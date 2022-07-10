@@ -9,7 +9,7 @@ function(x, mx=10000, ...) {
 	}
 )
 
-setMethod("lines", signature(x="SpatVector"), 
+setMethod("lines", signature(x="SpatVector"),
 	function(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)  {
 		if (nrow(x) == 0) return(invisible(NULL))
 		gtype <- geomtype(x)
@@ -56,7 +56,7 @@ setMethod("lines", signature(x="SpatVector"),
 )
 
 
-setMethod("points", signature(x="SpatVector"), 
+setMethod("points", signature(x="SpatVector"),
 	function(x, col, cex=1, pch=20, alpha=1, ...)  {
 		if (nrow(x) == 0) return(invisible(NULL))
 		if (missing(col)) col <- "black"
@@ -77,7 +77,7 @@ setMethod("points", signature(x="SpatVector"),
 )
 
 
-setMethod("polys", signature(x="SpatVector"), 
+setMethod("polys", signature(x="SpatVector"),
 	function(x, col, border="black", lwd=1, lty=1, alpha=1, ...)  {
 		if (nrow(x) == 0) return(invisible(NULL))
 		gtype <- geomtype(x)

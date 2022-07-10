@@ -6,7 +6,7 @@
 # adapted November 2020
 
 
-setMethod("crosstab", signature(x="SpatRaster", y="missing"), 
+setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 	function(x, digits=0, long=FALSE, useNA=FALSE) {
 
 		nl <- nlyr(x)
@@ -32,12 +32,12 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 
 		res <- res[res$Freq > 0,  ,drop=FALSE]
 
-		# some complexity to aggregate keeping 
+		# some complexity to aggregate keeping
 		# variables that are NA
 		if (useNA) {
 			for (i in 1:(ncol(res)-1)) {
 				if (any(is.na(res[,i]))) {
-					res[,i] <- factor(res[,i], levels=c(levels(res[,i]), NA), exclude=NULL) 
+					res[,i] <- factor(res[,i], levels=c(levels(res[,i]), NA), exclude=NULL)
 				}
 			}
 		}
@@ -49,7 +49,7 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 		}
 		if (nrow(res) == 0) {
 			res <- data.frame(matrix(nrow=0, ncol=length(nms)+1))
-		} 
+		}
 		nms <- make.names(nms, unique=TRUE)
 		colnames(res) <- c(nms, "Freq")
 

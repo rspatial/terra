@@ -4,8 +4,8 @@
 # Licence GPL v3
 
 
-setMethod("approximate", signature(x="SpatRaster"), 
-function(x, method="linear", yleft, yright, rule=1, f=0, ties=mean, z=NULL, NArule=1, filename="", ...) { 
+setMethod("approximate", signature(x="SpatRaster"),
+function(x, method="linear", yleft, yright, rule=1, f=0, ties=mean, z=NULL, NArule=1, filename="", ...) {
 
 	out <- rast(x, keeptime=TRUE)
 	nl <- nlyr(out)
@@ -18,7 +18,7 @@ function(x, method="linear", yleft, yright, rule=1, f=0, ties=mean, z=NULL, NAru
 		xout <- time(x)
 		if (any(is.na(xout))) {
 			xout <- 1:nl
-		} 
+		}
 	} else {
 		if (length(z)!= nl) {
 			error("approximate", "length of z does not match nlyr(x)")

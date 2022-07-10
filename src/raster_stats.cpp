@@ -71,7 +71,7 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int 
 		std::vector<std::map<double, unsigned long long int>> tabs(nl);
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned nrc = bs.nrows[i] * nc;
-			std::vector<double> v; 
+			std::vector<double> v;
 			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
 			if (round) {
 				for(double& d : v) d = roundn(d, digits);
@@ -127,7 +127,7 @@ std::vector<size_t> SpatRaster::count(double value, bool bylayer, bool round, in
 			if (std::isnan(value)) {
 				for (size_t lyr=0; lyr<nl; lyr++) {
 					unsigned off = lyr*nrc;
-					out[lyr] += count_if(v.begin()+off, v.begin()+off+nrc, 
+					out[lyr] += count_if(v.begin()+off, v.begin()+off+nrc,
 							[](double d){return std::isnan(d);});
 				}
 			} else {
@@ -146,7 +146,7 @@ std::vector<size_t> SpatRaster::count(double value, bool bylayer, bool round, in
 				for (double& d : v) d = roundn(d, digits);
 			}
 			if (std::isnan(value)) {
-				out[0] += count_if(v.begin(), v.end(), 
+				out[0] += count_if(v.begin(), v.end(),
 								[](double d){return std::isnan(d);});
 			} else {
 				out[0] += std::count(v.begin(), v.end(), value);
@@ -407,7 +407,7 @@ SpatDataFrame SpatRaster::zonal_old(SpatRaster z, std::string fun, bool narm, Sp
 		SpatOptions xopt(opt);
 		std::vector<unsigned> lyr = {0};
 		z = z.subset(lyr, xopt);
-		out.addWarning("only the first zonal layer is used"); 
+		out.addWarning("only the first zonal layer is used");
 	}
 
 	size_t nl = nlyr();
@@ -473,7 +473,7 @@ SpatDataFrame SpatRaster::zonal_old(SpatRaster z, std::string fun, bool narm, Sp
 				}
 			}
 		}
-	} 
+	}
 
 	else if (fun == "min") {
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
@@ -529,7 +529,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		SpatOptions xopt(opt);
 		std::vector<unsigned> lyr = {0};
 		z = z.subset(lyr, xopt);
-		out.addWarning("only the first zonal layer is used"); 
+		out.addWarning("only the first zonal layer is used");
 	}
 
 	double posinf = std::numeric_limits<double>::infinity();
@@ -559,10 +559,10 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 			for (size_t j=0; j<nl; j++) {
 				size_t off = j*nrc;
 				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-				for (size_t k=0; k<nrc; k++) { 
+				for (size_t k=0; k<nrc; k++) {
 					if (std::isnan(zv[k])) {
 						continue;
-					} 
+					}
 					if (narm && std::isnan(v[k])) {
 						if (m[j].find(zv[k]) == m[j].end()) {
 							m[j][zv[k]] = 0;
@@ -581,10 +581,10 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 			for (size_t j=0; j<nl; j++) {
 				size_t off = j*nrc;
 				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-				for (size_t k=0; k<nrc; k++) { 
+				for (size_t k=0; k<nrc; k++) {
 					if (std::isnan(zv[k])) {
 						continue;
-					} 
+					}
 					if (narm && std::isnan(v[k])) {
 						if (m[j].find(zv[k]) == m[j].end()) {
 							m[j][zv[k]] = 0;
@@ -603,10 +603,10 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 			for (size_t j=0; j<nl; j++) {
 				size_t off = j*nrc;
 				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-				for (size_t k=0; k<nrc; k++) { 
+				for (size_t k=0; k<nrc; k++) {
 					if (std::isnan(zv[k])) {
 						continue;
-					} 
+					}
 					if (narm && std::isnan(v[k])) {
 						if (m[j].find(zv[k]) == m[j].end()) {
 							m[j][zv[k]] = posinf;
@@ -625,10 +625,10 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 			for (size_t j=0; j<nl; j++) {
 				size_t off = j*nrc;
 				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-				for (size_t k=0; k<nrc; k++) { 
+				for (size_t k=0; k<nrc; k++) {
 					if (std::isnan(zv[k])) {
 						continue;
-					} 
+					}
 					if (narm && std::isnan(v[k])) {
 						if (m[j].find(zv[k]) == m[j].end()) {
 							m[j][zv[k]] = neginf;
@@ -647,15 +647,15 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 			for (size_t j=0; j<nl; j++) {
 				size_t off = j*nrc;
 				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-				for (size_t k=0; k<nrc; k++) { 
+				for (size_t k=0; k<nrc; k++) {
 					if (std::isnan(zv[k])) {
 						continue;
-					} 
+					}
 					if (!std::isnan(v[k])) {
 						if (cnt[j].find(zv[k]) == cnt[j].end()) {
 							cnt[j][zv[k]] = 0;
 						}
-					} else {						
+					} else {
 						if (cnt[j].find(zv[k]) == cnt[j].end()) {
 							cnt[j][zv[k]] = 1;
 						} else {
@@ -668,15 +668,15 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 			for (size_t j=0; j<nl; j++) {
 				size_t off = j*nrc;
 				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-				for (size_t k=0; k<nrc; k++) { 
+				for (size_t k=0; k<nrc; k++) {
 					if (std::isnan(zv[k])) {
 						continue;
-					} 
+					}
 					if (std::isnan(v[k])) {
 						if (cnt[j].find(zv[k]) == cnt[j].end()) {
 							cnt[j][zv[k]] = 0;
 						}
-					} else {						
+					} else {
 						if (cnt[j].find(zv[k]) == cnt[j].end()) {
 							cnt[j][zv[k]] = 1;
 						} else {
@@ -696,7 +696,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	if ((fun == "notNA") || (fun == "isNA")){
 		size_t n = cnt[0].size();
 		zone.reserve(n);
-		for (size_t i=0; i<nl; i++) {	
+		for (size_t i=0; i<nl; i++) {
 			std::vector<double> value;
 			value.reserve(n);
 			if (i==0) {
@@ -708,14 +708,14 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 			} else {
 				for (auto& it : cnt[i]) {
 					value.push_back(it.second);
-				}			
+				}
 			}
 			out.add_column(value, nms[i]);
 		}
 	} else {
 		size_t n = m[0].size();
 		zone.reserve(n);
-		for (size_t i=0; i<nl; i++) {	
+		for (size_t i=0; i<nl; i++) {
 			std::vector<double> value;
 			value.reserve(n);
 			if (i==0) {
@@ -727,7 +727,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 			} else {
 				for (auto& it : m[i]) {
 					value.push_back(it.second);
-				}			
+				}
 			}
 			size_t j = 0;
 			if (fun == "mean") {
@@ -736,14 +736,14 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 					if (d > 0) {
 						value[j] /= d;
 					} else {
-						value[j] = NAN;				
+						value[j] = NAN;
 					}
 					j++;
 				}
 			} else {
 				for (auto& it : cnt[i]) {
 					if (it.second == 0) {
-						value[j] = NAN;				
+						value[j] = NAN;
 					}
 					j++;
 				}

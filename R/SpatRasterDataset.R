@@ -102,7 +102,7 @@ setMethod("sds", signature(x="array"),
 
 setMethod("sds", signature(x="stars"),
 	function(x) {
-		s <- from_stars(x) 
+		s <- from_stars(x)
 		if (inherits(s, "SpatRaster")) {
 			sds(s)
 		} else {
@@ -113,7 +113,7 @@ setMethod("sds", signature(x="stars"),
 
 setMethod("sds", signature(x="stars_proxy"),
 	function(x) {
-		s <- from_stars(x) 
+		s <- from_stars(x)
 		if (inherits(s, "SpatRaster")) {
 			sds(s)
 		} else {
@@ -123,11 +123,11 @@ setMethod("sds", signature(x="stars_proxy"),
 )
 
 
-setMethod("c", signature(x="SpatRasterDataset"), 
+setMethod("c", signature(x="SpatRasterDataset"),
 	function(x, ...) {
 
 		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 ) # why? make a copy?
-	 
+	
 		dots <- list(...)
 		nms <- names(dots)
 
@@ -147,7 +147,7 @@ setMethod("c", signature(x="SpatRasterDataset"),
 				}
 			} else {
 				error("c", "arguments must be SpatRaster or SpatRasterDataset")
-			} 
+			}
 		}
 		messages(x, "c")
 	}
@@ -235,9 +235,9 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
-setMethod("$", "SpatRasterDataset",  
-	function(x, name) { 
-		x[name] 
+setMethod("$", "SpatRasterDataset",
+	function(x, name) {
+		x[name]
 	}
 )
 
@@ -251,14 +251,14 @@ setMethod("sprc", signature(x="missing"),
 )
 
 
-setMethod("sprc", signature(x="SpatRaster"), 
+setMethod("sprc", signature(x="SpatRaster"),
 	function(x, ...) {
 		sprc(list(x, ...))
 	}
 )
 
 
-setMethod("sprc", signature(x="list"), 
+setMethod("sprc", signature(x="list"),
 	function(x) {
 		n <- length(x)
 		ptr <- SpatRasterCollection$new()

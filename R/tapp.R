@@ -1,5 +1,5 @@
 
-setMethod("tapp", signature(x="SpatRaster"), 
+setMethod("tapp", signature(x="SpatRaster"),
 function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list()) {
 
 	stopifnot(!any(is.na(index)))
@@ -10,7 +10,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 			error("tapp", paste("invalid time step. Use one of:", paste(choices, collapse=", ")))
 		}
 		if (!x@ptr$hasTime) {
-			error("tapp", "x has no time data")		
+			error("tapp", "x has no time data")
 		}
 		choice <- choices[i]
 		if (choice == "doy") {
@@ -21,7 +21,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 			index <- as.character(time(x, choice))
 		}
 	}
-	
+
 	nl <- nlyr(x)
 	if (length(index) > nl) {
 		error("tapp", "length(index) > nlyr(x)")
@@ -37,7 +37,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	nms <- make.names(d[,1])
 	nms <- nms[uin]
 	txtfun <- .makeTextFun(fun)
-	if (inherits(txtfun, "character")) { 
+	if (inherits(txtfun, "character")) {
 		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)

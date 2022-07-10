@@ -65,7 +65,7 @@ readSVG <- function(f) {
 			z <- XML::xpathSApply(doc, "//path", XML::xmlGetAttr, a[i])
 			att[[i]] <- sapply(z, function(i) if (is.null(i)) NA else i, USE.NAMES = FALSE)
 		}
-		names(att) <- a 
+		names(att) <- a
 		values(v) <- data.frame(att)
 	}
 	v

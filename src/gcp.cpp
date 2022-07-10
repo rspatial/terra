@@ -22,7 +22,7 @@ SpatRaster SpatRaster::applyGCP(std::vector<double> fx, std::vector<double> fy, 
       gcps[i].dfGCPZ = (float) 0.0;
     }
 
-    GDALDatasetH hSrcDS; //hDstDS, 
+    GDALDatasetH hSrcDS; //hDstDS,
 
 	if (!open_gdal(hSrcDS, 0, false, opt)) {
 		out.setError("bad");
@@ -30,7 +30,7 @@ SpatRaster SpatRaster::applyGCP(std::vector<double> fx, std::vector<double> fy, 
 	}
 	std::string srccrs = getSRS("wkt");
     const char *projection = srccrs.c_str();
-    GDALSetGCPs(hSrcDS, fx.size(), gcps, projection); 
+    GDALSetGCPs(hSrcDS, fx.size(), gcps, projection);
 
 	//if (!get_output_bounds(hSrcDS, srccrs, srccrs, out)) {
 	//	GDALClose( hSrcDS );

@@ -178,7 +178,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 	if (w[3] > nlyr(x)) {
 		error("focal", "the third weights dimension is larger than nlyr(x)")
 	}
-	
+
 	msz <- prod(w)
 	dow <- !isTRUE(all(m == 1))
 	rna <- FALSE
@@ -187,7 +187,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 		kna <- !is.na(m)
 		m <- m[kna]
 		msz <- sum(kna)
-	} 
+	}
 
 	opt <- spatOptions()
 	halfway <- floor(w[3]/2)
@@ -223,7 +223,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 		outnl <- nl * length(vout)
 	} else {
 		startlyr = halfway+1;
-		endlyr = nl-halfway;	
+		endlyr = nl-halfway;
 		outnl <- (1+endlyr-startlyr) * length(vout)
 	}
 
@@ -250,7 +250,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
 			}
 		} else {
-			v <- lapply(1:w[3], 
+			v <- lapply(1:w[3],
 				function(k) matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
 			v <- do.call(rbind, v)
 		}
@@ -277,7 +277,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 			} else {
 				vout <- apply(v, 2, fun,...)
 			}
-			
+
 			if (transp) {
 				vout <- t(vout)
 			}

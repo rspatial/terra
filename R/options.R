@@ -1,7 +1,7 @@
 
 .terra_environment <- new.env(parent=emptyenv())
 
- 
+
 .create_options <- function() {
 	opt <- methods::new("SpatOptions")
 	opt@ptr <- SpatOptions$new()
@@ -10,12 +10,12 @@
 	opt@ptr$tempdir <- normalizePath(tempdir(), winslash="/")
 	.terra_environment$options <- opt
 }
- 
+
 .options_names <- function() {
-	c("progress", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid") #, "append") 
+	c("progress", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid") #, "append")
 }
 
- 
+
 .setOptions <- function(x, wopt) {
 
 	nms <- names(wopt)
@@ -58,14 +58,14 @@
 	}
 
 	x
-} 
- 
+}
+
 defaultOptions <- function() {
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
 	.terra_environment$options@ptr$deepcopy()
 }
- 
+
 spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
 	wopt <- c(list(...), wopt)
@@ -107,24 +107,24 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 #}
 
 .showOptions <- function(opt) {
-	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance") 
+	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance")
 	for (n in nms) {
 		v <- eval(parse(text=paste0("opt$", n)))
 		cat(paste0(substr(paste(n, "         "), 1, 10), ": ", v, "\n"))
 	}
-	cat(paste0("memmin    : ", 8 * opt$memmin / (1024^3), "\n"))	
+	cat(paste0("memmin    : ", 8 * opt$memmin / (1024^3), "\n"))
 	if (opt$memmax > 0) {
-		cat(paste0("memmax    : ", 8 * opt$memmax / (1024^3), "\n"))	
+		cat(paste0("memmax    : ", 8 * opt$memmax / (1024^3), "\n"))
 	}
 }
 
 
 .default_option_names <- function() {
-	c("datatype", "filetype") #, "verbose") 
+	c("datatype", "filetype") #, "verbose")
 }
 
 
- 
+
 terraOptions <- function(...) {
 	dots <- list(...)
 	if (is.null(.terra_environment$options)) .create_options()

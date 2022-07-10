@@ -26,7 +26,7 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 	if (vals.size() == size()) {
 		source[0].values = std::move(vals);
 		return true;
-	} 
+	}
 
 	if (nlyr() == 1) {
 		source[0].values.insert(source[0].values.end(), vals.begin(), vals.end());
@@ -41,8 +41,8 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 	size_t ncols = ncol();
 	size_t chunk = nrows * ncols;
 	for (size_t i=0; i<nlyr(); i++) {
-		size_t off1 = i * chunk; 
-		size_t off2 = startrow * ncols + i * nc; 
+		size_t off1 = i * chunk;
+		size_t off2 = startrow * ncols + i * nc;
 		std::copy( vals.begin()+off1, vals.begin()+off1+chunk, source[0].values.begin()+off2 );
 	}
 	return true;
@@ -191,7 +191,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 			SpatRaster out(fnames, {-1}, {""}, false, {}, {}, {});
 			return out;
 		}
-	} 
+	}
 
 	if (!readStart()) {
 		out.setError(getError());
@@ -199,12 +199,12 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	}
 
 	opt.ncopies = 2;
-	if (!out.writeStart(opt)) { 
+	if (!out.writeStart(opt)) {
 		readStop();
-		return out; 
+		return out;
 	}
 	for (size_t i=0; i<out.bs.n; i++) {
-		std::vector<double> v; 
+		std::vector<double> v;
 		readBlock(v, out.bs, i);
 		if (!out.writeBlock(v, i)) {
 			readStop();
@@ -263,8 +263,8 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	//bs = getBlockSize(opt);
     #ifdef useRcpp
 	if (opt.verbose) {
-		std::vector<double> mems = mem_needs(opt); 
-		double gb = 1073741824 / 8; 
+		std::vector<double> mems = mem_needs(opt);
+		double gb = 1073741824 / 8;
 		//{memneed, memavail, frac, csize, inmem} ;
 		// << "max vect size : " << roundn(mems.max_size() / gb, 2) << " GB" << std::endl;
 		Rcpp::Rcout<< "memory avail. : " << roundn(mems[1] / gb, 2) << " GB" << std::endl;

@@ -1,6 +1,6 @@
 
 
-setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"), 
+setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"),
 	function(x, y, fun="count", unit="m", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		y@ptr <- y@ptr$rasterizeGeom(x@ptr, unit, fun, opt)
@@ -19,9 +19,9 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 		if (!hasValues(y)) {
 			update <- FALSE
 		} else {
-			background <- NA 
+			background <- NA
 		}
-	} 
+	}
 
 	nrx <- nrow(x)
 
@@ -50,7 +50,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 			levs[[i]] <- levels(f)
 			values[,i] <- as.integer(f) - 1
 			has_levels <- TRUE
-		} 
+		}
 	}
 
 	g <- cellFromXY(y, x)
@@ -114,7 +114,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 		if (nrow(vv) > 0) {
 			vv[,1] <- vv[,1] - (b$row[i] - 1) * nc
 			w[vv[,1],] <- vv[,-1]
-		} 
+		}
 		writeValues(r, w, b$row[i], b$nrows[i])
 	}
 	r <- writeStop(r)
@@ -127,18 +127,18 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 }
 
 
-setMethod("rasterize", signature(x="matrix", y="SpatRaster"), 
+setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
 	function(x, y, values=1, fun, ..., background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 		lonlat <- .checkXYnames(colnames(x))
 
-		rasterize_points(x=x, y=y, field="", values=rep_len(values, nrow(x)), fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
+		rasterize_points(x=x, y=y, field="", values=rep_len(values, nrow(x)), fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)
 
 	}
 )
 
 
-setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
+setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 		values <- 1
@@ -163,7 +163,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 				values <- sapply(1:ncol(values), function(i) values[g[,1], i])
 			}
 			return(
-				rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
+				rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)
 			)
 		}
 
@@ -182,7 +182,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 
 
-setMethod("rasterize", signature(x="sf", y="SpatRaster"), 
+setMethod("rasterize", signature(x="sf", y="SpatRaster"),
 	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 		x <- vect(x)
 		rasterize(x, y, field=field, fun=fun, ..., background=background, touches=touches, update=update, sum=sum, cover=cover, filename=filename, overwrite=overwrite, wopt=wopt)
@@ -194,7 +194,7 @@ setMethod("rasterize", signature(x="sf", y="SpatRaster"),
 
 		# g <- geomtype(x)
 		# if (grepl("points", g)) {
-			# r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update, filename=filename, ...) 
+			# r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update, filename=filename, ...)
 			# return (r)
 		# }
 
@@ -238,15 +238,15 @@ setMethod("rasterize", signature(x="sf", y="SpatRaster"),
 					# field <- names(x)[field]
 				# } else {
 					# error("rasterize", "field index outside the value range (1:ncol(x))")
-				# } 
+				# }
 			# } else {
 				# y@ptr <- y@ptr$rasterize1(x@ptr, "", field, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
-			# } 
+			# }
 		# }
 
 		# if (is.character(field)) {
 			# if (length(field) == 1) {
-				# i <- which(field == names(x)) 
+				# i <- which(field == names(x))
 				# if (length(i) == 0) {
 					# error("rasterize", paste0(field, " is not a valid fieldname"))
 				# }
@@ -268,8 +268,8 @@ setMethod("rasterize", signature(x="sf", y="SpatRaster"),
 				# levs  <- levels(f)
 				# field <- as.integer(f) - 1
 				# y@ptr <- y@ptr$rasterize1(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
-			# } 
-		# } 
+			# }
+		# }
 
 		# if (domask) {
 			# y <- mask(y, xx, inverse=FALSE, updatevalue=NA, touches=touches, filename=fname, overwrite=overwrite, ...)

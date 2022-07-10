@@ -10,9 +10,9 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 	if (ncols < 1) error("rast", "ncols < 1")
 	nrows <- round(nrows)
 	if (nrows < 1) error("rast", "nrows < 1")
-	
+
 	if (missing(extent)) {
-		e <- c(xmin, xmax, ymin, ymax) 
+		e <- c(xmin, xmax, ymin, ymax)
 	} else {
 		extent <- ext(extent)
 		e <- as.vector(extent)
@@ -30,7 +30,7 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 		crs <- character_crs(crs, "rast")
 	}
 	#check_proj4_datum(crs)
-	
+
 	r <- methods::new("SpatRaster")
 	r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
 	r <- messages(r, "rast")
@@ -165,7 +165,7 @@ setMethod("rast", signature(x="character"),
 		if (is.null(opts)) opts <- ""[0]
 		if (is.null(drivers)) drivers <- ""[0]
 		if (length(subds) == 0) subds = 0
-		if (is.character(subds)) { 
+		if (is.character(subds)) {
 			#r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
 			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[])
 		} else {
@@ -175,7 +175,7 @@ setMethod("rast", signature(x="character"),
 		if (r@ptr$getMessage() == "ncdf extent") {
 			test <- try(r <- .ncdf_extent(r), silent=TRUE)
 			if (inherits(test, "try-error")) {
-				warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
+				warn("rast", "GDAL did not find an extent. Cells not equally spaced?")
 			}
 		}
 		r <- messages(r, "rast")
@@ -211,7 +211,7 @@ multi <- function(x, subds=0, xyz=3:1, drivers=NULL, opts=NULL) {
 	if (length(subds) == 0) subds = 1
 	subds <- subds[1]
 
-	if (is.character(subds)) { 
+	if (is.character(subds)) {
 		r@ptr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, xyz-1)
 	} else {
 		r@ptr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, xyz-1)
@@ -219,7 +219,7 @@ multi <- function(x, subds=0, xyz=3:1, drivers=NULL, opts=NULL) {
 	if (r@ptr$getMessage() == "ncdf extent") {
 		test <- try(r <- .ncdf_extent(r), silent=TRUE)
 		if (inherits(test, "try-error")) {
-			warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
+			warn("rast", "GDAL did not find an extent. Cells not equally spaced?")
 		}
 	}
 	r <- messages(r, "rast")
@@ -444,7 +444,7 @@ setMethod("rast", signature(x="stars_proxy"),
 	}
 )
 
-setMethod("NAflag<-", signature(x="SpatRaster"), 
+setMethod("NAflag<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		value <- as.numeric(value)
 		if (!(x@ptr$setNAflag(value))) {
@@ -454,7 +454,7 @@ setMethod("NAflag<-", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("NAflag", signature(x="SpatRaster"), 
+setMethod("NAflag", signature(x="SpatRaster"),
 	function(x)  {
 		x@ptr$getNAflag()
 	}

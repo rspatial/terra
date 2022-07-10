@@ -1,5 +1,5 @@
 
-setMethod ("has.colors" , "SpatRaster", 
+setMethod ("has.colors" , "SpatRaster",
 	function(x) {
 		x@ptr$hasColors()
 	}
@@ -7,7 +7,7 @@ setMethod ("has.colors" , "SpatRaster",
 
 
 
-setMethod ("coltab" , "SpatRaster", 
+setMethod ("coltab" , "SpatRaster",
 	function(x) {
 		hascols <- x@ptr$hasColors()
 		if (any(hascols)) {
@@ -22,7 +22,7 @@ setMethod ("coltab" , "SpatRaster",
 )
 
 
-setMethod ("coltab<-" , "SpatRaster", 
+setMethod ("coltab<-" , "SpatRaster",
 	function(x, value, layer=1) {
 
 		x@ptr <- x@ptr$deepcopy()
@@ -61,9 +61,9 @@ setMethod ("coltab<-" , "SpatRaster",
 		value[, 1] <- as.integer(value[, 1])
 		for (i in 2:ncol(value)) {
 			value[, i] <- as.integer(clamp(value[, i], 0, 255))
-		} 
+		}
 		value[is.na(value)] <- 255
-		
+
 		d <- .makeSpatDF(value)
 		if (x@ptr$setColors(layer, d)) {
 			return(x)

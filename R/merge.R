@@ -3,7 +3,7 @@
 # Version 1.0
 # License GPL v3
 
-setMethod("merge", signature(x="SpatVector", y="data.frame"), 
+setMethod("merge", signature(x="SpatVector", y="data.frame"),
 	function(x, y, ...) {
 		v <- values(x)
 		v$unique_nique_ique_que_e <- 1:nrow(v)
@@ -19,14 +19,14 @@ setMethod("merge", signature(x="SpatVector", y="data.frame"),
 	}
 )
 
-setMethod("merge", signature(x="SpatVector", y="SpatVector"), 
+setMethod("merge", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, ...) {
 		merge(x, data.frame(y), ...)
 	}
 )
 
-setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
+setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) {
 		rc <- sprc(x, y, ...)
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		x@ptr <- rc@ptr$merge(opt)
@@ -35,8 +35,8 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 )
 
 
-setMethod("merge", signature(x="SpatRasterCollection", "missing"), 
-	function(x, filename="", ...) { 
+setMethod("merge", signature(x="SpatRasterCollection", "missing"),
+	function(x, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
 		out@ptr <- x@ptr$merge(opt)
@@ -45,8 +45,8 @@ setMethod("merge", signature(x="SpatRasterCollection", "missing"),
 )
 
 
-setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) { 
+setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) {
 		rc <- sprc(x, y, ...)
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		x@ptr <- rc@ptr$mosaic(fun, opt)
@@ -54,8 +54,8 @@ setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
 	}
 )
 
-setMethod("mosaic", signature(x="SpatRasterCollection", "missing"), 
-	function(x, fun="mean", filename="", ...) { 
+setMethod("mosaic", signature(x="SpatRasterCollection", "missing"),
+	function(x, fun="mean", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
 		out@ptr <- x@ptr$mosaic(fun, opt)

@@ -11,23 +11,23 @@
 			test <- try(deparse(fun)[[1]], silent=TRUE)
 			test <- gsub('.Primitive\\(\"', "", test)
 			test <- gsub('\")', "", test)
-			if (test %in% c("sum", "min", "max", "prod", "any", "all")) return(test); 
+			if (test %in% c("sum", "min", "max", "prod", "any", "all")) return(test);
 		} else {
 			depf <- deparse(fun)
 			test1 <- isTRUE(try( depf[2] == 'UseMethod(\"mean\")', silent=TRUE))
 			test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
-			if (test1 | test2) { 
+			if (test1 | test2) {
 				return("mean")
 			}
 			test1 <- isTRUE(try( depf[2] == 'UseMethod(\"median\")', silent=TRUE))
 			test2 <- isTRUE(try( fun@generic == "median", silent=TRUE))
-			if (test1 | test2) { 
+			if (test1 | test2) {
 				return("median")
 			}
 			test1 <- isTRUE(try( depf[1] == "function (x, na.rm = FALSE) ", silent=TRUE))
 			test2 <- isTRUE(try( depf[2] == "sqrt(var(if (is.vector(x) || is.factor(x)) x else as.double(x), ", silent=TRUE))
 			test3 <- isTRUE(try( depf[3] == "    na.rm = na.rm))", silent=TRUE))
-			if (test1 && test2 && test3) { 
+			if (test1 && test2 && test3) {
 				return("sd")
 			}
 			if (isTRUE(try( fun@generic == "which.min", silent=TRUE))) {
@@ -36,26 +36,26 @@
 			if (isTRUE(try( fun@generic == "which.max", silent=TRUE))) {
 				return("which.max")
 			}
-			if (isTRUE(depf[3] == "    wh <- .Internal(which(x))")) return("which")			
-		} 
+			if (isTRUE(depf[3] == "    wh <- .Internal(which(x))")) return("which")
+		}
 	}
 	return(fun)
 }
 
 
-setMethod("aggregate", signature(x="SpatRaster"), 
+setMethod("aggregate", signature(x="SpatRaster"),
 function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	fun <- .makeTextFun(fun)
 	toc <- FALSE
-	if (inherits(fun, "character")) { 
+	if (inherits(fun, "character")) {
 		if (fun %in% c("sum", "mean", "min", "max", "median", "modal", "sd", "sdpop")) {
 			toc <- TRUE
 		} else {
-			fun <- match.fun(fun) 
+			fun <- match.fun(fun)
 		}
 	} else {
-		fun <- match.fun(fun) 
+		fun <- match.fun(fun)
 	}
 	if (!hasValues(x)) { toc = TRUE }
 	if (toc) {
@@ -97,7 +97,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 
 		nr <- max(1, floor(b$nrows[1] / fact[1])) * fact[1]
 		nrs <- rep(nr, floor(nrow(x)/nr))
-		d <- nrow(x) - sum(nrs) 
+		d <- nrow(x) - sum(nrs)
 		if (d > 0) nrs <- c(nrs, d)
 		b$row <- c(0, cumsum(nrs))[1:length(nrs)] + 1
 		b$nrows <- nrs
@@ -222,7 +222,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 				iby <- match(by, names(x))
 				if (any(is.na(iby))) {
 					bad <- paste(by[is.na(iby)], collapse=", ")
-					error("aggregate", "invalid name(s) in by: ", bad)					
+					error("aggregate", "invalid name(s) in by: ", bad)
 				}
 			} else if (is.numeric(by)) {
 				by <- unique(by)
@@ -234,35 +234,35 @@ setMethod("aggregate", signature(x="SpatVector"),
 			} else {
 				error("aggregate", "by should be character or numeric")
 			}
-			
+
 			d <- as.data.frame(x)
 			mvars <- FALSE
 			if (length(iby) > 1) {
 				cvar <- apply(d[, iby], 1, function(i) paste(i, collapse="_"))
 				by <- basename(tempfile())
 				values(x) <- NULL
-				x[[by]] <- cvar 
+				x[[by]] <- cvar
 				mvars <- TRUE
 			} else {
-				by <- names(x)[iby]	
+				by <- names(x)[iby]
 			}
 
 			x@ptr <- x@ptr$aggregate(by, dissolve)
 			messages(x)
-			
+
 			if (mvars) {
 				d[[by]] <- cvar
-				a <- aggregate_attributes(d, c(by, names(d)[iby]), fun=fun, count=count, ...)			
+				a <- aggregate_attributes(d, c(by, names(d)[iby]), fun=fun, count=count, ...)
 			} else {
 				a <- aggregate_attributes(d, names(d)[iby], fun=fun, count=count, ...)
 			}
-			
+
 			if (any(is.na(d[[by]]))) {
 				# because NaN and NA are dropped
 				i <- nrow(a)+(1:2)
 				a[i,] <- c(NA, NaN)
 			}
-			i <- match(x[[by,drop=TRUE]], a[[by]])			
+			i <- match(x[[by,drop=TRUE]], a[[by]])
 			i <- i[!is.na(i)]
 			if (mvars) {
 				a[[by]] <- NULL

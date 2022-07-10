@@ -4,7 +4,7 @@
 # License GPL v3
 
 
-.rast_replace <- function(x, name, value, caller="$<-") { 
+.rast_replace <- function(x, name, value, caller="$<-") {
 	if (inherits(value, "SpatRaster")) {
 		value <- value[[1]]
 		names(value) <- name
@@ -39,8 +39,8 @@
 	}
 }
 
-setMethod("$<-", "SpatRaster",  
-	function(x, name, value) { 
+setMethod("$<-", "SpatRaster",
+	function(x, name, value) {
 		.rast_replace(x, name, value, "$<-")
 	}
 )
@@ -144,7 +144,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 				value <- as.matrix(value)
 			}
 			value <- as.vector(value)
-		} 
+		}
 
 		x@ptr <- x@ptr$deepcopy()
 		opt <- spatOptions()
@@ -157,19 +157,19 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 )
 
 
-setMethod("set.values", signature(x="SpatRaster"), 
+setMethod("set.values", signature(x="SpatRaster"),
 	function(x, cells, values)  {
 		if (missing(cells) && missing(values)) {
 			x@ptr$readAll()
 			return(invisible(TRUE));
 		}
-## future: allow setting values in specific layers.		
+## future: allow setting values in specific layers.
 #		if (!missing(layers)) {
 #			layers <- 0
 #		} else {
 #			if (any(is.na(layers))) { error("set.values", "layers cannot be NA")}
-#			if (inherits(layers, "character")) { 
-#				layers <- match(layers, names(x)) 
+#			if (inherits(layers, "character")) {
+#				layers <- match(layers, names(x))
 #				if (any(is.na(layers))) { error("set.values", "invalid layer names")}
 #			}
 #			if (any((layers < 1) || (layers > nlyr(x))))  { error("set.values", "invalid layer numbers") }
@@ -180,16 +180,16 @@ setMethod("set.values", signature(x="SpatRaster"),
 		if (!is.null(dim(values))) {
 			#if ((layers[1] > 0) && (ncol(values) != n)) {
 			#	error("set.values", "ncol(values) does not match the number of layers")
-			#} else 
+			#} else
 			if (ncol(values) != nlyr(x)) {
-				error("set.values", "ncol(values) does not match the nlyr(x)")			
+				error("set.values", "ncol(values) does not match the nlyr(x)")
 			}
 			bylyr <- TRUE
 			if (inherits(values, "data.frame")) {
 				values <- as.matrix(values)
 			}
 			values <- as.vector(values)
-		} 
+		}
 		if (!x@ptr$replaceCellValues(cells-1, values, bylyr, spatOptions())) {
 			messages(x)
 		} else {
@@ -251,7 +251,7 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "ANY"),
 				i <- which(i)
 				x[i] <- value
 				x
-			} 
+			}
 		}
 	}
 )
@@ -266,7 +266,7 @@ setReplaceMethod("[", c("SpatRaster", "SpatVector", "missing"),
 		}
 		if (length(value) > 1) {
 			value <- rep_len(value, length.out=length(x))
-		} 
+		}
 		rasterize(i, x, field=value, update=TRUE)
 	}
 )

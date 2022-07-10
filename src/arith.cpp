@@ -278,7 +278,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 			} else {
 				for(double& d : a)  d -= x;
 			}
-		} 
+		}
 		else if (oper == "*") {
 			for(double& d : a)  d *= x;
 		} else if (oper == "/") {
@@ -589,7 +589,7 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 			for(double& d : a) d = roundn(d, digits);
 		} else if (fun == "signif") {
 			for(double& d : a) if (!std::isnan(d)) d = signif(d, digits);
-		} 
+		}
 		if (!out.writeBlock(a, i)) return out;
 	}
 	out.writeStop();
@@ -726,7 +726,7 @@ std::vector<T> operator&(const std::vector<T>& a, const std::vector<T>& b) {
 	for (size_t i=0; i<a.size(); i++) {
 		if (std::isnan(a[i]) || std::isnan(b[i])) {
 			result[i] = NAN;
-		} 
+		}
 	}
     return result;
 }
@@ -740,7 +740,7 @@ std::vector<T> operator|(const std::vector<T>& a, const std::vector<T>& b) {
 	for (size_t i=0; i<a.size(); i++) {
 		if (std::isnan(a[i]) || std::isnan(b[i])) {
 			result[i] = NAN;
-		} 
+		}
 	}
     return result;
 }
@@ -758,7 +758,7 @@ SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 		return out;
 	}
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a; 
+		std::vector<double> a;
 		readBlock(a, out.bs, i);
 		for (size_t j=0; j<a.size(); j++) {
 			a[i] = !a[i];
@@ -778,7 +778,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 	SpatRaster out = geometry();
 	out.setValueType(3);
 
-	std::vector<std::string> f {"&", "|"}; 
+	std::vector<std::string> f {"&", "|"};
 	if (std::find(f.begin(), f.end(), oper) == f.end()) {
 		out.setError("unknown logic function");
 		return out;
@@ -802,14 +802,14 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		return out;
 	}
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a; 
+		std::vector<double> a;
 		readBlock(a, out.bs, i);
 		std::vector<double> b;
 		x.readBlock(b, out.bs, i);
 		if (oper == "&") {
-			a = a & b; 
+			a = a & b;
 		} else if (oper == "|") {
-			a = a | b; 
+			a = a | b;
 		} else {
 			// stop
 		}
@@ -840,7 +840,7 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 	}
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a; 
+		std::vector<double> a;
 		readBlock(a, out.bs, i);
 		if (std::isnan(x)) {
 			for(double& d : a)  d = NAN;
@@ -892,7 +892,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 	std::vector<double> v(nl);
 	unsigned nc;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a; 
+		std::vector<double> a;
 		readBlock(a, out.bs, i);
 		nc = out.bs.nrows[i] * out.ncol();
 		for (size_t j=0; j<nc; j++) {
@@ -938,7 +938,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 
 	if (fun == "range") {
 		return range(add, narm, opt);
-	} 
+	}
 	out.source[0].names[0] = fun;
 	std::function<double(std::vector<double>&, bool)> sumFun;
 	if (fun == "std") {
@@ -967,7 +967,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 	if (add.size() > 0) v.insert( v.end(), add.begin(), add.end() );
 
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a; 
+		std::vector<double> a;
 		readBlock(a, out.bs, i);
 		unsigned nc = out.bs.nrows[i] * out.ncol();
 		std::vector<double> b(nc);
@@ -1001,12 +1001,12 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 
 
 	std::vector<std::string> f {"lowest", "highest", "first", "random", "NA"};
-	//std::vector<std::string>::iterator it; 
+	//std::vector<std::string>::iterator it;
 	auto it = std::find(f.begin(), f.end(), ties);
 	if (it == f.end()) {
 		out.setError("unknown ties choice");
 		return out;
-	} 
+	}
 	size_t ities = std::distance(f.begin(), it);
 
 	if (!readStart()) {
@@ -1028,7 +1028,7 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 	v.insert( v.end(), add.begin(), add.end() );
 
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a; 
+		std::vector<double> a;
 		readBlock(a, out.bs, i);
 		unsigned nc = out.bs.nrows[i] * out.ncol();
 		std::vector<double> b(nc);
@@ -1069,7 +1069,7 @@ SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &op
 	v.insert( v.end(), add.begin(), add.end() );
 
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a; 
+		std::vector<double> a;
 		readBlock(a, out.bs, i);
 		unsigned nc = out.bs.nrows[i] * out.ncol();
 		std::vector<double> b(nc * 2);
@@ -1130,7 +1130,7 @@ SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> ad
 	std::vector<double> v(ns);
 	if (add.size() > 0) v.insert( v.end(), add.begin(), add.end() );
 
-	std::vector<std::vector<double>> a(ns); 
+	std::vector<std::vector<double>> a(ns);
 	for (size_t i=0; i < out.bs.n; i++) {
 		unsigned nc = out.bs.nrows[i] * out.ncol() * nl;
 		for (size_t j=0; j < ns; j++) {
@@ -1166,7 +1166,7 @@ SpatRaster SpatRasterStack::summary(std::string fun, bool narm, SpatOptions &opt
 SpatRaster SpatRaster::isnan(SpatOptions &opt) {
 	SpatRaster out = geometry();
 	out.setValueType(3);
-	
+
     if (!hasValues()) return out;
 	if (!readStart()) {
 		out.setError(getError());
@@ -1178,7 +1178,7 @@ SpatRaster SpatRaster::isnan(SpatOptions &opt) {
 		return out;
 	}
 	for (size_t i=0; i<out.bs.n; i++) {
-		std::vector<double> v; 
+		std::vector<double> v;
 		readBlock(v, out.bs, i);
 		for (double &d : v) d = std::isnan(d);
 		if (!out.writeBlock(v, i)) return out;
@@ -1203,7 +1203,7 @@ SpatRaster SpatRaster::isnotnan(SpatOptions &opt) {
 		return out;
 	}
 	for (size_t i=0; i<out.bs.n; i++) {
-		std::vector<double> v; 
+		std::vector<double> v;
 		readBlock(v, out.bs, i);
 		for (double &d : v) d = ! std::isnan(d);
 		if (!out.writeBlock(v, i)) return out;
@@ -1228,7 +1228,7 @@ SpatRaster SpatRaster::isfinite(SpatOptions &opt) {
 		return out;
 	}
 	for (size_t i=0; i<out.bs.n; i++) {
-		std::vector<double> v; 
+		std::vector<double> v;
 		readBlock(v, out.bs, i);
 		for (double &d : v) d = std::isfinite(d);
 		if (!out.writeBlock(v, i)) return out;
@@ -1242,7 +1242,7 @@ SpatRaster SpatRaster::isfinite(SpatOptions &opt) {
 SpatRaster SpatRaster::isinfinite(SpatOptions &opt) {
 	SpatRaster out = geometry();
 	out.setValueType(3);
-	
+
     if (!hasValues()) return out;
 
 	if (!readStart()) {
@@ -1254,7 +1254,7 @@ SpatRaster SpatRaster::isinfinite(SpatOptions &opt) {
 		return out;
 	}
 	for (size_t i=0; i<out.bs.n; i++) {
-		std::vector<double> v; 
+		std::vector<double> v;
 		readBlock(v, out.bs, i);
 		for (double &d : v) d = std::isinf(d);
 		if (!out.writeBlock(v, i)) return out;
@@ -1276,9 +1276,9 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, SpatOptions
 		return out;
 	}
 
-  	if (!hasValues()) { 
-		setError("SpatRaster has no values");		
-		return out; 
+  	if (!hasValues()) {
+		setError("SpatRaster has no values");
+		return out;
 	}
 
 	if (!readStart()) {
@@ -1297,12 +1297,12 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, SpatOptions
 
 	std::vector<double> val;
 	if (what == "min") {
-		val = range_min(); 	
+		val = range_min();
 	} else {
-		val = range_max(); 			
+		val = range_max();
 	}
 	for (size_t i=0; i<bs.n; i++) {
-		std::vector<double> v; 
+		std::vector<double> v;
 		readBlock(v, bs, i);
 		size_t lyrsize = bs.nrows[i] * ncol();
 		size_t boff = i * lyrsize;

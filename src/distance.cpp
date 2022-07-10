@@ -152,17 +152,17 @@ void directionToNearest_lonlat(std::vector<double> &azi, const std::vector<doubl
 	double azi1, azi2, s12, dist;
 	size_t n = lon1.size();
 	size_t m = lon2.size();
-	
+
 	azi.resize(n, NAN);
 
 	struct geod_geodesic g;
 	geod_init(&g, a, f);
 
 	for (size_t i=0; i < n; i++) {
-		if (std::isnan(lat1[i])) { 
+		if (std::isnan(lat1[i])) {
 			azi[i] = NAN;
 			continue;
-		}	
+		}
 		geod_inverse(&g, lat1[i], lon1[i], lat2[0], lon2[0], &dist, &azi1, &azi2);
 		size_t minj=0;
 		azi[i] = azi1;
@@ -176,7 +176,7 @@ void directionToNearest_lonlat(std::vector<double> &azi, const std::vector<doubl
 		}
 		if (from) {
 			geod_inverse(&g, lat2[minj], lon2[minj], lat1[i], lon1[i], &s12, &azi1, &azi2);
-			azi[i] = azi1;	
+			azi[i] = azi1;
 		}
 		if (!degrees) {
 			azi[i] = toRad(azi[i]);

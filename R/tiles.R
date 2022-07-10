@@ -1,5 +1,5 @@
 
-setMethod("makeTiles", signature(x="SpatRaster"), 
+setMethod("makeTiles", signature(x="SpatRaster"),
 	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, ...) {
 		filename = trimws(filename[1])
 		filename <- filename[!is.na(filename)]
@@ -30,7 +30,7 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 #)
 
 
-setMethod("vrt", signature(x="character"), 
+setMethod("vrt", signature(x="character"),
 	function(x, filename="", options=NULL, overwrite=FALSE) {
 		opt <- spatOptions(filename, overwrite=overwrite)
 		r <- rast()

@@ -4,7 +4,7 @@
 # License GPL v3
 
 
-setMethod("dots", signature(x="SpatVector"), 
+setMethod("dots", signature(x="SpatVector"),
 	function(x, field, size,  ...) {
 		n <- length(x)
 		if (n < 1) return(NULL)
@@ -84,11 +84,11 @@ setMethod("dots", signature(x="SpatVector"),
 			a <- gg[[j]]
 			if (any(is.na(a))) next
 			if (any(a[,5] > 0)) {
-				a <- split(a, a[,5]) 
+				a <- split(a, a[,5])
 				a <- lapply(a, function(i) rbind(i, NA))
 				a <- do.call(rbind, a )
 				a <- a[-nrow(a), ]
-				# g[[i]][[1]] <- a 
+				# g[[i]][[1]] <- a
 			}
 			if (!is.null(out$leg$density)) {
 				graphics::polygon(a[,3:4], col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
@@ -97,7 +97,7 @@ setMethod("dots", signature(x="SpatVector"),
 				graphics::polypath(a[,3:4], col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
-		options("warn" = -1) 
+		options("warn" = -1)
 	}
 	invisible(out)
 }
@@ -133,7 +133,7 @@ setMethod("dots", signature(x="SpatVector"),
 		} else if (ncols < n) {
 			cols <- rep_len(cols, n)
 		}
-	} 
+	}
 	if (alpha < 1 && alpha >= 0) {
 		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha[1]*255, maxColorValue=255)
 	}
@@ -157,7 +157,7 @@ setMethod("dots", signature(x="SpatVector"),
 		out$uv <- out$uv[!is.na(out$uv)]
 	}
 	ucols <- .getCols(length(out$uv), out$cols, 1)
-	
+
 	i <- match(out$v, out$uv)
 	out$cols <- ucols
 	out$main_cols <- ucols[i]
@@ -165,7 +165,7 @@ setMethod("dots", signature(x="SpatVector"),
 	if (!is.null(out$colNA)) {
 		out$main_cols[is.na(out$main_cols)] <- out$colNA
 	}
-	
+
 	out$levels <- out$uv
 	out$leg$legend <- out$uv
 	nlevs <- length(out$uv)
@@ -208,7 +208,7 @@ setMethod("dots", signature(x="SpatVector"),
 	out$legend_type <- "continuous"
 	if (is.null(out$levels)) {
 		out$levels <- 5
-	} 
+	}
 	if (is.null(out$leg$digits)) {
 		dif <- diff(out$range)
 		if (dif == 0) {
@@ -237,7 +237,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 	if (is.null(out$breaks)) {
 		out$breaks <- min(5, nmx)
-	} 
+	}
 
 	if (length(out$breaks) == 1) {
 		out$breaks <- .get_breaks(out$v, out$breaks, out$breakby, out$range)
@@ -278,7 +278,7 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 
 	out$main_cols <- out$cols[out$vcut]
-	
+
 	if (!is.null(out$colNA)) {
 		out$main_cols[is.na(out$main_cols)] <- out$colNA
 	}
@@ -331,7 +331,7 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 	if (!out$legend_only) {
-		out <- .vplot(x, out, ...) 
+		out <- .vplot(x, out, ...)
 	}
 
 	if (out$axes) {
@@ -349,7 +349,7 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 
-.prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
+.prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE,
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, ...) {
@@ -381,12 +381,12 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 		out$lim <- e
 	}
-	
+
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)
 	out$axs <- as.list(pax)
 	if (is.null(out$axs$las)) out$axs$las <- las
-	out$draw_grid <- isTRUE(grid)	
+	out$draw_grid <- isTRUE(grid)
 	out$leg <- as.list(plg)
 	out$leg$geomtype <- geomtype(x)
 	out$asp <- 1
@@ -427,7 +427,7 @@ setMethod("dots", signature(x="SpatVector"),
 		out$legend_sort <- isTRUE(sort)
 		out$legend_sort_decreasing <- isTRUE(decreasing)
 	}
-	
+
 	if (missing(type)) {
 		type <- "depends"
 	} else {
@@ -438,18 +438,18 @@ setMethod("dots", signature(x="SpatVector"),
 	if (type=="none") {
 		legend <- FALSE
 		legend_only <- FALSE
-	} 
+	}
 	out$legend_type <- type
 
 	if (is.null(cols)) {
 		if (type == "none") {
 			if (out$leg$geomtype %in% c("lines", "points")) {
 				cols <- "black"
-			} 
+			}
 		} else {
 			cols <- rev(grDevices::rainbow(100, start=.1, end=0.9))
 		}
-	} 
+	}
 	if (!is.null(alpha)) {
 		alpha <- clamp(alpha[1]*255, 0, 255)
 		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
@@ -484,8 +484,8 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 
-setMethod("plot", signature(x="SpatVector", y="character"), 
-	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, 
+setMethod("plot", signature(x="SpatVector", y="character"),
+	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add,
 	main=y, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL,
 	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, ...) {
 
@@ -502,7 +502,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			if (length(y) > 1) {
 				nrnc <- .get_nrnc(nr, nc, length(y))
 				old.par <- graphics::par(no.readonly =TRUE)
-				on.exit(graphics::par(old.par))   
+				on.exit(graphics::par(old.par))
 				graphics::par(mfrow=nrnc)
 			}
 		if (is.character(legend)) {
@@ -534,12 +534,12 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, ...)
 			}
 		}
-		invisible(out)		
+		invisible(out)
 	}
 )
 
 
-setMethod("plot", signature(x="SpatVector", y="numeric"), 
+setMethod("plot", signature(x="SpatVector", y="numeric"),
 	function(x, y, ...)  {
 		y <- round(y)
 		if (any(y > ncol(x))) {
@@ -553,7 +553,7 @@ setMethod("plot", signature(x="SpatVector", y="numeric"),
 )
 
 
-setMethod("plot", signature(x="SpatVector", y="missing"), 
+setMethod("plot", signature(x="SpatVector", y="missing"),
 	function(x, y, ...)  {
 		out <- plot(x, "", ...)
 		invisible(out)
@@ -561,7 +561,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 )
 
 
-setMethod("plot", signature(x="SpatVectorProxy", y="missing"), 
+setMethod("plot", signature(x="SpatVectorProxy", y="missing"),
 	function(x, y, ...)  {
 		plot(ext(x), ...)
 	}

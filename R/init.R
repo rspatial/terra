@@ -4,7 +4,7 @@
 # License GPL v3
 
 
-setMethod("init", signature(x="SpatRaster"), 
+setMethod("init", signature(x="SpatRaster"),
 	function(x, fun, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		x <- rast(x)

@@ -11,7 +11,7 @@ setClass("GCP",
 
 
 
-setMethod("show", signature(object="GCP"), 
+setMethod("show", signature(object="GCP"),
 	function(object) {
 		m <- object@gcp
 		show(m)
@@ -24,12 +24,12 @@ setMethod("show", signature(object="GCP"),
 )
 
 
-#setMethod("add<-", signature(x="GCP"), 
+#setMethod("add<-", signature(x="GCP"),
 #	function(x, value) {
 #		if (missing(value)) {
 #			value <- terra:::RS_locator(2, "l")
 #			value <- rbind(as.vector(t(value)))
-#		} 
+#		}
 #		if (ncol(value) == 4) {
 #			x@gcp <- rbind(x@gcp, value)
 #		}

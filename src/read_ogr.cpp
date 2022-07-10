@@ -86,21 +86,21 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 			switch( poFieldDefn->GetType() ) {
 				case OFTReal:
 					if (poFeature->IsFieldNull(i)) {
-						df.dv[j].push_back(NAN);						
+						df.dv[j].push_back(NAN);
 					} else {
 						df.dv[j].push_back(poFeature->GetFieldAsDouble(i));
 					}
 					break;
 				case OFTInteger:
 					if (poFieldDefn->GetSubType() == OFSTBoolean) {
-						df.bv[j].push_back(poFeature->GetFieldAsInteger( i ));						
+						df.bv[j].push_back(poFeature->GetFieldAsInteger( i ));
 					} else {
 						df.iv[j].push_back(poFeature->GetFieldAsInteger( i ));
 					}
 					break;
 				case OFTInteger64:
 					if (poFeature->IsFieldNull(i)) {
-						df.iv[j].push_back(longNA);						
+						df.iv[j].push_back(longNA);
 					} else {
 						df.iv[j].push_back(poFeature->GetFieldAsInteger64( i ));
 					}
@@ -108,7 +108,7 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 	//          case OFTString:
 				default:
 					if (poFeature->IsFieldNull(i)) {
-						df.sv[j].push_back(df.NAS);						
+						df.sv[j].push_back(df.NAS);
 					} else {
 						df.sv[j].push_back(poFeature->GetFieldAsString( i ));
 					}
@@ -123,7 +123,7 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 
 
 /*
-std::string getDs_WKT(GDALDataset *poDataset) { 
+std::string getDs_WKT(GDALDataset *poDataset) {
 	std::string wkt = "";
 	char *cp;
 #if GDAL_VERSION_MAJOR >= 3
@@ -133,14 +133,14 @@ std::string getDs_WKT(GDALDataset *poDataset) {
 	if (err == OGRERR_NONE) {
 		wkt = std::string(cp);
 		CPLFree(cp);
-	} 
+	}
 #else
 	const char *pszSrc = GDALGetProjectionRef( poDataset );
-	if (pszSrc != NULL) { 
+	if (pszSrc != NULL) {
 		wkt = std::string(pszSrc);
 	}
 
-//	if (poDataset->GetProjectionRef() != NULL) { 
+//	if (poDataset->GetProjectionRef() != NULL) {
 //		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
 //		OGRErr err = oSRS.exportToPrettyWkt(&cp);
 //		if (err == OGRERR_NONE) {
@@ -149,11 +149,11 @@ std::string getDs_WKT(GDALDataset *poDataset) {
 //		}
 //	}
 
-#endif 
+#endif
 	return wkt;
 }
 
-std::string getDs_PRJ(GDALDataset *poDataset) { 
+std::string getDs_PRJ(GDALDataset *poDataset) {
 	std::string prj = "";
 #if GDAL_VERSION_MAJOR >= 3
 	char *cp;
@@ -180,7 +180,7 @@ SpatGeom getPointGeom(OGRGeometry *poGeometry) {
 	SpatGeom g(points);
 	if (poGeometry->IsEmpty()) {
 		return g;
-	} 
+	}
 	#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
 	OGRPoint *poPoint = poGeometry->toPoint();
 	#else
@@ -335,7 +335,7 @@ std::vector<std::string> SpatVector::layer_names(std::string filename) {
 	if (filename == "") {
 		setError("empty filename");
 		return out;
-	}	
+	}
 	if (!file_exists(filename)) {
 		setError("file does not exist");
 		return out;
@@ -348,8 +348,8 @@ std::vector<std::string> SpatVector::layer_names(std::string filename) {
         setError("Cannot open this dataset" );
 		return out;
     }
-			
-	size_t n = poDS->GetLayerCount();			
+
+	size_t n = poDS->GetLayerCount();
 	out.reserve(n);
 	for (size_t i=0; i<n; i++) {
 		OGRLayer *poLayer = poDS->GetLayer(i);
@@ -362,7 +362,7 @@ std::vector<std::string> SpatVector::layer_names(std::string filename) {
 
 	GDALClose(poDS);
 	return out;
-}	
+}
 
 SpatGeom emptyGeom() {
 	SpatGeom g;
@@ -444,7 +444,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 		if (filter.type() != "polygons") {
 			filter = filter.hull("convex");
 		} else if (filter.nrow() > 1) {
-			filter = filter.aggregate(true); 
+			filter = filter.aggregate(true);
 		}
 		GDALDataset *filterDS = filter.write_ogr("", "lyr", "Memory", false, true, std::vector<std::string>());
 		if (filter.hasError()) {
@@ -473,7 +473,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 	df = readAttributes(poLayer, as_proxy);
 
 	OGRFeature *poFeature;
-	
+
 	poLayer->ResetReading();
 	poFeature = poLayer->GetNextFeature();
 	if (poFeature != NULL) {
@@ -488,7 +488,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 		}
 	}
 	source_layer = poLayer->GetName();
-	
+
 	if (as_proxy) {
 		SpatGeom g;
 		if ((wkbgeom == wkbPoint) | (wkbgeom == wkbMultiPoint)) {
@@ -504,7 +504,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 				//SpatPart p;
 				//g = SpatGeom();
 				//g.addPart(p);
-				g = emptyGeom();				
+				g = emptyGeom();
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
@@ -520,7 +520,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 				//SpatPart p;
 				//g = SpatGeom();
 				//g.addPart(p);
-				g = emptyGeom();		
+				g = emptyGeom();
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
@@ -532,7 +532,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getPolygonsGeom(poGeometry);
 				} else if (wkbgeom == wkbMultiPolygon ) {
 					g = getMultiPolygonsGeom(poGeometry);
-				} 
+				}
 			} else {
 				//g = SpatGeom();
 				g = emptyGeom();
@@ -569,7 +569,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 				//SpatPart p;
 				//g = SpatGeom();
 				//g.addPart(p);
-				g = emptyGeom();			
+				g = emptyGeom();
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
@@ -587,7 +587,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 				//SpatPart p;
 				//g = SpatGeom();
 				//g.addPart(p);
-				g = emptyGeom();		
+				g = emptyGeom();
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
@@ -601,10 +601,10 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getPolygonsGeom(poGeometry);
 				} else if (wkbgeom == wkbMultiPolygon ) {
 					g = getMultiPolygonsGeom(poGeometry);
-				} 
+				}
 			} else {
 				//g = SpatGeom();
-				g = emptyGeom();		
+				g = emptyGeom();
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );

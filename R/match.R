@@ -37,7 +37,7 @@ setMethod("%in%", signature(x="SpatRaster"),
 			if (length(table) == 0) {
 				return(as.logical(x*0))
 			}
-		}	
+		}
 		opt <- spatOptions("", FALSE, list())
 		x@ptr <- x@ptr$is_in(table, opt)
 		messages(x, "%in%")

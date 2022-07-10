@@ -43,10 +43,10 @@ Rcpp::Rcout << "in" << std::endl;
 	char** papszOptions = NULL;
 	gnames = poRootGroup->GetMDArrayNames(papszOptions);
 	CSLDestroy(papszOptions);
-	
+
 	if (gnames.size() == 0) {
 		setError("no subdatsets detected");
-		return false;			
+		return false;
 	}
 	Rcpp::Rcout << "available: ";
 	for (size_t i=0; i<gnames.size(); i++) {
@@ -54,7 +54,7 @@ Rcpp::Rcout << "in" << std::endl;
 	}
 	Rcpp::Rcout << std::endl;
 
-	
+
 	if (subname.size() > 0) {
 		subdsname = subname[0];
 		if (std::find(gnames.begin(), gnames.end(), subdsname) == gnames.end()) {
@@ -64,7 +64,7 @@ Rcpp::Rcout << "in" << std::endl;
 	} else if (sub[0] >= 0) {
 		if (sub[0] >= (int)gnames.size()) {
 			setError("subdatset is out or range");
-			return false;			
+			return false;
 		} else {
 			subdsname = gnames[sub[0]];
 		}
@@ -78,7 +78,7 @@ Rcpp::Rcout << "in" << std::endl;
 			addWarning("using: " + subdsname + ". Other groups are: \n" + gn);
 		}
 	}
-		
+
 	Rcpp::Rcout << "subdsname: " << subdsname << std::endl;
 
     auto poVar = poRootGroup->OpenMDArray(subdsname.c_str());
@@ -96,12 +96,12 @@ Rcpp::Rcout << "in" << std::endl;
 		OGRErr err = srs->exportToWkt(&cp, options);
 		if (err == OGRERR_NONE) {
 			wkt = std::string(cp);
-		} 
+		}
 		CPLFree(cp);
 	}
-	
+
 	SpatRasterSource s;
-	
+
 	std::string msg;
 	if (!s.srs.set({wkt}, msg)) {
 		addWarning(msg);
@@ -122,7 +122,7 @@ Rcpp::Rcout << "in" << std::endl;
 		const auto indvar = poDim->GetIndexingVariable();
 		indvar->Read(
 			std::vector<GUInt64>{0}.data(),
-            count.data(), nullptr, nullptr, 
+            count.data(), nullptr, nullptr,
             GDALExtendedDataType::Create(GDT_Float64),
             &vals[0]);
 
@@ -132,7 +132,7 @@ Rcpp::Rcout << "in" << std::endl;
 		Rcpp::Rcout << vals[0] << " - " << vals[vals.size()-1] << std::endl;
 
     }
-    GDALExtendedDataTypeRelease(hDT); 
+    GDALExtendedDataTypeRelease(hDT);
 
 	s.m_ndims = dimcount.size();
 	s.source_name = subdsname;
@@ -204,7 +204,7 @@ Rcpp::Rcout << "in" << std::endl;
 // layer names
 	//std::vector<std::string> nms(s.nlyr, "");
 	//s.names = nms;
-// time 
+// time
 // extent
 	s.m_counts = dimcount;
 	setSource(s);
@@ -229,7 +229,7 @@ bool SpatRaster::readStartMulti(unsigned src) {
 		setError("not a good root group");
 		return false;
     }
-    
+
 	GDALMDArrayH hVar = GDALGroupOpenMDArray(hGroup, source[src].source_name.c_str(), NULL);
     GDALGroupRelease(hGroup);
     if (!hVar) {
@@ -252,7 +252,7 @@ bool SpatRaster::readStopMulti(unsigned src) {
 bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 
 	Rcpp::Rcout << "reading" << std::endl;
-	
+
 	std::vector<GUInt64> offset(source[src].m_ndims, 0);
 	std::vector<size_t> dims = source[src].m_dims;
 
@@ -284,13 +284,13 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 						NULL, // stride: default to row-major convention
 						hDT,
 						&temp[0],
-						NULL, // array start. Omitted 
-						0 // array size in bytes. Omitted 
+						NULL, // array start. Omitted
+						0 // array size in bytes. Omitted
 						);
-    GDALExtendedDataTypeRelease(hDT); 
+    GDALExtendedDataTypeRelease(hDT);
 
 
-//tbd: row order should be reversed 
+//tbd: row order should be reversed
 
 //	size_t nc = nrows * ncols;
 //	size_t nl = nlyr();
@@ -311,8 +311,8 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 	return true;
 }
 
-  
-#else  
+
+#else
 
 */
 

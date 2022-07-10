@@ -13,10 +13,10 @@ positive_indices <- function(i, n, caller=" [ ") {
 }
 
 
-setMethod("subset", signature(x="SpatRaster"), 
+setMethod("subset", signature(x="SpatRaster"),
 	function(x, subset, negate=FALSE, NSE=FALSE, filename="", overwrite=FALSE, ...) {
 		if (NSE) {
-			subset <- if (missing(subset)) { 
+			subset <- if (missing(subset)) {
 				1:nlyr(x)
 			} else {
 				nl <- as.list(seq_along(names(x)))
@@ -29,17 +29,17 @@ setMethod("subset", signature(x="SpatRaster"),
 				}
 				v
 			}
-		} 
+		}
 		if (is.character(subset)) {
 			nms <- names(x)
 			if (!all(subset %in% nms)) {
-				error("subset", "invalid name(s)")				
+				error("subset", "invalid name(s)")
 			}
 			if (sum(nms %in% subset) > length(subset)) {
 				error("subset", "you cannot select a layer with a name that is not unique")
 			}
 			subset <- match(subset, nms)
-		} 
+		}
 		if (any(is.na(subset))) {
 			error("subset", "undefined layer(s) selected")
 		}
@@ -48,7 +48,7 @@ setMethod("subset", signature(x="SpatRaster"),
 		opt <- spatOptions(filename, overwrite, ...)
 		x@ptr <- x@ptr$subset(subset-1, opt)
 		messages(x, "subset")
-	} 
+	}
 )
 
 
@@ -79,10 +79,10 @@ function(x, i, j, ... ,drop=TRUE) {
 	subset(x, i, NSE=FALSE, ...)
 })
 
-setMethod("$", "SpatRaster",  
-	function(x, name) { 
-		subset(x, name, NSE=FALSE) 
-	} 
+setMethod("$", "SpatRaster",
+	function(x, name) {
+		subset(x, name, NSE=FALSE)
+	}
 )
 
 setMethod("[[", c("SpatRaster", "logical", "missing"),
@@ -98,7 +98,7 @@ function(x, i, j, ... ,drop=TRUE) {
 
 
 
-setMethod("subset", signature(x="SpatVector"), 
+setMethod("subset", signature(x="SpatVector"),
 	function(x, subset, select, drop=FALSE, NSE=FALSE) {
  		if (NSE) {
 			d <- as.list(x)
@@ -110,7 +110,7 @@ setMethod("subset", signature(x="SpatVector"),
 					if (!is.logical(r)) error("subset", "argument 'subset' must be logical")
 					r & !is.na(r)
 				}
-			v <- if (missing(select)) { 
+			v <- if (missing(select)) {
 					TRUE
 				} else {
 					nl <- as.list(seq_along(d))
@@ -122,7 +122,7 @@ setMethod("subset", signature(x="SpatVector"),
 			if (missing(select)) {
 				x[which(as.vector(subset)), drop=drop]
 			} else {
-				x[which(as.vector(subset)), select, drop=drop]			
+				x[which(as.vector(subset)), select, drop=drop]
 			}
 		}
 	}
@@ -137,7 +137,7 @@ setMethod("subset", signature(x="SpatVector"),
 	}
 	if (length(i)==0) {
 		i <- 0
-	} 
+	}
 	if (length(i) < length(subset)) {
 		warn(" [ ", "invalid columns omitted")
 	}
@@ -219,7 +219,7 @@ function(x, i, j, ... , drop=FALSE) {
 			mis <- paste(j[is.na(jj)], collapse=", ")
 			error(" x[,j] ", paste("name(s) not in x:", mis))
 		}
-		if (length(jj) == 0) { 
+		if (length(jj) == 0) {
 			jj <- 0
 		}
 	}

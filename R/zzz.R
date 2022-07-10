@@ -3,7 +3,7 @@
 	path = ""
 	if (file.exists(system.file("proj/nad.lst", package = "terra")[1])) {
 		path <- system.file("proj", package="terra")
-	} 
+	}
 	.gdalinit(path)
 }
 

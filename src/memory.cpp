@@ -29,7 +29,7 @@ bool SpatRaster::canProcessInMemory(SpatOptions &opt) {
 	}
 	double supply;
 	if (opt.get_memmax() > 0) {
-		supply = opt.get_memmax() * opt.get_memfrac();		
+		supply = opt.get_memmax() * opt.get_memfrac();
 		//supply = std::min(supply, availableRAM());
 	} else {
 		supply = availableRAM() * opt.get_memfrac();
@@ -54,7 +54,7 @@ size_t SpatRaster::chunkSize(SpatOptions &opt) {
 	double supply;
 
 	if (opt.get_memmax() > 0) {
-		supply = opt.get_memmax() * opt.get_memfrac();		
+		supply = opt.get_memmax() * opt.get_memfrac();
 		//supply = std::min(supply, availableRAM());
 	} else {
 		supply = availableRAM() * opt.get_memfrac();
@@ -75,18 +75,18 @@ size_t SpatRaster::chunkSize(SpatOptions &opt) {
 
 std::vector<double> SpatRaster::mem_needs(SpatOptions &opt) {
 	//returning bytes
-	unsigned n = opt.ncopies; 
+	unsigned n = opt.ncopies;
 	double memneed  = ncell() * (nlyr() * n);
 	double memavail;
 	if (opt.get_memmax() > 0) {
 		memavail = opt.get_memmax();
-		//memavail = std::min(memavail, availableRAM()); 
+		//memavail = std::min(memavail, availableRAM());
 	} else {
-		memavail = availableRAM(); 
+		memavail = availableRAM();
 	}
 	double frac = opt.get_memfrac();
 	double csize = chunkSize(opt);
-	double inmem = canProcessInMemory(opt); 
+	double inmem = canProcessInMemory(opt);
 	std::vector<double> out = {memneed, memavail, frac, csize, inmem} ;
 	return out;
 }

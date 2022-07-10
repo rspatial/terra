@@ -128,7 +128,7 @@ void SpatRaster::checkTime(SpatRaster &x) {
 	} else {
 		std::vector<int_64> time;
 		setTime(time, "remove", "");
-		x.setTime(time, "remove", "");	
+		x.setTime(time, "remove", "");
 	}
 }
 
@@ -283,7 +283,7 @@ bool SpatRasterSource::in_order() {
 		if (layers[i] != i) {
 			return false;
 		}
-	} 
+	}
 	return true;
 }
 
@@ -333,7 +333,7 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
     }
 	if (all) {
 		return *this ;
-	} 
+	}
 
 	SpatRasterSource out;
 	if (memory) {
@@ -355,10 +355,10 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 		out.hasValues = hasValues;
 		//out.filename = filename;
 		//out.driver = driver;
-		//out.valueType = valueType; 
+		//out.valueType = valueType;
 		//out.hasNAflag = hasNAflag;
 		//out.NAflag = NAflag;
-	} else { 
+	} else {
 		//no values, deep copy is cheap
 		out = *this;
 		out.resize(0);

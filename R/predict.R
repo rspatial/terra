@@ -24,7 +24,7 @@ parfun <- function(cls, d, fun, model, ...) {
 		for (i in 1:ncol(const)) {
 			d <- cbind(d, const[,i,drop=FALSE])
 		}
-	}	 
+	}	
 	if (na.rm) {
 		n <- nrow(d)
 		i <- rowSums(is.na(d)) == 0
@@ -37,7 +37,7 @@ parfun <- function(cls, d, fun, model, ...) {
 			}
 			if (is.factor(r)) {
 				r <- as.integer(r)
-			} 
+			}
 			#how could it not be numeric?
 			#else if (is.data.frame(r)) {
 			#	if (nrow(r) > 1) {
@@ -98,11 +98,11 @@ parfun <- function(cls, d, fun, model, ...) {
 		}
 	} else if (inherits(m, "randomForest")) {
 		f <- names(which(sapply(m$forest$xlevels, max) != "0"))
-		if (length(f) > 0) { 
+		if (length(f) > 0) {
 			factors <- m$forest$xlevels[f]
 		}
 	} else if (inherits(m, "gbm")) {
-		dafr <- m$gbm.call$dataframe 
+		dafr <- m$gbm.call$dataframe
 		i <- sapply(dafr, is.factor)
 		if (any(i)) {
 			j <- which(i)
@@ -122,7 +122,7 @@ parfun <- function(cls, d, fun, model, ...) {
 	factors
 }
 
-setMethod("predict", signature(object="SpatRaster"), 
+setMethod("predict", signature(object="SpatRaster"),
 	function(object, model, fun=predict, ..., factors=NULL, const=NULL, na.rm=FALSE, index=NULL, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list()) {
 
 		nms <- names(object)
@@ -145,7 +145,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		tomat <- FALSE
 		readStart(object)
 		on.exit(readStop(object))
-		
+
 		testrow <- round(0.51*nr)
 		rnr <- 1
 		if (nc==1) rnr <- min(nr, 20) - testrow + 1
@@ -182,11 +182,11 @@ setMethod("predict", signature(object="SpatRaster"),
 			}
 			if (!allna) {
 				r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
-				if (ncell(object) > 1) { 
+				if (ncell(object) > 1) {
 					nl <- ncol(r)
 					cn <- colnames(r)
 				} else {
-					nl <- length(r) 
+					nl <- length(r)
 				}
 			} else {
 				warn("predict", "Cannot determine the number of output variables. Assuming 1. Use argument 'index' to set it manually")

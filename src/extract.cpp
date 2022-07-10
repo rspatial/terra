@@ -43,12 +43,12 @@ std::vector<double> SpatRaster::fourCellsFromXY(const std::vector<double> &x, co
 	int_64 mxr = nrow()-1;
 	int_64 mxc = ncol()-1;
 	int_64 r1, r2, c1, c2;
-	std::vector<double> bad = {NAN, NAN, NAN, NAN}; 
+	std::vector<double> bad = {NAN, NAN, NAN, NAN};
 	for (size_t i = 0; i < n; i++) {
 		if (y[i] < ymin || y[i] > ymax || x[i] < xmin || x[i] > xmax) {
 			out.insert(out.end(), bad.begin(), bad.end());
 			continue;
-		} 
+		}
 		if (y[i] == ymin) {
 			r1 = mxr;
 			r2 = mxr;
@@ -102,11 +102,11 @@ double bilinearInt(const double& x, const double& y, const double& x1, const dou
 */
 
 /*
-double bilinearIntold(const double& x, const double& y, 
-                   const double& x1, const double& x2, const double& y1, const double& y2, 
+double bilinearIntold(const double& x, const double& y,
+                   const double& x1, const double& x2, const double& y1, const double& y2,
                    const double& v11, const double& v21, const double& v12, const double& v22) {
 	double d = x2-x1;
-	double h1=NAN; 
+	double h1=NAN;
 	double h2=NAN;
 	if (!std::isnan(v11) && !std::isnan(v21)) {
 		h1 =  linearInt(d, x, x1, x2, v11, v21);
@@ -137,8 +137,8 @@ double bilinearIntold(const double& x, const double& y,
 */
 
 
-std::vector<double> bilinearInt(const double& x, const double& y, 
-                   const double& x1, const double& x2, const double& y1, const double& y2, 
+std::vector<double> bilinearInt(const double& x, const double& y,
+                   const double& x1, const double& x2, const double& y1, const double& y2,
                    double& v11, double& v12, double& v21, double& v22, bool weights) {
 
 	bool n1 = std::isnan(v11);
@@ -151,7 +151,7 @@ std::vector<double> bilinearInt(const double& x, const double& y,
 	double dy = (y1 - y2);
 	bool inty = dy > 0;
 	double w11, w12, w21, w22;
-	
+
 	if (std::isnan(x) || std::isnan(y) || (n1 && n2 && n3 && n4)) {
 		goto NAN_return;
 	}
@@ -278,7 +278,7 @@ std::vector<double> bilinearInt(const double& x, const double& y,
 		} else{
 			goto NAN_return;
 		}
-	} else { 
+	} else {
 		w11 = v11;
 		w21 = 0.0;
 		w12 = 0.0;
@@ -292,7 +292,7 @@ std::vector<double> bilinearInt(const double& x, const double& y,
 NAN_return:
 	if (weights) {
 		return std::vector<double>(4, NAN);
-	} 
+	}
 	return std::vector<double>(1, NAN);;
 
 }
@@ -350,7 +350,7 @@ std::vector<std::vector<double>> SpatRaster::bilinearValues(const std::vector<do
         }
 	} else {
 
- */     
+ */
 		for (size_t i=0; i<n; i++) {
             size_t ii = i * 4;
             for (size_t j=0; j<nlyr(); j++) {
@@ -378,10 +378,10 @@ std::vector<double> SpatRaster::bilinearCells(const std::vector<double> &x, cons
 	std::vector<double> w;
     for (size_t i=0; i<n; i++) {
         size_t ii = i * 4;
-		size_t j=0; 
+		size_t j=0;
         std::vector<double> w = bilinearInt(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], v[j][ii], v[j][ii+1], v[j][ii+2], v[j][ii+3], true);
-		res.insert(res.end(), four.begin()+ii, four.begin()+ii+4); 
-		res.insert(res.end(), w.begin(), w.end()); 
+		res.insert(res.end(), four.begin()+ii, four.begin()+ii+4);
+		res.insert(res.end(), w.begin(), w.end());
     }
 	return res;
 }
@@ -647,7 +647,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 	if (!source[0].srs.is_same(v.srs, false)) {
 		addWarning("CRS of raster and vector data do not match");
 	}
-	
+
 	std::string gtype = v.type();
 	if (gtype != "polygons") weights = false;
 
@@ -1005,7 +1005,7 @@ std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 					for (size_t k=0; k<n; k++) {
 						if (!is_NA(wcell[k]) && wcell[k] >= 0 && wcell[k] < nc) {
 							out[off2+k] = source[src].values[j + wcell[k]] ;
-						} 
+						}
 					}
 				} else {
 					for (size_t k=0; k<n; k++) {
@@ -1124,7 +1124,7 @@ std::vector<double> SpatRaster::extCells(SpatExtent ext) {
 	out.reserve((r[1]-r[0]) * (c[1]-c[0]));
 	for (int_64 i=r[0]; i <= r[1]; i++) {
 		for (int_64 j=c[0]; j <= c[1]; j++) {
-			out.push_back(i*nc+j); 
+			out.push_back(i*nc+j);
 		}
 	}
 	return out;

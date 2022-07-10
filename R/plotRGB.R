@@ -35,8 +35,8 @@
 
 
 
-setMethod("plotRGB", signature(x="SpatRaster"), 
-function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...) { 
+setMethod("plotRGB", signature(x="SpatRaster"),
+function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...) {
 
 	x <- x[[c(r, g, b, a)]]
 
@@ -67,7 +67,7 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 				x <- clamp(x, zlim[1], zlim[2], values=TRUE)
 			} else { #if (is.na(zlimcol)) {
 				x <- clamp(x, zlim[1], zlim[2], values=FALSE)
-			} 
+			}
 		} else if (NROW(zlim) == 3 & NCOL(zlim) == 2) {
 			for (i in 1:3) {
 				zmin <- min(zlim[i,])
@@ -76,7 +76,7 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 					x[[i]] <- clamp(x[[i]], zmin, zmax, values=TRUE)
 				} else { #if (is.na(zlimcol)) {
 					x[[i]] <- clamp(x[[i]], zmin, zmax, values=FALSE)
-				} 
+				}
 			}
 		} else {
 			error('zlim should be a vector of two numbers or a 3x2 matrix (one row for each color)')
@@ -121,7 +121,7 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 	if (!add) {
 		#if ((!axes) & (!margins)) {
 		#	old.par <- graphics::par(no.readonly =TRUE)
-		#	on.exit(graphics::par(old.par))   
+		#	on.exit(graphics::par(old.par))
 		#	graphics::par(plt=c(0,1,0,1))
 		#}
 

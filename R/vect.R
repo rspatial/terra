@@ -1,5 +1,5 @@
 
-#setMethod("row.names", signature(x="SpatVector"), 
+#setMethod("row.names", signature(x="SpatVector"),
 #	function(x) {
 #		1:nrow(x)
 #	}
@@ -17,14 +17,14 @@ character_crs <- function(crs, caller="") {
 }
 
 
-setMethod("emptyGeoms", signature(x="SpatVector"), 
+setMethod("emptyGeoms", signature(x="SpatVector"),
 	function(x) {
 		x@ptr$nullGeoms() + 1
 	}
 )
 
 
-setMethod("as.vector", signature(x="SpatVector"), 
+setMethod("as.vector", signature(x="SpatVector"),
 	function(x, mode="any") {
 		if (nrow(x) > 0) {
 			lapply(1:nrow(x), function(i) x[i,])
@@ -34,7 +34,7 @@ setMethod("as.vector", signature(x="SpatVector"),
 	}
 )
 
-setMethod("vect", signature(x="missing"), 
+setMethod("vect", signature(x="missing"),
 	function(x) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
@@ -43,7 +43,7 @@ setMethod("vect", signature(x="missing"),
 	}
 )
 
-setMethod("vect", signature(x="character"), 
+setMethod("vect", signature(x="character"),
 	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE) {
 		p <- methods::new("SpatVector")
 		s <- substr(x[1], 1, 5)
@@ -91,19 +91,19 @@ setMethod("vect", signature(x="character"),
 )
 
 
-setMethod("vect", signature(x="Spatial"), 
+setMethod("vect", signature(x="Spatial"),
 	function(x, ...) {
 		methods::as(x, "SpatVector")
 	}
 )
 
-setMethod("vect", signature(x="sf"), 
+setMethod("vect", signature(x="sf"),
 	function(x) {
 		methods::as(x, "SpatVector")
 	}
 )
 
-setMethod("vect", signature(x="sfc"), 
+setMethod("vect", signature(x="sfc"),
 	function(x) {
 		methods::as(x, "SpatVector")
 	}
@@ -142,30 +142,30 @@ setMethod("vect", signature(x="XY"), #sfg
 	return(FALSE)
 }
 
-setMethod("vect", signature(x="matrix"), 
+setMethod("vect", signature(x="matrix"),
 	function(x, type="points", atts=NULL, crs="") {
 		type <- tolower(type)
 		type <- match.arg(tolower(type), c("points", "lines", "polygons"))
 		stopifnot(NCOL(x) > 1)
-		
+
 		crs <- character_crs(crs, "vect")
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
-		crs(p) <- crs 
+		crs(p) <- crs
 
 		nr <- nrow(x)
 		if (nr == 0) {
 			return(p)
 		}
 
-		if (ncol(x) == 2) { 
+		if (ncol(x) == 2) {
 			lonlat <- .checkXYnames(colnames(x))
 			if (type == "points") {
 				p@ptr$setPointsXY(as.double(x[,1]), as.double(x[,2]))
 			} else {
 				p@ptr$setGeometry(type, rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
 			}
-			if (lonlat && isTRUE(crs=="")) crs <- "+proj=longlat" 
+			if (lonlat && isTRUE(crs=="")) crs <- "+proj=longlat"
 		} else if (ncol(x) == 4) {
 			#.checkXYnames(colnames(x)[3:4])
 			p@ptr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], rep(FALSE, nr))
@@ -185,8 +185,8 @@ setMethod("vect", signature(x="matrix"),
 )
 
 
-setMethod("$", "SpatVector",  function(x, name) { 
-	s <- .subset_cols(x, name, drop=TRUE) 
+setMethod("$", "SpatVector",  function(x, name) {
+	s <- .subset_cols(x, name, drop=TRUE)
 	s[,1,drop=TRUE]
 })
 
@@ -261,7 +261,7 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 			}
 			return(x);
 		}
-		
+
 		if (NCOL(value)	> 1) {
 			warn("[[<-,SpatVector", "only using the first column")
 			value <- value[,1]
@@ -274,7 +274,7 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 			d <- values(x)
 			d[[name]] <- value
 			values(x) <- d
-		} else {		
+		} else {
 			if (inherits(value, "factor")) {
 				v <- .makeSpatFactor(value)
 				ok <- x@ptr$add_column_factor(v, name)
@@ -306,8 +306,8 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 			}
 			if (!ok) {
 				error("[[<-,SpatVector", "cannot add these values")
-			}			
-		} 
+			}
+		}
 		x
 	}
 )
@@ -324,7 +324,7 @@ setReplaceMethod("[[", c("SpatVector", "numeric", "missing"),
 
 
 
-setMethod("$<-", "SpatVector",  
+setMethod("$<-", "SpatVector",
 	function(x, name, value) {
 		x[[name]] <- value
 		x
@@ -334,7 +334,7 @@ setMethod("$<-", "SpatVector",
 
 
 
-setMethod("vect", signature(x="data.frame"), 
+setMethod("vect", signature(x="data.frame"),
 	function(x, geom=c("lon", "lat"), crs=NA, keepgeom=FALSE) {
 		if (!all(geom %in% names(x))) {
 			error("vect", "the variable name(s) in argument `geom` are not in `x`")
@@ -347,12 +347,12 @@ setMethod("vect", signature(x="data.frame"),
 			}
 			if (inherits(x[,geom[2]], "integer")) {
 				x[,geom[2]] = as.numeric(x[,geom[2]])
-			}	
+			}
 			p <- methods::new("SpatVector")
 			p@ptr <- SpatVector$new()
 			x <- .makeSpatDF(x)
-			
-			p@ptr$setPointsDF(x, geom-1, crs, keepgeom)	
+
+			p@ptr$setPointsDF(x, geom-1, crs, keepgeom)
 			messages(p, "vect")
 			return(p)
 		} else if (length(geom) == 1) {
@@ -369,18 +369,18 @@ setMethod("vect", signature(x="data.frame"),
 )
 
 
-setMethod("vect", signature(x="list"), 
+setMethod("vect", signature(x="list"),
 	function(x) {
 		x <- svc(x)
 		x <- x@ptr$append()
 		v <- methods::new("SpatVector")
-		v@ptr <- x 
+		v@ptr <- x
 		messages(v, "vect")
 	}
 )
 
 
-setMethod("query", signature(x="SpatVectorProxy"), 
+setMethod("query", signature(x="SpatVectorProxy"),
 	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL) {
 		f <- x@ptr$v$source
 		layer <- x@ptr$v$layer
@@ -411,7 +411,7 @@ setMethod("query", signature(x="SpatVectorProxy"),
 
 		qy <- ""
 		if (!is.null(where)) {
-			qy <- paste("SELECT", vars, "FROM", layer, "WHERE", where[1]) 
+			qy <- paste("SELECT", vars, "FROM", layer, "WHERE", where[1])
 		}
 
 		nr <- nrow(x)
@@ -419,7 +419,7 @@ setMethod("query", signature(x="SpatVectorProxy"),
 		if (start > 0) {
 			if (qy == "") {
 				qy <- paste("SELECT", vars, "FROM", layer)
-			} 
+			}
 			if (n >= (nr-start)) {
 				qy <- paste(qy, "OFFSET", start)
 			} else {
@@ -429,15 +429,15 @@ setMethod("query", signature(x="SpatVectorProxy"),
 		} else if (n < nr) {
 			if (qy == "") {
 				qy <- paste("SELECT", vars, "FROM", layer)
-			} 
+			}
 			n <- min(n, nr)
-			qy <- paste(qy, "LIMIT", n)		
+			qy <- paste(qy, "LIMIT", n)
 		}
-		
+
 		if ((qy != "") && (x@ptr$v$read_query != "")) {
 			error("query", "A query was used to create 'x'; you can only subset it with extent or filter")
 		}
-		
+
 		vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE)
 	}
 )

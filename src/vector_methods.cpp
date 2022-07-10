@@ -93,7 +93,7 @@ SpatVector SpatVector::disaggregate() {
 		for (size_t j=0; j<g.parts.size(); j++) {
 			SpatGeom gg = SpatGeom(g.parts[j], g.gtype);
 			out.addGeom(gg);
-			if (!out.df.rbind(row)) { 
+			if (!out.df.rbind(row)) {
 				out.setError("cannot add row");
 				return out;
 			}
@@ -130,7 +130,7 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 		out = out.unaryunion();
 	}
 	out.srs = srs;
-	out.df  = uv; 
+	out.df  = uv;
 	return out;
 }
 
@@ -163,7 +163,7 @@ SpatVectorCollection SpatVector::split(std::string field) {
 	}
 	SpatDataFrame uv;
 	std::vector<int> idx = df.getIndex(i, uv);
-	
+
 	for (size_t i=0; i<uv.nrow(); i++) {
 		SpatVector v;
 		std::vector<unsigned> r;
@@ -290,7 +290,7 @@ std::vector<OGRGeometry *> geoms_from_ds(GDALDataset* src, int field, int value)
 	}
 	return g;
 }
-// create output dataset 
+// create output dataset
 	GDALDataset* dst;
 // get unique values in field
 // loop over unique values
@@ -404,9 +404,9 @@ SpatVector SpatVector::transpose() {
 				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
 					out.geoms[i].parts[j].holes[k].x.swap(out.geoms[i].parts[j].holes[k].y);
 
-					dswap(out.geoms[i].parts[j].holes[k].extent.xmin, 
+					dswap(out.geoms[i].parts[j].holes[k].extent.xmin,
 						 out.geoms[i].parts[j].holes[k].extent.ymin);
-					dswap(out.geoms[i].parts[j].holes[k].extent.xmax, 
+					dswap(out.geoms[i].parts[j].holes[k].extent.xmax,
 						 out.geoms[i].parts[j].holes[k].extent.ymax);
 				}
 			}
@@ -456,13 +456,13 @@ SpatVector SpatVector::flip(bool vertical) {
 						flipv(out.geoms[i].parts[j].holes[k].x, x0);
 						flipd(out.geoms[i].parts[j].holes[k].extent.xmin, x0);
 						flipd(out.geoms[i].parts[j].holes[k].extent.xmax, x0);
-						dswap(out.geoms[i].parts[j].holes[k].extent.xmin, 
+						dswap(out.geoms[i].parts[j].holes[k].extent.xmin,
 							  out.geoms[i].parts[j].holes[k].extent.xmax);
 					} else {
 						flipv(out.geoms[i].parts[j].holes[k].y, y0);
 						flipd(out.geoms[i].parts[j].holes[k].extent.ymin, y0);
 						flipd(out.geoms[i].parts[j].holes[k].extent.ymax, y0);
-						dswap(out.geoms[i].parts[j].holes[k].extent.ymin, 
+						dswap(out.geoms[i].parts[j].holes[k].extent.ymin,
 							  out.geoms[i].parts[j].holes[k].extent.ymax);
 					}
 				}
@@ -516,13 +516,13 @@ SpatVector SpatVector::rotate(double angle, double x0, double y0) {
 					rotit(out.geoms[i].parts[j].holes[k].x,
 						  out.geoms[i].parts[j].holes[k].y, x0, y0, cos_angle, sin_angle);
 
-					out.geoms[i].parts[j].holes[k].extent.xmin = 
-						vmin(out.geoms[i].parts[j].holes[k].x, true); 
-					out.geoms[i].parts[j].holes[k].extent.xmax = 
+					out.geoms[i].parts[j].holes[k].extent.xmin =
+						vmin(out.geoms[i].parts[j].holes[k].x, true);
+					out.geoms[i].parts[j].holes[k].extent.xmax =
 						vmax(out.geoms[i].parts[j].holes[k].x, true);
-					out.geoms[i].parts[j].holes[k].extent.ymin = 
+					out.geoms[i].parts[j].holes[k].extent.ymin =
 						vmin(out.geoms[i].parts[j].holes[k].y, true);
-					out.geoms[i].parts[j].holes[k].extent.ymax = 
+					out.geoms[i].parts[j].holes[k].extent.ymax =
 						vmax(out.geoms[i].parts[j].holes[k].y, true);
 				}
 			}
@@ -578,7 +578,7 @@ bool thinnodes(std::vector<double> &x, std::vector<double> &y, const double &thr
 	}
 	if (xout.size() == (n+1)) {
 		return false;
-	} 
+	}
 	if (xout.size() >= mnsize) {
 		x = std::move(xout);
 		y = std::move(yout);
@@ -603,13 +603,13 @@ SpatVector SpatVector::thin(double threshold) {
 		out.setError("can only thin lines or polygons");
 		return out;
 	}
-	
+
 	out = *this;
 	bool objext = false;
 	for (size_t i=0; i < size(); i++) {
 		bool geomext = false;
 		for (size_t j=0; j < out.geoms[i].size(); j++) {
-			if (thinnodes(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, threshold, mnode)) {	
+			if (thinnodes(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, threshold, mnode)) {
 				geomext = true;
 			}
 			if (geoms[i].parts[j].hasHoles()) {
@@ -648,13 +648,13 @@ SpatVector SpatVector::removeSlivers(double dthres, double athres, size_t n) {
 		out.setError("n must be at least 2");
 		return out;
 	}
-	
+
 	out = *this;
 	bool objext = false;
 	for (size_t i=0; i < size(); i++) {
 		bool geomext = false;
 		for (size_t j=0; j < out.geoms[i].size(); j++) {
-			if (remove_slivers(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, threshold, mnode)) {	
+			if (remove_slivers(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, threshold, mnode)) {
 				geomext = true;
 			}
 			if (geoms[i].parts[j].hasHoles()) {

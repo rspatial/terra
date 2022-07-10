@@ -1,5 +1,5 @@
 
-setMethod("rapp", signature(x="SpatRaster"), 
+setMethod("rapp", signature(x="SpatRaster"),
 function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, clamp=FALSE, circular=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 	stopifnot(hasValues(x))
@@ -34,18 +34,18 @@ function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, clamp=FALSE, circular=
 	} else {
 		index <- c(first, last)
 	}
-	compareGeom(x, index, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) 
+	compareGeom(x, index, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE)
 
 	if (!allyrs) {
 		txtfun <- .makeTextFun(match.fun(fun))
-		if (inherits(txtfun, "character")) { 
+		if (inherits(txtfun, "character")) {
 			if (txtfun %in% .cpp_funs) {
 				opt <- spatOptions(filename, overwrite, wopt=wopt)
 				na.rm <- isTRUE(list(...)$na.rm)
 				x@ptr <- x@ptr$rapply(index@ptr, firstval, lastval, txtfun, clamp, na.rm, circular, opt)
 				return(messages(x, "rapp"))
 			}
-		} 
+		}
 	}
 	out <- rast(x)
 	v <- x@ptr$rappvals(index@ptr, firstval, lastval, clamp, allyrs, fill, 0, 1, circular)

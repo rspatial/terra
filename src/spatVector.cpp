@@ -200,7 +200,7 @@ SpatVector::SpatVector() {
 	extent.xmax = 0;
 	extent.ymin = 0;
 	extent.ymax = 0;
-	
+
 	srs.proj4 = "";
 	srs.wkt = "";
 
@@ -326,7 +326,7 @@ std::string SpatVector::type(){
 	} else if (geoms[0].gtype == polygons) {
 		return "polygons";
 	} else if (geoms[0].gtype == null) {
-		return("null");		
+		return("null");
 	} else {
 		return("unknown");
 	}
@@ -466,7 +466,7 @@ std::vector<std::vector<double>> SpatVector::coordinates() {
 	out[1].reserve(ncrds);
 	size_t ng = size();
 	for (size_t i=0; i<ng; i++) {
-		size_t np = geoms[i].size();		
+		size_t np = geoms[i].size();
 		for (size_t j=0; j<np; j++) {
 			out[0].insert(out[0].end(), geoms[i].parts[j].x.begin(), geoms[i].parts[j].x.end());
 			out[1].insert(out[1].end(), geoms[i].parts[j].y.begin(), geoms[i].parts[j].y.end());
@@ -620,7 +620,7 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 			continue;
 		}
 
-		if ((g.gtype == polygons) | (n > 1)) { 
+		if ((g.gtype == polygons) | (n > 1)) {
 			wkt += "(";
 		}
 
@@ -628,7 +628,7 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 			SpatPart p = g.getPart(j);
 			if (j>0) wkt += ",";
 
-			if ((g.gtype == polygons) & (n > 1)) { 
+			if ((g.gtype == polygons) & (n > 1)) {
 				wkt += "(";
 			}
 
@@ -647,7 +647,7 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 					wkt += ")";
 				}
 			}
-			if ((g.gtype == polygons) & (n > 1)) { 
+			if ((g.gtype == polygons) & (n > 1)) {
 				wkt += ")";
 			}
 		}
@@ -802,7 +802,7 @@ void SpatVector::setPointsDF(SpatDataFrame &x, std::vector<unsigned> geo, std::s
 	}
 	if (geo[0] == geo[1]) {
 		setError("x and y coordinates are the same variable");
-		return;			
+		return;
 	}
 	setPointsGeometry(x.dv[x.iplace[geo[0]]], x.dv[x.iplace[geo[1]]]);
 	setSRS( {crs} );
@@ -941,7 +941,7 @@ SpatVector SpatVector::append(SpatVector x, bool ingnorecrs) {
 	}
 	if ((df.nrow() == 0) && (x.df.nrow() == 0)) {
 		return out;
-	} 
+	}
 	if ((df.nrow() > 0) && (x.df.nrow() > 0)) {
 		out.df.rbind(x.df);
 		return out;
@@ -980,9 +980,9 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 		v.addWarning("returning a copy");
 		return v;
 	}
-	
+
 	SpatVector v = *this;
-	
+
 	if (geoms[0].gtype == lines) {
 		for (size_t i=0; i < v.geoms.size(); i++) {
 			SpatGeom g;
@@ -1038,8 +1038,8 @@ SpatVector SpatVector::as_lines() {
 
 	if (geoms[0].gtype == lines) {
 		return *this;
-	} 
-	
+	}
+
 	if (geoms[0].gtype == points) {
 		std::vector<double> x, y;
 		x.reserve(size());
@@ -1069,7 +1069,7 @@ SpatVector SpatVector::as_lines() {
 			}
 		}
 		return v;
-	} 
+	}
 */
 	// polygons, multipoints
 	v = *this;
@@ -1117,14 +1117,14 @@ void SpatGeom::remove_duplicate_nodes(int digits) {
 	for (size_t i=start; i>0; i--) {
 		remove_duplicates(parts[i].x, parts[i].y, digits);
 		if (parts[i].x.size() < 4) {
-			parts.erase(parts.begin()+i); 
+			parts.erase(parts.begin()+i);
 			continue;
 		}
 		if (parts[i].hasHoles()) {
 			for (size_t j=0; j < parts[i].nHoles(); j++) {
 				remove_duplicates(parts[i].holes[j].x, parts[i].holes[j].y, digits);
 				if (parts[i].holes[j].x.size() < 4) {
-					parts[i].holes.erase(parts[i].holes.begin()+j); 
+					parts[i].holes.erase(parts[i].holes.begin()+j);
 				}
 			}
 		}
@@ -1153,7 +1153,7 @@ SpatVector SpatVectorCollection::append() {
 		return out;
 	}
 	out = v[0];
-	// if out.nrow == 0? 
+	// if out.nrow == 0?
 	std::string gtype = out.type();
 	for (size_t i=1; i<n; i++) {
 		if (v[i].type() != gtype) {
@@ -1169,7 +1169,7 @@ SpatVector SpatVectorCollection::append() {
 
 		if ((out.df.nrow() == 0) && (v[i].df.nrow() == 0)) {
 			continue;
-		} 
+		}
 		if ((out.df.nrow() > 0) && (v[i].df.nrow() > 0)) {
 			out.df.rbind(v[i].df);
 			continue;

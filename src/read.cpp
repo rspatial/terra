@@ -51,7 +51,7 @@ bool SpatRaster::readStop() {
 			} else if (source[i].multidim) {
 				readStopMulti(i);
 			} else {
-				readStopGDAL(i); 
+				readStopGDAL(i);
 			}
 		}
 	}
@@ -72,7 +72,7 @@ void SpatRaster::readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, u
 
 // BIP
 std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
-	std::vector<double> x; 
+	std::vector<double> x;
 	readValues(x, bs.row[i], bs.nrows[i], 0, ncol());
 	std::vector<double> v(x.size());
 	size_t off = bs.nrows[i] * ncol();
@@ -190,7 +190,7 @@ std::vector<double> SpatRaster::readValuesR(size_t row, size_t nrows, size_t col
 			// read from file
 			#ifdef useGDAL
 
-/* 
+/*
 				if (source[0].window.expanded) {
 					std::vector<double> gout;
 					readChunkGDAL(gout, src, source[0].window.off_row, nrows, source[0].window.off_col, ncols);
@@ -265,7 +265,7 @@ void SpatRaster::readValues(std::vector<double> &out, size_t row, size_t nrows, 
 
 bool SpatRaster::readAll() {
 	if (!hasValues()) {
-		return true; 
+		return true;
 	}
 
 	size_t row =0, col=0, nrows=nrow(), ncols=ncol();
@@ -276,7 +276,7 @@ bool SpatRaster::readAll() {
 			readChunkGDAL(source[src].values, src, row, nrows, col, ncols);
 			source[src].memory = true;
 			source[src].filename = "";
-			std::iota(source[src].layers.begin(), source[src].layers.end(), 0);			
+			std::iota(source[src].layers.begin(), source[src].layers.end(), 0);
 		}
 		if (src > 0) {
 			if (!source[0].combine_sources(source[src])) {

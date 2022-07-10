@@ -1,5 +1,5 @@
 
-# setMethod("arith", signature(x="SpatRaster"), 
+# setMethod("arith", signature(x="SpatRaster"),
 ## not exported
 arith <- function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
@@ -19,7 +19,7 @@ arith <- function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	}
 	if (!(is.numeric(r) | is.logical(r))) {
 		error("arith", "'fun' does not return a numeric vector")
-	} 
+	}
 	if (length(r) != length(v)) {
 		error("arith", "'fun' does not return the same number of values as the input")
 	}

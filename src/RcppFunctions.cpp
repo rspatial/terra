@@ -50,7 +50,7 @@ std::string proj_version() {
 
 
 // [[Rcpp::export]]
-std::vector<unsigned char> hex2rgb(std::string s) { 
+std::vector<unsigned char> hex2rgb(std::string s) {
 	unsigned char r, g, b;
 	s = s.erase(0,1); // remove the "#"
 	sscanf(s.c_str(), "%02hhx%02hhx%02hhx", &r, &g, &b);
@@ -59,9 +59,9 @@ std::vector<unsigned char> hex2rgb(std::string s) {
 }
 
 // [[Rcpp::export]]
-std::string rgb2hex(std::vector<unsigned char> x) { 
-	std::stringstream ss; 
-	ss << "#" << std::hex << std::setw(6) << (x[0] << 16 | x[1] << 8 | x[2] ); 
+std::string rgb2hex(std::vector<unsigned char> x) {
+	std::stringstream ss;
+	ss << "#" << std::hex << std::setw(6) << (x[0] << 16 | x[1] << 8 | x[2] );
 	std::string s = ss.str();
 	//std::transform(s.begin(), s.end(), s.begin(), ::toupper);
 	str_replace_all(s, " ", "0");
@@ -164,7 +164,7 @@ std::vector<double> geotransform(std::string fname) {
 void gdal_setconfig(std::string option, std::string value) {
 	if (value == "") {
 		CPLSetConfigOption(option.c_str(), NULL);
-	} else { 
+	} else {
 		CPLSetConfigOption(option.c_str(), value.c_str());
 	}
 }
@@ -175,7 +175,7 @@ std::string gdal_getconfig(std::string option) {
 	std::string out = "";
 	if (value != NULL) {
 		out = value;
-	}	
+	}
 	return out;
 }
 
@@ -302,20 +302,20 @@ inline void NORET stopNoCall(const char* fmt, Args&&... args) {
 static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
 	switch ( eErrClass ) {
         case 0:
-            break; 
+            break;
         case 1:
         case 2:
-            warningNoCall("%s (GDAL %d)", msg, err_no); 
-            break; 
+            warningNoCall("%s (GDAL %d)", msg, err_no);
+            break;
         case 3:
-            warningNoCall("%s (GDAL error %d)", msg, err_no); 
+            warningNoCall("%s (GDAL error %d)", msg, err_no);
             break;
         case 4:
-            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no); 
-            break; 
+            warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no);
+            break;
     }
     return;
 }
@@ -325,16 +325,16 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
         case 0:
         case 1:
         case 2:
-            break; 
+            break;
         case 3:
-            warningNoCall("%s (GDAL error %d)", msg, err_no); 
+            warningNoCall("%s (GDAL error %d)", msg, err_no);
             break;
         case 4:
-            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
-            break; 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
+            break;
     }
     return;
 }
@@ -348,10 +348,10 @@ static void __err_fatal(CPLErr eErrClass, int err_no, const char *msg) {
         case 3:
             break;
         case 4:
-            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            break; 
+            break;
     }
     return;
 }
@@ -372,7 +372,7 @@ void set_gdal_warnings(int level) {
 		CPLSetErrorHandler((CPLErrorHandler)__err_error);
 	} else {
 		CPLSetErrorHandler((CPLErrorHandler)__err_fatal);
-	} 
+	}
 }
 
 
@@ -380,10 +380,10 @@ void set_gdal_warnings(int level) {
 void gdal_init(std::string path) {
 	set_gdal_warnings(2);
     GDALAllRegister();
-    OGRRegisterAll(); 
+    OGRRegisterAll();
 	CPLSetConfigOption("GDAL_MAX_BAND_COUNT", "9999999");
 	CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
-	
+
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
 	if (path != "") {
@@ -406,7 +406,7 @@ std::vector<double> percRank(std::vector<double> x, std::vector<double> y, doubl
 		if (std::isnan(y[i]) ) {
 			out.push_back( NAN );
 		} else if ((y[i] < minc) || (y[i] > maxc )) {
-			out.push_back( 0 ); 
+			out.push_back( 0 );
 		} else {
 			size_t b = 0;
 			size_t t = 0;
@@ -423,7 +423,7 @@ std::vector<double> percRank(std::vector<double> x, std::vector<double> y, doubl
 			double z = (b + 0.5 * t) / nx;
 			if (tail == 1) { // both
 				if (z > 0.5) {
-					z = 2 * (1 - z); 
+					z = 2 * (1 - z);
 				} else {
 					z = 2 * z;
 				}
@@ -441,7 +441,7 @@ std::vector<double> percRank(std::vector<double> x, std::vector<double> y, doubl
 				}
 			}
 			out.push_back(z);
-		} 
+		}
 	}
 	return(out);
 }

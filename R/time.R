@@ -12,7 +12,7 @@ format_ym <- function(x) {
 }
 
 
-setMethod("timeInfo", signature(x="SpatRaster"), 
+setMethod("timeInfo", signature(x="SpatRaster"),
 	function(x) {
 		time <- x@ptr$hasTime
 		if (time) {
@@ -20,22 +20,22 @@ setMethod("timeInfo", signature(x="SpatRaster"),
 			if (step == "seconds") {
 				data.frame(time=time, step=step, zone=x@ptr$timezone)
 			} else {
-				data.frame(time=time, step=step, zone="")			
+				data.frame(time=time, step=step, zone="")
 			}
 		} else {
-			data.frame(time=time, step="", zone="")		
+			data.frame(time=time, step="", zone="")
 		}
 	}
 )
 
 
-setMethod("time", signature(x="SpatRaster"), 
-	function(x, format="") { 
+setMethod("time", signature(x="SpatRaster"),
+	function(x, format="") {
 		if (!x@ptr$hasTime) {
 			return(rep(NA, nlyr(x)))
 		}
 		d <- x@ptr$time
-		tstep <- x@ptr$timestep 
+		tstep <- x@ptr$timestep
 		if (format != "") {
 			if ((format == "months") && (tstep == "years")) {
 				error("time", "cannot extract months from years-time")
@@ -50,7 +50,7 @@ setMethod("time", signature(x="SpatRaster"),
 			}
 			tstep <- format
 		} else {
-			tstep <- x@ptr$timestep 
+			tstep <- x@ptr$timestep
 		}
 		if (tstep == "seconds") {
 			d <- strptime("1970-01-01", "%Y-%m-%d", tz="UTC") + d
@@ -72,19 +72,19 @@ setMethod("time", signature(x="SpatRaster"),
 		} else if (tstep == "years") {
 			d <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 			as.integer(format(d, "%Y"))
-		} else { # raw 
+		} else { # raw
 			d
 		}
 	}
 )
 
 
-setMethod("time<-", signature(x="SpatRaster"), 
+setMethod("time<-", signature(x="SpatRaster"),
 	function(x, value, tstep="")  {
 		if (is.null(value)) {
 			x@ptr$setTime(0[0], "remove")
 			return(x)
-		} 
+		}
 		if (inherits(value, "character")) {
 			error("time<-", "value cannot be a character type")
 		}
@@ -103,7 +103,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 			value <- as.numeric(value)
 			year <- floor(value)
 			month <- round(12 * (value - year) + 1)
-			d <- as.Date(paste(year, month, "15", sep="-")) 
+			d <- as.Date(paste(year, month, "15", sep="-"))
 			value <- as.POSIXlt(d)
 			tstep <- "yearmonths"
 		} else if (tstep == "years") {
@@ -128,14 +128,14 @@ setMethod("time<-", signature(x="SpatRaster"),
 
 
 
-setMethod("depth", signature(x="SpatRaster"), 
-	function(x) { 
+setMethod("depth", signature(x="SpatRaster"),
+	function(x) {
 		x@ptr$depth
 	}
 )
 
 
-setMethod("depth<-", signature(x="SpatRaster"), 
+setMethod("depth<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		if (is.null(value)) {
 			x@ptr$setTime(0[0])
@@ -149,25 +149,25 @@ setMethod("depth<-", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("linearUnits", signature(x="SpatRaster"), 
+setMethod("linearUnits", signature(x="SpatRaster"),
 	function(x) {
 		.getLinearUnits(crs(x))
 	}
 )
 
-setMethod("linearUnits", signature(x="SpatVector"), 
+setMethod("linearUnits", signature(x="SpatVector"),
 	function(x) {
 		.getLinearUnits(crs(x))
 	}
 )
 
-setMethod("units", signature(x="SpatRaster"), 
-	function(x) { 
+setMethod("units", signature(x="SpatRaster"),
+	function(x) {
 		x@ptr$units
 	}
 )
 
-setMethod("units<-", signature(x="SpatRaster"), 
+setMethod("units<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		if (is.null(value) || all(is.na(value))) {
 			value <- ""
@@ -182,13 +182,13 @@ setMethod("units<-", signature(x="SpatRaster"),
 )
 
 
-setMethod("units", signature(x="SpatRasterDataset"), 
-	function(x) { 
+setMethod("units", signature(x="SpatRasterDataset"),
+	function(x) {
 		x@ptr$units
 	}
 )
 
-setMethod("units<-", signature(x="SpatRasterDataset"), 
+setMethod("units<-", signature(x="SpatRasterDataset"),
 	function(x, value)  {
 		value <- as.character(value)
 		x@ptr$units <- value

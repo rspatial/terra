@@ -27,23 +27,23 @@
 #define M_2PI (3.1415926535897932384626433 * 2.0)
 #endif
 
-#ifndef M_PI_2 
+#ifndef M_PI_2
 #define M_PI_2 (3.1415926535897932384626433 / 2)
 #endif
- 
-#ifndef WGS84_a 
+
+#ifndef WGS84_a
 #define WGS84_a 6378137.0;
 #endif
 
-#ifndef WGS84_f 
+#ifndef WGS84_f
 #define WGS84_f 1/298.257223563;;
 #endif
 
- 
+
 inline void normLon(double &lon) {
 	lon = fmod(lon + 180, 360.) - 180;
 }
- 
+
 inline void normLonRad(double &lon) {
 	lon = fmod(lon + M_PI, M_2PI) - M_PI;
 }
@@ -96,7 +96,7 @@ double dist2track(double lon1, double lat1, double lon2, double lat2, double plo
 	struct geod_geodesic geod;
 	geod_init(&geod, a, f);
 	double r = 6378137.0;
-	
+
 	double d, b2, b3, azi;
 	geod_inverse(&geod, lat1, lon1, lat2, lon2, &d, &b2, &azi);
 	geod_inverse(&geod, lat1, lon1, plat, plon, &d, &b3, &azi);
@@ -116,7 +116,7 @@ double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, do
 	struct geod_geodesic geod;
 	geod_init(&geod, a, f);
 	double r = 6378137.0;
-	
+
 	double d, b2, b3, azi;
 	geod_inverse(&geod, lat1, lon1, lat2, lon2, &d, &b2, &azi);
 	geod_inverse(&geod, lat1, lon1, plat, plon, &d, &b3, &azi);
@@ -125,7 +125,7 @@ double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, do
 	b3 *= toRad;
 	double xtr = asin(sin(b3-b2) * sin(d));
 
-	double bsign = get_sign(cos(b2-b3));  
+	double bsign = get_sign(cos(b2-b3));
 	return fabs(bsign * acos(cos(d) / cos(xtr)) * r);
 }
 
@@ -135,7 +135,7 @@ double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, do
 
 // [[Rcpp::export]]
 double dist2segment(double plon, double plat, double lon1, double lat1, double lon2, double lat2) {
-			
+
 // the alongTrackDistance is the length of the path along the great circle to the point of intersection
 // there are two, depending on which node you start
 // we want to use the min, but the max needs to be < segment length
@@ -153,7 +153,7 @@ double dist2segment(double plon, double plat, double lon1, double lat1, double l
 
 // [[Rcpp::export]]
 double dist2segmentPoint(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double &ilon, double &ilat) {
-			
+
 	double seglength = dist_lonlat(lon1, lat1, lon2, lat2);
 	double trackdist1 = alongTrackDistance(lon1, lat1, lon2, lat2, plon, plat);
 	double trackdist2 = alongTrackDistance(lon2, lat2, lon1, lat1, plon, plat);
@@ -162,12 +162,12 @@ double dist2segmentPoint(double plon, double plat, double lon1, double lat1, dou
 		double d2 = dist_lonlat(lat2, lat2, plon, plat);
 		if (d1 < d2) {
 			ilon = lon1;
-			ilat = lat1;			
-			return d1;	
+			ilat = lat1;
+			return d1;
 		} else {
 			ilon = lon2;
-			ilat = lat2;			
-			return d2;	
+			ilat = lat2;
+			return d2;
 		}
 	}
 	double azi;
@@ -184,7 +184,7 @@ double dist2segmentPoint(double plon, double plat, double lon1, double lat1, dou
 
 
 std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
-	
+
 	std::vector<std::vector<double>> pxy = x.coordinates();
 	size_t np = pxy[0].size();
 	size_t ng = size();
@@ -192,7 +192,7 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 	std::vector<double> d, dd;
 	dd.reserve(np*ng);
 	d.resize(np);
-	
+
 	bool poly = type() == "polygons";
 	if (poly) {
 		SpatVector pg;
@@ -209,7 +209,7 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 				} else {
 					d[i] = dist2segment(pxy[0][i], pxy[1][i], xy[0][0], xy[1][0], xy[0][1], xy[1][1]);
 					for (size_t j=1; j<nseg; j++) {
-						d[i] = std::min(d[i], 
+						d[i] = std::min(d[i],
 						dist2segment(pxy[0][i], pxy[1][i], xy[0][j], xy[1][j], xy[0][j+1], xy[1][j+1]));
 					}
 				}
@@ -223,7 +223,7 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 			for (size_t i=0; i<np; i++) {
 				d[i] = dist2segment(pxy[0][i], pxy[1][i], xy[0][0], xy[1][0], xy[0][1], xy[1][1]);
 				for (size_t j=1; j<nseg; j++) {
-					d[i] = std::min(d[i], 
+					d[i] = std::min(d[i],
 					dist2segment(pxy[0][i], pxy[1][i], xy[0][j], xy[1][j], xy[0][j+1], xy[1][j+1]));
 				}
 			}
@@ -232,7 +232,7 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 	}
 	return dd;
 }
- 
+
 
 
 // [[Rcpp::export(name = "intermediate")]]
@@ -243,7 +243,7 @@ std::vector<std::vector<double>> intermediate(double lon1, double lat1, double l
 	geod_init(&geod, a, f);
 	double d, azi1, azi2;
 
-	std::vector<std::vector<double>> out(2);	
+	std::vector<std::vector<double>> out(2);
 	if (n <= 0) {
 		if (distance <= 0) {
 			out[0] = {lon1, lon2};
@@ -255,15 +255,15 @@ std::vector<std::vector<double>> intermediate(double lon1, double lat1, double l
 			if (n < 2) {
 				out[0] = {lon1, lon2};
 				out[1] = {lon1, lon2};
-				return out;				
+				return out;
 			}
 			distance = d / n;
 		}
 	} else if (n == 1) {
 		out[0] = {lon1, lon2};
-		out[1] = {lon1, lon2};					
+		out[1] = {lon1, lon2};
 		return out;
-	} else {	
+	} else {
 		geod_inverse(&geod, lat1, lon1, lat2, lon2, &d, &azi1, &azi2);
 		//distance = d / n;
 	}
@@ -293,7 +293,7 @@ void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, doubl
 		if (xout.size() > sz) {
 			sz += (np-i) * 10;
 			xout.reserve(sz);
-			yout.reserve(sz);			
+			yout.reserve(sz);
 		}
 		double d, azi1, azi2;
 		geod_inverse(&g, lat[i], lon[i], lat[i+1], lon[i+1], &d, &azi1, &azi2);
@@ -308,7 +308,7 @@ void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, doubl
 		for (size_t j=1; j<n; j++) {
 			geod_direct(&g, lat[i], lon[i], azi1, step*j, &newlat, &newlon, &azi2);
 			xout.push_back(newlon);
-			yout.push_back(newlat);			
+			yout.push_back(newlat);
 		}
 	}
 	xout.push_back(lon[np-1]);
@@ -333,7 +333,7 @@ void make_dense_planar(std::vector<double> &x, std::vector<double> &y, double &i
 		if (xout.size() > sz) {
 			sz += (np-i) * 10;
 			xout.reserve(sz);
-			yout.reserve(sz);			
+			yout.reserve(sz);
 		}
 		double d = sqrt(pow((x[i+1] - x[i]),2) + pow((y[i+1] - y[i]), 2));
 		size_t n = floor(d / interval);
@@ -342,7 +342,7 @@ void make_dense_planar(std::vector<double> &x, std::vector<double> &y, double &i
 		if (n < 2) {
 			continue;
 		}
-			
+
 		double a = fmod(atan2(x[i+1]-x[i], y[i+1]-y[i]), pi2);
 		double step = adjust ? d / n : interval;
 		double distx = step * sin(a);
@@ -387,7 +387,7 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 		for (size_t i=0; i<n; i++) {
 			SpatGeom g = geoms[i];
 			for (size_t j=0; j < geoms[i].size(); j++) {
-				make_dense_lonlat(g.parts[j].x, g.parts[j].y, interval, adjust, geod);	
+				make_dense_lonlat(g.parts[j].x, g.parts[j].y, interval, adjust, geod);
 				if (g.parts[j].hasHoles()) {
 					for (size_t k=0; k < g.parts[j].nHoles(); k++) {
 						make_dense_lonlat(g.parts[j].holes[k].x, g.parts[j].holes[k].y, interval, adjust, geod);
@@ -397,11 +397,11 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 			out.addGeom(g);
 		}
 	} else {
-		
+
 		for (size_t i=0; i<n; i++) {
 			SpatGeom g = geoms[i];
 			for (size_t j=0; j < geoms[i].size(); j++) {
-				make_dense_planar(g.parts[j].x, g.parts[j].y, interval, adjust);	
+				make_dense_planar(g.parts[j].x, g.parts[j].y, interval, adjust);
 				if (g.parts[j].hasHoles()) {
 					for (size_t k=0; k < g.parts[j].nHoles(); k++) {
 						make_dense_planar(g.parts[j].holes[k].x, g.parts[j].holes[k].y, interval, adjust);
@@ -413,19 +413,19 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 	}
 	return out;
 }
- 
- 
 
- 
+
+
+
 std::vector<bool> antipodal(std::vector<double> lon1, std::vector<double> lat1, std::vector<double> lon2, std::vector<double> lat2, double tol=1e-9) {
 	recycle(lon1, lon2);
 	recycle(lat1, lat2);
 	std::vector<bool> out;
 	out.reserve(lon1.size());
 	double Pi180 = M_PI / 180.;
-	for (size_t i=0; i<lon1.size(); i++){ 
+	for (size_t i=0; i<lon1.size(); i++){
 		normLon(lon1[i]);
-		normLon(lon2[i]);		
+		normLon(lon2[i]);
 		double diflon = fabs(lon1[i] - lon2[i]);
 		double diflat = fabs(lat1[i] + lat2[i]);
 		out.push_back(
@@ -438,7 +438,7 @@ std::vector<bool> antipodal(std::vector<double> lon1, std::vector<double> lat1, 
 
 void antipodes(std::vector<double> &lon, std::vector<double> &lat) {
 	size_t n=lon.size();
-	for (size_t i=0; i<n; i++) { 
+	for (size_t i=0; i<n; i++) {
 		lon[i] = lon[i] + 180;
 		normLon(lon[i]);
 		lat[i] = -lat[i];

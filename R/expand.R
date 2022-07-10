@@ -1,6 +1,6 @@
 
 
-setMethod("extend", signature(x="SpatExtent"), 
+setMethod("extend", signature(x="SpatExtent"),
 function(x, y) {
 	if (length(y) == 1) {
 		y <- rep(y, 4)
@@ -20,7 +20,7 @@ function(x, y) {
 
 
 
-setMethod("extend", signature(x="SpatRaster"), 
+setMethod("extend", signature(x="SpatRaster"),
 function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
 
 	if (!inherits(y, "SpatExtent")) {

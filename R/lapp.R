@@ -20,7 +20,7 @@
 			if (is.null(dim(vtst))) {
 				msg <- paste0("cannot use 'fun'. The number of values returned is not divisible by the number of input cells (returning: ", length(vtst), ", expecting :", nr, ")")
 			} else {
-				msg <- paste0("cannot use 'fun'. The number of rows returned is not divisible by the number of input cells (returning: ", nrow(vtst), ", expecting: ", nr, ")")	
+				msg <- paste0("cannot use 'fun'. The number of rows returned is not divisible by the number of input cells (returning: ", nrow(vtst), ", expecting: ", nr, ")")
 			}
 			nl <- -1
 		}
@@ -28,7 +28,7 @@
 		if (is.null(dim(vtst))) {
 			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells. (returning: ", length(vtst), ", expecting: ", nr, ")")
 		} else {
-			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells (returning:", nrow(vtst), ", expecting:", nr, ")")	
+			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells (returning:", nrow(vtst), ", expecting:", nr, ")")
 		}
 		nl <- -1
 	}
@@ -42,14 +42,14 @@
 }
 
 
-setMethod("lapp", signature(x="SpatRaster"), 
+setMethod("lapp", signature(x="SpatRaster"),
 function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	fun <- match.fun(fun)
 	dots <- list(...)
 	if (any(sapply(dots, function(i) inherits(i, "SpatRaster")))) {
 		error("lapp", "only 'x' can be a SpatRaster")
-		# otherwise .lapp_test may crash! 
+		# otherwise .lapp_test may crash!
 	}
 
 	if (usenames) {
@@ -133,7 +133,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 			if (is.null(dim(vtst))) {
 				msg <- paste0("cannot use 'fun'. The number of values returned is not divisible by the number of input cells (returning: ", length(vtst), ", expecting :", nr, ")")
 			} else {
-				msg <- paste0("cannot use 'fun'. The number of rows returned is not divisible by the number of input cells (returning: ", nrow(vtst), ", expecting: ", nr, ")")	
+				msg <- paste0("cannot use 'fun'. The number of rows returned is not divisible by the number of input cells (returning: ", nrow(vtst), ", expecting: ", nr, ")")
 			}
 			nl <- -1
 		}
@@ -141,14 +141,14 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 		if (is.null(dim(vtst))) {
 			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells. (returning: ", length(vtst), ", expecting: ", nr, ")")
 		} else {
-			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells (returning:", nrow(vtst), ", expecting:", nr, ")")	
+			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells (returning:", nrow(vtst), ", expecting:", nr, ")")
 		}
 		nl <- -1
 	}
 	if (nl < 0) {
 		error("lapp", msg)
 	}
-	
+
 	if (is.matrix(vtst)) {
 		nms <- colnames(vtst)
 	}
@@ -157,7 +157,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 
 
 
-setMethod("lapp", signature(x="SpatRasterDataset"), 
+setMethod("lapp", signature(x="SpatRasterDataset"),
 function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 
 	fun <- match.fun(fun)

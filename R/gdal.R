@@ -62,10 +62,10 @@ gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
 			proj_version()
 		} else if (lib=="geos") {
 			.geos_version()
-		} else {	
+		} else {
 			c(gdal=.gdal_version(), proj=proj_version(), geos=.geos_version())
-		}	
-	}	
+		}
+	}
 }
 
 
@@ -109,7 +109,7 @@ gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
 
 
 
-setMethod("describe", signature(x="character"), 
+setMethod("describe", signature(x="character"),
 	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="") {
 
 		if (meta) {

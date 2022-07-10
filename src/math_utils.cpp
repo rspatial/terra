@@ -92,7 +92,7 @@ double signif(double x, unsigned n) {
 		b = b / 10;
 	}
 	int d = n-i;
-	return roundn(x, d); 
+	return roundn(x, d);
 }
 
 bool is_equal(double a, double b, double tolerance=10.0) {

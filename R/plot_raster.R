@@ -36,7 +36,7 @@
 
 	if (is.null(out$levels)) {
 		out$levels <- 5
-	} 
+	}
 	if (is.null(out$leg$digits)) {
 		dif <- diff(out$range)
 		if (dif == 0) {
@@ -75,7 +75,7 @@
 	}
 	stopifnot(length(out$leg$legend) == length(out$levels))
 	nlevs <- length(levs)
-	
+
 	if (NCOL(out$cols) == 2) {
 		out$cols[,2] <- as.character(out$cols[,2])
 		i <- match(Z, as.numeric(levs))
@@ -194,7 +194,7 @@
 .generic.interval <- function(out, Z) {
 	if (is.null(out$breaks)) {
 		out$breaks <- 5
-	} 
+	}
 	if (length(out$breaks) == 1) {
 		out$breaks <- .get_breaks(Z, out$breaks, out$breakby, out$range)
 	}
@@ -240,7 +240,7 @@
 		out$leg$fill <- out$cols[,3]
 		Z <- as.matrix(x, wide=TRUE)
 		Z[is.nan(Z) | is.infinite(Z)] <- NA
-		Z[] <- out$leg$fill[Z]		
+		Z[] <- out$leg$fill[Z]
 	} else {
 		Z <- as.matrix(x, wide=TRUE)
 		Z[is.nan(Z) | is.infinite(Z)] <- NA
@@ -254,7 +254,7 @@
 	out
 }
 
-# leg.shrink=c(0,0), leg.main=NULL, leg.main.cex = 1, leg.digits=NULL, leg.loc=NULL, leg.ext=NULL, leg.levels=NULL, leg.labels=NULL, leg.at=NULL, 
+# leg.shrink=c(0,0), leg.main=NULL, leg.main.cex = 1, leg.digits=NULL, leg.loc=NULL, leg.ext=NULL, leg.levels=NULL, leg.labels=NULL, leg.at=NULL,
 
 
 .as.raster.colortable <- function(out, x, ...) {
@@ -274,33 +274,33 @@
 }
 
 
-# legend 
-#	border="black", box.lwd = graphics::par("lwd"), box.lty = graphics::par("lty"), 
-#	box.col = graphics::par("fg"), bty = "o", bg = graphics::par("bg"), xjust = 0, 
-#	yjust = 1, x.intersp = 1, y.intersp = 1, adj = c(0, 0.5), text.width = NULL, 
+# legend
+#	border="black", box.lwd = graphics::par("lwd"), box.lty = graphics::par("lty"),
+#	box.col = graphics::par("fg"), bty = "o", bg = graphics::par("bg"), xjust = 0,
+#	yjust = 1, x.intersp = 1, y.intersp = 1, adj = c(0, 0.5), text.width = NULL,
 #	text.col = graphics::par("col"), text.font = NULL, ncol = 1, horiz = FALSE, title = NULL,
- #   inset = 0, title.col = text.col, title.adj = 0.5, 
+ #   inset = 0, title.col = text.col, title.adj = 0.5,
 
-.plotit <- function(x, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=x$asp, axes=TRUE, new=NA, 
-	main="", line=0.5, cex.main=0.8, font.main=graphics::par()$font.main, 
+.plotit <- function(x, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=x$asp, axes=TRUE, new=NA,
+	main="", line=0.5, cex.main=0.8, font.main=graphics::par()$font.main,
 	col.main = graphics::par()$col.main, reset=FALSE, ...) {
 
 #	if (x$add) axes = FALSE
 	if ((!x$add) & (!x$legend_only)) {
 
-		old.mar <- graphics::par()$mar 
+		old.mar <- graphics::par()$mar
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
 		if (reset) on.exit(graphics::par(mar=old.mar))
 
 		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
-			
+
 		graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)
 	}
 	if (!x$values) {
 		return(x)
 	}
 	if (!x$legend_only) {
-		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], 
+		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4],
 			angle = 0, interpolate = x$interpolate)
 
 		if (axes) x <- .plot.axes(x)
@@ -319,14 +319,14 @@
 
 
 
-.prep.plot.data <- function(x, type, cols, mar=NULL, draw=FALSE, 
-  interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), 
+.prep.plot.data <- function(x, type, cols, mar=NULL, draw=FALSE,
+  interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(),
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
-  coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE, 
+  coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
   sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
- 
+
 	out <- list()
 
 	out$lim <- out$ext <- as.vector(ext(x))
@@ -335,7 +335,7 @@
 		x <- crop(x, ext)
 		out$ext <- as.vector(ext(x))
 		out$lim <- ext
-	} 
+	}
 	if (!(is.null(xlim) & is.null(ylim))) {
 		e <- as.vector(ext(x))
 		if (!is.null(xlim)) e[1:2] <- sort(xlim)
@@ -349,7 +349,7 @@
 	out$axs <- as.list(pax)
 	if (is.null(out$axs$las)) out$axs$las <- las
 	out$draw_grid <- isTRUE(grid)
-	
+
 	out$leg <- as.list(plg)
 	out$asp <- 1
 	out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
@@ -360,7 +360,7 @@
 	if (!is.null(alpha)) {
 		if (!inherits(alpha, "SpatRaster")) {
 			cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha[1]*255, maxColorValue=255)
-		} 
+		}
 	} else {
 		alpha <- 255
 	}
@@ -411,7 +411,7 @@
 			out$range <- range
 			out <- .as.raster.continuous(out, x, type)
 		}
- 
+
 		if (!is.null(colNA)) {
 			if (!is.na(colNA) && out$values) {
 				out$colNA <- grDevices::rgb(t(grDevices::col2rgb(colNA)), alpha=alpha, maxColorValue=255)
@@ -432,7 +432,7 @@
 }
 
 
-setMethod("plot", signature(x="SpatRaster", y="numeric"), 
+setMethod("plot", signature(x="SpatRaster", y="numeric"),
 	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, ...) {
 
 		y <- round(y)
@@ -475,7 +475,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			col <- rev(grDevices::terrain.colors(255))
 		} else if (inherits(col, "data.frame")) {
 			if (ncol(col) == 2) {
-				type <- "classes"			
+				type <- "classes"
 			} else if (ncol(col) == 3) {
 				type <- "interval"
 			} else {
@@ -531,13 +531,13 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 
-setMethod("plot", signature(x="SpatRaster", y="missing"), 
+setMethod("plot", signature(x="SpatRaster", y="missing"),
 	function(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend=TRUE, ...)  {
 
 		if (has.RGB(x)) {
 			i <- x@ptr$getRGB() + 1
-			if (missing(main)) main = ""			
-			if (is.null(mar)) mar = 0			
+			if (missing(main)) main = ""
+			if (is.null(mar)) mar = 0
 			plotRGB(x, i[1], i[2], i[3], maxcell=maxcell, mar=mar, main=main, ...)
 			return(invisible())
 		}
@@ -551,7 +551,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		}
 
 		nrnc <- .get_nrnc(nr, nc, nl)
-		old.par <- graphics::par(no.readonly = TRUE) 
+		old.par <- graphics::par(no.readonly = TRUE)
 		on.exit(graphics::par(old.par))
 		if (is.null(mar)) {
 			mar=c(1.5, 1.5, 1.5, 3)
@@ -578,7 +578,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 )
 
 
-setMethod("plot", signature(x="SpatRaster", y="character"), 
+setMethod("plot", signature(x="SpatRaster", y="character"),
 	function(x, y, ...) {
 		y <- match(y, names(x))
 		if (any(is.na(y))) {

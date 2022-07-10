@@ -1,5 +1,5 @@
 
-setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"), 
+setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 	function(x, z, fun="mean", ..., as.raster=FALSE, filename="", wopt=list())  {
 		if (nlyr(z) > 1) {
 			z <- z[[1]]
@@ -8,7 +8,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 		txtfun <- .makeTextFun(fun)
 		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum", "notNA", "isNA"))) {
 			na.rm <- isTRUE(list(...)$na.rm)
-			old <- isTRUE(list(...)$old) 
+			old <- isTRUE(list(...)$old)
 			opt <- spatOptions()
 			if (old) { # for testing, to be removed
 				sdf <- x@ptr$zonal_old(z@ptr, txtfun, na.rm, opt)
@@ -54,7 +54,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 )
 
 
-setMethod("global", signature(x="SpatRaster"), 
+setMethod("global", signature(x="SpatRaster"),
 	function(x, fun="mean", weights=NULL, ...)  {
 
 		nms <- names(x)
@@ -73,7 +73,7 @@ setMethod("global", signature(x="SpatRaster"),
 			return(res)
 		}
 
-		if (inherits(txtfun, "character")) { 
+		if (inherits(txtfun, "character")) {
 			if (txtfun %in% c("prod", "max", "min", "mean", "sum", "range", "rms", "sd", "sdpop", "notNA", "isNA")) {
 				na.rm <- isTRUE(list(...)$na.rm)
 				ptr <- x@ptr$global(txtfun, na.rm, opt)

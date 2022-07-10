@@ -291,7 +291,7 @@ SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &
 		}
 	}
 
-	OCTDestroyCoordinateTransformation(poCT); 
+	OCTDestroyCoordinateTransformation(poCT);
 	if (failcount > 0) {
 		m.addWarning(std::to_string(failcount) + " failed transformations");
 	}
@@ -303,7 +303,7 @@ SpatVector SpatVector::project(std::string crs) {
 
 	SpatVector s;
 	s.reserve(size());
-	
+
     #ifndef useGDAL
 		s.setError("GDAL is not available");
 		return(s);

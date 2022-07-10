@@ -46,19 +46,19 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		}
 	}
 
-	if (append) {	
-	
+	if (append) {
+
 		#if GDAL_VERSION_MAJOR < 3
 			setError("GDAL >= 3 required for inserting layers into an existing file");
 			return(poDS);
 		#endif
-		
+
 		poDS = static_cast<GDALDataset*>(GDALOpenEx(filename.c_str(), GDAL_OF_VECTOR | GDAL_OF_UPDATE,
 				NULL, NULL, NULL ));
 
 		std::vector<std::string> lyrnms;
-		
-		size_t n = poDS->GetLayerCount();			
+
+		size_t n = poDS->GetLayerCount();
 		for (size_t i=0; i<n; i++) {
 			OGRLayer *poLayer = poDS->GetLayer(i);
 			if (poLayer != NULL) {
@@ -88,10 +88,10 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
 			setError("cannot create a "+ driver + " dataset");
 			return poDS;
-		}	
+		}
 		poDS = poDriver->Create(filename.c_str(), 0, 0, 0, GDT_Unknown, NULL );
 	}
-	
+
     if( poDS == NULL ) {
         setError("Creation of output dataset failed" );
         return poDS;
@@ -116,7 +116,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	OGRSpatialReference *SRS = NULL;
 	if (s != "") {
 		SRS = new OGRSpatialReference;
-		OGRErr err = SRS->SetFromUserInput(s.c_str()); 
+		OGRErr err = SRS->SetFromUserInput(s.c_str());
 #if GDAL_VERSION_NUM >= 2050000
 		SRS->SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
 #endif
@@ -187,22 +187,22 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
 			setError( "Field creation failed for: " + nms[i]);
 			return poDS;
-		}		
+		}
 	}
 
 	// use a single transaction as in sf
-	// makes a big difference for gpkg by avoiding many INSERTs	
+	// makes a big difference for gpkg by avoiding many INSERTs
 	bool can_do_transaction = poDS->TestCapability(ODsCTransactions); // == TRUE);
 	bool transaction = false;
-	if (can_do_transaction) { 
-		transaction = (poDS->StartTransaction() == OGRERR_NONE); 
-		if (! transaction) { 
+	if (can_do_transaction) {
+		transaction = (poDS->StartTransaction() == OGRERR_NONE);
+		if (! transaction) {
 			setError("transaction failed");
-			return poDS; 
-		} 
+			return poDS;
+		}
 	}
 	// chunks
-	
+
 	if (nGroupTransactions == 0) {
 		nGroupTransactions = 50000;
 	}
@@ -338,17 +338,17 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				setError("transaction commit failed");
 			}
 			gcntr = 0;
-			transaction = (poDS->StartTransaction() == OGRERR_NONE); 
-			if (! transaction) { 
+			transaction = (poDS->StartTransaction() == OGRERR_NONE);
+			if (! transaction) {
 				setError("transaction failed");
-				return poDS; 
-			} 
+				return poDS;
+			}
 		}
     }
 	if (transaction && (gcntr>0) && (poDS->CommitTransaction() != OGRERR_NONE)) {
 		poDS->RollbackTransaction();
 		setError("transaction commit failed");
-	} 
+	}
 	return poDS;
 }
 
@@ -365,7 +365,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
     if (poDS != NULL) GDALClose( poDS );
 	if (hasError()) {
 		return false;
-	} 
+	}
 	return true;
 
 }
@@ -484,7 +484,7 @@ bool SpatVector::delete_layers(std::string filename, std::vector<std::string> la
 	if (filename == "") {
 		setError("empty filename");
 		return false;
-	}	
+	}
 	if (!file_exists(filename)) {
 		setError("file does not exist");
 		return false;
@@ -500,12 +500,12 @@ bool SpatVector::delete_layers(std::string filename, std::vector<std::string> la
     }
 
 	std::string fails;
-	
+
 	size_t n = poDS->GetLayerCount();
 	for (int i =(n-1); i > 0; i--) {
 		size_t m = layers.size();
 		if (m == 0) break;
-		
+
 		OGRLayer *poLayer = poDS->GetLayer(i);
 		if (poLayer == NULL) continue;
 		std::string lname = poLayer->GetName();
@@ -521,7 +521,7 @@ bool SpatVector::delete_layers(std::string filename, std::vector<std::string> la
 					if (fails.size() > 0) {
 						fails += ", " + layers[j];
 					} else {
-						fails = layers[j];						
+						fails = layers[j];
 					}
 				}
 				layers.erase(layers.begin() + j);

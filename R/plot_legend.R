@@ -60,7 +60,7 @@
 		x$axs$tck <- 1
 		x$axs$mgp = c(2, .15, 0)
 	}
-	
+
 	if (!is.null(x$axs$sides)) {
 		if (x$axs$sides[1] > 0) {
 			usr <- graphics::par("usr")
@@ -76,7 +76,7 @@
 					ur <- usr[4] - usr[3]
 					at <- c(usr[3]-10*ur, usr[4]+10*ur)
 				}
-				graphics::axis(s, at=at, labels=c("",""), lwd.ticks=0, 
+				graphics::axis(s, at=at, labels=c("",""), lwd.ticks=0,
 					cex.axis=x$axs$cex.axis, mgp=x$axis$mgp)
 				x$axs$side <- s
 				do.call(graphics::axis, x$axs)
@@ -115,18 +115,18 @@
 
 	if (is.null(x$leg$shrink)) {
 		leg.shrink <- c(0,0)
-	} else { 
+	} else {
 		leg.shrink <- rep_len(x$leg$shrink,2)
 	}
 	if (!is.null(x$leg$main)) {
 		n <- length(x$leg$main)
-		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n)) 
+		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n))
 	}
 
 	if (isTRUE(x$leg$loc=="bottom")) {
 		xd <- xmax - xmin
 		xmin <- xmin + xd * leg.shrink[1]
-		xmax <- xmax - xd * leg.shrink[2]	
+		xmax <- xmax - xd * leg.shrink[2]
 		yd <- ymax - ymin
 		ymin <- ymin + yd * leg.shrink[1]/1.5
 		ymax <- ymax - yd * leg.shrink[2]/1.5
@@ -229,8 +229,8 @@
 	cex <- x$leg$cex
 	if (is.null(cex)) cex <- 0.8
 	rotate <- isTRUE(x$leg$rotate)
-	srt <- ifelse(rotate, 90, 0) 
-	
+	srt <- ifelse(rotate, 90, 0)
+
 	cols <- rev(x$cols)
 	nc <- length(cols)
 
@@ -278,7 +278,7 @@
 }
 
 
-.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="", 
+.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="",
 	lty=1, lwd=1, pch=1, angle=45, density=NULL,
 	pt.cex = 1, pt.bg="black", pt.lwd=1, bty="n", border="black", seg.len=1,
 # catching
@@ -290,7 +290,7 @@
 		y <- usr[c(4)]
 	}
 	if (grepl("points", geomtype)) {
-		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, 
+		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch,
 		pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, ...)
 	} else if (geomtype == "lines") {
 		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, ...)

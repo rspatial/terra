@@ -19,7 +19,7 @@ setMethod("svc", signature(x="SpatVector"),
 		r <- methods::new("SpatVectorCollection")
 		r@ptr <- SpatVectorCollection$new()
 		r@ptr$push_back(x@ptr)
-		dots <- list(...) 
+		dots <- list(...)
 		if (length(dots) > 0) {
 			for (i in 1:length(dots)) {
 				if (inherits(dots[[i]], "SpatVector")) {
@@ -93,13 +93,13 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
-setMethod("c", signature(x="SpatVector"), 
+setMethod("c", signature(x="SpatVector"),
 	function(x, ...) {
 		svc(x, ...)
 	}
 )
 
-setMethod("c", signature(x="SpatVectorCollection"), 
+setMethod("c", signature(x="SpatVectorCollection"),
 	function(x, ...) {
 
 		x@ptr <- x@ptr$subset(0:(x@ptr$size()-1) ) ## deep copy
@@ -113,7 +113,7 @@ setMethod("c", signature(x="SpatVectorCollection"),
 				x@ptr$push_back(dots[[i]]@ptr)
 			} else {
 				error("c", "arguments must be SpatVector or SpatVectorCollection")
-			} 
+			}
 		}
 		messages(x, "c")
 	}

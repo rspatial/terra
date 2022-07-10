@@ -10,7 +10,7 @@
 }
 
 
-ext_from_rc <- function(x, r1, r2, c1, c2){ 
+ext_from_rc <- function(x, r1, r2, c1, c2){
 	e <- as.vector(ext(x))
 	r <- res(x)
 	c1 <- min(max(c1, 1), ncol(x))
@@ -95,9 +95,9 @@ wmax <- function(p, na.rm=FALSE) {
 
 
 extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, layer=NULL) {
-	
+
 	method <- match.arg(tolower(method), c("simple", "bilinear"))
-	
+
 	nl <- nlyr(x)
 	useLyr <- FALSE
 	if (!is.null(layer) && nl > 1) {
@@ -115,14 +115,14 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	cn <- names(x)
 	opt <- spatOptions()
 	if ((method == "bilinear") && (NCOL(y) > 1)) {
-		e <- x@ptr$bilinearValues(y[,1], y[,2])		
+		e <- x@ptr$bilinearValues(y[,1], y[,2])
 	} else {
 		if (NCOL(y) == 2) {
-			y <- cellFromXY(x, y) 
+			y <- cellFromXY(x, y)
 		}
 		e <- x@ptr$extractCell(y-1)
 	}
-	
+
 	if (list) {
 		messages(x, "extract")
 		return(e)
@@ -171,15 +171,15 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	}
 }
 
-setMethod("extract", signature(x="SpatRaster", y="matrix"), 
-function(x, y, ...) { 
+setMethod("extract", signature(x="SpatRaster", y="matrix"),
+function(x, y, ...) {
 	.checkXYnames(colnames(y))
 	extractCells(x, y, ...)
 })
 
 
-setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
-function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) { 
+setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
+function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
 
 	nl <- nlyr(x)
 	useLyr <- FALSE
@@ -206,13 +206,13 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 					fun <- wmin
 				} else if (fun == "max") {
 					fun <- wmax
-				} 
+				}
 			} else {
 				bad <- TRUE
 			}
 			if (bad) error("extract", 'if weights or exact=TRUE, "fun" must be "sum", "mean", "min", or "max"')
 		}
-	} 
+	}
 	if (!is.null(layer) && nl > 1) {
 		if (any(is.na(layer))) {error("extract", "argument 'layer' cannot have NAs")}
 		if (length(layer) == 1) {
@@ -278,7 +278,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 			e <- matrix(e, ncol=nc, byrow=TRUE)
 		}
 		e <- cbind(1:nrow(e), e)
-		if (nrow(e) > nrow(y)) { #multipoint 
+		if (nrow(e) > nrow(y)) { #multipoint
 			g <- geom(y)
 			e[,1] <- g[,1]
 		}
@@ -288,7 +288,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	cn <- c("ID", cn)
 	colnames(e) <- cn
 	if (hasfun) {
-		fun <- match.fun(fun) 
+		fun <- match.fun(fun)
 		e <- data.frame(e)
 		e <- aggregate(e[,-1,drop=FALSE], e[,1,drop=FALSE], fun, ...)
 
@@ -335,8 +335,8 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	e
 })
 
-setMethod("extract", signature(x="SpatRaster", y="sf"), 
-	function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) { 
+setMethod("extract", signature(x="SpatRaster", y="sf"),
+	function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
 		y <- vect(y)
 		extract(x, y, fun=fun, method=method, list=list, factors=factors, cells=cells, xy=xy, weights=weights, exact=exact, touches=touches, layer=layer, ...)
 	}
@@ -368,8 +368,8 @@ function(x, i, j, ... , drop=FALSE) {
 })
 
 
-setMethod("extract", signature(x="SpatRaster", y="data.frame"), 
-function(x, y, ...) { 
+setMethod("extract", signature(x="SpatRaster", y="data.frame"),
+function(x, y, ...) {
 	if (ncol(y) != 2) {
 		error("extract", "extract expects a 2 column data.frame of x and y coordinates")
 	}
@@ -378,15 +378,15 @@ function(x, y, ...) {
 })
 
 
-setMethod("extract", signature(x="SpatRaster", y="numeric"), 
-function(x, y, ...) { 
+setMethod("extract", signature(x="SpatRaster", y="numeric"),
+function(x, y, ...) {
 	y <- as.integer(y)
 	y[(y < 1) | (y > ncell(x))] <- NA
 	x[y]
 })
 
-setMethod("extract", signature(x="SpatRaster", y="SpatExtent"), 
-function(x, y, factors=TRUE, cells=FALSE, xy=FALSE) { 
+setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),
+function(x, y, factors=TRUE, cells=FALSE, xy=FALSE) {
 	y <- cells(x, y)
 	if (factors) dataframe = TRUE
 	v <- extract_cell(x, y, factors=factors)
@@ -436,7 +436,7 @@ function(x, i, j, ... , drop=TRUE) {
 	}
 	if (nargs() > (2+add)) {
 		i <- cellFromRowColCombine(x, i, 1:ncol(x))
-	} 
+	}
 	extract_cell(x, i, drop=FALSE)
 })
 

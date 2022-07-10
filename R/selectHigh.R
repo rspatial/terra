@@ -1,5 +1,5 @@
 
-setMethod("selectHighest", signature(x="SpatRaster"), 
+setMethod("selectHighest", signature(x="SpatRaster"),
 	function(x, n, low=FALSE) {
 		x <- x[[1]]
 		n <- min(ncell(x), max(1, n))

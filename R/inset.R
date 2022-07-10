@@ -4,7 +4,7 @@
 # License GPL v3
 
 
-setMethod("inext", signature(x="SpatVector"), 
+setMethod("inext", signature(x="SpatVector"),
 	function(x, e, y=NULL, gap=0) {
 	# the area used for scaling
 		gap <- rep_len(gap, 2)
@@ -22,7 +22,7 @@ setMethod("inext", signature(x="SpatVector"),
 		} else {
 			rescale(x, fx=fx, fy=fy, e[1], e[3])
 		}
-	} 
+	}
 )
 
 
@@ -55,7 +55,7 @@ setMethod("inext", signature(x="SpatVector"),
 
 	if ((loc != "") && (loc != "topleft")) {
 		stopifnot(loc %in% c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "center"))
-		
+
 		ex <- ext(x)
 		if (grepl("top", loc)) {
 			dy <- usr[4] - e[4]
@@ -103,14 +103,14 @@ setMethod("inext", signature(x="SpatVector"),
 }
 
 
-setMethod("inset", signature(x="SpatVector"), 
+setMethod("inset", signature(x="SpatVector"),
 	function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, box=NULL, pper, pbox, ...) {
 		.inset(x, e, loc=loc, scale=scale, background=background, perimeter=perimeter, pper=pper, box=box, pbox=pbox, ...)
 	}
 )
 
 
-setMethod("inset", signature(x="SpatRaster"), 
+setMethod("inset", signature(x="SpatRaster"),
 	function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, box=NULL, pper, pbox, ...) {
 		.inset(x, e, loc=loc, scale=scale, background=background, perimeter=perimeter, pper=pper, box=box, pbox=pbox, ...)
 	}

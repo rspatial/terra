@@ -4,13 +4,13 @@
 # License GPL v3
 
 
-setMethod ("has.RGB" , "SpatRaster", 
+setMethod ("has.RGB" , "SpatRaster",
 	function(x) {
 		x@ptr$rgb
 	}
 )
 
-setMethod("RGB<-", signature(x="SpatRaster"), 
+setMethod("RGB<-", signature(x="SpatRaster"),
 	function(x, value) {
 		if (is.null(value[1]) || is.na(value[1])) {
 			x@ptr$removeRGB()
@@ -29,7 +29,7 @@ setMethod("RGB<-", signature(x="SpatRaster"),
 )
 
 
-setMethod("RGB", signature(x="SpatRaster"), 
+setMethod("RGB", signature(x="SpatRaster"),
 	function(x) {
 		if (x@ptr$rgb) {
 			x@ptr$getRGB() + 1
@@ -166,7 +166,7 @@ col2rgb <- function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
 
 
 
-setMethod("colorize", signature(x="SpatRaster"), 
+setMethod("colorize", signature(x="SpatRaster"),
 	function(x, to="hsv", alpha=FALSE, stretch=NULL, grays=FALSE, NAzero=FALSE, filename="", overwrite=FALSE, ...) {
 		to <- tolower(to)
 		if (to %in% c("hsi", "hsl", "hsv")) {
@@ -177,10 +177,10 @@ setMethod("colorize", signature(x="SpatRaster"),
 				return(col2rgb(x, alpha=alpha, filename=filename, overwrite=overwrite, ...))
 			} else {
 				opt <- spatOptions(filename, overwrite, ...)
-				x@ptr <- x@ptr$hsx2rgb(opt)		
+				x@ptr <- x@ptr$hsx2rgb(opt)
 			}
 		} else if (to == "hsl") {
-			opt <- spatOptions(filename, overwrite, ...)		
+			opt <- spatOptions(filename, overwrite, ...)
 			x@ptr <- x@ptr$hsx2rgb(to, opt)
 		} else if (to == "col") {
 			return(rgb2col(x, stretch=stretch, grays=grays, NAzero=NAzero, filename=filename, overwrite=overwrite, ...))

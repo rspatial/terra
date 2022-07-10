@@ -33,7 +33,7 @@ std::vector<std::string> read_text(std::string filename) {
 			}
 		}
 		f.close();
-	} 
+	}
 	return s;
 }
 
@@ -98,7 +98,7 @@ bool path_exists(std::string path) {
 	stat(path.c_str(), &info );
 	if(info.st_mode & S_IFDIR) {
 		return true;
-	} 
+	}
 	return false;
 }
 
@@ -117,7 +117,7 @@ bool canWrite(std::string filename) {
 
 std::string get_path(const std::string filename) {
 	size_t found = filename.find_last_of("/\\");
-	std::string result = filename.substr(0, found); 
+	std::string result = filename.substr(0, found);
 	return result;
 }
 
@@ -143,7 +143,7 @@ bool can_write(std::string filename, bool overwrite, std::string &msg) {
 				if (file_exists(f)) {
 					remove(f.c_str());
 				}
-			}		
+			}
 		} else {
 			msg = "file exists";
 			return false;

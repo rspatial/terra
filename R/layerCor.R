@@ -9,7 +9,7 @@
 
 if (!isGeneric("layerCor")) {setGeneric("layerCor", function(x, ...) standardGeneric("layerCor"))}
 
-setMethod("layerCor", signature(x="SpatRaster"), 
+setMethod("layerCor", signature(x="SpatRaster"),
 	function(x, fun, w, asSample=TRUE, na.rm=FALSE, maxcell=Inf, ...) {
 
 		stopifnot(is.logical(asSample) & !is.na(asSample))

@@ -16,7 +16,7 @@
 	}
 }
 
-setMethod("image", signature(x="SpatRaster"), 
+setMethod("image", signature(x="SpatRaster"),
 	function(x, y=1, maxcell=500000, ...)  {
 		y <- as.integer(y[1])
 		stopifnot(y > 0 && y <= nlyr(x))

@@ -84,7 +84,7 @@ Also see the methods in section VIII
     \code{\link{Arith-methods}} \tab Standard arithmetic methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
     \code{\link{Compare-methods}} \tab Comparison methods for SpatRaster (\code{==, !=, >, <, <=, >=}) \cr
     \code{\link{Logic-methods}} \tab Boolean methods (\code{!, &, |}) \cr
-	\code{\link{Math-methods}} \tab \code{abs, sign, sqrt, ceiling, floor, trunc, cummax, cummin, cumprod,} \cr	
+	\code{\link{Math-methods}} \tab \code{abs, sign, sqrt, ceiling, floor, trunc, cummax, cummin, cumprod,} \cr
 	\tab \code{cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh,} \cr	 
 	\tab \code{exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif}\cr
     \code{\link{Summary-methods}} \tab \code{mean, max, min, median, sum, range, prod,} \cr
@@ -103,10 +103,10 @@ Also see the methods in section VIII
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{subst}} \tab Substitute (replace) cell values \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
-    \code{\link{init}} \tab Initialize cells with new values \cr	
+    \code{\link{init}} \tab Initialize cells with new values \cr
     \code{\link{mask}} \tab Replace values in a SpatRaster based on values in another SpatRaster\cr
-    \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr	
-    \code{\link{segregate}} \tab Make a 0/1 layer for each unique value \cr	
+    \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr
+    \code{\link{segregate}} \tab Make a 0/1 layer for each unique value \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
   }
@@ -124,7 +124,7 @@ Also see the methods in section VIII
     \code{\link{scale}} \tab Scale values \cr
     \code{\link[terra]{summary}} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
     \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
-    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr	
+    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -144,9 +144,9 @@ Also see the methods in section VIII
     \code{\link{focalReg}} \tab Regression beween layers for focal areas \cr
     \code{\link{focalCor}} \tab Correlation between layers for focal areas \cr
     \code{\link{patches}} \tab Find patches (clumps) \cr
-    \code{\link{terrain}} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr	
-    \code{\link{shade}} \tab Compute hill shade from slope and aspect layers \cr	
-    \code{\link{autocor}} \tab Compute global or local spatial autocorrelation  \cr	
+    \code{\link{terrain}} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr
+    \code{\link{shade}} \tab Compute hill shade from slope and aspect layers \cr
+    \code{\link{autocor}} \tab Compute global or local spatial autocorrelation  \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -176,7 +176,7 @@ Apart from the function listed below, you can also use indexing with \code{[} wi
     \code{\link{minmax}} \tab Get the minimum and maximum value of the cells of a SpatRaster (if known) \cr
     \code{\link{setMinMax}} \tab Compute the minimum and maximum value of a SpatRaster if these are not known \cr
     \code{\link{extract}} \tab spatial queries of a SpatRaster with a SpatVector\cr
-	
+
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -191,8 +191,8 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
     \code{\link{nrow}} \tab The number of rows \cr
     \code{\link{ncell}} \tab The number of cells (can not be set directly, only via ncol or nrow) \cr
     \code{\link{res}} \tab The resolution (x and y) \cr
-    \code{\link{nlyr}} \tab Get or set the number of layers \cr	
-    \code{\link{names}} \tab Get or set the layer names \cr	
+    \code{\link{nlyr}} \tab Get or set the number of layers \cr
+    \code{\link{names}} \tab Get or set the layer names \cr
     \code{\link{xres}} \tab The x resolution (can be set with res) \cr
     \code{\link{yres}} \tab The y resolution (can be set with res)\cr
     \code{\link{xmin}} \tab The minimum x coordinate (or longitude) \cr
@@ -201,11 +201,11 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
     \code{\link{ymax}} \tab The maximum y coordinate (or latitude) \cr
 	\code{\link{ext}} \tab Get or set the extent (minimum and maximum x and y coordinates ("bounding box") \cr
 	\code{\link{origin}} \tab The origin of a SpatRaster\cr
-    \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
+    \code{\link{crs}} \tab The coordinate reference system (map projection) \cr
     \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
-    \code{\link{sources}} \tab Get the filename(s) to which a SpatRaster is linked \cr	
-    \code{\link{inMemory}} \tab Are the data sources in memory (or on disk)? \cr	
-    \code{\link{compareGeom}} \tab Compare the geometry of SpatRasters \cr		
+    \code{\link{sources}} \tab Get the filename(s) to which a SpatRaster is linked \cr
+    \code{\link{inMemory}} \tab Are the data sources in memory (or on disk)? \cr
+    \code{\link{compareGeom}} \tab Compare the geometry of SpatRasters \cr
     \code{\link{NAflag}} \tab Set the \code{NA} value (for reading from a file with insufficient metadata) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
@@ -285,7 +285,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 \cr
 }
 }
-}	
+}
 
 \section{XIII. Miscellaneous SpatRaster methods}{
 
@@ -344,9 +344,9 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{linearUnits}} \tab returns the linear units of the crs (in meter)\cr
   \code{\link{ncol}}\tab The number of columns (of the attributes)\cr
   \code{\link{nrow}} \tab The number of rows (of the geometries and attributes)\cr
-  \code{\link{names}} \tab Get or set the layer names \cr	
+  \code{\link{names}} \tab Get or set the layer names \cr
   \code{\link{ext}} \tab Get the extent (minimum and maximum x and y coordinates ("bounding box") \cr
-  \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
+  \code{\link{crs}} \tab The coordinate reference system (map projection) \cr
   \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
@@ -453,9 +453,9 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
     \code{\link{ext}} \tab Create a SpatExtent object. For example to \code{\link{crop}} a Spatial dataset\cr
     \code{\link{intersect}} \tab Intersect two SpatExtent objects, same as \code{-}  \cr
     \code{\link{union}} \tab Combine two SpatExtent objects, same as \code{+} \cr
-    \code{\link{Math-methods}} \tab round/floor/ceiling of a SpatExtent \cr			
+    \code{\link{Math-methods}} \tab round/floor/ceiling of a SpatExtent \cr
     \code{\link{align}} \tab Align a SpatExtent with a SpatRaster \cr
-    \code{\link{draw}} \tab Create a SpatExtent by drawing it on top of a map (plot) \cr		
+    \code{\link{draw}} \tab Create a SpatExtent by drawing it on top of a map (plot) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -496,12 +496,12 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
     \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" plot \cr
     \code{\link{sbar}} \tab Add a scalebar to a map\cr
     \code{\link{north}} \tab Add a north arrow to a map\cr
-    \code{\link{inset}} \tab Add a small inset (overview) map\cr	
+    \code{\link{inset}} \tab Add a small inset (overview) map\cr
     \code{\link{dots}} \tab Make a dot-density map \cr
     \code{\link{cartogram}} \tab Make a cartogram \cr
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
     \code{\link{contour}} \tab Contour plot or filled-contour plot of a SpatRaster \cr
-    \code{\link{colorize}} \tab Combine three layers (red, green, blue channels) into a single layer with a color-table \cr	
+    \code{\link{colorize}} \tab Combine three layers (red, green, blue channels) into a single layer with a color-table \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 	}
 }
@@ -515,7 +515,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 	}
 }
-	
+
 \subsection{Other plots}{
   \tabular{ll}{
     \code{\link{plot}} \tab x-y scatter plot of the values of (a sample of) the layers of two SpatRaster objects\cr
