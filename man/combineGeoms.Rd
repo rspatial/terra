@@ -15,7 +15,8 @@ Combine the geometries of one SpatVector with those of another. Geometries can b
 }
 
 \usage{
-\S4method{combineGeoms}{SpatVector}(x, y, overlap=TRUE, boundary=TRUE, distance=TRUE, append=TRUE, minover=0.1, maxdist=Inf, dissolve=TRUE, erase=TRUE)
+\S4method{combineGeoms}{SpatVector}(x, y, overlap=TRUE, boundary=TRUE, distance=TRUE,
+	append=TRUE, minover=0.1, maxdist=Inf, dissolve=TRUE, erase=TRUE)
 }
 
 \arguments{
