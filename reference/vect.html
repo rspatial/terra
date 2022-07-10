@@ -92,7 +92,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 <dd><p>Spat* object. The extent of the object is used as a spatial filter to select the geometries to read. Ignored if <code>filter</code> is not <code>NULL</code></p></dd>
 
 <dt>filter</dt>
-<dd><p>SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points)</p></dd>
+<dd><p>SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points). It is guaranteed that all features that overlap with the extent of filter will be returned. It can happen that additional geometries are returned</p></dd>
 
 <dt>type</dt>
 <dd><p>character. Geometry type. Must be "points", "lines", or "polygons"</p></dd>

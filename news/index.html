@@ -48,6 +48,57 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="1.6-0" id="version-16-0">version 1.6-0<a class="anchor" aria-label="anchor" href="#version-16-0"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-1-6-0">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-0"></a></h3>
+<ul><li>
+<code>subst</code> no longer uses values that it changed earlier on. <a href="https://github.com/rspatial/terra/issues/639" class="external-link">#639</a> by Paul Smith</li>
+<li>
+<code>as.points&lt;SpatRaster&gt;</code> could return wrong factor labels. <a href="https://github.com/rspatial/terra/issues/640" class="external-link">#640</a> by Attilio Benini</li>
+<li>
+<code>mask&lt;SpatRaster,SpatVector&gt;</code> crashed when the results were written to disk. <a href="https://github.com/rspatial/terra/issues/646" class="external-link">#646</a> by Monika Anna Tomaszewska</li>
+<li>
+<code>extract&lt;SpatRaster,SpatVector(points)&gt;(xy=TRUE)</code> returned the locations the points, not the xy-coordinates of the cells. <a href="https://github.com/rspatial/terra/issues/650" class="external-link">#650</a> by Ward Fonteyn</li>
+<li>
+<code>wrap&lt;SpatRaster&gt;</code> did not return the correct labels for some categorical rasters. <a href="https://github.com/rspatial/terra/issues/652" class="external-link">#652</a> by Jakub Nowosad</li>
+<li>better support for non-latin characters in the legend <a href="https://github.com/rspatial/terra/issues/658" class="external-link">#658</a> by Krzysztof Dyba</li>
+<li>holes in small lon/lat polygons are now properly buffered <a href="https://github.com/rspatial/terra/issues/689" class="external-link">#689</a> by David Hofmann</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-1-6-0">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-0"></a></h3>
+<ul><li>
+<code>subst</code> can now substitute the values from multiple input layers with a single output value (layer)</li>
+<li>
+<code>subset&lt;SpatVector&gt;</code> now behaves like <code>subset&lt;data.frame&gt;</code> <a href="https://github.com/rspatial/terra/issues/648" class="external-link">#648</a> by Andrew Gene Brown</li>
+<li>setting category labels with a vector of names is now deprecated. A data.frame with at least two columns should be used. The first column should have the cell values (IDs).</li>
+<li>It is now possible to “drop” a layer from a SpatRaster by setting it to NULL <a href="https://github.com/rspatial/terra/issues/664" class="external-link">#664</a> by Daniel Valentins</li>
+<li>
+<code>freq</code> now provides the labels of factors, even if <code>bylayer=FALSE</code>. It now always returns a <code>data.frame</code> (it used to return a <code>matrix</code> in some cases. <a href="https://github.com/rspatial/terra/issues/687" class="external-link">#687</a> by Rodolfo Jaffé</li>
+<li>
+<code>disagg</code> and <code>aggregate</code> now return a warning instead of an error when using a (dis)aggregation factor of 1.<a href="https://github.com/rspatial/terra/issues/684" class="external-link">#684</a> by Justin Fain.</li>
+<li>
+<code>project</code> crashed when erroneously projecting raster data from one celestial body to another <a href="https://github.com/rspatial/terra/issues/688" class="external-link">#688</a> by Mike Sumner</li>
+<li>you can now set a color table with a two column (value, ID) data.frame</li>
+<li>categorical rasters can now be updated more easily <a href="https://github.com/rspatial/terra/issues/667" class="external-link">#667</a> by Alex Ilich</li>
+<li>more control over matching values with colors when using <code>plot</code>. <a href="https://github.com/rspatial/terra/issues/673" class="external-link">673</a> by Jakub Nowosad.</li>
+<li>SpatVector attributes can now also be a factor, date, or POSIXct. <a href="https://github.com/rspatial/terra/issues/697" class="external-link">697</a> by Grant Williamson</li>
+<li>improved handling of missing values in <code>extract(method="bilinear")</code>. <a href="https://github.com/rspatial/terra/pull/693" class="external-link">693</a> by swooping-magpie</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-1-6-0">new<a class="anchor" aria-label="anchor" href="#new-1-6-0"></a></h3>
+<ul><li>argument <code>as.raster</code> to <code>unique&lt;SpatRaster&gt;</code> to create a categorical raster with the unique combinations in the layers of the input raster. The default for argument <code>na.rm</code> was changed to <code>FALSE</code>
+</li>
+<li>
+<code>sort&lt;SpatRaster&gt;</code> to sort cell values across layers.</li>
+<li>
+<code>has.colors</code> and <code>has.RGB</code> for SpatRaster</li>
+<li>
+<code>cover</code> can now combine categorical rasters</li>
+<li>
+<code>concats</code> to combine the levels of two SpatRaster into new categories <a href="https://github.com/rspatial/terra/issues/663" class="external-link">663</a> by Alex Ilich</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5-34" id="version-15-34">version 1.5-34<small>2022-06-09</small><a class="anchor" aria-label="anchor" href="#version-15-34"></a></h2>
 <p>Released on 2022-06-09</p>
 <div class="section level3">
