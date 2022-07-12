@@ -380,7 +380,7 @@ function(x, y, ...) {
 
 setMethod("extract", signature(x="SpatRaster", y="numeric"),
 function(x, y, ...) {
-	y <- as.integer(y)
+	y <- round(y)
 	y[(y < 1) | (y > ncell(x))] <- NA
 	x[y]
 })
