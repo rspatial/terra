@@ -25,8 +25,8 @@ See \code{\link{extract}} to summarize values of a SpatRaster with a SpatVector.
 }
 
 \arguments{
-  \item{x}{SpatRaster}
-  \item{z}{SpatRaster with values representing zones}
+  \item{x}{SpatRaster or SpatVector}
+  \item{z}{Object of the same class as \code{x}. That is, either a SpatRaster with cell-values representing zones or a SpatVector with each polygon geometry representing a zone}
   \item{fun}{function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", "isNA", and "notNA" and, for relatively small SpatRasters, a proper function}
   \item{...}{additional arguments passed to fun}  
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned with the zonal statistic for each zone}  

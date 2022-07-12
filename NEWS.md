@@ -6,7 +6,7 @@
 - `subst` no longer uses values that it changed earlier on. [#639](https://github.com/rspatial/terra/issues/639) by Paul Smith
 - `as.points<SpatRaster>` could return wrong factor labels. [#640](https://github.com/rspatial/terra/issues/640) by Attilio Benini
 - `mask<SpatRaster,SpatVector>` crashed when the results were written to disk. [#646](https://github.com/rspatial/terra/issues/646) by Monika Anna Tomaszewska
-- `extract<SpatRaster,SpatVector(points)>(xy=TRUE)` returned the locations the points, not the xy-coordinates of the cells.  [#650](https://github.com/rspatial/terra/issues/650) by Ward Fonteyn
+- `extract<SpatRaster,SpatVector(points)>(xy=TRUE)` returned the locations of the points, not the xy-coordinates of the cells.  [#650](https://github.com/rspatial/terra/issues/650) by Ward Fonteyn
 - `wrap<SpatRaster>` did not return the correct labels for some categorical rasters. [#652](https://github.com/rspatial/terra/issues/652) by Jakub Nowosad
 - better support for non-latin characters in the legend [#658](https://github.com/rspatial/terra/issues/658) by Krzysztof Dyba
 - holes in small lon/lat polygons are now properly buffered [#689](https://github.com/rspatial/terra/issues/689) by David Hofmann
