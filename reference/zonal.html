@@ -69,10 +69,10 @@ See extract to summarize values of a SpatRaster with a SpatVector.'><meta proper
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>SpatRaster</p></dd>
+<dd><p>SpatRaster or SpatVector</p></dd>
 
   <dt>z</dt>
-<dd><p>SpatRaster with values representing zones</p></dd>
+<dd><p>Object of the same class as <code>x</code>. That is, either a SpatRaster with cell-values representing zones or a SpatVector with each polygon geometry representing a zone</p></dd>
 
   <dt>fun</dt>
 <dd><p>function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", "isNA", and "notNA" and, for relatively small SpatRasters, a proper function</p></dd>
