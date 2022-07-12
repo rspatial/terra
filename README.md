@@ -72,7 +72,9 @@ install.packages("rspatial/terra", configure.args = "--with-proj-lib=/usr/local/
 
 #### Linux
 
-C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3 are required, but more recent versions highly recommended.
+The *easy* way to install terra on linux is with [r2u](https://eddelbuettel.github.io/r2u/).
+
+The harder way: C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3 are required, but more recent versions highly recommended.
 
 To install these system requirements on Ubuntu you can do:
 
