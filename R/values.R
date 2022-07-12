@@ -354,6 +354,7 @@ setMethod("values", signature("SpatVector"),
 
 setMethod("values<-", signature("SpatVector", "data.frame"),
 	function(x, value) {
+		x@ptr <- x@ptr$deepcopy()
 		if (ncol(value) == 0) {
 			x@ptr$remove_df()
 			return(x)
@@ -386,6 +387,7 @@ setMethod("values<-", signature("SpatVector", "ANY"),
 
 setMethod("values<-", signature("SpatVector", "NULL"),
 	function(x, value) {
+		x@ptr <- x@ptr$deepcopy()
 		x@ptr$remove_df()
 		x
 	}

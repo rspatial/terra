@@ -3,7 +3,6 @@
 \docType{methods}
 
 \alias{combineGeoms}
-
 \alias{combineGeoms,SpatVector,SpatVector-method}
 
 \title{ 
@@ -11,17 +10,21 @@ Combine geometries
 }
 
 \description{
-Combine the geometries of one SpatVector with those of another. Geometries can be combined based on overlap, shared boundaries and distance (in that order of operation).   
+Combine the geometries of one SpatVector with those of another. Geometries can be combined based on overlap, shared boundaries and distance (in that order of operation). 
+
+The typical use-case of this method is when you are editing geometries and you have a number of small polygons in one SpatVector that should be part of the geometries of the another SpatVector; perhaps because they were small holes inbetween the borders of two SpatVectors.
+
+To append SpatVectors use `rbind` and see methods like \code{intersect} and \code{union} for "normal" polygons combinations. 
 }
 
 \usage{
-\S4method{combineGeoms}{SpatVector}(x, y, overlap=TRUE, boundary=TRUE, distance=TRUE,
+\S4method{combineGeoms}{SpatVector,SpatVector}(x, y, overlap=TRUE, boundary=TRUE, distance=TRUE,
 	append=TRUE, minover=0.1, maxdist=Inf, dissolve=TRUE, erase=TRUE)
 }
 
 \arguments{
   \item{x}{SpatVector of polygons}
-  \item{y}{SpatVector of polygons}
+  \item{y}{SpatVector of polygons geometries that are to be combined with \code{x}}
   \item{overlap}{logical. If \code{TRUE}, a geometry is combined with the geometry it has most overlap with, if the overlap is above \code{minover}}
   \item{boundary}{logical. If \code{TRUE}, a geometry is combined with the geometry it has most shared border with}
   \item{distance}{logical. If \code{TRUE}, a geometry is combined with the geometry it is nearest to}
@@ -37,6 +40,9 @@ SpatVector
 }
 
 \seealso{
+\code{\link{union}}, \code{\link{erase}}, \code{\link{intersect}}
+
+
 \code{\link{sharedPaths}}, \code{\link{erase}}, \code{\link{intersect}}
 }
 

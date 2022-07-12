@@ -186,6 +186,9 @@ setMethod("vect", signature(x="matrix"),
 
 
 setMethod("$", "SpatVector",  function(x, name) {
+	if (!(name %in% names(x))) {
+		error("$", paste(name, "is not a variable name in x"))
+	}
 	s <- .subset_cols(x, name, drop=TRUE)
 	s[,1,drop=TRUE]
 })
@@ -372,9 +375,8 @@ setMethod("vect", signature(x="data.frame"),
 setMethod("vect", signature(x="list"),
 	function(x) {
 		x <- svc(x)
-		x <- x@ptr$append()
 		v <- methods::new("SpatVector")
-		v@ptr <- x
+		v@ptr <- x@ptr$append()
 		messages(v, "vect")
 	}
 )

@@ -5,11 +5,12 @@
 
 positive_indices <- function(i, n, caller=" [ ") {
 	stopifnot(is.numeric(i))
+	i <- na.omit(i)
 	if (!(all(i <= 0) || all(i >= 0))) {
 		error(caller, "you cannot mix positive and negative indices")
 	}
-	i <- stats::na.omit(i)
-	(1:n)[i]
+	i <- (1:n)[i]
+	i[!is.na(i)]
 }
 
 
@@ -132,14 +133,16 @@ setMethod("subset", signature(x="SpatVector"),
 .subset_cols <- function(x, subset, drop=FALSE) {
 	if (is.character(subset)) {
 		i <- stats::na.omit(match(subset, names(x)))
+		if (length(i)==0) {
+			error("subset", "no valid variable name found")
+		} else if (length(i) < length(subset)) {
+			warn("subset", "invalid variable name(s) excluded")
+		}
 	} else {
 		i <- positive_indices(subset, ncol(x), "subset")
-	}
-	if (length(i)==0) {
-		i <- 0
-	}
-	if (length(i) < length(subset)) {
-		warn(" [ ", "invalid columns omitted")
+		if (length(i)==0) {
+			i <- 0
+		}		
 	}
 	x@ptr <- x@ptr$subset_cols(i-1)
 	x <- messages(x, "subset")
