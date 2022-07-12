@@ -382,7 +382,7 @@ setMethod("extract", signature(x="SpatRaster", y="numeric"),
 function(x, y, ...) {
 	y <- round(y)
 	y[(y < 1) | (y > ncell(x))] <- NA
-	x[y]
+	extract_cell(x, y)	
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),

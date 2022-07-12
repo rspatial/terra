@@ -331,6 +331,8 @@ class SpatVector {
 		SpatVector cover(SpatVector v, bool identity);
 		SpatVectorCollection split(std::string field);
 		SpatVector symdif(SpatVector v);
+		SpatVector set_precision(double gridSize);
+
 		std::vector<bool> is_related(SpatVector v, std::string relation);
 		std::vector<int> relate(SpatVector v, std::string relation);
 		std::vector<int> relate(std::string relation, bool symmetrical);

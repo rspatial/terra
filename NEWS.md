@@ -1,5 +1,5 @@
 
-# version 1.6-0
+# version 1.6-1
 
 ## bug fixes
 
@@ -35,6 +35,7 @@ https://github.com/rspatial/terra/issues/664) by Daniel Valentins
 - `has.colors` and `has.RGB` for SpatRaster
 - `cover` can now combine categorical rasters 
 - `concats` to combine the levels of two SpatRaster into new categories [663](https://github.com/rspatial/terra/issues/663) by Alex Ilich
+- `zonal<SpatVector,SpatVector>` method to aggregate SpatVector attributes by polygons
 
 
 # version 1.5-34

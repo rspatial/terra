@@ -42,7 +42,7 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 
 \S4method{extract}{SpatRaster,matrix}(x, y, ...)
 
-\S4method{extract}{SpatRaster,numeric}(x, y, ...)
+\S4method{extract}{SpatRaster,numeric}(x, y)
 
 \S4method{extract}{SpatVector,SpatVector}(x, y, ...)
 }

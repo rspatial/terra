@@ -212,6 +212,9 @@ aggregate_attributes <- function(d, by, fun=NULL, count=TRUE, ...) {
 
 setMethod("aggregate", signature(x="SpatVector"),
 	function(x, by=NULL, dissolve=TRUE, fun="mean", count=TRUE, ...) {
+		if (inherits(by, "SpatVector")) {
+			error("use 'zonal' to aggregate a SpatVector with a SpatVector")
+		}
 		if (is.null(by)) {
 			x$aggregate_by_variable = 1;
 			x@ptr <- x@ptr$aggregate("aggregate_by_variable", dissolve)

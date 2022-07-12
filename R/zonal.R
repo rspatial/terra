@@ -54,6 +54,75 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 )
 
 
+setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
+	function(x, z, fun=mean, as.polygons=FALSE, ...)  {
+		if (geomtype(z) != "polygons") {
+			error("zonal", "x must be points, and z must be polygons")
+		}
+		if (nrow(x) == 0) {
+			error("zonal", "x is empty")		
+		}
+		isn <- which(sapply(values(x[1,]), is.numeric))
+		if (!any(isn)) {
+			error("zonal", "x has no numeric variables (attributes) to aggregate")
+		}
+		x <- x[,isn]
+		if (geomtype(x) == "points") {
+			if (is.character(fun) && (fun == "weighted.mean")) {
+				fun <- mean
+			}
+			r <- !relate(x, z, "disjoint")
+			i <- apply(r, 1, \(i) if(any(i)) which(i) else (NA))
+			if (length(i) == 0) {
+				error("zonal", "there are no points in x that overlap with the polygons in z")		
+			}
+			a <- aggregate(values(x), data.frame(zone=i), fun, ...)
+		} else {
+			if (as.polygons) {
+				zz <- z
+				values(zz) <- data.frame(zone = 1:nrow(zz))
+				i <- intersect(zz, x)
+			} else {
+				values(z) <- data.frame(zone = 1:nrow(z))
+				i <- intersect(z, x)			
+			}
+			if (nrow(i) == 0) {
+				error("zonal", "the intersection of x and z is empty")			
+			}
+			v <- values(i)
+			if (is.character(fun) && (fun == "weighted.mean")) {
+				if (geomtype(i) == "lines") {
+					v$w <- perim(i)
+				} else {
+					v$w <- expanse(i)
+				}
+				s <- split(v, v$zone)
+				n <- ncol(v)-2
+				s <- lapply(s, function(d) {
+						out <- rep(NA, n)
+						for (i in 2:n) {
+							out[i-1] <- weighted.mean(d[[i]], w = d$w)
+						}
+						out
+					})
+				a <- data.frame(as.integer(names(s)), do.call(rbind, s))
+				colnames(a) <- names(v)[-ncol(v)]
+			} else {
+				a <- aggregate(v[,-1,drop=FALSE], v[,1,drop=FALSE], fun, ...)
+			}
+		}
+		if (as.polygons) {
+			f <- basename(tempfile())
+			z[[f]] <- 1:nrow(z)
+			names(a)[1] = f
+			a <- merge(z, a, by=f, all.x=TRUE)
+			a[[f]] <- NULL
+		}
+		a
+	}
+)
+
+
 setMethod("global", signature(x="SpatRaster"),
 	function(x, fun="mean", weights=NULL, ...)  {
 
