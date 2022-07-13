@@ -352,7 +352,13 @@ setMethod("dots", signature(x="SpatVector"),
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE,
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, buffer=TRUE, background=NULL,
-	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, ...) {
+	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL, ...) {
+
+
+	if ((y == "") && (is.null(values))) {
+		type="none"
+		plg=list()
+	}
 
 	out <- list()
 	out$ngeom <- nrow(x)
@@ -397,7 +403,14 @@ setMethod("dots", signature(x="SpatVector"),
 	out$breaks <- breaks
 	out$breakby <- breakby
 	out$background <- background
-	v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
+	if (is.null(values)) {
+		v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
+	} else {
+		if (inherits(values, "data.frame")) {
+			values <- values[[1]]
+		}
+		v <- rep_len(as.vector(values), nrow(x))
+	}
 	if (is.factor(v)) v <- as.character(v)
 	if (!is.null(range)) {
 		range <- sort(range)
@@ -498,13 +511,13 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			i <- is.na(match(y, names(x)))
 			error("plot", paste(paste(y[i], collapse=",")), " is not a name in x")
 		}
-			nrnc <- c(1,1)
-			if (length(y) > 1) {
-				nrnc <- .get_nrnc(nr, nc, length(y))
-				old.par <- graphics::par(no.readonly =TRUE)
-				on.exit(graphics::par(old.par))
-				graphics::par(mfrow=nrnc)
-			}
+		nrnc <- c(1,1)
+		if (length(y) > 1) {
+			nrnc <- .get_nrnc(nr, nc, length(y))
+			old.par <- graphics::par(no.readonly =TRUE)
+			on.exit(graphics::par(old.par))
+			graphics::par(mfrow=nrnc)
+		}
 		if (is.character(legend)) {
 			plg$x <- legend
 			legend <- TRUE
@@ -528,11 +541,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			}
 			if (missing(col)) col <- NULL
 
-			if (y[i] == "") {
-				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, ...)
-			} else {
-				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, ...)
-			}
+			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, ...)
 		}
 		invisible(out)
 	}
@@ -554,8 +563,8 @@ setMethod("plot", signature(x="SpatVector", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatVector", y="missing"),
-	function(x, y, ...)  {
-		out <- plot(x, "", ...)
+	function(x, y, values=NULL, ...)  {
+		out <- plot(x, "", values=values, ...)
 		invisible(out)
 	}
 )
