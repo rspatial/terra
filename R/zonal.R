@@ -55,7 +55,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 
 
 setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
-	function(x, z, fun=mean, as.polygons=FALSE, ...)  {
+	function(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE)  {
 		if (geomtype(z) != "polygons") {
 			error("zonal", "x must be points, and z must be polygons")
 		}
@@ -68,9 +68,6 @@ setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
 		}
 		x <- x[,isn]
 		if (geomtype(x) == "points") {
-			if (is.character(fun) && (fun == "weighted.mean")) {
-				fun <- mean
-			}
 			r <- !relate(x, z, "disjoint")
 			i <- apply(r, 1, \(i) if(any(i)) which(i) else (NA))
 			if (length(i) == 0) {
@@ -90,7 +87,7 @@ setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
 				error("zonal", "the intersection of x and z is empty")			
 			}
 			v <- values(i)
-			if (is.character(fun) && (fun == "weighted.mean")) {
+			if (weighted) {
 				if (geomtype(i) == "lines") {
 					v$w <- perim(i)
 				} else {

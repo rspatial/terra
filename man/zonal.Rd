@@ -33,7 +33,7 @@ See \code{\link{extract}} to summarize values of a SpatRaster with a SpatVector.
   \item{filename}{character. Output filename (ignored if \code{as.raster=FALSE}}
   \item{wopt}{list with additional arguments for writing files as in \code{\link{writeRaster}}}
 
-  \item{weighted}{logical. If \code{TRUE}, a weighted.mean is computed and \code{fun} is ignored. Weights are based on the length of the lines or the area of the polygons in \code{x} that intersect with \code{z}}  
+  \item{weighted}{logical. If \code{TRUE}, a weighted.mean is computed and \code{fun} is ignored. Weights are based on the length of the lines or the area of the polygons in \code{x} that intersect with \code{z}. This argument is ignored of \code{x} is a SpatVector or points}  
   \item{as.polygons}{logical. Should the results be merged with the attributes of \code{z}?}
 }
 
