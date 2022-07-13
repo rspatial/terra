@@ -4,7 +4,7 @@
 \alias{rectify,SpatRaster-method}
 
 
-\title{rectify a SpatRaster}
+\title{Rectify a SpatRaster}
 
 
 \description{
