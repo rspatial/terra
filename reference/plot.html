@@ -73,7 +73,7 @@
 <span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector,missing</span>
-<span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, values<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatExtent,missing</span>
 <span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
@@ -164,6 +164,9 @@
 
   <dt>reset</dt>
 <dd><p>logical. If <code>TRUE</code> add the margins (see argument <code>mar</code>) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  <code><a href="lines.html">lines</a></code></p></dd>
+
+  <dt>values</dt>
+<dd><p>vector with values to be used for plotting</p></dd>
 
   <dt>...</dt>
 <dd><p>arguments passed to <code>plot("SpatRaster", "numeric")</code> and additional graphical arguments</p></dd>
