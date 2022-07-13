@@ -182,7 +182,9 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		OGRFieldDefn oField(nms[i].c_str(), otype);
 		oField.SetSubType(eSubType);
 		if (otype == OFTString) {
-			oField.SetWidth(32); // needs to be computed
+			size_t w = 10;
+			w = std::max(w, df.strwidth(i));
+			oField.SetWidth(w); 
 		}
 		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
 			setError( "Field creation failed for: " + nms[i]);
@@ -426,7 +428,7 @@ bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions 
 
 		OGRFieldDefn oField(nms[i].c_str(), otype);
 		if (otype == OFTString) {
-			oField.SetWidth(32); // needs to be computed
+			oField.SetWidth(50); // needs to be computed
 		}
 		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
 			setError( "Field creation failed for: " + nms[i]);

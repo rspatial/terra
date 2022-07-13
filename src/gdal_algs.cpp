@@ -373,6 +373,7 @@ bool gdal_warper(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatas
 	return true;
 }
 
+
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
@@ -718,9 +719,14 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	double xmax = vmax(xx, TRUE);
 	double ymin = vmin(yy, TRUE);
 	double ymax = vmax(yy, TRUE);
+	
 	SpatExtent en(xmin, xmax, ymin, ymax);
+	Rcpp::Rcout << en.xmin << " " << en.xmax <<  " " << en.ymin <<  " " << en.ymax << std::endl;
+
 	out = out.setResolution(gt[1], -gt[5]);
 	out.setExtent(en, false, "out");
+	SpatExtent e = out.getExtent();
+	Rcpp::Rcout << e.xmin << " " << e.xmax <<  " " << e.ymin <<  " " << e.ymax << std::endl;
 
 	if (useaoi == 1) { // use extent
 		en = aoi.getExtent();
@@ -734,6 +740,8 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 		out = aoi.geometry(0);
 	} // else { // if (useaoi == 0) // no aoi
 
+	e = out.getExtent();
+	Rcpp::Rcout << e.xmin << " " << e.xmax <<  " " << e.ymin <<  " " << e.ymax << std::endl;
 
 	out = warper(out, "", method, false, false, true, opt);
 

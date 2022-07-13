@@ -311,9 +311,11 @@ void SpatRaster::setExtent(SpatExtent e) {
 
 void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 
+
 	if (snap != "") {
 		ext = align(ext, snap);
-		ext = ext.intersect(getExtent());
+// why? breaks rectify
+//		ext = ext.intersect(getExtent());
 	}
 
 	if (keepRes) {

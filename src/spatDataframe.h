@@ -130,5 +130,6 @@ class SpatDataFrame {
 		std::vector<std::vector<std::string>> to_strings();
 		std::vector<std::string> one_string();
 		SpatDataFrame unique();
+		size_t strwidth(unsigned i);
 };
 

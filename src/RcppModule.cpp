@@ -320,6 +320,7 @@ RCPP_MODULE(spat){
 
 		.method("write", &SpatDataFrame::write_dbf)
 		.field("messages", &SpatDataFrame::msg)
+		.method("strwidth", &SpatDataFrame::strwidth)
 	;
 
 
