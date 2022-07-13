@@ -1133,12 +1133,14 @@ SpatDataFrame SpatDataFrame::unique() {
 
 size_t SpatDataFrame::strwidth(unsigned i) {
 	size_t m = 0;
-	if (iplace.size() < i) {
-		unsigned j = iplace[i];
-		if (sv.size() < j) {
-			std::vector<std::string> s = sv[j];
-			for (i = 0; i<s.size(); i++) {
-				m = std::max(m, s[i].size());
+	if (i < iplace.size()) {
+		if (itype[i] == 2) {
+			unsigned j = iplace[i];
+			if (j < sv.size()) {
+				std::vector<std::string> s = sv[j];
+				for (i = 0; i<s.size(); i++) {
+					m = std::max(m, s[i].size());
+				}
 			}
 		}
 	}

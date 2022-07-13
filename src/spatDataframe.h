@@ -39,7 +39,7 @@ class SpatDataFrame {
 		std::string getError() { return msg.getError(); }
 	
 		std::vector<std::string> names;
-		std::vector<unsigned> itype; //0 double, 1 long, 2 string, 3 bool, 4 time
+		std::vector<unsigned> itype; //0 double, 1 long, 2 string, 3 bool, 4 time, 5 factor
 		std::vector<unsigned> iplace;
 		std::vector< std::vector<double>> dv;
 		std::vector< std::vector<long>> iv;
