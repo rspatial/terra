@@ -795,7 +795,7 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 		pxy = extent.sampleRegular(ssize, lonlat);
 	}
 	out = SpatVector(pxy[0], pxy[1], points, "");
-	out = intersect(out);
+	out = intersect(out, true);
 	if (random) {
 		if (out.size() > n) {
 			std::vector<int> rows(out.size());

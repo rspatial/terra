@@ -118,8 +118,8 @@ setMethod("split", signature(x="SpatVector"),
 
 
 setMethod("cover", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, identity=FALSE) {
-		x@ptr <- x@ptr$cover(y@ptr, identity[1])
+	function(x, y, identity=FALSE, expand=TRUE) {
+		x@ptr <- x@ptr$cover(y@ptr, identity[1], expand[1])
 		messages(x, "cover")
 	}
 )
@@ -194,7 +194,7 @@ setMethod("union", signature(x="SpatExtent", y="SpatExtent"),
 
 setMethod("intersect", signature(x="SpatVector", y="SpatVector"),
 	function(x, y) {
-		x@ptr <- x@ptr$intersect(y@ptr)
+		x@ptr <- x@ptr$intersect(y@ptr, TRUE)
 		messages(x, "intersect")
 	}
 )

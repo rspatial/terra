@@ -320,7 +320,7 @@ class SpatVector {
 		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
 		SpatVector delaunay(double tolerance, int onlyEdges);		
 		SpatVector hull(std::string htype, std::string by="");
-		SpatVector intersect(SpatVector v);
+		SpatVector intersect(SpatVector v, bool values);
 		SpatVector unite(SpatVector v);
 		SpatVector unite();
 		SpatVector erase_agg(SpatVector v);
@@ -328,7 +328,7 @@ class SpatVector {
 		SpatVector erase();
 		SpatVector mask(SpatVector x, bool inverse);
 		SpatVector gaps();		
-		SpatVector cover(SpatVector v, bool identity);
+		SpatVector cover(SpatVector v, bool identity, bool expand);
 		SpatVectorCollection split(std::string field);
 		SpatVector symdif(SpatVector v);
 		SpatVector set_precision(double gridSize);

@@ -1734,7 +1734,7 @@ void split_dateline(SpatVector &v) {
 	SpatVector ve(e1, "");
 	SpatVector ve2(e2, "");
 	ve = ve.append(ve2, true);
-	v = v.intersect(ve);
+	v = v.intersect(ve, true);
 	ve = v.subset_rows(1);
 	ve = ve.shift(-360, 0);
 	v.geoms[1] = ve.geoms[0];

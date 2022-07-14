@@ -8,6 +8,7 @@
 \alias{plot,SpatRaster,character-method}
 \alias{plot,SpatVector,missing-method}
 \alias{plot,SpatVector,numeric-method}
+\alias{plot,SpatVector,data.frame-method}
 \alias{plot,SpatVector,character-method}
 \alias{plot,SpatVectorProxy,missing-method}
 \alias{plot,SpatExtent,missing-method}

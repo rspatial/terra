@@ -177,7 +177,7 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 				std::vector<long> cell(p.size());
 				std::iota(cell.begin(), cell.end(), 0);
 				p.df.add_column(cell, "cell");
-				p = p.intersect(x);
+				p = p.intersect(x, true);
 				std::vector<double> stat;
 				if (x.type() == "lines") {
 					stat = p.length();

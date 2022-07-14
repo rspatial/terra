@@ -574,6 +574,13 @@ setMethod("plot", signature(x="SpatVector", y="numeric"),
 )
 
 
+#setMethod("plot", signature(x="SpatVector", y="data.frame"),
+#	function(x, y, values=NULL, ...)  {
+#		out <- plot(x, "", values=y, ...)
+#		invisible(out)
+#	}
+#)
+
 setMethod("plot", signature(x="SpatVector", y="missing"),
 	function(x, y, values=NULL, ...)  {
 		out <- plot(x, "", values=values, ...)

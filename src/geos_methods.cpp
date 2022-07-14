@@ -846,7 +846,7 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 		if (bnd.size() > 0) {
 			SpatDataFrame empty;
 			bnd.df = empty;
-			out = out.intersect(bnd);
+			out = out.intersect(bnd, true);
 		}
 		if ((type() == "points") && (!onlyEdges)) {
 			std::vector<int> atts = out.relateFirst(*this, "intersects");
@@ -1060,7 +1060,7 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 }
 
 
-SpatVector SpatVector::intersect(SpatVector v) {
+SpatVector SpatVector::intersect(SpatVector v, bool values) {
 
 	SpatVector out;
 	out.srs = srs;
@@ -1145,22 +1145,35 @@ SpatVector SpatVector::intersect(SpatVector v) {
 
 	SpatDataFrame df1, df2;
 	size_t n = out.nrow();
-	if (n < idx.size()) {
-		std::vector<unsigned> idx2, idy2;
-		idx2.reserve(n);
-		idy2.reserve(n);
-		for (size_t i=0; i<n; i++) {
-			idx2.push_back( idx[ out.df.iv[0][i] ]);
-			idy2.push_back( idy[ out.df.iv[0][i] ]);
+	if (values) {
+		if (n < idx.size()) {
+			std::vector<unsigned> idx2, idy2;
+			idx2.reserve(n);
+			idy2.reserve(n);
+			for (size_t i=0; i<n; i++) {
+				idx2.push_back( idx[ out.df.iv[0][i] ]);
+				idy2.push_back( idy[ out.df.iv[0][i] ]);
+			}
+			df1 = df.subset_rows(idx2);
+			df2 = v.df.subset_rows(idy2);
+		} else {
+			df1 = df.subset_rows(idx);
+			df2 = v.df.subset_rows(idy);
 		}
-		df1 = df.subset_rows(idx2);
-		df2 = v.df.subset_rows(idy2);
+		if (!df1.cbind(df2)) {
+			out.addWarning("could not combine attributes");
+		}
 	} else {
-		df1 = df.subset_rows(idx);
-		df2 = v.df.subset_rows(idy);
-	}
-	if (!df1.cbind(df2)) {
-		out.addWarning("could not combine attributes");
+		if (n < idx.size()) {
+			std::vector<unsigned> idx2;
+			idx2.reserve(n);
+			for (size_t i=0; i<n; i++) {
+				idx2.push_back( idx[ out.df.iv[0][i] ]);
+			}
+			df1 = df.subset_rows(idx2);
+		} else {
+			df1 = df.subset_rows(idx);
+		}
 	}
 	out.df = df1;
 	return out;
@@ -1585,7 +1598,7 @@ SpatVector SpatVector::unite(SpatVector v) {
 		return out;
 	}
 
-	out = intersect(v);
+	out = intersect(v, true);
 	if (out.hasError()) {
 		return out;
 	}
@@ -1708,17 +1721,22 @@ SpatVector SpatVector::symdif(SpatVector v) {
 
 
 
-SpatVector SpatVector::cover(SpatVector v, bool identity) {
+SpatVector SpatVector::cover(SpatVector v, bool identity, bool expand) {
 	if (v.srs.is_empty()) {
 		v.srs = srs;
 	}
 	SpatVector out = erase(v);
 	if (identity) {
-		SpatVector insect = intersect(v);
-		v = v.erase(insect);
+		SpatVector insect = intersect(v, true);
 		out = out.append(insect, true);
-		out = out.append(v, true);
+		if (expand) {
+			v = v.erase(insect);
+			out = out.append(v, true);
+		}
 	} else {
+		if (!expand) {
+			v = v.crop(*this);
+		}
 		out = out.append(v, true);
 	}
 	return out;

@@ -19,8 +19,7 @@ For polygons: areas of \code{x} that overlap with \code{y} are replaced by \code
 \usage{
 \S4method{cover}{SpatRaster,SpatRaster}(x, y, values=NA, filename="", ...)
 
-\S4method{cover}{SpatVector,SpatVector}(x, y, identity=FALSE)
-
+\S4method{cover}{SpatVector,SpatVector}(x, y, identity=FALSE, expand=TRUE)
 }
 
 \arguments{
@@ -30,6 +29,7 @@ For polygons: areas of \code{x} that overlap with \code{y} are replaced by \code
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
   \item{identity}{logical. If \code{TRUE} overlapping areas are intersected rather than replaced}
+  \item{expand}{logical. Should parts of \code{y} that are outside of \code{x} be included?}
 }
 
 
