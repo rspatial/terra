@@ -407,9 +407,21 @@ setMethod("dots", signature(x="SpatVector"),
 		v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
 	} else {
 		if (inherits(values, "data.frame")) {
-			values <- values[[1]]
+			if (ncol(values) == 2) {
+				xname = names(values)[1]
+				if (xname %in% names(x)) {
+					i <- match(x[[xname,drop=TRUE]], values[[1]])
+					v <- values[[2]][i]
+				} else {
+					error("plot", paste(xname, "is not a name in x"))
+				}
+			} else {
+				values <- values[[1]]
+			}
+		} else {
+			v <- as.vector(values)
 		}
-		v <- rep_len(as.vector(values), nrow(x))
+		v <- rep_len(v, nrow(x))
 	}
 	if (is.factor(v)) v <- as.character(v)
 	if (!is.null(range)) {
