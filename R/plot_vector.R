@@ -124,7 +124,11 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 .getCols <- function(n, cols, alpha=1) {
-	if (!is.null(cols)) {
+	if (inherits(cols, "function")) {
+		cols <- cols(n)
+	} else if (is.null(cols)) {
+		cols <- rep("black", n)
+	} else {
 		ncols <- length(cols)
 		if (ncols > n) {
 			steps <- ncols/n
@@ -594,3 +598,4 @@ setMethod("plot", signature(x="SpatVectorProxy", y="missing"),
 		plot(ext(x), ...)
 	}
 )
+

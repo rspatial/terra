@@ -63,13 +63,15 @@
 		steps <- x$get_timesteps()
 		zones <- x$get_timezones()
 		for (i in which(times)) {
-			d[[i]] <- strptime("1970-01-01", "%Y-%m-%d", tz = zones[i]) + d[[i]]
+			d[[i]] <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d[[i]]
+			if (!(zones[i] %in% c("", "UTC"))) {
+				attr(d[[i]], "tzone") = zones[i]
+			}
 			if (steps[i] == "days") {
 				d[[i]] <- as.Date(d[[i]])
-			}
+			} 			
 		}
 	}
-
 	d
 }
 

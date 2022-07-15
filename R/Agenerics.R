@@ -1,5 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("plotlet")) { setGeneric("plotlet", function(x, ...) standardGeneric("plotlet"))}
+
 if (!isGeneric("combineGeoms")) {setGeneric("combineGeoms", function(x, y, ...) standardGeneric("combineGeoms"))}
 if (!isGeneric("concats")) {setGeneric("concats", function(x, ...) standardGeneric("concats"))}
 if (!isGeneric("has.colors")) {setGeneric("has.colors", function(x, ...) standardGeneric("has.colors"))}
