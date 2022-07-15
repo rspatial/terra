@@ -1762,7 +1762,10 @@ SpatVector SpatVector::erase_agg(SpatVector v) {
 
 // this approach is nicer than the below in ::erase
 // but it fails if polys overlap
-	v = v.aggregate(false);
+//	v = v.aggregate(false);
+
+// so we do
+	v = v.aggregate(true);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
 	std::vector<unsigned> rids;
 	size_t nx = size();

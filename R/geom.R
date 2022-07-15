@@ -134,7 +134,7 @@ setMethod("symdif", signature(x="SpatVector", y="SpatVector"),
 
 setMethod("erase", signature(x="SpatVector", y="SpatVector"),
 	function(x, y) {
-		x@ptr <- x@ptr$erase(y@ptr)
+		x@ptr <- x@ptr$erase_agg(y@ptr)
 		messages(x, "erase")
 	}
 )
@@ -513,8 +513,9 @@ setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"),
 		values(x) = data.frame(idx=1:nrow(x))
 		values(y) = data.frame(idy=1:nrow(y))
 		y <- erase(y) # no self-overlaps
-		if (overlap) {
-			xy <- intersect(y, x)
+		if (overlap) {		
+			#avoid Warning message: [intersect] no intersection
+ 			xy <- suppressWarnings(intersect(y, x))
 			if (nrow(xy) > 0) {
 				xy$aint <- expanse(xy)
 				a <- values(xy)
