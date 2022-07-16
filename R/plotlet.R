@@ -10,7 +10,7 @@ popUp <- function(x) {
 
 
 setMethod("plotlet", signature(x="SpatVector"),
-	function(x, y="", col=rainbow, split=TRUE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), m=NULL ...)  {
+	function(x, y="", col=rainbow, split=TRUE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), m=NULL, ...)  {
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 		if (is.null(m)) {
 			m <- leaflet::leaflet()

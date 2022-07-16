@@ -589,15 +589,36 @@ setAs("SpatialGrid", "SpatRaster",
 	function(from){
 		prj <- attr(from@proj4string, "comment")
 		if (is.null(prj)) prj <- from@proj4string@projargs
-		b <- rast(ext=as.vector(t(from@bbox)), crs=prj)
+		b <- rast(ext=as.vector(t(from@bbox)), nrow=from@grid@cells.dim[2], ncol=from@grid@cells.dim[1], crs=prj)
 		if (inherits(from, "SpatialGridDataFrame")) {
-			dim(b) <- c(from@grid@cells.dim[2], from@grid@cells.dim[1], ncol(from@data))
+			cls <- sapply(from@data, function(i) class(i)[1])
+			if (all(cls == "numeric")) {		
+				nlyr(b) <- ncol(from@data)
+				b <- setValues(b, as.matrix(from@data))
+			} else {
+				x <- vector(mode="list", length=ncol(from@data))
+				for (i in 1:ncol(from@data)) {
+					x[[i]] <- setValues(b, from@data[,i])
+				}
+				b <- rast(x)
+			}
 			names(b) <- colnames(from@data)
-			b <- setValues(b, as.matrix(from@data))
 		} else {
 			dim(b) <- c(from@grid@cells.dim[2], from@grid@cells.dim[1])
 		}
 		b
 	}
 )
+
+
+setAs("SpatialPixels", "SpatRaster",
+	function(from){
+		if (methods::.hasSlot(from, "data")) {
+			as(as(from, "SpatialGridDataFrame"), "SpatRaster")
+		} else {
+			as(as(from, "SpatialGrid"), "SpatRaster")
+		}
+	}
+)
+
 
