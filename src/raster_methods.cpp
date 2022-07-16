@@ -529,7 +529,7 @@ SpatRaster SpatRaster::weighted_mean(std::vector<double> w, bool narm, SpatOptio
 }
 
 
-SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, double othervalue, SpatOptions &opt) {
+SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, double othervalue, bool round, int digits, SpatOptions &opt) {
 
 	SpatRaster out;
 	if (nlyr() > 1) {
@@ -542,14 +542,15 @@ SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, d
 		classes = rc[0];
 	}
 
-	std::vector<int> uc(classes.size());
-	for (size_t i=0; i<classes.size(); i++) {
-		uc[i] = round(classes[i]);
+	if (round) {
+		for (size_t i=0; i<classes.size(); i++) {
+			classes[i] = roundn(classes[i], digits);
+		}
 	}
-	std::sort(uc.begin(), uc.end());
-	uc.erase(std::unique(uc.begin(), uc.end()), uc.end());
+	std::sort(classes.begin(), classes.end());
+	classes.erase(std::unique(classes.begin(), classes.end()), classes.end());
 
-	size_t n = uc.size();
+	size_t n = classes.size();
 	if (n == 0) {
 		out.setError("no valid classes");
 		return out;
@@ -557,7 +558,7 @@ SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, d
 	out = geometry(n);
 	std::vector<std::string> snms(n);
 	for (size_t i=0; i<n; i++) {
-		snms[i] = std::to_string(uc[i]);
+		snms[i] = double_to_string(classes[i]);
 	}
 	out.setNames(snms);
 
@@ -573,14 +574,17 @@ SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, d
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, out.bs, i);
+		if (round) {
+			for(double& d : v) d = roundn(d, digits);
+		}
 		size_t nn = v.size();
 		std::vector<double> vv(nn * n, NAN);
 		for (size_t j=0; j<nn; j++) {
 			if (!std::isnan(v[j])) {
-				for (size_t k=0; k<uc.size(); k++) {
-					if (v[j] == uc[k]) {
+				for (size_t k=0; k<classes.size(); k++) {
+					if (v[j] == classes[k]) {
 						if (keepvalue) {
-							vv[j + k*nn] = uc[k];
+							vv[j + k*nn] = classes[k];
 						} else {
 							vv[j + k*nn] = 1;	 // true
 						}

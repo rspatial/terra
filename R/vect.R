@@ -157,8 +157,8 @@ setMethod("vect", signature(x="matrix"),
 		if (nr == 0) {
 			return(p)
 		}
-
-		if (ncol(x) == 2) {
+		nc <- ncol(x)
+		if (nc == 2) {
 			lonlat <- .checkXYnames(colnames(x))
 			if (type == "points") {
 				p@ptr$setPointsXY(as.double(x[,1]), as.double(x[,2]))
@@ -166,14 +166,14 @@ setMethod("vect", signature(x="matrix"),
 				p@ptr$setGeometry(type, rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
 			}
 			if (lonlat && isTRUE(crs=="")) crs <- "+proj=longlat"
-		} else if (ncol(x) == 4) {
-			#.checkXYnames(colnames(x)[3:4])
+		} else if (nc == 3) {
+			p@ptr$setGeometry(type, x[,1], rep(1, nr), x[,2], x[,3], rep(FALSE, nr))
+		} else if (nc == 4) {
 			p@ptr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], rep(FALSE, nr))
-		} else if (ncol(x) == 5) {
-			#.checkXYnames(colnames(x)[3:4])
+		} else if (nc == 5) {
 			p@ptr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], x[,5])
 		} else {
-			error("vect", "not an appropriate matrix")
+			error("vect", "not an appropriate matrix (too many columns)")
 		}
 		if (!is.null(atts)) {
 			if ((nrow(atts) == nrow(p)) & (ncol(atts) > 0)) {

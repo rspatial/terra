@@ -506,7 +506,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 					cats <- cats(x)[[1]][, c(1, act+1)]
 				} else if (is.bool(x)) {
 					type <- "factor"
-					levels(x) <- c("False", "True")
+					levels(x) <- data.frame(id=0:1, value=c("False", "True"))
 					cats <- cats(x)[[1]]
 				} else {
 					type <- "depends"

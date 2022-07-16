@@ -855,10 +855,10 @@ setMethod("rotate", signature(x="SpatRaster"),
 
 
 setMethod("segregate", signature(x="SpatRaster"),
-	function(x, classes=NULL, keep=FALSE, other=0, filename="", ...) {
+	function(x, classes=NULL, keep=FALSE, other=0, round=FALSE, digits=0, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (is.null(classes)) classes <- 1[0]
-		x@ptr <- x@ptr$separate(classes, keep, other, opt)
+		x@ptr <- x@ptr$separate(classes, keep[1], other[1], round[1], digits[1], opt)
 		messages(x, "segregate")
 	}
 )
