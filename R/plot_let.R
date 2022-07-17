@@ -10,7 +10,7 @@ popUp <- function(x) {
 
 
 setMethod("plotlet", signature(x="SpatVector"),
-	function(x, y="", col=rainbow, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), map=NULL, fillOpacity=0, legend="bottomright", collapse=FALSE, ...)  {
+	function(x, y="", col=rainbow, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), map=NULL, fillOpacity=0, legend="bottomright", collapse=FALSE, cex=1, ...)  {
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 		if (is.null(map)) {
 			map <- leaflet::leaflet()
@@ -80,10 +80,10 @@ setMethod("plotlet", signature(x="SpatVector"),
 						col=vcols, fillOpacity=fillOpacity, popup=popUp(x))
 				} else if (g == "lines") {
 					map <- leaflet::addPolylines(map, data=x, label=values,  
-						col=vcols, fillOpacity=fillOpacity, popup=popUp(x))
+						col=vcols, popup=popUp(x))
 				} else {
-					map <- leaflet::addMarkers(map, data=x, label=values,  
-						col=vcols, fillOpacity=fillOpacity, popup=popUp(x))
+					map <- leaflet::addCircleMarkers(map, data=x, label=values,  
+						col=vcols, radius=cex, popup=popUp(x))
 				}
 				if (!all(tiles == "")) {
 					map <- leaflet::addLayersControl(map, baseGroups = tiles, 
@@ -121,6 +121,41 @@ setMethod("plotlet", signature(x="SpatRaster"),
 			}
 		}
 		leaflet::addRasterImage(map, x, colors = col, opacity=opacity)
+	}
+)
+
+
+
+setMethod("lines", signature(x="leaflet"),
+	function(x, y, col, lwd=3, alpha=1)  {
+		stopifnot(inherits(y, "SpatVector"))
+		if (nrow(y) == 0) return(x)
+		if (missing(col)) col <- "black"
+		if (!(geomtype(y) %in% c("lines", "polygons"))) {
+			error("lines", "SpatVector y must have either lines or polygons geometry")
+		}
+		leaflet::addPolylines(x, data=y, weight=lwd, opacity=alpha, col=col)
+	}
+)
+
+setMethod("points", signature(x="leaflet"),
+	function(x, y, col, cex=1, alpha=1, popup=FALSE)  {
+		stopifnot(inherits(y, "SpatVector"))
+		if (nrow(y) == 0) return(x)
+		if (missing(col)) col <- "black"
+		if (!(geomtype(y) == "points")) {
+			if (geomtype(y) == "polygons") {
+				y <- centroids(y)			
+			} else {
+				y <- as.points(y)
+			}
+		}
+		if (popup) {
+			popup=popUp(y)
+		} else {
+			popup <- NULL
+		}
+		leaflet::addCircleMarkers(x, data=y, radius=cex, popup=popup, label=1:nrow(y), opacity=alpha, col=col)
 	}
 )
 

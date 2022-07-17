@@ -124,10 +124,11 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 .getCols <- function(n, cols, alpha=1) {
+	if (is.null(cols)) { 
+		return(cols)
+	}
 	if (inherits(cols, "function")) {
 		cols <- cols(n)
-	} else if (is.null(cols)) {
-		cols <- rep("black", n)
 	} else {
 		ncols <- length(cols)
 		if (ncols > n) {

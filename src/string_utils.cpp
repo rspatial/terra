@@ -27,7 +27,7 @@
 
 
 std::string double_to_string(double x) {
-	std::string s = std::to_string (x);
+	std::string s = std::to_string(x);
 	s.erase( s.find_last_not_of('0') + 1, std::string::npos );
 	s.erase( s.find_last_not_of('.') + 1, std::string::npos );
 	return s;
