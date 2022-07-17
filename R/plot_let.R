@@ -101,31 +101,6 @@ setMethod("plotlet", signature(x="SpatVector"),
 
 
 
-setMethod("plotlet", signature(x="SpatRaster"),
-	function(x, y="", col="Spectral", opacity=0.8, tiles="", map=NULL, ...)  {
-		#stopifnot(packageVersion("leaflet") > "2.1.1")
-		if (is.null(map)) {
-			map <- leaflet::leaflet()
-		} else {
-			tiles <- ""
-		}
-		if (!all(tiles == "")) {
-			if ("Streets" %in% tiles) {
-				map <- leaflet::addTiles(map, group="Streets")			
-			} 
-			tiles2 <- tiles[tiles != "Streets"]
-			if (length(tiles) > 0) {
-				for (i in 1:length(tiles2)) {
-					map <- leaflet::addProviderTiles(map, tiles2[i], group=tiles2[i])
-				}
-			}
-		}
-		leaflet::addRasterImage(map, x, colors = col, opacity=opacity)
-	}
-)
-
-
-
 setMethod("lines", signature(x="leaflet"),
 	function(x, y, col, lwd=3, alpha=1)  {
 		stopifnot(inherits(y, "SpatVector"))
@@ -158,4 +133,43 @@ setMethod("points", signature(x="leaflet"),
 		leaflet::addCircleMarkers(x, data=y, radius=cex, popup=popup, label=1:nrow(y), opacity=alpha, col=col)
 	}
 )
+
+
+
+
+setMethod("plotlet", signature(x="SpatRaster"),
+	function(x, y="", col, opacity=0.8, tiles="", maxcell=500000, legend="bottomright", map=NULL, ...)  {
+		#stopifnot(packageVersion("leaflet") > "2.1.1")
+		if (is.null(map)) {
+			map <- leaflet::leaflet()
+		} else {
+			tiles <- ""
+		}
+		if (!all(tiles == "")) {
+			if ("Streets" %in% tiles) {
+				map <- leaflet::addTiles(map, group="Streets")			
+			} 
+			tiles2 <- tiles[tiles != "Streets"]
+			if (length(tiles) > 0) {
+				for (i in 1:length(tiles2)) {
+					map <- leaflet::addProviderTiles(map, tiles2[i], group=tiles2[i])
+				}
+			}
+		}
+		col <- rev(grDevices::terrain.colors(255))
+		
+		x <- spatSample(x[[1]], maxcell, "regular", as.raster=TRUE)
+	
+		map <- leaflet::addRasterImage(map, x, colors = col, opacity=opacity)
+		if (!is.null(legend)) {
+			r <- minmax(x)
+			v <- seq(r[1], r[2], 5)
+			pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
+			map <- leaflet::addLegend(map, legend, pal=pal, values=v, 
+                  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
+		}
+		map
+	}
+)
+
 
