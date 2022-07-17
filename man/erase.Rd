@@ -32,7 +32,7 @@ SpatVector or SpatExtent
 }
 
 \seealso{
-\code{\code{\link{crop}}, \link{intersect}} for the inverse. 
+\code{\link{crop}} and \code{\link{intersect}} for the inverse. 
 
 The equivalent for SpatRaster is \code{\link{mask}}
 }

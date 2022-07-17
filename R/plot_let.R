@@ -10,8 +10,10 @@ popUp <- function(x) {
 
 
 setMethod("plet", signature(x="SpatVector"),
-	function(x, y="", col=rainbow, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), alpha=1, legend="bottomright", collapse=FALSE, cex=1, map=NULL)  {
+	function(x, y="", col, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), alpha=1, legend="bottomright", collapse=FALSE, cex=1, map=NULL)  {
 	
+		if (missing(col) col = grDevices::rainbow
+		
 		alpha <- 1 - max(0, min(1, alpha))
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 		if (is.null(map)) {

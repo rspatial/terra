@@ -29,12 +29,17 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 \arguments{
   \item{x}{SpatRaster, SpatVector, or leaflet object}
   \item{y}{missing or positive integer or name indicating the layer(s) to be plotted}
-  \item{col}{character. Colors. The default is \code{rev(grDevices::terrain.colors(50))}}
+  \item{col}{character. Vector of colors or color generating function. The default is \code{rev(grDevices::terrain.colors)}}
   \item{legend}{character to indicate the legend position ("bottomleft", "bottomright", "topleft" or "topright") or NULL to suppress the legend}
   \item{tiles}{character. Names of background tile providers}
-  \item{maxcell}{positive integer. Maximum number of cells to use for the plotlet}
+  \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{alpha}{Number between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque)}
   \item{map}{leaflet object}
+
+  \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
+  \item{lwd}{numeric, line-width. See \code{\link{par}}}
+
+  \item{split}{logical}
 }
 
 \seealso{
@@ -46,14 +51,14 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 #p <- spatSample(as.polygons(v, ext=T), 10)
 #values(p) = data.frame(id=11:20, name=letters[1:10])
 
-#m <- plotlet(v, "NAME_1", split=TRUE, fillOpacity=.2)
+#m <- plet(v, "NAME_1", split=TRUE, fillOpacity=.2)
 #m <- points(m, p, col="gray", cex=2, popup=T)
 lines(m, v)
 
 #r <- rast(system.file("ex/elev.tif", package="terra"))
-#plotlet(r) |> lines(v, lwd=1)
+#plet(r) |> lines(v, lwd=1)
 
-#plotlet(r, tiles="OpenWeatherMap.Wind") |> lines(v, lwd=2, col="blue")
+#plet(r, tiles="OpenWeatherMap.Wind") |> lines(v, lwd=2, col="blue")
 }
 
 
