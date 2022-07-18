@@ -53,7 +53,7 @@ v <- vect(system.file("ex/lux.shp", package="terra"))
 p <- spatSample(as.polygons(v, ext=T), 10)
 values(p) = data.frame(id=11:20, name=letters[1:10])
 
-#m <- plet(v, "NAME_1", split=TRUE, fillOpacity=.2)
+#m <- plet(v, "NAME_1", split=TRUE, alpha=.2)
 #m <- points(m, p, col="gray", cex=2, popup=T)
 #lines(m, v)
 
@@ -63,9 +63,10 @@ r <- rast(system.file("ex/elev.tif", package="terra"))
 #plet(r, tiles="Streets") |> lines(v, lwd=2, col="blue")
 
 x <- c(r, 50*classify(r, 5))
+names(x) <- c("first", "second")
 
-#plet(x, 1:2, tiles="Streets") |> lines(v, lwd=2, col="blue")
-#plet(x, 1:2, tiles="Streets", shared=TRUE) |> lines(v, lwd=2, col="blue")
+#plet(x, 1:2, tiles="Streets", collapse=FALSE) |> lines(v, lwd=2, col="blue")
+#plet(x, 1:2, tiles="Streets", shared=TRUE, collapse=FALSE) |> lines(v, lwd=2, col="blue")
 }
 }
 
