@@ -10,11 +10,11 @@ popUp <- function(x) {
 
 
 setMethod("plet", signature(x="SpatVector"),
-	function(x, y="", col, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), alpha=1, legend="bottomright", collapse=FALSE, cex=1, map=NULL)  {
+	function(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", split=FALSE, collapse=FALSE, cex=1, map=NULL)  {
 	
-		if (missing(col)) col = grDevices::rainbow
+		if (missing(col)) col = grDevices::rainbow		
+		alpha <- max(0, min(1, alpha))
 		
-		alpha <- 1 - max(0, min(1, alpha))
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 		if (is.null(map)) {
 			map <- leaflet::leaflet()
@@ -148,39 +148,90 @@ setMethod("points", signature(x="leaflet"),
 
 
 setMethod("plet", signature(x="SpatRaster"),
-	function(x, y=1, col, alpha=0.2, tiles="", maxcell=500000, legend="bottomright", map=NULL, ...)  {
+	function(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", shared=FALSE, collapse=TRUE, map=NULL)  {
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 
-		alpha <- 1 - max(0, min(1, alpha))
-
+		alpha <- max(0, min(1, alpha))
 		if (is.null(map)) {
 			map <- leaflet::leaflet()
 		} else {
-			tiles <- ""
+			tiles <- NULL
 		}
-		if (!all(tiles == "")) {
-			if ("Streets" %in% tiles) {
-				map <- leaflet::addTiles(map, group="Streets")			
-			} 
-			tiles2 <- tiles[tiles != "Streets"]
-			if (length(tiles) > 0) {
-				for (i in 1:length(tiles2)) {
-					map <- leaflet::addProviderTiles(map, tiles2[i], group=tiles2[i])
-				}
+		if (missing(col)) {
+			col <- rev(grDevices::terrain.colors(255))
+		}
+		if (length(tiles) > 0) {
+			tiles <- unique(tiles)
+			if (length(tiles) > 1) {
+				tiles <- tiles[1]
+				warn("plet", "only a single tileset can be used with raster data")
+			}
+			if (tiles == "Streets") {
+				map <- leaflet::addTiles(map)
+			} else {
+				map <- leaflet::addProviderTiles(map, tiles)
 			}
 		}
-		col <- rev(grDevices::terrain.colors(255))
 		
-		y <- y[1]
 		x <- spatSample(x[[y]], maxcell, "regular", as.raster=TRUE)
-	
-		map <- leaflet::addRasterImage(map, x, colors = col, opacity=opacity)
-		if (!is.null(legend)) {
-			r <- minmax(x)
-			v <- seq(r[1], r[2], 5)
-			pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
-			map <- leaflet::addLegend(map, legend, pal=pal, values=v, 
-                  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
+		if (nlyr(x) == 1) {
+			map <- leaflet::addRasterImage(map, x, colors = col, opacity=alpha)
+			if (!is.null(legend)) {
+				r <- minmax(x)
+				v <- seq(r[1], r[2], 5)
+				pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
+				map <- leaflet::addLegend(map, legend, pal=pal, values=v, opacity=1,
+					  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
+			}
+		} else {
+			nms <- make.unique(names(x))
+			many_legends <- one_legend <- FALSE
+			if (!is.null(legend)) {
+				r <- minmax(x)
+				if (shared) {
+					rr <- range(r)
+					pal <- leaflet::colorNumeric(col, rr, na.color="#00000000")
+					one_legend <- TRUE
+				} else {
+					many_legends <- TRUE
+				}
+			} else {
+				one_legend <- FALSE
+			}
+			for (i in 1:nlyr(x)) {
+				if (one_legend) {
+					map <- leaflet::addRasterImage(map, x[[i]], colors=pal, opacity=alpha, group=nms[i])
+				} else {
+					map <- leaflet::addRasterImage(map, x[[i]], colors=col, opacity=alpha, group=nms[i])
+					if (many_legends) {
+						v <- seq(r[1,i], r[2,i], length.out=5)
+						pal <- leaflet::colorNumeric(col, v, reverse=TRUE)
+						map <- leaflet::addLegend(map, position=legend, pal=pal, values=v, 
+							  title=nms[i], opacity=1, group=nms[i],
+							  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
+					}
+				}
+			}
+			map <- leaflet::addLayersControl(map, baseGroups=nms,
+				options = leaflet::layersControlOptions(collapsed=collapse))
+			if (many_legends) {	# show one legend at a time
+				map <- htmlwidgets::onRender(map, 
+					"function(el, x) {
+						var updateLegend = function () {
+						var selectedGroup = document.querySelectorAll('input:checked')[0].nextSibling.innerText.substr(1);
+						document.querySelectorAll('.legend').forEach(a => a.hidden=true);
+						document.querySelectorAll('.legend').forEach(l => {
+							if (l.children[0].children[0].innerText == selectedGroup) l.hidden=false;
+						});
+					};
+					updateLegend();
+					this.on('baselayerchange', e => updateLegend());}")				
+			} else if (one_legend) {
+				v <- seq(rr[1], rr[2], length.out=5)
+				pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
+				map <- leaflet::addLegend(map, position=legend, pal=pal, values=v, opacity=1, group=nms[i],
+						  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
+			}
 		}
 		map
 	}

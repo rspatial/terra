@@ -17,9 +17,9 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 }
 
 \usage{
-\S4method{plet}{SpatRaster}(x, y=1, col=rainbow, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), alpha=1, legend="bottomright", collapse=FALSE, cex=1, map=NULL)
+\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.2, tiles="", maxcell=500000, legend="bottomright", shared=FALSE, collapse=TRUE, map=NULL)
 
-\S4method{plet}{SpatVector}(x, y="", col, alpha=0.2, tiles="", maxcell=500000, legend="bottomright", map=NULL)
+\S4method{plet}{SpatVector}(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", split=FALSE, collapse=FALSE, cex=1, map=NULL)
 
 \S4method{lines}{leaflet}(x, y, col, lwd=3, alpha=1)
 
@@ -28,18 +28,19 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 
 \arguments{
   \item{x}{SpatRaster, SpatVector, or leaflet object}
-  \item{y}{missing or positive integer or name indicating the layer(s) to be plotted}
-  \item{col}{character. Vector of colors or color generating function. The default is \code{rev(grDevices::terrain.colors)}}
-  \item{legend}{character to indicate the legend position ("bottomleft", "bottomright", "topleft" or "topright") or NULL to suppress the legend}
-  \item{tiles}{character. Names of background tile providers}
-  \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
+  \item{y}{missing, or positive integer, or character (variable or layer name) indicating the layer(s) to be plotted. If \code{x} is a SpatRater, you can select multiple layers}
+  \item{col}{character. Vector of colors or color generating function}
   \item{alpha}{Number between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque)}
+  \item{tiles}{character. Names of background tile providers}
+  \item{maxcell}{positive integer. Maximum number of cells to use for the plot}  
+  \item{legend}{character to indicate the legend position ("bottomleft", "bottomright", "topleft" or "topright") or NULL to suppress the legend}
+  \item{shared}{logical. Should the legend be the same for all rasters (if multiple layers of SpatRaster \code{x} are mapped)}  
   \item{map}{leaflet object}
-
+  \item{collapse}{logical}
+  \item{split}{logical. IF \code{TRUE} a check-box is created to toggle each value in code{y} (If \code{x} is a SpatVector)}
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
   \item{lwd}{numeric, line-width. See \code{\link{par}}}
 
-  \item{split}{logical}
 }
 
 \seealso{
@@ -53,7 +54,7 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 
 #m <- plet(v, "NAME_1", split=TRUE, fillOpacity=.2)
 #m <- points(m, p, col="gray", cex=2, popup=T)
-lines(m, v)
+#lines(m, v)
 
 #r <- rast(system.file("ex/elev.tif", package="terra"))
 #plet(r) |> lines(v, lwd=1)
