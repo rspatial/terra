@@ -19,7 +19,7 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 \usage{
 \S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", shared=FALSE, collapse=TRUE, map=NULL)
 
-\S4method{plet}{SpatVector}(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", split=FALSE, collapse=FALSE, cex=1, map=NULL)
+\S4method{plet}{SpatVector}(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", popup=TRUE, split=FALSE, collapse=FALSE, cex=1, map=NULL)
 
 \S4method{lines}{leaflet}(x, y, col, lwd=3, alpha=1)
 
@@ -40,7 +40,7 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
   \item{split}{logical. IF \code{TRUE} a check-box is created to toggle each value in code{y} (If \code{x} is a SpatVector)}
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
   \item{lwd}{numeric, line-width. See \code{\link{par}}}
-
+  \item{popup}{logical. Should pop-ups be created?}
 }
 
 \seealso{

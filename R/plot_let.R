@@ -10,10 +10,11 @@ popUp <- function(x) {
 
 
 setMethod("plet", signature(x="SpatVector"),
-	function(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", split=FALSE, collapse=FALSE, cex=1, map=NULL)  {
+	function(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", popup=TRUE, split=FALSE, collapse=FALSE, cex=1, map=NULL)  {
 	
 		if (missing(col)) col = grDevices::rainbow		
 		alpha <- max(0, min(1, alpha))
+		pop <- NULL
 		
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 		if (is.null(map)) {
@@ -39,15 +40,18 @@ setMethod("plet", signature(x="SpatVector"),
 		y <- y[1]
 		if (y == "") {
 			cols <- .getCols(nrow(x), col)
+			if (popup) {
+				pop <- popUp(x)
+			}
 			if (g == "polygons") {
 				map <- leaflet::addPolygons(map, data=x, label=1:nrow(x),  
-							col=cols, fillOpacity=alpha, popup=popUp(x))
+							col=cols, fillOpacity=alpha, popup=pop)
 			} else if (g == "lines") {
 				map <- leaflet::addPolylines(map, data=x, label=1:nrow(x),  
-							col=cols, fillOpacity=alpha, popup=popUp(x))
+							col=cols, fillOpacity=alpha, popup=pop)
 			} else {
 				map <- leaflet::addMarkers(map, data=x, label=1:nrow(x),  
-							col=cols, fillOpacity=alpha, popup=popUp(x))			
+							col=cols, fillOpacity=alpha, popup=pop)			
 			}
 			if (!all(tiles == "")) {
 				map <- leaflet::addLayersControl(map, baseGroups = tiles, 
@@ -66,15 +70,18 @@ setMethod("plet", signature(x="SpatVector"),
 			if (split) {
 				for (i in seq_along(u)) {
 					s <- x[x[[y]] == u[i], ]
+					if (popup) {
+						pop <- popUp(s)
+					}
 					if (g == "polygons") {
 						map <- leaflet::addPolygons(map, data=s, label=u[i], group=u[i], 
-							col=cols[i], fillOpacity=alpha, popup=popUp(s))
+							col=cols[i], fillOpacity=alpha, popup=pop)
 					} else if (g == "lines") {
 						map <- leaflet::addPolylines(map, data=s, label=u[i], group=u[i], 
-							col=cols[i], fillOpacity=alpha, popup=popUp(s))
+							col=cols[i], fillOpacity=alpha, popup=pop)
 					} else {
 						map <- leaflet::addCircleMarkers(map, data=s, label=u[i], group=u[i], 
-							col=cols[i], fillOpacity=alpha, popup=popUp(s))					
+							col=cols[i], fillOpacity=alpha, popup=pop))					
 					}
 				}
 				if (all(tiles == "")) {
@@ -87,15 +94,18 @@ setMethod("plet", signature(x="SpatVector"),
 			} else {
 				values <- x[[y,drop=TRUE]]
 				vcols <- cols[as.numeric(as.factor(values))]
+				if (popup) {
+					pop <- popUp(x)
+				}
 				if (g == "polygons") {
 					map <- leaflet::addPolygons(map, data=x, label=values,  
-						col=vcols, fillOpacity=alpha, popup=popUp(x))
+						col=vcols, fillOpacity=alpha, popup=pop)
 				} else if (g == "lines") {
 					map <- leaflet::addPolylines(map, data=x, label=values,  
-						col=vcols, popup=popUp(x), fillOpacity=alpha)
+						col=vcols, popup=pop, fillOpacity=alpha)
 				} else {
 					map <- leaflet::addCircleMarkers(map, data=x, label=values,  
-						col=vcols, radius=cex, popup=popUp(x), fillOpacity=alpha)
+						col=vcols, radius=cex, popup=pop, fillOpacity=alpha)
 				}
 				if (!all(tiles == "")) {
 					map <- leaflet::addLayersControl(map, baseGroups = tiles, 
