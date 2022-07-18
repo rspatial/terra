@@ -184,7 +184,7 @@ aggregate_attributes <- function(d, by, fun=NULL, count=TRUE, ...) {
 	i[colnames(d) %in% by] <- TRUE
 	if (any(!i)) {
 		db <- aggregate(d[, !i,drop=FALSE], d[, by, drop=FALSE], .agg_uf)
-		db <- db[, colSums(is.na(db)) < nrow(db), drop=FALSE]
+		#db <- db[, colSums(is.na(db)) < nrow(db), drop=FALSE]
 		if (NCOL(da)>1) {
 			da <- merge(da, db, by=by)
 		} else {

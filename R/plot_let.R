@@ -124,14 +124,31 @@ setMethod("plet", signature(x="SpatVector"),
 
 
 setMethod("lines", signature(x="leaflet"),
-	function(x, y, col, lwd=3, alpha=1)  {
-		stopifnot(inherits(y, "SpatVector"))
-		if (nrow(y) == 0) return(x)
-		if (missing(col)) col <- "black"
-		if (!(geomtype(y) %in% c("lines", "polygons"))) {
-			error("lines", "SpatVector y must have either lines or polygons geometry")
+	function(x, y, col, lwd=3, alpha=1, collapse=FALSE)  {
+		if (inherits(y, "SpatVector")) {
+			if (nrow(y) == 0) return(x)
+			if (missing(col)) col <- "black"
+			if (!(geomtype(y) %in% c("lines", "polygons"))) {
+				error("lines", "SpatVector y must have either lines or polygons geometry")
+			}
+			leaflet::addPolylines(x, data=y, weight=lwd, opacity=alpha, col=col)
+		} else if (inherits(y, "SpatVectorCollection")) {
+			nms <- names(y)
+			n <- length(y)
+			nms[nchar(nms) == 0] <- "X"
+			nms <- make.unique(nms)
+			if (is.function(col)) {
+				cols <- col(n)
+			} else {
+				cols <- rep_len(col, n) 
+			}
+			lwd <- rep_len(lwd, n) 
+			alpha <- rep_len(alpha, n) 
+			for (i in 1:length(nms)) {
+				x <- leaflet::addPolylines(x, data=y[i], weight=lwd[i], opacity=alpha[i], col=cols[i], group=nms[i])
+			}
+			leaflet::addLayersControl(x, overlayGroups = nms, options = leaflet::layersControlOptions(collapsed=collapse))	
 		}
-		leaflet::addPolylines(x, data=y, weight=lwd, opacity=alpha, col=col)
 	}
 )
 
@@ -194,7 +211,7 @@ setMethod("plet", signature(x="SpatRaster"),
 				r <- minmax(x)
 				v <- seq(r[1], r[2], 5)
 				pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
-				map <- leaflet::addLegend(map, legend, pal=pal, values=v, opacity=1,
+				map <- leaflet::addLegend(map, legend, pal=pal, values=v, opacity=1, title=names(x),
 					  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
 			}
 		} else {

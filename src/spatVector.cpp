@@ -19,6 +19,7 @@
 #include <numeric>
 #include "math_utils.h"
 #include "vecmath.h"
+#include "recycle.h"
 
 #ifdef useGDAL
 	#include "crs.h"
@@ -1184,6 +1185,12 @@ SpatVector SpatVectorCollection::append() {
 		}
 	}
 	return out;
+}
+
+bool SpatVectorCollection::setNames(std::vector<std::string> nms, bool make_valid) {
+	recycle(nms, size());
+	names = nms;
+	return true;
 }
 
 

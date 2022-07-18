@@ -213,3 +213,20 @@ setMethod("longnames<-", signature(x="SpatRaster"),
 	}
 )
 
+
+setMethod("names", signature(x="SpatVectorCollection"),
+	function(x) {
+		nms <- x@ptr$names
+		Encoding(nms) <- "UTF-8"
+		nms
+	}
+)
+
+
+setMethod("names<-", signature(x="SpatVectorCollection"),
+	function(x, value) {
+		x@ptr <- x@ptr$deepcopy()
+		x@ptr$names <- enc2utf8(as.character(value))
+		x
+	}
+)

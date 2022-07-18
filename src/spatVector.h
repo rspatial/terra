@@ -369,6 +369,9 @@ class SpatVectorCollection {
 		SpatVectorCollection deepCopy() { return *this; }
 
 		std::vector<SpatVector> v;
+		std::vector<std::string> names;
+		std::vector<std::string> getNames() { return names;}
+		bool setNames(std::vector<std::string> nms, bool make_valid=false);
 
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
@@ -379,7 +382,12 @@ class SpatVectorCollection {
 		std::string getError() { return msg.getError();}
 
 		size_t size() { return v.size(); }
-		void push_back(SpatVector x) { v.push_back(x); };
+		void reserve(size_t n) { v.reserve(n); names.reserve(n); }
+		void resize(size_t n) { v.resize(n); names.resize(n); }
+		void push_back(SpatVector x) {
+			v.push_back(x); 
+			names.push_back("");
+		};
 		bool replace(SpatVector x, size_t i) { 
 			if (i < size()) {
 				v[i] = x; 

@@ -342,6 +342,8 @@ RCPP_MODULE(spat){
 		.method("getWarnings", &SpatVectorCollection::getWarnings)
 		.method("getError", &SpatVectorCollection::getError)
 		.method("from_hex_col", &SpatVectorCollection::from_hex_col)
+		.method("setNames", &SpatVectorCollection::setNames, "setNames" )
+		.property("names", &SpatVectorCollection::getNames)
 
 	;
 
