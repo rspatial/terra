@@ -81,7 +81,7 @@ setMethod("plet", signature(x="SpatVector"),
 							col=cols[i], fillOpacity=alpha, popup=pop)
 					} else {
 						map <- leaflet::addCircleMarkers(map, data=s, label=u[i], group=u[i], 
-							col=cols[i], fillOpacity=alpha, popup=pop))					
+							col=cols[i], fillOpacity=alpha, popup=pop)
 					}
 				}
 				if (all(tiles == "")) {
