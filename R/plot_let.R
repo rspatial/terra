@@ -18,11 +18,13 @@ setMethod("plet", signature(x="SpatVector"),
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 		if (is.null(map)) {
 			map <- leaflet::leaflet()
+			tiles <- unique(tiles)
+			tiles <- tiles[tiles!=""]
 		} else {
-			tiles <- ""
+			tiles <- NULL
 		}
 		g <- geomtype(x)
-		if (!all(tiles == "")) {
+		if ((!is.null(tiles)) && (length(tiles) > 0)) {
 			if ("Streets" %in% tiles) {
 				map <- leaflet::addTiles(map, group="Streets")			
 			} 
@@ -154,6 +156,8 @@ setMethod("plet", signature(x="SpatRaster"),
 		alpha <- max(0, min(1, alpha))
 		if (is.null(map)) {
 			map <- leaflet::leaflet()
+			tiles <- unique(tiles)
+			tiles <- tiles[tiles!=""]
 		} else {
 			tiles <- NULL
 		}
