@@ -23,7 +23,7 @@ The following options are available.
 
 \bold{memmin} - if memory required is below this threshold (in GB), the memory is assumed to be available. Otherwise, terra checks if it is available.
 
-\bold{memmax} - the maximum amount of RAM (in GB) that terra is allowed to use when processing a raster dataset. Should be less than what is detected (see \code{\link{mem_info}}, and higher values are ignored. Set it to a negative number or NA to not set this option). \code{terraOptions} only shows the value of \code{memmax} it it set.
+\bold{memmax} - the maximum amount of RAM (in GB) that terra is allowed to use when processing a raster dataset. Should be less than what is detected (see \code{\link{mem_info}}), and higher values are ignored. Set it to a negative number or NA to not set this option. \code{terraOptions} only shows the value of \code{memmax} if it is set.
 
 \bold{tempdir} - directory where temporary files are written. The default what is returned by \code{tempdir()}.
 
