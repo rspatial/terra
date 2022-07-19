@@ -17,9 +17,9 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 }
 
 \usage{
-\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", shared=FALSE, collapse=TRUE, map=NULL)
+\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", shared=FALSE, main=y, collapse=TRUE, map=NULL)
 
-\S4method{plet}{SpatVector}(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", popup=TRUE, split=FALSE, collapse=FALSE, cex=1, map=NULL)
+\S4method{plet}{SpatVector}(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", main=names(x), popup=TRUE, split=FALSE, collapse=FALSE, cex=1, map=NULL)
 
 \S4method{lines}{leaflet}(x, y, col, lwd=3, alpha=1)
 
@@ -34,6 +34,8 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
   \item{tiles}{character or NULL. Names of background tile providers}
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}  
   \item{legend}{character to indicate the legend position ("bottomleft", "bottomright", "topleft" or "topright") or NULL to suppress the legend}
+  \item{main}{character. Title for the legend. The length should be 1 if \code{x} is a SpatVector and length nlyr(x) if \code{x} is a SpatVector}
+  
   \item{shared}{logical. Should the legend be the same for all rasters (if multiple layers of SpatRaster \code{x} are mapped)}  
   \item{map}{leaflet object}
   \item{collapse}{logical. Should the layers "control" panel be collapsed?}

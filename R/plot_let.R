@@ -10,7 +10,7 @@ popUp <- function(x) {
 
 
 setMethod("plet", signature(x="SpatVector"),
-	function(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", popup=TRUE, split=FALSE, collapse=FALSE, cex=1, map=NULL)  {
+	function(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", main=y, popup=TRUE, split=FALSE, collapse=FALSE, cex=1, map=NULL)  {
 	
 		if (missing(col)) col = grDevices::rainbow		
 		alpha <- max(0, min(1, alpha))
@@ -114,7 +114,7 @@ setMethod("plet", signature(x="SpatVector"),
 
 			}
 			if (!is.null(legend)) {
-				map <- leaflet::addLegend(map, position=legend, colors=cols, labels=u, opacity=1, title=y)
+				map <- leaflet::addLegend(map, position=legend, colors=cols, labels=u, opacity=1, title=y[1])
 			}
 			map
 		}
@@ -177,7 +177,7 @@ setMethod("points", signature(x="leaflet"),
 
 
 setMethod("plet", signature(x="SpatRaster"),
-	function(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", shared=FALSE, collapse=TRUE, map=NULL)  {
+	function(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", main=names(x), shared=FALSE, collapse=TRUE, map=NULL)  {
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 
 		alpha <- max(0, min(1, alpha))
@@ -204,6 +204,9 @@ setMethod("plet", signature(x="SpatRaster"),
 			}
 		}
 		
+		if (length(main) != length(y)) {
+			main <- rep_len(main, length(x))[y]
+		}
 		x <- spatSample(x[[y]], maxcell, "regular", as.raster=TRUE)
 		if (nlyr(x) == 1) {
 			map <- leaflet::addRasterImage(map, x, colors = col, opacity=alpha)
@@ -211,7 +214,7 @@ setMethod("plet", signature(x="SpatRaster"),
 				r <- minmax(x)
 				v <- seq(r[1], r[2], 5)
 				pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
-				map <- leaflet::addLegend(map, legend, pal=pal, values=v, opacity=1, title=names(x),
+				map <- leaflet::addLegend(map, legend, pal=pal, values=v, opacity=1, title=main[1],
 					  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
 			}
 		} else {
@@ -238,7 +241,7 @@ setMethod("plet", signature(x="SpatRaster"),
 						v <- seq(r[1,i], r[2,i], length.out=5)
 						pal <- leaflet::colorNumeric(col, v, reverse=TRUE)
 						map <- leaflet::addLegend(map, position=legend, pal=pal, values=v, 
-							  title=nms[i], opacity=1, group=nms[i],
+							  title=main[i], opacity=1, group=nms[i],
 							  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
 					}
 				}
