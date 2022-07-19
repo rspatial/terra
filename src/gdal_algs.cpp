@@ -500,11 +500,12 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		offset.insert(offset.end(), source[0].offset.begin(), source[0].offset.end());
 	}
 
+	double halfy = out.yres() / 2;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		int bandstart = 0;
-		eout.ymax = out.yFromRow(out.bs.row[i]);
-		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1);
-		SpatRaster crop_out = out.crop(eout, "out", sopt);
+		eout.ymax = out.yFromRow(out.bs.row[i]) + halfy;
+		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - halfy;
+		SpatRaster crop_out = out.crop(eout, "near", sopt);
 		GDALDatasetH hDstDS;
 
 		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, has_so, scale, offset, sopt)) {
