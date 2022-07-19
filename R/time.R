@@ -82,7 +82,7 @@ setMethod("time", signature(x="SpatRaster"),
 setMethod("time<-", signature(x="SpatRaster"),
 	function(x, value, tstep="")  {
 		if (is.null(value)) {
-			x@ptr$setTime(0[0], "remove")
+			x@ptr$setTime(0[0], "remove", "")
 			return(x)
 		}
 		if (inherits(value, "character")) {
