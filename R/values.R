@@ -190,6 +190,7 @@ setMethod("setValues", signature("SpatRaster"),
 		if (make_factor) {
 			for (i in 1:nlyr(y)) {
 				levs <- data.frame(id=0:(length(levs)-1), labels=levs)
+				colnames(levs)[2] <- names(x)[i]
 				set.cats(y, i, levs, 2)
 			}
 		}
