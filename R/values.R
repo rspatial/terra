@@ -189,10 +189,10 @@ setMethod("setValues", signature("SpatRaster"),
 		y <- messages(y, "setValues")
 		if (make_factor) {
 			for (i in 1:nlyr(y)) {
-				levs <- data.frame(id=0:(length(levs)-1), labels=levs)
-				colnames(levs)[2] <- names(x)[i]
+				levs <- data.frame(value=0:(length(levs)-1), label=levs)
 				set.cats(y, i, levs, 2)
 			}
+			names(y) <- names(x)
 		}
 		if (set_coltab) {
 			coltab(y) <- fv
