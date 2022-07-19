@@ -3,6 +3,7 @@ setMethod("tapp", signature(x="SpatRaster"),
 function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list()) {
 
 	stopifnot(!any(is.na(index)))
+	
 	if ((length(index) == 1) && is.character(index)) {
 		choices <- c("years", "months", "week", "days", "doy", "yearmonths")
 		i <- pmatch(tolower(index), choices)
@@ -18,8 +19,18 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 		} else if (choice == "week") {
 			index <- strftime(time(x, "days"), format = "%V")
 		} else {
-			index <- as.character(time(x, choice))
+			index <- time(x, choice)
+			if (choice == "yearmonths") {
+				year <- trunc(index)
+				month <- 12 * (index - year) + 1
+				year <- formatC(year, width=4, flag = "0")
+				month <- formatC(month, width=2, flag = "0")
+				index <- paste0(year, month)
+			} else {
+				index <- as.character(time(x, choice))
+			}
 		}
+		time(x) <- NULL
 	}
 
 	nl <- nlyr(x)

@@ -430,7 +430,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
     lyrs = validLayers(lyrs, nlyr());
 
 	if (lyrs.size() == 0) {
-		out.setError("no (valid) layer references");
+		out.setError("no (valid) layer selected");
 		return(out);
 	} else if (lyrs.size() != oldsize) {
         out.addWarning("ignored " + std::to_string(oldsize - lyrs.size()) + " invalid layer reference(s)");
