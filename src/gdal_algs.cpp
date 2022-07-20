@@ -37,12 +37,15 @@
 SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
 
 	SpatExtent e = getExtent();
-	if (geobounds && is_lonlat() && ((e.ymin < -90) || (e.ymax > 90))) {
-		SpatRaster g = geometry();
-		e.ymin= std::max(e.ymin, -90.0);
-		e.ymax= std::min(e.ymax, 90.0);
-		g.source[0].extent = e;
-		return g.dense_extent(inside, false);
+	if (geobounds && is_lonlat()) {		
+		if ((e.ymin <= -90) || (e.ymax >= 90)) { 
+			double fy = yres() / 10; // avoid Inf with Mercator
+			SpatRaster g = geometry();
+			e.ymin= std::max(e.ymin, -90.0+fy);
+			e.ymax= std::min(e.ymax, 90.0-fy);
+			g.source[0].extent = e;
+			return g.dense_extent(inside, false);
+		}
 	}
 
 	std::vector<int_64> rows, cols;

@@ -35,8 +35,8 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, 
-        cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE,
-        touches=is.lines(y), layer=NULL, ...)
+        cells=FALSE, xy=FALSE, ID=TRUE, as.spatvector=FALSE, weights=FALSE,
+		exact=FALSE, touches=is.lines(y), layer=NULL, ...)
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, factors=TRUE, cells=FALSE, xy=FALSE)
 
@@ -57,6 +57,8 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 \item{factors}{logical. If \code{TRUE} the categories are returned as factors instead of their numerical representation. The value returned becomes a data.frame if it otherwise would have been a matrix, even if there are no factors}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}
 \item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{xyFromCell}}}
+\item{ID}{logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of input SpatVector \code{y}}
+\item{as.vector}{Should the extracted values be combined with the input SpatVector \code{y}?}
 \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}

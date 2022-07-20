@@ -8,6 +8,28 @@ popUp <- function(x) {
 	apply(s, 1, function(i) paste(i, collapse="<br>"))
 }
 
+setMethod("plet", signature(x="missing"),
+	function(x) {
+		leaflet()
+	}
+)
+
+baselayers <- function(tiles) {
+	map <- leaflet::leaflet()
+	if ((!is.null(tiles)) && (length(tiles) > 0)) {
+		if ("Streets" %in% tiles) {
+			map <- leaflet::addTiles(map, group="Streets")			
+		} 
+		tiles <- tiles[tiles != "Streets"]
+		if (length(tiles) > 0) {
+			for (i in 1:length(tiles)) {
+				map <- leaflet::addProviderTiles(map, tiles[i], group=tiles[i])
+			}
+		}
+	}
+	map
+}
+
 
 setMethod("plet", signature(x="SpatVector"),
 	function(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", main=y, popup=TRUE, split=FALSE, collapse=FALSE, cex=1, map=NULL)  {
@@ -18,27 +40,15 @@ setMethod("plet", signature(x="SpatVector"),
 		
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 		if (is.null(map)) {
-			map <- leaflet::leaflet()
-			tiles <- unique(tiles)
+			tiles <- unique(as.character(tiles))
 			tiles <- tiles[tiles!=""]
+			map <- baselayers(tiles)
 		} else {
 			tiles <- NULL
 		}
 		g <- geomtype(x)
-		if ((!is.null(tiles)) && (length(tiles) > 0)) {
-			if ("Streets" %in% tiles) {
-				map <- leaflet::addTiles(map, group="Streets")			
-			} 
-			tiles2 <- tiles[tiles != "Streets"]
-			if (length(tiles) > 0) {
-				tiles2 <- tiles[tiles != "Streets"]
-				for (i in 1:length(tiles2)) {
-					map <- leaflet::addProviderTiles(map, tiles2[i], group=tiles2[i])
-				}
-			}
-		}
 		y <- y[1]
-		if (y == "") {
+		if (y == "") { # no legend
 			cols <- .getCols(nrow(x), col)
 			if (popup) {
 				pop <- popUp(x)
@@ -53,12 +63,12 @@ setMethod("plet", signature(x="SpatVector"),
 				map <- leaflet::addMarkers(map, data=x, label=1:nrow(x),  
 							col=cols, fillOpacity=alpha, popup=pop)			
 			}
-			if (!all(tiles == "")) {
+			if (length(tiles) > 1) {
 				map <- leaflet::addLayersControl(map, baseGroups = tiles, 
 						options = leaflet::layersControlOptions(collapsed=collapse))
 			}
 			map
-		} else {
+		} else { # legend
 			if (is.numeric(y)) {
 				y <- round(y)
 				stopifnot((y > 0) && (y <= nlyr(x)))
@@ -67,7 +77,7 @@ setMethod("plet", signature(x="SpatVector"),
 			stopifnot(y %in% names(x))
 			u <- unique(x[[y, drop=TRUE]])
 			cols <- .getCols(length(u), col)
-			if (split) {
+			if (split) { 
 				for (i in seq_along(u)) {
 					s <- x[x[[y]] == u[i], ]
 					if (popup) {
@@ -84,14 +94,14 @@ setMethod("plet", signature(x="SpatVector"),
 							col=cols[i], fillOpacity=alpha, popup=pop)
 					}
 				}
-				if (all(tiles == "")) {
-					map <- leaflet::addLayersControl(map, overlayGroups = u, 
-						options = leaflet::layersControlOptions(collapsed=collapse))
-				} else {
+				if (length(tiles) > 1) {
 					map <- leaflet::addLayersControl(map, baseGroups = tiles, overlayGroups = u, 
 						options = leaflet::layersControlOptions(collapsed=collapse))
+				} else {
+					map <- leaflet::addLayersControl(map, overlayGroups = u, 
+						options = leaflet::layersControlOptions(collapsed=collapse))
 				}
-			} else {
+			} else { # do not split
 				values <- x[[y,drop=TRUE]]
 				vcols <- cols[as.numeric(as.factor(values))]
 				if (popup) {
@@ -107,14 +117,15 @@ setMethod("plet", signature(x="SpatVector"),
 					map <- leaflet::addCircleMarkers(map, data=x, label=values,  
 						col=vcols, radius=cex, popup=pop, fillOpacity=alpha)
 				}
-				if (!all(tiles == "")) {
+				if (length(tiles) > 1) {
 					map <- leaflet::addLayersControl(map, baseGroups = tiles, 
 						options = leaflet::layersControlOptions(collapsed=collapse))
 				}
 
 			}
 			if (!is.null(legend)) {
-				map <- leaflet::addLegend(map, position=legend, colors=cols, labels=u, opacity=1, title=y[1])
+				main <- gsub("\n", "</br>", main[1])
+				map <- leaflet::addLegend(map, position=legend, colors=cols, labels=u, opacity=1, title=main)
 			}
 			map
 		}
@@ -182,28 +193,21 @@ setMethod("plet", signature(x="SpatRaster"),
 
 		alpha <- max(0, min(1, alpha))
 		if (is.null(map)) {
-			map <- leaflet::leaflet()
-			tiles <- unique(tiles)
+			tiles <- unique(as.character(tiles))
 			tiles <- tiles[tiles!=""]
+			if (length(tiles) > 1) {
+				tiles <- tiles[1]
+				warn("plet", "only a single tileset can be used with raster data")
+			}
+			map <- baselayers(tiles)
 		} else {
 			tiles <- NULL
 		}
 		if (missing(col)) {
 			col <- rev(grDevices::terrain.colors(255))
 		}
-		if (length(tiles) > 0) {
-			tiles <- unique(tiles)
-			if (length(tiles) > 1) {
-				tiles <- tiles[1]
-				warn("plet", "only a single tileset can be used with raster data")
-			}
-			if (tiles == "Streets") {
-				map <- leaflet::addTiles(map)
-			} else {
-				map <- leaflet::addProviderTiles(map, tiles)
-			}
-		}
 		
+		main <- gsub("\n", "</br>", main)
 		if (length(main) != length(y)) {
 			main <- rep_len(main, length(x))[y]
 		}

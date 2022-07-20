@@ -3,6 +3,7 @@
 \docType{methods}
 
 \alias{plet}
+\alias{plet,missing-method}
 \alias{plet,SpatRaster-method}
 \alias{plet,SpatVector-method}
 \alias{lines,leaflet-method}
@@ -58,19 +59,26 @@ v <- vect(system.file("ex/lux.shp", package="terra"))
 p <- spatSample(as.polygons(v, ext=T), 10)
 values(p) = data.frame(id=11:20, name=letters[1:10])
 
-m <- plet(v, "NAME_1", split=TRUE, alpha=.2)
+m <- plet(v, "NAME_1", alpha=.5, tiles="")
 m <- points(m, p, col="gray", cex=2, popup=T)
 lines(m, v)
 
+plet(v, "NAME_1", split=TRUE, alpha=.2) |> 
+  points(p, col="gray", cex=2, popup=T) |> lines(v)
+
+
 r <- rast(system.file("ex/elev.tif", package="terra"))
-plet(r) |> lines(v, lwd=1)
+plet(r, main="Hi\nthere") |> lines(v, lwd=1)
 
 plet(r, tiles="Streets") |> lines(v, lwd=2, col="blue")
 
 x <- c(r, 50*classify(r, 5))
 names(x) <- c("first", "second")
 
+# each their own legend
 plet(x, 1:2, tiles="Streets", collapse=FALSE) |> lines(v, lwd=2, col="blue")
+
+# shared legend
 plet(x, 1:2, tiles="Streets", shared=TRUE, collapse=FALSE) |> lines(v, lwd=2, col="blue")
 
 }}}}

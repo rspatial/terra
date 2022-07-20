@@ -179,7 +179,7 @@ function(x, y, ...) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
-function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
+function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, ID=TRUE, as.spatvector=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
 
 	nl <- nlyr(x)
 	useLyr <- FALSE
@@ -332,13 +332,24 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 			e <- ee
 		}
 	}
+	if (as.spatvector) {
+		if (nrow(e) == nrow(y)) {
+			e <- cbind(y, e[,-1,drop=FALSE])
+		} else {
+			warn("extract", "cannot return a SpatVector because the number of records extracted does not match the number of rows in y (perhaps you need to use a summarizing function")
+		}
+	} else if (!ID) {
+		if (ncol(e) > nlyr(x)) {
+			e$ID <- NULL
+		}
+	}
 	e
 })
 
 setMethod("extract", signature(x="SpatRaster", y="sf"),
-	function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
+	function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, ID=TRUE, as.spatvector=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
 		y <- vect(y)
-		extract(x, y, fun=fun, method=method, list=list, factors=factors, cells=cells, xy=xy, weights=weights, exact=exact, touches=touches, layer=layer, ...)
+		extract(x, y, fun=fun, method=method, list=list, factors=factors, cells=cells, xy=xy, ID=TRUE, as.spatvector=FALSE, weights=weights, exact=exact, touches=touches, layer=layer, ...)
 	}
 )
 
