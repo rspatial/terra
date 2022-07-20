@@ -68,7 +68,7 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 		v <- focalValues(x, w, trunc(nrow(x)/2), 1)[ncol(x)/2, ,drop=FALSE]
 		if (dow) {
 			if (any(is.na(m))) {
-				v <- v[k] * mm
+				v <- v[,k,drop=FALSE] * mm
 			} else {
 				v <- v * m
 			}
