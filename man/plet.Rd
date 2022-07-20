@@ -20,8 +20,8 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 }
 
 \usage{
-\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, 
-  maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
+\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, maxcell=500000,
+   legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
 
 
 \S4method{plet}{SpatVector}(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE,
