@@ -56,13 +56,18 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, tiles<span class="op">=</span><span class="cn">NULL</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, shared<span class="op">=</span><span class="cn">FALSE</span>, main<span class="op">=</span><span class="va">y</span>, collapse<span class="op">=</span><span class="cn">TRUE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
+<span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, tiles<span class="op">=</span><span class="cn">NULL</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, shared<span class="op">=</span><span class="cn">FALSE</span>, main<span class="op">=</span><span class="va">y</span>, collapse<span class="op">=</span><span class="cn">TRUE</span>, panel<span class="op">=</span><span class="cn">FALSE</span>, project<span class="op">=</span><span class="cn">TRUE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
+
 
 <span class="co"># S4 method for SpatVector</span>
-<span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="st">""</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">1</span>, tiles<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Streets"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span><span class="op">)</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, main<span class="op">=</span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, split<span class="op">=</span><span class="cn">FALSE</span>, collapse<span class="op">=</span><span class="cn">FALSE</span>, cex<span class="op">=</span><span class="fl">1</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
+<span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="st">""</span>, <span class="va">col</span>, main<span class="op">=</span><span class="va">y</span>, alpha<span class="op">=</span><span class="fl">1</span>, cex<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">2</span>, fill<span class="op">=</span><span class="fl">0</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, label<span class="op">=</span><span class="cn">FALSE</span>, split<span class="op">=</span><span class="cn">FALSE</span>, tiles<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Streets"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span><span class="op">)</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, collapse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatVectorCollection</span>
+<span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">1</span>, cex<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">2</span>, fill<span class="op">=</span><span class="fl">0</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, label<span class="op">=</span><span class="cn">FALSE</span>, tiles<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Streets"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span><span class="op">)</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, collapse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
+
 
 <span class="co"># S4 method for leaflet</span>
-<span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, lwd<span class="op">=</span><span class="fl">3</span>, alpha<span class="op">=</span><span class="fl">1</span><span class="op">)</span>
+<span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, lwd<span class="op">=</span><span class="fl">2</span>, alpha<span class="op">=</span><span class="fl">1</span><span class="op">)</span>
 
 <span class="co"># S4 method for leaflet</span>
 <span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, cex<span class="op">=</span><span class="fl">1</span>, alpha<span class="op">=</span><span class="fl">1</span>, popup<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
@@ -116,6 +121,15 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
   <dt>popup</dt>
 <dd><p>logical. Should pop-ups be created?</p></dd>
 
+  <dt>labels</dt>
+<dd><p>logical. Should mouse-over labels be added?</p></dd>
+
+  <dt>panel</dt>
+<dd><p>logical. Should SpatRaster layers be shown as a panel"</p></dd>
+
+  <dt>project</dt>
+<dd><p>logical. Can be set to <code>FALSE</code> if the map projection is already equivalent to EPSG:3857</p></dd>
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -138,6 +152,10 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">plet</span><span class="op">(</span><span class="va">v</span>, <span class="st">"NAME_1"</span>, split<span class="op">=</span><span class="cn">TRUE</span>, alpha<span class="op">=</span><span class="fl">.2</span><span class="op">)</span> |&gt; </span>
 <span class="r-in">  <span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="st">"gray"</span>, cex<span class="op">=</span><span class="fl">2</span>, popup<span class="op">=</span><span class="cn">T</span><span class="op">)</span> |&gt; <span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="svc.html">svc</a></span><span class="op">(</span><span class="va">v</span>, <span class="va">p</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"the polys"</span>, <span class="st">"set of points"</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">plet</span><span class="op">(</span><span class="va">s</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span>
