@@ -20,12 +20,17 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 }
 
 \usage{
-\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", main=names(x), shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
+\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, 
+  maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
 
 
-\S4method{plet}{SpatVector}(x, y="", col, main=y, alpha=1, cex=1, lwd=2, fill=0, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", collapse=FALSE, map=NULL)
+\S4method{plet}{SpatVector}(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE,
+   label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
+   legend="bottomright", collapse=FALSE, map=NULL)
 
-\S4method{plet}{SpatVectorCollection}(x, col, alpha=1, cex=1, lwd=2, fill=0, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", collapse=FALSE, map=NULL)
+\S4method{plet}{SpatVectorCollection}(x, col, alpha=1, fill=0, cex=1, lwd=2, popup=TRUE, 
+   label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
+   legend="bottomright", collapse=FALSE, map=NULL)
 
 
 \S4method{lines}{leaflet}(x, y, col, lwd=2, alpha=1)
