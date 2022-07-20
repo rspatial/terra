@@ -208,7 +208,7 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 
 
 setMethod("lines", signature(x="leaflet"),
-	function(x, y, col, lwd=2, alpha=1, collapse=FALSE)  {
+	function(x, y, col, lwd=2, alpha=1)  {
 		if (inherits(y, "SpatVector")) {
 			if (nrow(y) == 0) return(x)
 			y <- makelonlat(y)
@@ -232,6 +232,7 @@ setMethod("lines", signature(x="leaflet"),
 			for (i in 1:length(nms)) {
 				x <- leaflet::addPolylines(x, data=y[i], weight=lwd[i], opacity=alpha[i], col=cols[i], group=nms[i])
 			}
+			collapse=FALSE
 			leaflet::addLayersControl(x, overlayGroups = nms, options = leaflet::layersControlOptions(collapsed=collapse))	
 		}
 	}

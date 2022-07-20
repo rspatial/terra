@@ -6,7 +6,7 @@
 \alias{plet,missing-method}
 \alias{plet,SpatRaster-method}
 \alias{plet,SpatVector-method}
-\alias{plet,SpatVectorCollection}
+\alias{plet,SpatVectorCollection-method}
 
 \alias{lines,leaflet-method}
 \alias{points,leaflet-method}
@@ -20,7 +20,7 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 }
 
 \usage{
-\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", shared=FALSE, main=y, collapse=TRUE, panel=FALSE, project=TRUE, map=NULL)
+\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", main=names(x), shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
 
 
 \S4method{plet}{SpatVector}(x, y="", col, main=y, alpha=1, cex=1, lwd=2, fill=0, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", collapse=FALSE, map=NULL)
@@ -37,7 +37,8 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
   \item{x}{SpatRaster, SpatVector, or leaflet object}
   \item{y}{missing, or positive integer, or character (variable or layer name) indicating the layer(s) to be plotted. If \code{x} is a SpatRater, you can select multiple layers}
   \item{col}{character. Vector of colors or color generating function}
-  \item{alpha}{Number between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque)}
+  \item{alpha}{Number between 0 and 1 to set the transparency for lines (0 is transparent, 1 is opaque)}
+  \item{fill}{Number between 0 and 1 to set the transparency for polygon areas (0 is transparent, 1 is opaque)}
   \item{tiles}{character or NULL. Names of background tile providers}
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}  
   \item{legend}{character to indicate the legend position ("bottomleft", "bottomright", "topleft" or "topright") or NULL to suppress the legend}
@@ -50,7 +51,7 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
   \item{lwd}{numeric, line-width. See \code{\link{par}}}
   \item{popup}{logical. Should pop-ups be created?}
-  \item{labels}{logical. Should mouse-over labels be added?}
+  \item{label}{logical. Should mouse-over labels be added?}
   \item{panel}{logical. Should SpatRaster layers be shown as a panel"}
   \item{project}{logical. Can be set to \code{FALSE} if the map projection is already equivalent to EPSG:3857}
 }
