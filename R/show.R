@@ -100,7 +100,11 @@ setMethod ("show" , "SpatVectorCollection",
 	function(object) {
 		cat(" class       :", class(object), "\n")
 		cat(" length      :", length(object), "\n")
-		for (i in 1:length(object)) {
+		n <- nn <- length(object)
+		if (n > 15) {
+			nn <- 15
+		}
+		for (i in 1:nn) {
 			v <- object[i]
 			if (i==1) {
 				cat(" geometry    : ", geomtype(v), " (", nrow(v) , ")\n", sep="")
@@ -108,6 +112,15 @@ setMethod ("show" , "SpatVectorCollection",
 				cat("               ", geomtype(v), " (", nrow(v) , ")\n", sep="")
 			}
 		}
+		if (n > nn) {
+			cat("               ", "   and ", n-nn, "more\n", sep="")			
+		}
+		nms <- names(object)
+		if (length(nms) > 10) {
+			nms <- c(nms[1:9], "...")
+		}
+		nms <- paste(nms, collapse=", ")
+		cat(" names       :", nms, "\n")
 	}
 )
 

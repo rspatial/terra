@@ -226,7 +226,7 @@ setMethod("names", signature(x="SpatVectorCollection"),
 setMethod("names<-", signature(x="SpatVectorCollection"),
 	function(x, value) {
 		x@ptr <- x@ptr$deepcopy()
-		x@ptr$names <- enc2utf8(as.character(value))
+		x@ptr$setNames(enc2utf8(as.character(value)), FALSE)
 		x
 	}
 )

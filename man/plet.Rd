@@ -6,6 +6,8 @@
 \alias{plet,missing-method}
 \alias{plet,SpatRaster-method}
 \alias{plet,SpatVector-method}
+\alias{plet,SpatVectorCollection}
+
 \alias{lines,leaflet-method}
 \alias{points,leaflet-method}
 
@@ -18,11 +20,15 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 }
 
 \usage{
-\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", shared=FALSE, main=y, collapse=TRUE, map=NULL)
+\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, tiles=NULL, maxcell=500000, legend="bottomright", shared=FALSE, main=y, collapse=TRUE, panel=FALSE, project=TRUE, map=NULL)
 
-\S4method{plet}{SpatVector}(x, y="", col, alpha=1, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", main=names(x), popup=TRUE, split=FALSE, collapse=FALSE, cex=1, map=NULL)
 
-\S4method{lines}{leaflet}(x, y, col, lwd=3, alpha=1)
+\S4method{plet}{SpatVector}(x, y="", col, main=y, alpha=1, cex=1, lwd=2, fill=0, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", collapse=FALSE, map=NULL)
+
+\S4method{plet}{SpatVectorCollection}(x, col, alpha=1, cex=1, lwd=2, fill=0, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", collapse=FALSE, map=NULL)
+
+
+\S4method{lines}{leaflet}(x, y, col, lwd=2, alpha=1)
 
 \S4method{points}{leaflet}(x, y, col, cex=1, alpha=1, popup=FALSE)
 }
@@ -44,6 +50,9 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
   \item{lwd}{numeric, line-width. See \code{\link{par}}}
   \item{popup}{logical. Should pop-ups be created?}
+  \item{labels}{logical. Should mouse-over labels be added?}
+  \item{panel}{logical. Should SpatRaster layers be shown as a panel"}
+  \item{project}{logical. Can be set to \code{FALSE} if the map projection is already equivalent to EPSG:3857}
 }
 
 \seealso{
@@ -65,6 +74,10 @@ lines(m, v)
 
 plet(v, "NAME_1", split=TRUE, alpha=.2) |> 
   points(p, col="gray", cex=2, popup=T) |> lines(v)
+
+s <- svc(v, p)
+names(s) <- c("the polys", "set of points")
+plet(s, col=c("red", "blue"), lwd=1)
 
 
 r <- rast(system.file("ex/elev.tif", package="terra"))
