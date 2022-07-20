@@ -56,7 +56,7 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, tiles<span class="op">=</span><span class="cn">NULL</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, shared<span class="op">=</span><span class="cn">FALSE</span>, main<span class="op">=</span><span class="va">y</span>, collapse<span class="op">=</span><span class="cn">TRUE</span>, panel<span class="op">=</span><span class="cn">FALSE</span>, project<span class="op">=</span><span class="cn">TRUE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
+<span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, tiles<span class="op">=</span><span class="cn">NULL</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, main<span class="op">=</span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, shared<span class="op">=</span><span class="cn">FALSE</span>, panel<span class="op">=</span><span class="cn">FALSE</span>, collapse<span class="op">=</span><span class="cn">TRUE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span> 
 
 
 <span class="co"># S4 method for SpatVector</span>
@@ -85,7 +85,10 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
 <dd><p>character. Vector of colors or color generating function</p></dd>
 
   <dt>alpha</dt>
-<dd><p>Number between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque)</p></dd>
+<dd><p>Number between 0 and 1 to set the transparency for lines (0 is transparent, 1 is opaque)</p></dd>
+
+  <dt>fill</dt>
+<dd><p>Number between 0 and 1 to set the transparency for polygon areas (0 is transparent, 1 is opaque)</p></dd>
 
   <dt>tiles</dt>
 <dd><p>character or NULL. Names of background tile providers</p></dd>
@@ -121,7 +124,7 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
   <dt>popup</dt>
 <dd><p>logical. Should pop-ups be created?</p></dd>
 
-  <dt>labels</dt>
+  <dt>label</dt>
 <dd><p>logical. Should mouse-over labels be added?</p></dd>
 
   <dt>panel</dt>
