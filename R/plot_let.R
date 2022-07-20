@@ -17,7 +17,7 @@ makelonlat <- function(x) {
 
 setMethod("plet", signature(x="missing"),
 	function(x) {
-		leaflet()
+		leaflet::leaflet()
 	}
 )
 
@@ -323,7 +323,7 @@ setMethod("plet", signature(x="SpatRaster"),
 		alpha <- max(0, min(1, alpha))
 		if (panel) {
 			tiles <- NULL
-			p <- make.panel(x, maxcell, add)
+			p <- make.panel(x, maxcell) #, add)
 			x <- p[[1]]
 			p <- p[[2]]
 			add <- p[[3]]
@@ -364,8 +364,8 @@ setMethod("plet", signature(x="SpatRaster"),
 			}
 			if (panel) {
 				#map <- leaflet::addCircleMarkers(map, data=p, label=p$label, radius=1, opacity=1, col="red")
-				map <- addLabelOnlyMarkers(map, label=p$label, data=p, 
-                      labelOptions = labelOptions(noHide = T, textOnly = T))
+				map <- leaflet::addLabelOnlyMarkers(map, label=p$label, data=p, 
+                      labelOptions = leaflet::labelOptions(noHide = T, textOnly = T))
 			}			
 		} else {
 			nms <- make.unique(names(x))

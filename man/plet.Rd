@@ -53,7 +53,6 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
   \item{popup}{logical. Should pop-ups be created?}
   \item{label}{logical. Should mouse-over labels be added?}
   \item{panel}{logical. Should SpatRaster layers be shown as a panel"}
-  \item{project}{logical. Can be set to \code{FALSE} if the map projection is already equivalent to EPSG:3857}
 }
 
 \seealso{
