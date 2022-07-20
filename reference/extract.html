@@ -57,8 +57,8 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,SpatVector</span>
 <span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, fun<span class="op">=</span><span class="cn">NULL</span>, method<span class="op">=</span><span class="st">"simple"</span>, list<span class="op">=</span><span class="cn">FALSE</span>, factors<span class="op">=</span><span class="cn">TRUE</span>, 
-        cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, weights<span class="op">=</span><span class="cn">FALSE</span>, exact<span class="op">=</span><span class="cn">FALSE</span>,
-        touches<span class="op">=</span><span class="fu"><a href="geomtype.html">is.lines</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, layer<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
+        cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, ID<span class="op">=</span><span class="cn">TRUE</span>, as.spatvector<span class="op">=</span><span class="cn">FALSE</span>, weights<span class="op">=</span><span class="cn">FALSE</span>,
+    exact<span class="op">=</span><span class="cn">FALSE</span>, touches<span class="op">=</span><span class="fu"><a href="geomtype.html">is.lines</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, layer<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,SpatExtent</span>
 <span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, factors<span class="op">=</span><span class="cn">TRUE</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
@@ -101,6 +101,12 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 
 <dt>xy</dt>
 <dd><p>logical. If <code>TRUE</code> the coordinates of the cells are also returned, unless <code>fun</code> is not <code>NULL</code>. Also see <code><a href="xyCellFrom.html">xyFromCell</a></code></p></dd>
+
+<dt>ID</dt>
+<dd><p>logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of input SpatVector <code>y</code></p></dd>
+
+<dt>as.vector</dt>
+<dd><p>Should the extracted values be combined with the input SpatVector <code>y</code>?</p></dd>
 
 <dt>weights</dt>
 <dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean</p></dd>
