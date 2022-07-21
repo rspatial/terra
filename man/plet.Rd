@@ -20,16 +20,17 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 }
 
 \usage{
-\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, maxcell=500000,
-   legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
+\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, main=names(x), 
+   tiles=NULL, wrap=TRUE, maxcell=500000, legend="bottomright", 
+   shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
 
 
 \S4method{plet}{SpatVector}(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE,
    label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
-   legend="bottomright", collapse=FALSE, map=NULL)
+   wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)
 
 \S4method{plet}{SpatVectorCollection}(x, col, alpha=1, fill=0, cex=1, lwd=2, popup=TRUE, 
-   label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
+   label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE,
    legend="bottomright", collapse=FALSE, map=NULL)
 
 
@@ -45,6 +46,7 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
   \item{alpha}{Number between 0 and 1 to set the transparency for lines (0 is transparent, 1 is opaque)}
   \item{fill}{Number between 0 and 1 to set the transparency for polygon areas (0 is transparent, 1 is opaque)}
   \item{tiles}{character or NULL. Names of background tile providers}
+  \item{wrap}{logical. if \code{TRUE}, tiles wrap around}
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}  
   \item{legend}{character to indicate the legend position ("bottomleft", "bottomright", "topleft" or "topright") or NULL to suppress the legend}
   \item{main}{character. Title for the legend. The length should be 1 if \code{x} is a SpatVector and length nlyr(x) if \code{x} is a SpatVector}

@@ -30,7 +30,7 @@ The shortest distance to the cells with the \code{target} value is computed for 
 }
 
 
-\seealso{See \code{\link[terra]{distance}} for "as the crow flies" distance} 
+\seealso{See \code{\link[terra]{distance}} for "as the crow flies" distance, and \code{\link{costDistance}} for distance across a landscape with variable friction} 
 
 
 \value{SpatRaster}

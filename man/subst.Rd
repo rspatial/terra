@@ -17,7 +17,7 @@ Substitute(replace) cell values of a SpatRaster with a new value. See \code{\lin
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{from}{numeric value(s). Normally a vector of the same length as `to`. If \code{x} has multiple layers, it can also be a matrix of numeric value(s) where \code{nrow(x) == length(from)}. In that case the output has a single layer, with values based on the combination of the values of the input layers}
+  \item{from}{numeric value(s). Normally a vector of the same length as `to`. If \code{x} has multiple layers, it can also be a matrix of numeric value(s) where \code{nrow(x) == length(to)}. In that case the output has a single layer, with values based on the combination of the values of the input layers}
   \item{to}{numeric value(s). Normally a vector of the same length as `from`. If \code{x} has a single layer, it can also be a matrix of numeric value(s) where \code{nrow(x) == length(from)}. In that case the output has multiple layers, one for each column in \code{to}} 
   \item{filename}{character. Output filename}
   \item{...}{Additional arguments for writing files as in \code{\link{writeRaster}}}

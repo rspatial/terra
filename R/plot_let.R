@@ -21,16 +21,18 @@ setMethod("plet", signature(x="missing"),
 	}
 )
 
-baselayers <- function(tiles) {
+baselayers <- function(tiles, wrap=TRUE) {
 	map <- leaflet::leaflet()
 	if ((!is.null(tiles)) && (length(tiles) > 0)) {
 		if ("Streets" %in% tiles) {
-			map <- leaflet::addTiles(map, group="Streets")			
+			map <- leaflet::addTiles(map, group="Streets", 
+			       options=leaflet::tileOptions(noWrap = !wrap))
 		} 
 		tiles <- tiles[tiles != "Streets"]
 		if (length(tiles) > 0) {
 			for (i in 1:length(tiles)) {
-				map <- leaflet::addProviderTiles(map, tiles[i], group=tiles[i])
+				map <- leaflet::addProviderTiles(map, tiles[i], group=tiles[i], 
+					       options=leaflet::tileOptions(noWrap = !wrap))
 			}
 		}
 	}
@@ -39,7 +41,7 @@ baselayers <- function(tiles) {
 
 
 setMethod("plet", signature(x="SpatVector"),
-	function(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", collapse=FALSE, map=NULL)  {
+	function(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
 
 		if (missing(col)) col = grDevices::rainbow		
 		alpha <- max(0, min(1, alpha))
@@ -50,7 +52,7 @@ setMethod("plet", signature(x="SpatVector"),
 		if (is.null(map)) {
 			tiles <- unique(as.character(tiles))
 			tiles <- tiles[tiles!=""]
-			map <- baselayers(tiles)
+			map <- baselayers(tiles, wrap)
 		} else {
 			tiles <- NULL
 		}
@@ -143,14 +145,14 @@ setMethod("plet", signature(x="SpatVector"),
 
 
 setMethod("plet", signature(x="SpatVectorCollection"),
-	function(x, col, alpha=1, fill=0, cex=1, lwd=2, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), legend="bottomright", collapse=FALSE, map=NULL)  {
+	function(x, col, alpha=1, fill=0, cex=1, lwd=2, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
 
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 
 		if (is.null(map)) {
 			tiles <- unique(as.character(tiles))
 			tiles <- tiles[tiles!=""]
-			map <- baselayers(tiles)
+			map <- baselayers(tiles, wrap)
 		} else {
 			tiles <- NULL
 		}
@@ -264,12 +266,14 @@ setMethod("points", signature(x="leaflet"),
 
 
 make.panel <- function(x, maxcell) {
-	nl <- nlyr(x)
-	nc <- ceiling(3 * nl / 4)
-	nr <- ceiling(nl / nc)
-	nc <- ceiling(nl / nr)
 	x <- spatSample(x, maxcell/nl, "regular", as.raster=TRUE)
-	x <- project(x, "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs")
+	if (is.lonlat(x)) {
+		asp <- 1/cos((mean(ext(x)[3:4]) * pi)/180)
+	} else {
+		asp <- 1
+	} 
+	crs(x) <- "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
+	ext(x) = c(0,1,0,asp)
 	#if (!is.null(add)) {
 	#	e <- as.vector(ext(x))
 	#	for (i in 1:length(add)) {
@@ -277,14 +281,20 @@ make.panel <- function(x, maxcell) {
 	#		add[i] <- rescale(v, fx=1/diff(e[1:2]), fy=1/diff(e[3:4]))
 	#	}
 	#}
-	ext(x) <- c(0,1,0,1)
+
+	nl <- nlyr(x)
+	asp <- asp * nrow(x) / ncol(x)
+	nc <- ceiling(2*sqrt(nl/2) * asp)
+	nr <- ceiling(nl / nc)
+	nc <- ceiling(nl / nr)
+
+	e <- as.vector(ext(x))
 	r <- res(x)
-	skiprow <- -1 - max(1, min(10, trunc(nrow(x)/20))) *r[2]
+	skiprow <- -asp - max(1, min(10, trunc(nrow(x)/20))) *r[2]
 	skipcol <- 1 + max(1, min(10, trunc(ncol(x)/20))) *r[1]
 #	skipcol <- 1 + max(r[1], min(10, r[1] * trunc(nrow(x)/20)))
 	labs <- data.frame(x=0, y=0, label=names(x))
-	rw = 0
-	cl = 0
+	rw = cl = 0
 	y <- vector(mode="list", length=nl)
 	off <- 0 #.4 / nr
 	for (i in 1:nl) {
@@ -305,7 +315,7 @@ make.panel <- function(x, maxcell) {
 
 
 setMethod("plet", signature(x="SpatRaster"),
-	function(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
+	function(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, wrap=TRUE, maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 
 #		if (!is.null(add)) {
@@ -339,7 +349,7 @@ setMethod("plet", signature(x="SpatRaster"),
 				tiles <- tiles[1]
 				warn("plet", "only a single tileset can be used with raster data")
 			}
-			map <- baselayers(tiles)
+			map <- baselayers(tiles, wrap)
 		} else {
 			tiles <- NULL
 		}
