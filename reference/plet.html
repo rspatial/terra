@@ -18,7 +18,7 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-3</span>
       </span>
     </div>
 
@@ -56,18 +56,19 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, main<span class="op">=</span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, tiles<span class="op">=</span><span class="cn">NULL</span>, maxcell<span class="op">=</span><span class="fl">500000</span>,
-   legend<span class="op">=</span><span class="st">"bottomright"</span>, shared<span class="op">=</span><span class="cn">FALSE</span>, panel<span class="op">=</span><span class="cn">FALSE</span>, collapse<span class="op">=</span><span class="cn">TRUE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span> 
+<span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, main<span class="op">=</span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, 
+   tiles<span class="op">=</span><span class="cn">NULL</span>, wrap<span class="op">=</span><span class="cn">TRUE</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, 
+   shared<span class="op">=</span><span class="cn">FALSE</span>, panel<span class="op">=</span><span class="cn">FALSE</span>, collapse<span class="op">=</span><span class="cn">TRUE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span> 
 
 
 <span class="co"># S4 method for SpatVector</span>
 <span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="st">""</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">1</span>, fill<span class="op">=</span><span class="fl">0</span>, main<span class="op">=</span><span class="va">y</span>, cex<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">2</span>, popup<span class="op">=</span><span class="cn">TRUE</span>,
    label<span class="op">=</span><span class="cn">FALSE</span>, split<span class="op">=</span><span class="cn">FALSE</span>, tiles<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Streets"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span><span class="op">)</span>, 
-   legend<span class="op">=</span><span class="st">"bottomright"</span>, collapse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
+   wrap<span class="op">=</span><span class="cn">TRUE</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, collapse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVectorCollection</span>
 <span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">1</span>, fill<span class="op">=</span><span class="fl">0</span>, cex<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">2</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, 
-   label<span class="op">=</span><span class="cn">FALSE</span>, tiles<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Streets"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span><span class="op">)</span>, 
+   label<span class="op">=</span><span class="cn">FALSE</span>, tiles<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Streets"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span><span class="op">)</span>, wrap<span class="op">=</span><span class="cn">TRUE</span>,
    legend<span class="op">=</span><span class="st">"bottomright"</span>, collapse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
 
 
@@ -97,6 +98,9 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
 
   <dt>tiles</dt>
 <dd><p>character or NULL. Names of background tile providers</p></dd>
+
+  <dt>wrap</dt>
+<dd><p>logical. if <code>TRUE</code>, tiles wrap around</p></dd>
 
   <dt>maxcell</dt>
 <dd><p>positive integer. Maximum number of cells to use for the plot</p></dd>
