@@ -438,15 +438,20 @@ function(x, i, j, ... , drop=TRUE) {
 	add <- any(grepl("drop", names(match.call())))
 	if (!drop) {
 		if (nargs() == 3) {
+			i <- positive_indices(i, ncell(x), caller=" [ ")
 			rc <- rowColFromCell(x, i)
 			e <- ext_from_rc(x, min(rc[,1]), max(rc[,1]), min(rc[,2]), max(rc[,2]))
 		} else {
+			i <- positive_indices(i, nrow(x), caller=" [ ")
 			e <- ext_from_rc(x, min(i), max(i), 1, ncol(x))
 		}
 		return(crop(x, e))
 	}
 	if (nargs() > (2+add)) {
+		i <- positive_indices(i, nrow(x), caller=" [ ")
 		i <- cellFromRowColCombine(x, i, 1:ncol(x))
+	} else {
+		i <- positive_indices(i, ncell(x), caller=" [ ")	
 	}
 	extract_cell(x, i, drop=FALSE)
 })
