@@ -147,12 +147,13 @@ setMethod("set.crs", signature("SpatRaster"),
 )
 
 
-setMethod("crs<-", signature("SpatRaster", "character"),
-	function(x, ..., value) {
-		x@ptr$set_crs(value[1])
-		messages(x, "crs<-")
-	}
-)
+
+#setMethod("crs<-", signature("SpatRaster", "character"),
+#	function(x, ..., value) {
+#		x@ptr$set_crs(value[1])
+#		messages(x, "crs<-")
+#	}
+#)
 
 
 setMethod("crs", signature("SpatVector"),
@@ -171,13 +172,13 @@ setMethod("crs", signature("SpatVectorProxy"),
 
 # breaks stppSim 1.2.3
 #
-#setMethod("crs", signature("sf"),
-#  function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
-#	  xcrs <- attr(x[[ attr(x, "sf_column") ]], "crs")$wkt
-#	  x <- vect(cbind(0,0), crs=xcrs)
-#	  .get_CRS(x, proj=proj, describe=describe, parse=parse)
-#  }
-#)
+setMethod("crs", signature("sf"),
+  function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+	  xcrs <- attr(x[[ attr(x, "sf_column") ]], "crs")$wkt
+	  x <- vect(cbind(0,0), crs=xcrs)
+	  .get_CRS(x, proj=proj, describe=describe, parse=parse)
+  }
+)
 
 setMethod("crs<-", signature("SpatVector", "ANY"),
 	function(x, value) {
