@@ -529,3 +529,23 @@ setMethod ("tail" , "SpatRaster",
 )
 
 
+setMethod ("str", "SpatRaster",
+	function(object, default=FALSE, ...) {
+		if (default) {
+			utils::str(object)
+		} else {
+			cat("Formal class 'SpatRaster' [package \"terra\"] with 1 slot\n  ..@ ptr:Reference class 'Rcpp_SpatRaster' [package \"terra\"] with 1 field\n")
+		}
+	}
+)
+
+setMethod ("str", "SpatVector",
+	function(object, default=FALSE, ...) {
+		if (default) {
+			utils::str(object)
+		} else {
+			cat("Formal class 'SpatVector' [package \"terra\"] with 1 slot\n  ..@ ptr:Reference class 'Rcpp_SpatVector' [package \"terra\"] with 1 field\n")
+		}
+	}
+)
+	

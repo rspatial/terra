@@ -31,11 +31,8 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 
 #else
 
-
 #include "ogr_spatialref.h"
 #include <gdal_priv.h> // GDALDriver
-
-
 
 bool is_ogr_error(OGRErr err, std::string &msg) {
 	if (err != OGRERR_NONE) {
@@ -238,7 +235,7 @@ bool wkt_from_string(std::string input, std::string& wkt, std::string& msg) {
 	if (input != "") {
 		OGRSpatialReference srs;
 		OGRErr e = srs.SetFromUserInput(input.c_str());
-		if (is_ogr_error(e, msg)) {
+		if (is_ogr_error(e, msg)) {	
 			return false;
 		}
 		success = wkt_from_spatial_reference(srs, wkt, msg);
