@@ -112,7 +112,7 @@ gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
 setMethod("describe", signature(x="character"),
 	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="") {
 
-		x <- .fullFilename(x[1])
+		x <- .fullFilename(x[1], FALSE)
 		if (meta) {
 			if (sds) {
 				return(.meta_sds(x, parse))
