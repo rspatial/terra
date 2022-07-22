@@ -131,18 +131,19 @@
 		out$leg$legend <- unique(na.omit(out$cats[ilevels, 2]))
 	}
 	if (!is.null(out$coltab)) {
-	# perhaps merge(z, cats, colors) instead for clarity
-		out$leg$fill <- out$coltab #//?
+		if (all_levels) {
+			mi <- match(out$cats[[1]], out$coltab[,1])
+			mi[is.na(mi)] <- 1
+			mc <- coltab[mi, ,drop=FALSE]
+			out$leg$fill <- grDevices::rgb(mc[,2], mc[,3], mc[,4], mc[,5], maxColorValue=255)
+		}
 		out$levels <- out$levels[!is.na(ilevels)]
 		m <- na.omit(match(out$cats[[1]][ilevels], out$coltab[,1]))
 		out$coltab <- out$coltab[m, ,drop=FALSE]
 		out$cols <- grDevices::rgb(out$coltab[,2], out$coltab[,3], out$coltab[,4], out$coltab[,5], maxColorValue=255)
 		i <- match(z, out$coltab[,1])
 		z <- out$cols[i]
-		#i <- match(ilevels, out$coltab[,1])
-		#out$cols <- out$cols[i]
 	} else {
-		#levlab <- data.frame(id=out$levels, lab=out$cats[[2]][ilevels], stringsAsFactors=FALSE)
 		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
 		leglevs <- na.omit(unique(levlab[,2]))
 		if (length(leglevs) == 0) {

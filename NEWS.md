@@ -1,12 +1,15 @@
+# version 1.6-4
 
-# version 1.6-1
+
+
+# version 1.6-3
 
 ## bug fixes
 
 - `subst` no longer uses values that it changed earlier on. [#639](https://github.com/rspatial/terra/issues/639) by Paul Smith
 - `as.points<SpatRaster>` could return wrong factor labels. [#640](https://github.com/rspatial/terra/issues/640) by Attilio Benini
 - `mask<SpatRaster,SpatVector>` crashed when the results were written to disk. [#646](https://github.com/rspatial/terra/issues/646) by Monika Anna Tomaszewska
-- `extract<SpatRaster,SpatVector(points)>(xy=TRUE)` returned the locations of the points, not the xy-coordinates of the cells.  [#650](https://github.com/rspatial/terra/issues/650) by Ward Fonteyn
+- `extract<SpatRaster,SpatVector(points)>(xy=TRUE)` returned the locations of the points, not the xy-coordinates of the cells. [#650](https://github.com/rspatial/terra/issues/650) by Ward Fonteyn
 - `wrap<SpatRaster>` did not return the correct labels for some categorical rasters. [#652](https://github.com/rspatial/terra/issues/652) by Jakub Nowosad
 - better support for non-latin characters in the legend [#658](https://github.com/rspatial/terra/issues/658) by Krzysztof Dyba
 - holes in small lon/lat polygons are now properly buffered [#689](https://github.com/rspatial/terra/issues/689) by David Hofmann
@@ -464,7 +467,7 @@ Released on 2021-05-13
 
 ## enhancements
 
-- `rast<Raster*>` now takes the crs from the Raster object, not from the file it may point to. Suggested by Floris Vanderhaeghe [#200](https://github.com/rspatial/terra/issues/200)
+- `rast<Raster*>` now takes the crs from the Raster object, not from the file it may point to. [#200] by Floris Vanderhaeghe 
 - `convhull` has a new argument `by=""` to make convex hulls for sub-sets of a SpatVector.
 - faster processing of large in memory rasters. See issue [#206](https://github.com/rspatial/terra/issues/206) by Krzysztof Dyba.
 
@@ -472,11 +475,11 @@ Released on 2021-05-13
 ## bug fixes
 
 - `extract` with multiple layers could return a data.frame where the values were not in the correct order (by row instead of by column)
-- `crop` works again with `sf` objects. Reported by Sebastian Brinkmann [#201](https://github.com/rspatial/terra/issues/201)
+- `crop` works again with `sf` objects. [#201] by Sebastian Brinkmann 
 - `vect<sf>` now also works for lines, and should be faster
-- `vect<character>` crashed R if a file had empty geometries. Reported by consumere [#202](https://github.com/rspatial/terra/issues/202)
-- `extract(points, bilinear=TRUE, cells=TRUE)` now works. Reported by fab4app [#203](https://github.com/rspatial/terra/issues/203)
-- `zonal` now works for `min` and `max`. Reported by Jakub Nowosad  [#207](https://github.com/rspatial/terra/issues/207)
+- `vect<character>` crashed R if a file had empty geometries. [#202] by consumere
+- `extract(points, bilinear=TRUE, cells=TRUE)` now works. [#203] by fab4app 
+- `zonal` now works for `min` and `max`. [#207] Reported by Jakub Nowosad
 
 
 ## name changes
@@ -499,7 +502,7 @@ Released on 2021-04-30
 
 - `trim` has a new argument `value` that allows trimming rows and columns with other values than the default `NA`
 - `rapp` has a new argument `clamp` that allows clamping start and end values to `1:nlyr(x)`, avoiding that all values are considered `NA`
-- `spatSample<SpatRaster>` has new arguments `as.points` and `values`. Getting values, cells and coordinates is no longer mutually exclusive. In response to [#191](https://github.com/rspatial/terra/issues/191). Requested by Agustin Lobo
+- `spatSample<SpatRaster>` has new arguments `as.points` and `values`. Getting values, cells and coordinates is no longer mutually exclusive. In response to [#191] by Agustin Lobo
 - `area<SpatRaster>` has a new argument `mask=FALSE`
 - `classify` can now take a single number to request that many cuts
 - `mosaic` and `merge` now warn and resample if rasters are not aligned
@@ -509,9 +512,9 @@ Released on 2021-04-30
 
 - `flip(x, direction="vertical")` no longer reverses the order of the layers
 - `extract` did not work for horizontal or vertical lines as their extent was considered invalid. Reported by Monika Tomaszewska
-- `autocor` did not handle NA values [#192](https://github.com/rspatial/terra/issues/192). Reported by Laurence Hawker
+- `autocor` did not handle NA values [#192] by Laurence Hawker
 - `nearest` now works for angular coordinates
-- The unit of `slope` in `terrain` was not correct (the tangent was returned instead of the slope) [#196](https://github.com/rspatial/terra/issues/196). Reported by Sven Alder
+- The unit of `slope` in `terrain` was not correct (the tangent was returned instead of the slope), [#196] by Sven Alder
 - `quantile` now works for rasters that have cells that are all `NA`. Reported by Jerry Nelson
 
 ## name changes

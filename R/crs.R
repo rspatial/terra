@@ -147,13 +147,12 @@ setMethod("set.crs", signature("SpatRaster"),
 )
 
 
-
-#setMethod("crs<-", signature("SpatRaster", "character"),
-#	function(x, ..., value) {
-#		x@ptr$set_crs(value[1])
-#		messages(x, "crs<-")
-#	}
-#)
+setMethod("crs<-", signature("SpatRaster", "character"),
+	function(x, ..., value) {
+		x@ptr$set_crs(value[1])
+		messages(x, "crs<-")
+	}
+)
 
 
 setMethod("crs", signature("SpatVector"),
