@@ -69,7 +69,7 @@ setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
 		x <- x[,isn]
 		if (geomtype(x) == "points") {
 			r <- !relate(x, z, "disjoint")
-			i <- apply(r, 1, \(i) if(any(i)) which(i) else (NA))
+			i <- apply(r, 1, function(i) if(any(i)) which(i) else (NA))
 			if (length(i) == 0) {
 				error("zonal", "there are no points in x that overlap with the polygons in z")		
 			}
