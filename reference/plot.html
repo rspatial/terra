@@ -55,8 +55,9 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,numeric</span>
 <span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, <span class="va">type</span>, mar<span class="op">=</span><span class="cn">NULL</span>, legend<span class="op">=</span><span class="cn">TRUE</span>, axes<span class="op">=</span><span class="cn">TRUE</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, 
-    maxcell<span class="op">=</span><span class="fl">500000</span>, smooth<span class="op">=</span><span class="cn">FALSE</span>, range<span class="op">=</span><span class="cn">NULL</span>, levels<span class="op">=</span><span class="cn">NULL</span>, fun<span class="op">=</span><span class="cn">NULL</span>, colNA<span class="op">=</span><span class="cn">NULL</span>,
-  alpha<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, decreasing<span class="op">=</span><span class="cn">FALSE</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, reset<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
+    maxcell<span class="op">=</span><span class="fl">500000</span>, smooth<span class="op">=</span><span class="cn">FALSE</span>, range<span class="op">=</span><span class="cn">NULL</span>, levels<span class="op">=</span><span class="cn">NULL</span>, all_levels<span class="op">=</span><span class="cn">FALSE</span>,
+  fun<span class="op">=</span><span class="cn">NULL</span>, colNA<span class="op">=</span><span class="cn">NULL</span>, alpha<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, decreasing<span class="op">=</span><span class="cn">FALSE</span>, grid<span class="op">=</span><span class="cn">FALSE</span>,
+  ext<span class="op">=</span><span class="cn">NULL</span>, reset<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,missing</span>
 <span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, <span class="va">main</span>, mar<span class="op">=</span><span class="cn">NULL</span>, <span class="va">nc</span>, <span class="va">nr</span>, maxnl<span class="op">=</span><span class="fl">16</span>, legend<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span>
@@ -124,7 +125,10 @@
 <dd><p>numeric. minimum and maximum values to be used for the continuous legend</p></dd>
 
   <dt>levels</dt>
-<dd><p>character. labels to be used for the classes legend</p></dd>
+<dd><p>character. labels for the legend when <code>type="classes"</code></p></dd>
+
+  <dt>all_levels</dt>
+<dd><p>logical. If <code>TRUE</code>, the legend shows all levels of a categorical raster, even if they are not present in the data</p></dd>
 
   <dt>fun</dt>
 <dd><p>function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector <code>v</code>, you could do <code>fun=function() lines(v)</code>. The function may have one argument, representing the the layer that is plotted (1 to the number of layers)</p></dd>
