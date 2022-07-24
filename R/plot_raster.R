@@ -131,7 +131,7 @@
 		out$leg$legend <- unique(na.omit(out$cats[ilevels, 2]))
 	}
 	if (!is.null(out$coltab)) {
-		if (all_levels) {
+		if (out$all_levels) {
 			mi <- match(out$cats[[1]], out$coltab[,1])
 			mi[is.na(mi)] <- 1
 			mc <- coltab[mi, ,drop=FALSE]

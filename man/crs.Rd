@@ -15,6 +15,8 @@
 \alias{crs<-,SpatVector-method}
 \alias{crs<-,SpatVector,ANY-method}
 
+\alias{crs,sf-method}
+
 \title{ Get or set a coordinate reference system }
 
 \description{
