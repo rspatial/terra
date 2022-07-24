@@ -37,7 +37,7 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 		m <- rep(1, prod(w))
 	}
 	cpp <- FALSE
-	txtfun <- .makeTextFun(fun)
+
 	if (is.character(txtfun)) {
 		if (is.null(wopt$names)) {
 			wopt$names <- paste0("focal_", txtfun)
@@ -130,7 +130,7 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 				}
 				if (nl > 1) {
 					if (outnl > 1) {
-						vv <- rbind(vv, v)
+						vv <- cbind(vv, v)
 					} else {
 						vv <- c(vv, v)
 					}
