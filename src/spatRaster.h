@@ -674,6 +674,7 @@ class SpatRaster {
 
 		void rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 
 		void rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 
+		void rasterizeLinesLength(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt);
 
 
 		SpatRaster replaceValues(std::vector<double> from, std::vector<double> to, long nl, bool keepcats, SpatOptions &opt);

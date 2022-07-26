@@ -21,6 +21,8 @@
 #include "distance.h"
 #include "vecmath.h"
 
+
+
 double rowColToCell(unsigned ncols, unsigned row, unsigned col) {
   return row * ncols + col;
 }
@@ -649,7 +651,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 	}
 
 	std::string gtype = v.type();
-	if (gtype != "polygons") weights = false;
+	if (gtype == "points") weights = false;
 
 	if (exact) weights = false;
     unsigned nl = nlyr();
@@ -721,8 +723,13 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 			p.srs = v.srs;
 			std::vector<double> cell, wgt;
 			if (weights) {
-				rasterizeCellsWeights(cell, wgt, p, opt);
+				if (gtype == "lines") {
+					rasterizeLinesLength(cell, wgt, p, opt);
+				}
 			} else if (exact) {
+				if (gtype == "lines") {	
+					rasterizeLinesLength(cell, wgt, p, opt);
+				}
 				rasterizeCellsExact(cell, wgt, p, opt);
 			} else {
 				cell = rasterizeCells(p, touches, opt);
@@ -752,8 +759,12 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 
 	std::vector<double> flat;
 	std::string gtype = v.type();
-	if (gtype != "polygons") weights = false;
-
+	if (gtype == "points") {
+		weights = false;
+		exact = false;
+	}
+	if (exact) weights = false;
+	
     unsigned nl = nlyr();
     unsigned ng = v.size();
 
@@ -786,7 +797,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 				std::vector<double> cellxy = cellFromXY(x, y);
 				xycells = xyFromCell(cellxy);
 			}
-			if (!cells & !xy & !weights) {
+			if (!cells & !xy) {
 				return( extractXYFlat(x, y, method, cells));
 			} else {
 				srcout = extractXY(x, y, method, cells);
@@ -844,9 +855,17 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 			p.srs = v.srs;
 			std::vector<double> cell, wgt;
 			if (weights) {
-				rasterizeCellsWeights(cell, wgt, p, opt);
+				if (gtype == "lines") {
+					rasterizeLinesLength(cell, wgt, p, opt);
+				} else {
+					rasterizeCellsWeights(cell, wgt, p, opt);
+				}
 			} else if (exact) {
-				rasterizeCellsExact(cell, wgt, p, opt);
+				if (gtype == "lines") {
+					rasterizeLinesLength(cell, wgt, p, opt);
+				} else {
+					rasterizeCellsExact(cell, wgt, p, opt);
+				}
 			} else {
 				cell = rasterizeCells(p, touches, opt);
             }
