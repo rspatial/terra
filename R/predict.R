@@ -93,39 +93,43 @@ parfun <- function(cls, d, fun, model, ...) {
 }
 
 
-
-.getFactors <- function(m, facts=NULL, lyrnms) {
-
-	if (!is.null(facts)) {
-		stopifnot(is.list(factors))
-		f <- names(factors)
-		if (any(trimws(f) == "")) {
-			error("predict", "all factors must be named")
+.getFactors <- function(model, fun, d, nl, const, na.rm, index, ...) {
+	if (!is.data.frame(d)) {
+		d <- data.frame(d)
+	}
+	if (! is.null(const)) {
+		for (i in 1:ncol(const)) {
+			d <- cbind(d, const[,i,drop=FALSE])
 		}
-	} else if (inherits(m, "randomForest")) {
-		f <- names(which(sapply(m$forest$xlevels, max) != "0"))
-		if (length(f) > 0) {
-			factors <- m$forest$xlevels[f]
+	}	
+	if (na.rm) {
+		n <- nrow(d)
+		i <- rowSums(is.na(d)) == 0
+		d <- d[i,,drop=FALSE]
+	}
+	if (nrow(d) > 0) {
+		r <- fun(model, d, ...)
+	}
+
+	if (inherits(model, "gstat")) {
+		nr <- max(nrow(d), 5)
+		xy <- d[1:nr,1:2]
+		if (all(xy == r[1:nr, 1:2])) {
+			r <- r[,-c(1:2)]   # x, y
 		}
-	} else if (inherits(m, "gbm")) {
-		dafr <- m$gbm.call$dataframe
-		i <- sapply(dafr, is.factor)
-		if (any(i)) {
-			j <- which(i)
-			factors <- list()
-			for (i in 1:length(j)) {
-				factors[[i]] <- levels(dafr[[ j[i] ]])
+	}
+
+	if (is.list(r) || is.data.frame(r)) {
+		out <- sapply(r, levels)
+		for (i in 1:length(out)) {
+			if (!is.null(out[[i]])) {
+				out[[i]] <- data.frame(value=1:length(out[[i]]), label=out[[i]])
 			}
-			names(factors) <- colnames(dafr)[j]
 		}
-	} else { #glm and others
-		try(factors <- m$xlevels, silent=TRUE)
+		out
+	} else {
+		NULL
 	}
-	if (!all(names(factors) %in% lyrnms)) {
-		ff <- f[!(f %in% lyrnms)]
-		error("predict", paste("factor name(s):", paste(ff, collapse=", "), " not in layer names"))
-	}
-	factors
 }
 
 setMethod("predict", signature(object="SpatRaster"),
@@ -194,11 +198,14 @@ setMethod("predict", signature(object="SpatRaster"),
 				} else {
 					nl <- length(r)
 				}
+				levs <- .getFactors(model, fun, d, nl, const, na.rm, index, ...)
 			} else {
 				warn("predict", "Cannot determine the number of output variables. Assuming 1. Use argument 'index' to set it manually")
+				levs <- NULL
 			}
 		}
 		out <- rast(object, nlyrs=nl)
+		levels(out) <- levs
 		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
 
 		if (cores > 1) {
