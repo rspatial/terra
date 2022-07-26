@@ -9,13 +9,14 @@ Make a focal ("moving window") weight matrix for use in the \code{\link{focal}} 
 }
 
 \usage{
-focalMat(x, d, type=c('circle', 'Gauss', 'rectangle'))
+focalMat(x, d, type=c('circle', 'Gauss', 'rectangle'), fillNA=FALSE)
 }
 
 \arguments{
 \item{x}{SpatRaster}
 \item{d}{numeric. If \code{type=circle}, the radius of the circle (in units of the crs). If \code{type=rectangle} the dimension of the rectangle (one or two numbers). If \code{type=Gauss} the size of sigma, and optionally another number to determine the size of the matrix returned (default is 3*sigma)} 
 \item{type}{character indicating the type of filter to be returned}
+\item{fillNA}{logical. If \code{TRUE}, zeros are set to \code{NA} such that they are ignored in the computations. Only applies to \code{type="circle"}}
 }
 
 \value{

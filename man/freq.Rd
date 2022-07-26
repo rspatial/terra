@@ -24,8 +24,7 @@ Frequency table of the values of a SpatRaster. \code{NA}s are not counted unless
 }
 
 \value{
-\code{matrix} or \code{data.frame} with 3 columns (layer, value, count) or, if \code{bylayer=FALSE} two columns (value, count). If any of the layers of \code{x} is categorical, there is an additional column (label). 
-A \code{data.frame} is returned if \code{usenames=TRUE} or if any of the layers of \code{x} is categorical.
+A \code{data.frame} with 3 columns (layer, value, count) unless \code{bylayer=FALSE} in which case a\code{data.frame} with two columns is returned (value, count). 
 }
 
 

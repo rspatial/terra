@@ -4,19 +4,21 @@
 # License GPL v3
 
 
-.circular.weight <- function(rs, d) {
+.circular.weight <- function(rs, d, fillNA=FALSE) {
 	nx <- 1 + 2 * floor(d/rs[1])
 	ny <- 1 + 2 * floor(d/rs[2])
 	m <- matrix(ncol=nx, nrow=ny)
 	m[ceiling(ny/2), ceiling(nx/2)] <- 1
-	if (nx == 1 & ny == 1) {
-		return(m)
-	} else {
+	if ((nx != 1) || (ny != 1)) {
 		x <- rast(m, crs="+proj=utm +zone=1 +datum=WGS84")
 		ext(x) <- c(xmin=0, xmax=nx*rs[1], ymin=0, ymax=ny*rs[2])
 		d <- as.matrix(distance(x), wide=TRUE) <= d
-		d / sum(d)
+		m <- d / sum(d)
 	}
+	if (fillNA) {
+		m[m <= 0] <- NA
+	}
+	m
 }
 
 
@@ -54,11 +56,11 @@
 
 
 
-focalMat <- function(x, d, type=c('circle', 'Gauss', 'rectangle')) {
+focalMat <- function(x, d, type=c('circle', 'Gauss', 'rectangle'), fillNA=FALSE) {
 	type <- match.arg(type)
 	x <- res(x)
 	if (type == 'circle') {
-		.circular.weight(x, d[1])
+		.circular.weight(x, d[1], fillNA)
 	} else if (type == 'Gauss') {
 		if (!length(d) %in% 1:2) {
 			error("focalMath", "if type=Gauss, d should be a vector of length 1 or 2")

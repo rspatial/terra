@@ -10,19 +10,31 @@
 \alias{max}
 \alias{which.min}
 \alias{which.max}
+\alias{any}
+\alias{all}
+\alias{prod}
+\alias{range}
+\alias{sum}
 
 \alias{mean,SpatRaster-method}
 \alias{mean,SpatVector-method}
 \alias{mean,SpatExtent-method}
 \alias{median,SpatRaster-method}
 \alias{median,SpatVector-method}
-\alias{stdev}
-\alias{stdev,SpatRaster-method}
 \alias{min,SpatRaster-method}
 \alias{max,SpatRaster-method}
 \alias{range,SpatRaster-method}
 \alias{which.min,SpatRaster-method}
 \alias{which.max,SpatRaster-method}
+
+\alias{any,SpatRaster-method}
+\alias{all,SpatRaster-method}
+\alias{prod,SpatRaster-method}
+\alias{range,SpatRaster-method}
+\alias{sum,SpatRaster-method}
+
+\alias{stdev}
+\alias{stdev,SpatRaster-method}
 
 
 \title{Summarize}
@@ -52,21 +64,31 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \S4method{range}{SpatRaster}(x, ..., na.rm=FALSE)
 
-\S4method{mean}{SpatRaster}(x, ..., trim=NA, na.rm=FALSE)
+\S4method{prod}{SpatRaster}(x, ..., na.rm=FALSE)
 
-\S4method{median}{SpatRaster}(x, na.rm=FALSE)
+\S4method{sum}{SpatRaster}(x, ..., na.rm=FALSE)
 
-\S4method{stdev}{SpatRaster}(x, ..., pop=TRUE, na.rm=FALSE)
+\S4method{any}{SpatRaster}(x, ..., na.rm=FALSE)
+
+\S4method{all}{SpatRaster}(x, ..., na.rm=FALSE)
+
+\S4method{range}{SpatRaster}(x, ..., na.rm=FALSE)
 
 \S4method{which.min}{SpatRaster}(x)
 
 \S4method{which.max}{SpatRaster}(x)
+
+\S4method{stdev}{SpatRaster}(x, ..., pop=TRUE, na.rm=FALSE)
+
+\S4method{mean}{SpatRaster}(x, ..., trim=NA, na.rm=FALSE)
+
+\S4method{median}{SpatRaster}(x, na.rm=FALSE, ...)
 }
 
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{...}{additional SpatRaster objects or numeric values; and arguments \code{filename}, \code{overwrite} and \code{wopt} as for \code{writeRaster}}
+  \item{...}{additional SpatRaster objects or numeric values; and arguments \code{filename}, \code{overwrite} and \code{wopt} as for \code{\link{writeRaster}}}
   \item{na.rm}{logical. If \code{TRUE}, \code{NA} values are ignored. If \code{FALSE}, \code{NA} is returned if \code{x} has any \code{NA} values}
   \item{trim}{ignored}
   \item{pop}{logical. If \code{TRUE}, the population standard deviation is computed. Otherwise the sample standard deviation is computed}
@@ -98,6 +120,8 @@ y <- stdev(r)
 yy <- app(r, sd)
 
 z <- stdev(r, r*2)
+
+x <- mean(r, filename=paste0(tempfile(), ".tif"))
 }
 
 \keyword{methods}

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2022  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -22,11 +22,16 @@
 #include "gdal_alg.h"
 #include "ogrsf_frmts.h"
 
-
+/*
 std::vector<bool> SpatVector::is_valid() {
 	std::vector<bool> out;
 	out.reserve(nrow());
-	GDALDataset* src = write_ogr("", "layer", "Memory", true, std::vector<std::string>());
+	GDALDataset* src;
+	if (!write_ogr(src, "", "layer", "Memory", false, false, true, std::vector<std::string>())) {
+		if (src != NULL) GDALClose( src );
+		setError("cannot do it");
+		return false;
+	}
 	OGRLayer *inLayer = src->GetLayer(0);
 	inLayer->ResetReading();
 	OGRFeature *inFeature;
@@ -41,7 +46,7 @@ std::vector<bool> SpatVector::is_valid() {
 
 SpatVector SpatVector::make_valid() {
 	SpatVector out;
-	GDALDataset* src = write_ogr("", "layer", "Memory", true, std::vector<std::string>());
+	GDALDataset* src = write_ogr("", "layer", "Memory", false, false, true, std::vector<std::string>());
 	OGRLayer *inLayer = src->GetLayer(0);
 	inLayer->ResetReading();
 	OGRFeature *inFeature;
@@ -60,10 +65,11 @@ SpatVector SpatVector::make_valid() {
 	}
 	std::vector<double> fext;
 	SpatVector fvct;
-	out.read_ogr(src, "", "", fext, fvct);
+	out.read_ogr(src, "", "", fext, fvct, false);
 	GDALClose(src);
 	return out;
 }
+*/
 
 
 SpatVector SpatVector::disaggregate() {
@@ -75,14 +81,19 @@ SpatVector SpatVector::disaggregate() {
 		return out;
 	}
 
+	size_t n=0;
+	for (size_t i=0; i<nrow(); i++) {
+		n += geoms[i].parts.size();
+	}
+	out.reserve(n);
+
 	for (size_t i=0; i<nrow(); i++) {
 		SpatGeom g = getGeom(i);
 		SpatDataFrame row = df.subset_rows(i);
 		for (size_t j=0; j<g.parts.size(); j++) {
-			SpatGeom gg = SpatGeom(g.parts[j]);
-			gg.gtype = g.gtype;
+			SpatGeom gg = SpatGeom(g.parts[j], g.gtype);
 			out.addGeom(gg);
-			if (!out.df.rbind(row)) { 
+			if (!out.df.rbind(row)) {
 				out.setError("cannot add row");
 				return out;
 			}
@@ -100,10 +111,11 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	int i = where_in_vector(field, get_names(), false);
 	if (i < 0) {
 		out.setError("cannot find field: " + field);
-		return out;	
+		return out;
 	}
 	SpatDataFrame uv;
 	std::vector<int> idx = df.getIndex(i, uv);
+	out.reserve(uv.nrow());
 	for (size_t i=0; i<uv.nrow(); i++) {
 		SpatGeom g;
 		g.gtype = geoms[0].gtype;
@@ -118,7 +130,7 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 		out = out.unaryunion();
 	}
 	out.srs = srs;
-	out.df  = uv; 
+	out.df  = uv;
 	return out;
 }
 
@@ -143,14 +155,15 @@ SpatVector SpatVector::aggregate(bool dissolve) {
 SpatVectorCollection SpatVector::split(std::string field) {
 
 	SpatVectorCollection out;
-	
+
 	int i = where_in_vector(field, get_names(), false);
 	if (i < 0) {
 		out.setError("cannot find field: " + field);
-		return out;	
+		return out;
 	}
 	SpatDataFrame uv;
 	std::vector<int> idx = df.getIndex(i, uv);
+
 	for (size_t i=0; i<uv.nrow(); i++) {
 		SpatVector v;
 		std::vector<unsigned> r;
@@ -168,66 +181,6 @@ SpatVectorCollection SpatVector::split(std::string field) {
 }
 
 
-
-
-
-/*
-	} else {
-
-		GDALDataset* src = out.write_ogr("", "layer", "Memory", true);
-		OGRLayer *inLayer = src->GetLayer(0);
-		inLayer->ResetReading();
-		OGRFeature *inFeature;
-*/
-/*
-		const OGRSpatialReference *srs = src->GetSpatialRef();
-		GDALDataset *dst = NULL;
-		GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );
-		dst = poDriver->Create("", 0, 0, 0, GDT_Unknown, NULL );
-		OGRLayer *outLayer;
-		outLayer = dst->CreateLayer("lyrname", (OGRSpatialReference *)srs, wkbMultiPolygon, NULL );
-		OGRFieldDefn oField("uid", OFTInteger64);
-		if( outLayer->CreateField( &oField ) != OGRERR_NONE ) {
-			out.setError( "Creating union field failed");
-			return out;
-		}
-		OGRFeature *outFeature;
-		i = 0;
-*/
-/*
-		while( (inFeature = inLayer->GetNextFeature()) != NULL ) {
-			OGRGeometry *poGeometry = inFeature->GetGeometryRef();
-			//OGRMultiPolygon *poGeom = ( OGRMultiPolygon * )poGeometry;
-			if (!poGeometry->IsValid()) {
-				out.setError("invalid geom");
-				return out;			
-			}
-			OGRGeometry *poGeom = poGeometry->UnionCascaded();
-			if (poGeom == NULL) {
-				out.setError("union failed");
-				return out;
-			}
-			//outFeature = OGRFeature::CreateFeature( outLayer->GetLayerDefn() );
-			//outFeature->SetField(0, (GIntBig)i); i++;
-			if (inFeature->SetGeometry( poGeom ) != OGRERR_NONE) {
-				out.setError("cannot set geometry");
-				return out;
-			}
-			if (inLayer->SetFeature( inFeature ) != OGRERR_NONE) {
-				out.setError("cannot set feature");
-				return out;
-			}
-			//OGRFeature::DestroyFeature( outFeature );
-			OGRFeature::DestroyFeature( inFeature );
-		}
-		out.read_ogr(src);
-		GDALClose(src);
-//		GDALClose(dst);
-	}
-
-	return out;
-}
-*/
 
 SpatVector SpatVector::remove_holes() {
 
@@ -269,7 +222,7 @@ SpatVector SpatVector::get_holes() {
 
 	for (size_t i=0; i<n; i++) {
 		SpatGeom g;
-		g.gtype = polygons;	
+		g.gtype = polygons;
 		bool found = false;
 		for (size_t j=0; j < geoms[i].size(); j++) {
 			SpatPart p = geoms[i].parts[j];
@@ -337,7 +290,7 @@ std::vector<OGRGeometry *> geoms_from_ds(GDALDataset* src, int field, int value)
 	}
 	return g;
 }
-// create output dataset 
+// create output dataset
 	GDALDataset* dst;
 // get unique values in field
 // loop over unique values
@@ -450,10 +403,10 @@ SpatVector SpatVector::transpose() {
 			if (geoms[i].parts[j].hasHoles()) {
 				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
 					out.geoms[i].parts[j].holes[k].x.swap(out.geoms[i].parts[j].holes[k].y);
-				
-					dswap(out.geoms[i].parts[j].holes[k].extent.xmin, 
+
+					dswap(out.geoms[i].parts[j].holes[k].extent.xmin,
 						 out.geoms[i].parts[j].holes[k].extent.ymin);
-					dswap(out.geoms[i].parts[j].holes[k].extent.xmax, 
+					dswap(out.geoms[i].parts[j].holes[k].extent.xmax,
 						 out.geoms[i].parts[j].holes[k].extent.ymax);
 				}
 			}
@@ -503,13 +456,13 @@ SpatVector SpatVector::flip(bool vertical) {
 						flipv(out.geoms[i].parts[j].holes[k].x, x0);
 						flipd(out.geoms[i].parts[j].holes[k].extent.xmin, x0);
 						flipd(out.geoms[i].parts[j].holes[k].extent.xmax, x0);
-						dswap(out.geoms[i].parts[j].holes[k].extent.xmin, 
+						dswap(out.geoms[i].parts[j].holes[k].extent.xmin,
 							  out.geoms[i].parts[j].holes[k].extent.xmax);
 					} else {
 						flipv(out.geoms[i].parts[j].holes[k].y, y0);
 						flipd(out.geoms[i].parts[j].holes[k].extent.ymin, y0);
 						flipd(out.geoms[i].parts[j].holes[k].extent.ymax, y0);
-						dswap(out.geoms[i].parts[j].holes[k].extent.ymin, 
+						dswap(out.geoms[i].parts[j].holes[k].extent.ymin,
 							  out.geoms[i].parts[j].holes[k].extent.ymax);
 					}
 				}
@@ -563,13 +516,13 @@ SpatVector SpatVector::rotate(double angle, double x0, double y0) {
 					rotit(out.geoms[i].parts[j].holes[k].x,
 						  out.geoms[i].parts[j].holes[k].y, x0, y0, cos_angle, sin_angle);
 
-					out.geoms[i].parts[j].holes[k].extent.xmin = 
-						vmin(out.geoms[i].parts[j].holes[k].x, true); 
-					out.geoms[i].parts[j].holes[k].extent.xmax = 
+					out.geoms[i].parts[j].holes[k].extent.xmin =
+						vmin(out.geoms[i].parts[j].holes[k].x, true);
+					out.geoms[i].parts[j].holes[k].extent.xmax =
 						vmax(out.geoms[i].parts[j].holes[k].x, true);
-					out.geoms[i].parts[j].holes[k].extent.ymin = 
+					out.geoms[i].parts[j].holes[k].extent.ymin =
 						vmin(out.geoms[i].parts[j].holes[k].y, true);
-					out.geoms[i].parts[j].holes[k].extent.ymax = 
+					out.geoms[i].parts[j].holes[k].extent.ymax =
 						vmax(out.geoms[i].parts[j].holes[k].y, true);
 				}
 			}
@@ -578,16 +531,147 @@ SpatVector SpatVector::rotate(double angle, double x0, double y0) {
 			out.geoms[i].parts[j].extent.ymin = vmin(out.geoms[i].parts[j].y, true);
 			out.geoms[i].parts[j].extent.ymax = vmax(out.geoms[i].parts[j].y, true);
 			if (j==0) {
-				out.geoms[i].extent = out.geoms[i].parts[j].extent;			
+				out.geoms[i].extent = out.geoms[i].parts[j].extent;
 			} else {
 				out.geoms[i].extent.unite(out.geoms[i].parts[j].extent);
 			}
 		}
 		if (i==0) {
-			out.extent = out.geoms[i].extent;			
+			out.extent = out.geoms[i].extent;
 		} else {
 			out.extent.unite(out.geoms[i].extent);
 		}
 	}
 	return out;
 }
+
+
+inline double cartdist(const double& x1, const double& y1, const double &x2, const double &y2) {
+	return sqrt(pow(x2-x1, 2) + pow(y2-y1, 2));
+}
+
+
+
+bool thinnodes(std::vector<double> &x, std::vector<double> &y, const double &threshold, const size_t &mnsize) {
+	std::vector<double> xout, yout;
+	size_t n = x.size();
+	xout.reserve(n);
+	yout.reserve(n);
+	n--;
+	for (size_t i=0; i<n; i++) {
+		if (cartdist(x[i], y[i], x[i+1], y[i+1]) <= threshold) {
+			xout.push_back((x[i] + x[i+1])/2);
+			yout.push_back((y[i] + y[i+1])/2);
+		} else {
+			xout.push_back(x[i]);
+			yout.push_back(y[i]);
+		}
+	}
+	if (cartdist(x[n], y[n], xout[0], yout[0]) <= threshold) {
+		xout.push_back((x[n] + xout[0])/2);
+		yout.push_back((y[n] + yout[0])/2);
+		xout[0] = xout[n];
+		yout[0] = xout[n];
+	} else {
+		xout.push_back(xout[0]);
+		yout.push_back(yout[0]);
+	}
+	if (xout.size() == (n+1)) {
+		return false;
+	}
+	if (xout.size() >= mnsize) {
+		x = std::move(xout);
+		y = std::move(yout);
+		return true;
+	}
+	return false;
+}
+
+
+
+SpatVector SpatVector::thin(double threshold) {
+
+	SpatVector out;
+	if (threshold < 0) {
+		out.setError("threshold must be a positive number");
+		return out;
+	}
+	size_t mnode = 4;
+	if (geoms[0].gtype == lines) {
+		mnode = 3;
+	} else if (geoms[0].gtype != polygons) {
+		out.setError("can only thin lines or polygons");
+		return out;
+	}
+
+	out = *this;
+	bool objext = false;
+	for (size_t i=0; i < size(); i++) {
+		bool geomext = false;
+		for (size_t j=0; j < out.geoms[i].size(); j++) {
+			if (thinnodes(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, threshold, mnode)) {
+				geomext = true;
+			}
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					thinnodes(geoms[i].parts[j].holes[k].x, geoms[i].parts[j].holes[k].y, threshold, mnode);
+				}
+			}
+		}
+		if (geomext) {
+			objext = true;
+			geoms[i].computeExtent();
+		}
+	}
+	if (objext) {
+		computeExtent();
+	}
+
+	return out;
+}
+
+
+
+/*
+SpatVector SpatVector::removeSlivers(double dthres, double athres, size_t n) {
+
+	SpatVector out;
+	if (geoms[0].gtype != polygons) {
+		out.setError("can only remove slivers from polygons");
+		return out;
+	}
+	if ((dthres < 0) || (athres < 0)) {
+		out.setError("thresholds must be a positive number");
+		return out;
+	}
+	if (n < 2)) {
+		out.setError("n must be at least 2");
+		return out;
+	}
+
+	out = *this;
+	bool objext = false;
+	for (size_t i=0; i < size(); i++) {
+		bool geomext = false;
+		for (size_t j=0; j < out.geoms[i].size(); j++) {
+			if (remove_slivers(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, threshold, mnode)) {
+				geomext = true;
+			}
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					remove_slivers(geoms[i].parts[j].holes[k].x, geoms[i].parts[j].holes[k].y, threshold, mnode);
+				}
+			}
+		}
+		if (geomext) {
+			objext = true;
+			geoms[i].computeExtent();
+		}
+	}
+	if (objext) {
+		computeExtent();
+	}
+	return out;
+}
+*/
+

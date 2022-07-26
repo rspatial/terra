@@ -12,7 +12,7 @@ Plot (make a map of) the values of a SpatRaster via \code{\link[graphics]{image}
 }
 
 \usage{
-\S4method{image}{SpatRaster}(x, y=1, maxcell=50000, ...)
+\S4method{image}{SpatRaster}(x, y=1, maxcell=500000, ...)
 }
 
 \arguments{

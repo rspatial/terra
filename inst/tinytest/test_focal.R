@@ -10,9 +10,10 @@ f <- focal(r, t(m), na.rm=TRUE)
 e <- c(-2, -2, 2, -5, -2, 5, -8, -2, 8)
 expect_equal(e, as.vector(values(f)))
 
-f <- focal(r, m, fun=mean, na.rm=TRUE)
-e <- c(-4, -5, -6, -3, -3, -3, 4, 5, 6)
-expect_equal(e, as.vector(values(f)))
+expect_error(focal(r, m, fun=mean, na.rm=TRUE), pattern="[focal]")
+
+#e <- c(-4, -5, -6, -3, -3, -3, 4, 5, 6)
+#expect_equal(e, as.vector(values(f)))
 
 m <- matrix(1,3,3)
 f <- focal(r, m, na.rm=TRUE)
@@ -70,3 +71,12 @@ expect_equal(e, f)
 f <- as.vector(values(focal(r, 3, mean, na.rm=FALSE)))
 e <- c(NA, NA, NA, 5, 5, 5, NA, NA, NA)
 expect_equal(e, f)
+
+
+r <- rast(ncols=100, nrows=100, ext(0, 10, 0, 10))
+values(r) = 1:ncell(r)
+r[5,]=NA
+f= focal(r, w=5, fun=mean, na.policy="only", na.rm=TRUE, wopt=list(steps=4))
+x  = (f - r)
+expect_equal(sum(values(x), na.rm=TRUE), 0)
+

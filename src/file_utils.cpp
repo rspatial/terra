@@ -1,3 +1,20 @@
+// Copyright (c) 2018-2022  Robert J. Hijmans
+//
+// This file is part of the "spat" library.
+//
+// spat is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// spat is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with spat. If not, see <http://www.gnu.org/licenses/>.
+
 #include "spatBase.h"
 #include <fstream>
 #include <random>
@@ -27,13 +44,13 @@ std::vector<std::string> read_text(std::string filename) {
 	if (f.is_open())  {
 		while (getline(f, line)) {
 			if (line.empty()) {
-				s.push_back("");				
+				s.push_back("");
 			} else {
 				s.push_back(line);
 			}
 		}
 		f.close();
-	} 
+	}
 	return s;
 }
 
@@ -98,7 +115,7 @@ bool path_exists(std::string path) {
 	stat(path.c_str(), &info );
 	if(info.st_mode & S_IFDIR) {
 		return true;
-	} 
+	}
 	return false;
 }
 
@@ -117,7 +134,7 @@ bool canWrite(std::string filename) {
 
 std::string get_path(const std::string filename) {
 	size_t found = filename.find_last_of("/\\");
-	std::string result = filename.substr(0, found); 
+	std::string result = filename.substr(0, found);
 	return result;
 }
 
@@ -135,8 +152,15 @@ bool can_write(std::string filename, bool overwrite, std::string &msg) {
 				msg = ("cannot overwrite existing file");
 				return false;
 			}
-			std::string aux = filename + ".aux.xml";
-			remove(aux.c_str());
+			//std::string aux = filename + ".aux.xml";
+			//remove(aux.c_str());
+			std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json"};
+			for (size_t i=0; i<exts.size(); i++) {
+				std::string f = filename + exts[i];
+				if (file_exists(f)) {
+					remove(f.c_str());
+				}
+			}
 		} else {
 			msg = "file exists";
 			return false;
@@ -155,7 +179,7 @@ bool can_write(std::string filename, bool overwrite, std::string &msg) {
 
 
 
-std::string tempFile(std::string tmpdir, std::string ext) {
+std::string tempFile(std::string tmpdir, unsigned pid, std::string ext) {
     std::vector<char> characters = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K',
     'L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m',
     'n','o','p','q','r','s','t','u','v','w','x','y','z' };
@@ -168,7 +192,7 @@ std::string tempFile(std::string tmpdir, std::string ext) {
 	};
     std::string filename(15, 0);
     std::generate_n(filename.begin(), 15, draw);
-	filename = tmpdir + "/spat_" + filename + ext;
+	filename = tmpdir + "/spat_" + filename + "_" + std::to_string(pid) + ext;
 	return filename;
 }
 

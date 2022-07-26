@@ -9,7 +9,7 @@ status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/
 
 <img align="right" width="250" src="man/figures/logo.png">
 
-`terra` is an R package for spatial analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
+`terra` is an *R* package for spatial data analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
 
 [stackoverflow](https://stackoverflow.com/questions/tagged/terra) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/terra/issues).
 
@@ -27,14 +27,13 @@ The easiest way to use the *development version* on Windows or MacOS, is to inst
 install.packages('terra', repos='https://rspatial.r-universe.dev')
 ```
 
-Please note that, on MacOS, the development version does not support the HDF4 file format, which is used for some NASA satellite data products.
 
 ### From source-code
 
-To install from source-code, first install the packages that terra depends on: 
+To install from source-code, first install the [Rcpp](https://cran.r-project.org/web/packages/Rcpp/index.html) package that terra depends on: 
 
 ```
-install.packages(c("raster", "Rcpp"))
+install.packages("Rcpp")
 ```
 
 And then continue based on the OS you are using. 
@@ -58,19 +57,24 @@ On OSX, first install gdal and proj with homebrew
 brew install pkg-config
 brew install gdal
 ```
-Followed by
+
+Followed by (note the additional configuration argument needed for the current homebrew version of proj (7.0.0)
 
 ```
-Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
-remotes::install_github("rspatial/terra")
+remotes::install_github("rspatial/terra", configure.args = "--with-proj-lib=/usr/local/lib/")
 ```
 
-This should work on **Catalina** and **Big Sur**
+To install the CRAN version from source you would do
 
+```
+install.packages("rspatial/terra", configure.args = "--with-proj-lib=/usr/local/lib/")
+```
 
 #### Linux
 
-C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3 are required, but more recent versions highly recommended.
+The *easy* way to install terra on linux is with [r2u](https://eddelbuettel.github.io/r2u/).
+
+The harder way: C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3 are required, but more recent versions highly recommended.
 
 To install these system requirements on Ubuntu you can do:
 

@@ -1,6 +1,6 @@
 
 
-setMethod("extend", signature(x="SpatExtent"), 
+setMethod("extend", signature(x="SpatExtent"),
 function(x, y) {
 	if (length(y) == 1) {
 		y <- rep(y, 4)
@@ -20,15 +20,15 @@ function(x, y) {
 
 
 
-setMethod("extend", signature(x="SpatRaster"), 
-function(x, y, filename="", overwrite=FALSE, ...) {
+setMethod("extend", signature(x="SpatRaster"),
+function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
 
 	if (!inherits(y, "SpatExtent")) {
 
 		if (is.vector(y)) {
 			if (length(y) <= 2) {
 				y <- round(y)
-				stopifnot(all(y > 0))
+				stopifnot(all(y >= 0))
 				adj <- rev(y) * res(x)
 				y <- as.vector(ext(x))
 				y[1] <- y[1] - adj[1]
@@ -39,14 +39,14 @@ function(x, y, filename="", overwrite=FALSE, ...) {
 			}
 		} else {
 			test <- try ( y <- ext(y), silent=TRUE )
-			if (class(test) == "try-error") {
+			if (inherits(test, "try-error")) {
 				error("extend", "cannot get a SpatExtent object from argument y")
 			}
 		}
 	}
 
 	opt <- spatOptions(filename, overwrite, ...)
-	x@ptr <- x@ptr$expand(y@ptr, opt)
+	x@ptr <- x@ptr$expand(y@ptr, snap[1], opt)
 	messages(x, "extend")
 }
 )

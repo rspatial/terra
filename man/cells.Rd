@@ -62,10 +62,10 @@ cells(r, v)
 cells(r, v, method="bilinear")
 
 # cells for polygons
-#f <- system.file("ex/lux.shp", package="terra")
-#v <- vect(f)
-#r <- rast(v)
-#cv <- cells(r, v) 
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+r <- rast(v)
+cv <- cells(r, v) 
 }
 
 

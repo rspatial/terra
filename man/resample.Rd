@@ -23,12 +23,17 @@ If the origin and crs are the same, you should consider using these other functi
 	\code{near}: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. This is used by default if the first layer of \code{x} is categorical.
 
 	\code{bilinear}: bilinear interpolation. This is the default if the first layer of \code{x} is numeric (not categorical).
-	
+
 	\code{cubic}: cubic interpolation.
-	
+
 	\code{cubicspline}: cubic spline interpolation.
-	
+
 	\code{lanczos}: Lanczos windowed sinc resampling.
+
+	\code{sum}: the weighted sum of all non-NA contributing grid cells.
+
+	\code{min, q1, med, q3, max, average, mode, rms}: the minimum, first quartile, median, third quartile, maximum, mean, mode, or root-mean-square value of all non-NA contributing grid cells.
+
   }
   
   \item{filename}{character. Output filename}

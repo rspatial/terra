@@ -11,7 +11,8 @@ A hill shade layer is often used as a backdrop on top of which another, semi-tra
 }
 
 \usage{
-shade(slope, aspect, angle=45, direction=0, normalize=FALSE, filename="", ...)  
+shade(slope, aspect, angle=45, direction=0, normalize=FALSE,
+   filename="", overwrite=FALSE, ...)  
 }
 
 \arguments{
@@ -21,6 +22,7 @@ shade(slope, aspect, angle=45, direction=0, normalize=FALSE, filename="", ...)
   \item{direction}{ The direction (azimuth) angle of the light source (sun), in degrees}
   \item{normalize}{Logical. If \code{TRUE}, values below zero are set to zero and the results are multiplied with 255}
   \item{filename}{character. Output filename}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}  
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
 }
 

@@ -6,7 +6,7 @@
 
 .scatterPlotRaster <- function(x, y, maxcell=100000, warn=TRUE, cex, xlab, ylab, nc, nr, maxnl=16, main, add=FALSE, gridded=FALSE, ncol=25, nrow=25, ...) {
 
-	compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) 
+	compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE)
 	nlx <- nlyr(x)
 	nly <- nlyr(y)
 
@@ -61,7 +61,7 @@
 
 	y <- x[,c((nlx+1):ncol(x))]
 	x <- x[,1:nlx]
-	
+
 
 	if (warn & (NROW(x) < cells)) {
 		warn("plot", 'plot used a sample of ', round(100*NROW(x)/cells, 1), '% of the cells. You can use "maxcell" to increase the sample)')
@@ -91,7 +91,7 @@
 
 	if (nl > 1) {
 
-		old.par <- graphics::par(no.readonly = TRUE) 
+		old.par <- graphics::par(no.readonly = TRUE)
 		on.exit(graphics::par(old.par))
 		graphics::par(mfrow=c(nr, nc), mar=c(4, 4, 2, 2))
 
@@ -125,7 +125,7 @@
 }
 
 
-setMethod("plot", signature(x="SpatRaster", y="SpatRaster"), 
+setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, maxcell=100000, warn=TRUE, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...) {
 
 		nl <- max(nlyr(x), nlyr(y))
@@ -174,7 +174,7 @@ setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 		e <- extent(xlim, ylim)
 		out <- extend(crop(out, e), e, value=0)
 	}
-	plot(out, maxcell=nc*nr, asp=asp, ...) 
+	plot(out, maxcell=nc*nr, asp=asp, ...)
 }
 
 

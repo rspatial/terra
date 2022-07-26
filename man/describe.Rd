@@ -31,8 +31,8 @@ character (invisibly, if \code{print=FALSE})
 f <- system.file("ex/elev.tif", package="terra")
 describe(f)
 describe(f, meta=TRUE)
-#g <- desc(f, options=c("json", "nomd", "proj4"))
-#cat(g, "\n")
+#g <- describe(f, options=c("json", "nomd", "proj4"))
+#head(g)
 }
 
 \keyword{spatial}

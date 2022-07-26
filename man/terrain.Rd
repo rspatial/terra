@@ -3,10 +3,12 @@
 \alias{terrain}
 \alias{terrain,SpatRaster-method}
 
-\title{terrain characteristic}
+\title{terrain characteristics}
 
 \description{
-Compute terrain characteristic from elevation data. The elevation values should be the same as the map units (typically meter) for projected (planar) raster data. They should be in meter when the coordinate reference system (CRS) is longitude/latitude. 
+Compute terrain characteristics from elevation data. The elevation values should be in the same units as the map units (typically meter) for projected (planar) raster data. They should be in meter when the coordinate reference system is longitude/latitude. 
+
+For accuracy, always compute these values on the original data (do not first change the projection). Distances (needed for slope and aspect) for longitude/latitude data are computed on the WGS84 ellipsoid with Karney's algorithm. 
 }
 
 \usage{
@@ -23,7 +25,7 @@ Compute terrain characteristic from elevation data. The elevation values should 
 }
 
 \details{
-When \code{neighbors=4}, slope and aspect are computed according to Fleming and Hoffer (1979) and Ritter (1987). When \code{neigbors=8}, slope and aspect are computed according to Horn (1981). The Horn algorithm may be best for rough surfaces, and the Fleming and Hoffer algorithm may be better for smoother surfaces (Jones, 1997; Burrough and McDonnell, 1998).
+When \code{neighbors=4}, slope and aspect are computed according to Fleming and Hoffer (1979) and Ritter (1987). When \code{neighbors=8}, slope and aspect are computed according to Horn (1981). The Horn algorithm may be best for rough surfaces, and the Fleming and Hoffer algorithm may be better for smoother surfaces (Jones, 1997; Burrough and McDonnell, 1998).
 
 If slope = 0, aspect is set to 0.5*pi radians (or 90 degrees if unit="degrees"). When computing slope or aspect, the coordinate reference system of \code{x} must be known for the algorithm to differentiate between planar and longitude/latitude data.
 
@@ -53,14 +55,21 @@ rough <- focal(x, w=f, fun=function(x, ...) {max(x) - min(x)}, na.rm=TRUE)
 \references{
 Burrough, P., and R.A. McDonnell, 1998. Principles of Geographical Information Systems. Oxford University Press.
 
-Fleming, M.D. and Hoffer, R.M., 1979. Machine processing of landsat MSS data and DMA topographic data for forest cover type mapping. LARS Technical Report 062879. Laboratory for Applications of Remote Sensing, Purdue University, West Lafayette, Indiana.
+Fleming, M.D. and Hoffer, R.M., 1979. Machine processing of Landsat MSS data and DMA topographic data for forest cover type mapping. LARS Technical Report 062879. Laboratory for Applications of Remote Sensing, Purdue University, West Lafayette, Indiana.
 
 Horn, B.K.P., 1981. Hill shading and the reflectance map. Proceedings of the IEEE 69:14-47
 
 Jones, K.H., 1998. A comparison of algorithms used to compute hill terrain as a property of the DEM. Computers & Geosciences 24: 315-323 
 
+Karney, C.F.F., 2013. Algorithms for geodesics, J. Geodesy 87: 43-55. doi:10.1007/s00190-012-0578-z.
+
 Ritter, P., 1987. A vector-based terrain and aspect generation algorithm. Photogrammetric Engineering and Remote Sensing 53: 1109-1111
 }
 
+\examples{
+f <- system.file("ex/elev.tif", package="terra")
+r <- rast(f)
+x <- terrain(r, "slope")
+}
 
 \keyword{spatial}

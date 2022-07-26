@@ -4,15 +4,15 @@
 # License GPL v3
 
 
-setMethod("hist", signature(x="SpatRaster"), 
+setMethod("hist", signature(x="SpatRaster"),
 	function(x, layer, maxcell=1000000, plot=TRUE, main, ...) {
 
 		if (missing(layer)) {
 			y <- 1:nlyr(x)
 		} else if (is.character(layer)) {
 			y <- match(layer, names(x))
-		} else { 
-			y <- layer 
+		} else {
+			y <- layer
 		}
 
 		y <- unique(as.integer(round(y)))
@@ -25,7 +25,7 @@ setMethod("hist", signature(x="SpatRaster"),
 		}
 
 		if (missing(main)) {
-			main=names(x) 
+			main=names(x)
 		}
 
 		if (nl > 1)	{
@@ -42,11 +42,11 @@ setMethod("hist", signature(x="SpatRaster"),
 			spots <- mfrow[1] * mfrow[2]
 			if (spots < nl) {
 				old.par <- graphics::par(no.readonly =TRUE)
-				on.exit(graphics::par(old.par))   
+				on.exit(graphics::par(old.par))
 				graphics::par(mfrow=c(nr, nc))
 			}
 			for (i in 1:length(y)) {
-				res[[i]] = .hist1(x[[ y[i] ]], maxcell=maxcell, main=main[y[i]], plot=plot, ...) 
+				res[[i]] = .hist1(x[[ y[i] ]], maxcell=maxcell, main=main[y[i]], plot=plot, ...)
 			}
 
 		} else if (nl==1) {
@@ -54,7 +54,7 @@ setMethod("hist", signature(x="SpatRaster"),
 				x <- x[[y]]
 				main <- main[y]
 			}
-			res <- .hist1(x, maxcell=maxcell, main=main, plot=plot, ...) 
+			res <- .hist1(x, maxcell=maxcell, main=main, plot=plot, ...)
 		}
 		if (plot) {
 			return(invisible(res))
@@ -92,9 +92,9 @@ setMethod("hist", signature(x="SpatRaster"),
 #	}
 
 	if (plot) {
-		hist(v, main=main, plot=plot, ...)  
+		hist(v, main=main, plot=plot, ...)
 	} else {
-		hist(v, plot=plot, ...)  
+		hist(v, plot=plot, ...)
 	}
 }
 

@@ -20,7 +20,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 \usage{
 \S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, na.rm=FALSE,
 	as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, 
-	cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE)
+	cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL)
 
 
 \S4method{spatSample}{SpatVector}(x, size, method="random", strata=NULL, chess="")
@@ -29,19 +29,20 @@ In order to assure regularity when requesting a regular sample, the number of ce
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster, SpatVector or SpatExtent}
   \item{size}{numeric. The sample size. If \code{x} is a SpatVector, you can also provide a vector of the same length as \code{x} in wich case sampling is done seperately for each geometry. If \code{x} is a SpatRaster, and you are using \code{method="regular"} you can specify the size as two numbers (number of rows and columns)}
-  \item{method}{character. Should be "regular" or "random"}
+  \item{method}{character. Should be "regular" or "random", If \code{x} is a \code{SpatRaster}, it can also be "stratified" (each value in \code{x} is a stratum) or "weights" (each value in \code{x} is a probability weight)}
   \item{replace}{logical. If \code{TRUE}, sampling is with replacement (if \code{method="random"}}
   \item{na.rm}{logical. If \code{TRUE}, code{NAs} are removed. Only used with random sampling of cell values. That is with \code{method="random", as.raster=FALSE, cells=FALSE}}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
   \item{as.df}{logical. If \code{TRUE}, a data.frame is returned instead of a matrix}
   \item{as.points}{logical. If \code{TRUE}, a SpatVector of points is returned}
   \item{values}{logical. If \code{TRUE} cell values are returned}
-  \item{cells}{logical. If \code{TRUE}, cell numbers are returned}
+  \item{cells}{logical. If \code{TRUE}, cell numbers are returned. If \code{method="stratified"} this is always set to \code{TRUE} if \code{xy=FALSE}}
   \item{xy}{logical. If \code{TRUE}, cell coordinates are returned}
   \item{ext}{SpatExtent or NULL to restrict sampling to a a subset of the area of \code{x}}
   \item{warn}{logical. Give a warning if the sample size returned is smaller than requested}
+  \item{weights}{SpatRaster. Used to provide weights when \code{method="stratified"}}
 
   \item{strata}{if not NULL, stratified random sampling is done, taking \code{size} samples from each stratum. If \code{x} has polygon geometry, \code{strata} must be a field name (or index) in \code{x}. If \code{x} has point geometry, \code{strata} can be a SpatVector of polygons or a SpatRaster}
   \item{chess}{character. One of "", "white", or "black". For stratified sampling if \code{strata} is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard}
@@ -52,7 +53,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
 
 \value{
-numeric or SpatRaster
+numeric matrix, data.frame, SpatRaster or SpatVector
 }
 
 \examples{
@@ -79,6 +80,16 @@ v <- r[cells]
 xy <- xyFromCell(r, cells)
 cbind(xy, v)
 
+# stratified
+rr <- rast(ncol=10, nrow=10, names="stratum")
+set.seed(1)
+values(rr) <- round(runif(ncell(rr), 1, 3))
+spatSample(rr, 2, "stratified", xy=TRUE)
+
+s <- spatSample(rr, 5, "stratified", as.points=TRUE)
+plot(rr, plg=list(title="raster"))
+plot(s, 1, add=TRUE, plg=list(x=185, y=1, title="points"))
+ 
 ## SpatExtent 
 e <- ext(r)
 spatSample(e, 10, "random", lonlat=TRUE)
@@ -89,6 +100,7 @@ v <- vect(f)
 #sample geometries 
 i <- sample(nrow(v), 5)
 vv <- v[i,]
+
 
 }
 

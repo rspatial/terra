@@ -20,7 +20,7 @@ Split a SpatVector or SpatRaster}
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{f}{If \code{x} is a SpatVector: a field (variable) name or a vector of the same length as \code{x}. If \code{x} is a SpatVector: a vector of the length \code{nlyr(x)}}
+  \item{f}{If \code{x} is a SpatVector: a field (variable) name or a vector of the same length as \code{x}. If \code{x} is a SpatRaster: a vector of the length \code{nlyr(x)}}
 }
 
 \value{

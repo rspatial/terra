@@ -1,17 +1,21 @@
-\name{is.valid}
+\name{valid}
 
 \alias{is.valid}
 \alias{is.valid,SpatVector-method}
+\alias{makeValid}
+\alias{makeValid,SpatVector-method}
 
   
-\title{Check polygon validity}
+\title{Check or fix polygon validity}
 
 \description{
-Check the validity of polygons
+Check the validity of polygons or attempt to fix it
 }
 
 \usage{
 \S4method{is.valid}{SpatVector}(x, messages=FALSE, as.points=FALSE)
+
+\S4method{makeValid}{SpatVector}(x)
 }
 
 \arguments{
@@ -35,11 +39,6 @@ is.valid(w, TRUE)
 plot(w)
 points(cbind(4.54, -2.72), cex=2, col="red")
 
-# invalid polygon
-#w <- vect("POLYGON ((0 -5, 10 0, 10 -10, 4 -2))")
-#is.valid(w)
-
 }
-
 \keyword{spatial}
 

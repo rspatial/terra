@@ -11,15 +11,29 @@
 	vtst <- try(do.call(fun, c(v, list(...))), silent=FALSE)
 	if (inherits(vtst, "try-error")) {
 		nl <- -1
+		msg <- "cannot use 'fun'"
 	}
 	if (length(vtst) >= nr) {
 		if ((length(vtst) %% nr) == 0) {
 			nl <- length(vtst) / nr
 		} else {
+			if (is.null(dim(vtst))) {
+				msg <- paste0("cannot use 'fun'. The number of values returned is not divisible by the number of input cells (returning: ", length(vtst), ", expecting :", nr, ")")
+			} else {
+				msg <- paste0("cannot use 'fun'. The number of rows returned is not divisible by the number of input cells (returning: ", nrow(vtst), ", expecting: ", nr, ")")
+			}
 			nl <- -1
 		}
 	} else {
+		if (is.null(dim(vtst))) {
+			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells. (returning: ", length(vtst), ", expecting: ", nr, ")\nPerhaps the function is not properly vectorized")
+		} else {
+			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells (returning:", nrow(vtst), ", expecting:", nr, ")\nPerhaps the function is not properly vectorized")
+		}
 		nl <- -1
+	}
+	if (nl < 0) {
+		error("lapp", msg)
 	}
 	if (is.matrix(vtst)) {
 		nms <- colnames(vtst)
@@ -28,14 +42,14 @@
 }
 
 
-setMethod("lapp", signature(x="SpatRaster"), 
+setMethod("lapp", signature(x="SpatRaster"),
 function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	fun <- match.fun(fun)
 	dots <- list(...)
 	if (any(sapply(dots, function(i) inherits(i, "SpatRaster")))) {
 		error("lapp", "only 'x' can be a SpatRaster")
-		# otherwise .lapp_test may crash! 
+		# otherwise .lapp_test may crash!
 	}
 
 	if (usenames) {
@@ -47,12 +61,12 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 	doclust <- FALSE
 	if (inherits(cores, "cluster")) {
 		doclust <- TRUE
-		ncores <- length(cores)		
+		ncores <- length(cores)
 	} else if (cores > 1) {
 		doclust <- TRUE
 		ncores <- cores
 		cores <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cores), add=TRUE)	
+		on.exit(parallel::stopCluster(cores), add=TRUE)
 	}
 
 	readStart(x)
@@ -60,7 +74,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 	ncx <- ncol(x)
 	v <- readValues(x, round(0.51*nrow(x)), 1, 1, ncx, dataframe=TRUE)
 	test <- .lapp_test(v, fun, usenames, ...)
-	if (test$nl < 1) error("lapp", "I do not like 'fun' :(")
+	if (test$nl < 1) error("lapp", "cannot use 'fun'. The number of values returned is not divisible by the number of input cells")
 	out <- rast(x, nlyrs=test$nl)
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
@@ -110,16 +124,31 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 	vtst <- try(do.call(fun, c(v, list(...))), silent=FALSE)
 	if (inherits(vtst, "try-error")) {
 		nl <- -1
+		msg <- "cannot use 'fun'"
 	}
 	if (length(vtst) >= nr) {
 		if ((length(vtst) %% nr) == 0) {
 			nl <- length(vtst) / nr
 		} else {
+			if (is.null(dim(vtst))) {
+				msg <- paste0("cannot use 'fun'. The number of values returned is not divisible by the number of input cells (returning: ", length(vtst), ", expecting :", nr, ")")
+			} else {
+				msg <- paste0("cannot use 'fun'. The number of rows returned is not divisible by the number of input cells (returning: ", nrow(vtst), ", expecting: ", nr, ")")
+			}
 			nl <- -1
 		}
 	} else {
+		if (is.null(dim(vtst))) {
+			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells. (returning: ", length(vtst), ", expecting: ", nr, ")\nPerhaps the function is not properly vectorized.")
+		} else {
+			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells (returning:", nrow(vtst), ", expecting:", nr, ")\nPerhaps the function is not properly vectorized.")
+		}
 		nl <- -1
 	}
+	if (nl < 0) {
+		error("lapp", msg)
+	}
+
 	if (is.matrix(vtst)) {
 		nms <- colnames(vtst)
 	}
@@ -128,7 +157,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 
 
 
-setMethod("lapp", signature(x="SpatRasterDataset"), 
+setMethod("lapp", signature(x="SpatRasterDataset"),
 function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 
 	fun <- match.fun(fun)
@@ -145,8 +174,7 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 
 	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.51*nrx), 1, 1, ncx, mat=TRUE))
 	test <- .lapp_test_stack(v, fun, recycle, ...)
-	if (test$nl < 1) error("lapp", "cannot use 'fun'")
-	out <- rast(x)
+	out <- rast(x[1])
 	nlyr(out) <- test$nl
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names

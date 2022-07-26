@@ -8,7 +8,7 @@
 \title{Which cells are TRUE?}
 
 \description{
-This method returns a single layer SpatRaster with cell values that are the first layer in the input that has the value is not zero (FALSE), and, hence, is \code{TRUE}.
+This method returns a single layer SpatRaster with cell values indicating the the first layer in the input that is \code{TRUE}. All numbers that are not zero (or \code{FALSE}), are considered to be \code{TRUE}.
 }
 
 

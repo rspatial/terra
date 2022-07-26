@@ -9,11 +9,14 @@
 \title{Cell values and geometry attributes}
 
 \description{
-Get the cell values of a SpatRaster or the attributes of a SpatVector
+Get the cell values of a SpatRaster or the attributes of a SpatVector.
+
+By default all values returned are numeric. This is because a vector or matrix can only store one data type, and a SpatRaster may consist of multiple data types. However, with \code{values(x, dataframe=TRUE)} and \code{\link[terra]{as.data.frame}(x)} the values returned match the type of each layer, and can be numeric, logical, integer, or factor.
 }
 
 \usage{
-\S4method{values}{SpatRaster}(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...)
+\S4method{values}{SpatRaster}(x, mat=TRUE, dataframe=FALSE, row=1, 
+    nrows=nrow(x), col=1, ncols=ncol(x), na.rm=FALSE, ...)
 
 \S4method{values}{SpatVector}(x, ...)
 }
@@ -28,6 +31,7 @@ Get the cell values of a SpatRaster or the attributes of a SpatVector
  \item{nrows}{positive integer. How many rows?}
  \item{col}{positive integer. Column number to start from, should be between 1 and ncol(x)}
  \item{ncols}{positive integer. How many columns? Default is the number of columns left after the start column}
+ \item{na.rm}{logical. Remove \code{NA}s?}
 
  \item{...}{additional arguments passed to \code{\link{data.frame}}}
 }
@@ -35,6 +39,7 @@ Get the cell values of a SpatRaster or the attributes of a SpatVector
 
 \details{
 If \code{x} is a \code{SpatRaster}, and \code{mat=FALSE}, the values are returned as a vector. In cell-order by layer. If \code{mat=TRUE}, a matrix is returned in which the values of each layer are represented by a column (with \code{ncell(x)} rows). The values per layer are in cell-order, that is, from top-left, to top-right and then down by row. Use \code{\link{as.matrix}(x, wide=TRUE)} for an alternative matrix representation where the number of rows and columns matches that of \code{x}.  
+
 }
 
 

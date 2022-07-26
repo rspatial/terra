@@ -16,8 +16,8 @@
 	}
 }
 
-setMethod("image", signature(x="SpatRaster"), 
-	function(x, y=1, maxcell=50000, ...)  {
+setMethod("image", signature(x="SpatRaster"),
+	function(x, y=1, maxcell=500000, ...)  {
 		y <- as.integer(y[1])
 		stopifnot(y > 0 && y <= nlyr(x))
 		x <- spatSample(x[[y]], maxcell, method="regular", as.raster=TRUE)

@@ -1,9 +1,9 @@
 
 RS_locator <- function(n, type, id=FALSE, pch=20, ...) {
 # locator that also works in RStudio
-# Berry Boessenkool 
+# Berry Boessenkool
 # https://stackoverflow.com/a/65147220/635245
-	on.exit(return(cbind(x, y))) 
+	on.exit(return(cbind(x, y)))
 	x <- y <- NULL
 	for (i in seq_len(n)) {
 		p <- graphics::locator(1)
@@ -11,9 +11,9 @@ RS_locator <- function(n, type, id=FALSE, pch=20, ...) {
 		x <- c(x, p$x)
 		y <- c(y, p$y)
 		points(x, y, type=type, pch=pch, ...)
-		if (id) { 
-			text(p$x, p$y, labels=i, pos=4, ...) 
-		} 
+		if (id) {
+			text(p$x, p$y, labels=i, pos=4, ...)
+		}
 	}
 }
 
@@ -64,7 +64,7 @@ RS_locator <- function(n, type, id=FALSE, pch=20, ...) {
 }
 
 setMethod("draw", signature(x="character"),
-    function(x="extent", col="red", lwd=2, id=FALSE, n=1000, ...){ 
+    function(x="extent", col="red", lwd=2, id=FALSE, n=1000, ...){
 		x <- match.arg(tolower(x), c("extent", "polygon", "lines", "points"))
 		if (x == "extent") {
 			.drawExt(col=col, lwd=lwd, ...)
@@ -74,12 +74,12 @@ setMethod("draw", signature(x="character"),
 			.drawLin(n, col=col, lwd=lwd, id=id, ...)
 		} else if (x == "points" || x == "multipoints" ) {
 			.drawPts(n, col=col, id=id, ...)
-		} 
+		}
 	}
 )
 
 setMethod("draw", signature(x="missing"),
-    function(x="extent", ...){ 
+    function(x="extent", ...){
 		draw("extent", ...)
 	}
 )

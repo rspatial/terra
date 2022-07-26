@@ -14,20 +14,20 @@ See \code{\link{focal}} for an easier to use method.
 
 \usage{
 \S4method{focalCpp}{SpatRaster}(x, w=3, fun, ..., fillvalue=NA, 
-		expand=FALSE, filename="", overwrite=FALSE, wopt=list())
+		silent=TRUE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
 \item{x}{SpatRaster}
 \item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in \code{\link{focal}}}
 
-\item{fun}{\code{\link{cppFunction}} that iterates over cells. For C++ functions that operate on a single focal window, or for R functions use \code{\link{focal}} instead. The function must have at least three arguments. The first argument can have any name, but it must be a NumericVector or std::vector<double> and gets the focal values. The other two arguments \code{ni} and \code{wi} must be of type \code{size_t}. \code{ni} represents the number of cells and \code{nw} represents the size of (number of elements in) the window}
+\item{fun}{\code{\link{cppFunction}} that iterates over cells. For C++ functions that operate on a single focal window, or for R functions use \code{\link{focal}} instead. The function must have at least three arguments. The first argument can have any name, but it must be a \code{Rcpp::NumericVector}, \code{Rcpp::IntegerVector} or a \code{std::vector<double>}. This is the container that receives the focal values. The other two arguments \code{ni} and \code{wi} must be of type \code{size_t}. \code{ni} represents the number of cells and \code{nw} represents the size of (number of elements in) the window}
 
 \item{...}{additional arguments to \code{fun}}
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
 
-\item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border}
+\item{silent}{logical. If \code{TRUE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a \code{fun} that does not work}
 
 \item{filename}{character. Output filename}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
@@ -48,16 +48,18 @@ cppFunction(
 	'NumericVector sum_and_multiply(NumericVector x, double m, size_t ni, size_t nw) {
 		NumericVector out(ni);
 		// loop over cells
+		size_t start = 0;
 		for (size_t i=0; i<ni; i++) {
+			size_t end = start + nw;
 			// compute something for a window
-			size_t start = i * nw;
 			double v = 0;
 			// loop over the values of a window
-			for (size_t j=start; j<(start+nw); j++) {
+			for (size_t j=start; j<end; j++) {
 				v += x[j];
 			}
 			out[i] = v * m;
-		}		
+			start = end;
+		}
 		return out;
 	}'
 )
@@ -85,7 +87,7 @@ R_sm_iter <- function(x, m, ni, nw) {
 	for (i in 1:ni) {
 		start <- (i-1) * nw + 1
 		out[i] <- sum(x[start:(start+nw-1)]) * m
-	}		
+	}
 	out
 }
 

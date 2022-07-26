@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2022  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -69,5 +69,20 @@ std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
 		theFun = vmean<double>;
 	}
 	return theFun;
+}
+
+
+bool ball(const std::vector<bool>& v) {
+    for (size_t i=0; i<v.size(); i++) {
+		if (!v[i]) return false;
+	}
+	return true;
+}
+
+bool bany(const std::vector<bool>& v) {
+    for (size_t i=0; i<v.size(); i++) {
+		if (v[i]) return true;
+	}
+	return false;
 }
 

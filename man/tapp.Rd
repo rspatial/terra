@@ -12,9 +12,11 @@ Apply a function to subsets of layers of a SpatRaster (similar to \code{\link[ba
 
 The function used should return a single value, and the number of layers in the output SpatRaster equals the number of unique values in \code{index}.
 
-For example, if you have a SpatRaster with 6 layers, you can use \code{index=c(1,1,1,2,2,2)} and \code{fun=sum}. This will return a SpatRaster with two layers. The first layer is the sum of the first three layers in the input SpatRaster, and the second layer is the sum of the last three layers in the input SpatRaster. Indices are recycled such that \code{index=c(1,2)} would also return a SpatRaster with two layers (one based on the odd layers (1,3,5), the other based on the even layers (2,4,6)).
+For example, if you have a SpatRaster with 6 layers, you can use \code{index=c(1,1,1,2,2,2)} and \code{fun=sum}. This will return a SpatRaster with two layers. The first layer is the sum of the first three layers in the input SpatRaster, and the second layer is the sum of the last three layers in the input SpatRaster. Indices are recycled such that \code{index=c(1,2)} would also return a SpatRaster with two layers (one based on the odd layers (1,3,5), the other based on the even layers (2,4,6)). 
 
-See \code{\link{app}} or \code{\link{Summary-methods}} if you want to use a more efficient function that returns multiple layers based on \bold{all} layers in the SpatRaster object.
+The index can also be one of the following values to group by time period (if \code{x} has the appropriate \code{\link{time}} values): "years", "months", "yearmonths", "days", "week" (ISO 8601 week number), or "doy" (day of the year).
+
+See \code{\link{app}} or \code{\link{Summary-methods}} if you want to use a more efficient function that returns multiple layers based on \bold{all} layers in the SpatRaster.
 }
 
 \usage{
@@ -23,7 +25,7 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to use a more
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{index}{factor or numeric (integer). Vector of length \code{nlyr(x)} (shorter vectors are recycled) grouping the input layers}
+  \item{index}{factor or numeric (integer). Vector of length \code{nlyr(x)} (shorter vectors are recycled) grouping the input layers. It can also be one of the following values: "years", "months", "yearmonths", "days", "week" (ISO 8601 week number), or "doy" (day of the year)}
   \item{fun}{function to be applied. The following functions have been re-implemented in C++ for speed: "sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first". To use the base-R function for say, "min", you could use something like \code{fun = \(i) min(i)}}
   \item{...}{additional arguments passed to \code{fun}}
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used. You can also supply a cluster object. Ignored for functions that are implemented by terra in C++ (see under fun)}  

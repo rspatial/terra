@@ -1,3 +1,7 @@
+install_time_patches/
+src/Makevars.ucrt.orig
+src/Makevars.ucrt.rej
+
 .gitignore
 .gitattributes
 ^windows

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020  Robert J. Hijmans
+// Copyright (c) 2018-2022  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -30,6 +30,8 @@ class SpatDate {
     SpatDate(int doy, int year);
     SpatDate(const long& d) { v = d; };
 //    SpatDate(const std::string& s);
+	virtual ~SpatDate(){}
+
 
     std::vector<int> ymd();
     int doy();

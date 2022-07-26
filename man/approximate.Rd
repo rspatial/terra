@@ -1,20 +1,20 @@
-\name{approxNA}
+\name{approximate}
 
 \docType{methods}
 
-\alias{approxNA}
-\alias{approxNA,SpatRaster-method}
+\alias{approximate}
+\alias{approximate,SpatRaster-method}
 
 \title{Estimate values for cell values that are \code{NA} by interpolating between layers}
 
 \description{
-approxNA uses the \code{stats} function \code{\link{approx}} to estimate values for cells that are \code{NA} by interpolation across layers. Layers are considered equidistant, unless argument \code{z} is used, or \code{time(x)} returns values that are not \code{NA}, in which case these values are used to determine distance between layers.
+approximate uses the \code{stats} function \code{\link{approx}} to estimate values for cells that are \code{NA} by interpolation across layers. Layers are considered equidistant, unless argument \code{z} is used, or \code{time(x)} returns values that are not \code{NA}, in which case these values are used to determine distance between layers.
 
 For estimation based on neighboring cells see \code{\link{focal}}
 }
 
 \usage{
-\S4method{approxNA}{SpatRaster}(x, method="linear", yleft, yright,
+\S4method{approximate}{SpatRaster}(x, method="linear", yleft, yright,
             rule=1, f=0, ties=mean, z=NULL, NArule=1,filename="",  ...) 
 }
 
@@ -52,9 +52,9 @@ r2[5:15] <- NA
 r3[8:25] <- NA
 s <- c(r1,r2,r3,r4,r5,r6)
 s[1:5] <- NA
-x1 <- approxNA(s)
-x2 <- approxNA(s, rule=2)
-x3 <- approxNA(s, rule=2, z=c(1,2,3,5,14,15))
+x1 <- approximate(s)
+x2 <- approximate(s, rule=2)
+x3 <- approximate(s, rule=2, z=c(1,2,3,5,14,15))
 
 }
 

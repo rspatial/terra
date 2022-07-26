@@ -33,7 +33,7 @@ x <- selectHighest(r, 1000)
 y <- selectHighest(r, 1000, TRUE)
 
 m <- merge(y-1, x)
-levels(m) <- c("low", "high")
+levels(m) <- data.frame(id=0:1, elevation=c("low", "high"))
 plot(m)
 }
 

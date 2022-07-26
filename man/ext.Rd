@@ -13,7 +13,9 @@
 \alias{ext,SpatExtent-method}
 \alias{ext,SpatRaster-method}
 \alias{ext,SpatVector-method}
+\alias{ext,SpatVectorProxy-method}
 \alias{ext,SpatRasterDataset-method}
+\alias{ext,SpatRasterCollection-method}
 \alias{ext<-,SpatRaster,SpatExtent-method}
 \alias{ext<-,SpatRaster,numeric-method}
 \alias{ext,numeric-method}
@@ -23,15 +25,19 @@
 \alias{ext,Extent-method}
 \alias{ext,sf-method}
 
-  
+
 \title{Create, get or set a SpatExtent}
 
 \description{
 Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create a SpatExtent from a vector (length=4; order= xmin, xmax, ymin, ymax)
+
+See \code{\link{set.ext}} to set the extent in place.
 }
 
 \usage{
-\S4method{ext}{SpatRaster}(x)
+\S4method{ext}{SpatRaster}(x, cells=NULL)
+
+\S4method{ext}{SpatVector}(x)
 
 \S4method{ext}{numeric}(x, ...)
 
@@ -46,13 +52,14 @@ Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create 
 
 \arguments{
   \item{x}{SpatRaster}
+  \item{cells}{postive integer (cell) numbers to subset the extent to area covered by these cells}
   \item{value}{SpatExtent, or numeric vector of lenght four (xmin, xmax, ymin, ymax), or a single number with the \code{$} method}  
   \item{name}{charcter, one of xmin, xmax, ymin, or ymax}  
   \item{...}{if \code{x} is a single numeric value, additional numeric values for xmax, ymin, and ymax}  
 }
  
 \value{
-SpatExtent
+A \code{\link{SpatExtent}} object. 
 }
 
 \examples{

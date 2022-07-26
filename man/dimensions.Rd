@@ -39,6 +39,7 @@
 \alias{dim,SpatRasterDataset-method}
 \alias{dim<-,SpatRaster-method}
 \alias{dim,SpatVector-method}
+\alias{dim,SpatVectorProxy-method}
 
 \alias{res,SpatRasterDataset-method}
 \alias{res,SpatRaster-method}

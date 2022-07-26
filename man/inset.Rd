@@ -16,9 +16,11 @@ Make an inset map or scale the extent of a SpatVector
 }
 
 \usage{
-\S4method{inset}{SpatVector}(x, e, loc="", scale=0.2, background="white", border="black", box=NULL, pbx, ...)
+\S4method{inset}{SpatVector}(x, e, loc="", scale=0.2, background="white", 
+	perimeter=TRUE, box=NULL, pper, pbox, ...)
 
-\S4method{inset}{SpatRaster}(x, e, loc="", scale=0.2, background="white", border="black", box=NULL, pbx, ...)
+\S4method{inset}{SpatRaster}(x, e, loc="", scale=0.2, background="white", 
+	perimeter=TRUE, box=NULL, pper, pbox, ...)
 
 \S4method{inext}{SpatVector}(x, e, y=NULL, gap=0)
 }
@@ -29,9 +31,10 @@ Make an inset map or scale the extent of a SpatVector
   \item{loc}{character. One of "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "center"}
   \item{scale}{numeric. The relative size of the inset, used when x is missing}
   \item{background}{color for the background of the inset. Use \code{NA} for no background color}
-  \item{border}{color for the border around the inset. Use \code{NA} for no border}
-  \item{box}{SpatExtent or missing, to draw a box on the inset}
-  \item{pbx}{list with graphical arguments for the box}
+  \item{perimeter}{logical. If \code{TRUE} a perimeter (border) is drawn around the inset}
+  \item{box}{SpatExtent or missing, to draw a box on the inset, e.g. to show where the map is located in a larger area}
+  \item{pper}{list with graphical parameters (arguments) such as \code{col} and \code{lwd} for the perimeter line}
+  \item{pbox}{list with graphical parameters (arguments) such as \code{col} and \code{lwd} for the box (line)}
   \item{...}{additional arguments passed to plot for the drawing of \code{x}}
   \item{y}{SpatVector. If not NULL, \code{y} is scaled based with the parameters for \code{x}. This is useful, for example, when \code{x} represent boundaries, and \code{y} points within these boundaries}
   \item{gap}{numeric to add space between the SpatVector and the SpatExtent}
@@ -40,7 +43,7 @@ Make an inset map or scale the extent of a SpatVector
 
 \seealso{\code{\link{sbar}}, \code{\link{rescale}}, \code{\link{shift}}}
 
-\value{scaled and shifted SpatVector or SpatRaster (invisibly)}
+\value{scaled and shifted SpatVector or SpatRaster (returned invisibly)}
 
 \examples{ 
 f <- system.file("ex/lux.shp", package="terra")
@@ -49,6 +52,12 @@ x <- v[v$NAME_2 == "Diekirch", ]
 
 plot(x, density=10, col="blue")
 inset(v)
+
+# more elaborate
+plot(x, density=10, col="blue")
+inset(v, col = "brown", border="lightgrey", perimeter=TRUE, 
+		pper=list(col="orange", lwd=3, lty=2), 
+		box=ext(x), pbox=list(col="blue", lwd=2))
 
 cols <- rep("light grey", 12)
 cols[2] <- "red"
@@ -73,12 +82,11 @@ lines(x, lwd=2.5)
 text(x, "NAME_2", cex=1.5, halo=TRUE)
 sbar(6, c(6.04, 49.785), type="bar", below="km", label=c(0,3,6), cex=.8)
 s <- inset(v, col=cols, box=b, scale=.2, loc="topright", background="light yellow",
-	pbx=list(lwd=2, lty=5, col="blue"))
+	pbox=list(lwd=2, lty=5, col="blue"))
 
 # note the returned inset SpatVector
 s
-
-
+lines(s, col="orange")
 }
 
 \keyword{methods}

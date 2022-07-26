@@ -4,8 +4,8 @@
 # Licence GPL v3
 
 
-setMethod('approxNA', signature(x="SpatRaster"), 
-function(x, method="linear", yleft, yright, rule=1, f=0, ties=mean, z=NULL, NArule=1, filename="", ...) { 
+setMethod("approximate", signature(x="SpatRaster"),
+function(x, method="linear", yleft, yright, rule=1, f=0, ties=mean, z=NULL, NArule=1, filename="", ...) {
 
 	out <- rast(x, keeptime=TRUE)
 	nl <- nlyr(out)
@@ -13,23 +13,23 @@ function(x, method="linear", yleft, yright, rule=1, f=0, ties=mean, z=NULL, NAru
 		warning('cannot interpolate with a single layer')
 		return(x)
 	}
-	
+
 	if (is.null(z)) {
 		xout <- time(x)
 		if (any(is.na(xout))) {
 			xout <- 1:nl
-		} 
+		}
 	} else {
 		if (length(z)!= nl) {
-			error("approxNA", "length of z does not match nlyr(x)")
+			error("approximate", "length of z does not match nlyr(x)")
 		}
-		xout <- z		
+		xout <- z
 	}
-	
+
 	ifelse((missing(yleft) & missing(yright)), ylr <- 0L, ifelse(missing(yleft), ylr <- 1L, ifelse(missing(yright), ylr <- 2L, ylr <- 3L)))
 
     nc <- ncol(out)
-	
+
 	readStart(x)
 	on.exit(readStop(x))
 	b <- writeStart(out, filename, ...)

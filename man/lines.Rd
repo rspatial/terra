@@ -11,6 +11,7 @@
 \alias{polys,SpatVector-method}
 \alias{points,SpatVector-method}
 
+\alias{polys,SpatExtent-method}
 \alias{lines,SpatExtent-method}
 \alias{points,SpatExtent-method}
 
@@ -24,15 +25,17 @@ These are simpler alternatives for \code{\link[terra:plot]{plot(x, add=TRUE)}}
 }
 
 \usage{
-\S4method{points}{SpatVector}(x, col, cex=1, pch=20, ...)
+\S4method{points}{SpatVector}(x, col, cex=1, pch=20, alpha=1, ...)
 
-\S4method{lines}{SpatVector}(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, ...)
+\S4method{lines}{SpatVector}(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)
 
-\S4method{polys}{SpatVector}(x, col, border="black", lwd=1, lty=1, ...)
+\S4method{polys}{SpatVector}(x, col, border="black", lwd=1, lty=1, alpha=1, ...)
 
-\S4method{points}{SpatExtent}(x, col, ...)
+\S4method{points}{SpatExtent}(x, col="black", alpha=1, ...)
 
-\S4method{lines}{SpatExtent}(x, col, ...)
+\S4method{lines}{SpatExtent}(x, col="black", alpha=1, ...)
+
+\S4method{polys}{SpatExtent}(x, col, alpha=1, ...)
 }
 
 \arguments{
@@ -42,6 +45,7 @@ These are simpler alternatives for \code{\link[terra:plot]{plot(x, add=TRUE)}}
   \item{border}{character. color(s) of the polygon borders. Use \code{NULL} or \code{NA} to not draw a border}
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
   \item{pch}{positive integer, line type. See \code{\link{points}}}
+  \item{alpha}{number between 0 and 1 to set transparency}
   \item{lwd}{numeric, line-width. See \code{\link{par}}}
   \item{lty}{positive integer, line type. See \code{\link{par}}}
   \item{arrows}{logical. If \code{TRUE} and \code{y} is a SpatVector, arrows are drawn intead of lines. See \code{?\link{arrows}} for additional arguments}

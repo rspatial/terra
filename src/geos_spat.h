@@ -1,27 +1,49 @@
+// Copyright (c) 2018-2022  Robert J. Hijmans
+//
+// This file is part of the "spat" library.
+//
+// spat is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// spat is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with spat. If not, see <http://www.gnu.org/licenses/>.
+
 #define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
-
 #if GEOS_VERSION_MAJOR == 3
 # if GEOS_VERSION_MINOR >= 5
-#  define HAVE350
+#  define GEOS350
 # endif
 # if GEOS_VERSION_MINOR == 6
 #  if GEOS_VERSION_PATCH >= 1
-#   define HAVE361
+#   define GEOS361
 #  endif
 # endif
 # if GEOS_VERSION_MINOR >= 7
-#  define HAVE361
-#  define HAVE370
+#  define GEOS361
+#  define GEOS370
+# endif
+# if GEOS_VERSION_MINOR >= 8
+#  define GEOS361
+#  define GEOS370
+#  define GEOS380
 # endif
 #else
 # if GEOS_VERSION_MAJOR > 3
-#  define HAVE350
-#  define HAVE370
-#  define HAVE361
+#  define GEOS350
+#  define GEOS370
+#  define GEOS361
 # endif
 #endif
+
 
 #include "spatVector.h"
 #include <cstdarg> 
@@ -41,6 +63,13 @@ static PrepGeomPtr geos_ptr(const GEOSPreparedGeometry* pg, GEOSContextHandle_t 
 	auto deleter = std::bind(GEOSPreparedGeom_destroy_r, hGEOSctxt, std::placeholders::_1);
 	return PrepGeomPtr(pg, deleter);
 }
+
+using TreePtr= std::unique_ptr<GEOSSTRtree, std::function<void(GEOSSTRtree*)> >;
+static TreePtr geos_ptr(GEOSSTRtree* t, GEOSContextHandle_t hGEOSctxt) {
+	auto deleter = std::bind(GEOSSTRtree_destroy_r, hGEOSctxt, std::placeholders::_1);
+	return TreePtr(t, deleter);
+}
+
 
 #ifdef useRcpp
 #include "Rcpp.h"
@@ -112,7 +141,7 @@ static void __warningHandler(const char *fmt, ...) {
 
 
 void geos_finish(GEOSContextHandle_t ctxt) {
-#ifdef HAVE350
+#ifdef GEOS350
 	GEOS_finish_r(ctxt);
 #else
 	finishGEOS_r(ctxt);
@@ -121,7 +150,7 @@ void geos_finish(GEOSContextHandle_t ctxt) {
 
 
 GEOSContextHandle_t geos_init(void) {
-#ifdef HAVE350
+#ifdef GEOS350
 	GEOSContextHandle_t ctxt = GEOS_init_r();
 	GEOSContext_setNoticeHandler_r(ctxt, __warningHandler);
 	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
@@ -138,7 +167,7 @@ static void __warningIgnore(const char *fmt, ...) {
 
 GEOSContextHandle_t geos_init2(void) {
 
-#ifdef HAVE350
+#ifdef GEOS350
 	GEOSContextHandle_t ctxt = GEOS_init_r();
 	GEOSContext_setNoticeHandler_r(ctxt, __warningIgnore);
 	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
@@ -324,7 +353,7 @@ SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEO
 	std::vector<double> x, y;
 	bool xok, yok;
 
-	if ((vt == "points") | (vt == "lines")) {	
+	if ((vt == "points") || (vt == "lines")) {	
 		for(size_t i = 0; i < ng; i++) {
 			GEOSGeometry* g = geoms[i].get();
 			size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
@@ -589,6 +618,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 			//Rcpp::Rcout << np << std::endl;
 
 
+			size_t kk = 0; // introduced for intersect
 			for(size_t j = 0; j<np; j++) {
 
 				const GEOSGeometry* gg = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
@@ -614,13 +644,12 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					if (increment) f++;
 				}
 
-	
 				for(size_t k = 0; k<npp; k++) {
 
 					const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, gg, k);
 
 					if (ggt == "Polygon" || ggt == "MultiPolygon") {
-						if (!polysFromGeom(hGEOSCtxt, part, f, k, pl_x, pl_y, pl_gid, pl_gp, pl_hole, msg)) {
+						if (!polysFromGeom(hGEOSCtxt, part, f, kk, pl_x, pl_y, pl_gid, pl_gp, pl_hole, msg)) {
 							out.setError(msg);
 							return out;
 						}
@@ -643,10 +672,11 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					} else {
 						out.addWarning("unhandeled Collection geom: " + ggt);
 					}
-					if (increment) f++;
+					kk++;
 				}
-				if (!increment) f++;
+				if (increment) f++;
 			}
+			if (!increment) f++;
 		} else {
 			out.setError("what is this: " + gt + "?");
 		}

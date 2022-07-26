@@ -3,16 +3,22 @@
 # Version 1.0
 # License GPL v3
 
-setMethod("lines", signature(x="SpatExtent"), 
-	function(x, col, ...)  {
+setMethod("lines", signature(x="SpatExtent"),
+	function(x, col="black", alpha=1, ...)  {
 		e <- as.vector(x)
 		p <- rbind(c(e[1],e[3]), c(e[1],e[4]), c(e[2],e[4]), c(e[2],e[3]), c(e[1],e[3]))
-		if (missing(col)) col <- "black"
-		graphics::lines(p, col=col[1], ...)
+		col <- .getCols(1, col, alpha)
+		graphics::lines(p, col=col, ...)
 	}
 )
 
-setMethod("plot", signature(x="SpatExtent", y="missing"), 
+setMethod("polys", signature(x="SpatExtent"),
+	function(x, col="black", alpha=1, ...)  {
+		polys(as.polygons(x), col=col, alpha=alpha, ...)
+	}
+)
+
+setMethod("plot", signature(x="SpatExtent", y="missing"),
 	function(x, ...)  {
 		test <- try(x$valid, silent=TRUE)
 		if (inherits(test, "try-error")) {
@@ -22,13 +28,11 @@ setMethod("plot", signature(x="SpatExtent", y="missing"),
 	}
 )
 
-setMethod("points", signature(x="SpatExtent"), 
-	function(x, col, ...)  {
+setMethod("points", signature(x="SpatExtent"),
+	function(x, col="black", alpha=1, ...)  {
 		e <- as.vector(x)
 		p <- rbind(c(e[1],e[3]), c(e[1],e[4]), c(e[2],e[4]), c(e[2],e[3]), c(e[1],e[3]))
-		if (missing(col)) col <- "black"
-		col <- .getCols(4, col)
-		if (is.null(col)) col <- "black"
+		col <- .getCols(4, col, alpha)
 		graphics::points(p, col=col, ...)
 	}
 )

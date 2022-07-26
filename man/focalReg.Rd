@@ -7,24 +7,22 @@
 \title{Focal regression}
 
 \description{
-Calculate the coeffients for a focal ("moving window") OLS regression model. 
+Calculate the coefficients for a focal ("moving window") OLS regression model. 
 }
 
 \usage{
 \S4method{focalReg}{SpatRaster}(x, w=3, na.rm=TRUE,  
-		fillvalue=NA, expand=FALSE, filename="", ...) 
+		fillvalue=NA, filename="", ...) 
 }
 
 \arguments{
-\item{x}{SpatRaster with at leat two layers. The first is the "Y" (dependent) variable and the remainder are the "X" (independent) variables}
+\item{x}{SpatRaster with at least two layers. The first is the "Y" (dependent) variable and the remainder are the "X" (independent) variables}
 
 \item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in \code{\link{focal}}}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
-
-\item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border}
 
 \item{filename}{character. Output filename}
 \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

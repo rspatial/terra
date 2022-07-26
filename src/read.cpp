@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2022  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -51,7 +51,7 @@ bool SpatRaster::readStop() {
 			} else if (source[i].multidim) {
 				readStopMulti(i);
 			} else {
-				readStopGDAL(i); 
+				readStopGDAL(i);
 			}
 		}
 	}
@@ -59,26 +59,21 @@ bool SpatRaster::readStop() {
 }
 
 
-// BSQ
-std::vector<double> SpatRaster::readBlock(BlockSize bs, unsigned i){
-	return readValues(bs.row[i], bs.nrows[i], 0, ncol());
-}
-
-
 // 2D BSQ
-std::vector<std::vector<double>> SpatRaster::readBlock2(BlockSize bs, unsigned i) {
-	std::vector<double> x = readValues(bs.row[i], bs.nrows[i], 0, ncol());
-	std::vector<std::vector<double>> v(nlyr());
+void SpatRaster::readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, unsigned i) {
+	std::vector<double> x;
+	readValues(x, bs.row[i], bs.nrows[i], 0, ncol());
+	v.resize(nlyr());
 	size_t off = bs.nrows[i] * ncol();
 	for (size_t i=0; i<nlyr(); i++) {
 		v[i] = std::vector<double>(x.begin()+(i*off), x.begin()+((i+1)*off));
 	}
-	return(v);
 }
 
 // BIP
 std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
-	std::vector<double> x = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+	std::vector<double> x;
+	readValues(x, bs.row[i], bs.nrows[i], 0, ncol());
 	std::vector<double> v(x.size());
 	size_t off = bs.nrows[i] * ncol();
 	size_t nl = nlyr();
@@ -129,17 +124,18 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, 
 				out.insert(out.end(), v1.begin(), v1.end());
 			}
 			*/
-	
+
 	} else { //	no window
-		if (row==0 && nrows==nrow() && col==0 && ncols==ncol()) {
+		size_t nc = ncol();
+		if (row==0 && nrows==nrow() && col==0 && ncols==nc) {
 			out.insert(out.end(), source[src].values.begin(), source[src].values.end());
 		} else {
 			double ncells = ncell();
-			if (col==0 && ncols==ncol()) {
+			if (col==0 && ncols==nc) {
 				for (size_t lyr=0; lyr < nl; lyr++) {
 					size_t add = ncells * lyr;
-					size_t a = add + row * ncol();
-					size_t b = a + nrows * ncol();
+					size_t a = add + row * nc;
+					size_t b = a + nrows * nc;
 					out.insert(out.end(), source[src].values.begin()+a, source[src].values.begin()+b);
 				}
 			} else {
@@ -148,7 +144,7 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, 
 				for (size_t lyr=0; lyr < nl; lyr++) {
 					size_t add = ncells * lyr;
 					for (size_t r = row; r < endrow; r++) {
-						size_t a = add + r * ncol();
+						size_t a = add + r * nc;
 						out.insert(out.end(), source[src].values.begin()+a+col, source[src].values.begin()+a+endcol);
 					}
 				}
@@ -159,7 +155,7 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, 
 
 
 
-std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
+std::vector<double> SpatRaster::readValuesR(size_t row, size_t nrows, size_t col, size_t ncols){
 
 	std::vector<double> out;
 
@@ -186,6 +182,7 @@ std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col,
 
 	unsigned n = nsrc();
 
+	out.reserve(nrows * ncols * nlyr());
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {
 			readChunkMEM(out, src, row, nrows, col, ncols);
@@ -193,11 +190,11 @@ std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col,
 			// read from file
 			#ifdef useGDAL
 
-/* 
+/*
 				if (source[0].window.expanded) {
 					std::vector<double> gout;
 					readChunkGDAL(gout, src, source[0].window.off_row, nrows, source[0].window.off_col, ncols);
-								
+
 					size_t rrow = row + source[0].window.off_row;
 					size_t rcol = col + source[0].window.off_col;
 					unsigned endrow = rrow + nrows;
@@ -229,11 +226,46 @@ std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col,
 	return out;
 }
 
+void SpatRaster::readValues(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols){
+
+	if (((row + nrows) > nrow()) || ((col + ncols) > ncol())) {
+		setError("invalid rows/columns");
+		return;
+	}
+
+	if ((nrows==0) | (ncols==0)) {
+		return;
+	}
+
+	if (!hasValues()) {
+		out.resize(nrows * ncols * nlyr(), NAN);
+		addWarning("raster has no values");
+		return; // or NAs?
+	}
+
+
+	unsigned n = nsrc();
+	out.resize(0);
+	out.reserve(nrows * ncols * nlyr());
+
+	for (size_t src=0; src<n; src++) {
+		if (source[src].memory) {
+			readChunkMEM(out, src, row, nrows, col, ncols);
+		} else {
+			// read from file
+			#ifdef useGDAL
+			readChunkGDAL(out, src, row, nrows, col, ncols);
+			#endif // useGDAL
+		}
+	}
+	return;
+}
+
 
 
 bool SpatRaster::readAll() {
 	if (!hasValues()) {
-		return true; 
+		return true;
 	}
 
 	size_t row =0, col=0, nrows=nrow(), ncols=ncol();
@@ -244,6 +276,7 @@ bool SpatRaster::readAll() {
 			readChunkGDAL(source[src].values, src, row, nrows, col, ncols);
 			source[src].memory = true;
 			source[src].filename = "";
+			std::iota(source[src].layers.begin(), source[src].layers.end(), 0);
 		}
 		if (src > 0) {
 			if (!source[0].combine_sources(source[src])) {
@@ -251,7 +284,7 @@ bool SpatRaster::readAll() {
 				return false;
 			}
 			source[src].values.resize(0);
-		}	
+		}
 	}
 	readStop();
 	if (n>1) source.resize(1);
@@ -273,16 +306,16 @@ std::vector<double> SpatRaster::getValues(long lyr, SpatOptions &opt) {
 	if (hw) {
 		if (!readStart()) return out;
 		if (lyr < 0) { // default; read all
-			out = readValues(0, nrow(), 0, ncol());
+			readValues(out, 0, nrow(), 0, ncol());
 		} else {
 			unsigned lyrnr = lyr;
 			SpatRaster sub = subset({lyrnr}, opt);
-			out = sub.readValues(0, nrow(), 0, ncol());
+			sub.readValues(out, 0, nrow(), 0, ncol());
 		}
 		readStop();
 		return out;
 	}
-	
+
 	if (lyr < 0) { // default; read all
 		unsigned n = nsrc();
 		for (size_t src=0; src<n; src++) {
@@ -328,7 +361,7 @@ bool SpatRaster::getValuesSource(size_t src, std::vector<double> &out) {
 	if (hw) {
 		SpatRaster sub = SpatRaster(source[src]);
 		if (!readStart()) return false;
-		out = sub.readValues(0, nrow(), 0, ncol());
+		sub.readValues(out, 0, nrow(), 0, ncol());
 		readStop();
 		return true;
 	}

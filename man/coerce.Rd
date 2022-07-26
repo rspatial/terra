@@ -20,7 +20,7 @@ Coercion to other object types
 \usage{
 \S4method{as.vector}{SpatRaster}(x, mode='any')
 
-\S4method{as.matrix}{SpatRaster}(x, ...)
+\S4method{as.matrix}{SpatRaster}(x, wide=FALSE, ...)
 
 \S4method{as.array}{SpatRaster}(x)
 }
@@ -28,8 +28,9 @@ Coercion to other object types
 
 \arguments{
 \item{x}{SpatRaster or SpatVector}
-\item{...}{additional argument \code{as.matrix}: \code{wide (logical)}. If \code{FALSE} each layer in the SpatRaster becomes a column in the matrix and each cell in the SpatRaster becomes a row. If \code{TRUE} each row in the SpatRaster becomes a row in the matrix and each column in the SpatRaster becomes a column in the matrix }
+\item{wide}{logical. If \code{FALSE} each layer in the SpatRaster becomes a column in the matrix and each cell in the SpatRaster becomes a row. If \code{TRUE} each row in the SpatRaster becomes a row in the matrix and each column in the SpatRaster becomes a column in the matrix }
 \item{mode}{this argument is ignored}
+\item{...}{additional arguments (none implemented)}
 }
 
 \value{

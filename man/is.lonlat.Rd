@@ -1,9 +1,5 @@
 \name{is.lonlat}
 
-\alias{isLonLat}
-\alias{isLonLat,SpatRaster-method}
-\alias{isLonLat,SpatVector-method}
-
 \alias{is.lonlat}
 \alias{is.lonlat,SpatRaster-method}
 \alias{is.lonlat,SpatVector-method}
@@ -14,17 +10,12 @@
 \description{
 Test whether a SpatRaster or SpatVector has a longitude/latitude coordinate reference system (CRS), or perhaps has one. That is wen the CRS is unknown (\code{""}) but the x coordinates are within -181 and 181 and the y coordinates are within -90.1 and 90.1. For a SpatRaster you can also test if it is longitude/latitude and "global" (covers all longitudes).
 
-The form \code{\link{isLonLat}} is depracated. Use \code{\link{is.lonlat}}
 }
 
 \usage{
 \S4method{is.lonlat}{SpatRaster}(x, perhaps=FALSE, warn=TRUE, global=FALSE)
 
 \S4method{is.lonlat}{SpatVector}(x, perhaps=FALSE, warn=TRUE)
-
-\S4method{isLonLat}{SpatRaster}(x)
-
-\S4method{isLonLat}{SpatVector}(x)
 }
 
 \arguments{
@@ -35,7 +26,7 @@ The form \code{\link{isLonLat}} is depracated. Use \code{\link{is.lonlat}}
 }
 
 \value{
-logical
+logical or NA
 }
 
 \examples{

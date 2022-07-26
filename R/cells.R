@@ -1,17 +1,21 @@
-# Author: Robert J. Hijmans 
+# Author: Robert J. Hijmans
 # Date : June 2020
 # Version 1.0
 # License GPL v3
 
- 
-setMethod("cells", signature(x="SpatRaster", y="missing"), 
+
+setMethod("cells", signature(x="SpatRaster", y="missing"),
 	function(x, y) {
 		# is this useful?
-		which(!is.na(values(x)))
+		if (hasValues(x)) {
+			which(!is.na(values(x)))
+		} else {
+			1:ncell(x)
+		}
 	}
 )
 
-setMethod("cells", signature(x="SpatRaster", y="numeric"), 
+setMethod("cells", signature(x="SpatRaster", y="numeric"),
 	function(x, y) {
 		opt <- spatOptions()
 		v <- x@ptr$is_in_cells(y, opt)
@@ -23,11 +27,11 @@ setMethod("cells", signature(x="SpatRaster", y="numeric"),
 )
 
 
-setMethod("cells", signature("SpatRaster", "SpatVector"), 
+setMethod("cells", signature("SpatRaster", "SpatVector"),
 	function(x, y, method="simple", weights=FALSE, exact=FALSE, touches=is.lines(y)) {
 		method = match.arg(tolower(method), c("simple", "bilinear"))
 		opt <- spatOptions()
-		d <- x@ptr$vectCells(y@ptr, touches[1], method[1], weights[1], exact[1], opt) 
+		d <- x@ptr$vectCells(y@ptr, touches[1], method[1], weights[1], exact[1], opt)
 		if (geomtype(y) == "points") {
 			d <- matrix(d, nrow=nrow(y), byrow=TRUE)
 			d <- cbind(1:nrow(y), d)
@@ -54,14 +58,14 @@ setMethod("cells", signature("SpatRaster", "SpatVector"),
 )
 
 
-#setMethod("cells", signature("SpatRaster", "SpatExtent"), 
+#setMethod("cells", signature("SpatRaster", "SpatExtent"),
 #	function(x, y, ...) {
 #		p <- as.polygons(y, crs=crs(x))
 #		cells(x, p)[,2]
 #	}
 #)
 
-#setMethod("cells", signature("SpatRaster", "SpatExtent"), 
+#setMethod("cells", signature("SpatRaster", "SpatExtent"),
 #	function(x, y, ...) {
 #		e <- align(y, x)
 #		s <- res(x)/2
@@ -75,7 +79,7 @@ setMethod("cells", signature("SpatRaster", "SpatVector"),
 #)
 
 
-setMethod("cells", signature("SpatRaster", "SpatExtent"), 
+setMethod("cells", signature("SpatRaster", "SpatExtent"),
 	function(x, y) {
 		opt <- spatOptions()
 		x@ptr$extCells(y@ptr) + 1

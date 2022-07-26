@@ -58,7 +58,7 @@ xy <- rbind(cbind(1, p), cbind(0, a))
 e <- extract(logo, xy[,2:3])
 
 # combine with response (excluding the ID column)
-v <- data.frame(cbind(pa=xy[,1], e[,-1]))
+v <- data.frame(cbind(pa=xy[,1], e))
 
 #build a model, here with glm 
 model <- glm(formula=pa~., data=v)
@@ -136,6 +136,12 @@ rp3 <- predict(logo, rfm, fun=rfun)
 parallel::stopCluster(cls)
 
 plot(c(rp0, rp1, rp2, rp3))
+
+
+### with two output variables (probabilities for each class)
+v$pa <- as.factor(v$pa)
+rfm2 <- randomForest(formula=pa~., data=v)
+rfp <- predict(logo, rfm2, cores=2, type="prob", cpkgs="randomForest")
 }
 
 }
