@@ -183,7 +183,16 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 
 	nl <- nlyr(x)
 	useLyr <- FALSE
-	method <- match.arg(tolower(method), c("simple", "bilinear"))
+	geo <- geomtype(y)
+	if (geo == "points") {	
+		method <- match.arg(tolower(method), c("simple", "bilinear"))
+		if (weights) {
+			warn("weights are ignored for point data")
+		}
+		weights <- FALSE
+	} else {
+		method <- "simple"
+	}
 	hasfun <- !is.null(fun)
 	if (weights && exact) {
 		exact = FALSE
@@ -257,6 +266,10 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		cn <- c(cn, "cell")
 		nc <- nc + 1
 	}
+	if (xy) {
+		cn <- c(cn, "x", "y")
+		nc <- nc + 2
+	}
 	if (weights) {
 		cn <- c(cn, "weight")
 		nc <- nc + 1
@@ -264,12 +277,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		cn <- c(cn, "fraction")
 		nc <- nc + 1
 	}
-	if (xy) {
-		cn <- c(cn, "x", "y")
-		nc <- nc + 2
-	}
 
-	geo <- geomtype(y)
 	if (geo == "points") {
 		## this was? should be fixed upstream
 		if (nc == nl) {
