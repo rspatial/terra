@@ -5,6 +5,7 @@
 \alias{svc}
 \alias{svc,missing-method}
 \alias{svc,list-method}
+\alias{svc,sf-method}
 \alias{svc,SpatVector-method}
 \alias{[<-,SpatVectorCollection,numeric,missing-method}
 \alias{[,SpatVectorCollection,numeric,missing-method}

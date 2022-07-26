@@ -6,11 +6,16 @@
 \title{Stretch}
 
 \description{
-Linear stretch of values in a SpatRaster object. Provide the desired output range (minv and maxv) and the lower and upper bounds in the original data, either as quantiles (\code{minq} and \code{maxq}, or as cell values (\code{smin} and \code{smax}). If \code{smin} and \code{smax} are both not \code{NA}, \code{minq} and \code{maxq} are ignored.
+Linear or histogram equalization stretch of values in a SpatRaster. 
+
+For linear stretch, provide the desired output range (\code{minv} and \code{maxv}) and the lower and upper bounds in the original data, either as quantiles (\code{minq} and \code{maxq}, or as cell values (\code{smin} and \code{smax}). If \code{smin} and \code{smax} are both not \code{NA}, \code{minq} and \code{maxq} are ignored.
+
+For histogram equalization, these arguments are ignored, but you can provide the desired scale of the output. 
 }
 
 \usage{
-\S4method{stretch}{SpatRaster}(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, filename="", ...)
+\S4method{stretch}{SpatRaster}(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA,
+		histeq=FALSE, scale=1, filename="", ...)
 }
 
 \arguments{
@@ -21,6 +26,9 @@ Linear stretch of values in a SpatRaster object. Provide the desired output rang
 \item{maxq}{numeric <= 1 and larger than minq. upper quantile bound of original value. Ignored if smax is supplied}
 \item{smin}{numeric < smax. user supplied lower value for the layers, to be used instead of a quantile computed by the function itself}
 \item{smax}{numeric > smin. user supplied upper value for the layers, to be used instead of a quantile computed by the function itself}
+
+\item{histeq}{logical. If \code{TRUE} histogram equalization is used instead of linear stretch}
+\item{scale}{numeric. The scale (maximum value) of the output if \code{histeq=TRUE}}
 
 \item{filename}{character. Output filename}
 \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

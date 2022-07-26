@@ -84,8 +84,8 @@ void watershed(double* p, int nx, int ny, int x, int y, int* pOut)
 {
   static int nCall = 0;
   nCall++;
-  printf("%d \n", nCall);
-  printf("%d %d %d %d \n",nx,ny,x,y);
+  ///printf("%d \n", nCall);
+  ///printf("%d %d %d %d \n",nx,ny,x,y);
   
   // Set cell under analysis to 1, being part of the watershed
   // For the first cell it is not granted that it is a valid raster cell
@@ -165,7 +165,7 @@ void watershed(double* p, int nx, int ny, int x, int y, int* pOut)
   int n = 0;      // Number of raster cells to be processed in queue
   int nLoop = 0;  // Counter for loops over cells
   int x,y;
-  printf("DEBUG: col=%d,row=%d\n",x,y);
+  ///printf("DEBUG: col=%d,row=%d\n",x,y);
   
   // printf("TEST Row, cell 60: %d,%d\n", getRow(nx,ny,60), getCol(nx,ny,60));
   // Set raster cell in the output file
@@ -176,14 +176,14 @@ void watershed(double* p, int nx, int ny, int x, int y, int* pOut)
   q[0] = delta;
   n++;
   
-  printf("BEFORE n=%d and size(n)=%d\n", n, (int)sizeof(n));
+  ///printf("BEFORE n=%d and size(n)=%d\n", n, (int)sizeof(n));
   
   // Process all pending (until any) raster cells in the queue
   //for (int i = 0; i < n; i++) {
   while (n > 0) {
-    //printf("DEBUG: IN THE LOOP n=%d\n", n);
+    //printf("DEBUG: IN THE LOOP n=%d\n", n); // REMOVE PRINTF ?? 
     nLoop++;
-    if (nLoop % 10000 == 0) printf("%d ", nLoop);  // Print number of internal loops
+   // if (nLoop % 10000 == 0) printf("%d ", nLoop);  // Print number of internal loops
     
     // Pick up top raster cell
     x = getCol(nx, ny, q[0]);   // ATTENTION: base 0 or 1?
@@ -192,7 +192,7 @@ void watershed(double* p, int nx, int ny, int x, int y, int* pOut)
     
     // Queue just full. This should be better managed incrementing its size dinamically
     if (n > 9990) {
-      printf("\nAborted! Internal buffer for cells to be processed just full! Size to be incremented!\n");
+    //THIS MUST BE MODIFIED  printf("\nAborted! Internal buffer for cells to be processed just full! Size to be incremented!\n");
       return;
     }
     
@@ -448,7 +448,7 @@ SpatRaster  SpatRaster::watershed2(int pp_offset,SpatOptions &opt) {
   printf("nx=%d ny=%d\n",nx,ny);
   //Rcpp::IntegerVector pOut(nx*ny);
    // https://www.codeguru.com/cpp/cpp/cpp_mfc/stl/article.php/c4027/C-Tutorial-A-Beginners-Guide-to-stdvector-Part-1.htm 
-  std::vector<double> p=getValues(); //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/
+  std::vector<double> p=getValues(0,opt); //EC 20211203 //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/
   
 
  //SEE HERE https://stackoverflow.com/questions/26488480/how-can-i-trust-casting-from-double-to-integer

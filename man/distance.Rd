@@ -6,7 +6,7 @@
 \alias{distance,SpatVector,ANY-method}
 \alias{distance,SpatVector,SpatVector-method}
 \alias{distance,matrix,matrix-method}
-\alias{distance,matrix,ANY-method}
+\alias{distance,matrix,missing-method}
 
 \title{Geographic distance}
 
@@ -18,11 +18,17 @@ If \code{y} is \code{missing} this method computes the distance, for all cells t
 
 If \code{y} is a SpatVector, the distance to that SpatVector is computed for all cells. For lines and polygons this is done after rasterization; and only the overlapping areas of the vector and raster are considered (for now).
 
+The distance is always expressed in meter if the coordinate reference system is longitude/latitude, and in map units otherwise. Map units are typically meter, but inspect \code{crs(x)} if in doubt.
+
+Results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance. 
+
 \bold{If \code{x} is a SpatVector:}
 
 If \code{y} is \code{missing}, a distance matrix between all object in \code{x} is computed. An distance matrix object of class "dist" is returned. 
 
 If \code{y} is a SpatVector the geographic distance between all objects is computed (and a matrix is returned). If both sets have the same number of points, and \code{pairwise=TRUE}, the distance between each pair of objects is computed, and a vector is returned.
+
+The distance is always expressed in meter, except when the coordinate reference system is longitude/latitude AND one of the SpatVector(s) consists of lines or polygons. In that case the distance is in degrees, and thus not very useful (this will be fixed soon). Otherwise, results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance. 
 }
 
 \usage{
@@ -36,11 +42,11 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
 
 \S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE)
 
-\S4method{distance}{matrix,ANY}(x, y, lonlat, sequential=FALSE)
+\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE)
 }
 
 \arguments{
-  \item{x}{SpatRaster, SpatVector, or two-column matrix (x,y) or (lon,lat)}
+  \item{x}{SpatRaster, SpatVector, or two-column matrix with coordinates (x,y) or (lon,lat)}
   \item{y}{missing or SpatVector, or two-column matrix}
   \item{grid}{logical. If \code{TRUE}, distance is computed using a path that goes through the centers of the 8 neighboring cells}
   \item{filename}{character. Output filename}
@@ -62,6 +68,9 @@ The distance unit is in meters.
 A distance matrix can be coerced into a matrix with \code{as.matrix}
 }
 
+\references{
+Karney, C.F.F., 2013. Algorithms for geodesics, J. Geodesy 87: 43-55. doi:10.1007/s00190-012-0578-z.
+}
 
 \examples{
 #lonlat
@@ -71,9 +80,9 @@ d <- distance(r)
 plot(d / 100000)
 
 #planar
-r <- rast(ncols=36, nrows=18, crs="+proj=utm +zone=1 +datum=WGS84")
-r[500] <- 1
-d <- distance(r) 
+rr <- rast(ncols=36, nrows=18, crs="+proj=utm +zone=1 +datum=WGS84")
+rr[500] <- 1
+d <- distance(rr) 
 
 p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="+proj=longlat +datum=WGS84")
 dp <- distance(r, p1) 

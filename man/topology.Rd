@@ -7,12 +7,14 @@
 \alias{makeNodes}
 \alias{mergeLines}
 \alias{removeDupNodes}
+\alias{emptyGeoms}
 \alias{snap}
 
 \alias{makeNodes,SpatVector-method}
 \alias{mergeLines,SpatVector-method}
 \alias{snap,SpatVector-method}
 \alias{removeDupNodes,SpatVector-method}
+\alias{emptyGeoms,SpatVector-method}
 
 \title{ 
 Vector topology methods
@@ -25,6 +27,8 @@ Vector topology methods
 \code{mergeLines} connect lines to form polygons
 
 \code{removeDupNodes} removes duplicate nodes in geometries and optionally rounds the coordinates
+
+\code{emptyGeoms} returns the indices of empty (null) geometries
 
 \code{snap} makes boundaries of geometries identical if they are very close to each other.
 }
@@ -39,7 +43,7 @@ Vector topology methods
 \arguments{
   \item{x}{SpatVector of lines or polygons}
   \item{y}{SpatVector of lines or polygons to snap to. If \code{NULL} snapping is to the other geometries in \code{x}}
-  \item{tolerance}{numeric. Snapping tolerance (distance between geometries) or simplifying tolerance (distance between nodes)}
+  \item{tolerance}{numeric. Snapping tolerance (distance between geometries)}
   \item{digits}{numeric. Number of digits used in rounding. Ignored if < 0}
 } 
 
@@ -48,9 +52,21 @@ SpatVector
 }
 
 
-\seealso{\code{\link{sharedPaths}}, \code{\link{gaps}}, \code{\link{simplify}}}
+\seealso{\code{\link{sharedPaths}}, \code{\link{gaps}}, \code{\link{simplifyGeom}}}
 
 
+
+
+\examples{
+p1 <- as.polygons(ext(0,1,0,1))
+p2 <- as.polygons(ext(1.1,2,0,1))
+
+p <- rbind(p1, p2)
+
+y <- snap(p, tol=.15)
+plot(p, lwd=3, col="light gray")
+lines(y, col="red", lwd=2)
+}
 
 \keyword{methods}
 \keyword{spatial}

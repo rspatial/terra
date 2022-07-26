@@ -19,23 +19,28 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 
 \usage{
 \S4method{classify}{SpatRaster}(x, rcl, include.lowest=FALSE, right=TRUE, 
-     othersNA=FALSE, filename="", ...)
+     others=NULL, brackets=TRUE, filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{rcl}{matrix for classification. This matrix must have 1, 2 or 3 columns. If there are three columns, the first two columns are "from" "to" of the input values, and the third column "becomes" has the new value for that range. 
   
-  The two column matrix ("is", "becomes") can be useful for re-classifying integer values. In that case, the \code{right} argument is automatically set to \code{NA}.
+  The two column matrix ("is", "becomes") can be useful for classifying integer values. In that case, the arguments \code{right} and \code{include.lowest} are ignored.
   
-  A single column matrix (or a vector) is interpreted as a set of cuts if there is more than one value. In that case the values are classified based on their location inbetween the cut-values.  
+  A single column matrix (or a vector) is interpreted as a set of cuts if there is more than one value. In that case the values are classified based on their location in-between the cut-values.  
   
   If a single number is provided, that is used to make that number of cuts, at equal intervals between the lowest and highest values of the SpatRaster.
-  }  
- 
+  } 
+  
   \item{include.lowest}{logical, indicating if a value equal to the lowest value in \code{rcl} (or highest value in the second column, for \code{right=FALSE}) should be included.}
- \item{right}{logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa. The default is \code{TRUE}. A special case is to use right=NA. In this case both the left and right intervals are open}
- \item{othersNA}{logical. If \code{TRUE}, values that are not matched become \code{NA}. If \code{FALSE}, they retain their original value.} 
+  
+ \item{right}{logical. If \code{TRUE}, the intervals are closed on the right (and open on the left). If \code{FALSE} they are open at the right and closed at the left. "open" means that the extreme value is *not* included in the interval. Thus, right-closed and left open is \code{(0,1] = {x | 0 < x <= 1}}. You can also close both sides with \code{right=NA}, that is only meaningful if you "from-to-becomes" classification with integers. For example to classify 1-5 -> 1, 6-10 -> 2, 11-15 -> 3. That may be easier to read and write than the equivalent 1-5 -> 1, 5-10 -> 2, 10-15 -> 3 with \code{right=TRUE} and \code{include.lowest=TRUE}}
+ 
+ \item{others}{numeric. If not \code{NULL} all values that are not matched are set to this value. Otherwise they retain their original value.} 
+
+ \item{brackets}{logical. If \code{TRUE}, intervals are have parenthesis or brackets around them to indicate whether they are open or closed. Only applies if \code{rcl} is a vector (or single column matrix)} 
+
 
   \item{filename}{character. Output filename}
   \item{...}{Additional arguments for writing files as in \code{\link{writeRaster}}}
@@ -66,8 +71,9 @@ rclmat <- matrix(m, ncol=3, byrow=TRUE)
 rc1 <- classify(r, rclmat, include.lowest=TRUE)
 
 ## cuts
-# equivalent to the above
-rc2 <- classify(r, c(0, 0.25, 0.5, 1), include.lowest=TRUE)
+# equivalent to the above, but now a categorical SpatRaster is returned 
+rc2 <- classify(r, c(0, 0.25, 0.5, 1), include.lowest=TRUE, brackets=TRUE)
+freq(rc2)
 
 ## is-becomes 
 x <- round(r*3)
@@ -83,7 +89,7 @@ m
 rcx1 <- classify(x, m)
 unique(rcx1)
 
-rcx2 <- classify(x, m, othersNA=TRUE)
+rcx2 <- classify(x, m, others=NA)
 unique(rcx2)
 }
 

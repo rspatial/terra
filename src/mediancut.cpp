@@ -1,3 +1,20 @@
+// Copyright (c) 2018-2022  Robert J. Hijmans
+//
+// This file is part of the "spat" library.
+//
+// spat is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// spat is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with spat. If not, see <http://www.gnu.org/licenses/>.
+
 /*
 #include "spatRaster.h"
 
@@ -16,7 +33,7 @@ make_cut <- function(x) {
 		if (max(rng) == 0) {
 			out[[i]] <- rgb
 			j <- j - 1
-			next		
+			next
 		}
 		p <- which.max(rng) + 1
 		m <- median(rgb[,p])
@@ -58,10 +75,10 @@ SpatRatser SpatRaster::RGB2col(std::string stretch, SpatOptions &opt) {
 			return out;
 		}
 		if (vmax(idx) >= x.nlyr()) {
-			out.setError("invalid RGB indices")	
+			out.setError("invalid RGB indices")
 		}
 		*this = subset(idx);
-		
+
 		if (stretch != "") {
 			if (stretch == "lin") {
 
@@ -71,10 +88,10 @@ SpatRatser SpatRaster::RGB2col(std::string stretch, SpatOptions &opt) {
 				out.addWarning("invalid stretch option");
 			}
 		}
-		
+
 		v <- cbind(id=1:ncell(x), values(x))
 		v <- median_cut(stats::na.omit(v))
-		
+
 		a <- aggregate(v[,3:5], list(v[,1]), median)
 		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], maxColorValue=255)
 		m <- merge(v[,1:2], a[, c(1,5)], by=1)

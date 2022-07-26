@@ -75,9 +75,34 @@ setMethod("sds", signature(x="list"),
 	}
 )
 
+
+setMethod("sds", signature(x="array"),
+	function(x, crs="", extent=NULL) {
+		dims <- dim(x)
+		if (length(dims) <= 3) {
+			return(sds(rast(x, crs=crs, extent=extent)))
+		}
+		if (length(dims) > 4) {
+			if (length(dims) == 5) {
+				if (dims[5] == 1) {
+					x <- x[,,,,1]
+				} else {
+					error("sds,array", "cannot handle an array with 5 dimensions")
+				}
+			} else {
+				error("sds,array", "cannot handle an array with more than 4 dimensions")
+			}
+		}
+		r <- lapply(1:dims[4], function(i) rast(x[,,,i], crs=crs, extent=extent))
+		sds(r)
+	}
+)
+
+
+
 setMethod("sds", signature(x="stars"),
 	function(x) {
-		s <- from_stars(x) 
+		s <- from_stars(x)
 		if (inherits(s, "SpatRaster")) {
 			sds(s)
 		} else {
@@ -88,7 +113,7 @@ setMethod("sds", signature(x="stars"),
 
 setMethod("sds", signature(x="stars_proxy"),
 	function(x) {
-		s <- from_stars(x) 
+		s <- from_stars(x)
 		if (inherits(s, "SpatRaster")) {
 			sds(s)
 		} else {
@@ -98,11 +123,11 @@ setMethod("sds", signature(x="stars_proxy"),
 )
 
 
-setMethod("c", signature(x="SpatRasterDataset"), 
+setMethod("c", signature(x="SpatRasterDataset"),
 	function(x, ...) {
 
 		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 ) # why? make a copy?
-	 
+	
 		dots <- list(...)
 		nms <- names(dots)
 
@@ -122,7 +147,7 @@ setMethod("c", signature(x="SpatRasterDataset"),
 				}
 			} else {
 				error("c", "arguments must be SpatRaster or SpatRasterDataset")
-			} 
+			}
 		}
 		messages(x, "c")
 	}
@@ -210,15 +235,14 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
-setMethod("$", "SpatRasterDataset",  
-	function(x, name) { 
-		x[name] 
+setMethod("$", "SpatRasterDataset",
+	function(x, name) {
+		x[name]
 	}
 )
 
 
-
-setMethod("src", signature(x="missing"),
+setMethod("sprc", signature(x="missing"),
 	function(x) {
 		r <- methods::new("SpatRasterCollection")
 		r@ptr <- SpatRasterCollection$new()
@@ -227,14 +251,14 @@ setMethod("src", signature(x="missing"),
 )
 
 
-setMethod("src", signature(x="SpatRaster"), 
+setMethod("sprc", signature(x="SpatRaster"),
 	function(x, ...) {
-		src(list(x, ...))
+		sprc(list(x, ...))
 	}
 )
 
 
-setMethod("src", signature(x="list"), 
+setMethod("sprc", signature(x="list"),
 	function(x) {
 		n <- length(x)
 		ptr <- SpatRasterCollection$new()
@@ -245,7 +269,7 @@ setMethod("src", signature(x="list"),
 				} else {
 					name <- names(x[[i]])
 					cls <- class(x[[i]])
-					error("src", "list elements should be 'SpatRaster'\n", name, "is of class: ", cls)
+					error("sprc", "list elements should be 'SpatRaster'\n", name, "is of class: ", cls)
 				}
 			}
 		}

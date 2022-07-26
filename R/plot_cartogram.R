@@ -1,5 +1,5 @@
 
-setMethod("cartogram", signature(x="SpatVector"), 
+setMethod("cartogram", signature(x="SpatVector"),
 	function(x, var, type)  {
 		type <- match.arg(tolower(type), "nc")
 		stopifnot(var %in% names(x))

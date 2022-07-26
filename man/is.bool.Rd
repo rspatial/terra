@@ -21,7 +21,7 @@
 \description{
 The values in a SpatRaster layer are by default numeric, but they can also be logical (Boolean), integer, or categorical
 
-Note that \code{as.bool} and \code{as.int} return a new \code{SpatRaster}, whereas \code{is.bool} and \code{is.int} return a \code{logical} value for each layer. For a \code{SpatRaster}, \code{isTRUE} is equivalent to \code{as.bool}, \code{isFALSE} is equivalent to \code{!as.bool}, code{as.integer} is the same as \code{as.int} and \code{as.logical} is the same as \code{as.bool}
+Note that \code{as.bool} and \code{as.int} return a new \code{SpatRaster}, whereas \code{is.bool} and \code{is.int} return a \code{logical} value for each layer. For a \code{SpatRaster}, \code{isTRUE} is equivalent to \code{as.bool}, \code{isFALSE} is equivalent to \code{!as.bool}, \code{as.integer} is the same as \code{as.int} and \code{as.logical} is the same as \code{as.bool}
 }
 
 \usage{

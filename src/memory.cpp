@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2022  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -24,7 +24,16 @@
 bool SpatRaster::canProcessInMemory(SpatOptions &opt) {
 	if (opt.get_todisk()) return false;
 	double demand = size() * opt.ncopies;
-	double supply = (availableRAM()) * opt.get_memfrac();
+	if (demand < opt.get_memmin()) {
+		return true;
+	}
+	double supply;
+	if (opt.get_memmax() > 0) {
+		supply = opt.get_memmax() * opt.get_memfrac();
+		//supply = std::min(supply, availableRAM());
+	} else {
+		supply = availableRAM() * opt.get_memfrac();
+	}
 	std::vector<double> v;
 	double maxsup = v.max_size(); //for 32 bit systems
 	supply = std::min(supply, maxsup);
@@ -35,8 +44,22 @@ bool SpatRaster::canProcessInMemory(SpatOptions &opt) {
 size_t SpatRaster::chunkSize(SpatOptions &opt) {
 	double n = opt.ncopies;
 	double frac = opt.get_memfrac();
+
+	double demand = size() * n;
+	if (demand < opt.get_memmin()) {
+		return nrow();
+	}
+
 	double cells_in_row = ncol() * nlyr() * n;
-	double rows = (availableRAM()) * frac / cells_in_row;
+	double supply;
+
+	if (opt.get_memmax() > 0) {
+		supply = opt.get_memmax() * opt.get_memfrac();
+		//supply = std::min(supply, availableRAM());
+	} else {
+		supply = availableRAM() * opt.get_memfrac();
+	}
+	double rows = supply * frac / cells_in_row;
 	//double maxrows = 10000;
 	//rows = std::min(rows, maxrows);
 	size_t urows = floor(rows);
@@ -52,12 +75,18 @@ size_t SpatRaster::chunkSize(SpatOptions &opt) {
 
 std::vector<double> SpatRaster::mem_needs(SpatOptions &opt) {
 	//returning bytes
-	unsigned n = opt.ncopies; 
+	unsigned n = opt.ncopies;
 	double memneed  = ncell() * (nlyr() * n);
-	double memavail = availableRAM(); 
+	double memavail;
+	if (opt.get_memmax() > 0) {
+		memavail = opt.get_memmax();
+		//memavail = std::min(memavail, availableRAM());
+	} else {
+		memavail = availableRAM();
+	}
 	double frac = opt.get_memfrac();
 	double csize = chunkSize(opt);
-	double inmem = canProcessInMemory(opt); 
+	double inmem = canProcessInMemory(opt);
 	std::vector<double> out = {memneed, memavail, frac, csize, inmem} ;
 	return out;
 }

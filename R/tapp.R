@@ -1,10 +1,45 @@
 
-setMethod("tapp", signature(x="SpatRaster"), 
+setMethod("tapp", signature(x="SpatRaster"),
 function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list()) {
 
 	stopifnot(!any(is.na(index)))
+	
+	if ((length(index) == 1) && is.character(index)) {
+		choices <- c("years", "months", "week", "days", "doy", "yearmonths")
+		i <- pmatch(tolower(index), choices)
+		if (is.na(i)) {
+			error("tapp", paste("invalid time step. Use one of:", paste(choices, collapse=", ")))
+		}
+		if (!x@ptr$hasTime) {
+			error("tapp", "x has no time data")
+		}
+		choice <- choices[i]
+		if (choice == "doy") {
+			index <- format(time(x, "days"), "%j")
+		} else if (choice == "week") {
+			index <- strftime(time(x, "days"), format = "%V")
+		} else {
+			index <- time(x, choice)
+			if (choice == "yearmonths") {
+				year <- trunc(index)
+				month <- 12 * (index - year) + 1
+				year <- formatC(year, width=4, flag = "0")
+				month <- formatC(month, width=2, flag = "0")
+				index <- paste0(year, month)
+			} else {
+				index <- as.character(time(x, choice))
+			}
+		}
+		time(x) <- NULL
+	}
+
+	nl <- nlyr(x)
+	if (length(index) > nl) {
+		error("tapp", "length(index) > nlyr(x)")
+	}
+	index <- rep_len(index, nl)
 	if (!is.factor(index)) {
-		index <- as.factor(index)
+		index <- factor(index, levels=unique(index))
 	}
 	nms <- as.character(index)
 	ind <- as.integer(index)
@@ -13,7 +48,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	nms <- make.names(d[,1])
 	nms <- nms[uin]
 	txtfun <- .makeTextFun(fun)
-	if (inherits(txtfun, "character")) { 
+	if (inherits(txtfun, "character")) {
 		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)
@@ -23,8 +58,6 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	}
 	fun <- match.fun(fun)
 
-	nl <- nlyr(x)
-	ind <- rep_len(index, nl)
 	out <- rast(x)
 	nlyr(out) <- length(uin)
 	names(out) <- nms
@@ -35,7 +68,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	} else if (cores > 1) {
 		doclust <- TRUE
 		cores <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cores))	
+		on.exit(parallel::stopCluster(cores))
 	}
 
 	readStart(x)
@@ -44,7 +77,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 
 	if (doclust) {
 		pfun <- function(x, ...) apply(x, 1, FUN=fun, ...)
-		parallel::clusterExport(cores, "pfun", environment())	
+		parallel::clusterExport(cores, "pfun", environment())
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, ncol(out), TRUE)
 			v <- lapply(uin, function(i) v[, ind==i, drop=FALSE])

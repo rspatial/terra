@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2022  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -71,7 +71,8 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int 
 		std::vector<std::map<double, unsigned long long int>> tabs(nl);
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned nrc = bs.nrows[i] * nc;
-			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			std::vector<double> v;
+			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
 			if (round) {
 				for(double& d : v) d = roundn(d, digits);
 			}
@@ -89,7 +90,8 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int 
 		out.resize(1);
 		std::map<double, long long unsigned> tabs;
 		for (size_t i = 0; i < bs.n; i++) {
-			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			std::vector<double> v;
+			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
 			if (round) {
 				for (double& d : v) d = roundn(d, digits);
 			}
@@ -117,14 +119,15 @@ std::vector<size_t> SpatRaster::count(double value, bool bylayer, bool round, in
 		out.resize(nl);
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned nrc = bs.nrows[i] * nc;
-			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			std::vector<double> v;
+			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
 			if (round) {
 				for(double& d : v) d = roundn(d, digits);
 			}
 			if (std::isnan(value)) {
 				for (size_t lyr=0; lyr<nl; lyr++) {
 					unsigned off = lyr*nrc;
-					out[lyr] += count_if(v.begin()+off, v.begin()+off+nrc, 
+					out[lyr] += count_if(v.begin()+off, v.begin()+off+nrc,
 							[](double d){return std::isnan(d);});
 				}
 			} else {
@@ -137,12 +140,13 @@ std::vector<size_t> SpatRaster::count(double value, bool bylayer, bool round, in
 	} else {
 		out.resize(1);
 		for (size_t i = 0; i < bs.n; i++) {
-			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			std::vector<double> v;
+			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
 			if (round) {
 				for (double& d : v) d = roundn(d, digits);
 			}
 			if (std::isnan(value)) {
-				out[0] += count_if(v.begin(), v.end(), 
+				out[0] += count_if(v.begin(), v.end(),
 								[](double d){return std::isnan(d);});
 			} else {
 				out[0] += std::count(v.begin(), v.end(), value);
@@ -165,12 +169,12 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 		return out;
 	} else if (nlyr() < 2) {
 		out.setError("more than one layer needed to compute quantiles");
-		return out;	
+		return out;
 	}
 
 	double pmin = vmin(probs, false);
 	double pmax = vmin(probs, false);
-	if ((std::isnan(pmin)) | (std::isnan(pmax)) | (pmin < 0) | (pmax > 1)) {
+	if ((std::isnan(pmin)) || (std::isnan(pmax)) || (pmin < 0) || (pmax > 1)) {
 		SpatRaster out = geometry(1);
 		out.setError("intvalid probs");
 		return out;
@@ -191,7 +195,8 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 	std::vector<double> v(nl);
 
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a = readBlock(out.bs, i);
+		std::vector<double> a;
+		readBlock(a, out.bs, i);
 		unsigned nc = out.bs.nrows[i] * out.ncol();
 		std::vector<double> b(nc * n);
 		for (size_t j=0; j<nc; j++) {
@@ -203,7 +208,7 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 				b[j+(k*nc)] = p[k];
 			}
 		}
-		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeBlock(b, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -222,16 +227,27 @@ void unique_values_alt(std::vector<double> &d) {
 }
 
 
-void unique_values(std::vector<double> &d) {
-	d.erase(std::remove_if(d.begin(), d.end(),
-            [](const double& value) { return std::isnan(value); }), d.end());
-	std::set<double> u { d.begin(), d.end()};
-	std::copy(u.begin(), u.end(), d.begin());
-	d.erase(d.begin()+u.size(), d.end());
+void unique_values(std::vector<double> &d, bool narm) {
+	if (narm) {
+		d.erase(std::remove_if(d.begin(), d.end(),
+				[](const double& value) { return std::isnan(value); }), d.end());
+		std::set<double> u { d.begin(), d.end()};
+		std::copy(u.begin(), u.end(), d.begin());
+		d.erase(d.begin()+u.size(), d.end());
+	} else {
+		size_t s = d.size();
+		d.erase(std::remove_if(d.begin(), d.end(),
+				[](const double& value) { return std::isnan(value); }), d.end());
+		bool addNAN = s > d.size();
+		std::set<double> u { d.begin(), d.end()};
+		std::copy(u.begin(), u.end(), d.begin());
+		d.erase(d.begin()+u.size(), d.end());
+		if (addNAN) d.push_back(NAN);
+	}
 }
 
 
-std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, bool narm, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
 	if (!hasValues()) return out;
@@ -250,11 +266,12 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, SpatOptions &o
 	if (bylayer) {
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned n = bs.nrows[i] * nc;
-			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			std::vector<double> v;
+			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*n;
 				out[lyr].insert(out[lyr].end(), v.begin()+off, v.begin()+off+n);
-				unique_values(out[lyr]);
+				unique_values(out[lyr], narm);
 			}
 		}
 	} else {
@@ -262,7 +279,8 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, SpatOptions &o
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned n = bs.nrows[i] * nc;
 			std::vector<std::vector<double>> m(n, std::vector<double>(nl));
-			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			std::vector<double> v;
+			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
 			for (size_t j = 0; j < v.size(); j++) {
 				if (std::isnan(v[j])) v[j] = lowest_double;
 			}
@@ -299,132 +317,72 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, SpatOptions &o
 
 
 
-/*
-void jointstats_old(const std::vector<double> &u, const std::vector<double> &v, const std::vector<double> &z, std::string fun, bool narm, std::vector<double>& out, std::vector<double> &cnt) {
-
-	std::vector<double> cmp;
-	//recycle(v, z);
-
-	for (size_t j=0; j<u.size(); j++) {
-		cmp.resize(0);
-		cmp.reserve(v.size() / u.size());
-
-		for (size_t k=0; k<v.size(); k++) {
-			if (z[k] == u[j]) {
-				if (!(narm & std::isnan(v[k]))) {
-					cmp.push_back(v[k]);
-				}
-			}
-		}
-		if (cmp.size() == 0) continue;
-		if (fun=="sum") {
-			double s = vsum(cmp, narm);
-			out[j] = s + out[j];
-		} else if (fun=="mean") {
-			double s = vsum(cmp, narm);
-			if (narm) {
-				for (size_t k=0; k<cmp.size(); k++) {
-					cnt[j] += !std::isnan(cmp[k]);
-				}
-			} else {
-				cnt[j] += cmp.size();
-			}
-			out[j] = s + out[j];
-		} else if (fun == "min") {
-			double m = vmin(cmp, narm);
-			if (narm) {
-				if (!std::isnan(m)) {
-					if (cnt[j] == 0) {
-						out[j] = m;
-						cnt[j] = 1;
-					} else {
-						out[j] = std::min(m, out[j]);
-					}
-				}
-			} else {
-				if (cnt[j] == 0) {
-					out[j] = m;
-					cnt[j] = 1;
-				} else {
-					out[j] = std::min(m, out[j]);
-				}
-			}
-		} else if (fun == "max") {
-			double m = vmax(cmp, narm);
-			if (narm) {
-				if (!std::isnan(m)) {
-					if (cnt[j] == 0) {
-						out[j] = m;
-						cnt[j] = 1;
-					} else {
-						out[j] = std::max(m, out[j]);
-					}
-				}
-			} else {
-				if (cnt[j] == 0) {
-					out[j] = m;
-					cnt[j] = 1;
-				} else {
-					out[j] = std::max(m, out[j]);
-				}
-			}
-		}
-	}
-}
-*/
-
-
 void jointstats(const std::vector<double> &u, const std::vector<double> &v, const std::vector<double> &z, std::string fun, bool narm, std::vector<double>& out, std::vector<double> &cnt) {
 
-	std::vector<std::vector<double>> dat(u.size());
-	if (narm) {
-		for (size_t i=0; i<z.size(); i++) {
-			if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
-				dat[z[i]].push_back(v[i]);	
-			}
-		}
-	} else {
-		for (size_t i=0; i<z.size(); i++) {
-			if (!std::isnan(z[i])) {
-				dat[z[i]].push_back(v[i]);	
-			}
-		}
-	}
 	if (fun=="sum") {
-		for (size_t i=0; i<u.size(); i++) {	
-			if (dat[i].size() > 0) {
-				out[i] += vsum(dat[i], false);
+		if (narm) {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
+					out[z[i]] += v[i];
+				}
+			}
+		} else {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i]))) {
+					out[z[i]] += v[i];
+				}
 			}
 		}
-	}
-	if (fun=="mean") {
-		for (size_t i=0; i<u.size(); i++) {	
-			if (dat[i].size() > 0) {
-				out[i] += vsum(dat[i], false);
-				cnt[i] += dat[i].size();
+	} else if (fun=="mean") {
+		if (narm) {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
+					out[z[i]] += v[i];
+					cnt[z[i]]++;
+				}
+			}
+		} else {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i]))) {
+					out[z[i]] += v[i];
+					cnt[z[i]]++;
+				}
 			}
 		}
-	}
-	if (fun=="min") {
-		for (size_t i=0; i<u.size(); i++) {	
-			if (dat[i].size() > 0) {
-				double mn = vmin(dat[i], false);
-				out[i] = std::min(out[i], mn);
+	} else if (fun=="min") {
+		if (narm) {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
+					out[z[i]] = std::min(out[z[i]], v[i]);
+				}
+			}
+		} else {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i]))) {
+					out[z[i]] = std::min(out[z[i]], v[i]);
+				}
 			}
 		}
-	}
-	if (fun=="max") {
-		for (size_t i=0; i<u.size(); i++) {	
-			if (dat[i].size() > 0) {
-				double mx = vmax(dat[i], false);
-				out[i] = std::max(out[i], mx);
+	} else if (fun=="max") {
+		if (narm) {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
+					out[z[i]] = std::max(out[z[i]], v[i]);
+				}
+			}
+		} else {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i]))) {
+					out[z[i]] = std::max(out[z[i]], v[i]);
+				}
 			}
 		}
 	}
 }
 
 
-SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOptions &opt) {
+
+SpatDataFrame SpatRaster::zonal_old(SpatRaster z, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
 	std::vector<std::string> f {"sum", "mean", "min", "max"};
@@ -449,11 +407,11 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		SpatOptions xopt(opt);
 		std::vector<unsigned> lyr = {0};
 		z = z.subset(lyr, xopt);
-		out.addWarning("only the first zonal layer is used"); 
+		out.addWarning("only the first zonal layer is used");
 	}
 
 	size_t nl = nlyr();
-	std::vector<std::vector<double>> uq = z.unique(true, opt);
+	std::vector<std::vector<double>> uq = z.unique(true, true, opt);
 	std::vector<double> u = uq[0];
 	double initv = 0;
 	double posinf = std::numeric_limits<double>::infinity();
@@ -473,14 +431,15 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	opt.ncopies = 6;
 	BlockSize bs = getBlockSize(opt);
 	for (size_t i=0; i<bs.n; i++) {
-		std::vector<double> v =    readValues(bs.row[i], bs.nrows[i], 0, ncol());
-		std::vector<double> zv = z.readValues(bs.row[i], bs.nrows[i], 0, ncol());
+		std::vector<double> v, zv;
+		readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
+		z.readValues(zv, bs.row[i], bs.nrows[i], 0, ncol());
 		std::vector<double> zvr(zv.size());
 		for (size_t j=0; j<zvr.size(); j++)	 {
 			if (std::isnan(zv[j])) {
-				zvr[j] = NAN;				
+				zvr[j] = NAN;
 			} else {
-				for (size_t k=0; k<u.size(); k++) {	
+				for (size_t k=0; k<u.size(); k++) {
 					if (zv[j] == u[k]) {
 						zvr[j] = k;
 						continue;
@@ -514,8 +473,8 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 				}
 			}
 		}
-	} 
-	
+	}
+
 	else if (fun == "min") {
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			for (size_t j=0; j<u.size(); j++) {
@@ -523,7 +482,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 					stats[lyr][j] = NAN;
 				}
 			}
-		}		
+		}
 	} else if (fun == "max") {
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			for (size_t j=0; j<u.size(); j++) {
@@ -531,7 +490,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 					stats[lyr][j] = NAN;
 				}
 			}
-		}		
+		}
 	}
 
 	out.add_column(u, "zone");
@@ -545,6 +504,256 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 
 
 
+SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOptions &opt) {
 
+	SpatDataFrame out;
+	std::vector<std::string> f {"sum", "mean", "min", "max", "isNA", "notNA"};
+	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+		out.setError("not a valid function");
+		return(out);
+	}
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return(out);
+	}
+	if (!z.hasValues()) {
+		out.setError("zonal SpatRaster has no values");
+		return(out);
+	}
+	if (!compare_geom(z, false, true, opt.get_tolerance())) {
+		out.setError("dimensions and/or extent do not match");
+		return(out);
+	}
 
+	if (z.nlyr() > 1) {
+		SpatOptions xopt(opt);
+		std::vector<unsigned> lyr = {0};
+		z = z.subset(lyr, xopt);
+		out.addWarning("only the first zonal layer is used");
+	}
 
+	double posinf = std::numeric_limits<double>::infinity();
+	double neginf = -posinf;
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!z.readStart()) {
+		out.setError(z.getError());
+		return(out);
+	}
+	opt.ncopies = 6;
+	BlockSize bs = getBlockSize(opt);
+
+	size_t nl = nlyr();
+	size_t nc = ncol();
+	std::vector<std::map<double, double>> m(nl);
+	std::vector<std::map<double, size_t>> cnt(nl);
+
+	for (size_t i=0; i<bs.n; i++) {
+		unsigned nrc = bs.nrows[i] * nc;
+		std::vector<double> vv, zv;
+		readValues(vv, bs.row[i], bs.nrows[i], 0, ncol());
+		z.readValues(zv, bs.row[i], bs.nrows[i], 0, ncol());
+		if (fun == "sum") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							m[j][zv[k]] = 0;
+							cnt[j][zv[k]] = 0;
+						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] += v[k];
+						cnt[j][zv[k]] = 1; // may be necessary if the first case was NAN
+					}
+				}
+			}
+		} else if (fun == "mean") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							m[j][zv[k]] = 0;
+							cnt[j][zv[k]] = 0;
+						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] += v[k];
+						cnt[j][zv[k]]++;
+					}
+				}
+			}
+		} else if (fun == "min") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							m[j][zv[k]] = posinf;
+							cnt[j][zv[k]] = 0;
+						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] = std::min(v[k], m[j][zv[k]]);
+						cnt[j][zv[k]] = 1;
+					}
+				}
+			}
+		} else if (fun == "max") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							m[j][zv[k]] = neginf;
+							cnt[j][zv[k]] = 0;
+						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] = std::max(v[k], m[j][zv[k]]);
+						cnt[j][zv[k]] = 1;
+					}
+				}
+			}
+		} else if (fun == "isNA") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (!std::isnan(v[k])) {
+						if (cnt[j].find(zv[k]) == cnt[j].end()) {
+							cnt[j][zv[k]] = 0;
+						}
+					} else {
+						if (cnt[j].find(zv[k]) == cnt[j].end()) {
+							cnt[j][zv[k]] = 1;
+						} else {
+							cnt[j][zv[k]]++;
+						}
+					}
+				}
+			}
+		} else if (fun == "notNA") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (std::isnan(v[k])) {
+						if (cnt[j].find(zv[k]) == cnt[j].end()) {
+							cnt[j][zv[k]] = 0;
+						}
+					} else {
+						if (cnt[j].find(zv[k]) == cnt[j].end()) {
+							cnt[j][zv[k]] = 1;
+						} else {
+							cnt[j][zv[k]]++;
+						}
+					}
+				}
+			}
+		}
+	}
+	readStop();
+	z.readStop();
+
+	std::vector<double> zone;
+	std::vector<std::string> nms = getNames();
+
+	if ((fun == "notNA") || (fun == "isNA")){
+		size_t n = cnt[0].size();
+		zone.reserve(n);
+		for (size_t i=0; i<nl; i++) {
+			std::vector<double> value;
+			value.reserve(n);
+			if (i==0) {
+				for (auto& it : cnt[0]) {
+					zone.push_back(it.first);
+					value.push_back(it.second);
+				}
+				out.add_column(zone, "zone");
+			} else {
+				for (auto& it : cnt[i]) {
+					value.push_back(it.second);
+				}
+			}
+			out.add_column(value, nms[i]);
+		}
+	} else {
+		size_t n = m[0].size();
+		zone.reserve(n);
+		for (size_t i=0; i<nl; i++) {
+			std::vector<double> value;
+			value.reserve(n);
+			if (i==0) {
+				for (auto& it : m[0]) {
+					zone.push_back(it.first);
+					value.push_back(it.second);
+				}
+				out.add_column(zone, "zone");
+			} else {
+				for (auto& it : m[i]) {
+					value.push_back(it.second);
+				}
+			}
+			size_t j = 0;
+			if (fun == "mean") {
+				for (auto& it : cnt[i]) {
+					double d = (double)it.second;
+					if (d > 0) {
+						value[j] /= d;
+					} else {
+						value[j] = NAN;
+					}
+					j++;
+				}
+			} else {
+				for (auto& it : cnt[i]) {
+					if (it.second == 0) {
+						value[j] = NAN;
+					}
+					j++;
+				}
+			}
+			out.add_column(value, nms[i]);
+		}
+	}
+//	std::vector<std::string> nms = getNames();
+//	for (size_t i=0; i<nlyr(); i++) {
+//		out.add_column(stats[i], nms[i]);
+//	}
+	return(out);
+}

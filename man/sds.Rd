@@ -6,6 +6,7 @@
 \alias{sds,missing-method}
 \alias{sds,character-method}
 \alias{sds,list-method}
+\alias{sds,array-method}
 \alias{sds,SpatRaster-method}
 \alias{sds,stars-method}
 \alias{sds,stars_proxy-method}
@@ -28,12 +29,16 @@ See \code{\link{describe}} for getting information about the sub-datasets presen
 \S4method{sds}{SpatRaster}(x, ...) 
 
 \S4method{sds}{list}(x) 
+
+\S4method{sds}{array}(x, crs="", extent=NULL)
 }
 
 \arguments{
 \item{x}{character (filename), or SpatRaster, or list of SpatRaster objects, or missing. If multiple filenames are provided, it is attempted to make SpatRasters from these, and combine them into a SpatRasterDataset}
 \item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a positive integer}
-\item{...}{additional arguments. Can be other \code{SpatRaster} objects if \code{x} is a \code{SpatRaster}} 
+\item{crs}{character. Description of the Coordinate Reference System (map projection) in \code{PROJ.4}, \code{WKT} or \code{authority:code} notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned}
+\item{extent}{\code{\link{SpatExtent}}}
+\item{...}{additional \code{SpatRaster} objects} 
 }
 
 
@@ -54,6 +59,9 @@ length(x)
 
 # extract the second SpatRaster
 x[2]
+
+a <- array(1:9, c(3,3,3,3))
+sds(a)
 }
 
 

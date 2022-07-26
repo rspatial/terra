@@ -32,7 +32,8 @@ SpatVector or SpatExtent
 }
 
 \seealso{
-\code{\link{intersect}}, \code{\link{crop}}. 
+\code{\link{crop}} and \code{\link{intersect}} for the inverse. 
+
 The equivalent for SpatRaster is \code{\link{mask}}
 }
 
@@ -40,13 +41,24 @@ The equivalent for SpatRaster is \code{\link{mask}}
 \examples{
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
+
+# polygons with polygons or extent
+
 e <- ext(5.6, 6, 49.55, 49.7)
 x <- erase(v, e)
 
 p <- vect("POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.6, 5.8 49.8))")
 y <- erase(v, p)
 
-# self-erase
+# lines with polygons
+lns <- as.lines(rast(v, ncol=10, nrow=10))[12:22]
+eln <- erase(lns, v)
+plot(v)
+lines(lns, col='blue', lwd=4, lty=3)
+lines(eln, col='red', lwd=2)
+
+
+## self-erase
 h <- convHull(v[-12], "NAME_1")
 he <- erase(h)
 plot(h, lwd=2, border="red", lty=2)

@@ -9,6 +9,11 @@
 
 \description{
 Make a Red-Green-Blue plot based on three layers in a SpatRaster. The layers (sometimes referred to as "bands" because they may represent different bandwidths in the electromagnetic spectrum) are combined such that they represent the red, green and blue channel. This function can be used to make "true" (or "false") color images from Landsat and other multi-spectral satellite images. 
+
+Note that the margins of the plot are set to zero (no axes or titles are visible) but can be set with the \code{mar} argument. 
+
+An alternative way to plot RGB images is to first use \code{\link{colorize}} to create a single layer SpatRaster with a color-table and then use \code{\link[terra]{plot}}.
+
 }
 
 
@@ -48,7 +53,7 @@ Make a Red-Green-Blue plot based on three layers in a SpatRaster. The layers (so
 }
 
 
-\seealso{ \code{\link{plot}}, \code{\link{RGB}} }
+\seealso{ \code{\link{plot}}, \code{\link{colorize}}, \code{\link{RGB}} }
 
 \examples{
 b <- rast(system.file("ex/logo.tif", package="terra"))   

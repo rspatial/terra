@@ -1,7 +1,8 @@
 
+
 .cpp_funs <- c("sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first")
 
-setMethod("sapp", signature(x="SpatRaster"), 
+setMethod("sapp", signature(x="SpatRaster"),
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	#x <- lapply(as.list(x), fun, ..., wopt=wopt)
 	#x <- lapply(x, messages)
@@ -15,13 +16,23 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 }
 )
 
+setMethod("sapp", signature(x="SpatRasterDataset"),
+function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
+	x <- rast(lapply(as.list(x), function(i, ...) messages(fun(i, ..., wopt=wopt))))
+	if (filename != "") {
+		writeRaster(x, filename, overwrite, wopt=wopt)
+	} else {
+		tighten(x)
+	}
+}
+)
 
 
-setMethod("app", signature(x="SpatRaster"), 
+setMethod("app", signature(x="SpatRaster"),
 function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	txtfun <- .makeTextFun(fun)
-	if (inherits(txtfun, "character")) { 
+	if (inherits(txtfun, "character")) {
 		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
@@ -43,9 +54,13 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		if (test) {
 			error("app", "additional arguments cannot be a SpatRaster")
 		}
-	}	
-# figure out the shape of the output by testing with one row
-	v <- readValues(x, round(0.51*nrow(x)), 1, 1, nc, mat=TRUE)
+	}
+# figure out the shape of the output by testing with up to 13 cells
+	teststart <- max(1, 0.5 * nc - 6)
+	testend <- min(teststart + 12, nc)
+	ntest <- 1 + testend - teststart
+
+	v <- readValues(x, round(0.51*nrow(x)), 1, teststart, ntest, mat=TRUE)
 	usefun <- FALSE
 	if (nl==1) {
 		r <- fun(v, ...)
@@ -71,12 +86,12 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	}
 	trans <- FALSE
 	if (NCOL(r) > 1) {
-		#? if ((ncol(r) %% nc) == 0) {
-		if (ncol(r) == nc) {
+		#? if ((ncol(r) %% ntest) == 0) {
+		if (ncol(r) == ntest) {
 			nlyr(out) <- nrow(r)
 			trans <- TRUE
 			nms <- rownames(r)
-		} else if (nrow(r) == nc) {
+		} else if (nrow(r) == ntest) {
 			nlyr(out) <- ncol(r)
 			nms <- colnames(r)
 		} else {
@@ -86,26 +101,28 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			wopt$names <- nms
 		}
 	} else {
-		if ((length(r) %% nc) != 0) {
+		if ((length(r) %% ntest) != 0) {
 			error("app", "the number of values returned by 'fun' is not appropriate")
 		} else {
-			nlyr(out) <- length(r) / nc
+			nlyr(out) <- length(r) / ntest
 		}
 	}
 
 	doclust <- FALSE
 	if (inherits(cores, "cluster")) {
 		doclust <- TRUE
-		ncores <- length(cores)				
+		ncores <- length(cores)
 	} else if (cores > 1) {
 		doclust <- TRUE
-		ncores <- cores	
+		ncores <- cores
 		cores <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cores), add=TRUE)	
+		on.exit(parallel::stopCluster(cores), add=TRUE)
+		expnms <- names(list(...))
+		lapply(expnms, function(n) parallel::clusterExport(cores, n))
 	}
-	
+
 	ncops <- nlyr(x) / nlyr(out)
-	ncops <- ifelse(ncops > 1, ceiling(ncops), 1) * 4 
+	ncops <- ifelse(ncops > 1, ceiling(ncops), 1) * 4
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=ncops)
 
 	if (doclust) {
@@ -152,7 +169,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	nr <- nrow(v[[1]])
 	v <- lapply(v, as.vector)
 	v <- do.call(cbind, v)
-	r <- apply(v, 1, fun, ...) 
+	r <- apply(v, 1, fun, ...)
 	if (inherits(r, "try-error")) {
 		nl <- -1
 	}
@@ -191,7 +208,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	nr <- nrow(v[[1]])
 	v <- lapply(v, as.vector)
 	v <- do.call(cbind, v)
-	r <- apply(v, 1, fun, ...) 
+	r <- apply(v, 1, fun, ...)
 	if (inherits(r, "try-error")) {
 		nl <- -1
 	}
@@ -224,16 +241,15 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 
 
-setMethod("app", signature(x="SpatRasterDataset"), 
+setMethod("app", signature(x="SpatRasterDataset"),
 function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	txtfun <- .makeTextFun(match.fun(fun))
-	if (inherits(txtfun, "character")) { 
+	if (inherits(txtfun, "character")) {
 		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)
 			r <- rast()
-			opt <- spatOptions()
 			r@ptr <- x@ptr$summary(txtfun, narm, opt)
 			return (messages(r, "app") )
 		}
@@ -253,9 +269,9 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	
+
 	nc <- (nlyr(x[1]) * length(x)) / nlyr(out)
-	nc <- ifelse(nc > 1, ceil(nc), 1) * 3 
+	nc <- ifelse(nc > 1, ceiling(nc), 1) * 3
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nc)
 
 	if (cores > 1) {
@@ -275,7 +291,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	} else {
 		for (i in 1:b$n) {
 			v <- lapply(1:length(x), function(s) as.vector(readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)))
-			r <- apply(do.call(cbind, v), 1, fun, ...) 
+			r <- apply(do.call(cbind, v), 1, fun, ...)
 			if (test$trans) {
 				r <- t(r)
 			}

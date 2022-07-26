@@ -11,7 +11,7 @@ Evaluate whether two SpatRaster objects have the same extent, number of rows and
 
 \usage{
 \S4method{compareGeom}{SpatRaster,SpatRaster}(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE,
-	rowcol=TRUE, res=FALSE, stopOnError=TRUE)
+	rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=FALSE)
 }
 
 \arguments{
@@ -25,7 +25,8 @@ Evaluate whether two SpatRaster objects have the same extent, number of rows and
   \item{rowcol}{logical. If \code{TRUE}, number of rows and columns of the objects are compared}
   \item{res}{logical. If \code{TRUE}, resolutions are compared (redundant when checking extent and rowcol)}
   \item{stopOnError}{logical. If \code{TRUE}, code execution stops if raster do not match}
- }
+  \item{messages}{logical. If \code{TRUE}, warning/error messages are printed even if \code{stopOnError=FALSE}}
+}
  
 
 \examples{

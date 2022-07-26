@@ -9,16 +9,17 @@
 \title{Virtual Raster Tiles}
 
 \description{ 
-Create a Virtual Raster Tiles (VRT) dataset from file-based raster datasets. 
+Create a Virtual Raster Tiles (VRT) dataset from a collection of file-based raster datasets. 
 }
 
 \usage{
-\S4method{vrt}{character}(x, filename="", overwrite=FALSE)
+\S4method{vrt}{character}(x, filename="", options=NULL, overwrite=FALSE)
 }
 
 \arguments{
   \item{x}{character. Filenames of raster "tiles". See \code{\link{tiles}}}
-  \item{filename}{character. Output VRT filename}
+  \item{filename}{character. Output VRT filename}  
+  \item{options}{character. Options as for \href{https://gdal.org/programs/gdalbuildvrt.html}{gdalbuildvrt}}
   \item{overwrite}{logical. Should \code{filename} be overwritten if it exists?}
 }
 
@@ -26,6 +27,9 @@ Create a Virtual Raster Tiles (VRT) dataset from file-based raster datasets.
 SpatRaster
 }
 
+\seealso{
+\code{\link{makeTiles}} to create tiles; \code{\link{makeVRT}} to create a .vrt file for a file without a header
+}
 
 \examples{
 r <- rast(ncols=100, nrows=100)

@@ -1,9 +1,40 @@
+// Copyright (c) 2018-2022  Robert J. Hijmans
+//
+// This file is part of the "spat" library.
+//
+// spat is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// spat is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with spat. If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef SPATTIME_GUARD
 #define SPATTIME_GUARD
 
 //#include <vector>
 //#include <string>
 typedef long long SpatTime_t;
+
+class SpatTime_v {
+	public:
+		std::vector<SpatTime_t> x;
+		std::string zone;
+		std::string step;
+		size_t size() { return(x.size());}
+		void resize(size_t n) {x.resize(n);}
+		void resize(size_t n, SpatTime_t v) {x.resize(n, v);}
+		void reserve(size_t n) {x.reserve(n);}
+		void push_back(SpatTime_t v) {x.push_back(v);}
+};
+
+
 std::vector<int> get_date(SpatTime_t x);
 std::vector<int> getymd(std::string s);
 SpatTime_t get_time_string(std::string s);

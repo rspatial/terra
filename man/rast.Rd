@@ -21,16 +21,15 @@
 \title{Create a SpatRaster}
 
 \description{
-Methods to create a SpatRaster. These objects can be created from scratch or from a file.
+Methods to create a SpatRaster. These objects can be created from scratch, from a filename, or from another object.
 
-A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers).
+A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). 
 
-When a SpatRaster is created from a file, it does not load the cell (pixel) values into memory (RAM). It only reads the basic parameters that describe the SpatRaster such as the number of rows and columns and the coordinate reference system. The actual values will be read, perhaps in chunks -- to avoid memory overflows -- as needed.
+When a SpatRaster is created from a file, it does not load the cell (pixel) values into memory (RAM). It only reads the parameters that describe the geometry of the SpatRaster, such as the number of rows and columns and the coordinate reference system. The actual values will be read when needed.
 }
 
-
 \usage{
-\S4method{rast}{character}(x, subds=0, opts=NULL)
+\S4method{rast}{character}(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL)
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
           ymin=-90, ymax=90, crs, extent, resolution, vals, names, time, units)
@@ -39,9 +38,11 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
 \S4method{rast}{matrix}(x, type="", crs="", digits=6, extent=NULL)
 
-\S4method{rast}{data.frame}(x, type="", crs="", digits=6)
+\S4method{rast}{data.frame}(x, type="xyz", crs="", digits=6, extent=NULL)
 
-\S4method{rast}{list}(x)
+\S4method{rast}{array}(x, crs="", extent=NULL)
+
+\S4method{rast}{list}(x, warn=TRUE)
 
 \S4method{rast}{SpatRasterDataset}(x)
 
@@ -53,6 +54,8 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \arguments{
 \item{x}{filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects. For other types it will be attempted to create a SpatRaster via (`as(x, "SpatRaster")`}
 \item{subds}{positive integer or character to select a sub-dataset. If zero or "", all sub-datasets are returned (if possible)}
+\item{lyrs}{positive integer or character to select a subset of layers (a.k.a. "bands")}
+\item{drivers}{character. GDAL drivers to consider}
 \item{opts}{character. GDAL dataset open options}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
@@ -61,7 +64,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \item{xmax}{maximum x coordinate (right border)}
 \item{ymin}{minimum y coordinate (bottom border)}
 \item{ymax}{maximum y coordinate (top border)}
-\item{crs}{character. PROJ.4 type description of a Coordinate Reference System (map projection). If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, "+proj=longlat +datum=WGS84" is used}
+\item{crs}{character. Description of the Coordinate Reference System (map projection) in \code{PROJ.4}, \code{WKT} or \code{authority:code} notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned}
 \item{keeptime}{logical. If \code{FALSE} the time stamps are discarded}
 \item{keepunits}{logical. If \code{FALSE} the layer units are discarded}
 \item{props}{logical. If \code{TRUE} the properties (categories and color-table) are kept}
@@ -73,7 +76,8 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \item{units}{character. units for each layer}
 \item{type}{character. If the value is not \code{"xyz"}, the raster has the same number of rows and colums as the matrix. If the value is \code{"xyz"}, the matrix must have at least two columns, the first with \code{x} (or longitude) and the second with \code{y} (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells.}
 \item{digits}{integer to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when \code{type="xyz"}}
-\item{...}{additional arguments, in some cases passed on to the \code{rast,missing-method}}  
+\item{warn}{logical. If \code{TRUE}, a warnings about empty rasters may be emitted}
+\item{...}{additional arguments passed on to the \code{rast,missing-method}}  
 }
 
 
@@ -82,8 +86,12 @@ SpatRaster
 }
 
 \details{
-The files are opened and read via GDAL. GDAL guesses the file format from the name, and/or else tries reading it with different "drivers" untill it succeeds. In very few cases this may cause a file to be opened with wrong driver, and some information may be lost (for example because of opening a netCDF file with the HDF5 driver. You can avoid that by prepending the driver name to the filename like this: \code{rast('NETCDF:"filename.ncdf"')}
+Files are read with the GDAL library. GDAL guesses the file format from the name, and/or tries reading it with different "drivers" (see \code{\link{gdal}}) until it succeeds. In very few cases this may cause a file to be opened with the wrong driver, and some information may be lost. For example, when a netCDF file is opened with the HDF5 driver. You can avoid that by using argument \code{rast("filename.ncdf", drivers="NETCDF")}
+
+These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save SpatRaster objects to disk (and pass a filename or cell values ot cluster nodes). Also see \code{\link{wrap}}. 
 }
+
+\seealso{\code{\link{sds}} to create a SpatRasterDataset (4 dimensions) and \code{\link{vect}} for vector (points, lines, polygons) data}
 
 \examples{
 # Create a SpatRaster from scratch
@@ -97,6 +105,16 @@ s <- rast(system.file("ex/logo.tif", package="terra"))
 
 # Create a skeleton with no associated cell values
 rast(s)
+
+# from a matrix 
+m <- matrix(1:25, nrow=5, ncol=5)
+rm <- rast(m)
+
+# from a "xyz" data.frame
+d <- as.data.frame(rm, xy=TRUE)
+head(d)
+rast(d, type="xyz")
+
 }
 
 \keyword{methods}

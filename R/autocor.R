@@ -11,7 +11,7 @@
 	} else if (length(ngb) > 2) {
 		error("autocor", "ngb should be a single value or two values")
 	}
-	if (min(ngb) < 1) { stop("ngb should be larger than 1") } 
+	if (min(ngb) < 1) { stop("ngb should be larger than 1") }
 	if (mustBeOdd) {
 		if (any(ngb %% 2 == 0)) {
 			error("autocor", "neighborhood size must be an odd number")
@@ -32,7 +32,7 @@
 				warning('central cell of weights matrix (filter) was set to zero')
 			}
 			w[ceiling(dim(w)[1]/2), ceiling(dim(w)[2]/2)] <- 0
-		}		
+		}
 		stopifnot(all(w >= 0))
 	}
 	if (min(dim(w) %% 2)==0) {
@@ -40,10 +40,10 @@
 	}
 	w
 }
-	
 
 
-setMethod("autocor", signature(x="numeric"), 
+
+setMethod("autocor", signature(x="numeric"),
 	function(x, w, method="moran") {
 		method <- match.arg(tolower(method), c("moran", "geary", "gi", "gi*", "mean", "locmor"))
 
@@ -69,7 +69,7 @@ setMethod("autocor", signature(x="numeric"),
 				warn("autocor", paste("it is unexpected that a weight matrix for", method, "has diagonal values that are zero"))
 			}
 		}
-		
+
 
 		if (method == "moran") {
 			dx <- x - mean(x, na.rm=TRUE)
@@ -86,7 +86,7 @@ setMethod("autocor", signature(x="numeric"),
 			diag(w) <- 0
 			sumxminx <- sum(x, na.rm=TRUE) - x
 			Gi <- colSums(x * w) / sumxminx
-			Ei <- rowSums(w) / (n-1) 
+			Ei <- rowSums(w) / (n-1)
 
 			# variance following spdep::localG
 			xibar <- sumxminx/(n - 1)
@@ -97,7 +97,7 @@ setMethod("autocor", signature(x="numeric"),
 			(Gi-Ei)/sqrt(VG)
 
 		} else if (method == "gi*") {
-			
+
 			if (any(as.numeric(diag(w)) == 0)) {
 				warn("autocor", "it is unexpected that a weight matrix for Gi* has diagonal values that are zero")
 			}
@@ -113,7 +113,7 @@ setMethod("autocor", signature(x="numeric"),
 			if (any(as.numeric(diag(w)) != 0)) {
 				warn("autocor", "it is unexpected that a weight matrix for local Moran has diagonal values that are not zero")
 			}
-			z <- x - mean(x, na.rm=TRUE)	
+			z <- x - mean(x, na.rm=TRUE)
 			mp <- z / ( (sum(z^2, na.rm=TRUE) / length(x)) )
 			mp * apply(w, 1, function(i) {
 					sum(z * i, na.rm=TRUE)
@@ -129,12 +129,12 @@ setMethod("autocor", signature(x="numeric"),
 			m[j] <- NA
 			m
 		}
- 	} 
+ 	}
 )
 
 
 
-setMethod("autocor", signature(x="SpatRaster"), 
+setMethod("autocor", signature(x="SpatRaster"),
 	function(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE) {
 
 		method <- match.arg(tolower(method), c("moran", "geary"))
@@ -143,7 +143,7 @@ setMethod("autocor", signature(x="SpatRaster"),
 			warn("autocor", "only the first layer of x is used")
 			x <- x[[1]]
 		}
-		
+
 		if (global) {
 			if (method == "moran") {
 				z <- x - unlist(global(x, "mean", na.rm=TRUE))
@@ -153,21 +153,21 @@ setMethod("autocor", signature(x="SpatRaster"),
 				z2 <- unlist(global(z*z, "sum", na.rm=TRUE))
 				n <- ncell(z) - unlist(global(is.na(z), "sum"))
 				zz <- ifel(is.na(x), NA, 1)
-				W <- focal( zz, w=w, fun="sum") 
+				W <- focal( zz, w=w, fun="sum")
 				NS0 <- n / unlist(global(W, "sum", na.rm=TRUE))
 				m <- NS0 * wZiZj / z2
 				names(m) <- names(x)
 				m
 			} else { # geary
 				w <- .getFilter(w, warn=FALSE)
-				i <- trunc(length(w)/2)+1 
+				i <- trunc(length(w)/2)+1
 				n <- ncell(x) - unlist(global(is.na(x), "sum"))
 				fun <- function(x,...) sum((x-x[i])^2, ...)
 				f <- focal(x, w=dim(w), fun=fun, na.rm=TRUE)
 				Eij <- unlist(global(f, "sum", na.rm=TRUE))
 				xx <- ifel(is.na(x), NA ,1)
-				W <- focal(xx, w=w, na.rm=TRUE ) 
-				z <- 2 * unlist(global(W, "sum", na.rm=TRUE)) * 
+				W <- focal(xx, w=w, na.rm=TRUE )
+				z <- 2 * unlist(global(W, "sum", na.rm=TRUE)) *
 					unlist(global((x - unlist(global(x, "mean", na.rm=TRUE)))^2, "sum", na.rm=TRUE))
 				g <- (n-1)*Eij/z
 				names(g) <- names(x)
@@ -177,24 +177,24 @@ setMethod("autocor", signature(x="SpatRaster"),
 			if (method == "moran") {
 				z <- x - unlist(global(x, "mean", na.rm=TRUE))
 				zz <- ifel(is.na(x), NA, 1)
-				W  <- focal(zz, w=w, na.rm=TRUE)		
+				W  <- focal(zz, w=w, na.rm=TRUE)
 				lz <- focal(z, w=w, na.rm=TRUE) / W
-					
+
 				n <- ncell(x) - unlist(global(is.na(x), "sum"))
 				s2 <- unlist(global(x, "sd", na.rm=TRUE)^2)
-				m <- (z / s2) * lz	
+				m <- (z / s2) * lz
 				names(m) <- names(x)
-				m				
+				m
 			} else {
 				w <- .getFilter(w)
-				i <- trunc(length(w)/2)+1 
+				i <- trunc(length(w)/2)+1
 				fun <- function(x,...) sum((x-x[i])^2, ...)
 				Eij <- focal(x, w=dim(w), fun=fun, na.rm=TRUE)
-				s2 <- unlist(global(x, "sd", na.rm=TRUE))^2 
-				n <- ncell(x) - unlist(global(is.na(x), "sum"))	
+				s2 <- unlist(global(x, "sd", na.rm=TRUE))^2
+				n <- ncell(x) - unlist(global(is.na(x), "sum"))
 				g <- Eij / s2
 				names(g) <- names(x)
-				g		
+				g
 			}
 		}
 	}

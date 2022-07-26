@@ -19,17 +19,21 @@ terraOptions(...)
 \details{
 The following options are available. 
 
-memfrac - value between 0.1 and 0.9 (larger values give a warning). The fraction of RAM that may be used by the program.
+\bold{memfrac} - value between 0 and 0.9 (larger values give a warning). The fraction of RAM that may be used by the program.
 
-tempdir - directory where temporary files are written. The default what is returned by tempdir().
+\bold{memmin} - if memory required is below this threshold (in GB), the memory is assumed to be available. Otherwise, terra checks if it is available.
 
-datatype - default data type. See \code{\link{writeRaster}}
+\bold{memmax} - the maximum amount of RAM (in GB) that terra is allowed to use when processing a raster dataset. Should be less than what is detected (see \code{\link{mem_info}}), and higher values are ignored. Set it to a negative number or NA to not set this option. \code{terraOptions} only shows the value of \code{memmax} if it is set.
 
-todisk - logical. If \code{TRUE} write all raster data to disk (temp file if no file name is specified). For debugging.
+\bold{tempdir} - directory where temporary files are written. The default what is returned by \code{tempdir()}.
 
-progress - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero
+\bold{datatype} - default data type. See \code{\link{writeRaster}}
 
-verbose - logical. If \code{TRUE} debugging info is printed for some functions
+\bold{todisk} - logical. If \code{TRUE} write all raster data to disk (temp file if no file name is specified). For debugging.
+
+\bold{progress} - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero
+
+\bold{verbose} - logical. If \code{TRUE} debugging info is printed for some functions
 }
 
 \examples{

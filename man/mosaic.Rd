@@ -11,7 +11,11 @@ mosaic SpatRasters
 }
 
 \description{
-mosaic SpatRasters to form a new SpatRaster object with a larger spatial extent. Unlike with \code{\link{merge}}, values on overlapping areas are averaged. 
+Combine adjacent and (partly) overlapping SpatRasters to form a single new SpatRaster. Values in overlapping cells are averaged (by default) or can be computed with another function.
+
+The SpatRasters must have the same origin and spatial resolution. 
+
+This method is similar to the simpler, but faster \code{\link{merge}} method. 
 }
 
 \usage{
@@ -30,9 +34,6 @@ mosaic SpatRasters to form a new SpatRaster object with a larger spatial extent.
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
 } 
 
-\details{
-The SpatRaster objects must have the same origin and spatial resolution. In areas where the SpatRaster objects overlap, the values of the SpatRaster that is last in the sequence of arguments will be retained. 
-}
 
 \value{
 SpatRaster
@@ -56,7 +57,7 @@ m2 <- mosaic(z, y, x)
 
 # if you have many SpatRasters make a SpatRasterCollection from a list
 rlist <- list(x, y, z)
-rsrc <- src(rlist)
+rsrc <- sprc(rlist)
 
 m <- mosaic(rsrc)
 }

@@ -22,8 +22,9 @@
 		if (is.null(r)) {
 			r <- c(min(x, na.rm=TRUE), max(x, na.rm=TRUE))
 		}
-		if ((r[1] %% 1) != 0) { r[1] <- r[1] - 0.00001 }
-		if ((r[2] %% 1) != 0) { r[2] <- r[2] + 0.00001 }
+		small <- 1e-16
+		if ((r[1] %% 1) != 0) { r[1] <- r[1] - small }
+		if ((r[2] %% 1) != 0) { r[2] <- r[2] + small }
 		breaks <- seq(r[1] , r[2], length.out=n+1)
 	}
 	breaks
@@ -46,12 +47,20 @@
 
 
 .plot.axes <- function(x) {
-	if (is.null(x$axs$cex)) {
-		x$axs$cex.axis = 0.75
+	if (is.null(x$axs$cex.axis)) {
+		x$axs$cex.axis = 0.7
 	}
 	if (is.null(x$axs$mgp)) {
-		x$axs$mgp = c(2, .5, 0)
+		x$axs$mgp = c(2, .25, 0)
 	}
+	if (is.null(x$axs$tcl)) {
+		x$axs$tcl <- -0.25
+	}
+	if (x$draw_grid) {
+		x$axs$tck <- 1
+		x$axs$mgp = c(2, .15, 0)
+	}
+
 	if (!is.null(x$axs$sides)) {
 		if (x$axs$sides[1] > 0) {
 			usr <- graphics::par("usr")
@@ -67,7 +76,7 @@
 					ur <- usr[4] - usr[3]
 					at <- c(usr[3]-10*ur, usr[4]+10*ur)
 				}
-				graphics::axis(s, at=at, labels=c("",""), lwd.ticks=0, 
+				graphics::axis(s, at=at, labels=c("",""), lwd.ticks=0,
 					cex.axis=x$axs$cex.axis, mgp=x$axis$mgp)
 				x$axs$side <- s
 				do.call(graphics::axis, x$axs)
@@ -106,18 +115,30 @@
 
 	if (is.null(x$leg$shrink)) {
 		leg.shrink <- c(0,0)
-	} else { 
+	} else {
 		leg.shrink <- rep_len(x$leg$shrink,2)
 	}
 	if (!is.null(x$leg$main)) {
 		n <- length(x$leg$main)
-		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n)) 
+		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n))
 	}
 
-	yd <- ymax - ymin
-	ymin <- ymin + yd * leg.shrink[1]
-	ymax <- ymax - yd * leg.shrink[2]
-    dx <- xmax - xmin
+	if (isTRUE(x$leg$loc=="bottom")) {
+		xd <- xmax - xmin
+		xmin <- xmin + xd * leg.shrink[1]
+		xmax <- xmax - xd * leg.shrink[2]
+		yd <- ymax - ymin
+		ymin <- ymin + yd * leg.shrink[1]/1.5
+		ymax <- ymax - yd * leg.shrink[2]/1.5
+	} else {
+		yd <- ymax - ymin
+		ymin <- ymin + yd * leg.shrink[1]
+		ymax <- ymax - yd * leg.shrink[1]
+		xd <- xmax - xmin
+		xmin <- xmin + xd * leg.shrink[2]/5
+		xmax <- xmax - xd * leg.shrink[2]/5
+    }
+	dx <- xmax - xmin
 	dy <- ymax - ymin
 
 	x$leg$ext <- data.frame(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, dx=dx, dy=dy)
@@ -187,7 +208,7 @@
 				text(x=e$xmin, y=ymax+(n-i)*0.05* e$dy,
 					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
 			} else {
-				ymax <- e$ymax + 2*e$dy
+				ymax <- e$ymax + e$dy
 				text(x=(e$xmin+e$xmax)/2, y=ymax+(n-i)*0.05* e$dy,
 					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
 			}
@@ -207,6 +228,8 @@
 
 	cex <- x$leg$cex
 	if (is.null(cex)) cex <- 0.8
+	rotate <- isTRUE(x$leg$rotate)
+	srt <- ifelse(rotate, 90, 0)
 
 	cols <- rev(x$cols)
 	nc <- length(cols)
@@ -255,7 +278,7 @@
 }
 
 
-.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="", 
+.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="",
 	lty=1, lwd=1, pch=1, angle=45, density=NULL,
 	pt.cex = 1, pt.bg="black", pt.lwd=1, bty="n", border="black", seg.len=1,
 # catching
@@ -267,7 +290,7 @@
 		y <- usr[c(4)]
 	}
 	if (grepl("points", geomtype)) {
-		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, 
+		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch,
 		pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, ...)
 	} else if (geomtype == "lines") {
 		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, ...)

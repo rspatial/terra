@@ -1,11 +1,19 @@
 
+setMethod ("has.colors" , "SpatRaster",
+	function(x) {
+		x@ptr$hasColors()
+	}
+)
 
-setMethod ("coltab" , "SpatRaster", 
+
+
+setMethod ("coltab" , "SpatRaster",
 	function(x) {
 		hascols <- x@ptr$hasColors()
 		if (any(hascols)) {
 			d <- x@ptr$getColors()
 			d <- lapply(d, .getSpatDF)
+			d[!hascols] <- list(NULL)
 		} else {
 			d <- vector("list", length(hascols))
 		}
@@ -14,15 +22,13 @@ setMethod ("coltab" , "SpatRaster",
 )
 
 
-setMethod ("coltab<-" , "SpatRaster", 
-	function(x, layer=1, value) {
-		#stopifnot(hasValues(x))
-		if (missing(value)) {
-			value <- layer
-			layer <- 1
-		}
+setMethod ("coltab<-" , "SpatRaster",
+	function(x, value, layer=1) {
+
+		x@ptr <- x@ptr$deepcopy()
+
 		layer <- layer[1]-1
-		
+
 		if (is.null(value)) {
 			x@ptr$removeColors(layer)
 			return(x)
@@ -32,22 +38,31 @@ setMethod ("coltab<-" , "SpatRaster",
 			value <- value[[1]]
 		}
 		if (inherits(value, "character")) {
-			value <- t(grDevices::col2rgb(value, alpha=TRUE))
-		}
-		if (inherits(value, "character")) {
-			value <- data.frame(t(grDevices::col2rgb(value, alpha=TRUE)))
+			value <- data.frame(t(grDevices::col2rgb(value, alpha=TRUE)), stringsAsFactors=FALSE)
 		} else if (inherits(value, "matrix")) {
 			value <- data.frame(value)
 		}
 
-		stopifnot(inherits(value, "data.frame"))
-
-		value <- value[1:256,]
-		value[is.na(value)] <- 255
-		value <- data.frame(sapply(value, function(i) as.integer(clamp(i, 0, 255))))
-		if (ncol(value) == 3) {
-			value <- cbind(value, alpha=255)
+		if (!inherits(value, "data.frame")) {
+			error("coltab<-", "cannot process these color values")
 		}
+		if (ncol(value) == 2) {
+			value <- data.frame(values=value[,1], t(grDevices::col2rgb(value[,2], alpha=TRUE)), stringsAsFactors=FALSE)
+		} else {
+			nms <- tolower(names(value))
+			if (!("value" %in% nms)) {
+				value <- cbind(values=(1:nrow(value))-1, value)
+			}
+			#value <- value[1:256,]
+			if (ncol(value) == 4) {
+				value <- cbind(value, alpha=255)
+			}
+		}
+		value[, 1] <- as.integer(value[, 1])
+		for (i in 2:ncol(value)) {
+			value[, i] <- as.integer(clamp(value[, i], 0, 255))
+		}
+		value[is.na(value)] <- 255
 
 		d <- .makeSpatDF(value)
 		if (x@ptr$setColors(layer, d)) {

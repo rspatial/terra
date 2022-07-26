@@ -6,7 +6,7 @@
 
 	// get xrange in lon
 	// find pretty breaks
-	// get yrange in lat 
+	// get yrange in lat
 
 //}
 

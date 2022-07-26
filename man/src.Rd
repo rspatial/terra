@@ -1,11 +1,11 @@
-\name{src}
+\name{sprc}
 
 \docType{methods}
 
-\alias{src}
-\alias{src,missing-method}
-\alias{src,list-method}
-\alias{src,SpatRaster-method}
+\alias{sprc}
+\alias{sprc,missing-method}
+\alias{sprc,list-method}
+\alias{sprc,SpatRaster-method}
 
 
 \title{Create a SpatRasterCollection}
@@ -17,11 +17,11 @@ They can be used to combine several SpatRasters to be used with \code{\link{merg
 }
 
 \usage{
-\S4method{src}{SpatRaster}(x, ...) 
+\S4method{sprc}{SpatRaster}(x, ...) 
 
-\S4method{src}{list}(x) 
+\S4method{sprc}{list}(x) 
 
-\S4method{src}{missing}(x) 
+\S4method{sprc}{missing}(x) 
 }
 
 \arguments{
@@ -44,7 +44,7 @@ res(y) <- res(x)
 values(x) <- 1:ncell(x)
 values(y) <- 1:ncell(y)
 
-z <- src(x, y)
+z <- sprc(x, y)
 z
 }
 

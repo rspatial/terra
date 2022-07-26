@@ -1,21 +1,21 @@
 \name{voronoi}
 
-\alias{delauny}
+\alias{delaunay}
 \alias{voronoi}
 \alias{voronoi,SpatVector-method}
-\alias{delauny,SpatVector-method}
+\alias{delaunay,SpatVector-method}
 
 
-\title{Voronoi diagram and Delauny triangles}
+\title{Voronoi diagram and Delaunay triangles}
 
 \description{
-Get a voronoi diagram or delauny triangles for points, or the nodes of lines or polygons
+Get a Voronoi diagram or Delaunay triangles for points, or the nodes of lines or polygons
 }
 
 \usage{
 \S4method{voronoi}{SpatVector}(x, bnd=NULL, tolerance=0, as.lines=FALSE, deldir=FALSE) 
 
-\S4method{delauny}{SpatVector}(x, tolerance=0, as.lines=FALSE) 
+\S4method{delaunay}{SpatVector}(x, tolerance=0, as.lines=FALSE) 
 }
 
 
@@ -38,6 +38,9 @@ wkt <- c("MULTIPOLYGON ( ((40 40, 20 45, 45 30, 40 40)),
 x <- vect(wkt)
 v <- voronoi(x)
 v
+
+d <- delaunay(x)
+d
 
 plot(v, lwd=2, col=rainbow(15))
 lines(x, col="gray", lwd=2)

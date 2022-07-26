@@ -2,6 +2,8 @@
 
 \alias{atan2,SpatRaster,SpatRaster-method}
 \alias{atan2}
+\alias{atan_2,SpatRaster,SpatRaster-method}
+\alias{atan_2}
 
 \title{Two argument arc-tangent}
 
@@ -13,11 +15,15 @@ See \code{\link{Math-methods}} for other trigonometric and mathematical function
 
 \usage{
 \S4method{atan2}{SpatRaster,SpatRaster}(y, x)
+
+\S4method{atan_2}{SpatRaster,SpatRaster}(y, x, filename, ...)
 }
 
 \arguments{
   \item{y}{SpatRaster}
   \item{x}{SpatRaster}
+  \item{filename}{character. Output filename}
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
 }
 
 \seealso{ \code{\link{Math-methods}} }
@@ -33,3 +39,4 @@ atan2(r1, r2)
 
 \keyword{math}
 \keyword{spatial}
+

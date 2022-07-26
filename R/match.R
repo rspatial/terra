@@ -1,16 +1,27 @@
 # Author: Robert J. Hijmans
 # License GPL v3
 
+getCatIDs <- function(x, table, sender="%in%") {
+	if (!is.factor(x)) {
+		error(sender, "Can only match character values if x is categorical")
+	}
+	if (nlyr(x) != 1) {
+		error(sender, "matching with character values is only supported for single layer SpatRaster")
+	}
+	d <- cats(x)[[1]]
+	m <- na.omit(match(table, d[,2]))
+	d[m,1]
+}
+
 
 setMethod("match", signature(x="SpatRaster"),
 	function(x, table, nomatch=NA, incomparables=NULL) {
 		table <- unique(table)
 		if (is.character(table)) {
-			if (!is.factor(x)) error("match", "table has character values")
-			table <- stats::na.omit(match(table, levels(x)[[1]]))
+			table <- getCatIDs(x, table, sender="match")
 			if (length(table) == 0) {
-				return (x * 0)
-			} 
+				return(as.logical(x*0))
+			}
 		}
 		app(x, function(i) match(i, table, nomatch, incomparables))
 	}
@@ -19,8 +30,15 @@ setMethod("match", signature(x="SpatRaster"),
 
 setMethod("%in%", signature(x="SpatRaster"),
 	function(x, table) {
-		opt <- spatOptions("", FALSE, list())
+
 		table <- unique(table)
+		if (is.character(table)) {
+			table <- getCatIDs(x, table)
+			if (length(table) == 0) {
+				return(as.logical(x*0))
+			}
+		}
+		opt <- spatOptions("", FALSE, list())
 		x@ptr <- x@ptr$is_in(table, opt)
 		messages(x, "%in%")
 	}

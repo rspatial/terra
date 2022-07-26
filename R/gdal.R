@@ -18,7 +18,26 @@ gdalCache <- function(size=NA) {
 	}
 }
 
-gdal <- function(warn=NA, drivers=FALSE) {
+getGDALconfig <- function(option) {
+	sapply(option, .gdal_getconfig)
+}
+
+setGDALconfig <- function(option, value="") {
+	value <- rep_len(value, length(option))
+	for (i in 1:length(option)) {
+		if (grepl("=", option[i])) {
+			opt <- trimws(unlist(strsplit(option[i], "="))[1:2])
+			.gdal_setconfig(opt[1], opt[2])
+		} else {
+			.gdal_setconfig(trimws(option[i]), trimws(value[i]))
+		}
+	}
+}
+
+
+
+
+gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
 	if (!is.na(warn)) {
 		warn <- as.integer(warn)
 		stopifnot(warn %in% c(1:4))
@@ -36,7 +55,16 @@ gdal <- function(warn=NA, drivers=FALSE) {
 		rownames(x) <- NULL
 		x
 	} else {
-		.gdalversion()
+		lib <- tolower(lib)
+		if (lib=="gdal") {
+			.gdal_version()
+		} else if (lib=="proj") {
+			proj_version()
+		} else if (lib=="geos") {
+			.geos_version()
+		} else {
+			c(gdal=.gdal_version(), proj=proj_version(), geos=.geos_version())
+		}
 	}
 }
 
@@ -45,12 +73,13 @@ gdal <- function(warn=NA, drivers=FALSE) {
 .describe_sds <- function(x, print=FALSE) {
 	x <- .sdinfo(x)
 	if (length(x[[1]]) == 1 & length(x[[2]]) == 0) {
-		error("gdal (sds)", "not working for: ", x[[1]])
+		error("gdal (sds)", x[[1]])
 	}
+	names(x) <- c("name", "var", "desc", "nrow", "ncol", "nlyr")
 	m <- do.call(cbind, x)
-	m <- data.frame(1:nrow(m), m, stringsAsFactors=FALSE)
-	colnames(m) <- c("id", "name", "var", "desc", "nrow", "ncol", "nlyr")
-	for (i in 5:7) m[,i] <- as.integer(m[,i])
+	m <- data.frame(id=1:nrow(m), m, stringsAsFactors=FALSE)
+	ii <- which(colnames(m) %in% c("nrow", "ncol", "nlyr"))
+	for (i in ii) m[,i] <- as.integer(m[,i])
 	if (print) {
 		print(m)
 		invisible(m)
@@ -80,9 +109,10 @@ gdal <- function(warn=NA, drivers=FALSE) {
 
 
 
-setMethod("describe", signature(x="character"), 
+setMethod("describe", signature(x="character"),
 	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="") {
 
+		x <- .fullFilename(x[1], FALSE)
 		if (meta) {
 			if (sds) {
 				return(.meta_sds(x, parse))

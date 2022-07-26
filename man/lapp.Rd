@@ -13,7 +13,7 @@ Apply a function to a SpatRaster, using layers as arguments.
 
 The number of arguments in function \code{fun} must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterDataset). For example, if you want to multiply two layers, you could use this function: \code{fun=function(x,y){return(x*y)}} percentage: \code{fun=function(x,y){return(100 * x / y)}}. If you combine three layers you could use \code{fun=function(x,y,z){return((x + y) * z)}}
 
-Before you use the function, test it to make sure that it is vectorized. That is, it should work for vectors longer than one, not only for single numbers. The function must return the same number of elements as its input vectors, or multiples of that. Also make sure that the function is NA-proof: it should returns the same number of values when some or all input values are \code{NA}. And the function must return a vector or a matrix, not a \code{data.frame}.
+Before you use the function, test it to make sure that it is vectorized. That is, it should work for vectors longer than one, not only for single numbers. Or if the input SpatRaster(s) have multiple layers, it should work for a matrix (multiple cells) of input data (or matrices in the case of a SpatRasterDataSet). The function must return the same number of elements as its input vectors, or multiples of that. Also make sure that the function is \code{NA}-proof: it should returns the same number of values when some or all input values are \code{NA}. And the function must return a vector or a matrix, not a \code{data.frame}. To test it, run it with \code{do.call(fun, data)} (see examples). 
 
 Use \code{\link{app}} for summarize functions such as \code{sum}, that take any number of arguments; and \code{\link{tapp}} to do so for groups of layers. 
 }
@@ -51,6 +51,10 @@ s <- rast(system.file("ex/logo.tif", package="terra")) + 1
 ss <- s[[2:1]]
 
 fvi <- function(x, y){ (x - y ) / (x + y) } 
+# test the function
+data <- list(c(1:5,NA), 6:1)
+do.call(fvi, data)
+
 x <- lapp(ss, fun=fvi )
 
 # which is the same as supplying the layers to "fun"
@@ -81,7 +85,16 @@ pairs(c(x1, x2, x3, x4))
 
 ## SpatRasterDataset
 x <- sds(s, s[[1]]+50)
-lapp(x, function(x, y) x/y, recycle=TRUE)
+fun <- function(x, y) { x/y }
+
+# test "fun"
+data <- list(matrix(1:9, ncol=3), matrix(9:1, ncol=3))
+do.call(fun, data)
+
+lapp(x, fun, recycle=TRUE)
+
+# the same, more concisely
+z <- s / (s[[1]]+50)
 }
  
 \keyword{methods}

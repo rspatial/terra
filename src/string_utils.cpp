@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2022  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -26,8 +26,8 @@
 #include <numeric>
 
 
-std::string double_to_string(double x) { 
-	std::string s = std::to_string (x);
+std::string double_to_string(double x) {
+	std::string s = std::to_string(x);
 	s.erase( s.find_last_not_of('0') + 1, std::string::npos );
 	s.erase( s.find_last_not_of('.') + 1, std::string::npos );
 	return s;
@@ -54,7 +54,7 @@ std::vector<char *> string_to_charpnt(std::vector<std::string> s) {
 //	return charstr;
 //}
 
-std::vector<std::string> double_to_string(const std::vector<double> &x, std::string prep) { 
+std::vector<std::string> double_to_string(const std::vector<double> &x, std::string prep) {
 	std::vector<std::string> out(x.size());
 	for (size_t i=0; i<x.size(); i++) {
 		out[i] = prep + double_to_string (x[i]);
@@ -97,7 +97,7 @@ bool ends_on(std::string const &s, std::string const &end) {
 	if (s.length() >= end.length()) {
 		if (s.compare(s.length() - end.length(), s.length(), end) == 0) {
 			return false;
-		} 
+		}
 	}
 	return true;
 }
