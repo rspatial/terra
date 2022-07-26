@@ -184,15 +184,13 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	nl <- nlyr(x)
 	useLyr <- FALSE
 	geo <- geomtype(y)
-	if (geo == "points") {	
-		method <- match.arg(tolower(method), c("simple", "bilinear"))
-		if (weights) {
-			warn("weights are ignored for point data")
+	if (weights) {
+		if (geo != "polygons") {	
+			warn("weights are ignored for point and lines data")
+			weights <- FALSE
 		}
-		weights <- FALSE
-	} else {
-		method <- "simple"
-	}
+	} 
+	method <- match.arg(tolower(method), c("simple", "bilinear"))
 	hasfun <- !is.null(fun)
 	if (weights && exact) {
 		exact = FALSE
