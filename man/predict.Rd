@@ -10,6 +10,8 @@
 \description{
 Make a SpatRaster object with predictions from a fitted model object (for example, obtained with \code{glm} or \code{randomForest}). The first argument is a SpatRaster object with the predictor variables. The \code{\link{names}} in the Raster object should exactly match those expected by the model. Any regression like model for which a predict method has been implemented (or can be implemented) can be used. 
 
+The method should work if the model's predict function returns a vector, matrix or data.frame (or a list that can be coerced to a data.frame). In other cases it may be necessary to provide a custom "predict" function that wraps the model's predict function to return the values in the required form. See the examples.
+
 This approach of using model predictions is commonly used in remote sensing (for the classification of satellite images) and in ecology, for species distribution modeling.
 }
 
@@ -74,9 +76,10 @@ points(a, bg='red', pch=21)
 model <- glm(formula=pa~., data=v, family="binomial")
 r1log <- predict(logo, model, type="response")
 
-# use a modified function to get the probability and standard error
-# from the glm model. The values returned by "predict" are in a list,
-# and this list needs to be transformed to a matrix
+# to get the probability and standard error
+r1se <- predict(logo, model, se.fit=TRUE)
+
+# or provide a custom predict function
 
 predfun <- function(model, data) {
   v <- predict(model, data, se.fit=TRUE)

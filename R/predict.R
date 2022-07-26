@@ -35,8 +35,12 @@ parfun <- function(cls, d, fun, model, ...) {
 			} else {
 				r <- fun(model, d, ...)
 			}
-			if (is.factor(r)) {
+			if (is.list(r)) {
+				r <- as.data.frame(lapply(r, as.numeric))			
+			} else if (is.factor(r)) {
 				r <- as.integer(r)
+			} else if (is.data.frame(r)) {
+				r <- sapply(r, as.numeric)
 			}
 			#how could it not be numeric?
 			#else if (is.data.frame(r)) {
@@ -66,7 +70,9 @@ parfun <- function(cls, d, fun, model, ...) {
 		} else {
 			r <- fun(model, d, ...)
 		}
-		if (is.factor(r)) {
+		if (is.list(r)) {
+			r <- as.data.frame(lapply(r, as.numeric))			
+		} else if (is.factor(r)) {
 			r <- as.integer(r)
 		} else if (is.data.frame(r)) {
 			r <- sapply(r, as.numeric)
