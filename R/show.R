@@ -290,8 +290,9 @@ setMethod ("show" , "SpatRaster",
 				#r <- minmax(object)
 				r <- rbind(object@ptr$range_min, object@ptr$range_max)
 				r[,!hMM] <- c(Inf, -Inf)
-				minv <- format(r[1,])
-				maxv <- format(r[2,])
+				r <- sapply(data.frame(r), format)
+				minv <- r[1,]
+				maxv <- r[2,]
 				if (any(isB)) {
 					minv[isB] <- ifelse(minv[isB]=="0", "FALSE", "TRUE")
 					maxv[isB] <- ifelse(maxv[isB]=="0", "FALSE", "TRUE")
