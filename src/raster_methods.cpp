@@ -2008,15 +2008,15 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 			x.readValues(m, out.bs.row[i], out.bs.nrows[i], 0, ncol());
 			recycle(v, m);
 			if (std::isnan(value)) {
-				for (size_t i=0; i < v.size(); i++) {
-					if (std::isnan(v[i])) {
-						v[i] = m[i];
+				for (size_t j=0; j < v.size(); j++) {
+					if (std::isnan(v[j])) {
+						v[j] = m[j];
 					}
 				}
 			} else {
-				for (size_t i=0; i < v.size(); i++) {
-					if (v[i] == value) {
-						v[i] = m[i];
+				for (size_t j=0; j < v.size(); j++) {
+					if (v[j] == value) {
+						v[j] = m[j];
 					}
 				}
 			}
@@ -2038,16 +2038,16 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 			readValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol());
 			x.readValues(m, out.bs.row[i], out.bs.nrows[i], 0, ncol());
 			recycle(v, m);
-			for (size_t i=0; i < v.size(); i++) {
+			for (size_t j=0; j < v.size(); j++) {
 				if (hasNA) {
-					if (std::isnan(v[i])) {
-						v[i] = m[i];
+					if (std::isnan(v[j])) {
+						v[j] = m[j];
 						continue;
 					}
 				}
-				for (size_t i=0; i<values.size(); i++) {
-					if (v[i] == values[i]) {
-						v[i] = m[i];
+				for (size_t j=0; j<values.size(); j++) {
+					if (v[j] == values[j]) {
+						v[j] = m[j];
 						continue;
 					}
 				}
