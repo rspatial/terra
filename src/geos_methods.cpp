@@ -208,6 +208,12 @@ SpatVector SpatVector::make_valid2() {
 }
 
 
+/*
+need to find the correct version required 
+
+#ifndef GEOS350
+	out.setError("GEOS 3.5 required");
+#else
 
 SpatVector SpatVector::set_precision(double gridSize) {
 	SpatVector out;
@@ -238,7 +244,7 @@ SpatVector SpatVector::set_precision(double gridSize) {
 	out.srs = srs;
 	return out;
 }
-
+*/
 
 
 SpatVector SpatVector::crop(SpatExtent e) {
