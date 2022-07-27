@@ -210,7 +210,7 @@ SpatVector SpatVector::make_valid2() {
 
 /*
 need to find the correct version required 
-
+does not work with 3.4.2 (see #734)
 #ifndef GEOS350
 	out.setError("GEOS 3.5 required");
 #else
