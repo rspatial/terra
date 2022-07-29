@@ -18,7 +18,7 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-5</span>
       </span>
     </div>
 
@@ -56,8 +56,8 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,SpatVector</span>
-<span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, fun<span class="op">=</span><span class="cn">NULL</span>, method<span class="op">=</span><span class="st">"simple"</span>, list<span class="op">=</span><span class="cn">FALSE</span>, factors<span class="op">=</span><span class="cn">TRUE</span>, 
-        cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, ID<span class="op">=</span><span class="cn">TRUE</span>, as.spatvector<span class="op">=</span><span class="cn">FALSE</span>, weights<span class="op">=</span><span class="cn">FALSE</span>,
+<span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, fun<span class="op">=</span><span class="cn">NULL</span>, method<span class="op">=</span><span class="st">"simple"</span>,  
+        cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, ID<span class="op">=</span><span class="cn">TRUE</span>, value<span class="op">=</span><span class="st">"data.frame"</span>, weights<span class="op">=</span><span class="cn">FALSE</span>,
     exact<span class="op">=</span><span class="cn">FALSE</span>, touches<span class="op">=</span><span class="fu"><a href="geomtype.html">is.lines</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, layer<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,SpatExtent</span>
@@ -90,12 +90,6 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 <dt>method</dt>
 <dd><p>character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells</p></dd>
 
-<dt>list</dt>
-<dd><p>logical. If <code>FALSE</code> the output is simplified to a <code>data.frame</code> (if <code>fun=NULL</code>)</p></dd>
-
-<dt>factors</dt>
-<dd><p>logical. If <code>TRUE</code> the categories are returned as factors instead of their numerical representation. The value returned becomes a data.frame if it otherwise would have been a matrix, even if there are no factors</p></dd>
-
 <dt>cells</dt>
 <dd><p>logical. If <code>TRUE</code> the cell numbers are also returned, unless <code>fun</code> is not <code>NULL</code>. Also see <code><a href="cells.html">cells</a></code></p></dd>
 
@@ -105,8 +99,8 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 <dt>ID</dt>
 <dd><p>logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of input SpatVector <code>y</code></p></dd>
 
-<dt>as.spatvector</dt>
-<dd><p>Should the extracted values be combined with the input SpatVector <code>y</code>?</p></dd>
+<dt>value</dt>
+<dd><p>character. The requested output type. One of "data.frame", "list", "matrix", or "SpatVector". If a list is chosen, it contains matrices of the raw values (not the labels of factors if t</p></dd>
 
 <dt>weights</dt>
 <dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean</p></dd>
@@ -123,7 +117,7 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>matrix, list, or data.frame</p>
+    <p>data.frame, list, matrix, or SpatVector</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -138,9 +132,9 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 <span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">xy</span>, crs<span class="op">=</span><span class="st">"+proj=longlat +datum=WGS84"</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">extract</span><span class="op">(</span><span class="va">r</span>, <span class="va">xy</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   lyr.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      lyr.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    13</span>
 <span class="r-in"><span class="fu">extract</span><span class="op">(</span><span class="va">r</span>, <span class="va">p</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ID lyr.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  1    21</span>
@@ -175,10 +169,10 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 <span class="r-in"><span class="va">xy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">179000</span>, <span class="fl">330000</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">xy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">xy</span><span class="op">-</span><span class="fl">100</span>, <span class="va">xy</span>, <span class="va">xy</span><span class="op">+</span><span class="fl">1000</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">extract</span><span class="op">(</span><span class="va">r</span>, <span class="va">xy</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   test</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  378</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  251</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      test</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  208</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">xy</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="geometry.html">geom</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
@@ -252,7 +246,8 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 <span class="r-in"></span>
 <span class="r-in"><span class="va">ee</span> <span class="op">&lt;-</span> <span class="fu">extract</span><span class="op">(</span><span class="va">z</span>, <span class="va">v</span>, list<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/rapply.html" class="external-link">rapply</a></span><span class="op">(</span><span class="va">ee</span>, <span class="va">mean</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  5.20 16.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        ID      test </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1.444444 10.333333 </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">z</span><span class="op">*</span><span class="fl">2</span>, <span class="va">z</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span>
@@ -266,9 +261,10 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 <span class="r-in"></span>
 <span class="r-in"><span class="va">ee</span> <span class="op">&lt;-</span> <span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">v</span>, list<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rapply.html" class="external-link">rapply</a></span><span class="op">(</span><span class="va">ee</span>, <span class="va">mean</span><span class="op">)</span>, ncol<span class="op">=</span><span class="fu"><a href="dimensions.html">nlyr</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, byrow<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2]     [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  5.20 10.4 1.733333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 16.75 33.5 5.583333</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>data length [4] is not a sub-multiple or multiple of the number of columns [3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]      [,2]     [,3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.444444 10.333333 20.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 3.444444  1.444444 10.33333</span>
 </code></pre></div>
     </div>
   </div>
