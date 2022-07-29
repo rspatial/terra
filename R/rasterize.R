@@ -8,8 +8,6 @@ setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"),
 	}
 )
 
-
-
 # now can use
 # r@ptr = r@ptr$rasterizePoints(v@ptr, "mean", 1:nrow(v), NA, opt)
 
@@ -22,9 +20,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 			background <- NA
 		}
 	}
-
 	nrx <- nrow(x)
-
 	if (!is.data.frame(values)) {
 		values <- as.data.frame(values)
 	}

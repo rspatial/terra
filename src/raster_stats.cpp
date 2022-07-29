@@ -520,9 +520,12 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		out.setError("zonal SpatRaster has no values");
 		return(out);
 	}
-	if (!compare_geom(z, false, true, opt.get_tolerance())) {
-		out.setError("dimensions and/or extent do not match");
+	if (!compare_geom(z, false, true, opt.get_tolerance(), true)) {
+		out.setError(getError());
 		return(out);
+	}
+	if (hasWarning()) {
+		out.addWarning(getWarnings());
 	}
 
 	if (z.nlyr() > 1) {

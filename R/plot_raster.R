@@ -125,6 +125,7 @@
 	}
 	out$levels <- sort(stats::na.omit(unique(z)))
 	ilevels <- match(out$levels, out$cats[[1]])
+	# mismatch: ilevels <- na.omit(ilevels)
 	if (out$all_levels) {
 		out$leg$legend <- unique(na.omit(out$cats[, 2]))	
 	} else {
@@ -505,7 +506,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				if (has.colors(x)) {
 					coltab <- coltab(x)[[1]]
 					if (is.factor(x)) {
-						act <- activeCat(x)
+						#act <- activeCat(x)
 						cats <- levels(x)[[1]] # cats(x)[[1]][, c(1, act+1)]
 						type <- "factor"
 					} else {
@@ -514,8 +515,8 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 					}
 				} else if (is.factor(x)) {
 					type <- "factor"
-					act <- activeCat(x)
-					cats <- cats(x)[[1]][, c(1, act+1)]
+					#act <- activeCat(x)
+					cats <- levels(x)[[1]] #cats(x)[[1]][, c(1, act+1)]
 				} else if (is.bool(x)) {
 					type <- "factor"
 					levels(x) <- data.frame(id=0:1, value=c("False", "True"))

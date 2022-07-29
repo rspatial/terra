@@ -34,8 +34,8 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 } 
 
 \usage{
-\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, 
-        cells=FALSE, xy=FALSE, ID=TRUE, as.spatvector=FALSE, weights=FALSE,
+\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple",  
+        cells=FALSE, xy=FALSE, ID=TRUE, value="data.frame", weights=FALSE,
 		exact=FALSE, touches=is.lines(y), layer=NULL, ...)
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, factors=TRUE, cells=FALSE, xy=FALSE)
@@ -53,19 +53,17 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 \item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min} and \code{max} are accepted)}
 \item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector. For example \code{na.rm=TRUE}. Or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (such as the \code{method} and \code{cells} arguments)}
 \item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
-\item{list}{logical. If \code{FALSE} the output is simplified to a \code{data.frame} (if \code{fun=NULL})}
-\item{factors}{logical. If \code{TRUE} the categories are returned as factors instead of their numerical representation. The value returned becomes a data.frame if it otherwise would have been a matrix, even if there are no factors}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}
 \item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{xyFromCell}}}
 \item{ID}{logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of input SpatVector \code{y}}
-\item{as.spatvector}{Should the extracted values be combined with the input SpatVector \code{y}?}
+\item{value}{character. The requested output type. One of "data.frame", "list", "matrix", or "SpatVector". If a list is chosen, it contains matrices of the raw values (not the labels of factors if t}
 \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
 \item{layer}{character or numeric to select the layer to extract from for each geometry. If \code{layer} is a character it can be a name in \code{y} or a vector of layer names. If it is numeric, it must be integer values between \code{1} and \code{nlyr(x)}}
 }
 
-\value{matrix, list, or data.frame}
+\value{data.frame, list, matrix, or SpatVector}
 
 \seealso{\link{values}}
 

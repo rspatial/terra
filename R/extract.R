@@ -94,8 +94,9 @@ wmax <- function(p, na.rm=FALSE) {
 
 
 
-extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, layer=NULL) {
+extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NULL, value="data.frame") {
 
+	value <- match.arg(tolower(value), c("data.frame", "list", "matrix"))
 	method <- match.arg(tolower(method), c("simple", "bilinear"))
 
 	nl <- nlyr(x)
@@ -123,7 +124,7 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 		e <- x@ptr$extractCell(y-1)
 	}
 
-	if (list) {
+	if (value=="list") {
 		messages(x, "extract")
 		return(e)
 	}
@@ -149,7 +150,7 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	}
 	colnames(e) <- cn
 
-	if (factors) {
+	if (method=="data.frame") {
 		if (method != "simple") {
 			e <- as.data.frame(e)
 		} else {
@@ -179,7 +180,14 @@ function(x, y, ...) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
-function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, ID=TRUE, as.spatvector=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
+function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, value="data.frame", weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
+
+	value <- match.arg(tolower(value), c("data.frame", "list", "matrix", "spatvector"))
+	if (value == "matrix") {
+		factors <- FALSE
+	} else {
+		factors <- TRUE	
+	}
 
 	nl <- nlyr(x)
 	useLyr <- FALSE
@@ -241,17 +249,15 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	#e <- rapply(e, f, how="replace")
 	cn <- names(x)
 	opt <- spatOptions()
-	if (list) {
+	if (value == "list") {
 		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 		x <- messages(x, "extract")
-		if (weights || exact) {
-			if (hasfun) {
-				e <- sapply(e, fun, ...)
-				e <- matrix(e, nrow=nrow(y), byrow=TRUE)
-				colnames(e) <- cn
-				e <- cbind(ID=1:nrow(e), e)
-			}
-		}
+		#if ((weights || exact) && (hasfun)) {
+		#	e <- sapply(e, fun, ...)
+		#	e <- matrix(e, nrow=nrow(y), byrow=TRUE)
+		#	colnames(e) <- cn
+		#	e <- cbind(ID=1:nrow(e), e)
+		#}
 		return(e)
 	}
 
@@ -317,7 +323,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		e[, cncell] <- e[, cncell] + 1
 	}
 
-	if (factors) {
+	if (value != "matrix") {
 		if (hasfun || method != "simple") {
 			e <- as.data.frame(e)
 		} else {
@@ -336,7 +342,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 			e <- ee
 		}
 	}
-	if (as.spatvector) {
+	if (value == "spatvector") {
 		if (nrow(e) == nrow(y)) {
 			e <- cbind(y, e[,-1,drop=FALSE])
 		} else {
@@ -351,9 +357,9 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 })
 
 setMethod("extract", signature(x="SpatRaster", y="sf"),
-	function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, ID=TRUE, as.spatvector=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
+	function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, value="data.frame", weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
 		y <- vect(y)
-		extract(x, y, fun=fun, method=method, list=list, factors=factors, cells=cells, xy=xy, ID=TRUE, as.spatvector=FALSE, weights=weights, exact=exact, touches=touches, layer=layer, ...)
+		extract(x, y, fun=fun, method=method, cells=cells, xy=xy, ID=TRUE, value="data.frame", weights=weights, exact=exact, touches=touches, layer=layer, ...)
 	}
 )
 
