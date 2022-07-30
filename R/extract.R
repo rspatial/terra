@@ -251,7 +251,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	if (as.list) {
 		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 		x <- messages(x, "extract")
-		if ((weights || exact) && (hasfun)) {
+		if (hasfun) {
 			e <- sapply(e, fun, ...)
 			e <- matrix(e, nrow=nrow(y), byrow=TRUE)
 			colnames(e) <- cn
