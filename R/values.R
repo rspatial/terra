@@ -10,11 +10,12 @@ setMethod("hasValues", signature(x="SpatRaster"),
 )
 
 
-.makeDataFrame <- function(x, v, factors=TRUE, ...) {
+.makeDataFrame <- function(x, v, ...) {
 
 	v <- data.frame(v, check.names=FALSE, ...)
 
-	if (factors) {
+#	factors=TRUE,
+#	if (factors) {
 		ff <- is.factor(x)
 		if (any(ff)) {
 			ff <- which(ff)
@@ -44,21 +45,21 @@ setMethod("hasValues", signature(x="SpatRaster"),
 				}
 			}
 		}
-	} else {
-		bb <- is.bool(x)
-		if (any(bb)) {
-			for (b in which(bb)) {
-				v[[b]] = as.logical(v[[b]])
-			}
-		}
+	#} else {
+	#	bb <- is.bool(x)
+	#	if (any(bb)) {
+	#		for (b in which(bb)) {
+	#			v[[b]] = as.logical(v[[b]])
+	#		}
+	#	}
 
-		ii <- is.int(x)
-		if (any(ii)) {
-			for (i in which(ii)) {
-				v[[i]] = as.integer(v[[i]])
-			}
-		}
-	}
+	#	ii <- is.int(x)
+	#	if (any(ii)) {
+	#		for (i in which(ii)) {
+	#			v[[i]] = as.integer(v[[i]])
+	#		}
+	#	}
+	#}
 	v
 }
 
@@ -73,7 +74,7 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 		v <- matrix(v, ncol = nlyr(x))
 		colnames(v) <- names(x)
 		if (dataframe) {
-			return(.makeDataFrame(x, v, factors=TRUE, ...) )
+			return(.makeDataFrame(x, v, ...) )
 		}
 	}
 	v

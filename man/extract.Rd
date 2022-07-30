@@ -34,11 +34,11 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 } 
 
 \usage{
-\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple",  
-        cells=FALSE, xy=FALSE, ID=TRUE, value="data.frame", weights=FALSE,
-		exact=FALSE, touches=is.lines(y), layer=NULL, ...)
+\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE,
+    ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y),
+	layer=NULL, as.list=FALSE, as.spatvector=FALSE, ...)
 
-\S4method{extract}{SpatRaster,SpatExtent}(x, y, factors=TRUE, cells=FALSE, xy=FALSE)
+\S4method{extract}{SpatRaster,SpatExtent}(x, y, cells=FALSE, xy=FALSE)
 
 \S4method{extract}{SpatRaster,matrix}(x, y, ...)
 
@@ -50,20 +50,21 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 \arguments{
 \item{x}{SpatRaster or SpatVector of polygons}
 \item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
-\item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min} and \code{max} are accepted)}
+\item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min} and \code{max} are accepted). Ignored if \code{value="list"}}
 \item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector. For example \code{na.rm=TRUE}. Or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (such as the \code{method} and \code{cells} arguments)}
 \item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}
 \item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{xyFromCell}}}
 \item{ID}{logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of input SpatVector \code{y}}
-\item{value}{character. The requested output type. One of "data.frame", "list", "matrix", or "SpatVector". If a list is chosen, it contains matrices of the raw values (not the labels of factors if t}
 \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
 \item{layer}{character or numeric to select the layer to extract from for each geometry. If \code{layer} is a character it can be a name in \code{y} or a vector of layer names. If it is numeric, it must be integer values between \code{1} and \code{nlyr(x)}}
+\item{as.list}{logical. If \code{TRUE}, the value returned is a list with the raw cell values (e.g. returning the index intead of the label for categorical variables)}
+\item{as.spatvector}{logical. Should the extracted values be \code{cbind}-ed to the SpatVector \code{y}?}
 }
 
-\value{data.frame, list, matrix, or SpatVector}
+\value{data.frame or SpatVector}
 
 \seealso{\link{values}}
 
@@ -120,18 +121,12 @@ e <- extract(z, v)
 e
 tapply(e[,2], e[,1], mean, na.rm=TRUE)
 
-ee <- extract(z, v, list=TRUE)
-rapply(ee, mean)
-
 x <- c(z, z*2, z/3)
 names(x) <- letters[1:3]
 
 e <- extract(x, v)
 de <- data.frame(e)
 aggregate(de[,2:4], de[,1,drop=FALSE], mean)
-
-ee <- extract(x, v, list=TRUE)
-matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
 }
 
 \keyword{methods}

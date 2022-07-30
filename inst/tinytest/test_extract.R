@@ -53,7 +53,7 @@ x1 <- rbind(c(-145,-10), c(-145,-5), c(-140, -5), c(-140,-10))
 x2 <- rbind(c(-10,0), c(140,60), c(160,0), c(140,-55))
 z <- rbind(cbind(object=1, part=1, x1, hole=0), cbind(object=3, part=1, x2, hole=0))
 colnames(z)[3:4] <- c('x', 'y')
-p <- vect(z, "polygons")
+p <- vect(z, "polygons", crs=crs(r))
 rr <- c(r, r*2)
 test <- terra::extract(r, p, fun = mean)
 expect_equal(as.vector(as.matrix(test)), c(1,2,51.5,53))
@@ -169,3 +169,19 @@ expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilin
 expect_equal(terra::extract(r, data.frame(X = 45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
 expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
 expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+
+
+v <- vect(system.file("ex/lux.shp", package="terra"))[1:2,]
+z <- rast(v, resolution=.1, names="test")
+values(z) <- 1:ncell(z)
+ee <- extract(z, v, as.list=TRUE)
+expect_equal(rapply(ee, mean), c(5.20,16.75))
+
+
+x <- c(z, z*2, z/3)
+names(x) <- letters[1:3]
+ee <- extract(x, v, as.list=TRUE)
+m <- matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
+expect_equal(round(as.vector(t(m)),6), c(5.200000, 10.400000,  1.733333, 16.750000, 33.500000,  5.583333))
+
+
