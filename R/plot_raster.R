@@ -545,21 +545,29 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"),
-	function(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend=TRUE, ...)  {
+	function(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend, ...)  {
 
+		
 		if (has.RGB(x)) {
 			i <- x@ptr$getRGB() + 1
 			if (missing(main)) main = ""
 			if (is.null(mar)) mar = 0
-			plotRGB(x, i[1], i[2], i[3], maxcell=maxcell, mar=mar, main=main, ...)
+			if (missing(legend)) {
+				legend <- FALSE
+			} else {
+				legend <- legend
+			}
+			plotRGB(x, i[1], i[2], i[3], maxcell=maxcell, mar=mar, main=main, legend=legend, ...)
 			return(invisible())
 		}
 
 		nl <- max(1, min(nlyr(x), maxnl))
 
+		if (missing(legend)) legend <- TRUE
+		
 		if (nl==1) {
 			if (missing(main)) main = ""
-			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, ...)
+			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, legend=legend, ...)
 			return(invisible(out))
 		}
 
