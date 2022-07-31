@@ -96,7 +96,7 @@ wmax <- function(p, na.rm=FALSE) {
 
 extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NULL) {
 
-#	value <- match.arg(tolower(value), c("data.frame", "list", "matrix"))
+	#value <- match.arg(tolower(value), c("data.frame", "list", "matrix"))
 	method <- match.arg(tolower(method), c("simple", "bilinear"))
 
 	nl <- nlyr(x)
@@ -195,10 +195,10 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	if (weights && exact) {
 		exact = FALSE
 	}
+	wfun <- FALSE
 	if (hasfun) {
 		cells <- FALSE
 		xy <- FALSE
-		wfun <- FALSE
 		if (weights || exact) {
 			wfun <- TRUE
 			fun <- .makeTextFun(fun)
