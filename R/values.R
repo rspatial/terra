@@ -130,11 +130,19 @@ setMethod("setValues", signature("SpatRaster"),
 		y <- rast(x, keeptime=keeptime, keepunits=keepunits, props=props)
 
 		if (is.matrix(values)) {
-			if (nrow(values) == nrow(x)) {
-				values <- as.vector(t(values))
-			} else {
-				values <- as.vector(values)
-			}
+			nl <- nlyr(x)
+			d <- dim(values)
+			if (!all(d == c(ncell(x), nl))) {
+				if ((nl==1) && (all(d ==dim(x)[1:2]))) {
+					values <- as.vector(t(values))
+				} 
+				if ((d[2] == nl) && (d[1] < ncell(x))) {
+					values <- apply(values, 2, function(i) rep_len(i, ncell(x)))
+				} else {
+					error("setValues","dimensions of the matrix do not match the SpatRaster")				
+				}
+			} 
+			values <- as.vector(values)
 		} else if (is.array(values)) {
 			stopifnot(length(dim(values)) == 3)
 			values <- as.vector(aperm(values, c(2,1,3)))
