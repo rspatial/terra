@@ -123,12 +123,12 @@ setMethod("focalValues", signature("SpatRaster"),
 	}
 )
 
-mtrans <- function(m, nc) {
+mtrans <- function(mm, nc) {
 	v <- NULL
-	n <- ncol(m) / nc
+	n <- ncol(mm) / nc
 	for (i in 1:n) {
 		j <- 1:nc + (i-1) * nc
-		v <- c(v, as.vector(t(values[, j])))
+		v <- c(v, as.vector(t(mm[, j])))
 	}
 	v
 }
