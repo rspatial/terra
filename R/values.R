@@ -123,11 +123,12 @@ setMethod("focalValues", signature("SpatRaster"),
 	}
 )
 
+
 mtrans <- function(mm, nc) {
 	v <- NULL
 	n <- ncol(mm) / nc
 	for (i in 1:n) {
-		j <- 1:nc + (i-1) * nc
+		j <- 1:nc + (i-1)*nc
 		v <- c(v, as.vector(t(mm[, j])))
 	}
 	v
@@ -144,20 +145,19 @@ setMethod("setValues", signature("SpatRaster"),
 			d <- dim(values)
 			if (!all(d == c(ncell(x), nl))) {
 				ncx <- ncol(x)
-				if ((d[1] == nrow(x)) && ((d[2] %% nl*ncx) == 0) && (d[2] <= nl*ncx) ) {
-					if (ncx > d[2]) {
+				if ((d[1] == nrow(x)) && ((d[2] %% nl*ncx) == 0)) {
+					if (ncx < d[2]) {
 						values <- mtrans(values, ncx)
 					} else {
 						values <- as.vector(t(values))
 					}
 				} else if ((d[2] == nl) && (d[1] < ncell(x))) {
 					if (d[1] > 1) warn("setValues", "values were recycled")
-					values <- apply(values, 2, function(i) rep_len(i, ncell(x)))
+					values <- as.vector(apply(values, 2, function(i) rep_len(i, ncell(x))))
 				} else {
 					error("setValues","dimensions of the matrix do not match the SpatRaster")				
 				}
 			} 
-			values <- as.vector(values)
 		} else if (is.array(values)) {
 			stopifnot(length(dim(values)) == 3)
 			values <- as.vector(aperm(values, c(2,1,3)))
