@@ -171,17 +171,17 @@ expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "biline
 expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
 
 
-v <- vect(system.file("ex/lux.shp", package="terra"))[1:2,]
-z <- rast(v, resolution=.1, names="test")
-values(z) <- 1:ncell(z)
-ee <- extract(z, v, as.list=TRUE)
-expect_equal(rapply(ee, mean), c(5.20,16.75))
+# v <- vect(system.file("ex/lux.shp", package="terra"))[1:2,]
+# z <- rast(v, resolution=.1, names="test")
+# values(z) <- 1:ncell(z)
+# ee <- extract(z, v, as.list=TRUE)
+# expect_equal(rapply(ee, mean), c(5.20,16.75))
 
 
-x <- c(z, z*2, z/3)
-names(x) <- letters[1:3]
-ee <- extract(x, v, as.list=TRUE)
-m <- matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
-expect_equal(round(as.vector(t(m)),6), c(5.200000, 10.400000,  1.733333, 16.750000, 33.500000,  5.583333))
+# x <- c(z, z*2, z/3)
+# names(x) <- letters[1:3]
+# ee <- extract(x, v, as.list=TRUE)
+# m <- matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
+# expect_equal(round(as.vector(t(m)),6), c(5.200000, 10.400000,  1.733333, 16.750000, 33.500000,  5.583333))
 
 

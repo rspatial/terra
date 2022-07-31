@@ -174,7 +174,7 @@ function(x, y, ...) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
-function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, as.list=FALSE, as.spatvector=FALSE, ...) {
+function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, ...) {
 
 #	value <- match.arg(tolower(value), c("data.frame", "matrix", "spatvector"))
 #	if (value == "matrix") {
@@ -198,8 +198,9 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	if (hasfun) {
 		cells <- FALSE
 		xy <- FALSE
+		wfun <- FALSE
 		if (weights || exact) {
-			as.list <- TRUE
+			wfun <- TRUE
 			fun <- .makeTextFun(fun)
 			bad <- FALSE
 			if (is.character(fun)) {
@@ -243,23 +244,21 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		useLyr <- TRUE
 	}
 
-	#f <- function(i) if(length(i)==0) { NA } else { i }
-	#e <- rapply(e, f, how="replace")
 	cn <- names(x)
 	opt <- spatOptions()
 	
-	if (as.list) {
+	if (wfun) {
 		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 		x <- messages(x, "extract")
-		if (hasfun) {
-			e <- sapply(e, fun, ...)
-			e <- matrix(e, nrow=nrow(y), byrow=TRUE)
+		e <- sapply(e, fun, ...)
+		e <- matrix(e, nrow=nrow(y), byrow=TRUE)
+		if (ncol(e) == length(cn)) {
 			colnames(e) <- cn
-			if (ID) {
-				e <- data.frame(ID=1:nrow(e), e)
-			} else {
-				e <- data.frame(e)			
-			}
+		}
+		if (ID) {
+			e <- data.frame(ID=1:nrow(e), e)
+		} else {
+			e <- data.frame(e)			
 		}
 		return(e)
 	}	
@@ -344,7 +343,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 			e <- ee
 		}
 	}
-	if (as.spatvector) {
+	if (bind) {
 		if (nrow(e) == nrow(y)) {
 			e <- cbind(y, e[,-1,drop=FALSE])
 		} else {
@@ -359,10 +358,11 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 })
 
 
+
 setMethod("extract", signature(x="SpatRaster", y="sf"),
-	function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, as.spatvector=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
+	function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, ...) {
 		y <- vect(y)
-		extract(x, y, fun=fun, method=method, cells=cells, xy=xy, ID=TRUE, as.spatvector=as.spatvector, weights=weights, exact=exact, touches=touches, layer=layer, ...)
+		extract(x, y, fun=fun, method=method, cells=cells, xy=xy, ID=TRUE, weights=weights, exact=exact, touches=touches, layer=layer, bind=bind, ...)
 	}
 )
 

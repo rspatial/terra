@@ -30,13 +30,13 @@
 \description{
 Extract values from a SpatRaster for a set of locations. The locations can be a SpatVector (points, lines, polygons), a matrix with (x, y) or (longitude, latitude -- in that order!) coordinates, or a vector with cell numbers.  
 
-When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first column has the ID (record number) of the \code{SpatVector} used.
+When argument \code{y} is a \code{SpatVector} the first column has the ID (record number) of the \code{SpatVector} used (unless you set \code{ID=FALSE}).
 } 
 
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE,
     ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y),
-	layer=NULL, as.list=FALSE, as.spatvector=FALSE, ...)
+	layer=NULL, bind=FALSE, ...)
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, cells=FALSE, xy=FALSE)
 
@@ -51,7 +51,6 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 \item{x}{SpatRaster or SpatVector of polygons}
 \item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
 \item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min} and \code{max} are accepted).}
-\item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector. For example \code{na.rm=TRUE}. Or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (such as the \code{method} and \code{cells} arguments)}
 \item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}
 \item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{xyFromCell}}}
@@ -60,11 +59,11 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
 \item{layer}{character or numeric to select the layer to extract from for each geometry. If \code{layer} is a character it can be a name in \code{y} or a vector of layer names. If it is numeric, it must be integer values between \code{1} and \code{nlyr(x)}}
-\item{as.list}{logical. If \code{TRUE}, the value returned is a list with the raw cell values (e.g. returning the index intead of the label for categorical variables)}
-\item{as.spatvector}{logical. Should the extracted values be \code{cbind}-ed to the SpatVector \code{y}?}
+\item{bind}{logical. If \code{TRUE}, a SpatVector is returned consisting of the input SpatVector \code{y} and the \code{cbind}-ed extracted values}
+\item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector. For example \code{na.rm=TRUE}. Or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (such as the \code{method} and \code{cells} arguments)}
 }
 
-\value{data.frame, list or SpatVector}
+\value{data.frame or SpatVector}
 
 \seealso{\link{values}}
 
