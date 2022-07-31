@@ -135,8 +135,7 @@ setMethod("setValues", signature("SpatRaster"),
 			if (!all(d == c(ncell(x), nl))) {
 				if ((nl==1) && (all(d ==dim(x)[1:2]))) {
 					values <- as.vector(t(values))
-				} 
-				if ((d[2] == nl) && (d[1] < ncell(x))) {
+				} else if ((d[2] == nl) && (d[1] < ncell(x))) {
 					values <- apply(values, 2, function(i) rep_len(i, ncell(x)))
 				} else {
 					error("setValues","dimensions of the matrix do not match the SpatRaster")				
