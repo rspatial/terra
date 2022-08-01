@@ -173,7 +173,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 		}
 	} else { # regular
 		if (lonlat) {
-			ratio <- 0.5 * ncol(r)/nrow(r)
+			ratio <- ncol(r)/nrow(r)
 			n <- sqrt(size)
 			nx <- max(1, (round(n*ratio)))
 			ny <- max(1, (round(n/ratio)))
