@@ -145,7 +145,8 @@ setMethod("setValues", signature("SpatRaster"),
 			d <- dim(values)
 			if (!all(d == c(ncell(x), nl))) {
 				ncx <- ncol(x)
-				if ((d[1] == nrow(x)) && ((d[2] %% nl*ncx) == 0)) {
+				if ((d[1] == nrow(x)) && ((d[2] %% nl*ncx) == 0)) { 
+					# raster-shaped matrix 
 					if (ncx < d[2]) {
 						values <- mtrans(values, ncx)
 					} else {
