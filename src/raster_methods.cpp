@@ -2127,6 +2127,10 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 		out.setError("invalid extent");
 		return out;
 	}
+	if ((e.xmin == e.xmax) && (e.ymin == e.ymax)) {
+		out.setError("cannot crop a SpatRaster with an empty extent");
+		return out;
+	}
 	e = e.intersect(out.getExtent());
 	if ( !e.valid() ) {
 		out.setError("extents do not overlap");
@@ -2189,6 +2193,11 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
 SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, bool touches, SpatOptions &opt) {
 	SpatOptions copt(opt);
+	if (v.nrow() == 0) {
+		SpatRaster out;
+		out.setError("cannot crop a SpatRaster with an empty SpatVector");
+		return out;
+	}
 	SpatRaster out = crop(v.extent, snap, copt);
 	return out.mask(v, false, NAN, touches, opt);
 }
