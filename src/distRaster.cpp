@@ -2311,7 +2311,7 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 		if (!hasValues()) {
 			out.resize(1);
 			for (size_t i=0; i<ar.size(); i++) {
-				out[0] += ar[i] * (double) nc;
+				out[0] += ar[i] * nc;
 			}
 		} else {
 			for (size_t i=0; i<bs.n; i++) {
@@ -2323,7 +2323,7 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 					for (size_t j=0; j<bs.nrows[i]; j++) {
 						size_t row = bs.row[i] + j;
 						size_t offset = lyroff + j * nc;
-						size_t n = offset + nc - 1;
+						size_t n = offset + nc;
 						for (size_t k=offset; k<n; k++) {
 							if (!std::isnan(v[k])) out[lyr] += ar[row];
 						}
