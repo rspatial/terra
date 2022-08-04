@@ -2272,38 +2272,41 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 }
 
 
-std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool transform, bool by_value, SpatOptions &opt) {
 
 	if (source[0].srs.wkt == "") {
 		setError("empty CRS");
-		return {NAN};
+		return {{NAN}};
 	}
 
 	std::vector<std::string> f {"m", "km", "ha"};
 	if (std::find(f.begin(), f.end(), unit) == f.end()) {
 		setError("invalid unit");
-		return {NAN};
+		return {{NAN}};
 	}
-
-	std::vector<double> out(nlyr(), 0);
 
 	if (transform) { //avoid very large polygon objects
 		opt.set_memfrac(std::max(0.1, opt.get_memfrac()/2));
 	}
 	BlockSize bs = getBlockSize(opt);
 	if (!readStart()) {
-		std::vector<double> err(nlyr(), -1);
-		return(err);
+		return {{NAN}};
+	}
+	size_t nc = ncol();
+	size_t nl = nlyr();
+	std::vector<double> out(nl, 0);
+	std::vector<std::map<double, double>> m;
+	if (by_value) {
+		m.resize(nl);
 	}
 
 	if (is_lonlat()) {
 		SpatRaster x = geometry(1);
 		SpatExtent extent = x.getExtent();
-		if ((x.ncol() == 1) && ((extent.xmax - extent.xmin) > 180)) {
+		if ((nc == 1) && ((extent.xmax - extent.xmin) > 180)) {
 			std::vector<unsigned> fact= {1,2};
 			x = x.disaggregate(fact, opt);
 		}
-		size_t nc = x.ncol();
 		SpatExtent e = {extent.xmin, extent.xmin+x.xres(), extent.ymin, extent.ymax};
 		SpatRaster onecol = x.crop(e, "near", opt);
 		SpatVector p = onecol.as_polygons(false, false, false, false, false, opt);
@@ -2318,14 +2321,31 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 				std::vector<double> v;
 				readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
 				size_t blockoff = bs.nrows[i] * nc;
-				for (size_t lyr=0; lyr<nlyr(); lyr++) {
+				for (size_t lyr=0; lyr<nl; lyr++) {
 					size_t lyroff = lyr * blockoff;
-					for (size_t j=0; j<bs.nrows[i]; j++) {
-						size_t row = bs.row[i] + j;
-						size_t offset = lyroff + j * nc;
-						size_t n = offset + nc;
-						for (size_t k=offset; k<n; k++) {
-							if (!std::isnan(v[k])) out[lyr] += ar[row];
+					if (by_value) {
+						for (size_t j=0; j<bs.nrows[i]; j++) {
+							size_t row = bs.row[i] + j;
+							size_t offset = lyroff + j * nc;
+							size_t n = offset + nc;
+							for (size_t k=offset; k<n; k++) {
+								if (!std::isnan(v[k])) {
+									if (m[lyr].find(v[k]) == m[lyr].end()) {
+										m[lyr][v[k]] = ar[row];
+									} else {
+										m[lyr][v[k]] += ar[row];
+									}
+								}
+							}
+						}						
+					} else {
+						for (size_t j=0; j<bs.nrows[i]; j++) {
+							size_t row = bs.row[i] + j;
+							size_t offset = lyroff + j * nc;
+							size_t n = offset + nc;
+							for (size_t k=offset; k<n; k++) {
+								if (!std::isnan(v[k])) out[lyr] += ar[row];
+							}
 						}
 					}
 				}
@@ -2356,28 +2376,45 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 				SpatRaster onechunk = x.crop(e, "near", popt);
 				SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
 				p = p.project("EPSG:4326");
-				std::vector<double> par = p.area(unit, true, {});
-
+				std::vector<double> ar = p.area(unit, true, {});
 				std::vector<double> v;
 				readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
-				unsigned off = bs.nrows[i] * ncol() ;
-				for (size_t lyr=0; lyr<nlyr(); lyr++) {
-					unsigned offset = lyr * off;
-					unsigned n = offset + off;
-					for (size_t j=offset; j<n; j++) {
-						if (!std::isnan(v[j])) {
-							out[lyr] += par[j - offset];
+				size_t blockoff = bs.nrows[i] * nc;
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					size_t lyroff = lyr * blockoff;
+					if (by_value) {
+						for (size_t j=0; j<bs.nrows[i]; j++) {
+							size_t row = bs.row[i] + j;
+							size_t offset = lyroff + j * nc;
+							size_t n = offset + nc;
+							for (size_t k=offset; k<n; k++) {
+								if (!std::isnan(v[k])) {
+									if (m[lyr].find(v[k]) == m[lyr].end()) {
+										m[lyr][v[k]] = ar[row];
+									} else {
+										m[lyr][v[k]] += ar[row];
+									}
+								}
+							}
+						}						
+					} else {
+						for (size_t j=0; j<bs.nrows[i]; j++) {
+							size_t row = bs.row[i] + j;
+							size_t offset = lyroff + j * nc;
+							size_t n = offset + nc;
+							for (size_t k=offset; k<n; k++) {
+								if (!std::isnan(v[k])) out[lyr] += ar[row];
+							}
 						}
 					}
 				}
 			}
-
 		}
 	} else {
 		double adj = unit == "m" ? 1 : unit == "km" ? 1000000 : 10000;
-		double m = source[0].srs.to_meter();
-		m = std::isnan(m) ? 1 : m;
-		double ar = xres() * yres() * m * m / adj;
+		double unit = source[0].srs.to_meter();
+		unit = std::isnan(unit) ? 1 : unit;
+		double ar = xres() * yres() * unit * unit / adj;
 		if (!hasValues()) {
 			out.resize(1);
 			out[0] = ncell() * ar;
@@ -2385,22 +2422,50 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 			for (size_t i=0; i<bs.n; i++) {
 				std::vector<double> v;
 				readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
-				unsigned off = bs.nrows[i] * ncol() ;
-				for (size_t lyr=0; lyr<nlyr(); lyr++) {
-					unsigned offset = lyr * off;
-					unsigned n = offset + off;
-					for (size_t j=offset; j<n; j++) {
-						if (!std::isnan(v[j])) out[lyr]++;
+				size_t blockoff = bs.nrows[i] * nc;
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					size_t lyroff = lyr * blockoff;
+					if (by_value) {
+						for (size_t j=0; j<bs.nrows[i]; j++) {
+							size_t offset = lyroff + j * nc;
+							size_t n = offset + nc;
+							for (size_t k=offset; k<n; k++) {
+								if (!std::isnan(v[k])) {
+									if (m[lyr].find(v[k]) == m[lyr].end()) {
+										m[lyr][v[k]] = ar;
+									} else {
+										m[lyr][v[k]] += ar;
+									}
+								}
+							}
+						}						
+					} else {
+						for (size_t j=0; j<bs.nrows[i]; j++) {
+							size_t offset = lyroff + j * nc;
+							size_t n = offset + nc;
+							for (size_t k=offset; k<n; k++) {
+								if (!std::isnan(v[j])) {
+									out[lyr] += ar;
+								}
+							}
+						}
 					}
 				}
-			}
-			for (size_t lyr=0; lyr<nlyr(); lyr++) {
-				out[lyr] = out[lyr] * ar;
 			}
 		}
 	}
 	readStop();
-	return(out);
+	if (by_value) {
+		std::vector<std::vector<double>> dout(nl);
+		for (size_t i=0; i<nl; i++) {
+			for (auto& it:m[i]) {
+				dout[i].push_back(it.first);
+				dout[i].push_back(it.second);
+			}
+		}
+		return dout;
+	} 
+	return {out};
 }
 
 
