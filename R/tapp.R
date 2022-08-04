@@ -27,10 +27,10 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 				month <- formatC(month, width=2, flag = "0")
 				index <- paste0(year, month)
 			} else {
-				index <- as.character(time(x, choice))
+				index <- as.character(index)
 			}
 		}
-		time(x) <- NULL
+		#time(x) <- NULL
 	}
 
 	nl <- nlyr(x)
