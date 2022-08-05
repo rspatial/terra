@@ -335,8 +335,13 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 // and  3, 4, 5 are the new nrow, ncol, nlyr
 	if (!get_aggregate_dims(fact, message)) {
 		if (message.substr(0,3) == "all") {
-			out = *this;
-			out.addWarning(message);
+			std::string filename = opt.get_filename();
+			if (filename != "") {
+				out = writeRaster(opt);
+			} else {
+				out = *this;
+				out.addWarning(message);
+			}
 		} else {
 			out.setError(message);
 		}
@@ -2138,6 +2143,12 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	}
 
 	out.setExtent(e, true, snap);
+	
+	// #740
+	e = getExtent();
+	e.intersect(out.getExtent());
+	out.setExtent(e, true, "near");
+	
 	if (!hasValues() ) {
 		if (opt.get_filename() != "") {
 			out.addWarning("ignoring filename argument because there are no cell values");
