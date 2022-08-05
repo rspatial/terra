@@ -1,7 +1,5 @@
 
 
-# not exported
-if (!isGeneric("blockSize")) {setGeneric("blockSize", function(x, ...) standardGeneric("blockSize"))}
 setMethod("blockSize", signature(x="SpatRaster"),
 	function(x, n) {
 		opt <- spatOptions("", FALSE, ncopies=n)
