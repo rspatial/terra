@@ -231,7 +231,9 @@ class SpatRaster {
 		size_t nrow();
 		SpatExtent getExtent();
 		void setExtent(SpatExtent e);
-		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
+//		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
+		void setExtent(SpatExtent ext, bool keepRes, bool no_expand, std::string snap);
+
 		SpatVector dense_extent(bool inside, bool geobounds);
 
 		//std::vector<std::string> getCRS();

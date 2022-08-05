@@ -470,7 +470,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	if (align) {
 		SpatExtent e = out.getExtent();
 		e = x.align(e, "out");
-		out.setExtent(e, false);
+		out.setExtent(e, false, true, "");
 		std::vector<double> res = x.resolution();
 		out = out.setResolution(res[0], res[1]);
 	}
@@ -727,16 +727,16 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	SpatExtent en(xmin, xmax, ymin, ymax);
 	out = out.setResolution(gt[1], -gt[5]);
 
-	out.setExtent(en, false, "out");
+	out.setExtent(en, false, true, "out");
 	SpatExtent e = out.getExtent();
 
 	if (useaoi == 1) { // use extent
 		en = aoi.getExtent();
 		if (snap) {
 			en = out.align(en, "near");
-			out.setExtent(en, false, "near");
+			out.setExtent(en, false, true, "near");
 		} else {
-			out.setExtent(en, false, "");
+			out.setExtent(en, false, true, "");
 		}
 	} else if (useaoi == 2){  // extent and resolution
 		out = aoi.geometry(0);

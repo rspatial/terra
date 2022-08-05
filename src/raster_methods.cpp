@@ -1064,7 +1064,7 @@ SpatRaster SpatRaster::transpose(SpatOptions &opt) {
 	enew.xmax = eold.ymax;
 	enew.ymin = eold.xmin;
 	enew.ymax = eold.xmax;
-	out.setExtent(enew, false, "");
+	out.setExtent(enew, false, true, "");
 	out.source[0].ncol = nrow();
 	out.source[0].nrow = ncol();
 	if (!hasValues()) return out;
@@ -1880,7 +1880,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 	SpatExtent outext = out.getExtent();
 	outext.xmin = outext.xmin + addx;
 	outext.xmax = outext.xmax + addx;
-	out.setExtent(outext, true);
+	out.setExtent(outext, true, true, "");
 
 	if (!hasValues()) return out;
 
@@ -2077,7 +2077,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, SpatOptions &opt) 
 	SpatExtent extent = getExtent();
 	e.unite(extent);
 
-	out.setExtent(e, true);
+	out.setExtent(e, true, true, "");
 	if (!hasValues() ) {
 		if (opt.get_filename() != "") {
 			out.addWarning("ignoring filename argument because there are no cell values");
@@ -2142,13 +2142,8 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 		return out;
 	}
 
-	out.setExtent(e, true, snap);
-	
-	// #740
-	e = getExtent();
-	e.intersect(out.getExtent());
-	out.setExtent(e, true, "near");
-	
+	out.setExtent(e, true, false, snap);
+
 	if (!hasValues() ) {
 		if (opt.get_filename() != "") {
 			out.addWarning("ignoring filename argument because there are no cell values");
@@ -2312,7 +2307,7 @@ SpatRaster SpatRaster::shift(double x, double y, SpatOptions &opt) {
 	outext.xmax = outext.xmax + x;
 	outext.ymin = outext.ymin + y;
 	outext.ymax = outext.ymax + y;
-	out.setExtent(outext, true);
+	out.setExtent(outext, true, true, "");
 	return out;
 }
 
@@ -2442,7 +2437,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		nl = std::max(nl, ds[i].nlyr());
 	}
 	out = ds[0].geometry(nl, false);
-	out.setExtent(e, true, "");
+	out.setExtent(e, true, true, "");
 
 	for (int i=(n-1); i>=0; i--) {
 		if (!hvals[i]) {
@@ -2561,7 +2556,7 @@ SpatRaster SpatRasterCollection::morph(SpatRaster &x, SpatOptions &opt) {
 	}
 
 	out.setSRS(x.getSRS("wkt"));
-	out.setExtent(e, false, "near");
+	out.setExtent(e, false, true, "near");
 
 	lrtrim(filename);
 	if (filename != "") {

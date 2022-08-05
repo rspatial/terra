@@ -911,7 +911,7 @@ bool SpatRaster::removeWindow() {
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].hasWindow) {
 			SpatExtent e = source[0].window.full_extent;
-			setExtent(e, true, "");
+			setExtent(e, true, true, "");
 			for (size_t i=0; i<source.size(); i++) {
 				source[i].hasWindow = false;
 				source[i].nrow = source[0].window.full_nrow;
@@ -994,7 +994,7 @@ bool SpatRaster::setWindow(SpatExtent x) {
 		source[i].window.full_ncol   = source[i].ncol;
 		source[i].hasWindow     = true;
 	}
-	setExtent(x, true, "");
+	setExtent(x, true, true, "");
 
 	return true;
 }
