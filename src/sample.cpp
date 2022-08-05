@@ -571,7 +571,10 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 
 	if (lonlat) {
 		double halfy = ymin + (ymax - ymin)/2;
-		double dx = distance_lonlat(xmin, halfy, xmax, halfy);
+		
+		// beware that -180 is the same as 180; therefore:
+		double dx = distance_lonlat(xmin, halfy, xmin + 1, halfy);
+		dx *= (xmax - xmin);	
 		double dy = distance_lonlat(0, ymin, 0, ymax);
 		double ratio = dx/dy;
 		double ny = std::max(1.0, sqrt(size / ratio));

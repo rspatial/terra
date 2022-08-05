@@ -291,7 +291,7 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 1
 
-SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions &opt) {
+SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<std::string> options, SpatOptions &opt) {
 	SpatRaster out;
 	out.setError( "GDAL version >= 2.1 required for vrt");
 	return out;
