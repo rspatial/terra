@@ -36,11 +36,7 @@ setMethod("vrt", signature(x="character"),
 		r <- rast()
 		if (is.null(options)) {
 			options=""[0]
-		} else {
-			if (any(substr(options, 1, 1) != "-")) {
-				warn("vrt", "options that do not start with '-' are ignored")
-			}
-		}
+		} 
 		r@ptr <- r@ptr$make_vrt(x, options, opt)
 		messages(r, "vrt")
 	}
