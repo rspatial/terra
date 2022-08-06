@@ -39,6 +39,7 @@ void add_quotes(std::vector<std::string> &s) {
 }
 */
 
+
 std::string quoted_csv(const std::vector<std::string> &s) {
 	std::string ss;
 	if (s.size() == 0) {
@@ -450,10 +451,29 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		if (canProcessInMemory(opt)) {
 			poDriver = GetGDALDriverManager()->GetDriverByName("MEM");
 			poDS = poDriver->Create("", ncol(), nrow(), nlyr(), gdt, papszOptions);
-		} else {
-			std::string f = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+		} else {	
+			//std::string driver = opt.get_filetype();
+			//std::string f = tempFile(opt.get_tempdir(), opt.pid, "");
+			//getGDALdriver(f, driver);
+			//if (driver == "") {
+			//	setError("invalid default temp filetype");
+			//	return(false);
+			//}
+			
+			std::string f, driver;
+			if (!getTempFile(f, driver, opt)) {
+				return false;
+			}
+			//std::string f = tempFile(opt.get_tempdir(), opt.pid, ".tif");
 			copy_filename = f;
-			poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+
+			GDALDriver *poDriver;
+			//poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+			poDriver = GetGDALDriverManager()->GetDriverByName(driver.c_str());
+			if(poDriver == NULL) {
+				setError("invalid driver");
+				return false;
+			}
 			poDS = poDriver->Create(f.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
 		}
 	} else {

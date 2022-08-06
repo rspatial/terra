@@ -233,8 +233,12 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	std::string filename = fnames[0];
 	if (filename == "") {
 		if (!canProcessInMemory(opt)) {
-			std::string extension = ".tif";
-			filename = tempFile(opt.get_tempdir(), opt.pid, extension);
+			//std::string extension = ".tif";
+			//filename = tempFile(opt.get_tempdir(), opt.pid, extension);
+			std::string driver;
+			if (!getTempFile(filename, driver, opt)) {
+				return false;
+			}
 			opt.set_filenames({filename});
 			//opt.gdal_options = {"COMPRESS=NONE"};
 		}

@@ -25,7 +25,6 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 		if (driver == "RST") {
 			filename = noext(filename) + ".rst";
 		}
-
 		return;
 	}
 
@@ -57,6 +56,33 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 	}
 }
 
+bool SpatRaster::getTempFile(std::string &filename, std::string &driver, SpatOptions& opt) {
+
+	driver = opt.get_def_filetype();
+	if ((driver == "") || (driver == "GTiff")) {
+		driver = "GTiff";
+		filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+		return true;
+	}
+	filename = tempFile(opt.get_tempdir(), opt.pid, "");
+	std::unordered_map<std::string, std::string>
+	exts = {
+		{"GTiff", ".tif"},
+		{"NetCDF", ".nc"},
+		{"GPKG", ".gpkg"},
+		{"HFA", ".img"},
+		{"RRASTER", ".grd"},
+		{"SAGA", ".sgrd"},
+		{"RST", ".rst"},
+		{"ENVI", ".envi"},
+		{"AAIGrid", ".asc"},
+	};
+    auto i = exts.find(driver);
+    if (i != exts.end()) {
+		filename += i->second;
+	}
+	return true;
+}
 
 
 /*
