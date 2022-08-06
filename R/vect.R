@@ -125,17 +125,17 @@ setMethod("vect", signature(x="XY"), #sfg
 	z <- tolower(x[1:2])
 	x <- substr(z, 1, 3)
 	y <- substr(x, 1, 1)
-	if ((y[1] == "x") & (y[2] == "y")) return(FALSE)
-	if ((x[1] == "eas") & (x[2] == "nor")) return(FALSE)
-	if ((x[1] == "lon") & (x[2] == "lat")) return(TRUE)
-	if (grepl("lon", z[1]) & grepl("lat", z[2])) return(TRUE)
+	if ((y[1] == "x") && (y[2] == "y")) return(FALSE)
+	if ((x[1] == "eas") && (x[2] == "nor")) return(FALSE)
+	if ((x[1] == "lon") && (x[2] == "lat")) return(TRUE)
+	if (grepl("lon", z[1]) && grepl("lat", z[2])) return(TRUE)
 
-	if ((x[1] == "lat") | (x[2] == "lon")) {
-		error("vect", "longitude/latitude in the wrong order")
-	} else if ((y[1] == "y") | (y[2] == "x")) {
-		error("vect", "x/y in the wrong order")
-	} else if ((x[1] == "nor") | (x[2] == "eas")) {
-		error("vect", "easting/northing in the wrong order")
+	if ((x[1] == "lat") && (x[2] == "lon")) {
+		stop("vect", "longitude/latitude in the wrong order")
+	} else if ((y[1] == "y") && (y[2] == "x")) {
+		stop("vect", "x/y in the wrong order")
+	} else if ((x[1] == "nor") && (x[2] == "eas")) {
+		stop("vect", "easting/northing in the wrong order")
 	} else if (warn) {
 		warn("coordinate names not recognized. Expecting lon/lat, x/y, or easting/northing")
 	}
