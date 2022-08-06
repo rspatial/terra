@@ -1,7 +1,7 @@
 
 
 setMethod("blockSize", signature(x="SpatRaster"),
-	function(x, n) {
+	function(x, n=4) {
 		opt <- spatOptions("", FALSE, ncopies=n)
 		b <- x@ptr$getBlockSizeR(n, opt$memfrac)
 		b$row <- b$row + 1
