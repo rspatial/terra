@@ -6,10 +6,10 @@
 \alias{vrt,character-method}
 
 
-\title{Virtual Raster Tiles}
+\title{Virtual Raster Dataset}
 
 \description{ 
-Create a Virtual Raster Tiles (VRT) dataset from a collection of file-based raster datasets. 
+Create a Virtual Raster Dataset (VRT) from a collection of file-based raster datasets (tiles). 
 }
 
 \usage{
