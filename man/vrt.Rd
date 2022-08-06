@@ -39,11 +39,11 @@ filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
 
-vrtfile <- paste0(tempfile(), ".vrt")
-# output in lower resolution
-v <- vrt(ff, vrtfile, options = c("-tr", 5, 5))
-head(readLines(vrtfile))
-v
+## output in lower resolution
+#vrtfile <- paste0(tempfile(), ".vrt")
+#v <- vrt(ff, vrtfile, options = c("-tr", 5, 5))
+#head(readLines(vrtfile))
+#v
 }
 
 

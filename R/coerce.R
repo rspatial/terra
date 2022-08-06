@@ -574,7 +574,9 @@ setAs("Spatial", "SpatVector",
 		} else {
 			error("coerce", "cannot coerce this object to a SpatVector")
 		}
-		crs <- attr(from@proj4string, "comment")
+		#the below can change the proj-string when going back to sp
+		#crs <- attr(from@proj4string, "comment")
+		crs <- NULL
 		if (is.null(crs)) crs <- from@proj4string@projargs
 		if (methods::.hasSlot(from, "data")) {
 			vect(g, vtype, from@data, crs=crs)
