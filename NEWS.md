@@ -1,5 +1,20 @@
-# version 1.6-4
+# version 1.6-7
 
+## new
+
+- method `blocks` to guide reading raster data in chunks. [#748](https://github.com/rspatial/terra/issues/748) by John Baums
+
+
+## enhancements 
+
+- A warning is given when writing raster values that are outside the limits of the requested datatype [#752](
+https://github.com/rspatial/terra/issues/752) by Jim Shady
+
+## bug fixes 
+
+- values of `focal` where not correct if the input SpatRaster had multiple layers and a "custom" function. [#727](https://github.com/rspatial/terra/issues/727) by Jean-Luc Dupouey. 
+- `plot<SpatRaster>` did not honor argument `legend=FALSE`. [#738](https://github.com/rspatial/terra/issues/738) by Grzegorz Sapijaszko
+- `expanse` failed when processing in chunks [#741](https://github.com/rspatial/terra/issues/741) by Gareth Davies 
 
 
 # version 1.6-3

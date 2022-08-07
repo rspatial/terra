@@ -151,7 +151,7 @@
 	for (i in 1:n) {
 		y = x[i]
 		readStart(y)
-		b <- blockSize(y, 4)
+		b <- blocks(y, 4)
 		if (length(ncvars[[1]]$dim) == 3) {
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)

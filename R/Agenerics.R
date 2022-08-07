@@ -1,6 +1,6 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
-if (!isGeneric("blockSize")) {setGeneric("blockSize", function(x, ...) standardGeneric("blockSize"))}
+if (!isGeneric("blocks")) {setGeneric("blocks", function(x, ...) standardGeneric("blocks"))}
 
 if (!isGeneric("str")) { setGeneric("str", function(object, ...) standardGeneric("str"))}
 	

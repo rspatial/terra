@@ -9,7 +9,7 @@
 \alias{writeStop}
 \alias{writeValues}
 \alias{fileBlocksize}
-\alias{blockSize}
+\alias{blocks}
 \alias{readStart,SpatRaster-method}
 \alias{readStop,SpatRaster-method}
 \alias{readStart,SpatRasterDataset-method}
@@ -18,7 +18,7 @@
 \alias{writeStart,SpatRaster,character-method}
 \alias{writeStop,SpatRaster-method}
 \alias{writeValues,SpatRaster,vector-method}
-\alias{blockSize,SpatRaster-method}
+\alias{blocks,SpatRaster-method}
 
 \title{Read from, or write to, file}
 
@@ -27,7 +27,7 @@ Methods to read from or write chunks of values to or from a file. These are low 
 
 To write chunks, begin by opening a file with \code{writeStart}, then write values to it in chunks using the list that is returned by \code{writeStart}. When writing is done close the file with \code{writeStop}. 
 
-\code{blockSize} also retunrs chunk size information. For example for only reading raster data. 
+\code{blocks} also retunrs chunk size information. For example for only reading raster data. 
 }
 
 \usage{
@@ -43,7 +43,7 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
 
 \S4method{writeValues}{SpatRaster,vector}(x, v, start, nrows)
 
-\S4method{blockSize}{SpatRaster}(x, n=4)
+\S4method{blocks}{SpatRaster}(x, n=4)
 
 fileBlocksize(x)
 }
