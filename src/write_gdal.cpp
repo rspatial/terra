@@ -678,6 +678,34 @@ void tmp_min_max_na(std::vector<T> &out, const std::vector<double> &v, const dou
 }
 
 
+template <typename Iterator>
+void minmaxlim(Iterator start, Iterator end, double &vmin, double &vmax, const double &lmin, const double &lmax, bool& outrange) {
+    vmin = std::numeric_limits<double>::max();
+    vmax = std::numeric_limits<double>::lowest();
+    bool none = true;
+	for (Iterator v = start; v !=end; ++v) {
+		if (!std::isnan(*v)) {
+			if (*v >= lmin && *v <= lmax) {
+				if (*v > vmax) {
+					vmax = *v;
+					none = false;
+				}
+				if (*v < vmin) {
+					vmin = *v;
+				}
+			} else {
+				outrange = true;
+			}
+		}
+    }
+    if (none) {
+        vmin = NAN;
+        vmax = NAN;
+    }
+}
+
+
+
 bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols){
 
 
@@ -688,18 +716,19 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 	std::string datatype = source[0].datatype;
 
 	if ((compute_stats) && (!gdal_stats)) {
+		bool invalid = false;
 		for (size_t i=0; i < nl; i++) {
 			size_t start = nc * i;
 			if (datatype == "INT4S") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT32_MAX);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT32_MAX, invalid);
 			} else if (datatype == "INT2S") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT16_MIN, (double)INT16_MAX);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT16_MIN, (double)INT16_MAX, invalid);
 			} else if (datatype == "INT4U") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT32_MAX);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT32_MAX, invalid);
 			} else if (datatype == "INT2U") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT16_MAX);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT16_MAX, invalid);
 			} else if (datatype == "INT1U") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, 255.0);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, 255.0, invalid);
 			} else {
 				minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
 			}
@@ -712,6 +741,9 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 					source[0].range_max[i] = std::max(source[0].range_max[i], vmax);
 				}
 			}
+		}
+		if (invalid) {
+			addWarning("detected values outside of the limits of datatype " + datatype);
 		}
 	}
 
