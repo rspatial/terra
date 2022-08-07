@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-7</span>
       </span>
     </div>
 
@@ -47,7 +47,27 @@
       <small>Source: <a href="https://github.com/rspatial/terra/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="section level2"><h2 class="page-header" data-toc-text="1.6-4" id="version-16-4">version 1.6-4<a class="anchor" aria-label="anchor" href="#version-16-4"></a></h2></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.6-7" id="version-16-7">version 1.6-7<a class="anchor" aria-label="anchor" href="#version-16-7"></a></h2>
+<div class="section level3">
+<h3 id="new-1-6-7">new<a class="anchor" aria-label="anchor" href="#new-1-6-7"></a></h3>
+<ul><li>method <code>blocks</code> to guide reading raster data in chunks. <a href="https://github.com/rspatial/terra/issues/748" class="external-link">#748</a> by John Baums</li></ul></div>
+<div class="section level3">
+<h3 id="enhancements-1-6-7">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-7"></a></h3>
+<ul><li>A warning is given when writing raster values that are outside the limits of the requested datatype <a href="https://github.com/rspatial/terra/issues/752" class="external-link">#752</a> by Jim Shady</li>
+<li>Arguments to <code>extract</code> were simplified. <a href="https://github.com/rspatial/terra/issues/736" class="external-link">#736</a> by François Rousseu</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-6-7">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-7"></a></h3>
+<ul><li>values of <code>focal</code> where not correct if the input SpatRaster had multiple layers and a “custom” function. <a href="https://github.com/rspatial/terra/issues/727" class="external-link">#727</a> by Jean-Luc Dupouey.</li>
+<li>
+<code>plot&lt;SpatRaster&gt;</code> did not honor argument <code>legend=FALSE</code>. <a href="https://github.com/rspatial/terra/issues/738" class="external-link">#738</a> by Grzegorz Sapijaszko</li>
+<li>
+<code>expanse</code> failed when processing in chunks <a href="https://github.com/rspatial/terra/issues/741" class="external-link">#741</a> by Gareth Davies</li>
+<li>
+<code>crop&lt;SpatRaster,SpatExtent&gt;</code> with snap=“out” could lead to a crash if the extent was beyond the SpatRaster. <a href="https://github.com/rspatial/terra/issues/740" class="external-link">#740</a> by Mauricio Zambrano-Bigiarini</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.6-3" id="version-16-3">version 1.6-3<small>2022-07-25</small><a class="anchor" aria-label="anchor" href="#version-16-3"></a></h2>
 <div class="section level3">
