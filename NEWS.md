@@ -4,7 +4,9 @@
 
 - `droplevels` for SpatRaster. [#757](https://github.com/rspatial/terra/issues/757) by Rodolfo Jaffe.
 
+## bug fixes 
 
+- all.equal bug [#756](https://github.com/rspatial/terra/pull/756) fixed by John Baums
 
 # version 1.6-7
 
