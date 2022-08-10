@@ -1,4 +1,11 @@
 
+setMethod("droplevels", signature(x="SpatRaster"),
+	function(x) {
+		x@ptr <- x@ptr$droplevels()
+		messages(x)
+	}
+)
+
 
 setMethod("is.factor", signature(x="SpatRaster"),
 	function(x) {

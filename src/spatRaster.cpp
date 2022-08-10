@@ -1159,6 +1159,7 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<long> values, std::vector
 
 
 
+
 bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index) {
 
 	if (layer > (nlyr()-1)) {
@@ -1248,6 +1249,45 @@ int SpatRaster::getCatIndex(unsigned layer) {
 	}
     std::vector<unsigned> sl = findLyr(layer);
 	return source[sl[0]].cats[sl[1]].index;
+}
+
+SpatRaster SpatRaster::dropLevels() {
+	std::vector<bool> hascats = hasCategories();
+	if (!vany(hascats, true)) {
+		return *this;
+	}	
+	std::vector<SpatCategories> cats = getCategories();
+	SpatOptions opt;
+	SpatRaster out = *this;
+	std::vector<std::vector<double>> uvv = unique(true, true, opt);
+	for (size_t i=0; i<hascats.size(); i++) {
+		if (hascats[i]) {
+			SpatCategories lyrcats = cats[i];
+			size_t n = lyrcats.d.nrow();
+			std::vector<double> uv = uvv[i];
+			std::vector<long> uvi(uv.size());
+			for (size_t j=0; j<uv.size(); j++) {
+				uvi[j] = uv[j];
+			}
+			std::vector<long> isin;
+			isin.reserve(n);
+			for (size_t j=0; j<n; j++) {
+				for (size_t k=0; k<uvi.size(); k++) {
+					if (lyrcats.d.iv[0][j] == uvi[k]) {
+						isin.push_back(j);
+						continue;
+					}
+				}
+			}
+			lyrcats.d = lyrcats.d.subset_rows(isin);
+			if (lyrcats.d.nrow() == 0) {
+				out.removeCategories(i);				
+			} else {
+				out.setCategories(i, lyrcats.d, lyrcats.index);
+			}
+		}
+	}
+	return out;
 }
 
 

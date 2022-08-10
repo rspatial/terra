@@ -1,4 +1,14 @@
+# version 1.6-8
+
+## new
+
+- `droplevels` for SpatRaster. [#757](https://github.com/rspatial/terra/issues/757) by Rodolfo Jaffe.
+
+
+
 # version 1.6-7
+
+Released on 2022-08-07
 
 ## new
 
@@ -15,10 +25,13 @@ https://github.com/rspatial/terra/issues/752) by Jim Shady
 - values of `focal` where not correct if the input SpatRaster had multiple layers and a "custom" function. [#727](https://github.com/rspatial/terra/issues/727) by Jean-Luc Dupouey. 
 - `plot<SpatRaster>` did not honor argument `legend=FALSE`. [#738](https://github.com/rspatial/terra/issues/738) by Grzegorz Sapijaszko
 - `expanse` failed when processing in chunks [#741](https://github.com/rspatial/terra/issues/741) by Gareth Davies 
-- `crop<SpatRaster,SpatExtent>` with snap="out" could lead to a crash if the extent was beyond the SpatRaster. [#740](https://github.com/rspatial/terra/issues/740) by Mauricio Zambrano-Bigiarini
+- `crop<SpatRaster,SpatExtent>` with argument `snap="out"` could lead to a crash if the extent was beyond the SpatRaster. [#740](https://github.com/rspatial/terra/issues/740) by Mauricio Zambrano-Bigiarini
+
 
 
 # version 1.6-3
+
+Released on 2022-07-25
 
 ## bug fixes
 
@@ -433,7 +446,7 @@ Released on 2021-06-20
 
 - `na.omit<SpatVector>` to remove empty geometries and/or attribute records that have an `NA`
 - new method `src` to create a `SpatRasterCollection` (a loose collection of tiles). 
-- `merge` and `mosaic` now have methods for a `SpatRasterCollection`. To avoid the (inefficient) use of `do.call`. See issue [#210](https://github.com/rspatial/terra/issues/210) by Matthew Talluto.
+- `merge` and `mosaic` now have methods for a `SpatRasterCollection`. To avoid the (inefficient) use of `do.call`. #210 by Matthew Talluto.
 - `activeCat` and `activeCat<-` to get or set the "active" category if there are multiple categories (raster attributes)
 - `as.numeric` and `catalyze` to transfer categories to numeric cell values
 - summarize methods such as `range` and `mean` for (the attributes of) a `SpatVector`
@@ -441,28 +454,27 @@ Released on 2021-06-20
 
 ## enhancements
 
-- additional arguments (such as `na.rm`) are now used by `rasterize` with point geometries. Suggested by Jakub Nowosad  [#209](https://github.com/rspatial/terra/issues/209)
-- improved handling (and documentation) of `gstat` models by `interpolate`. See issue [#208](https://github.com/rspatial/terra/issues/208) by Jakub Nowosad.
-- new argument `cpkgs` to `predict` to list the packages that need to be exported to the cores if argument `cores` is larger than one. `?predict` now shows different approaches to parallelize `predict` (based on examples in issue [#178](
-https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
+- additional arguments (such as `na.rm`) are now used by `rasterize` with point geometries. #209 by Jakub Nowosad
+- improved handling (and documentation) of `gstat` models by `interpolate`. #208 by Jakub Nowosad
+- new argument `cpkgs` to `predict` to list the packages that need to be exported to the cores if argument `cores` is larger than one. `?predict` now shows different approaches to parallelize `predict` (based on examples in issue. #178 by by Matthew Coghill.
 - `freq` now returns labels for categorical layers
-- `adjacent` now has a `pairs` argument. Requested by Kenneth Blake Vernon in issue [#239](https://github.com/rspatial/terra/issues/239) 
+- `adjacent` now has a `pairs` argument. #239 by Kenneth Blake Vernon
 - `adjacent` now also takes a matrix to specify adjacent cells
-- `mean` and other summarize methods now take a `filename` argument and disallow non-recognized named arguments. See issue [#238](https://github.com/rspatial/terra/issues/238) by Jessica Nephin
-- The raster attribute table of ESRI-GRID integer data, or from an ESRI `vat.dbf` file is now ignored if it only has the counts of the values. See issue [#234]( https://github.com/rspatial/terra/issues/234) by Jullee
-- time attributes are no longer lost when doing raster operations. Suggested by Mauricio Zambrano-Bigiarini in [#246]( https://github.com/rspatial/terra/issues/246)
+- `mean` and other summarize methods now take a `filename` argument and disallow non-recognized named arguments. #238 by Jessica Nephin
+- The raster attribute table of ESRI-GRID integer data, or from an ESRI `vat.dbf` file is now ignored if it only has the counts of the values. #234 by Jullee
+- time attributes are no longer lost when doing raster operations. #246 by Mauricio Zambrano-Bigiarini
 - resample (and project) no longer ignore `gdal=""` write options and use BIGTIFF if necessary (suggested by Ani Ghosh)
 - new argument `layer` in the `extract-SpatRaster,SpatVector` method to extract values for a single layers specified for each geometry (see this [question](https://gis.stackexchange.com/a/401591/8993)).
 
 ## bug fixes 
 
-- better handling of paths with non-ASCII characters (e.g., Chinese) for GeoTiff but still fails for NetCDF (see issue [#233](https://github.com/rspatial/terra/issues/223) by Dongdong Kong)
+- better handling of paths with non-ASCII characters (e.g., Chinese) for GeoTiff but still fails for NetCDF. #233 by Dongdong Kong
 - `extract` with points and `cells=TRUE` or `xy=TRUE` gave garbled output
-- `as.character<SpatRaster>` (called by `wrap`) did not capture the layer names. Reported by Pascal Title [#213](https://github.com/rspatial/terra/issues/213)
+- `as.character<SpatRaster>` (called by `wrap`) did not capture the layer names. #213 by Pascal Title
 - `focal` mirrored the weight matrix, thus affecting the results when using an asymmetrical weight matrix. Reported by Sebastiano Trevisani
-- `terra::terraOptions` now works without attaching the package (issue [#229](https://github.com/rspatial/terra/issues/229) reported by Karl Dunkle Werner)
-- `app` with `ncores > 0` and a function that returns multiple layers now works (issue [#240](https://github.com/rspatial/terra/issues/240) reported by BastienFR.
-- `autocor` (local) can now handle `NA` values. Reported by Jakub Nowosad [#245](https://github.com/rspatial/terra/issues/245).
+- `terra::terraOptions` now works without attaching the package. #229 by Karl Dunkle Werner
+- `app` with `ncores > 0` and a function that returns multiple layers now works. #240 by BastienFR.
+- `autocor` (local) can now handle `NA` values. #245 by Jakub Nowosad .
 - `mask` with a SpatVector and a large (out of memory) multi-layer SpatRaster only worked for the first layer. Reported by Monika Tomaszewska.
 
 

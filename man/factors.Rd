@@ -6,6 +6,8 @@
 \alias{is.factor,SpatRaster-method}
 \alias{as.factor}
 \alias{as.factor,SpatRaster-method}
+\alias{droplevels}
+\alias{droplevels,SpatRaster-method}
 \alias{levels}
 \alias{levels,SpatRaster-method}
 \alias{levels<-}
@@ -29,6 +31,8 @@ If there are multiple columns with categories, you can set the "active" category
 \code{cats} returns the entire data.frame, whereas \code{levels} only return two columns: the index and the active category.
 
 To set categories for the first layers you can provide \code{levels<-} with a data.frame or a list with a data.frame. To set categories for multiple layers you can provide \code{levels<-} with a list with one element for each layer. Use \code{categories} to set the categories for a specific layer or specific layers.
+
+\code{droplevels} removes categories that are not used (declared but not present as values in the raster).
 }
 
 \usage{
@@ -43,6 +47,8 @@ To set categories for the first layers you can provide \code{levels<-} with a da
 \S4method{is.factor}{SpatRaster}(x)
 
 \S4method{as.factor}{SpatRaster}(x)
+
+\S4method{droplevels}{SpatRaster}(x)
 }
 
 

@@ -574,6 +574,7 @@ class SpatRaster {
 		SpatRaster buffer(double d, SpatOptions &opt);
 		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions &opt);
 		SpatRaster combineCats(SpatRaster x, SpatOptions &opt);
+		SpatRaster dropLevels();
 
 		SpatRaster cover(SpatRaster x, std::vector<double> value, SpatOptions &opt);
 
