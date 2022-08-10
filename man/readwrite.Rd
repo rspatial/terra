@@ -25,9 +25,9 @@
 \description{
 Methods to read from or write chunks of values to or from a file. These are low level methods for programmers. Use writeRaster if you want to save an entire SpatRaster to file in one step. It is much easier to use. 
 
-To write chunks, begin by opening a file with \code{writeStart}, then write values to it in chunks using the list that is returned by \code{writeStart}. When writing is done close the file with \code{writeStop}. 
+To write chunks, begin by opening a file with \code{writeStart}, then write values to it in chunks using the list that is returned by \code{writeStart}. When writing is done, close the file with \code{writeStop}. 
 
-\code{blocks} also retunrs chunk size information. For example for only reading raster data. 
+\code{blocks} also returns chunk size information. For example for only reading raster data. 
 }
 
 \usage{
