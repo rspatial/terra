@@ -9,8 +9,8 @@ setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"),
 		first <- all.equal.default(target, current)
 		if (isTRUE(first)) {
 			if (hasValues(target)) {
-				if (ncell(x) > maxcell) {
-					s <- round(100 * maxcell / ncell(x))
+				if (ncell(target) > maxcell) {
+					s <- round(100 * maxcell / ncell(target))
 					warn("all.equal", paste0("using a sample of ", s, "% of the cells"))
 				}
 				vt <- spatSample(target, maxcell, "regular")
