@@ -16,6 +16,66 @@ setMethod("is.related", signature(x="SpatVector", y="SpatExtent"),
 	}
 )
 
+setMethod("is.related", signature(x="SpatExtent", y="SpatVector"),
+	function(x, y, relation) {
+		x <- as.polygons(x)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+
+setMethod("is.related", signature(x="SpatVector", y="SpatRaster"),
+	function(x, y, relation) {
+		y <- as.polygons(y, ext=TRUE)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+setMethod("is.related", signature(x="SpatRaster", y="SpatVector"),
+	function(x, y, relation) {
+		x <- as.polygons(x, ext=TRUE)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+
+setMethod("is.related", signature(x="SpatExtent", y="SpatRaster"),
+	function(x, y, relation) {
+		x <- as.polygons(x)
+		y <- as.polygons(y, ext=TRUE)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+setMethod("is.related", signature(x="SpatRaster", y="SpatExtent"),
+	function(x, y, relation) {
+		x <- as.polygons(x, ext=TRUE)
+		y <- as.polygons(y)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+setMethod("is.related", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y, relation) {
+		x <- as.polygons(x, ext=TRUE)
+		y <- as.polygons(y, ext=TRUE)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+
 
 
 setMethod("relate", signature(x="SpatVector", y="SpatVector"),
@@ -38,6 +98,45 @@ setMethod("relate", signature(x="SpatVector", y="SpatExtent"),
 setMethod("relate", signature(x="SpatExtent", y="SpatVector"),
 	function(x, y, relation, ...) {
 		x <- as.polygons(x)
+		relate(x, y, relation, ...)
+	}
+)
+
+
+setMethod("relate", signature(x="SpatVector", y="SpatRaster"),
+	function(x, y, relation, ...) {
+		y <- as.polygons(y, ext=TRUE)
+		relate(x, y, relation, ...)
+	}
+)
+
+setMethod("relate", signature(x="SpatRaster", y="SpatVector"),
+	function(x, y, relation, ...) {
+		x <- as.polygons(x, ext=TRUE)
+		relate(x, y, relation, ...)
+	}
+)
+
+setMethod("relate", signature(x="SpatExtent", y="SpatRaster"),
+	function(x, y, relation, ...) {
+		x <- as.polygons(x)
+		y <- as.polygons(y, ext=TRUE)		
+		relate(x, y, relation, ...)
+	}
+)
+
+setMethod("relate", signature(x="SpatRaster", y="SpatExtent"),
+	function(x, y, relation, ...) {
+		x <- as.polygons(x, ext=TRUE)
+		y <- as.polygons(y)
+		relate(x, y, relation, ...)
+	}
+)
+
+setMethod("relate", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y, relation, ...) {
+		x <- as.polygons(x, ext=TRUE)
+		y <- as.polygons(y, ext=TRUE)
 		relate(x, y, relation, ...)
 	}
 )

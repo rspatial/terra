@@ -10,17 +10,28 @@
 \alias{relate,SpatVector,SpatExtent-method}
 \alias{relate,SpatExtent,SpatVector-method}
 \alias{relate,SpatExtent,SpatExtent-method}
+\alias{relate,SpatVector,SpatRaster-method}
+\alias{relate,SpatRaster,SpatVector-method}
+\alias{relate,SpatExtent,SpatRaster-method}
+\alias{relate,SpatRaster,SpatExtent-method}
+\alias{relate,SpatRaster,SpatRaster-method}
+
 \alias{is.related,SpatVector,SpatVector-method}
 \alias{is.related,SpatVector,SpatExtent-method}
 \alias{is.related,SpatExtent,SpatVector-method}
+\alias{is.related,SpatVector,SpatRaster-method}
+\alias{is.related,SpatRaster,SpatVector-method}
+\alias{is.related,SpatRaster,SpatRaster-method}
+\alias{is.related,SpatExtent,SpatRaster-method}
+\alias{is.related,SpatRaster,SpatExtent-method}
 
 
 \title{ 
-relate
+Spatial relationships between geometries
 }
 
 \description{
-Get a matrix indicating the presence or absence of spatial relationships between geometries.
+This method returns a boolean matrix indicating the presence or absence of a specific spatial relationships between geometries.
 }
 
 \usage{
