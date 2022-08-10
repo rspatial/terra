@@ -362,7 +362,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 setMethod("extract", signature(x="SpatRaster", y="sf"),
 	function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, ...) {
 		y <- vect(y)
-		extract(x, y, fun=fun, method=method, cells=cells, xy=xy, ID=TRUE, weights=weights, exact=exact, touches=touches, layer=layer, bind=bind, ...)
+		extract(x, y, fun=fun, method=method, cells=cells, xy=xy, ID=ID, weights=weights, exact=exact, touches=touches, layer=layer, bind=bind, ...)
 	}
 )
 
