@@ -109,6 +109,8 @@ parfun <- function(cls, d, fun, model, ...) {
 	}
 	if (nrow(d) > 0) {
 		r <- fun(model, d, ...)
+	} else {
+		return(NULL)
 	}
 
 	if (inherits(model, "gstat")) {
