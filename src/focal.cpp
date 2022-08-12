@@ -444,7 +444,7 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 	opt.ncopies += 2;
 	opt.minrows = w[0] > nr ? nr : w[0];
 
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -639,7 +639,7 @@ SpatRaster SpatRaster::focal1(std::vector<unsigned> w, std::vector<double> m, do
 		return(out);
 	}
 	opt.ncopies += 2 * ww;
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -799,7 +799,7 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 	opt.ncopies += std::max(1, (int)(nc * ww / ncell()));
 	opt.minrows = w[0] > nr ? nr : w[0];
 
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}

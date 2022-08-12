@@ -7,6 +7,8 @@
 ## bug fixes 
 
 - all.equal bug [#756](https://github.com/rspatial/terra/pull/756) fixed by John Baums
+- extract<"SpatRaster","sf"> ignored the ID argument. [#755](https://github.com/rspatial/terra/issues/755) by Dainius Masiliūnas.
+- There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file [#760](https://github.com/rspatial/terra/issues/760) by John Baums
 
 # version 1.6-7
 

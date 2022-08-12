@@ -485,7 +485,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	opt.ncopies += 4;
-	if (!out.writeStart(opt)) {
+	if (!out.writeStart(opt, filenames())) {
 		return out;
 	}
 
@@ -642,7 +642,7 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 	}
 
 	unsigned nc = out.ncol();
-  	if (!out.writeStart(opt)) { return out; }
+  	if (!out.writeStart(opt, filenames())) { return out; }
 	for (size_t i = 0; i < out.bs.n; i++) {
         unsigned firstcell = out.cellFromRowCol(out.bs.row[i], 0);
 		unsigned lastcell  = out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, nc-1);
@@ -916,11 +916,12 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
 		if (driver == "") {
-			setError("cannot guess file type from filename");
+			out.setError("cannot guess file type from filename");
 			return out;
 		}
+		
 		std::string errmsg;
-		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
+		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
 			out.setError(errmsg);
 			return out;
 		}
@@ -1032,7 +1033,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 			return out;
 		}
 		std::string errmsg;
-		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
+		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
 			out.setError(errmsg);
 			return out;
 		}

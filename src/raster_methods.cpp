@@ -424,7 +424,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		}
 	}
 
-	if (!out.writeStart(opt)) {
+	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -488,7 +488,7 @@ SpatRaster SpatRaster::weighted_mean(std::vector<double> w, bool narm, SpatOptio
 			out.setError(getError());
 			return(out);
 		}
-		if (!out.writeStart(opt)) {
+		if (!out.writeStart(opt, filenames())) {
 			readStop();
 			return out;
 		}
@@ -571,7 +571,7 @@ SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, d
 		out.setError(getError());
 		return(out);
 	}
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -644,7 +644,7 @@ SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
 	}
 
 	out.setValueType(3);
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -791,7 +791,7 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 		return(out);
 	}
 
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -835,7 +835,7 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 		out.setError(getError());
 		return(out);
 	}
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -900,7 +900,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 		out.setError(x.getError());
 		return(out);
 	}
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -980,7 +980,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, std::vector<double> mask
 		}
 	}
 
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -1072,7 +1072,7 @@ SpatRaster SpatRaster::transpose(SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -1266,7 +1266,7 @@ SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions
 		return(out);
 	}
 
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -1318,7 +1318,7 @@ SpatRaster SpatRaster::selRange(SpatRaster x, int z, int recycleby, SpatOptions 
 		return(out);
 	}
 
-	if (!out.writeStart(opt)) {
+	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -1396,7 +1396,7 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 	std::function<double(std::vector<double>&, bool)> theFun = getFun(fun);
 
 	int nl = nlyr();
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -1673,7 +1673,7 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 		return(out);
 	}
 
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -1720,7 +1720,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		return out;
 	}
 
-	if (!out.writeStart(opt)) {
+	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -1832,7 +1832,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 
 SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 	SpatRaster out = geometry();
- 	if (!out.writeStart(opt)) { return out; }
+ 	if (!out.writeStart(opt, filenames())) { return out; }
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	if (values.size() == 1) {
@@ -1888,7 +1888,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -2000,7 +2000,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 		return(out);
 	}
 
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		x.readStop();
 		return out;
@@ -2102,7 +2102,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, SpatOptions &opt) 
 		return(out);
 	}
 
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -2182,7 +2182,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	}
 
 //	opt.ncopies = 2;
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -2218,7 +2218,7 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 		return(out);
 	}
 
-	if (!out.writeStart(opt)) {
+	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -2271,7 +2271,7 @@ SpatRaster SpatRaster::reverse(SpatOptions &opt) {
 		return(out);
 	}
 
-	if (!out.writeStart(opt)) {
+	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -2358,7 +2358,7 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 	if (!any_hasvals) return out;
 
  //   out.setResolution(xres(), yres());
- 	if (!out.writeStart(opt)) { return out; }
+ 	if (!out.writeStart(opt, filenames())) { return out; }
 	out.fill(NAN);
 
 	for (size_t i=0; i<n; i++) {
@@ -2470,7 +2470,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	}
 	if (warn != "") out.addWarning(warn);
 
- 	if (!out.writeStart(opt)) { return out; }
+ 	if (!out.writeStart(opt, filenames())) { return out; }
 	SpatOptions sopt(opt);
 	sopt.progressbar = false;
 	std::vector<double> v;
@@ -2938,7 +2938,7 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 		out.setError(getError());
 		return(out);
 	}
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -3468,7 +3468,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 		return(out);
 	}
 
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -3799,7 +3799,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	if (filename != "") {
 		bool overwrite = opt.get_overwrite();
 		std::string errmsg;
-		if (!can_write(filename, overwrite, errmsg)) {
+		if (!can_write({filename}, filenames(), overwrite, errmsg)) {
 			out.setError(errmsg + " (" + filename +")");
 			return(out);
 		}
@@ -3809,7 +3809,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	}
 
 	opt.set_filenames({""});
- 	if (!out.writeStart(opt)) { return out; }
+ 	if (!out.writeStart(opt, filenames())) { return out; }
 	size_t nc = ncol();
 	size_t ncps = 1;
 	std::vector<double> above(nc, NAN);
@@ -3951,7 +3951,7 @@ SpatRaster SpatRaster::rgb2hsx(std::string type, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
- 	if (!out.writeStart(opt)) { return out; }
+ 	if (!out.writeStart(opt, filenames())) { return out; }
 
 	size_t nc=ncol();
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -4055,7 +4055,7 @@ SpatRaster SpatRaster::hsx2rgb(SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
- 	if (!out.writeStart(opt)) { return out; }
+ 	if (!out.writeStart(opt, filenames())) { return out; }
 	size_t nc=ncol();
 
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -4119,7 +4119,7 @@ SpatRaster SpatRaster::sort(bool decreasing, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}

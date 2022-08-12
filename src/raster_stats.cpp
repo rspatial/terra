@@ -187,7 +187,7 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 		out.setError(getError());
 		return(out);
 	}
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}

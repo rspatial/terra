@@ -108,7 +108,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool align_points, 
 		return(out);
 	}
 
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -176,7 +176,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, SpatOptions &opt) {
 //	bool lonlat = is_lonlat(); // m == 0
 	unsigned nc = ncol();
 
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -809,7 +809,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 		return(first);
 	}
 	opt.progressbar = false;
- 	if (!first.writeStart(opt)) { return first; }
+ 	if (!first.writeStart(opt, filenames())) { return first; }
 
 	size_t nc = ncol();
 	std::vector<double> dabove(nc, NAN);
@@ -820,7 +820,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 			first.setError(getError());
 			return(first);
 		}
-		if (!first.writeStart(opt)) {
+		if (!first.writeStart(opt, filenames())) {
 			readStop();
 			old.readStop();
 			return first;
@@ -886,7 +886,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 
 	dabove = std::vector<double>(nc, NAN);
 	vabove = std::vector<double>(nc, 0);
-  	if (!second.writeStart(opt)) {
+  	if (!second.writeStart(opt, filenames())) {
 		readStop();
 		first.readStop();
 		return second;
@@ -1324,7 +1324,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		bool npole = (polar == 1) || (polar == 2);
 		bool spole = (polar == -1) || (polar == 2);
 		SpatRaster second = first;
-		if (!first.writeStart(ops)) { return first; }
+		if (!first.writeStart(ops, filenames())) { return first; }
 		for (size_t i = 0; i < first.bs.n; i++) {
 			readBlock(v, first.bs, i);
 			d.resize(v.size(), std::numeric_limits<double>::infinity());
@@ -1347,7 +1347,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 			readStop();
 			return(first);
 		}
-		if (!second.writeStart(ops)) {
+		if (!second.writeStart(ops, filenames())) {
 			readStop();
 			return second;
 		}
@@ -1374,7 +1374,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 			readStop();
 			return(second);
 		}
-		if (!out.writeStart(opt)) {
+		if (!out.writeStart(opt, filenames())) {
 			readStop();
 			return out;
 		}
@@ -1400,7 +1400,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		double m = source[0].srs.to_meter();
 		m = std::isnan(m) ? 1 : m;
 
-		if (!first.writeStart(ops)) { return first; }
+		if (!first.writeStart(ops, filenames())) { return first; }
 		std::vector<double> vv;
 		for (size_t i = 0; i < first.bs.n; i++) {
 			readBlock(v, first.bs, i);
@@ -1414,7 +1414,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 			return(out);
 		}
 		above = std::vector<double>(ncol(), std::numeric_limits<double>::infinity());
-		if (!out.writeStart(opt)) {
+		if (!out.writeStart(opt, filenames())) {
 			readStop();
 			return out;
 		}
@@ -1577,7 +1577,7 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 	}
 
 	opt.minrows = 2;
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -2193,9 +2193,9 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 		std::vector<double> a = p.area(unit, true, {});
 		size_t nc = out.ncol();
 		if (disagg) {
-			if (!out.writeStart(xopt)) { return out; }
+			if (!out.writeStart(xopt, filenames())) { return out; }
 		} else {
-			if (!out.writeStart(opt)) { return out; }
+			if (!out.writeStart(opt, filenames())) { return out; }
 		}
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v;
@@ -2228,10 +2228,10 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 				fcol = (ncol() / rcx) + 1;
 				out = out.aggregate({frow, fcol}, "mean", false, xopt);
 				xopt.ncopies *= 5;
-				if (!out.writeStart(xopt)) { return out; }
+				if (!out.writeStart(xopt, filenames())) { return out; }
 			} else {
 				opt.ncopies *= 5;
-				if (!out.writeStart(opt)) { return out; }
+				if (!out.writeStart(opt, filenames())) { return out; }
 			}
 			SpatRaster empty = out.geometry(1);
 			SpatExtent extent = out.getExtent();
@@ -2252,7 +2252,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 				out = out.warper(target, "", "bilinear", false, false, true, opt);
 			}
 		} else {
-			if (!out.writeStart(opt)) { return out; }
+			if (!out.writeStart(opt, filenames())) { return out; }
 			double u = unit == "m" ? 1 : unit == "km" ? 1000000 : 10000;
 			double m = out.source[0].srs.to_meter();
 			double a = std::isnan(m) ? 1 : m;
@@ -2954,7 +2954,7 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 	}
 
 	opt.minrows = 3;
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}

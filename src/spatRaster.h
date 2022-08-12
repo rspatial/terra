@@ -460,7 +460,8 @@ class SpatRaster {
 
 		bool readAll();
 
-		bool writeStart(SpatOptions &opt);
+		bool writeStart(SpatOptions &opt, const std::vector<std::string> srcnames);
+
 		bool writeBlock(std::vector<double> &v, unsigned i){ // inline
 			// for debugging?
 			// if (bs.row.size() <= i) {
@@ -478,7 +479,7 @@ class SpatRaster {
 		bool write_aux_json(std::string filename);
 
 		//bool writeStartGDAL(std::string filename, std::string driver, std::string datatype, bool overwrite, SpatOptions &opt);
-		bool writeStartGDAL(SpatOptions &opt);		
+		bool writeStartGDAL(SpatOptions &opt, const std::vector<std::string> &srcnames);		
 		bool fillValuesGDAL(double fillvalue);
 		bool writeValuesGDAL(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
 		bool writeStopGDAL();
@@ -530,8 +531,6 @@ class SpatRaster {
 
 		SpatRaster sources_to_disk(std::vector<std::string> &tmpfs, bool unique, SpatOptions &opt);
 		bool sources_from_file();
-
-		bool differentFilenames(std::vector<std::string> outf, bool &duplicates, bool &empty);
 
 		std::vector<int> getFileBlocksize();
 

@@ -93,56 +93,6 @@ bool SpatRaster::isSource(std::string filename) {
 	return false;
 }
 
-/*
-#include <experimental/filesystem>
-bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
-	std::vector<std::string> inf = filenames();
-	for (size_t i=0; i<inf.size(); i++) {
-		if (inf[i] == "") continue;
-		std::experimental::filesystem::path pin = inf[i];
-		for (size_t j=0; j<outf.size(); j++) {
-			std::experimental::filesystem::path pout = outf[i];
-			if (pin.compare(pout) == 0) return false;
-		}
-	}
-	return true;
-}
-*/
-
-bool SpatRaster::differentFilenames(std::vector<std::string> outf, bool &duplicates, bool &empty) {
-	std::vector<std::string> inf = filenames();
-	duplicates = false;
-	empty = false;
-	for (size_t j=0; j<outf.size(); j++) {
-		if (outf[j] == "") {
-			empty = true;
-			return false;
-		}
-	}
-
-	for (size_t i=0; i<inf.size(); i++) {
-		if (inf[i] == "") continue;
-		#ifdef _WIN32
-		lowercase(inf[i]);
-		#endif
-		for (size_t j=0; j<outf.size(); j++) {
-			#ifdef _WIN32
-			lowercase(outf[j]);
-			#endif
-			if (inf[i] == outf[j]) return false;
-		}
-	}
-
-	size_t n = outf.size();
-	outf.erase(std::unique(outf.begin(), outf.end()), outf.end());
-	if (n > outf.size()) {
-		duplicates = true;
-		return false;
-	}
-	return true;
-}
-
-
 
 SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
@@ -154,17 +104,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 	// recursive writing of layers
 	std::vector<std::string> fnames = opt.get_filenames();
-	bool dups, empty;
-	if (!differentFilenames(fnames, dups, empty)) {
-		if (dups) {
-			out.setError("duplicate filenames");
-		} else if (empty) {
-			out.setError("empty filename");
-		} else {
-			out.setError("source and target filename cannot be the same");
-		}
-		return(out);
-	}
+	std::string  msg;
 
 	size_t nl = nlyr();
 	if (fnames.size() > 1) {
@@ -174,11 +114,9 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		} else {
 			bool overwrite = opt.get_overwrite();
 			std::string errmsg;
-			for (size_t i=0; i<nl; i++) {
-				if (!can_write(fnames[i], overwrite, errmsg)) {
-					out.setError(errmsg + " (" + fnames[i] +")");
-					return(out);
-				}
+			if (!can_write(fnames, filenames(), overwrite, errmsg)) {
+				out.setError(errmsg);
+				return(out);
 			}
 			for (unsigned i=0; i<nl; i++) {
 				opt.set_filenames({fnames[i]});
@@ -199,7 +137,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	}
 
 	opt.ncopies = 2;
-	if (!out.writeStart(opt)) {
+	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -220,7 +158,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 
 
-bool SpatRaster::writeStart(SpatOptions &opt) {
+bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> srcnames) {
 
 	if (opt.names.size() == nlyr()) {
 		setNames(opt.names);
@@ -248,7 +186,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	if (filename != "") {
 		// open GDAL filestream
 		#ifdef useGDAL
-		if (! writeStartGDAL(opt) ) {
+		if (! writeStartGDAL(opt, srcnames) ) {
 			return false;
 		}
 		#else

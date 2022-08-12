@@ -46,6 +46,20 @@ class SpatRasterCollection {
 		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
 		SpatRaster summary(std::string fun, SpatOptions &opt);
+
+		std::vector<std::string> filenames() {
+			size_t n =0;
+			for (size_t i=0; i<ds.size(); i++) { 
+				n += ds[i].nlyr();
+			}
+			std::vector<std::string> names;
+			names.reserve(n);
+			for (size_t i=0; i<ds.size(); i++) { 
+				std::vector<std::string> n = ds[i].filenames();
+				names.insert(names.end(), n.begin(), n.end());
+			}
+			return names;
+		};
 		
 };
 
@@ -100,6 +114,19 @@ class SpatRasterStack {
 				units = u;
 			}
 		}
+		std::vector<std::string> filenames() {
+			size_t n =0;
+			for (size_t i=0; i<ds.size(); i++) { 
+				n += ds[i].nlyr();
+			}
+			std::vector<std::string> names;
+			names.reserve(n);
+			for (size_t i=0; i<ds.size(); i++) { 
+				std::vector<std::string> n = ds[i].filenames();
+				names.insert(names.end(), n.begin(), n.end());
+			}
+			return names;
+		};
 
 		bool readStart() {
 			for (auto& x : ds) { if (!x.readStart()) return false; }

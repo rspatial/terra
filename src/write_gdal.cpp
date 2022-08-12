@@ -303,7 +303,7 @@ void removeVatJson(std::string filename) {
 }
 
 
-bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
+bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string> &srcnames) {
 
 	std::string filename = opt.get_filename();
 	if (filename == "") {
@@ -355,16 +355,14 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError("cannot append and overwrite at the same time");
 		return false;
 	}
-	if (file_exists(filename) && (!opt.get_overwrite()) && (!append)) {
-		setError("file exists. You can use 'overwrite=TRUE' to overwrite it");
-		return false;
+	if (!append) {
+		std::string msg;
+		if (!can_write({filename}, srcnames, opt.get_overwrite(), msg)) {		
+			setError(msg);
+			return false;
+		}
 	}
 	removeVatJson(filename);
-
-//	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
-//		setError(errmsg);
-//		return(false);
-//	}
 
 
 // what if append=true?
