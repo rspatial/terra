@@ -79,7 +79,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, sources=sources(x), wopt=wopt)
 	expected <- test$nl * ncx
 
 	if (doclust) {
@@ -181,7 +181,7 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	}
 	nltot <- sum(nlyr(x)) + nlyr(out)
 	fact <- max(4, 4 * nltot / nlyr(out))
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=fact)
+	b <- writeStart(out, filename, overwrite, sources=sources(x), wopt=wopt, n=fact)
 
 	#		nr <- b$nrows[i] * ncol(out)
 	#		splits <- rep(1:ncores, each=ceiling(nr) / ncores)[1:nr]

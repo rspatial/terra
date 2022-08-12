@@ -73,7 +73,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 
 	readStart(x)
 	on.exit(readStop(x), add=TRUE)
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, sources=sources(x), wopt=wopt)
 
 	if (doclust) {
 		pfun <- function(x, ...) apply(x, 1, FUN=fun, ...)

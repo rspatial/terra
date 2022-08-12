@@ -61,7 +61,7 @@ function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, clamp=FALSE, circular=
 	} else if (length(v) == nc) {
 		nlyr(out) <- 1
 	}
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nlyr(x)*3)
+	b <- writeStart(out, filename, overwrite, sources=sources(x), wopt=wopt, n=nlyr(x)*3)
 	for (i in 1:b$n) {
 		v <- x@ptr$rappvals(index@ptr, firstval, lastval, clamp, allyrs, fill, b$row[i]-1, b$nrows[i], circular)
 		v <- sapply(v, fun, ...)

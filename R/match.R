@@ -50,7 +50,7 @@ setMethod("%in%", signature(x="SpatRaster"),
 #		readStart(x)
 #		on.exit(readStop(x))
 #		nc <- ncol(out)
-#		b <- writeStart(out, filename="", overwrite=FALSE, wopt=list())
+#		b <- writeStart(out, filename="", overwrite=FALSE, sources=sources(x), wopt=list())
 #		for (i in 1:b$n) {
 #			v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
 #			v <- v %in% table

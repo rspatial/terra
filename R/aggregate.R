@@ -119,7 +119,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		mpl <- prod(dims[5:6]) * fun_ret
 		readStart(x)
 		on.exit(readStop(x))
-		ignore <- writeStart(out, filename, overwrite, wopt=wopt)
+		ignore <- writeStart(out, filename, overwrite, sources=sources(x), wopt=wopt)
 		if (doPar) {
 			for (i in 1:b$n) {
 				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)

@@ -123,7 +123,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	ncops <- nlyr(x) / nlyr(out)
 	ncops <- ifelse(ncops > 1, ceiling(ncops), 1) * 4
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=ncops)
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=ncops, sources=sources(x))
 
 	if (doclust) {
 		for (i in 1:b$n) {
@@ -272,7 +272,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	nc <- (nlyr(x[1]) * length(x)) / nlyr(out)
 	nc <- ifelse(nc > 1, ceiling(nc), 1) * 3
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nc)
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nc, sources=sources(x))
 
 	if (cores > 1) {
 		cls <- parallel::makeCluster(cores)

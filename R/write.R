@@ -11,10 +11,10 @@ setMethod("blocks", signature(x="SpatRaster"),
 
 
 setMethod("writeStart", signature(x="SpatRaster", filename="character"),
-	function(x, filename="", overwrite=FALSE, n=4, ...) {
+	function(x, filename="", overwrite=FALSE, n=4, sources="", ...) {
 		filename <- enc2utf8(filename)
 		opt <- spatOptions(filename, overwrite, ncopies=n, ...)
-		ok <- x@ptr$writeStart(opt)
+		ok <- x@ptr$writeStart(opt, sources)
 		messages(x, "writeStart")
 		b <- x@ptr$getBlockSizeWrite()
 		b$row <- b$row + 1

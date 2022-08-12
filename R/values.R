@@ -282,6 +282,19 @@ setMethod("sources", signature(x="SpatRasterCollection"),
 	}
 )
 
+setMethod("sources", signature(x="SpatRasterDataset"),
+	function(x, nlyr=FALSE, bands=FALSE) {
+		if (nlyr | bands) {
+			x <- lapply(x, function(i) sources(i, nlyr, bands))
+			x <- lapply(1:length(x), function(i) cbind(cid=i, x[[i]]))
+			do.call(rbind, x)
+		} else {
+			sapply(x, sources)
+		}
+	}
+)
+
+
 setMethod("sources", signature(x="SpatVector"),
 	function(x) {
 		if (x@ptr$source != "") {
