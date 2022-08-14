@@ -98,6 +98,13 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
+setMethod("[[", c("SpatRaster", "ANY", "missing"),
+function(x, i, j, ... ,drop=TRUE) {
+	i <- as.vector(unlist(i))
+	x[[i, ..., drop=drop]]
+})
+
+
 
 setMethod("subset", signature(x="SpatVector"),
 	function(x, subset, select, drop=FALSE, NSE=FALSE) {
