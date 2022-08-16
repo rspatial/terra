@@ -142,6 +142,12 @@ setMethod("Arith", signature(e1="SpatRaster", e2="numeric"),
 	}
 )
 
+setMethod("Arith", signature(e1="SpatRaster", e2="logical"),
+    function(e1, e2){
+		methods::callGeneric(e1, as.integer(e2))
+	}
+)
+
 
 setMethod("Arith", signature(e1="SpatRaster", e2="missing"),
     function(e1, e2){
@@ -160,6 +166,11 @@ setMethod("Arith", signature(e1="numeric", e2="SpatRaster"),
 	}
 )
 
+setMethod("Arith", signature(e1="logical", e2="SpatRaster"),
+    function(e1, e2){
+		methods::callGeneric(as.integer(e1), e2)
+	}
+)
 
 setMethod("Compare", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){

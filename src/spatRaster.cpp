@@ -1111,16 +1111,27 @@ bool SpatRaster::createCategories(unsigned layer, SpatOptions &opt) {
 
 
 std::vector<bool> SpatRaster::hasCategories() {
-	std::vector<bool> b(nlyr());
+	std::vector<bool> b;
+	b.reserve(nlyr());
 	std::vector<unsigned> ns = nlyrBySource();
-	unsigned k = 0;
 	for (size_t i=0; i<ns.size(); i++) {
 		for (size_t j=0; j<ns[i]; j++) {
-			b[k] = source[i].hasCategories[j];
-			k++;
+			b.push_back(source[i].hasCategories[j]);
 		}
 	}
 	return b;
+}
+
+std::vector<std::string> SpatRaster::getDataType() {
+	std::vector<std::string> d;
+	d.reserve(nlyr());
+	std::vector<unsigned> ns = nlyrBySource();
+	for (size_t i=0; i<ns.size(); i++) {
+		for (size_t j=0; j<ns[i]; j++) {
+			d.push_back(source[i].dataType[j]);		
+		}
+	}
+	return d;
 }
 
 
@@ -2136,6 +2147,7 @@ SpatRaster SpatRaster::to_memory_copy(SpatOptions &opt) {
 
 std::vector<int> SpatRaster::getFileBlocksize() {
 	std::vector<int> b;
+	b.reserve(2 * nlyr());
 	for (size_t i=0; i<source.size(); i++) {
 		b.insert(b.end(), source[i].blockrows.begin(), source[i].blockrows.end());
 	}

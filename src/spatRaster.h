@@ -135,7 +135,7 @@ class SpatRasterSource {
 		std::vector<bool> hasCategories;
 		std::vector<SpatCategories> cats;
 		std::vector<unsigned char> valueType;
-
+		std::vector<std::string> dataType;
 
 		std::vector<bool> hasColors;
 		std::vector<SpatDataFrame> cols;
@@ -163,6 +163,7 @@ class SpatRasterSource {
 		
 		void setRange();
 		void resize(unsigned n);
+		void reserve(unsigned n);
 		bool in_order();
 		bool combine_sources(const SpatRasterSource &x);
 		bool combine(SpatRasterSource &x);
@@ -631,6 +632,8 @@ class SpatRaster {
 		
 		SpatRaster is_in(std::vector<double> m, SpatOptions &opt);
 		std::vector<std::vector<double>> is_in_cells(std::vector<double> m, SpatOptions &opt);
+
+		std::vector<std::string> getDataType();
 
 		SpatRaster isnot(SpatOptions &opt);
 		SpatRaster isnan(SpatOptions &opt);

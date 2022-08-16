@@ -535,6 +535,17 @@ std::string getDsPRJ(GDALDataset *poDataset) {
 }
 
 
+inline std::string dtypename(const std::string &d) {
+	if (d == "Float64") return "FLT8S";
+	if (d == "Float32") return "FLT4S";
+	if (d == "Int32") return "INT4S";
+	if (d == "Int16") return "INT2S";
+	if (d == "UInt32") return "INT4U";
+	if (d == "UInt16") return "INT2U";
+	if (d == "Byte") return "INT1U";
+	return "FLT4S";
+}
+
 
 SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids) {
 
@@ -807,8 +818,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		poBand->GetBlockSize(&bs1, &bs2);
 		s.blockcols[i] = bs1;
 		s.blockrows[i] = bs2;
-
-		//std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
+		s.dataType[i] = dtypename(GDALGetDataTypeName(poBand->GetRasterDataType()));
 
 		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
 		adfMinMax[1] = poBand->GetMaximum( &bGotMax );

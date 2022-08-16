@@ -617,12 +617,12 @@ RCPP_MODULE(spat){
 		.method("getCatIndex", &SpatRaster::getCatIndex, "getCatIndex")
 		.method("setCatIndex", &SpatRaster::setCatIndex, "setCatIndex")
 
-
 		.method("hasColors", &SpatRaster::hasColors, "hasColors")
 		.method("getColors", &SpatRaster::getColors, "getColors")
 		.method("setColors", &SpatRaster::setColors, "setColors")
 		.method("removeColors", &SpatRaster::removeColors, "removeColors")
 
+		.property("dataType", &SpatRaster::getDataType)
 		.property("valueType", &SpatRaster::getValueType)
 		.method("setValueType", &SpatRaster::setValueType)
 		.property("hasRange", &SpatRaster::hasRange )

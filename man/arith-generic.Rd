@@ -13,6 +13,8 @@
 \alias{Arith,SpatRaster,missing-method}
 \alias{Arith,numeric,SpatRaster-method}
 \alias{Arith,SpatRaster,numeric-method}
+\alias{Arith,logical,SpatRaster-method}
+\alias{Arith,SpatRaster,logical-method}
 \alias{Arith,missing,SpatRaster-method}
 
 
