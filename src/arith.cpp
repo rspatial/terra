@@ -175,6 +175,25 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 	}
 	if (logical) {
 		out.setValueType(3);
+	} else if (oper != "/") {
+		std::vector<int> v = getValueType();
+		std::vector<int> vx = x.getValueType();
+		bool is_int = true;
+		for (size_t i = 0; i<v.size(); i++) {
+			if ((v[i] != 1) && (v[i] != 3)) { 
+				is_int = false;
+				break;
+			}
+		}
+		for (size_t i = 0; i<vx.size(); i++) {
+			if (!is_int) break;
+			if ((vx[i] != 1) && (vx[i] != 3)) { 
+				is_int = false;
+			}
+		}
+		if (is_int) {
+			out.setValueType(1);
+		}		
 	}
 
 	if (!out.compare_geom(x, false, true, opt.get_tolerance())) {
@@ -252,6 +271,18 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 	}
 	if (logical) {
 		out.setValueType(3);
+	} else if (oper != "/") {
+		std::vector<int> v = getValueType();
+		bool is_int = true;
+		for (size_t i = 0; i<v.size(); i++) {
+			if ((v[i] != 1) && (v[i] != 3)) { 
+				is_int = false;
+				break;
+			}
+		}
+		if (is_int && (x == std::round(x))) { 
+			out.setValueType(1);
+		}
 	}
 
 
@@ -382,6 +413,22 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 	}
 	if (logical) {
 		out.setValueType(3);
+	} else if (oper != "/") {
+		std::vector<int> v = getValueType();
+		bool is_int = true;
+		for (size_t i = 0; i<v.size(); i++) {
+			if ((v[i] != 1) && (v[i] != 3)) { 
+				is_int = false;
+				break;
+			}
+		}
+		for (size_t i = 0; i<x.size(); i++) {
+			if (!is_int) break;
+			is_int = x[i] == std::round(x[i]); 
+		}
+		if (is_int) { 
+			out.setValueType(1);
+		}
 	}
 
 
