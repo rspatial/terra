@@ -143,6 +143,7 @@ setMethod("set.crs", signature("SpatRaster"),
 		value <- .txtCRS(value)
 		x@ptr$set_crs(value)
 		messages(x, "set_crs")
+		invisible(TRUE)
 	}
 )
 

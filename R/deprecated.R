@@ -7,11 +7,11 @@ setMethod ("area" , "SpatRaster",
 )
 
 
-if (!isGeneric("setCats")) { setGeneric("setCats", function(x, ...) standardGeneric("setCats")) }
+#if (!isGeneric("setCats")) { setGeneric("setCats", function(x, ...) standardGeneric("setCats")) }
 
-setMethod ("setCats" , "SpatRaster",
-	function (x, ...) {
-		warn("setCats", "this function will be removed. You can use 'set.cats' instead")
-		set.cats(x, ...)
-	}
-)
+#setMethod ("setCats" , "SpatRaster",
+#	function (x, ...) {
+#		warn("setCats", "this function will be removed. You can use 'set.cats' instead")
+#		set.cats(x, ...)
+#	}
+#)

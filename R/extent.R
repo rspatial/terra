@@ -106,6 +106,7 @@ setMethod("set.ext", signature("SpatRaster"),
 		e <- ext(value)
 		x@ptr$extent <- e@ptr
 		messages(x, "set_ext")
+		invisible(TRUE)
 	}
 )
 

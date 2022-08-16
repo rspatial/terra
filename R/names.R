@@ -63,7 +63,7 @@ setMethod("names<-", signature(x="SpatRaster"),
 setMethod("set.names", signature(x="SpatRaster"),
 	function(x, value, index=1:nlyr(x), validate=FALSE)  {
 		value <- .raster_names_check(x, value, index, validate)
-		if (! x@ptr$setNames(value, FALSE)) {
+		if (!x@ptr$setNames(value, FALSE)) {
 			error("set.names", "cannot set these names")
 		}
 		invisible(TRUE)

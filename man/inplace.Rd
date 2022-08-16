@@ -68,6 +68,7 @@ These "in-place" replacement methods assign new value to an object without makin
   \item{layer}{positive integer indicating to which layer to you want to assign these categories}
 }
 
+\value{logical (invisibly)}
 
 \examples{
 s <- rast(ncols=5, nrows=5, nlyrs=3)
