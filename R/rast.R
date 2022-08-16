@@ -181,7 +181,7 @@ setMethod("rast", signature(x="character"),
 		r <- messages(r, "rast")
 		if (crs(r) == "") {
 			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
-				if (!isTRUE(all(as.vector(ext(r)) == c(0,1,0,1)))) {
+				if (!isTRUE(all(as.vector(ext(r)) == c(0,ncol(r),0,nrow(r))))) {
 					crs(r) <- "OGC:CRS84"
 				}
 			}

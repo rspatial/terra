@@ -703,7 +703,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 	} else {
 		hasExtent = false;
-		SpatExtent e(0, 1, 0, 1);
+		SpatExtent e(0, s.ncol, 0, s.nrow);
 		s.extent = e;
 		if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
 			#ifndef standalone
