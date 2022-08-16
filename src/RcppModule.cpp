@@ -591,7 +591,7 @@ RCPP_MODULE(spat){
 
 		//.method("getRasterAtt", &getRasterAttributes, "get attributes")
 
-		.property("filenames", &SpatRaster::filenames )
+		.method("filenames", &SpatRaster::filenames )
 
 		.field_readonly("rgb", &SpatRaster::rgb)
 		.field_readonly("rgbtype", &SpatRaster::rgbtype)
