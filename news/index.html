@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-8</span>
       </span>
     </div>
 
@@ -48,7 +48,21 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-7" id="version-16-7">version 1.6-7<a class="anchor" aria-label="anchor" href="#version-16-7"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-8" id="version-16-8">version 1.6-8<a class="anchor" aria-label="anchor" href="#version-16-8"></a></h2>
+<div class="section level3">
+<h3 id="new-1-6-8">new<a class="anchor" aria-label="anchor" href="#new-1-6-8"></a></h3>
+<ul><li>
+<code>droplevels</code> for SpatRaster. <a href="https://github.com/rspatial/terra/issues/757" class="external-link">#757</a> by Rodolfo Jaffe.</li></ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-6-8">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-8"></a></h3>
+<ul><li>all.equal bug <a href="https://github.com/rspatial/terra/pull/756" class="external-link">#756</a> fixed by John Baums</li>
+<li>extract&lt;“SpatRaster”,“sf”&gt; ignored the ID argument. <a href="https://github.com/rspatial/terra/issues/755" class="external-link">#755</a> by Dainius Masiliūnas.</li>
+<li>There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file <a href="https://github.com/rspatial/terra/issues/760" class="external-link">#760</a> by John Baums</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.6-7" id="version-16-7">version 1.6-7<small>2022-08-07</small><a class="anchor" aria-label="anchor" href="#version-16-7"></a></h2>
+<p>Released on 2022-08-07</p>
 <div class="section level3">
 <h3 id="new-1-6-7">new<a class="anchor" aria-label="anchor" href="#new-1-6-7"></a></h3>
 <ul><li>method <code>blocks</code> to guide reading raster data in chunks. <a href="https://github.com/rspatial/terra/issues/748" class="external-link">#748</a> by John Baums</li></ul></div>
@@ -65,11 +79,12 @@
 <li>
 <code>expanse</code> failed when processing in chunks <a href="https://github.com/rspatial/terra/issues/741" class="external-link">#741</a> by Gareth Davies</li>
 <li>
-<code>crop&lt;SpatRaster,SpatExtent&gt;</code> with snap=“out” could lead to a crash if the extent was beyond the SpatRaster. <a href="https://github.com/rspatial/terra/issues/740" class="external-link">#740</a> by Mauricio Zambrano-Bigiarini</li>
+<code>crop&lt;SpatRaster,SpatExtent&gt;</code> with argument <code>snap="out"</code> could lead to a crash if the extent was beyond the SpatRaster. <a href="https://github.com/rspatial/terra/issues/740" class="external-link">#740</a> by Mauricio Zambrano-Bigiarini</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.6-3" id="version-16-3">version 1.6-3<small>2022-07-25</small><a class="anchor" aria-label="anchor" href="#version-16-3"></a></h2>
+<p>Released on 2022-07-25</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-3">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-3"></a></h3>
 <ul><li>
@@ -593,7 +608,7 @@
 </li>
 <li>new method <code>src</code> to create a <code>SpatRasterCollection</code> (a loose collection of tiles).</li>
 <li>
-<code>merge</code> and <code>mosaic</code> now have methods for a <code>SpatRasterCollection</code>. To avoid the (inefficient) use of <code>do.call</code>. See issue <a href="https://github.com/rspatial/terra/issues/210" class="external-link">#210</a> by Matthew Talluto.</li>
+<code>merge</code> and <code>mosaic</code> now have methods for a <code>SpatRasterCollection</code>. To avoid the (inefficient) use of <code>do.call</code>. <a href="https://github.com/rspatial/terra/issues/210" class="external-link">#210</a> by Matthew Talluto.</li>
 <li>
 <code>activeCat</code> and <code>activeCat&lt;-</code> to get or set the “active” category if there are multiple categories (raster attributes)</li>
 <li>
@@ -604,41 +619,37 @@
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-3-4">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-3-4"></a></h3>
-<ul><li>additional arguments (such as <code>na.rm</code>) are now used by <code>rasterize</code> with point geometries. Suggested by Jakub Nowosad <a href="https://github.com/rspatial/terra/issues/209" class="external-link">#209</a>
-</li>
-<li>improved handling (and documentation) of <code>gstat</code> models by <code>interpolate</code>. See issue <a href="https://github.com/rspatial/terra/issues/208" class="external-link">#208</a> by Jakub Nowosad.</li>
-<li>new argument <code>cpkgs</code> to <code>predict</code> to list the packages that need to be exported to the cores if argument <code>cores</code> is larger than one. <code><a href="../reference/predict.html">?predict</a></code> now shows different approaches to parallelize <code>predict</code> (based on examples in issue <a href="https://github.com/rspatial/terra/issues/178" class="external-link">#178</a> raised by by Matthew Coghill).</li>
+<ul><li>additional arguments (such as <code>na.rm</code>) are now used by <code>rasterize</code> with point geometries. <a href="https://github.com/rspatial/terra/issues/209" class="external-link">#209</a> by Jakub Nowosad</li>
+<li>improved handling (and documentation) of <code>gstat</code> models by <code>interpolate</code>. <a href="https://github.com/rspatial/terra/issues/208" class="external-link">#208</a> by Jakub Nowosad</li>
+<li>new argument <code>cpkgs</code> to <code>predict</code> to list the packages that need to be exported to the cores if argument <code>cores</code> is larger than one. <code><a href="../reference/predict.html">?predict</a></code> now shows different approaches to parallelize <code>predict</code> (based on examples in issue. <a href="https://github.com/rspatial/terra/issues/178" class="external-link">#178</a> by by Matthew Coghill.</li>
 <li>
 <code>freq</code> now returns labels for categorical layers</li>
 <li>
-<code>adjacent</code> now has a <code>pairs</code> argument. Requested by Kenneth Blake Vernon in issue <a href="https://github.com/rspatial/terra/issues/239" class="external-link">#239</a>
-</li>
+<code>adjacent</code> now has a <code>pairs</code> argument. <a href="https://github.com/rspatial/terra/issues/239" class="external-link">#239</a> by Kenneth Blake Vernon</li>
 <li>
 <code>adjacent</code> now also takes a matrix to specify adjacent cells</li>
 <li>
-<code>mean</code> and other summarize methods now take a <code>filename</code> argument and disallow non-recognized named arguments. See issue <a href="https://github.com/rspatial/terra/issues/238" class="external-link">#238</a> by Jessica Nephin</li>
-<li>The raster attribute table of ESRI-GRID integer data, or from an ESRI <code>vat.dbf</code> file is now ignored if it only has the counts of the values. See issue <a href="https://github.com/rspatial/terra/issues/234" class="external-link">#234</a> by Jullee</li>
-<li>time attributes are no longer lost when doing raster operations. Suggested by Mauricio Zambrano-Bigiarini in <a href="https://github.com/rspatial/terra/issues/246" class="external-link">#246</a>
-</li>
+<code>mean</code> and other summarize methods now take a <code>filename</code> argument and disallow non-recognized named arguments. <a href="https://github.com/rspatial/terra/issues/238" class="external-link">#238</a> by Jessica Nephin</li>
+<li>The raster attribute table of ESRI-GRID integer data, or from an ESRI <code>vat.dbf</code> file is now ignored if it only has the counts of the values. <a href="https://github.com/rspatial/terra/issues/234" class="external-link">#234</a> by Jullee</li>
+<li>time attributes are no longer lost when doing raster operations. <a href="https://github.com/rspatial/terra/issues/246" class="external-link">#246</a> by Mauricio Zambrano-Bigiarini</li>
 <li>resample (and project) no longer ignore <code>gdal=""</code> write options and use BIGTIFF if necessary (suggested by Ani Ghosh)</li>
 <li>new argument <code>layer</code> in the <code>extract-SpatRaster,SpatVector</code> method to extract values for a single layers specified for each geometry (see this <a href="https://gis.stackexchange.com/a/401591/8993" class="external-link">question</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-4">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-4"></a></h3>
-<ul><li>better handling of paths with non-ASCII characters (e.g., Chinese) for GeoTiff but still fails for NetCDF (see issue <a href="https://github.com/rspatial/terra/issues/223" class="external-link">#233</a> by Dongdong Kong)</li>
+<ul><li>better handling of paths with non-ASCII characters (e.g., Chinese) for GeoTiff but still fails for NetCDF. <a href="https://github.com/rspatial/terra/issues/233" class="external-link">#233</a> by Dongdong Kong</li>
 <li>
 <code>extract</code> with points and <code>cells=TRUE</code> or <code>xy=TRUE</code> gave garbled output</li>
 <li>
-<code>as.character&lt;SpatRaster&gt;</code> (called by <code>wrap</code>) did not capture the layer names. Reported by Pascal Title <a href="https://github.com/rspatial/terra/issues/213" class="external-link">#213</a>
-</li>
+<code>as.character&lt;SpatRaster&gt;</code> (called by <code>wrap</code>) did not capture the layer names. <a href="https://github.com/rspatial/terra/issues/213" class="external-link">#213</a> by Pascal Title</li>
 <li>
 <code>focal</code> mirrored the weight matrix, thus affecting the results when using an asymmetrical weight matrix. Reported by Sebastiano Trevisani</li>
 <li>
-<code><a href="../reference/terraOptions.html">terra::terraOptions</a></code> now works without attaching the package (issue <a href="https://github.com/rspatial/terra/issues/229" class="external-link">#229</a> reported by Karl Dunkle Werner)</li>
+<code><a href="../reference/terraOptions.html">terra::terraOptions</a></code> now works without attaching the package. <a href="https://github.com/rspatial/terra/issues/229" class="external-link">#229</a> by Karl Dunkle Werner</li>
 <li>
-<code>app</code> with <code>ncores &gt; 0</code> and a function that returns multiple layers now works (issue <a href="https://github.com/rspatial/terra/issues/240" class="external-link">#240</a> reported by BastienFR.</li>
+<code>app</code> with <code>ncores &gt; 0</code> and a function that returns multiple layers now works. <a href="https://github.com/rspatial/terra/issues/240" class="external-link">#240</a> by BastienFR.</li>
 <li>
-<code>autocor</code> (local) can now handle <code>NA</code> values. Reported by Jakub Nowosad <a href="https://github.com/rspatial/terra/issues/245" class="external-link">#245</a>.</li>
+<code>autocor</code> (local) can now handle <code>NA</code> values. <a href="https://github.com/rspatial/terra/issues/245" class="external-link">#245</a> by Jakub Nowosad .</li>
 <li>
 <code>mask</code> with a SpatVector and a large (out of memory) multi-layer SpatRaster only worked for the first layer. Reported by Monika Tomaszewska.</li>
 </ul></div>

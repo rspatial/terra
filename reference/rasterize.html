@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-8</span>
       </span>
     </div>
 
@@ -138,11 +138,14 @@
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># rasterize points as a matrix</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">rasterize</span><span class="op">(</span><span class="va">p</span>, <span class="va">r</span>, fun<span class="op">=</span><span class="va">sum</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'unique': unable to find an inherited method for function ‘sources’ for signature ‘"matrix"’</span>
 <span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">rasterize</span><span class="op">(</span><span class="va">p</span>, <span class="va">r</span>, value<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>, fun<span class="op">=</span><span class="va">max</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'unique': unable to find an inherited method for function ‘sources’ for signature ‘"matrix"’</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># rasterize points as a SpatVector</span></span>
 <span class="r-in"><span class="va">pv</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">xv</span> <span class="op">&lt;-</span> <span class="fu">rasterize</span><span class="op">(</span><span class="va">pv</span>, <span class="va">r</span>, fun<span class="op">=</span><span class="va">sum</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'unique': unable to find an inherited method for function ‘sources’ for signature ‘"matrix"’</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Polygons</span></span>
 <span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
