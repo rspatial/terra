@@ -40,7 +40,9 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
 SpatRaster
 }
 
-\seealso{\link{\code{intersect}}}
+\seealso{
+\code{\link{intersect}}
+}
 
 \examples{
 r <- rast(xmin=0, xmax=10, ymin=0, ymax=10, nrows=25, ncols=25)
