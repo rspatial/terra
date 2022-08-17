@@ -409,6 +409,10 @@ class SpatVectorCollection {
 		SpatVector get(size_t i) { 
 			SpatVector out;
 			out.msg = msg;
+			if (size() == 0) {
+				out.addWarning("empty SpatVector");
+				return out;
+			}
 			if (i < size()) {
 				out = v[i];
 			} else {

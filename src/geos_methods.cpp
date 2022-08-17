@@ -1061,9 +1061,6 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 	out = coll.get(0);
 	out.srs = srs;
 	out.df = df;
-	//if ((vt == "lines") && (out.type() == "polygons")) {
-	//	return out.remove_holes();
-	//}
 	return out;
 }
 
