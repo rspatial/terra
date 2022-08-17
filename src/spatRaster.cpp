@@ -1264,9 +1264,15 @@ int SpatRaster::getCatIndex(unsigned layer) {
 
 SpatRaster SpatRaster::dropLevels() {
 	std::vector<bool> hascats = hasCategories();
-	if (!vany(hascats, true)) {
-		return *this;
+	bool bany = false;
+	for (size_t i=0; i<hascats.size(); i++) {
+		if (hascats[i]) {
+			bany = true;
+			break;
+		}
 	}	
+	if (!bany) return *this;
+	
 	std::vector<SpatCategories> cats = getCategories();
 	SpatOptions opt;
 	SpatRaster out = *this;
