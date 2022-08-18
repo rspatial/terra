@@ -96,7 +96,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 		if (has_levels) {
 			levels(r) <- levs
 		}
-		b <- writeStart(r, filename=filename, sources=sources(x), overwrite=overwrite, wopt=wopt)
+		b <- writeStart(r, filename=filename, sources=sources(y), overwrite=overwrite, wopt=wopt)
 		filename  <- ""
 	} else {
 		b <- writeStart(r, "")
