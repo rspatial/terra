@@ -585,3 +585,17 @@ function(x, y, ...) {
 	e
 })
 
+
+setMethod("extract", signature(x="SpatVector", y="matrix"),
+function(x, y, ...) {
+	stopifnot(ncol(y) == 2)
+	.checkXYnames(colnames(y))
+	y <- vect(y)
+	extract(x, y, ...)
+})
+
+setMethod("extract", signature(x="SpatVector", y="data.frame"),
+function(x, y, ...) {
+	extract(x, as.matrix(y), ...)
+})
+

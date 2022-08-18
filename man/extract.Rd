@@ -10,6 +10,7 @@
 \alias{extract,SpatRaster,data.frame-method}
 \alias{extract,SpatRaster,numeric-method}
 \alias{extract,SpatVector,SpatVector-method}
+\alias{extract,SpatVector,matrix-method}
 
 
 \alias{[,SpatVector,SpatVector,missing-method}
