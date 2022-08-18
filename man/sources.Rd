@@ -5,6 +5,7 @@
 \alias{sources}
 \alias{sources,SpatRaster-method}
 \alias{sources,SpatRasterCollection-method}
+\alias{sources,SpatRasterDataset-method}
 \alias{sources,SpatVector-method}
 \alias{sources,SpatVectorProxy-method}
 
