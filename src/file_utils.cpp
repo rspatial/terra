@@ -191,7 +191,7 @@ bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> o
 
 
 bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg) {
-	if (!differentFilenames(filenames, srcnames, msg)) {
+	if (!differentFilenames(srcnames, filenames, msg)) {
 		return false;
 	}
 	for (size_t i=0; i<filenames.size(); i++) {
