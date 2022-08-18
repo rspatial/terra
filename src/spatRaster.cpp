@@ -115,7 +115,7 @@ SpatRaster::SpatRaster() {
 	s.hasValues = false;
 	s.valueType = { 0 };
 	s.layers.resize(1, 0);
-	s.datatype = "";
+	s.dtype = "";
 	s.names = {"lyr.1"};
 	s.srs.proj4 = "+proj=longlat +datum=WGS84";
 	s.srs.wkt = "GEOGCRS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", ELLIPSOID[\"WGS 84\",6378137,298.257223563, LENGTHUNIT[\"metre\",1]]], PRIMEM[\"Greenwich\",0, ANGLEUNIT[\"degree\",0.0174532925199433]], CS[ellipsoidal,2], AXIS[\"geodetic latitude (Lat)\",north, ORDER[1], ANGLEUNIT[\"degree\",0.0174532925199433]], AXIS[\"geodetic longitude (Lon)\",east, ORDER[2], ANGLEUNIT[\"degree\",0.0174532925199433]], USAGE[ SCOPE[\"Horizontal component of 3D system.\"], AREA[\"World.\"], BBOX[-90,-180,90,180]], ID[\"EPSG\",4326]]";
@@ -160,7 +160,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	//s.layers.resize(1, s.nlyr);
 	//std::iota(s.layers.begin(), s.layers.end(), 0);
 
-	s.datatype = "";
+	s.dtype = "";
 
 #ifdef useGDAL
 	std::string msg;
@@ -201,7 +201,7 @@ SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, st
 	s.layers.resize(1, 0);
 	//s.layers.resize(1, _nlyr);
 	//std::iota(s.layers.begin(), s.layers.end(), 0);
-	s.datatype = "";
+	s.dtype = "";
 #ifdef useGDAL
 	std::string msg;
 	if (!s.srs.set(crs, msg )) {
@@ -1128,7 +1128,7 @@ std::vector<std::string> SpatRaster::getDataType() {
 	std::vector<unsigned> ns = nlyrBySource();
 	for (size_t i=0; i<ns.size(); i++) {
 		for (size_t j=0; j<ns[i]; j++) {
-			d.push_back(source[i].dataType[j]);		
+			d.push_back(source[i].dataType[j]);
 		}
 	}
 	return d;

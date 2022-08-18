@@ -144,7 +144,7 @@ class SpatRasterSource {
 		bool hasValues=false;
 		std::string filename;
 		std::string driver;
-		std::string datatype; 
+		std::string dtype; 
 		std::vector<std::string> open_ops;
 		std::vector<std::string> open_drivers;
 		

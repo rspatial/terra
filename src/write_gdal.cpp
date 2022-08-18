@@ -364,7 +364,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	}
 	removeVatJson(filename);
 
-
 // what if append=true?
 	std::string auxf = filename + ".aux.xml";
 	remove(auxf.c_str());
@@ -408,7 +407,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		setError("invalid datatype");
 		return false;
 	}
-	source[0].datatype = datatype;
 
 	int dsize = std::stoi(datatype.substr(3,1));
 	GIntBig diskNeeded = ncell() * nlyr() * dsize;
@@ -622,16 +620,14 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	source[0].resize(nlyr());
 	source[0].nlyrfile = nlyr();
-	source[0].datatype = datatype;
+	source[0].dtype = datatype;
 	for (size_t i =0; i<nlyr(); i++) {
 		source[0].range_min[i] = NAN; //std::numeric_limits<double>::max();
 		source[0].range_max[i] = NAN; //std::numeric_limits<double>::lowest();
 	}
-
 	source[0].driver = "gdal" ;
 	source[0].filename = filename;
 	source[0].memory = false;
-
 	write_aux_json(filename);
 
 /*
@@ -711,7 +707,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 	double vmin, vmax;
 	size_t nc = nrows * ncols;
 	size_t nl = nlyr();
-	std::string datatype = source[0].datatype;
+	std::string datatype = source[0].dtype;
 
 	if ((compute_stats) && (!gdal_stats)) {
 		bool invalid = false;
@@ -812,7 +808,7 @@ bool SpatRaster::writeStopGDAL() {
 
 	GDALRasterBand *poBand;
 	source[0].hasRange.resize(nlyr());
-	std::string datatype = source[0].datatype;
+	std::string datatype = source[0].dtype;
 
 	for (size_t i=0; i < nlyr(); i++) {
 		poBand = source[0].gdalconnection->GetRasterBand(i+1);

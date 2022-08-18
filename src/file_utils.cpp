@@ -164,15 +164,18 @@ bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
 */
 
 bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> outf, std::string &msg) {
+	#ifdef _WIN32
+	for (size_t j=0; j<outf.size(); j++) {
+		std::transform(outf[j].begin(), outf[j].end(), outf[j].begin(), ::tolower);
+	}
+	#endif
+
 	for (size_t i=0; i<inf.size(); i++) {
 		if (inf[i] == "") continue;
 		#ifdef _WIN32
 		std::transform(inf[i].begin(), inf[i].end(), inf[i].begin(), ::tolower);
 		#endif
 		for (size_t j=0; j<outf.size(); j++) {
-			#ifdef _WIN32
-			std::transform(outf[j].begin(), outf[j].end(), outf[j].begin(), ::tolower);
-			#endif
 			if (inf[i] == outf[j]) {
 				msg = "source and target filename cannot be the same";			
 				return false;
@@ -188,12 +191,14 @@ bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> o
 	return true;
 }
 
-
+#include "Rcpp.h"
 
 bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg) {
+
 	if (!differentFilenames(srcnames, filenames, msg)) {
 		return false;
 	}
+
 	for (size_t i=0; i<filenames.size(); i++) {
 		if ((filenames[i] != "") && file_exists(filenames[i])) {
 			if (overwrite) {
@@ -204,8 +209,8 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 				//std::string aux = filename + ".aux.xml";
 				//remove(aux.c_str());
 				std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json"};
-				for (size_t i=0; i<exts.size(); i++) {
-					std::string f = filenames[i] + exts[i];
+				for (size_t j=0; j<exts.size(); j++) {
+					std::string f = filenames[i] + exts[j];
 					if (file_exists(f)) {
 						remove(f.c_str());
 					}

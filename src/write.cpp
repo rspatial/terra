@@ -141,6 +141,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		readStop();
 		return out;
 	}
+
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, out.bs, i);
@@ -149,7 +150,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 			out.writeStop();
 			return out;
 		}
-	}
+	}	
 	out.writeStop();
 	readStop();
 	return out;
