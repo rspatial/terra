@@ -522,7 +522,7 @@ setAs("SpatVector", "Spatial",
 			error("coerce", "first run 'library(raster)' to coerce a SpatVector to a Spatial object" )
 		}
 		g <- geom(from, df=TRUE)
-		geom(g, values(from), geomtype(from), as.character(crs(from)))
+		geom(g, values(from), geomtype(from), as.character(crs(from, proj=TRUE)))
 	}
 )
 
@@ -576,8 +576,8 @@ setAs("Spatial", "SpatVector",
 		}
 		#the below can change the proj-string when going back to sp
 		#crs <- attr(from@proj4string, "comment")
-		crs <- NULL
-		if (is.null(crs)) crs <- from@proj4string@projargs
+		#if (is.null(crs)) 
+		crs <- from@proj4string@projargs
 		if (methods::.hasSlot(from, "data")) {
 			vect(g, vtype, from@data, crs=crs)
 		} else {
