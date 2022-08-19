@@ -557,7 +557,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			} else {
 				legend <- legend
 			}
-			plotRGB(x, i[1], i[2], i[3], maxcell=maxcell, mar=mar, main=main, legend=legend, ...)
+			plotRGB(x, i[1], i[2], i[3], maxcell=maxcell, mar=mar, main=main, ...)
 			return(invisible())
 		}
 
