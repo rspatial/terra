@@ -61,7 +61,7 @@ An alternative way to plot RGB images is to first use colorize to create a singl
 <span class="fu">plotRGB</span><span class="op">(</span><span class="va">x</span>, r<span class="op">=</span><span class="fl">1</span>, g<span class="op">=</span><span class="fl">2</span>, b<span class="op">=</span><span class="fl">3</span>, a<span class="op">=</span><span class="cn">NULL</span>, <span class="va">scale</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, mar<span class="op">=</span><span class="fl">0</span>, 
     stretch<span class="op">=</span><span class="cn">NULL</span>, ext<span class="op">=</span><span class="cn">NULL</span>, smooth<span class="op">=</span><span class="cn">FALSE</span>, colNA<span class="op">=</span><span class="st">"white"</span>, <span class="va">alpha</span>, <span class="va">bgalpha</span>, 
     addfun<span class="op">=</span><span class="cn">NULL</span>, zlim<span class="op">=</span><span class="cn">NULL</span>, zlimcol<span class="op">=</span><span class="cn">NULL</span>, axes<span class="op">=</span><span class="cn">FALSE</span>, xlab<span class="op">=</span><span class="st">""</span>, ylab<span class="op">=</span><span class="st">""</span>, 
-    asp<span class="op">=</span><span class="cn">NULL</span>, add<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">interpolate</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    asp<span class="op">=</span><span class="cn">NULL</span>, add<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">xlim</span>, <span class="va">ylim</span>,<span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -132,8 +132,11 @@ An alternative way to plot RGB images is to first use colorize to create a singl
   <dt>add</dt>
 <dd><p>logical. If <code>TRUE</code> add values to current plot</p></dd>
 
-  <dt>interpolate</dt>
-<dd><p>logical. Do not use, to be removed</p></dd>
+  <dt>xlim</dt>
+<dd><p>numeric. min and max values to set the extent of the x-axis</p></dd>
+
+  <dt>ylim</dt>
+<dd><p>numeric. min and max values to set the extent of  the y-axis</p></dd>
 
   <dt>...</dt>
 <dd><p>graphical parameters as in <code><a href="plot.html">plot</a></code> or <code><a href="https://rdrr.io/r/graphics/rasterImage.html" class="external-link">rasterImage</a></code></p></dd>
