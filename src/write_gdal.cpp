@@ -702,7 +702,6 @@ void minmaxlim(Iterator start, Iterator end, double &vmin, double &vmax, const d
 
 bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols){
 
-
 	CPLErr err = CE_None;
 	double vmin, vmax;
 	size_t nc = nrows * ncols;
@@ -740,7 +739,6 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			addWarning("detected values outside of the limits of datatype " + datatype);
 		}
 	}
-
 
 	int hasNA=0;
 	double na = source[0].gdalconnection->GetRasterBand(1)->GetNoDataValue(&hasNA);
@@ -782,10 +780,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			//std::vector<int8_t> vv(vals.begin(), vals.end());
 			std::vector<int8_t> vv;
 			tmp_min_max_na(vv, vals, na, 0, 255);
-
 			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Byte, nl, NULL, 0, 0, 0, NULL );
-
-
 		} else {
 			setError("bad datatype");
 			GDALClose( source[0].gdalconnection );

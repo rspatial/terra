@@ -261,6 +261,7 @@ RCPP_MODULE(spat){
 		.field("datatype_set", &SpatOptions::datatype_set)
 		.field("threads", &SpatOptions::threads)
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
+		.field("progressbar", &SpatOptions::progressbar)
 		.property("ncopies", &SpatOptions::get_ncopies, &SpatOptions::set_ncopies)
 
 		.property("def_filetype", &SpatOptions::get_def_filetype, &SpatOptions::set_def_filetype )

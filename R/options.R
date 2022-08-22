@@ -12,14 +12,13 @@
 }
 
 .options_names <- function() {
-	c("progress", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid") #, "append")
+	c("progress", "progressbar", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid") #, "append")
 }
 
 
 .setOptions <- function(x, wopt) {
 
 	nms <- names(wopt)
-
 	g <- which(nms == "gdal")
 	if (length(g) > 0) {
 		gopt <- unlist(wopt[g])
@@ -56,7 +55,6 @@
 			x$datatype_set = TRUE;
 		}
 	}
-
 	x
 }
 

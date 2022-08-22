@@ -222,6 +222,7 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 	}
 
 	if (opt.progressbar) {
+		Rcpp::Rcout << "pb" << std::endl;
 		unsigned long steps = bs.n+2;
 		pbar = new Progress(steps, opt.show_progress(bs.n));
 		pbar->increment();
@@ -260,6 +261,7 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 		success = writeValuesMem(vals, startrow, nrows);
 	}
 
+//return success;
 #ifdef useRcpp
 	if (progressbar) {
 		if (Progress::check_abort()) {
