@@ -22,7 +22,7 @@ An alternative way to plot RGB images is to first use \code{\link{colorize}} to 
 \S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, 
 		stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, 
 		addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", 
-		asp=NULL, add=FALSE, interpolate, ...)
+		asp=NULL, add=FALSE, xlim, ylim,...)
 }
 
 \arguments{
@@ -48,7 +48,8 @@ An alternative way to plot RGB images is to first use \code{\link{colorize}} to 
   \item{ylab}{character. Label of y-axis}
   \item{asp}{numeric. Aspect (ratio of x and y. If NULL, and appropriate value is computed to match data for the longitude/latitude coordinate reference system, and 1 for planar coordinate reference systems}
   \item{add}{logical. If \code{TRUE} add values to current plot}
-  \item{interpolate}{logical. Do not use, to be removed}
+  \item{xlim}{numeric. min and max values to set the extent of the x-axis}
+  \item{ylim}{numeric. min and max values to set the extent of  the y-axis}
   \item{...}{graphical parameters as in \code{\link{plot}} or \code{\link{rasterImage}}}
 }
 

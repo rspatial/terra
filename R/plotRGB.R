@@ -36,7 +36,7 @@
 
 
 setMethod("plotRGB", signature(x="SpatRaster"),
-function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, xlim, ylim, ...) {
+function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, xlim, ylim, ...) {
 
 	x <- x[[c(r, g, b, a)]]
 
@@ -150,11 +150,6 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 			#graphics::axis(3, at=xticks, labels=FALSE, lwd.ticks=0)
 			#graphics::axis(4, at=yticks, labels=FALSE, lwd.ticks=0)
 			graphics::box()
-		}
-	}
-	if (!missing(interpolate)) { # for backwards compatibility
-		if (is.logical(interpolate)) {
-			smooth <- interpolate
 		}
 	}
 	graphics::rasterImage(z, bb[1], bb[3], bb[2], bb[4], interpolate=smooth, ...)
