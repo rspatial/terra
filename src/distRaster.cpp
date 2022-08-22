@@ -1805,78 +1805,83 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 		double lat, lon, azi, s12, azi2;
 
 		// not checking for empty points
-
 		for (size_t i=0; i<npts; i++) {
 			if (std::isnan(xy[0][i] || std::isnan(xy[1][i]) || (xy[1][i]) > 90) || (xy[1][i] < -90)) {
 				out.addGeom(SpatGeom(polygons));
 			} else {
 				std::vector<double> ptx;
 				std::vector<double> pty;
-				ptx.reserve(n);
-				pty.reserve(n);
 				geod_inverse(&gd, xy[1][i], xy[0][i],  90, xy[0][i], &s12, &azi, &azi2);
 				bool npole = s12 < d[i];
 				geod_inverse(&gd, xy[1][i], xy[0][i], -90, xy[0][i], &s12, &azi, &azi2);
 				bool spole = s12 < d[i];
+
 				if (npole && spole) {
-					ptx = std::vector<double> {-180,  0, 180, 180, 180,   0, -180, -180};
-					pty = std::vector<double> {  90, 90,  90,   0, -90, -90,  -90,    0};
-					npole = false;
-					spole = false;
+					ptx = std::vector<double> {-180,  0, 180, 180, 180,   0, -180, -180, -180};
+					pty = std::vector<double> {  90, 90,  90,   0, -90, -90,  -90,    0,   90};
+					g.reSetPart(SpatPart(ptx, pty));
+					out.addGeom(g);
+					//npole = false;
+					//spole = false;
 				} else {
+					ptx.reserve(n);
+					pty.reserve(n);
 					for (size_t j=0; j < n; j++) {
 						geod_direct(&gd, xy[1][i], xy[0][i], brng[j], d[i], &lat, &lon, &azi);
 						ptx.push_back(lon);
 						pty.push_back(lat);
 					}
-				}
-				if (npole) {
-					sort_unique_2d(ptx, pty);
-					if (ptx[ptx.size()-1] < 180) {
-						ptx.push_back(180);
-						pty.push_back(pty[pty.size()-1]);
-					}
-					ptx.push_back(180);
-					pty.push_back(90);
-					ptx.push_back(-180);
-					pty.push_back(90);
-					if (ptx[0] > -180) {
-						ptx.push_back(-180);
-						pty.push_back(pty[0]);
-					}
-					ptx.push_back(ptx[0]);
-					pty.push_back(pty[0]);
-					g.reSetPart(SpatPart(ptx, pty));
-					out.addGeom(g);
-				} else if (spole) {
-					sort_unique_2d(ptx, pty);
-					if (ptx[ptx.size()-1] < 180) {
-						ptx.push_back(180);
-						pty.push_back(pty[pty.size()-1]);
-					}
-					ptx.push_back(180);
-					pty.push_back(-90);
-					ptx.push_back(-180);
-					pty.push_back(-90);
-					if (ptx[0] > -180) {
-						ptx.push_back(-180);
-						pty.push_back(pty[0]);
-					}
-					ptx.push_back(ptx[0]);
-					pty.push_back(pty[0]);
-					g.reSetPart(SpatPart(ptx, pty));
-					out.addGeom(g);
-				} else {
-					ptx.push_back(ptx[0]);
-					pty.push_back(pty[0]);
-					bool split = fix_date_line(g, ptx, pty);
-					if (split & no_multipolygons) {
-						for (size_t j=0; j<g.parts.size(); j++) {
-							SpatGeom gg(g.parts[j], polygons);
-							out.addGeom(gg);
+					if (npole) {
+						sort_unique_2d(ptx, pty);
+						if (ptx[ptx.size()-1] < 180) {
+							ptx.push_back(180);
+							pty.push_back(pty[pty.size()-1]);
 						}
-					} else {
+						ptx.push_back(180);
+						pty.push_back(90);
+						ptx.push_back(-180);
+						pty.push_back(90);
+						if (ptx[0] > -180) {
+							ptx.push_back(-180);
+							pty.push_back(pty[0]);
+						}
+						ptx.push_back(ptx[0]);
+						pty.push_back(pty[0]);
+						g.reSetPart(SpatPart(ptx, pty));
 						out.addGeom(g);
+					} else if (spole) {
+						sort_unique_2d(ptx, pty);
+						if (ptx[ptx.size()-1] < 180) {
+							ptx.push_back(180);
+							pty.push_back(pty[pty.size()-1]);
+						}
+						ptx.push_back(180);
+						pty.push_back(-90);
+						ptx.push_back(-180);
+						pty.push_back(-90);
+						if (ptx[0] > -180) {
+							ptx.push_back(-180);
+							pty.push_back(pty[0]);
+						}
+						ptx.push_back(ptx[0]);
+						pty.push_back(pty[0]);
+						g.reSetPart(SpatPart(ptx, pty));
+						out.addGeom(g);
+					} else {
+						ptx.push_back(ptx[0]);
+						pty.push_back(pty[0]);
+						bool split = false;
+						try {
+							split = fix_date_line(g, ptx, pty);
+						} catch(...) {}
+						if (split & no_multipolygons) {
+							for (size_t j=0; j<g.parts.size(); j++) {
+								SpatGeom gg(g.parts[j], polygons);
+								out.addGeom(gg);
+							}
+						} else {
+							out.addGeom(g);
+						}
 					}
 				}
 			}
