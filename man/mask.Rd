@@ -34,9 +34,9 @@ Select geometries of \code{x} that intersect, or not intersect, with the geometr
 \item{x}{SpatRaster or SpatVector}
 \item{mask}{SpatRaster or SpatVector}
 \item{inverse}{logical. If \code{TRUE}, areas on mask that are _not_ the \code{maskvalue} are masked}
-\item{maskvalues}{numeric. The value(s) in \code{mask} that indicates the cells of \code{x} that should become \code{updatevalue} (default = \code{NA})}
-\item{updatevalue}{numeric. The value that cells of \code{x} should become if they are not covered by \code{mask} (and not \code{NA})}
- \item{touches}{logical. If \code{TRUE}, all cells touched by lines or polygons will be masked, not just those on the line render path, or whose center point is within the polygon}
+\item{maskvalues}{numeric. The value(s) in \code{mask} that indicate which cells of \code{x} should be maked (change their value to \code{updatevalue} (default = \code{NA}))}
+\item{updatevalue}{numeric. The value that masked cells should become (if they are not \code{NA})}
+\item{touches}{logical. If \code{TRUE}, all cells touched by lines or polygons will be masked, not just those on the line render path, or whose center point is within the polygon}
 \item{filename}{character. Output filename}
 \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
