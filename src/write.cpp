@@ -222,7 +222,6 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 	}
 
 	if (opt.progressbar) {
-		Rcpp::Rcout << "pb" << std::endl;
 		unsigned long steps = bs.n+2;
 		pbar = new Progress(steps, opt.show_progress(bs.n));
 		pbar->increment();
