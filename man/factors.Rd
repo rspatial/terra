@@ -48,7 +48,7 @@ To set categories for the first layer of a SpatRaster, you can provide \code{lev
   \item{x}{SpatRaster}
   \item{layer}{positive integer, the layer number or name}
   \item{active}{logical. If \code{TRUE}, only return the active category}
-  \item{value}{a data.frame (ID, category) or vector with category names}
+  \item{value}{a data.frame (ID, category) that define the categories. Or \code{NULL} to remove them}
   \item{index}{positive integer, indicating the column in \code{data.frame} \code{value} to be used as the (active) category, (not counting the first column with the cell values)}
 }  
 
