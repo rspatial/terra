@@ -475,7 +475,7 @@ SpatRaster SpatRaster::weighted_mean(std::vector<double> w, bool narm, SpatOptio
 	}
 
 	unsigned nl = nlyr();
-	if (nl == 1) return *this;
+	//if (nl == 1) return *this; this is not consistent if weight is zero
 	recycle(w, nl);
 
 	if (narm) {
@@ -494,12 +494,12 @@ SpatRaster SpatRaster::weighted_mean(std::vector<double> w, bool narm, SpatOptio
 		}
 		unsigned nc = ncol();
 
-		for (size_t i = 0; i<out.bs.n; i++) {
+		for (size_t i=0; i<out.bs.n; i++) {
 			std::vector<double> v;
 			readBlock(v, out.bs, i);
 			size_t off = out.bs.nrows[i] * nc;
-			std::vector<double> wm(0, off);
-			std::vector<double> wv(0, off);
+			std::vector<double> wm(off, 0);
+			std::vector<double> wv(off, 0);
 			for (size_t j=0; j<nl; j++) {
 				size_t start = j * off;
 				size_t end = start + off;
