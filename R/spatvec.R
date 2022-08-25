@@ -207,11 +207,31 @@ setMethod("centroids", signature(x="SpatVector"),
 
 
 
-
 setMethod("densify", signature(x="SpatVector"),
 	function(x, interval, equalize=TRUE) {
 		x@ptr <- x@ptr$densify(interval, equalize)
 		messages(x)
 	}
 )
+
+setMethod("normalize_dateline", signature(x="SpatVector"),
+	function(x) {
+		if (nrow(x) == 0) return(deepcopy(x))
+		nc <- ncol(x)
+		fname <- "uuu-_123_uqq_-agg_-id123"
+		x[[fname]] <- 1:nrow(x)
+		d <- values(x)
+		out <- x[,fname]
+		out@ptr <- out@ptr$normalize_dateline()
+		out <- messages(out)
+		a <- aggregate(out, fname, count=FALSE)
+		if (nc > 0) {
+			a <- merge(a, d, by=fname)
+		}
+		a[[fname]] <- NULL
+		a
+	}
+)
+
+
 

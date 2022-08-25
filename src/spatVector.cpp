@@ -213,6 +213,8 @@ SpatVector::SpatVector(SpatGeom g) {
 	addGeom(g);
 }
 
+
+
 /*
 SpatVector::SpatVector(const SpatVector &x) {
 	srs = x.srs;
@@ -356,6 +358,11 @@ bool SpatVector::setGeom(SpatGeom p) {
 	extent = p.extent;
 	return true;
 }
+
+void SpatVector::reserve(size_t n) {
+	geoms.reserve(n);
+}
+
 
 void SpatVector::computeExtent() {
 	if (geoms.size() == 0) return;
@@ -1212,6 +1219,28 @@ SpatVector SpatVector::round(int digits) {
 		}
 	}
 	return(out);
+}
+
+
+SpatVector SpatVector::normalize_dateline() {
+	SpatVector out = *this;
+	SpatExtent e = {180, 361, -91, 91};
+	SpatVector x = out.crop(e);
+	if (x.nrow() > 0) {
+		x = x.shift(-360, 0);
+		SpatVector v(e, "");
+		out = out.erase(v);
+		out = out.append(x, true);
+	}
+	e = {-360, -180, -91, 91};
+	x = out.crop(e);
+	if (x.nrow() > 0) {
+		x = x.shift(360, 0);
+		SpatVector v(e, "");
+		out = out.erase(v);
+		out = out.append(x, true);
+	}
+	return out;
 }
 
 
