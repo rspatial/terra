@@ -370,6 +370,7 @@ RCPP_MODULE(spat){
 		.method("boundary", &SpatVector::boundary)
 		.method("polygonize", &SpatVector::polygonize)
 		.method("normalize", &SpatVector::normalize)
+		.method("normalize_dateline", &SpatVector::normalize_dateline)
 		.method("line_merge", &SpatVector::line_merge)
 		.method("simplify", &SpatVector::simplify)
 		.method("thin", &SpatVector::thin)

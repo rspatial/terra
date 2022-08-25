@@ -195,7 +195,7 @@ aggregate_attributes <- function(d, by, fun=NULL, count=TRUE, ...) {
 	if (count) {
 		dn <- aggregate(d[, by[1],drop=FALSE], d[, by, drop=FALSE], length)
 		colnames(dn)[ncol(dn)] = "agg_n"
-		if (NCOL(da ) > 1) {
+		if (NCOL(da) > 1) {
 			if (nrow(dn) > 0) {
 				dn <- merge(da, dn, by=by)
 			} else {
@@ -238,7 +238,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 				error("aggregate", "by should be character or numeric")
 			}
 
-			d <- as.data.frame(x)
+			d <- values(x)
 			mvars <- FALSE
 			if (length(iby) > 1) {
 				cvar <- apply(d[, iby], 1, function(i) paste(i, collapse="_"))
@@ -270,7 +270,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 			if (mvars) {
 				a[[by]] <- NULL
 			}
-			values(x) <- a[i,]
+			values(x) <- a[i,,drop=FALSE]
 		}
 		x
 	}

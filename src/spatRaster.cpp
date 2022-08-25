@@ -1992,6 +1992,7 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	std::vector<double> cells(ncell()) ;
 	std::iota (std::begin(cells), std::end(cells), 0);
 	std::vector< std::vector<double> > xy = xyFromCell(cells);
+	vect.reserve(cells.size());
 	for (int i=nc-1; i>=0; i--) {
 		if (narm) {
 			bool erase;

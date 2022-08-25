@@ -131,9 +131,6 @@ class SpatVector {
 		unsigned nxy();
 
 		SpatVector deepCopy() {return *this;}
-		void reserve(size_t n) {
-			geoms.reserve(n);
-		}	
 
 		SpatExtent getExtent();
 //		bool is_geographic();
@@ -185,6 +182,7 @@ class SpatVector {
 
 		std::vector<double> area(std::string unit, bool transform, std::vector<double> mask);
 
+		void reserve(size_t n);
 		std::vector<double> length();
 		std::vector<double> distance(SpatVector x, bool pairwise);
 		std::vector<double> distance(bool sequential);
@@ -278,6 +276,7 @@ class SpatVector {
 		SpatVector transpose();
 		SpatVector flip(bool vertical);	
 		SpatVector rotate(double angle, double x0, double y0);
+		SpatVector normalize_dateline();
 
 //ogr 
 		std::vector<bool> is_valid();
