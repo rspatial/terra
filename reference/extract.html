@@ -58,7 +58,7 @@ When argument y is a SpatVector the first column has the ID (record number) of t
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,SpatVector</span>
 <span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, fun<span class="op">=</span><span class="cn">NULL</span>, method<span class="op">=</span><span class="st">"simple"</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>,
     ID<span class="op">=</span><span class="cn">TRUE</span>, weights<span class="op">=</span><span class="cn">FALSE</span>, exact<span class="op">=</span><span class="cn">FALSE</span>, touches<span class="op">=</span><span class="fu"><a href="geomtype.html">is.lines</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>,
-  layer<span class="op">=</span><span class="cn">NULL</span>, bind<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
+  layer<span class="op">=</span><span class="cn">NULL</span>, bind<span class="op">=</span><span class="cn">FALSE</span>, raw<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,SpatExtent</span>
 <span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
@@ -111,13 +111,16 @@ When argument y is a SpatVector the first column has the ID (record number) of t
 <dt>bind</dt>
 <dd><p>logical. If <code>TRUE</code>, a SpatVector is returned consisting of the input SpatVector <code>y</code> and the <code>cbind</code>-ed extracted values</p></dd>
 
+<dt>raw</dt>
+<dd><p>logical. If <code>TRUE</code>, a matrix is returned with the "raw" numeric cell values. If <code>FALSE</code>, a data.frame is returned and teh cell values are transformed to factor, logical, or integer values, where appropriate</p></dd>
+
 <dt>...</dt>
 <dd><p>additional arguments to <code>fun</code> if <code>y</code> is a SpatVector. For example <code>na.rm=TRUE</code>. Or arguments passed to the <code>SpatRaster,SpatVector</code> method if <code>y</code> is a matrix (such as the <code>method</code> and <code>cells</code> arguments)</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>data.frame or SpatVector</p>
+    <p>data.frame, matrix or SpatVector</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
