@@ -94,7 +94,7 @@ wmax <- function(p, na.rm=FALSE) {
 
 
 
-extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NULL) {
+extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NULL, raw=FALSE) {
 
 	#value <- match.arg(tolower(value), c("data.frame", "list", "matrix"))
 	method <- match.arg(tolower(method), c("simple", "bilinear"))
@@ -146,10 +146,12 @@ extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NUL
 	}
 	colnames(e) <- cn
 
-	if (method != "simple") {
-		e <- as.data.frame(e)
-	} else {
-		e <- .makeDataFrame(x, e)
+	if (!raw) {
+		if (method != "simple") {
+			e <- as.data.frame(e)
+		} else {
+			e <- .makeDataFrame(x, e)
+		}
 	}
 
 	if (useLyr) {
@@ -174,7 +176,7 @@ function(x, y, ...) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
-function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, ...) {
+function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, raw=FALSE, ...) {
 
 #	value <- match.arg(tolower(value), c("data.frame", "matrix", "spatvector"))
 #	if (value == "matrix") {
@@ -182,7 +184,8 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 #	} else {
 #		factors <- TRUE	
 #	}
-
+	if (bind) raw=FALSE 
+	
 	nl <- nlyr(x)
 	useLyr <- FALSE
 	geo <- geomtype(y)
@@ -325,12 +328,13 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		e[, cncell] <- e[, cncell] + 1
 	}
 
-#	if (value != "matrix") {
-	if (hasfun || method != "simple") {
-		e <- as.data.frame(e)
-	} else {
-		id <- data.frame(e[,1,drop=FALSE])
-		e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE]))
+	if (!raw) {
+		if (hasfun || (method != "simple")) {
+			e <- as.data.frame(e)
+		} else {
+			id <- data.frame(e[,1,drop=FALSE])
+			e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE]))
+		}
 	}
 
 	if (useLyr) {
@@ -351,7 +355,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		}
 	} else if (!ID) {
 		if (ncol(e) > nlyr(x)) {
-			e$ID <- NULL
+			e <- e[,-1,drop=FALSE]
 		}
 	}
 	e
