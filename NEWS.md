@@ -4,6 +4,7 @@
 
 - `droplevels` for SpatRaster. [#757](https://github.com/rspatial/terra/issues/757) by Rodolfo Jaffe.
 - new method `which.related` for SpatVectors. 
+- new method `normalize.longitude` for SpatVector. 
 
 ## enhancements
 

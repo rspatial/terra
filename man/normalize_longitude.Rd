@@ -1,9 +1,9 @@
-\name{normalize_longitude}
+\name{normalize.longitude}
 
 \docType{methods}
 
-\alias{normalize_longitude}
-\alias{normalize_longitude,SpatVector-method}
+\alias{normalize.longitude}
+\alias{normalize.longitude,SpatVector-method}
 
 \title{normalize vector data that crosses the dateline}
 
@@ -12,10 +12,12 @@ Normalize the longitude of geometries, that is move geometries to a bounding box
 } 
 
 \usage{
-\S4method{normalize_longitude}{SpatVector}()
+\S4method{normalize.longitude}{SpatVector}(x)
 }
 
-
+\arguments{
+  \item{x}{SpatVector}
+}
 
 \value{SpatVector}
 

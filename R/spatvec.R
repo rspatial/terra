@@ -214,7 +214,7 @@ setMethod("densify", signature(x="SpatVector"),
 	}
 )
 
-setMethod("normalize_longitude", signature(x="SpatVector"),
+setMethod("normalize.longitude", signature(x="SpatVector"),
 	function(x) {
 		if (nrow(x) == 0) return(deepcopy(x))
 		nc <- ncol(x)
