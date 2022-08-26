@@ -27,8 +27,12 @@ Create a Virtual Raster Dataset (VRT) from a collection of file-based raster dat
 SpatRaster
 }
 
+\note{
+A VRT can reference very many datasets. These are not all opened at the same time. The default is to open not more than 100 files. To increase performance, this maximum limit can be increased by setting the GDAL_MAX_DATASET_POOL_SIZE configuration option to a bigger value with \code{\link{setGDALconfig}}. Note that a typical user process on Linux is limited to 1024 simultaneously opened files.
+}
+
 \seealso{
-\code{\link{makeTiles}} to create tiles; \code{\link{makeVRT}} to create a .vrt file for a file without a header
+\code{\link{makeTiles}} to create tiles; \code{\link{makeVRT}} to create a .vrt file for a binary raster file that does not have a header file.
 }
 
 \examples{
@@ -38,6 +42,10 @@ x <- rast(ncols=2, nrows=2)
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
+
+#vrtfile <- paste0(tempfile(), ".vrt")
+#v <- vrt(ff, vrtfile)
+
 
 ## output in lower resolution
 #vrtfile <- paste0(tempfile(), ".vrt")
