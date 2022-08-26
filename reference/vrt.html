@@ -78,9 +78,13 @@
 
 <p>SpatRaster</p>
     </div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>A VRT can reference very many datasets. These are not all opened at the same time. The default is to open not more than 100 files. To increase performance, this maximum limit can be increased by setting the GDAL_MAX_DATASET_POOL_SIZE configuration option to a bigger value with <code><a href="gdal.html">setGDALconfig</a></code>. Note that a typical user process on Linux is limited to 1024 simultaneously opened files.</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="makeTiles.html">makeTiles</a></code> to create tiles; <code><a href="makeVRT.html">makeVRT</a></code> to create a .vrt file for a file without a header</p></div>
+    <div class="dont-index"><p><code><a href="makeTiles.html">makeTiles</a></code> to create tiles; <code><a href="makeVRT.html">makeVRT</a></code> to create a .vrt file for a binary raster file that does not have a header file.</p></div>
     </div>
 
     <div id="ref-examples">
@@ -91,10 +95,14 @@
 <span class="r-in"><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"_.tif"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="makeTiles.html">makeTiles</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span>, <span class="va">filename</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">ff</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpsyrkkV/file8fcc78bf2a78_1.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpsyrkkV/file8fcc78bf2a78_2.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpsyrkkV/file8fcc78bf2a78_3.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpsyrkkV/file8fcc78bf2a78_4.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpsBercy/file8c2d5cd0411d_1.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpsBercy/file8c2d5cd0411d_2.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpsBercy/file8c2d5cd0411d_3.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpsBercy/file8c2d5cd0411d_4.tif"</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">#vrtfile &lt;- paste0(tempfile(), ".vrt")</span></span>
+<span class="r-in"><span class="co">#v &lt;- vrt(ff, vrtfile)</span></span>
+<span class="r-in"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## output in lower resolution</span></span>
 <span class="r-in"><span class="co">#vrtfile &lt;- paste0(tempfile(), ".vrt")</span></span>
