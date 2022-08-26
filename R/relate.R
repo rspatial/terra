@@ -88,6 +88,18 @@ setMethod("relate", signature(x="SpatVector", y="SpatVector"),
 )
 
 
+setMethod("which.related", signature(x="SpatVector", y="SpatVector"),
+	function(x, y, relation) {
+		out <- x@ptr$which_related(y@ptr, relation)
+		x <- messages(x, "which.related")
+		out <- do.call(cbind, out) + 1
+		colnames(out) <- c("id.x", "id.y")
+		out
+	}
+)
+
+
+
 setMethod("relate", signature(x="SpatVector", y="SpatExtent"),
 	function(x, y, relation, ...) {
 		y <- as.polygons(y)

@@ -25,21 +25,28 @@
 \alias{is.related,SpatExtent,SpatRaster-method}
 \alias{is.related,SpatRaster,SpatExtent-method}
 
+\alias{which.related,SpatVector,SpatVector-method}
 
 \title{ 
 Spatial relationships between geometries
 }
 
 \description{
-This method returns a boolean matrix indicating the presence or absence of a specific spatial relationships between geometries.
+\code{relate} returns a logical matrix indicating the presence or absence of a specific spatial relationships between the geometries in \code{x} and \code{y}. 
+
+\code{is.relate} returns a logical vector indicating the presence or absence of a specific spatial relationships between \code{x} and any of the geometries in \code{y}
+
+\code{which.related} returns a two-column matrix with the related pairs of geometries in \code{x} and \code{y}
 }
 
 \usage{
 \S4method{relate}{SpatVector,SpatVector}(x, y, relation)
 
+\S4method{relate}{SpatVector,missing}(x, y, relation, pairs=FALSE, symmetrical=FALSE)
+
 \S4method{is.related}{SpatVector,SpatVector}(x, y, relation)
 
-\S4method{relate}{SpatVector,missing}(x, y, relation, pairs=FALSE, symmetrical=FALSE)
+\S4method{which.related}{SpatVector,SpatVector}(x, y, relation)
 }
 
 \arguments{
@@ -51,7 +58,7 @@ This method returns a boolean matrix indicating the presence or absence of a spe
 } 
 
 \value{
-matrix (relate) or vector (is.related)
+matrix (relate; which.related) or vector (is.related)
 }
 
 \seealso{

@@ -560,25 +560,30 @@ function(x, i, j, ..., drop=FALSE) {
 setMethod("extract", c("SpatVector", "SpatVector"),
 function(x, y, ...) {
 
-	#r <- relate(y, x, "within")
-	#e <- apply(r, 1, which)
-	r <- relate(x, y, "covers")
-	e <- apply(r, 2, which)
-	if (length(e) == 0) {
-		e <- list(e)
-	}
-	if (is.list(e)) {
-		e <- lapply(1:length(e), function(i) {
-			if (length(e[[i]]) == 0) {
-				cbind(i, NA)
-			} else {
-				cbind(i, e[[i]])
-			}
-		})
-		e <- do.call(rbind, e)
+#	r <- relate(x, y, "covers")
+#	e <- apply(r, 2, which)
+	e <- y@ptr$which_related(x@ptr, "coveredby")
+	if (length(e[[1]]) == 0) {
+		e <- cbind(0,0)[0,,drop=F]
 	} else {
-		e <- cbind(1:nrow(y), e)
+		e <- do.call(cbind, e) + 1
 	}
+	
+#	if (length(e) == 0) {
+#		e <- list(e)
+#	}
+#	if (is.list(e)) {
+#		e <- lapply(1:length(e), function(i) {
+#			if (length(e[[i]]) == 0) {
+#				cbind(i, NA)
+#			} else {
+#				cbind(i, e[[i]])
+#			}
+#		})
+#		e <- do.call(rbind, e)
+#	} else {
+#		e <- cbind(1:nrow(y), e)
+#	}
 	if (ncol(x) > 0) {
 		d <- as.data.frame(x)
 		e <- data.frame(id.y=e[,1], d[e[,2], ,drop=FALSE])

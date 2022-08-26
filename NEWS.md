@@ -1,14 +1,24 @@
-# version 1.6-8
+# version 1.6-11
 
 ## new
 
 - `droplevels` for SpatRaster. [#757](https://github.com/rspatial/terra/issues/757) by Rodolfo Jaffe.
+- new method `which.related` for SpatVectors. 
+
+## enhancements
+
+- new argument `raw=FALSE` to `extract<SpatRaster>` [#776](https://github.com/rspatial/terra/issues/776) by Thomas Roh.
 
 ## bug fixes 
 
 - all.equal bug [#756](https://github.com/rspatial/terra/pull/756) fixed by John Baums
 - extract<"SpatRaster","sf"> ignored the ID argument. [#755](https://github.com/rspatial/terra/issues/755) by Dainius Masiliūnas.
 - There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file [#760](https://github.com/rspatial/terra/issues/760) by John Baums
+- `vrt` is no longer constrained by the maximum number of files that can be opened [780](https://github.com/rspatial/terra/issues/780)
+- `weighted.mean` crashed with numeric weights and na.rm=TRUE [#777](https://github.com/rspatial/terra/issues/777) by David Holstius
+
+
+
 
 # version 1.6-7
 
