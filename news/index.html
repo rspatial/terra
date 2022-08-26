@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-11</span>
       </span>
     </div>
 
@@ -48,16 +48,26 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-8" id="version-16-8">version 1.6-8<a class="anchor" aria-label="anchor" href="#version-16-8"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-11" id="version-16-11">version 1.6-11<a class="anchor" aria-label="anchor" href="#version-16-11"></a></h2>
 <div class="section level3">
-<h3 id="new-1-6-8">new<a class="anchor" aria-label="anchor" href="#new-1-6-8"></a></h3>
+<h3 id="new-1-6-11">new<a class="anchor" aria-label="anchor" href="#new-1-6-11"></a></h3>
 <ul><li>
-<code>droplevels</code> for SpatRaster. <a href="https://github.com/rspatial/terra/issues/757" class="external-link">#757</a> by Rodolfo Jaffe.</li></ul></div>
+<code>droplevels</code> for SpatRaster. <a href="https://github.com/rspatial/terra/issues/757" class="external-link">#757</a> by Rodolfo Jaffe.</li>
+<li>new method <code>which.related</code> for SpatVectors.</li>
+</ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-8">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-8"></a></h3>
+<h3 id="enhancements-1-6-11">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-11"></a></h3>
+<ul><li>new argument <code>raw=FALSE</code> to <code>extract&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/issues/776" class="external-link">#776</a> by Thomas Roh.</li></ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-6-11">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-11"></a></h3>
 <ul><li>all.equal bug <a href="https://github.com/rspatial/terra/pull/756" class="external-link">#756</a> fixed by John Baums</li>
 <li>extract&lt;“SpatRaster”,“sf”&gt; ignored the ID argument. <a href="https://github.com/rspatial/terra/issues/755" class="external-link">#755</a> by Dainius Masiliūnas.</li>
 <li>There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file <a href="https://github.com/rspatial/terra/issues/760" class="external-link">#760</a> by John Baums</li>
+<li>
+<code>vrt</code> is no longer constrained by the maximum number of files that can be opened <a href="https://github.com/rspatial/terra/issues/780" class="external-link">780</a>
+</li>
+<li>
+<code>weighted.mean</code> crashed with numeric weights and na.rm=TRUE <a href="https://github.com/rspatial/terra/issues/777" class="external-link">#777</a> by David Holstius</li>
 </ul></div>
 </div>
     <div class="section level2">
