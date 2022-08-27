@@ -26,7 +26,7 @@ Normalize the longitude of geometries, that is move geometries to a bounding box
 
 \examples{
 p <- vect("POLYGON ((120 10, 230 75, 230 -75, 120 10))")
-normalize_longitude(p)
+normalize.longitude(p)
 }
 
 \keyword{methods}

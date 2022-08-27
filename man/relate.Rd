@@ -3,6 +3,7 @@
 \docType{methods}
 
 \alias{relate}
+\alias{which.related}
 \alias{is.related}
 
 \alias{relate,SpatVector,SpatVector-method}
