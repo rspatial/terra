@@ -75,8 +75,12 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((120 10, 230 75, 230 -75, 120 10))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">normalize_longitude</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in normalize_longitude(p):</span> could not find function "normalize_longitude"</span>
+<span class="r-in"><span class="fu">normalize.longitude</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 1, 0  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : -180, 180, -75, 75  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. :  </span>
 </code></pre></div>
     </div>
   </div>
