@@ -825,7 +825,12 @@ bool SpatRaster::writeStopGDAL() {
 				if (datatype.substr(0,3) == "INT") {
 					source[0].range_min[i] = trunc(source[0].range_min[i]);
 					source[0].range_max[i] = trunc(source[0].range_max[i]);
-				}
+				} else if (datatype == "FLT4S") {
+					float x = source[0].range_min[i];
+					source[0].range_min[i] = x; // match precision
+					x = source[0].range_max[i];
+					source[0].range_max[i] = x;
+				}				
 				poBand->SetStatistics(source[0].range_min[i], source[0].range_max[i], -9999., -9999.);
 			}
 			source[0].hasRange[i] = true;
