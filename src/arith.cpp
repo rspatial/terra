@@ -1333,21 +1333,14 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, SpatOptions
 	}
 	BlockSize bs = getBlockSize(opt);
 
-	std::vector<bool> hr = hasRange();
-	bool hasR = true;
-	for (size_t i=0; i<hr.size(); i++) {
-		if (!hr[i]) hasR = false;
-	}
-	if (!hasR) {
-		setRange(opt);
-	}
-
 	std::vector<double> val;
-	if (what == "min") {
-		val = range_min();
+	bool domin = what == "min";
+	if (domin) {
+		val.resize(nl, std::numeric_limits<double>::max());
 	} else {
-		val = range_max();
+		val.resize(nl, std::numeric_limits<double>::lowest());
 	}
+	
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, bs, i);
@@ -1355,10 +1348,33 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, SpatOptions
 		size_t boff = i * lyrsize;
 		for (size_t j=0; j<nl; j++) {
 			size_t off = j * lyrsize;
-			for (size_t k=off; k<(off+lyrsize); k++) {
-				if (!std::isnan(v[k]) && (v[k] == val[j])) {
-					double cell = k - off + boff;
-					out[j].push_back(cell);
+			if (domin) {
+				for (size_t k=off; k<(off+lyrsize); k++) {
+					if (!std::isnan(v[k])) {
+						if (v[k] < val[j]) {
+							val[j] = v[k];
+							out[j].resize(0);
+							double cell = k - off + boff;							
+							out[j].push_back(cell);
+						} else if (v[k] == val[j]) {
+							double cell = k - off + boff;							
+							out[j].push_back(cell);					
+						}
+					}
+				}
+			} else {
+				for (size_t k=off; k<(off+lyrsize); k++) {
+					if (!std::isnan(v[k])) {
+						if (v[k] > val[j]) {
+							val[j] = v[k];
+							out[j].resize(0);
+							double cell = k - off + boff;							
+							out[j].push_back(cell);
+						} else if (v[k] == val[j]) {
+							double cell = k - off + boff;							
+							out[j].push_back(cell);					
+						}
+					}
 				}
 			}
 		}

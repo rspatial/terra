@@ -10,7 +10,7 @@
 \title{Where are the cells with the min or max values?}
 
 \description{
-This method returns the cell numbers for the cells with the min or max values of a SpatRaster.
+This method returns the cell numbers for the cells with the min or max values of each layer in a SpatRaster.
 }
 
 
