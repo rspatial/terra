@@ -16,6 +16,7 @@ This method returns the cell numbers for the cells with the min or max values of
 
 \usage{
 \S4method{where.min}{SpatRaster}(x, list)
+
 \S4method{where.max}{SpatRaster}(x, list)
 }
 
