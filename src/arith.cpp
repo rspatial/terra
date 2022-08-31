@@ -1334,13 +1334,31 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, SpatOptions
 	BlockSize bs = getBlockSize(opt);
 
 	std::vector<double> val;
-	bool domin = what == "min";
-	if (domin) {
-		val.resize(nl, std::numeric_limits<double>::max());
-	} else {
-		val.resize(nl, std::numeric_limits<double>::lowest());
+	bool do_min = what == "min";
+
+	std::vector<bool> hr = hasRange();
+	bool hasR = true;
+	for (size_t i=0; i<hr.size(); i++) {
+		if (!hr[i]) {
+			hasR = false;
+			break;
+		}
 	}
-	
+	if (hasR) {
+		if (do_min) {
+			val = range_min();
+			for (double &d : val) d *= 1.00001;
+		} else {
+			val = range_max();
+			for (double &d : val) d *= 0.99999;
+		}
+	} else {
+		if (do_min) {
+			val.resize(nl, std::numeric_limits<double>::max());
+		} else {
+			val.resize(nl, std::numeric_limits<double>::lowest());
+		}
+	}
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, bs, i);
@@ -1348,7 +1366,7 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, SpatOptions
 		size_t boff = i * lyrsize;
 		for (size_t j=0; j<nl; j++) {
 			size_t off = j * lyrsize;
-			if (domin) {
+			if (do_min) {
 				for (size_t k=off; k<(off+lyrsize); k++) {
 					if (!std::isnan(v[k])) {
 						if (v[k] < val[j]) {
