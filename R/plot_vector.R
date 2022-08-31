@@ -35,23 +35,32 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 .plotLines <- function(x, out, lty=1, lwd=1, ...) {
-	if (nrow(x) == 0) return(out)
-	cols <- out$cols
-	if (is.null(cols)) cols = rep("black", length(x))
 
-	g <- geom(x, df=TRUE)
-	g <- split(g, g[,1])
-	g <- lapply(g, function(x) split(x, x[,2]))
-	#p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4], ...))
-	n <- length(g)
+	n <- nrow(x)
+	if (n == 0) return(out)
+	cols <- out$cols
+	if (is.null(cols)) cols = rep("black", n)
+
+	g <- lapply(x@ptr$get_linesList(), function(i) { names(i)=c("x", "y"); i } )
+
+#	g <- geom(x, df=TRUE)
+#	g <- split(g, g[,1])
+#	g <- lapply(g, function(x) split(x[,3:4], x[,2]))
+#	n <- length(g)
+
 	lty <- rep_len(lty, n)
 	lwd <- rep_len(lwd, n)
 	for (i in 1:n) {
-		x <- g[[i]]
-		for (j in 1:length(x)) {
-			lines(x[[j]][,3:4], col=out$main_cols[i], lwd=lwd[i], lty=lty[i], ...)
-		}
+		plot.xy(g[[i]], type="l", lty=lty[i], col=out$main_cols[i], lwd=lwd[i], ...)
 	}
+
+#	for (i in 1:n) {
+#		for (j in 1:length(g[[i]])) {
+#			lines(g[[i]][[j]], col=out$main_cols[i], lwd=lwd[i], lty=lty[i], ...)
+#		}
+#	}
+
+
 	out$leg$lwd <- lwd
 	out$leg$lty <- lty
 	out
@@ -62,7 +71,7 @@ setMethod("dots", signature(x="SpatVector"),
 	if (nrow(x) == 0) return(out)
 	g <- geom(x, df=TRUE)
 	g <- split(g, g[,1])
-	g <- lapply(g, function(y) split(y, y[,2]))
+	g <- lapply(g, function(y) split(y[,3:5], y[,2]))
 	n <- length(g)
 	if (!is.null(out$leg$border)) {
 		out$leg$border <- rep_len(out$leg$border, n)
@@ -83,18 +92,18 @@ setMethod("dots", signature(x="SpatVector"),
 		for (j in 1:length(gg)) {
 			a <- gg[[j]]
 			if (any(is.na(a))) next
-			if (any(a[,5] > 0)) {
-				a <- split(a, a[,5])
+			if (any(a[,3] > 0)) {
+				a <- split(a, a[,3])
 				a <- lapply(a, function(i) rbind(i, NA))
 				a <- do.call(rbind, a )
 				a <- a[-nrow(a), ]
 				# g[[i]][[1]] <- a
 			}
 			if (!is.null(out$leg$density)) {
-				graphics::polygon(a[,3:4], col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
-				graphics::polypath(a[,3:4], col=NA, rule="evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polygon(a[,1:2], col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polypath(a[,1:2], col=NA, rule="evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			} else {
-				graphics::polypath(a[,3:4], col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polypath(a[,1:2], col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
 		options("warn" = -1)

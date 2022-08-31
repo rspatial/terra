@@ -11,7 +11,8 @@ function(x, mx=10000, ...) {
 
 setMethod("lines", signature(x="SpatVector"),
 	function(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)  {
-		if (nrow(x) == 0) return(invisible(NULL))
+		n <- nrow(x)
+		if (n == 0) return(invisible(NULL))
 		gtype <- geomtype(x)
 		if (missing(col)) col <- "black"
 		if (!is.null(y)) {
@@ -33,24 +34,26 @@ setMethod("lines", signature(x="SpatVector"),
 		} else if (grepl("points", gtype)) {
 			points(x, col=col, type="l", lwd=lwd, lty=lty, alpha=alpha, ...)
 		} else {
-			n <- length(x)
 			col <- .getCols(n, col, alpha)
 			lwd <- rep_len(lwd, n)
 			lty <- rep_len(lty, n)
-			g <- geom(x, df=TRUE)
-			g <- split(g, g[,1])
-			if (gtype == "polygons") {
-				g <- lapply(g, function(x) split(x, x[,c(2,5)]))
-			} else {
-				g <- lapply(g, function(x) split(x, x[,2]))
-			}
-			#p <- sapply(g, function(x) lapply(x, function(y) graphics::lines(y[,3:4], ...)))
-			for (i in 1:length(g)) {
-				x <- g[[i]]
-				for (j in 1:length(x)) {
-					lines(x[[j]][,3:4], col=col[i], lwd=lwd[i], lty=lty[i], ...)
-				}
-			}
+			g <- lapply(x@ptr$get_linesList(), function(i) { names(i)=c("x", "y"); i } )
+			for (i in 1:n) {
+				plot.xy(g[[i]], type="l", lty=lty[i], col=col[i], lwd=lwd[i], ...)
+			}		
+			
+			#g <- geom(x, df=TRUE)
+			#g <- split(g, g[,1])
+			#if (gtype == "polygons") {
+			#	g <- lapply(g, function(x) split(x, x[,c(2,5)]))
+			#} else {
+			#	g <- lapply(g, function(x) split(x, x[,2]))
+			#}
+			#for (i in 1:length(g)) {
+			#	for (j in 1:length(g[[i]])) {
+			#		lines(g[[i]][[j]][,3:4], col=col[i], lwd=lwd[i], lty=lty[i], ...)
+			#	}
+			#}
 		}
 	}
 )
