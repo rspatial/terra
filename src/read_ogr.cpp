@@ -630,7 +630,11 @@ bool SpatVector::read(std::string fname, std::string layer, std::string query, s
     //OGRRegisterAll();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
-        setError("Cannot open this file as a SpatVector");
+		if (!file_exists(fname)) {
+			setError("file does not exist: " + fname);
+		} else {
+			setError("Cannot open this file as a SpatVector: " + fname);
+		}
 		return false;
     }
 	bool success = read_ogr(poDS, layer, query, extent, filter, as_proxy);
