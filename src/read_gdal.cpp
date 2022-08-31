@@ -645,7 +645,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
 		} else {
-			setError("cannot read from " + fname );
+			setError("cannot open this file as a SpatRaster: " + fname);
 		}
 		return false;
 	}
