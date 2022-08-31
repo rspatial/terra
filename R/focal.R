@@ -234,7 +234,9 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 
 	out <- rast(x, nlyr=outnl)
 	if (!is.null(nms)) {
-		names(out) <- nms
+		if (length(nms) <= outnl)) {
+			names(out) <- rep_len(nms, outnl) 
+		}
 	}
 	b <- writeStart(out, filename, overwrite, n=msz*4, sources=sources(x), wopt=wopt)
 
