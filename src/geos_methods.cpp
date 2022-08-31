@@ -700,7 +700,7 @@ SpatVector SpatVector::crop(SpatVector v) {
 
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 //	if ((type() != "polygons") & (type() != "mutlipolygons")) {
-	if ((type() != "polygons")) {
+	if ((v.type() != "polygons")) {
 		v = v.hull("convex");
 	} else {
 		v = v.aggregate(false);
