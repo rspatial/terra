@@ -2895,6 +2895,15 @@ bool can_use_replace(const std::vector<double> &from, const std::vector<double> 
 SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, long nl, bool keepcats, SpatOptions &opt) {
 
 	SpatRaster out;
+	if (from.size() < 1) {
+		out.setError("argument 'from' cannot be empty");
+		return out;		
+	}
+	if (to.size() < 1) {
+		out.setError("argument 'to' cannot be empty");
+		return out;		
+	}
+		
 	bool mout = false;
 	bool min = false;
 	if (nl > 1) {
