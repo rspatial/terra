@@ -34,6 +34,9 @@ setMethod("lines", signature(x="SpatVector"),
 		} else if (grepl("points", gtype)) {
 			points(x, col=col, type="l", lwd=lwd, lty=lty, alpha=alpha, ...)
 		} else {
+			if (gtype == "polygons") {
+				x <- as.lines(x) # for holes
+			}
 			col <- .getCols(n, col, alpha)
 			lwd <- rep_len(lwd, n)
 			lty <- rep_len(lty, n)
