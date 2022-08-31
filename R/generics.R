@@ -627,8 +627,11 @@ setMethod("freq", signature(x="SpatRaster"),
 					}
 				}
 			}
-			if (nlyr(x) > 1 && !bylayer) {
-				v <- aggregate(v[,"count",drop=FALSE], v[,"value", drop=FALSE], sum)
+			if (!bylayer) {
+#				if (nlyr(x) > 1)
+#					v <- aggregate(v[,"count",drop=FALSE], v[,"value", drop=FALSE], sum)
+#				} 
+				v <- v[,-1]
 			}
 		}
 		if (usenames) {
