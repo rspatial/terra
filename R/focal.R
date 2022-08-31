@@ -234,7 +234,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 
 	out <- rast(x, nlyr=outnl)
 	if (!is.null(nms)) {
-		if (length(nms) <= outnl)) {
+		if (length(nms) <= outnl) {
 			names(out) <- rep_len(nms, outnl) 
 		}
 	}
