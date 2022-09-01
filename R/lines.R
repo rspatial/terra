@@ -70,7 +70,8 @@ setMethod("points", signature(x="SpatVector"),
 		if ((length(col) == 1) && (length(cex)==1) && (length(pch)==1)) {
 			col <- .getCols(1, col, alpha)
 			#graphics::points(g[,3:4], col=col,  pch=pch, cex=cex,...)
-			graphics::plot.xy(list(x=g[,3], y=g[,4]), type="p", pch=pch, col=col, cex=cex, ...)
+			g <- crds(x)
+			graphics::plot.xy(list(x=g[,1], y=g[,2]), type="p", pch=pch, col=col, cex=cex, ...)
 		} else {
 			col <- .getCols(n, col, alpha)
 			cex <- rep_len(cex, n)

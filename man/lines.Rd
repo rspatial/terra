@@ -25,7 +25,7 @@ These are simpler alternatives for \code{\link[terra:plot]{plot(x, add=TRUE)}}
 }
 
 \usage{
-\S4method{points}{SpatVector}(x, col, cex=1, pch=20, alpha=1, ...)
+\S4method{points}{SpatVector}(x, col, cex=0.7, pch=16, alpha=1, ...)
 
 \S4method{lines}{SpatVector}(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)
 

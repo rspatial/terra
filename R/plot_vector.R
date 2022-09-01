@@ -51,7 +51,7 @@ setMethod("dots", signature(x="SpatVector"),
 	lty <- rep_len(lty, n)
 	lwd <- rep_len(lwd, n)
 	for (i in 1:n) {
-		plot.xy(g[[i]], type="l", lty=lty[i], col=out$main_cols[i], lwd=lwd[i], ...)
+		graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=out$main_cols[i], lwd=lwd[i], ...)
 	}
 
 #	for (i in 1:n) {
