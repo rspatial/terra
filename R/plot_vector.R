@@ -112,7 +112,7 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 
-.vplot <- function(x, out, xlab="", ylab="", cex=1, pch=16, ...) {
+.vplot <- function(x, out, xlab="", ylab="", cex=0.7, pch=16, ...) {
 	if (out$leg$geomtype == "points") {
 		points(x, col=out$main_cols, cex=cex, pch=pch, ...)
 		#if (!out$add) {

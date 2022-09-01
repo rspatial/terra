@@ -42,7 +42,7 @@ setMethod("lines", signature(x="SpatVector"),
 			lty <- rep_len(lty, n)
 			g <- lapply(x@ptr$get_linesList(), function(i) { names(i)=c("x", "y"); i } )
 			for (i in 1:n) {
-				plot.xy(g[[i]], type="l", lty=lty[i], col=col[i], lwd=lwd[i], ...)
+				graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=col[i], lwd=lwd[i], ...)
 			}		
 			
 			#g <- geom(x, df=TRUE)
@@ -63,21 +63,28 @@ setMethod("lines", signature(x="SpatVector"),
 
 
 setMethod("points", signature(x="SpatVector"),
-	function(x, col, cex=1, pch=20, alpha=1, ...)  {
-		if (nrow(x) == 0) return(invisible(NULL))
-		if (missing(col)) col <- "black"
+	function(x, col, cex=0.7, pch=16, alpha=1, ...)  {
 		n <- length(x)
-		col <- .getCols(n, col, alpha)
-		cex <- rep_len(cex, n)
-		pch <- rep_len(pch, n)
-		g <- geom(x, df=TRUE)
-		if (any(table(g$id) > 1)) {
-			g <- split(g, g[,1])
-			for (i in 1:n) {
-				graphics::points(g[[i]][,3:4], col=col[i], pch=pch[i], cex=cex[i], ...)
-			}
+		if (n == 0) return(invisible(NULL))
+		if (missing(col)) col <- "black"
+		if ((length(col) == 1) && (length(cex)==1) && (length(pch)==1)) {
+			col <- .getCols(1, col, alpha)
+			#graphics::points(g[,3:4], col=col,  pch=pch, cex=cex,...)
+			graphics::plot.xy(list(x=g[,3], y=g[,4]), type="p", pch=pch, col=col, cex=cex, ...)
 		} else {
-			graphics::points(g[,3:4], col=col,  pch=pch, cex=cex,...)
+			col <- .getCols(n, col, alpha)
+			cex <- rep_len(cex, n)
+			pch <- rep_len(pch, n)
+			g <- geom(x, df=TRUE)
+			if (nrow(g) > g[nrow(g), 1]) {
+				g <- split(g[,3:4], g[,1])
+				for (i in 1:n) {
+					#graphics::points(g[[i]], col=col[i], pch=pch[i], cex=cex[i], ...)
+					graphics::plot.xy(list(x=g[[i]][,1], y=g[[i]][,2]), type="p", pch=pch[i], col=col[i], cex=cex[i], ...)
+				}
+			} else {
+				graphics::plot.xy(list(x=g[,3], y=g[,4]), type="p", pch=pch, col=col, cex=cex, ...)
+			}
 		}
 	}
 )
