@@ -403,7 +403,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, others=NULL, brackets=TRUE, f
 )
 
 setMethod("subst", signature(x="SpatRaster"),
-function(x, from, to, filename="", ...) {
+function(x, from, to, raw=FALSE, filename="", ...) {
 	opt <- spatOptions(filename, ...)
 
 	if (inherits(from, "data.frame")) {
@@ -420,6 +420,9 @@ function(x, from, to, filename="", ...) {
 	}
 	keepcats <- FALSE
 	fromc <- inherits(from[1], "character")
+	if (raw && fromc) {
+		error("subst", "if 'raw=TRUE', from cannot have character values")	
+	}
 	toc <- inherits(to[1], "character")
 	if (fromc || toc) {
 		#if (!(fromc && toc)) {
@@ -442,36 +445,31 @@ function(x, from, to, filename="", ...) {
 			}
 		}
 		levs <- cats(x, 1, active=TRUE)[[1]]
-		frfr <- levs[,1][match(from, levs[,2])]
-		matchid <- FALSE
-		if (all(is.na(frfr))) {
-			frfr <- levs[,1][match(from, levs[,1])]
-			if (all(is.na(frfr))) {
+		if (!raw) {
+			from <- levs[,1][match(from, levs[,2])]
+			if (all(is.na(from))) {
+				warn("subst", "all 'from' values are missing, returning a copy")
 				return(deepcopy(x))
 			}
-			matchid <- TRUE
 		}
-		from <- frfr
 		i <- is.na(from)		
 		if (any(i)) {
 			to <- rep_len(to, length(from))
 			from <- from[!i]
 			to <- to[!i]
 		}
-		if (matchid) {
-			toto <- levs[,1][match(to, levs[,1])]		
-		} else {
+		if (!raw) {
 			toto <- levs[,1][match(to, levs[,2])]
-		}
-		if (any(is.na(toto))) { # add new levels
-			i <- which(is.na(toto))
-			m <- cbind(max(levs[,1]) + 1:length(i), to[i])
-			colnames(m) <- colnames(levs)
-			levs <- rbind(levs, m)
-			to <- levs[,1][match(to, levs[,2])]
-			levels(x) <- levs
-		} else {
-			to <- toto
+			if (any(is.na(toto))) { # add new levels
+				i <- which(is.na(toto))
+				m <- cbind(max(levs[,1]) + 1:length(i), to[i])
+				colnames(m) <- colnames(levs)
+				levs <- rbind(levs, m)
+				to <- levs[,1][match(to, levs[,2])]
+				levels(x) <- levs
+			} else {
+				to <- toto
+			}
 		}
 		keepcats <- TRUE
 	}
