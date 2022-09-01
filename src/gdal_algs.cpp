@@ -263,7 +263,7 @@ bool getAlgo(GDALResampleAlg &alg, std::string m) {
 		alg = GRA_Max;
 	} else if (m=="min") {
 		alg = GRA_Min;
-	} else if (m=="med") {
+	} else if (m=="median") {
 		alg = GRA_Med;
 	} else if (m=="q1") {
 		alg = GRA_Q1;
@@ -293,7 +293,7 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 
 	GDALResampleAlg a;
 	if (!getAlgo(a, method)) {
-		if ((method=="sum") || (method=="rms")) {
+		if (method=="sum" || method=="rms") {
 			msg = method + " not available in your version of GDAL";
 		} else {
 			msg = "unknown resampling algorithm";
