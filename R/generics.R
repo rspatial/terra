@@ -442,17 +442,27 @@ function(x, from, to, filename="", ...) {
 			}
 		}
 		levs <- cats(x, 1, active=TRUE)[[1]]
-		from <- levs[,1][match(from, levs[,2])]
-		i <- is.na(from)
-		if (all(i)) {
-			return(deepcopy(x))
+		frfr <- levs[,1][match(from, levs[,2])]
+		matchid <- FALSE
+		if (all(is.na(frfr))) {
+			frfr <- levs[,1][match(from, levs[,1])]
+			if (all(is.na(frfr))) {
+				return(deepcopy(x))
+			}
+			matchid <- TRUE
 		}
+		from <- frfr
+		i <- is.na(from)		
 		if (any(i)) {
 			to <- rep_len(to, length(from))
 			from <- from[!i]
 			to <- to[!i]
 		}
-		toto <- levs[,1][match(to, levs[,2])]
+		if (matchid) {
+			toto <- levs[,1][match(to, levs[,1])]		
+		} else {
+			toto <- levs[,1][match(to, levs[,2])]
+		}
 		if (any(is.na(toto))) { # add new levels
 			i <- which(is.na(toto))
 			m <- cbind(max(levs[,1]) + 1:length(i), to[i])
