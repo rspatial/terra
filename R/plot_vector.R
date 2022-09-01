@@ -38,8 +38,8 @@ setMethod("dots", signature(x="SpatVector"),
 
 	n <- nrow(x)
 	if (n == 0) return(out)
-	cols <- out$cols
-	if (is.null(cols)) cols = rep("black", n)
+#	cols <- out$cols
+#	if (is.null(cols)) cols = rep("black", n)
 
 	g <- lapply(x@ptr$get_linesList(), function(i) { names(i)=c("x", "y"); i } )
 
@@ -112,7 +112,7 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 
-.vplot <- function(x, out, xlab="", ylab="", cex=0.7, pch=16, ...) {
+.vplot <- function(x, out, xlab="", ylab="", cex=0.7, pch=16, lty=1, lwd=1, ...) {
 	if (out$leg$geomtype == "points") {
 		points(x, col=out$main_cols, cex=cex, pch=pch, ...)
 		#if (!out$add) {
@@ -120,13 +120,13 @@ setMethod("dots", signature(x="SpatVector"),
 		#}
 		out$leg$pch = pch
 		out$leg$pt.cex = cex
+	} else if (out$leg$geomtype == "polygons") {
+		out <- .plotPolygons(x, out, density=out$leg$density, angle=out$leg$angle, ...)
 	} else {
-		#e <- matrix(as.vector(ext(x)), 2)
-		if (out$leg$geomtype == "polygons") {
-			out <- .plotPolygons(x, out, density=out$leg$density, angle=out$leg$angle, ...)
-		} else {
-			out <- .plotLines(x, out, ...)
-		}
+		# out <- .plotLines(x, out, ...)
+		lines(x, col=out$main_cols, lty=lty, lwd=lwd, ...)
+		out$leg$lwd = lwd
+		out$leg$lty = lty		
 	}
 	out
 }
@@ -156,10 +156,11 @@ setMethod("dots", signature(x="SpatVector"),
 
 .vect.legend.none <- function(out) {
 	#if (out$leg$geomtype == "points") {
-		out$main_cols <- .getCols(out$ngeom, out$cols, 1)
+	#	out$main_cols <- .getCols(out$ngeom, out$cols, 1)
 	#} else {
 	#	out$cols <- .getCols(out$ngeom, out$cols)
 	#}
+	out$main_cols <- out$cols	
 	out
 }
 
@@ -597,8 +598,7 @@ setMethod("plot", signature(x="SpatVector", y="numeric"),
 
 setMethod("plot", signature(x="SpatVector", y="missing"),
 	function(x, y, values=NULL, ...)  {
-		out <- plot(x, "", values=values, ...)
-		invisible(out)
+		invisible( plot(x, "", values=values, ...) )
 	}
 )
 

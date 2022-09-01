@@ -37,14 +37,20 @@ setMethod("lines", signature(x="SpatVector"),
 			if (gtype == "polygons") {
 				x <- as.lines(x) # for holes
 			}
-			col <- .getCols(n, col, alpha)
-			lwd <- rep_len(lwd, n)
-			lty <- rep_len(lty, n)
-			g <- lapply(x@ptr$get_linesList(), function(i) { names(i)=c("x", "y"); i } )
-			for (i in 1:n) {
-				graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=col[i], lwd=lwd[i], ...)
-			}		
-			
+			if ((length(col) == 1) && (length(lty)==1) && (length(lwd)==1)) {
+				col <- .getCols(1, col, alpha)
+				g <- x@ptr$get_linesNA()
+				names(g) <- c("x", "y")
+				graphics::plot.xy(g, type="l", lty=lty, col=col, lwd=lwd, ...)
+			} else {
+				col <- .getCols(n, col, alpha)
+				lwd <- rep_len(lwd, n)
+				lty <- rep_len(lty, n)
+				g <- lapply(x@ptr$get_linesList(), function(i) { names(i)=c("x", "y"); i } )
+				for (i in 1:n) {
+					graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=col[i], lwd=lwd[i], ...)
+				}		
+			}
 			#g <- geom(x, df=TRUE)
 			#g <- split(g, g[,1])
 			#if (gtype == "polygons") {

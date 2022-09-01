@@ -187,6 +187,26 @@ std::vector<std::vector<std::vector<double>>> get_linesList(SpatVector* v) {
 	return out;
 }
 
+std::vector<std::vector<double>> get_linesNA(SpatVector* v) {
+	size_t ni = v->nrow();
+	size_t n = v->ncoords() + ni;
+	std::vector<std::vector<double>> out(2);
+	out[0].reserve(n);
+	out[1].reserve(n);
+	for (size_t i=0; i < ni; i++) {
+		SpatGeom g = v->getGeom(i);
+		size_t nj = g.size();
+		for (size_t j=0; j<nj; j++) {
+			out[0].insert(out[0].end(), g.parts[j].x.begin(), g.parts[j].x.end());
+			out[1].insert(out[1].end(), g.parts[j].y.begin(), g.parts[j].y.end());
+			out[0].push_back(NAN);
+			out[1].push_back(NAN);
+		}
+	}
+	out[0].erase(out[0].end() - 1);
+	out[1].erase(out[1].end() - 1);
+	return out;
+}
 
 RCPP_EXPOSED_CLASS(SpatFactor)
 RCPP_EXPOSED_CLASS(SpatTime_v)
@@ -424,6 +444,7 @@ RCPP_MODULE(spat){
 		.method("get_geometryDF", &get_geometryDF)
 		.method("get_geometryList", &get_geometryList)
 		.method("get_linesList", &get_linesList)
+		.method("get_linesNA", &get_linesNA)
 
 		.method("add_column_empty", (void (SpatVector::*)(unsigned dtype, std::string name))( &SpatVector::add_column))
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
