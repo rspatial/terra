@@ -415,18 +415,23 @@ function(x, from, to, filename="", ...) {
 	tom <- inherits(to, "matrix")
 	frm <- inherits(from, "matrix")
 
+	if (NROW(from) < NROW(to)) {
+		error("subst", "from is shorter than to")
+	}
 	keepcats <- FALSE
 	fromc <- inherits(from[1], "character")
 	toc <- inherits(to[1], "character")
 	if (fromc || toc) {
-		if (!(fromc && toc)) {
-			error("subst", "either both or neither from and to should have character values")
-		}
+		#if (!(fromc && toc)) {
+		#	error("subst", "either both or neither from and to should have character values")
+		#}
 		if (!is.factor(x)) {
-			error("subst", "from has characters but x is not categorical")
-		}
+			error("subst", "from or to has character values but x is not categorical")
+		}	
+	}
+	if (any(is.factor(x))) {
 		if (nlyr(x) > 1) {
-			error("subst", "you can only use characters if x has 1 layer")
+			error("subst", "you can only use 'subst' with categorical layers if x has a single layer")
 		}
 		if (inherits(to, "matrix")) {
 			if (ncol(to) == 1) {
@@ -438,7 +443,26 @@ function(x, from, to, filename="", ...) {
 		}
 		levs <- cats(x, 1, active=TRUE)[[1]]
 		from <- levs[,1][match(from, levs[,2])]
-		to <- levs[,1][match(to, levs[,2])]
+		i <- is.na(from)
+		if (all(i)) {
+			return(deepcopy(x))
+		}
+		if (any(i)) {
+			to <- rep_len(to, length(from))
+			from <- from[!i]
+			to <- to[!i]
+		}
+		toto <- levs[,1][match(to, levs[,2])]
+		if (any(is.na(toto))) { # add new levels
+			i <- which(is.na(toto))
+			m <- cbind(max(levs[,1]) + 1:length(i), to[i])
+			colnames(m) <- colnames(levs)
+			levs <- rbind(levs, m)
+			to <- levs[,1][match(to, levs[,2])]
+			levels(x) <- levs
+		} else {
+			to <- toto
+		}
 		keepcats <- TRUE
 	}
 
