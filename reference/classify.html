@@ -92,11 +92,10 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 <dd><p>logical. If <code>TRUE</code>, intervals are have parenthesis or brackets around them to indicate whether they are open or closed. Only applies if <code>rcl</code> is a vector (or single column matrix)</p></dd>
  
 
-
-  <dt>filename</dt>
+ <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
 
-  <dt>...</dt>
+ <dt>...</dt>
 <dd><p>Additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
 
 
@@ -113,7 +112,8 @@ With "cuts" the values are sorted, so that the order in which they are provided 
     </div>
     <div id="note">
     <h2>Note</h2>
-    <p>For model-based classification see <code><a href="predict.html">predict</a></code></p>
+    <p>classify works with the "raw" values of categorical rasters, ignoring the levels (labels, categories). To change the labels of categorical rasters, use <code><a href="subst.html">subst</a></code> instead.</p>
+<p>For model-based classification see <code><a href="predict.html">predict</a></code></p>
     </div>
 
     <div id="ref-examples">
