@@ -380,23 +380,6 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, others=NULL, brackets=TRUE, f
 		others <- TRUE
 	}
 	keepcats <- FALSE
-	if (inherits(rcl[1], "character")) {
-		if (nlyr(x) > 1) {
-			error("classify", "rcl has characters. That is not allowed with multiple layers in x")
-		}
-		if (!is.factor(x)) {
-			error("classify", "rcl has characters but x is not categorical")
-		}
-		if (ncol(rcl) != 2) {
-			error("classify", "rcl has characters. It should have 2 columns")
-		}
-		levs <- cats(x, 1, active=TRUE)[[1]]
-		rc1 <- levs[,1][match(rcl[,1], levs[,2])]
-		rc2 <- levs[,1][match(rcl[,2], levs[,2])]
-		rcl <- cbind(rc1, rc2)[!is.na(rc1), ]
-		keepcats <- TRUE
-	}
-
     x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right, include.lowest, others, othersValue, bylayer[1], brackets[1], keepcats, opt)
 	messages(x, "classify")
 }
@@ -414,41 +397,34 @@ function(x, from, to, raw=FALSE, filename="", ...) {
 	}
 	tom <- inherits(to, "matrix")
 	frm <- inherits(from, "matrix")
+	if (tom && frm) {
+		error("subst", "either 'to' or 'from' can be a matrix, not both")
+	}
 
 	if (NROW(from) < NROW(to)) {
 		error("subst", "from is shorter than to")
 	}
-	keepcats <- FALSE
 	fromc <- inherits(from[1], "character")
-	if (raw && fromc) {
-		error("subst", "if 'raw=TRUE', from cannot have character values")	
-	}
 	toc <- inherits(to[1], "character")
-	if (fromc || toc) {
-		#if (!(fromc && toc)) {
-		#	error("subst", "either both or neither from and to should have character values")
-		#}
-		if (!is.factor(x)) {
-			error("subst", "from or to has character values but x is not categorical")
-		}	
+	if (raw && fromc) {
+		error("subst", "if 'raw=TRUE', 'from' cannot have character values")	
 	}
+	keepcats <- FALSE
 	if (any(is.factor(x))) {
 		if (nlyr(x) > 1) {
 			error("subst", "you can only use 'subst' with categorical layers if x has a single layer")
 		}
 		if (inherits(to, "matrix")) {
-			if (ncol(to) == 1) {
-				to <- as.vector(to)
-			} else if (ncol(to) != nlyr(x)) {
-				to <- as.vector(to[,1])
+			if (ncol(to) > 1) {
 				warn("subst", "only the first column of 'to' is used with factors")
 			}
+			to <- as.vector(to[,1])
 		}
-		levs <- cats(x, 1, active=TRUE)[[1]]
+		levs <- levels(x)[[1]]
 		if (!raw) {
 			from <- levs[,1][match(from, levs[,2])]
 			if (all(is.na(from))) {
-				warn("subst", "all 'from' values are missing, returning a copy")
+				warn("subst", "all 'from' values are missing, returning a copy of 'x'")
 				return(deepcopy(x))
 			}
 		}
@@ -472,10 +448,8 @@ function(x, from, to, raw=FALSE, filename="", ...) {
 			}
 		}
 		keepcats <- TRUE
-	}
-
-	if (tom && frm) {
-		error("subst", "either 'to' or 'from' can be a matrix, not both")
+	} else if (fromc || toc) {
+		error("subst", "from or to has character values but x is not categorical")
 	}
 
 	if (tom) {

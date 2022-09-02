@@ -44,7 +44,7 @@ setMethod("vect", signature(x="missing"),
 )
 
 setMethod("vect", signature(x="character"),
-	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE) {
+	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, readgeoms=TRUE) {
 		p <- methods::new("SpatVector")
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
@@ -60,6 +60,10 @@ setMethod("vect", signature(x="character"),
 				x <- enc2utf8(x)
 			}
 			proxy <- isTRUE(proxy)
+			readgeoms <- isTRUE(readgeoms)
+			if ((!readgeoms) && proxy) {
+				error("vect", "you cannot use 'readgeoms=FALSE' when proxy=TRUE")
+			}
 			#if (proxy) query <- ""
 			if (is.null(filter)) {
 				filter <- vect()@ptr
@@ -74,7 +78,7 @@ setMethod("vect", signature(x="character"),
 			} else {
 				extent <- as.vector(ext(extent))
 			}
-			p@ptr$read(x, layer, query, extent, filter, proxy)
+			p@ptr$read(x, layer, query, extent, filter, proxy, readgeoms)
 			if (isTRUE(crs != "")) {
 				crs(p) <- crs
 			}
@@ -86,7 +90,11 @@ setMethod("vect", signature(x="character"),
 				return(pp)
 			}
 		}
-		messages(p, "vect")
+		p <- messages(p, "vect")
+		if (!readgeoms) {
+			p <- values(p)
+		}
+		p
 	}
 )
 

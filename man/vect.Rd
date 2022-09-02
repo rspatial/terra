@@ -30,7 +30,8 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 } 
 
 \usage{
-\S4method{vect}{character}(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE)
+\S4method{vect}{character}(x, layer="", query="", extent=NULL, filter=NULL, 
+		crs="", proxy=FALSE, readgeoms=TRUE)
 
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
@@ -51,6 +52,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
 \item{crs}{character. The coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see \code{\link{crs}})}
 \item{proxy}{logical. If \code{TRUE} a SpatVectorProxy is returned}
+\item{readgeoms}{logical. If \code{FALSE} only the attributes are read and returned as a data.frame}
 \item{geom}{character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)}
 \item{keepgeom}{logical. If \code{TRUE} the geom variable(s) is (are) also included in the attributes}
 }
