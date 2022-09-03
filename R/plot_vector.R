@@ -68,22 +68,35 @@ setMethod("dots", signature(x="SpatVector"),
 
 .plotPolygons <- function(x, out, lty=1, lwd=1, density=NULL, angle=45, ...) {
 
-	if (nrow(x) == 0) return(out)
-	g <- geom(x, df=TRUE)
-	g <- split(g, g[,1])
-	g <- lapply(g, function(y) split(y[,3:5], y[,2]))
-	n <- length(g)
+	n <- nrow(x)
+	if (n == 0) return(out)
+	if ((length(out$main_cols) == 0) && (length(out$leg$border) <= 1) && (length(lty) <= 1) && (length(lwd) <= 1) && (is.null(density))) {
+		if (is.null(out$leg$border)) out$leg$border <- "black"
+		lines(x, col=out$leg$border, lty=lty, lwd=lwd, ...)
+		return(out)
+	}
+	
+#		cols <- .getCols(length(x), col, alpha)
+#		out <- list(main_cols=cols)
+	
 	if (!is.null(out$leg$border)) {
 		out$leg$border <- rep_len(out$leg$border, n)
 	} else {
 		out$leg$border <- NA
 	}
 	if (!is.null(density)) {
-		out$leg$density <- rep_len(density, length(g))
+		out$leg$density <- rep_len(density, n)
 		out$leg$angle <- rep_len(angle, n)
 	}
-	out$leg$lty <- rep_len(lty, n)
-	out$leg$lwd <- rep_len(lwd, n)
+	if (!is.null(lty)) out$leg$lty <- rep_len(lty, n)
+	if (!is.null(lwd)) out$leg$lwd <- rep_len(lwd, n)
+	
+	if (!is.null(out$main_cols)) {
+		out$main_cols <- rep_len(out$main_cols, n)
+	}
+	g <- geom(x, df=TRUE)
+	g <- split(g, g[,1])
+	g <- lapply(g, function(y) split(y[,3:5], y[,2]))
 
 	w <- getOption("warn")
 	on.exit(options("warn" = w))
@@ -93,17 +106,17 @@ setMethod("dots", signature(x="SpatVector"),
 			a <- gg[[j]]
 			if (any(is.na(a))) next
 			if (any(a[,3] > 0)) {
-				a <- split(a, a[,3])
+				a <- split(a[,1:2,drop=FALSE], a[,3])
 				a <- lapply(a, function(i) rbind(i, NA))
 				a <- do.call(rbind, a )
 				a <- a[-nrow(a), ]
 				# g[[i]][[1]] <- a
 			}
 			if (!is.null(out$leg$density)) {
-				graphics::polygon(a[,1:2], col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
-				graphics::polypath(a[,1:2], col=NA, rule="evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polygon(a, col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polypath(a, col=NA, rule="evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			} else {
-				graphics::polypath(a[,1:2], col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polypath(a, col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
 		options("warn" = -1)
@@ -121,7 +134,7 @@ setMethod("dots", signature(x="SpatVector"),
 		out$leg$pch = pch
 		out$leg$pt.cex = cex
 	} else if (out$leg$geomtype == "polygons") {
-		out <- .plotPolygons(x, out, density=out$leg$density, angle=out$leg$angle, ...)
+		out <- .plotPolygons(x, out, density=out$leg$density, angle=out$leg$angle, lty=lty, lwd=lwd, ...)
 	} else {
 		# out <- .plotLines(x, out, ...)
 		lines(x, col=out$main_cols, lty=lty, lwd=lwd, ...)

@@ -99,18 +99,18 @@ setMethod("points", signature(x="SpatVector"),
 
 setMethod("polys", signature(x="SpatVector"),
 	function(x, col, border="black", lwd=1, lty=1, alpha=1, ...)  {
-		if (nrow(x) == 0) return(invisible(NULL))
 		gtype <- geomtype(x)
 		if (gtype != "polygons") {
 			error("polys", "expecting polygons")
 		}
 		if (missing(col)) {
 			col <- NULL
-		}
-		cols <- .getCols(length(x), col, alpha)
-		out <- list(main_cols=cols)
+		} else if (length(col) > 1) {
+			col <- .getCols(length(x), col, alpha)
+		}	
+		out <- list(main_cols=col)
 		out$leg$border <- border
-		.plotPolygons(x, out, lwd=lwd, lty=lty, ...)
+		p <- .plotPolygons(x, out, lwd=lwd, lty=lty, ...)
 	}
 )
 
