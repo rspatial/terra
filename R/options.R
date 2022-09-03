@@ -51,9 +51,12 @@
 		for (i in seq_along(nms)) {
 			x[[nms[i]]] <- wopt[[i]]
 		}
-		if ("datatype" %in% nms) {
-			x$datatype_set = TRUE;
-		}
+	}
+	if (x$messages$has_warning) {
+		warn("options", paste(x$messages$getWarnings(), collapse="\n"))
+	}
+	if (x$messages$has_error) {
+		error("options", x$messages$getError())
 	}
 	x
 }
