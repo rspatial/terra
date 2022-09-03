@@ -374,7 +374,8 @@ SpatGeom emptyGeom() {
 	return g;
 }
 
-bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, bool geoms) {
+
+bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
 
 	std::string crs = "";
 
@@ -467,8 +468,10 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 		read_extent = extent;
 	}
 
-	df = readAttributes(poLayer, as_proxy);
-	if (!geoms) {
+	if (what != "geoms") { 
+		df = readAttributes(poLayer, as_proxy);
+	}
+	if (what == "attributes") {
 		if (query != "") {
 			poDS->ReleaseResultSet(poLayer);
 		}		
@@ -631,7 +634,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 }
 
 
-bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, bool geoms) {
+bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
     //OGRRegisterAll();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
@@ -642,7 +645,7 @@ bool SpatVector::read(std::string fname, std::string layer, std::string query, s
 		}
 		return false;
     }
-	bool success = read_ogr(poDS, layer, query, extent, filter, as_proxy, geoms);
+	bool success = read_ogr(poDS, layer, query, extent, filter, as_proxy, what);
 	if (poDS != NULL) GDALClose( poDS );
 	source = fname;
 	return success;
@@ -651,7 +654,7 @@ bool SpatVector::read(std::string fname, std::string layer, std::string query, s
 SpatVector SpatVector::fromDS(GDALDataset *poDS) {
 	SpatVector out, fvct;
 	std::vector<double> fext;
-	out.read_ogr(poDS, "", "", fext, fvct, false, true);
+	out.read_ogr(poDS, "", "", fext, fvct, false, "");
 	return out;
 }
 

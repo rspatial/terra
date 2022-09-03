@@ -230,7 +230,7 @@ bool GetVAT(std::string filename, SpatCategories &vat) {
 	SpatVector v, fvct;
 	std::vector<double> fext;
 
-	v.read(filename, "", "", fext, fvct, false, false); 
+	v.read(filename, "", "", fext, fvct, false, ""); 
 	if (v.df.nrow() == 0) return false;
 
 

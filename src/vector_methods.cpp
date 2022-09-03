@@ -65,7 +65,7 @@ SpatVector SpatVector::make_valid() {
 	}
 	std::vector<double> fext;
 	SpatVector fvct;
-	out.read_ogr(src, "", "", fext, fvct, false, true);
+	out.read_ogr(src, "", "", fext, fvct, false, "");
 	GDALClose(src);
 	return out;
 }
