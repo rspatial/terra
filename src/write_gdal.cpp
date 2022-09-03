@@ -375,25 +375,41 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	std::vector<SpatDataFrame> ct = getColors();
 	bool cat = hasCats[0];
 
-	if ((driver != "GPKG") || opt.datatype_set) {
-		bool rat = cat ? is_rat(source[0].cats[0].d) : false;
-		if (rat) {
-			if (hasCT[0]) {
-				datatype = "INT1U";
+	bool rat = cat ? is_rat(source[0].cats[0].d) : false;
+	if (rat) {
+		if (hasCT[0]) {
+			if (opt.datatype_set && (datatype != opt.get_datatype())) {
+				addWarning("change datatype to INT1U to write the color-table");					
 			} else {
-				datatype = "INT4S";
+				datatype = "INT1U";
 			}
-		} else if (hasCT[0] || cat) {
-			datatype = "INT1U";
-		} else if (datatype != "INT1U") {
-			std::fill(hasCT.begin(), hasCT.end(), false);
+		} else {
+			//if (opt.datatype_set) {
+			//	std::string sdt = opt.get_datatype().substr(0, 3); 
+			//	if (sdt != "INT") {
+			//		addWarning("change datatype to an INT type to write the categories");
+			//	}
+			//} else {
+			//	datatype = "INT4S";					
+			//}
+			if (!opt.datatype_set && (driver != "GPKG")) {
+				datatype = "INT4S";					
+			}
 		}
-		//if (opt.datatype_set) {
-		//	if (datatype != opt.get_datatype()) {
-		//		addWarning("changed datatype to " + datatype);
-		//	}
-		//}
+	} else if (hasCT[0] || cat) {
+		if (opt.datatype_set && (datatype != "INT1U")) {
+			addWarning("change datatype to INT1U to write the color-table");
+		} else {
+			datatype = "INT1U";
+		}
+	} else if (datatype != "INT1U") {
+		std::fill(hasCT.begin(), hasCT.end(), false);
 	}
+	//if (opt.datatype_set) {
+	//	if (datatype != opt.get_datatype()) {
+	//		addWarning("changed datatype to " + datatype);
+	//	}
+	//}
 	
 	GDALDataType gdt;
 	if (!getGDALDataType(datatype, gdt)) {
