@@ -1049,7 +1049,7 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 		isfact <- is.factor(x)
 		if (any(isfact)) {
 			ff <- which(isfact)
-			levs <- cats(x)
+			levs <- levels(x)
 			for (f in ff) {
 				lvs <- levs[[f]]
 				fv <- factor(lvs[,2])

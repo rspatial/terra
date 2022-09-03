@@ -289,7 +289,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 
 		if (!as.raster) {
 			ff <- is.factor(x)
-			lv <- active_cats(x)
+			lv <- levels(x)
 		}
 
 		if (cells || xy || as.points) {

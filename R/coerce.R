@@ -191,12 +191,11 @@ get_labels <- function(x, p, dissolve=FALSE) {
 	}
 	if (any(ff)) {
 		ff <- which(ff)
-		cgs <- cats(x)
+		cgs <- levels(x)
 		for (f in ff) {
 			cg <- cgs[[f]]
 			i <- match(unlist(p[[f]]), cg[,1])
-			act <- activeCat(x, f)
-			p[[f]] <- cg[i, act+1]
+			p[[f]] <- cg[i, 2]
 		}
 	}
 	p

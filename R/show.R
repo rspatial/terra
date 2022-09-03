@@ -288,7 +288,7 @@ setMethod ("show" , "SpatRaster",
 			isB <- is.bool(object)
 			if (any(hMM) || any(is.factor(object))) {
 				#r <- minmax(object)
-				r <- rbind(object@ptr$range_min, object@ptr$range_max)
+				rr <- r <- rbind(object@ptr$range_min, object@ptr$range_max)
 				r[,!hMM] <- c(Inf, -Inf)
 				r <- sapply(data.frame(r), format)
 				minv <- r[1,]
@@ -309,16 +309,15 @@ setMethod ("show" , "SpatRaster",
 				}
 				isf <- is.factor(object)
 				if (any(isf)) {
-					for (i in 1:length(isf)) {
+					cats <- levels(object)
+					for (i in which(isf)) {
 						if (i > mnr) break
-						if (isf[i]) {
-							cats <- cats(object, i, TRUE)[[1]]
-							j <- match(r[,i], cats[,1])
-							cats <- cats[j, 2]
-							if (length(cats) > 0) {
-								minv[i] <- cats[1]
-								maxv[i] <- cats[2]
-							}
+						levs <- cats[[i]]
+						j <- match(rr[,i], levs[,1])
+						levs <- levs[j, 2]
+						if (length(levs) > 1) {
+							minv[i] <- levs[1]
+							maxv[i] <- levs[2]
 						}
 					}
 				}

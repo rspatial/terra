@@ -19,15 +19,14 @@ setMethod("hasValues", signature(x="SpatRaster"),
 		ff <- is.factor(x)
 		if (any(ff)) {
 			ff <- which(ff)
-			cgs <- cats(x)
+			cgs <- levels(x)
 			for (f in ff) {
 				cg <- cgs[[f]]
 				i <- match(v[,f], cg[,1])
-				act <- activeCat(x, f) + 1
-				if (!inherits(cg[[act]], "numeric")) {
-					v[[f]] <- factor(cg[i, act], levels=unique(cg[[act]]))
+				if (!inherits(cg[[2]], "numeric")) {
+					v[[f]] <- factor(cg[i, 2], levels=unique(cg[[2]]))
 				} else {
-					v[[f]] <- cg[i, act]
+					v[[f]] <- cg[i, 2]
 				}
 			}
 		} else {

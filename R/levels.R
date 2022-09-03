@@ -245,8 +245,8 @@ setMethod("cats" , "SpatRaster",
 )
 
 
-
-active_cats <- function(x, layer) {
+# superseded by levels(x)[[layer]]
+..active_cats <- function(x, layer) {
 	ff <- is.factor(x)
 	if (!any(ff)) {
 		return (lapply(ff, function(i) NULL))
