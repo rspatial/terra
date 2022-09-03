@@ -157,6 +157,12 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 }
 
 
+SpatRaster SpatRaster::writeTempRaster(SpatOptions &opt) {
+	SpatOptions xopt(opt);
+	std::string fname = tempFile(xopt.get_tempdir(), xopt.pid, "_temp_raster.tif");
+	xopt.set_filenames({fname});
+	return writeRaster(xopt);
+}
 
 
 bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> srcnames) {
