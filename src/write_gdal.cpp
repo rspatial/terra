@@ -375,33 +375,26 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	std::vector<SpatDataFrame> ct = getColors();
 	bool cat = hasCats[0];
 
-	bool rat = cat ? is_rat(source[0].cats[0].d) : false;
-	if (rat) {
-		if (hasCT[0]) {
+	if (driver != "GPKG") {
+		bool rat = cat ? is_rat(source[0].cats[0].d) : false;
+		if (rat) {
+			if (hasCT[0]) {
+				datatype = "INT1U";
+			} else {
+				datatype = "INT4S";
+			}
+		} else if (hasCT[0] || cat) {
 			datatype = "INT1U";
-		} else {
-			datatype = "INT4S";
+		} else if (datatype != "INT1U") {
+			std::fill(hasCT.begin(), hasCT.end(), false);
 		}
-/*
-		hasCats[0] = false;
-		hasCT[0] = false;
-		std::fill(hasCT.begin(), hasCT.end(), false);
-		SpatCategories cats = source[0].cats[0];
-		SpatOptions sopt(opt);
-		cats.d.write_dbf(filename, true, sopt);
-*/
-	} else if (hasCT[0] || cat) {
-		datatype = "INT1U";
-	} else if (datatype != "INT1U") {
-		std::fill(hasCT.begin(), hasCT.end(), false);
-	}
-
-	if (opt.datatype_set) {
-		if (datatype != opt.get_datatype()) {
-			addWarning("changed datatype to " + datatype);
+		if (opt.datatype_set) {
+			if (datatype != opt.get_datatype()) {
+				addWarning("changed datatype to " + datatype);
+			}
 		}
 	}
-
+	
 	GDALDataType gdt;
 	if (!getGDALDataType(datatype, gdt)) {
 		setError("invalid datatype");
