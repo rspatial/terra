@@ -60,6 +60,7 @@ class SpatPart {
 		SpatHole getHole(unsigned i) { return( holes[i] ) ; }
 		bool hasHoles() { return holes.size() > 0;}
 		unsigned nHoles() { return holes.size();}
+		size_t ncoords();
 };
 
 

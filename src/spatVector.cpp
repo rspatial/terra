@@ -71,6 +71,16 @@ SpatPart::SpatPart(std::vector<double> X, std::vector<double> Y) {
 }
 
 
+size_t SpatPart::ncoords() {
+	size_t ncrds = x.size();
+	size_t nh = holes.size();
+	for (size_t k=0; k < nh; k++) {
+		ncrds += holes[k].x.size();
+	}
+	return ncrds;
+}
+
+
 SpatGeom::SpatGeom() {}
 
 SpatGeom::SpatGeom(SpatPart p, SpatGeomType type) {

@@ -94,24 +94,30 @@ setMethod("dots", signature(x="SpatVector"),
 	if (!is.null(out$main_cols)) {
 		out$main_cols <- rep_len(out$main_cols, n)
 	}
-	g <- geom(x, df=TRUE)
-	g <- split(g, g[,1])
-	g <- lapply(g, function(y) split(y[,3:5], y[,2]))
+	
+#	g <- geom(x, df=TRUE)
+#	g <- split(g, g[,1])
+#	g <- lapply(g, function(y) split(y[,3:5], y[,2]))
+#	w <- getOption("warn")
+#	on.exit(options("warn" = w))
+#	for (i in 1:length(g)) {
+#		gg <- g[[i]]
+#		for (j in 1:length(gg)) {
+#			a <- gg[[j]]
+#			if (any(is.na(a))) next
+#			if (any(a[,3] > 0)) {
+#				a <- split(a[,1:2,drop=FALSE], a[,3])
+#				a <- lapply(a, function(i) rbind(i, NA))
+#				a <- do.call(rbind, a )
+#				a <- a[-nrow(a), ]
+#				# g[[i]][[1]] <- a
+#			}
 
-	w <- getOption("warn")
-	on.exit(options("warn" = w))
+	g <- x@ptr$get_polygonsList()
 	for (i in 1:length(g)) {
-		gg <- g[[i]]
-		for (j in 1:length(gg)) {
-			a <- gg[[j]]
-			if (any(is.na(a))) next
-			if (any(a[,3] > 0)) {
-				a <- split(a[,1:2,drop=FALSE], a[,3])
-				a <- lapply(a, function(i) rbind(i, NA))
-				a <- do.call(rbind, a )
-				a <- a[-nrow(a), ]
-				# g[[i]][[1]] <- a
-			}
+		for (j in 1:length(g[[i]])) {
+			a <- g[[i]][[j]]
+			names(a) <- c("x", "y")
 			if (!is.null(out$leg$density)) {
 				graphics::polygon(a, col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 				graphics::polypath(a, col=NA, rule="evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
@@ -119,7 +125,7 @@ setMethod("dots", signature(x="SpatVector"),
 				graphics::polypath(a, col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
-		options("warn" = -1)
+#		options("warn" = -1)
 	}
 	invisible(out)
 }
