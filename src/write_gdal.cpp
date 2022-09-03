@@ -375,7 +375,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	std::vector<SpatDataFrame> ct = getColors();
 	bool cat = hasCats[0];
 
-	if (driver != "GPKG") {
+	if ((driver != "GPKG") || opt.datatype_set) {
 		bool rat = cat ? is_rat(source[0].cats[0].d) : false;
 		if (rat) {
 			if (hasCT[0]) {
@@ -388,11 +388,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		} else if (datatype != "INT1U") {
 			std::fill(hasCT.begin(), hasCT.end(), false);
 		}
-		if (opt.datatype_set) {
-			if (datatype != opt.get_datatype()) {
-				addWarning("changed datatype to " + datatype);
-			}
-		}
+		//if (opt.datatype_set) {
+		//	if (datatype != opt.get_datatype()) {
+		//		addWarning("changed datatype to " + datatype);
+		//	}
+		//}
 	}
 	
 	GDALDataType gdt;
