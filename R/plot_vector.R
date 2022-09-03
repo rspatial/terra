@@ -114,18 +114,19 @@ setMethod("dots", signature(x="SpatVector"),
 #			}
 
 	g <- x@ptr$get_polygonsList()
-	for (i in 1:length(g)) {
-		for (j in 1:length(g[[i]])) {
-			a <- g[[i]][[j]]
-			names(a) <- c("x", "y")
-			if (!is.null(out$leg$density)) {
-				graphics::polygon(a, col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
-				graphics::polypath(a, col=NA, rule="evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
-			} else {
-				graphics::polypath(a, col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+	if (is.null(out$leg$density)) {
+		for (i in 1:length(g)) {
+			for (j in 1:length(g[[i]])) {
+				graphics::polypath(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
-#		options("warn" = -1)
+	} else {
+		for (i in 1:length(g)) {
+			for (j in 1:length(g[[i]])) {
+				graphics::polygon(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polypath(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=NA, rule="evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+			}
+		}
 	}
 	invisible(out)
 }
