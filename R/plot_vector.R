@@ -41,7 +41,7 @@ setMethod("dots", signature(x="SpatVector"),
 #	cols <- out$cols
 #	if (is.null(cols)) cols = rep("black", n)
 
-	g <- lapply(x@ptr$get_linesList(), function(i) { names(i)=c("x", "y"); i } )
+	g <- lapply(x@ptr$linesList(), function(i) { names(i)=c("x", "y"); i } )
 
 #	g <- geom(x, df=TRUE)
 #	g <- split(g, g[,1])
@@ -113,7 +113,7 @@ setMethod("dots", signature(x="SpatVector"),
 #				# g[[i]][[1]] <- a
 #			}
 
-	g <- x@ptr$get_polygonsList()
+	g <- x@ptr$polygonsList()
 	if (is.null(out$leg$density)) {
 		for (i in 1:length(g)) {
 			for (j in 1:length(g[[i]])) {

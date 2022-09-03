@@ -281,6 +281,10 @@ class SpatVector {
 		SpatVector rotate(double angle, double x0, double y0);
 		SpatVector normalize_dateline();
 
+		std::vector<std::vector<double>> linesNA();
+		std::vector<std::vector<std::vector<double>>> linesList();
+		std::vector<std::vector<std::vector<std::vector<double>>>> polygonsList();
+
 //ogr 
 		std::vector<bool> is_valid();
 		SpatVector make_valid();
