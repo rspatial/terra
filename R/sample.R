@@ -9,10 +9,10 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, c
 		if (size >= nrow(res)) {
 			i <- 1:nrow(res)
 		} else {
-			i <- sample(nrow(res), size, prob=res[,ncol(res)], replace=replace)
+			i <- sample.int(nrow(res), size, prob=res[,ncol(res)], replace=replace)
 		}
 	} else {
-		i <- sample(nrow(res), size, prob=res[,ncol(res)], replace=replace)
+		i <- sample.int(nrow(res), size, prob=res[,ncol(res)], replace=replace)
 	}
 	res <- res[i,]
 	if (as.points) {
@@ -27,86 +27,128 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, c
 	res
 }
 
-
-sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=2, weights=NULL) {
-
-	if ((!xy) && (!as.points)) cells <- TRUE
-
-	f <- freq(x)
-	exp <- max(1, exp)
-	ss <- exp * size * nrow(f)
-	lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
-
-	if (is.null(weights)) {
-		if ((!lonlat) && (ss > (0.8 * ncell(x)))) {
-			sr <- cbind(1:ncell(x), values(x))
-			colnames(sr) <- c("cell", names(x))
-		} else {
-			sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=FALSE)
-		}
-	} else {
+sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL) {
+	if (!is.null(ext)) {
+		x <- crop(x, ext)
+	}
+	if (!is.null(weights)) {
 		if (!inherits(weights, "SpatRaster")) {
 			error("spatSample", "weights must be a SpatRaster")
 		}
 		if (!compareGeom(x, weights)) {
 			error("spatSample", "geometry of weights does not match the geometry of x")
 		}
-		sr <- vector("list", length = nrow(f))
-		for (i in 1:nrow(f)) {
-			r <- x == f[i,2]
-			r <- mask(weights, r, maskvalue=TRUE, inverse=TRUE)
-			sr[[i]] <- sampleWeights(r, size, replace=replace, cells=TRUE, ext=ext)[,1]
+		v <- cbind(cell=1:ncell(x), values(x), values(weights))
+		v <- v[!is.na(v[,2]), ]
+		uv <- sort(unique(v[,2]))
+		ys <- vector(mode="list", length=length(uv))
+		for (i in seq_len(length(uv))) {
+			vv <- v[v[,2] == uv[i], ]
+			if (replace) {
+				s <- sample.int(nrow(vv), size, prob=vv[,3], replace=TRUE)
+			} else {
+				s <- sample.int(nrow(vv), min(size, nrow(vv)), prob=vv[,3], replace=FALSE)
+			}
+			ys[[i]] <- vv[s,-3]
 		}
-		sr <- unlist(sr)
-		sr <- cbind(cell=sr, extract(x, sr))
+	} else if (lonlat) {
+		v <- cbind(cell=1:ncell(x), values(x), abs(cos(pi * values(init(x, "y")) / 360)))
+		v <- v[!is.na(v[,2]), ]
+		uv <- sort(unique(v[,2]))
+		ys <- vector(mode="list", length=length(uv))
+		for (i in seq_len(length(uv))) {
+			vv <- v[v[,2] == uv[i], ]
+			if (replace) {
+				s <- sample.int(nrow(vv), size, prob=vv[,3], replace=TRUE)
+			} else {
+				s <- sample.int(nrow(vv), min(size, nrow(vv)), prob=vv[,3], replace=FALSE)
+			}
+			ys[[i]] <- vv[s,-3]
+		}
+	} else {
+		v <- cbind(cell=1:ncell(x), values(x))
+		v <- v[!is.na(v[,2]), ]
+		uv <- sort(unique(v[,2]))
+		ys <- vector(mode="list", length=length(uv))
+		for (i in seq_len(length(uv))) {
+			vv <- v[v[,2] == uv[i], ]
+			if (replace) {
+				s <- sample.int(nrow(vv), size, replace=TRUE)
+			} else {
+				s <- sample.int(nrow(vv), min(size, nrow(vv)), replace=FALSE)
+			}
+			ys[[i]] <- vv[s,]
+		}
 	}
-	ys <- list()
-	notfound <- NULL
+	ys <- do.call(rbind, ys)
+	ta <- tapply(ys[,1], ys[,2], length)
+	ta <- names(ta)[ta < size]
+	if ((length(ta) > 0) && warn) {
+		warn("spatSample", 'fewer samples than requested are available for group(s): ', paste(ta, collapse=', '))
+	}
+	ys
+}
 
-	for (i in seq_len(nrow(f))) {
-		y <- sr[sr[, 2] == f[i,2], ,drop=FALSE]
-		if (nrow(y) < size) {
-			notfound <- c(notfound, i)
+
+
+
+sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=5, weights=NULL) {
+
+	lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
+	if (blocks(x, n=4)$n == 1) {
+		res <- sampleStratMemory(x, size, replace, lonlat, ext)
+	} else {
+
+		f <- freq(x)
+		exp <- max(1, exp)
+		ss <- exp * size * nrow(f)
+
+		if (is.null(weights)) {
+			if ((!lonlat) && (ss > (0.8 * ncell(x)))) {
+				if (!is.null(ext)) {
+					x <- crop(x, ext)
+				}
+				sr <- cbind(1:ncell(x), values(x))
+				colnames(sr) <- c("cell", names(x))
+			} else {
+				sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=FALSE)
+			}
 		} else {
+			if (!inherits(weights, "SpatRaster")) {
+				error("spatSample", "weights must be a SpatRaster")
+			}
+			if (!compareGeom(x, weights)) {
+				error("spatSample", "geometry of weights does not match the geometry of x")
+			}
+			sr <- vector("list", length = nrow(f))
+			for (i in 1:nrow(f)) {
+				r <- x == f[i,2]
+				r <- mask(weights, r, maskvalue=TRUE, inverse=TRUE)
+				sr[[i]] <- sampleWeights(r, size, replace=replace, cells=TRUE, ext=ext)[,1]
+			}
+			sr <- unlist(sr)
+			sr <- cbind(cell=sr, extract(x, sr))
+		}
+		uv <- unique(sr[,2])
+		ys <- vector(mode="list", length=length(uv))
+		for (i in seq_len(length(uv))) {
+			y <- sr[sr[, 2] == uv[i], ,drop=FALSE]
 			if (nrow(y) > size) {
-				y <- y[sample(nrow(y), size),  ,drop=FALSE]
+				y <- y[sample.int(nrow(y), size),  ,drop=FALSE]
 			}
 			ys[[i]] <- y
 		}
-	}
-	if(!is.null(notfound)){
-	  for (i in seq_along(notfound)) {
-	    # use sampleWeights with prob 1
-	    r <- x == f[notfound[i],2]
-	    y_fix <- data.frame(cell = sampleWeights(r, size, replace = replace,
-	                  cells = TRUE, ext = ext)[, 1], stratum = notfound[i])
-	    ys[[notfound[i]]] <- y_fix
-	  }
-	}
-	res <- do.call(rbind, ys)
-	colnames(res) <- c('cell', names(x))
+		res <- do.call(rbind, ys)
+		colnames(res) <- c('cell', names(x))
 
-	ures <- unique(res[,2])
-	miss <- !(f[,"value"] %in% ures)
-	if (any(miss) && warn) {
-		miss <- which(miss)
-		if (length(miss)== 1) {
-			warn("sample", 'no samples for stratum: ', miss)
-		} else if (length(miss) > 1) {
-			warn("sample", 'no samples for strata: ', paste(miss, collapse=', '))
+		ta <- tapply(res[,1], res[,2], length)
+		ta <- names(ta)[ta < size]
+		if ((length(ta) > 0) && warn) {
+			warn("spatSample", 'fewer samples than requested for group(s): ', paste(ta, collapse=', '))
 		}
 	}
-
-	ta <- tapply(res[,1], res[,2], length)
-	tanm <- names(ta)[which(ta < size)]
-	if ((length(tanm) > 0) && warn) {
-		if (length(tanm)== 1) {
-			warn("sample", 'fewer samples than requested for stratum: ', tanm)
-		} else if (length(tanm) > 1) {
-			warn("sample", 'fewer samples than requested for strata: ', paste(tanm, collapse=', '))
-		}
-	}
-
+	
+	if ((!xy) && (!as.points)) cells <- TRUE
 	if (xy) {
 		pts <- xyFromCell(x, res[,1])
 		res <- cbind(res[,1,drop=FALSE], pts, res[,2,drop=FALSE])
@@ -126,42 +168,48 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 }
 
 
-
-
-
-
-
-
 .seed <- function() {
   sample.int(.Machine$integer.max, 1)
 }
 
 
-.sampleCells <- function(x, size, method, replace, na.rm=FALSE, ext=NULL) {
+.sampleCellsMemory <- function(x, size, replace, lonlat, ext=NULL) {
+	if (!is.null(ext)) {
+		x <- crop(x, ext)
+	}
+	if (lonlat) {
+		v <- cbind(cell=1:ncell(x), values(x), abs(cos(pi * values(init(x, "y")) / 360)))
+		v <- v[!is.na(v[,2]), ]
+		i <- sample.int(nrow(v), min(size, nrow(v)), prob=v[,2], replace=replace)
+	} else {
+		v <- cbind(cell=1:ncell(x), values(x))
+		v <- v[!is.na(v[,2]),]
+		i <- sample.int(nrow(v), min(size, nrow(v)), replace=replace)
+	}
+	v[i,1]
+}
+
+
+.sampleCells <- function(x, size, method, replace, na.rm=FALSE, ext=NULL, exp=5) {
 	r <- rast(x)
 	lonlat <- is.lonlat(r, perhaps=TRUE, warn=TRUE)
 	if (!is.null(ext)) {
 		r <- crop(rast(r), ext)
 	}
+	
 	if ( ((!replace) || (method == "regular")) && (size >= ncell(r)) ) {
 		cells <- 1:ncell(r)
-	}
-
-	if (method == "random") {
+	} else if (method == "random") {
 		nsize <- size
-		if (na.rm) {
-			# too expensive for large files and small samples:
-			# propNA <- freq(x, value = NA)[,"count"]/ncell(r)
-			# size <- size / (propNA * .8)
-			# one can always take a larger sample.
-			size <- size * 4
-		}
-		if (lonlat) {
+		if (na.rm) size <- size * exp
+		
+		if (na.rm && (blocks(x, n=4)$n == 1)) {
+			cells <- .sampleCellsMemory(x, nsize, replace, lonlat, ext)
+		} else if (lonlat) {
 			m <- ifelse(replace, 1.5, 1.25)
 			n <- m * size
 			y <- yFromRow(r, 1:nrow(r))
-			w <- abs(cos(pi*y/180))
-			rows <- sample.int(nrow(r), n, replace=TRUE, prob=w)
+			rows <- sample.int(nrow(r), n, replace=TRUE, prob=abs(cos(pi*y/180)))
 			cols <- sample.int(ncol(r), n, replace=TRUE)
 			cells <- cellFromRowCol(r, rows, cols)
 			if (!replace) {
@@ -169,7 +217,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			}
 		} else {
 			size <- min(ncell(r), size)
-			cells <- sample(ncell(r), size, replace=replace)
+			cells <- sample.int(ncell(r), size, replace=replace)
 		}
 	} else { # regular
 		if (lonlat) {
@@ -217,7 +265,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			cells <- cells[1:nsize]
 		}
 	}
-	return(cells)
+	cells
 }
 
 
@@ -241,8 +289,8 @@ set_factors <- function(x, ff, cts, asdf) {
 
 
 setMethod("spatSample", signature(x="SpatRaster"),
-	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL) {
-
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5) {
+		exp <- max(c(1, exp), na.rm=TRUE)
 		size <- round(size)
 		if (any(size < 1)) {
 			error("spatSample", "sample size must be a positive integer")
@@ -254,30 +302,30 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		method <- match.arg(tolower(method), c("random", "regular", "stratified", "weights"))
 		if (method == "stratified") {
 			if (as.raster) {
-				error("as.raster is not valid for method='stratified'")
+				error("spatSample", "as.raster is not valid for method='stratified'")
 			}
 			if (nlyr(x) > 1) {
 				x <- x[[1]]
-				warn("only the first layer of x is used")
+				warn("spatSample", "only the first layer of x is used")
 			}
 			if (!hasValues(x)) {
-				error("x has no values")
+				error("spatSample", "x has no values")
 			}
-			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext, warn=warn, exp=5, weights=weights) )
+			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights) )
 		} else if (!is.null(weights)) {
 			error("spatSample", "argument weights is only used when method='stratified'")
 		}
 
 		if (method == "weights") {
 			if (as.raster) {
-				error("as.raster is not valid for method='weights'")
+				error("spatSample", "as.raster is not valid for method='weights'")
 			}
 			if (nlyr(x) > 1) {
 				x <- x[[1]]
-				warn("only the first layer of x is used")
+				warn("spatSample", "only the first layer of x is used")
 			}
 			if (!hasValues(x)) {
-				error("x has no values")
+				error("spatSample", "x has no values")
 			}
 			out <- try(sampleWeights(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext) )
 			if (inherits(out, "try-error")) {
@@ -381,11 +429,11 @@ setMethod("spatSample", signature(x="SpatRaster"),
 						if (nrow(out) < size) {
 							warn("spatSample", "more non-NA cells requested than available")
 						} else {
-							out <- out[sample(nrow(out), size), ,drop=FALSE]
+							out <- out[sample.int(nrow(out), size), ,drop=FALSE]
 						}
 					} else {
 						out <- values(x)
-						out <- out[sample(nrow(out), size, replace=replace), ,drop=FALSE]
+						out <- out[sample.int(nrow(out), size, replace=replace), ,drop=FALSE]
 					}
 					out <- set_factors(out, ff, lv, as.df)
 					return(out)
@@ -561,7 +609,7 @@ setMethod("spatSample", signature(x="SpatVector"),
 				return(r)
 			}
 			if (length(size) == 1) {
-				x@ptr = x@ptr$sample(size, method[1], .seed())
+				x@ptr = x@ptr$sample.int(size, method[1], .seed())
 			} else {
 				x@ptr = x@ptr$sampleGeom(size, method[1], .seed())
 			}
