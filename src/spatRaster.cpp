@@ -85,7 +85,7 @@ void SpatRaster::setSources(std::vector<SpatRasterSource> s) {
 
 
 void SpatRaster::setSource(SpatRasterSource s) {
-	s.resize(s.nlyr);
+	s.resize(s.nlyr); // appears to be necessary!
 	source = {s};
 }
 

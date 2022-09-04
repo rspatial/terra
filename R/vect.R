@@ -348,7 +348,7 @@ setMethod("$<-", "SpatVector",
 
 
 setMethod("vect", signature(x="data.frame"),
-	function(x, geom=c("lon", "lat"), crs=NA, keepgeom=FALSE) {
+	function(x, geom=c("lon", "lat"), crs="", keepgeom=FALSE) {
 		if (!all(geom %in% names(x))) {
 			error("vect", "the variable name(s) in argument `geom` are not in `x`")
 		}
