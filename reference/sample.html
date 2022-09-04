@@ -58,10 +58,9 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">spatSample</span><span class="op">(</span><span class="va">x</span>, <span class="va">size</span>, method<span class="op">=</span><span class="st">"random"</span>, replace<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>,
-  as.raster<span class="op">=</span><span class="cn">FALSE</span>, as.df<span class="op">=</span><span class="cn">TRUE</span>, as.points<span class="op">=</span><span class="cn">FALSE</span>, values<span class="op">=</span><span class="cn">TRUE</span>, 
-  cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, warn<span class="op">=</span><span class="cn">TRUE</span>, weights<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
-
+<span class="fu">spatSample</span><span class="op">(</span><span class="va">x</span>, <span class="va">size</span>, method<span class="op">=</span><span class="st">"random"</span>, replace<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, 
+    as.raster<span class="op">=</span><span class="cn">FALSE</span>, as.df<span class="op">=</span><span class="cn">TRUE</span>, as.points<span class="op">=</span><span class="cn">FALSE</span>, values<span class="op">=</span><span class="cn">TRUE</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, 
+    xy<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, warn<span class="op">=</span><span class="cn">TRUE</span>, weights<span class="op">=</span><span class="cn">NULL</span>, exp<span class="op">=</span><span class="fl">5</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector</span>
 <span class="fu">spatSample</span><span class="op">(</span><span class="va">x</span>, <span class="va">size</span>, method<span class="op">=</span><span class="st">"random"</span>, strata<span class="op">=</span><span class="cn">NULL</span>, chess<span class="op">=</span><span class="st">""</span><span class="op">)</span>
@@ -76,7 +75,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <dd><p>SpatRaster, SpatVector or SpatExtent</p></dd>
 
   <dt>size</dt>
-<dd><p>numeric. The sample size. If <code>x</code> is a SpatVector, you can also provide a vector of the same length as <code>x</code> in wich case sampling is done seperately for each geometry. If <code>x</code> is a SpatRaster, and you are using <code>method="regular"</code> you can specify the size as two numbers (number of rows and columns)</p></dd>
+<dd><p>numeric. The sample size. If <code>x</code> is a SpatVector, you can also provide a vector of the same length as <code>x</code> in which case sampling is done separately for each geometry. If <code>x</code> is a SpatRaster, and you are using <code>method="regular"</code> you can specify the size as two numbers (number of rows and columns)</p></dd>
 
   <dt>method</dt>
 <dd><p>character. Should be "regular" or "random", If <code>x</code> is a <code>SpatRaster</code>, it can also be "stratified" (each value in <code>x</code> is a stratum) or "weights" (each value in <code>x</code> is a probability weight)</p></dd>
@@ -125,6 +124,10 @@ In order to assure regularity when requesting a regular sample, the number of ce
   <dt>lonlat</dt>
 <dd><p>logical. If <code>TRUE</code>, sampling of a SpatExtent is weighted by <code>cos(latitude)</code>. For SpatRaster and SpatVector this done based on the <code><a href="crs.html">crs</a></code>, but it is ignored if <code>as.raster=TRUE</code></p></dd>
 
+  
+  <dt>exp</dt>
+<dd><p>numeric &gt;= 1. 'Expansion factor' that is multiplied with <code>size</code> to get an initial sample. used for stratified samples and random samples with <code>na.rm=TRUE</code> to try to get at least <code>size</code> samples</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -138,30 +141,31 @@ In order to assure regularity when requesting a regular sample, the number of ce
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">10</span>, as.raster<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    elevation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        280</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        311</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        340</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        282</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7        297</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        290</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       473</span>
-<span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">10</span>, <span class="st">"random"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    elevation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        305</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        448</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        467</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        299</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10        NA</span>
+<span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   elevation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       407</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       347</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        NA</span>
+<span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   elevation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       291</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       302</span>
+<span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span>, <span class="st">"regular"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   elevation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       479</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       NaN</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       NaN</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       419</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       306</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       281</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       286</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       NaN</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## if you require cell numbers and/or coordinates</span></span>
 <span class="r-in"><span class="va">size</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
@@ -173,12 +177,12 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="va">xy</span> <span class="op">&lt;-</span> <span class="fu"><a href="xyCellFrom.html">xyFromCell</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">cells</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">xy</span>, <span class="va">v</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          x        y elevation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 5.795833 49.84583       443</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 5.787500 49.81250       429</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 6.029167 49.77083       290</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 6.087500 49.55417       301</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 5.904167 49.75417       273</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 6.362500 50.17917        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 6.045833 49.69583       311</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 6.195833 50.10417        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 5.745833 49.79583        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 5.787500 49.82917       494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 5.879167 49.67917       296</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 6.254167 49.93750        NA</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># regular </span></span>
 <span class="r-in"><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">6</span>, <span class="st">"regular"</span>, cells<span class="op">=</span><span class="cn">TRUE</span>, values<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
@@ -199,13 +203,13 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">rr</span>, <span class="fl">2</span>, <span class="st">"stratified"</span>, xy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       x   y stratum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   90  27       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29  -54  27       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28  162  45       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13  162   9       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12  162 -27       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  -162  45       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      x   y stratum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -126  63       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  126 -27       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  126  27       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -162  81       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   18 -45       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  -18  27       3</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">rr</span>, <span class="fl">5</span>, <span class="st">"stratified"</span>, as.points<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">rr</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"raster"</span><span class="op">)</span><span class="op">)</span></span>
@@ -216,16 +220,16 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">e</span>, <span class="fl">10</span>, <span class="st">"random"</span>, lonlat<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              x        y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 6.151890 49.78002</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 5.796490 49.68310</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 6.366530 49.75749</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 5.909058 49.54728</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 6.275593 49.61868</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 6.163672 49.76404</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 5.935549 49.76923</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 6.508582 49.49506</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 5.930067 50.02674</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 6.272336 50.09641</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 6.362453 49.45905</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 6.214008 49.74760</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 5.841767 49.60890</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 5.832523 49.44475</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 6.160047 49.88271</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 6.504415 49.59319</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 6.188561 49.69205</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 6.299401 49.56755</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 6.361697 49.68979</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 6.250035 49.85949</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## SpatVector</span></span>
 <span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
@@ -233,8 +237,6 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="co">#sample geometries </span></span>
 <span class="r-in"><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">vv</span> <span class="op">&lt;-</span> <span class="va">v</span><span class="op">[</span><span class="va">i</span>,<span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>

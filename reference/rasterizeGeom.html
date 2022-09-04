@@ -104,11 +104,15 @@ The area of polygons is intended for summing the area of polygons that are relat
 <span class="r-in"><span class="co"># count of points</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">44</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample.html">spatSample</a></span><span class="op">(</span><span class="va">v</span>, <span class="fl">100</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in envRefInferField(x, what, getClass(class(x)), selfEnv):</span> ‘sample.int’ is not a valid field or method name for reference class “Rcpp_SpatVector”</span>
 <span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">rasterizeGeom</span><span class="op">(</span><span class="va">pts</span>, <span class="va">r</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'rasterizeGeom': object 'pts' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># area of polygons</span></span>
 <span class="r-in"><span class="va">pols</span> <span class="op">&lt;-</span> <span class="fu"><a href="buffer.html">buffer</a></span><span class="op">(</span><span class="va">pts</span>, <span class="fl">1000</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'buffer': object 'pts' not found</span>
 <span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">rasterizeGeom</span><span class="op">(</span><span class="va">pols</span>, <span class="va">r</span>, fun<span class="op">=</span><span class="st">"area"</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'rasterizeGeom': object 'pols' not found</span>
 </code></pre></div>
     </div>
   </div>
