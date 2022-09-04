@@ -570,17 +570,14 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 	double r2 = ymax - ymin;
 
 	if (lonlat) {
-		double halfy = ymin + (ymax - ymin)/2;
+		double halfy = ymin + r2/2;
 		
 		// beware that -180 is the same as 180; therefore:
-		double dx = distance_lonlat(xmin, halfy, xmin + 1, halfy);
-		dx *= (xmax - xmin);	
+		double dx = distance_lonlat(xmin, halfy, xmin + 1, halfy) * r1;
 		double dy = distance_lonlat(0, ymin, 0, ymax);
 		double ratio = dx/dy;
-		double ny = std::max(1.0, sqrt(size / ratio));
-		double nx = std::max(1.0, size / ny);
-		ny = std::round(ny);
-		nx = std::round(nx);
+		double ny = std::round(std::max(1.0, sqrt(size / ratio)));
+		double nx = std::round(std::max(1.0, size / ny));
 		double x_i = r1 / nx;
 		double y_i = r2 / ny;
 
@@ -605,12 +602,11 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 		for (size_t i=0; i<lat.size(); i++) {
 			double start = halfx - 0.5*xi[i];
 			std::vector <double> x;
-			if (start < xmin) {
+			if (start <= xmin) {
 				x = { halfx };
 			} else {
-				while (start > xmin) {
-					start -= xi[i];
-				}
+				size_t sx = std::ceil((start-xmin)/x_i);
+				start -= sx * x_i; 
 				x = seq(start + xi[i], xmax, xi[i]);
 			}
 			if (x.size() <= 1) {

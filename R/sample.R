@@ -27,7 +27,7 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, c
 	res
 }
 
-sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL) {
+sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, warn=TRUE) {
 	if (!is.null(ext)) {
 		x <- crop(x, ext)
 	}
@@ -81,10 +81,12 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL) 
 		}
 	}
 	ys <- do.call(rbind, ys)
-	ta <- tapply(ys[,1], ys[,2], length)
-	ta <- names(ta)[ta < size]
-	if ((length(ta) > 0) && warn) {
-		warn("spatSample", 'fewer samples than requested are available for group(s): ', paste(ta, collapse=', '))
+	if (warn) {
+		ta <- tapply(ys[,1], ys[,2], length)
+		ta <- names(ta)[ta < size]
+		if (length(ta) > 0) {
+			warn("spatSample", 'fewer samples than requested are available for group(s): ', paste(ta, collapse=', '))
+		}
 	}
 	ys
 }
@@ -99,9 +101,10 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 		res <- sampleStratMemory(x, size, replace, lonlat, ext)
 	} else {
 
-		f <- freq(x)
+		#f <- freq(x)
+		f <- unique(x)[,1]
 		exp <- max(1, exp)
-		ss <- exp * size * nrow(f)
+		ss <- exp * size * length(f)
 
 		if (is.null(weights)) {
 			if ((!lonlat) && (ss > (0.8 * ncell(x)))) {
@@ -120,9 +123,9 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			if (!compareGeom(x, weights)) {
 				error("spatSample", "geometry of weights does not match the geometry of x")
 			}
-			sr <- vector("list", length = nrow(f))
-			for (i in 1:nrow(f)) {
-				r <- x == f[i,2]
+			sr <- vector("list", length=length(f))
+			for (i in 1:length(f)) {
+				r <- x == f[i]
 				r <- mask(weights, r, maskvalue=TRUE, inverse=TRUE)
 				sr[[i]] <- sampleWeights(r, size, replace=replace, cells=TRUE, ext=ext)[,1]
 			}
@@ -141,10 +144,14 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 		res <- do.call(rbind, ys)
 		colnames(res) <- c('cell', names(x))
 
-		ta <- tapply(res[,1], res[,2], length)
-		ta <- names(ta)[ta < size]
-		if ((length(ta) > 0) && warn) {
-			warn("spatSample", 'fewer samples than requested for group(s): ', paste(ta, collapse=', '))
+		if (warn) {
+			ta <- table(res[,2])
+			ta <- names(ta[ta < size])
+			tb <- f[!(f %in% unique(res[,2]))]
+			tba <- c(tb, ta)
+			if ((length(tba) > 0)) {
+				warn("spatSample", "fewer samples than requested for group(s): ", paste(tba, collapse=", "))
+			}
 		}
 	}
 	
