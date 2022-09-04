@@ -609,7 +609,7 @@ setMethod("spatSample", signature(x="SpatVector"),
 				return(r)
 			}
 			if (length(size) == 1) {
-				x@ptr = x@ptr$sample.int(size, method[1], .seed())
+				x@ptr = x@ptr$sample(size, method[1], .seed())
 			} else {
 				x@ptr = x@ptr$sampleGeom(size, method[1], .seed())
 			}
