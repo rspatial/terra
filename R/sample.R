@@ -334,13 +334,13 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			return (out)
 		}
 
-
 		if (!as.raster) {
 			ff <- is.factor(x)
 			lv <- levels(x)
 		}
 
 		if (cells || xy || as.points) {
+			
 			size <- size[1]
 			cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
 			if (method == "random") {
@@ -360,7 +360,6 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 			if (values && hasValues(x)) {
 				e <- extract(x, cnrs)
-				#e <- set_factors(e, ff, lv, as.df)
 				if (is.null(out)) {
 					out <- e
 				} else {
@@ -369,7 +368,8 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 			if (as.points) {
 				if (xy) {
-					out <- vect(out, crs=crs(x))
+					out <- data.frame(out)
+					out <- vect(out, geom=c("x", "y"), crs=crs(x))
 				} else {
 					xy <- xyFromCell(x, cnrs)
 					# xy is a matrix, no geom argument
