@@ -146,12 +146,22 @@ See extract to summarize values of a SpatRaster with a SpatVector.'><meta proper
 <span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">[</span>,<span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample.html">spatSample</a></span><span class="op">(</span><span class="va">v</span>, <span class="fl">100</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in envRefInferField(x, what, getClass(class(x)), selfEnv):</span> ‘sample.int’ is not a valid field or method name for reference class “Rcpp_SpatVector”</span>
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>b2<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, ssep1<span class="op">=</span><span class="fl">100</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in values(p) &lt;- data.frame(b2 = 1:100, ssep1 = 100:1):</span> object 'p' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">zonal</span><span class="op">(</span><span class="va">p</span>, <span class="va">v</span>, <span class="va">mean</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'zonal': object 'p' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    zone       b2    ssep1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 66.33333 34.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 69.40000 31.60000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 39.75000 61.25000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 41.00000 60.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 60.80000 40.20000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 44.28571 56.71429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 61.71429 39.28571</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 64.50000 36.50000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 34.42857 66.57143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 47.75000 53.25000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   11 39.11111 61.88889</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   12 58.21429 42.78571</span>
 </code></pre></div>
     </div>
   </div>
