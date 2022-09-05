@@ -14,7 +14,7 @@ Coerce a SpatRaster or SpatVector to a data.frame
 \usage{
 \S4method{as.data.frame}{SpatVector}(x, row.names=NULL, optional=FALSE, geom=NULL, ...)
 
-\S4method{as.data.frame}{SpatRaster}(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=FALSE, ...)
+\S4method{as.data.frame}{SpatRaster}(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=NA, ...)
 }
 
 \arguments{
