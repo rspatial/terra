@@ -48,19 +48,23 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-11" id="version-16-11">version 1.6-11<a class="anchor" aria-label="anchor" href="#version-16-11"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-13" id="version-16-13">version 1.6-13<a class="anchor" aria-label="anchor" href="#version-16-13"></a></h2>
 <div class="section level3">
-<h3 id="new-1-6-11">new<a class="anchor" aria-label="anchor" href="#new-1-6-11"></a></h3>
+<h3 id="new-1-6-13">new<a class="anchor" aria-label="anchor" href="#new-1-6-13"></a></h3>
 <ul><li>
 <code>droplevels</code> for SpatRaster. <a href="https://github.com/rspatial/terra/issues/757" class="external-link">#757</a> by Rodolfo Jaffe.</li>
 <li>new method <code>which.related</code> for SpatVectors.</li>
 <li>new method <code>normalize.longitude</code> for SpatVector.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-6-11">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-11"></a></h3>
-<ul><li>new argument <code>raw=FALSE</code> to <code>extract&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/issues/776" class="external-link">#776</a> by Thomas Roh.</li></ul></div>
+<h3 id="enhancements-1-6-13">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-13"></a></h3>
+<ul><li>new argument <code>raw=FALSE</code> to <code>extract&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/issues/776" class="external-link">#776</a> by Thomas Roh.</li>
+<li>
+<code>as.data.frame</code> now takes <code>na.rm=NA</code> to only remove rows that are NA for all layers. The default value changed from <code>TRUE</code> to <code>NA</code>. <a href="https://github.com/rspatial/terra/issues/792" class="external-link">#792</a> by Ed Carnell</li>
+<li>faster plotting of SpatVector data <a href="https://github.com/rspatial/terra/issues/774" class="external-link">#774</a> by Krzysztof Dyba</li>
+</ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-11">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-11"></a></h3>
+<h3 id="bug-fixes-1-6-13">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-13"></a></h3>
 <ul><li>all.equal bug <a href="https://github.com/rspatial/terra/pull/756" class="external-link">#756</a> fixed by John Baums</li>
 <li>extract&lt;“SpatRaster”,“sf”&gt; ignored the ID argument. <a href="https://github.com/rspatial/terra/issues/755" class="external-link">#755</a> by Dainius Masiliūnas.</li>
 <li>There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file <a href="https://github.com/rspatial/terra/issues/760" class="external-link">#760</a> by John Baums</li>
@@ -69,6 +73,10 @@
 </li>
 <li>
 <code>weighted.mean</code> crashed with numeric weights and na.rm=TRUE <a href="https://github.com/rspatial/terra/issues/777" class="external-link">#777</a> by David Holstius</li>
+<li>
+<code>project&lt;SpatRaster&gt;</code> did not consider an extent that was set by the user <a href="https://github.com/rspatial/terra/issues/775" class="external-link">#775</a> by Philippe Massicotte</li>
+<li>
+<code>focalCor</code> failed for large rasters <a href="https://github.com/rspatial/terra/issues/607" class="external-link">#607</a> by John Clark</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -398,18 +406,17 @@
 <div class="section level3">
 <h3 id="enhancements-1-4-22">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-4-22"></a></h3>
 <ul><li>
-<code>lapp</code> and <code>tapp</code> now have a <code>cores</code> argument (as do <code>app</code> and <code>predict</code>). Suggested by Dongdong Kong <a href="https://github.com/rspatial/terra/pull/365" class="external-link">#365</a>
-</li>
+<code>lapp</code> and <code>tapp</code> now have a <code>cores</code> argument (as do <code>app</code> and <code>predict</code>). Suggested by Dongdong Kong [#365]</li>
 <li>
-<code>focal</code> now also works with a function that returns multiple values (see <a href="https://github.com/rspatial/terra/pull/318" class="external-link">#318</a> by Alex Ilich).</li>
+<code>focal</code> now also works with a function that returns multiple values. See [#318] by Alex Ilich.</li>
 <li>
 <code>focal</code> can now process multiple layers in one step.</li>
-<li>expanded support for conversion from <code>stars</code> objects <a href="https://github.com/rspatial/terra/issues/220" class="external-link">#220</a> by Jakub Nowosad</li>
+<li>expanded support for conversion from <code>stars</code> objects [#220] by Jakub Nowosad</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-4-22">new<a class="anchor" aria-label="anchor" href="#new-1-4-22"></a></h3>
 <ul><li>
-<code>focalCpp</code> takes a C++ function that iterates over cells to speed up computation by avoiding <code>apply</code> (see <a href="https://github.com/rspatial/terra/pull/318" class="external-link">#318</a> by Alex Ilich).</li>
+<code>focalCpp</code> takes a C++ function that iterates over cells to speed up computation by avoiding <code>apply</code> (see [#318] by Alex Ilich).</li>
 <li>
 <code>focalReg</code> for focal OLS regression models between layers</li>
 </ul></div>
@@ -420,9 +427,9 @@
 <div class="section level3">
 <h3 id="bug-fixes-1-4-20">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-20"></a></h3>
 <ul><li>
-<code>terra</code> did not install with versions of GDAL below 3 <a href="https://github.com/rspatial/terra/issues/402" class="external-link">#402</a> by Alex Ilich.</li>
+<code>terra</code> did not install with versions of GDAL below 3 [#402] by Alex Ilich.</li>
 <li>
-<code>distance</code> between two SpatVectors or matrices with <code>pairwise=FALSE</code> returned a matrix that was filled by column instead of by row <a href="https://github.com/rspatial/terra/issues/403" class="external-link">#403</a> by Paul Smith</li>
+<code>distance</code> between two SpatVectors or matrices with <code>pairwise=FALSE</code> returned a matrix that was filled by column instead of by row [#403] by Paul Smith</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -431,26 +438,25 @@
 <div class="section level3">
 <h3 id="bug-fixes-1-4-19">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-19"></a></h3>
 <ul><li>
-<code>rast</code> with some NetCDF files failed because of bad parsing of dates. <a href="https://github.com/rspatial/terra/pull/361" class="external-link">#361</a> by Juan Carlos Zamora-Pereira</li>
+<code>rast</code> with some NetCDF files failed because of bad parsing of dates. [#361] by Juan Carlos Zamora-Pereira</li>
 <li>
-<code>distance&lt;SpatRaster&gt;</code> with lon/lat data was not correct. <a href="https://github.com/rspatial/terra/pull/368" class="external-link">#368</a> by Greg Schmidt</li>
+<code>distance&lt;SpatRaster&gt;</code> with lon/lat data was not correct. [#368] by Greg Schmidt</li>
 <li>
-<code>as.polygons&lt;SpatRaster&gt;</code> failed with a SpatRaster and a categorical layer that is not the first layer. <a href="https://github.com/rspatial/terra/pull/370" class="external-link">#370</a> by Patrick Schratz</li>
-<li>The filename argument in <code>rasterize</code> was not ignored, also causing errors when writing to temporary files. <a href="https://github.com/rspatial/terra/pull/377" class="external-link">#377</a> by Robbie Price</li>
+<code>as.polygons&lt;SpatRaster&gt;</code> failed with a SpatRaster and a categorical layer that is not the first layer. [#370] by Patrick Schratz</li>
+<li>The filename argument in <code>rasterize</code> was not ignored, also causing errors when writing to temporary files. [#377] by Robbie Price</li>
 <li>
-<code>rast&lt;character&gt;</code> crashed if the sds was an empty character string. <a href="https://github.com/rspatial/terra/pull/381" class="external-link">#381</a> by Dan Baston</li>
+<code>rast&lt;character&gt;</code> crashed if the sds was an empty character string. [#381] by Dan Baston</li>
 <li>
-<code>plot&lt;SpatVector&gt;</code> now responds to the <code>range</code> argument <a href="https://github.com/rspatial/terra/issues/385" class="external-link">#385</a> by Márcia Barbosa</li>
+<code>plot&lt;SpatVector&gt;</code> now responds to the <code>range</code> argument [#385] by Márcia Barbosa</li>
 <li>
-<code>zonal</code> failed for user-defined functions. <a href="https://github.com/rspatial/terra/issues/393" class="external-link">#393</a> by mqueinnec</li>
+<code>zonal</code> failed for user-defined functions. [#393] by mqueinnec</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-4-19">new<a class="anchor" aria-label="anchor" href="#new-1-4-19"></a></h3>
 <ul><li>new method <code>selectHighest</code> to select n cell values with the highest or lowest values.</li>
 <li>new method <code>vect&lt;list&gt;</code> to append SpatVectors (faster than <code>do.call(rbind, x)</code>)</li>
 <li>new argument <code>align=FALSE</code> to <code>project</code> to align to the template SpatRaster but ignore the resolution</li>
-<li>new method <code>gdalCache</code> to set the GDAL cache size, contributed by Dan Baston <a href="https://github.com/rspatial/terra/pull/387" class="external-link">#387</a>
-</li>
+<li>new method <code>gdalCache</code> to set the GDAL cache size, contributed by Dan Baston [#387]</li>
 <li>new method <code>fileBlocksize</code>
 </li>
 <li>new argument <code>options</code> to <code>writeVector</code> to pass layer creation options to GDAL</li>
@@ -462,10 +468,9 @@
 <div class="section level3">
 <h3 id="enhancements-1-4-19">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-4-19"></a></h3>
 <ul><li>
-<code>terra</code> now installs with older versions of GEOS <a href="https://github.com/rspatial/terra/pull/363" class="external-link">#363</a>
-</li>
+<code>terra</code> now installs with older versions of GEOS [#363]</li>
 <li>
-<code>terra</code> now installs on CentOS 7 with GDAL 2.1.4 and a C++ compiler that does not support std::regexp. <a href="https://github.com/rspatial/terra/issues/384" class="external-link">#384</a> by Ariel Paulson</li>
+<code>terra</code> now installs on CentOS 7 with GDAL 2.1.4 and a C++ compiler that does not support std::regexp. [#384] by Ariel Paulson</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -486,8 +491,7 @@
 <div class="section level3">
 <h3 id="enhancements-1-4-9">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-4-9"></a></h3>
 <ul><li>
-<code>project</code> and <code>resample</code> now choose the resampling method based on the first layer, using “near” for categorical data. Thanks to Matthew Lewis <a href="https://github.com/rspatial/terra/pull/355" class="external-link">#355</a>
-</li></ul></div>
+<code>project</code> and <code>resample</code> now choose the resampling method based on the first layer, using “near” for categorical data. Thanks to Matthew Lewis [#355]</li></ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-4-9">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-9"></a></h3>
 <ul><li>
@@ -503,58 +507,53 @@
 <div class="section level3">
 <h3 id="enhancements-1-4-7">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-4-7"></a></h3>
 <ul><li>
-<code>freq</code> has a new argument <code>usenames</code>. See issue <a href="https://github.com/rspatial/terra/issues/309" class="external-link">#309</a> by Bappa Das</li>
+<code>freq</code> has a new argument <code>usenames</code>. See issue [#309] by Bappa Das</li>
 <li>
-<code>rast&lt;character&gt;</code> has a new argument <code>opts</code> that can be used to pass GDAL open options. See issue <a href="https://github.com/rspatial/terra/issues/314" class="external-link">#314</a>
-</li>
+<code>rast&lt;character&gt;</code> has a new argument <code>opts</code> that can be used to pass GDAL open options. See issue [#314]</li>
 <li>
-<code>rast&lt;SpatRaster&gt;</code> now takes arguments <code>names</code> and <code>vals</code>. See issue <a href="https://github.com/rspatial/terra/issues/323" class="external-link">#323</a> by Dongdong Kong</li>
+<code>rast&lt;SpatRaster&gt;</code> now takes arguments <code>names</code> and <code>vals</code>. See issue [#323] by Dongdong Kong</li>
 <li>
-<code>crs&lt;-</code> now warns if an unsupported datum is used. See issue <a href="https://github.com/rspatial/terra/issues/317" class="external-link">#317</a>
-</li>
+<code>crs&lt;-</code> now warns if an unsupported datum is used. See issue [#317]</li>
 <li>
 <code>spatSample</code> now returns factor values if a SpatRaster layer is.factor except when using <code>as.df=FALSE</code>
 </li>
-<li>new method <code>origin&lt;-</code> to set the origin of a SpatRaster. See issue <a href="https://github.com/rspatial/terra/issues/326" class="external-link">#326</a> by Jakub Nowosad</li>
+<li>new method <code>origin&lt;-</code> to set the origin of a SpatRaster. See issue [#326] by Jakub Nowosad</li>
 <li>
-<code>crs</code> has a new argument <code>parse</code>. See <a href="https://github.com/rspatial/terra/issues/344" class="external-link">#344</a>
-</li>
+<code>crs</code> has a new argument <code>parse</code>. See [#344]</li>
 <li>
-<code>plot&lt;SpatRaster,missing&gt;</code> has a new argument <code>reset=FALSE</code> that allows resetting the par()$mar parameters after plotting. See issue <a href="https://github.com/rspatial/terra/issues/340" class="external-link">#340</a> by Derek Friend</li>
+<code>plot&lt;SpatRaster,missing&gt;</code> has a new argument <code>reset=FALSE</code> that allows resetting the par()$mar parameters after plotting. See issue [#340] by Derek Friend</li>
 <li>
-<code>crds</code> has a new argument <code>na.rm</code>. See <a href="https://github.com/rspatial/terra/issues/338" class="external-link">#338</a> by Kodi Arfer</li>
+<code>crds</code> has a new argument <code>na.rm</code>. See [#338] by Kodi Arfer</li>
 <li>
-<code>show(Spat*)</code> now prints the name and EPSG code of a crs if available. See <a href="https://github.com/rspatial/terra/issues/317" class="external-link">#317</a> by Jakub Nowosad</li>
+<code>show(Spat*)</code> now prints the name and EPSG code of a crs if available. See [#317] by Jakub Nowosad</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-4-7">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-7"></a></h3>
 <ul><li>
-<code>plotRGB</code> failed if there were <code>NA</code>s. Issue <a href="https://github.com/rspatial/terra/issues/308" class="external-link">#308</a> by Jakub Nowosad</li>
+<code>plotRGB</code> failed if there were <code>NA</code>s. Issue [#308] by Jakub Nowosad</li>
 <li>
-<code>writeVector</code> crashed R when used with a SpatVector with no geometries. Reported by Timothy White in issue <a href="https://github.com/rspatial/terra/issues/319" class="external-link">#319</a>
-</li>
+<code>writeVector</code> crashed R when used with a SpatVector with no geometries. Reported by Timothy White in issue [#319]</li>
 <li>
-<code>summary&lt;SpatRaster&gt;</code> now returns counts for the classes (instead of a numerical summary of the indices) <a href="https://github.com/rspatial/terra/issues/324" class="external-link">#324</a> by Jakub Nowosad</li>
+<code>summary&lt;SpatRaster&gt;</code> now returns counts for the classes (instead of a numerical summary of the indices) [#324] by Jakub Nowosad</li>
 <li>
-<code>tapp</code> with a character index now returns a SpatRaster with the correct names <a href="https://github.com/rspatial/terra/issues/345" class="external-link">#345</a> by Stuart Brown</li>
+<code>tapp</code> with a character index now returns a SpatRaster with the correct names [#345] by Stuart Brown</li>
 <li>
-<code>rasterize</code> with a character variable now adds the ID column to the categories <a href="https://github.com/rspatial/terra/issues/337" class="external-link">#337</a> by Tate Brasel</li>
+<code>rasterize</code> with a character variable now adds the ID column to the categories [#337] by Tate Brasel</li>
 <li>
-<code>cellSize</code> now masks values in all cases (when requested with <code>mask=TRUE</code>). Issue <a href="https://github.com/rspatial/terra/issues/339" class="external-link">#339</a> by Jean-Luc Dupouey</li>
+<code>cellSize</code> now masks values in all cases (when requested with <code>mask=TRUE</code>). Issue [#339] by Jean-Luc Dupouey</li>
 <li>
-<code>buffer&lt;SpatVector&gt;</code> no longer treats lines like polygons <a href="https://github.com/rspatial/terra/issues/332" class="external-link">#332</a> by Márcia Barbosa</li>
+<code>buffer&lt;SpatVector&gt;</code> no longer treats lines like polygons [#332] by Márcia Barbosa</li>
 <li>
-<code>plot</code> now passes the layer index to <code>fun</code> <a href="https://github.com/rspatial/terra/issues/310" class="external-link">#310</a> by Ben Tupper</li>
-<li>the <code>to_id</code> in <code>nearest</code> was sometimes wrong. See <a href="https://github.com/rspatial/terra/issues/328" class="external-link">#328</a> by Shawn Ligocki</li>
+<code>plot</code> now passes the layer index to <code>fun</code> [#310] by Ben Tupper</li>
+<li>the <code>to_id</code> in <code>nearest</code> was sometimes wrong. See [#328] by Shawn Ligocki</li>
 <li>better support for ESRI value attribute tables (VAT). See this <a href="https://stackoverflow.com/q/69385928/635245" class="external-link">SO question</a>
 </li>
 <li>
-<code>focal</code> did not reset initial values for NA cells when processing chunks. <a href="https://github.com/rspatial/terra/issues/312" class="external-link">#312</a> by Jeffrey Evans</li>
+<code>focal</code> did not reset initial values for NA cells when processing chunks. [#312] by Jeffrey Evans</li>
 <li>
-<code>focal</code> could run out of memory when using a large window and user-defined function, and was inexact at the chunk boundary <a href="https://github.com/rspatial/terra/issues/347" class="external-link">#347</a>
-</li>
+<code>focal</code> could run out of memory when using a large window and user-defined function, and was inexact at the chunk boundary [#347]</li>
 <li>
-<code>zonal</code> with <code>as.raster=TRUE</code> failed for categorical SpatRasters <a href="https://github.com/rspatial/terra/issues/348" class="external-link">#348</a> by Jakub Nowosad</li>
+<code>zonal</code> with <code>as.raster=TRUE</code> failed for categorical SpatRasters [#348] by Jakub Nowosad</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -562,8 +561,8 @@
 <p>Released on 2021-08-20</p>
 <div class="section level3">
 <h3 id="enhancements-1-3-22">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-3-22"></a></h3>
-<ul><li>if <code>time(x) &lt;- d</code> is set with a <code>Date</code> class object, <code>time(x)</code> now returns a <code>Date</code> object instead of a <code>POSIXct</code> object. Issue <a href="https://github.com/rspatial/terra/issues/256" class="external-link">#256</a> raised by Mauricio Zambrano-Bigiarini</li>
-<li>The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue <a href="https://github.com/rspatial/terra/issues/258" class="external-link">#258</a> by AGeographer. Also implemented for names in both SpatVector and SpatRaster</li>
+<ul><li>if <code>time(x) &lt;- d</code> is set with a <code>Date</code> class object, <code>time(x)</code> now returns a <code>Date</code> object instead of a <code>POSIXct</code> object. Issue [#256] by Mauricio Zambrano-Bigiarini</li>
+<li>The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue [#258] by AGeographer. Also implemented for names in both SpatVector and SpatRaster</li>
 <li>
 <code>rast&lt;data.frame&gt;</code> method to avoid confusion with the <code>matrix</code> and <code>list</code> methods in response to a <a href="https://stackoverflow.com/q/68133958/635245" class="external-link">SO question</a> by Stackbeans</li>
 <li>the extreme values used to represent NA where not as intended (one or two lower) for INT2U and INT4U. Reported by Jean-Luc Dupouey on <a href="https://stackoverflow.com/q/68216362/635245" class="external-link">stackoverflow</a>
@@ -574,39 +573,36 @@
 <li>
 <code>vect&lt;character&gt;</code> (filename) now has argument <code>layer</code> to select a layer from a multi-layer file / database, and arguments <code>query</code>, <code>extent</code> and <code>filter</code> for reading a subset</li>
 <li>
-<code>subst</code> can now create multiple output layers See <a href="https://github.com/rspatial/terra/issues/276" class="external-link">issue 276</a> by Agustin Lobo</li>
+<code>subst</code> can now create multiple output layers See [issue 276] by Agustin Lobo</li>
 <li>
-<code>classify</code> can now create different multiple output layers See <a href="https://github.com/rspatial/terra/issues/276" class="external-link">issue 276</a> by Agustin Lobo</li>
+<code>classify</code> can now create different multiple output layers See [issue 276] by Agustin Lobo</li>
 <li>Argument <code>alpha</code> of <code>plot&lt;SpatRaster&gt;</code> can now be a <code>SpatRaster</code>. See this <a href="https://stackoverflow.com/q/68736432/635245" class="external-link">SO question</a> by James McCarthy</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-22">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-22"></a></h3>
 <ul><li>The <code>filename</code> and <code>overwrite</code> arguments were ignored in <code>rasterize</code>
 </li>
-<li>gdal options are now also honored for create-copy drivers <a href="https://github.com/rspatial/terra/issues/260" class="external-link">#260</a>
-</li>
-<li>buffer for lonlat now works better at the world’s “edges” <a href="https://github.com/rspatial/terra/issues/261" class="external-link">#261</a>
-</li>
+<li>gdal options are now also honored for create-copy drivers [#260]</li>
+<li>buffer for lonlat now works better at the world’s “edges” [#261]</li>
 <li>scale/offset were ignored by <code>project</code>. Reported by Fabian Fischer</li>
 <li>
-<code>rasterize&lt;SpatRaster,SpatVector&gt;</code> with <code>inverse=TRUE</code> crashed the R session. Issue <a href="https://github.com/rspatial/terra/issues/264" class="external-link">#264</a> by Jean-Luc Dupouey</li>
-<li>The output of <code>merge</code> and <code>mosaic</code> was not correct for large rasters (only the first rows were used). Reported by Zavud Baghirov in <a href="https://github.com/rspatial/terra/issues/271" class="external-link">#271</a>
-</li>
+<code>rasterize&lt;SpatRaster,SpatVector&gt;</code> with <code>inverse=TRUE</code> crashed the R session. Issue [#264] by Jean-Luc Dupouey</li>
+<li>The output of <code>merge</code> and <code>mosaic</code> was not correct for large rasters (only the first rows were used). Reported by Zavud Baghirov in [#271]</li>
 <li>
-<code>as.points,SpatRaster</code> did not remove <code>NA</code>’s correctly and shifted values. Issues <a href="https://github.com/rspatial/terra/issues/269" class="external-link">#269</a> and <a href="https://github.com/rspatial/terra/issues/273" class="external-link">#273</a> by Julian Hagenauer</li>
+<code>as.points,SpatRaster</code> did not remove <code>NA</code>’s correctly and shifted values. Issues [#269] and [#273] by Julian Hagenauer</li>
 <li>
-<code>rast&lt;matrix&gt;</code> rotated values when using an equal-sided matrix <a href="https://github.com/rspatial/terra/issues/274" class="external-link">#274</a> by Jakub Nowosad</li>
-<li>the number of rows and columns were reversed when using <code>project</code> with a crs argument. <a href="https://github.com/rspatial/terra/issues/283" class="external-link">#283</a> by Timothée Giraud</li>
+<code>rast&lt;matrix&gt;</code> rotated values when using an equal-sided matrix [#274] by Jakub Nowosad</li>
+<li>the number of rows and columns were reversed when using <code>project</code> with a crs argument. [#283] by Timothée Giraud</li>
 <li>In <code>classify</code>, argument <code>right</code> had TRUE and FALSE reversed.</li>
 <li>
-<code>terrain</code> had edge effects <a href="https://github.com/rspatial/terra/issues/303" class="external-link">#303</a> by Andrew Gene Brown.</li>
+<code>terrain</code> had edge effects [#303] by Andrew Gene Brown.</li>
 <li>
-<code>terrain</code> can now compute multiple variables at once <a href="https://github.com/rspatial/terra/issues/286" class="external-link">#286</a> by Žan Kuralt</li>
+<code>terrain</code> can now compute multiple variables at once [#286] by Žan Kuralt</li>
 <li>
-<code>wrap&lt;SpatRaster&gt;</code> changed factors into numeric <a href="https://github.com/rspatial/terra/issues/302" class="external-link">#302</a> by Patrick Schratz</li>
+<code>wrap&lt;SpatRaster&gt;</code> changed factors into numeric [#302] by Patrick Schratz</li>
 <li>
-<code>writeVector</code> failed with “FlatGeobuf” (and probably other formats as well) for not using a proper MultiPolygon <a href="https://github.com/rspatial/terra/issues/299" class="external-link">#299</a> by L Dalby</li>
-<li>regular sampling of polygons with <code>spatSample</code> is now much more regular <a href="https://github.com/rspatial/terra/issues/289" class="external-link">#289</a> by Jakub Nowosad</li>
+<code>writeVector</code> failed with “FlatGeobuf” (and probably other formats as well) for not using a proper MultiPolygon [#299] by L Dalby</li>
+<li>regular sampling of polygons with <code>spatSample</code> is now much more regular [#289] by Jakub Nowosad</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -648,19 +644,19 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-4">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-4"></a></h3>
-<ul><li>better handling of paths with non-ASCII characters (e.g., Chinese) for GeoTiff but still fails for NetCDF. <a href="https://github.com/rspatial/terra/issues/233" class="external-link">#233</a> by Dongdong Kong</li>
+<ul><li>better handling of paths with non-ASCII characters (e.g., Chinese) for GeoTiff but still fails for NetCDF. [#233] by Dongdong Kong</li>
 <li>
 <code>extract</code> with points and <code>cells=TRUE</code> or <code>xy=TRUE</code> gave garbled output</li>
 <li>
-<code>as.character&lt;SpatRaster&gt;</code> (called by <code>wrap</code>) did not capture the layer names. <a href="https://github.com/rspatial/terra/issues/213" class="external-link">#213</a> by Pascal Title</li>
+<code>as.character&lt;SpatRaster&gt;</code> (called by <code>wrap</code>) did not capture the layer names. [#213] by Pascal Title</li>
 <li>
 <code>focal</code> mirrored the weight matrix, thus affecting the results when using an asymmetrical weight matrix. Reported by Sebastiano Trevisani</li>
 <li>
-<code><a href="../reference/terraOptions.html">terra::terraOptions</a></code> now works without attaching the package. <a href="https://github.com/rspatial/terra/issues/229" class="external-link">#229</a> by Karl Dunkle Werner</li>
+<code><a href="../reference/terraOptions.html">terra::terraOptions</a></code> now works without attaching the package. [#229] by Karl Dunkle Werner</li>
 <li>
-<code>app</code> with <code>ncores &gt; 0</code> and a function that returns multiple layers now works. <a href="https://github.com/rspatial/terra/issues/240" class="external-link">#240</a> by BastienFR.</li>
+<code>app</code> with <code>ncores &gt; 0</code> and a function that returns multiple layers now works. [#240] by BastienFR.</li>
 <li>
-<code>autocor</code> (local) can now handle <code>NA</code> values. <a href="https://github.com/rspatial/terra/issues/245" class="external-link">#245</a> by Jakub Nowosad .</li>
+<code>autocor</code> (local) can now handle <code>NA</code> values. [#245] by Jakub Nowosad .</li>
 <li>
 <code>mask</code> with a SpatVector and a large (out of memory) multi-layer SpatRaster only worked for the first layer. Reported by Monika Tomaszewska.</li>
 </ul></div>
@@ -690,7 +686,7 @@
 <code>rast&lt;Raster*&gt;</code> now takes the crs from the Raster object, not from the file it may point to. [#200] by Floris Vanderhaeghe</li>
 <li>
 <code>convhull</code> has a new argument <code>by=""</code> to make convex hulls for sub-sets of a SpatVector.</li>
-<li>faster processing of large in memory rasters. See issue <a href="https://github.com/rspatial/terra/issues/206" class="external-link">#206</a> by Krzysztof Dyba.</li>
+<li>faster processing of large in memory rasters. See issue [#206] by Krzysztof Dyba.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-2-10">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-2-10"></a></h3>
