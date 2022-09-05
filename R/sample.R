@@ -204,17 +204,15 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 		r <- crop(rast(r), ext)
 	}
 	
-	if ( ((!replace) || (method == "regular")) && (size >= ncell(r)) ) {
+	if ((!replace) && (size >= ncell(r))) {
 		cells <- 1:ncell(r)
 	} else if (method == "random") {
-		nsize <- size
-		if (na.rm) size <- size * exp
-		
+		if (na.rm) esize <- size * exp
 		if (na.rm && (blocks(x, n=4)$n == 1)) {
-			cells <- .sampleCellsMemory(x, nsize, replace, lonlat, ext)
+			cells <- .sampleCellsMemory(x, size, replace, lonlat, ext)
 		} else if (lonlat) {
 			m <- ifelse(replace, 1.5, 1.25)
-			n <- m * size
+			n <- m * esize
 			y <- yFromRow(r, 1:nrow(r))
 			rows <- sample.int(nrow(r), n, replace=TRUE, prob=abs(cos(pi*y/180)))
 			cols <- sample.int(ncol(r), n, replace=TRUE)
@@ -223,27 +221,54 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 				cells <- unique(cells)
 			}
 		} else {
-			size <- min(ncell(r), size)
-			cells <- sample.int(ncell(r), size, replace=replace)
+			if (!replace) esize <- min(ncell(r), esize)
+			cells <- sample.int(ncell(r), esize, replace=replace)
 		}
 	} else { # regular
 		if (lonlat) {
-			ratio <- ncol(r)/nrow(r)
+			#ratio <- ncol(r)/nrow(r)
+			e <- ext(r)
+			r1 = e$xmax - e$xmin;
+			r2 = e$ymax - e$ymin;
+			halfy = e$ymin + r2/2;	
+
+			# beware that -180 is the same as 180; and that latitude can only go from -90:90 therefore:
+			dx = distance(cbind(e$xmin, halfy), cbind(e$xmin + 1, halfy), TRUE, TRUE) * min(180.0, r1);
+			dy = distance(cbind(0, e$ymin), cbind(0, e$ymax), TRUE, TRUE);
+			ratio = dy/dx;
 			n <- sqrt(size)
-			nx <- max(1, (round(n*ratio)))
-			ny <- max(1, (round(n/ratio)))
+			#nx <- max(1, (round(n*ratio)))
+			#ny <- max(1, (round(n/ratio)))
+			nx <- min(max(1, round(n*ratio)), ncol(r))
+			ny <- min(max(1, round(n/ratio)), nrow(r))
 			xi <- ncol(r) / nx
 			yi <- nrow(r) / ny
 			rows <- unique(round(seq(.5*yi, nrow(r), yi)))
-
 			w <- cos(pi*yFromRow(r, rows)/180)
 			w <- w * length(w)/sum(w)
 			xi <- xi / w
 			xi <- pmax(1,pmin(xi, ncol(r)))
 			z <- list()
-			#off <- stats::runif(1)
-			for (i in 1:length(rows)) {
-				z[[i]] <- cbind(rows[i], unique(round(seq(0.5*xi[i], ncol(r), xi[i]))))
+
+			# needs refinement:
+			global <- diff(e[1:2]) > 355
+			
+			if (global) {
+				xi <- round(ncol(r) / round(ncol(r) / xi))
+				for (i in 1:length(rows)) {
+					if (xi[i] == 1) {
+						cols <- 1:ncol(r)
+					} else {
+						cols <- seq(xi[i]/2, ncol(r)-1, xi[i])
+					}
+					z[[i]] <- cbind(rows[i], cols)
+				}
+			} else {
+#				xi <- round(ncol(r) / (round((ncol(r) / xi))+1))
+				for (i in 1:length(rows)) {
+					cols <- seq(xi[i]/2, ncol(r), xi[i])
+					z[[i]] <- cbind(rows[i], cols)
+				}
 			}
 			z <- do.call(rbind, z)
 			cells <- cellFromRowCol(r, z[,1], z[,2])
