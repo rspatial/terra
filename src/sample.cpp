@@ -598,7 +598,6 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 		for (size_t i=0; i<w.size(); i++) {
 			xi.push_back(x_i / (w[i] * nwsumw));
 		}
-		double halfx = xmin + (xmax - xmin)/2;
 		bool global = (xmax - xmin) > 355; // needs refinement
 		if (global) {
 			xmax -= 0.000001;
@@ -612,6 +611,7 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 			}
 			
 		} else {
+			double halfx = xmin + (xmax - xmin)/2;
 			for (size_t i=0; i<lat.size(); i++) {
 				std::vector<double> x = seq(halfx, xmax, xi[i]);
 				double start = halfx-xi[i];
