@@ -1312,7 +1312,7 @@ SpatRaster SpatRaster::isinfinite(SpatOptions &opt) {
 }
 
 
-std::vector<std::vector<double>> SpatRaster::where(std::string what, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::where(std::string what, bool values, SpatOptions &opt) {
 
 	unsigned nl = nlyr();
 	std::vector<std::vector<double>> out(nl);
@@ -1395,6 +1395,10 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, SpatOptions
 					}
 				}
 			}
+			if (values) {
+				std::vector<double> wval(out[j].size(), val[j]);
+				out[j].insert(out[j].end(), wval.begin(), wval.end());
+			}			
 		}
 	}
 	readStop();

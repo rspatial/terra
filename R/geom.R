@@ -211,8 +211,9 @@ setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"),
 
 setMethod("intersect", signature(x="SpatVector", y="SpatExtent"),
 	function(x, y) {
-		x@ptr <- x@ptr$crop_ext(y@ptr)
-		x
+		#x@ptr <- x@ptr$crop_ext(y@ptr)
+		#x
+		crop(x, y)
 	}
 )
 
@@ -264,6 +265,8 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 					stop("y does not have a SpatExtent")
 				}
 			}
+			## crop_ext does not include points on the borders
+			## https://github.com/rspatial/raster/issues/283
 			#x@ptr <- x@ptr$crop_ext(y@ptr)
 			y <- as.polygons(y)
 			x@ptr <- x@ptr$crop_vct(y@ptr)			

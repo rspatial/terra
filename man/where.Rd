@@ -15,13 +15,14 @@ This method returns the cell numbers for the cells with the min or max values of
 
 
 \usage{
-\S4method{where.min}{SpatRaster}(x, list)
+\S4method{where.min}{SpatRaster}(x, values=TRUE, list=FALSE)
 
-\S4method{where.max}{SpatRaster}(x, list)
+\S4method{where.max}{SpatRaster}(x, values=TRUE, list=FALSE)
 }
 
 \arguments{
   \item{x}{SpatRaster}
+  \item{values}{logical. If \code{TRUE} the min or max values are also returned}
   \item{list}{logical. If \code{TRUE} a list is returned instead of a matrix}
 }
 

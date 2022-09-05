@@ -457,33 +457,52 @@ setMethod("which.lyr", "SpatRaster",
 	}
 )
 
-setMethod("where.max", "SpatRaster",
-	function(x, list=FALSE) {
-		opt <- spatOptions()
-		out <- x@ptr$where("max", opt)
-		x <- messages(x, "where.max")
-		if (list) {
-			return(lapply(out, function(i) i + 1))
+wherefun <- function(out, list, values) {
+	if (list) {
+		if (values) {
+			lapply(out, function(i) {
+				m <- matrix(i, ncol=2)
+				m[,1] <- m[,1] + 1
+				colnames(m) <- c("cell", "value")
+				m
+			})
+		} else {
+			lapply(out, function(i) {i + 1})		
 		}
-		out <- lapply(1:length(out), function(i) cbind(i, out[[i]] + 1) )
-		out <- do.call(rbind, out)
-		colnames(out) <- c("layer", "cell")
+	} else {
+		if (values) {
+			out <- lapply(1:length(out), function(i) {
+				m <- matrix(out[[i]], ncol=2)
+				m[,1] <- m[,1] + 1
+				cbind(i, m)
+			})
+			out <- do.call(rbind, out)
+			colnames(out) <- c("layer", "cell", "value")
+		} else {
+			out <- lapply(1:length(out), function(i) {cbind(i, out[[i]] + 1)})		
+			out <- do.call(rbind, out)
+			colnames(out) <- c("layer", "cell")
+		}
 		out
+	}
+}
+
+
+setMethod("where.max", "SpatRaster",
+	function(x, values=TRUE, list=FALSE) {
+		opt <- spatOptions()
+		out <- x@ptr$where("max", values, opt)
+		x <- messages(x, "where.max")
+		wherefun(out, list, values)
 	}
 )
 
 setMethod("where.min", "SpatRaster",
-	function(x, list=FALSE) {
+	function(x, values=TRUE, list=FALSE) {
 		opt <- spatOptions()
-		out <- x@ptr$where("min", opt)
+		out <- x@ptr$where("min", values, opt)
 		x <- messages(x, "where.min")
-		if (list) {
-			return(lapply(out, function(i) i + 1))
-		}
-		out <- lapply(1:length(out), function(i) cbind(i, out[[i]] + 1) )
-		out <- do.call(rbind, out)
-		colnames(out) <- c("layer", "cell")
-		out
+		wherefun(out, list, values)
 	}
 )
 
