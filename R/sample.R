@@ -207,7 +207,11 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	if ((!replace) && (size >= ncell(r))) {
 		cells <- 1:ncell(r)
 	} else if (method == "random") {
-		if (na.rm) esize <- size * exp
+		if (na.rm) {
+			esize <- size * exp
+		} else {
+			esize <- size
+		}
 		if (na.rm && (blocks(x, n=4)$n == 1)) {
 			cells <- .sampleCellsMemory(x, size, replace, lonlat, ext)
 		} else if (lonlat) {
