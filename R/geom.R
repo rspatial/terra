@@ -264,7 +264,9 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 					stop("y does not have a SpatExtent")
 				}
 			}
-			x@ptr <- x@ptr$crop_ext(y@ptr)
+			#x@ptr <- x@ptr$crop_ext(y@ptr)
+			y <- as.polygons(y)
+			x@ptr <- x@ptr$crop_vct(y@ptr)			
 		}
 		messages(x, "crop")
 	}
