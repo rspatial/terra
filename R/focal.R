@@ -560,8 +560,8 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 
 	b <- writeStart(out, filename, n=msz*4, sources=sources(x), ...)
 
-	v <- list()
 	for (i in 1:b$n) {
+		v <- list()
 		Y <- focalValues(x[[1]], w, b$row[i], b$nrows[i], fillvalue)
 		if (dow) {
 			if (isnam) {
@@ -580,7 +580,8 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 					Y <- Y * m
 				}
 			}
-			v[[j-1]] <- t(sapply(1:nrow(Y), function(i, ...) fun(X[i,], Y[i,], ...)))
+			corv <- t(sapply(1:nrow(Y), function(i, ...) fun(X[i,], Y[i,], ...)))
+			v[[j-1]] <- corv 
 		}
 		v <- do.call(cbind, v)
 		writeValues(out, v, b$row[i], b$nrows[i])
