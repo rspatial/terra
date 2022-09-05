@@ -302,8 +302,8 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 		cells <- cells[v]
 	}
 	if (method == "random") {
-		if (length(cells) > nsize) {
-			cells <- cells[1:nsize]
+		if (length(cells) > size) {
+			cells <- cells[1:size]
 		}
 	}
 	cells
