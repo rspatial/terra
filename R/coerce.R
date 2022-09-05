@@ -345,11 +345,7 @@ as.matrix.SpatRaster <- function(x, wide=FALSE, ...) {
 setMethod("as.matrix", signature(x="SpatRaster"), as.matrix.SpatRaster)
 
 
-as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=TRUE, ...) {
-#	dots <- list(...)
-#	xy <- isTRUE(dots$xy)
-#	cells <- isTRUE(dots$cells)
-#	na.rm <- isTRUE(dots$na.rm)
+as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=FALSE, ...) {
 
 	d <- NULL
 	if (xy) {
@@ -364,7 +360,11 @@ as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE
 		d <- data.frame(d)
 		d <- cbind(d, values(x, dataframe=TRUE), ...)
 	}
-	if (na.rm) {
+	if (is.na(na.rm)) {
+		cols <- (1 + cells + xy * 2):ncol(d)
+		i <- rowSums(is.na(d[,cols,drop=FALSE])) < length(cols)
+		d <- d[i,,drop=FALSE]
+	} else if (isTRUE(na.rm)) {
 		d <- stats::na.omit(d)
 		attr(d, "na.action") <- NULL
 	}
