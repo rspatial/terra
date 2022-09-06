@@ -498,8 +498,12 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 		coltab <- NULL
 		cats  <- NULL
-		if (!is.null(breaks) && missing(type)) {
-			type <- "interval"
+		if (!is.null(breaks)) {
+			if (missing(type)) {
+				type <- "interval"
+			} else {
+				range <- range(breaks)
+			}
 		} else {
 			if (missing(type)) {
 				if (has.colors(x)) {

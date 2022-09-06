@@ -144,7 +144,7 @@ setMethod("setValues", signature("SpatRaster"),
 		}
 		if (is.matrix(values)) {
 			if (!keepnames) {
-				names(y) <- colnames(values)
+				if (!is.null(nms)) names(y) <- nms
 			}
 			nl <- nlyr(x)
 			d <- dim(values)
