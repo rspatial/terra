@@ -3,6 +3,7 @@
 
 If x is a SpatRaster:
 If y is missing this method computes the distance, for all cells that are NA in SpatRaster x to the nearest cell that is not NA. If argument grid=TRUE, the distance is computed using a path that goes through the centers of the 8 neighboring cells.
+If y is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed (only if grid=FALSE).
 If y is a SpatVector, the distance to that SpatVector is computed for all cells. For lines and polygons this is done after rasterization; and only the overlapping areas of the vector and raster are considered (for now).
 The distance is always expressed in meter if the coordinate reference system is longitude/latitude, and in map units otherwise. Map units are typically meter, but inspect crs(x) if in doubt.
 Results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance.
@@ -63,6 +64,7 @@ The distance is always expressed in meter, except when the coordinate reference 
 
 <p><b>If <code>x</code> is a SpatRaster:</b></p>
 <p>If <code>y</code> is <code>missing</code> this method computes the distance, for all cells that are <code>NA</code> in SpatRaster <code>x</code> to the nearest cell that is not <code>NA</code>. If argument <code>grid=TRUE</code>, the distance is computed using a path that goes through the centers of the 8 neighboring cells.</p>
+<p>If <code>y</code> is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed (only if <code>grid=FALSE</code>).</p>
 <p>If <code>y</code> is a SpatVector, the distance to that SpatVector is computed for all cells. For lines and polygons this is done after rasterization; and only the overlapping areas of the vector and raster are considered (for now).</p>
 <p>The distance is always expressed in meter if the coordinate reference system is longitude/latitude, and in map units otherwise. Map units are typically meter, but inspect <code>crs(x)</code> if in doubt.</p>
 <p>Results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance.</p>
@@ -74,6 +76,9 @@ The distance is always expressed in meter, except when the coordinate reference 
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,missing</span>
+<span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster,numeric</span>
 <span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,SpatVector</span>
@@ -98,7 +103,7 @@ The distance is always expressed in meter, except when the coordinate reference 
 <dd><p>SpatRaster, SpatVector, or two-column matrix with coordinates (x,y) or (lon,lat)</p></dd>
 
   <dt>y</dt>
-<dd><p>missing or SpatVector, or two-column matrix</p></dd>
+<dd><p>missing, numeric, SpatVector, or two-column matrix</p></dd>
 
   <dt>grid</dt>
 <dd><p>logical. If <code>TRUE</code>, distance is computed using a path that goes through the centers of the 8 neighboring cells</p></dd>
@@ -154,6 +159,9 @@ The distance is always expressed in meter, except when the coordinate reference 
 <span class="r-in"><span class="va">rr</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">36</span>, nrows<span class="op">=</span><span class="fl">18</span>, crs<span class="op">=</span><span class="st">"+proj=utm +zone=1 +datum=WGS84"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">rr</span><span class="op">[</span><span class="fl">500</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">distance</span><span class="op">(</span><span class="va">rr</span><span class="op">)</span> </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">rr</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">99</span></span>
+<span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu">distance</span><span class="op">(</span><span class="va">rr</span>, <span class="op">-</span><span class="fl">99</span><span class="op">)</span> </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">90</span>,<span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>,<span class="op">-</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span>, crs<span class="op">=</span><span class="st">"+proj=longlat +datum=WGS84"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">dp</span> <span class="op">&lt;-</span> <span class="fu">distance</span><span class="op">(</span><span class="va">r</span>, <span class="va">p1</span><span class="op">)</span> </span>
