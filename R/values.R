@@ -101,7 +101,7 @@ function(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x
 
 setMethod("values<-", signature("SpatRaster", "ANY"),
 	function(x, value) {
-		setValues(x, value)
+		setValues(x, value, keepnames=TRUE)
 	}
 )
 
@@ -135,11 +135,17 @@ mtrans <- function(mm, nc) {
 
 
 setMethod("setValues", signature("SpatRaster"),
-	function(x, values, keeptime=TRUE, keepunits=TRUE, props=FALSE) {
+	function(x, values, keeptime=TRUE, keepunits=TRUE, keepnames=FALSE, props=FALSE) {
 
 		y <- rast(x, keeptime=keeptime, keepunits=keepunits, props=props)
-
+		if (is.data.frame(values)) {
+			# needs improvement to deal with mixed data types
+			values <- as.matrix(values)
+		}
 		if (is.matrix(values)) {
+			if (!keepnames) {
+				names(y) <- colnames(values)
+			}
 			nl <- nlyr(x)
 			d <- dim(values)
 			if (!all(d == c(ncell(x), nl))) {
