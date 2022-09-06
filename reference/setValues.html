@@ -57,7 +57,7 @@
 <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span>
 
 <span class="co"># S4 method for SpatRaster,ANY</span>
-<span class="fu">setValues</span><span class="op">(</span><span class="va">x</span>, <span class="va">values</span>, keeptime<span class="op">=</span><span class="cn">TRUE</span>, keepunits<span class="op">=</span><span class="cn">TRUE</span>, props<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">setValues</span><span class="op">(</span><span class="va">x</span>, <span class="va">values</span>, keeptime<span class="op">=</span><span class="cn">TRUE</span>, keepunits<span class="op">=</span><span class="cn">TRUE</span>, keepnames<span class="op">=</span><span class="cn">FALSE</span>, props<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector,ANY</span>
 <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></code></pre></div>
@@ -69,7 +69,7 @@
 <dd><p>SpatRaster or SpatVector</p></dd>
 
  <dt>value</dt>
-<dd><p>For SpatRaster: matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. For SpatVector: data.frame, matrix, vector, or NULL</p></dd>
+<dd><p>For SpatRaster: numeric, matrix or data.frame. The length of the numeric values must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. The number of columns of the matrix or data.frame must match the number of layers of <code>x</code>, and the number of rows must match the number of cells of <code>x</code>. For SpatVector: data.frame, matrix, vector, or NULL</p></dd>
 
  <dt>values</dt>
 <dd><p>Same as for <code>value</code></p></dd>
@@ -79,6 +79,9 @@
 
  <dt>keepunits</dt>
 <dd><p>logical. If <code>FALSE</code> the units are discarded</p></dd>
+
+ <dt>keepnames</dt>
+<dd><p>logical. If <code>FALSE</code> the layer names are replaced by the column names in <code>y</code> (if present)</p></dd>
 
  <dt>props</dt>
 <dd><p>logical. If <code>TRUE</code> the properties (categories and color-table) are kept</p></dd>

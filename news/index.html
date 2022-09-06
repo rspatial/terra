@@ -62,6 +62,8 @@
 <li>
 <code>as.data.frame</code> now takes <code>na.rm=NA</code> to only remove rows that are NA for all layers. The default value changed from <code>TRUE</code> to <code>NA</code>. <a href="https://github.com/rspatial/terra/issues/792" class="external-link">#792</a> by Ed Carnell</li>
 <li>faster plotting of SpatVector data <a href="https://github.com/rspatial/terra/issues/774" class="external-link">#774</a> by Krzysztof Dyba</li>
+<li>
+<code>distance&lt;SpatRaster&gt;</code> can now ignore cells. <a href="https://github.com/rspatial/terra/issues/560" class="external-link">#560</a> by Bernardo Brandão Niebuhr</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-13">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-13"></a></h3>
@@ -69,7 +71,7 @@
 <li>extract&lt;“SpatRaster”,“sf”&gt; ignored the ID argument. <a href="https://github.com/rspatial/terra/issues/755" class="external-link">#755</a> by Dainius Masiliūnas.</li>
 <li>There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file <a href="https://github.com/rspatial/terra/issues/760" class="external-link">#760</a> by John Baums</li>
 <li>
-<code>vrt</code> is no longer constrained by the maximum number of files that can be opened <a href="https://github.com/rspatial/terra/issues/780" class="external-link">780</a>
+<code>vrt</code> is no longer constrained by the maximum number of files that can be opened <a href="https://github.com/rspatial/terra/issues/780" class="external-link">#780</a>
 </li>
 <li>
 <code>weighted.mean</code> crashed with numeric weights and na.rm=TRUE <a href="https://github.com/rspatial/terra/issues/777" class="external-link">#777</a> by David Holstius</li>
@@ -77,6 +79,8 @@
 <code>project&lt;SpatRaster&gt;</code> did not consider an extent that was set by the user <a href="https://github.com/rspatial/terra/issues/775" class="external-link">#775</a> by Philippe Massicotte</li>
 <li>
 <code>focalCor</code> failed for large rasters <a href="https://github.com/rspatial/terra/issues/607" class="external-link">#607</a> by John Clark</li>
+<li>
+<code>focal</code> with <code>expand=TRUE</code> was prone to run out of memory <a href="https://github.com/rspatial/terra/issues/610" class="external-link">#610</a> by Nathan Elliott</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -399,7 +403,7 @@
 <ul><li>
 <code>app</code> grossly overestimated RAM needed, slowing it down. Reported by Jerry Nelson</li>
 <li>
-<code>terra</code> now installs, again, with older versions of GEOS <a href="https://github.com/rspatial/terra/pull/406" class="external-link">#406</a> by fparyani</li>
+<code>terra</code> now installs, again, with older versions of GEOS [#406] by fparyani</li>
 <li>
 <code>terra</code> did not install with Clang on CRAN/OSX due to using C++13 idiom.</li>
 </ul></div>
