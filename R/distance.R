@@ -14,17 +14,27 @@ setMethod("buffer", signature(x="SpatRaster"),
 )
 
 
+setMethod("distance", signature(x="SpatRaster", y="numeric"),
+	function(x, y, grid=FALSE, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		if (grid) {
+			x@ptr <- x@ptr$gridDistance(opt)
+		} else {
+			y <- as.numeric(y)[1]
+			x@ptr <- x@ptr$rastDistance(y, opt)
+		}
+		messages(x, "distance")
+	}
+)
+
 setMethod("distance", signature(x="SpatRaster", y="missing"),
 	function(x, y, grid=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (grid) {
-			#if (is.lonlat(x)) {
-			#	return(gridDistance(x, filename=filename, ...))
-			#} else {
 			x@ptr <- x@ptr$gridDistance(opt)
-			#}
 		} else {
-			x@ptr <- x@ptr$rastDistance(opt)
+			y <- as.numeric(NA)
+			x@ptr <- x@ptr$rastDistance(y, opt)
 		}
 		messages(x, "distance")
 	}
@@ -158,9 +168,9 @@ setMethod("distance", signature(x="matrix", y="missing"),
 
 
 setMethod("direction", signature(x="SpatRaster"),
-	function(x, from=FALSE, degrees=FALSE, filename="", ...) {
+	function(x, from=FALSE, degrees=FALSE, ignore=NA, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$rastDirection(from[1], degrees[1], opt)
+		x@ptr <- x@ptr$rastDirection(from[1], degrees[1], ignore, opt)
 		messages(x, "direction")
 	}
 )

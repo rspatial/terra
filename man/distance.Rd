@@ -2,6 +2,7 @@
 
 \alias{distance}
 \alias{distance,SpatRaster,missing-method}
+\alias{distance,SpatRaster,numeric-method}
 \alias{distance,SpatRaster,SpatVector-method}
 \alias{distance,SpatVector,ANY-method}
 \alias{distance,SpatVector,SpatVector-method}
@@ -15,6 +16,8 @@
 \bold{If \code{x} is a SpatRaster:}
 
 If \code{y} is \code{missing} this method computes the distance, for all cells that are \code{NA} in SpatRaster \code{x} to the nearest cell that is not \code{NA}. If argument \code{grid=TRUE}, the distance is computed using a path that goes through the centers of the 8 neighboring cells.
+
+If \code{y} is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed (only if \code{grid=FALSE}).
 
 If \code{y} is a SpatVector, the distance to that SpatVector is computed for all cells. For lines and polygons this is done after rasterization; and only the overlapping areas of the vector and raster are considered (for now).
 
@@ -34,6 +37,8 @@ The distance is always expressed in meter, except when the coordinate reference 
 \usage{
 \S4method{distance}{SpatRaster,missing}(x, y, grid=FALSE, filename="", ...)
 
+\S4method{distance}{SpatRaster,numeric}(x, y, grid=FALSE, filename="", ...)
+
 \S4method{distance}{SpatRaster,SpatVector}(x, y, filename="", ...)
 
 \S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE)
@@ -47,7 +52,7 @@ The distance is always expressed in meter, except when the coordinate reference 
 
 \arguments{
   \item{x}{SpatRaster, SpatVector, or two-column matrix with coordinates (x,y) or (lon,lat)}
-  \item{y}{missing or SpatVector, or two-column matrix}
+  \item{y}{missing, numeric, SpatVector, or two-column matrix}
   \item{grid}{logical. If \code{TRUE}, distance is computed using a path that goes through the centers of the 8 neighboring cells}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
@@ -83,6 +88,9 @@ plot(d / 100000)
 rr <- rast(ncols=36, nrows=18, crs="+proj=utm +zone=1 +datum=WGS84")
 rr[500] <- 1
 d <- distance(rr) 
+
+rr[1:10,1:10] <- -99
+e <- distance(rr, -99) 
 
 p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="+proj=longlat +datum=WGS84")
 dp <- distance(r, p1) 

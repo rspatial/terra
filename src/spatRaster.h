@@ -583,12 +583,12 @@ class SpatRaster {
 		SpatRaster cropmask(SpatVector v, std::string snap, bool touches, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
-		SpatRaster distance(SpatOptions &opt);
+		SpatRaster distance(double ignore, SpatOptions &opt);
 		SpatRaster disdir_vector_rasterize(SpatVector p, bool align_points, bool distance, bool from, bool degrees, SpatOptions &opt);
 		
 		SpatRaster distance_vector(SpatVector p, SpatOptions &opt);
 
-		SpatRaster direction(bool from, bool degrees, SpatOptions &opt);
+		SpatRaster direction(bool from, bool degrees, double ignore, SpatOptions &opt);
 		SpatRaster direction_vector(SpatVector p, bool from, bool degrees, SpatOptions &opt);
 		
 		SpatRaster clumps(int directions, bool zeroAsNA, SpatOptions &opt);

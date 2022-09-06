@@ -117,7 +117,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool align_points, 
 		std::vector<double> v, cells;
 		cells.resize(out.bs.nrows[i] * nc) ;
 		std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
-
+		
 		if (gtype == "points") {
 			readBlock(v, out.bs, i);
 			for (size_t j=0; j<v.size(); j++) {
@@ -203,7 +203,8 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, SpatOptions &opt) {
 
 
 
-SpatRaster SpatRaster::distance(SpatOptions &opt) {
+SpatRaster SpatRaster::distance(double ignore, SpatOptions &opt) {
+
 	SpatRaster out = geometry(1);
 	if (!hasValues()) {
 		out.setError("SpatRaster has no values");
@@ -222,7 +223,7 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 			std::vector<unsigned> lyr = {i};
 			SpatRaster r = subset(lyr, ops);
 			ops.names = {nms[i]};
-			r = r.distance(ops);
+			r = r.distance(ignore, ops);
 			out.source[i] = r.source[0];
 		}
 		if (opt.get_filename() != "") {
@@ -231,7 +232,13 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 		return out;
 	}
 
-	out = edges(false, "inner", 8, NAN, ops);
+	if (!std::isnan(ignore)) {
+		SpatOptions xopt(opt);
+		SpatRaster x = replaceValues({ignore}, {NAN}, 1, false, xopt);
+		out = x.edges(false, "inner", 8, NAN, ops);		
+	} else {
+		out = edges(false, "inner", 8, NAN, ops);
+	}
 	SpatVector p = out.as_points(false, true, false, ops);
 	if (p.size() == 0) {
 		return out.init({0}, opt);
@@ -240,7 +247,7 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 	return out;
 }
 
-SpatRaster SpatRaster::direction(bool from, bool degrees, SpatOptions &opt) {
+SpatRaster SpatRaster::direction(bool from, bool degrees, double ignore, SpatOptions &opt) {
 	SpatRaster out = geometry(1);
 	if (!hasValues()) {
 		out.setError("SpatRaster has no values");
@@ -259,7 +266,7 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, SpatOptions &opt) {
 			std::vector<unsigned> lyr = {i};
 			SpatRaster r = subset(lyr, ops);
 			ops.names = {nms[i]};
-			r = r.direction(from, degrees, ops);
+			r = r.direction(from, degrees, ignore, ops);
 			out.source[i] = r.source[0];
 		}
 		if (opt.get_filename() != "") {
@@ -268,7 +275,13 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, SpatOptions &opt) {
 		return out;
 	}
 
-	out = edges(false, "inner", 8, NAN, ops);
+	if (!std::isnan(ignore)) {
+		SpatOptions xopt(opt);
+		SpatRaster x = replaceValues({ignore}, {NAN}, 1, false, xopt);
+		out = x.edges(false, "inner", 8, NAN, ops);		
+	} else {
+		out = edges(false, "inner", 8, NAN, ops);
+	}
 	SpatVector p = out.as_points(false, true, false, opt);
 	if (p.size() == 0) {
 		out.setError("no cells to compute direction from or to");
