@@ -158,14 +158,14 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 
 	std::vector<std::string> ss = {"histogram", "count", "red", "green", "blue", "opacity", "r", "g", "b", "alpha"};
 
-	std::vector<std::string> ratnms;
+	//std::vector<std::string> ratnms;
 	std::vector<int> id, id2;
 
 	bool hasvalue=false;
 	for (size_t i=0; i<nc; i++) {
 		std::string name = pRAT->GetNameOfCol(i);
 		lowercase(name);
-		ratnms.push_back(name);
+		//ratnms.push_back(name);
 		if (name == "value") {
 			id.insert(id.begin(), i);
 			hasvalue = true;
@@ -178,7 +178,12 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 			}
 		}
 	}
+	if ((id.size() == 0) && (id2.size() == 1)) {
+// #790 avoid having just "count" or "histogram" 
+		return(out);
+	}
 	id.insert(id.end(), id2.begin(), id2.end());
+	
 
 	if (!hasvalue) {
 		std::vector<long> vid(nr);

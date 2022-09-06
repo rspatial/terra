@@ -11,16 +11,18 @@
 - new argument `raw=FALSE` to `extract<SpatRaster>` [#776](https://github.com/rspatial/terra/issues/776) by Thomas Roh.
 - `as.data.frame` now takes `na.rm=NA` to only remove rows that are NA for all layers. The default value changed from `TRUE` to `NA`. [#792](https://github.com/rspatial/terra/issues/792) by Ed Carnell
 - faster plotting of SpatVector data [#774](https://github.com/rspatial/terra/issues/774) by Krzysztof Dyba
+- `distance<SpatRaster>` can now ignore cells. [#560](https://github.com/rspatial/terra/issues/560) by Bernardo Brandão Niebuhr
 
 ## bug fixes 
 
 - all.equal bug [#756](https://github.com/rspatial/terra/pull/756) fixed by John Baums
 - extract<"SpatRaster","sf"> ignored the ID argument. [#755](https://github.com/rspatial/terra/issues/755) by Dainius Masiliūnas.
 - There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file [#760](https://github.com/rspatial/terra/issues/760) by John Baums
-- `vrt` is no longer constrained by the maximum number of files that can be opened [780](https://github.com/rspatial/terra/issues/780)
+- `vrt` is no longer constrained by the maximum number of files that can be opened [#780](https://github.com/rspatial/terra/issues/780)
 - `weighted.mean` crashed with numeric weights and na.rm=TRUE [#777](https://github.com/rspatial/terra/issues/777) by David Holstius
 - `project<SpatRaster>` did not consider an extent that was set by the user [#775](https://github.com/rspatial/terra/issues/775) by Philippe Massicotte
 - `focalCor` failed for large rasters [#607](https://github.com/rspatial/terra/issues/607) by John Clark
+- `focal` with `expand=TRUE` was prone to run out of memory [#610](https://github.com/rspatial/terra/issues/610) by Nathan Elliott
 
 
 # version 1.6-7
@@ -290,7 +292,7 @@ Released on 2021-11-24
 ## bug fixes
 
 - `app` grossly overestimated RAM needed, slowing it down. Reported by Jerry Nelson 
-- `terra` now installs, again, with older versions of GEOS [#406](https://github.com/rspatial/terra/pull/406) by fparyani
+- `terra` now installs, again, with older versions of GEOS [#406] by fparyani
 - `terra` did not install with Clang on CRAN/OSX due to using C++13 idiom.
 
 
