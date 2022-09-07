@@ -185,8 +185,8 @@ class SpatVector {
 
 		void reserve(size_t n);
 		std::vector<double> length();
-		std::vector<double> distance(SpatVector x, bool pairwise);
-		std::vector<double> distance(bool sequential);
+		std::vector<double> distance(SpatVector x, bool pairwise, std::string unit);
+		std::vector<double> distance(bool sequential, std::string unit);
 		std::vector<double> linedistLonLat(SpatVector pts);
 
 		std::vector<std::vector<size_t>> knearest(size_t k);

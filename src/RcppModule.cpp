@@ -431,8 +431,8 @@ RCPP_MODULE(spat){
 		.method("set_crs", (bool (SpatVector::*)(std::string crs))( &SpatVector::setSRS))
 		//.method("prj", &SpatVector::getPRJ)
 
-		.method("distance_self", (std::vector<double> (SpatVector::*)(bool))( &SpatVector::distance))
-		.method("distance_other", (std::vector<double> (SpatVector::*)(SpatVector, bool))( &SpatVector::distance))
+		.method("distance_self", (std::vector<double> (SpatVector::*)(bool, std::string))( &SpatVector::distance))
+		.method("distance_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string))( &SpatVector::distance))
 
 		.method("geosdist_self", (std::vector<double> (SpatVector::*)(bool))( &SpatVector::geos_distance))
 		.method("geosdist_other", (std::vector<double> (SpatVector::*)(SpatVector, bool))( &SpatVector::geos_distance))

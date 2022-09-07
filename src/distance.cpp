@@ -324,7 +324,8 @@ std::vector<std::vector<double> > destpoint_plane(std::vector<double>  x, std::v
 }
 
 
-void distanceToNearest_lonlat(std::vector<double> &d, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2) {
+
+void distanceToNearest_lonlat(std::vector<double> &d, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2, const double& adj_unit) {
 	int n = lon1.size();
 	int m = lon2.size();
 	double a = 6378137.0;
@@ -341,9 +342,10 @@ void distanceToNearest_lonlat(std::vector<double> &d, const std::vector<double> 
 		for (int j=1; j<m; j++) {
 			geod_inverse(&g, lat1[i], lon1[i], lat2[j], lon2[j], &s12, &azi1, &azi2);
 			if (s12 < d[i]) {
-				d[i] = s12;
+				d[i] = s12 * adj_unit;
 			}
 		}
+		d[i] *= adj_unit;
 	}
 }
 
@@ -379,13 +381,14 @@ void distanceToNearest_plane(std::vector<double> &d, const std::vector<double> &
 	int m = x2.size();
   	for (int i=0; i < n; i++) {
 		if (std::isnan(x1[i])) continue;
-		d[i] = sqrt(pow((x2[0]-x1[i]),2) + pow((y2[0]-y1[i]), 2)) * lindist;
+		d[i] = sqrt(pow((x2[0]-x1[i]),2) + pow((y2[0]-y1[i]), 2));
 		for (int j=1; j < m; j++) {
 			double r = sqrt(pow((x2[j]-x1[i]),2) + pow((y2[j]-y1[i]), 2));
 			if (r < d[i]) {
-				d[i] = r * lindist;
+				d[i] = r;
 			}
 		}
+		d[i] *= lindist;
 	}
 }
 
