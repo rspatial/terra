@@ -168,9 +168,9 @@ setMethod("distance", signature(x="matrix", y="missing"),
 
 
 setMethod("direction", signature(x="SpatRaster"),
-	function(x, from=FALSE, degrees=FALSE, ignore=NA, filename="", ...) {
+	function(x, from=FALSE, degrees=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$rastDirection(from[1], degrees[1], ignore, opt)
+		x@ptr <- x@ptr$rastDirection(from[1], degrees[1], NA, NA, opt)
 		messages(x, "direction")
 	}
 )
