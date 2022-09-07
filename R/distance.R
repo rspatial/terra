@@ -116,7 +116,7 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 		if (pairs) {
 			d <- as.matrix(d)
 			diag(d) <- NA
-			d <- mat2wide(d, symmetrical, unit)
+			d <- mat2wide(d, symmetrical)
 		}
 		d
 	}
