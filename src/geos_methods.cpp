@@ -1300,9 +1300,76 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation) {
 		}
 	}
 	geos_finish(hGEOSCtxt);
+	return out;
+}
+
+
+
+void cb(void *item, void *userdata) { // callback function for tree selection
+	std::vector<size_t> *ret = (std::vector<size_t> *) userdata;
+	ret->push_back(*((size_t *) item));
+}
+
+std::vector<int> SpatVector::relate_tree(SpatVector v, std::string relation) {
+
+	std::vector<int> out;
+	int pattern = getRel(relation);
+	if (pattern == 2) {
+		setError("'" + relation + "'" + " is not a valid relate name or pattern");
+		return out;
+	}
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+
+	std::vector<size_t> items(y.size());
+	TreePtr tree1 = geos_ptr(GEOSSTRtree_create_r(hGEOSCtxt, 10), hGEOSCtxt);
+	for (size_t i = 0; i < y.size(); i++) {
+		items[i] = i;
+		if (! GEOSisEmpty_r(hGEOSCtxt, y[i].get()))
+			GEOSSTRtree_insert_r(hGEOSCtxt, tree1.get(), y[i].get(), &(items[i]));
+	}
+
+	size_t nx = size();
+	size_t ny = v.size();
+	out.resize(nx*ny, 0);
+	if (pattern == 1) {
+		for (size_t i = 0; i < nx; i++) {
+			// pre-select sfc1's using tree:
+			std::vector<size_t> tree_sel, sel;
+			if (! GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
+				GEOSSTRtree_query_r(hGEOSCtxt, tree1.get(), x[i].get(), cb, &tree_sel);
+			}
+			for (size_t j = 0; j < tree_sel.size(); j++) {
+				if (GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[tree_sel[j]].get(), relation.c_str())) {
+					out[i * nx + tree_sel[j]] = 1; //.push_back(tree_sel[j]);
+				}
+			}
+		}
+	} else {
+		std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> relFun = getPrepRelateFun(relation);
+		for (size_t i=0; i<nx; i++) {
+			// pre-select 
+			std::vector<size_t> tree_sel, sel;
+			if (! GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
+				GEOSSTRtree_query_r(hGEOSCtxt, tree1.get(), x[i].get(), cb, &tree_sel);
+			}
+			if (! tree_sel.empty()) {
+				PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, x[i].get()), hGEOSCtxt);
+				for (size_t j=0; j < tree_sel.size(); j++) {
+					if (relFun(hGEOSCtxt, pr.get(), y[tree_sel[j]].get())) {
+						out[i * nx + tree_sel[j]] = 1; //.push_back(tree_sel[j]);
+					}
+				}
+			}
+		}
+	}
+	geos_finish(hGEOSCtxt);
 
 	return out;
 }
+
 
 
 std::vector<std::vector<double>> SpatVector::which_relate(SpatVector v, std::string relation) {
@@ -1459,6 +1526,50 @@ std::vector<int> SpatVector::relate(std::string relation, bool symmetrical) {
 	return out;
 }
 
+std::vector<unsigned> SpatVector::equals_exact(SpatVector v, double tol) {
+	std::vector<unsigned> out;
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+	size_t nx = size();
+	size_t ny = v.size();
+	out.reserve(nx*ny);
+	for (size_t i = 0; i < nx; i++) {
+		for (size_t j = 0; j < ny; j++) {
+			out.push_back( GEOSEqualsExact_r(hGEOSCtxt, x[i].get(), y[j].get(), tol));
+		}
+	}
+	geos_finish(hGEOSCtxt);
+	return out;
+}
+
+
+std::vector<unsigned> SpatVector::equals_exact(bool symmetrical, double tol) {
+	std::vector<unsigned> out;
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+
+	if (symmetrical) {
+		size_t s = size();
+		size_t n = ((s-1) * s)/2;
+		out.reserve(n);
+		for (size_t i=0; i<(s-1); i++) {
+			for (size_t j=(i+1); j<s; j++) {
+				out.push_back( GEOSEqualsExact_r(hGEOSCtxt, x[i].get(), x[j].get(), tol));
+			}
+		}
+	} else {
+		size_t nx = size();
+		out.reserve(nx*nx);
+		for (size_t i = 0; i < nx; i++) {
+			for (size_t j = 0; j < nx; j++) {
+				out.push_back( GEOSEqualsExact_r(hGEOSCtxt, x[i].get(), x[j].get(), tol));
+			}
+		}
+	}
+	geos_finish(hGEOSCtxt);
+	return out;
+}
 
 
 std::vector<bool> SpatVector::is_related(SpatVector v, std::string relation) {
@@ -1522,41 +1633,38 @@ SpatVector SpatVector::mask(SpatVector x, bool inverse) {
 }
 
 
+typedef int (* dist_fn)(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *, double *);
 
-std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel) {
+bool get_dist_fun(dist_fn &f, std::string s) {
+	if ((s == "Euclidean") || (s == ""))
+		f = GEOSDistance_r;
+	else if (s == "Hausdorff")
+		f = GEOSHausdorffDistance_r;
+#ifdef GEOS370
+	else if (s == "Frechet")
+		f = GEOSFrechetDistance_r;
+#endif
+	else {
+		return false;
+	}
+	return true;
+}
+
+
+std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel, std::string fun) {
 
 	std::vector<double> out;
+
+	dist_fn distfun;
+	if (!get_dist_fun(distfun, fun)) {
+		setError("invalid distance function");
+		return out;
+	}
 
 	size_t nx = size();
 	size_t ny = v.size();
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
-
-	/* recycling, not a good idea here
-	std::vector<GeomPtr> x;
-	std::vector<GeomPtr> y;
-	if ((parallel) && (nx != ny) && (nx > 1) && (ny > 1)) {
-		SpatVector rr;
-		if (ny < nx) {
-			rr = v;
-			ny = nx;
-			recycle(rr.geoms, nx);
-			x = geos_geoms(this, hGEOSCtxt);
-			y = geos_geoms(&rr, hGEOSCtxt);
-		} else {
-			rr = *this;
-			recycle(rr.geoms, ny);
-			nx = ny;
-			x = geos_geoms(&rr, hGEOSCtxt);
-			y = geos_geoms(&v, hGEOSCtxt);
-		}
-
-	} else {
-		x = geos_geoms(this, hGEOSCtxt);
-		y = geos_geoms(&v, hGEOSCtxt);
-	}
-	*/
-
 
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
@@ -1580,7 +1688,7 @@ std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel) {
 		if (nyone) {
 			out.reserve(nx);
 			for (size_t i = 0; i < nx; i++) {
-				if ( GEOSDistance_r(hGEOSCtxt, x[i].get(), y[0].get(), &d)) {
+				if ( distfun(hGEOSCtxt, x[i].get(), y[0].get(), &d)) {
 					out.push_back(d);
 				} else {
 					out.push_back(NAN);
@@ -1589,7 +1697,7 @@ std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel) {
 		} else {
 			out.reserve(nx);
 			for (size_t i = 0; i < nx; i++) {
-				if ( GEOSDistance_r(hGEOSCtxt, x[i].get(), y[i].get(), &d)) {
+				if ( distfun(hGEOSCtxt, x[i].get(), y[i].get(), &d)) {
 					out.push_back(d);
 				} else {
 					out.push_back(NAN);
@@ -1600,7 +1708,7 @@ std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel) {
 		out.reserve(nx*ny);
 		for (size_t i = 0; i < nx; i++) {
 			for (size_t j = 0; j < ny; j++) {
-				if ( GEOSDistance_r(hGEOSCtxt, x[i].get(), y[j].get(), &d)) {
+				if ( distfun(hGEOSCtxt, x[i].get(), y[j].get(), &d)) {
 					out.push_back(d);
 				} else {
 					out.push_back(NAN);
@@ -1612,9 +1720,14 @@ std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel) {
 	return out;
  }
 
-std::vector<double> SpatVector::geos_distance(bool sequential) {
+std::vector<double> SpatVector::geos_distance(bool sequential, std::string fun) {
 
 	std::vector<double> out;
+	dist_fn distfun;
+	if (!get_dist_fun(distfun, fun)) {
+		setError("invalid distance function");
+		return out;
+	}
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
@@ -1624,7 +1737,7 @@ std::vector<double> SpatVector::geos_distance(bool sequential) {
 		out.reserve(s);
 		out.push_back(0);
 		for (size_t i=0; i<(s-1); i++) {
-			if ( GEOSDistance_r(hGEOSCtxt, x[i].get(), x[i+1].get(), &d)) {
+			if ( distfun(hGEOSCtxt, x[i].get(), x[i+1].get(), &d)) {
 				out.push_back(d);
 			} else {
 				out.push_back(NAN);
@@ -1634,7 +1747,7 @@ std::vector<double> SpatVector::geos_distance(bool sequential) {
 		out.reserve((s-1) * s / 2);
 		for (size_t i=0; i<(s-1); i++) {
 			for (size_t j=(i+1); j<s; j++) {
-				if ( GEOSDistance_r(hGEOSCtxt, x[i].get(), x[j].get(), &d)) {
+				if ( distfun(hGEOSCtxt, x[i].get(), x[j].get(), &d)) {
 					out.push_back(d);
 				} else {
 					out.push_back(NAN);
@@ -2182,6 +2295,70 @@ SpatVector SpatVector::nearest_point() {
 	out.srs = srs;
 	return out;
 }
+
+#ifdef GEOS361
+
+// helper struct for STRtree:
+typedef struct { GEOSGeom g; size_t id; } item_g;
+
+int distance_fn(const void *item1, const void *item2, double *distance, void *userdata) {
+	return GEOSDistance_r( (GEOSContextHandle_t) userdata, ((item_g *)item1)->g, ((item_g *)item2)->g, distance);
+}
+
+std::vector<int> SpatVector::nearest_geometry(SpatVector v) {
+	// for every feature find the index (1-based) of the nearest feature in v
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+
+	TreePtr tree = geos_ptr(GEOSSTRtree_create_r(hGEOSCtxt, 10), hGEOSCtxt);
+	std::vector<item_g> items(y.size());
+	bool tree_is_empty = true;
+	for (size_t i = 0; i < y.size(); i++) {
+		items[i].id = i;
+		items[i].g = y[i].get();
+		if (!GEOSisEmpty_r(hGEOSCtxt, y[i].get())) {
+			GEOSSTRtree_insert_r(hGEOSCtxt, tree.get(), y[i].get(), &(items[i]));
+			tree_is_empty = false;
+		}
+	}
+	std::vector<int> out;
+	if (tree_is_empty) {
+		setError("cannot make tree");
+		return out;		
+	}
+	
+	out.resize(nrow(), -1);
+	for (size_t i = 0; i < x.size(); i++) {
+		if (!GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
+			item_g item, *ret_item;
+			item.id = -99;
+			item.g = x[i].get();
+			// now query tree for nearest GEOM at item:
+			ret_item = (item_g *) GEOSSTRtree_nearest_generic_r(hGEOSCtxt, tree.get(), &item,
+					x[i].get(), distance_fn, hGEOSCtxt);
+			if (ret_item != NULL) {
+				out[i] = ret_item->id; 
+			} else {
+				setError("GEOS error");
+				return out;		
+			}
+		} 
+	}
+	geos_finish(hGEOSCtxt);
+
+//	SpatVector out = v.subset_rows(sel);
+	return out;
+}
+#else
+SpatVector SpatVector::nearest_feature(SpatVector v, std::string distfun) {
+	SpatVector out;
+	out.setError("you need GEOS 3.6.1 for this method");
+	return out;
+}
+#endif // GEOS361
+
 
 SpatVector SpatVector::cross_dateline(bool &fixed) {
 	SpatVector out;

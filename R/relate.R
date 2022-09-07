@@ -76,17 +76,20 @@ setMethod("is.related", signature(x="SpatRaster", y="SpatRaster"),
 )
 
 
-
-
 setMethod("relate", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, relation) {
-		out <- x@ptr$relate_between(y@ptr, relation)
+	function(x, y, relation, usetree=FALSE) {
+		if (relation %in% c("FF*FF****", "disjoint")) usetree <- FALSE
+		if (relation == "equals_exact") error("relate", "use 'equals()' instead")		
+		if (usetree) {
+			out <- x@ptr$relate_tree_between(y@ptr, relation)		
+		} else {
+			out <- x@ptr$relate_between(y@ptr, relation)
+		}
 		x <- messages(x, "relate")
 		out[out == 2] <- NA
 		matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
 	}
 )
-
 
 setMethod("which.related", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, relation) {
@@ -182,6 +185,38 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 		out
 	}
 )
+
+
+
+setMethod("equals", signature(x="SpatVector", y="SpatVector"),
+	function(x, y, tolerance=0) {
+		out <- x@ptr$equals_between(y@ptr, tolerance)
+		x <- messages(x, "equals")
+		out[out == 2] <- NA
+		matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+	}
+)
+
+setMethod("equals", signature(x="SpatVector", y="missing"),
+	function(x, y, tolerance=0, pairs=FALSE, symmetrical=FALSE) {
+		out <- x@ptr$equals_within(symmetrical, tolerance)
+		x <- messages(x, "equals")
+		out[out == 2] <- NA
+		if (symmetrical) {
+			class(out) <- "dist"
+			attr(out, "Size") <- nrow(x)
+			attr(out, "Diag") <- FALSE
+			attr(out, "Upper") <- FALSE
+		} else {
+			out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+		}
+		if (pairs) {
+			out <- mat2wide(out, symmetrical)
+		}
+		out
+	}
+)
+
 
 
 setMethod("adjacent", signature(x="SpatRaster"),

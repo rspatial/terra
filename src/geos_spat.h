@@ -64,13 +64,13 @@ static PrepGeomPtr geos_ptr(const GEOSPreparedGeometry* pg, GEOSContextHandle_t 
 	return PrepGeomPtr(pg, deleter);
 }
 
-/*
+
 using TreePtr= std::unique_ptr<GEOSSTRtree, std::function<void(GEOSSTRtree*)> >;
 static TreePtr geos_ptr(GEOSSTRtree* t, GEOSContextHandle_t hGEOSctxt) {
 	auto deleter = std::bind(GEOSSTRtree_destroy_r, hGEOSctxt, std::placeholders::_1);
 	return TreePtr(t, deleter);
 }
-*/
+
 
 #ifdef useRcpp
 #include "Rcpp.h"

@@ -344,12 +344,17 @@ class SpatVector {
 		std::vector<int> relate(SpatVector v, std::string relation);
 		std::vector<int> relate(std::string relation, bool symmetrical);
 		std::vector<int> relateFirst(SpatVector v, std::string relation);
-		std::vector<double> geos_distance(SpatVector v, bool parallel);
-		std::vector<double> geos_distance(bool sequential);
+		std::vector<int> relate_tree(SpatVector v, std::string relation);
+		std::vector<unsigned> equals_exact(SpatVector v, double tol);
+		std::vector<unsigned> equals_exact(bool symmetrical, double tol);
 
+		std::vector<double> geos_distance(SpatVector v, bool parallel, std::string fun);
+		std::vector<double> geos_distance(bool sequential, std::string fun);
 
 		SpatVector nearest_point(SpatVector v, bool parallel);
 		SpatVector nearest_point();
+		std::vector<int> nearest_geometry(SpatVector v);
+		
 		SpatVector sample(unsigned n, std::string method, unsigned seed);
 		SpatVector sample_geom(std::vector<unsigned> n, std::string method, unsigned seed);
 

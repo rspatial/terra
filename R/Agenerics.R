@@ -81,6 +81,7 @@ if (!isGeneric("minRect")) {setGeneric("minRect", function(x, ...) standardGener
 if (!isGeneric("which.related")) {setGeneric("which.related", function(x, y, ...) standardGeneric("which.related"))}
 if (!isGeneric("is.related")) {setGeneric("is.related", function(x, y, ...) standardGeneric("is.related"))}
 if (!isGeneric("relate")) {setGeneric("relate", function(x, y, ...) standardGeneric("relate"))}
+if (!isGeneric("equals")) {setGeneric("equals", function(x, y, ...) standardGeneric("equals"))}
 if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y) standardGeneric("intersect"))}
 
 if (!isGeneric("not.na")) {setGeneric("not.na", function(x, ...) standardGeneric("not.na"))}

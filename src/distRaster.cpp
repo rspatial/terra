@@ -378,7 +378,8 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit) {
 	}
 	std::string gtype = type();
 	if (gtype != "points") {
-		d = geos_distance(sequential);
+		std::string distfun="";
+		d = geos_distance(sequential, distfun);
 		if (m != 1) {
 			for (double &i : d) i *= m;
 		}
@@ -468,9 +469,10 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 
 	std::string gtype = type();
 	std::string xtype = x.type();
-
+	
 	if ((!lonlat) || (gtype != "points") || (xtype != "points")) {
-		d = geos_distance(x, pairwise);
+		std::string distfun="";
+		d = geos_distance(x, pairwise, distfun);
 		if ((!lonlat) && (m != 1)) {
 			for (double &i : d) i *= m;
 		}

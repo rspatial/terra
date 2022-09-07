@@ -434,8 +434,8 @@ RCPP_MODULE(spat){
 		.method("distance_self", (std::vector<double> (SpatVector::*)(bool, std::string))( &SpatVector::distance))
 		.method("distance_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string))( &SpatVector::distance))
 
-		.method("geosdist_self", (std::vector<double> (SpatVector::*)(bool))( &SpatVector::geos_distance))
-		.method("geosdist_other", (std::vector<double> (SpatVector::*)(SpatVector, bool))( &SpatVector::geos_distance))
+		.method("geosdist_self", (std::vector<double> (SpatVector::*)(bool, std::string))( &SpatVector::geos_distance))
+		.method("geosdist_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string))( &SpatVector::geos_distance))
 
 		.method("extent", &SpatVector::getExtent, "extent")
 		.method("getDF", &getVectorAttributes, "get attributes")
@@ -505,11 +505,18 @@ RCPP_MODULE(spat){
 		.method("relate_first", &SpatVector::relateFirst)
 		.method("relate_between", ( std::vector<int> (SpatVector::*)(SpatVector, std::string))( &SpatVector::relate ))
 		.method("relate_within", ( std::vector<int> (SpatVector::*)(std::string, bool))( &SpatVector::relate ))
+		.method("relate_tree_between", &SpatVector::relate_tree)
+		.method("equals_between", ( std::vector<unsigned> (SpatVector::*)(SpatVector, double))( &SpatVector::equals_exact ))
+		.method("equals_within", ( std::vector<unsigned> (SpatVector::*)(bool, double))( &SpatVector::equals_exact ))
+
+
 		.method("crop_ext", ( SpatVector (SpatVector::*)(SpatExtent))( &SpatVector::crop ))
 		.method("crop_vct", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::crop ))
 
 		.method("near_between", (SpatVector (SpatVector::*)(SpatVector, bool))( &SpatVector::nearest_point))
 		.method("near_within", (SpatVector (SpatVector::*)())( &SpatVector::nearest_point))
+		.method("near_geom", &SpatVector::nearest_geometry)
+
 		//.method("knearest", &SpatVector::knearest)
 
 		.method("split", &SpatVector::split)
