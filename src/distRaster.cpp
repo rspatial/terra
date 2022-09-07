@@ -355,7 +355,7 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double 
 		out.setError("no cells to compute direction from or to");
 		return(out);
 	}
-	out = disdir_vector_rasterize(p, false, false, from, degrees, target, exclude, "", opt);
+	out = disdir_vector_rasterize(p, false, false, from, degrees, target, exclude, "m", opt);
 	return out;
 }
 
