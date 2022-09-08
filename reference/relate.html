@@ -59,7 +59,7 @@ is.related returns a logical vector indicating the presence or absence of a spec
 <span class="fu">relate</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">relation</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector,missing</span>
-<span class="fu">relate</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">relation</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, symmetrical<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">relate</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">relation</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector,SpatVector</span>
 <span class="fu">is.related</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">relation</span><span class="op">)</span></code></pre></div>
@@ -82,15 +82,12 @@ is.related returns a logical vector indicating the presence or absence of a spec
   <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code> and <code>sparse=TRUE</code>, geometries in <code>x</code> for which there is no related geometry in <code>y</code> are omitted</p></dd>
 
-  <dt>symmetrical</dt>
-<dd><p>logical. If <code>TRUE</code> and <code>pairs=TRUE</code>, the relation between a pair is only included once. For example, the relation between geometry 1 and 3 is included, but the relation between 3 and 1 is not. Note that whole some relationships are symmetrical (e.g. "touches"), but that others are not (e.g. "within")</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>matrix (relate; which.related) or vector (is.related)</p>
+<p>matrix (relate) or vector (is.related)</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
