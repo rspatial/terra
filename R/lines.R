@@ -31,11 +31,9 @@ setMethod("lines", signature(x="SpatVector"),
 				b <- as.vector(t(cbind(p1[,2], p2[,2], NA)))
 				lines(cbind(a, b), col=col, lwd=lwd, lty=lty, alpha=alpha, ...)
 			}
-		} else if (grepl("points", gtype)) {
-			points(x, col=col, type="l", lwd=lwd, lty=lty, alpha=alpha, ...)
 		} else {
-			if (gtype == "polygons") {
-				x <- as.lines(x) # for holes
+			if (gtype != "polygons") {
+				x <- as.lines(x) 
 			}
 			if ((length(col) == 1) && (length(lty)==1) && (length(lwd)==1)) {
 				col <- .getCols(1, col, alpha)

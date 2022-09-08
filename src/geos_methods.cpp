@@ -1075,55 +1075,57 @@ SpatVector SpatVector::intersect(SpatVector v, bool values) {
 	//v = v.aggregate(false);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
 	std::vector<GeomPtr> result;
-	size_t nx = size();
-	size_t ny = v.size();
+//	size_t nx = size();
+//	size_t ny = v.size();
 	std::vector<unsigned> idx, idy;
+
+	std::vector<std::vector<double>> r = which_relate(v, "intersects", true);
+	size_t n = r[0].size();
+	idx.reserve(n);
+	idy.reserve(n);
+	for (size_t i=0; i<n; i++) {
+		idx.push_back( (unsigned) r[0][i] );
+		idy.push_back( (unsigned) r[1][i] );
+	}
+	r.resize(0);
 	std::vector<long> ids;
-	idx.reserve(nx);
-	idy.reserve(ny);
+	ids.reserve(n);
+
 
 	if (type() == "points") {
-		//std::vector<bool> ixj(nx, false);
-		//size_t count = 0;
-		for (size_t j = 0; j < ny; j++) {
+//		idx = wr[0];
+//		idy = wr[1];
+
+/*		for (size_t j = 0; j < ny; j++) {
 			PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, y[j].get()), hGEOSCtxt);
 			for (size_t i = 0; i < nx; i++) {
 				if (GEOSPreparedIntersects_r(hGEOSCtxt, pr.get(), x[i].get())) {
-					//if (!ixj[i]
-					//ixj[i] = true;
 					idx.push_back(i);
 					idy.push_back(j);
-					//count++;
 				}
 			}
 		}
-		//std::vector<int> sx;
-		//sx.reserve(count);
-		//for (size_t i=0; i<ixj.size(); i++) {
-		//	if (ixj[i]) sx.push_back(i);
-		//}
+*/
 		out = subset_rows(idx);
 
 	} else {
 
-		long k = 0;
-		for (size_t i = 0; i < nx; i++) {
-			for (size_t j = 0; j < ny; j++) {
-				GEOSGeometry* geom = GEOSIntersection_r(hGEOSCtxt, x[i].get(), y[j].get());
-				if (geom == NULL) {
-					out.setError("GEOS exception");
-					geos_finish(hGEOSCtxt);
-					return(out);
-				}
-				if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
-					result.push_back(geos_ptr(geom, hGEOSCtxt));
-					idx.push_back(i);
-					idy.push_back(j);
-					ids.push_back(k);
-					k++;
-				} else {
-					GEOSGeom_destroy_r(hGEOSCtxt, geom);
-				}
+		//long k = 0;
+		for (size_t i = 0; i < n; i++) {
+			GEOSGeometry* geom = GEOSIntersection_r(hGEOSCtxt, x[idx[i]].get(), y[idy[i]].get());
+			if (geom == NULL) {
+				out.setError("GEOS exception");
+				geos_finish(hGEOSCtxt);
+				return(out);
+			}
+			if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
+				result.push_back(geos_ptr(geom, hGEOSCtxt));
+				//idx.push_back(i);
+				//idy.push_back(j);
+				ids.push_back(i);
+				//k++;
+			} else {
+				GEOSGeom_destroy_r(hGEOSCtxt, geom);
 			}
 		}
 
@@ -1149,7 +1151,7 @@ SpatVector SpatVector::intersect(SpatVector v, bool values) {
 	}
 
 	SpatDataFrame df1, df2;
-	size_t n = out.nrow();
+	n = out.nrow();
 	if (values) {
 		if (n < idx.size()) {
 			std::vector<unsigned> idx2, idy2;
