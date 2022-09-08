@@ -1185,7 +1185,6 @@ SpatVector SpatVector::intersect(SpatVector v, bool values) {
 }
 
 
-/*
 
 std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> getRelateFun(const std::string rel) {
 	std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> rfun;
@@ -1201,8 +1200,8 @@ std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry
 		rfun = GEOSWithin_r;
 	} else if (rel == "contains") {
 		rfun = GEOSContains_r;
-	} else if (rel == "containsproperly") {
-		rfun = GEOSContainsProperly_r;
+//	} else if (rel == "containsproperly") {
+//		rfun = GEOSContainsProperly_r;
 	} else if (rel == "overlaps") {
 		rfun = GEOSOverlaps_r;
 	} else if (rel == "covers") {
@@ -1212,7 +1211,7 @@ std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry
 	}
 	return rfun;
 }
-*/
+
 
 std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> getPrepRelateFun(const std::string rel) {
 	std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> rfun;
@@ -1269,8 +1268,15 @@ int getRel(std::string &relation) {
 	return pattern;
 }
 
-std::vector<int> SpatVector::relate(SpatVector v, std::string relation) {
 
+
+void callbck(void *item, void *userdata) { // callback function for tree selection
+	std::vector<size_t> *ret = (std::vector<size_t> *) userdata;
+	ret->push_back(*((size_t *) item));
+}
+
+
+std::vector<int> SpatVector::relate(SpatVector v, std::string relation, bool prepared, bool index) {
 	std::vector<int> out;
 	int pattern = getRel(relation);
 	if (pattern == 2) {
@@ -1284,89 +1290,88 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation) {
 	size_t nx = size();
 	size_t ny = v.size();
 	out.reserve(nx*ny);
-	if (pattern == 1) {
-		for (size_t i = 0; i < nx; i++) {
-			for (size_t j = 0; j < ny; j++) {
-				out.push_back( GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[j].get(), relation.c_str()));
+
+	if (!index) {
+		if (pattern == 1) {
+			for (size_t i = 0; i < nx; i++) {
+				for (size_t j = 0; j < ny; j++) {
+					out.push_back( GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[j].get(), relation.c_str()));
+				}
 			}
-		}
-	} else {
-		std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> relFun = getPrepRelateFun(relation);
-		for (size_t i = 0; i < nx; i++) {
-			PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, x[i].get()), hGEOSCtxt);
-			for (size_t j = 0; j < ny; j++) {
-				out.push_back( relFun(hGEOSCtxt, pr.get(), y[j].get()));
+		} else if (prepared) {
+			std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> relFun = getPrepRelateFun(relation);
+			for (size_t i = 0; i < nx; i++) {
+				PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, x[i].get()), hGEOSCtxt);
+				for (size_t j = 0; j < ny; j++) {
+					out.push_back( relFun(hGEOSCtxt, pr.get(), y[j].get()));
+				}
 			}
-		}
-	}
-	geos_finish(hGEOSCtxt);
-	return out;
-}
-
-
-
-void cb(void *item, void *userdata) { // callback function for tree selection
-	std::vector<size_t> *ret = (std::vector<size_t> *) userdata;
-	ret->push_back(*((size_t *) item));
-}
-
-std::vector<int> SpatVector::relate_tree(SpatVector v, std::string relation) {
-
-	std::vector<int> out;
-	int pattern = getRel(relation);
-	if (pattern == 2) {
-		setError("'" + relation + "'" + " is not a valid relate name or pattern");
-		return out;
-	}
-
-	GEOSContextHandle_t hGEOSCtxt = geos_init();
-	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
-	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
-
-	std::vector<size_t> items(y.size());
-	TreePtr tree1 = geos_ptr(GEOSSTRtree_create_r(hGEOSCtxt, 10), hGEOSCtxt);
-	for (size_t i = 0; i < y.size(); i++) {
-		items[i] = i;
-		if (! GEOSisEmpty_r(hGEOSCtxt, y[i].get()))
-			GEOSSTRtree_insert_r(hGEOSCtxt, tree1.get(), y[i].get(), &(items[i]));
-	}
-
-	size_t nx = size();
-	size_t ny = v.size();
-	out.resize(nx*ny, 0);
-	if (pattern == 1) {
-		for (size_t i = 0; i < nx; i++) {
-			// pre-select sfc1's using tree:
-			std::vector<size_t> tree_sel, sel;
-			if (! GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
-				GEOSSTRtree_query_r(hGEOSCtxt, tree1.get(), x[i].get(), cb, &tree_sel);
-			}
-			for (size_t j = 0; j < tree_sel.size(); j++) {
-				if (GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[tree_sel[j]].get(), relation.c_str())) {
-					out[i * nx + tree_sel[j]] = 1; //.push_back(tree_sel[j]);
+		} else {
+			std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> relFun = getRelateFun(relation);
+			for (size_t i = 0; i < nx; i++) {
+				for (size_t j = 0; j < ny; j++) {
+					out.push_back( relFun(hGEOSCtxt, x[i].get(), y[j].get()));
 				}
 			}
 		}
 	} else {
-		std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> relFun = getPrepRelateFun(relation);
-		for (size_t i=0; i<nx; i++) {
-			// pre-select 
-			std::vector<size_t> tree_sel, sel;
-			if (! GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
-				GEOSSTRtree_query_r(hGEOSCtxt, tree1.get(), x[i].get(), cb, &tree_sel);
-			}
-			if (! tree_sel.empty()) {
-				PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, x[i].get()), hGEOSCtxt);
-				for (size_t j=0; j < tree_sel.size(); j++) {
-					if (relFun(hGEOSCtxt, pr.get(), y[tree_sel[j]].get())) {
+		std::vector<size_t> items(y.size());
+		TreePtr tree1 = geos_ptr(GEOSSTRtree_create_r(hGEOSCtxt, 10), hGEOSCtxt);
+		for (size_t i = 0; i < y.size(); i++) {
+			items[i] = i;
+			if (! GEOSisEmpty_r(hGEOSCtxt, y[i].get()))
+				GEOSSTRtree_insert_r(hGEOSCtxt, tree1.get(), y[i].get(), &(items[i]));
+		}
+
+		if (pattern == 1) {
+			for (size_t i = 0; i < nx; i++) {
+				// pre-select y's using tree:
+				std::vector<size_t> tree_sel, sel;
+				if (! GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
+					GEOSSTRtree_query_r(hGEOSCtxt, tree1.get(), x[i].get(), callbck, &tree_sel);
+				}
+				for (size_t j = 0; j < tree_sel.size(); j++) {
+					if (GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[tree_sel[j]].get(), relation.c_str())) {
 						out[i * nx + tree_sel[j]] = 1; //.push_back(tree_sel[j]);
+					}
+				}
+			}
+		} else if (prepared) {
+			std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> relFun = getPrepRelateFun(relation);
+			for (size_t i=0; i<nx; i++) {
+				// pre-select y
+				std::vector<size_t> tree_sel, sel;
+				if (! GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
+					GEOSSTRtree_query_r(hGEOSCtxt, tree1.get(), x[i].get(), callbck, &tree_sel);
+				}
+				if (! tree_sel.empty()) {
+					PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, x[i].get()), hGEOSCtxt);
+					for (size_t j=0; j < tree_sel.size(); j++) {
+						if (relFun(hGEOSCtxt, pr.get(), y[tree_sel[j]].get())) {
+							out[i * nx + tree_sel[j]] = 1; //.push_back(tree_sel[j]);
+						}
+					}
+				}
+			}
+		} else {
+			std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> relFun = getRelateFun(relation);
+			for (size_t i=0; i<nx; i++) {
+				// pre-select y
+				std::vector<size_t> tree_sel, sel;
+				if (! GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
+					GEOSSTRtree_query_r(hGEOSCtxt, tree1.get(), x[i].get(), callbck, &tree_sel);
+				}
+				if (! tree_sel.empty()) {
+					for (size_t j=0; j < tree_sel.size(); j++) {
+						if (relFun(hGEOSCtxt, x[i].get(), y[tree_sel[j]].get())) {
+							out[i * nx + tree_sel[j]] = 1; //.push_back(tree_sel[j]);
+						}
 					}
 				}
 			}
 		}
 	}
 	geos_finish(hGEOSCtxt);
-
 	return out;
 }
 

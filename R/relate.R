@@ -77,14 +77,10 @@ setMethod("is.related", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("relate", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, relation, usetree=FALSE) {
-		if (relation %in% c("FF*FF****", "disjoint")) usetree <- FALSE
-		if (relation == "equals_exact") error("relate", "use 'equals()' instead")		
-		if (usetree) {
-			out <- x@ptr$relate_tree_between(y@ptr, relation)		
-		} else {
-			out <- x@ptr$relate_between(y@ptr, relation)
-		}
+	function(x, y, relation) {
+		index <- TRUE
+		if (relation %in% c("FF*FF****", "disjoint")) index <- FALSE
+		out <- x@ptr$relate_between(y@ptr, relation, TRUE, index)
 		x <- messages(x, "relate")
 		out[out == 2] <- NA
 		matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)

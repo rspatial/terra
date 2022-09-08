@@ -341,10 +341,10 @@ class SpatVector {
 
 		std::vector<std::vector<double>> which_relate(SpatVector v, std::string relation);
 		std::vector<bool> is_related(SpatVector v, std::string relation);
-		std::vector<int> relate(SpatVector v, std::string relation);
+//		std::vector<int> relate(SpatVector v, std::string relation);
+		std::vector<int> relate(SpatVector v, std::string relation, bool prepared, bool index);
 		std::vector<int> relate(std::string relation, bool symmetrical);
 		std::vector<int> relateFirst(SpatVector v, std::string relation);
-		std::vector<int> relate_tree(SpatVector v, std::string relation);
 		std::vector<unsigned> equals_exact(SpatVector v, double tol);
 		std::vector<unsigned> equals_exact(bool symmetrical, double tol);
 

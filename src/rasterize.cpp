@@ -167,7 +167,7 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 			std::vector<double> v(out.bs.nrows[i] * out.ncol(), 0);
 
 			if (fun == "crosses") {
-				std::vector<int> r = p.relate(x, "crosses");
+				std::vector<int> r = p.relate(x, "crosses", true, true);
 				size_t nx = x.size();
 				for (size_t j=0; j< r.size(); j++) {
 					size_t k= j / nx;

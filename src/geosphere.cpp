@@ -200,7 +200,7 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 		std::vector<int> insect;
 		for (size_t g=0; g<ng; g++) {
 			pg.geoms = { geoms[g] };
-			insect = pg.relate(x, "intersects");
+			insect = pg.relate(x, "intersects", true, true);
 			std::vector<std::vector<double>> xy = geoms[g].coordinates();
 			size_t nseg = xy[0].size() - 1;
 			for (size_t i=0; i<np; i++) {
