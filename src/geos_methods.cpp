@@ -1951,7 +1951,6 @@ std::vector<bool> SpatVector::is_related(SpatVector v, std::string relation) {
 
 		if (pattern == 1) {
 			for (size_t i = 0; i < nx; i++) {
-				// pre-select y's using tree:
 				std::vector<size_t> tree_sel, sel;
 				if (! GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
 					GEOSSTRtree_query_r(hGEOSCtxt, tree1.get(), x[i].get(), callbck, &tree_sel);

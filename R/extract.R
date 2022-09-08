@@ -386,9 +386,8 @@ setMethod("[", c("SpatVector", "SpatVector", "missing"),
 function(x, i, j, ... , drop=FALSE) {
 	#r <- !relate(x, i, "disjoint")
 	#r <- which(apply(r, 1, any))
-	r <- relate(x, i, "disjoint", pairs=TRUE, na.rm=TRUE)
-	r <- unique(r[, 1])
-	x[-r, ]
+	r <- is.related(x, i, "intersects")
+	x[r, ]
 })
 
 
