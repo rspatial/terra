@@ -39,7 +39,7 @@ Spatial relationships between geometries
 \usage{
 \S4method{relate}{SpatVector,SpatVector}(x, y, relation, pairs=FALSE, na.rm=TRUE)
 
-\S4method{relate}{SpatVector,missing}(x, y, relation, pairs=FALSE, symmetrical=FALSE)
+\S4method{relate}{SpatVector,missing}(x, y, relation, pairs=FALSE, na.rm=FALSE)
 
 \S4method{is.related}{SpatVector,SpatVector}(x, y, relation)
 }
@@ -50,11 +50,10 @@ Spatial relationships between geometries
   \item{relation}{character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint". Or a "DE-9IM" string such as "FF*FF****". See \href{https://en.wikipedia.org/wiki/DE-9IM}{wikipedia} or \href{https://docs.geotools.org/stable/userguide/library/jts/dim9.html}{geotools doc}}
   \item{pairs}{logical. If \code{TRUE} a two-column matrix is returned with the indices of the cases where the requested relation is \code{TRUE}. This is especially helpful when dealing with many geometries as the returned value is generally much smaller} 
   \item{na.rm}{logical. If \code{TRUE} and \code{sparse=TRUE}, geometries in \code{x} for which there is no related geometry in \code{y} are omitted}
-  \item{symmetrical}{logical. If \code{TRUE} and \code{pairs=TRUE}, the relation between a pair is only included once. For example, the relation between geometry 1 and 3 is included, but the relation between 3 and 1 is not. Note that whole some relationships are symmetrical (e.g. "touches"), but that others are not (e.g. "within")}
 } 
 
 \value{
-matrix (relate; which.related) or vector (is.related)
+matrix (relate) or vector (is.related)
 }
 
 \seealso{

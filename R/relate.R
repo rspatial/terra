@@ -224,37 +224,6 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 
 
 
-setMethod("equals", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, tolerance=0) {
-		out <- x@ptr$equals_between(y@ptr, tolerance)
-		x <- messages(x, "equals")
-		out[out == 2] <- NA
-		matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
-	}
-)
-
-setMethod("equals", signature(x="SpatVector", y="missing"),
-	function(x, y, tolerance=0, pairs=FALSE, symmetrical=FALSE) {
-		out <- x@ptr$equals_within(symmetrical, tolerance)
-		x <- messages(x, "equals")
-		out[out == 2] <- NA
-		if (symmetrical) {
-			class(out) <- "dist"
-			attr(out, "Size") <- nrow(x)
-			attr(out, "Diag") <- FALSE
-			attr(out, "Upper") <- FALSE
-		} else {
-			out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
-		}
-		if (pairs) {
-			out <- mat2wide(out, symmetrical)
-		}
-		out
-	}
-)
-
-
-
 setMethod("adjacent", signature(x="SpatRaster"),
 	function(x, cells, directions="rook", pairs=FALSE, include=FALSE) {
 		cells <- cells - 1

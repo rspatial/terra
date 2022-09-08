@@ -2337,11 +2337,11 @@ SpatVector SpatVector::cover(SpatVector v, bool identity, bool expand) {
 SpatVector SpatVector::erase_agg(SpatVector v) {
 
 	if ((type() == "points") || (v.type() == "points")) {
-		std::vector<int> b = relateFirst(v, "intersects");
+		std::vector<bool> b = is_related(v, "intersects");
 		std::vector<unsigned> r;
 		r.reserve(b.size());
 		for (size_t i=0; i < b.size(); i++) {
-			if (b[i] == -1) r.push_back(i);
+			if (!b[i]) r.push_back(i);
 		}
 		return subset_rows(r);
 	}
@@ -2397,11 +2397,11 @@ SpatVector SpatVector::erase_agg(SpatVector v) {
 SpatVector SpatVector::erase(SpatVector v) {
 
 	if ((type() == "points") || (v.type() == "points")) {
-		std::vector<int> b = relateFirst(v, "intersects");
+		std::vector<bool> b = is_related(v, "intersects");
 		std::vector<unsigned> r;
 		r.reserve(b.size());
 		for (size_t i=0; i<b.size(); i++) {
-			if (b[i] == -1) r.push_back(i);
+			if (!b[i]) r.push_back(i);
 		}
 		return subset_rows(r);
 	}

@@ -390,6 +390,28 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 )
 
 
+setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
+	function(x, y, tolerance=0) {
+		out <- x@ptr$equals_between(y@ptr, tolerance)
+		x <- messages(x, "compareGeom")
+		out[out == 2] <- NA
+		matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+	}
+)
+
+setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
+	function(x, y, tolerance=0) {
+		out <- x@ptr$equals_within(tolerance)
+		x <- messages(x, "compareGeom")
+		out[out == 2] <- NA
+		out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+		out
+	}
+)
+
+
+
+
 setMethod("values", signature("SpatVector"),
 	function(x, ...) {
 		as.data.frame(x, ...)

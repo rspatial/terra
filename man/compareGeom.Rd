@@ -6,12 +6,16 @@
 \title{Compare geometries of SpatRasters}
 
 \description{
-Evaluate whether two SpatRaster objects have the same extent, number of rows and columns, projection, resolution, and origin (or a subset of these comparisons). 
+Evaluate whether two SpatRasters have the same extent, number of rows and columns, projection, resolution, and origin (or a subset of these comparisons). Or whether two SpatVectors have the same geometries, or wheter a SpatVector has duplicated geometries. 
 }
 
 \usage{
 \S4method{compareGeom}{SpatRaster,SpatRaster}(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE,
 	rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=FALSE)
+
+\S4method{compareGeom}{SpatVector,SpatVector}(x, y, tolerance=0)
+
+\S4method{compareGeom}{SpatVector,missing}(x, y, tolerance=0)
 }
 
 \arguments{
@@ -26,8 +30,12 @@ Evaluate whether two SpatRaster objects have the same extent, number of rows and
   \item{res}{logical. If \code{TRUE}, resolutions are compared (redundant when checking extent and rowcol)}
   \item{stopOnError}{logical. If \code{TRUE}, code execution stops if raster do not match}
   \item{messages}{logical. If \code{TRUE}, warning/error messages are printed even if \code{stopOnError=FALSE}}
+  \item{tolerance}{numeric}
 }
- 
+
+\value{
+logical (SpatRaster) or matrix of logical (SpatVector)
+} 
 
 \examples{
 r1 <- rast()
@@ -35,6 +43,7 @@ r2 <- rast()
 r3 <- rast()
 compareGeom(r1, r2, r3)
 nrow(r3) <- 10
+
 
 \dontrun{
 compareGeom(r1, r3)
