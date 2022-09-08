@@ -77,25 +77,34 @@ setMethod("is.related", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("relate", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, relation) {
-		index <- TRUE
-		if (relation %in% c("FF*FF****", "disjoint")) index <- FALSE
-		out <- x@ptr$relate_between(y@ptr, relation, TRUE, index)
-		x <- messages(x, "relate")
-		out[out == 2] <- NA
-		matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+	function(x, y, relation, sparse=TRUE, na.rm=TRUE) {
+		if (sparse) {
+			out <- x@ptr$which_related(y@ptr, relation, na.rm[1])
+			messages(x, "relate")
+			names(out) <- c("id.x", "id.y")
+			if (length(out[[1]]) == 0) {
+				return (cbind(0,0)[0,,drop=FALSE])
+			} else {
+				do.call(cbind, out) + 1
+			}
+		} else {
+			out <- x@ptr$relate_between(y@ptr, relation, TRUE, TRUE)
+			messages(x, "relate")
+			out[out == 2] <- NA
+			matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+		}
 	}
 )
 
-setMethod("which.related", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, relation) {
-		out <- x@ptr$which_related(y@ptr, relation)
-		x <- messages(x, "which.related")
-		out <- do.call(cbind, out) + 1
-		colnames(out) <- c("id.x", "id.y")
-		out
-	}
-)
+#setMethod("which.related", signature(x="SpatVector", y="SpatVector"),
+#	function(x, y, relation) {
+#		out <- x@ptr$which_related(y@ptr, relation)
+#		x <- messages(x, "which.related")
+#		out <- do.call(cbind, out) + 1
+#		colnames(out) <- c("id.x", "id.y")
+#		out
+#	}
+#)
 
 
 

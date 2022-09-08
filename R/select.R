@@ -29,7 +29,7 @@ setMethod("sel", signature(x="SpatVector"),
 		} else {
 			e <- draw("pol")
 		}
-		i <- relate(x, e, "intersects")
+		i <- relate(x, e, "intersects", sparse=FALSE)
 		x <- x[as.vector(i), ]
 		if (draw) {
 			if (geomtype(x) == "points" || geomtype(x) == "multipoints") {

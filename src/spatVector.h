@@ -339,7 +339,7 @@ class SpatVector {
 		SpatVector symdif(SpatVector v);
 		SpatVector set_precision(double gridSize);
 
-		std::vector<std::vector<double>> which_relate(SpatVector v, std::string relation);
+		std::vector<std::vector<double>> which_relate(SpatVector v, std::string relation, bool narm);
 		std::vector<bool> is_related(SpatVector v, std::string relation);
 //		std::vector<int> relate(SpatVector v, std::string relation);
 		std::vector<int> relate(SpatVector v, std::string relation, bool prepared, bool index);

@@ -384,9 +384,11 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("[", c("SpatVector", "SpatVector", "missing"),
 function(x, i, j, ... , drop=FALSE) {
-	r <- !relate(x, i, "disjoint")
-	r <- which(apply(r, 1, any))
-	x[r, ]
+	#r <- !relate(x, i, "disjoint")
+	#r <- which(apply(r, 1, any))
+	r <- relate(x, i, "disjoint", sparse=TRUE, na.rm=TRUE)
+	r <- unique(r[, 1])
+	x[-r, ]
 })
 
 
@@ -562,12 +564,14 @@ function(x, y, ...) {
 
 #	r <- relate(x, y, "covers")
 #	e <- apply(r, 2, which)
-	e <- y@ptr$which_related(x@ptr, "coveredby")
-	if (length(e[[1]]) == 0) {
-		e <- cbind(0,0)[0,,drop=F]
-	} else {
-		e <- do.call(cbind, e) + 1
-	}
+
+#	e <- y@ptr$which_related(x@ptr, "coveredby")
+#	if (length(e[[1]]) == 0) {
+#		e <- cbind(0,0)[0,,drop=FALSE]
+#	} else {
+#		e <- do.call(cbind, e) + 1
+#	}
+	e <- relate(y, x, "coveredby", sparse=TRUE, na.rm=FALSE)
 	
 #	if (length(e) == 0) {
 #		e <- list(e)

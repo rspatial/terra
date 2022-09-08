@@ -1,9 +1,8 @@
-# version 1.6-13
+# version 1.6-14
 
 ## new
 
 - `droplevels` for SpatRaster. [#757](https://github.com/rspatial/terra/issues/757) by Rodolfo Jaffe.
-- new method `which.related` for SpatVectors. 
 - new method `normalize.longitude` for SpatVector. 
 
 ## enhancements
@@ -12,6 +11,7 @@
 - `as.data.frame` now takes `na.rm=NA` to only remove rows that are NA for all layers. The default value changed from `TRUE` to `NA`. [#792](https://github.com/rspatial/terra/issues/792) by Ed Carnell
 - faster plotting of SpatVector data [#774](https://github.com/rspatial/terra/issues/774) by Krzysztof Dyba
 - `distance<SpatRaster>` has new arguments "target" and "exclude". [#560](https://github.com/rspatial/terra/issues/560) by Bernardo Brandão Niebuhr
+- new argument `sparse=FALSE` for `relate<SpatVector,SpatVector>. 
 
 ## bug fixes 
 

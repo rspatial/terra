@@ -502,7 +502,7 @@ RCPP_MODULE(spat){
 
 		.method("is_related", &SpatVector::is_related)
 		.method("which_related", &SpatVector::which_relate)
-		.method("relate_first", &SpatVector::relateFirst)
+//		.method("relate_first", &SpatVector::relateFirst)
 		.method("relate_between", ( std::vector<int> (SpatVector::*)(SpatVector, std::string, bool, bool))( &SpatVector::relate ))
 		.method("relate_within", ( std::vector<int> (SpatVector::*)(std::string, bool))( &SpatVector::relate ))
 		.method("equals_between", ( std::vector<unsigned> (SpatVector::*)(SpatVector, double))( &SpatVector::equals_exact ))
