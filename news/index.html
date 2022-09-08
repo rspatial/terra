@@ -48,25 +48,25 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-13" id="version-16-13">version 1.6-13<a class="anchor" aria-label="anchor" href="#version-16-13"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-14" id="version-16-14">version 1.6-14<a class="anchor" aria-label="anchor" href="#version-16-14"></a></h2>
 <div class="section level3">
-<h3 id="new-1-6-13">new<a class="anchor" aria-label="anchor" href="#new-1-6-13"></a></h3>
+<h3 id="new-1-6-14">new<a class="anchor" aria-label="anchor" href="#new-1-6-14"></a></h3>
 <ul><li>
 <code>droplevels</code> for SpatRaster. <a href="https://github.com/rspatial/terra/issues/757" class="external-link">#757</a> by Rodolfo Jaffe.</li>
-<li>new method <code>which.related</code> for SpatVectors.</li>
 <li>new method <code>normalize.longitude</code> for SpatVector.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-6-13">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-13"></a></h3>
+<h3 id="enhancements-1-6-14">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-14"></a></h3>
 <ul><li>new argument <code>raw=FALSE</code> to <code>extract&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/issues/776" class="external-link">#776</a> by Thomas Roh.</li>
 <li>
 <code>as.data.frame</code> now takes <code>na.rm=NA</code> to only remove rows that are NA for all layers. The default value changed from <code>TRUE</code> to <code>NA</code>. <a href="https://github.com/rspatial/terra/issues/792" class="external-link">#792</a> by Ed Carnell</li>
 <li>faster plotting of SpatVector data <a href="https://github.com/rspatial/terra/issues/774" class="external-link">#774</a> by Krzysztof Dyba</li>
 <li>
 <code>distance&lt;SpatRaster&gt;</code> has new arguments “target” and “exclude”. <a href="https://github.com/rspatial/terra/issues/560" class="external-link">#560</a> by Bernardo Brandão Niebuhr</li>
+<li>new argument <code>sparse=FALSE</code> for `relate&lt;SpatVector,SpatVector&gt;.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-13">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-13"></a></h3>
+<h3 id="bug-fixes-1-6-14">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-14"></a></h3>
 <ul><li>all.equal bug <a href="https://github.com/rspatial/terra/pull/756" class="external-link">#756</a> fixed by John Baums</li>
 <li>extract&lt;“SpatRaster”,“sf”&gt; ignored the ID argument. <a href="https://github.com/rspatial/terra/issues/755" class="external-link">#755</a> by Dainius Masiliūnas.</li>
 <li>There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file <a href="https://github.com/rspatial/terra/issues/760" class="external-link">#760</a> by John Baums</li>
