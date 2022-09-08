@@ -501,7 +501,10 @@ RCPP_MODULE(spat){
 		.method("mask", &SpatVector::mask)
 
 		.method("is_related", &SpatVector::is_related)
-		.method("which_related", &SpatVector::which_relate)
+			
+		.method("related_between", ( std::vector<std::vector<double>> (SpatVector::*)(SpatVector, std::string, bool))( &SpatVector::which_relate))
+		.method("related_within", ( std::vector<std::vector<double>> (SpatVector::*)(std::string, bool))( &SpatVector::which_relate))
+
 //		.method("relate_first", &SpatVector::relateFirst)
 		.method("relate_between", ( std::vector<int> (SpatVector::*)(SpatVector, std::string, bool, bool))( &SpatVector::relate ))
 		.method("relate_within", ( std::vector<int> (SpatVector::*)(std::string, bool))( &SpatVector::relate ))

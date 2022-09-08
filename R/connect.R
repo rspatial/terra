@@ -53,7 +53,7 @@ connect_dateline <- function(x) {
 					next
 				}
 			}
-			if (relate(xx[i,], yy[j,], "touches", sparse=FALSE)) {
+			if (relate(xx[i,], yy[j,], "touches", pairs=FALSE)) {
 				px <- c(px, i)
 				py <- c(py, j)
 			}

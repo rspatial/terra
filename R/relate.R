@@ -77,21 +77,29 @@ setMethod("is.related", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("relate", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, relation, sparse=TRUE, na.rm=TRUE) {
-		if (sparse) {
-			out <- x@ptr$which_related(y@ptr, relation, na.rm[1])
+	function(x, y, relation, pairs=FALSE, na.rm=TRUE) {
+		if (pairs) {
+			out <- x@ptr$related_between(y@ptr, relation[1], na.rm[1])
 			messages(x, "relate")
-			names(out) <- c("id.x", "id.y")
 			if (length(out[[1]]) == 0) {
-				return (cbind(0,0)[0,,drop=FALSE])
+				cbind(id.x=0,id.y=0)[0,,drop=FALSE]
 			} else {
+				names(out) <- c("id.x", "id.y")
 				do.call(cbind, out) + 1
 			}
 		} else {
-			out <- x@ptr$relate_between(y@ptr, relation, TRUE, TRUE)
+			out <- x@ptr$related_between(y@ptr, relation[1], TRUE)
 			messages(x, "relate")
-			out[out == 2] <- NA
-			matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+			m <- matrix(FALSE, nrow(x), nrow(y))
+			if (length(out[[1]]) > 0) {
+				m[do.call(cbind, out) + 1] <- TRUE
+			}
+			m
+			
+#			out <- x@ptr$relate_between(y@ptr, relation, TRUE, TRUE)
+#			messages(x, "relate")
+#			out[out == 2] <- NA
+#			matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
 		}
 	}
 )
@@ -172,22 +180,45 @@ setMethod("relate", signature(x="SpatExtent", y="SpatExtent"),
 
 
 setMethod("relate", signature(x="SpatVector", y="missing"),
-	function(x, y, relation, pairs=FALSE, symmetrical=FALSE) {
-		out <- x@ptr$relate_within(relation, symmetrical)
-		x <- messages(x, "relate")
-		out[out == 2] <- NA
-		if (symmetrical) {
-			class(out) <- "dist"
-			attr(out, "Size") <- nrow(x)
-			attr(out, "Diag") <- FALSE
-			attr(out, "Upper") <- FALSE
-		} else {
-			out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
-		}
+	function(x, y, relation, pairs=FALSE, na.rm=TRUE) {
+
 		if (pairs) {
-			out <- mat2wide(out, symmetrical)
+			out <- x@ptr$related_within(relation, na.rm[1])
+			messages(x, "relate")
+			if (length(out[[1]]) == 0) {
+				cbind(id.1=0,id.2=0)[0,,drop=FALSE]
+			} else {
+				names(out) <- c("id.1", "id.2")
+				do.call(cbind, out) + 1
+			}
+		} else {
+			out <- x@ptr$related_within(relation, TRUE)
+			messages(x, "relate")
+			out <- do.call(cbind, out) + 1
+			m <- matrix(FALSE, nrow(x), nrow(x))
+			m[out] <- TRUE
+			m
+			#if (symmetrical) {
+			#	as.dist(m)
+			#} else {
+			#	m
+			#}
 		}
-		out
+			
+		#out <- x@ptr$relate_within(relation, symmetrical)
+		#out[out == 2] <- NA
+		#if (symmetrical) {
+		#	class(out) <- "dist"
+		#	attr(out, "Size") <- nrow(x)
+		#	attr(out, "Diag") <- FALSE
+		#	attr(out, "Upper") <- FALSE
+		#} else {
+		#	out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+		#}
+		#if (pairs) {
+		#	out <- mat2wide(out, symmetrical)
+		#}
+		#out
 	}
 )
 
