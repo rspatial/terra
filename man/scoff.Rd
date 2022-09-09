@@ -2,6 +2,9 @@
 
 \alias{scoff}
 \alias{scoff<-}
+\alias{scoff,SpatRaster-method}
+\alias{scoff<-,SpatRaster-method}
+
 
 \title{Scale (gain) and offset}
 
@@ -17,8 +20,9 @@ Note that setting the scale and/or offset are intended to be used with values th
 }
 
 \usage{
-scoff(x)
-scoff(x) <- value
+\S4method{scoff}{SpatRaster}(x)
+
+\S4method{scoff}{SpatRaster}(x)<-value
 }
 
 \arguments{
