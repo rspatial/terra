@@ -54,6 +54,8 @@
 <ul><li>
 <code>droplevels</code> for SpatRaster. <a href="https://github.com/rspatial/terra/issues/757" class="external-link">#757</a> by Rodolfo Jaffe.</li>
 <li>new method <code>normalize.longitude</code> for SpatVector.</li>
+<li>
+<code>scoff</code> to get and <code>scoff&lt;-</code> to set the scale (gain) and offset of a SpatRaster.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-14">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-14"></a></h3>
@@ -64,6 +66,12 @@
 <li>
 <code>distance&lt;SpatRaster&gt;</code> has new arguments “target” and “exclude”. <a href="https://github.com/rspatial/terra/issues/560" class="external-link">#560</a> by Bernardo Brandão Niebuhr</li>
 <li>new argument <code>sparse=FALSE</code> for `relate&lt;SpatVector,SpatVector&gt;.</li>
+<li>new argument <code>usenames=FALSE</code> for <code>lapp&lt;SpatRasterDataset&gt;</code> <a href="https://github.com/rspatial/terra/issues/793" class="external-link">#793</a> by Colin Brust.</li>
+<li>
+<code>vect&lt;character&gt;</code> now reports that a file is non-existent <a href="https://github.com/rspatial/terra/issues/784" class="external-link">#784</a> by John Baums</li>
+<li>faster <code>relate</code> <a href="https://github.com/rspatial/terra/issues/716" class="external-link">#716</a> by Krzysztof Dyba</li>
+<li>
+<code>focal3D</code> now checks if all the window’s dimensions are odd <a href="https://github.com/rspatial/terra/issues/772" class="external-link">#772</a> by Neander Marcel Heming</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-14">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-14"></a></h3>
@@ -71,8 +79,7 @@
 <li>extract&lt;“SpatRaster”,“sf”&gt; ignored the ID argument. <a href="https://github.com/rspatial/terra/issues/755" class="external-link">#755</a> by Dainius Masiliūnas.</li>
 <li>There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file <a href="https://github.com/rspatial/terra/issues/760" class="external-link">#760</a> by John Baums</li>
 <li>
-<code>vrt</code> is no longer constrained by the maximum number of files that can be opened <a href="https://github.com/rspatial/terra/issues/780" class="external-link">#780</a>
-</li>
+<code>vrt</code> is no longer constrained by the maximum number of files that can be opened <a href="https://github.com/rspatial/terra/issues/780" class="external-link">#780</a> by 8Ginette8<br></li>
 <li>
 <code>weighted.mean</code> crashed with numeric weights and na.rm=TRUE <a href="https://github.com/rspatial/terra/issues/777" class="external-link">#777</a> by David Holstius</li>
 <li>
@@ -81,6 +88,8 @@
 <code>focalCor</code> failed for large rasters <a href="https://github.com/rspatial/terra/issues/607" class="external-link">#607</a> by John Clark</li>
 <li>
 <code>focal</code> with <code>expand=TRUE</code> was prone to run out of memory <a href="https://github.com/rspatial/terra/issues/610" class="external-link">#610</a> by Nathan Elliott</li>
+<li>
+<code>crop&lt;SpatVector&gt;</code> did not work well when the second argument were points or lines <a href="https://github.com/rspatial/terra/issues/782" class="external-link">#782</a> by Márcia Barbosa</li>
 </ul></div>
 </div>
     <div class="section level2">
