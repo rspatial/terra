@@ -8,11 +8,11 @@
 \description{
 resample transfers values between SpatRaster objects that do not align (have a different origin and/or resolution). See \code{\link{project}} to change the coordinate reference system (crs). 
 
-If the origin and crs are the same, you should consider using these other functions instead: \code{\link{aggregate}}, \code{\link{disagg}}, \code{\link{extend}} or \code{\link{crop}}.
+If the origin and extent of the input and output are the same, you should consider using these other functions instead: \code{\link{aggregate}}, \code{\link{disagg}}, \code{\link{extend}} or \code{\link{crop}}.
 }
 
 \usage{
-\S4method{resample}{SpatRaster,SpatRaster}(x, y, method, filename="", ...)
+\S4method{resample}{SpatRaster,SpatRaster}(x, y, method, threads=TRUE, filename="", ...)
 }
 
 \arguments{
@@ -35,8 +35,10 @@ If the origin and crs are the same, you should consider using these other functi
 	\code{min, q1, med, q3, max, average, mode, rms}: the minimum, first quartile, median, third quartile, maximum, mean, mode, or root-mean-square value of all non-NA contributing grid cells.
 
   }
+  \item{threads}{logical. If \code{TRUE} multiple threads are used (faster for large files)}
   
   \item{filename}{character. Output filename}
+
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 

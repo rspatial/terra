@@ -27,7 +27,7 @@ Note that setting the scale and/or offset are intended to be used with values th
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{value}{two column matrix with scale (first column) and offset (second column) for each layer}
+  \item{value}{two-column matrix with scale (first column) and offset (second column) for each layer. Or \code{NULL} to remove all scale and offset values}
 }
 
 \value{

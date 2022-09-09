@@ -673,7 +673,7 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 )
 
 setMethod("project", signature(x="SpatRaster"),
-	function(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, res=NULL, origin=NULL, filename="", ...)  {
+	function(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, res=NULL, origin=NULL, threads=TRUE, filename="", ...)  {
 	
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@ptr$rgb)) {
@@ -688,7 +688,7 @@ setMethod("project", signature(x="SpatRaster"),
 			method <- "near"
 			warn("project", "argument 'method=ngb' is deprecated, it should be 'method=near'")
 		}
-		opt <- spatOptions(filename, ...)
+		opt <- spatOptions(filename, threads=threads, ...)
 
 		if (inherits(y, "SpatRaster")) {
 			if (gdal) {
@@ -802,7 +802,7 @@ setMethod("rectify", signature(x="SpatRaster"),
 )
 
 setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
-	function(x, y, method, filename="", ...)  {
+	function(x, y, method, threads=TRUE, filename="", ...)  {
 
 		if (missing(method)) {
 			method <- ifelse(is.factor(x)[1], "near", "bilinear")
@@ -819,7 +819,7 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 		if ((ycrs == "") && (xcrs != "")) {
 			crs(y) <- xcrs
 		}
-		opt <- spatOptions(filename, ...)
+		opt <- spatOptions(filename, threads=threads, ...)
 #		if (gdal) {
 			x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, FALSE, TRUE, opt)
 #		} else {
@@ -1115,12 +1115,17 @@ setMethod("scoff", signature(x="SpatRaster"),
 
 setMethod("scoff<-", signature("SpatRaster"),
 	function(x, value) {
-		if (NCOL(value) != 2) {
-			error("scoff<-", "value must be a 2-column matrix")
+		if (is.null(value)) {
+			x@ptr <- x@ptr$deepcopy()
+			x@ptr$setScaleOffset(1, 0)		
+		} else {
+			if (NCOL(value) != 2) {
+				error("scoff<-", "value must be a 2-column matrix")
+			}
+			x@ptr <- x@ptr$deepcopy()
+			x@ptr$setScaleOffset(value[,1], value[,2])
 		}
-		x@ptr$setScaleOffset(value[,1], value[,2])
-		messages(x)
-		x
+		messages(x, "scoff<-")
 	}
 )
 
@@ -1128,7 +1133,7 @@ setMethod("sort", signature(x="SpatRaster"),
 	function (x, decreasing=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$sort(decreasing[1], opt)
-		messages(x)
+		messages(x, "sort")
 	}
 )
 

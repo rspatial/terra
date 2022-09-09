@@ -15,7 +15,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 \S4method{project}{SpatVector}(x, y)
 
 \S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, 
-		gdal=TRUE, res=NULL, origin=NULL, filename="", ...)
+		gdal=TRUE, res=NULL, origin=NULL, threads=TRUE, filename="", ...)
 
 \S4method{project}{matrix}(x, from, to)
 }
@@ -48,6 +48,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 
   \item{origin}{numeric. Can be used to set the origon of the output raster if \code{y} is a CRS}
   
+  \item{threads}{logical. If \code{TRUE} multiple threads are used (faster for large files)}
+
   \item{filename}{character. Output filename}
   
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
@@ -65,17 +67,13 @@ SpatVector or SpatRaster
 \seealso{\code{\link{crs}}, \code{\link{resample}}}
 
 \note{
-User beware. Sadly, the PROJ.4 notation has been partly deprecated in the GDAL/PROJ library that is used by this function. You can still use this notation, but *only* with the the WGS84 datum. Other datums are silently ignored. 
-
-When printing a Spat* object the PROJ.4 notation is shown because it is the most concise and clear format available. However, internally a WKT representation is used (see \code{\link{crs}}).
+The PROJ.4 notation of coordinate reference systems has been partly deprecated in the GDAL/PROJ library that is used by this function. You can still use this notation, but *only* with the the WGS84 datum. Other datums are silently ignored. 
 
 Transforming (projecting) raster data is fundamentally different from transforming vector data. Vector data can be transformed and back-transformed without loss in precision and without changes in the values. This is not the case with raster data. In each transformation the values for the new cells are estimated in some fashion. Therefore, if you need to match raster and vector data for analysis, you should generally transform the vector data. 
 
 When using this method with a \code{SpatRaster}, the preferable approach is to provide a template \code{SpatRaster} as argument \code{y}. The template is then another raster dataset that you want your data to align with. If you do not have a template to begin with, you can do \code{project(x, crs)} and then manipulate the output to get the template you want. For example, where possible use whole numbers for the extent and resolution so that you do not have to worry about small differences in the future. You can use commands like \code{dim(z) = c(180, 360)} or \code{res(z) <- 100000}. 
 
-The output resolution should be similar to the input resolution, but there is not "correct" resolution in raster transformation; but it is not obvious what this resolution is if you are using lon/lat data that spans a large North-South extent.
-
-See \code{sf_proj_pipelines} to use specific "projection pipe lines"
+The output resolution should generally be similar to the input resolution, but there is no "correct" resolution in raster transformation. It is not obvious what this resolution is if you are using lon/lat data that spans a large North-South extent.
 }
 
 
@@ -95,9 +93,8 @@ v <- vect(f)
 crs(v, proj=TRUE)
 cat(crs(v), "\n")
 
-crs <- "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84"
-p <- project(v, crs)
-p
+project(v, "+proj=moll")
+
 
 project(v, "EPSG:2169")
 }
