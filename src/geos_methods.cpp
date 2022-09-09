@@ -1279,6 +1279,7 @@ void callbck(void *item, void *userdata) { // callback function for tree selecti
 
 
 std::vector<int> SpatVector::relate(SpatVector v, std::string relation, bool prepared, bool index) {
+	// this method is redundant with "which_relate")
 	std::vector<int> out;
 	int pattern = getRel(relation);
 	if (pattern == 2) {
@@ -1613,6 +1614,7 @@ std::vector<std::vector<double>> SpatVector::which_relate(std::string relation, 
 
 
 std::vector<int> SpatVector::relate(std::string relation, bool symmetrical) {
+	// this method is redundant with "which_relate")
 
 	std::vector<int> out;
 	int pattern = getRel(relation);
