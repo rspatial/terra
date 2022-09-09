@@ -1105,6 +1105,25 @@ setMethod("labels", signature(object="SpatRaster"),
 )
 
 
+setMethod("scoff", signature(x="SpatRaster"),
+	function(x) {
+		out <- x@ptr$getScaleOffset()
+		names(out) <- c("scale", "offset")
+		do.call(cbind, out)
+	}
+)
+
+setMethod("scoff<-", signature("SpatRaster"),
+	function(x, value) {
+		if (NCOL(value) != 2) {
+			error("scoff<-", "value must be a 2-column matrix")
+		}
+		x@ptr$setScaleOffset(value[,1], value[,2])
+		messages(x)
+		x
+	}
+)
+
 setMethod("sort", signature(x="SpatRaster"),
 	function (x, decreasing=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
@@ -1112,5 +1131,4 @@ setMethod("sort", signature(x="SpatRaster"),
 		messages(x)
 	}
 )
-
 

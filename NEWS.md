@@ -4,6 +4,7 @@
 
 - `droplevels` for SpatRaster. [#757](https://github.com/rspatial/terra/issues/757) by Rodolfo Jaffe.
 - new method `normalize.longitude` for SpatVector. 
+- `scoff` to get and `scoff<-` to set the scale (gain) and offset of a SpatRaster. 
 
 ## enhancements
 
@@ -12,17 +13,22 @@
 - faster plotting of SpatVector data [#774](https://github.com/rspatial/terra/issues/774) by Krzysztof Dyba
 - `distance<SpatRaster>` has new arguments "target" and "exclude". [#560](https://github.com/rspatial/terra/issues/560) by Bernardo Brandão Niebuhr
 - new argument `sparse=FALSE` for `relate<SpatVector,SpatVector>. 
+- new argument `usenames=FALSE` for `lapp<SpatRasterDataset>` [#793](https://github.com/rspatial/terra/issues/793) by Colin Brust.
+- `vect<character>` now reports that a file is non-existent [#784](https://github.com/rspatial/terra/issues/784) by John Baums
+- faster `relate` [#716](https://github.com/rspatial/terra/issues/716) by Krzysztof Dyba
+- `focal3D` now checks if all the window's dimensions are odd [#772](https://github.com/rspatial/terra/issues/772) by Neander Marcel Heming
 
 ## bug fixes 
 
 - all.equal bug [#756](https://github.com/rspatial/terra/pull/756) fixed by John Baums
 - extract<"SpatRaster","sf"> ignored the ID argument. [#755](https://github.com/rspatial/terra/issues/755) by Dainius Masiliūnas.
 - There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file [#760](https://github.com/rspatial/terra/issues/760) by John Baums
-- `vrt` is no longer constrained by the maximum number of files that can be opened [#780](https://github.com/rspatial/terra/issues/780)
+- `vrt` is no longer constrained by the maximum number of files that can be opened [#780](https://github.com/rspatial/terra/issues/780) by 8Ginette8	
 - `weighted.mean` crashed with numeric weights and na.rm=TRUE [#777](https://github.com/rspatial/terra/issues/777) by David Holstius
 - `project<SpatRaster>` did not consider an extent that was set by the user [#775](https://github.com/rspatial/terra/issues/775) by Philippe Massicotte
 - `focalCor` failed for large rasters [#607](https://github.com/rspatial/terra/issues/607) by John Clark
 - `focal` with `expand=TRUE` was prone to run out of memory [#610](https://github.com/rspatial/terra/issues/610) by Nathan Elliott
+- `crop<SpatVector>` did not work well when the second argument were points or lines [#782](https://github.com/rspatial/terra/issues/782) by Márcia Barbosa
 
 
 # version 1.6-7

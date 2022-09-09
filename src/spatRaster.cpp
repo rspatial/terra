@@ -1217,6 +1217,82 @@ std::vector<SpatCategories> SpatRaster::getCategories() {
 }
 
 
+std::vector<std::vector<double>> SpatRaster::getScaleOffset() {
+	std::vector<std::vector<double>> so(2);
+	so[0].reserve(nlyr());
+	so[1].reserve(nlyr());	
+	for (size_t i=0; i<source.size(); i++) {
+		so[0].insert(so[0].end(), source[i].scale.begin(), source[i].scale.end());
+		so[1].insert(so[1].end(), source[i].offset.begin(), source[i].offset.end());
+	}
+	return so;
+}
+
+bool SpatRaster::setScaleOffset(std::vector<double> sc, std::vector<double> of) {
+	size_t n = sc.size();
+	size_t nl = nlyr();
+	if (n != of.size()) {
+		setError("length of scale and offset should be the same");
+		return false;
+	}
+	if (n > nl) {
+		setError("length of scale and offset cannot exceed the number of layers");
+		return false;
+	}
+	if (n < nl) {
+		recycle(sc, nl);
+		recycle(of, nl);
+		if (n > 1) {
+			addWarning("recycling scale and offset to the number of layers");
+		}
+	}
+	size_t k=0;
+	size_t nc=ncell();
+	for (size_t i=0; i<source.size(); i++)	{
+		if (source[i].memory) {
+			for (size_t j=0; j<source[i].nlyr; j++) {
+				size_t loff = j * nc;
+				bool dorange = false;
+				if (sc[k] != 1) {
+					for (size_t p=loff; p<(loff+nc); p++) {
+						source[i].values[p] *= sc[k];
+					}
+					dorange = true;
+				}
+				if (of[k] != 0) {
+					for (size_t p=loff; p<(loff+nc); p++) {
+						source[i].values[p] += of[k];
+					}
+					dorange = true;
+				}
+				if (dorange) {
+					source[i].range_min[j] = source[i].range_min[j] * sc[k] + of[k];
+					source[i].range_max[j] = source[i].range_max[j] * sc[k] + of[k];
+				}
+				k++;
+			}
+		} else {
+			for (size_t j=0; j<source[i].nlyr; j++) {
+				if (source[i].has_scale_offset[j]) {
+					source[i].range_min[j] = (source[i].range_min[j] - source[i].offset[j]) / source[i].scale[j];
+					source[i].range_max[j] = (source[i].range_max[j] - source[i].offset[j]) / source[i].scale[j];
+				}
+				source[i].scale[j] = sc[k];
+				source[i].offset[j] = of[k];
+				if ((sc[k] != 1) || (of[k] != 0)) {
+					source[i].has_scale_offset[j] = true;
+					source[i].range_min[j] = source[i].range_min[j] * sc[k] + of[k];
+					source[i].range_max[j] = source[i].range_max[j] * sc[k] + of[k];
+				} else {
+					source[i].has_scale_offset[j] = false;					
+				}
+				k++;
+			}
+		}
+	}
+	return true;
+}
+
 
 std::vector<std::string> SpatRaster::getLabels(unsigned layer) {
 	std::vector<std::string> out;

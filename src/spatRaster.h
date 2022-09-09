@@ -420,7 +420,8 @@ class SpatRaster {
 		int getCatIndex(unsigned layer);
 		bool setCatIndex(unsigned layer, unsigned index);
 		
-
+		bool setScaleOffset(std::vector<double> sc, std::vector<double> of);
+		std::vector<std::vector<double>> getScaleOffset();
 
 		//bool setAttrIndex(size_t layer, int i);
 		//std::vector<int> getAttrIndex();

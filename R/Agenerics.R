@@ -2,6 +2,9 @@
 
 if (!isGeneric("normalize.longitude")) {setGeneric("normalize.longitude", function(x, ...) standardGeneric("normalize.longitude"))}
 
+if (!isGeneric("scoff")) {setGeneric("scoff", function(x, ...) standardGeneric("scoff"))}
+if (!isGeneric("scoff<-")) {setGeneric("scoff<-", function(x, ..., value) standardGeneric("scoff<-"))}
+
 if (!isGeneric("blocks")) {setGeneric("blocks", function(x, ...) standardGeneric("blocks"))}
 if (!isGeneric("droplevels")) {setGeneric("droplevels", function(x, ...) standardGeneric("droplevels"))}
 
