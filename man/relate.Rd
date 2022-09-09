@@ -39,7 +39,7 @@ Spatial relationships between geometries
 \usage{
 \S4method{relate}{SpatVector,SpatVector}(x, y, relation, pairs=FALSE, na.rm=TRUE)
 
-\S4method{relate}{SpatVector,missing}(x, y, relation, pairs=FALSE, na.rm=FALSE)
+\S4method{relate}{SpatVector,missing}(x, y, relation, pairs=FALSE, na.rm=TRUE)
 
 \S4method{is.related}{SpatVector,SpatVector}(x, y, relation)
 }

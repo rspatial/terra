@@ -2,6 +2,8 @@
 
 \alias{compareGeom}
 \alias{compareGeom,SpatRaster,SpatRaster-method}
+\alias{compareGeom,SpatVector,SpatVector-method}
+\alias{compareGeom,SpatVector,missing-method}
   
 \title{Compare geometries of SpatRasters}
 
