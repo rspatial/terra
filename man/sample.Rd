@@ -67,20 +67,10 @@ spatSample(r, 5, "regular")
 
 ## if you require cell numbers and/or coordinates
 size <- 6
-# random cells 
-cells <- spatSample(r, 6, "random", cells=TRUE, values=FALSE)
-cells <- as.vector(cells)
+spatSample(r, 6, "random", cells=TRUE, xy=TRUE, values=FALSE)
 
-v <- r[cells]
-xy <- xyFromCell(r, cells)
-cbind(xy, v)
-
-# regular 
-cells <- spatSample(r, 6, "regular", cells=TRUE, values=FALSE)
-cells <- as.vector(cells)
-v <- r[cells]
-xy <- xyFromCell(r, cells)
-cbind(xy, v)
+# regular, with values 
+spatSample(r, 6, "regular", cells=TRUE, xy=TRUE)
 
 # stratified
 rr <- rast(ncol=10, nrow=10, names="stratum")
@@ -99,9 +89,13 @@ spatSample(e, 10, "random", lonlat=TRUE)
 ## SpatVector
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
-#sample geometries 
-i <- sample(nrow(v), 5)
-vv <- v[i,]
+
+#sample the geometries 
+i <- sample(v, 3)
+
+# sample points in geometries
+p <- spatSample(v, 3)
+
 }
 
 \keyword{spatial}
