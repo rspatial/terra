@@ -336,6 +336,13 @@ setMethod("rep", signature(x="SpatRaster"),
 )
 
 
+#setMethod("rep", signature(x="SpatVector"),
+#	function(x, ...) {
+#		i <- rep(1:nrow(x), ...)
+#		x[i,]
+#	}
+#)
+
 setMethod("clamp", signature(x="SpatRaster"),
 	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
