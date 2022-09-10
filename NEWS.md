@@ -1,9 +1,9 @@
-# version 1.6-14
+# version 1.6-15
 
 ## new
 
 - `droplevels` for SpatRaster. [#757](https://github.com/rspatial/terra/issues/757) by Rodolfo Jaffe.
-- new method `normalize.longitude` for SpatVector. 
+- `normalize.longitude` for SpatVector. 
 - `scoff` to get and `scoff<-` to set the scale (gain) and offset of a SpatRaster. 
 
 ## enhancements

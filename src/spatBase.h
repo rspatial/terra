@@ -214,6 +214,13 @@ class SpatExtent {
 		SpatExtent deepCopy() {return *this;}
 		SpatExtent align(double d, std::string snap);
 
+		bool intersects(SpatExtent e) { 
+			if ((xmin > e.xmax) || (xmax < e.xmin) || (ymin > e.ymax) || (ymax < e.ymin)) {
+				return false;
+			}
+			return true;
+		}
+
 		SpatExtent intersect(SpatExtent e) { // check first if intersects?
 			SpatExtent out;
 			out.xmin = std::max(xmin, e.xmin);
@@ -222,6 +229,7 @@ class SpatExtent {
 			out.ymax = std::min(ymax, e.ymax);
 			return out;
 		}
+
 
 		void unite(SpatExtent e) {
 			if (std::isnan(xmin)) {

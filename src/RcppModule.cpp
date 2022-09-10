@@ -380,6 +380,8 @@ RCPP_MODULE(spat){
 		.method("shared_paths2", (SpatVector (SpatVector::*)(SpatVector))( &SpatVector::shared_paths))
 		.method("snap", &SpatVector::snap)
 		.method("snapto", &SpatVector::snapto)
+		.method("spatial_index_2d", &SpatVector::index_2d)
+		.method("spatial_index_sparse", &SpatVector::index_sparse)
 
 		.field_readonly("is_proxy", &SpatVector::is_proxy )
 		.field_readonly("read_query", &SpatVector::read_query )

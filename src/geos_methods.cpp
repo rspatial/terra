@@ -247,6 +247,44 @@ SpatVector SpatVector::set_precision(double gridSize) {
 */
 
 
+std::vector<std::vector<unsigned>> SpatVector::index_2d(SpatVector v) {
+	std::vector<std::vector<unsigned>> out(2);
+	size_t n = std::max(size(), v.size()) * 2;
+	out[0].reserve(n);
+	out[1].reserve(n);
+	size_t k = 0;
+	for (size_t i=0; i<size(); i++) {
+		for (size_t j=0; j<size(); j++) {
+			if (geoms[i].extent.intersects(v.geoms[j].extent)) {
+				out[0].push_back(i);
+				out[1].push_back(j);
+				k++;
+				if (k > n) {
+					n += std::max(size(), v.size());
+					out[0].reserve(n);
+					out[1].reserve(n);
+				}
+			}
+		}
+	}
+	return out;
+}
+
+
+std::vector<std::vector<unsigned>> SpatVector::index_sparse(SpatVector v) {
+	std::vector<std::vector<unsigned>> out(v.size());
+	for (size_t i=0; i<size(); i++) {
+		for (size_t j=0; j<size(); j++) {
+			if (geoms[i].extent.intersects(v.geoms[j].extent)) {
+				out[i].push_back(j);
+			}
+		}
+	}
+	return out;
+}
+
+
+
 SpatVector SpatVector::crop(SpatExtent e) {
 
 	SpatVector out;

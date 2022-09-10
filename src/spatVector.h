@@ -338,6 +338,8 @@ class SpatVector {
 		SpatVectorCollection split(std::string field);
 		SpatVector symdif(SpatVector v);
 		SpatVector set_precision(double gridSize);
+		std::vector<std::vector<unsigned>> index_2d(SpatVector v);
+		std::vector<std::vector<unsigned>> index_sparse(SpatVector v);
 
 		std::vector<std::vector<double>> which_relate(SpatVector v, std::string relation, bool narm);
 		std::vector<std::vector<double>> which_relate(std::string relation, bool narm);
