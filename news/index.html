@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
       </span>
     </div>
 
@@ -47,18 +47,21 @@
       <small>Source: <a href="https://github.com/rspatial/terra/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2"><h2 class="page-header" data-toc-text="1.6-18" id="version-16-18">version 1.6-18<a class="anchor" aria-label="anchor" href="#version-16-18"></a></h2></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-14" id="version-16-14">version 1.6-14<a class="anchor" aria-label="anchor" href="#version-16-14"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-17" id="version-16-17">version 1.6-17<small>2022-09-10</small><a class="anchor" aria-label="anchor" href="#version-16-17"></a></h2>
+<p>Released on 2022-09-10</p>
 <div class="section level3">
-<h3 id="new-1-6-14">new<a class="anchor" aria-label="anchor" href="#new-1-6-14"></a></h3>
+<h3 id="new-1-6-17">new<a class="anchor" aria-label="anchor" href="#new-1-6-17"></a></h3>
 <ul><li>
 <code>droplevels</code> for SpatRaster. <a href="https://github.com/rspatial/terra/issues/757" class="external-link">#757</a> by Rodolfo Jaffe.</li>
-<li>new method <code>normalize.longitude</code> for SpatVector.</li>
+<li>
+<code>normalize.longitude</code> for SpatVector.</li>
 <li>
 <code>scoff</code> to get and <code>scoff&lt;-</code> to set the scale (gain) and offset of a SpatRaster.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-6-14">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-14"></a></h3>
+<h3 id="enhancements-1-6-17">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-17"></a></h3>
 <ul><li>new argument <code>raw=FALSE</code> to <code>extract&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/issues/776" class="external-link">#776</a> by Thomas Roh.</li>
 <li>
 <code>as.data.frame</code> now takes <code>na.rm=NA</code> to only remove rows that are NA for all layers. The default value changed from <code>TRUE</code> to <code>NA</code>. <a href="https://github.com/rspatial/terra/issues/792" class="external-link">#792</a> by Ed Carnell</li>
@@ -74,7 +77,7 @@
 <code>focal3D</code> now checks if all the window’s dimensions are odd <a href="https://github.com/rspatial/terra/issues/772" class="external-link">#772</a> by Neander Marcel Heming</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-14">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-14"></a></h3>
+<h3 id="bug-fixes-1-6-17">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-17"></a></h3>
 <ul><li>all.equal bug <a href="https://github.com/rspatial/terra/pull/756" class="external-link">#756</a> fixed by John Baums</li>
 <li>extract&lt;“SpatRaster”,“sf”&gt; ignored the ID argument. <a href="https://github.com/rspatial/terra/issues/755" class="external-link">#755</a> by Dainius Masiliūnas.</li>
 <li>There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file <a href="https://github.com/rspatial/terra/issues/760" class="external-link">#760</a> by John Baums</li>

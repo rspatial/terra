@@ -18,7 +18,7 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
       </span>
     </div>
 
@@ -114,14 +114,18 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">z</span>, <span class="va">y</span>, <span class="va">x</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span>, <span class="va">z</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># if you have many SpatRasters make a SpatRasterCollection from a list</span></span>
 <span class="r-in"><span class="va">rlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">rsrc</span> <span class="op">&lt;-</span> <span class="fu"><a href="src.html">sprc</a></span><span class="op">(</span><span class="va">rlist</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">rsrc</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## SpatVector with data.frame</span></span>

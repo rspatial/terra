@@ -18,7 +18,7 @@ Also note that time gaps are not filled. You can use fillTime to do that."><meta
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
       </span>
     </div>
 
@@ -87,12 +87,15 @@ Also note that time gaps are not filled. You can use fillTime to do that."><meta
 <span class="r-in"><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="time.html">time</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-01"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">5</span></span>
 <span class="r-in"><span class="va">s1</span> <span class="op">&lt;-</span> <span class="va">s1</span><span class="op">/</span><span class="fl">10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="fu"><a href="time.html">time</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-07"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">5</span></span>
 <span class="r-in"><span class="va">s2</span> <span class="op">&lt;-</span> <span class="va">s1</span><span class="op">*</span><span class="fl">10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="fu"><a href="time.html">time</a></span><span class="op">(</span><span class="va">s2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-05"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">5</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="sds.html">sds</a></span><span class="op">(</span><span class="va">s1</span>, <span class="va">s1</span>, <span class="va">s2</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mergeTime</span><span class="op">(</span><span class="va">x</span>, <span class="va">mean</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 </code></pre></div>
     </div>
   </div>

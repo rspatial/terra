@@ -21,7 +21,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
       </span>
     </div>
 
@@ -111,13 +111,16 @@ For planar CRSs, the area is therefore not computed based on the linear units of
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># size of each raster cell</span></span>
 <span class="r-in"><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu">cellSize</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># illustration of distortion</span></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">90</span>, nrows<span class="op">=</span><span class="fl">45</span>, ymin<span class="op">=</span><span class="op">-</span><span class="fl">80</span>, ymax<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"+proj=merc"</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">bad</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span><span class="va">m</span>, <span class="fu"><a href="summarize-generics.html">prod</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">res</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1000000</span>, names<span class="op">=</span><span class="st">"naive"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">good</span> <span class="op">&lt;-</span> <span class="fu">cellSize</span><span class="op">(</span><span class="va">m</span>, unit<span class="op">=</span><span class="st">"km"</span>, names<span class="op">=</span><span class="st">"corrected"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">good</span>, <span class="va">bad</span><span class="op">)</span>, nc<span class="op">=</span><span class="fl">1</span>, mar<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="cellSize-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>

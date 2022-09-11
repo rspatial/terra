@@ -20,7 +20,7 @@ Use app for summarize functions such as sum, that take any number of arguments; 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
       </span>
     </div>
 
@@ -115,6 +115,7 @@ Use app for summarize functions such as sum, that take any number of arguments; 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">fvi</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">{</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">y</span> <span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">x</span> <span class="op">+</span> <span class="va">y</span><span class="op">)</span> <span class="op">}</span> </span>
@@ -124,15 +125,19 @@ Use app for summarize functions such as sum, that take any number of arguments; 
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.7142857 -0.4285714 -0.1428571  0.1428571  0.4285714         NA</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">ss</span>, fun<span class="op">=</span><span class="va">fvi</span> <span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># which is the same as supplying the layers to "fun"</span></span>
 <span class="r-in"><span class="co"># in some cases this will be much faster </span></span>
 <span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">fvi</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">f2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span><span class="op">{</span> <span class="op">(</span><span class="va">z</span> <span class="op">-</span> <span class="va">y</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">}</span> </span>
 <span class="r-in"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span>, fun<span class="op">=</span><span class="va">f2</span> <span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">f2</span>, z<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># the usenames argument</span></span>
 <span class="r-in"></span>
@@ -140,11 +145,15 @@ Use app for summarize functions such as sum, that take any number of arguments; 
 <span class="r-in"><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "red"   "green" "blue" </span>
 <span class="r-in"><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="co"># x1 and x2 are the same, despite the change in the order of the layers</span></span>
 <span class="r-in"><span class="co"># x4 is also the same, but x3 is not</span></span>
 <span class="r-in"><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">x4</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># while this would fail because </span></span>
 <span class="r-in"><span class="co"># there are too many layers in s</span></span>
@@ -155,6 +164,7 @@ Use app for summarize functions such as sum, that take any number of arguments; 
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## SpatRasterDataset</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="sds.html">sds</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fl">50</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span> <span class="va">x</span><span class="op">/</span><span class="va">y</span> <span class="op">}</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># test "fun"</span></span>
@@ -166,6 +176,7 @@ Use app for summarize functions such as sum, that take any number of arguments; 
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.4285714 1.5000000 9.000000</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">lapp</span><span class="op">(</span><span class="va">x</span>, <span class="va">fun</span>, recycle<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 77, 101, 3  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 1, 1  (x, y)</span>
@@ -178,6 +189,7 @@ Use app for summarize functions such as sum, that take any number of arguments; 
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># the same, more concisely</span></span>
 <span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">s</span> <span class="op">/</span> <span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fl">50</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 </code></pre></div>
     </div>
   </div>

@@ -18,7 +18,7 @@ When argument y is a SpatVector the first column has the ID (record number) of t
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
       </span>
     </div>
 
@@ -192,6 +192,7 @@ When argument y is a SpatVector the first column has the ID (record number) of t
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  3  208</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">r</span> <span class="op">+</span> <span class="fl">10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">p</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ID test</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  1  388</span>
@@ -211,6 +212,7 @@ When argument y is a SpatVector the first column has the ID (record number) of t
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  208</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">x</span><span class="op">*</span><span class="fl">2</span>,<span class="va">x</span><span class="op">*</span><span class="fl">3</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">y</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   test test.1 test.2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  388    776   1164</span>
@@ -248,6 +250,7 @@ When argument y is a SpatVector the first column has the ID (record number) of t
 <span class="r-out co"><span class="r-pr">#&gt;</span>  5.20 16.75 </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">z</span><span class="op">*</span><span class="fl">2</span>, <span class="va">z</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">v</span><span class="op">)</span></span>

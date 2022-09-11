@@ -22,7 +22,7 @@ If the coordinate reference system (CRS) of the SpatRaster is longitude/latitude
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
       </span>
     </div>
 
@@ -101,6 +101,7 @@ If the coordinate reference system (CRS) of the SpatRaster is longitude/latitude
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">5</span>, nrows<span class="op">=</span><span class="fl">5</span>, crs<span class="op">=</span><span class="st">"+proj=utm +zone=1 +datum=WGS84"</span>, </span>
 <span class="r-in">    xmin<span class="op">=</span><span class="fl">0</span>, xmax<span class="op">=</span><span class="fl">5</span>, ymin<span class="op">=</span><span class="fl">0</span>, ymax<span class="op">=</span><span class="fl">5</span>, vals<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">13</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">costDistance</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
@@ -109,6 +110,7 @@ If the coordinate reference system (CRS) of the SpatRaster is longitude/latitude
 <span class="r-in"></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">10</span>, nrows<span class="op">=</span><span class="fl">10</span>,  xmin<span class="op">=</span><span class="fl">0</span>, xmax<span class="op">=</span><span class="fl">10</span>, ymin<span class="op">=</span><span class="fl">0</span>, ymax<span class="op">=</span><span class="fl">10</span>, </span>
 <span class="r-in">    vals<span class="op">=</span><span class="fl">10</span>, crs<span class="op">=</span><span class="st">"+proj=utm +zone=1 +datum=WGS84"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">10</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">6</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">7</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">8</span><span class="op">:</span><span class="fl">9</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>

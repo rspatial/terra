@@ -23,7 +23,7 @@ for (SpatExtent, SpatExtent): +, -, and for (SpatExtent, numeric): +, -, *, /, %
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
       </span>
     </div>
 
@@ -85,11 +85,15 @@ for (SpatExtent, SpatExtent): +, -, and for (SpatExtent, numeric): +, -, *, /, %
 <span class="r-in"><span class="va">r2</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">r1</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">r3</span> <span class="op">&lt;-</span> <span class="va">r1</span> <span class="op">+</span> <span class="va">r2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">r2</span> <span class="op">&lt;-</span> <span class="va">r1</span> <span class="op">/</span> <span class="fl">10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">r3</span> <span class="op">&lt;-</span> <span class="va">r1</span> <span class="op">*</span> <span class="op">(</span><span class="va">r2</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">r2</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r1</span>, <span class="va">r2</span>, <span class="va">r3</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">b2</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op">*</span> <span class="fl">10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">### SpatExtent methods</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">2.2</span>, <span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span></span>
