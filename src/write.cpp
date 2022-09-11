@@ -228,9 +228,10 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 	}
 
 	if (opt.progressbar) {
-		unsigned long steps = bs.n+2;
-		pbar = new Progress(steps, opt.show_progress(bs.n));
-		pbar->increment();
+		pbar.init(bs.n);	
+		//unsigned long steps = bs.n+2;
+		//pbar = new Progress(steps, opt.show_progress(bs.n));
+		//pbar->increment();
 		progressbar = true;
 	} else {
 		progressbar = false;
@@ -239,6 +240,16 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 	return true;
 }
 
+#ifdef useRcpp
+
+static void chkIntFn(void *dummy) {
+  R_CheckUserInterrupt();
+}
+bool checkInterrupt() {
+  return (R_ToplevelExec(chkIntFn, NULL) == FALSE);
+}
+
+#endif
 
 
 bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t nrows) {
@@ -268,15 +279,22 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 
 //return success;
 #ifdef useRcpp
-	if (progressbar) {
-		if (Progress::check_abort()) {
-			pbar->cleanup();
-			delete pbar;
-			setError("aborted");
-			return(false);
-		}
-		pbar->increment();
+	if (checkInterrupt()) {
+		pbar.interrupt();
+		setError("aborted");
+		return(false);
 	}
+	if (progressbar) {
+		pbar.stepit();
+	}	
+//		if (Progress::check_abort()) {
+//			pbar->cleanup();
+//			delete pbar;
+//			setError("aborted");
+//			return(false);
+//		}
+//		pbar->increment();
+//	}
 #endif
 	return success;
 }
@@ -308,15 +326,22 @@ bool SpatRaster::writeValuesRect(std::vector<double> &vals, size_t startrow, siz
 	}
 
 #ifdef useRcpp
-	if (progressbar) {
-		if (Progress::check_abort()) {
-			pbar->cleanup();
-			delete pbar;
-			setError("aborted");
-			return(false);
-		}
-		pbar->increment();
+	if (checkInterrupt()) {
+		pbar.interrupt();
+		setError("aborted");
+		return(false);
 	}
+	if (progressbar) {
+		pbar.stepit();
+	}
+	//	if (Progress::check_abort()) {
+	//		pbar->cleanup();
+	//		delete pbar;
+	//		setError("aborted");
+	//		return(false);
+	//	}
+	//	pbar->increment();
+	//}
 #endif
 	return success;
 }
@@ -357,10 +382,15 @@ bool SpatRaster::writeStop(){
 
 #ifdef useRcpp
 	if (progressbar) {
+		pbar.stepit();
+	}
+/*	
+	if (progressbar) {
 		pbar->increment();
 		pbar->cleanup();
 		delete pbar;
 	}
+*/	
 #endif
 
 	return success;

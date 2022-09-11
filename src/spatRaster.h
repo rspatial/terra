@@ -26,8 +26,8 @@
 #ifdef useRcpp
 #include <Rcpp.h>
 // Rcpp::depends(RcppProgress)
-#include "progress.hpp"
-#include "progress_bar.hpp"
+//#include "progress.hpp"
+//#include "progress_bar.hpp"
 #endif
 
 typedef long long int_64;
@@ -185,6 +185,7 @@ class BlockSize {
 		unsigned n;
 };
 
+
 class SpatRaster {
 
     private:
@@ -201,7 +202,8 @@ class SpatRaster {
 	public:
 
 #ifdef useRcpp
-		Progress* pbar;
+//		Progress* pbar;
+		SpatProgress pbar;
 		bool progressbar = false;
 #endif
 

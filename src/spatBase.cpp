@@ -530,3 +530,51 @@ bool SpatCategories::concatenate(SpatCategories &x) {
 	return true;
 }
 
+
+#ifdef useRcpp
+
+void SpatProgress::init(size_t n) {
+	
+	std::string bar = "|---------|---------|---------|---------|";
+	Rcpp::Rcout << bar << "\r";
+	R_FlushConsole();
+
+	nstep = n;
+	step = 0;
+	size_t width = bar.size();
+	
+	double increment = (double) width / double(nstep);
+	steps.reserve(nstep+1);
+	for (size_t i=0; i<nstep; i++) {
+		int val = round(i * increment);
+		steps.push_back(val);
+	}
+	steps.push_back(width);
+}
+
+
+void SpatProgress::stepit() {
+	if (step < nstep) {
+		int n = steps[step+1] - steps[step];
+		if (n > 0) {
+			for (int i=0; i<n; i++) Rcpp::Rcout << "=";
+		}
+	} else if (step == nstep){
+		Rcpp::Rcout << "\r                                          \r";
+	}
+	step++;
+	R_FlushConsole();
+}
+
+void SpatProgress::interrupt() {
+	Rcpp::Rcout << "\r                                          \r";
+	R_FlushConsole();
+}
+
+#else 
+	
+void SpatProgress::init(size_t n, size_t width) {}
+void SpatProgress::stepit() {}
+void SpatProgress::interrupt() {}
+
+#endif

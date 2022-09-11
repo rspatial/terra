@@ -348,3 +348,14 @@ class SpatSRS {
 		}
 };
 
+
+class SpatProgress {
+	public:
+		virtual ~SpatProgress(){}		
+		size_t nstep;
+		size_t step;
+		std::vector<int> steps;
+		void init(size_t n);
+		void stepit();
+		void interrupt();
+};
