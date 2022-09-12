@@ -63,7 +63,7 @@ setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
 			value <- list(value)
 		}
 		for (k in 1:length(i)) {
-			.rast_replace(x, i[k], value[[k]], " [[<- ")
+			x <- .rast_replace(x, i[k], value[[k]], " [[<- ")
 #			eval(parse(text = paste0("x$", i[k], " <- value[[k]]")))
 		}
 		x
