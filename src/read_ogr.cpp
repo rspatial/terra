@@ -375,7 +375,19 @@ SpatGeom emptyGeom() {
 }
 
 
+bool SpatVector::test(std::string filename) { 
+	GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx(filename.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
+	OGRLayer *poLayer = poDS->GetLayer(0);
+	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
+	return true;
+}
+
+//#include "Rcpp.h"
+
 bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
+
+//Rcpp::Rcout << 1 << std::endl;
+//R_FlushConsole(); R_ProcessEvents();
 
 	std::string crs = "";
 
@@ -429,7 +441,9 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 		}
 	}
 
+
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
+
 	if (poSRS) {
 		char *psz = NULL;
 		OGRErr err = poSRS->exportToWkt(&psz);
