@@ -8,7 +8,7 @@
 \title{Compare geometries of SpatRasters}
 
 \description{
-Evaluate whether two SpatRasters have the same extent, number of rows and columns, projection, resolution, and origin (or a subset of these comparisons). Or whether two SpatVectors have the same geometries, or wheter a SpatVector has duplicated geometries. 
+Evaluate whether two SpatRasters have the same extent, number of rows and columns, projection, resolution, and origin (or a subset of these comparisons). Or whether two SpatVectors have the same geometries, or whether a SpatVector has duplicated geometries. 
 }
 
 \usage{

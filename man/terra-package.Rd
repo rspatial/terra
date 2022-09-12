@@ -141,7 +141,7 @@ Also see the methods in section VIII
     \code{\link{direction}} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
     \code{\link{focalCpp}} \tab Faster focal by using custom C++ functions \cr
-    \code{\link{focalReg}} \tab Regression beween layers for focal areas \cr
+    \code{\link{focalReg}} \tab Regression between layers for focal areas \cr
     \code{\link{focalCor}} \tab Correlation between layers for focal areas \cr
     \code{\link{patches}} \tab Find patches (clumps) \cr
     \code{\link{terrain}} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr

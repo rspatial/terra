@@ -46,7 +46,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 
   \item{res}{numeric. Can be used to set the resolution of the output raster if \code{y} is a CRS}
 
-  \item{origin}{numeric. Can be used to set the origon of the output raster if \code{y} is a CRS}
+  \item{origin}{numeric. Can be used to set the origin of the output raster if \code{y} is a CRS}
   
   \item{threads}{logical. If \code{TRUE} multiple threads are used (faster for large files)}
 

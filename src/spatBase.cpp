@@ -544,6 +544,8 @@ void SpatProgress::init(size_t n) {
 	size_t width = bar.size();
 	
 	double increment = (double) width / double(nstep);
+
+	steps.resize(0);
 	steps.reserve(nstep+1);
 	for (size_t i=0; i<nstep; i++) {
 		int val = round(i * increment);

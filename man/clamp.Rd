@@ -22,7 +22,7 @@ Clamp values to a minimum and maximum value. That is, all values below a lower t
   \item{upper}{numeric. highest value}
   \item{values}{logical. If \code{FALSE} values outside the clamping range become \code{NA}, if \code{TRUE}, they get the extreme values}
   \item{filename}{character. Output filename}
-  \item{...}{additional argumments for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{

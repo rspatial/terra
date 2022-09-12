@@ -101,7 +101,7 @@ You can also set the number of rows or columns or layers. When setting dimension
 
 
 \arguments{
-\item{x}{SpatRaster or SpatVector or related objecs}
+\item{x}{SpatRaster or SpatVector or related objects}
 \item{value}{For ncol and nrow: positive integer. For res: one or two positive numbers }  
 }
 

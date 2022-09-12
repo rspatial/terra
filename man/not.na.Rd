@@ -23,7 +23,7 @@ Shortcut method to avoid the two-step \code{!is.na(x)}
 }
 
 
-\section{seealso}{
+\seealso{
 \code{\link{Compare-methods}}
 }
 

@@ -8,7 +8,7 @@
 \title{Add (in place) a SpatRaster to another SpatRaster object}
 
 \description{
-Add (in place) a SpatRaster to another SpatRaster object. Comparable with \code{\link{c}}, but withouth copying the object. 
+Add (in place) a SpatRaster to another SpatRaster object. Comparable with \code{\link{c}}, but without copying the object. 
 }
 
 \usage{

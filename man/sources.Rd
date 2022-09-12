@@ -35,7 +35,7 @@ Get the data sources of a SpatRaster or SpatVector or related object. Sources ar
 \item{x}{SpatRaster, SpatRasterCollection, SpatVector or SpatVectorProxy}
 \item{nlyr}{logical. If \code{TRUE} for each source, the number of layers is returned}
 \item{bands}{logical. If \code{TRUE} for each source, the "bands" used, that is, the layer number in the source file, are returned}
-\item{bylayer}{logical. If \code{TRUE} a value is retured for each layer instead of for each source}
+\item{bylayer}{logical. If \code{TRUE} a value is returned for each layer instead of for each source}
 }
 
 \value{

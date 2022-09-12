@@ -6,11 +6,11 @@
 \alias{symdif,SpatVector,SpatVector-method}
 
 \title{ 
-Symetrical difference
+Symmetrical difference
 }
 
 \description{
-Symetrical difference of polygons
+Symmetrical difference of polygons
 }
 \usage{
 \S4method{symdif}{SpatVector,SpatVector}(x, y)

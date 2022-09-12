@@ -16,7 +16,7 @@ Compute the difference between consecutive layers in a SpatRaster.
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{lag}{postive integer indicating which lag to use}
+  \item{lag}{positive integer indicating which lag to use}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

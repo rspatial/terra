@@ -62,7 +62,7 @@ When argument \code{y} is a \code{SpatVector} the first column has the ID (recor
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
 \item{layer}{character or numeric to select the layer to extract from for each geometry. If \code{layer} is a character it can be a name in \code{y} or a vector of layer names. If it is numeric, it must be integer values between \code{1} and \code{nlyr(x)}}
 \item{bind}{logical. If \code{TRUE}, a SpatVector is returned consisting of the input SpatVector \code{y} and the \code{cbind}-ed extracted values}
-\item{raw}{logical. If \code{TRUE}, a matrix is returned with the "raw" numeric cell values. If \code{FALSE}, a data.frame is returned and teh cell values are transformed to factor, logical, or integer values, where appropriate}
+\item{raw}{logical. If \code{TRUE}, a matrix is returned with the "raw" numeric cell values. If \code{FALSE}, a data.frame is returned and the cell values are transformed to factor, logical, or integer values, where appropriate}
 \item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector. For example \code{na.rm=TRUE}. Or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (such as the \code{method} and \code{cells} arguments)}
 }
 
