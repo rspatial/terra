@@ -377,7 +377,6 @@ SpatGeom emptyGeom() {
 
 bool SpatVector::test(std::string filename) { 
 	GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx(filename.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
-	OGRLayer *poLayer = poDS->GetLayer(0);
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
 	return true;
 }
