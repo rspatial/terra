@@ -533,49 +533,58 @@ bool SpatCategories::concatenate(SpatCategories &x) {
 
 #ifdef useRcpp
 
-void SpatProgress::init(size_t n) {
+void SpatProgress::init(size_t n, int nmin) {
 	
-	std::string bar = "|---------|---------|---------|---------|";
-	Rcpp::Rcout << bar << "\r";
-	R_FlushConsole();
-
-	nstep = n;
-	step = 0;
-	size_t width = bar.size();
+	if ((nmin <= 0) || ((int)n < nmin)) {
+		show = false;
+	} else {
+		show = true;
 	
-	double increment = (double) width / double(nstep);
+		std::string bar = "|---------|---------|---------|---------|";
+		Rcpp::Rcout << bar << "\r";
+		R_FlushConsole();
 
-	steps.resize(0);
-	steps.reserve(nstep+1);
-	for (size_t i=0; i<nstep; i++) {
-		int val = round(i * increment);
-		steps.push_back(val);
+		nstep = n;
+		step = 0;
+		size_t width = bar.size();
+		
+		double increment = (double) width / double(nstep);
+
+		steps.resize(0);
+		steps.reserve(nstep+1);
+		for (size_t i=0; i<nstep; i++) {
+			int val = round(i * increment);
+			steps.push_back(val);
+		}
+		steps.push_back(width);
 	}
-	steps.push_back(width);
 }
 
-
 void SpatProgress::stepit() {
-	if (step < nstep) {
-		int n = steps[step+1] - steps[step];
-		if (n > 0) {
-			for (int i=0; i<n; i++) Rcpp::Rcout << "=";
+	if (show) {
+		if (step < nstep) {
+			int n = steps[step+1] - steps[step];
+			if (n > 0) {
+				for (int i=0; i<n; i++) Rcpp::Rcout << "=";
+			}
+		} else if (step == nstep){
+			Rcpp::Rcout << "\r                                          \r";
 		}
-	} else if (step == nstep){
-		Rcpp::Rcout << "\r                                          \r";
+		step++;
 	}
-	step++;
 	R_FlushConsole();
 }
 
 void SpatProgress::interrupt() {
-	Rcpp::Rcout << "\r                                          \r";
+	if (show) {
+		Rcpp::Rcout << "\r                                          \r";
+	}
 	R_FlushConsole();
 }
 
 #else 
 	
-void SpatProgress::init(size_t n, size_t width) {}
+void SpatProgress::init(size_t n, int nmin) {}
 void SpatProgress::stepit() {}
 void SpatProgress::interrupt() {}
 

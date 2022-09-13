@@ -223,12 +223,11 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 		Rcpp::Rcout<< "in memory     : " << inmem << std::endl;
 		Rcpp::Rcout<< "block size    : " << mems[3] << " rows" << std::endl;
 		Rcpp::Rcout<< "n blocks      : " << bs.n << std::endl;
-		Rcpp::Rcout<< "pb            : " << opt.show_progress(bs.n) << std::endl;
-		Rcpp::Rcout<< std::endl;
+		Rcpp::Rcout<< "pb            : " << opt.get_progress() << std::endl << std::endl;
 	}
 
 	if (opt.progressbar) {
-		pbar.init(bs.n);	
+		pbar.init(bs.n, opt.get_progress());	
 		//unsigned long steps = bs.n+2;
 		//pbar = new Progress(steps, opt.show_progress(bs.n));
 		//pbar->increment();

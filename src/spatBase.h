@@ -355,7 +355,8 @@ class SpatProgress {
 		size_t nstep;
 		size_t step;
 		std::vector<int> steps;
-		void init(size_t n);
+		void init(size_t n, int nmin);
+		bool show;
 		void stepit();
 		void interrupt();
 };
