@@ -321,13 +321,6 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 
 		hBand = GDALGetRasterBand(hSrcDS, srcbands[i]+1);
 		double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
-		if (verbose && i == 0) {
-#ifdef useRcpp
-			std::string hna = hasNA ? "true" : "false";
-			Rcpp::Rcout << "hasNA         : " << hna << std::endl;
-			Rcpp::Rcout << "NA flag       : " << naflag << std::endl;
-#endif
-		}
 		if (hasNA) {
 			psWarpOptions->padfSrcNoDataReal[i] = naflag;
 			psWarpOptions->padfDstNoDataReal[i] = naflag;
