@@ -813,6 +813,8 @@ RCPP_MODULE(spat){
 		.method("initv", ( SpatRaster (SpatRaster::*)(std::vector<double>, SpatOptions&) )( &SpatRaster::init ), "init value")
 		.method("is_in", &SpatRaster::is_in, "isin")
 		.method("is_in_cells", &SpatRaster::is_in_cells, "isincells")
+		.method("anynan", &SpatRaster::anynan)
+		.method("allnan", &SpatRaster::allnan)
 		.method("isnan", &SpatRaster::isnan)
 		.method("not_na", &SpatRaster::isnotnan)
 		.method("isfinite", &SpatRaster::isfinite, "isfinite")

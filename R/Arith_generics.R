@@ -370,6 +370,22 @@ setMethod("is.na", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("anyNA", signature(x="SpatRaster"),
+	function(x) {
+		opt <- spatOptions()
+		x@ptr <- x@ptr$anynan(opt)
+		messages(x, "anyNA")
+	}
+)
+
+
+setMethod("allNA", signature(x="SpatRaster"),
+	function(x) {
+		opt <- spatOptions()
+		x@ptr <- x@ptr$allnan(opt)
+		messages(x, "allNA")
+	}
+)
 
 setMethod("is.nan", signature(x="SpatRaster"),
 	function(x) {

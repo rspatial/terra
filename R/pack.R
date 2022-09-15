@@ -127,7 +127,19 @@ setMethod("wrap", signature(x="SpatRaster"),
 	function(x) {
 		r <- methods::new("PackedSpatRaster")
 		r@definition <- as.character(x)
-		r@values <- values(x)
+		
+		b <- blocks(x, 2)
+		s <- sources(x)
+		if ((b$n == 1) || (all(s == ""))) {
+			r@values <- values(x)
+		} else if (all(s != "")) {
+			r@attributes$sources <- sources(x, TRUE, TRUE)
+		} else {
+			fname <- paste0(tempfile(), ".tif")
+			x <- writeRaster(x, tmpfile)
+			r@attributes$filename <- fname
+		}
+		
 		if (any(is.factor(x))) {
 			r@attributes$levels <- cats(x)
 		}
@@ -150,8 +162,29 @@ setMethod("wrap", signature(x="SpatRaster"),
 
 setMethod("rast", signature(x="PackedSpatRaster"),
 	function(x) {
+
 		r <- eval(parse(text=x@definition))
-		values(r) <- x@values
+		if (!is.null(x@attributes$filename)) {
+			rr <- rast(x@attributes$filename)
+			ext(rr) <- ext(r)
+			crs(rr) <- crs(r)
+			r <- rr
+		} else if (!is.null(x@attributes$sources)) {
+			s <- x@attributes$sources
+			u <- unique(s$sid)
+			rr <- lapply(1:length(u), function(i) {
+					ss <- s[s$sid == i, ]
+					r <- rast(ss[1,2])
+					r[[ss[,3]]]
+				})
+			rr <- rast(rr)
+			ext(rr) <- ext(r)
+			crs(rr) <- crs(r)
+			r <- rr
+		} else {
+			values(r) <- x@values
+		}
+		
 		if (length(x@attributes) > 0) {
 			nms <- names(x@attributes)
 			if (all(nms %in% c("levels", "time", "units", "depth"))) {

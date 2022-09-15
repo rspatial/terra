@@ -143,10 +143,6 @@ setMethod("setValues", signature("SpatRaster"),
 			values <- as.matrix(values)
 		}
 		if (is.matrix(values)) {
-			if (!keepnames) {
-				nms <- colnames(values)
-				if (!is.null(nms)) names(y) <- nms
-			}
 			nl <- nlyr(x)
 			d <- dim(values)
 			if (!all(d == c(ncell(x), nl))) {
@@ -165,6 +161,10 @@ setMethod("setValues", signature("SpatRaster"),
 					error("setValues","dimensions of the matrix do not match the SpatRaster")				
 				}
 			} 
+			if (!keepnames) {
+				nms <- colnames(values)
+				if (!is.null(nms)) names(y) <- nms
+			}
 		} else if (is.array(values)) {
 			stopifnot(length(dim(values)) == 3)
 			values <- as.vector(aperm(values, c(2,1,3)))

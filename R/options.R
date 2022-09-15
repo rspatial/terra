@@ -119,6 +119,14 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	}
 }
 
+.getOptions <- function() {
+	opt <- spatOptions()
+	nms <- names(opt)
+	nms <- nms[!grepl("^\\.", nms)]
+	nms <- nms[!(nms %in% c("initialize", "messages", "getClass"))]
+	sapply(nms, function(n) eval(parse(text=paste0("opt$", n))))
+}
+
 
 .default_option_names <- function() {
 	c("datatype", "filetype") #, "verbose")

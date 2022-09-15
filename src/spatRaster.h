@@ -642,6 +642,8 @@ class SpatRaster {
 		SpatRaster isnot(SpatOptions &opt);
 		SpatRaster isnan(SpatOptions &opt);
 		SpatRaster isnotnan(SpatOptions &opt);
+		SpatRaster allnan(SpatOptions &opt);
+		SpatRaster anynan(SpatOptions &opt);
 		SpatRaster isfinite(SpatOptions &opt);
 		SpatRaster isinfinite(SpatOptions &opt);
 

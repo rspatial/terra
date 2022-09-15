@@ -15,6 +15,8 @@
 \alias{prod}
 \alias{range}
 \alias{sum}
+\alias{anyNA}
+\alias{allNA}
 
 \alias{mean,SpatRaster-method}
 \alias{mean,SpatVector-method}
@@ -32,6 +34,8 @@
 \alias{prod,SpatRaster-method}
 \alias{range,SpatRaster-method}
 \alias{sum,SpatRaster-method}
+\alias{anyNA,SpatRaster-method}
+\alias{allNA,SpatRaster-method}
 
 \alias{stdev}
 \alias{stdev,SpatRaster-method}
@@ -43,7 +47,7 @@
 
 Compute summary statistics for cells, either across layers or between layers (parallel summary). 
 
-The following summary methods are available for SpatRaster: \code{any, all, max, min, mean, median, prod, range, stdev, sum, which.min, which.max}. See \code{\link{modal}} to compute the mode and \code{\link{app}} to compute summary statistics that are not included here.
+The following summary methods are available for SpatRaster: \code{any, anyNA, all, allNA, max, min, mean, median, prod, range, stdev, sum, which.min, which.max}. See \code{\link{modal}} to compute the mode and \code{\link{app}} to compute summary statistics that are not included here.
  
 Because generic functions are used, the method applied is chosen based on the first argument: "\code{x}". This means that if \code{r} is a SpatRaster, \code{mean(r, 5)} will work, but \code{mean(5, r)} will not work.
 
