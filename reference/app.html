@@ -20,7 +20,7 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-19</span>
       </span>
     </div>
 
@@ -110,9 +110,7 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">10</span>, nrows<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="math-generics.html">sqrt</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, <span class="va">r</span><span class="op">+</span><span class="fl">50</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">app</span><span class="op">(</span><span class="va">x</span>, fun<span class="op">=</span><span class="va">sum</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">s</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 1  (nrow, ncol, nlyr)</span>
@@ -126,7 +124,6 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
 <span class="r-in"><span class="co"># for a few generic functions like </span></span>
 <span class="r-in"><span class="co"># "sum", "mean", and "max" you can also do</span></span>
 <span class="r-in"><span class="fu"><a href="summarize-generics.html">sum</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 1  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 36, 18  (x, y)</span>
@@ -139,9 +136,7 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## SpatRasterDataset</span></span>
 <span class="r-in"><span class="va">sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="sds.html">sds</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">x</span><span class="op">*</span><span class="fl">2</span>, <span class="va">x</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu">app</span><span class="op">(</span><span class="va">sd</span>, <span class="va">max</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">a</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 3  (nrow, ncol, nlyr)</span>
@@ -154,7 +149,6 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
 <span class="r-out co"><span class="r-pr">#&gt;</span> max values  :   200,    20,   300 </span>
 <span class="r-in"><span class="co"># same as </span></span>
 <span class="r-in"><span class="fu"><a href="summarize-generics.html">max</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">x</span><span class="op">*</span><span class="fl">2</span>, <span class="va">x</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 3  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 36, 18  (x, y)</span>
@@ -168,11 +162,9 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
 <span class="r-in"><span class="co">## also works for a single layer</span></span>
 <span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">(</span><span class="va">i</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">i</span> <span class="op">+</span> <span class="fu"><a href="math-generics.html">sqrt</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">app</span><span class="op">(</span><span class="va">r</span>, <span class="va">f</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="co"># same as above, but that is not memory-safe</span></span>
 <span class="r-in"><span class="co"># and has no filename argument </span></span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">f</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="co">#### multiple cores </span></span>

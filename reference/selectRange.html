@@ -19,7 +19,7 @@ See extract for extraction of values by cell, point, or otherwise."><meta proper
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-19</span>
       </span>
     </div>
 
@@ -97,17 +97,13 @@ See extract for extraction of values by cell, point, or otherwise."><meta proper
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">10</span>, nrows<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">+</span><span class="fl">2</span>, <span class="va">r</span><span class="op">+</span><span class="fl">5</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">s</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">selectRange</span><span class="op">(</span><span class="va">s</span>, <span class="va">r</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">selectRange</span><span class="op">(</span><span class="va">s</span>, <span class="va">r</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 </code></pre></div>
     </div>
   </div>

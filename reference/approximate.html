@@ -18,7 +18,7 @@ For estimation based on neighboring cells see focal"><meta property="og:image" c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-19</span>
       </span>
     </div>
 
@@ -115,7 +115,6 @@ For estimation based on neighboring cells see focal"><meta property="og:image" c
 <span class="r-in"><span class="va">r3</span> <span class="op">&lt;-</span> <span class="fu"><a href="setValues.html">setValues</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">r4</span> <span class="op">&lt;-</span> <span class="fu"><a href="setValues.html">setValues</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">r5</span> <span class="op">&lt;-</span> <span class="fu"><a href="setValues.html">setValues</a></span><span class="op">(</span><span class="va">r</span>, <span class="cn">NA</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">r6</span> <span class="op">&lt;-</span> <span class="fu"><a href="setValues.html">setValues</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">r1</span><span class="op">[</span><span class="fl">6</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span class="r-in"><span class="va">r2</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">15</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
@@ -123,11 +122,8 @@ For estimation based on neighboring cells see focal"><meta property="og:image" c
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r1</span>,<span class="va">r2</span>,<span class="va">r3</span>,<span class="va">r4</span>,<span class="va">r5</span>,<span class="va">r6</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">s</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span class="r-in"><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu">approximate</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu">approximate</span><span class="op">(</span><span class="va">s</span>, rule<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu">approximate</span><span class="op">(</span><span class="va">s</span>, rule<span class="op">=</span><span class="fl">2</span>, z<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">5</span>,<span class="fl">14</span>,<span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

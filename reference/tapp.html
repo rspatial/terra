@@ -21,7 +21,7 @@ See app or Summary-methods if you want to use a more efficient function that ret
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-19</span>
       </span>
     </div>
 
@@ -109,9 +109,7 @@ See app or Summary-methods if you want to use a more efficient function that ret
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span>, <span class="va">r</span>, <span class="va">r</span>, <span class="va">r</span>, <span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="va">s</span> <span class="op">*</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">b1</span> <span class="op">&lt;-</span> <span class="fu">tapp</span><span class="op">(</span><span class="va">s</span>, index<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>, fun<span class="op">=</span><span class="va">sum</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">b1</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 2  (nrow, ncol, nlyr)</span>
@@ -123,7 +121,6 @@ See app or Summary-methods if you want to use a more efficient function that ret
 <span class="r-out co"><span class="r-pr">#&gt;</span> min values  :   6,   15 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 600, 1500 </span>
 <span class="r-in"><span class="va">b2</span> <span class="op">&lt;-</span> <span class="fu">tapp</span><span class="op">(</span><span class="va">s</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, fun<span class="op">=</span><span class="va">sum</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">b2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 3  (nrow, ncol, nlyr)</span>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-19</span>
       </span>
     </div>
 
@@ -98,20 +98,16 @@
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># give least weight to first layer, most to last layer</span></span>
 <span class="r-in"><span class="va">wm1</span> <span class="op">&lt;-</span> <span class="fu">weighted.mean</span><span class="op">(</span><span class="va">b</span>, w<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># spatially varying weights</span></span>
 <span class="r-in"><span class="co"># weigh by column number</span></span>
 <span class="r-in"><span class="va">w1</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span><span class="va">b</span>, <span class="st">"col"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># weigh by row number</span></span>
 <span class="r-in"><span class="va">w2</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span><span class="va">b</span>, <span class="st">"row"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">w1</span>, <span class="va">w2</span>, <span class="va">w2</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">wm2</span> <span class="op">&lt;-</span> <span class="fu">weighted.mean</span><span class="op">(</span><span class="va">b</span>, w<span class="op">=</span><span class="va">w</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 </code></pre></div>
     </div>
   </div>

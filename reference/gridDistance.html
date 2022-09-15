@@ -20,7 +20,7 @@ The shortest distance to the cells with the target value is computed for all cel
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-19</span>
       </span>
     </div>
 
@@ -97,7 +97,6 @@ The shortest distance to the cells with the target value is computed for all cel
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># global lon/lat raster</span></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncol<span class="op">=</span><span class="fl">10</span>,nrow<span class="op">=</span><span class="fl">10</span>, vals<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">48</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">66</span><span class="op">:</span><span class="fl">68</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">gridDistance</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> </span>
@@ -113,9 +112,7 @@ The shortest distance to the cells with the target value is computed for all cel
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># distance to cells that are not NA </span></span>
 <span class="r-in"><span class="va">rr</span> <span class="op">&lt;-</span> <span class="fu"><a href="classify.html">classify</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">1</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu">gridDistance</span><span class="op">(</span><span class="va">rr</span>, <span class="cn">NA</span><span class="op">)</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> |---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          </span>
 <span class="r-in"></span>
 <span class="r-in"></span>
 </code></pre></div>
