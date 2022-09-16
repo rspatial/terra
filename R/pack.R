@@ -136,7 +136,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 			r@attributes$sources <- sources(x, TRUE, TRUE)
 		} else {
 			fname <- paste0(tempfile(), ".tif")
-			x <- writeRaster(x, tmpfile)
+			x <- writeRaster(x, fname)
 			r@attributes$filename <- fname
 		}
 		
