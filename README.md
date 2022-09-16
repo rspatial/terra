@@ -58,10 +58,10 @@ brew install pkg-config
 brew install gdal
 ```
 
-Followed by (note the additional configuration argument needed for the current homebrew version of proj (7.0.0)
+Followed by (note the additional configuration argument needed for the current homebrew version of proj (9.1.0)
 
 ```
-remotes::install_github("rspatial/terra", configure.args = "--with-proj-lib=/usr/local/lib/")
+remotes::install_github("rspatial/terra", configure.args = "--with-proj-lib=/opt/homebrew/Cellar/proj/9.1.0/lib/")
 ```
 
 To install the CRAN version from source you would do
