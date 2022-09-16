@@ -1,6 +1,12 @@
-# version 1.6-18
+# version 1.6-19
 
+## new
 
+- `anyNA` and `allNA` for SpatRaster
+
+## bug fixes 
+
+- `spatSample` with `na.rm` and SpatRasters with multiple layers did not work. [#800](https://github.com/rspatial/terra/issues/800) by Andrea Manica
 
 # version 1.6-17
 

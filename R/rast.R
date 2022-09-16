@@ -88,7 +88,7 @@ setMethod("rast", signature(x="list"),
 		}
 		out <- messages(out, "rast")
 		lnms <- names(x)
-		if (any(lnms != "") && length(lnms) == nlyr(out)) {
+		if (any(lnms != "") && (length(lnms) == nlyr(out))) {
 			rnms <- names(out)
 			rnms[lnms != ""] <- lnms[lnms != ""]
 			names(out) <- rnms
