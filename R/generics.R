@@ -756,10 +756,12 @@ setMethod("project", signature(x="matrix"),
         if (!is.character(to)) {
            to <- as.character(crs(to))
         }
-		v <- vect(x, type="line", crs=from)
-        v@ptr <- v@ptr$project(to)
-        messages(v, "project")
-        crds(v)
+		#v <- vect(x, type="line", crs=from)
+        #v@ptr <- v@ptr$project(to)
+        v <- vect()
+		xy <- v@ptr$project_xy(x[,1], x[,2], from, to)
+		messages(v, "project")
+		matrix(xy, ncol=2)
     }
 )
 
