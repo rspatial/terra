@@ -88,10 +88,16 @@ setMethod("rast", signature(x="list"),
 		}
 		out <- messages(out, "rast")
 		lnms <- names(x)
-		if (any(lnms != "") && (length(lnms) == nlyr(out))) {
+		if (any(lnms != "") && length(lnms) == nlyr(out)) {
 			rnms <- names(out)
 			rnms[lnms != ""] <- lnms[lnms != ""]
 			names(out) <- rnms
+		} else if (all(lnms != "")) {
+		    nl <- sapply(x, nlyr)
+			rnms <- sapply(1:length(nl), function(i) {
+						if (nl[i] > 1) paste0(lnms[i], "_", 1:nl[i]) else lnms[i]
+					})
+			names(out) <- unlist(rnms)
 		}
 		out
 	}
