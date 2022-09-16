@@ -184,9 +184,12 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	if (!is.null(ext)) {
 		x <- crop(x, ext)
 	}
+	if (nlyr(x) > 1) {
+		x <- ifel(anyNA(x), NA, 0)
+	}
 	if (lonlat) {
-		v <- cbind(cell=1:ncell(x), values(x), abs(cos(pi * values(init(x, "y")) / 360)))
-		v <- v[!is.na(v[,2]), ]
+		v <- cbind(cell=1:ncell(x), abs(cos(pi * values(init(x, "y")) / 360)), values(x))		
+		v <- v[!is.na(v[,3]),]
 		i <- sample.int(nrow(v), min(size, nrow(v)), prob=v[,2], replace=replace)
 	} else {
 		v <- cbind(cell=1:ncell(x), values(x))
