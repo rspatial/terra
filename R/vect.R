@@ -12,6 +12,9 @@ character_crs <- function(crs, caller="") {
 		warn(caller, "argument 'crs' should be a character value")
 		as.character(crs)
 	} else {
+		if (tolower(crs) == "local") {
+			crs = 'LOCAL_CS["Cartesian (Meter)", LOCAL_DATUM["Local Datum",0], UNIT["Meter",1.0], AXIS["X",EAST], AXIS["Y",NORTH]]'
+		}
 		crs
 	}
 }

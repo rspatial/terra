@@ -30,13 +30,19 @@ is.proj <- function(crs) {
 	x@ptr$get_crs("proj4")
 }
 
+.name_from_wkt <- function(wkt) {
+	s = strsplit(wkt, ",")[[1]][1]
+	strsplit(s, "\"")[[1]][[2]]
+}
+
 .name_or_proj4 <- function(x) {
 	if (inherits(x, "SpatVectorProxy")) {
 		v <- vect()
 		v@ptr <- x@ptr$v
 		x <- v
 	}
-	d <- .srs_describe(x@ptr$get_crs("wkt"))
+	wkt <- x@ptr$get_crs("wkt")
+	d <- .srs_describe(wkt)
 	r <- x@ptr$get_crs("proj4")
 	if (!(d$name %in% c(NA, "unknown", "unnamed"))) {
 		if (substr(r, 1, 13) == "+proj=longlat") {
@@ -46,6 +52,12 @@ is.proj <- function(crs) {
 		}
 		if (!is.na(d$code)) {
 			r <- paste0(r, " (", d$authority, ":", d$code, ")")
+		}
+	}
+	if (r == "") {
+		rr <- try(.name_from_wkt(wkt), silent=TRUE)
+		if (!inherits(rr, "try-error")) {
+			r <- rr
 		}
 	}
 	r
@@ -122,6 +134,9 @@ setMethod("crs", signature("SpatRasterDataset"),
 		x <- y
 	} else if (is.character(x)) {
 		x <- x[1]
+		if (tolower(x) == "local") {
+			x = 'LOCAL_CS["Cartesian (Meter)", LOCAL_DATUM["Local Datum",0], UNIT["Meter",1.0], AXIS["X",EAST], AXIS["Y",NORTH]]'
+		}
 	} else {
 		error("crs", "I do not know what to do with this argument (expected a character string)")
 	}

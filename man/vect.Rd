@@ -50,7 +50,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \item{filter}{SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points). It is guaranteed that all features that overlap with the extent of filter will be returned. It can happen that additional geometries are returned}
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
-\item{crs}{character. The coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see \code{\link{crs}})}
+\item{crs}{character. The coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see \code{\link{crs}}). See \code{\link{crs}}}
 \item{proxy}{logical. If \code{TRUE} a SpatVectorProxy is returned}
 \item{what}{character indicating what to read. Either \code{""} for geometries and attributes, \code{geoms} to only read the geometries, \code{attributes} to only read the attributes (that are returned as a data.frame)}
 \item{geom}{character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)}

@@ -24,6 +24,7 @@
 #include "math_utils.h"
 #include "vecmath.h"
 #include "file_utils.h"
+#include "crs.h"
 
 
 void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const double &lindist) {
@@ -2090,6 +2091,7 @@ std::vector<double> SpatVector::area(std::string unit, bool transform, std::vect
 				SpatVector v = project("EPSG:4326");
 				if (v.hasError()) {
 					setError(v.getError());
+					addWarning("cannot transform these data to lon/lat. Use 'transform=FALSE'?");
 					return {NAN};
 				}
 				return v.area(unit, false, mask);
@@ -2289,7 +2291,13 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 		}
 
 	} else {
+		
 		if (transform) {
+			if (!can_transform(source[0].srs.wkt, "EPSG:4326")) {
+				out.setError("Cannot transform this crs to lon/lat. Use 'transform=FALSE'?");
+				return out;
+			}
+			
 			bool resample = false;
 //			SpatRaster empty = out.geometry(1);
 			size_t rcx = std::max(rcmax, 10);
