@@ -93,7 +93,7 @@ bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 	if (nr == 0) return true;
 
 //	GDALRasterAttributeTable *pRat = poBand->GetDefaultRAT();
-	GDALRasterAttributeTable *pRat = new GDALDefaultRasterAttributeTable();
+	GDALDefaultRasterAttributeTable *pRat = new GDALDefaultRasterAttributeTable();
 
 	for (size_t i=0; i<d.ncol(); i++) {
 		const char *fn = d.names[i].c_str();
@@ -136,6 +136,7 @@ bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 	delete pRat;
 	return (err == CE_None);
 }
+
 
 bool is_rat(SpatDataFrame &d) {
 	if (d.nrow() == 0) return false;

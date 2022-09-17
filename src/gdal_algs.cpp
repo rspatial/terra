@@ -1029,6 +1029,36 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 }
 
 
+/*
+bool getGridderAlgo(std::string algo, GDALGridAlgorithm &a) {
+	a = GGA_NearestNeighbor;
+	return true;
+}
+
+SpatRaster SpatRaster::gridder(std::string algo, std::vector<double> x, std::vector<double> y, std::vector<double> z, SpatOptions &opt) {
+
+	SpatRaster out=geometry(1);
+	GDALGridAlgorithm eAlg;
+	if (!getGridderAlgo(algo, eAlg) {
+		out.setError("error");
+		return out;
+	}
+	GUInt32 np = x.size();
+	GUInt32 nc = ncol();
+	GUInt32 nr = nrow();
+
+	const void *poOptions = NULL;
+	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, np, x, &y[0], &z[0], true);
+		
+	SpatExtent e = get_extent();
+	CPLErr err = GDALGridContextProcess(ctxt, e.xmin, e.xmax, e.ymin, e.ymax, nc, nr, GDALDataType eType, void *pData, NULL, NULL);
+
+	GDALGridContextFree(ctxt);
+	return out;
+}
+*/
+
+
 SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {
 	SpatRaster out = geometry(1, true, true, true);
 	if ((connections != 4) && (connections != 8)) {
