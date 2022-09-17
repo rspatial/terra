@@ -4,13 +4,12 @@
 
 \alias{wrap,SpatVector-method}
 \alias{wrap,SpatRaster-method}
-\alias{wrap,Spatial-method}
 
 
 \title{wrap (pack) a SpatRaster or SpatVector object}
 
 \description{
-Wrap a SpatRaster or SpatVector object to create a Packed* object. Packed objects can be saved as an R object to disk (.rds or .RData), or passed over a connection that serializes (e.g. to nodes on a computer cluster); but with large datasets passing a filename could be more sensible in that context. 
+Wrap a SpatRaster or SpatVector object to create a Packed* object. Packed objects can be passed over a connection that serializes (e.g. to nodes on a computer cluster). At the receiving end they need to be unpacked with either \code{rast} or \code{vect}.
 }
 
 \usage{
