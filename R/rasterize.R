@@ -11,6 +11,22 @@ setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"),
 # now can use
 # r@ptr = r@ptr$rasterizePoints(v@ptr, "mean", 1:nrow(v), NA, opt)
 
+.set_names <- function(wopt, cnms, fun, nc) {
+	if (is.null(wopt$names)) {
+		if (is.null(cnms)) {
+			if (nc == 1) {
+				cnms <- fun
+			} else {
+				cnms <- paste0(fun, "_", 1:nc)
+			}
+		} else {
+			cnms <- paste0(cnms, "_", fun)
+		}
+		wopt$names <- cnms
+	}
+	wopt
+}
+
 rasterize_points <- function(x, y, field, values, fun="last", background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 
 	if (update) {
@@ -21,6 +37,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 		}
 	}
 	nrx <- nrow(x)
+	cnms <- colnames(values)
 	if (!is.data.frame(values)) {
 		values <- as.data.frame(values)
 	}
@@ -55,7 +72,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 	if (length(g) == 0) {
 		return(r)
 	}
-	values <- values[i,]
+	values <- values[i, ,drop=FALSE]
 
 	if (missing(fun)) fun <- "last"
 	if (is.character(fun) && (fun %in% c("first", "last", "pa"))) {
@@ -82,6 +99,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 			}
 		}
 		#r[values[,1]] <- as.matrix(values[,-1])
+		wopt <- .set_names(wopt, cnms, fun, NCOL(values))
 
 	} else {
 		has_levels <- FALSE
@@ -89,8 +107,16 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 		# allow for multiple fields
 		#r[a[,1]] <- as.matrix(a[,-1])
 		levs <- NULL
+		if (is.null(wopt$names)) {
+			fun <- .makeTextFun(fun)
+			if (inherits(fun, "character")) {
+				wopt <- .set_names(wopt, cnms, fun, NCOL(values))
+			} else if (!is.null(cnms)) {
+				wopt$names <- cnms
+			}
+		}
 	}
-
+	values <- as.matrix(values)
 
 	if (!update) {
 		if (has_levels) {
@@ -106,7 +132,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 		w <- matrix(background, nrow=b$nrows * nc, ncol=nl)
 		mincell <- cellFromRowCol(r, b$row[i], 1)
 		maxcell <- cellFromRowCol(r, b$row[i] + b$nrows[i]-1, nc)
-		vv <- values[values[,1] >= mincell & values[,1] <= maxcell, ]
+		vv <- values[values[,1] >= mincell & values[,1] <= maxcell, ,drop=FALSE]
 		if (nrow(vv) > 0) {
 			vv[,1] <- vv[,1] - (b$row[i] - 1) * nc
 			w[vv[,1],] <- vv[,-1]
@@ -125,10 +151,24 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 
 setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
 	function(x, y, values=1, fun, ..., background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list()) {
-
 		lonlat <- .checkXYnames(colnames(x))
-
-		rasterize_points(x=x, y=y, field="", values=rep_len(values, nrow(x)), fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)
+		
+		if (NCOL(values) <= 1) {
+			values <- unlist(values)
+			if (length(values) > nrow(x)) {
+				error("rasterize", "length(values) > nrow(x)")
+			}
+			values=rep_len(values, nrow(x))
+		} else {
+			if (nrow(values) > nrow(x)) {
+				error("rasterize", "nrow(values) > nrow(x)")
+			}
+			if (nrow(values) < nrow(x)) {
+				i <- rep_len(1:nrow(values), nrow(x))
+				values <- values[i, ]			
+			}
+		}
+		rasterize_points(x=x, y=y, field="", values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)
 
 	}
 )

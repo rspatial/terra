@@ -128,9 +128,10 @@ setMethod("wrap", signature(x="SpatRaster"),
 		r <- methods::new("PackedSpatRaster")
 		r@definition <- as.character(x)
 		
-		b <- blocks(x, 2)
+		opt <- spatOptions(ncopies=2)
+		can <- x@ptr$canProcessInMemory(opt)
 		s <- sources(x)
-		if ((b$n == 1) || (all(s == ""))) {
+		if (can || (all(s == ""))) {
 			r@values <- values(x)
 		} else if (all(s != "")) {
 			r@attributes$sources <- sources(x, TRUE, TRUE)
@@ -142,6 +143,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 		
 		if (any(is.factor(x))) {
 			r@attributes$levels <- cats(x)
+			r@attributes$levindex <- activeCat(x, 0)
 		}
 		v <- time(x)
 		if (any(!is.na(v))) {
@@ -187,13 +189,14 @@ setMethod("rast", signature(x="PackedSpatRaster"),
 		
 		if (length(x@attributes) > 0) {
 			nms <- names(x@attributes)
-			if (all(nms %in% c("levels", "time", "units", "depth"))) {
+			if (any(nms %in% c("levels", "time", "units", "depth"))) {
 				time(r) <- x@attributes$time
 				units(r) <- x@attributes$units
 				depth(r) <- x@attributes$depth
-				levels(r) <- x@attributes$levels
-			} else {
-				levels(r) <- x@attributes
+				if (!is.null(x@attributes$levels)) {
+					if (is.null(x@attributes$levindex)) x@attributes$levindex <- 2
+					set.cats(r, layer=0, x@attributes$levels, index=x@attributes$levindex+1)
+				}
 			}
 		}
 		r
@@ -227,7 +230,7 @@ setMethod("saveRDS", signature(object="SpatVector"),
 setMethod("serialize", signature(object="SpatRaster"),
 	function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, refhook = NULL) {
 		if (!all(inMemory(object))) {
-			opt <- spatOptions()
+			opt <- spatOptions(ncopies=2)
 			if (object@ptr$canProcessInMemory(opt)) {
 				set.values(object)
 			} else {
