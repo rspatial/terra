@@ -74,10 +74,10 @@ droplevels removes categories that are not used (declared but not present as val
 <span class="fu">levels</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">cats</span><span class="op">(</span><span class="va">x</span>, <span class="va">layer</span>, active<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">cats</span><span class="op">(</span><span class="va">x</span>, <span class="va">layer</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">categories</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, <span class="va">index</span><span class="op">)</span>
+<span class="fu">categories</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, <span class="va">active</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
 <span class="fu">droplevels</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
@@ -89,16 +89,13 @@ droplevels removes categories that are not used (declared but not present as val
 <dd><p>SpatRaster</p></dd>
 
   <dt>layer</dt>
-<dd><p>positive integer, the layer number or name</p></dd>
-
-  <dt>active</dt>
-<dd><p>logical. If <code>TRUE</code>, only return the active category</p></dd>
+<dd><p>the layer name or number (positive integer); or 0 for all layers</p></dd>
 
   <dt>value</dt>
 <dd><p>a data.frame (ID, category) that define the categories. Or <code>NULL</code> to remove them</p></dd>
 
-  <dt>index</dt>
-<dd><p>positive integer, indicating the column in <code>data.frame</code> <code>value</code> to be used as the (active) category, (not counting the first column with the cell values)</p></dd>
+  <dt>active</dt>
+<dd><p>positive integer, indicating the column in <code>data.frame</code> <code>value</code> to be used as the active category, (not counting the first column with the cell values)</p></dd>
 
 </dl></div>
     <div id="value">

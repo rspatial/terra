@@ -77,7 +77,7 @@
 
 
   <dt>values</dt>
-<dd><p>numeric. For when <code>x</code> is a matrix. Normally of length 1 or nrow(x). The values will be recycled to <code>nrow(x)</code></p></dd>
+<dd><p>typically a numeric vector of length <code>1</code> or <code>nrow(x)</code>. If the length is below <code>nrow(x)</code> the values will be recycled to <code>nrow(x)</code>. Only used when <code>x</code> is a matrix. Can also be a matrix or data.frame</p></dd>
 
   
   <dt>fun</dt>
