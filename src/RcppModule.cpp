@@ -363,7 +363,6 @@ RCPP_MODULE(spat){
 		.constructor<SpatExtent, std::string>()
 		.constructor<std::vector<std::string>>()
 		
-		.method("test", &SpatVector::test)
 		.method("deepcopy", &SpatVector::deepCopy)
 		.method("wkt", &SpatVector::wkt)
 		.method("wkb", &SpatVector::wkb)

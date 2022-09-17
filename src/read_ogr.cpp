@@ -375,25 +375,6 @@ SpatGeom emptyGeom() {
 }
 
 
-#include "Rcpp.h"
-#include <regex>
-
-bool SpatVector::test(std::string filename) { 
-
-	static int hasWorkingRegex = std::regex_match("c", std::regex("a|b|c"));
-    if(hasWorkingRegex) 
-		Rcpp::Rcout << "regex works" << std::endl; 
-	else 
-		Rcpp::Rcout << "regex does not work" << std::endl ;
-
-	R_FlushConsole(); R_ProcessEvents();
-
-	GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx(filename.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
-	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
-	return true;
-}
-
-
 bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
 
 //Rcpp::Rcout << 1 << std::endl;

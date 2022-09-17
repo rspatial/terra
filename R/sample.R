@@ -441,8 +441,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				} else {
 					x@ptr <- x@ptr$sampleRegularRaster(size)
 				}
-				x <- messages(x, "spatSample")
-				return(x);
+				return (messages(x, "spatSample"))
 			} else {
 				opt <- spatOptions()
 				if (length(size) > 1) {

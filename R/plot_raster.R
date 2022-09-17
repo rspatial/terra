@@ -12,7 +12,9 @@
 		out$values = FALSE
 		return(out)
 	}
+
 	uzi <- unique(z)
+
 	if (type == "depends") {
 		if (length(uzi) < 6) {
 			return (.as.raster.classes(out, x))
@@ -439,6 +441,7 @@
 			out$r <- matrix(grDevices::rgb(t(grDevices::col2rgb(out$r)), alpha=alpha, maxColorValue=255),
 			nrow=nrow(out$r), byrow=TRUE)
 		}
+
 		out <- .plotit(out, new=new, reset=reset, ...)
 	}
 	invisible(out)
@@ -478,7 +481,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			}
 			x <- spatSample(x, maxcell, ext=ext, method="regular", as.raster=TRUE)
 		}
-
+		
 		if (is.character(legend)) {
 			plg$x <- legend
 			legend <- TRUE

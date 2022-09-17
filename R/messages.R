@@ -12,6 +12,7 @@ warn <- function(f, wmsg="", ...) {
 }
 
 messages <- function(x, f="") {
+	g <- gc(verbose=FALSE)
 	if (methods::.hasSlot(x, "ptr")) {
 		if (x@ptr$has_warning()) {
 			warn(f, paste(x@ptr$getWarnings(), collapse="\n"))
@@ -19,7 +20,6 @@ messages <- function(x, f="") {
 		if (x@ptr$has_error()) {
 			error(f, x@ptr$getError())
 		}
-		return(x)
 	} else {
 		if (x$has_warning()) {
 			warn(f, paste(x$getWarnings(), collapse="\n"))
@@ -27,8 +27,8 @@ messages <- function(x, f="") {
 		if (x$has_error()) {
 			error(f, x$getError())
 		}
-		return(x)
 	}
+	x
 }
 
 
