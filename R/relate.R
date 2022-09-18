@@ -230,7 +230,7 @@ setMethod("adjacent", signature(x="SpatRaster"),
 		if (inherits(directions, "matrix")) {
 			v <- x@ptr$adjacentMat(cells, as.logical(directions), dim(directions), include)
 		} else {
-			if (pairs) include <- FALSE
+			#if (pairs) include <- FALSE
 			v <- x@ptr$adjacent(cells,  as.character(directions)[1], include)
 		}
 		messages(x, "adjacent")
