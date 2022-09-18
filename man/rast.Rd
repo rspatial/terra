@@ -69,7 +69,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \item{keepunits}{logical. If \code{FALSE} the layer units are discarded}
 \item{props}{logical. If \code{TRUE} the properties (categories and color-table) are kept}
 \item{extent}{object of class SpatExtent. If present, the arguments xmin, xmax, ymin and ymax are ignored}
-\item{resolution}{numeric vector of length 1 or 2 to set the resolution (see \code{\link{res}}). If this argument is used, arguments \code{ncol} and \code{nrow} are ignored }
+\item{resolution}{numeric vector of length 1 or 2 to set the resolution (see \code{\link{res}}). If this argument is used, arguments \code{ncols} and \code{nrows} are ignored }
 \item{vals}{numeric. An optional vector with cell values (if fewer values are provided, these are recycled to reach the number of cells)}
 \item{names}{character. An optional vector with layer names (must match the number of layers)}
 \item{time}{time or date stamps for each layer}
