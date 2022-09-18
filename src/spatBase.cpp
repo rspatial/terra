@@ -537,27 +537,28 @@ void SpatProgress::init(size_t n, int nmin) {
 	
 	if ((nmin <= 0) || ((int)n < nmin)) {
 		show = false;
-	} else {
-		show = true;
+		return;
+	} 
 	
-		std::string bar = "|---------|---------|---------|---------|";
-		Rcpp::Rcout << bar << "\r";
-		R_FlushConsole();
+	show = true;
+	
+	std::string bar = "|---------|---------|---------|---------|";
+	Rcpp::Rcout << bar << "\r";
+	R_FlushConsole();
 
-		nstep = n;
-		step = 0;
-		size_t width = bar.size();
+	nstep = n;
+	step = 0;
+	size_t width = bar.size();
 		
-		double increment = (double) width / double(nstep);
+	double increment = (double) width / double(nstep);
 
-		steps.resize(0);
-		steps.reserve(nstep+1);
-		for (size_t i=0; i<nstep; i++) {
-			int val = round(i * increment);
-			steps.push_back(val);
-		}
-		steps.push_back(width);
+	steps.resize(0);
+	steps.reserve(nstep+1);
+	for (size_t i=0; i<nstep; i++) {
+		int val = round(i * increment);
+		steps.push_back(val);
 	}
+	steps.push_back(width);
 }
 
 void SpatProgress::stepit() {
@@ -568,18 +569,18 @@ void SpatProgress::stepit() {
 				for (int i=0; i<n; i++) Rcpp::Rcout << "=";
 			}
 		} else if (step == nstep){
-			Rcpp::Rcout << "\r                                          \r";
+			Rcpp::Rcout << "\r                                          \r\r";
 		}
 		step++;
+		R_FlushConsole();
 	}
-	R_FlushConsole();
 }
 
 void SpatProgress::interrupt() {
 	if (show) {
-		Rcpp::Rcout << "\r                                          \r";
+		Rcpp::Rcout << "\r                                          \r\r";
+		R_FlushConsole();
 	}
-	R_FlushConsole();
 }
 
 #else 

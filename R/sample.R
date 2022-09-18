@@ -185,7 +185,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 		x <- crop(x, ext)
 	}
 	if (nlyr(x) > 1) {
-		x <- ifel(anyNA(x), NA, 0)
+		x <- subst(anyNA(x), 1, NA)
 	}
 	if (lonlat) {
 		v <- cbind(cell=1:ncell(x), abs(cos(pi * values(init(x, "y")) / 360)), values(x))		
