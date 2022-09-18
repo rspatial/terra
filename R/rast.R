@@ -314,10 +314,11 @@ setMethod("rast", signature(x="ANY"),
 				sfi <- attr(x, "sf_column")
 				crs(out) <- attr(x[[sfi]], "crs")$wkt
 			}
-			out
 		} else {
-			methods::as(x, "SpatRaster")
+			out <- methods::as(x, "SpatRaster")
 		}
+		g <- gc()
+		out
 	}
 )
 

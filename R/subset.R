@@ -125,14 +125,16 @@ setMethod("subset", signature(x="SpatVector"),
 					names(nl) <- names(d)
 					eval(substitute(select), nl, parent.frame())
 				}
-			x[r, v, drop=drop]
+			x <- x[r, v, drop=drop]
 		} else {
 			if (missing(select)) {
-				x[which(as.vector(subset)), drop=drop]
+				x <- x[which(as.vector(subset)), drop=drop]
 			} else {
-				x[which(as.vector(subset)), select, drop=drop]
+				x <- x[which(as.vector(subset)), select, drop=drop]
 			}
 		}
+		g <- gc()
+		x
 	}
 )
 

@@ -8,7 +8,7 @@
 
 - `wrap<SpatRaster>` will use file references if the data is deemed to large to all load into memory. [#801](https://github.com/rspatial/terra/issues/801) by Jean-Romain
 - better support for a "local" arbitrary Euclidean crs [#797](https://github.com/rspatial/terra/issues/797) by Agustin Lobo
-- fixed the annoying garbage collection messages `Error in x$.self$finalize() : attempt to apply non-function` at least for some cases [#218](https://github.com/rspatial/terra/issues/218) by Charlie Joey Hadley
+- fixed the annoying garbage collection messages `Error in x$.self$finalize() : attempt to apply non-function` at least for some cases. [#218](https://github.com/rspatial/terra/issues/218) by Charlie Joey Hadley
 
 ## bug fixes 
 
