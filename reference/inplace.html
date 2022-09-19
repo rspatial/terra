@@ -81,7 +81,7 @@ set.crs is the in-place replacement version of crs&amp;lt;-'><meta property="og:
 <span class="fu">set.crs</span><span class="op">(</span><span class="va">x</span>, <span class="va">value</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">set.values</span><span class="op">(</span><span class="va">x</span>, <span class="va">cells</span>, <span class="va">values</span><span class="op">)</span>
+<span class="fu">set.values</span><span class="op">(</span><span class="va">x</span>, <span class="va">cells</span>, <span class="va">values</span>, layer<span class="op">=</span><span class="fl">0</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
 <span class="fu">set.cats</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, <span class="va">index</span><span class="op">)</span></code></pre></div>
@@ -110,7 +110,7 @@ set.crs is the in-place replacement version of crs&amp;lt;-'><meta property="og:
 
 
   <dt>layer</dt>
-<dd><p>positive integer indicating to which layer to you want to assign these categories</p></dd>
+<dd><p>positive integer(s) indicating to which layer(s) to you want to assign these categories or to which you want to set these values. A number &lt; 1 indicates "all layers"</p></dd>
 
 </dl></div>
     <div id="value">
@@ -147,6 +147,7 @@ set.crs is the in-place replacement version of crs&amp;lt;-'><meta property="og:
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># change values</span></span>
 <span class="r-in"><span class="fu">set.values</span><span class="op">(</span><span class="va">r</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>, <span class="fl">900</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [set.values] invalid layer numbers</span>
 </code></pre></div>
     </div>
   </div>

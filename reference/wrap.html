@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">wrap</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="fu">wrap</span><span class="op">(</span><span class="va">x</span>, proxy<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector</span>
 <span class="fu">wrap</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
@@ -64,6 +64,9 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatVector or SpatRaster</p></dd>
+
+  <dt>proxy</dt>
+<dd><p>logical. If <code>FALSE</code> raster cell values are forced to memory if possible. If <code>TRUE</code>, a reference to source filenames is stored for data sources that are not in memory</p></dd>
 
 </dl></div>
     <div id="value">
