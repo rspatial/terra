@@ -732,6 +732,7 @@ RCPP_MODULE(spat){
 #endif
 		.method("setValues", &SpatRaster::setValues)
 		.method("replaceCellValues", &SpatRaster::replaceCellValues)
+		.method("replaceCellValuesLayer", &SpatRaster::replaceCellValuesLayer)
 		.method("setRange", &SpatRaster::setRange, "setRange")
 		.method("writeStart", &SpatRaster::writeStart, "writeStart")
 		.method("writeStop", &SpatRaster::writeStop, "writeStop")

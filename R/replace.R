@@ -162,46 +162,67 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 
 
 setMethod("set.values", signature(x="SpatRaster"),
-	function(x, cells, values)  {
-		if (missing(cells) && missing(values)) {
-			x@ptr$readAll()
-			return(invisible(TRUE));
-		}
-## future: allow setting values in specific layers.
-#		if (!missing(layers)) {
-#			layers <- 0
-#		} else {
-#			if (any(is.na(layers))) { error("set.values", "layers cannot be NA")}
-#			if (inherits(layers, "character")) {
-#				layers <- match(layers, names(x))
-#				if (any(is.na(layers))) { error("set.values", "invalid layer names")}
-#			}
-#			if (any((layers < 1) || (layers > nlyr(x))))  { error("set.values", "invalid layer numbers") }
-#			n <- length(layers)
-#			if (n > length(unique(layers)))  { error("set.values", "duplicated layers") }
-#		}
-		bylyr <- FALSE
-		if (!is.null(dim(values))) {
-			#if ((layers[1] > 0) && (ncol(values) != n)) {
-			#	error("set.values", "ncol(values) does not match the number of layers")
-			#} else
-			if (ncol(values) != nlyr(x)) {
-				error("set.values", "ncol(values) does not match the nlyr(x)")
+	function(x, cells, values, layer=0)  {
+		if (is.character(layer)) {
+			layer <- match(layer, names(x))
+			if (any(is.na(layer))) {
+				error("set.values", "invalid layer")
 			}
-			bylyr <- TRUE
-			if (inherits(values, "data.frame")) {
-				values <- as.matrix(values)
-			}
-			values <- as.vector(values)
 		}
-		if (!x@ptr$replaceCellValues(cells-1, values, bylyr, spatOptions())) {
+		layer <- round(layer)
+
+		if (all(layer < 1)) {
+			if (missing(cells) && missing(values)) {
+				return(invisible(TRUE));
+			}
+			if (any(is.na(layer))) { error("set.values", "layers cannot be NA")}
+			if (inherits(layer, "character")) {
+				layer <- match(layer, names(x))
+				if (any(is.na(layer))) { error("set.values", "invalid layer names")}
+			}
+			if (any((layer < 1) | (layer > nlyr(x))))  { error("set.values", "invalid layer numbers") }
+			n <- length(layer)
+			if (n > length(unique(layer)))  { error("set.values", "duplicated layers") }
+
+			bylyr <- FALSE
+			if (!is.null(dim(values))) {
+				if (ncol(values) != n) {
+					error("set.values", "ncol(values) does not match the `length(layer)`")
+				}
+				bylyr <- TRUE
+				if (inherits(values, "data.frame")) {
+					values <- as.matrix(values)
+				}
+				values <- as.vector(values)
+			}
+			ok <- x@ptr$replaceCellValuesLayer(layer-1, cells-1, values, bylyr, spatOptions())
 			messages(x)
-		} else {
 			invisible(TRUE)
+		} else {
+			if (any(layer < 1)) {
+				error("set.values", "some (but not all) layer numbers are < 1")
+			}
+			if (missing(cells) && missing(values)) {
+				x@ptr$readAll()
+				return(invisible(TRUE));
+			}
+			bylyr <- FALSE
+			if (!is.null(dim(values))) {
+				if (ncol(values) != nlyr(x)) {
+					error("set.values", "ncol(values) does not match the nlyr(x)")
+				}
+				bylyr <- TRUE
+				if (inherits(values, "data.frame")) {
+					values <- as.matrix(values)
+				}
+				values <- as.vector(values)
+			}
+			ok <- x@ptr$replaceCellValues(cells-1, values, bylyr, spatOptions())
+			messages(x)
 		}
+		invisible(TRUE)
 	}
 )
-
 
 setReplaceMethod("[", c("SpatRaster", "numeric", "numeric"),
 	function(x, i, j, value) {

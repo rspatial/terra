@@ -69,10 +69,12 @@ setMethod ("set.cats" , "SpatRaster",
 
 		if (is.character(layer)) {
 			layer <- match(layer, names(x))
-			if (is.na(layer)) {
+			if (any(is.na(layer))) {
 				error("set.cats", "invalid layer")
 			}
 		}
+		layer <- round(layer)
+		
 		if (length(layer) > 1) {
 			if (!is.list(value)) {
 				error("set.cats", "value should be a list")

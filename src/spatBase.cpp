@@ -569,7 +569,7 @@ void SpatProgress::stepit() {
 				for (int i=0; i<n; i++) Rcpp::Rcout << "=";
 			}
 		} else if (step == nstep){
-			Rcpp::Rcout << "\r                                          \r\r";
+			Rcpp::Rcout << "\r                                          \r";
 		}
 		step++;
 		R_FlushConsole();
@@ -578,7 +578,7 @@ void SpatProgress::stepit() {
 
 void SpatProgress::interrupt() {
 	if (show) {
-		Rcpp::Rcout << "\r                                          \r\r";
+		Rcpp::Rcout << "\r                                          \r";
 		R_FlushConsole();
 	}
 }

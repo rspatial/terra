@@ -3922,6 +3922,84 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 }
 
 
+bool SpatRaster::replaceCellValuesLayer(std::vector<size_t> layers, std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt) {
+	
+	size_t nl = layers.size();
+
+	size_t maxnl = nlyr()-1;
+	for (size_t i=0; i<nl; i++) {
+		if (layers[i] > maxnl) {
+			setError("invalid layer number");
+			return(false);
+		}
+	}
+
+	size_t cs = cells.size();
+	size_t vs = v.size();
+	if (vs == 1) {
+		bylyr = false;
+		recycle(v, cs);
+	} else if (bylyr) {
+		if (vs != (cs*nl)) {
+			setError("length of cells and values do not match");
+			return false;
+		}
+	} else if (cs != vs) {
+		if ((vs / nl) == cs) {
+			bylyr = true;
+		} else {
+			setError("lengths of cells and values do not match");
+			return false;
+		}
+	}
+	size_t nc = ncell();
+
+
+	if (!hasValues()) {
+		*this = init({NAN}, opt);
+	}
+	
+	std::vector<size_t> srcs;
+	srcs.reserve(nl);
+	for (size_t i=0; i<nl; i++) {
+	    std::vector<unsigned> sl = findLyr(layers[i]);
+		size_t src = sl[0];
+		size_t lyr = sl[1];
+		
+		srcs.push_back(src);
+		
+		if (!source[src].memory) {
+			// if sources is a temp file update the file?
+			// or create a tmp file?
+			try {
+				readAll();
+			} catch(...) {
+				setError("cannot process this raster in memory");
+				return false;
+			}
+		}
+
+		size_t off = nc * lyr;
+		if (bylyr) {
+			size_t koff = cs * i;
+			for (size_t k=0; k<cs; k++) {
+				source[src].values[off + cells[k]] = v[koff + k];
+			}
+		} else {
+			for (size_t k=0; k<cs; k++) {
+				source[src].values[off + cells[k]] = v[k];
+			}
+		}
+	}
+	std::sort(srcs.begin(), srcs.end());
+	srcs.erase(std::unique(srcs.begin(), srcs.end()), srcs.end());
+	for (size_t i=0; i<srcs.size(); i++) {
+		source[i].setRange();
+	}
+	return true;
+}
+
+
 
 SpatRaster SpatRaster::rgb2hsx(std::string type, SpatOptions &opt) {
 

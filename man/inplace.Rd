@@ -51,7 +51,7 @@ These "in-place" replacement methods assign new value to an object without makin
 \S4method{set.crs}{SpatRaster}(x, value)
 \S4method{set.crs}{SpatVector}(x, value)
 
-\S4method{set.values}{SpatRaster}(x, cells, values)
+\S4method{set.values}{SpatRaster}(x, cells, values, layer=0)
 
 \S4method{set.cats}{SpatRaster}(x, layer=1, value, index)
 }
@@ -65,7 +65,7 @@ These "in-place" replacement methods assign new value to an object without makin
   \item{cells}{cell numbers or missing}
   \item{values}{replacement values or missing to load all values into memory}
 
-  \item{layer}{positive integer indicating to which layer to you want to assign these categories}
+  \item{layer}{positive integer(s) indicating to which layer(s) to you want to assign these categories or to which you want to set these values. A number < 1 indicates "all layers"}
 }
 
 \value{logical (invisibly)}

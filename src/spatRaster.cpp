@@ -1170,7 +1170,7 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<long> values, std::vector
 
 bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index) {
 
-	if (layer > (nlyr()-1)) {
+	if (layer >= nlyr()) {
 		setError("invalid layer number");
 		return(false);
 	}
