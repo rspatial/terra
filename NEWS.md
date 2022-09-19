@@ -14,7 +14,7 @@
 
 - `spatSample` with `na.rm` and SpatRasters with multiple layers did not work. [#800](https://github.com/rspatial/terra/issues/800) by Andrea Manica
 - `adjacent<SpatRaster>` with `pairs=TRUE, include=TRUE` ignored `include=TRUE` [#808](https://github.com/rspatial/terra/issues/808) by Joseph Lewis
-
+- `rasterize` did not accept "NA" as value for updating [#809](https://github.com/rspatial/terra/issues/809)  by Márcia Barbosa
 
 # version 1.6-17
 

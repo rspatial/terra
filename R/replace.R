@@ -199,7 +199,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 			messages(x)
 			invisible(TRUE)
 		} else {
-			if (any(layer < 1)) {
+			if (any(layer > 0)) {
 				error("set.values", "some (but not all) layer numbers are < 1")
 			}
 			if (missing(cells) && missing(values)) {
