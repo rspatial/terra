@@ -124,12 +124,13 @@ setMethod("as.character", signature(x="SpatRaster"),
 
 
 setMethod("wrap", signature(x="SpatRaster"),
-	function(x) {
+	function(x, proxy=FALSE) {
 		r <- methods::new("PackedSpatRaster")
 		r@definition <- as.character(x)
 		
 		opt <- spatOptions(ncopies=2)
-		can <- x@ptr$canProcessInMemory(opt)
+		can <- (!proxy) && x@ptr$canProcessInMemory(opt)
+		
 		s <- sources(x)
 		if (can || (all(s == ""))) {
 			r@values <- values(x)

@@ -13,13 +13,14 @@ Wrap a SpatRaster or SpatVector object to create a Packed* object. Packed object
 }
 
 \usage{
-\S4method{wrap}{SpatRaster}(x)
+\S4method{wrap}{SpatRaster}(x, proxy=FALSE)
 
 \S4method{wrap}{SpatVector}(x)
 }
 
 \arguments{
   \item{x}{SpatVector or SpatRaster}
+  \item{proxy}{logical. If \code{FALSE} raster cell values are forced to memory if possible. If \code{TRUE}, a reference to source filenames is stored for data sources that are not in memory}
 }
 
 \value{
