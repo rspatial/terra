@@ -2764,7 +2764,6 @@ int distance_fn(const void *item1, const void *item2, double *distance, void *us
 }
 
 std::vector<int> SpatVector::nearest_geometry(SpatVector v) {
-	// for every feature find the index (1-based) of the nearest feature in v
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
@@ -2783,7 +2782,7 @@ std::vector<int> SpatVector::nearest_geometry(SpatVector v) {
 	}
 	std::vector<int> out;
 	if (tree_is_empty) {
-		setError("cannot make tree");
+		setError("cannot make spatial index");
 		return out;		
 	}
 	
@@ -2793,7 +2792,6 @@ std::vector<int> SpatVector::nearest_geometry(SpatVector v) {
 			item_g item, *ret_item;
 			item.id = -99;
 			item.g = x[i].get();
-			// now query tree for nearest GEOM at item:
 			ret_item = (item_g *) GEOSSTRtree_nearest_generic_r(hGEOSCtxt, tree.get(), &item,
 					x[i].get(), distance_fn, hGEOSCtxt);
 			if (ret_item != NULL) {
@@ -2810,7 +2808,7 @@ std::vector<int> SpatVector::nearest_geometry(SpatVector v) {
 	return out;
 }
 #else
-SpatVector SpatVector::nearest_feature(SpatVector v, std::string distfun) {
+std::vector<int> SpatVector::nearest_geometry(SpatVector v) {
 	SpatVector out;
 	out.setError("you need GEOS 3.6.1 for this method");
 	return out;
