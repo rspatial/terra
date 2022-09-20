@@ -97,12 +97,20 @@ Change a categorical layer into one or more numerical layers. With as.numeric yo
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fl">10</span></span>
 <span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id<span class="op">=</span><span class="fl">11</span><span class="op">:</span><span class="fl">13</span>, cover<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"forest"</span>, <span class="st">"water"</span>, <span class="st">"urban"</span><span class="op">)</span>, letters<span class="op">=</span><span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, value<span class="op">=</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="factors.html">levels</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">d</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .local(x, ...):</span> object 'index' not found</span>
 <span class="r-in"><span class="fu">catalyze</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (nrow(gg) &gt; 0) {    for (j in 2:ncol(gg)) {        z &lt;- as.numeric(y, index = j)        out &lt;- c(out, z)    }} else {    out &lt;- c(out, y)}:</span> argument is of length zero</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 3  (nrow, ncol, nlyr)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 36, 18  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sources     : memory  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               memory  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               memory  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       : cover, letters, value </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :     1,       1,    10 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max values  :     3,       3,    12 </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="activeCat.html">activeCat</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [activeCat] layer is not categorical</span>
 <span class="r-in"><span class="fu">as.numeric</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 1  (nrow, ncol, nlyr)</span>
@@ -110,9 +118,9 @@ Change a categorical layer into one or more numerical layers. With as.numeric yo
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source      : memory </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : lyr.1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :    11 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :    13 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : letters </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :       1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :       3 </span>
 </code></pre></div>
     </div>
   </div>
