@@ -60,7 +60,7 @@ setMethod("levels<-", signature(x="SpatRaster"),
 
 
 setMethod ("set.cats" , "SpatRaster",
-	function(x, layer=1, value, index=2) {
+	function(x, layer=1, value, active=2) {
 
 		if (missing(value)) {
 			error("set.cats", "value cannot be missing")
@@ -179,7 +179,7 @@ setMethod ("set.cats" , "SpatRaster",
 
 
 setMethod ("categories" , "SpatRaster",
-	function(x, layer=1, value, active) {
+	function(x, layer=1, value, active=3) {
 		x@ptr <- x@ptr$deepcopy()
 		set.cats(x, layer, value, active)
 		x

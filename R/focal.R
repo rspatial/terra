@@ -82,17 +82,28 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 		on.exit(readStop(x))
 		nl <- nlyr(x)
 		outnl <- nl * length(test)
+		out <- rast(x, nlyr=outnl)
+
 		transp <- FALSE
 		nms <- NULL
 		if (isTRUE(nrow(test) > 1)) {
 			transp <- TRUE
 			nms <- rownames(test)
+			if (nl > 1) {
+				nms <- paste0(rep(names(x), each=nl), "_", rep(nms, nl))
+			}
 		} else if (isTRUE(ncol(test) > 1)) {
 			nms <- colnames(test)
+			if (nl > 1) {
+				nms <- paste0(rep(names(x), each=nl), "_", rep(nms, nl))
+			}
+		} else {
+			nms <- names(x)
+			if (nl > 1) {
+				nms <- paste0(rep(names(x), each=nl), "_", rep(1:length(test), nl))
+			}
 		}
-
-		out <- rast(x, nlyr=outnl)
-		if (!is.null(nms)) {
+		if (length(nms) == nlyr(out)) {
 			names(out) <- nms
 		}
 		b <- writeStart(out, filename, overwrite, n=msz*4, sources=sources(x), wopt=wopt)

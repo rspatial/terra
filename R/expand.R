@@ -36,6 +36,10 @@ function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
 				y[3] <- y[3] - adj[2]
 				y[4] <- y[4] + adj[2]
 				y <- ext(y)
+			} else if (length(y) == 4) {
+				y <- ext(y)
+			} else {
+				error("extend", "if 'y' is a vector it should have 1, 2, or four numbers")
 			}
 		} else {
 			test <- try ( y <- ext(y), silent=TRUE )

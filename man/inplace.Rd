@@ -53,19 +53,21 @@ These "in-place" replacement methods assign new value to an object without makin
 
 \S4method{set.values}{SpatRaster}(x, cells, values, layer=0)
 
-\S4method{set.cats}{SpatRaster}(x, layer=1, value, index)
+\S4method{set.cats}{SpatRaster}(x, layer=1, value, active=2)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{value}{character (\code{set.names}). For \code{set.cats}: a data.frame with columns (value, category) or vector with category names}
-  \item{index}{positive integer indicating layer(s) to assign a name to, or the index to select the active category}
+  \item{index}{positive integer indicating layer(s) to assign a name to}
   \item{validate}{logical. Make names valid and/or unique?}
 
   \item{cells}{cell numbers or missing}
   \item{values}{replacement values or missing to load all values into memory}
 
   \item{layer}{positive integer(s) indicating to which layer(s) to you want to assign these categories or to which you want to set these values. A number < 1 indicates "all layers"}
+  
+  \item{active}{positive integer indicating the active category (column number in \code{value}}
 }
 
 \value{logical (invisibly)}
