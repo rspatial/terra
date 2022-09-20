@@ -868,6 +868,15 @@ setMethod("rotate", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("rotate", signature(x="SpatVector"),
+	function(x, longitude=0, left=TRUE, normalize=FALSE) {
+		x@ptr <- x@ptr$rotate_longitude(longitude, left)
+		if (normalize) {
+			x <- normalize.longitude(x)
+		}
+		messages(x, "rotate")		
+	}
+)
 
 setMethod("segregate", signature(x="SpatRaster"),
 	function(x, classes=NULL, keep=FALSE, other=0, round=FALSE, digits=0, filename="", ...) {

@@ -1227,12 +1227,14 @@ SpatVector SpatVector::round(int digits) {
 				}
 			}
 		}
+		out.geoms[i].computeExtent();
 	}
+	out.computeExtent();
 	return(out);
 }
 
 
-SpatVector SpatVector::normalize_dateline() {
+SpatVector SpatVector::normalize_longitude() {
 	SpatVector out = *this;
 	SpatExtent e = {180, 361, -91, 91};
 	SpatVector x = out.crop(e);
@@ -1254,6 +1256,47 @@ SpatVector SpatVector::normalize_dateline() {
 }
 
 
+SpatVector SpatVector::rotate_longitude(double longitude, bool left) {
+	SpatVector out = *this;
+	size_t ng = out.size();
+	for (size_t i=0; i<ng; i++) {
+		size_t np = out.geoms[i].size();
+		for (size_t j=0; j<np; j++) {
+			size_t nx = out.geoms[i].parts[j].x.size();
+			for (size_t k=0; k<nx; k++) {
+				if (left) {
+					if (out.geoms[i].parts[j].x[k] > longitude) {
+						out.geoms[i].parts[j].x[k] = out.geoms[i].parts[j].x[k] - 360;					
+					}
+				} else {
+					if (out.geoms[i].parts[j].x[k] < longitude) {
+						out.geoms[i].parts[j].x[k] = out.geoms[i].parts[j].x[k] + 360;					
+					}
+				}
+			}
+			if (out.geoms[i].parts[j].hasHoles()) {
+				size_t nh = out.geoms[i].parts[j].holes.size();
+				for (size_t k=0; k<nh; k++) {
+					size_t nx = out.geoms[i].parts[j].holes[k].x.size();
+					for (size_t h=0; h<nx; h++) {
+						if (left) {
+							if (out.geoms[i].parts[j].holes[k].x[h] > longitude) {
+								out.geoms[i].parts[j].holes[k].x[h] = out.geoms[i].parts[j].holes[k].x[h] - 360;
+							} 
+						} else {
+							if (out.geoms[i].parts[j].holes[k].x[h] < longitude) {
+								out.geoms[i].parts[j].holes[k].x[h] = out.geoms[i].parts[j].holes[k].x[h] + 360;
+							} 
+						}
+					}
+				}
+			}
+		}
+		out.geoms[i].computeExtent();		
+	}
+	out.computeExtent();		
+	return(out);
+}
 
 
 std::vector<std::vector<std::vector<double>>> SpatVector::linesList() {

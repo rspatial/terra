@@ -211,9 +211,7 @@ class SpatVector {
 		SpatVector fromDS(GDALDataset *poDS);
 		bool ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &message);		
 		bool delete_layers(std::string filename, std::vector<std::string> layers, bool return_error);		
-		std::vector<std::string> layer_names(std::string filename);		
-
-
+		std::vector<std::string> layer_names(std::string filename);	
 #endif
 
 // attributes
@@ -280,7 +278,8 @@ class SpatVector {
 		SpatVector transpose();
 		SpatVector flip(bool vertical);	
 		SpatVector rotate(double angle, double x0, double y0);
-		SpatVector normalize_dateline();
+		SpatVector normalize_longitude();
+		SpatVector rotate_longitude(double longitude, bool left);
 
 		std::vector<std::vector<double>> linesNA();
 		std::vector<std::vector<std::vector<double>>> linesList();

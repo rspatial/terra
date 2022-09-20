@@ -222,7 +222,7 @@ setMethod("normalize.longitude", signature(x="SpatVector"),
 		x[[fname]] <- 1:nrow(x)
 		d <- values(x)
 		out <- x[,fname]
-		out@ptr <- out@ptr$normalize_dateline()
+		out@ptr <- out@ptr$normalize_longitude()
 		out <- messages(out)
 		a <- aggregate(out, fname, count=FALSE)
 		if (nc > 0) {

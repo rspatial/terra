@@ -13,6 +13,8 @@ Rotate a SpatRaster that has longitude coordinates from 0 to 360, to standard co
 
 \usage{
 \S4method{rotate}{SpatRaster}(x, left=TRUE, filename="", ...)
+
+\S4method{rotate}{SpatVector}(x, longitude=0, left=TRUE, normalize=FALSE)
 }
 
 \arguments{
@@ -20,6 +22,9 @@ Rotate a SpatRaster that has longitude coordinates from 0 to 360, to standard co
  \item{left}{logical. If \code{TRUE}, rotate to the left, else to the right}
  \item{filename}{character. Output filename}
  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+
+ \item{longitude}{numeric. The longitude around which to rotate}
+ \item{normalize}{logical. Should the output be normalized to longitudes between -180 and 180? See \code{\link{normalize.longitude}}}
 }
 
 \value{
