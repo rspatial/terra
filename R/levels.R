@@ -82,7 +82,7 @@ setMethod ("set.cats" , "SpatRaster",
 			if (length(layer) != length(value)) {
 				error("set.cats", "length(value) != length(value)")
 			}
-			index <- rep_len(index, nlyr(x))
+			index <- rep_len(active, nlyr(x))
 			for (i in 1:length(layer)) {
 				ok <- set.cats(x, layer[i], value[[i]], index[i])
 				x <- messages(x, "set.cats")
@@ -97,7 +97,7 @@ setMethod ("set.cats" , "SpatRaster",
 			if (length(value) != nlyr(x)) {
 				error("set.cats", "length(value) != nlyr(x)")
 			}
-			index <- rep_len(index, nlyr(x))
+			index <- rep_len(active, nlyr(x))
 			for (i in 1:length(value)) {
 				ok <- set.cats(x, i, value[[i]], index[i])
 				x <- messages(x, "set.cats")
@@ -154,7 +154,7 @@ setMethod ("set.cats" , "SpatRaster",
 			}
 		}
 
-		index <- max(1, min(ncol(value), index))
+		index <- max(1, min(ncol(value), active))
 		if (setname) {
 			nms <- names(x)
 			nms[layer] <-  colnames(value)[index]
