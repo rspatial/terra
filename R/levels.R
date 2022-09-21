@@ -179,7 +179,7 @@ setMethod ("set.cats" , "SpatRaster",
 
 
 setMethod ("categories" , "SpatRaster",
-	function(x, layer=1, value, active=3) {
+	function(x, layer=1, value, active=2) {
 		x@ptr <- x@ptr$deepcopy()
 		set.cats(x, layer, value, active)
 		x
