@@ -2809,8 +2809,8 @@ std::vector<int> SpatVector::nearest_geometry(SpatVector v) {
 }
 #else
 std::vector<int> SpatVector::nearest_geometry(SpatVector v) {
-	SpatVector out;
-	out.setError("you need GEOS 3.6.1 for this method");
+	setError("you need GEOS 3.6.1 for this method");
+	std::vector<int> out;
 	return out;
 }
 #endif // GEOS361
