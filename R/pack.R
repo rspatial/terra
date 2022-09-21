@@ -33,11 +33,11 @@ setClass("PackedSpatRaster",
 	vd@crs <- as.character(crs(x))
 	stopifnot(vd@type %in% c("points", "lines", "polygons"))
 	g <- geom(x)
-	vd@coordinates <- g[, c("x", "y")]
-	j <- c(1,2, grep("hole", colnames(g)))
-	g <- g[,j]
+	vd@coordinates <- g[, c("x", "y"), drop=FALSE]
+	j <- c(1, 2, grep("hole", colnames(g)))
+	g <- g[ , j, drop=FALSE]
 	i <- which(!duplicated(g))
-	vd@index <- cbind(g[i, ], start=i)
+	vd@index <- cbind(g[i, ,drop=FALSE], start=i)
 	vd
 }
 
