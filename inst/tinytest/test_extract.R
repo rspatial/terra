@@ -3,6 +3,12 @@ f <- system.file("ex/lux.shp", package="terra")
 y <- vect(f)[1:2,]
 
 elev <- rast(system.file("ex/elev.tif", package = "terra"))
+e <- extract(elev, y, fun=mean, na.rm=TRUE)
+expect_equal(e[,2], c(467.10517, 333.86294))
+
+e <- extract(elev, y, fun=mean, exact=TRUE, na.rm=TRUE)
+expect_equal(e[,2], c(467.379239, 334.685564))
+
 e <- extract(elev, y, fun=mean, weights=TRUE, na.rm=TRUE)
 expect_equal(e[,2], c(467.14028, 335.22483))
 
