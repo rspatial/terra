@@ -725,12 +725,15 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 			if (weights) {
 				if (gtype == "lines") {
 					rasterizeLinesLength(cell, wgt, p, opt);
+				} else {
+					rasterizeCellsWeights(cell, wgt, p, opt);
 				}
 			} else if (exact) {
 				if (gtype == "lines") {	
 					rasterizeLinesLength(cell, wgt, p, opt);
+				} else {
+					rasterizeCellsExact(cell, wgt, p, opt);
 				}
-				rasterizeCellsExact(cell, wgt, p, opt);
 			} else {
 				cell = rasterizeCells(p, touches, opt);
             }

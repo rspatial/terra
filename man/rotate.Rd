@@ -11,7 +11,7 @@
 \description{
 Rotate a SpatRaster that has longitude coordinates from 0 to 360, to standard coordinates between -180 and 180 degrees (or vice-versa). Longitude between 0 and 360 is frequently used in global climate models.
 
-Rotate a SpatVector such that coordinates that are connected across the date line (and end up at the "other side" of the longitude scale are reconnected
+Rotate a SpatVector as for a SpatRaster \code{split=TRUE}, or to correct for coordinates that are connected across the date line (and end up at the "other side" of the longitude scale) are reconnected.
 }
 
 \usage{
@@ -52,6 +52,10 @@ g <- project(d, "+proj=longlat")
 x <- rotate(g, 50)
 plot(g)
 lines(x, col="red")
+
+## rotate countries to 0-360 longitude
+#w <- geodata::world(path=".")
+#x <- rotate(w, long=0, split=TRUE, left=FALSE)
 
 }
 
