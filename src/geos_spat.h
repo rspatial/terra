@@ -468,7 +468,16 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 	if (npts < 0) {
 		msg = "GEOS exception 9";
 		return false;
-	}
+	} 
+	if (npts == 0) { // for #813
+		x.push_back(NAN);
+		y.push_back(NAN);
+		gid.push_back(i);			
+		gp.push_back(j);			
+		hole.push_back(0);
+		return true;
+	}	
+		
 	double xvalue = 0;
 	double yvalue = 0;
 	for (int p=0; p < npts; p++) {
@@ -498,6 +507,16 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 		msg = "exception 99";
 		return false;
 	}
+
+	if (npts == 0) { // for #813
+		x.push_back(NAN);
+		y.push_back(NAN);
+		gid.push_back(i);			
+		gp.push_back(j);			
+		hole.push_back(0);
+		return true;
+	}	
+
 	double xvalue = 0;
 	double yvalue = 0;
 	for (int p=0; p < npts; p++) {
@@ -584,7 +603,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					out.setError(msg);
 					return out;
 				}
-			}	
+			}
 			if (track_ids) pts_ids.push_back(ids[i]);
 			f++;
 		} else if (gt == "LineString" || gt == "MultiLineString") {
@@ -615,9 +634,6 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 			f++;
 
 		} else if (gt == "GeometryCollection") {
-
-			//Rcpp::Rcout << np << std::endl;
-
 
 			size_t kk = 0; // introduced for intersect
 			for(size_t j = 0; j<np; j++) {
@@ -697,9 +713,11 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 		out.push_back(v);
 		//Rcpp::Rcout << "lns" << std::endl;
 	}
+
 	if (pt_x.size() > 0) {
 		SpatVector v;
 		v.setGeometry("points", pt_gid, pt_gp, pt_x, pt_y, pt_hole);
+
 		if (track_ids) v.df.add_column(pts_ids, "ids");
 		out.push_back(v);
 		//Rcpp::Rcout << "pts" << std::endl;
