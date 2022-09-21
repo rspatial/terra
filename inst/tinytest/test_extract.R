@@ -1,7 +1,12 @@
 
 f <- system.file("ex/lux.shp", package="terra")
-y <- vect(f)
-y <- y[1:2,]
+y <- vect(f)[1:2,]
+
+elev <- rast(system.file("ex/elev.tif", package = "terra"))
+e <- extract(elev, y, fun=mean, weights=TRUE, na.rm=TRUE)
+expect_equal(e[,2], c(467.14028, 335.22483))
+
+
 x <- rast(y, res=.2)
 values(x) <- 1:ncell(x)
 expect_equal(cells(x, y), cbind(ID=c(1,2), cell=c(1,4)))
@@ -182,5 +187,4 @@ expect_equal(round(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "
 # ee <- extract(x, v, as.list=TRUE)
 # m <- matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
 # expect_equal(round(as.vector(t(m)),6), c(5.200000, 10.400000,  1.733333, 16.750000, 33.500000,  5.583333))
-
 
