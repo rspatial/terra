@@ -16,7 +16,7 @@ Rotate a SpatVector such that coordinates that are connected across the date lin
 \usage{
 \S4method{rotate}{SpatRaster}(x, left=TRUE, filename="", ...)
 
-\S4method{rotate}{SpatVector}(x, longitude=0, left=TRUE, normalize=FALSE)
+\S4method{rotate}{SpatVector}(x, longitude=0, split=FALSE, left=TRUE, normalize=FALSE)
 }
 
 \arguments{
@@ -26,6 +26,7 @@ Rotate a SpatVector such that coordinates that are connected across the date lin
  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 
  \item{longitude}{numeric. The longitude around which to rotate}
+ \item{split}{logical. Should geometries be split at \code{longitude}?}
  \item{normalize}{logical. Should the output be normalized to longitudes between -180 and 180? See \code{\link{normalize.longitude}}}
 }
 

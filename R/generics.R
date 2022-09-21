@@ -869,12 +869,43 @@ setMethod("rotate", signature(x="SpatRaster"),
 )
 
 setMethod("rotate", signature(x="SpatVector"),
-	function(x, longitude=0, left=TRUE, normalize=FALSE) {
-		x@ptr <- x@ptr$rotate_longitude(longitude, left)
+	function(x, longitude=0, split=FALSE, left=TRUE, normalize=FALSE) {
+		if (split) {
+			e <- ext(x)
+			if ((longitude < e$xmin) || (longitude > e$xmax)) {
+				if (left) {
+					return(shift(x, -360))
+				} else {
+					return(shift(x, 360))
+				}
+			}
+			e <- as.vector(floor(e) + 1)
+			ew <- ext(c(e[1], longitude, e[3:4]))
+			ee <- ext(c(longitude, e[2:4]))
+			x$unique_id_for_aggregation <- 1:nrow(x)
+			xw <- crop(x, ew)
+			xe <- crop(x, ee)
+			if (left) {
+				xe <- shift(xe, -360)
+			} else {
+				xw <- shift(xw, 360)			
+			}
+			out <- rbind(xe, xw)
+			if (nrow(out) > nrow(x)) {
+				out <- aggregate(out, "unique_id_for_aggregation", id=F)
+				i <- match(out$unique_id_for_aggregation, x$unique_id_for_aggregation)
+				values(out) <- values(x)[i,,drop=FALSE]
+				x <- out
+			} 
+			x$unique_id_for_aggregation <- NULL
+		} else {
+			x@ptr <- x@ptr$rotate_longitude(longitude, left)
+			x <- messages(x, "rotate")		
+		}
 		if (normalize) {
 			x <- normalize.longitude(x)
 		}
-		messages(x, "rotate")		
+		x
 	}
 )
 
