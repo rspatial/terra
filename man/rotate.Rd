@@ -4,6 +4,7 @@
 
 \alias{rotate}
 \alias{rotate,SpatRaster-method}
+\alias{rotate,SpatVector-method}
 
 \title{Rotate data along longitude}
 
