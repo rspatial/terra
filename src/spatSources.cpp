@@ -612,15 +612,16 @@ void SpatRaster::collapse() {
 
 SpatRaster SpatRaster::collapse_sources() {
 	SpatRaster out;
-	//std::vector<SpatRasterSource> src;
+	std::vector<SpatRasterSource> src;
 	SpatRasterSource s = source[0];
 	for (size_t i=1; i<nsrc(); i++) {
 		if (! s.combine_sources(source[i])) {
-			out.source.push_back(s);
+			src.push_back(s);
 			s = source[i];
 		}
 	}
-	out.source.push_back(s);
+	src.push_back(s);
+	out.setSources(src);
 	return out;
 }
 

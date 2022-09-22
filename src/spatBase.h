@@ -210,13 +210,7 @@ class SpatExtent {
 		SpatExtent() {xmin = -180; xmax = 180; ymin = -90; ymax = 90;}
 		SpatExtent(double _xmin, double _xmax, double _ymin, double _ymax) {xmin = _xmin; xmax = _xmax; ymin = _ymin; ymax = _ymax;}
 		virtual ~SpatExtent(){}
-		void set(double xn, double xx, double yn, double yx) {
-			xmin = xn;
-			xmax = xx;
-			ymin = yn;
-			ymax = yx;
-		}
-		
+
 		SpatExtent deepCopy() {return *this;}
 		SpatExtent align(double d, std::string snap);
 
