@@ -344,11 +344,11 @@ class SpatRaster {
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs);
 		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> x);
 		SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options);
-		SpatRaster(SpatRasterSource s);
+		SpatRaster(SpatRasterSource &s);
 		virtual ~SpatRaster(){}
-
-		void setSource(SpatRasterSource s);
-		void setSources(std::vector<SpatRasterSource> s);
+		
+		void setSource(SpatRasterSource &s);
+		void setSources(std::vector<SpatRasterSource> &s);
 		//SpatRaster(const SpatRaster& x);
 
 

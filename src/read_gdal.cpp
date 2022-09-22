@@ -673,43 +673,43 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 
-	SpatRasterSource s;
-	s.ncol = poDataset->GetRasterXSize();
-	s.nrow = poDataset->GetRasterYSize();
-	s.nlyr = nl;
-	s.nlyrfile = nl;
-	s.resize(nl);
+	source.resize(1);
+//	SpatRasterSource s;
+	source[0].ncol = poDataset->GetRasterXSize();
+	source[0].nrow = poDataset->GetRasterYSize();
+	source[0].nlyr = nl;
+	source[0].nlyrfile = nl;
+	source[0].resize(nl);
 
-	s.flipped = false;
-	s.rotated = false;
+	source[0].flipped = false;
+	source[0].rotated = false;
 	double adfGeoTransform[6];
 
 	bool hasExtent = true;
 	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
 
 		double xmin = adfGeoTransform[0]; /* left x */
-		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e resolution */
+		double xmax = xmin + adfGeoTransform[1] * source[0].ncol; /* w-e resolution */
 		//xmax = roundn(xmax, 9);
 		double ymax = adfGeoTransform[3]; // top y
-		double ymin = ymax + s.nrow * adfGeoTransform[5];
+		double ymin = ymax + source[0].nrow * adfGeoTransform[5];
 		//ymin = roundn(ymin, 9);
 
 		if (adfGeoTransform[5] > 0) {
-			s.flipped = true;
+			source[0].flipped = true;
 			std::swap(ymin, ymax);
 		}
 
-		SpatExtent e(xmin, xmax, ymin, ymax);
-		s.extent = e;
+		source[0].extent.set(xmin, xmax, ymin, ymax);
 
 		if (adfGeoTransform[2] != 0 || adfGeoTransform[4] != 0) {
-			s.rotated = true;
+			source[0].rotated = true;
 			addWarning("the data in this file are rotated. Use 'rectify' to fix that");
 		}
 	} else {
 		hasExtent = false;
-		SpatExtent e(0, s.ncol, 0, s.nrow);
-		s.extent = e;
+		source[0].extent.set(0, source[0].ncol, 0, source[0].nrow);
+
 		if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
 			#ifndef standalone
 			setMessage("ncdf extent");
@@ -721,33 +721,33 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 	}
 
-	s.memory = false;
-	s.filename = fname;
-	s.open_ops = options;
-	//s.open_drivers = {gdrv}; // failed for some hdf
-	s.open_drivers = drivers;
-	//s.driver = "gdal";
+	source[0].memory = false;
+	source[0].filename = fname;
+	source[0].open_ops = options;
+	//source[0].open_drivers = {gdrv}; // failed for some hdf
+	source[0].open_drivers = drivers;
+	//source[0].driver = "gdal";
 
 /*
 	if( poDataset->GetProjectionRef() != NULL ) {
 		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
 		char *pszPRJ = NULL;
 		oSRS.exportToProj4(&pszPRJ);
-		s.crs = pszPRJ;
+		source[0].crs = pszPRJ;
 	} else {
-		s.crs = "";
+		source[0].crs = "";
 	}
 */
 
 	std::string crs = getDsWKT(poDataset);
 	if (crs == "") {
-		if (hasExtent && s.extent.xmin >= -180 && s.extent.xmax <= 360 && s.extent.ymin >= -90 && s.extent.ymax <= 90) {
+		if (hasExtent && source[0].extent.xmin >= -180 && source[0].extent.xmax <= 360 && source[0].extent.ymin >= -90 && source[0].extent.ymax <= 90) {
 			crs = "OGC:CRS84";
-			s.parameters_changed = true;
+			source[0].parameters_changed = true;
 		}
 	}
 	std::string msg;
-	if (!s.srs.set(crs, msg)) {
+	if (!source[0].srs.set(crs, msg)) {
 		addWarning(msg);
 	}
 
@@ -756,20 +756,20 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	std::vector<std::string> units;
 
 	try {
-		read_aux_json(fname, timestamps, timestep, units, s.nlyr);
+		read_aux_json(fname, timestamps, timestep, units, source[0].nlyr);
 	} catch(...) {
 		timestamps.resize(0);
 		units.resize(0);
 		addWarning("could not parse aux.json");
 	}
 	if (timestamps.size() > 0) {
-		s.time = timestamps;
-		s.timestep = timestep;
-		s.hasTime = true;
+		source[0].time = timestamps;
+		source[0].timestep = timestep;
+		source[0].hasTime = true;
 	}
 	if (units.size() > 0) {
-		s.unit = units;
-		s.hasUnit = true;
+		source[0].unit = units;
+		source[0].hasUnit = true;
 	}
 
 	GDALRasterBand  *poBand;
@@ -777,16 +777,16 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	double adfMinMax[2];
 	int bGotMin, bGotMax;
 
-//	s.layers.resize(1);
+//	source[0].layers.resize(1);
 //	std::string unit = "";
 
-	s.source_name = basename_noext(fname);
-	std::vector<std::vector<std::string>> bandmeta(s.nlyr);
-	bool getCols = s.nlyr == 3;
+	source[0].source_name = basename_noext(fname);
+	std::vector<std::vector<std::string>> bandmeta(source[0].nlyr);
+	bool getCols = source[0].nlyr == 3;
 	std::vector<unsigned> rgb_lyrs(3, -99);
 
 	int bs1, bs2;
-	for (size_t i = 0; i < s.nlyr; i++) {
+	for (size_t i = 0; i < source[0].nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
 
 		if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB")) {
@@ -799,38 +799,38 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		int success;
 	//	double naflag = poBand->GetNoDataValue(&success);
 	//	if (success) {
-	//		s.NAflag = naflag;
+	//		source[0].NAflag = naflag;
 	//	} else {
-	//		s.NAflag = NAN;
+	//		source[0].NAflag = NAN;
 	//	}
 
-		s.has_scale_offset[i] = false;
+		source[0].has_scale_offset[i] = false;
 		double offset = poBand->GetOffset(&success);
 		if (success) {
 			if (offset != 0) {
-				s.offset[i] = offset;
-				s.has_scale_offset[i] = true;
+				source[0].offset[i] = offset;
+				source[0].has_scale_offset[i] = true;
 			}
 		}
 		double scale = poBand->GetScale(&success);
 		if (success) {
 			if (scale != 1) {
-				s.scale[i] = scale;
-				s.has_scale_offset[i] = true;
+				source[0].scale[i] = scale;
+				source[0].has_scale_offset[i] = true;
 			}
 		}
 
 		poBand->GetBlockSize(&bs1, &bs2);
-		s.blockcols[i] = bs1;
-		s.blockrows[i] = bs2;
-		s.dataType[i] = dtypename(GDALGetDataTypeName(poBand->GetRasterDataType()));
+		source[0].blockcols[i] = bs1;
+		source[0].blockrows[i] = bs2;
+		source[0].dataType[i] = dtypename(GDALGetDataTypeName(poBand->GetRasterDataType()));
 
 		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
 		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
 		if( (bGotMin && bGotMax) ) {
-			s.hasRange[i] = true;
-			s.range_min[i] = adfMinMax[0];
-			s.range_max[i] = adfMinMax[1];
+			source[0].hasRange[i] = true;
+			source[0].range_min[i] = adfMinMax[0];
+			source[0].range_max[i] = adfMinMax[1];
 		}
 
 		//if( poBand->GetOverviewCount() > 0 ) printf( "Band has %d overviews.\n", poBand->GetOverviewCount() );
@@ -846,22 +846,21 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 		GDALColorTable *ct = poBand->GetColorTable();
 		if( ct != NULL ) {
-			s.hasColors[i] = true;
-			s.cols[i] = GetCOLdf(ct);
+			source[0].hasColors[i] = true;
+			source[0].cols[i] = GetCOLdf(ct);
 		}
 
 		std::string bandname = poBand->GetDescription();
 		char **cat = poBand->GetCategoryNames();
-		if( cat != NULL )	{
-			SpatCategories scat = GetCategories(cat, bandname);
-			s.cats[i] = scat;
-			s.hasCategories[i] = true;
+		if(cat != NULL )	{
+			source[0].cats[i] = GetCategories(cat, bandname);
+			source[0].hasCategories[i] = true;
 		}
 
 		bool have_rat = false;
 		SpatCategories crat;
 
-		if (!s.hasCategories[i]) {
+		if (!source[0].hasCategories[i]) {
 			GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 			if( rat != NULL ) {
 				crat = GetRAT(rat);
@@ -870,60 +869,60 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 						std::vector<std::string> catnms = crat.d.get_names();
 						std::vector<std::string> compnms = {"ID", "VALUE", "COUNT"};
 						if ((catnms.size() > 3) || (catnms != compnms)) {
-							s.cats[i] = crat;
-							s.hasCategories[i] = true;
+							source[0].cats[i] = crat;
+							source[0].hasCategories[i] = true;
 							have_rat = true;
 						}
 					} else {
-						s.cats[i] = crat;
-						s.hasCategories[i] = true;
+						source[0].cats[i] = crat;
+						source[0].hasCategories[i] = true;
 						have_rat = true;
 					}
 				}
 			}
 		}
 		//	} else {
-		//		s.cats[i].d.cbind(crat.d); // needs more checking.
+		//		source[0].cats[i].d.cbind(crat.d); // needs more checking.
 		//	} else {
 
-		if (!s.hasCategories[i]) {
+		if (!source[0].hasCategories[i]) {
 			if (GetVAT(fname, crat)) {
-				s.cats[i] = crat;
-				s.hasCategories[i] = true;
+				source[0].cats[i] = crat;
+				source[0].hasCategories[i] = true;
 				have_rat = true;
 			}
 		}
 
-		if ((!s.hasColors[i]) && (have_rat)) {
+		if ((!source[0].hasColors[i]) && (have_rat)) {
 			SpatDataFrame ratcols;
 			if (colsFromRat(crat.d, ratcols)) {
-				s.hasColors[i] = true;
-				s.cols[i] = ratcols;
+				source[0].hasColors[i] = true;
+				source[0].cols[i] = ratcols;
 			}
 		}
 
 		std::string nm = "";
-		if (s.hasCategories[i]) {
-			if (s.cats[i].index < s.cats[i].d.ncol()) {
-				std::vector<std::string> nms = s.cats[i].d.get_names();
-				nm = nms[s.cats[i].index];
+		if (source[0].hasCategories[i]) {
+			if (source[0].cats[i].index < source[0].cats[i].d.ncol()) {
+				std::vector<std::string> nms = source[0].cats[i].d.get_names();
+				nm = nms[source[0].cats[i].index];
 			}
 		}
 		if (nm == "") {
 			if (bandname != "") {
 				nm = bandname;
-			} else if (s.nlyr > 1) {
-				nm = s.source_name + "_" + std::to_string(i+1);
+			} else if (source[0].nlyr > 1) {
+				nm = source[0].source_name + "_" + std::to_string(i+1);
 			} else {
 				nm = basename_noext(fname) ;
 			}
 		}
 
 		std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
-		if ((!s.has_scale_offset[i]) && (in_string(dtype, "Int") || (dtype == "Byte"))) {
-			s.valueType[i] = 1;
+		if ((!source[0].has_scale_offset[i]) && (in_string(dtype, "Int") || (dtype == "Byte"))) {
+			source[0].valueType[i] = 1;
 		}
-		s.names[i] = nm;
+		source[0].names[i] = nm;
 	}
 
 
@@ -934,17 +933,19 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		while (*m != nullptr) {
 			metadata.push_back(*m++);
 		}
-		s.set_names_time_ncdf(metadata, bandmeta, msg);
+		source[0].set_names_time_ncdf(metadata, bandmeta, msg);
 	} else if (gdrv == "GRIB") {
-		s.set_names_time_grib(bandmeta, msg);
+		source[0].set_names_time_grib(bandmeta, msg);
 	}
 	if (msg.size() > 1) {
 		addWarning(msg);
 	}
 
 	GDALClose( (GDALDatasetH) poDataset );
-	s.hasValues = true;
-	setSource(s);
+	source[0].hasValues = true;
+
+//	source.resize(1);
+//	source[0] = std::move(s);
 
 	if (getCols) {
 		setRGB(rgb_lyrs[0], rgb_lyrs[1], rgb_lyrs[2], -99, "rgb");

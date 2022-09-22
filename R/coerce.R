@@ -460,7 +460,7 @@ setAs("sf", "SpatVector",
 	function(from) {
 		v <- try(.from_sf(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
-			error("as,sf", "coercion failed. You can try coercing via a Spatial* (sp) class")
+			error("as,sf", "coercion failed. Please report this at https://github.com/rspatial/terra")
 		}
 		v
 	}
@@ -478,7 +478,7 @@ setAs("sfc", "SpatVector",
 	function(from) {
 		v <- try(.from_sfc(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
-			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")
+			error("as,sfc", "coercion failed. Please report this at https://github.com/rspatial/terra")			
 		}
 		v
 	}
@@ -489,7 +489,7 @@ setAs("sfg", "SpatVector",
 	function(from) {
 		v <- try(.from_sfc(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
-			error("as,sfg", "coercion failed. You can try coercing via a Spatial* (sp) class")
+			error("as,sfg", "coercion failed. Please report at https://github.com/rspatial/terra")
 		}
 		v
 	}
@@ -499,7 +499,7 @@ setAs("XY", "SpatVector",
 	function(from) {
 		v <- try(.from_sfc(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
-			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")
+			error("as,sfc", "coercion failed. Please report at https://github.com/rspatial/terra")
 		}
 		v
 	}

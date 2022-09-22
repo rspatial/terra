@@ -4,6 +4,7 @@
 # License GPL v3
 
 
+
 setClass("SpatRaster",
 	representation (
 		ptr = "C++Object"
@@ -19,6 +20,12 @@ setClass("SpatRaster",
 		}
 	}
 )
+
+#setMethod("initialize", "SpatRaster", 
+#    function(.Object, ...) {
+#		.Object
+#    }
+#)
 
 setClass("SpatRasterDataset",
 	representation (

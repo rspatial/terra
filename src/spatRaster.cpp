@@ -54,9 +54,11 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 		//setError("cannot open file: " + fname[0]);
 		return;
 	}
+	if (fname.size() == 1) return; 
+	
 	SpatOptions opt;
+	SpatRaster r;
 	for (size_t i=1; i<fname.size(); i++) {
-		SpatRaster r;
 		bool ok = r.constructFromFile(fname[i], subds, subdsname, drivers, options);
 		if (r.msg.has_warning) {
 			addWarning(r.msg.warnings[0]);
@@ -79,44 +81,44 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 }
 
 
-void SpatRaster::setSources(std::vector<SpatRasterSource> s) {
+void SpatRaster::setSources(std::vector<SpatRasterSource> &s) {
 	source = s;
 }
 
 
-void SpatRaster::setSource(SpatRasterSource s) {
+void SpatRaster::setSource(SpatRasterSource &s) {
 	s.resize(s.nlyr); // appears to be necessary!
 	source = {s};
 }
 
 
-SpatRaster::SpatRaster(SpatRasterSource s) {
-	std::vector<SpatRasterSource> vs = {s};
-	setSources(vs);
+SpatRaster::SpatRaster(SpatRasterSource &s) {
+	source = {s};
+//	std::vector<SpatRasterSource> vs = {s};
+//	setSources(vs);
 }
 
 
 SpatRaster::SpatRaster() {
 
-	SpatRasterSource s;
-	s.nrow = 10;
-	s.ncol = 10;
-	s.extent = SpatExtent();
-	s.memory = true;
-	s.filename = "";
-	//s.driver = "";
-	s.nlyr = 1; // or 0?
-	s.resize(1);
+	source.resize(1);
+	source[0].nrow = 10;
+	source[0].ncol = 10;
+	source[0].extent = SpatExtent();
+	source[0].memory = true;
+	source[0].filename = "";
+	//source[0].driver = "";
+	source[0].nlyr = 1; // or 0?
+	source[0].resize(1);
 
-	s.hasRange = { false };
-	s.hasValues = false;
-	s.valueType = { 0 };
-	s.layers.resize(1, 0);
-	s.dtype = "";
-	s.names = {"lyr.1"};
-	s.srs.proj4 = "+proj=longlat +datum=WGS84";
-	s.srs.wkt = "GEOGCRS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", ELLIPSOID[\"WGS 84\",6378137,298.257223563, LENGTHUNIT[\"metre\",1]]], PRIMEM[\"Greenwich\",0, ANGLEUNIT[\"degree\",0.0174532925199433]], CS[ellipsoidal,2], AXIS[\"geodetic latitude (Lat)\",north, ORDER[1], ANGLEUNIT[\"degree\",0.0174532925199433]], AXIS[\"geodetic longitude (Lon)\",east, ORDER[2], ANGLEUNIT[\"degree\",0.0174532925199433]], USAGE[ SCOPE[\"Horizontal component of 3D system.\"], AREA[\"World.\"], BBOX[-90,-180,90,180]], ID[\"EPSG\",4326]]";
-	setSource(s);
+	source[0].hasRange = { false };
+	source[0].hasValues = false;
+	source[0].valueType = { 0 };
+	source[0].layers.resize(1, 0);
+	source[0].dtype = "";
+	source[0].names = {"lyr.1"};
+	source[0].srs.proj4 = "+proj=longlat +datum=WGS84";
+	source[0].srs.wkt = "GEOGCRS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", ELLIPSOID[\"WGS 84\",6378137,298.257223563, LENGTHUNIT[\"metre\",1]]], PRIMEM[\"Greenwich\",0, ANGLEUNIT[\"degree\",0.0174532925199433]], CS[ellipsoidal,2], AXIS[\"geodetic latitude (Lat)\",north, ORDER[1], ANGLEUNIT[\"degree\",0.0174532925199433]], AXIS[\"geodetic longitude (Lon)\",east, ORDER[2], ANGLEUNIT[\"degree\",0.0174532925199433]], USAGE[ SCOPE[\"Horizontal component of 3D system.\"], AREA[\"World.\"], BBOX[-90,-180,90,180]], ID[\"EPSG\",4326]]";
 }
 
 /*
@@ -138,30 +140,30 @@ bool SpatRaster::hasValues() {
 
 SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs) {
 
-	SpatRasterSource s;
-	s.nrow=rcl[0];
-	s.ncol=rcl[1];
-	s.extent.xmin = ext[0];
-	s.extent.xmax = ext[1];
-	s.extent.ymin = ext[2];
-	s.extent.ymax = ext[3];
-	s.hasValues = false;
-	s.hasRange = {false};
-	s.valueType = { 0 };
+	source.resize(1);
+	source[0].nrow=rcl[0];
+	source[0].ncol=rcl[1];
+	source[0].extent.xmin = ext[0];
+	source[0].extent.xmax = ext[1];
+	source[0].extent.ymin = ext[2];
+	source[0].extent.ymax = ext[3];
+	source[0].hasValues = false;
+	source[0].hasRange = {false};
+	source[0].valueType = { 0 };
 
-	s.memory = true;
-	s.filename = "";
-	//s.driver = "";
-	s.nlyr = rcl[2];
-	s.layers.resize(1, 0);
-	//s.layers.resize(1, s.nlyr);
-	//std::iota(s.layers.begin(), s.layers.end(), 0);
+	source[0].memory = true;
+	source[0].filename = "";
+	//source[0].driver = "";
+	source[0].nlyr = rcl[2];
+	source[0].layers.resize(1, 0);
+	//source[0].layers.resize(1, source[0].nlyr);
+	//std::iota(source[0].layers.begin(), source[0].layers.end(), 0);
 
-	s.dtype = "";
+	source[0].dtype = "";
 
 #ifdef useGDAL
 	std::string msg;
-	if (!s.srs.set( crs, msg )) {
+	if (!source[0].srs.set( crs, msg )) {
 		setError(msg);
 		return;
 	} else if (msg != "") {
@@ -169,51 +171,50 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	}
 
 #else
-	s.srs.proj4 = lrtrim_copy(crs);
+	source[0].srs.proj4 = lrtrim_copy(crs);
 #endif
 
 	for (unsigned i=0; i < rcl[2]; i++) {
-		s.names.push_back("lyr." + std::to_string(i+1)) ;
+		source[0].names.push_back("lyr." + std::to_string(i+1)) ;
 	}
 
-	setSource(s);
 }
 
 
 
 SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs) {
 
-	SpatRasterSource s;
-	s.nrow = nr;
-	s.ncol = nc;
-	s.extent = ext;
-	s.hasValues = false;
-	s.memory = true;
-	s.filename = "";
-	//s.driver = "";
-	s.nlyr = nl;
-	s.hasRange = { false };
-	s.valueType = { 0 };
+	source.resize(1);
+	
+	source[0].nrow = nr;
+	source[0].ncol = nc;
+	source[0].extent = ext;
+	source[0].hasValues = false;
+	source[0].memory = true;
+	source[0].filename = "";
+	//source[0].driver = "";
+	source[0].nlyr = nl;
+	source[0].hasRange = { false };
+	source[0].valueType = { 0 };
 
-	s.layers.resize(1, 0);
-	//s.layers.resize(1, _nlyr);
-	//std::iota(s.layers.begin(), s.layers.end(), 0);
-	s.dtype = "";
+	source[0].layers.resize(1, 0);
+	//source[0].layers.resize(1, _nlyr);
+	//std::iota(source[0].layers.begin(), source[0].layers.end(), 0);
+	source[0].dtype = "";
 #ifdef useGDAL
 	std::string msg;
-	if (!s.srs.set(crs, msg )) {
+	if (!source[0].srs.set(crs, msg )) {
 		setError(msg);
 		return;
 	} else if (msg != "") {
 		addWarning(msg);
 	}
 #else
-	s.srs.proj4 = lrtrim_copy(crs);
+	source[0].srs.proj4 = lrtrim_copy(crs);
 #endif
 	for (unsigned i=0; i < nl; i++) {
-		s.names.push_back("lyr." + std::to_string(i+1)) ;
+		source[0].names.push_back("lyr." + std::to_string(i+1)) ;
 	}
-	setSource(s);
 }
 
 
