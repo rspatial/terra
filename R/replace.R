@@ -138,7 +138,9 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		if (narg > 0) { # row
 			i <- cellFromRowColCombine(x, i, 1:ncol(x))
 		}
-
+		if (any(is.na(i))) {
+			warn("[", "indices should not be NA")
+		}
 		bylyr = FALSE
 		if (!is.null(dim(value))) {
 			#x@ptr <- x@ptr$replaceValues(i, value, ncol(value))
@@ -163,6 +165,11 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 
 setMethod("set.values", signature(x="SpatRaster"),
 	function(x, cells, values, layer=0)  {
+
+		if (any(is.na(cells))) {
+			warn("set.values", "cells should not be NA")
+		}
+
 		if (is.character(layer)) {
 			layer <- match(layer, names(x))
 			if (any(is.na(layer))) {
@@ -170,6 +177,8 @@ setMethod("set.values", signature(x="SpatRaster"),
 			}
 		}
 		layer <- round(layer)
+
+
 
 		if (all(layer > 0)) {
 			if (missing(cells) && missing(values)) {

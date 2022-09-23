@@ -3850,6 +3850,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 
 
 bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt) {
+	
 	size_t cs = cells.size();
 	size_t vs = v.size();
 	if (vs == 1) {

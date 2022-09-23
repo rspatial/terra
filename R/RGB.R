@@ -151,15 +151,18 @@ col2rgb <- function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
 		x <- x[[1]]
 		warn("colorize", "only the first layer of 'x' is considered")
 	}
-	ct <- coltab(r)[[1]]
+	ct <- coltab(x)[[1]]
 	if (is.null(ct)) {
 		error("error", "x has no color table")
 	}
 	ct <- as.matrix(ct)
 	if (!alpha) {
-		ct <- ct[,1:3]
+		ct <- ct[,1:4]
 	}
-	r <- app(x, function(i) { ct[i+1, ,drop=FALSE] }, filename="", overwrite=FALSE, wopt=list(...))
+	r <- app(x, function(i) {
+			j <- match(i, ct[,1])
+			ct[j, -1,drop=FALSE] 
+		}, filename="", overwrite=FALSE, wopt=list(...))
 	RGB(r) <- 1:3
 	r
 }
