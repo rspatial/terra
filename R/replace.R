@@ -50,7 +50,7 @@ setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
 	function(x, i, j, value) {
 		if (inherits(value, "SpatRaster")) {
 			if (nlyr(value) != length(i)) {
-				error(" [[,SpatRaster", "length of names must be equal to the number of layers")
+				error("`[[`", "length of names must be equal to the number of layers")
 			}
 			names(value) <- i
 		} else if (length(i) > 1) {
@@ -73,13 +73,13 @@ setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
 setReplaceMethod("[[", c("SpatRaster", "numeric", "missing"),
 	function(x, i, j, value) {
 		if (!inherits(value, "SpatRaster")) {
-			error(" [[<- ", "Expected a SpatRaster as replacement value")
+			error("`[[<-`", "Expected a SpatRaster as replacement value")
 		}
 		if (nlyr(value) != length(i)) {
-			error(" [[,SpatRaster,numeric", "length of indices must be equal to the number of layers")
+			error("`[[`", "length of indices must be equal to the number of layers")
 		}
 		if (any(i<1) | any(i > nlyr(x))) {
-			error(" [[,SpatRaster,numeric", "indices must be between 1 and the number of layers")
+			error("`[[`", "indices must be between 1 and the number of layers")
 		}
 		if (nlyr(x) == 1) {
 			compareGeom(x, value, crs=FALSE, warncrs=TRUE)
@@ -111,7 +111,7 @@ setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 				if ((d[2] == nl) && (d[1] < ncell(x))) {
 					value <- apply(value, 2, function(i) rep_len(i, ncell(x)))
 				} else {
-					error(" [,SpatRaster","dimensions of the matrix do not match the SpatRaster")
+					error("`[`","dimensions of the matrix do not match the SpatRaster")
 				}
 			}
 			x <- try( setValues(x, value, TRUE, TRUE) )
@@ -123,7 +123,7 @@ setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 			}
 		}
 		if (inherits(x, "try-error")) {
-			error(" [ ", "cannot set values")
+			error("`[`", "cannot set values")
 		}
 		return(x)
 	}
@@ -139,7 +139,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 			i <- cellFromRowColCombine(x, i, 1:ncol(x))
 		}
 		if (any(is.na(i))) {
-			warn("[", "indices should not be NA")
+			warn("`[`", "indices should not be NA")
 		}
 		bylyr = FALSE
 		if (!is.null(dim(value))) {
@@ -155,7 +155,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		x@ptr <- x@ptr$deepcopy()
 		opt <- spatOptions()
 		if (!x@ptr$replaceCellValues(i-1, value, bylyr, opt)) {
-			messages(x, "'[<-'")
+			messages(x, "`[<-`")
 		} else {
 			x
 		}
@@ -267,7 +267,7 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "ANY"),
 		theCall <- sys.call(-1)
 		narg <- length(theCall)-length(match.call(call=sys.call(-1)))
 		if (narg > 0) { # row
-			error(" [,SpatRaster,SpatRaster", "you cannot use a SpatRaster as a row index")
+			error("`[`", "you cannot use a SpatRaster as a row index")
 		}
 		if (inherits(value, "SpatRaster")) {
 			x <- mask(x, i, maskvalues=TRUE)
@@ -296,7 +296,7 @@ setReplaceMethod("[", c("SpatRaster", "SpatVector", "missing"),
 		theCall <- sys.call(-1)
 		narg <- length(theCall)-length(match.call(call=sys.call(-1)))
 		if (narg > 0) { # row
-			error(" [,SpatRaster,SpatVector", "you cannot use a SpatVector as a row index")
+			error("`[`", "you cannot use a SpatVector as a row index")
 		}
 		if (length(value) > 1) {
 			value <- rep_len(value, length.out=length(x))
