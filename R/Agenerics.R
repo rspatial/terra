@@ -32,6 +32,7 @@ if (!isGeneric("set.values")) {setGeneric("set.values", function(x, ...) standar
 if (!isGeneric("set.ext")) {setGeneric("set.ext", function(x, ...) standardGeneric("set.ext"))}
 if (!isGeneric("set.names")) {setGeneric("set.names", function(x, ...) standardGeneric("set.names"))}
 if (!isGeneric("set.crs")) {setGeneric("set.crs", function(x, ...) standardGeneric("set.crs"))}
+if (!isGeneric("set.RGB")) {setGeneric("set.RGB", function(x, ...) standardGeneric("set.RGB"))}
 
 
 if (!isGeneric("math")) { setGeneric("math", function(x, ...) standardGeneric("math")) }

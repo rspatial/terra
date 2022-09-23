@@ -138,9 +138,9 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		if (narg > 0) { # row
 			i <- cellFromRowColCombine(x, i, 1:ncol(x))
 		}
-		if (any(is.na(i))) {
-			warn("`[`", "indices should not be NA")
-		}
+		#if (any(is.na(i))) {
+		#	warn("`[`", "indices should not be NA")
+		#}
 		bylyr = FALSE
 		if (!is.null(dim(value))) {
 			#x@ptr <- x@ptr$replaceValues(i, value, ncol(value))
@@ -199,9 +199,9 @@ setMethod("set.values", signature(x="SpatRaster"),
 					error("set.values", "ncol(values) does not match the `length(layer)`")
 				}
 				bylyr <- TRUE
-				if (inherits(values, "data.frame")) {
-					values <- as.matrix(values)
-				}
+				#if (inherits(values, "data.frame")) {
+				#	values <- as.matrix(values)
+				#}
 				values <- as.vector(values)
 			}
 			ok <- x@ptr$replaceCellValuesLayer(layer-1, cells-1, values, bylyr, spatOptions())
@@ -221,9 +221,9 @@ setMethod("set.values", signature(x="SpatRaster"),
 					error("set.values", "ncol(values) does not match the nlyr(x)")
 				}
 				bylyr <- TRUE
-				if (inherits(values, "data.frame")) {
-					values <- as.matrix(values)
-				}
+				#if (inherits(values, "data.frame")) {
+				#	values <- as.matrix(values)
+				#}
 				values <- as.vector(values)
 			}
 			ok <- x@ptr$replaceCellValues(cells-1, values, bylyr, spatOptions())
