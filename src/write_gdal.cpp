@@ -788,7 +788,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		} else if (datatype == "INT1U") {
 			//min_max_na(vals, na, 0, 255);
 			//std::vector<int8_t> vv(vals.begin(), vals.end());
-			std::vector<int8_t> vv;
+			std::vector<uint8_t> vv;
 			tmp_min_max_na(vv, vals, na, 0, 255);
 			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Byte, nl, NULL, 0, 0, 0, NULL );
 		} else {

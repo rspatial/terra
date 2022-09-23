@@ -344,11 +344,11 @@ class SpatRaster {
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs);
 		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> x);
 		SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options);
-		SpatRaster(SpatRasterSource s);
+		SpatRaster(SpatRasterSource &s);
 		virtual ~SpatRaster(){}
 
-		void setSource(SpatRasterSource s);
-		void setSources(std::vector<SpatRasterSource> s);
+		void setSource(SpatRasterSource &s);
+		void setSources(std::vector<SpatRasterSource> &s);
 		//SpatRaster(const SpatRaster& x);
 
 
@@ -364,10 +364,10 @@ class SpatRaster {
 		
 //		bool constructFromNCDFsds(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname);
 
-		void addSource(SpatRaster x, bool warn, SpatOptions &opt);	
+		void addSource(SpatRaster &x, bool warn, SpatOptions &opt);	
 		void checkTime(SpatRaster &x);	
-		SpatRaster combineSources(SpatRaster x, bool warn);
-		void combine(SpatRaster x);
+		SpatRaster combineSources(SpatRaster &x, bool warn);
+		void combine(SpatRaster &x);
 		
 		SpatRaster subset(std::vector<unsigned> lyrs, SpatOptions &opt);
 		SpatRaster replace(SpatRaster x, unsigned layer, SpatOptions &opt);

@@ -46,7 +46,7 @@ SpatRasterSource::SpatRasterSource() {
 
 
 
-SpatRaster SpatRaster::combineSources(SpatRaster x, bool warn) {
+SpatRaster SpatRaster::combineSources(SpatRaster &x, bool warn) {
 
 	SpatRaster out = geometry();
 	if (!hasValues()) {
@@ -86,7 +86,7 @@ SpatRaster SpatRaster::combineSources(SpatRaster x, bool warn) {
 }
 
 
-void SpatRaster::combine(SpatRaster x) {
+void SpatRaster::combine(SpatRaster &x) {
 
 	if (!compare_geom(x, false, false, 0.1)) {
 		return;
@@ -132,7 +132,7 @@ void SpatRaster::checkTime(SpatRaster &x) {
 	}
 }
 
-void SpatRaster::addSource(SpatRaster x, bool warn, SpatOptions &opt) {
+void SpatRaster::addSource(SpatRaster &x, bool warn, SpatOptions &opt) {
 
 	if (!hasValues()) {
 		if (!x.hasValues()) {			

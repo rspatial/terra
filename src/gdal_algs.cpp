@@ -1029,12 +1029,37 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 }
 
 
-/*
+
 bool getGridderAlgo(std::string algo, GDALGridAlgorithm &a) {
-	a = GGA_NearestNeighbor;
+	if (algo == "near") {
+		a = GGA_NearestNeighbor;
+	} else if (algo == "invdistpow") {
+		a = GGA_InverseDistanceToAPower;
+	} else if (algo == "movingavg") {
+		a = GGA_MovingAverage;
+	} else if (algo == "min") {
+		a = GGA_MetricMinimum;
+	} else if (algo == "max") {
+		a = GGA_MetricMaximum;
+	} else if (algo == "range") {
+		a = GGA_MetricRange;
+	} else if (algo == "count") {
+		a = GGA_MetricCount;
+	} else if (algo == "distance") {
+		a = GGA_MetricAverageDistance;
+	} else if (algo == "ptsdistance") {
+		a = GGA_MetricAverageDistancePts;
+	} else if (algo == "linear") {
+		a = GGA_Linear;
+	} else if (algo == "invdistpownear") {
+		a = GGA_InverseDistanceToAPowerNearestNeighbor;
+	} else {
+		return false;
+	}
 	return true;
 }
 
+/*
 SpatRaster SpatRaster::gridder(std::string algo, std::vector<double> x, std::vector<double> y, std::vector<double> z, SpatOptions &opt) {
 
 	SpatRaster out=geometry(1);
@@ -1056,8 +1081,9 @@ SpatRaster SpatRaster::gridder(std::string algo, std::vector<double> x, std::vec
 	GDALGridContextFree(ctxt);
 	return out;
 }
-*/
 
+
+*/
 
 SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {
 	SpatRaster out = geometry(1, true, true, true);

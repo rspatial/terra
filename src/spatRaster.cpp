@@ -79,20 +79,19 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 }
 
 
-void SpatRaster::setSources(std::vector<SpatRasterSource> s) {
+void SpatRaster::setSources(std::vector<SpatRasterSource> &s) {
 	source = s;
 }
 
 
-void SpatRaster::setSource(SpatRasterSource s) {
+void SpatRaster::setSource(SpatRasterSource &s) {
 	s.resize(s.nlyr); // appears to be necessary!
 	source = {s};
 }
 
 
-SpatRaster::SpatRaster(SpatRasterSource s) {
-	std::vector<SpatRasterSource> vs = {s};
-	setSources(vs);
+SpatRaster::SpatRaster(SpatRasterSource &s) {
+	source = {s};
 }
 
 

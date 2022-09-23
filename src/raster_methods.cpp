@@ -3898,7 +3898,9 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 				size_t off = nc * j;
 				size_t koff = cs * (j+addlyr);
 				for (size_t k=0; k<cs; k++) {
-					source[i].values[off + cells[k]] = v[koff + k];
+					if (!std::isnan(cells[k])) {
+						source[i].values[off + cells[k]] = v[koff + k];
+					}
 				}
 			}
 			source[i].setRange();
@@ -3912,7 +3914,9 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 			for (size_t j=0; j<nl; j++) {
 				size_t off = nc * j;
 				for (size_t k=0; k<cs; k++) {
-					source[i].values[off + cells[k]] = v[k];
+					if (!std::isnan(cells[k])) {
+						source[i].values[off + cells[k]] = v[k];
+					}
 				}
 			}
 			source[i].setRange();
@@ -3983,11 +3987,15 @@ bool SpatRaster::replaceCellValuesLayer(std::vector<size_t> layers, std::vector<
 		if (bylyr) {
 			size_t koff = cs * i;
 			for (size_t k=0; k<cs; k++) {
-				source[src].values[off + cells[k]] = v[koff + k];
+				if (!std::isnan(cells[k])) {
+					source[src].values[off + cells[k]] = v[koff + k];
+				}
 			}
 		} else {
 			for (size_t k=0; k<cs; k++) {
-				source[src].values[off + cells[k]] = v[k];
+				if (!std::isnan(cells[k])) {
+					source[src].values[off + cells[k]] = v[k];
+				}
 			}
 		}
 	}
