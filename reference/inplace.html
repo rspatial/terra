@@ -22,7 +22,7 @@ set.crs is the in-place replacement version of crs&amp;lt;-'><meta property="og:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-21</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-22</span>
       </span>
     </div>
 
@@ -84,7 +84,10 @@ set.crs is the in-place replacement version of crs&amp;lt;-'><meta property="og:
 <span class="fu">set.values</span><span class="op">(</span><span class="va">x</span>, <span class="va">cells</span>, <span class="va">values</span>, layer<span class="op">=</span><span class="fl">0</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">set.cats</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
+<span class="fu">set.cats</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">set.RGB</span><span class="op">(</span><span class="va">x</span>, <span class="va">value</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -93,7 +96,7 @@ set.crs is the in-place replacement version of crs&amp;lt;-'><meta property="og:
 <dd><p>SpatRaster</p></dd>
 
   <dt>value</dt>
-<dd><p>character (<code>set.names</code>). For <code>set.cats</code>: a data.frame with columns (value, category) or vector with category names</p></dd>
+<dd><p>character for <code>set.names</code>. For <code>set.cats</code>: a data.frame with columns (value, category) or vector with category names. For <code>set.RGB</code> 3 or 4 numbers indicating the RGB(A) layers</p></dd>
 
   <dt>index</dt>
 <dd><p>positive integer indicating layer(s) to assign a name to</p></dd>
