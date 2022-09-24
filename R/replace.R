@@ -178,8 +178,6 @@ setMethod("set.values", signature(x="SpatRaster"),
 		}
 		layer <- round(layer)
 
-
-
 		if (all(layer > 0)) {
 			if (missing(cells) && missing(values)) {
 				return(invisible(TRUE));

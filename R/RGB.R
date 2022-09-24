@@ -31,7 +31,7 @@ setMethod("set.RGB", signature(x="SpatRaster"),
 
 setMethod("RGB<-", signature(x="SpatRaster"),
 	function(x, value) {
-		x <- x@ptr$deepcopy()
+		x@ptr <- x@ptr$deepcopy()
 		set.RGB(x, value)
 		x
 	}
@@ -164,32 +164,20 @@ terra_col2rgb <- function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
 		error("error", "x has no color table")
 	}
 	ct <- as.matrix(ct)
+	nms <- c("red", "green", "blue", "alpha")
+	rgbidx <- 1:4
 	if (!alpha) {
 		ct <- ct[,1:4]
-	}
-	
-	# avoid app overhead
-	opt <- spatOptions(ncopies=4)
-	if (x@ptr$canProcessInMemory(opt)) {
-		out <- rast(x, nlyr=ncol(ct)-1)
-		names(out) <- c("red", "green", "blue")
-		x <- match(values(x), ct[,1])
-		values(out) <- ct[x, -1]
-		if (filename != "") {
-			out <- writeRaster(out, filename=filename, overwrite=overwrite, ...)
-		}
-	} else {
-		out <- app(x, function(i) {
-				j <- match(i, ct[,1])
-				ct[j, -1,drop=FALSE] 
-			}, filename="", overwrite=FALSE, wopt=list(...))
+		nms <- nms[1:3]
+		rgbidx <- rgbidx[1:3]
 	}
 
-	if (alpha) {
-		set.RGB(out, 1:4)
-	} else {
-		set.RGB(out, 1:3)
+	wopt=list(...)
+	if (is.null(wopt$names)) {
+		wopt$names <- nms
 	}
+	out <- subst(x, from=ct[,1], to=ct[,-1], filename="", overwrite=FALSE, wopt=wopt)
+	set.RGB(out, rgbidx)
 	out
 }
 
