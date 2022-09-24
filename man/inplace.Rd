@@ -7,6 +7,9 @@
 \alias{set.values}
 \alias{set.values,SpatRaster-method}
 
+\alias{set.RGB}
+\alias{set.RGB,SpatRaster-method}
+
 \alias{setCats}
 \alias{setCats,SpatRaster-method}
 
@@ -54,11 +57,13 @@ These "in-place" replacement methods assign new value to an object without makin
 \S4method{set.values}{SpatRaster}(x, cells, values, layer=0)
 
 \S4method{set.cats}{SpatRaster}(x, layer=1, value, active=2)
+
+\S4method{set.RGB}{SpatRaster}(x, value)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{value}{character (\code{set.names}). For \code{set.cats}: a data.frame with columns (value, category) or vector with category names}
+  \item{value}{character for \code{set.names}. For \code{set.cats}: a data.frame with columns (value, category) or vector with category names. For \code{set.RGB} 3 or 4 numbers indicating the RGB(A) layers}
   \item{index}{positive integer indicating layer(s) to assign a name to}
   \item{validate}{logical. Make names valid and/or unique?}
 

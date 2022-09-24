@@ -166,9 +166,9 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 setMethod("set.values", signature(x="SpatRaster"),
 	function(x, cells, values, layer=0)  {
 
-		if (any(is.na(cells))) {
-			warn("set.values", "cells should not be NA")
-		}
+		#if (any(is.na(cells))) {
+		#	warn("set.values", "cells should not be NA")
+		#}
 
 		if (is.character(layer)) {
 			layer <- match(layer, names(x))
