@@ -264,8 +264,10 @@ bool can_transform(std::string fromCRS, std::string toCRS) {
 	OGRCoordinateTransformation *poCT;
 	poCT = OGRCreateCoordinateTransformation(&source, &target);
 	if( poCT == NULL )	{
+		OCTDestroyCoordinateTransformation(poCT);
 		return false;
 	}
+	OCTDestroyCoordinateTransformation(poCT);
 	return true;
 }
 
