@@ -176,7 +176,7 @@ terra_col2rgb <- function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
 	if (is.null(wopt$names)) {
 		wopt$names <- nms
 	}
-	out <- subst(x, from=ct[,1], to=ct[,-1], filename="", overwrite=FALSE, wopt=wopt)
+	out <- subst(x, from=ct[,1], to=ct[,-1], raw=TRUE, filename="", overwrite=FALSE, wopt=wopt)
 	set.RGB(out, rgbidx)
 	out
 }
