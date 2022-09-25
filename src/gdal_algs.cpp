@@ -355,7 +355,7 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 	return true;
 }
 
-
+/*
 bool gdal_warper(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS) {
     GDALWarpOperation oOperation;
     if (oOperation.Initialize( psWarpOptions ) != CE_None) {
@@ -364,11 +364,9 @@ bool gdal_warper(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatas
     if (oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(hDstDS), GDALGetRasterYSize(hDstDS)) != CE_None) {
 		return false;
 	}
-    GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
-    GDALDestroyWarpOptions( psWarpOptions );
 	return true;
 }
-
+*/
 
 
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
@@ -564,9 +562,17 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 				out.setError(errmsg);
 				return out;
 			}
-			//bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose(), opt.threads);
-			ok = gdal_warper(psWarpOptions, hSrcDS, hDstDS);
-			if( hSrcDS != NULL ) GDALClose( (GDALDatasetH) hSrcDS );
+			//ok = gdal_warper(psWarpOptions, hSrcDS, hDstDS);
+			GDALWarpOperation oOperation;
+			if (oOperation.Initialize( psWarpOptions ) != CE_None) {
+				ok = false;
+			} else if (oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(hDstDS), GDALGetRasterYSize(hDstDS)) != CE_None) {
+				ok = false;
+			}
+			GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
+			GDALDestroyWarpOptions( psWarpOptions );
+
+			if( hSrcDS != NULL ) GDALClose( (GDALDatasetH) hSrcDS );			
 			if (!ok) {
 				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
 				out.setError("warp failure");
