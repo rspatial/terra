@@ -442,7 +442,10 @@
     <loc>/reference/replace-vector.html</loc>
   </url>
   <url>
-    <loc>/reference/replace.html</loc>
+    <loc>/reference/replace_layers.html</loc>
+  </url>
+  <url>
+    <loc>/reference/replace_values.html</loc>
   </url>
   <url>
     <loc>/reference/resample.html</loc>
