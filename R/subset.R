@@ -54,37 +54,18 @@ setMethod("subset", signature(x="SpatRaster"),
 
 
 
-setMethod("[", c("SpatRaster", "SpatVector", "missing"),
-	function(x, i, j) {
-		if (drop) {
-			extract(x, i, data.frame=TRUE)[ , -1, drop=FALSE]
-		} else {
-			crop(x, i, mask=TRUE)
-		}
-	}
-)
-
-
-## expression matching
-setMethod("[", c("SpatRaster", "character","missing"),
-	function(x, i, j) {
-		i <- grep(i, names(x))
-		subset(x, i, NSE=FALSE)
-	}
-)
-
 ## exact matching
+setMethod("$", "SpatRaster",
+	function(x, name) {
+		subset(x, name, NSE=FALSE)
+	}
+)
 
 setMethod("[[", c("SpatRaster", "character","missing"),
 function(x, i, j) {
 	subset(x, i, NSE=FALSE)
 })
 
-setMethod("$", "SpatRaster",
-	function(x, name) {
-		subset(x, name, NSE=FALSE)
-	}
-)
 
 setMethod("[[", c("SpatRaster", "logical", "missing"),
 function(x, i, j) {

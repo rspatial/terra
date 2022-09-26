@@ -72,21 +72,36 @@ setMethod("set.values", signature(x="SpatRaster"),
 )
 
 
-make_index <- function(v, vmx, name="i") {
+make_replace_index <- function(v, vmx, name="i") {
 	if (inherits(v, "SpatRaster")) {
 		error("`[<-`", paste("index", name, "cannot be a SpatRaster"))
 	} 
 	if (inherits(v, "SpatVector")) {
 		error("`[<-`", paste("index", name, "cannot be a SpatVector"))
 	}
+	if (inherits(v, "SpatExtent")) {
+		error("`[<-`", paste("index", name, "cannot be a SpatExtent"))
+	}
 
 	if (!is.numeric(v)) {
+
+		if (NCOL(v) > 1) {
+			error("`[<-`", paste("index", name, "has multiple columns"))
+		}
 		if (inherits(v, "data.frame")) {
 			v <- v[,1,drop=TRUE]
+		} else if (inherits(v, "matrix")) {
+			v <- as.vector(v)
+		} 
+		if (!is.vector(v)) {
+			error("`[<-`", paste("the type of index", name, "is unexpected:", class(v)[1]))		
+		}
+		if (is.factor(v) || is.character(v)) {
+			error("`[<-`", paste("the type of index", name, "cannot be a factor or character"))			
 		} 
 		if (is.logical(v)) {
 			if (length(v) > vmx) {
-				error("`[<-`", paste(name, "is too long"))
+				error("`[<-`", paste("index", name, "is too long"))
 			} 
 			if (length(v) < vmx) {
 				v <- which(rep_len(v, vmx))
@@ -159,6 +174,18 @@ make_index <- function(v, vmx, name="i") {
 }
 
 
+.replace_spatextent <- function(x, i, value) {
+	if (length(value) > 1) {
+		if (length(value) > nrow(i)) {
+			# could be by layer if NCOL>1?
+			error("`[`", "value is too long")
+		}
+		value <- rep_len(value, length.out=length(i))
+	}
+	rasterize(as.polygons(i), x, field=value, update=TRUE)
+}
+
+
 .replace_spatraster <- function(x, i, value) {
 	if (inherits(value, "SpatRaster")) {
 		x <- mask(x, i, maskvalues=TRUE)
@@ -198,7 +225,7 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 					stop()
 				}
 			} else {
-				k <- make_index(k, nlyr(x), "k")
+				k <- make_replace_index(k, nlyr(x), "k")
 			}
 			if ((length(k) == nlyr(x)) && (all(k == 1:nlyr(x)))) {
 				x <- .replace_all(x, value)
@@ -228,24 +255,27 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			if (inherits(i, "SpatVector")) {
 				return(.replace_spatvector(x, i, value))
 			}
+			if (inherits(i, "SpatExtent")) {
+				return(.replace_spatextent(x, i, value))
+			}
 			theCall <- sys.call(-1)
 			narg <- length(theCall)-length(match.call(call=theCall))		
 			if ((narg==0) && nj) {
 				# cell
-				i <- make_index(i, ncell(x), "i")
+				i <- make_replace_index(i, ncell(x), "i")
 			} else if (nj) {
 				# row
-				i <- make_index(i, nrow(x), "i")
+				i <- make_replace_index(i, nrow(x), "i")
 				i <- cellFromRowColCombine(x, i, 1:ncol(x))
 			} else {
 				#row,col
-				i <- make_index(i, nrow(x), "i")
-				j <- make_index(j, ncol(x), "j")
+				i <- make_replace_index(i, nrow(x), "i")
+				j <- make_replace_index(j, ncol(x), "j")
 				i <- cellFromRowColCombine(x, i, j)
 			}
 		} else { #if (!nj) {
 			#col
-			j <- make_index(j, ncol(x), "j")
+			j <- make_replace_index(j, ncol(x), "j")
 			i <- cellFromRowColCombine(x, 1:nrow(x), j)
 		}
 		return(.replace_cell(x, i, value))

@@ -5,8 +5,8 @@
 \alias{[,SpatExtent,missing,missing-method}
 \alias{[,SpatExtent,numeric,missing-method}
 
-\alias{[,SpatRaster,character,missing-method}
-\alias{[,SpatRaster,logical,missing-method}
+\alias{[,SpatRaster,ANY,ANY,ANY-method}
+\alias{[,SpatRaster,ANY,ANY-method}
 
 \alias{[,SpatRasterDataset,numeric,missing-method}
 \alias{[,SpatRasterDataset,numeric,numeric-method}
@@ -31,14 +31,14 @@
 \alias{[,SpatVector,matrix,missing-method}
 
 
-\title{Subset a SpatRaster, SpatVector or SpatExtent}
+\title{Extract values from a SpatRaster, SpatVector or SpatExtent}
 
 \description{
-Select a subset of layers from a SpatRaster; a subset of records (row) and/or variables (columns) from a SpatVector; or a number from a SpatExtent.  
+Extract values from a SpatRaster; a subset of records (row) and/or variables (columns) from a SpatVector; or a number from a SpatExtent.  
 }
 
 \usage{
-\S4method{[}{SpatRaster,character,missing}(x, i, j)
+\S4method{[}{SpatRaster,ANY,ANY,ANY}(x, i, j, k)
 
 \S4method{[}{SpatVector,numeric,numeric}(x, i, j, drop=FALSE)
 
@@ -57,6 +57,8 @@ Select a subset of layers from a SpatRaster; a subset of records (row) and/or va
   }
   \item{j}{numeric, logical, or missing to select columns}
 
+  \item{k}{numeric, character, or missing to select layers}
+
   \item{drop}{logical. If \code{FALSE} an object of the same class as \code{x} is returned}
 }
 
@@ -65,7 +67,7 @@ numeric if \code{x} is a SpatExtent.
 Same as \code{x} if \code{drop=FALSE}. Otherwise a data.frame
 }
 
-\seealso{\code{link{subset}, link{$}, link{[[}, link{extract}}}
+\seealso{link{extract}, \code{link{subset}, link{$}, link{[[}, }}
 
 \examples{
 ### SpatRaster
@@ -83,7 +85,6 @@ v <- vect(system.file("ex/lux.shp", package="terra"))
 v[2:3,]
 v[1:2, 2:3]
 v[1:2, 2:3, drop=TRUE]
-
 }
 
 \keyword{ spatial }
