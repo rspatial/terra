@@ -7,6 +7,7 @@
 \alias{[[,SpatRaster,character,missing-method}
 \alias{[[,SpatRaster,ANY,missing-method}
 \alias{[,SpatRaster,character,missing-method}
+\alias{[,SpatRaster,logical,missing-method}
 \alias{[,SpatRasterDataset,numeric,missing-method}
 \alias{[,SpatRasterDataset,numeric,numeric-method}
 \alias{[,SpatRasterDataset,logical,missing-method}

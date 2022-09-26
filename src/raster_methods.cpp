@@ -3853,16 +3853,19 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 	
 	size_t cs = cells.size();
 	size_t vs = v.size();
+	size_t nl = nlyr();
 	if (vs == 1) {
 		bylyr = false;
 		recycle(v, cs);
 	} else if (bylyr) {
-		if (vs != (cs*nlyr())) {
+		if (vs == nl) {
+			rep_each(v, cs);			
+		} else if (vs != (cs*nl)) {
 			setError("length of cells and values do not match");
 			return false;
 		}
 	} else if (cs != vs) {
-		if ((vs / nlyr()) == cs) {
+		if ((vs / nl) == cs) {
 			bylyr = true;
 		} else {
 			setError("lengths of cells and values do not match");
