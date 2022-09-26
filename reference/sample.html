@@ -142,19 +142,13 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">10</span>, as.raster<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   elevation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       438</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       282</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       303</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       383</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        NA</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[spatSample] fewer values returned than requested</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] elevation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;0 rows&gt; (or 0-length row.names)</span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   elevation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       180</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       374</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       515</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       324</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       385</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[spatSample] fewer values returned than requested</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] elevation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;0 rows&gt; (or 0-length row.names)</span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span>, <span class="st">"regular"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   elevation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1       479</span>
@@ -171,12 +165,12 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="va">size</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">6</span>, <span class="st">"random"</span>, cells<span class="op">=</span><span class="cn">TRUE</span>, xy<span class="op">=</span><span class="cn">TRUE</span>, values<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      cell        x        y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 7092 6.254167 49.57083</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 4842 6.504167 49.77083</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 6370 5.779167 49.62917</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 6017 6.004167 49.66250</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 4383 5.845833 49.80417</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 4277 5.754167 49.81250</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 3685 6.362500 49.87083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 6100 5.904167 49.65417</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 5984 6.520833 49.67083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 6717 6.295833 49.60417</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 1150 5.820833 50.08750</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 3295 6.279167 49.90417</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># regular, with values </span></span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">6</span>, <span class="st">"regular"</span>, cells<span class="op">=</span><span class="cn">TRUE</span>, xy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
