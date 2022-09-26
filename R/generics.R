@@ -811,7 +811,7 @@ setMethod("rectify", signature(x="SpatRaster"),
 )
 
 setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
-	function(x, y, method, threads=TRUE, filename="", ...)  {
+	function(x, y, method, threads=FALSE, filename="", ...)  {
 
 		if (missing(method)) {
 			method <- ifelse(is.factor(x)[1], "near", "bilinear")
