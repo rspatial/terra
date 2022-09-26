@@ -3,6 +3,7 @@
 
 \docType{methods}
 
+\alias{[<-}
 \alias{[<-,SpatRaster,ANY,ANY,ANY-method}
 
 \title{Replace values of a SpatRaster}
@@ -25,7 +26,7 @@ Replace values of a SpatRaster. These are convenience functions for smaller obje
  
 \value{SpatRaster}
 
-\seealso{\code{link{classify}, \link{subst}, \link{set.values}, \link{values}, \link{replace}}}
+\seealso{\code{\link{classify}, \link{subst}, \link{set.values}, \link{values}, \link{[<-}}}
 
 \examples{
 r <- rast(ncols=5, nrows=5, xmin=0, xmax=5, ymin=0, ymax=5)

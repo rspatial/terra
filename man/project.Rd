@@ -15,7 +15,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 \S4method{project}{SpatVector}(x, y)
 
 \S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, 
-		gdal=TRUE, res=NULL, origin=NULL, threads=TRUE, filename="", ...)
+		gdal=TRUE, res=NULL, origin=NULL, threads=FALSE, filename="", ...)
 
 \S4method{project}{matrix}(x, from, to)
 }

@@ -2,6 +2,9 @@
 
 \docType{methods}
 
+\alias{$<-}
+\alias{[[<-}
+
 \alias{$<-,SpatRaster-method}
 \alias{[[<-,SpatRaster,character,missing-method}
 \alias{[[<-,SpatRaster,numeric,missing-method}
