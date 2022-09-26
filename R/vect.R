@@ -208,15 +208,15 @@ setMethod("$", "SpatVector",  function(x, name) {
 
 
 setMethod("[[", c("SpatVector", "numeric", "missing"),
-function(x, i, j, ... ,drop=FALSE) {
-	s <- .subset_cols(x, i, ..., drop=TRUE)
+function(x, i, j,drop=FALSE) {
+	s <- .subset_cols(x, i, drop=TRUE)
 	s[,,drop=drop]
 })
 
 
 setMethod("[[", c("SpatVector", "character", "missing"),
-function(x, i, j, ... ,drop=FALSE) {
-	s <- .subset_cols(x, i, ..., drop=TRUE)
+function(x, i, j, drop=FALSE) {
+	s <- .subset_cols(x, i, drop=TRUE)
 	s[,,drop=drop]
 })
 
@@ -265,8 +265,8 @@ setReplaceMethod("[", c("SpatVector", "missing", "ANY"),
 )
 
 
-setReplaceMethod("[[", c("SpatVector", "character", "missing"),
-	function(x, i, j, value) {
+setReplaceMethod("[[", c("SpatVector", "character"),
+	function(x, i, value) {
 
 		x@ptr <- x@ptr$deepcopy()
 		if (is.null(value)) {
@@ -329,8 +329,8 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 )
 
 
-setReplaceMethod("[[", c("SpatVector", "numeric", "missing"),
-	function(x, i, j, value) {
+setReplaceMethod("[[", c("SpatVector", "numeric"),
+	function(x, i, value) {
 		stopifnot(i > 0 && i <= ncol(x))
 		vn <- names(x)[i]
 		x[[vn]] <- value

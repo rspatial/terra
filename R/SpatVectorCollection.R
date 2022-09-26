@@ -75,7 +75,7 @@ setReplaceMethod("[", c("SpatVectorCollection", "numeric", "missing"),
 
 
 setMethod("[", c("SpatVectorCollection", "numeric", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j) {
 	if (i<0) {i <- (1:length(x))[i]}
 	if (drop && (length(i) == 1)) {
 		ptr <- x@ptr$get(i-1)
@@ -88,7 +88,7 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 setMethod("[[", c("SpatVectorCollection", "numeric", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i) {
 	x[i,drop=drop]
 })
 

@@ -174,7 +174,7 @@ setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 
 
 setMethod("[", c("SpatRasterDataset", "numeric", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j, drop=TRUE) {
 	i <- positive_indices(i, length(x), " [ ")
 
 	if (drop && (length(i) == 1)) {
@@ -188,7 +188,7 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 setMethod("[", c("SpatRasterDataset", "numeric", "numeric"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j, drop=TRUE) {
 	y <- x[i,drop=drop]
 	if (inherits(y, "SpatRaster")) {
 		return(y[[j]])
@@ -205,32 +205,32 @@ function(x, i, j, ... ,drop=TRUE) {
 
 
 setMethod("[", c("SpatRasterDataset", "logical", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
-	x[which(i), ..., drop=drop]
+function(x, i, j,drop=TRUE) {
+	x[which(i), drop=drop]
 })
 
 setMethod("[", c("SpatRasterDataset", "character", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j, drop=TRUE) {
 	i <- match(i, names(x))
 	if (any(is.na(i))) {
 		error("`[`", "unknown name(s) provided")
 	}
-	x[i, ..., drop=drop]
+	x[i, drop=drop]
 })
 
 setMethod("[[", c("SpatRasterDataset", "ANY", "ANY"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j, drop=TRUE) {
 	mi <- missing(i)
 	mj <- missing(j)
 
 	if ((mi) && (mj)) {
-		`[`(x, ..., drop=drop)
+		`[`(x, drop=drop)
 	} else if (mi) {
-		`[`(x, j=j, ..., drop=drop)
+		`[`(x, j=j, drop=drop)
 	} else if (mj) {
-		`[`(x, i=i, ..., drop=drop)
+		`[`(x, i=i, drop=drop)
 	} else {
-		`[`(x, i=i, j=j, ..., drop=drop)
+		`[`(x, i=i, j=j, drop=drop)
 	}
 })
 

@@ -41,13 +41,13 @@
 
 setMethod("$<-", "SpatRaster",
 	function(x, name, value) {
-		.rast_replace(x, name, value, "$<-")
+		.rast_replace(x, name, value, "`$<-`")
 	}
 )
 
 
-setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
-	function(x, i, j, value) {
+setReplaceMethod("[[", c("SpatRaster", "character"),
+	function(x, i, value) {
 		if (inherits(value, "SpatRaster")) {
 			if (nlyr(value) != length(i)) {
 				error("`[[`", "length of names must be equal to the number of layers")
@@ -63,15 +63,15 @@ setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
 			value <- list(value)
 		}
 		for (k in 1:length(i)) {
-			x <- .rast_replace(x, i[k], value[[k]], " [[<- ")
+			x <- .rast_replace(x, i[k], value[[k]], "`[[<-`")
 #			eval(parse(text = paste0("x$", i[k], " <- value[[k]]")))
 		}
 		x
 	}
 )
 
-setReplaceMethod("[[", c("SpatRaster", "numeric", "missing"),
-	function(x, i, j, value) {
+setReplaceMethod("[[", c("SpatRaster", "numeric"),
+	function(x, i, value) {
 		if (!inherits(value, "SpatRaster")) {
 			error("`[[<-`", "Expected a SpatRaster as replacement value")
 		}

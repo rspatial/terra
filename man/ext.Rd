@@ -2,12 +2,6 @@
 
 \docType{methods}
 
-\alias{$,SpatExtent-method}
-\alias{$<-,SpatExtent-method}
-\alias{[,SpatExtent,missing,missing-method}
-\alias{[,SpatExtent,numeric,missing-method}
-\alias{[<-,SpatExtent,numeric,missing-method}
-
 \alias{ext}
 \alias{ext<-}
 \alias{ext,SpatExtent-method}
@@ -44,17 +38,12 @@ See \code{\link{set.ext}} to set the extent in place.
 \S4method{ext}{SpatRaster,SpatExtent}(x)<-value
 
 \S4method{ext}{SpatRaster,numeric}(x)<-value
-
-\S4method{$}{SpatExtent}(x, name)
-
-\S4method{$}{SpatExtent}(x, name)<-value
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{cells}{positive integer (cell) numbers to subset the extent to area covered by these cells}
-  \item{value}{SpatExtent, or numeric vector of length four (xmin, xmax, ymin, ymax), or a single number with the \code{$} method}  
-  \item{name}{character, one of xmin, xmax, ymin, or ymax}  
+  \item{value}{SpatExtent, or numeric vector of length four (xmin, xmax, ymin, ymax)}  
   \item{...}{if \code{x} is a single numeric value, additional numeric values for xmax, ymin, and ymax}  
 }
  

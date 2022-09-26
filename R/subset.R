@@ -55,7 +55,7 @@ setMethod("subset", signature(x="SpatRaster"),
 
 
 setMethod("[", c("SpatRaster", "SpatVector", "missing"),
-	function(x, i, j, ... ,drop=TRUE) {
+	function(x, i, j) {
 		if (drop) {
 			extract(x, i, data.frame=TRUE)[ , -1, drop=FALSE]
 		} else {
@@ -66,18 +66,18 @@ setMethod("[", c("SpatRaster", "SpatVector", "missing"),
 
 
 ## expression matching
-setMethod("[", c("SpatRaster", "character", "missing"),
-	function(x, i, j, ... ,drop=TRUE) {
+setMethod("[", c("SpatRaster", "character","missing"),
+	function(x, i, j) {
 		i <- grep(i, names(x))
-		subset(x, i, NSE=FALSE, ...)
+		subset(x, i, NSE=FALSE)
 	}
 )
 
 ## exact matching
 
-setMethod("[[", c("SpatRaster", "character", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
-	subset(x, i, NSE=FALSE, ...)
+setMethod("[[", c("SpatRaster", "character","missing"),
+function(x, i, j) {
+	subset(x, i, NSE=FALSE)
 })
 
 setMethod("$", "SpatRaster",
@@ -87,21 +87,21 @@ setMethod("$", "SpatRaster",
 )
 
 setMethod("[[", c("SpatRaster", "logical", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
-	subset(x, which(i), NSE=FALSE, ...)
+function(x, i, j) {
+	subset(x, which(i), NSE=FALSE)
 })
 
 
 setMethod("[[", c("SpatRaster", "numeric", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
-	subset(x, i, NSE=FALSE, ...)
+function(x, i, j) {
+	subset(x, i, NSE=FALSE)
 })
 
 
 setMethod("[[", c("SpatRaster", "ANY", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j) {
 	i <- as.vector(unlist(i))
-	x[[i, ..., drop=drop]]
+	x[[i]]
 })
 
 
@@ -176,14 +176,14 @@ function(x, i, j, ... , drop=FALSE) {
 })
 
 setMethod("[", c("SpatVector", "numeric", "logical"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	j <- which(rep_len(j, ncol(x)))
 	x[i, j, drop=drop]
 })
 
 
 setMethod("[", c("SpatVector", "logical", "missing"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	i <- which(rep_len(i, nrow(x)))
 	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- messages(x, "[")
@@ -195,7 +195,7 @@ function(x, i, j, ... , drop=FALSE) {
 })
 
 setMethod("[", c("SpatVector", "numeric", "numeric"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	i <- positive_indices(i, nrow(x), "'['")
 	j <- positive_indices(j, ncol(x), "'['")
 	p <- x@ptr$subset_rows(i-1)
@@ -210,7 +210,7 @@ function(x, i, j, ... , drop=FALSE) {
 
 
 setMethod("[", c("SpatVector", "missing", "numeric"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	j <- positive_indices(j, ncol(x), "'['")
 	x@ptr <- x@ptr$subset_cols(j-1)
 	x <- messages(x, "[")
@@ -222,7 +222,7 @@ function(x, i, j, ... , drop=FALSE) {
 })
 
 setMethod("[", c("SpatVector", "missing", "character"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	if (j[1] == "") {
 		jj <- 0
 	} else {
@@ -239,34 +239,34 @@ function(x, i, j, ... , drop=FALSE) {
 })
 
 setMethod("[", c("SpatVector", "missing", "logical"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	j <- which(rep_len(j, ncol(x)))
 	x[,j,drop=drop]
 })
 
 
 setMethod("[", c("SpatVector", "numeric", "character"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	j <- stats::na.omit(match(j, names(x)))
 	if (length(j) == 0) j <- 0
 	x <- x[i,j,drop=drop]
 })
 
 setMethod("[", c("SpatVector", "logical", "character"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	i <- which(rep_len(i, nrow(x)))
 	x[i,j,drop=drop]
 })
 
 
 setMethod("[", c("SpatVector", "logical", "numeric"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	i <- which(rep_len(i, nrow(x)))
 	x[i,j,drop=drop]
 })
 
 setMethod("[", c("SpatVector", "logical", "logical"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	i <- which(rep_len(i, nrow(x)))
 	j <- which(rep_len(j, ncol(x)))
 	x[i,j,drop=drop]
@@ -274,7 +274,7 @@ function(x, i, j, ... , drop=FALSE) {
 
 
 setMethod("[", c("SpatVector", "missing", "missing"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j,  drop=FALSE) {
 	if (drop) {
 		values(x)
 	} else {
@@ -284,11 +284,11 @@ function(x, i, j, ... , drop=FALSE) {
 
 
 setMethod("[", c("SpatVector", "matrix", "missing"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	x[i[,1]]
 })
 
 setMethod("[", c("SpatVector", "data.frame", "missing"),
-function(x, i, j, ... , drop=FALSE) {
+function(x, i, j, drop=FALSE) {
 	x[i[,1]]
 })

@@ -308,13 +308,13 @@ setMethod("$<-", "SpatExtent",
 
 
 setMethod("[", c("SpatExtent", "missing", "missing"),
-	function(x, i, j, ... , drop=FALSE) {
+	function(x, i, j) {
 		as.vector(x)
 	}
 )
 
 setMethod("[", c("SpatExtent", "numeric", "missing"),
-	function(x, i, j, ... , drop=FALSE) {
+	function(x, i, j) {
 		x <- as.vector(x)
 		x[i]
 	}
