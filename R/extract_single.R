@@ -1,5 +1,5 @@
 
-make_extract_index <- function(x, v, vmx, name="i") {
+make_extract_index <- function(v, vmx, name="i") {
 
 	caller <- paste0("`[`(", name, ")`")
 	if (inherits(v, "SpatRaster")) {
@@ -42,19 +42,15 @@ make_extract_index <- function(x, v, vmx, name="i") {
 			error(caller, paste("the type of index", name, "is unexpected:", class(v)[1]))		
 		}
 	}
-
 	if (inherits(v, "matrix")) {
 		if (ncol(v) == 1) {
 			v <- v[,1]
-		} else if ((nrow(v) == 1) && (ncol(v) != 2)) {
+		} else if (nrow(v) == 1) {
 			v <- v[1,]
-		} else if ((name == "i") && (ncol(v) == 2)) {
-			v <- cellFromRowCol(x, v[,1], v[,2])
 		} else {
-			error(caller, paste("index", name, "has", ncol(v), "columns"))
+			error(caller, paste("index", name, "has unexpected dimensions:", paste(dim(v), collapse=", ")))	
 		}
-	} 		
-
+	}
 	positive_indices(v, vmx, caller=caller)
 }
 
@@ -142,8 +138,18 @@ make_extract_index <- function(x, v, vmx, name="i") {
 		messages(x, "extract")
 		e <- do.call(cbind, e)
 		colnames(e) <- names(x)
-		.makeDataFrame(x, e)[,,drop=FALSE] #never drop data.frame for values
+		.makeDataFrame(x, e)
 	}
+}	
+
+
+.extract_cell_layer <- function(x, i, lyrs) {
+	e <- x@ptr$extractCell(i-1)
+	messages(x, "extract")
+	e <- do.call(cbind, e)
+	colnames(e) <- names(x)
+	e <- .makeDataFrame(x, e)
+	e[cbind(1:nrow(e), lyrs)]
 }	
 
 
@@ -154,10 +160,29 @@ setMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 		nj <- missing(j)
 		nk <- missing(k)
 			
-		#if (!ni) cat("i", i, "\n")
-		#if (!nj) cat("j", j, "\n")
-		#if (!nk) cat("k", k, "\n")
-		#cat("drop", drop, "\n")
+		if (!nk) {
+			if (is.logical(k) && length(k) == 1) {
+				drop <- k
+				nk <- TRUE
+			}
+		}
+		
+		if ((!ni) && (inherits(i, "matrix"))) {
+			if (ncol(i) == 1) {
+				i <- i[,1]
+			} else if ((nrow(i) == 1) && (ncol(i) != 2)) {
+				i <- i[1,]
+			} else if (ncol(i) == 2) {
+				i <- cellFromRowCol(x, i[,1], i[,2])
+				nj <- nk <- TRUE
+			} else if (ncol(i) == 3) {
+				k <- i[,3]
+				i <- cellFromRowCol(x, i[,1], i[,2])
+				return(.extract_cell_layer(x, i, k))
+			} else {
+				error("`[<-`", paste("index i has", ncol(i), "columns"))
+			}
+		} 		
 		
 		if (!nk) {
 			if (is.logical(k) && length(k) == 1) {
@@ -170,7 +195,7 @@ setMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 						error("`[`(k)", "invalid layer name(s)")
 					}
 				} else {
-					k <- make_extract_index(x, k, nlyr(x), "k")
+					k <- make_extract_index(k, nlyr(x), "k")
 				}
 				x <- x[[k]]
 			}
@@ -203,21 +228,21 @@ setMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			narg <- length(theCall)-length(match.call(call=theCall))		
 			if ((narg==0) && nj) {
 				# cell
-				i <- make_extract_index(x, i, ncell(x), "i")
+				i <- make_extract_index(i, ncell(x), "i")
 				return(.extract_cell(x, i, drop=drop))
 			} else if (nj) {
 				# row
-				i <- make_extract_index(x, i, nrow(x), "i")
+				i <- make_extract_index(i, nrow(x), "i")
 				return(.extract_row(x, i, drop=drop))
 			} else {
 				#row,col
-				i <- make_extract_index(x, i, nrow(x), "i")
-				j <- make_extract_index(x, j, ncol(x), "j")
+				i <- make_extract_index(i, nrow(x), "i")
+				j <- make_extract_index(j, ncol(x), "j")
 				return(.extract_rowcol(x, i, j, drop=drop))
 			}
 		} else { #if (!nj) {
 			#col
-			j <- make_extract_index(x, j, ncol(x), "j")
+			j <- make_extract_index(j, ncol(x), "j")
 			return(.extract_col(x, j, drop=drop))
 		}
 	} 

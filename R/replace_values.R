@@ -73,20 +73,23 @@ setMethod("set.values", signature(x="SpatRaster"),
 
 
 make_replace_index <- function(v, vmx, name="i") {
+
+	caller <- paste0("`[<-`(", name, ")`")
+
 	if (inherits(v, "SpatRaster")) {
-		error("`[<-`", paste("index", name, "cannot be a SpatRaster"))
+		error(caller, paste("index", name, "cannot be a SpatRaster"))
 	} 
 	if (inherits(v, "SpatVector")) {
-		error("`[<-`", paste("index", name, "cannot be a SpatVector"))
+		error(caller, paste("index", name, "cannot be a SpatVector"))
 	}
 	if (inherits(v, "SpatExtent")) {
-		error("`[<-`", paste("index", name, "cannot be a SpatExtent"))
+		error(caller, paste("index", name, "cannot be a SpatExtent"))
 	}
 
 	if (!is.numeric(v)) {
 
 		if (NCOL(v) > 1) {
-			error("`[<-`", paste("index", name, "has multiple columns"))
+			error(caller, paste("index", name, "has multiple columns"))
 		}
 		if (inherits(v, "data.frame")) {
 			v <- v[,1,drop=TRUE]
@@ -94,14 +97,14 @@ make_replace_index <- function(v, vmx, name="i") {
 			v <- as.vector(v)
 		} 
 		if (!is.vector(v)) {
-			error("`[<-`", paste("the type of index", name, "is unexpected:", class(v)[1]))		
+			error(caller, paste("the type of index", name, "is unexpected:", class(v)[1]))		
 		}
 		if (is.factor(v) || is.character(v)) {
-			error("`[<-`", paste("the type of index", name, "cannot be a factor or character"))			
+			error(caller, paste("the type of index", name, "cannot be a factor or character"))			
 		} 
 		if (is.logical(v)) {
 			if (length(v) > vmx) {
-				error("`[<-`", paste("index", name, "is too long"))
+				error(caller, paste("index", name, "is too long"))
 			} 
 			if (length(v) < vmx) {
 				v <- which(rep_len(v, vmx))
@@ -110,8 +113,19 @@ make_replace_index <- function(v, vmx, name="i") {
 			v <- as.numeric(v)
 		}
 	}
+
+	if (inherits(v, "matrix")) {
+		if (ncol(v) == 1) {
+			v <- v[,1]
+		} else if (nrow(v) == 1) {
+			v <- v[1,]
+		} else {
+			error(caller, paste("index", name, "has unexpected dimensions:", paste(dim(v), collapse=", ")))	
+		}
+	}
+
 	if (any(v < 1 | v > vmx)) {
-		error("`[<-`", paste(name, "is out of its valid range"))
+		error(caller, paste(name, "is out of its valid range"))
 	}
 	v
 }
@@ -161,7 +175,21 @@ make_replace_index <- function(v, vmx, name="i") {
 	}
 }
 
+.replace_cell_lyr <- function(x, cell, lyrs, value) {
+	ulyrs <- sort(unique(lyrs))
+	opt <- spatOptions()
+	for (lyr in ulyrs) {
+		y <- x[[lyr]]
+		i <- lyrs == lyr
+		if (!y@ptr$replaceCellValues(cell[i]-1, value[i], FALSE, opt)) {
+			messages(y, "`[<-`")
+		}
+		x[[lyr]] <- y
+	}
+	x
+}
 
+		
 .replace_spatvector <- function(x, i, value) {
 	if (length(value) > 1) {
 		if (length(value) > nrow(i)) {
@@ -214,11 +242,33 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 		ni <- missing(i)
 		nj <- missing(j)
 		nk <- missing(k)
+		
 		if (missing(value)) {
-			value = k
-			k = NA
+			value <- k
+			k <- NA
 			nk <- TRUE
-		} else if (!nk) {
+		}
+		
+		if ((!ni) && (inherits(i, "matrix"))) {
+			if (ncol(i) == 1) {
+				i <- i[,1]
+			} else if ((nrow(i) == 1) && (ncol(i) != 2)) {
+				i <- i[1,]
+			} else if (ncol(i) == 2) {
+				i <- cellFromRowCol(x, i[,1], i[,2])
+				nj <- TRUE
+				nk <- TRUE
+			} else if (ncol(i) == 3) {
+				k <- i[,3]
+				value <- rep_len(value, length(k))
+				i <- cellFromRowCol(x, i[,1], i[,2])
+				return(.replace_cell_lyr(x, i, k, value))
+			} else {
+				error("`[<-`", paste("index i has", ncol(i), "columns"))
+			}
+		} 		
+		
+		if (!nk) {
 			if (inherits(k, "character")) {
 				k <- match(k, names(x))
 				if (any(is.na(k))) {
@@ -227,20 +277,22 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			} else {
 				k <- make_replace_index(k, nlyr(x), "k")
 			}
-			if ((length(k) == nlyr(x)) && (all(k == 1:nlyr(x)))) {
-				x <- .replace_all(x, value)
-			} else {
 			# should be able to pass "k" to the cpp methods instead
-				y <- x[[k]]
-				if (ni & nj) {
-					y[] <- value 
-				} else if (ni) {
-					y[,j] <- value 
+			y <- x[[k]]
+			if (ni & nj) {
+				y[] <- value 
+			} else if (ni) {
+				y[,j] <- value 
+			} else {
+				theCall <- sys.call(-1)
+				narg <- length(theCall)-length(match.call(call=theCall))		
+				if (narg == 0) {
+					y[i] <- value
 				} else {
 					y[i,] <- value
 				}
-				x[[k]] <- y
 			}
+			x[[k]] <- y
 			return(x)
 		}
 
