@@ -168,11 +168,6 @@ extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NUL
 	}
 }
 
-setMethod("extract", signature(x="SpatRaster", y="matrix"),
-function(x, y, ...) {
-	.checkXYnames(colnames(y))
-	extractCells(x, y, ...)
-})
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
@@ -391,6 +386,16 @@ function(x, y, xy=FALSE) {
 		v <- cbind(xyFromCell(x, y), v)
 	}
 	v
+})
+
+setMethod("extract", signature(x="SpatRaster", y="matrix"),
+function(x, y, cells=FALSE) {
+	.checkXYnames(colnames(y))
+	cells <- xyFromCell(x, y)
+	v <- extract(x, y, xy=xy)
+	if (cells) {
+		v <- cbind(cell=y, v)
+	}
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),

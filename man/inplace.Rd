@@ -10,9 +10,6 @@
 \alias{set.RGB}
 \alias{set.RGB,SpatRaster-method}
 
-\alias{setCats}
-\alias{setCats,SpatRaster-method}
-
 \alias{set.cats}
 \alias{set.cats,SpatRaster-method}
 
