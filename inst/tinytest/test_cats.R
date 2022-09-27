@@ -53,7 +53,7 @@ expect_equal(levels(r2), list(lv, lv))
 
 # verify samples for layer a and layer b have categories
 expect_equal(r2[c(15,3)], data.frame(cover = factor(c("forest", "urban"), levels = lv[,2]),
-                                           cover.1 = factor(c("forest", "urban"), levels = lv[,2]), stringsAsFactors=FALSE))
+                                           cover = factor(c("forest", "urban"), levels = lv[,2]), stringsAsFactors=FALSE, check.names = FALSE))
 
 # make sure no errors when show()ing factors
 expect_silent(show(r2))
