@@ -114,7 +114,7 @@ setMethod("subset", signature(x="SpatVector"),
 				x <- x[which(as.vector(subset)), select, drop=drop]
 			}
 		}
-		g <- gc()
+		#g <- gc()
 		x
 	}
 )

@@ -74,7 +74,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 
 make_replace_index <- function(v, vmx, name="i") {
 
-	caller <- paste0("`[<-`(", name, ")`")
+	caller <- paste0("`[<-`(", name, ")")
 
 	if (inherits(v, "SpatRaster")) {
 		error(caller, paste("index", name, "cannot be a SpatRaster"))
@@ -106,7 +106,7 @@ make_replace_index <- function(v, vmx, name="i") {
 			if (length(v) > vmx) {
 				error(caller, paste("index", name, "is too long"))
 			} 
-			if (length(v) < vmx) {
+			if (length(v) <= vmx) {
 				v <- which(rep_len(v, vmx))
 			}
 		} else {
