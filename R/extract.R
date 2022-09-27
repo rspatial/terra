@@ -392,7 +392,7 @@ setMethod("extract", signature(x="SpatRaster", y="matrix"),
 function(x, y, cells=FALSE) {
 	.checkXYnames(colnames(y))
 	y <- cellFromXY(x, y)
-	v <- extract(x, y, cells=cells)
+	v <- extract(x, y)
 	if (cells) {
 		v <- cbind(cell=y, v)
 	}
