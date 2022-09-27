@@ -180,10 +180,17 @@ setMethod ("set.cats" , "SpatRaster",
 
 setMethod ("categories" , "SpatRaster",
 	function(x, layer=1, value, active=2, ...) {
-		x@ptr <- x@ptr$deepcopy()
+
 		# backwards compatibility
-		indx <- list(...)$index
-		if (!is.null(idx)) active = idx
+		if (isTRUE(active == 2)) {
+			index <- list(...)$index
+			if (!is.null(index)) {
+				active = index
+				warn("categories", "please use argument 'active' in lieu of 'index'")
+			}
+		}
+
+		x@ptr <- x@ptr$deepcopy()
 		set.cats(x, layer, value, active)
 		x
 	}
