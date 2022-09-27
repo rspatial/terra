@@ -45,8 +45,6 @@ make_extract_index <- function(v, vmx, name="i") {
 	if (inherits(v, "matrix")) {
 		if (ncol(v) == 1) {
 			v <- v[,1]
-		} else if (nrow(v) == 1) {
-			v <- v[1,]
 		} else {
 			error(caller, paste("index", name, "has unexpected dimensions:", paste(dim(v), collapse=", ")))	
 		}

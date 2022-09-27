@@ -180,7 +180,7 @@ make_replace_index <- function(v, vmx, name="i") {
 	opt <- spatOptions()
 	for (lyr in ulyrs) {
 		y <- x[[lyr]]
-		i <- lyrs == lyr
+		i <- which(lyrs == lyr)
 		if (!y@ptr$replaceCellValues(cell[i]-1, value[i], FALSE, opt)) {
 			messages(y, "`[<-`")
 		}
@@ -252,8 +252,6 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 		if ((!ni) && (inherits(i, "matrix"))) {
 			if (ncol(i) == 1) {
 				i <- i[,1]
-			} else if ((nrow(i) == 1) && (ncol(i) != 2)) {
-				i <- i[1,]
 			} else if (ncol(i) == 2) {
 				i <- cellFromRowCol(x, i[,1], i[,2])
 				nj <- TRUE
