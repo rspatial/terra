@@ -741,7 +741,7 @@ RCPP_MODULE(spat){
 		.method("writeRaster", &SpatRaster::writeRaster, "writeRaster")
 		.method("canProcessInMemory", &SpatRaster::canProcessInMemory, "canProcessInMemory")
 		.method("chunkSize", &SpatRaster::chunkSize, "chunkSize")
-		.method("to_memory", &SpatRaster::to_memory, "to_memory")
+//		.method("to_memory", &SpatRaster::to_memory, "to_memory")
 
 		.method("adjacentMat", &SpatRaster::adjacentMat, "adjacent with matrix")
 		.method("adjacent", &SpatRaster::adjacent, "adjacent")
