@@ -77,8 +77,10 @@ bool SpatRaster::write_aux_json(std::string filename) {
 			}
 			f << "}" << std::endl;
 		} else {
+			f.close();
 			return false;
 		}
+		f.close();
 		return true;
 	}
 	return true;

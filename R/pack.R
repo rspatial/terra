@@ -211,6 +211,18 @@ setMethod("show", signature(object="PackedSpatRaster"),
 )
 
 
+setMethod("unwrap", signature(x="ANY"),
+	function(x) {
+		if (inherits(x, "PackedSpatRaster")) {
+			x <- rast(x)
+		} else if (inherits(x, "PackedSpatVector")) {
+			x <- vect(x)		
+		}
+		x
+	}
+)
+
+
 
 setMethod("serialize", signature(object="SpatVector"),
 	function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, refhook = NULL) {

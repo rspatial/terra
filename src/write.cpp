@@ -517,3 +517,48 @@ bool SpatRaster::writeStartFs(std::string filename, std::string format, std::str
 */
 
 
+bool SpatRaster::writeDelim(std::string filename, std::string delim, bool cell, bool xy, SpatOptions &opt) {
+
+	if (!hasValues()) {
+		setError("there are no cell values");
+		return false;
+	}
+	if (!readStart()) {
+		setError(getError());
+		return(false);
+	}
+
+	std::ofstream f;
+	f.open(filename);
+	if (!f.is_open()) {
+		setError("could not open the csv file for writing");
+		return false;
+	}
+	std::vector<std::string> nms = getNames();
+	if (xy | cell) {
+		std::vector<std::string> add;
+		if (xy) {
+			add.push_back("x");
+			add.push_back("y");
+		} 
+		if (cell) {
+			add.push_back("cell");
+		}
+		nms.insert(nms.begin(), add.begin(), add.end());	
+	}
+
+	std::string s = concatenate(nms, delim);
+	f << s << std::endl;
+
+	BlockSize bs = getBlockSize(opt);
+	for (size_t i=0; i<bs.n; i++) {
+		std::vector<double> v;
+		readBlock(v, bs, i);
+		//s = get_delim_string(v, delim);
+		//f << s << std::endl;
+	}	
+	f.close();
+	readStop();
+	return true;
+}
+
