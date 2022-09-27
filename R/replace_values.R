@@ -34,7 +34,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 			bylyr <- FALSE
 			if (!is.null(dim(values))) {
 				if (ncol(values) != n) {
-					error("set.values", "ncol(values) does not match the `length(layer)`")
+					error("set.values", "ncol(values) does not match `length(layer)`")
 				}
 				bylyr <- TRUE
 				#if (inherits(values, "data.frame")) {
@@ -156,7 +156,7 @@ make_replace_index <- function(v, vmx, name="i") {
 	return(x)
 }
 
-.replace_cell <- function(x, i, value) {
+.replace_cell <- function(x, i, k, value) {
 	bylyr = FALSE
 	if (!is.null(dim(value))) {
 		stopifnot(ncol(value) == nlyr(x))
@@ -168,11 +168,16 @@ make_replace_index <- function(v, vmx, name="i") {
 	}
 	opt <- spatOptions()
 	x@ptr <- x@ptr$deepcopy()
-	if (!x@ptr$replaceCellValues(i-1, value, bylyr, opt)) {
-		messages(x, "`[<-`")
+	if (is.na(k[1])) {
+		if (!x@ptr$replaceCellValues(i-1, value, bylyr, opt)) {
+			messages(x, "`[<-`")
+		} 
 	} else {
-		x
+		if (!x@ptr$replaceCellValuesLayer(k-1, i-1, value, bylyr, opt)) {
+			messages(x, "`[<-`")		
+		}
 	}
+	x
 }
 
 .replace_cell_lyr <- function(x, cell, lyrs, value) {
@@ -275,23 +280,8 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			} else {
 				k <- make_replace_index(k, nlyr(x), "k")
 			}
-			# should be able to pass "k" to the cpp methods instead
-			y <- x[[k]]
-			if (ni & nj) {
-				y[] <- value 
-			} else if (ni) {
-				y[,j] <- value 
-			} else {
-				theCall <- sys.call(-1)
-				narg <- length(theCall)-length(match.call(call=theCall))		
-				if (narg == 0) {
-					y[i] <- value
-				} else {
-					y[i,] <- value
-				}
-			}
-			x[[k]] <- y
-			return(x)
+		} else {
+			k <- NA
 		}
 
 		if (ni & nj) {
@@ -328,7 +318,7 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			j <- make_replace_index(j, ncol(x), "j")
 			i <- cellFromRowColCombine(x, 1:nrow(x), j)
 		}
-		return(.replace_cell(x, i, value))
+		return(.replace_cell(x, i, k, value))
 	} 
 )
 
