@@ -77,7 +77,7 @@ droplevels removes categories that are not used (declared but not present as val
 <span class="fu">cats</span><span class="op">(</span><span class="va">x</span>, <span class="va">layer</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">categories</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<span class="fu">categories</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">2</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
 <span class="fu">droplevels</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
@@ -96,6 +96,9 @@ droplevels removes categories that are not used (declared but not present as val
 
   <dt>active</dt>
 <dd><p>positive integer, indicating the column in <code>data.frame</code> <code>value</code> to be used as the active category, (not counting the first column with the cell values)</p></dd>
+
+  <dt>...</dt>
+<dd><p>additional arguments</p></dd>
 
 </dl></div>
     <div id="value">
