@@ -126,7 +126,7 @@ make_extract_index <- function(v, vmx, name="i") {
 
 
 
-.extract_cell <- function(x, i, drop=FALSE) {
+.extract_cell <- function(x, i, drop=TRUE) {
 	if (!drop) {	
 		rc <- rowColFromCell(x, i)
 		e <- ext_from_rc(x, min(rc[,1]), max(rc[,1]), min(rc[,2]), max(rc[,2]))
