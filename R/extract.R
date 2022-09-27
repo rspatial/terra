@@ -383,29 +383,29 @@ function(x, y, ...) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="numeric"),
-function(x, y, ...) {
+function(x, y, xy=FALSE) {
 	y <- round(y)
 	y[(y < 1) | (y > ncell(x))] <- NA
-	.extract_cell(x, y)	
+	v <- .extract_cell(x, y, drop=TRUE)	
+	if (xy) {
+		v <- cbind(xyFromCell(x, y), v)
+	}
+	v
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),
 function(x, y, cells=FALSE, xy=FALSE) {
 	y <- cells(x, y)
-	v <- .extract_cell(x, y)
+	v <- extract(x, y, xy=xy)
 	if (cells) {
-		v$cell <- y
+		v <- cbind(cell=y, v)
 	}
-	if (xy) {
-		v <- cbind(v, xyFromCell(x, y))
-	}
-	v
 }
 )
 
 
 setMethod("extract", c("SpatVector", "SpatVector"),
-function(x, y, ...) {
+function(x, y) {
 
 #	r <- relate(x, y, "covers")
 #	e <- apply(r, 2, which)
@@ -445,15 +445,15 @@ function(x, y, ...) {
 
 
 setMethod("extract", signature(x="SpatVector", y="matrix"),
-function(x, y, ...) {
+function(x, y) {
 	stopifnot(ncol(y) == 2)
 	.checkXYnames(colnames(y))
 	y <- vect(y)
-	extract(x, y, ...)
+	extract(x, y)
 })
 
 setMethod("extract", signature(x="SpatVector", y="data.frame"),
-function(x, y, ...) {
-	extract(x, as.matrix(y), ...)
+function(x, y) {
+	extract(x, as.matrix(y))
 })
 

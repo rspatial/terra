@@ -1,7 +1,7 @@
 \name{deprecated}
 
-\alias{area}
-\alias{area,SpatRaster-method}
+\alias{setCats}
+\alias{setCats,SpatRaster-method}
 
 \title{deprecated methods}
 
@@ -10,7 +10,7 @@ These methods are deprecated and will be removed in future versions
 }
 
 \usage{
-\S4method{area}{SpatRaster}(x, ...)
+\S4method{setCats}{SpatRaster}(x, ...)
 }
 
 \arguments{
