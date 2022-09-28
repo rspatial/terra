@@ -625,7 +625,14 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		return false ;
 	}
 	char *pszSRS_WKT = NULL;
+	
+#if GDAL_VERSION_MAJOR >= 3
+	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	oSRS.exportToWkt(&pszSRS_WKT, options);
+#else
 	oSRS.exportToWkt(&pszSRS_WKT);
+#endif
+
 	poDS->SetProjection(pszSRS_WKT);
 	CPLFree(pszSRS_WKT);
 	// destroySRS(oSRS) ?

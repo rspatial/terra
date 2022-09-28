@@ -495,7 +495,12 @@ bool GDALsetSRS(GDALDatasetH &hDS, const std::string &crs) {
 		return false ;
 	}
 	char *pszSRS_WKT = NULL;
+#if GDAL_VERSION_MAJOR >= 3
+	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	OSRExportToWktEx( hSRS, &pszSRS_WKT, options);
+#else
 	OSRExportToWkt( hSRS, &pszSRS_WKT );
+#endif
 	OSRDestroySpatialReference( hSRS );
 	GDALSetProjection( hDS, pszSRS_WKT );
 	CPLFree( pszSRS_WKT );
@@ -938,8 +943,14 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 			OSRDestroySpatialReference( hSRS );
 			return false;
 		}
-		char *pszSRS_WKT = NULL;
-		OSRExportToWkt( hSRS, &pszSRS_WKT );
+		char *pszSRS_WKT = NULL;		
+		#if GDAL_VERSION_MAJOR >= 3
+			const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+			OSRExportToWktEx( hSRS, &pszSRS_WKT, options);
+		#else
+			OSRExportToWkt( hSRS, &pszSRS_WKT );
+		#endif
+		
 		GDALSetProjection( hDS, pszSRS_WKT );
 		CPLFree(pszSRS_WKT);
 		OSRDestroySpatialReference( hSRS );

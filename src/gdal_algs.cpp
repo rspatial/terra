@@ -140,7 +140,12 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 	};
 
 	char *pszDstWKT = NULL;
+#if GDAL_VERSION_MAJOR >= 3
+	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	oSRS->exportToWkt( &pszDstWKT, options);
+#else
 	oSRS->exportToWkt( &pszDstWKT );
+#endif
 
 	// Create a transformer that maps from source pixel/line coordinates
 	// to destination georeferenced coordinates (not destination
