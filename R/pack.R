@@ -242,31 +242,31 @@ setMethod("saveRDS", signature(object="SpatVector"),
 
 setMethod("serialize", signature(object="SpatRaster"),
 	function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, refhook = NULL) {
-		if (!all(inMemory(object))) {
-			opt <- spatOptions(ncopies=2)
-			if (object@ptr$canProcessInMemory(opt)) {
-				set.values(object)
-			} else {
-				error("Cannot be loaded into memory which is required for serialize")
-			}
-		}
 		object <- wrap(object)
 		serialize(object, connection=connection, ascii = ascii, xdr = xdr, version = version, refhook = refhook)
+	}
+)
+
+setMethod("unserialize", signature(connection="ANY"),
+	function(connection, refhook = NULL) {
+		x <- base::unserialize(connection, refhook)
+		unwrap(x)
 	}
 )
 
 
 setMethod("saveRDS", signature(object="SpatRaster"),
 	function(object, file="", ascii = FALSE, version = NULL, compress=TRUE, refhook = NULL) {
-		if (!all(inMemory(object))) {
-			opt <- spatOptions()
-			if (object@ptr$canProcessInMemory(opt)) {
-				set.values(object)
-			} else {
-				error("Cannot be loaded into memory which is required for saveRDS")
-			}
-		}
-		object = wrap(object)
+		object <- wrap(object)
 		saveRDS(object, file=file, ascii = ascii, version = version, compress=compress, refhook = refhook)
+	}
+)
+
+
+
+setMethod("readRDS", signature(file="character"),
+	function (file = "", refhook = NULL) {
+		x <- base::readRDS(file=file, refhook=refhook)
+		unwrap(x)
 	}
 )
