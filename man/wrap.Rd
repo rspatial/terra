@@ -1,21 +1,27 @@
 \name{wrap}
 
 \alias{wrap}
+\alias{unwrap}
 
 \alias{wrap,SpatVector-method}
 \alias{wrap,SpatRaster-method}
+\alias{unwrap,ANY-method}
+\alias{unwrap,PackedSpatRaster-method}
+\alias{unwrap,PackedSpatVector-method}
 
 
-\title{wrap (pack) a SpatRaster or SpatVector object}
+\title{wrap and unwrap}
 
 \description{
-Wrap a SpatRaster or SpatVector object to create a Packed* object. Packed objects can be passed over a connection that serializes (e.g. to nodes on a computer cluster). At the receiving end they need to be unpacked with either \code{rast} or \code{vect}.
+Use \code{wrap} to pack a SpatRaster or SpatVector object to create a Packed* object. Packed objects can be passed over a connection that serializes (e.g. to nodes on a computer cluster). At the receiving end they need to be unpacked with \code{unwrap}.
 }
 
 \usage{
 \S4method{wrap}{SpatRaster}(x, proxy=FALSE)
 
 \S4method{wrap}{SpatVector}(x)
+
+\S4method{unwrap}{ANY}(x)
 }
 
 \arguments{
@@ -24,7 +30,9 @@ Wrap a SpatRaster or SpatVector object to create a Packed* object. Packed object
 }
 
 \value{
-Packed* object 
+\code{wrap}: Packed* object
+
+\code{unwrap}: SpatRaster or SpatVector
 }
 
 

@@ -27,41 +27,26 @@ setClass("PackedSpatRaster",
 )
 
 
-.packVector <- function(x) {
-	vd <- methods::new("PackedSpatVector")
-	vd@type <- geomtype(x)
-	vd@crs <- as.character(crs(x))
-	stopifnot(vd@type %in% c("points", "lines", "polygons"))
-	g <- geom(x)
-	vd@coordinates <- g[, c("x", "y"), drop=FALSE]
-	j <- c(1, 2, grep("hole", colnames(g)))
-	g <- g[ , j, drop=FALSE]
-	i <- which(!duplicated(g))
-	vd@index <- cbind(g[i, ,drop=FALSE], start=i)
-	vd
-}
-
-#setMethod("wrap", signature(x="Spatial"),
-#	function(x) {
-#		pv <- .packVector(x)
-#		if (methods::.hasSlot(x, "data")) {
-#			pv@attributes <- x@data
-#		}
-#		pv
-#	}
-#)
-
 
 setMethod("wrap", signature(x="SpatVector"),
 	function(x) {
-		pv <- .packVector(x)
-		pv@attributes <- as.data.frame(x)
-		pv
+		vd <- methods::new("PackedSpatVector")
+		vd@type <- geomtype(x)
+		vd@crs <- as.character(crs(x))
+		#stopifnot(vd@type %in% c("points", "lines", "polygons"))
+		g <- geom(x)
+		vd@coordinates <- g[, c("x", "y"), drop=FALSE]
+		j <- c(1, 2, grep("hole", colnames(g)))
+		g <- g[ , j, drop=FALSE]
+		i <- which(!duplicated(g))
+		vd@index <- cbind(g[i, ,drop=FALSE], start=i)
+		vd@attributes <- as.data.frame(x)
+		vd
 	}
 )
 
 
-setMethod("vect", signature(x="PackedSpatVector"),
+setMethod("unwrap", signature(x="PackedSpatVector"),
 	function(x) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
@@ -87,9 +72,16 @@ setMethod("vect", signature(x="PackedSpatVector"),
 	}
 )
 
+setMethod("vect", signature(x="PackedSpatVector"),
+	function(x) {
+		unwrap(x)
+	}
+)
+
+
 setMethod("show", signature(object="PackedSpatVector"),
 	function(object) {
-		print(paste("This is a", class(object), "object. Use 'terra::vect()' to unpack it"))
+		print(paste("This is a", class(object), "object. Use 'terra::unwrap()' to unpack it"))
 	}
 )
 
@@ -163,7 +155,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 )
 
 
-setMethod("rast", signature(x="PackedSpatRaster"),
+setMethod("unwrap", signature(x="PackedSpatRaster"),
 	function(x) {
 
 		r <- eval(parse(text=x@definition))
@@ -204,24 +196,26 @@ setMethod("rast", signature(x="PackedSpatRaster"),
 	}
 )
 
-setMethod("show", signature(object="PackedSpatRaster"),
-	function(object) {
-		print(paste("This is a", class(object), "object. Use 'terra::rast()' to unpack it"))
+setMethod("rast", signature(x="PackedSpatRaster"),
+	function(x) {
+		unwrap(x)
 	}
 )
+
+setMethod("show", signature(object="PackedSpatRaster"),
+	function(object) {
+		print(paste("This is a", class(object), "object. Use 'terra::unwrap()' to unpack it"))
+	}
+)
+
+
 
 
 setMethod("unwrap", signature(x="ANY"),
 	function(x) {
-		if (inherits(x, "PackedSpatRaster")) {
-			x <- rast(x)
-		} else if (inherits(x, "PackedSpatVector")) {
-			x <- vect(x)		
-		}
 		x
 	}
 )
-
 
 
 setMethod("serialize", signature(object="SpatVector"),
@@ -270,3 +264,15 @@ setMethod("readRDS", signature(file="character"),
 		unwrap(x)
 	}
 )
+
+
+
+#setMethod("wrap", signature(x="Spatial"),
+#	function(x) {
+#		pv <- .packVector(x)
+#		if (methods::.hasSlot(x, "data")) {
+#			pv@attributes <- x@data
+#		}
+#		pv
+#	}
+#)
