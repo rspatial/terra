@@ -389,10 +389,9 @@ function(x, y, xy=FALSE) {
 })
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"),
-function(x, y, cells=FALSE, method="simple") {
+function(x, y, ...) {
 	.checkXYnames(colnames(y))
-	y <- vect(y)
-	extract(x, y, cells=cells, method=method, ID=FALSE)
+	extract(x, vect(y), ...)
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),

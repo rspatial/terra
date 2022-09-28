@@ -44,7 +44,7 @@ When argument \code{y} is a \code{SpatVector} the first column has the ID (recor
 
 \S4method{extract}{SpatRaster,numeric}(x, y, xy=FALSE)
 
-\S4method{extract}{SpatRaster,matrix}(x, y, cells=FALSE)
+\S4method{extract}{SpatRaster,matrix}(x, y, ...)
 
 \S4method{extract}{SpatVector,SpatVector}(x, y)
 }

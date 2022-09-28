@@ -2,11 +2,16 @@
 
 \alias{serialize}
 \alias{saveRDS}
+\alias{unserialize}
+\alias{readRDS}
 
 \alias{serialize,SpatVector-method}
 \alias{serialize,SpatRaster-method}
+\alias{unserialize,ANY-method}
+
 \alias{saveRDS,SpatVector-method}
 \alias{saveRDS,SpatRaster-method}
+\alias{readRDS,chracter-method}
 
 
 \title{serialize and saveRDS for SpatRaster and SpatVector}
