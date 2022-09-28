@@ -52,10 +52,11 @@ xy <- rbind(xy-100, xy, xy+1000)
 e <- extract(r, xy)
 expect_equal(e[,1] , c(378, 251, 208))
 
-e <- extract(r, xy, method="bilinear")
+vxy <- vect(xy)
+e <- extract(r, vxy, ID=FALSE, method="bilinear")
 expect_equal(e[,1] , c(378.00, 270.75, 197.25))
 
-e <- extract(r, xy, method="bilinear", cells=TRUE)
+e <- extract(r, vxy, method="bilinear", cells=TRUE, ID=FALSE)
 expect_equal(unlist(e, use.names=FALSE), c(378.00, 270.75, 197.25,8173.00,8016.00,6041.00))
  
 r <- rast(nrows = 10, ncols = 10, nlyrs = 1, vals = 1:100, names = "temp")
@@ -76,8 +77,6 @@ expect_equal(round(as.vector(as.matrix(test)),5), c(1,2, 51.80006, 52.21312))
 
 test <- terra::extract(rr, p, fun = mean, exact=TRUE)
 expect_equal(round(as.vector(as.matrix(test)),5), c(1,2, 51.80006, 52.21312, 103.60012, 104.42623))
-
-
 
 r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
 terra::values(r) <- c(100, 100, NaN, 100)

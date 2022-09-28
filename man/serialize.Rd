@@ -57,7 +57,6 @@ p <- serialize(v, NULL)
 head(p)
 x <- unserialize(p)
 x
-vect(x)
 }
 
 
