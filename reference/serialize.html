@@ -111,7 +111,7 @@ SpatRaster objects must have all values in memory (that is, the cell values are 
 <span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">serialize</span><span class="op">(</span><span class="va">v</span>, <span class="cn">NULL</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="headtail.html">head</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 58 0a 00 00 00 03</span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">unserialize</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">x</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
