@@ -389,9 +389,14 @@ function(x, y, xy=FALSE) {
 })
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"),
-function(x, y, ...) {
+function(x, y, cells=FALSE) {
 	.checkXYnames(colnames(y))
-	extract(x, vect(y), ...)
+	y <- cellFromXY(x, y)
+	if (cells) {
+		cbind(cell=y, extract(x, y))	
+	} else {
+		extract(x, y)
+	}
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),

@@ -11,7 +11,7 @@
 
 \alias{saveRDS,SpatVector-method}
 \alias{saveRDS,SpatRaster-method}
-\alias{readRDS,chracter-method}
+\alias{readRDS,character-method}
 
 
 \title{serialize and saveRDS for SpatRaster and SpatVector}
