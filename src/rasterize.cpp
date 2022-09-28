@@ -597,7 +597,19 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
     SpatOptions ropt(opt);
 	SpatRaster r = geometry(1);
 	SpatExtent e = getExtent();
-	e = e.intersect(v.getExtent());
+	SpatExtent ev = v.getExtent();
+	if (ev.xmin >= ev.xmax) {
+		double xr = 0.1 * xres();
+		ev.xmin -= xr;
+		ev.xmax += xr;
+	}
+	if (ev.ymin >= ev.ymax) {
+		double yr = 0.1 * yres();
+		ev.ymin -= yr;
+		ev.ymax += yr;
+	}
+	
+	e = e.intersect(ev);
 	if ( !e.valid() ) {
 		std::vector<double> out(1, NAN);
 		return out;
