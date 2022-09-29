@@ -3,7 +3,7 @@
 \alias{setCats}
 \alias{setCats,SpatRaster-method}
 \alias{area}
-\alias{area,ANY-method}
+\alias{area,SpatRaster-method}
 
 \title{deprecated methods}
 

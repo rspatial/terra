@@ -138,7 +138,7 @@ retro_labels <- function(x, lat=TRUE) {
 			ur <- usr[2] - usr[1]
 			edg <- c(usr[1]-10*ur, usr[2]+10*ur)
 			if (is.null(xat)) {
-				y$at <- axTicks(s)
+				y$at <- graphics::axTicks(s)
 			} else {
 				y$at <- xat
 			}
