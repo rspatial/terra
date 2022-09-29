@@ -87,13 +87,13 @@ retro_labels <- function(x, lat=TRUE) {
 	if (!is.null(x$axs$labels)) {
 		xlab <- ylab <- x$axs$labels
 	}
-	if (!is.null(x$axs$xlabels)) {
-		xlab <- x$axs$xlabels
-		x$axs$xlabels <- NULL
+	if (!is.null(x$axs$xlabs)) {
+		xlab <- x$axs$xlabs
+		x$axs$xlabs <- NULL
 	}
-	if (!is.null(x$axs$ylabels)) {
-		ylab <- x$axs$ylabels
-		x$axs$ylabels <- NULL
+	if (!is.null(x$axs$ylabs)) {
+		ylab <- x$axs$ylabs
+		x$axs$ylabs <- NULL
 	}
 	
 	xat <- yat <- NULL
@@ -134,29 +134,32 @@ retro_labels <- function(x, lat=TRUE) {
 	
 	for (s in 1:4) {
 		y$side <- s
+		y$labels <- NULL
 		if (s %in% c(1,3)) {
 			ur <- usr[2] - usr[1]
 			edg <- c(usr[1]-10*ur, usr[2]+10*ur)
-			y$at <- xat
-			if (!is.null(xlab)) {
-				y$labels <- xlab				
-			} else if (retro) {
-				if (is.null(y$at)) {
-					y$at <- axTicks(s)
-				}
-				y$labels <- retro_labels(y$at)
+			if (is.null(xat)) {
+				y$at <- axTicks(s)
+			} else {
+				y$at <- xat
+			}
+			if (is.null(xlab)) {
+				y$labels <- if (retro) retro_labels(y$at) else y$at
+			} else {
+				y$labels <- xlab
 			}
 		} else {
 			ur <- usr[4] - usr[3]
 			edg <- c(usr[3]-10*ur, usr[4]+10*ur)
-			y$at <- yat
-			if (!is.null(ylab)) {
-				y$labels <- ylab				
-			} else if (retro) {
-				if (is.null(y$at)) {
-					y$at <- axTicks(s)
-				}
-				y$labels <- retro_labels(y$at)
+			if (is.null(yat)) {
+				y$at <- axTicks(s)
+			} else {
+				y$at <- yat
+			}
+			if (is.null(ylab)) {
+				y$labels <- if (retro) retro_labels(y$at) else y$at
+			} else {
+				y$labels <- ylab
 			}
 		}
 		z <- y
