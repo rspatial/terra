@@ -98,7 +98,7 @@
 <dd><p>numeric vector of length 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use <code>mar=NA</code> to not set the margins</p></dd>
 
   <dt>legend</dt>
-<dd><p>logical or character. If not <code>FALSE</code> a legend is drawn. The character value can be used to indicate where the legend is to be draw. For example "topright" or "bottomleft". Use <code>plg</code> for more refined placement (SpatVector data only)</p></dd>
+<dd><p>logical or character. If not <code>FALSE</code> a legend is drawn. The character value can be used to indicate where the legend is to be drawn. For example "topright" or "bottomleft". Use <code>plg</code> for more refined placement (SpatVector data only)</p></dd>
 
   <dt>axes</dt>
 <dd><p>logical. Draw axes?</p></dd>
@@ -113,7 +113,7 @@
 <dd><p>list with parameters for drawing the legend. See the arguments for <code><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></code></p></dd>
 
   <dt>pax</dt>
-<dd><p>list with parameters for drawing axes. See the arguments for <code><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></code>. Arguments <code>side</code>, <code>tick</code> and <code>lab</code> can be used to indicate for which of the four axes to draw a line (side), tick mark, or label. The default is <code>c(1:4)</code> for side and <code>1:2</code> for the other two. If <code>side</code> is changed the other two default to that value. Logical argument <code>retro</code> can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) in stead of the standard decimal notation</p></dd>
+<dd><p>list with parameters for drawing axes. See the arguments for <code><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></code>. Arguments <code>side</code>, <code>tick</code> and <code>lab</code> can be used to indicate for which of the four axes to draw a line (side), tick mark, or label. The default is <code>c(1:4)</code> for side and <code>1:2</code> for the other two. If <code>side</code> is changed the other two default to that value. Logical argument <code>retro</code> can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation</p></dd>
   
   <dt>maxcell</dt>
 <dd><p>positive integer. Maximum number of cells to use for the plot</p></dd>
@@ -136,7 +136,7 @@
   <dt>breakby</dt>
 <dd><p>character or function. Either "eqint" for equal interval breaks, "cases" for equal quantile breaks. If a function is supplied it should take a single argument (a vector of values) and create groups</p></dd>
 
- <dt>fun</dt>
+  <dt>fun</dt>
 <dd><p>function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector <code>v</code>, you could do <code>fun=function() lines(v)</code>. The function may have one argument, representing the the layer that is plotted (1 to the number of layers)</p></dd>
   
   <dt>colNA</dt>
