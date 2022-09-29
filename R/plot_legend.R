@@ -137,34 +137,29 @@ retro_labels <- function(x, lat=TRUE) {
 		if (s %in% c(1,3)) {
 			ur <- usr[2] - usr[1]
 			edg <- c(usr[1]-10*ur, usr[2]+10*ur)
-			if (is.null(xat)) {
-				y$at <- edg
-			} else {				
-				y$at <- xat
-			}
+			y$at <- xat
 			if (!is.null(xlab)) {
 				y$labels <- xlab				
+			} else if (retro) {
+				if (is.null(y$at)) {
+					y$at <- axTicks(s)
+				}
+				y$labels <- retro_labels(y$at)
 			}
 		} else {
 			ur <- usr[4] - usr[3]
 			edg <- c(usr[3]-10*ur, usr[4]+10*ur)
-			if (is.null(yat)) {
-				y$at <- edg
-			} else {
-				y$at <- yat
-			}
+			y$at <- yat
 			if (!is.null(ylab)) {
 				y$labels <- ylab				
 			} else if (retro) {
+				if (is.null(y$at)) {
+					y$at <- axTicks(s)
+				}
 				y$labels <- retro_labels(y$at)
 			}
 		}
 		z <- y
-		if (s %in% c(1,3)) {
-			z$at <- xat
-		} else {
-			z$at <- yat			
-		}
 		z$lwd <- 0
 
 		if (s %in% labs) {
