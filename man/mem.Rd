@@ -19,7 +19,7 @@ free_RAM()
 }
 
 \arguments{
-  \item{x}{SpatRastaer}
+  \item{x}{SpatRaster}
   \item{n}{positive integer. The number of copies of \code{x} that are needed}
 }
 
