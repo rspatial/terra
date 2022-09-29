@@ -155,9 +155,10 @@ retro_labels <- function(x, lat=TRUE) {
 			}
 			if (!is.null(ylab)) {
 				y$labels <- ylab				
+			} else if (retro) {
+				y$labels <- retro_labels(y$at)
 			}
 		}
-		if (retro) y$labels <- retro_labels(y$labels)
 		z <- y
 		if (s %in% c(1,3)) {
 			z$at <- xat
