@@ -48,28 +48,38 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-20" id="version-16-20">version 1.6-20<a class="anchor" aria-label="anchor" href="#version-16-20"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-24" id="version-16-24">version 1.6-24<a class="anchor" aria-label="anchor" href="#version-16-24"></a></h2>
 <div class="section level3">
-<h3 id="new-1-6-20">new<a class="anchor" aria-label="anchor" href="#new-1-6-20"></a></h3>
+<h3 id="new-1-6-24">new<a class="anchor" aria-label="anchor" href="#new-1-6-24"></a></h3>
 <ul><li>
-<code>anyNA</code> and <code>allNA</code> for SpatRaster</li></ul></div>
-<div class="section level3">
-<h3 id="enhancements-1-6-20">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-20"></a></h3>
-<ul><li>
-<code>wrap&lt;SpatRaster&gt;</code> will use file references if the data is deemed to large to all load into memory. <a href="https://github.com/rspatial/terra/issues/801" class="external-link">#801</a> by Jean-Romain</li>
-<li>better support for a “local” arbitrary Euclidean crs <a href="https://github.com/rspatial/terra/issues/797" class="external-link">#797</a> by Agustin Lobo</li>
-<li>fixed the annoying garbage collection messages <code>Error in x$.self$finalize() : attempt to apply non-function</code> at least for some cases. <a href="https://github.com/rspatial/terra/issues/218" class="external-link">#218</a> by Charlie Joey Hadley</li>
+<code>anyNA</code> and <code>allNA</code> for SpatRaster</li>
 <li>
-<code>[</code> and <code>[&lt;-</code> for SpatRaster now have a third index <code>k</code> for subsetting or assigning values by layer</li>
+<code>unwrap</code> to restore a PackedSpatVector or PackedSpatRaster</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-20">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-20"></a></h3>
+<h3 id="enhancements-1-6-24">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-24"></a></h3>
 <ul><li>
-<code>spatSample</code> with <code>na.rm</code> and SpatRasters with multiple layers did not work. <a href="https://github.com/rspatial/terra/issues/800" class="external-link">#800</a> by Andrea Manica</li>
+<code>wrap&lt;SpatRaster&gt;</code> will use file references if the data is deemed to large to all load into memory. <a href="https://github.com/rspatial/terra/issues/801" class="external-link">#801</a> by Jean-Romain</li>
 <li>
-<code>adjacent&lt;SpatRaster&gt;</code> with <code>pairs=TRUE, include=TRUE</code> ignored <code>include=TRUE</code> <a href="https://github.com/rspatial/terra/issues/808" class="external-link">#808</a> by Joseph Lewis</li>
+<code>readRDS</code> and <code>unserialize</code> now return a SpatRaster or SpatVector (instead of a PackedSpat*)</li>
+<li>better support for a “local” arbitrary Euclidean crs <a href="https://github.com/rspatial/terra/issues/797" class="external-link">#797</a> by Agustin Lobo</li>
 <li>
-<code>rasterize</code> did not accept “NA” as value for updating <a href="https://github.com/rspatial/terra/issues/809" class="external-link">#809</a> by Márcia Barbosa</li>
+<code>[</code> and <code>[&lt;-</code> for SpatRaster now have a third index <code>k</code> for subsetting or assigning values by layer</li>
+<li>
+<code>clamp</code> can now take low and high values for each layer</li>
+<li>The <code>pax</code> argument in <code>plot</code> now provides more control over what to draw on each axis via paramters <code>side</code>, <code>tick</code> and <code>lab</code>
+</li>
+<li>The <code>pax</code> argument in <code>plot</code> now has argument <code>retro</code> to use a sexagesimal notation of degrees</li>
+<li>
+<code>extend</code> has a new argument <code>fill=NA</code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-6-24">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-24"></a></h3>
+<ul><li><p>The annoying garbage collection messages <code>Error in x$.self$finalize() : attempt to apply non-function</code> is now suppressed in most cases. <a href="https://github.com/rspatial/terra/issues/218" class="external-link">#218</a> by Charlie Joey Hadley. This problem should go away altogether when a new version of “Rcpp” is released (ETA Jan 2023) thanks to a fix by Kevin Ushey <a href="https://github.com/rspatial/terra/issues/30" class="external-link">#30</a></p></li>
+<li><p><code>spatSample</code> with <code>na.rm</code> and SpatRasters with multiple layers did not work. <a href="https://github.com/rspatial/terra/issues/800" class="external-link">#800</a> by Andrea Manica</p></li>
+<li><p><code>adjacent&lt;SpatRaster&gt;</code> with <code>pairs=TRUE, include=TRUE</code> ignored <code>include=TRUE</code> <a href="https://github.com/rspatial/terra/issues/808" class="external-link">#808</a> by Joseph Lewis</p></li>
+<li><p><code>rasterize</code> did not accept “NA” as value for updating <a href="https://github.com/rspatial/terra/issues/809" class="external-link">#809</a> by Márcia Barbosa</p></li>
 </ul></div>
 </div>
     <div class="section level2">

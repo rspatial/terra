@@ -66,10 +66,10 @@
 <dd><p>SpatRaster</p></dd>
 
   <dt>lower</dt>
-<dd><p>numeric. lowest value</p></dd>
+<dd><p>numeric. lowest value (you can specify a different value for each layer)</p></dd>
 
   <dt>upper</dt>
-<dd><p>numeric. highest value</p></dd>
+<dd><p>numeric. highest value (you can specify a different value for each layer)</p></dd>
 
   <dt>values</dt>
 <dd><p>logical. If <code>FALSE</code> values outside the clamping range become <code>NA</code>, if <code>TRUE</code>, they get the extreme values</p></dd>
@@ -97,6 +97,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">10</span>, nrows<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">rc</span> <span class="op">&lt;-</span> <span class="fu">clamp</span><span class="op">(</span><span class="va">r</span>, <span class="fl">25</span>, <span class="fl">75</span><span class="op">)</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 75</span>
 <span class="r-in"><span class="va">rc</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 1  (nrow, ncol, nlyr)</span>
