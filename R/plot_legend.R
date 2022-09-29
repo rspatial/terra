@@ -109,20 +109,19 @@ retro_labels <- function(x, lat=TRUE) {
 		x$axs$yat <- NULL
 	}
 
-	sides <- unique(x$axs$sides)
+	sides <- unique(x$axs$side)
 	if (!is.null(sides)) sides <- round(sides)
 	sides <- sides[sides > 0 & sides < 5]
 	if (is.null(sides)) {
 		sides <- 1:2
 		graphics::box()
 	}
-	x$axs$sides <- NULL
 
-	ticks <- x$axs$ticks 
+	ticks <- x$axs$tick 
 	if (is.null(ticks)) {
 		ticks <- sides
 	}
-	labs <- x$axs$labs 
+	labs <- x$axs$lab
 	if (is.null(labs)) {
 		labs <- sides
 	} 
@@ -130,7 +129,7 @@ retro_labels <- function(x, lat=TRUE) {
 	usr <- graphics::par("usr")
 	y <- x$axs
 	retro <- isTRUE(y$retro)
-	y$retro <- y$sides <- y$labs <- y$ticks <- NULL
+	y$retro <- y$lab <- y$tick <- NULL
 	
 	for (s in 1:4) {
 		y$side <- s
