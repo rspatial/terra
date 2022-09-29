@@ -122,7 +122,7 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool 
 	x = x.geometry(1, false, false, false);
 	SpatExtent e = getExtent();
 	if (expand) {
-		x = x.extend(e, "out", opt);
+		x = x.extend(e, "out", NAN, opt);
 	}
 	x = x.crop(e, "out", opt);
 
@@ -1249,18 +1249,36 @@ void clamp_vector(std::vector<double> &v, double low, double high, bool usevalue
 
 
 
-SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions &opt) {
+SpatRaster SpatRaster::clamp(std::vector<double> low, std::vector<double> high, bool usevalue, SpatOptions &opt) {
 
 	SpatRaster out = geometry(nlyr(), true);
-	if (low > high) {
-		out.setError("lower clamp value cannot be larger than the higher clamp value");
-		return out;
-	}
 	if (!hasValues()) {
 		out.setError("cannot clamp a raster with no values");
 		return out;
 	}
-
+	if ((low.size() == 0) || (high.size() == 0)) {
+		out.setError("you must provide low and high clamp values");
+		return out;		
+	}
+	size_t nl = nlyr();
+	if ((low.size() > nl) || (high.size() > nl)) {
+		out.setError("there are more low and/or high values than layers");
+		return out;
+	}
+	bool do_one = true;
+	if ((low.size() > 1) || (high.size() > 1)) {	
+		do_one = false;
+		recycle(low, nl);
+		recycle(high, nl);
+	}
+	for (size_t i=0; i<nl; i++) {
+		if (low[i] > high[i]) {
+			out.setError("lower clamp value cannot be larger than the higher clamp value");
+			return out;
+		}
+		Rcpp::Rcout << low[i] << " " << high[i] << std::endl;
+	}
+	
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -1270,12 +1288,46 @@ SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions
 		readStop();
 		return out;
 	}
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v;
-		readBlock(v, out.bs, i);
-		clamp_vector(v, low, high, usevalue);
-		if (!out.writeBlock(v, i)) return out;
-	}
+
+	if (do_one) {	
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v;
+			readBlock(v, out.bs, i);
+			clamp_vector(v, low[0], high[0], usevalue);
+			if (!out.writeBlock(v, i)) return out;
+		}
+	} else {
+		size_t nc = ncol();
+		for (size_t i = 0; i < out.bs.n; i++) {
+			size_t off = out.bs.nrows[i] * nc;
+			std::vector<double> v;
+			readBlock(v, out.bs, i);
+			if (usevalue) {
+				for (size_t j=0; j<nl; j++) {
+					size_t start = j * off;
+					size_t end = start + off;
+					for (size_t k=start; k<end; k++) {
+						if (v[k] < low[j] ) {
+							v[k] = low[j];
+						} else if ( v[k] > high[j] ) {
+							v[k] = high[j];
+						}
+					}
+				}
+			} else {
+				for (size_t j=0; j<nl; j++) {
+					size_t start = j * off;
+					size_t end = start + off;
+					for (size_t k=start; k<end; k++) {
+						if ((v[k] < low[j] ) || (v[k] > high[j])) {
+							v[k] = NAN;
+						}
+					}
+				}
+			}
+			if (!out.writeBlock(v, i)) return out;
+		}
+	}		
 	readStop();
 	out.writeStop();
 	return(out);
@@ -1965,7 +2017,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 			return x.deepCopy();
 		} else {
 			SpatExtent e = getExtent();
-			return x.extend(e, "near", opt);
+			return x.extend(e, "near", NAN, opt);
 		}
 	}
 
@@ -2070,7 +2122,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 
 
 
-SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, SpatOptions &opt) {
+SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, double fill, SpatOptions &opt) {
 
 	SpatRaster out = geometry(nlyr(), true);
 	e = out.align(e, snap);
@@ -2106,7 +2158,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, SpatOptions &opt) 
 		readStop();
 		return out;
 	}
-	out.fill(NAN);
+	out.fill(fill);
 	BlockSize bs = getBlockSize(opt);
 	for (size_t i=0; i<bs.n; i++) {
         std::vector<double> v;
@@ -2484,7 +2536,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 			if ( e.valid_notequal() ) {
 				SpatRaster r = ds[j].crop(eout, "near", sopt);
 				//SpatExtent ec = r.getExtent();
-				r = r.extend(eout, "near", sopt);
+				r = r.extend(eout, "near", NAN, sopt);
 				//SpatExtent ee = r.getExtent();
 				if (!s.push_back(r, "", "", "", false)) {
 					out.setError("internal error: " + s.getError());

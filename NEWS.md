@@ -1,22 +1,30 @@
-# version 1.6-20
+# version 1.6-24
 
 ## new
 
 - `anyNA` and `allNA` for SpatRaster
+- `unwrap` to restore a PackedSpatVector or PackedSpatRaster
 
 ## enhancements
 
 - `wrap<SpatRaster>` will use file references if the data is deemed to large to all load into memory. [#801](https://github.com/rspatial/terra/issues/801) by Jean-Romain
+- `readRDS` and `unserialize` now return a SpatRaster or SpatVector (instead of a PackedSpat*)
 - better support for a "local" arbitrary Euclidean crs [#797](https://github.com/rspatial/terra/issues/797) by Agustin Lobo
-- fixed the annoying garbage collection messages `Error in x$.self$finalize() : attempt to apply non-function` at least for some cases. [#218](https://github.com/rspatial/terra/issues/218) by Charlie Joey Hadley
 - `[` and `[<-` for SpatRaster now have a third index `k` for subsetting or assigning values by layer
+- `clamp` can now take low and high values for each layer 
+- The `pax` argument in `plot` now provides more control over what to draw on each axis via paramters `side`, `tick` and `lab`
+- The `pax` argument in `plot` now has argument `retro` to use a sexagesimal notation of degrees
+- `extend` has a new argument `fill=NA`
 
 
 ## bug fixes 
 
+- The annoying garbage collection messages `Error in x$.self$finalize() : attempt to apply non-function` is now suppressed in most cases. [#218](https://github.com/rspatial/terra/issues/218) by Charlie Joey Hadley. This problem should go away altogether when a new version of "Rcpp" is released (ETA Jan 2023) thanks to a fix by Kevin Ushey [#30](https://github.com/rspatial/terra/issues/30)
+
 - `spatSample` with `na.rm` and SpatRasters with multiple layers did not work. [#800](https://github.com/rspatial/terra/issues/800) by Andrea Manica
 - `adjacent<SpatRaster>` with `pairs=TRUE, include=TRUE` ignored `include=TRUE` [#808](https://github.com/rspatial/terra/issues/808) by Joseph Lewis
 - `rasterize` did not accept "NA" as value for updating [#809](https://github.com/rspatial/terra/issues/809)  by Márcia Barbosa
+
 
 # version 1.6-17
 

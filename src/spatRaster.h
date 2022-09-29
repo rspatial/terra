@@ -580,7 +580,8 @@ class SpatRaster {
 
 
 		SpatRaster buffer(double d, SpatOptions &opt);
-		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions &opt);
+		SpatRaster clamp(std::vector<double> low, std::vector<double> high, bool usevalue, SpatOptions &opt);
+
 		SpatRaster combineCats(SpatRaster x, SpatOptions &opt);
 		SpatRaster dropLevels();
 
@@ -601,7 +602,7 @@ class SpatRaster {
 		SpatRaster clumps(int directions, bool zeroAsNA, SpatOptions &opt);
 
 		SpatRaster edges(bool classes, std::string type, unsigned directions, double falseval, SpatOptions &opt);
-		SpatRaster extend(SpatExtent e, std::string snap, SpatOptions &opt);
+		SpatRaster extend(SpatExtent e, std::string snap, double fill, SpatOptions &opt);
 		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
 		std::vector<double> extractVectorFlat(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
 		
