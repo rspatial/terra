@@ -51,7 +51,7 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
   \item{buffer}{logical. If \code{TRUE} the plotting area is slightly larger than the extent of \code{x}}
   \item{background}{background color. Default is no color (white)}
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}}
-  \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{sides}, \code{ticks} and \code{labs} can be used to indicate for which of the four axes to draw a line (side), tick mark, or label. The default is \code{c(1,2)} or the value of \code{sides}. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere)}  
+  \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{side}, \code{tick} and \code{lab} can be used to indicate for which of the four axes to draw a line (side), tick mark, or label. The default is \code{c(1:4)} for side and \code{1:2} for the other two. If \code{side} is changed the other two default to that value. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) in stead of the standard decimal notation}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{smooth}{logical. If \code{TRUE} the cell values are smoothed (for continuous legend)}
   \item{range}{numeric. minimum and maximum values to be used for the continuous legend }
