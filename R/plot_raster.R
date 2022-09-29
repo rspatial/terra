@@ -336,7 +336,7 @@
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(),
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
-  sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, allticks=FALSE, retro=FALSE, ...) {
+  sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
 
@@ -360,10 +360,7 @@
 
 	out$add <- isTRUE(add)
 	out$axs <- as.list(pax)
-	out$allticks <- isTRUE(allticks)
-	out$retro <- retro && is.lonlat(x, TRUE, FALSE)
 	
-	out$allticks <- isTRUE(allticks)
 	if (is.null(out$axs$las)) out$axs$las <- las
 	out$draw_grid <- isTRUE(grid)
 

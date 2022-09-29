@@ -65,6 +65,8 @@ retro_labels <- function(x, lat=TRUE) {
 	}
 }
 
+
+
 .plot.axes <- function(x) {
 
 	if (is.null(x$axs$cex.axis)) {
@@ -93,12 +95,6 @@ retro_labels <- function(x, lat=TRUE) {
 		ylab <- x$axs$ylabels
 		x$axs$ylabels <- NULL
 	}
-	retro <- x$retro
-	if (x$retro) {
-		xlab <- retro_labels(xlab)
-		ylab <- retro_labels(ylab)
-	}
-	
 	
 	xat <- yat <- NULL
 	if (!is.null(x$axs$at)) {
@@ -113,60 +109,81 @@ retro_labels <- function(x, lat=TRUE) {
 		x$axs$yat <- NULL
 	}
 
-	allticks <- x$allticks
-	x$allticks <- NULL	
-	sides <- x$axs$sides
+	sides <- unique(x$axs$sides)
+	if (!is.null(sides)) sides <- round(sides)
+	sides <- sides[sides > 0 & sides < 5]
 	if (is.null(sides)) {
 		sides <- 1:2
 		graphics::box()
 	}
-	sides <- round(unique(sides))
 	x$axs$sides <- NULL
 
-	if (sides[1] > 0) {
-		sides <- sides[sides > 0 & sides < 5]
-		usr <- graphics::par("usr")
-		for (s in 1:4) {
-			if (s %in% c(1,3)) {
-				if (is.null(xat)) {
-					x$axs$at <- c(usr[1]-10*ur, usr[2]+10*ur)
-				} else {
-					ur <- usr[2] - usr[1]
-					x$axs$at <- xat
-				}
-				if (x$retro) xlab = retro_labels(x$axs$at)
-				if (!is.null(xlab)) {
-					x$axs$labels <- xlab				
-				}
-			} else {
-				if (is.null(yat)) {
-					x$axs$at <- c(usr[3]-10*ur, usr[4]+10*ur)
-				} else {
-					ur <- usr[4] - usr[3]
-					x$axs$at <- yat
-				}
-				if (x$retro) ylab = retro_labels(x$axs$at)
-				if (!is.null(ylab)) {
-					x$axs$labels <- ylab				
-				}
+	ticks <- x$axs$ticks 
+	if (is.null(ticks)) {
+		ticks <- sides
+	}
+	labs <- x$axs$labs 
+	if (is.null(labs)) {
+		labs <- sides
+	} 
+
+	usr <- graphics::par("usr")
+	y <- x$axs
+	retro <- isTRUE(y$retro)
+	y$retro <- y$sides <- y$labs <- y$ticks <- NULL
+	
+	for (s in 1:4) {
+		y$side <- s
+		if (s %in% c(1,3)) {
+			ur <- usr[2] - usr[1]
+			edg <- c(usr[1]-10*ur, usr[2]+10*ur)
+			if (is.null(xat)) {
+				y$at <- edg
+			} else {				
+				y$at <- xat
 			}
-			if (s %in% sides) {
-				graphics::axis(s, at=x$axs$at, labels=c("",""), lwd.ticks=0,
-					cex.axis=x$axs$cex.axis, mgp=x$axis$mgp)
-				x$axs$side <- s
-				do.call(graphics::axis, x$axs)
-			} else if (allticks) {
-				labs <-	x$axs$labels <- FALSE
-				x$axs$side <- s
-				if (s %in% c(1,3)) {
-					x$axs$at <- xat
-				} else {
-					x$axs$at <- yat			
-				}
-				do.call(graphics::axis, x$axs)
-				x$axs$labels <- labs
+			if (!is.null(xlab)) {
+				y$labels <- xlab				
+			}
+		} else {
+			ur <- usr[4] - usr[3]
+			edg <- c(usr[3]-10*ur, usr[4]+10*ur)
+			if (is.null(yat)) {
+				y$at <- edg
+			} else {
+				y$at <- yat
+			}
+			if (!is.null(ylab)) {
+				y$labels <- ylab				
 			}
 		}
+		if (retro) y$labels <- retro_labels(y$labels)
+		z <- y
+		if (s %in% c(1,3)) {
+			z$at <- xat
+		} else {
+			z$at <- yat			
+		}
+		z$lwd <- 0
+
+		if (s %in% labs) {
+			z$lwd.ticks <- 0
+			do.call(graphics::axis, z)
+		}
+		z$labels <- FALSE
+		if (s %in% ticks) {
+			z$lwd <- 0
+			z$lwd.ticks <- y$lwd.ticks
+			if (is.null(z$lwd.ticks)) z$lwd.ticks <- 1
+			do.call(graphics::axis, z)
+		}	
+		if (s %in% sides) {
+			d <- diff(edg) * 10
+			z$at <- edg + c(-d, d)
+			z$lwd.ticks <- 0
+			z$lwd <- y$lwd
+			do.call(graphics::axis, z)
+		} 
 	}
 	x
 }
