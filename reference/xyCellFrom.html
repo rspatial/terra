@@ -88,6 +88,9 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.</p>
 <span class="co"># S4 method for SpatRaster,numeric,numeric</span>
 <span class="fu">cellFromRowColCombine</span><span class="op">(</span><span class="va">object</span>, <span class="va">row</span>, <span class="va">col</span><span class="op">)</span>
 
+<span class="co"># S4 method for SpatRaster,numeric,numeric</span>
+<span class="fu">rowColCombine</span><span class="op">(</span><span class="va">object</span>, <span class="va">row</span>, <span class="va">col</span><span class="op">)</span>
+
 <span class="co"># S4 method for SpatRaster,numeric</span>
 <span class="fu">rowFromCell</span><span class="op">(</span><span class="va">object</span>, <span class="va">cell</span><span class="op">)</span>
 
@@ -143,7 +146,7 @@ The last cell number equals the number of cells of the SpatRaster (see <code><a 
 <p>colFromX, rowFromY, cellFromXY, cellFromRowCol, rowFromCell, colFromCell: vector of row, column, or cell numbers</p>
 
 
-<p>rowColFromCell: matrix of row and column numbers</p>
+<p>rowColFromCell, rowColCombine: matrix of row and column numbers</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
