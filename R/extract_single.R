@@ -154,9 +154,37 @@ make_extract_index <- function(v, vmx, name="i") {
 
 setMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 	function(x, i, j, k, drop=TRUE) {
-		ni <- missing(i)
-		nj <- missing(j)
-		nk <- missing(k)
+		if (missing(i)) {
+			ni <- TRUE
+			li <- FALSE
+			i <- NULL
+		} else {
+			ni <- FALSE
+			li <- is.list(i)
+		}
+
+		if (missing(j)) {
+			nj <- TRUE
+			lj <- FALSE
+			j <- NULL
+		} else {
+			nj <- FALSE
+			lj <- is.list(j)
+		}
+
+		if (missing(k)) {
+			nk <- TRUE
+			lk <- FALSE
+			k <- NULL
+		} else {
+			nk <- FALSE
+			lk <- is.list(k)
+		}
+		if (any(li, lj, lk)) {
+			i <- rcl(x, i, j, k)
+			nj <- nk <- TRUE
+		}
+
 			
 		if (!nk) {
 			if (is.logical(k) && length(k) == 1) {
@@ -168,8 +196,6 @@ setMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 		if ((!ni) && (inherits(i, "matrix"))) {
 			if (ncol(i) == 1) {
 				i <- i[,1]
-			} else if ((nrow(i) == 1) && (ncol(i) != 2)) {
-				i <- i[1,]
 			} else if (ncol(i) == 2) {
 				i <- cellFromRowCol(x, i[,1], i[,2])
 				nj <- nk <- TRUE

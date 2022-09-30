@@ -183,7 +183,7 @@ setMethod(rcl, signature(x="SpatRaster"),
 			hr <- !is.null(row)
 			hc <- !is.null(col)
 			hl <- !is.null(lyr)
-			n <- sum(r, c, l)
+			n <- sum(hr, hc, hl)
 
 			if (hl) {
 				lyr[!c(lyr %in% 1:nlyr(x))] <- NA 

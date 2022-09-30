@@ -244,9 +244,40 @@ make_replace_index <- function(v, vmx, name="i") {
 
 setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 	function(x, i, j, k, value) {
-		ni <- missing(i)
-		nj <- missing(j)
-		nk <- missing(k)
+
+		if (missing(i)) {
+			ni <- TRUE
+			li <- FALSE
+			i <- NULL
+		} else {
+			ni <- FALSE
+			li <- is.list(i)
+		}
+
+		if (missing(j)) {
+			nj <- TRUE
+			lj <- FALSE
+			j <- NULL
+		} else {
+			nj <- FALSE
+			lj <- is.list(j)
+		}
+
+		if (missing(k)) {
+			nk <- TRUE
+			lk <- FALSE
+			k <- NULL
+		} else {
+			nk <- FALSE
+			lk <- is.list(k)
+		}
+
+		if (any(li, lj, lk)) {
+			i <- rcl(x, i, j, k)
+			nj <- nk <- TRUE
+			ni <- FALSE
+		}
+		
 		
 		if (missing(value)) {
 			value <- k
@@ -267,7 +298,7 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 				i <- cellFromRowCol(x, i[,1], i[,2])
 				return(.replace_cell_lyr(x, i, k, value))
 			} else {
-				error("`[<-`", paste("index i has", ncol(i), "columns"))
+					error("`[<-`", paste("index i has", ncol(i), "columns"))
 			}
 		} 		
 		
