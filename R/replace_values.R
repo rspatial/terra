@@ -298,7 +298,7 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 				i <- cellFromRowCol(x, i[,1], i[,2])
 				return(.replace_cell_lyr(x, i, k, value))
 			} else {
-					error("`[<-`", paste("index i has", ncol(i), "columns"))
+				error("`[<-`", paste("index i has", ncol(i), "columns"))
 			}
 		} 		
 		

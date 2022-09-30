@@ -183,6 +183,7 @@ setMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 		if (any(li, lj, lk)) {
 			i <- rcl(x, i, j, k)
 			nj <- nk <- TRUE
+			ni <- FALSE
 		}
 
 			
