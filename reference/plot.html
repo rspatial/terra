@@ -98,7 +98,7 @@
 <dd><p>numeric vector of length 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use <code>mar=NA</code> to not set the margins</p></dd>
 
   <dt>legend</dt>
-<dd><p>logical or character. If not <code>FALSE</code> a legend is drawn. The character value can be used to indicate where the legend is to be drawn. For example "topright" or "bottomleft". Use <code>plg</code> for more refined placement (SpatVector data only)</p></dd>
+<dd><p>logical or character. If not <code>FALSE</code> a legend is drawn. The character value can be used to indicate where the legend is to be drawn. For example "topright" or "bottomleft". Use <code>plg</code> for more refined placement. Not supported for continuous legends (the default for raster data)</p></dd>
 
   <dt>axes</dt>
 <dd><p>logical. Draw axes?</p></dd>
@@ -184,7 +184,8 @@
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="lines.html">points</a></code>, <code><a href="lines.html">lines</a></code>, <code><a href="lines.html">polys</a></code>, <code><a href="image.html">image</a></code>, <code>scatterplot</code>, <code><a href="sbar.html">sbar</a></code></p></div>
+    <div class="dont-index"><p><code><a href="lines.html">points</a></code>, <code><a href="lines.html">lines</a></code>, <code><a href="lines.html">polys</a></code>, <code><a href="image.html">image</a></code>, <code>scatterplot</code>, 
+ scale bar: <code><a href="sbar.html">sbar</a></code>, north arrow: <code><a href="north.html">north</a></code></p></div>
     </div>
 
     <div id="ref-examples">
@@ -198,15 +199,12 @@
 <span class="r-in"><span class="fu">plot</span><span class="op">(</span><span class="va">r</span>, type<span class="op">=</span><span class="st">"interval"</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="plot-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.3</span>, <span class="fl">6.35</span>, <span class="fl">49.9</span>, <span class="fl">50.1</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">plot</span><span class="op">(</span><span class="va">r</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ext<span class="op">=</span><span class="va">e</span>, title<span class="op">=</span><span class="st">"Title\n"</span>, title.cex<span class="op">=</span><span class="fl">1.25</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sides<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>"sides" is not a graphical parameter</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>"sides" is not a graphical parameter</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>"sides" is not a graphical parameter</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>"sides" is not a graphical parameter</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>"sides" is not a graphical parameter</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>"sides" is not a graphical parameter</span>
+<span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.37</span>, <span class="fl">6.41</span>, <span class="fl">49.9</span>, <span class="fl">50.1</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">plot</span><span class="op">(</span><span class="va">r</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ext<span class="op">=</span><span class="va">e</span>, title<span class="op">=</span><span class="st">"Title\n"</span>, title.cex<span class="op">=</span><span class="fl">1.25</span><span class="op">)</span>, </span>
+<span class="r-in">    pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>side<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, retro<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="north.html">north</a></span><span class="op">(</span><span class="st">"topleft"</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="plot-3.png" alt="" width="700" height="433"></span>
+<span class="r-in">    </span>
 <span class="r-in"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="classify.html">classify</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">200</span>,<span class="fl">300</span>,<span class="fl">400</span>,<span class="fl">500</span>,<span class="fl">600</span><span class="op">)</span><span class="op">)</span></span>
