@@ -50,8 +50,16 @@ retro_labels <- function(x, lat=TRUE) {
 	if ((is.null(x)) || (!is.numeric(x))) {
 		return(x)
 	}
-	d <- floor(x)
-	m <- round(60*(x - d))
+	if ((length(x) > 1) && (min(diff(x)) <= 1/120)) {
+		d <- floor(x)
+		m <- floor(60*(x - d))
+		s <- round(3600*(x - d - m/60))	
+	} else {
+		d <- floor(x)
+		m <- round(60*(x - d))
+		s <- 0
+	}
+	
 	if (lat) {
 		h <- c("S", "", "N")[sign(d)+2]
 	} else {
@@ -59,9 +67,10 @@ retro_labels <- function(x, lat=TRUE) {
 	}
 	if (all(m==0)) {
 		r <- paste0(d, "\u00B0" , h)	
-	} else {
+	} else if (any(s != 0)){
 		m <- formatC(m, width=2, flag="0")
-		r <- paste0(d, "\u00B0" , m, "'", h)	
+		s <- formatC(s, width=2, flag="0")
+		r <- paste0(d, "\u00B0" , m, "'", s, '"', h)	
 	}
 }
 
