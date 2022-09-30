@@ -137,7 +137,7 @@ repfun <- function(v, n, N) {
 	} else if (n == N) {
 		as.list(v)
 	} else {
-		error("rcl", "if one argument is a list, the others should be a list, or a vector of length 1, or have the length of the list argument")
+		error("rcl", "if one argument is a list, the others should be a list,\n       or a vector of length 1, or have the length of the list argument")
 	}
 }
 
@@ -166,16 +166,26 @@ setMethod(rcl, signature(x="SpatRaster"),
 			nl <- length(lyr)
 			N <- unique(c(nr, nc, nl)[c(lr, lc, ll)])
 			if (length(N) > 1) {
-				error("rcl", "list arguments should all have the same length")
+				N <- max(N)
+				islst <- which(c(lr, lc, ll))
+				for (i in islst) {
+					if (i == 1) {
+						row <- rep_len(row, N)
+					} else if (i == 2) {
+						col <- rep_len(col, N)
+					} else {
+						lyr <- rep_len(lyr, N)
+					}
+				}
 			}
 			notlst <- which(!c(lr, lc, ll))
 			for (i in notlst) {
 				if (i == 1) {
 					row <- repfun(row, nr, N)
 				} else if (i == 2) {
-					col <- repfun(col, nr, N)
+					col <- repfun(col, nc, N)
 				} else {
-					lyr <- repfun(lyr, nr, N)
+					lyr <- repfun(lyr, nl, N)
 				}
 			}
 			out <- lapply(1:N, function(i) { rcl(x, row[[i]], col[[i]], lyr[[i]]) })
@@ -213,8 +223,5 @@ setMethod(rcl, signature(x="SpatRaster"),
 	}
 )
 
-x = rast(ncol=5, nrow=5, nlyr=2)
-
-rcl(x, 1, list(1:2, 3:4), 1:2)
 
 
