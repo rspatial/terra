@@ -129,13 +129,15 @@ setMethod(colFromCell, signature(object="SpatRaster", cell="numeric"),
 )
 
 
-repfun <- function(v, n, N) {
+.rep_fun <- function(v, n, N, m) {
 	if (is.null(v)) {
 		v
 	} else if (n == 1) {
 		replicate(N, v, FALSE)
 	} else if (n == N) {
 		as.list(v)
+	} else if ((n == m) && all(v==(1:m))) {
+		NULL
 	} else {
 		error("rcl", "if one argument is a list, the others should be a list,\n       or a vector of length 1, or have the length of the list argument")
 	}
@@ -170,11 +172,11 @@ setMethod(rcl, signature(x="SpatRaster"),
 			notlst <- which(!c(lr, lc, ll))
 			for (i in notlst) {
 				if (i == 1) {
-					row <- repfun(row, nr, N)
+					row <- .rep_fun(row, nr, N, nrow(x))
 				} else if (i == 2) {
-					col <- repfun(col, nc, N)
+					col <- .rep_fun(col, nc, N, ncol(x))
 				} else {
-					lyr <- repfun(lyr, nl, N)
+					lyr <- .rep_fun(lyr, nl, N, nlyr(x))
 				}
 			}
 			out <- lapply(1:N, function(i) { rcl(x, row[[i]], col[[i]], lyr[[i]]) })

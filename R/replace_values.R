@@ -245,53 +245,32 @@ make_replace_index <- function(v, vmx, name="i") {
 setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 	function(x, i, j, k, value) {
 
-		if (missing(i)) {
-			ni <- TRUE
-			li <- FALSE
-			i <- NULL
-		} else {
-			ni <- FALSE
-			li <- is.list(i)
-		}
-
-		if (missing(j)) {
-			nj <- TRUE
-			lj <- FALSE
-			j <- NULL
-		} else {
-			nj <- FALSE
-			lj <- is.list(j)
-		}
-
-		if (missing(k)) {
-			nk <- TRUE
-			lk <- FALSE
-			k <- NULL
-		} else {
-			nk <- FALSE
-			lk <- is.list(k)
-		}
-
-		if (any(li, lj, lk)) {
+		m <- c(missing(i), missing(j), missing(k))
+		s <- rep(FALSE, 3)
+		if (!m[1]) s[1] <- is.list(i)
+		if (!m[2]) s[2] <- is.list(j)
+		if (!m[3]) s[3] <- is.list(k)
+		if (any(s)) {
+			if (m[1]) i <- NULL 
+			if (m[2]) j <- NULL 
+			if (m[3]) k <- NULL 
 			i <- rcl(x, i, j, k)
-			nj <- nk <- TRUE
-			ni <- FALSE
+			m <- c(FALSE, TRUE, TRUE)
 		}
-		
-		
+	
 		if (missing(value)) {
 			value <- k
 			k <- NA
-			nk <- TRUE
+			m[3] <- TRUE
 		}
 		
-		if ((!ni) && (inherits(i, "matrix"))) {
+		if ((!m[1]) && (inherits(i, "matrix"))) {
 			if (ncol(i) == 1) {
 				i <- i[,1]
 			} else if (ncol(i) == 2) {
 				i <- cellFromRowCol(x, i[,1], i[,2])
-				nj <- TRUE
-				nk <- TRUE
+				m[2] <- TRUE
+				m[3] <- TRUE
 			} else if (ncol(i) == 3) {
 				k <- i[,3]
 				value <- rep_len(value, length(k))
@@ -302,7 +281,7 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			}
 		} 		
 		
-		if (!nk) {
+		if (!m[3]) {
 			if (inherits(k, "character")) {
 				k <- match(k, names(x))
 				if (any(is.na(k))) {
@@ -315,11 +294,11 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			k <- NA
 		}
 
-		if (ni & nj) {
+		if (m[1] & m[2]) {
 			return(.replace_all(x, value))
 		} 
 		
-		if (!ni) { # i not missing			
+		if (!m[1]) { # i not missing			
 			if (inherits(i, "SpatRaster")) {
 				return(.replace_spatraster(x, i, value))
 			} 
@@ -331,10 +310,10 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			}
 			theCall <- sys.call(-1)
 			narg <- length(theCall)-length(match.call(call=theCall))		
-			if ((narg==0) && nj) {
+			if ((narg==0) && m[2]) {
 				# cell
 				i <- make_replace_index(i, ncell(x), "i")
-			} else if (nj) {
+			} else if (m[2]) {
 				# row
 				i <- make_replace_index(i, nrow(x), "i")
 				i <- cellFromRowColCombine(x, i, 1:ncol(x))
@@ -344,7 +323,7 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 				j <- make_replace_index(j, ncol(x), "j")
 				i <- cellFromRowColCombine(x, i, j)
 			}
-		} else { #if (!nj) {
+		} else { #if (!m[2]) {
 			#col
 			j <- make_replace_index(j, ncol(x), "j")
 			i <- cellFromRowColCombine(x, 1:nrow(x), j)
@@ -352,7 +331,4 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 		return(.replace_cell(x, i, k, value))
 	} 
 )
-
-
-
 
