@@ -46,7 +46,7 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
   \item{col}{character. Colors. The default is \code{rev(grDevices::terrain.colors(50))}. If \code{x} is a \code{SpatRaster}, it can also be a \code{data.frame} with two columns (value, color) to get a "classes" type legend or with three columns (from, to, color) to get an "interval" type legend}
   \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval". If not specified, the type is chosen based on the data}
   \item{mar}{numeric vector of length 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use \code{mar=NA} to not set the margins}
-  \item{legend}{logical or character. If not \code{FALSE} a legend is drawn. The character value can be used to indicate where the legend is to be drawn. For example "topright" or "bottomleft". Use \code{plg} for more refined placement (SpatVector data only)}
+  \item{legend}{logical or character. If not \code{FALSE} a legend is drawn. The character value can be used to indicate where the legend is to be drawn. For example "topright" or "bottomleft". Use \code{plg} for more refined placement. Not supported for continuous legends (the default for raster data)}
   \item{axes}{logical. Draw axes?}
   \item{buffer}{logical. If \code{TRUE} the plotting area is slightly larger than the extent of \code{x}}
   \item{background}{background color. Default is no color (white)}
@@ -77,7 +77,8 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
 }
 
 \seealso{
- \code{\link{points}}, \code{\link{lines}}, \code{\link{polys}}, \code{\link{image}}, \code{scatter\link[terra:scatter]{plot}}, \code{\link{sbar}}
+ \code{\link{points}}, \code{\link{lines}}, \code{\link{polys}}, \code{\link{image}}, \code{scatter\link[terra:scatter]{plot}}, 
+ scale bar: \code{\link{sbar}}, north arrow: \code{\link{north}}
 }
 
 \examples{ 
@@ -88,8 +89,11 @@ plot(r)
 
 plot(r, type="interval")
 
-e <- c(6.3, 6.35, 49.9, 50.1)
-plot(r, plg=list(ext=e, title="Title\n", title.cex=1.25), pax=list(sides=1:2))
+e <- c(6.37, 6.41, 49.9, 50.1)
+plot(r, plg=list(ext=e, title="Title\n", title.cex=1.25), 
+		pax=list(side=1:4, retro=TRUE))
+north("topleft")
+		
 
 
 d <- classify(r, c(100,200,300,400,500,600))

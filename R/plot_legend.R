@@ -53,15 +53,15 @@ retro_labels <- function(x, lat=TRUE) {
 	d <- floor(x)
 	m <- round(60*(x - d))
 	if (lat) {
-		h <- c("N", "", "S")[sign(d)+2]
+		h <- c("S", "", "N")[sign(d)+2]
 	} else {
 		h <- c("W", "", "E")[sign(d)+2]	
 	}
 	if (all(m==0)) {
-		r <- paste0(d, "°" , h)	
+		r <- paste0(d, "\u00B0" , h)	
 	} else {
 		m <- formatC(m, width=2, flag="0")
-		r <- paste0(d, "°" , m, "'", h)	
+		r <- paste0(d, "\u00B0" , m, "'", h)	
 	}
 }
 
@@ -143,7 +143,7 @@ retro_labels <- function(x, lat=TRUE) {
 				y$at <- xat
 			}
 			if (is.null(xlab)) {
-				y$labels <- if (retro) retro_labels(y$at) else y$at
+				y$labels <- if (retro) retro_labels(y$at, lat=FALSE) else y$at
 			} else {
 				y$labels <- xlab
 			}
@@ -151,12 +151,12 @@ retro_labels <- function(x, lat=TRUE) {
 			ur <- usr[4] - usr[3]
 			edg <- c(usr[3]-10*ur, usr[4]+10*ur)
 			if (is.null(yat)) {
-				y$at <- axTicks(s)
+				y$at <- graphics::axTicks(s)
 			} else {
 				y$at <- yat
 			}
 			if (is.null(ylab)) {
-				y$labels <- if (retro) retro_labels(y$at) else y$at
+				y$labels <- if (retro) retro_labels(y$at, lat=TRUE) else y$at
 			} else {
 				y$labels <- ylab
 			}
