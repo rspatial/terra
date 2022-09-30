@@ -145,17 +145,6 @@ repfun <- function(v, n, N) {
 setMethod(rcl, signature(x="SpatRaster"),
 	function(x, row=NULL, col=NULL, lyr=NULL) {
 
-		r <- !is.null(row)
-		c <- !is.null(col)
-		l <- !is.null(lyr)
-		n <- sum(r, c, l)
-		if (n == 0) {
-			out <- rowColFromCell(x, 1:ncell(x))
-			out <- cbind(out[,1], out[,2], rep(1:nlyr(x), each=nrow(out)))
-			colnames(out) <- c("row", "col", "lyr")
-			return(out)
-		}
-		
 		lr <- is.list(row)
 		lc <- is.list(col)
 		ll <- is.list(lyr)
@@ -191,29 +180,37 @@ setMethod(rcl, signature(x="SpatRaster"),
 			out <- lapply(1:N, function(i) { rcl(x, row[[i]], col[[i]], lyr[[i]]) })
 			do.call(rbind, out)
 		} else {
-			if (l) {
-				if (any(!(lyr %in% 1:nlyr(x)))) {
-					error("rcl", "the values of lyr should be within 1:nlyr(x)")
-				}
+			hr <- !is.null(row)
+			hc <- !is.null(col)
+			hl <- !is.null(lyr)
+			n <- sum(r, c, l)
+
+			if (hl) {
+				lyr[!c(lyr %in% 1:nlyr(x))] <- NA 
 			}
-			if (r & c & l) {
+			if (n == 0) {
+				out <- rowColFromCell(x, 1:ncell(x))
+				out <- cbind(out[,1], out[,2], rep(1:nlyr(x), each=nrow(out)))
+				colnames(out) <- c("row", "col", "lyr")
+				return(out)
+			} else if (hr & hc & hl) {
 				out <- rowColCombine(x, row, col)
 				out <- cbind(out[,1], out[,2], rep(lyr, each=nrow(out)))			
-			} else if (!c) {
+			} else if (!hc) {
 				out <- rowColCombine(x, row, 1:ncol(x))
-				if (l) {
+				if (hl) {
 					out <- cbind(out[,1], out[,2], rep(lyr, each=nrow(out)))
 				} else {
 					out <- cbind(out[,1], out[,2], rep(1:nlyr(x), each=nrow(out)))
 				}
-			} else if (!r) {
+			} else if (!hr) {
 				out <- rowColCombine(x, 1:nrow(x), col)
-				if (l) {
+				if (hl) {
 					out <- cbind(out[,1], out[,2], rep(lyr, each=nrow(out)))
 				} else {
 					out <- cbind(out[,1], out[,2], rep(1:nlyr(x), each=nrow(out)))
 				}
-			} else if (!l) {
+			} else if (!hl) {
 				out <- rowColCombine(x, row, col)
 				out <- cbind(out[,1], out[,2], rep(1:nlyr(x), each=nrow(out)))
 			}

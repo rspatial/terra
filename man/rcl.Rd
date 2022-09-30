@@ -16,11 +16,16 @@ Get a matrix with the combination of row, column, and layer numbers
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{row}{positive integer that are row number(s) or NULL for all rows}
+  \item{row}{positive integer that are row number(s), a list thereof, or NULL for all rows}
   \item{col}{as above for columns}
-  \item{col}{as above for layers}
+  \item{lyr}{as above for layers}
 }
 
+\details{
+If a list is used for at least one of \code{row}, \code{col} or \code{lyr}, these are evaluated in parallel. That is combinations are made for each list element, not across list elements. If, in this case another argument is not a list it has to have either length 1 (used for all cases) or have the same length as the (longest) list, in which case the value is coerced into a list with \code{as.list}
+
+If multiple arguments are a list but they have different lengths, theyare recycled to the longest list. 
+}
 
 \value{
 matrix
