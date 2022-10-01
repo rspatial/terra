@@ -3,14 +3,12 @@ check_ngb_pars <- function(algo, pars, fill) {
 	#p <- c("Power", "Smoothing", "Radius", "Radius1", "Radius2", "Angle", "nMaxPoints", "nMinPoints")
 	n <- tolower(names(pars))
 	if (length(n) == 0) error("rasterizeNGB", "parameters are not named") 	
-	if (algo %in%  c("min", "max", "range", "count", "distance", "ptsdistance")) {
+	if (algo %in%  c("min", "max", "range", "mean", "count", "distto", "distbetween")) {
 		pex <- c("Radius1", "Radius2", "Angle", "MinPoints")
 	} else if (algo == "invdistpow") {
-		pex <- c("Smooting", "Radius1", "Radius2", "Angle", "MaxPoints", "MinPoints")
+		pex <- c("Power", "Smoothing", "Radius1", "Radius2", "Angle", "MaxPoints", "MinPoints")
 	} else if (algo == "invdistpownear") {
-		pex <- c("Smooting", "Radius", "MaxPoints", "MinPoints")
-	} else if (algo == "movingavg") {
-		pex <- c("Radius1", "Radius2", "Angle", "MinPoints")	
+		pex <- c("Power", "Smoothing", "Radius", "MaxPoints", "MinPoints")
 	} else if (algo == "near") {
 		pex <- c("Radius1", "Radius2", "Angle")	
 	} else if (algo == "linear") {
@@ -24,30 +22,38 @@ check_ngb_pars <- function(algo, pars, fill) {
 }
 
 
+get_z <- function(y, field) {
+	if (inherits(field, "character")) {
+		if (lenght(field != 1)) {
+			error("rasterizeNGB", "field name should have length 1")
+		}
+		if (!field %in% names(y)) {
+			error("rasterizeNGB", paste(field, "is not a name in y"))			
+		}
+		z <- y[[field, drop=TRUE]]
+		if (!is.numeric(z)) {
+			error("rasterizeNGB", paste(field, "is not numeric"))
+		}
+	} else {
+		if (!is.numeric(field)) {
+			error("rasterizeNGB", paste(field, "is not numeric"))
+		}
+		z <- rep_len(field, nrow(y))
+	}
+	z
+}
+
 setMethod("rasterizeNGB", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field="", algo, pars, fill=NA, filename="", ...) {
+	function(x, y, field="", algo, rad1=1, rad2=rad1, angle=0, minPoints=1, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
 			error("rasterizeNGB", "SpatVector y must have a point geometry")		
 		}
-		algo <- tolower(algo)
-		pars <- check_ngb_pars(algo, pars, fill) 
-		if (inherits(field, "character")) {
-			if (lenght(field != 1)) {
-				error("rasterizeNGB", "field name should have length 1")
-			}
-			if (!field %in% names(y)) {
-				error("rasterizeNGB", paste(field, "is not a name in y"))			
-			}
-			z <- y[[field, drop=TRUE]]
-			if (!is.numeric(z)) {
-				error("rasterizeNGB", paste(field, "is not numeric"))
-			}
-		} else {
-			if (!is.numeric(field)) {
-				error("rasterizeNGB", paste(field, "is not numeric"))
-			}
-			z <- rep_len(field, nrow(y))
-		}
+
+		algos <- c("min", "max", "range", "mean", "count", "distto", "distbetween")
+		algo <- match.arg(tolower(algo), algos)
+		pars <- c(rad1, rad2, angle, minPoints, fill)
+
+		z <- get_z(y, field)
 		y <- crds(y)
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$gridder(y[,1], y[,2], z, algo, pars, opt)
@@ -58,6 +64,39 @@ setMethod("rasterizeNGB", signature(x="SpatRaster", y="SpatVector"),
 
 
 setMethod("rasterizeNGB", signature(x="SpatRaster", y="matrix"),
+	function(x, y, algo, rad1=1, rad2=rad1, angle=0, minPoints=1, fill=NA, filename="", ...) {
+
+		algos <- c("min", "max", "range", "mean", "count", "distto", "distbetween")
+		algo <- match.arg(tolower(algo), algos)
+		pars <- c(rad1, rad2, angle, minPoints, fill)
+		if (ncol(y) != 3) {
+			error("rasterizeNGB", "expecting a matrix with three columns")
+		}
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$gridder(y[,1], y[,2], y[,3], algo, pars, opt)
+		messages(x, "rasterizeNGB")
+	}
+)
+
+
+setMethod("rasterizeNGB2", signature(x="SpatRaster", y="SpatVector"),
+	function(x, y, field="", algo, pars, fill=NA, filename="", ...) {
+		if (geomtype(y) != "points") {
+			error("rasterizeNGB", "SpatVector y must have a point geometry")		
+		}
+		algo <- tolower(algo)
+		pars <- check_ngb_pars(algo, pars, fill) 
+		z <- get_z(y, field)
+		y <- crds(y)
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$gridder(y[,1], y[,2], z, algo, pars, opt)
+		messages(x, "rasterizeNGB")
+	}
+)
+
+
+
+setMethod("rasterizeNGB2", signature(x="SpatRaster", y="matrix"),
 	function(x, y, algo, pars, fill=NA, filename="", ...) {
 		algo <- tolower(algo)
 		pars <- check_ngb_pars(algo, pars, fill) 

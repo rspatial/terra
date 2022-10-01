@@ -1048,7 +1048,7 @@ bool getGridderAlgo(std::string algo, GDALGridAlgorithm &a) {
 		a = GGA_InverseDistanceToAPower;
 	} else if (algo == "invdistpownear") {
 		a = GGA_InverseDistanceToAPowerNearestNeighbor;
-	} else if (algo == "movingavg") {
+	} else if (algo == "mean") {
 		a = GGA_MovingAverage;
 	} else if (algo == "min") {
 		a = GGA_MetricMinimum;
@@ -1058,9 +1058,9 @@ bool getGridderAlgo(std::string algo, GDALGridAlgorithm &a) {
 		a = GGA_MetricRange;
 	} else if (algo == "count") {
 		a = GGA_MetricCount;
-	} else if (algo == "distance") {
+	} else if (algo == "distto") {
 		a = GGA_MetricAverageDistance;
-	} else if (algo == "ptsdistance") {
+	} else if (algo == "distbetween") {
 		a = GGA_MetricAverageDistancePts;
 	} else if (algo == "linear") {
 		a = GGA_Linear;
@@ -1160,14 +1160,20 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 		return out;
 	}
 	void *poOptions;
-	if (is_in_vector(algo, {"min", "max", "range", "count", "distance", "ptsdistance"})) {
+	if (is_in_vector(algo, {"min", "max", "range", "count", "distto", "distbetween"})) {
 		if (algops.size() != 5) {
 			out.setError("incorrect algorithm options");
 			return out;
 		}
 		poOptions = metricOptions(algops) ;
+	} else if (algo == "mean") {
+		if (algops.size() != 5) {
+			out.setError("incorrect algorithm options");
+			return out;
+		}
+		poOptions = moveAvgOps(algops);
 	} else if (algo == "invdistpow") {
-		if (algops.size() != 10) {
+		if (algops.size() != 8) {
 			out.setError("incorrect algorithm options");
 			return out;
 		}
@@ -1178,13 +1184,6 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 			return out;
 		}
 		poOptions = invDistPowerNNOps(algops);
-
-	} else if (algo == "movingavg") {
-		if (algops.size() != 5) {
-			out.setError("incorrect algorithm options");
-			return out;
-		}
-		poOptions = moveAvgOps(algops);
 	} else if (algo == "near") {
 		if (algops.size() != 4) {
 			out.setError("incorrect algorithm options");
