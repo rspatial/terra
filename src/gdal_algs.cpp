@@ -1046,6 +1046,8 @@ bool getGridderAlgo(std::string algo, GDALGridAlgorithm &a) {
 		a = GGA_NearestNeighbor;
 	} else if (algo == "invdistpow") {
 		a = GGA_InverseDistanceToAPower;
+	} else if (algo == "invdistpownear") {
+		a = GGA_InverseDistanceToAPowerNearestNeighbor;
 	} else if (algo == "movingavg") {
 		a = GGA_MovingAverage;
 	} else if (algo == "min") {
@@ -1062,8 +1064,6 @@ bool getGridderAlgo(std::string algo, GDALGridAlgorithm &a) {
 		a = GGA_MetricAverageDistancePts;
 	} else if (algo == "linear") {
 		a = GGA_Linear;
-	} else if (algo == "invdistpownear") {
-		a = GGA_InverseDistanceToAPowerNearestNeighbor;
 	} else {
 		return false;
 	}
@@ -1071,34 +1071,140 @@ bool getGridderAlgo(std::string algo, GDALGridAlgorithm &a) {
 }
 
 
-SpatRaster SpatRaster::gridder(std::string algo, std::vector<double> x, std::vector<double> y, std::vector<double> z, SpatOptions &opt) {
+void *metricOptions(std::vector<double> op) {
+	GDALGridDataMetricsOptions *poOptions = static_cast<GDALGridDataMetricsOptions *>(
+		CPLCalloc(sizeof(GDALGridDataMetricsOptions), 1));
+	poOptions->dfRadius1 = op[0];
+	poOptions->dfRadius2 = op[1];
+	poOptions->dfAngle = op[2];
+	poOptions->nMinPoints = op[3];
+	poOptions->dfNoDataValue = op[4];
+	return poOptions;
+}
+
+
+
+void *invDistPowerOps(std::vector<double> op) {
+	GDALGridInverseDistanceToAPowerOptions *poOptions = static_cast<GDALGridInverseDistanceToAPowerOptions *>(
+		CPLCalloc(sizeof(GDALGridInverseDistanceToAPowerOptions), 1));
+	poOptions->dfPower = op[0];
+	poOptions->dfSmoothing = op[1];
+	poOptions->dfAnisotropyRatio = op[2];
+	poOptions->dfAnisotropyAngle = op[3];
+	poOptions->dfRadius1 = op[4];
+	poOptions->dfRadius2 = op[5];
+	poOptions->dfAngle = op[6];
+	poOptions->nMaxPoints = op[7];
+	poOptions->nMinPoints = op[8];
+	poOptions->dfNoDataValue = op[9];
+	return poOptions;
+}
+
+
+void *invDistPowerNNOps(std::vector<double> op) {
+	GDALGridInverseDistanceToAPowerNearestNeighborOptions *poOptions = static_cast<GDALGridInverseDistanceToAPowerNearestNeighborOptions *>(
+		CPLCalloc(sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions), 1));
+	poOptions->dfPower = op[0];
+	poOptions->dfRadius = op[1];
+	poOptions->dfSmoothing = op[2];
+	poOptions->nMaxPoints = op[3];
+	poOptions->nMinPoints = op[4];
+	poOptions->dfNoDataValue = op[5];
+	return poOptions;
+}
+
+
+void *moveAvgOps(std::vector<double> op) {
+	GDALGridMovingAverageOptions *poOptions = static_cast<GDALGridMovingAverageOptions *>(
+		CPLCalloc(sizeof(GDALGridMovingAverageOptions), 1));
+	poOptions->dfRadius1 = op[0];
+	poOptions->dfRadius2 = op[1];
+	poOptions->dfAngle = op[2];
+	poOptions->nMinPoints = op[3];
+	poOptions->dfNoDataValue = op[4];
+	return poOptions;
+}
+
+
+
+void *nearngbOps(std::vector<double> op) {
+	GDALGridNearestNeighborOptions *poOptions = static_cast<GDALGridNearestNeighborOptions *>(
+		CPLCalloc(sizeof(GDALGridNearestNeighborOptions), 1));
+	poOptions->dfRadius1 = op[0];
+	poOptions->dfRadius2 = op[1];
+	poOptions->dfAngle = op[2];
+	poOptions->dfNoDataValue = op[3];
+	return poOptions;
+}
+
+
+void *LinearOps(std::vector<double> op) {
+	GDALGridLinearOptions *poOptions = static_cast<GDALGridLinearOptions *>(
+		CPLCalloc(sizeof(GDALGridLinearOptions), 1));
+	poOptions->dfRadius = op[0];
+	poOptions->dfNoDataValue = op[1];
+	return poOptions;
+}
+
+
+
+SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::string algo, std::vector<double> algops, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 
 	GDALGridAlgorithm eAlg;
 		if (!getGridderAlgo(algo, eAlg)) {
-		out.setError("error");
+		out.setError("unknown algorithm");
 		return out;
 	}
-	double background = NAN;
-	if (algo == "count") {
-		background = 0;
+	void *poOptions;
+	if (is_in_vector(algo, {"min", "max", "range", "count", "distance", "ptsdistance"})) {
+		if (algops.size() != 5) {
+			out.setError("incorrect algorithm options");
+			return out;
+		}
+		poOptions = metricOptions(algops) ;
+	} else if (algo == "invdistpow") {
+		if (algops.size() != 10) {
+			out.setError("incorrect algorithm options");
+			return out;
+		}
+		poOptions = invDistPowerOps(algops);
+	} else if (algo == "invdistpownear") {
+		if (algops.size() != 6) {
+			out.setError("incorrect algorithm options");
+			return out;
+		}
+		poOptions = invDistPowerNNOps(algops);
+
+	} else if (algo == "movingavg") {
+		if (algops.size() != 5) {
+			out.setError("incorrect algorithm options");
+			return out;
+		}
+		poOptions = moveAvgOps(algops);
+	} else if (algo == "near") {
+		if (algops.size() != 4) {
+			out.setError("incorrect algorithm options");
+			return out;
+		}
+		poOptions = nearngbOps(algops);
+	} else if (algo == "linear") {
+		if (algops.size() != 2) {
+			out.setError("incorrect algorithm options");
+			return out;
+		}
+		poOptions = LinearOps(algops);
+	} else {
+		out.setError("incorrect algorithm");
+		return out;
 	}
 	
 	SpatExtent e = out.getExtent();
 	if (!out.writeStart(opt, out.filenames())) {
 		return out;
 	}
-
-	GDALGridDataMetricsOptions *poOptions = static_cast<GDALGridDataMetricsOptions *>(
-        CPLCalloc(sizeof(GDALGridDataMetricsOptions), 1));
-
-	poOptions->dfRadius1 = 5;
-	poOptions->dfRadius2 = 5;
-	poOptions->dfAngle = 0;
-	poOptions->nMinPoints = 1;
-	poOptions->dfNoDataValue = background;
-
+	
 	std::vector<double> v(out.ncell());
 
 	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, x.size(), &x[0], &y[0], &z[0], true);

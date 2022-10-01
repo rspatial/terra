@@ -1,5 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("rasterizeNGB")) {setGeneric("rasterizeNGB", function(x, y, ...) standardGeneric("rasterizeNGB"))}
+
 if (!isGeneric("normalize.longitude")) {setGeneric("normalize.longitude", function(x, ...) standardGeneric("normalize.longitude"))}
 
 if (!isGeneric("allNA")) {setGeneric("allNA", function(x, ...) standardGeneric("allNA"))}
