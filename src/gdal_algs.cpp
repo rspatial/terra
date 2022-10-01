@@ -1089,14 +1089,16 @@ void *invDistPowerOps(std::vector<double> op) {
 		CPLCalloc(sizeof(GDALGridInverseDistanceToAPowerOptions), 1));
 	poOptions->dfPower = op[0];
 	poOptions->dfSmoothing = op[1];
-	poOptions->dfAnisotropyRatio = op[2];
-	poOptions->dfAnisotropyAngle = op[3];
-	poOptions->dfRadius1 = op[4];
-	poOptions->dfRadius2 = op[5];
-	poOptions->dfAngle = op[6];
-	poOptions->nMaxPoints = op[7];
-	poOptions->nMinPoints = op[8];
-	poOptions->dfNoDataValue = op[9];
+	poOptions->dfRadius1 = op[2];
+	poOptions->dfRadius2 = op[3];
+	poOptions->dfAngle = op[4];
+	poOptions->nMaxPoints = op[5];
+	poOptions->nMinPoints = op[6];
+	poOptions->dfNoDataValue = op[7];
+
+	poOptions->dfAnisotropyRatio = 1;
+	poOptions->dfAnisotropyAngle = 0;
+
 	return poOptions;
 }
 

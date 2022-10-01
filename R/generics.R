@@ -3,47 +3,6 @@
 # Version 1.0
 # License GPL v3
 
-setMethod("rasterizeNGB", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field="", algo, pars, filename="", ...) {
-		if (geomtype(y) != "points") {
-			error("rasterizeNGB", "SpatVector y must have a point geometry")		
-		}
-		if (inherits(field, "character")) {
-			if (lenght(field != 1)) {
-				error("rasterizeNGB", "field name should have length 1")
-			}
-			if (!field %in% names(y)) {
-				error("rasterizeNGB", paste(field, "is not a name in y"))			
-			}
-			z <- y[[field, drop=TRUE]]
-			if (!is.numeric(z)) {
-				error("rasterizeNGB", paste(field, "is not numeric"))
-			}
-		} else {
-			if (!is.numeric(field)) {
-				error("rasterizeNGB", paste(field, "is not numeric"))
-			}
-			z <- rep_len(field, nrow(y))
-		}
-		y <- crds(y)
-		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$gridder(y[,1], y[,2], z, algo, pars, opt)
-		messages(x, "rasterizeNGB")
-	}
-)
-
-
-
-setMethod("rasterizeNGB", signature(x="SpatRaster", y="matrix"),
-	function(x, y, algo, pars, filename="", ...) {
-		if (ncol(y) != 3) {
-			error("rasterizeNGB", "expecting a matrix with three columns")
-		}
-		x@ptr <- x@ptr$gridder(y[,1], y[,2], y[,3], algo, pars, opt)
-		messages(x, "rasterizeNGB")
-	}
-)
-
 
 setMethod("weighted.mean", signature(x="SpatRaster", w="numeric"),
 	function(x, w, na.rm=FALSE, filename="", ...) {
