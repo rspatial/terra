@@ -684,6 +684,9 @@ class SpatRaster {
 		SpatRaster rasterizeLyr(SpatVector x, double value, double background, bool touches, bool update, SpatOptions &opt);
 
 		SpatRaster rasterize(SpatVector x, std::string field, std::vector<double> values, double background, bool touches, bool add, bool weights, bool update, bool minmax, SpatOptions &opt);
+		
+		SpatRaster gridder(std::string algo, std::vector<double> x, std::vector<double> y, std::vector<double> z, SpatOptions &opt);
+		
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches, SpatOptions &opt);
 		//std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
 		SpatRaster rasterizeGeom(SpatVector x, std::string unit, std::string count, SpatOptions &opt);
