@@ -56,10 +56,10 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,SpatVector</span>
-<span class="fu">rasterizeNGB</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">field</span>, <span class="va">algo</span>, <span class="va">pars</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">rasterizeNGB</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">field</span>, <span class="va">algo</span>, <span class="va">pars</span>, fill<span class="op">=</span><span class="cn">NA</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,matrix</span>
-<span class="fu">rasterizeNGB</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">algo</span>, <span class="va">pars</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">rasterizeNGB</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">algo</span>, <span class="va">pars</span>, fill<span class="op">=</span><span class="cn">NA</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,6 +79,9 @@
   <dt>pars</dt>
 <dd><p>numeric. algorithm specific parameters. See Details</p></dd>
 
+  <dt>fill</dt>
+<dd><p>numeric. value to use to fill empty cells</p></dd>
+
   <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
 
@@ -94,9 +97,10 @@
     <h2>Details</h2>
     
 
-<p>explain algorithms and parameters</p>
-<p>"min", "max", "range", "count", "distance", "ptsdistance", "invdistpow", "invdistpownear, "movingavg", "near", "linear"</p>
-    </div>
+<p>Description of the algorithms</p>
+<table class="table table"><tr><td><b>Name</b></td><td><b>Description</b></td></tr><tr><td>min</td><td>Minimum Value</td></tr><tr><td>max</td><td>Maximum Value</td></tr><tr><td>range</td><td>Data Range</td></tr><tr><td>count</td><td>Number of Points</td></tr><tr><td>distance</td><td>Average Distance</td></tr><tr><td>ptsdistance</td><td>Average Distance Between Data Points</td></tr><tr><td>invdistpow</td><td>Inverse distance to a power</td></tr><tr><td>invdistpownear</td><td>Inverse distance to a power with nearest neighbor search for max points</td></tr><tr><td>movingavg</td><td>Moving Average</td></tr><tr><td>near</td><td>Nearest Neighbor</td></tr><tr><td>linear</td><td>Linear interpolation (from Delaunay triangulation)</td></tr></table><p>Parameters required by algorithm</p>
+<table class="table table"><tr><td><b>Parameter</b></td><td><b>min, max, range, count</b></td><td><b>invdistpow</b></td><td><b>invdistpownear</b></td><td><b>movingavg</b></td><td><b>near</b></td><td><b>linear</b></td></tr><tr><td></td><td><b>distance, ptsdistance</b></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Power</td><td></td><td>x</td><td>x</td><td></td><td></td><td></td></tr><tr><td>Smoothing</td><td></td><td>x</td><td>x</td><td></td><td></td><td></td></tr><tr><td>Radius</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr><tr><td>Radius1</td><td>x</td><td>x</td><td></td><td>x</td><td>x</td><td></td></tr><tr><td>Radius2</td><td>x</td><td>x</td><td></td><td>x</td><td>x</td><td></td></tr><tr><td>Angle</td><td>x</td><td>x</td><td></td><td>x</td><td>x</td><td>x</td></tr><tr><td>nMaxPoints</td><td></td><td>x</td><td>x</td><td></td><td></td><td></td></tr><tr><td>nMinPoints</td><td>x</td><td>x</td><td>x</td><td>x</td><td></td><td></td></tr></table><p>Description of the parameters</p>
+<table class="table table"><tr><td><b>Parameter</b></td><td><b>Description</b></td></tr><tr><td>Power</td><td>Weighting power</td></tr><tr><td>Smoothing</td><td>Smoothing parameter</td></tr><tr><td>Radius</td><td>The radius of search circle</td></tr><tr><td>Radius1</td><td>The first radius (X axis if rotation angle is 0) of search ellipse.</td></tr><tr><td>Radius2</td><td>The second radius (Y axis if rotation angle is 0) of search ellipse.</td></tr><tr><td>Angle</td><td>Angle of ellipse rotation in degrees. Ellipse rotated counter clockwise.</td></tr><tr><td>MaxPoints</td><td>Maximum number of data points to use. Do not search for more points than this number. If less amount of points found the grid node considered empty and will be filled with NODATA marker.</td></tr><tr><td>MinPoints</td><td>Minimum number of data points to use. If less amount of points found the grid node considered empty and will be filled with NODATA marker.</td></tr></table></div>
     <div id="value">
     <h2>Value</h2>
     
@@ -106,7 +110,16 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncol<span class="op">=</span><span class="fl">100</span>, nrow<span class="op">=</span><span class="fl">100</span>, crs<span class="op">=</span><span class="st">"local"</span>, xmin<span class="op">=</span><span class="fl">0</span>, xmax<span class="op">=</span><span class="fl">50</span>, ymin<span class="op">=</span><span class="fl">0</span>, ymax<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">5</span>, <span class="fl">45</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">5</span>, <span class="fl">45</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">250</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">xyz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">y</span>,<span class="va">z</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">rasterizeNGB</span><span class="op">(</span><span class="va">r</span>, <span class="va">xyz</span>, <span class="st">"count"</span>, pars<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span>Radius1<span class="op">=</span><span class="fl">5</span>,Radius2<span class="op">=</span><span class="fl">5</span>,Angle<span class="op">=</span><span class="fl">0</span>,MinPoints<span class="op">=</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
