@@ -39,9 +39,7 @@ This can result in much smoother results compared to the standard \code{\link{ra
 
 \details{
 
-Description of the algorithms
-
-\tabular{ll}{\bold{Name} \tab \bold{Description} \cr
+\tabular{ll}{\bold{Algorithm name} \tab \bold{Description} \cr
 min    \tab Minimum value of z inside the ellipse\cr
 max    \tab Maximum value or z inside the ellipse\cr
 mean    \tab Mean value or z inside the ellipse\cr
