@@ -96,7 +96,6 @@ ifel is an R equivalent to the Con method in ArcGIS (arcpy)."><meta property="og
 <span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="app.html">app</a></span><span class="op">(</span><span class="va">r</span>, fun<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span><span class="va">i</span><span class="op">[</span><span class="va">i</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span>; <span class="va">i</span><span class="op">}</span><span class="op">)</span></span>
 <span class="r-in"><span class="co"># or </span></span>
 <span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="clamp.html">clamp</a></span><span class="op">(</span><span class="va">r</span>, <span class="op">-</span><span class="cn">Inf</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -inf 1</span>
 <span class="r-in"><span class="co"># or (not recommended for large datasets)</span></span>
 <span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="va">r</span></span>
 <span class="r-in"><span class="va">e</span><span class="op">[</span><span class="va">e</span><span class="op">&gt;</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
