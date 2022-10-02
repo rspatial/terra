@@ -9,15 +9,15 @@
 \title{Rasterize points with a neighborhood}
 
 \description{
-Rasterize points using a ellipse (or circle) as neighborhood. For each raster cell, the points that fall within a user-defined ellipse that is centered on the cell are considered. 
+Rasterize points using a circle (or ellipse) as neighborhood. For each raster cell, the points that fall within a user-defined circle centered on that cell are considered. 
 
 This can result in much smoother results compared to the standard \code{\link{rasterize}} method.
 }
 
 \usage{
-\S4method{rasterizeNGB}{SpatRaster,SpatVector}(x, y, field, algo, rad1, rad2=rad1, angle=0, minPoints=1, fill=NA, filename="", ...)
+\S4method{rasterizeNGB}{SpatRaster,SpatVector}(x, y, field, algo, radius, minPoints=1, fill=NA, filename="", ...)
 
-\S4method{rasterizeNGB}{SpatRaster,matrix}(x, y, algo, rad1, rad2=rad1, angle=0, minPoints=1, fill=NA, filename="", ...)
+\S4method{rasterizeNGB}{SpatRaster,matrix}(x, y, algo, radius, minPoints=1, fill=NA, filename="", ...)
 }
 
 \arguments{
@@ -25,9 +25,7 @@ This can result in much smoother results compared to the standard \code{\link{ra
   \item{y}{SpatVector or matrix with three columns (x,y,z)}
   \item{field}{character. field name in SpatVector \code{y}}
   \item{algo}{character. The algorithm to use. One of: "min", "max", "mean", "range", "count", "distto", "distbetween". See Details}
-  \item{rad1}{numeric. The first radius of the search ellipse (x-axis if \code{angle=0}) }
-  \item{rad2}{numeric. The second radius of the search ellipse (y-axis if \code{angle=0}) }
-  \item{angle}{numeric. The angle of ellipse rotation in degrees. Rotation is counter clockwise}
+  \item{radius}{numeric. The radius of the circle (single number). If two numbers are supplied these are interpreted as the radii of an ellipse (x and y-axis). If a third number is supplied it is assumed to be in degrees and used to rotate the ellipse (counter clockwise)}
   \item{minPoints}{numeric. The minimum number of points to use. If fewer points are found in a search ellipse it is considered empty and the fill value is returned}
   \item{fill}{numeric. value to use to fill cells with empty search areas}
   \item{filename}{character. Output filename}
@@ -36,7 +34,7 @@ This can result in much smoother results compared to the standard \code{\link{ra
 
 
 \seealso{
-\code{\link{rasterize}}
+\code{\link{rasterize}}, \code{\link{rasterizeGeom}}, \code{\link{interpNear}}, \code{\link{interpIDW}}
 }
 
 \details{

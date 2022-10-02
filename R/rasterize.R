@@ -9,7 +9,7 @@ check_ngb_pars <- function(algo, pars, fill) {
 		pex <- c("Power", "Smoothing", "Radius1", "Radius2", "Angle", "MaxPoints", "MinPoints")
 	} else if (algo == "invdistpownear") {
 		pex <- c("Power", "Smoothing", "Radius", "MaxPoints", "MinPoints")
-	} else if (algo == "near") {
+	} else if (algo == "nearest") {
 		pex <- c("Radius1", "Radius2", "Angle")	
 	} else if (algo == "linear") {
 		pex <- c("Radius")
@@ -24,7 +24,7 @@ check_ngb_pars <- function(algo, pars, fill) {
 
 get_z <- function(y, field) {
 	if (inherits(field, "character")) {
-		if (lenght(field != 1)) {
+		if (length(field != 1)) {
 			error("rasterizeNGB", "field name should have length 1")
 		}
 		if (!field %in% names(y)) {
@@ -43,16 +43,26 @@ get_z <- function(y, field) {
 	z
 }
 
+get_rad <- function(r) {
+	if (length(radius) == 1) {
+		c(r, r, 0)
+	} else if (length(radius) == 2) {
+		c(r, 0)
+	} else if (length(radius) == 3) {
+		r
+	} else {
+		error("rasterizeNGB", "radius should have length 1, 2, or 3")
+	}
+}
+
 setMethod("rasterizeNGB", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field="", algo, rad1=1, rad2=rad1, angle=0, minPoints=1, fill=NA, filename="", ...) {
+	function(x, y, field="", algo, radius, minPoints=1, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
 			error("rasterizeNGB", "SpatVector y must have a point geometry")		
 		}
-
 		algos <- c("min", "max", "range", "mean", "count", "distto", "distbetween")
-		algo <- match.arg(tolower(algo), algos)
-		pars <- c(rad1, rad2, angle, minPoints, fill)
-
+		algo <- match.arg(tolower(algo), algos)		
+		pars <- c(get_rad(radius), minPoints, fill)
 		z <- get_z(y, field)
 		y <- crds(y)
 		opt <- spatOptions(filename, ...)
@@ -79,36 +89,93 @@ setMethod("rasterizeNGB", signature(x="SpatRaster", y="matrix"),
 )
 
 
-setMethod("rasterizeNGB2", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field="", algo, pars, fill=NA, filename="", ...) {
+setMethod("interpNear", signature(x="SpatRaster", y="SpatVector"),
+	function(x, y, field="", algo, radius, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
-			error("rasterizeNGB", "SpatVector y must have a point geometry")		
+			error("interpNear", "SpatVector y must have a point geometry")		
 		}
-		algo <- tolower(algo)
-		pars <- check_ngb_pars(algo, pars, fill) 
+		algos <- c("nearest", "linear")
+		algo <- match.arg(tolower(algo), algos)
+		if (algo == "nearest") {
+			pars <- c(get_rad(radius), fill)
+		} else {
+			pars <- c(radius[1], fill)		
+		}
+
 		z <- get_z(y, field)
 		y <- crds(y)
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$gridder(y[,1], y[,2], z, algo, pars, opt)
-		messages(x, "rasterizeNGB")
+		messages(x, "interpNear")
 	}
 )
 
 
 
-setMethod("rasterizeNGB2", signature(x="SpatRaster", y="matrix"),
-	function(x, y, algo, pars, fill=NA, filename="", ...) {
-		algo <- tolower(algo)
-		pars <- check_ngb_pars(algo, pars, fill) 
+setMethod("interpNear", signature(x="SpatRaster", y="matrix"),
+	function(x, y, algo, radius, fill=NA, filename="", ...) {
+
+		algos <- c("nearest", "linear")
+		algo <- match.arg(tolower(algo), algos)
+
+		if (algo == "nearest") {
+			pars <- c(get_rad(radius), fill)
+		} else {
+			pars <- c(radius[1], fill)		
+		}
+
 		if (ncol(y) != 3) {
-			error("rasterizeNGB", "expecting a matrix with three columns")
+			error("interpNear", "expecting a matrix with three columns")
 		}
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$gridder(y[,1], y[,2], y[,3], algo, pars, opt)
-		messages(x, "rasterizeNGB")
+		messages(x, "interpNear")
 	}
 )
 
+
+setMethod("interpIDW", signature(x="SpatRaster", y="SpatVector"),
+	function(x, y, field="", algo, power, smooth, radius, minPoints, maxPoints, fill=NA, filename="", ...) {
+		if (geomtype(y) != "points") {
+			error("interpIDW", "SpatVector y must have a point geometry")		
+		}
+		algos <- c("invdistpow", "invdistpownear")
+		algo <- match.arg(tolower(algo), algos)
+
+		if (algo == "invdistpow") {
+			pars <- c(power, smooth, get_rad(radius), maxPoints, minPoints, fill)
+		} else {
+			pars <- c(power, smooth, radius[1], maxPoints, minPoints, fill)		
+		}
+		z <- get_z(y, field)
+		y <- crds(y)
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$gridder(y[,1], y[,2], z, algo, pars, opt)
+		messages(x, "interpIDW")
+	}
+)
+
+
+
+setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
+	function(x, y, algo, power, smooth, radius, minPoints, maxPoints, fill=NA, filename="", ...) {
+
+		algos <- c("invdistpow", "invdistpownear")
+		algo <- match.arg(tolower(algo), algos)
+		if (algo == "invdistpow") {
+			pars <- c(power, smooth, get_rad(radius), maxPoints, minPoints, fill)
+		} else {
+			pars <- c(power, smooth, radius[1], maxPoints, minPoints, fill)		
+		}
+
+		if (ncol(y) != 3) {
+			error("interpIDW", "expecting a matrix with three columns")
+		}
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$gridder(y[,1], y[,2], y[,3], algo, pars, opt)
+		messages(x, "interpIDW")
+	}
+)
 
 
 setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"),

@@ -1,7 +1,8 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
 if (!isGeneric("rasterizeNGB")) {setGeneric("rasterizeNGB", function(x, y, ...) standardGeneric("rasterizeNGB"))}
-if (!isGeneric("rasterizeNGB2")) {setGeneric("rasterizeNGB2", function(x, y, ...) standardGeneric("rasterizeNGB2"))}
+if (!isGeneric("interpNear")) {setGeneric("interpNear", function(x, y, ...) standardGeneric("interpNear"))}
+if (!isGeneric("interpIDW")) {setGeneric("interpIDW", function(x, y, ...) standardGeneric("interpIDW"))}
 
 if (!isGeneric("normalize.longitude")) {setGeneric("normalize.longitude", function(x, ...) standardGeneric("normalize.longitude"))}
 
