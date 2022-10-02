@@ -1,8 +1,8 @@
 
-check_ngb_pars <- function(algo, pars, fill) {
+check_ngb_pars <- function(algo, pars, fill, caller="rasterizeWin") {
 	#p <- c("Power", "Smoothing", "Radius", "Radius1", "Radius2", "Angle", "nMaxPoints", "nMinPoints")
 	n <- tolower(names(pars))
-	if (length(n) == 0) error("rasterizeNGB", "parameters are not named") 	
+	if (length(n) == 0) error(caller, "parameters are not named") 	
 	if (algo %in%  c("min", "max", "range", "mean", "count", "distto", "distbetween")) {
 		pex <- c("Radius1", "Radius2", "Angle", "MinPoints")
 	} else if (algo == "invdistpow") {
@@ -14,36 +14,36 @@ check_ngb_pars <- function(algo, pars, fill) {
 	} else if (algo == "linear") {
 		pex <- c("Radius")
 	} else {
-		error("rasterizeNGB", "invalid algorithm name")
+		error(caller, "invalid algorithm name")
 	}
-	if (length(n) != length(pex)) error("rasterizeNGB", paste("expected 4 parameters for", algo, "got",  length(n)))
-	if (!all(n %in% tolower(pex)))error("rasterizeNGB", paste("parameters needed for", algo, ":\n  ", paste(pex, collapse=",")))
+	if (length(n) != length(pex)) error(caller, paste("expected 4 parameters for", algo, "got",  length(n)))
+	if (!all(n %in% tolower(pex)))error(caller, paste("parameters needed for", algo, ":\n  ", paste(pex, collapse=",")))
 	c(pars[match(n, tolower(pex))], fill)
 }
 
 
-get_z <- function(y, field) {
+get_z <- function(y, field, caller="rasterizeWin") {
 	if (inherits(field, "character")) {
-		if (length(field != 1)) {
-			error("rasterizeNGB", "field name should have length 1")
+		if (length(field) != 1) {
+			error(caller, "field name should have length 1")
 		}
 		if (!field %in% names(y)) {
-			error("rasterizeNGB", paste(field, "is not a name in y"))			
+			error(caller, paste(field, "is not a name in y"))			
 		}
 		z <- y[[field, drop=TRUE]]
 		if (!is.numeric(z)) {
-			error("rasterizeNGB", paste(field, "is not numeric"))
+			error(caller, paste(field, "is not numeric"))
 		}
 	} else {
 		if (!is.numeric(field)) {
-			error("rasterizeNGB", paste(field, "is not numeric"))
+			error(caller, paste(field, "is not numeric"))
 		}
 		z <- rep_len(field, nrow(y))
 	}
 	z
 }
 
-get_rad <- function(r, caller="rasterizeNGB") {
+get_rad <- function(r, caller="rasterizeWin") {
 	if (length(r) == 1) {
 		c(r, r, 0)
 	} else if (length(r) == 2) {
@@ -99,9 +99,9 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 setMethod("rasterizeWin", signature(x="SpatRaster", y="SpatVector"),
 	function(x, y, field, fun, radius, minPoints=1, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
-			error("rasterizeNGB", "SpatVector y must have a point geometry")		
+			error("rasterizeWin", "SpatVector y must have a point geometry")		
 		}
-		y <- cbind(crds(y), get_z(y, field))
+		y <- cbind(crds(y), get_z(y, field, "rasterizeWin"))
 		rasterizeWin(x, y, fun=fun, radius=radius, minPoints=minPoints, fill=fill, filename=filename, ...)
 	}
 )
@@ -136,7 +136,7 @@ setMethod("interpNear", signature(x="SpatRaster", y="SpatVector"),
 		if (geomtype(y) != "points") {
 			error("interpNear", "SpatVector y must have a point geometry")		
 		}
-		y <- cbind(crds(y), get_z(y, field))
+		y <- cbind(crds(y), get_z(y, field, "interpNear"))
 		interpNear(x, y, radius=radius, interpolate=interpolate, fill=fill, filename=filename, ...)
 	}
 )
@@ -168,7 +168,7 @@ setMethod("interpIDW", signature(x="SpatRaster", y="SpatVector"),
 		if (geomtype(y) != "points") {
 			error("interpIDW", "SpatVector y must have a point geometry")		
 		}
-		y <- cbind(crds(y), get_z(y, field))
+		y <- cbind(crds(y), get_z(y, field, "interpIDW"))
 		interpIDW(x, y, radius, power=power, smooth=smooth, maxPoints=maxPoints, minPoints=minPoints, near=near, fill=fill, filename=filename, ...)
 	}
 )
