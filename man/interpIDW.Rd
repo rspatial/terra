@@ -20,7 +20,7 @@ invdistpownear: Inverse distance to a power with nearest neighbor search for max
 \S4method{interpIDW}{SpatRaster,SpatVector}(x, y, field, algo, radius, power, smooth,
        maxPoints, minPoints=1, fill=NA, filename="", ...)
 
-\S4method{interpIDW}{SpatRaster,SpatVector}(x, y, algo, radius, power, smooth, 
+\S4method{interpIDW}{SpatRaster,matrix}(x, y, algo, radius, power, smooth, 
        maxPoints, minPoints=1, fill=NA, filename="", ...)
 }
 

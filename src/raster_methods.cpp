@@ -648,6 +648,7 @@ SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
 		readStop();
 		return out;
 	}
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, out.bs, i);

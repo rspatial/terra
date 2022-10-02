@@ -1207,25 +1207,38 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 	}
 	
 	std::vector<double> v(out.ncell());
-
 	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, x.size(), &x[0], &y[0], &z[0], true);
-	CPLErr eErr = GDALGridContextProcess(ctxt, e.xmin, e.xmax, e.ymin, e.ymax, out.ncol(), out.nrow(), GDT_Float64, &v[0], NULL, NULL);
-	GDALGridContextFree(ctxt);
+	double rsy = out.yres() / 2;
+	size_t ncs = out.ncol();
+	BlockSize bs = x.getBlockSize(xopt);
 
-	if ( eErr != CE_None ) {
-		out.setError("something went wrong");
-		return out;
+	for (size_t i=0; i < bs.n; i++) {
+		ymax = yFromRow(bs.row[i]) + rsy;
+		ymin = yFromRow(bs.row[i] + bs.nrows[i] - 1) - rsy;
+
+		CPLErr eErr = GDALGridContextProcess(ctxt, e.xmin, e.xmax, ymin, ymax, out.ncol(), out.nrow(), GDT_Float64, &v[0], NULL, NULL);
+
+		if ( eErr != CE_None ) {
+			out.setError("something went wrong");
+			GDALGridContextFree(ctxt);
+			return out;
+		}
+		
+		std::vector<double> f;
+		f.reserve(v.size());
+		for (size_t i=0; i < bs.nrows[i]; i++) {
+			unsigned start = (bs.nrows[i] - 1 - i) * ncs;
+			f.insert(f.end(), v.begin()+start, v.begin()+start+ncs);
+		}	
+		if (!out.writeBlock(f, i)) {
+			GDALGridContextFree(ctxt);
+			return out;
+		}
 	}
 	
-	size_t nrs = out.nrow();
-	size_t ncs = out.ncol();
-	std::vector<double> f;
-	f.reserve(v.size());
-	for (size_t i=0; i < nrs; i++) {
-		unsigned start = (nrs - 1 - i) * ncs;
-		f.insert(f.end(), v.begin()+start, v.begin()+start+ncs);
-	}	
-	if (!out.writeValues(f, 0, out.nrow())) return out;
+	CSLDestroy(poOptions);
+
+	GDALGridContextFree(ctxt);
 	out.writeStop();
 	return out;
 }

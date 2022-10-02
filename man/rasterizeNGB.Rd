@@ -70,7 +70,7 @@ rfuns <- c("count", "min", "max", "mean")
 x <- lapply(rfuns, function(f) rasterizeNGB(r, xyz, f, rad1=5))
 names(x) <- rfuns 
 x <- rast(x)
-plot(x)
+#plot(x)
 }
 
 \keyword{spatial}

@@ -78,7 +78,7 @@ setMethod("rasterizeNGB", signature(x="SpatRaster", y="matrix"),
 
 		algos <- c("min", "max", "range", "mean", "count", "distto", "distbetween")
 		algo <- match.arg(tolower(algo), algos)
-		pars <- c(rad1, rad2, angle, minPoints, fill)
+		pars <- c(get_rad(radius), minPoints, fill)
 		if (ncol(y) != 3) {
 			error("rasterizeNGB", "expecting a matrix with three columns")
 		}
