@@ -83,10 +83,6 @@ linear: Linear interpolation"><meta property="og:image" content="/logo.png"><!--
   <dt>radius</dt>
 <dd><p>numeric. The radius of the circle (single number). For <code>algo=nearest</code> only: if two numbers are supplied these are interpreted as the radii of an ellipse (x and y-axis). If a third number is supplied it is assumed to be in degrees and used to rotate the ellipse (counter clockwise)</p></dd>
 
-
-  <dt>pars</dt>
-<dd><p>numeric. algorithm specific parameters. See Details</p></dd>
-
   <dt>fill</dt>
 <dd><p>numeric. value to use to fill empty cells</p></dd>
 
@@ -118,8 +114,7 @@ linear: Linear interpolation"><meta property="og:image" content="/logo.png"><!--
 <span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">250</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">xyz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">y</span>,<span class="va">z</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">interpolateNGB</span><span class="op">(</span><span class="va">r</span>, <span class="va">xyz</span>, <span class="st">"count"</span>, pars<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span>Radius1<span class="op">=</span><span class="fl">5</span>,Radius2<span class="op">=</span><span class="fl">5</span>,Angle<span class="op">=</span><span class="fl">0</span>,MinPoints<span class="op">=</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in interpolateNGB(r, xyz, "count", pars = c(Radius1 = 5, Radius2 = 5,     Angle = 0, MinPoints = 0)):</span> could not find function "interpolateNGB"</span>
+<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">interpNear</span><span class="op">(</span><span class="va">r</span>, <span class="va">xyz</span>, <span class="st">"nearest"</span>, radius<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
