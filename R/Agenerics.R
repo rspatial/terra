@@ -1,6 +1,6 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
-if (!isGeneric("rasterizeNGB")) {setGeneric("rasterizeNGB", function(x, y, ...) standardGeneric("rasterizeNGB"))}
+if (!isGeneric("rasterizeWin")) {setGeneric("rasterizeWin", function(x, y, ...) standardGeneric("rasterizeWin"))}
 if (!isGeneric("interpNear")) {setGeneric("interpNear", function(x, y, ...) standardGeneric("interpNear"))}
 if (!isGeneric("interpIDW")) {setGeneric("interpIDW", function(x, y, ...) standardGeneric("interpIDW"))}
 

@@ -49,7 +49,7 @@ Transfer values associated with the geometries of vector data to a raster
 }
 
 \seealso{
-\code{\link{rasterizeGeom}}, \code{\link{rasterizeNGB}}, \code{\link{mask}}
+\code{\link{rasterizeGeom}}, \code{\link{rasterizeWin}}, \code{\link{mask}}
 }
 
 

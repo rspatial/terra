@@ -1150,7 +1150,7 @@ void *LinearOps(std::vector<double> op) {
 
 
 
-SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::string algo, std::vector<double> algops, SpatOptions &opt) {
+SpatRaster SpatRaster::rasterizeWindow(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::string algo, std::vector<double> algops, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 
@@ -1242,6 +1242,53 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 	return out;
 }
 
+
+std::vector<std::vector<double>> SpatRaster::winpoints(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt) {
+
+// mostly from GDALGRID
+
+    const double radius1 = win[0] * win[0]; 
+    const double radius2 = win[1] * win[1];
+	const double R12 = radius1 * radius2;
+
+    // Compute coefficients for coordinate system rotation.
+	double angle = std::fmod(win[2], 360.0);
+	if (angle < 0) angle += 360.0;
+    const bool rotated = angle != 0.0;
+    angle = angle * M_PI / 180.0;
+
+    const double coeff1 = rotated ? cos(angle) : 0.0;
+    const double coeff2 = rotated ? sin(angle) : 0.0;
+
+	const size_t nc = ncell();
+	const size_t np = x.size();
+
+	std::vector<double> cells(nc);
+	std::iota(cells.begin(), cells.end(), 0.0);
+	std::vector<std::vector<double>> xy = xyFromCell(cells);
+
+	const size_t exps = 2 * np * std::max(1.0, win[0]) * std::max(1.0, win[1]) * M_PI / xres();
+
+	std::vector<std::vector<double>> out(2);
+	out[0].reserve(exps);
+	out[1].reserve(exps);
+
+    for (size_t i=0; i<nc; i++ ) {
+		for (size_t j=0; j <np; j++ ) {
+			double RX = x[j] - xy[0][i];
+			double RY = y[j] - xy[1][i];
+			if( rotated ) {
+				RX = RX * coeff1 + RY * coeff2;
+				RY = RY * coeff1 - RX * coeff2;
+			}
+			if( (radius2 * RX * RX + radius1 * RY * RY) <= R12 ) {
+				out[0].push_back(i);
+				out[1].push_back(j);
+			}
+		}
+    }
+    return out;
+}
 
 
 

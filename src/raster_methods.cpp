@@ -1272,12 +1272,11 @@ SpatRaster SpatRaster::clamp(std::vector<double> low, std::vector<double> high, 
 		recycle(low, nl);
 		recycle(high, nl);
 	}
-	for (size_t i=0; i<nl; i++) {
+	for (size_t i=0; i<low.size(); i++) {
 		if (low[i] > high[i]) {
 			out.setError("lower clamp value cannot be larger than the higher clamp value");
 			return out;
 		}
-		Rcpp::Rcout << low[i] << " " << high[i] << std::endl;
 	}
 	
 	if (!readStart()) {

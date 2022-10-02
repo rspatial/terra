@@ -33,7 +33,7 @@ linear: Linear interpolation
 }
 
 \seealso{
-\code{\link{rasterizeNGB}, \link{rasterize}, \link{interpIDW}, \link{interpolate}}
+\code{\link{rasterizeWin}, \link{rasterize}, \link{interpIDW}, \link{interpolate}}
 }
 
 
