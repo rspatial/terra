@@ -317,7 +317,7 @@ setMethod("rast", signature(x="ANY"),
 		} else {
 			out <- methods::as(x, "SpatRaster")
 		}
-		g <- gc()
+		#g <- gc()
 		out
 	}
 )
