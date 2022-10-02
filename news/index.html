@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-24</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-25</span>
       </span>
     </div>
 
@@ -48,25 +48,29 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-24" id="version-16-24">version 1.6-24<a class="anchor" aria-label="anchor" href="#version-16-24"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-25" id="version-16-25">version 1.6-25<a class="anchor" aria-label="anchor" href="#version-16-25"></a></h2>
 <div class="section level3">
-<h3 id="new-1-6-24">new<a class="anchor" aria-label="anchor" href="#new-1-6-24"></a></h3>
+<h3 id="new-1-6-25">new<a class="anchor" aria-label="anchor" href="#new-1-6-25"></a></h3>
 <ul><li>
+<code>[</code> and <code>[&lt;-</code> for SpatRaster now have a third index <code>k</code> for subsetting or assigning values by layer</li>
+<li>
 <code>anyNA</code> and <code>allNA</code> for SpatRaster</li>
 <li>
 <code>unwrap</code> to restore a PackedSpatVector or PackedSpatRaster</li>
 <li>
 <code>rasterizeWin</code> method for rasterization with a moving window</li>
+<li>
+<code>interpIDW</code> method for inverse-distance-weighted interpolation of points with a moving window</li>
+<li>
+<code>interpNear</code> method for nearest neighbor interpolation of points with a moving window</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-6-24">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-24"></a></h3>
+<h3 id="enhancements-1-6-25">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-25"></a></h3>
 <ul><li>
 <code>wrap&lt;SpatRaster&gt;</code> will use file references if the data is deemed to large to all load into memory. <a href="https://github.com/rspatial/terra/issues/801" class="external-link">#801</a> by Jean-Romain</li>
 <li>
 <code>readRDS</code> and <code>unserialize</code> now return a SpatRaster or SpatVector (instead of a PackedSpat*)</li>
 <li>better support for a “local” arbitrary Euclidean crs <a href="https://github.com/rspatial/terra/issues/797" class="external-link">#797</a> by Agustin Lobo</li>
-<li>
-<code>[</code> and <code>[&lt;-</code> for SpatRaster now have a third index <code>k</code> for subsetting or assigning values by layer</li>
 <li>
 <code>clamp</code> can now take low and high values for each layer</li>
 <li>The <code>pax</code> argument in <code>plot</code> now provides more control over what to draw on each axis via paramters <code>side</code>, <code>tick</code> and <code>lab</code>
@@ -75,9 +79,12 @@
 <li>
 <code>extend</code> has a new argument <code>fill=NA</code>
 </li>
+<li>A warning is now given when <code>c</code>ombining SpatRasters with different CRSs. <a href="https://github.com/rspatial/terra/issues/818" class="external-link">#818</a> by Andrew Marx</li>
+<li>
+<code>plotRGB</code> now accounts for the value of zlim when stretching; allowing to use the same coloring scheme across SpatRasters <a href="https://github.com/rspatial/terra/issues/810" class="external-link">#810</a> by Agustin Lobo.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-24">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-24"></a></h3>
+<h3 id="bug-fixes-1-6-25">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-25"></a></h3>
 <ul><li>The annoying garbage collection messages <code>Error in x$.self$finalize() : attempt to apply non-function</code> is now suppressed in most cases. <a href="https://github.com/rspatial/terra/issues/218" class="external-link">#218</a> by Charlie Joey Hadley. This problem should go away altogether when a new version of “Rcpp” is released (ETA Jan 2023) thanks to a fix by Kevin Ushey <a href="https://github.com/rspatial/terra/issues/30" class="external-link">#30</a>
 </li>
 <li>
@@ -86,6 +93,14 @@
 <code>adjacent&lt;SpatRaster&gt;</code> with <code>pairs=TRUE, include=TRUE</code> ignored <code>include=TRUE</code> <a href="https://github.com/rspatial/terra/issues/808" class="external-link">#808</a> by Joseph Lewis</li>
 <li>
 <code>rasterize</code> did not accept “NA” as value for updating <a href="https://github.com/rspatial/terra/issues/809" class="external-link">#809</a> by Márcia Barbosa</li>
+<li>
+<code>extract</code> with a perfectly vertical or horizontal line failed in some cases <a href="https://github.com/rspatial/terra/issues/823" class="external-link">#823</a> by Dimitri Falk</li>
+<li>
+<code>wrap&lt;SpatVector&gt;</code> failed if there was a single point geometry <a href="https://github.com/rspatial/terra/issues/815" class="external-link">#815</a> by Patrick Schaefer</li>
+<li>
+<code>extract&lt;SpatRaster&gt;</code> with <code>weights=TRUE</code> did not return values <a href="https://github.com/rspatial/terra/issues/814" class="external-link">#814</a> by Jean-Luc Dupouey.</li>
+<li>
+<code>x[["newname"]] &lt;- r</code> for SpatRasters <code>x</code> and <code>r</code> did not work <a href="https://github.com/rspatial/terra/issues/795" class="external-link">#795</a> by Jim Shady</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -133,6 +148,8 @@
 <code>focal</code> with <code>expand=TRUE</code> was prone to run out of memory <a href="https://github.com/rspatial/terra/issues/610" class="external-link">#610</a> by Nathan Elliott</li>
 <li>
 <code>crop&lt;SpatVector&gt;</code> did not work well when the second argument were points or lines <a href="https://github.com/rspatial/terra/issues/782" class="external-link">#782</a> by Márcia Barbosa</li>
+<li>
+<code>adjacent</code> with <code>pairs=TRUE</code> now respects the <code>include=TRUE</code> argument <a href="https://github.com/rspatial/terra/issues/808" class="external-link">808</a> by Joseph Lewis</li>
 </ul></div>
 </div>
     <div class="section level2">
