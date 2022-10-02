@@ -25,7 +25,9 @@ Interpolate points within a moving window using inverse distance weighting. The 
   \item{x}{SpatRaster}
   \item{y}{SpatVector or matrix with three columns (x,y,z)}
   \item{field}{character. field name in SpatVector \code{y}}
-  \item{radius}{numeric. The radius of the circle (single number). If \code{near=FALSE} only: if two numbers are supplied these are interpreted as the radii of an ellipse (x and y-axis). If a third number is supplied it is assumed to be in degrees and used to rotate the ellipse (counter clockwise)}
+  \item{radius}{numeric. The radius of the circle (single number). If \code{near=FALSE}, it is also possible to use two or three numbers. Two numbers are interpreted as the radii of an ellipse (x and y-axis). A third number should indicated the desired, counter clockwise, rotation of the ellipse (in degrees)}
+
+  
   \item{power}{numeric. Weighting power}
   \item{smooth}{numeric. Smoothing parameter}
   \item{minPoints}{numeric. The minimum number of points to use. If fewer points are found in a search ellipse it is considered empty and the fill value is returned}
@@ -49,12 +51,12 @@ SpatRaster
 
 r <- rast(ncol=100, nrow=100, crs="local", xmin=0, xmax=50, ymin=0, ymax=50)
 set.seed(100)
-x <- runif(250, 5, 45)
-y <- runif(250, 5, 45)
-z <- sample(250)
+x <- runif(25, 5, 45)
+y <- runif(25, 5, 45)
+z <- sample(25)
 xyz <- cbind(x,y,z)
 
-x <- interpIDW(r, xyz, "invdistpow", radius=5, power=1, smooth=1, maxPoints=5)
+x <- interpIDW(r, xyz, radius=5, power=1, smooth=1, maxPoints=5)
 
 }
 

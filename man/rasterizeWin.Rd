@@ -25,7 +25,8 @@ This can result in much smoother results compared to the standard \code{\link{ra
   \item{y}{SpatVector or matrix with three columns (x, y, z)}
   \item{field}{character. field name in SpatVector \code{y} with the values to rasterize}
   \item{fun}{function to summarize the values for each cell. Functions must take a numeric vector and return a single number. The fast built-in functions are "min", "max", "mean", "range", "count", "distto" (average distance to the points), "distbetween" (average distance between the points)}
-  \item{radius}{numeric. The radius of the circle (single number). If two numbers are supplied these are interpreted as the radii of an ellipse (x- and y-axis). If a third number is supplied it is assumed to be in degrees and used to rotate the ellipse (counter clockwise)}
+  \item{radius}{numeric. The radius of the circle (single number). If two numbers are supplied these are interpreted as the radii of an ellipse (x- and y-axis). If a third number is supplied it should be the desired, counter clockwise, rotation of the ellipse (in degrees)}
+ 
   \item{minPoints}{numeric. The minimum number of points to use. If fewer points are found in a search ellipse it is considered empty and the fill value is returned}
   \item{fill}{numeric. value to use to fill cells with empty search areas}
   \item{filename}{character. Output filename}

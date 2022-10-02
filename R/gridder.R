@@ -70,19 +70,27 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 				builtin <- TRUE
 			}
 		} 
-		pars <- c(get_rad(radius), minPoints, fill)
+		pars <- c(get_rad(radius), minPoints[1], fill[1])
 		if (ncol(y) != 3) {
 			error("rasterizeNGB", "expecting a matrix with three columns")
 		}
 		opt <- spatOptions(filename, ...)
 		if (builtin) {
 			x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
-			messages(x, "rasterizeNGB")
-		} else {		
+			messages(x, "rasterizeWin")
+		} else {
 			p <- x@ptr$winpoints(y[,1], y[,2], pars, opt)
-			p <- aggregate(list(y[,3][p[[2]]+1]), p[1], fun)
 			x <- rast(x, nlyr=1)
-			x[p[,1]+1] <- p[,2]
+			if (!is.na(fill[1])) {
+				x <- init(x, fill[1])
+			}
+			
+			if (length(p[[1]]) == 0) {
+				warn("rasterizeWin", "All windows were empty")
+			} else {
+				p <- aggregate(list(y[,3][p[[2]]+1]), p[1], fun)
+				set.values(x, p[,1]+1, p[,2])
+			}
 			x
 		}
 	}
@@ -94,7 +102,7 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="SpatVector"),
 			error("rasterizeNGB", "SpatVector y must have a point geometry")		
 		}
 		y <- cbind(crds(y), get_z(y, field))
-		raterizeNGB(x, y, fun=fun, radius=radius, minPoints=minPoints, fill=fill, filename=filename, ...)
+		raterizeWin(x, y, fun=fun, radius=radius, minPoints=minPoints, fill=fill, filename=filename, ...)
 	}
 )
 
@@ -102,39 +110,40 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="SpatVector"),
 
 
 setMethod("interpNear", signature(x="SpatRaster", y="matrix"),
-	function(x, y, algo, radius, fill=NA, filename="", ...) {
-
-		algos <- c("nearest", "linear")
-		algo <- match.arg(tolower(algo), algos)
-
-		if (algo == "nearest") {
-			pars <- c(get_rad(radius, "interpNear"), fill)
-		} else {
-			pars <- c(radius[1], fill)		
-		}
+	function(x, y, radius, interpolate=FALSE, fill=NA, filename="", ...) {
 
 		if (ncol(y) != 3) {
 			error("interpNear", "expecting a matrix with three columns")
 		}
+
+		if (interpolate) {
+			algo <- "linear"
+			pars <- c(radius[1], fill)		
+		} else {
+			algo <- "nearest"
+			pars <- c(get_rad(radius, "interpNear"), fill)
+		}
+
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$rasterizeWin(y[,1], y[,2], y[,3], algo, pars, opt)
+		x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
 		messages(x, "interpNear")
 	}
 )
 
+
 setMethod("interpNear", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field, algo, radius, fill=NA, filename="", ...) {
+	function(x, y, field, radius, interpolate=FALSE, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
 			error("interpNear", "SpatVector y must have a point geometry")		
 		}
 		y <- cbind(crds(y), get_z(y, field))
-		interpNear(x, y, algo=algo, radius=radius, fill=fill, filename=filename, ...)
+		interpNear(x, y, radius=radius, interpolate=interpolate, fill=fill, filename=filename, ...)
 	}
 )
 
 
 setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
-	function(x, y, algo, radius, power=2, smooth=0, maxPoints, minPoints=1, near=FALSE, fill=NA, filename="", ...) {
+	function(x, y, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...) {
 
 		if (near) {
 			algo <- "invdistpownear"
@@ -148,7 +157,7 @@ setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
 			error("interpIDW", "expecting a matrix with three columns")
 		}
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$rasterizeWin(y[,1], y[,2], y[,3], algo, pars, opt)
+		x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
 		messages(x, "interpIDW")
 	}
 )

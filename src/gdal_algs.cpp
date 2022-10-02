@@ -1273,20 +1273,56 @@ std::vector<std::vector<double>> SpatRaster::winpoints(std::vector<double> x, st
 	out[0].reserve(exps);
 	out[1].reserve(exps);
 
-    for (size_t i=0; i<nc; i++ ) {
-		for (size_t j=0; j <np; j++ ) {
-			double RX = x[j] - xy[0][i];
-			double RY = y[j] - xy[1][i];
-			if( rotated ) {
-				RX = RX * coeff1 + RY * coeff2;
-				RY = RY * coeff1 - RX * coeff2;
-			}
-			if( (radius2 * RX * RX + radius1 * RY * RY) <= R12 ) {
-				out[0].push_back(i);
-				out[1].push_back(j);
+	size_t minpt = win[3] < 2 ? 1 : win[3];
+
+	if (minpt == 1) {
+		for (size_t i=0; i<nc; i++ ) {
+			for (size_t j=0; j <np; j++ ) {
+				double RX = x[j] - xy[0][i];
+				double RY = y[j] - xy[1][i];
+				if( rotated ) {
+					RX = RX * coeff1 + RY * coeff2;
+					RY = RY * coeff1 - RX * coeff2;
+				}
+				if( (radius2 * RX * RX + radius1 * RY * RY) <= R12 ) {
+					out[0].push_back(i);
+					out[1].push_back(j);
+				}
 			}
 		}
-    }
+	} else {
+		std::vector<double> tmp0, tmp1;
+		tmp0.reserve(10);
+		tmp1.reserve(10);
+		for (size_t i=0; i<nc; i++ ) {
+			bool found = false;
+			size_t n = 0;
+			for (size_t j=0; j <np; j++ ) {
+				double RX = x[j] - xy[0][i];
+				double RY = y[j] - xy[1][i];
+				if( rotated ) {
+					RX = RX * coeff1 + RY * coeff2;
+					RY = RY * coeff1 - RX * coeff2;
+				}
+				if( (radius2 * RX * RX + radius1 * RY * RY) <= R12 ) {
+					tmp0.push_back(i);
+					tmp1.push_back(j);
+					found = true;
+					n++;
+				}
+			}
+			if (found) {
+				if (n >= minpt) {
+					out[0].insert(out[0].end(), tmp0.begin(), tmp0.end());
+					out[1].insert(out[1].end(), tmp1.begin(), tmp1.end());
+				}
+				tmp0.resize(0);
+				tmp1.resize(0);
+				tmp0.reserve(10);
+				tmp1.reserve(10);
+			}
+		}
+	}
     return out;
 }
 

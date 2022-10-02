@@ -4,6 +4,8 @@
 
 - `anyNA` and `allNA` for SpatRaster
 - `unwrap` to restore a PackedSpatVector or PackedSpatRaster
+- `rasterizeWin` method for rasterization with a moving window
+
 
 ## enhancements
 
@@ -20,7 +22,6 @@
 ## bug fixes 
 
 - The annoying garbage collection messages `Error in x$.self$finalize() : attempt to apply non-function` is now suppressed in most cases. [#218](https://github.com/rspatial/terra/issues/218) by Charlie Joey Hadley. This problem should go away altogether when a new version of "Rcpp" is released (ETA Jan 2023) thanks to a fix by Kevin Ushey [#30](https://github.com/rspatial/terra/issues/30)
-
 - `spatSample` with `na.rm` and SpatRasters with multiple layers did not work. [#800](https://github.com/rspatial/terra/issues/800) by Andrea Manica
 - `adjacent<SpatRaster>` with `pairs=TRUE, include=TRUE` ignored `include=TRUE` [#808](https://github.com/rspatial/terra/issues/808) by Joseph Lewis
 - `rasterize` did not accept "NA" as value for updating [#809](https://github.com/rspatial/terra/issues/809)  by Márcia Barbosa
