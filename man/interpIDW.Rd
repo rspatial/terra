@@ -17,9 +17,11 @@ invdistpownear: Inverse distance to a power with nearest neighbor search for max
 }
 
 \usage{
-\S4method{interpIDW}{SpatRaster,SpatVector}(x, y, field, algo, power, smooth, radius, minPoints, maxPoints, fill=NA, filename="", ...)
+\S4method{interpIDW}{SpatRaster,SpatVector}(x, y, field, algo, radius, power, smooth,
+       maxPoints, minPoints=1, fill=NA, filename="", ...)
 
-\S4method{interpIDW}{SpatRaster,SpatVector}(x, y, algo, power, smooth, radius, minPoints, maxPoints, fill=NA, filename="", ...)
+\S4method{interpIDW}{SpatRaster,SpatVector}(x, y, algo, radius, power, smooth, 
+       maxPoints, minPoints=1, fill=NA, filename="", ...)
 }
 
 \arguments{
@@ -55,7 +57,7 @@ y <- runif(250, 5, 45)
 z <- sample(250)
 xyz <- cbind(x,y,z)
 
-#r <- interpIDW(r, xyz, )
+x <- interpIDW(r, xyz, "invdistpow", radius=5, power=1, smooth=1, maxPoints=5)
 
 }
 

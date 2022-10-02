@@ -27,8 +27,6 @@ linear: Linear interpolation
   \item{field}{character. field name in SpatVector \code{y}}
   \item{algo}{character. The algorithm to use. One of: "nearest", "linear"}
   \item{radius}{numeric. The radius of the circle (single number). For \code{algo=nearest} only: if two numbers are supplied these are interpreted as the radii of an ellipse (x and y-axis). If a third number is supplied it is assumed to be in degrees and used to rotate the ellipse (counter clockwise)}
-
-  \item{pars}{numeric. algorithm specific parameters. See Details}
   \item{fill}{numeric. value to use to fill empty cells}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
@@ -52,7 +50,7 @@ y <- runif(250, 5, 45)
 z <- sample(250)
 xyz <- cbind(x,y,z)
 
-r <- interpolateNGB(r, xyz, "count", pars=c(Radius1=5,Radius2=5,Angle=0,MinPoints=0))
+x <- interpNear(r, xyz, "nearest", radius=5)
 
 }
 

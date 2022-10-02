@@ -1042,7 +1042,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 
 
 bool getGridderAlgo(std::string algo, GDALGridAlgorithm &a) {
-	if (algo == "near") {
+	if (algo == "nearest") {
 		a = GGA_NearestNeighbor;
 	} else if (algo == "invdistpow") {
 		a = GGA_InverseDistanceToAPower;
@@ -1184,7 +1184,7 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 			return out;
 		}
 		poOptions = invDistPowerNNOps(algops);
-	} else if (algo == "near") {
+	} else if (algo == "nearest") {
 		if (algops.size() != 4) {
 			out.setError("incorrect algorithm options");
 			return out;
@@ -1197,7 +1197,7 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 		}
 		poOptions = LinearOps(algops);
 	} else {
-		out.setError("incorrect algorithm");
+		out.setError("unknown algorithm");
 		return out;
 	}
 	
