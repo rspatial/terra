@@ -102,7 +102,7 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="SpatVector"),
 			error("rasterizeNGB", "SpatVector y must have a point geometry")		
 		}
 		y <- cbind(crds(y), get_z(y, field))
-		raterizeWin(x, y, fun=fun, radius=radius, minPoints=minPoints, fill=fill, filename=filename, ...)
+		rasterizeWin(x, y, fun=fun, radius=radius, minPoints=minPoints, fill=fill, filename=filename, ...)
 	}
 )
 

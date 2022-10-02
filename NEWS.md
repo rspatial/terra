@@ -1,10 +1,13 @@
-# version 1.6-24
+# version 1.6-25
 
 ## new
 
+- `[` and `[<-` for SpatRaster now have a third index `k` for subsetting or assigning values by layer
 - `anyNA` and `allNA` for SpatRaster
 - `unwrap` to restore a PackedSpatVector or PackedSpatRaster
 - `rasterizeWin` method for rasterization with a moving window
+- `interpIDW` method for inverse-distance-weighted interpolation of points with a moving window
+- `interpNear` method for nearest neighbor interpolation of points with a moving window
 
 
 ## enhancements
@@ -12,11 +15,12 @@
 - `wrap<SpatRaster>` will use file references if the data is deemed to large to all load into memory. [#801](https://github.com/rspatial/terra/issues/801) by Jean-Romain
 - `readRDS` and `unserialize` now return a SpatRaster or SpatVector (instead of a PackedSpat*)
 - better support for a "local" arbitrary Euclidean crs [#797](https://github.com/rspatial/terra/issues/797) by Agustin Lobo
-- `[` and `[<-` for SpatRaster now have a third index `k` for subsetting or assigning values by layer
 - `clamp` can now take low and high values for each layer 
 - The `pax` argument in `plot` now provides more control over what to draw on each axis via paramters `side`, `tick` and `lab`
 - The `pax` argument in `plot` now has argument `retro` to use a sexagesimal notation of degrees
 - `extend` has a new argument `fill=NA`
+- A warning is now given when `c`ombining SpatRasters with different CRSs. [#818](https://github.com/rspatial/terra/issues/818) by Andrew Marx
+- `plotRGB` now accounts for the value of zlim when stretching; allowing to use the same coloring scheme across SpatRasters [#810](https://github.com/rspatial/terra/issues/810) by Agustin Lobo.
 
 
 ## bug fixes 
@@ -25,6 +29,10 @@
 - `spatSample` with `na.rm` and SpatRasters with multiple layers did not work. [#800](https://github.com/rspatial/terra/issues/800) by Andrea Manica
 - `adjacent<SpatRaster>` with `pairs=TRUE, include=TRUE` ignored `include=TRUE` [#808](https://github.com/rspatial/terra/issues/808) by Joseph Lewis
 - `rasterize` did not accept "NA" as value for updating [#809](https://github.com/rspatial/terra/issues/809)  by Márcia Barbosa
+- `extract` with a perfectly vertical or horizontal line failed in some cases [#823](https://github.com/rspatial/terra/issues/823) by Dimitri Falk
+- `wrap<SpatVector>` failed if there was a single point geometry [#815](https://github.com/rspatial/terra/issues/815) by Patrick Schaefer
+- `extract<SpatRaster>` with `weights=TRUE` did not return values [#814](https://github.com/rspatial/terra/issues/814) by Jean-Luc Dupouey. 
+- `x[["newname"]] <- r` for SpatRasters `x` and `r` did not work [#795](https://github.com/rspatial/terra/issues/795) by Jim Shady
 
 
 # version 1.6-17
@@ -49,6 +57,8 @@ Released on 2022-09-10
 - faster `relate` [#716](https://github.com/rspatial/terra/issues/716) by Krzysztof Dyba
 - `focal3D` now checks if all the window's dimensions are odd [#772](https://github.com/rspatial/terra/issues/772) by Neander Marcel Heming
 
+
+
 ## bug fixes 
 
 - all.equal bug [#756](https://github.com/rspatial/terra/pull/756) fixed by John Baums
@@ -60,6 +70,7 @@ Released on 2022-09-10
 - `focalCor` failed for large rasters [#607](https://github.com/rspatial/terra/issues/607) by John Clark
 - `focal` with `expand=TRUE` was prone to run out of memory [#610](https://github.com/rspatial/terra/issues/610) by Nathan Elliott
 - `crop<SpatVector>` did not work well when the second argument were points or lines [#782](https://github.com/rspatial/terra/issues/782) by Márcia Barbosa
+- `adjacent` with `pairs=TRUE` now respects the `include=TRUE` argument [808](https://github.com/rspatial/terra/issues/808) by Joseph Lewis
 
 
 # version 1.6-7

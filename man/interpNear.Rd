@@ -6,10 +6,10 @@
 \alias{interpNear,SpatRaster,SpatVector-method}
 \alias{interpNear,SpatRaster,matrix-method}
 
-\title{Nearest neighbor interpolation of points, using a moving window}
+\title{Nearest neighbor interpolation}
 
 \description{
-
+Nearest neighbor interpolation of points, using a moving window
 }
 
 \usage{
