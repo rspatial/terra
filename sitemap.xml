@@ -301,6 +301,12 @@
     <loc>/reference/inset.html</loc>
   </url>
   <url>
+    <loc>/reference/interpIDW.html</loc>
+  </url>
+  <url>
+    <loc>/reference/interpNear.html</loc>
+  </url>
+  <url>
     <loc>/reference/interpolate.html</loc>
   </url>
   <url>
@@ -428,9 +434,6 @@
   </url>
   <url>
     <loc>/reference/rasterizeNGB.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rasterizeNGB2.html</loc>
   </url>
   <url>
     <loc>/reference/rcl.html</loc>
