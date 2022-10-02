@@ -55,6 +55,8 @@
 <code>anyNA</code> and <code>allNA</code> for SpatRaster</li>
 <li>
 <code>unwrap</code> to restore a PackedSpatVector or PackedSpatRaster</li>
+<li>
+<code>rasterizeWin</code> method for rasterization with a moving window</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-24">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-24"></a></h3>
@@ -76,10 +78,14 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-24">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-24"></a></h3>
-<ul><li><p>The annoying garbage collection messages <code>Error in x$.self$finalize() : attempt to apply non-function</code> is now suppressed in most cases. <a href="https://github.com/rspatial/terra/issues/218" class="external-link">#218</a> by Charlie Joey Hadley. This problem should go away altogether when a new version of “Rcpp” is released (ETA Jan 2023) thanks to a fix by Kevin Ushey <a href="https://github.com/rspatial/terra/issues/30" class="external-link">#30</a></p></li>
-<li><p><code>spatSample</code> with <code>na.rm</code> and SpatRasters with multiple layers did not work. <a href="https://github.com/rspatial/terra/issues/800" class="external-link">#800</a> by Andrea Manica</p></li>
-<li><p><code>adjacent&lt;SpatRaster&gt;</code> with <code>pairs=TRUE, include=TRUE</code> ignored <code>include=TRUE</code> <a href="https://github.com/rspatial/terra/issues/808" class="external-link">#808</a> by Joseph Lewis</p></li>
-<li><p><code>rasterize</code> did not accept “NA” as value for updating <a href="https://github.com/rspatial/terra/issues/809" class="external-link">#809</a> by Márcia Barbosa</p></li>
+<ul><li>The annoying garbage collection messages <code>Error in x$.self$finalize() : attempt to apply non-function</code> is now suppressed in most cases. <a href="https://github.com/rspatial/terra/issues/218" class="external-link">#218</a> by Charlie Joey Hadley. This problem should go away altogether when a new version of “Rcpp” is released (ETA Jan 2023) thanks to a fix by Kevin Ushey <a href="https://github.com/rspatial/terra/issues/30" class="external-link">#30</a>
+</li>
+<li>
+<code>spatSample</code> with <code>na.rm</code> and SpatRasters with multiple layers did not work. <a href="https://github.com/rspatial/terra/issues/800" class="external-link">#800</a> by Andrea Manica</li>
+<li>
+<code>adjacent&lt;SpatRaster&gt;</code> with <code>pairs=TRUE, include=TRUE</code> ignored <code>include=TRUE</code> <a href="https://github.com/rspatial/terra/issues/808" class="external-link">#808</a> by Joseph Lewis</li>
+<li>
+<code>rasterize</code> did not accept “NA” as value for updating <a href="https://github.com/rspatial/terra/issues/809" class="external-link">#809</a> by Márcia Barbosa</li>
 </ul></div>
 </div>
     <div class="section level2">

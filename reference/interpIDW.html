@@ -78,8 +78,10 @@ Interpolate points within a moving window using inverse distance weighting. The 
 <dd><p>character. field name in SpatVector <code>y</code></p></dd>
 
   <dt>radius</dt>
-<dd><p>numeric. The radius of the circle (single number). If <code>near=FALSE</code> only: if two numbers are supplied these are interpreted as the radii of an ellipse (x and y-axis). If a third number is supplied it is assumed to be in degrees and used to rotate the ellipse (counter clockwise)</p></dd>
+<dd><p>numeric. The radius of the circle (single number). If <code>near=FALSE</code>, it is also possible to use two or three numbers. Two numbers are interpreted as the radii of an ellipse (x and y-axis). A third number should indicated the desired, counter clockwise, rotation of the ellipse (in degrees)</p></dd>
 
+
+  
   <dt>power</dt>
 <dd><p>numeric. Weighting power</p></dd>
 
@@ -121,13 +123,12 @@ Interpolate points within a moving window using inverse distance weighting. The 
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncol<span class="op">=</span><span class="fl">100</span>, nrow<span class="op">=</span><span class="fl">100</span>, crs<span class="op">=</span><span class="st">"local"</span>, xmin<span class="op">=</span><span class="fl">0</span>, xmax<span class="op">=</span><span class="fl">50</span>, ymin<span class="op">=</span><span class="fl">0</span>, ymax<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">5</span>, <span class="fl">45</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">5</span>, <span class="fl">45</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">250</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">5</span>, <span class="fl">45</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">5</span>, <span class="fl">45</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">25</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">xyz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">y</span>,<span class="va">z</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">interpIDW</span><span class="op">(</span><span class="va">r</span>, <span class="va">xyz</span>, <span class="st">"invdistpow"</span>, radius<span class="op">=</span><span class="fl">5</span>, power<span class="op">=</span><span class="fl">1</span>, smooth<span class="op">=</span><span class="fl">1</span>, maxPoints<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in envRefInferField(x, what, getClass(class(x)), selfEnv):</span> ‘rasterizeWin’ is not a valid field or method name for reference class “Rcpp_SpatRaster”</span>
+<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">interpIDW</span><span class="op">(</span><span class="va">r</span>, <span class="va">xyz</span>, radius<span class="op">=</span><span class="fl">5</span>, power<span class="op">=</span><span class="fl">1</span>, smooth<span class="op">=</span><span class="fl">1</span>, maxPoints<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
