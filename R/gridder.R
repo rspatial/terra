@@ -80,7 +80,7 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 			messages(x, "rasterizeNGB")
 		} else {		
 			p <- x@ptr$winpoints(y[,1], y[,2], pars, opt)
-			p <- aggregate(list(y[,3,drop=FALSE][p[[2]]+1]), p[1], max)
+			p <- aggregate(list(y[,3,drop=FALSE][p[[2]]+1]), p[1], fun)
 			x <- rast(x, nlyr=1)
 			x[p[,1]] <- p[,2]
 			x
