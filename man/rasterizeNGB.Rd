@@ -64,10 +64,10 @@ y <- runif(50, 5, 45)
 z <- sample(50)
 xyz <- cbind(x,y,z)
 
-r <- rasterizeNGB(r, xyz, "count", rad1=5)
+r <- rasterizeNGB(r, xyz, "count", radius=5)
 
 rfuns <- c("count", "min", "max", "mean")
-x <- lapply(rfuns, function(f) rasterizeNGB(r, xyz, f, rad1=5))
+x <- lapply(rfuns, function(f) rasterizeNGB(r, xyz, f, radius=5))
 names(x) <- rfuns 
 x <- rast(x)
 #plot(x)

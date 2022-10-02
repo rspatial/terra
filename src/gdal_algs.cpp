@@ -1210,11 +1210,11 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, x.size(), &x[0], &y[0], &z[0], true);
 	double rsy = out.yres() / 2;
 	size_t ncs = out.ncol();
-	BlockSize bs = x.getBlockSize(xopt);
+	BlockSize bs = out.getBlockSize(opt);
 
 	for (size_t i=0; i < bs.n; i++) {
-		ymax = yFromRow(bs.row[i]) + rsy;
-		ymin = yFromRow(bs.row[i] + bs.nrows[i] - 1) - rsy;
+		double ymax = yFromRow(bs.row[i]) + rsy;
+		double ymin = yFromRow(bs.row[i] + bs.nrows[i] - 1) - rsy;
 
 		CPLErr eErr = GDALGridContextProcess(ctxt, e.xmin, e.xmax, ymin, ymax, out.ncol(), out.nrow(), GDT_Float64, &v[0], NULL, NULL);
 
@@ -1226,8 +1226,8 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 		
 		std::vector<double> f;
 		f.reserve(v.size());
-		for (size_t i=0; i < bs.nrows[i]; i++) {
-			unsigned start = (bs.nrows[i] - 1 - i) * ncs;
+		for (size_t j=0; j < bs.nrows[i]; j++) {
+			unsigned start = (bs.nrows[i] - 1 - j) * ncs;
 			f.insert(f.end(), v.begin()+start, v.begin()+start+ncs);
 		}	
 		if (!out.writeBlock(f, i)) {
@@ -1236,8 +1236,6 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 		}
 	}
 	
-	CSLDestroy(poOptions);
-
 	GDALGridContextFree(ctxt);
 	out.writeStop();
 	return out;
