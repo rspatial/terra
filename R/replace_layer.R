@@ -94,7 +94,7 @@ setReplaceMethod("[[", c("SpatRaster", "numeric"),
 				x <- c(x[[1:(i[k]-1)]], value[[k]], x[[(i[k]+1):nlyr(x)]])
 			}
 		}
-		#g <- gc()
+		g <- gc()
 		x
 	}
 )

@@ -135,7 +135,7 @@ setMethod("interpNear", signature(x="SpatRaster", y="matrix"),
 
 
 setMethod("interpIDW", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field, algo, radius, power, smooth, maxPoints, minPoints=1, fill=NA, filename="", ...) {
+	function(x, y, field, algo, radius, power=2, smooth=0, maxPoints, minPoints=1, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
 			error("interpIDW", "SpatVector y must have a point geometry")		
 		}
@@ -158,7 +158,7 @@ setMethod("interpIDW", signature(x="SpatRaster", y="SpatVector"),
 
 
 setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
-	function(x, y, algo, radius, power, smooth, maxPoints, minPoints=1, fill=NA, filename="", ...) {
+	function(x, y, algo, radius, power=2, smooth=0, maxPoints, minPoints=1, fill=NA, filename="", ...) {
 
 		algos <- c("invdistpow", "invdistpownear")
 		algo <- match.arg(tolower(algo), algos)

@@ -1208,6 +1208,8 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 	
 	std::vector<double> v(out.ncell());
 	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, x.size(), &x[0], &y[0], &z[0], true);
+	CPLFree( poOptions );
+
 	double rsy = out.yres() / 2;
 	size_t ncs = out.ncol();
 	BlockSize bs = out.getBlockSize(opt);
@@ -1235,7 +1237,6 @@ SpatRaster SpatRaster::gridder(std::vector<double> x, std::vector<double> y, std
 			return out;
 		}
 	}
-	
 	GDALGridContextFree(ctxt);
 	out.writeStop();
 	return out;
