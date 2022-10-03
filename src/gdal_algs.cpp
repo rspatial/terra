@@ -1327,7 +1327,7 @@ std::vector<std::vector<double>> SpatRaster::win_circle(std::vector<double> x, s
 }
 
 
-inline double rarea(double Ax, double Ay, double Bx, double By, double Cx, double Cy) {
+inline double rarea(double &Ax, double &Ay, double &Bx, double &By, double &Cx, double &Cy) {
    return std::abs( (Bx*Ay - Ax*By) + (Cx*By - Bx*Cy) + (Ax*Cy - Cx*Ay) ) / 2;
 }
 
@@ -1338,13 +1338,17 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 	win[1] = std::abs(win[1]);
     const double h = win[0] / 2; 
     const double w = win[1] / 2;
-	// multiply for floating point inprecision
+	
+	// multiply for floating point imprecision
 	const double rar = win[0] * win[1] * 1.00000001;
 	double angle = std::fmod(win[2], 360.0);
 	if (angle < 0) angle += 360.0;
     const bool rotated = angle != 0.0;
-	double cphi=0, sphi=0;
+
+	double cphi=0, sphi=0, bigw=0, bigh=0;
 	double wcphi=0, hcphi=0, wsphi=0, hsphi=0;
+	std::vector<double> ox(4);
+	std::vector<double> oy(4);
 
 	if (rotated) {
 		angle = angle * M_PI / 180.0;
@@ -1355,6 +1359,17 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 		wsphi= sphi * w;
 		hsphi= sphi * h;
 
+		ox[0] = -wcphi - hsphi;
+		oy[0] = -wsphi + hcphi;
+		ox[1] =  wcphi - hsphi;
+		oy[1] =  wsphi + hcphi;
+		ox[2] =  wcphi + hsphi;
+		oy[2] =  wsphi - hcphi;
+		ox[3] = -wcphi + hsphi;
+		oy[3] = -wsphi - hcphi;
+		
+		bigw = (vmax(ox, false) - vmin(ox, false))/2;
+		bigh = (vmax(oy, false) - vmin(oy, false))/2;
 	}
 
 	const size_t nc = ncell();
@@ -1377,30 +1392,32 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 	if (minpt < 2) {
 		for (size_t i=0; i<nc; i++ ) {
 			if (rotated) {
-				rx[0] = xy[0][i] - wcphi - hsphi;
-				ry[0] = xy[1][i] - wsphi + hcphi;
-				rx[1] = xy[0][i] + wcphi - hsphi;
-				ry[1] = xy[1][i] + wsphi + hcphi;
-				rx[2] = xy[0][i] + wcphi + hsphi;
-				ry[2] = xy[1][i] + wsphi - hcphi;
-				rx[3] = xy[0][i] - wcphi + hsphi;
-				ry[3] = xy[1][i] - wsphi - hcphi;
+				rx[0] = xy[0][i] + ox[0];
+				ry[0] = xy[1][i] + oy[0];
+				rx[1] = xy[0][i] + ox[1];
+				ry[1] = xy[1][i] + oy[1];
+				rx[2] = xy[0][i] + ox[2];
+				ry[2] = xy[1][i] + oy[2];
+				rx[3] = xy[0][i] + ox[3];
+				ry[3] = xy[1][i] + oy[3];
 			}
 			for (size_t j=0; j <np; j++ ) {
 				if (rotated) {
-					// triangles apd, dpc, cpb, bpa
-					double area  = rarea(rx[0], ry[0], x[j], y[j], rx[3], ry[3]);
-					       area += rarea(rx[3], ry[3], x[j], y[j], rx[2], ry[2]);
-						   area += rarea(rx[2], ry[2], x[j], y[j], rx[1], ry[1]);
-						   area += rarea(rx[1], ry[1], x[j], y[j], rx[0], ry[0]);
-					if (area < rar) {
-						out[0].push_back(i);
-						out[1].push_back(j);					
+					if ((std::abs(x[j] - xy[0][i]) <= bigw) 
+							&& (std::abs(y[j] - xy[1][i]) <= bigh)) {
+						// triangles apd, dpc, cpb, bpa
+						double area  = rarea(rx[0], ry[0], x[j], y[j], rx[3], ry[3]);
+							   area += rarea(rx[3], ry[3], x[j], y[j], rx[2], ry[2]);
+							   area += rarea(rx[2], ry[2], x[j], y[j], rx[1], ry[1]);
+							   area += rarea(rx[1], ry[1], x[j], y[j], rx[0], ry[0]);
+						if (area < rar) {
+							out[0].push_back(i);
+							out[1].push_back(j);					
+						}
 					}
 				} else {
-					double dX = std::abs(x[j] - xy[0][i]);
-					double dY = std::abs(y[j] - xy[1][i]);
-					if ((dX <= w) && (dY <= h)) {
+					if ((std::abs(x[j] - xy[0][i]) <= w) &&
+						(std::abs(y[j] - xy[1][i]) <= h)) {
 						out[0].push_back(i);
 						out[1].push_back(j);
 					}
@@ -1416,16 +1433,19 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 			size_t n = 0;
 			for (size_t j=0; j <np; j++ ) {
 				if (rotated) {
-					// apd, dpc, cpb, pba
-					double area = rarea(rx[0], ry[0], x[j], y[j], rx[3], ry[3]);
-					area += rarea(rx[3], ry[3], x[j], y[j], rx[2], ry[2]);
-					area += rarea(rx[2], ry[2], x[j], y[j], rx[1], ry[1]);
-					area += rarea(x[j], y[j], rx[1], ry[1], rx[0], ry[0]);
-					if (area <= rar) {
-						tmp0.push_back(i);
-						tmp1.push_back(j);
-						found = true;
-						n++;
+					if ((std::abs(x[j] - xy[0][i]) <= bigw) 
+							&& (std::abs(y[j] - xy[1][i]) <= bigh)) {
+						// apd, dpc, cpb, pba
+						double area = rarea(rx[0], ry[0], x[j], y[j], rx[3], ry[3]);
+						area += rarea(rx[3], ry[3], x[j], y[j], rx[2], ry[2]);
+						area += rarea(rx[2], ry[2], x[j], y[j], rx[1], ry[1]);
+						area += rarea(x[j], y[j], rx[1], ry[1], rx[0], ry[0]);
+						if (area <= rar) {
+							tmp0.push_back(i);
+							tmp1.push_back(j);
+							found = true;
+							n++;
+						}
 					}
 				} else {
 					double dX = std::abs(x[j] - xy[0][i]);
