@@ -52,10 +52,10 @@ y <- runif(50, 5, 45)
 z <- sample(50)
 xyz <- cbind(x,y,z)
 
-r <- rasterizeWin(r, xyz, "count", radius=5)
+r <- rasterizeWin(r, xyz, "count", pars=5)
 
 rfuns <- c("count", "min", "max", "mean")
-x <- lapply(rfuns, function(f) rasterizeWin(r, xyz, f, radius=5))
+x <- lapply(rfuns, function(f) rasterizeWin(r, xyz, f, pars=5))
 names(x) <- rfuns 
 x <- rast(x)
 #plot(x)
