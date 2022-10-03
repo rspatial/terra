@@ -126,43 +126,47 @@
 		return(out)
 	}
 	out$levels <- sort(stats::na.omit(unique(z)))
-	ilevels <- match(out$levels, out$cats[[1]])
-	# mismatch: ilevels <- na.omit(ilevels)
 	if (out$all_levels) {
-		out$leg$legend <- unique(na.omit(out$cats[, 2]))	
+		ilevels <- 1:nrow(out$cats)
 	} else {
-		out$leg$legend <- unique(na.omit(out$cats[ilevels, 2]))
+		ilevels <- match(out$levels, out$cats[[1]])
 	}
 	if (!is.null(out$coltab)) {
 		if (out$all_levels) {
 			mi <- match(out$cats[[1]], out$coltab[,1])
 			mi[is.na(mi)] <- 1
-			mc <- coltab[mi, ,drop=FALSE]
+			mc <- out$coltab[mi, ,drop=FALSE]
 			out$leg$fill <- grDevices::rgb(mc[,2], mc[,3], mc[,4], mc[,5], maxColorValue=255)
+			out$leg$legend <- na.omit(out$cats[, 2])
+		} else {
+			out$levels <- out$levels[!is.na(ilevels)]
+			m <- na.omit(match(out$cats[[1]][ilevels], out$coltab[,1]))
+			out$leg$legend <- na.omit(out$cats[ilevels, 2])
+			out$coltab <- out$coltab[m, ,drop=FALSE]
 		}
-		out$levels <- out$levels[!is.na(ilevels)]
-		m <- na.omit(match(out$cats[[1]][ilevels], out$coltab[,1]))
-		out$coltab <- out$coltab[m, ,drop=FALSE]
 		out$cols <- grDevices::rgb(out$coltab[,2], out$coltab[,3], out$coltab[,4], out$coltab[,5], maxColorValue=255)
 		i <- match(z, out$coltab[,1])
 		z <- out$cols[i]
 	} else {
-		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
+
+		out$leg$legend <- unique(na.omit(out$cats[ilevels, 2]))
+
+		levlab <- data.frame(id=out$levels[ilevels], lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
 		leglevs <- na.omit(unique(levlab[,2]))
 		if (length(leglevs) == 0) {
 			error("plot", "something is wrong with the categories")
 		}
 		nlevs <- length(leglevs)
 		ncols <- length(out$cols)
-		ncats <- nrow(out$cats)
-		if (ncats < ncols) {
-			i <- round(seq(1, ncols, length.out = ncats))
+		#ncats <- nrow(out$cats)
+		if (nlevs < ncols) {
+			i <- round(seq(1, ncols, length.out = nlevs))
 			out$cols <- out$cols[i]
-		} else if (ncats > ncols) {
-			out$cols <- rep_len(out$cols, ncats)
+		} else if (nlevs > ncols) {
+			out$cols <- rep_len(out$cols, nlevs)
 		}
 		out$leg$fill <- out$cols
-		out$cols <- out$cols[ilevels]
+		#out$cols <- out$cols[ilevels] 
 		dd <- data.frame(lab=leglevs, out$cols)
 		m <- merge(levlab, dd)
 		z <- m$out.cols[match(z, m$id)]
@@ -170,7 +174,6 @@
 	if (!out$all_levels) {
 		out$leg$fill <- out$cols	
 	}
-
 
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
 	out$r <- as.raster(z)
