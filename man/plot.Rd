@@ -116,10 +116,10 @@ plot(r/2, range=c(50,600))
 # as you only need one legend:
 par(mfrow=c(1,2))
 plot(r, range=c(50,600), mar=c(4, 3, 4, 3), plg=list(shrink=0.9, cex=.8), 
-	pax=list(sides=1:2, cex.axis=.6))
+	pax=list(side=1:2, cex.axis=.6))
 #text(182500, 335000, "Two maps, one plot", xpd=NA)
 plot(r/2, range=c(50,600), mar=c(4, 2, 4, 4), legend=FALSE, 
-	pax=list(sides=c(1,4), cex.axis=.6))
+	pax=list(side=c(1,4), cex.axis=.6))
 
 # multi-layer with RGB
 s <- rast(system.file("ex/logo.tif", package="terra"))   
@@ -149,9 +149,9 @@ v <- vect(f)
 
 plot(v)
 
-plot(v, 2, pax=list(sides=1:2), plg=list(x=6.2, y=50.2, cex=1.2))
+plot(v, 2, pax=list(side=1:2), plg=list(x=6.2, y=50.2, cex=1.2))
 
-plot(v, 4, pax=list(sides=1:2), plg=list(x=6.2, y=50.2, ncol=2), main="")
+plot(v, 4, pax=list(side=1:2), plg=list(x=6.2, y=50.2, ncol=2), main="")
  
 plot(v, 1, plg=list(x=5.9, y=49.37, horiz=TRUE, cex=1.1), main="", mar=c(5,2,0.5,0.5))
 
