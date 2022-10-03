@@ -18,7 +18,7 @@ This can result in much smoother results compared to the standard rasterize meth
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-25</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-27</span>
       </span>
     </div>
 
@@ -56,10 +56,10 @@ This can result in much smoother results compared to the standard rasterize meth
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,SpatVector</span>
-<span class="fu">rasterizeWin</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">field</span>, <span class="va">fun</span>, <span class="va">radius</span>, minPoints<span class="op">=</span><span class="fl">1</span>, fill<span class="op">=</span><span class="cn">NA</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">rasterizeWin</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">field</span>, <span class="va">fun</span>, win<span class="op">=</span><span class="st">"circle"</span>, <span class="va">pars</span>, minPoints<span class="op">=</span><span class="fl">1</span>, fill<span class="op">=</span><span class="cn">NA</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,matrix</span>
-<span class="fu">rasterizeWin</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">fun</span>, <span class="va">radius</span>, minPoints<span class="op">=</span><span class="fl">1</span>, fill<span class="op">=</span><span class="cn">NA</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">rasterizeWin</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">fun</span>, win<span class="op">=</span><span class="st">"circle"</span>, <span class="va">pars</span>, minPoints<span class="op">=</span><span class="fl">1</span>, fill<span class="op">=</span><span class="cn">NA</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,10 +76,12 @@ This can result in much smoother results compared to the standard rasterize meth
   <dt>fun</dt>
 <dd><p>function to summarize the values for each cell. Functions must take a numeric vector and return a single number. The fast built-in functions are "min", "max", "mean", "range", "count", "distto" (average distance to the points), "distbetween" (average distance between the points)</p></dd>
 
-  <dt>radius</dt>
-<dd><p>numeric. The radius of the circle (single number). If two numbers are supplied these are interpreted as the radii of an ellipse (x- and y-axis). If a third number is supplied it should be the desired, counter clockwise, rotation of the ellipse (in degrees)</p></dd>
+  <dt>win</dt>
+<dd><p>character to choose the window type. Can be "circle", "ellipse" or "rectangle"</p></dd>
 
- 
+  <dt>pars</dt>
+<dd><p>parameters to define the window. If <code>win="circle"</code>, a single number (the radius). If <code>win="ellipse"</code>, either two numbers (the x and y-axis) or three numbers the axes and a rotation (in degrees). If <code>win="rectangle"</code>, either two (with, height) or three (width, height) and the rotation in degrees</p></dd>
+
   <dt>minPoints</dt>
 <dd><p>numeric. The minimum number of points to use. If fewer points are found in a search ellipse it is considered empty and the fill value is returned</p></dd>
 
@@ -115,11 +117,14 @@ This can result in much smoother results compared to the standard rasterize meth
 <span class="r-in"><span class="va">xyz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">y</span>,<span class="va">z</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">rasterizeWin</span><span class="op">(</span><span class="va">r</span>, <span class="va">xyz</span>, <span class="st">"count"</span>, radius<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_rad(pars):</span> argument "pars" is missing, with no default</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">rfuns</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"count"</span>, <span class="st">"min"</span>, <span class="st">"max"</span>, <span class="st">"mean"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">rfuns</span>, <span class="kw">function</span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="fu">rasterizeWin</span><span class="op">(</span><span class="va">r</span>, <span class="va">xyz</span>, <span class="va">f</span>, radius<span class="op">=</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get_rad(pars):</span> argument "pars" is missing, with no default</span>
 <span class="r-in"><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">rfuns</span> </span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in methods::as(x, "SpatRaster"):</span> no method or default for coercing “numeric” to “SpatRaster”</span>
 <span class="r-in"><span class="co">#plot(x)</span></span>
 <span class="r-in"></span>
 <span class="r-in"></span>
