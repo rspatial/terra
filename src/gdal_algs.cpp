@@ -1077,7 +1077,7 @@ void *metricOptions(std::vector<double> op) {
 	poOptions->dfRadius1 = op[0];
 	poOptions->dfRadius2 = op[1];
 	poOptions->dfAngle = op[2];
-	poOptions->nMinPoints = op[3];
+	poOptions->nMinPoints = std::max(0.0, op[3]);
 	poOptions->dfNoDataValue = op[4];
 	return poOptions;
 }
@@ -1092,8 +1092,8 @@ void *invDistPowerOps(std::vector<double> op) {
 	poOptions->dfRadius1 = op[2];
 	poOptions->dfRadius2 = op[3];
 	poOptions->dfAngle = op[4];
-	poOptions->nMaxPoints = op[5];
-	poOptions->nMinPoints = op[6];
+	poOptions->nMaxPoints = std::max(0.0, op[5]);
+	poOptions->nMinPoints = std::max(0.0, op[6]);
 	poOptions->dfNoDataValue = op[7];
 
 	poOptions->dfAnisotropyRatio = 1;
@@ -1109,8 +1109,8 @@ void *invDistPowerNNOps(std::vector<double> op) {
 	poOptions->dfPower = op[0];
 	poOptions->dfRadius = op[1];
 	poOptions->dfSmoothing = op[2];
-	poOptions->nMaxPoints = op[3];
-	poOptions->nMinPoints = op[4];
+	poOptions->nMaxPoints = std::max(0.0, op[3]);
+	poOptions->nMinPoints = std::max(op[4], 0.0);
 	poOptions->dfNoDataValue = op[5];
 	return poOptions;
 }
@@ -1122,7 +1122,7 @@ void *moveAvgOps(std::vector<double> op) {
 	poOptions->dfRadius1 = op[0];
 	poOptions->dfRadius2 = op[1];
 	poOptions->dfAngle = op[2];
-	poOptions->nMinPoints = op[3];
+	poOptions->nMinPoints = std::max(op[3], 0.0);
 	poOptions->dfNoDataValue = op[4];
 	return poOptions;
 }
@@ -1338,6 +1338,7 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 	win[1] = std::abs(win[1]);
     const double h = win[0] / 2; 
     const double w = win[1] / 2;
+	// multiply for floating point inprecision
 	const double rar = win[0] * win[1] * 1.00000001;
 	double angle = std::fmod(win[2], 360.0);
 	if (angle < 0) angle += 360.0;

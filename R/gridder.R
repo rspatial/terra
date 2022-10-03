@@ -112,7 +112,12 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 				if (fun %in% c("distto", "distbetween")) {
 					error("rasterizeWin", paste(fun, "not yet available for 'win=rectangle'"))
 				}
-				if (fun == "count") fun = length
+				if (fun == "count") {
+					fun = length
+					if (minPoints == 0) {
+						fill = 0
+					}
+				}
 			}
 			p <- x@ptr$winrect(y[,1], y[,2], pars, opt)
 				
