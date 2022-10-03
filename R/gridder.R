@@ -60,49 +60,91 @@ get_rad <- function(r, caller="rasterizeWin") {
 
 
 setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
-	function(x, y, fun, radius, minPoints=1, fill=NA, filename="", ...) {
+	function(x, y, fun, win="circle", pars, minPoints=1, fill=NA, filename="", ...) {
 
-		algo <- .makeTextFun(fun)
-		algos <- c("min", "max", "range", "mean", "count", "distto", "distbetween")
-		builtin <- FALSE
-		if (inherits(algo, "character")) {
-			if ((algo %in% algos)) {
-				builtin <- TRUE
-			}
-		} 
-		pars <- c(get_rad(radius), minPoints[1], fill[1])
+		pars <- c(get_rad(pars), minPoints[1], fill[1])
 		if (ncol(y) != 3) {
 			error("rasterizeNGB", "expecting a matrix with three columns")
 		}
+		win <- match.arg(tolower(win), c("circle", "ellipse", "rectangle"))
 		opt <- spatOptions(filename, ...)
-		if (builtin) {
-			x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
-			messages(x, "rasterizeWin")
+
+		if (win %in% c("circle", "ellipse")) {
+			if (win == "circle") {
+				pars[2] = pars[1]
+				pars[3] = 0;
+			}
+			algo <- .makeTextFun(fun)
+			algos <- c("min", "max", "range", "mean", "count", "distto", "distbetween")
+			builtin <- FALSE
+			if (inherits(algo, "character")) {
+				if ((algo %in% algos)) {
+					builtin <- TRUE
+				}
+			} 
+			if (builtin) {
+				x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
+				messages(x, "rasterizeWin")
+			} else {
+				p <- x@ptr$wincircle(y[,1], y[,2], pars, opt)
+				
+				# should loop over blocks.. 
+				x <- rast(x, nlyr=1)
+				if (!is.na(fill[1])) {
+					x <- init(x, fill[1])
+				}
+				
+				if (length(p[[1]]) == 0) {
+					warn("rasterizeWin", "All windows were empty")
+					if (filename != "") {
+						x <- writeRaster(x, filename, ...)
+					}
+					x
+				} else {
+					p <- aggregate(list(y[,3][p[[2]]+1]), p[1], fun)
+					#set.values(x, p[,1]+1, p[,2])
+					ok <- x@ptr$replaceCellValuesLayer(0, p[,1], p[,2], FALSE, opt)
+					messages(x)
+				}
+			}
 		} else {
-			p <- x@ptr$winpoints(y[,1], y[,2], pars, opt)
+			if (inherits(fun, "character")) {
+				if (fun %in% c("distto", "distbetween")) {
+					error("rasterizeWin", paste(fun, "not yet available for 'win=rectangle'"))
+				}
+				if (fun == "count") fun = length
+			}
+			p <- x@ptr$winrect(y[,1], y[,2], pars, opt)
+				
+			# should loop over blocks.. 				
 			x <- rast(x, nlyr=1)
 			if (!is.na(fill[1])) {
 				x <- init(x, fill[1])
 			}
-			
+				
 			if (length(p[[1]]) == 0) {
 				warn("rasterizeWin", "All windows were empty")
+				if (filename != "") {
+					x <- writeRaster(x, filename, ...)
+				}
+				x
 			} else {
 				p <- aggregate(list(y[,3][p[[2]]+1]), p[1], fun)
-				set.values(x, p[,1]+1, p[,2])
+				#set.values(x, p[,1]+1, p[,2])
+				ok <- x@ptr$replaceCellValuesLayer(0, p[,1], p[,2], FALSE, opt)
+				messages(x)
 			}
-			x
 		}
 	}
 )
 
 setMethod("rasterizeWin", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field, fun, radius, minPoints=1, fill=NA, filename="", ...) {
+	function(x, y, field, fun, win="circle", pars, minPoints=1, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
 			error("rasterizeWin", "SpatVector y must have a point geometry")		
 		}
 		y <- cbind(crds(y), get_z(y, field, "rasterizeWin"))
-		rasterizeWin(x, y, fun=fun, radius=radius, minPoints=minPoints, fill=fill, filename=filename, ...)
+		rasterizeWin(x, y, fun=fun, win=win, pars=pars, minPoints=minPoints, fill=fill, filename=filename, ...)
 	}
 )
 

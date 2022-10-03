@@ -687,7 +687,8 @@ class SpatRaster {
 		
 		SpatRaster rasterizeWindow(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::string algo, std::vector<double> algops, SpatOptions &opt);
 
-		std::vector<std::vector<double>> winpoints(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt);
+		std::vector<std::vector<double>> win_circle(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt);
+		std::vector<std::vector<double>> win_rect(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt);
 		
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches, SpatOptions &opt);
 		//std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
@@ -770,6 +771,8 @@ class SpatRaster {
 		SpatRaster is_true(SpatOptions &opt);
 		SpatRaster is_false(SpatOptions &opt);
 		SpatRaster not_na(SpatOptions &opt);
+
+		SpatRaster viewshed(const std::vector<double> obs, const double targetZ, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, SpatOptions &opt);
 
 		SpatRaster sieveFilter(int threshold, int connections, SpatOptions &opt);	
 		

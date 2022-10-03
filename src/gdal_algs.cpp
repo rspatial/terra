@@ -1243,7 +1243,7 @@ SpatRaster SpatRaster::rasterizeWindow(std::vector<double> x, std::vector<double
 }
 
 
-std::vector<std::vector<double>> SpatRaster::winpoints(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::win_circle(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt) {
 
 // mostly from GDALGRID
 
@@ -1327,6 +1327,140 @@ std::vector<std::vector<double>> SpatRaster::winpoints(std::vector<double> x, st
 }
 
 
+inline double rarea(double Ax, double Ay, double Bx, double By, double Cx, double Cy) {
+   return std::abs( (Bx*Ay - Ax*By) + (Cx*By - Bx*Cy) + (Ax*Cy - Cx*Ay) ) / 2;
+}
+
+
+std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt) {
+	
+	win[0] = std::abs(win[0]);
+	win[1] = std::abs(win[1]);
+    const double h = win[0] / 2; 
+    const double w = win[1] / 2;
+	const double rar = win[0] * win[1] * 1.00000001;
+	double angle = std::fmod(win[2], 360.0);
+	if (angle < 0) angle += 360.0;
+    const bool rotated = angle != 0.0;
+	double cphi=0, sphi=0;
+	double wcphi=0, hcphi=0, wsphi=0, hsphi=0;
+
+	if (rotated) {
+		angle = angle * M_PI / 180.0;
+		cphi = cos(angle);
+		sphi = sin(angle);
+		wcphi= cphi * w;
+		hcphi= cphi * h;
+		wsphi= sphi * w;
+		hsphi= sphi * h;
+
+	}
+
+	const size_t nc = ncell();
+	const size_t np = x.size();
+
+	std::vector<double> cells(nc);
+	std::iota(cells.begin(), cells.end(), 0.0);
+	std::vector<std::vector<double>> xy = xyFromCell(cells);
+
+	const size_t exps = 2 * np * std::max(1.0, win[0]) * std::max(1.0, win[1]) * M_PI / xres();
+
+	std::vector<std::vector<double>> out(2);
+	out[0].reserve(exps);
+	out[1].reserve(exps);
+
+	size_t minpt = win[3] < 2 ? 1 : win[3];
+	std::vector<double> rx(4);
+	std::vector<double> ry(4);
+
+	if (minpt < 2) {
+		for (size_t i=0; i<nc; i++ ) {
+			if (rotated) {
+				rx[0] = xy[0][i] - wcphi - hsphi;
+				ry[0] = xy[1][i] - wsphi + hcphi;
+				rx[1] = xy[0][i] + wcphi - hsphi;
+				ry[1] = xy[1][i] + wsphi + hcphi;
+				rx[2] = xy[0][i] + wcphi + hsphi;
+				ry[2] = xy[1][i] + wsphi - hcphi;
+				rx[3] = xy[0][i] - wcphi + hsphi;
+				ry[3] = xy[1][i] - wsphi - hcphi;
+			}
+			for (size_t j=0; j <np; j++ ) {
+				if (rotated) {
+					// triangles apd, dpc, cpb, bpa
+					double area  = rarea(rx[0], ry[0], x[j], y[j], rx[3], ry[3]);
+					       area += rarea(rx[3], ry[3], x[j], y[j], rx[2], ry[2]);
+						   area += rarea(rx[2], ry[2], x[j], y[j], rx[1], ry[1]);
+						   area += rarea(rx[1], ry[1], x[j], y[j], rx[0], ry[0]);
+					if (area < rar) {
+						out[0].push_back(i);
+						out[1].push_back(j);					
+					}
+				} else {
+					double dX = std::abs(x[j] - xy[0][i]);
+					double dY = std::abs(y[j] - xy[1][i]);
+					if ((dX <= w) && (dY <= h)) {
+						out[0].push_back(i);
+						out[1].push_back(j);
+					}
+				}
+			}
+		}
+	} else {
+		std::vector<double> tmp0, tmp1;
+		tmp0.reserve(10);
+		tmp1.reserve(10);
+		for (size_t i=0; i<nc; i++ ) {
+			bool found = false;
+			size_t n = 0;
+			for (size_t j=0; j <np; j++ ) {
+				if (rotated) {
+					// apd, dpc, cpb, pba
+					double area = rarea(rx[0], ry[0], x[j], y[j], rx[3], ry[3]);
+					area += rarea(rx[3], ry[3], x[j], y[j], rx[2], ry[2]);
+					area += rarea(rx[2], ry[2], x[j], y[j], rx[1], ry[1]);
+					area += rarea(x[j], y[j], rx[1], ry[1], rx[0], ry[0]);
+					if (area <= rar) {
+						tmp0.push_back(i);
+						tmp1.push_back(j);
+						found = true;
+						n++;
+					}
+				} else {
+					double dX = std::abs(x[j] - xy[0][i]);
+					double dY = std::abs(y[j] - xy[1][i]);
+					if ((dX <= w) && (dY <= h)) {
+						tmp0.push_back(i);
+						tmp1.push_back(j);
+						found = true;
+						n++;
+					}
+				}
+			}
+			if (found) {
+				if (n >= minpt) {
+					out[0].insert(out[0].end(), tmp0.begin(), tmp0.end());
+					out[1].insert(out[1].end(), tmp1.begin(), tmp1.end());
+				}
+				tmp0.resize(0);
+				tmp1.resize(0);
+				tmp0.reserve(10);
+				tmp1.reserve(10);
+			}
+		}
+	}
+	
+    return out;
+}
+
+
+SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const double targetZ, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+// GDALDatasetH GDALViewshedGenerate(GDALRasterBandH hBand, const char *pszDriverName, const char *pszTargetRasterName, CSLConstList papszCreationOptions, double dfObserverX, double dfObserverY, double dfObserverHeight, double dfTargetHeight, double dfVisibleVal, double dfInvisibleVal, double dfOutOfRangeVal, double dfNoDataVal, double dfCurvCoeff, GDALViewshedMode eMode, double dfMaxDistance, GDALProgressFunc pfnProgress, void *pProgressArg, GDALViewshedOutputType heightMode, CSLConstList papszExtraOptions)
+	return out;
+}
+
 
 SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {
 	SpatRaster out = geometry(1, true, true, true);
@@ -1375,6 +1509,9 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 		out.setError("empty driver");
 		return out;
 	}
+	
+	//opt.datatype = "INT4S";
+	
 	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
 		out.setError("cannot create new dataset");
 		GDALClose(hSrcDS);
@@ -1384,7 +1521,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
 	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
 
-	if (!GDALSieveFilter(hSrcBand, NULL, hTargetBand, threshold, connections, NULL, NULL, NULL)) {
+	if (!GDALSieveFilter(hSrcBand, nullptr, hTargetBand, threshold, connections, nullptr, NULL, NULL)) {
 		out.setError("sieve failed");
 		GDALClose(hSrcDS);
 		GDALClose(hDstDS);

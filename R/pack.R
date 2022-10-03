@@ -236,7 +236,7 @@ setMethod("saveRDS", signature(object="SpatVector"),
 
 setMethod("serialize", signature(object="SpatRaster"),
 	function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, refhook = NULL) {
-		object <- wrap(object)
+		object <- wrap(object, proxy=TRUE)
 		serialize(object, connection=connection, ascii = ascii, xdr = xdr, version = version, refhook = refhook)
 	}
 )
