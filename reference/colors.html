@@ -72,7 +72,7 @@
 <dd><p>positive integer, the layer number or name</p></dd>
 
   <dt>value</dt>
-<dd><p>a two-column data.frame (first column the cell value, second the color); 
+<dd><p>a two-column data.frame (first column the cell value, the second column the color); 
   a vector of colors (the first one is the color for value 0 and so on); or a three (red,green,blue) or four (alpha) column data.frame also from 0 to n; or NULL to remove the color table</p></dd>
 
 </dl></div>
@@ -85,16 +85,16 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">3</span>, nrows<span class="op">=</span><span class="fl">2</span>, vals<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">coltb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="transpose.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/col2rgb.html" class="external-link">col2rgb</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">6</span>, end<span class="op">=</span><span class="fl">.9</span><span class="op">)</span>, alpha<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">3</span>, nrows<span class="op">=</span><span class="fl">2</span>, vals<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">coltb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>value<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">6</span>, end<span class="op">=</span><span class="fl">.9</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">coltb</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   red green blue alpha</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 255     0    0   255</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 235   255    0   255</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   0   255   41   255</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   0   194  255   255</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  82     0  255   255</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 255     0  153   255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   value     col</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 #FF0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 #EBFF00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 #00FF29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 #00C2FF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 #5200FF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 #FF0099</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="colors-1.png" alt="" width="700" height="433"></span>
