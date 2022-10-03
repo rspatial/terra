@@ -22,9 +22,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2
 
       - name: Install spatial dependencies
-        run: |
-          rm '/usr/local/bin/gfortran'
-          brew install gdal proj
+        run: brew install gdal proj
 
       - name: Query dependencies
         run: |
