@@ -124,7 +124,8 @@ make_replace_index <- function(v, vmx, name="i") {
 		}
 	}
 
-	if (any(v < 1 | v > vmx)) {
+	vv <- na.omit(v)
+	if (any(vv < 1 | vv > vmx)) {
 		error(caller, paste(name, "is out of its valid range"))
 	}
 	v

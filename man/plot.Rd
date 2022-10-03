@@ -95,7 +95,6 @@ plot(r, plg=list(ext=e, title="Title\n", title.cex=1.25),
 north("topleft")
 		
 
-
 d <- classify(r, c(100,200,300,400,500,600))
 plot(d, type="classes")
 
@@ -165,6 +164,7 @@ plot(v, "AREA", type="interval", breaks=3, mar=c(3.1, 3.1, 2.1, 3.1),
 plot(v, "AREA", type="interval", breaks=c(0,200,250,350), mar=c(2,2,2,2), 
   plg=list(legend=c("<200", "200-250", ">250"), cex=1, 
   bty="o", x=6.4, y=50.125, box.lwd=2, bg="light yellow", title="My Legend"))
+
 }
 
 
