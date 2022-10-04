@@ -77,7 +77,7 @@ For accuracy, always compute these values on the original data (do not first cha
 <dd><p>character. Output filename</p></dd>
 
   <dt>...</dt>
-<dd><p>list. Options for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+<dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
 
 </dl></div>
     <div id="details">
@@ -92,6 +92,10 @@ For accuracy, always compute these values on the original data (do not first cha
 <p>TRI &lt;- focal(x, w=f, fun=function(x, ...) sum(abs(x[-5]-x[5]))/8)</p>
 <p>TPI &lt;- focal(x, w=f, fun=function(x, ...) x[5] - mean(x[-5]))</p>
 <p>rough &lt;- focal(x, w=f, fun=function(x, ...) max(x) - min(x), na.rm=TRUE)</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="viewshed.html">viewshed</a></code></p></div>
     </div>
     <div id="references">
     <h2>References</h2>
