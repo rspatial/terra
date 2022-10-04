@@ -9,6 +9,7 @@
 - `interpIDW` method for inverse-distance-weighted interpolation of points with a moving window
 - `interpNear` method for nearest neighbor interpolation of points with a moving window
 - `viewshed` method
+- `sieve` method implementing a sieve filter
 
 
 ## enhancements

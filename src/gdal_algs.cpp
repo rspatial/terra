@@ -1476,8 +1476,13 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 
 
 SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt) {
-	
+
 	SpatRaster out = geometry(1);
+	if (could_be_lonlat()) {
+		out.setError("the method does not support lon/lat data");
+		return out;
+	}
+	
 	if (!hasValues()) {
 		out.setError("input raster has no values");
 		return out;
@@ -1533,7 +1538,10 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 	GIntBig diskNeeded = ncell() * 4;
 	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
 
+	//GVM_Diagonal = 1, GVM_Edge = 2, GVM_Max = 3, GVM_Min = 4.
 	GDALViewshedMode emode = GVM_Edge; // =mode
+	
+	// GVOT_NORMAL = 1, GVOT_MIN_TARGET_HEIGHT_FROM_DEM = 2, GVOT_MIN_TARGET_HEIGHT_FROM_GROUND = 3
 	GDALViewshedOutputType outmode=GVOT_NORMAL; //= heightmode;
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
 	
@@ -1553,6 +1561,89 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 }
 
 
+SpatRaster SpatRaster::proximity(bool cells, double maxdist, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	if (nlyr() > 1) {
+		out.addWarning("only the first layer is processed");
+	}
+	
+	if (!hasValues()) {
+		out.setError("input raster has no values");
+		return out;
+	}
+
+	std::string filename = opt.get_filename();
+	std::string driver;
+	if (filename == "") {
+		if (canProcessInMemory(opt)) {
+			driver = "MEM";
+		} else {
+			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+			opt.set_filenames({filename});
+			driver = "GTiff";
+		}
+	} else {
+		driver = opt.get_filetype();
+		getGDALdriver(filename, driver);
+		if (driver == "") {
+			setError("cannot guess file type from filename");
+			return out;
+		}
+		std::string errmsg;
+		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
+			return out;
+		}
+	}
+
+	SpatOptions ops(opt);
+	GDALDatasetH hSrcDS, hDstDS;
+	if (!open_gdal(hSrcDS, 0, false, ops)) {
+		out.setError("cannot open input dataset");
+		return out;
+	}
+
+	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
+	if ( hDriver == NULL ) {
+		out.setError("empty driver");
+		return out;
+	}
+		
+	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
+		out.setError("cannot create new dataset");
+		GDALClose(hSrcDS);
+		return out;
+	}
+	GIntBig diskNeeded = ncell() * 4;
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
+
+	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
+	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
+
+	if (GDALComputeProximity(hSrcBand, hTargetBand, papszOptions, NULL, NULL) != CE_None) {
+		out.setError("proximity failed");
+		GDALClose(hSrcDS);
+		GDALClose(hDstDS);
+		return out;
+	}
+
+	GDALClose(hSrcDS);
+	if (driver == "MEM") {
+		if (!out.from_gdalMEM(hDstDS, false, true)) {
+			out.setError("conversion failed (mem)");
+			GDALClose(hDstDS);
+			return out;
+		}
+	} else {
+		out = SpatRaster(filename, {-1}, {""}, {}, {});
+	}
+	GDALClose(hDstDS);
+	return out;
+
+
+}
+
 SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1, true, true, true);
@@ -1561,7 +1652,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 		out.setError("input raster has no values");
 		return out;
 	}
-	if ((connections != 4) && (connections != 8)) {
+	if (!((connections == 4) || (connections == 8))) {
 		out.setError("connections should be 4 or 8");
 		return out;
 	}
@@ -1618,7 +1709,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
 	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
 
-	if (!GDALSieveFilter(hSrcBand, nullptr, hTargetBand, threshold, connections, nullptr, NULL, NULL)) {
+	if (GDALSieveFilter(hSrcBand, nullptr, hTargetBand, threshold, connections, nullptr, NULL, NULL) != CE_None) {
 		out.setError("sieve failed");
 		GDALClose(hSrcDS);
 		GDALClose(hDstDS);

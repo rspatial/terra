@@ -1,6 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
 if (!isGeneric("viewshed")) {setGeneric("viewshed", function(x, ...) standardGeneric("viewshed"))}
+if (!isGeneric("sieve")) {setGeneric("sieve", function(x, ...) standardGeneric("sieve"))}
 
 if (!isGeneric("rasterizeWin")) {setGeneric("rasterizeWin", function(x, y, ...) standardGeneric("rasterizeWin"))}
 if (!isGeneric("interpNear")) {setGeneric("interpNear", function(x, y, ...) standardGeneric("interpNear"))}
