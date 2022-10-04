@@ -1206,19 +1206,19 @@ SpatRaster SpatRaster::rasterizeWindow(std::vector<double> x, std::vector<double
 		return out;
 	}
 	
-	std::vector<double> v(out.ncell());
 	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, x.size(), &x[0], &y[0], &z[0], true);
 	CPLFree( poOptions );
 
 	double rsy = out.yres() / 2;
 	size_t ncs = out.ncol();
 	BlockSize bs = out.getBlockSize(opt);
-
+	std::vector<double> v;
 	for (size_t i=0; i < bs.n; i++) {
 		double ymax = yFromRow(bs.row[i]) + rsy;
 		double ymin = yFromRow(bs.row[i] + bs.nrows[i] - 1) - rsy;
+		v.resize(bs.nrows[i] * ncs);
 
-		CPLErr eErr = GDALGridContextProcess(ctxt, e.xmin, e.xmax, ymin, ymax, out.ncol(), out.nrow(), GDT_Float64, &v[0], NULL, NULL);
+		CPLErr eErr = GDALGridContextProcess(ctxt, e.xmin, e.xmax, ymin, ymax, ncs, bs.nrows[i], GDT_Float64, &v[0], NULL, NULL);
 
 		if ( eErr != CE_None ) {
 			out.setError("something went wrong");

@@ -30,7 +30,7 @@ Apply a sieve filter. That is, remove "noise", by changing small clumps of cells
 
 \examples{
 r <- rast(nrows=18, ncols=18, xmin=0, vals=0, crs="local")
-r[1:2, 5] <- 1
+r[2, 5] <- 1
 r[5:8, 2:3] <- 2
 r[7:12, 10:15] <- 3
 r[15:16, 15:18] <- 4

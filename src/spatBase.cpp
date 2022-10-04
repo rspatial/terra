@@ -543,7 +543,7 @@ void SpatProgress::init(size_t n, int nmin) {
 	show = true;
 	
 	std::string bar = "|---------|---------|---------|---------|";
-	Rcpp::Rcout << bar << "\r";
+	Rcpp::Rcout << "\r" << bar << "\r";
 	R_FlushConsole();
 
 	nstep = n;

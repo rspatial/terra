@@ -24,9 +24,9 @@ This can result in much smoother results compared to the standard \code{\link{ra
   \item{x}{SpatRaster}
   \item{y}{SpatVector or matrix with three columns (x, y, z)}
   \item{field}{character. field name in SpatVector \code{y} with the values to rasterize}
-  \item{fun}{function to summarize the values for each cell. Functions must take a numeric vector and return a single number. The fast built-in functions are "min", "max", "mean", "range", "count", "distto" (average distance to the points), "distbetween" (average distance between the points)}
-  \item{win}{character to choose the window type. Can be "circle", "ellipse" or "rectangle"}
-  \item{pars}{parameters to define the window. If \code{win="circle"}, a single number (the radius). If \code{win="ellipse"}, either two numbers (the x and y-axis) or three numbers the axes and a rotation (in degrees). If \code{win="rectangle"}, either two (with, height) or three (width, height) and the rotation in degrees}
+  \item{fun}{function to summarize the values for each cell. Functions must take a numeric vector and return a single number. For \code{win="circle"} and \code{win="ellipse"} the fast built-in functions are "min", "max", "mean", "range", "count", "distto" (average distance to the points), "distbetween" (average distance between the points). "range" returns the difference between the min and max value}
+  \item{win}{character to choose the window type. Can be "circle", "ellipse", "rectangle", or "buffer"}
+  \item{pars}{parameters to define the window. If \code{win="circle"} or \code{win="buffer"}, a single number to set the radius of the circle or the width of the buffer. If \code{win="ellipse"}, either two numbers (the x and y-axis) or three numbers the axes and a rotation (in degrees). If \code{win="rectangle"}, either two (width, height) or three (width, height) and the rotation in degrees}
   \item{minPoints}{numeric. The minimum number of points to use. If fewer points are found in a search ellipse it is considered empty and the fill value is returned}
   \item{fill}{numeric. value to use to fill cells with empty search areas}
   \item{filename}{character. Output filename}
