@@ -31,10 +31,12 @@ The algorithm used is by Wang et al.: https://www.asprs.org/wp-content/uploads/p
 
 \examples{
 
-f <- system.file("ex/elev.tif", package="terra")
-r <- rast(f)
-x <- project(r, "EPSG:2169")
-v <- viewshed(x, c(70300, 96982), 0, 0, 0.85714)
+if (gdal() >= 3.1) {
+	f <- system.file("ex/elev.tif", package="terra")
+	r <- rast(f)
+	x <- project(r, "EPSG:2169")
+	v <- viewshed(x, c(70300, 96982), 0, 0, 0.85714)
+}
 
 }
 

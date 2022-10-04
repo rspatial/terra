@@ -1475,6 +1475,9 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 }
 
 
+
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1
+
 SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
@@ -1559,6 +1562,17 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 	out = out.mask(*this, false, NAN, NAN, opt);
 	return out;
 }
+
+#else
+
+SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt) {
+	SpatRaster out;
+	out.setError("viewshed is not available for your version of GDAL. Need 3.1 or higher");
+	return out;
+}
+
+#endif
+
 
 
 SpatRaster SpatRaster::proximity(bool cells, double maxdist, SpatOptions &opt) {
