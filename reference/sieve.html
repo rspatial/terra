@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">sieve</span><span class="op">(</span><span class="va">x</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">sieve</span><span class="op">(</span><span class="va">x</span>, <span class="va">threshold</span>, directions<span class="op">=</span><span class="fl">8</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -62,11 +62,14 @@
     <dl><dt>x</dt>
 <dd><p>SpatRaster, single layer with elevation values. Values should have the same unit as the map units</p></dd>
 
+  
   <dt>threshold</dt>
 <dd><p>positive integer. Only clumps smaller than this threshold will be removed</p></dd>
 
-  <dt>connections</dt>
-<dd><p>integer to indicate how many connections to consider for each cell. Either 4 (rook) or 8 (queen) connections</p></dd>
+  
+  <dt>directions</dt>
+<dd><p>numeric to indicate which cells are connected. Either <code>4</code> to only consider the horizontal and vertical neighbors ("rook"), or <code>8</code> to consider the vertical, horizontal and diagonal neighbors</p></dd>
+
 
   <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
