@@ -1048,7 +1048,7 @@ setMethod("terrain", signature(x="SpatRaster"),
 
 
 setMethod("viewshed", signature(x="SpatRaster"),
-	function(x, loc, observer=1.80, target=0, curvcoef=0.85714, output="yes/no", filename="", ...) {
+	function(x, loc, observer=1.80, target=0, curvcoef=6/7, output="yes/no", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		z <- rast()
 		if (length(loc) == 1) {

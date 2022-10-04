@@ -278,11 +278,19 @@ setReplaceMethod("[[", c("SpatVector", "character"),
 			return(x);
 		}
 
+		if (inherits(value, "data.frame")) {
+			if (ncol(value)	> 1) {
+				warn("`[[<-`", "only using the first column")
+			}
+			value <- value[,1]
+		} else if (inherits(value, "list")) {
+			value <- unlist(value)
+		}
+
 		if (NCOL(value)	> 1) {
 			warn("[[<-,SpatVector", "only using the first column")
 			value <- value[,1]
 		}
-
 		name <- i[1]
 		value <- rep(value, length.out=nrow(x))
 
