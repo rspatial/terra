@@ -175,7 +175,7 @@ setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 
 setMethod("[", c("SpatRasterDataset", "numeric", "missing"),
 function(x, i, j, drop=TRUE) {
-	i <- positive_indices(i, length(x), " [ ")
+	i <- positive_indices(i, length(x), TRUE, "`[`(i)")
 
 	if (drop && (length(i) == 1)) {
 		ptr <- x@ptr$getsds(i-1)
@@ -288,7 +288,7 @@ setMethod("length", signature(x="SpatRasterCollection"),
 
 setMethod("[", c("SpatRasterCollection", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	i <- positive_indices(i, length(x), " [ ")
+	i <- positive_indices(i, length(x), TRUE, "`[`(i)")
 	if (drop && (length(i) == 1)) {
 		ptr <- x@ptr$x[i][[1]]
 		x <- rast()

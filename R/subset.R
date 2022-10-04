@@ -3,14 +3,18 @@
 # Version 1.0
 # License GPL v3
 
-positive_indices <- function(i, n, caller=" [ ") {
+positive_indices <- function(i, n, na.rm=TRUE, caller="`[`") {
 	stopifnot(is.numeric(i))
 	i <- na.omit(i)
 	if (!(all(i <= 0) || all(i >= 0))) {
 		error(caller, "you cannot mix positive and negative indices")
 	}
 	i <- (1:n)[i]
-	i[!is.na(i)]
+	if (na.rm) {
+		i[!is.na(i)]
+	} else {
+		i
+	}
 }
 
 
@@ -45,7 +49,7 @@ setMethod("subset", signature(x="SpatRaster"),
 			error("subset", "undefined layer(s) selected")
 		}
 		if (negate) subset = -subset
-		subset <- positive_indices(subset, nlyr(x), "subset")
+		subset <- positive_indices(subset, nlyr(x), TRUE, "subset")
 		opt <- spatOptions(filename, overwrite, ...)
 		x@ptr <- x@ptr$subset(subset-1, opt)
 		messages(x, "subset")
@@ -129,7 +133,7 @@ setMethod("subset", signature(x="SpatVector"),
 			warn("subset", "invalid variable name(s) excluded")
 		}
 	} else {
-		i <- positive_indices(subset, ncol(x), "subset")
+		i <- positive_indices(subset, ncol(x), TRUE, "subset")
 		if (length(i)==0) {
 			i <- 0
 		}		
@@ -146,7 +150,7 @@ setMethod("subset", signature(x="SpatVector"),
 
 setMethod("[", c("SpatVector", "numeric", "missing"),
 function(x, i, j, ... , drop=FALSE) {
-	i <- positive_indices(i, nrow(x), "'['")
+	i <- positive_indices(i, nrow(x), TRUE, "`[`")
 	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- messages(x, "[")
 	if (drop) {
@@ -177,8 +181,8 @@ function(x, i, j, drop=FALSE) {
 
 setMethod("[", c("SpatVector", "numeric", "numeric"),
 function(x, i, j, drop=FALSE) {
-	i <- positive_indices(i, nrow(x), "'['")
-	j <- positive_indices(j, ncol(x), "'['")
+	i <- positive_indices(i, nrow(x), TRUE, "`[`")
+	j <- positive_indices(j, ncol(x), TRUE, "`[`")
 	p <- x@ptr$subset_rows(i-1)
 	x@ptr <- p$subset_cols(j-1)
 	x <- messages(x, "'['")
@@ -192,7 +196,7 @@ function(x, i, j, drop=FALSE) {
 
 setMethod("[", c("SpatVector", "missing", "numeric"),
 function(x, i, j, drop=FALSE) {
-	j <- positive_indices(j, ncol(x), "'['")
+	j <- positive_indices(j, ncol(x), TRUE, "`[`")
 	x@ptr <- x@ptr$subset_cols(j-1)
 	x <- messages(x, "[")
 	if (drop) {

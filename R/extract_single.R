@@ -1,7 +1,7 @@
 
 make_extract_index <- function(v, vmx, name="i") {
 
-	caller <- paste0("`[`(", name, ")`")
+	caller <- paste0("`[`(", name, ")")
 	if (inherits(v, "SpatRaster")) {
 		error(caller, paste("index", name, "cannot be a SpatRaster"))
 	} 
@@ -49,159 +49,7 @@ make_extract_index <- function(v, vmx, name="i") {
 			error(caller, paste("index", name, "has unexpected dimensions:", paste(dim(v), collapse=", ")))	
 		}
 	}
-	positive_indices(v, vmx, caller=caller)
-}
-
-
-
-.extract_spatraster <- function(x, i, drop) {
-	if (!compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
-		return (x[ext(i), drop=drop])
-	}
-	if (drop) {
-		if (is.bool(i)) {
-			i <- as.logical(values(i))
-		} else {
-			i <- !is.na(values(i))
-		}
-		values(x)[i,]
-	} else {
-		if (is.bool(i)) {
-			mask(x, i, maskvalues=FALSE)
-		} else {
-			mask(x, i)
-		}
-	}
-}
-
-
-.extract_spatextent <- function(x, i, drop) {
-	x <- crop(x, i)
-	if (drop) {
-		values(x)
-	} else {
-		x
-	}
-}
-
-
-
-.extract_spatvector <- function(x, i, drop) {
-	if (drop) {
-		extract(x, i, data.frame=TRUE)[ , -1, drop=FALSE]
-	} else {
-		crop(x, i, mask=TRUE)
-	}
-}
-
-
-
-.extract_row <- function(x, i, drop=TRUE) {
-	if (!drop) {
-		e <- ext_from_rc(x, min(i), max(i), 1, ncol(x))
-		return(crop(x, e))
-	}
-	i <- cellFromRowColCombine(x, i, 1:ncol(x))
-	.extract_cell(x, i, drop=TRUE)
-}
-
-
-.extract_col <- function(x, j, drop=TRUE) {
-	if (!drop) {
-		e <- ext_from_rc(x, 1, nrow(x), min(j), max(j))
-		return(crop(x, e))
-	}
-	i <- cellFromRowColCombine(x, 1:nrow(x), j)
-	.extract_cell(x, i, drop=TRUE)
-}
-
-.extract_rowcol <- function(x, i, j, drop=TRUE) {
-	if (!drop) {
-		e <- ext_from_rc(x, min(i), max(i), min(j), max(j))
-		return(crop(x, e))
-	}
-	i <- cellFromRowColCombine(x, i, j)
-	.extract_cell(x, i, drop=TRUE)
-}
-
-
-
-.extract_cell <- function(x, i, drop=TRUE) {
-	if (!drop) {	
-		rc <- rowColFromCell(x, i)
-		e <- ext_from_rc(x, min(rc[,1]), max(rc[,1]), min(rc[,2]), max(rc[,2]))
-		crop(x, e)	
-	} else {	
-		e <- x@ptr$extractCell(i-1)
-		messages(x, "extract")
-		e <- do.call(cbind, e)
-		colnames(e) <- names(x)
-		.makeDataFrame(x, e)
-	}
-}	
-
-
-.extract_cell_layer <- function(x, i, lyrs) {
-	e <- x@ptr$extractCell(i-1)
-	messages(x, "extract")
-	e <- do.call(cbind, e)
-	colnames(e) <- names(x)
-	e <- .makeDataFrame(x, e)
-	e[cbind(1:nrow(e), lyrs)]
-}	
-
-
-make_extract_index <- function(v, vmx, name="i") {
-
-	caller <- paste0("`[`(", name, ")`")
-	if (inherits(v, "SpatRaster")) {
-		error(caller, paste("index", name, "cannot be a SpatRaster"))
-	} 
-	if (inherits(v, "SpatVector")) {
-		error(caller, paste("index", name, "cannot be a SpatVector"))
-	}
-	if (inherits(v, "SpatExtent")) {
-		error(caller, paste("index", name, "cannot be a SpatExtent"))
-	}
-
-	if (!is.numeric(v)) {
-		if (inherits(v, "data.frame")) {
-			if (ncol(v) == 1) {
-				v <- v[,1,drop=TRUE]
-			} else if ((name == "i") && (ncol(v) == 2)) {
-				v <- cellFromRowCol(x, v[,1], v[,2])
-			} else {
-				error(caller, paste("index", name, "has", ncol(v), "columns"))
-			}
-		} else if (inherits(v, "matrix")) {
-			if (ncol(v) == 1) {
-				v <- v[,1]
-			} else {
-				error(caller, paste("index", name, "is not numeric and has", ncol(v), "columns"))
-			}
-		}
-		
-		if (!is.vector(v)) {
-			error(caller, paste("the type of index", name, "is unexpected:", class(v)[1]))		
-		}
-		if (is.factor(v) || is.character(v)) {
-			error(caller, paste("the type of index", name, "cannot be a factor or character"))			
-		}
-		if (is.logical(v)) {
-			v <- which(v)
-		} 
-		if (!is.numeric(v)) {
-			error(caller, paste("the type of index", name, "is unexpected:", class(v)[1]))		
-		}
-	}
-	if (inherits(v, "matrix")) {
-		if (ncol(v) == 1) {
-			v <- v[,1]
-		} else {
-			error(caller, paste("index", name, "has unexpected dimensions:", paste(dim(v), collapse=", ")))	
-		}
-	}
-	positive_indices(v, vmx, caller=caller)
+	positive_indices(v, vmx, FALSE, caller=caller)
 }
 
 
@@ -308,22 +156,6 @@ make_extract_index <- function(v, vmx, name="i") {
 		crop(x, e)	
 	}
 }	
-
-
-
-setMethod("[", c("SpatVector", "SpatVector", "missing"),
-function(x, i, j) {
-	#r <- !relate(x, i, "disjoint")
-	#r <- which(apply(r, 1, any))
-	r <- is.related(x, i, "intersects")
-	x[r, ]
-})
-
-
-setMethod("[", c("SpatVector", "SpatExtent", "missing"),
-function(x, i, j) {
-	x[as.polygons(i)]
-})
 
 
 
@@ -440,8 +272,6 @@ setMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 		}
 	} 
 )
-
-
 
 
 
