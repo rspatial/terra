@@ -55,6 +55,15 @@ make_extract_index <- function(v, vmx, name="i") {
 
 
 .extract_spatraster <- function(x, i, drop) {
+
+	if (!hasValues(i)) {
+		error("`[`", "the index SpatRaster must have values")	
+	}
+
+	if (nlyr(i) > 1) {
+		error("`[`", "the index SpatRaster can only have one layer")
+	}
+	
 	if (!compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
 		return (x[ext(i), drop=drop])
 	}
