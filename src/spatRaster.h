@@ -772,7 +772,7 @@ class SpatRaster {
 		SpatRaster is_false(SpatOptions &opt);
 		SpatRaster not_na(SpatOptions &opt);
 
-		SpatRaster viewshed(const std::vector<double> obs, const double targetZ, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, SpatOptions &opt);
+		SpatRaster viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt);
 
 		SpatRaster sieveFilter(int threshold, int connections, SpatOptions &opt);	
 		

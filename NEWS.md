@@ -1,4 +1,4 @@
-# version 1.6-26
+# version 1.6-27
 
 ## new
 
@@ -8,6 +8,7 @@
 - `rasterizeWin` method for rasterization with a moving window
 - `interpIDW` method for inverse-distance-weighted interpolation of points with a moving window
 - `interpNear` method for nearest neighbor interpolation of points with a moving window
+- `viewshed` method
 
 
 ## enhancements

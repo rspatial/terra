@@ -1475,16 +1475,92 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 }
 
 
-SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const double targetZ, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, SpatOptions &opt) {
-
+SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt) {
+	
 	SpatRaster out = geometry(1);
-// GDALDatasetH GDALViewshedGenerate(GDALRasterBandH hBand, const char *pszDriverName, const char *pszTargetRasterName, CSLConstList papszCreationOptions, double dfObserverX, double dfObserverY, double dfObserverHeight, double dfTargetHeight, double dfVisibleVal, double dfInvisibleVal, double dfOutOfRangeVal, double dfNoDataVal, double dfCurvCoeff, GDALViewshedMode eMode, double dfMaxDistance, GDALProgressFunc pfnProgress, void *pProgressArg, GDALViewshedOutputType heightMode, CSLConstList papszExtraOptions)
+	if (!hasValues()) {
+		out.setError("input raster has no values");
+		return out;
+	}
+	
+	double minval = -9999;
+	if (source[0].hasRange[0]) {
+		minval = source[0].range_min[0] - 9999;
+	}
+	SpatOptions topt(opt);
+		
+	SpatRaster x;
+	if (nlyr() > 1) {
+		out.addWarning("viewshed is only done for the first layer");
+		x = subset({0}, topt);
+		x = x.replaceValues({NAN}, {minval}, 0, false, topt);
+	} else {
+		x = replaceValues({NAN}, {minval}, 0, false, topt);
+	}
+	
+	std::string filename = opt.get_filename();
+	std::string driver;
+	if (filename == "") {
+		filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+		driver = "GTiff";
+	} else {
+		driver = opt.get_filetype();
+		getGDALdriver(filename, driver);
+		if (driver == "") {
+			setError("cannot guess file type from filename");
+			return out;
+		}
+		std::string errmsg;
+		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
+			return out;
+		}
+	}
+
+	GDALDatasetH hSrcDS;
+	SpatOptions ops(opt);
+	if (!x.open_gdal(hSrcDS, 0, false, ops)) {
+		out.setError("cannot open input dataset");
+		return out;
+	}
+
+	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
+	if ( hDriver == NULL ) {
+		out.setError("empty driver");
+		return out;
+	}
+
+	GIntBig diskNeeded = ncell() * 4;
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
+
+	GDALViewshedMode emode = GVM_Edge; // =mode
+	GDALViewshedOutputType outmode=GVOT_NORMAL; //= heightmode;
+	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
+	
+	GDALDatasetH hDstDS = GDALViewshedGenerate(hSrcBand, driver.c_str(), filename.c_str(), papszOptions, obs[0], obs[1], obs[2], obs[3], vals[0], vals[1], vals[2], vals[3], curvcoef, emode, maxdist, NULL, NULL, outmode, NULL);
+
+	if (hDstDS != NULL) {
+		GDALClose(hDstDS);
+		GDALClose(hSrcDS);
+		out = SpatRaster(filename, {-1}, {""}, {}, {});
+	} else {
+		GDALClose(hSrcDS);
+		out.setError("something went wrong");
+	}
+	out.setValueType(3);
+	out = out.mask(*this, false, NAN, NAN, opt);
 	return out;
 }
 
 
 SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {
+
 	SpatRaster out = geometry(1, true, true, true);
+
+	if (!hasValues()) {
+		out.setError("input raster has no values");
+		return out;
+	}
 	if ((connections != 4) && (connections != 8)) {
 		out.setError("connections should be 4 or 8");
 		return out;

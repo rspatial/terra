@@ -1047,6 +1047,22 @@ setMethod("terrain", signature(x="SpatRaster"),
 )
 
 
+setMethod("viewshed", signature(x="SpatRaster"),
+	function(x, loc, observer=1.80, target=0, curvcoef=0.85714, filename="", ...) {
+		if (is.lonlat(x, TRUE)) {
+			error("viewshed", "the method does not support lonlat data")
+		}
+		opt <- spatOptions(filename, ...)
+		z <- rast()
+		if (length(loc) == 1) {
+			loc <- xyFromCell(x, loc)
+		}
+		z@ptr <- x@ptr$view(c(loc[1:2], observer[1], target[1]), c(1,0,2,3), curvcoef, 1, 0, 1, opt)
+		z <- messages(z, "viewshed")
+		mask(z, x)
+	}
+)
+
 setMethod("trim", signature(x="SpatRaster"),
 	function(x, padding=0, value=NA, filename="", ...) {
 		opt <- spatOptions(filename, ...)

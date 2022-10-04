@@ -889,6 +889,13 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true, true, true);
 
+	std::vector<int> vt = getValueType();
+	std::sort(vt.begin(), vt.end());
+	vt.erase(std::unique(vt.begin(), vt.end()), vt.end());
+	if (vt.size() == 1) {
+		out.setValueType(vt[0]);
+	}
+
 	if (!out.compare_geom(x, false, true, opt.get_tolerance(), true, true, true, false)) {
 		return(out);
 	}

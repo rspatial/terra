@@ -860,6 +860,7 @@ RCPP_MODULE(spat){
 		.method("unique", &SpatRaster::unique)
 		.method("where", &SpatRaster::where)
 		.method("sieve", &SpatRaster::sieveFilter)
+		.method("view", &SpatRaster::viewshed)
 
 		.method("rectify", &SpatRaster::rectify)
 		.method("stretch", &SpatRaster::stretch)
