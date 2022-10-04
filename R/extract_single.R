@@ -60,7 +60,7 @@ make_extract_index <- function(v, vmx, name="i") {
 	}
 	if (drop) {
 		i <- which(values(i)==1)
-		values(x)[i,]
+		values(x)[i, ,drop=FALSE]
 	} else {
 		if (is.bool(i)) {
 			mask(x, i, maskvalues=FALSE)
