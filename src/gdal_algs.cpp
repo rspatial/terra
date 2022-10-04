@@ -1553,9 +1553,11 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 	if (hDstDS != NULL) {
 		GDALClose(hDstDS);
 		GDALClose(hSrcDS);
+		CSLDestroy( papszOptions );
 		out = SpatRaster(filename, {-1}, {""}, {}, {});
 	} else {
 		GDALClose(hSrcDS);
+		CSLDestroy( papszOptions );
 		out.setError("something went wrong");
 	}
 	out.setValueType(3);
@@ -1639,10 +1641,13 @@ SpatRaster SpatRaster::proximity(bool cells, double maxdist, SpatOptions &opt) {
 		out.setError("proximity failed");
 		GDALClose(hSrcDS);
 		GDALClose(hDstDS);
+		CSLDestroy( papszOptions );
 		return out;
 	}
 
 	GDALClose(hSrcDS);
+	CSLDestroy( papszOptions );
+	
 	if (driver == "MEM") {
 		if (!out.from_gdalMEM(hDstDS, false, true)) {
 			out.setError("conversion failed (mem)");
@@ -1670,8 +1675,8 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 		out.setError("connections should be 4 or 8");
 		return out;
 	}
-	if (threshold < 1) {
-		out.setError("threshold should be > 0");
+	if (threshold < 2) {
+		out.setError("a threshold < 2 is not meaningful");
 		return out;
 	}
 

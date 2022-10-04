@@ -10,13 +10,16 @@ Apply a sieve filter. That is, remove "noise", by changing small clumps of cells
 }
 
 \usage{
-\S4method{sieve}{SpatRaster}(x, filename="", ...) 
+\S4method{sieve}{SpatRaster}(x, threshold, directions=8, filename="", ...) 
 }
 
 \arguments{
   \item{x}{SpatRaster, single layer with elevation values. Values should have the same unit as the map units}
+  
   \item{threshold}{positive integer. Only clumps smaller than this threshold will be removed}
-  \item{connections}{integer to indicate how many connections to consider for each cell. Either 4 (rook) or 8 (queen) connections}
+  
+  \item{directions}{numeric to indicate which cells are connected. Either \code{4} to only consider the horizontal and vertical neighbors ("rook"), or \code{8} to consider the vertical, horizontal and diagonal neighbors}
+
   \item{filename}{character. Output filename}
   \item{...}{Options for writing files as in \code{\link{writeRaster}}}
 }

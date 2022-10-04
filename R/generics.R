@@ -1060,10 +1060,10 @@ setMethod("viewshed", signature(x="SpatRaster"),
 )
 
 setMethod("sieve", signature(x="SpatRaster"),
-	function(x, threshold, connections=8, filename="", ...) {
+	function(x, threshold, directions=8, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$sieve(threshold, connections, opt)
-		messages(x, "viewshed")
+		x@ptr <- x@ptr$sieve(threshold[1], directions[1], opt)
+		messages(x, "sieve")
 	}
 )
 
