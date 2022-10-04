@@ -59,11 +59,7 @@ make_extract_index <- function(v, vmx, name="i") {
 		return (x[ext(i), drop=drop])
 	}
 	if (drop) {
-		if (is.bool(i)) {
-			i <- as.logical(values(i))
-		} else {
-			i <- !is.na(values(i))
-		}
+		i <- which(values(i)==1)
 		values(x)[i,]
 	} else {
 		if (is.bool(i)) {
