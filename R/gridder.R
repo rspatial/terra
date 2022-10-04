@@ -74,7 +74,7 @@ rastWinR <- function(x, y, win, pars, rfun, filename, opt, ...) {
 			p <- rbe@ptr$wincircle(y[,1], y[,2], pars, opt)						
 		}
 		if (!is.na(pars[5])) {
-			rbe <- init(rbe, fill[1])
+			rbe <- init(rbe, pars[5])
 		}				
 
 		if ((pars[4] > 1) && (length(p[[1]]) > 0)) {
