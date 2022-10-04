@@ -1048,13 +1048,16 @@ setMethod("terrain", signature(x="SpatRaster"),
 
 
 setMethod("viewshed", signature(x="SpatRaster"),
-	function(x, loc, observer=1.80, target=0, curvcoef=0.85714, filename="", ...) {
+	function(x, loc, observer=1.80, target=0, curvcoef=0.85714, output="yes/no", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		z <- rast()
 		if (length(loc) == 1) {
 			loc <- xyFromCell(x, loc)
 		}
-		z@ptr <- x@ptr$view(c(loc[1:2], observer[1], target[1]), c(1,0,2,3), curvcoef, 1, 0, 1, opt)
+		outops <- c("yes/no", "sea", "land")
+		output <- match.arg(tolower(output), outops)
+		output <- match(output, outops)
+		z@ptr <- x@ptr$view(c(loc[1:2], observer[1], target[1]), c(1,0,2,3), curvcoef, 2, 0, output, opt)
 		messages(z, "viewshed")
 	}
 )

@@ -1490,7 +1490,34 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 		out.setError("input raster has no values");
 		return out;
 	}
-	
+
+	GDALViewshedOutputType outmode;
+	if (heightmode==1) {
+		outmode = GVOT_NORMAL; //= heightmode;
+	} else if (heightmode==2) {
+		outmode = GVOT_MIN_TARGET_HEIGHT_FROM_DEM;
+	} else if (heightmode==3) {
+		outmode = GVOT_MIN_TARGET_HEIGHT_FROM_GROUND;		
+	} else {
+		out.setError("invalid output type");
+		return out;		
+	}
+
+
+	GDALViewshedMode emode;
+	if (mode==1) {
+		emode = GVM_Diagonal;
+	} else if (mode==2) {
+		emode = GVM_Edge;
+	} else if (mode==3) {
+		emode = GVM_Max;
+	} else if (mode==4) {
+		emode = GVM_Min;
+	} else {
+		out.setError("invalid mode");
+		return out;		
+	}
+		
 	double minval = -9999;
 	if (source[0].hasRange[0]) {
 		minval = source[0].range_min[0] - 9999;
@@ -1540,12 +1567,8 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 
 	GIntBig diskNeeded = ncell() * 4;
 	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
-
-	//GVM_Diagonal = 1, GVM_Edge = 2, GVM_Max = 3, GVM_Min = 4.
-	GDALViewshedMode emode = GVM_Edge; // =mode
 	
-	// GVOT_NORMAL = 1, GVOT_MIN_TARGET_HEIGHT_FROM_DEM = 2, GVOT_MIN_TARGET_HEIGHT_FROM_GROUND = 3
-	GDALViewshedOutputType outmode=GVOT_NORMAL; //= heightmode;
+	
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
 	
 	GDALDatasetH hDstDS = GDALViewshedGenerate(hSrcBand, driver.c_str(), filename.c_str(), papszOptions, obs[0], obs[1], obs[2], obs[3], vals[0], vals[1], vals[2], vals[3], curvcoef, emode, maxdist, NULL, NULL, outmode, NULL);
@@ -1560,7 +1583,14 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 		CSLDestroy( papszOptions );
 		out.setError("something went wrong");
 	}
-	out.setValueType(3);
+	if (heightmode==1) {
+		out.setValueType(3);
+		out.setNames({"viewshed"});
+	} else if (heightmode==2) {
+		out.setNames({"above_sea"});		
+	} else {
+		out.setNames({"above_land"});
+	}
 	out = out.mask(*this, false, NAN, NAN, opt);
 	return out;
 }
