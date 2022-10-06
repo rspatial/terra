@@ -74,13 +74,13 @@ This can result in much smoother results compared to the standard rasterize meth
 <dd><p>character. field name in SpatVector <code>y</code> with the values to rasterize</p></dd>
 
   <dt>fun</dt>
-<dd><p>function to summarize the values for each cell. Functions must take a numeric vector and return a single number. For <code>win="circle"</code> and <code>win="ellipse"</code> the fast built-in functions are "min", "max", "mean", "range", "count", "distto" (average distance to the points), "distbetween" (average distance between the points). "range" returns the difference between the min and max value</p></dd>
+<dd><p>function to summarize the values for each cell. Functions must take a numeric vector and return a single number. For <code>win="circle"</code> and <code>win="ellipse"</code> the fast built-in functions are "min", "max", "mean", "range", "count", "distto" (average distance to the points from the center of the cell), "distbetween" (average distance between the points inside the window). "range" returns the difference between the min and max value</p></dd>
 
   <dt>win</dt>
 <dd><p>character to choose the window type. Can be "circle", "ellipse", "rectangle", or "buffer"</p></dd>
 
   <dt>pars</dt>
-<dd><p>parameters to define the window. If <code>win="circle"</code> or <code>win="buffer"</code>, a single number to set the radius of the circle or the width of the buffer. If <code>win="ellipse"</code>, either two numbers (the x and y-axis) or three numbers the axes and a rotation (in degrees). If <code>win="rectangle"</code>, either two (width, height) or three (width, height) and the rotation in degrees</p></dd>
+<dd><p>parameters to define the window. If <code>win="circle"</code> or <code>win="buffer"</code>, a single number to set the radius of the circle or the width of the buffer. If <code>win="ellipse"</code>, either two numbers (the x and y-axis) or three numbers the axes and a rotation (in degrees). If <code>win="rectangle"</code>, either two (width, height) or three (width, height) and the rotation in degrees. The unit of the radius/width/height/axis parameters is that of the coordinate reference system. That is, if you have a lon/lat crs, there is no conversion of degrees to meters or vice-versa</p></dd>
 
   <dt>minPoints</dt>
 <dd><p>numeric. The minimum number of points to use. If fewer points are found in a search ellipse it is considered empty and the fill value is returned</p></dd>
