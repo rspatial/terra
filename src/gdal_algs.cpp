@@ -1041,6 +1041,315 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 
 
 
+
+
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1
+
+SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	if (could_be_lonlat()) {
+		out.setError("the method does not support lon/lat data");
+		return out;
+	}
+	
+	if (!hasValues()) {
+		out.setError("input raster has no values");
+		return out;
+	}
+
+	GDALViewshedOutputType outmode;
+	if (heightmode==1) {
+		outmode = GVOT_NORMAL; //= heightmode;
+	} else if (heightmode==2) {
+		outmode = GVOT_MIN_TARGET_HEIGHT_FROM_DEM;
+	} else if (heightmode==3) {
+		outmode = GVOT_MIN_TARGET_HEIGHT_FROM_GROUND;		
+	} else {
+		out.setError("invalid output type");
+		return out;		
+	}
+
+
+	GDALViewshedMode emode;
+	if (mode==1) {
+		emode = GVM_Diagonal;
+	} else if (mode==2) {
+		emode = GVM_Edge;
+	} else if (mode==3) {
+		emode = GVM_Max;
+	} else if (mode==4) {
+		emode = GVM_Min;
+	} else {
+		out.setError("invalid mode");
+		return out;		
+	}
+		
+	double minval = -9999;
+	if (source[0].hasRange[0]) {
+		minval = source[0].range_min[0] - 9999;
+	}
+	SpatOptions topt(opt);
+		
+	SpatRaster x;
+	if (nlyr() > 1) {
+		out.addWarning("viewshed is only done for the first layer");
+		x = subset({0}, topt);
+		x = x.replaceValues({NAN}, {minval}, 0, false, topt);
+	} else {
+		x = replaceValues({NAN}, {minval}, 0, false, topt);
+	}
+	
+	std::string filename = opt.get_filename();
+	std::string driver;
+	if (filename == "") {
+		filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+		driver = "GTiff";
+	} else {
+		driver = opt.get_filetype();
+		getGDALdriver(filename, driver);
+		if (driver == "") {
+			setError("cannot guess file type from filename");
+			return out;
+		}
+		std::string errmsg;
+		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
+			return out;
+		}
+	}
+
+	GDALDatasetH hSrcDS;
+	SpatOptions ops(opt);
+	if (!x.open_gdal(hSrcDS, 0, false, ops)) {
+		out.setError("cannot open input dataset");
+		return out;
+	}
+
+	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
+	if ( hDriver == NULL ) {
+		out.setError("empty driver");
+		return out;
+	}
+
+	GIntBig diskNeeded = ncell() * 4;
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
+	
+	
+	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
+	
+	GDALDatasetH hDstDS = GDALViewshedGenerate(hSrcBand, driver.c_str(), filename.c_str(), papszOptions, obs[0], obs[1], obs[2], obs[3], vals[0], vals[1], vals[2], vals[3], curvcoef, emode, maxdist, NULL, NULL, outmode, NULL);
+
+	if (hDstDS != NULL) {
+		GDALClose(hDstDS);
+		GDALClose(hSrcDS);
+		CSLDestroy( papszOptions );
+		out = SpatRaster(filename, {-1}, {""}, {}, {});
+	} else {
+		GDALClose(hSrcDS);
+		CSLDestroy( papszOptions );
+		out.setError("something went wrong");
+	}
+	if (heightmode==1) {
+		out.setValueType(3);
+		out.setNames({"viewshed"});
+	} else if (heightmode==2) {
+		out.setNames({"above_sea"});		
+	} else {
+		out.setNames({"above_land"});
+	}
+	out = out.mask(*this, false, NAN, NAN, opt);
+	return out;
+}
+
+#else
+
+
+SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt) {
+	SpatRaster out;
+	out.setError("viewshed is not available for your version of GDAL. Need 3.1 or higher");
+	return out;
+}
+
+
+#endif
+
+
+
+SpatRaster SpatRaster::proximity(bool cells, double maxdist, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	if (nlyr() > 1) {
+		out.addWarning("only the first layer is processed");
+	}
+	
+	if (!hasValues()) {
+		out.setError("input raster has no values");
+		return out;
+	}
+
+	std::string filename = opt.get_filename();
+	std::string driver;
+	if (filename == "") {
+		if (canProcessInMemory(opt)) {
+			driver = "MEM";
+		} else {
+			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+			opt.set_filenames({filename});
+			driver = "GTiff";
+		}
+	} else {
+		driver = opt.get_filetype();
+		getGDALdriver(filename, driver);
+		if (driver == "") {
+			setError("cannot guess file type from filename");
+			return out;
+		}
+		std::string errmsg;
+		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
+			return out;
+		}
+	}
+
+	SpatOptions ops(opt);
+	GDALDatasetH hSrcDS, hDstDS;
+	if (!open_gdal(hSrcDS, 0, false, ops)) {
+		out.setError("cannot open input dataset");
+		return out;
+	}
+
+	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
+	if ( hDriver == NULL ) {
+		out.setError("empty driver");
+		return out;
+	}
+		
+	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
+		out.setError("cannot create new dataset");
+		GDALClose(hSrcDS);
+		return out;
+	}
+	GIntBig diskNeeded = ncell() * 4;
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
+
+	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
+	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
+
+	if (GDALComputeProximity(hSrcBand, hTargetBand, papszOptions, NULL, NULL) != CE_None) {
+		out.setError("proximity failed");
+		GDALClose(hSrcDS);
+		GDALClose(hDstDS);
+		CSLDestroy( papszOptions );
+		return out;
+	}
+
+	GDALClose(hSrcDS);
+	CSLDestroy( papszOptions );
+	
+	if (driver == "MEM") {
+		if (!out.from_gdalMEM(hDstDS, false, true)) {
+			out.setError("conversion failed (mem)");
+			GDALClose(hDstDS);
+			return out;
+		}
+	} else {
+		out = SpatRaster(filename, {-1}, {""}, {}, {});
+	}
+	GDALClose(hDstDS);
+	return out;
+
+
+}
+
+SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1, true, true, true);
+
+	if (!hasValues()) {
+		out.setError("input raster has no values");
+		return out;
+	}
+	if (!((connections == 4) || (connections == 8))) {
+		out.setError("connections should be 4 or 8");
+		return out;
+	}
+	if (threshold < 2) {
+		out.setError("a threshold < 2 is not meaningful");
+		return out;
+	}
+
+	std::string filename = opt.get_filename();
+	std::string driver;
+	if (filename == "") {
+		if (canProcessInMemory(opt)) {
+			driver = "MEM";
+		} else {
+			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+			opt.set_filenames({filename});
+			driver = "GTiff";
+		}
+	} else {
+		driver = opt.get_filetype();
+		getGDALdriver(filename, driver);
+		if (driver == "") {
+			setError("cannot guess file type from filename");
+			return out;
+		}
+		std::string errmsg;
+		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
+			return out;
+		}
+	}
+
+	SpatOptions ops(opt);
+	GDALDatasetH hSrcDS, hDstDS;
+	if (!open_gdal(hSrcDS, 0, false, ops)) {
+		out.setError("cannot open input dataset");
+		return out;
+	}
+
+	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
+	if ( hDriver == NULL ) {
+		out.setError("empty driver");
+		return out;
+	}
+	
+	//opt.datatype = "INT4S";
+	
+	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
+		out.setError("cannot create new dataset");
+		GDALClose(hSrcDS);
+		return out;
+	}
+
+	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
+	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
+
+	if (GDALSieveFilter(hSrcBand, nullptr, hTargetBand, threshold, connections, nullptr, NULL, NULL) != CE_None) {
+		out.setError("sieve failed");
+		GDALClose(hSrcDS);
+		GDALClose(hDstDS);
+		return out;
+	}
+
+	GDALClose(hSrcDS);
+	if (driver == "MEM") {
+		if (!out.from_gdalMEM(hDstDS, false, true)) {
+			out.setError("conversion failed (mem)");
+			GDALClose(hDstDS);
+			return out;
+		}
+	} else {
+		out = SpatRaster(filename, {-1}, {""}, {}, {});
+	}
+	GDALClose(hDstDS);
+	return out;
+}
+
+
+
 bool getGridderAlgo(std::string algo, GDALGridAlgorithm &a) {
 	if (algo == "nearest") {
 		a = GGA_NearestNeighbor;
@@ -1331,9 +1640,74 @@ inline double rarea(double &Ax, double &Ay, double &Bx, double &By, double &Cx, 
    return std::abs( (Bx*Ay - Ax*By) + (Cx*By - Bx*Cy) + (Ax*Cy - Cx*Ay) ) / 2;
 }
 
+/*
+//template <typename T, typename Compare>
+std::vector<std::size_t> sort_permutation(const std::vector<double> &vec, Compare& compare) {
+    std::vector<std::size_t> p(vec.size());
+    std::iota(p.begin(), p.end(), 0);
+    std::sort(p.begin(), p.end(),
+        [&](std::size_t i, std::size_t j){ return compare(vec[i], vec[j]); });
+    return p;
+}
 
-std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt) {
-	
+//template <typename T>
+std::vector<double> apply_permutation(const std::vector<double>& vec, const std::vector<std::size_t>& p) {
+    std::vector<double> sorted_vec(vec.size());
+    std::transform(p.begin(), p.end(), sorted_vec.begin(), [&](std::size_t i){ return vec[i]; });
+    return sorted_vec;
+}
+
+bool sortAscending(const std::pair<int,int>& p1, const std::pair<int,int>& p2){
+  return std::tie(p1.second, p1.first) < std::tie(p2.second, p2.first);
+}
+*/
+
+
+std::vector<std::size_t> sort_order(const std::vector<double>& vec){
+	std::vector<std::size_t> p(vec.size());
+	std::iota(p.begin(), p.end(), 0);
+	std::sort(p.begin(), p.end(),
+            [&](std::size_t i, std::size_t j){ return (vec[i] < vec[j]); });
+	return p;
+}
+
+void permute(std::vector<double>& vec, const std::vector<std::size_t>& p) {
+	std::vector<bool> done(vec.size());
+	for (std::size_t i = 0; i < vec.size(); ++i)  {
+		if (done[i]) {
+			continue;
+		}	
+		done[i] = true;
+		std::size_t prev_j = i;
+		std::size_t j = p[i];
+		while (i != j) {
+			std::swap(vec[prev_j], vec[j]);
+			done[j] = true;
+			prev_j = j;
+			j = p[j];
+		}
+	}
+}
+
+
+void sortvecs(std::vector<double> &X, std::vector<double> &Y, std::vector<double> &Z) {  
+	auto p = sort_order(X);
+	permute(X, p);
+	permute(Y, p);
+	permute(Z, p);
+  
+	p = sort_order(Y);
+	permute(X, p);
+	permute(Y, p);
+	permute(Z, p);
+}
+
+
+
+std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::vector<double> win, SpatOptions &opt) {
+
+	sortvecs(x, y, z);
+
 	win[0] = std::abs(win[0]);
 	win[1] = std::abs(win[1]);
     const double h = win[0] / 2; 
@@ -1345,7 +1719,7 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 	if (angle < 0) angle += 360.0;
     const bool rotated = angle != 0.0;
 
-	double cphi=0, sphi=0, bigw=0, bigh=0;
+	double cphi=0, sphi=0, bigw=0, bigh=0, offh;
 	double wcphi=0, hcphi=0, wsphi=0, hsphi=0;
 	std::vector<double> ox(4);
 	std::vector<double> oy(4);
@@ -1370,414 +1744,197 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 		
 		bigw = (vmax(ox, false) - vmin(ox, false))/2;
 		bigh = (vmax(oy, false) - vmin(oy, false))/2;
+		offh = bigh * 1.00000001;
+	} else {
+		offh = h * 1.00000001;
 	}
+		
+	const size_t nc = ncol();
+	const size_t nr = nrow();
 
-	const size_t nc = ncell();
-	const size_t np = x.size();
-
-	std::vector<double> cells(nc);
-	std::iota(cells.begin(), cells.end(), 0.0);
-	std::vector<std::vector<double>> xy = xyFromCell(cells);
-
-	const size_t exps = 2 * np * std::max(1.0, win[0]) * std::max(1.0, win[1]) * M_PI / xres();
-
+	size_t np = x.size() * 2;
 	std::vector<std::vector<double>> out(2);
-	out[0].reserve(exps);
-	out[1].reserve(exps);
+	out[0].reserve(np);
+	out[1].reserve(np);
 
 	size_t minpt = win[3] < 2 ? 1 : win[3];
 	std::vector<double> rx(4);
 	std::vector<double> ry(4);
 
+	std::vector<int_64> cols(nc);
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> xc = xFromCol(cols);
+
 	if (minpt < 2) {
-		for (size_t i=0; i<nc; i++ ) {
-			if (rotated) {
-				rx[0] = xy[0][i] + ox[0];
-				ry[0] = xy[1][i] + oy[0];
-				rx[1] = xy[0][i] + ox[1];
-				ry[1] = xy[1][i] + oy[1];
-				rx[2] = xy[0][i] + ox[2];
-				ry[2] = xy[1][i] + oy[2];
-				rx[3] = xy[0][i] + ox[3];
-				ry[3] = xy[1][i] + oy[3];
-			}
-			for (size_t j=0; j <np; j++ ) {
-				if (rotated) {
-					if ((std::abs(x[j] - xy[0][i]) <= bigw) 
-							&& (std::abs(y[j] - xy[1][i]) <= bigh)) {
-						// triangles apd, dpc, cpb, bpa
-						double area  = rarea(rx[0], ry[0], x[j], y[j], rx[3], ry[3]);
-							   area += rarea(rx[3], ry[3], x[j], y[j], rx[2], ry[2]);
-							   area += rarea(rx[2], ry[2], x[j], y[j], rx[1], ry[1]);
-							   area += rarea(rx[1], ry[1], x[j], y[j], rx[0], ry[0]);
-						if (area < rar) {
-							out[0].push_back(i);
-							out[1].push_back(j);					
+	
+		if (rotated) {
+			for (size_t r=0; r<nr; r++) {
+				double yrow = yFromRow(r);
+				double ytop = yrow + offh;
+				double ybot = yrow - offh;
+				double rnc = r * nc;
+				ry[0] = yrow + oy[0];
+				ry[1] = yrow + oy[1];
+				ry[2] = yrow + oy[2];
+				ry[3] = yrow + oy[3];
+				np = y.size();
+				for (long i=(np-1); i>=0; i--) {
+					if (y[i] > ytop) {
+						y.pop_back(); // above current row
+					} else if (y[i] >= ybot) {
+						for (long j=(nc-1); j>=0; j--) {
+							double dist = x[i] - xc[j];
+							if (dist > bigw) {
+								break;
+							} else if (std::abs(dist) <= bigw) {
+								rx[0] = xc[j] + ox[0];
+								rx[1] = xc[j] + ox[1];
+								rx[2] = xc[j] + ox[2];
+								rx[3] = xc[j] + ox[3];
+								// triangles apd, dpc, cpb, bpa
+								double area = rarea(rx[0], ry[0], x[i], y[i], rx[3], ry[3]);
+								area += rarea(rx[3], ry[3], x[i], y[i], rx[2], ry[2]);
+								area += rarea(rx[2], ry[2], x[i], y[i], rx[1], ry[1]);
+								area += rarea(rx[1], ry[1], x[i], y[i], rx[0], ry[0]);
+								if (area < rar) {
+									out[0].push_back(rnc+j);
+									out[1].push_back(z[i]);					
+								}
+							} 
 						}
-					}
-				} else {
-					if ((std::abs(x[j] - xy[0][i]) <= w) &&
-						(std::abs(y[j] - xy[1][i]) <= h)) {
-						out[0].push_back(i);
-						out[1].push_back(j);
+					} else {
+						break;
 					}
 				}
+			}
+		} else {	
+			for (size_t r=0; r<nr; r++) {
+				double yrow = yFromRow(r);
+				double ytop = yrow + offh;
+				double ybot = yrow - offh;
+				double rnc = r*nc;
+				np = y.size();
+				for (long i=(np-1); i>=0; i--) {
+					if (y[i] > ytop) {
+						y.pop_back(); // above current row
+					} else if (y[i] >= ybot) {
+						for (long j=(nc-1); j>=0; j--) {
+							double dist = x[i] - xc[j];
+							if (dist > w) {
+								break;
+							} else if (std::abs(dist) <= w) {
+								out[0].push_back(rnc+j);
+								out[1].push_back(z[i]);
+							}
+						}
+					} else {
+						break;
+					}	
+				} 
 			}
 		}
 	} else {
-		std::vector<double> tmp0, tmp1;
-		tmp0.reserve(10);
-		tmp1.reserve(10);
-		for (size_t i=0; i<nc; i++ ) {
-			bool found = false;
-			size_t n = 0;
-			for (size_t j=0; j <np; j++ ) {
-				if (rotated) {
-					if ((std::abs(x[j] - xy[0][i]) <= bigw) 
-							&& (std::abs(y[j] - xy[1][i]) <= bigh)) {
-						// apd, dpc, cpb, pba
-						double area = rarea(rx[0], ry[0], x[j], y[j], rx[3], ry[3]);
-						area += rarea(rx[3], ry[3], x[j], y[j], rx[2], ry[2]);
-						area += rarea(rx[2], ry[2], x[j], y[j], rx[1], ry[1]);
-						area += rarea(x[j], y[j], rx[1], ry[1], rx[0], ry[0]);
-						if (area <= rar) {
-							tmp0.push_back(i);
-							tmp1.push_back(j);
-							found = true;
-							n++;
+
+		if (rotated) {
+			for (size_t r=0; r<nr; r++) {
+				double yrow = yFromRow(r);
+				double ytop = yrow + offh;
+				double ybot = yrow - offh;
+				double rnc = r*nc;
+				ry[0] = yrow + oy[0];
+				ry[1] = yrow + oy[1];
+				ry[2] = yrow + oy[2];
+				ry[3] = yrow + oy[3];
+				np = y.size();
+				std::vector<double> tmp0, tmp1;
+				for (long i=(np-1); i>=0; i--) {
+					if (y[i] > ytop) {
+						y.pop_back(); // above current row
+					} else if (y[i] >= ybot) {
+						bool found = false;
+						size_t minlim = 0;
+						for (long j=(nc-1); j>=0; j--) {
+							double dist = x[i] - xc[j];
+							if (dist > bigw) {
+								break;
+							} else if (std::abs(dist) <= bigw) {
+								rx[0] = xc[j] + ox[0];
+								rx[1] = xc[j] + ox[1];
+								rx[2] = xc[j] + ox[2];
+								rx[3] = xc[j] + ox[3];
+								// triangles apd, dpc, cpb, bpa
+								double area = rarea(rx[0], ry[0], x[i], y[i], rx[3], ry[3]);
+								area += rarea(rx[3], ry[3], x[i], y[i], rx[2], ry[2]);
+								area += rarea(rx[2], ry[2], x[i], y[i], rx[1], ry[1]);
+								area += rarea(rx[1], ry[1], x[i], y[i], rx[0], ry[0]);
+								if (area < rar) {
+									tmp0.push_back(rnc+j);
+									tmp1.push_back(z[i]);
+									found = true;
+									minlim++;
+								}
+							} 
 						}
-					}
-				} else {
-					double dX = std::abs(x[j] - xy[0][i]);
-					double dY = std::abs(y[j] - xy[1][i]);
-					if ((dX <= w) && (dY <= h)) {
-						tmp0.push_back(i);
-						tmp1.push_back(j);
-						found = true;
-						n++;
+						if (found) {
+							if (minlim >= minpt) {
+								out[0].insert(out[0].end(), tmp0.begin(), tmp0.end());
+								out[1].insert(out[1].end(), tmp1.begin(), tmp1.end());
+							}
+							tmp0.resize(0);
+							tmp1.resize(0);
+							tmp0.reserve(10);
+							tmp1.reserve(10);
+						}
+					} else {
+						break;
 					}
 				}
 			}
-			if (found) {
-				if (n >= minpt) {
-					out[0].insert(out[0].end(), tmp0.begin(), tmp0.end());
-					out[1].insert(out[1].end(), tmp1.begin(), tmp1.end());
-				}
-				tmp0.resize(0);
-				tmp1.resize(0);
-				tmp0.reserve(10);
-				tmp1.reserve(10);
+		} else {	
+			for (size_t r=0; r<nr; r++) {
+				double yrow = yFromRow(r);
+				double ytop = yrow + offh;
+				double ybot = yrow - offh;
+				double rnc = r*nc;
+				np = y.size();
+				std::vector<double> tmp0, tmp1;
+				for (long i=(np-1); i>=0; i--) {
+					if (y[i] > ytop) {
+						y.pop_back(); // above current row
+					} else if (y[i] >= ybot) {
+						bool found = false;
+						size_t minlim = 0;
+						for (long j=(nc-1); j>=0; j--) {
+							double dist = x[i] - xc[j];
+							if (dist > w) {
+								break;
+							} else if (std::abs(dist) <= w) {
+								tmp0.push_back(rnc+j);
+								tmp1.push_back(z[i]);
+								found = true;
+								minlim++;
+							}
+						}
+						if (found) {
+							if (minlim >= minpt) {
+								out[0].insert(out[0].end(), tmp0.begin(), tmp0.end());
+								out[1].insert(out[1].end(), tmp1.begin(), tmp1.end());
+							}
+							tmp0.resize(0);
+							tmp1.resize(0);
+							tmp0.reserve(10);
+							tmp1.reserve(10);
+						}
+					} else {
+						break;
+					}	
+				} 
 			}
 		}
 	}
-	
     return out;
 }
 
-
-
-#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1
-
-SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt) {
-
-	SpatRaster out = geometry(1);
-	if (could_be_lonlat()) {
-		out.setError("the method does not support lon/lat data");
-		return out;
-	}
-	
-	if (!hasValues()) {
-		out.setError("input raster has no values");
-		return out;
-	}
-
-	GDALViewshedOutputType outmode;
-	if (heightmode==1) {
-		outmode = GVOT_NORMAL; //= heightmode;
-	} else if (heightmode==2) {
-		outmode = GVOT_MIN_TARGET_HEIGHT_FROM_DEM;
-	} else if (heightmode==3) {
-		outmode = GVOT_MIN_TARGET_HEIGHT_FROM_GROUND;		
-	} else {
-		out.setError("invalid output type");
-		return out;		
-	}
-
-
-	GDALViewshedMode emode;
-	if (mode==1) {
-		emode = GVM_Diagonal;
-	} else if (mode==2) {
-		emode = GVM_Edge;
-	} else if (mode==3) {
-		emode = GVM_Max;
-	} else if (mode==4) {
-		emode = GVM_Min;
-	} else {
-		out.setError("invalid mode");
-		return out;		
-	}
-		
-	double minval = -9999;
-	if (source[0].hasRange[0]) {
-		minval = source[0].range_min[0] - 9999;
-	}
-	SpatOptions topt(opt);
-		
-	SpatRaster x;
-	if (nlyr() > 1) {
-		out.addWarning("viewshed is only done for the first layer");
-		x = subset({0}, topt);
-		x = x.replaceValues({NAN}, {minval}, 0, false, topt);
-	} else {
-		x = replaceValues({NAN}, {minval}, 0, false, topt);
-	}
-	
-	std::string filename = opt.get_filename();
-	std::string driver;
-	if (filename == "") {
-		filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
-		driver = "GTiff";
-	} else {
-		driver = opt.get_filetype();
-		getGDALdriver(filename, driver);
-		if (driver == "") {
-			setError("cannot guess file type from filename");
-			return out;
-		}
-		std::string errmsg;
-		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
-			out.setError(errmsg);
-			return out;
-		}
-	}
-
-	GDALDatasetH hSrcDS;
-	SpatOptions ops(opt);
-	if (!x.open_gdal(hSrcDS, 0, false, ops)) {
-		out.setError("cannot open input dataset");
-		return out;
-	}
-
-	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
-	if ( hDriver == NULL ) {
-		out.setError("empty driver");
-		return out;
-	}
-
-	GIntBig diskNeeded = ncell() * 4;
-	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
-	
-	
-	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
-	
-	GDALDatasetH hDstDS = GDALViewshedGenerate(hSrcBand, driver.c_str(), filename.c_str(), papszOptions, obs[0], obs[1], obs[2], obs[3], vals[0], vals[1], vals[2], vals[3], curvcoef, emode, maxdist, NULL, NULL, outmode, NULL);
-
-	if (hDstDS != NULL) {
-		GDALClose(hDstDS);
-		GDALClose(hSrcDS);
-		CSLDestroy( papszOptions );
-		out = SpatRaster(filename, {-1}, {""}, {}, {});
-	} else {
-		GDALClose(hSrcDS);
-		CSLDestroy( papszOptions );
-		out.setError("something went wrong");
-	}
-	if (heightmode==1) {
-		out.setValueType(3);
-		out.setNames({"viewshed"});
-	} else if (heightmode==2) {
-		out.setNames({"above_sea"});		
-	} else {
-		out.setNames({"above_land"});
-	}
-	out = out.mask(*this, false, NAN, NAN, opt);
-	return out;
-}
-
-#else
-
-SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt) {
-	SpatRaster out;
-	out.setError("viewshed is not available for your version of GDAL. Need 3.1 or higher");
-	return out;
-}
-
-#endif
-
-
-
-SpatRaster SpatRaster::proximity(bool cells, double maxdist, SpatOptions &opt) {
-
-	SpatRaster out = geometry(1);
-	if (nlyr() > 1) {
-		out.addWarning("only the first layer is processed");
-	}
-	
-	if (!hasValues()) {
-		out.setError("input raster has no values");
-		return out;
-	}
-
-	std::string filename = opt.get_filename();
-	std::string driver;
-	if (filename == "") {
-		if (canProcessInMemory(opt)) {
-			driver = "MEM";
-		} else {
-			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
-			opt.set_filenames({filename});
-			driver = "GTiff";
-		}
-	} else {
-		driver = opt.get_filetype();
-		getGDALdriver(filename, driver);
-		if (driver == "") {
-			setError("cannot guess file type from filename");
-			return out;
-		}
-		std::string errmsg;
-		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
-			out.setError(errmsg);
-			return out;
-		}
-	}
-
-	SpatOptions ops(opt);
-	GDALDatasetH hSrcDS, hDstDS;
-	if (!open_gdal(hSrcDS, 0, false, ops)) {
-		out.setError("cannot open input dataset");
-		return out;
-	}
-
-	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
-	if ( hDriver == NULL ) {
-		out.setError("empty driver");
-		return out;
-	}
-		
-	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
-		out.setError("cannot create new dataset");
-		GDALClose(hSrcDS);
-		return out;
-	}
-	GIntBig diskNeeded = ncell() * 4;
-	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
-
-	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
-	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
-
-	if (GDALComputeProximity(hSrcBand, hTargetBand, papszOptions, NULL, NULL) != CE_None) {
-		out.setError("proximity failed");
-		GDALClose(hSrcDS);
-		GDALClose(hDstDS);
-		CSLDestroy( papszOptions );
-		return out;
-	}
-
-	GDALClose(hSrcDS);
-	CSLDestroy( papszOptions );
-	
-	if (driver == "MEM") {
-		if (!out.from_gdalMEM(hDstDS, false, true)) {
-			out.setError("conversion failed (mem)");
-			GDALClose(hDstDS);
-			return out;
-		}
-	} else {
-		out = SpatRaster(filename, {-1}, {""}, {}, {});
-	}
-	GDALClose(hDstDS);
-	return out;
-
-
-}
-
-SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {
-
-	SpatRaster out = geometry(1, true, true, true);
-
-	if (!hasValues()) {
-		out.setError("input raster has no values");
-		return out;
-	}
-	if (!((connections == 4) || (connections == 8))) {
-		out.setError("connections should be 4 or 8");
-		return out;
-	}
-	if (threshold < 2) {
-		out.setError("a threshold < 2 is not meaningful");
-		return out;
-	}
-
-	std::string filename = opt.get_filename();
-	std::string driver;
-	if (filename == "") {
-		if (canProcessInMemory(opt)) {
-			driver = "MEM";
-		} else {
-			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
-			opt.set_filenames({filename});
-			driver = "GTiff";
-		}
-	} else {
-		driver = opt.get_filetype();
-		getGDALdriver(filename, driver);
-		if (driver == "") {
-			setError("cannot guess file type from filename");
-			return out;
-		}
-		std::string errmsg;
-		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
-			out.setError(errmsg);
-			return out;
-		}
-	}
-
-	SpatOptions ops(opt);
-	GDALDatasetH hSrcDS, hDstDS;
-	if (!open_gdal(hSrcDS, 0, false, ops)) {
-		out.setError("cannot open input dataset");
-		return out;
-	}
-
-	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
-	if ( hDriver == NULL ) {
-		out.setError("empty driver");
-		return out;
-	}
-	
-	//opt.datatype = "INT4S";
-	
-	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
-		out.setError("cannot create new dataset");
-		GDALClose(hSrcDS);
-		return out;
-	}
-
-	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
-	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
-
-	if (GDALSieveFilter(hSrcBand, nullptr, hTargetBand, threshold, connections, nullptr, NULL, NULL) != CE_None) {
-		out.setError("sieve failed");
-		GDALClose(hSrcDS);
-		GDALClose(hDstDS);
-		return out;
-	}
-
-	GDALClose(hSrcDS);
-	if (driver == "MEM") {
-		if (!out.from_gdalMEM(hDstDS, false, true)) {
-			out.setError("conversion failed (mem)");
-			GDALClose(hDstDS);
-			return out;
-		}
-	} else {
-		out = SpatRaster(filename, {-1}, {""}, {}, {});
-	}
-	GDALClose(hDstDS);
-	return out;
-}
 
 
 /*

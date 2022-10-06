@@ -688,7 +688,7 @@ class SpatRaster {
 		SpatRaster rasterizeWindow(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::string algo, std::vector<double> algops, SpatOptions &opt);
 
 		std::vector<std::vector<double>> win_circle(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt);
-		std::vector<std::vector<double>> win_rect(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt);
+		std::vector<std::vector<double>> win_rect(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::vector<double> win, SpatOptions &opt);
 		
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches, SpatOptions &opt);
 		//std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);

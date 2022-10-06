@@ -69,7 +69,7 @@ rastWinR <- function(x, y, win, pars, rfun, filename, opt, ...) {
 		e$ymin <- yFromRow(out, b$row[i] + b$nrows[i] - 1) - hy
 		rbe <- crop(rb, e)
 		if (win == "rectangle") {
-			p <- rbe@ptr$winrect(y[,1], y[,2], pars, opt)				
+			p <- rbe@ptr$winrect(y[,1], y[,2], y[,3], pars, opt)				
 		} else {
 			p <- rbe@ptr$wincircle(y[,1], y[,2], pars, opt)						
 		}
@@ -86,7 +86,11 @@ rastWinR <- function(x, y, win, pars, rfun, filename, opt, ...) {
 		} 
 
 		if (length(p[[1]]) > 0) {
-			p <- aggregate(list(y[,3][p[[2]]+1]), p[1], rfun)
+			if (win == "rectangle") {
+				p <- aggregate(p[2], p[1], rfun)
+			} else {
+				p <- aggregate(list(y[,3][p[[2]]+1]), p[1], rfun)			
+			}
 			#set.values(x, p[,1]+1, p[,2])
 			ok <- rbe@ptr$replaceCellValuesLayer(0, p[,1], p[,2], FALSE, opt)
 			messages(rbe)
