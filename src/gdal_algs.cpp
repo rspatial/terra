@@ -28,10 +28,7 @@
 #include "crs.h"
 #include "gdalio.h"
 #include "recycle.h"
-
-
-//#include <vector>
-//#include "vecmath.h"
+#include "sort.h"
 
 
 SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
@@ -1391,8 +1388,6 @@ void *metricOptions(std::vector<double> op) {
 	return poOptions;
 }
 
-
-
 void *invDistPowerOps(std::vector<double> op) {
 	GDALGridInverseDistanceToAPowerOptions *poOptions = static_cast<GDALGridInverseDistanceToAPowerOptions *>(
 		CPLCalloc(sizeof(GDALGridInverseDistanceToAPowerOptions), 1));
@@ -1411,7 +1406,6 @@ void *invDistPowerOps(std::vector<double> op) {
 	return poOptions;
 }
 
-
 void *invDistPowerNNOps(std::vector<double> op) {
 	GDALGridInverseDistanceToAPowerNearestNeighborOptions *poOptions = static_cast<GDALGridInverseDistanceToAPowerNearestNeighborOptions *>(
 		CPLCalloc(sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions), 1));
@@ -1423,7 +1417,6 @@ void *invDistPowerNNOps(std::vector<double> op) {
 	poOptions->dfNoDataValue = op[5];
 	return poOptions;
 }
-
 
 void *moveAvgOps(std::vector<double> op) {
 	GDALGridMovingAverageOptions *poOptions = static_cast<GDALGridMovingAverageOptions *>(
@@ -1437,7 +1430,6 @@ void *moveAvgOps(std::vector<double> op) {
 }
 
 
-
 void *nearngbOps(std::vector<double> op) {
 	GDALGridNearestNeighborOptions *poOptions = static_cast<GDALGridNearestNeighborOptions *>(
 		CPLCalloc(sizeof(GDALGridNearestNeighborOptions), 1));
@@ -1448,7 +1440,6 @@ void *nearngbOps(std::vector<double> op) {
 	return poOptions;
 }
 
-
 void *LinearOps(std::vector<double> op) {
 	GDALGridLinearOptions *poOptions = static_cast<GDALGridLinearOptions *>(
 		CPLCalloc(sizeof(GDALGridLinearOptions), 1));
@@ -1456,8 +1447,6 @@ void *LinearOps(std::vector<double> op) {
 	poOptions->dfNoDataValue = op[1];
 	return poOptions;
 }
-
-
 
 SpatRaster SpatRaster::rasterizeWindow(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::string algo, std::vector<double> algops, SpatOptions &opt) {
 
@@ -1636,72 +1625,22 @@ std::vector<std::vector<double>> SpatRaster::win_circle(std::vector<double> x, s
 }
 
 
-inline double rarea(double &Ax, double &Ay, double &Bx, double &By, double &Cx, double &Cy) {
+inline double rarea(const double &Ax, const double &Ay, const double &Bx, const double &By, const double &Cx, const double &Cy) {
    return std::abs( (Bx*Ay - Ax*By) + (Cx*By - Bx*Cy) + (Ax*Cy - Cx*Ay) ) / 2;
-}
-
-/*
-//template <typename T, typename Compare>
-std::vector<std::size_t> sort_permutation(const std::vector<double> &vec, Compare& compare) {
-    std::vector<std::size_t> p(vec.size());
-    std::iota(p.begin(), p.end(), 0);
-    std::sort(p.begin(), p.end(),
-        [&](std::size_t i, std::size_t j){ return compare(vec[i], vec[j]); });
-    return p;
-}
-
-//template <typename T>
-std::vector<double> apply_permutation(const std::vector<double>& vec, const std::vector<std::size_t>& p) {
-    std::vector<double> sorted_vec(vec.size());
-    std::transform(p.begin(), p.end(), sorted_vec.begin(), [&](std::size_t i){ return vec[i]; });
-    return sorted_vec;
-}
-
-bool sortAscending(const std::pair<int,int>& p1, const std::pair<int,int>& p2){
-  return std::tie(p1.second, p1.first) < std::tie(p2.second, p2.first);
-}
-*/
-
-
-std::vector<std::size_t> sort_order(const std::vector<double>& vec){
-	std::vector<std::size_t> p(vec.size());
-	std::iota(p.begin(), p.end(), 0);
-	std::sort(p.begin(), p.end(),
-            [&](std::size_t i, std::size_t j){ return (vec[i] < vec[j]); });
-	return p;
-}
-
-void permute(std::vector<double>& vec, const std::vector<std::size_t>& p) {
-	std::vector<bool> done(vec.size());
-	for (std::size_t i = 0; i < vec.size(); ++i)  {
-		if (done[i]) {
-			continue;
-		}	
-		done[i] = true;
-		std::size_t prev_j = i;
-		std::size_t j = p[i];
-		while (i != j) {
-			std::swap(vec[prev_j], vec[j]);
-			done[j] = true;
-			prev_j = j;
-			j = p[j];
-		}
-	}
 }
 
 
 void sortvecs(std::vector<double> &X, std::vector<double> &Y, std::vector<double> &Z) {  
-	auto p = sort_order(X);
+	std::vector<std::size_t> p = sort_order_d(X);
 	permute(X, p);
 	permute(Y, p);
 	permute(Z, p);
   
-	p = sort_order(Y);
+	p = sort_order_d(Y);
 	permute(X, p);
 	permute(Y, p);
 	permute(Z, p);
 }
-
 
 
 std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::vector<double> win, SpatOptions &opt) {
