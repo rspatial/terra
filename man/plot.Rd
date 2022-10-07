@@ -53,7 +53,7 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}}
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{side}, \code{tick} and \code{lab} can be used to indicate for which of the four axes to draw a line (side), tick mark, or label. The default is \code{c(1:4)} for side and \code{1:2} for the other two. If \code{side} is changed the other two default to that value. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
-  \item{smooth}{logical. If \code{TRUE} the cell values are smoothed (for continuous legend)}
+  \item{smooth}{logical. If \code{TRUE} the cell values are smoothed (only if a continuous legend is used)}
   \item{range}{numeric. minimum and maximum values to be used for the continuous legend }
   \item{levels}{character. labels for the legend when \code{type="classes"} }
   \item{all_levels}{logical. If \code{TRUE}, the legend shows all levels of a categorical raster, even if they are not present in the data}

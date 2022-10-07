@@ -1,3 +1,8 @@
+# Author: Robert J. Hijmans
+# Date : October 2022
+# Version 1.0
+# License GPL v3
+
 
 check_ngb_pars <- function(algo, pars, fill, caller="rasterizeWin") {
 	#p <- c("Power", "Smoothing", "Radius", "Radius1", "Radius2", "Angle", "nMaxPoints", "nMinPoints")
@@ -58,24 +63,24 @@ get_rad <- function(r, caller="rasterizeWin") {
 }
 
 
-rastWinR <- function(x, y, win, pars, rfun, filename, opt, ...) {
-	out <- rast(x, nlyr=1)
+rastWinR <- function(x, y, win, pars, rfun, nl, filename, ...) {
+
+	out <- rast(x, nlyr=nl)
 	rb <- rast(out)
 	e <- ext(out)
 	hy <- yres(out)/2
+
+	opt <- spatOptions()
 	b <- writeStart(out, filename, n=12, sources="", ...)
 	for (i in 1:b$n) {
 		e$ymax <- yFromRow(out, b$row[i]) + hy
-		e$ymin <- yFromRow(out, b$row[i] + b$nrows[i] - 1) - hy
+		e$ymin <- yFromRow(out, b$row[i]  + b$nrows[i] - 1) - hy
 		rbe <- crop(rb, e)
 		if (win == "rectangle") {
 			p <- rbe@ptr$winrect(y[,1], y[,2], y[,3], pars, opt)				
 		} else {
-			p <- rbe@ptr$wincircle(y[,1], y[,2], pars, opt)						
+			p <- rbe@ptr$wincircle(y[,1], y[,2], y[,3], pars, opt)						
 		}
-		if (!is.na(pars[5])) {
-			rbe <- init(rbe, pars[5])
-		}				
 
 		if ((pars[4] > 1) && (length(p[[1]]) > 0)) {
 			a <- aggregate(p[[1]], p[1], length)
@@ -86,24 +91,66 @@ rastWinR <- function(x, y, win, pars, rfun, filename, opt, ...) {
 		} 
 
 		if (length(p[[1]]) > 0) {
-			if (win == "rectangle") {
-				p <- aggregate(p[2], p[1], rfun)
-			} else {
-				p <- aggregate(list(y[,3][p[[2]]+1]), p[1], rfun)			
-			}
-			#set.values(x, p[,1]+1, p[,2])
-			ok <- rbe@ptr$replaceCellValuesLayer(0, p[,1], p[,2], FALSE, opt)
-			messages(rbe)
-			writeValues(out, values(rbe), b$row[i], b$nrows[i])					
-		} else if (!is.na(pars[5])) {
-			writeValues(out, values(rbe), b$row[i], b$nrows[i])									
+			p <- aggregate(p[2], p[1], rfun)
+			v <- matrix(pars[5], ncell(rbe), nl)
+			v[p[,1], ] <- p[,-1]
+			writeValues(out, v, b$row[i], b$nrows[i])					
 		} else {
-			nc <- b$nrows[i] * ncol(rb)
-			writeValues(out, rep(NA, nc), b$row[i], b$nrows[i])				
+			writeValues(out, rep(pars[5], ncell(rbe) * nl), b$row[i], b$nrows[i])
 		}
 	}
 	writeStop(out)
 }
+
+
+rastBufR <- function(x, y, win, pars, rfun, nl, filename, ...) {
+	w <- pars[1]
+	z <- y[,3]
+	y <- vect(y[,1:2,drop=FALSE])
+	out <- rast(x, nlyr=1)
+	rb <- rast(out)
+	if (!is.lonlat(x)) {
+		ngb <- max(round(w/yres(x)), round(w/xres(x)))
+		if (ngb <= 5) {					
+			m <- matrix(1, 2*round(w/yres(x))+1, 2*round(w/xres(x))+1)
+			rb <- rasterize(y, rb)
+			rb <- focal(rb, m, "sum", na.rm=TRUE)
+		} 
+	}
+	out <- rast(x, nlyr=1)
+	ncs <- ncol(out)
+	e <- ext(out)
+	hy <- yres(out)/2
+	off <- 0
+	b <- writeStart(out, filename, n=12, sources="", ...)
+	for (i in 1:b$n) {
+		e$ymax <- yFromRow(out, b$row[i]) + hy
+		e$ymin <- yFromRow(out, b$row[i] + b$nrows[i] - 1) - hy
+		rbe <- crop(rb, e)
+		f <- as.polygons(rbe, dissolve=FALSE)
+		if (nrow(f) > 0) {
+			f <- buffer(f, w)
+			r <- relate(f, v, "intersects", pairs=TRUE)
+		} else {
+			r <- cbind(0,0)[0,]
+		}
+		if ((pars[4] > 1) && (nrow(r) > 0)) {
+			a <- aggregate(r[,1], list(r[,1]), length)
+			a <- a[a[,2] >= pars[4], 1]
+			r <- r[r[,1] %in% a, ]
+		} 
+		if (nrow(r) > 0) {
+			f <- aggregate(z[r[,2]], list(r[,1]), rfun)
+			v <- matrix(pars[5], ncell(rbe), nl)
+			v[f[,1], ] <- f[,-1]
+			writeValues(out, v, b$row[i], b$nrows[i])					
+		} else if (!is.na(pars[5])) {
+			writeValues(out, rep(pars[5], ncell(rbe) * nl), b$row[i], b$nrows[i])
+		}
+	}
+	writeStop(out)
+}
+
 
 setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 	function(x, y, fun, win="circle", pars, minPoints=1, fill=NA, filename="", ...) {
@@ -113,88 +160,39 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 			error("rasterizeNGB", "expecting a matrix with three columns")
 		}
 		win <- match.arg(tolower(win), c("circle", "ellipse", "rectangle", "buffer"))
-		opt <- spatOptions(filename, ...)
 
-		if (win %in% c("circle", "ellipse")) {
+		if (inherits(fun, "character")) {
+			if (fun[1] == "count") {
+				fun <- length
+				pars[5] = 0
+			}
+			nl <- 1
+		} else {
+			test <- fun(1:5)
+			nl <- length(test)
+		}
+
+		if (win == "buffer") {
+			rastBufR(x, y, win, pars=pars, rfun=fun, nl=nl, filename=filename, ...)
+		} else {
 			if (win == "circle") {
 				pars[2] = pars[1]
 				pars[3] = 0;
 			}
 			algo <- .makeTextFun(fun)
-			algos <- c("min", "max", "range", "mean", "count", "distto", "distbetween")
+			#algos <- c("min", "max", "range", "mean", "count", "distto", "distbetween")
+			algos <- c("distto", "distbetween")
 			builtin <- FALSE
 			if (inherits(algo, "character") && (algo %in% algos)) {
-				x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
-				messages(x, "rasterizeWin")
-			} else {
-				rastWinR(x, y, win, pars=pars, rfun=fun, filename=filename, opt=opt, ...)
-			}
-		} else if (win == "rectangle") {
-			if (inherits(fun, "character")) {
-				if (fun %in% c("distto", "distbetween")) {
+				if (win == "rectangle") {
 					error("rasterizeWin", paste(fun, "not yet available for 'win=rectangle'"))
-				}
-				if (fun == "count") {
-					fun = length
-					if (minPoints == 0) {
-						fill = 0
-					}
-				}
-			}
-			rastWinR(x, y, win, pars=pars, rfun=fun, filename=filename, opt=opt, ...)
-		} else {
-			w <- pars[1]
-			z <- y[,3]
-			y <- vect(y[,1:2,drop=FALSE])
-			out <- rast(x, nlyr=1)
-			rb <- rast(out)
-			if (!is.lonlat(x)) {
-				ngb <- max(round(w/yres(x)), round(w/xres(x)))
-				if (ngb <= 5) {					
-					m <- matrix(1, 2*round(w/yres(x))+1, 2*round(w/xres(x))+1)
-					rb <- rasterize(y, rb)
-					rb <- focal(rb, m, "sum", na.rm=TRUE)
-				} 
-			}
-			out <- rast(x, nlyr=1)
-			ncs <- ncol(out)
-			e <- ext(out)
-			hy <- yres(out)/2
-			b <- writeStart(out, filename, n=12, sources="", ...)
-			off <- 0
-			for (i in 1:b$n) {
-				e$ymax <- yFromRow(out, b$row[i]) + hy
-				e$ymin <- yFromRow(out, b$row[i] + b$nrows[i] - 1) - hy
-				rbe <- crop(rb, e)
-				f <- as.polygons(rbe, dissolve=FALSE)
-				if (nrow(f) > 0) {
-					f <- buffer(f, w)
-					r <- relate(f, v, "intersects", pairs=TRUE)
 				} else {
-					r <- cbind(0,0)[0,]
+					opt <- spatOptions(filename, ...)
+					x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
+					return(messages(x, "rasterizeWin"))
 				}
-				if (!is.na(pars[5])) {
-					rbe <- init(rbe, fill[1])
-				}		
-
-				if ((pars[4] > 1) && (nrow(r) > 0)) {
-					a <- aggregate(r[,1], list(r[,1]), length)
-					a <- a[a[,2] >= pars[4], 1]
-					r <- r[r[,1] %in% a, ]
-				} 
-
-				if (nrow(r) > 0) {
-					f <- aggregate(z[r[,2]], list(r[,1]), fun)
-					ok <- rbe@ptr$replaceCellValuesLayer(0, f[,1], f[,2], FALSE, opt)
-					rbe <- messages(rbe)
-					writeValues(out, values(rbe), b$row[i], b$nrows[i])					
-				} else if (!is.na(pars[5])) {
-					writeValues(out, values(rbe), b$row[i], b$nrows[i])									
-				} else {
-					writeValues(out, rep(NA, b$nrows[i] * ncs), b$row[i], b$nrows[i])				
-				}
-			}
-			writeStop(out)
+			} 
+			rastWinR(x, y, win, pars=pars, rfun=fun, nl=nl, filename=filename, ...)
 		}
 	}
 )
