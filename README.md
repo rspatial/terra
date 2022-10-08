@@ -40,7 +40,7 @@ And then continue based on the OS you are using.
 
 #### Windows
 
-On Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. 
+On Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. You need a recent version of Rtools42 (rtools42-5355-5357).
 
 Then, in R, install the package.
 
