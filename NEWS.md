@@ -1,20 +1,20 @@
-# version 1.6-27
+# version 1.6-28
 
 ## new
 
 - `[` and `[<-` for SpatRaster now have a third index `k` for subsetting or assigning values by layer
 - `anyNA` and `allNA` for SpatRaster
 - `unwrap` to restore a PackedSpatVector or PackedSpatRaster
-- `rasterizeWin` method for rasterization with a moving window
+- `rasterizeWin` method for rasterization with a moving window (circle, ellipse, rectangle, buffer)
 - `interpIDW` method for inverse-distance-weighted interpolation of points with a moving window
 - `interpNear` method for nearest neighbor interpolation of points with a moving window
-- `viewshed` method
-- `sieve` method implementing a sieve filter
+- `viewshed` method for SpatRaster
+- `sieve` filter method for SpatRaster
 
 
 ## enhancements
 
-- `wrap<SpatRaster>` will use file references if the data is deemed to large to all load into memory. [#801](https://github.com/rspatial/terra/issues/801) by Jean-Romain
+- `wrap<SpatRaster>` now uses file references if the data is deemed to large to all load into memory. [#801](https://github.com/rspatial/terra/issues/801) by Jean-Romain
 - `readRDS` and `unserialize` now return a SpatRaster or SpatVector (instead of a PackedSpat*)
 - better support for a "local" arbitrary Euclidean crs [#797](https://github.com/rspatial/terra/issues/797) by Agustin Lobo
 - `clamp` can now take low and high values for each layer 

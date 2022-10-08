@@ -99,6 +99,13 @@ SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
 
+	std::vector<int> vt = getValueType();
+	std::sort(vt.begin(), vt.end());
+	vt.erase(std::unique(vt.begin(), vt.end()), vt.end());
+	if (vt.size() == 1) {
+		out.setValueType(vt[0]);
+	}
+
 	if (!source[0].hasValues) return (out);
 
 	std::vector<double> v;
@@ -137,6 +144,13 @@ SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc) {
 	}
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
+
+	std::vector<int> vt = getValueType();
+	std::sort(vt.begin(), vt.end());
+	vt.erase(std::unique(vt.begin(), vt.end()), vt.end());
+	if (vt.size() == 1) {
+		out.setValueType(vt[0]);
+	}
 
 	if (!source[0].hasValues) return (out);
 

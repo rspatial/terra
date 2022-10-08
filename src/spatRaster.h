@@ -772,7 +772,7 @@ class SpatRaster {
 		SpatRaster is_false(SpatOptions &opt);
 		SpatRaster not_na(SpatOptions &opt);
 
-		SpatRaster proximity(bool cells, double maxdist, SpatOptions &opt);
+		SpatRaster proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, SpatOptions &opt);
 		SpatRaster viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt);
 		SpatRaster sieveFilter(int threshold, int connections, SpatOptions &opt);	
 		

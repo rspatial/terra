@@ -24,7 +24,7 @@ Use elevation data to compute the locations that can be seen, or how much higher
   \item{...}{Options for writing files as in \code{\link{writeRaster}}}
 }
 
-\seealso{\code{\link{viewshed}}}
+\seealso{\code{\link{terrain}}}
 
 \references{
 The algorithm used is by Wang et al.: https://www.asprs.org/wp-content/uploads/pers/2000journal/january/2000_jan_87-90.pdf.
@@ -36,7 +36,8 @@ if (gdal() >= 3.1) {
 	f <- system.file("ex/elev.tif", package="terra")
 	r <- rast(f)
 	x <- project(r, "EPSG:2169")
-	v <- viewshed(x, c(70300, 96982), 0, 0, 0.85714)
+	p <- cbind(70300, 96982)
+	v <- viewshed(x, p, 0, 0, 0.85714)
 }
 
 }

@@ -275,6 +275,8 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 
 std::vector<std::vector<double>> SpatRaster::win_circle(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::vector<double> win, SpatOptions &opt) {
 
+// the basic approach is from GDALGRID
+
 	sortvecs(x, y, z);
 
     const double radius1 = win[0] * win[0]; 
@@ -391,91 +393,3 @@ std::vector<std::vector<double>> SpatRaster::win_circle(std::vector<double> x, s
     return out;
 }
 
-
-
-/*
-# old version
-std::vector<std::vector<double>> SpatRaster::win_circle(std::vector<double> x, std::vector<double> y, std::vector<double> win, SpatOptions &opt) {
-
-// mostly from GDALGRID
-
-    const double radius1 = win[0] * win[0]; 
-    const double radius2 = win[1] * win[1];
-	const double R12 = radius1 * radius2;
-
-    // Compute coefficients for coordinate system rotation.
-	double angle = std::fmod(win[2], 360.0);
-	if (angle < 0) angle += 360.0;
-    const bool rotated = angle != 0.0;
-    angle = angle * M_PI / 180.0;
-
-    const double coeff1 = rotated ? cos(angle) : 0.0;
-    const double coeff2 = rotated ? sin(angle) : 0.0;
-
-	const size_t nc = ncell();
-	const size_t np = x.size();
-
-	std::vector<double> cells(nc);
-	std::iota(cells.begin(), cells.end(), 0.0);
-	std::vector<std::vector<double>> xy = xyFromCell(cells);
-
-	const size_t exps = 2 * np * std::max(1.0, win[0]) * std::max(1.0, win[1]) * M_PI / xres();
-
-	std::vector<std::vector<double>> out(2);
-	out[0].reserve(exps);
-	out[1].reserve(exps);
-
-	size_t minpt = win[3] < 2 ? 1 : win[3];
-
-	if (minpt == 1) {
-		for (size_t i=0; i<nc; i++ ) {
-			for (size_t j=0; j <np; j++ ) {
-				double RX = x[j] - xy[0][i];
-				double RY = y[j] - xy[1][i];
-				if( rotated ) {
-					RX = RX * coeff1 + RY * coeff2;
-					RY = RY * coeff1 - RX * coeff2;
-				}
-				if( (radius2 * RX * RX + radius1 * RY * RY) <= R12 ) {
-					out[0].push_back(i);
-					out[1].push_back(j);
-				}
-			}
-		}
-	} else {
-		std::vector<double> tmp0, tmp1;
-		tmp0.reserve(10);
-		tmp1.reserve(10);
-		for (size_t i=0; i<nc; i++ ) {
-			bool found = false;
-			size_t n = 0;
-			for (size_t j=0; j <np; j++ ) {
-				double RX = x[j] - xy[0][i];
-				double RY = y[j] - xy[1][i];
-				if( rotated ) {
-					RX = RX * coeff1 + RY * coeff2;
-					RY = RY * coeff1 - RX * coeff2;
-				}
-				if( (radius2 * RX * RX + radius1 * RY * RY) <= R12 ) {
-					tmp0.push_back(i);
-					tmp1.push_back(j);
-					found = true;
-					n++;
-				}
-			}
-			if (found) {
-				if (n >= minpt) {
-					out[0].insert(out[0].end(), tmp0.begin(), tmp0.end());
-					out[1].insert(out[1].end(), tmp1.begin(), tmp1.end());
-				}
-				tmp0.resize(0);
-				tmp1.resize(0);
-				tmp0.reserve(10);
-				tmp1.reserve(10);
-			}
-		}
-	}
-    return out;
-}
-
-*/

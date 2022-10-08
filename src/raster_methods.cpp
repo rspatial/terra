@@ -1723,6 +1723,7 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 
 	opt.ncopies = 2*fact[0]*fact[1]*fact[2];
 	BlockSize bs = getBlockSize(opt);
+	opt.steps = bs.n;
 	//opt.set_blocksizemp();
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
@@ -2232,6 +2233,13 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 			out = deepCopy();
 		}
 		return out;
+	}
+
+	std::vector<int> vt = getValueType();
+	std::sort(vt.begin(), vt.end());
+	vt.erase(std::unique(vt.begin(), vt.end()), vt.end());
+	if (vt.size() == 1) {
+		out.setValueType(vt[0]);
 	}
 
 	unsigned ncols = out.ncol();

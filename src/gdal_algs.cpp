@@ -1131,7 +1131,6 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 	GIntBig diskNeeded = ncell() * 4;
 	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
 	
-	
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
 	
 	GDALDatasetH hDstDS = GDALViewshedGenerate(hSrcBand, driver.c_str(), filename.c_str(), papszOptions, obs[0], obs[1], obs[2], obs[3], vals[0], vals[1], vals[2], vals[3], curvcoef, emode, maxdist, NULL, NULL, outmode, NULL);
@@ -1170,9 +1169,14 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 
 #endif
 
+const char* doubleToChar(double value){
+    std::stringstream ss ;
+    ss << value;
+    const char* str = ss.str().c_str();
+    return str;
+}
 
-
-SpatRaster SpatRaster::proximity(bool cells, double maxdist, SpatOptions &opt) {
+SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (nlyr() > 1) {
@@ -1208,27 +1212,60 @@ SpatRaster SpatRaster::proximity(bool cells, double maxdist, SpatOptions &opt) {
 		}
 	}
 
-	SpatOptions ops(opt);
 	GDALDatasetH hSrcDS, hDstDS;
-	if (!open_gdal(hSrcDS, 0, false, ops)) {
-		out.setError("cannot open input dataset");
-		return out;
-	}
 
 	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
 	if ( hDriver == NULL ) {
 		out.setError("empty driver");
 		return out;
 	}
-		
-	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
+			
+	GIntBig diskNeeded = ncell() * 4;
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
+	papszOptions = CSLSetNameValue(papszOptions, "DISTUNITS", "GEO");
+	
+	SpatOptions ops(opt);
+	SpatRaster x;
+	bool mask = false;
+	std::vector<double> mvals;
+	if (buffer) {
+		x = replaceValues({0}, {1}, 1, false, ops);		
+		papszOptions = CSLSetNameValue(papszOptions, "MAXDIST", doubleToChar(maxdist));		
+		papszOptions = CSLSetNameValue(papszOptions, "FIXED_BUF_VAL", doubleToChar(1.0));		
+	} else if (!std::isnan(target)) {
+		x = replaceValues({target}, {NAN}, 1, false, ops);		
+		mvals.push_back(NAN);
+		if (!std::isnan(exclude) && (exclude != 0)) {
+			x = x.replaceValues({0, exclude}, {1, 0}, 1, false, ops);	
+			mvals.push_back(exclude);
+		}
+		mask = true;
+	} else if (!std::isnan(exclude) && (exclude != 0)) {
+		x = replaceValues({0, exclude}, {1, 0}, 1, false, ops);		
+		mvals.push_back(exclude);
+		mask = true;
+	} else {
+		x = replaceValues({0}, {1}, 1, false, ops);		
+	}
+
+	if (x.hasValues()) {
+		if (!x.open_gdal(hSrcDS, 0, false, ops)) {
+			out.setError("cannot open input dataset");
+			return out;
+		}		
+	} else if (!open_gdal(hSrcDS, 0, false, ops)) {
+		out.setError("cannot open input dataset");
+		return out;
+	}
+
+	std::string tmpfile = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+	std::string fname = mask ? tmpfile : filename;
+	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, ops)) {
 		out.setError("cannot create new dataset");
 		GDALClose(hSrcDS);
 		return out;
 	}
-	GIntBig diskNeeded = ncell() * 4;
-	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
-
+	
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
 	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
 
@@ -1253,9 +1290,10 @@ SpatRaster SpatRaster::proximity(bool cells, double maxdist, SpatOptions &opt) {
 		out = SpatRaster(filename, {-1}, {""}, {}, {});
 	}
 	GDALClose(hDstDS);
+	if (mask) {
+		out = out.mask(*this, false, mvals, NAN, opt);
+	}
 	return out;
-
-
 }
 
 SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {

@@ -293,6 +293,10 @@ SpatRaster SpatRaster::distance(double target, double exclude, std::string unit,
 		}
 		return out;
 	}
+	if (!is_lonlat()) { // && std::isnan(target) && std::isnan(exclude)) {
+		return proximity(target, exclude, unit, false, 0, opt); 
+	}
+
 	if (!std::isnan(exclude)) {
 		SpatRaster x;
 		if (std::isnan(target)) {
@@ -1697,19 +1701,35 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 	}
 
 	SpatOptions ops(opt);
-	if (nlyr() > 1) {
-		std::vector<unsigned> lyr = {0};
-		out = subset(lyr, ops);
-		out = out.buffer(d, opt);
-		out.addWarning("buffer computations are only done for the first input layer");
+	size_t nl = nlyr();
+	if (nl > 1) {
+		std::vector<std::string> nms = getNames();
+		if (ops.names.size() == nms.size()) {
+			nms = opt.names;
+		}
+		out.source.resize(nl);
+		for (unsigned i=0; i<nl; i++) {
+			std::vector<unsigned> lyr = {i};
+			SpatRaster r = subset(lyr, ops);
+			ops.names = {nms[i]};
+			r = r.buffer(d, ops);
+			out.source[i] = r.source[0];
+		}
+		if (opt.get_filename() != "") {
+			out = out.writeRaster(opt);
+		}
 		return out;
 	}
 
-	std::string etype = "inner";
-	SpatRaster e = edges(false, etype, 8, 0, ops);
-	SpatVector p = e.as_points(false, true, false, opt);
-	out = out.disdir_vector_rasterize(p, false, true, false, false, NAN, NAN, "m", ops);
-	out = out.arith(d, "<=", false, opt);
+	if (!is_lonlat()) {
+		out = proximity(NAN, NAN, "", true, d, ops); 
+		out = out.isnotnan(opt);
+	} else {
+		SpatRaster e = edges(false, "inner", 8, 0, ops);
+		SpatVector p = e.as_points(false, true, false, opt);
+		out = out.disdir_vector_rasterize(p, false, true, false, false, NAN, NAN, "m", ops);
+		out = out.arith(d, "<=", false, opt);
+	}
 	return out;
 }
 

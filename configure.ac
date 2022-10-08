@@ -420,7 +420,7 @@ if test "${PROJH}" = no; then
 #include <stdlib.h>
 #include <proj_api.h>
 
-int main() {
+int main(void) {
     printf("%d\n", PJ_VERSION);
     exit(0);
 }
