@@ -137,18 +137,20 @@ setMethod("distance", signature(x="SpatVector", y="SpatVector"),
 
 
 setMethod("distance", signature(x="matrix", y="matrix"),
-	function(x, y, lonlat, pairwise=FALSE, unit="m") {
+	function(x, y, lonlat, pairwise=FALSE) {
 		if (missing(lonlat)) {
 			error("distance", "you must set lonlat to TRUE or FALSE")
 		}
-		unit <- as.character(unit[1])
 		stopifnot(ncol(x) == 2)
 		stopifnot(ncol(y) == 2)
-		crs <- ifelse(lonlat, "+proj=longlat +datum=WGS84",
-							  "+proj=utm +zone=1 +datum=WGS84")
-		x <- vect(x, crs=crs)
-		y <- vect(y, crs=crs)
-		distance(x, y, pairwise, unit=unit)
+		v <- vect()
+		d <- v@ptr$point_distance(x[,1], x[,2], y[,1], y[,2], pairwise[1], 1, lonlat)
+		messages(v)
+		if (pairwise) {
+			d
+		} else {
+			matrix(d, nrow=nrow(x), ncol=nrow(y), byrow=TRUE)
+		}
 	}
 )
 

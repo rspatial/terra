@@ -199,8 +199,9 @@ RCPP_MODULE(spat){
 	;
 
     class_<SpatSRS>("SpatSRS")
-		.method("is_lonlat", &SpatSRS::is_lonlat, "")
-		.method("to_meter", &SpatSRS::to_meter, "to_meter")
+		.method("set", &SpatSRS::set)
+		.method("is_lonlat", &SpatSRS::is_lonlat)
+		.method("to_meter", &SpatSRS::to_meter)
 	;
 
     class_<SpatExtent>("SpatExtent")
@@ -437,6 +438,8 @@ RCPP_MODULE(spat){
 
 		.method("distance_self", (std::vector<double> (SpatVector::*)(bool, std::string))( &SpatVector::distance))
 		.method("distance_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string))( &SpatVector::distance))
+
+		.method("point_distance", &SpatVector::pointdistance)
 
 		.method("geosdist_self", (std::vector<double> (SpatVector::*)(bool, std::string))( &SpatVector::geos_distance))
 		.method("geosdist_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string))( &SpatVector::geos_distance))

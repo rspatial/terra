@@ -439,6 +439,80 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit) {
 }
 
 
+std::vector<double>  SpatVector::pointdistance(std::vector<double>& px, std::vector<double>& py, std::vector<double>& sx, std::vector<double>& sy, bool pairwise, double m, bool lonlat) {
+
+	std::vector<double> d;
+
+	size_t szp = px.size();
+	size_t szs = sx.size();
+	if ((szp == 0) || (szs == 0)) {
+		setError("empty SpatVector");
+		return(d);
+	}
+
+	if (pairwise && (szp != szs ) && (szs > 1) && (szp > 1))  {
+		setError("Can only do pairwise distance if geometries match, or if one is a single geometry");
+		return(d);
+	}
+	
+//	std::vector<std::vector<double>> p = coordinates();
+//	std::vector<std::vector<double>> px = x.coordinates();
+
+
+	size_t n = pairwise ? std::max(szs,szp) : szp*szs;
+	d.reserve(n);
+
+	if (pairwise) {
+		if (szp == szs) {
+			if (lonlat) {
+				for (size_t i = 0; i < szs; i++) {
+					d.push_back( distance_lonlat(px[i], py[i], sx[i], sy[i]) );
+				}
+			} else { // not reached
+				for (size_t i = 0; i < szs; i++) {
+					d.push_back( distance_plane(px[i], py[i], sx[i], sy[i]) * m);
+				}
+			}
+		} else if (szp == 1) {  // to avoid recycling.
+			if (lonlat) {
+				for (size_t i = 0; i < szs; i++) {
+					d.push_back(  distance_lonlat(px[0], py[0], sx[i], sy[i]));
+				}
+			} else { // not reached
+				for (size_t i = 0; i < szs; i++) {
+					d.push_back( distance_plane(px[0], py[0], sx[i], sy[i]) * m);
+				}
+			}
+		} else { // if (szs == 1) {
+			if (lonlat) {
+				for (size_t i = 0; i < szp; i++) {
+					d.push_back(  distance_lonlat(px[i], py[i], sx[0], sy[0]));
+				}
+			} else { // not reached
+				for (size_t i = 0; i < szp; i++) {
+					d.push_back(  distance_plane(px[i], py[i], sx[0], sy[0]) * m );
+				}
+			}
+		}
+	} else {
+		if (lonlat) {
+			for (size_t i=0; i<szp; i++) {
+				for (size_t j=0; j<szs; j++) {
+					d.push_back(distance_lonlat(px[i], py[i], sx[j], sy[j]));
+				}
+			}
+		} else { // not reached
+			for (size_t i=0; i<szp; i++) {
+				for (size_t j=0; j<szs; j++) {
+					d.push_back(distance_plane(px[i], py[i], sx[j], sy[j]) * m);
+				}
+			}
+		}
+	}
+
+	return d;
+}
+
 
 std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::string unit) {
 
@@ -475,7 +549,7 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 	std::string gtype = type();
 	std::string xtype = x.type();
 	
-	if ((!lonlat) || (gtype != "points") || (xtype != "points")) {
+	if ((gtype != "points") || (xtype != "points")) {
 		std::string distfun="";
 		d = geos_distance(x, pairwise, distfun);
 		if ((!lonlat) && (m != 1)) {
@@ -483,10 +557,10 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 		}
 		return d;
 	}
+	
 	std::vector<std::vector<double>> p = coordinates();
 	std::vector<std::vector<double>> px = x.coordinates();
-
-
+	
 	size_t n = pairwise ? std::max(s,sx) : s*sx;
 	d.resize(n);
 

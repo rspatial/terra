@@ -187,6 +187,8 @@ class SpatVector {
 		void reserve(size_t n);
 		std::vector<double> length();
 		std::vector<double> distance(SpatVector x, bool pairwise, std::string unit);
+		std::vector<double> pointdistance(std::vector<double>& px, std::vector<double>& py, std::vector<double>& sx, std::vector<double>& sy, bool pairwise, double m, bool lonlat);
+
 		std::vector<double> distance(bool sequential, std::string unit);
 		std::vector<double> linedistLonLat(SpatVector pts);
 
