@@ -128,8 +128,13 @@
 	out$levels <- sort(stats::na.omit(unique(z)))
 	if (out$all_levels) {
 		ilevels <- 1:nrow(out$cats)
+		out$levels = out$cats[,1]
 	} else {
 		ilevels <- match(out$levels, out$cats[[1]])
+		if (any(is.na(ilevels))) {
+			warn("plot", "value(s) in raster that is/are not in levels")
+			ilevels = na.omit(ilevels)
+		}
 	}
 	if (!is.null(out$coltab)) {
 		if (out$all_levels) {
@@ -150,8 +155,7 @@
 	} else {
 
 		out$leg$legend <- unique(na.omit(out$cats[ilevels, 2]))
-
-		levlab <- data.frame(id=out$levels[ilevels], lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
+		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
 		leglevs <- na.omit(unique(levlab[,2]))
 		if (length(leglevs) == 0) {
 			error("plot", "something is wrong with the categories")
