@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-27" id="version-16-27">version 1.6-27<a class="anchor" aria-label="anchor" href="#version-16-27"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-28" id="version-16-28">version 1.6-28<a class="anchor" aria-label="anchor" href="#version-16-28"></a></h2>
 <div class="section level3">
-<h3 id="new-1-6-27">new<a class="anchor" aria-label="anchor" href="#new-1-6-27"></a></h3>
+<h3 id="new-1-6-28">new<a class="anchor" aria-label="anchor" href="#new-1-6-28"></a></h3>
 <ul><li>
 <code>[</code> and <code>[&lt;-</code> for SpatRaster now have a third index <code>k</code> for subsetting or assigning values by layer</li>
 <li>
@@ -58,20 +58,20 @@
 <li>
 <code>unwrap</code> to restore a PackedSpatVector or PackedSpatRaster</li>
 <li>
-<code>rasterizeWin</code> method for rasterization with a moving window</li>
+<code>rasterizeWin</code> method for rasterization with a moving window (circle, ellipse, rectangle, buffer)</li>
 <li>
 <code>interpIDW</code> method for inverse-distance-weighted interpolation of points with a moving window</li>
 <li>
 <code>interpNear</code> method for nearest neighbor interpolation of points with a moving window</li>
 <li>
-<code>viewshed</code> method</li>
+<code>viewshed</code> method for SpatRaster</li>
 <li>
-<code>sieve</code> method implementing a sieve filter</li>
+<code>sieve</code> filter method for SpatRaster</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-6-27">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-27"></a></h3>
+<h3 id="enhancements-1-6-28">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-28"></a></h3>
 <ul><li>
-<code>wrap&lt;SpatRaster&gt;</code> will use file references if the data is deemed to large to all load into memory. <a href="https://github.com/rspatial/terra/issues/801" class="external-link">#801</a> by Jean-Romain</li>
+<code>wrap&lt;SpatRaster&gt;</code> now uses file references if the data is deemed to large to all load into memory. <a href="https://github.com/rspatial/terra/issues/801" class="external-link">#801</a> by Jean-Romain</li>
 <li>
 <code>readRDS</code> and <code>unserialize</code> now return a SpatRaster or SpatVector (instead of a PackedSpat*)</li>
 <li>better support for a “local” arbitrary Euclidean crs <a href="https://github.com/rspatial/terra/issues/797" class="external-link">#797</a> by Agustin Lobo</li>
@@ -88,7 +88,7 @@
 <code>plotRGB</code> now accounts for the value of zlim when stretching; allowing to use the same coloring scheme across SpatRasters <a href="https://github.com/rspatial/terra/issues/810" class="external-link">#810</a> by Agustin Lobo.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-27">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-27"></a></h3>
+<h3 id="bug-fixes-1-6-28">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-28"></a></h3>
 <ul><li>The annoying garbage collection messages <code>Error in x$.self$finalize() : attempt to apply non-function</code> is now suppressed in most cases. <a href="https://github.com/rspatial/terra/issues/218" class="external-link">#218</a> by Charlie Joey Hadley. This problem should go away altogether when a new version of “Rcpp” is released (ETA Jan 2023) thanks to a fix by Kevin Ushey <a href="https://github.com/rspatial/terra/issues/30" class="external-link">#30</a>
 </li>
 <li>
