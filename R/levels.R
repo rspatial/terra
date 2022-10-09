@@ -290,8 +290,15 @@ setMethod("cats" , "SpatRaster",
 
 setMethod ("as.numeric", "SpatRaster",
 	function(x, index=NULL, filename="", ...) {
-		stopifnot(nlyr(x) == 1)
-		if (!is.factor(x)) return(x)
+		if (!any(is.factor(x))) {
+			x <- deepcopy(x)
+			x@ptr$setValueType(0)
+			return(x)
+		}
+		if (nlyr(x) > 1) {
+			x <- lapply(1:nlyr(x), function(i) as.numeric(x[[i]]))
+			return( rast(x) )
+		}
 		g <- cats(x)[[1]]
 		if (!is.null(index)) {
 			if (!((index > 1) & (index <= ncol(g)))) {
