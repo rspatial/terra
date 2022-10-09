@@ -546,14 +546,14 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	SpatRaster out = geometry();
 	if (!hasValues()) return out;
 
-	std::vector<std::string> f {"abs", "ceiling", "floor", "trunc", "sign"};
-	bool is_int = std::find(f.begin(), f.end(), fun) != f.end();
-	if (is_int) out.setValueType(1);
-
-	f = {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"};
-	if ((!is_int) && std::find(f.begin(), f.end(), fun) == f.end()) {
+	std::vector<std::string> f = {"ceiling", "floor", "trunc", "sign", "log", "log10", "log2", "log1p", "exp", "expm1", "abs", "sqrt"};
+	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown math function");
 		return out;
+	}
+	f = {"ceiling", "floor", "trunc", "sign"};
+	if (std::find(f.begin(), f.end(), fun) != f.end()) {
+		out.setValueType(1);
 	}
 
 	std::function<double(double)> mathFun;
