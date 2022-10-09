@@ -439,7 +439,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit) {
 }
 
 
-std::vector<double>  SpatVector::pointdistance(std::vector<double>& px, std::vector<double>& py, std::vector<double>& sx, std::vector<double>& sy, bool pairwise, double m, bool lonlat) {
+std::vector<double> SpatVector::pointdistance(const std::vector<double>& px, const std::vector<double>& py, const std::vector<double>& sx, const std::vector<double>& sy, bool pairwise, double m, bool lonlat) {
 
 	std::vector<double> d;
 
@@ -560,6 +560,9 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 	
 	std::vector<std::vector<double>> p = coordinates();
 	std::vector<std::vector<double>> px = x.coordinates();
+	
+	return pointdistance(p[0], p[1], px[0], px[1], pairwise, m, lonlat);
+	
 	
 	size_t n = pairwise ? std::max(s,sx) : s*sx;
 	d.resize(n);
