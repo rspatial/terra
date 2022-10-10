@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">text</span><span class="op">(</span><span class="va">x</span>, <span class="va">labels</span>, digits<span class="op">=</span><span class="fl">0</span>, halo<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">text</span><span class="op">(</span><span class="va">x</span>, <span class="va">labels</span>, digits<span class="op">=</span><span class="fl">0</span>, halo<span class="op">=</span><span class="cn">FALSE</span>, inside<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector</span>
 <span class="fu">text</span><span class="op">(</span><span class="va">x</span>, <span class="va">labels</span>, halo<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
@@ -69,10 +69,13 @@
 <dd><p>character. Optional. Vector of labels with <code>length(x)</code> or a variable name from <code>names(x)</code></p></dd>
 
   <dt>digits</dt>
-<dd><p>integer. how many digits should be used?</p></dd>
+<dd><p>integer. How many digits should be used?</p></dd>
 
   <dt>halo</dt>
 <dd><p>logical. If <code>TRUE</code> a "halo" is printed around the text. If <code>TRUE</code>, additional arguments <code>hc="white"</code> and <code>hw=0.1</code> can be modified to set the color and width of the halo</p></dd>
+
+  <dt>inside</dt>
+<dd><p>logical. Should the text always be placed inside one the sub-geometries?</p></dd>
 
   <dt>...</dt>
 <dd><p>additional arguments to pass to graphics function <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></code></p></dd>

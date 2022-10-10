@@ -57,7 +57,7 @@
 <span class="fu">erase</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector,missing</span>
-<span class="fu">erase</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="fu">erase</span><span class="op">(</span><span class="va">x</span>, sequential<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector,SpatExtent</span>
 <span class="fu">erase</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></code></pre></div>
@@ -71,6 +71,9 @@
   <dt>y</dt>
 <dd><p>SpatVector or SpatExtent</p></dd>
 
+  <dt>sequential</dt>
+<dd><p>logical. Should areas be erased sequentially? See Details</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -82,6 +85,11 @@
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="crop.html">crop</a></code> and <code><a href="intersect.html">intersect</a></code> for the inverse.</p>
 <p>The equivalent for SpatRaster is <code><a href="mask.html">mask</a></code></p></div>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>If polygons are erased sequentially, everything that is covered by the first polygon is removed from all other polygons, then everything that is covered by (what is remaining of) the second polygon is removed, etc.</p>
+<p>If polygons are not erased sequentially, all overlapping areas are erased and only the areas covered by a single geometry are returned.</p>
     </div>
 
     <div id="ref-examples">
