@@ -63,13 +63,15 @@
 	}
 
 	fz <- as.factor(Z)
-	levs <- as.integer(levels(fz))
 	if (!is.null(out$levels)) {
 		if (is.null(out$leg$legend)) {
 			out$leg$legend <- as.character(out$levels)
 		}
 		levs <- out$levels
 	} else {
+		levs <- as.numeric(levels(fz))
+		d <- ceiling(1/diff(range(levs)))
+		levs <- round(levs, d)
 		out$levels <- as.numeric(levs)
 		if (is.null(out$leg$legend)) {
 			out$leg$legend <- levs
