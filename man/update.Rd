@@ -9,7 +9,7 @@
 \description{
 The "update." replacement methods change the contents of an existing file. BE CAREFUL. 
 
-\code{update.names} writes the (changed) names of SpatRaster \code(x) to the file of the data source.
+\code{update.names} writes the (changed) names of SpatRaster \code{x} to the file of the data source.
 }
 
 \usage{
