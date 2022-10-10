@@ -42,7 +42,7 @@
 	if (is.null(out$leg$digits)) {
 		dif <- diff(out$range)
 		if (dif == 0) {
-			out$leg_digits = 0;
+			out$leg$digits <- 0;
 		} else {
 			out$leg$digits <- max(0, -floor(log10(dif/10)))
 		}
@@ -52,6 +52,12 @@
 	out
 }
 
+
+prettyNumbs <- function(x, digits) {
+	x <- formatC(x, digits=digits, format = "f", flag="#")
+	x <- substr(x, 1, digits+1)
+	gsub("\\.$", "", x)
+}
 
 .as.raster.classes <- function(out, x, ...) {
 
@@ -73,12 +79,16 @@
 		digits <- out$leg$digits
 		if (is.null(digits)) {
 			d <- ceiling(1 / min(diff(sort(levs))))
-			digits <- round(log10(d) + 1)
+			decimals <- round(log10(d) + 1)
+			levs <- round(levs, decimals)
 		}
-		levs <- round(levs, digits)
 		out$levels <- levs
 		if (is.null(out$leg$legend)) {
-			out$leg$legend <- levs
+			if (!is.null(out$leg$digits)) {
+				out$leg$legend <- prettyNumbs(levs, digits)
+			} else {
+				out$leg$legend <- levs
+			}
 		}
 	}
 	out$leg$digits <- NULL
@@ -225,7 +235,15 @@
 	if (length(out$breaks) == 1) {
 		out$breaks <- .get_breaks(Z, out$breaks, out$breakby, out$range)
 	}
-	fz <- cut(Z, out$breaks, include.lowest=TRUE, right=FALSE)
+
+	if (!is.null(out$leg$digits)) {
+#		out$leg$legend <- substr(formatC(levs, digits=digits, format = "f", flag="#"), 1, digits+1)
+		fz <- cut(Z, out$breaks, include.lowest=TRUE, right=FALSE, dig.lab=out$leg$digits)
+	} else {
+		fz <- cut(Z, out$breaks, include.lowest=TRUE, right=FALSE)
+	}
+
+
 	out$vcut <- as.integer(fz)
 	levs <- levels(fz)
 	nlevs <- length(levs)
@@ -241,18 +259,23 @@
 	#out$cols <- cols
 	out$leg$fill <- cols
 	#out$leg$levels <- levels(fz)
-
 	if (!is.null(out$leg$legend)) {
 		stopifnot(length(out$leg$legend) == nlevs)
 	} else {
 		levs <- gsub("]", "", gsub(")", "", gsub("\\[", "", levs)))
 		levs <- paste(levs, collapse=",")
 		m <- matrix(as.numeric(unlist(strsplit(levs, ","))), ncol=2, byrow=TRUE)
+		if (!is.null(out$leg$digits)) {
+			m <- prettyNumbs(m, out$leg$digits)
+		}
 		m <- apply(m, 1, function(i) paste(i, collapse=" - "))
 		out$leg$legend <- m
 	}
+	out$leg$digits <- NULL
 	out
 }
+
+
 
 .as.raster.interval <- function(out, x, ...) {
 

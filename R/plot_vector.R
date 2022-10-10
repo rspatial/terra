@@ -247,7 +247,7 @@ setMethod("dots", signature(x="SpatVector"),
 	if (is.null(out$leg$digits)) {
 		dif <- diff(out$range)
 		if (dif == 0) {
-			out$leg_digits = 0;
+			out$leg$digits <- 0;
 		} else {
 			out$leg$digits <- max(0, -floor(log10(dif/10)))
 		}

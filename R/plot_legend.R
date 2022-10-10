@@ -2,12 +2,12 @@
 .get_breaks <- function(x, n, method, r=NULL) {
 	if (is.function(method)) {
 		if (!is.null(r)) {
-			x[x<r[1] | x>r[2]] <- NA
+			x[(x<r[1]) | (x>r[2])] <- NA
 		}
 		breaks <- method(x)
 	} else if (method=="cases") {
 		if (!is.null(r)) {
-			x[x<r[1] | x>r[2]] <- NA
+			x[(x<r[1]) | (x>r[2])] <- NA
 		}
 		n <- n+1
 		i <- seq(0, 1, length.out=n)
