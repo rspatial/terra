@@ -1176,7 +1176,7 @@ const char* doubleToChar(double value){
     return str;
 }
 
-SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, SpatOptions &opt) {
+SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (nlyr() > 1) {
@@ -1229,22 +1229,33 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 	bool mask = false;
 	std::vector<double> mvals;
 	if (buffer) {
-		x = replaceValues({0}, {1}, 1, false, ops);		
+		if (remove_zero) {
+			x = replaceValues({0}, {1}, 1, false, ops);		
+		}
 		papszOptions = CSLSetNameValue(papszOptions, "MAXDIST", doubleToChar(maxdist));		
 		papszOptions = CSLSetNameValue(papszOptions, "FIXED_BUF_VAL", doubleToChar(1.0));		
 	} else if (!std::isnan(target)) {
 		x = replaceValues({target}, {NAN}, 1, false, ops);		
 		mvals.push_back(NAN);
 		if (!std::isnan(exclude) && (exclude != 0)) {
-			x = x.replaceValues({0, exclude}, {1, 0}, 1, false, ops);	
+			if (remove_zero) {
+				x = x.replaceValues({0, exclude}, {1, 0}, 1, false, ops);	
+			} else {
+				x = x.replaceValues({exclude}, {0}, 1, false, ops);					
+			}
 			mvals.push_back(exclude);
 		}
 		mask = true;
 	} else if (!std::isnan(exclude) && (exclude != 0)) {
-		x = replaceValues({0, exclude}, {1, 0}, 1, false, ops);		
+		if (remove_zero) {
+			x = replaceValues({0, exclude}, {1, 0}, 1, false, ops);		
+		} else {
+			x = replaceValues({exclude}, {0}, 1, false, ops);					
+		}
+		
 		mvals.push_back(exclude);
 		mask = true;
-	} else {
+	} else if (remove_zero) {
 		x = replaceValues({0}, {1}, 1, false, ops);		
 	}
 
