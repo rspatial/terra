@@ -188,7 +188,6 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 			//opt.gdal_options = {"COMPRESS=NONE"};
 		}
 	}
-
 	bs = getBlockSize(opt);
 	if (filename != "") {
 		// open GDAL filestream

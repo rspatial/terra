@@ -6,9 +6,9 @@
 
 
 setMethod("buffer", signature(x="SpatRaster"),
-	function(x, width, filename="", ...) {
+	function(x, width, background=0, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$buffer(width, opt)
+		x@ptr <- x@ptr$buffer(width, background, opt)
 		messages(x, "buffer")
 	}
 )

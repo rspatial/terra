@@ -3919,6 +3919,13 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt) {
 	
 	size_t cs = cells.size();
+	double nce = ncell() - 1;
+	for (size_t i=0; i<cs; i++) {
+	if ((cells[i] < 0) || (cells[i] > nce)) {
+			setError("cell number(s) out of range");
+			return false;	
+		}
+	}
 	size_t vs = v.size();
 	size_t nl = nlyr();
 	if (vs == 1) {
@@ -3999,6 +4006,16 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 
 bool SpatRaster::replaceCellValuesLayer(std::vector<size_t> layers, std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt) {
 	
+	
+	size_t cs = cells.size();
+	double nce = ncell() - 1;
+	for (size_t i=0; i<cs; i++) {
+		if ((cells[i] < 0) || (cells[i] > nce)) {
+			setError("cell number(s) out of range");
+			return false;	
+		}
+	}
+	
 	size_t nl = layers.size();
 
 	size_t maxnl = nlyr()-1;
@@ -4009,7 +4026,6 @@ bool SpatRaster::replaceCellValuesLayer(std::vector<size_t> layers, std::vector<
 		}
 	}
 
-	size_t cs = cells.size();
 	size_t vs = v.size();
 	if (vs == 1) {
 		bylyr = false;

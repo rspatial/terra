@@ -140,8 +140,8 @@ setMethod("erase", signature(x="SpatVector", y="SpatVector"),
 )
 
 setMethod("erase", signature(x="SpatVector", y="missing"),
-	function(x) {
-		x@ptr <- x@ptr$erase_self()
+	function(x, sequential=TRUE) {
+		x@ptr <- x@ptr$erase_self(sequential)
 		messages(x, "erase")
 	}
 )

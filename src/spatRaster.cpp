@@ -1845,6 +1845,74 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
 }
 
 
+SpatVector SpatRaster::as_multipoints(bool narm, bool nall, SpatOptions &opt) {
+
+	BlockSize bs = getBlockSize(opt);
+    size_t ncl = ncell();
+	SpatVector pv;
+	pv.reserve(1);
+
+    std::vector<std::vector<double>> xy;
+	if (!narm) {
+        for (size_t i=0; i<ncl; i++) {
+            xy = xyFromCell(i);
+			SpatPart p(xy[0], xy[1]);
+			SpatGeom g(p, points);
+			pv.addGeom(g);
+			g.parts.resize(0);
+        }
+		return pv;
+	}
+
+	if (!readStart()) {
+		pv.setError(getError());
+		return(pv);
+	}
+
+	size_t nc = ncol();
+	unsigned nl = nlyr();
+	std::vector<double> v, x, y;
+	for (size_t i = 0; i < bs.n; i++) {
+		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
+        size_t off1 = (bs.row[i] * nc);
+ 		size_t vnc = bs.nrows[i] * nc;
+		for (size_t j=0; j<vnc; j++) {
+			if (nall) {
+				bool allna = true;
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					size_t off2 = lyr*vnc;
+					if (!std::isnan(v[off2+j])) {
+						allna = false;
+						continue;
+					}
+				}
+				if (allna) continue;
+			} else {
+				bool foundna = false;
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					size_t off2 = lyr*vnc;
+					if (std::isnan(v[off2+j])) {
+						foundna = true;
+						continue;
+					}
+				}
+				if (foundna) continue;
+			}
+			xy = xyFromCell( off1+j );
+			x.push_back(xy[0][0]);
+			y.push_back(xy[1][0]);
+		}
+	}
+	SpatPart p(x, y);
+	SpatGeom g(p, points);
+	pv.addGeom(g);
+
+	readStop();
+	pv.srs = source[0].srs;
+	return(pv);
+}
+
+
 SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions &opt) {
 
 	BlockSize bs = getBlockSize(opt);
@@ -1938,7 +2006,6 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
 	pv.srs = source[0].srs;
 	return(pv);
 }
-
 
 
 

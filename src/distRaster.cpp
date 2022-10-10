@@ -92,7 +92,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool align_points, 
 		x = out.rasterize(p, "", feats, NAN, false, false, false, false, false, ops);
 		if (gtype == "polygons") {
 			std::string etype = "inner";
-			x = x.edges(false, etype, 8, 0, ops);
+			x = x.edges(false, etype, 8, NAN, ops);
 		}
 		p = x.as_points(false, true, false, opt);
 		pxy = p.coordinates();
@@ -1764,7 +1764,7 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 
 
 
-SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
+SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (!hasValues()) {
@@ -1773,10 +1773,15 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 	}
 
 	if (d <= 0) {
-		out.setError("buffer size <= 0; nothing to compute");
+		out.setError("buffer should be > 0");
 		return out;
 	}
-
+	
+	if (background == 1) {
+		out.setError("the background value cannot be 1");
+		return out;
+	}
+	
 	SpatOptions ops(opt);
 	size_t nl = nlyr();
 	if (nl > 1) {
@@ -1789,7 +1794,7 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 			std::vector<unsigned> lyr = {i};
 			SpatRaster r = subset(lyr, ops);
 			ops.names = {nms[i]};
-			r = r.buffer(d, ops);
+			r = r.buffer(d, background, ops);
 			out.source[i] = r.source[0];
 		}
 		if (opt.get_filename() != "") {
@@ -1799,13 +1804,27 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 	}
 
 	if (!is_lonlat()) {
-		out = proximity(NAN, NAN, "", true, d, ops); 
-		out = out.isnotnan(opt);
-	} else {
-		SpatRaster e = edges(false, "inner", 8, 0, ops);
-		SpatVector p = e.as_points(false, true, false, opt);
-		out = out.disdir_vector_rasterize(p, false, true, false, false, NAN, NAN, "m", ops);
-		out = out.arith(d, "<=", false, opt);
+		if (!std::isnan(background)) {
+			out = proximity(NAN, NAN, "", true, d, ops);
+			if (background == 0) {
+				out = out.isnotnan(opt);
+			} else {
+				out = out.replaceValues({NAN}, {background}, 1, false, opt);
+			}
+		} else {
+			out = proximity(NAN, NAN, "", true, d, opt);
+		}
+	} else {	
+		SpatRaster e = edges(false, "inner", 8, NAN, ops);
+		SpatVector p = e.as_points(false, true, false, ops);
+		p = p.buffer({d}, 10);
+		p = p.aggregate(true);
+		out = out.rasterize(p, "", {1}, background, false, false, false, false, true, opt);
+		if (background == 0) {
+			out.setValueType(3);
+		}
+		//out = out.disdir_vector_rasterize(p, false, true, false, false, NAN, NAN, "m", ops);
+		//out = out.arith(d, "<=", false, opt);
 	}
 	return out;
 }

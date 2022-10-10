@@ -2554,7 +2554,7 @@ SpatVector SpatVector::erase(SpatVector v) {
 
 */
 
-SpatVector SpatVector::erase() {
+SpatVector SpatVector::erase(bool sequential) {
 	SpatVector out;
 
 	if (type() != "polygons") {
@@ -2570,27 +2570,47 @@ SpatVector SpatVector::erase() {
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<unsigned> rids;
 
-	for (size_t i = 0; i < (n-1); i++) {
-		for (size_t j = (i+1); j < n; j++) {
-			GEOSGeometry* geom = GEOSDifference_r(hGEOSCtxt, x[i].get(), x[j].get());
-			if (geom == NULL) {
-				out.setError("GEOS exception");
-				geos_finish(hGEOSCtxt);
-				return(out);
-			} else if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
-				GEOSGeom_destroy_r(hGEOSCtxt, geom);
-				rids.push_back(i);
-				break;
-			} else {
-				x[i] = geos_ptr(geom, hGEOSCtxt);
+	if (sequential) {
+		for (size_t i = 0; i < (n-1); i++) {
+			for (size_t j = (i+1); j < n; j++) {
+				GEOSGeometry* geom = GEOSDifference_r(hGEOSCtxt, x[i].get(), x[j].get());
+				if (geom == NULL) {
+					out.setError("GEOS exception");
+					geos_finish(hGEOSCtxt);
+					return(out);
+				} else if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
+					GEOSGeom_destroy_r(hGEOSCtxt, geom);
+					rids.push_back(i);
+					break;
+				} else {
+					x[i] = geos_ptr(geom, hGEOSCtxt);
+				}
+			}
+		}
+	} else {
+		std::vector<GeomPtr> y = geos_geoms(this, hGEOSCtxt);
+		for (size_t i=0; i<n; i++) {
+			for (size_t j=0; j<n; j++) {
+				if (j == i) continue;
+				GEOSGeometry* geom = GEOSDifference_r(hGEOSCtxt, x[i].get(), y[j].get());
+				if (geom == NULL) {
+					out.setError("GEOS exception");
+					geos_finish(hGEOSCtxt);
+					return(out);
+				} else if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
+					GEOSGeom_destroy_r(hGEOSCtxt, geom);
+					rids.push_back(i);
+					break;
+				} else {
+					x[i] = geos_ptr(geom, hGEOSCtxt);
+				}
 			}
 		}
 	}
-
+	
 	SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt);
 	out = coll.get(0);
 	out.srs = srs;
-
 	out.df = df;
 	out.df.remove_rows(rids);
 	//SpatVector last = subset_rows(n-1);

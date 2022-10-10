@@ -333,7 +333,7 @@ class SpatVector {
 		SpatVector unite();
 		SpatVector erase_agg(SpatVector v);
 		SpatVector erase(SpatVector v);
-		SpatVector erase();
+		SpatVector erase(bool sequential);
 		SpatVector mask(SpatVector x, bool inverse);
 		SpatVector gaps();		
 		SpatVector cover(SpatVector v, bool identity, bool expand);

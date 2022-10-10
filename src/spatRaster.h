@@ -572,6 +572,7 @@ class SpatRaster {
 		SpatVector polygonize(bool trunc, bool values, bool narm, bool aggregate, SpatOptions &opt);
 		SpatVector as_lines(SpatOptions &opt);
 		SpatVector as_points(bool values, bool narm, bool nall, SpatOptions &opt);
+		SpatVector as_multipoints(bool narm, bool nall, SpatOptions &opt);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
 		std::vector<std::vector<double>> bilinearValues(const std::vector<double> &x, const std::vector<double> &y);
@@ -579,7 +580,7 @@ class SpatRaster {
 		std::vector<double> fourCellsFromXY(const std::vector<double> &x, const std::vector<double> &y);
 
 
-		SpatRaster buffer(double d, SpatOptions &opt);
+		SpatRaster buffer(double d, double background, SpatOptions &opt);
 		SpatRaster clamp(std::vector<double> low, std::vector<double> high, bool usevalue, SpatOptions &opt);
 
 		SpatRaster combineCats(SpatRaster x, SpatOptions &opt);
