@@ -94,20 +94,18 @@ std::vector<double> SpatRaster::mem_needs(SpatOptions &opt) {
 //BlockSize SpatRaster::getBlockSize(unsigned n, double frac, unsigned steps) {
 BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 
-	unsigned steps = opt.get_steps();
 
 	BlockSize bs;
-	size_t cs;
+	size_t cs = chunkSize(opt);
+	bs.n = std::ceil(nrow() / double(cs));
+	unsigned steps = opt.get_steps();
 
 	if (steps > 0) {
 		if (steps > nrow()) {
 			steps = nrow();
 		}
-		bs.n = steps;
-		cs = nrow() / steps;
-	} else {
-		cs = chunkSize(opt);
-		bs.n = std::ceil(nrow() / double(cs));
+		bs.n = std::max(steps, bs.n);
+		cs = nrow() / bs.n;
 	}
 	bs.row = std::vector<size_t>(bs.n);
 	bs.nrows = std::vector<size_t>(bs.n, cs);

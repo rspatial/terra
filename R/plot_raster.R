@@ -70,13 +70,18 @@
 		levs <- out$levels
 	} else {
 		levs <- as.numeric(levels(fz))
-		d <- ceiling(1/diff(range(levs)))
-		levs <- round(levs, d)
-		out$levels <- as.numeric(levs)
+		digits <- out$leg$digits
+		if (is.null(digits)) {
+			d <- ceiling(1 / min(diff(sort(levs))))
+			digits <- round(log10(d) + 1)
+		}
+		levs <- round(levs, digits)
+		out$levels <- levs
 		if (is.null(out$leg$legend)) {
 			out$leg$legend <- levs
 		}
 	}
+	out$leg$digits <- NULL
 	stopifnot(length(out$leg$legend) == length(out$levels))
 	nlevs <- length(levs)
 
@@ -345,7 +350,7 @@
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(),
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
-  sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, ...) {
+  sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
 
@@ -372,6 +377,7 @@
 	
 	if (is.null(out$axs$las)) out$axs$las <- las
 	out$draw_grid <- isTRUE(grid)
+	out$leg$digits <- decimals
 
 	out$leg <- as.list(plg)
 	out$all_levels <- isTRUE(all_levels)

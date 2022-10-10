@@ -2600,6 +2600,7 @@ SpatVector SpatVector::erase(bool sequential) {
 				} else if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
 					GEOSGeom_destroy_r(hGEOSCtxt, geom);
 					rids.push_back(i);
+					Rcpp::Rcout << i << std::endl;
 					break;
 				} else {
 					x[i] = geos_ptr(geom, hGEOSCtxt);
