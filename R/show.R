@@ -217,6 +217,7 @@ setMethod ("show" , "SpatRaster",
 
 			nsr <- nsrc(object)
 			m <- inMemory(object)
+
 			f <- sources(object)
 			hdf5 <- substr(f, 1, 5) == "HDF5:"
 			f[!hdf5] <- basename(f[!hdf5])
@@ -227,26 +228,32 @@ setMethod ("show" , "SpatRaster",
 				f[hdf5] <- ff
 			}
 			#f <- gsub("\\", "/", f, fixed=TRUE)
-
 			f <- gsub("\"", "", f)
 			sources <- rep("memory", length(m))
 			sources[!m] <- f[!m]
-
-			if (nsr > 1) {
-				mxsrc <- 3
-				lbs <- .nlyrBySource(object)
-				lbsprint <- paste0(" (", lbs, " layers)")
-				lbsprint[lbs == 1] <- ""
-				cat("sources     :", sources[1], lbsprint[1], "\n")
-				for (i in 2:(min(mxsrc, nsr))) {
-					cat("             ", sources[i], lbsprint[i], "\n")
-				}
-
-				if (nsr > mxsrc) {
-					cat("             ", "... and", nsr-mxsrc, "more source(s)\n")
-				}
+			
+			if (all(m)) {
+				cat("source(s)   : memory\n")			
 			} else {
-				cat("source      :", sources[1], "\n")
+				if (nsr > 1) {
+					mxsrc <- 3
+					lbs <- .nlyrBySource(object)
+					lbsprint <- paste0(" (", lbs, " layers)")
+					lbsprint[lbs == 1] <- ""
+					cat("sources     :", sources[1], lbsprint[1], "\n")
+					for (i in 2:(min(mxsrc, nsr))) {
+						cat("             ", sources[i], lbsprint[i], "\n")
+					}
+					if (nsr > mxsrc) {
+						if (nsr == (mxsrc+1)) {
+							cat("             ", sources[mxsrc+1], lbsprint[mxsrc+1], "\n")				
+						} else {
+							cat("             ", "... and", nsr-mxsrc, "more source(s)\n")
+						}
+					}
+				} else {
+					cat("source      :", sources[1], "\n")
+				}
 			}
 			rgb <- RGB(object)
 			if (!is.null(rgb)) {				

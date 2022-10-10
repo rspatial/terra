@@ -10,7 +10,7 @@
 \description{
 Apply a function to subsets of layers of a SpatRaster (similar to \code{\link[base]{tapply}} and \code{\link[stats]{aggregate}}). The layers are combined based on the \code{index}.
 
-The function used should return a single value, and the number of layers in the output SpatRaster equals the number of unique values in \code{index}.
+The number of layers in the output SpatRaster equals the number of unique values in \code{index} times the number of values that the supplied function returns for a single vector of numbers.
 
 For example, if you have a SpatRaster with 6 layers, you can use \code{index=c(1,1,1,2,2,2)} and \code{fun=sum}. This will return a SpatRaster with two layers. The first layer is the sum of the first three layers in the input SpatRaster, and the second layer is the sum of the last three layers in the input SpatRaster. Indices are recycled such that \code{index=c(1,2)} would also return a SpatRaster with two layers (one based on the odd layers (1,3,5), the other based on the even layers (2,4,6)). 
 
