@@ -936,3 +936,20 @@ bool SpatRaster::fillValuesGDAL(double fillvalue) {
 	}
 	return true;
 }
+
+
+bool SpatRaster::update_names(SpatOptions &opt) { 
+	GDALDatasetH hDS;
+	GDALRasterBandH poBand;
+	for (size_t i=0; i<nsrc(); i++) {
+		if (source[i].memory) continue;		
+		open_gdal(hDS, i, true, opt);
+		for (size_t b=0; b < source[i].nlyr; b++) {
+			poBand = GDALGetRasterBand(hDS, b+1);
+			GDALSetDescription(poBand, source[i].names[b].c_str());
+		}
+		GDALClose(hDS);
+	}
+	return true;
+}
+

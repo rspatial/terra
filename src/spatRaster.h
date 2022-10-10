@@ -528,6 +528,7 @@ class SpatRaster {
 		SpatRaster writeRaster(SpatOptions &opt);
 		SpatRaster writeTempRaster(SpatOptions &opt);
 		bool writeDelim(std::string filename, std::string delim, bool cell, bool xy, SpatOptions &opt);
+		bool update_names(SpatOptions &opt);
 
 		//SpatRaster writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
 		//SpatRaster writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
@@ -592,8 +593,8 @@ class SpatRaster {
 		SpatRaster cropmask(SpatVector v, std::string snap, bool touches, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
-		SpatRaster distance(double target, double exclude, std::string unit, SpatOptions &opt);
-		SpatRaster disdir_vector_rasterize(SpatVector p, bool align_points, bool distance, bool from, bool degrees, double target, double exclude, std::string unit, SpatOptions &opt);
+		SpatRaster distance(double target, double exclude, std::string unit, bool remove_zero, SpatOptions &opt);
+		SpatRaster disdir_vector_rasterize(SpatVector p, bool distance, bool from, bool degrees, double target, double exclude, std::string unit, SpatOptions &opt);
 		
 		SpatRaster distance_vector(SpatVector p, std::string unit, SpatOptions &opt);
 
@@ -773,7 +774,7 @@ class SpatRaster {
 		SpatRaster is_false(SpatOptions &opt);
 		SpatRaster not_na(SpatOptions &opt);
 
-		SpatRaster proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, SpatOptions &opt);
+		SpatRaster proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt);
 		SpatRaster viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt);
 		SpatRaster sieveFilter(int threshold, int connections, SpatOptions &opt);	
 		

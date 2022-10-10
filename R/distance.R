@@ -60,12 +60,11 @@ setMethod("gridDistance", signature(x="SpatRaster"),
 
 
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, unit="m", filename="", ...) {
+	function(x, y, unit="m", rasterize=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		unit <- as.character(unit[1])
-		if (is.lonlat(x, perhaps=TRUE)) {
-			x <- rast(x)
-			x@ptr <- x@ptr$vectDisdirRasterize(y@ptr, TRUE, TRUE, FALSE, FALSE, NA, NA, unit, opt)
+		if (rasterize) {
+			x@ptr <- x@ptr$vectDisdirRasterize(y@ptr, TRUE, FALSE, FALSE, NA, NA, unit, opt)
 		} else {
 			x@ptr <- x@ptr$vectDistanceDirect(y@ptr, unit, opt)
 		}
@@ -103,7 +102,7 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 		}
 
 		if (sequential) {
-			return( x@ptr$distance_self(sequential))
+			return( x@ptr$distance_self(sequential, unit))
 		}
 		unit <- as.character(unit[1])
 		d <- x@ptr$distance_self(sequential, unit)
@@ -156,7 +155,7 @@ setMethod("distance", signature(x="matrix", y="matrix"),
 
 
 setMethod("distance", signature(x="matrix", y="missing"),
-	function(x, y, lonlat=NULL, sequential=FALSE, unit="m") {
+	function(x, y, lonlat=NULL, sequential=FALSE, pairs=FALSE, symmetrical=TRUE) {
 		if (is.null(lonlat)) {
 			error("distance", "lonlat should be TRUE or FALSE")
 		}
@@ -164,7 +163,7 @@ setMethod("distance", signature(x="matrix", y="missing"),
 		crs <- ifelse(isTRUE(lonlat), "+proj=longlat +datum=WGS84",
 							  "+proj=utm +zone=1 +datum=WGS84")
 		x <- vect(x, crs=crs)
-		distance(x, sequential=sequential, unit=unit)
+		distance(x, sequential=sequential, pairs=pairs, symmetrical=symmetrical, unit="m")
 	}
 )
 

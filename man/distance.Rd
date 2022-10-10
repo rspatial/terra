@@ -45,15 +45,15 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
 \usage{
 \S4method{distance}{SpatRaster,missing}(x, y, target=NA, exclude=NULL, unit="m", filename="", ...)
 
-\S4method{distance}{SpatRaster,SpatVector}(x, y, unit="m", filename="", ...)
+\S4method{distance}{SpatRaster,SpatVector}(x, y, unit="m", rasterize=FALSE, filename="", ...)
 
 \S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m")
 
 \S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, unit="m")
 
-\S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE, unit="m")
+\S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE)
 
-\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE, unit="m")
+\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE, pairs=FALSE, symmetrical=TRUE)
 }
 
 \arguments{
@@ -62,6 +62,7 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
   \item{target}{numeric. The value of the cells for which distances to cells that are not \code{NA} should be computed}
   \item{exclude}{numeric. The value of the cells that should not be considered for computing distances}
   \item{unit}{character. Can be either "m" or "km"}
+  \item{rasterize}{logical. If \code{TRUE} distance is computed from the cells covered by the geometries after rasterization. This can be much faster in some cases}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
   \item{sequential}{logical. If \code{TRUE}, the distance between sequential geometries is returned}
