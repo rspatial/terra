@@ -41,7 +41,7 @@
 	}
 	if (is.null(out$leg$digits)) {
 		dif <- diff(out$range)
-		if (dif == 0) {
+		if ((dif == 0) || (length(dif) ==0)) {
 			out$leg$digits <- 0;
 		} else {
 			out$leg$digits <- max(0, -floor(log10(dif/10)))
@@ -78,8 +78,23 @@ prettyNumbs <- function(x, digits) {
 		levs <- as.numeric(levels(fz))
 		digits <- out$leg$digits
 		if (is.null(digits)) {
-			d <- ceiling(1 / min(diff(sort(levs))))
-			decimals <- round(log10(d) + 1)
+			if (length(levs) > 1) {
+				d <- ceiling(1 / min(diff(sort(levs))))
+				decimals <- round(log10(d) + 1)
+			} else {
+				txt <- format(levs, scientific = FALSE, digits=18)
+				txt <- unlist(strsplit(txt, "\\."))
+				if (nchar(txt[1]) > 3) decimals = 0
+				else if (nchar(txt[1]) > 2) decimals = 1
+				else if (nchar(txt[1]) > 1) decimals = 2
+				else if (txt[1] != 0) decimals = 3
+				else {
+					txt <- unlist(strsplit(txt[2], ""))
+					i <- which(txt != "0")[1]
+					if (length(i) > 0) decimals = i+2
+					else decimals = 9;
+				}
+			}
 			levs <- round(levs, decimals)
 		}
 		out$levels <- levs
