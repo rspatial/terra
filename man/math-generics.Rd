@@ -13,6 +13,9 @@
 
 \alias{Math2,SpatVector-method}
 
+\alias{cumsum}
+\alias{cumsum,SpatRaster-method}
+
 \alias{log}
 \alias{log,SpatRaster-method}
 \alias{round}
@@ -52,6 +55,8 @@ The following methods have been implemented for \code{SpatExtent}: \code{round, 
 \S4method{math}{SpatRaster}(x, fun, digits=0, filename="", overwrite=FALSE, ...)
 
 \S4method{round}{SpatVector}(x, digits=4)
+
+\S4method{cumsum}{SpatRaster}(x)
 }
 
 \seealso{
@@ -89,6 +94,8 @@ s <- sqrt(r)
 math(r, "sqrt")
 
 round(s, 1)
+
+cumsum(r)
 }
 
 \keyword{methods}
