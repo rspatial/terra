@@ -1045,7 +1045,7 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 	if (multi) {
 		v.df = df;
 	} else {
-		v = v.disaggregate();
+		v = v.disaggregate(false);
 	}
 	return(v);
 }

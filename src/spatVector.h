@@ -277,7 +277,7 @@ class SpatVector {
 		std::string getError() { return msg.getError();}
 
 		SpatVector append(SpatVector x, bool ignorecrs);
-		SpatVector disaggregate();
+		SpatVector disaggregate(bool segments);
 		SpatVector shift(double x, double y);
 		SpatVector rescale(double fx, double fy, double x0, double y0);
 		SpatVector transpose();

@@ -72,15 +72,14 @@ SpatVector SpatVector::make_valid() {
 */
 
 
-SpatVector SpatVector::disaggregate() {
+SpatVector SpatVector::disaggregate(bool segments) {
+
 	SpatVector out;
 	out.srs = srs;
 	out.df = df.skeleton();
-
 	if (nrow() == 0) {
 		return out;
 	}
-
 	size_t n=0;
 	for (size_t i=0; i<nrow(); i++) {
 		n += geoms[i].parts.size();
@@ -98,6 +97,29 @@ SpatVector SpatVector::disaggregate() {
 				return out;
 			}
 		}
+	}
+	if (segments && (type() != "points")) {
+		SpatVector x;
+		x.srs = srs;
+		x.df = df.skeleton();
+		
+		for (size_t i=0; i<out.nrow(); i++) {
+			SpatGeom g = out.getGeom(i);
+			SpatDataFrame row = out.df.subset_rows(i);
+			size_t n = g.parts[0].x.size() - 1;			
+			for (size_t j=0; j<n; j++) {
+				std::vector<double> sx = {g.parts[0].x[j], g.parts[0].x[j+1]};
+				std::vector<double> sy = {g.parts[0].y[j], g.parts[0].y[j+1]};
+				SpatPart p(sx, sy);
+				SpatGeom gg = SpatGeom(p, lines);
+				x.addGeom(gg);
+				if (!x.df.rbind(row)) {
+					x.setError("cannot add row");
+					return x;
+				}
+			}
+		}
+		return x;
 	}
 
 	return out;

@@ -886,7 +886,7 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 	out = coll.get(0);
 	out.srs = srs;
 	if (!out.hasError()) {
-		out = out.disaggregate();
+		out = out.disaggregate(false);
 		if (bnd.size() > 0) {
 			SpatDataFrame empty;
 			bnd.df = empty;
@@ -935,7 +935,7 @@ SpatVector SpatVector::delaunay(double tolerance, int onlyEdges) {
 	out = coll.get(0);
 	out.srs = srs;
 	if (!out.hasError()) {
-		out = out.disaggregate();
+		out = out.disaggregate(false);
 		// associate with attributes
 	}
 	return out;
@@ -975,7 +975,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 		return x;
 	}
 
-	x = x.disaggregate();
+	x = x.disaggregate(false);
 	SpatVector tmp;
 	tmp.reserve(x.size());
 	for (size_t i =0; i<x.geoms.size(); i++) {
@@ -2646,7 +2646,7 @@ SpatVector SpatVector::gaps() {
 	SpatVector p(e, "");
 
 	p = p.erase(*this);
-	p = p.disaggregate();
+	p = p.disaggregate(false);
 	double exmin = e.xmin + 1;
 	unsigned j;
 	for (size_t i=0; i<p.size(); i++) {
