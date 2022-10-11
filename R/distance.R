@@ -29,7 +29,7 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 		} else {
 			exclude <- NA
 		}
-		x@ptr <- x@ptr$rastDistance(target, exclude, tolower(unit), opt)
+		x@ptr <- x@ptr$rastDistance(target, exclude, tolower(unit), TRUE, opt)
 		messages(x, "distance")
 	}
 )

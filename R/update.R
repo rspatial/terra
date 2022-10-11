@@ -4,8 +4,9 @@ setMethod("update.names", signature(x="SpatRaster"),
 		opt <- terra:::spatOptions()
 		ok <- x@ptr$update_names(opt)
 		if (!ok) {
-			error("update.names", "update failed")
+			messages(x, "update.names")
 		}
 		invisible(x)
 	}
 )
+
