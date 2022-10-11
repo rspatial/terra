@@ -129,6 +129,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool
 		
 		std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
 
+/*
 		if (gtype == "points") {
 			readBlock(v, out.bs, i);
 			if (std::isnan(target)) {
@@ -170,6 +171,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool
 				}
 			}
 		} else {
+*/			
 			x.readBlock(v, out.bs, i);
 			if (std::isnan(target)) {		
 				for (size_t j=0; j<v.size(); j++) {
@@ -187,7 +189,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool
 					}
 				}
 			}
-		}
+//		}
 		std::vector<std::vector<double>> xy = xyFromCell(cells);
 		if (distance) {
 			shortDistPoints(vals, xy[0], xy[1], pxy[0], pxy[1], lonlat, m);
@@ -272,7 +274,55 @@ std::vector<double> dist_only(const std::vector<double>& vx, const std::vector<d
 }
 
 
-SpatRaster SpatRaster::distance_vector(SpatVector p, std::string unit, SpatOptions &opt) {
+SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>& y, bool lonlat, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (x.size() == 0) {
+		out.setError("no locations to compute distance from");
+		return(out);
+	}
+
+	std::vector<std::size_t> pm = sort_order_a(y);
+	permute(x, pm);
+	permute(y, pm);
+
+	unsigned nc = ncol();
+	opt.steps = std::max(opt.steps, (size_t) 4);
+
+ 	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+	std::vector<double> cells;
+	std::vector<double> dlast;
+	
+	std::vector<int_64> cols;
+	cols.resize(ncol());
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> tox = xFromCol(cols);
+	
+	double oldfirst = 0;
+	size_t first = 0;
+	size_t last  = x.size();
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		double toy = yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1);
+		dlast = dist_bounds(x, y, tox, toy, first, last, lonlat);
+		
+		cells.resize((out.bs.nrows[i] -1) * nc) ;
+		std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
+		std::vector<std::vector<double>> rxy = xyFromCell(cells);
+
+		std::vector<double> d = dist_only(x, y, rxy[0], rxy[1], oldfirst, last, lonlat, dlast);
+		oldfirst = first;
+		if (!out.writeBlock(d, i)) return out;
+	}
+	out.writeStop();
+	return(out);
+}
+
+
+SpatRaster SpatRaster::distance_spatvector(SpatVector p, std::string unit, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (source[0].srs.wkt == "") {
@@ -295,48 +345,15 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, std::string unit, SpatOptio
 		return(out);
 	}
 
-	p = p.aggregate(false);
+	//p = p.aggregate(false);
 	std::vector<std::vector<double>> pxy = p.coordinates();
-	std::vector<std::size_t> pm = sort_order_a(pxy[1]);
-	permute(pxy[0], pm);
-	permute(pxy[1], pm);
-
-	unsigned nc = ncol();
-	opt.steps = std::max(opt.steps, (size_t) 4);
-
- 	if (!out.writeStart(opt, filenames())) {
-		readStop();
-		return out;
+	if (m != 1) {
+		SpatOptions ops(opt);
+		SpatRaster out = distance_crds(pxy[0], pxy[1], lonlat, ops);
+		return out.arith(m, "*", false, opt);
+	} else {
+		return distance_crds(pxy[0], pxy[1], lonlat, opt);
 	}
-	std::vector<double> cells;
-	std::vector<double> dlast;
-	
-	std::vector<int_64> cols;
-	cols.resize(ncol());
-	std::iota(cols.begin(), cols.end(), 0);
-	std::vector<double> tox = xFromCol(cols);
-	
-	double oldfirst = 0;
-	size_t first = 0;
-	size_t last  = pxy[0].size();
-
-	for (size_t i = 0; i < out.bs.n; i++) {
-		double toy = yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1);
-		dlast = dist_bounds(pxy[0], pxy[1], tox, toy, first, last, lonlat);
-		
-		cells.resize((out.bs.nrows[i] -1) * nc) ;
-		std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
-		std::vector<std::vector<double>> rxy = xyFromCell(cells);
-
-		std::vector<double> d = dist_only(pxy[0], pxy[1], rxy[0], rxy[1], oldfirst, last, lonlat, dlast);
-		if (m != 1) {
-			for (double &v : d) v *= m;
-		}
-		oldfirst = first;
-		if (!out.writeBlock(d, i)) return out;
-	}
-	out.writeStop();
-	return(out);
 }
 
 /*

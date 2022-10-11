@@ -596,7 +596,8 @@ class SpatRaster {
 		SpatRaster distance(double target, double exclude, std::string unit, bool remove_zero, SpatOptions &opt);
 		SpatRaster disdir_vector_rasterize(SpatVector p, bool distance, bool from, bool degrees, double target, double exclude, std::string unit, SpatOptions &opt);
 		
-		SpatRaster distance_vector(SpatVector p, std::string unit, SpatOptions &opt);
+		SpatRaster distance_spatvector(SpatVector p, std::string unit, SpatOptions &opt);
+		SpatRaster distance_crds(std::vector<double>& x, std::vector<double>& y, bool lonlat, SpatOptions &opt);
 
 		SpatRaster direction(bool from, bool degrees, double target, double exclude, SpatOptions &opt);
 		SpatRaster direction_vector(SpatVector p, bool from, bool degrees, SpatOptions &opt);
