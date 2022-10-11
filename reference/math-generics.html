@@ -78,7 +78,10 @@ round has also been implemented for SpatVector, to round the coordinates of the 
 <span class="fu">math</span><span class="op">(</span><span class="va">x</span>, <span class="va">fun</span>, digits<span class="op">=</span><span class="fl">0</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">x</span>, digits<span class="op">=</span><span class="fl">4</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">x</span>, digits<span class="op">=</span><span class="fl">4</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">cumsum</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="see-also">
@@ -149,6 +152,17 @@ round has also been implemented for SpatVector, to round the coordinates of the 
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       : lyr.1, lyr.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min values  :   0.2,   0.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max values  :   1.0,   1.0 </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">cumsum</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 2  (nrow, ncol, nlyr)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 36, 18  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       :      lyr.1,     lyr.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min values  : 0.05937462, 0.1293587 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 0.96477909, 1.8721676 </span>
 </code></pre></div>
     </div>
   </div>
