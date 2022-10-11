@@ -1,7 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
 
-if (!isGeneric("update.names")) {setGeneric("update.names", function(x, ...) standardGeneric("update.names"))}
+if (!isGeneric("update")) {setGeneric("update", function(object, ...) standardGeneric("update"))}
 
 if (!isGeneric("viewshed")) {setGeneric("viewshed", function(x, ...) standardGeneric("viewshed"))}
 if (!isGeneric("sieve")) {setGeneric("sieve", function(x, ...) standardGeneric("sieve"))}

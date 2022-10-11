@@ -1,12 +1,14 @@
 
-setMethod("update.names", signature(x="SpatRaster"),
-	function(x) {
-		opt <- terra:::spatOptions()
-		ok <- x@ptr$update_names(opt)
-		if (!ok) {
-			messages(x, "update.names")
+setMethod("update", signature(object="SpatRaster"),
+	function(object, names=FALSE) {
+		if (names) {
+			opt <- terra:::spatOptions()
+			ok <- object@ptr$update_names(opt)
+			if (!ok) {
+				messages(object, "update")
+			}
 		}
-		invisible(x)
+		invisible(object)
 	}
 )
 
