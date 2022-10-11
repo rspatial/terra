@@ -943,7 +943,10 @@ bool SpatRaster::update_names(SpatOptions &opt) {
 	GDALRasterBandH poBand;
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].memory) continue;		
-		open_gdal(hDS, i, true, opt);
+		if (!open_gdal(hDS, i, true, opt)) {
+			setError("cannot open source " + std::to_string(i+1));
+			return false;
+		}
 		for (size_t b=0; b < source[i].nlyr; b++) {
 			poBand = GDALGetRasterBand(hDS, b+1);
 			GDALSetDescription(poBand, source[i].names[b].c_str());
