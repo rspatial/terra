@@ -30,11 +30,11 @@
 
 inline void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const bool& haversine, const double &lindist) {
 	if (lonlat) {
-		if (haversine) {
-			distanceToNearest_lonlat(d, x, y, px, py, lindist);
-		} else {
+	//	if (haversine) {
+	//		distanceToNearest_haversine(d, x, y, px, py, lindist);
+	//	} else {
 			distanceToNearest_lonlat(d, x, y, px, py, lindist);			
-		}
+	//	}
 	} else {
 		distanceToNearest_plane(d, x, y, px, py, lindist);
 	}
@@ -63,149 +63,6 @@ bool get_m(double &m, SpatSRS srs, bool lonlat, std::string unit) {
 		m /= 1000;
 	}
 	return true;
-}
-
-SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool from, bool degrees, double target, double exclude, std::string unit, bool haversine, SpatOptions &opt) {
-
-	SpatRaster out = geometry();
-	if (source[0].srs.wkt == "") {
-		out.setError("CRS not defined");
-		return(out);
-	}
-	if (!source[0].srs.is_same(p.srs, false)) {
-		out.setError("CRS do not match");
-		return(out);
-	}
-	bool lonlat = is_lonlat(); 
-
-	SpatRaster x;
-	SpatOptions ops(opt);
-	std::string gtype = p.type();
-	bool poly = gtype == "polygons";
-	
-	x = out.rasterize(p, "", {1}, NAN, false, false, false, false, false, ops);
-
-	if (distance && (!lonlat)) {
-		return x.distance(NAN, 0, unit, false, haversine, opt);
-	}
-
-	if (poly) {
-		x  = x.edges(false, "inner", 8, 0, ops);
-		SpatRaster xp = x.replaceValues({0}, {exclude}, 1, false, ops);
-		p  = xp.as_points(false, true, false, opt);
-	} else {
-		x = x.edges(false, "inner", 8, NAN, ops);
-		p = x.as_points(false, true, false, opt);
-	}
-	
-	std::vector<std::vector<double>> pxy = p.coordinates();
-
-	if (pxy.size() == 0) {
-		out.setError("no locations to compute from");
-		return(out);
-	}
-
-	double m=1;
-	if (!get_m(m, source[0].srs, lonlat, unit)) {
-		out.setError("invalid unit");
-		return(out);
-	}
-	unsigned nc = ncol();
-	if (!readStart()) {
-		out.setError(getError());
-		return(out);
-	}
-
- 	if (!out.writeStart(opt, filenames())) {
-		readStop();
-		return out;
-	}
-
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v;
-		std::vector<double> cells(out.bs.nrows[i] * nc) ;
-		std::vector<double> vals;
-		if (distance) {
-			vals.resize(out.bs.nrows[i] * nc, 0);
-		} else {
-			vals.resize(out.bs.nrows[i] * nc, NAN);			
-		}
-		
-		std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
-
-/*
-		if (gtype == "points") {
-			readBlock(v, out.bs, i);
-			if (std::isnan(target)) {
-				if (std::isnan(exclude)) {
-					for (size_t j=0; j<v.size(); j++) {
-						if (!std::isnan(v[j])) {
-							cells[j] = NAN;
-						}
-					}
-				} else {
-					for (size_t j=0; j<v.size(); j++) {
-						if (!std::isnan(v[j])) {
-							cells[j] = NAN;
-							if (v[j] == exclude) {
-								vals[j] = NAN;
-							}									
-						}
-					}
-				}
-			} else {
-				if (std::isnan(exclude)) {
-					for (size_t j=0; j<v.size(); j++) {
-						if (v[j] != target) {
-							cells[j] = NAN;
-							if (std::isnan(v[j])) {
-								vals[j] = NAN;
-							}
-						}
-					}
-				} else {
-					for (size_t j=0; j<v.size(); j++) {
-						if (v[j] != target) {
-							cells[j] = NAN;
-							if (std::isnan(v[j]) || (v[j] == exclude)) {
-								vals[j] = NAN;
-							}
-						}
-					}
-				}
-			}
-		} else {
-*/			
-			x.readBlock(v, out.bs, i);
-			if (std::isnan(target)) {		
-				for (size_t j=0; j<v.size(); j++) {
-					if (!std::isnan(v[j])) {
-						cells[j] = NAN;
-					}
-				}
-			} else {
-				for (size_t j=0; j<v.size(); j++) {
-					if (v[j] != target) {
-						cells[j] = NAN;
-						if (std::isnan(v[j])) {
-							vals[j] = NAN;
-						}
-					}
-				}
-			}
-//		}
-		std::vector<std::vector<double>> xy = xyFromCell(cells);
-		if (distance) {
-			shortDistPoints(vals, xy[0], xy[1], pxy[0], pxy[1], lonlat, haversine, m);
-		} else {
-			shortDirectPoints(vals, xy[0], xy[1], pxy[0], pxy[1], lonlat, from, degrees);
-		}
-		if (!out.writeBlock(vals, i)) return out;
-	}
-
-	out.writeStop();
-	readStop();
-	return(out);
 }
 
 
@@ -526,6 +383,156 @@ SpatRaster SpatRaster::distance_spatvector(SpatVector p, std::string unit, bool 
 	}
 	return out;
 }
+
+
+SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool from, bool degrees, double target, double exclude, std::string unit, bool haversine, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (source[0].srs.wkt == "") {
+		out.setError("CRS not defined");
+		return(out);
+	}
+	if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRS do not match");
+		return(out);
+	}
+	bool lonlat = is_lonlat(); 
+
+	SpatRaster x;
+	SpatOptions ops(opt);
+	std::string gtype = p.type();
+	bool poly = gtype == "polygons";
+	
+	x = out.rasterize(p, "", {1}, NAN, false, false, false, false, false, ops);
+
+	if (distance && (!lonlat)) {
+		return x.distance(NAN, 0, unit, false, haversine, opt);
+	}
+
+	if (poly) {
+		x  = x.edges(false, "inner", 8, 0, ops);
+		SpatRaster xp = x.replaceValues({0}, {exclude}, 1, false, ops);
+		p  = xp.as_points(false, true, false, opt);
+	} else {
+		x = x.edges(false, "inner", 8, NAN, ops);
+		p = x.as_points(false, true, false, opt);
+	}
+	
+	std::vector<std::vector<double>> pxy = p.coordinates();
+
+	if (pxy.size() == 0) {
+		out.setError("no locations to compute from");
+		return(out);
+	}
+
+	double m=1;
+	if (!get_m(m, source[0].srs, lonlat, unit)) {
+		out.setError("invalid unit");
+		return(out);
+	}
+
+	if (distance) {
+		return( x.distance_crds(pxy[0], pxy[1], lonlat, haversine, poly, opt));
+	}
+	
+	unsigned nc = ncol();
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+ 	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> v;
+		std::vector<double> cells(out.bs.nrows[i] * nc) ;
+		std::vector<double> vals;
+		if (distance) {
+			vals.resize(out.bs.nrows[i] * nc, 0);
+		} else {
+			vals.resize(out.bs.nrows[i] * nc, NAN);			
+		}
+		
+		std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
+
+/*
+		if (gtype == "points") {
+			readBlock(v, out.bs, i);
+			if (std::isnan(target)) {
+				if (std::isnan(exclude)) {
+					for (size_t j=0; j<v.size(); j++) {
+						if (!std::isnan(v[j])) {
+							cells[j] = NAN;
+						}
+					}
+				} else {
+					for (size_t j=0; j<v.size(); j++) {
+						if (!std::isnan(v[j])) {
+							cells[j] = NAN;
+							if (v[j] == exclude) {
+								vals[j] = NAN;
+							}									
+						}
+					}
+				}
+			} else {
+				if (std::isnan(exclude)) {
+					for (size_t j=0; j<v.size(); j++) {
+						if (v[j] != target) {
+							cells[j] = NAN;
+							if (std::isnan(v[j])) {
+								vals[j] = NAN;
+							}
+						}
+					}
+				} else {
+					for (size_t j=0; j<v.size(); j++) {
+						if (v[j] != target) {
+							cells[j] = NAN;
+							if (std::isnan(v[j]) || (v[j] == exclude)) {
+								vals[j] = NAN;
+							}
+						}
+					}
+				}
+			}
+		} else {
+*/			
+			x.readBlock(v, out.bs, i);
+			if (std::isnan(target)) {		
+				for (size_t j=0; j<v.size(); j++) {
+					if (!std::isnan(v[j])) {
+						cells[j] = NAN;
+					}
+				}
+			} else {
+				for (size_t j=0; j<v.size(); j++) {
+					if (v[j] != target) {
+						cells[j] = NAN;
+						if (std::isnan(v[j])) {
+							vals[j] = NAN;
+						}
+					}
+				}
+			}
+//		}
+		std::vector<std::vector<double>> xy = xyFromCell(cells);
+		if (distance) {
+			shortDistPoints(vals, xy[0], xy[1], pxy[0], pxy[1], lonlat, haversine, m);
+		} else {
+			shortDirectPoints(vals, xy[0], xy[1], pxy[0], pxy[1], lonlat, from, degrees);
+		}
+		if (!out.writeBlock(vals, i)) return out;
+	}
+
+	out.writeStop();
+	readStop();
+	return(out);
+}
+
 
 
 /*
