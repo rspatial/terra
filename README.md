@@ -49,9 +49,9 @@ Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
 remotes::install_github("rspatial/terra")
 ```
 
-#### MacOS
+#### macOS
 
-On OSX, first install gdal and proj with homebrew
+On macOS, first install gdal and proj with homebrew
 
 ```
 brew install pkg-config
@@ -67,7 +67,7 @@ remotes::install_github("rspatial/terra", configure.args = "--with-proj-lib=/opt
 To install the CRAN version from source you would do
 
 ```
-install.packages("rspatial/terra", configure.args = "--with-proj-lib=/usr/local/lib/")
+install.packages("terra", configure.args = "--with-proj-lib=/opt/homebrew/Cellar/proj/9.1.0/lib/")
 ```
 
 #### Linux
