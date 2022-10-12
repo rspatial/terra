@@ -18,7 +18,7 @@ Or apply the same method to each sub-dataset (SpatRaster) in a SpatRasterDataset
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-30</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-31</span>
       </span>
     </div>
 
@@ -98,10 +98,12 @@ Or apply the same method to each sub-dataset (SpatRaster) in a SpatRasterDataset
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>  </span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">sapp</span><span class="op">(</span><span class="va">s</span>, <span class="va">terrain</span><span class="op">)</span></span>
 <span class="r-in"></span>
+<span class="r-in"><span class="co">#SpatRasterDataset</span></span>
 <span class="r-in"><span class="va">sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="sds.html">sds</a></span><span class="op">(</span><span class="va">s</span><span class="op">*</span><span class="fl">2</span>, <span class="va">s</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">sapp</span><span class="op">(</span><span class="va">sd</span>, <span class="va">mean</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">sapp</span><span class="op">(</span><span class="va">sd</span>, \<span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="summarize-generics.html">mean</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
