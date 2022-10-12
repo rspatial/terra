@@ -9,7 +9,9 @@
 - `interpIDW` method for inverse-distance-weighted interpolation of points with a moving window
 - `interpNear` method for nearest neighbor interpolation of points with a moving window
 - `viewshed` method for SpatRaster
+- `update` method for SpatRaster
 - `sieve` filter method for SpatRaster
+- argument `segments=FALSE` to `disagg<SpatRaster>`
 
 
 ## enhancements

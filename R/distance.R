@@ -15,7 +15,7 @@ setMethod("buffer", signature(x="SpatRaster"),
 
 
 setMethod("distance", signature(x="SpatRaster", y="missing"),
-	function(x, y, target=NA, exclude=NULL, unit="m", filename="", ...) {
+	function(x, y, target=NA, exclude=NULL, unit="m", haversine=TRUE, filename="", ...) {
 		if (!is.null(list(...)$grid)) {
 			error("distance", "use 'gridDistance(x)' instead of  'distance(x, grid=TRUE)'")
 		}
@@ -29,7 +29,7 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 		} else {
 			exclude <- NA
 		}
-		x@ptr <- x@ptr$rastDistance(target, exclude, tolower(unit), TRUE, opt)
+		x@ptr <- x@ptr$rastDistance(target, exclude, tolower(unit), TRUE, haversine, opt)
 		messages(x, "distance")
 	}
 )
@@ -60,13 +60,13 @@ setMethod("gridDistance", signature(x="SpatRaster"),
 
 
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, unit="m", rasterize=FALSE, filename="", ...) {
+	function(x, y, unit="m", rasterize=FALSE, haversine=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		unit <- as.character(unit[1])
 		if (rasterize) {
-			x@ptr <- x@ptr$vectDisdirRasterize(y@ptr, TRUE, FALSE, FALSE, NA, NA, unit, opt)
+			x@ptr <- x@ptr$vectDisdirRasterize(y@ptr, TRUE, FALSE, FALSE, NA, NA, unit, haversine, opt)
 		} else {
-			x@ptr <- x@ptr$vectDistanceDirect(y@ptr, unit, opt)
+			x@ptr <- x@ptr$vectDistanceDirect(y@ptr, unit, haversine, opt)
 		}
 		messages(x, "distance")
 	}

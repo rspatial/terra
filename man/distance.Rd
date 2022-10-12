@@ -43,9 +43,9 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
 
 
 \usage{
-\S4method{distance}{SpatRaster,missing}(x, y, target=NA, exclude=NULL, unit="m", filename="", ...)
+\S4method{distance}{SpatRaster,missing}(x, y, target=NA, exclude=NULL, unit="m", haversine=TRUE, filename="", ...)
 
-\S4method{distance}{SpatRaster,SpatVector}(x, y, unit="m", rasterize=FALSE, filename="", ...)
+\S4method{distance}{SpatRaster,SpatVector}(x, y, unit="m", rasterize=FALSE, haversine=TRUE, filename="", ...)
 
 \S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m")
 
@@ -62,6 +62,7 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
   \item{target}{numeric. The value of the cells for which distances to cells that are not \code{NA} should be computed}
   \item{exclude}{numeric. The value of the cells that should not be considered for computing distances}
   \item{unit}{character. Can be either "m" or "km"}
+  \item{haversine}{logical. Use the haversine formula for lon/lat data use the haversine formula? If \code{FALSE}, the more precise but slower method of Karney (2003) is used}  
   \item{rasterize}{logical. If \code{TRUE} distance is computed from the cells covered by the geometries after rasterization. This can be much faster in some cases}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
