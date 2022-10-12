@@ -84,10 +84,10 @@ If y is missing, the distance between each points in x with all other points in 
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,missing</span>
-<span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, target<span class="op">=</span><span class="cn">NA</span>, exclude<span class="op">=</span><span class="cn">NULL</span>, unit<span class="op">=</span><span class="st">"m"</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, target<span class="op">=</span><span class="cn">NA</span>, exclude<span class="op">=</span><span class="cn">NULL</span>, unit<span class="op">=</span><span class="st">"m"</span>, haversine<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,SpatVector</span>
-<span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, unit<span class="op">=</span><span class="st">"m"</span>, rasterize<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, unit<span class="op">=</span><span class="st">"m"</span>, rasterize<span class="op">=</span><span class="cn">FALSE</span>, haversine<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector,ANY</span>
 <span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, sequential<span class="op">=</span><span class="cn">FALSE</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, symmetrical<span class="op">=</span><span class="cn">TRUE</span>, unit<span class="op">=</span><span class="st">"m"</span><span class="op">)</span>
@@ -119,6 +119,9 @@ If y is missing, the distance between each points in x with all other points in 
   <dt>unit</dt>
 <dd><p>character. Can be either "m" or "km"</p></dd>
 
+  <dt>haversine</dt>
+<dd><p>logical. Use the haversine formula for lon/lat data use the haversine formula? If <code>FALSE</code>, the more precise but slower method of Karney (2003) is used</p></dd>
+  
   <dt>rasterize</dt>
 <dd><p>logical. If <code>TRUE</code> distance is computed from the cells covered by the geometries after rasterization. This can be much faster in some cases</p></dd>
 
