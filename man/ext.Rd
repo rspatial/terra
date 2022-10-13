@@ -46,7 +46,7 @@ You can set the extent of a SpatRaster, but you cannot set the extent of a SpatV
   \item{cells}{positive integer (cell) numbers to subset the extent to area covered by these cells}
   \item{value}{SpatExtent, or numeric vector of length four (xmin, xmax, ymin, ymax)}  
   \item{...}{if \code{x} is a single numeric value, additional numeric values for xmax, ymin, and ymax}  
-  \item{xy}{logical. If \code{TRUE}, coordinates are in (xmin, ymin, xmax, ymax) order, instead of in the terra standard order of (xmin, xmax, ymin, ymax)}
+  \item{xy}{logical. Set this to \code{TRUE} to indicate that coordinates are in (xmin, ymin, xmax, ymax) order, instead of in the terra standard order of (xmin, xmax, ymin, ymax)}
 }
  
 \value{
