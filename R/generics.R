@@ -718,8 +718,8 @@ setMethod("project", signature(x="SpatVector"),
 
 setMethod("project", signature(x="SpatExtent"),
 	function(x, from, to)  {
-		x <- as.points(x)
-		crs(x) <- from
+		x <- as.polygons(x, crs=from)
+		x <- densify(x, 10000)
 		ext(project(x, to))
 	}
 )
