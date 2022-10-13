@@ -2007,28 +2007,26 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
 	return(pv);
 }
 
-bool SpatRaster::as_points_value(const double& target, std::vector<std::vector<double>>& xy, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::as_points_value(const double& target, SpatOptions &opt) {
 	
+	std::vector<std::vector<double>> xy(2);
 	if (nlyr() > 1) {
 		setError("can only process one layer");
-		return false;
+		return xy;
 	}
 
 	BlockSize bs = getBlockSize(opt);
-    size_t ncl = ncell();
-	xy[0].resize(0);
-	xy[1].resize(0);
-	xy[0].reserve(ncl/4);
-	xy[1].reserve(ncl/4);
-
+	
 	if (!readStart()) {
-		return(false);
+		return(xy);
 	}
 
 	size_t nc = ncol();
-	std::vector<double> v;
-	std::vector<std::vector<double>> p;
+    size_t ncl = ncell();
+	std::vector<double> cells;
+	cells.reserve(std::min(ncl/10, (size_t)10000));
 	
+	std::vector<double> v;
 	if (std::isnan(target)) {
 		for (size_t i = 0; i < bs.n; i++) {
 			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
@@ -2036,9 +2034,7 @@ bool SpatRaster::as_points_value(const double& target, std::vector<std::vector<d
 			size_t szv = v.size();
 			for (size_t j=0; j<szv; j++) {
 				if (std::isnan(v[j])) {
-					p = xyFromCell( base+j );
-					xy[0].push_back(p[0][0]);
-					xy[1].push_back(p[1][0]);				
+					cells.push_back(base+j);
 				}
 			}
 		}
@@ -2049,15 +2045,13 @@ bool SpatRaster::as_points_value(const double& target, std::vector<std::vector<d
 			size_t szv = v.size();
 			for (size_t j=0; j<szv; j++) {
 				if (v[j] == target) {
-					p = xyFromCell( base+j );
-					xy[0].push_back(p[0][0]);
-					xy[1].push_back(p[1][0]);				
+					cells.push_back(base+j);
 				}
 			}
 		}
 	}
 	readStop();
-	return(true);
+	return xyFromCell(cells);
 }
 
 

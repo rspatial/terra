@@ -573,7 +573,7 @@ class SpatRaster {
 		SpatVector polygonize(bool trunc, bool values, bool narm, bool aggregate, SpatOptions &opt);
 		SpatVector as_lines(SpatOptions &opt);
 		SpatVector as_points(bool values, bool narm, bool nall, SpatOptions &opt);
-		bool as_points_value(const double& target, std::vector<std::vector<double>>& xy, SpatOptions &opt);
+		std::vector<std::vector<double>> as_points_value(const double& target, SpatOptions &opt);
 
 		SpatVector as_multipoints(bool narm, bool nall, SpatOptions &opt);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
@@ -599,7 +599,7 @@ class SpatRaster {
 		SpatRaster disdir_vector_rasterize(SpatVector p, bool distance, bool from, bool degrees, double target, double exclude, std::string unit, bool haversine, SpatOptions &opt);
 		
 		SpatRaster distance_spatvector(SpatVector p, std::string unit, bool haversine, SpatOptions &opt);
-		SpatRaster distance_crds(std::vector<double>& x, std::vector<double>& y, bool lonlat, bool haversine, bool skip,SpatOptions &opt);
+		SpatRaster distance_crds(std::vector<double>& x, std::vector<double>& y, bool lonlat, bool haversine, bool skip, bool setNA, SpatOptions &opt);
 
 		SpatRaster direction(bool from, bool degrees, double target, double exclude, SpatOptions &opt);
 		SpatRaster direction_vector(SpatVector p, bool from, bool degrees, SpatOptions &opt);
