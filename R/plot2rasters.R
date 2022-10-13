@@ -167,7 +167,7 @@ setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 
 	out <- rast(xmin=rx[1], xmax=rx[2], ymin=ry[1], ymax=ry[2], ncol=nc, nrow=nr, crs="+proj=utm +zone=1 +datum=WGS84")
 	colnames(xy) <- c("x", "y")
-	out <- rasterize(vect(xy), out, fun=function(x, ...) length(x), background=0)
+	out <- rasterize(vect(xy), out, fun=function(x, ...) length(x), background=NA)
 	if (!is.null(xlim) | !is.null(ylim)) {
 		if (is.null(xlim)) xlim <- c(xmin(x), xmax(x))
 		if (is.null(ylim)) ylim <- c(ymin(x), ymax(x))

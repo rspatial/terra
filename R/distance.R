@@ -73,6 +73,12 @@ setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
 )
 
 
+setMethod("distance", signature(x="SpatRaster", y="sf"),
+	function(x, y, unit="m", rasterize=FALSE, haversine=TRUE, filename="", ...) {
+		distance(x, vect(y), unit=unit, rasterize=rasterize, haversine=haversine, filename=filename, ...) 
+	}
+)
+
 
 mat2wide <- function(m, sym=TRUE, keep=NULL) {
 	if (inherits(m, "dist")) {

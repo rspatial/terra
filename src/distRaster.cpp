@@ -283,7 +283,7 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 
 	unsigned nc = ncol();
 	opt.steps = std::max(opt.steps, (size_t) 4);
-	opt.progress = std::max(opt.progress, (unsigned) 6);
+	opt.progress = opt.progress * 1.5;
 
  	if (!out.writeStart(opt, filenames())) {
 		readStop();

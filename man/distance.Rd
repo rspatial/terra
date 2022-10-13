@@ -3,6 +3,7 @@
 \alias{distance}
 \alias{distance,SpatRaster,missing-method}
 \alias{distance,SpatRaster,SpatVector-method}
+\alias{distance,SpatRaster,sf-method}
 \alias{distance,SpatVector,ANY-method}
 \alias{distance,SpatVector,SpatVector-method}
 \alias{distance,matrix,matrix-method}

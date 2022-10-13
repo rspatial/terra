@@ -716,6 +716,14 @@ setMethod("project", signature(x="SpatVector"),
 	}
 )
 
+setMethod("project", signature(x="SpatExtent"),
+	function(x, from, to)  {
+		x <- as.points(x)
+		crs(x) <- from
+		ext(project(x, to))
+	}
+)
+
 setMethod("project", signature(x="matrix"),
     function(x, from, to)  {
         if (ncol(x) != 2) {
