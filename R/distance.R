@@ -165,11 +165,10 @@ setMethod("distance", signature(x="matrix", y="missing"),
 		if (is.null(lonlat)) {
 			error("distance", "lonlat should be TRUE or FALSE")
 		}
-		unit <- as.character(unit[1])
 		crs <- ifelse(isTRUE(lonlat), "+proj=longlat +datum=WGS84",
-							  "+proj=utm +zone=1 +datum=WGS84")
+							          "+proj=utm +zone=1 +datum=WGS84")
 		x <- vect(x, crs=crs)
-		distance(x, sequential=sequential, pairs=pairs, symmetrical=symmetrical, unit="m")
+		distance(x, sequential=sequential, pairs=pairs, symmetrical=symmetrical)
 	}
 )
 
