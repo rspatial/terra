@@ -785,9 +785,9 @@ RCPP_MODULE(spat){
 	
 		.method("combineCats", &SpatRaster::combineCats)
 		.method("droplevels", &SpatRaster::dropLevels)
-
-		.method("vectDisdirRasterize", &SpatRaster::disdir_vector_rasterize)
 		.method("vectDistanceDirect", &SpatRaster::distance_spatvector)
+		.method("vectDistanceRasterize", &SpatRaster::distance_rasterize)
+		.method("vectDirectionRasterize", &SpatRaster::direction_rasterize)
 		.method("clamp", &SpatRaster::clamp)
 		.method("replaceValues", &SpatRaster::replaceValues)
 		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, double, bool, bool, bool, SpatOptions&) )( &SpatRaster::reclassify))

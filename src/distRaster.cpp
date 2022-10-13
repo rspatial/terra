@@ -255,7 +255,7 @@ std::vector<double> dist_only(const std::vector<double>& vx, const std::vector<d
 }
 
 
-SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>& y, bool lonlat, bool haversine, bool skip, bool setNA, SpatOptions &opt) {
+SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>& y, bool haversine, bool skip, bool setNA, std::string unit, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (x.size() == 0) {
@@ -267,7 +267,14 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 	permute(x, pm);
 	permute(y, pm);
 
+	bool lonlat = is_lonlat(); 
 	if (!lonlat) haversine = false;
+
+	double m=1;
+	if (!get_m(m, source[0].srs, lonlat, unit)) {
+		out.setError("invalid unit");
+		return(out);
+	}
 
 	if (haversine) {
 		for (double &d : x) d *= toRad;	
@@ -317,9 +324,11 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 			dlast = dist_bounds(x, y, tox, toy, first, last, lonlat, haversine);
 			std::vector<double> d = dist_only(x, y, rxy[0], rxy[1], oldfirst, last, lonlat, dlast, true, v, haversine, setNA);
 			oldfirst = first;
+			if (m != 1) {
+				for (double &v : d) v *= m;				
+			}
 			if (!out.writeBlock(d, i)) return out;
-		}		
-		
+		}				
 		readStop();
 	} else {
 		for (size_t i = 0; i < out.bs.n; i++) {
@@ -335,6 +344,9 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 			dlast = dist_bounds(x, y, tox, toy, first, last, lonlat, haversine);
 			std::vector<double> d = dist_only(x, y, rxy[0], rxy[1], oldfirst, last, lonlat, dlast, false, v, haversine, setNA);
 			oldfirst = first;
+			if (m != 1) {
+				for (double &v : d) v *= m;				
+			}
 			if (!out.writeBlock(d, i)) return out;
 		}
 	}
@@ -360,12 +372,6 @@ SpatRaster SpatRaster::distance_spatvector(SpatVector p, std::string unit, bool 
 		return(out);
 	}
 
-	bool lonlat = is_lonlat(); 
-	double m=1;
-	if (!get_m(m, source[0].srs, lonlat, unit)) {
-		out.setError("invalid unit");
-		return(out);
-	}
 
 	//p = p.aggregate(false);
 	std::vector<std::vector<double>> pxy = p.coordinates();
@@ -375,25 +381,15 @@ SpatRaster SpatRaster::distance_spatvector(SpatVector p, std::string unit, bool 
 		SpatRaster x = rasterize(p, "", {1}, NAN, false, false, false, false, false, ops);
 		x = x.edges(false, "inner", 8, 0, ops);
 		SpatRaster xp = x.replaceValues({1}, {NAN}, 1, false, ops);
-		if (m != 1) {
-			out = x.distance_crds(pxy[0], pxy[1], lonlat, haversine, true, setNA, ops);
-			out= out.arith(m, "*", false, opt);
-		} else {
-			out = x.distance_crds(pxy[0], pxy[1], lonlat, haversine, true, setNA, opt);
-		}		
+		out = x.distance_crds(pxy[0], pxy[1], haversine, true, setNA, unit, opt);
 	} else {
-		if (m != 1) {
-			out = distance_crds(pxy[0], pxy[1], lonlat, haversine, false, setNA, ops);
-			return out.arith(m, "*", false, opt);
-		} else {
-			out = distance_crds(pxy[0], pxy[1], lonlat, haversine, false, setNA, opt);
-		}
+		out = distance_crds(pxy[0], pxy[1], haversine, false, setNA, unit, opt);
 	}
 	return out;
 }
 
 
-SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool from, bool degrees, double target, double exclude, std::string unit, bool haversine, SpatOptions &opt) {
+SpatRaster SpatRaster::distance_rasterize(SpatVector p, double target, double exclude, std::string unit, bool haversine, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (source[0].srs.wkt == "") {
@@ -413,7 +409,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool
 	
 	x = out.rasterize(p, "", {1}, NAN, false, false, false, false, false, ops);
 
-	if (distance && (!lonlat)) {
+	if (!lonlat) {
 		return x.distance(NAN, 0, unit, false, haversine, opt);
 	}
 
@@ -440,9 +436,50 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool
 	}
 
 	bool setNA = false;
-	if (distance) {
-		return( x.distance_crds(pxy[0], pxy[1], lonlat, haversine, poly, setNA, opt));
+	return( x.distance_crds(pxy[0], pxy[1], haversine, poly, setNA, unit, opt));
+	
+}
+
+
+
+SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (source[0].srs.wkt == "") {
+		out.setError("CRS not defined");
+		return(out);
 	}
+	if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRS do not match");
+		return(out);
+	}
+	bool lonlat = is_lonlat(); 
+
+	SpatRaster x;
+	SpatOptions ops(opt);
+	std::string gtype = p.type();
+	bool poly = gtype == "polygons";
+	
+	x = out.rasterize(p, "", {1}, NAN, false, false, false, false, false, ops);
+
+
+	if (poly) {
+		x  = x.edges(false, "inner", 8, 0, ops);
+		SpatRaster xp = x.replaceValues({0}, {exclude}, 1, false, ops);
+		p  = xp.as_points(false, true, false, opt);
+	} else {
+//		x = x.edges(false, "inner", 8, NAN, ops);
+		p = x.as_points(false, true, false, opt);
+	}
+	
+	std::vector<std::vector<double>> pxy = p.coordinates();
+
+	if (pxy.size() == 0) {
+		out.setError("no locations to compute from");
+		return(out);
+	}
+
+
 	
 	unsigned nc = ncol();
 	if (!readStart()) {
@@ -459,11 +496,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool
 		std::vector<double> v;
 		std::vector<double> cells(out.bs.nrows[i] * nc) ;
 		std::vector<double> vals;
-		if (distance) {
-			vals.resize(out.bs.nrows[i] * nc, 0);
-		} else {
-			vals.resize(out.bs.nrows[i] * nc, NAN);			
-		}
+		vals.resize(out.bs.nrows[i] * nc, NAN);			
 		
 		std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
 
@@ -529,11 +562,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool
 			}
 //		}
 		std::vector<std::vector<double>> xy = xyFromCell(cells);
-		if (distance) {
-			shortDistPoints(vals, xy[0], xy[1], pxy[0], pxy[1], lonlat, haversine, m);
-		} else {
-			shortDirectPoints(vals, xy[0], xy[1], pxy[0], pxy[1], lonlat, from, degrees);
-		}
+		shortDirectPoints(vals, xy[0], xy[1], pxy[0], pxy[1], lonlat, from, degrees);
 		if (!out.writeBlock(vals, i)) return out;
 	}
 
@@ -541,7 +570,6 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool distance, bool
 	readStop();
 	return(out);
 }
-
 
 
 /*
@@ -646,7 +674,7 @@ SpatRaster SpatRaster::distance(double target, double exclude, std::string unit,
 			if (p.size() == 0) {
 				return out.init({0}, opt);
 			}
-			return distance_crds(p[0], p[1], is_lonlat(), haversine, true, setNA, opt);
+			return distance_crds(p[0], p[1], haversine, true, setNA, unit, opt);
 
 		} else {
 			x = replaceValues({exclude, target}, {NAN, NAN}, 1, false, ops);
@@ -667,7 +695,7 @@ SpatRaster SpatRaster::distance(double target, double exclude, std::string unit,
 	if (p.size() == 0) {
 		return out.init({0}, opt);
 	}
-	return out.distance_crds(p[0], p[1], is_lonlat(), haversine, true, setNA, opt);
+	return out.distance_crds(p[0], p[1], haversine, true, setNA, unit, opt);
 	
 }
 
@@ -713,8 +741,7 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double 
 		out.setError("no cells to compute direction from or to");
 		return(out);
 	}
-	out = disdir_vector_rasterize(p, false, from, degrees, target, exclude, "m", false, opt);
-	return out;
+	return direction_rasterize(p, from, degrees, target, exclude, opt);
 }
 
 

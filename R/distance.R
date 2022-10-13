@@ -64,7 +64,7 @@ setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
 		opt <- spatOptions(filename, ...)
 		unit <- as.character(unit[1])
 		if (rasterize) {
-			x@ptr <- x@ptr$vectDisdirRasterize(y@ptr, TRUE, FALSE, FALSE, NA, NA, unit, haversine, opt)
+			x@ptr <- x@ptr$vectDistanceRasterize(y@ptr, NA, NA, unit, haversine, opt)
 		} else {
 			x@ptr <- x@ptr$vectDistanceDirect(y@ptr, unit, haversine, opt)
 		}
