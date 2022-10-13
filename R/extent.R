@@ -29,18 +29,20 @@ setMethod("ext", signature(x="missing"),
 )
 
 setMethod("ext", signature(x="numeric"),
-	function(x, ...){
+	function(x, ..., xy=FALSE){
 		dots <- as.vector(unlist(list(...)))
 		x <- c(x, dots)
-		if (length(x) < 4) {
-			error("ext", "insufficient number of elements (should be 4)")
-		}
-		if (length(x) > 4) {
-			error("ext", "more elements than expected (should be 4)")
+		n <- length(x)
+		if (n != 4) {
+			error("ext", "expected four numbers")
 		}
 		names(x) <- NULL
 		e <- methods::new("SpatExtent")
-		e@ptr <- SpatExtent$new(x[1], x[2], x[3], x[4])
+		if (xy) {
+			e@ptr <- SpatExtent$new(x[1], x[3], x[2], x[4])		
+		} else {		
+			e@ptr <- SpatExtent$new(x[1], x[2], x[3], x[4])
+		}
 		if (!e@ptr$valid) {
 			error("ext", "invalid extent")
 		}
