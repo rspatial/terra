@@ -13,11 +13,13 @@
 \alias{ext<-,SpatRaster,SpatExtent-method}
 \alias{ext<-,SpatRaster,numeric-method}
 \alias{ext,numeric-method}
+\alias{ext,matrix-method}
 \alias{ext,missing-method}
 \alias{ext,Spatial-method}
 \alias{ext,Raster-method}
 \alias{ext,Extent-method}
 \alias{ext,sf-method}
+\alias{ext,bbox-method}
 
 
 \title{Create, get or set a SpatExtent}

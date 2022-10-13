@@ -48,6 +48,21 @@ setMethod("ext", signature(x="numeric"),
 	}
 )
 
+setMethod("ext", signature(x="matrix"),
+	function(x){
+		ext(as.vector(x))
+	}
+)
+
+setMethod("ext", signature(x="bbox"),
+	function(x){
+		ext(x[c(1,3,2,4)])
+	}
+)
+
+
+
+
 
 setMethod("ext", signature(x="SpatRaster"),
 	function(x, cells=NULL){

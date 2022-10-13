@@ -938,20 +938,57 @@ bool SpatRaster::fillValuesGDAL(double fillvalue) {
 }
 
 
-bool SpatRaster::update_names(SpatOptions &opt) { 
+bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) { 
+	if ((!names) & (!crs) & (!ext)) {
+		addWarning("nothing to do");
+		return false;
+	}
 	GDALDatasetH hDS;
 	GDALRasterBandH poBand;
+	size_t n=0;
 	for (size_t i=0; i<nsrc(); i++) {
-		if (source[i].memory) continue;		
+		if (source[i].memory) continue;	
+		n++;
 		if (!open_gdal(hDS, i, true, opt)) {
 			setError("cannot open source " + std::to_string(i+1));
 			return false;
 		}
-		for (size_t b=0; b < source[i].nlyr; b++) {
-			poBand = GDALGetRasterBand(hDS, b+1);
-			GDALSetDescription(poBand, source[i].names[b].c_str());
+		if (names) {
+			for (size_t b=0; b < source[i].nlyr; b++) {
+				poBand = GDALGetRasterBand(hDS, b+1);
+				GDALSetDescription(poBand, source[i].names[b].c_str());
+			}
+		} 
+		if (crs) {
+			std::string crs = source[i].srs.wkt;
+			OGRSpatialReference oSRS;
+			OGRErr erro = oSRS.SetFromUserInput(&crs[0]);
+			if (erro == 4) {
+				setError("CRS failure");
+				GDALClose( hDS );
+				return false ;
+			}
+			char *pszSRS_WKT = NULL;
+		#if GDAL_VERSION_MAJOR >= 3
+			const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+			oSRS.exportToWkt(&pszSRS_WKT, options);
+		#else
+			oSRS.exportToWkt(&pszSRS_WKT);
+		#endif
+			GDALSetProjection(hDS, pszSRS_WKT);
+			CPLFree(pszSRS_WKT);		
+		}
+		if (ext) {
+			std::vector<double> rs = resolution();
+			SpatExtent extent = getExtent();
+			double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
+			GDALSetGeoTransform(hDS, adfGeoTransform);
 		}
 		GDALClose(hDS);
+	}
+	if (n == 0) {
+		addWarning("no sources on disk");
+		return false;
 	}
 	return true;
 }

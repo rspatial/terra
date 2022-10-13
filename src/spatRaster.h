@@ -528,7 +528,7 @@ class SpatRaster {
 		SpatRaster writeRaster(SpatOptions &opt);
 		SpatRaster writeTempRaster(SpatOptions &opt);
 		bool writeDelim(std::string filename, std::string delim, bool cell, bool xy, SpatOptions &opt);
-		bool update_names(SpatOptions &opt);
+		bool update_meta(bool names, bool crs, bool ext, SpatOptions &opt);
 
 		//SpatRaster writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
 		//SpatRaster writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);

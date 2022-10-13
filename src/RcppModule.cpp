@@ -745,7 +745,7 @@ RCPP_MODULE(spat){
 		.method("canProcessInMemory", &SpatRaster::canProcessInMemory)
 		.method("chunkSize", &SpatRaster::chunkSize)
 //		.method("to_memory", &SpatRaster::to_memory, "to_memory")
-		.method("update_names", &SpatRaster::update_names)
+		.method("update_meta", &SpatRaster::update_meta)
 
 
 		.method("adjacentMat", &SpatRaster::adjacentMat)
