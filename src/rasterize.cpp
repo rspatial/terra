@@ -653,9 +653,15 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 	if ( !e.valid() ) {
 		return;
 	}
-	r = r.crop(v.extent, "out", ropt);
+	bool cropped = false;
+	SpatRaster rc = r.crop(v.extent, "out", ropt);
+	if ( ((ncol() > 1000) && ((ncol() / rc.ncol()) > 1.5))
+			|| ((nrow() > 1000) && ((nrow() / rc.nrow()) > 1.5) )) {
+		cropped = true;
+		r = rc;
+	}
 	//r = r.disaggregate(fact, ropt);
-	std::vector<double> feats(1, 0.01) ;
+	std::vector<double> feats(1, 1) ;
 	r = r.rasterize(v, "", feats, NAN, true, false, true, false, false, ropt);
 //	r = r.aggregate(fact, "sum", true, ropt);
 	std::vector<std::vector<double>> pts = r.cells_notna(ropt);
@@ -665,8 +671,13 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 		cells.resize(1);
 		cells[0] = NAN;
 	} else {
-		cells = pts[0];
 		weights = pts[1];
+		if (cropped) {
+			pts = r.xyFromCell(pts[0]);
+			cells = cellFromXY(pts[0], pts[1]);
+		} else {
+			cells = pts[0];
+		}
 	}
 	return;
 }
