@@ -219,6 +219,17 @@ setMethod ("show" , "SpatRaster",
 			m <- inMemory(object)
 
 			f <- sources(object)
+			nf <- nchar(f)
+			if (any(nf > 256)) {
+				for (i in 1:length(nf)) {
+					if (nf[i] > 256) {
+						f[i] <- unlist(strsplit(f[i], "\\?"))[1]
+						if (nchar(f[i]) > 256) {
+							f[i] <- substr(f[i], nf[i]-255, nf[i])
+						}
+					}
+				}
+			}
 			hdf5 <- substr(f, 1, 5) == "HDF5:"
 			f[!hdf5] <- basename(f[!hdf5])
 			if (any(hdf5)) {
