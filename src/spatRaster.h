@@ -574,6 +574,8 @@ class SpatRaster {
 		SpatVector as_lines(SpatOptions &opt);
 		SpatVector as_points(bool values, bool narm, bool nall, SpatOptions &opt);
 		std::vector<std::vector<double>> as_points_value(const double& target, SpatOptions &opt);
+		std::vector<std::vector<double>> cells_notna(SpatOptions &opt);
+
 
 		SpatVector as_multipoints(bool narm, bool nall, SpatOptions &opt);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);

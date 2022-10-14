@@ -2054,6 +2054,41 @@ std::vector<std::vector<double>> SpatRaster::as_points_value(const double& targe
 	return xyFromCell(cells);
 }
 
+std::vector<std::vector<double>> SpatRaster::cells_notna(SpatOptions &opt) {
+	
+	std::vector<std::vector<double>> out(2);
+	if (nlyr() > 1) {
+		setError("can only process one layer");
+		return out;
+	}
+
+	BlockSize bs = getBlockSize(opt);
+	
+	if (!readStart()) {
+		return(out);
+	}
+
+	size_t nc = ncol();
+    size_t ncl = ncell();
+	size_t rs = std::min(ncl/10, (size_t)10000);
+	out[0].reserve(rs);
+	out[1].reserve(rs);
+	
+	for (size_t i = 0; i < bs.n; i++) {
+		std::vector<double> v;
+		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
+		size_t base = (bs.row[i] * nc);
+		size_t szv = v.size();
+		for (size_t j=0; j<szv; j++) {
+			if (!std::isnan(v[j])) {
+				out[0].push_back(base+j); // cell
+				out[1].push_back(v[j]); // value
+			}
+		}
+	}
+	readStop();
+	return out;
+}
 
 
 void getCorners(std::vector<double> &x,  std::vector<double> &y, const double &X, const double &Y, const double &xr, const double &yr) {
