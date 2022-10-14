@@ -642,33 +642,29 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt) {
 // note that this is only for polygons
     SpatOptions ropt(opt);
-	opt.progress = nrow()+1;
-	SpatRaster rr = geometry(1);
-	std::vector<unsigned> fact = {10, 10};
+	//opt.progress = nrow()+1;
+	SpatRaster r = geometry(1);
+	//std::vector<unsigned> fact = {10, 10};
 	SpatExtent e = getExtent();
 	SpatExtent ve = v.getExtent();
 	e = e.intersect(ve);
 	if ( !e.valid() ) {
 		return;
 	}
-	SpatRaster r = rr.crop(v.extent, "out", ropt);
-	r = r.disaggregate(fact, ropt);
-	std::vector<double> feats(1, 1) ;
-	r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt);
-	r = r.arith(100.0, "/", false, ropt);
-	r = r.aggregate(fact, "sum", true, ropt);
-	SpatVector pts = r.as_points(true, true, false, ropt);
-	if (pts.size() == 0) {
+	r = r.crop(v.extent, "out", ropt);
+	//r = r.disaggregate(fact, ropt);
+	std::vector<double> feats(1, 0.01) ;
+	r = r.rasterize(v, "", feats, NAN, true, false, true, false, false, ropt);
+//	r = r.aggregate(fact, "sum", true, ropt);
+	std::vector<std::vector<double>> pts = r.cells_notna(ropt);
+	if (pts[0].size() == 0) {
 		weights.resize(1);
 		weights[0] = NAN;
 		cells.resize(1);
 		cells[0] = NAN;
 	} else {
-		SpatDataFrame vd = pts.getGeometryDF();
-		std::vector<double> x = vd.getD(0);
-		std::vector<double> y = vd.getD(1);
-		cells = rr.cellFromXY(x, y);
-		weights = pts.df.dv[0];
+		cells = pts[0];
+		weights = pts[1];
 	}
 	return;
 }
