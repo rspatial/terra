@@ -282,7 +282,7 @@ class SpatVector {
 		SpatVector rescale(double fx, double fy, double x0, double y0);
 		SpatVector transpose();
 		SpatVector flip(bool vertical);	
-		SpatVector rotate(double angle, double x0, double y0);
+		SpatVector rotate(double angle, std::vector<double> x0, std::vector<double> y0);
 		SpatVector normalize_longitude();
 		SpatVector rotate_longitude(double longitude, bool left);
 

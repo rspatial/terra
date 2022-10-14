@@ -322,7 +322,7 @@ setMethod("spin", signature(x="SpatVector"),
 		}
 		angle <- angle[1]
 		stopifnot(is.numeric(angle) && !is.nan(angle))
-		x@ptr <- x@ptr$rotate(angle, x0[1], y0[1])
+		x@ptr <- x@ptr$rotate(angle, x0, y0)
 		messages(x, "spin")
 	}
 )
@@ -453,7 +453,7 @@ setMethod("simplifyGeom", signature(x="SpatVector"),
 setMethod("thinGeom", signature(x="SpatVector"),
 	function(x, threshold=1e-6, makeValid=TRUE) {
 		x@ptr <- x@ptr$thin(threshold)
-		x <- messages(x, "simplifyGeom")
+		x <- messages(x, "thinGeom")
 		if (makeValid) {
 			x <- makeValid(x)
 		}

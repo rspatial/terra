@@ -18,6 +18,7 @@
 #include "spatVector.h"
 #include "string_utils.h"
 #include "vecmath.h"
+#include "recycle.h"
 
 #include "gdal_alg.h"
 #include "ogrsf_frmts.h"
@@ -525,18 +526,21 @@ void rotit(std::vector<double> &x, std::vector<double> &y, const double &x0, con
 
 
 
-SpatVector SpatVector::rotate(double angle, double x0, double y0) {
+SpatVector SpatVector::rotate(double angle, std::vector<double> x0, std::vector<double> y0) {
 	angle = -M_PI * angle / 180;
+	size_t n = size();
+	recycle(x0, n);
+	recycle(y0, n);
 	double cos_angle = cos(angle);
 	double sin_angle = sin(angle);
 	SpatVector out = *this;
-	for (size_t i=0; i < size(); i++) {
+	for (size_t i=0; i < n; i++) {
 		for (size_t j=0; j < geoms[i].size(); j++) {
-			rotit(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, x0, y0, cos_angle, sin_angle);
+			rotit(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, x0[i], y0[i], cos_angle, sin_angle);
 			if (geoms[i].parts[j].hasHoles()) {
 				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
 					rotit(out.geoms[i].parts[j].holes[k].x,
-						  out.geoms[i].parts[j].holes[k].y, x0, y0, cos_angle, sin_angle);
+						  out.geoms[i].parts[j].holes[k].y, x0[i], y0[i], cos_angle, sin_angle);
 
 					out.geoms[i].parts[j].holes[k].extent.xmin =
 						vmin(out.geoms[i].parts[j].holes[k].x, true);
