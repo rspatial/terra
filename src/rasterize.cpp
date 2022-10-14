@@ -250,8 +250,10 @@ SpatRaster SpatRaster::hardCopy(SpatOptions &opt) {
 bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filename, std::string &driver, double &naval, bool update, double background, SpatOptions &opt) {
 
 	filename = opt.get_filename();
+	SpatOptions ops(opt);
+	ops.ncopies += 4;
 	if (filename == "") {
-		if (canProcessInMemory(opt)) {
+		if (canProcessInMemory(ops)) {
 			driver = "MEM";
 		} else {
 			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
