@@ -157,7 +157,7 @@ rastBufR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 			rb <- focal(rb, m, "sum", na.rm=TRUE)
 		} 
 	}
-	out <- rast(x, nlyr=1)
+	out <- rast(x, nlyr=nl)
 	ncs <- ncol(out)
 	e <- ext(out)
 	hy <- yres(out)/2
@@ -167,13 +167,9 @@ rastBufR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 		e$ymax <- yFromRow(out, b$row[i]) + hy
 		e$ymin <- yFromRow(out, b$row[i] + b$nrows[i] - 1) - hy
 		rbe <- crop(rb, e)
-		f <- as.polygons(rbe, dissolve=FALSE)
-		if (nrow(f) > 0) {
-			f <- buffer(f, w)
-			r <- relate(f, v, "intersects", pairs=TRUE)
-		} else {
-			r <- cbind(0,0)[0,]
-		}
+		buf <- as.polygons(rbe, dissolve=FALSE)
+		buf <- buffer(buf, w)
+		r <- relate(buf, y, "intersects", pairs=TRUE)
 		if ((pars[4] > 1) && (nrow(r) > 0)) {
 			a <- aggregate(r[,1], list(r[,1]), length)
 			a <- a[a[,2] >= pars[4], 1]
@@ -181,21 +177,22 @@ rastBufR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 		} 
 		if (nrow(r) > 0) {
 			v <- matrix(pars[5], ncell(rbe), nl)
-			if ((ncol(z) == 2) || (!cvars)) {			
+			if ((ncol(z) == 1) || (!cvars)) {
 				f <- aggregate(z[r[,2]], list(r[,1]), rfun)
 				v[f[,1], ] <- f[,-1]
-				writeValues(out, v, b$row[i], b$nrows[i])					
+				writeValues(out, v, b$row[i], b$nrows[i])
 			} else {
-				p <- z[r[,1], drop=FALSE]
+				u <- unique(r[,1])
+				p <- z[r[,2], ,drop=FALSE]
 				p <- sapply(u, function(i) rfun(p[r[,1]==i, ,drop=FALSE]))
 				if (!is.null(dim(p))) p <- t(p)
-				v[r[,1], ] <- as.matrix(p)
-				writeValues(out, v, b$row[i], b$nrows[i])					
+				v[u, ] <- as.matrix(p)
+				writeValues(out, v, b$row[i], b$nrows[i])
 			}
 		} else {
 			writeValues(out, rep(pars[5], ncell(rbe) * nl), b$row[i], b$nrows[i])
 		}			
-	}		
+	}
 	writeStop(out)
 }
 
