@@ -10,7 +10,7 @@ e <- extract(elev, y, fun=mean, exact=TRUE, na.rm=TRUE)
 expect_equal(e[,2], c(467.379239, 334.685564))
 
 e <- extract(elev, y, fun=mean, weights=TRUE, na.rm=TRUE)
-expect_equal(e[,2], c(467.29708, 334.856276))
+expect_equal(e[,2], c( 467.145222, 335.190032))
 
 
 x <- rast(y, res=.2)
