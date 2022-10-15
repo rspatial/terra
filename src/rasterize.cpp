@@ -397,12 +397,14 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	if (weights && ispol) {
 		SpatOptions sopts(opt);
 		SpatRaster wout = geometry(1);
+		field = "";
 		unsigned agx = 1000 / ncol();
 		agx = std::max((unsigned)10, agx);
 		unsigned agy = 1000 / nrow();
 		agy = std::max((unsigned)10, agy);
+		//unsigned agx = 100;
+		//unsigned agy = 100;
 		wout = wout.disaggregate({agx, agy}, sopts);
-		field = "";
 		double f = agx * agy;
 		wout = wout.rasterize(x, field, {1/f}, background, touches, add, false, false, false, sopts);
 		wout = wout.aggregate({agx, agy}, "sum", true, opt);
@@ -660,23 +662,22 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 		cropped = true;
 		r = rc;
 	}
-	//r = r.disaggregate(fact, ropt);
-	std::vector<double> feats(1, 1) ;
-	r = r.rasterize(v, "", feats, NAN, true, false, true, false, false, ropt);
-//	r = r.aggregate(fact, "sum", true, ropt);
-	std::vector<std::vector<double>> pts = r.cells_notna(ropt);
-	if (pts[0].size() == 0) {
+	std::vector<double> feats;
+	r = r.rasterize(v, "", feats, NAN, false, false, true, false, false, ropt);
+	std::vector<std::vector<double>> cv = r.cells_notna(ropt);
+	
+	if (cv[0].size() == 0) {
 		weights.resize(1);
 		weights[0] = NAN;
 		cells.resize(1);
 		cells[0] = NAN;
 	} else {
-		weights = pts[1];
+		weights = cv[1];
 		if (cropped) {
-			pts = r.xyFromCell(pts[0]);
-			cells = cellFromXY(pts[0], pts[1]);
+			cv = r.xyFromCell(cv[0]);
+			cells = cellFromXY(cv[0], cv[1]);
 		} else {
-			cells = pts[0];
+			cells = cv[0];
 		}
 	}
 	return;

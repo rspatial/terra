@@ -763,6 +763,7 @@ RCPP_MODULE(spat){
 
 		.method("as_points", &SpatRaster::as_points)
 		.method("as_points_value", &SpatRaster::as_points_value)
+		.method("cells_notna", &SpatRaster::cells_notna)
 		.method("as_multipoints", &SpatRaster::as_multipoints)
 
 		.method("as_lines", &SpatRaster::as_lines)

@@ -10,17 +10,17 @@ e <- extract(elev, y, fun=mean, exact=TRUE, na.rm=TRUE)
 expect_equal(e[,2], c(467.379239, 334.685564))
 
 e <- extract(elev, y, fun=mean, weights=TRUE, na.rm=TRUE)
-expect_equal(e[,2], c( 467.145222, 335.190032))
+expect_equal(e[,2], c(467.3933629, 334.65513085))
 
 
 x <- rast(y, res=.2)
 values(x) <- 1:ncell(x)
 expect_equal(cells(x, y), cbind(ID=c(1,2), cell=c(1,4)))
-expect_equal(as.vector(cells(x, y, weights=TRUE)), c(1, 1, 1, 2, 2, 2, 1, 2, 4, 2, 3, 4, 0.525620, 0.418020, 0.044992, 0.000300, 0.074204, 0.495152))
+expect_equal(as.vector(cells(x, y, weights=TRUE)), c(1, 1, 1, 2, 2, 2, 1, 2, 4, 2, 3, 4, 0.521988, 0.414648, 0.043812, 0.000240, 0.072960, 0.491532))
 
 expect_equivalent(unlist(extract(x, y)), c(1,2,1,4))
-expect_equivalent(unlist(extract(x, y, cells=TRUE, weights=TRUE)), c(1, 1, 1, 2, 2, 2, 1, 2, 4, 2, 3, 4, 1, 2, 4, 2, 3, 4,
-0.525620, 0.418020, 0.044992, 0.000300, 0.074204, 0.495152))
+expect_equivalent(unlist(extract(x, y, cells=TRUE, weights=TRUE)), c(1, 1, 1, 2, 2, 2, 1, 2, 4, 2, 3, 4, 1, 2, 4, 2, 3, 4, 0.521988, 0.414648, 0.043812, 0.000240, 0.072960, 0.491532))
+
 
 r <- rast(nrows=5, ncols=5, xmin=0, xmax=1, ymin=0, ymax=1, names="test")
 r[c(2,7)] <- c(15, 20)
