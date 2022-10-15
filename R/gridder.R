@@ -224,10 +224,9 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 				nl <- length(test)				
 			} else {
 				test <- fun(1:5)
-				nl <- length(test)
+				nl <- length(test) * (ncol(y)-2)
 			}
 		}
-		nl <- nl * (ncol(y)-2)
 		
 		if (win == "buffer") {
 			rastBufR(x, y, win, pars=pars, rfun=fun, nl=nl, cvars=cvars, filename=filename, ...)
