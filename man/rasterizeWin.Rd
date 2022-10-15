@@ -15,9 +15,11 @@ This can result in much smoother results compared to the standard \code{\link{ra
 }
 
 \usage{
-\S4method{rasterizeWin}{SpatRaster,SpatVector}(x, y, field, fun, win="circle", pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...)
+\S4method{rasterizeWin}{SpatRaster,SpatVector}(x, y, field, fun, win="circle", 
+		pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...)
 
-\S4method{rasterizeWin}{SpatRaster,matrix}(x, y, fun, win="circle", pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...)
+\S4method{rasterizeWin}{SpatRaster,matrix}(x, y, fun, win="circle", 
+		pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...)
 }
 
 \arguments{

@@ -254,12 +254,12 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 )
 
 setMethod("rasterizeWin", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field, fun, win="circle", pars, minPoints=1, fill=NA, filename="", ...) {
+	function(x, y, field, fun, win="circle", pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...) {
 		if (geomtype(y) != "points") {
 			error("rasterizeWin", "SpatVector y must have a point geometry")		
 		}
 		y <- cbind(crds(y), get_z(y, field, "rasterizeWin"))
-		rasterizeWin(x, y, fun=fun, win=win, pars=pars, minPoints=minPoints, fill=fill, filename=filename, ...)
+		rasterizeWin(x, y, fun=fun, win=win, pars=pars, minPoints=minPoints, fill=fill, cvars=cvars, filename=filename, ...)
 	}
 )
 
