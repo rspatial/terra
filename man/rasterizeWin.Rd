@@ -15,9 +15,9 @@ This can result in much smoother results compared to the standard \code{\link{ra
 }
 
 \usage{
-\S4method{rasterizeWin}{SpatRaster,SpatVector}(x, y, field, fun, win="circle", pars, minPoints=1, fill=NA, filename="", ...)
+\S4method{rasterizeWin}{SpatRaster,SpatVector}(x, y, field, fun, win="circle", pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...)
 
-\S4method{rasterizeWin}{SpatRaster,matrix}(x, y, fun, win="circle", pars, minPoints=1, fill=NA, filename="", ...)
+\S4method{rasterizeWin}{SpatRaster,matrix}(x, y, fun, win="circle", pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...)
 }
 
 \arguments{
@@ -29,6 +29,7 @@ This can result in much smoother results compared to the standard \code{\link{ra
   \item{pars}{parameters to define the window. If \code{win="circle"} or \code{win="buffer"}, a single number to set the radius of the circle or the width of the buffer. If \code{win="ellipse"}, either two numbers (the x and y-axis) or three numbers the axes and a rotation (in degrees). If \code{win="rectangle"}, either two (width, height) or three (width, height) and the rotation in degrees. The unit of the radius/width/height/axis parameters is that of the coordinate reference system. That is, if you have a lon/lat crs, there is no conversion of degrees to meters or vice-versa}
   \item{minPoints}{numeric. The minimum number of points to use. If fewer points are found in a search ellipse it is considered empty and the fill value is returned}
   \item{fill}{numeric. value to use to fill cells with empty search areas}
+  \item{cvars}{logical. When using multiple fields, should \code{fun} operate on all of them at once? If not, \code{fun} is applied to each variable separately}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

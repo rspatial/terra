@@ -64,7 +64,7 @@ get_rad <- function(r, caller="rasterizeWin") {
 }
 
 
-rastWinR <- function(x, y, win, pars, rfun, nl, filename, ...) {
+rastWinR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 
 	out <- rast(x, nlyr=nl)
 	rb <- rast(out)
@@ -122,9 +122,17 @@ rastWinR <- function(x, y, win, pars, rfun, nl, filename, ...) {
 			} 
 
 			if (length(p[[1]]) > 0) {
-				p <- aggregate(y[p[[2]],3:ncol(y)], p[1], rfun)
+				py <- y[p[[2]],3:ncol(y)]
 				v <- matrix(pars[5], ncell(rbe), nl)
-				v[p[,1], ] <- as.matrix(p[,-1])
+				if (cvars) {
+					u <- unique(p[[1]])
+					p <- sapply(u, function(i) rfun(py[p[[1]]==i, ,drop=FALSE]))
+					if (!is.null(dim(p))) p <- t(p)
+					v[u, ] <- as.matrix(p)
+				} else {
+					p <- aggregate(py, p[1], rfun)
+					v[p[,1], ] <- as.matrix(p[,-1])
+				}
 				writeValues(out, v, b$row[i], b$nrows[i])					
 			} else {
 				writeValues(out, rep(pars[5], ncell(rbe) * nl), b$row[i], b$nrows[i])
@@ -135,9 +143,9 @@ rastWinR <- function(x, y, win, pars, rfun, nl, filename, ...) {
 }
 
 
-rastBufR <- function(x, y, win, pars, rfun, nl, filename, ...) {
+rastBufR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 	w <- pars[1]
-	z <- y[,3]
+	z <- y[,-c(1:2), drop=FALSE]
 	y <- vect(y[,1:2,drop=FALSE])
 	out <- rast(x, nlyr=1)
 	rb <- rast(out)
@@ -172,20 +180,28 @@ rastBufR <- function(x, y, win, pars, rfun, nl, filename, ...) {
 			r <- r[r[,1] %in% a, ]
 		} 
 		if (nrow(r) > 0) {
-			f <- aggregate(z[r[,2]], list(r[,1]), rfun)
 			v <- matrix(pars[5], ncell(rbe), nl)
-			v[f[,1], ] <- f[,-1]
-			writeValues(out, v, b$row[i], b$nrows[i])					
-		} else if (!is.na(pars[5])) {
+			if ((ncol(z) == 2) || (!cvars)) {			
+				f <- aggregate(z[r[,2]], list(r[,1]), rfun)
+				v[f[,1], ] <- f[,-1]
+				writeValues(out, v, b$row[i], b$nrows[i])					
+			} else {
+				pz <- z[r[,1], drop=FALSE]
+				p <- sapply(u, function(i) rfun(pz[r[,1]==i, ,drop=FALSE]))
+				if (!is.null(dim(p))) p <- t(p)
+				v[u, ] <- as.matrix(p)
+				writeValues(out, v, b$row[i], b$nrows[i])					
+			}
+		} else {
 			writeValues(out, rep(pars[5], ncell(rbe) * nl), b$row[i], b$nrows[i])
-		}
-	}
+		}			
+	}		
 	writeStop(out)
 }
 
 
 setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
-	function(x, y, fun, win="circle", pars, minPoints=1, fill=NA, filename="", ...) {
+	function(x, y, fun, win="circle", pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...) {
 
 		pars <- c(get_rad(pars), minPoints[1], fill[1])
 		if (ncol(y) < 3) {
@@ -193,6 +209,7 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 		}
 		win <- match.arg(tolower(win), c("circle", "ellipse", "rectangle", "buffer"))
 
+		if (ncol(y) == 3) cvars = FALSE
 		if (inherits(fun, "character")) {
 			if (fun[1] == "count") {
 				fun <- length
@@ -200,16 +217,20 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 			}
 			nl <- 1
 		} else {
-			i <- min(10, nrow(y))
-			aggregate(y[1:i, -c(1:2)], list(rep(1, i)), fun)
-			
-			test <- fun(1:5)
-			nl <- length(test)
+			if (cvars) {
+				i <- min(10, nrow(y))
+				v <- y[1:i, -c(1:2)]
+				test <- sapply(1, function(i) fun(v))
+				nl <- length(test)				
+			} else {
+				test <- fun(1:5)
+				nl <- length(test)
+			}
 		}
 		nl <- nl * (ncol(y)-2)
 		
 		if (win == "buffer") {
-			rastBufR(x, y, win, pars=pars, rfun=fun, nl=nl, filename=filename, ...)
+			rastBufR(x, y, win, pars=pars, rfun=fun, nl=nl, cvars=cvars, filename=filename, ...)
 		} else {
 			if (win == "circle") {
 				pars[2] = pars[1]
@@ -228,7 +249,7 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 					return(messages(x, "rasterizeWin"))
 				}
 			} 
-			rastWinR(x, y, win, pars=pars, rfun=fun, nl=nl, filename=filename, ...)
+			rastWinR(x, y, win, pars=pars, rfun=fun, nl=nl, cvars=cvars, filename=filename, ...)
 		}
 	}
 )
