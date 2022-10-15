@@ -186,10 +186,10 @@ rastBufR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 				v[f[,1], ] <- f[,-1]
 				writeValues(out, v, b$row[i], b$nrows[i])					
 			} else {
-				pz <- z[r[,1], drop=FALSE]
-				p <- sapply(u, function(i) rfun(pz[r[,1]==i, ,drop=FALSE]))
+				p <- z[r[,1], drop=FALSE]
+				p <- sapply(u, function(i) rfun(p[r[,1]==i, ,drop=FALSE]))
 				if (!is.null(dim(p))) p <- t(p)
-				v[u, ] <- as.matrix(p)
+				v[r[,1], ] <- as.matrix(p)
 				writeValues(out, v, b$row[i], b$nrows[i])					
 			}
 		} else {
