@@ -14,7 +14,9 @@ Merge multiple SpatRaster objects or SpatExtent objects, or merge a SpatVector w
 }
 
 \description{
-Merge multiple SpatRasters to create a new SpatRaster object with a larger spatial extent. The SpatRasters must have the same origin and spatial resolution. In areas where the SpatRasters overlap, the values of the SpatRaster that is first in the sequence of arguments (or in the SpatRasterCollection) will be retained. See \code{\link{classify}} to merge a \code{SpatRaster} and a \code{data.frame}. You can also merge SpatExtent objects. 
+Merge multiple SpatRasters to create a new SpatRaster object with a larger spatial extent. The SpatRasters must have the same origin and spatial resolution. In areas where the SpatRasters overlap, the values of the SpatRaster that is first in the sequence of arguments (or in the SpatRasterCollection) will be retained (unless \code{first=FALSE}. 
+
+See \code{\link{classify}} to merge a \code{SpatRaster} and a \code{data.frame}. You can also merge SpatExtent objects. 
 
 There is a also a method for merging SpatVector with a data.frame; that is, to join the data.frame to the attribute table of the SpatVector.
 }

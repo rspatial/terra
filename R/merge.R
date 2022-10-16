@@ -49,7 +49,7 @@ setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) {
 		rc <- sprc(x, y, ...)
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
-		fun <- .makeTxtFun(fun)
+		fun <- .makeTextFun(fun)
 		if (!inherits(fun, "character")) {
 			error("mosaic", "function 'fun' is not valid")
 		}
@@ -62,7 +62,7 @@ setMethod("mosaic", signature(x="SpatRasterCollection", "missing"),
 	function(x, fun="mean", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
-		fun <- .makeTxtFun(fun)
+		fun <- .makeTextFun(fun)
 		if (!inherits(fun, "character")) {
 			error("mosaic", "function 'fun' is not valid")
 		}

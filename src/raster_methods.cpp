@@ -2489,7 +2489,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 	std::vector<std::string> f {"first", "last", "sum", "mean", "median", "min", "max"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
-		out.setError("not a valid function");
+		out.setError("argument 'value' is not a valid function name");
 		return out;
 	}
 	if (fun == "first") {

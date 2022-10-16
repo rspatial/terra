@@ -15,7 +15,7 @@ Combine adjacent and (partly) overlapping SpatRasters to form a single new SpatR
 
 The SpatRasters must have the same origin and spatial resolution. 
 
-This method is similar to the simpler, but faster \code{\link{merge}} method. 
+This method is similar to the simpler, but much faster, \code{\link{merge}} method. 
 }
 
 \usage{
