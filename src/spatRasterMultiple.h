@@ -42,7 +42,7 @@ class SpatRasterCollection {
 				ds.erase(ds.begin()+i);
 			}
 		}
-		SpatRaster merge(SpatOptions &opt);
+		SpatRaster merge(bool first, SpatOptions &opt);
 		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
 		SpatRaster summary(std::string fun, SpatOptions &opt);

@@ -9,7 +9,7 @@
 - `interpIDW` method for inverse-distance-weighted interpolation of points with a moving window
 - `interpNear` method for nearest neighbor interpolation of points with a moving window
 - `viewshed` method for SpatRaster
-- `update` method for SpatRaster
+- `update` method for SpatRaster to write new names or a new extent or crs to an existing raster file.
 - `sieve` filter method for SpatRaster
 - argument `segments=FALSE` to `disagg<SpatRaster>`
 
@@ -25,6 +25,7 @@
 - `extend` has a new argument `fill=NA`
 - A warning is now given when `c`ombining SpatRasters with different CRSs. [#818](https://github.com/rspatial/terra/issues/818) by Andrew Marx
 - `plotRGB` now accounts for the value of zlim when stretching; allowing to use the same coloring scheme across SpatRasters [#810](https://github.com/rspatial/terra/issues/810) by Agustin Lobo.
+- the center of rotation for `spin` is now vectorized
 
 
 ## bug fixes 

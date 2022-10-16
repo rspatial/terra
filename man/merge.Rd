@@ -20,9 +20,9 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
 }
 
 \usage{
-\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{merge}{SpatRasterCollection,missing}(x, filename="", ...)
+\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, filename="", ...)
 
 \S4method{merge}{SpatExtent,SpatExtent}(x, y, ...)
 
@@ -33,6 +33,7 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
   \item{x}{SpatRaster or SpatExtent}
   \item{y}{object of same class as \code{x}}
   \item{...}{if \code{x} is a SpatRaster: additional objects of the same class as \code{x}. If \code{x} is a SpatRasterCollection: options for writing files as in \code{\link{writeRaster}}. If \code{x} is a SpatVector, the same arguments as in \code{\link[base]{merge}}}
+  \item{first}{logical. If \code{TRUE}, in areas where rasters overlap, the first value that is not \code{NA} is used. Otherwise the last value that is not \code{NA} is used}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}

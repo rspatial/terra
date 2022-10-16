@@ -529,18 +529,35 @@ void rotit(std::vector<double> &x, std::vector<double> &y, const double &x0, con
 SpatVector SpatVector::rotate(double angle, std::vector<double> x0, std::vector<double> y0) {
 	angle = -M_PI * angle / 180;
 	size_t n = size();
-	recycle(x0, n);
-	recycle(y0, n);
+	if ((x0.size() == 0) || (y0.size() == 0)) {
+		SpatVector out;
+		out.setError("no center of rotation provided");
+		return out;
+	}
+	bool multi = true;
+	double ix0, iy0; 
+	if ((x0.size() == 1) && (y0.size() == 1)) {
+		multi = false;
+		ix0 = x0[0];
+		iy0 = y0[0]; 
+	} else {
+		recycle(x0, n);
+		recycle(y0, n);
+	}
 	double cos_angle = cos(angle);
 	double sin_angle = sin(angle);
 	SpatVector out = *this;
 	for (size_t i=0; i < n; i++) {
+		if (multi) {
+			ix0 = x0[i];
+			iy0 = y0[i];
+		} 
 		for (size_t j=0; j < geoms[i].size(); j++) {
-			rotit(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, x0[i], y0[i], cos_angle, sin_angle);
+			rotit(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, ix0, iy0, cos_angle, sin_angle);
 			if (geoms[i].parts[j].hasHoles()) {
 				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
 					rotit(out.geoms[i].parts[j].holes[k].x,
-						  out.geoms[i].parts[j].holes[k].y, x0[i], y0[i], cos_angle, sin_angle);
+						  out.geoms[i].parts[j].holes[k].y, ix0, iy0, cos_angle, sin_angle);
 
 					out.geoms[i].parts[j].holes[k].extent.xmin =
 						vmin(out.geoms[i].parts[j].holes[k].x, true);
