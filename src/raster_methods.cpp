@@ -2487,10 +2487,16 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out;
 
-	std::vector<std::string> f {"first", "sum", "mean", "median", "min", "max"};
+	std::vector<std::string> f {"first", "last", "sum", "mean", "median", "min", "max"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("not a valid function");
 		return out;
+	}
+	if (fun == "first") {
+		return merge(true, opt);
+	}
+	if (fun == "last") {
+		return merge(false, opt);
 	}
 
 	unsigned n = size();
