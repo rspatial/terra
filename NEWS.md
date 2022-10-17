@@ -16,6 +16,7 @@
 
 ## enhancements
 
+- faster `mosaic` and `merge<SpatRaster>` [#577](https://github.com/rspatial/terra/issues/577) by Jean-Romain
 - `wrap<SpatRaster>` now uses file references if the data is deemed to large to all load into memory. [#801](https://github.com/rspatial/terra/issues/801) by Jean-Romain
 - `readRDS` and `unserialize` now return a SpatRaster or SpatVector (instead of a PackedSpat*)
 - better support for a "local" arbitrary Euclidean crs [#797](https://github.com/rspatial/terra/issues/797) by Agustin Lobo
