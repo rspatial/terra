@@ -161,7 +161,7 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 		for (size_t i=0; i < out.bs.n; i++) {
 			e.ymax = yFromRow(out.bs.row[i]) + rsy;
 			e.ymin = yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1) - rsy;
-			SpatRaster tmp = empty.crop(e, "near", ops);
+			SpatRaster tmp = empty.crop(e, "near", false, ops);
 
 			SpatVector p = tmp.as_polygons(true, false, false, false, false, ops);
 			std::vector<double> v(out.bs.nrows[i] * out.ncol(), 0);
@@ -619,7 +619,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 		return out;
 	}
 
-	SpatRaster rc = r.crop(e, "out", ropt);
+	SpatRaster rc = r.crop(e, "out", false, ropt);
 	std::vector<double> feats(1, 1) ;
     SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, ropt);
 	SpatVector pts = rcr.as_points(false, true, false, ropt);
@@ -656,7 +656,7 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 		return;
 	}
 	bool cropped = false;
-	SpatRaster rc = r.crop(v.extent, "out", ropt);
+	SpatRaster rc = r.crop(v.extent, "out", false, ropt);
 	if ( ((ncol() > 1000) && ((ncol() / rc.ncol()) > 1.5))
 			|| ((nrow() > 1000) && ((nrow() / rc.nrow()) > 1.5) )) {
 		cropped = true;
@@ -688,7 +688,7 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 	SpatOptions ropt(opt);
 	opt.progress = nrow()+1;
 	SpatRaster r = geometry(1);
-	r = r.crop(v.extent, "out", ropt);
+	r = r.crop(v.extent, "out", false, ropt);
 
 //	if (r.ncell() < 1000) {
 		std::vector<double> feats(1, 1) ;
@@ -783,13 +783,12 @@ void SpatRaster::rasterizeLinesLength(std::vector<double> &cells, std::vector<do
 		m *= tom;
 	}
 
-
 	SpatOptions xopt(opt);
 	xopt.ncopies = std::max(xopt.ncopies, (unsigned)4) * 8;
 	SpatRaster x = geometry(1);
 	
 	SpatExtent ev = v.getExtent();
-	x = x.crop(ev, "out", xopt);
+	x = x.crop(ev, "out", false, xopt);
 	BlockSize bs = x.getBlockSize(xopt);
 	
 	SpatExtent e = x.getExtent();
@@ -797,7 +796,7 @@ void SpatRaster::rasterizeLinesLength(std::vector<double> &cells, std::vector<do
 	for (size_t i=0; i < bs.n; i++) {
 		e.ymax = yFromRow(bs.row[i]) + rsy;
 		e.ymin = yFromRow(bs.row[i] + bs.nrows[i] - 1) - rsy;
-		SpatRaster tmp = x.crop(e, "near", xopt);	
+		SpatRaster tmp = x.crop(e, "near", false, xopt);	
 		std::vector<double> cell(tmp.ncell());
 		std::iota(cell.begin(), cell.end(), 0);
 		std::vector<std::vector<double>> xy = tmp.xyFromCell(cell);

@@ -122,7 +122,7 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool 
 	if (expand) {
 		x = x.extend(e, "out", NAN, opt);
 	}
-	x = x.crop(e, "out", opt);
+	x = x.crop(e, "out", false, opt);
 
 	std::vector<size_t> d(x.ncell());
 	std::iota(d.begin(), d.end(), 1);
@@ -135,7 +135,7 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool 
 		std::string fout = f + std::to_string(d[i]) + fext;
 		SpatExtent exi = x.ext_from_cell(i);
 		opt.set_filenames({fout});
-		SpatRaster out = crop(exi, "near", opt);
+		SpatRaster out = crop(exi, "near", false, opt);
 		if (out.hasError()) {
 			setError(out.getError());
 			return ff;
@@ -1227,7 +1227,7 @@ SpatRaster SpatRaster::trim(double value, unsigned padding, SpatOptions &opt) {
 	double yr = res[1];
 	SpatExtent e = SpatExtent(xFromCol(firstcol)-0.5*xr, xFromCol(lastcol)+0.5*xr, yFromRow(lastrow)-0.5*yr, yFromRow(firstrow)+0.5*yr);
 
-	return( crop(e, "near", opt) ) ;
+	return( crop(e, "near", false, opt) ) ;
 }
 
 
@@ -2182,7 +2182,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, double fill, SpatO
 
 
 
-SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
+SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt) {
 
 	SpatRaster out = geometry(nlyr(), true, true, true);
 
@@ -2194,10 +2194,23 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 		out.setError("cannot crop a SpatRaster with an empty extent");
 		return out;
 	}
+	SpatExtent fext = e;
 	e = e.intersect(out.getExtent());
 	if ( !e.valid() ) {
 		out.setError("extents do not overlap");
 		return out;
+	}
+
+	SpatOptions ops;
+	if (expand) {
+		if ((fext.xmax <= e.xmax)  && (fext.xmin >= e.xmin) && (fext.ymax <= e.ymax)  && (fext.ymin >= e.ymin)) {
+			expand = false;
+		} else if ((fext.xmax >= e.xmax)  && (fext.xmin <= e.xmin) && (fext.ymax >= e.ymax)  && (fext.ymin <= e.ymin)) {
+			return extend(e, snap, NAN, ops);
+		} else {
+			ops = opt;
+			opt = SpatOptions(opt);
+		}
 	}
 
 	out.setExtent(e, true, false, snap);
@@ -2259,18 +2272,43 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	out.writeStop();
 	readStop();
 
+	if (expand) {
+		out = out.extend(fext, snap, NAN, ops);		
+	}
 	return(out);
 }
 
-SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, bool touches, SpatOptions &opt) {
+SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, bool extend, bool touches, SpatOptions &opt) {
 	SpatOptions copt(opt);
 	if (v.nrow() == 0) {
 		SpatRaster out;
 		out.setError("cannot crop a SpatRaster with an empty SpatVector");
 		return out;
 	}
-	SpatRaster out = crop(v.extent, snap, copt);
+	SpatRaster out = crop(v.extent, snap, extend, copt);
 	return out.mask(v, false, NAN, touches, opt);
+}
+
+
+SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt) {
+	SpatRasterCollection out;
+	if ( !e.valid() ) {
+		out.setError("invalid extent");
+		return out;
+	}
+	if ((e.xmin == e.xmax) && (e.ymin == e.ymax)) {
+		out.setError("cannot crop with an empty extent");
+		return out;
+	}
+	SpatOptions ops(opt);
+	for (size_t i=0; i<size(); i++) {
+		SpatExtent xe = e.intersect(ds[i].getExtent());
+		if (xe.valid()) {
+			SpatRaster x = ds[i].crop(e, snap, expand, ops);
+			out.push_back(x.source[0]);
+		}
+	}
+	return out;
 }
 
 
@@ -2446,7 +2484,7 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 		if (!r.hasValues()) continue;
 		SpatExtent re = r.getExtent();
 		if (!r.shared_basegeom(out, 0.1, true)) {
-			SpatRaster temp = out.crop(re, "near", topt);
+			SpatRaster temp = out.crop(re, "near", false, topt);
 			std::vector<bool> hascats = r.hasCategories();
 			std::string method = hascats[0] ? "near" : "bilinear";
 			r = r.warper(temp, "", method, false, false, true, topt);
@@ -2455,6 +2493,7 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 				return out;
 			}
 			warn = true;
+			re = r.getExtent();
 		}
 		BlockSize bs = r.getBlockSize(opt);
 		if (!r.readStart()) {
@@ -2483,10 +2522,28 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 }
 
 
+	
+
+
+bool overlaps(const std::vector<unsigned>& r1, const std::vector<unsigned>& r2, 
+			  const std::vector<unsigned>& c1, const std::vector<unsigned>& c2) {
+	size_t n = r1.size() - 1;
+	for (size_t i=0; i<(n-1); i++) {
+		for (size_t j=(i+1); j<n; j++) {
+			if ((r1[i] <= r2[j]) && (r2[i] >= r1[j]) && (c1[i] <= c2[j]) && (c2[i] >= c1[j])) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+	
+
+
+
 SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out;
-
 	std::vector<std::string> f {"first", "last", "sum", "mean", "median", "min", "max"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("argument 'value' is not a valid function name");
@@ -2498,7 +2555,6 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	if (fun == "last") {
 		return merge(false, opt);
 	}
-
 	unsigned n = size();
 
 	if (n == 0) {
@@ -2539,82 +2595,85 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		return out;
 	}
 
-	SpatExtent eout = out.getExtent();
-//	double hxr = out.xres()/2;
+//	SpatExtent eout = out.getExtent();
+	double hxr = out.xres()/2;
 	double hyr = out.yres()/2;
-
-	bool warn = false;
-//	std::vector<unsigned> r1, r2, c1, c2;
-//	r1.reserve(n);
-//	r2.reserve(n);
-//	c1.reserve(n);
-//	c2.reserve(n);
-	
+	std::vector<unsigned> r1, r2, c1, c2;
+	r1.reserve(n); r2.reserve(n);
+	c1.reserve(n); c2.reserve(n);
+	SpatVector ve;
+	ve.reserve(n);
+	SpatOptions topt(opt);
 	for (size_t i=0; i<n; i++) {
-		SpatOptions topt(opt);
-		if(!ds[i].shared_basegeom(out, 0.1, true)) {
-			SpatRaster temp = out.crop(ds[i].getExtent(), "near", topt);
-			std::vector<bool> hascats = ds[i].hasCategories();
-			std::string method = hascats[0] ? "near" : "bilinear";
-			ds[i] = ds[i].warper(temp, "", method, false, false, true, topt);
-			if (ds[i].hasError()) {
-				out.setError(ds[i].getError());
-				return out;
-			}
-			warn = true;
-		}
-//		SpatExtent ee = ds[i].getExtent();
-//		r1.push_back(out.rowFromY(ee.ymax - hyr));
-//		r2.push_back(out.rowFromY(ee.ymin + hyr));
-//		c1.push_back(out.colFromX(ee.xmin + hxr));
-//		c2.push_back(out.colFromX(ee.xmax - hxr));
+		SpatExtent ee = ds[i].getExtent();
+		r1.push_back(out.rowFromY(ee.ymax - hyr));
+		r2.push_back(out.rowFromY(ee.ymin + hyr));
+		c1.push_back(out.colFromX(ee.xmin + hxr));
+		c2.push_back(out.colFromX(ee.xmax - hxr));
+		SpatVector v(ee, "");
+		ve.geoms.push_back(v.geoms[0]);
 	}
-	if (warn) out.addWarning("rasters did not align and were resampled");
 
+	if (!overlaps(r1, r2, c1, c2)) {
+		return merge(true, opt);			
+	}
+
+	ve = ve.unite();
+	n = ve.nrow();
+	bool warn = false;
  	if (!out.writeStart(opt, filenames())) { return out; }
 	SpatOptions sopt(opt);
 	sopt.progressbar = false;
-	std::vector<double> v;
-	for (size_t i=0; i < out.bs.n; i++) {
-		eout.ymax = out.yFromRow(out.bs.row[i]) + hyr;
-		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1) - hyr;
-		SpatRasterStack s;
-		for (size_t j=0; j<n; j++) {
-			e = ds[j].getExtent();
-			e = e.intersect(eout);
-			if ( e.valid_notequal() ) {
-				SpatRaster r = ds[j].crop(eout, "near", sopt);
-				//SpatExtent ec = r.getExtent();
-				r = r.extend(eout, "near", NAN, sopt);
-				//SpatExtent ee = r.getExtent();
-				if (!s.push_back(r, "", "", "", false)) {
-					out.setError("internal error: " + s.getError());
-					out.writeStop();
-					return out;
-				}
-			}
+
+	for (size_t i=0; i<n; i++) {
+		SpatVector vi = ve.subset_rows(i);
+		SpatRasterCollection x = crop(vi.extent, "near", true, topt);
+		SpatRaster r;
+		if (x.size() == 0) {
+			continue;
+		} else if (x.size() > 1) {
+			SpatRasterStack s;
+			s.ds = x.ds;
+			r = s.summary(fun, true, topt);
+		} else {
+			r = x.ds[0];
 		}
-		size_t ncls = out.bs.nrows[i] * out.ncol() * nl;
-		if (s.size() > 0) {
-			SpatRaster r = s.summary(fun, true, sopt);
+		BlockSize bs = r.getBlockSize(opt);
+		if (!r.readStart()) {
+			out.setError(r.getError());
+			return(out);
+		}
+		SpatExtent re = r.getExtent();
+		if (!r.shared_basegeom(out, 0.1, true)) {
+			SpatRaster temp = out.crop(re, "near", false, topt);
+			std::vector<bool> hascats = r.hasCategories();
+			std::string method = hascats[0] ? "near" : "bilinear";
+			r = r.warper(temp, "", method, false, false, true, topt);
 			if (r.hasError()) {
 				out.setError(r.getError());
-				out.writeStop();
 				return out;
 			}
-			if (!r.getValuesSource(0, v)) {
-				out.setError(r.getError());
-				out.writeStop();
-				return out;
-			}
-			recycle(v, ncls);
-		} else {
-			v = std::vector<double>(ncls, NAN);
+			warn = true;
+			re = r.getExtent();
 		}
-		if (!out.writeBlock(v, i)) return out;
+
+		for (size_t j=0; j<bs.n; j++) {
+			std::vector<double> v;
+			r.readBlock(v, bs, j);			
+			unsigned row1  = out.rowFromY(r.yFromRow(bs.row[j]));
+			unsigned row2  = out.rowFromY(r.yFromRow(bs.row[j]+bs.nrows[j]-1));
+			unsigned col1  = out.colFromX(re.xmin + hxr);
+			unsigned col2  = out.colFromX(re.xmax - hxr);
+			unsigned ncols = col2-col1+1;
+			unsigned nrows = row2-row1+1;
+			recycle(v, ncols * nrows * nl);
+			if (!out.writeValuesRect(v, row1, nrows, col1, ncols)) return out;
+		}
+		r.readStop();
 	}
 	out.writeStop();
-	return(out);
+	if (warn) out.addWarning("rasters did not align and were resampled");
+	return out;
 }
 
 

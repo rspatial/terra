@@ -537,7 +537,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		int bandstart = 0;
 		eout.ymax = out.yFromRow(out.bs.row[i]) + halfy;
 		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - halfy;
-		SpatRaster crop_out = out.crop(eout, "near", sopt);
+		SpatRaster crop_out = out.crop(eout, "near", false, sopt);
 		GDALDatasetH hDstDS;
 
 		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, has_so, scale, offset, sopt)) {

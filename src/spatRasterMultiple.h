@@ -42,6 +42,7 @@ class SpatRasterCollection {
 				ds.erase(ds.begin()+i);
 			}
 		}
+		SpatRasterCollection crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt);
 		SpatRaster merge(bool first, SpatOptions &opt);
 		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
@@ -243,7 +244,7 @@ class SpatRasterStack {
 			return out;
 		}
 
-		SpatRasterStack crop(SpatExtent e, std::string snap, SpatOptions &opt) {
+		SpatRasterStack crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt) {
 			SpatRasterStack out;
 			std::vector<std::string> ff = opt.get_filenames();
 			if (ff.size() != ds.size()) {
@@ -251,7 +252,7 @@ class SpatRasterStack {
 				opt.ncopies *= ds.size();
 			}
 			for (size_t i=0; i<ds.size(); i++) {
-				out.push_back(ds[i].crop(e, snap, opt), names[i], long_names[i], units[i], true);
+				out.push_back(ds[i].crop(e, snap, expand, opt), names[i], long_names[i], units[i], true);
 				if (has_error()) {
 					return(out);
 				}

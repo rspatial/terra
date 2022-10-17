@@ -465,32 +465,34 @@ function(x, from, to, raw=FALSE, filename="", ...) {
 }
 
 setMethod("crop", signature(x="SpatRaster", y="ANY"),
-	function(x, y, snap="near", mask=FALSE, touches=TRUE, filename="", ...) {
+	function(x, y, snap="near", mask=FALSE, touches=TRUE, exend=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (mask && inherits(y, "SpatVector")) {
-			x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], touches[1], opt)
+			x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], touches[1], extend[1], opt)
 		} else {
 			y <- .getExt(y, method="crop")
-			x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
+			x@ptr <- x@ptr$crop(y@ptr, snap[1], extend[1], opt)
 		}
 		messages(x, "crop")
 	}
 )
 
 setMethod("crop", signature(x="SpatRasterDataset", y="ANY"),
-	function(x, y, snap="near", filename="", ...) {
-		if (all(filename != "")) {
-			ext <- tools::file_ext(filename)
-			filename <- tools::file_path_sans_ext(filename)
-			filename <- paste0(make.unique(filename, sep="_"), ext)
-		}
-		opt <- spatOptions(filename, ...)
+	function(x, y, snap="near", extend=FALSE) {
+		opt <- spatOptions()
 		y <- .getExt(y, method="crop")
-		x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
+		x@ptr <- x@ptr$crop(y@ptr, snap[1], extend[1], opt)
 		messages(x, "crop")
 	}
 )
 
+setMethod("crop", signature(x="SpatRasterCollection", y="ANY"),
+	function(x, y, snap="near", extend=FALSE) {
+		y <- .getExt(y, method="crop")
+		x@ptr <- x@ptr$crop(y@ptr, snap[1], extend[1], opt)
+		messages(x, "crop")
+	}
+)
 
 
 setMethod("selectRange", signature(x="SpatRaster"),

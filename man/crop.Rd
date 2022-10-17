@@ -5,6 +5,7 @@
 \alias{crop}
 \alias{crop,SpatRaster-method}
 \alias{crop,SpatRasterDataset-method}
+\alias{crop,SpatRasterCollection-method}
 \alias{crop,SpatVector-method}
 
 \title{Cut out a geographic subset}
@@ -18,9 +19,11 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
 }
 
 \usage{
-\S4method{crop}{SpatRaster}(x, y, snap="near", mask=FALSE, touches=TRUE, filename="", ...)
+\S4method{crop}{SpatRaster}(x, y, snap="near", mask=FALSE, touches=TRUE, expand=FALSE, filename="", ...)
 
-\S4method{crop}{SpatRasterDataset}(x, y, snap="near", filename="", ...)
+\S4method{crop}{SpatRasterDataset}(x, y, snap="near", extend=FALSE)
+
+\S4method{crop}{SpatRasterCollection}(x, y, snap="near", extend=FALSE)
 
 \S4method{crop}{SpatVector}(x, y)
 }
@@ -31,6 +34,7 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
   \item{snap}{character. One of "near", "in", or "out". Used to align \code{y} to the geometry of \code{x}} 
   \item{mask}{logical. Should \code{y} be used to mask? Only used if \code{y} is a SpatVector}  
   \item{touches}{logical. If \code{TRUE} and \code{mask=TRUE}, all cells touched by lines or polygons will be masked, not just those on the line render path, or whose center point is within the polygon}
+  \item{extend}{logical. Should rows and/or columns be added if \code{y} is beyond the extent of \code{x}?}  
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
