@@ -110,24 +110,16 @@ Currently, the window will be forced to intersect with the extent of the SpatRas
 <span class="r-in"></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">xe</span> <span class="op">&lt;-</span> <span class="fu"><a href="crop.html">crop</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in extend[1]:</span> object of type 'closure' is not subsettable</span>
 <span class="r-in"><span class="fu"><a href="global.html">global</a></span><span class="op">(</span><span class="va">xe</span>, <span class="st">"mean"</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> elevation 396.4167</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'global': object 'xe' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">xe</span>, <span class="va">r</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'xe' not found</span>
 <span class="r-in"><span class="fu">window</span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE  TRUE</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'window': object 'b' not found</span>
 <span class="r-in"><span class="va">b</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 6, 12, 2  (nrow, ncol, nlyr)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.008333333, 0.008333333  (x, y)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> extent (win): 5.9, 6, 49.95, 50  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sources     : memory  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               elev.tif  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> names       : elevation, elevation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :       323,      &gt;141 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max values  :       492,      547&lt; </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'b' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">window</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span class="r-in"><span class="va">r</span></span>
