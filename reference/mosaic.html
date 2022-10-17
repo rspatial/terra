@@ -19,7 +19,7 @@ This method is similar to the simpler, but much faster, merge method."><meta pro
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-31</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-32</span>
       </span>
     </div>
 
@@ -101,21 +101,57 @@ This method is similar to the simpler, but much faster, merge method."><meta pro
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">110</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">80</span>, ymin<span class="op">=</span><span class="fl">40</span>, ymax<span class="op">=</span><span class="fl">70</span>, ncols<span class="op">=</span><span class="fl">30</span>, nrows<span class="op">=</span><span class="fl">30</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">85</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">55</span>, ymax<span class="op">=</span><span class="fl">60</span>, ymin<span class="op">=</span><span class="fl">30</span>, ncols<span class="op">=</span><span class="fl">30</span>, nrows<span class="op">=</span><span class="fl">30</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">60</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">30</span>, ymax<span class="op">=</span><span class="fl">50</span>, ymin<span class="op">=</span><span class="fl">20</span>, ncols<span class="op">=</span><span class="fl">30</span>, nrows<span class="op">=</span><span class="fl">30</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">110</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">80</span>, ymin<span class="op">=</span><span class="fl">40</span>, ymax<span class="op">=</span><span class="fl">70</span>, ncols<span class="op">=</span><span class="fl">30</span>, nrows<span class="op">=</span><span class="fl">30</span>, vals<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">85</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">55</span>, ymax<span class="op">=</span><span class="fl">60</span>, ymin<span class="op">=</span><span class="fl">30</span>, ncols<span class="op">=</span><span class="fl">30</span>, nrows<span class="op">=</span><span class="fl">30</span>, vals<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">60</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">30</span>, ymax<span class="op">=</span><span class="fl">50</span>, ymin<span class="op">=</span><span class="fl">20</span>, ncols<span class="op">=</span><span class="fl">30</span>, nrows<span class="op">=</span><span class="fl">30</span>, vals<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0 - 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 - 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 - 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 - 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 - 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0 + 2 crop-collection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 + 2 crop-collection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2</span>
 <span class="r-in"><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="op">(</span><span class="va">z</span>, <span class="va">y</span>, <span class="va">x</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0 - 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 - 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 - 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 - 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 - 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0 + 2 crop-collection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 + 2 crop-collection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># if you have many SpatRasters make a SpatRasterCollection from a list</span></span>
 <span class="r-in"><span class="va">rlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">rsrc</span> <span class="op">&lt;-</span> <span class="fu"><a href="src.html">sprc</a></span><span class="op">(</span><span class="va">rlist</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="op">(</span><span class="va">rsrc</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0 - 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 - 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 - 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 - 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 - 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0 + 2 crop-collection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 + 2 crop-collection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2</span>
 </code></pre></div>
     </div>
   </div>

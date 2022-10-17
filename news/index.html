@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-31</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-32</span>
       </span>
     </div>
 
@@ -74,7 +74,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-31">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-31"></a></h3>
-<ul><li>
+<ul><li>faster <code>mosaic</code> and <code>merge&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/issues/577" class="external-link">#577</a> by Jean-Romain</li>
+<li>
 <code>wrap&lt;SpatRaster&gt;</code> now uses file references if the data is deemed to large to all load into memory. <a href="https://github.com/rspatial/terra/issues/801" class="external-link">#801</a> by Jean-Romain</li>
 <li>
 <code>readRDS</code> and <code>unserialize</code> now return a SpatRaster or SpatVector (instead of a PackedSpat*)</li>
