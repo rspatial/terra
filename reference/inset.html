@@ -140,7 +140,6 @@
 <span class="r-in"><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">ff</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="crop.html">crop</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="fl">.01</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in extend[1]:</span> object of type 'closure' is not subsettable</span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, type<span class="op">=</span><span class="st">"int"</span>, mar<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"topright"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, lwd<span class="op">=</span><span class="fl">2.5</span><span class="op">)</span></span>
@@ -162,7 +161,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 12, 6  (geometries, attributes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 6.433793, 6.605834, 50.01559, 50.17659  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 6.255333, 6.321333, 49.9636, 50.02537  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  source      : lux.shp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA   POP</span>
