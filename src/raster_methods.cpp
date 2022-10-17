@@ -2542,9 +2542,8 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 	SpatOptions topt(opt);
 	bool warn = false;
 	for (size_t i=0; i<n; i++) {
-		SpatRaster r = ds[seq[i]];
-		if (!r.hasValues()) continue;
-		if (!write_part(out, r, hxr, nl, warn, topt)) {
+		if (!ds[seq[i]].hasValues()) continue;
+		if (!write_part(out, ds[seq[i]], hxr, nl, warn, topt)) {
 			return out;
 		}
 	}
@@ -2670,8 +2669,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	for (size_t i=0; i<n; i++) {
 		if (nrst[i] < 0) continue;
 		SpatVector vi = ve.subset_rows(i);
-		SpatRaster r = ds[nrst[i]];
-		if (!write_part(out, r, hxr, nl, warn, sopt)) {
+		if (!write_part(out, ds[nrst[i]], hxr, nl, warn, sopt)) {
 			return out;
 		}
 	}
@@ -2680,13 +2678,12 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		if (nrst[i] >= 0) continue;
 		SpatVector vi = ve.subset_rows(i);
 		SpatRasterCollection x = crop(vi.extent, "near", true, sopt);
-		SpatRaster r;
 		if (x.size() == 0) {
 			continue;
 		} 
 		SpatRasterStack s;
 		s.ds = x.ds;
-		r = s.summary(fun, true, sopt);
+		SpatRaster r = s.summary(fun, true, sopt);
 
 		if (!write_part(out, r, hxr, nl, warn, sopt)) {
 			return out;
