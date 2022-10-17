@@ -2449,6 +2449,43 @@ bool SpatRaster::compare_origin(std::vector<double> x, double tol) {
 
 
 
+bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, unsigned& nl, bool warn, SpatOptions &opt) {
+	BlockSize bs = r.getBlockSize(opt);
+	if (!r.readStart()) {
+	out.setError(r.getError());
+		return false;
+	}
+	SpatExtent re = r.getExtent();
+	if (!r.shared_basegeom(out, 0.1, true)) {
+		SpatRaster temp = out.crop(re, "near", false, opt);
+		std::vector<bool> hascats = r.hasCategories();
+		std::string method = hascats[0] ? "near" : "bilinear";
+		r = r.warper(temp, "", method, false, false, true, opt);
+		if (r.hasError()) {
+			out.setError(r.getError());
+			return false;
+		}
+		warn = true;
+		re = r.getExtent();
+	}
+
+	for (size_t j=0; j<bs.n; j++) {
+		std::vector<double> v;
+		r.readBlock(v, bs, j);			
+		unsigned row1  = out.rowFromY(r.yFromRow(bs.row[j]));
+		unsigned row2  = out.rowFromY(r.yFromRow(bs.row[j]+bs.nrows[j]-1));
+		unsigned col1  = out.colFromX(re.xmin + hxr);
+		unsigned col2  = out.colFromX(re.xmax - hxr);
+		unsigned ncols = col2-col1+1;
+		unsigned nrows = row2-row1+1;
+		recycle(v, ncols * nrows * nl);
+		if (!out.writeValuesRect(v, row1, nrows, col1, ncols)) return false;
+	}
+	r.readStop();
+	return true;
+}
+
+
 SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 
 	SpatRaster out;
@@ -2507,47 +2544,16 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 	for (size_t i=0; i<n; i++) {
 		SpatRaster r = ds[seq[i]];
 		if (!r.hasValues()) continue;
-		SpatExtent re = r.getExtent();
-		if (!r.shared_basegeom(out, 0.1, true)) {
-			SpatRaster temp = out.crop(re, "near", false, topt);
-			std::vector<bool> hascats = r.hasCategories();
-			std::string method = hascats[0] ? "near" : "bilinear";
-			r = r.warper(temp, "", method, false, false, true, topt);
-			if (r.hasError()) {
-				out.setError(r.getError());
-				return out;
-			}
-			warn = true;
-			re = r.getExtent();
+		if (!write_part(out, r, hxr, nl, warn, topt)) {
+			return out;
 		}
-		BlockSize bs = r.getBlockSize(opt);
-		if (!r.readStart()) {
-			out.setError(r.getError());
-			return(out);
-		}
-		for (size_t j=0; j<bs.n; j++) {
-			std::vector<double> v;
-			r.readBlock(v, bs, j);			
-            unsigned row1  = out.rowFromY(r.yFromRow(bs.row[j]));
-            unsigned row2  = out.rowFromY(r.yFromRow(bs.row[j]+bs.nrows[j]-1));
-            unsigned col1  = out.colFromX(re.xmin + hxr);
-            unsigned col2  = out.colFromX(re.xmax - hxr);
-			unsigned ncols = col2-col1+1;
-			unsigned nrows = row2-row1+1;
-			recycle(v, ncols * nrows * nl);
-            if (!out.writeValuesRect(v, row1, nrows, col1, ncols)) return out;
-		}
-		r.readStop();
 	}
-
 	out.writeStop();
 	if (warn) out.addWarning("rasters did not align and were resampled");
 
 	return(out);
 }
 
-
-	
 
 
 bool overlaps(const std::vector<unsigned>& r1, const std::vector<unsigned>& r2, 
@@ -2563,7 +2569,6 @@ bool overlaps(const std::vector<unsigned>& r1, const std::vector<unsigned>& r2,
 	return false;
 }
 	
-
 
 
 SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
@@ -2628,7 +2633,6 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	c1.reserve(n); c2.reserve(n);
 	SpatVector ve;
 	ve.reserve(n);
-	SpatOptions topt(opt);
 	for (size_t i=0; i<n; i++) {
 		SpatExtent ee = ds[i].getExtent();
 		r1.push_back(out.rowFromY(ee.ymax - hyr));
@@ -2667,88 +2671,29 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		if (nrst[i] < 0) continue;
 		SpatVector vi = ve.subset_rows(i);
 		SpatRaster r = ds[nrst[i]];
-		BlockSize bs = r.getBlockSize(opt);
-		if (!r.readStart()) {
-			out.setError(r.getError());
-			return(out);
+		if (!write_part(out, r, hxr, nl, warn, sopt)) {
+			return out;
 		}
-		SpatExtent re = r.getExtent();
-		if (!r.shared_basegeom(out, 0.1, true)) {
-			SpatRaster temp = out.crop(re, "near", false, topt);
-			std::vector<bool> hascats = r.hasCategories();
-			std::string method = hascats[0] ? "near" : "bilinear";
-			r = r.warper(temp, "", method, false, false, true, topt);
-			if (r.hasError()) {
-				out.setError(r.getError());
-				return out;
-			}
-			warn = true;
-			re = r.getExtent();
-		}
-
-		for (size_t j=0; j<bs.n; j++) {
-			std::vector<double> v;
-			r.readBlock(v, bs, j);			
-			unsigned row1  = out.rowFromY(r.yFromRow(bs.row[j]));
-			unsigned row2  = out.rowFromY(r.yFromRow(bs.row[j]+bs.nrows[j]-1));
-			unsigned col1  = out.colFromX(re.xmin + hxr);
-			unsigned col2  = out.colFromX(re.xmax - hxr);
-			unsigned ncols = col2-col1+1;
-			unsigned nrows = row2-row1+1;
-			recycle(v, ncols * nrows * nl);
-			if (!out.writeValuesRect(v, row1, nrows, col1, ncols)) return out;
-		}
-		r.readStop();
 	}
-
 
 	for (size_t i=0; i<n; i++) {
 		if (nrst[i] >= 0) continue;
 		SpatVector vi = ve.subset_rows(i);
-		SpatRasterCollection x = crop(vi.extent, "near", true, topt);
+		SpatRasterCollection x = crop(vi.extent, "near", true, sopt);
 		SpatRaster r;
 		if (x.size() == 0) {
 			continue;
 		} 
 		SpatRasterStack s;
 		s.ds = x.ds;
-		r = s.summary(fun, true, topt);
+		r = s.summary(fun, true, sopt);
 
-		BlockSize bs = r.getBlockSize(opt);
-		if (!r.readStart()) {
-			out.setError(r.getError());
-			return(out);
+		if (!write_part(out, r, hxr, nl, warn, sopt)) {
+			return out;
 		}
-		SpatExtent re = r.getExtent();
-		if (!r.shared_basegeom(out, 0.1, true)) {
-			SpatRaster temp = out.crop(re, "near", false, topt);
-			std::vector<bool> hascats = r.hasCategories();
-			std::string method = hascats[0] ? "near" : "bilinear";
-			r = r.warper(temp, "", method, false, false, true, topt);
-			if (r.hasError()) {
-				out.setError(r.getError());
-				return out;
-			}
-			warn = true;
-			re = r.getExtent();
-		}
-
-		for (size_t j=0; j<bs.n; j++) {
-			std::vector<double> v;
-			r.readBlock(v, bs, j);			
-			unsigned row1  = out.rowFromY(r.yFromRow(bs.row[j]));
-			unsigned row2  = out.rowFromY(r.yFromRow(bs.row[j]+bs.nrows[j]-1));
-			unsigned col1  = out.colFromX(re.xmin + hxr);
-			unsigned col2  = out.colFromX(re.xmax - hxr);
-			unsigned ncols = col2-col1+1;
-			unsigned nrows = row2-row1+1;
-			recycle(v, ncols * nrows * nl);
-			if (!out.writeValuesRect(v, row1, nrows, col1, ncols)) return out;
-		}
-		r.readStop();
-	}
-	
+	}	
 	out.writeStop();
+
 	if (warn) out.addWarning("rasters did not align and were resampled");
 	return out;
 }
