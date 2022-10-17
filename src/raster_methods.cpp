@@ -2184,8 +2184,6 @@ SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, double fill, SpatO
 
 SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt) {
 
-Rcpp::Rcout << "crop-raster\n";
-
 	SpatRaster out = geometry(nlyr(), true, true, true);
 
 	if ( !e.valid() ) {
@@ -2293,8 +2291,6 @@ SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, bool touches, bo
 
 
 SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt) {
-
-Rcpp::Rcout << "crop-collection\n";
 
 	SpatRasterCollection out;
 	if ( !e.valid() ) {
@@ -2649,11 +2645,15 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 	ve = ve.unite();
 	n = ve.nrow();
-	std::vector<std::vector<size_t>> nrst(n);
+	std::vector<int> nrst(n, -9);
 	for (size_t i=0; i<ve.ncol(); i++) {
 		for (size_t j=0; j<n; j++) {
 			if (ve.df.iv[i][j] == 1) {
-				nrst[j].push_back(i);
+				if (nrst[j] == -9) {
+					nrst[j] = i;
+				} else {
+					nrst[j] = -99;
+				}
 			}
 		}
 	}
@@ -2664,10 +2664,9 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	sopt.progressbar = false;
 
 	for (size_t i=0; i<n; i++) {
-		Rcpp::Rcout << i << " - " << nrst[i][0] << std::endl;
-		if (nrst[i].size() != 1) continue;
+		if (nrst[i] < 0) continue;
 		SpatVector vi = ve.subset_rows(i);
-		SpatRaster r = ds[nrst[i][0]];
+		SpatRaster r = ds[nrst[i]];
 		BlockSize bs = r.getBlockSize(opt);
 		if (!r.readStart()) {
 			out.setError(r.getError());
@@ -2704,12 +2703,9 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 
 	for (size_t i=0; i<n; i++) {
-		if (nrst[i].size() <= 1) continue;
+		if (nrst[i] >= 0) continue;
 		SpatVector vi = ve.subset_rows(i);
-		Rcpp::Rcout << i << " + "  << nrst[i].size() << " ";
 		SpatRasterCollection x = crop(vi.extent, "near", true, topt);
-		Rcpp::Rcout  << x.size() << std::endl;
-
 		SpatRaster r;
 		if (x.size() == 0) {
 			continue;
