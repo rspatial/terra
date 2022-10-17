@@ -489,6 +489,7 @@ setMethod("crop", signature(x="SpatRasterDataset", y="ANY"),
 setMethod("crop", signature(x="SpatRasterCollection", y="ANY"),
 	function(x, y, snap="near", extend=FALSE) {
 		y <- .getExt(y, method="crop")
+		opt <- spatOptions()
 		x@ptr <- x@ptr$crop(y@ptr, snap[1], extend[1], opt)
 		messages(x, "crop")
 	}
