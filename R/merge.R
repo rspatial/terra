@@ -47,12 +47,12 @@ setMethod("merge", signature(x="SpatRasterCollection", "missing"),
 
 setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) {
-		rc <- sprc(x, y, ...)
-		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		fun <- .makeTextFun(fun)
 		if (!inherits(fun, "character")) {
 			error("mosaic", "function 'fun' is not valid")
 		}
+		opt <- spatOptions(filename, overwrite, wopt=wopt)
+		rc <- sprc(x, y, ...)
 		x@ptr <- rc@ptr$mosaic(fun, opt)
 		messages(x, "mosaic")
 	}
