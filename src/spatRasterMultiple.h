@@ -42,8 +42,8 @@ class SpatRasterCollection {
 				ds.erase(ds.begin()+i);
 			}
 		}
-		SpatRasterCollection crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt);
-		SpatRasterCollection cropmask(SpatVector v, std::string snap, bool touches, bool expand, SpatOptions &opt);
+		SpatRasterCollection crop(SpatExtent e, std::string snap, bool expand, std::vector<unsigned> use, SpatOptions &opt);
+		SpatRasterCollection cropmask(SpatVector v, std::string snap, bool touches, bool expand, std::vector<unsigned> use, SpatOptions &opt);
 		SpatRaster merge(bool first, SpatOptions &opt);
 		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);

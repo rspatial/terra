@@ -2290,7 +2290,8 @@ SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, bool touches, bo
 }
 
 
-SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt) {
+SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, bool expand, std::vector<unsigned> use, SpatOptions &opt) {
+
 
 	SpatRasterCollection out;
 	if ( !e.valid() ) {
@@ -2302,18 +2303,28 @@ SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, 
 		return out;
 	}
 	SpatOptions ops(opt);
-	for (size_t i=0; i<size(); i++) {
-		SpatExtent xe = e.intersect(ds[i].getExtent());
-		if (xe.valid()) {
-			SpatRaster x = ds[i].crop(e, snap, expand, ops);
-			out.push_back(x.source[0]);
+	if (use.size() > 0) {
+		for (size_t i=0; i<use.size(); i++) {
+			SpatExtent xe = e.intersect(ds[use[i]].getExtent());
+			if (xe.valid()) {
+				SpatRaster r = ds[use[i]];
+				r = r.crop(e, snap, expand, ops);
+				out.ds.push_back(r);
+			}
+		}
+	} else {
+		for (size_t i=0; i<size(); i++) {
+			SpatExtent xe = e.intersect(ds[i].getExtent());
+			if (xe.valid()) {
+				out.ds.push_back(ds[i].crop(e, snap, expand, ops));
+			}
 		}
 	}
 	return out;
 }
 
 
-SpatRasterCollection SpatRasterCollection::cropmask(SpatVector v, std::string snap, bool touches, bool expand, SpatOptions &opt) {
+SpatRasterCollection SpatRasterCollection::cropmask(SpatVector v, std::string snap, bool touches, bool expand, std::vector<unsigned> use, SpatOptions &opt) {
 	SpatRasterCollection out;
 
 	SpatExtent e = v.extent;
@@ -2326,11 +2337,21 @@ SpatRasterCollection SpatRasterCollection::cropmask(SpatVector v, std::string sn
 		return out;
 	}
 	SpatOptions ops(opt);
-	for (size_t i=0; i<size(); i++) {
-		SpatExtent xe = e.intersect(ds[i].getExtent());
-		if (xe.valid()) {
-			SpatRaster x = ds[i].cropmask(v, snap, touches, expand, ops);
-			out.push_back(x.source[0]);
+	if (use.size() > 0) {
+		for (size_t i=0; i<use.size(); i++) {
+			SpatExtent xe = e.intersect(ds[use[i]].getExtent());
+			if (xe.valid()) {
+				SpatRaster r = ds[use[i]].cropmask(v, snap, touches, expand, ops);
+				out.push_back(r.source[0]);
+			}
+		}
+	} else {
+		for (size_t i=0; i<size(); i++) {
+			SpatExtent xe = e.intersect(ds[i].getExtent());
+			if (xe.valid()) {
+				SpatRaster x = ds[i].cropmask(v, snap, touches, expand, ops);
+				out.push_back(x.source[0]);
+			}
 		}
 	}
 	return out;
@@ -2569,6 +2590,7 @@ bool overlaps(const std::vector<unsigned>& r1, const std::vector<unsigned>& r2,
 }
 	
 
+#include "sort.h"
 
 SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
@@ -2647,19 +2669,23 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	}
 
 	ve = ve.unite();
+	ve = ve.disaggregate(false);
 	n = ve.nrow();
-	std::vector<int> nrst(n, -9);
+	std::vector<std::vector<unsigned>> rsti(n);
 	for (size_t i=0; i<ve.ncol(); i++) {
 		for (size_t j=0; j<n; j++) {
 			if (ve.df.iv[i][j] == 1) {
-				if (nrst[j] == -9) {
-					nrst[j] = i;
-				} else {
-					nrst[j] = -99;
-				}
+				rsti[j].push_back(i);
 			}
 		}
 	}
+	std::vector<size_t> rcnt(n);
+	for (size_t i=0; i<n; i++) {
+		rcnt[i] = rsti[i].size();
+	}
+	std::vector<std::size_t> ord = sort_order_d(rcnt);
+	permute(rcnt, ord);
+	permute(rsti, ord);
 
 	bool warn = false;
  	if (!out.writeStart(opt, filenames())) { return out; }
@@ -2667,28 +2693,28 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	sopt.progressbar = false;
 
 	for (size_t i=0; i<n; i++) {
-		if (nrst[i] < 0) continue;
-		SpatVector vi = ve.subset_rows(i);
-		if (!write_part(out, ds[nrst[i]], hxr, nl, warn, sopt)) {
-			return out;
+		SpatRaster r;
+		if (rcnt[i] == 1) {
+			r = ds[rsti[i][0]];
+		} else if (rcnt[i] > 1) {
+			SpatVector vi = ve.subset_rows(ord[i]);
+			SpatRasterCollection x;
+			x = crop(vi.extent, "near", true, rsti[i], sopt);
+			if (x.size() == 0) {
+				continue;
+			} 
+			SpatRasterStack s;
+			s.ds = x.ds;
+					
+			r = s.summary(fun, true, sopt);
+			if (r.hasError()) {
+				return r;
+			}	
 		}
-	}
-
-	for (size_t i=0; i<n; i++) {
-		if (nrst[i] >= 0) continue;
-		SpatVector vi = ve.subset_rows(i);
-		SpatRasterCollection x = crop(vi.extent, "near", true, sopt);
-		if (x.size() == 0) {
-			continue;
-		} 
-		SpatRasterStack s;
-		s.ds = x.ds;
-		SpatRaster r = s.summary(fun, true, sopt);
-
 		if (!write_part(out, r, hxr, nl, warn, sopt)) {
 			return out;
 		}
-	}	
+	}
 	out.writeStop();
 
 	if (warn) out.addWarning("rasters did not align and were resampled");
