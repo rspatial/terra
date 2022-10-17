@@ -4,7 +4,7 @@
 
 \alias{rasterizeWin}
 \alias{rasterizeWin,SpatRaster,SpatVector-method}
-\alias{rasterizeWin,SpatRaster,matrix-method}
+\alias{rasterizeWin,SpatRaster,data.frame-method}
 
 \title{Rasterize points with a moving window}
 
@@ -18,7 +18,7 @@ This can result in much smoother results compared to the standard \code{\link{ra
 \S4method{rasterizeWin}{SpatRaster,SpatVector}(x, y, field, fun, win="circle", pars, minPoints=1, 
 		      fill=NA, cvars=FALSE, filename="", ...)
 
-\S4method{rasterizeWin}{SpatRaster,matrix}(x, y, fun, win="circle", pars, minPoints=1, 
+\S4method{rasterizeWin}{SpatRaster,data.frame}(x, y, fun, win="circle", pars, minPoints=1, 
 		      fill=NA, cvars=FALSE, filename="", ...)
 }
 
@@ -53,7 +53,7 @@ set.seed(100)
 x <- runif(50, 5, 45)
 y <- runif(50, 5, 45)
 z <- sample(50)
-xyz <- cbind(x,y,z)
+xyz <- data.frame(x,y,z)
 
 r <- rasterizeWin(r, xyz, "count", pars=5)
 

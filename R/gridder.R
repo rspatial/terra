@@ -73,7 +73,7 @@ rastWinR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 
 	opt <- spatOptions()
 	b <- writeStart(out, filename, n=12, sources="", ...)
-	if (ncol(y) == 3) {
+	if ((ncol(y) == 3) && (is.numeric(y[,3]))) {
 		for (i in 1:b$n) {
 			e$ymax <- yFromRow(out, b$row[i]) + hy
 			e$ymin <- yFromRow(out, b$row[i]  + b$nrows[i] - 1) - hy
@@ -197,7 +197,7 @@ rastBufR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 }
 
 
-setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
+setMethod("rasterizeWin", signature(x="SpatRaster", y="data.frame"),
 	function(x, y, fun, win="circle", pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...) {
 
 		pars <- c(get_rad(pars), minPoints[1], fill[1])
@@ -212,7 +212,7 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="matrix"),
 				fun <- length
 				pars[5] = 0
 			}
-			nl <- 1
+			nl <- ncol(y)-2				
 		} else {
 			if (cvars) {
 				i <- min(10, nrow(y))
