@@ -139,7 +139,6 @@
 <span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">patches</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span class="r-in"><span class="co"># remove patches smaller than 100 ha</span></span>
 <span class="r-in"><span class="va">rz</span> <span class="op">&lt;-</span> <span class="fu"><a href="zonal.html">zonal</a></span><span class="op">(</span><span class="fu"><a href="cellSize.html">cellSize</a></span><span class="op">(</span><span class="va">y</span>, unit<span class="op">=</span><span class="st">"ha"</span><span class="op">)</span>, <span class="va">y</span>, <span class="va">sum</span>, as.raster<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> crop-raster</span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="ifelse.html">ifel</a></span><span class="op">(</span><span class="va">rz</span> <span class="op">&lt;</span> <span class="fl">100</span>, <span class="cn">NA</span>, <span class="va">y</span><span class="op">)</span></span>
 </code></pre></div>
     </div>
