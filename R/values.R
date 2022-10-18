@@ -1,5 +1,5 @@
 # Author: Robert J. Hijmans
-# Date :  June 2008
+# Date :  June 2018
 # Version 0.9
 # License GPL v3
 
@@ -16,49 +16,37 @@ setMethod("hasValues", signature(x="SpatRaster"),
 
 #	factors=TRUE,
 #	if (factors) {
-		ff <- is.factor(x)
-		if (any(ff)) {
-			ff <- which(ff)
-			cgs <- levels(x)
-			for (f in ff) {
-				cg <- cgs[[f]]
-				i <- match(v[,f], cg[,1])
-				if (!inherits(cg[[2]], "numeric")) {
-					v[[f]] <- factor(cg[i, 2], levels=unique(cg[[2]]))
-				} else {
-					v[[f]] <- cg[i, 2]
-				}
-			}
-		} else {
-			bb <- is.bool(x)
-			if (any(bb)) {
-				for (b in which(bb)) {
-					v[[b]] = as.logical(v[[b]])
-				}
-			}
-
-			ii <- is.int(x)
-			if (any(ii)) {
-				for (i in which(ii)) {
-					v[[i]] = as.integer(v[[i]])
-				}
+	ff <- is.factor(x)
+	if (any(ff)) {
+		ff <- which(ff)
+		cgs <- levels(x)
+		for (f in ff) {
+			cg <- cgs[[f]]
+			i <- match(v[,f], cg[,1])
+			if (!inherits(cg[[2]], "numeric")) {
+				v[[f]] <- factor(cg[i, 2], levels=unique(cg[[2]]))
+			} else {
+				v[[f]] <- cg[i, 2]
 			}
 		}
-	#} else {
-	#	bb <- is.bool(x)
-	#	if (any(bb)) {
-	#		for (b in which(bb)) {
-	#			v[[b]] = as.logical(v[[b]])
-	#		}
-	#	}
-
-	#	ii <- is.int(x)
-	#	if (any(ii)) {
-	#		for (i in which(ii)) {
-	#			v[[i]] = as.integer(v[[i]])
-	#		}
-	#	}
-	#}
+	} 
+	bb <- is.bool(x)
+	if (any(bb)) {
+		for (b in which(bb)) {
+			v[[b]] = as.logical(v[[b]])
+		}
+	}
+	ii <- is.int(x)
+	if (any(ii)) {
+		for (i in which(ii)) {
+			v[[i]] = as.integer(v[[i]])
+		}
+	}
+	dd <- !(bb | ii | ff)
+	if (any(dd)) {
+		d = which(dd)
+		v[,d] = replace(v[,d], is.na(v[,d]), NA)
+	}
 	v
 }
 
