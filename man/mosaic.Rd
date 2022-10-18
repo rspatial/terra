@@ -45,11 +45,13 @@ SpatRaster
 
 
 \examples{
+
 x <- rast(xmin=-110, xmax=-60, ymin=40, ymax=70, res=1, vals=1)
-y <- rast(xmin=-85, xmax=-55, ymax=60, ymin=30, res=1, vals=2)
+y <- rast(xmin=-95, xmax=-45, ymax=60, ymin=30, res=1, vals=2)
 z <- rast(xmin=-80, xmax=-30, ymax=50, ymin=20, res=1, vals=3)
 
 m1 <- mosaic(x, y, z)
+
 m2 <- mosaic(z, y, x)
 
 # with many SpatRasters, make a SpatRasterCollection from a list
