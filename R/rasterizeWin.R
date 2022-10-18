@@ -64,7 +64,7 @@ get_rad <- function(r, caller="rasterizeWin") {
 }
 
 
-rastWinR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
+rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, ...) {
 
 	out <- rast(x, nlyr=nl)
 	rb <- rast(out)
@@ -72,7 +72,7 @@ rastWinR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 	hy <- yres(out)/2
 
 	opt <- spatOptions()
-	b <- writeStart(out, filename, n=12, sources="", ...)
+	b <- writeStart(out, filename, n=12, sources="", wopt=wopt)
 	if ((ncol(y) == 3) && (is.numeric(y[,3]))) {
 		for (i in 1:b$n) {
 			e$ymax <- yFromRow(out, b$row[i]) + hy
@@ -93,15 +93,18 @@ rastWinR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 			} 
 
 			if (length(p[[1]]) > 0) {
-				p <- aggregate(p[2], p[1], rfun)
+				p <- aggregate(p[2], p[1], fun, ...)
 				v <- matrix(pars[5], ncell(rbe), nl)
-				v[p[,1], ] <- p[,-1]
+				v[p[,1]+1, ] <- p[,-1]
 				writeValues(out, v, b$row[i], b$nrows[i])					
 			} else {
 				writeValues(out, rep(pars[5], ncell(rbe) * nl), b$row[i], b$nrows[i])
 			}
 		}
 	} else {
+		if (cvars && (length(list(...)) > 0)) {
+			usedots <- TRUE
+		}
 		id <- 1:nrow(y)
 		for (i in 1:b$n) {
 			e$ymax <- yFromRow(out, b$row[i]) + hy
@@ -110,7 +113,7 @@ rastWinR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 			if (win == "rectangle") {
 				p <- rbe@ptr$winrect(y[,1], y[,2], id, pars, opt)				
 			} else {
-				p <- rbe@ptr$wincircle(y[,1], y[,2], id, pars, opt)						
+				p <- rbe@ptr$wincircle(y[,1], y[,2], id, pars, opt)
 			}
 
 			if ((pars[4] > 1) && (length(p[[1]]) > 0)) {
@@ -126,12 +129,16 @@ rastWinR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 				v <- matrix(pars[5], ncell(rbe), nl)
 				if (cvars) {
 					u <- unique(p[[1]])
-					p <- sapply(u, function(i) rfun(py[p[[1]]==i, ,drop=FALSE]))
+					if (usedots) {
+						p <- sapply(u, function(i) fun(py[p[[1]]==i, ,drop=FALSE], ...))
+					} else {
+						p <- sapply(u, function(i) fun(py[p[[1]]==i, ,drop=FALSE]))					
+					}
 					if (!is.null(dim(p))) p <- t(p)
-					v[u, ] <- as.matrix(p)
+					v[u+1, ] <- as.matrix(p)
 				} else {
-					p <- aggregate(py, p[1], rfun)
-					v[p[,1], ] <- as.matrix(p[,-1])
+					p <- aggregate(py, p[1], fun, ...)
+					v[p[,1]+1, ] <- as.matrix(p[,-1])
 				}
 				writeValues(out, v, b$row[i], b$nrows[i])					
 			} else {
@@ -143,7 +150,7 @@ rastWinR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 }
 
 
-rastBufR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
+rastBufR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, ...) {
 	w <- pars[1]
 	z <- y[,-c(1:2), drop=FALSE]
 	y <- vect(y[,1:2,drop=FALSE])
@@ -162,7 +169,8 @@ rastBufR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 	e <- ext(out)
 	hy <- yres(out)/2
 	off <- 0
-	b <- writeStart(out, filename, n=12, sources="", ...)
+	b <- writeStart(out, filename, n=12, sources="", wopt=wopt)
+
 	for (i in 1:b$n) {
 		e$ymax <- yFromRow(out, b$row[i]) + hy
 		e$ymin <- yFromRow(out, b$row[i] + b$nrows[i] - 1) - hy
@@ -178,13 +186,17 @@ rastBufR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 		if (nrow(r) > 0) {
 			v <- matrix(pars[5], ncell(rbe), nl)
 			if ((ncol(z) == 1) || (!cvars)) {
-				f <- aggregate(z[r[,2]], list(r[,1]), rfun)
+				f <- aggregate(z[r[,2]], list(r[,1]), fun, ...)
 				v[f[,1], ] <- f[,-1]
 				writeValues(out, v, b$row[i], b$nrows[i])
 			} else {
 				u <- unique(r[,1])
 				p <- z[r[,2], ,drop=FALSE]
-				p <- sapply(u, function(i) rfun(p[r[,1]==i, ,drop=FALSE]))
+				if (usedots) {
+					p <- sapply(u, function(i) fun(p[r[,1]==i, ,drop=FALSE], ...))
+				} else {
+					p <- sapply(u, function(i) fun(p[r[,1]==i, ,drop=FALSE]))				
+				}
 				if (!is.null(dim(p))) p <- t(p)
 				v[u, ] <- as.matrix(p)
 				writeValues(out, v, b$row[i], b$nrows[i])
@@ -197,36 +209,45 @@ rastBufR <- function(x, y, win, pars, rfun, nl, cvars, filename, ...) {
 }
 
 
-setMethod("rasterizeWin", signature(x="SpatRaster", y="data.frame"),
-	function(x, y, fun, win="circle", pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...) {
+setMethod("rasterizeWin", signature(x="data.frame", y="SpatRaster"),
+	function(x, y, win="circle", pars, fun, ..., cvars=FALSE, minPoints=1, fill=NA, filename="", wopt=list()) {
 
 		pars <- c(get_rad(pars), minPoints[1], fill[1])
-		if (ncol(y) < 3) {
+		if (ncol(x) < 3) {
 			error("rasterizeNGB", "expecting a matrix with at least three columns")
 		}
 		win <- match.arg(tolower(win), c("circle", "ellipse", "rectangle", "buffer"))
 
-		if (ncol(y) == 3) cvars = FALSE
+		usedots <- length(list(...)) > 0
+		if (ncol(x) == 3) cvars = FALSE
 		if (inherits(fun, "character")) {
 			if (fun[1] == "count") {
 				fun <- length
 				pars[5] = 0
 			}
-			nl <- ncol(y)-2				
+			nl <- ncol(x)-2	
 		} else {
 			if (cvars) {
-				i <- min(10, nrow(y))
-				v <- y[1:i, -c(1:2)]
-				test <- sapply(1, function(i) fun(v))
+				i <- min(10, nrow(x))
+				v <- x[1:i, -c(1:2)]
+				if (usedots) {
+					test <- sapply(1, function(i) fun(v, ...))
+				} else {
+					test <- sapply(1, function(i) fun(v))				
+				}
 				nl <- length(test)				
 			} else {
-				test <- fun(1:5)
-				nl <- length(test) * (ncol(y)-2)
+				if (usedots) {
+					test <- fun(1:5, ...)
+				} else {
+					test <- fun(1:5)				
+				}
+				nl <- length(test) * (ncol(x)-2)
 			}
 		}
 		
 		if (win == "buffer") {
-			rastBufR(x, y, win, pars=pars, rfun=fun, nl=nl, cvars=cvars, filename=filename, ...)
+			rastBufR(y, x, win, pars=pars, fun=fun, nl=nl, cvars=cvars, filename=filename, wopt=wopt, ...)
 		} else {
 			if (win == "circle") {
 				pars[2] = pars[1]
@@ -240,23 +261,23 @@ setMethod("rasterizeWin", signature(x="SpatRaster", y="data.frame"),
 				if (win == "rectangle") {
 					error("rasterizeWin", paste(fun, "not yet available for 'win=rectangle'"))
 				} else {
-					opt <- spatOptions(filename, ...)
-					x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
+					opt <- spatOptions(filename, wopt=wopt)
+					x@ptr <- x@ptr$rasterizeWindow(x[,1], x[,2], x[,3], algo, pars, opt)
 					return(messages(x, "rasterizeWin"))
 				}
 			} 
-			rastWinR(x, y, win, pars=pars, rfun=fun, nl=nl, cvars=cvars, filename=filename, ...)
+			rastWinR(x=y, y=x, win=win, pars=pars, fun=fun, nl=nl, cvars=cvars, filename=filename, wopt=wopt, usedots=usedots, ...)
 		}
 	}
 )
 
-setMethod("rasterizeWin", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field, fun, win="circle", pars, minPoints=1, fill=NA, cvars=FALSE, filename="", ...) {
-		if (geomtype(y) != "points") {
+setMethod("rasterizeWin", signature(x="SpatVector", y="SpatRaster"),
+	function(x, y, field, win="circle", pars, fun, ..., cvars=FALSE, minPoints=1, fill=NA, filename="", wopt=list()) {
+		if (geomtype(x) != "points") {
 			error("rasterizeWin", "SpatVector y must have a point geometry")		
 		}
-		y <- cbind(crds(y), get_z(y, field, "rasterizeWin"))
-		rasterizeWin(x, y, fun=fun, win=win, pars=pars, minPoints=minPoints, fill=fill, cvars=cvars, filename=filename, ...)
+		x <- cbind(crds(x), get_z(x, field, "rasterizeWin"))
+		rasterizeWin(x, y, win=win, pars=pars, fun=fun, minPoints=minPoints, fill=fill, cvars=cvars, filename=filename, wopt=wopt, ...)
 	}
 )
 
