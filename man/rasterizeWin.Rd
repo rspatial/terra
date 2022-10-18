@@ -15,11 +15,11 @@ This can result in much smoother results compared to the standard \code{\link{ra
 }
 
 \usage{
-\S4method{rasterizeWin}{SpatVector,SpatRaster}(x, y, field, win="circle", pars, fun, ..., minPoints=1, 
-		      fill=NA, cvars=FALSE, filename="", wopt=list())
+\S4method{rasterizeWin}{SpatVector,SpatRaster}(x, y, field, win="circle", pars, fun, ..., cvars=FALSE, 
+			  minPoints=1, fill=NA, filename="", wopt=list())
 
-\S4method{rasterizeWin}{data.frame,SpatRaster}(x, y, win="circle", pars, fun, ..., minPoints=1, 
-		      fill=NA, cvars=FALSE, filename="", wopt=list())
+\S4method{rasterizeWin}{data.frame,SpatRaster}(x, y, win="circle", pars, fun, ..., cvars=FALSE, 
+		      minPoints=1, fill=NA, filename="", wopt=list())
 }
 
 \arguments{
@@ -57,10 +57,10 @@ y <- runif(50, 5, 45)
 z <- sample(50)
 xyz <- data.frame(x,y,z)
 
-r <- rasterizeWin(xyz, r, "count", pars=5)
+r <- rasterizeWin(xyz, r, fun="count", pars=5)
 
 rfuns <- c("count", "min", "max", "mean")
-x <- lapply(rfuns, function(f) rasterizeWin(r, xyz, f, pars=5))
+x <- lapply(rfuns, function(f) rasterizeWin(xyz, r, fun=f, pars=5))
 names(x) <- rfuns 
 x <- rast(x)
 #plot(x)
