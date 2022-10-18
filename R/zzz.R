@@ -24,10 +24,11 @@
 
 .gdinit <- function() {
 	path = ""
-	if (file.exists(system.file("proj/nad.lst", package = "terra")[1])) {
+	sf <- system.file("", package="terra")
+	if (file.exists(file.path(sf, "proj/nad.lst"))) {
 		path <- system.file("proj", package="terra")
 	}
-	.gdalinit(path)
+	.gdalinit(path, file.path(sf, "gdal"))
 }
 
 loadModule("spat", TRUE)

@@ -377,17 +377,19 @@ void set_gdal_warnings(int level) {
 
 
 // [[Rcpp::export(name = ".gdalinit")]]
-void gdal_init(std::string path) {
+void gdal_init(std::string projpath, std::string datapath) {
 	set_gdal_warnings(2);
     GDALAllRegister();
     OGRRegisterAll();
 	CPLSetConfigOption("GDAL_MAX_BAND_COUNT", "9999999");
 	CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
+	CPLSetConfigOption("GDAL_DATA", datapath.c_str());
+
 
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
-	if (path != "") {
-		const char *cp = path.c_str();
+	if (projpath != "") {
+		const char *cp = projpath.c_str();
 		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
 	}
 #endif

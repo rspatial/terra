@@ -73,8 +73,8 @@ rgb2hex <- function(x) {
     invisible(.Call(`_terra_set_gdal_warnings`, level))
 }
 
-.gdalinit <- function(path) {
-    invisible(.Call(`_terra_gdal_init`, path))
+.gdalinit <- function(projpath, datapath) {
+    invisible(.Call(`_terra_gdal_init`, projpath, datapath))
 }
 
 .precRank <- function(x, y, minc, maxc, tail) {

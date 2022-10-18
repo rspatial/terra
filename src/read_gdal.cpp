@@ -1838,12 +1838,18 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 
 std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<std::string>> &m) {
 
-	std::vector<std::vector<std::string>> out(3);
+	std::vector<std::vector<std::string>> out(4);
 	if (m.size() < 1) return out;
+	
+	bool ft1 = false;
+	bool ft2 = false;
 
 	for (size_t i=0; i<m.size(); i++) {
-		std::string comm, time, units = "";
+
+		std::string comm, time1, time2, units = "";
+
 		for (size_t j=0; j<m[i].size(); j++) {
+			
 			size_t pos = m[i][j].find("GRIB_COMMENT=");
 			if (pos != std::string::npos) {
 				comm = m[i][j];
@@ -1860,6 +1866,14 @@ std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<s
 				lrtrim(units);
 				continue;
 			}
+			pos = m[i][j].find("GRIB_VALID_TIME=");
+			if (pos != std::string::npos) {
+				std::string tmp = m[i][j];
+				tmp.erase(0, pos+16);
+				time1 = tmp;
+				ft1 = true;
+				continue;
+			}
 			pos = m[i][j].find("TIME=");
 			if (pos != std::string::npos) {
 				std::string tmp = m[i][j];
@@ -1867,15 +1881,23 @@ std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<s
 				pos = tmp.find("sec");
 				if (pos != std::string::npos) {
 					tmp.erase(tmp.begin()+pos, tmp.end());
-					time = tmp;
+					time2 = tmp;
+					ft2 = true;
 				}
-				continue;
 			}
 		}
 		out[0].push_back(comm);
 		out[1].push_back(units);
-		out[2].push_back(time);
+		out[2].push_back(time1);
+		out[3].push_back(time2);
 	}
+	
+	if (!ft1) {
+		if (ft2) {
+			out[2] = out[3];
+		}
+	}
+	out.resize(3);
 	return out;
 }
 
@@ -1884,6 +1906,7 @@ std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<s
 void SpatRasterSource::set_names_time_grib(std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
 	if (bandmeta.size() == 0) return;
+	
 	std::vector<std::vector<std::string>> nms = grib_names(bandmeta);
 
 	if (nms[0].size() != names.size()) return;
@@ -1893,28 +1916,36 @@ void SpatRasterSource::set_names_time_grib(std::vector<std::vector<std::string>>
 		str_replace(names[i], "0[-] ", "");
 		str_replace_all(names[i], "\"", "");
 	}
-	unit = {nms[1]};
 
-	std::vector<int_64> tm;
-	bool hastime = true;
-	for (size_t i=0; i<nms[2].size(); i++) {
-		if (nms[2][i] == "") {
-			hastime = false;
-			break;
-		}
-		int_64 tim;
-		try {
-			tim = stol(nms[2][i]);
-		} catch(...) {
-			hastime = false;
-			break;
-		}
-		tm.push_back(tim);
+	if (nms[1].size() == nms[0].size()) {
+		unit = {nms[1]};
 	}
+
+	bool hastime = false;
+	std::vector<int_64> tm;
+	if (nms[2].size() == nms[0].size()) {
+		hastime = true;
+		int_64 tim;
+		for (size_t i=0; i<nms[2].size(); i++) {
+			if (nms[2][i] == "") {
+				hastime = false;
+				break;
+			}
+			try {
+				tim = stol(nms[2][i]);
+			} catch(...) {
+				hastime = false;
+				break;
+			}
+			tm.push_back(tim);
+		}
+	}
+
 	if (hastime) {
 		time = tm;
 		timestep = "seconds";
 		hasTime = true;
 	}
+	
 }
 
