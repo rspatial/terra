@@ -391,7 +391,7 @@ function(x, from, to, raw=FALSE, filename="", ...) {
 	fromc <- inherits(from[1], "character")
 	toc <- inherits(to[1], "character")
 	if (raw && fromc) {
-		error("subst", "if 'raw=TRUE', 'from' cannot have character values")	
+		error("subst", "if 'raw=TRUE', 'from' cannot have character values")
 	}
 	keepcats <- FALSE
 	if (any(is.factor(x))) {
@@ -412,7 +412,7 @@ function(x, from, to, raw=FALSE, filename="", ...) {
 				return(deepcopy(x))
 			}
 		}
-		i <- is.na(from)		
+		i <- is.na(from)
 		if (any(i)) {
 			to <- rep_len(to, length(from))
 			from <- from[!i]
@@ -661,7 +661,7 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 
 setMethod("project", signature(x="SpatRaster"),
 	function(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, res=NULL, origin=NULL, threads=FALSE, filename="", ...)  {
-	
+
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@ptr$rgb)) {
 				method <- "near"
@@ -876,7 +876,7 @@ setMethod("rotate", signature(x="SpatVector"),
 			if (left) {
 				xe <- shift(xe, -360)
 			} else {
-				xw <- shift(xw, 360)			
+				xw <- shift(xw, 360)
 			}
 			out <- rbind(xe, xw)
 			if (nrow(out) > nrow(x)) {
@@ -888,7 +888,7 @@ setMethod("rotate", signature(x="SpatVector"),
 			x$unique_id_for_aggregation <- NULL
 		} else {
 			x@ptr <- x@ptr$rotate_longitude(longitude, left)
-			x <- messages(x, "rotate")		
+			x <- messages(x, "rotate")
 		}
 		if (normalize) {
 			x <- normalize.longitude(x)
@@ -1178,7 +1178,7 @@ setMethod("scoff<-", signature("SpatRaster"),
 	function(x, value) {
 		if (is.null(value)) {
 			x@ptr <- x@ptr$deepcopy()
-			x@ptr$setScaleOffset(1, 0)		
+			x@ptr$setScaleOffset(1, 0)
 		} else {
 			if (NCOL(value) != 2) {
 				error("scoff<-", "value must be a 2-column matrix")

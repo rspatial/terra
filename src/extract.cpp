@@ -729,7 +729,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 					rasterizeCellsWeights(cell, wgt, p, opt);
 				}
 			} else if (exact) {
-				if (gtype == "lines") {	
+				if (gtype == "lines") {
 					rasterizeLinesLength(cell, wgt, p, opt);
 				} else {
 					rasterizeCellsExact(cell, wgt, p, opt);
@@ -767,7 +767,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 		exact = false;
 	}
 	if (exact) weights = false;
-	
+
     unsigned nl = nlyr();
     unsigned ng = v.size();
 

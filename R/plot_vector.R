@@ -75,10 +75,10 @@ setMethod("dots", signature(x="SpatVector"),
 		lines(x, col=out$leg$border, lty=lty, lwd=lwd, ...)
 		return(out)
 	}
-	
+
 #		cols <- .getCols(length(x), col, alpha)
 #		out <- list(main_cols=cols)
-	
+
 	if (!is.null(out$leg$border)) {
 		out$leg$border <- rep_len(out$leg$border, n)
 	} else {
@@ -90,11 +90,11 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 	if (!is.null(lty)) out$leg$lty <- rep_len(lty, n)
 	if (!is.null(lwd)) out$leg$lwd <- rep_len(lwd, n)
-	
+
 	if (!is.null(out$main_cols)) {
 		out$main_cols <- rep_len(out$main_cols, n)
 	}
-	
+
 #	g <- geom(x, df=TRUE)
 #	g <- split(g, g[,1])
 #	g <- lapply(g, function(y) split(y[,3:5], y[,2]))
@@ -146,7 +146,7 @@ setMethod("dots", signature(x="SpatVector"),
 		# out <- .plotLines(x, out, ...)
 		lines(x, col=out$main_cols, lty=lty, lwd=lwd, ...)
 		out$leg$lwd = lwd
-		out$leg$lty = lty		
+		out$leg$lty = lty
 	}
 	out
 }
@@ -180,7 +180,7 @@ setMethod("dots", signature(x="SpatVector"),
 	#} else {
 	#	out$cols <- .getCols(out$ngeom, out$cols)
 	#}
-	out$main_cols <- out$cols	
+	out$main_cols <- out$cols
 	out
 }
 

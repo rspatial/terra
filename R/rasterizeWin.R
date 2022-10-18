@@ -7,7 +7,7 @@
 check_ngb_pars <- function(algo, pars, fill, caller="rasterizeWin") {
 	#p <- c("Power", "Smoothing", "Radius", "Radius1", "Radius2", "Angle", "nMaxPoints", "nMinPoints")
 	n <- tolower(names(pars))
-	if (length(n) == 0) error(caller, "parameters are not named") 	
+	if (length(n) == 0) error(caller, "parameters are not named") 
 	if (algo %in%  c("min", "max", "range", "mean", "count", "distto", "distbetween")) {
 		pex <- c("Radius1", "Radius2", "Angle", "MinPoints")
 	} else if (algo == "invdistpow") {
@@ -15,7 +15,7 @@ check_ngb_pars <- function(algo, pars, fill, caller="rasterizeWin") {
 	} else if (algo == "invdistpownear") {
 		pex <- c("Power", "Smoothing", "Radius", "MaxPoints", "MinPoints")
 	} else if (algo == "nearest") {
-		pex <- c("Radius1", "Radius2", "Angle")	
+		pex <- c("Radius1", "Radius2", "Angle")
 	} else if (algo == "linear") {
 		pex <- c("Radius")
 	} else {
@@ -34,7 +34,7 @@ get_z <- function(y, field, caller="rasterizeWin") {
 		}
 		if (!all(field %in% names(y))) {
 			f <- paste(field[!(field %in% names(y))], collapse=", ")
-			error(caller, paste(f, " is not a name in y"))			
+			error(caller, paste(f, " is not a name in y"))
 		}
 		z <- y[, field, drop=TRUE]
 		if (any(!sapply(z, is.numeric))) {
@@ -79,9 +79,9 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 			e$ymin <- yFromRow(out, b$row[i]  + b$nrows[i] - 1) - hy
 			rbe <- crop(rb, e)
 			if (win == "rectangle") {
-				p <- rbe@ptr$winrect(y[,1], y[,2], y[,3], pars, opt)				
+				p <- rbe@ptr$winrect(y[,1], y[,2], y[,3], pars, opt)
 			} else {
-				p <- rbe@ptr$wincircle(y[,1], y[,2], y[,3], pars, opt)						
+				p <- rbe@ptr$wincircle(y[,1], y[,2], y[,3], pars, opt)
 			}
 
 			if ((pars[4] > 1) && (length(p[[1]]) > 0)) {
@@ -96,7 +96,7 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 				p <- aggregate(p[2], p[1], fun, ...)
 				v <- matrix(pars[5], ncell(rbe), nl)
 				v[p[,1]+1, ] <- p[,-1]
-				writeValues(out, v, b$row[i], b$nrows[i])					
+				writeValues(out, v, b$row[i], b$nrows[i])
 			} else {
 				writeValues(out, rep(pars[5], ncell(rbe) * nl), b$row[i], b$nrows[i])
 			}
@@ -111,7 +111,7 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 			e$ymin <- yFromRow(out, b$row[i]  + b$nrows[i] - 1) - hy
 			rbe <- crop(rb, e)
 			if (win == "rectangle") {
-				p <- rbe@ptr$winrect(y[,1], y[,2], id, pars, opt)				
+				p <- rbe@ptr$winrect(y[,1], y[,2], id, pars, opt)
 			} else {
 				p <- rbe@ptr$wincircle(y[,1], y[,2], id, pars, opt)
 			}
@@ -132,7 +132,7 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 					if (usedots) {
 						p <- sapply(u, function(i) fun(py[p[[1]]==i, ,drop=FALSE], ...))
 					} else {
-						p <- sapply(u, function(i) fun(py[p[[1]]==i, ,drop=FALSE]))					
+						p <- sapply(u, function(i) fun(py[p[[1]]==i, ,drop=FALSE]))
 					}
 					if (!is.null(dim(p))) p <- t(p)
 					v[u+1, ] <- as.matrix(p)
@@ -140,7 +140,7 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 					p <- aggregate(py, p[1], fun, ...)
 					v[p[,1]+1, ] <- as.matrix(p[,-1])
 				}
-				writeValues(out, v, b$row[i], b$nrows[i])					
+				writeValues(out, v, b$row[i], b$nrows[i])
 			} else {
 				writeValues(out, rep(pars[5], ncell(rbe) * nl), b$row[i], b$nrows[i])
 			}
@@ -158,7 +158,7 @@ rastBufR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 	rb <- rast(out)
 	if (!is.lonlat(x)) {
 		ngb <- max(round(w/yres(x)), round(w/xres(x)))
-		if (ngb <= 5) {					
+		if (ngb <= 5) {
 			m <- matrix(1, 2*round(w/yres(x))+1, 2*round(w/xres(x))+1)
 			rb <- rasterize(y, rb)
 			rb <- focal(rb, m, "sum", na.rm=TRUE)
@@ -195,7 +195,7 @@ rastBufR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 				if (usedots) {
 					p <- sapply(u, function(i) fun(p[r[,1]==i, ,drop=FALSE], ...))
 				} else {
-					p <- sapply(u, function(i) fun(p[r[,1]==i, ,drop=FALSE]))				
+					p <- sapply(u, function(i) fun(p[r[,1]==i, ,drop=FALSE]))
 				}
 				if (!is.null(dim(p))) p <- t(p)
 				v[u, ] <- as.matrix(p)
@@ -203,7 +203,7 @@ rastBufR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 			}
 		} else {
 			writeValues(out, rep(pars[5], ncell(rbe) * nl), b$row[i], b$nrows[i])
-		}			
+		}
 	}
 	writeStop(out)
 }
@@ -225,7 +225,7 @@ setMethod("rasterizeWin", signature(x="data.frame", y="SpatRaster"),
 				fun <- length
 				pars[5] = 0
 			}
-			nl <- ncol(x)-2	
+			nl <- ncol(x)-2
 		} else {
 			if (cvars) {
 				i <- min(10, nrow(x))
@@ -233,19 +233,19 @@ setMethod("rasterizeWin", signature(x="data.frame", y="SpatRaster"),
 				if (usedots) {
 					test <- sapply(1, function(i) fun(v, ...))
 				} else {
-					test <- sapply(1, function(i) fun(v))				
+					test <- sapply(1, function(i) fun(v))
 				}
-				nl <- length(test)				
+				nl <- length(test)
 			} else {
 				if (usedots) {
 					test <- fun(1:5, ...)
 				} else {
-					test <- fun(1:5)				
+					test <- fun(1:5)
 				}
 				nl <- length(test) * (ncol(x)-2)
 			}
 		}
-		
+
 		if (win == "buffer") {
 			rastBufR(y, x, win, pars=pars, fun=fun, nl=nl, cvars=cvars, filename=filename, wopt=wopt, ...)
 		} else {
@@ -274,7 +274,7 @@ setMethod("rasterizeWin", signature(x="data.frame", y="SpatRaster"),
 setMethod("rasterizeWin", signature(x="SpatVector", y="SpatRaster"),
 	function(x, y, field, win="circle", pars, fun, ..., cvars=FALSE, minPoints=1, fill=NA, filename="", wopt=list()) {
 		if (geomtype(x) != "points") {
-			error("rasterizeWin", "SpatVector y must have a point geometry")		
+			error("rasterizeWin", "SpatVector y must have a point geometry")
 		}
 		x <- cbind(crds(x), get_z(x, field, "rasterizeWin"))
 		rasterizeWin(x, y, win=win, pars=pars, fun=fun, minPoints=minPoints, fill=fill, cvars=cvars, filename=filename, wopt=wopt, ...)
@@ -293,7 +293,7 @@ setMethod("interpNear", signature(x="SpatRaster", y="matrix"),
 
 		if (interpolate) {
 			algo <- "linear"
-			pars <- c(radius[1], fill)		
+			pars <- c(radius[1], fill)
 		} else {
 			algo <- "nearest"
 			pars <- c(get_rad(radius, "interpNear"), fill)
@@ -309,7 +309,7 @@ setMethod("interpNear", signature(x="SpatRaster", y="matrix"),
 setMethod("interpNear", signature(x="SpatRaster", y="SpatVector"),
 	function(x, y, field, radius, interpolate=FALSE, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
-			error("interpNear", "SpatVector y must have a point geometry")		
+			error("interpNear", "SpatVector y must have a point geometry")
 		}
 		y <- cbind(crds(y), get_z(y, field, "interpNear"))
 		interpNear(x, y, radius=radius, interpolate=interpolate, fill=fill, filename=filename, ...)
@@ -322,10 +322,10 @@ setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
 
 		if (near) {
 			algo <- "invdistpownear"
-			pars <- c(power, smooth, radius[1], maxPoints, minPoints, fill)		
+			pars <- c(power, smooth, radius[1], maxPoints, minPoints, fill)
 		} else {
 			algo <- "invdistpow"
-			pars <- c(power, smooth, get_rad(radius, "interpIDW"), maxPoints, minPoints, fill)			
+			pars <- c(power, smooth, get_rad(radius, "interpIDW"), maxPoints, minPoints, fill)
 		}
 
 		if (ncol(y) != 3) {
@@ -341,7 +341,7 @@ setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
 setMethod("interpIDW", signature(x="SpatRaster", y="SpatVector"),
 	function(x, y, field, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
-			error("interpIDW", "SpatVector y must have a point geometry")		
+			error("interpIDW", "SpatVector y must have a point geometry")
 		}
 		y <- cbind(crds(y), get_z(y, field, "interpIDW"))
 		interpIDW(x, y, radius, power=power, smooth=smooth, maxPoints=maxPoints, minPoints=minPoints, near=near, fill=fill, filename=filename, ...)

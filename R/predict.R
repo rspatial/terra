@@ -24,7 +24,7 @@ parfun <- function(cls, d, fun, model, ...) {
 		for (i in 1:ncol(const)) {
 			d <- cbind(d, const[,i,drop=FALSE])
 		}
-	}	
+	}
 	if (na.rm) {
 		n <- nrow(d)
 		i <- rowSums(is.na(d)) == 0
@@ -36,7 +36,7 @@ parfun <- function(cls, d, fun, model, ...) {
 				r <- fun(model, d, ...)
 			}
 			if (is.list(r)) {
-				r <- as.data.frame(lapply(r, as.numeric))			
+				r <- as.data.frame(lapply(r, as.numeric))
 			} else if (is.factor(r)) {
 				r <- as.integer(r)
 			} else if (is.data.frame(r)) {
@@ -71,7 +71,7 @@ parfun <- function(cls, d, fun, model, ...) {
 			r <- fun(model, d, ...)
 		}
 		if (is.list(r)) {
-			r <- as.data.frame(lapply(r, as.numeric))			
+			r <- as.data.frame(lapply(r, as.numeric))
 		} else if (is.factor(r)) {
 			r <- as.integer(r)
 		} else if (is.data.frame(r)) {
@@ -101,7 +101,7 @@ parfun <- function(cls, d, fun, model, ...) {
 		for (i in 1:ncol(const)) {
 			d <- cbind(d, const[,i,drop=FALSE])
 		}
-	}	
+	}
 	if (na.rm) {
 		n <- nrow(d)
 		i <- rowSums(is.na(d)) == 0

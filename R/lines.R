@@ -47,7 +47,7 @@ setMethod("lines", signature(x="SpatVector"),
 				g <- lapply(x@ptr$linesList(), function(i) { names(i)=c("x", "y"); i } )
 				for (i in 1:n) {
 					graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=col[i], lwd=lwd[i], ...)
-				}		
+				}
 			}
 			#g <- geom(x, df=TRUE)
 			#g <- split(g, g[,1])
@@ -105,7 +105,7 @@ setMethod("polys", signature(x="SpatVector"),
 			col <- NULL
 		} else if (length(col) > 1) {
 			col <- .getCols(length(x), col, alpha)
-		}	
+		}
 		out <- list(main_cols=col)
 		out$leg$border <- border
 		p <- .plotPolygons(x, out, lwd=lwd, lty=lty, ...)

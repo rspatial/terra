@@ -183,7 +183,7 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 		return(out);
 	}
 	id.insert(id.end(), id2.begin(), id2.end());
-	
+
 
 	if (!hasvalue) {
 		std::vector<long> vid(nr);

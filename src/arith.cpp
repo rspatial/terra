@@ -193,7 +193,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		}
 		if (is_int) {
 			out.setValueType(1);
-		}		
+		}
 	}
 
 	if (!out.compare_geom(x, false, true, opt.get_tolerance())) {
@@ -1450,11 +1450,11 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, bool values
 						if (v[k] < val[j]) {
 							val[j] = v[k];
 							out[j].resize(0);
-							double cell = k - off + boff;							
+							double cell = k - off + boff;
 							out[j].push_back(cell);
 						} else if (v[k] == val[j]) {
-							double cell = k - off + boff;							
-							out[j].push_back(cell);					
+							double cell = k - off + boff;
+							out[j].push_back(cell);
 						}
 					}
 				}
@@ -1464,11 +1464,11 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, bool values
 						if (v[k] > val[j]) {
 							val[j] = v[k];
 							out[j].resize(0);
-							double cell = k - off + boff;							
+							double cell = k - off + boff;
 							out[j].push_back(cell);
 						} else if (v[k] == val[j]) {
-							double cell = k - off + boff;							
-							out[j].push_back(cell);					
+							double cell = k - off + boff;
+							out[j].push_back(cell);
 						}
 					}
 				}
@@ -1476,7 +1476,7 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, bool values
 			if (values) {
 				std::vector<double> wval(out[j].size(), val[j]);
 				out[j].insert(out[j].end(), wval.begin(), wval.end());
-			}			
+			}
 		}
 	}
 	readStop();

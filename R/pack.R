@@ -119,10 +119,10 @@ setMethod("wrap", signature(x="SpatRaster"),
 	function(x, proxy=FALSE) {
 		r <- methods::new("PackedSpatRaster")
 		r@definition <- as.character(x)
-		
+
 		opt <- spatOptions(ncopies=2)
 		can <- (!proxy) && x@ptr$canProcessInMemory(opt)
-		
+
 		s <- sources(x)
 		if (can || (all(s == ""))) {
 			r@values <- values(x)
@@ -133,7 +133,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 			x <- writeRaster(x, fname)
 			r@attributes$filename <- fname
 		}
-		
+
 		if (any(is.factor(x))) {
 			r@attributes$levels <- cats(x)
 			r@attributes$levindex <- activeCat(x, 0)
@@ -179,7 +179,7 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 		} else {
 			values(r) <- x@values
 		}
-		
+
 		if (length(x@attributes) > 0) {
 			nms <- names(x@attributes)
 			if (any(nms %in% c("levels", "time", "units", "depth"))) {

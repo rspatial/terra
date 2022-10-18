@@ -103,11 +103,11 @@ SpatVector SpatVector::disaggregate(bool segments) {
 		SpatVector x;
 		x.srs = srs;
 		x.df = df.skeleton();
-		
+
 		for (size_t i=0; i<out.nrow(); i++) {
 			SpatGeom g = out.getGeom(i);
 			SpatDataFrame row = out.df.subset_rows(i);
-			size_t n = g.parts[0].x.size() - 1;			
+			size_t n = g.parts[0].x.size() - 1;
 			for (size_t j=0; j<n; j++) {
 				std::vector<double> sx = {g.parts[0].x[j], g.parts[0].x[j+1]};
 				std::vector<double> sy = {g.parts[0].y[j], g.parts[0].y[j+1]};

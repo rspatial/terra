@@ -1266,11 +1266,11 @@ SpatVector SpatVector::rotate_longitude(double longitude, bool left) {
 			for (size_t k=0; k<nx; k++) {
 				if (left) {
 					if (out.geoms[i].parts[j].x[k] > longitude) {
-						out.geoms[i].parts[j].x[k] = out.geoms[i].parts[j].x[k] - 360;					
+						out.geoms[i].parts[j].x[k] = out.geoms[i].parts[j].x[k] - 360;
 					}
 				} else {
 					if (out.geoms[i].parts[j].x[k] < longitude) {
-						out.geoms[i].parts[j].x[k] = out.geoms[i].parts[j].x[k] + 360;					
+						out.geoms[i].parts[j].x[k] = out.geoms[i].parts[j].x[k] + 360;
 					}
 				}
 			}
@@ -1292,9 +1292,9 @@ SpatVector SpatVector::rotate_longitude(double longitude, bool left) {
 				}
 			}
 		}
-		out.geoms[i].computeExtent();		
+		out.geoms[i].computeExtent();
 	}
-	out.computeExtent();		
+	out.computeExtent();
 	return(out);
 }
 
@@ -1377,7 +1377,7 @@ std::vector<std::vector<std::vector<std::vector<double>>>> SpatVector::polygonsL
 					out[i][j][0].push_back(NAN);
 					out[i][j][1].push_back(NAN);
 					out[i][j][0].insert(out[i][j][0].end(), g.parts[j].holes[k].x.begin(), g.parts[j].holes[k].x.end());
-					out[i][j][1].insert(out[i][j][1].end(), g.parts[j].holes[k].y.begin(), g.parts[j].holes[k].y.end());				
+					out[i][j][1].insert(out[i][j][1].end(), g.parts[j].holes[k].y.begin(), g.parts[j].holes[k].y.end());
 				}
 			} else {
 				out[i][j][0] = g.parts[j].x;

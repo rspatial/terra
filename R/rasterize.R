@@ -152,7 +152,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
 	function(x, y, values=1, fun, ..., background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 		lonlat <- .checkXYnames(colnames(x))
-		
+
 		if (NCOL(values) <= 1) {
 			values <- unlist(values)
 			if (length(values) > nrow(x)) {
@@ -165,7 +165,7 @@ setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
 			}
 			if (nrow(values) < nrow(x)) {
 				i <- rep_len(1:nrow(values), nrow(x))
-				values <- values[i, ]			
+				values <- values[i, ]
 			}
 		}
 		rasterize_points(x=x, y=y, field="", values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)

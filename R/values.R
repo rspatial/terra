@@ -146,7 +146,7 @@ setMethod("setValues", signature("SpatRaster"),
 					if (d[1] > 1) warn("setValues", "values were recycled")
 					values <- as.vector(apply(values, 2, function(i) rep_len(i, ncell(x))))
 				} else {
-					error("setValues","dimensions of the matrix do not match the SpatRaster")				
+					error("setValues","dimensions of the matrix do not match the SpatRaster")
 				}
 			} 
 			if (!keepnames) {
@@ -255,7 +255,7 @@ setMethod("sources", signature(x="SpatRaster"),
 			if (nlyr) {
 				d$nlyr <- rep(nls, nls)
 			}
-			d			
+			d
 		} else if (nlyr) {
 			data.frame(source=src, nlyr=x@ptr$nlyrBySource(), stringsAsFactors=FALSE)
 		} else {

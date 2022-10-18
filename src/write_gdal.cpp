@@ -360,7 +360,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	}
 	if (!append) {
 		std::string msg;
-		if (!can_write({filename}, srcnames, opt.get_overwrite(), msg)) {		
+		if (!can_write({filename}, srcnames, opt.get_overwrite(), msg)) {
 			setError(msg);
 			return false;
 		}
@@ -382,7 +382,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	if (rat) {
 		if (hasCT[0]) {
 			if (opt.datatype_set && (datatype != opt.get_datatype())) {
-				addWarning("change datatype to INT1U to write the color-table");					
+				addWarning("change datatype to INT1U to write the color-table");
 			} else {
 				datatype = "INT1U";
 			}
@@ -393,10 +393,10 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			//		addWarning("change datatype to an INT type to write the categories");
 			//	}
 			//} else {
-			//	datatype = "INT4S";					
+			//	datatype = "INT4S";
 			//}
 			if (!opt.datatype_set && (driver != "GPKG")) {
-				datatype = "INT4S";					
+				datatype = "INT4S";
 			}
 		}
 	} else if (hasCT[0] || cat) {
@@ -413,7 +413,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	//		addWarning("changed datatype to " + datatype);
 	//	}
 	//}
-	
+
 	GDALDataType gdt;
 	if (!getGDALDataType(datatype, gdt)) {
 		setError("invalid datatype");
@@ -459,7 +459,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		if (canProcessInMemory(opt)) {
 			poDriver = GetGDALDriverManager()->GetDriverByName("MEM");
 			poDS = poDriver->Create("", ncol(), nrow(), nlyr(), gdt, papszOptions);
-		} else {	
+		} else {
 			//std::string driver = opt.get_filetype();
 			//std::string f = tempFile(opt.get_tempdir(), opt.pid, "");
 			//getGDALdriver(f, driver);
@@ -467,7 +467,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			//	setError("invalid default temp filetype");
 			//	return(false);
 			//}
-			
+
 			std::string f, driver;
 			if (!getTempFile(f, driver, opt)) {
 				return false;
@@ -625,7 +625,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		return false ;
 	}
 	char *pszSRS_WKT = NULL;
-	
+
 #if GDAL_VERSION_MAJOR >= 3
 	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
 	oSRS.exportToWkt(&pszSRS_WKT, options);
@@ -847,7 +847,7 @@ bool SpatRaster::writeStopGDAL() {
 				} else if (datatype == "FLT4S") { // match precision
 					source[0].range_min[i] = (float) source[0].range_min[i]; 
 					source[0].range_max[i] = (float) source[0].range_max[i]; 
-				}				
+				}
 				poBand->SetStatistics(source[0].range_min[i], source[0].range_max[i], -9999., -9999.);
 			}
 			source[0].hasRange[i] = true;
@@ -947,7 +947,7 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 	GDALRasterBandH poBand;
 	size_t n=0;
 	for (size_t i=0; i<nsrc(); i++) {
-		if (source[i].memory) continue;	
+		if (source[i].memory) continue;
 		n++;
 		if (!open_gdal(hDS, i, true, opt)) {
 			setError("cannot open source " + std::to_string(i+1));
@@ -976,7 +976,7 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 			oSRS.exportToWkt(&pszSRS_WKT);
 		#endif
 			GDALSetProjection(hDS, pszSRS_WKT);
-			CPLFree(pszSRS_WKT);		
+			CPLFree(pszSRS_WKT);
 		}
 		if (ext) {
 			std::vector<double> rs = resolution();

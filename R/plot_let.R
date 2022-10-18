@@ -43,11 +43,11 @@ baselayers <- function(tiles, wrap=TRUE) {
 setMethod("plet", signature(x="SpatVector"),
 	function(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
 
-		if (missing(col)) col = grDevices::rainbow		
+		if (missing(col)) col = grDevices::rainbow
 		alpha <- max(0, min(1, alpha))
 		fill <- max(0, min(1, alpha))
 		x <- makelonlat(x)
-		
+
 		#stopifnot(packageVersion("leaflet") > "2.1.1")
 		if (is.null(map)) {
 			tiles <- unique(as.character(tiles))
@@ -71,7 +71,7 @@ setMethod("plet", signature(x="SpatVector"),
 							col=cols, opacity=alpha,  popup=pop)
 			} else {
 				map <- leaflet::addMarkers(map, data=x, label=lab,  
-							col=cols, fillOpacity=fill, opacity=alpha, popup=pop)			
+							col=cols, fillOpacity=fill, opacity=alpha, popup=pop)
 			}
 			if (length(tiles) > 1) {
 				map <- leaflet::addLayersControl(map, baseGroups = tiles, 
@@ -182,7 +182,7 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 			v <- makelonlat(v)
 			g <- geomtype(v)
 			pop <- NULL
-			lab <- NULL			
+			lab <- NULL
 			if (popup[i]) {
 				pop <- popUp(v)
 			} 
@@ -235,7 +235,7 @@ setMethod("lines", signature(x="leaflet"),
 				x <- leaflet::addPolylines(x, data=y[i], weight=lwd[i], opacity=alpha[i], col=cols[i], group=nms[i])
 			}
 			collapse=FALSE
-			leaflet::addLayersControl(x, overlayGroups = nms, options = leaflet::layersControlOptions(collapsed=collapse))	
+			leaflet::addLayersControl(x, overlayGroups = nms, options = leaflet::layersControlOptions(collapsed=collapse))
 		}
 	}
 )
@@ -248,7 +248,7 @@ setMethod("points", signature(x="leaflet"),
 		if (missing(col)) col <- "black"
 		if (!(geomtype(y) == "points")) {
 			if (geomtype(y) == "polygons") {
-				y <- centroids(y)			
+				y <- centroids(y)
 			} else {
 				y <- as.points(y)
 			}
@@ -341,7 +341,7 @@ setMethod("plet", signature(x="SpatRaster"),
 		} else {
 			x <- spatSample(x[[y]], maxcell, "regular", as.raster=TRUE)
 		}
-				
+
 		if (is.null(map)) {
 			tiles <- unique(as.character(tiles))
 			tiles <- tiles[tiles!=""]
@@ -356,13 +356,13 @@ setMethod("plet", signature(x="SpatRaster"),
 		if (missing(col)) {
 			col <- rev(grDevices::terrain.colors(255))
 		}
-		
+
 		main <- gsub("\n", "</br>", main)
 		if (length(main) != length(y)) {
 			main <- rep_len(main, length(x))[y]
 		}
-		
-		
+
+
 		if (nlyr(x) == 1) {
 			map <- leaflet::addRasterImage(map, x, colors=col, opacity=alpha)
 			if (!is.null(legend)) {
@@ -370,13 +370,13 @@ setMethod("plet", signature(x="SpatRaster"),
 				v <- seq(r[1], r[2], 5)
 				pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
 				map <- leaflet::addLegend(map, legend, pal=pal, values=v, opacity=1, title=main[1],
-					  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
+					  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
 			}
 			if (panel) {
 				#map <- leaflet::addCircleMarkers(map, data=p, label=p$label, radius=1, opacity=1, col="red")
 				map <- leaflet::addLabelOnlyMarkers(map, label=p$label, data=p, 
                       labelOptions = leaflet::labelOptions(noHide = T, textOnly = T))
-			}			
+			}
 		} else {
 			nms <- make.unique(names(x))
 			many_legends <- one_legend <- FALSE
@@ -402,7 +402,7 @@ setMethod("plet", signature(x="SpatRaster"),
 						pal <- leaflet::colorNumeric(col, v, reverse=TRUE)
 						map <- leaflet::addLegend(map, position=legend, pal=pal, values=v, 
 							  title=main[i], opacity=1, group=nms[i],
-							  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
+							  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
 					}
 				}
 			}
@@ -419,12 +419,12 @@ setMethod("plet", signature(x="SpatRaster"),
 						});
 					};
 					updateLegend();
-					this.on('baselayerchange', e => updateLegend());}")				
+					this.on('baselayerchange', e => updateLegend());}")
 			} else if (one_legend) {
 				v <- seq(rr[1], rr[2], length.out=5)
 				pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
 				map <- leaflet::addLegend(map, position=legend, pal=pal, values=v, opacity=1, group=nms[i],
-						  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))	
+						  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
 			}
 		}
 		map

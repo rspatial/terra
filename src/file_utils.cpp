@@ -177,7 +177,7 @@ bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> o
 		#endif
 		for (size_t j=0; j<outf.size(); j++) {
 			if (inf[i] == outf[j]) {
-				msg = "source and target filename cannot be the same";			
+				msg = "source and target filename cannot be the same";
 				return false;
 			}
 		}

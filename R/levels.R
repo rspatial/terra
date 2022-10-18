@@ -74,7 +74,7 @@ setMethod ("set.cats" , "SpatRaster",
 			}
 		}
 		layer <- round(layer)
-		
+
 		if (length(layer) > 1) {
 			if (!is.list(value)) {
 				error("set.cats", "value should be a list")
@@ -89,7 +89,7 @@ setMethod ("set.cats" , "SpatRaster",
 			}
 			return(invisible(ok))
 		} 
-		
+
 		if (layer < 1) {
 			if (!is.list(value)) {
 				error("set.cats", "value should be a list")
@@ -207,7 +207,7 @@ setMethod ("activeCat" , "SpatRaster",
 			}
 		}
 		if (layer < 1) {
-			a <- sapply(1:nlyr(x), function(i) x@ptr$getCatIndex(i-1))	
+			a <- sapply(1:nlyr(x), function(i) x@ptr$getCatIndex(i-1))
 			a[a==0] <- NA
 			a
 		} else {

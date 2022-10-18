@@ -95,7 +95,7 @@ setMethod("relate", signature(x="SpatVector", y="SpatVector"),
 				m[do.call(cbind, out) + 1] <- TRUE
 			}
 			m
-			
+
 #			out <- x@ptr$relate_between(y@ptr, relation, TRUE, TRUE)
 #			messages(x, "relate")
 #			out[out == 2] <- NA
@@ -148,7 +148,7 @@ setMethod("relate", signature(x="SpatRaster", y="SpatVector"),
 setMethod("relate", signature(x="SpatExtent", y="SpatRaster"),
 	function(x, y, relation, ...) {
 		x <- as.polygons(x)
-		y <- as.polygons(y, ext=TRUE)		
+		y <- as.polygons(y, ext=TRUE)
 		relate(x, y, relation, ...)
 	}
 )
@@ -204,7 +204,7 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 			#	m
 			#}
 		}
-			
+
 		#out <- x@ptr$relate_within(relation, symmetrical)
 		#out[out == 2] <- NA
 		#if (symmetrical) {

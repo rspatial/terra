@@ -505,7 +505,7 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 					fill.reserve(dhw0 * nc);
 					for (size_t i=1; i<dhw0; i++) {
 						fill.insert(fill.end(), vin.end()-nc, vin.end());
-					}					
+					}
 				} else {
 					std::fill(fill.begin(), fill.end(), fillvalue);
 				}
@@ -569,8 +569,8 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 						fill.reserve(dhw0 * nc);
 						for (size_t i=1; i<dhw0; i++) {
 							fill.insert(fill.end(), vin.end()-nc, vin.end());
-						}					
-						
+						}
+
 					} else {
 						std::fill(fill.begin(), fill.end(), fillvalue);
 					}

@@ -113,7 +113,7 @@ setMethod ("show" , "SpatVectorCollection",
 			}
 		}
 		if (n > nn) {
-			cat("               ", "   and ", n-nn, "more\n", sep="")			
+			cat("               ", "   and ", n-nn, "more\n", sep="")
 		}
 		nms <- names(object)
 		if (length(nms) > 10) {
@@ -242,9 +242,9 @@ setMethod ("show" , "SpatRaster",
 			f <- gsub("\"", "", f)
 			sources <- rep("memory", length(m))
 			sources[!m] <- f[!m]
-			
+
 			if (all(m)) {
-				cat("source(s)   : memory\n")			
+				cat("source(s)   : memory\n")
 			} else {
 				if (nsr > 1) {
 					mxsrc <- 3
@@ -257,7 +257,7 @@ setMethod ("show" , "SpatRaster",
 					}
 					if (nsr > mxsrc) {
 						if (nsr == (mxsrc+1)) {
-							cat("             ", sources[mxsrc+1], lbsprint[mxsrc+1], "\n")				
+							cat("             ", sources[mxsrc+1], lbsprint[mxsrc+1], "\n")
 						} else {
 							cat("             ", "... and", nsr-mxsrc, "more source(s)\n")
 						}
@@ -267,7 +267,7 @@ setMethod ("show" , "SpatRaster",
 				}
 			}
 			rgb <- RGB(object)
-			if (!is.null(rgb)) {				
+			if (!is.null(rgb)) {
 				cat(paste("colors", toupper(object@ptr$rgbtype), " :"), paste(rgb, collapse=", "), "\n")
 			}
 			hasct <- object@ptr$hasColors()
@@ -566,4 +566,4 @@ setMethod ("str", "SpatVector",
 		}
 	}
 )
-	
+

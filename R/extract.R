@@ -177,14 +177,14 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 #	if (value == "matrix") {
 #		factors <- FALSE
 #	} else {
-#		factors <- TRUE	
+#		factors <- TRUE
 #	}
 	if (bind) raw=FALSE 
-	
+
 	nl <- nlyr(x)
 	useLyr <- FALSE
 	geo <- geomtype(y)
-	if (weights && (geo == "points")) {	
+	if (weights && (geo == "points")) {
 		warn("argument weights is ignored for point data")
 		weights <- FALSE
 	} 
@@ -216,7 +216,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 					bad <- TRUE
 				}
 			} else {
-				bad <- TRUE			
+				bad <- TRUE
 			}
 			if (bad) {
 				error("extract", 'if weights=TRUE or exact=TRUE, "fun" must be "sum", "mean", "min", or "max"')
@@ -244,7 +244,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 
 	cn <- names(x)
 	opt <- spatOptions()
-	
+
 	if (wfun) {
 		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 		x <- messages(x, "extract")
@@ -256,11 +256,11 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		if (ID) {
 			e <- data.frame(ID=1:nrow(e), e)
 		} else {
-			e <- data.frame(e)			
+			e <- data.frame(e)
 		}
 		return(e)
-	}	
-	
+	}
+
 	e <- x@ptr$extractVectorFlat(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 	x <- messages(x, "extract")
 	nc <- nl
@@ -381,7 +381,7 @@ setMethod("extract", signature(x="SpatRaster", y="numeric"),
 function(x, y, xy=FALSE) {
 	y <- round(y)
 	y[(y < 1) | (y > ncell(x))] <- NA
-	v <- .extract_cell(x, y, drop=TRUE)	
+	v <- .extract_cell(x, y, drop=TRUE)
 	if (xy) {
 		v <- cbind(xyFromCell(x, y), v)
 	}
@@ -393,7 +393,7 @@ function(x, y, cells=FALSE) {
 	.checkXYnames(colnames(y))
 	y <- cellFromXY(x, y)
 	if (cells) {
-		cbind(cell=y, extract(x, y))	
+		cbind(cell=y, extract(x, y))
 	} else {
 		extract(x, y)
 	}
@@ -423,7 +423,7 @@ function(x, y) {
 #		e <- do.call(cbind, e) + 1
 #	}
 	e <- relate(y, x, "coveredby", pairs=TRUE, na.rm=FALSE)
-	
+
 #	if (length(e) == 0) {
 #		e <- list(e)
 #	}

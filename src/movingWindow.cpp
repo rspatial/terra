@@ -47,7 +47,7 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 	win[1] = std::abs(win[1]);
     const double h = win[0] / 2; 
     const double w = win[1] / 2;
-	
+
 	// multiply for floating point imprecision
 	const double rar = win[0] * win[1] * 1.00000001;
 	double angle = std::fmod(win[2], 360.0);
@@ -76,14 +76,14 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 		oy[2] =  wsphi - hcphi;
 		ox[3] = -wcphi + hsphi;
 		oy[3] = -wsphi - hcphi;
-		
+
 		bigw = (vmax(ox, false) - vmin(ox, false))/2;
 		bigh = (vmax(oy, false) - vmin(oy, false))/2;
 		offh = bigh * 1.00000001;
 	} else {
 		offh = h * 1.00000001;
 	}
-		
+
 	const size_t nc = ncol();
 	const size_t nr = nrow();
 
@@ -101,7 +101,7 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 	std::vector<double> xc = xFromCol(cols);
 
 	if (minpt < 2) {
-	
+
 		if (rotated) {
 			for (size_t r=0; r<nr; r++) {
 				double yrow = yFromRow(r);
@@ -133,7 +133,7 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 								area += rarea(rx[1], ry[1], x[i], y[i], rx[0], ry[0]);
 								if (area < rar) {
 									out[0].push_back(rnc+j);
-									out[1].push_back(z[i]);					
+									out[1].push_back(z[i]);
 								}
 							} 
 						}
@@ -142,7 +142,7 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 					}
 				}
 			}
-		} else {	
+		} else {
 			for (size_t r=0; r<nr; r++) {
 				double yrow = yFromRow(r);
 				double ytop = yrow + offh;
@@ -164,7 +164,7 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 						}
 					} else {
 						break;
-					}	
+					}
 				} 
 			}
 		}
@@ -225,7 +225,7 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 					}
 				}
 			}
-		} else {	
+		} else {
 			for (size_t r=0; r<nr; r++) {
 				double yrow = yFromRow(r);
 				double ytop = yrow + offh;
@@ -262,7 +262,7 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 						}
 					} else {
 						break;
-					}	
+					}
 				} 
 			}
 		}
@@ -326,7 +326,7 @@ std::vector<std::vector<double>> SpatRaster::win_circle(std::vector<double> x, s
 					y.pop_back(); // above current row
 				} else if (y[i] >= ybot) {
 					bool found = false;
-					for (long j=(nc-1); j>=0; j--) {						
+					for (long j=(nc-1); j>=0; j--) {
 						double RX = x[i] - xc[j];
 						double RY = y[i] - yrow;
 						if (rotated) {
@@ -360,7 +360,7 @@ std::vector<std::vector<double>> SpatRaster::win_circle(std::vector<double> x, s
 				} else if (y[i] >= ybot) {
 					bool found = false;
 					size_t minlim = 0;
-					for (long j=(nc-1); j>=0; j--) {						
+					for (long j=(nc-1); j>=0; j--) {
 						double RX = x[i] - xc[j];
 						double RY = y[i] - yrow;
 						if (rotated) {
@@ -386,7 +386,7 @@ std::vector<std::vector<double>> SpatRaster::win_circle(std::vector<double> x, s
 					}
 				} else {
 					break;
-				}	
+				}
 			}
 		}
 	}

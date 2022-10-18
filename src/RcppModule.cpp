@@ -363,7 +363,7 @@ RCPP_MODULE(spat){
 		.constructor()
 		.constructor<SpatExtent, std::string>()
 		.constructor<std::vector<std::string>>()
-		
+
 		.method("deepcopy", &SpatVector::deepCopy)
 		.method("wkt", &SpatVector::wkt)
 		.method("wkb", &SpatVector::wkb)
@@ -509,7 +509,7 @@ RCPP_MODULE(spat){
 		.method("mask", &SpatVector::mask)
 
 		.method("is_related", &SpatVector::is_related)
-			
+
 		.method("related_between", ( std::vector<std::vector<double>> (SpatVector::*)(SpatVector, std::string, bool))( &SpatVector::which_relate))
 		.method("related_within", ( std::vector<std::vector<double>> (SpatVector::*)(std::string, bool))( &SpatVector::which_relate))
 
@@ -642,7 +642,7 @@ RCPP_MODULE(spat){
 		.method("setCatIndex", &SpatRaster::setCatIndex)
 		.method("getScaleOffset", &SpatRaster::getScaleOffset)
 		.method("setScaleOffset", &SpatRaster::setScaleOffset)
-	
+
 		.method("hasColors", &SpatRaster::hasColors)
 		.method("getColors", &SpatRaster::getColors)
 		.method("setColors", &SpatRaster::setColors)
@@ -783,7 +783,7 @@ RCPP_MODULE(spat){
 		.method("rastDirection", &SpatRaster::direction)
 		.method("make_tiles", &SpatRaster::make_tiles)
 		.method("ext_from_rc", &SpatRaster::ext_from_rc)
-	
+
 		.method("combineCats", &SpatRaster::combineCats)
 		.method("droplevels", &SpatRaster::dropLevels)
 		.method("vectDistanceDirect", &SpatRaster::distance_spatvector)

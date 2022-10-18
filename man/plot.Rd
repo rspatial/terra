@@ -93,7 +93,7 @@ e <- c(6.37, 6.41, 49.9, 50.1)
 plot(r, plg=list(ext=e, title="Title\n", title.cex=1.25), 
 		pax=list(side=1:4, retro=TRUE))
 north("topleft")
-		
+	
 
 d <- classify(r, c(100,200,300,400,500,600))
 plot(d, type="classes")

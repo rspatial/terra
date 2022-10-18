@@ -150,7 +150,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 			out.writeStop();
 			return out;
 		}
-	}	
+	}
 	out.writeStop();
 	readStop();
 	return out;
@@ -226,7 +226,7 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 	}
 
 	if (opt.progressbar) {
-		pbar.init(bs.n, opt.get_progress());	
+		pbar.init(bs.n, opt.get_progress());
 		//unsigned long steps = bs.n+2;
 		//pbar = new Progress(steps, opt.show_progress(bs.n));
 		//pbar->increment();
@@ -284,7 +284,7 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 	}
 	if (progressbar) {
 		pbar.stepit();
-	}	
+	}
 //		if (Progress::check_abort()) {
 //			pbar->cleanup();
 //			delete pbar;
@@ -382,13 +382,13 @@ bool SpatRaster::writeStop(){
 	if (progressbar) {
 		pbar.stepit();
 	}
-/*	
+/*
 	if (progressbar) {
 		pbar->increment();
 		pbar->cleanup();
 		delete pbar;
 	}
-*/	
+*/
 #endif
 
 	return success;
@@ -543,7 +543,7 @@ bool SpatRaster::writeDelim(std::string filename, std::string delim, bool cell, 
 		if (cell) {
 			add.push_back("cell");
 		}
-		nms.insert(nms.begin(), add.begin(), add.end());	
+		nms.insert(nms.begin(), add.begin(), add.end());
 	}
 
 	std::string s = concatenate(nms, delim);
@@ -555,7 +555,7 @@ bool SpatRaster::writeDelim(std::string filename, std::string delim, bool cell, 
 		readBlock(v, bs, i);
 		//s = get_delim_string(v, delim);
 		//f << s << std::endl;
-	}	
+	}
 	f.close();
 	readStop();
 	return true;

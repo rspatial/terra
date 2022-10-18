@@ -65,7 +65,7 @@ setMethod("vect", signature(x="character"),
 				x <- enc2utf8(x)
 			}
 			proxy <- isTRUE(proxy)
-			
+
 			if ((what=="attributes") && proxy) {
 				error("vect", "you cannot use 'what==attribtues' when proxy=TRUE")
 			}

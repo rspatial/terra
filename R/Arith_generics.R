@@ -483,7 +483,7 @@ wherefun <- function(out, list, values) {
 				m
 			})
 		} else {
-			lapply(out, function(i) {i + 1})		
+			lapply(out, function(i) {i + 1})
 		}
 	} else {
 		if (values) {
@@ -495,7 +495,7 @@ wherefun <- function(out, list, values) {
 			out <- do.call(rbind, out)
 			colnames(out) <- c("layer", "cell", "value")
 		} else {
-			out <- lapply(1:length(out), function(i) {cbind(i, out[[i]] + 1)})		
+			out <- lapply(1:length(out), function(i) {cbind(i, out[[i]] + 1)})
 			out <- do.call(rbind, out)
 			colnames(out) <- c("layer", "cell")
 		}

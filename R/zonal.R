@@ -60,7 +60,7 @@ setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
 			error("zonal", "x must be points, and z must be polygons")
 		}
 		if (nrow(x) == 0) {
-			error("zonal", "x is empty")		
+			error("zonal", "x is empty")
 		}
 		isn <- which(sapply(values(x[1,]), is.numeric))
 		if (!any(isn)) {
@@ -71,7 +71,7 @@ setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
 			r <- !relate(x, z, "disjoint", pairs=FALSE)
 			i <- apply(r, 1, function(i) if(any(i)) which(i) else (NA))
 			if (length(i) == 0) {
-				error("zonal", "there are no points in x that overlap with the polygons in z")		
+				error("zonal", "there are no points in x that overlap with the polygons in z")
 			}
 			a <- aggregate(values(x), data.frame(zone=i), fun, ...)
 		} else {
@@ -81,10 +81,10 @@ setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
 				i <- intersect(zz, x)
 			} else {
 				values(z) <- data.frame(zone = 1:nrow(z))
-				i <- intersect(z, x)			
+				i <- intersect(z, x)
 			}
 			if (nrow(i) == 0) {
-				error("zonal", "the intersection of x and z is empty")			
+				error("zonal", "the intersection of x and z is empty")
 			}
 			v <- values(i)
 			if (weighted) {

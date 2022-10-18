@@ -391,7 +391,7 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<
 //	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), tiles.size(), (GDALDatasetH *) tiles.data(), nullptr, vrtops, &pbUsageError);
 
 	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), filenames.size(), nullptr, names, vrtops, &pbUsageError);
-	
+
 	GDALBuildVRTOptionsFree(vrtops);
 	CSLDestroy( names );
 
@@ -943,14 +943,14 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 			OSRDestroySpatialReference( hSRS );
 			return false;
 		}
-		char *pszSRS_WKT = NULL;		
+		char *pszSRS_WKT = NULL;
 		#if GDAL_VERSION_MAJOR >= 3
 			const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
 			OSRExportToWktEx( hSRS, &pszSRS_WKT, options);
 		#else
 			OSRExportToWkt( hSRS, &pszSRS_WKT );
 		#endif
-		
+
 		GDALSetProjection( hDS, pszSRS_WKT );
 		CPLFree(pszSRS_WKT);
 		OSRDestroySpatialReference( hSRS );

@@ -77,7 +77,7 @@ void SpatOptions::set_datatype(std::string d) {
 	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT2S", "INT4S", "FLT4S", "FLT8S" };
 	if (is_in_vector(d, ss)) {
 		datatype = d;
-		datatype_set = TRUE;	
+		datatype_set = TRUE;
 	} else {
 		msg.addWarning(d + " is not a valid datatype");
 	}
@@ -534,14 +534,14 @@ bool SpatCategories::concatenate(SpatCategories &x) {
 #ifdef useRcpp
 
 void SpatProgress::init(size_t n, int nmin) {
-	
+
 	if ((nmin <= 0) || ((int)n < nmin)) {
 		show = false;
 		return;
 	} 
-	
+
 	show = true;
-	
+
 	std::string bar = "|---------|---------|---------|---------|";
 	Rcpp::Rcout << "\r" << bar << "\r";
 	R_FlushConsole();
@@ -549,7 +549,7 @@ void SpatProgress::init(size_t n, int nmin) {
 	nstep = n;
 	step = 0;
 	size_t width = bar.size();
-		
+
 	double increment = (double) width / double(nstep);
 
 	steps.resize(0);
@@ -584,7 +584,7 @@ void SpatProgress::interrupt() {
 }
 
 #else 
-	
+
 void SpatProgress::init(size_t n, int nmin) {}
 void SpatProgress::stepit() {}
 void SpatProgress::interrupt() {}

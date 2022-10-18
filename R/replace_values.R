@@ -97,10 +97,10 @@ make_replace_index <- function(v, vmx, name="i") {
 			v <- as.vector(v)
 		} 
 		if (!is.vector(v)) {
-			error(caller, paste("the type of index", name, "is unexpected:", class(v)[1]))		
+			error(caller, paste("the type of index", name, "is unexpected:", class(v)[1]))
 		}
 		if (is.factor(v) || is.character(v)) {
-			error(caller, paste("the type of index", name, "cannot be a factor or character"))			
+			error(caller, paste("the type of index", name, "cannot be a factor or character"))
 		} 
 		if (is.logical(v)) {
 			if (length(v) > vmx) {
@@ -120,7 +120,7 @@ make_replace_index <- function(v, vmx, name="i") {
 		} else if (nrow(v) == 1) {
 			v <- v[1,]
 		} else {
-			error(caller, paste("index", name, "has unexpected dimensions:", paste(dim(v), collapse=", ")))	
+			error(caller, paste("index", name, "has unexpected dimensions:", paste(dim(v), collapse=", ")))
 		}
 	}
 
@@ -175,7 +175,7 @@ make_replace_index <- function(v, vmx, name="i") {
 		} 
 	} else {
 		if (!x@ptr$replaceCellValuesLayer(k-1, i-1, value, bylyr, opt)) {
-			messages(x, "`[<-`")		
+			messages(x, "`[<-`")
 		}
 	}
 	x
@@ -195,7 +195,7 @@ make_replace_index <- function(v, vmx, name="i") {
 	x
 }
 
-		
+
 .replace_spatvector <- function(x, i, value) {
 	if (length(value) > 1) {
 		if (length(value) > nrow(i)) {
@@ -258,13 +258,13 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			i <- rcl(x, i, j, k)
 			m <- c(FALSE, TRUE, TRUE)
 		}
-	
+
 		if (missing(value)) {
 			value <- k
 			k <- NA
 			m[3] <- TRUE
 		}
-		
+
 		if ((!m[1]) && (inherits(i, "matrix"))) {
 			if (ncol(i) == 1) {
 				i <- i[,1]
@@ -280,8 +280,8 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			} else {
 				error("`[<-`", paste("index i has", ncol(i), "columns"))
 			}
-		} 		
-		
+		} 
+
 		if (!m[3]) {
 			if (inherits(k, "character")) {
 				k <- match(k, names(x))
@@ -298,8 +298,8 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 		if (m[1] & m[2]) {
 			return(.replace_all(x, value))
 		} 
-		
-		if (!m[1]) { # i not missing			
+
+		if (!m[1]) { # i not missing
 			if (inherits(i, "SpatRaster")) {
 				return(.replace_spatraster(x, i, value))
 			} 
@@ -310,7 +310,7 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 				return(.replace_spatextent(x, i, value))
 			}
 			theCall <- sys.call(-1)
-			narg <- length(theCall)-length(match.call(call=theCall))		
+			narg <- length(theCall)-length(match.call(call=theCall))
 			if ((narg==0) && m[2]) {
 				# cell
 				i <- make_replace_index(i, ncell(x), "i")

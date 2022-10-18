@@ -612,7 +612,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 		ev.ymin -= yr;
 		ev.ymax += yr;
 	}
-	
+
 	e = e.intersect(ev);
 	if ( !e.valid() ) {
 		std::vector<double> out(1, NAN);
@@ -665,7 +665,7 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 	std::vector<double> feats;
 	r = r.rasterize(v, "", feats, NAN, false, false, true, false, false, ropt);
 	std::vector<std::vector<double>> cv = r.cells_notna(ropt);
-	
+
 	if (cv[0].size() == 0) {
 		weights.resize(1);
 		weights[0] = NAN;
@@ -786,17 +786,17 @@ void SpatRaster::rasterizeLinesLength(std::vector<double> &cells, std::vector<do
 	SpatOptions xopt(opt);
 	xopt.ncopies = std::max(xopt.ncopies, (unsigned)4) * 8;
 	SpatRaster x = geometry(1);
-	
+
 	SpatExtent ev = v.getExtent();
 	x = x.crop(ev, "out", false, xopt);
 	BlockSize bs = x.getBlockSize(xopt);
-	
+
 	SpatExtent e = x.getExtent();
 	double rsy = x.yres() / 2;
 	for (size_t i=0; i < bs.n; i++) {
 		e.ymax = yFromRow(bs.row[i]) + rsy;
 		e.ymin = yFromRow(bs.row[i] + bs.nrows[i] - 1) - rsy;
-		SpatRaster tmp = x.crop(e, "near", false, xopt);	
+		SpatRaster tmp = x.crop(e, "near", false, xopt);
 		std::vector<double> cell(tmp.ncell());
 		std::iota(cell.begin(), cell.end(), 0);
 		std::vector<std::vector<double>> xy = tmp.xyFromCell(cell);
@@ -807,7 +807,7 @@ void SpatRaster::rasterizeLinesLength(std::vector<double> &cells, std::vector<do
 		if (p.nrow() > 1) {
 			cells.insert(cells.end(), p.df.dv[0].begin(), p.df.dv[0].end());
 			std::vector<double> w = p.length();
-			double sm = std::accumulate(w.begin(), w.end(), 0.0);	
+			double sm = std::accumulate(w.begin(), w.end(), 0.0);
 			for (double &d : w) d /= sm;
 			weights.insert(weights.end(), w.begin(), w.end());
 		}

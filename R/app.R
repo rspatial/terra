@@ -8,7 +8,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	if ((length(list(...))) > 1) {
 		x <- lapply(as.list(x), function(r, ...) fun(r, ...))
 	} else {
-		x <- lapply(as.list(x), fun)	
+		x <- lapply(as.list(x), fun)
 	}
 	x <- rast(x)
 	if (filename != "") {

@@ -1424,10 +1424,10 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation, bool pre
 
 
 std::vector<std::vector<double>> SpatVector::which_relate(SpatVector v, std::string relation, bool narm) {
-	
+
 	bool index=true;
 	if ((relation == "FF*FF****") || (relation == "disjoint")) index = false;
-	
+
 	std::vector<std::vector<double>> out(2);
 	int pattern = getRel(relation);
 	if (pattern == 2) {
@@ -1448,7 +1448,7 @@ std::vector<std::vector<double>> SpatVector::which_relate(SpatVector v, std::str
 			for (size_t i = 0; i < nx; i++) {
 				bool none = !narm;
 				for (size_t j = 0; j < ny; j++) {
-					if ( GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[j].get(), relation.c_str())) {	
+					if ( GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[j].get(), relation.c_str())) {
 						out[0].push_back(i);
 						out[1].push_back(j);
 						none = false;
@@ -1468,7 +1468,7 @@ std::vector<std::vector<double>> SpatVector::which_relate(SpatVector v, std::str
 					if (relFun(hGEOSCtxt, pr.get(), y[j].get())) {
 						out[0].push_back(i);
 						out[1].push_back(j);
-						none = false;						
+						none = false;
 					}
 				}
 				if (none) {
@@ -1498,7 +1498,7 @@ std::vector<std::vector<double>> SpatVector::which_relate(SpatVector v, std::str
 					if (GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[tree_sel[j]].get(), relation.c_str())) {
 						out[0].push_back(i);
 						out[1].push_back(tree_sel[j]);
-						none = false;						
+						none = false;
 					}
 				}
 				if (none) {
@@ -1521,7 +1521,7 @@ std::vector<std::vector<double>> SpatVector::which_relate(SpatVector v, std::str
 						if (relFun(hGEOSCtxt, pr.get(), y[tree_sel[j]].get())) {
 							out[0].push_back(i);
 							out[1].push_back(tree_sel[j]);
-							none = false;						
+							none = false;
 						}
 					}
 				}
@@ -1539,10 +1539,10 @@ std::vector<std::vector<double>> SpatVector::which_relate(SpatVector v, std::str
 
 
 std::vector<std::vector<double>> SpatVector::which_relate(std::string relation, bool narm) {
-	
+
 	bool index=true;
 	if ((relation == "FF*FF****") || (relation == "disjoint")) index = false;
-	
+
 	std::vector<std::vector<double>> out(2);
 	int pattern = getRel(relation);
 	if (pattern == 2) {
@@ -1562,7 +1562,7 @@ std::vector<std::vector<double>> SpatVector::which_relate(std::string relation, 
 			for (size_t i=0; i<nx; i++) {
 				bool none = !narm;
 				for (size_t j=0; j<nx; j++) {
-					if ( GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), x[j].get(), relation.c_str())) {	
+					if ( GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), x[j].get(), relation.c_str())) {
 						out[0].push_back(i);
 						out[1].push_back(j);
 						none = false;
@@ -1582,7 +1582,7 @@ std::vector<std::vector<double>> SpatVector::which_relate(std::string relation, 
 					if (relFun(hGEOSCtxt, pr.get(), x[j].get())) {
 						out[0].push_back(i);
 						out[1].push_back(j);
-						none = false;						
+						none = false;
 					}
 				}
 				if (none) {
@@ -1612,7 +1612,7 @@ std::vector<std::vector<double>> SpatVector::which_relate(std::string relation, 
 					if (GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), x[tree_sel[j]].get(), relation.c_str())) {
 						out[0].push_back(i);
 						out[1].push_back(tree_sel[j]);
-						none = false;						
+						none = false;
 					}
 				}
 				if (none) {
@@ -1634,7 +1634,7 @@ std::vector<std::vector<double>> SpatVector::which_relate(std::string relation, 
 						if (relFun(hGEOSCtxt, pr.get(), x[tree_sel[j]].get())) {
 							out[0].push_back(i);
 							out[1].push_back(tree_sel[j]);
-							none = false;						
+							none = false;
 						}
 					}
 				}
@@ -1808,10 +1808,10 @@ std::vector<int> SpatVector::relateFirst(SpatVector v, std::string relation) {
 
 
 std::vector<int> SpatVector::relateFirst(SpatVector v, std::string relation) {
-	
+
 	bool index=true;
 	if ((relation == "FF*FF****") || (relation == "disjoint")) index = false;
-	
+
 	std::vector<int> out;
 	int pattern = getRel(relation);
 	if (pattern == 2) {
@@ -1830,7 +1830,7 @@ std::vector<int> SpatVector::relateFirst(SpatVector v, std::string relation) {
 		if (pattern == 1) {
 			for (size_t i = 0; i < nx; i++) {
 				for (size_t j = 0; j < ny; j++) {
-					if ( GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[j].get(), relation.c_str())) {	
+					if ( GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[j].get(), relation.c_str())) {
 						out[i] = j;
 						continue;
 					}
@@ -1942,10 +1942,10 @@ std::vector<bool> SpatVector::is_related(SpatVector v, std::string relation) {
 
 
 std::vector<bool> SpatVector::is_related(SpatVector v, std::string relation) {
-	
+
 	bool index=true;
 	if ((relation == "FF*FF****") || (relation == "disjoint")) index = false;
-	
+
 	std::vector<bool> out;
 	int pattern = getRel(relation);
 	if (pattern == 2) {
@@ -1964,7 +1964,7 @@ std::vector<bool> SpatVector::is_related(SpatVector v, std::string relation) {
 		if (pattern == 1) {
 			for (size_t i = 0; i < nx; i++) {
 				for (size_t j = 0; j < ny; j++) {
-					if ( GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[j].get(), relation.c_str())) {	
+					if ( GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[j].get(), relation.c_str())) {
 						out[i] = true;
 						continue;
 					}
@@ -2608,7 +2608,7 @@ SpatVector SpatVector::erase(bool sequential) {
 			}
 		}
 	}
-	
+
 	SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt);
 	out = coll.get(0);
 	out.srs = srs;
@@ -2804,9 +2804,9 @@ std::vector<int> SpatVector::nearest_geometry(SpatVector v) {
 	std::vector<int> out;
 	if (tree_is_empty) {
 		setError("cannot make spatial index");
-		return out;		
+		return out;
 	}
-	
+
 	out.resize(nrow(), -1);
 	for (size_t i = 0; i < x.size(); i++) {
 		if (!GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
@@ -2819,7 +2819,7 @@ std::vector<int> SpatVector::nearest_geometry(SpatVector v) {
 				out[i] = ret_item->id; 
 			} else {
 				setError("GEOS error");
-				return out;		
+				return out;
 			}
 		} 
 	}

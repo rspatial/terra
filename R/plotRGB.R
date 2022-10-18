@@ -86,7 +86,7 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 	if (!is.null(stretch)) {
 		if (stretch == "lin") {
 			if (!is.null(zlim)) {
-				x <- stretch(x, smin=zlim[1], smax=zlim[2])			
+				x <- stretch(x, smin=zlim[1], smax=zlim[2])
 			} else {
 				x <- stretch(x, minq=0.02, maxq=0.98)
 			}

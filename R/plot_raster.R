@@ -208,7 +208,7 @@ prettyNumbs <- function(x, digits) {
 		z <- m$out.cols[match(z, m$id)]
 	}
 	if (!out$all_levels) {
-		out$leg$fill <- out$cols	
+		out$leg$fill <- out$cols
 	}
 
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
@@ -412,7 +412,7 @@ prettyNumbs <- function(x, digits) {
 
 	out$add <- isTRUE(add)
 	out$axs <- as.list(pax)
-	
+
 	if (is.null(out$axs$las)) out$axs$las <- las
 	out$draw_grid <- isTRUE(grid)
 	out$leg$digits <- decimals
@@ -535,7 +535,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			}
 			x <- spatSample(x, maxcell, ext=ext, method="regular", as.raster=TRUE)
 		}
-		
+
 		if (is.character(legend)) {
 			plg$x <- legend
 			legend <- TRUE
@@ -607,7 +607,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 setMethod("plot", signature(x="SpatRaster", y="missing"),
 	function(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend, ...)  {
 
-		
+
 		if (has.RGB(x)) {
 			i <- x@ptr$getRGB() + 1
 			if (missing(main)) main = ""
@@ -624,7 +624,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		nl <- max(1, min(nlyr(x), maxnl))
 
 		if (missing(legend)) legend <- TRUE
-		
+
 		if (nl==1) {
 			if (missing(main)) main = ""
 			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, legend=legend, ...)

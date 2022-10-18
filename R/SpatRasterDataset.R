@@ -127,7 +127,7 @@ setMethod("c", signature(x="SpatRasterDataset"),
 	function(x, ...) {
 
 		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 ) # why? make a copy?
-	
+
 		dots <- list(...)
 		nms <- names(dots)
 

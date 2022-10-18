@@ -76,7 +76,7 @@ setMethod(cellFromRowColCombine, signature(object="SpatRaster", row="numeric", c
 
 setMethod(rowColCombine, signature(object="SpatRaster", row="numeric", col="numeric"),
 	function(object, row, col) {
-		cell <- object@ptr$cellFromRowColCombine(row-1, col-1)	
+		cell <- object@ptr$cellFromRowColCombine(row-1, col-1)
 		rc <- object@ptr$rowColFromCell(cell)
 		rc <- do.call(cbind, rc)
 		rc[rc < 0] <- NA
@@ -197,7 +197,7 @@ setMethod(rcl, signature(x="SpatRaster"),
 				return(out)
 			} else if (hr & hc & hl) {
 				out <- rowColCombine(x, row, col)
-				out <- cbind(out[,1], out[,2], rep(lyr, each=nrow(out)))			
+				out <- cbind(out[,1], out[,2], rep(lyr, each=nrow(out)))
 			} else if (!hc) {
 				out <- rowColCombine(x, row, 1:ncol(x))
 				if (hl) {

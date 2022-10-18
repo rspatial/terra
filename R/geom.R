@@ -269,7 +269,7 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 			## https://github.com/rspatial/raster/issues/283
 			#x@ptr <- x@ptr$crop_ext(y@ptr)
 			y <- as.polygons(y)
-			x@ptr <- x@ptr$crop_vct(y@ptr)			
+			x@ptr <- x@ptr$crop_vct(y@ptr)
 		}
 		messages(x, "crop")
 	}
@@ -515,7 +515,7 @@ setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"),
 		values(x) = data.frame(idx=1:nrow(x))
 		values(y) = data.frame(idy=1:nrow(y))
 		y <- erase(y) # no self-overlaps
-		if (overlap) {		
+		if (overlap) {
 			#avoid Warning message: [intersect] no intersection
  			xy <- suppressWarnings(intersect(y, x))
 			if (nrow(xy) > 0) {

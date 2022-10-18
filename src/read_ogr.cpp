@@ -436,14 +436,14 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
 
 	if (poSRS) {
-		char *psz = NULL;		
+		char *psz = NULL;
 	#if GDAL_VERSION_MAJOR >= 3
 		const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
 		OGRErr err = poSRS->exportToWkt(&psz, options);
 	#else
 		OGRErr err = poSRS->exportToWkt(&psz);
 	#endif
-		
+
 		if (err == OGRERR_NONE) {
 			crs = psz;
 		}
@@ -485,10 +485,10 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 	if (what == "attributes") {
 		if (query != "") {
 			poDS->ReleaseResultSet(poLayer);
-		}		
+		}
 		return true;
 	}
-	
+
 	//const char* lname = poLayer->GetName();
 	OGRwkbGeometryType wkbgeom = wkbFlatten(poLayer->GetGeomType());
 	OGRFeature *poFeature;

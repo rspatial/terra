@@ -3,7 +3,7 @@ setMethod("tapp", signature(x="SpatRaster"),
 function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list()) {
 
 	stopifnot(!any(is.na(index)))
-	
+
 	if ((length(index) == 1) && is.character(index)) {
 		choices <- c("years", "months", "week", "days", "doy", "yearmonths")
 		i <- pmatch(tolower(index), choices)
@@ -78,7 +78,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 		}
 		nms <- paste(rep(nms, each=length(addnms)), rep(addnms, length(nms)), sep="_")
 	}
-	
+
 	out <- rast(x)
 	nlyr(out) <- nlout * length(uin)
 	names(out) <- nms

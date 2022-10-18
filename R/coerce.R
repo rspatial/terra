@@ -593,7 +593,7 @@ setAs("SpatialGrid", "SpatRaster",
 		b <- rast(ext=as.vector(t(from@bbox)), nrow=from@grid@cells.dim[2], ncol=from@grid@cells.dim[1], crs=prj)
 		if (inherits(from, "SpatialGridDataFrame")) {
 			cls <- sapply(from@data, function(i) class(i)[1])
-			if (all(cls == "numeric")) {		
+			if (all(cls == "numeric")) {
 				nlyr(b) <- ncol(from@data)
 				b <- setValues(b, as.matrix(from@data))
 			} else {

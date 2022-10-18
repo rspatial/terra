@@ -39,8 +39,8 @@ setMethod("ext", signature(x="numeric"),
 		names(x) <- NULL
 		e <- methods::new("SpatExtent")
 		if (xy) {
-			e@ptr <- SpatExtent$new(x[1], x[3], x[2], x[4])		
-		} else {		
+			e@ptr <- SpatExtent$new(x[1], x[3], x[2], x[4])
+		} else {
 			e@ptr <- SpatExtent$new(x[1], x[2], x[3], x[4])
 		}
 		if (!e@ptr$valid) {

@@ -136,7 +136,7 @@ setMethod("subset", signature(x="SpatVector"),
 		i <- positive_indices(subset, ncol(x), TRUE, "subset")
 		if (length(i)==0) {
 			i <- 0
-		}		
+		}
 	}
 	x@ptr <- x@ptr$subset_cols(i-1)
 	x <- messages(x, "subset")

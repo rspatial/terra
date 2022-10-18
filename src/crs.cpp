@@ -213,7 +213,7 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 		if (is_ogr_error(e, msg)) {
 			msg = "empty srs";
 			return false;
-		}	
+		}
 		if (! wkt_from_spatial_reference(srs, wkt, msg)) {
 			msg = "can't get wkt from srs";
 			return false;
@@ -236,7 +236,7 @@ bool wkt_from_string(std::string input, std::string& wkt, std::string& msg) {
 	if (input != "") {
 		OGRSpatialReference srs;
 		OGRErr e = srs.SetFromUserInput(input.c_str());
-		if (is_ogr_error(e, msg)) {	
+		if (is_ogr_error(e, msg)) {
 			return false;
 		}
 		success = wkt_from_spatial_reference(srs, wkt, msg);
@@ -319,7 +319,7 @@ std::vector<double> SpatVector::project_xy(std::vector<double> x, std::vector<do
 	msg = transform_coordinates(x, y, fromCRS, toCRS);
 	x.insert(x.end(), y.begin(), y.end());
 	return x;
-	
+
 }
 
 

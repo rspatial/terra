@@ -1264,7 +1264,7 @@ SpatRaster SpatRaster::clamp(std::vector<double> low, std::vector<double> high, 
 	}
 	if ((low.size() == 0) || (high.size() == 0)) {
 		out.setError("you must provide low and high clamp values");
-		return out;		
+		return out;
 	}
 	size_t nl = nlyr();
 	if ((low.size() > nl) || (high.size() > nl)) {
@@ -1272,7 +1272,7 @@ SpatRaster SpatRaster::clamp(std::vector<double> low, std::vector<double> high, 
 		return out;
 	}
 	bool do_one = true;
-	if ((low.size() > 1) || (high.size() > 1)) {	
+	if ((low.size() > 1) || (high.size() > 1)) {
 		do_one = false;
 		recycle(low, nl);
 		recycle(high, nl);
@@ -1283,7 +1283,7 @@ SpatRaster SpatRaster::clamp(std::vector<double> low, std::vector<double> high, 
 			return out;
 		}
 	}
-	
+
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -1294,7 +1294,7 @@ SpatRaster SpatRaster::clamp(std::vector<double> low, std::vector<double> high, 
 		return out;
 	}
 
-	if (do_one) {	
+	if (do_one) {
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v;
 			readBlock(v, out.bs, i);
@@ -1332,7 +1332,7 @@ SpatRaster SpatRaster::clamp(std::vector<double> low, std::vector<double> high, 
 			}
 			if (!out.writeBlock(v, i)) return out;
 		}
-	}		
+	}
 	readStop();
 	out.writeStop();
 	return(out);
@@ -2273,7 +2273,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 	readStop();
 
 	if (expand) {
-		out = out.extend(fext, snap, NAN, ops);		
+		out = out.extend(fext, snap, NAN, ops);
 	}
 	return(out);
 }
@@ -2492,7 +2492,7 @@ bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, unsigned& nl,
 
 	for (size_t j=0; j<bs.n; j++) {
 		std::vector<double> v;
-		r.readBlock(v, bs, j);			
+		r.readBlock(v, bs, j);
 		unsigned row1  = out.rowFromY(r.yFromRow(bs.row[j]));
 		unsigned row2  = out.rowFromY(r.yFromRow(bs.row[j]+bs.nrows[j]-1));
 		unsigned col1  = out.colFromX(re.xmin + hxr);
@@ -2588,7 +2588,7 @@ bool overlaps(const std::vector<unsigned>& r1, const std::vector<unsigned>& r2,
 	}
 	return false;
 }
-	
+
 
 #include "sort.h"
 
@@ -2665,7 +2665,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	}
 
 	if (!overlaps(r1, r2, c1, c2)) {
-		return merge(true, opt);			
+		return merge(true, opt);
 	}
 
 	ve = ve.unite();
@@ -2705,11 +2705,11 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 			} 
 			SpatRasterStack s;
 			s.ds = x.ds;
-					
+
 			r = s.summary(fun, true, sopt);
 			if (r.hasError()) {
 				return r;
-			}	
+			}
 		}
 		if (!write_part(out, r, hxr, nl, warn, sopt)) {
 			return out;
@@ -3102,13 +3102,13 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 	SpatRaster out;
 	if (from.size() < 1) {
 		out.setError("argument 'from' cannot be empty");
-		return out;		
+		return out;
 	}
 	if (to.size() < 1) {
 		out.setError("argument 'to' cannot be empty");
-		return out;		
+		return out;
 	}
-		
+
 	bool mout = false;
 	bool min = false;
 	if (nl > 1) {
@@ -4055,13 +4055,13 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 
 
 bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt) {
-	
+
 	size_t cs = cells.size();
 	double nce = ncell() - 1;
 	for (size_t i=0; i<cs; i++) {
 	if ((cells[i] < 0) || (cells[i] > nce)) {
 			setError("cell number(s) out of range");
-			return false;	
+			return false;
 		}
 	}
 	size_t vs = v.size();
@@ -4071,7 +4071,7 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 		recycle(v, cs);
 	} else if (bylyr) {
 		if (vs == nl) {
-			rep_each(v, cs);			
+			rep_each(v, cs);
 		} else if (vs != (cs*nl)) {
 			setError("length of cells and values do not match");
 			return false;
@@ -4143,17 +4143,17 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 
 
 bool SpatRaster::replaceCellValuesLayer(std::vector<size_t> layers, std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt) {
-	
-	
+
+
 	size_t cs = cells.size();
 	double nce = ncell() - 1;
 	for (size_t i=0; i<cs; i++) {
 		if ((cells[i] < 0) || (cells[i] > nce)) {
 			setError("cell number(s) out of range");
-			return false;	
+			return false;
 		}
 	}
-	
+
 	size_t nl = layers.size();
 
 	size_t maxnl = nlyr()-1;
@@ -4187,16 +4187,16 @@ bool SpatRaster::replaceCellValuesLayer(std::vector<size_t> layers, std::vector<
 	if (!hasValues()) {
 		*this = init({NAN}, opt);
 	}
-	
+
 	std::vector<size_t> srcs;
 	srcs.reserve(nl);
 	for (size_t i=0; i<nl; i++) {
 	    std::vector<unsigned> sl = findLyr(layers[i]);
 		size_t src = sl[0];
 		size_t lyr = sl[1];
-		
+
 		srcs.push_back(src);
-		
+
 		if (!source[src].memory) {
 			// if sources is a temp file update the file?
 			// or create a tmp file?

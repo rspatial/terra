@@ -186,13 +186,13 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 		stopifnot(all(w > 0))
 		m <- rep(1, prod(w))
 	}
-	
+
 	if (w[3] > nlyr(x)) {
 		error("focal3D", "the third weights dimension is larger than nlyr(x)")
 	}
 	if (any((w %% 2) == 0)) {
 		error("focal3D", "w must be odd sized in all dimensions")
-	
+
 	}
 
 	msz <- prod(w)

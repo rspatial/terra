@@ -135,7 +135,7 @@ void SpatRaster::checkTime(SpatRaster &x) {
 void SpatRaster::addSource(SpatRaster &x, bool warn, SpatOptions &opt) {
 
 	if (!hasValues()) {
-		if (!x.hasValues()) {			
+		if (!x.hasValues()) {
 			if (compare_geom(x, false, true, 0.1, true)) {
 				source.insert(source.end(), x.source.begin(), x.source.end());
 			} else {
@@ -152,7 +152,7 @@ void SpatRaster::addSource(SpatRaster &x, bool warn, SpatOptions &opt) {
 		}
 		return;
 	}
-		
+
 	if (compare_geom(x, false, true, 0.1, true)) {
 		if (!x.hasValues()) {
 			x = x.init({NAN}, opt);
