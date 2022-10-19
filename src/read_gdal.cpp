@@ -1870,6 +1870,10 @@ std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<s
 			if (pos != std::string::npos) {
 				std::string tmp = m[i][j];
 				tmp.erase(0, pos+16);
+				pos = tmp.find("sec");
+				if (pos != std::string::npos) {
+					tmp.erase(tmp.begin()+pos, tmp.end());
+				}
 				time1 = tmp;
 				ft1 = true;
 				continue;
@@ -1881,9 +1885,9 @@ std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<s
 				pos = tmp.find("sec");
 				if (pos != std::string::npos) {
 					tmp.erase(tmp.begin()+pos, tmp.end());
-					time2 = tmp;
-					ft2 = true;
 				}
+				time2 = tmp;
+				ft2 = true;
 			}
 		}
 		out[0].push_back(comm);
