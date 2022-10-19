@@ -180,7 +180,7 @@ setMethod("rast", signature(x="character"),
 		}
 		r <- messages(r, "rast")
 		if (r@ptr$getMessage() == "ncdf extent") {
-			test <- try(r <- .ncdf_extent(r), silent=TRUE)
+			test <- try(r <- .ncdf_extent(r, f), silent=TRUE)
 			if (inherits(test, "try-error")) {
 				warn("rast", "GDAL did not find an extent. Cells not equally spaced?")
 			}

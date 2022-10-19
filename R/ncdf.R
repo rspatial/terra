@@ -1,11 +1,11 @@
 
-.ncdf_extent <- function(x) {
+.ncdf_extent <- function(x, f) {
 
 	if (!("ncdf4" %in% rownames(utils::installed.packages()))) {
 		warn("rast", "GDAL did not find an extent. installing the ncdf4 package may help")
 		return(x)
 	}
-	fname <- sources(x)[1]
+	fname <- f
 	zvar <- varnames(x)
 
 	dims <- 1:3
