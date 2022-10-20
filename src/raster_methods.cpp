@@ -4521,3 +4521,74 @@ SpatRaster SpatRaster::combineCats(SpatRaster x, SpatOptions &opt) {
 	//return(out);
 }
 
+
+SpatRaster SpatRaster::intersect(SpatRaster &x, SpatOptions &opt) {
+	
+	size_t nl = std::max(nlyr(), x.nlyr());
+	SpatRaster out = geometry(nl);
+	out.setValueType(3);
+	
+	if (!hasValues()) return out;
+	if (!x.hasValues()) return out;
+
+	if (!out.compare_geom(x, false, false, opt.get_tolerance(), true)) {
+		if (!shared_basegeom(x, 0.1, true)) {
+			out.setError("rasters are not aligned");
+			return(out);
+		} else {
+			out.msg.has_error = false;
+			out.msg.error = "";
+			SpatExtent e = getExtent();
+			e = e.intersect(x.getExtent());
+			if (e.empty()) {
+				out.setError("rasters do not intersect");
+				return(out);
+			}
+			SpatOptions xopt(opt);
+			x = x.crop(e, "near", false, xopt);
+			SpatRaster y = crop(e, "near", false, xopt);
+			return y.intersect(x, opt);
+		}
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!x.readStart()) {
+		out.setError(x.getError());
+		return(out);
+	}
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		x.readStop();
+		return out;
+	}
+
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> a, b;
+		readValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		x.readValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		recycle(a, b);
+		std::vector<double> d(a.size());
+		for (size_t j=0; j<a.size(); j++) {
+			if (std::isnan(a[j]) && std::isnan(b[j])) {
+				d[j] = NAN;
+			} else if (std::isnan(a[j]) || std::isnan(b[j])) {
+				d[j] = 0;				
+			} else {
+				d[j] = 1;
+			}
+		}
+		if (!out.writeBlock(d, i)) return out;
+	}
+
+	out.writeStop();
+	readStop();
+	x.readStop();
+	return(out);
+
+}
+
+
+

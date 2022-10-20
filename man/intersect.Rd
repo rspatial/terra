@@ -8,17 +8,22 @@
 \alias{intersect,SpatVector,SpatExtent-method}
 \alias{intersect,SpatExtent,SpatVector-method}
 \alias{intersect,SpatExtent,SpatExtent-method}
+\alias{intersect,SpatRaster,SpatRaster-method}
 
 \title{ 
 Intersection
 }
 
 \description{
-Intersect the geometries of two SpatVectors.
+You can intersect SpatVectors with each other or with a SpatExtent. Intersecting points with points uses the extent of \code{y} to get the intersection. Intersecting of points and lines is not supported because of numerical inaccuracies with that. You can use \code{\link{buffer}}, to create polygons from lines and use these with intersect. 
 
-Intersecting points with points uses the extent of \code{y} to get the intersection. Intersecting of points and lines is not supported because of numerical inaccuracies with that. You can use \code{\link{buffer}}, to create polygons from lines and use these with intersect. 
+You can also intersect two SpatExtents. 
 
-See \code{\link{crop}} for intersection of a SpatRaster.
+When intersecting two SpatRasters these need to be aligned (have the same origin and spatial resolution). The values of the returned SpatRaster are \code{TRUE} where both have input rasters have values, \code{FALSE} where one has values, and \code{NA} in all other cells. 
+
+See \code{\link{crop}} for intersection of a SpatRaster with a SpatExtent (or the extent of a SpatRaster or SpatVector).
+
+See \code{\link{relate}} to find out which geometries of a SpatVector intersect.
 }
 
 \usage{
@@ -29,11 +34,13 @@ See \code{\link{crop}} for intersection of a SpatRaster.
 \S4method{intersect}{SpatExtent,SpatVector}(x, y)
 
 \S4method{intersect}{SpatExtent,SpatExtent}(x, y)
+
+\S4method{intersect}{SpatRaster,SpatRaster}(x, y)
 }
 
 \arguments{
-  \item{x}{SpatVector or SpatExtent}
-  \item{y}{SpatVector or SpatExtent}
+  \item{x}{SpatVector, SpatExtent, or SpatRaster}
+  \item{y}{SpatVector, SpatExtent, or SpatRaster if \code{x} is a SpatRaster}
 } 
 
 \value{
@@ -59,6 +66,14 @@ p <- vect(c("POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.6, 5.8 49.8))",
 values(p) <- data.frame(pid=1:2, area=expanse(p))
 
 y <- intersect(v, p)
+
+r <- s <- rast(ncol=5, nrow=5, xmin=1, xmax=5, ymin=1, ymax=5)
+r[5:20] = 5:20
+s[11:20] = 11:20
+rs <- intersect(r, s)
+
+u <- shift(r, .8)
+us <- intersect(u, s)
 }
 
 

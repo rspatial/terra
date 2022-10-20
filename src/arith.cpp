@@ -727,8 +727,13 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 
 
 SpatRaster SpatRaster::atan_2(SpatRaster x, SpatOptions &opt) {
-	SpatRaster out = geometry();
-	if (!hasValues()) return out;
+
+	size_t nl = std::max(nlyr(), x.nlyr());
+	SpatRaster out = geometry(nl);
+	if ((!hasValues()) || (!x.hasValues())) {
+		return out;
+	} 
+	
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);

@@ -15,3 +15,18 @@ setMethod ("setCats" , "SpatRaster",
 		set.cats(x, ...)
 	}
 )
+
+
+setMethod("costDistance", signature(x="SpatRaster"),
+	function(x, target=0, scale=1000, maxiter=50, filename="", ...) {
+		warn("costDistance", "'costDistance' was renamed to 'costDist'. 'costDistance' will be removed in a future version")
+		costDist(x, target=target, scale=scale, maxiter=maxiter, filename=filename, ...)
+	}
+)
+
+setMethod("gridDistance", signature(x="SpatRaster"),
+	function(x, target=0, scale=1000, maxiter=50, filename="", ...) {
+		warn("gridDistance", "'gridDistance' was renamed to 'gridDist'. 'gridDistance' will be removed in a future version")
+		gridDist(x, target=target, scale=scale, maxiter=maxiter, filename=filename, ...) 
+	}
+)

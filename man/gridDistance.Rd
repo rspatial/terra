@@ -2,6 +2,8 @@
 
 \alias{gridDistance}
 \alias{gridDistance,SpatRaster-method}
+\alias{gridDist}
+\alias{gridDist,SpatRaster-method}
 
 
 \title{Distance on a grid}
@@ -17,7 +19,7 @@ The shortest distance to the cells with the \code{target} value is computed for 
 }
 
 \usage{
-\S4method{gridDistance}{SpatRaster}(x, target=0, scale=1000, maxiter=50, filename="", ...) 
+\S4method{gridDist}{SpatRaster}(x, target=0, scale=1000, maxiter=50, filename="", ...) 
 }
 
 \arguments{
@@ -30,7 +32,7 @@ The shortest distance to the cells with the \code{target} value is computed for 
 }
 
 
-\seealso{See \code{\link[terra]{distance}} for "as the crow flies" distance, and \code{\link{costDistance}} for distance across a landscape with variable friction} 
+\seealso{See \code{\link[terra]{distance}} for "as the crow flies" distance, and \code{\link{costDist}} for distance across a landscape with variable friction} 
 
 
 \value{SpatRaster}
@@ -41,18 +43,18 @@ The shortest distance to the cells with the \code{target} value is computed for 
 r <- rast(ncol=10,nrow=10, vals=1)
 r[48] <- 0
 r[66:68] <- NA
-d <- gridDistance(r) 
+d <- gridDist(r) 
 plot(d)
 
 
 # planar
 crs(r) <- "+proj=utm +zone=15 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
-d <- gridDistance(r) 
+d <- gridDist(r) 
 plot(d)
 
 # distance to cells that are not NA 
 rr <- classify(r, cbind(1, NA))
-dd <- gridDistance(rr, NA) 
+dd <- gridDist(rr, NA) 
 
 
 }

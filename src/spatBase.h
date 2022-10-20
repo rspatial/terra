@@ -266,8 +266,11 @@ class SpatExtent {
 		bool valid() {
 			return ((xmax >= xmin) && (ymax >= ymin));
 		}
-		bool valid_notequal() {
+		bool valid_notempty() {
 			return ((xmax > xmin) && (ymax > ymin));
+		}
+		bool empty() {
+			return ((xmax <= xmin) || (ymax <= ymin));
 		}
 
 		bool compare(SpatExtent e, std::string oper, double tolerance);

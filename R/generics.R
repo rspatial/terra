@@ -100,6 +100,16 @@ setMethod("align", signature(x="SpatExtent", y="numeric"),
 	}
 )
 
+
+setMethod("intersect", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y) {
+		opt <- terra:::spatOptions() 
+		x@ptr <- x@ptr$intersect(y@ptr, opt)
+		messages(x)
+	}
+)
+
+
 setMethod("cellSize", signature(x="SpatRaster"),
 	function(x, mask=TRUE, unit="m", transform=TRUE, rcx=100, filename="", ...) {
 		opt <- spatOptions(filename, ...)

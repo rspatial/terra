@@ -714,6 +714,8 @@ class SpatRaster {
 		//SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);
 		//SpatRaster classify_layers(std::vector<double> groups, unsigned nc, std::vector<double> id, SpatOptions &opt);
 
+		SpatRaster intersect(SpatRaster &x, SpatOptions &opt);
+		
 		std::vector<double> readSample(unsigned src, size_t srows, size_t scols);
 		SpatRaster rotate(bool left, SpatOptions &opt);
 

@@ -210,13 +210,11 @@ rastBufR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, ...) {
 				p <- sapply(s, fun, ...)
 				if (!is.null(dim(p))) {
 					p <- t(as.matrix(p))
-					u <- rownames(p)
+					u <- as.numeric(rownames(p))
 				} else {
-					u <- names(p)
+					u <- as.numeric(names(p))
 				}
-				u <- as.numeric(u)
 				v[u, ] <- p
-
 				writeValues(out, v, b$row[i], b$nrows[i])
 			}
 		} else {

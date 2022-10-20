@@ -796,6 +796,7 @@ RCPP_MODULE(spat){
 		.method("selRange", &SpatRaster::selRange)
 		.method("separate", &SpatRaster::separate)
 		.method("sort", &SpatRaster::sort)
+		.method("intersect", &SpatRaster::intersect)
 
 		.method("cover", &SpatRaster::cover)
 		.method("crop", &SpatRaster::crop)
