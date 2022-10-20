@@ -103,7 +103,7 @@ setMethod("align", signature(x="SpatExtent", y="numeric"),
 
 setMethod("intersect", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y) {
-		opt <- terra:::spatOptions() 
+		opt <- spatOptions() 
 		x@ptr <- x@ptr$intersect(y@ptr, opt)
 		messages(x)
 	}
