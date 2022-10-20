@@ -64,7 +64,7 @@ get_rad <- function(r, caller="rasterizeWin") {
 }
 
 
-rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, ...) {
+rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, ...) {
 
 	out <- rast(x, nlyr=nl)
 	rb <- rast(out)
@@ -102,9 +102,6 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 			}
 		}
 	} else {
-		if (cvars && (length(list(...)) > 0)) {
-			usedots <- TRUE
-		}
 		id <- 1:nrow(y)
 		for (i in 1:b$n) {
 			e$ymax <- yFromRow(out, b$row[i]) + hy
@@ -123,19 +120,27 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 				p[[1]] <- p[[1]][a]
 				p[[2]] <- p[[2]][a]
 			} 
-
+	
 			if (length(p[[1]]) > 0) {
 				py <- y[p[[2]],3:ncol(y)]
 				v <- matrix(pars[5], ncell(rbe), nl)
 				if (cvars) {
-					u <- unique(p[[1]])
-					if (usedots) {
-						p <- sapply(u, function(i) fun(py[p[[1]]==i, ,drop=FALSE], ...))
+					#u <- unique(p[[1]])
+					#if (usedots) {
+					#	p <- sapply(u, function(i) fun(py[p[[1]]==i, ,drop=FALSE], ...))
+					#} else {
+					#	p <- sapply(u, function(i) fun(py[p[[1]]==i, ,drop=FALSE]))
+					#}
+					p <- split(py, p[[1]])
+					p <- sapply(p, fun, ...)
+					if (!is.null(dim(p))) {
+						p <- t(as.matrix(p))
+						u <- rownames(p)
 					} else {
-						p <- sapply(u, function(i) fun(py[p[[1]]==i, ,drop=FALSE]))
+						u <- names(p)
 					}
-					if (!is.null(dim(p))) p <- t(p)
-					v[u+1, ] <- as.matrix(p)
+					u <- as.numeric(u)
+					v[u+1, ] <- p
 				} else {
 					p <- aggregate(py, p[1], fun, ...)
 					v[p[,1]+1, ] <- as.matrix(p[,-1])
@@ -150,10 +155,10 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 }
 
 
-rastBufR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, ...) {
+rastBufR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, ...) {
 	w <- pars[1]
 	z <- y[,-c(1:2), drop=FALSE]
-	y <- vect(y[,1:2,drop=FALSE])
+	y <- vect(y[,1:2,drop=FALSE], geom=c("x", "y"))
 	out <- rast(x, nlyr=1)
 	rb <- rast(out)
 	if (!is.lonlat(x)) {
@@ -186,19 +191,32 @@ rastBufR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, usedots, .
 		if (nrow(r) > 0) {
 			v <- matrix(pars[5], ncell(rbe), nl)
 			if ((ncol(z) == 1) || (!cvars)) {
-				f <- aggregate(z[r[,2]], list(r[,1]), fun, ...)
+				f <- aggregate(z[r[,2],,drop=FALSE], list(r[,1]), fun, ...)
 				v[f[,1], ] <- f[,-1]
 				writeValues(out, v, b$row[i], b$nrows[i])
 			} else {
-				u <- unique(r[,1])
-				p <- z[r[,2], ,drop=FALSE]
-				if (usedots) {
-					p <- sapply(u, function(i) fun(p[r[,1]==i, ,drop=FALSE], ...))
+				#u <- unique(r[,1])
+				#p <- z[r[,2], ,drop=FALSE]
+				#if (usedots) {
+				#	p <- sapply(u, function(i) fun(p[r[,1]==i, ,drop=FALSE], ...))
+				#} else {
+				#	p <- sapply(u, function(i) fun(p[r[,1]==i, ,drop=FALSE]))
+				#}
+				#if (!is.null(dim(p))) p <- t(p)
+				#v[u, ] <- as.matrix(p)
+
+				py <- z[r[,2], ,drop=FALSE]
+				s <- split(py, r[,1])
+				p <- sapply(s, fun, ...)
+				if (!is.null(dim(p))) {
+					p <- t(as.matrix(p))
+					u <- rownames(p)
 				} else {
-					p <- sapply(u, function(i) fun(p[r[,1]==i, ,drop=FALSE]))
+					u <- names(p)
 				}
-				if (!is.null(dim(p))) p <- t(p)
-				v[u, ] <- as.matrix(p)
+				u <- as.numeric(u)
+				v[u, ] <- p
+
 				writeValues(out, v, b$row[i], b$nrows[i])
 			}
 		} else {
@@ -218,7 +236,7 @@ setMethod("rasterizeWin", signature(x="data.frame", y="SpatRaster"),
 		}
 		win <- match.arg(tolower(win), c("circle", "ellipse", "rectangle", "buffer"))
 
-		usedots <- length(list(...)) > 0
+#		usedots <- length(list(...)) > 0
 		if (ncol(x) == 3) cvars = FALSE
 		if (inherits(fun, "character")) {
 			if (fun[1] == "count") {
@@ -230,18 +248,10 @@ setMethod("rasterizeWin", signature(x="data.frame", y="SpatRaster"),
 			if (cvars) {
 				i <- min(10, nrow(x))
 				v <- x[1:i, -c(1:2)]
-				if (usedots) {
-					test <- sapply(1, function(i) fun(v, ...))
-				} else {
-					test <- sapply(1, function(i) fun(v))
-				}
+				test <- sapply(list(v), fun, ...)
 				nl <- length(test)
 			} else {
-				if (usedots) {
-					test <- fun(1:5, ...)
-				} else {
-					test <- fun(1:5)
-				}
+				test <- sapply(list(1:5), fun, ...)
 				nl <- length(test) * (ncol(x)-2)
 			}
 		}
@@ -266,7 +276,7 @@ setMethod("rasterizeWin", signature(x="data.frame", y="SpatRaster"),
 					return(messages(x, "rasterizeWin"))
 				}
 			} 
-			rastWinR(x=y, y=x, win=win, pars=pars, fun=fun, nl=nl, cvars=cvars, filename=filename, wopt=wopt, usedots=usedots, ...)
+			rastWinR(x=y, y=x, win=win, pars=pars, fun=fun, nl=nl, cvars=cvars, filename=filename, wopt=wopt, ...)
 		}
 	}
 )
