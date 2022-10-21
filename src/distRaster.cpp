@@ -380,7 +380,7 @@ SpatRaster SpatRaster::distance_spatvector(SpatVector p, std::string unit, bool 
 	if (p.type() == "polygons") {
 		SpatRaster x = rasterize(p, "", {1}, NAN, false, false, false, false, false, ops);
 		x = x.edges(false, "inner", 8, 0, ops);
-		SpatRaster xp = x.replaceValues({1}, {NAN}, 1, false, ops);
+		SpatRaster xp = x.replaceValues({1}, {NAN}, 1, false, NAN, false, ops);
 		out = x.distance_crds(pxy[0], pxy[1], haversine, true, setNA, unit, opt);
 	} else {
 		out = distance_crds(pxy[0], pxy[1], haversine, false, setNA, unit, opt);
@@ -415,7 +415,7 @@ SpatRaster SpatRaster::distance_rasterize(SpatVector p, double target, double ex
 
 	if (poly) {
 		x  = x.edges(false, "inner", 8, 0, ops);
-		SpatRaster xp = x.replaceValues({0}, {exclude}, 1, false, ops);
+		SpatRaster xp = x.replaceValues({0}, {exclude}, 1, false, NAN, false, ops);
 		p  = xp.as_points(false, true, false, opt);
 	} else {
 //		x = x.edges(false, "inner", 8, NAN, ops);
@@ -465,7 +465,7 @@ SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees
 
 	if (poly) {
 		x  = x.edges(false, "inner", 8, 0, ops);
-		SpatRaster xp = x.replaceValues({0}, {exclude}, 1, false, ops);
+		SpatRaster xp = x.replaceValues({0}, {exclude}, 1, false, NAN, false, ops);
 		p  = xp.as_points(false, true, false, opt);
 	} else {
 //		x = x.edges(false, "inner", 8, NAN, ops);
@@ -668,7 +668,7 @@ SpatRaster SpatRaster::distance(double target, double exclude, std::string unit,
 	if (!std::isnan(exclude)) {
 		SpatRaster x;
 		if (std::isnan(target)) {
-			x = replaceValues({exclude}, {target}, 1, false, ops);
+			x = replaceValues({exclude}, {target}, 1, false, NAN, false, ops);
 			x = x.edges(false, "inner", 8, 1, ops);
 			p = x.as_points_value(1, ops);
 			if (p.size() == 0) {
@@ -677,16 +677,16 @@ SpatRaster SpatRaster::distance(double target, double exclude, std::string unit,
 			return distance_crds(p[0], p[1], haversine, true, setNA, unit, opt);
 
 		} else {
-			x = replaceValues({exclude, target}, {NAN, NAN}, 1, false, ops);
+			x = replaceValues({exclude, target}, {NAN, NAN}, 1, false, NAN, false, ops);
 			x = x.edges(false, "inner", 8, 1, ops);
 			p = x.as_points_value(1, ops);
-			out = replaceValues({NAN, exclude, target}, {target, NAN, NAN}, 1, false, ops);
+			out = replaceValues({NAN, exclude, target}, {target, NAN, NAN}, 1, false, NAN, false, ops);
 		}
 	} else if (!std::isnan(target)) {
-		SpatRaster x = replaceValues({target}, {NAN}, 1, false, ops);
+		SpatRaster x = replaceValues({target}, {NAN}, 1, false, NAN, false, ops);
 		x = x.edges(false, "inner", 8, 0, ops);
 		p = x.as_points_value(1, ops);
-		out = replaceValues({NAN, target}, {std::numeric_limits<double>::max(), NAN}, 1, false, ops);
+		out = replaceValues({NAN, target}, {std::numeric_limits<double>::max(), NAN}, 1, false, NAN, false, ops);
 		setNA = true;
 	} else {
 		out = edges(false, "inner", 8, 0, ops);
@@ -731,7 +731,7 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double 
 
 	if (!std::isnan(exclude)) {
 		SpatOptions xopt(opt);
-		SpatRaster x = replaceValues({exclude}, {NAN}, 1, false, xopt);
+		SpatRaster x = replaceValues({exclude}, {NAN}, 1, false, NAN, false, xopt);
 		out = x.edges(false, "inner", 8, target, ops);
 	} else {
 		out = edges(false, "inner", 8, target, ops);
@@ -2211,7 +2211,7 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 			if (background == 0) {
 				out = out.isnotnan(opt);
 			} else {
-				out = out.replaceValues({NAN}, {background}, 1, false, opt);
+				out = out.replaceValues({NAN}, {background}, 1, false, NAN, false, opt);
 			}
 		} else {
 			out = proximity(NAN, NAN, "", true, d, true, opt);

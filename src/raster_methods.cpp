@@ -3083,6 +3083,7 @@ SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vec
 }
 
 
+/*
 bool can_use_replace(const std::vector<double> &from, const std::vector<double> &to) {
 	// test if any "to" later occurs in "from"
 	size_t n = from.size();
@@ -3095,9 +3096,9 @@ bool can_use_replace(const std::vector<double> &from, const std::vector<double> 
 	}
 	return true;
 }
+*/
 
-
-SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, long nl, bool keepcats, SpatOptions &opt) {
+SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, long nl, bool setothers, double others, bool keepcats, SpatOptions &opt) {
 
 	SpatRaster out;
 	if (from.size() < 1) {
@@ -3160,61 +3161,39 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 	if (mout) {
 		size_t tosz = to.size() / nl;
 		size_t nlyr = out.nlyr();
-		if (can_use_replace(from, to)) {
-			for (size_t i = 0; i < out.bs.n; i++) {
-				std::vector<double> v;
-				readBlock(v, out.bs, i);
-				size_t vs = v.size();
-				v.reserve(vs * nlyr);
-				for (size_t lyr = 1; lyr < nlyr; lyr++) {
-					v.insert(v.end(), v.begin(), v.begin()+vs);
-				}
-				for (size_t lyr = 0; lyr < nlyr; lyr++) {
-					std::vector<double> tolyr(to.begin()+lyr*tosz, to.begin()+(lyr+1)*tosz);
-					recycle(tolyr, from);
-					size_t offset = lyr*vs;
-					for (size_t j=0; j< from.size(); j++) {
-						if (std::isnan(from[j])) {
-							for (size_t k=offset; k<(offset+vs); k++) {
-								v[k] = std::isnan(v[k]) ? tolyr[j] : v[k];
-							}
-						} else {
-							std::replace(v.begin()+offset, v.begin()+(offset+vs), from[j], tolyr[j]);
-						}
-					}
-				}
-				if (!out.writeBlock(v, i)) return out;
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v;
+			readBlock(v, out.bs, i);
+			size_t vs = v.size();
+			v.reserve(vs * nlyr);
+			for (size_t lyr = 1; lyr < nlyr; lyr++) {
+				v.insert(v.end(), v.begin(), v.begin()+vs);
 			}
-		} else {
-			for (size_t i = 0; i < out.bs.n; i++) {
-				std::vector<double> v;
-				readBlock(v, out.bs, i);
-				size_t vs = v.size();
-				v.reserve(vs * nlyr);
-				for (size_t lyr = 1; lyr < nlyr; lyr++) {
-					v.insert(v.end(), v.begin(), v.begin()+vs);
-				}
-				std::vector<double> vv = v;
-				for (size_t lyr = 0; lyr < nlyr; lyr++) {
-					std::vector<double> tolyr(to.begin()+lyr*tosz, to.begin()+(lyr+1)*tosz);
-					recycle(tolyr, from);
-					size_t offset = lyr*vs;
-					for (size_t j=0; j< from.size(); j++) {
-						if (std::isnan(from[j])) {
-							for (size_t k=offset; k<(offset+vs); k++) {
-								v[k] = std::isnan(vv[k]) ? tolyr[j] : vv[k];
-							}
-						} else {
-							for (size_t k=offset; k<(offset+vs); k++) {
-								if (vv[k] == from[j]) {
-									v[k] = tolyr[j];
-								}
+			std::vector<double> vv;
+			if (setothers) {
+				vv.resize(v.size(), others);
+			} else {
+				vv = v;
+			}
+			for (size_t lyr = 0; lyr < nlyr; lyr++) {
+				std::vector<double> tolyr(to.begin()+lyr*tosz, to.begin()+(lyr+1)*tosz);
+				recycle(tolyr, from);
+				size_t offset = lyr*vs;
+				for (size_t j=0; j< from.size(); j++) {
+					if (std::isnan(from[j])) {
+						for (size_t k=offset; k<(offset+vs); k++) {
+							vv[k] = std::isnan(v[k]) ? tolyr[j] : v[k];
+						}
+					} else {
+						for (size_t k=offset; k<(offset+vs); k++) {
+							if (v[k] == from[j]) {
+								vv[k] = tolyr[j];
 							}
 						}
 					}
 				}
-				if (!out.writeBlock(v, i)) return out;
 			}
+			if (!out.writeBlock(vv, i)) return out;
 		}
 	} else if (min) {
 		size_t n = from.size()/nl;
@@ -3232,7 +3211,7 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 			std::vector<double> v;
 			readBlock(v, out.bs, i);
 			size_t nc = v.size() / nlr;
-			std::vector<double> vv(nc, NAN);
+			std::vector<double> vv(nc, others);
 			for (size_t j=0; j<nc; j++) {
 				for (size_t m=0; m<n; m++) {
 					bool match = true;
@@ -3257,41 +3236,31 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 		}
 	} else {
 		recycle(to, from);
-		if (can_use_replace(from, to)) {
-			for (size_t i = 0; i < out.bs.n; i++) {
-				std::vector<double> v;
-				readBlock(v, out.bs, i);
-				for (size_t j=0; j< from.size(); j++) {
-					if (std::isnan(from[j])) {
-						for (double &d : v) d = std::isnan(d) ? to[j] : d;
-					} else {
-						std::replace(v.begin(), v.end(), from[j], to[j]);
-					}
-				}
-				if (!out.writeBlock(v, i)) return out;
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v;
+			readBlock(v, out.bs, i);
+			std::vector<double> vv;
+			if (setothers) {
+				vv.resize(v.size(), others);
+			} else {
+				vv = v;
 			}
-		} else {
-			for (size_t i = 0; i < out.bs.n; i++) {
-				std::vector<double> v;
-				readBlock(v, out.bs, i);
-				std::vector<double> vv = v;
-				for (size_t j=0; j< from.size(); j++) {
-					if (std::isnan(from[j])) {
-						for (size_t k=0; k<v.size(); k++) {
-							if (std::isnan(vv[k])) {
-								v[k] = to[j];
-							}
+			for (size_t j=0; j< from.size(); j++) {
+				if (std::isnan(from[j])) {
+					for (size_t k=0; k<v.size(); k++) {
+						if (std::isnan(v[k])) {
+							vv[k] = to[j];
 						}
-					} else {
-						for (size_t k=0; k<v.size(); k++) {
-							if (vv[k] == from[j]) {
-								v[k] = to[j];
-							}
+					}
+				} else {
+					for (size_t k=0; k<v.size(); k++) {
+						if (v[k] == from[j]) {
+							vv[k] = to[j];
 						}
 					}
 				}
-				if (!out.writeBlock(v, i)) return out;
 			}
+			if (!out.writeBlock(vv, i)) return out;
 		}
 	}
 	readStop();
@@ -4508,7 +4477,7 @@ SpatRaster SpatRaster::combineCats(SpatRaster x, SpatOptions &opt) {
 			x.source[0].cats[0] = sc;
 			x.source[0].hasCategories[0] = true;
 
-			x = x.replaceValues(from, to, -2, true, opt);
+			x = x.replaceValues(from, to, -2, false, NAN, true, opt);
 			return x;
 		} else {
 			out.setError("cannot concatenate categories");

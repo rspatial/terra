@@ -380,7 +380,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, others=NULL, brackets=TRUE, f
 )
 
 setMethod("subst", signature(x="SpatRaster"),
-function(x, from, to, raw=FALSE, filename="", ...) {
+function(x, from, to, others=NULL, raw=FALSE, filename="", ...) {
 	opt <- spatOptions(filename, ...)
 
 	if (inherits(from, "data.frame")) {
@@ -445,15 +445,23 @@ function(x, from, to, raw=FALSE, filename="", ...) {
 	} else if (fromc || toc) {
 		error("subst", "from or to has character values but x is not categorical")
 	}
-
+	
+	if (is.null(others)) {
+		setothers <- FALSE
+		others <- NA
+	} else {
+		setothers <- TRUE
+		others <- others[1]
+	}
+	
 	if (tom) {
 		nms <- colnames(to)
 		if (!is.null(nms)) 	opt$names = nms
-		x@ptr <- x@ptr$replaceValues(from, to, ncol(to), keepcats, opt)
+		x@ptr <- x@ptr$replaceValues(from, to, ncol(to), setothers, others, keepcats, opt)
 	} else if (frm) {
-		x@ptr <- x@ptr$replaceValues(as.vector(t(from)), to, -ncol(from), FALSE, opt)
+		x@ptr <- x@ptr$replaceValues(as.vector(t(from)), to, -ncol(from), setothers, others, FALSE, opt)
 	} else {
-		x@ptr <- x@ptr$replaceValues(from, to, 0, keepcats, opt)
+		x@ptr <- x@ptr$replaceValues(from, to, 0, setothers, others, keepcats, opt)
 	}
 	messages(x, "subst")
 }

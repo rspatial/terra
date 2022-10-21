@@ -1091,9 +1091,9 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 	if (nlyr() > 1) {
 		out.addWarning("viewshed is only done for the first layer");
 		x = subset({0}, topt);
-		x = x.replaceValues({NAN}, {minval}, 0, false, topt);
+		x = x.replaceValues({NAN}, {minval}, 0, false, NAN, false, topt);
 	} else {
-		x = replaceValues({NAN}, {minval}, 0, false, topt);
+		x = replaceValues({NAN}, {minval}, 0, false, NAN, false, topt);
 	}
 
 	std::string filename = opt.get_filename();
@@ -1230,33 +1230,33 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 	std::vector<double> mvals;
 	if (buffer) {
 		if (remove_zero) {
-			x = replaceValues({0}, {1}, 1, false, ops);
+			x = replaceValues({0}, {1}, 1, false, NAN, false, ops);
 		}
 		papszOptions = CSLSetNameValue(papszOptions, "MAXDIST", doubleToChar(maxdist));
 		papszOptions = CSLSetNameValue(papszOptions, "FIXED_BUF_VAL", doubleToChar(1.0));
 	} else if (!std::isnan(target)) {
-		x = replaceValues({target}, {NAN}, 1, false, ops);
+		x = replaceValues({target}, {NAN}, 1, false, NAN, false, ops);
 		mvals.push_back(NAN);
 		if (!std::isnan(exclude) && (exclude != 0)) {
 			if (remove_zero) {
-				x = x.replaceValues({0, exclude}, {1, 0}, 1, false, ops);
+				x = x.replaceValues({0, exclude}, {1, 0}, 1, false, NAN, false, ops);
 			} else {
-				x = x.replaceValues({exclude}, {0}, 1, false, ops);
+				x = x.replaceValues({exclude}, {0}, 1, false, NAN, false, ops);
 			}
 			mvals.push_back(exclude);
 		}
 		mask = true;
 	} else if (!std::isnan(exclude) && (exclude != 0)) {
 		if (remove_zero) {
-			x = replaceValues({0, exclude}, {1, 0}, 1, false, ops);
+			x = replaceValues({0, exclude}, {1, 0}, 1, false, NAN, false, ops);
 		} else {
-			x = replaceValues({exclude}, {0}, 1, false, ops);
+			x = replaceValues({exclude}, {0}, 1, false, NAN, false, ops);
 		}
 
 		mvals.push_back(exclude);
 		mask = true;
 	} else if (remove_zero) {
-		x = replaceValues({0}, {1}, 1, false, ops);
+		x = replaceValues({0}, {1}, 1, false, NAN, false, ops);
 	}
 
 	if (x.hasValues()) {

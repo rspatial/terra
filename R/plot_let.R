@@ -366,6 +366,7 @@ setMethod("plet", signature(x="SpatRaster"),
 		if (nlyr(x) == 1) {
 			map <- leaflet::addRasterImage(map, x, colors=col, opacity=alpha)
 			if (!is.null(legend)) {
+				if (!hasMinMax(x)) setMinMax(x)
 				r <- minmax(x)
 				v <- seq(r[1], r[2], 5)
 				pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
@@ -381,6 +382,7 @@ setMethod("plet", signature(x="SpatRaster"),
 			nms <- make.unique(names(x))
 			many_legends <- one_legend <- FALSE
 			if (!is.null(legend)) {
+				if (!hasMinMax(x)) setMinMax(x)
 				r <- minmax(x)
 				if (shared) {
 					rr <- range(r)

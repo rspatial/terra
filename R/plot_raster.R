@@ -84,15 +84,17 @@ prettyNumbs <- function(x, digits) {
 			} else {
 				txt <- format(levs, scientific = FALSE, digits=18)
 				txt <- unlist(strsplit(txt, "\\."))
-				if (nchar(txt[1]) > 3) decimals = 0
-				else if (nchar(txt[1]) > 2) decimals = 1
-				else if (nchar(txt[1]) > 1) decimals = 2
-				else if (txt[1] != 0) decimals = 3
-				else {
+				if (nchar(txt[1]) > 3) decimals <- 0
+				else if (nchar(txt[1]) > 2) decimals <- 1
+				else if (nchar(txt[1]) > 1) decimals <- 2
+				else if (txt[1] != "0") decimals <- 3
+				else if (length(txt) > 1) {
 					txt <- unlist(strsplit(txt[2], ""))
 					i <- which(txt != "0")[1]
-					if (length(i) > 0) decimals = i+2
-					else decimals = 9;
+					if (length(i) > 0) decimals <- i+2
+					else decimals <- 9;
+				} else {
+					decimals <- 0
 				}
 			}
 			levs <- round(levs, decimals)
