@@ -105,6 +105,10 @@ dist_lonlat <- function(lon1, lat1, lon2, lat2) {
     .Call(`_terra_dist_lonlat`, lon1, lat1, lon2, lat2)
 }
 
+dest_lonlat <- function(slon, slat, sazi, dist, dlon, dlat, dazi) {
+    invisible(.Call(`_terra_dest_lonlat`, slon, slat, sazi, dist, dlon, dlat, dazi))
+}
+
 dir_lonlat <- function(lon1, lat1, lon2, lat2) {
     .Call(`_terra_dir_lonlat`, lon1, lat1, lon2, lat2)
 }

@@ -952,6 +952,25 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 	std::string xtype = x.type();
 
 	if ((gtype != "points") || (xtype != "points")) {
+		
+/*
+		if (lonlat) {
+			if (xtype == "points") {
+				return linedistLonLat(x);
+			} else if (gtype == "points") {
+				for (size_t i=0; i<x.nrow(); i++) {
+					SpatVector tmp = x.subset_rows(i);
+					std::vector<double> dd = tmp.linedistLonLat(*this);
+					d.push_back(vmin(dd, false));
+				}
+				return d;
+			} else {
+				SpatVector tmp = x.as_points(false, true);
+				return linedistLonLat(x);				
+			}
+		}
+*/			
+
 		std::string distfun="";
 		d = geos_distance(x, pairwise, distfun);
 		if ((!lonlat) && (m != 1)) {

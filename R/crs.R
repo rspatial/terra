@@ -37,13 +37,15 @@ is.proj <- function(crs) {
 
 .name_or_proj4 <- function(x) {
 	if (inherits(x, "SpatVectorProxy")) {
-		v <- vect()
-		v@ptr <- x@ptr$v
-		x <- v
+		ptr <- x@ptr$v
+	} else if (inherits(x, "Rcpp_SpatRaster")) {
+		ptr <- x	
+	} else {
+		ptr <- x@ptr
 	}
-	wkt <- x@ptr$get_crs("wkt")
+	wkt <- ptr$get_crs("wkt")
 	d <- .srs_describe(wkt)
-	r <- x@ptr$get_crs("proj4")
+	r <- ptr$get_crs("proj4")
 	if (!(d$name %in% c(NA, "unknown", "unnamed"))) {
 		if (substr(r, 1, 13) == "+proj=longlat") {
 			r <- paste("lon/lat", d$name)

@@ -132,7 +132,7 @@ std::vector<std::string> get_metadata(std::string filename) {
 	}
 
 	char **m = poDataset->GetMetadata();
-	if (m != NULL) { // needed
+	if (m != NULL) {
 		while (*m != nullptr) {
 			out.push_back(*m++);
 		}

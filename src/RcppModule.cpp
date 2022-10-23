@@ -406,6 +406,7 @@ RCPP_MODULE(spat){
 		.method("linesList", &SpatVector::linesList)
 		.method("polygonsList", &SpatVector::polygonsList)
 		.method("linesNA", &SpatVector::linesNA)
+		.method("linedistlonlat", &SpatVector::linedistLonLat)
 
 		.method("add_column_empty", (void (SpatVector::*)(unsigned dtype, std::string name))( &SpatVector::add_column))
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
@@ -885,7 +886,12 @@ RCPP_MODULE(spat){
 
     class_<SpatRasterCollection>("SpatRasterCollection")
 		.constructor()
-		.method("deepcopy", &SpatRasterCollection::deepCopy, "deepCopy")
+	    .constructor<std::string, std::vector<int>, bool>()
+
+		.property("names", &SpatRasterCollection::get_names, &SpatRasterCollection::set_names)
+
+		.method("deepcopy", &SpatRasterCollection::deepCopy)
+		.method("dims", &SpatRasterCollection::dims)
 
 		.method("has_error", &SpatRasterCollection::has_error)
 		.method("has_warning", &SpatRasterCollection::has_warning)

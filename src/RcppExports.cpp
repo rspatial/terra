@@ -301,6 +301,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dest_lonlat
+void dest_lonlat(double slon, double slat, double sazi, double dist, double& dlon, double& dlat, double& dazi);
+RcppExport SEXP _terra_dest_lonlat(SEXP slonSEXP, SEXP slatSEXP, SEXP saziSEXP, SEXP distSEXP, SEXP dlonSEXP, SEXP dlatSEXP, SEXP daziSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type slon(slonSEXP);
+    Rcpp::traits::input_parameter< double >::type slat(slatSEXP);
+    Rcpp::traits::input_parameter< double >::type sazi(saziSEXP);
+    Rcpp::traits::input_parameter< double >::type dist(distSEXP);
+    Rcpp::traits::input_parameter< double& >::type dlon(dlonSEXP);
+    Rcpp::traits::input_parameter< double& >::type dlat(dlatSEXP);
+    Rcpp::traits::input_parameter< double& >::type dazi(daziSEXP);
+    dest_lonlat(slon, slat, sazi, dist, dlon, dlat, dazi);
+    return R_NilValue;
+END_RCPP
+}
 // dir_lonlat
 double dir_lonlat(double lon1, double lat1, double lon2, double lat2);
 RcppExport SEXP _terra_dir_lonlat(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP) {
@@ -428,6 +444,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_set_proj_search_paths", (DL_FUNC) &_terra_set_proj_search_paths, 1},
     {"_terra_PROJ_network", (DL_FUNC) &_terra_PROJ_network, 2},
     {"_terra_dist_lonlat", (DL_FUNC) &_terra_dist_lonlat, 4},
+    {"_terra_dest_lonlat", (DL_FUNC) &_terra_dest_lonlat, 7},
     {"_terra_dir_lonlat", (DL_FUNC) &_terra_dir_lonlat, 4},
     {"_terra_dist2track", (DL_FUNC) &_terra_dist2track, 7},
     {"_terra_alongTrackDistance", (DL_FUNC) &_terra_alongTrackDistance, 6},

@@ -14,6 +14,33 @@ setMethod("dim", signature(x="SpatRasterDataset"),
 	}
 )
 
+setMethod("dim", signature(x="SpatRasterCollection"),
+	function(x) {
+		m <- matrix(x@ptr$dims(), ncol=3)
+		colnames(m) <- c("nrow", "ncol", "nlyr")
+		m
+	}
+)
+
+setMethod("nrow", signature(x="SpatRasterCollection"),
+	function(x) {
+		dim(x)[,1]
+	}
+)
+
+setMethod("ncol", signature(x="SpatRasterCollection"),
+	function(x) {
+		dim(x)[,2]
+	}
+)
+
+setMethod("nlyr", signature(x="SpatRasterCollection"),
+	function(x) {
+		dim(x)[,3]
+	}
+)
+
+
 setMethod("nrow", signature(x="SpatRaster"),
 	function(x){ return(x@ptr$nrow())}
 )

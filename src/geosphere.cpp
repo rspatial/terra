@@ -40,6 +40,8 @@
 #endif
 
 
+#include "Rcpp.h"
+
 inline void normLon(double &lon) {
 	lon = fmod(lon + 180, 360.) - 180;
 }
@@ -67,6 +69,7 @@ double dist_lonlat(const double &lon1, const double &lat1, const double &lon2, c
 }
 
 
+// [[Rcpp::export]]
 void dest_lonlat(double slon, double slat, double sazi, double dist, double &dlon, double &dlat, double &dazi) {
 	double a = 6378137.0;
 	double f = 1/298.257223563;
@@ -131,7 +134,6 @@ double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, do
 
 
 
-#include "Rcpp.h"
 
 // [[Rcpp::export]]
 double dist2segment(double plon, double plat, double lon1, double lat1, double lon2, double lat2) {

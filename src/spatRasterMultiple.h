@@ -32,11 +32,17 @@ class SpatRasterCollection {
 		std::string getError() { return msg.getError(); }
 	
 		std::vector<SpatRaster> ds;
+		std::vector<std::string> names;
 		SpatRasterCollection() {};
+		SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids);
+		
 		SpatRasterCollection(size_t n) { ds.resize(n); };
 		size_t size() { return ds.size(); }
 		void resize(size_t n) { ds.resize(n); }
-		void push_back(SpatRaster r) { ds.push_back(r); };
+		void push_back(SpatRaster r, std::string name) { 
+			ds.push_back(r);
+			names.push_back(name);
+		}
 		void erase(size_t i) { 
 			if (i < ds.size()) {
 				ds.erase(ds.begin()+i);
@@ -48,6 +54,27 @@ class SpatRasterCollection {
 		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
 		SpatRaster summary(std::string fun, SpatOptions &opt);
+
+		std::vector<unsigned> dims() {
+			size_t n = ds.size();
+			size_t n2 = 2 * n;
+			std::vector<unsigned> out(n * 3);
+			for (size_t i=0; i<n; i++) {
+				out[i]    = ds[i].nrow();
+				out[i+n]  = ds[i].ncol();
+				out[i+n2] = ds[i].nlyr();
+			}
+			return out;
+		};
+
+		std::vector<std::string> get_names() {
+			return names;
+		};
+		void set_names(std::vector<std::string> nms) {
+			if (nms.size() == ds.size()) {
+				names = nms;
+			}
+		}
 
 		std::vector<std::string> filenames() {
 			size_t n =0;

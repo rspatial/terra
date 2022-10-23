@@ -481,12 +481,13 @@ setMethod("show" , "SpatRasterDataset",
 
 		ln <- names(object)
 		if (any(ln != "")) {
+			if (length(ln) > 6) {
+				ln <- c(ln[1:6], "...")		
+			}
 			cat("names       :", paste(ln, collapse=", "), "\n")
 		}
 	}
 )
-
-
 
 
 setMethod("show" , "SpatRasterCollection",
@@ -494,10 +495,30 @@ setMethod("show" , "SpatRasterCollection",
 		cat("class       :" , class(object), "\n")
 		nr <- length(object)
 		cat("length      :", nr, "\n")
+		d <- (t(dim(object)))
+		d[] <- as.character(d)
+		if (ncol(d) > 14) {
+			d <- d[,1:15]
+			d[,15] <- "..."
+		}
+		for (i in 1:ncol(d)) {
+			d[,i] <- format(d[,i], width=max(nchar(d[,i])), justify="right")
+		}
+		cat("nrow        :", paste(d[1,], collapse=", "), "\n")
+		cat("ncol        :", paste(d[2,], collapse=", "), "\n")
+		cat("nlyr        :", paste(d[3,], collapse=", "), "\n")
+		
+		crs <- .name_or_proj4(object@ptr$x[[1]])
+		if (crs != "") cat("crs (first) :", crs,	 "\n")
+		ln <- names(object)
+		if (any(ln != "")) {
+			if (length(ln) > 6) {
+				ln = c(ln[1:6], "...")		
+			}
+			cat("names       :", paste(ln, collapse=", "), "\n")
+		}
 	}
 )
-
-
 
 
 setMethod ("head" , "SpatVector",

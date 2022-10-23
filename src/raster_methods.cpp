@@ -2342,7 +2342,7 @@ SpatRasterCollection SpatRasterCollection::cropmask(SpatVector v, std::string sn
 			SpatExtent xe = e.intersect(ds[use[i]].getExtent());
 			if (xe.valid()) {
 				SpatRaster r = ds[use[i]].cropmask(v, snap, touches, expand, ops);
-				out.push_back(r.source[0]);
+				out.push_back(r.source[0], names[use[i]]);
 			}
 		}
 	} else {
@@ -2350,7 +2350,7 @@ SpatRasterCollection SpatRasterCollection::cropmask(SpatVector v, std::string sn
 			SpatExtent xe = e.intersect(ds[i].getExtent());
 			if (xe.valid()) {
 				SpatRaster x = ds[i].cropmask(v, snap, touches, expand, ops);
-				out.push_back(x.source[0]);
+				out.push_back(x.source[0], names[i]);
 			}
 		}
 	}

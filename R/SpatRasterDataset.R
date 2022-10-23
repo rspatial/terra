@@ -279,6 +279,33 @@ setMethod("sprc", signature(x="list"),
 	}
 )
 
+setMethod("sprc", signature(x="character"),
+	function(x, ids=0) {
+
+		if (length(x) > 1) {
+			r <- lapply(x, rast)
+			s <- sds(r)
+			names(s) <- tools::file_path_sans_ext(basename(x))
+			return(s)
+		}
+
+		x <- trimws(x[1])
+		if (nchar(x) == 0) {
+			error("sprc", "provide valid file name(s)")
+		}
+		f <- .fullFilename(x)
+		r <- methods::new("SpatRasterCollection")
+		ids <- round(ids)-1
+		if (ids[1] < 0) {
+			useids <- FALSE
+		} else {
+			useids <- TRUE
+		}
+		r@ptr <- SpatRasterCollection$new(f, ids, useids)
+		messages(r, "sprc")
+	}
+)
+
 
 setMethod("length", signature(x="SpatRasterCollection"),
 	function(x) {

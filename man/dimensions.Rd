@@ -23,6 +23,8 @@
 \alias{ncol,SpatRaster-method}
 \alias{nrow,SpatRasterDataset-method}
 \alias{ncol,SpatRasterDataset-method}
+\alias{nrow,SpatRasterCollection-method}
+\alias{ncol,SpatRasterCollection-method}
 \alias{nrow<-,SpatRaster,numeric-method}
 \alias{ncol<-,SpatRaster,numeric-method}
 \alias{nlyr,SpatRasterDataset-method}
@@ -35,6 +37,7 @@
 \alias{ncell,SpatRasterDataset-method}
 \alias{length,SpatRasterDataset-method}
 \alias{length,SpatRasterCollection-method}
+\alias{nlyr,SpatRasterCollection-method}
 \alias{dim,SpatRaster-method}
 \alias{dim,SpatRasterDataset-method}
 \alias{dim<-,SpatRaster-method}

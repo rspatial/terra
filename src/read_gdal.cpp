@@ -552,6 +552,7 @@ inline std::string dtypename(const std::string &d) {
 }
 
 
+
 SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids) {
 
 	std::vector<std::string> ops;
@@ -583,7 +584,6 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 		ids.resize(meta.size());
 		std::iota(ids.begin(), ids.end(), 0);
 	}
-	SpatRaster sub;
 	int idssz = ids.size();
 	int metsz = meta.size();
 
@@ -598,10 +598,69 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 			size_t pos = s.find(delim);
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
+				SpatRaster sub;
 				if (sub.constructFromFile(s, {-1}, {""}, {}, {})) {
 					if (!push_back(sub, basename_sds(s), "", "", true)) {
 						addWarning("skipped (different geometry): " + s);
 					}
+				} else {
+					addWarning("skipped (fail): " + s);
+				}
+			}
+		}
+	}
+	GDALClose( (GDALDatasetH) poDataset );
+}
+
+
+SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids) {
+
+	std::vector<std::string> ops;
+    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, ops, ops);
+    if( poDataset == NULL )  {
+		if (!file_exists(fname)) {
+			setError("file does not exist");
+		} else {
+			setError("cannot read from " + fname );
+		}
+		return;
+	}
+
+	std::string delim = "NAME=";
+	char **metadata = poDataset->GetMetadata("SUBDATASETS");
+
+	if (metadata == NULL) {
+		setError("file has no subdatasets");
+		GDALClose( (GDALDatasetH) poDataset );
+		return;
+	}
+
+	std::vector<std::string> meta;
+    for (size_t i=0; metadata[i] != NULL; i++) {
+		meta.push_back(metadata[i]);
+	}
+
+	if (!useids) {
+		ids.resize(meta.size());
+		std::iota(ids.begin(), ids.end(), 0);
+	}
+	int idssz = ids.size();
+	int metsz = meta.size();
+
+	if (metsz == 0) {
+		setError("file does not consist of subdatasets");
+	} else {
+		for (int i=0; i<idssz; i++) {
+			if ((ids[i] < 0) || ((2*ids[i]) >= metsz)) {
+				continue;
+			}
+			std::string s = meta[ids[i]*2];
+			size_t pos = s.find(delim);
+			if (pos != std::string::npos) {
+				s.erase(0, pos + delim.length());
+				SpatRaster sub;
+				if (sub.constructFromFile(s, {-1}, {""}, {}, {})) {
+					push_back(sub, basename_sds(s));
 				} else {
 					addWarning("skipped (fail): " + s);
 				}
