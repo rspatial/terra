@@ -26,15 +26,42 @@ std::vector<std::string> SpatRasterCollection::getWarnings() { return msg.getWar
 std::string SpatRasterCollection::getError() { return msg.getError(); }
 
 SpatRasterCollection::SpatRasterCollection(size_t n) { ds.resize(n); };
+
 size_t SpatRasterCollection::size() { return ds.size(); }
+
 void SpatRasterCollection::resize(size_t n) { ds.resize(n); }
+
 void SpatRasterCollection::push_back(SpatRaster r, std::string name) { 
+	if (ds.size() == 0) {
+		extent = r.getExtent();
+	} else {
+		extent.unite(r.getExtent());
+	}
 	ds.push_back(r);
 	names.push_back(name);
+	
 }
+
+void SpatRasterCollection::setExtent() { 
+	if (ds.size() == 0) {
+		extent = SpatExtent();
+		return;
+	} else {
+		extent = ds[0].getExtent();
+	}
+	for (size_t i=1; i<ds.size(); i++) {
+		extent.unite(ds[i].getExtent());
+	}
+}
+
+SpatExtent SpatRasterCollection::getExtent() { 
+	return extent;
+}
+
 void SpatRasterCollection::erase(size_t i) { 
 	if (i < ds.size()) {
 		ds.erase(ds.begin()+i);
+		setExtent();
 	}
 }
 
@@ -57,14 +84,14 @@ SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, 
 			if (xe.valid()) {
 				SpatRaster r = ds[use[i]];
 				r = r.crop(e, snap, expand, ops);
-				out.ds.push_back(r);
+				out.push_back(r, "");
 			}
 		}
 	} else {
 		for (size_t i=0; i<size(); i++) {
 			SpatExtent xe = e.intersect(ds[i].getExtent());
 			if (xe.valid()) {
-				out.ds.push_back(ds[i].crop(e, snap, expand, ops));
+				out.push_back(ds[i].crop(e, snap, expand, ops), "");
 			}
 		}
 	}

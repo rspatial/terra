@@ -504,6 +504,10 @@ setMethod("show" , "SpatRasterCollection",
 		cat("ncol        :", paste(d[2,], collapse=", "), "\n")
 		cat("nlyr        :", paste(d[3,], collapse=", "), "\n")
 		
+		e <- as.vector(ext(object))
+		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+		
+		
 		crs <- .name_or_proj4(object@ptr$x[[1]])
 		if (crs != "") cat("crs (first) :", crs,	 "\n")
 		ln <- names(object)

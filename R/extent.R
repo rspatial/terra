@@ -10,6 +10,13 @@ setMethod("ext", signature(x="SpatExtent"),
 	}
 )
 
+setMethod("ext", signature(x="SpatRasterCollection"),
+	function(x){
+		e <- methods::new("SpatExtent")
+		e@ptr <- x@ptr$extent()
+		e
+	}
+)
 
 setMethod("ext", signature(x="sf"),
 	function(x){

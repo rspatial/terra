@@ -1,4 +1,4 @@
-# version 1.6-31
+# version 1.6-33
 
 ## new
 
@@ -12,6 +12,7 @@
 - `update` method for SpatRaster to write new names or a new extent or crs to an existing raster file.
 - `sieve` filter method for SpatRaster
 - argument `segments=FALSE` to `disagg<SpatRaster>`
+- `sprc<character>` method to create a SpatRasterCollection from a file with subdatasets
 
 
 ## enhancements

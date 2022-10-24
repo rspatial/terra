@@ -892,6 +892,7 @@ RCPP_MODULE(spat){
 
 		.method("deepcopy", &SpatRasterCollection::deepCopy)
 		.method("dims", &SpatRasterCollection::dims)
+		.method("extent", &SpatRasterCollection::getExtent)
 
 		.method("has_error", &SpatRasterCollection::has_error)
 		.method("has_warning", &SpatRasterCollection::has_warning)

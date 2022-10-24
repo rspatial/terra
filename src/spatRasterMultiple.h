@@ -32,9 +32,12 @@ class SpatRasterCollection {
 		std::string getError();
 	
 		std::vector<SpatRaster> ds;
+		SpatExtent extent;
 		std::vector<std::string> names;
 		SpatRasterCollection() {};
 		SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids);
+		void setExtent();
+		SpatExtent getExtent();
 		
 		SpatRasterCollection(size_t n);
 		size_t size();
