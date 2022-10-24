@@ -10,7 +10,7 @@ setMethod("dim", signature(x="SpatRaster"),
 
 setMethod("dim", signature(x="SpatRasterDataset"),
 	function(x) {
-		dim(x[1])[1:2]
+		c(x@ptr$nrow(), x@ptr$ncol())
 	}
 )
 
@@ -120,7 +120,7 @@ setMethod("nlyr", signature(x="SpatRaster"),
 
 setMethod("nlyr", signature(x="SpatRasterDataset"),
 	function(x){
-		sapply(1:length(x), function(i) nlyr(x[i]))
+		return(x@ptr$nlyr() )
     }
 )
 
@@ -166,7 +166,7 @@ function(x) {
 
 setMethod("res", signature(x="SpatRasterDataset"),
 function(x) {
-		x[1]@ptr$res
+		x@ptr$res()
 	}
 )
 

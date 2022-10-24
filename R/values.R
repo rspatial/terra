@@ -283,7 +283,7 @@ setMethod("sources", signature(x="SpatRasterDataset"),
 			x <- lapply(1:length(x), function(i) cbind(cid=i, x[[i]]))
 			do.call(rbind, x)
 		} else {
-			sapply(x, sources)
+			x@ptr$filenames()
 		}
 	}
 )

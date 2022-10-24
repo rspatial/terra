@@ -432,7 +432,7 @@ setMethod ("show" , "SpatRaster",
 
 
 .sources <- function(x) {
-	m <- inMemory(x)
+	#m <- inMemory(x)
 	f <- sources(x)
 	f <- gsub("\"", "", basename(f))
 	i <- grep(":", f)
@@ -444,9 +444,8 @@ setMethod ("show" , "SpatRaster",
 			}
 		}
 	}
-	sources <- rep("memory", length(m))
-	sources[!m] <- f[!m]
-	unique(sources)
+	f[f==""] <- "memory"
+	unique(f)
 }
 
 
@@ -466,17 +465,14 @@ setMethod("show" , "SpatRasterDataset",
 		}
 		cat("nlyr        :", paste(nss, collapse=", "), "\n")
 
-
 		xyres <- res(object)
 		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
 		e <- as.vector(ext(object))
 		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 
+		cat("coord. ref. :" , .name_or_proj4(object), "\n")
 
-		cat("coord. ref. :" , .name_or_proj4(object[1]), "\n")
-
-		s <- unlist(lapply(1:ns, function(i) .sources(object[i])))
-		s <- unique(s)
+		s <- .sources(object)
 		cat("source(s)   :", paste(s, collapse=", "), "\n")
 
 		ln <- names(object)
