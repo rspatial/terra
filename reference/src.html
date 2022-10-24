@@ -102,9 +102,13 @@ You can create a SpatRasterCollection from a file with subdatasets."><meta prope
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">sprc</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ptr$add(x[[i]]@ptr):</span> could not find valid method</span>
 <span class="r-in"><span class="va">z</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'z' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRasterCollection </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> length      : 2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nrow        : 30, 30 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ncol        : 60, 60 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nlyr        :  1,  1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> crs (first) : lon/lat WGS 84 </span>
 </code></pre></div>
     </div>
   </div>
