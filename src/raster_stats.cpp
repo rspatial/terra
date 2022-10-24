@@ -525,7 +525,10 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		return(out);
 	}
 	if (hasWarning()) {
-		out.addWarning(getWarnings());
+		std::vector<std::string> w = getWarnings();
+		for (size_t i=0; i<w.size(); i++) {
+			out.addWarning(w[i]);
+		}
 	}
 
 	if (z.nlyr() > 1) {

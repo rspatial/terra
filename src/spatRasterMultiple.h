@@ -28,7 +28,7 @@ class SpatRasterCollection {
 		void addWarning(std::string s);
 		bool has_error();
 		bool has_warning();
-		std::string getWarnings();
+		std::vector<std::string> getWarnings();
 		std::string getError();
 	
 		std::vector<SpatRaster> ds;
@@ -64,7 +64,7 @@ class SpatRasterStack {
 		void addWarning(std::string s);
 		bool has_error();
 		bool has_warning();
-		std::string getWarnings();
+		std::vector<std::string> getWarnings();
 		std::string getError();
 
 		std::vector<SpatRaster> ds;

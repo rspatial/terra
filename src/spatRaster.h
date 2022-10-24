@@ -224,7 +224,7 @@ class SpatRaster {
 		void setMessage(std::string s) { msg.setMessage(s); }
 		bool hasError() { return msg.has_error; }
 		bool hasWarning() { return msg.has_warning; }
-		std::string getWarnings() { return msg.getWarnings();}
+		std::vector<std::string> getWarnings() { return msg.getWarnings();}
 		std::string getError() { return msg.getError();}
 		std::string getMessage() { return msg.getMessage();}
 

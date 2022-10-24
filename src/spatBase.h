@@ -71,11 +71,8 @@ class SpatMessages {
 			warnings.push_back(s);
 		}
 
-		std::string getWarnings() {
-			std::string w = "";
-			for (size_t i = 0; i<warnings.size(); i++) {
-				w += warnings[i] + "\n" ;
-			}
+		std::vector<std::string> getWarnings() {
+			std::vector<std::string> w = warnings; 		
 			warnings.resize(0);
 			has_warning = false;
 			return w;
@@ -90,13 +87,14 @@ class SpatMessages {
 			message = s;
 		}
 		
-		std::vector<std::string> getAll() {
+/*		std::vector<std::string> getAll() {
 			std::string warns = getWarnings();
 			std::string error = getError();
 			std::string msg = getMessage();
 			std::vector<std::string> amsgs = { error, warns, msg};
 			return amsgs;
 		}
+*/
 };
 
 
