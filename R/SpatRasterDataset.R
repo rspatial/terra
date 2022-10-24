@@ -265,7 +265,7 @@ setMethod("sprc", signature(x="list"),
 		if (n > 0) {
 			for (i in 1:n) {
 				if (inherits(x[[i]], "SpatRaster")) {
-					ptr$add(x[[i]]@ptr)
+					ptr$add(x[[i]]@ptr, "")
 				} else {
 					name <- names(x[[i]])
 					cls <- class(x[[i]])
@@ -317,14 +317,14 @@ setMethod("[", c("SpatRasterCollection", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	i <- positive_indices(i, length(x), TRUE, "`[`(i)")
 	if (drop && (length(i) == 1)) {
-		ptr <- x@ptr$x[i][[1]]
+		ptr <- x@ptr$x[[i]]
 		x <- rast()
 		x@ptr <- ptr
 	} else {
 		s <- x@ptr$x[i]
 		ptr <- SpatRasterCollection$new()
 		for (i in 1:length(s)) {
-			ptr$add(s[[i]])
+			ptr$add(s[[i]], "")
 		}
 		x@ptr <- ptr
 	}
