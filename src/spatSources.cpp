@@ -538,8 +538,6 @@ bool SpatRasterSource::combine_sources(const SpatRasterSource &x) {
 	cats.insert(cats.end(), x.cats.begin(), x.cats.end());
 	hasColors.insert(hasColors.end(), x.hasColors.begin(), x.hasColors.end());
 	cols.insert(cols.end(), x.cols.begin(), x.cols.end());
-	valueType.insert(valueType.end(), x.valueType.begin(), x.valueType.end());
-	dataType.insert(dataType.end(), x.dataType.begin(), x.dataType.end());
 	has_scale_offset.insert(has_scale_offset.end(), x.has_scale_offset.begin(), x.has_scale_offset.end());
 	scale.insert(scale.end(), x.scale.begin(), x.scale.end());
 	offset.insert(offset.end(), x.offset.begin(), x.offset.end());
