@@ -18,6 +18,7 @@ setMethod("ext", signature(x="SpatRasterCollection"),
 	}
 )
 
+
 setMethod("ext", signature(x="sf"),
 	function(x){
 		sfi <- attr(x, "sf_column")
@@ -104,12 +105,6 @@ setMethod("ext", signature(x="SpatRasterDataset"),
 )
 
 
-setMethod("ext", signature(x="SpatRasterCollection"),
-	function(x){
-		e <- sapply(1:length(x), function(i) as.vector(ext(x[i])))
-		ext(min(e[1,]), max(e[2,]), min(e[3,]), max(e[4,]))
-	}
-)
 
 setMethod("ext<-", signature("SpatRaster", "SpatExtent"),
 	function(x, value) {

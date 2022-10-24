@@ -367,6 +367,7 @@ std::vector<bool> SpatRaster::hasRange() {
 
 std::vector<int> SpatRaster::getValueType() {
 	std::vector<int> d;
+	d.reserve(nlyr());
 	for (size_t i=0; i<source.size(); i++) {
 		d.insert(d.end(), source[i].valueType.begin(), source[i].valueType.end());
 	}

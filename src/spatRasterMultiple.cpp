@@ -32,16 +32,34 @@ size_t SpatRasterCollection::size() { return ds.size(); }
 void SpatRasterCollection::resize(size_t n) { ds.resize(n); }
 
 void SpatRasterCollection::push_back(SpatRaster r, std::string name) { 
+
+/*
 	if (ds.size() == 0) {
 		extent = r.getExtent();
 	} else {
 		extent.unite(r.getExtent());
 	}
+*/
 	ds.push_back(r);
 	names.push_back(name);
 	
 }
 
+SpatExtent SpatRasterCollection::getExtent() { 
+	SpatExtent e;
+	if (ds.size() == 0) {
+		e = SpatExtent();
+	} else {
+		e = ds[0].getExtent();
+		for (size_t i=1; i<ds.size(); i++) {
+			e.unite(ds[i].getExtent());
+		}
+	}
+	return e;
+}
+
+
+/*
 void SpatRasterCollection::setExtent() { 
 	if (ds.size() == 0) {
 		extent = SpatExtent();
@@ -57,11 +75,12 @@ void SpatRasterCollection::setExtent() {
 SpatExtent SpatRasterCollection::getExtent() { 
 	return extent;
 }
+*/
 
 void SpatRasterCollection::erase(size_t i) { 
 	if (i < ds.size()) {
 		ds.erase(ds.begin()+i);
-		setExtent();
+//		setExtent();
 	}
 }
 
