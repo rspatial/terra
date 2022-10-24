@@ -16,6 +16,7 @@
 \alias{set.names}
 \alias{set.names,SpatRaster-method}
 \alias{set.names,SpatRasterDataset-method}
+\alias{set.names,SpatRasterCollection-method}
 \alias{set.names,SpatVector-method}
 \alias{set.names,SpatVectorCollection-method}
 

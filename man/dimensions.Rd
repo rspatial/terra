@@ -40,6 +40,7 @@
 \alias{nlyr,SpatRasterCollection-method}
 \alias{dim,SpatRaster-method}
 \alias{dim,SpatRasterDataset-method}
+\alias{dim,SpatRasterCollection-method}
 \alias{dim<-,SpatRaster-method}
 \alias{dim,SpatVector-method}
 \alias{dim,SpatVectorProxy-method}
