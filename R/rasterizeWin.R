@@ -37,13 +37,13 @@ get_z <- function(y, field, caller="rasterizeWin") {
 			error(caller, paste(f, " is not a name in y"))
 		}
 		z <- y[, field, drop=TRUE]
-		if (any(!sapply(z, is.numeric))) {
-			error(caller, paste("fields must be numeric"))
-		}
+		#if (any(!sapply(z, is.numeric))) {
+		#	error(caller, paste("fields must be numeric"))
+		#}
 	} else {
-		if (!is.numeric(field)) {
-			error(caller, paste(field, "is not numeric"))
-		}
+		#if (!is.numeric(field)) {
+		#	error(caller, paste(field, "is not numeric"))
+		#}
 		z <- rep_len(field, nrow(y))
 	}
 	z
@@ -298,6 +298,9 @@ setMethod("interpNear", signature(x="SpatRaster", y="matrix"),
 		if (ncol(y) != 3) {
 			error("interpNear", "expecting a matrix with three columns")
 		}
+		if (!is.numeric(y)) {
+			error("interpNear", "values must be numeric")
+		}
 
 		if (interpolate) {
 			algo <- "linear"
@@ -328,6 +331,13 @@ setMethod("interpNear", signature(x="SpatRaster", y="SpatVector"),
 setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
 	function(x, y, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...) {
 
+		if (ncol(y) != 3) {
+			error("interpIDW", "expecting a matrix with three columns")
+		}
+		if (!is.numeric(y)) {
+			error("interpNear", "values must be numeric")
+		}
+
 		if (near) {
 			algo <- "invdistpownear"
 			pars <- c(power, smooth, radius[1], maxPoints, minPoints, fill)
@@ -336,9 +346,6 @@ setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
 			pars <- c(power, smooth, get_rad(radius, "interpIDW"), maxPoints, minPoints, fill)
 		}
 
-		if (ncol(y) != 3) {
-			error("interpIDW", "expecting a matrix with three columns")
-		}
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
 		messages(x, "interpIDW")
