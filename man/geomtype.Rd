@@ -8,6 +8,7 @@
 \alias{geomtype,Spatial-method}
 \alias{datatype}
 \alias{datatype,SpatVector-method}
+\alias{datatype,SpatRaster-method}
 \alias{is.points}
 \alias{is.lines}
 \alias{is.polygons}

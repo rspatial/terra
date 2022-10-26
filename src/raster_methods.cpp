@@ -2130,7 +2130,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 
 SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, double fill, SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr(), true);
+	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, opt);
 	e = out.align(e, snap);
 	SpatExtent extent = getExtent();
 	e.unite(extent);
@@ -2184,7 +2184,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, double fill, SpatO
 
 SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr(), true, true, true);
+	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, opt);
 
 	if ( !e.valid() ) {
 		out.setError("invalid extent");
@@ -2206,7 +2206,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 		if ((fext.xmax <= e.xmax)  && (fext.xmin >= e.xmin) && (fext.ymax <= e.ymax)  && (fext.ymin >= e.ymin)) {
 			expand = false;
 		} else if ((fext.xmax >= e.xmax)  && (fext.xmin <= e.xmin) && (fext.ymax >= e.ymax)  && (fext.ymin <= e.ymin)) {
-			return extend(e, snap, NAN, ops);
+			return extend(e, snap, NAN, opt);
 		} else {
 			ops = opt;
 			opt = SpatOptions(opt);
@@ -2278,13 +2278,20 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 	return(out);
 }
 
+
 SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, bool touches, bool extend, SpatOptions &opt) {
-	SpatOptions copt(opt);
 	if (v.nrow() == 0) {
 		SpatRaster out;
 		out.setError("cannot crop a SpatRaster with an empty SpatVector");
 		return out;
 	}
+	if (hasValues() && (!opt.datatype_set)) {
+		std::vector<std::string> dt = getDataType(true);
+		if ((dt.size() == 1) && (dt[0] != "")) {
+			opt.set_datatype(dt[0]);
+		}
+	}	
+	SpatOptions copt(opt);
 	SpatRaster out = crop(v.extent, snap, extend, copt);
 	return out.mask(v, false, NAN, touches, opt);
 }
@@ -2293,7 +2300,7 @@ SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, bool touches, bo
 
 SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr(), true, true, true);
+	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, opt);
 	if (!hasValues()) return out;
 	if (!readStart()) {
 		out.setError(getError());
@@ -2346,7 +2353,7 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 
 SpatRaster SpatRaster::reverse(SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr(), true, true, true);
+	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, opt);
 	if (!hasValues()) return out;
 	if (!readStart()) {
 		out.setError(getError());

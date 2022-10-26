@@ -96,7 +96,7 @@ bool SpatRaster::isSource(std::string filename) {
 
 SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr(), true, true, true);
+	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, opt);
 	if (!hasValues()) {
 		out.setError("there are no cell values");
 		return out;

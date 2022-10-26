@@ -280,10 +280,22 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 		out.rgb = rgb;
 		out.rgbtype = rgbtype;
 		out.rgblyrs = rgblyrs;
-	}
+	}	
 	return out;
 }
 
+
+SpatRaster SpatRaster::geometry_opt(long nlyrs, bool properties, bool time, bool units, bool datatype, SpatOptions &opt) {
+
+	if (datatype && hasValues() && (!opt.datatype_set)) {
+		std::vector<std::string> dt = getDataType(true);
+		if ((dt.size() == 1) && (dt[0] != "")) {
+			opt.set_datatype(dt[0]);
+		}
+	}	
+	
+	return geometry(nlyrs, properties, time, units);
+}
 
 SpatRaster SpatRaster::deepCopy() {
 	return *this;
@@ -1119,7 +1131,7 @@ std::vector<bool> SpatRaster::hasCategories() {
 	return b;
 }
 
-std::vector<std::string> SpatRaster::getDataType() {
+std::vector<std::string> SpatRaster::getDataType(bool unique) {
 	std::vector<std::string> d;
 	d.reserve(nlyr());
 	std::vector<unsigned> ns = nlyrBySource();
@@ -1127,6 +1139,10 @@ std::vector<std::string> SpatRaster::getDataType() {
 		for (size_t j=0; j<ns[i]; j++) {
 			d.push_back(source[i].dataType[j]);
 		}
+	}
+	if (unique) {
+		std::sort(d.begin(), d.end());
+		d.erase(std::unique(d.begin(), d.end()), d.end());
 	}
 	return d;
 }
