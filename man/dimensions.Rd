@@ -23,6 +23,8 @@
 \alias{ncol,SpatRaster-method}
 \alias{nrow,SpatRasterDataset-method}
 \alias{ncol,SpatRasterDataset-method}
+\alias{nrow,SpatRasterCollection-method}
+\alias{ncol,SpatRasterCollection-method}
 \alias{nrow<-,SpatRaster,numeric-method}
 \alias{ncol<-,SpatRaster,numeric-method}
 \alias{nlyr,SpatRasterDataset-method}
@@ -35,8 +37,10 @@
 \alias{ncell,SpatRasterDataset-method}
 \alias{length,SpatRasterDataset-method}
 \alias{length,SpatRasterCollection-method}
+\alias{nlyr,SpatRasterCollection-method}
 \alias{dim,SpatRaster-method}
 \alias{dim,SpatRasterDataset-method}
+\alias{dim,SpatRasterCollection-method}
 \alias{dim<-,SpatRaster-method}
 \alias{dim,SpatVector-method}
 \alias{dim,SpatVectorProxy-method}
@@ -101,7 +105,7 @@ You can also set the number of rows or columns or layers. When setting dimension
 
 
 \arguments{
-\item{x}{SpatRaster or SpatVector or related objecs}
+\item{x}{SpatRaster or SpatVector or related objects}
 \item{value}{For ncol and nrow: positive integer. For res: one or two positive numbers }  
 }
 

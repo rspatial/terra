@@ -71,11 +71,8 @@ class SpatMessages {
 			warnings.push_back(s);
 		}
 
-		std::string getWarnings() {
-			std::string w = "";
-			for (size_t i = 0; i<warnings.size(); i++) {
-				w += warnings[i] + "\n" ;
-			}
+		std::vector<std::string> getWarnings() {
+			std::vector<std::string> w = warnings; 		
 			warnings.resize(0);
 			has_warning = false;
 			return w;
@@ -90,13 +87,14 @@ class SpatMessages {
 			message = s;
 		}
 		
-		std::vector<std::string> getAll() {
+/*		std::vector<std::string> getAll() {
 			std::string warns = getWarnings();
 			std::string error = getError();
 			std::string msg = getMessage();
 			std::vector<std::string> amsgs = { error, warns, msg};
 			return amsgs;
 		}
+*/
 };
 
 
@@ -214,6 +212,13 @@ class SpatExtent {
 		SpatExtent deepCopy() {return *this;}
 		SpatExtent align(double d, std::string snap);
 
+		bool intersects(SpatExtent e) { 
+			if ((xmin > e.xmax) || (xmax < e.xmin) || (ymin > e.ymax) || (ymax < e.ymin)) {
+				return false;
+			}
+			return true;
+		}
+
 		SpatExtent intersect(SpatExtent e) { // check first if intersects?
 			SpatExtent out;
 			out.xmin = std::max(xmin, e.xmin);
@@ -222,6 +227,7 @@ class SpatExtent {
 			out.ymax = std::min(ymax, e.ymax);
 			return out;
 		}
+
 
 		void unite(SpatExtent e) {
 			if (std::isnan(xmin)) {
@@ -258,8 +264,11 @@ class SpatExtent {
 		bool valid() {
 			return ((xmax >= xmin) && (ymax >= ymin));
 		}
-		bool valid_notequal() {
+		bool valid_notempty() {
 			return ((xmax > xmin) && (ymax > ymin));
+		}
+		bool empty() {
+			return ((xmax <= xmin) || (ymax <= ymin));
 		}
 
 		bool compare(SpatExtent e, std::string oper, double tolerance);
@@ -340,3 +349,15 @@ class SpatSRS {
 		}
 };
 
+
+class SpatProgress {
+	public:
+		virtual ~SpatProgress(){}		
+		size_t nstep;
+		size_t step;
+		std::vector<int> steps;
+		void init(size_t n, int nmin);
+		bool show = false;
+		void stepit();
+		void interrupt();
+};

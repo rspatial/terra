@@ -18,6 +18,7 @@
 //#ifdef useGDAL
 #include "ogr_spatialref.h"
 
+bool can_transform(std::string fromCRS, std::string toCRS);
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS);
 bool wkt_from_spatial_reference(const OGRSpatialReference *srs, std::string &wkt, std::string &msg);
 bool prj_from_spatial_reference(const OGRSpatialReference *srs, std::string &prj, std::string &msg);

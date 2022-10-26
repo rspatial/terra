@@ -21,7 +21,7 @@ function(x, y) {
 
 
 setMethod("extend", signature(x="SpatRaster"),
-function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
+function(x, y, snap="near", fill=NA, filename="", overwrite=FALSE, ...) {
 
 	if (!inherits(y, "SpatExtent")) {
 
@@ -36,6 +36,10 @@ function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
 				y[3] <- y[3] - adj[2]
 				y[4] <- y[4] + adj[2]
 				y <- ext(y)
+			} else if (length(y) == 4) {
+				y <- ext(y)
+			} else {
+				error("extend", "if 'y' is a vector it should have 1, 2, or four numbers")
 			}
 		} else {
 			test <- try ( y <- ext(y), silent=TRUE )
@@ -46,7 +50,7 @@ function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
 	}
 
 	opt <- spatOptions(filename, overwrite, ...)
-	x@ptr <- x@ptr$expand(y@ptr, snap[1], opt)
+	x@ptr <- x@ptr$expand(y@ptr, snap[1], fill[1], opt)
 	messages(x, "extend")
 }
 )

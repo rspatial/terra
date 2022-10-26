@@ -71,6 +71,16 @@ SpatPart::SpatPart(std::vector<double> X, std::vector<double> Y) {
 }
 
 
+size_t SpatPart::ncoords() {
+	size_t ncrds = x.size();
+	size_t nh = holes.size();
+	for (size_t k=0; k < nh; k++) {
+		ncrds += holes[k].x.size();
+	}
+	return ncrds;
+}
+
+
 SpatGeom::SpatGeom() {}
 
 SpatGeom::SpatGeom(SpatPart p, SpatGeomType type) {
@@ -212,6 +222,8 @@ SpatVector::SpatVector() {
 SpatVector::SpatVector(SpatGeom g) {
 	addGeom(g);
 }
+
+
 
 /*
 SpatVector::SpatVector(const SpatVector &x) {
@@ -356,6 +368,11 @@ bool SpatVector::setGeom(SpatGeom p) {
 	extent = p.extent;
 	return true;
 }
+
+void SpatVector::reserve(size_t n) {
+	geoms.reserve(n);
+}
+
 
 void SpatVector::computeExtent() {
 	if (geoms.size() == 0) return;
@@ -1028,7 +1045,7 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 	if (multi) {
 		v.df = df;
 	} else {
-		v = v.disaggregate();
+		v = v.disaggregate(false);
 	}
 	return(v);
 }
@@ -1210,8 +1227,164 @@ SpatVector SpatVector::round(int digits) {
 				}
 			}
 		}
+		out.geoms[i].computeExtent();
 	}
+	out.computeExtent();
 	return(out);
 }
 
+
+SpatVector SpatVector::normalize_longitude() {
+	SpatVector out = *this;
+	SpatExtent e = {180, 361, -91, 91};
+	SpatVector x = out.crop(e);
+	if (x.nrow() > 0) {
+		x = x.shift(-360, 0);
+		SpatVector v(e, "");
+		out = out.erase(v);
+		out = out.append(x, true);
+	}
+	e = {-360, -180, -91, 91};
+	x = out.crop(e);
+	if (x.nrow() > 0) {
+		x = x.shift(360, 0);
+		SpatVector v(e, "");
+		out = out.erase(v);
+		out = out.append(x, true);
+	}
+	return out;
+}
+
+
+SpatVector SpatVector::rotate_longitude(double longitude, bool left) {
+	SpatVector out = *this;
+	size_t ng = out.size();
+	for (size_t i=0; i<ng; i++) {
+		size_t np = out.geoms[i].size();
+		for (size_t j=0; j<np; j++) {
+			size_t nx = out.geoms[i].parts[j].x.size();
+			for (size_t k=0; k<nx; k++) {
+				if (left) {
+					if (out.geoms[i].parts[j].x[k] > longitude) {
+						out.geoms[i].parts[j].x[k] = out.geoms[i].parts[j].x[k] - 360;
+					}
+				} else {
+					if (out.geoms[i].parts[j].x[k] < longitude) {
+						out.geoms[i].parts[j].x[k] = out.geoms[i].parts[j].x[k] + 360;
+					}
+				}
+			}
+			if (out.geoms[i].parts[j].hasHoles()) {
+				size_t nh = out.geoms[i].parts[j].holes.size();
+				for (size_t k=0; k<nh; k++) {
+					size_t nx = out.geoms[i].parts[j].holes[k].x.size();
+					for (size_t h=0; h<nx; h++) {
+						if (left) {
+							if (out.geoms[i].parts[j].holes[k].x[h] > longitude) {
+								out.geoms[i].parts[j].holes[k].x[h] = out.geoms[i].parts[j].holes[k].x[h] - 360;
+							} 
+						} else {
+							if (out.geoms[i].parts[j].holes[k].x[h] < longitude) {
+								out.geoms[i].parts[j].holes[k].x[h] = out.geoms[i].parts[j].holes[k].x[h] + 360;
+							} 
+						}
+					}
+				}
+			}
+		}
+		out.geoms[i].computeExtent();
+	}
+	out.computeExtent();
+	return(out);
+}
+
+
+std::vector<std::vector<std::vector<double>>> SpatVector::linesList() {
+	size_t ni = nrow();
+	std::vector<std::vector<std::vector<double>>> out(ni);
+	for (size_t i=0; i < ni; i++) {
+		SpatGeom g = getGeom(i);
+		size_t nj = g.size();
+		if (nj == 0) { // empty
+			continue;
+		}
+		out[i].resize(2);
+		size_t ncr = g.ncoords()+nj-1;
+		out[i][0].reserve(ncr);
+		out[i][1].reserve(ncr);
+		for (size_t j=0; j<nj; j++) {
+			if (j > 0) {
+				out[i][0].push_back(NAN);
+				out[i][1].push_back(NAN);
+			}
+			out[i][0].insert(out[i][0].end(), g.parts[j].x.begin(), g.parts[j].x.end());
+			out[i][1].insert(out[i][1].end(), g.parts[j].y.begin(), g.parts[j].y.end());
+		}
+	}
+	return out;
+}
+
+
+std::vector<std::vector<double>> SpatVector::linesNA() {
+	size_t ni = nrow();
+	size_t n = ncoords() + ni;
+	std::vector<std::vector<double>> out(2);
+	out[0].reserve(n);
+	out[1].reserve(n);
+	for (size_t i=0; i < ni; i++) {
+		SpatGeom g = getGeom(i);
+		size_t nj = g.size();
+		for (size_t j=0; j<nj; j++) {
+			out[0].insert(out[0].end(), g.parts[j].x.begin(), g.parts[j].x.end());
+			out[1].insert(out[1].end(), g.parts[j].y.begin(), g.parts[j].y.end());
+			out[0].push_back(NAN);
+			out[1].push_back(NAN);
+			size_t nk = g.parts[j].nHoles();
+			for (size_t k=0; k<nk ; k++) {
+				out[0].insert(out[0].end(), g.parts[j].holes[k].x.begin(), g.parts[j].holes[k].x.end());
+				out[1].insert(out[1].end(), g.parts[j].holes[k].y.begin(), g.parts[j].holes[k].y.end());
+				out[0].push_back(NAN);
+				out[1].push_back(NAN);
+			}
+		}
+	}
+	out[0].erase(out[0].end() - 1);
+	out[1].erase(out[1].end() - 1);
+	return out;
+}
+
+
+std::vector<std::vector<std::vector<std::vector<double>>>> SpatVector::polygonsList() {
+	size_t ni = nrow();
+	std::vector<std::vector<std::vector<std::vector<double>>>> out(ni);
+	for (size_t i=0; i < ni; i++) {
+		SpatGeom g = getGeom(i);
+		size_t nj = g.size();
+		if (nj == 0) { // empty
+			continue;
+		}
+		out[i].resize(nj);
+		for (size_t j=0; j<nj; j++) {
+			out[i][j].resize(2);
+			size_t nk = g.parts[j].nHoles();
+			if (nk > 0) {
+				size_t ncr = g.parts[j].ncoords()+nk;
+				out[i][j][0].reserve(ncr);
+				out[i][j][1].reserve(ncr);
+				out[i][j][0].insert(out[i][j][0].end(), g.parts[j].x.begin(), g.parts[j].x.end());
+				out[i][j][1].insert(out[i][j][1].end(), g.parts[j].y.begin(), g.parts[j].y.end());
+				for (size_t k=0; k<nk ; k++) {
+					out[i][j][0].push_back(NAN);
+					out[i][j][1].push_back(NAN);
+					out[i][j][0].insert(out[i][j][0].end(), g.parts[j].holes[k].x.begin(), g.parts[j].holes[k].x.end());
+					out[i][j][1].insert(out[i][j][1].end(), g.parts[j].holes[k].y.begin(), g.parts[j].holes[k].y.end());
+				}
+			} else {
+				out[i][j][0] = g.parts[j].x;
+				out[i][j][1] = g.parts[j].y;
+			}
+		}
+	}
+	return out;
+}
 

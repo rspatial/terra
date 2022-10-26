@@ -60,6 +60,7 @@ class SpatPart {
 		SpatHole getHole(unsigned i) { return( holes[i] ) ; }
 		bool hasHoles() { return holes.size() > 0;}
 		unsigned nHoles() { return holes.size();}
+		size_t ncoords();
 };
 
 
@@ -131,9 +132,6 @@ class SpatVector {
 		unsigned nxy();
 
 		SpatVector deepCopy() {return *this;}
-		void reserve(size_t n) {
-			geoms.reserve(n);
-		}	
 
 		SpatExtent getExtent();
 //		bool is_geographic();
@@ -171,6 +169,7 @@ class SpatVector {
 		std::vector<std::vector<double>> coordinates();
 
 		SpatVector project(std::string crs);
+		std::vector<double> project_xy(std::vector<double> x, std::vector<double> y, std::string fromCRS, std::string toCRS);
 
 		SpatVector subset_cols(int i);
 		SpatVector subset_cols(std::vector<int> range);
@@ -185,9 +184,15 @@ class SpatVector {
 
 		std::vector<double> area(std::string unit, bool transform, std::vector<double> mask);
 
+		void reserve(size_t n);
 		std::vector<double> length();
-		std::vector<double> distance(SpatVector x, bool pairwise);
-		std::vector<double> distance(bool sequential);
+		std::vector<double> distance(SpatVector x, bool pairwise, std::string unit);
+		std::vector<double> pointdistance(const std::vector<double>& px, const std::vector<double>& py, const std::vector<double>& sx, const std::vector<double>& sy, bool pairwise, double m, bool lonlat);
+
+//		std::vector<double> pointdistance_seq(const std::vector<double>& px, const std::vector<double>& py, double m, bool lonlat);
+
+
+		std::vector<double> distance(bool sequential, std::string unit);
 		std::vector<double> linedistLonLat(SpatVector pts);
 
 		std::vector<std::vector<size_t>> knearest(size_t k);
@@ -200,18 +205,18 @@ class SpatVector {
 		SpatVector set_holes(SpatVector x, size_t i);
 		SpatVector remove_duplicate_nodes(int digits);
 		
-		bool read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy);
+		bool read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what);
 		
 		bool write(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string>);
 		
 #ifdef useGDAL
 		GDALDataset* write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options);
 		GDALDataset* GDAL_ds();
-		bool read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy);
+		bool read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what);
 		SpatVector fromDS(GDALDataset *poDS);
 		bool ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &message);		
 		bool delete_layers(std::string filename, std::vector<std::string> layers, bool return_error);		
-		std::vector<std::string> layer_names(std::string filename);		
+		std::vector<std::string> layer_names(std::string filename);	
 #endif
 
 // attributes
@@ -268,16 +273,22 @@ class SpatVector {
 		void addWarning(std::string s) { msg.addWarning(s); }
 		bool hasError() { return msg.has_error; }
 		bool hasWarning() { return msg.has_warning; }
-		std::string getWarnings() { return msg.getWarnings();}
+		std::vector<std::string> getWarnings() { return msg.getWarnings();}
 		std::string getError() { return msg.getError();}
 
 		SpatVector append(SpatVector x, bool ignorecrs);
-		SpatVector disaggregate();
+		SpatVector disaggregate(bool segments);
 		SpatVector shift(double x, double y);
 		SpatVector rescale(double fx, double fy, double x0, double y0);
 		SpatVector transpose();
 		SpatVector flip(bool vertical);	
-		SpatVector rotate(double angle, double x0, double y0);
+		SpatVector rotate(double angle, std::vector<double> x0, std::vector<double> y0);
+		SpatVector normalize_longitude();
+		SpatVector rotate_longitude(double longitude, bool left);
+
+		std::vector<std::vector<double>> linesNA();
+		std::vector<std::vector<std::vector<double>>> linesList();
+		std::vector<std::vector<std::vector<std::vector<double>>>> polygonsList();
 
 //ogr 
 		std::vector<bool> is_valid();
@@ -325,24 +336,33 @@ class SpatVector {
 		SpatVector unite();
 		SpatVector erase_agg(SpatVector v);
 		SpatVector erase(SpatVector v);
-		SpatVector erase();
+		SpatVector erase(bool sequential);
 		SpatVector mask(SpatVector x, bool inverse);
 		SpatVector gaps();		
 		SpatVector cover(SpatVector v, bool identity, bool expand);
 		SpatVectorCollection split(std::string field);
 		SpatVector symdif(SpatVector v);
 		SpatVector set_precision(double gridSize);
+		std::vector<std::vector<unsigned>> index_2d(SpatVector v);
+		std::vector<std::vector<unsigned>> index_sparse(SpatVector v);
 
+		std::vector<std::vector<double>> which_relate(SpatVector v, std::string relation, bool narm);
+		std::vector<std::vector<double>> which_relate(std::string relation, bool narm);
 		std::vector<bool> is_related(SpatVector v, std::string relation);
-		std::vector<int> relate(SpatVector v, std::string relation);
+//		std::vector<int> relate(SpatVector v, std::string relation);
+		std::vector<int> relate(SpatVector v, std::string relation, bool prepared, bool index);
 		std::vector<int> relate(std::string relation, bool symmetrical);
 		std::vector<int> relateFirst(SpatVector v, std::string relation);
-		std::vector<double> geos_distance(SpatVector v, bool parallel);
-		std::vector<double> geos_distance(bool sequential);
+		std::vector<unsigned> equals_exact(SpatVector v, double tol);
+		std::vector<unsigned> equals_exact(bool symmetrical, double tol);
 
+		std::vector<double> geos_distance(SpatVector v, bool parallel, std::string fun);
+		std::vector<double> geos_distance(bool sequential, std::string fun);
 
 		SpatVector nearest_point(SpatVector v, bool parallel);
 		SpatVector nearest_point();
+		std::vector<int> nearest_geometry(SpatVector v);
+		
 		SpatVector sample(unsigned n, std::string method, unsigned seed);
 		SpatVector sample_geom(std::vector<unsigned> n, std::string method, unsigned seed);
 
@@ -378,7 +398,7 @@ class SpatVectorCollection {
 		void addWarning(std::string s) { msg.addWarning(s); }
 		bool hasError() { return msg.has_error; }
 		bool hasWarning() { return msg.has_warning; }
-		std::string getWarnings() { return msg.getWarnings();}
+		std::vector<std::string> getWarnings() { return msg.getWarnings();}
 		std::string getError() { return msg.getError();}
 
 		size_t size() { return v.size(); }
@@ -409,6 +429,10 @@ class SpatVectorCollection {
 		SpatVector get(size_t i) { 
 			SpatVector out;
 			out.msg = msg;
+			if (size() == 0) {
+				out.addWarning("empty SpatVector");
+				return out;
+			}
 			if (i < size()) {
 				out = v[i];
 			} else {

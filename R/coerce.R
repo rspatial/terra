@@ -191,12 +191,11 @@ get_labels <- function(x, p, dissolve=FALSE) {
 	}
 	if (any(ff)) {
 		ff <- which(ff)
-		cgs <- cats(x)
+		cgs <- levels(x)
 		for (f in ff) {
 			cg <- cgs[[f]]
 			i <- match(unlist(p[[f]]), cg[,1])
-			act <- activeCat(x, f)
-			p[[f]] <- cg[i, act+1]
+			p[[f]] <- cg[i, 2]
 		}
 	}
 	p
@@ -346,11 +345,7 @@ as.matrix.SpatRaster <- function(x, wide=FALSE, ...) {
 setMethod("as.matrix", signature(x="SpatRaster"), as.matrix.SpatRaster)
 
 
-as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=TRUE, ...) {
-#	dots <- list(...)
-#	xy <- isTRUE(dots$xy)
-#	cells <- isTRUE(dots$cells)
-#	na.rm <- isTRUE(dots$na.rm)
+as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=NA, ...) {
 
 	d <- NULL
 	if (xy) {
@@ -365,7 +360,11 @@ as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE
 		d <- data.frame(d)
 		d <- cbind(d, values(x, dataframe=TRUE), ...)
 	}
-	if (na.rm) {
+	if (is.na(na.rm)) {
+		cols <- (1 + cells + xy * 2):ncol(d)
+		i <- rowSums(is.na(d[,cols,drop=FALSE])) < length(cols)
+		d <- d[i,,drop=FALSE]
+	} else if (isTRUE(na.rm)) {
 		d <- stats::na.omit(d)
 		attr(d, "na.action") <- NULL
 	}
@@ -522,7 +521,7 @@ setAs("SpatVector", "Spatial",
 			error("coerce", "first run 'library(raster)' to coerce a SpatVector to a Spatial object" )
 		}
 		g <- geom(from, df=TRUE)
-		geom(g, values(from), geomtype(from), as.character(crs(from)))
+		geom(g, values(from), geomtype(from), as.character(crs(from, proj=TRUE)))
 	}
 )
 
@@ -574,8 +573,10 @@ setAs("Spatial", "SpatVector",
 		} else {
 			error("coerce", "cannot coerce this object to a SpatVector")
 		}
-		crs <- attr(from@proj4string, "comment")
-		if (is.null(crs)) crs <- from@proj4string@projargs
+		#the below can change the proj-string when going back to sp
+		#crs <- attr(from@proj4string, "comment")
+		#if (is.null(crs)) 
+		crs <- from@proj4string@projargs
 		if (methods::.hasSlot(from, "data")) {
 			vect(g, vtype, from@data, crs=crs)
 		} else {
@@ -592,7 +593,7 @@ setAs("SpatialGrid", "SpatRaster",
 		b <- rast(ext=as.vector(t(from@bbox)), nrow=from@grid@cells.dim[2], ncol=from@grid@cells.dim[1], crs=prj)
 		if (inherits(from, "SpatialGridDataFrame")) {
 			cls <- sapply(from@data, function(i) class(i)[1])
-			if (all(cls == "numeric")) {		
+			if (all(cls == "numeric")) {
 				nlyr(b) <- ncol(from@data)
 				b <- setValues(b, as.matrix(from@data))
 			} else {

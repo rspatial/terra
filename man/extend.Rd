@@ -14,7 +14,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 }
 
 \usage{
-\S4method{extend}{SpatRaster}(x, y, snap="near", filename="", overwrite=FALSE, ...) 
+\S4method{extend}{SpatRaster}(x, y, snap="near", fill=NA, filename="", overwrite=FALSE, ...) 
 
 \S4method{extend}{SpatExtent}(x, y) 
 }
@@ -25,6 +25,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
   
   If \code{x} is a SpatExtent, \code{y} should be a numeric vector of 1, 2, or 4 elements}
   \item{snap}{character. One of "near", "in", or "out". Used to align \code{y} to the geometry of \code{x}} 
+  \item{fill}{numeric. The value used to for the new raster cells}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

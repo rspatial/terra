@@ -22,7 +22,7 @@ An alternative way to plot RGB images is to first use \code{\link{colorize}} to 
 \S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, 
 		stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, 
 		addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", 
-		asp=NULL, add=FALSE, interpolate, ...)
+		asp=NULL, add=FALSE, xlim, ylim,...)
 }
 
 \arguments{
@@ -41,14 +41,15 @@ An alternative way to plot RGB images is to first use \code{\link{colorize}} to 
   \item{alpha}{transparency. Integer between 0 (transparent) and 255 (opaque)}
   \item{bgalpha}{Background transparency. Integer between 0 (transparent) and 255 (opaque)}
   \item{addfun}{Function to add additional items such as points or polygons to the plot (map). See \code{\link{plot}}}
-  \item{zlim}{numeric vector of length 2. Range of values to plot (optional)}
+  \item{zlim}{numeric vector of length 2. Range of values to plot (optional). If this is set, and \code{stretch="lin"} is used, then the values are stretched within the range of \code{zlim}. This allows creating consistent coloring between SpatRasters with different cell-value ranges, even when stretching the colors for improved contrast}
   \item{zlimcol}{If \code{NULL} the values outside the range of zlim get the color of the extremes of the range. If zlimcol has any other value, the values outside the zlim range get the color of \code{NA} values (see colNA)}
   \item{axes}{logical. If \code{TRUE} axes are drawn (and arguments such as \code{main="title"} will be honored)}
   \item{xlab}{character. Label of x-axis}
   \item{ylab}{character. Label of y-axis}
   \item{asp}{numeric. Aspect (ratio of x and y. If NULL, and appropriate value is computed to match data for the longitude/latitude coordinate reference system, and 1 for planar coordinate reference systems}
   \item{add}{logical. If \code{TRUE} add values to current plot}
-  \item{interpolate}{logical. Do not use, to be removed}
+  \item{xlim}{numeric. min and max values to set the extent of the x-axis}
+  \item{ylim}{numeric. min and max values to set the extent of  the y-axis}
   \item{...}{graphical parameters as in \code{\link{plot}} or \code{\link{rasterImage}}}
 }
 

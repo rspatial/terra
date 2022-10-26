@@ -79,7 +79,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, sources=sources(x), wopt=wopt)
 	expected <- test$nl * ncx
 
 	if (doclust) {
@@ -158,7 +158,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 
 
 setMethod("lapp", signature(x="SpatRasterDataset"),
-function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())  {
+function(x, fun, ..., usenames=FALSE, recycle=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 
 	fun <- match.fun(fun)
 	dots <- list(...)
@@ -172,7 +172,9 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	readStart(x)
 	on.exit(readStop(x))
 
+	nms <- names(x)
 	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.51*nrx), 1, 1, ncx, mat=TRUE))
+	if (usenames) names(v) <- nms
 	test <- .lapp_test_stack(v, fun, recycle, ...)
 	out <- rast(x[1])
 	nlyr(out) <- test$nl
@@ -181,31 +183,15 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	}
 	nltot <- sum(nlyr(x)) + nlyr(out)
 	fact <- max(4, 4 * nltot / nlyr(out))
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=fact)
-
-	#		nr <- b$nrows[i] * ncol(out)
-	#		splits <- rep(1:ncores, each=ceiling(nr) / ncores)[1:nr]
-	#		v <- vector(mode = "list", length = ncores)
-	#		for (j in 1:length(x)) {
-	#			vv <- readValues(x[j], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)
-	#			for (k in 1:ncores) {
-	#				v[[k]][[j]] <- vv[splits==k,]
-	#			}
-	#		}
-	#		if (recycle) {
-	#			for (k in 1:ncores) {
-	#				v[[k]] <- lapply(v[[k]], as.vector)
-	#			}
-	#		}
-	#		if (length(list(...) > 0)) {
-	#			v[[k]] <- c(v[[k]], list(...))
-	#		}
-
+	b <- writeStart(out, filename, overwrite, sources=unlist(sources(x)), wopt=wopt, n=fact)
 
 	for (i in 1:b$n) {
 		v <- lapply(1:length(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
 		if (recycle) {
 			v <- lapply(v, as.vector)
+		}
+		if (usenames) {
+			names(v) <- nms
 		}
 		v <- do.call(fun, c(v, list(...)))
 		writeValues(out, v, b$row[i], b$nrows[i])

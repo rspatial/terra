@@ -99,6 +99,13 @@ SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
 
+	std::vector<int> vt = getValueType();
+	std::sort(vt.begin(), vt.end());
+	vt.erase(std::unique(vt.begin(), vt.end()), vt.end());
+	if (vt.size() == 1) {
+		out.setValueType(vt[0]);
+	}
+
 	if (!source[0].hasValues) return (out);
 
 	std::vector<double> v;
@@ -137,6 +144,13 @@ SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc) {
 	}
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
+
+	std::vector<int> vt = getValueType();
+	std::sort(vt.begin(), vt.end());
+	vt.erase(std::unique(vt.begin(), vt.end()), vt.end());
+	if (vt.size() == 1) {
+		out.setValueType(vt[0]);
+	}
 
 	if (!source[0].hasValues) return (out);
 
@@ -570,14 +584,14 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 	double r2 = ymax - ymin;
 
 	if (lonlat) {
-		double halfy = ymin + (ymax - ymin)/2;
-		double dx = distance_lonlat(xmin, halfy, xmax, halfy);
+		double halfy = ymin + r2/2;
+		// beware that -180 is the same as 180; and that latitude can only go from -90:90 therefore:
+		double dx = distance_lonlat(xmin, halfy, xmin + 1, halfy) * std::min(180.0, r1);
 		double dy = distance_lonlat(0, ymin, 0, ymax);
-		double ratio = dx/dy;
-		double ny = std::max(1.0, sqrt(size / ratio));
-		double nx = std::max(1.0, size / ny);
-		ny = std::round(ny);
-		nx = std::round(nx);
+		double ratio = dy/dx;
+		double n = sqrt(size);
+		double ny = std::round(std::max(1.0, n * ratio));
+		double nx = std::round(std::max(1.0, n / ratio));
 		double x_i = r1 / nx;
 		double y_i = r2 / ny;
 
@@ -598,27 +612,32 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 		for (size_t i=0; i<w.size(); i++) {
 			xi.push_back(x_i / (w[i] * nwsumw));
 		}
-		double halfx = xmin + (xmax - xmin)/2;
-		for (size_t i=0; i<lat.size(); i++) {
-			double start = halfx - 0.5*xi[i];
-			std::vector <double> x;
-			if (start < xmin) {
-				x = { halfx };
-			} else {
-				while (start > xmin) {
-					start -= xi[i];
+		bool global = (xmax - xmin) > 355; // needs refinement
+		if (global) {
+			xmax -= 0.000001;
+			for (size_t i=0; i<lat.size(); i++) {
+				size_t n = std::max(1, (int)(360.0/xi[i]));
+				double step = 360.0 / n;
+				std::vector<double> x = seq(xmin+0.5*step, xmax, step);
+				std::vector<double> y(x.size(), lat[i]);
+				out[0].insert(out[0].end(), x.begin(), x.end());
+				out[1].insert(out[1].end(), y.begin(), y.end());
+			}
+
+		} else {
+			double halfx = xmin + (xmax - xmin)/2;
+			for (size_t i=0; i<lat.size(); i++) {
+				std::vector<double> x = seq(halfx, xmax, xi[i]);
+				double start = halfx-xi[i];
+				if (start > xmin) {
+					std::vector <double> x2 = seq(start, xmin, -xi[i]);
+					x.insert(x.end(), x2.begin(), x2.end());
 				}
-				x = seq(start + xi[i], xmax, xi[i]);
+				std::vector<double> y(x.size(), lat[i]);
+				out[0].insert(out[0].end(), x.begin(), x.end());
+				out[1].insert(out[1].end(), y.begin(), y.end());
 			}
-			if (x.size() <= 1) {
-				x = { halfx };
-			}
-			std::vector <double> y(x.size(), lat[i]);
-
-			out[0].insert(out[0].end(), x.begin(), x.end());
-			out[1].insert(out[1].end(), y.begin(), y.end());
 		}
-
 	} else {
 		double ratio = r1/r2;
 		double ny = std::max(1.0, sqrt(size / ratio));

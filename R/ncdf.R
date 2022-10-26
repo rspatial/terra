@@ -1,11 +1,11 @@
 
-.ncdf_extent <- function(x) {
+.ncdf_extent <- function(x, f) {
 
 	if (!("ncdf4" %in% rownames(utils::installed.packages()))) {
 		warn("rast", "GDAL did not find an extent. installing the ncdf4 package may help")
 		return(x)
 	}
-	fname <- sources(x)[1]
+	fname <- f
 	zvar <- varnames(x)
 
 	dims <- 1:3
@@ -151,7 +151,7 @@
 	for (i in 1:n) {
 		y = x[i]
 		readStart(y)
-		b <- blockSize(y, 4)
+		b <- blocks(y, 4)
 		if (length(ncvars[[1]]$dim) == 3) {
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)

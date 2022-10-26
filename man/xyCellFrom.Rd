@@ -16,6 +16,8 @@
 \alias{cellFromRowCol,SpatRaster,numeric,numeric-method}
 \alias{cellFromRowColCombine}
 \alias{cellFromRowColCombine,SpatRaster,numeric,numeric-method}
+\alias{rowColCombine}
+\alias{rowColCombine,SpatRaster,numeric,numeric-method}
 \alias{colFromX}
 \alias{colFromX,SpatRaster,numeric-method}
 \alias{rowFromY}
@@ -61,6 +63,8 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
 
 \S4method{cellFromRowColCombine}{SpatRaster,numeric,numeric}(object, row, col)
 
+\S4method{rowColCombine}{SpatRaster,numeric,numeric}(object, row, col)
+
 \S4method{rowFromCell}{SpatRaster,numeric}(object, cell)
 
 \S4method{colFromCell}{SpatRaster,numeric}(object, cell)
@@ -93,7 +97,7 @@ xyFromCell: matrix(x,y) with coordinate pairs
 
 colFromX, rowFromY, cellFromXY, cellFromRowCol, rowFromCell, colFromCell: vector of row, column, or cell numbers
 
-rowColFromCell: matrix of row and column numbers
+rowColFromCell, rowColCombine: matrix of row and column numbers
 }
 
 

@@ -142,6 +142,12 @@ setMethod("Arith", signature(e1="SpatRaster", e2="numeric"),
 	}
 )
 
+setMethod("Arith", signature(e1="SpatRaster", e2="logical"),
+    function(e1, e2){
+		methods::callGeneric(e1, as.integer(e2))
+	}
+)
+
 
 setMethod("Arith", signature(e1="SpatRaster", e2="missing"),
     function(e1, e2){
@@ -160,6 +166,11 @@ setMethod("Arith", signature(e1="numeric", e2="SpatRaster"),
 	}
 )
 
+setMethod("Arith", signature(e1="logical", e2="SpatRaster"),
+    function(e1, e2){
+		methods::callGeneric(as.integer(e1), e2)
+	}
+)
 
 setMethod("Compare", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){
@@ -198,7 +209,7 @@ getFactTable <- function(x, table, sender="%in%") {
 	if (nlyr(x) != 1) {
 		error(sender, "matching with character values is only supported for single layer SpatRaster")
 	}
-	d <- cats(x)[[1]]
+	d <- levels(x)[[1]]
 	m <- na.omit(match(table, d[,2]))
 	if (length(m) == 0) {
 		return(as.logical(x*0))
@@ -359,6 +370,22 @@ setMethod("is.na", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("anyNA", signature(x="SpatRaster"),
+	function(x) {
+		opt <- spatOptions()
+		x@ptr <- x@ptr$anynan(opt)
+		messages(x, "anyNA")
+	}
+)
+
+
+setMethod("allNA", signature(x="SpatRaster"),
+	function(x) {
+		opt <- spatOptions()
+		x@ptr <- x@ptr$allnan(opt)
+		messages(x, "allNA")
+	}
+)
 
 setMethod("is.nan", signature(x="SpatRaster"),
 	function(x) {
@@ -446,35 +473,52 @@ setMethod("which.lyr", "SpatRaster",
 	}
 )
 
-setMethod("where.max", "SpatRaster",
-	function(x, list=FALSE) {
-		opt <- spatOptions()
-		out <- x@ptr$where("max", opt)
-		x <- messages(x, "where.max")
-		if (list) return(x)
-		out <- lapply(1:length(out), function(i) cbind(i, out[[i]]) )
-		out <- do.call(rbind, out)
-		mnmx <- minmax(x)
-		out <- cbind(out, mnmx[2, out[,1]])
-		out[,2] <- out[,2] + 1
-		colnames(out) <- c("layer", "cell", "max")
+wherefun <- function(out, list, values) {
+	if (list) {
+		if (values) {
+			lapply(out, function(i) {
+				m <- matrix(i, ncol=2)
+				m[,1] <- m[,1] + 1
+				colnames(m) <- c("cell", "value")
+				m
+			})
+		} else {
+			lapply(out, function(i) {i + 1})
+		}
+	} else {
+		if (values) {
+			out <- lapply(1:length(out), function(i) {
+				m <- matrix(out[[i]], ncol=2)
+				m[,1] <- m[,1] + 1
+				cbind(i, m)
+			})
+			out <- do.call(rbind, out)
+			colnames(out) <- c("layer", "cell", "value")
+		} else {
+			out <- lapply(1:length(out), function(i) {cbind(i, out[[i]] + 1)})
+			out <- do.call(rbind, out)
+			colnames(out) <- c("layer", "cell")
+		}
 		out
+	}
+}
+
+
+setMethod("where.max", "SpatRaster",
+	function(x, values=TRUE, list=FALSE) {
+		opt <- spatOptions()
+		out <- x@ptr$where("max", values, opt)
+		x <- messages(x, "where.max")
+		wherefun(out, list, values)
 	}
 )
 
 setMethod("where.min", "SpatRaster",
-	function(x, list=FALSE) {
+	function(x, values=TRUE, list=FALSE) {
 		opt <- spatOptions()
-		out <- x@ptr$where("min", opt)
+		out <- x@ptr$where("min", values, opt)
 		x <- messages(x, "where.min")
-		if (list) return(x)
-		out <- lapply(1:length(out), function(i) cbind(i, out[[i]]) )
-		out <- do.call(rbind, out)
-		mnmx <- minmax(x)
-		out <- cbind(out, mnmx[1,out[,1]])
-		out[,2] <- out[,2] + 1
-		colnames(out) <- c("layer", "cell", "min")
-		out
+		wherefun(out, list, values)
 	}
 )
 

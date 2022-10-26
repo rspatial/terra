@@ -25,7 +25,7 @@ These are simpler alternatives for \code{\link[terra:plot]{plot(x, add=TRUE)}}
 }
 
 \usage{
-\S4method{points}{SpatVector}(x, col, cex=1, pch=20, alpha=1, ...)
+\S4method{points}{SpatVector}(x, col, cex=0.7, pch=16, alpha=1, ...)
 
 \S4method{lines}{SpatVector}(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)
 
@@ -44,7 +44,7 @@ These are simpler alternatives for \code{\link[terra:plot]{plot(x, add=TRUE)}}
   \item{col}{character. Colors}
   \item{border}{character. color(s) of the polygon borders. Use \code{NULL} or \code{NA} to not draw a border}
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
-  \item{pch}{positive integer, line type. See \code{\link{points}}}
+  \item{pch}{positive integer, point type. See \code{\link{points}}. On some (linux) devices, the default symbol "16" is a not a very smooth circle. You can use "20" instead (it takes a bit longer to draw) or "1" for an open circle}
   \item{alpha}{number between 0 and 1 to set transparency}
   \item{lwd}{numeric, line-width. See \code{\link{par}}}
   \item{lty}{positive integer, line type. See \code{\link{par}}}

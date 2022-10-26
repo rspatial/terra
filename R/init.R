@@ -25,7 +25,7 @@ setMethod("init", signature(x="SpatRaster"),
 			messages(x, "init")
 		} else {
 			nc <- ncol(x) * nlyr(x)
-			b <- writeStart(x, filename, ...)
+			b <- writeStart(x, filename, sources=sources(x), ...)
 			for (i in 1:b$n) {
 				n <- b$nrows[i] * nc;
 				r <- fun(n)

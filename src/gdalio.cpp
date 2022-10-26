@@ -25,7 +25,6 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 		if (driver == "RST") {
 			filename = noext(filename) + ".rst";
 		}
-
 		return;
 	}
 
@@ -57,6 +56,33 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 	}
 }
 
+bool SpatRaster::getTempFile(std::string &filename, std::string &driver, SpatOptions& opt) {
+
+	driver = opt.get_def_filetype();
+	if ((driver == "") || (driver == "GTiff")) {
+		driver = "GTiff";
+		filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+		return true;
+	}
+	filename = tempFile(opt.get_tempdir(), opt.pid, "");
+	std::unordered_map<std::string, std::string>
+	exts = {
+		{"GTiff", ".tif"},
+		{"NetCDF", ".nc"},
+		{"GPKG", ".gpkg"},
+		{"HFA", ".img"},
+		{"RRASTER", ".grd"},
+		{"SAGA", ".sgrd"},
+		{"RST", ".rst"},
+		{"ENVI", ".envi"},
+		{"AAIGrid", ".asc"},
+	};
+    auto i = exts.find(driver);
+    if (i != exts.end()) {
+		filename += i->second;
+	}
+	return true;
+}
 
 
 /*
@@ -106,7 +132,7 @@ std::vector<std::string> get_metadata(std::string filename) {
 	}
 
 	char **m = poDataset->GetMetadata();
-	if (m != NULL) { // needed
+	if (m != NULL) {
 		while (*m != nullptr) {
 			out.push_back(*m++);
 		}
@@ -291,7 +317,7 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 1
 
-SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions &opt) {
+SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<std::string> options, SpatOptions &opt) {
 	SpatRaster out;
 	out.setError( "GDAL version >= 2.1 required for vrt");
 	return out;
@@ -319,6 +345,7 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<
 		return(out);
 	}
 
+/*
 	std::vector<GDALDataset *> tiles;
 	std::vector<std::string> ops;
 
@@ -330,6 +357,12 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<
 			return out;
 		}
 		tiles.push_back(poDataset);
+	}
+*/
+
+	char **names = NULL;
+	for (std::string& f : filenames) {
+		names = CSLAddString(names, f.c_str());
 	}
 
 //	psOptions * vrtops;
@@ -351,13 +384,18 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<
 	GDALBuildVRTOptions* vrtops = GDALBuildVRTOptionsNew(vops.data(), NULL);
 	if (vrtops == NULL) {
 		out.setError("options error");
+		CSLDestroy( names );
 		return(out);
 	}
 	int pbUsageError;
-	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), tiles.size(), (GDALDatasetH *) tiles.data(), nullptr, vrtops, &pbUsageError);
-	GDALBuildVRTOptionsFree(vrtops);
+//	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), tiles.size(), (GDALDatasetH *) tiles.data(), nullptr, vrtops, &pbUsageError);
 
-	for (size_t i= 0; i<tiles.size(); i++) GDALClose(tiles[i]);
+	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), filenames.size(), nullptr, names, vrtops, &pbUsageError);
+
+	GDALBuildVRTOptionsFree(vrtops);
+	CSLDestroy( names );
+
+	//for (size_t i= 0; i<tiles.size(); i++) GDALClose(tiles[i]);
 	if(ds == NULL )  {
 		out.setError("cannot create vrt. Error #"+ std::to_string(pbUsageError));
 		return out;
@@ -457,7 +495,12 @@ bool GDALsetSRS(GDALDatasetH &hDS, const std::string &crs) {
 		return false ;
 	}
 	char *pszSRS_WKT = NULL;
+#if GDAL_VERSION_MAJOR >= 3
+	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	OSRExportToWktEx( hSRS, &pszSRS_WKT, options);
+#else
 	OSRExportToWkt( hSRS, &pszSRS_WKT );
+#endif
 	OSRDestroySpatialReference( hSRS );
 	GDALSetProjection( hDS, pszSRS_WKT );
 	CPLFree( pszSRS_WKT );
@@ -901,7 +944,13 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 			return false;
 		}
 		char *pszSRS_WKT = NULL;
-		OSRExportToWkt( hSRS, &pszSRS_WKT );
+		#if GDAL_VERSION_MAJOR >= 3
+			const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+			OSRExportToWktEx( hSRS, &pszSRS_WKT, options);
+		#else
+			OSRExportToWkt( hSRS, &pszSRS_WKT );
+		#endif
+
 		GDALSetProjection( hDS, pszSRS_WKT );
 		CPLFree(pszSRS_WKT);
 		OSRDestroySpatialReference( hSRS );

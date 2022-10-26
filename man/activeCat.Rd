@@ -23,7 +23,7 @@ Get or set the active category of a multi-categorical SpatRaster layer
 \arguments{
   \item{x}{SpatRaster}
   \item{layer}{positive integer, the layer number or name}
-  \item{value}{a data.frame (ID, category) or vector with category names}
+  \item{value}{a data.frame (ID, category)}
 }  
 
 

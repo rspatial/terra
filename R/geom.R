@@ -140,8 +140,8 @@ setMethod("erase", signature(x="SpatVector", y="SpatVector"),
 )
 
 setMethod("erase", signature(x="SpatVector", y="missing"),
-	function(x) {
-		x@ptr <- x@ptr$erase_self()
+	function(x, sequential=TRUE) {
+		x@ptr <- x@ptr$erase_self(sequential)
 		messages(x, "erase")
 	}
 )
@@ -211,8 +211,9 @@ setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"),
 
 setMethod("intersect", signature(x="SpatVector", y="SpatExtent"),
 	function(x, y) {
-		x@ptr <- x@ptr$crop_ext(y@ptr)
-		x
+		#x@ptr <- x@ptr$crop_ext(y@ptr)
+		#x
+		crop(x, y)
 	}
 )
 
@@ -256,9 +257,6 @@ setMethod("buffer", signature(x="SpatVector"),
 setMethod("crop", signature(x="SpatVector", y="ANY"),
 	function(x, y) {
 		if (inherits(y, "SpatVector")) {
-			if (length(y) > 1) {
-				y <- aggregate(y)
-			}
 			x@ptr <- x@ptr$crop_vct(y@ptr)
 		} else {
 			if (!inherits(y, "SpatExtent")) {
@@ -267,7 +265,11 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 					stop("y does not have a SpatExtent")
 				}
 			}
-			x@ptr <- x@ptr$crop_ext(y@ptr)
+			## crop_ext does not include points on the borders
+			## https://github.com/rspatial/raster/issues/283
+			#x@ptr <- x@ptr$crop_ext(y@ptr)
+			y <- as.polygons(y)
+			x@ptr <- x@ptr$crop_vct(y@ptr)
 		}
 		messages(x, "crop")
 	}
@@ -290,8 +292,8 @@ setMethod("minRect", signature(x="SpatVector"),
 
 
 setMethod("disagg", signature(x="SpatVector"),
-	function(x) {
-		x@ptr <- x@ptr$disaggregate()
+	function(x, segments=FALSE) {
+		x@ptr <- x@ptr$disaggregate(segments[1])
 		messages(x, "disagg")
 	}
 )
@@ -320,7 +322,7 @@ setMethod("spin", signature(x="SpatVector"),
 		}
 		angle <- angle[1]
 		stopifnot(is.numeric(angle) && !is.nan(angle))
-		x@ptr <- x@ptr$rotate(angle, x0[1], y0[1])
+		x@ptr <- x@ptr$rotate(angle, x0, y0)
 		messages(x, "spin")
 	}
 )
@@ -451,7 +453,7 @@ setMethod("simplifyGeom", signature(x="SpatVector"),
 setMethod("thinGeom", signature(x="SpatVector"),
 	function(x, threshold=1e-6, makeValid=TRUE) {
 		x@ptr <- x@ptr$thin(threshold)
-		x <- messages(x, "simplifyGeom")
+		x <- messages(x, "thinGeom")
 		if (makeValid) {
 			x <- makeValid(x)
 		}
@@ -513,7 +515,7 @@ setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"),
 		values(x) = data.frame(idx=1:nrow(x))
 		values(y) = data.frame(idy=1:nrow(y))
 		y <- erase(y) # no self-overlaps
-		if (overlap) {		
+		if (overlap) {
 			#avoid Warning message: [intersect] no intersection
  			xy <- suppressWarnings(intersect(y, x))
 			if (nrow(xy) > 0) {

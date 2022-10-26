@@ -15,7 +15,7 @@
 SpatRaster SpatRaster::rasterizePoints(SpatVector x, std::string fun, std::vector<double> values, double background, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1, false, false, false);
-	if (!out.writeStart(opt)) {
+	if (!out.writeStart(opt, filenames())) {
 		return out;
 	}
 	if (fun != "count" && (values.size() != x.size())) {
@@ -155,19 +155,19 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 			m *= m;
 		}
 		opt.ncopies = std::max(opt.ncopies, (unsigned)4) * 8;
-		if (!out.writeStart(opt)) {
+		if (!out.writeStart(opt, filenames())) {
 			return out;
 		}
 		for (size_t i=0; i < out.bs.n; i++) {
 			e.ymax = yFromRow(out.bs.row[i]) + rsy;
 			e.ymin = yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1) - rsy;
-			SpatRaster tmp = empty.crop(e, "near", ops);
+			SpatRaster tmp = empty.crop(e, "near", false, ops);
 
 			SpatVector p = tmp.as_polygons(true, false, false, false, false, ops);
 			std::vector<double> v(out.bs.nrows[i] * out.ncol(), 0);
 
 			if (fun == "crosses") {
-				std::vector<int> r = p.relate(x, "crosses");
+				std::vector<int> r = p.relate(x, "crosses", true, true);
 				size_t nx = x.size();
 				for (size_t j=0; j< r.size(); j++) {
 					size_t k= j / nx;
@@ -217,7 +217,7 @@ SpatRaster SpatRaster::hardCopy(SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
- 	if (!out.writeStart(opt)) {
+ 	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -250,8 +250,10 @@ SpatRaster SpatRaster::hardCopy(SpatOptions &opt) {
 bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filename, std::string &driver, double &naval, bool update, double background, SpatOptions &opt) {
 
 	filename = opt.get_filename();
+	SpatOptions ops(opt);
+	ops.ncopies += 4;
 	if (filename == "") {
-		if (canProcessInMemory(opt)) {
+		if (canProcessInMemory(ops)) {
 			driver = "MEM";
 		} else {
 			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
@@ -266,7 +268,7 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filen
 			return false;
 		}
 		std::string msg;
-		if (!can_write(filename, opt.get_overwrite(), msg)) {
+		if (!can_write({filename}, filenames(), opt.get_overwrite(), msg)) {
 			out.setError(msg);
 			return false;
 		}
@@ -395,12 +397,14 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	if (weights && ispol) {
 		SpatOptions sopts(opt);
 		SpatRaster wout = geometry(1);
+		field = "";
 		unsigned agx = 1000 / ncol();
 		agx = std::max((unsigned)10, agx);
 		unsigned agy = 1000 / nrow();
 		agy = std::max((unsigned)10, agy);
+		//unsigned agx = 100;
+		//unsigned agy = 100;
 		wout = wout.disaggregate({agx, agy}, sopts);
-		field = "";
 		double f = agx * agy;
 		wout = wout.rasterize(x, field, {1/f}, background, touches, add, false, false, false, sopts);
 		wout = wout.aggregate({agx, agy}, "sum", true, opt);
@@ -440,11 +444,23 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			return out;
 		}
 		std::string dt = x.df.get_datatype(field);
-		if (dt == "string") {
-			//std::vector<std::string> ss = ;
-			SpatFactor f(x.df.getS(i));
-			for (size_t i=0; i<values.size(); i++) {
-				values[i] = f.v[i] - 1;
+		if (dt == "double") {
+			values = x.df.getD(i);
+		} else if (dt == "long") {
+			values = x.df.as_double(i);
+			out.setValueType(1);
+		} else if (dt == "bool") {
+			values = x.df.as_double(i);
+			out.setValueType(3);
+		} else if (dt == "time") {
+			// tbd
+			values = x.df.as_double(i);
+		} else {
+			std::vector<std::string> sv = x.df.as_string(i);
+			SpatFactor f(sv);
+			values.resize(f.v.size());
+			for (size_t j=0; j<values.size(); j++) {
+				values[j] = f.v[j];
 			}
 			if (!add && !update) {
 				std::vector<long> u(f.labels.size());
@@ -455,14 +471,6 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			if (add) {
 				add = false;
 				addWarning("cannot add factors");
-			}
-		} else if (dt == "double") {
-			values = x.df.getD(i);
-		} else {
-			std::vector<long> v = x.df.getI(i);
-			values.resize(v.size());
-			for (size_t i=0; i<values.size(); i++) {
-				values[i] = v[i];
 			}
 		}
 	}
@@ -593,13 +601,25 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
     SpatOptions ropt(opt);
 	SpatRaster r = geometry(1);
 	SpatExtent e = getExtent();
-	e = e.intersect(v.getExtent());
+	SpatExtent ev = v.getExtent();
+	if (ev.xmin >= ev.xmax) {
+		double xr = 0.1 * xres();
+		ev.xmin -= xr;
+		ev.xmax += xr;
+	}
+	if (ev.ymin >= ev.ymax) {
+		double yr = 0.1 * yres();
+		ev.ymin -= yr;
+		ev.ymax += yr;
+	}
+
+	e = e.intersect(ev);
 	if ( !e.valid() ) {
 		std::vector<double> out(1, NAN);
 		return out;
 	}
 
-	SpatRaster rc = r.crop(e, "out", ropt);
+	SpatRaster rc = r.crop(e, "out", false, ropt);
 	std::vector<double> feats(1, 1) ;
     SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, ropt);
 	SpatVector pts = rcr.as_points(false, true, false, ropt);
@@ -626,33 +646,39 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt) {
 // note that this is only for polygons
     SpatOptions ropt(opt);
-	opt.progress = nrow()+1;
-	SpatRaster rr = geometry(1);
-	std::vector<unsigned> fact = {10, 10};
+	//opt.progress = nrow()+1;
+	SpatRaster r = geometry(1);
+	//std::vector<unsigned> fact = {10, 10};
 	SpatExtent e = getExtent();
 	SpatExtent ve = v.getExtent();
 	e = e.intersect(ve);
 	if ( !e.valid() ) {
 		return;
 	}
-	SpatRaster r = rr.crop(v.extent, "out", ropt);
-	r = r.disaggregate(fact, ropt);
-	std::vector<double> feats(1, 1) ;
-	r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt);
-	r = r.arith(100.0, "/", false, ropt);
-	r = r.aggregate(fact, "sum", true, ropt);
-	SpatVector pts = r.as_points(true, true, false, ropt);
-	if (pts.size() == 0) {
+	bool cropped = false;
+	SpatRaster rc = r.crop(v.extent, "out", false, ropt);
+	if ( ((ncol() > 1000) && ((ncol() / rc.ncol()) > 1.5))
+			|| ((nrow() > 1000) && ((nrow() / rc.nrow()) > 1.5) )) {
+		cropped = true;
+		r = rc;
+	}
+	std::vector<double> feats;
+	r = r.rasterize(v, "", feats, NAN, false, false, true, false, false, ropt);
+	std::vector<std::vector<double>> cv = r.cells_notna(ropt);
+
+	if (cv[0].size() == 0) {
 		weights.resize(1);
 		weights[0] = NAN;
 		cells.resize(1);
 		cells[0] = NAN;
 	} else {
-		SpatDataFrame vd = pts.getGeometryDF();
-		std::vector<double> x = vd.getD(0);
-		std::vector<double> y = vd.getD(1);
-		cells = rr.cellFromXY(x, y);
-		weights = pts.df.dv[0];
+		weights = cv[1];
+		if (cropped) {
+			cv = r.xyFromCell(cv[0]);
+			cells = cellFromXY(cv[0], cv[1]);
+		} else {
+			cells = cv[0];
+		}
 	}
 	return;
 }
@@ -662,7 +688,7 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 	SpatOptions ropt(opt);
 	opt.progress = nrow()+1;
 	SpatRaster r = geometry(1);
-	r = r.crop(v.extent, "out", ropt);
+	r = r.crop(v.extent, "out", false, ropt);
 
 //	if (r.ncell() < 1000) {
 		std::vector<double> feats(1, 1) ;
@@ -742,5 +768,50 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 
 }
 
+
+void SpatRaster::rasterizeLinesLength(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt) {
+
+	if (v.type() != "lines") {
+		setError("expected lines");
+		return;
+	}
+
+	double m = 1;
+	if (!v.is_lonlat()) {
+		double tom = v.srs.to_meter();
+		tom = std::isnan(tom) ? 1 : tom;
+		m *= tom;
+	}
+
+	SpatOptions xopt(opt);
+	xopt.ncopies = std::max(xopt.ncopies, (unsigned)4) * 8;
+	SpatRaster x = geometry(1);
+
+	SpatExtent ev = v.getExtent();
+	x = x.crop(ev, "out", false, xopt);
+	BlockSize bs = x.getBlockSize(xopt);
+
+	SpatExtent e = x.getExtent();
+	double rsy = x.yres() / 2;
+	for (size_t i=0; i < bs.n; i++) {
+		e.ymax = yFromRow(bs.row[i]) + rsy;
+		e.ymin = yFromRow(bs.row[i] + bs.nrows[i] - 1) - rsy;
+		SpatRaster tmp = x.crop(e, "near", false, xopt);
+		std::vector<double> cell(tmp.ncell());
+		std::iota(cell.begin(), cell.end(), 0);
+		std::vector<std::vector<double>> xy = tmp.xyFromCell(cell);
+		cell = cellFromXY(xy[0], xy[1]);
+		SpatVector p = tmp.as_polygons(true, false, false, false, false, xopt);
+		p.df.add_column(cell, "cell");
+		p = p.intersect(v, true);
+		if (p.nrow() > 1) {
+			cells.insert(cells.end(), p.df.dv[0].begin(), p.df.dv[0].end());
+			std::vector<double> w = p.length();
+			double sm = std::accumulate(w.begin(), w.end(), 0.0);
+			for (double &d : w) d /= sm;
+			weights.insert(weights.end(), w.begin(), w.end());
+		}
+	}
+}
 
 

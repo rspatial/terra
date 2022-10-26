@@ -105,8 +105,10 @@ void rep_each_vect(std::vector<T> &v, std::vector<size_t> n) {
 template <typename T>
 std::vector<T> seq(T start, T end, T increment) {
 	std::vector<T> out;
-	if (increment <= 0) return out; 
-	if (start >= end) return out;
+	//if (increment <= 0) return out; 
+	if ((start > end) && (increment > 0)) return out;
+	if ((start < end) && (increment < 0)) return out;
+	if (start == end) return {start};
 	size_t s = floor((end - start) / increment);
 	out.reserve(s);
 	for (size_t i=0; i<=s; i++) {

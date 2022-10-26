@@ -93,56 +93,6 @@ bool SpatRaster::isSource(std::string filename) {
 	return false;
 }
 
-/*
-#include <experimental/filesystem>
-bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
-	std::vector<std::string> inf = filenames();
-	for (size_t i=0; i<inf.size(); i++) {
-		if (inf[i] == "") continue;
-		std::experimental::filesystem::path pin = inf[i];
-		for (size_t j=0; j<outf.size(); j++) {
-			std::experimental::filesystem::path pout = outf[i];
-			if (pin.compare(pout) == 0) return false;
-		}
-	}
-	return true;
-}
-*/
-
-bool SpatRaster::differentFilenames(std::vector<std::string> outf, bool &duplicates, bool &empty) {
-	std::vector<std::string> inf = filenames();
-	duplicates = false;
-	empty = false;
-	for (size_t j=0; j<outf.size(); j++) {
-		if (outf[j] == "") {
-			empty = true;
-			return false;
-		}
-	}
-
-	for (size_t i=0; i<inf.size(); i++) {
-		if (inf[i] == "") continue;
-		#ifdef _WIN32
-		lowercase(inf[i]);
-		#endif
-		for (size_t j=0; j<outf.size(); j++) {
-			#ifdef _WIN32
-			lowercase(outf[j]);
-			#endif
-			if (inf[i] == outf[j]) return false;
-		}
-	}
-
-	size_t n = outf.size();
-	outf.erase(std::unique(outf.begin(), outf.end()), outf.end());
-	if (n > outf.size()) {
-		duplicates = true;
-		return false;
-	}
-	return true;
-}
-
-
 
 SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
@@ -154,17 +104,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 	// recursive writing of layers
 	std::vector<std::string> fnames = opt.get_filenames();
-	bool dups, empty;
-	if (!differentFilenames(fnames, dups, empty)) {
-		if (dups) {
-			out.setError("duplicate filenames");
-		} else if (empty) {
-			out.setError("empty filename");
-		} else {
-			out.setError("source and target filename cannot be the same");
-		}
-		return(out);
-	}
+	std::string msg;
 
 	size_t nl = nlyr();
 	if (fnames.size() > 1) {
@@ -174,11 +114,9 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		} else {
 			bool overwrite = opt.get_overwrite();
 			std::string errmsg;
-			for (size_t i=0; i<nl; i++) {
-				if (!can_write(fnames[i], overwrite, errmsg)) {
-					out.setError(errmsg + " (" + fnames[i] +")");
-					return(out);
-				}
+			if (!can_write(fnames, filenames(), overwrite, errmsg)) {
+				out.setError(errmsg);
+				return(out);
 			}
 			for (unsigned i=0; i<nl; i++) {
 				opt.set_filenames({fnames[i]});
@@ -199,10 +137,11 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	}
 
 	opt.ncopies = 2;
-	if (!out.writeStart(opt)) {
+	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
+
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, out.bs, i);
@@ -218,9 +157,15 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 }
 
 
+SpatRaster SpatRaster::writeTempRaster(SpatOptions &opt) {
+	SpatOptions xopt(opt);
+	std::string fname = tempFile(xopt.get_tempdir(), xopt.pid, "_temp_raster.tif");
+	xopt.set_filenames({fname});
+	return writeRaster(xopt);
+}
 
 
-bool SpatRaster::writeStart(SpatOptions &opt) {
+bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> srcnames) {
 
 	if (opt.names.size() == nlyr()) {
 		setNames(opt.names);
@@ -233,18 +178,21 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	std::string filename = fnames[0];
 	if (filename == "") {
 		if (!canProcessInMemory(opt)) {
-			std::string extension = ".tif";
-			filename = tempFile(opt.get_tempdir(), opt.pid, extension);
+			//std::string extension = ".tif";
+			//filename = tempFile(opt.get_tempdir(), opt.pid, extension);
+			std::string driver;
+			if (!getTempFile(filename, driver, opt)) {
+				return false;
+			}
 			opt.set_filenames({filename});
 			//opt.gdal_options = {"COMPRESS=NONE"};
 		}
 	}
-
 	bs = getBlockSize(opt);
 	if (filename != "") {
 		// open GDAL filestream
 		#ifdef useGDAL
-		if (! writeStartGDAL(opt) ) {
+		if (! writeStartGDAL(opt, srcnames) ) {
 			return false;
 		}
 		#else
@@ -274,14 +222,14 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		Rcpp::Rcout<< "in memory     : " << inmem << std::endl;
 		Rcpp::Rcout<< "block size    : " << mems[3] << " rows" << std::endl;
 		Rcpp::Rcout<< "n blocks      : " << bs.n << std::endl;
-		Rcpp::Rcout<< "pb            : " << opt.show_progress(bs.n) << std::endl;
-		Rcpp::Rcout<< std::endl;
+		Rcpp::Rcout<< "pb            : " << opt.get_progress() << std::endl << std::endl;
 	}
 
 	if (opt.progressbar) {
-		unsigned long steps = bs.n+2;
-		pbar = new Progress(steps, opt.show_progress(bs.n));
-		pbar->increment();
+		pbar.init(bs.n, opt.get_progress());
+		//unsigned long steps = bs.n+2;
+		//pbar = new Progress(steps, opt.show_progress(bs.n));
+		//pbar->increment();
 		progressbar = true;
 	} else {
 		progressbar = false;
@@ -290,6 +238,16 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	return true;
 }
 
+#ifdef useRcpp
+
+static void chkIntFn(void *dummy) {
+  R_CheckUserInterrupt();
+}
+bool checkInterrupt() {
+  return (R_ToplevelExec(chkIntFn, NULL) == FALSE);
+}
+
+#endif
 
 
 bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t nrows) {
@@ -317,16 +275,24 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 		success = writeValuesMem(vals, startrow, nrows);
 	}
 
+//return success;
 #ifdef useRcpp
-	if (progressbar) {
-		if (Progress::check_abort()) {
-			pbar->cleanup();
-			delete pbar;
-			setError("aborted");
-			return(false);
-		}
-		pbar->increment();
+	if (checkInterrupt()) {
+		pbar.interrupt();
+		setError("aborted");
+		return(false);
 	}
+	if (progressbar) {
+		pbar.stepit();
+	}
+//		if (Progress::check_abort()) {
+//			pbar->cleanup();
+//			delete pbar;
+//			setError("aborted");
+//			return(false);
+//		}
+//		pbar->increment();
+//	}
 #endif
 	return success;
 }
@@ -358,15 +324,22 @@ bool SpatRaster::writeValuesRect(std::vector<double> &vals, size_t startrow, siz
 	}
 
 #ifdef useRcpp
-	if (progressbar) {
-		if (Progress::check_abort()) {
-			pbar->cleanup();
-			delete pbar;
-			setError("aborted");
-			return(false);
-		}
-		pbar->increment();
+	if (checkInterrupt()) {
+		pbar.interrupt();
+		setError("aborted");
+		return(false);
 	}
+	if (progressbar) {
+		pbar.stepit();
+	}
+	//	if (Progress::check_abort()) {
+	//		pbar->cleanup();
+	//		delete pbar;
+	//		setError("aborted");
+	//		return(false);
+	//	}
+	//	pbar->increment();
+	//}
 #endif
 	return success;
 }
@@ -407,10 +380,15 @@ bool SpatRaster::writeStop(){
 
 #ifdef useRcpp
 	if (progressbar) {
+		pbar.stepit();
+	}
+/*
+	if (progressbar) {
 		pbar->increment();
 		pbar->cleanup();
 		delete pbar;
 	}
+*/
 #endif
 
 	return success;
@@ -537,4 +515,49 @@ bool SpatRaster::writeStartFs(std::string filename, std::string format, std::str
 }
 */
 
+
+bool SpatRaster::writeDelim(std::string filename, std::string delim, bool cell, bool xy, SpatOptions &opt) {
+
+	if (!hasValues()) {
+		setError("there are no cell values");
+		return false;
+	}
+	if (!readStart()) {
+		setError(getError());
+		return(false);
+	}
+
+	std::ofstream f;
+	f.open(filename);
+	if (!f.is_open()) {
+		setError("could not open the csv file for writing");
+		return false;
+	}
+	std::vector<std::string> nms = getNames();
+	if (xy | cell) {
+		std::vector<std::string> add;
+		if (xy) {
+			add.push_back("x");
+			add.push_back("y");
+		} 
+		if (cell) {
+			add.push_back("cell");
+		}
+		nms.insert(nms.begin(), add.begin(), add.end());
+	}
+
+	std::string s = concatenate(nms, delim);
+	f << s << std::endl;
+
+	BlockSize bs = getBlockSize(opt);
+	for (size_t i=0; i<bs.n; i++) {
+		std::vector<double> v;
+		readBlock(v, bs, i);
+		//s = get_delim_string(v, delim);
+		//f << s << std::endl;
+	}
+	f.close();
+	readStop();
+	return true;
+}
 

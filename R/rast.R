@@ -88,11 +88,18 @@ setMethod("rast", signature(x="list"),
 		}
 		out <- messages(out, "rast")
 		lnms <- names(x)
-		i <- lnms != ""
-		if (any(i)) {
-			rnms <- names(out)
-			rnms[lnms != ""] <- lnms[lnms != ""]
-			names(out) <- rnms
+		if (!is.null(lnms)) {
+			if (any(lnms != "") && (length(lnms) == nlyr(out))) {
+				rnms <- names(out)
+				rnms[lnms != ""] <- lnms[lnms != ""]
+				names(out) <- rnms
+			} else if (all(lnms != "")) {
+				nl <- sapply(x, nlyr)
+				rnms <- sapply(1:length(nl), function(i) {
+							if (nl[i] > 1) paste0(lnms[i], "_", 1:nl[i]) else lnms[i]
+						})
+				names(out) <- unlist(rnms)
+			}
 		}
 		out
 	}
@@ -173,7 +180,8 @@ setMethod("rast", signature(x="character"),
 		}
 		r <- messages(r, "rast")
 		if (r@ptr$getMessage() == "ncdf extent") {
-			test <- try(r <- .ncdf_extent(r), silent=TRUE)
+			# could have used opts="IGNORE_XY_AXIS_NAME_CHECKS=YES"
+			test <- try(r <- .ncdf_extent(r, f), silent=TRUE)
 			if (inherits(test, "try-error")) {
 				warn("rast", "GDAL did not find an extent. Cells not equally spaced?")
 			}
@@ -181,7 +189,7 @@ setMethod("rast", signature(x="character"),
 		r <- messages(r, "rast")
 		if (crs(r) == "") {
 			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
-				if (!isTRUE(all(as.vector(ext(r)) == c(0,1,0,1)))) {
+				if (!isTRUE(all(as.vector(ext(r)) == c(0,ncol(r),0,nrow(r))))) {
 					crs(r) <- "OGC:CRS84"
 				}
 			}
@@ -307,10 +315,11 @@ setMethod("rast", signature(x="ANY"),
 				sfi <- attr(x, "sf_column")
 				crs(out) <- attr(x[[sfi]], "crs")$wkt
 			}
-			out
 		} else {
-			methods::as(x, "SpatRaster")
+			out <- methods::as(x, "SpatRaster")
 		}
+		#g <- gc()
+		out
 	}
 )
 

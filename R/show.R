@@ -113,7 +113,7 @@ setMethod ("show" , "SpatVectorCollection",
 			}
 		}
 		if (n > nn) {
-			cat("               ", "   and ", n-nn, "more\n", sep="")			
+			cat("               ", "   and ", n-nn, "more\n", sep="")
 		}
 		nms <- names(object)
 		if (length(nms) > 10) {
@@ -217,7 +217,19 @@ setMethod ("show" , "SpatRaster",
 
 			nsr <- nsrc(object)
 			m <- inMemory(object)
+
 			f <- sources(object)
+			nf <- nchar(f)
+			if (any(nf > 256)) {
+				for (i in 1:length(nf)) {
+					if (nf[i] > 256) {
+						f[i] <- unlist(strsplit(f[i], "\\?"))[1]
+						if (nchar(f[i]) > 256) {
+							f[i] <- substr(f[i], nf[i]-255, nf[i])
+						}
+					}
+				}
+			}
 			hdf5 <- substr(f, 1, 5) == "HDF5:"
 			f[!hdf5] <- basename(f[!hdf5])
 			if (any(hdf5)) {
@@ -227,29 +239,35 @@ setMethod ("show" , "SpatRaster",
 				f[hdf5] <- ff
 			}
 			#f <- gsub("\\", "/", f, fixed=TRUE)
-
 			f <- gsub("\"", "", f)
 			sources <- rep("memory", length(m))
 			sources[!m] <- f[!m]
 
-			if (nsr > 1) {
-				mxsrc <- 3
-				lbs <- .nlyrBySource(object)
-				lbsprint <- paste0(" (", lbs, " layers)")
-				lbsprint[lbs == 1] <- ""
-				cat("sources     :", sources[1], lbsprint[1], "\n")
-				for (i in 2:(min(mxsrc, nsr))) {
-					cat("             ", sources[i], lbsprint[i], "\n")
-				}
-
-				if (nsr > mxsrc) {
-					cat("             ", "... and", nsr-mxsrc, "more source(s)\n")
-				}
+			if (all(m)) {
+				cat("source(s)   : memory\n")
 			} else {
-				cat("source      :", sources[1], "\n")
+				if (nsr > 1) {
+					mxsrc <- 3
+					lbs <- .nlyrBySource(object)
+					lbsprint <- paste0(" (", lbs, " layers)")
+					lbsprint[lbs == 1] <- ""
+					cat("sources     :", sources[1], lbsprint[1], "\n")
+					for (i in 2:(min(mxsrc, nsr))) {
+						cat("             ", sources[i], lbsprint[i], "\n")
+					}
+					if (nsr > mxsrc) {
+						if (nsr == (mxsrc+1)) {
+							cat("             ", sources[mxsrc+1], lbsprint[mxsrc+1], "\n")
+						} else {
+							cat("             ", "... and", nsr-mxsrc, "more source(s)\n")
+						}
+					}
+				} else {
+					cat("source      :", sources[1], "\n")
+				}
 			}
 			rgb <- RGB(object)
-			if (!is.null(rgb)) {				
+			if (!is.null(rgb)) {
 				cat(paste("colors", toupper(object@ptr$rgbtype), " :"), paste(rgb, collapse=", "), "\n")
 			}
 			hasct <- object@ptr$hasColors()
@@ -288,10 +306,11 @@ setMethod ("show" , "SpatRaster",
 			isB <- is.bool(object)
 			if (any(hMM) || any(is.factor(object))) {
 				#r <- minmax(object)
-				r <- rbind(object@ptr$range_min, object@ptr$range_max)
+				rr <- r <- rbind(object@ptr$range_min, object@ptr$range_max)
 				r[,!hMM] <- c(Inf, -Inf)
-				minv <- format(r[1,])
-				maxv <- format(r[2,])
+				r <- sapply(data.frame(r), format)
+				minv <- r[1,]
+				maxv <- r[2,]
 				if (any(isB)) {
 					minv[isB] <- ifelse(minv[isB]=="0", "FALSE", "TRUE")
 					maxv[isB] <- ifelse(maxv[isB]=="0", "FALSE", "TRUE")
@@ -308,16 +327,15 @@ setMethod ("show" , "SpatRaster",
 				}
 				isf <- is.factor(object)
 				if (any(isf)) {
-					for (i in 1:length(isf)) {
+					cats <- levels(object)
+					for (i in which(isf)) {
 						if (i > mnr) break
-						if (isf[i]) {
-							cats <- cats(object, i, TRUE)[[1]]
-							j <- match(r[,i], cats[,1])
-							cats <- cats[j, 2]
-							if (length(cats) > 0) {
-								minv[i] <- cats[1]
-								maxv[i] <- cats[2]
-							}
+						levs <- cats[[i]]
+						j <- match(rr[,i], levs[,1])
+						levs <- levs[j, 2]
+						if (length(levs) > 1) {
+							minv[i] <- levs[1]
+							maxv[i] <- levs[2]
 						}
 					}
 				}
@@ -414,7 +432,7 @@ setMethod ("show" , "SpatRaster",
 
 
 .sources <- function(x) {
-	m <- inMemory(x)
+	#m <- inMemory(x)
 	f <- sources(x)
 	f <- gsub("\"", "", basename(f))
 	i <- grep(":", f)
@@ -426,9 +444,8 @@ setMethod ("show" , "SpatRaster",
 			}
 		}
 	}
-	sources <- rep("memory", length(m))
-	sources[!m] <- f[!m]
-	unique(sources)
+	f[f==""] <- "memory"
+	unique(f)
 }
 
 
@@ -448,27 +465,25 @@ setMethod("show" , "SpatRasterDataset",
 		}
 		cat("nlyr        :", paste(nss, collapse=", "), "\n")
 
-
 		xyres <- res(object)
 		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
 		e <- as.vector(ext(object))
 		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 
+		cat("coord. ref. :" , .name_or_proj4(object), "\n")
 
-		cat("coord. ref. :" , .name_or_proj4(object[1]), "\n")
-
-		s <- unlist(lapply(1:ns, function(i) .sources(object[i])))
-		s <- unique(s)
+		s <- .sources(object)
 		cat("source(s)   :", paste(s, collapse=", "), "\n")
 
 		ln <- names(object)
 		if (any(ln != "")) {
+			if (length(ln) > 6) {
+				ln <- c(ln[1:6], "...")		
+			}
 			cat("names       :", paste(ln, collapse=", "), "\n")
 		}
 	}
 )
-
-
 
 
 setMethod("show" , "SpatRasterCollection",
@@ -476,10 +491,34 @@ setMethod("show" , "SpatRasterCollection",
 		cat("class       :" , class(object), "\n")
 		nr <- length(object)
 		cat("length      :", nr, "\n")
+		d <- (t(dim(object)))
+		d[] <- as.character(d)
+		if (ncol(d) > 14) {
+			d <- d[,1:15]
+			d[,15] <- "..."
+		}
+		for (i in 1:ncol(d)) {
+			d[,i] <- format(d[,i], width=max(nchar(d[,i])), justify="right")
+		}
+		cat("nrow        :", paste(d[1,], collapse=", "), "\n")
+		cat("ncol        :", paste(d[2,], collapse=", "), "\n")
+		cat("nlyr        :", paste(d[3,], collapse=", "), "\n")
+		
+		e <- as.vector(ext(object))
+		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+		
+		
+		crs <- .name_or_proj4(object@ptr$x[[1]])
+		if (crs != "") cat("crs (first) :", crs,	 "\n")
+		ln <- names(object)
+		if (any(ln != "")) {
+			if (length(ln) > 6) {
+				ln = c(ln[1:6], "...")		
+			}
+			cat("names       :", paste(ln, collapse=", "), "\n")
+		}
 	}
 )
-
-
 
 
 setMethod ("head" , "SpatVector",
@@ -548,4 +587,4 @@ setMethod ("str", "SpatVector",
 		}
 	}
 )
-	
+

@@ -141,7 +141,7 @@ Also see the methods in section VIII
     \code{\link{direction}} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
     \code{\link{focalCpp}} \tab Faster focal by using custom C++ functions \cr
-    \code{\link{focalReg}} \tab Regression beween layers for focal areas \cr
+    \code{\link{focalReg}} \tab Regression between layers for focal areas \cr
     \code{\link{focalCor}} \tab Correlation between layers for focal areas \cr
     \code{\link{patches}} \tab Find patches (clumps) \cr
     \code{\link{terrain}} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr
@@ -600,7 +600,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 }
 
 \section{Authors}{
-Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for \code{sf}. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows. Michael Sumner contributed various bits and pieces.
+Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of code using the GEOS library was adapted from code by Edzer Pebesma for \code{sf}. Michael Sumner contributed various bits and pieces.
 }
 
 \section{Acknowledgments}{

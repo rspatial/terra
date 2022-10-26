@@ -28,7 +28,7 @@ Transfer values associated with the geometries of vector data to a raster
   
   \item{field}{character or numeric. If \code{field} is a character, it should a variable name in \code{x}. If \code{field} is numeric it typically is a single number or a vector of length \code{nrow(x)}. The values are recycled to \code{nrow(x)}}
 
-  \item{values}{numeric. For when \code{x} is a matrix. Normally of length 1 or nrow(x). The values will be recycled to \code{nrow(x)}}
+  \item{values}{typically a numeric vector of length \code{1} or \code{nrow(x)}. If the length is below \code{nrow(x)} the values will be recycled to \code{nrow(x)}. Only used when \code{x} is a matrix. Can also be a matrix or data.frame}
   
   \item{fun}{function, summarizing function that returns a single number; for when there are multiple points in one cell. For example \code{mean}, \code{length} (to get a count), \code{min} or \code{max}. Only used if \code{x} consists of points}
   \item{...}{additional arguments passed to \code{fun} if \code{x} has point geometries}
@@ -49,7 +49,7 @@ Transfer values associated with the geometries of vector data to a raster
 }
 
 \seealso{
-\code{\link{mask}}
+\code{\link{rasterizeGeom}}, \code{\link{rasterizeWin}}, \code{\link{mask}}
 }
 
 

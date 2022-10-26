@@ -209,12 +209,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // gdal_init
-void gdal_init(std::string path);
-RcppExport SEXP _terra_gdal_init(SEXP pathSEXP) {
+void gdal_init(std::string projpath, std::string datapath);
+RcppExport SEXP _terra_gdal_init(SEXP projpathSEXP, SEXP datapathSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type path(pathSEXP);
-    gdal_init(path);
+    Rcpp::traits::input_parameter< std::string >::type projpath(projpathSEXP);
+    Rcpp::traits::input_parameter< std::string >::type datapath(datapathSEXP);
+    gdal_init(projpath, datapath);
     return R_NilValue;
 END_RCPP
 }
@@ -298,6 +299,22 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double& >::type lat2(lat2SEXP);
     rcpp_result_gen = Rcpp::wrap(dist_lonlat(lon1, lat1, lon2, lat2));
     return rcpp_result_gen;
+END_RCPP
+}
+// dest_lonlat
+void dest_lonlat(double slon, double slat, double sazi, double dist, double& dlon, double& dlat, double& dazi);
+RcppExport SEXP _terra_dest_lonlat(SEXP slonSEXP, SEXP slatSEXP, SEXP saziSEXP, SEXP distSEXP, SEXP dlonSEXP, SEXP dlatSEXP, SEXP daziSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type slon(slonSEXP);
+    Rcpp::traits::input_parameter< double >::type slat(slatSEXP);
+    Rcpp::traits::input_parameter< double >::type sazi(saziSEXP);
+    Rcpp::traits::input_parameter< double >::type dist(distSEXP);
+    Rcpp::traits::input_parameter< double& >::type dlon(dlonSEXP);
+    Rcpp::traits::input_parameter< double& >::type dlat(dlatSEXP);
+    Rcpp::traits::input_parameter< double& >::type dazi(daziSEXP);
+    dest_lonlat(slon, slat, sazi, dist, dlon, dlat, dazi);
+    return R_NilValue;
 END_RCPP
 }
 // dir_lonlat
@@ -419,7 +436,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_sdsmetatdataparsed", (DL_FUNC) &_terra_sdsmetatdataparsed, 1},
     {"_terra_gdal_drivers", (DL_FUNC) &_terra_gdal_drivers, 0},
     {"_terra_set_gdal_warnings", (DL_FUNC) &_terra_set_gdal_warnings, 1},
-    {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 1},
+    {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 2},
     {"_terra_percRank", (DL_FUNC) &_terra_percRank, 5},
     {"_terra_setGDALCacheSizeMB", (DL_FUNC) &_terra_setGDALCacheSizeMB, 1},
     {"_terra_getGDALCacheSizeMB", (DL_FUNC) &_terra_getGDALCacheSizeMB, 0},
@@ -427,6 +444,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_set_proj_search_paths", (DL_FUNC) &_terra_set_proj_search_paths, 1},
     {"_terra_PROJ_network", (DL_FUNC) &_terra_PROJ_network, 2},
     {"_terra_dist_lonlat", (DL_FUNC) &_terra_dist_lonlat, 4},
+    {"_terra_dest_lonlat", (DL_FUNC) &_terra_dest_lonlat, 7},
     {"_terra_dir_lonlat", (DL_FUNC) &_terra_dir_lonlat, 4},
     {"_terra_dist2track", (DL_FUNC) &_terra_dist2track, 7},
     {"_terra_alongTrackDistance", (DL_FUNC) &_terra_alongTrackDistance, 6},

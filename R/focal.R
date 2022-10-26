@@ -82,20 +82,31 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 		on.exit(readStop(x))
 		nl <- nlyr(x)
 		outnl <- nl * length(test)
+		out <- rast(x, nlyr=outnl)
+
 		transp <- FALSE
 		nms <- NULL
 		if (isTRUE(nrow(test) > 1)) {
 			transp <- TRUE
 			nms <- rownames(test)
+			if (nl > 1) {
+				nms <- paste0(rep(names(x), each=nl), "_", rep(nms, nl))
+			}
 		} else if (isTRUE(ncol(test) > 1)) {
 			nms <- colnames(test)
+			if (nl > 1) {
+				nms <- paste0(rep(names(x), each=nl), "_", rep(nms, nl))
+			}
+		} else {
+			nms <- names(x)
+			if (nl > 1) {
+				nms <- paste0(rep(names(x), each=nl), "_", rep(1:length(test), nl))
+			}
 		}
-
-		out <- rast(x, nlyr=outnl)
-		if (!is.null(nms)) {
+		if (length(nms) == nlyr(out)) {
 			names(out) <- nms
 		}
-		b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
+		b <- writeStart(out, filename, overwrite, n=msz*4, sources=sources(x), wopt=wopt)
 		opt <- spatOptions()
 
 		for (i in 1:b$n) {
@@ -175,8 +186,13 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 		stopifnot(all(w > 0))
 		m <- rep(1, prod(w))
 	}
+
 	if (w[3] > nlyr(x)) {
-		error("focal", "the third weights dimension is larger than nlyr(x)")
+		error("focal3D", "the third weights dimension is larger than nlyr(x)")
+	}
+	if (any((w %% 2) == 0)) {
+		error("focal3D", "w must be odd sized in all dimensions")
+
 	}
 
 	msz <- prod(w)
@@ -229,9 +245,11 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 
 	out <- rast(x, nlyr=outnl)
 	if (!is.null(nms)) {
-		names(out) <- nms
+		if (length(nms) <= outnl) {
+			names(out) <- rep_len(nms, outnl) 
+		}
 	}
-	b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, n=msz*4, sources=sources(x), wopt=wopt)
 
 	nread <- prod(w[1:2])
 
@@ -349,7 +367,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 		wopt$names <- colnames(test)
 	}
 	out <- rast(x, nlyr=outnl)
-	b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, n=msz*4, sources=sources(x), wopt=wopt)
 
 	nc <- ncol(out)
 	for (i in 1:b$n) {
@@ -453,7 +471,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, filename="",  ...)  {
 		#fun = ols
 	}
 	names(out) <- paste0("B", 0:(nl-1))
-	b <- writeStart(out, filename, n=msz*4, ...)
+	b <- writeStart(out, filename, n=msz*4, sources=sources(x), ...)
 	ry <- x[[1]]
 	rx <- x[[-1]]
 
@@ -551,10 +569,10 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 	outnl <- (nlyr(x) - 1) * length(test)
 	out <- rast(x, nlyr=outnl)
 
-	b <- writeStart(out, filename, n=msz*4, ...)
+	b <- writeStart(out, filename, n=msz*4, sources=sources(x), ...)
 
-	v <- list()
 	for (i in 1:b$n) {
+		v <- list()
 		Y <- focalValues(x[[1]], w, b$row[i], b$nrows[i], fillvalue)
 		if (dow) {
 			if (isnam) {
@@ -573,7 +591,8 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 					Y <- Y * m
 				}
 			}
-			v[[j-1]] <- t(sapply(1:nrow(Y), function(i, ...) fun(X[i,], Y[i,], ...)))
+			corv <- t(sapply(1:nrow(Y), function(i, ...) fun(X[i,], Y[i,], ...)))
+			v[[j-1]] <- corv 
 		}
 		v <- do.call(cbind, v)
 		writeValues(out, v, b$row[i], b$nrows[i])

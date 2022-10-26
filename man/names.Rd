@@ -24,6 +24,9 @@
 \alias{longnames,SpatRasterDataset-method}
 \alias{longnames<-,SpatRasterDataset-method}
 
+\alias{names,SpatRasterCollection-method}
+\alias{names<-,SpatRasterCollection-method}
+
 \alias{names,SpatVector-method}
 \alias{names,SpatVectorCollection-method}
 \alias{names,SpatVectorProxy-method}

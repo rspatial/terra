@@ -10,6 +10,14 @@ setMethod("ext", signature(x="SpatExtent"),
 	}
 )
 
+setMethod("ext", signature(x="SpatRasterCollection"),
+	function(x){
+		e <- methods::new("SpatExtent")
+		e@ptr <- x@ptr$extent()
+		e
+	}
+)
+
 
 setMethod("ext", signature(x="sf"),
 	function(x){
@@ -29,21 +37,41 @@ setMethod("ext", signature(x="missing"),
 )
 
 setMethod("ext", signature(x="numeric"),
-	function(x, ...){
-		dots <- unlist(list(...))
+	function(x, ..., xy=FALSE){
+		dots <- as.vector(unlist(list(...)))
 		x <- c(x, dots)
-		if (length(x) < 4) {
-			error("ext", "insufficient number of elements (should be 4)")
-		}
-		if (length(x) > 4) {
-			warn("ext", "more elements than expected (should be 4)")
+		n <- length(x)
+		if (n != 4) {
+			error("ext", "expected four numbers")
 		}
 		names(x) <- NULL
 		e <- methods::new("SpatExtent")
-		e@ptr <- SpatExtent$new(x[1], x[2], x[3], x[4])
-		if (methods::validObject(e)) return(e)
+		if (xy) {
+			e@ptr <- SpatExtent$new(x[1], x[3], x[2], x[4])
+		} else {
+			e@ptr <- SpatExtent$new(x[1], x[2], x[3], x[4])
+		}
+		if (!e@ptr$valid) {
+			error("ext", "invalid extent")
+		}
+		e
 	}
 )
+
+setMethod("ext", signature(x="matrix"),
+	function(x){
+		ext(as.vector(x))
+	}
+)
+
+setMethod("ext", signature(x="bbox"),
+	function(x){
+		ext(x[c(1,3,2,4)])
+	}
+)
+
+
+
 
 
 setMethod("ext", signature(x="SpatRaster"),
@@ -71,18 +99,12 @@ setMethod("ext", signature(x="SpatRaster"),
 setMethod("ext", signature(x="SpatRasterDataset"),
 	function(x){
 		e <- methods::new("SpatExtent")
-		e@ptr <- x[1]@ptr$extent
+		e@ptr <- x@ptr$ext()
 		return(e)
 	}
 )
 
 
-setMethod("ext", signature(x="SpatRasterCollection"),
-	function(x){
-		e <- sapply(1:length(x), function(i) as.vector(ext(x[i])))
-		ext(min(e[1,]), max(e[2,]), min(e[3,]), max(e[4,]))
-	}
-)
 
 setMethod("ext<-", signature("SpatRaster", "SpatExtent"),
 	function(x, value) {
@@ -106,6 +128,7 @@ setMethod("set.ext", signature("SpatRaster"),
 		e <- ext(value)
 		x@ptr$extent <- e@ptr
 		messages(x, "set_ext")
+		invisible(TRUE)
 	}
 )
 
@@ -304,13 +327,13 @@ setMethod("$<-", "SpatExtent",
 
 
 setMethod("[", c("SpatExtent", "missing", "missing"),
-	function(x, i, j, ... , drop=FALSE) {
+	function(x, i, j) {
 		as.vector(x)
 	}
 )
 
 setMethod("[", c("SpatExtent", "numeric", "missing"),
-	function(x, i, j, ... , drop=FALSE) {
+	function(x, i, j) {
 		x <- as.vector(x)
 		x[i]
 	}

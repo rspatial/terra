@@ -75,7 +75,12 @@ std::string SpatOptions::get_def_datatype() { return def_datatype; }
 
 void SpatOptions::set_datatype(std::string d) {
 	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT2S", "INT4S", "FLT4S", "FLT8S" };
-	if (is_in_vector(d, ss)) datatype = d;
+	if (is_in_vector(d, ss)) {
+		datatype = d;
+		datatype_set = TRUE;
+	} else {
+		msg.addWarning(d + " is not a valid datatype");
+	}
 }
 std::string SpatOptions::get_datatype() {if (datatype != "") {return datatype;} else {return def_datatype;}}
 
@@ -309,13 +314,13 @@ void SpatRaster::setExtent(SpatExtent e) {
 }
 
 
-void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
-
+void SpatRaster::setExtent(SpatExtent ext, bool keepRes, bool expand, std::string snap) {
 
 	if (snap != "") {
 		ext = align(ext, snap);
-// why? breaks rectify
-//		ext = ext.intersect(getExtent());
+	}
+	if (!expand) {
+		ext = ext.intersect(getExtent());
 	}
 
 	if (keepRes) {
@@ -525,3 +530,63 @@ bool SpatCategories::concatenate(SpatCategories &x) {
 	return true;
 }
 
+
+#ifdef useRcpp
+
+void SpatProgress::init(size_t n, int nmin) {
+
+	if ((nmin <= 0) || ((int)n < nmin)) {
+		show = false;
+		return;
+	} 
+
+	show = true;
+
+	std::string bar = "|---------|---------|---------|---------|";
+	Rcpp::Rcout << "\r" << bar << "\r";
+	R_FlushConsole();
+
+	nstep = n;
+	step = 0;
+	size_t width = bar.size();
+
+	double increment = (double) width / double(nstep);
+
+	steps.resize(0);
+	steps.reserve(nstep+1);
+	for (size_t i=0; i<nstep; i++) {
+		int val = round(i * increment);
+		steps.push_back(val);
+	}
+	steps.push_back(width);
+}
+
+void SpatProgress::stepit() {
+	if (show) {
+		if (step < nstep) {
+			int n = steps[step+1] - steps[step];
+			if (n > 0) {
+				for (int i=0; i<n; i++) Rcpp::Rcout << "=";
+			}
+		} else if (step == nstep){
+			Rcpp::Rcout << "\r                                          \r";
+		}
+		step++;
+		R_FlushConsole();
+	}
+}
+
+void SpatProgress::interrupt() {
+	if (show) {
+		Rcpp::Rcout << "\r                                          \r";
+		R_FlushConsole();
+	}
+}
+
+#else 
+
+void SpatProgress::init(size_t n, int nmin) {}
+void SpatProgress::stepit() {}
+void SpatProgress::interrupt() {}
+
+#endif

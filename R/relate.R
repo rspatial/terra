@@ -16,16 +16,104 @@ setMethod("is.related", signature(x="SpatVector", y="SpatExtent"),
 	}
 )
 
+setMethod("is.related", signature(x="SpatExtent", y="SpatVector"),
+	function(x, y, relation) {
+		x <- as.polygons(x)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+
+setMethod("is.related", signature(x="SpatVector", y="SpatRaster"),
+	function(x, y, relation) {
+		y <- as.polygons(y, ext=TRUE)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+setMethod("is.related", signature(x="SpatRaster", y="SpatVector"),
+	function(x, y, relation) {
+		x <- as.polygons(x, ext=TRUE)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+
+setMethod("is.related", signature(x="SpatExtent", y="SpatRaster"),
+	function(x, y, relation) {
+		x <- as.polygons(x)
+		y <- as.polygons(y, ext=TRUE)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+setMethod("is.related", signature(x="SpatRaster", y="SpatExtent"),
+	function(x, y, relation) {
+		x <- as.polygons(x, ext=TRUE)
+		y <- as.polygons(y)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+setMethod("is.related", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y, relation) {
+		x <- as.polygons(x, ext=TRUE)
+		y <- as.polygons(y, ext=TRUE)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
 
 
 setMethod("relate", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, relation) {
-		out <- x@ptr$relate_between(y@ptr, relation)
-		x <- messages(x, "relate")
-		out[out == 2] <- NA
-		matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+	function(x, y, relation, pairs=FALSE, na.rm=TRUE) {
+		if (pairs) {
+			out <- x@ptr$related_between(y@ptr, relation[1], na.rm[1])
+			messages(x, "relate")
+			if (length(out[[1]]) == 0) {
+				cbind(id.x=0,id.y=0)[0,,drop=FALSE]
+			} else {
+				names(out) <- c("id.x", "id.y")
+				do.call(cbind, out) + 1
+			}
+		} else {
+			out <- x@ptr$related_between(y@ptr, relation[1], TRUE)
+			messages(x, "relate")
+			m <- matrix(FALSE, nrow(x), nrow(y))
+			if (length(out[[1]]) > 0) {
+				m[do.call(cbind, out) + 1] <- TRUE
+			}
+			m
+
+#			out <- x@ptr$relate_between(y@ptr, relation, TRUE, TRUE)
+#			messages(x, "relate")
+#			out[out == 2] <- NA
+#			matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+		}
 	}
 )
+
+#setMethod("which.related", signature(x="SpatVector", y="SpatVector"),
+#	function(x, y, relation) {
+#		out <- x@ptr$which_related(y@ptr, relation)
+#		x <- messages(x, "which.related")
+#		out <- do.call(cbind, out) + 1
+#		colnames(out) <- c("id.x", "id.y")
+#		out
+#	}
+#)
+
 
 
 setMethod("relate", signature(x="SpatVector", y="SpatExtent"),
@@ -43,6 +131,45 @@ setMethod("relate", signature(x="SpatExtent", y="SpatVector"),
 )
 
 
+setMethod("relate", signature(x="SpatVector", y="SpatRaster"),
+	function(x, y, relation, ...) {
+		y <- as.polygons(y, ext=TRUE)
+		relate(x, y, relation, ...)
+	}
+)
+
+setMethod("relate", signature(x="SpatRaster", y="SpatVector"),
+	function(x, y, relation, ...) {
+		x <- as.polygons(x, ext=TRUE)
+		relate(x, y, relation, ...)
+	}
+)
+
+setMethod("relate", signature(x="SpatExtent", y="SpatRaster"),
+	function(x, y, relation, ...) {
+		x <- as.polygons(x)
+		y <- as.polygons(y, ext=TRUE)
+		relate(x, y, relation, ...)
+	}
+)
+
+setMethod("relate", signature(x="SpatRaster", y="SpatExtent"),
+	function(x, y, relation, ...) {
+		x <- as.polygons(x, ext=TRUE)
+		y <- as.polygons(y)
+		relate(x, y, relation, ...)
+	}
+)
+
+setMethod("relate", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y, relation, ...) {
+		x <- as.polygons(x, ext=TRUE)
+		y <- as.polygons(y, ext=TRUE)
+		relate(x, y, relation, ...)
+	}
+)
+
+
 setMethod("relate", signature(x="SpatExtent", y="SpatExtent"),
 	function(x, y, relation, ...) {
 		x <- as.polygons(x)
@@ -53,24 +180,48 @@ setMethod("relate", signature(x="SpatExtent", y="SpatExtent"),
 
 
 setMethod("relate", signature(x="SpatVector", y="missing"),
-	function(x, y, relation, pairs=FALSE, symmetrical=FALSE) {
-		out <- x@ptr$relate_within(relation, symmetrical)
-		x <- messages(x, "relate")
-		out[out == 2] <- NA
-		if (symmetrical) {
-			class(out) <- "dist"
-			attr(out, "Size") <- nrow(x)
-			attr(out, "Diag") <- FALSE
-			attr(out, "Upper") <- FALSE
-		} else {
-			out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
-		}
+	function(x, y, relation, pairs=FALSE, na.rm=TRUE) {
+
 		if (pairs) {
-			out <- mat2wide(out, symmetrical)
+			out <- x@ptr$related_within(relation, na.rm[1])
+			messages(x, "relate")
+			if (length(out[[1]]) == 0) {
+				cbind(id.1=0,id.2=0)[0,,drop=FALSE]
+			} else {
+				names(out) <- c("id.1", "id.2")
+				do.call(cbind, out) + 1
+			}
+		} else {
+			out <- x@ptr$related_within(relation, TRUE)
+			messages(x, "relate")
+			out <- do.call(cbind, out) + 1
+			m <- matrix(FALSE, nrow(x), nrow(x))
+			m[out] <- TRUE
+			m
+			#if (symmetrical) {
+			#	as.dist(m)
+			#} else {
+			#	m
+			#}
 		}
-		out
+
+		#out <- x@ptr$relate_within(relation, symmetrical)
+		#out[out == 2] <- NA
+		#if (symmetrical) {
+		#	class(out) <- "dist"
+		#	attr(out, "Size") <- nrow(x)
+		#	attr(out, "Diag") <- FALSE
+		#	attr(out, "Upper") <- FALSE
+		#} else {
+		#	out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+		#}
+		#if (pairs) {
+		#	out <- mat2wide(out, symmetrical)
+		#}
+		#out
 	}
 )
+
 
 
 setMethod("adjacent", signature(x="SpatRaster"),
@@ -79,7 +230,7 @@ setMethod("adjacent", signature(x="SpatRaster"),
 		if (inherits(directions, "matrix")) {
 			v <- x@ptr$adjacentMat(cells, as.logical(directions), dim(directions), include)
 		} else {
-			if (pairs) include <- FALSE
+			#if (pairs) include <- FALSE
 			v <- x@ptr$adjacent(cells,  as.character(directions)[1], include)
 		}
 		messages(x, "adjacent")

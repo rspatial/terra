@@ -27,41 +27,26 @@ setClass("PackedSpatRaster",
 )
 
 
-.packVector <- function(x) {
-	vd <- methods::new("PackedSpatVector")
-	vd@type <- geomtype(x)
-	vd@crs <- as.character(crs(x))
-	stopifnot(vd@type %in% c("points", "lines", "polygons"))
-	g <- geom(x)
-	vd@coordinates <- g[, c("x", "y")]
-	j <- c(1,2, grep("hole", colnames(g)))
-	g <- g[,j]
-	i <- which(!duplicated(g))
-	vd@index <- cbind(g[i, ], start=i)
-	vd
-}
-
-#setMethod("wrap", signature(x="Spatial"),
-#	function(x) {
-#		pv <- .packVector(x)
-#		if (methods::.hasSlot(x, "data")) {
-#			pv@attributes <- x@data
-#		}
-#		pv
-#	}
-#)
-
 
 setMethod("wrap", signature(x="SpatVector"),
 	function(x) {
-		pv <- .packVector(x)
-		pv@attributes <- as.data.frame(x)
-		pv
+		vd <- methods::new("PackedSpatVector")
+		vd@type <- geomtype(x)
+		vd@crs <- as.character(crs(x))
+		#stopifnot(vd@type %in% c("points", "lines", "polygons"))
+		g <- geom(x)
+		vd@coordinates <- g[, c("x", "y"), drop=FALSE]
+		j <- c(1, 2, grep("hole", colnames(g)))
+		g <- g[ , j, drop=FALSE]
+		i <- which(!duplicated(g))
+		vd@index <- cbind(g[i, ,drop=FALSE], start=i)
+		vd@attributes <- as.data.frame(x)
+		vd
 	}
 )
 
 
-setMethod("vect", signature(x="PackedSpatVector"),
+setMethod("unwrap", signature(x="PackedSpatVector"),
 	function(x) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
@@ -87,9 +72,16 @@ setMethod("vect", signature(x="PackedSpatVector"),
 	}
 )
 
+setMethod("vect", signature(x="PackedSpatVector"),
+	function(x) {
+		unwrap(x)
+	}
+)
+
+
 setMethod("show", signature(object="PackedSpatVector"),
 	function(object) {
-		print(paste("This is a", class(object), "object. Use 'terra::vect()' to unpack it"))
+		print(paste("This is a", class(object), "object. Use 'terra::unwrap()' to unpack it"))
 	}
 )
 
@@ -124,12 +116,27 @@ setMethod("as.character", signature(x="SpatRaster"),
 
 
 setMethod("wrap", signature(x="SpatRaster"),
-	function(x) {
+	function(x, proxy=FALSE) {
 		r <- methods::new("PackedSpatRaster")
 		r@definition <- as.character(x)
-		r@values <- values(x)
+
+		opt <- spatOptions(ncopies=2)
+		can <- (!proxy) && x@ptr$canProcessInMemory(opt)
+
+		s <- sources(x)
+		if (can || (all(s == ""))) {
+			r@values <- values(x)
+		} else if (all(s != "")) {
+			r@attributes$sources <- sources(x, TRUE, TRUE)
+		} else {
+			fname <- paste0(tempfile(), ".tif")
+			x <- writeRaster(x, fname)
+			r@attributes$filename <- fname
+		}
+
 		if (any(is.factor(x))) {
 			r@attributes$levels <- cats(x)
+			r@attributes$levindex <- activeCat(x, 0)
 		}
 		v <- time(x)
 		if (any(!is.na(v))) {
@@ -148,31 +155,67 @@ setMethod("wrap", signature(x="SpatRaster"),
 )
 
 
-setMethod("rast", signature(x="PackedSpatRaster"),
+setMethod("unwrap", signature(x="PackedSpatRaster"),
 	function(x) {
+
 		r <- eval(parse(text=x@definition))
-		values(r) <- x@values
+		if (!is.null(x@attributes$filename)) {
+			rr <- rast(x@attributes$filename)
+			ext(rr) <- ext(r)
+			crs(rr) <- crs(r)
+			r <- rr
+		} else if (!is.null(x@attributes$sources)) {
+			s <- x@attributes$sources
+			u <- unique(s$sid)
+			rr <- lapply(1:length(u), function(i) {
+					ss <- s[s$sid == i, ]
+					r <- rast(ss[1,2])
+					r[[ss[,3]]]
+				})
+			rr <- rast(rr)
+			ext(rr) <- ext(r)
+			crs(rr) <- crs(r)
+			r <- rr
+		} else {
+			values(r) <- x@values
+		}
+
 		if (length(x@attributes) > 0) {
 			nms <- names(x@attributes)
-			if (all(nms %in% c("levels", "time", "units", "depth"))) {
+			if (any(nms %in% c("levels", "time", "units", "depth"))) {
 				time(r) <- x@attributes$time
 				units(r) <- x@attributes$units
 				depth(r) <- x@attributes$depth
-				levels(r) <- x@attributes$levels
-			} else {
-				levels(r) <- x@attributes
+				if (!is.null(x@attributes$levels)) {
+					if (is.null(x@attributes$levindex)) x@attributes$levindex <- 2
+					set.cats(r, layer=0, x@attributes$levels, index=x@attributes$levindex+1)
+				}
 			}
 		}
 		r
 	}
 )
 
-setMethod("show", signature(object="PackedSpatRaster"),
-	function(object) {
-		print(paste("This is a", class(object), "object. Use 'terra::rast()' to unpack it"))
+setMethod("rast", signature(x="PackedSpatRaster"),
+	function(x) {
+		unwrap(x)
 	}
 )
 
+setMethod("show", signature(object="PackedSpatRaster"),
+	function(object) {
+		print(paste("This is a", class(object), "object. Use 'terra::unwrap()' to unpack it"))
+	}
+)
+
+
+
+
+setMethod("unwrap", signature(x="ANY"),
+	function(x) {
+		x
+	}
+)
 
 
 setMethod("serialize", signature(object="SpatVector"),
@@ -193,31 +236,43 @@ setMethod("saveRDS", signature(object="SpatVector"),
 
 setMethod("serialize", signature(object="SpatRaster"),
 	function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, refhook = NULL) {
-		if (!all(inMemory(object))) {
-			opt <- spatOptions()
-			if (object@ptr$canProcessInMemory(opt)) {
-				set.values(object)
-			} else {
-				error("Cannot be loaded into memory which is required for serialize")
-			}
-		}
-		object <- wrap(object)
+		object <- wrap(object, proxy=TRUE)
 		serialize(object, connection=connection, ascii = ascii, xdr = xdr, version = version, refhook = refhook)
+	}
+)
+
+setMethod("unserialize", signature(connection="ANY"),
+	function(connection, refhook = NULL) {
+		x <- base::unserialize(connection, refhook)
+		unwrap(x)
 	}
 )
 
 
 setMethod("saveRDS", signature(object="SpatRaster"),
 	function(object, file="", ascii = FALSE, version = NULL, compress=TRUE, refhook = NULL) {
-		if (!all(inMemory(object))) {
-			opt <- spatOptions()
-			if (object@ptr$canProcessInMemory(opt)) {
-				set.values(object)
-			} else {
-				error("Cannot be loaded into memory which is required for saveRDS")
-			}
-		}
-		object = wrap(object)
+		object <- wrap(object)
 		saveRDS(object, file=file, ascii = ascii, version = version, compress=compress, refhook = refhook)
 	}
 )
+
+
+
+setMethod("readRDS", signature(file="character"),
+	function (file = "", refhook = NULL) {
+		x <- base::readRDS(file=file, refhook=refhook)
+		unwrap(x)
+	}
+)
+
+
+
+#setMethod("wrap", signature(x="Spatial"),
+#	function(x) {
+#		pv <- .packVector(x)
+#		if (methods::.hasSlot(x, "data")) {
+#			pv@attributes <- x@data
+#		}
+#		pv
+#	}
+#)

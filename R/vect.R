@@ -12,6 +12,9 @@ character_crs <- function(crs, caller="") {
 		warn(caller, "argument 'crs' should be a character value")
 		as.character(crs)
 	} else {
+		if (tolower(crs) == "local") {
+			crs = 'LOCAL_CS["Cartesian (Meter)", LOCAL_DATUM["Local Datum",0], UNIT["Meter",1.0], AXIS["X",EAST], AXIS["Y",NORTH]]'
+		}
 		crs
 	}
 }
@@ -44,7 +47,9 @@ setMethod("vect", signature(x="missing"),
 )
 
 setMethod("vect", signature(x="character"),
-	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE) {
+	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="") {
+		what <- trimws(tolower(what))
+		if (what != "") what <- match.arg(trimws(tolower(what)), c("geoms", "attributes"))
 		p <- methods::new("SpatVector")
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
@@ -60,6 +65,10 @@ setMethod("vect", signature(x="character"),
 				x <- enc2utf8(x)
 			}
 			proxy <- isTRUE(proxy)
+
+			if ((what=="attributes") && proxy) {
+				error("vect", "you cannot use 'what==attribtues' when proxy=TRUE")
+			}
 			#if (proxy) query <- ""
 			if (is.null(filter)) {
 				filter <- vect()@ptr
@@ -74,7 +83,7 @@ setMethod("vect", signature(x="character"),
 			} else {
 				extent <- as.vector(ext(extent))
 			}
-			p@ptr$read(x, layer, query, extent, filter, proxy)
+			p@ptr$read(x, layer, query, extent, filter, proxy, what)
 			if (isTRUE(crs != "")) {
 				crs(p) <- crs
 			}
@@ -86,7 +95,11 @@ setMethod("vect", signature(x="character"),
 				return(pp)
 			}
 		}
-		messages(p, "vect")
+		p <- messages(p, "vect")
+		if (what == "attributes") {
+			p <- values(p)
+		}
+		p
 	}
 )
 
@@ -125,17 +138,17 @@ setMethod("vect", signature(x="XY"), #sfg
 	z <- tolower(x[1:2])
 	x <- substr(z, 1, 3)
 	y <- substr(x, 1, 1)
-	if ((y[1] == "x") & (y[2] == "y")) return(FALSE)
-	if ((x[1] == "eas") & (x[2] == "nor")) return(FALSE)
-	if ((x[1] == "lon") & (x[2] == "lat")) return(TRUE)
-	if (grepl("lon", z[1]) & grepl("lat", z[2])) return(TRUE)
+	if ((y[1] == "x") && (y[2] == "y")) return(FALSE)
+	if ((x[1] == "eas") && (x[2] == "nor")) return(FALSE)
+	if ((x[1] == "lon") && (x[2] == "lat")) return(TRUE)
+	if (grepl("lon", z[1]) && grepl("lat", z[2])) return(TRUE)
 
-	if ((x[1] == "lat") | (x[2] == "lon")) {
-		error("vect", "longitude/latitude in the wrong order")
-	} else if ((y[1] == "y") | (y[2] == "x")) {
-		error("vect", "x/y in the wrong order")
-	} else if ((x[1] == "nor") | (x[2] == "eas")) {
-		error("vect", "easting/northing in the wrong order")
+	if ((x[1] == "lat") && (x[2] == "lon")) {
+		stop("vect", "longitude/latitude in the wrong order")
+	} else if ((y[1] == "y") && (y[2] == "x")) {
+		stop("vect", "x/y in the wrong order")
+	} else if ((x[1] == "nor") && (x[2] == "eas")) {
+		stop("vect", "easting/northing in the wrong order")
 	} else if (warn) {
 		warn("coordinate names not recognized. Expecting lon/lat, x/y, or easting/northing")
 	}
@@ -195,15 +208,15 @@ setMethod("$", "SpatVector",  function(x, name) {
 
 
 setMethod("[[", c("SpatVector", "numeric", "missing"),
-function(x, i, j, ... ,drop=FALSE) {
-	s <- .subset_cols(x, i, ..., drop=TRUE)
+function(x, i, j,drop=FALSE) {
+	s <- .subset_cols(x, i, drop=TRUE)
 	s[,,drop=drop]
 })
 
 
 setMethod("[[", c("SpatVector", "character", "missing"),
-function(x, i, j, ... ,drop=FALSE) {
-	s <- .subset_cols(x, i, ..., drop=TRUE)
+function(x, i, j, drop=FALSE) {
+	s <- .subset_cols(x, i, drop=TRUE)
 	s[,,drop=drop]
 })
 
@@ -252,8 +265,8 @@ setReplaceMethod("[", c("SpatVector", "missing", "ANY"),
 )
 
 
-setReplaceMethod("[[", c("SpatVector", "character", "missing"),
-	function(x, i, j, value) {
+setReplaceMethod("[[", c("SpatVector", "character"),
+	function(x, i, value) {
 
 		x@ptr <- x@ptr$deepcopy()
 		if (is.null(value)) {
@@ -265,11 +278,19 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 			return(x);
 		}
 
+		if (inherits(value, "data.frame")) {
+			if (ncol(value)	> 1) {
+				warn("`[[<-`", "only using the first column")
+			}
+			value <- value[,1]
+		} else if (inherits(value, "list")) {
+			value <- unlist(value)
+		}
+
 		if (NCOL(value)	> 1) {
 			warn("[[<-,SpatVector", "only using the first column")
 			value <- value[,1]
 		}
-
 		name <- i[1]
 		value <- rep(value, length.out=nrow(x))
 
@@ -316,8 +337,8 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 )
 
 
-setReplaceMethod("[[", c("SpatVector", "numeric", "missing"),
-	function(x, i, j, value) {
+setReplaceMethod("[[", c("SpatVector", "numeric"),
+	function(x, i, value) {
 		stopifnot(i > 0 && i <= ncol(x))
 		vn <- names(x)[i]
 		x[[vn]] <- value
@@ -338,7 +359,7 @@ setMethod("$<-", "SpatVector",
 
 
 setMethod("vect", signature(x="data.frame"),
-	function(x, geom=c("lon", "lat"), crs=NA, keepgeom=FALSE) {
+	function(x, geom=c("lon", "lat"), crs="", keepgeom=FALSE) {
 		if (!all(geom %in% names(x))) {
 			error("vect", "the variable name(s) in argument `geom` are not in `x`")
 		}

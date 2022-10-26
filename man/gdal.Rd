@@ -26,7 +26,7 @@ getGDALconfig(option)
   \item{lib}{character. "gdal", "proj", or "geos", or any other value to get the versions numbers of all three}
   \item{size}{numeric. The new cache size in MB}  
   \item{option}{character. GDAL configuration option name, or a "name=value" string (in which case the value argument is ignored}
-  \item{value}{character. value for GDAL configuratoin option. Use "" to reset it to its default value}
+  \item{value}{character. value for GDAL configuration option. Use "" to reset it to its default value}
 }
 
 

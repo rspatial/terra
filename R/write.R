@@ -1,9 +1,7 @@
 
 
-# not exported
-if (!isGeneric("blockSize")) {setGeneric("blockSize", function(x, ...) standardGeneric("blockSize"))}
-setMethod("blockSize", signature(x="SpatRaster"),
-	function(x, n) {
+setMethod("blocks", signature(x="SpatRaster"),
+	function(x, n=4) {
 		opt <- spatOptions("", FALSE, ncopies=n)
 		b <- x@ptr$getBlockSizeR(n, opt$memfrac)
 		b$row <- b$row + 1
@@ -13,10 +11,10 @@ setMethod("blockSize", signature(x="SpatRaster"),
 
 
 setMethod("writeStart", signature(x="SpatRaster", filename="character"),
-	function(x, filename="", overwrite=FALSE, n=4, ...) {
+	function(x, filename="", overwrite=FALSE, n=4, sources="", ...) {
 		filename <- enc2utf8(filename)
 		opt <- spatOptions(filename, overwrite, ncopies=n, ...)
-		ok <- x@ptr$writeStart(opt)
+		ok <- x@ptr$writeStart(opt, unique(sources))
 		messages(x, "writeStart")
 		b <- x@ptr$getBlockSizeWrite()
 		b$row <- b$row + 1
@@ -50,7 +48,8 @@ setMethod("writeRaster", signature(x="SpatRaster", filename="character"),
 function(x, filename="", overwrite=FALSE, ...) {
 	filename <- trimws(filename)
 	stopifnot(filename != "")
-	if (any(tools::file_ext(filename) %in% c("nc", "cdf")) || isTRUE(list(...)$filetype=="netCDF")) {
+	ftp <- list(...)$filetype
+	if (any(tools::file_ext(filename) %in% c("nc", "cdf")) && (is.null(ftp) || isTRUE(ftp=="netCDF"))) {
 		warn("consider writeCDF to write ncdf files")
 	}
 	filename <- enc2utf8(filename)

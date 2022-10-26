@@ -27,7 +27,7 @@ Set cell values of a SpatRaster or the attributes of a SpatVector. For large Spa
 \usage{
 \S4method{values}{SpatRaster,ANY}(x)<-value
 
-\S4method{setValues}{SpatRaster,ANY}(x, values, keeptime=TRUE, keepunits=TRUE, props=FALSE)
+\S4method{setValues}{SpatRaster,ANY}(x, values, keeptime=TRUE, keepunits=TRUE, keepnames=FALSE, props=FALSE)
 
 \S4method{values}{SpatVector,ANY}(x)<-value
 }
@@ -35,10 +35,11 @@ Set cell values of a SpatRaster or the attributes of a SpatVector. For large Spa
 
 \arguments{
  \item{x}{SpatRaster or SpatVector}
- \item{value}{For SpatRaster: matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. For SpatVector: data.frame, matrix, vector, or NULL}
+ \item{value}{For SpatRaster: numeric, matrix or data.frame. The length of the numeric values must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. The number of columns of the matrix or data.frame must match the number of layers of \code{x}, and the number of rows must match the number of cells of \code{x}. For SpatVector: data.frame, matrix, vector, or NULL}
  \item{values}{Same as for \code{value}}
  \item{keeptime}{logical. If \code{TRUE} the time stamps are kept}
  \item{keepunits}{logical. If \code{FALSE} the units are discarded}
+ \item{keepnames}{logical. If \code{FALSE} the layer names are replaced by the column names in \code{y} (if present)}
  \item{props}{logical. If \code{TRUE} the properties (categories and color-table) are kept}
 }
 

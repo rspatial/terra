@@ -21,7 +21,7 @@ The minimum and maximum value of a SpatRaster are returned or computed (from a f
 
 \arguments{
   \item{x}{ SpatRaster }
-  \item{force}{logical. If \code{TRUE} min and max values are recomputed even if already avaialbe }
+  \item{force}{logical. If \code{TRUE} min and max values are recomputed even if already available }
 }
 
 \value{

@@ -22,14 +22,14 @@ The sample size used can be increased with the \code{maxcell} argument. You can 
 \arguments{
   \item{target}{SpatRaster}
   \item{current}{SpatRaster}
-  \item{maxcell}{postive integer. The size of the regular sample used to compare cell values}
+  \item{maxcell}{positive integer. The size of the regular sample used to compare cell values}
   \item{...}{additional arguments passed to all.equal.numeric to compare cell values}
 }
 
 \seealso{\code{\link{compareGeom}}}
 
 \value{
-Either \code{TRUE} or a chracter vector describing the differences between target and current.
+Either \code{TRUE} or a character vector describing the differences between target and current.
 }
 
 \examples{

@@ -13,6 +13,8 @@
 \alias{Arith,SpatRaster,missing-method}
 \alias{Arith,numeric,SpatRaster-method}
 \alias{Arith,SpatRaster,numeric-method}
+\alias{Arith,logical,SpatRaster-method}
+\alias{Arith,SpatRaster,logical-method}
 \alias{Arith,missing,SpatRaster-method}
 
 
@@ -30,7 +32,7 @@ The following methods have been implemented for \code{SpatExtent}:
 for \code{(SpatExtent, SpatExtent)}: \code{+, -}, and for \code{(SpatExtent, numeric)}: \code{+, -, *, /, \%\%}
 }
 
-\section{seealso}{
+\seealso{
 \code{\link{ifel}} to conveniently combine operations and \code{\link{Math-methods}} or \code{\link{app}} to use mathematical functions not implemented by the package.
 }
 

@@ -69,7 +69,7 @@
 			}
 			if (steps[i] == "days") {
 				d[[i]] <- as.Date(d[[i]])
-			} 			
+			} 
 		}
 	}
 	d

@@ -14,7 +14,7 @@ Note that the distance unit of the buffer \code{width} parameter is meters if th
 }
 
 \usage{
-\S4method{buffer}{SpatRaster}(x, width, filename="", ...)
+\S4method{buffer}{SpatRaster}(x, width, background=0, filename="", ...)
 
 \S4method{buffer}{SpatVector}(x, width, quadsegs=10)
 }
@@ -24,11 +24,16 @@ Note that the distance unit of the buffer \code{width} parameter is meters if th
 \item{width}{numeric. Unit is meter if \code{x} has a longitude/latitude CRS, or mapunits in other cases. Should be > 0 for SpatRaster}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{background}{numeric. value to assign to cells outside the buffer. If this value is zero or FALSE, a boolean SpatRaster is returned}  
   \item{quadsegs}{positive integer. Number of line segments to use to draw a quart circle}  
 }
 
 
-\value{SpatRaster}
+\value{
+Same as \code{x} (SpatRaster or SpatVector). 
+For SpatRaster: cells inside the buffers have the value 1.
+}
+
 
 \seealso{
 \code{\link{distance}}
@@ -37,9 +42,7 @@ Note that the distance unit of the buffer \code{width} parameter is meters if th
 
 \examples{
 r <- rast(ncols=36, nrows=18)
-v <- rep(NA, ncell(r))
-v[500] <- 1
-values(r) <- v
+r[500] <- 1
 b <- buffer(r, width=5000000) 
 plot(b)
 
@@ -55,3 +58,4 @@ points(v)
 }
 
 \keyword{spatial}
+

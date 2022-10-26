@@ -4,10 +4,13 @@
 
 setMethod("sapp", signature(x="SpatRaster"),
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
-	#x <- lapply(as.list(x), fun, ..., wopt=wopt)
-	#x <- lapply(x, messages)
-	#x <- rast(x)
-	x <- rast(lapply(as.list(x), function(i, ...) messages(fun(i, ..., wopt=wopt))))
+#	x <- rast(lapply(as.list(x), function(i, ...) messages(fun(i, ..., wopt=wopt))))
+	if ((length(list(...))) > 1) {
+		x <- lapply(as.list(x), function(r, ...) fun(r, ...))
+	} else {
+		x <- lapply(as.list(x), fun)
+	}
+	x <- rast(x)
 	if (filename != "") {
 		writeRaster(x, filename, overwrite, wopt=wopt)
 	} else {
@@ -18,7 +21,8 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
 setMethod("sapp", signature(x="SpatRasterDataset"),
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
-	x <- rast(lapply(as.list(x), function(i, ...) messages(fun(i, ..., wopt=wopt))))
+	x <- lapply(as.list(x), function(r, ...) app(r, fun, ...))
+	x <- rast(x)
 	if (filename != "") {
 		writeRaster(x, filename, overwrite, wopt=wopt)
 	} else {
@@ -123,7 +127,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	ncops <- nlyr(x) / nlyr(out)
 	ncops <- ifelse(ncops > 1, ceiling(ncops), 1) * 4
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=ncops)
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=ncops, sources=sources(x))
 
 	if (doclust) {
 		for (i in 1:b$n) {
@@ -272,7 +276,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	nc <- (nlyr(x[1]) * length(x)) / nlyr(out)
 	nc <- ifelse(nc > 1, ceiling(nc), 1) * 3
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nc)
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nc, sources=unlist(sources(x)))
 
 	if (cores > 1) {
 		cls <- parallel::makeCluster(cores)

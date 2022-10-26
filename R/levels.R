@@ -1,4 +1,11 @@
 
+setMethod("droplevels", signature(x="SpatRaster"),
+	function(x) {
+		x@ptr <- x@ptr$droplevels()
+		messages(x)
+	}
+)
+
 
 setMethod("is.factor", signature(x="SpatRaster"),
 	function(x) {
@@ -53,7 +60,7 @@ setMethod("levels<-", signature(x="SpatRaster"),
 
 
 setMethod ("set.cats" , "SpatRaster",
-	function(x, layer=1, value, index=2) {
+	function(x, layer=1, value, active=2) {
 
 		if (missing(value)) {
 			error("set.cats", "value cannot be missing")
@@ -62,23 +69,12 @@ setMethod ("set.cats" , "SpatRaster",
 
 		if (is.character(layer)) {
 			layer <- match(layer, names(x))
-			if (is.na(layer)) {
+			if (any(is.na(layer))) {
 				error("set.cats", "invalid layer")
 			}
 		}
-		if (layer < 1) {
-			if (!is.list(value)) {
-				error("set.cats", "value should be a list")
-			}
-			if (length(value) != nlyr(x)) {
-				error("set.cats", "length(value) != nlyr(x)")
-			}
-			index <- rep(index, nlyr(x))
-			for (i in 1:length(value)) {
-				set.cats(x, i, value[i], index[i])
-			}
-			return(x)
-		}
+		layer <- round(layer)
+
 		if (length(layer) > 1) {
 			if (!is.list(value)) {
 				error("set.cats", "value should be a list")
@@ -86,11 +82,27 @@ setMethod ("set.cats" , "SpatRaster",
 			if (length(layer) != length(value)) {
 				error("set.cats", "length(value) != length(value)")
 			}
-			index <- rep(index, length(layer))
+			index <- rep_len(active, nlyr(x))
 			for (i in 1:length(layer)) {
-				set.cats(x, layer[i], value[i], index[i])
+				ok <- set.cats(x, layer[i], value[[i]], index[i])
+				x <- messages(x, "set.cats")
 			}
-			return(x)
+			return(invisible(ok))
+		} 
+
+		if (layer < 1) {
+			if (!is.list(value)) {
+				error("set.cats", "value should be a list")
+			}
+			if (length(value) != nlyr(x)) {
+				error("set.cats", "length(value) != nlyr(x)")
+			}
+			index <- rep_len(active, nlyr(x))
+			for (i in 1:length(value)) {
+				ok <- set.cats(x, i, value[[i]], index[i])
+				x <- messages(x, "set.cats")
+			}
+			return(invisible(ok))
 		}
 
 		layer <- layer[1]
@@ -130,7 +142,7 @@ setMethod ("set.cats" , "SpatRaster",
 				error("set.cats", "value should have at least two columns")
 			} else {
 				value[,1] <- round(value[,1])
-				if (length(unique(value[,1])) != nrow(value)) {
+				if (length(unique(value[,1,drop=TRUE])) != nrow(value)) {
 					error("set.cats", "duplicate values (IDs) supplied")
 				}
 			}
@@ -142,7 +154,7 @@ setMethod ("set.cats" , "SpatRaster",
 			}
 		}
 
-		index <- max(1, min(ncol(value), index))
+		index <- max(1, min(ncol(value), active))
 		if (setname) {
 			nms <- names(x)
 			nms[layer] <-  colnames(value)[index]
@@ -167,26 +179,43 @@ setMethod ("set.cats" , "SpatRaster",
 
 
 setMethod ("categories" , "SpatRaster",
-	function(x, layer=1, value, index) {
+	function(x, layer=1, value, active=2, ...) {
+
+		# backwards compatibility
+		if (isTRUE(active == 2)) {
+			index <- list(...)$index
+			if (!is.null(index)) {
+				active = index
+				warn("categories", "please use argument 'active' in lieu of 'index'")
+			}
+		}
+
 		x@ptr <- x@ptr$deepcopy()
-		set.cats(x, layer, value, index)
+		set.cats(x, layer, value, active)
 		x
 	}
 )
 
+
 setMethod ("activeCat" , "SpatRaster",
 	function(x, layer=1) {
 		layer = layer[1]
-			if (is.character(layer)) {
+		if (is.character(layer)) {
 			layer = which(layer == names(x))[1]
 			if (is.na(layer)) {
 				error("activeCat", "invalid layer name")
 			}
 		}
-		if (!is.factor(x)[layer]) {
-			return(NA)
+		if (layer < 1) {
+			a <- sapply(1:nlyr(x), function(i) x@ptr$getCatIndex(i-1))
+			a[a==0] <- NA
+			a
+		} else {
+			if (!is.factor(x)[layer]) {
+				return(NA)
+			}
+			x@ptr$getCatIndex(layer-1)
 		}
-		x@ptr$getCatIndex(layer-1)
 	}
 )
 
@@ -219,7 +248,7 @@ setMethod("activeCat<-" , "SpatRaster",
 )
 
 setMethod("cats" , "SpatRaster",
-	function(x, layer, active=FALSE) {
+	function(x, layer) {
 		if (!missing(layer)) {
 			x <- subset(x, layer, NSE=FALSE)
 		}
@@ -228,18 +257,14 @@ setMethod("cats" , "SpatRaster",
 			if (cats[[i]]$df$nrow == 0) {
 				return(NULL)
 			}
-			y <- .getSpatDF(cats[[i]]$df)
-			if (active) {
-				y <- y[, c(1, activeCat(x, i) + 1)]
-			}
-			y
+			.getSpatDF(cats[[i]]$df)
 		})
 	}
 )
 
 
-
-active_cats <- function(x, layer) {
+# superseded by levels(x)[[layer]]
+..active_cats <- function(x, layer) {
 	ff <- is.factor(x)
 	if (!any(ff)) {
 		return (lapply(ff, function(i) NULL))
@@ -265,8 +290,15 @@ active_cats <- function(x, layer) {
 
 setMethod ("as.numeric", "SpatRaster",
 	function(x, index=NULL, filename="", ...) {
-		stopifnot(nlyr(x) == 1)
-		if (!is.factor(x)) return(x)
+		if (!any(is.factor(x))) {
+			x <- deepcopy(x)
+			x@ptr$setValueType(0)
+			return(x)
+		}
+		if (nlyr(x) > 1) {
+			x <- lapply(1:nlyr(x), function(i) as.numeric(x[[i]]))
+			return( rast(x) )
+		}
 		g <- cats(x)[[1]]
 		if (!is.null(index)) {
 			if (!((index > 1) & (index <= ncol(g)))) {

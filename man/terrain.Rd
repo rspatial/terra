@@ -21,7 +21,7 @@ For accuracy, always compute these values on the original data (do not first cha
   \item{unit}{character. "degrees" or "radians" for the output of "slope" and "aspect"}
   \item{neighbors}{integer. Indicating how many neighboring cells to use to compute slope or aspect with. Either 8 (queen case) or 4 (rook case)}
   \item{filename}{character. Output filename}
-  \item{...}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \details{
@@ -51,6 +51,8 @@ TPI <- focal(x, w=f, fun=function(x, ...) x[5] - mean(x[-5]))
 
 rough <- focal(x, w=f, fun=function(x, ...) {max(x) - min(x)}, na.rm=TRUE)
 }
+
+\seealso{\code{\link{viewshed}}}
 
 \references{
 Burrough, P., and R.A. McDonnell, 1998. Principles of Geographical Information Systems. Oxford University Press.

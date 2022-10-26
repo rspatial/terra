@@ -48,7 +48,7 @@ setMethod("zoom", signature(x="SpatVector"),
 			grDevices::dev.new()
 		}
 		e <- as.vector(e)
-		plot(0, type="n", xlim=e[1:2], ylim=e[3:4], xlab="", ylab="")	
+		plot(0, type="n", xlim=e[1:2], ylim=e[3:4], xlab="", ylab="")
 		plot(x, add=TRUE, ...)
 		return(invisible(e))
 	}

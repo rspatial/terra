@@ -36,7 +36,7 @@
 
 
 setMethod("plotRGB", signature(x="SpatRaster"),
-function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...) {
+function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, xlim, ylim, ...) {
 
 	x <- x[[c(r, g, b, a)]]
 
@@ -85,7 +85,11 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 
 	if (!is.null(stretch)) {
 		if (stretch == "lin") {
-			x <- stretch(x, minq=0.02, maxq=0.98)
+			if (!is.null(zlim)) {
+				x <- stretch(x, smin=zlim[1], smax=zlim[2])
+			} else {
+				x <- stretch(x, minq=0.02, maxq=0.98)
+			}
 		} else {
 			x <- stretch(x, histeq=TRUE, scale=255)
 		}
@@ -135,8 +139,8 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 			}
 		}
 
-		xlim=c(bb[1], bb[2])
-		ylim=c(bb[3], bb[4])
+		if (missing(xlim)) xlim=c(bb[1], bb[2])
+		if (missing(ylim)) ylim=c(bb[3], bb[4])
 
 		plot(NA, NA, xlim=xlim, ylim=ylim, type = "n", xaxs='i', yaxs='i', xlab=xlab, ylab=ylab, asp=asp, axes=FALSE, ...)
 		if (axes) {
@@ -150,11 +154,6 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 			#graphics::axis(3, at=xticks, labels=FALSE, lwd.ticks=0)
 			#graphics::axis(4, at=yticks, labels=FALSE, lwd.ticks=0)
 			graphics::box()
-		}
-	}
-	if (!missing(interpolate)) { # for backwards compatibility
-		if (is.logical(interpolate)) {
-			smooth <- interpolate
 		}
 	}
 	graphics::rasterImage(z, bb[1], bb[3], bb[2], bb[4], interpolate=smooth, ...)

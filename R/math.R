@@ -29,7 +29,7 @@ setMethod("Math", signature(x="SpatRaster"),
 		oper <- as.vector(.Generic)[1]
 		opt <- spatOptions()
 		if (substr(oper, 1, 3) == "cum") {
-			x@ptr <- x@ptr$cum(substr(oper, 4, 10), FALSE, "", FALSE)
+			x@ptr <- x@ptr$cum(substr(oper, 4, 10), FALSE, opt)
 		} else if (oper %in% c("acos", "acosh", "asin", "asinh", "atan", "atanh", "cos", "cosh", "cospi", "sin", "sinh", "sinpi", "tan", "tanh", "tanpi")) {
 			x@ptr <- x@ptr$trig(oper, opt)
 		} else {
