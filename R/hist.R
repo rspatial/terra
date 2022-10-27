@@ -5,23 +5,25 @@
 
 
 setMethod("hist", signature(x="SpatRaster"),
-	function(x, layer, maxcell=1000000, plot=TRUE, main, ...) {
+	function(x, layer, maxcell=1000000, plot=TRUE, maxnl=16, main, ...) {
 
 		if (missing(layer)) {
 			y <- 1:nlyr(x)
 		} else if (is.character(layer)) {
 			y <- match(layer, names(x))
+			maxnl <- Inf
 		} else {
 			y <- layer
+			maxnl <- Inf
 		}
 
-		y <- unique(as.integer(round(y)))
+		y <- as.integer(round(y))
 		y <- stats::na.omit(y)
 		y <- y[ y >= 1 & y <= nlyr(x) ]
 		nl <- length(y)
 
 		if (nl == 0) {
-			error("hist", "no layers selected")
+			error("hist", "no valid layers selected")
 		}
 
 		if (missing(main)) {
@@ -30,10 +32,10 @@ setMethod("hist", signature(x="SpatRaster"),
 
 		if (nl > 1)	{
 			res <- list()
-			if (nl > 16) {
-				warn("hist", "only the first 16 layers are plotted")
-				nl <- 16
-				y <- y[1:16]
+			if (nl > maxnl) {
+				warn(paste("hist", "only the first", maxnl, "layers are used (see argument maxnl)"))
+				nl <- maxnl
+				y <- y[1:maxnl]
 			}
 
 			nc <- ceiling(sqrt(nl))
@@ -92,10 +94,12 @@ setMethod("hist", signature(x="SpatRaster"),
 #	}
 
 	if (plot) {
-		hist(v, main=main, plot=plot, ...)
+		out <- hist(v, main=main, plot=plot, ...)
 	} else {
-		hist(v, plot=plot, ...)
+		out <- hist(v, plot=plot, ...)
 	}
+	out$xname <- names(x)
+	out
 }
 
 
