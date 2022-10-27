@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-31" id="version-16-31">version 1.6-31<a class="anchor" aria-label="anchor" href="#version-16-31"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-33" id="version-16-33">version 1.6-33<a class="anchor" aria-label="anchor" href="#version-16-33"></a></h2>
 <div class="section level3">
-<h3 id="new-1-6-31">new<a class="anchor" aria-label="anchor" href="#new-1-6-31"></a></h3>
+<h3 id="new-1-6-33">new<a class="anchor" aria-label="anchor" href="#new-1-6-33"></a></h3>
 <ul><li>
 <code>[</code> and <code>[&lt;-</code> for SpatRaster now have a third index <code>k</code> for subsetting or assigning values by layer</li>
 <li>
@@ -71,9 +71,11 @@
 <code>sieve</code> filter method for SpatRaster</li>
 <li>argument <code>segments=FALSE</code> to <code>disagg&lt;SpatRaster&gt;</code>
 </li>
+<li>
+<code>sprc&lt;character&gt;</code> method to create a SpatRasterCollection from a file with subdatasets</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-6-31">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-31"></a></h3>
+<h3 id="enhancements-1-6-33">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-33"></a></h3>
 <ul><li>faster <code>mosaic</code> and <code>merge&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/issues/577" class="external-link">#577</a> by Jean-Romain</li>
 <li>
 <code>wrap&lt;SpatRaster&gt;</code> now uses file references if the data is deemed to large to all load into memory. <a href="https://github.com/rspatial/terra/issues/801" class="external-link">#801</a> by Jean-Romain</li>
@@ -94,7 +96,7 @@
 <li>the center of rotation for <code>spin</code> is now vectorized</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-31">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-31"></a></h3>
+<h3 id="bug-fixes-1-6-33">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-33"></a></h3>
 <ul><li>The annoying garbage collection messages <code>Error in x$.self$finalize() : attempt to apply non-function</code> is now suppressed in most cases. <a href="https://github.com/rspatial/terra/issues/218" class="external-link">#218</a> by Charlie Joey Hadley. This problem should go away altogether when a new version of “Rcpp” is released (ETA Jan 2023) thanks to a fix by Kevin Ushey <a href="https://github.com/rspatial/terra/issues/30" class="external-link">#30</a>
 </li>
 <li>
@@ -167,7 +169,8 @@
 <p>Released on 2022-08-07</p>
 <div class="section level3">
 <h3 id="new-1-6-7">new<a class="anchor" aria-label="anchor" href="#new-1-6-7"></a></h3>
-<ul><li>method <code>blocks</code> to guide reading raster data in chunks. <a href="https://github.com/rspatial/terra/issues/748" class="external-link">#748</a> by John Baums</li></ul></div>
+<ul><li>method <code>blocks</code> to guide reading raster data in chunks. <a href="https://github.com/rspatial/terra/issues/748" class="external-link">#748</a> by John Baums</li>
+</ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-7">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-7"></a></h3>
 <ul><li>A warning is given when writing raster values that are outside the limits of the requested datatype <a href="https://github.com/rspatial/terra/issues/752" class="external-link">#752</a> by Jim Shady</li>
@@ -294,7 +297,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="name-changes-1-5-34">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-5-34"></a></h3>
-<ul><li>delauny -&gt; delaunay <a href="https://github.com/rspatial/terra/issues/627" class="external-link">#627</a> by Derek Friend</li></ul></div>
+<ul><li>delauny -&gt; delaunay <a href="https://github.com/rspatial/terra/issues/627" class="external-link">#627</a> by Derek Friend</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5-21" id="version-15-21">version 1.5-21<small>2022-02-16</small><a class="anchor" aria-label="anchor" href="#version-15-21"></a></h2>
@@ -372,7 +376,8 @@
 <li>src -&gt; sprc</li>
 <li>simplify -&gt; simplifyGeom</li>
 </ul><p>For consistency</p>
-<ul><li>setCats -&gt; set.cats</li></ul></div>
+<ul><li>setCats -&gt; set.cats</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5-12" id="version-15-12">version 1.5-12<small>2022-01-13</small><a class="anchor" aria-label="anchor" href="#version-15-12"></a></h2>
@@ -476,7 +481,8 @@
 <div class="section level3">
 <h3 id="changes-1-4-22">changes<a class="anchor" aria-label="anchor" href="#changes-1-4-22"></a></h3>
 <ul><li>
-<code>focal</code> now has ellipses (<code>...</code>) to allow for providing additional arguments to <code>fun</code>. For this reason it does not have a <code>na.rm</code> argument anymore as that can be supplied via the ellipses. In practice this means that the default will be <code>na.rm=FALSE</code> for the standard functions such as <code>mean</code> and <code>sum</code>.</li></ul></div>
+<code>focal</code> now has ellipses (<code>...</code>) to allow for providing additional arguments to <code>fun</code>. For this reason it does not have a <code>na.rm</code> argument anymore as that can be supplied via the ellipses. In practice this means that the default will be <code>na.rm=FALSE</code> for the standard functions such as <code>mean</code> and <code>sum</code>.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-4-22">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-22"></a></h3>
 <ul><li>
@@ -562,7 +568,8 @@
 <div class="section level3">
 <h3 id="enhancements-1-4-11">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-4-11"></a></h3>
 <ul><li>the definition of <code>setValues</code> now has two arguments (<code>x</code> and <code>values</code>), just like <code>raster</code> had; to avoid reverse dependency problems with <code>raster</code>
-</li></ul></div>
+</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.4-9" id="version-14-9">version 1.4-9<small>2021-10-07</small><a class="anchor" aria-label="anchor" href="#version-14-9"></a></h2>
@@ -574,11 +581,13 @@
 <div class="section level3">
 <h3 id="enhancements-1-4-9">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-4-9"></a></h3>
 <ul><li>
-<code>project</code> and <code>resample</code> now choose the resampling method based on the first layer, using “near” for categorical data. Thanks to Matthew Lewis [#355]</li></ul></div>
+<code>project</code> and <code>resample</code> now choose the resampling method based on the first layer, using “near” for categorical data. Thanks to Matthew Lewis [#355]</li>
+</ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-4-9">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-9"></a></h3>
 <ul><li>
-<code>hist</code> failed with small samples. Issue <a href="https://github.com/rspatial/terra/issues/356" class="external-link">#356</a> by Martin Queinnec</li></ul></div>
+<code>hist</code> failed with small samples. Issue <a href="https://github.com/rspatial/terra/issues/356" class="external-link">#356</a> by Martin Queinnec</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.4-7" id="version-14-7">version 1.4-7<small>2021-10-05</small><a class="anchor" aria-label="anchor" href="#version-14-7"></a></h2>
@@ -873,7 +882,8 @@
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.1-4" id="version-11-4">version 1.1-4<small>2021-03-09</small><a class="anchor" aria-label="anchor" href="#version-11-4"></a></h2>
-<ul><li>No news recorded for this version and earlier versions</li></ul></div>
+<ul><li>No news recorded for this version and earlier versions</li>
+</ul></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
