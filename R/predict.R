@@ -194,7 +194,7 @@ setMethod("predict", signature(object="SpatRaster"),
 				}
 			}
 			if (!allna) {
-				r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
+				r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL, ...)
 				if (ncell(object) > 1) {
 					nl <- ncol(r)
 					cn <- colnames(r)
@@ -225,7 +225,7 @@ setMethod("predict", signature(object="SpatRaster"),
 				parallel::clusterExport(cores, "cpkgs", environment())
 				parallel::clusterCall(cores, function() for (i in 1:length(cpkgs)) {library(cpkgs[i], character.only=TRUE) })
 			}
-			export_args(cores, ...)
+			export_args(cores, ..., caller="predict")
 			
 		} else {
 			cores <- NULL

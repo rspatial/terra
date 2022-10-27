@@ -32,10 +32,13 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 )
 
 
-export_args <- function(cores, ...) {
+export_args <- function(cores, ..., caller="app") {
 	vals <- list(...)
 	if (length(vals) < 1) return(NULL)
-	nms <- names(list(...))
+	nms <- names(vals)
+	if (any(nms == "")) {
+		error(caller, "additional arguments must be named when using multiple cores")
+	}
 	for (i in seq_along(vals)) {
 		assign(nms[i], force(vals[i])) 
 	}

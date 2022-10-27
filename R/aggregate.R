@@ -113,7 +113,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 			doPar <- TRUE
 			cores <- parallel::makeCluster(cores)
 			on.exit(parallel::stopCluster(cores))
-			export_args(cores, ...)
+			export_args(cores, ..., caller="aggregate")
 		} else {
 			doPar <- FALSE
 		}

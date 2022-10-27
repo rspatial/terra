@@ -82,7 +82,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 
 	if (doclust) {
 		ncores <- length(cores)
-		export_args(cores, ...)		
+		export_args(cores, ..., caller="lapp")		
 		cfun <- function(i, ...)  do.call(fun, i, ...)
 		parallel::clusterExport(cores, "cfun", environment())
 		for (i in 1:b$n) {
