@@ -106,14 +106,16 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		outrows  <- c(0, cumsum(outnr))[1:length(outnr)] + 1
 		nc <- ncol(x)
 
-		if (cores > 1) {
+
+		if (inherits(cores, "cluster")) {
 			doPar <- TRUE
-			cls <- parallel::makeCluster(cores)
-			on.exit(parallel::stopCluster(cls))
-			#f <- function(v, ...) parallel::parSapply(cls, v, fun, ...)
+		} else if (cores > 1) {
+			doPar <- TRUE
+			cores <- parallel::makeCluster(cores)
+			on.exit(parallel::stopCluster(cores))
+			export_args(cores, ...)
 		} else {
 			doPar <- FALSE
-			#f <- function(v, ...) sapply(v, fun, ...)
 		}
 
 		mpl <- prod(dims[5:6]) * fun_ret
@@ -124,7 +126,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 			for (i in 1:b$n) {
 				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
 				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
-				v <- parallel::parSapply(cls, v, fun, ...)
+				v <- parallel::parSapply(cores, v, fun, ...)
 				if (length(v) != outnr[i] * mpl) {
 					error("aggregate", "this function does not return the correct number of values")
 				}

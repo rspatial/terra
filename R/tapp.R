@@ -96,6 +96,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	b <- writeStart(out, filename, overwrite, sources=sources(x), wopt=wopt)
 
 	if (doclust) {
+		export_args(cores, ...)
 		pfun <- function(x, ...) apply(x, 1, FUN=fun, ...)
 		parallel::clusterExport(cores, "pfun", environment())
 		for (i in 1:b$n) {

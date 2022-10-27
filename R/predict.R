@@ -16,7 +16,8 @@ parfun <- function(cls, d, fun, model, ...) {
 }
 
 
-.runModel <- function(model, fun, d, nl, const, na.rm, index, cores=1, cls=NULL, ...) {
+.runModel <- function(model, fun, d, nl, const, na.rm, index, cores, ...) {
+	doPar <- length(cores) > 0
 	if (!is.data.frame(d)) {
 		d <- data.frame(d)
 	}
@@ -30,8 +31,8 @@ parfun <- function(cls, d, fun, model, ...) {
 		i <- rowSums(is.na(d)) == 0
 		d <- d[i,,drop=FALSE]
 		if (nrow(d) > 0) {
-			if (cores > 1) {
-				r <- parfun(cls, d, fun, model, ...)
+			if (doPar) {
+				r <- parfun(cores, d, fun, model, ...)
 			} else {
 				r <- fun(model, d, ...)
 			}
@@ -65,8 +66,8 @@ parfun <- function(cls, d, fun, model, ...) {
 			}
 		}
 	} else {
-		if (cores > 1) {
-			r <- parfun(cls, d, fun, model, ...)
+		if (doPar) {
+			r <- parfun(cores, d, fun, model, ...)
 		} else {
 			r <- fun(model, d, ...)
 		}
@@ -210,28 +211,29 @@ setMethod("predict", signature(object="SpatRaster"),
 		levels(out) <- levs
 		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
 
-		if (cores > 1) {
-			cls <- parallel::makeCluster(cores)
-			on.exit(parallel::stopCluster(cls), add=TRUE)
-			parallel::clusterExport(cls, c("model", "fun"), environment())
+		doclust <- FALSE
+		if (inherits(cores, "cluster")) {
+			doclust <- TRUE
+		} else if (cores > 1) {
+			doclust <- TRUE
+			cores <- parallel::makeCluster(cores)
+			on.exit(parallel::stopCluster(cores), add=TRUE)
+		}
+		if (doclust) {
+			parallel::clusterExport(cores, c("model", "fun"), environment())
 			if (!is.null(cpkgs)) {
-				parallel::clusterExport(cls, "cpkgs", environment())
-				parallel::clusterCall(cls, function() for (i in 1:length(cpkgs)) {library(cpkgs[i], character.only=TRUE) })
+				parallel::clusterExport(cores, "cpkgs", environment())
+				parallel::clusterCall(cores, function() for (i in 1:length(cpkgs)) {library(cpkgs[i], character.only=TRUE) })
 			}
-			dots <- list(...)
-			if (length(dots) > 0) {
-				nms <- names(dots)
-				dotsenv <- new.env()
-				lapply(1:length(dots), function(i) assign(nms[i], dots[[i]], envir=dotsenv))
-				parallel::clusterExport(cls, nms, dotsenv)
-			}
+			export_args(cores, ...)
+			
 		} else {
-			cls <- NULL
+			cores <- NULL
 		}
 		b <- writeStart(out, filename, overwrite, wopt=wopt, n=max(nlyr(out), nlyr(object))*4, sources=sources(object))
 		for (i in 1:b$n) {
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
-			r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=cores, cls=cls, ...)
+			r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=cores, ...)
 			writeValues(out, r, b$row[i], b$nrows[i])
 		}
 		writeStop(out)
