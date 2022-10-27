@@ -32,6 +32,17 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 )
 
 
+export_args <- function(cores, ...) {
+	vals <- list(...)
+	if (length(vals) < 1) return(NULL)
+	nms <- names(list(...))
+	for (i in seq_along(vals)) {
+		assign(nms[i], force(vals[i])) 
+	}
+	parallel::clusterExport(cores, nms, envir=environment())
+}
+
+
 setMethod("app", signature(x="SpatRaster"),
 function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
@@ -115,14 +126,13 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	doclust <- FALSE
 	if (inherits(cores, "cluster")) {
 		doclust <- TRUE
-		ncores <- length(cores)
 	} else if (cores > 1) {
 		doclust <- TRUE
-		ncores <- cores
 		cores <- parallel::makeCluster(cores)
 		on.exit(parallel::stopCluster(cores), add=TRUE)
-		expnms <- names(list(...))
-		lapply(expnms, function(n) parallel::clusterExport(cores, n))
+		export_args(cores, ...)
+#		expnms <- names(list(...))
+#		parallel::clusterExport(cores, expnms)
 	}
 
 	ncops <- nlyr(x) / nlyr(out)
@@ -130,6 +140,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=ncops, sources=sources(x))
 
 	if (doclust) {
+		ncores <- length(cores)
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
 			icsz <- max(min(100, ceiling(b$nrows[i] / ncores)), b$nrows[i])
