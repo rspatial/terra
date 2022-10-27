@@ -135,7 +135,7 @@ class SpatRasterSource {
 		std::vector<bool> hasCategories;
 		std::vector<SpatCategories> cats;
 		std::vector<unsigned char> valueType;
-		std::vector<std::string> dataType;
+		//std::vector<std::string> dataType;
 
 		std::vector<bool> hasColors;
 		std::vector<SpatDataFrame> cols;

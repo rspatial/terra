@@ -819,7 +819,6 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 
 bool SpatRaster::writeStopGDAL() {
 
-
 	GDALRasterBand *poBand;
 	source[0].hasRange.resize(nlyr());
 	std::string datatype = source[0].dtype;

@@ -1133,12 +1133,10 @@ std::vector<bool> SpatRaster::hasCategories() {
 
 std::vector<std::string> SpatRaster::getDataType(bool unique) {
 	std::vector<std::string> d;
-	d.reserve(nlyr());
-	std::vector<unsigned> ns = nlyrBySource();
-	for (size_t i=0; i<ns.size(); i++) {
-		for (size_t j=0; j<ns[i]; j++) {
-			d.push_back(source[i].dataType[j]);
-		}
+	size_t n = nsrc();
+	d.reserve(n);
+	for (size_t i=0; i<n; i++) {
+		d.push_back(source[i].dtype);
 	}
 	if (unique) {
 		std::sort(d.begin(), d.end());

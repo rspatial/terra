@@ -882,7 +882,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		poBand->GetBlockSize(&bs1, &bs2);
 		s.blockcols[i] = bs1;
 		s.blockrows[i] = bs2;
-		s.dataType[i] = dtypename(GDALGetDataTypeName(poBand->GetRasterDataType()));
+		s.dtype = dtypename(GDALGetDataTypeName(poBand->GetRasterDataType()));
 
 		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
 		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
