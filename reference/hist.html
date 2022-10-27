@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">hist</span><span class="op">(</span><span class="va">x</span>, <span class="va">layer</span>, maxcell<span class="op">=</span><span class="fl">1000000</span>, plot<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">main</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">hist</span><span class="op">(</span><span class="va">x</span>, <span class="va">layer</span>, maxcell<span class="op">=</span><span class="fl">1000000</span>, plot<span class="op">=</span><span class="cn">TRUE</span>, maxnl<span class="op">=</span><span class="fl">16</span>, <span class="va">main</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -63,13 +63,16 @@
 <dd><p>SpatRaster</p></dd>
 
   <dt>layer</dt>
-<dd><p>integer (or character) to indicate layer number (or name). Can be used to subset the layers to plot in a multilayer SpatRaster</p></dd>
+<dd><p>positive integer or character to indicate layer numbers (or names). If missing, all layers up to <code>maxnl</code> are used</p></dd>
  
   <dt>maxcell</dt>
 <dd><p>integer. To regularly sample very large objects</p></dd>
 
   <dt>plot</dt>
 <dd><p>logical. Plot the histogram or only return the histogram values</p></dd>
+
+  <dt>maxnl</dt>
+<dd><p>positive integer. The maximum number of layers to use. Ignored if <code>layer</code> is not missing</p></dd>
 
   <dt>main</dt>
 <dd><p>character. Main title(s) for the plot. Default is the value of <code><a href="names.html">names</a></code></p></dd>
@@ -118,7 +121,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.05 0.15 0.25 0.35 0.45 0.55 0.65 0.75 0.85 0.95</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $xname</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "v"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lyr.1"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $equidist</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
