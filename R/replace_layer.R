@@ -20,14 +20,18 @@
 	i <- which(name == names(x))[1]
 	if (is.null(value)) {
 		if (is.na(i)) {
-				return(x)
+			return(x)
 		} else {
 			return(subset(x, -i, NSE=FALSE))
 		}
 	}
 
 	if (is.na(i)) {
-		c(x, value)
+		if (hasValues(x)) {
+			c(x, value)
+		} else {
+			value
+		}
 	} else if (nlyr(x) == 1) {
 		value$deepcopy()
 	} else if (i == 1) {

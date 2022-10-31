@@ -18,9 +18,9 @@ setMethod("hasValues", signature(x="SpatRaster"),
 #	if (factors) {
 	ff <- is.factor(x)
 	if (any(ff)) {
-		ff <- which(ff)
+		fs <- which(ff)
 		cgs <- levels(x)
-		for (f in ff) {
+		for (f in fs) {
 			cg <- cgs[[f]]
 			i <- match(v[,f], cg[,1])
 			if (!inherits(cg[[2]], "numeric")) {
