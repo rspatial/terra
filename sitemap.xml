@@ -151,7 +151,7 @@
     <loc>/reference/coords.html</loc>
   </url>
   <url>
-    <loc>/reference/costDistance.html</loc>
+    <loc>/reference/costDist.html</loc>
   </url>
   <url>
     <loc>/reference/cover.html</loc>
@@ -271,7 +271,7 @@
     <loc>/reference/global.html</loc>
   </url>
   <url>
-    <loc>/reference/gridDistance.html</loc>
+    <loc>/reference/gridDist.html</loc>
   </url>
   <url>
     <loc>/reference/headtail.html</loc>
