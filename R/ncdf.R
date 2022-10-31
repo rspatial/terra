@@ -6,7 +6,7 @@
 		return(x)
 	}
 	fname <- f
-	zvar <- varnames(x)
+	zvar <- varnames(x)[1]
 
 	dims <- 1:3
 
