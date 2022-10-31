@@ -143,6 +143,17 @@ void replace_one_char(std::string& s, char from, char to) {
 }
 
 
+int getyear(std::string s) {
+	int y;
+	try {
+		y = stoi(s);
+	} catch(...) {
+		y = 1970;
+	}
+	return y;
+}
+
+
 std::vector<int> getymd(std::string s) {
 //	s = std::regex_replace(s, std::regex("T"), " ");
 	replace_one_char(s, 'T', ' ');

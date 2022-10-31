@@ -1746,6 +1746,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		if (fc & fu) break;
 	}
 
+	bool years = false;
 	bool days = false;
 	bool hours = false;
 	bool seconds = false;
@@ -1758,6 +1759,8 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 			days = true;
 		} else if ((origin.find("seconds")) != std::string::npos) {
 			seconds = true;
+		} else if ((origin.find("years")) != std::string::npos) {
+			years = true;
 		}
 		size_t pos;
 		if ((pos = origin.find("from")) != std::string::npos) {
@@ -1794,6 +1797,10 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		} else if (seconds) {
 			offset = get_time_string(origin);
 			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]+offset);
+		} else if (years) {
+			step = "years";
+			int syear = getyear(origin);
+			for (size_t i=0; i<raw.size(); i++) out.push_back(get_time(syear+raw[i], 6, 30, 0, 0, 0));
 		} else {
 			step = "raw";
 			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]);

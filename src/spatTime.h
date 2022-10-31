@@ -35,8 +35,10 @@ class SpatTime_v {
 };
 
 
+SpatTime_t get_time(long year, unsigned month, unsigned day, unsigned hr, unsigned min, unsigned sec);
 std::vector<int> get_date(SpatTime_t x);
 std::vector<int> getymd(std::string s);
+int getyear(std::string s);
 SpatTime_t get_time_string(std::string s);
 SpatTime_t time_from_day(int syear, int smonth, int sday, double ndays);
 SpatTime_t time_from_day_noleap(int syear, int smonth, int sday, double ndays);
