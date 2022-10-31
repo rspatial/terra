@@ -11,24 +11,21 @@
 
 \description{
 
-Use a friction (cost) surface to compute the cost-distance from any cell to one or more target cells. 
+Use a friction (cost) surface to compute the cost-distance from any cell to the border of one or more target cells. 
 
 Distances are computed by summing local distances between cells, which are connected with their neighbors in 8 directions, and assuming that the path has to go through the centers of one of the neighboring raster cells. 
 
 Distances are multiplied with the friction, thus to get the cost-distance, the friction surface must express the cost per unit distance (speed) of travel. 
-
-If the coordinate reference system (CRS) of the SpatRaster is longitude/latitude (\code{+proj=longlat}) the distance is in meters divided by variable m. The default of m is 1000, expressing distance in km. Otherwise the distance is in the units of the CRS (typically meters).
-
 }
 
 \usage{
-\S4method{costDist}{SpatRaster}(x, target=0, scale=1000, maxiter=50, filename="", ...) 
+\S4method{costDist}{SpatRaster}(x, target=0, scale=1, maxiter=50, filename="", ...) 
 }
 
 \arguments{
 \item{x}{SpatRaster}
 \item{target}{numeric. value of the target cells (where to compute cost-distance to)}
-\item{scale}{numeric. Scale factor for longitude/latitude data (1 = m, 1000 = km)}
+\item{scale}{numeric. Scale factor. The cost distance is divided by this number}
 \item{maxiter}{numeric. The maximum number of iterations. Increase this number if you get the warning that \code{costDistance did not converge}}
 \item{filename}{character. output filename (optional)}
 \item{...}{additional arguments as for \code{\link{writeRaster}}}  
