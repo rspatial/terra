@@ -377,11 +377,15 @@ std::vector<bool> SpatRaster::hasRange() {
 	return(x);
 }
 
-std::vector<int> SpatRaster::getValueType() {
+std::vector<int> SpatRaster::getValueType(bool unique) {
 	std::vector<int> d;
 	d.reserve(nlyr());
 	for (size_t i=0; i<source.size(); i++) {
 		d.insert(d.end(), source[i].valueType.begin(), source[i].valueType.end());
+	}
+	if (unique) {
+		std::sort(d.begin(), d.end());
+		d.erase(std::unique(d.begin(), d.end()), d.end());	
 	}
 	return(d);
 }

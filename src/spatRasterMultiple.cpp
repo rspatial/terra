@@ -59,6 +59,22 @@ SpatExtent SpatRasterCollection::getExtent() {
 }
 
 
+std::vector<int> SpatRasterCollection::getValueType(bool unique) {
+	std::vector<int> d;
+	
+	for (size_t i=0; i<ds.size(); i++) {
+		std::vector<int> dd = ds[i].getValueType(false);		
+		d.insert(d.end(), dd.begin(), dd.end());
+	}
+	if (unique) {
+		std::sort(d.begin(), d.end());
+		d.erase(std::unique(d.begin(), d.end()), d.end());	
+	}
+	return(d);
+}
+
+
+
 /*
 void SpatRasterCollection::setExtent() { 
 	if (ds.size() == 0) {

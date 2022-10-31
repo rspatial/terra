@@ -329,12 +329,12 @@ setMethod("as.logical", signature(x="SpatRaster"),
 
 setMethod("is.bool", signature(x="SpatRaster"),
 	function(x) {
-		x@ptr$valueType == 3
+		x@ptr$valueType(FALSE) == 3
 	}
 )
 setMethod("is.int", signature(x="SpatRaster"),
 	function(x) {
-		x@ptr$valueType == 1
+		x@ptr$valueType(FALSE) == 1
 	}
 )
 

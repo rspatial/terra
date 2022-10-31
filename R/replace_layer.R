@@ -29,8 +29,10 @@
 	if (is.na(i)) {
 		if (hasValues(x)) {
 			c(x, value)
-		} else {
+		} else if (hasValues(value)) {
 			value
+		} else {
+			c(x, value)			
 		}
 	} else if (nlyr(x) == 1) {
 		value$deepcopy()

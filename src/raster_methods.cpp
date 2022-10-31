@@ -887,12 +887,6 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true, true, true);
 
-	std::vector<int> vt = getValueType();
-	std::sort(vt.begin(), vt.end());
-	vt.erase(std::unique(vt.begin(), vt.end()), vt.end());
-	if (vt.size() == 1) {
-		out.setValueType(vt[0]);
-	}
 
 	if (!out.compare_geom(x, false, true, opt.get_tolerance(), true, true, true, false)) {
 		return(out);
@@ -905,6 +899,10 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 	if (!x.readStart()) {
 		out.setError(x.getError());
 		return(out);
+	}
+	std::vector<int> vt = getValueType(true);
+	if (vt.size() == 1) {
+		out.setValueType(vt[0]);
 	}
   	if (!out.writeStart(opt, filenames())) {
 		readStop();
@@ -2246,9 +2244,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 		return out;
 	}
 
-	std::vector<int> vt = getValueType();
-	std::sort(vt.begin(), vt.end());
-	vt.erase(std::unique(vt.begin(), vt.end()), vt.end());
+	std::vector<int> vt = getValueType(true);
 	if (vt.size() == 1) {
 		out.setValueType(vt[0]);
 	}
@@ -2490,6 +2486,11 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 
 	out = out.geometry(nl, true);
 	double hxr = out.xres()/2;
+
+	std::vector<int> vt = getValueType(true);
+		if (vt.size() == 1) {
+		out.setValueType(vt[0]);
+	}
 
  	if (!out.writeStart(opt, filenames())) { return out; }
 

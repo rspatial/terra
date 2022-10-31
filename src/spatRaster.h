@@ -305,7 +305,7 @@ class SpatRaster {
 		std::vector<double> range_min();
 		std::vector<double> range_max();
 
-		std::vector<int> getValueType();
+		std::vector<int> getValueType(bool unique);
 		bool setValueType(unsigned char d);
 
 

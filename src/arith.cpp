@@ -176,8 +176,8 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 	if (logical) {
 		out.setValueType(3);
 	} else if (oper != "/") {
-		std::vector<int> v = getValueType();
-		std::vector<int> vx = x.getValueType();
+		std::vector<int> v = getValueType(false);
+		std::vector<int> vx = x.getValueType(false);
 		bool is_int = true;
 		for (size_t i = 0; i<v.size(); i++) {
 			if ((v[i] != 1) && (v[i] != 3)) { 
@@ -272,7 +272,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 	if (logical) {
 		out.setValueType(3);
 	} else if (oper != "/") {
-		std::vector<int> v = getValueType();
+		std::vector<int> v = getValueType(false);
 		bool is_int = true;
 		for (size_t i = 0; i<v.size(); i++) {
 			if ((v[i] != 1) && (v[i] != 3)) { 
@@ -414,7 +414,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 	if (logical) {
 		out.setValueType(3);
 	} else if (oper != "/") {
-		std::vector<int> v = getValueType();
+		std::vector<int> v = getValueType(false);
 		bool is_int = true;
 		for (size_t i = 0; i<v.size(); i++) {
 			if ((v[i] != 1) && (v[i] != 3)) { 
