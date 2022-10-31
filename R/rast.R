@@ -158,7 +158,7 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL) {
 
 		x <- trimws(x)
 		x <- x[x!=""]
@@ -196,11 +196,12 @@ setMethod("rast", signature(x="character"),
 		}
 
 		if (!is.null(lyrs)) {
-			r[[lyrs]]
-		} else {
-			r
+			r <- r[[lyrs]]
+		} 
+		if (!is.null(win)) {
+			window(r) <- win
 		}
-
+		r
 	}
 )
 

@@ -136,8 +136,11 @@ setMethod("crs", signature("SpatRasterDataset"),
 		x <- y
 	} else if (is.character(x)) {
 		x <- x[1]
-		if (tolower(x) == "local") {
+		lowx <- tolower(x)
+		if (lowx == "local") {
 			x = 'LOCAL_CS["Cartesian (Meter)", LOCAL_DATUM["Local Datum",0], UNIT["Meter",1.0], AXIS["X",EAST], AXIS["Y",NORTH]]'
+		} else if (lowx == "lonlat") {
+			x <- "+proj=longlat"
 		}
 	} else {
 		error("crs", "I do not know what to do with this argument (expected a character string)")

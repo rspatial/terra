@@ -29,7 +29,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 }
 
 \usage{
-\S4method{rast}{character}(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL)
+\S4method{rast}{character}(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL)
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
           ymin=-90, ymax=90, crs, extent, resolution, vals, names, time, units)
@@ -57,6 +57,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \item{lyrs}{positive integer or character to select a subset of layers (a.k.a. "bands")}
 \item{drivers}{character. GDAL drivers to consider}
 \item{opts}{character. GDAL dataset open options}
+\item{win}{SpatExtent to set a \code{\link{window}} (area of interest)}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}
