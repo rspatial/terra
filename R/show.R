@@ -473,6 +473,9 @@ setMethod("show" , "SpatRasterDataset",
 		cat("coord. ref. :" , .name_or_proj4(object), "\n")
 
 		s <- .sources(object)
+		if (length(s) > 6) {
+			s <- c(s[1:6], "...")
+		}
 		cat("source(s)   :", paste(s, collapse=", "), "\n")
 
 		ln <- names(object)
