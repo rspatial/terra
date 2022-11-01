@@ -19,7 +19,7 @@ The shortest distance to the cells with the \code{target} value is computed for 
 }
 
 \usage{
-\S4method{gridDist}{SpatRaster}(x, target=NA, scale=1, maxiter=50, filename="", ...) 
+\S4method{gridDist}{SpatRaster}(x, target=0, scale=1, maxiter=50, filename="", ...) 
 }
 
 \arguments{

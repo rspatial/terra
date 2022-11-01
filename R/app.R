@@ -317,7 +317,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			v <- lapply(1:length(x), function(s) as.vector(readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)))
 			v <- do.call(cbind, v)
 			icsz <- max(min(100, ceiling(b$nrows[i] / ncores)), b$nrows[i])
-			r <- parallel::parRapply(cls, v, fun, ..., chunk.size=icsz)
+			r <- parallel::parRapply(cores, v, fun, ..., chunk.size=icsz)
 			if (test$trans) {
 				r <- t(r)
 			}
