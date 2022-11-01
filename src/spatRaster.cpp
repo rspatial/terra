@@ -1149,6 +1149,16 @@ std::vector<std::string> SpatRaster::getDataType(bool unique) {
 	return d;
 }
 
+std::vector<std::string> SpatRaster::dataType() {
+	std::vector<std::string> d;
+	size_t n = nsrc();
+	d.reserve(n);
+	for (size_t i=0; i<n; i++) {
+		d.push_back(source[i].dtype);
+	}
+	return d;
+}
+
 
 
 

@@ -652,6 +652,7 @@ class SpatRaster {
 		std::vector<std::vector<double>> is_in_cells(std::vector<double> m, SpatOptions &opt);
 
 		std::vector<std::string> getDataType(bool unique);
+		std::vector<std::string> dataType();
 
 		SpatRaster isnot(SpatOptions &opt);
 		SpatRaster isnan(SpatOptions &opt);
