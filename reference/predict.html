@@ -58,7 +58,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">predict</span><span class="op">(</span><span class="va">object</span>, <span class="va">model</span>, fun<span class="op">=</span><span class="va">predict</span>, <span class="va">...</span>, factors<span class="op">=</span><span class="cn">NULL</span>, const<span class="op">=</span><span class="cn">NULL</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>,
+<span class="fu">predict</span><span class="op">(</span><span class="va">object</span>, <span class="va">model</span>, fun<span class="op">=</span><span class="va">predict</span>, <span class="va">...</span>, const<span class="op">=</span><span class="cn">NULL</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>,
           index<span class="op">=</span><span class="cn">NULL</span>, cores<span class="op">=</span><span class="fl">1</span>, cpkgs<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
@@ -79,9 +79,6 @@ This approach of using model predictions is commonly used in remote sensing (for
 
   <dt>const</dt>
 <dd><p>data.frame. Can be used to add a constant value as a predictor variable so that you do not need to make a SpatRaster layer for it</p></dd>
-
- <dt>factors</dt>
-<dd><p>list with levels for factor variables. The list elements should be named with names that correspond to names in <code>object</code> such that they can be matched. This argument may be omitted for standard models such as "glm" as the predict function will extract the levels from the <code>model</code> object, but it is necessary in some other cases (e.g. cforest models from the party package)</p></dd>
 
   <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code>, cells with <code>NA</code> values in the predictors are removed from the computation. This option prevents errors with models that cannot handle <code>NA</code> values. In most other cases this will not affect the output. An exception is when predicting with a model that returns predicted values even if some (or all!) variables are <code>NA</code></p></dd>
