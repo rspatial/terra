@@ -50,10 +50,6 @@ SpatRaster or SpatExtent
 Combining tiles with \code{\link{vrt}} may be more efficient. See \code{\link{mosaic}} for averaging overlapping regions. 
 }
 
-\note{
-You can use \code{merge} with \code{do.call} to merge a list of SpatRasters (see example). But note that if the list is named, these names are used by \code{merge}. So if all elements are named, there should be one element with a SpatRaster called \code{x} and another one called \code{y}. For example with \code{names(x)[1:2] <- c("x"m "y")}. You can also removed the names of the the first two elements (assuming these are SpatRasters) with \code{names(x)[1:2] <- ""}.
-}
-
 
 \examples{
 x <- rast(xmin=-110, xmax=-80, ymin=40, ymax=70, res=1, vals=1)
@@ -64,7 +60,8 @@ m1 <- merge(x, y, z)
 m2 <- merge(z, y, x)
 m3 <- merge(y, x, z)
 
-# if you have many SpatRasters make a SpatRasterCollection from a list
+# if you have many SpatRasters, it may be convenient
+# to make a SpatRasterCollection
 rlist <- list(x, y, z)
 rsrc <- sprc(rlist)
 
