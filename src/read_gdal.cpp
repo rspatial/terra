@@ -990,8 +990,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	if ((gdrv=="netCDF") || (gdrv == "HDF5"))  {
 		std::vector<std::string> metadata;
 		char **m = poDataset->GetMetadata();
-		while (*m != nullptr) {
-			metadata.push_back(*m++);
+		if (m) {
+			while (*m != nullptr) {
+				metadata.push_back(*m++);
+			}
 		}
 		s.set_names_time_ncdf(metadata, bandmeta, msg);
 	} else if (gdrv == "GRIB") {
