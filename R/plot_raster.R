@@ -568,8 +568,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				if (has.colors(x)) {
 					coltab <- coltab(x)[[1]]
 					if (is.factor(x)) {
-						#act <- activeCat(x)
-						cats <- levels(x)[[1]] # cats(x)[[1]][, c(1, act+1)]
+						cats <- levels(x)[[1]] 
 						type <- "factor"
 					} else {
 						type <- "colortable"
@@ -577,8 +576,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 					}
 				} else if (is.factor(x)) {
 					type <- "factor"
-					#act <- activeCat(x)
-					cats <- levels(x)[[1]] #cats(x)[[1]][, c(1, act+1)]
+					cats <- levels(x)[[1]]
 				} else if (is.bool(x)) {
 					type <- "factor"
 					levels(x) <- data.frame(id=0:1, value=c("False", "True"))
@@ -588,6 +586,13 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				}
 			} else {
 				type <- match.arg(type, c("continuous", "classes", "interval"))
+			}
+		}
+		if ((type == "classes") && is.null(levels) && is.factor(x)) {
+			type <- "factor"
+			cats <- cats(x)[[1]]
+			if (has.colors(x)) {
+				coltab <- coltab(x)[[1]]
 			}
 		}
 
