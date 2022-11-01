@@ -122,7 +122,10 @@ parfun <- function(cls, d, fun, model, ...) {
 		}
 	}
 
-	if (is.list(r) || is.data.frame(r)) {
+	if (is.factor(r)) {
+		levs <- levels(r)
+		data.frame(value=1:length(levs), class=levs)
+	} else if (is.list(r) || is.data.frame(r)) {
 		out <- sapply(r, levels)
 		for (i in 1:length(out)) {
 			if (!is.null(out[[i]])) {
@@ -136,7 +139,7 @@ parfun <- function(cls, d, fun, model, ...) {
 }
 
 setMethod("predict", signature(object="SpatRaster"),
-	function(object, model, fun=predict, ..., factors=NULL, const=NULL, na.rm=FALSE, index=NULL, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list()) {
+	function(object, model, fun=predict, ..., const=NULL, na.rm=FALSE, index=NULL, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list()) {
 
 		nms <- names(object)
 		if (length(unique(nms)) != length(nms)) {
