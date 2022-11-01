@@ -377,7 +377,7 @@ SpatRasterStack SpatRasterStack::subset(std::vector<unsigned> x) {
 	SpatRasterStack out;
 	for (size_t i=0; i<x.size(); i++) {
 		if (x[i] < ds.size()) {
-			out.push_back(ds[x[i]], names[i], long_names[i], units[i], true);
+			out.push_back(ds[x[i]], names[x[i]], long_names[x[i]], units[x[i]], true);
 		} 				
 	} 
 	return out;
