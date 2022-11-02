@@ -1,5 +1,6 @@
 
 .get_breaks <- function(x, n, method, r=NULL) {
+	#x <- x[!is.na(x)]
 	if (is.function(method)) {
 		if (!is.null(r)) {
 			x[(x<r[1]) | (x>r[2])] <- NA

@@ -30,7 +30,7 @@
 		stopifnot(out$range[2] > out$range[1])
 	}
 
-	breaks <- .get_breaks(Z, length(out$cols), "eqint", out$range)
+	breaks <- .get_breaks(z, length(out$cols), "eqint", out$range)
 	Z[] <- out$cols[as.integer(cut(Z, breaks, include.lowest=TRUE, right=FALSE))]
 	out$r <- as.raster(Z)
 

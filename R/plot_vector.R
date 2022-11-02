@@ -459,6 +459,9 @@ setMethod("dots", signature(x="SpatVector"),
 		v <- rep_len(v, nrow(x))
 	}
 	if (is.factor(v)) v <- as.character(v)
+	if (is.numeric(v)) {
+		v[!is.finite(v)] <- NA
+	}
 	if (!is.null(range)) {
 		range <- sort(range)
 		v[v < range[1]] <- NA

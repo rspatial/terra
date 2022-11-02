@@ -43,9 +43,10 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 			wopt$names <- paste0("focal_", txtfun)
 		}
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
-		narm <- isTRUE(list(...)$na.rm)
-		if (na.only && (!narm)) {
-			error("focal", "combining 'na.only=TRUE' with 'na.rm=FALSE' has no effect")
+		if (na.only) {
+			narm <- TRUE
+		} else {
+			narm <- isTRUE(list(...)$na.rm)
 		}
 		x@ptr <- x@ptr$focal(w, m, fillvalue, narm, na.only, na.omit, txtfun, expand, opt)
 		messages(x, "focal")
