@@ -9,7 +9,7 @@
 \alias{merge,SpatVector,data.frame-method}
 
 \title{ 
-Merge multiple SpatRaster objects or SpatExtent objects, or merge a SpatVector with a data.frame
+Merge SpatRasters, or merge a SpatVector with a data.frame
 }
 
 \description{
