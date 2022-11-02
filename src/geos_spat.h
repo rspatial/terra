@@ -90,10 +90,12 @@ static void __errorHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	size_t n = BUFSIZ + 1;
+	vsnprintf(buf, n, fmt, ap);
+//	vsprintf(buf, fmt, ap);
 	va_end(ap);
 	p = buf + strlen(buf) - 1;
-	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
+	if (strlen(buf) > 0 && *p == '\n') *p = '\0';
     errNoCall(buf); 
 	return; 
 } 
@@ -102,10 +104,12 @@ static void __warningHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	size_t n = BUFSIZ + 1;
+	vsnprintf(buf, n, fmt, ap);
+//	vsprintf(buf, fmt, ap);
 	va_end(ap);
 	p = buf + strlen(buf) - 1;
-	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
+	if (strlen(buf) > 0 && *p == '\n') *p = '\0';
     warnNoCall(buf); 
 	return;
 }
@@ -117,7 +121,9 @@ static void __errorHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	size_t n = BUFSIZ + 1;
+	vsnprintf(buf, n, fmt, ap);
+//	vsprintf(buf, fmt, ap);
 	va_end(ap);
 	p = buf + strlen(buf) - 1;
 	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
@@ -129,7 +135,9 @@ static void __warningHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	size_t n = BUFSIZ + 1;
+	vsnprintf(buf, n, fmt, ap);
+//	vsprintf(buf, fmt, ap);
 	va_end(ap);
 	p = buf + strlen(buf) - 1;
 	if(strlen(buf) > 0 && *p == '\n') *p = '\0';

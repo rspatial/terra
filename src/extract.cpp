@@ -996,7 +996,7 @@ std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 	std::vector<double> out(nlyr() * n, NAN);
 
 	unsigned ns = nsrc();
-	unsigned lyr = 0;
+//	unsigned lyr = 0;
 	size_t nc;
 	size_t off = 0;
 	for (size_t src=0; src<ns; src++) {
@@ -1036,7 +1036,7 @@ std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 						}
 					}
 				}
-				lyr++;
+				//lyr++;
 			}
 		} else {
 			//if (source[0].driver == "raster") {

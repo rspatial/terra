@@ -776,12 +776,14 @@ void SpatRaster::rasterizeLinesLength(std::vector<double> &cells, std::vector<do
 		return;
 	}
 
+/*
 	double m = 1;
 	if (!v.is_lonlat()) {
 		double tom = v.srs.to_meter();
 		tom = std::isnan(tom) ? 1 : tom;
 		m *= tom;
 	}
+*/
 
 	SpatOptions xopt(opt);
 	xopt.ncopies = std::max(xopt.ncopies, (unsigned)4) * 8;
