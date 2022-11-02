@@ -104,10 +104,6 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
     <h2>See also</h2>
     <div class="dont-index"><p>Combining tiles with <code><a href="vrt.html">vrt</a></code> may be more efficient. See <code><a href="mosaic.html">mosaic</a></code> for averaging overlapping regions.</p></div>
     </div>
-    <div id="note">
-    <h2>Note</h2>
-    <p>You can use <code>merge</code> with <code>do.call</code> to merge a list of SpatRasters (see example). But note that if the list is named, these names are used by <code>merge</code>. So if all elements are named, there should be one element with a SpatRaster called <code>x</code> and another one called <code>y</code>. For example with <code>names(x)[1:2] &lt;- c("x"m "y")</code>. You can also removed the names of the the first two elements (assuming these are SpatRasters) with <code>names(x)[1:2] &lt;- ""</code>.</p>
-    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
@@ -119,7 +115,8 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
 <span class="r-in"><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">z</span>, <span class="va">y</span>, <span class="va">x</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span>, <span class="va">z</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co"># if you have many SpatRasters make a SpatRasterCollection from a list</span></span>
+<span class="r-in"><span class="co"># if you have many SpatRasters, it may be convenient</span></span>
+<span class="r-in"><span class="co"># to make a SpatRasterCollection</span></span>
 <span class="r-in"><span class="va">rlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">rsrc</span> <span class="op">&lt;-</span> <span class="fu"><a href="src.html">sprc</a></span><span class="op">(</span><span class="va">rlist</span><span class="op">)</span></span>
 <span class="r-in"></span>
