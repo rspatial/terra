@@ -90,7 +90,7 @@ static void __errorHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	size_t n = BUFSIZ + 1;
+	size_t n = BUFSIZ;
 	vsnprintf(buf, n, fmt, ap);
 //	vsprintf(buf, fmt, ap);
 	va_end(ap);
@@ -104,7 +104,7 @@ static void __warningHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	size_t n = BUFSIZ + 1;
+	size_t n = BUFSIZ;
 	vsnprintf(buf, n, fmt, ap);
 //	vsprintf(buf, fmt, ap);
 	va_end(ap);
@@ -121,7 +121,7 @@ static void __errorHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	size_t n = BUFSIZ + 1;
+	size_t n = BUFSIZ;
 	vsnprintf(buf, n, fmt, ap);
 //	vsprintf(buf, fmt, ap);
 	va_end(ap);
@@ -135,7 +135,7 @@ static void __warningHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	size_t n = BUFSIZ + 1;
+	size_t n = BUFSIZ;
 	vsnprintf(buf, n, fmt, ap);
 //	vsprintf(buf, fmt, ap);
 	va_end(ap);
