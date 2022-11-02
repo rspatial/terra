@@ -52,13 +52,12 @@ SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
 		rows = seq_steps((int_64) 0, (int_64) nrow()-1, 50);
 	}
 	if (ncol() < 51) {
-		cols.resize(nrow());
+		cols.resize(ncol());
 		std::iota(cols.begin(), cols.end(), 0);
 	} else {
 		cols = seq_steps((int_64) 0, (int_64) ncol()-1, 50);
 	}
-
-
+	
 	std::vector<double> xcol = xFromCol(cols) ;
 	std::vector<double> yrow = yFromRow(rows) ;
 

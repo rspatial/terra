@@ -1948,6 +1948,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
     size_t ncl = ncell();
 	SpatVector pv;
 	pv.reserve(ncl);
+	pv.srs = source[0].srs;
 
     std::vector<std::vector<double>> xy;
 	if ((!values) && (!narm)) {
@@ -2032,7 +2033,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
 		}
 	}
 	readStop();
-	pv.srs = source[0].srs;
+//	pv.srs = source[0].srs;
 	return(pv);
 }
 
