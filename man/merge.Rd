@@ -15,11 +15,7 @@ Merge SpatRasters, or merge a SpatVector with a data.frame
 \description{
 Merge multiple SpatRasters to create a new SpatRaster object with a larger spatial extent. The SpatRasters must have the same origin and spatial resolution. In areas where the SpatRasters overlap, the values of the SpatRaster that is first in the sequence of arguments (or in the SpatRasterCollection) will be retained (unless \code{first=FALSE}. 
 
-See \code{\link{classify}} to merge a \code{SpatRaster} and a \code{data.frame}. 
-
 There is a also a method for merging SpatVector with a data.frame; that is, to join the data.frame to the attribute table of the SpatVector.
-
-Use \code{\link{union}} to combine two SpatExtent objects. 
 }
 
 \usage{
@@ -31,8 +27,8 @@ Use \code{\link{union}} to combine two SpatExtent objects.
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatVector}
-  \item{y}{object of same class as \code{x}}
+  \item{x}{SpatRaster, SpatRasterCollection, or SpatVector}
+  \item{y}{missing if \code{x} is a SpatRasterCollection. SpatRaster if \code{x} is a SpatRaster. data.frame if \code{x} is a SpatVector}
   \item{...}{if \code{x} is a SpatRaster: additional objects of the same class as \code{x}. If \code{x} is a SpatRasterCollection: options for writing files as in \code{\link{writeRaster}}. If \code{x} is a SpatVector, the same arguments as in \code{\link[base]{merge}}}
   \item{first}{logical. If \code{TRUE}, in areas where rasters overlap, the first value that is not \code{NA} is used. Otherwise the last value that is not \code{NA} is used}
   \item{filename}{character. Output filename}
@@ -46,7 +42,9 @@ SpatRaster or SpatVector
 }
 
 \seealso{
-Combining tiles with \code{\link{vrt}} may be more efficient. See \code{\link{mosaic}} for averaging overlapping regions. 
+Combining tiles with \code{\link{vrt}} may be more efficient than using \code{merge}. See \code{\link{mosaic}} for averaging overlapping regions. 
+
+See \code{\link{classify}} to merge a \code{SpatRaster} and a \code{data.frame} and \code{\link{union}} to combine SpatExtent objects. 
 }
 
 
