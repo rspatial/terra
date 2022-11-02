@@ -6,13 +6,14 @@
 			x[(x<r[1]) | (x>r[2])] <- NA
 		}
 		breaks <- method(x)
-	} else if (method=="cases") {
+	} else if (method[1]=="cases") {
 		if (!is.null(r)) {
 			x[(x<r[1]) | (x>r[2])] <- NA
 		}
 		n <- n+1
 		i <- seq(0, 1, length.out=n)
 		breaks <- quantile(x, i, na.rm=TRUE)
+		breaks <- unique(breaks)
 		if ((breaks[1] %% 1) != 0) {
 			breaks[1] <- breaks[1] - 0.000001
 		}
