@@ -27,13 +27,11 @@ Use \code{\link{union}} to combine two SpatExtent objects.
 
 \S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, filename="", ...)
 
-\S4method{merge}{SpatExtent,SpatExtent}(x, y, ...)
-
 \S4method{merge}{SpatVector,data.frame}(x, y, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatExtent}
+  \item{x}{SpatRaster or SpatVector}
   \item{y}{object of same class as \code{x}}
   \item{...}{if \code{x} is a SpatRaster: additional objects of the same class as \code{x}. If \code{x} is a SpatRasterCollection: options for writing files as in \code{\link{writeRaster}}. If \code{x} is a SpatVector, the same arguments as in \code{\link[base]{merge}}}
   \item{first}{logical. If \code{TRUE}, in areas where rasters overlap, the first value that is not \code{NA} is used. Otherwise the last value that is not \code{NA} is used}
@@ -44,7 +42,7 @@ Use \code{\link{union}} to combine two SpatExtent objects.
 
 
 \value{
-SpatRaster or SpatExtent
+SpatRaster or SpatVector
 }
 
 \seealso{
