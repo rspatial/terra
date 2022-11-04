@@ -1303,7 +1303,7 @@ SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 	size_t lastcol = 0;
 
 	if (std::isnan(value)) {
-		for (size_t i=0; i<bs.n; i++) {
+		for (size_t i=0; i<bs.n; i++) {	
 			bstart = i+1;
 			readBlock(v, bs, i);
 			std::vector<size_t> loff(nl);
@@ -1324,12 +1324,13 @@ SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 				}
 				if (rowfound) break;
 			}
-			
 			if (rowfound) {
 				block_cols(v, firstcol, lastcol, firstcolfound, lastcolfound, firstrow, bs.nrows[i], bs.nrows[i], nc, nl, padding);
 				break;
-			}
+			}		
 		}
+		firstrow += bs.row[bstart-1];
+				
 		if (!rowfound) {
 			SpatRaster out;
 			out.setError("only cells with NA found");
@@ -1340,11 +1341,12 @@ SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 			out.setError("only cells with NA found");
 			return out;
 		}
+		
 		lastrow = firstrow;
 		rowfound = false;
 		if (bstart == bs.n) { // no need to read v again
-			size_t i = bs.n - 1;
 			bend = bstart;
+			size_t i = bs.n - 1;
 			std::vector<size_t> loff(nl);
 			for (size_t j=0; j<nl; j++) {
 				loff[j] = j * bs.nrows[i] * nc;
@@ -1364,7 +1366,10 @@ SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 				if (rowfound) break;
 			}
 			block_cols(v, firstcol, lastcol, firstcolfound, lastcolfound, 0, lastrow, bs.nrows[i], nc, nl, padding);
+			lastrow += bs.row[i];
+
 		} else { // read blocks from bottom
+
 			for (long i=(bs.n-1); i>=0; i--) {
 				bend = i;
 				readBlock(v, bs, i);
@@ -1392,6 +1397,7 @@ SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 					break;
 				}
 			}
+			lastrow += bs.row[bend];
 		}
 		for (size_t i=bstart; i<bend; i++) {
 			if (firstcolfound && lastcolfound) break;
