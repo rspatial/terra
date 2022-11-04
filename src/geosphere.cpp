@@ -309,6 +309,8 @@ void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, doubl
 		double newlat, newlon;
 		for (size_t j=1; j<n; j++) {
 			geod_direct(&g, lat[i], lon[i], azi1, step*j, &newlat, &newlon, &azi2);
+			// avoid -180 to 180 jumps
+			if ((lon[i] == -180) && (newlon == 180)) newlon = -180;
 			xout.push_back(newlon);
 			yout.push_back(newlat);
 		}
@@ -396,6 +398,7 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 					}
 				}
 			}
+			g.computeExtent();
 			out.addGeom(g);
 		}
 	} else {

@@ -19,7 +19,7 @@ Add additional nodes to lines or polygons. This can be useful to do prior to usi
 
 \arguments{
   \item{x}{SpatVector}
-  \item{interval}{numeric larger than 1, specifying the desired minimum interval between nodes}
+  \item{interval}{postive number, specifying the desired minimum distance between nodes. The unit is meter for lonlat data, and in the linear unit of the crs for planar data}
   \item{equalize}{logical. If \code{TRUE}, new nodes are spread at equal intervals between old nodes}
 } 
 
