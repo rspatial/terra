@@ -1168,11 +1168,11 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 
 #endif
 
-const char* doubleToChar(double value){
+std::string doubleToAlmostChar(double value){
     std::stringstream ss ;
     ss << value;
-    const char* str = ss.str().c_str();
-    return str;
+	std::string out = ss.str();
+	return out;
 }
 
 SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt) {
@@ -1231,8 +1231,8 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 		if (remove_zero) {
 			x = replaceValues({0}, {1}, 1, false, NAN, false, ops);
 		}
-		papszOptions = CSLSetNameValue(papszOptions, "MAXDIST", doubleToChar(maxdist));
-		papszOptions = CSLSetNameValue(papszOptions, "FIXED_BUF_VAL", doubleToChar(1.0));
+		papszOptions = CSLSetNameValue(papszOptions, "MAXDIST", doubleToAlmostChar(maxdist).c_str());
+		papszOptions = CSLSetNameValue(papszOptions, "FIXED_BUF_VAL", doubleToAlmostChar(1.0).c_str());
 	} else if (!std::isnan(target)) {
 		x = replaceValues({target}, {NAN}, 1, false, NAN, false, ops);
 		mvals.push_back(NAN);
