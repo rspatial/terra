@@ -381,11 +381,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	bool rat = cat ? is_rat(source[0].cats[0].d) : false;
 	if (rat) {
 		if (hasCT[0]) {
-			if (opt.datatype_set && (datatype != opt.get_datatype())) {
-				addWarning("change datatype to INT1U to write the color-table");
-			} else {
-				datatype = "INT1U";
-			}
+			//if (opt.datatype_set && (datatype != opt.get_datatype())) {
+			//	addWarning("change datatype to INT1U to write the color-table");
+			//} else {
+			//	datatype = "INT1U";
+			//}
 		} else {
 			//if (opt.datatype_set) {
 			//	std::string sdt = opt.get_datatype().substr(0, 3); 
@@ -548,7 +548,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 		if ((i==0) && hasCT[i]) {
 			if (!setCT(poBand, ct[i])) {
-				addWarning("could not write the color table");
+				//addWarning("could not write the color table");
+				//should set it as the RAT instead 
 			}
 		}
 		if (hasCats[i]) {

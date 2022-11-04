@@ -9,7 +9,9 @@
 	z <- stats::na.omit(as.vector(Z))
 	n <- length(z)
 	if (n == 0) {
-		out$values = FALSE
+		#out$values = FALSE
+		out$range <- c(NA, NA)
+		out$legend_draw <- FALSE
 		return(out)
 	}
 
@@ -64,7 +66,9 @@ prettyNumbs <- function(x, digits) {
 	Z <- as.matrix(x, wide=TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 	if (all(is.na(Z))) {
-		out$values = FALSE
+		#out$values = FALSE
+		out$range <- c(NA, NA)
+		out$legend_draw <- FALSE
 		return(out)
 	}
 
@@ -156,13 +160,15 @@ prettyNumbs <- function(x, digits) {
 	#z[z<1 | z>256] <- NA
 	z[is.nan(z) | is.infinite(z)] <- NA
 	if (all(is.na(z))) {
-		out$values = FALSE
+		#out$values = FALSE
+		out$range <- c(NA, NA)
+		out$legend_draw <- FALSE
 		return(out)
 	}
 	out$levels <- sort(stats::na.omit(unique(z)))
 	if (out$all_levels) {
 		ilevels <- 1:nrow(out$cats)
-		out$levels = out$cats[,1]
+		out$levels <- out$cats[,1]
 	} else {
 		ilevels <- match(out$levels, out$cats[[1]])
 		if (any(is.na(ilevels))) {
@@ -170,24 +176,42 @@ prettyNumbs <- function(x, digits) {
 			ilevels = na.omit(ilevels)
 		}
 	}
+
 	if (!is.null(out$coltab)) {
+		# avoid multiple colors for the same category
+		if (length(unique(out$cats[ilevels,2])) < length(ilevels)) {
+			z <- out$cats[match(z, out$cats[,1]),2]
+			i <- match(unique(out$cats[ilevels,2]), out$cats[ilevels,2])	
+			j <- out$cats[ilevels[i],]
+			z <- j[match(z, j[,2]), 1]
+			out$cats <- j			
+			out$levels <- sort(stats::na.omit(unique(z)))
+			#out$coltabt = out$coltab[match(j[,1], out$coltab[,1]), ]
+			if (out$all_levels) {
+				ilevels <- 1:nrow(out$cats)
+				out$levels <- out$cats[,1]
+			} else {
+				ilevels <- match(out$levels, out$cats[[1]])
+			}
+		}
+
 		if (out$all_levels) {
 			mi <- match(out$cats[[1]], out$coltab[,1])
 			mi[is.na(mi)] <- 1
 			mc <- out$coltab[mi, ,drop=FALSE]
 			out$leg$fill <- grDevices::rgb(mc[,2], mc[,3], mc[,4], mc[,5], maxColorValue=255)
 			out$leg$legend <- na.omit(out$cats[, 2])
-		} else {
+		} else {	
 			out$levels <- out$levels[!is.na(ilevels)]
 			m <- na.omit(match(out$cats[[1]][ilevels], out$coltab[,1]))
 			out$leg$legend <- na.omit(out$cats[ilevels, 2])
 			out$coltab <- out$coltab[m, ,drop=FALSE]
 		}
+
 		out$cols <- grDevices::rgb(out$coltab[,2], out$coltab[,3], out$coltab[,4], out$coltab[,5], maxColorValue=255)
 		i <- match(z, out$coltab[,1])
 		z <- out$cols[i]
 	} else {
-
 		out$leg$legend <- unique(na.omit(out$cats[ilevels, 2]))
 		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
 		leglevs <- na.omit(unique(levlab[,2]))
@@ -212,6 +236,7 @@ prettyNumbs <- function(x, digits) {
 	if (!out$all_levels) {
 		out$leg$fill <- out$cols
 	}
+	
 
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
 	out$r <- as.raster(z)
