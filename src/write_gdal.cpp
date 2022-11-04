@@ -142,7 +142,7 @@ bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 
 bool is_rat(SpatDataFrame &d) {
 	if (d.nrow() == 0) return false;
-	if (d.ncol() > 2) return true;
+	if (d.ncol() < 2) return false;
 	if (d.itype[0] == 1) {
 		long dmin = vmin(d.iv[0], true);
 		long dmax = vmax(d.iv[0], true);
@@ -380,13 +380,13 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	bool rat = cat ? is_rat(source[0].cats[0].d) : false;
 	if (rat) {
-		if (hasCT[0]) {
+//		if (hasCT[0]) {
 			//if (opt.datatype_set && (datatype != opt.get_datatype())) {
 			//	addWarning("change datatype to INT1U to write the color-table");
 			//} else {
 			//	datatype = "INT1U";
 			//}
-		} else {
+//		} else {
 			//if (opt.datatype_set) {
 			//	std::string sdt = opt.get_datatype().substr(0, 3); 
 			//	if (sdt != "INT") {
@@ -398,7 +398,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			if (!opt.datatype_set && (driver != "GPKG")) {
 				datatype = "INT4S";
 			}
-		}
+//		}
 	} else if (hasCT[0] || cat) {
 		if (opt.datatype_set && (datatype != "INT1U")) {
 			addWarning("change datatype to INT1U to write the color-table");
