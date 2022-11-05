@@ -584,23 +584,25 @@ setMethod ("tail" , "SpatRaster",
 )
 
 
-setMethod ("str", "SpatRaster",
-	function(object, default=FALSE, ...) {
-		if (default) {
-			utils::str(object)
-		} else {
-			cat("Formal class 'SpatRaster' [package \"terra\"] with 1 slot\n  ..@ ptr:Reference class 'Rcpp_SpatRaster' [package \"terra\"] with 1 field\n")
-		}
-	}
-)
 
-setMethod ("str", "SpatVector",
-	function(object, default=FALSE, ...) {
-		if (default) {
-			utils::str(object)
-		} else {
-			cat("Formal class 'SpatVector' [package \"terra\"] with 1 slot\n  ..@ ptr:Reference class 'Rcpp_SpatVector' [package \"terra\"] with 1 field\n")
-		}
-	}
-)
+str.SpatRaster <- function(object) {
+	cat("S4 class 'SpatRaster' [package \"terra\"]\n")
+}
+setMethod("str", signature(object="SpatRaster"), str.SpatRaster)
 
+
+str.SpatVector <- function(object, ...) {
+	cat("S4 class 'SpatVector' [package \"terra\"]\n")
+}
+setMethod("str", signature(object="SpatVector"), str.SpatVector)
+
+
+str.SpatExtent <- function(object, ...) {
+	cat("S4 class 'SpatExtent' [package \"terra\"]\n")
+}
+setMethod("str", signature(object="SpatExtent"), str.SpatExtent)
+
+str.SpatGraticule <- function(object, ...) {
+	cat("S4 class 'SpatGraticule' [package \"terra\"]\n")
+}
+setMethod("str", signature(object="SpatGraticule"), str.SpatGraticule)

@@ -15,7 +15,8 @@ There are other help files for plotting a \code{\link[terra:plot]{SpatRaster}}, 
 
 \usage{
 \S4method{plot}{SpatGraticule,missing}(x, y, background=NULL, col="black", mar=NULL, labels=TRUE,
-	retro=FALSE, lab.loc=c(1,1), lab.lon=NULL, lab.lat=NULL, lab.cex=0.65, lab.col="black", ...)
+	retro=FALSE, lab.loc=c(1,1), lab.lon=NULL, lab.lat=NULL, lab.cex=0.65, 
+	lab.col="black", box=FALSE, box.col="black", ...)
 }
 
 \arguments{

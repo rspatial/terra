@@ -76,6 +76,20 @@ setMethod("crop", signature(x="SpatGraticule"),
 	}
 )
 
+setMethod("erase", signature(x="SpatGraticule", y="SpatVector"),
+	function(x, y) {
+		v <- vect()
+
+		v@ptr <- x@ptr
+		v <- erase(v, y)
+		x@ptr <- v@ptr
+
+		v@ptr <- x@box
+		v <- erase(v, y)
+		x@box <- v@ptr
+		x
+	}
+)
 
 grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col) {
 

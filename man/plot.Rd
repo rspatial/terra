@@ -20,7 +20,8 @@ There are other help files for plotting a \code{\link[terra:plot_vector]{SpatVec
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), 
     maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE,
 	breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, 
-	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, background=NULL, ...)
+	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, background=NULL,
+	...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend, ...)
 

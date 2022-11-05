@@ -1,4 +1,4 @@
-# version 1.6-36
+# version 1.6-38
 
 ## new
 
@@ -13,6 +13,7 @@
 - `sieve` filter method for SpatRaster
 - argument `segments=FALSE` to `disagg<SpatRaster>`
 - `sprc<character>` method to create a SpatRasterCollection from a file with subdatasets
+- `graticule` function to create a SpatGraticule and related methods `plot<SpatGraticule>` and `crop<SpatGraticule>`
 
 
 ## enhancements
@@ -40,6 +41,7 @@
 - `wrap<SpatVector>` failed if there was a single point geometry [#815](https://github.com/rspatial/terra/issues/815) by Patrick Schaefer
 - `extract<SpatRaster>` with `weights=TRUE` did not return values [#814](https://github.com/rspatial/terra/issues/814) by Jean-Luc Dupouey. 
 - `x[["newname"]] <- r` for SpatRasters `x` and `r` did not work [#795](https://github.com/rspatial/terra/issues/795) by Jim Shady
+- fixed support for some non-conventional netCDF files [#869](https://github.com/rspatial/terra/issues/869) by Mike Sumner, [#864](https://github.com/rspatial/terra/issues/864) by eleanorecc, and [#851](https://github.com/rspatial/terra/issues/851) by Philippe Massicotte.
 
 
 # version 1.6-17

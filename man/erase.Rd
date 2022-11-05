@@ -6,6 +6,7 @@
 \alias{erase,SpatVector,SpatVector-method}
 \alias{erase,SpatVector,missing-method}
 \alias{erase,SpatVector,SpatExtent-method}
+\alias{erase,SpatGraticule,SpatVector-method}
 
 \title{ Erase parts of a SpatVector object}
 
