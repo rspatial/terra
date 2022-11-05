@@ -33,7 +33,7 @@ SpatGraticule
 g <- graticule(30, crs="+proj=robin")
 g
 
-plot(g, background="azure", col="red")
+plot(g, background="azure", col="red", inclat=seq(1,13,2), lty=2)
 }
 
 \keyword{methods}

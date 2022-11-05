@@ -40,7 +40,8 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
 
 \S4method{plot}{SpatExtent,missing}(x, y, ...)
 
-\S4method{plot}{SpatGraticule,missing}(x, y, background=NA, col="black", mar=NULL, ...)
+\S4method{plot}{SpatGraticule,missing}(x, y, background=NULL, col="black", mar=c(1,1,1,1), 
+	labels=TRUE, retro=FALSE, labloc=c(1,1), inclon=NULL, inclat=NULL, ...)
 }
 
 \arguments{
@@ -76,12 +77,18 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
   \item{ext}{SpatExtent. Can be use instead of xlim and ylim to set the extent of the plot}
   \item{reset}{logical. If \code{TRUE} add the margins (see argument \code{mar}) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  \code{\link{lines}}}
   \item{values}{Either a vector with values to be used for plotting or a two-column data.frame, where the first column matches a variable in \code{x} and the second column has the values to be plotted}
-  \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and additional graphical arguments}  
+  \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and/or additional graphical arguments}  
+  
+  \item{labels}{logical. If \code{TRUE}, show graticule labels}
+  \item{retro}{logical. If \code{TRUE}, show "retro" instead of decimal labels with the graticule}
+  \item{labloc}{numeric. The first number indicates where the longitude graticule labels should be drawn (1=bottom, 2=top, NA=not drawn, any other number=top and bottom). The second number indicates where the latitude graticule labels should be drawn (1=left, 2=right, NA=not drawn, any other number=left and right)
+  \item{inclon}{positive integers between 1 and the number of labels, indicating which longitude graticule labels should be included}
+  \item{inclat}{positive integers between 1 and the number of labels, indicating which latitude graticule labels should be included}
 }
 
 \seealso{
  \code{\link{points}}, \code{\link{lines}}, \code{\link{polys}}, \code{\link{image}}, \code{scatter\link[terra:scatter]{plot}}, 
- scale bar: \code{\link{sbar}}, north arrow: \code{\link{north}}
+ scale bar: \code{\link{sbar}}, north arrow: \code{\link{north}, graticule: \code{\link{graticule}}}
 }
 
 \examples{ 

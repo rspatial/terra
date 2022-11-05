@@ -76,20 +76,107 @@ setMethod("crop", signature(x="SpatGraticule"),
 )
 
 
-setMethod("plot", signature(x="SpatGraticule", y="missing"),
-	function(x, y, background=NULL, col="black", mar=c(1,1,1,1), ...) {
-		v <- vect()
-		if (!is.null(background)) {
-			v@ptr <- x@box
-			plot(v, col=background, border=NA, axes=FALSE, mar=mar)
-			v@ptr <- x@ptr
+grat_labels <- function(v, retro, atlon, atlat, labloc) {
+
+	left <- right <- top <- bottom <- FALSE
+	labloc <- rep_len(labloc, 2)
+	if (!is.na(labloc[1])) {
+		if (labloc[1] == 1) {
+			bottom <- TRUE
+		} else if (labloc[1] == 2) {
+			top <- TRUE
 		} else {
-			v@ptr <- x@ptr
-			plot(v, axes=FALSE, type="n", mar=mar)
+			bottom <- TRUE
+			top <- TRUE	
 		}
+	}
+	if (!is.na(labloc[2])) {
+		if (labloc[2] == 1) {
+			left <- TRUE
+		} else if (labloc[2] == 2) {
+			right <- TRUE
+		} else {
+			left <- TRUE
+			right <- TRUE	
+		}
+	}
+
+	if (left || right) {
+		x <- v[v$h, ]
+		g <- geom(x)
+		if (retro) {
+			labs <- retro_labels(x$lat, lat=TRUE)
+		} else {
+			labs <- paste0(x$lat,"\u00B0")		
+		}	
+		if (!is.null(atlat)) {
+			atlat <- round(na.omit(atlat))
+			atlat <- atlat[(atlat > 0) & (atlat <= length(labs))] 
+			labs <- labs[atlat]
+		}
+		if (left) {
+			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
+			if (!is.null(atlat)) {
+				a <- a[atlat, ]
+			}
+			text(a, labels=labs, pos=2, offset=.25, cex=.65, halo=TRUE, xpd=TRUE)
+		}
+		if (right) {
+			g <- g[nrow(g):1, ]
+			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
+			if (!is.null(atlat)) {
+				a <- a[atlat, ]
+			}
+			text(a, labels=labs, pos=4, offset=.25, cex=.65, halo=TRUE, xpd=TRUE)
+		}
+	}
+	if (top || bottom) {
+		x <- v[!v$h, ]
+		g <- geom(x)
+		if (retro) {
+			labs <- retro_labels(x$lon, lat=FALSE)
+		} else {
+			labs <- paste0(x$lon,"\u00B0")		
+		}
+		if (!is.null(atlon)) {
+			atlon <- round(na.omit(atlon))
+			atlon <- atlon[(atlon > 0) & (atlon <= length(labs))] 
+			labs <- labs[atlon]
+		}
+		if (bottom) {
+			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
+			if (!is.null(atlon)) {
+				a <- a[atlon, ]
+			}
+			text(a, labels=labs, pos=1, offset=.25, cex=.65, halo=TRUE, xpd=TRUE)
+		}
+		if (top) {
+			g <- g[nrow(g):1, ]
+			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
+			if (!is.null(atlon)) {
+				a <- a[atlon, ]
+			}
+			text(a, labels=labs, pos=3, offset=.25, cex=.65, halo=TRUE, xpd=TRUE)
+		}
+	}	
+}	
+
+
+setMethod("plot", signature(x="SpatGraticule", y="missing"),
+	function(x, y, background=NULL, col="black", mar=c(1,1,1,1), labels=TRUE, retro=FALSE, labloc=c(1,1), inclon=NULL, inclat=NULL, ...) {
+		v <- vect()
+		v@ptr <- x@box
+		if (!is.null(background)) {
+			plot(v, col=background, border=NA, axes=FALSE, mar=mar)
+		} else {
+			plot(ext(v), border=NA, axes=FALSE, mar=mar)
+		}
+		v@ptr <- x@ptr
 		lines(v, col=col, ...)
+		if (labels) grat_labels(v, retro, inclon, inclat, labloc)
 	}
 )
+
 
 setMethod("lines", signature(x="SpatGraticule"),
 	function(x, ...) {

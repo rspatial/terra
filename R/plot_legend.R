@@ -67,6 +67,7 @@ retro_labels <- function(x, lat=TRUE) {
 	} else {
 		h <- c("W", "", "E")[sign(d)+2]
 	}
+	d <- abs(d)
 	if (all(m==0)) {
 		r <- paste0(d, "\u00B0" , h)
 	} else if (any(s != 0)){
