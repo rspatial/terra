@@ -64,16 +64,16 @@ RS_locator <- function(n, type, id=FALSE, pch=20, ...) {
 }
 
 setMethod("draw", signature(x="character"),
-    function(x="extent", col="red", lwd=2, id=FALSE, n=1000, ...){
+    function(x="extent", col="red", lwd=2, id=FALSE, n=1000, xpd=TRUE, ...){
 		x <- match.arg(tolower(x), c("extent", "polygon", "lines", "points"))
 		if (x == "extent") {
-			.drawExt(col=col, lwd=lwd, ...)
+			.drawExt(col=col, lwd=lwd, xpd=xpd, ...)
 		} else if (x == "polygon") {
-			.drawPol(n, col=col, lwd=lwd, id=id, ...)
+			.drawPol(n, col=col, lwd=lwd, id=id, xpd=xpd, ...)
 		} else if (x == "lines") {
-			.drawLin(n, col=col, lwd=lwd, id=id, ...)
+			.drawLin(n, col=col, lwd=lwd, id=id, xpd=xpd, ...)
 		} else if (x == "points" || x == "multipoints" ) {
-			.drawPts(n, col=col, id=id, ...)
+			.drawPts(n, col=col, id=id, xpd=xpd, ...)
 		}
 	}
 )
