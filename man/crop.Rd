@@ -7,6 +7,8 @@
 \alias{crop,SpatRasterDataset-method}
 \alias{crop,SpatRasterCollection-method}
 \alias{crop,SpatVector-method}
+\alias{crop,SpatGraticule-method}
+
 
 \title{Cut out a geographic subset}
 
@@ -26,6 +28,8 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
 \S4method{crop}{SpatRasterCollection}(x, y, snap="near", extend=FALSE)
 
 \S4method{crop}{SpatVector}(x, y)
+
+\S4method{crop}{SpatGraticule}(x, y)
 }
 
 \arguments{

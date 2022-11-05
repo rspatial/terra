@@ -15,7 +15,7 @@ The object returned, a SpatGraticule, can be plotted with \code{plot} and \code{
 }
 
 \usage{
-graticule(lon, lat=lon, crs="+proj=longlat")
+graticule(lon=30, lat=30, crs="+proj=longlat")
 }
 
 \arguments{
@@ -29,11 +29,16 @@ SpatGraticule
 }
 
 
+\seealso{
+\code{\link[terra:plot_graticule]{plot<SpatGraticule>}}.
+}
+
 \examples{
-g <- graticule(30, crs="+proj=robin")
+g <- graticule(60, 30, crs="+proj=robin")
 g
 
-plot(g, background="azure", col="red", inclat=seq(1,13,2), lty=2)
+graticule(90, c(-90, -60, -23.5, 0, 23.5, 60, 90), crs="+proj=robin")
+
 }
 
 \keyword{methods}

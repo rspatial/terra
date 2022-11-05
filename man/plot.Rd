@@ -1,59 +1,40 @@
-\name{plot}
+\name{plot_raster}
 
 \docType{methods}
 
 \alias{plot}
+
 \alias{plot,SpatRaster,missing-method}
 \alias{plot,SpatRaster,numeric-method}
 \alias{plot,SpatRaster,character-method}
-\alias{plot,SpatVector,missing-method}
-\alias{plot,SpatVector,numeric-method}
-\alias{plot,SpatVector,data.frame-method}
-\alias{plot,SpatVector,character-method}
-\alias{plot,SpatVectorProxy,missing-method}
-\alias{plot,SpatExtent,missing-method}
-\alias{plot,SpatGraticule,missing-method}
 
-\title{Make a map}
+\title{Make a map (SpatRaster)}
 
 \description{
-Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lines}} to add a SpatVector to an existing map.
+Plot a SpatRaster. 
+
+There are other help files for plotting a \code{\link[terra:plot_vector]{SpatVector}}, \code{\link[terra:plot_extent]{SpatExtent}}, or \code{\link[terra:plot_graticule]{SpatGraticule}}
 }
 
 \usage{
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), 
     maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE,
 	breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, 
-	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, ...)
+	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, background=NULL, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend, ...)
 
 \S4method{plot}{SpatRaster,character}(x, y, ...)
-
-\S4method{plot}{SpatVector,character}(x, y, col, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, 
-    main=y, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
-    sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, ...)
-
-\S4method{plot}{SpatVector,numeric}(x, y, ...)
-
-\S4method{plot}{SpatVector,missing}(x, y, values=NULL, ...)
-
-\S4method{plot}{SpatExtent,missing}(x, y, ...)
-
-\S4method{plot}{SpatGraticule,missing}(x, y, background=NULL, col="black", mar=c(1,1,1,1), 
-	labels=TRUE, retro=FALSE, labloc=c(1,1), inclon=NULL, inclat=NULL, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatVector}
+  \item{x}{SpatRaster}
   \item{y}{missing or positive integer or name indicating the layer(s) to be plotted}
   \item{col}{character. Colors. The default is \code{rev(grDevices::terrain.colors(50))}. If \code{x} is a \code{SpatRaster}, it can also be a \code{data.frame} with two columns (value, color) to get a "classes" type legend or with three columns (from, to, color) to get an "interval" type legend}
   \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval". If not specified, the type is chosen based on the data}
   \item{mar}{numeric vector of length 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use \code{mar=NA} to not set the margins}
   \item{legend}{logical or character. If not \code{FALSE} a legend is drawn. The character value can be used to indicate where the legend is to be drawn. For example "topright" or "bottomleft". Use \code{plg} for more refined placement. Not supported for continuous legends (the default for raster data)}
   \item{axes}{logical. Draw axes?}
-  \item{buffer}{logical. If \code{TRUE} the plotting area is slightly larger than the extent of \code{x}}
-  \item{background}{background color. Default is no color (white)}
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}. Argument \code{digits} can be used to set the number of digits to print (after the decimal point for a continuous legend)}
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{side}, \code{tick} and \code{lab} can be used to indicate for which of the four axes to draw a line (side), tick mark, or label. The default is \code{c(1:4)} for side and \code{1:2} for the other two. If \code{side} is changed the other two default to that value. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
@@ -66,33 +47,28 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
   \item{fun}{function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector \code{v}, you could do \code{fun=function() lines(v)}. The function may have one argument, representing the the layer that is plotted (1 to the number of layers) }  
   \item{colNA}{character. color for the NA values}
   \item{alpha}{Either a single numeric between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque) or a SpatRaster with values between 0 and 1 to set the transparency by cell. To set the transparency for a given color, set it to the colors directly}
-  \item{sort}{logical. If \code{TRUE} legends with categorical values are sorted. If \code{x} is a \code{SpatVector} you can also supply a vector of the unique values, in the order in which you want them to appear in the legend}
+  \item{sort}{logical. If \code{TRUE} legends with categorical values are sorted}
   \item{decreasing}{logical. If \code{TRUE}, legends are sorted in decreasing order}
   \item{grid}{logical. If \code{TRUE} grid lines are drawn. Their properties such as type and color can be set with the \code{pax} argument}
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
   \item{main}{character. Main plot titles (one for each layer to be plotted)}
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)}
-  \item{add}{logical. If \code{TRUE} add the object to the current plot}
   \item{ext}{SpatExtent. Can be use instead of xlim and ylim to set the extent of the plot}
-  \item{reset}{logical. If \code{TRUE} add the margins (see argument \code{mar}) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  \code{\link{lines}}}
-  \item{values}{Either a vector with values to be used for plotting or a two-column data.frame, where the first column matches a variable in \code{x} and the second column has the values to be plotted}
+  \item{reset}{logical. If \code{TRUE} add the margins (see argument \code{mar}) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  \code{\link{lines}})}
+  \item{add}{logical. If \code{TRUE} add the object to the current plot}
+  \item{background}{background color. Default is no color}
   \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and/or additional graphical arguments}  
-  
-  \item{labels}{logical. If \code{TRUE}, show graticule labels}
-  \item{retro}{logical. If \code{TRUE}, show "retro" instead of decimal labels with the graticule}
-  \item{labloc}{numeric. The first number indicates where the longitude graticule labels should be drawn (1=bottom, 2=top, NA=not drawn, any other number=top and bottom). The second number indicates where the latitude graticule labels should be drawn (1=left, 2=right, NA=not drawn, any other number=left and right)
-  \item{inclon}{positive integers between 1 and the number of labels, indicating which longitude graticule labels should be included}
-  \item{inclat}{positive integers between 1 and the number of labels, indicating which latitude graticule labels should be included}
 }
 
 \seealso{
  \code{\link{points}}, \code{\link{lines}}, \code{\link{polys}}, \code{\link{image}}, \code{scatter\link[terra:scatter]{plot}}, 
- scale bar: \code{\link{sbar}}, north arrow: \code{\link{north}, graticule: \code{\link{graticule}}}
+ scale bar: \code{\link{sbar}}, north arrow: \code{\link{north}}
+
+ plot a \code{\link[terra:plot_vector]{SpatVector}}, \code{\link[terra:plot_extent]{SpatExtent}}, or \code{\link[terra:plot_graticule]{SpatGraticule}}
 }
 
 \examples{ 
-## raster
 f <- system.file("ex/elev.tif", package="terra") 
 r <- rast(f)
 plot(r)
@@ -150,30 +126,6 @@ plot(c(x,y), col=cols)
 r  = rast(nrows=10, ncols=10, vals=1:100)
 dr = data.frame(from=c(5,33,66,150), to=c(33, 66, 95,200), col=rainbow(4))
 plot(r, col=dr)
-
-### SpatVector 
-
-f <- system.file("ex/lux.shp", package="terra")
-v <- vect(f)
-
-plot(v)
-
-plot(v, 2, pax=list(side=1:2), plg=list(x=6.2, y=50.2, cex=1.2))
-
-plot(v, 4, pax=list(side=1:2), plg=list(x=6.2, y=50.2, ncol=2), main="")
- 
-plot(v, 1, plg=list(x=5.9, y=49.37, horiz=TRUE, cex=1.1), main="", mar=c(5,2,0.5,0.5))
-
-plot(v, density=1:12, angle=seq(18, 360, 20), col=rainbow(12))
-
-plot(v, "NAME_2", col=rainbow(12), border=c("gray", "blue"), lwd=3, type="classes")
-
-plot(v, "AREA", type="interval", breaks=3, mar=c(3.1, 3.1, 2.1, 3.1),
-  plg=list(x="topright"), main="")
-
-plot(v, "AREA", type="interval", breaks=c(0,200,250,350), mar=c(2,2,2,2), 
-  plg=list(legend=c("<200", "200-250", ">250"), cex=1, 
-  bty="o", x=6.4, y=50.125, box.lwd=2, bg="light yellow", title="My Legend"))
 
 }
 

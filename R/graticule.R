@@ -3,15 +3,16 @@
 # Version 1
 # License GPL v3
 
-graticule <- function(lat, lon=lat, crs="+proj=longlat") {
+graticule <- function(lon=30, lat=30, crs="+proj=longlat") {
 
 	interval <- 100
-
+	
 	if (length(lon) == 1) {
 		lon <- seq(-180, 180, lon)
 	} else {
 		lon <- sort(lon)
 	}
+	
 	if (length(lat) == 1) {
 		lat <- seq(-90, 90, lat)
 	} else {
@@ -47,18 +48,18 @@ graticule <- function(lat, lon=lat, crs="+proj=longlat") {
 }
 
 
-setMethod("project", signature(x="SpatGraticule"),
-	function(x, y) {
-		v <- vect()
-		v@ptr <- x@ptr
-		v <- project(v, y)
-		x@ptr <- v@ptr
-		v@ptr <- x@box
-		v <- project(v, y)
-		x@box <- v@ptr
-		x
-	}
-)
+#setMethod("project", signature(x="SpatGraticule"),
+#	function(x, y) {
+#		v <- vect()
+#		v@ptr <- x@ptr
+#		v <- project(v, y)
+#		x@ptr <- v@ptr
+#		v@ptr <- x@box
+#		v <- project(v, y)
+#		x@box <- v@ptr
+#		x
+#	}
+#)
 
 setMethod("crop", signature(x="SpatGraticule"),
 	function(x, y) {
@@ -76,7 +77,7 @@ setMethod("crop", signature(x="SpatGraticule"),
 )
 
 
-grat_labels <- function(v, retro, atlon, atlat, labloc) {
+grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col) {
 
 	left <- right <- top <- bottom <- FALSE
 	labloc <- rep_len(labloc, 2)
@@ -119,7 +120,7 @@ grat_labels <- function(v, retro, atlon, atlat, labloc) {
 			if (!is.null(atlat)) {
 				a <- a[atlat, ]
 			}
-			text(a, labels=labs, pos=2, offset=.25, cex=.65, halo=TRUE, xpd=TRUE)
+			text(a, labels=labs, pos=2, offset=.25, cex=cex, halo=TRUE, xpd=TRUE, col=col)
 		}
 		if (right) {
 			g <- g[nrow(g):1, ]
@@ -127,7 +128,7 @@ grat_labels <- function(v, retro, atlon, atlat, labloc) {
 			if (!is.null(atlat)) {
 				a <- a[atlat, ]
 			}
-			text(a, labels=labs, pos=4, offset=.25, cex=.65, halo=TRUE, xpd=TRUE)
+			text(a, labels=labs, pos=4, offset=.25, cex=cex, halo=TRUE, xpd=TRUE, col=col)
 		}
 	}
 	if (top || bottom) {
@@ -148,7 +149,7 @@ grat_labels <- function(v, retro, atlon, atlat, labloc) {
 			if (!is.null(atlon)) {
 				a <- a[atlon, ]
 			}
-			text(a, labels=labs, pos=1, offset=.25, cex=.65, halo=TRUE, xpd=TRUE)
+			text(a, labels=labs, pos=1, offset=.25, cex=cex, halo=TRUE, xpd=TRUE, col=col)
 		}
 		if (top) {
 			g <- g[nrow(g):1, ]
@@ -156,24 +157,31 @@ grat_labels <- function(v, retro, atlon, atlat, labloc) {
 			if (!is.null(atlon)) {
 				a <- a[atlon, ]
 			}
-			text(a, labels=labs, pos=3, offset=.25, cex=.65, halo=TRUE, xpd=TRUE)
+			text(a, labels=labs, pos=3, offset=.25, cex=cex, halo=TRUE, xpd=TRUE, col=col)
 		}
 	}	
 }	
 
 
 setMethod("plot", signature(x="SpatGraticule", y="missing"),
-	function(x, y, background=NULL, col="black", mar=c(1,1,1,1), labels=TRUE, retro=FALSE, labloc=c(1,1), inclon=NULL, inclat=NULL, ...) {
-		v <- vect()
-		v@ptr <- x@box
+	function(x, y, background=NULL, col="black", mar=NULL, labels=TRUE, retro=FALSE, lab.loc=c(1,1), lab.lon=NULL, lab.lat=NULL, lab.cex=.65, lab.col="black", box=FALSE, box.col="black", ...) {
+		b <- vect()
+		b@ptr <- x@box
+		if (!is.null(mar)) mar <- rep_len(mar, 4)
 		if (!is.null(background)) {
-			plot(v, col=background, border=NA, axes=FALSE, mar=mar)
+			plot(b, col=background, border=NA, axes=FALSE, mar=mar)
 		} else {
-			plot(ext(v), border=NA, axes=FALSE, mar=mar)
+			plot(ext(b), border=NA, axes=FALSE, mar=mar)
 		}
+		v <- vect()
 		v@ptr <- x@ptr
 		lines(v, col=col, ...)
-		if (labels) grat_labels(v, retro, inclon, inclat, labloc)
+		if (box) {
+			lwd <- list(...)$lwd
+			if (is.null(lwd)) lwd=1;
+			lines(b, lty=1, col=box.col, lwd=lwd)
+		}
+		if (labels) grat_labels(v, isTRUE(retro[1]), lab.lon, lab.lat, lab.loc, lab.cex[1], lab.col[1])
 	}
 )
 

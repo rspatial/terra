@@ -8,6 +8,8 @@
 
 \alias{lines,SpatVector-method}
 \alias{lines,SpatRaster-method}
+\alias{lines,SpatGraticule-method}
+
 \alias{polys,SpatVector-method}
 \alias{points,SpatVector-method}
 

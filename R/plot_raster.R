@@ -384,6 +384,11 @@ prettyNumbs <- function(x, digits) {
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
 		if (reset) on.exit(graphics::par(mar=old.mar))
 
+		if (!is.null(x$background)) {
+			usr <- graphics::par("usr")
+			graphics::rect(usr[1], usr[3], usr[2], usr[4], col=x$background)
+		}
+
 		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
 
 		graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)
@@ -415,7 +420,7 @@ prettyNumbs <- function(x, digits) {
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(),
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
-  sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, ...) {
+  sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
 
@@ -530,7 +535,7 @@ prettyNumbs <- function(x, digits) {
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"),
-	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, ...) {
+	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, background=NULL, ...) {
 
 		y <- round(y)
 		stopifnot((min(y) > 0) & (max(y) <= nlyr(x)))
@@ -542,7 +547,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 					alpha <- alpha[[y]]
 				}
 			}
-			plot(x, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=maxcell/(length(x)/2), smooth=smooth, range=range, levels=levels, all_levels=all_levels, breaks=breaks, breakby=breakby, fun=fun, colNA=colNA, alpha=alpha, grid=grid, sort=sort, decreasing=decreasing, ext=ext, ...)
+			plot(x, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=maxcell/(length(x)/2), smooth=smooth, range=range, levels=levels, all_levels=all_levels, breaks=breaks, breakby=breakby, fun=fun, colNA=colNA, alpha=alpha, grid=grid, sort=sort, decreasing=decreasing, ext=ext, reset=reset, add=add, background=background, ...)
 			return(invisible())
 		}
 
@@ -621,7 +626,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			}
 		}
 
-		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, sort=sort, decreasing=decreasing, ext=ext, all_levels=all_levels, breaks=breaks, breakby=breakby, ...)
+		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, sort=sort, decreasing=decreasing, ext=ext, all_levels=all_levels, breaks=breaks, breakby=breakby, add=add, background=background, ...)
 
 		if (!is.null(fun)) {
 			if (!is.null(formals(fun))) {
