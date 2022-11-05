@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for character</span>
-<span class="fu">draw</span><span class="op">(</span>x<span class="op">=</span><span class="st">"extent"</span>, col<span class="op">=</span><span class="st">"red"</span>, lwd<span class="op">=</span><span class="fl">2</span>, id<span class="op">=</span><span class="cn">FALSE</span>, n<span class="op">=</span><span class="fl">1000</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">draw</span><span class="op">(</span>x<span class="op">=</span><span class="st">"extent"</span>, col<span class="op">=</span><span class="st">"red"</span>, lwd<span class="op">=</span><span class="fl">2</span>, id<span class="op">=</span><span class="cn">FALSE</span>, n<span class="op">=</span><span class="fl">1000</span>, xpd<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -74,6 +74,9 @@
   <dt>n</dt>
 <dd><p>the maximum number of clicks (does not apply when <code>x=="extent"</code> in which case <code>n</code> is always 2</p></dd>
   
+  <dt>xpd</dt>
+<dd><p>logical. If <code>TRUE</code>, you can draw outside the current plotting area</p></dd>
+
   <dt>...</dt>
 <dd><p>additional graphics arguments for drawing</p></dd>
 
