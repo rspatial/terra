@@ -19,6 +19,8 @@
 #include "recycle.h"
 #include "vecmath.h"
 #include <cmath>
+#include <functional>
+
 #include "math_utils.h"
 #include "file_utils.h"
 #include "string_utils.h"
@@ -1229,7 +1231,7 @@ SpatRaster SpatRaster::trim1(double value, unsigned padding, SpatOptions &opt) {
 }
 
 
-void block_cols(const std::vector<double> &v, size_t &firstcol, size_t &lastcol, bool &firstcoldone, bool &lastcoldone, const size_t &firstrow, const size_t &lastrow, const size_t &nr, const size_t &nc, const size_t &nl, const size_t &padding) {
+void block_cols(const std::vector<double> &v, std::function<bool(double,double)> fun, const double &value, size_t &firstcol, size_t &lastcol, bool &firstcoldone, bool &lastcoldone, const size_t &firstrow, const size_t &lastrow, const size_t &nr, const size_t &nc, const size_t &nl, const size_t &padding) {
 
 	size_t maxcol = nc - padding - 1;
 
@@ -1243,7 +1245,7 @@ void block_cols(const std::vector<double> &v, size_t &firstcol, size_t &lastcol,
 			size_t roff = r * nc;
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				for (size_t c=0; c<firstcol; c++) {
-					if (!std::isnan(v[loff[lyr] + roff + c])) {
+					if (fun(v[loff[lyr] + roff + c], value)) {
 						firstcol = c;
 						if (firstcol <= padding) firstcoldone = true;
 						break;
@@ -1259,7 +1261,7 @@ void block_cols(const std::vector<double> &v, size_t &firstcol, size_t &lastcol,
 			size_t roff = r * nc;
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				for (long c=(nc-1); c>=(long)lastcol; c--) {
-					if (!std::isnan(v[loff[lyr] + roff + c])) {
+					if (fun(v[loff[lyr] + roff + c], value)) {
 						lastcol = c;
 						if (lastcol >= maxcol) lastcoldone = true;
 						break;
@@ -1273,6 +1275,13 @@ void block_cols(const std::vector<double> &v, size_t &firstcol, size_t &lastcol,
 }
 
 
+inline bool trim_value(const double &x, const double &y) {
+	return x != y;	
+}
+
+inline bool trim_nan(const double &x, const double &y) {
+	return !std::isnan(x);	
+}
 
 SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 
@@ -1289,61 +1298,88 @@ SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 	size_t nl = nlyr();
 	size_t nc = ncol();
 	size_t nr = nrow();
-	bool rowfound = false;
+	bool firstrowfound = false;
+	bool lastrowfound = false;
 	bool firstcolfound = false;
 	bool lastcolfound = false;
 
+
 	size_t bstart = 0;
 	size_t bend = bs.n - 1;
-	
 	
 	size_t firstrow = nr-1;
 	size_t lastrow = 0;
 	size_t firstcol = nc-1; 
 	size_t lastcol = 0;
 
+	if (padding >= nc) {
+		firstcolfound = true;
+		lastcolfound = true;
+		firstcol = 0;
+		lastcol = nc-1;
+	}
+	if (padding >= nr) {
+		firstrowfound = true;
+		lastrowfound = true;
+		firstrow = 0;
+		lastrow = nr-1;
+	}
+
+	std::function<bool(double,double)> fun;
+
 	if (std::isnan(value)) {
-		for (size_t i=0; i<bs.n; i++) {	
-			bstart = i+1;
-			readBlock(v, bs, i);
-			std::vector<size_t> loff(nl);
-			for (size_t j=0; j<nl; j++) {
-				loff[j] = j * bs.nrows[i] * nc;
-			}
-			for (size_t r=0; r<bs.nrows[i]; r++) {
-				size_t roff = r * nc;
-				for (size_t lyr=0; lyr<nl; lyr++) {
-					for (size_t j=0; j<nc; j++) {
-						if (!std::isnan(v[loff[lyr] + roff + j])) {
-							rowfound = true;
-							firstrow = r; 
-							break;
-						}
+		fun = trim_nan;
+	} else {
+		fun = trim_value;
+	}
+	
+	bool rowfound = false;
+	for (size_t i=0; i<bs.n; i++) {	
+		if (firstrowfound) {
+			rowfound = true;
+			break;
+		}
+		bstart = i+1;
+		readBlock(v, bs, i);
+		std::vector<size_t> loff(nl);
+		for (size_t j=0; j<nl; j++) {
+			loff[j] = j * bs.nrows[i] * nc;
+		}
+		for (size_t r=0; r<bs.nrows[i]; r++) {
+			size_t roff = r * nc;
+			for (size_t lyr=0; lyr<nl; lyr++) {
+				for (size_t j=0; j<nc; j++) {
+					if (fun(v[loff[lyr] + roff + j], value)) {
+						rowfound = true;
+						firstrow = r; 
+						break;
 					}
-					if (rowfound) break;
 				}
 				if (rowfound) break;
 			}
-			if (rowfound) {
-				block_cols(v, firstcol, lastcol, firstcolfound, lastcolfound, firstrow, bs.nrows[i], bs.nrows[i], nc, nl, padding);
-				break;
-			}		
+			if (rowfound) break;
 		}
-		firstrow += bs.row[bstart-1];
-				
-		if (!rowfound) {
-			SpatRaster out;
-			out.setError("only cells with NA found");
-			return out;
-		}
-		if (!rowfound) {
-			SpatRaster out;
-			out.setError("only cells with NA found");
-			return out;
-		}
-		
-		lastrow = firstrow;
-		rowfound = false;
+		if (rowfound) {
+			block_cols(v, fun, value, firstcol, lastcol, firstcolfound, lastcolfound, firstrow, bs.nrows[i], bs.nrows[i], nc, nl, padding);
+			break;
+		}		
+	}
+	firstrow += bs.row[bstart-1];
+			
+	if (!rowfound) {
+		SpatRaster out;
+		out.setError("only cells with NA found");
+		return out;
+	}
+	if (!rowfound) {
+		SpatRaster out;
+		out.setError("only cells with NA found");
+		return out;
+	}
+	
+	lastrow = firstrow;
+	rowfound = false;
+	if (!lastrowfound) {
 		if (bstart == bs.n) { // no need to read v again
 			bend = bstart;
 			size_t i = bs.n - 1;
@@ -1355,7 +1391,7 @@ SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 				size_t roff = r * nc;
 				for (size_t lyr=0; lyr<nl; lyr++) {
 					for (size_t j=0; j<nc; j++) {
-						if (!std::isnan(v[loff[lyr] + roff + j])) {
+						if (fun(v[loff[lyr] + roff + j], value)) {
 							rowfound = true;
 							lastrow = r;
 							break;
@@ -1365,7 +1401,7 @@ SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 				}
 				if (rowfound) break;
 			}
-			block_cols(v, firstcol, lastcol, firstcolfound, lastcolfound, 0, lastrow, bs.nrows[i], nc, nl, padding);
+			block_cols(v, fun, value, firstcol, lastcol, firstcolfound, lastcolfound, 0, lastrow, bs.nrows[i], nc, nl, padding);
 			lastrow += bs.row[i];
 
 		} else { // read blocks from bottom
@@ -1381,7 +1417,7 @@ SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 					size_t roff = r * nc;
 					for (size_t lyr=0; lyr<nl; lyr++) {
 						for (size_t j=0; j<nc; j++) {
-							if (!std::isnan(v[loff[lyr] + roff + j])) {
+							if (fun(v[loff[lyr] + roff + j], value)) {
 								rowfound = true;
 								lastrow = r;
 								break;
@@ -1393,84 +1429,30 @@ SpatRaster SpatRaster::trim2(double value, unsigned padding, SpatOptions &opt) {
 				}
 
 				if (rowfound) {
-					block_cols(v, firstcol, lastcol, firstcolfound, lastcolfound, 0, lastrow, bs.nrows[i], nc, nl, padding);
+					block_cols(v, fun, value, firstcol, lastcol, firstcolfound, lastcolfound, 0, lastrow, bs.nrows[i], nc, nl, padding);
 					break;
 				}
 			}
 			lastrow += bs.row[bend];
 		}
-		for (size_t i=bstart; i<bend; i++) {
-			if (firstcolfound && lastcolfound) break;
-			readBlock(v, bs, i);
-			block_cols(v, firstcol, lastcol, firstcolfound, lastcolfound, 0, bs.nrows[i], bs.nrows[i], nc, nl, padding);
-		}
-		firstrow = std::max(firstrow - padding, size_t(0));
-		lastrow = std::max(std::min(lastrow + padding, nr), size_t(0));
-		if (lastrow < firstrow) {
-			std::swap(firstrow, lastrow);
-		}
-		firstcol = std::min(std::max(firstcol-padding, size_t(0)), nc);
-		lastcol = std::max(std::min(lastcol+padding, nc), size_t(0));
-		if (lastcol < firstcol) {
-			std::swap(firstcol, lastcol);
-		}
-		
-	} else {
-		size_t r;
-		long nrl = nrow() * nlyr();
-		long ncl = ncol() * nlyr();
-
-		for (r=0; r<nr; r++) {
-			readValues(v, r, 1, 0, ncol());
-			if (std::count( v.begin(), v.end(), value) < ncl) {
-				rowfound = true;
-				break;
-			}
-		}
-
-		if (!rowfound) {
-			SpatRaster out;
-			out.setError("only cells with value: " + std::to_string(value) + " found");
-			return out;
-		}
-
-		firstrow = std::max(r - padding, size_t(0));
-
-		for (r=nrow()-1; r>firstrow; r--) {
-			readValues(v, r, 1, 0, ncol());
-			if (std::count( v.begin(), v.end(), value) < ncl) {
-				break;
-			}
-		}
-
-		lastrow = std::max(std::min(r+padding, nrow()), size_t(0));
-
-		if (lastrow < firstrow) {
-			std::swap(firstrow, lastrow);
-		}
-		size_t c;
-		for (c=0; c<ncol(); c++) {
-			readValues(v, 0, nrow(), c, 1);
-			if (std::count( v.begin(), v.end(), value) < nrl) {
-				break;
-			}
-		}
-		firstcol = std::min(std::max(c-padding, size_t(0)), ncol());
-
-
-		for (c=ncol()-1; c>firstcol; c--) {
-			readValues(v, 0, nrow(), c, 1);
-			if (std::count( v.begin(), v.end(), value) < nrl) {
-				break;
-			}
-		}
-		lastcol = std::max(std::min(c+padding, ncol()), size_t(0));
-
 	}
-
+	for (size_t i=bstart; i<bend; i++) {
+		if (firstcolfound && lastcolfound) break;
+		readBlock(v, bs, i);
+		block_cols(v, fun, value, firstcol, lastcol, firstcolfound, lastcolfound, 0, bs.nrows[i], bs.nrows[i], nc, nl, padding);
+	}
+	firstrow = std::max(firstrow - padding, size_t(0));
+	lastrow = std::max(std::min(lastrow + padding, nr), size_t(0));
+	if (lastrow < firstrow) {
+		std::swap(firstrow, lastrow);
+	}
+	firstcol = std::min(std::max(firstcol-padding, size_t(0)), nc);
+	lastcol = std::max(std::min(lastcol+padding, nc), size_t(0));
+	if (lastcol < firstcol) {
+		std::swap(firstcol, lastcol);
+	}
+	
 	readStop();
-
-
 	std::vector<double> res = resolution();
 	double xr = res[0];
 	double yr = res[1];

@@ -1103,7 +1103,11 @@ setMethod("sieve", signature(x="SpatRaster"),
 setMethod("trim", signature(x="SpatRaster"),
 	function(x, padding=0, value=NA, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$trim(value[1], padding[1], opt)
+		padding <- round(padding[1])
+		if (padding < 0) {
+			error("trim", "padding must be a non-negative integer")
+		}
+		x@ptr <- x@ptr$trim(value[1], padding, opt)
 		messages(x, "trim")
 	}
 )

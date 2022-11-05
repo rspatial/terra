@@ -12,6 +12,7 @@
 \alias{plot,SpatVector,character-method}
 \alias{plot,SpatVectorProxy,missing-method}
 \alias{plot,SpatExtent,missing-method}
+\alias{plot,SpatGraticule,missing-method}
 
 \title{Make a map}
 
@@ -38,6 +39,8 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
 \S4method{plot}{SpatVector,missing}(x, y, values=NULL, ...)
 
 \S4method{plot}{SpatExtent,missing}(x, y, ...)
+
+\S4method{plot}{SpatGraticule,missing}(x, y, background=NA, col="black", mar=NULL, ...)
 }
 
 \arguments{

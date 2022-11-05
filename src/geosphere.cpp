@@ -282,7 +282,7 @@ std::vector<std::vector<double>> intermediate(double lon1, double lat1, double l
 }
 
 
-void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, double &interval, bool &adjust, geod_geodesic &g) {
+void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, const double &interval, const bool &adjust, geod_geodesic &g) {
 	size_t np = lon.size();
 	if (np < 2) {
 		return;
@@ -298,6 +298,11 @@ void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, doubl
 			yout.reserve(sz);
 		}
 		double d, azi1, azi2;
+		//double hlat = lat[i] + (lat[i+1] - lat[i])/2;
+		//double hlon = lon[i] + (lon[i+1] - lon[i])/2;
+		//geod_inverse(&g, lat[i], lon[i], hlat, hlon, &d1, &azi1, &azi2);
+		//geod_inverse(&g, hlat, hlon, lat[i+1], lon[i+1], &d2, &azi1, &azi2);
+		//double d = d1 + d2;
 		geod_inverse(&g, lat[i], lon[i], lat[i+1], lon[i+1], &d, &azi1, &azi2);
 		size_t n = floor(d / interval);
 		xout.push_back(lon[i]);
@@ -305,7 +310,7 @@ void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, doubl
 		if (n < 2) {
 			continue;
 		}
-		double step = adjust ? d / n : d;
+		double step = adjust ? d / n : interval;
 		double newlat, newlon;
 		for (size_t j=1; j<n; j++) {
 			geod_direct(&g, lat[i], lon[i], azi1, step*j, &newlat, &newlon, &azi2);
