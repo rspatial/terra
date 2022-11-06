@@ -185,9 +185,19 @@ void extend_line(const double &x1, const double &y1, const double &x2, const dou
 		struct geod_geodesic g;
 		geod_init(&g, a, f);
 		geod_inverse(&g, y1, x1, y2, x2, &s12, &azi1, &azi2);		
-		geod_direct(&g, y2, x2, azi1, distance, &y, &x, &azi2);
+		geod_direct(&g, y2, x2, azi2, distance, &y, &x, &azi1);
 	} else {
-		double bearing = atan((y2-y1)/(x2-x1));
+		double bearing;
+		double dx = x2 - x1;
+		if (dx == 0) {
+			if (y2 > y1) {
+				bearing = 0;
+			} else {
+				bearing = M_PI;				
+			}
+		} else {
+			bearing = atan((y2-y1)/dx);
+		}
 		if (plus) {
 			x = x2 + distance * sin(bearing);
 			y = y2 + distance * cos(bearing);
@@ -207,6 +217,13 @@ SpatVector SpatVector::elongate(double length) {
 	}
 	if (geoms[0].gtype != lines) {
 		out.setError("you can only elongate lines");
+		return out;
+	}
+	if (length < 0) {
+		out.setError("length must be > 0");
+		return out;
+	}
+	if (length == 0) {
 		return out;
 	}
 

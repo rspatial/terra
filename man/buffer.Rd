@@ -36,7 +36,7 @@ For SpatRaster: cells inside the buffers have the value 1.
 
 
 \seealso{
-\code{\link{distance}}
+\code{\link{distance}}, \code{\link{elongate}}
 }
 
 

@@ -20,14 +20,14 @@ Elongate SpatVector lines
   \item{length}{positive number indicating how much the lines should be elongated at each end. The unit is meter is the crs is lonlat and it is the same as the linear unit of the crs on other cases (also meter in most cases)}
 }
 
+
 \value{
 SpatVector
 }
 
 \seealso{
-\code{\link{crop}} and \code{\link{erase}} for the inverse. 
+\code{\link{buffer}}, \code{\link{crop}} and \code{\link{erase}} 
 }
-
 
 \examples{
 v <- vect(cbind(c(0,1,2), c(0,0,2)), "lines", crs="lonlat")
