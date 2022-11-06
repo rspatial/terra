@@ -247,7 +247,7 @@
         </td>
         <td><p>Cross-tabulate</p></td>
       </tr><tr><td>
-          <p><code><a href="crs.html">crs(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="crs.html">crs(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="crs.html">`crs&lt;-`(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="crs.html">`crs&lt;-`(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
+          <p><code><a href="crs.html">crs(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="crs.html">crs(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="crs.html">crs(<i>&lt;character&gt;</i>)</a></code> <code><a href="crs.html">`crs&lt;-`(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="crs.html">`crs&lt;-`(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
         </td>
         <td><p>Get or set a coordinate reference system</p></td>
       </tr><tr><td>
@@ -302,6 +302,10 @@
           <p><code><a href="draw.html">draw(<i>&lt;character&gt;</i>)</a></code> </p>
         </td>
         <td><p>Draw a polygon, line, extent, or points</p></td>
+      </tr><tr><td>
+          <p><code><a href="elongate.html">elongate(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>elongate lines</p></td>
       </tr><tr><td>
           <p><code><a href="erase.html">erase(<i>&lt;SpatVector&gt;</i>,<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="erase.html">erase(<i>&lt;SpatVector&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> <code><a href="erase.html">erase(<i>&lt;SpatVector&gt;</i>,<i>&lt;SpatExtent&gt;</i>)</a></code> </p>
         </td>
@@ -567,9 +571,9 @@
         </td>
         <td><p>Plot with leaflet</p></td>
       </tr><tr><td>
-          <p><code><a href="plot.html">plot(<i>&lt;SpatRaster&gt;</i>,<i>&lt;numeric&gt;</i>)</a></code> <code><a href="plot.html">plot(<i>&lt;SpatRaster&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> <code><a href="plot.html">plot(<i>&lt;SpatRaster&gt;</i>,<i>&lt;character&gt;</i>)</a></code> </p>
+          <p><code><a href="plot.html">plot</a></code> </p>
         </td>
-        <td><p>Make a map (SpatRaster)</p></td>
+        <td><p>Make a map with "terra"</p></td>
       </tr><tr><td>
           <p><code><a href="plotRGB.html">plotRGB(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
@@ -582,6 +586,10 @@
           <p><code><a href="plot_graticule.html">plot(<i>&lt;SpatGraticule&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> </p>
         </td>
         <td><p>Plot a SpatGraticule</p></td>
+      </tr><tr><td>
+          <p><code><a href="plot_raster.html">plot(<i>&lt;SpatRaster&gt;</i>,<i>&lt;numeric&gt;</i>)</a></code> <code><a href="plot_raster.html">plot(<i>&lt;SpatRaster&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> <code><a href="plot_raster.html">plot(<i>&lt;SpatRaster&gt;</i>,<i>&lt;character&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Make a map (SpatRaster)</p></td>
       </tr><tr><td>
           <p><code><a href="plot_vector.html">plot(<i>&lt;SpatVector&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="plot_vector.html">plot(<i>&lt;SpatVector&gt;</i>,<i>&lt;numeric&gt;</i>)</a></code> <code><a href="plot_vector.html">plot(<i>&lt;SpatVector&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> </p>
         </td>
