@@ -145,6 +145,7 @@ grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col) {
 			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
 			if (!is.null(atlat)) {
 				a <- a[atlat, ]
+				labs <- rev(labs)
 			}
 			text(a, labels=labs, pos=4, offset=.25, cex=cex, halo=TRUE, xpd=TRUE, col=col)
 		}
@@ -174,6 +175,7 @@ grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col) {
 			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
 			if (!is.null(atlon)) {
 				a <- a[atlon, ]
+				labs <- rev(labs)
 			}
 			text(a, labels=labs, pos=3, offset=.25, cex=cex, halo=TRUE, xpd=TRUE, col=col)
 		}
