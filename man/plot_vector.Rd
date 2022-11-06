@@ -15,10 +15,9 @@
 \description{
 Plot the values of a SpatVector to make a map. 
 
-There are other help files for plotting a \code{\link[terra:plot]{SpatRaster}}, \code{\link[terra:plot_extent]{SpatExtent}}, or \code{\link[terra:plot_graticule]{SpatGraticule}}
-
 See \code{\link{points}}, \code{\link{lines}} or \code{\link{polys}} to add a SpatVector to an existing map.
 
+See \code{\link{plot}} for plotting other object types.
 }
 
 \usage{
@@ -58,9 +57,7 @@ See \code{\link{points}}, \code{\link{lines}} or \code{\link{polys}} to add a Sp
 }
 
 \seealso{
-\code{\link{points}}, \code{\link{lines}}, \code{\link{polys}},
-
-plot a \code{\link[terra:plot]{SpatRaster}}, \code{\link[terra:plot_extent]{SpatExtent}}, or a \code{\link[terra:plot_graticule]{SpatGraticule}}.
+\code{\link{points}}, \code{\link{lines}}, \code{\link{polys}}, \code{\link{plot}},
 
 scale bar: \code{\link{sbar}}, north arrow: \code{\link{north}}
 }

@@ -14,6 +14,7 @@
 - argument `segments=FALSE` to `disagg<SpatRaster>`
 - `sprc<character>` method to create a SpatRasterCollection from a file with subdatasets
 - `graticule` function to create a SpatGraticule and related methods `plot<SpatGraticule>` and `crop<SpatGraticule>`
+- `elongate` method for SpatVector lines
 
 
 ## enhancements

@@ -585,7 +585,7 @@ setMethod ("tail" , "SpatRaster",
 
 
 
-str.SpatRaster <- function(object) {
+str.SpatRaster <- function(object, ...) {
 	cat("S4 class 'SpatRaster' [package \"terra\"]\n")
 }
 setMethod("str", signature(object="SpatRaster"), str.SpatRaster)

@@ -10,7 +10,7 @@
 \description{
 Plot a SpatGraticule created with \code{\link{graticule}}.
 
-There are other help files for plotting a \code{\link[terra:plot]{SpatRaster}}, \code{\link[terra:plot_vector]{SpatVector}}, or a \code{\link[terra:plot_extent]{SpatExtent}}.
+See \code{\link{plot}} for plotting other object types.
 }
 
 \usage{
@@ -38,20 +38,18 @@ There are other help files for plotting a \code{\link[terra:plot]{SpatRaster}}, 
 }
 
 \seealso{
- \code{\link{graticule}}
-
+ \code{\link{graticule}}, \code{\link{plot}}, 
  \code{\link{points}}, \code{\link{lines}}, \code{\link{polys}}, \code{\link{image}}, \code{scatter\link[terra:scatter]{plot}}, 
-
  scale bar: \code{\link{sbar}}, north arrow: \code{\link{north}}
- 
-plot a \code{\link[terra:plot]{SpatRaster}}, \code{\link[terra:plot_vector]{SpatVector}}, or a \code{\link[terra:plot_extent]{SpatExtent}}.
+
 }
 
 \examples{
 g <- graticule(60, 30, crs="+proj=robin")
 
 plot(g, background="azure", col="red", lty=2, box=TRUE)
-plot(g, background="azure", col="light gray", lab.loc=c(1,2), lab.lon=c(2,4,6), lab.lat=3:5, lty=3, retro=TRUE)
+plot(g, background="azure", col="light gray", lab.loc=c(1,2), 
+		lab.lon=c(2,4,6), lab.lat=3:5, lty=3, retro=TRUE)
 }
 
 

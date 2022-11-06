@@ -390,6 +390,13 @@ setMethod("voronoi", signature(x="SpatVector"),
 	}
 )
 
+setMethod("elongate", signature(x="SpatVector"),
+	function(x, length=0) {
+		x@ptr <- x@ptr$elongate(length)
+		messages(x, "elongate")
+	}
+)
+
 
 setMethod("width", signature(x="SpatVector"),
 	function(x, as.lines=FALSE) {

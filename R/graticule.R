@@ -5,7 +5,6 @@
 
 graticule <- function(lon=30, lat=30, crs="+proj=longlat") {
 
-	interval <- 100
 	
 	if (length(lon) == 1) {
 		lon <- seq(-180, 180, lon)
@@ -18,6 +17,8 @@ graticule <- function(lon=30, lat=30, crs="+proj=longlat") {
 	} else {
 		lat <- sort(lat)
 	}
+
+	interval <- 100 #should depend on extent
 	
 	y <- cbind(rep(1:length(lon), each=2), rep(lon, each=2), range(lat))
 	vy <- vect(y, "lines", crs="+proj=longlat")
@@ -31,8 +32,9 @@ graticule <- function(lon=30, lat=30, crs="+proj=longlat") {
 	vx <- densify(vx, interval/110, TRUE)
 	values(vx) <- data.frame(h=TRUE, lat=lat)
 	crs(vx) <- "+proj=longlat"
-
+	
 	v <- rbind(vy, vx)
+	
 	e <- as.polygons(ext(v), crs=crs(v))
 	e <- densify(e, interval*1000, TRUE)
 	
@@ -42,7 +44,7 @@ graticule <- function(lon=30, lat=30, crs="+proj=longlat") {
 	}
 
 	g <- new("SpatGraticule")
-	g@ptr <- v@ptr 
+	g@ptr <- v@ptr
 	g@box <- e@ptr 
 	g
 }
@@ -79,8 +81,10 @@ setMethod("crop", signature(x="SpatGraticule"),
 setMethod("erase", signature(x="SpatGraticule", y="SpatVector"),
 	function(x, y) {
 		v <- vect()
-
+	
 		v@ptr <- x@ptr
+		y <- project(y, v)
+
 		v <- erase(v, y)
 		x@ptr <- v@ptr
 

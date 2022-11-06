@@ -175,6 +175,67 @@ SpatVector SpatVector::aggregate(bool dissolve) {
 }
 
 
+#include "geodesic.h"
+
+void extend_line(const double &x1, const double &y1, const double &x2, const double &y2, double &x, double &y, const bool &geo, const double &distance, bool plus) {
+	if (geo) {
+		double a = 6378137.0;
+		double f = 1/298.257223563;
+		double s12, azi1, azi2;
+		struct geod_geodesic g;
+		geod_init(&g, a, f);
+		geod_inverse(&g, y1, x1, y2, x2, &s12, &azi1, &azi2);		
+		geod_direct(&g, y2, x2, azi1, distance, &y, &x, &azi2);
+	} else {
+		double bearing = atan((y2-y1)/(x2-x1));
+		if (plus) {
+			x = x2 + distance * sin(bearing);
+			y = y2 + distance * cos(bearing);
+		} else {
+			x = x2 - distance * sin(bearing);
+			y = y2 - distance * cos(bearing);			
+		}
+	}
+}
+
+SpatVector SpatVector::elongate(double length) {
+
+	SpatVector out = *this;
+	size_t n = size();
+	if (n == 0) {
+		return out;
+	}
+	if (geoms[0].gtype != lines) {
+		out.setError("you can only elongate lines");
+		return out;
+	}
+
+	double x, y;
+	bool geo = is_lonlat();
+	
+	for (size_t i=0; i<n; i++) {
+		for (size_t j=0; j < out.geoms[i].size(); j++) {
+			SpatPart p = out.geoms[i].parts[j];
+			size_t n = p.x.size();
+			if (n < 2) continue;
+			extend_line(p.x[1], p.y[1], p.x[0], p.y[0], x, y, geo, length, false);
+			p.x.insert(p.x.begin(), x);
+			p.y.insert(p.y.begin(), y);
+			
+			extend_line(p.x[n-1], p.y[n-1], p.x[n], p.y[n], x, y, geo, length, true);
+			p.x.push_back(x);			
+			p.y.push_back(y);
+			
+			out.geoms[i].parts[j] = p;
+		}
+		out.geoms[i].computeExtent();
+	}
+	out.computeExtent();
+	return out;
+}
+
+
+
 SpatVectorCollection SpatVector::split(std::string field) {
 
 	SpatVectorCollection out;
@@ -672,6 +733,9 @@ SpatVector SpatVector::thin(double threshold) {
 
 	return out;
 }
+
+
+
 
 
 

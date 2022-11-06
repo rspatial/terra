@@ -1,5 +1,6 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("elongate")) {setGeneric("elongate", function(x, ...) standardGeneric("elongate"))}
 
 if (!isGeneric("update")) {setGeneric("update", function(object, ...) standardGeneric("update"))}
 

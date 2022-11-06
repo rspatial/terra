@@ -493,6 +493,7 @@ RCPP_MODULE(spat){
 		.method("erase_agg", &SpatVector::erase_agg)
 		.method("erase", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::erase ))
 		.method("erase_self", ( SpatVector (SpatVector::*)(bool))( &SpatVector::erase ))
+		.method("elongate", &SpatVector::elongate)
 		.method("gaps", &SpatVector::gaps)
 
 		.method("symdif", &SpatVector::symdif)

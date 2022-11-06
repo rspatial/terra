@@ -16,6 +16,7 @@
 \alias{crs<-,SpatVector,ANY-method}
 
 \alias{crs,sf-method}
+\alias{crs,character-method}
 
 \title{ Get or set a coordinate reference system }
 
@@ -29,6 +30,8 @@ Setting a new CRS does not change the data itself, it just changes the label. So
 \S4method{crs}{SpatRaster}(x, proj=FALSE, describe=FALSE, parse=FALSE)
 
 \S4method{crs}{SpatVector}(x, proj=FALSE, describe=FALSE, parse=FALSE)
+
+\S4method{crs}{character}(x, proj=FALSE, describe=FALSE, parse=FALSE)
 
 \S4method{crs}{SpatRaster}(x)<-value
 
@@ -66,9 +69,11 @@ crs(r, describe=TRUE, proj=TRUE)
 crs(r) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 crs(r)
 
-# You can also use epsg codes
+# You can use epsg codes
 crs(r)  <- "epsg:25831"
 crs(r, describe=TRUE)$area
+
+crs("epsg:25831", describe=TRUE)
 }
 
 \keyword{ spatial }

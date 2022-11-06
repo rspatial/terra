@@ -103,6 +103,13 @@ is.proj <- function(crs) {
 }
 
 
+setMethod("crs", signature("character"),
+	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+		x <- rast(crs=x)
+		.get_CRS(x, proj=proj, describe=describe, parse=parse)
+	}
+)
+
 setMethod("crs", signature("SpatRaster"),
 	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
 		.get_CRS(x, proj=proj, describe=describe, parse=parse)
