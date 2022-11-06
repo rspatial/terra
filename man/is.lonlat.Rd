@@ -3,7 +3,7 @@
 \alias{is.lonlat}
 \alias{is.lonlat,SpatRaster-method}
 \alias{is.lonlat,SpatVector-method}
-\alias{is.lonlat,charcter-method}
+\alias{is.lonlat,character-method}
 
   
 \title{Check for longitude/latitude crs}
