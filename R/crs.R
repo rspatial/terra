@@ -277,3 +277,9 @@ setMethod("is.lonlat", signature("SpatVector"),
 	}
 )
 
+setMethod("is.lonlat", signature("character"),
+	function(x, perhaps=FALSE, warn=TRUE) {
+		x <- rast(crs=x)
+		is.lonlat(x, perhaps=perhaps, warn=warn)
+	}
+)

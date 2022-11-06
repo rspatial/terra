@@ -3,8 +3,12 @@
 # Version 1
 # License GPL v3
 
-graticule <- function(lon=30, lat=30, crs="+proj=longlat") {
+graticule <- function(lon=30, lat=30, crs="") {
 
+
+	if (crs == "") {
+		crs <- "+proj=longlat"
+	}
 	
 	if (length(lon) == 1) {
 		lon <- seq(-180, 180, lon)
@@ -38,7 +42,7 @@ graticule <- function(lon=30, lat=30, crs="+proj=longlat") {
 	e <- as.polygons(ext(v), crs=crs(v))
 	e <- densify(e, interval*1000, TRUE)
 	
-	if (crs != "+proj=longlat") {
+	if (!is.lonlat(crs, FALSE, FALSE)) {
 		v <- project(v, crs)
 		e <- project(e, crs)
 	}

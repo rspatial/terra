@@ -3,6 +3,7 @@
 \alias{is.lonlat}
 \alias{is.lonlat,SpatRaster-method}
 \alias{is.lonlat,SpatVector-method}
+\alias{is.lonlat,charcter-method}
 
   
 \title{Check for longitude/latitude crs}
@@ -16,6 +17,8 @@ Test whether a SpatRaster or SpatVector has a longitude/latitude coordinate refe
 \S4method{is.lonlat}{SpatRaster}(x, perhaps=FALSE, warn=TRUE, global=FALSE)
 
 \S4method{is.lonlat}{SpatVector}(x, perhaps=FALSE, warn=TRUE)
+
+\S4method{is.lonlat}{character}(x, perhaps=FALSE, warn=TRUE)
 }
 
 \arguments{

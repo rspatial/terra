@@ -15,22 +15,21 @@ The object returned, a SpatGraticule, can be plotted with \code{plot} and \code{
 }
 
 \usage{
-graticule(lon=30, lat=30, crs="+proj=longlat")
+graticule(lon=30, lat=30, crs="")
 }
 
 \arguments{
-  \item{lon}{numeric. Either single number (the interval between longitudes) or a vector with longitudes}
-  \item{lat}{numeric. Either single number (the interval between latitudes) or a vector with latitudes}
-  \item{crs}{character}
+  \item{lon}{numeric. Either a single number (the interval between longitudes), or a vector with longitudes}
+  \item{lat}{numeric. Either a single number (the interval between latitudes), or a vector with latitudes}
+  \item{crs}{character. The coordinate reference system to use}
 } 
 
 \value{
 SpatGraticule
 }
 
-
 \seealso{
-\code{\link[terra:plot_graticule]{plot<SpatGraticule>}}.
+\code{\link[=plot,SpatGraticule,missing-method]{plot<SpatGraticule>}}.
 }
 
 \examples{
