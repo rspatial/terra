@@ -99,7 +99,7 @@ setMethod("erase", signature(x="SpatGraticule", y="SpatVector"),
 	}
 )
 
-grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col) {
+grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col, offlon, offlat, vfont=NULL, font=NULL, ...) {
 
 	left <- right <- top <- bottom <- FALSE
 	labloc <- rep_len(labloc, 2)
@@ -123,8 +123,8 @@ grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col) {
 			right <- TRUE	
 		}
 	}
-
 	if (left || right) {
+		s <- sign(offlat)+2
 		x <- v[v$h, ]
 		g <- geom(x)
 		if (retro) {
@@ -142,7 +142,9 @@ grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col) {
 			if (!is.null(atlat)) {
 				a <- a[atlat, ]
 			}
-			text(a, labels=labs, pos=2, offset=.25, cex=cex, halo=TRUE, xpd=TRUE, col=col)
+			pos <- c(4,0,2)[s]
+			if (pos == 0) pos <- NULL
+			text(a, labels=labs, pos=pos, offset=abs(offlat), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 		}
 		if (right) {
 			g <- g[nrow(g):1, ]
@@ -151,10 +153,13 @@ grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col) {
 				a <- a[atlat, ]
 				labs <- rev(labs)
 			}
-			text(a, labels=labs, pos=4, offset=.25, cex=cex, halo=TRUE, xpd=TRUE, col=col)
+			pos <- c(2,0,4)[s]
+			if (pos == 0) pos <- NULL
+			text(a, labels=labs, pos=pos, offset=abs(offlat), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 		}
 	}
 	if (top || bottom) {
+		s <- sign(offlon)+2
 		x <- v[!v$h, ]
 		g <- geom(x)
 		if (retro) {
@@ -172,7 +177,9 @@ grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col) {
 			if (!is.null(atlon)) {
 				a <- a[atlon, ]
 			}
-			text(a, labels=labs, pos=1, offset=.25, cex=cex, halo=TRUE, xpd=TRUE, col=col)
+			pos <- c(3,0,1)[s]
+			if (pos == 0) pos <- NULL
+			text(a, labels=labs, pos=pos, offset=abs(offlon), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 		}
 		if (top) {
 			g <- g[nrow(g):1, ]
@@ -181,21 +188,25 @@ grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col) {
 				a <- a[atlon, ]
 				labs <- rev(labs)
 			}
-			text(a, labels=labs, pos=3, offset=.25, cex=cex, halo=TRUE, xpd=TRUE, col=col)
+			pos <- c(1,0,3)[s]
+			if (pos == 0) pos <- NULL
+			text(a, labels=labs, pos=pos, offset=abs(offlon), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 		}
 	}	
 }	
 
 
 setMethod("plot", signature(x="SpatGraticule", y="missing"),
-	function(x, y, background=NULL, col="black", mar=NULL, labels=TRUE, retro=FALSE, lab.loc=c(1,1), lab.lon=NULL, lab.lat=NULL, lab.cex=.65, lab.col="black", box=FALSE, box.col="black", ...) {
+	function(x, y, background=NULL, col="black", mar=NULL, labels=TRUE, retro=FALSE, lab.loc=c(1,1), lab.lon=NULL, lab.lat=NULL, lab.cex=.65, lab.col="black", off.lat=0.25, off.lon=0.25, box=FALSE, box.col="black", add=FALSE, ...) {
 		b <- vect()
 		b@ptr <- x@box
 		if (!is.null(mar)) mar <- rep_len(mar, 4)
 		if (!is.null(background)) {
-			plot(b, col=background, border=NA, axes=FALSE, mar=mar)
+			plot(b, col=background, border=NA, axes=FALSE, mar=mar, add=add)
 		} else {
-			plot(ext(b), border=NA, axes=FALSE, mar=mar)
+			if (!add) {
+				plot(ext(b), border=NA, axes=FALSE, mar=mar)
+			}
 		}
 		v <- vect()
 		v@ptr <- x@ptr
@@ -205,7 +216,7 @@ setMethod("plot", signature(x="SpatGraticule", y="missing"),
 			if (is.null(lwd)) lwd=1;
 			lines(b, lty=1, col=box.col, lwd=lwd)
 		}
-		if (labels) grat_labels(v, isTRUE(retro[1]), lab.lon, lab.lat, lab.loc, lab.cex[1], lab.col[1])
+		if (labels) grat_labels(v, isTRUE(retro[1]), lab.lon, lab.lat, lab.loc, lab.cex[1], lab.col[1], off.lon, off.lat, ...)
 	}
 )
 
