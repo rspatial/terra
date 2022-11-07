@@ -163,7 +163,7 @@ setMethod("setValues", signature("SpatRaster"),
 			if (all(substr(na.omit(values), 1, 1) == "#")) {
 				fv <- as.factor(values)
 				if (length(levels(fv)) <= 256) {
-					values <- as.integer(fv)-1
+					values <- as.integer(fv) #-1
 					fv <- levels(fv)
 					set_coltab <- TRUE
 				} else {
@@ -175,12 +175,12 @@ setMethod("setValues", signature("SpatRaster"),
 			} else {
 				values <- as.factor(values)
 				levs <- levels(values)
-				values <- as.integer(values) - 1 # -1 not needed anymore?
+				values <- as.integer(values) # -1 not needed anymore?
 				make_factor <- TRUE
 			}
 		} else if (is.factor(values)) {
 			levs <- levels(values)
-			values <- as.integer(values) - 1
+			values <- as.integer(values)# - 1
 			make_factor <- TRUE
 		}
 
@@ -208,7 +208,7 @@ setMethod("setValues", signature("SpatRaster"),
 		y <- messages(y, "setValues")
 		if (make_factor) {
 			for (i in 1:nlyr(y)) {
-				levs <- data.frame(value=0:(length(levs)-1), label=levs)
+				levs <- data.frame(value=1:length(levs), label=levs)
 				set.cats(y, i, levs, 2)
 			}
 			names(y) <- names(x)
