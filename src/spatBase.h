@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef SPATBASE_GUARD
+#define SPATBASE_GUARD
+
 #include <vector>
 #include <algorithm>
 #include <string>
@@ -361,3 +364,6 @@ class SpatProgress {
 		void stepit();
 		void interrupt();
 };
+
+
+#endif

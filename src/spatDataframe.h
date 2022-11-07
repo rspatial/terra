@@ -16,6 +16,9 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 
+#ifndef SPATDATAFRAME_GUARD
+#define SPATDATAFRAME_GUARD
+
 #include <vector>
 #include <string>
 //#include "spatMessages.h"
@@ -132,4 +135,6 @@ class SpatDataFrame {
 		SpatDataFrame unique();
 		size_t strwidth(unsigned i);
 };
+
+#endif //SPATDATAFRAME_GUARD
 

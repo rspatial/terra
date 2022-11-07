@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 //#include "spatRaster.h"
 #include "spatRasterMultiple.h"
+#include "spatGraph.h"
 #include <memory> //std::addressof
 #include "NA.h"
 #include "spatTime.h"
@@ -179,6 +180,7 @@ RCPP_EXPOSED_CLASS(SpatRasterStack)
 RCPP_EXPOSED_CLASS(SpatVector)
 RCPP_EXPOSED_CLASS(SpatVectorProxy)
 RCPP_EXPOSED_CLASS(SpatVectorCollection)
+RCPP_EXPOSED_CLASS(SpatGraph)
 
 RCPP_MODULE(spat){
 
@@ -198,10 +200,16 @@ RCPP_MODULE(spat){
 		.field("labels", &SpatFactor::labels)
 	;
 
+
     class_<SpatSRS>("SpatSRS")
+		.constructor()
 		.method("set", &SpatSRS::set)
 		.method("is_lonlat", &SpatSRS::is_lonlat)
 		.method("to_meter", &SpatSRS::to_meter)
+	;
+
+    class_<SpatGraph>("SpatGraph")
+		.constructor()
 	;
 
     class_<SpatExtent>("SpatExtent")

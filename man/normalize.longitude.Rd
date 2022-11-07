@@ -8,7 +8,7 @@
 \title{normalize vector data that crosses the dateline}
 
 \description{
-Normalize the longitude of geometries, that is move geometries to a bounding box of -180 to 180 degrees 
+Normalize the longitude of geometries, move them if they are outside of the -180 to 180 degrees range. 
 } 
 
 \usage{

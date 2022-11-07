@@ -15,9 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-//#include "spatBase.h"
+#ifndef SPATVECTOR_GUARD
+#define SPATVECTOR_GUARD
+
 #include "spatDataframe.h"
-//#include "spatMessages.h"
 
 #ifdef useGDAL
 #include "gdal_priv.h"
@@ -458,3 +459,5 @@ class SpatVectorProxy {
 		SpatVector query_filter(std::string query, std::vector<double> extent, SpatVector filter);
 };
 
+
+#endif // SPATVECTOR_GUARD
