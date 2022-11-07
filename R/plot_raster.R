@@ -172,17 +172,18 @@ prettyNumbs <- function(x, digits) {
 	} else {
 		ilevels <- match(out$levels, out$cats[[1]])
 		if (any(is.na(ilevels))) {
-			warn("plot", "value(s) in raster that is/are not in levels")
-			ilevels = na.omit(ilevels)
+			warn("plot", "found value(s) in raster that is/are not in levels")
 		}
 	}
 
 	if (!is.null(out$coltab)) {
 		# avoid multiple colors for the same category
-		if (length(unique(out$cats[ilevels,2])) < length(ilevels)) {
+		ilevs <- na.omit(ilevels)
+		ulevs <- unique(out$cats[ilevs,2])
+		if (length(ulevs) < length(ilevs)) {
 			z <- out$cats[match(z, out$cats[,1]),2]
-			i <- match(unique(out$cats[ilevels,2]), out$cats[ilevels,2])	
-			j <- out$cats[ilevels[i],]
+			i <- match(ulevs, out$cats[ilevels,2])	
+			j <- out$cats[ilevs[i],]
 			z <- j[match(z, j[,2]), 1]
 			out$cats <- j			
 			out$levels <- sort(stats::na.omit(unique(z)))
@@ -236,8 +237,6 @@ prettyNumbs <- function(x, digits) {
 	if (!out$all_levels) {
 		out$leg$fill <- out$cols
 	}
-	
-
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
 	out$r <- as.raster(z)
 
