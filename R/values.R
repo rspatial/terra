@@ -320,10 +320,14 @@ setMethod("hasMinMax", signature(x="SpatRaster"),
 )
 
 setMethod("minmax", signature(x="SpatRaster"),
-	function(x) {
+	function(x, compute=FALSE) {
 		have <- x@ptr$hasRange
-		if (!any(have)) {
-			warn("minmax", "min and max values not available. See 'setMinMax' or 'global'")
+		if (!all(have)) {
+			if (compute) {
+				x@ptr$setRange(opt)
+			} else {
+				warn("minmax", "min and max values not available for all layers. See 'setMinMax' or 'global'")
+			}
 		}
 		r <- rbind(x@ptr$range_min, x@ptr$range_max)
 		r[,!have] <- c(Inf, -Inf)
