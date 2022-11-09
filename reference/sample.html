@@ -81,10 +81,10 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <dd><p>character. Should be "regular" or "random", If <code>x</code> is a <code>SpatRaster</code>, it can also be "stratified" (each value in <code>x</code> is a stratum) or "weights" (each value in <code>x</code> is a probability weight)</p></dd>
 
   <dt>replace</dt>
-<dd><p>logical. If <code>TRUE</code>, sampling is with replacement (if <code>method="random"</code></p></dd>
+<dd><p>logical. If <code>TRUE</code>, sampling is with replacement (if <code>method="random"</code>)</p></dd>
 
   <dt>na.rm</dt>
-<dd><p>logical. If <code>TRUE</code>, codeNAs are removed. Only used with random sampling of cell values. That is with <code>method="random", as.raster=FALSE, cells=FALSE</code></p></dd>
+<dd><p>logical. If <code>TRUE</code>, <code>NAs</code> are removed. Only used with random sampling of cell values. That is with <code>method="random", as.raster=FALSE, cells=FALSE</code></p></dd>
 
   <dt>as.raster</dt>
 <dd><p>logical. If <code>TRUE</code>, a SpatRaster is returned</p></dd>
@@ -105,7 +105,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <dd><p>logical. If <code>TRUE</code>, cell coordinates are returned</p></dd>
 
   <dt>ext</dt>
-<dd><p>SpatExtent or NULL to restrict sampling to a a subset of the area of <code>x</code></p></dd>
+<dd><p>SpatExtent or NULL to restrict sampling to a subset of the area of <code>x</code></p></dd>
 
   <dt>warn</dt>
 <dd><p>logical. Give a warning if the sample size returned is smaller than requested</p></dd>
@@ -126,7 +126,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
   
   <dt>exp</dt>
-<dd><p>numeric &gt;= 1. 'Expansion factor' that is multiplied with <code>size</code> to get an initial sample. used for stratified samples and random samples with <code>na.rm=TRUE</code> to try to get at least <code>size</code> samples</p></dd>
+<dd><p>numeric &gt;= 1. 'Expansion factor' that is multiplied with <code>size</code> to get an initial sample used for stratified samples and random samples with <code>na.rm=TRUE</code> to try to get at least <code>size</code> samples</p></dd>
 
 </dl></div>
     <div id="value">
@@ -227,7 +227,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co">#sample the geometries </span></span>
+<span class="r-in"><span class="co"># sample the geometries </span></span>
 <span class="r-in"><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">v</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># sample points in geometries</span></span>
