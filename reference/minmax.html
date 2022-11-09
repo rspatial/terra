@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-38</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-40</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">minmax</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="fu">minmax</span><span class="op">(</span><span class="va">x</span>, compute<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="co"># S4 method for SpatRaster</span>
 <span class="fu">hasMinMax</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co"># S4 method for SpatRaster</span>
@@ -65,6 +65,9 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
+
+  <dt>compute</dt>
+<dd><p>logical. If <code>TRUE</code> min and max values are computed if they are not available</p></dd>
 
   <dt>force</dt>
 <dd><p>logical. If <code>TRUE</code> min and max values are recomputed even if already available</p></dd>
