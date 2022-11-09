@@ -377,14 +377,20 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	std::vector<bool> hasCats = hasCategories();
 	std::vector<SpatDataFrame> ct = getColors();
 	bool cat = hasCats[0];
+	bool warnCT = true;
 
 	bool rat = cat ? is_rat(source[0].cats[0].d) : false;
 	if (rat) {
+		// needs redesign. Is CT also part of RAT? 
+		// other layers affected? etc.
+		warnCT = false;
 		if (hasCT[0]) {
-			if (opt.datatype_set && (datatype != opt.get_datatype())) {
-				addWarning("change datatype to INT1U to write the color-table");
-			} else {
-				datatype = "INT1U";
+			if (ct[0].nrow() < 256) {
+				if (opt.datatype_set && (datatype != opt.get_datatype())) {
+					addWarning("change datatype to INT1U to write the color-table");
+				} else {
+					datatype = "INT1U";
+				}
 			}
 		} else {
 			//if (opt.datatype_set) {
@@ -548,7 +554,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 		if ((i==0) && hasCT[i]) {
 			if (!setCT(poBand, ct[i])) {
-				addWarning("could not write the color table");
+				if (warnCT) {
+					addWarning("could not write the color table");
+				}
 			}
 		}
 		if (hasCats[i]) {
