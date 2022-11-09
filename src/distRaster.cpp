@@ -2583,7 +2583,7 @@ double area_plane(const SpatGeom &geom) {
 }
 
 
-std::vector<double> SpatVector::area(std::string unit, bool transform, std::vector<double> mask) {
+std::vector<double> SpatVector::area(std::string unit, bool &transform, std::vector<double> mask) {
 
 	if (type() != "polygons") { // area is zero
 		std::vector<double>	out(nrow());
@@ -2628,16 +2628,11 @@ std::vector<double> SpatVector::area(std::string unit, bool transform, std::vect
 		}
 	} else {
 		if (!srs.is_lonlat()) {
-			if (transform) {
+			if (transform && can_transform(srs.wkt, "EPSG:4326")) {
 				SpatVector v = project("EPSG:4326");
-				if (v.hasError()) {
-					setError(v.getError());
-					addWarning("cannot transform these data to lon/lat. Use 'transform=FALSE'?");
-					return {NAN};
-				}
 				return v.area(unit, false, mask);
-
 			} else {
+				transform = false;
 				double m = srs.to_meter();
 				adj *= std::isnan(m) ? 1 : m * m;
 				if (domask) {

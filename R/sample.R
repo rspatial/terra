@@ -624,6 +624,7 @@ get_field_name <- function(x, nms, sender="") {
 setMethod("spatSample", signature(x="SpatVector"),
 	function(x, size, method="random", strata=NULL, chess="") {
 		method = match.arg(tolower(method), c("regular", "random"))
+		size <- round(size)
 		stopifnot(size > 0)
 		gtype <- geomtype(x)
 		if (gtype == "polygons") {
@@ -651,12 +652,14 @@ setMethod("spatSample", signature(x="SpatVector"),
 				r <- do.call(rbind, r)
 				return(r)
 			}
+			out <- vect()
 			if (length(size) == 1) {
-				x@ptr = x@ptr$sample(size, method[1], .seed())
+				out@ptr <- x@ptr$sample(size, method[1], .seed())
 			} else {
-				x@ptr = x@ptr$sampleGeom(size, method[1], .seed())
+				out@ptr <- x@ptr$sampleGeom(size, method[1], .seed())	
 			}
-			return(messages(x))
+			messages(x, "spatSample")
+			return(messages(out, "spatSample"))
 		} else if (grepl(gtype, "points")) {
 			if (!is.null(strata)) {
 				if (inherits(strata, "SpatRaster")) {
