@@ -17,7 +17,7 @@ parfun <- function(cls, d, fun, model, ...) {
 
 
 .runModel <- function(model, fun, d, nl, const, na.rm, index, cores, ...) {
-	doPar <- length(cores) > 0
+	doPar <- !is.null(cores)
 	if (!is.data.frame(d)) {
 		d <- data.frame(d)
 	}

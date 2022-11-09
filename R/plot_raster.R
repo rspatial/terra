@@ -172,7 +172,7 @@ prettyNumbs <- function(x, digits) {
 	} else {
 		ilevels <- match(out$levels, out$cats[[1]])
 		if (any(is.na(ilevels))) {
-			warn("plot", "found value(s) in raster that is/are not in levels")
+			warn("plot", "unknown categories in raster values")
 		}
 	}
 
