@@ -602,6 +602,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 				poBand->SetNoDataValue(UINT16_MAX);
 			} else if (datatype == "INT1U") {
 				poBand->SetNoDataValue(255);
+			} else if (datatype == "INT1S") {
+				poBand->SetNoDataValue(-128); //GDT_Int8
 			} else {
 				poBand->SetNoDataValue(NAN);
 			}
@@ -749,6 +751,8 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT16_MAX, invalid);
 			} else if (datatype == "INT1U") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, 255.0, invalid);
+			} else if (datatype == "INTSU") {
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, -128.0, 127.0, invalid);
 			} else {
 				minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
 			}
@@ -790,6 +794,16 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			std::vector<int16_t> vv;
 			tmp_min_max_na(vv, vals, na, (double)INT16_MIN, (double)INT16_MAX);
 			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int16, nl, NULL, 0, 0, 0, NULL );
+		} else if (datatype == "INT1S") {
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 7
+			setError("cannot write INT1S values with GDAL < 3.7");
+			GDALClose( source[0].gdalconnection );
+			return false;	
+#else 			
+			std::vector<int8_t> vv;
+			tmp_min_max_na(vv, vals, na, -127.0, 128.0);
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int8, nl, NULL, 0, 0, 0, NULL );
+#endif
 		} else if (datatype == "INT4U") {
 			//min_max_na(vals, na, 0, (double)INT32_MAX * 2 - 1);
 			//std::vector<uint32_t> vv(vals.begin(), vals.end());
