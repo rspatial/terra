@@ -5,7 +5,7 @@
 \alias{interpolate}
 \alias{interpolate,SpatRaster-method}
 
-\title{Interpolate}
+\title{Spatial interpolation}
 
 \description{
 Make a SpatRaster with interpolated values using a fitted model object of classes such as "gstat" (gstat package) or "Krige" (fields package), or any other model that has location (e.g., "x" and "y", or "longitude" and "latitude") as predictors (independent variables). If x and y are the only predictors, it is most efficient if you provide an empty (no associated data in memory or on file) SpatRaster for which you want predictions. If there are more spatial predictor variables provide these as a SpatRaster in the first argument of the function. If you do not have x and y locations as implicit predictors in your model you should use \code{\link[terra]{predict}} instead.
@@ -39,7 +39,7 @@ Make a SpatRaster with interpolated values using a fitted model object of classe
 SpatRaster
 }
 
-\seealso{ \code{\link{predict}}}
+\seealso{ \code{\link{predict}}, \code{link{interpIDW}}, \code{link{interpNear}}}
 
 
 \examples{
