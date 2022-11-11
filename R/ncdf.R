@@ -147,8 +147,8 @@
 		if (prj != "") {
 			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", prj, prec='text')
 		}
-		prj <- crs(x[1], describe=TRUE)[,3]
-		if (prj != "") {
+		prj <- crs(x[1], describe=TRUE)[1,3]
+		if (!is.na(prj)) {
 			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "epsg_code", prj, prec='text')
 		}
 	}
