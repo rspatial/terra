@@ -482,11 +482,18 @@ function(x, from, to, others=NULL, raw=FALSE, filename="", ...) {
 	y
 }
 
+
 setMethod("crop", signature(x="SpatRaster", y="ANY"),
 	function(x, y, snap="near", mask=FALSE, touches=TRUE, extend=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (mask && inherits(y, "SpatVector")) {
 			x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], touches[1], extend[1], opt)
+		} else if (mask && inherits(y, "SpatRaster")) {
+			mopt <- spatOptions(filename="", ...)
+			e <- .getExt(y, method="crop")
+			x@ptr <- x@ptr$crop(e@ptr, snap[1], extend[1], mopt)
+			x <- messages(x, "crop")
+			return(mask(x, y, filename=filename, ...))
 		} else {
 			y <- .getExt(y, method="crop")
 			x@ptr <- x@ptr$crop(y@ptr, snap[1], extend[1], opt)

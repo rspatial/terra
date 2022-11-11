@@ -41,6 +41,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 SpatRaster
 }
 
+\seealso{ \code{\link{interpolate}} for spatial model prediction }
 
 \examples{
 logo <- rast(system.file("ex/logo.tif", package="terra"))   
