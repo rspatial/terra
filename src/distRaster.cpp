@@ -3041,29 +3041,22 @@ std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool tra
 				readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
 				size_t blockoff = bs.nrows[i] * nc;
 				for (size_t lyr=0; lyr<nl; lyr++) {
-					size_t lyroff = lyr * blockoff;
+					size_t offset = lyr * blockoff;
+					size_t n = offset + blockoff;
 					if (by_value) {
-						for (size_t j=0; j<bs.nrows[i]; j++) {
-							size_t offset = lyroff + j * nc;
-							size_t n = offset + nc;
-							for (size_t k=offset; k<n; k++) {
-								if (!std::isnan(v[k])) {
-									if (m[lyr].find(v[k]) == m[lyr].end()) {
-										m[lyr][v[k]] = ar;
-									} else {
-										m[lyr][v[k]] += ar;
-									}
+						for (size_t k=offset; k<n; k++) {
+							if (!std::isnan(v[k])) {
+								if (m[lyr].find(v[k]) == m[lyr].end()) {
+									m[lyr][v[k]] = ar;
+								} else {
+									m[lyr][v[k]] += ar;
 								}
 							}
 						}
 					} else {
-						for (size_t j=0; j<bs.nrows[i]; j++) {
-							size_t offset = lyroff + j * nc;
-							size_t n = offset + nc;
-							for (size_t k=offset; k<n; k++) {
-								if (!std::isnan(v[j])) {
-									out[lyr] += ar;
-								}
+						for (size_t k=offset; k<n; k++) {
+							if (!std::isnan(v[k])) {
+								out[lyr] += ar;
 							}
 						}
 					}
