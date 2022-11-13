@@ -490,10 +490,14 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 			x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], touches[1], extend[1], opt)
 		} else if (mask && inherits(y, "SpatRaster")) {
 			mopt <- spatOptions(filename="", ...)
-			e <- .getExt(y, method="crop")
+			e <- ext(y)
 			x@ptr <- x@ptr$crop(e@ptr, snap[1], extend[1], mopt)
 			x <- messages(x, "crop")
-			return(mask(x, y, filename=filename, ...))
+			if (!compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=FALSE, messages=TRUE)) {
+				return(mask(x, y, filename=filename, ...))
+			} else {
+				return(x)
+			}
 		} else {
 			y <- .getExt(y, method="crop")
 			x@ptr <- x@ptr$crop(y@ptr, snap[1], extend[1], opt)

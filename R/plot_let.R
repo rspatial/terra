@@ -8,7 +8,12 @@ popUp <- function(x) {
 }
 
 makelonlat <- function(x) {
-	if (!is.lonlat(x)) {
+	geo <- is.lonlat(x)
+	if (is.na(geo)) {
+		geo <- is.lonlat(x, TRUE, TRUE)
+		if (geo) return(x)
+		error("plet", "coordinate reference system is unknown and does not look like lon/lat")
+	} else if (!geo) {
 		project(x, "+proj=longlat")
 	} else {
 		x
@@ -70,8 +75,11 @@ setMethod("plet", signature(x="SpatVector"),
 				map <- leaflet::addPolylines(map, data=x, label=lab,  
 							col=cols, opacity=alpha,  popup=pop)
 			} else {
-				map <- leaflet::addMarkers(map, data=x, label=lab,  
-							col=cols, fillOpacity=fill, opacity=alpha, popup=pop)
+				map <- leaflet::addCircleMarkers(map, data=x, radius=cex, popup=pop, 
+								label=lab, opacity=alpha, col=cols)
+
+	#			map <- leaflet::addMarkers(map, data=x, label=lab)  
+	##						col=cols, fillOpacity=fill, opacity=alpha, popup=pop)
 			}
 			if (length(tiles) > 1) {
 				map <- leaflet::addLayersControl(map, baseGroups = tiles, 
@@ -101,7 +109,7 @@ setMethod("plet", signature(x="SpatVector"),
 							col=cols[i], opacity=alpha, popup=pop)
 					} else {
 						map <- leaflet::addCircleMarkers(map, data=s, label=lab[i], group=u[i], 
-							col=cols[i], fillOpacity=fill, opacity=alpha, popup=pop)
+							col=cols[i], fillOpacity=fill, opacity=alpha, popup=pop, radius=cex)
 					}
 				}
 				if (length(tiles) > 1) {
