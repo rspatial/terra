@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-41</span>
       </span>
     </div>
 
@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-39" id="version-16-39">version 1.6-39<a class="anchor" aria-label="anchor" href="#version-16-39"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-41" id="version-16-41">version 1.6-41<a class="anchor" aria-label="anchor" href="#version-16-41"></a></h2>
 <div class="section level3">
-<h3 id="new-1-6-39">new<a class="anchor" aria-label="anchor" href="#new-1-6-39"></a></h3>
+<h3 id="new-1-6-41">new<a class="anchor" aria-label="anchor" href="#new-1-6-41"></a></h3>
 <ul><li>
 <code>[</code> and <code>[&lt;-</code> for SpatRaster now have a third index <code>k</code> for subsetting or assigning values by layer</li>
 <li>
@@ -80,7 +80,7 @@
 <code>elongate</code> method for SpatVector lines</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-6-39">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-39"></a></h3>
+<h3 id="enhancements-1-6-41">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-41"></a></h3>
 <ul><li>faster <code>mosaic</code> and <code>merge&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/issues/577" class="external-link">#577</a> by Jean-Romain</li>
 <li>
 <code>wrap&lt;SpatRaster&gt;</code> now uses file references if the data is deemed to large to all load into memory. <a href="https://github.com/rspatial/terra/issues/801" class="external-link">#801</a> by Jean-Romain</li>
@@ -101,7 +101,7 @@
 <li>the center of rotation for <code>spin</code> is now vectorized</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-39">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-39"></a></h3>
+<h3 id="bug-fixes-1-6-41">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-41"></a></h3>
 <ul><li>The annoying garbage collection messages <code>Error in x$.self$finalize() : attempt to apply non-function</code> is now suppressed in most cases. <a href="https://github.com/rspatial/terra/issues/218" class="external-link">#218</a> by Charlie Joey Hadley. This problem should go away altogether when a new version of “Rcpp” is released (ETA Jan 2023) thanks to a fix by Kevin Ushey <a href="https://github.com/rspatial/terra/issues/30" class="external-link">#30</a>
 </li>
 <li>
