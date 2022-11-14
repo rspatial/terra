@@ -9,6 +9,15 @@ function(x, mx=10000, ...) {
 	}
 )
 
+
+setMethod("points", signature(x="SpatRaster"),
+function(x, ...) {
+		p <- as.points(x)
+		points(p, ...)
+	}
+)
+
+
 setMethod("lines", signature(x="SpatVector"),
 	function(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)  {
 		n <- nrow(x)
@@ -112,3 +121,4 @@ setMethod("polys", signature(x="SpatVector"),
 	}
 )
 
+		

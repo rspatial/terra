@@ -9,13 +9,14 @@
 \alias{lines,SpatVector-method}
 \alias{lines,SpatRaster-method}
 \alias{lines,SpatGraticule-method}
+\alias{lines,SpatExtent-method}
+
+\alias{points,SpatVector-method}
+\alias{points,SpatRaster-method}
+\alias{points,SpatExtent-method}
 
 \alias{polys,SpatVector-method}
-\alias{points,SpatVector-method}
-
 \alias{polys,SpatExtent-method}
-\alias{lines,SpatExtent-method}
-\alias{points,SpatExtent-method}
 
 
 \title{Add SpatVector data to a map}
