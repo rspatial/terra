@@ -4,7 +4,7 @@ function(x, mx=10000, ...) {
 		if(prod(dim(x)) > mx) {
 			error("lines", "too many lines (you can increase the value of mx or use as.polygons)")
 		}
-		v <- as.polygons(x, dissolve=FALSE, values=FALSE)
+		v <- as.polygons(x[[1]], dissolve=FALSE, values=FALSE)
 		lines(v, ...)
 	}
 )
@@ -12,8 +12,18 @@ function(x, mx=10000, ...) {
 
 setMethod("points", signature(x="SpatRaster"),
 function(x, ...) {
-		p <- as.points(x)
+		p <- as.points(x[[1]])
 		points(p, ...)
+	}
+)
+
+setMethod("polys", signature(x="SpatRaster"),
+function(x, mx=10000, dissolve=TRUE, ...) {
+		if(prod(dim(x)) > mx) {
+			error("lines", "too many lines (you can increase the value of mx or use as.polygons)")
+		}
+		p <- as.polygons(x[[1]], dissolve=dissolve)
+		polys(p, ...)
 	}
 )
 
