@@ -158,6 +158,9 @@ setMethod("crs", signature("SpatRasterDataset"),
 
 setMethod("crs<-", signature("SpatRaster", "ANY"),
 	function(x, value) {
+		if (crs(x) != "") {
+			warn("crs<-", "assigning a new crs. Use 'project' to transform the data to a new crs")
+		}
 		value <- .txtCRS(value)
 		x@ptr <- x@ptr$deepcopy()
 		x@ptr$set_crs(value)
