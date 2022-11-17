@@ -18,7 +18,7 @@ Note that the distance unit of the buffer width parameter is meters if the CRS i
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-42</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-43</span>
       </span>
     </div>
 
@@ -110,6 +110,7 @@ For SpatRaster: cells inside the buffers have the value 1.</p>
 <span class="r-plt img"><img src="buffer-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="crs.html">crs</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"+proj=longlat"</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Assigning a new crs. Use 'project' to transform a SpatVector to a new crs</span>
 <span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">buffer</span><span class="op">(</span><span class="va">v</span>, <span class="fl">1500000</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
