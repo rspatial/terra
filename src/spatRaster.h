@@ -417,7 +417,7 @@ class SpatRaster {
 		bool createCategories(unsigned layer, SpatOptions &opt);
 		std::vector<bool> hasCategories();
 		bool setCategories(unsigned layer, SpatDataFrame d, unsigned index);
-		bool removeCategories(unsigned layer);
+		bool removeCategories(long layer);
 		std::vector<SpatCategories> getCategories();
 		SpatCategories getLayerCategories(unsigned layer);
 		std::vector<std::string> getLabels(unsigned layer);

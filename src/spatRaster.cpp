@@ -1217,15 +1217,24 @@ bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index) 
 }
 
 
-bool SpatRaster::removeCategories(unsigned layer) {
-	if (layer > (nlyr()-1)) {
+bool SpatRaster::removeCategories(long layer) {
+	if (layer > (((long)nlyr())-1)) {
 		setError("invalid layer number");
 		return(false);
 	}
-    std::vector<unsigned> sl = findLyr(layer);
 	SpatCategories s;
-	source[sl[0]].cats[sl[1]] = s;
-	source[sl[0]].hasCategories[sl[1]] = false;
+	if (layer < 0) {
+		for (size_t i=0; i<source.size(); i++) {
+			for (size_t j=0; j<source[i].cats.size(); j++) {
+				source[i].cats[j] = s;
+				source[i].hasCategories[j] = false;
+			}
+		}
+	} else {
+		std::vector<unsigned> sl = findLyr(layer);
+		source[sl[0]].cats[sl[1]] = s;
+		source[sl[0]].hasCategories[sl[1]] = false;
+	}
 	return true;
 }
 

@@ -158,10 +158,10 @@ setMethod("crs", signature("SpatRasterDataset"),
 
 setMethod("crs<-", signature("SpatRaster", "ANY"),
 	function(x, value) {
-		if (crs(x) != "") {
-			warn("crs<-", "assigning a new crs. Use 'project' to transform the data to a new crs")
-		}
 		value <- .txtCRS(value)
+		if ((crs(x) != "") && (value != "")) {
+			warn("crs<-", "assigning a new crs. Use 'project' to transform a SpatRaster to a new crs")
+		}
 		x@ptr <- x@ptr$deepcopy()
 		x@ptr$set_crs(value)
 		messages(x, "crs<-")
@@ -214,6 +214,9 @@ setMethod("crs", signature("sf"),
 setMethod("crs<-", signature("SpatVector", "ANY"),
 	function(x, value) {
 		value <- .txtCRS(value)
+		if ((crs(x) != "") && (value != "")) {
+			warn("crs<-", "assigning a new crs. Use 'project' to transform a SpatVector to a new crs")
+		}
 		x@ptr <- x@ptr$deepcopy()
 		x@ptr$set_crs(value)
 		messages(x, "crs<-")
