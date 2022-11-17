@@ -33,15 +33,16 @@ Setting a new CRS does not change the data itself, it just changes the label. So
 
 \S4method{crs}{character}(x, proj=FALSE, describe=FALSE, parse=FALSE)
 
-\S4method{crs}{SpatRaster}(x)<-value
+\S4method{crs}{SpatRaster}(x, warn=TRUE)<-value
 
-\S4method{crs}{SpatVector}(x)<-value
+\S4method{crs}{SpatVector}(x, warn=TRUE)<-value
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{proj}{logical. If \code{TRUE} the crs is returned in PROJ-string notation}
   \item{describe}{logical. If \code{TRUE} the name, EPSG code, and the name and extent of the area of use are returned if known}
+  \item{warn}{logical. If \code{TRUE}, a warning is given when the object already has a non-empty crs.
   \item{value}{character string describing a coordinate reference system. This can be in a WKT format, as a <authority:number> code such as "EPSG:4326", or a PROJ-string format such as "+proj=utm +zone=12" (see Note)}
   \item{parse}{logical. If \code{TRUE}, wkt parts are parsed into a vector (each line becomes an element)}
 }
