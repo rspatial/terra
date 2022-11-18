@@ -368,7 +368,7 @@ void make_dense_planar(std::vector<double> &x, std::vector<double> &y, double &i
 }
 
 
-SpatVector SpatVector::densify(double interval, bool adjust) {
+SpatVector SpatVector::densify(double interval, bool adjust, bool ignorelonlat) {
 
 	SpatVector out;
 	if (type() == "points") {
@@ -387,7 +387,7 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 	}
 	size_t n = size();
 	out.reserve(n);
-	if (is_lonlat()) {
+	if (is_lonlat() && (!ignorelonlat)) {
 		double a = 6378137.0;
 		double f = 1/298.257223563;
 		struct geod_geodesic geod;

@@ -376,7 +376,7 @@ class SpatVector {
 		SpatVector cbind(SpatDataFrame d);
 		void fix_lonlat_overflow();
 		SpatVector cross_dateline(bool &fixed);
-		SpatVector densify(double interval, bool adjust);
+		SpatVector densify(double interval, bool adjust, bool ignorelonlat);
 		SpatVector round(int digits);
 		std::vector<unsigned> nullGeoms();
 };
