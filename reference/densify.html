@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVector</span>
-<span class="fu">densify</span><span class="op">(</span><span class="va">x</span>, <span class="va">interval</span>, equalize<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu">densify</span><span class="op">(</span><span class="va">x</span>, <span class="va">interval</span>, equalize<span class="op">=</span><span class="cn">TRUE</span>, ignorelonlat<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -63,10 +63,13 @@
 <dd><p>SpatVector</p></dd>
 
   <dt>interval</dt>
-<dd><p>postive number, specifying the desired minimum distance between nodes. The unit is meter for lonlat data, and in the linear unit of the crs for planar data</p></dd>
+<dd><p>positive number, specifying the desired minimum distance between nodes. The unit is meter for lonlat data, and in the linear unit of the crs for planar data</p></dd>
 
   <dt>equalize</dt>
 <dd><p>logical. If <code>TRUE</code>, new nodes are spread at equal intervals between old nodes</p></dd>
+
+  <dt>flat</dt>
+<dd><p>logical. If <code>TRUE</code>, the earth's curvature is ignored for lonlat data</p></dd>
 
 </dl></div>
     <div id="value">

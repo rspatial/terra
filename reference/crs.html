@@ -83,37 +83,57 @@ Setting a new CRS does not change the data itself, it just changes the label. So
 <dd><p>logical. If <code>TRUE</code> the name, EPSG code, and the name and extent of the area of use are returned if known</p></dd>
 
   <dt>warn</dt>
-<dd><p>logical. If <code>TRUE</code>, a message is printed when the object already has a non-empty crs.
-  valuecharacter string describing a coordinate reference system. This can be in a WKT format, as a &lt;authority:number&gt; code such as "EPSG:4326", or a PROJ-string format such as "+proj=utm +zone=12" (see Note)
-  parselogical. If <code>TRUE</code>, wkt parts are parsed into a vector (each line becomes an element)</p></dd>
+<dd><p>logical. If <code>TRUE</code>, a message is printed when the object already has a non-empty crs</p></dd>
 
+  <dt>value</dt>
+<dd><p>character string describing a coordinate reference system. This can be in a WKT format, as a &lt;authority:number&gt; code such as "EPSG:4326", or a PROJ-string format such as "+proj=utm +zone=12" (see Note)</p></dd>
 
+  <dt>parse</dt>
+<dd><p>logical. If <code>TRUE</code>, wkt parts are parsed into a vector (each line becomes an element)</p></dd>
 
-</dl><p>Projections are handled by the PROJ/GDAL libraries. Recent changes in the PROJ library to improve transformations between datums have degraded the library's usability. The PROJ developers suggest to no longer use the proj-string notation to define a CRS, but use the WKT2 or &lt;authority&gt;:&lt;code&gt; notation instead. These alternative systems work for formally described CRSs that are in databases, but they do not cover the infinite number of CRSs that exist. It is not practical to define one's own custom CRS with WKT2. Moreover, unlike the proj-notation, these newer systems are hard to read and that leads to code that cannot be easily understood and, therefore, is more error-prone.It is still possible to use the PROJ-string notation with one major caveat: the datum should be WGS84 (or the equivalent NAD83) -- if you want to transform your data to a coordinate reference system with a different datum. Thus as long as you use WGS84, or an ellipsoid instead of a datum, you can safely use PROJ-strings to represent your CRS; including to define your own custom CRS.You can also set the crs to "local" to get an informal coordinate system on an arbitrary Euclidean (Cartesian) plane with units in meter.</p>
-
-
-
+</dl></div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>Projections are handled by the PROJ/GDAL libraries. Recent changes in the PROJ library to improve transformations between datums have degraded the library's usability. The PROJ developers suggest to no longer use the proj-string notation to define a CRS, but use the WKT2 or &lt;authority&gt;:&lt;code&gt; notation instead. These alternative systems work for formally described CRSs that are in databases, but they do not cover the infinite number of CRSs that exist. It is not practical to define one's own custom CRS with WKT2. Moreover, unlike the proj-notation, these newer systems are hard to read and that leads to code that cannot be easily understood and, therefore, is more error-prone.</p>
+<p>It is still possible to use the PROJ-string notation with one major caveat: the datum should be WGS84 (or the equivalent NAD83) -- if you want to transform your data to a coordinate reference system with a different datum. Thus as long as you use WGS84, or an ellipsoid instead of a datum, you can safely use PROJ-strings to represent your CRS; including to define your own custom CRS.</p>
+<p>You can also set the crs to "local" to get an informal coordinate system on an arbitrary Euclidean (Cartesian) plane with units in meter.</p>
+    </div>
+    <div id="value">
+    <h2>Value</h2>
+    
 
 <p>character or modified SpatRaster/Vector</p>
-
-
-
-
-<p>r &lt;- rast()
-crs(r)
-crs(r, describe=TRUE, proj=TRUE)crs(r) &lt;- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
-crs(r)# You can use epsg codes
-crs(r)  &lt;- "epsg:25831"
-crs(r, describe=TRUE)$areacrs("epsg:25831", describe=TRUE)</p>
-
-
-
-<p>spatial</p>
-
-
-
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">crs</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GEOGCRS[\"WGS 84\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]],\n        ID[\"EPSG\",6326]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n        ID[\"EPSG\",8901]],\n    CS[ellipsoidal,2],\n        AXIS[\"longitude\",east,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433,\n                ID[\"EPSG\",9122]]],\n        AXIS[\"latitude\",north,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433,\n                ID[\"EPSG\",9122]]]]"</span>
+<span class="r-in"><span class="fu">crs</span><span class="op">(</span><span class="va">r</span>, describe<span class="op">=</span><span class="cn">TRUE</span>, proj<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     name authority code area         extent                                proj</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 WGS 84      &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; NA, NA, NA, NA +proj=longlat +datum=WGS84 +no_defs</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">crs</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Assigning a new crs. Use 'project' to transform a SpatRaster to a new crs</span>
+<span class="r-in"><span class="fu">crs</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "PROJCRS[\"unknown\",\n    BASEGEOGCRS[\"unknown\",\n        DATUM[\"Unknown based on WGS84 ellipsoid\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1],\n                ID[\"EPSG\",7030]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8901]]],\n    CONVERSION[\"unknown\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",-100,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",48,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",33,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",0,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",0,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"(E)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]],\n        AXIS[\"(N)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]]]"</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># You can use epsg codes</span></span>
+<span class="r-in"><span class="fu">crs</span><span class="op">(</span><span class="va">r</span><span class="op">)</span>  <span class="op">&lt;-</span> <span class="st">"epsg:25831"</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Assigning a new crs. Use 'project' to transform a SpatRaster to a new crs</span>
+<span class="r-in"><span class="fu">crs</span><span class="op">(</span><span class="va">r</span>, describe<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">area</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Europe between 0°E and 6°E: Andorra; Belgium - onshore and offshore; Denmark - offshore; Germany - offshore; Jan Mayen - offshore; Norway including Svalbard - onshore and offshore; Spain - onshore and offshore"</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">crs</span><span class="op">(</span><span class="st">"epsg:25831"</span>, describe<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    name authority  code</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 ETRS89 / UTM zone 31N      EPSG 25831</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                                                                                                area</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Europe between 0°E and 6°E: Andorra; Belgium - onshore and offshore; Denmark - offshore; Germany - offshore; Jan Mayen - offshore; Norway including Svalbard - onshore and offshore; Spain - onshore and offshore</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                     extent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.00, 6.01, 82.45, 37.00</span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
