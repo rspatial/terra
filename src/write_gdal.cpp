@@ -20,6 +20,7 @@
 #include "string_utils.h"
 #include "file_utils.h"
 #include "vecmath.h"
+#include "recycle.h"
 
 #include <unordered_map>
 #include <vector>
@@ -548,21 +549,31 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	if (writeRGB) nms = {"red", "green", "blue"};
 
-	double scale = opt.get_scale();
-	double offset = opt.get_offset();
+	std::vector<double> scale = opt.get_scale();
+	std::vector<double> offset = opt.get_offset();
 	bool scoff = false;
-	if ((scale != 1) || (offset != 0)) {
-		scoff = true;
-		size_t nl = nlyr();
-		source[0].has_scale_offset = std::vector<bool>(nl, true);
-		source[0].scale  = std::vector<double>(nl, scale);
-		source[0].offset = std::vector<double>(nl, offset);
+	size_t nl = nlyr();
+	for (size_t i=0; i<scale.size(); i++) {
+		if ((scale[i] != 1) || (offset[i] != 0)) {
+			if (!scoff) {
+				source[0].has_scale_offset = std::vector<bool>(nl, false);
+				scoff = true;
+			}
+			source[0].has_scale_offset[i] = true;
+		}
+	}
+	if (scoff) {
+		recycle(scale, nl);
+		recycle(offset, nl);
+		source[0].scale  = scale;
+		source[0].offset = offset;
 	}
 
+	bool scoffwarning = false;
+	
 	for (size_t i=0; i < nlyr(); i++) {
 
 		poBand = poDS->GetRasterBand(i+1);
-
 		if ((i==0) && hasCT[i]) {
 			if (!setCT(poBand, ct[i])) {
 				if (warnCT) {
@@ -631,19 +642,25 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		}
 		
 		if (scoff) {
-			bool failed = (poBand->SetScale(scale)) != CE_None;
-			if (!failed) {
-				failed = ((poBand->SetOffset(offset)) != CE_None);
-			}
-			if (failed) {
-				addWarning("could not set offset");
-				source[0].has_scale_offset[i] = false;
-				source[0].scale[i]  = 1;
-				source[0].offset[i] = 0;;
+			if (source[0].has_scale_offset[i]) {
+				bool failed = (poBand->SetScale(scale[i])) != CE_None;
+				if (!failed) {
+					failed = ((poBand->SetOffset(offset[i])) != CE_None);
+				}
+				if (failed) {
+					source[0].has_scale_offset[i] = false;
+					source[0].scale[i]  = 1;
+					source[0].offset[i] = 0;
+					scoffwarning = true;
+				}
 			}
 		}
 	}
 
+	if (scoffwarning) {
+		addWarning("could not set offset");
+	}
+	
 	std::vector<double> rs = resolution();
 	SpatExtent extent = getExtent();
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
@@ -748,6 +765,8 @@ void minmaxlim(Iterator start, Iterator end, double &vmin, double &vmax, const d
         vmin = NAN;
         vmax = NAN;
     }
+	vmin = std::trunc(vmin);	
+	vmax = std::trunc(vmax);	
 }
 
 
@@ -759,6 +778,16 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 	size_t nc = nrows * ncols;
 	size_t nl = nlyr();
 	std::string datatype = source[0].dtype;
+
+	size_t n = vals.size() / nl;
+	for (size_t i=0; i<nl; i++) {
+		if (source[0].has_scale_offset[i]) {
+			size_t start = i*n;
+			for (size_t j=start; j<(start+n); j++) {
+				vals[j] = (vals[j] - source[0].offset[i]) / source[0].scale[i];
+			}
+		}
+	}
 
 	if ((compute_stats) && (!gdal_stats)) {
 		bool invalid = false;
@@ -774,10 +803,14 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT16_MAX, invalid);
 			} else if (datatype == "INT1U") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, 255.0, invalid);
-			} else if (datatype == "INTSU") {
+			} else if (datatype == "INT1S") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, -128.0, 127.0, invalid);
 			} else {
 				minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
+			}
+			if (source[0].has_scale_offset[i]) {
+				vmin = vmin * source[0].scale[i] + source[0].offset[i];
+				vmax = vmax * source[0].scale[i] + source[0].offset[i];
 			}
 			if (!std::isnan(vmin)) {
 				if (std::isnan(source[0].range_min[i])) {
@@ -794,15 +827,6 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		}
 	}
 
-	size_t n = vals.size() / nl;
-	for (size_t i=0; i<nl; i++) {
-		if (source[0].has_scale_offset[i]) {
-			size_t start = i*n;
-			for (size_t j=start; j<(start+n); j++) {
-				vals[j] = (vals[j] - source[0].offset[i]) / source[0].scale[i];
-			}
-		}
-	}
 	int hasNA = 0;
 	double na = source[0].gdalconnection->GetRasterBand(1)->GetNoDataValue(&hasNA);
 	if ((datatype == "FLT8S") || (datatype == "FLT4S")) {

@@ -225,11 +225,11 @@ size_t SpatOptions::get_ncopies(){ return ncopies; }
 
 
 
-void SpatOptions::set_offset(double d) { offset = d ; }
-double SpatOptions::get_offset() {return offset;}
+void SpatOptions::set_offset(std::vector<double> d) { offset = d ; }
+std::vector<double> SpatOptions::get_offset() {return offset;}
 
-void SpatOptions::set_scale(double d) {scale=d;}
-double SpatOptions::get_scale(){return scale;}
+void SpatOptions::set_scale(std::vector<double> d) {scale=d;}
+std::vector<double> SpatOptions::get_scale(){return scale;}
 
 
 bool extent_operator(std::string oper) {

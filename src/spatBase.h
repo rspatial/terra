@@ -109,8 +109,8 @@ class SpatOptions {
 		double memmin = 134217728; // 1024^3 / 8
 		double memfrac = 0.6;
 		double tolerance = 0.1;
-		double offset = 0;
-		double scale = 1;
+		std::vector<double> offset = {0};
+		std::vector<double> scale = {1};
 		
 	public:
 		SpatOptions();
@@ -202,10 +202,10 @@ class SpatOptions {
 		void set_ncopies(size_t n);
 		size_t get_ncopies();
 
-		void set_offset(double d);
-		double get_offset();
-		void set_scale(double d);
-		double get_scale();
+		void set_offset(std::vector<double> d);
+		std::vector<double> get_offset();
+		void set_scale(std::vector<double> d);
+		std::vector<double> get_scale();
 
 		SpatMessages msg;
 };

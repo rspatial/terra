@@ -10,7 +10,6 @@
 //static void SpatRaster_finalizer( SpatRaster* ptr ){
 //}
 
-
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) {
 	SpatOptions opt;
 	opt.ncopies = n;
