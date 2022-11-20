@@ -290,6 +290,10 @@ RCPP_MODULE(spat){
 		.property("steps", &SpatOptions::get_steps, &SpatOptions::set_steps)
 	//	.property("overwrite", &SpatOptions::set_overwrite, &SpatOptions::get_overwrite )
 		//.field("gdaloptions", &SpatOptions::gdaloptions)
+
+		.property("scale", &SpatOptions::get_scale, &SpatOptions::set_scale)
+		.property("offset", &SpatOptions::get_offset, &SpatOptions::set_offset)
+
 	;
 
     class_<SpatDataFrame>("SpatDataFrame")

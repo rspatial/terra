@@ -44,7 +44,7 @@ get_z <- function(y, field, caller="rasterizeWin") {
 		#if (!is.numeric(field)) {
 		#	error(caller, paste(field, "is not numeric"))
 		#}
-		z <- rep_len(field, nrow(y))
+		z <- data.frame(field=rep_len(field, nrow(y)))
 	}
 	z
 }

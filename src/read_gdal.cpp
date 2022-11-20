@@ -1058,6 +1058,7 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 				std::replace(d.begin()+start, d.begin()+start+n, flag, na);
 			}
 		}
+		
 		if (haveso[i]) {
 			for (size_t j=start; j<(start+n); j++) {
 				d[j] = d[j] * scale[i] + offset[i];

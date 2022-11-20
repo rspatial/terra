@@ -1289,20 +1289,10 @@ bool SpatRaster::setScaleOffset(std::vector<double> sc, std::vector<double> of) 
 		if (source[i].memory) {
 			for (size_t j=0; j<source[i].nlyr; j++) {
 				size_t loff = j * nc;
-				bool dorange = false;
-				if (sc[k] != 1) {
+				if ((sc[k] != 1) || (of[k] != 0)) {
 					for (size_t p=loff; p<(loff+nc); p++) {
-						source[i].values[p] *= sc[k];
+						source[i].values[p] = source[i].values[p] * sc[k] + of[k];
 					}
-					dorange = true;
-				}
-				if (of[k] != 0) {
-					for (size_t p=loff; p<(loff+nc); p++) {
-						source[i].values[p] += of[k];
-					}
-					dorange = true;
-				}
-				if (dorange) {
 					source[i].range_min[j] = source[i].range_min[j] * sc[k] + of[k];
 					source[i].range_max[j] = source[i].range_max[j] * sc[k] + of[k];
 				}

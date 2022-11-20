@@ -224,6 +224,14 @@ void SpatOptions::set_ncopies(size_t n) { ncopies = std::max((size_t)1, n); }
 size_t SpatOptions::get_ncopies(){ return ncopies; }
 
 
+
+void SpatOptions::set_offset(double d) { offset = d ; }
+double SpatOptions::get_offset() {return offset;}
+
+void SpatOptions::set_scale(double d) {scale=d;}
+double SpatOptions::get_scale(){return scale;}
+
+
 bool extent_operator(std::string oper) {
 	std::vector<std::string> f {"==", "!=", ">", "<", ">=", "<="};
 	return (std::find(f.begin(), f.end(), oper) != f.end());

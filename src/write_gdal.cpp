@@ -548,6 +548,17 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	if (writeRGB) nms = {"red", "green", "blue"};
 
+	double scale = opt.get_scale();
+	double offset = opt.get_offset();
+	bool scoff = false;
+	if ((scale != 1) || (offset != 0)) {
+		scoff = true;
+		size_t nl = nlyr();
+		source[0].has_scale_offset = std::vector<bool>(nl, true);
+		source[0].scale  = std::vector<double>(nl, scale);
+		source[0].offset = std::vector<double>(nl, offset);
+	}
+
 	for (size_t i=0; i < nlyr(); i++) {
 
 		poBand = poDS->GetRasterBand(i+1);
@@ -618,7 +629,18 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 				poBand->SetColorInterpretation(GCI_BlueBand);
 			}
 		}
-
+		
+		if (scoff) {
+			bool failed = (poBand->SetScale(scale)) != CE_None;
+			if (failed) {
+				addWarning("could not set scale/offset");
+			} else {
+				failed = ((poBand->SetOffset(offset)) != CE_None);
+				if (failed) {
+					addWarning("could not set offset");
+				}
+			}
+		}
 	}
 
 	std::vector<double> rs = resolution();
@@ -860,9 +882,17 @@ bool SpatRaster::writeStopGDAL() {
 				} else {
 					poBand->ComputeStatistics(gdal_approx, &mn, &mx, &av, &sd, NULL, NULL);
 				}
+				
+				if (source[0].has_scale_offset[i]) {
+					mn = mn * source[0].scale[i] + source[0].offset[i];
+					mx = mx * source[0].scale[i] + source[0].offset[i];
+				}
 				poBand->SetStatistics(mn, mx, av, sd);
 			} else {
-				if (datatype.substr(0,3) == "INT") {
+				if (source[0].has_scale_offset[i]) {
+					source[0].range_min[i] = source[0].range_min[i] * source[0].scale[i] + source[0].offset[i];
+					source[0].range_max[i] = source[0].range_max[i] * source[0].scale[i] + source[0].offset[i];
+				} else if (datatype.substr(0,3) == "INT") {
 					source[0].range_min[i] = trunc(source[0].range_min[i]);
 					source[0].range_max[i] = trunc(source[0].range_max[i]);
 				} else if (datatype == "FLT4S") { // match precision

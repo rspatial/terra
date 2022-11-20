@@ -58,6 +58,10 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 \code{steps}\tab positive integers. In how many steps (chunks) do you want to process the data (for debugging)\cr
 
 \code{todisk}\tab logical. If \code{TRUE} processing operates as if the dataset is very large and needs to be written to a temporary file (for debugging).\cr
+
+\code{scale}\tab set a "scale" value. This indicates that the cell values have been divided by this value; and when reading the file, cell values need to be multiplied with this value\cr
+
+\code{offset}\tab set an "offset" value. This indicates that this value was subtracted from the cell values; and when reading the file, this value needs to be added to the cell values (after applying the scale value)\cr
 }
 }
 

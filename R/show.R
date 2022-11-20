@@ -308,6 +308,8 @@ setMethod ("show" , "SpatRaster",
 				#r <- minmax(object)
 				rr <- r <- rbind(object@ptr$range_min, object@ptr$range_max)
 				r[,!hMM] <- c(Inf, -Inf)
+				#sc <- scoff(object)
+				#r <- r * sc[,1] + sc[,2]
 				r <- sapply(data.frame(r), format)
 				minv <- r[1,]
 				maxv <- r[2,]

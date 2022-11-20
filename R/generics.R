@@ -1217,6 +1217,8 @@ setMethod("scoff<-", signature("SpatRaster"),
 				error("scoff<-", "value must be a 2-column matrix")
 			}
 			x@ptr <- x@ptr$deepcopy()
+			value[is.na(value[,1]),1] <- 1
+			value[is.na(value[,2]),2] <- 0
 			x@ptr$setScaleOffset(value[,1], value[,2])
 		}
 		messages(x, "scoff<-")
