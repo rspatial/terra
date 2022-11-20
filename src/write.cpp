@@ -23,9 +23,9 @@
 
 bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size_t nrows) {
 
-	if (source[0].has_scale_offset[0]) {
-		for (double &d : vals) d = d * source[0].scale[0] + source[0].offset[0];
-	}
+	//if (source[0].has_scale_offset[0]) {
+	//	for (double &d : vals) d = d * source[0].scale[0] + source[0].offset[0];
+	//}
 
 	if (vals.size() == size()) {
 		source[0].values = std::move(vals);
@@ -206,13 +206,6 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 		#endif
 	} else if ((nl == 1) && (bs.n > 1)) {
 		source[0].values.reserve(ncell());
-	}
-	double scale = opt.get_scale();
-	double offset = opt.get_offset();
-	if ((scale != 1) || (offset != 0)) {
-		source[0].has_scale_offset = std::vector<bool>(nl, true);
-		source[0].scale  = std::vector<double>(nl, scale);
-		source[0].offset = std::vector<double>(nl, offset);
 	}
 
 	if (source[0].open_write) {

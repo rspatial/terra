@@ -632,13 +632,14 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		
 		if (scoff) {
 			bool failed = (poBand->SetScale(scale)) != CE_None;
-			if (failed) {
-				addWarning("could not set scale/offset");
-			} else {
+			if (!failed) {
 				failed = ((poBand->SetOffset(offset)) != CE_None);
-				if (failed) {
-					addWarning("could not set offset");
-				}
+			}
+			if (failed) {
+				addWarning("could not set offset");
+				source[0].has_scale_offset[i] = false;
+				source[0].scale[i]  = 1;
+				source[0].offset[i] = 0;;
 			}
 		}
 	}
@@ -793,7 +794,16 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		}
 	}
 
-	int hasNA=0;
+	size_t n = vals.size() / nl;
+	for (size_t i=0; i<nl; i++) {
+		if (source[0].has_scale_offset[i]) {
+			size_t start = i*n;
+			for (size_t j=start; j<(start+n); j++) {
+				vals[j] = (vals[j] - source[0].offset[i]) / source[0].scale[i];
+			}
+		}
+	}
+	int hasNA = 0;
 	double na = source[0].gdalconnection->GetRasterBand(1)->GetNoDataValue(&hasNA);
 	if ((datatype == "FLT8S") || (datatype == "FLT4S")) {
 		if (hasNA) {
@@ -881,18 +891,10 @@ bool SpatRaster::writeStopGDAL() {
 					mx = adfMinMax[1];
 				} else {
 					poBand->ComputeStatistics(gdal_approx, &mn, &mx, &av, &sd, NULL, NULL);
-				}
-				
-				if (source[0].has_scale_offset[i]) {
-					mn = mn * source[0].scale[i] + source[0].offset[i];
-					mx = mx * source[0].scale[i] + source[0].offset[i];
-				}
+				}		
 				poBand->SetStatistics(mn, mx, av, sd);
 			} else {
-				if (source[0].has_scale_offset[i]) {
-					source[0].range_min[i] = source[0].range_min[i] * source[0].scale[i] + source[0].offset[i];
-					source[0].range_max[i] = source[0].range_max[i] * source[0].scale[i] + source[0].offset[i];
-				} else if (datatype.substr(0,3) == "INT") {
+				if (datatype.substr(0,3) == "INT") {
 					source[0].range_min[i] = trunc(source[0].range_min[i]);
 					source[0].range_max[i] = trunc(source[0].range_max[i]);
 				} else if (datatype == "FLT4S") { // match precision
