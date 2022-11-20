@@ -551,9 +551,15 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	std::vector<double> scale = opt.get_scale();
 	std::vector<double> offset = opt.get_offset();
-	bool scoff = false;
 	size_t nl = nlyr();
+	if (((scale.size() > 1) || (offset.size())) || 
+		((scale[0] != 1) || (offset[0] != 0))) {	
+		recycle(scale, nl);
+		recycle(offset, nl);
+	}
+	bool scoff = false;
 	for (size_t i=0; i<scale.size(); i++) {
+		//if (scale[i] == 0) scale[i] = 1;
 		if ((scale[i] != 1) || (offset[i] != 0)) {
 			if (!scoff) {
 				source[0].has_scale_offset = std::vector<bool>(nl, false);
@@ -563,8 +569,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		}
 	}
 	if (scoff) {
-		recycle(scale, nl);
-		recycle(offset, nl);
 		source[0].scale  = scale;
 		source[0].offset = offset;
 	}
@@ -612,12 +616,15 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan."
 			if (hasNAflag) {
 				poBand->SetNoDataValue(naflag);
+			} else if (datatype == "INT8S") {
+				poBand->SetNoDataValue(INT64_MIN); //-2147483648;
 			} else if (datatype == "INT4S") {
 				poBand->SetNoDataValue(INT32_MIN); //-2147483648;
 			} else if (datatype == "INT2S") {
 				poBand->SetNoDataValue(INT16_MIN);
+			} else if (datatype == "INT8U") {
+				poBand->SetNoDataValue(UINT64_MAX);
 			} else if (datatype == "INT4U") {
-				//double na = (double)UINT32_MAX;
 				poBand->SetNoDataValue(UINT32_MAX);
 			} else if (datatype == "INT2U") {
 				//double na = (double)INT16_MAX * 2 - 1;
@@ -793,10 +800,14 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		bool invalid = false;
 		for (size_t i=0; i < nl; i++) {
 			size_t start = nc * i;
-			if (datatype == "INT4S") {
+			if (datatype == "INT8S") {
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT64_MAX, invalid);
+			} else if (datatype == "INT4S") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT32_MAX, invalid);
 			} else if (datatype == "INT2S") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT16_MIN, (double)INT16_MAX, invalid);
+			} else if (datatype == "INT8U") {
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT64_MAX, invalid);
 			} else if (datatype == "INT4U") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT32_MAX, invalid);
 			} else if (datatype == "INT2U") {
@@ -838,7 +849,11 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		}
 		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vals[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL );
 	} else {
-		if (datatype == "INT4S") {
+		if (datatype == "INT8S") {
+			std::vector<int64_t> vv;
+			tmp_min_max_na(vv, vals, na, (double)INT64_MIN, (double)INT64_MAX);
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int64, nl, NULL, 0, 0, 0, NULL );
+		} else if (datatype == "INT4S") {
 			//min_max_na(vals, na, (double)INT32_MIN, (double)INT32_MAX);
 			//std::vector<int32_t> vv(vals.begin(), vals.end());
 			std::vector<int32_t> vv;
@@ -860,6 +875,10 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			tmp_min_max_na(vv, vals, na, -127.0, 128.0);
 			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int8, nl, NULL, 0, 0, 0, NULL );
 #endif
+		} else if (datatype == "INT8U") {
+			std::vector<uint64_t> vv;
+			tmp_min_max_na(vv, vals, na, 0, (double)UINT64_MAX);
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_UInt64, nl, NULL, 0, 0, 0, NULL );
 		} else if (datatype == "INT4U") {
 			//min_max_na(vals, na, 0, (double)INT32_MAX * 2 - 1);
 			//std::vector<uint32_t> vv(vals.begin(), vals.end());

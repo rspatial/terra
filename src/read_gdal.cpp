@@ -543,9 +543,11 @@ std::string getDsPRJ(GDALDataset *poDataset) {
 inline std::string dtypename(const std::string &d) {
 	if (d == "Float64") return "FLT8S";
 	if (d == "Float32") return "FLT4S";
+	if (d == "Int64") return "INT8S";
 	if (d == "Int32") return "INT4S";
 	if (d == "Int16") return "INT2S";
 	if (d == "Int8") return "INT1S";
+	if (d == "UInt64") return "INT8U";
 	if (d == "UInt32") return "INT4U";
 	if (d == "UInt16") return "INT2U";
 	if (d == "Byte") return "INT1U";

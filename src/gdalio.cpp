@@ -441,12 +441,16 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 bool getNAvalue(GDALDataType gdt, double & naval) {
 	if (gdt == GDT_Float32) {
 		naval = NAN;
+	} else if (gdt == GDT_Int64) {
+		naval = INT64_MIN;
 	} else if (gdt == GDT_Int32) {
 		naval = INT32_MIN;
 	} else if (gdt == GDT_Float64) {
 		naval = NAN;
 	} else if (gdt == GDT_Int16) {
 		naval = INT16_MIN;
+	} else if (gdt == GDT_UInt64) {
+		naval = UINT64_MAX;
 	} else if (gdt == GDT_UInt32) {
 		naval = UINT32_MAX;
 	} else if (gdt == GDT_UInt16) {
@@ -471,12 +475,16 @@ bool getNAvalue(GDALDataType gdt, double & naval) {
 bool getGDALDataType(std::string datatype, GDALDataType &gdt) {
 	if (datatype=="FLT4S") {
 		gdt = GDT_Float32;
+	} else if (datatype == "INT8S") {
+		gdt = GDT_Int64;
 	} else if (datatype == "INT4S") {
 		gdt = GDT_Int32;
 	} else if (datatype == "FLT8S") {
 		gdt = GDT_Float64;
 	} else if (datatype == "INT2S") {
 		gdt = GDT_Int16;
+	} else if (datatype == "INT8U") {
+		gdt = GDT_UInt64;
 	} else if (datatype == "INT4U") {
 		gdt = GDT_UInt32;
 	} else if (datatype == "INT2U") {
