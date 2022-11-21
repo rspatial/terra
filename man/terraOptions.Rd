@@ -5,15 +5,16 @@
 \title{Options}
 
 \description{
-Class and methods for showing and setting general options for terra.
+Get or set general options.
 }
 
 \usage{
-terraOptions(...)
+terraOptions(..., print=TRUE)
 }
 
 \arguments{
-  \item{...}{option names and values (see Details). Or missing, to show the current options}  
+  \item{...}{option names and values (see Details). Or missing, to get or show the current options}  
+  \item{print}{logical. If \code{TRUE} the option names and values are printed }  
 } 
 
 \details{
@@ -34,6 +35,10 @@ The following options are available.
 \bold{progress} - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero
 
 \bold{verbose} - logical. If \code{TRUE} debugging info is printed for some functions
+}
+
+\value{
+list. Invisibly if \code{print=TRUE}
 }
 
 \examples{

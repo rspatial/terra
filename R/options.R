@@ -107,24 +107,32 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 #	}
 #}
 
-.showOptions <- function(opt) {
-	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance")
-	for (n in nms) {
-		v <- eval(parse(text=paste0("opt$", n)))
-		cat(paste0(substr(paste(n, "         "), 1, 10), ": ", v, "\n"))
-	}
-	cat(paste0("memmin    : ", 8 * opt$memmin / (1024^3), "\n"))
-	if (opt$memmax > 0) {
-		cat(paste0("memmax    : ", 8 * opt$memmax / (1024^3), "\n"))
-	}
-}
 
 .getOptions <- function() {
 	opt <- spatOptions()
 	nms <- names(opt)
 	nms <- nms[!grepl("^\\.", nms)]
-	nms <- nms[!(nms %in% c("initialize", "messages", "getClass"))]
-	sapply(nms, function(n) eval(parse(text=paste0("opt$", n))))
+	nms <- nms[!(nms %in% c("initialize", "messages", "getClass", "finalize", "datatype_set", "pid", "statistics", "gdal_options", "scale", "offset", "threads", "filenames", "NAflag"))]
+	nms <- gsub("def_", "", nms)
+	out <- sapply(nms, function(n) eval(parse(text=paste0("opt$", n))))
+	out$memmin <- 8 * out$memmin / (1024^3)
+	if (out$memmax > 0) {
+		out$memmax <- 8 * out$memmax / (1024^3)
+	} 
+	out
+}
+
+.showOptions <- function(opt, print=TRUE) {
+	out <- .getOptions()
+	if (!print) return(out)
+	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance", "memmin", "memmax")
+	p <- out[names(out) %in% nms]
+	if (p$memmax <= 0) p$memmax <- NULL
+	nms <- names(p)
+	for (i in seq_along(nms)) {
+		cat(paste0(substr(paste(nms[i], "         "), 1, 10), ": ", p[i], "\n"))
+	}
+	invisible(out)
 }
 
 
@@ -132,14 +140,12 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	c("datatype", "filetype") #, "verbose")
 }
 
-
-
-terraOptions <- function(...) {
+terraOptions <- function(..., print=TRUE) {
 	dots <- list(...)
 	if (is.null(.terra_environment$options)) .create_options()
 	opt <- .terra_environment$options@ptr
 	if (length(dots) == 0) {
-		.showOptions(opt)
+		.showOptions(opt, print=print)
 	} else {
 		nms <- names(dots)
 		d <- nms %in% .default_option_names()
