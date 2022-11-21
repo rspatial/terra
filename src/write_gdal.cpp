@@ -616,14 +616,10 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan."
 			if (hasNAflag) {
 				poBand->SetNoDataValue(naflag);
-			} else if (datatype == "INT8S") {
-				poBand->SetNoDataValue(INT64_MIN); //-2147483648;
 			} else if (datatype == "INT4S") {
 				poBand->SetNoDataValue(INT32_MIN); //-2147483648;
 			} else if (datatype == "INT2S") {
 				poBand->SetNoDataValue(INT16_MIN);
-			} else if (datatype == "INT8U") {
-				poBand->SetNoDataValue(UINT64_MAX);
 			} else if (datatype == "INT4U") {
 				poBand->SetNoDataValue(UINT32_MAX);
 			} else if (datatype == "INT2U") {
@@ -633,6 +629,19 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 				poBand->SetNoDataValue(255);
 			} else if (datatype == "INT1S") {
 				poBand->SetNoDataValue(-128); //GDT_Int8
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 5
+// no Int64
+#else 
+			} else if (datatype == "INT8S") {
+				//INT64_MIN == -9223372036854775808;
+				if (poBand->SetNoDataValueAsInt64(INT64_MIN) != CE_None) {
+					addWarning("no data problem");
+				}			
+			} else if (datatype == "INT8U") {
+				if (poBand->SetNoDataValueAsUInt64(UINT64_MAX-1101) != CE_None) {
+					addWarning("no data problem");
+				}			
+#endif
 			} else {
 				poBand->SetNoDataValue(NAN);
 			}
@@ -801,7 +810,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		for (size_t i=0; i < nl; i++) {
 			size_t start = nc * i;
 			if (datatype == "INT8S") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT64_MAX, invalid);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT64_MIN, (double)INT64_MAX, invalid);
 			} else if (datatype == "INT4S") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT32_MAX, invalid);
 			} else if (datatype == "INT2S") {

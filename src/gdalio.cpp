@@ -6,14 +6,9 @@
 #include "string_utils.h"
 #include "file_utils.h"
 #include "crs.h"
-//#include <vector>
-//#include <string>
 
 #include "cpl_port.h"
 #include "cpl_conv.h" // CPLFree()
-//#include "gdal_version.h"
-
-
 
 
 void getGDALdriver(std::string &filename, std::string &driver) {
@@ -438,6 +433,7 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 
 #endif
 
+
 bool getNAvalue(GDALDataType gdt, double & naval) {
 	if (gdt == GDT_Float32) {
 		naval = NAN;
@@ -454,11 +450,11 @@ bool getNAvalue(GDALDataType gdt, double & naval) {
 	} else if (gdt == GDT_Byte) {
 		naval = 255;
 
-#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 6
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 5
 // no Int64
-# else 
+#else 
 	} else if (gdt == GDT_UInt64) {
-		naval = UINT64_MAX;
+		naval = UINT64_MAX - 1101; 
 	} else if (gdt == GDT_Int64) {
 		naval = INT64_MIN;
 #endif

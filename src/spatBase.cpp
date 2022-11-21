@@ -79,9 +79,9 @@ std::string SpatOptions::get_def_datatype() { return def_datatype; }
 
 void SpatOptions::set_datatype(std::string d) {
 #if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 7
-	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT2S", "INT4S", "FLT4S", "FLT8S" } ;
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT8U", "INT2S", "INT4S", "INT8S", "FLT4S", "FLT8S"} ;
 #else 
-	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT1S", "INT2S", "INT4S", "FLT4S", "FLT8S"};
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT8U", "INT1S", "INT2S", "INT4S", "INT8S", "FLT4S", "FLT8S"};
 #endif
 	if (is_in_vector(d, ss)) {
 		datatype = d;

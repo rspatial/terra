@@ -1057,6 +1057,7 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 					}
 				}
 			} else {
+			Rcpp::Rcout << flag << std::endl;
 				std::replace(d.begin()+start, d.begin()+start+n, flag, na);
 			}
 		}
@@ -1090,11 +1091,9 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 
 void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, size_t row, unsigned nrows, size_t col, unsigned ncols) {
 
-
 	if (source[src].flipped) {
 		row = nrow() - row - nrows;
 	}
-
 
 	if (source[src].multidim) {
 		readValuesMulti(data, src, row, nrows, col, ncols);
