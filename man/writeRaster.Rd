@@ -35,7 +35,8 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 \tabular{ll}{
 \bold{name} \tab \bold{description}\cr
 
-\code{datatype}\tab values for \code{datatype} are "INT1U", "INT1S" (GDAL >= 3.7), "INT2U", "INT2S", "INT4U", "INT4S", "INT8U", "INT8S", "FLT4S", "FLT8S". The first three letters indicate whether the datatype is an integer (whole numbers) of a real number ("float", decimal numbers), the fourth character indicates the number of bytes used for each number. Higher values allow for storing larger numbers and/or more precision; but create larger files. The  "S" or "U" indicate whether the values are signed (both negative and positive) or unsigned (zero and positive values only).\cr
+\code{datatype}\tab values accepted are "INT1U", "INT2U", "INT2S", "INT4U", "INT4S", "FLT4S", "FLT8S". With GDAL >= 3.5 you can also use "INT8U" and "INT8S". And with GDAL >= 3.7 you can use also use "INT1S". 
+The first three letters indicate whether the datatype is an integer (whole numbers) of a real number ("float", decimal numbers), the fourth character indicates the number of bytes used for each number. Higher values allow for storing larger numbers and/or more precision; but create larger files. The  "S" or "U" indicate whether the values are signed (both negative and positive) or unsigned (zero and positive values only).\cr
 
 \code{filetype}\tab file format expresses as \href{https://gdal.org/drivers/raster/index.html}{GDAL driver names}. If this argument is not supplied, the driver is derived from the filename.\cr
 
@@ -53,15 +54,17 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 
 \code{NAflag}\tab numeric. value to represent missing (\code{NA} or \code{NaN}) values. See note\cr
 
+\code{scale}\tab numeric. Cell values written to disk are divided by this value (default is 1). See \code{\link{scoff}}\cr
+
+\code{offset}\tab numeric. Value that is subtracted from the cell values written to disk (default is 0). See 
+\code{\link{scoff}} \cr
+
 \code{verbose}\tab logical. If \code{TRUE} debugging information is printed\cr
 
 \code{steps}\tab positive integers. In how many steps (chunks) do you want to process the data (for debugging)\cr
 
 \code{todisk}\tab logical. If \code{TRUE} processing operates as if the dataset is very large and needs to be written to a temporary file (for debugging).\cr
 
-\code{scale}\tab set a "scale" value. The values written will be divided by this value\cr
-
-\code{offset}\tab set an "offset" value. This will be subtracted from the values written\cr
 }
 }
 
