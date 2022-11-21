@@ -47,6 +47,14 @@
 			wopt <- wopt[-i]
 			nms <- nms[-i]
 		}
+		if ("tempdir" %in% nms) {
+			i <- which(nms == "tempdir")
+			if (!dir.exists(wopt[[i]])) {
+				warn("options", "you cannot set the tempdir to a path that does not exist")
+				wopt <- wopt[-i]
+				nms <- nms[-i]
+			}
+		}
 
 		for (i in seq_along(nms)) {
 			x[[nms[i]]] <- wopt[[i]]
@@ -144,10 +152,22 @@ terraOptions <- function(..., print=TRUE) {
 	dots <- list(...)
 	if (is.null(.terra_environment$options)) .create_options()
 	opt <- .terra_environment$options@ptr
-	if (length(dots) == 0) {
+
+	nms <- names(dots)
+	ndots <- length(dots)
+
+	if ("tempdir" %in% nms) {
+		i <- which(nms == "tempdir")
+		if (!dir.exists(dots[[i]])) {
+			warn("options", "you cannot set the tempdir to a path that does not exist")
+			dots <- dots[-i]
+			nms <- nms[-i]
+		}
+	}
+
+	if (ndots == 0) {
 		.showOptions(opt, print=print)
 	} else {
-		nms <- names(dots)
 		d <- nms %in% .default_option_names()
 		dnms <- paste0("def_", nms)
 		for (i in 1:length(nms)) {
