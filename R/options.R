@@ -167,7 +167,7 @@ terraOptions <- function(..., print=TRUE) {
 
 	if (ndots == 0) {
 		.showOptions(opt, print=print)
-	} else {
+	} else if (length(dots) > 0) {
 		d <- nms %in% .default_option_names()
 		dnms <- paste0("def_", nms)
 		for (i in 1:length(nms)) {
