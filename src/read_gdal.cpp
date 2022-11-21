@@ -1057,7 +1057,6 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 					}
 				}
 			} else {
-			Rcpp::Rcout << flag << std::endl;
 				std::replace(d.begin()+start, d.begin()+start+n, flag, na);
 			}
 		}
