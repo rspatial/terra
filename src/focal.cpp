@@ -89,7 +89,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	readValues(d, startrow, readnrows, 0, nc);
 	std::vector<double> out(n, fillvalue);
 
-//Rcpp::Rcout << "sr " << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl;
+// << "sr " << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl;
 
 
 	for (int_64 r=0; r < nrows; r++) {

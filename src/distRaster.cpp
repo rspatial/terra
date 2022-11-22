@@ -1059,20 +1059,6 @@ inline void DxDxyCost(const double &lat, const int &row, double xres, double yre
 	dxy = std::isnan(dxy) ? NAN : dxy / (mult * distscale);
 }
 
-/*
-void printit(std::vector<double>&x, size_t nc, std::string s) {
-	size_t cnt = 0;
-	Rcpp::Rcout << s << std::endl;
-	for (size_t i=0; i<x.size(); i++) {
-		Rcpp::Rcout << x[i] << " ";
-		cnt++;
-		if (cnt == nc) {
-			Rcpp::Rcout << std::endl;
-			cnt = 0;
-		}
-	}
-}
-*/
 
 void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir, bool global, bool npole, bool spole) {
 
@@ -1740,8 +1726,6 @@ void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vect
 
 
 void broom_dist_geo_global(std::vector<double> &dist, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lat, double latdir, double scale, bool npole, bool spole) {
-
-//Rcpp::Rcout << npole << " " << spole << std::endl;
 
 //	double dy = distance_lonlat(0, 0, 0, res[1]);
 	double dx, dy, dxy;

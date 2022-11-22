@@ -698,7 +698,6 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 				std::vector<double> x = vd.getD(0);
 				std::vector<double> y = vd.getD(1);
 				//srcout = extractXY(x, y, method, cells);
-//				Rcpp::Rcout << srcout.size() << " " << srcout[0].size() << std::endl;
 
 				/*
 				for (size_t j=0; j<nl; j++) {
@@ -820,7 +819,6 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 			return flat;
 		/*
 		} else { // multipoint
-			Rcpp::Rcout << "multipoint" << std::endl;
 			std::vector<double> x = vd.getD(0);
 			std::vector<double> y = vd.getD(1);
 			if (!cells & !xy & !weights) {
@@ -832,7 +830,6 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 				std::vector<double> x = vd.getD(0);
 				std::vector<double> y = vd.getD(1);
 				srcout = extractXY(x, y, method, cells);
-				Rcpp::Rcout << srcout.size() << " " << srcout[0].size();
 
 				out.push_back(srcout);
 
@@ -843,10 +840,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 					out[i][nl+cells]   = x;
 					out[i][nl+cells+1] = y;
 				}
-
-
 			}
-
 		}
 		*/
 	} else {

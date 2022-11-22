@@ -377,9 +377,6 @@ SpatGeom emptyGeom() {
 
 bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
 
-//Rcpp::Rcout << 1 << std::endl;
-//R_FlushConsole(); R_ProcessEvents();
-
 	std::string crs = "";
 
 	OGRLayer *poLayer;

@@ -100,7 +100,6 @@ GDALDataset* openGDAL(std::string filename, unsigned OpenFlag, std::vector<std::
 	for (size_t i=0; i<open_options.size(); i++) {
 		std::vector<std::string> opt = strsplit(open_options[i], "=");
 		if (opt.size() == 2) {
-//			Rcpp::Rcout << opt[0] << "=" << opt[1] << std::endl;
 			openops = CSLSetNameValue(openops, opt[0].c_str(), opt[1].c_str());
 		}
 	}
