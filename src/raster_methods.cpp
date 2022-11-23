@@ -1660,6 +1660,10 @@ SpatRaster SpatRaster::roll(size_t n, std::string fun, std::string type, bool ci
 		out.setError("it makes no sense to use a rolling function with n >= nlyr(x)");
 		return out;		
 	}
+	if (n <= 1) {
+		out.setError("n should be > 1");
+		return out;		
+	}
 	std::vector<std::string> types = {"around", "to", "from"};
 	if (!is_in_vector(type, types)) {
 		out.setError("unknown roll type, should be 'around', 'to', or 'from'");
