@@ -47,7 +47,7 @@ movingFun <- function(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE
 
 
 setMethod("roll", signature(x="numeric"),
-	function(x, n, fun=mean, type="from", circular=FALSE, na.rm=FALSE) {
+	function(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE) {
 		movingFun(x, n, fun, type=type, circular=circular, na.rm=na.rm)
 	}
 )
