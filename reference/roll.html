@@ -88,10 +88,15 @@
 
 
     </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="math-generics.html">cumsum</a></code></p></div>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="va">mean</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## numeric</span></span>
+<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="va">mean</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  2  3  4  5  6  7  8  9 10 11 NA NA</span>
 <span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="va">mean</span>, <span class="st">'to'</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] NA NA  2  3  4  5  6  7  8  9 10 11</span>
@@ -107,7 +112,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1.80 2.40 2.80 3.20 3.40 3.60 4.00 4.40 4.80 5.40 6.00 6.60 7.40 7.75 8.00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [16] 8.50 9.00  NaN</span>
 <span class="r-in"></span>
-<span class="r-in"></span>
+<span class="r-in"><span class="co">## SpatVector</span></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncol<span class="op">=</span><span class="fl">2</span>, nrow<span class="op">=</span><span class="fl">2</span>, nlyr<span class="op">=</span><span class="fl">10</span>, vals<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span> <span class="op">=</span> <span class="fl">2</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span> <span class="op">=</span> <span class="fl">4</span></span>
