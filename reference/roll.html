@@ -66,19 +66,19 @@
 <dd><p>SpatRaster or numeric</p></dd>
 
   <dt>n</dt>
-<dd><p>Size of the 'window', i.e. the number of sequential elements to use in the function</p></dd>
+<dd><p>integer &gt; 1. Size of the 'window', i.e. the number of sequential elements to use in the function</p></dd>
 
   <dt>fun</dt>
-<dd><p>A function like mean, min, max, sum</p></dd>
+<dd><p>a function like mean, min, max, sum</p></dd>
 
   <dt>type</dt>
-<dd><p>Character. One of 'around', 'to', or 'from'. The choice indicates which values should be used in the computation. The focal element is always used. If <code>type</code> is 'around', the other elements are before and after the focal element. Alternatively, you can select the elements preceding the focal element ('to') or those coming after it 'from'. For example, when using <code>n=3</code> for element 5 of a vector; 'around' used elements 4,5,6; 'to' used elements 3,4,5, and 'from' uses elements 5,6,7</p></dd>
+<dd><p>character. One of 'around', 'to', or 'from'. The choice indicates which values should be used in the computation. The focal element is always used. If <code>type</code> is 'around', the other elements are before and after the focal element. Alternatively, you can select the elements preceding the focal element ('to') or those coming after it 'from'. For example, when using <code>n=3</code> for element 5 of a vector; 'around' used elements 4,5,6; 'to' used elements 3,4,5, and 'from' uses elements 5,6,7</p></dd>
 
   <dt>circular</dt>
-<dd><p>Logical. If <code>TRUE</code>, the data are considered to have a circular nature (e.g. months of the year), and the last elements in vector <code>x</code> are used in the computation of the moving function of the first element(s) of the vector, and the first elements are used in the computation of the moving function for the last element(s)</p></dd>
+<dd><p>logical. If <code>TRUE</code>, the data are considered to have a circular nature (e.g. months of the year), and the last elements in vector <code>x</code> are used in the computation of the moving function of the first element(s) of the vector, and the first elements are used in the computation of the moving function for the last element(s)</p></dd>
 
   <dt>na.rm</dt>
-<dd><p>Logical. If <code>TRUE</code>, <code>NA</code> values should be ingored (by <code>fun</code>)</p></dd>
+<dd><p>logical. If <code>TRUE</code>, <code>NA</code> values should be ingored (by <code>fun</code>)</p></dd>
 
   <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
@@ -107,17 +107,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  2  3  4  5  6  7  8  9 10 11 NA NA</span>
 <span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="va">mean</span>, <span class="st">'to'</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] NA NA  2  3  4  5  6  7  8  9 10 11</span>
-<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="va">mean</span>, <span class="st">'from'</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  2  3  4  5  6  7  8  9 10 11 NA NA</span>
 <span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="va">mean</span>, circular<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  2  3  4  5  6  7  8  9 10 11  8  5</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">6</span>,<span class="fl">7</span>,<span class="fl">7</span>,<span class="fl">8</span>,<span class="fl">9</span>,<span class="cn">NA</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="va">v</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1.8 2.4 2.8 3.2 3.4 3.6 4.0 4.4 4.8 5.4 6.0 6.6 7.4  NA  NA  NA  NA  NA</span>
-<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="va">v</span>, n<span class="op">=</span><span class="fl">5</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1.80 2.40 2.80 3.20 3.40 3.60 4.00 4.40 4.80 5.40 6.00 6.60 7.40 7.75 8.00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] 8.50 9.00  NaN</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## SpatVector</span></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncol<span class="op">=</span><span class="fl">2</span>, nrow<span class="op">=</span><span class="fl">2</span>, nlyr<span class="op">=</span><span class="fl">10</span>, vals<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
