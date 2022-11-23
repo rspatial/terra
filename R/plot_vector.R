@@ -169,7 +169,7 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 	if (!is.null(alpha)) {
-		if (alpha < 1 && alpha >= 0) {
+		if (alpha[1] < 1 && alpha[1] >= 0) {
 			cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha[1]*255, maxColorValue=255)
 		}
 	}
@@ -517,10 +517,11 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 	if (!is.null(alpha)) {
 		alpha <- clamp(alpha[1], 0, 1)
-		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
+		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha*255, maxColorValue=255)
 	} else {
 		alpha <- 1
 	}
+
 	out$alpha <- alpha
 	out$cols <- cols
 	out$legend_draw <- isTRUE(legend)
