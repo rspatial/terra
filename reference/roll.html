@@ -53,7 +53,11 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">roll</span><span class="op">(</span><span class="va">x</span>, <span class="va">n</span>, fun<span class="op">=</span><span class="va">mean</span>, type<span class="op">=</span><span class="st">"around"</span>, circular<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
+<span class="fu">roll</span><span class="op">(</span><span class="va">x</span>, <span class="va">n</span>, fun<span class="op">=</span><span class="va">mean</span>, type<span class="op">=</span><span class="st">"around"</span>, circular<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span> 
+
+<span class="co"># S4 method for numeric</span>
+<span class="fu">roll</span><span class="op">(</span><span class="va">x</span>, <span class="va">n</span>, fun<span class="op">=</span><span class="va">mean</span>, type<span class="op">=</span><span class="st">"around"</span>, circular<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -75,6 +79,9 @@
 
   <dt>na.rm</dt>
 <dd><p>Logical. If <code>TRUE</code>, <code>NA</code> values should be ingored (by <code>fun</code>)</p></dd>
+
+  <dt>filename</dt>
+<dd><p>character. Output filename</p></dd>
 
   <dt>...</dt>
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
@@ -117,13 +124,13 @@
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span> <span class="op">=</span> <span class="fl">2</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span> <span class="op">=</span> <span class="fl">4</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="va">r</span>, n<span class="op">=</span><span class="fl">3</span>, <span class="st">"sum"</span>, <span class="st">"from"</span>, na.rm<span class="op">=</span><span class="cn">F</span><span class="op">)</span> |&gt; <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="va">r</span>, n<span class="op">=</span><span class="fl">3</span>, <span class="st">"sum"</span>, <span class="st">"from"</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> |&gt; <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      lyr.1 lyr.2 lyr.3 lyr.4 lyr.5 lyr.6 lyr.7 lyr.8 lyr.9 lyr.10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]     3     3     3     3     3     3     3     3   NaN    NaN</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]     6     6     6     6     6     6     6     6   NaN    NaN</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]     3     3     3     3     3     3     3     3   NaN    NaN</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    12    12    12    12    12    12    12    12   NaN    NaN</span>
-<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="va">r</span>, n<span class="op">=</span><span class="fl">3</span>, <span class="st">"sum"</span>, <span class="st">"from"</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span> |&gt; <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="va">r</span>, n<span class="op">=</span><span class="fl">3</span>, <span class="st">"sum"</span>, <span class="st">"from"</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> |&gt; <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      lyr.1 lyr.2 lyr.3 lyr.4 lyr.5 lyr.6 lyr.7 lyr.8 lyr.9 lyr.10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]     3     3     3     3     3     3     3     3     2      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]     6     6     6     6     6     6     6     6     4      2</span>
@@ -136,14 +143,14 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]     3     3     3     3     3     3     3     3     3      3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    12    12    12    12    12    12    12    12    12     12</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="va">r</span>, n<span class="op">=</span><span class="fl">3</span>, <span class="st">"sum"</span>, <span class="st">"to"</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span> |&gt; <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="va">r</span>, n<span class="op">=</span><span class="fl">3</span>, <span class="st">"sum"</span>, <span class="st">"to"</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> |&gt; <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      lyr.1 lyr.2 lyr.3 lyr.4 lyr.5 lyr.6 lyr.7 lyr.8 lyr.9 lyr.10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]     1     2     3     3     3     3     3     3     3      3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]     2     4     6     6     6     6     6     6     6      6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]     1     2     3     3     3     3     3     3     3      3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]     4     8    12    12    12    12    12    12    12     12</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="va">r</span>, n<span class="op">=</span><span class="fl">3</span>, <span class="st">"sum"</span>, <span class="st">"around"</span>, <span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">F</span><span class="op">)</span> |&gt; <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="va">r</span>, n<span class="op">=</span><span class="fl">3</span>, <span class="st">"sum"</span>, <span class="st">"around"</span>, circular<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> |&gt; <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      lyr.1 lyr.2 lyr.3 lyr.4 lyr.5 lyr.6 lyr.7 lyr.8 lyr.9 lyr.10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]     3     3     3     3     3     3     3     3     3      3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]     6     6     6     6     6     6     6     6     6      6</span>
