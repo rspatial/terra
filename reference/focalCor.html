@@ -55,7 +55,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
 <span class="fu">focalCor</span><span class="op">(</span><span class="va">x</span>, w<span class="op">=</span><span class="fl">3</span>, <span class="va">fun</span>, <span class="va">...</span>, fillvalue<span class="op">=</span><span class="cn">NA</span>, 
-    filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    weighted<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -65,11 +65,11 @@
 
 
 <dt>w</dt>
-<dd><p>window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in <code><a href="focal.html">focal</a></code></p></dd>
+<dd><p>numeric or matrix to define the focal window. The window an be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in <code><a href="focal.html">focal</a></code>. Note that if <code>weighted=FALSE</code> all values that are 0 are set to NA, and all values that are neither 0 or NA are set to 1</p></dd>
 
 
 <dt>fun</dt>
-<dd><p>A function with at least two arguments (one for each layer)</p></dd>
+<dd><p>a function with at least two arguments (one for each layer)</p></dd>
 
 
 <dt>...</dt>
@@ -78,6 +78,10 @@
 
 <dt>fillvalue</dt>
 <dd><p>numeric. The value of the cells in the virtual rows and columns outside of the raster</p></dd>
+
+
+<dt>weighted</dt>
+<dd><p>logical. If <code>TRUE</code> and <code>w</code> is a matrix, the values of w are used as weights. For this to work, <code>fun</code> must have an argument <code>weights</code></p></dd>
 
 
 <dt>filename</dt>
