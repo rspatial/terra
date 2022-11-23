@@ -32,7 +32,11 @@ movingFun <- function(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE
 	}
 	m <- matrix(ncol=n, nrow=lng)
     for (i in 1:n) { m[,i] <- x[i:(lng+i-1)] }
-    apply(m, MARGIN=1, FUN=fun, na.rm=na.rm)
+	if (na.rm) {
+		apply(m, MARGIN=1, FUN=fun, na.rm=na.rm)
+	} else {
+		apply(m, MARGIN=1, FUN=fun)	
+	}
 }
 
 
@@ -60,7 +64,7 @@ setMethod("roll", signature(x="SpatRaster"),
 				return (terra:::messages(x, "roll")	)
 			}
 		} else {
-			f <- function(i) movingFun(i, n, fun, type=type, circular=circular, na.rm=na.r)
+			f <- function(i) movingFun(i, n, fun, type=type, circular=circular, na.rm=na.rm)
 			app(x, f, filename=filename, ...)
 		}
 	}

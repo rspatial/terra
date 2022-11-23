@@ -1657,7 +1657,7 @@ SpatRaster SpatRaster::roll(size_t n, std::string fun, std::string type, bool ci
 		return out;
 	}
 	if (n >= nlyr()) {
-		out.setError("it makes no sense to use a rolling function with n > nlyr(x)");
+		out.setError("it makes no sense to use a rolling function with n >= nlyr(x)");
 		return out;		
 	}
 	std::vector<std::string> types = {"around", "to", "from"};
@@ -1665,6 +1665,8 @@ SpatRaster SpatRaster::roll(size_t n, std::string fun, std::string type, bool ci
 		out.setError("unknown roll type, should be 'around', 'to', or 'from'");
 		return out;					
 	}
+
+	// to do: use functions that iterate over vector instead of copying
 	
 	std::function<double(std::vector<double>&, bool)> theFun = getFun(fun);
 
@@ -1827,10 +1829,8 @@ SpatRaster SpatRaster::roll(size_t n, std::string fun, std::string type, bool ci
 			if (!out.writeBlock(vv, i)) return out;
 		}
 	}
-	
 	readStop();
-	out.writeStop();
-	
+	out.writeStop();	
 	return out;	
 }
 
