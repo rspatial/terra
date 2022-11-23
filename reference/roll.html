@@ -66,19 +66,19 @@
 <dd><p>SpatRaster or numeric</p></dd>
 
   <dt>n</dt>
-<dd><p>integer &gt; 1. Size of the 'window', i.e. the number of sequential elements to use in the function</p></dd>
+<dd><p>integer &gt; 1. The size of the "window", that is, the number of sequential elements to use in the <code>fun</code>. This is normally an odd number</p></dd>
 
   <dt>fun</dt>
 <dd><p>a function like mean, min, max, sum</p></dd>
 
   <dt>type</dt>
-<dd><p>character. One of 'around', 'to', or 'from'. The choice indicates which values should be used in the computation. The focal element is always used. If <code>type</code> is 'around', the other elements are before and after the focal element. Alternatively, you can select the elements preceding the focal element ('to') or those coming after it 'from'. For example, when using <code>n=3</code> for element 5 of a vector; 'around' used elements 4,5,6; 'to' used elements 3,4,5, and 'from' uses elements 5,6,7</p></dd>
+<dd><p>character. One of "around", "to", or "from". The choice indicates which values should be used in the computation. The focal element is always used. If <code>type</code> is "around", the other elements are before and after the focal element. Alternatively, you can select the elements preceding the focal element ("to") or those coming after it "from". For example, when using <code>n=3</code> for element 5 of a vector; "around" used elements 4,5,6; "to" used elements 3,4,5, and "from" uses elements 5,6,7</p></dd>
 
   <dt>circular</dt>
-<dd><p>logical. If <code>TRUE</code>, the data are considered to have a circular nature (e.g. months of the year), and the last elements in vector <code>x</code> are used in the computation of the moving function of the first element(s) of the vector, and the first elements are used in the computation of the moving function for the last element(s)</p></dd>
+<dd><p>logical. If <code>TRUE</code>, the data are considered to have a circular nature (e.g. days or months of the year), such that there are no missing values before first or after the last value.</p></dd>
 
   <dt>na.rm</dt>
-<dd><p>logical. If <code>TRUE</code>, <code>NA</code> values should be ingored (by <code>fun</code>)</p></dd>
+<dd><p>logical. If <code>TRUE</code>, <code>NA</code> values should be ignored (by <code>fun</code>)</p></dd>
 
   <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
@@ -105,7 +105,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## numeric</span></span>
 <span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="va">mean</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  2  3  4  5  6  7  8  9 10 11 NA NA</span>
-<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="va">mean</span>, <span class="st">'to'</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="va">mean</span>, <span class="st">"to"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] NA NA  2  3  4  5  6  7  8  9 10 11</span>
 <span class="r-in"><span class="fu">roll</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="va">mean</span>, circular<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  2  3  4  5  6  7  8  9 10 11  8  5</span>
