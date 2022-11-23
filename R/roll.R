@@ -55,12 +55,12 @@ setMethod("roll", signature(x="numeric"),
 
 
 setMethod("roll", signature(x="SpatRaster"),
-	function(x, n, fun="mean", type="from", circular=FALSE, na.rm=FALSE, filename="", ...) {
+	function(x, n, fun="mean", type="around", circular=FALSE, na.rm=FALSE, filename="", ...) {
 		txtfun <- .makeTextFun(match.fun(fun))
 		if (inherits(txtfun, "character")) {
 			if (txtfun %in% .cpp_funs) {
 				opt <- terra:::spatOptions(filename, ...)
-				x@ptr <- x@ptr$roll(n, fun, type, circular, na.rm, opt)
+				x@ptr <- x@ptr$roll(n, txtfun, type, circular, na.rm, opt)
 				return (terra:::messages(x, "roll")	)
 			}
 		} else {
