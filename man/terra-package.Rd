@@ -9,7 +9,7 @@
 
 \description{
 
-\code{terra} provides methods to manipulate geographic (spatial) data in "raster" and "vector" form. Raster data divide space into rectangular cells (pixels) and they are commonly used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure. In contrast, "vector" spatial data (points, lines, polygons) are typically used to represent discrete spatial entities, such as a road, country, or bus stop. 
+\code{terra} provides methods to manipulate geographic (spatial) data in "raster" and "vector" form. Raster data divide space into rectangular grid cells and they are commonly used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure, and in that context grid cells are often referred to as pixels. In contrast, "vector" spatial data (points, lines, polygons) are typically used to represent discrete spatial entities, such as a road, country, or bus stop. 
 
 The package implements two main classes (data types): \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. \code{SpatVector} supports all types of geometric operations such as intersections.
 
@@ -591,6 +591,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 \code{couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
 \code{layerize}\tab\code{\link{segregate}}\cr
 \code{layerStats}\tab\code{\link{layerCor}}\cr
+\code{movingFun}\tab\code{\link{roll}}\cr
 \code{NAvalue}\tab\code{\link{NAflag}}\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
