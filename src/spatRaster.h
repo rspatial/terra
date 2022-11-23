@@ -461,7 +461,7 @@ class SpatRaster {
 		}
 
 		void readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, unsigned i);
-		std::vector<double> readBlockIP(BlockSize bs, unsigned i);		
+		void readBlockIP(std::vector<double> &x, BlockSize bs, unsigned i);		
 		std::vector<double> readExtent(SpatExtent e);
 		bool readStop();
 
@@ -562,6 +562,8 @@ class SpatRaster {
 
 		std::vector<std::vector<double>> sum_area(std::string unit, bool transform, bool by_value, SpatOptions &opt);
 		std::vector<std::vector<double>> area_by_value(SpatOptions &opt);
+
+		SpatRaster roll(size_t n, std::string fun, std::string type, bool circular, bool narm, SpatOptions &opt);
 
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster arith(double x, std::string oper, bool reverse, SpatOptions &opt);

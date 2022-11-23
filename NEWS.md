@@ -1,8 +1,9 @@
-# version 1.6-43
+# version 1.6-44
 
 ## new
 
 - raster write options `scale` and `offset`. [#900](https://github.com/rspatial/terra/issues/900) by Kyle David
+- `roll<SpatRaster>` method for rolling (moving) average and other rolling functions
 
 
 # version 1.6-41

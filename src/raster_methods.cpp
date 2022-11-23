@@ -1645,6 +1645,196 @@ SpatRaster SpatRaster::selRange(SpatRaster x, int z, int recycleby, SpatOptions 
 }
 
 
+SpatRaster SpatRaster::roll(size_t n, std::string fun, std::string type, bool circular, bool narm, SpatOptions &opt) {
+	
+	SpatRaster out = geometry();
+	if (!hasValues()) {
+		out.setError("no values in input");
+		return(out);
+	}
+	if (!haveFun(fun)) {
+		out.setError("unknown function argument");
+		return out;
+	}
+	if (n >= nlyr()) {
+		out.setError("it makes no sense to use a rolling function with n > nlyr(x)");
+		return out;		
+	}
+	std::vector<std::string> types = {"around", "to", "from"};
+	if (!is_in_vector(type, types)) {
+		out.setError("unknown roll type, should be 'around', 'to', or 'from'");
+		return out;					
+	}
+	
+	std::function<double(std::vector<double>&, bool)> theFun = getFun(fun);
+
+	size_t nl = nlyr();
+ 	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+	if (circular) {
+		for (size_t i=0; i<out.bs.n; i++) {
+			std::vector<double> v;
+			readBlockIP(v, out.bs, i);
+			size_t ncell = out.bs.nrows[i] * ncol();
+			std::vector<double> vv(v.size(), NAN);
+			if (type=="from") {
+				for (size_t j=0; j<ncell; j++) {
+					size_t offset = j*nl;
+					for (size_t k=0; k<nl; k++) {
+						std::vector<double> se;
+						size_t start = offset + k;
+						size_t end = k + n;
+						if (end > nl) {
+							size_t cend = end - nl;
+							se = {v.begin()+offset, v.begin()+offset+cend};
+							end = nl;
+						}
+						end += offset;
+						se.insert(se.end(), v.begin()+start, v.begin()+end);
+						vv[ncell * k + j] = theFun(se, narm);
+					}
+				}
+			} else if (type=="around") {
+				size_t halfn = n / 2;
+				for (size_t j=0; j<ncell; j++) {
+					size_t offset = j*nl;
+					for (size_t k=0; k<nl; k++) {
+						std::vector<double> se;
+						size_t start, end;
+						if (k < halfn) {
+							start = 0;
+							end = n + k - halfn;
+							size_t cbegin = nl - (halfn - k);
+							se = {v.begin()+offset+cbegin, v.begin()+offset+nl};
+						} else {
+							start = k - halfn;
+							end = start + n;
+						}
+						if (end > nl) {
+							end = nl;
+							size_t cend = end - nl + 1;
+							se = {v.begin()+offset, v.begin()+offset+cend};
+						}
+						start += offset;
+						end += offset;
+						se.insert(se.end(), v.begin()+start, v.begin()+end);
+						vv[ncell * k + j] = theFun(se, narm);
+					}
+				}
+			} else if (type=="to") {
+				for (size_t j=0; j<ncell; j++) {
+					size_t offset = j*nl;
+					for (size_t k=0; k<nl; k++) {
+						std::vector<double> se;
+						size_t start;
+						size_t end = offset + k + 1;
+						if (k < (n-1)) {
+							start = offset;
+							size_t cbegin = nl - (n - k - 1);
+							se = {v.begin()+offset+cbegin, v.begin()+offset+nl};
+						} else {
+							start = end - n;
+						}
+						se.insert(se.end(), v.begin()+start, v.begin()+end);
+						vv[ncell * k + j] = theFun(se, narm);
+					}
+				}
+			}	
+			if (!out.writeBlock(vv, i)) return out;
+		}
+	} else { // not circular
+		std::vector<double> se;
+		for (size_t i=0; i<out.bs.n; i++) {
+			std::vector<double> v;
+			readBlockIP(v, out.bs, i);
+			size_t ncell = out.bs.nrows[i] * ncol();
+			std::vector<double> vv(v.size(), NAN);
+			if (type=="from") {
+				for (size_t j=0; j<ncell; j++) {
+					size_t offset = j*nl;
+					for (size_t k=0; k<nl; k++) {
+						size_t start = offset + k;
+						size_t end = k + n;
+						if (end > nl) {
+							if (narm) {
+								end = nl;
+							} else {
+								continue;
+							}
+						}
+						end += offset;
+						se = {v.begin()+start, v.begin()+end};
+						vv[ncell * k + j] = theFun(se, narm);
+					}
+				}
+			} else if (type=="around") {
+				size_t halfn = n / 2;
+				for (size_t j=0; j<ncell; j++) {
+					size_t offset = j*nl;
+					for (size_t k=0; k<nl; k++) {
+						size_t start, end;
+						if (k < halfn) {
+							if (narm) {
+								start = 0;
+								end = n + k - halfn;
+							} else {
+								continue;	
+							}
+						} else {
+							start = k - halfn;
+							end = start + n;
+						}
+						if (end > nl) {
+							if (narm) {
+								end = nl;
+							} else {
+								continue;
+							}
+						}
+						start += offset;
+						end += offset;
+						se = {v.begin()+start, v.begin()+end};
+						vv[ncell * k + j] = theFun(se, narm);
+					}
+				}
+			} else if (type=="to") {
+				for (size_t j=0; j<ncell; j++) {
+					size_t offset = j*nl;
+					for (size_t k=0; k<nl; k++) {
+						size_t start;
+						size_t end = offset + k + 1;
+						if (k < (n-1)) {
+							if (narm) {
+								start = offset;						
+							} else {
+								continue;
+							}
+						} else {
+							start = end - n;
+						}
+						se = {v.begin()+start, v.begin()+end};
+						vv[ncell * k + j] = theFun(se, narm);
+					}
+				}
+			}	
+			if (!out.writeBlock(vv, i)) return out;
+		}
+	}
+	
+	readStop();
+	out.writeStop();
+	
+	return out;	
+}
+
+
 SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::string fun, bool clamp, bool narm, bool circular, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);

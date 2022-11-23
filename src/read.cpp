@@ -71,8 +71,7 @@ void SpatRaster::readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, u
 }
 
 // BIP
-std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
-	std::vector<double> x;
+void SpatRaster::readBlockIP(std::vector<double> &x, BlockSize bs, unsigned i) {
 	readValues(x, bs.row[i], bs.nrows[i], 0, ncol());
 	std::vector<double> v(x.size());
 	size_t off = bs.nrows[i] * ncol();
@@ -84,7 +83,7 @@ std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
 			v[jj] = lyr[j];
 		}
 	}
-	return(v);
+	x = std::move(v);
 }
 
 

@@ -41,3 +41,28 @@ movingFun <- function(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE
     x[(seq_along(x) - (n+1)) %% length(x) + 1]
 }
 
+
+setMethod("roll", signature(x="numeric"),
+	function(x, n, fun=mean, type="from", circular=FALSE, na.rm=FALSE) {
+		movingFun(x, n, fun, type=type, circular=circular, na.rm=na.rm)
+	}
+)
+
+
+
+setMethod("roll", signature(x="SpatRaster"),
+	function(x, n, fun="mean", type="from", circular=FALSE, na.rm=FALSE, filename="", ...) {
+		txtfun <- .makeTextFun(match.fun(fun))
+		if (inherits(txtfun, "character")) {
+			if (txtfun %in% .cpp_funs) {
+				opt <- terra:::spatOptions(filename, ...)
+				x@ptr <- x@ptr$roll(n, fun, type, circular, na.rm, opt)
+				return (terra:::messages(x, "roll")	)
+			}
+		} else {
+			f <- function(i) movingFun(i, n, fun, type=type, circular=circular, na.rm=na.r)
+			app(x, f, filename=filename, ...)
+		}
+	}
+)
+

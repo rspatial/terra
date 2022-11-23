@@ -779,6 +779,7 @@ RCPP_MODULE(spat){
 		.method("apply", &SpatRaster::apply)
 		.method("rapply", &SpatRaster::rapply)
 		.method("rappvals", &SpatRaster::rappvals)
+		.method("roll", &SpatRaster::roll)
 		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::arith ))
 		.method("arith_numb", ( SpatRaster (SpatRaster::*)(std::vector<double>, std::string, bool, SpatOptions&) )( &SpatRaster::arith ))
 		.method("rst_area", &SpatRaster::rst_area)
