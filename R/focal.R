@@ -409,14 +409,14 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 
 
 setMethod("focalReg", signature(x="SpatRaster"),
-function(x, w=3, na.rm=TRUE, fillvalue=NA, filename="",  ...)  {
+function(x, w=3, na.rm=TRUE, fillvalue=NA, weighted=FALSE, filename="",  ...)  {
 
 	ols <- function(x, y) {
 		v <- cbind(y, x)
 		X <- cbind(1, v[,-1])
 		XtX <- t(X) %*% X
 		if (det(XtX) == 0) {
-			return(NA)
+			return(rep(NA, ncol(y)+1))
 		}
 		invXtX <- solve(XtX) %*% t(X)
 		invXtX %*% v[,1]
@@ -425,7 +425,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, filename="",  ...)  {
 	ols_narm <- function(x, y) {
 		v <- na.omit(cbind(y, x))
 		if (nrow(v) < (NCOL(x) + 1)) {
-			return(NA)
+			return(rep(NA, ncol(y)+1))
 		}
 		X <- cbind(1, v[,-1])
 		XtX <- t(X) %*% X
@@ -442,36 +442,77 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, filename="",  ...)  {
 	if (!is.numeric(w)) {
 		error("focalReg", "w should be numeric vector or matrix")
 	}
+
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
+		test <- na.omit(m)
+		if (length(test) == 0) {
+			error("focalReg", "all values in w are NA")
+		}
+		if (!weighted) {
+			m[m==0] <- NA
+			if (any(test != 1)) {
+				warn("focalReg", "all weights that are not zero or NA are set to 1")
+				m[!is.na(m)] <- 1
+			}
+		} 
 		w <- dim(w)
 	} else {
 		w <- rep_len(w, 2)
 		stopifnot(all(w > 0))
 		m <- rep(1, prod(w))
+		weighted <- FALSE
 	}
-	msz <- prod(w)
-	dow <- !isTRUE(all(m == 1))
-	isnam <- FALSE
-	if (any(is.na(m))) {
-		k <- !is.na(m)
-		mm <- m[k]
-		msz <- sum(k)
-		isnam <- TRUE
-	}
-	out <- rast(x)
 
-	if (na.rm) {
-		fun = function(x, y) {
-			x <- try(ols_narm(x, y), silent=TRUE)
-		}
-		#fun = ols_narm
-	} else {
-		fun = function(x, y) try(ols(x, y), silent=TRUE)
-		#fun = ols
+	msz <- prod(w)
+
+	hasnam <- FALSE
+	if (any(is.na(m))) {
+		hasnam <- TRUE
+		k <- !is.na(m)
+		msz <- sum(k)
+		weights <- m[k]
+	} else if (weighted) {
+		weights <- m	
 	}
-	names(out) <- paste0("B", 0:(nl-1))
-	b <- writeStart(out, filename, n=msz*4, sources=sources(x), ...)
+
+	if (msz < 2) {
+		error("the effective weight matrix must have positive dimensions, and at least one must be > 1")
+	}
+
+	if (weighted) {
+		if (!na.rm) {
+			fun = function(x, y, w) {
+				if (any(is.na(x)) || any(is.na(y))) { 
+					return(rep(NA, NCOL(y)+1))
+				}
+				coefficients(glm(y~x, weights=w))
+			}
+		} else {
+			fun = function(x, y, w) {
+				v <- na.omit(data.frame(y=y, x=x, w=w))
+				if (nrow(v) < (NCOL(x) + 1)) {
+					return(rep(NA, NCOL(y)+1))
+				}
+				coefficients(glm(y~., data=v, weights=v$w))
+			}		
+		}
+	} else {
+		if (na.rm) {
+			fun = ols_narm
+		} else {
+			fun = ols
+		}
+	}
+
+	out <- rast(x)
+#	names(out) <- paste0("B", 0:(nl-1))	
+	wopt <- list(...)
+	if (is.null(wopt$names )) {
+		wopt$names <- c("intercept", names(x)[-1])
+	}
+	
+	b <- writeStart(out, filename, n=msz*4, sources=sources(x), wopt=wopt)
 	ry <- x[[1]]
 	rx <- x[[-1]]
 
@@ -479,38 +520,29 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, filename="",  ...)  {
 		for (i in 1:b$n) {
 			Y <- focalValues(ry, w, b$row[i], b$nrows[i], fillvalue)
 			X <- focalValues(rx, w, b$row[i], b$nrows[i], fillvalue)
-			if (dow) {
-				if (isnam) {
-					Y <- Y[k] * mm
-					X <- X[k] * mm
-				} else {
-					Y <- Y * m
-					X <- X * m
-				}
+			if (hasnam) {
+				Y <- Y[,k,drop=FALSE]
+				X <- X[,k,drop=FALSE]
 			}
-			v <- t(sapply(1:nrow(Y), function(i) fun(X[i,], Y[i,])))
+			if (weighted) {
+				v <- t(sapply(1:nrow(Y), function(i) fun(X[i,], Y[i,], weights)))			
+			} else {
+				v <- t(sapply(1:nrow(Y), function(i) fun(X[i,], Y[i,])))
+			}
 			writeValues(out, v, b$row[i], b$nrows[i])
 		}
 	} else {
 
 		for (i in 1:b$n) {
 			Y <- focalValues(ry, w, b$row[i], b$nrows[i], fillvalue)
-			if (dow) {
-				if (isnam) {
-					Y <- Y[k] * mm
-				} else {
-					Y <- Y * m
-				}
+			if (hasnam) {
+				Y <- Y[,k,drop=FALSE]
 			}
 			X <- list()
 			for (j in 1:(nl-1)) {
 				X[[j]] <- focalValues(rx[[j]], w, b$row[i], b$nrows[i], fillvalue)
-				if (dow) {
-					if (any(is.na(m))) {
-						X[[j]] <- X[[j]][k] * mm
-					} else {
-						X[[j]] <- X[[j]] * m
-					}
+				if (hasnam) {
+					X[[j]] <- X[[j]][,k]
 				}
 			}
 			v <- list()
@@ -520,7 +552,11 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, filename="",  ...)  {
 					xlst[[j]] <- X[[j]][p,]
 				}
 				pX <- do.call(cbind, xlst)
-				v[[p]] <- fun(pX, Y[p,])
+				if (weighted) {
+					v[[p]] <- fun(pX, Y[p,], weights)
+				} else {
+					v[[p]] <- fun(pX, Y[p,])
+				}
 			}
 			v <- t(do.call(cbind, v))
 			writeValues(out, v, b$row[i], b$nrows[i])
@@ -573,6 +609,10 @@ function(x, w=3, fun, ..., fillvalue=NA, weighted=FALSE, filename="", overwrite=
 		weights <- m[k]
 	} else if (weighted) {
 		weights <- m	
+	}
+
+	if (msz < 2) {
+		error("the effective weight matrix must have positive dimensions, and at least one must be > 1")
 	}
 
 	if (weighted) {
