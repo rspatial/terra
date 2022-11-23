@@ -193,7 +193,6 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 	}
 	if (any((w %% 2) == 0)) {
 		error("focal3D", "w must be odd sized in all dimensions")
-
 	}
 
 	msz <- prod(w)
@@ -536,7 +535,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, filename="",  ...)  {
 
 
 setMethod("focalCor", signature(x="SpatRaster"),
-function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list()) {
+function(x, w=3, fun, ..., fillvalue=NA, weighted=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 	nl <- nlyr(x)
 	if (nl < 2) error("focalCor", "x must have at least 2 layers")
@@ -546,23 +545,41 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 	}
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
+		test <- na.omit(m)
+		if (length(test) == 0) {
+			error("focalCor", "all values in w are NA")
+		}
+		if (!weighted) {
+			m[m==0] <- NA
+			if (any(test != 1)) {
+				warn("focalCor", "all weights that are not zero or NA are set to 1")
+				m[!is.na(m)] <- 1
+			}
+		} 
 		w <- dim(w)
 	} else {
 		w <- rep_len(w, 2)
 		stopifnot(all(w > 0))
 		m <- rep(1, prod(w))
+		weighted <- FALSE
 	}
 	msz <- prod(w)
-	dow <- !isTRUE(all(m == 1))
-	isnam <- FALSE
+
+	hasnam <- FALSE
 	if (any(is.na(m))) {
+		hasnam <- TRUE
 		k <- !is.na(m)
-		mm <- m[k]
 		msz <- sum(k)
-		isnam <- TRUE
+		weights <- m[k]
+	} else if (weighted) {
+		weights <- m	
 	}
 
-	test <- do.call(fun, list(1:prod(w), prod(w):1), ...)
+	if (weighted) {
+		test <- do.call(fun, list(1:prod(w), prod(w):1, weights=1/c(1:prod(w)), ...))		
+	} else {
+		test <- do.call(fun, list(1:prod(w), prod(w):1, ...))
+	}
 	if (is.null(wopt$names )) {
 		wopt$names <- colnames(test)
 	}
@@ -570,30 +587,25 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 	outnl <- (nlyr(x) - 1) * length(test)
 	out <- rast(x, nlyr=outnl)
 
-	b <- writeStart(out, filename, n=msz*4, sources=sources(x), ...)
+	b <- writeStart(out, filename, n=msz*4, sources=sources(x), wopt=wopt)
 
 	for (i in 1:b$n) {
 		v <- list()
 		Y <- focalValues(x[[1]], w, b$row[i], b$nrows[i], fillvalue)
-		if (dow) {
-			if (isnam) {
-				Y <- Y[k] * mm
-			} else {
-				Y <- Y * m
-			}
+		if (hasnam) {
+			Y <- Y[,k,drop=FALSE]
 		}
 		for (j in 2:nlyr(x)) {
 			X <- Y
 			Y <- focalValues(x[[j]], w, b$row[i], b$nrows[i], fillvalue)
-			if (dow) {
-				if (isnam) {
-					Y <- Y[k] * mm
-				} else {
-					Y <- Y * m
-				}
+			if (hasnam) {
+				Y <- Y[,k,drop=FALSE]
+			} 
+			if (weighted) {
+				v[[j-1]] <- t(sapply(1:nrow(Y), function(i) fun(X[i,], Y[i,], weights=weights, ...)))
+			} else {
+				v[[j-1]] <- t(sapply(1:nrow(Y), function(i) fun(X[i,], Y[i,], ...)))
 			}
-			corv <- t(sapply(1:nrow(Y), function(i, ...) fun(X[i,], Y[i,], ...)))
-			v[[j-1]] <- corv 
 		}
 		v <- do.call(cbind, v)
 		writeValues(out, v, b$row[i], b$nrows[i])

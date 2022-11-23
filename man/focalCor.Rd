@@ -12,19 +12,21 @@ Calculate values such as a correlation coefficient for focal regions in two neig
 
 \usage{
 \S4method{focalCor}{SpatRaster}(x, w=3, fun, ..., fillvalue=NA, 
-		filename="", overwrite=FALSE, wopt=list()) 
+		weighted=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 }
 
 \arguments{
 \item{x}{SpatRaster with at least two layers}
 
-\item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in \code{\link{focal}}}
+\item{w}{numeric or matrix to define the focal window. The window an be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in \code{\link{focal}}. Note that if \code{weighted=FALSE} all values that are 0 are set to NA, and all values that are neither 0 or NA are set to 1}
 
-\item{fun}{A function with at least two arguments (one for each layer)}
+\item{fun}{a function with at least two arguments (one for each layer)}
 
 \item{...}{additional arguments for \code{fun}}
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
+
+\item{weighted}{logical. If \code{TRUE} and \code{w} is a matrix, the values of w are used as weights. For this to work, \code{fun} must have an argument \code{weights}}
 
 \item{filename}{character. Output filename}
 
