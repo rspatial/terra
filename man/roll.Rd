@@ -30,7 +30,10 @@ roll(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE)
 Same as \code{x}
 }
 
+\seealso(\code{\link{cumsum}}
+
 \examples{
+## numeric
 roll(1:12, 3, mean)
 roll(1:12, 3, mean, 'to')
 roll(1:12, 3, mean, 'from')
@@ -40,7 +43,7 @@ v <- c(0,1,2,3,3,3,3,4,4,4,5,5,6,7,7,8,9,NA)
 roll(v, n=5)
 roll(v, n=5, na.rm=TRUE)
 
-
+## SpatVector
 r <- rast(ncol=2, nrow=2, nlyr=10, vals=1)
 r[1,2] = 2
 r[2,2] = 4
