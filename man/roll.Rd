@@ -30,7 +30,7 @@ roll(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE)
 Same as \code{x}
 }
 
-\seealso(\code{\link{cumsum}}
+\seealso{\code{\link{cumsum}}}
 
 \examples{
 ## numeric
