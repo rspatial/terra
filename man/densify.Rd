@@ -14,7 +14,7 @@ Add additional nodes to lines or polygons. This can be useful to do prior to usi
 }
 
 \usage{
-\S4method{densify}{SpatVector}(x, interval, equalize=TRUE, ignorelonlat=FALSE)
+\S4method{densify}{SpatVector}(x, interval, equalize=TRUE, flat=FALSE)
 }
 
 \arguments{
