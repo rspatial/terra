@@ -248,6 +248,9 @@ setMethod("mask", signature(x="SpatVector", mask="SpatVector"),
 
 setMethod("buffer", signature(x="SpatVector"),
 	function(x, width, quadsegs=10) {
+		if (is.character(width)) {
+			width <- x[[width, drop=TRUE]]
+		}
 		x@ptr <- x@ptr$buffer(width, quadsegs)
 		messages(x, "buffer")
 	}
