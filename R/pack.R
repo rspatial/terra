@@ -147,7 +147,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 			r@attributes$units <- v
 		}
 		v <- depth(x)
-		if (any(!is.na(v))) {
+		if (!all(v) ==0) {
 			r@attributes$depth <- v
 		}
 		r
@@ -184,11 +184,11 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 			nms <- names(x@attributes)
 			if (any(nms %in% c("levels", "time", "units", "depth"))) {
 				time(r) <- x@attributes$time
-				units(r) <- x@attributes$units
+				units(r) <- x@attributes$units	
 				depth(r) <- x@attributes$depth
 				if (!is.null(x@attributes$levels)) {
-					if (is.null(x@attributes$levindex)) x@attributes$levindex <- 2
-					set.cats(r, layer=0, x@attributes$levels, index=x@attributes$levindex+1)
+					if (is.null(x@attributes$levindex)) x@attributes$levindex <- 1
+					set.cats(r, layer=0, x@attributes$levels, active=x@attributes$levindex)
 				}
 			}
 		}
