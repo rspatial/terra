@@ -25,7 +25,7 @@ This is different than the sample standard deviation returned by sd (which uses 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-44</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-45</span>
       </span>
     </div>
 
@@ -106,7 +106,16 @@ This is different than the sample standard deviation returned by sd (which uses 
 <span class="fu">mean</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, trim<span class="op">=</span><span class="cn">NA</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">median</span><span class="op">(</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">median</span><span class="op">(</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">anyNA</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">noNA</span><span class="op">(</span><span class="va">x</span>, FNA<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">allNA</span><span class="op">(</span><span class="va">x</span>, FNA<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -125,6 +134,9 @@ This is different than the sample standard deviation returned by sd (which uses 
 
   <dt>pop</dt>
 <dd><p>logical. If <code>TRUE</code>, the population standard deviation is computed. Otherwise the sample standard deviation is computed</p></dd>
+
+  <dt>FNA</dt>
+<dd><p>logical. If <code>TRUE</code>, cells that would otherwise be <code>FALSE</code> are set to <code>NA</code></p></dd>
 
 </dl></div>
     <div id="value">
