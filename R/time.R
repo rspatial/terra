@@ -138,7 +138,7 @@ setMethod("depth", signature(x="SpatRaster"),
 setMethod("depth<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		if (is.null(value)) {
-			x@ptr$setTime(0[0])
+			x@ptr$setDepth(0[0])
 			return(x)
 		}
 		value <- as.numeric(value)
