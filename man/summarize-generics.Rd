@@ -37,6 +37,7 @@
 \alias{sum,SpatRaster-method}
 \alias{anyNA,SpatRaster-method}
 \alias{allNA,SpatRaster-method}
+\alias{noNA,SpatRaster-method}
 
 \alias{stdev}
 \alias{stdev,SpatRaster-method}

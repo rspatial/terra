@@ -486,7 +486,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, weighted=FALSE, filename="",  ...)  {
 				if (any(is.na(x)) || any(is.na(y))) { 
 					return(rep(NA, NCOL(y)+1))
 				}
-				coefficients(glm(y~x, weights=w))
+				stats::coefficients(stats::glm(y~x, weights=w))
 			}
 		} else {
 			fun = function(x, y, w) {
@@ -494,7 +494,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, weighted=FALSE, filename="",  ...)  {
 				if (nrow(v) < (NCOL(x) + 1)) {
 					return(rep(NA, NCOL(y)+1))
 				}
-				coefficients(glm(y~., data=v, weights=v$w))
+				stats::coefficients(stats::glm(y~., data=v, weights=v$w))
 			}		
 		}
 	} else {
