@@ -48,12 +48,25 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-44" id="version-16-44">version 1.6-44<a class="anchor" aria-label="anchor" href="#version-16-44"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-45" id="version-16-45">version 1.6-45<a class="anchor" aria-label="anchor" href="#version-16-45"></a></h2>
 <div class="section level3">
-<h3 id="new-1-6-44">new<a class="anchor" aria-label="anchor" href="#new-1-6-44"></a></h3>
+<h3 id="new-1-6-45">new<a class="anchor" aria-label="anchor" href="#new-1-6-45"></a></h3>
 <ul><li>raster write options <code>scale</code> and <code>offset</code>. <a href="https://github.com/rspatial/terra/issues/900" class="external-link">#900</a> by Kyle David</li>
 <li>
 <code>roll&lt;SpatRaster&gt;</code> method for rolling (moving) average and other rolling functions</li>
+<li>
+<code>noNA&lt;SpatRaster&gt;</code> method to identify cells that are not NA (across layers)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-1-6-45">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-45"></a></h3>
+<ul><li>argument <code>exhaustive</code> to <code>spatSample&lt;SpatRaster&gt;</code> for large sparse rasters</li>
+<li>
+<code>focalCor</code> and <code>focalReg</code> can now use the values in custom windows as weights</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-6-45">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-45"></a></h3>
+<ul><li>
+<code>focalCor</code> and <code>focalReg</code> now work for custom windows</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -262,43 +275,43 @@
 <p>Released 2022-06-09</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-5-34">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-34"></a></h3>
-<ul><li>“flipped” rasters were not always handled well. <a href="https://github.com/rspatial/terra/issues/546" class="external-link">#546</a> by Dan Baston</li>
-<li>better reading of GTiff with subdatsets. <a href="https://github.com/rspatial/terra/issues/601" class="external-link">#601</a> by Kyle Doherty</li>
-<li>better handling of multi-layer categorical rasters and <code>extract</code>. <a href="https://github.com/rspatial/terra/issues/580" class="external-link">#580</a> by André M. Bellvé</li>
+<ul><li>“flipped” rasters were not always handled well. [#546] by Dan Baston</li>
+<li>better reading of GTiff with subdatsets. [#601] by Kyle Doherty</li>
+<li>better handling of multi-layer categorical rasters and <code>extract</code>. [#580] by André M. Bellvé</li>
 <li>
-<code>weighted.mean</code> did not adjust the weights if there were <code>NA</code>s in the values. <a href="https://github.com/rspatial/terra/issues/574" class="external-link">#574</a> by Lars Dalby</li>
-<li>bug in masking. <a href="https://github.com/rspatial/terra/issues/552" class="external-link">#552</a> reported by Márcia Barbosa and <a href="https://github.com/rspatial/terra/issues/565" class="external-link">565</a> by Jakub Nowosad.</li>
-<li>fixed <code>stretch</code> option in <code>plotRGB</code> <a href="https://github.com/rspatial/terra/issues/550" class="external-link">#550</a> by Agustin Lobo</li>
-<li>unwrap of a SpatRaster failed with a crs including a “’”. <a href="https://github.com/rspatial/terra/issues/602" class="external-link">#602</a> by Jean Romain.</li>
+<code>weighted.mean</code> did not adjust the weights if there were <code>NA</code>s in the values. [#574] by Lars Dalby</li>
+<li>bug in masking. [#552] reported by Márcia Barbosa and [565] by Jakub Nowosad.</li>
+<li>fixed <code>stretch</code> option in <code>plotRGB</code> [#550] by Agustin Lobo</li>
+<li>unwrap of a SpatRaster failed with a crs including a “’”. [#602] by Jean Romain.</li>
 <li>
-<code>spatSample</code> with <code>cells=TRUE</code> failed for planar data <a href="https://github.com/rspatial/terra/issues/554" class="external-link">#544</a> by Benjamin Misiuk</li>
+<code>spatSample</code> with <code>cells=TRUE</code> failed for planar data [#544] by Benjamin Misiuk</li>
 <li>
-<code>compareGeom(x, y, stopOnError=FALSE)</code> did not remove the error messages stored in <code>x</code> leading to unexpected warnings later on. <a href="https://github.com/rspatial/terra/issues/568" class="external-link">#568</a> by David Hofmann.</li>
+<code>compareGeom(x, y, stopOnError=FALSE)</code> did not remove the error messages stored in <code>x</code> leading to unexpected warnings later on. [#568] by David Hofmann.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-5-34">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-34"></a></h3>
-<ul><li>Using &amp; or | with SpatRasters now returns a boolean SpatRaster. <a href="https://github.com/rspatial/terra/issues/594" class="external-link">#594</a> by Dan Baston</li>
-<li>SpatVector now supports logical values. <a href="https://github.com/rspatial/terra/issues/593" class="external-link">#593</a> by Derek Friend</li>
-<li>Attempt to create SpatRaster with an invalid number of rows now gives an error. <a href="https://github.com/rspatial/terra/issues/544" class="external-link">#544</a> by Dan Baston</li>
+<ul><li>Using &amp; or | with SpatRasters now returns a boolean SpatRaster. [#594] by Dan Baston</li>
+<li>SpatVector now supports logical values. [#593] by Derek Friend</li>
+<li>Attempt to create SpatRaster with an invalid number of rows now gives an error. [#544] by Dan Baston</li>
 <li>
-<code>layerCor</code> does not create temp files anymore. <a href="https://github.com/rspatial/terra/issues/551" class="external-link">#551</a> by Christine Anderson</li>
-<li>not using the same iterator symbols in nested loops to avoid warnings on the Intel compiler. <a href="https://github.com/rspatial/terra/issues/573" class="external-link">#573</a> by Gareth Davies.</li>
+<code>layerCor</code> does not create temp files anymore. [#551] by Christine Anderson</li>
+<li>not using the same iterator symbols in nested loops to avoid warnings on the Intel compiler. [#573] by Gareth Davies.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-5-34">new<a class="anchor" aria-label="anchor" href="#new-1-5-34"></a></h3>
-<ul><li>new arguments <code>res</code> and <code>origin</code> to <code>project&lt;SpatRaster&gt;</code> method. <a href="https://github.com/rspatial/terra/issues/596" class="external-link">#596</a> by Alex Ilich</li>
-<li>new argument <code>inside=TRUE</code> to <code>centroids</code> to get a centroid-like point that is guaranteed to be on the geometry (“point on surface”). <a href="https://github.com/rspatial/terra/issues/588" class="external-link">#588</a> by Márcia Barbosa</li>
-<li>new argument <code>keepgeom=FALSE</code> to <code>vect&lt;data.frame&gt;</code> that allows setting (keeping) the geometry as an attribute. <a href="https://github.com/rspatial/terra/issues/586" class="external-link">#586</a> by Márcia Barbosa</li>
+<ul><li>new arguments <code>res</code> and <code>origin</code> to <code>project&lt;SpatRaster&gt;</code> method. [#596] by Alex Ilich</li>
+<li>new argument <code>inside=TRUE</code> to <code>centroids</code> to get a centroid-like point that is guaranteed to be on the geometry (“point on surface”). [#588] by Márcia Barbosa</li>
+<li>new argument <code>keepgeom=FALSE</code> to <code>vect&lt;data.frame&gt;</code> that allows setting (keeping) the geometry as an attribute. [#586] by Márcia Barbosa</li>
 <li>
-<code>saveRDS</code> and <code>serialize</code> methods for SpatRaster and SpatVector. <a href="https://github.com/rspatial/terra/issues/549" class="external-link">#549</a> by Andrei Mîrț</li>
+<code>saveRDS</code> and <code>serialize</code> methods for SpatRaster and SpatVector. [#549] by Andrei Mîrț</li>
 <li>
-<code>xFromCol</code> and <code>yFromCol</code> now have a <code>&lt;SpatRaster,missing&gt;</code> method. <a href="https://github.com/rspatial/terra/issues/583" class="external-link">#583</a> by Michael Sumner.</li>
+<code>xFromCol</code> and <code>yFromCol</code> now have a <code>&lt;SpatRaster,missing&gt;</code> method. [#583] by Michael Sumner.</li>
 <li>
-<code>svc&lt;sf&gt;</code> method to deal with GeometryCollection types. <a href="https://github.com/rspatial/terra/issues/585" class="external-link">#585</a> by Sarah Endicott</li>
+<code>svc&lt;sf&gt;</code> method to deal with GeometryCollection types. [#585] by Sarah Endicott</li>
 <li>
-<code>as.points&lt;SpatRaster&gt;</code> and <code>as.polygons&lt;SpatRaster&gt;</code> have a new argument <code>na.all=FALSE</code> that affects the interpretation of <code>na.rm</code>. <a href="https://github.com/rspatial/terra/issues/548" class="external-link">#548</a> by Jean-Luc Dupouey.</li>
+<code>as.points&lt;SpatRaster&gt;</code> and <code>as.polygons&lt;SpatRaster&gt;</code> have a new argument <code>na.all=FALSE</code> that affects the interpretation of <code>na.rm</code>. [#548] by Jean-Luc Dupouey.</li>
 <li>
-<code>setGDALconfig</code> and <code>getGDALconfig</code> to set GDAL configuration options. <a href="https://github.com/rspatial/terra/issues/608" class="external-link">#608</a> by Erik Bolch.</li>
+<code>setGDALconfig</code> and <code>getGDALconfig</code> to set GDAL configuration options. [#608] by Erik Bolch.</li>
 <li>new argument <code>circular</code> to <code>rapp</code> to allow the start to be after the end (for if layers represent days of the year)</li>
 <li>new method <code>costDistance&lt;SpatRaster&gt;</code>
 </li>
@@ -309,11 +322,11 @@
 <li>
 <code>as.list</code> implemented for <code>&lt;SpatRasterDataset&gt;</code>.</li>
 <li>
-<code>sources</code> implemented for <code>&lt;SpatRasterDataset&gt;</code>, <code>&lt;SpatVector&gt;</code> and <code>&lt;SpatVectorProxy&gt;</code> <a href="https://github.com/rspatial/terra/issues/638" class="external-link">#638</a> by Andrew Gene Brown</li>
+<code>sources</code> implemented for <code>&lt;SpatRasterDataset&gt;</code>, <code>&lt;SpatVector&gt;</code> and <code>&lt;SpatVectorProxy&gt;</code> [#638] by Andrew Gene Brown</li>
 </ul></div>
 <div class="section level3">
 <h3 id="name-changes-1-5-34">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-5-34"></a></h3>
-<ul><li>delauny -&gt; delaunay <a href="https://github.com/rspatial/terra/issues/627" class="external-link">#627</a> by Derek Friend</li>
+<ul><li>delauny -&gt; delaunay [#627] by Derek Friend</li>
 </ul></div>
 </div>
     <div class="section level2">
