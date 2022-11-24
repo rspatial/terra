@@ -20,7 +20,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 \usage{
 \S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, na.rm=FALSE, 
     as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, 
-    xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5)
+    xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE)
 
 \S4method{spatSample}{SpatVector}(x, size, method="random", strata=NULL, chess="")
 
@@ -48,7 +48,9 @@ In order to assure regularity when requesting a regular sample, the number of ce
   
   \item{lonlat}{logical. If \code{TRUE}, sampling of a SpatExtent is weighted by \code{cos(latitude)}. For SpatRaster and SpatVector this done based on the \code{\link{crs}}, but it is ignored if \code{as.raster=TRUE}}
   
-  \item{exp}{numeric >= 1. 'Expansion factor' that is multiplied with \code{size} to get an initial sample used for stratified samples and random samples with \code{na.rm=TRUE} to try to get at least \code{size} samples}
+  \item{exp}{numeric >= 1. "Expansion factor" that is multiplied with \code{size} to get an initial sample used for stratified samples and random samples with \code{na.rm=TRUE} to try to get at least \code{size} samples}
+  
+  \item{exhaustive}{logical. If \code{TRUE} and \code{na.rm=TRUE} first all cells that are not \code{NA} are determined and a sample is taked from these cells. This is useful when you are dealing with a very large raster that is sparse (most cells are NA). Otherwise, the default approach may not find enough samples. This should not be used in other cases, especially not with large rasters that mostly have values}  
 }
 
 

@@ -2099,7 +2099,7 @@ std::vector<std::vector<double>> SpatRaster::cells_notna(SpatOptions &opt) {
 
 	size_t nc = ncol();
     size_t ncl = ncell();
-	size_t rs = std::min(ncl/10, (size_t)10000);
+	size_t rs = std::max(ncl/50, (size_t)10000);
 	out[0].reserve(rs);
 	out[1].reserve(rs);
 
@@ -2112,6 +2112,42 @@ std::vector<std::vector<double>> SpatRaster::cells_notna(SpatOptions &opt) {
 			if (!std::isnan(v[j])) {
 				out[0].push_back(base+j); // cell
 				out[1].push_back(v[j]); // value
+			}
+		}
+	}
+	readStop();
+	return out;
+}
+
+std::vector<double> SpatRaster::cells_notna_novalues(SpatOptions &opt) {
+
+
+	if (nlyr() > 1) {
+		SpatOptions topt(opt);
+		SpatRaster x = nonan(true, topt);
+		return x.cells_notna_novalues(opt);
+	}
+	
+	std::vector<double> out;
+	BlockSize bs = getBlockSize(opt);
+
+	if (!readStart()) {
+		return(out);
+	}
+
+	size_t nc = ncol();
+    size_t ncl = ncell();
+	size_t rs = std::max(ncl/500, (size_t)10000);
+	out.reserve(rs);
+
+	for (size_t i = 0; i < bs.n; i++) {
+		std::vector<double> v;
+		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
+		size_t base = (bs.row[i] * nc);
+		size_t szv = v.size();
+		for (size_t j=0; j<szv; j++) {
+			if (!std::isnan(v[j])) {
+				out.push_back(base+j); // cell
 			}
 		}
 	}

@@ -789,6 +789,7 @@ RCPP_MODULE(spat){
 		.method("as_points", &SpatRaster::as_points)
 		.method("as_points_value", &SpatRaster::as_points_value)
 		.method("cells_notna", &SpatRaster::cells_notna)
+		.method("cells_notna_novalues", &SpatRaster::cells_notna_novalues)
 		.method("as_multipoints", &SpatRaster::as_multipoints)
 
 		.method("as_lines", &SpatRaster::as_lines)
@@ -851,6 +852,7 @@ RCPP_MODULE(spat){
 		.method("is_in", &SpatRaster::is_in)
 		.method("is_in_cells", &SpatRaster::is_in_cells)
 		.method("anynan", &SpatRaster::anynan)
+		.method("nonan", &SpatRaster::nonan)
 		.method("allnan", &SpatRaster::allnan)
 		.method("isnan", &SpatRaster::isnan)
 		.method("not_na", &SpatRaster::isnotnan)

@@ -578,6 +578,7 @@ class SpatRaster {
 		SpatVector as_points(bool values, bool narm, bool nall, SpatOptions &opt);
 		std::vector<std::vector<double>> as_points_value(const double& target, SpatOptions &opt);
 		std::vector<std::vector<double>> cells_notna(SpatOptions &opt);
+		std::vector<double> cells_notna_novalues(SpatOptions &opt);
 
 
 		SpatVector as_multipoints(bool narm, bool nall, SpatOptions &opt);
@@ -659,8 +660,9 @@ class SpatRaster {
 		SpatRaster isnot(SpatOptions &opt);
 		SpatRaster isnan(SpatOptions &opt);
 		SpatRaster isnotnan(SpatOptions &opt);
-		SpatRaster allnan(SpatOptions &opt);
-		SpatRaster anynan(SpatOptions &opt);
+		SpatRaster allnan(bool setnan, SpatOptions &opt);
+		SpatRaster anynan(bool setnan, SpatOptions &opt);
+		SpatRaster nonan(bool setnan, SpatOptions &opt);
 		SpatRaster isfinite(SpatOptions &opt);
 		SpatRaster isinfinite(SpatOptions &opt);
 

@@ -6,10 +6,11 @@
 
 setMethod("cells", signature(x="SpatRaster", y="missing"),
 	function(x, y) {
-		# is this useful?
 		if (hasValues(x)) {
-			which(!is.na(values(x)))
+			opt <- spatOptions()
+			x@ptr$cells_notna_novalues(opt)
 		} else {
+			# is this useful?
 			1:ncell(x)
 		}
 	}

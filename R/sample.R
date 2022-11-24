@@ -27,10 +27,15 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, c
 	res
 }
 
+
 sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, warn=TRUE) {
 	if (!is.null(ext)) {
 		x <- crop(x, ext)
+		if (!is.null(weights)) {
+			weights <- crop(weights, ext)
+		}
 	}
+	
 	if (!is.null(weights)) {
 		if (!inherits(weights, "SpatRaster")) {
 			error("spatSample", "weights must be a SpatRaster")
@@ -93,12 +98,11 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 
 
 
-
 sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=5, weights=NULL) {
 
 	lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
 	if (blocks(x, n=4)$n == 1) {
-		res <- sampleStratMemory(x, size, replace, lonlat, ext)
+		res <- sampleStratMemory(x, size, replace, lonlat, ext, weights, warn)
 	} else {
 
 		#f <- freq(x)
@@ -332,8 +336,50 @@ set_factors <- function(x, ff, cts, asdf) {
 }
 
 
+
+.sampleCellsExhaustive <- function(x, size, replace, ext=NULL, weights=NULL, warn=TRUE) {
+
+	if (!is.null(ext)) {
+		x <- crop(x, ext)
+	}
+	rx <- rast(x)
+	x <- cells(x)
+	if (length(x) < size) {
+		if (!replace) {
+			warn("spatSample", "fewer samples than requested are available")
+			return(x)
+		}
+		size <- length(x)
+	}
+	
+	if (!is.null(weights)) {
+		if (!inherits(weights, "SpatRaster")) {
+			error("spatSample", "weights must be a SpatRaster")
+		}
+		weights <- weights[[1]]
+		if (!is.null(ext)) {
+			weights <- crop(weights, ext)
+		}
+		if (!compareGeom(x, weights)) {
+			error("spatSample", "geometry of weights does not match the geometry of x")
+		}
+		weights <- weights[x]
+		s <- sample.int(x, size, prob=weights, replace=replace)
+
+	} else if (is.lonlat(rx)) {	
+		y <- xyFromCell(rx, x)[,2]
+		weights <- abs(cos(pi * y / 360))
+		s <- sample(x, size, prob=weights, replace=replace)
+	} else {
+		s <- sample(x, size, replace=replace)
+	}
+	s
+}
+
+
+
 setMethod("spatSample", signature(x="SpatRaster"),
-	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5) {
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE) {
 		exp <- max(c(1, exp), na.rm=TRUE)
 		size <- round(size)
 		if (any(size < 1)) {
@@ -386,7 +432,12 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (cells || xy || as.points) {
 
 			size <- size[1]
-			cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
+			if (exhaustive && (method=="random") && na.rm) {
+				cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
+			} else {
+				cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
+			}
+			
 			if (method == "random") {
 				if (length(cnrs) < size && warn) {
 					warn("spatSample", "fewer cells returned than requested")
@@ -395,10 +446,12 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				}
 			}
 			out <- NULL
+			
 			if (cells) {
 				out <- matrix(cnrs, ncol=1)
 				colnames(out) <- "cell"
 			}
+			
 			if (xy) {
 				out <- cbind(out, xyFromCell(x, cnrs))
 			}
@@ -459,10 +512,15 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 		} else { # random
 			size <- size[1]
+
 			if (as.raster) {
 				x@ptr <- x@ptr$sampleRandomRaster(size, replace, .seed())
 				x <- messages(x, "spatSample")
 				return(x);
+			} else if (exhaustive && na.rm) {
+				cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
+				out <- x[cnrs]
+			
 			} else {
 				#v <- x@ptr$sampleRandomValues(size, replace, seed)
 				if (size > 0.75 * ncell(x)) {
@@ -504,12 +562,10 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				}
 				if (NROW(out) < size) {
 					if (warn) warn("spatSample", "fewer values returned than requested")
-				} else if (method == "random") {
-					if (is.null(dim(out))) {
-						out = out[1:size]
-					} else {
-						out = out[1:size, ,drop=FALSE]
-					}
+				} else if (is.null(dim(out))) {
+					out = out[1:size]
+				} else {
+					out = out[1:size, ,drop=FALSE]
 				}
 				return(out)
 			}

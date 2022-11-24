@@ -17,6 +17,7 @@
 \alias{sum}
 \alias{anyNA}
 \alias{allNA}
+\alias{noNA}
 
 \alias{mean,SpatRaster-method}
 \alias{mean,SpatVector-method}
@@ -87,6 +88,13 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 \S4method{mean}{SpatRaster}(x, ..., trim=NA, na.rm=FALSE)
 
 \S4method{median}{SpatRaster}(x, na.rm=FALSE, ...)
+
+\S4method{anyNA}{SpatRaster}(x)
+
+\S4method{noNA}{SpatRaster}(x, FNA=FALSE)
+
+\S4method{allNA}{SpatRaster}(x, FNA=FALSE)
+
 }
 
 
@@ -96,6 +104,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
   \item{na.rm}{logical. If \code{TRUE}, \code{NA} values are ignored. If \code{FALSE}, \code{NA} is returned if \code{x} has any \code{NA} values}
   \item{trim}{ignored}
   \item{pop}{logical. If \code{TRUE}, the population standard deviation is computed. Otherwise the sample standard deviation is computed}
+  \item{FNA}{logical. If \code{TRUE}, cells that would otherwise be \code{FALSE} are set to \code{NA}}
 }
 
 

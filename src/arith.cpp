@@ -1241,7 +1241,7 @@ SpatRaster SpatRaster::isnan(SpatOptions &opt) {
 }
 
 
-SpatRaster SpatRaster::anynan(SpatOptions &opt) {
+SpatRaster SpatRaster::anynan(bool setnan, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	out.setValueType(3);
@@ -1256,13 +1256,14 @@ SpatRaster SpatRaster::anynan(SpatOptions &opt) {
 		readStop();
 		return out;
 	}
+	double inval = setnan ? NAN : 0;
 	size_t nl = nlyr();
 	size_t nc = ncol();
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v, w;
 		readBlock(v, out.bs, i);
 		size_t off = out.bs.nrows[i] * nc;
-		w.resize(off);
+		w.resize(off, inval);
 		for (size_t j=0; j<off; j++) {
 			for (size_t k=0; k<nl; k++) {
 				size_t cell = j + k * off;
@@ -1280,7 +1281,7 @@ SpatRaster SpatRaster::anynan(SpatOptions &opt) {
 }
 
 
-SpatRaster SpatRaster::allnan(SpatOptions &opt) {
+SpatRaster SpatRaster::nonan(bool setnan, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	out.setValueType(3);
@@ -1290,6 +1291,48 @@ SpatRaster SpatRaster::allnan(SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
+
+	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+	double inval = setnan ? NAN : 0;
+	size_t nl = nlyr();
+	size_t nc = ncol();
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> v, w;
+		readBlock(v, out.bs, i);
+		size_t off = out.bs.nrows[i] * nc;
+		w.resize(off, 1);
+		for (size_t j=0; j<off; j++) {
+			for (size_t k=0; k<nl; k++) {
+				size_t cell = j + k * off;
+				if (std::isnan(v[cell])) {
+					w[j] = inval;
+					continue;
+				}
+			}
+		}
+		if (!out.writeBlock(w, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
+
+SpatRaster SpatRaster::allnan(bool setnan, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	out.setValueType(3);
+
+    if (!hasValues()) return out;
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	double outval = setnan ? NAN : 0;
 
 	if (!out.writeStart(opt, filenames())) {
 		readStop();
@@ -1306,7 +1349,7 @@ SpatRaster SpatRaster::allnan(SpatOptions &opt) {
 			for (size_t k=0; k<nl; k++) {
 				size_t cell = j + k * off;
 				if (!std::isnan(v[cell])) {
-					w[j] = 0;
+					w[j] = outval;
 					continue;
 				}
 			}
