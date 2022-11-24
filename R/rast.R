@@ -314,7 +314,7 @@ setMethod("rast", signature(x="ANY"),
 			out <- rast(ext(x), ...)
 			if (is.null(list(...)$crs)) {
 				sfi <- attr(x, "sf_column")
-				crs(out) <- attr(x[[sfi]], "crs")$wkt
+				crs(out, warn=FALSE) <- attr(x[[sfi]], "crs")$wkt
 			}
 		} else {
 			out <- methods::as(x, "SpatRaster")

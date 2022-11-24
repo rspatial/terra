@@ -280,7 +280,7 @@ make.panel <- function(x, maxcell) {
 	} else {
 		asp <- 1
 	} 
-	crs(x) <- "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
+	crs(x, warn=FALSE) <- "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs"
 	ext(x) = c(0,1,0,asp)
 	#if (!is.null(add)) {
 	#	e <- as.vector(ext(x))

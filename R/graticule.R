@@ -35,7 +35,7 @@ graticule <- function(lon=30, lat=30, crs="") {
 	vx <- vect(x, "lines", crs="local")
 	vx <- densify(vx, interval/110, TRUE)
 	values(vx) <- data.frame(h=TRUE, lat=lat)
-	crs(vx) <- "+proj=longlat"
+	crs(vx, warn=FALSE) <- "+proj=longlat"
 	
 	v <- rbind(vy, vx)
 	

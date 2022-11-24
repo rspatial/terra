@@ -162,7 +162,7 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 		if (!is.null(x@attributes$filename)) {
 			rr <- rast(x@attributes$filename)
 			ext(rr) <- ext(r)
-			crs(rr) <- crs(r)
+			crs(rr, warn=FALSE) <- crs(r)
 			r <- rr
 		} else if (!is.null(x@attributes$sources)) {
 			s <- x@attributes$sources
@@ -174,7 +174,7 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 				})
 			rr <- rast(rr)
 			ext(rr) <- ext(r)
-			crs(rr) <- crs(r)
+			crs(rr, warn=FALSE) <- crs(r)
 			r <- rr
 		} else {
 			values(r) <- x@values

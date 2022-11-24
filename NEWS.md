@@ -2,20 +2,22 @@
 
 ## new
 
-- raster write options `scale` and `offset`. [#900](https://github.com/rspatial/terra/issues/900) by Kyle David
 - `roll<SpatRaster>` method for rolling (moving) average and other rolling functions
 - `noNA<SpatRaster>` method to identify cells that are not NA (across layers) 
 
 ## enhancements
 
-- argument `exhaustive` to `spatSample<SpatRaster>` for large sparse rasters
-- `focalCor` and `focalReg` can now use the values in custom windows as weights
+- argument `exhaustive` to `spatSample<SpatRaster>` for large sparse rasters. [#905](https://github.com/rspatial/terra/issues/905) by PetiteTong.
+- `focalCor` and `focalReg` can now use the values in custom windows as weights. [#907](https://github.com/rspatial/terra/issues/907) by Fabian Fischer.
+- `crs(x)<-` now emits a warning about the difference between tranforming and setting a crs when x already had a crs. [#897](https://github.com/rspatial/terra/issues/897) by Márcia Barbosa.
+- it is now possible to write a scale and offset with `writeRaster` [#900](https://github.com/rspatial/terra/issues/900) by Kyle David
+- `crosstab` now shows the labels names for a categorical SpatRaster. [895](https://github.com/rspatial/terra/issues/895) by Derek Corcoran Barrios
 
 
 ## bug fixes 
 
 - `focalCor` and `focalReg` now work for custom windows
-
+- argument "alpha" in `plot<SpatVector>` was not working properly. [#906](https://github.com/rspatial/terra/issues/906) by Márcia Barbosa.
 
 # version 1.6-41
 

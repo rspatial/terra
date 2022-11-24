@@ -3498,18 +3498,26 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 		if (keepcats) {
 			out.source[0].hasCategories[0] = source[0].hasCategories[0];
 			out.source[0].cats[0] = source[0].cats[0];
+			out.source[0].hasColors = source[0].hasColors;
+			out.source[0].cols = source[0].cols;
+			
 		}
 	} else {
 		if (nl == 0) {
 			out = geometry(nlyr());
 			out.source[0].hasCategories = hasCategories();
 			out.source[0].cats = getCategories();
+			out.source[0].hasColors = hasColors();
+			out.source[0].cols = getColors();
+			
 		} else {
 			out = geometry(nl);
 			if (keepcats) {
 				for (long i=0; i<nl; i++) {
 					out.source[0].hasCategories[i] = source[0].hasCategories[0];
 					out.source[0].cats[i] = source[0].cats[0];
+					out.source[0].hasColors[i] = source[0].hasColors[0];
+					out.source[0].cols[i] = source[0].cols[0];
 				}
 			}
 		}
