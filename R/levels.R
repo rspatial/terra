@@ -51,7 +51,7 @@ setMethod("levels<-", signature(x="SpatRaster"),
 				set.cats(x, i, value[[i]])
 			}
 		} else {
-			set.cats(x, 1, value, 2)
+			set.cats(x, 1, value)
 		}
 		x
 	}
@@ -157,7 +157,7 @@ setMethod ("set.cats" , "SpatRaster",
 		index <- max(1, min(ncol(value), active))
 		if (setname) {
 			nms <- names(x)
-			nms[layer] <-  colnames(value)[index]
+			nms[layer] <-  colnames(value)[index+1]
 			if (! x@ptr$setNames(nms, FALSE)) {
 				error("names<-", "cannot set name")
 			}
@@ -337,7 +337,7 @@ catLayer <- function(x, index, ...) {
 			fact <- unique(data.frame(ton, toc))
 			names(fact) <- c("ID", names(g)[index])
 			fact <- fact[order(fact[,1]), ]
-			set.cats(x, 1, fact, 2)
+			set.cats(x, 1, fact, 1)
 		}
 		x
 }

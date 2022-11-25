@@ -1589,7 +1589,7 @@ SpatRaster SpatRaster::rasterizeWindow(std::vector<double> x, std::vector<double
 	}
 
 	GUInt32 npts = x.size();
-	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, npts	, &x[0], &y[0], &z[0], true);
+	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, npts, &x[0], &y[0], &z[0], true);
 	CPLFree( poOptions );
 
 	double rsy = out.yres() / 2;

@@ -1185,7 +1185,7 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 			uid <- 1:nrow(u)
 			x <- subst(x, u, uid-1)
 			lab <- apply(u, 1, function(i) paste(i, collapse="_"))
-			set.cats(x, 1, data.frame(ID=uid-1, label=lab, u), 2)
+			set.cats(x, 1, data.frame(ID=uid-1, label=lab, u), 1)
 			return(x)
 		}
 		u

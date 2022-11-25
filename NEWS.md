@@ -19,6 +19,10 @@
 
 - `focalCor` and `focalReg` now work for custom windows
 - argument "alpha" in `plot<SpatVector>` was not working properly. [#906](https://github.com/rspatial/terra/issues/906) by Márcia Barbosa.
+- `time<-` with time-step "years" could not handle negative years. [911](https://github.com/rspatial/terra/issues/911) by Andrea Manica
+- `wrap`/`unwrap` (and by extension `saveRDS`/`readRDS`) did not handle categorical rasters well [#912](https://github.com/rspatial/terra/issues/912) by Christine Anderson.
+- `interpIDW` failed with GDAL 3.6 [910](https://github.com/rspatial/terra/issues/910) by Roger Bivand
+
 
 # version 1.6-41
 
