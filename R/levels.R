@@ -207,9 +207,9 @@ setMethod ("activeCat" , "SpatRaster",
 			}
 		}
 		if (layer < 1) {
-			a <- sapply(1:nlyr(x), function(i) x@ptr$getCatIndex(i-1))
-			a[a==0] <- NA
-			a
+			a <- sapply(1:nlyr(x), function(i) x@ptr$getCatIndex(i))
+			#a[a==0] <- NA
+			a + 1
 		} else {
 			if (!is.factor(x)[layer]) {
 				return(NA)
