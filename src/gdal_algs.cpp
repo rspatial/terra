@@ -1427,6 +1427,12 @@ bool getGridderAlgo(std::string algo, GDALGridAlgorithm &a) {
 void *metricOptions(std::vector<double> op) {
 	GDALGridDataMetricsOptions *poOptions = static_cast<GDALGridDataMetricsOptions *>(
 		CPLCalloc(sizeof(GDALGridDataMetricsOptions), 1));
+
+	#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 6
+	#else
+	poOptions->nSizeOfStructure = sizeof(GDALGridDataMetricsOptions);
+	#endif 
+		
 	poOptions->dfRadius1 = op[0];
 	poOptions->dfRadius2 = op[1];
 	poOptions->dfAngle = op[2];
@@ -1438,6 +1444,12 @@ void *metricOptions(std::vector<double> op) {
 void *invDistPowerOps(std::vector<double> op) {
 	GDALGridInverseDistanceToAPowerOptions *poOptions = static_cast<GDALGridInverseDistanceToAPowerOptions *>(
 		CPLCalloc(sizeof(GDALGridInverseDistanceToAPowerOptions), 1));
+
+	#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 6
+	#else
+	poOptions->nSizeOfStructure = sizeof(GDALGridInverseDistanceToAPowerOptions);
+	#endif
+	
 	poOptions->dfPower = op[0];
 	poOptions->dfSmoothing = op[1];
 	poOptions->dfRadius1 = op[2];
@@ -1456,6 +1468,12 @@ void *invDistPowerOps(std::vector<double> op) {
 void *invDistPowerNNOps(std::vector<double> op) {
 	GDALGridInverseDistanceToAPowerNearestNeighborOptions *poOptions = static_cast<GDALGridInverseDistanceToAPowerNearestNeighborOptions *>(
 		CPLCalloc(sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions), 1));
+
+	#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 6
+	#else
+	poOptions->nSizeOfStructure =  sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions);
+	#endif
+
 	poOptions->dfPower = op[0];
 	poOptions->dfRadius = op[1];
 	poOptions->dfSmoothing = op[2];
@@ -1468,6 +1486,13 @@ void *invDistPowerNNOps(std::vector<double> op) {
 void *moveAvgOps(std::vector<double> op) {
 	GDALGridMovingAverageOptions *poOptions = static_cast<GDALGridMovingAverageOptions *>(
 		CPLCalloc(sizeof(GDALGridMovingAverageOptions), 1));
+
+	#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 6
+	#else
+	poOptions->nSizeOfStructure = sizeof(GDALGridMovingAverageOptions);
+	#endif
+
+
 	poOptions->dfRadius1 = op[0];
 	poOptions->dfRadius2 = op[1];
 	poOptions->dfAngle = op[2];
@@ -1480,6 +1505,12 @@ void *moveAvgOps(std::vector<double> op) {
 void *nearngbOps(std::vector<double> op) {
 	GDALGridNearestNeighborOptions *poOptions = static_cast<GDALGridNearestNeighborOptions *>(
 		CPLCalloc(sizeof(GDALGridNearestNeighborOptions), 1));
+
+	#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 6
+	#else
+	poOptions->nSizeOfStructure = sizeof(GDALGridNearestNeighborOptions);
+	#endif
+
 	poOptions->dfRadius1 = op[0];
 	poOptions->dfRadius2 = op[1];
 	poOptions->dfAngle = op[2];
@@ -1490,6 +1521,12 @@ void *nearngbOps(std::vector<double> op) {
 void *LinearOps(std::vector<double> op) {
 	GDALGridLinearOptions *poOptions = static_cast<GDALGridLinearOptions *>(
 		CPLCalloc(sizeof(GDALGridLinearOptions), 1));
+
+	#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 6
+	#else
+	poOptions->nSizeOfStructure = sizeof(GDALGridLinearOptions);
+	#endif
+
 	poOptions->dfRadius = op[0];
 	poOptions->dfNoDataValue = op[1];
 	return poOptions;
@@ -1552,7 +1589,7 @@ SpatRaster SpatRaster::rasterizeWindow(std::vector<double> x, std::vector<double
 	}
 
 	GUInt32 npts = x.size();
-	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, npts, &x[0], &y[0], &z[0], true);
+	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, npts	, &x[0], &y[0], &z[0], true);
 	CPLFree( poOptions );
 
 	double rsy = out.yres() / 2;
