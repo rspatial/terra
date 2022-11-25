@@ -30,3 +30,11 @@ setMethod("gridDistance", signature(x="SpatRaster"),
 		gridDist(x, target=target, scale=scale, maxiter=maxiter, filename=filename, ...) 
 	}
 )
+
+
+setMethod("focalCor", signature(x="SpatRaster"),
+	function(x, ...) {
+		warn("focalCor", "'focalCor' will be removed. It was renamed to 'focalLyr'")
+		focalLyr(x, ...)
+	}
+)

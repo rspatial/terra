@@ -523,3 +523,77 @@ std::string PROJ_network(bool enable, std::string url) {
 	return s;
 }
 
+
+
+// [[Rcpp::export(name = ".weighted_pearson")]]
+double weighted_pearson_cor(std::vector<double> x, std::vector<double> y, std::vector<double> weights, bool narm=true) {
+  
+	if (narm) {
+		size_t n = x.size()-1;
+		for (long i=n; i >= 0; i--) {
+			if (std::isnan(x[i]) || std::isnan(y[i])) {
+				x.erase(x.begin()+i);
+				y.erase(y.begin()+i);
+				weights.erase(weights.begin()+i);
+			}
+		}	
+		if (x.size() < 2) {
+			return(NAN);
+		}
+	}
+	size_t n = x.size();
+	double sw = accumulate(weights.begin(), weights.end(), 0.0);
+	for (double &d : weights) d /= sw;
+	double sxw = 0;
+	double syw = 0;
+	for (size_t i=0; i<n; i++) {
+		sxw += x[i] * weights[i];
+		syw += y[i] * weights[i];
+	}
+	for (size_t i=0; i<n; i++) {
+		x[i] -= sxw;
+		y[i] -= syw;
+	}
+	double vx = 0;
+	double vy = 0;
+	double vxy = 0;
+	for (size_t i=0; i<n; i++) {
+		vx += weights[i] * x[i] * x[i];
+		vy += weights[i] * y[i] * y[i];
+		vxy += weights[i] * x[i] * y[i];
+	}
+	return  vxy / std::sqrt(vx * vy);
+}
+
+
+// [[Rcpp::export(name = ".pearson")]]
+double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
+ 
+	if (narm) {
+		size_t n = x.size()-1;
+		for (long i=n; i >= 0; i--) {
+			if (std::isnan(x[i]) || std::isnan(y[i])) {
+				x.erase(x.begin()+i);
+				y.erase(y.begin()+i);
+			}
+		}	
+		if (x.size() < 2) {
+			return(NAN);
+		}
+	}
+	size_t n = x.size();
+	double xbar = accumulate(x.begin(), x.end(), 0.0) / n;
+	double ybar = accumulate(y.begin(), y.end(), 0.0) / n;
+	double numer = 0;
+	for (size_t i=0; i<n; i++) {
+		numer += (x[i]-xbar) * (y[i]-ybar);
+	}
+	double s1 = 0;
+	double s2 = 0;
+	for (size_t i=0; i<n; i++) {
+		s1 += std::pow(x[i]-xbar, 2);
+		s2 += std::pow(y[i]-ybar, 2);
+	}
+	return numer / std::sqrt(s1 * s2);
+}
+

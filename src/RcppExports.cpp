@@ -287,6 +287,33 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// weighted_pearson_cor
+double weighted_pearson_cor(std::vector<double> x, std::vector<double> y, std::vector<double> weights, bool narm);
+RcppExport SEXP _terra_weighted_pearson_cor(SEXP xSEXP, SEXP ySEXP, SEXP weightsSEXP, SEXP narmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<double> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<double> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< std::vector<double> >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< bool >::type narm(narmSEXP);
+    rcpp_result_gen = Rcpp::wrap(weighted_pearson_cor(x, y, weights, narm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pearson_cor
+double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm);
+RcppExport SEXP _terra_pearson_cor(SEXP xSEXP, SEXP ySEXP, SEXP narmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<double> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<double> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< bool >::type narm(narmSEXP);
+    rcpp_result_gen = Rcpp::wrap(pearson_cor(x, y, narm));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dist_lonlat
 double dist_lonlat(const double& lon1, const double& lat1, const double& lon2, const double& lat2);
 RcppExport SEXP _terra_dist_lonlat(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP) {
@@ -443,6 +470,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_get_proj_search_paths", (DL_FUNC) &_terra_get_proj_search_paths, 0},
     {"_terra_set_proj_search_paths", (DL_FUNC) &_terra_set_proj_search_paths, 1},
     {"_terra_PROJ_network", (DL_FUNC) &_terra_PROJ_network, 2},
+    {"_terra_weighted_pearson_cor", (DL_FUNC) &_terra_weighted_pearson_cor, 4},
+    {"_terra_pearson_cor", (DL_FUNC) &_terra_pearson_cor, 3},
     {"_terra_dist_lonlat", (DL_FUNC) &_terra_dist_lonlat, 4},
     {"_terra_dest_lonlat", (DL_FUNC) &_terra_dest_lonlat, 7},
     {"_terra_dir_lonlat", (DL_FUNC) &_terra_dir_lonlat, 4},

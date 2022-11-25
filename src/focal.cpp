@@ -594,4 +594,3 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 	return(out);
 }
 
-
