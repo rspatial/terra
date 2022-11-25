@@ -38,7 +38,7 @@ To set categories for the first layer of a SpatRaster, you can provide \code{lev
 
 \S4method{cats}{SpatRaster}(x, layer)
 
-\S4method{categories}{SpatRaster}(x, layer=1, value, active=2, ...)
+\S4method{categories}{SpatRaster}(x, layer=1, value, active=1, ...)
 
 \S4method{droplevels}{SpatRaster}(x)
 }
@@ -48,7 +48,7 @@ To set categories for the first layer of a SpatRaster, you can provide \code{lev
   \item{x}{SpatRaster}
   \item{layer}{the layer name or number (positive integer); or 0 for all layers}
   \item{value}{a data.frame (ID, category) that define the categories. Or \code{NULL} to remove them}
-  \item{active}{positive integer, indicating the column in \code{data.frame} \code{value} to be used as the active category, (not counting the first column with the cell values)}
+  \item{active}{positive integer, indicating the column in \code{value} to be used as the active category (zero based to skip the first column with the cell values; that is 1 is the second column in \code{value})}
   \item{...}{additional arguments}
 }  
 

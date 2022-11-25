@@ -147,7 +147,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 			r@attributes$units <- v
 		}
 		v <- depth(x)
-		if (!all(v) ==0) {
+		if (!all(v ==0)) {
 			r@attributes$depth <- v
 		}
 		r
