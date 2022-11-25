@@ -51,22 +51,27 @@
 <h2 class="page-header" data-toc-text="1.6-45" id="version-16-45">version 1.6-45<a class="anchor" aria-label="anchor" href="#version-16-45"></a></h2>
 <div class="section level3">
 <h3 id="new-1-6-45">new<a class="anchor" aria-label="anchor" href="#new-1-6-45"></a></h3>
-<ul><li>raster write options <code>scale</code> and <code>offset</code>. <a href="https://github.com/rspatial/terra/issues/900" class="external-link">#900</a> by Kyle David</li>
-<li>
+<ul><li>
 <code>roll&lt;SpatRaster&gt;</code> method for rolling (moving) average and other rolling functions</li>
 <li>
 <code>noNA&lt;SpatRaster&gt;</code> method to identify cells that are not NA (across layers)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-45">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-45"></a></h3>
-<ul><li>argument <code>exhaustive</code> to <code>spatSample&lt;SpatRaster&gt;</code> for large sparse rasters</li>
+<ul><li>argument <code>exhaustive</code> to <code>spatSample&lt;SpatRaster&gt;</code> for large sparse rasters. <a href="https://github.com/rspatial/terra/issues/905" class="external-link">#905</a> by PetiteTong.</li>
 <li>
-<code>focalCor</code> and <code>focalReg</code> can now use the values in custom windows as weights</li>
+<code>focalCor</code> and <code>focalReg</code> can now use the values in custom windows as weights. <a href="https://github.com/rspatial/terra/issues/907" class="external-link">#907</a> by Fabian Fischer.</li>
+<li>
+<code>crs(x)&lt;-</code> now emits a warning about the difference between tranforming and setting a crs when x already had a crs. <a href="https://github.com/rspatial/terra/issues/897" class="external-link">#897</a> by Márcia Barbosa.</li>
+<li>it is now possible to write a scale and offset with <code>writeRaster</code> <a href="https://github.com/rspatial/terra/issues/900" class="external-link">#900</a> by Kyle David</li>
+<li>
+<code>crosstab</code> now shows the labels names for a categorical SpatRaster. <a href="https://github.com/rspatial/terra/issues/895" class="external-link">895</a> by Derek Corcoran Barrios</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-45">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-45"></a></h3>
 <ul><li>
 <code>focalCor</code> and <code>focalReg</code> now work for custom windows</li>
+<li>argument “alpha” in <code>plot&lt;SpatVector&gt;</code> was not working properly. <a href="https://github.com/rspatial/terra/issues/906" class="external-link">#906</a> by Márcia Barbosa.</li>
 </ul></div>
 </div>
     <div class="section level2">
