@@ -78,6 +78,18 @@ setMethod("time", signature(x="SpatRaster"),
 	}
 )
 
+make_posix <- function(y, m) {
+	y <- floor(y)
+	d <- paste(abs(y), m, "15", sep="-")
+	d <- as.POSIXlt(d)
+	neg <- (y < 0)
+	if (any(neg)) {
+		for (i in seq_along(neg)) {
+			d$year[i] = y[i] - 1900
+		}
+	}
+	d
+}
 
 setMethod("time<-", signature(x="SpatRaster"),
 	function(x, value, tstep="")  {
@@ -103,11 +115,10 @@ setMethod("time<-", signature(x="SpatRaster"),
 			value <- as.numeric(value)
 			year <- floor(value)
 			month <- round(12 * (value - year) + 1)
-			d <- as.Date(paste(year, month, "15", sep="-"))
-			value <- as.POSIXlt(d)
+			value <- make_posix(value, month)
 			tstep <- "yearmonths"
 		} else if (tstep == "years") {
-			value <- as.POSIXlt(as.Date(paste0(floor(value), "-6-15")))
+			value <- make_posix(value, "6")
 		} else if (tstep == "months") {
 			value <- floor(value)
 			if (!all(value %in% 1:12)) {
