@@ -4,12 +4,13 @@
 
 - `roll<SpatRaster>` method for rolling (moving) average and other rolling functions
 - `noNA<SpatRaster>` method to identify cells that are not NA (across layers) 
+- `rangeFill<SpatRaster>` method 
 
 ## enhancements
 
 - argument `exhaustive` to `spatSample<SpatRaster>` for large sparse rasters. [#905](https://github.com/rspatial/terra/issues/905) by PetiteTong.
 - `focalCor` and `focalReg` can now use the values in custom windows as weights. [#907](https://github.com/rspatial/terra/issues/907) by Fabian Fischer.
-- `crs(x)<-` now emits a warning about the difference between tranforming and setting a crs when x already had a crs. [#897](https://github.com/rspatial/terra/issues/897) by Márcia Barbosa.
+- `crs(x, warn=TRUE)<-` now emits a warning about the difference between transforming and setting a crs when x already had a crs. [#897](https://github.com/rspatial/terra/issues/897) by Márcia Barbosa.
 - it is now possible to write a scale and offset with `writeRaster` [#900](https://github.com/rspatial/terra/issues/900) by Kyle David
 - `crosstab` now shows the labels names for a categorical SpatRaster. [895](https://github.com/rspatial/terra/issues/895) by Derek Corcoran Barrios
 
@@ -33,7 +34,7 @@ Released 2022-11-18
 - `interpNear` method for nearest neighbor interpolation of points with a moving window
 - `viewshed` method for SpatRaster
 - `update` method for SpatRaster to write new names or a new extent or crs to an existing raster file.
-- `sieve` filter method for SpatRaster
+- `sieve` filter for SpatRaster
 - argument `segments=FALSE` to `disagg<SpatRaster>`
 - `sprc<character>` method to create a SpatRasterCollection from a file with subdatasets
 - `graticule` function to create a SpatGraticule and related methods `plot<SpatGraticule>` and `crop<SpatGraticule>`

@@ -4,6 +4,15 @@
 # License GPL v3
 
 
+setMethod("rangeFill", signature(x="SpatRaster"),
+	function(x, y, limit, filename="", ...) {
+		opt <- spatOptions()
+		x@ptr <- x@ptr$fill_range(y@ptr, limit, opt)
+		messages(x, "rangeFill")
+	}
+)
+
+
 setMethod("weighted.mean", signature(x="SpatRaster", w="numeric"),
 	function(x, w, na.rm=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)

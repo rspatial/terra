@@ -889,7 +889,6 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true, true, true);
 
-
 	if (!out.compare_geom(x, false, true, opt.get_tolerance(), true, true, true, false)) {
 		return(out);
 	}
@@ -4934,4 +4933,65 @@ SpatRaster SpatRaster::intersect(SpatRaster &x, SpatOptions &opt) {
 }
 
 
+SpatRaster SpatRaster::fill_range(SpatRaster &x, long rsize, SpatOptions &opt) {
+	
+	SpatRaster out;
+	if (rsize < 3) {
+		out.setError("rsize must be larger than 3");
+		return out;
+	}
+	if ((nlyr() != 1) || (x.nlyr() != 1)) {
+		out.setError("the input rasters must have one layer");
+		return out;		
+	}
+	if (!(hasValues() && x.hasValues())) {
+		out.setError("the input rasters must have values");
+		return out;		
+	}
+	
+	size_t nl = rsize;
+	out = geometry(nl, false, false, false);
+	if (!out.compare_geom(x, false, false, opt.get_tolerance(), false, true, true, false)) {
+		return(out);
+	}
+	
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!x.readStart()) {
+		out.setError(x.getError());
+		return(out);
+	}
+	
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		x.readStop();
+		return out;
+	}
 
+	size_t nc = ncell();
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> a, b;
+		readValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		x.readValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		std::vector<double> d(a.size() * nl);
+		for (size_t j=0; j<a.size(); j++) {
+			if (std::isnan(a[j]) || std::isnan(b[j]) || (a[j] < 1) || (b[j] > nl) || (b[j] < a[j])) {
+				for (size_t k=0; k<nl; k++) {
+					d[k*nc+j] = NAN;
+				}				
+			} else {
+				for (size_t k=(a[j]-1); k<b[j]; k++) {
+					d[k*nc+j] = 1;
+				}
+			}
+		}
+		if (!out.writeBlock(d, i)) return out;
+	}
+	out.writeStop();
+	readStop();
+	x.readStop();
+	return(out);
+	
+}

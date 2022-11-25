@@ -35,7 +35,7 @@ Calculate values for a moving-window by comparing the value in one layers with t
 \value{SpatRaster}
 
 
-\seealso{ \code{\link{focal}}, \link{focal3D}}, \code{\link{focalValues}} }
+\seealso{ \code{\link{focal}, \link{focal3D}}, \link{focalValues}} 
 
 
 \examples{
