@@ -55,6 +55,8 @@
 <code>roll&lt;SpatRaster&gt;</code> method for rolling (moving) average and other rolling functions</li>
 <li>
 <code>noNA&lt;SpatRaster&gt;</code> method to identify cells that are not NA (across layers)</li>
+<li>
+<code>rangeFill&lt;SpatRaster&gt;</code> method</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-45">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-45"></a></h3>
@@ -62,7 +64,7 @@
 <li>
 <code>focalCor</code> and <code>focalReg</code> can now use the values in custom windows as weights. <a href="https://github.com/rspatial/terra/issues/907" class="external-link">#907</a> by Fabian Fischer.</li>
 <li>
-<code>crs(x)&lt;-</code> now emits a warning about the difference between tranforming and setting a crs when x already had a crs. <a href="https://github.com/rspatial/terra/issues/897" class="external-link">#897</a> by Márcia Barbosa.</li>
+<code>crs(x, warn=TRUE)&lt;-</code> now emits a warning about the difference between transforming and setting a crs when x already had a crs. <a href="https://github.com/rspatial/terra/issues/897" class="external-link">#897</a> by Márcia Barbosa.</li>
 <li>it is now possible to write a scale and offset with <code>writeRaster</code> <a href="https://github.com/rspatial/terra/issues/900" class="external-link">#900</a> by Kyle David</li>
 <li>
 <code>crosstab</code> now shows the labels names for a categorical SpatRaster. <a href="https://github.com/rspatial/terra/issues/895" class="external-link">895</a> by Derek Corcoran Barrios</li>
@@ -96,7 +98,7 @@
 <li>
 <code>update</code> method for SpatRaster to write new names or a new extent or crs to an existing raster file.</li>
 <li>
-<code>sieve</code> filter method for SpatRaster</li>
+<code>sieve</code> filter for SpatRaster</li>
 <li>argument <code>segments=FALSE</code> to <code>disagg&lt;SpatRaster&gt;</code>
 </li>
 <li>
