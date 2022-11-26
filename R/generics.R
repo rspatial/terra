@@ -7,6 +7,7 @@
 setMethod("rangeFill", signature(x="SpatRaster"),
 	function(x, limit, filename="", ...) {
 		opt <- spatOptions()
+
 		x@ptr <- x@ptr$fill_range(limit, opt)
 		messages(x, "rangeFill")
 	}
