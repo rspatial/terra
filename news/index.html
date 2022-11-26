@@ -74,6 +74,12 @@
 <ul><li>
 <code>focalCor</code> and <code>focalReg</code> now work for custom windows</li>
 <li>argument “alpha” in <code>plot&lt;SpatVector&gt;</code> was not working properly. <a href="https://github.com/rspatial/terra/issues/906" class="external-link">#906</a> by Márcia Barbosa.</li>
+<li>
+<code>time&lt;-</code> with time-step “years” could not handle negative years. <a href="https://github.com/rspatial/terra/issues/911" class="external-link">911</a> by Andrea Manica</li>
+<li>
+<code>wrap</code>/<code>unwrap</code> (and by extension <code>saveRDS</code>/<code>readRDS</code>) did not handle categorical rasters well <a href="https://github.com/rspatial/terra/issues/912" class="external-link">#912</a> by Christine Anderson.</li>
+<li>
+<code>interpIDW</code> failed with GDAL 3.6 <a href="https://github.com/rspatial/terra/issues/910" class="external-link">910</a> by Roger Bivand</li>
 </ul></div>
 </div>
     <div class="section level2">
