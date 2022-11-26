@@ -1229,6 +1229,7 @@ setMethod("scoff<-", signature("SpatRaster"),
 			value[is.na(value[,1]),1] <- 1
 			value[is.na(value[,2]),2] <- 0
 			x@ptr$setScaleOffset(value[,1], value[,2])
+			x@ptr$setValueType(0)
 		}
 		messages(x, "scoff<-")
 	}
