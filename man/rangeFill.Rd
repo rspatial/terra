@@ -34,12 +34,11 @@ For example, for a cell with \code{start=3}, \code{end=5} and with \code{limit=8
 
 \examples{
 
-library(terra)
 x <- y <- rast(ncol=2, nrow=2)
 values(x) <- c(NA, 1:3)
 values(y) <- c(NA, 4:6)
-r <- rangeFill(x, y, 8)
 
+r <- rangeFill(c(x, y), 8)
 }
 
 
