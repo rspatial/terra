@@ -56,7 +56,7 @@ For example, for a cell with start=3, end=5 and with limit=8, the output for tha
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">rangeFill</span><span class="op">(</span><span class="va">x</span>, <span class="va">limit</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">rangeFill</span><span class="op">(</span><span class="va">x</span>, <span class="va">limit</span>, circular<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -68,6 +68,10 @@ For example, for a cell with start=3, end=5 and with limit=8, the output for tha
 <dt>limit</dt>
 <dd><p>numeric &gt; 1. The range size</p></dd>
 
+
+<dt>circular</dt>
+<dd><p>logical. If <code>TRUE</code> the values are considered circular, such as the days of the year. In that case, if first &gt; last the layers used are c(first:limit, 1:last). Otherwise, the range would be considered invalid and <code>NA</code> would be used</p></dd>
+ 
 
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
