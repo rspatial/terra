@@ -10,7 +10,7 @@ Calculate values for a moving-window by comparing the value in one layers with t
 }
 
 \usage{
-\S4method{focalReg}{SpatRaster}(x, w=3, fun="ols", ..., fillvalue=NA, filename="", wopt=list()) 
+\S4method{focalReg}{SpatRaster}(x, w=3, fun="ols", ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list()) 
 }
 
 \arguments{

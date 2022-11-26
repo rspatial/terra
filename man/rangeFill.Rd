@@ -6,24 +6,21 @@
 \title{Fill layers with a range}
 
 \description{
-Fill layers with cell-varying ranges defined by a start and end SpatRaster. 
-The range must start at 1 and end at a user-defined maximum. 
+Fill layers with cell-varying ranges defined by a start and end SpatRaster. The range must start at 1 and end at a user-defined maximum. 
+
+For example, for a cell with \code{start=3}, \code{end=5} and with \code{limit=8}, the output for that cell would be \code{0,0,1,1,1,0,0,0}
 }
 
 \usage{
-\S4method{rangeFill}{SpatRaster}(x, y, limit, filename="", ...) 
+\S4method{rangeFill}{SpatRaster}(x, limit, filename="", ...) 
 }
 
 \arguments{
-\item{x}{SpatRaster with at single layer. Cell values are indicate the start of the range (1 based)}
-
-\item{x}{SpatRaster with at single layer. Cell values are indicate the end of the range}
+\item{x}{SpatRaster with at two layers. The Cell values of the first layer indicate the start of the range (1 based); the cell values are indicate the end of the range}
 
 \item{limit}{numeric > 1. The range size}
 
 \item{filename}{character. Output filename}
-
-\item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
 
 \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 

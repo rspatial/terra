@@ -337,7 +337,7 @@ catLayer <- function(x, index, ...) {
 			fact <- unique(data.frame(ton, toc))
 			names(fact) <- c("ID", names(g)[index])
 			fact <- fact[order(fact[,1]), ]
-			set.cats(x, 1, fact, 1)
+			set.cats(x, 1, fact)
 		}
 		x
 }

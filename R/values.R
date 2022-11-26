@@ -209,7 +209,7 @@ setMethod("setValues", signature("SpatRaster"),
 		if (make_factor) {
 			for (i in 1:nlyr(y)) {
 				levs <- data.frame(value=1:length(levs), label=levs)
-				set.cats(y, i, levs, 1)
+				set.cats(y, i, levs)
 			}
 			names(y) <- names(x)
 		}

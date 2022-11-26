@@ -4933,65 +4933,55 @@ SpatRaster SpatRaster::intersect(SpatRaster &x, SpatOptions &opt) {
 }
 
 
-SpatRaster SpatRaster::fill_range(SpatRaster &x, long rsize, SpatOptions &opt) {
+SpatRaster SpatRaster::fill_range(long limit, SpatOptions &opt) {
 	
-	SpatRaster out;
-	if (rsize < 3) {
-		out.setError("rsize must be larger than 3");
+	size_t nl = limit;
+	SpatRaster out = geometry(nl, false, false, false);
+	
+	if (limit < 3) {
+		out.setError("limit must be larger than 3");
 		return out;
 	}
-	if ((nlyr() != 1) || (x.nlyr() != 1)) {
-		out.setError("the input rasters must have one layer");
+	if (nlyr() != 2) {
+		out.setError("the input raster must have two layers");
 		return out;		
 	}
-	if (!(hasValues() && x.hasValues())) {
-		out.setError("the input rasters must have values");
+	if (!hasValues()) {
+		out.setError("the input raster must have values");
 		return out;		
 	}
-	
-	size_t nl = rsize;
-	out = geometry(nl, false, false, false);
-	if (!out.compare_geom(x, false, false, opt.get_tolerance(), false, true, true, false)) {
-		return(out);
-	}
-	
+		
 	if (!readStart()) {
 		out.setError(getError());
-		return(out);
-	}
-	if (!x.readStart()) {
-		out.setError(x.getError());
 		return(out);
 	}
 	
   	if (!out.writeStart(opt, filenames())) {
 		readStop();
-		x.readStop();
 		return out;
 	}
 
 	size_t nc = ncell();
 	for (size_t i=0; i<out.bs.n; i++) {
-		std::vector<double> a, b;
-		readValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol());
-		x.readValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol());
-		std::vector<double> d(a.size() * nl);
-		for (size_t j=0; j<a.size(); j++) {
-			if (std::isnan(a[j]) || std::isnan(b[j]) || (a[j] < 1) || (b[j] > nl) || (b[j] < a[j])) {
+		std::vector<double> v;
+		readValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		std::vector<double> d(v.size() * nl);
+		for (size_t j=0; j<v.size(); j++) {
+			size_t jnc = j+nc;
+			if (std::isnan(v[j]) || std::isnan(v[jnc]) || (v[j] < 1) || (v[jnc] > nl) || (v[jnc] < v[j])) {
 				for (size_t k=0; k<nl; k++) {
 					d[k*nc+j] = NAN;
 				}				
 			} else {
-				for (size_t k=(a[j]-1); k<b[j]; k++) {
+				for (size_t k=(v[j]-1); k<v[jnc]; k++) {
 					d[k*nc+j] = 1;
 				}
 			}
 		}
 		if (!out.writeBlock(d, i)) return out;
 	}
-	out.writeStop();
 	readStop();
-	x.readStop();
+	out.writeStop();
 	return(out);
 	
 }

@@ -5,9 +5,9 @@
 
 
 setMethod("rangeFill", signature(x="SpatRaster"),
-	function(x, y, limit, filename="", ...) {
+	function(x, limit, filename="", ...) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$fill_range(y@ptr, limit, opt)
+		x@ptr <- x@ptr$fill_range(limit, opt)
 		messages(x, "rangeFill")
 	}
 )
@@ -1185,7 +1185,7 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 			uid <- 1:nrow(u)
 			x <- subst(x, u, uid-1)
 			lab <- apply(u, 1, function(i) paste(i, collapse="_"))
-			set.cats(x, 1, data.frame(ID=uid-1, label=lab, u), 1)
+			set.cats(x, 1, data.frame(ID=uid-1, label=lab, u))
 			return(x)
 		}
 		u
