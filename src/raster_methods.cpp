@@ -4933,7 +4933,7 @@ SpatRaster SpatRaster::intersect(SpatRaster &x, SpatOptions &opt) {
 }
 
 
-SpatRaster SpatRaster::fill_range(long limit, SpatOptions &opt) {
+SpatRaster SpatRaster::fill_range(long limit, bool circular, SpatOptions &opt) {
 	
 	size_t nl = limit;
 	SpatRaster out = geometry(nl, false, false, false);
@@ -4960,21 +4960,58 @@ SpatRaster SpatRaster::fill_range(long limit, SpatOptions &opt) {
 		readStop();
 		return out;
 	}
-
-	size_t nc = ncell();
+	
 	for (size_t i=0; i<out.bs.n; i++) {
+		size_t nc = out.bs.nrows[i] * ncol();
 		std::vector<double> v;
 		readValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		std::vector<double> d(v.size() * nl);
-		for (size_t j=0; j<v.size(); j++) {
-			size_t jnc = j+nc;
-			if (std::isnan(v[j]) || std::isnan(v[jnc]) || (v[j] < 1) || (v[jnc] > nl) || (v[jnc] < v[j])) {
-				for (size_t k=0; k<nl; k++) {
-					d[k*nc+j] = NAN;
-				}				
-			} else {
-				for (size_t k=(v[j]-1); k<v[jnc]; k++) {
-					d[k*nc+j] = 1;
+		if (circular) {
+			for (size_t j=0; j<nc; j++) {
+				size_t jnc = j+nc;
+				size_t start = v[j]-1;
+				size_t end = v[jnc];
+				if (std::isnan(v[j]) || std::isnan(v[jnc])) {
+					for (size_t k=0; k<nl; k++) {
+						d[k*nc+j] = NAN;
+					}									
+				} else {
+					bool circ = false;
+					if (start > end) {
+						std::swap(start, end);
+						circ = true;
+					}
+					if ((start < 1) || (end > nl)) {
+						for (size_t k=0; k<nl; k++) {
+							d[k*nc+j] = NAN;
+						}
+					} else {
+						if (circ) {
+							for (size_t k=start; k<nl; k++) {
+								d[k*nc+j] = 1;
+							}
+							for (size_t k=0; k<end; k++) {
+								d[k*nc+j] = 1;
+							}
+						} else {
+							for (size_t k=start; k<end; k++) {
+								d[k*nc+j] = 1;
+							}
+						}
+					}
+				}
+			}	
+		} else {
+			for (size_t j=0; j<nc; j++) {
+				size_t jnc = j+nc;
+				if (std::isnan(v[j]) || std::isnan(v[jnc]) || (v[j] < 1) || (v[jnc] > nl) || (v[jnc] < v[j])) {
+					for (size_t k=0; k<nl; k++) {
+						d[k*nc+j] = NAN;
+					}				
+				} else {
+					for (size_t k=(v[j]-1); k<v[jnc]; k++) {
+						d[k*nc+j] = 1;
+					}
 				}
 			}
 		}

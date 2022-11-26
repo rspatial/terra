@@ -12,13 +12,15 @@ For example, for a cell with \code{start=3}, \code{end=5} and with \code{limit=8
 }
 
 \usage{
-\S4method{rangeFill}{SpatRaster}(x, limit, filename="", ...) 
+\S4method{rangeFill}{SpatRaster}(x, limit, circular=FALSE, filename="", ...) 
 }
 
 \arguments{
 \item{x}{SpatRaster with at two layers. The Cell values of the first layer indicate the start of the range (1 based); the cell values are indicate the end of the range}
 
 \item{limit}{numeric > 1. The range size}
+
+\item{circular}{logical. If \code{TRUE} the values are considered circular, such as the days of the year. In that case, if first > last the layers used are c(first:limit, 1:last). Otherwise, the range would be considered invalid and \code{NA} would be used} 
 
 \item{filename}{character. Output filename}
 

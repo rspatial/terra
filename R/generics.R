@@ -5,10 +5,9 @@
 
 
 setMethod("rangeFill", signature(x="SpatRaster"),
-	function(x, limit, filename="", ...) {
-		opt <- spatOptions()
-
-		x@ptr <- x@ptr$fill_range(limit, opt)
+	function(x, limit, circular=FALSE, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$fill_range(limit, circular, opt)
 		messages(x, "rangeFill")
 	}
 )
@@ -299,31 +298,6 @@ setMethod("c", signature(x="SpatRaster"),
 	}
 )
 
-#setMethod("c", signature(x="SpatRaster"),
-#	function(x, ..., warn=TRUE) {
-#		skips <- 0
-#		hv <- hasValues(x)
-#		dots <- list(...)
-#		x@ptr <- x@ptr$deepcopy()
-#		opt <- spatOptions()
-#		for (i in dots) {
-#			if (inherits(i, "SpatRaster")) {
-#				x@ptr$addSource(i@ptr, warn, opt)
-#				if (x@ptr$messages$has_error) {
-#					messages(x, "c")
-#					return()
-#				}
-#			} else {
-#				skips = skips + 1
-#			}
-#		}
-#		if (skips > 0) warn("c,SpatRaster", paste("skipped", skips, "object(s) that are not SpatRaster"))
-#		messages(x, "c")
-#		x
-#	}
-#)
-
-
 
 setMethod("rep", signature(x="SpatRaster"),
 	function(x, ...) {
@@ -332,13 +306,6 @@ setMethod("rep", signature(x="SpatRaster"),
 	}
 )
 
-
-#setMethod("rep", signature(x="SpatVector"),
-#	function(x, ...) {
-#		i <- rep(1:nrow(x), ...)
-#		x[i,]
-#	}
-#)
 
 setMethod("clamp", signature(x="SpatRaster"),
 	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", ...) {
