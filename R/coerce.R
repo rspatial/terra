@@ -469,7 +469,7 @@ setAs("sf", "SpatVector",
 .from_sfc <- function(from) {
 	v <- vect()
 	v@ptr <- v@ptr$from_hex(sf::rawToHex(sf::st_as_binary(from)), "")
-	crs(v) <- attr(from, "crs")$wkt
+	crs(v, warn=FALSE) <- attr(from, "crs")$wkt
 	v
 }
 

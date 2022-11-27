@@ -56,7 +56,7 @@ setMethod("vect", signature(x="character"),
 #		if (all(grepl("\\(", x) & grepl("\\)", x))) {
 			x <- gsub("\n", "", x)
 			p@ptr <- SpatVector$new(x)
-			crs(p) <- crs
+			crs(p, warn=FALSE) <- crs
 		} else {
 			p@ptr <- SpatVector$new()
 			nx <- try(normalizePath(x, mustWork=TRUE), silent=TRUE)
@@ -85,7 +85,7 @@ setMethod("vect", signature(x="character"),
 			}
 			p@ptr$read(x, layer, query, extent, filter, proxy, what)
 			if (isTRUE(crs != "")) {
-				crs(p) <- crs
+				crs(p, warn=FALSE) <- crs
 			}
 			if (proxy) {
 				messages(p, "vect")
@@ -164,7 +164,7 @@ setMethod("vect", signature(x="matrix"),
 		crs <- character_crs(crs, "vect")
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
-		crs(p) <- crs
+		crs(p, warn=FALSE) <- crs
 
 		nr <- nrow(x)
 		if (nr == 0) {

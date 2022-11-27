@@ -123,7 +123,7 @@ setMethod("Arith", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){
 		opt <- spatOptions()
 		oper <- as.vector(.Generic)[1]
-		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%"))
+		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%", "%/%"))
 		oper <- ifelse(oper == "%%", "%", oper)
 		e1@ptr <- e1@ptr$arith_rast(e2@ptr, oper, opt)
 		messages(e1, oper)
@@ -134,7 +134,7 @@ setMethod("Arith", signature(e1="SpatRaster", e2="SpatRaster"),
 setMethod("Arith", signature(e1="SpatRaster", e2="numeric"),
     function(e1, e2){
 		oper <- as.vector(.Generic)[1]
-		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%"))
+		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%", "%/%"))
 		opt <- spatOptions()
 		oper <- ifelse(oper == "%%", "%", oper)
 		e1@ptr <- e1@ptr$arith_numb(e2, oper, FALSE, opt)
@@ -158,7 +158,7 @@ setMethod("Arith", signature(e1="SpatRaster", e2="missing"),
 setMethod("Arith", signature(e1="numeric", e2="SpatRaster"),
     function(e1, e2){
 		oper <- as.vector(.Generic)[1]
-		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%"))
+		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%", "%/%"))
 		opt <- spatOptions()
 		oper <- ifelse(oper == "%%", "%", oper)
 		e2@ptr <- e2@ptr$arith_numb(e1, oper, TRUE, opt)

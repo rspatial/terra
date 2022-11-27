@@ -51,7 +51,7 @@ setMethod("unwrap", signature(x="PackedSpatVector"),
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
 		if (!is.na(x@crs)) {
-			crs(p) <- x@crs
+			crs(p, warn=FALSE) <- x@crs
 		}
 		if (nrow(x@coordinates) == 0) {
 			return(p)

@@ -152,7 +152,7 @@ void power(std::vector<double>& a, const std::vector<double>& b) {
 bool smooth_operator(std::string oper, bool &logical) {
 	std::vector<std::string> f {"==", "!=", ">", "<", ">=", "<="};
 	logical = std::find(f.begin(), f.end(), oper) != f.end();
-	f = {"+", "-", "*", "^", "/", "%"};
+	f = {"+", "-", "*", "^", "/", "%", "%/%"};
 	return (logical || (std::find(f.begin(), f.end(), oper) != f.end()));
 }
 
@@ -231,6 +231,10 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 			power(a, b);
 		} else if (oper == "%") {
 			 a % b;
+		} else if (oper == "%/%") {
+			for (size_t i=0; i<a.size(); i++) {
+				a[i] = trunc(a[i] / b[1]);
+			}
 		} else if (oper == "==") {
 			a == b;
 		} else if (oper == "!=") {
@@ -333,6 +337,12 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 				for (size_t i=0; i<a.size(); i++) {
 					a[i] = std::fmod(a[i], x);
 				}
+			}
+		} else if (oper == "%/%") {
+			if (reverse) {
+				for(double& d : a) d = trunc(x / d);
+			} else {
+				for(double& d : a) d = trunc(d / x);
 			}
 		} else if (oper == "==") {
 			for(double& d : a) if (!std::isnan(d)) d = d == x;

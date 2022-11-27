@@ -179,17 +179,17 @@ setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
-		values <- 1
-		if (is.na(field)) {
-			values <- as.numeric(NA)
-			field  <- ""
-		} else if (is.null(field) || all(field == "")) {
-			field <- ""
-		} else if (!is.character(field)) {
+		if (!is.character(field)) {
 			values <- as.numeric(field)
 			field  <- ""
-		} else {
-			stopifnot(field %in% names(x))
+		} else if (is.na(field[1])) {
+			values <- as.numeric(NA)
+			field  <- ""
+		} else if (is.null(field) || field[1] == "") {
+			field <- ""
+			values <- 1
+		} else if (!(field[1] %in% names(x))) {
+			error("rasterize", paste(field, "is not a field in 'x'"))
 		}
 
 		g <- geomtype(x)
