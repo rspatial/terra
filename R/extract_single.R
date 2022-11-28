@@ -65,6 +65,9 @@ make_extract_index <- function(v, vmx, name="i") {
 	}
 
 	if (!compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
+		if (!drop) {
+			return(crop(x, i))
+		}
 		i <- cells(x, ext(i))
 		return (x[i, drop=drop])
 	}
