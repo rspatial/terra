@@ -2943,7 +2943,7 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 
 bool overlaps(const std::vector<unsigned>& r1, const std::vector<unsigned>& r2, 
 			  const std::vector<unsigned>& c1, const std::vector<unsigned>& c2) {
-	size_t n = r1.size() - 1;
+	size_t n = r1.size();
 	for (size_t i=0; i<(n-1); i++) {
 		for (size_t j=(i+1); j<n; j++) {
 			if ((r1[i] <= r2[j]) && (r2[i] >= r1[j]) && (c1[i] <= c2[j]) && (c2[i] >= c1[j])) {
