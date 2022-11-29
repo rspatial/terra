@@ -197,7 +197,11 @@ function(x) {
 
 
 setMethod("datatype", signature(x="SpatRaster"),
-	function(x){
-		x@ptr$getDataType(FALSE);
+	function(x, bylyr=TRUE){
+		d <- x@ptr$getDataType(FALSE);
+		if (bylyr) {
+			d <- rep(d, sources(x, TRUE)$nlyr)
+		}
+		d
 	}
 )

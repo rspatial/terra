@@ -36,7 +36,7 @@ setMethod("hasValues", signature(x="SpatRaster"),
 			v[[b]] = as.logical(v[[b]])
 		}
 	}
-	ii <- (is.int(x) & (!ff) & (substr(datatype(x), 1, 4) != "INT8"))
+	ii <- (is.int(x) & (!ff) & (substr(datatype(x, TRUE), 1, 4) != "INT8"))
 	if (any(ii)) {
 		for (i in which(ii)) {
 			v[[i]] = as.integer(v[[i]])

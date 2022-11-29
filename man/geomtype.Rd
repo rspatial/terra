@@ -32,10 +32,14 @@ Get the geometry type (points, lines, or polygons) of a SpatVector or the data t
 \S4method{is.lines}{SpatVector}(x)
 
 \S4method{is.polygons}{SpatVector}(x)
+
+\S4method{datatype}{SpatRaster}(x, bylyr=TRUE)
 }
 
 \arguments{
-\item{x}{SpatVector}
+\item{x}{SpatVector or SpatRaster}
+
+\item{bylyr}{logical. If \code{TRUE} a value is returned for each layer. Otherwise, a value is returned for each data source (such as a file)}
 }
 
 \value{character}

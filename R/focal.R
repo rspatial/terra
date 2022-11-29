@@ -469,6 +469,7 @@ function(x, w=3, fun="ols", ..., fillvalue=NA, filename="", overwrite=FALSE, wop
 		}
 		if (any(test != 1)) {
 			weighted <- TRUE
+			message("the focal values are used as weights")
 		} 
 		w <- dim(w)
 	} else {
@@ -607,6 +608,7 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 		}
 		if (any(test != 1)) {
 			weighted <- TRUE
+			message("the focal values are used as weights")
 		} 
 		w <- dim(w)
 	} else {
