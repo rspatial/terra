@@ -66,13 +66,20 @@
 <span class="fu">is.lines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector</span>
-<span class="fu">is.polygons</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+<span class="fu">is.polygons</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">datatype</span><span class="op">(</span><span class="va">x</span>, bylyr<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>SpatVector</p></dd>
+<dd><p>SpatVector or SpatRaster</p></dd>
+
+
+<dt>bylyr</dt>
+<dd><p>logical. If <code>TRUE</code> a value is returned for each layer. Otherwise, a value is returned for each data source (such as a file)</p></dd>
 
 </dl></div>
     <div id="value">
