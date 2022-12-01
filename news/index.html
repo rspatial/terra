@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-46</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-47</span>
       </span>
     </div>
 
@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-45" id="version-16-45">version 1.6-45<a class="anchor" aria-label="anchor" href="#version-16-45"></a></h2>
+<h2 class="page-header" data-toc-text="1.6-47" id="version-16-47">version 1.6-47<a class="anchor" aria-label="anchor" href="#version-16-47"></a></h2>
 <div class="section level3">
-<h3 id="new-1-6-45">new<a class="anchor" aria-label="anchor" href="#new-1-6-45"></a></h3>
+<h3 id="new-1-6-47">new<a class="anchor" aria-label="anchor" href="#new-1-6-47"></a></h3>
 <ul><li>
 <code>roll&lt;SpatRaster&gt;</code> method for rolling (moving) average and other rolling functions</li>
 <li>
@@ -59,28 +59,40 @@
 <code>rangeFill&lt;SpatRaster&gt;</code> method</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-6-45">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-45"></a></h3>
+<h3 id="enhancements-1-6-47">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-47"></a></h3>
 <ul><li>argument <code>exhaustive</code> to <code>spatSample&lt;SpatRaster&gt;</code> for large sparse rasters. <a href="https://github.com/rspatial/terra/issues/905" class="external-link">#905</a> by PetiteTong.</li>
 <li>
-<code>focalCor</code> and <code>focalReg</code> can now use the values in custom windows as weights. <a href="https://github.com/rspatial/terra/issues/907" class="external-link">#907</a> by Fabian Fischer.</li>
+<code>focalPairs</code> and <code>focalReg</code> can now use the values in custom windows as weights. <a href="https://github.com/rspatial/terra/issues/907" class="external-link">#907</a> by Fabian Fischer.</li>
+<li>
+<code>focalReg</code> now has additional arugment “intercept=TRUE”. <a href="https://github.com/rspatial/terra/issues/916" class="external-link">#916</a> by Jordan Adamson</li>
 <li>
 <code>crs(x, warn=TRUE)&lt;-</code> now emits a warning about the difference between transforming and setting a crs when x already had a crs. <a href="https://github.com/rspatial/terra/issues/897" class="external-link">#897</a> by Márcia Barbosa.</li>
 <li>it is now possible to write a scale and offset with <code>writeRaster</code> <a href="https://github.com/rspatial/terra/issues/900" class="external-link">#900</a> by Kyle David</li>
 <li>
 <code>crosstab</code> now shows the labels names for a categorical SpatRaster. <a href="https://github.com/rspatial/terra/issues/895" class="external-link">895</a> by Derek Corcoran Barrios</li>
+<li>
+<code>makeTiles</code> can now take a SpatVector to define the tiles. <a href="https://github.com/rspatial/terra/issues/920" class="external-link">920</a> by Tristan Goodbody</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-45">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-45"></a></h3>
+<h3 id="bug-fixes-1-6-47">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-47"></a></h3>
 <ul><li>
-<code>focalCor</code> and <code>focalReg</code> now work for custom windows</li>
+<code>focalPairs</code> and <code>focalReg</code> now work for custom windows <a href="https://github.com/rspatial/terra/issues/907" class="external-link">#907</a> by Fabian Fischer</li>
 <li>argument “alpha” in <code>plot&lt;SpatVector&gt;</code> was not working properly. <a href="https://github.com/rspatial/terra/issues/906" class="external-link">#906</a> by Márcia Barbosa.</li>
 <li>
-<code>time&lt;-</code> with time-step “years” could not handle negative years. <a href="https://github.com/rspatial/terra/issues/911" class="external-link">911</a> by Andrea Manica</li>
+<code>time&lt;-</code> with time-step “years” could not handle negative years. <a href="https://github.com/rspatial/terra/issues/911" class="external-link">#911</a> by Andrea Manica</li>
 <li>
 <code>wrap</code>/<code>unwrap</code> (and by extension <code>saveRDS</code>/<code>readRDS</code>) did not handle categorical rasters well <a href="https://github.com/rspatial/terra/issues/912" class="external-link">#912</a> by Christine Anderson.</li>
 <li>
-<code>interpIDW</code> failed with GDAL 3.6 <a href="https://github.com/rspatial/terra/issues/910" class="external-link">910</a> by Roger Bivand</li>
+<code>interpIDW</code> failed with GDAL 3.6 <a href="https://github.com/rspatial/terra/issues/910" class="external-link">#910</a> by Roger Bivand</li>
+<li>
+<code>spatSample</code> with strata bug fix “unable to find an inherited method for function ‘trim’” <a href="https://github.com/rspatial/terra/issues/919" class="external-link">#919</a> by Alfredo Ascanio</li>
+<li>it is possible to slice a SpatRaster with a SpatExtent <a href="https://github.com/rspatial/terra/issues/914" class="external-link">#914</a> by Jakub Nowosad.</li>
+<li>merge/mosaic did not handle NAs when using two layers <a href="https://github.com/rspatial/terra/issues/913" class="external-link">#913</a> by Joao Carreiras.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="name-changes-1-6-47">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-6-47"></a></h3>
+<p>focalCor -&gt; focalPairs to reflect its possible use beyond correlation</p>
+</div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.6-41" id="version-16-41">version 1.6-41<small>2022-11-18</small><a class="anchor" aria-label="anchor" href="#version-16-41"></a></h2>
@@ -156,6 +168,10 @@
 <code>x[["newname"]] &lt;- r</code> for SpatRasters <code>x</code> and <code>r</code> did not work <a href="https://github.com/rspatial/terra/issues/795" class="external-link">#795</a> by Jim Shady</li>
 <li>fixed support for some non-conventional netCDF files <a href="https://github.com/rspatial/terra/issues/869" class="external-link">#869</a> by Mike Sumner, <a href="https://github.com/rspatial/terra/issues/864" class="external-link">#864</a> by eleanorecc, and <a href="https://github.com/rspatial/terra/issues/851" class="external-link">#851</a> by Philippe Massicotte.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="name-changes-1-6-41">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-6-41"></a></h3>
+<p>costDistance -&gt; costDist to avoid conflict with {gdistance} gridDistance -&gt; gridDist for consistency</p>
+</div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.6-17" id="version-16-17">version 1.6-17<small>2022-09-10</small><a class="anchor" aria-label="anchor" href="#version-16-17"></a></h2>
