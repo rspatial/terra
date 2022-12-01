@@ -8,7 +8,7 @@
 \title{Sort a SpatRaster}
 
 \description{
-Sort the cell values of a SpatRaster across layers
+Sort the cell values of a SpatRaster across layers. 
 }
 
 \usage{

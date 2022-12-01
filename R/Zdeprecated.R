@@ -34,7 +34,7 @@ setMethod("gridDistance", signature(x="SpatRaster"),
 
 setMethod("focalCor", signature(x="SpatRaster"),
 	function(x, ...) {
-		warn("focalCor", "'focalCor' will be removed. It was renamed to 'focalLyr'")
-		focalLyr(x, ...)
+		warn("focalCor", "'focalCor' will be removed. It was renamed to 'focalPairs'")
+		focalPairs(x, ...)
 	}
 )

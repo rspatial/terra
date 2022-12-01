@@ -1,9 +1,9 @@
-\name{focalLyr}
+\name{focalPairs}
 
 \alias{focalCor}
 \alias{focalCor,SpatRaster-method}
-\alias{focalLyr}
-\alias{focalLyr,SpatRaster-method}
+\alias{focalPairs}
+\alias{focalPairs,SpatRaster-method}
 
 
 \title{Focal function across two layers}
@@ -13,7 +13,7 @@ Calculate values such as a correlation coefficient for focal regions in two neig
 }
 
 \usage{
-\S4method{focalLyr}{SpatRaster}(x, w=3, fun, ..., fillvalue=NA, 
+\S4method{focalPairs}{SpatRaster}(x, w=3, fun, ..., fillvalue=NA, 
 		filename="", overwrite=FALSE, wopt=list()) 
 }
 
@@ -48,14 +48,14 @@ r[[1]] <- flip(r[[1]], "horizontal")
 r[[2]] <- flip(r[[2]], "vertical") + init(rast(r,1), runif)
 r[[3]] <- init(rast(r,1), runif)
 
-x <- focalLyr(r, w=5, "pearson", na.rm=TRUE)
+x <- focalPairs(r, w=5, "pearson", na.rm=TRUE)
 plot(x)
 
 
 # suppress warning "the standard deviation is zero"
-suppressWarnings(x <- focalLyr(r, w=5, "pearson", use="complete.obs"))
+suppressWarnings(x <- focalPairs(r, w=5, "pearson", use="complete.obs"))
 
-z <- focalLyr(r, w=9, function(x, y) mean(x) + mean(y))
+z <- focalPairs(r, w=9, function(x, y) mean(x) + mean(y))
 }
 
 

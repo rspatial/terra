@@ -61,7 +61,7 @@ if (!isGeneric("selectHighest")) {setGeneric("selectHighest", function(x, ...) s
 if (!isGeneric("focal3D")) { setGeneric("focal3D", function(x, ...) standardGeneric("focal3D")) }
 if (!isGeneric("focalReg")) { setGeneric("focalReg", function(x, ...) standardGeneric("focalReg")) }
 if (!isGeneric("focalCpp")) { setGeneric("focalCpp", function(x, ...) standardGeneric("focalCpp")) }
-if (!isGeneric("focalLyr")) { setGeneric("focalLyr", function(x, ...) standardGeneric("focalLyr")) }
+if (!isGeneric("focalPairs")) { setGeneric("focalPairs", function(x, ...) standardGeneric("focalPairs")) }
 if (!isGeneric("focalCor")) { setGeneric("focalCor", function(x, ...) standardGeneric("focalCor")) }
 
 if (!isGeneric("clearance")) {setGeneric("clearance", function(x, ...) standardGeneric("clearance"))}
