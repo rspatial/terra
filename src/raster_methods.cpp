@@ -112,6 +112,7 @@ SpatExtent SpatRaster::ext_from_cell(double cell) {
 	return ext_from_rc(rc[0][0], rc[0][0], rc[1][0], rc[1][0]);
 }
 
+
 std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool narm, std::string filename, SpatOptions &opt) {
 
 	std::vector<std::string> ff;
@@ -121,10 +122,11 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool 
 	}
 	x = x.geometry(1, false, false, false);
 	SpatExtent e = getExtent();
+	SpatOptions ops(opt);
 	if (expand) {
-		x = x.extend(e, "out", NAN, opt);
+		x = x.extend(e, "out", NAN, ops);
 	}
-	x = x.crop(e, "out", false, opt);
+	x = x.crop(e, "out", false, ops);
 
 	std::vector<size_t> d(x.ncell());
 	std::iota(d.begin(), d.end(), 1);
@@ -138,6 +140,62 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool 
 		SpatExtent exi = x.ext_from_cell(i);
 		opt.set_filenames({fout});
 		SpatRaster out = crop(exi, "near", false, opt);
+		if (out.hasError()) {
+			setError(out.getError());
+			return ff;
+		}
+		if ( out.hasValues() ) {
+			if (narm) {
+				std::vector<double> rmin = out.range_min();
+				size_t cnt = 0;
+				for (double &v : rmin) {
+					if (std::isnan(v)) cnt++;
+				}
+				if (cnt == nl) {
+					remove(fout.c_str());
+					continue;
+				}
+			}
+			ff.push_back(fout);
+		}
+	}
+	return ff;
+}
+
+
+
+std::vector<std::string> SpatRaster::make_tiles_vect(SpatVector x, bool expand, bool narm, std::string filename, SpatOptions &opt) {
+
+	std::vector<std::string> ff;
+	if (!hasValues()) {
+		setError("input raster has no values");
+		return ff;
+	}
+	if (x.type() != "polygons") {
+		setError("The SpatVector must have a polygons geometry");
+		return ff;		
+	}
+	SpatExtent e = getExtent();
+	SpatOptions ops(opt);
+	std::vector<size_t> d(x.size());
+	std::iota(d.begin(), d.end(), 1);
+
+	std::string fext = getFileExt(filename);
+	std::string f = noext(filename);
+	ff.reserve(d.size());
+	size_t nl = nlyr();
+	for (size_t i=0; i<d.size(); i++) {
+		SpatExtent exi = x.geoms[i].extent;
+		std::string fout = f + std::to_string(d[i]) + fext;
+		opt.set_filenames( {fout} );
+		SpatRaster out;
+		if (!e.intersects(exi)) continue;
+		if (expand) {
+			out = crop(exi, "near", false, ops);
+			out = out.extend(exi, "out", NAN, opt);
+		} else {
+			out = crop(exi, "near", false, opt);
+		}
 		if (out.hasError()) {
 			setError(out.getError());
 			return ff;
