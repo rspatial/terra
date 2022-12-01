@@ -11,7 +11,7 @@
 \title{Make tiles}
 
 \description{ 
-Divide a SpatRaster into "tiles". The cell of another SpatRaster (normally with a much lower resolution) are used to define the tiles.
+Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with a much lower resolution) or a SpatVector with polygon geometry can be used to define the tiles.
 }
 
 \usage{
