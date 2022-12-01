@@ -157,10 +157,10 @@ setMethod("crs", signature("SpatRasterDataset"),
 }
 
 setMethod("crs<-", signature("SpatRaster", "ANY"),
-	function(x, warn=TRUE, value) {
+	function(x, warn=FALSE, value) {
 		if (missing(value)) {
 			value <- warn
-			warn <- TRUE
+			warn <- FALSE
 		}
 		value <- .txtCRS(value)
 		if (warn && (crs(x) != "") && (value != "")) {
@@ -216,10 +216,10 @@ setMethod("crs", signature("sf"),
 )
 
 setMethod("crs<-", signature("SpatVector", "ANY"),
-	function(x, warn, value) {
+	function(x, warn=FALSE, value) {
 		if (missing(value)) {
 			value <- warn
-			warn <- TRUE
+			warn <- FALSE
 		}
 		value <- .txtCRS(value)
 		if (warn && (crs(x) != "") && (value != "")) {

@@ -33,9 +33,9 @@ Setting a new CRS does not change the data itself, it just changes the label. So
 
 \S4method{crs}{character}(x, proj=FALSE, describe=FALSE, parse=FALSE)
 
-\S4method{crs}{SpatRaster}(x, warn=TRUE)<-value
+\S4method{crs}{SpatRaster}(x, warn=FALSE)<-value
 
-\S4method{crs}{SpatVector}(x, warn=TRUE)<-value
+\S4method{crs}{SpatVector}(x, warn=FALSE)<-value
 }
 
 \arguments{

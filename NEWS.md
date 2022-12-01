@@ -1,4 +1,4 @@
-# version 1.6-45
+# version 1.6-47
 
 ## new
 
@@ -9,19 +9,29 @@
 ## enhancements
 
 - argument `exhaustive` to `spatSample<SpatRaster>` for large sparse rasters. [#905](https://github.com/rspatial/terra/issues/905) by PetiteTong.
-- `focalCor` and `focalReg` can now use the values in custom windows as weights. [#907](https://github.com/rspatial/terra/issues/907) by Fabian Fischer.
+- `focalPairs` and `focalReg` can now use the values in custom windows as weights. [#907](https://github.com/rspatial/terra/issues/907) by Fabian Fischer.
+- `focalReg` now has additional arugment "intercept=TRUE". [#916](https://github.com/rspatial/terra/issues/916) by Jordan Adamson
 - `crs(x, warn=TRUE)<-` now emits a warning about the difference between transforming and setting a crs when x already had a crs. [#897](https://github.com/rspatial/terra/issues/897) by Márcia Barbosa.
 - it is now possible to write a scale and offset with `writeRaster` [#900](https://github.com/rspatial/terra/issues/900) by Kyle David
 - `crosstab` now shows the labels names for a categorical SpatRaster. [895](https://github.com/rspatial/terra/issues/895) by Derek Corcoran Barrios
+- `makeTiles` can now take a SpatVector to define the tiles. [920](https://github.com/rspatial/terra/issues/920) by Tristan Goodbody
 
 
 ## bug fixes 
 
-- `focalCor` and `focalReg` now work for custom windows
+- `focalPairs` and `focalReg` now work for custom windows [#907](https://github.com/rspatial/terra/issues/907) by Fabian Fischer
 - argument "alpha" in `plot<SpatVector>` was not working properly. [#906](https://github.com/rspatial/terra/issues/906) by Márcia Barbosa.
-- `time<-` with time-step "years" could not handle negative years. [911](https://github.com/rspatial/terra/issues/911) by Andrea Manica
+- `time<-` with time-step "years" could not handle negative years. [#911](https://github.com/rspatial/terra/issues/911) by Andrea Manica
 - `wrap`/`unwrap` (and by extension `saveRDS`/`readRDS`) did not handle categorical rasters well [#912](https://github.com/rspatial/terra/issues/912) by Christine Anderson.
-- `interpIDW` failed with GDAL 3.6 [910](https://github.com/rspatial/terra/issues/910) by Roger Bivand
+- `interpIDW` failed with GDAL 3.6 [#910](https://github.com/rspatial/terra/issues/910) by Roger Bivand
+- `spatSample` with strata bug fix "unable to find an inherited method for function 'trim'" [#919](https://github.com/rspatial/terra/issues/919) by Alfredo Ascanio
+- it is possible to slice a SpatRaster with a SpatExtent [#914](https://github.com/rspatial/terra/issues/914) by Jakub Nowosad.
+- merge/mosaic did not handle NAs when using two layers [#913](https://github.com/rspatial/terra/issues/913) by Joao Carreiras.
+
+
+## name changes
+
+focalCor -> focalPairs to reflect its possible use beyond correlation
 
 
 # version 1.6-41
@@ -71,6 +81,11 @@ Released 2022-11-18
 - `extract<SpatRaster>` with `weights=TRUE` did not return values [#814](https://github.com/rspatial/terra/issues/814) by Jean-Luc Dupouey. 
 - `x[["newname"]] <- r` for SpatRasters `x` and `r` did not work [#795](https://github.com/rspatial/terra/issues/795) by Jim Shady
 - fixed support for some non-conventional netCDF files [#869](https://github.com/rspatial/terra/issues/869) by Mike Sumner, [#864](https://github.com/rspatial/terra/issues/864) by eleanorecc, and [#851](https://github.com/rspatial/terra/issues/851) by Philippe Massicotte.
+
+## name changes
+
+costDistance -> costDist to avoid conflict with {gdistance}
+gridDistance -> gridDist for consistency
 
 
 # version 1.6-17
