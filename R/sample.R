@@ -608,7 +608,7 @@ setMethod("spatSample", signature(x="SpatExtent"),
 	cell <- cellFromXY(r, xy)
     uc <- unique(stats::na.omit(cell))
 
-	chess <- trim(chess)
+	chess <- trimws(chess)
 	if (chess != "") {
 		chess <- match.arg(tolower(chess), c("white", "black"))
 		nc <- ncol(r)
