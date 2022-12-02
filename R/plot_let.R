@@ -93,11 +93,13 @@ setMethod("plet", signature(x="SpatVector"),
 				y <- names(x)[y]
 			}
 			stopifnot(y %in% names(x))
-			u <- unique(x[[y, drop=TRUE]])
+			x <- x[, y]
+			v <- values(x)[,1]
+			u <- unique(v)
 			cols <- .getCols(length(u), col)
 			if (split) { 
 				for (i in seq_along(u)) {
-					s <- x[x[[y]] == u[i], ]
+					s <- x[v == u[i], ]
 					pop <- lab <- NULL
 					if (isTRUE(popup[1])) pop <- popUp(s)
 					if (isTRUE(label[1])) lab <- u
@@ -120,11 +122,10 @@ setMethod("plet", signature(x="SpatVector"),
 						options = leaflet::layersControlOptions(collapsed=collapse))
 				}
 			} else { # do not split
-				values <- x[[y,drop=TRUE]]
-				vcols <- cols[as.numeric(as.factor(values))]
+				vcols <- cols[1:length(v)]
 				pop <- lab <- NULL
 				if (isTRUE(popup[1])) pop <- popUp(x)
-				if (isTRUE(label[1])) lab <- values
+				if (isTRUE(label[1])) lab <- v
 				if (g == "polygons") {
 					map <- leaflet::addPolygons(map, data=x, label=lab,  
 						col=vcols, opacity=alpha, fillOpacity=fill, popup=pop)
@@ -374,7 +375,7 @@ setMethod("plet", signature(x="SpatRaster"),
 		if (nlyr(x) == 1) {
 			map <- leaflet::addRasterImage(map, x, colors=col, opacity=alpha)
 			if (!is.null(legend)) {
-				if (!hasMinMax(x)) setMinMax(x)
+				if (!all(hasMinMax(x))) setMinMax(x)
 				r <- minmax(x)
 				v <- seq(r[1], r[2], 5)
 				pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
@@ -390,7 +391,7 @@ setMethod("plet", signature(x="SpatRaster"),
 			nms <- make.unique(names(x))
 			many_legends <- one_legend <- FALSE
 			if (!is.null(legend)) {
-				if (!hasMinMax(x)) setMinMax(x)
+				if (!all(hasMinMax(x))) setMinMax(x)
 				r <- minmax(x)
 				if (shared) {
 					rr <- range(r)
