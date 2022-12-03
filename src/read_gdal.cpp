@@ -603,7 +603,8 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 				s.erase(0, pos + delim.length());
 				SpatRaster sub;
 				if (sub.constructFromFile(s, {-1}, {""}, {}, {})) {
-					if (!push_back(sub, basename_sds(s), "", "", true)) {
+					std::string sname = (sub.source[0].source_name != "") ? sub.source[0].source_name : basename_sds(s);
+					if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
 						addWarning("skipped (different geometry): " + s);
 					}
 				} else {
