@@ -4,6 +4,7 @@
 Standard comparison and logical operators for computations with SpatRasters. Computations are local (applied on a cell by cell basis). If multiple SpatRaster objects are used, these must have the same geometry (extent and resolution). These operators have been implemented:
 Logical: !, &amp;amp;, |, isTRUE, isFALSE
 Compare:  ==, !=, &amp;gt;, &amp;lt;,  &amp;lt;=, &amp;gt;=, is.na, is.nan, is.finite, is.infinite
+See not.na for the inverse of is.na, and noNA to detect cells with missing value across layers.
 The terra package does not distinguish between NA (not available) and NaN (not a number). In most cases this state is represented by NaN.
 
 The following method has been implemented for
@@ -25,7 +26,7 @@ The following method has been implemented for
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-47</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-48</span>
       </span>
     </div>
 
@@ -62,6 +63,7 @@ The following method has been implemented for
 <p>Standard comparison and logical operators for computations with SpatRasters. Computations are local (applied on a cell by cell basis). If multiple SpatRaster objects are used, these must have the same geometry (extent and resolution). These operators have been implemented:</p>
 <p><b>Logical</b>: <code>!, &amp;, |, isTRUE, isFALSE</code></p>
 <p><b>Compare</b>: <code> ==, !=, &gt;, &lt;,  &lt;=, &gt;=, is.na, is.nan, is.finite, is.infinite</code></p>
+<p>See <code><a href="not.na.html">not.na</a></code> for the inverse of <code>is.na</code>, and <code><a href="summarize-generics.html">noNA</a></code> to detect cells with missing value across layers.</p>
 <p>The terra package does not distinguish between <code>NA</code> (not available) and <code>NaN</code> (not a number). In most cases this state is represented by <code>NaN</code>.</p>
 
 <p>The following method has been implemented for</p>
