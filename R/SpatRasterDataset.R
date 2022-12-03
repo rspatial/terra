@@ -53,7 +53,9 @@ setMethod("sds", signature(x="SpatRaster"),
 		nms <- rep_len(nms, length(dots))
 		for (i in seq_along(dots)) {
 			if (inherits(dots[[i]], "SpatRaster")) {
-				r@ptr$add(dots[[i]]@ptr, nms[i], "", "", FALSE)
+				vname <- nms[i]
+				if (vname == "") vname = varnames(dots[[i]])[1]
+				r@ptr$add(dots[[i]]@ptr, vname, longnames(dots[[i]])[1], units(dots[[i]])[1], FALSE)
 			}
 		}
 		messages(r, "sds")

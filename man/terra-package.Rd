@@ -82,13 +82,14 @@ Also see the methods in section VIII
 
   \tabular{ll}{
     \code{\link{Arith-methods}} \tab Standard arithmetic methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
-    \code{\link{Compare-methods}} \tab Comparison methods for SpatRaster (\code{==, !=, >, <, <=, >=}) \cr
+    \code{\link{Compare-methods}} \tab Comparison methods for SpatRaster (\code{==, !=, >, <, <=, >=}) \cr \code{is.na, is.finite} \tab Which values are missing or not finite? \cr
+    \code{\link{not.na}} \tab a one-step equivalent to \code{!is.na} \cr
+    \code{\link{Summary-methods}} \tab \code{mean, max, min, median, sum, range, prod,} \cr
+    \tab \code{any, all, stdev, which.min, which.max, anyNA, noNA, allNA}\cr
     \code{\link{Logic-methods}} \tab Boolean methods (\code{!, &, |}) \cr
 	\code{\link{Math-methods}} \tab \code{abs, sign, sqrt, ceiling, floor, trunc, cummax, cummin, cumprod,} \cr
 	\tab \code{cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh,} \cr	 
 	\tab \code{exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif}\cr
-    \code{\link{Summary-methods}} \tab \code{mean, max, min, median, sum, range, prod,} \cr
-    \tab \code{any, all, stdev, which.min, which.max, anyNA, allNA}\cr
     \code{\link{as.bool}}\tab create a Boolean (logical) SpatRaster \cr
     \code{\link{as.int}}\tab create an integer (whole numbers) SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -108,6 +109,8 @@ Also see the methods in section VIII
     \code{\link{mask}} \tab Replace values in a SpatRaster based on values in another SpatRaster\cr
     \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr
     \code{\link{segregate}} \tab Make a 0/1 layer for each unique value \cr
+    \code{\link{rangeFill}} \tab Make a 0/1 SpatRaster for a time series \cr
+	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
   }
@@ -141,9 +144,10 @@ Also see the methods in section VIII
     \code{\link{costDist}} \tab Shortest distance considering cell-varying friction \cr
     \code{\link{direction}} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
+    \code{\link{focal3D}} \tab Three dimensional (row, col, lyr) focal functions \cr
     \code{\link{focalCpp}} \tab Faster focal by using custom C++ functions \cr
     \code{\link{focalReg}} \tab Regression between layers for focal areas \cr
-    \code{\link{focalCor}} \tab Correlation between layers for focal areas \cr
+    \code{\link{focalPairs}} \tab Apply a function (e.g. a correlation coeffient) to focal values for pairs of layers \cr
     \code{\link{patches}} \tab Find patches (clumps) \cr
     \code{\link{sieve}} \tab Sieve filter to remove small patches\cr
     \code{\link{terrain}} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr
