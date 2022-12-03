@@ -46,7 +46,7 @@ The following method has been implemented for
 \bold{(SpatExtent, SpatExtent)}: \code{==}
 }
 
-\seealso{
+\see also{
 \code{\link{all.equal}}, \link{Arith-methods}. See \code{\link{ifel}} to conveniently combine operations and \code{\link{Math-methods}} or \code{\link{app}} to apply any R function to a SpatRaster. 
 }
 
