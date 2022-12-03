@@ -115,14 +115,14 @@ setMethod("dots", signature(x="SpatVector"),
 
 	g <- x@ptr$polygonsList()
 	if (is.null(out$leg$density)) {
-		for (i in 1:length(g)) {
+		for (i in seq_along(g)) {
 			for (j in 1:length(g[[i]])) {
 				graphics::polypath(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
 	} else {
 		for (i in 1:length(g)) {
-			for (j in 1:length(g[[i]])) {
+			for (j in seq_along(g[[i]])) {
 				graphics::polygon(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 				graphics::polypath(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=NA, rule="evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
