@@ -63,9 +63,13 @@ setMethod("lines", signature(x="SpatVector"),
 				col <- .getCols(n, col, alpha)
 				lwd <- rep_len(lwd, n)
 				lty <- rep_len(lty, n)
-				g <- lapply(x@ptr$linesList(), function(i) { names(i)=c("x", "y"); i } )
+#				g <- lapply(x@ptr$linesList(), function(i) { names(i)=c("x", "y"); i } )
+				g <- x@ptr$linesList()
 				for (i in 1:n) {
-					graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=col[i], lwd=lwd[i], ...)
+					if (length(g[[i]]) > 0) {
+						names(g[[i]]) = c("x", "y")
+						graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=col[i], lwd=lwd[i])
+					}
 				}
 			}
 			#g <- geom(x, df=TRUE)

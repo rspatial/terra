@@ -36,7 +36,7 @@ Standard comparison and logical operators for computations with SpatRasters. Com
 
 \bold{Compare}: \code{ ==, !=, >, <,  <=, >=, is.na, is.nan, is.finite, is.infinite}
 
-See \link{\code{not.na}} for the inverse of \code{is.na}, and \link{\code{noNA}} to detect cells with missing value across layers.
+See \code{\link{not.na}} for the inverse of \code{is.na}, and \code{\link{noNA}} to detect cells with missing value across layers.
 
 The terra package does not distinguish between \code{NA} (not available) and \code{NaN} (not a number). In most cases this state is represented by \code{NaN}.  
 

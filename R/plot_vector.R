@@ -41,17 +41,21 @@ setMethod("dots", signature(x="SpatVector"),
 #	cols <- out$cols
 #	if (is.null(cols)) cols = rep("black", n)
 
-	g <- lapply(x@ptr$linesList(), function(i) { names(i)=c("x", "y"); i } )
+#	g <- lapply(x@ptr$linesList(), function(i) { names(i)=c("x", "y"); i } )
 
 #	g <- geom(x, df=TRUE)
 #	g <- split(g, g[,1])
 #	g <- lapply(g, function(x) split(x[,3:4], x[,2]))
 #	n <- length(g)
 
+	g <- x@ptr$linesList()
 	lty <- rep_len(lty, n)
 	lwd <- rep_len(lwd, n)
 	for (i in 1:n) {
-		graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=out$main_cols[i], lwd=lwd[i], ...)
+		if (!is.null(g[[i]])) {
+			names(g[[i]]) = c("x", "y")
+			graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=out$main_cols[i], lwd=lwd[i], ...)
+		}
 	}
 
 #	for (i in 1:n) {
@@ -116,7 +120,7 @@ setMethod("dots", signature(x="SpatVector"),
 	g <- x@ptr$polygonsList()
 	if (is.null(out$leg$density)) {
 		for (i in seq_along(g)) {
-			for (j in 1:length(g[[i]])) {
+			for (j in seq_along(g[[i]])) {
 				graphics::polypath(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
