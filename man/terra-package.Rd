@@ -82,7 +82,7 @@ Also see the methods in section VIII
 
   \tabular{ll}{
     \code{\link{Arith-methods}} \tab Standard arithmetic methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
-    \code{\link{Compare-methods}} \tab Comparison methods for SpatRaster (\code{==, !=, >, <, <=, >=}) \cr \code{is.na, is.finite} \tab Which values are missing or not finite? \cr
+    \code{\link{Compare-methods}} \tab Comparison methods for SpatRaster (\code{==, !=, >, <, <=, >=m is.na, is.finite}) \cr 	
     \code{\link{not.na}} \tab a one-step equivalent to \code{!is.na} \cr
     \code{\link{Summary-methods}} \tab \code{mean, max, min, median, sum, range, prod,} \cr
     \tab \code{any, all, stdev, which.min, which.max, anyNA, noNA, allNA}\cr

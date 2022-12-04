@@ -587,14 +587,14 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 				lastrow <- i > (prod(nrnc) - nrnc[2])
 				if (lastrow) {
 					if (newrow) {
-						pax$sides <- 1:2
+						pax$side <- 1:2
 					} else {
-						pax$sides <- 1
+						pax$side <- 1
 					}
 				} else if (newrow) {
-					pax$sides <- 2
+					pax$side <- 2
 				} else {
-					pax$sides <- 0
+					pax$side <- 0
 				}
 			}
 			if (missing(col)) col <- NULL

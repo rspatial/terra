@@ -48,6 +48,8 @@ baselayers <- function(tiles, wrap=TRUE) {
 setMethod("plet", signature(x="SpatVector"),
 	function(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
 
+		stopifnot(packageVersion("leaflet") > "2.1.1")
+		
 		if (missing(col)) col = grDevices::rainbow
 		alpha <- max(0, min(1, alpha))
 		fill <- max(0, min(1, alpha))
@@ -156,7 +158,7 @@ setMethod("plet", signature(x="SpatVector"),
 setMethod("plet", signature(x="SpatVectorCollection"),
 	function(x, col, alpha=1, fill=0, cex=1, lwd=2, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
 
-		#stopifnot(packageVersion("leaflet") > "2.1.1")
+		stopifnot(packageVersion("leaflet") > "2.1.1")
 
 		if (is.null(map)) {
 			tiles <- unique(as.character(tiles))
@@ -325,7 +327,8 @@ make.panel <- function(x, maxcell) {
 
 setMethod("plet", signature(x="SpatRaster"),
 	function(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, wrap=TRUE, maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
-		#stopifnot(packageVersion("leaflet") > "2.1.1")
+
+		stopifnot(packageVersion("leaflet") > "2.1.1")
 
 #		if (!is.null(add)) {
 #			if (inherits(add, "SpatVector")) {
