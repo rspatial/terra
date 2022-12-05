@@ -323,6 +323,7 @@ setMethod("interpNear", signature(x="SpatRaster", y="SpatVector"),
 			error("interpNear", "SpatVector y must have a point geometry")
 		}
 		y <- cbind(crds(y), get_z(y, field, "interpNear"))
+		y <- as.matrix(y)
 		interpNear(x, y, radius=radius, interpolate=interpolate, fill=fill, filename=filename, ...)
 	}
 )
@@ -335,7 +336,7 @@ setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
 			error("interpIDW", "expecting a matrix with three columns")
 		}
 		if (!is.numeric(y)) {
-			error("interpNear", "values must be numeric")
+			error("interpIDW", "values must be numeric")
 		}
 
 		if (near) {
@@ -359,6 +360,7 @@ setMethod("interpIDW", signature(x="SpatRaster", y="SpatVector"),
 			error("interpIDW", "SpatVector y must have a point geometry")
 		}
 		y <- cbind(crds(y), get_z(y, field, "interpIDW"))
+		y <- as.matrix(y)
 		interpIDW(x, y, radius, power=power, smooth=smooth, maxPoints=maxPoints, minPoints=minPoints, near=near, fill=fill, filename=filename, ...)
 	}
 )

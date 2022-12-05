@@ -586,9 +586,12 @@ function(x, w=3, fun="ols", ..., fillvalue=NA, filename="", overwrite=FALSE, wop
 		fun <- funopt$fun
 		wopt <- funopt$wopt
 		outnl <- funopt$nl
+	} else {
+		# need to test
+		#outnl <- 
 	}
 	out <- rast(x, nlyr=outnl)
-
+	
 	b <- writeStart(out, filename, n=msz*4, sources=sources(x), wopt=wopt)
 	ry <- x[[1]]
 	rx <- x[[-1]]
