@@ -192,3 +192,6 @@ expect_equal(round(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "
 # m <- matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
 # expect_equal(round(as.vector(t(m)),6), c(5.200000, 10.400000,  1.733333, 16.750000, 33.500000,  5.583333))
 
+m = rast(nrow = 2, ncol = 2, vals=1:4)
+expect_equal(cells(m), 1:4)
+

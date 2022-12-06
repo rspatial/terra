@@ -8,7 +8,7 @@ setMethod("cells", signature(x="SpatRaster", y="missing"),
 	function(x, y) {
 		if (hasValues(x)) {
 			opt <- spatOptions()
-			x@ptr$cells_notna_novalues(opt)
+			x@ptr$cells_notna_novalues(opt) + 1
 		} else {
 			# is this useful?
 			1:ncell(x)
