@@ -1170,9 +1170,13 @@ SpatVector SpatVectorCollection::append() {
 		return out;
 	}
 	out = v[0];
-	// if out.nrow == 0?
 	std::string gtype = out.type();
 	for (size_t i=1; i<n; i++) {
+		if (v[i].size() == 0) continue;
+		if (out.size() == 0) {
+			out = v[i];
+			continue;
+		}
 		if (v[i].type() != gtype) {
 			out.setError("all SpatVectors must have the same geometry type");
 			return out;
@@ -1180,7 +1184,6 @@ SpatVector SpatVectorCollection::append() {
 		//too much copying
 		//out = out.append(v[i], true);
 
-		if (v[i].size() == 0) continue;
 		out.geoms.insert(out.geoms.end(), v[i].geoms.begin(), v[i].geoms.end());
 		out.extent.unite(v[i].extent);
 
