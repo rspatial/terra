@@ -1,8 +1,20 @@
 
 setMethod("droplevels", signature(x="SpatRaster"),
-	function(x) {
-		x@ptr <- x@ptr$droplevels()
-		messages(x)
+	function(x, level=NULL, layer=1) {
+		if (is.null(level)) {
+			x@ptr <- x@ptr$droplevels()
+			messages(x)
+		} else {
+			if (is.character(layer)) {
+				layer <- match(layer, names(x))
+				if (any(is.na(layer))) {
+					error("droplevels", "invalid layer")
+				}
+			}
+			x[[layer]][x[[layer]] %in%  level] <- NA
+			x@ptr <- x@ptr$droplevels()
+			messages(x)
+		}
 	}
 )
 
