@@ -1175,6 +1175,7 @@ SpatVector SpatVectorCollection::append() {
 		if (v[i].size() == 0) continue;
 		if (out.size() == 0) {
 			out = v[i];
+			gtype = out.type();
 			continue;
 		}
 		if (v[i].type() != gtype) {
