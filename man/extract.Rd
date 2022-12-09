@@ -33,6 +33,8 @@
 Extract values from a SpatRaster for a set of locations. The locations can be a SpatVector (points, lines, polygons), a matrix with (x, y) or (longitude, latitude -- in that order!) coordinates, or a vector with cell numbers.  
 
 When argument \code{y} is a \code{SpatVector} the first column has the ID (record number) of the \code{SpatVector} used (unless you set \code{ID=FALSE}).
+
+Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize}} on \code{SpatVector} (this may be more efficient in some cases).
 } 
 
 \usage{
@@ -68,7 +70,7 @@ When argument \code{y} is a \code{SpatVector} the first column has the ID (recor
 
 \value{data.frame, matrix or SpatVector}
 
-\seealso{\link{values}}
+\seealso{\link{values}, \link{zonal}}
 
 \examples{
 r <- rast(ncols=5, nrows=5, xmin=0, xmax=5, ymin=0, ymax=5)
