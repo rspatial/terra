@@ -1,4 +1,4 @@
-\name{Spatial interpolation}
+\name{interpolation}
 
 \docType{methods}
 

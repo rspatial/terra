@@ -1,4 +1,4 @@
-\name{read and write}
+\name{readwrite}
 
 \docType{methods}
 
