@@ -286,7 +286,7 @@ setMethod("sprc", signature(x="character"),
 
 		if (length(x) > 1) {
 			r <- lapply(x, rast)
-			s <- sds(r)
+			s <- sprc(r)
 			names(s) <- tools::file_path_sans_ext(basename(x))
 			return(s)
 		}
