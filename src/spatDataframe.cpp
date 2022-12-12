@@ -664,11 +664,20 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 					sv[a].resize(nr1);
 					if (x.itype[i] == 0) {
 						for (size_t k=0; k<nr2; k++) {
-							sv[a].push_back(std::to_string(x.dv[b][k]));
+							if (x.dv[b][k]) {
+								sv[a].push_back(NAS);								
+							} else {
+								sv[a].push_back(std::to_string(x.dv[b][k]));
+							}
 						}
 					} else if (x.itype[i] == 1){
+						long longNA = NA<long>::value;
 						for (size_t k=0; k<nr2; k++) {
-							sv[a].push_back(std::to_string(x.iv[b][k]));
+							if (x.iv[b][k] == longNA) {
+								sv[a].push_back("____NA_+");
+							} else {
+								sv[a].push_back(std::to_string(x.iv[b][k]));
+							}
 						}
 					} else if (x.itype[i] == 3){
 						for (size_t k=0; k<nr2; k++) {
@@ -677,14 +686,19 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 							} else if (x.bv[b][k] == 1) {
 								sv[a].push_back("FALSE");
 							} else {
-								sv[a].push_back("NAS");
+								sv[a].push_back(NAS);
 							}
 						}
 					} else if (x.itype[i] == 4){
+						SpatTime_t timeNA = NA<SpatTime_t>::value;
 						for (size_t k=0; k<nr2; k++) {
-							sv[a].push_back(std::to_string(x.tv[b].x[k]));
+							if (x.tv[b].x[k] == timeNA) {
+								sv[a].push_back(NAS);
+							} else {
+								sv[a].push_back(std::to_string(x.tv[b].x[k]));								
+							}
 						}
-					} else {
+					} else { // 5
 						for (size_t k=0; k<nr2; k++) {
 							std::string s = x.fv[b].getLabel(k);
 							sv[a].push_back(s);
@@ -761,6 +775,8 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 					}
 				} else if (itype[j] == 4) {
 					tv[a].resize(nr1 + nr2);
+				} else {
+					fv[a].resize(nr1 + nr2);					
 				}
 			}
 		}
