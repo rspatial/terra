@@ -296,7 +296,8 @@ setReplaceMethod("[[", c("SpatVector", "character"),
 
 		if (name %in% names(x)) {
 			d <- values(x)
-			d[[name]] <- value
+			#[] to keep type if NA is used
+			d[[name]][] <- value
 			values(x) <- d
 		} else {
 			if (inherits(value, "factor")) {
