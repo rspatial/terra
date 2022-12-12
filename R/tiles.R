@@ -9,6 +9,13 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 			ff <- x@ptr$make_tiles(y@ptr, extend[1], na.rm[1], filename, opt)
 		} else if (inherits(y, "SpatVector")) {
 			ff <- x@ptr$make_tiles_vect(y@ptr, extend[1], na.rm[1], filename, opt)		
+		} else if (is.numeric(y)) {
+			if (length(y) > 2) {
+				error("makeTiles", "expected one or two numbers")
+			}
+			y <- rep_len(y, 2)
+			y <- aggregate(rast(x), y)
+			ff <- x@ptr$make_tiles(y@ptr, extend[1], na.rm[1], filename, opt)			
 		} else {
 			error("makeTiles", "y must be a SpatRaster or SpatVector")
 		}

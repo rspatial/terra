@@ -11,7 +11,7 @@
 \title{Make tiles}
 
 \description{ 
-Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with a much lower resolution) or a SpatVector with polygon geometry can be used to define the tiles.
+Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with a much lower resolution) or a SpatVector with polygon geometry can be used to define the tiles. You can also provide one or two numbers to indicate the number of rows and columns per tile. 
 }
 
 \usage{
@@ -20,7 +20,7 @@ Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{y}{SpatRaster or SpatVector}
+  \item{y}{SpatRaster, SpatVector, or numeric}
   \item{filename}{character. Output filename template. Filenames will be altered by adding the tile number for each tile}
   \item{extend}{logical. If \code{TRUE}, the extent of \code{y} is expanded to assure that it covers all of \code{x}}
   \item{na.rm}{logical. If \code{TRUE}, tiles with only missing values are ignored}
