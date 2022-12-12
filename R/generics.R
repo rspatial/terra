@@ -463,17 +463,23 @@ function(x, from, to, others=NULL, raw=FALSE, filename="", ...) {
 setMethod("crop", signature(x="SpatRaster", y="ANY"),
 	function(x, y, snap="near", mask=FALSE, touches=TRUE, extend=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		if (mask && inherits(y, "SpatVector")) {
-			x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], touches[1], extend[1], opt)
-		} else if (mask && inherits(y, "SpatRaster")) {
-			mopt <- spatOptions(filename="", ...)
-			e <- ext(y)
-			x@ptr <- x@ptr$crop(e@ptr, snap[1], extend[1], mopt)
-			x <- messages(x, "crop")
-			if (!compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=FALSE, messages=TRUE)) {
-				return(mask(x, y, filename=filename, ...))
+		if (mask) {
+			if (inherits(y, "SpatVector")) {
+				x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], touches[1], extend[1], opt)
+			} else if (inherits(y, "SpatRaster")) {
+				mopt <- spatOptions(filename="", ...)
+				e <- ext(y)
+				x@ptr <- x@ptr$crop(e@ptr, snap[1], extend[1], mopt)
+				x <- messages(x, "crop")
+				if (!compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=FALSE, messages=TRUE)) {
+					return(mask(x, y, filename=filename, ...))
+				} else {
+					return(x)
+				}
 			} else {
-				return(x)
+				y <- .getExt(y, method="crop")
+				warn("crop", paste("mask=TRUE is ignored for", class(y)[1], "objects"))
+				x@ptr <- x@ptr$crop(y@ptr, snap[1], extend[1], opt)
 			}
 		} else {
 			y <- .getExt(y, method="crop")
@@ -482,6 +488,7 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 		messages(x, "crop")
 	}
 )
+
 
 setMethod("crop", signature(x="SpatRasterDataset", y="ANY"),
 	function(x, y, snap="near", extend=FALSE) {
