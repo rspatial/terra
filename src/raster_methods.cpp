@@ -874,7 +874,7 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 
 
 
-SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, SpatOptions &opt) {
+SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, std::vector<int_64> time, std::string timestep, std::string timezone, SpatOptions &opt) {
 
 	recycle(ind, nlyr());
 	std::vector<unsigned> ui = vunique(ind);
@@ -882,6 +882,12 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 	SpatRaster out = geometry(nl);
 	recycle(nms, nl);
 	out.setNames(nms);
+	if (time.size() > 0) {
+		recycle(time, nl);
+		if (!out.setTime(time, timestep, timezone)) {
+			out.addWarning("could not set time");
+		}
+	}
 
 	if (!haveFun(fun)) {
 		out.setError("unknown function argument");

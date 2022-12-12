@@ -1,47 +1,88 @@
 
+
+
 setMethod("tapp", signature(x="SpatRaster"),
 function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list()) {
 
 	stopifnot(!any(is.na(index)))
 
-	if ((length(index) == 1) && is.character(index)) {
-		choices <- c("years", "months", "week", "days", "doy", "yearmonths")
-		i <- pmatch(tolower(index), choices)
-		if (is.na(i)) {
-			error("tapp", paste("invalid time step. Use one of:", paste(choices, collapse=", ")))
-		}
-		if (!x@ptr$hasTime) {
-			error("tapp", "x has no time data")
-		}
-		choice <- choices[i]
-		if (choice == "doy") {
-			index <- format(time(x, "days"), "%j")
-		} else if (choice == "week") {
-			index <- strftime(time(x, "days"), format = "%V")
-		} else {
-			index <- time(x, choice)
-			if (choice == "yearmonths") {
-				year <- trunc(index)
-				month <- 12 * (index - year) + 1
-				year <- formatC(year, width=4, flag = "0")
-				month <- formatC(month, width=2, flag = "0")
-				index <- paste0(year, month)
-			} else {
-				index <- as.character(index)
+	prename <- ""
+	out_time <- double()
+	out_tstep <- ""
+	out_tz <- "UTC"
+	if (length(index) == 1) {
+		if (is.character(index)) {
+			choices <- c("years", "months", "week", "days", "doy", "yearmonths", "yearweeks", "7days", "10days", "15days")
+			i <- pmatch(tolower(index), choices)
+			if (is.na(i)) {
+				error("tapp", paste("invalid time step. Use one of:", paste(choices, collapse=", ")))
 			}
-		}
-		#time(x) <- NULL
+			if (!x@ptr$hasTime) {
+				error("tapp", "x has no time data")
+			}
+			choice <- choices[i]
+			if (choice == "doy") {
+				# or POSIXlt$yday
+				index <- format(time(x, "days"), "%j")
+				prename <- "doy_"
+			} else if (choice == "week") {
+				index <- strftime(time(x, "days"), format = "%V")
+				prename <- "week_"
+			} else if (choice == "yearweeks") {
+				index <- yearweek(time(x, "days"))
+				prename <- "yw_"
+			} else if (choice == "7days") {
+				index <- as.integer(format(time(x, "days"), "%j"))
+				index <- as.character((index-1) %/% 7 + 1)
+				prename <- "d7_"
+			} else if (choice == "10days") {
+				index <- as.integer(format(time(x, "days"), "%j"))
+				index <- as.character((index-1) %/% 10 + 1)
+				prename <- "d10_"
+			} else if (choice == "15days") {
+				index <- as.integer(format(time(x, "days"), "%j"))
+				index <- as.character((index-1) %/% 15 + 1)
+				prename <- "d15_"
+			} else {
+				index <- time(x, choice)	
+				out_time <- time_as_seconds(x)[!duplicated(index)]
+				out_tstep <- choice
+				out_tz <- attr(index, "tzone")
+				if (is.null(out_tz)) out_tz = "UTC"
+				if (choice == "yearmonths") {
+					year <- trunc(index)
+					month <- 12 * (index - year) + 1
+					year <- formatC(year, width=4, flag = "0")
+					month <- formatC(month, width=2, flag = "0")
+					index <- paste0(year, month)
+					prename <- "ym_"
+				} else {
+					index <- as.character(index)
+					if (choice == "months") {
+						prename <- "m_"
+					} else if (choice == "days") {
+						prename <- "d_"
+					} else if (choice == "years") {
+						prename <- "y_"
+					} 
+				}
+			}
+		} else if (is.function(index)) {
+			index <- as.character(index(time(x)))
+		} 
 	}
 
 	nl <- nlyr(x)
 	if (length(index) > nl) {
 		error("tapp", "length(index) > nlyr(x)")
+	} else if (length(unique(index)) == 1) {
+		warn("tapp", "it is not sensible to a single value as index (use app instead)")	
 	}
 	index <- rep_len(index, nl)
 	if (!is.factor(index)) {
 		index <- factor(index, levels=unique(index))
 	}
-	nms <- as.character(index)
+	nms <- paste0(prename, as.character(index))
 	ind <- as.integer(index)
 	d <- unique(data.frame(nms, ind, stringsAsFactors=FALSE))
 	uin <- d[,2]
@@ -52,7 +93,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)
-			x@ptr <- x@ptr$apply(index, txtfun, narm, nms, opt)
+			x@ptr <- x@ptr$apply(index, txtfun, narm, nms, out_time, out_tstep, out_tz, opt)
 			return(messages(x, "tapp"))
 		}
 	}
@@ -67,7 +108,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	test <- apply(v, 1, FUN=fun, ...)
 	transpose = FALSE
 	nlout <- 1
-	if (ncol(test) > 1) {
+	if (NCOL(test) > 1) {
 		if (ncol(test) == testnc) {
 			transpose = TRUE
 			nlout <- nrow(test)
@@ -82,7 +123,9 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	out <- rast(x)
 	nlyr(out) <- nlout * length(uin)
 	names(out) <- nms
-
+	if (out_tstep != "") {
+		time(out, out_tstep) <- out_time 
+	}
 	doclust <- FALSE
 	if (inherits(cores, "cluster")) {
 		doclust <- TRUE

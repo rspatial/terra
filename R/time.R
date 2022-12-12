@@ -11,6 +11,20 @@ format_ym <- function(x) {
 	paste(y, m, sep="-")
 }
 
+yearweek <- function(d) {
+	y <- as.integer(strftime(d, format = "%Y"))
+	w <- strftime(d, format = "%V")
+	m <- strftime(d, format = "%m")
+	i <- w > "51" & m=="01"
+	y[i] <- y[i] - 1
+	i <- w=="01" & m=="12"
+	y[i] <- y[i] + 1
+	yy <- as.character(y)
+	i <- nchar(yy) < 4
+	yy[i] <- formatC(y[i], width=4, flag="0")	
+	paste0(yy, w)
+}
+
 
 setMethod("timeInfo", signature(x="SpatRaster"),
 	function(x) {
@@ -27,6 +41,17 @@ setMethod("timeInfo", signature(x="SpatRaster"),
 		}
 	}
 )
+
+
+time_as_seconds <- function(x) {
+	d <- x@ptr$time
+	d <- strptime("1970-01-01", "%Y-%m-%d", tz="UTC") + d
+	tz <- x@ptr$timezone
+	if (!(tz %in% c("", "UTC"))) {
+		attr(d, "tzone") = tz
+	}
+	d
+}
 
 
 setMethod("time", signature(x="SpatRaster"),
@@ -78,21 +103,30 @@ setMethod("time", signature(x="SpatRaster"),
 	}
 )
 
-make_posix <- function(y, m) {
+posix_from_ym <- function(y, m) {
 	y <- floor(y)
-	d <- paste(abs(y), m, "15", sep="-")
-	d <- as.POSIXlt(d)
-	neg <- (y < 0)
-	if (any(neg)) {
-		for (i in seq_along(neg)) {
-			d$year[i] = y[i] - 1900
+	i <- ((y < 0) | (y > 9999))
+	if (any(i)) {
+		d <- paste(paste(rep("1900", length(y)), m, "15", sep="-"), "12:00:00")
+		d[!i] <- paste(paste(y[!i], m, "15", sep="-"), "12:00:00")
+		d <- as.POSIXlt(d, format="%Y-%m-%d %H:%M:%S", tz="UTC")
+		for (j in i) {
+			d$year[j] = y[j] - 1900
 		}
+		d
+	} else {
+		d <- paste(paste(y, m, "15", sep="-"), "12:00:00")
+		as.POSIXlt(d, format="%Y-%m-%d %H:%M:%S", tz="UTC")
 	}
-	d
 }
 
+
 setMethod("time<-", signature(x="SpatRaster"),
-	function(x, value, tstep="")  {
+	function(x, tstep="", value)  {
+		if (missing(value)) {
+			value <- tstep
+			tstep <- ""
+		}
 		if (is.null(value)) {
 			x@ptr$setTime(0[0], "remove", "")
 			return(x)
@@ -103,34 +137,67 @@ setMethod("time<-", signature(x="SpatRaster"),
 		if (length(value) != nlyr(x)) {
 			error("time<-", "length(value) != nlyr(x)")
 		}
+		if (tstep != "") {
+			tstep = match.arg(as.character(tstep), c("days", "months", "years", "yearmonths", "raw"))
+		}
+		
 		tzone <- "UTC"
+		stept <- ""
 		if (inherits(value, "Date")) {
 			value <- as.POSIXlt(value)
-			tstep <- "days"
+			if (tstep == "") stept <- "days"
 		} else if (inherits(value, "POSIXt")) {
-			tstep <- "seconds"
+			if (tstep == "") stept <- "seconds"
 			tzone <- attr(value, "tzone")
 			if (is.null(tzone)) tzone = ""
 		} else if (inherits(value, "yearmon")) {
 			value <- as.numeric(value)
 			year <- floor(value)
 			month <- round(12 * (value - year) + 1)
-			value <- make_posix(value, month)
-			tstep <- "yearmonths"
-		} else if (tstep == "years") {
-			value <- make_posix(value, "6")
-		} else if (tstep == "months") {
-			value <- floor(value)
-			if (!all(value %in% 1:12)) {
-				error("date<-", "month values should be between 1 and 12")
+			value <- posix_from_ym(value, month)
+			if (tstep == "") stept <- "yearmonths"
+		} 
+		
+		if (stept == "") {
+			stept = tstep
+			if (tstep == "years") {
+				if (is.numeric(value)) {
+					value <- posix_from_ym(value, "6")
+				} else {
+					value <- as.integer(strftime(value, format = "%Y"))
+					value <- posix_from_ym(value, "6")
+				}
+			} else if (tstep == "months") {
+				if (is.numeric(value)) {
+					value <- floor(value)
+				} else {
+					value <- as.integer(strftime(value, format = "%m"))
+				}
+				if (!all(value %in% 1:12)) {
+					error("date<-", "months should be between 1 and 12")
+				}
+				value <- posix_from_ym(1970, value)
+			} else if (tstep == "yearmonths") {
+				if (is.numeric(value)) {
+					y <- round(value, -2)
+					m <- value - (y * 100)
+				} else {
+					y <- as.integer(strftime(value, format = "%Y"))
+					m <- as.integer(strftime(value, format = "%m"))
+				}
+				if (!all(m %in% 1:12)) {
+					error("date<-", "months should be between 1 and 12")
+				}
+				value <- posix_from_ym(y, m)
+			#} else if (tstep == "days") {
+			#	print(value)
+			#	value <- as.Date(value)
+			#	stept = tstep
+			} else if (tstep == "") {
+				stept <- "raw"
 			}
-			value <- as.POSIXlt(as.Date(paste0("1970-", value, "-15")))
-		} else if (tstep == "") {
-			tstep <- "raw"
-		} else {
-			error("time<-", "unknown tstep")
 		}
-		if (!x@ptr$setTime(as.numeric(value), tstep, tzone)) {
+		if (!x@ptr$setTime(as.numeric(value), stept, tzone)) {
 			error("time<-", "cannot set these values")
 		}
 		return(x)
