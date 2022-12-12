@@ -6,7 +6,7 @@ The categories can be inspected with levels and cats. They are represented by a 
 If there are multiple columns with categories, you can set the "active" category to choose the one you want to use.
 cats returns the entire data.frame, whereas levels only return two columns: the index and the active category.
 To set categories for the first layer of a SpatRaster, you can provide levels&amp;lt;- with a data.frame or a list with a data.frame. To set categories for multiple layers you can provide levels&amp;lt;- with a list with one element (that either has a data.frame or is NULL) for each layer. Use categories to set the categories for a specific layer or specific layers.
-droplevels removes categories that are not used (declared but not present as values in the raster).'><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+droplevels removes categories that are not used (declared but not present as values in the raster) if levels=NULL.'><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -63,7 +63,7 @@ droplevels removes categories that are not used (declared but not present as val
 <p>If there are multiple columns with categories, you can set the "active" category to choose the one you want to use.</p>
 <p><code>cats</code> returns the entire data.frame, whereas <code>levels</code> only return two columns: the index and the active category.</p>
 <p>To set categories for the first layer of a SpatRaster, you can provide <code>levels&lt;-</code> with a data.frame or a list with a data.frame. To set categories for multiple layers you can provide <code>levels&lt;-</code> with a list with one element (that either has a <code>data.frame</code> or is <code>NULL</code>) for each layer. Use <code>categories</code> to set the categories for a specific layer or specific layers.</p>
-<p><code>droplevels</code> removes categories that are not used (declared but not present as values in the raster).</p>
+<p><code>droplevels</code> removes categories that are not used (declared but not present as values in the raster) if <code>levels=NULL</code>.</p>
     </div>
 
     <div id="ref-usage">
@@ -98,7 +98,7 @@ droplevels removes categories that are not used (declared but not present as val
 <dd><p>positive integer, indicating the column in <code>value</code> to be used as the active category (zero based to skip the first column with the cell values; that is 1 is the second column in <code>value</code>)</p></dd>
 
   <dt>level</dt>
-<dd><p>the level value(s) to remove</p></dd>
+<dd><p>the categories to remove for the layer specified with <code>layer</code></p></dd>
 
   <dt>...</dt>
 <dd><p>additional arguments</p></dd>
