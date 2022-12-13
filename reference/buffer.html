@@ -68,7 +68,7 @@ Note that the distance unit of the buffer width parameter is meters if the CRS i
 <dd><p>SpatRaster or SpatVector</p></dd>
 
 <dt>width</dt>
-<dd><p>numeric. Unit is meter if <code>x</code> has a longitude/latitude CRS, or mapunits in other cases. Should be &gt; 0 for SpatRaster. If <code>x</code> is a SpatVector, this argument is vectorized, meaning that you can provide a different value for each geometry in <code>x</code>; and you can also use the name of a variable in <code>x</code> that has the widths</p></dd>
+<dd><p>numeric. Unit is meter if <code>x</code> has a longitude/latitude CRS, or in the units of the coordinate reference system in other cases (typically also meter). The value should be &gt; 0 if <code>x</code> is a SpatRaster. If <code>x</code> is a SpatVector, this argument is vectorized, meaning that you can provide a different value for each geometry in <code>x</code>; and you can also use the name of a variable in <code>x</code> that has the widths</p></dd>
 
   <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
