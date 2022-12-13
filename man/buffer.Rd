@@ -21,7 +21,7 @@ Note that the distance unit of the buffer \code{width} parameter is meters if th
 
 \arguments{
 \item{x}{SpatRaster or SpatVector}
-\item{width}{numeric. Unit is meter if \code{x} has a longitude/latitude CRS, or mapunits in other cases. Should be > 0 for SpatRaster. If \code{x} is a SpatVector, this argument is vectorized, meaning that you can provide a different value for each geometry in \code{x}; and you can also use the name of a variable in \code{x} that has the widths}
+\item{width}{numeric. Unit is meter if \code{x} has a longitude/latitude CRS, or in the units of the coordinate reference system in other cases (typically also meter). The value should be > 0 if \code{x} is a SpatRaster. If \code{x} is a SpatVector, this argument is vectorized, meaning that you can provide a different value for each geometry in \code{x}; and you can also use the name of a variable in \code{x} that has the widths}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
   \item{background}{numeric. value to assign to cells outside the buffer. If this value is zero or FALSE, a boolean SpatRaster is returned}  

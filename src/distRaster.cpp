@@ -2212,6 +2212,7 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 		return out;
 	}
 
+
 	if (!is_lonlat()) {
 		if (!std::isnan(background)) {
 			out = proximity(NAN, NAN, "", true, d, true, ops);
@@ -2235,6 +2236,9 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 		//out = out.disdir_vector_rasterize(p, false, true, false, false, NAN, NAN, "m", ops);
 		//out = out.arith(d, "<=", false, opt);
 	}
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results may be wrong");
+	} 
 	return out;
 }
 
