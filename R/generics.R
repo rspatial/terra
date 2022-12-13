@@ -466,6 +466,9 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 		if (mask) {
 			if (inherits(y, "SpatVector")) {
 				x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], touches[1], extend[1], opt)
+			} else if (inherits(y, "sf")) {
+				y <- vect(y)
+				x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], touches[1], extend[1], opt)
 			} else if (inherits(y, "SpatRaster")) {
 				mopt <- spatOptions(filename="", ...)
 				e <- ext(y)
