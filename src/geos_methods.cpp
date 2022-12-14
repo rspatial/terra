@@ -1028,13 +1028,11 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 	quadsegs = std::min(quadsegs, (unsigned) 180);
 	SpatVector out;
 	out.srs = srs;
-	bool islonlat;
 	if (srs.is_empty()) {
 		out.addWarning("unknown CRS. Results may be wrong");
-		islonlat = false;
-	} else {
-		islonlat = is_lonlat();
-	}
+	} 
+	bool islonlat = is_lonlat();
+	
 	if (dist.size() == 1 && dist[0] == 0) {
 		islonlat = false; //faster
 	}
