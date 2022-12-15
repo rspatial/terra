@@ -1,5 +1,8 @@
-# version 1.6-48
+# version 1.6-49
 
+## enhancements
+
+- `shade` is now vectorized for arguments `angle` and `direction` to facilitate generating multiple hillshades that can be combined for a better result [#948](https://github.com/rspatial/terra/issues/948) by Jürgen Niedballa
 
 ## bug fixes 
 

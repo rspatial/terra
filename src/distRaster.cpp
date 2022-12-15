@@ -24,6 +24,7 @@
 #include "math_utils.h"
 #include "vecmath.h"
 #include "file_utils.h"
+#include "string_utils.h"
 #include "crs.h"
 #include "sort.h"
 
@@ -3622,4 +3623,103 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 	readStop();
 	return out;
 }
+
+
+
+
+SpatRaster SpatRaster::hillshade(SpatRaster aspect, std::vector<double> angle, std::vector<double> direction, bool normalize, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	if ((nlyr() != 1) || (aspect.nlyr() != 1)) {
+		out.setError("slope and aspect should have one layer");
+		return out;
+	}
+	if ((angle.size() == 0) || (direction.size() == 0)) {
+		out.setError("you must provide a value for aspect and direction");
+		return out;		
+	}
+	
+	std::vector<std::string> nms;
+
+	if ((angle.size() > 1) || (direction.size() > 1)) {
+		recycle(angle, direction);
+		recycle(direction, angle);	
+		//nms = opt.names;
+		SpatOptions ops(opt);
+		size_t nl = angle.size();
+		out.source.resize(nl);
+		if (ops.names.size() == nl) {
+			nms = opt.names;
+		} else {
+			nms.reserve(nl);
+			for (unsigned i=0; i<nl; i++) {
+				std::string nmi = "hs_" + double_to_string(angle[i]) + "_" + double_to_string(direction[i]);
+				nms.push_back(nmi);
+			}
+		}
+				
+		for (unsigned i=0; i<nl; i++) {
+			ops.names = {nms[i]};
+			SpatRaster r = hillshade(aspect, {angle[i]}, {direction[i]}, normalize, ops);
+			out.source[i] = r.source[0];
+		}
+		if (opt.get_filename() != "") {
+			out = out.writeRaster(opt);
+		}
+		return out;
+	} else {
+		if ((opt.names.size() == 1) && (opt.names[0] != "")) {
+			out.setNames(  {opt.names[0] } );
+		} else {
+			out.setNames( {"hillshade"} );
+		}
+	}
+
+	double dir = direction[0] * M_PI / 180.0;
+	double zen = (90.0 - angle[0]) * M_PI/180.0;
+	double coszen = cos(zen);
+	double sinzen = sin(zen);
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!aspect.readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> slp;
+		std::vector<double> asp;
+		readBlock(slp, out.bs, i);
+		aspect.readBlock(asp, out.bs, i);
+		if (normalize) {
+			for (size_t i=0; i<slp.size(); i++) {
+				slp[i] = cos(slp[i]) * coszen + sin(slp[i]) * sinzen * cos(dir-asp[i]);
+				if (slp[i] < 0) {
+					slp[i] = 0;
+				} else {
+					slp[i] *= 255;
+				}
+			}
+		} else {
+			for (size_t i=0; i<slp.size(); i++) {
+				slp[i] = cos(slp[i]) * coszen + sin(slp[i]) * sinzen * cos(dir-asp[i]);
+			}
+		}
+		if (!out.writeBlock(slp, i)) return out;
+	}
+	out.writeStop();
+	readStop();
+	aspect.readStop();
+	return out;
+}
+
+
 

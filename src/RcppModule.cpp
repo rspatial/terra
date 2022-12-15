@@ -891,6 +891,7 @@ RCPP_MODULE(spat){
 		.method("scale", &SpatRaster::scale)
 		.method("shift", &SpatRaster::shift)
 		.method("terrain", &SpatRaster::terrain)
+		.method("hillshade", &SpatRaster::hillshade)
 		.method("summary", &SpatRaster::summary)
 		.method("summary_numb", &SpatRaster::summary_numb)
 		.method("transpose", &SpatRaster::transpose)
