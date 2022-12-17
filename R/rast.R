@@ -327,9 +327,6 @@ setMethod("rast", signature(x="ANY"),
 
 .rastFromXYZ <- function(xyz, digits=6, crs="", extent=NULL) {
 
-	if (!is.null(extent)) {
-		warn("rast", 'argument "extent" is ignored if type="xyz"')
-	}
 
 	ln <- colnames(xyz)
 	## xyz might not have colnames, or might have "" names
@@ -397,6 +394,11 @@ setMethod("rast", signature(x="ANY"),
 		v[cells, ] <- xyz[, -c(1:2)]
 		values(r) <- v
 	}
+
+	if (!is.null(extent)) {
+		ext(r) <- extent
+	}
+
 	return(r)
 }
 
