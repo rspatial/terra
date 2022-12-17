@@ -2958,7 +2958,9 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 		hvals[i] = ds[i].hasValues();
 		nl = std::max(nl, ds[i].nlyr());
 	}
-	out = ds[0].geometry(1, false);
+
+	out = ds[0].geometry(nl, true);
+	//out = ds[0].geometry(1, false);
 	out.setExtent(e, true, true, "");
 
 	bool anyvals = false;
@@ -2972,7 +2974,7 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 		return out;
 	}
 
-	out = out.geometry(nl, true);
+	//out = out.geometry(nl, true);
 	double hxr = out.xres()/2;
 
 	std::vector<int> vt = getValueType(true);
