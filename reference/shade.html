@@ -68,10 +68,10 @@ A hill shade layer is often used as a backdrop on top of which another, semi-tra
 <dd><p>SpatRaster with aspect values (in radians)</p></dd>
 
   <dt>angle</dt>
-<dd><p>The the elevation angle of the light source (sun), in degrees</p></dd>
+<dd><p>The the elevation angle(s) of the light source (sun), in degrees</p></dd>
 
   <dt>direction</dt>
-<dd><p>The direction (azimuth) angle of the light source (sun), in degrees</p></dd>
+<dd><p>The direction (azimuth) angle(s) of the light source (sun), in degrees</p></dd>
 
   <dt>normalize</dt>
 <dd><p>Logical. If <code>TRUE</code>, values below zero are set to zero and the results are multiplied with 255</p></dd>
@@ -106,6 +106,14 @@ A hill shade layer is often used as a backdrop on top of which another, semi-tra
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">hill</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/gray.html" class="external-link">grey</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span>, legend<span class="op">=</span><span class="cn">FALSE</span>, mar<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">alt</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">25</span>, alpha<span class="op">=</span><span class="fl">0.35</span><span class="op">)</span>, add<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="shade-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># A better hill shade may be achieved by combining </span></span>
+<span class="r-in"><span class="co"># different angles and directions. For example</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu">shade</span><span class="op">(</span><span class="va">slope</span>, <span class="va">aspect</span>, angle <span class="op">=</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">45</span>, <span class="fl">45</span>, <span class="fl">80</span><span class="op">)</span>, direction <span class="op">=</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">225</span>, <span class="fl">270</span>, <span class="fl">315</span>, <span class="fl">135</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Reduce</a></span><span class="op">(</span><span class="va">mean</span>, <span class="va">h</span><span class="op">)</span>        </span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
@@ -120,7 +128,7 @@ A hill shade layer is often used as a backdrop on top of which another, semi-tra
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
