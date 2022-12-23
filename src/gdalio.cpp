@@ -502,7 +502,7 @@ bool getGDALDataType(std::string datatype, GDALDataType &gdt) {
 // no Int8
 #else 
 	} else if (datatype == "INT1S") {
-		GDAL 3.7
+		// GDAL 3.7
 		gdt = GDT_Int8;
 #endif
 	} else {
