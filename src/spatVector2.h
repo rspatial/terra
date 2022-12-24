@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-/*
+
 
 #ifndef SPATVECTOR2_GUARD
 #define SPATVECTOR2_GUARD
@@ -28,37 +28,47 @@
 #endif
 
 
-
-class SpatGeom2 {
-	public:
-		//constructors
-		SpatGeom2();
-		SpatGeom2(SpatGeomType g);
-		virtual ~SpatGeom2(){}
-		SpatGeomType gtype = unknown;
-
-		std::vector<double> x;
-		std::vector<double> y;
-		size_t np;
-		std::vector<long> p; 
-};
-
-
-
-class SpatVector2Collection;
-
 class SpatVector2 {
 
-	public:
-		std::vector<double> x;
-		std::vector<double> y;
-		std::vector<size_t> np; // cumulative
-		std::vector<long> p; // offsets; neg is hole
+// g 
+// geom gparts (cumulative)
+//    1      4
+//    2      5
+//    3      8
+//    4      9
 
+// p & h
+//part     p     h
+//   1    10    -1
+//   2    22    -1
+//   3    28    -1
+//   4    36     1 
+//   1    40    -1
+
+
+	public:
+		std::vector<double> xc;
+		std::vector<double> yc;
+		std::vector<size_t> g; // number of parts per geom, cumulative
+		std::vector<size_t> p; // part offsets
+		std::vector<long long> h; // hole
+
+		SpatGeomType gtype = unknown;
 		SpatExtent extent;
 		SpatDataFrame df;
 		//std::vector<std::string> crs;
 		SpatSRS srs;
+
+		SpatVector2();
+		SpatVector to_old();		
+		SpatVector2 from_old(SpatVector x);
+		
+		size_t ngeoms();
+};
+
+
+
+/*
 		bool is_proxy = false;
 		std::string read_query = "";
 		std::vector<double> read_extent;
@@ -335,9 +345,10 @@ class SpatVector2 {
 		SpatVector densify(double interval, bool adjust);
 		SpatVector round(int digits);
 		std::vector<unsigned> nullGeoms();
-		*/
 		
 };
+		*/
+
 
 /*
 
@@ -418,4 +429,4 @@ class SpatVectorProxy {
 };
 */
 
-//#endif // SPATVECTOR2_GUARD
+#endif // SPATVECTOR2_GUARD

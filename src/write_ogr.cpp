@@ -36,6 +36,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			if ((!overwrite) && (!append)) {
 				setError("file exists. Use 'overwrite=TRUE' to overwrite it");
 				return(poDS);
+			} else {
+				options.push_back("OVERWRITE=YES");
 			}
 		} else {
 			append = false;

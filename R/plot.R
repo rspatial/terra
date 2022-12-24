@@ -302,7 +302,7 @@ setMethod("barplot", "SpatRaster",
 
 shade <- function(slope, aspect, angle=45, direction=0, normalize=FALSE, filename="", overwrite=FALSE, ...) {
 	stopifnot(inherits(slope, "SpatRaster"))
-	opt <- terra:::spatOptions(filename, overwrite=overwrite, ...)
+	opt <- spatOptions(filename, overwrite=overwrite, ...)
 	slope@ptr <- slope@ptr$hillshade(aspect@ptr, angle, direction, normalize[1], opt)
 	messages(slope, "shade")
 }

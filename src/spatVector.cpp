@@ -475,6 +475,21 @@ size_t SpatVector::ncoords() {
 	return ncrds;
 }
 
+size_t SpatVector::nparts(bool holes) {
+	size_t totnp = 0;
+	size_t ng = geoms.size();
+	for (size_t i=0; i<ng; i++) {
+		size_t np = geoms[i].parts.size();
+		totnp += np;
+		if (holes) {
+			for (size_t j=0; j<np; j++) {
+				totnp += geoms[i].parts[j].nHoles();
+			}
+		}
+	}
+	return totnp;
+}
+
 
 std::vector<std::vector<double>> SpatVector::coordinates() {
 	std::vector<std::vector<double>> out(2);

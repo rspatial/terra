@@ -59,9 +59,9 @@ setMethod("roll", signature(x="SpatRaster"),
 		txtfun <- .makeTextFun(match.fun(fun))
 		if (inherits(txtfun, "character")) {
 			if (txtfun %in% .cpp_funs) {
-				opt <- terra:::spatOptions(filename, ...)
+				opt <- spatOptions(filename, ...)
 				x@ptr <- x@ptr$roll(n, txtfun, type, circular, na.rm, opt)
-				return (terra:::messages(x, "roll")	)
+				return (messages(x, "roll")	)
 			}
 		} else {
 			f <- function(i) movingFun(i, n, fun, type=type, circular=circular, na.rm=na.rm)

@@ -142,7 +142,7 @@ T vmedian(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-T vsum(std::vector<T>& v, bool narm) {
+T vsum(const std::vector<T>& v, bool narm) {
 	T x = v[0];
 	if (narm) {		
 		for (size_t i=1; i<v.size(); i++) {
@@ -705,6 +705,35 @@ std::vector<size_t> order(const std::vector<T> &v) {
 	return idx;
 }
 */
+
+
+
+template <typename T>
+T sum_se(const std::vector<T>& v, size_t s, size_t e, bool narm) {
+	T x = v[0];
+	if (narm) {		
+		for (size_t i=s; i<e; i++) {
+			if (is_NA(x)) {
+				x = v[i];
+			} else if (!is_NA(v[i])) {
+				x += v[i];
+			}
+		}
+	} else {
+		for (size_t i=1; i<v.size(); i++) {
+			if (!is_NA(x)) {
+				if (is_NA(v[i])) {
+					x = NA<T>::value;
+					break;
+				} else {
+					x += v[i];
+				}
+			}
+		}
+	}
+	return x;
+}
+
 
 #endif
 

@@ -43,13 +43,11 @@ hill <- shade(slope, aspect, 40, 270)
 plot(hill, col=grey(0:100/100), legend=FALSE, mar=c(2,2,1,4))
 plot(alt, col=rainbow(25, alpha=0.35), add=TRUE)
 
-
 # A better hill shade may be achieved by combining 
 # different angles and directions. For example
 
 h <- shade(slope, aspect, angle = c(45, 45, 45, 80), direction = c(225, 270, 315, 135))
 h <- Reduce(mean, h)				
-
 }
 
 

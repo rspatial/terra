@@ -26,9 +26,9 @@
 		}
 	} else {
 		if (is.null(dim(vtst))) {
-			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells. (returning: ", length(vtst), ", expecting: ", nr, ")\nPerhaps the function is not properly vectorized")
+			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells.\n(returning: ", length(vtst), ", expecting: ", nr, ")\nPerhaps the function is not properly vectorized")
 		} else {
-			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells (returning:", nrow(vtst), ", expecting:", nr, ")\nPerhaps the function is not properly vectorized")
+			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells.\n(returning:", nrow(vtst), ", expecting:", nr, ")\nPerhaps the function is not properly vectorized")
 		}
 		nl <- -1
 	}
@@ -139,9 +139,9 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 		}
 	} else {
 		if (is.null(dim(vtst))) {
-			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells. (returning: ", length(vtst), ", expecting: ", nr, ")\nPerhaps the function is not properly vectorized.")
+			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells.\n(returning: ", length(vtst), ", expecting: ", nr, ")\nPerhaps the function is not properly vectorized.")
 		} else {
-			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells (returning:", nrow(vtst), ", expecting:", nr, ")\nPerhaps the function is not properly vectorized.")
+			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells.\n(returning:", nrow(vtst), ", expecting:", nr, ")\nPerhaps the function is not properly vectorized.")
 		}
 		nl <- -1
 	}

@@ -166,6 +166,8 @@ class SpatVector {
 		std::vector<std::string> getGeometryWKT();
 		void computeExtent();
 
+		size_t nparts(bool holes);
+
 		size_t ncoords();
 		std::vector<std::vector<double>> coordinates();
 
