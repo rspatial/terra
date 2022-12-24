@@ -34,7 +34,7 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 
 When argument \code{y} is a \code{SpatVector} the first column has the ID (record number) of the \code{SpatVector} used (unless you set \code{ID=FALSE}).
 
-Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize}} on \code{SpatVector} (this may be more efficient in some cases).
+Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize}} with a \code{SpatVector} (this may be more efficient in some cases).
 } 
 
 \usage{
@@ -44,16 +44,16 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, cells=FALSE, xy=FALSE)
 
-\S4method{extract}{SpatRaster,numeric}(x, y, xy=FALSE)
+\S4method{extract}{SpatRaster,matrix}(x, y, cells=FALSE, method="simple")
 
-\S4method{extract}{SpatRaster,matrix}(x, y, cells=FALSE)
+\S4method{extract}{SpatRaster,numeric}(x, y, xy=FALSE)
 
 \S4method{extract}{SpatVector,SpatVector}(x, y)
 }
 
 \arguments{
 \item{x}{SpatRaster or SpatVector of polygons}
-\item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
+\item{y}{SpatVector (points, lines, or polygons). Alternatively, for points, a 2-column matrix or data.frame (x, y) or (lon, lat). Or a vector with cell numbers}
 \item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min} and \code{max} are accepted).}
 \item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}

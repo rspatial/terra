@@ -389,8 +389,13 @@ function(x, y, xy=FALSE) {
 })
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"),
-function(x, y, cells=FALSE) {
+function(x, y, cells=FALSE, method="simple") {
 	.checkXYnames(colnames(y))
+	method <- match.arg(tolower(method), c("simple", "bilinear"))
+	if (method != "simple") {
+		y <- vect(y)
+		return(extract(x, y, method=method, ID=FALSE))
+	}
 	y <- cellFromXY(x, y)
 	if (cells) {
 		cbind(cell=y, extract(x, y))
