@@ -312,8 +312,8 @@ class SpatVector {
 		SpatVector boundary();
 		SpatVector line_merge();
 		SpatVector simplify(double tolerance, bool preserveTopology);
-		SpatVector shared_paths();
-		SpatVector shared_paths(SpatVector x);
+		SpatVector shared_paths(bool index);
+		SpatVector shared_paths(SpatVector x, bool index);
 		SpatVector snap(double tolerance);
 		SpatVector snapto(SpatVector y, double tolerance);
 		SpatVector thin(double threshold);
