@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,8 +53,8 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,missing</span>
-<span class="fu">crosstab</span><span class="op">(</span><span class="va">x</span>, digits<span class="op">=</span><span class="fl">0</span>, long<span class="op">=</span><span class="cn">FALSE</span>, useNA<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,missing</span></span>
+<span><span class="fu">crosstab</span><span class="op">(</span><span class="va">x</span>, digits<span class="op">=</span><span class="fl">0</span>, long<span class="op">=</span><span class="cn">FALSE</span>, useNA<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -85,24 +85,24 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nc<span class="op">=</span><span class="fl">5</span>, nr<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">3</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">s</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">crosstab</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nc<span class="op">=</span><span class="fl">5</span>, nr<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">3</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">s</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">crosstab</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      lyr.1.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> lyr.1 0 1 2 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0 1 1 4 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     1 2 5 5 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     2 0 2 4 1</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">rs</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">/</span><span class="va">s</span></span>
-<span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
-<span class="r-in"><span class="va">s</span><span class="op">[</span><span class="fl">20</span><span class="op">:</span><span class="fl">25</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">s</span>, <span class="va">rs</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">crosstab</span><span class="op">(</span><span class="va">x</span>, useNA<span class="op">=</span><span class="cn">TRUE</span>, long<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="va">r</span><span class="op">/</span><span class="va">s</span></span></span>
+<span class="r-in"><span><span class="va">r</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span></span>
+<span class="r-in"><span><span class="va">s</span><span class="op">[</span><span class="fl">20</span><span class="op">:</span><span class="fl">25</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">s</span>, <span class="va">rs</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">crosstab</span><span class="op">(</span><span class="va">x</span>, useNA<span class="op">=</span><span class="cn">TRUE</span>, long<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lyr.1 lyr.1.1 lyr.1.2 n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1      0       2       0 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2      0      NA       0 1</span>

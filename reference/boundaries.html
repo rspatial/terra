@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,9 +53,9 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">boundaries</span><span class="op">(</span><span class="va">x</span>, classes<span class="op">=</span><span class="cn">FALSE</span>, inner<span class="op">=</span><span class="cn">TRUE</span>, 
-         directions<span class="op">=</span><span class="fl">8</span>, falseval<span class="op">=</span><span class="fl">0</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">boundaries</span><span class="op">(</span><span class="va">x</span>, classes<span class="op">=</span><span class="cn">FALSE</span>, inner<span class="op">=</span><span class="cn">TRUE</span>, </span>
+<span>         directions<span class="op">=</span><span class="fl">8</span>, falseval<span class="op">=</span><span class="fl">0</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -97,13 +97,13 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">18</span>, ncols<span class="op">=</span><span class="fl">36</span>, xmin<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">150</span><span class="op">:</span><span class="fl">250</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">251</span><span class="op">:</span><span class="fl">450</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="va">bi</span> <span class="op">&lt;-</span> <span class="fu">boundaries</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">bo</span> <span class="op">&lt;-</span> <span class="fu">boundaries</span><span class="op">(</span><span class="va">r</span>, inner<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">bc</span> <span class="op">&lt;-</span> <span class="fu">boundaries</span><span class="op">(</span><span class="va">r</span>, classes<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">#plot(bc)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">18</span>, ncols<span class="op">=</span><span class="fl">36</span>, xmin<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span><span class="op">[</span><span class="fl">150</span><span class="op">:</span><span class="fl">250</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="va">r</span><span class="op">[</span><span class="fl">251</span><span class="op">:</span><span class="fl">450</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="va">bi</span> <span class="op">&lt;-</span> <span class="fu">boundaries</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bo</span> <span class="op">&lt;-</span> <span class="fu">boundaries</span><span class="op">(</span><span class="va">r</span>, inner<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bc</span> <span class="op">&lt;-</span> <span class="fu">boundaries</span><span class="op">(</span><span class="va">r</span>, classes<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#plot(bc)</span></span></span>
 </code></pre></div>
     </div>
   </div>

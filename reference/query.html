@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,9 +53,9 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVectorProxy</span>
-<span class="fu">query</span><span class="op">(</span><span class="va">x</span>, start<span class="op">=</span><span class="fl">1</span>, n<span class="op">=</span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, vars<span class="op">=</span><span class="cn">NULL</span>, where<span class="op">=</span><span class="cn">NULL</span>, 
-    extent<span class="op">=</span><span class="cn">NULL</span>, filter<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVectorProxy</span></span>
+<span><span class="fu">query</span><span class="op">(</span><span class="va">x</span>, start<span class="op">=</span><span class="fl">1</span>, n<span class="op">=</span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, vars<span class="op">=</span><span class="cn">NULL</span>, where<span class="op">=</span><span class="cn">NULL</span>, </span>
+<span>    extent<span class="op">=</span><span class="cn">NULL</span>, filter<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -93,9 +93,9 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span>, proxy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span>, proxy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">v</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVectorProxy</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 12, 6  (geometries, attributes)</span>
@@ -104,9 +104,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_1 NAME_1  ID_2 NAME_2  AREA   POP</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;  &lt;chr&gt; &lt;num&gt;  &lt;chr&gt; &lt;num&gt; &lt;int&gt;</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">query</span><span class="op">(</span><span class="va">v</span>, vars<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"ID_2"</span>, <span class="st">"NAME_2"</span><span class="op">)</span>, start<span class="op">=</span><span class="fl">5</span>, n<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">query</span><span class="op">(</span><span class="va">v</span>, vars<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"ID_2"</span>, <span class="st">"NAME_2"</span><span class="op">)</span>, start<span class="op">=</span><span class="fl">5</span>, n<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 2, 2  (geometries, attributes)</span>
@@ -117,8 +117,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;      &lt;chr&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     5      Wiltz</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    6 Echternach</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">v</span>, vars<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"ID_2"</span>, <span class="st">"NAME_1"</span>, <span class="st">"NAME_2"</span><span class="op">)</span>, where<span class="op">=</span><span class="st">"NAME_1='Grevenmacher' AND ID_2 &gt; 6"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">query</span><span class="op">(</span><span class="va">v</span>, vars<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"ID_2"</span>, <span class="st">"NAME_1"</span>, <span class="st">"NAME_2"</span><span class="op">)</span>, where<span class="op">=</span><span class="st">"NAME_1='Grevenmacher' AND ID_2 &gt; 6"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 2, 3  (geometries, attributes)</span>
@@ -129,15 +129,15 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;        &lt;chr&gt;        &lt;chr&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     7 Grevenmacher       Remich</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   12 Grevenmacher Grevenmacher</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## with an extent</span></span>
-<span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">5.9</span>, <span class="fl">6.3</span>, <span class="fl">49.9</span>, <span class="fl">50</span><span class="op">)</span> </span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">query</span><span class="op">(</span><span class="va">v</span>, extent<span class="op">=</span><span class="va">e</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## with polygons</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.spatvector.html">as.polygons</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">query</span><span class="op">(</span><span class="va">v</span>, filter<span class="op">=</span><span class="va">p</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## with an extent</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">5.9</span>, <span class="fl">6.3</span>, <span class="fl">49.9</span>, <span class="fl">50</span><span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">query</span><span class="op">(</span><span class="va">v</span>, extent<span class="op">=</span><span class="va">e</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## with polygons</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.spatvector.html">as.polygons</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">query</span><span class="op">(</span><span class="va">v</span>, filter<span class="op">=</span><span class="va">p</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 4, 6  (geometries, attributes)</span>

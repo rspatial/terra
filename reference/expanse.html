@@ -19,7 +19,7 @@ For vector data, the best way to compute area is to use the longitude/latitude C
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -57,11 +57,11 @@ For vector data, the best way to compute area is to use the longitude/latitude C
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">expanse</span><span class="op">(</span><span class="va">x</span>, unit<span class="op">=</span><span class="st">"m"</span>, transform<span class="op">=</span><span class="cn">TRUE</span>, byValue<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">expanse</span><span class="op">(</span><span class="va">x</span>, unit<span class="op">=</span><span class="st">"m"</span>, transform<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">expanse</span><span class="op">(</span><span class="va">x</span>, unit<span class="op">=</span><span class="st">"m"</span>, transform<span class="op">=</span><span class="cn">TRUE</span>, byValue<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">expanse</span><span class="op">(</span><span class="va">x</span>, unit<span class="op">=</span><span class="st">"m"</span>, transform<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -95,33 +95,33 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co">### SpatRaster </span></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">18</span>, ncols<span class="op">=</span><span class="fl">36</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span><span class="op">[</span><span class="fl">200</span><span class="op">:</span><span class="fl">400</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">v</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># summed area in km2</span></span>
-<span class="r-in"><span class="fu">expanse</span><span class="op">(</span><span class="va">r</span>, unit<span class="op">=</span><span class="st">"km"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">### SpatRaster </span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">18</span>, ncols<span class="op">=</span><span class="fl">36</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">v</span><span class="op">[</span><span class="fl">200</span><span class="op">:</span><span class="fl">400</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">v</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># summed area in km2</span></span></span>
+<span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">r</span>, unit<span class="op">=</span><span class="st">"km"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 273986501</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># all cells </span></span>
-<span class="r-in"><span class="fu">expanse</span><span class="op">(</span><span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, unit<span class="op">=</span><span class="st">"km"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># all cells </span></span></span>
+<span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, unit<span class="op">=</span><span class="st">"km"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 510065622</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">90</span>, nrows<span class="op">=</span><span class="fl">45</span>, ymin<span class="op">=</span><span class="op">-</span><span class="fl">80</span>, ymax<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"+proj=merc"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">expanse</span><span class="op">(</span><span class="va">m</span>, unit<span class="op">=</span><span class="st">"km"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">90</span>, nrows<span class="op">=</span><span class="fl">45</span>, ymin<span class="op">=</span><span class="op">-</span><span class="fl">80</span>, ymax<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"+proj=merc"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">m</span>, unit<span class="op">=</span><span class="st">"km"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 498751903</span>
-<span class="r-in"><span class="fu">expanse</span><span class="op">(</span><span class="va">m</span>, unit<span class="op">=</span><span class="st">"km"</span>, transform<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">m</span>, unit<span class="op">=</span><span class="st">"km"</span>, transform<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1241591858</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">11</span><span class="op">:</span><span class="fl">14</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">11</span><span class="op">:</span><span class="fl">14</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[setValues] values were recycled</span>
-<span class="r-in"><span class="fu">expanse</span><span class="op">(</span><span class="va">m2</span>, unit<span class="op">=</span><span class="st">"km"</span>, byValue<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">m2</span>, unit<span class="op">=</span><span class="st">"km"</span>, byValue<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      layer value     area</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]     1     1 10182145</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]     1     2 10182145</span>
@@ -129,17 +129,17 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]     2    12 10182145</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,]     2    13 10182145</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,]     2    14 10182145</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">### SpatVector</span></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu">expanse</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">a</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">### SpatVector</span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu">expanse</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">a</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 312283206 218674025 259454806  76200409 263174257 188282143 128991500</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 210354494 185630770 251322021 237113004 233329960</span>
-<span class="r-in"><span class="fu"><a href="summarize-generics.html">sum</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="summarize-generics.html">sum</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2564810595</span>
 </code></pre></div>
     </div>

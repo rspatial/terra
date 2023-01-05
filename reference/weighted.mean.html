@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,11 +53,11 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,numeric</span>
-<span class="fu">weighted.mean</span><span class="op">(</span><span class="va">x</span>, <span class="va">w</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatRaster,SpatRaster</span>
-<span class="fu">weighted.mean</span><span class="op">(</span><span class="va">x</span>, <span class="va">w</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,numeric</span></span>
+<span><span class="fu">weighted.mean</span><span class="op">(</span><span class="va">x</span>, <span class="va">w</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster,SpatRaster</span></span>
+<span><span class="fu">weighted.mean</span><span class="op">(</span><span class="va">x</span>, <span class="va">w</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -94,20 +94,20 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span>   </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># give least weight to first layer, most to last layer</span></span>
-<span class="r-in"><span class="va">wm1</span> <span class="op">&lt;-</span> <span class="fu">weighted.mean</span><span class="op">(</span><span class="va">b</span>, w<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># spatially varying weights</span></span>
-<span class="r-in"><span class="co"># weigh by column number</span></span>
-<span class="r-in"><span class="va">w1</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span><span class="va">b</span>, <span class="st">"col"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># weigh by row number</span></span>
-<span class="r-in"><span class="va">w2</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span><span class="va">b</span>, <span class="st">"row"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">w1</span>, <span class="va">w2</span>, <span class="va">w2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">wm2</span> <span class="op">&lt;-</span> <span class="fu">weighted.mean</span><span class="op">(</span><span class="va">b</span>, w<span class="op">=</span><span class="va">w</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span>   </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># give least weight to first layer, most to last layer</span></span></span>
+<span class="r-in"><span><span class="va">wm1</span> <span class="op">&lt;-</span> <span class="fu">weighted.mean</span><span class="op">(</span><span class="va">b</span>, w<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># spatially varying weights</span></span></span>
+<span class="r-in"><span><span class="co"># weigh by column number</span></span></span>
+<span class="r-in"><span><span class="va">w1</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span><span class="va">b</span>, <span class="st">"col"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># weigh by row number</span></span></span>
+<span class="r-in"><span><span class="va">w2</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span><span class="va">b</span>, <span class="st">"row"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">w1</span>, <span class="va">w2</span>, <span class="va">w2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">wm2</span> <span class="op">&lt;-</span> <span class="fu">weighted.mean</span><span class="op">(</span><span class="va">b</span>, w<span class="op">=</span><span class="va">w</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>

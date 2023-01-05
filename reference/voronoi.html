@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,11 +53,11 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVector</span>
-<span class="fu">voronoi</span><span class="op">(</span><span class="va">x</span>, bnd<span class="op">=</span><span class="cn">NULL</span>, tolerance<span class="op">=</span><span class="fl">0</span>, as.lines<span class="op">=</span><span class="cn">FALSE</span>, deldir<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> 
-
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">delaunay</span><span class="op">(</span><span class="va">x</span>, tolerance<span class="op">=</span><span class="fl">0</span>, as.lines<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">voronoi</span><span class="op">(</span><span class="va">x</span>, bnd<span class="op">=</span><span class="cn">NULL</span>, tolerance<span class="op">=</span><span class="fl">0</span>, as.lines<span class="op">=</span><span class="cn">FALSE</span>, deldir<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">delaunay</span><span class="op">(</span><span class="va">x</span>, tolerance<span class="op">=</span><span class="fl">0</span>, as.lines<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -85,29 +85,29 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">wkt</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"MULTIPOLYGON ( ((40 40, 20 45, 45 30, 40 40)), </span>
-<span class="r-in">  ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),(30 20, 20 15, 20 25, 30 20)))"</span>, </span>
-<span class="r-in">  <span class="st">"POLYGON ((0 -5, 10 0, 10 -10, 0 -5))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">wkt</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">voronoi</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">wkt</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"MULTIPOLYGON ( ((40 40, 20 45, 45 30, 40 40)), </span></span></span>
+<span class="r-in"><span><span class="st">  ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),(30 20, 20 15, 20 25, 30 20)))"</span>, </span></span>
+<span class="r-in"><span>  <span class="st">"POLYGON ((0 -5, 10 0, 10 -10, 0 -5))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">wkt</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">voronoi</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">v</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 14, 0  (geometries, attributes)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : -55, 100, -65, 100  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. :  </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">delaunay</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">d</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">delaunay</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">d</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 18, 0  (geometries, attributes)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 0, 45, -10, 45  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. :  </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, col<span class="op">=</span><span class="st">"gray"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, col<span class="op">=</span><span class="st">"gray"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="voronoi-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

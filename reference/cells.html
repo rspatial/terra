@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,17 +53,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,missing</span>
-<span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatRaster,numeric</span>
-<span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatRaster,SpatVector</span>
-<span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, method<span class="op">=</span><span class="st">"simple"</span>, weights<span class="op">=</span><span class="cn">FALSE</span>, exact<span class="op">=</span><span class="cn">FALSE</span>, touches<span class="op">=</span><span class="fu"><a href="geomtype.html">is.lines</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatRaster,SpatExtent</span>
-<span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,missing</span></span>
+<span><span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster,numeric</span></span>
+<span><span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster,SpatVector</span></span>
+<span><span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, method<span class="op">=</span><span class="st">"simple"</span>, weights<span class="op">=</span><span class="cn">FALSE</span>, exact<span class="op">=</span><span class="cn">FALSE</span>, touches<span class="op">=</span><span class="fu"><a href="geomtype.html">is.lines</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster,SpatExtent</span></span>
+<span><span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -96,42 +96,42 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">10</span>, nrows<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, <span class="fl">31</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="ifelse.html">ifel</a></span><span class="op">(</span><span class="va">r</span> <span class="op">&gt;</span> <span class="fl">28</span>, <span class="va">r</span> <span class="op">+</span> <span class="fl">10</span>, <span class="va">r</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># all cell numbers of cells that are not NA</span></span>
-<span class="r-in"><span class="fu">cells</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">10</span>, nrows<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span><span class="op">[</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, <span class="fl">31</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="ifelse.html">ifel</a></span><span class="op">(</span><span class="va">r</span> <span class="op">&gt;</span> <span class="fl">28</span>, <span class="va">r</span> <span class="op">+</span> <span class="fl">10</span>, <span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># all cell numbers of cells that are not NA</span></span></span>
+<span class="r-in"><span><span class="fu">cells</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 26 27 28 29 30</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># cell numbers that match values</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">cells</span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">28</span>,<span class="fl">38</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span><span class="op">$</span><span class="va">lyr.1</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># cell numbers that match values</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">cells</span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">28</span>,<span class="fl">38</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span><span class="op">$</span><span class="va">lyr.1</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 28</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># cells for points</span></span>
-<span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">10</span>,<span class="op">-</span><span class="fl">30</span><span class="op">)</span>, y<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">40</span>,<span class="op">-</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="xyCellFrom.html">cellFromXY</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">m</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># cells for points</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">10</span>,<span class="op">-</span><span class="fl">30</span><span class="op">)</span>, y<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">40</span>,<span class="op">-</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="xyCellFrom.html">cellFromXY</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 26 56 35</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">cells</span><span class="op">(</span><span class="va">r</span>, <span class="va">v</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cells</span><span class="op">(</span><span class="va">r</span>, <span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      ID cell</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1   26</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  2   56</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  3   35</span>
-<span class="r-in"><span class="fu">cells</span><span class="op">(</span><span class="va">r</span>, <span class="va">v</span>, method<span class="op">=</span><span class="st">"bilinear"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">cells</span><span class="op">(</span><span class="va">r</span>, <span class="va">v</span>, method<span class="op">=</span><span class="st">"bilinear"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      ID c1 c2 c3 c4  w1  w2  w3  w4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1 25 26 35 36   0   1   0   0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  2 55 56 65 66 NaN NaN NaN NaN</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  3 34 35 44 45 NaN NaN NaN NaN</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># cells for polygons</span></span>
-<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">cv</span> <span class="op">&lt;-</span> <span class="fu">cells</span><span class="op">(</span><span class="va">r</span>, <span class="va">v</span><span class="op">)</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># cells for polygons</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cv</span> <span class="op">&lt;-</span> <span class="fu">cells</span><span class="op">(</span><span class="va">r</span>, <span class="va">v</span><span class="op">)</span> </span></span>
 </code></pre></div>
     </div>
   </div>

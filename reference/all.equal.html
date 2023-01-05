@@ -19,7 +19,7 @@ The sample size used can be increased with the maxcell argument. You can set it 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -57,8 +57,8 @@ The sample size used can be increased with the maxcell argument. You can set it 
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,SpatRaster</span>
-<span class="fu">all.equal</span><span class="op">(</span><span class="va">target</span>, <span class="va">current</span>, maxcell<span class="op">=</span><span class="fl">10000</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,SpatRaster</span></span>
+<span><span class="fu">all.equal</span><span class="op">(</span><span class="va">target</span>, <span class="va">current</span>, maxcell<span class="op">=</span><span class="fl">10000</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -89,30 +89,30 @@ The sample size used can be increased with the maxcell argument. You can set it 
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="math-generics.html">sqrt</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">10</span>, ncols<span class="op">=</span><span class="fl">10</span>, xmin<span class="op">=</span><span class="fl">0</span>, vals <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r2</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">10</span>, ncols<span class="op">=</span><span class="fl">10</span>, xmin<span class="op">=</span><span class="fl">0</span>, vals <span class="op">=</span> <span class="va">mat</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">all.equal</span><span class="op">(</span><span class="va">r1</span>, <span class="va">r2</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="math-generics.html">sqrt</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">10</span>, ncols<span class="op">=</span><span class="fl">10</span>, xmin<span class="op">=</span><span class="fl">0</span>, vals <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r2</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">10</span>, ncols<span class="op">=</span><span class="fl">10</span>, xmin<span class="op">=</span><span class="fl">0</span>, vals <span class="op">=</span> <span class="va">mat</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">all.equal</span><span class="op">(</span><span class="va">r1</span>, <span class="va">r2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"><span class="fu">all.equal</span><span class="op">(</span><span class="va">r1</span>, <span class="va">r1</span><span class="op">*</span><span class="fl">1</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">all.equal</span><span class="op">(</span><span class="va">r1</span>, <span class="va">r1</span><span class="op">*</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"><span class="fu">all.equal</span><span class="op">(</span><span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">r1</span><span class="op">)</span>, <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">all.equal</span><span class="op">(</span><span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">r1</span><span class="op">)</span>, <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># compare geometries </span></span>
-<span class="r-in"><span class="fu"><a href="compareGeom.html">compareGeom</a></span><span class="op">(</span><span class="va">r1</span>, <span class="va">r2</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># compare geometries </span></span></span>
+<span class="r-in"><span><span class="fu"><a href="compareGeom.html">compareGeom</a></span><span class="op">(</span><span class="va">r1</span>, <span class="va">r2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Compare all cell values for near equality</span></span>
-<span class="r-in"><span class="co"># as floating point number imprecision can be a problem</span></span>
-<span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="minmax.html">minmax</a></span><span class="op">(</span><span class="va">r1</span> <span class="op">-</span> <span class="va">r2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="summarize-generics.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-7</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compare all cell values for near equality</span></span></span>
+<span class="r-in"><span><span class="co"># as floating point number imprecision can be a problem</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="minmax.html">minmax</a></span><span class="op">(</span><span class="va">r1</span> <span class="op">-</span> <span class="va">r2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="summarize-generics.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-7</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># comparison of cell values to create new SpatRaster</span></span>
-<span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="va">r1</span> <span class="op">==</span> <span class="va">r2</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># comparison of cell values to create new SpatRaster</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="va">r1</span> <span class="op">==</span> <span class="va">r2</span></span></span>
 </code></pre></div>
     </div>
   </div>

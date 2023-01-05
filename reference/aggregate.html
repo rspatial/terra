@@ -18,7 +18,7 @@ Or aggregate ("dissolve") a SpatVector.'><meta property="og:image" content="/log
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -55,11 +55,11 @@ Or aggregate ("dissolve") a SpatVector.'><meta property="og:image" content="/log
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">aggregate</span><span class="op">(</span><span class="va">x</span>, fact<span class="op">=</span><span class="fl">2</span>, fun<span class="op">=</span><span class="st">"mean"</span>, <span class="va">...</span>, cores<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">aggregate</span><span class="op">(</span><span class="va">x</span>, by<span class="op">=</span><span class="cn">NULL</span>, dissolve<span class="op">=</span><span class="cn">TRUE</span>, fun<span class="op">=</span><span class="st">"mean"</span>, count<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">aggregate</span><span class="op">(</span><span class="va">x</span>, fact<span class="op">=</span><span class="fl">2</span>, fun<span class="op">=</span><span class="st">"mean"</span>, <span class="va">...</span>, cores<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">aggregate</span><span class="op">(</span><span class="va">x</span>, by<span class="op">=</span><span class="cn">NULL</span>, dissolve<span class="op">=</span><span class="cn">TRUE</span>, fun<span class="op">=</span><span class="st">"mean"</span>, count<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -118,28 +118,28 @@ Or aggregate ("dissolve") a SpatVector.'><meta property="og:image" content="/log
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># aggregated SpatRaster, no values</span></span>
-<span class="r-in"><span class="va">ra</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">r</span>, fact<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># aggregated raster, max of the values</span></span>
-<span class="r-in"><span class="va">ra</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">r</span>, fact<span class="op">=</span><span class="fl">10</span>, fun<span class="op">=</span><span class="va">max</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># multiple layers</span></span>
-<span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">s</span>, <span class="fl">20</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## SpatVector </span></span>
-<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">va</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">v</span>, <span class="st">"ID_1"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">va</span>, <span class="st">"NAME_1"</span>, lwd<span class="op">=</span><span class="fl">5</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"topright"</span><span class="op">)</span>, mar<span class="op">=</span><span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">3</span>, col<span class="op">=</span><span class="st">"light gray"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">va</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">v</span>, <span class="st">"ID_1"</span>, halo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># aggregated SpatRaster, no values</span></span></span>
+<span class="r-in"><span><span class="va">ra</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">r</span>, fact<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># aggregated raster, max of the values</span></span></span>
+<span class="r-in"><span><span class="va">ra</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">r</span>, fact<span class="op">=</span><span class="fl">10</span>, fun<span class="op">=</span><span class="va">max</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># multiple layers</span></span></span>
+<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">s</span>, <span class="fl">20</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## SpatVector </span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">va</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">v</span>, <span class="st">"ID_1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">va</span>, <span class="st">"NAME_1"</span>, lwd<span class="op">=</span><span class="fl">5</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"topright"</span><span class="op">)</span>, mar<span class="op">=</span><span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">3</span>, col<span class="op">=</span><span class="st">"light gray"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">va</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">v</span>, <span class="st">"ID_1"</span>, halo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="aggregate-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

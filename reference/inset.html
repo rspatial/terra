@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,16 +53,16 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVector</span>
-<span class="fu">inset</span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span>, loc<span class="op">=</span><span class="st">""</span>, scale<span class="op">=</span><span class="fl">0.2</span>, background<span class="op">=</span><span class="st">"white"</span>, 
-  perimeter<span class="op">=</span><span class="cn">TRUE</span>, box<span class="op">=</span><span class="cn">NULL</span>, <span class="va">pper</span>, <span class="va">pbox</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatRaster</span>
-<span class="fu">inset</span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span>, loc<span class="op">=</span><span class="st">""</span>, scale<span class="op">=</span><span class="fl">0.2</span>, background<span class="op">=</span><span class="st">"white"</span>, 
-  perimeter<span class="op">=</span><span class="cn">TRUE</span>, box<span class="op">=</span><span class="cn">NULL</span>, <span class="va">pper</span>, <span class="va">pbox</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">inext</span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span>, y<span class="op">=</span><span class="cn">NULL</span>, gap<span class="op">=</span><span class="fl">0</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">inset</span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span>, loc<span class="op">=</span><span class="st">""</span>, scale<span class="op">=</span><span class="fl">0.2</span>, background<span class="op">=</span><span class="st">"white"</span>, </span>
+<span>  perimeter<span class="op">=</span><span class="cn">TRUE</span>, box<span class="op">=</span><span class="cn">NULL</span>, <span class="va">pper</span>, <span class="va">pbox</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">inset</span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span>, loc<span class="op">=</span><span class="st">""</span>, scale<span class="op">=</span><span class="fl">0.2</span>, background<span class="op">=</span><span class="st">"white"</span>, </span>
+<span>  perimeter<span class="op">=</span><span class="cn">TRUE</span>, box<span class="op">=</span><span class="cn">NULL</span>, <span class="va">pper</span>, <span class="va">pbox</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">inext</span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span>, y<span class="op">=</span><span class="cn">NULL</span>, gap<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -115,49 +115,49 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">v</span><span class="op">[</span><span class="va">v</span><span class="op">$</span><span class="va">NAME_2</span> <span class="op">==</span> <span class="st">"Diekirch"</span>, <span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">x</span>, density<span class="op">=</span><span class="fl">10</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">inset</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">v</span><span class="op">[</span><span class="va">v</span><span class="op">$</span><span class="va">NAME_2</span> <span class="op">==</span> <span class="st">"Diekirch"</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">x</span>, density<span class="op">=</span><span class="fl">10</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">inset</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="inset-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># more elaborate</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">x</span>, density<span class="op">=</span><span class="fl">10</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">inset</span><span class="op">(</span><span class="va">v</span>, col <span class="op">=</span> <span class="st">"brown"</span>, border<span class="op">=</span><span class="st">"lightgrey"</span>, perimeter<span class="op">=</span><span class="cn">TRUE</span>, </span>
-<span class="r-in">    pper<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col<span class="op">=</span><span class="st">"orange"</span>, lwd<span class="op">=</span><span class="fl">3</span>, lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span>, </span>
-<span class="r-in">    box<span class="op">=</span><span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, pbox<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col<span class="op">=</span><span class="st">"blue"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="st">"light grey"</span>, <span class="fl">12</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">cols</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"red"</span></span>
-<span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.2</span>, <span class="fl">6.3</span>, <span class="fl">49.9</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">+</span><span class="fl">0.02</span></span>
-<span class="r-in"><span class="fu">inset</span><span class="op">(</span><span class="va">v</span>, e<span class="op">=</span><span class="va">e</span>, col<span class="op">=</span><span class="va">cols</span>, box<span class="op">=</span><span class="va">b</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># more elaborate</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">x</span>, density<span class="op">=</span><span class="fl">10</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">inset</span><span class="op">(</span><span class="va">v</span>, col <span class="op">=</span> <span class="st">"brown"</span>, border<span class="op">=</span><span class="st">"lightgrey"</span>, perimeter<span class="op">=</span><span class="cn">TRUE</span>, </span></span>
+<span class="r-in"><span>    pper<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col<span class="op">=</span><span class="st">"orange"</span>, lwd<span class="op">=</span><span class="fl">3</span>, lty<span class="op">=</span><span class="fl">2</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>    box<span class="op">=</span><span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, pbox<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col<span class="op">=</span><span class="st">"blue"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="st">"light grey"</span>, <span class="fl">12</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cols</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"red"</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.2</span>, <span class="fl">6.3</span>, <span class="fl">49.9</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">+</span><span class="fl">0.02</span></span></span>
+<span class="r-in"><span><span class="fu">inset</span><span class="op">(</span><span class="va">v</span>, e<span class="op">=</span><span class="va">e</span>, col<span class="op">=</span><span class="va">cols</span>, box<span class="op">=</span><span class="va">b</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="inset-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># with a SpatRaster</span></span>
-<span class="r-in"><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">ff</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="crop.html">crop</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="fl">.01</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, type<span class="op">=</span><span class="st">"int"</span>, mar<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"topright"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, lwd<span class="op">=</span><span class="fl">2.5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">inset</span><span class="op">(</span><span class="va">v</span>, col<span class="op">=</span><span class="va">cols</span>, loc<span class="op">=</span><span class="st">"topleft"</span>, scale<span class="op">=</span><span class="fl">0.15</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># with a SpatRaster</span></span></span>
+<span class="r-in"><span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">ff</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="crop.html">crop</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="fl">.01</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, type<span class="op">=</span><span class="st">"int"</span>, mar<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"topright"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, lwd<span class="op">=</span><span class="fl">2.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">inset</span><span class="op">(</span><span class="va">v</span>, col<span class="op">=</span><span class="va">cols</span>, loc<span class="op">=</span><span class="st">"topleft"</span>, scale<span class="op">=</span><span class="fl">0.15</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="inset-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># a more complex one</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"meter\n"</span>, shrink<span class="op">=</span><span class="fl">.2</span>, cex<span class="op">=</span><span class="fl">.8</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">4</span>, col<span class="op">=</span><span class="st">"white"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, lwd<span class="op">=</span><span class="fl">2.5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"NAME_2"</span>, cex<span class="op">=</span><span class="fl">1.5</span>, halo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="sbar.html">sbar</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.04</span>, <span class="fl">49.785</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"bar"</span>, below<span class="op">=</span><span class="st">"km"</span>, label<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">6</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">.8</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">inset</span><span class="op">(</span><span class="va">v</span>, col<span class="op">=</span><span class="va">cols</span>, box<span class="op">=</span><span class="va">b</span>, scale<span class="op">=</span><span class="fl">.2</span>, loc<span class="op">=</span><span class="st">"topright"</span>, background<span class="op">=</span><span class="st">"light yellow"</span>,</span>
-<span class="r-in">  pbox<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="fl">5</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># note the returned inset SpatVector</span></span>
-<span class="r-in"><span class="va">s</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># a more complex one</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"meter\n"</span>, shrink<span class="op">=</span><span class="fl">.2</span>, cex<span class="op">=</span><span class="fl">.8</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">4</span>, col<span class="op">=</span><span class="st">"white"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, lwd<span class="op">=</span><span class="fl">2.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"NAME_2"</span>, cex<span class="op">=</span><span class="fl">1.5</span>, halo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="sbar.html">sbar</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.04</span>, <span class="fl">49.785</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"bar"</span>, below<span class="op">=</span><span class="st">"km"</span>, label<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">6</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">.8</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">inset</span><span class="op">(</span><span class="va">v</span>, col<span class="op">=</span><span class="va">cols</span>, box<span class="op">=</span><span class="va">b</span>, scale<span class="op">=</span><span class="fl">.2</span>, loc<span class="op">=</span><span class="st">"topright"</span>, background<span class="op">=</span><span class="st">"light yellow"</span>,</span></span>
+<span class="r-in"><span>  pbox<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="fl">5</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># note the returned inset SpatVector</span></span></span>
+<span class="r-in"><span><span class="va">s</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 12, 6  (geometries, attributes)</span>
@@ -169,7 +169,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     1 Diekirch     1 Clervaux   312 18081</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     2 Diekirch   218 32543</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     3  Redange   259 18664</span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">s</span>, col<span class="op">=</span><span class="st">"orange"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">s</span>, col<span class="op">=</span><span class="st">"orange"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="inset-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

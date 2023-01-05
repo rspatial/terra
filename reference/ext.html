@@ -18,7 +18,7 @@ You can set the extent of a SpatRaster, but you cannot set the extent of a SpatV
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -55,20 +55,20 @@ You can set the extent of a SpatRaster, but you cannot set the extent of a SpatV
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">ext</span><span class="op">(</span><span class="va">x</span>, cells<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">ext</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="co"># S4 method for numeric</span>
-<span class="fu">ext</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, xy<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatRaster,SpatExtent</span>
-<span class="fu">ext</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span>
-
-<span class="co"># S4 method for SpatRaster,numeric</span>
-<span class="fu">ext</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">ext</span><span class="op">(</span><span class="va">x</span>, cells<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">ext</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for numeric</span></span>
+<span><span class="fu">ext</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, xy<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster,SpatExtent</span></span>
+<span><span class="fu">ext</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster,numeric</span></span>
+<span><span class="fu">ext</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -98,34 +98,34 @@ You can set the extent of a SpatRaster, but you cannot set the extent of a SpatV
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu">ext</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="coerce.html">as.vector</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu">ext</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="coerce.html">as.vector</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> xmin xmax ymin ymax </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -180  180  -90   90 </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ext(-180, 180, -90, 90)"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">ext</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2.5</span>, <span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">ext</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2.5</span>, <span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 180, 360, 1  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.006944444, 0.008333333  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 0, 2.5, 0, 1.5  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 </span>
-<span class="r-in"><span class="va">er</span> <span class="op">&lt;-</span> <span class="fu">ext</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">er</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">er</span> <span class="op">&lt;-</span> <span class="fu">ext</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">er</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : 0, 3, 0, 2 (xmin, xmax, ymin, ymax)</span>
-<span class="r-in"><span class="co"># go "in"</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">er</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># go "in"</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">er</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : 0, 3, 0, 2 (xmin, xmax, ymin, ymax)</span>
-<span class="r-in"><span class="co"># go "out"</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="va">er</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># go "out"</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="va">er</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : 0, 2, 0, 1 (xmin, xmax, ymin, ymax)</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">ext</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">e</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">ext</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">e</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,8 +53,8 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVector</span>
-<span class="fu">densify</span><span class="op">(</span><span class="va">x</span>, <span class="va">interval</span>, equalize<span class="op">=</span><span class="cn">TRUE</span>, flat<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">densify</span><span class="op">(</span><span class="va">x</span>, <span class="va">interval</span>, equalize<span class="op">=</span><span class="cn">TRUE</span>, flat<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -81,32 +81,32 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">120</span>,<span class="op">-</span><span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">80</span>,<span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>,<span class="op">-</span><span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">120</span>,<span class="op">-</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span>, </span>
-<span class="r-in">  type<span class="op">=</span><span class="st">"polygons"</span>, crs<span class="op">=</span><span class="st">"+proj=longlat"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">vd</span> <span class="op">&lt;-</span> <span class="fu">densify</span><span class="op">(</span><span class="va">v</span>, <span class="fl">200000</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span><span class="va">v</span>, <span class="st">"+proj=robin"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span><span class="va">vd</span>, <span class="st">"+proj=robin"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># good </span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">pd</span>, col<span class="op">=</span><span class="st">"gray"</span>, border<span class="op">=</span><span class="st">"red"</span>, lwd<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">pd</span>, col<span class="op">=</span><span class="st">"gray"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># bad</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="st">"blue"</span>, lwd<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="st">"blue"</span>, cex<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="st">"blue"</span>, alpha<span class="op">=</span><span class="fl">.1</span>, add<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"good"</span>, <span class="st">"bad"</span><span class="op">)</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span>, lty<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">120</span>,<span class="op">-</span><span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">80</span>,<span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>,<span class="op">-</span><span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">120</span>,<span class="op">-</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>  type<span class="op">=</span><span class="st">"polygons"</span>, crs<span class="op">=</span><span class="st">"+proj=longlat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">vd</span> <span class="op">&lt;-</span> <span class="fu">densify</span><span class="op">(</span><span class="va">v</span>, <span class="fl">200000</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span><span class="va">v</span>, <span class="st">"+proj=robin"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span><span class="va">vd</span>, <span class="st">"+proj=robin"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># good </span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">pd</span>, col<span class="op">=</span><span class="st">"gray"</span>, border<span class="op">=</span><span class="st">"red"</span>, lwd<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">pd</span>, col<span class="op">=</span><span class="st">"gray"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># bad</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="st">"blue"</span>, lwd<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="st">"blue"</span>, cex<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="st">"blue"</span>, alpha<span class="op">=</span><span class="fl">.1</span>, add<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"good"</span>, <span class="st">"bad"</span><span class="op">)</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span>, lty<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="densify-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## the other way around does not work</span></span>
-<span class="r-in"><span class="co">## unless the original data was truly planar (e.g. derived from a map)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">densify</span><span class="op">(</span><span class="va">p</span>, <span class="fl">250000</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"+proj=longlat"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># bad</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># good</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">vd</span>, col<span class="op">=</span><span class="st">"red"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## the other way around does not work</span></span></span>
+<span class="r-in"><span><span class="co">## unless the original data was truly planar (e.g. derived from a map)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">densify</span><span class="op">(</span><span class="va">p</span>, <span class="fl">250000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"+proj=longlat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># bad</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># good</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">vd</span>, col<span class="op">=</span><span class="st">"red"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="densify-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

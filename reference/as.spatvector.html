@@ -18,7 +18,7 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -55,33 +55,33 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">as.polygons</span><span class="op">(</span><span class="va">x</span>, trunc<span class="op">=</span><span class="cn">TRUE</span>, dissolve<span class="op">=</span><span class="cn">TRUE</span>, values<span class="op">=</span><span class="cn">TRUE</span>,
-    na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.all<span class="op">=</span><span class="cn">FALSE</span>, extent<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatRaster</span>
-<span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatRaster</span>
-<span class="fu">as.points</span><span class="op">(</span><span class="va">x</span>, values<span class="op">=</span><span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.all<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">as.polygons</span><span class="op">(</span><span class="va">x</span>, extent<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">as.points</span><span class="op">(</span><span class="va">x</span>, multi<span class="op">=</span><span class="cn">FALSE</span>, skiplast<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatExtent</span>
-<span class="fu">as.polygons</span><span class="op">(</span><span class="va">x</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatExtent</span>
-<span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatExtent</span>
-<span class="fu">as.points</span><span class="op">(</span><span class="va">x</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">as.polygons</span><span class="op">(</span><span class="va">x</span>, trunc<span class="op">=</span><span class="cn">TRUE</span>, dissolve<span class="op">=</span><span class="cn">TRUE</span>, values<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>    na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.all<span class="op">=</span><span class="cn">FALSE</span>, extent<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">as.points</span><span class="op">(</span><span class="va">x</span>, values<span class="op">=</span><span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.all<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">as.polygons</span><span class="op">(</span><span class="va">x</span>, extent<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">as.points</span><span class="op">(</span><span class="va">x</span>, multi<span class="op">=</span><span class="cn">FALSE</span>, skiplast<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatExtent</span></span>
+<span><span class="fu">as.polygons</span><span class="op">(</span><span class="va">x</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatExtent</span></span>
+<span><span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatExtent</span></span>
+<span><span class="fu">as.points</span><span class="op">(</span><span class="va">x</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -126,10 +126,10 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">2</span>, nrows<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">as.points</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">2</span>, nrows<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">as.points</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : points </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 4, 1  (geometries, attributes)</span>
@@ -140,19 +140,19 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
 <span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    3</span>
-<span class="r-in"><span class="fu">as.lines</span><span class="op">(</span><span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, crs<span class="op">=</span><span class="fu"><a href="crs.html">crs</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">as.lines</span><span class="op">(</span><span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, crs<span class="op">=</span><span class="fu"><a href="crs.html">crs</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : lines </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 1, 0  (geometries, attributes)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span>  <span class="op">(</span><span class="fu"><a href="gdal.html">gdal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="st">"3.0.0"</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">as.polygons</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
-<span class="r-in">  <span class="va">p</span></span>
-<span class="r-in">  <span class="fu">as.lines</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span class="r-in">  <span class="fu">as.points</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span>  <span class="op">(</span><span class="fu"><a href="gdal.html">gdal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="st">"3.0.0"</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">as.polygons</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">p</span></span></span>
+<span class="r-in"><span>  <span class="fu">as.lines</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">as.points</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : points </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 16, 1  (geometries, attributes)</span>

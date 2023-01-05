@@ -19,7 +19,7 @@ You can create a SpatRasterCollection from a file with subdatasets."><meta prope
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -57,17 +57,17 @@ You can create a SpatRasterCollection from a file with subdatasets."><meta prope
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">sprc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span> 
-
-<span class="co"># S4 method for list</span>
-<span class="fu">sprc</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> 
-
-<span class="co"># S4 method for missing</span>
-<span class="fu">sprc</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> 
-
-<span class="co"># S4 method for character</span>
-<span class="fu">sprc</span><span class="op">(</span><span class="va">x</span>, ids<span class="op">=</span><span class="fl">0</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">sprc</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># S4 method for list</span></span>
+<span><span class="fu">sprc</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># S4 method for missing</span></span>
+<span><span class="fu">sprc</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># S4 method for character</span></span>
+<span><span class="fu">sprc</span><span class="op">(</span><span class="va">x</span>, ids<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -95,14 +95,14 @@ You can create a SpatRasterCollection from a file with subdatasets."><meta prope
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">110</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">50</span>, ymin<span class="op">=</span><span class="fl">40</span>, ymax<span class="op">=</span><span class="fl">70</span>, ncols<span class="op">=</span><span class="fl">60</span>, nrows<span class="op">=</span><span class="fl">30</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">80</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">20</span>, ymax<span class="op">=</span><span class="fl">60</span>, ymin<span class="op">=</span><span class="fl">30</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="dimensions.html">res</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="dimensions.html">res</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">sprc</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">z</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">110</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">50</span>, ymin<span class="op">=</span><span class="fl">40</span>, ymax<span class="op">=</span><span class="fl">70</span>, ncols<span class="op">=</span><span class="fl">60</span>, nrows<span class="op">=</span><span class="fl">30</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">80</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">20</span>, ymax<span class="op">=</span><span class="fl">60</span>, ymin<span class="op">=</span><span class="fl">30</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dimensions.html">res</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="dimensions.html">res</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">sprc</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">z</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRasterCollection </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> length      : 2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> nrow        : 30, 30 </span>

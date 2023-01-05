@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,7 +53,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">focalMat</span><span class="op">(</span><span class="va">x</span>, <span class="va">d</span>, type<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">'circle'</span>, <span class="st">'Gauss'</span>, <span class="st">'rectangle'</span><span class="op">)</span>, fillNA<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">focalMat</span><span class="op">(</span><span class="va">x</span>, <span class="va">d</span>, type<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">'circle'</span>, <span class="st">'Gauss'</span>, <span class="st">'rectangle'</span><span class="op">)</span>, fillNA<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -82,16 +82,16 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">180</span>, nrows<span class="op">=</span><span class="fl">180</span>, xmin<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">focalMat</span><span class="op">(</span><span class="va">r</span>, <span class="fl">2</span>, <span class="st">"circle"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">180</span>, nrows<span class="op">=</span><span class="fl">180</span>, xmin<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">focalMat</span><span class="op">(</span><span class="va">r</span>, <span class="fl">2</span>, <span class="st">"circle"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]       [,3]       [,4]       [,5]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.00000000 0.00000000 0.07692308 0.00000000 0.00000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.00000000 0.07692308 0.07692308 0.07692308 0.00000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.07692308 0.07692308 0.07692308 0.07692308 0.07692308</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 0.00000000 0.07692308 0.07692308 0.07692308 0.00000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.00000000 0.00000000 0.07692308 0.00000000 0.00000000</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">focalMat</span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, <span class="st">"rect"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">focalMat</span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, <span class="st">"rect"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]       [,3]       [,4]       [,5]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.02857143 0.02857143 0.02857143 0.02857143 0.02857143</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.02857143 0.02857143 0.02857143 0.02857143 0.02857143</span>
@@ -100,9 +100,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.02857143 0.02857143 0.02857143 0.02857143 0.02857143</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 0.02857143 0.02857143 0.02857143 0.02857143 0.02857143</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [7,] 0.02857143 0.02857143 0.02857143 0.02857143 0.02857143</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Gaussian filter for square cells</span></span>
-<span class="r-in"><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu">focalMat</span><span class="op">(</span><span class="va">r</span>, <span class="fl">1</span>, <span class="st">"Gauss"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Gaussian filter for square cells</span></span></span>
+<span class="r-in"><span><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu">focalMat</span><span class="op">(</span><span class="va">r</span>, <span class="fl">1</span>, <span class="st">"Gauss"</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>

@@ -19,7 +19,7 @@ To append SpatVectors use `rbind` and see methods like intersect and union for "
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -57,9 +57,9 @@ To append SpatVectors use `rbind` and see methods like intersect and union for "
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVector,SpatVector</span>
-<span class="fu">combineGeoms</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, overlap<span class="op">=</span><span class="cn">TRUE</span>, boundary<span class="op">=</span><span class="cn">TRUE</span>, distance<span class="op">=</span><span class="cn">TRUE</span>,
-  append<span class="op">=</span><span class="cn">TRUE</span>, minover<span class="op">=</span><span class="fl">0.1</span>, maxdist<span class="op">=</span><span class="cn">Inf</span>, dissolve<span class="op">=</span><span class="cn">TRUE</span>, erase<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector,SpatVector</span></span>
+<span><span class="fu">combineGeoms</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, overlap<span class="op">=</span><span class="cn">TRUE</span>, boundary<span class="op">=</span><span class="cn">TRUE</span>, distance<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>  append<span class="op">=</span><span class="cn">TRUE</span>, minover<span class="op">=</span><span class="fl">0.1</span>, maxdist<span class="op">=</span><span class="cn">Inf</span>, dissolve<span class="op">=</span><span class="cn">TRUE</span>, erase<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -110,33 +110,33 @@ To append SpatVectors use `rbind` and see methods like intersect and union for "
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((0 0, 8 0, 8 9, 0 9, 0 0))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((10 4, 12 4, 12 7, 11 7, 11 6, 10 6, 10 4))"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((5 6, 15 6, 15 15, 5 15, 5 6))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((8 2, 9 2, 9 3, 8 3, 8 2))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y3</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((2 6, 3 6, 3 8, 2 8, 2 6))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y4</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((2 12, 3 12, 3 13, 2 13, 2 12))"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>xid<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="crs.html">crs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"+proj=utm +zone=1"</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">y1</span>, <span class="va">y2</span>, <span class="va">y3</span>, <span class="va">y4</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>yid<span class="op">=</span><span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="crs.html">crs</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"+proj=utm +zone=1"</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>, border<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="st">"red"</span>,<span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"xid"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">y</span>, <span class="st">"yid"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((0 0, 8 0, 8 9, 0 9, 0 0))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((10 4, 12 4, 12 7, 11 7, 11 6, 10 6, 10 4))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((5 6, 15 6, 15 15, 5 15, 5 6))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((8 2, 9 2, 9 3, 8 3, 8 2))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y3</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((2 6, 3 6, 3 8, 2 8, 2 6))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y4</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((2 12, 3 12, 3 13, 2 13, 2 12))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>xid<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="crs.html">crs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"+proj=utm +zone=1"</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">y1</span>, <span class="va">y2</span>, <span class="va">y3</span>, <span class="va">y4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>yid<span class="op">=</span><span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="crs.html">crs</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"+proj=utm +zone=1"</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>, border<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="st">"red"</span>,<span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"xid"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">y</span>, <span class="st">"yid"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="combineGeoms-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">combineGeoms</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">v</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">combineGeoms</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">v</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="combineGeoms-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">combineGeoms</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, boundary<span class="op">=</span><span class="cn">FALSE</span>, maxdist<span class="op">=</span><span class="fl">1</span>, minover<span class="op">=</span><span class="fl">.05</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">v</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">combineGeoms</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, boundary<span class="op">=</span><span class="cn">FALSE</span>, maxdist<span class="op">=</span><span class="fl">1</span>, minover<span class="op">=</span><span class="fl">.05</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">v</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="combineGeoms-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

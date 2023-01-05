@@ -18,7 +18,7 @@ The object returned, a SpatGraticule, can be plotted with plot and lines. There 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -55,7 +55,7 @@ The object returned, a SpatGraticule, can be plotted with plot and lines. There 
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">graticule</span><span class="op">(</span>lon<span class="op">=</span><span class="fl">30</span>, lat<span class="op">=</span><span class="fl">30</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">graticule</span><span class="op">(</span>lon<span class="op">=</span><span class="fl">30</span>, lat<span class="op">=</span><span class="fl">30</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -83,21 +83,21 @@ The object returned, a SpatGraticule, can be plotted with plot and lines. There 
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">graticule</span><span class="op">(</span><span class="fl">60</span>, <span class="fl">30</span>, crs<span class="op">=</span><span class="st">"+proj=robin"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">g</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">graticule</span><span class="op">(</span><span class="fl">60</span>, <span class="fl">30</span>, crs<span class="op">=</span><span class="st">"+proj=robin"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">g</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatGraticule </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> lon         : -180 -120 -60 0 60 120 180 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> lat         : -90 -60 -30 0 30 60 90 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : +proj=robin +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -17005833, 17005833, -8625155, 8625155  (xmin, xmax, ymin, ymax)</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">graticule</span><span class="op">(</span><span class="fl">90</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>, <span class="op">-</span><span class="fl">60</span>, <span class="op">-</span><span class="fl">23.5</span>, <span class="fl">0</span>, <span class="fl">23.5</span>, <span class="fl">60</span>, <span class="fl">90</span><span class="op">)</span>, crs<span class="op">=</span><span class="st">"+proj=robin"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">graticule</span><span class="op">(</span><span class="fl">90</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>, <span class="op">-</span><span class="fl">60</span>, <span class="op">-</span><span class="fl">23.5</span>, <span class="fl">0</span>, <span class="fl">23.5</span>, <span class="fl">60</span>, <span class="fl">90</span><span class="op">)</span>, crs<span class="op">=</span><span class="st">"+proj=robin"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatGraticule </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> lon         : -180 -90 0 90 180 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> lat         : -90 -60 -23.5 0 23.5 60 90 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : +proj=robin +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -17005833, 17005833, -8625155, 8625155  (xmin, xmax, ymin, ymax)</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

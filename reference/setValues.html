@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,14 +53,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,ANY</span>
-<span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span>
-
-<span class="co"># S4 method for SpatRaster,ANY</span>
-<span class="fu">setValues</span><span class="op">(</span><span class="va">x</span>, <span class="va">values</span>, keeptime<span class="op">=</span><span class="cn">TRUE</span>, keepunits<span class="op">=</span><span class="cn">TRUE</span>, keepnames<span class="op">=</span><span class="cn">FALSE</span>, props<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector,ANY</span>
-<span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,ANY</span></span>
+<span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster,ANY</span></span>
+<span><span class="fu">setValues</span><span class="op">(</span><span class="va">x</span>, <span class="va">values</span>, keeptime<span class="op">=</span><span class="cn">TRUE</span>, keepunits<span class="op">=</span><span class="cn">TRUE</span>, keepnames<span class="op">=</span><span class="cn">FALSE</span>, props<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector,ANY</span></span>
+<span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -102,10 +102,10 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">setValues</span><span class="op">(</span><span class="va">r</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">setValues</span><span class="op">(</span><span class="va">r</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 90, 95, 1  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.008333333, 0.008333333  (x, y)</span>
@@ -115,8 +115,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> name        : elevation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min value   :         1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max value   :      8550 </span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x</span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 90, 95, 1  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.008333333, 0.008333333  (x, y)</span>
@@ -126,7 +126,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> name        :    elevation </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min value   : 0.0001064336 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max value   : 0.9999305937 </span>
-<span class="r-in"><span class="fu"><a href="headtail.html">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="headtail.html">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    elevation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.20754511</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.22865814</span>
@@ -134,11 +134,11 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.57487220</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.07706438</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.03554058</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, name<span class="op">=</span><span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="headtail.html">head</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, name<span class="op">=</span><span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="headtail.html">head</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ID name</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  1    a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  2    b</span>

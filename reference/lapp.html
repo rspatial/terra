@@ -20,7 +20,7 @@ Use app for summarize functions such as sum, that take any number of arguments; 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -59,12 +59,12 @@ Use app for summarize functions such as sum, that take any number of arguments; 
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">lapp</span><span class="op">(</span><span class="va">x</span>, <span class="va">fun</span>, <span class="va">...</span>, usenames<span class="op">=</span><span class="cn">FALSE</span>, cores<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatRasterDataset</span>
-<span class="fu">lapp</span><span class="op">(</span><span class="va">x</span>, <span class="va">fun</span>, <span class="va">...</span>, usenames<span class="op">=</span><span class="cn">FALSE</span>, recycle<span class="op">=</span><span class="cn">FALSE</span>, 
-    filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">lapp</span><span class="op">(</span><span class="va">x</span>, <span class="va">fun</span>, <span class="va">...</span>, usenames<span class="op">=</span><span class="cn">FALSE</span>, cores<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRasterDataset</span></span>
+<span><span class="fu">lapp</span><span class="op">(</span><span class="va">x</span>, <span class="va">fun</span>, <span class="va">...</span>, usenames<span class="op">=</span><span class="cn">FALSE</span>, recycle<span class="op">=</span><span class="cn">FALSE</span>, </span>
+<span>    filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -114,58 +114,58 @@ Use app for summarize functions such as sum, that take any number of arguments; 
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>  </span>
-<span class="r-in"><span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">fvi</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">{</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">y</span> <span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">x</span> <span class="op">+</span> <span class="va">y</span><span class="op">)</span> <span class="op">}</span> </span>
-<span class="r-in"><span class="co"># test the function</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="cn">NA</span><span class="op">)</span>, <span class="fl">6</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">fvi</span>, <span class="va">data</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>  </span></span>
+<span class="r-in"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fvi</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">{</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">y</span> <span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">x</span> <span class="op">+</span> <span class="va">y</span><span class="op">)</span> <span class="op">}</span> </span></span>
+<span class="r-in"><span><span class="co"># test the function</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="cn">NA</span><span class="op">)</span>, <span class="fl">6</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">fvi</span>, <span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.7142857 -0.4285714 -0.1428571  0.1428571  0.4285714         NA</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">ss</span>, fun<span class="op">=</span><span class="va">fvi</span> <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># which is the same as supplying the layers to "fun"</span></span>
-<span class="r-in"><span class="co"># in some cases this will be much faster </span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">fvi</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">f2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span><span class="op">{</span> <span class="op">(</span><span class="va">z</span> <span class="op">-</span> <span class="va">y</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">}</span> </span>
-<span class="r-in"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span>, fun<span class="op">=</span><span class="va">f2</span> <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">f2</span>, z<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># the usenames argument</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">fvi2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">red</span>, <span class="va">green</span><span class="op">)</span><span class="op">{</span> <span class="op">(</span><span class="va">red</span> <span class="op">-</span> <span class="va">green</span> <span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">red</span> <span class="op">+</span> <span class="va">green</span><span class="op">)</span> <span class="op">}</span> </span>
-<span class="r-in"><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">ss</span>, fun<span class="op">=</span><span class="va">fvi</span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># which is the same as supplying the layers to "fun"</span></span></span>
+<span class="r-in"><span><span class="co"># in some cases this will be much faster </span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">fvi</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">f2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span><span class="op">{</span> <span class="op">(</span><span class="va">z</span> <span class="op">-</span> <span class="va">y</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">}</span> </span></span>
+<span class="r-in"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span>, fun<span class="op">=</span><span class="va">f2</span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">f2</span>, z<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the usenames argument</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fvi2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">red</span>, <span class="va">green</span><span class="op">)</span><span class="op">{</span> <span class="op">(</span><span class="va">red</span> <span class="op">-</span> <span class="va">green</span> <span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">red</span> <span class="op">+</span> <span class="va">green</span><span class="op">)</span> <span class="op">}</span> </span></span>
+<span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "red"   "green" "blue" </span>
-<span class="r-in"><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># x1 and x2 are the same, despite the change in the order of the layers</span></span>
-<span class="r-in"><span class="co"># x4 is also the same, but x3 is not</span></span>
-<span class="r-in"><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x4</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># while this would fail because </span></span>
-<span class="r-in"><span class="co"># there are too many layers in s</span></span>
-<span class="r-in"><span class="co"># x5 &lt;- lapp(s, fvi2, usenames=FALSE)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="pairs.html">pairs</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, <span class="va">x3</span>, <span class="va">x4</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># x1 and x2 are the same, despite the change in the order of the layers</span></span></span>
+<span class="r-in"><span><span class="co"># x4 is also the same, but x3 is not</span></span></span>
+<span class="r-in"><span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x4</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># while this would fail because </span></span></span>
+<span class="r-in"><span><span class="co"># there are too many layers in s</span></span></span>
+<span class="r-in"><span><span class="co"># x5 &lt;- lapp(s, fvi2, usenames=FALSE)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="pairs.html">pairs</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, <span class="va">x3</span>, <span class="va">x4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="lapp-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## SpatRasterDataset</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="sds.html">sds</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fl">50</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span> <span class="va">x</span><span class="op">/</span><span class="va">y</span> <span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># test "fun"</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">9</span>, ncol<span class="op">=</span><span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">9</span><span class="op">:</span><span class="fl">1</span>, ncol<span class="op">=</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">fun</span>, <span class="va">data</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## SpatRasterDataset</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="sds.html">sds</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span> <span class="va">x</span><span class="op">/</span><span class="va">y</span> <span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># test "fun"</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">9</span>, ncol<span class="op">=</span><span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">9</span><span class="op">:</span><span class="fl">1</span>, ncol<span class="op">=</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">fun</span>, <span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]     [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.1111111 0.6666667 2.333333</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.2500000 1.0000000 4.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.4285714 1.5000000 9.000000</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">lapp</span><span class="op">(</span><span class="va">x</span>, <span class="va">fun</span>, recycle<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">lapp</span><span class="op">(</span><span class="va">x</span>, <span class="va">fun</span>, recycle<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 77, 101, 3  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 1, 1  (x, y)</span>
@@ -175,9 +175,9 @@ Use app for summarize functions such as sum, that take any number of arguments; 
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       :      lyr.1,      lyr.2,      lyr.3 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min values  : 0.01960784, 0.01851852, 0.01694915 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 0.83660131, 0.88571429, 1.12359551 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># the same, more concisely</span></span>
-<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">s</span> <span class="op">/</span> <span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fl">50</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the same, more concisely</span></span></span>
+<span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">s</span> <span class="op">/</span> <span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fl">50</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>

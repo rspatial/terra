@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,8 +53,8 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for character</span>
-<span class="fu">describe</span><span class="op">(</span><span class="va">x</span>, sds<span class="op">=</span><span class="cn">FALSE</span>, meta<span class="op">=</span><span class="cn">FALSE</span>, parse<span class="op">=</span><span class="cn">FALSE</span>, options<span class="op">=</span><span class="st">""</span>, print<span class="op">=</span><span class="cn">FALSE</span>, open_opt<span class="op">=</span><span class="st">""</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for character</span></span>
+<span><span class="fu">describe</span><span class="op">(</span><span class="va">x</span>, sds<span class="op">=</span><span class="cn">FALSE</span>, meta<span class="op">=</span><span class="cn">FALSE</span>, parse<span class="op">=</span><span class="cn">FALSE</span>, options<span class="op">=</span><span class="st">""</span>, print<span class="op">=</span><span class="cn">FALSE</span>, open_opt<span class="op">=</span><span class="st">""</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -90,8 +90,8 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">describe</span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">describe</span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Driver: GTiff/GeoTIFF"                                                    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "Files: /Users/runner/work/_temp/Library/terra/ex/elev.tif"                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "Size is 95, 90"                                                           </span>
@@ -146,10 +146,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [52] "    STATISTICS_MEAN=-9999"                                                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [53] "    STATISTICS_MINIMUM=141"                                               </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [54] "    STATISTICS_STDDEV=-9999"                                              </span>
-<span class="r-in"><span class="fu">describe</span><span class="op">(</span><span class="va">f</span>, meta<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">describe</span><span class="op">(</span><span class="va">f</span>, meta<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "AREA_OR_POINT=Area"</span>
-<span class="r-in"><span class="co">#g &lt;- describe(f, options=c("json", "nomd", "proj4"))</span></span>
-<span class="r-in"><span class="co">#head(g)</span></span>
+<span class="r-in"><span><span class="co">#g &lt;- describe(f, options=c("json", "nomd", "proj4"))</span></span></span>
+<span class="r-in"><span><span class="co">#head(g)</span></span></span>
 </code></pre></div>
     </div>
   </div>

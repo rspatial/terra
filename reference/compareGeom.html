@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -53,15 +53,15 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,SpatRaster</span>
-<span class="fu">compareGeom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span>, lyrs<span class="op">=</span><span class="cn">FALSE</span>, crs<span class="op">=</span><span class="cn">TRUE</span>, warncrs<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">TRUE</span>,
-  rowcol<span class="op">=</span><span class="cn">TRUE</span>, res<span class="op">=</span><span class="cn">FALSE</span>, stopOnError<span class="op">=</span><span class="cn">TRUE</span>, messages<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector,SpatVector</span>
-<span class="fu">compareGeom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, tolerance<span class="op">=</span><span class="fl">0</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector,missing</span>
-<span class="fu">compareGeom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, tolerance<span class="op">=</span><span class="fl">0</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,SpatRaster</span></span>
+<span><span class="fu">compareGeom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span>, lyrs<span class="op">=</span><span class="cn">FALSE</span>, crs<span class="op">=</span><span class="cn">TRUE</span>, warncrs<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>  rowcol<span class="op">=</span><span class="cn">TRUE</span>, res<span class="op">=</span><span class="cn">FALSE</span>, stopOnError<span class="op">=</span><span class="cn">TRUE</span>, messages<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector,SpatVector</span></span>
+<span><span class="fu">compareGeom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, tolerance<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector,missing</span></span>
+<span><span class="fu">compareGeom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, tolerance<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -112,17 +112,17 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r2</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r3</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">compareGeom</span><span class="op">(</span><span class="va">r1</span>, <span class="va">r2</span>, <span class="va">r3</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r2</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r3</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">compareGeom</span><span class="op">(</span><span class="va">r1</span>, <span class="va">r2</span>, <span class="va">r3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-in"><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">r3</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">compareGeom</span><span class="op">(</span><span class="va">r1</span>, <span class="va">r3</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">r3</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">compareGeom</span><span class="op">(</span><span class="va">r1</span>, <span class="va">r3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>

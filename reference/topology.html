@@ -23,7 +23,7 @@ snap makes boundaries of geometries identical if they are very close to each oth
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -65,14 +65,14 @@ snap makes boundaries of geometries identical if they are very close to each oth
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVector</span>
-<span class="fu">mergeLines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">snap</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="cn">NULL</span>, <span class="va">tolerance</span><span class="op">)</span>
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">removeDupNodes</span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>
-<span class="co"># S4 method for SpatVector</span>
-<span class="fu">makeNodes</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">mergeLines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">snap</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="cn">NULL</span>, <span class="va">tolerance</span><span class="op">)</span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">removeDupNodes</span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co"># S4 method for SpatVector</span></span>
+<span><span class="fu">makeNodes</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -103,14 +103,14 @@ snap makes boundaries of geometries identical if they are very close to each oth
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.spatvector.html">as.polygons</a></span><span class="op">(</span><span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.spatvector.html">as.polygons</a></span><span class="op">(</span><span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">1.1</span>,<span class="fl">2</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">snap</span><span class="op">(</span><span class="va">p</span>, tol<span class="op">=</span><span class="fl">.15</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">p</span>, lwd<span class="op">=</span><span class="fl">3</span>, col<span class="op">=</span><span class="st">"light gray"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">y</span>, col<span class="op">=</span><span class="st">"red"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.spatvector.html">as.polygons</a></span><span class="op">(</span><span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.spatvector.html">as.polygons</a></span><span class="op">(</span><span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">1.1</span>,<span class="fl">2</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">snap</span><span class="op">(</span><span class="va">p</span>, tol<span class="op">=</span><span class="fl">.15</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">p</span>, lwd<span class="op">=</span><span class="fl">3</span>, col<span class="op">=</span><span class="st">"light gray"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">y</span>, col<span class="op">=</span><span class="st">"red"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="topology-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

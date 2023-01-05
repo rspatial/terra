@@ -19,7 +19,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -57,9 +57,9 @@ For histogram equalization, these arguments are ignored, but you can provide the
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">stretch</span><span class="op">(</span><span class="va">x</span>, minv<span class="op">=</span><span class="fl">0</span>, maxv<span class="op">=</span><span class="fl">255</span>, minq<span class="op">=</span><span class="fl">0</span>, maxq<span class="op">=</span><span class="fl">1</span>, smin<span class="op">=</span><span class="cn">NA</span>, smax<span class="op">=</span><span class="cn">NA</span>,
-    histeq<span class="op">=</span><span class="cn">FALSE</span>, scale<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">stretch</span><span class="op">(</span><span class="va">x</span>, minv<span class="op">=</span><span class="fl">0</span>, maxv<span class="op">=</span><span class="fl">255</span>, minq<span class="op">=</span><span class="fl">0</span>, maxq<span class="op">=</span><span class="fl">1</span>, smin<span class="op">=</span><span class="cn">NA</span>, smax<span class="op">=</span><span class="cn">NA</span>,</span>
+<span>    histeq<span class="op">=</span><span class="cn">FALSE</span>, scale<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -109,11 +109,11 @@ For histogram equalization, these arguments are ignored, but you can provide the
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nc<span class="op">=</span><span class="fl">10</span>, nr<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">rs</span> <span class="op">&lt;-</span> <span class="fu">stretch</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sr</span> <span class="op">&lt;-</span> <span class="fu">stretch</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nc<span class="op">=</span><span class="fl">10</span>, nr<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="fu">stretch</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sr</span> <span class="op">&lt;-</span> <span class="fu">stretch</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>

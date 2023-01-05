@@ -18,7 +18,7 @@ is.related returns a logical vector indicating the presence or absence of a spec
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-51</span>
       </span>
     </div>
 
@@ -55,14 +55,14 @@ is.related returns a logical vector indicating the presence or absence of a spec
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVector,SpatVector</span>
-<span class="fu">relate</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">relation</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector,missing</span>
-<span class="fu">relate</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">relation</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatVector,SpatVector</span>
-<span class="fu">is.related</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">relation</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector,SpatVector</span></span>
+<span><span class="fu">relate</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">relation</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector,missing</span></span>
+<span><span class="fu">relate</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">relation</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatVector,SpatVector</span></span>
+<span><span class="fu">is.related</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">relation</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -96,39 +96,39 @@ is.related returns a logical vector indicating the presence or absence of a spec
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># polygons</span></span>
-<span class="r-in"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((0 0, 8 0, 8 9, 0 9, 0 0))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((5 6, 15 6, 15 15, 5 15, 5 6))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((8 2, 9 2, 9 3, 8 3, 8 2))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((2 6, 3 6, 3 8, 2 8, 2 6))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">p5</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((2 12, 3 12, 3 13, 2 13, 2 12))"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">p6</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((10 4, 12 4, 12 7, 11 7, 11 6, 10 6, 10 4))"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span>, <span class="va">p6</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">6</span>, alpha<span class="op">=</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">p</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># polygons</span></span></span>
+<span class="r-in"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((0 0, 8 0, 8 9, 0 9, 0 0))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((5 6, 15 6, 15 15, 5 15, 5 6))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((8 2, 9 2, 9 3, 8 3, 8 2))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((2 6, 3 6, 3 8, 2 8, 2 6))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">p5</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((2 12, 3 12, 3 13, 2 13, 2 12))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">p6</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((10 4, 12 4, 12 7, 11 7, 11 6, 10 6, 10 4))"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span>, <span class="va">p6</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">6</span>, alpha<span class="op">=</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">p</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="relate-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## relate SpatVectors</span></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="st">"intersects"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## relate SpatVectors</span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="st">"intersects"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] TRUE</span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">p1</span>, <span class="va">p3</span>, <span class="st">"touches"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">p1</span>, <span class="va">p3</span>, <span class="st">"touches"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] TRUE</span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">p1</span>, <span class="va">p5</span>, <span class="st">"disjoint"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">p1</span>, <span class="va">p5</span>, <span class="st">"disjoint"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] TRUE</span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span>, <span class="va">p4</span>, <span class="st">"disjoint"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span>, <span class="va">p4</span>, <span class="st">"disjoint"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  TRUE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## relate geometries within SpatVectors</span></span>
-<span class="r-in"><span class="co"># which are completely separated?</span></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"disjoint"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## relate geometries within SpatVectors</span></span></span>
+<span class="r-in"><span><span class="co"># which are completely separated?</span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"disjoint"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE FALSE FALSE FALSE  TRUE  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE FALSE  TRUE  TRUE  TRUE FALSE</span>
@@ -136,9 +136,9 @@ is.related returns a logical vector indicating the presence or absence of a spec
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] FALSE  TRUE  TRUE FALSE  TRUE  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,]  TRUE FALSE  TRUE  TRUE  TRUE FALSE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># which touch (not overlap or within)?</span></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"touches"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># which touch (not overlap or within)?</span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"touches"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE FALSE  TRUE FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE FALSE FALSE FALSE FALSE FALSE</span>
@@ -146,8 +146,8 @@ is.related returns a logical vector indicating the presence or absence of a spec
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] FALSE FALSE FALSE FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] FALSE FALSE FALSE FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,] FALSE FALSE FALSE FALSE FALSE FALSE</span>
-<span class="r-in"><span class="co"># which overlap (not merely touch, and not within)?</span></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"overlaps"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># which overlap (not merely touch, and not within)?</span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"overlaps"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE  TRUE FALSE FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  TRUE FALSE FALSE FALSE FALSE  TRUE</span>
@@ -155,8 +155,8 @@ is.related returns a logical vector indicating the presence or absence of a spec
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] FALSE FALSE FALSE FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] FALSE FALSE FALSE FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,] FALSE  TRUE FALSE FALSE FALSE FALSE</span>
-<span class="r-in"><span class="co"># which are within (not merely overlap)?</span></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"within"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># which are within (not merely overlap)?</span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"within"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  TRUE FALSE FALSE FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE  TRUE FALSE FALSE FALSE FALSE</span>
@@ -164,9 +164,9 @@ is.related returns a logical vector indicating the presence or absence of a spec
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  TRUE FALSE FALSE  TRUE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] FALSE FALSE FALSE FALSE  TRUE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,] FALSE FALSE FALSE FALSE FALSE  TRUE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># do they touch or overlap or are within?</span></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"intersects"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># do they touch or overlap or are within?</span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"intersects"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  TRUE  TRUE  TRUE  TRUE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  TRUE  TRUE FALSE FALSE FALSE  TRUE</span>
@@ -174,15 +174,15 @@ is.related returns a logical vector indicating the presence or absence of a spec
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  TRUE FALSE FALSE  TRUE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] FALSE FALSE FALSE FALSE  TRUE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,] FALSE  TRUE FALSE FALSE FALSE  TRUE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="summarize-generics.html">all</a></span><span class="op">(</span><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"intersects"</span><span class="op">)</span> <span class="op">==</span> </span>
-<span class="r-in">  <span class="op">(</span><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"overlaps"</span><span class="op">)</span> <span class="op">|</span> </span>
-<span class="r-in">   <span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"touches"</span><span class="op">)</span> <span class="op">|</span></span>
-<span class="r-in">   <span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"within"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="summarize-generics.html">all</a></span><span class="op">(</span><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"intersects"</span><span class="op">)</span> <span class="op">==</span> </span></span>
+<span class="r-in"><span>  <span class="op">(</span><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"overlaps"</span><span class="op">)</span> <span class="op">|</span> </span></span>
+<span class="r-in"><span>   <span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"touches"</span><span class="op">)</span> <span class="op">|</span></span></span>
+<span class="r-in"><span>   <span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"within"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#for polygons, "coveredby" is "within"</span></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"coveredby"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#for polygons, "coveredby" is "within"</span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">p</span>, relation<span class="op">=</span><span class="st">"coveredby"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  TRUE FALSE FALSE FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE  TRUE FALSE FALSE FALSE FALSE</span>
@@ -190,85 +190,85 @@ is.related returns a logical vector indicating the presence or absence of a spec
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  TRUE FALSE FALSE  TRUE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] FALSE FALSE FALSE FALSE  TRUE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,] FALSE FALSE FALSE FALSE FALSE  TRUE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># polygons, lines, and points </span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">pp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">L1</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"LINESTRING(1 11, 4 6, 10 6)"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">L2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"LINESTRING(8 14, 12 10)"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">L3</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"LINESTRING(1 8, 12 14)"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">L1</span>, <span class="va">L2</span>, <span class="va">L3</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">7</span>,<span class="fl">10</span>,<span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">5</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">pp</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">2</span>, alpha<span class="op">=</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">pp</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"POL"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>, halo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">pp</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">lns</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">lns</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"L"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, halo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">pts</span>, cex<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">pts</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"PT"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, halo<span class="op">=</span><span class="cn">TRUE</span>, pos<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># polygons, lines, and points </span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">pp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">L1</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"LINESTRING(1 11, 4 6, 10 6)"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">L2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"LINESTRING(8 14, 12 10)"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">L3</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"LINESTRING(1 8, 12 14)"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">L1</span>, <span class="va">L2</span>, <span class="va">L3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">7</span>,<span class="fl">10</span>,<span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">5</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">pp</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">2</span>, alpha<span class="op">=</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">pp</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"POL"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>, halo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">pp</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">lns</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">lns</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"L"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, halo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">pts</span>, cex<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">pts</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"PT"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, halo<span class="op">=</span><span class="cn">TRUE</span>, pos<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="relate-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, relation<span class="op">=</span><span class="st">"crosses"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, relation<span class="op">=</span><span class="st">"crosses"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]  [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE FALSE  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE FALSE  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  TRUE  TRUE FALSE</span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"crosses"</span><span class="op">)</span> </span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"crosses"</span><span class="op">)</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  TRUE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  TRUE  TRUE</span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"touches"</span><span class="op">)</span> </span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"touches"</span><span class="op">)</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] FALSE FALSE</span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"intersects"</span><span class="op">)</span> </span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"intersects"</span><span class="op">)</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  TRUE TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  TRUE TRUE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"within"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"within"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] FALSE FALSE</span>
-<span class="r-in"><span class="co"># polygons can contain lines or points, not the other way around</span></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"contains"</span><span class="op">)</span> </span>
+<span class="r-in"><span><span class="co"># polygons can contain lines or points, not the other way around</span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"contains"</span><span class="op">)</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] FALSE FALSE</span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">pp</span>, <span class="va">lns</span>, relation<span class="op">=</span><span class="st">"contains"</span><span class="op">)</span> </span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">pp</span>, <span class="va">lns</span>, relation<span class="op">=</span><span class="st">"contains"</span><span class="op">)</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]  [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE  TRUE FALSE</span>
-<span class="r-in"><span class="co"># points and lines can be covered by polygons</span></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"coveredby"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># points and lines can be covered by polygons</span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">lns</span>, <span class="va">pp</span>, relation<span class="op">=</span><span class="st">"coveredby"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] FALSE FALSE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">pts</span>, <span class="va">pp</span>, <span class="st">"within"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">pts</span>, <span class="va">pp</span>, <span class="st">"within"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  TRUE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] FALSE FALSE</span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">pts</span>, <span class="va">pp</span>, <span class="st">"touches"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">pts</span>, <span class="va">pp</span>, <span class="st">"touches"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] FALSE  TRUE</span>
-<span class="r-in"><span class="fu">relate</span><span class="op">(</span><span class="va">pts</span>, <span class="va">lns</span>, <span class="st">"touches"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">relate</span><span class="op">(</span><span class="va">pts</span>, <span class="va">lns</span>, <span class="st">"touches"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]  [,2]  [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  TRUE FALSE FALSE</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
