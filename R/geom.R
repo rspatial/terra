@@ -480,11 +480,14 @@ setMethod("thinGeom", signature(x="SpatVector"),
 setMethod("sharedPaths", signature(x="SpatVector"),
 	function(x, y=NULL) {
 		if (is.null(y)) {
-			x@ptr <- x@ptr$shared_paths()
+			x@ptr <- x@ptr$shared_paths(TRUE)
 		} else {
-			x@ptr <- x@ptr$shared_paths2(y@ptr)
+			x@ptr <- x@ptr$shared_paths2(y@ptr, TRUE)
 		}
-		messages(x, "sharedPaths")
+		x <- messages(x, "sharedPaths")
+		# sort data to ensure consistent order with spatial indices
+		if (nrow(x) > 0) x <- x[order(x$id1, x$id2), ]
+		x
 	}
 )
 
