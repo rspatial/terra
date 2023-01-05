@@ -31,11 +31,11 @@ SpatVector SpatVector2::to_old() {
 	for (size_t i=0; i<ng; i++) { 
 		SpatGeom geom;
 		geom.gtype = gtype;
-		for (size_t j=g[i]; j<g[i+1]; j++) { 
-			std::vector<double> x = {xc.begin() + p[j], xc.begin() + p[j+1]};
-			std::vector<double> y = {yc.begin() + p[j], yc.begin() + p[j+1]};
+		for (size_t j=G[i]; j<G[i+1]; j++) { 
+			std::vector<double> x = {X.begin() + P[j], X.begin() + P[j+1]};
+			std::vector<double> y = {Y.begin() + P[j], Y.begin() + P[j+1]};
 			if (gtype == polygons) {
-				if (h[j] >= 0) {
+				if (H[j] >= 0) {
 					geom.parts[geom.parts.size()-1].addHole(x, y);
 				} else {
 					SpatPart prt(x, y);
@@ -57,59 +57,59 @@ SpatVector2 SpatVector2::from_old(SpatVector x) {
 	out.srs = x.srs;
 	if (x.size() > 0) out.gtype = x.geoms[0].gtype;
 	size_t nxy = x.nxy();
-	out.xc.reserve(nxy);
-	out.yc.reserve(nxy);
+	out.X.reserve(nxy);
+	out.Y.reserve(nxy);
 	size_t ng = x.size();
-	out.g.reserve(ng);
+	out.G.reserve(ng);
 	size_t np = x.nparts(true);
-	out.p.reserve(np);
+	out.P.reserve(np);
 	if (x.type() == "polygons") {
-		out.h.reserve(ng);
+		out.H.reserve(ng);
 	}
 	
 	size_t pcnt = 0;
 	size_t gcnt = 0;
-	out.g.push_back(0); // so that we can use (j to j+1) for the first part
-	out.p.push_back(0); // so that we can use (j to j+1) for the first part
+	out.G.push_back(0); // so that we can use (j to j+1) for the first part
+	out.P.push_back(0); // so that we can use (j to j+1) for the first part
 	for (size_t i=0; i<ng; i++) {
 		SpatGeom xg = x.getGeom(i);
 		size_t np = xg.size();
 		if (np == 0) { // empty
 			pcnt++;
-			out.p.push_back(pcnt);
-			out.xc.push_back(NAN);
-			out.yc.push_back(NAN);
+			out.P.push_back(pcnt);
+			out.X.push_back(NAN);
+			out.Y.push_back(NAN);
 			if (x.type() == "polygons") {
-				out.h.push_back(-1);
+				out.H.push_back(-1);
 			}
 		}
 		for (size_t j=0; j < np; j++) {
 			SpatPart prt = xg.getPart(j);
-			out.xc.insert(out.xc.end(), prt.x.begin(), prt.x.end());
-			out.yc.insert(out.yc.end(), prt.y.begin(), prt.y.end());
+			out.X.insert(out.X.end(), prt.x.begin(), prt.x.end());
+			out.Y.insert(out.Y.end(), prt.y.begin(), prt.y.end());
 			pcnt += prt.x.size();
-			out.p.push_back(pcnt);
-			out.h.push_back(-1);
+			out.P.push_back(pcnt);
+			out.H.push_back(-1);
 			if (prt.hasHoles()) {
 				for (size_t k=0; k < prt.nHoles(); k++) {
 					SpatHole hle = prt.getHole(k);
-					out.xc.insert(out.xc.end(), hle.x.begin(), hle.x.end());
-					out.yc.insert(out.yc.end(), hle.y.begin(), hle.y.end());
+					out.X.insert(out.X.end(), hle.x.begin(), hle.x.end());
+					out.Y.insert(out.Y.end(), hle.y.begin(), hle.y.end());
 					pcnt += hle.x.size();
-					out.p.push_back(pcnt);
-					out.h.push_back(j);
+					out.P.push_back(pcnt);
+					out.H.push_back(j);
 					gcnt++;
 				}
 			}
 		}
 		gcnt += np;
-		out.g.push_back(gcnt);
+		out.G.push_back(gcnt);
 	}
 	return out;
 }
 
 size_t SpatVector2::ngeoms() {
-	return (g.size() - 1);
+	return (G.size() - 1);
 }
 
 

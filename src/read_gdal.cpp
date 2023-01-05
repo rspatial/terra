@@ -178,7 +178,7 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 			}
 		}
 	}
-	if ((id.size() == 0) && (id2.size() == 1)) {
+	if ((id.size() <= 1) && (id2.size() == 1)) {
 // #790 avoid having just "count" or "histogram" 
 		return(out);
 	}

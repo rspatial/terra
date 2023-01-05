@@ -190,11 +190,12 @@ RCPP_MODULE(spat){
     class_<SpatVector2>("SpatVector2")
 	
 		.constructor()
-		.field("x", &SpatVector2::xc)
-		.field("y", &SpatVector2::yc)
-		.field("g", &SpatVector2::g)
-		.field("p", &SpatVector2::p)
-		.field("h", &SpatVector2::h)
+		.field("x", &SpatVector2::X)
+		.field("y", &SpatVector2::Y)
+		.field("z", &SpatVector2::Z)
+		.field("g", &SpatVector2::G)
+		.field("p", &SpatVector2::P)
+		.field("h", &SpatVector2::H)
 		.method("from_old", &SpatVector2::from_old)
 		.method("to_old", &SpatVector2::to_old)
 	;

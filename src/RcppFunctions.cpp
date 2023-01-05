@@ -597,3 +597,27 @@ double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
 	return numer / std::sqrt(s1 * s2);
 }
 
+
+# include "vecmathse.h"
+// [[Rcpp::export(name = ".stattest1")]]
+double stattest1(std::vector<double> x, std::string fun, bool narm) {
+	if (!haveseFun(fun)) {
+		Rcpp::Rcout << fun + " is not available" << std::endl;
+		return NAN;
+	}
+	std::function<double(std::vector<double>&, double, double)> f = getseFun(fun, narm);
+	return f(x, 0, x.size());
+}
+
+
+# include "vecmath.h"
+// [[Rcpp::export(name = ".stattest2")]]
+double stattest2(std::vector<double> x, std::string fun, bool narm) {
+	if (!haveFun(fun)) {
+		Rcpp::Rcout << fun + " is not available" << std::endl;
+		return NAN;
+	}
+	std::function<double(std::vector<double>&, bool)> f = getFun(fun);
+	return f(x, narm);
+}
+

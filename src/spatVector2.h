@@ -47,11 +47,12 @@ class SpatVector2 {
 
 
 	public:
-		std::vector<double> xc;
-		std::vector<double> yc;
-		std::vector<size_t> g; // number of parts per geom, cumulative
-		std::vector<size_t> p; // part offsets
-		std::vector<long long> h; // hole
+		std::vector<double> X;
+		std::vector<double> Y;
+		std::vector<double> Z;
+		std::vector<size_t> G; // number of parts per geom, cumulative
+		std::vector<size_t> P; // part offsets
+		std::vector<long long> H; // hole
 
 		SpatGeomType gtype = unknown;
 		SpatExtent extent;

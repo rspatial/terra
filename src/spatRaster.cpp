@@ -1951,6 +1951,14 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
 	pv.reserve(ncl);
 	pv.srs = source[0].srs;
 
+	if (!hasValues()) {
+		if (values || narm) {
+			pv.addWarning("raster has no values");
+		}
+		values = false;
+		narm = false;
+	}
+
     std::vector<std::vector<double>> xy;
 	if ((!values) && (!narm)) {
         for (size_t i=0; i<ncl; i++) {
@@ -1958,7 +1966,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
 			SpatPart p(xy[0], xy[1]);
 			SpatGeom g(p, points);
 			pv.addGeom(g);
-			g.parts.resize(0);
+			//g.parts.resize(0);
         }
 		return pv;
 	}

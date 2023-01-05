@@ -348,3 +348,9 @@ setReplaceMethod("[", c("SpatExtent", "numeric", "missing"),
 	}
 )
 
+
+setMethod("is.valid", signature(x="SpatExtent"),
+	function(x) {
+		x@ptr$valid
+	}
+)

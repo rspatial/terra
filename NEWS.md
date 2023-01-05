@@ -1,4 +1,4 @@
-# version 1.6-49
+# version 1.6-50
 
 ## enhancements
 
@@ -6,7 +6,7 @@
 
 ## bug fixes 
 
-- `writeCDF` supports writing yearly time steps [#926](https://github.com/rspatial/terra/issues/926) by Andrea Manica
+- `writeCDF` now supports writing yearly time steps [#926](https://github.com/rspatial/terra/issues/926) by Andrea Manica
 
 
 # version 1.6-47
