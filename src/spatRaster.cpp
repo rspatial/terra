@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -1005,9 +1005,9 @@ bool SpatRaster::setWindow(SpatExtent x) {
 		source[i].window.expand = exp;
 		source[i].window.expanded  = expand;
 		source[i].window.full_extent = getExtent();
-		source[i].window.full_nrow   = source[i].nrow;
-		source[i].window.full_ncol   = source[i].ncol;
-		source[i].hasWindow     = true;
+		source[i].window.full_nrow = source[i].nrow;
+		source[i].window.full_ncol = source[i].ncol;
+		source[i].hasWindow = true;
 	}
 	setExtent(x, true, true, "");
 

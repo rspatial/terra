@@ -1,12 +1,15 @@
-# version 1.6-50
+# version 1.6-51
 
 ## enhancements
 
 - `shade` is now vectorized for arguments `angle` and `direction` to facilitate generating multiple hillshades that can be combined for a better result [#948](https://github.com/rspatial/terra/issues/948) by Jürgen Niedballa
+- `sharedPaths` now uses spatial indices [#960](https://github.com/rspatial/terra/issues/960) by Jeff Hanson
 
 ## bug fixes 
 
 - `writeCDF` now supports writing yearly time steps [#926](https://github.com/rspatial/terra/issues/926) by Andrea Manica
+- as.contour now works for a single level [#966](https://github.com/rspatial/terra/issues/966) by Johannes Signer
+- subsetting a SpatRaster with a window returned a SpatRaster with the dimensions of the non-windowed raster, thus changing the resolution. [#964](https://github.com/rspatial/terra/issues/964) by Derek Friend
 
 
 # version 1.6-47
