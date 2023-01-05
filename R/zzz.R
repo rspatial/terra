@@ -29,6 +29,9 @@
 		path <- system.file("proj", package="terra")
 	}
 	.gdalinit(path, file.path(sf, "gdal"))
+	if (gdal() == "3.6.0") {
+		message("You are using GDAL version 3.6.0. That version has been retracted")
+	}
 }
 
 loadModule("spat", TRUE)
