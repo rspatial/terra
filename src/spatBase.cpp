@@ -345,18 +345,19 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, bool expand, std::strin
 		double yrs = res[1];
 		unsigned nc = std::max(1.0, round( (ext.xmax - ext.xmin) / xrs ));
 		unsigned nr = std::max(1.0, round( (ext.ymax - ext.ymin) / yrs ));
-		source[0].ncol = nc;
-		source[0].nrow = nr;
 		ext.xmax = ext.xmin + nc * xrs;
 		ext.ymax = ext.ymin + nr * yrs;
-		source[0].extent = ext;
-	}
-
-	for (size_t i=0; i<nsrc(); i++) {
-		source[i].extent = ext;
-		source[i].extset = true;
-		//source[i].nrow = source[0].nrow;
-		//source[i].ncol = source[0].ncol;
+		for (size_t i=0; i<nsrc(); i++) {
+			source[i].extent = ext;
+			source[i].extset = true;
+			source[i].nrow = nr;
+			source[i].ncol = nc;
+		}
+	} else {
+		for (size_t i=0; i<nsrc(); i++) {
+			source[i].extent = ext;
+			source[i].extset = true;
+		}
 	}
 }
 
