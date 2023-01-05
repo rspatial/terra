@@ -100,7 +100,7 @@ setMethod("as.contour", signature(x="SpatRaster"),
 	function(x, maxcells=100000, ...) {
 		x <- spatSample(x[[1]], size=maxcells, method="regular", as.raster=TRUE)
 		z <- grDevices::contourLines(x=xFromCol(x,1:ncol(x)), y=yFromRow(x, nrow(x):1), z=t(as.matrix(x, wide=TRUE)[nrow(x):1,]), ...)
-		y <- sapply(1:length(z), function(i) cbind(z[[i]]$level, i, z[[i]]$x, z[[i]]$y))
+		y <- lapply(1:length(z), function(i) cbind(z[[i]]$level, i, z[[i]]$x, z[[i]]$y))
 		y <- do.call(rbind, y)
 		y[] <- as.numeric(y)
 		u <- unique(y[,1])
