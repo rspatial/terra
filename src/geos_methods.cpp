@@ -21,6 +21,10 @@
 #include "recycle.h"
 #include "string_utils.h"
 
+void callbck(void *item, void *userdata) { // callback function for tree selection
+	std::vector<size_t> *ret = (std::vector<size_t> *) userdata;
+	ret->push_back(*((size_t *) item));
+}
 
 SpatVector SpatVector::allerretour() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
@@ -495,12 +499,11 @@ SpatVector SpatVector::simplify(double tolerance, bool preserveTopology) {
 }
 
 
-
-SpatVector SpatVector::shared_paths() {
+SpatVector SpatVector::shared_paths(bool index) {
 
 	if (type() == "polygons") {
 		SpatVector x = as_lines();
-		return x.shared_paths();
+		return x.shared_paths(index);
 	}
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
@@ -509,16 +512,52 @@ SpatVector SpatVector::shared_paths() {
 	size_t s = size();
 	std::vector<long> id1, id2;
 	std::vector<GeomPtr> p;
-	for (size_t i=0; i<(s-1); i++) {
-		for (size_t j=(i+1); j<s; j++) {
-			GEOSGeometry* r = GEOSSharedPaths_r(hGEOSCtxt, x[i].get(), x[j].get());
-			if (r != NULL) {
-				if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
-					p.push_back(geos_ptr(r, hGEOSCtxt));
-					id1.push_back(i+1);
-					id2.push_back(j+1);
-				} else {
-					GEOSGeom_destroy_r(hGEOSCtxt, r);
+
+	if (!index) {
+		// calculate shared paths
+		for (size_t i=0; i<(s-1); i++) {
+			for (size_t j=(i+1); j<s; j++) {
+				GEOSGeometry* r = GEOSSharedPaths_r(hGEOSCtxt, x[i].get(), x[j].get());
+				if (r != NULL) {
+					if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+						p.push_back(geos_ptr(r, hGEOSCtxt));
+						id1.push_back(i+1);
+						id2.push_back(j+1);
+					} else {
+						GEOSGeom_destroy_r(hGEOSCtxt, r);
+					}
+				}
+			}
+		}
+	} else {
+		// use spatial index
+		std::vector<size_t> items(x.size());
+		TreePtr tree1 = geos_ptr(GEOSSTRtree_create_r(hGEOSCtxt, 10), hGEOSCtxt);
+		for (size_t i = 0; i < s; i++) {
+			items[i] = i;
+			if (! GEOSisEmpty_r(hGEOSCtxt, x[i].get()))
+				GEOSSTRtree_insert_r(hGEOSCtxt, tree1.get(), x[i].get(), &(items[i]));
+		}
+		for (size_t i = 0; i < s; i++) {
+			// pre-select x's using tree:
+			std::vector<size_t> tree_sel, sel;
+			if (!GEOSisEmpty_r(hGEOSCtxt, x[i].get())) {
+				GEOSSTRtree_query_r(hGEOSCtxt, tree1.get(), x[i].get(), callbck, &tree_sel);
+			}
+			if (! tree_sel.empty()) {
+				for (size_t j = 0; j < tree_sel.size(); j++) {
+					if (tree_sel[j] > i) {
+						GEOSGeometry* r = GEOSSharedPaths_r(hGEOSCtxt, x[i].get(), x[tree_sel[j]].get());
+						if (r != NULL) {
+							if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+								p.push_back(geos_ptr(r, hGEOSCtxt));
+								id1.push_back(i+1);
+								id2.push_back(tree_sel[j]+1);
+							} else {
+								GEOSGeom_destroy_r(hGEOSCtxt, r);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -538,14 +577,14 @@ SpatVector SpatVector::shared_paths() {
 }
 
 
-SpatVector SpatVector::shared_paths(SpatVector x) {
+SpatVector SpatVector::shared_paths(SpatVector x, bool index) {
 
 	if (x.type() == "polygons") {
 		x = x.as_lines();
 	}
 	if (type() == "polygons") {
 		SpatVector v = as_lines();
-		return v.shared_paths(x);
+		return v.shared_paths(x, index);
 	}
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
@@ -556,16 +595,49 @@ SpatVector SpatVector::shared_paths(SpatVector x) {
 	size_t sb = b.size();
 	std::vector<long> id1, id2;
 	std::vector<GeomPtr> p;
-	for (size_t i=0; i<sa; i++) {
-		for (size_t j=0; j<sb; j++) {
-			GEOSGeometry* r = GEOSSharedPaths_r(hGEOSCtxt, a[i].get(), b[j].get());
-			if (r != NULL) {
-				if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
-					p.push_back(geos_ptr(r, hGEOSCtxt));
-					id1.push_back(i+1);
-					id2.push_back(j+1);
-				} else {
-					GEOSGeom_destroy_r(hGEOSCtxt, r);
+
+	if (!index) {
+		for (size_t i=0; i<sa; i++) {
+			for (size_t j=0; j<sb; j++) {
+				GEOSGeometry* r = GEOSSharedPaths_r(hGEOSCtxt, a[i].get(), b[j].get());
+				if (r != NULL) {
+					if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+						p.push_back(geos_ptr(r, hGEOSCtxt));
+						id1.push_back(i+1);
+						id2.push_back(j+1);
+					} else {
+						GEOSGeom_destroy_r(hGEOSCtxt, r);
+					}
+				}
+			}
+		}
+	} else {
+		// use spatial index
+		std::vector<size_t> items(x.size());
+		TreePtr tree1 = geos_ptr(GEOSSTRtree_create_r(hGEOSCtxt, 10), hGEOSCtxt);
+		for (size_t i = 0; i < sb; i++) {
+			items[i] = i;
+			if (! GEOSisEmpty_r(hGEOSCtxt, b[i].get()))
+				GEOSSTRtree_insert_r(hGEOSCtxt, tree1.get(), b[i].get(), &(items[i]));
+		}
+		for (size_t i = 0; i < sa; i++) {
+			// pre-select x's using tree:
+			std::vector<size_t> tree_sel, sel;
+			if (!GEOSisEmpty_r(hGEOSCtxt, a[i].get())) {
+				GEOSSTRtree_query_r(hGEOSCtxt, tree1.get(), a[i].get(), callbck, &tree_sel);
+			}
+			if (! tree_sel.empty()) {
+				for (size_t j = 0; j < tree_sel.size(); j++) {
+					GEOSGeometry* r = GEOSSharedPaths_r(hGEOSCtxt, a[i].get(), b[tree_sel[j]].get());
+					if (r != NULL) {
+						if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+							p.push_back(geos_ptr(r, hGEOSCtxt));
+							id1.push_back(i+1);
+							id2.push_back(tree_sel[j]+1);
+						} else {
+							GEOSGeom_destroy_r(hGEOSCtxt, r);
+						}
+					}
 				}
 			}
 		}
@@ -1307,14 +1379,6 @@ int getRel(std::string &relation) {
 	}
 	return pattern;
 }
-
-
-
-void callbck(void *item, void *userdata) { // callback function for tree selection
-	std::vector<size_t> *ret = (std::vector<size_t> *) userdata;
-	ret->push_back(*((size_t *) item));
-}
-
 
 std::vector<int> SpatVector::relate(SpatVector v, std::string relation, bool prepared, bool index) {
 	// this method is redundant with "which_relate")
