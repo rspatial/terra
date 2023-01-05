@@ -1005,4 +1005,3 @@ SpatRaster SQRTfree(SpatRaster* g) {
 	return r;
 }
 */
-
