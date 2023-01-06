@@ -237,6 +237,11 @@ setMethod("predict", signature(object="SpatRaster"),
 		for (i in 1:b$n) {
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
 			r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=cores, ...)
+			if ((length(r) %% prod(b$nrows[i], nc)) != 0) {
+				msg <- "the number of values returned by the predict function does not match the input."
+				if (!na.rm) msg <- paste(msg, "Try na.rm=TRUE?")
+				error("predict", msg)
+			}
 			writeValues(out, r, b$row[i], b$nrows[i])
 		}
 		writeStop(out)
