@@ -393,15 +393,21 @@ setMethod("vect", signature(x="data.frame"),
 	}
 )
 
-
 setMethod("vect", signature(x="list"),
-	function(x) {
+	function(x, type="points", crs="") {
+		x <- lapply(x, function(i) {
+			if (inherits(i, "SpatVector")) return(i)
+			vect(i, type=type)
+		})
 		x <- svc(x)
 		v <- methods::new("SpatVector")
 		v@ptr <- x@ptr$append()
+		crs(v) <- crs
 		messages(v, "vect")
 	}
 )
+
+
 
 
 setMethod("query", signature(x="SpatVectorProxy"),

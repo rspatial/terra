@@ -5,6 +5,7 @@
 \alias{vect}
 \alias{vect,character-method}
 \alias{vect,list-method}
+\alias{vect,SpatVector-method}
 \alias{vect,data.frame-method}
 \alias{vect,matrix-method}
 \alias{vect,missing-method}
@@ -37,13 +38,13 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 
 \S4method{vect}{data.frame}(x, geom=c("lon", "lat"), crs="", keepgeom=FALSE)
 
-\S4method{vect}{list}(x)
+\S4method{vect}{list}(x, type="points", crs="")
 
 \S4method{vect}{sf}(x)
 }
 
 \arguments{
-\item{x}{character. A filename; or a "Well Known Text" string; or a data.frame (only to make a SpatVector of points); or a "geom" matrix to make a SpatVector of any supported geometry (see examples and \code{\link{geom}}); or a spatial vector data object defined in the \code{sf} or \code{sp} packages}
+\item{x}{character. A filename; or a "Well Known Text" string; or a data.frame (only to make a SpatVector of points); or a "geom" matrix to make a SpatVector of any supported geometry (see examples and \code{\link{geom}}); or a spatial vector data object defined in the \code{sf} or \code{sp} packages; or a list with matrices with coordinates}
 \item{layer}{character. layer name to select a layer from a file (database) with multiple layers}
 \item{query}{character. An query to subset the dataset in the \href{https://gdal.org/user/ogr_sql_dialect.html}{OGR-SQL dialect}}
 \item{extent}{Spat* object. The extent of the object is used as a spatial filter to select the geometries to read. Ignored if \code{filter} is not \code{NULL}}
