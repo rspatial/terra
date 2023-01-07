@@ -5031,7 +5031,7 @@ SpatRaster SpatRaster::fill_range(long limit, bool circular, SpatOptions &opt) {
 		size_t nc = out.bs.nrows[i] * ncol();
 		std::vector<double> v;
 		readValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol());
-		std::vector<double> d(v.size() * nl);
+		std::vector<double> d((v.size() / 2) * nl);
 		if (circular) {
 			for (size_t j=0; j<nc; j++) {
 				size_t jnc = j+nc;
