@@ -270,13 +270,16 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 
 	size_t nv = nrows * ncol() * nlyr();
 	if (vals.size() != nv) {
-		setError("incorrect number of values for writing");
+		if (nv > vals.size()) {
+			setError("incorrect number of values (too many) for writing");
+		} else {
+			setError("incorrect number of values (too few) for writing");
+		}
 		return false;
 	}
 
 	if (source[0].driver == "gdal") {
 		#ifdef useGDAL
-
 		success = writeValuesGDAL(vals, startrow, nrows, 0, ncol());
 		#else
 		setError("GDAL is not available");

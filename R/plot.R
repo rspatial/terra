@@ -307,3 +307,28 @@ shade <- function(slope, aspect, angle=45, direction=0, normalize=FALSE, filenam
 	messages(slope, "shade")
 }
 
+
+map.pal <- function(name, n=50, ...) { 
+	f <- system.file("colors/palettes.rds", package="terra")
+	v <- readRDS(f)
+	if (missing(name)) {
+		return(names(v))
+	}
+	if (name %in% names(v)) {
+		r <- colorRampPalette(v[[name]], ...)
+		r(n)
+	} else {
+		error("map.pal", paste(name, "is not a known palette"))
+	}
+}
+
+map.leg <- function(name) { 
+	f <- system.file("colors/legends.rds", package="terra")
+	v <- readRDS(f)
+	if (name %in% names(v)) {
+		v[[name]]
+	} else {
+		error("map.leg", paste(name, "is not a known legend"))
+	}
+}
+

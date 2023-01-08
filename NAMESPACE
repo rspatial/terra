@@ -18,5 +18,5 @@ S3method(str, SpatRaster)
 S3method(str, SpatExtent)
 S3method(str, SpatGraticule)
 
-export(focalMat, gdal, getGDALconfig, graticule, setGDALconfig, north, sbar, terraOptions, tmpFiles, makeVRT, mem_info, free_RAM, shade, gdalCache, fileBlocksize, vector_layers)
+export(focalMat, gdal, getGDALconfig, graticule, setGDALconfig, map.pal, north, sbar, terraOptions, tmpFiles, makeVRT, mem_info, free_RAM, shade, gdalCache, fileBlocksize, vector_layers)
 
