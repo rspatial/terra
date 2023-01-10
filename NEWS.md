@@ -4,12 +4,17 @@
 
 - `shade` is now vectorized for arguments `angle` and `direction` to facilitate generating multiple hillshades that can be combined for a better result [#948](https://github.com/rspatial/terra/issues/948) by Jürgen Niedballa
 - `sharedPaths` now uses spatial indices [#960](https://github.com/rspatial/terra/issues/960) by Jeff Hanson
+- `predict` better support for models such as ranger that do not return anything for missing values [#968](
+https://github.com/rspatial/terra/issues/968) by Alex Ilich
+
 
 ## bug fixes 
 
 - `writeCDF` now supports writing yearly time steps [#926](https://github.com/rspatial/terra/issues/926) by Andrea Manica
 - as.contour now works for a single level [#966](https://github.com/rspatial/terra/issues/966) by Johannes Signer
 - subsetting a SpatRaster with a window returned a SpatRaster with the dimensions of the non-windowed raster, thus changing the resolution. [#964](https://github.com/rspatial/terra/issues/964) by Derek Friend
+- removing a factor variable from a SpatVector crashed R. [#969](https://github.com/rspatial/terra/issues/969) by Andrew Gene Brown
+- median did not always return the correct number for a SpatRaster with 3 or more layers [#970](https://github.com/rspatial/terra/issues/970) by MatteaE
 
 
 # version 1.6-47
