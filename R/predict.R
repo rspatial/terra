@@ -53,7 +53,7 @@ parfun <- function(cls, d, fun, model, ...) {
 			#}
 			r <- as.matrix(r)
 			if (!all(i)) {
-				m <- matrix(NA, nrow=nl*n, ncol=ncol(r))
+				m <- matrix(NA, nrow=n, ncol=ncol(r))
 				m[i,] <- r
 				colnames(m) <- colnames(r)
 				r <- m
@@ -237,7 +237,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		for (i in 1:b$n) {
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
 			r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=cores, ...)
-			if (length(r) != prod(b$nrows[i], nc, nl)) {
+			if (prod(NROW(r), NCOL(r)) != prod(b$nrows[i], nc, nl)) {
 				msg <- "the number of values returned by the predict function does not match the input."
 				if (!na.rm) msg <- paste(msg, "Try na.rm=TRUE?")
 				error("predict", msg)
