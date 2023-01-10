@@ -418,8 +418,10 @@ bool SpatDataFrame::remove_column(int i) {
 		sv.erase(sv.begin()+place);
 	} else if (dtype == 3) {
 		bv.erase(bv.begin()+place);
-	} else {
+	} else if (dtype == 4) {
 		tv.erase(tv.begin()+place);
+	} else {
+		fv.erase(fv.begin()+place);
 	}
 	return true;
 }
