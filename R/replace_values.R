@@ -248,9 +248,9 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 
 		m <- c(missing(i), missing(j), missing(k))
 		s <- rep(FALSE, 3)
-		if (!m[1]) s[1] <- is.list(i)
-		if (!m[2]) s[2] <- is.list(j)
-		if (!m[3]) s[3] <- is.list(k)
+		if (!m[1]) s[1] <- inherits(i, "list")
+		if (!m[2]) s[2] <- inherits(j, "list")
+		if (!m[3]) s[3] <- inherits(k, "list")
 		if (any(s)) {
 			if (m[1]) i <- NULL 
 			if (m[2]) j <- NULL 
