@@ -315,7 +315,7 @@ map.pal <- function(name, n=50, ...) {
 		return(names(v))
 	}
 	if (name %in% names(v)) {
-		r <- colorRampPalette(v[[name]], ...)
+		r <- grDevices::colorRampPalette(v[[name]], ...)
 		r(n)
 	} else {
 		error("map.pal", paste(name, "is not a known palette"))
