@@ -1,6 +1,6 @@
 
 .assume_lonlat <- function(pr) {
-	(pr$usr[1] > -181) && (pr$usr[2] < 181) && (pr$yaxp[1] > -200) && (pr$yaxp[2] < 200)
+	(pr$usr[1] > -300) && (pr$usr[2] < 300) && (pr$yaxp[1] > -200) && (pr$yaxp[2] < 200)
 }
 
 .get_dd <- function(pr, lonlat, d=NULL) {
@@ -26,7 +26,7 @@
 }
 
 .get_xy <- function(xy, dx=0, dy=0, pr, defpos="bottomleft", caller="") {
-    if(is.null(xy)) {
+    if (is.null(xy)) {
 		xy <- defpos
 	}
 	if (!is.character(xy)) {
@@ -168,7 +168,7 @@ north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ..
 }
 
 
-sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ...){
+sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, ...){
 
 	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
@@ -186,20 +186,38 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 
 	if (type == "line") {
 		lines(matrix(c(xy[1], xy[2], xy[1]+dd, xy[2]), byrow=T, nrow=2), lwd=lwd, xpd=xpd, ...)
-		if (missing(label)) {
-			label <- paste(d)
-		}
-		if (is.null(label)) {
-			label <- paste(d)
+		
+		if (missing(label) || is.null(label)) {
+			if (divs > 2) {
+				label <- c(0, round(d/2), d)
+			} else {
+				label <- paste(d)
+			}
 		}
 		if (missing(adj)) {
 			adj <- c(0.5, -0.2-lwd/20 )
 		}
-
+		tadd <- 0
+		if (!isFALSE(ticks)) {
+			if (isTRUE(ticks)) {
+				tadd <- dd / (15 * diff(pr$usr[1:2]) / diff(pr$usr[3:4]))
+			} else {
+				tadd <- ticks
+			}
+			if (length(label) == 1) {
+				xtick <- c(xy[1], xy[1]+dd)
+			} else {
+				xtick <- c(xy[1], xy[1]+dd/2, xy[1]+dd)			
+			}
+			for (i in 1:length(xtick)) {
+				lines(rbind(c(xtick[i], xy[2]), c(xtick[i], xy[2]+tadd)), lwd=ceiling(lwd/2), ...)
+			}
+		}
+		tadd <- max(0, tadd)
 		if (length(label) == 1) label =c("", label, "")
-		text(xy[1], xy[2],labels=label[1], xpd=xpd, adj=adj,...)
-		text(xy[1]+0.5*dd, xy[2],labels=label[2], xpd=xpd, adj=adj,...)
-		text(xy[1]+dd, xy[2],labels=label[3], xpd=xpd, adj=adj,...)
+		text(xy[1], xy[2]+tadd,labels=label[1], xpd=xpd, adj=adj, ...)
+		text(xy[1]+0.5*dd, xy[2]+tadd,labels=label[2], xpd=xpd, adj=adj,...)
+		text(xy[1]+dd, xy[2]+tadd,labels=label[3], xpd=xpd, adj=adj,...)
 
 		xy[2] <- xy[2] - dd/10
 
@@ -215,10 +233,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 			half <- xy[1] + dd / 2
 			graphics::polygon(c(xy[1], xy[1], half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd)
 			graphics::polygon(c(half, half, xy[1]+dd, xy[1]+dd ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black", xpd=xpd)
-			if (missing(label)) {
-				label <- c("0", "", d)
-			}
-			if (is.null(label)) {
+			if (is.missing(label) || is.null(label)) {
 				label <- c("0", "", d)
 			}
 
@@ -234,10 +249,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 			graphics::polygon(c(q1, q1, half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black", xpd=xpd)
 			graphics::polygon(c(half, half, q3, q3 ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd)
 			graphics::polygon(c(q3, q3, end, end), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black", xpd=xpd)
-			if (missing(label)) {
-				label <- c("0", round(0.5*d), d)
-			}
-			if (is.null(label)) {
+			if (missing(label) || is.null(label)) {
 				label <- c("0", round(0.5*d), d)
 			}
 			text(xy[1], xy[2], labels=label[1], xpd=xpd, adj=adj, ...)
@@ -250,3 +262,8 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 		text(xy[1]+(0.5*dd), xy[2], xpd=xpd, labels=below, adj=adj,...)
 	}
 }
+
+
+#plot(w)
+#sbar(10000, lwd=1, ticks=T, label=c(0,5000,10000), col="red", xy=c(-180, -50))
+
