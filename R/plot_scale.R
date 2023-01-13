@@ -233,7 +233,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 			half <- xy[1] + dd / 2
 			graphics::polygon(c(xy[1], xy[1], half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd)
 			graphics::polygon(c(half, half, xy[1]+dd, xy[1]+dd ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black", xpd=xpd)
-			if (is.missing(label) || is.null(label)) {
+			if (missing(label) || is.null(label)) {
 				label <- c("0", "", d)
 			}
 
@@ -263,7 +263,4 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 	}
 }
 
-
-#plot(w)
-#sbar(10000, lwd=1, ticks=T, label=c(0,5000,10000), col="red", xy=c(-180, -50))
 

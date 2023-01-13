@@ -3,6 +3,14 @@
 # Version 1.0
 # License GPL v3
 
+point_on_border <- function(r, x, y, tolerance = sqrt(.Machine$double.eps)) {
+    v <- h <- (x >= xmin(r)) & (x <= xmax(r)) & (y >= ymin(r)) & (y <= ymax(r))
+    v[v] <- ((x[v] - xmin(r)) %% res(r)[1]) < tolerance
+    h[h] <- ((y[h] - ymin(r)) %% res(r)[2]) < tolerance
+    h | v
+}
+
+
 setMethod("yFromRow", signature(object="SpatRaster", row="numeric"),
 	function(object, row) {
 		object@ptr$yFromRow(row - 1)
