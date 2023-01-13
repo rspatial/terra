@@ -24,7 +24,7 @@ sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL,
 \item{adj}{adjustment for text placement}
 \item{lwd}{line width for the "line" type of the scale bar}
 \item{xpd}{logical. If \code{TRUE}, the scale bar can be outside the plotting area}
-\item{xpd}{logical or numeric. If not \code{FALSE}, tick marks are added to a "line" scale bar. The length of the tick marks can be specified}
+\item{ticks}{logical or numeric. If not \code{FALSE}, tick marks are added to a "line" scale bar. The length of the tick marks can be specified}
 \item{...}{graphical arguments to be passed to other methods }
 }
 
