@@ -87,14 +87,20 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">map.pal</span><span class="op">(</span><span class="st">"elevation"</span>, <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [map.pal] elevation is not a known palette</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "#00BFBF" "#00E254" "#1CFF00" "#A9FF00" "#FFE200" "#FF9B00" "#E97F14"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "#C67F37" "#C39F7B" "#C8C8C8"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, col<span class="op">=</span><span class="fu">map.pal</span><span class="op">(</span><span class="st">"elevation"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [map.pal] elevation is not a known palette</span>
+<span class="r-plt img"><img src="mappal-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">map.pal</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "aspect"      "bcyr"        "bgyr"        "blues"       "byg"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "byr"         "curvature"   "differences" "elevation"   "grass"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "greens"      "grey"        "gyr"         "haxby"       "inferno"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "magma"       "oranges"     "plasma"      "rainbow"     "ramp"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "reds"        "roygbiv"     "rstcurv"     "ryb"         "ryg"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26] "sepia"       "viridis"     "water"       "wave"       </span>
 </code></pre></div>
     </div>
   </div>

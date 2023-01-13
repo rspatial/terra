@@ -53,8 +53,8 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sbar</span><span class="op">(</span><span class="va">d</span>, xy<span class="op">=</span><span class="cn">NULL</span>, type<span class="op">=</span><span class="st">"line"</span>, divs<span class="op">=</span><span class="fl">2</span>, below<span class="op">=</span><span class="st">""</span>, </span>
-<span>    lonlat<span class="op">=</span><span class="cn">NULL</span>, <span class="va">label</span>, adj<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">2</span>, xpd<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sbar</span><span class="op">(</span><span class="va">d</span>, xy<span class="op">=</span><span class="cn">NULL</span>, type<span class="op">=</span><span class="st">"line"</span>, divs<span class="op">=</span><span class="fl">2</span>, below<span class="op">=</span><span class="st">""</span>, lonlat<span class="op">=</span><span class="cn">NULL</span>, </span>
+<span>  <span class="va">label</span>, adj<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">2</span>, xpd<span class="op">=</span><span class="cn">TRUE</span>, ticks<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -89,6 +89,9 @@
 <dt>xpd</dt>
 <dd><p>logical. If <code>TRUE</code>, the scale bar can be outside the plotting area</p></dd>
 
+<dt>xpd</dt>
+<dd><p>logical or numeric. If not <code>FALSE</code>, tick marks are added to a "line" scale bar. The length of the tick marks can be specified</p></dd>
+
 <dt>...</dt>
 <dd><p>graphical arguments to be passed to other methods</p></dd>
 
@@ -111,7 +114,7 @@
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">sbar</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">sbar</span><span class="op">(</span><span class="fl">1000</span>, xy<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">178500</span>, <span class="fl">333500</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"bar"</span>, divs<span class="op">=</span><span class="fl">4</span>, cex<span class="op">=</span><span class="fl">.8</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">sbar</span><span class="op">(</span><span class="fl">1000</span>, xy<span class="op">=</span><span class="st">"bottomright"</span>, divs<span class="op">=</span><span class="fl">4</span>, cex<span class="op">=</span><span class="fl">.8</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">sbar</span><span class="op">(</span><span class="fl">1000</span>, xy<span class="op">=</span><span class="st">"bottomright"</span>, divs<span class="op">=</span><span class="fl">3</span>, cex<span class="op">=</span><span class="fl">.8</span>, ticks<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="north.html">north</a></span><span class="op">(</span>d<span class="op">=</span><span class="fl">250</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">178550</span>, <span class="fl">332500</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="sbar-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
@@ -121,6 +124,7 @@
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, type<span class="op">=</span><span class="st">"interval"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">sbar</span><span class="op">(</span><span class="fl">20</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.2</span>, <span class="fl">50.1</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"bar"</span>, cex<span class="op">=</span><span class="fl">.8</span>, divs<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">sbar</span><span class="op">(</span><span class="fl">15</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.3</span>, <span class="fl">50</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"bar"</span>, below<span class="op">=</span><span class="st">"km"</span>, label<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">7.5</span>,<span class="fl">15</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">.8</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is.missing(label):</span> could not find function "is.missing"</span>
 <span class="r-in"><span><span class="fu">sbar</span><span class="op">(</span><span class="fl">15</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.65</span>, <span class="fl">49.8</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">.8</span>, label<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="st">"km"</span>,<span class="fl">15</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="north.html">north</a></span><span class="op">(</span>type<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">sbar</span><span class="op">(</span><span class="fl">15</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.65</span>, <span class="fl">49.7</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">.8</span>, label<span class="op">=</span><span class="st">"15 kilometer"</span>, lwd<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>

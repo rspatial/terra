@@ -55,6 +55,8 @@
 <code>shade</code> is now vectorized for arguments <code>angle</code> and <code>direction</code> to facilitate generating multiple hillshades that can be combined for a better result <a href="https://github.com/rspatial/terra/issues/948" class="external-link">#948</a> by Jürgen Niedballa</li>
 <li>
 <code>sharedPaths</code> now uses spatial indices <a href="https://github.com/rspatial/terra/issues/960" class="external-link">#960</a> by Jeff Hanson</li>
+<li>
+<code>predict</code> better support for models such as ranger that do not return anything for missing values <a href="https://github.com/rspatial/terra/issues/968" class="external-link">#968</a> by Alex Ilich</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-51">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-51"></a></h3>
@@ -62,6 +64,8 @@
 <code>writeCDF</code> now supports writing yearly time steps <a href="https://github.com/rspatial/terra/issues/926" class="external-link">#926</a> by Andrea Manica</li>
 <li>as.contour now works for a single level <a href="https://github.com/rspatial/terra/issues/966" class="external-link">#966</a> by Johannes Signer</li>
 <li>subsetting a SpatRaster with a window returned a SpatRaster with the dimensions of the non-windowed raster, thus changing the resolution. <a href="https://github.com/rspatial/terra/issues/964" class="external-link">#964</a> by Derek Friend</li>
+<li>removing a factor variable from a SpatVector crashed R. <a href="https://github.com/rspatial/terra/issues/969" class="external-link">#969</a> by Andrew Gene Brown</li>
+<li>median did not always return the correct number for a SpatRaster with 3 or more layers <a href="https://github.com/rspatial/terra/issues/970" class="external-link">#970</a> by MatteaE</li>
 </ul></div>
 </div>
     <div class="section level2">
