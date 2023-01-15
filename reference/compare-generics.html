@@ -6,9 +6,8 @@ Logical: !, &amp;amp;, |, isTRUE, isFALSE
 Compare:  ==, !=, &amp;gt;, &amp;lt;,  &amp;lt;=, &amp;gt;=, is.na, is.nan, is.finite, is.infinite
 See not.na for the inverse of is.na, and noNA to detect cells with missing value across layers.
 The terra package does not distinguish between NA (not available) and NaN (not a number). In most cases this state is represented by NaN.
-
-The following method has been implemented for
-(SpatExtent, SpatExtent): =="><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+If you use a SpatRaster with a vector of multiple numbers, each element in the vector is considered a layer (with a constant value). If you use a SpatRaster with a matrix, the number of columns of the matrix must match the number of layers of the SpatRaster. The rows are used to match the cells. That is, if there are two rows, these match cells 1 and 2, and they are recycled to 3 and 4, etc.
+The following method has been implemented for (SpatExtent, SpatExtent): =="><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -65,9 +64,8 @@ The following method has been implemented for
 <p><b>Compare</b>: <code> ==, !=, &gt;, &lt;,  &lt;=, &gt;=, is.na, is.nan, is.finite, is.infinite</code></p>
 <p>See <code><a href="not.na.html">not.na</a></code> for the inverse of <code>is.na</code>, and <code><a href="summarize-generics.html">noNA</a></code> to detect cells with missing value across layers.</p>
 <p>The terra package does not distinguish between <code>NA</code> (not available) and <code>NaN</code> (not a number). In most cases this state is represented by <code>NaN</code>.</p>
-
-<p>The following method has been implemented for</p>
-<p><b>(SpatExtent, SpatExtent)</b>: <code>==</code></p>
+<p>If you use a SpatRaster with a vector of multiple numbers, each element in the vector is considered a layer (with a constant value). If you use a SpatRaster with a matrix, the number of columns of the matrix must match the number of layers of the SpatRaster. The rows are used to match the cells. That is, if there are two rows, these match cells 1 and 2, and they are recycled to 3 and 4, etc.</p>
+<p>The following method has been implemented for <b>(SpatExtent, SpatExtent)</b>: <code>==</code></p>
     </div>
 
 
