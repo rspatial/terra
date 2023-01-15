@@ -378,7 +378,7 @@ class SpatRaster {
 
 		void gdalogrproj_init(std::string path);
 
-		bool compare_geom(SpatRaster x, bool lyrs, bool crs, double tol, bool warncrs=false, bool ext=true, bool rowcol=true, bool res=false);
+		bool compare_geom(SpatRaster &x, bool lyrs, bool crs, double tol, bool warncrs=false, bool ext=true, bool rowcol=true, bool res=false);
 		bool compare_origin(std::vector<double> x, double tol);
 		bool shared_basegeom(SpatRaster &x, double tol, bool test_overlap);
 
@@ -568,6 +568,8 @@ class SpatRaster {
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster arith(double x, std::string oper, bool reverse, SpatOptions &opt);
 		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt);
+		SpatRaster arith_m(std::vector<double> x, std::string oper, std::vector<size_t> dim, bool reverse, SpatOptions &opt);
+
 		SpatRaster apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, std::vector<int_64> time, std::string timestep, std::string timezone, SpatOptions &opt);
 	
 		SpatRaster rapply(SpatRaster x, double first, double last, std::string fun, bool clamp, bool narm, bool circular, SpatOptions &opt);

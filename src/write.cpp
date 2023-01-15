@@ -232,9 +232,6 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 
 	if (opt.progressbar) {
 		pbar.init(bs.n, opt.get_progress());
-		//unsigned long steps = bs.n+2;
-		//pbar = new Progress(steps, opt.show_progress(bs.n));
-		//pbar->increment();
 		progressbar = true;
 	} else {
 		progressbar = false;
@@ -293,20 +290,12 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 #ifdef useRcpp
 	if (checkInterrupt()) {
 		pbar.interrupt();
-		setError("aborted");
+		setError("interrupted");
 		return(false);
 	}
 	if (progressbar) {
 		pbar.stepit();
 	}
-//		if (Progress::check_abort()) {
-//			pbar->cleanup();
-//			delete pbar;
-//			setError("aborted");
-//			return(false);
-//		}
-//		pbar->increment();
-//	}
 #endif
 	return success;
 }
@@ -346,14 +335,6 @@ bool SpatRaster::writeValuesRect(std::vector<double> &vals, size_t startrow, siz
 	if (progressbar) {
 		pbar.stepit();
 	}
-	//	if (Progress::check_abort()) {
-	//		pbar->cleanup();
-	//		delete pbar;
-	//		setError("aborted");
-	//		return(false);
-	//	}
-	//	pbar->increment();
-	//}
 #endif
 	return success;
 }
@@ -394,7 +375,7 @@ bool SpatRaster::writeStop(){
 
 #ifdef useRcpp
 	if (progressbar) {
-		pbar.stepit();
+		pbar.finish();
 	}
 /*
 	if (progressbar) {

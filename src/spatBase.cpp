@@ -451,8 +451,7 @@ std::vector<double> SpatRaster::origin() {
 }
 
 
-
-bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, double tol, bool warncrs, bool ext, bool rowcol, bool res) {
+bool SpatRaster::compare_geom(SpatRaster &x, bool lyrs, bool crs, double tol, bool warncrs, bool ext, bool rowcol, bool res) {
 
 	tol = tol < 0 ? 0 : tol;
 
@@ -585,9 +584,15 @@ void SpatProgress::stepit() {
 			if (n > 0) {
 				for (int i=0; i<n; i++) Rcpp::Rcout << "=";
 			}
-		} else if (step == nstep){
-			Rcpp::Rcout << "\r                                          \r";
 		}
+		step++;
+		R_FlushConsole();
+	}
+}
+
+void SpatProgress::finish() {
+	if (show) {
+		Rcpp::Rcout << "\r                                          \r";
 		step++;
 		R_FlushConsole();
 	}

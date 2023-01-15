@@ -369,6 +369,7 @@ class SpatProgress {
 		void init(size_t n, int nmin);
 		bool show = false;
 		void stepit();
+		void finish();
 		void interrupt();
 };
 
