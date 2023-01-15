@@ -573,23 +573,27 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 		out.setError("incorrect dimensions"); 
 		return out;
 	}
-	size_t nl = nlyr();
-	
-	if (dim[1] != nl) {
-		out.setError("incorrect matrix dimensions (ncol != nlyr(x))"); 
+	if ((dim[1] * dim[0]) != x.size()) {
+		out.setError("incorrect matrix dimensions (dim(m) != length(x))"); 
 		return out;
 	}
+
+	// single cell
 	if (dim[0] < 2) {
 		return(arith(x, oper, reverse, opt));
 	}
-	
 	if (dim[0] > ncell()) {
 		out.setError("incorrect matrix dimensions (nrow > ncell(x))"); 
 		return out;
 	}
-	if ((dim[1] * dim[0]) != x.size()) {
-		out.setError("incorrect matrix dimensions (dim(m) != length(x))"); 
+
+	size_t nl = nlyr();
+	if (dim[1] > nl) {
+		out.setError("incorrect matrix dimensions (ncol != nlyr(x))"); 
 		return out;
+	} else if (dim[1] < nl) {
+		recycle(x, nl * dim[0]);
+		dim[1] = nl;
 	}
 	
 	bool logical;
@@ -632,8 +636,7 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 	}
 
 	unsigned nc = ncol();
-
-	std::vector<double> xx = x;
+	size_t nx = x.size();
 	
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v;
@@ -642,80 +645,84 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 		for (size_t j=0; j<nl; j++) {
 			size_t s = j * off;
 			size_t d = j * dim[0];
-			x = {xx.begin()+d, xx.begin()+d+dim[0]};
-			recycle(x, off); // note: not correct if x.size() > boff!
+			std::vector<double> xj = {x.begin()+d, x.begin()+d+dim[0]};
+			size_t start = (out.bs.row[i] * nc) % nx;
+			if (start != 0) {
+				std::rotate(xj.begin(), xj.begin()+start, xj.end());
+			}
+			recycle(xj, off);
 			if (oper == "+") {
 				for (size_t k=0; k<off; k++) {
-					v[s+k] += x[k];
+					v[s+k] += xj[k];
 				}
 			} else if (oper == "-") {				
 				if (reverse) {
 					for (size_t k=0; k<off; k++) {
-						v[s+k] = x[k] - v[s+k];
+						v[s+k] = xj[k] - v[s+k];
 					}
 				} else {
 					for (size_t k=0; k<off; k++) {
-						v[s+k] -= x[k];
+						v[s+k] -= xj[k];
 					}
 				}
 			} else if (oper == "*") {
 				for (size_t k=0; k<off; k++) {
-					v[s+k] *= x[k];
+					v[s+k] *= xj[k];
 				}
 			} else if (oper == "/") {				
 				if (reverse) {
 					for (size_t k=0; k<off; k++) {
-						v[s+k] = x[k] / v[s+k];
+						v[s+k] = xj[k] / v[s+k];
 					}
 				} else {
 					for (size_t k=0; k<off; k++) {
-						v[s+k] /= x[k];
+						v[s+k] /= xj[k];
 					}
 				}
 				
 			} else if (oper == "^") {				
 				if (reverse) {
 					for (size_t k=0; k<off; k++) {
-						v[s+k] = std::pow(x[k], v[s+k]);
+						v[s+k] = std::pow(xj[k], v[s+k]);
 					}
 				} else {
 					for (size_t k=0; k<off; k++) {
-						v[s+k] = std::pow(v[s+k], x[k]);
+						v[s+k] = std::pow(v[s+k], xj[k]);
 					}
 				}
 			} else if (oper == "%") {
 				if (reverse) {
 					for (size_t k=0; k<off; k++) {
-						v[s+k] = std::fmod(x[k], v[s+k]);
+						v[s+k] = std::fmod(xj[k], v[s+k]);
 					}
 				} else {
 					for (size_t k=0; k<off; k++) {
-						v[s+k] = std::fmod(v[s+k], x[k]);
+						v[s+k] = std::fmod(v[s+k], xj[k]);
 					}
 				}
 			} else if (oper == "==") {
 				for (size_t k=0; k<off; k++) {
-					v[s+k] = v[s+k] == x[k];
+					v[s+k] = v[s+k] == xj[k];
 				}			
 			} else if (oper == "!=") {
 				for (size_t k=0; k<off; k++) {
-					v[s+k] = v[s+k] != x[k];
+					v[s+k] = v[s+k] != xj[k];
 				}			
 			} else if (oper == ">=") {				
 				for (size_t k=0; k<off; k++) {
-					if (!std::isnan(v[s+k])) v[s+k] = v[s+k] >= x[k];
+					if (!std::isnan(v[s+k])) v[s+k] = v[s+k] >= xj[k];
 				}			
 			} else if (oper == "<=") {
 				for (size_t k=0; k<off; k++) {
-					if (!std::isnan(v[s+k])) v[s+k] = v[s+k] <= x[k];
+					if (!std::isnan(v[s+k])) v[s+k] = v[s+k] <= xj[k];
 				}
 			} else if (oper == ">") {
 				for (size_t k=0; k<off; k++) {
-					if (!std::isnan(v[s+k])) v[s+k] = v[s+k] > x[k];
+					if (!std::isnan(v[s+k])) v[s+k] = v[s+k] > xj[k];
 				}
 			} else if (oper == "<") {
 				for (size_t k=0; k<off; k++) {
-					if (!std::isnan(v[s+k])) v[s+k] = v[s+k] < x[k];
+					if (!std::isnan(v[s+k])) v[s+k] = v[s+k] < xj[k];
 				}
 			} else {
 				// stop
