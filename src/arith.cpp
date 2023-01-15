@@ -556,28 +556,27 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vector<size_t> dim, bool reverse, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	
-	if (x.size() == 0) {
-		out.setError("cannot compute with nothing");
-		return out;
-	}
 	if (!hasValues()) {
 		out.setError("raster has no values"); // or warn and treat as NA?
 		return out;
 	}
-
-	if (x.size() == 1) {
-		return(arith(x[0], oper, reverse, opt));
+	
+	size_t nx = x.size();
+	if (nx == 0) {
+		out.setError("cannot compute with nothing");
+		return out;
 	}
 	if (dim.size() != 2) {
 		out.setError("incorrect dimensions"); 
 		return out;
 	}
-	if ((dim[1] * dim[0]) != x.size()) {
+	if ((dim[1] * dim[0]) != nx) {
 		out.setError("incorrect matrix dimensions (dim(m) != length(x))"); 
 		return out;
 	}
-
+	if (nx == 1) {
+		return(arith(x[0], oper, reverse, opt));
+	}
 	// single cell
 	if (dim[0] < 2) {
 		return(arith(x, oper, reverse, opt));
@@ -636,7 +635,6 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 	}
 
 	unsigned nc = ncol();
-	size_t nx = x.size();
 	
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v;
@@ -646,7 +644,7 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 			size_t s = j * off;
 			size_t d = j * dim[0];
 			std::vector<double> xj = {x.begin()+d, x.begin()+d+dim[0]};
-			size_t start = (out.bs.row[i] * nc) % nx;
+			size_t start = (out.bs.row[i] * nc) % xj.size();
 			if (start != 0) {
 				std::rotate(xj.begin(), xj.begin()+start, xj.end());
 			}
