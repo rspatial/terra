@@ -9,6 +9,9 @@
 \alias{Compare,numeric,SpatRaster-method}
 \alias{Compare,SpatRaster,numeric-method}
 \alias{Compare,SpatRaster,character-method}
+\alias{Compare,SpatRaster,matrix-method}
+\alias{Compare,matrix,SpatRaster-method}
+
 
 \alias{Logic,SpatRaster,SpatRaster-method}
 \alias{Logic,SpatRaster,numeric-method}
@@ -40,10 +43,9 @@ See \code{\link{not.na}} for the inverse of \code{is.na}, and \code{\link{noNA}}
 
 The terra package does not distinguish between \code{NA} (not available) and \code{NaN} (not a number). In most cases this state is represented by \code{NaN}.  
 
+If you use a SpatRaster with a vector of multiple numbers, each element in the vector is considered a layer (with a constant value). If you use a SpatRaster with a matrix, the number of columns of the matrix must match the number of layers of the SpatRaster. The rows are used to match the cells. That is, if there are two rows, these match cells 1 and 2, and they are recycled to 3 and 4, etc. 
 
-The following method has been implemented for 
-
-\bold{(SpatExtent, SpatExtent)}: \code{==}
+The following method has been implemented for \bold{(SpatExtent, SpatExtent)}: \code{==}
 }
 
 \seealso{
