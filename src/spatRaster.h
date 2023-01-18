@@ -785,6 +785,7 @@ class SpatRaster {
 		SpatRaster applyGCP(std::vector<double> fx, std::vector<double> fy, std::vector<double> tx, std::vector<double> ty, SpatOptions &opt);
 
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
+		SpatDataFrame zonal_weighted(SpatRaster x, SpatRaster w,  bool narm, SpatOptions &opt);
 		SpatDataFrame zonal_old(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
 		SpatRaster rgb2hsx(std::string type, SpatOptions &opt);	

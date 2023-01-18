@@ -14,6 +14,8 @@ character_crs <- function(crs, caller="") {
 	} else {
 		if (tolower(crs) == "local") {
 			crs = 'LOCAL_CS["Cartesian (Meter)", LOCAL_DATUM["Local Datum",0], UNIT["Meter",1.0], AXIS["X",EAST], AXIS["Y",NORTH]]'
+		} else if (tolower(crs) == "lonlat") {
+			x <- "+proj=longlat"
 		}
 		crs
 	}
@@ -50,6 +52,7 @@ setMethod("vect", signature(x="character"),
 	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="") {
 		what <- trimws(tolower(what))
 		if (what != "") what <- match.arg(trimws(tolower(what)), c("geoms", "attributes"))
+		
 		p <- methods::new("SpatVector")
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
@@ -63,6 +66,13 @@ setMethod("vect", signature(x="character"),
 			if (!inherits(nx, "try-error")) { # skip html
 				x <- nx
 				x <- enc2utf8(x)
+				if (tolower(tools::file_ext(x)) == "rds") {
+					v <- readRDS(x)
+					if (!inherits(v, "SpatVector")) {
+						error("vect", "the rds file does not store a SpatVector")
+					}
+					return(v)
+				}
 			}
 			proxy <- isTRUE(proxy)
 

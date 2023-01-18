@@ -165,9 +165,18 @@ setMethod("rast", signature(x="character"),
 		if (length(x) == 0) {
 			error("rast", "filename is empty. Provide a valid filename")
 		}
-		r <- methods::new("SpatRaster")
 		f <- .fullFilename(x)
 		f <- enc2utf8(f)
+
+		if (tolower(tools::file_ext(f)) == "rds") {
+			r <- readRDS(x)
+			if (!inherits(r, "SpatVector")) {
+				error("rast", "the rds file does not store a SpatRaster")
+			}
+			return(r)
+		}
+		
+		r <- methods::new("SpatRaster")
 		#subds <- subds[1]
 		if (is.null(opts)) opts <- ""[0]
 		if (is.null(drivers)) drivers <- ""[0]

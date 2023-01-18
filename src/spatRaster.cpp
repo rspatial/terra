@@ -1952,7 +1952,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
 	pv.srs = source[0].srs;
 
 	if (!hasValues()) {
-		if (values || narm) {
+		if (values) {
 			pv.addWarning("raster has no values");
 		}
 		values = false;

@@ -19,7 +19,7 @@ See \code{\link{extract}} to summarize values of a SpatRaster with a SpatVector.
 }
 
 \usage{
-\S4method{zonal}{SpatRaster,SpatRaster}(x, z, fun=mean, ..., as.raster=FALSE, filename="", wopt=list()) 
+\S4method{zonal}{SpatRaster,SpatRaster}(x, z, fun=mean, ..., w=NULL, as.raster=FALSE, filename="", wopt=list()) 
 
 \S4method{zonal}{SpatVector,SpatVector}(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE) 
 }
@@ -29,6 +29,7 @@ See \code{\link{extract}} to summarize values of a SpatRaster with a SpatVector.
   \item{z}{Object of the same class as \code{x}. That is, either a SpatRaster with cell-values representing zones or a SpatVector with each polygon geometry representing a zone}
   \item{fun}{function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", "isNA", and "notNA" and, for relatively small SpatRasters, a proper function}
   \item{...}{additional arguments passed to fun}  
+  \item{w}{SpatRaster with weights. Should have a single-layer with non-negative values}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned with the zonal statistic for each zone}  
   \item{filename}{character. Output filename (ignored if \code{as.raster=FALSE}}
   \item{wopt}{list with additional arguments for writing files as in \code{\link{writeRaster}}}
@@ -38,7 +39,7 @@ See \code{\link{extract}} to summarize values of a SpatRaster with a SpatVector.
 }
 
 \value{
-A \code{data.frame} with a value for each zone) or a SpatRaster or SpatVector of polygons
+A \code{data.frame} with a value for each zone, or a SpatRaster, or SpatVector of polygons
 }
 
 \seealso{ See \code{\link{global}} for "global" statistics (i.e., all of \code{x} is considered a single zone),  \code{\link{app}} for local statistics, and \code{\link{extract}} for summarizing values for polygons}
@@ -50,6 +51,11 @@ z <- rast(r)
 values(z) <- rep(c(1:2, NA, 3:4), each=20)
 names(z) <- "zone"
 zonal(r, z, "sum", na.rm=TRUE)
+
+# with weights 
+w <- init(r, "col")
+zonal(r, z, w=w, "mean", na.rm=TRUE)
+
 
 # multiple layers
 r <- rast(system.file("ex/logo.tif", package = "terra")) 

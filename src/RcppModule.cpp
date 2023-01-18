@@ -924,7 +924,8 @@ RCPP_MODULE(spat){
 		.method("warp", &SpatRaster::warper)
 		.method("resample", &SpatRaster::resample)
 		.method("zonal", &SpatRaster::zonal)
-		.method("zonal_old", &SpatRaster::zonal_old)
+		.method("zonal_weighted", &SpatRaster::zonal_weighted)
+//		.method("zonal_old", &SpatRaster::zonal_old)
 		.method("is_true", &SpatRaster::is_true)
 		.method("is_false", &SpatRaster::is_false)
 	;

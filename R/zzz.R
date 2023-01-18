@@ -30,19 +30,16 @@
 	}
 	.gdalinit(path, file.path(sf, "gdal"))
 	if (gdal() == "3.6.0") {
-		message("You are using GDAL version 3.6.0. That version has been retracted")
+		message("Using GDAL version 3.6.0 which was retracted because it cannot write large GPKG files")
 	}
 }
 
 loadModule("spat", TRUE)
 
-
 .onLoad <- function(libname, pkgname) {
 	.gdinit()
-
 	#registerMethods(list(c(package, genname, class)))
 }
-
 
 
 .onAttach <- function(libname, pkgname) {

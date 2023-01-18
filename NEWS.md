@@ -1,4 +1,23 @@
-# version 1.6-51
+# version 1.7-0
+
+
+## new
+
+- argument `w` to `zonal<SpatRaster>` to compute weighted means
+
+## bug fixes 
+
+
+## enhancements
+
+
+# version 1.6-53
+
+Released 2023-01-17
+
+## new
+
+- arithmetic and logical operations between a SpatRaster and a matrix, to allow for using cell-varying and cell/layer-varying scalars. layer-varying scalars were already supported via vectors.
 
 ## enhancements
 
@@ -6,7 +25,6 @@
 - `sharedPaths` now uses spatial indices [#960](https://github.com/rspatial/terra/issues/960) by Jeff Hanson
 - `predict` better support for models such as ranger that do not return anything for missing values [#968](
 https://github.com/rspatial/terra/issues/968) by Alex Ilich
-
 
 ## bug fixes 
 
@@ -37,7 +55,6 @@ Released 2022-12-02
 - `crosstab` now shows the labels names for a categorical SpatRaster. [895](https://github.com/rspatial/terra/issues/895) by Derek Corcoran Barrios
 - `makeTiles` can now take a SpatVector to define the tiles. [920](https://github.com/rspatial/terra/issues/920) by Tristan Goodbody
 
-
 ## bug fixes 
 
 - `focalPairs` and `focalReg` now work for custom windows [#907](https://github.com/rspatial/terra/issues/907) by Fabian Fischer
@@ -52,7 +69,7 @@ Released 2022-12-02
 
 ## name changes
 
-focalCor -> focalPairs to reflect its possible use beyond correlation
+- focalCor -> focalPairs to reflect its possible use beyond correlation
 
 
 # version 1.6-41
@@ -153,13 +170,12 @@ Released 2022-08-07
 
 ## new
 
-- method `blocks` to guide reading raster data in chunks. [#748](https://github.com/rspatial/terra/issues/748) by John Baums
+- method `blocks` to guide reading raster data in chunks. [#748] by John Baums
 
 ## enhancements 
 
-- A warning is given when writing raster values that are outside the limits of the requested datatype [#752](
-https://github.com/rspatial/terra/issues/752) by Jim Shady
-- Arguments to `extract` were simplified. [#736](https://github.com/rspatial/terra/issues/736) by François Rousseu
+- A warning is given when writing raster values that are outside the limits of the requested datatype [#752] by Jim Shady
+- Arguments to `extract` were simplified. [#736] by François Rousseu
 
 ## bug fixes 
 
@@ -176,30 +192,29 @@ Released 2022-07-25
 
 ## bug fixes
 
-- `subst` no longer uses values that it changed earlier on. [#639](https://github.com/rspatial/terra/issues/639) by Paul Smith
-- `as.points<SpatRaster>` could return wrong factor labels. [#640](https://github.com/rspatial/terra/issues/640) by Attilio Benini
-- `mask<SpatRaster,SpatVector>` crashed when the results were written to disk. [#646](https://github.com/rspatial/terra/issues/646) by Monika Anna Tomaszewska
-- `extract<SpatRaster,SpatVector(points)>(xy=TRUE)` returned the locations of the points, not the xy-coordinates of the cells. [#650](https://github.com/rspatial/terra/issues/650) by Ward Fonteyn
-- `wrap<SpatRaster>` did not return the correct labels for some categorical rasters. [#652](https://github.com/rspatial/terra/issues/652) by Jakub Nowosad
-- better support for non-latin characters in the legend [#658](https://github.com/rspatial/terra/issues/658) by Krzysztof Dyba
-- holes in small lon/lat polygons are now properly buffered [#689](https://github.com/rspatial/terra/issues/689) by David Hofmann
+- `subst` no longer uses values that it changed earlier on. [#639] by Paul Smith
+- `as.points<SpatRaster>` could return wrong factor labels. [#640] by Attilio Benini
+- `mask<SpatRaster,SpatVector>` crashed when the results were written to disk. [#646] by Monika Anna Tomaszewska
+- `extract<SpatRaster,SpatVector(points)>(xy=TRUE)` returned the locations of the points, not the xy-coordinates of the cells. [#650] by Ward Fonteyn
+- `wrap<SpatRaster>` did not return the correct labels for some categorical rasters. [#652] by Jakub Nowosad
+- better support for non-latin characters in the legend [#658] by Krzysztof Dyba
+- holes in small lon/lat polygons are now properly buffered [#689] by David Hofmann
 
 
 ## enhancements 
 
 - `subst` can now substitute the values from multiple input layers with a single output value (layer)
-- `subset<SpatVector>` now behaves like `subset<data.frame>` [#648](https://github.com/rspatial/terra/issues/648) by Andrew Gene Brown
+- `subset<SpatVector>` now behaves like `subset<data.frame>` [#648] by Andrew Gene Brown
 - setting category labels with a vector of names is now deprecated. A data.frame with at least two columns should be used. The first column should have the cell values (IDs).
-- It is now possible to "drop" a layer from a SpatRaster by setting it to NULL [#664](
-https://github.com/rspatial/terra/issues/664) by Daniel Valentins
-- `freq` now provides the labels of factors, even if `bylayer=FALSE`. It now always returns a `data.frame` (it used to return a `matrix` in some cases. [#687](https://github.com/rspatial/terra/issues/687) by Rodolfo Jaffé
-- `disagg` and `aggregate` now return a warning instead of an error when using a (dis)aggregation factor of 1.[#684](https://github.com/rspatial/terra/issues/684) by Justin Fain.
-- `project` crashed when erroneously projecting raster data from one celestial body to another [#688](https://github.com/rspatial/terra/issues/688) by Mike Sumner
+- It is now possible to "drop" a layer from a SpatRaster by setting it to NULL [#664] by Daniel Valentins
+- `freq` now provides the labels of factors, even if `bylayer=FALSE`. It now always returns a `data.frame` (it used to return a `matrix` in some cases. [#687] by Rodolfo Jaffé
+- `disagg` and `aggregate` now return a warning instead of an error when using a (dis)aggregation factor of 1.[#684] by Justin Fain.
+- `project` crashed when erroneously projecting raster data from one celestial body to another [#688] by Mike Sumner
 - you can now set a color table with a two column (value, ID) data.frame
-- categorical rasters can now be updated more easily [#667](https://github.com/rspatial/terra/issues/667) by Alex Ilich
-- more control over matching values with colors when using `plot`. [673](https://github.com/rspatial/terra/issues/673) by Jakub Nowosad.
-- SpatVector attributes can now also be a factor, date, or POSIXct. [697](https://github.com/rspatial/terra/issues/697) by Grant Williamson
-- improved handling of missing values in `extract(method="bilinear")`. [693](https://github.com/rspatial/terra/pull/693) by swooping-magpie
+- categorical rasters can now be updated more easily [#667] by Alex Ilich
+- more control over matching values with colors when using `plot`. [673] by Jakub Nowosad.
+- SpatVector attributes can now also be a factor, date, or POSIXct. [697] by Grant Williamson
+- improved handling of missing values in `extract(method="bilinear")`. [693] by swooping-magpie
 
 ## new
 
@@ -207,7 +222,7 @@ https://github.com/rspatial/terra/issues/664) by Daniel Valentins
 - `sort<SpatRaster>` to sort cell values across layers.
 - `has.colors` and `has.RGB` for SpatRaster
 - `cover` can now combine categorical rasters 
-- `concats` to combine the levels of two SpatRaster into new categories [663](https://github.com/rspatial/terra/issues/663) by Alex Ilich
+- `concats` to combine the levels of two SpatRaster into new categories [663] by Alex Ilich
 - `zonal<SpatVector,SpatVector>` method to aggregate SpatVector attributes by polygons
 
 

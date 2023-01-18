@@ -1,6 +1,6 @@
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
-	function(x, z, fun="mean", ..., as.raster=FALSE, filename="", wopt=list())  {
+	function(x, z, fun="mean", ..., w=NULL, as.raster=FALSE, filename="", wopt=list())  {
 		if (nlyr(z) > 1) {
 			z <- z[[1]]
 		}
@@ -8,10 +8,12 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 		txtfun <- .makeTextFun(fun)
 		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum", "notNA", "isNA"))) {
 			na.rm <- isTRUE(list(...)$na.rm)
-			old <- isTRUE(list(...)$old)
 			opt <- spatOptions()
-			if (old) { # for testing, to be removed
-				sdf <- x@ptr$zonal_old(z@ptr, txtfun, na.rm, opt)
+			if (!is.null(w)) {
+				if (txtfun != "mean") {
+					error("zonal", "fun must be 'mean' when using weights")
+				}
+				sdf <- x@ptr$zonal_weighted(z@ptr, w@ptr, na.rm, opt)				
 			} else {
 				sdf <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
 			}
