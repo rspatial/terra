@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-52</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-0</span>
       </span>
     </div>
 
@@ -48,9 +48,27 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.6-51" id="version-16-51">version 1.6-51<a class="anchor" aria-label="anchor" href="#version-16-51"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-0" id="version-17-0">version 1.7-0<a class="anchor" aria-label="anchor" href="#version-17-0"></a></h2>
 <div class="section level3">
-<h3 id="enhancements-1-6-51">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-51"></a></h3>
+<h3 id="new-1-7-0">new<a class="anchor" aria-label="anchor" href="#new-1-7-0"></a></h3>
+<ul><li>argument <code>w</code> to <code>zonal&lt;SpatRaster&gt;</code> to compute weighted means</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-7-0">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-0"></a></h3>
+</div>
+<div class="section level3">
+<h3 id="enhancements-1-7-0">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-0"></a></h3>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.6-53" id="version-16-53">version 1.6-53<small>2023-01-17</small><a class="anchor" aria-label="anchor" href="#version-16-53"></a></h2>
+<p>Released 2023-01-17</p>
+<div class="section level3">
+<h3 id="new-1-6-53">new<a class="anchor" aria-label="anchor" href="#new-1-6-53"></a></h3>
+<ul><li>arithmetic and logical operations between a SpatRaster and a matrix, to allow for using cell-varying and cell/layer-varying scalars. layer-varying scalars were already supported via vectors.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-1-6-53">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-53"></a></h3>
 <ul><li>
 <code>shade</code> is now vectorized for arguments <code>angle</code> and <code>direction</code> to facilitate generating multiple hillshades that can be combined for a better result <a href="https://github.com/rspatial/terra/issues/948" class="external-link">#948</a> by Jürgen Niedballa</li>
 <li>
@@ -59,7 +77,7 @@
 <code>predict</code> better support for models such as ranger that do not return anything for missing values <a href="https://github.com/rspatial/terra/issues/968" class="external-link">#968</a> by Alex Ilich</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-6-51">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-51"></a></h3>
+<h3 id="bug-fixes-1-6-53">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-53"></a></h3>
 <ul><li>
 <code>writeCDF</code> now supports writing yearly time steps <a href="https://github.com/rspatial/terra/issues/926" class="external-link">#926</a> by Andrea Manica</li>
 <li>as.contour now works for a single level <a href="https://github.com/rspatial/terra/issues/966" class="external-link">#966</a> by Johannes Signer</li>
@@ -113,8 +131,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="name-changes-1-6-47">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-6-47"></a></h3>
-<p>focalCor -&gt; focalPairs to reflect its possible use beyond correlation</p>
-</div>
+<ul><li>focalCor -&gt; focalPairs to reflect its possible use beyond correlation</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.6-41" id="version-16-41">version 1.6-41<small>2022-11-18</small><a class="anchor" aria-label="anchor" href="#version-16-41"></a></h2>
@@ -249,12 +267,12 @@
 <p>Released 2022-08-07</p>
 <div class="section level3">
 <h3 id="new-1-6-7">new<a class="anchor" aria-label="anchor" href="#new-1-6-7"></a></h3>
-<ul><li>method <code>blocks</code> to guide reading raster data in chunks. <a href="https://github.com/rspatial/terra/issues/748" class="external-link">#748</a> by John Baums</li>
+<ul><li>method <code>blocks</code> to guide reading raster data in chunks. [#748] by John Baums</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-7">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-7"></a></h3>
-<ul><li>A warning is given when writing raster values that are outside the limits of the requested datatype <a href="https://github.com/rspatial/terra/issues/752" class="external-link">#752</a> by Jim Shady</li>
-<li>Arguments to <code>extract</code> were simplified. <a href="https://github.com/rspatial/terra/issues/736" class="external-link">#736</a> by François Rousseu</li>
+<ul><li>A warning is given when writing raster values that are outside the limits of the requested datatype [#752] by Jim Shady</li>
+<li>Arguments to <code>extract</code> were simplified. [#736] by François Rousseu</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-7">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-7"></a></h3>
@@ -273,37 +291,37 @@
 <div class="section level3">
 <h3 id="bug-fixes-1-6-3">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-3"></a></h3>
 <ul><li>
-<code>subst</code> no longer uses values that it changed earlier on. <a href="https://github.com/rspatial/terra/issues/639" class="external-link">#639</a> by Paul Smith</li>
+<code>subst</code> no longer uses values that it changed earlier on. [#639] by Paul Smith</li>
 <li>
-<code>as.points&lt;SpatRaster&gt;</code> could return wrong factor labels. <a href="https://github.com/rspatial/terra/issues/640" class="external-link">#640</a> by Attilio Benini</li>
+<code>as.points&lt;SpatRaster&gt;</code> could return wrong factor labels. [#640] by Attilio Benini</li>
 <li>
-<code>mask&lt;SpatRaster,SpatVector&gt;</code> crashed when the results were written to disk. <a href="https://github.com/rspatial/terra/issues/646" class="external-link">#646</a> by Monika Anna Tomaszewska</li>
+<code>mask&lt;SpatRaster,SpatVector&gt;</code> crashed when the results were written to disk. [#646] by Monika Anna Tomaszewska</li>
 <li>
-<code>extract&lt;SpatRaster,SpatVector(points)&gt;(xy=TRUE)</code> returned the locations of the points, not the xy-coordinates of the cells. <a href="https://github.com/rspatial/terra/issues/650" class="external-link">#650</a> by Ward Fonteyn</li>
+<code>extract&lt;SpatRaster,SpatVector(points)&gt;(xy=TRUE)</code> returned the locations of the points, not the xy-coordinates of the cells. [#650] by Ward Fonteyn</li>
 <li>
-<code>wrap&lt;SpatRaster&gt;</code> did not return the correct labels for some categorical rasters. <a href="https://github.com/rspatial/terra/issues/652" class="external-link">#652</a> by Jakub Nowosad</li>
-<li>better support for non-latin characters in the legend <a href="https://github.com/rspatial/terra/issues/658" class="external-link">#658</a> by Krzysztof Dyba</li>
-<li>holes in small lon/lat polygons are now properly buffered <a href="https://github.com/rspatial/terra/issues/689" class="external-link">#689</a> by David Hofmann</li>
+<code>wrap&lt;SpatRaster&gt;</code> did not return the correct labels for some categorical rasters. [#652] by Jakub Nowosad</li>
+<li>better support for non-latin characters in the legend [#658] by Krzysztof Dyba</li>
+<li>holes in small lon/lat polygons are now properly buffered [#689] by David Hofmann</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-3">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-3"></a></h3>
 <ul><li>
 <code>subst</code> can now substitute the values from multiple input layers with a single output value (layer)</li>
 <li>
-<code>subset&lt;SpatVector&gt;</code> now behaves like <code>subset&lt;data.frame&gt;</code> <a href="https://github.com/rspatial/terra/issues/648" class="external-link">#648</a> by Andrew Gene Brown</li>
+<code>subset&lt;SpatVector&gt;</code> now behaves like <code>subset&lt;data.frame&gt;</code> [#648] by Andrew Gene Brown</li>
 <li>setting category labels with a vector of names is now deprecated. A data.frame with at least two columns should be used. The first column should have the cell values (IDs).</li>
-<li>It is now possible to “drop” a layer from a SpatRaster by setting it to NULL <a href="https://github.com/rspatial/terra/issues/664" class="external-link">#664</a> by Daniel Valentins</li>
+<li>It is now possible to “drop” a layer from a SpatRaster by setting it to NULL [#664] by Daniel Valentins</li>
 <li>
-<code>freq</code> now provides the labels of factors, even if <code>bylayer=FALSE</code>. It now always returns a <code>data.frame</code> (it used to return a <code>matrix</code> in some cases. <a href="https://github.com/rspatial/terra/issues/687" class="external-link">#687</a> by Rodolfo Jaffé</li>
+<code>freq</code> now provides the labels of factors, even if <code>bylayer=FALSE</code>. It now always returns a <code>data.frame</code> (it used to return a <code>matrix</code> in some cases. [#687] by Rodolfo Jaffé</li>
 <li>
-<code>disagg</code> and <code>aggregate</code> now return a warning instead of an error when using a (dis)aggregation factor of 1.<a href="https://github.com/rspatial/terra/issues/684" class="external-link">#684</a> by Justin Fain.</li>
+<code>disagg</code> and <code>aggregate</code> now return a warning instead of an error when using a (dis)aggregation factor of 1.[#684] by Justin Fain.</li>
 <li>
-<code>project</code> crashed when erroneously projecting raster data from one celestial body to another <a href="https://github.com/rspatial/terra/issues/688" class="external-link">#688</a> by Mike Sumner</li>
+<code>project</code> crashed when erroneously projecting raster data from one celestial body to another [#688] by Mike Sumner</li>
 <li>you can now set a color table with a two column (value, ID) data.frame</li>
-<li>categorical rasters can now be updated more easily <a href="https://github.com/rspatial/terra/issues/667" class="external-link">#667</a> by Alex Ilich</li>
-<li>more control over matching values with colors when using <code>plot</code>. <a href="https://github.com/rspatial/terra/issues/673" class="external-link">673</a> by Jakub Nowosad.</li>
-<li>SpatVector attributes can now also be a factor, date, or POSIXct. <a href="https://github.com/rspatial/terra/issues/697" class="external-link">697</a> by Grant Williamson</li>
-<li>improved handling of missing values in <code>extract(method="bilinear")</code>. <a href="https://github.com/rspatial/terra/pull/693" class="external-link">693</a> by swooping-magpie</li>
+<li>categorical rasters can now be updated more easily [#667] by Alex Ilich</li>
+<li>more control over matching values with colors when using <code>plot</code>. [673] by Jakub Nowosad.</li>
+<li>SpatVector attributes can now also be a factor, date, or POSIXct. [697] by Grant Williamson</li>
+<li>improved handling of missing values in <code>extract(method="bilinear")</code>. [693] by swooping-magpie</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-6-3">new<a class="anchor" aria-label="anchor" href="#new-1-6-3"></a></h3>
@@ -316,7 +334,7 @@
 <li>
 <code>cover</code> can now combine categorical rasters</li>
 <li>
-<code>concats</code> to combine the levels of two SpatRaster into new categories <a href="https://github.com/rspatial/terra/issues/663" class="external-link">663</a> by Alex Ilich</li>
+<code>concats</code> to combine the levels of two SpatRaster into new categories [663] by Alex Ilich</li>
 <li>
 <code>zonal&lt;SpatVector,SpatVector&gt;</code> method to aggregate SpatVector attributes by polygons</li>
 </ul></div>

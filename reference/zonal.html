@@ -20,7 +20,7 @@ See extract to summarize values of a SpatRaster with a SpatVector.'><meta proper
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6-52</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-0</span>
       </span>
     </div>
 
@@ -60,7 +60,7 @@ See extract to summarize values of a SpatRaster with a SpatVector.'><meta proper
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,SpatRaster</span></span>
-<span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, w<span class="op">=</span><span class="cn">NULL</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># S4 method for SpatVector,SpatVector</span></span>
 <span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, weighted<span class="op">=</span><span class="cn">FALSE</span>, as.polygons<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -80,6 +80,9 @@ See extract to summarize values of a SpatRaster with a SpatVector.'><meta proper
   <dt>...</dt>
 <dd><p>additional arguments passed to fun</p></dd>
   
+  <dt>w</dt>
+<dd><p>SpatRaster with weights. Should have a single-layer with non-negative values</p></dd>
+
   <dt>as.raster</dt>
 <dd><p>logical. If <code>TRUE</code>, a SpatRaster is returned with the zonal statistic for each zone</p></dd>
   
@@ -101,7 +104,7 @@ See extract to summarize values of a SpatRaster with a SpatVector.'><meta proper
     <h2>Value</h2>
     
 
-<p>A <code>data.frame</code> with a value for each zone) or a SpatRaster or SpatVector of polygons</p>
+<p>A <code>data.frame</code> with a value for each zone, or a SpatRaster, or SpatVector of polygons</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -121,6 +124,16 @@ See extract to summarize values of a SpatRaster with a SpatVector.'><meta proper
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    2   610</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3    3  1410</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4    4  1810</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># with weights </span></span></span>
+<span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"col"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">zonal</span><span class="op">(</span><span class="va">r</span>, <span class="va">z</span>, w<span class="op">=</span><span class="va">w</span>, <span class="st">"mean"</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   zone lyr.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1    12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2    32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3    72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4    92</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># multiple layers</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span><span class="op">)</span> </span></span>
