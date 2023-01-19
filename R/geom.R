@@ -107,7 +107,7 @@ as.list.svc <- function(x) {
 setMethod("split", signature(x="SpatVector"),
 	function(x, f) {
 		if (length(f) > 1) {
-			x <- copy(x)
+			x <- deepcopy(x)
 			x$f <- f
 			f <- "f"
 		}
