@@ -158,16 +158,16 @@ bool smooth_operator(std::string &oper, bool &logical, bool &reverse) {
 		if (oper == "%%") oper = "%";
 		if (reverse) {
 			if (oper == ">") {				
-				oper = "<";
-				reverse = false;
-			} else if (oper == "<") {				
-				oper = ">";
-				reverse = false;
-			} else if (oper == ">=") {				
 				oper = "<=";
 				reverse = false;
-			} else if (oper == "<=") {				
+			} else if (oper == "<") {				
 				oper = ">=";
+				reverse = false;
+			} else if (oper == ">=") {				
+				oper = "<";
+				reverse = false;
+			} else if (oper == "<=") {				
+				oper = ">";
 				reverse = false;
 			}
 		}
