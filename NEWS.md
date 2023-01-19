@@ -7,6 +7,8 @@
 
 ## bug fixes 
 
+- in the previous version, a bug was introduced such that the order of operation in arithmetic operations with SpatRasters was ignored. [#978](https://github.com/rspatial/terra/issues/978) by Andrew Marx
+
 
 ## enhancements
 
