@@ -155,20 +155,21 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 	size_t nc = (int) pRAT->GetColumnCount();
 	size_t nr = (int) pRAT->GetRowCount();
 
-
 	std::vector<std::string> ss = {"histogram", "count", "red", "green", "blue", "opacity", "r", "g", "b", "alpha"};
 
 	//std::vector<std::string> ratnms;
 	std::vector<int> id, id2;
 
 	bool hasvalue=false;
+	//std::string valuename = "";
 	for (size_t i=0; i<nc; i++) {
 		std::string name = pRAT->GetNameOfCol(i);
 		lowercase(name);
 		//ratnms.push_back(name);
-		if (name == "value") {
+		if (!hasvalue && ((name == "value") || (name == "id"))) {
 			id.insert(id.begin(), i);
 			hasvalue = true;
+			//valuename = name;
 		} else {
 			int k = where_in_vector(name, ss, true);
 			if (k >= 0) {
@@ -183,7 +184,6 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 		return(out);
 	}
 	id.insert(id.end(), id2.begin(), id2.end());
-
 
 	if (!hasvalue) {
 		std::vector<long> vid(nr);
@@ -338,6 +338,7 @@ bool setIntCol(SpatDataFrame &d, SpatDataFrame &out, int k, std::string name) {
 
 bool colsFromRat(SpatDataFrame &d, SpatDataFrame &out) {
 
+
 	std::vector<std::string> ss = d.get_names();
 	for (size_t i=0; i<ss.size(); i++) {
 		lowercase(ss[i]);
@@ -346,9 +347,10 @@ bool colsFromRat(SpatDataFrame &d, SpatDataFrame &out) {
 	int k = where_in_vector("value", ss, true);
 	if (k >= 0) {
 		size_t j = d.iplace[k];
+		
 		if (d.itype[k] == 1) {
 			out.add_column(d.iv[j], "value");
-		} else {
+		} else if (d.itype[k] == 0) {
 			std::vector<long> x;
 			x.reserve(d.nrow());
 			for (size_t i=0; i<d.nrow(); i++) {
@@ -360,39 +362,48 @@ bool colsFromRat(SpatDataFrame &d, SpatDataFrame &out) {
 		return false;
 	}
 
-	std::vector<std::string> cols1 = {"red", "green", "blue"};
-	std::vector<std::string> cols2 = {"r", "g", "b"};
-	for (size_t i=0; i<3; i++) {
-		int k = where_in_vector(cols1[i], ss, true);
-		if (k >= 0) {
-			if (!setIntCol(d, out, k, cols1[i])) return false;
-		} else {
-			int k = where_in_vector(cols2[i], ss, true);
+
+//	int k = where_in_vector("colors", ss, true);
+//	if (k >= 0) {
+		//col2rgb(d, out, k);
+//	} else {
+		std::vector<std::string> cols1 = {"red", "green", "blue"};
+		std::vector<std::string> cols2 = {"r", "g", "b"};
+		for (size_t i=0; i<3; i++) {
+			int k = where_in_vector(cols1[i], ss, true);
 			if (k >= 0) {
 				if (!setIntCol(d, out, k, cols1[i])) return false;
 			} else {
-				return false;
+				int k = where_in_vector(cols2[i], ss, true);
+				if (k >= 0) {
+					if (!setIntCol(d, out, k, cols1[i])) return false;
+				} else {
+					return false;
+				}
 			}
 		}
-	}
 
-	bool have_alpha = false;
-	k = where_in_vector("alpha", ss, true);
-	if (k >= 0) {
-		if (setIntCol(d, out, k, "alpha")) have_alpha = true;
-	}
-	if (!have_alpha) {
-		int k = where_in_vector("transparency", ss, true);
+		bool have_alpha = false;
+		k = where_in_vector("alpha", ss, true);
 		if (k >= 0) {
 			if (setIntCol(d, out, k, "alpha")) have_alpha = true;
 		}
-	}
-	if (!have_alpha) {
-		std::vector<long> a(out.nrow(), 255);
-		out.add_column(a, "alpha");
-	}
 
+		if (!have_alpha) {
+			int k = where_in_vector("transparency", ss, true);
+			if (k >= 0) {
+				if (setIntCol(d, out, k, "alpha")) have_alpha = true;
+			}
+		}
+
+		if (!have_alpha) {
+			std::vector<long> a(out.nrow(), 255);
+			out.add_column(a, "alpha");
+		}
+//	}
+	
 	d = out;
+
 	return true;
 }
 
@@ -973,6 +984,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				nm = nms[s.cats[i].index];
 			}
 		}
+		
 		if (nm == "") {
 			if (bandname != "") {
 				nm = bandname;
