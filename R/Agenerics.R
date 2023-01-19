@@ -224,6 +224,7 @@ if (!isGeneric("boundaries")) {	setGeneric("boundaries", function(x, ...) standa
 if (!isGeneric("boxplot")) { setGeneric("boxplot", function(x, ...) standardGeneric("boxplot"))}
 if (!isGeneric("buffer")) {setGeneric("buffer", function(x, ...) standardGeneric("buffer"))}
 if (!isGeneric("clamp")) { setGeneric("clamp", function(x, ...) standardGeneric("clamp")) }
+if (!isGeneric("clamp_ts")) { setGeneric("clamp_ts", function(x, ...) standardGeneric("clamp_ts")) }
 if (!isGeneric("click")) {setGeneric("click", function(x, ...)standardGeneric("click"))}
 if (!isGeneric("contour")) { setGeneric("contour", function(x,...) standardGeneric("contour"))}
 if (!isGeneric("cover")) {setGeneric("cover", function(x, y, ...) standardGeneric("cover"))}

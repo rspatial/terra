@@ -19,20 +19,26 @@ See \code{\link{extract}} to summarize values of a SpatRaster with a SpatVector.
 }
 
 \usage{
-\S4method{zonal}{SpatRaster,SpatRaster}(x, z, fun=mean, ..., w=NULL, as.raster=FALSE, filename="", wopt=list()) 
+\S4method{zonal}{SpatRaster,SpatRaster}(x, z, fun=mean, ..., w=NULL, as.raster=FALSE, filename="", wopt=list())
+
+\S4method{zonal}{SpatRaster,SpatVector}(x, z, fun=mean, ..., weigths=FALSE, exact=FALSE, touches=FALSE, w=NULL, as.raster=FALSE, filename="", wopt=list())
 
 \S4method{zonal}{SpatVector,SpatVector}(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE) 
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{z}{Object of the same class as \code{x}. That is, either a SpatRaster with cell-values representing zones or a SpatVector with each polygon geometry representing a zone}
+  \item{z}{SpatRaster with cell-values representing zones or a SpatVector with each polygon geometry representing a zone}
   \item{fun}{function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", "isNA", and "notNA" and, for relatively small SpatRasters, a proper function}
-  \item{...}{additional arguments passed to fun}  
+  \item{...}{additional arguments passed to fun, such as \code{na.rm=TRUE}}  
   \item{w}{SpatRaster with weights. Should have a single-layer with non-negative values}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned with the zonal statistic for each zone}  
   \item{filename}{character. Output filename (ignored if \code{as.raster=FALSE}}
   \item{wopt}{list with additional arguments for writing files as in \code{\link{writeRaster}}}
+
+  \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
+  \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
+  \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
 
   \item{weighted}{logical. If \code{TRUE}, a weighted.mean is computed and \code{fun} is ignored. Weights are based on the length of the lines or the area of the polygons in \code{x} that intersect with \code{z}. This argument is ignored of \code{x} is a SpatVector or points}  
   \item{as.polygons}{logical. Should the results be merged with the attributes of \code{z}?}

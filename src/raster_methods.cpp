@@ -18,12 +18,14 @@
 #include "spatRasterMultiple.h"
 #include "recycle.h"
 #include "vecmath.h"
+#include "vecmathse.h"
 #include <cmath>
 #include <functional>
 
 #include "math_utils.h"
 #include "file_utils.h"
 #include "string_utils.h"
+#include "sort.h"
 
 
 /*
@@ -1631,6 +1633,81 @@ SpatRaster SpatRaster::clamp(std::vector<double> low, std::vector<double> high, 
 }
 
 
+std::vector<double> bip2bil(const std::vector<double> &v, size_t nl) {
+	
+	size_t n = v.size();
+	size_t ncell = n / nl;
+	
+	std::vector<double> out(n);
+	std::vector<size_t> offlyr(nl);
+	for (size_t j=0; j<nl; j++) {
+		offlyr[j] = j * ncell;
+	}
+	
+	for (size_t i=0; i<ncell; i++) {
+		size_t off = i * nl;
+		for (size_t j=0; j<nl; j++) {
+			out[offlyr[j] + i] = v[off + j];
+		}
+	}
+	return out;
+}
+
+
+
+SpatRaster SpatRaster::clamp_ts(bool min, bool max, SpatOptions &opt) {
+
+	SpatRaster out = geometry(nlyr(), true);
+	if (!hasValues()) {
+		out.setError("cannot clamp a raster with no values");
+		return out;
+	}
+	if (!(min || max)) {
+		out.setError("min or max must be TRUE");
+		return(out);		
+	}
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+	size_t nl = nlyr();
+	size_t nc = ncol();
+	for (size_t i=0; i<out.bs.n; i++) {
+		size_t ncells = out.bs.nrows[i] * nc;
+		std::vector<double> v;
+		readBlockIP(v, out.bs, i);
+		
+		for (size_t j=0; j<ncells; j++) {
+			size_t start = j * nl;
+			size_t end = start + nl;
+			if (min) {
+				double minv = min_se_rm(v, start, end);
+				double wmin = whichmin_se_rm(v, start, end);
+				for (size_t k=start; k<(start+wmin); k++) {
+					v[k] = minv;
+				}
+			}
+			if (max) {
+				double maxv = max_se_rm(v, start, end);
+				double wmax = whichmax_se_rm(v, start, end);
+				for (size_t k=(start+wmax); k<end; k++) {
+					v[k] = maxv;
+				}
+			}
+		}
+		v = bip2bil(v, nl);
+		if (!out.writeBlock(v, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
 
 
 SpatRaster SpatRaster::selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt) {
@@ -3021,7 +3098,6 @@ bool overlaps(const std::vector<unsigned>& r1, const std::vector<unsigned>& r2,
 }
 
 
-#include "sort.h"
 
 SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 

@@ -23,6 +23,8 @@
 #include <map>
 
 #include "vecmath.h"
+#include "vecmathse.h"
+
 #include "math_utils.h"
 #include "string_utils.h"
 
@@ -172,8 +174,8 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 		return out;
 	}
 
-	double pmin = vmin(probs, false);
-	double pmax = vmin(probs, false);
+	double pmin = min_se(probs, 0, probs.size());
+	double pmax = max_se(probs, 0, probs.size());
 	if ((std::isnan(pmin)) || (std::isnan(pmax)) || (pmin < 0) || (pmax > 1)) {
 		SpatRaster out = geometry(1);
 		out.setError("intvalid probs");
@@ -897,3 +899,207 @@ SpatDataFrame SpatRaster::zonal_weighted(SpatRaster z, SpatRaster w, bool narm, 
 	}
 	return(out);
 }
+
+
+SpatDataFrame SpatRaster::zonal_poly(SpatVector x, std::string fun, bool weights, bool exact, bool touches,bool narm, SpatOptions &opt) {
+
+	SpatDataFrame out;
+	std::string gtype = x.type();
+	if (gtype != "polygons") {
+		out.setError("SpatVector must have polygon geometry");
+		return out;
+	}
+	
+	if (!hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}
+
+	if ((weights || exact)) {
+		if ((fun != "mean") && (fun!="min") && (fun!="max")) {
+			out.setError("fun should be 'min', 'max' or 'mean' when using weights/exact");
+			return out;			
+		}
+	}
+
+	if (!haveseFun(fun)) {
+		out.setError("Unknown function");
+		return out;
+	}
+	std::function<double(std::vector<double>&, double, double)> zfun= getseFun(fun, narm);
+
+    unsigned nl = nlyr();
+    unsigned ng = x.size();
+
+	std::vector<std::vector<double>> zv(nl, std::vector<double>(ng));
+	
+    SpatRaster r = geometry(1);
+    for (size_t i=0; i<ng; i++) {
+		SpatGeom g = x.getGeom(i);
+		SpatVector p(g);
+		p.srs = x.srs;
+		std::vector<double> cell, wgt;
+		if (weights) {
+			rasterizeCellsWeights(cell, wgt, p, opt);
+		} else if (exact) {
+			rasterizeCellsExact(cell, wgt, p, opt);
+		} else {
+			cell = rasterizeCells(p, touches, opt);
+        }
+		
+		std::vector<std::vector<double>> e = extractCell(cell);
+ 		if ((weights || exact) && fun == "mean") {
+			if (narm) {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						if (!std::isnan(e[j][k])) {
+							wsum += wgt[k];
+							vsum += (e[j][k] * wgt[k]);  
+						}
+					}
+					zv[j][i] = vsum / wsum;
+				}
+			} else {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						wsum += wgt[k];
+						vsum += (e[j][k] * wgt[k]);  
+					}
+					zv[j][i] = vsum / wsum;
+				}
+			}
+		} else {
+			for (size_t j=0; j<nl; j++) {
+				zv[j][i] = zfun(e[j], 0, e[j].size());
+			}
+		}
+	}
+	std::vector<std::string> nms = getNames();	
+	for (size_t j=0; j<nl; j++) {
+		out.add_column(zv[j], nms[j]);
+	}
+	
+	return out;
+}
+
+
+SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool weights, bool exact, bool touches, bool narm, SpatOptions &opt) {
+
+	SpatDataFrame out;
+	std::string gtype = x.type();
+	if (gtype != "polygons") {
+		out.setError("SpatVector must have polygon geometry");
+		return out;
+	}
+	
+	if (!compare_geom(w, false, true, opt.get_tolerance(), true)) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}
+	if (!w.hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}
+
+    unsigned nl = nlyr();
+    unsigned ng = x.size();
+
+	std::vector<std::vector<double>> zv(nl, std::vector<double>(ng));
+	
+    SpatRaster r = geometry(1);
+    for (size_t i=0; i<ng; i++) {
+		SpatGeom g = x.getGeom(i);
+		SpatVector p(g);
+		p.srs = x.srs;
+		std::vector<double> cell, wgt;
+		if (weights) {
+			rasterizeCellsWeights(cell, wgt, p, opt);
+		} else if (exact) {
+			rasterizeCellsExact(cell, wgt, p, opt);
+		} else {
+			cell = rasterizeCells(p, touches, opt);
+        }
+		
+		std::vector<std::vector<double>> e = extractCell(cell);
+		std::vector<std::vector<double>> we = w.extractCell(cell);
+		
+ 		if (weights || exact) {
+			if (narm) {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						if (!std::isnan(e[j][k])) {
+							wsum += we[j][k] * wgt[k];
+							vsum += (e[j][k] * we[j][k] * wgt[k]);  
+						}
+					}
+					zv[j][i] = vsum / wsum;
+				}
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						if ((!std::isnan(e[j][k])) & (!std::isnan(we[j][k]))) {
+							wsum += we[j][k] * wgt[k];
+							vsum += (e[j][k] * we[j][k] * wgt[k]);  
+						}
+					}
+					zv[j][i] = vsum / wsum;
+				}				
+
+
+			} else {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						wsum += wgt[k];
+						vsum += (e[j][k] * wgt[k]);  
+					}
+					zv[j][i] = vsum / wsum;
+				}
+			}
+		} else {
+			if (narm) {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						if ((!std::isnan(e[j][k])) & (!std::isnan(we[j][k]))) {
+							wsum += we[j][k];
+							vsum += (e[j][k] * we[j][k]);  
+						}
+					}
+					zv[j][i] = vsum / wsum;
+				}				
+			} else {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						wsum += we[j][k];
+						vsum += (e[j][k] * we[j][k]);  
+					}
+					zv[j][i] = vsum / wsum;
+				}
+			}
+		}
+	}
+	std::vector<std::string> nms = getNames();	
+	for (size_t j=0; j<nl; j++) {
+		out.add_column(zv[j], nms[j]);
+	}
+	
+	return out;
+}
+
+

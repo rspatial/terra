@@ -22,8 +22,7 @@
 #include <functional>
 
 
-
-inline double median_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double median_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	size_t n = (e - s) + 1;
 	std::vector<double> vv;
 	vv.reserve(n);
@@ -50,7 +49,7 @@ inline double median_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double median_se(const std::vector<double>& v, size_t s, size_t e) {
+double median_se(const std::vector<double>& v, size_t s, size_t e) {
 	size_t n = (e - s) + 1;
 	std::vector<double> vv;
 	vv.reserve(n);
@@ -80,9 +79,9 @@ inline double median_se(const std::vector<double>& v, size_t s, size_t e) {
 
 
 
-inline double sum_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double sum_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s];
-	for (size_t i=s; i<e; i++) {
+	for (size_t i=(s+1); i<e; i++) {
 		if (std::isnan(x)) {
 			x = v[i];
 		} else if (!std::isnan(v[i])) {
@@ -92,12 +91,12 @@ inline double sum_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	return x;
 }
 
-inline double sum_se(const std::vector<double>& v, size_t s, size_t e) {
+double sum_se(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s];
 	if (std::isnan(x)) {
 		return(x);
 	}
-	for (size_t i=s; i<e; i++) {
+	for (size_t i=(s+1); i<e; i++) {
 		if (std::isnan(v[i])) {
 			x = NAN;
 			break;
@@ -109,7 +108,7 @@ inline double sum_se(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double sum2_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double sum2_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s] * v[s];
 	for (size_t i=(s+1); i<e; i++) {
 		if (std::isnan(x)) {
@@ -121,7 +120,7 @@ inline double sum2_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	return x;
 }
 
-inline double sum2_se(const std::vector<double>& v, size_t s, size_t e) {
+double sum2_se(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s] * v[s];
 	if (std::isnan(x)) return(x);
 	for (size_t i=(s+1); i<e; i++) {
@@ -136,7 +135,7 @@ inline double sum2_se(const std::vector<double>& v, size_t s, size_t e) {
 
 
 
-inline double prod_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double prod_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s];
 	for (size_t i=(s+1); i<e; i++) {
 		if (std::isnan(x)) {
@@ -149,7 +148,7 @@ inline double prod_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double prod_se(const std::vector<double>& v, size_t s, size_t e) {
+double prod_se(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s];
 	if (std::isnan(x)) {
 		return(NAN);
@@ -166,7 +165,7 @@ inline double prod_se(const std::vector<double>& v, size_t s, size_t e) {
 
 
 
-inline double mean_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double mean_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = 0;
 	unsigned d = 0;
 	for (size_t i=s; i<e; i++) {
@@ -184,7 +183,7 @@ inline double mean_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double mean_se(const std::vector<double>& v, size_t s, size_t e) {
+double mean_se(const std::vector<double>& v, size_t s, size_t e) {
 	double x = 0;
 	unsigned d = 0;
 	for (size_t i=s; i<e; i++) {
@@ -204,7 +203,7 @@ inline double mean_se(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double sd_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double sd_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double m = mean_se_rm(v, s, e);
 	if (std::isnan(m)) return m;
 	double x = 0;
@@ -222,7 +221,7 @@ inline double sd_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double sd_se(const std::vector<double>& v, size_t s, size_t e) {
+double sd_se(const std::vector<double>& v, size_t s, size_t e) {
 	double m = mean_se(v, s, e);
 	if (std::isnan(m)) return m;
 	double x = 0;
@@ -237,7 +236,7 @@ inline double sd_se(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double sdpop_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double sdpop_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double m = mean_se_rm(v, s, e);
 	if (std::isnan(m)) return m;
 	double x = 0;
@@ -254,7 +253,7 @@ inline double sdpop_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 
 
 
-inline double sdpop_se(const std::vector<double>& v, size_t s, size_t e) {
+double sdpop_se(const std::vector<double>& v, size_t s, size_t e) {
 	double m = mean_se(v, s, e);
 	if (std::isnan(m)) return m;
 	double x = 0;
@@ -268,7 +267,7 @@ inline double sdpop_se(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double min_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double min_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s];
 	for (size_t i=(s+1); i<e; i++) {
 		if (!std::isnan(v[i])) {
@@ -283,7 +282,7 @@ inline double min_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double min_se(const std::vector<double>& v, size_t s, size_t e) {
+double min_se(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s];
 	if (std::isnan(x)) return x;
 	for (size_t i=(s+1); i<e; i++) {
@@ -297,7 +296,7 @@ inline double min_se(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double max_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double max_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s];
 	for (size_t i=(s+1); i<e; i++) {
 		if (!std::isnan(v[i])) {
@@ -312,7 +311,7 @@ inline double max_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double max_se(const std::vector<double>& v, size_t s, size_t e) {
+double max_se(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s];
 	if (std::isnan(x)) return x;
 	for (size_t i=(s+1); i<e; i++) {
@@ -326,7 +325,7 @@ inline double max_se(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double first_se_rm(std::vector<double>& v, size_t s, size_t e) {
+double first_se_rm(std::vector<double>& v, size_t s, size_t e) {
 	for (size_t i=s; i<e; i++) {
 		if (!std::isnan(v[i])) {
 			return v[i];
@@ -335,28 +334,28 @@ inline double first_se_rm(std::vector<double>& v, size_t s, size_t e) {
 	return NAN;
 }
 
-inline double first_se(std::vector<double>& v, size_t s, size_t e) {
+double first_se(std::vector<double>& v, size_t s, size_t e) {
 	return v[s];
 }
 
 
-inline double which_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double which_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	for (size_t i=s; i<e; i++) {
-		if ((!std::isnan(v[i])) && v[i] != 0) {
-			return i+1;
+		if ((!std::isnan(v[i])) && (v[i] != 0)) {
+			return (i+1) - s; // +1 for R
 		}
 	}
 	return NAN;
 }
 
-inline double which_se(const std::vector<double>& v, size_t s, size_t e) {
+double which_se(const std::vector<double>& v, size_t s, size_t e) {
 	return which_se_rm(v, s, e);
 }
 
 
-inline double whichmin_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double whichmin_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s];
-	double out = 0;
+	double out = s;
 	if (std::isnan(x)) {
 		out = NAN;
 	} 
@@ -371,17 +370,18 @@ inline double whichmin_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 			}
 		}
 	} 
-	return (out + 1);  // +1 for R
+	out++;  // +1 for R
+	return (out - s);
 }
 
-inline double whichmin_se(const std::vector<double>& v, size_t s, size_t e) {
+double whichmin_se(const std::vector<double>& v, size_t s, size_t e) {
 	return whichmin_se_rm(v, s, e);
 }
 
 
-inline double whichmax_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double whichmax_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = v[s];
-	double out = 0;
+	double out = s;
 	if (std::isnan(x)) {
 		out = NAN;
 	}
@@ -396,15 +396,16 @@ inline double whichmax_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 			}
 		}
 	}
-	return (out + 1);  // +1 for R
+	out++;  // +1 for R
+	return (out - s); 
 }
 
-inline double whichmax_se(const std::vector<double>& v, size_t s, size_t e) {
+double whichmax_se(const std::vector<double>& v, size_t s, size_t e) {
 	return whichmax_se_rm(v, s, e);
 }
 
 
-inline double all_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double all_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = 1;
 	for (size_t i=s; i<e; i++) {
 		if (!std::isnan(v[i])) {
@@ -418,7 +419,7 @@ inline double all_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double all_se(const std::vector<double>& v, size_t s, size_t e) {
+double all_se(const std::vector<double>& v, size_t s, size_t e) {
 	double x = 1;
     for (size_t i=s; i<e; i++) {
         if (std::isnan(v[i]) || (v[i] == 0)) {
@@ -430,7 +431,7 @@ inline double all_se(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline double any_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+double any_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = NAN;
 	for (size_t i=s; i<e; i++) {
 		if (!std::isnan(v[i])) {
@@ -445,7 +446,7 @@ inline double any_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	return x;
 }
 
-inline double any_se(const std::vector<double>& v, size_t s, size_t e) {
+double any_se(const std::vector<double>& v, size_t s, size_t e) {
 	double x = 0;
 	for (size_t i=s; i<e; i++) {
 		if (std::isnan(v[i])) {
@@ -459,7 +460,7 @@ inline double any_se(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline std::vector<double> range_se_rm(std::vector<double>& v, size_t s, size_t e) {
+std::vector<double> range_se_rm(std::vector<double>& v, size_t s, size_t e) {
 
 	std::vector<double> x = { v[s], v[s] };
 	for (size_t i=(s+1); i<e; i++) {
@@ -477,7 +478,7 @@ inline std::vector<double> range_se_rm(std::vector<double>& v, size_t s, size_t 
 }
 
 
-inline std::vector<double> range_se(std::vector<double>& v, size_t s, size_t e) {
+std::vector<double> range_se(std::vector<double>& v, size_t s, size_t e) {
 
 	std::vector<double> x = { v[s], v[s] };
 	if (!std::isnan(x[0])) { return x; }
@@ -498,7 +499,7 @@ inline std::vector<double> range_se(std::vector<double>& v, size_t s, size_t e) 
 
 
 
-inline double modal_se_rm(std::vector<double>& v, size_t s, size_t e) {
+double modal_se_rm(std::vector<double>& v, size_t s, size_t e) {
 
 	size_t n = (e-s) + 1;
     std::vector<unsigned> counts(n, 0);
@@ -520,12 +521,12 @@ inline double modal_se_rm(std::vector<double>& v, size_t s, size_t e) {
     return v[maxCount];
 }
 
-inline double modal_se(std::vector<double>& v, size_t s, size_t e) {
+double modal_se(std::vector<double>& v, size_t s, size_t e) {
 	return modal_se_rm(v, s, e);
 }
 
 
-inline std::vector<bool> isna_se(const std::vector<double>& v, size_t s, size_t e) {
+std::vector<bool> isna_se(const std::vector<double>& v, size_t s, size_t e) {
 	std::vector<bool> x(e, false);
 	for (size_t i=s; i<e; i++) {
 		if (std::isnan(v[i])) {
@@ -536,7 +537,7 @@ inline std::vector<bool> isna_se(const std::vector<double>& v, size_t s, size_t 
 }
 
 
-inline std::vector<bool> isnotna_se(const std::vector<double>& v, size_t s, size_t e) {
+std::vector<bool> isnotna_se(const std::vector<double>& v, size_t s, size_t e) {
 	std::vector<bool> x(e, true);
 	for (size_t i=s; i<e; i++) {
 		if (std::isnan(v[i])) {
@@ -547,7 +548,7 @@ inline std::vector<bool> isnotna_se(const std::vector<double>& v, size_t s, size
 }
 
 
-inline void cumsum_se_rm(std::vector<double>& v, size_t s, size_t e) {
+void cumsum_se_rm(std::vector<double>& v, size_t s, size_t e) {
     for (size_t i=(s+1); i<e; i++) {
         if (std::isnan(v[i])) {
             v[i] = v[i-1];
@@ -557,7 +558,7 @@ inline void cumsum_se_rm(std::vector<double>& v, size_t s, size_t e) {
     }
 }
 
-inline void cumsum_se(std::vector<double>& v, size_t s, size_t e) {
+void cumsum_se(std::vector<double>& v, size_t s, size_t e) {
     for (size_t i=(s+1); i<e; i++) {
         if (std::isnan(v[i]) || std::isnan(v[i-1])) {
             v[i] = NAN;
@@ -569,7 +570,7 @@ inline void cumsum_se(std::vector<double>& v, size_t s, size_t e) {
 
 
 
-inline void cumprod_se_rm(std::vector<double>& v, size_t s, size_t e) {
+void cumprod_se_rm(std::vector<double>& v, size_t s, size_t e) {
     for (size_t i=(s+1); i<e; i++) {
         if (std::isnan(v[i])) {
             v[i] = v[i-1];
@@ -579,7 +580,7 @@ inline void cumprod_se_rm(std::vector<double>& v, size_t s, size_t e) {
     }
 }
 
-inline void cumprod_se(std::vector<double>& v, size_t s, size_t e) {
+void cumprod_se(std::vector<double>& v, size_t s, size_t e) {
     for (size_t i=(s+1); i<e; i++) {
         if (std::isnan(v[i]) || std::isnan(v[i-1])) {
             v[i] = NAN;
@@ -591,7 +592,7 @@ inline void cumprod_se(std::vector<double>& v, size_t s, size_t e) {
 
 
 
-inline void cummax_se_rm(std::vector<double>& v, size_t s, size_t e) {
+void cummax_se_rm(std::vector<double>& v, size_t s, size_t e) {
     for (size_t i=(s+1); i<e; i++) {
         if (std::isnan(v[i])) {
             v[i] = v[i-1];
@@ -601,7 +602,7 @@ inline void cummax_se_rm(std::vector<double>& v, size_t s, size_t e) {
     }
 }
 
-inline void cummax_se(std::vector<double>& v, size_t s, size_t e) {
+void cummax_se(std::vector<double>& v, size_t s, size_t e) {
     for (size_t i=(s+1); i<e; i++) {
         if (std::isnan(v[i]) || std::isnan(v[i-1])) {
 			v[i] = NAN;
@@ -612,7 +613,7 @@ inline void cummax_se(std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline void cummin_se_rm(std::vector<double>& v, size_t s, size_t e) {
+void cummin_se_rm(std::vector<double>& v, size_t s, size_t e) {
     for (size_t i=(s+1); i<e; i++) {
         if (std::isnan(v[i])) {
             v[i] = v[i-1];
@@ -623,7 +624,7 @@ inline void cummin_se_rm(std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-inline void cummin_se(std::vector<double>& v, size_t s, size_t e) {
+void cummin_se(std::vector<double>& v, size_t s, size_t e) {
     for (size_t i=(s+1); i<e; i++) {
         if (std::isnan(v[i]) || std::isnan(v[i-1])) {
             v[i] = NAN;

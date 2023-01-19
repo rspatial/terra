@@ -433,8 +433,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	GIntBig diskAvailable = VSIGetDiskFreeSpace(dname.c_str());
 	if ((diskAvailable > -1) && (diskAvailable < diskNeeded)) {
 		long gb = 1073741824;
-		setError("insufficient disk space. Estimated need: " + std::to_string(diskNeeded/gb) + "GB. Available: " + std::to_string(diskAvailable/gb) + " GB.");
-		return false;
+		std::string msg = "Estimated disk space needed without compression: " + std::to_string(diskNeeded/gb) + "GB. Available: " + std::to_string(diskAvailable/gb) + " GB.";
+		// was an error, but actual file size is not known
+		addWarning(msg);
 	}
 
 	stat_options(opt.get_statistics(), compute_stats, gdal_stats, gdal_minmax, gdal_approx);

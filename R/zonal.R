@@ -55,6 +55,44 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 	}
 )
 
+setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
+	function(x, z, fun="mean", ..., w=NULL, weights=FALSE, exact=FALSE, touches=FALSE, as.raster=FALSE, filename="", wopt=list())  {
+		opt <- spatOptions()
+		narm <- isTRUE(list(...)$na.rm)
+		txtfun <- .makeTextFun(fun)
+		if (!inherits(txtfun, "character")) {
+			error("zonal", "this function is not supported")
+			# should use "extract" for these cases
+		}	
+		if (is.null(w)) {
+			out <- x@ptr$zonal_poly(z@ptr, txtfun, weights[1], exact[1], touches[1], narm, opt)
+		} else {
+			if (txtfun != "mean") {
+				error("zonal", "fun must be 'mean' when using weights")
+			}
+			out <- x@ptr$zonal_poly_weighted(z@ptr, w@ptr, weights[1], exact[1], touches[1], narm, opt)
+		}
+		messages(out, "zonal")
+		out <- .getSpatDF(out)
+		
+		if (as.raster) {
+			if (is.null(wopt$names)) {
+				wopt$names <- names(x)
+			}
+			x <- rasterize(z, x, 1:nrow(z))
+			subst(x, 1:nrow(out), out, filename=filename, wopt=wopt)
+		} else {
+			#if (is.factor(z)) {
+			#	levs <- levels(z)[[1]]
+			#	m <- match(out$zone, levs[,1])
+			#	out$zone <- levs[m, 2]
+			#}
+			#colnames(out)[1] <- zname
+			out
+		}
+	}
+)
+
 
 setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
 	function(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE)  {
