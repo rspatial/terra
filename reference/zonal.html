@@ -60,7 +60,10 @@ See extract to summarize values of a SpatRaster with a SpatVector.'><meta proper
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,SpatRaster</span></span>
-<span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, w<span class="op">=</span><span class="cn">NULL</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, w<span class="op">=</span><span class="cn">NULL</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster,SpatVector</span></span>
+<span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, weigths<span class="op">=</span><span class="cn">FALSE</span>, exact<span class="op">=</span><span class="cn">FALSE</span>, touches<span class="op">=</span><span class="cn">FALSE</span>, w<span class="op">=</span><span class="cn">NULL</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatVector,SpatVector</span></span>
 <span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, weighted<span class="op">=</span><span class="cn">FALSE</span>, as.polygons<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -72,13 +75,13 @@ See extract to summarize values of a SpatRaster with a SpatVector.'><meta proper
 <dd><p>SpatRaster or SpatVector</p></dd>
 
   <dt>z</dt>
-<dd><p>Object of the same class as <code>x</code>. That is, either a SpatRaster with cell-values representing zones or a SpatVector with each polygon geometry representing a zone</p></dd>
+<dd><p>SpatRaster with cell-values representing zones or a SpatVector with each polygon geometry representing a zone</p></dd>
 
   <dt>fun</dt>
 <dd><p>function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", "isNA", and "notNA" and, for relatively small SpatRasters, a proper function</p></dd>
 
   <dt>...</dt>
-<dd><p>additional arguments passed to fun</p></dd>
+<dd><p>additional arguments passed to fun, such as <code>na.rm=TRUE</code></p></dd>
   
   <dt>w</dt>
 <dd><p>SpatRaster with weights. Should have a single-layer with non-negative values</p></dd>
@@ -91,6 +94,16 @@ See extract to summarize values of a SpatRaster with a SpatVector.'><meta proper
 
   <dt>wopt</dt>
 <dd><p>list with additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
+
+  <dt>weights</dt>
+<dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean</p></dd>
+
+  <dt>exact</dt>
+<dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean</p></dd>
+
+  <dt>touches</dt>
+<dd><p>logical. If <code>TRUE</code>, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered <code>TRUE</code> when <code>weights=TRUE</code> or <code>exact=TRUE</code></p></dd>
 
 
   <dt>weighted</dt>
