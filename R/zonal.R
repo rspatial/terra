@@ -61,10 +61,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
 		narm <- isTRUE(list(...)$na.rm)
 		txtfun <- .makeTextFun(fun)
 		if (!inherits(txtfun, "character")) {
-			if (!is.null(w)) {
-				error("zonal", "argument 'w' not supported with this 'fun'")
-			}
-			out <- extract(x, z, fun=fun, ..., weights=weights, exact=exact, touches=touces)
+			error("zonal", "this 'fun' is not supported. You can use extract instead")
 		} else {
 			if (is.null(w)) {
 				out <- x@ptr$zonal_poly(z@ptr, txtfun, weights[1], exact[1], touches[1], narm, opt)

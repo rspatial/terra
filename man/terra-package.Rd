@@ -582,17 +582,18 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 \code{cellFromLine, cellFromPolygon,}\tab \code{\link{cells}}\cr
 \code{cellsFromExtent}\tab\code{\link{cells}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
-\code{corLocal}\tab\code{\link{focalCor}}\cr
-\code{coordinates}\tab\code{\link{crds}}\cr
 \code{clump}\tab\code{\link{patches}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
+\code{corLocal}\tab\code{\link{focalCor}}\cr
+\code{coordinates}\tab\code{\link{crds}}\cr
+\code{couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
 \code{disaggregate} \tab\code{\link{disagg}}\cr
+\code{distanceFromPoints} \tab \code{\link{distance}}\cr
 \code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
 \code{dropLayer}\tab\code{\link{subset}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
-\code{distanceFromPoints} \tab \code{\link{distance}}\cr
+\code{getValues}\tab\code{\link{values}}\cr
 \code{isLonLat, isGlobalLonLat}\tab\code{\link{is.lonlat}}\cr
-\code{couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
 \code{layerize}\tab\code{\link{segregate}}\cr
 \code{layerStats}\tab\code{\link{layerCor}}\cr
 \code{movingFun}\tab\code{\link{roll}}\cr
