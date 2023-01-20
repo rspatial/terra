@@ -1038,8 +1038,8 @@ SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool w
 					double vsum = 0;
 					for (size_t k=0; k<e[j].size(); k++) {
 						if (!std::isnan(e[j][k])) {
-							wsum += we[j][k] * wgt[k];
-							vsum += (e[j][k] * we[j][k] * wgt[k]);  
+							wsum += we[0][k] * wgt[k];
+							vsum += (e[j][k] * we[0][k] * wgt[k]);  
 						}
 					}
 					zv[j][i] = vsum / wsum;
@@ -1048,9 +1048,9 @@ SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool w
 					double wsum = 0;
 					double vsum = 0;
 					for (size_t k=0; k<e[j].size(); k++) {
-						if ((!std::isnan(e[j][k])) & (!std::isnan(we[j][k]))) {
-							wsum += we[j][k] * wgt[k];
-							vsum += (e[j][k] * we[j][k] * wgt[k]);  
+						if ((!std::isnan(e[j][k])) & (!std::isnan(we[0][k]))) {
+							wsum += we[0][k] * wgt[k];
+							vsum += (e[j][k] * we[0][k] * wgt[k]);  
 						}
 					}
 					zv[j][i] = vsum / wsum;
@@ -1062,8 +1062,8 @@ SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool w
 					double wsum = 0;
 					double vsum = 0;
 					for (size_t k=0; k<e[j].size(); k++) {
-						wsum += wgt[k];
-						vsum += (e[j][k] * wgt[k]);  
+						wsum += we[0][k];
+						vsum += (e[j][k] * we[0][k]);  
 					}
 					zv[j][i] = vsum / wsum;
 				}
@@ -1074,9 +1074,9 @@ SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool w
 					double wsum = 0;
 					double vsum = 0;
 					for (size_t k=0; k<e[j].size(); k++) {
-						if ((!std::isnan(e[j][k])) & (!std::isnan(we[j][k]))) {
-							wsum += we[j][k];
-							vsum += (e[j][k] * we[j][k]);  
+						if ((!std::isnan(e[j][k])) & (!std::isnan(we[0][k]))) {
+							wsum += we[0][k];
+							vsum += (e[j][k] * we[0][k]);  
 						}
 					}
 					zv[j][i] = vsum / wsum;
@@ -1086,8 +1086,8 @@ SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool w
 					double wsum = 0;
 					double vsum = 0;
 					for (size_t k=0; k<e[j].size(); k++) {
-						wsum += we[j][k];
-						vsum += (e[j][k] * we[j][k]);  
+						wsum += we[0][k];
+						vsum += (e[j][k] * we[0][k]);  
 					}
 					zv[j][i] = vsum / wsum;
 				}

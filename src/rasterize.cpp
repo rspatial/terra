@@ -629,7 +629,10 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 		SpatDataFrame vd = pts.getGeometryDF();
 		std::vector<double> x = vd.getD(0);
 		std::vector<double> y = vd.getD(1);
-		cells = r.cellFromXY(x, y);
+		cells = r.cellFromXY(x, y);	
+		cells.erase(std::remove_if(cells.begin(), cells.end(),
+                    [](const double& value) { return std::isnan(value); }), cells.end());
+		std::sort( cells.begin(), cells.end() );
 		cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
 		if (cells.size() == 0) {
 			cells.resize(1, NAN);
@@ -639,6 +642,10 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 		std::vector<double> x = vd.getD(0);
 		std::vector<double> y = vd.getD(1);
 		cells = r.cellFromXY(x, y);
+//		cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
+		if (cells.size() == 0) {
+			cells.resize(1, NAN);
+		}
 	}
 	return cells;
 }

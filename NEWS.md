@@ -1,9 +1,11 @@
 # version 1.7-0
 
-
 ## new
 
-- argument `w` to `zonal<SpatRaster>` to compute weighted means
+- argument `w` to `zonal<SpatRaster,SpatRaster>` to compute weighted means
+- `zonal<SpatRaster,SpatVector>` method
+- `clamp_ts` method
+
 
 ## bug fixes 
 
