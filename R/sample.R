@@ -318,6 +318,8 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 
 
 set_factors <- function(x, ff, cts, asdf) {
+	if (!asdf) return(x)
+	
 	if (any(ff)) {
 		x <- data.frame(x)
 		for (i in which(ff)) {
@@ -329,10 +331,8 @@ set_factors <- function(x, ff, cts, asdf) {
 				x[[i]] <- ct[m,2]
 			}
 		}
-	} else if (asdf) {
-		x <- data.frame(x)
 	}
-	x
+	data.frame(x)
 }
 
 
@@ -519,8 +519,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				return(x);
 			} else if (exhaustive && na.rm) {
 				cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
-				out <- x[cnrs]
-			
+				out <- x[cnrs]	
 			} else {
 				#v <- x@ptr$sampleRandomValues(size, replace, seed)
 				if (size > 0.75 * ncell(x)) {
@@ -548,7 +547,8 @@ setMethod("spatSample", signature(x="SpatRaster"),
 						if ((i>1) && (!replace)) {
 							scells <- unique(scells)
 						}
-						out <- stats::na.omit(x[scells])
+						out <- extractCells(x, scells, raw=!as.df)   
+						out <- stats::na.omit(out)
 						if (nrow(out) >= size) {
 							out <- out[1:size, ,drop=FALSE]
 							attr(out, "na.action") <- NULL
@@ -558,7 +558,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 					}
 				} else {
 					scells <- .sampleCells(x, size, method, replace)
-					out <- x[scells]
+					out <- extractCells(x, scells, raw=!as.df)   
 				}
 				if (NROW(out) < size) {
 					if (warn) warn("spatSample", "fewer values returned than requested")
@@ -567,6 +567,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				} else {
 					out = out[1:size, ,drop=FALSE]
 				}
+				out <- set_factors(out, ff, lv, as.df)
 				return(out)
 			}
 		}
