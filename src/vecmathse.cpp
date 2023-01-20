@@ -98,7 +98,7 @@ double sum_se(const std::vector<double>& v, size_t s, size_t e) {
 	}
 	for (size_t i=(s+1); i<e; i++) {
 		if (std::isnan(v[i])) {
-			x = NAN;
+			return NAN;
 			break;
 		} else {
 			x += v[i];

@@ -9,13 +9,11 @@
 \title{Zonal statistics}
 
 \description{
-Compute zonal statistics, that is summarize values of a SpatRaster for each "zone" defined by another SpatRaster. 
+Compute zonal statistics, that is summarize values of a SpatRaster for each "zone" defined by another SpatRaster, or by a SpatVector with polygon geometry. 
 
-If \code{fun} is a true R \code{function}, \code{zonal} may fail for very large SpatRaster objects, except for the functions ("mean", "min", "max", "sum", "isNA", and "notNA"). 
+If \code{fun} is a true R \code{function}, the <SpatRaster,SpatRaster> method when using very large SpatRasters, except for the functions ("mean", "min", "max", "sum", "isNA", and "notNA"). 
 
 You can also summarize values of a SpatVector for each polygon (zone) defined by another SpatVector. 
-
-See \code{\link{extract}} to summarize values of a SpatRaster with a SpatVector. 
 }
 
 \usage{
@@ -48,9 +46,13 @@ See \code{\link{extract}} to summarize values of a SpatRaster with a SpatVector.
 A \code{data.frame} with a value for each zone, or a SpatRaster, or SpatVector of polygons
 }
 
-\seealso{ See \code{\link{global}} for "global" statistics (i.e., all of \code{x} is considered a single zone),  \code{\link{app}} for local statistics, and \code{\link{extract}} for summarizing values for polygons}
+\seealso{ See \code{\link{global}} for "global" statistics (i.e., all of \code{x} is considered a single zone),  \code{\link{app}} for local statistics, and \code{\link{extract}} for summarizing values for polygons
+\code{\link{extract}} for an alternative way to summarize values of a SpatRaster with a SpatVector. 
+}
 
 \examples{
+
+### SpatRaster, SpatRaster
 r <- rast(ncols=10, nrows=10)
 values(r) <- 1:ncell(r)
 z <- rast(r)
@@ -61,7 +63,6 @@ zonal(r, z, "sum", na.rm=TRUE)
 # with weights 
 w <- init(r, "col")
 zonal(r, z, w=w, "mean", na.rm=TRUE)
-
 
 # multiple layers
 r <- rast(system.file("ex/logo.tif", package = "terra")) 
@@ -76,7 +77,19 @@ zonal(r, z, "mean", na.rm = TRUE)
 zr <- zonal(r, z, "mean", na.rm = TRUE, as.raster=TRUE)
 
 
-### SpatVector 
+### SpatRaster, SpatVector
+x <- rast(ncol=2,nrow=2, vals=1:4, xmin=0, xmax=1, ymin=0, ymax=1, crs="+proj=utm +zone=1")
+p <- as.polygons(x)
+pp <- shift(p, .2)
+r <- disagg(x, 4)
+
+zonal(r, p)
+zonal(r, p, sum)
+zonal(x, pp, exact=TRUE)
+zonal(c(x, x*10), pp, w=x)
+
+
+### SpatVector, SpatVector
 
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)[,c(2,4)]
