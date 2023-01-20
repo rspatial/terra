@@ -3,7 +3,7 @@
 \alias{zonal}
 
 \alias{zonal,SpatRaster,SpatRaster-method}
-
+\alias{zonal,SpatRaster,SpatVector-method}
 \alias{zonal,SpatVector,SpatVector-method}
 
 \title{Zonal statistics}
@@ -19,7 +19,8 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 \usage{
 \S4method{zonal}{SpatRaster,SpatRaster}(x, z, fun=mean, ..., w=NULL, as.raster=FALSE, filename="", wopt=list())
 
-\S4method{zonal}{SpatRaster,SpatVector}(x, z, fun=mean, ..., weigths=FALSE, exact=FALSE, touches=FALSE, w=NULL, as.raster=FALSE, filename="", wopt=list())
+\S4method{zonal}{SpatRaster,SpatVector}(x, z, fun=mean, ..., w=NULL, weights=FALSE,
+		exact=FALSE, touches=FALSE, as.raster=FALSE, filename="", wopt=list())
 
 \S4method{zonal}{SpatVector,SpatVector}(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE) 
 }
@@ -43,10 +44,10 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 }
 
 \value{
-A \code{data.frame} with a value for each zone, or a SpatRaster, or SpatVector of polygons
+A \code{data.frame} with a value for each zone, or a SpatRaster, or SpatVector of polygons.
 }
 
-\seealso{ See \code{\link{global}} for "global" statistics (i.e., all of \code{x} is considered a single zone),  \code{\link{app}} for local statistics, and \code{\link{extract}} for summarizing values for polygons
+\seealso{ See \code{\link{global}} for "global" statistics (i.e., all of \code{x} is considered a single zone), \code{\link{app}} for local statistics, and \code{\link{extract}} for summarizing values for polygons
 \code{\link{extract}} for an alternative way to summarize values of a SpatRaster with a SpatVector. 
 }
 

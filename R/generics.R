@@ -316,7 +316,7 @@ setMethod("clamp", signature(x="SpatRaster"),
 )
 
 setMethod("clamp_ts", signature(x="SpatRaster"),
-	function(x, min=FALSE, max=FALSE, filename="", ...) {
+	function(x, min=FALSE, max=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$clamp_ts(min, max, opt)
 		messages(x, "clamp_ts")
