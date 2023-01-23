@@ -50,18 +50,17 @@ function(x, filename="", overwrite=FALSE, ...) {
 	stopifnot(filename != "")
 	filename <- enc2utf8(filename)
 
-	ftp <- list(...)$filetype
+	ftp <- list(...)$filetype[1]
 	fext <- tools::file_ext(filename)
 	if (any(fext %in% c("nc", "cdf")) && (is.null(ftp) || isTRUE(ftp=="netCDF"))) {
-		warn("consider writeCDF to write ncdf files")
-	}
-
-	if ((fext == "rds") && ((is.null(ftp)) || isTRUE(ftp=="RDS"))) {
-		if ((!overwrite) && file.exists(filename)) {
-			error("Use 'overwrite=TRUE' to overwrite an existing file")
-		}
-		return(saveRDS(x, filename))
-	}
+		warn("writeRaster", "consider writeCDF to write ncdf files")
+	} 
+	#else if ((length(fext)==1) && (any(fext == "rds")) && ((is.null(ftp)) || isTRUE(ftp=="RDS"))) {
+	#	if ((!overwrite) && file.exists(filename)) {
+	#		error("writeRaster", "Use 'overwrite=TRUE' to overwrite an existing file")
+	#	}
+	#	return(saveRDS(x, filename))
+	#}
 	opt <- spatOptions(filename, overwrite, ...)
 	x@ptr <- x@ptr$writeRaster(opt)
 	x <- messages(x, "writeRaster")

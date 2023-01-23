@@ -1048,7 +1048,7 @@ SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool w
 					double wsum = 0;
 					double vsum = 0;
 					for (size_t k=0; k<e[j].size(); k++) {
-						if ((!std::isnan(e[j][k])) & (!std::isnan(we[0][k]))) {
+						if ((!std::isnan(e[j][k])) && (!std::isnan(we[0][k]))) {
 							wsum += we[0][k] * wgt[k];
 							vsum += (e[j][k] * we[0][k] * wgt[k]);  
 						}
@@ -1074,7 +1074,7 @@ SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool w
 					double wsum = 0;
 					double vsum = 0;
 					for (size_t k=0; k<e[j].size(); k++) {
-						if ((!std::isnan(e[j][k])) & (!std::isnan(we[0][k]))) {
+						if ((!std::isnan(e[j][k])) && (!std::isnan(we[0][k]))) {
 							wsum += we[0][k];
 							vsum += (e[j][k] * we[0][k]);  
 						}

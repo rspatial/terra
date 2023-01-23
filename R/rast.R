@@ -168,13 +168,13 @@ setMethod("rast", signature(x="character"),
 		f <- .fullFilename(x)
 		f <- enc2utf8(f)
 
-		if (tolower(tools::file_ext(f)) == "rds") {
-			r <- readRDS(x)
-			if (!inherits(r, "SpatVector")) {
-				error("rast", "the rds file does not store a SpatRaster")
-			}
-			return(r)
-		}
+#		if (tolower(tools::file_ext(f)) == "rds") {
+#			r <- readRDS(x)
+#			if (!inherits(r, "SpatRaster")) {
+#				error("rast", "the rds file does not store a SpatRaster")
+#			}
+#			return(r)
+#		}
 		
 		r <- methods::new("SpatRaster")
 		#subds <- subds[1]

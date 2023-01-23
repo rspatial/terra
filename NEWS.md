@@ -24,8 +24,7 @@ Released 2023-01-17
 
 - `shade` is now vectorized for arguments `angle` and `direction` to facilitate generating multiple hillshades that can be combined for a better result [#948](https://github.com/rspatial/terra/issues/948) by Jürgen Niedballa
 - `sharedPaths` now uses spatial indices [#960](https://github.com/rspatial/terra/issues/960) by Jeff Hanson
-- `predict` better support for models such as ranger that do not return anything for missing values [#968](
-https://github.com/rspatial/terra/issues/968) by Alex Ilich
+- `predict` has better support for models such as ranger that do not return anything for missing values [#968](https://github.com/rspatial/terra/issues/968) by Alex Ilich
 
 ## bug fixes 
 
@@ -123,8 +122,8 @@ Released 2022-11-18
 
 ## name changes
 
-costDistance -> costDist to avoid conflict with {gdistance}
-gridDistance -> gridDist for consistency
+- costDistance -> costDist to avoid conflict with {gdistance}
+- gridDistance -> gridDist for consistency
 
 
 # version 1.6-17
@@ -133,36 +132,34 @@ Released 2022-09-10
 
 ## new
 
-- `droplevels` for SpatRaster. [#757](https://github.com/rspatial/terra/issues/757) by Rodolfo Jaffe.
+- `droplevels` for SpatRaster. [#757] by Rodolfo Jaffe.
 - `normalize.longitude` for SpatVector. 
 - `scoff` to get and `scoff<-` to set the scale (gain) and offset of a SpatRaster. 
 
 ## enhancements
 
-- new argument `raw=FALSE` to `extract<SpatRaster>` [#776](https://github.com/rspatial/terra/issues/776) by Thomas Roh.
-- `as.data.frame` now takes `na.rm=NA` to only remove rows that are NA for all layers. The default value changed from `TRUE` to `NA`. [#792](https://github.com/rspatial/terra/issues/792) by Ed Carnell
-- faster plotting of SpatVector data [#774](https://github.com/rspatial/terra/issues/774) by Krzysztof Dyba
-- `distance<SpatRaster>` has new arguments "target" and "exclude". [#560](https://github.com/rspatial/terra/issues/560) by Bernardo Brandão Niebuhr
+- new argument `raw=FALSE` to `extract<SpatRaster>` [#776] by Thomas Roh.
+- `as.data.frame` now takes `na.rm=NA` to only remove rows that are NA for all layers. The default value changed from `TRUE` to `NA`. [#792] by Ed Carnell
+- faster plotting of SpatVector data [#774] by Krzysztof Dyba
+- `distance<SpatRaster>` has new arguments "target" and "exclude". [#560] by Bernardo Brandão Niebuhr
 - new argument `sparse=FALSE` for `relate<SpatVector,SpatVector>. 
-- new argument `usenames=FALSE` for `lapp<SpatRasterDataset>` [#793](https://github.com/rspatial/terra/issues/793) by Colin Brust.
-- `vect<character>` now reports that a file is non-existent [#784](https://github.com/rspatial/terra/issues/784) by John Baums
-- faster `relate` [#716](https://github.com/rspatial/terra/issues/716) by Krzysztof Dyba
-- `focal3D` now checks if all the window's dimensions are odd [#772](https://github.com/rspatial/terra/issues/772) by Neander Marcel Heming
-
-
+- new argument `usenames=FALSE` for `lapp<SpatRasterDataset>` [#793] by Colin Brust.
+- `vect<character>` now reports that a file is non-existent [#784] by John Baums
+- faster `relate` [#716] by Krzysztof Dyba
+- `focal3D` now checks if all the window's dimensions are odd [#772] by Neander Marcel Heming
 
 ## bug fixes 
 
-- all.equal bug [#756](https://github.com/rspatial/terra/pull/756) fixed by John Baums
-- extract<"SpatRaster","sf"> ignored the ID argument. [#755](https://github.com/rspatial/terra/issues/755) by Dainius Masiliūnas.
-- There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file [#760](https://github.com/rspatial/terra/issues/760) by John Baums
-- `vrt` is no longer constrained by the maximum number of files that can be opened [#780](https://github.com/rspatial/terra/issues/780) by 8Ginette8	
-- `weighted.mean` crashed with numeric weights and na.rm=TRUE [#777](https://github.com/rspatial/terra/issues/777) by David Holstius
-- `project<SpatRaster>` did not consider an extent that was set by the user [#775](https://github.com/rspatial/terra/issues/775) by Philippe Massicotte
-- `focalCor` failed for large rasters [#607](https://github.com/rspatial/terra/issues/607) by John Clark
-- `focal` with `expand=TRUE` was prone to run out of memory [#610](https://github.com/rspatial/terra/issues/610) by Nathan Elliott
-- `crop<SpatVector>` did not work well when the second argument were points or lines [#782](https://github.com/rspatial/terra/issues/782) by Márcia Barbosa
-- `adjacent` with `pairs=TRUE` now respects the `include=TRUE` argument [808](https://github.com/rspatial/terra/issues/808) by Joseph Lewis
+- all.equal bug [#756] fixed by John Baums
+- extract<"SpatRaster","sf"> ignored the ID argument. [#755] by Dainius Masiliūnas.
+- There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file [#760] by John Baums
+- `vrt` is no longer constrained by the maximum number of files that can be opened [#780] by 8Ginette8	
+- `weighted.mean` crashed with numeric weights and na.rm=TRUE [#777] by David Holstius
+- `project<SpatRaster>` did not consider an extent that was set by the user [#775] by Philippe Massicotte
+- `focalCor` failed for large rasters [#607] by John Clark
+- `focal` with `expand=TRUE` was prone to run out of memory [#610] by Nathan Elliott
+- `crop<SpatVector>` did not work well when the second argument were points or lines [#782] by Márcia Barbosa
+- `adjacent` with `pairs=TRUE` now respects the `include=TRUE` argument [808] by Joseph Lewis
 
 
 # version 1.6-7
@@ -180,11 +177,10 @@ Released 2022-08-07
 
 ## bug fixes 
 
-- values of `focal` where not correct if the input SpatRaster had multiple layers and a "custom" function. [#727](https://github.com/rspatial/terra/issues/727) by Jean-Luc Dupouey. 
-- `plot<SpatRaster>` did not honor argument `legend=FALSE`. [#738](https://github.com/rspatial/terra/issues/738) by Grzegorz Sapijaszko
-- `expanse` failed when processing in chunks [#741](https://github.com/rspatial/terra/issues/741) by Gareth Davies 
-- `crop<SpatRaster,SpatExtent>` with argument `snap="out"` could lead to a crash if the extent was beyond the SpatRaster. [#740](https://github.com/rspatial/terra/issues/740) by Mauricio Zambrano-Bigiarini
-
+- values of `focal` where not correct if the input SpatRaster had multiple layers and a "custom" function. [#727] by Jean-Luc Dupouey. 
+- `plot<SpatRaster>` did not honor argument `legend=FALSE`. [#738] by Grzegorz Sapijaszko
+- `expanse` failed when processing in chunks [#741] by Gareth Davies 
+- `crop<SpatRaster,SpatExtent>` with argument `snap="out"` could lead to a crash if the extent was beyond the SpatRaster. [#740] by Mauricio Zambrano-Bigiarini
 
 
 # version 1.6-3
@@ -200,7 +196,6 @@ Released 2022-07-25
 - `wrap<SpatRaster>` did not return the correct labels for some categorical rasters. [#652] by Jakub Nowosad
 - better support for non-latin characters in the legend [#658] by Krzysztof Dyba
 - holes in small lon/lat polygons are now properly buffered [#689] by David Hofmann
-
 
 ## enhancements 
 
@@ -275,7 +270,6 @@ Released 2022-06-09
 - delauny -> delaunay [#627] by Derek Friend
 
 
-
 # version 1.5-21
 
 Released 2022-02-17
@@ -286,7 +280,6 @@ Released 2022-02-17
 - focal/focalCpp showed strange patterns when the window size was larger than the block size [#519] by Alex Ilich
 - using `xy=TRUE` in `as.data.frame` normalized the names [#538] by Kodi Arfer
 - new argument `options` to `vrt` [#629] by Monika Tomaszewska.
-
 
 ## enhancements 
 
@@ -320,7 +313,6 @@ Released 2022-01-30
 - `aggregate<SpatRaster>` now accepts functions that return more than one value per aggregated cell
 - `writeVector` has new argument `insert` to add a layer to an existing file (e.g. GPKG).
 
-
 ## new
 
 - new option `method="weights"` for `spatSample<SpatRaster>`
@@ -331,7 +323,6 @@ Released 2022-01-30
 - new argument `proxy=FALSE` to `vect` to create a SpatVectorProxy object
 - new method `query<SpatVectorProxy>` to extract parts of a SpatVectorProxy
 - new method `vector_layers` that returns, and can delete, vector format layers from a database/file such as GPKG
-
 
 ## name changes
 
