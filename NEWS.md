@@ -1,4 +1,4 @@
-# version 1.7-0
+# version 1.7-1
 
 ## new
 
@@ -6,13 +6,10 @@
 - `zonal<SpatRaster,SpatVector>` method
 - `clamp_ts` method
 
-
 ## bug fixes 
 
 - in the previous version, a bug was introduced such that the order of operation in arithmetic operations with SpatRasters was ignored. [#978](https://github.com/rspatial/terra/issues/978) by Andrew Marx
-
-
-## enhancements
+- Fixed `split<SpatVector>`. [#979](https://github.com/rspatial/terra/issues/979) by srfall
 
 
 # version 1.6-53
