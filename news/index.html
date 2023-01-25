@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-4</span>
       </span>
     </div>
 
@@ -48,9 +48,20 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-0" id="version-17-0">version 1.7-0<a class="anchor" aria-label="anchor" href="#version-17-0"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-4" id="version-17-4">version 1.7-4<a class="anchor" aria-label="anchor" href="#version-17-4"></a></h2>
 <div class="section level3">
-<h3 id="new-1-7-0">new<a class="anchor" aria-label="anchor" href="#new-1-7-0"></a></h3>
+<h3 id="new-1-7-4">new<a class="anchor" aria-label="anchor" href="#new-1-7-4"></a></h3>
+<ul><li>argument <code>order=FALSE</code> to <code>sort&lt;SpatRaster&gt;</code>
+</li>
+<li>
+<code>sort&lt;SpatVector&gt;</code> (and <code>&lt;data.frame&gt;</code> method</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.7-3" id="version-17-3">version 1.7-3<small>2023-01-24</small><a class="anchor" aria-label="anchor" href="#version-17-3"></a></h2>
+<p>Released 2023-01-24</p>
+<div class="section level3">
+<h3 id="new-1-7-3">new<a class="anchor" aria-label="anchor" href="#new-1-7-3"></a></h3>
 <ul><li>argument <code>w</code> to <code>zonal&lt;SpatRaster,SpatRaster&gt;</code> to compute weighted means</li>
 <li>
 <code>zonal&lt;SpatRaster,SpatVector&gt;</code> method</li>
@@ -58,12 +69,10 @@
 <code>clamp_ts</code> method</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-0">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-0"></a></h3>
+<h3 id="bug-fixes-1-7-3">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-3"></a></h3>
 <ul><li>in the previous version, a bug was introduced such that the order of operation in arithmetic operations with SpatRasters was ignored. <a href="https://github.com/rspatial/terra/issues/978" class="external-link">#978</a> by Andrew Marx</li>
+<li>Fixed <code>split&lt;SpatVector&gt;</code>. <a href="https://github.com/rspatial/terra/issues/979" class="external-link">#979</a> by srfall</li>
 </ul></div>
-<div class="section level3">
-<h3 id="enhancements-1-7-0">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-0"></a></h3>
-</div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.6-53" id="version-16-53">version 1.6-53<small>2023-01-17</small><a class="anchor" aria-label="anchor" href="#version-16-53"></a></h2>
@@ -79,7 +88,7 @@
 <li>
 <code>sharedPaths</code> now uses spatial indices <a href="https://github.com/rspatial/terra/issues/960" class="external-link">#960</a> by Jeff Hanson</li>
 <li>
-<code>predict</code> better support for models such as ranger that do not return anything for missing values <a href="https://github.com/rspatial/terra/issues/968" class="external-link">#968</a> by Alex Ilich</li>
+<code>predict</code> has better support for models such as ranger that do not return anything for missing values <a href="https://github.com/rspatial/terra/issues/968" class="external-link">#968</a> by Alex Ilich</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-53">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-53"></a></h3>
@@ -215,8 +224,9 @@
 </ul></div>
 <div class="section level3">
 <h3 id="name-changes-1-6-41">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-6-41"></a></h3>
-<p>costDistance -&gt; costDist to avoid conflict with {gdistance} gridDistance -&gt; gridDist for consistency</p>
-</div>
+<ul><li>costDistance -&gt; costDist to avoid conflict with {gdistance}</li>
+<li>gridDistance -&gt; gridDist for consistency</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.6-17" id="version-16-17">version 1.6-17<small>2022-09-10</small><a class="anchor" aria-label="anchor" href="#version-16-17"></a></h2>
@@ -224,7 +234,7 @@
 <div class="section level3">
 <h3 id="new-1-6-17">new<a class="anchor" aria-label="anchor" href="#new-1-6-17"></a></h3>
 <ul><li>
-<code>droplevels</code> for SpatRaster. <a href="https://github.com/rspatial/terra/issues/757" class="external-link">#757</a> by Rodolfo Jaffe.</li>
+<code>droplevels</code> for SpatRaster. [#757] by Rodolfo Jaffe.</li>
 <li>
 <code>normalize.longitude</code> for SpatVector.</li>
 <li>
@@ -232,39 +242,39 @@
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-17">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-17"></a></h3>
-<ul><li>new argument <code>raw=FALSE</code> to <code>extract&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/issues/776" class="external-link">#776</a> by Thomas Roh.</li>
+<ul><li>new argument <code>raw=FALSE</code> to <code>extract&lt;SpatRaster&gt;</code> [#776] by Thomas Roh.</li>
 <li>
-<code>as.data.frame</code> now takes <code>na.rm=NA</code> to only remove rows that are NA for all layers. The default value changed from <code>TRUE</code> to <code>NA</code>. <a href="https://github.com/rspatial/terra/issues/792" class="external-link">#792</a> by Ed Carnell</li>
-<li>faster plotting of SpatVector data <a href="https://github.com/rspatial/terra/issues/774" class="external-link">#774</a> by Krzysztof Dyba</li>
+<code>as.data.frame</code> now takes <code>na.rm=NA</code> to only remove rows that are NA for all layers. The default value changed from <code>TRUE</code> to <code>NA</code>. [#792] by Ed Carnell</li>
+<li>faster plotting of SpatVector data [#774] by Krzysztof Dyba</li>
 <li>
-<code>distance&lt;SpatRaster&gt;</code> has new arguments “target” and “exclude”. <a href="https://github.com/rspatial/terra/issues/560" class="external-link">#560</a> by Bernardo Brandão Niebuhr</li>
+<code>distance&lt;SpatRaster&gt;</code> has new arguments “target” and “exclude”. [#560] by Bernardo Brandão Niebuhr</li>
 <li>new argument <code>sparse=FALSE</code> for `relate&lt;SpatVector,SpatVector&gt;.</li>
-<li>new argument <code>usenames=FALSE</code> for <code>lapp&lt;SpatRasterDataset&gt;</code> <a href="https://github.com/rspatial/terra/issues/793" class="external-link">#793</a> by Colin Brust.</li>
+<li>new argument <code>usenames=FALSE</code> for <code>lapp&lt;SpatRasterDataset&gt;</code> [#793] by Colin Brust.</li>
 <li>
-<code>vect&lt;character&gt;</code> now reports that a file is non-existent <a href="https://github.com/rspatial/terra/issues/784" class="external-link">#784</a> by John Baums</li>
-<li>faster <code>relate</code> <a href="https://github.com/rspatial/terra/issues/716" class="external-link">#716</a> by Krzysztof Dyba</li>
+<code>vect&lt;character&gt;</code> now reports that a file is non-existent [#784] by John Baums</li>
+<li>faster <code>relate</code> [#716] by Krzysztof Dyba</li>
 <li>
-<code>focal3D</code> now checks if all the window’s dimensions are odd <a href="https://github.com/rspatial/terra/issues/772" class="external-link">#772</a> by Neander Marcel Heming</li>
+<code>focal3D</code> now checks if all the window’s dimensions are odd [#772] by Neander Marcel Heming</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-17">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-17"></a></h3>
-<ul><li>all.equal bug <a href="https://github.com/rspatial/terra/pull/756" class="external-link">#756</a> fixed by John Baums</li>
-<li>extract&lt;“SpatRaster”,“sf”&gt; ignored the ID argument. <a href="https://github.com/rspatial/terra/issues/755" class="external-link">#755</a> by Dainius Masiliūnas.</li>
-<li>There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file <a href="https://github.com/rspatial/terra/issues/760" class="external-link">#760</a> by John Baums</li>
+<ul><li>all.equal bug [#756] fixed by John Baums</li>
+<li>extract&lt;“SpatRaster”,“sf”&gt; ignored the ID argument. [#755] by Dainius Masiliūnas.</li>
+<li>There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file [#760] by John Baums</li>
 <li>
-<code>vrt</code> is no longer constrained by the maximum number of files that can be opened <a href="https://github.com/rspatial/terra/issues/780" class="external-link">#780</a> by 8Ginette8<br></li>
+<code>vrt</code> is no longer constrained by the maximum number of files that can be opened [#780] by 8Ginette8<br></li>
 <li>
-<code>weighted.mean</code> crashed with numeric weights and na.rm=TRUE <a href="https://github.com/rspatial/terra/issues/777" class="external-link">#777</a> by David Holstius</li>
+<code>weighted.mean</code> crashed with numeric weights and na.rm=TRUE [#777] by David Holstius</li>
 <li>
-<code>project&lt;SpatRaster&gt;</code> did not consider an extent that was set by the user <a href="https://github.com/rspatial/terra/issues/775" class="external-link">#775</a> by Philippe Massicotte</li>
+<code>project&lt;SpatRaster&gt;</code> did not consider an extent that was set by the user [#775] by Philippe Massicotte</li>
 <li>
-<code>focalCor</code> failed for large rasters <a href="https://github.com/rspatial/terra/issues/607" class="external-link">#607</a> by John Clark</li>
+<code>focalCor</code> failed for large rasters [#607] by John Clark</li>
 <li>
-<code>focal</code> with <code>expand=TRUE</code> was prone to run out of memory <a href="https://github.com/rspatial/terra/issues/610" class="external-link">#610</a> by Nathan Elliott</li>
+<code>focal</code> with <code>expand=TRUE</code> was prone to run out of memory [#610] by Nathan Elliott</li>
 <li>
-<code>crop&lt;SpatVector&gt;</code> did not work well when the second argument were points or lines <a href="https://github.com/rspatial/terra/issues/782" class="external-link">#782</a> by Márcia Barbosa</li>
+<code>crop&lt;SpatVector&gt;</code> did not work well when the second argument were points or lines [#782] by Márcia Barbosa</li>
 <li>
-<code>adjacent</code> with <code>pairs=TRUE</code> now respects the <code>include=TRUE</code> argument <a href="https://github.com/rspatial/terra/issues/808" class="external-link">808</a> by Joseph Lewis</li>
+<code>adjacent</code> with <code>pairs=TRUE</code> now respects the <code>include=TRUE</code> argument [808] by Joseph Lewis</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -281,13 +291,13 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-7">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-7"></a></h3>
-<ul><li>values of <code>focal</code> where not correct if the input SpatRaster had multiple layers and a “custom” function. <a href="https://github.com/rspatial/terra/issues/727" class="external-link">#727</a> by Jean-Luc Dupouey.</li>
+<ul><li>values of <code>focal</code> where not correct if the input SpatRaster had multiple layers and a “custom” function. [#727] by Jean-Luc Dupouey.</li>
 <li>
-<code>plot&lt;SpatRaster&gt;</code> did not honor argument <code>legend=FALSE</code>. <a href="https://github.com/rspatial/terra/issues/738" class="external-link">#738</a> by Grzegorz Sapijaszko</li>
+<code>plot&lt;SpatRaster&gt;</code> did not honor argument <code>legend=FALSE</code>. [#738] by Grzegorz Sapijaszko</li>
 <li>
-<code>expanse</code> failed when processing in chunks <a href="https://github.com/rspatial/terra/issues/741" class="external-link">#741</a> by Gareth Davies</li>
+<code>expanse</code> failed when processing in chunks [#741] by Gareth Davies</li>
 <li>
-<code>crop&lt;SpatRaster,SpatExtent&gt;</code> with argument <code>snap="out"</code> could lead to a crash if the extent was beyond the SpatRaster. <a href="https://github.com/rspatial/terra/issues/740" class="external-link">#740</a> by Mauricio Zambrano-Bigiarini</li>
+<code>crop&lt;SpatRaster,SpatExtent&gt;</code> with argument <code>snap="out"</code> could lead to a crash if the extent was beyond the SpatRaster. [#740] by Mauricio Zambrano-Bigiarini</li>
 </ul></div>
 </div>
     <div class="section level2">
