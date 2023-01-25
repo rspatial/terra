@@ -290,7 +290,9 @@ SpatRaster SpatRaster::geometry_opt(long nlyrs, bool properties, bool time, bool
 	if (datatype && hasValues() && (!opt.datatype_set)) {
 		std::vector<std::string> dt = getDataType(true);
 		if ((dt.size() == 1) && (dt[0] != "")) {
-			opt.set_datatype(dt[0]);
+			if (!hasScaleOffset()) {
+				opt.set_datatype(dt[0]);
+			}
 		}
 	}	
 	
@@ -1265,6 +1267,15 @@ std::vector<std::vector<double>> SpatRaster::getScaleOffset() {
 		so[1].insert(so[1].end(), source[i].offset.begin(), source[i].offset.end());
 	}
 	return so;
+}
+
+bool SpatRaster::hasScaleOffset() {
+	for (size_t i=0; i<source.size(); i++) {
+		for (size_t j=0; j<source[i].has_scale_offset.size(); j++) {
+			if (source[i].has_scale_offset[j]) return true;
+		}
+	}
+	return false;
 }
 
 bool SpatRaster::setScaleOffset(std::vector<double> sc, std::vector<double> of) {

@@ -15,7 +15,7 @@
 		return(out)
 	}
 
-	uzi <- unique(z)
+	uzi <- round(unique(z), 12)
 
 	if (type == "depends") {
 		if (length(uzi) < 6) {

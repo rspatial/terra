@@ -4910,9 +4910,7 @@ SpatRaster SpatRaster::hsx2rgb(SpatOptions &opt) {
 }
 
 
-
-
-SpatRaster SpatRaster::sort(bool decreasing, SpatOptions &opt) {
+SpatRaster SpatRaster::sort(bool decreasing, bool order, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (!hasValues()) {
@@ -4930,25 +4928,54 @@ SpatRaster SpatRaster::sort(bool decreasing, SpatOptions &opt) {
 	unsigned nl = out.nlyr();
 	std::vector<double> v(nl);
 	unsigned nc;
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a;
-		readBlock(a, out.bs, i);
-		nc = out.bs.nrows[i] * out.ncol();
-		for (size_t j=0; j<nc; j++) {
+	if (order) {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> a;
+			readBlock(a, out.bs, i);
+			nc = out.bs.nrows[i] * out.ncol();
+			std::vector<size_t> knc;
+			knc.reserve(nl);
 			for (size_t k=0; k<nl; k++) {
-				v[k] = a[j+k*nc];
+				knc.push_back(k*nc);
 			}
-			if (decreasing) {
-				std::sort(v.rbegin(), v.rend());
-			} else {
-				std::sort(v.begin(), v.end());
+			std::vector<size_t> ord;
+			for (size_t j=0; j<nc; j++) {
+				for (size_t k=0; k<nl; k++) {
+					v[k] = a[j+knc[k]];
+				}
+				if (decreasing) {
+				// sort_order_d would make more sense!
+					ord = sort_order_a(v);
+				} else {
+					ord = sort_order_d(v);
+				}
+				for (size_t k=0; k<v.size(); k++) {
+					a[j+knc[k]] = ord[k];
+				}
 			}
-			for (size_t k=0; k<v.size(); k++) {
-				a[j+k*nc] = v[k];
-			}
+			if (!out.writeBlock(a, i)) return out;
 		}
-		if (!out.writeBlock(a, i)) return out;
+	} else {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> a;
+			readBlock(a, out.bs, i);
+			nc = out.bs.nrows[i] * out.ncol();
+			for (size_t j=0; j<nc; j++) {
+				for (size_t k=0; k<nl; k++) {
+					v[k] = a[j+k*nc];
+				}
+				if (decreasing) {
+					std::sort(v.rbegin(), v.rend());
+				} else {
+					std::sort(v.begin(), v.end());
+				}
+				for (size_t k=0; k<v.size(); k++) {
+					a[j+k*nc] = v[k];
+				}
+			}
+			if (!out.writeBlock(a, i)) return out;
 
+		}
 	}
 	out.writeStop();
 	readStop();
@@ -5123,7 +5150,7 @@ SpatRaster SpatRaster::fill_range(long limit, bool circular, SpatOptions &opt) {
 						std::swap(start, end);
 						circ = true;
 					}
-					if ((start < 1) || (end > nl)) {
+					if (end > nl) {
 						for (size_t k=0; k<nl; k++) {
 							d[k*nc+j] = NAN;
 						}

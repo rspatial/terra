@@ -1221,10 +1221,35 @@ setMethod("scoff<-", signature("SpatRaster"),
 )
 
 setMethod("sort", signature(x="SpatRaster"),
-	function (x, decreasing=FALSE, filename="", ...) {
+	function (x, decreasing=FALSE, order=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$sort(decreasing[1], opt)
+		x@ptr <- x@ptr$sort(decreasing[1], order[1], opt)
 		messages(x, "sort")
 	}
 )
 
+
+setMethod("sort", signature(x="SpatVector"),
+	function (x, v, decreasing=FALSE) {
+		if (length(v) > 1) {
+			v <- data.frame(x)[,v]
+			i <- do.call(order, lapply(v, function(i) i))
+		} else {
+			i <- order(x[[v]], decreasing=decreasing)
+		}
+		x[i, ]
+	}
+)
+
+
+setMethod("sort", signature(x="data.frame"),
+	function (x, v, decreasing=FALSE) {
+		if (length(v) > 1) {
+			v <- data.frame(x)[, v]
+			i <- do.call(order, lapply(v, function(i) i))
+		} else {
+			i <- order(x[[v]], decreasing=decreasing)
+		}
+		x[i, ]
+	}
+)

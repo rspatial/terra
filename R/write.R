@@ -96,7 +96,7 @@ get_filetype <- function(filename) {
 
 setMethod("writeVector", signature(x="SpatVector", filename="character"),
 function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, options="ENCODING=UTF-8") {
-	filename <- trimws(filename)
+	filename <- trimws(filename[1])
 	filename <- enc2utf8(filename)
 	if (filename == "") {
 		error("writeVector", "provide a filename")

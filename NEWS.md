@@ -1,4 +1,15 @@
-# version 1.7-1
+# version 1.7-4
+
+## new
+
+- argument `order=FALSE` to `sort<SpatRaster>` 
+- `sort<SpatVector>` (and `<data.frame>` method
+
+
+
+# version 1.7-3
+
+Released 2023-01-24
 
 ## new
 

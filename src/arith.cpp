@@ -64,30 +64,6 @@ void operator%(std::vector<double>& a, const std::vector<double>& b) {
 
 
 //template <typename T>
-void operator==(std::vector<double>& a, const std::vector<double>& b) {
-//    std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::equal_to<T>());
-	for (size_t i=0; i<a.size(); i++) {
-		if (std::isnan(a[i]) || std::isnan(b[i])) {
-			a[i] = NAN;
-		} else {
-			a[i] = a[i] == b[i];
-		}
-	}
-}
-
-//template <typename T>
-void operator!=(std::vector<double>& a, const std::vector<double>& b) {
-//    std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::not_equal_to<T>());
-	for (size_t i=0; i<a.size(); i++) {
-		if (std::isnan(a[i]) || std::isnan(b[i])) {
-			a[i] = NAN;
-		} else {
-			a[i] = a[i] != b[i];
-		}
-	}
-}
-
-//template <typename T>
 void operator>=(std::vector<double>& a, const std::vector<double>& b) {
 //    std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::greater_equal<T>());
 	for (size_t i=0; i<a.size(); i++) {
@@ -136,17 +112,6 @@ void operator<(std::vector<double>& a, const std::vector<double>& b) {
 	}
 }
 
-
-//template <typename T>
-void power(std::vector<double>& a, const std::vector<double>& b) {
-	for (size_t i=0; i<a.size(); i++) {
-		if (std::isnan(a[i]) || std::isnan(b[i])) {
-			a[i] = NAN;
-		} else {
-			a[i] = std::pow(a[i], b[i]);
-		}
-	}
-}
 
 
 bool smooth_operator(std::string &oper, bool &logical, bool &reverse) {
@@ -245,17 +210,35 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		} else if (oper == "/") {
 			std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::divides<double>());
 		} else if (oper == "^") {
-			power(a, b);
+			for (size_t i=0; i<a.size(); i++) {
+				if (std::isnan(a[i]) || std::isnan(b[i])) {
+					a[i] = NAN;
+				} else {
+					a[i] = std::pow(a[i], b[i]);
+				}
+			}
 		} else if (oper == "%") {
 			 a % b;
 		} else if (oper == "%/%") {
 			for (size_t i=0; i<a.size(); i++) {
-				a[i] = trunc(a[i] / b[1]);
+				a[i] = trunc(a[i] / b[i]);
 			}
 		} else if (oper == "==") {
-			a == b;
+			for (size_t i=0; i<a.size(); i++) {
+				if (std::isnan(a[i]) || std::isnan(b[i])) {
+					a[i] = NAN;
+				} else {
+					a[i] = a[i] == b[i];
+				}
+			}
 		} else if (oper == "!=") {
-			a != b;
+			for (size_t i=0; i<a.size(); i++) {
+				if (std::isnan(a[i]) || std::isnan(b[i])) {
+					a[i] = NAN;
+				} else {
+					a[i] = a[i] != b[i];
+				}
+			}
 		} else if (oper == ">=") {
 			a >= b;
 		} else if (oper == "<=") {
