@@ -1,4 +1,4 @@
-
+# comment
 
 setMethod("animate", signature(x="SpatRaster"),
 function(x, pause=0.25, main, range, maxcell=50000, n=1, ...) {
