@@ -6,7 +6,6 @@
 - `sort<SpatVector>` (and `<data.frame>` method
 
 
-
 # version 1.7-3
 
 Released 2023-01-24
@@ -40,7 +39,7 @@ Released 2023-01-17
 ## bug fixes 
 
 - `writeCDF` now supports writing yearly time steps [#926](https://github.com/rspatial/terra/issues/926) by Andrea Manica
-- as.contour now works for a single level [#966](https://github.com/rspatial/terra/issues/966) by Johannes Signer
+- `as.contour` now works for a single level [#966](https://github.com/rspatial/terra/issues/966) by Johannes Signer
 - subsetting a SpatRaster with a window returned a SpatRaster with the dimensions of the non-windowed raster, thus changing the resolution. [#964](https://github.com/rspatial/terra/issues/964) by Derek Friend
 - removing a factor variable from a SpatVector crashed R. [#969](https://github.com/rspatial/terra/issues/969) by Andrew Gene Brown
 - median did not always return the correct number for a SpatRaster with 3 or more layers [#970](https://github.com/rspatial/terra/issues/970) by MatteaE
@@ -75,7 +74,7 @@ Released 2022-12-02
 - `interpIDW` failed with GDAL 3.6 [#910](https://github.com/rspatial/terra/issues/910) by Roger Bivand
 - `spatSample` with strata bug fix "unable to find an inherited method for function 'trim'" [#919](https://github.com/rspatial/terra/issues/919) by Alfredo Ascanio
 - it is possible to slice a SpatRaster with a SpatExtent [#914](https://github.com/rspatial/terra/issues/914) by Jakub Nowosad.
-- merge/mosaic did not handle NAs when using two layers [#913](https://github.com/rspatial/terra/issues/913) by Joao Carreiras.
+- `merge`/`mosaic` did not handle NAs when using two layers [#913](https://github.com/rspatial/terra/issues/913) by Joao Carreiras.
 
 
 ## name changes
@@ -133,8 +132,8 @@ Released 2022-11-18
 
 ## name changes
 
-- costDistance -> costDist to avoid conflict with {gdistance}
-- gridDistance -> gridDist for consistency
+- `costDistance` -> `costDist` to avoid conflict with {gdistance}
+- `gridDistance` -> `gridDist` for consistency
 
 
 # version 1.6-17
@@ -161,8 +160,8 @@ Released 2022-09-10
 
 ## bug fixes 
 
-- all.equal bug [#756] fixed by John Baums
-- extract<"SpatRaster","sf"> ignored the ID argument. [#755] by Dainius Masiliūnas.
+- `all.equal` bug [#756] fixed by John Baums
+- `extract<"SpatRaster","sf">` ignored the ID argument. [#755] by Dainius Masiliūnas.
 - There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file [#760] by John Baums
 - `vrt` is no longer constrained by the maximum number of files that can be opened [#780] by 8Ginette8	
 - `weighted.mean` crashed with numeric weights and na.rm=TRUE [#777] by David Holstius

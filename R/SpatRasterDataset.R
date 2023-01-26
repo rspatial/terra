@@ -191,18 +191,41 @@ function(x, i, j, drop=TRUE) {
 
 setMethod("[", c("SpatRasterDataset", "numeric", "numeric"),
 function(x, i, j, drop=TRUE) {
-	y <- x[i,drop=drop]
-	if (inherits(y, "SpatRaster")) {
-		return(y[[j]])
+	if (is.character(i)) {
+		i <- match(i, names(x))
 	}
-	nd <- y@ptr$nsds()
-	x@ptr <- SpatRasterStack$new()
-	nms <- y@ptr$names
-	for (k in seq_along(1:nd)) {
-		r <- y[k][[j]]
-		x@ptr$add(r@ptr, nms[k], "", "", FALSE)
+	i <- positive_indices(i, length(x))
+	j <- positive_indices(j, min(nlyr(x)))	
+	nd <- i
+	if (drop) {
+		out <- lapply(nd, function(k) x[k][[j]])
+		out <- rast(out)
+	} else {
+		out <- sds()
+		nms <- x@ptr$names
+		for (k in nd) {
+			r <- y[k][[j]]
+			out@ptr$add(r@ptr, nms[k], "", "", FALSE)
+		}
 	}
-	messages(x, "`[`")
+	messages(out, "`[`")
+})
+
+setMethod("[", c("SpatRasterDataset", "numeric", "logical"),
+function(x, i, j, drop=TRUE) {
+	j <- postive_indices(j, min(nlyr(x)))
+	`[`(x, i=i, j=j, drop=drop)
+})
+
+setMethod("[", c("SpatRasterDataset", "missing", "numeric"),
+function(x, i, j, drop=TRUE) {
+	`[`(x, i=1:x@ptr$nsds(), j=j, drop=drop)
+})
+
+setMethod("[", c("SpatRasterDataset", "missing", "logical"),
+function(x, i, j, drop=TRUE) {
+	j <- postive_indices(j, min(nlyr(x)))
+	`[`(x, i=1:x@ptr$nsds(), j=j, drop=drop)
 })
 
 

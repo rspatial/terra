@@ -4,10 +4,12 @@
 # License GPL v3
 
 positive_indices <- function(i, n, na.rm=TRUE, caller="`[`") {
-	stopifnot(is.numeric(i))
 	i <- na.omit(i)
-	if (!(all(i <= 0) || all(i >= 0))) {
-		error(caller, "you cannot mix positive and negative indices")
+	if (!is.logical(i)) {
+		stopifnot(is.numeric(i))
+		if (!(all(i <= 0) || all(i >= 0))) {
+			error(caller, "you cannot mix positive and negative indices")
+		}
 	}
 	i <- (1:n)[i]
 	if (na.rm) {
