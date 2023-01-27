@@ -263,7 +263,6 @@ std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_
 }
 
 
-
 std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){
 	std::default_random_engine gen(seed);
 	std::uniform_int_distribution<> U(0, N-1);
@@ -275,62 +274,15 @@ std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){
 	return sample;
 }
 
-
 std::vector<size_t> sample_replace_weights(size_t size, size_t N, std::vector<double> prob, unsigned seed){
-
-	// normalize prob
-	double maxw = *max_element(prob.begin(), prob.end());
-	for (double& d : prob)  d /= maxw;
-	double minw = *min_element(prob.begin(), prob.end());
-
-	std::default_random_engine gen(seed);
-	std::uniform_int_distribution<> U(0, N-1);
-	std::vector<size_t> sample;
-	sample.reserve(size);
-
-	std::uniform_real_distribution<> Uw(minw, 1);
-	size_t cnt = 0;
-	size_t cnt2 = 0;
-	size_t ssize = size * 10;
-	while (cnt < size) {
-		double w = Uw(gen);
-		double v = U(gen);
-		if (prob[v] >= w) {
-			sample.push_back(v);
-			cnt++;
-		} else {
-			cnt2++;
-			if (cnt2 > ssize) cnt = size;
-		}
-	}
+	std::discrete_distribution<int> dist(std::begin(prob), std::end(prob));
+	std::mt19937 gen;
+	gen.seed(seed);
+	std::vector<size_t> sample(size);
+	for(auto & i: sample) i = dist(gen);
 	return sample;
 }
 
-/*
-std::vector<size_t> sample_replace_weights_gen(size_t size, size_t N, std::vector<double> prob, std::default_random_engine gen){
-
-	// normalize prob
-	double minw = *min_element(prob.begin(),prob.end());
-	double maxw = *max_element(prob.begin(),prob.end()) - minw;
-	for (double& d : prob)  d = (d - minw) / maxw;
-
-	std::uniform_int_distribution<> U(0, N-1);
-	std::vector<size_t> sample;
-	sample.reserve(size);
-
-	std::uniform_real_distribution<> Uw(0, 1);
-	size_t cnt = 0;
-	while (cnt < size) {
-		double w = Uw(gen);
-		double v = U(gen);
-		if (prob[v] >= w) {
-			sample.push_back(v);
-			cnt++;
-		}
-	}
-	return sample;
-}
-*/
 
 std::vector<size_t> sample_no_replace(size_t size, size_t N, unsigned seed){
 	size_t one = 1;
@@ -528,11 +480,8 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 		std::vector<double> w;
 		w.reserve(r.size());
 		for (size_t i=0; i<r.size(); i++) {
-			if (i == 0) {
-			}
 			double ww = std::abs(cos(M_PI * r[i]/180.0));
 			w.push_back(ww );
-
 		}
 
 		std::vector	<size_t> x = sample(size, r.size(), true, w, seed);
