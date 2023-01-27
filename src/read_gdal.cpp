@@ -864,7 +864,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
 
-		if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB")) {
+		if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
 			char **m = poBand->GetMetadata();
 			while (*m != nullptr) {
 				bandmeta[i].push_back(*m++);
@@ -1013,9 +1013,13 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		}
 		s.set_names_time_ncdf(metadata, bandmeta, msg);
-	} else if (gdrv == "GRIB") {
+	} else if (gdrv == "GRIB") {	
+		s.set_names_time_grib(bandmeta, msg);
+	} else if (gdrv == "GTiff") {	
+	// needs to get its own generic one 
 		s.set_names_time_grib(bandmeta, msg);
 	}
+	s.mdata = bandmeta;
 	if (msg.size() > 1) {
 		addWarning(msg);
 	}

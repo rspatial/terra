@@ -191,9 +191,6 @@ function(x, i, j, drop=TRUE) {
 
 setMethod("[", c("SpatRasterDataset", "numeric", "numeric"),
 function(x, i, j, drop=TRUE) {
-	if (is.character(i)) {
-		i <- match(i, names(x))
-	}
 	i <- positive_indices(i, length(x))
 	j <- positive_indices(j, min(nlyr(x)))	
 	nd <- i
@@ -231,7 +228,8 @@ function(x, i, j, drop=TRUE) {
 
 setMethod("[", c("SpatRasterDataset", "logical", "missing"),
 function(x, i, j,drop=TRUE) {
-	x[which(i), drop=drop]
+	i <- postive_indices(j, length(x))
+	x[i, drop=drop]
 })
 
 setMethod("[", c("SpatRasterDataset", "character", "missing"),

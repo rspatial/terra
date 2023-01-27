@@ -98,7 +98,7 @@ class SpatRasterSource {
 		std::vector<size_t> m_subset;
 		bool m_hasNA = false;
 		double m_missing_value;
-
+		std::vector<std::vector<std::string>> mdata;
 		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
 		SpatSRS srs;
@@ -168,12 +168,10 @@ class SpatRasterSource {
 		bool combine_sources(const SpatRasterSource &x);
 		bool combine(SpatRasterSource &x);
 		
-
 		bool parameters_changed = false;		
 		
 		void set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg);
 		void set_names_time_grib(std::vector<std::vector<std::string>> bandmeta, std::string &msg);
-		
 };
 
 
@@ -333,6 +331,8 @@ class SpatRaster {
 
 		bool setNAflag(std::vector<double> flag);
 		std::vector<double> getNAflag();
+
+		std::vector<std::vector<std::string>> getMetadata();
 
 
 ////////////////////////////////////////////////////

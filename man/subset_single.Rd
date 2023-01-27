@@ -8,12 +8,18 @@
 \alias{[,SpatRaster,ANY,ANY,ANY-method}
 \alias{[,SpatRaster,ANY,ANY-method}
 
-\alias{[,SpatRasterDataset,numeric,missing-method}
-\alias{[,SpatRasterDataset,numeric,numeric-method}
 \alias{[,SpatRasterDataset,logical,missing-method}
 \alias{[,SpatRasterDataset,character,missing-method}
 
+\alias{[,SpatRasterDataset,numeric,missing-method}
+\alias{[,SpatRasterDataset,numeric,numeric-method}
+\alias{[,SpatRasterDataset,numeric,logical-method}
+
+\alias{[,SpatRasterDataset,missing,numeric-method}
+\alias{[,SpatRasterDataset,missing,logical-method}
+
 \alias{[,SpatRasterCollection,numeric,missing-method}
+
 
 \alias{[,SpatVector,missing,missing-method}
 \alias{[,SpatVector,missing,numeric-method}

@@ -12,6 +12,16 @@ setMethod("rangeFill", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("metadata", signature(x="SpatRaster"),
+	function(x) {
+		x <- x@ptr$metadata
+		f <- function(i) {
+			matrix(unlist(regmatches(i, regexpr("=", i), invert=TRUE)), ncol=2, byrow=TRUE)
+		}
+		lapply(x, f)
+	}
+)
+
 
 setMethod("weighted.mean", signature(x="SpatRaster", w="numeric"),
 	function(x, w, na.rm=FALSE, filename="", ...) {

@@ -1,5 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("metadata")) {setGeneric("metadata", function(x, ...) standardGeneric("metadata"))}
+
 if (!isGeneric("rangeFill")) {setGeneric("rangeFill", function(x, ...) standardGeneric("rangeFill"))}
 if (!isGeneric("roll")) {setGeneric("roll", function(x, ...) standardGeneric("roll"))}
 if (!isGeneric("elongate")) {setGeneric("elongate", function(x, ...) standardGeneric("elongate"))}

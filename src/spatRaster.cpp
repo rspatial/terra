@@ -1164,6 +1164,20 @@ std::vector<std::string> SpatRaster::dataType() {
 }
 
 
+std::vector<std::vector<std::string>> SpatRaster::getMetadata() {
+	std::vector<std::vector<std::string>> d;
+	size_t n = nsrc();
+	d.reserve(nlyr());
+	for (size_t i=0; i<n; i++) {
+		if (source[i].mdata.size() == 0) {
+			d.resize(d.size() + source[i].nlyr);
+		} else {
+			d.insert(d.end(), source[i].mdata.begin(), source[i].mdata.end());
+		}
+	}
+	return d;
+}
+
 
 
 bool SpatRaster::setLabels(unsigned layer, std::vector<long> values, std::vector<std::string> labels, std::string name) {
