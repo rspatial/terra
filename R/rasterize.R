@@ -152,7 +152,23 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 
 
 setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
-	function(x, y, values=1, fun, ..., background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list()) {
+	function(x, y, values=1, fun, ..., background=NA, update=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list()) {
+
+		if (!is.null(by)) {
+			by <- rep_len(by, nrow(x))
+			values <- rep_len(values, nrow(x))
+
+			x <- lapply(split(data.frame(x), by), as.matrix)
+			values <- split(values, by)
+
+			out <- rast(lapply(1:length(x), function(i) rasterize(x[[i]], y, values[[i]], fun, background=background, update=update)))
+			names(out) <- unique(by)
+			if (filename != "") {
+				out <- writeRaster(out, filename, overwrite=overwrite, wopt=wopt)
+			}
+			return(out)
+		}
+
 		lonlat <- .checkXYnames(colnames(x))
 
 		if (NCOL(values) <= 1) {
@@ -177,7 +193,19 @@ setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
-	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", overwrite=FALSE, wopt=list()) {
+	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list()) {
+
+
+		if (!is.null(by)) {
+			uby <- unlist(unique(x[[by]]))
+			x <- split(x, by)
+			out <- rast(lapply(x, function(i) rasterize(i, y, field=field, fun, background=background, touches=touches, update=update, sum=sum, cover=cover)))
+			names(out) <- uby
+			if (filename != "") {
+				out <- writeRaster(out, filename, overwrite=overwrite, wopt=wopt)
+			}
+			return(out)
+		}
 
 		values <- 1
 		if (!is.character(field)) {

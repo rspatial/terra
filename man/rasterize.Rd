@@ -15,10 +15,10 @@ Transfer values associated with the geometries of vector data to a raster
 
 \usage{
 \S4method{rasterize}{SpatVector,SpatRaster}(x, y, field="", fun, ..., background=NA, touches=FALSE,
-	update=FALSE, sum=FALSE, cover=FALSE, filename="", overwrite=FALSE, wopt=list())
+	update=FALSE, sum=FALSE, cover=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list())
 
 \S4method{rasterize}{matrix,SpatRaster}(x, y, values=1, fun, ..., background=NA, 
-	update=FALSE, filename="", overwrite=FALSE, wopt=list())
+	update=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -42,6 +42,8 @@ Transfer values associated with the geometries of vector data to a raster
   \item{sum}{logical. If \code{TRUE}, the values of overlapping geometries are summed instead of replaced; and \code{background} is set to zero. Only used if \code{x} does not consists of points} 
 
   \item{cover}{logical. If \code{TRUE} and the geometry of \code{x} is polygons, the fraction of a cell that is covered by the polygons is returned. This is estimated by determining presence/absence of the polygon in at least 100 sub-cells (more of there are very few cells)} 
+
+  \item{by}{character or numeric value(s) to split \code{x} into multiple groups. There will be a separate layer for each group returned. If \code{x} is a SpatVector, \code{by} can be a column number or name. If \code{x} is a matrix, \code{by} should be a vector that identifies group membership for each row in \code{x}}
 
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}  
