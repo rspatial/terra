@@ -14,11 +14,14 @@ setMethod("rangeFill", signature(x="SpatRaster"),
 
 setMethod("metadata", signature(x="SpatRaster"),
 	function(x) {
-		x <- x@ptr$metadata
 		f <- function(i) {
-			matrix(unlist(regmatches(i, regexpr("=", i), invert=TRUE)), ncol=2, byrow=TRUE)
+			if (length(i) == 0) {
+				matrix(ncol=2, nrow=0)
+			} else {
+				matrix(unlist(regmatches(i, regexpr("=", i), invert=TRUE)), ncol=2, byrow=TRUE)
+			}
 		}
-		lapply(x, f)
+		lapply(x@ptr$metadata, f)
 	}
 )
 
