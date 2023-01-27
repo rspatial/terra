@@ -1,9 +1,15 @@
-# version 1.7-4
+# version 1.7-5
 
 ## new
 
 - argument `order=FALSE` to `sort<SpatRaster>` 
 - `sort<SpatVector>` (and `<data.frame>` method
+- argument `by=NULL` to `rasterize>` [#986](https://github.com/rspatial/terra/issues/986) by Sam Weber
+- `metadata<SpatRaster>` method
+
+## bug fixes 
+
+- the legend created by `plet` was not always correct. [#983](https://github.com/rspatial/terra/issues/983) by Simon Rolph
 
 
 # version 1.7-3
@@ -20,6 +26,7 @@ Released 2023-01-24
 
 - in the previous version, a bug was introduced such that the order of operation in arithmetic operations with SpatRasters was ignored. [#978](https://github.com/rspatial/terra/issues/978) by Andrew Marx
 - Fixed `split<SpatVector>`. [#979](https://github.com/rspatial/terra/issues/979) by srfall
+- `spatSample` with `as.df=FALSE` returned a data.frame instead of a matrix [#982](https://github.com/rspatial/terra/issues/982) by Alex Ilich
 
 
 # version 1.6-53
