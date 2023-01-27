@@ -380,7 +380,7 @@ setMethod("plet", signature(x="SpatRaster"),
 			if (!is.null(legend)) {
 				if (!all(hasMinMax(x))) setMinMax(x)
 				r <- minmax(x)
-				v <- seq(r[1], r[2], 5)
+				v <- seq(r[1], r[2], length.out=5)
 				pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
 				map <- leaflet::addLegend(map, legend, pal=pal, values=v, opacity=1, title=main[1],
 					  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
