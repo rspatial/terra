@@ -107,7 +107,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 
 		} else {
 
-			v <- spatSample(x, size=maxcell, "regular", na.rm=na.rm)
+			v <- spatSample(x, size=maxcell, "regular", na.rm=na.rm, warn=FALSE)
 			for(i in 1:nl) {
 				for(j in i:nl) {
 					mat[j,i] <- mat[i,j] <- FUN(v[,i], v[,j])

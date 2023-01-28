@@ -50,6 +50,8 @@ SpatRaster
 
 \seealso{
 \code{\link{intersect}}, \code{\link{extend}}
+
+See \code{window} for a virtual and sometimes more efficient way to crop a dataset.
 }
 
 \examples{

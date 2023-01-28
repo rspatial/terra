@@ -1017,7 +1017,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		s.set_names_time_grib(bandmeta, msg);
 	} else if (gdrv == "GTiff") {	
 	// needs to get its own generic one 
-		s.set_names_time_grib(bandmeta, msg);
+		s.set_names_time_tif(bandmeta, msg);
 	}
 	s.mdata = bandmeta;
 	if (msg.size() > 1) {
@@ -2025,6 +2025,94 @@ void SpatRasterSource::set_names_time_grib(std::vector<std::vector<std::string>>
 			}
 			try {
 				tim = stol(nms[2][i]);
+			} catch(...) {
+				hastime = false;
+				break;
+			}
+			tm.push_back(tim);
+		}
+	}
+
+	if (hastime) {
+		time = tm;
+		timestep = "seconds";
+		hasTime = true;
+	}
+	
+}
+
+
+
+std::vector<std::vector<std::string>> tiff_names(const std::vector<std::vector<std::string>> &m) {
+
+	std::vector<std::vector<std::string>> out(4);
+	if (m.size() < 1) return out;
+	
+	for (size_t i=0; i<m.size(); i++) {
+
+		std::string time, units = "";
+		bool keepgoing = false;
+
+		for (size_t j=0; j<m[i].size(); j++) {			
+			size_t pos = m[i][j].find("UNIT=");
+			if (pos == std::string::npos) {
+				pos = m[i][j].find("unit=");
+			}	
+			if (pos != std::string::npos) {
+				units = m[i][j];
+				units.erase(0, pos+5);
+				str_replace(units, "[", "");
+				str_replace(units, "]", "");
+				lrtrim(units);
+				keepgoing = true;
+				continue;
+			}
+			pos = m[i][j].find("TIME=");
+			if (pos == std::string::npos) {
+				pos = m[i][j].find("time=");
+			}	
+			if (pos != std::string::npos) {
+				std::string tmp = m[i][j];
+				tmp.erase(0, pos+5);
+				pos = tmp.find("sec");
+				if (pos != std::string::npos) {
+					tmp.erase(tmp.begin()+pos, tmp.end());
+				}
+				time = tmp;
+				keepgoing = true;
+			}
+			if (!keepgoing) return out;
+		}
+		out[1].push_back(units);
+		out[2].push_back(time);
+	}
+	
+	return out;
+}
+
+
+void SpatRasterSource::set_names_time_tif(std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
+
+	if (bandmeta.size() == 0) return;
+	
+	std::vector<std::vector<std::string>> nms = tiff_names(bandmeta);
+
+	if (nms[1].size() == nlyr) {
+		unit = {nms[0]};
+	}
+
+	bool hastime = false;
+	std::vector<int_64> tm;
+	if (nms[1].size() == nlyr) {
+		hastime = true;
+		int_64 tim;
+		for (size_t i=0; i<nms[1].size(); i++) {
+			if (nms[1][i] == "") {
+				hastime = false;
+				break;
+			}
+			try {
+				tim = stol(nms[1][i]);
 			} catch(...) {
 				hastime = false;
 				break;

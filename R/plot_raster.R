@@ -562,9 +562,9 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				if (nlyr(alpha) > 1) {
 					alpha <- alpha[[y]]
 				}
-				alpha <- spatSample(alpha, maxcell, ext=ext, method="regular", as.raster=TRUE)
+				alpha <- spatSample(alpha, maxcell, ext=ext, method="regular", as.raster=TRUE, warn=FALSE)
 			}
-			x <- spatSample(x, maxcell, ext=ext, method="regular", as.raster=TRUE)
+			x <- spatSample(x, maxcell, ext=ext, method="regular", as.raster=TRUE, warn=FALSE)
 		}
 
 		if (is.character(legend)) {

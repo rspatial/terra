@@ -10,7 +10,8 @@
 ## bug fixes 
 
 - the legend created by `plet` was not always correct. [#983](https://github.com/rspatial/terra/issues/983) by Simon Rolph
-
+- `spatSample<SpatRaster>(regular=TRUE)` failed with providing two numbers (row, col) as sample size. [#991](
+https://github.com/rspatial/terra/issues/991) by srfall
 
 # version 1.7-3
 

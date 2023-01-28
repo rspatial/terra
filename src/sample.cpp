@@ -128,7 +128,7 @@ SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 }
 
 
-SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc) {
+SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc, bool warn) {
 
 	SpatRaster out = geometry(nlyr(), true);
 	if ((nr == 0) || (nc ==0)) {
@@ -136,11 +136,11 @@ SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc) {
 	}
 
 	if (nr > nrow()) {
-		out.addWarning("number of rows cannot be larger than nrow(x)");
+		if (warn) out.addWarning("number of rows cannot be larger than nrow(x)");
 		nr = nrow();
 	}
 	if (nc > ncol()) {
-		out.addWarning("number of rows cannot be larger than nrow(x)");
+		if (warn) out.addWarning("number of rows cannot be larger than nrow(x)");
 		nc = ncol();
 	}
 

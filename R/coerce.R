@@ -163,7 +163,7 @@ setMethod("as.raster", signature(x="SpatRaster"),
 		if (missing(col)) {
 			col <- rev(grDevices::terrain.colors(255))
 		}
-		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
+		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
 		x <- as.matrix(x, wide=TRUE)
 		r <- range(x, na.rm=TRUE)
 		x <- (x - r[1])/ (r[2] - r[1])
@@ -176,7 +176,7 @@ setMethod("as.raster", signature(x="SpatRaster"),
 
 
 .as.image <- function(x, maxcells=10000) {
-	x <- spatSample(x, size=maxcells, method="regular", as.raster=TRUE)
+	x <- spatSample(x, size=maxcells, method="regular", as.raster=TRUE, warn=FALSE)
 	X <- xFromCol(x, 1:ncol(x))
 	Y <- yFromRow(x, nrow(x):1)
 	Z <- t(as.matrix(x, wide=TRUE)[nrow(x):1,])

@@ -194,7 +194,7 @@ setMethod("predict", signature(object="SpatRaster"),
 					#}
 				}
 				if (allna) {
-					d <- spatSample(object, min(1000, ncell(object)), "regular")
+					d <- spatSample(object, min(1000, ncell(object)), "regular", warn=FALSE)
 					allna <- all(is.na(d))
 				}
 			}

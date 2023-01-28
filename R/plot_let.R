@@ -277,7 +277,7 @@ setMethod("points", signature(x="leaflet"),
 
 
 make.panel <- function(x, maxcell) {
-	x <- spatSample(x, maxcell/nl, "regular", as.raster=TRUE)
+	x <- spatSample(x, maxcell/nl, "regular", as.raster=TRUE, warn=FALSE)
 	if (is.lonlat(x)) {
 		asp <- 1/cos((mean(ext(x)[3:4]) * pi)/180)
 	} else {
@@ -351,7 +351,7 @@ setMethod("plet", signature(x="SpatRaster"),
 			add <- p[[3]]
 			main <- ""
 		} else {
-			x <- spatSample(x[[y]], maxcell, "regular", as.raster=TRUE)
+			x <- spatSample(x[[y]], maxcell, "regular", as.raster=TRUE, warn=FALSE)
 		}
 
 		if (is.null(map)) {

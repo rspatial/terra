@@ -391,7 +391,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			if (length(size) > 1) {
 				error("spatSample", "sample size must be a single number")
 			}
-			if (size > ncell(x)) {
+			if (warn && (size > ncell(x))) {
 				warn("spatSample", "requested sample size is larger than the number of cells")
 				size <- ncell(x)
 			}
@@ -446,7 +446,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 			
 			if (method == "random") {
-				if (length(cnrs) < size && warn) {
+				if ((length(cnrs) < size) && warn) {
 					warn("spatSample", "fewer cells returned than requested")
 				} else if (length(cnrs) > size) {
 					cnrs <- cnrs[1:size]
@@ -496,7 +496,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (method == "regular") {
 			if (as.raster) {
 				if (length(size) > 1) {
-					x@ptr <- x@ptr$sampleRowColRaster(size[1], size[2])
+					x@ptr <- x@ptr$sampleRowColRaster(size[1], size[2], warn[1])
 				} else {
 					x@ptr <- x@ptr$sampleRegularRaster(size)
 				}

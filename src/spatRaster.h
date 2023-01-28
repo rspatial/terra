@@ -172,6 +172,7 @@ class SpatRasterSource {
 		
 		void set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg);
 		void set_names_time_grib(std::vector<std::vector<std::string>> bandmeta, std::string &msg);
+		void set_names_time_tif(std::vector<std::vector<std::string>> bandmeta, std::string &msg);
 };
 
 
@@ -734,7 +735,7 @@ class SpatRaster {
 
 		std::vector<size_t> sampleCells(unsigned size, std::string method, bool replace, unsigned seed);
 		SpatRaster sampleRegularRaster(unsigned size);
-		SpatRaster sampleRowColRaster(size_t nr, size_t nc);
+		SpatRaster sampleRowColRaster(size_t nr, size_t nc, bool warn);
 		SpatRaster sampleRandomRaster(unsigned size, bool replace, unsigned seed);
 		std::vector<std::vector<double>> sampleRegularValues(unsigned size, SpatOptions &opt);
 		std::vector<std::vector<double>> sampleRowColValues(size_t nr, size_t nc, SpatOptions &opt);

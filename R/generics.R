@@ -1054,7 +1054,7 @@ setMethod("summary", signature(object="SpatRaster"),
 		if (warn && (ncell(object) > size)) {
 			warn("summary", "used a sample")
 		}
-		s <- spatSample(object, size, method="regular")
+		s <- spatSample(object, size, method="regular", warn=FALSE)
 		summary(s, ...)
 	}
 )
