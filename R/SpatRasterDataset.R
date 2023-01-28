@@ -210,7 +210,7 @@ function(x, i, j, drop=TRUE) {
 
 setMethod("[", c("SpatRasterDataset", "numeric", "logical"),
 function(x, i, j, drop=TRUE) {
-	j <- postive_indices(j, min(nlyr(x)))
+	j <- positive_indices(j, min(nlyr(x)))
 	`[`(x, i=i, j=j, drop=drop)
 })
 
@@ -221,14 +221,14 @@ function(x, i, j, drop=TRUE) {
 
 setMethod("[", c("SpatRasterDataset", "missing", "logical"),
 function(x, i, j, drop=TRUE) {
-	j <- postive_indices(j, min(nlyr(x)))
+	j <- positive_indices(j, min(nlyr(x)))
 	`[`(x, i=1:x@ptr$nsds(), j=j, drop=drop)
 })
 
 
 setMethod("[", c("SpatRasterDataset", "logical", "missing"),
 function(x, i, j,drop=TRUE) {
-	i <- postive_indices(j, length(x))
+	i <- positive_indices(j, length(x))
 	x[i, drop=drop]
 })
 

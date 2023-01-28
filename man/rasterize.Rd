@@ -14,11 +14,11 @@ Transfer values associated with the geometries of vector data to a raster
 }
 
 \usage{
-\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field="", fun, ..., background=NA, touches=FALSE,
-	update=FALSE, sum=FALSE, cover=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list())
+\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, 
+	sum=FALSE, cover=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{rasterize}{matrix,SpatRaster}(x, y, values=1, fun, ..., background=NA, 
-	update=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list())
+\S4method{rasterize}{matrix,SpatRaster}(x, y, values=1, fun, ..., background=NA, update=FALSE, 
+	by=NULL, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
