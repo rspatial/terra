@@ -68,13 +68,15 @@ retro_labels <- function(x, lat=TRUE) {
 		h <- c("W", "", "E")[sign(d)+2]
 	}
 	d <- abs(d)
-	if (all(m==0)) {
-		r <- paste0(d, "\u00B0" , h)
-	} else if (any(s != 0)){
-		m <- formatC(m, width=2, flag="0")
-		s <- formatC(s, width=2, flag="0")
-		r <- paste0(d, "\u00B0" , m, "'", s, '"', h)
-	}
+	i <- (s == 0) & (m == 0)
+	j <- (s == 0) & (m != 0)
+
+	m <- formatC(m, width=2, flag="0")
+	s <- formatC(s, width=2, flag="0")
+	r <- paste0(d, "\u00B0" , m, "'", s, '"', h)
+	r[i] <- paste0(d[i], "\u00B0" , h[i])
+	r[j] <- paste0(d[j], "\u00B0" , m[j], "'", h[j])	
+	r
 }
 
 
