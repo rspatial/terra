@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-5</span>
       </span>
     </div>
 
@@ -48,13 +48,20 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-4" id="version-17-4">version 1.7-4<a class="anchor" aria-label="anchor" href="#version-17-4"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-5" id="version-17-5">version 1.7-5<a class="anchor" aria-label="anchor" href="#version-17-5"></a></h2>
 <div class="section level3">
-<h3 id="new-1-7-4">new<a class="anchor" aria-label="anchor" href="#new-1-7-4"></a></h3>
+<h3 id="new-1-7-5">new<a class="anchor" aria-label="anchor" href="#new-1-7-5"></a></h3>
 <ul><li>argument <code>order=FALSE</code> to <code>sort&lt;SpatRaster&gt;</code>
 </li>
 <li>
 <code>sort&lt;SpatVector&gt;</code> (and <code>&lt;data.frame&gt;</code> method</li>
+<li>argument <code>by=NULL</code> to <code>rasterize&gt;</code> <a href="https://github.com/rspatial/terra/issues/986" class="external-link">#986</a> by Sam Weber</li>
+<li>
+<code>metadata&lt;SpatRaster&gt;</code> method</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-7-5">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-5"></a></h3>
+<ul><li>the legend created by <code>plet</code> was not always correct. <a href="https://github.com/rspatial/terra/issues/983" class="external-link">#983</a> by Simon Rolph</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -72,6 +79,8 @@
 <h3 id="bug-fixes-1-7-3">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-3"></a></h3>
 <ul><li>in the previous version, a bug was introduced such that the order of operation in arithmetic operations with SpatRasters was ignored. <a href="https://github.com/rspatial/terra/issues/978" class="external-link">#978</a> by Andrew Marx</li>
 <li>Fixed <code>split&lt;SpatVector&gt;</code>. <a href="https://github.com/rspatial/terra/issues/979" class="external-link">#979</a> by srfall</li>
+<li>
+<code>spatSample</code> with <code>as.df=FALSE</code> returned a data.frame instead of a matrix <a href="https://github.com/rspatial/terra/issues/982" class="external-link">#982</a> by Alex Ilich</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -94,7 +103,8 @@
 <h3 id="bug-fixes-1-6-53">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-53"></a></h3>
 <ul><li>
 <code>writeCDF</code> now supports writing yearly time steps <a href="https://github.com/rspatial/terra/issues/926" class="external-link">#926</a> by Andrea Manica</li>
-<li>as.contour now works for a single level <a href="https://github.com/rspatial/terra/issues/966" class="external-link">#966</a> by Johannes Signer</li>
+<li>
+<code>as.contour</code> now works for a single level <a href="https://github.com/rspatial/terra/issues/966" class="external-link">#966</a> by Johannes Signer</li>
 <li>subsetting a SpatRaster with a window returned a SpatRaster with the dimensions of the non-windowed raster, thus changing the resolution. <a href="https://github.com/rspatial/terra/issues/964" class="external-link">#964</a> by Derek Friend</li>
 <li>removing a factor variable from a SpatVector crashed R. <a href="https://github.com/rspatial/terra/issues/969" class="external-link">#969</a> by Andrew Gene Brown</li>
 <li>median did not always return the correct number for a SpatRaster with 3 or more layers <a href="https://github.com/rspatial/terra/issues/970" class="external-link">#970</a> by MatteaE</li>
@@ -141,7 +151,8 @@
 <li>
 <code>spatSample</code> with strata bug fix “unable to find an inherited method for function ‘trim’” <a href="https://github.com/rspatial/terra/issues/919" class="external-link">#919</a> by Alfredo Ascanio</li>
 <li>it is possible to slice a SpatRaster with a SpatExtent <a href="https://github.com/rspatial/terra/issues/914" class="external-link">#914</a> by Jakub Nowosad.</li>
-<li>merge/mosaic did not handle NAs when using two layers <a href="https://github.com/rspatial/terra/issues/913" class="external-link">#913</a> by Joao Carreiras.</li>
+<li>
+<code>merge</code>/<code>mosaic</code> did not handle NAs when using two layers <a href="https://github.com/rspatial/terra/issues/913" class="external-link">#913</a> by Joao Carreiras.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="name-changes-1-6-47">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-6-47"></a></h3>
@@ -224,8 +235,10 @@
 </ul></div>
 <div class="section level3">
 <h3 id="name-changes-1-6-41">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-6-41"></a></h3>
-<ul><li>costDistance -&gt; costDist to avoid conflict with {gdistance}</li>
-<li>gridDistance -&gt; gridDist for consistency</li>
+<ul><li>
+<code>costDistance</code> -&gt; <code>costDist</code> to avoid conflict with {gdistance}</li>
+<li>
+<code>gridDistance</code> -&gt; <code>gridDist</code> for consistency</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -258,8 +271,10 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-17">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-17"></a></h3>
-<ul><li>all.equal bug [#756] fixed by John Baums</li>
-<li>extract&lt;“SpatRaster”,“sf”&gt; ignored the ID argument. [#755] by Dainius Masiliūnas.</li>
+<ul><li>
+<code>all.equal</code> bug [#756] fixed by John Baums</li>
+<li>
+<code>extract&lt;"SpatRaster","sf"&gt;</code> ignored the ID argument. [#755] by Dainius Masiliūnas.</li>
 <li>There is now (in all cases) a check to avoid overwriting (one of) the input file(s) when writing a raster file [#760] by John Baums</li>
 <li>
 <code>vrt</code> is no longer constrained by the maximum number of files that can be opened [#780] by 8Ginette8<br></li>

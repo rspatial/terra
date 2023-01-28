@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-5</span>
       </span>
     </div>
 
@@ -55,11 +55,11 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector,SpatRaster</span></span>
 <span><span class="fu">rasterize</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, field<span class="op">=</span><span class="st">""</span>, <span class="va">fun</span>, <span class="va">...</span>, background<span class="op">=</span><span class="cn">NA</span>, touches<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span>  update<span class="op">=</span><span class="cn">FALSE</span>, sum<span class="op">=</span><span class="cn">FALSE</span>, cover<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  update<span class="op">=</span><span class="cn">FALSE</span>, sum<span class="op">=</span><span class="cn">FALSE</span>, cover<span class="op">=</span><span class="cn">FALSE</span>, by<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for matrix,SpatRaster</span></span>
 <span><span class="fu">rasterize</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, values<span class="op">=</span><span class="fl">1</span>, <span class="va">fun</span>, <span class="va">...</span>, background<span class="op">=</span><span class="cn">NA</span>, </span>
-<span>  update<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  update<span class="op">=</span><span class="cn">FALSE</span>, by<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -106,6 +106,10 @@
   <dt>cover</dt>
 <dd><p>logical. If <code>TRUE</code> and the geometry of <code>x</code> is polygons, the fraction of a cell that is covered by the polygons is returned. This is estimated by determining presence/absence of the polygon in at least 100 sub-cells (more of there are very few cells)</p></dd>
  
+
+  <dt>by</dt>
+<dd><p>character or numeric value(s) to split <code>x</code> into multiple groups. There will be a separate layer for each group returned. If <code>x</code> is a SpatVector, <code>by</code> can be a column number or name. If <code>x</code> is a matrix, <code>by</code> should be a vector that identifies group membership for each row in <code>x</code></p></dd>
+
 
   <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>

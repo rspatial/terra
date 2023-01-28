@@ -19,7 +19,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-5</span>
       </span>
     </div>
 
@@ -157,7 +157,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="cn">NA</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span>, each<span class="op">=</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">/</span><span class="fl">5</span>, length.out<span class="op">=</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">zonal</span><span class="op">(</span><span class="va">r</span>, <span class="va">z</span>, <span class="st">"mean"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   zone      red    green     blue</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   zone    red;   green;    blue; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1    1 197.9486 198.0103 193.5556</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    2 173.2219 176.7717 185.2585</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3    3 168.2952 172.6232 184.6939</span>
@@ -209,18 +209,18 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">zonal</span><span class="op">(</span><span class="va">p</span>, <span class="va">v</span>, <span class="va">mean</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    zone       b2    ssep1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 66.33333 34.66667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 69.40000 31.60000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 39.75000 61.25000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 41.00000 60.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 60.80000 40.20000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 44.28571 56.71429</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 61.71429 39.28571</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 64.50000 36.50000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 34.42857 66.57143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 47.75000 53.25000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   11 39.11111 61.88889</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   12 58.21429 42.78571</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 49.40000 51.60000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 51.66667 49.33333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 48.00000 53.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 34.00000 67.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 66.30769 34.69231</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 53.33333 47.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 29.80000 71.20000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 41.60000 59.40000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 47.33333 53.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 45.37500 55.62500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   11 55.20000 45.80000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   12 55.15385 45.84615</span>
 </code></pre></div>
     </div>
   </div>
