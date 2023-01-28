@@ -135,11 +135,19 @@ SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc) {
 		out.setError("number of rows and columns must be > 0");
 	}
 
-	nr = std::min(nr, nrow());
-	nc = std::min(nc, ncol());
+	if (nr > nrow()) {
+		out.addWarning("number of rows cannot be larger than nrow(x)");
+		nr = nrow();
+	}
+	if (nc > ncol()) {
+		out.addWarning("number of rows cannot be larger than nrow(x)");
+		nc = ncol();
+	}
+
 	if ((nc == ncol()) && (nr == nrow())) {
 		return( *this );
 	}
+
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
 
