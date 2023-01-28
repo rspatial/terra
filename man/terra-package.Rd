@@ -330,7 +330,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 \code{\link{impose}} \tab force the members of SpatRasterCollection to the same geometry\cr
 \code{\link{merge}} \tab merge the members of a SpatRasterCollection\cr
 \code{\link{mosaic}} \tab mosaic (merge with a function for overlapping areas) the members of a SpatRasterCollection\cr
-\code{\link{[}} \tab extract a SpatRastert\cr
+\code{\link{[}} \tab extract a SpatRaster\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }}
 
