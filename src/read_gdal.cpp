@@ -866,7 +866,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 		if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
 			char **m = poBand->GetMetadata();
-			while (*m != nullptr) {
+			while (m != nullptr && *m != nullptr) {
 				bandmeta[i].push_back(*m++);
 			}
 		}
