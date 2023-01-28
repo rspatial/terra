@@ -385,8 +385,14 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (any(size < 1)) {
 			error("spatSample", "sample size must be a positive integer")
 		}
-		if ((size > ncell(x)) & (!replace)) {
-			size <- ncell(x)
+		if (!replace) {
+			if ( length(size) == 1 && (size > ncell(x))) {
+				warn("spatSample", "requested sample size is larger than the number of cells")
+				size <- ncell(x)
+			} else if (length(size) > 1 & any(size[1] > nrow(x), size[2] > ncol(x))) {
+				warn("spatSample", "requested sample dimensions are larger than the source raster")
+				size <- pmin(size, c(nrow(x), ncol(x)))
+			}
 		}
 
 		method <- match.arg(tolower(method), c("random", "regular", "stratified", "weights"))
@@ -483,8 +489,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 
 		method <- tolower(method)
 		stopifnot(method %in% c("random", "regular"))
-		if (!replace) size <- pmin(ncell(x), size)
-
+	
 		if (!is.null(ext)) x <- crop(x, ext)
 
 		if (method == "regular") {
