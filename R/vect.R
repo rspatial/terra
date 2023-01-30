@@ -48,6 +48,12 @@ setMethod("vect", signature(x="missing"),
 	}
 )
 
+setMethod("vect", signature(x="SpatExtent"),
+	function(x, crs="") {
+		as.polygons(x, crs=crs)
+	}
+)
+
 setMethod("vect", signature(x="character"),
 	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="") {
 		what <- trimws(tolower(what))

@@ -514,13 +514,13 @@ SpatRaster SpatRaster::weighted_mean(SpatRaster w, bool narm, SpatOptions &opt) 
 	}
 
 	SpatOptions topt(opt);
-	out = arith(w, "*", topt);
+	out = arith(w, "*", false, topt);
 	out = out.summary("sum", narm, topt);
 	if (narm) {
 		w = w.mask(*this, false, NAN, NAN, topt);
 	}
 	SpatRaster wsum = w.summary("sum", narm, topt);
-	return out.arith(wsum, "/", opt);
+	return out.arith(wsum, "/", false, opt);
 }
 
 
@@ -586,10 +586,10 @@ SpatRaster SpatRaster::weighted_mean(std::vector<double> w, bool narm, SpatOptio
 
 	} else {
 		SpatOptions topt(opt);
-		out = arith(w, "*", false, topt);
+		out = arith(w, "*", false, false, topt);
 		out = out.summary("sum", narm, topt);
 		double wsum = vsum(w, narm);
-		return out.arith(wsum, "/", false, opt);
+		return out.arith(wsum, "/", false, false, opt);
 	}
 }
 
@@ -692,7 +692,7 @@ SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
 		}
 	}
 	if (m.size() == 0) { // only NA
-		return isnan(opt);
+		return isnan(false, opt);
 	}
 
 
@@ -3564,9 +3564,9 @@ SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vec
 			center = df.getD(0);
 		}
 		if (doscale) {
-			out = arith(center, "-", false, opts);
+			out = arith(center, "-", false, false, opts);
 		} else {
-			out = arith(center, "-", false, opt);
+			out = arith(center, "-", false, false, opt);
 		}
 	}
 	if (doscale) {
@@ -3581,9 +3581,9 @@ SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vec
 			scale = df.getD(0);
 		}
 		if (docenter) {
-			out = out.arith(scale, "/", false, opt);
+			out = out.arith(scale, "/", false, false, opt);
 		} else {
-			out = arith(scale, "/", false, opt);
+			out = arith(scale, "/", false, false, opt);
 		}
 	}
 	return out;

@@ -92,9 +92,9 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \S4method{anyNA}{SpatRaster}(x)
 
-\S4method{noNA}{SpatRaster}(x, FNA=FALSE)
+\S4method{noNA}{SpatRaster}(x, falseNA=FALSE)
 
-\S4method{allNA}{SpatRaster}(x, FNA=FALSE)
+\S4method{allNA}{SpatRaster}(x, falseNA=FALSE)
 
 }
 
@@ -105,7 +105,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
   \item{na.rm}{logical. If \code{TRUE}, \code{NA} values are ignored. If \code{FALSE}, \code{NA} is returned if \code{x} has any \code{NA} values}
   \item{trim}{ignored}
   \item{pop}{logical. If \code{TRUE}, the population standard deviation is computed. Otherwise the sample standard deviation is computed}
-  \item{FNA}{logical. If \code{TRUE}, cells that would otherwise be \code{FALSE} are set to \code{NA}}
+  \item{falseNA}{logical. If \code{TRUE}, cells that would otherwise be \code{FALSE} are set to \code{NA}}
 }
 
 

@@ -1,5 +1,8 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("logic")) {setGeneric("logic", function(x, ...) standardGeneric("logic"))}
+if (!isGeneric("compare")) {setGeneric("compare", function(x, y, ...) standardGeneric("compare"))}
+
 if (!isGeneric("metadata")) {setGeneric("metadata", function(x, ...) standardGeneric("metadata"))}
 
 if (!isGeneric("rangeFill")) {setGeneric("rangeFill", function(x, ...) standardGeneric("rangeFill"))}

@@ -567,9 +567,9 @@ class SpatRaster {
 
 		SpatRaster roll(size_t n, std::string fun, std::string type, bool circular, bool narm, SpatOptions &opt);
 
-		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions &opt);
-		SpatRaster arith(double x, std::string oper, bool reverse, SpatOptions &opt);
-		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt);
+		SpatRaster arith(SpatRaster x, std::string oper, bool falseNA, SpatOptions &opt);
+		SpatRaster arith(double x, std::string oper, bool reverse, bool falseNA, SpatOptions &opt);
+		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, bool falseNA, SpatOptions &opt);
 		SpatRaster arith_m(std::vector<double> x, std::string oper, std::vector<size_t> dim, bool reverse, SpatOptions &opt);
 
 		SpatRaster apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, std::vector<int_64> time, std::string timestep, std::string timezone, SpatOptions &opt);
@@ -664,14 +664,19 @@ class SpatRaster {
 		std::vector<std::string> getDataType(bool unique);
 		std::vector<std::string> dataType();
 
-		SpatRaster isnot(SpatOptions &opt);
-		SpatRaster isnan(SpatOptions &opt);
-		SpatRaster isnotnan(SpatOptions &opt);
-		SpatRaster allnan(bool setnan, SpatOptions &opt);
-		SpatRaster anynan(bool setnan, SpatOptions &opt);
-		SpatRaster nonan(bool setnan, SpatOptions &opt);
-		SpatRaster isfinite(SpatOptions &opt);
-		SpatRaster isinfinite(SpatOptions &opt);
+		SpatRaster isnot(bool falseNA, SpatOptions &opt);
+		SpatRaster isnan(bool falseNA, SpatOptions &opt);
+		SpatRaster isnotnan(bool falseNA, SpatOptions &opt);
+		SpatRaster isfinite(bool falseNA, SpatOptions &opt);
+		SpatRaster isinfinite(bool falseNA, SpatOptions &opt);
+		SpatRaster is_true(bool falseNA, SpatOptions &opt);
+		SpatRaster is_false(bool falseNA, SpatOptions &opt);
+		SpatRaster not_na(bool falseNA, SpatOptions &opt);
+
+		SpatRaster allnan(bool falseNA, SpatOptions &opt);
+		SpatRaster anynan(bool falseNA, SpatOptions &opt);
+		SpatRaster nonan(bool falseNA, SpatOptions &opt);
+		SpatRaster which(SpatOptions &opt);
 
 		std::vector<double> line_cells(SpatGeom& g);
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
@@ -797,11 +802,6 @@ class SpatRaster {
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
 		SpatRaster rgb2hsx(std::string type, SpatOptions &opt);	
 		SpatRaster hsx2rgb(SpatOptions &opt);	
-
-		SpatRaster which(SpatOptions &opt);
-		SpatRaster is_true(SpatOptions &opt);
-		SpatRaster is_false(SpatOptions &opt);
-		SpatRaster not_na(SpatOptions &opt);
 
 		SpatRaster proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt);
 		SpatRaster viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt);

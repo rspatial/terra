@@ -123,7 +123,7 @@ setMethod("Arith", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){
 		opt <- spatOptions()
 		oper <- as.vector(.Generic)[1]
-		e1@ptr <- e1@ptr$arith_rast(e2@ptr, oper, opt)
+		e1@ptr <- e1@ptr$arith_rast(e2@ptr, oper, FALSE, opt)
 		messages(e1, oper)
 	}
 )
@@ -133,7 +133,7 @@ setMethod("Arith", signature(e1="SpatRaster", e2="numeric"),
     function(e1, e2){
 		oper <- as.vector(.Generic)[1]
 		opt <- spatOptions()
-		e1@ptr <- e1@ptr$arith_numb(e2, oper, FALSE, opt)
+		e1@ptr <- e1@ptr$arith_numb(e2, oper, FALSE, FALSE, opt)
 		messages(e1, oper)
 	}
 )
@@ -154,7 +154,7 @@ setMethod("Arith", signature(e1="numeric", e2="SpatRaster"),
     function(e1, e2){
 		oper <- as.vector(.Generic)[1]
 		opt <- spatOptions()
-		e2@ptr <- e2@ptr$arith_numb(e1, oper, TRUE, opt)
+		e2@ptr <- e2@ptr$arith_numb(e1, oper, TRUE, FALSE, opt)
 		messages(e2, oper)
 	}
 )
@@ -189,7 +189,7 @@ setMethod("Compare", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){
 		opt <- spatOptions()
 		oper <- as.vector(.Generic)[1]
-		e1@ptr <- e1@ptr$arith_rast(e2@ptr, oper, opt)
+		e1@ptr <- e1@ptr$arith_rast(e2@ptr, oper, FALSE, opt)
 		messages(e1, oper)
 	}
 )
@@ -199,7 +199,7 @@ setMethod("Compare", signature(e1="SpatRaster", e2="numeric"),
     function(e1, e2){
 		oper <- as.vector(.Generic)[1]
 		opt <- spatOptions()
-		e1@ptr <- e1@ptr$arith_numb(e2, oper, FALSE, opt)
+		e1@ptr <- e1@ptr$arith_numb(e2, oper, FALSE, FALSE, opt)
 		messages(e1, oper)
 	}
 )
@@ -209,7 +209,7 @@ setMethod("Compare", signature(e1="numeric", e2="SpatRaster"),
     function(e1, e2){
 		oper <- as.vector(.Generic)[1]
 		opt <- spatOptions()
-		e2@ptr <- e2@ptr$arith_numb(e1, oper, TRUE, opt)
+		e2@ptr <- e2@ptr$arith_numb(e1, oper, TRUE, FALSE, opt)
 		messages(e2, oper)
 	}
 )
@@ -262,7 +262,7 @@ setMethod("Compare", signature(e1="SpatRaster", e2="character"),
 			error(oper, "comparisons only supported for single values (see %in% and match)")
 		}
 		opt <- spatOptions()
-		e1@ptr <- e1@ptr$arith_numb(e2, oper, TRUE, opt)
+		e1@ptr <- e1@ptr$arith_numb(e2, oper, TRUE, FALSE, opt)
 		messages(e1, oper)
 	}
 )
@@ -326,9 +326,9 @@ setMethod("!", signature(x="SpatRaster"),
 )
 
 setMethod("not.na", signature(x="SpatRaster"),
-	function(x, filename="", ...) {
+	function(x, falseNA=FALSE, filename="", ...) {
 		opt <- spatOptions(filename=filename, ...)
-		x@ptr <- x@ptr$not_na(opt)
+		x@ptr <- x@ptr$not_na(falseNA, opt)
 		messages(x, "not.na")
 	}
 )
@@ -337,7 +337,7 @@ setMethod("not.na", signature(x="SpatRaster"),
 setMethod("isTRUE", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$is_true(opt)
+		x@ptr <- x@ptr$is_true(FALSE, opt)
 		messages(x, "isTRUE")
 	}
 )
@@ -346,7 +346,7 @@ setMethod("isTRUE", signature(x="SpatRaster"),
 setMethod("isFALSE", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$is_false(opt)
+		x@ptr <- x@ptr$is_false(FALSE, opt)
 		messages(x, "isFALSE")
 	}
 )
@@ -373,7 +373,7 @@ setMethod("is.int", signature(x="SpatRaster"),
 setMethod("as.bool", signature(x="SpatRaster"),
 	function(x, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$is_true(opt)
+		x@ptr <- x@ptr$is_true(FALSE, opt)
 		messages(x, "as.boolean")
 	}
 )
@@ -396,7 +396,7 @@ setMethod("as.integer", signature(x="SpatRaster"),
 setMethod("is.na", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$isnan(opt)
+		x@ptr <- x@ptr$isnan(FALSE, opt)
 		messages(x, "is.na")
 	}
 )
@@ -410,18 +410,18 @@ setMethod("anyNA", signature(x="SpatRaster"),
 )
 
 setMethod("noNA", signature(x="SpatRaster"),
-	function(x, FNA=FALSE) {
+	function(x, falseNA=FALSE) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$nonan(FNA, opt)
+		x@ptr <- x@ptr$nonan(falseNA, opt)
 		messages(x, "noNA")
 	}
 )
 
 
 setMethod("allNA", signature(x="SpatRaster"),
-	function(x, FNA=FALSE) {
+	function(x, falseNA=FALSE) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$allnan(FNA, opt)
+		x@ptr <- x@ptr$allnan(falseNA, opt)
 		messages(x, "allNA")
 	}
 )
@@ -429,7 +429,7 @@ setMethod("allNA", signature(x="SpatRaster"),
 setMethod("is.nan", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$isnan(opt)
+		x@ptr <- x@ptr$isnan(FALSE, opt)
 		messages(x, "is.nan")
 	}
 )
@@ -438,7 +438,7 @@ setMethod("is.nan", signature(x="SpatRaster"),
 setMethod("is.finite", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$isfinite(opt)
+		x@ptr <- x@ptr$isfinite(FALSE, opt)
 		messages(x, "is.finite")
 	}
 )
@@ -446,7 +446,7 @@ setMethod("is.finite", signature(x="SpatRaster"),
 setMethod("is.infinite", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$isinfinite(opt)
+		x@ptr <- x@ptr$isinfinite(FALSE, opt)
 		messages(x, "is.infinite")
 	}
 )
@@ -679,6 +679,69 @@ setMethod("modal", signature("SpatRaster"),
 		}
 		x@ptr <- x@ptr$modal(add, ties[1], na.rm[1], opt)
 		messages(x, "modal")
+	}
+)
+
+
+setMethod("compare", signature(x="SpatRaster"),
+    function(x, y, oper, falseNA=FALSE, filename="", overwrite=FALSE, ...){
+		if (!is.character(oper)) {
+			error("compare", "oper must be a character value")
+		}
+		oper = oper[1]
+		ops <- c("==", "!=", ">", "<", ">=", "<=")
+		if (!(oper %in% ops)) {
+			error("compare", "oper must be a one of", ops)		
+		}
+
+		opt <- spatOptions(filename, overwrite, ...)
+		if (inherits(y, "SpatRaster")) {
+			x@ptr <- x@ptr$arith_rast(y@ptr, oper, falseNA[1], opt)
+		} else {
+			x@ptr <- x@ptr$arith_numb(y, oper, FALSE, falseNA[1], opt)
+		}
+		messages(x, oper)
+	}
+)
+
+
+setMethod("logic", signature(x="SpatRaster"),
+    function(x, oper, falseNA=FALSE, filename="", overwrite=FALSE, ...){
+		if (!is.character(oper)) {
+			error("logic", "oper must be a character value")
+		}
+		oper = oper[1]
+		ops <- c("!", "is.na", "allNA", "noNA", "is.infinite", "is.finite", "iSTRUE", "isFALSE")
+		if (!(oper %in% ops)) {
+			error("compare", "oper must be a one of", ops)		
+		}
+		opt <- spatOptions(filename, overwrite, ...)
+		falseNA <- as.logical(falseNA[1])
+		
+		if (oper == "is.infinite") {
+			x@ptr <- x@ptr$isinfinite(falseNA, opt)
+		} else if (oper == "is.finite") {
+			x@ptr <- x@ptr$isfinite(falseNA, opt)
+		} else if (oper == "is.na") {
+			x@ptr <- x@ptr$isnan(falseNA, opt)
+		} else if (oper == "isTRUE") {
+			x@ptr <- x@ptr$is_true(falseNA, opt)
+		} else if (oper == "isFALSE") {
+			x@ptr <- x@ptr$is_false(falseNA, opt)
+		} else if (oper == "allNA") {
+			x@ptr <- x@ptr$allnan(falseNA, opt)
+		} else if (oper == "noNA") {
+			x@ptr <- x@ptr$nonan(falseNA, opt)
+		} else if (oper == "anyNA") {
+			x@ptr <- x@ptr$anynan(falseNA, opt)
+		} else if (oper == "anyNA") {
+			x@ptr <- x@ptr$anynan(falseNA, opt)
+		} else if (oper == "!") {
+			x@ptr <- x@ptr$arith_numb(0, "==", FALSE, falseNA[1], opt)
+		} else {
+			error("logic", "??")
+		}
+		messages(x, "logic")
 	}
 )
 

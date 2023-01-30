@@ -801,7 +801,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 //		usemask = true;
 		SpatOptions mopt(topt);
 		mopt.set_datatype("INT1U");
-		mask = tmp.isfinite(mopt);
+		mask = tmp.isfinite(false, mopt);
 	} else if (trunc) {
 		tmp = tmp.math("trunc", topt);
 		trunc = false;

@@ -2218,7 +2218,7 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 		if (!std::isnan(background)) {
 			out = proximity(NAN, NAN, "", true, d, true, ops);
 			if (background == 0) {
-				out = out.isnotnan(opt);
+				out = out.isnotnan(false, opt);
 			} else {
 				out = out.replaceValues({NAN}, {background}, 1, false, NAN, false, opt);
 			}
@@ -2854,7 +2854,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 			}
 			if (resample) {
 				double divr = frow*fcol;
-				out = out.arith(divr, "/", false, xopt);
+				out = out.arith(divr, "/", false, false, xopt);
 				out = out.warper(target, "", "bilinear", false, false, true, opt);
 			}
 		} else {

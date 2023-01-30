@@ -795,8 +795,8 @@ RCPP_MODULE(spat){
 		.method("rappvals", &SpatRaster::rappvals)
 		.method("roll", &SpatRaster::roll)
 		.method("fill_range", &SpatRaster::fill_range)
-		.method("arith_rast", (SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::arith ))
-		.method("arith_numb", (SpatRaster (SpatRaster::*)(std::vector<double>, std::string, bool, SpatOptions&) )( &SpatRaster::arith))
+		.method("arith_rast", (SpatRaster (SpatRaster::*)(SpatRaster, std::string, bool, SpatOptions&) )( &SpatRaster::arith ))
+		.method("arith_numb", (SpatRaster (SpatRaster::*)(std::vector<double>, std::string, bool, bool,SpatOptions&) )( &SpatRaster::arith))
 		.method("arith_m", &SpatRaster::arith_m)
 		
 		.method("rst_area", &SpatRaster::rst_area)
@@ -877,6 +877,9 @@ RCPP_MODULE(spat){
 		.method("not_na", &SpatRaster::isnotnan)
 		.method("isfinite", &SpatRaster::isfinite)
 		.method("isinfinite", &SpatRaster::isinfinite)
+		.method("is_true", &SpatRaster::is_true)
+		.method("is_false", &SpatRaster::is_false)
+
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("mask_raster", ( SpatRaster (SpatRaster::*)(SpatRaster, bool, std::vector<double>, double, SpatOptions&) )( &SpatRaster::mask))
@@ -930,8 +933,6 @@ RCPP_MODULE(spat){
 		.method("zonal_poly", &SpatRaster::zonal_poly)		
 		.method("zonal_poly_weighted", &SpatRaster::zonal_poly_weighted)		
 //		.method("zonal_old", &SpatRaster::zonal_old)
-		.method("is_true", &SpatRaster::is_true)
-		.method("is_false", &SpatRaster::is_false)
 	;
 
     class_<SpatRasterCollection>("SpatRasterCollection")

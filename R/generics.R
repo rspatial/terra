@@ -559,7 +559,7 @@ setMethod("diff", signature(x="SpatRaster"),
 		y <- x[[-((n-lag+1):n)]]
 		x <- x[[-(1:lag)]]
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$arith_rast(y@ptr, "-", opt)
+		x@ptr <- x@ptr$arith_rast(y@ptr, "-", FALSE, opt)
 		messages(x, "diff")
 	}
 )
