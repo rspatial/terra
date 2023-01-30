@@ -1,4 +1,4 @@
-# version 1.7-5
+# version 1.7-6
 
 ## new
 
@@ -6,6 +6,9 @@
 - `sort<SpatVector>` (and `<data.frame>` method
 - argument `by=NULL` to `rasterize>` [#986](https://github.com/rspatial/terra/issues/986) by Sam Weber
 - `metadata<SpatRaster>` method
+- `compare<SpatRaster>` and `logic<SpatRaster>` methods
+- `vect<SpatExtent>` method
+
 
 ## bug fixes 
 
