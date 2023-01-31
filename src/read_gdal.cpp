@@ -1769,31 +1769,37 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 	}
 
 	bool years = false;
+	bool yearsbp = false;
 	bool days = false;
 	bool hours = false;
 	bool seconds = false;
 	bool foundorigin = false;
 
 	if (fu) {
+		lowercase(origin);
 		if ((origin.find("hours")) != std::string::npos) {
 			hours = true;
 		} else if ((origin.find("days")) != std::string::npos) {
 			days = true;
 		} else if ((origin.find("seconds")) != std::string::npos) {
 			seconds = true;
+		} else if ((origin.find("years before present")) != std::string::npos) {
+			yearsbp = true;
+			foundorigin = true;
 		} else if ((origin.find("years")) != std::string::npos) {
 			years = true;
 		}
-		size_t pos;
-		if ((pos = origin.find("from")) != std::string::npos) {
-			origin.erase(0, pos + 5);
-			foundorigin = true;
-		} else if ((pos = origin.find("since")) != std::string::npos) {
-			origin.erase(0, pos + 6);
-			foundorigin = true;
+		if (!foundorigin) {
+			size_t pos;		
+			if ((pos = origin.find("from")) != std::string::npos) {
+				origin.erase(0, pos + 5);
+				foundorigin = true;
+			} else if ((pos = origin.find("since")) != std::string::npos) {
+				origin.erase(0, pos + 6);
+				foundorigin = true;
+			}
 		}
 	}
-
 	SpatTime_t offset = 0;
 	if (foundorigin) {
 		step = "seconds";
@@ -1822,6 +1828,10 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		} else if (years) {
 			step = "years";
 			int syear = getyear(origin);
+			for (size_t i=0; i<raw.size(); i++) out.push_back(get_time(syear+raw[i], 6, 30, 0, 0, 0));
+		} else if (yearsbp) {
+			step = "years";
+			int syear = 1950;
 			for (size_t i=0; i<raw.size(); i++) out.push_back(get_time(syear+raw[i], 6, 30, 0, 0, 0));
 		} else {
 			step = "raw";
