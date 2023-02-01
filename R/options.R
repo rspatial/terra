@@ -1,4 +1,3 @@
-
 .terra_environment <- new.env(parent=emptyenv())
 
 
@@ -9,6 +8,12 @@
 	tmpdir <- try(tempdir(check = TRUE), silent=TRUE)
 	opt@ptr$tempdir <- normalizePath(tempdir(), winslash="/")
 	.terra_environment$options <- opt
+
+	x <- options("terra_default")[[1]]
+	if (!is.null(x)) {
+		do.call(terraOptions, x)
+	}
+
 }
 
 .options_names <- function() {
