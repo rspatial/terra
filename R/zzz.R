@@ -29,9 +29,9 @@
 		path <- system.file("proj", package="terra")
 	}
 	.gdalinit(path, file.path(sf, "gdal"))
-	if (gdal() == "3.6.0") {
-		message("Using GDAL version 3.6.0 which was retracted because it cannot write large GPKG files")
-	}
+#	if (gdal() == "3.6.0") {
+#		message("Using GDAL version 3.6.0 which was retracted because it cannot write large GPKG files")
+#	}
 }
 
 loadModule("spat", TRUE)
