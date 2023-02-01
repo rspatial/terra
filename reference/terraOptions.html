@@ -77,6 +77,12 @@
 <p><b>progress</b> - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero</p>
 <p><b>verbose</b> - logical. If <code>TRUE</code> debugging info is printed for some functions</p>
     </div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>It is possible to set your own default options in "etc/.Rprofile.site" of your R installation like this</p>
+<p><code>options(terra_default=list(tempdir="d:/temp", memfrac=.4))</code></p>
+<p>But that may not be a good practise. It is clearer to set your favorite options at the beginning of each script.</p>
+    </div>
     <div id="value">
     <h2>Value</h2>
     
@@ -89,7 +95,7 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">terraOptions</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp46NjsZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpflmEiM</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datatype  : FLT4S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memfrac   : 0.6</span>
@@ -103,7 +109,7 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[options] you cannot set the tempdir to a path that does not exist</span>
 <span class="r-in"><span><span class="fu">terraOptions</span><span class="op">(</span>progress<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">terraOptions</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp46NjsZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpflmEiM</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datatype  : FLT4S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memfrac   : 0.5</span>
