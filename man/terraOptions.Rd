@@ -37,6 +37,14 @@ The following options are available.
 \bold{verbose} - logical. If \code{TRUE} debugging info is printed for some functions
 }
 
+\note{
+It is possible to set your own default options in "etc/.Rprofile.site" of your R installation like this
+
+\code{options(terra_default=list(tempdir="d:/temp", memfrac=.4))}
+
+But that may not be a good practise. It is clearer to set your favorite options at the beginning of each script.
+}
+
 \value{
 list. Invisibly if \code{print=TRUE}
 }
@@ -50,3 +58,4 @@ terraOptions()
 
 \keyword{classes}
 \keyword{spatial}
+
