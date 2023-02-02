@@ -372,28 +372,29 @@ prettyNumbs <- function(x, digits) {
 #	text.col = graphics::par("col"), text.font = NULL, ncol = 1, horiz = FALSE, title = NULL,
  #   inset = 0, title.col = text.col, title.adj = 0.5,
 
-.plotit <- function(x, type = "n", yaxs="i", xaxs="i", axes=TRUE, new=NA,
-	main="", line=0.5, cex.main=0.8, cex.lab=0.8, line.lab=1.5, font.main=graphics::par()$font.main,
-	col.main = graphics::par()$col.main, reset=FALSE, ...) {
+
+.plotit <- function(x) {
 
 #	if (x$add) axes = FALSE
 	if ((!x$add) & (!x$legend_only)) {
 
 		old.mar <- graphics::par()$mar
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
-		if (reset) on.exit(graphics::par(mar=old.mar))
+		if (x$reset) on.exit(graphics::par(mar=old.mar))
 
 		if (!is.null(x$background)) {
 			usr <- graphics::par("usr")
 			graphics::rect(usr[1], usr[3], usr[2], usr[4], col=x$background)
 		}
 
-		plot(x$lim[1:2], x$lim[3:4], type=type, xlab="", ylab="", asp=x$asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
-		line.lab <- rep_len(line.lab, 2)
-		mtext(side=1, text=x$xlab, line=line.lab[1], cex=cex.lab)
-		mtext(side=2, text=x$ylab, line=line.lab[2], cex=cex.lab)
+		arglist <- c(list(x=x$lim[1:2], y=x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=!x$values), x$dots)
+		do.call(plot, arglist)
+		#plot(x$lim[1:2], x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=!x$values, ...)
+		x$line.lab <- rep_len(x$line.lab, 2)
+		mtext(side=1, text=x$xlab, line=x$line.lab[1], cex=x$cex.lab)
+		mtext(side=2, text=x$ylab, line=x$line.lab[2], cex=x$cex.lab)
 
-		graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)
+		graphics::title(x$main, line=x$line.main, cex.main=x$cex.main, font.main=x$font.main, col.main=x$col.main)
 	}
 	if (!x$values) {
 		return(x)
@@ -402,7 +403,7 @@ prettyNumbs <- function(x, digits) {
 		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4],
 			angle = 0, interpolate = x$interpolate)
 
-		if (axes) x <- .plot.axes(x)
+		if (x$axes) x <- .plot.axes(x)
 	}
 	if (x$legend_draw) {
 		if (x$legend_type == "continuous") {
@@ -420,10 +421,13 @@ prettyNumbs <- function(x, digits) {
 
 .prep.plot.data <- function(x, type, cols, mar=NULL, draw=FALSE,
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(),
-  levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
+  levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
   sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
-  xlab="", ylab="", asp=NULL, ...) {
+  xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=0.8, 
+  line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
+  axes=TRUE, ...) {
+
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
 
@@ -473,8 +477,20 @@ prettyNumbs <- function(x, digits) {
 		alpha <- 255
 	}
 
+	out$dots  <- list(...)
+	out$reset <- reset
+	out$main  <- main
+	out$cex.main  <- cex.main
+	out$font.main <- font.main
+	out$col.main  <- col.main
+	out$line.main <- line.main
+	out$axes <- axes
+	out$xaxs <- xaxs
+	out$yaxs <- yaxs
 	out$xlab <- xlab
 	out$ylab <- ylab 
+	out$cex.lab <- cex.lab
+	out$line.lab <- line.lab 
 	out$cols <- cols
 	out$coltab <- coltab
 	out$cats <- cats
@@ -500,6 +516,8 @@ prettyNumbs <- function(x, digits) {
 	} else {
 		out$mar <- rep_len(mar, 4)
 	}
+
+
 
 	if (!hasValues(x)) {
 		out$values = FALSE
@@ -536,8 +554,7 @@ prettyNumbs <- function(x, digits) {
 			out$r <- matrix(grDevices::rgb(t(grDevices::col2rgb(out$r)), alpha=alpha, maxColorValue=255),
 			nrow=nrow(out$r), byrow=TRUE)
 		}
-
-		out <- .plotit(out, new=new, reset=reset, ...)
+		out <- .plotit(out)
 	}
 	invisible(out)
 }
