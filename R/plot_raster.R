@@ -391,8 +391,8 @@ prettyNumbs <- function(x, digits) {
 		do.call(plot, arglist)
 		#plot(x$lim[1:2], x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=!x$values, ...)
 		x$line.lab <- rep_len(x$line.lab, 2)
-		mtext(side=1, text=x$xlab, line=x$line.lab[1], cex=x$cex.lab)
-		mtext(side=2, text=x$ylab, line=x$line.lab[2], cex=x$cex.lab)
+		graphics::mtext(side=1, text=x$xlab, line=x$line.lab[1], cex=x$cex.lab)
+		graphics::mtext(side=2, text=x$ylab, line=x$line.lab[2], cex=x$cex.lab)
 
 		graphics::title(x$main, line=x$line.main, cex.main=x$cex.main, font.main=x$font.main, col.main=x$col.main)
 	}
@@ -407,14 +407,14 @@ prettyNumbs <- function(x, digits) {
 	}
 	if (x$legend_draw) {
 		if (x$legend_type == "continuous") {
-			x <- do.call(.plot.cont.legend, list(x=x))
+			leg <- do.call(.plot.cont.legend, list(x=x))
 #		} else if (x$legend_type == "classes") {
 		} else {
 			#y <- do.call(.plot.class.legend, x$leg)
 			leg <- do.call(.plot.class.legend, x$leg)
 		}
 	}
-	x
+	invisible(x)
 }
 
 

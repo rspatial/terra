@@ -4,8 +4,9 @@
 # License GPL v3
 
 
-.scatterPlotRaster <- function(x, y, maxcell=100000, warn=TRUE, cex, xlab, ylab, nc, nr, maxnl=16, main, add=FALSE, smooth=FALSE, gridded=FALSE, ncol=25, nrow=25, asp=NA, colramp=colorRampPalette(c("white", blues9)),
-...) {
+.scatterPlotRaster <- function(x, y, maxcell=100000, warn=TRUE, cex, xlab, ylab, nc, nr, 
+	maxnl=16, main, add=FALSE, smooth=FALSE, gridded=FALSE, ncol=25, nrow=25, asp=NA,
+	colramp=grDevices::colorRampPalette(c("white", grDevices::blues9)), ...) {
 
 	compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE)
 	nlx <- nlyr(x)
@@ -61,9 +62,6 @@
 			}
 		}
 	}
-
-
-
 
 	x <- as.matrix(spatSample(c(x,y), size=maxcell, method="regular", as.raster=FALSE, warn=FALSE))
 	# y <- as.matrix(spatSample(y, size=maxcell, method="regular", as.raster=FALSE))
