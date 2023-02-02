@@ -372,8 +372,8 @@ prettyNumbs <- function(x, digits) {
 #	text.col = graphics::par("col"), text.font = NULL, ncol = 1, horiz = FALSE, title = NULL,
  #   inset = 0, title.col = text.col, title.adj = 0.5,
 
-.plotit <- function(x, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=x$asp, axes=TRUE, new=NA,
-	main="", line=0.5, cex.main=0.8, font.main=graphics::par()$font.main,
+.plotit <- function(x, type = "n", yaxs="i", xaxs="i", axes=TRUE, new=NA,
+	main="", line=0.5, cex.main=0.8, cex.lab=0.8, line.lab=1.5, font.main=graphics::par()$font.main,
 	col.main = graphics::par()$col.main, reset=FALSE, ...) {
 
 #	if (x$add) axes = FALSE
@@ -388,7 +388,10 @@ prettyNumbs <- function(x, digits) {
 			graphics::rect(usr[1], usr[3], usr[2], usr[4], col=x$background)
 		}
 
-		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
+		plot(x$lim[1:2], x$lim[3:4], type=type, xlab="", ylab="", asp=x$asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
+		line.lab <- rep_len(line.lab, 2)
+		mtext(side=1, text=x$xlab, line=line.lab[1], cex=cex.lab)
+		mtext(side=2, text=x$ylab, line=line.lab[2], cex=cex.lab)
 
 		graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)
 	}
@@ -419,7 +422,8 @@ prettyNumbs <- function(x, digits) {
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(),
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
-  sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL, ...) {
+  sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
+  xlab="", ylab="", asp=NULL, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
 
@@ -451,12 +455,16 @@ prettyNumbs <- function(x, digits) {
 	out$leg <- as.list(plg)
 	out$all_levels <- isTRUE(all_levels)
 
-	out$asp <- 1
-	out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
-	if (out$lonlat) {
-		out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
+	if (is.null(asp)) {
+		out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
+		if (out$lonlat) {
+			out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
+		} else {
+			out$asp <- 1
+		}
+	} else {
+		out$asp <- asp
 	}
-
 	if (!is.null(alpha)) {
 		if (!inherits(alpha, "SpatRaster")) {
 			cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha[1]*255, maxColorValue=255)
@@ -465,6 +473,8 @@ prettyNumbs <- function(x, digits) {
 		alpha <- 255
 	}
 
+	out$xlab <- xlab
+	out$ylab <- ylab 
 	out$cols <- cols
 	out$coltab <- coltab
 	out$cats <- cats

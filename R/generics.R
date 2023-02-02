@@ -567,7 +567,7 @@ setMethod("diff", signature(x="SpatRaster"),
 
 setMethod("disagg", signature(x="SpatRaster"),
 	function(x, fact, method="near", filename="", ...) {
-		stopifnot(method %in% c("near", "bilinear"))
+		method <- match.arg(tolower(method), c("near", "bilinear"))
 		if (method == "bilinear") {
 			y <- disagg(rast(x), fact)
 			r <- resample(x, y, "bilinear", filename=filename, ...)
