@@ -198,8 +198,11 @@ setMethod("predict", signature(object="SpatRaster"),
 					d <- spatSample(object, min(1000, ncell(object)), "regular", warn=FALSE)
 					allna <- all(is.na(d))
 				}
+				if (allna) {
+					d[] <- runif(prod(dim(d)))
+				}
 			}
-			if (!allna) {
+#			if (!allna) {
 				r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL, ...)
 				if (ncell(object) > 1) {
 					nl <- ncol(r)
@@ -208,9 +211,9 @@ setMethod("predict", signature(object="SpatRaster"),
 					nl <- length(r)
 				}
 				levs <- .getFactors(model, fun, d, nl, const, na.rm, index, ...)
-			} else {
-				warn("predict", "Cannot determine the number of output variables. Assuming 1. Use argument 'index' to set it manually")
-			}
+#			} else {
+#				warn("predict", "Cannot determine the number of output variables. Assuming 1. Use argument 'index' to set it manually")
+#			}
 		}
 		out <- rast(object, nlyrs=nl)
 		levels(out) <- levs
