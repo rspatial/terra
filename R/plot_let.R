@@ -375,8 +375,10 @@ setMethod("plet", signature(x="SpatRaster"),
 		}
 
 
+		notmerc <- isTRUE(crs(x, describe=TRUE)$code != "3857")
+
 		if (nlyr(x) == 1) {
-			map <- leaflet::addRasterImage(map, x, colors=col, opacity=alpha)
+			map <- leaflet::addRasterImage(map, x, colors=col, opacity=alpha, project=notmerc)
 			if (!is.null(legend)) {
 				if (!all(hasMinMax(x))) setMinMax(x)
 				r <- minmax(x)
@@ -408,9 +410,9 @@ setMethod("plet", signature(x="SpatRaster"),
 			}
 			for (i in 1:nlyr(x)) {
 				if (one_legend) {
-					map <- leaflet::addRasterImage(map, x[[i]], colors=pal, opacity=alpha, group=nms[i])
+					map <- leaflet::addRasterImage(map, x[[i]], colors=pal, opacity=alpha, group=nms[i], project=notmerc)
 				} else {
-					map <- leaflet::addRasterImage(map, x[[i]], colors=col, opacity=alpha, group=nms[i])
+					map <- leaflet::addRasterImage(map, x[[i]], colors=col, opacity=alpha, group=nms[i], project=notmerc)
 					if (many_legends) {
 						v <- seq(r[1,i], r[2,i], length.out=5)
 						pal <- leaflet::colorNumeric(col, v, reverse=TRUE)
