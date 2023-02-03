@@ -21,7 +21,7 @@ parfun <- function(cls, d, fun, model, ...) {
 	if (!is.data.frame(d)) {
 		d <- data.frame(d)
 	}
-	if (! is.null(const)) {
+	if (!is.null(const)) {
 		for (i in 1:ncol(const)) {
 			d <- cbind(d, const[,i,drop=FALSE])
 		}
@@ -175,28 +175,28 @@ setMethod("predict", signature(object="SpatRaster"),
 		} else {
 			allna <- FALSE
 			if (na.rm) {
-				allna <- all(is.na(d))
+				allna <- all(nrow(na.omit(d)) == 0)
 				if (allna) {
 					testrow <- ceiling(testrow - 0.25*nr)
 					d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-					allna <- all(is.na(d))
+					allna <- all(nrow(na.omit(d)) == 0)
 				}
 				if (allna) {
 					testrow <- floor(testrow + 0.5*nr)
 					if ((testrow + rnr) > nr) rnr = nr - testrow + 1
 					d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-					allna <- all(is.na(d))
+					allna <- all(nrow(na.omit(d)) == 0)
 				}
 				if (allna && (ncell(object) < 1000)) {
 					d <- readValues(object, 1, nr, 1, nc, TRUE, TRUE)
-					allna <- all(is.na(d))
+					allna <- all(nrow(na.omit(d)) == 0)
 					#if (allna) {
 					#	error("predict", "all predictor values are NA")
 					#}
 				}
 				if (allna) {
 					d <- spatSample(object, min(1000, ncell(object)), "regular", warn=FALSE)
-					allna <- all(is.na(d))
+					allna <- all(nrow(na.omit(d)) == 0)
 				}
 				if (allna) {
 					d[] <- runif(prod(dim(d)))
