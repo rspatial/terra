@@ -169,6 +169,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		if (nc==1) rnr <- min(nr, 20) - testrow + 1
 		d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
 		cn <- NULL
+		levs <- NULL
 		if (!is.null(index)) {
 			nl <- length(index)
 		} else {
@@ -209,7 +210,6 @@ setMethod("predict", signature(object="SpatRaster"),
 				levs <- .getFactors(model, fun, d, nl, const, na.rm, index, ...)
 			} else {
 				warn("predict", "Cannot determine the number of output variables. Assuming 1. Use argument 'index' to set it manually")
-				levs <- NULL
 			}
 		}
 		out <- rast(object, nlyrs=nl)
