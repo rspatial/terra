@@ -38,27 +38,18 @@ parfun <- function(cls, d, fun, model, ...) {
 			}
 			if (is.list(r)) {
 				r <- as.data.frame(r)
-				r <- sapply(r, as.numeric)			
+				# data.frame(lapply) instead of sapply to catch a one-row case
+				r <- data.frame(lapply(r, as.numeric))
 			} else if (is.factor(r)) {
 				r <- as.integer(r)
-			} else if (is.data.frame(r)) {
-				r <- sapply(r, as.numeric)
-			}
-			#how could it not be numeric?
-			#else if (is.data.frame(r)) {
-			#	if (nrow(r) > 1) {
-			#		r <- apply(r, as.numeric)
-			#	} else {
-			#		r[] <- as.numeric(r)
-			#	}
-			#}
+			} 
 			r <- as.matrix(r)
 			if (!all(i)) {
 				m <- matrix(NA, nrow=n, ncol=ncol(r))
 				m[i,] <- r
 				colnames(m) <- colnames(r)
 				r <- m
-				}
+			}
 		} else {
 			if (!is.null(index)) {
 				r <- matrix(NA, nrow=nl*n, ncol=max(index))
