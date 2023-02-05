@@ -124,7 +124,7 @@ This is different than the sample standard deviation returned by sd (which uses 
 <dd><p>SpatRaster</p></dd>
 
   <dt>...</dt>
-<dd><p>additional SpatRaster objects or numeric values; and arguments <code>filename</code>, <code>overwrite</code> and <code>wopt</code> as for <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+<dd><p>additional SpatRaster objects or numeric values; and arguments <code>par</code> for parallel summarization (see Details), and <code>filename</code>, <code>overwrite</code> and <code>wopt</code> as for <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
 
   <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>NA</code> values are ignored. If <code>FALSE</code>, <code>NA</code> is returned if <code>x</code> has any <code>NA</code> values</p></dd>
@@ -142,6 +142,10 @@ This is different than the sample standard deviation returned by sd (which uses 
     <div id="value">
     <h2>Value</h2>
     <p>SpatRaster</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>Additional argument <code>par</code> can be used for "parallel" summarizing a SpatRaster and a numeric or logical value. If a SpatRaster <code>x</code> has three layers, <code>max(x, 5)</code> will return a single layer (the number five is treated as a layer in which all cells have value five). In contrast <code>max(x, 5, par=TRUE)</code> returns three layers (the number five is treated as another SpatRaster with a single layer with all cells having the value five.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -171,6 +175,9 @@ This is different than the sample standard deviation returned by sd (which uses 
 <span class="r-out co"><span class="r-pr">#&gt;</span> name        :       max </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min value   : 0.1808664 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max value   : 0.9926841 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## when adding a number, do you want 1 layer or all layers?</span></span></span>
+<span class="r-in"><span><span class="co"># 1 layer</span></span></span>
 <span class="r-in"><span><span class="fu">max</span><span class="op">(</span><span class="va">r</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 1  (nrow, ncol, nlyr)</span>
@@ -181,6 +188,18 @@ This is different than the sample standard deviation returned by sd (which uses 
 <span class="r-out co"><span class="r-pr">#&gt;</span> name        :       max </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min value   : 0.5000000 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max value   : 0.9926841 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># all layers</span></span></span>
+<span class="r-in"><span><span class="fu">max</span><span class="op">(</span><span class="va">r</span>, <span class="fl">0.5</span>, par<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 10, 10, 3  (nrow, ncol, nlyr)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 36, 18  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       :     lyr.1,     lyr.2,     lyr.3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min values  : 0.5000000, 0.5000000, 0.5000000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 0.9919061, 0.9926841, 0.9815635 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">stdev</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># not the same as </span></span></span>
