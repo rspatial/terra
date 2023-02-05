@@ -452,7 +452,7 @@ setMethod("is.infinite", signature(x="SpatRaster"),
 )
 
 
-.summarize <- function(x, ..., fun, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
+.summarize <- function(x, ..., fun, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list(), par=FALSE) {
 
 	dots <- list(...)
 	add <- NULL
@@ -471,7 +471,7 @@ setMethod("is.infinite", signature(x="SpatRaster"),
 			}
 		}
 	}
-	if (any(cls)) {
+	if (any(cls) | par) {
 		x <- sds(c(list(x), dots[cls]))
 	}
 
