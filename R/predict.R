@@ -190,7 +190,7 @@ setMethod("predict", signature(object="SpatRaster"),
 					allna <- all(nrow(na.omit(d)) == 0)
 				}
 				if (allna) {
-					d[] <- runif(prod(dim(d)))
+					d[] <- stats::runif(prod(dim(d)))
 				}
 			}
 #			if (!allna) {

@@ -56,67 +56,71 @@ setMethod("vect", signature(x="SpatExtent"),
 
 setMethod("vect", signature(x="character"),
 	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="") {
+
 		what <- trimws(tolower(what))
 		if (what != "") what <- match.arg(trimws(tolower(what)), c("geoms", "attributes"))
 		
-		p <- methods::new("SpatVector")
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
+			p <- methods::new("SpatVector")
 #		if (all(grepl("\\(", x) & grepl("\\)", x))) {
-			x <- gsub("\n", "", x)
-			p@ptr <- SpatVector$new(x)
+			p@ptr <- SpatVector$new(gsub("\n", "", x))
 			crs(p, warn=FALSE) <- crs
-		} else {
-			p@ptr <- SpatVector$new()
-			nx <- try(normalizePath(x[1], mustWork=TRUE), silent=TRUE)
-			if (!inherits(nx, "try-error")) { # skip html
-				x <- nx
-				x <- enc2utf8(x)
-				if (tolower(tools::file_ext(x)) == "rds") {
-					v <- readRDS(x)
-					if (!inherits(v, "SpatVector")) {
-						error("vect", "the rds file does not store a SpatVector")
-					}
-					return(v)
+			return(p)
+		} 
+		
+		x <- x[1]
+		nx <- try(normalizePath(x, mustWork=TRUE), silent=TRUE)
+		if (!inherits(nx, "try-error")) { # skip html
+			x <- nx
+			if (grepl("\\.rds$", tolower(x))) {
+				v <- unwrap(readRDS(x))
+				if (!inherits(v, "SpatVector")) {
+					error("vect", "the rds file does not store a SpatVector")
 				}
+				return(v)
 			}
-			proxy <- isTRUE(proxy)
+		} else if ((substr(x, 1, 4) == "http") & (grepl("\\.shp$", x) | grepl("\\.gpkg$", x))) {
+			x <- paste0("/vsicurl/", x[1])
+		}
 
+		p <- methods::new("SpatVector")
+		p@ptr <- SpatVector$new()
+		proxy <- isTRUE(proxy)
 			if ((what=="attributes") && proxy) {
-				error("vect", "you cannot use 'what==attribtues' when proxy=TRUE")
-			}
-			#if (proxy) query <- ""
-			if (is.null(filter)) {
-				filter <- vect()@ptr
-			} else {
-				if (proxy) {
-					error("vect", "you cannot use 'filter' when proxy=TRUE")
-				}
-				filter <- filter@ptr
-			}
-			if (is.null(extent)) {
-				extent <- double()
-			} else {
-				extent <- as.vector(ext(extent))
-			}
-			p@ptr$read(x, layer, query, extent, filter, proxy, what)
-			if (isTRUE(crs != "")) {
-				crs(p, warn=FALSE) <- crs
-			}
+			error("vect", "you cannot use 'what==attribtues' when proxy=TRUE")
+		}
+		#if (proxy) query <- ""
+		if (is.null(filter)) {
+			filter <- vect()@ptr
+		} else {
 			if (proxy) {
-				messages(p, "vect")
-				pp <- methods::new("SpatVectorProxy")
-				pp@ptr <- SpatVectorProxy$new()
-				pp@ptr$v <- p@ptr
-				return(pp)
+				error("vect", "you cannot use 'filter' when proxy=TRUE")
 			}
+			filter <- filter@ptr
 		}
-		p <- messages(p, "vect")
-		if (what == "attributes") {
-			p <- values(p)
+		if (is.null(extent)) {
+			extent <- double()
+		} else {
+			extent <- as.vector(ext(extent))
 		}
-		p
+		p@ptr$read(x, layer, query, extent, filter, proxy, what)
+		if (isTRUE(crs != "")) {
+			crs(p, warn=FALSE) <- crs
+		}
+		if (proxy) {
+			messages(p, "vect")
+			pp <- methods::new("SpatVectorProxy")
+			pp@ptr <- SpatVectorProxy$new()
+			pp@ptr$v <- p@ptr
+			return(pp)
+		}
 	}
+	p <- messages(p, "vect")
+	if (what == "attributes") {
+		p <- values(p)
+	}
+	p
 )
 
 

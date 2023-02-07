@@ -135,16 +135,21 @@ setMethod("rast", signature(x="SpatVector"),
 
 
 
-.fullFilename <- function(x, mustExist=TRUE) {
+.fullFilename <- function(x, mustExist=TRUE, vsi=TRUE) {
 	x <- trimws(x)
+	x <- x[x != ""]
+	
+	i <- substr(x, 1, 4) == "http" 
+	if (vsi) {
+		x[i] <- paste0("/vsicurl/", x[i])
+	}
+	if (all(i)) return(x)
+	
+	x <- enc2utf8(x)
 	p <- normalizePath(x, winslash = "/", mustWork = FALSE)
 	if (mustExist) {
 		i <- file.exists(p)
-		if (all(i)) {
-			return(p)
-		} else {
-			x[i] <- p[i]
-		}
+		x[i] <- p[i]
 	} else {
 		return(p)
 	}
@@ -158,23 +163,20 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, vsi=TRUE) {
 
-		x <- trimws(x)
-		x <- x[x!=""]
-		if (length(x) == 0) {
+		f <- .fullFilename(x, TRUE, vsi=vsi)
+		if (length(f) == 0) {
 			error("rast", "filename is empty. Provide a valid filename")
 		}
-		f <- .fullFilename(x)
-		f <- enc2utf8(f)
 
-#		if (tolower(tools::file_ext(f)) == "rds") {
-#			r <- readRDS(x)
-#			if (!inherits(r, "SpatRaster")) {
-#				error("rast", "the rds file does not store a SpatRaster")
-#			}
-#			return(r)
-#		}
+		if ((length(f) == 1) && grepl("\\.rds$", tolower(f[1]))) {
+			r <- unwrap(readRDS(x))
+			if (!inherits(r, "SpatRaster")) {
+				error("rast", "the rds file does not store a SpatRaster")
+			}
+			return(r)
+		}
 		
 		r <- methods::new("SpatRaster")
 		#subds <- subds[1]
