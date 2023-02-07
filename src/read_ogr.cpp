@@ -83,39 +83,48 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 		for (size_t i = 0; i < nfields; i++ ) {
 			poFieldDefn = poFDefn->GetFieldDefn( i );
 			unsigned j = df.iplace[i];
+			int not_null = poFeature->IsFieldSetAndNotNull(i);
 			switch( poFieldDefn->GetType() ) {
 				case OFTReal:
-					if (poFeature->IsFieldNull(i)) {
-						df.dv[j].push_back(NAN);
-					} else {
+					if (not_null) {
 						df.dv[j].push_back(poFeature->GetFieldAsDouble(i));
+					} else {
+						df.dv[j].push_back(NAN);
 					}
 					break;
 				case OFTInteger:
 					if (poFieldDefn->GetSubType() == OFSTBoolean) {
-						df.bv[j].push_back(poFeature->GetFieldAsInteger( i ));
+						if (not_null) {
+							df.bv[j].push_back(poFeature->GetFieldAsInteger(i));
+						} else {
+							df.bv[j].push_back(2);
+						}
 					} else {
-						df.iv[j].push_back(poFeature->GetFieldAsInteger( i ));
+						if (not_null) {
+							df.iv[j].push_back(poFeature->GetFieldAsInteger(i));
+						} else {
+							df.iv[j].push_back(longNA);
+						}
 					}
 					break;
 				case OFTInteger64:
-					if (poFeature->IsFieldNull(i)) {
-						df.iv[j].push_back(longNA);
+					if (not_null) {
+						df.iv[j].push_back(poFeature->GetFieldAsInteger64(i));
 					} else {
-						df.iv[j].push_back(poFeature->GetFieldAsInteger64( i ));
+						df.iv[j].push_back(longNA);
 					}
 					break;
 	//          case OFTString:
 				default:
-					if (poFeature->IsFieldNull(i)) {
-						df.sv[j].push_back(df.NAS);
+					if (not_null) {
+						df.sv[j].push_back(poFeature->GetFieldAsString(i));
 					} else {
-						df.sv[j].push_back(poFeature->GetFieldAsString( i ));
+						df.sv[j].push_back(df.NAS);
 					}
 					break;
 			}
 		}
-		OGRFeature::DestroyFeature( poFeature );
+		OGRFeature::DestroyFeature(poFeature);
 		if (as_proxy) break;
 	}
 	return df;

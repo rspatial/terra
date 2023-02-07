@@ -11,7 +11,7 @@
 \description{
 Aggregate a SpatRaster to create a new SpatRaster with a lower resolution (larger cells). Aggregation groups rectangular areas to create larger cells. The value for the resulting cells is computed with a user-specified function. 
 
-Or aggregate ("dissolve") a SpatVector. 
+You can also aggregate ("dissolve") a SpatVector. This either combines all geometries into one geometry, or it combines the geometries that have the same value for the variable(s) specified with argument \code{by}.
 }
 
 \usage{
@@ -30,7 +30,7 @@ Or aggregate ("dissolve") a SpatVector.
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
   
-  \item{by}{character. The variable used to aggregate the geometries}
+  \item{by}{character. The variable(s) used to group the geometries}
   \item{dissolve}{logical. Should borders between aggregated geometries be dissolved?} 
   \item{count}{logical. If \code{TRUE} and \code{by} is not \code{NULL}, a variable "agg_n" is included that shows the number of input geometries for each output geometry}
 }

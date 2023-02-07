@@ -27,6 +27,7 @@
 #include "ogrsf_frmts.h"
 
 
+#include "Rcpp.h"
 
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
@@ -229,7 +230,12 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 					poFeature->SetField(j, (GIntBig)ival);
 				}
 			} else if (tps[j] == "bool") {
-				poFeature->SetField(j, df.getBvalue(i, j));
+				int8_t b = df.getBvalue(i, j);
+				if (b < 2) {
+					poFeature->SetField(j, b);
+				} else {
+					poFeature->SetFieldNull(j);
+				}
 			} else if (tps[j] == "time") {
 				SpatTime_t tval = df.getTvalue(i, j);
 				if (tval != longNA) {
