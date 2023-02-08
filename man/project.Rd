@@ -40,6 +40,12 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 	\code{cubic}: cubic interpolation.
 
 	\code{cubicspline}: cubic spline interpolation.
+
+	\code{lanczos}: Lanczos windowed sinc resampling.
+
+	\code{sum}: the weighted sum of all non-NA contributing grid cells.	
+	
+	\code{min, q1, med, q3, max, average, mode, rms}: the minimum, first quartile, median, third quartile, maximum, mean, mode, or root-mean-square value of all non-NA contributing grid cells.	
   }
 
   \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent (see example with Robinson projection)}
