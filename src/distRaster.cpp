@@ -3170,6 +3170,53 @@ void do_TRI(std::vector<double> &val, std::vector<double> const &d, size_t nrow,
 	}
 }
 
+inline double pow2(double x) {
+	return pow(x, 2);
+}
+
+void do_TRI_riley(std::vector<double> &val, std::vector<double> const &d, size_t nrow, size_t ncol, bool before, bool after) {
+	if (!before) {
+		val.resize(val.size() + ncol, NAN);
+	}
+	for (size_t row=1; row< (nrow-1); row++) {
+		val.push_back(NAN);
+		for (size_t col=1; col< (ncol-1); col++) {
+			size_t i = row * ncol + col;
+			val.push_back(
+				sqrt(pow2(d[i-1-ncol]-d[i]) + pow2(d[i-1]-d[i]) + pow2(d[i-1+ncol]-d[i]) + 
+				pow2(d[i-ncol]-d[i]) + pow2(d[i+ncol]-d[i]) + pow2(d[i+1-ncol]-d[i]) + 
+				pow2(d[i+1]-d[i]) + pow2(d[i+1+ncol]-d[i]))
+			);
+		}
+		val.push_back(NAN);
+	}
+	if (!after) {
+		val.resize(val.size() + ncol, NAN);
+	}
+}
+
+void do_TRI_rmsd(std::vector<double> &val, std::vector<double> const &d, size_t nrow, size_t ncol, bool before, bool after) {
+	if (!before) {
+		val.resize(val.size() + ncol, NAN);
+	}
+	for (size_t row=1; row< (nrow-1); row++) {
+		val.push_back(NAN);
+		for (size_t col=1; col< (ncol-1); col++) {
+			size_t i = row * ncol + col;
+			val.push_back(
+				sqrt((pow2(d[i-1-ncol]-d[i]) + pow2(d[i-1]-d[i]) + pow2(d[i-1+ncol]-d[i]) + 
+				pow2(d[i-ncol]-d[i]) + pow2(d[i+ncol]-d[i]) + pow2(d[i+1-ncol]-d[i]) + 
+				pow2(d[i+1]-d[i]) + pow2(d[i+1+ncol]-d[i]))/8)
+			);
+		}
+		val.push_back(NAN);
+	}
+	if (!after) {
+		val.resize(val.size() + ncol, NAN);
+	}
+}
+
+
 void do_TPI(std::vector<double> &val, const std::vector<double> &d, const size_t nrow, const size_t ncol, bool before, bool after) {
 	if (!before) {
 		val.resize(val.size() + ncol, NAN);
@@ -3529,7 +3576,7 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 	}
 
 	bool aspslope = false;
-	std::vector<std::string> f {"TPI", "TRI", "aspect", "flowdir", "slope", "roughness"};
+	std::vector<std::string> f {"TPI", "TRI", "TRIriley", "TRIrmsd", "aspect", "flowdir", "slope", "roughness"};
 	for (size_t i=0; i<v.size(); i++) {
 		if (std::find(f.begin(), f.end(), v[i]) == f.end()) {
 			out.setError("unknown terrain variable: " + v[i]);
@@ -3613,6 +3660,10 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 				do_TPI(val, d, rnrw, nc, before, after);
 			} else if (v[j] == "TRI") {
 				do_TRI(val, d, rnrw, nc, before, after);
+			} else if (v[j] == "TRIriley") {
+				do_TRI_riley(val, d, rnrw, nc, before, after);
+			} else if (v[j] == "TRIrmsd") {
+				do_TRI_rmsd(val, d, rnrw, nc, before, after);			
 			} else {
 				out.setError("?"); return out;
 			}
