@@ -41,17 +41,15 @@ If two cells have the same drop in elevation, a random cell is picked. That is n
 
 Most terrain indices are according to Wilson et al. (2007), as in \href{https://gdal.org/programs/gdaldem.html}{gdaldem}. TRI (Terrain Ruggedness Index) is the mean of the absolute differences between the value of a cell and its 8 surrounding cells. TPI (Topographic Position Index) is the difference between the value of a cell and the mean value of its 8 surrounding cells. Roughness is the difference between the maximum and the minimum value of a cell and its 8 surrounding cells. 
 
-TRIriley (TRI according to Riley et al. (2007)) returns the square root of summed squared differences between the value of a cell and its 8 surrounding cells. TRIrmsd computes the square root of the mean of the squared differences between these cells.  
+TRIriley (TRI according to Riley et al. (2007)) returns the square root of summed squared differences between the value of a cell and its 8 surrounding cells. TRIrmsd computes the square root of the mean of the squared differences between these cells. The benefit of  TRIrmsd
 
 Such measures can also be computed with the \code{\link{focal}} function:
 
-f <- matrix(1, nrow=3, ncol=3)
+TRI <- focal(x, w=3, fun=\(x) sum(abs(x[-5]-x[5]))/8)
 
-TRI <- focal(x, w=f, fun=function(x, ...) sum(abs(x[-5]-x[5]))/8)
+TPI <- focal(x, w=3, fun=\(x) x[5] - mean(x[-5]))
 
-TPI <- focal(x, w=f, fun=function(x, ...) x[5] - mean(x[-5]))
-
-rough <- focal(x, w=f, fun=function(x, ...) {max(x) - min(x)}, na.rm=TRUE)
+rough <- focal(x, w=3, fun=\(x) {max(x) - min(x)})
 }
 
 \seealso{\code{\link{viewshed}}}

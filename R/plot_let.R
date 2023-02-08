@@ -201,7 +201,7 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 				lab <- 1:nrow(v)
 			}
 			if (g == "polygons") {
-				map <- leaflet::addPolygons(map, data=v, weight=lwd[i], col=cols[i], fillOpacity=fill[i], opacity=alpha[i], popup=pop, label=lab)
+				map <- leaflet::addPolygons(map, data=v, weight=lwd[i], col=cols[i], fillOpacity=fill[i], opacity=alpha[i], popup=pop, label=lab, group=nms[i])
 			} else if (g == "lines") {
 				map <- leaflet::addPolylines(map, data=v, weight=lwd[i], opacity=alpha[i], col=cols[i], group=nms[i], popup=pop, label=lab)
 			} else {
@@ -330,6 +330,11 @@ setMethod("plet", signature(x="SpatRaster"),
 
 		stopifnot(utils::packageVersion("leaflet") > "2.1.1")
 
+		if (is.na(crs(x))) {
+			error("plet", "x must have a crs")
+		}
+
+
 #		if (!is.null(add)) {
 #			if (inherits(add, "SpatVector")) {
 #				add <- svc(makelonlat(add))
@@ -343,6 +348,17 @@ setMethod("plet", signature(x="SpatRaster"),
 #		}
 
 		alpha <- max(0, min(1, alpha))
+		
+		e <- ext(x)
+		if (is.lonlat(x) && ((e$ymin < -86) || (e$ymax > 86))) {
+			yr1 <- e$ymax - e$ymin
+			e$ymin <- max(e$ymin, -86)
+			e$ymax <- min(e$ymax, 86)
+			yr2 <- e$ymax - e$ymin
+			x <- spatSample(x[[y]], (yr1/yr2) * maxcell, "regular", as.raster=TRUE, warn=FALSE)
+			x <- crop(x, e) 
+		}
+		
 		if (panel) {
 			tiles <- NULL
 			p <- make.panel(x, maxcell) #, add)
