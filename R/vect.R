@@ -115,12 +115,12 @@ setMethod("vect", signature(x="character"),
 			pp@ptr$v <- p@ptr
 			return(pp)
 		}
+		p <- messages(p, "vect")
+		if (what == "attributes") {
+			p <- values(p)
+		}
+		p
 	}
-	p <- messages(p, "vect")
-	if (what == "attributes") {
-		p <- values(p)
-	}
-	p
 )
 
 
