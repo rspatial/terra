@@ -245,14 +245,16 @@ setMethod("is.lonlat", signature("SpatRaster"),
 		if (perhaps) {
 			ok <- x@ptr$isLonLat()
 			if (ok) {
+				messages(x, "is.lonlat")
 				if (global) {
 					return(x@ptr$isGlobalLonLat())
 				} else {
 					return(ok)
 				}
-			}
+			} 
 			ok <- x@ptr$couldBeLonLat()
 			if (ok) {
+				messages(x, "is.lonlat")
 				if (global) {
 					ok <- x@ptr$isGlobalLonLat()
 				}
@@ -262,11 +264,14 @@ setMethod("is.lonlat", signature("SpatRaster"),
 			}
 		} else {
 			ok <- x@ptr$isLonLat()
-			if (ok && global) {
-				ok <- x@ptr$isGlobalLonLat()
-			}
-			if ((!ok) && (crs(x) == "")) {
+			if (ok) {
+				messages(x, "is.lonlat")
+				if (global) {
+					ok <- x@ptr$isGlobalLonLat()
+				}
+			} else if (crs(x) == "") {
 				ok <- NA
+				warn("is.lonlat", "unknown crs")
 			}
 		}
 		ok
@@ -276,18 +281,8 @@ setMethod("is.lonlat", signature("SpatRaster"),
 
 setMethod("is.lonlat", signature("SpatVector"),
 	function(x, perhaps=FALSE, warn=TRUE) {
-		if (perhaps) {
-			ok <- x@ptr$couldBeLonLat()
-			if (ok && warn) {
-				if (crs(x) == "") warn("is.lonlat", "assuming lon/lat crs")
-			}
-		} else {
-			ok <- x@ptr$isLonLat()
-			if ((!ok) && (crs(x) == "")) {
-				ok <- NA
-			}
-		}
-		ok
+		x <- rast(x)
+		is.lonlat(x, perhaps=perhaps, warn=warn, global=FALSE)
 	}
 )
 
