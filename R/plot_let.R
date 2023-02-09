@@ -350,10 +350,10 @@ setMethod("plet", signature(x="SpatRaster"),
 		alpha <- max(0, min(1, alpha))
 		
 		e <- ext(x)
-		if (is.lonlat(x) && ((e$ymin < -86) || (e$ymax > 86))) {
+		if (is.lonlat(x) && ((e$ymin < -85) || (e$ymax > 85))) {
 			yr1 <- e$ymax - e$ymin
-			e$ymin <- max(e$ymin, -86)
-			e$ymax <- min(e$ymax, 86)
+			e$ymin <- max(e$ymin, -85)
+			e$ymax <- min(e$ymax, 85)
 			yr2 <- e$ymax - e$ymin
 			x <- spatSample(x[[y]], (yr1/yr2) * maxcell, "regular", as.raster=TRUE, warn=FALSE)
 			x <- crop(x, e) 
