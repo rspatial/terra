@@ -323,7 +323,8 @@ class SpatVector {
 		SpatVector aggregate(bool dissolve);
 		SpatVector aggregate(std::string field, bool dissolve);
 
-        SpatVector buffer(std::vector<double> d, unsigned quadsegs);
+		SpatVector buffer(std::vector<double> d, unsigned quadsegs, std::string capstyle, std::string joinstyle, double mitrelimit, bool singlesided);
+
 		SpatVector point_buffer(std::vector<double>	 d, unsigned quadsegs, bool no_multipolygons);
 
 		SpatVector centroid(bool check_lonlat);

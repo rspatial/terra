@@ -247,7 +247,7 @@ setMethod("mask", signature(x="SpatVector", mask="SpatVector"),
 #)
 
 setMethod("buffer", signature(x="SpatVector"),
-	function(x, width, quadsegs=10) {
+	function(x, width, quadsegs=10, capstyle="round", joinstyle="round", mitrelimit=NA, singlesided=FALSE) {
 		if (is.character(width)) {
 			if (!(width %in% names(x))) {
 				error("buffer", paste(width, "is not a field in x"))
@@ -257,7 +257,7 @@ setMethod("buffer", signature(x="SpatVector"),
 		if (!is.numeric(width)) {
 			error("buffer", "width is not numeric")
 		}
-		x@ptr <- x@ptr$buffer(width, quadsegs)
+		x@ptr <- x@ptr$buffer(width, quadsegs, tolower(capstyle), tolower(joinstyle), mitrelimit, singlesided)
 		messages(x, "buffer")
 	}
 )

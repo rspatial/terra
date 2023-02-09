@@ -2228,7 +2228,7 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 	} else {
 		SpatRaster e = edges(false, "inner", 8, NAN, ops);
 		SpatVector p = e.as_points(false, true, false, ops);
-		p = p.buffer({d}, 10);
+		p = p.buffer({d}, 10, "", "", NAN, false);
 		p = p.aggregate(true);
 		out = out.rasterize(p, "", {1}, background, false, false, false, false, true, opt);
 		if (background == 0) {
