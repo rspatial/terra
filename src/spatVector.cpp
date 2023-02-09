@@ -306,7 +306,7 @@ bool SpatVector::is_lonlat() {
 	if (srs.is_lonlat()) {
 		SpatExtent e = getExtent();
 		if ((e.xmin < -181) || (e.xmax > 361) || (e.ymin < -90.001) || (e.ymax > 90.001)) {
-			addWarning("coordinates are suspect for lon/lat");
+			addWarning("coordinates are out of range for lon/lat");
 		}
 		return true;
 	}

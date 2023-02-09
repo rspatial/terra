@@ -20,7 +20,6 @@
 
 \alias{[,SpatRasterCollection,numeric,missing-method}
 
-
 \alias{[,SpatVector,missing,missing-method}
 \alias{[,SpatVector,missing,numeric-method}
 \alias{[,SpatVector,missing,character-method}
@@ -36,17 +35,33 @@
 \alias{[,SpatVector,data.frame,missing-method}
 \alias{[,SpatVector,matrix,missing-method}
 
+\alias{[,SpatVector,SpatVector,missing-method}
+\alias{[,SpatVector,SpatExtent,missing-method}
+\alias{[,SpatRaster,SpatVector,missing-method}
+\alias{[,SpatRaster,missing,missing-method}
+\alias{[,SpatRaster,numeric,missing-method}
+\alias{[,SpatRaster,missing,numeric-method}
+\alias{[,SpatRaster,numeric,numeric-method}
+\alias{[,SpatRaster,data.frame,missing-method}
+\alias{[,SpatRaster,matrix,missing-method}
+\alias{[,SpatRaster,SpatRaster,missing-method}
+\alias{[,SpatRaster,SpatExtent,missing-method}
+
 
 \title{Extract values from a SpatRaster, SpatVector or SpatExtent}
 
 \description{
 Extract values from a SpatRaster; a subset of records (row) and/or variables (columns) from a SpatVector; or a number from a SpatExtent.  
+
+You can use indices (row, column, layer or cell numbers) to extract. You can also use other Spat* objects. 
 }
 
 \usage{
 \S4method{[}{SpatRaster,ANY,ANY,ANY}(x, i, j, k)
 
 \S4method{[}{SpatVector,numeric,numeric}(x, i, j, drop=FALSE)
+
+\S4method{[}{SpatVector,SpatVector,missing}(x, i, j)
 
 \S4method{[}{SpatExtent,numeric,missing}(x, i, j)
 
@@ -57,9 +72,10 @@ Extract values from a SpatRaster; a subset of records (row) and/or variables (co
   \item{i}{
   if \code{x} is a \code{SpatRaster}: numeric, logical or missing to select rows or, if \code{j} is missing, to select cells numbers.
   
-  if \code{x} is a \code{SpatVector}: numeric or missing to select rows)
+  if \code{x} is a \code{SpatVector}: numeric or missing to select rows. 
+  if \code{i} is another SpatVector: get a new SpatVector with the geometries that intersect.
 
-  if \code{x} is a \code{SpatExtent}: integer between 1 and 4)
+  if \code{x} is a \code{SpatExtent}: integer between 1 and 4.
   }
   \item{j}{numeric, logical, or missing to select columns}
 

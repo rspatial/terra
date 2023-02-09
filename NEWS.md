@@ -1,4 +1,4 @@
-# version 1.7-6
+# version 1.7-7
 
 ## new
 
@@ -9,12 +9,12 @@
 - `compare<SpatRaster>` and `logic<SpatRaster>` methods
 - `vect<SpatExtent>` method
 
-
 ## bug fixes 
 
 - the legend created by `plet` was not always correct. [#983](https://github.com/rspatial/terra/issues/983) by Simon Rolph
 - `spatSample<SpatRaster>(regular=TRUE)` failed with providing two numbers (row, col) as sample size. [#991](
 https://github.com/rspatial/terra/issues/991) by srfall
+
 
 # version 1.7-3
 

@@ -14,19 +14,6 @@
 \alias{extract,SpatVector,data.frame-method}
 
 
-\alias{[,SpatVector,SpatVector,missing-method}
-\alias{[,SpatVector,SpatExtent,missing-method}
-\alias{[,SpatRaster,SpatVector,missing-method}
-\alias{[,SpatRaster,missing,missing-method}
-\alias{[,SpatRaster,numeric,missing-method}
-\alias{[,SpatRaster,missing,numeric-method}
-\alias{[,SpatRaster,numeric,numeric-method}
-\alias{[,SpatRaster,data.frame,missing-method}
-\alias{[,SpatRaster,matrix,missing-method}
-\alias{[,SpatRaster,SpatRaster,missing-method}
-\alias{[,SpatRaster,SpatExtent,missing-method}
-
-
 \title{Extract values from a SpatRaster}
 
 \description{
