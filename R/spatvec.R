@@ -107,7 +107,7 @@ setMethod("dim", signature(x="SpatVectorProxy"),
 as.data.frame.SpatVector <- function(x, row.names=NULL, optional=FALSE, geom=NULL, ...) {
 	d <- .getSpatDF(x@ptr$df, ...)
 	# fix empty names
-	colnames(d) <- x@ptr$names
+	colnames(d)[1:ncol(x)] <- x@ptr$names
 	if (!is.null(geom)) {
 		geom <- match.arg(toupper(geom), c("WKT", "HEX", "XY"))
 		if (geom == "XY") {
