@@ -54,11 +54,7 @@
 
 
 
-.write_cdf <- function(x, filename, overwrite=FALSE, zname="time", atts="", gridmap="", prec="float", compression=NA, missval, ...) {
-
-	dots <- list(...)
-	force_v4 <- isTRUE(dots$force_v4)
-	verbose  <- isTRUE(dots$verbose)
+.write_cdf <- function(x, filename, overwrite=FALSE, zname="time", atts="", gridmap="", prec="float", compression=NA, missval, force_v4=TRUE, verbose=FALSE, ...) {
 
 	n <- length(x)
 	y <- x[1]
@@ -132,7 +128,6 @@
 			ncvars[[i]] <- ncdf4::ncvar_def(name=vars[i], units=units[i], dim=list(xdim, ydim), missval=missval[i], longname=lvar[i], prec = prec[i], compression=compression, ...)
 		}
 	}
-
 
 	ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
 	
