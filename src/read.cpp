@@ -261,6 +261,35 @@ void SpatRaster::readValues(std::vector<double> &out, size_t row, size_t nrows, 
 }
 
 
+void SpatRaster::readValuesWhileWriting(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols){
+
+	if (((row + nrows) > nrow()) || ((col + ncols) > ncol())) {
+		setError("invalid rows/columns");
+		return;
+	}
+
+	if ((nrows==0) | (ncols==0)) {
+		return;
+	}
+
+	unsigned n = nsrc();
+	out.resize(0);
+	out.reserve(nrows * ncols * nlyr());
+
+	for (size_t src=0; src<n; src++) {
+		if (source[src].memory) {
+			readChunkMEM(out, src, row, nrows, col, ncols);
+		} else {
+			// read from file
+			#ifdef useGDAL
+			readChunkGDAL(out, src, row, nrows, col, ncols);
+			#endif // useGDAL
+		}
+	}
+	return;
+}
+
+
 
 bool SpatRaster::readAll() {
 	if (!hasValues()) {

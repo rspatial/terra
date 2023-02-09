@@ -456,6 +456,7 @@ class SpatRaster {
 		bool readStart();
 		std::vector<double> readValuesR(size_t row, size_t nrows, size_t col, size_t ncols);
 		void readValues(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols);
+		void readValuesWhileWriting(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols);
 		void readChunkMEM(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
 
 		void readBlock(std::vector<double> &v, BlockSize bs, unsigned i){ // inline

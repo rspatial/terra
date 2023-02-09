@@ -2971,7 +2971,7 @@ bool SpatRaster::compare_origin(std::vector<double> x, double tol) {
 
 
 
-bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, unsigned& nl, bool warn, SpatOptions &opt) {
+bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, unsigned& nl, bool notfirstlyr, bool warn, SpatOptions &opt) {
 	BlockSize bs = r.getBlockSize(opt);
 	if (!r.readStart()) {
 	out.setError(r.getError());
@@ -2991,16 +2991,25 @@ bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, unsigned& nl,
 		re = r.getExtent();
 	}
 
-	for (size_t j=0; j<bs.n; j++) {
-		std::vector<double> v;
-		r.readBlock(v, bs, j);
-		unsigned row1  = out.rowFromY(r.yFromRow(bs.row[j]));
-		unsigned row2  = out.rowFromY(r.yFromRow(bs.row[j]+bs.nrows[j]-1));
+	for (size_t i=0; i<bs.n; i++) {
+		std::vector<double> v, vout;
+		r.readBlock(v, bs, i);
+		unsigned row1  = out.rowFromY(r.yFromRow(bs.row[i]));
+		unsigned row2  = out.rowFromY(r.yFromRow(bs.row[i]+bs.nrows[i]-1));
 		unsigned col1  = out.colFromX(re.xmin + hxr);
 		unsigned col2  = out.colFromX(re.xmax - hxr);
 		unsigned ncols = col2-col1+1;
 		unsigned nrows = row2-row1+1;
 		recycle(v, ncols * nrows * nl);
+		
+		if (notfirstlyr) {
+			out.readValuesWhileWriting(vout, row1, nrows, col1, ncols);
+			for (size_t j=0; j<v.size(); j++) {
+				if (std::isnan(v[j])) {
+					v[j] = vout[j];
+				}
+			}
+		}
 		if (!out.writeValuesRect(v, row1, nrows, col1, ncols)) return false;
 	}
 	r.readStop();
@@ -3072,7 +3081,7 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 	bool warn = false;
 	for (size_t i=0; i<n; i++) {
 		if (!ds[seq[i]].hasValues()) continue;
-		if (!write_part(out, ds[seq[i]], hxr, nl, warn, topt)) {
+		if (!write_part(out, ds[seq[i]], hxr, nl, i>0, warn, topt)) {
 			return out;
 		}
 	}
@@ -3218,7 +3227,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 				return r;
 			}
 		}
-		if (!write_part(out, r, hxr, nl, warn, sopt)) {
+		if (!write_part(out, r, hxr, nl, i>0, warn, sopt)) {
 			return out;
 		}
 	}

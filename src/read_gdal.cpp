@@ -1128,7 +1128,7 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, size_t r
 		return;
 	}
 
-	if (!source[src].open_read) {
+	if (!(source[src].open_read || source[src].open_write)) {
 		setError("the file is not open for reading");
 		return;
 	}
