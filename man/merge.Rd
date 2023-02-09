@@ -13,15 +13,15 @@ Merge SpatRasters, or merge a SpatVector with a data.frame
 }
 
 \description{
-Merge multiple SpatRasters to create a new SpatRaster object with a larger spatial extent. The SpatRasters must have the same origin and spatial resolution. In areas where the SpatRasters overlap, the values of the SpatRaster that is first in the sequence of arguments (or in the SpatRasterCollection) will be retained (unless \code{first=FALSE}. 
+Merge multiple SpatRasters to create a new SpatRaster object with a larger spatial extent. The SpatRasters must have the same origin and spatial resolution. In areas where the SpatRasters overlap, the values of the SpatRaster that is first in the sequence of arguments (or in the SpatRasterCollection) will be retained (unless \code{first=FALSE}. Cells that are \code{NA} are ignored unless \code{na.rm=FALSE}
 
 There is a also a method for merging SpatVector with a data.frame; that is, to join the data.frame to the attribute table of the SpatVector.
 }
 
 \usage{
-\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, filename="", overwrite=FALSE, wopt=list())
+\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, filename="", ...)
+\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, filename="", ...)
 
 \S4method{merge}{SpatVector,data.frame}(x, y, ...)
 }
@@ -30,7 +30,8 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
   \item{x}{SpatRaster, SpatRasterCollection, or SpatVector}
   \item{y}{missing if \code{x} is a SpatRasterCollection. SpatRaster if \code{x} is a SpatRaster. data.frame if \code{x} is a SpatVector}
   \item{...}{if \code{x} is a SpatRaster: additional objects of the same class as \code{x}. If \code{x} is a SpatRasterCollection: options for writing files as in \code{\link{writeRaster}}. If \code{x} is a SpatVector, the same arguments as in \code{\link[base]{merge}}}
-  \item{first}{logical. If \code{TRUE}, in areas where rasters overlap, the first value that is not \code{NA} is used. Otherwise the last value that is not \code{NA} is used}
+  \item{first}{logical. If \code{TRUE}, in areas where rasters overlap, the first value is used. Otherwise the last value is used}
+  \item{na.rm}{logical. If \code{TRUE} values that are \code{NA} are ignored}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}

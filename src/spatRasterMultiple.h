@@ -48,7 +48,7 @@ class SpatRasterCollection {
 		SpatRasterCollection cropmask(SpatVector v, std::string snap, bool touches, bool expand, std::vector<unsigned> use, SpatOptions &opt);
 		std::vector<int> getValueType(bool unique);
 
-		SpatRaster merge(bool first, SpatOptions &opt);
+		SpatRaster merge(bool first, bool narm, SpatOptions &opt);
 		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
 		SpatRaster summary(std::string fun, SpatOptions &opt);

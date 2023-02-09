@@ -3017,7 +3017,7 @@ bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, unsigned& nl,
 }
 
 
-SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
+SpatRaster SpatRasterCollection::merge(bool first, bool narm, SpatOptions &opt) {
 
 	SpatRaster out;
 	unsigned n = size();
@@ -3079,9 +3079,13 @@ SpatRaster SpatRasterCollection::merge(bool first, SpatOptions &opt) {
 
 	SpatOptions topt(opt);
 	bool warn = false;
+	bool notfirst = false;
 	for (size_t i=0; i<n; i++) {
 		if (!ds[seq[i]].hasValues()) continue;
-		if (!write_part(out, ds[seq[i]], hxr, nl, i>0, warn, topt)) {
+		if (narm) {
+			notfirst = i > 0;
+		}
+		if (!write_part(out, ds[seq[i]], hxr, nl, notfirst, warn, topt)) {
 			return out;
 		}
 	}
@@ -3117,10 +3121,10 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		return out;
 	}
 	if (fun == "first") {
-		return merge(true, opt);
+		return merge(true, true, opt);
 	}
 	if (fun == "last") {
-		return merge(false, opt);
+		return merge(false, true, opt);
 	}
 	unsigned n = size();
 
@@ -3181,7 +3185,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	}
 
 	if (!overlaps(r1, r2, c1, c2)) {
-		return merge(true, opt);
+		return merge(true, true, opt);
 	}
 
 	ve = ve.unite();
@@ -3227,7 +3231,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 				return r;
 			}
 		}
-		if (!write_part(out, r, hxr, nl, i>0, warn, sopt)) {
+		if (!write_part(out, r, hxr, nl, false, warn, sopt)) {
 			return out;
 		}
 	}

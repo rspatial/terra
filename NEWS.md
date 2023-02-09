@@ -1,4 +1,4 @@
-# version 1.7-7
+# version 1.7-8
 
 ## new
 
@@ -9,12 +9,20 @@
 - `compare<SpatRaster>` and `logic<SpatRaster>` methods
 - `vect<SpatExtent>` method
 
-## bug fixes 
+## enhancements
+
+- it is now possible to save terra options across sessions [#995](https://github.com/rspatial/terra/issues/995) by Guillaume Patoine.
+- better warnings for `is.lonlat` [#1006](https://github.com/rspatial/terra/issues/1006) by Andrew Gene Brown.
+- argument `na.rm` to `merge<SpatRaster>`
+
+## bug fixes
 
 - the legend created by `plet` was not always correct. [#983](https://github.com/rspatial/terra/issues/983) by Simon Rolph
 - `spatSample<SpatRaster>(regular=TRUE)` failed with providing two numbers (row, col) as sample size. [#991](
 https://github.com/rspatial/terra/issues/991) by srfall
-
+- `merge<SpatRaster>` did not ignore NAs [#1002](https://github.com/rspatial/terra/issues/1002) by jmmonnet.
+- `writeCDF` failed when using argument force_v4 [#1009](https://github.com/rspatial/terra/issues/1009) by R. Kyle Bocinsky
+- `predict` better handling of rasters with many NAs [#988](https://github.com/rspatial/terra/issues/998) by Lucas Johnson
 
 # version 1.7-3
 
