@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-8</span>
       </span>
     </div>
 
@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-7" id="version-17-7">version 1.7-7<a class="anchor" aria-label="anchor" href="#version-17-7"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-8" id="version-17-8">version 1.7-8<a class="anchor" aria-label="anchor" href="#version-17-8"></a></h2>
 <div class="section level3">
-<h3 id="new-1-7-7">new<a class="anchor" aria-label="anchor" href="#new-1-7-7"></a></h3>
+<h3 id="new-1-7-8">new<a class="anchor" aria-label="anchor" href="#new-1-7-8"></a></h3>
 <ul><li>argument <code>order=FALSE</code> to <code>sort&lt;SpatRaster&gt;</code>
 </li>
 <li>
@@ -64,10 +64,23 @@
 <code>vect&lt;SpatExtent&gt;</code> method</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-7">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-7"></a></h3>
+<h3 id="enhancements-1-7-8">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-8"></a></h3>
+<ul><li>it is now possible to save terra options across sessions <a href="https://github.com/rspatial/terra/issues/995" class="external-link">#995</a> by Guillaume Patoine.</li>
+<li>better warnings for <code>is.lonlat</code> <a href="https://github.com/rspatial/terra/issues/1006" class="external-link">#1006</a> by Andrew Gene Brown.</li>
+<li>argument <code>na.rm</code> to <code>merge&lt;SpatRaster&gt;</code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-7-8">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-8"></a></h3>
 <ul><li>the legend created by <code>plet</code> was not always correct. <a href="https://github.com/rspatial/terra/issues/983" class="external-link">#983</a> by Simon Rolph</li>
 <li>
 <code>spatSample&lt;SpatRaster&gt;(regular=TRUE)</code> failed with providing two numbers (row, col) as sample size. <a href="https://github.com/rspatial/terra/issues/991" class="external-link">#991</a> by srfall</li>
+<li>
+<code>merge&lt;SpatRaster&gt;</code> did not ignore NAs <a href="https://github.com/rspatial/terra/issues/1002" class="external-link">#1002</a> by jmmonnet.</li>
+<li>
+<code>writeCDF</code> failed when using argument force_v4 <a href="https://github.com/rspatial/terra/issues/1009" class="external-link">#1009</a> by R. Kyle Bocinsky</li>
+<li>
+<code>predict</code> better handling of rasters with many NAs <a href="https://github.com/rspatial/terra/issues/998" class="external-link">#988</a> by Lucas Johnson</li>
 </ul></div>
 </div>
     <div class="section level2">
