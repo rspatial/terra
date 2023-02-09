@@ -303,7 +303,14 @@ size_t SpatVector::size() {
 }
 
 bool SpatVector::is_lonlat() {
-	return srs.is_lonlat();
+	if (srs.is_lonlat()) {
+		SpatExtent e = getExtent();
+		if ((e.xmin < -181) || (e.xmax > 361) || (e.ymin < -90.001) || (e.ymax > 90.001)) {
+			addWarning("coordinates are suspect for lon/lat");
+		}
+		return true;
+	}
+	return false;
 }
 
 
