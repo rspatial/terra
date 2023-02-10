@@ -66,30 +66,6 @@ SpatRaster SpatRaster::rasterizePoints(const std::vector<double>&x, const std::v
 			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i]))  return out;
 		}
-	} else if (fun == "sum") {
-		for (size_t i=0; i < out.bs.n; i++) {
-			double cmin = out.bs.row[i] * nc;
-			double 	cmax = (out.bs.row[i]+out.bs.nrows[i]) * nc - 1;
-			std::vector<double> v(out.bs.nrows[i] * out.ncol(), 0);
-			for (size_t j=cellcnt; j<cells.size(); j++) {
-				if (narm && std::isnan(values[j])) continue;
-				if (cells[j] <= cmax) {
-					size_t k = cells[j] - cmin;
-					v[k] += values[j];
-				} else {
-					cellcnt = j;
-					break;
-				}
-			}
-			if (background != 0) {
-				for (size_t j=0; j<v.size(); j++) {
-					if (v[j] == 0) {
-						v[j] = background;
-					}
-				}
-			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i]))  return out;
-		}
 	} else if (fun == "mean") {
 		for (size_t i=0; i < out.bs.n; i++) {
 			double cmin = out.bs.row[i] * nc;
@@ -107,16 +83,43 @@ SpatRaster SpatRaster::rasterizePoints(const std::vector<double>&x, const std::v
 					break;
 				}
 			}
-			for (size_t j=0; j<cnt.size(); j++) {
-				if (cnt[j] > 0) {
-					v[j] /= cnt[j];
-				}
-			}
 			if (background != 0) {
 				for (size_t j=0; j<v.size(); j++) {
-					if (v[j] == 0) {
+					if (cnt[j] == 0) {
 						v[j] = background;
+					} else {
+						v[j] /= cnt[j];						
 					}
+				}
+			} else {
+				for (size_t j=0; j<cnt.size(); j++) {
+					if (cnt[j] > 0) {
+						v[j] /= cnt[j];
+					}
+				}				
+			}			
+			
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i]))  return out;
+		}
+	} else if (fun == "sum") {
+		for (size_t i=0; i < out.bs.n; i++) {
+			double cmin = out.bs.row[i] * nc;
+			double cmax = (out.bs.row[i]+out.bs.nrows[i]) * nc - 1;
+			std::vector<double> v(out.bs.nrows[i] * out.ncol(), background);
+			std::vector<bool> newcell(out.bs.nrows[i] * out.ncol(), true);
+			for (size_t j=cellcnt; j<cells.size(); j++) {
+				if (narm && std::isnan(values[j])) continue;
+				if (cells[j] <= cmax) {
+					size_t k = cells[j] - cmin;
+					if (newcell[k]) {
+						v[k] = values[j];
+						newcell[k] = false;
+					} else {
+						v[k] += values[j];
+					}
+				} else {
+					cellcnt = j;
+					break;
 				}
 			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i]))  return out;
@@ -126,7 +129,7 @@ SpatRaster SpatRaster::rasterizePoints(const std::vector<double>&x, const std::v
 			double cmin = out.bs.row[i] * nc;
 			double cmax = (out.bs.row[i]+out.bs.nrows[i]) * nc - 1;
 			std::vector<double> v(out.bs.nrows[i] * out.ncol(), background);
-			std::vector<bool> newcell(out.bs.nrows[i] * out.ncol(), true);;
+			std::vector<bool> newcell(out.bs.nrows[i] * out.ncol(), true);
 			for (size_t j=cellcnt; j<cells.size(); j++) {
 				if (narm && std::isnan(values[j])) continue;
 				if (cells[j] <= cmax) {
@@ -149,7 +152,7 @@ SpatRaster SpatRaster::rasterizePoints(const std::vector<double>&x, const std::v
 			double cmin = out.bs.row[i] * nc;
 			double cmax = (out.bs.row[i]+out.bs.nrows[i]) * nc - 1;
 			std::vector<double> v(out.bs.nrows[i] * out.ncol(), background);
-			std::vector<bool> newcell(out.bs.nrows[i] * out.ncol(), true);;
+			std::vector<bool> newcell(out.bs.nrows[i] * out.ncol(), true);
 			for (size_t j=cellcnt; j<cells.size(); j++) {
 				if (narm && std::isnan(values[j])) continue;
 				if (cells[j] <= cmax) {
@@ -172,7 +175,7 @@ SpatRaster SpatRaster::rasterizePoints(const std::vector<double>&x, const std::v
 			double cmin = out.bs.row[i] * nc;
 			double cmax = (out.bs.row[i]+out.bs.nrows[i]) * nc - 1;
 			std::vector<double> v(out.bs.nrows[i] * out.ncol(), background);
-			std::vector<bool> newcell(out.bs.nrows[i] * out.ncol(), true);;
+			std::vector<bool> newcell(out.bs.nrows[i] * out.ncol(), true);
 			for (size_t j=cellcnt; j<cells.size(); j++) {
 				if (narm && std::isnan(values[j])) continue;
 				if (cells[j] <= cmax) {
