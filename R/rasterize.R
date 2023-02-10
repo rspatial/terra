@@ -46,10 +46,8 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 		if (!is.data.frame(values)) { # dropped if nrx==1
 			values <- as.data.frame(values)
 		}
-	} else {
-		if (nrow(values) != nrx) {
-			error("rasterize", "the number or rows in values does not match the number of points")
-		}
+	} else if (nrow(values) != nrx) {
+		error("rasterize", paste0("the number or rows in values is ", nrow(values), "\nThat does not match the number of points: ", nrx))
 	}
 #	values(r) <- background
 	nl <- ncol(values)
@@ -195,7 +193,6 @@ setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list()) {
 
-
 		if (!is.null(by)) {
 			uby <- unlist(unique(x[[by]]))
 			x <- split(x, by)
@@ -227,15 +224,16 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			if (field[1] != "") {
 				values <- x[[field]]
 			} else {
-				values <- rep(1, nrx)
+				values <- data.frame(v=rep(1, nrx))
 			}
 			xy <- crds(x)
+			print(head(values))
 			if (nrow(xy) != nrx) { # multi-points
 				g <- geom(x)
 				values <- values[g[,1], ,drop=FALSE]
 			}
 			return(
-				rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)
+				rasterize_points(x=xy, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)
 			)
 		}
 
