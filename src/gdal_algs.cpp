@@ -28,7 +28,7 @@
 #include "crs.h"
 #include "gdalio.h"
 #include "recycle.h"
-
+#include <sstream>
 
 SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
 
