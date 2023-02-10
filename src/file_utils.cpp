@@ -191,8 +191,6 @@ bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> o
 	return true;
 }
 
-#include "Rcpp.h"
-
 bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg) {
 
 	if (!differentFilenames(srcnames, filenames, msg)) {
