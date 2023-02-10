@@ -375,6 +375,10 @@ prettyNumbs <- function(x, digits) {
 
 .plotit <- function(x) {
 
+	if (is.null(x$r)) {
+		x$values = FALSE
+	}
+
 #	if (x$add) axes = FALSE
 	if ((!x$add) & (!x$legend_only)) {
 

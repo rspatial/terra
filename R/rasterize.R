@@ -71,9 +71,9 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 		txtfun <- .makeTextFun(fun)
 		if (inherits(txtfun, "character")) {
 			if (txtfun %in% c("first", "last", "pa", "sum", "mean", "count", "min", "max", "prod")) {	
-				#if (is.null(wopt$names)) {
-				#	wopt$names <- txtfun
-				#}
+				if (is.null(wopt$names)) {
+					wopt$names <- txtfun
+				}
 				if (update) {
 					ops <- spatOptions("", TRUE, wopt)	
 				} else {
