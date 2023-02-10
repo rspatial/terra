@@ -29,11 +29,10 @@ setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"),
 
 rasterize_points <- function(x, y, field, values, fun="last", background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 
+	if (missing(fun)) fun <- "last"
 	if (update) {
 		if (!hasValues(y)) {
 			update <- FALSE
-		} else {
-			background <- NA
 		}
 	}
 	nrx <- nrow(x)
@@ -49,10 +48,9 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 	} else if (nrow(values) != nrx) {
 		error("rasterize", paste0("the number or rows in values is ", nrow(values), "\nThat does not match the number of points: ", nrx))
 	}
-#	values(r) <- background
+
 	nl <- ncol(values)
 	r <- rast(y, nlyrs=nl)	
-
 	levs <- list()
 	has_levels <- FALSE
 	for (i in 1:nl) {
@@ -61,8 +59,38 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 			levs[[i]] <- levels(f)
 			values[,i] <- as.integer(f) - 1
 			has_levels <- TRUE
+		} else if (is.factor(values[,i])) {
+			f <- values[,i]
+			levs[[i]] <- levels(f)
+			values[,i] <- as.integer(f) - 1
+			has_levels <- TRUE
 		}
 	}
+
+	if (NCOL(values) == 1 && (!has_levels)) {
+		txtfun <- .makeTextFun(fun)
+		if (inherits(txtfun, "character")) {
+			if (txtfun %in% c("first", "last", "pa", "sum", "mean", "count", "min", "max", "prod")) {	
+				#if (is.null(wopt$names)) {
+				#	wopt$names <- txtfun
+				#}
+				if (update) {
+					ops <- spatOptions("", TRUE, wopt)	
+				} else {
+					ops <- spatOptions(filename, overwrite, wopt=wopt)				
+				}
+				narm <- isTRUE(list(...)$na.rm)
+				r <- rast()
+				r@ptr <- y@ptr$rasterizePoints(x[,1], x[,2], txtfun, values[[1]], narm, background, ops)
+				messages(r)
+				if (update) {
+					r <- cover(r, y, filename=filename, overwrite=overwrite, wopt)
+				}
+				return(r)
+			}
+		}
+	}
+
 
 	g <- cellFromXY(y, x)
 	i <- which(!is.na(g))
@@ -72,48 +100,20 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 	}
 	values <- values[i, ,drop=FALSE]
 
-	if (missing(fun)) fun <- "last"
-	if (is.character(fun) && (fun %in% c("first", "last", "pa"))) {
-		narm <- isTRUE(list(...)$na.rm)
-		if (fun == "pa") {
-			if (narm) {
-				values <- aggregate(values, list(g), function(i) length(na.omit(i)))
-				values[values < 1] <- background
-			} else {
-				values <- aggregate(values, list(g), function(i) 1)
-			}
-			has_levels <- FALSE
-		} else if (fun == "first") {
-			if (narm) {
-				values <- aggregate(values, list(g), function(i) na.omit(i)[1])
-			} else {
-				values <- aggregate(values, list(g), function(i) i[1])
-			}
-		} else if (fun == "last") {
-			if (narm) {
-				values <- aggregate(values, list(g), function(i) rev(na.omit(i))[1])
-			} else {
-				values <- aggregate(values, list(g), function(i) rev(i)[1])
-			}
-		}
-		#r[values[,1]] <- as.matrix(values[,-1])
-		wopt <- .set_names(wopt, cnms, fun, NCOL(values))
-
-	} else {
-		has_levels <- FALSE
-		values <- aggregate(values, list(g), fun, ...)
-		# allow for multiple fields
-		#r[a[,1]] <- as.matrix(a[,-1])
-		levs <- NULL
-		if (is.null(wopt$names)) {
-			fun <- .makeTextFun(fun)
-			if (inherits(fun, "character")) {
-				wopt <- .set_names(wopt, cnms, fun, NCOL(values))
-			} else if (!is.null(cnms)) {
-				wopt$names <- cnms
-			}
+	has_levels <- FALSE
+	values <- aggregate(values, list(g), fun, ...)
+	# allow for multiple fields
+	#r[a[,1]] <- as.matrix(a[,-1])
+	levs <- NULL
+	if (is.null(wopt$names)) {
+		fun <- .makeTextFun(fun)
+		if (inherits(fun, "character")) {
+			wopt <- .set_names(wopt, cnms, fun, NCOL(values))
+		} else if (!is.null(cnms)) {
+			wopt$names <- cnms
 		}
 	}
+
 	values <- as.matrix(values)
 	nl <- max(1, ncol(values)-1)
 	r <- rast(r, nlyrs=nl)	
@@ -223,11 +223,8 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			# also allow for multiple columns to multiple layers
 			if (field[1] != "") {
 				values <- x[[field]]
-			} else {
-				values <- data.frame(v=rep(1, nrx))
-			}
+			} 
 			xy <- crds(x)
-			print(head(values))
 			if (nrow(xy) != nrx) { # multi-points
 				g <- geom(x)
 				values <- values[g[,1], ,drop=FALSE]
