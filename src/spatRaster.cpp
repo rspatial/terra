@@ -901,7 +901,7 @@ bool SpatRaster::valid_sources(bool files, bool rotated) {
 		std::string f = source[i].filename;
 		if (f.empty()) continue;
 		if (files) {
-			std::size_t found = f.find(":"); // perhaps http: or PG:xxx
+			std::size_t found = f.find(':'); // perhaps http: or PG:xxx
 			if ((found == 1) || (found == std::string::npos)) {
 				if (!file_exists(f)) {
 					setError("missing source: " + f);

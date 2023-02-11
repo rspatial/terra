@@ -177,7 +177,7 @@ std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string
 			size_t pos = s.find(ddelim);
 			if (pos != std::string::npos) {
 				s.erase(0, pos + ddelim.length());
-				pos = s.find("]");
+				pos = s.find(']');
 				std::string dims = s.substr(1, pos-1);
 
 				std::vector<std::string> d = strsplit(dims, "x");
@@ -204,7 +204,7 @@ std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string
 				}
 				//desc.push_back(std::string(pos, s.size()));
 				s = s.substr(pos+2, s.size());
-				pos = s.find(" ");
+				pos = s.find(' ');
 				s = s.substr(0, pos);
 				desc.push_back(s);
 

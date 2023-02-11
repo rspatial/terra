@@ -472,7 +472,7 @@ std::string basename_sds(std::string f) {
 		f.erase(0, i + 1);
 	}
 	// this may be incorrect of the variable name includes a ":" ?
-	const size_t j = f.find_last_of(":");
+	const size_t j = f.find_last_of(':');
 	if (std::string::npos != j) {
 		f.erase(0, j + 1);
 	}
