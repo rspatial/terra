@@ -259,7 +259,7 @@ std::vector<double> dist_only(const std::vector<double>& vx, const std::vector<d
 SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>& y, bool haversine, bool skip, bool setNA, std::string unit, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (x.size() == 0) {
+	if (x..empty()) {
 		out.setError("no locations to compute distance from");
 		return(out);
 	}
@@ -360,7 +360,7 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 SpatRaster SpatRaster::distance_spatvector(SpatVector p, std::string unit, bool haversine, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (source[0].srs.wkt == "") {
+	if (source[0].srs.wkt.empty()) {
 		out.setError("CRS not defined");
 		return(out);
 	}
@@ -393,7 +393,7 @@ SpatRaster SpatRaster::distance_spatvector(SpatVector p, std::string unit, bool 
 SpatRaster SpatRaster::distance_rasterize(SpatVector p, double target, double exclude, std::string unit, bool haversine, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (source[0].srs.wkt == "") {
+	if (source[0].srs.wkt.empty()) {
 		out.setError("CRS not defined");
 		return(out);
 	}
@@ -425,7 +425,7 @@ SpatRaster SpatRaster::distance_rasterize(SpatVector p, double target, double ex
 
 	std::vector<std::vector<double>> pxy = p.coordinates();
 
-	if (pxy.size() == 0) {
+	if (pxy.empty()) {
 		out.setError("no locations to compute from");
 		return(out);
 	}
@@ -446,7 +446,7 @@ SpatRaster SpatRaster::distance_rasterize(SpatVector p, double target, double ex
 SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (source[0].srs.wkt == "") {
+	if (source[0].srs.wkt.empty()) {
 		out.setError("CRS not defined");
 		return(out);
 	}
@@ -475,7 +475,7 @@ SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees
 
 	std::vector<std::vector<double>> pxy = p.coordinates();
 
-	if (pxy.size() == 0) {
+	if (pxy.empty()) {
 		out.setError("no locations to compute from");
 		return(out);
 	}
@@ -655,7 +655,7 @@ SpatRaster SpatRaster::distance(double target, double exclude, std::string unit,
 			r = r.distance(target, exclude, unit, remove_zero, haversine, ops);
 			out.source[i] = r.source[0];
 		}
-		if (opt.get_filename() != "") {
+		if (!opt.get_filename().empty()) {
 			out = out.writeRaster(opt);
 		}
 		return out;
@@ -672,7 +672,7 @@ SpatRaster SpatRaster::distance(double target, double exclude, std::string unit,
 			x = replaceValues({exclude}, {target}, 1, false, NAN, false, ops);
 			x = x.edges(false, "inner", 8, 1, ops);
 			p = x.as_points_value(1, ops);
-			if (p.size() == 0) {
+			if (p.empty()) {
 				return out.init({0}, opt);
 			}
 			return distance_crds(p[0], p[1], haversine, true, setNA, unit, opt);
@@ -693,7 +693,7 @@ SpatRaster SpatRaster::distance(double target, double exclude, std::string unit,
 		out = edges(false, "inner", 8, 0, ops);
 		p = out.as_points_value(1, ops);
 	}
-	if (p.size() == 0) {
+	if (p.empty()) {
 		return out.init({0}, opt);
 	}
 	return out.distance_crds(p[0], p[1], haversine, true, setNA, unit, opt);
@@ -724,7 +724,7 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double 
 			r = r.direction(from, degrees, target, exclude, ops);
 			out.source[i] = r.source[0];
 		}
-		if (opt.get_filename() != "") {
+		if (!opt.get_filename().empty()) {
 			out = out.writeRaster(opt);
 		}
 		return out;
@@ -1046,7 +1046,7 @@ inline double minCostDist(std::vector<double> &d) {
 	d.erase(std::remove_if(d.begin(), d.end(),
 		[](const double& v) { return std::isnan(v); }), d.end());
 	std::sort(d.begin(), d.end());
-	return d.size() > 0 ? d[0] : NAN;
+	return d.empty() ? NAN : d[0];
 }
 
 
@@ -1491,7 +1491,7 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, boo
 	}
 
 	std::string filename = opt.get_filename();
-	if (filename != "") {
+	if (!filename.empty()) {
 		if (file_exists(filename) && (!opt.get_overwrite())) {
 			out.setError("output file exists. You can use 'overwrite=TRUE' to overwrite it");
 			return(out);
@@ -1533,7 +1533,7 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, boo
 		converged = true;
 		i++;
 	}
-	if (filename != "") {
+	if (!filename.empty()) {
 		out = out.writeRaster(opt);
 	}
 	if (i == maxiter) {
@@ -1854,7 +1854,7 @@ SpatRaster SpatRaster::gridDistance(double m, SpatOptions &opt) {
 			r = r.gridDistance(m, ops);
 			out.source[i] = r.source[0];
 		}
-		if (opt.get_filename() != "") {
+		if (!opt.get_filename().empty()) {
 			out = out.writeRaster(opt);
 		}
 		return out;
@@ -2207,7 +2207,7 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 			r = r.buffer(d, background, ops);
 			out.source[i] = r.source[0];
 		}
-		if (opt.get_filename() != "") {
+		if (!opt.get_filename().empty()) {
 			out = out.writeRaster(opt);
 		}
 		return out;
@@ -2600,7 +2600,7 @@ std::vector<double> SpatVector::area(std::string unit, bool transform, std::vect
 	}
 	double adj = unit == "m" ? 1 : unit == "km" ? 1000000 : 10000;
 
-	if (srs.wkt == "") {
+	if (srs.wkt.empty()) {
 		addWarning("unknown CRS. Results can be wrong");
 		if (domask) {
 			for (size_t i=0; i<s; i++) {
@@ -2724,7 +2724,7 @@ std::vector<double> SpatVector::length() {
 	double m = srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
 
-	if (srs.wkt == "") {
+	if (srs.wkt.empty()) {
 		addWarning("unknown CRS. Results can be wrong");
 	}
 
@@ -2747,7 +2747,7 @@ std::vector<double> SpatVector::length() {
 SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int rcmax, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
-	if (out.source[0].srs.wkt == "") {
+	if (out.source[0].srs.wkt.empty()) {
 		out.setError("empty CRS");
 		return out;
 	}
@@ -2758,7 +2758,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 		return out;
 	}
 
-	if (opt.names.size() == 0) {
+	if (opt.names.empty()) {
 		opt.names = {"area"};
 	}
 	bool lonlat = is_lonlat();
@@ -2880,7 +2880,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 
 std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool transform, bool by_value, SpatOptions &opt) {
 
-	if (source[0].srs.wkt == "") {
+	if (source[0].srs.wkt.empty()) {
 		setError("empty CRS");
 		return {{NAN}};
 	}
@@ -3685,7 +3685,7 @@ SpatRaster SpatRaster::hillshade(SpatRaster aspect, std::vector<double> angle, s
 		out.setError("slope and aspect should have one layer");
 		return out;
 	}
-	if ((angle.size() == 0) || (direction.size() == 0)) {
+	if (angle.empty() || direction.empty()) {
 		out.setError("you must provide a value for aspect and direction");
 		return out;		
 	}
@@ -3714,12 +3714,12 @@ SpatRaster SpatRaster::hillshade(SpatRaster aspect, std::vector<double> angle, s
 			SpatRaster r = hillshade(aspect, {angle[i]}, {direction[i]}, normalize, ops);
 			out.source[i] = r.source[0];
 		}
-		if (opt.get_filename() != "") {
+		if (!opt.get_filename().empty()) {
 			out = out.writeRaster(opt);
 		}
 		return out;
 	} else {
-		if ((opt.names.size() == 1) && (opt.names[0] != "")) {
+		if ((opt.names.size() == 1) && !opt.names[0].empty()) {
 			out.setNames(  {opt.names[0] } );
 		} else {
 			out.setNames( {"hillshade"} );
