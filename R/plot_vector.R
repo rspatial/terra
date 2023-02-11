@@ -383,6 +383,7 @@ setMethod("dots", signature(x="SpatVector"),
 		if (out$legend_type == "continuous") {
 			out$legpars <- do.call(.plot.cont.legend, list(x=out))
 		} else {
+			out$leg$plotext <- out$ext
 			out$legpars <- do.call(.plot.class.legend, out$leg)
 		}
 	}

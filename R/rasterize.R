@@ -33,21 +33,10 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 	if (update && (!hasValues(y))) update <- FALSE
 	nrx <- nrow(x)
 
-	nrx <- nrow(x)
-	# also allow for multiple columns to multiple layers
-	if (field[1] != "") {
-		values <- x[[field]]
-	} else if (!is.data.frame(values)) {
+
+	if (!is.data.frame(values)) {
 		values <- as.data.frame(values)
 	}
-
-	xy <- crds(x)
-	if (nrow(xy) != nrx) { # multi-points
-		g <- geom(x)
-		values <- values[g[,1], ,drop=FALSE]
-	}
-
-
 	if (nrow(values) == 1) {
 		values <- sapply(values, function(x) rep_len(x, nrx))
 		if (!is.data.frame(values)) { # dropped if nrx==1
@@ -227,8 +216,18 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
+			nrx <- nrow(x)
+			# also allow for multiple columns to multiple layers
+			if (field[1] != "") {
+				values <- x[[field]]
+			} 
+			xy <- crds(x)
+			if (nrow(xy) != nrx) { # multi-points
+				g <- geom(x)
+				values <- values[g[,1], ,drop=FALSE]
+			}
 			return(
-				rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)
+				rasterize_points(x=xy, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)
 			)
 		}
 

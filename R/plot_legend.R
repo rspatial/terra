@@ -127,20 +127,17 @@ retro_labels <- function(x, lat=TRUE) {
 	if (!is.null(sides)) sides <- round(sides)
 	sides <- sides[sides > 0 & sides < 5]
 	if (is.null(sides)) {
-		sides <- 1:2
-		lines(ext(x$ext))
+		x$axs$side <- sides <- 1:2
 		#graphics::box()
-	} else if (isTRUE(x$box)) { 
-		lines(ext(x$ext))	
 	}
 
 	ticks <- x$axs$tick 
 	if (is.null(ticks)) {
-		ticks <- sides
+		x$axs$tick <- ticks <- sides
 	}
 	labs <- x$axs$lab
 	if (is.null(labs)) {
-		labs <- sides
+		x$axs$lab <- labs <- sides
 	} 
 
 #	usr <- graphics::par("usr")
@@ -284,7 +281,7 @@ retro_labels <- function(x, lat=TRUE) {
 }
 
 .get.leg.extent <- function(x) {
-	usr <- graphics::par("usr")
+	#usr <- graphics::par("usr")
 	dxy <- graphics::par("cxy") * graphics::par("cex")
 	loc <- x$leg$loc
 	xmin <- x$ext[1]
@@ -294,15 +291,20 @@ retro_labels <- function(x, lat=TRUE) {
 	p <- NULL
 	if (is.character(loc)) {
 		if (loc == "left") {
-			s <- .line.usr(trunc(graphics::par("mar")[2]), 2)
-			p <- c(s+4*dxy[1], s+5*dxy[1], ymin, ymax)
+			#s <- .line.usr(trunc(graphics::par("mar")[2]), 2)
+			#p <- c(s+4*dxy[1], s+5*dxy[1], ymin, ymax)	
+			if (any(2 %in% x$axs$lab)) {
+				p <- c(xmin-4*dxy[1], xmin-3*dxy[1], ymin, ymax)			
+			} else {
+				p <- c(xmin-2*dxy[1], xmin-dxy[1], ymin, ymax)
+			}
 		} else if (loc == "bottom") {
 			s <- .line.usr(trunc(graphics::par("mar")[1]), 1)
 			p <- c(xmin, xmax, s+2*dxy[2], s+3*dxy[2])
 		} else if (loc == "top") {
-			p <- c(xmin, xmax, usr[4]+dxy[2], usr[4]+2*dxy[2])
+			p <- c(xmin, xmax, ymax+dxy[2], ymax+2*dxy[2])
 		} else { #if (loc == "right") {
-			p <- c(usr[2]+dxy[1], usr[2]+2*dxy[1], ymin, ymax)
+			p <- c(xmax+dxy[1], xmax+2*dxy[1], ymin, ymax)
 		}
 	}
 	x$leg$ext <- p
@@ -400,15 +402,15 @@ retro_labels <- function(x, lat=TRUE) {
 
 
 .plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="",
-	lty=1, lwd=1, pch=1, angle=45, density=NULL,
-	pt.cex = 1, pt.bg="black", pt.lwd=1, bty="n", border="black", seg.len=1,
+	lty=1, lwd=1, pch=1, angle=45, density=NULL, pt.cex = 1, pt.bg="black", pt.lwd=1, 
+	bty="n", border="black", seg.len=1, plotext,
 # catching
 	merge, trace,...) {
 
 	if (x == "top") {
-		usr <- graphics::par("usr")
-		x <- usr[c(2)]
-		y <- usr[c(4)]
+		#usr <- graphics::par("usr")
+		x <- plotext[2]
+		y <- plotext[4]
 	}
 	if (grepl("points", geomtype)) {
 		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch,
