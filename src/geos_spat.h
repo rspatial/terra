@@ -586,7 +586,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 	std::vector<double> pt_x, pt_y, ln_x, ln_y, pl_x, pl_y;
 	std::vector<long> pts_ids, lin_ids, pol_ids;
 	
-	bool track_ids = ids.size() > 0; 	
+	bool track_ids = !ids.empty(); 	
 	if (track_ids) {
 		pol_ids.reserve(geoms.size());
 	}
@@ -707,14 +707,14 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 		}
 	}
 
-	if (pl_x.size() > 0) {
+	if (!pl_x.empty()) {
 		SpatVector v;
 		v.setGeometry("polygons", pl_gid, pl_gp, pl_x, pl_y, pl_hole);
 		if (track_ids) v.df.add_column(pol_ids, "ids");
 		out.push_back(v);
 		//Rcpp::Rcout << "pls" << std::endl;
 	}
-	if (ln_x.size() > 0) {
+	if (!ln_x.empty()) {
 		SpatVector v;
 		v.setGeometry("lines", ln_gid, ln_gp, ln_x, ln_y, ln_hole);
 		if (track_ids) v.df.add_column(lin_ids, "ids");
@@ -722,7 +722,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 		//Rcpp::Rcout << "lns" << std::endl;
 	}
 
-	if (pt_x.size() > 0) {
+	if (!pt_x.empty()) {
 		SpatVector v;
 		v.setGeometry("points", pt_gid, pt_gp, pt_x, pt_y, pt_hole);
 
