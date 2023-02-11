@@ -935,7 +935,9 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 	SpatVector a = aggregate(false);
 	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);
 	GEOSGeometry* v;
-	if (bnd.size() > 0) {
+	if (bnd.empty()) {
+		v = GEOSVoronoiDiagram_r(hGEOSCtxt, g[0].get(), NULL, tolerance, onlyEdges);
+	} else {
 		if (bnd.type() != "polygons") {
 			out.setError("boundary must be polygon");
 			geos_finish(hGEOSCtxt);
@@ -943,8 +945,6 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 		}
 		std::vector<GeomPtr> ge = geos_geoms(&bnd, hGEOSCtxt);
 		v = GEOSVoronoiDiagram_r(hGEOSCtxt, g[0].get(), ge[0].get(), tolerance, onlyEdges);
-	} else {
-		v = GEOSVoronoiDiagram_r(hGEOSCtxt, g[0].get(), NULL, tolerance, onlyEdges);
 	}
 	if (v == NULL) {
 		out.setError("GEOS exception");
@@ -959,7 +959,7 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 	out.srs = srs;
 	if (!out.hasError()) {
 		out = out.disaggregate(false);
-		if (bnd.size() > 0) {
+		if (!bnd.empty()) {
 			SpatDataFrame empty;
 			bnd.df = empty;
 			out = out.intersect(bnd, true);
@@ -1130,9 +1130,9 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 					SpatVector h = p.get_holes();
 					p = p.remove_holes();
 					p = lonlat_buf(p, d[i], quadsegs, true, false);
-					if (h.size() > 0) {
+					if (!h.empty()) {
 						h = lonlat_buf(h, d[i], quadsegs, true, true);
-						if (h.size() > 0) {
+						if (!h.empty()) {
 							for (size_t j=0; j<h.geoms[0].parts.size(); j++) {
 								p.geoms[0].parts[0].addHole(h.geoms[0].parts[j].x, h.geoms[0].parts[j].y);
 							}
@@ -2756,7 +2756,7 @@ SpatVector SpatVector::gaps() {
 SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 	SpatVector out;
 
-	if ((size() == 0) || (v.size()==0)) {
+	if ((size() == 0) || v.empty()) {
 		out.setError("empty SpatVecor(s)");
 		return out;
 	}

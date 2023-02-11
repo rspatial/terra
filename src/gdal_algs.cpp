@@ -1097,13 +1097,13 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 
 	std::string filename = opt.get_filename();
 	std::string driver;
-	if (filename == "") {
+	if (filename.empty()) {
 		filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
 		driver = "GTiff";
 	} else {
 		driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
-		if (driver == "") {
+		if (driver.empty()) {
 			setError("cannot guess file type from filename");
 			return out;
 		}

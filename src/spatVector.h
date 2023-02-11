@@ -59,7 +59,7 @@ class SpatPart {
 		bool addHole(std::vector<double> X, std::vector<double> Y);
 		bool addHole(SpatHole h);
 		SpatHole getHole(unsigned i) { return( holes[i] ) ; }
-		bool hasHoles() { return holes.size() > 0;}
+		bool hasHoles() { return !holes.empty();}
 		unsigned nHoles() { return holes.size();}
 		size_t ncoords();
 };

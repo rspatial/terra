@@ -368,7 +368,7 @@ SpatRaster SpatRaster::distance_spatvector(SpatVector p, std::string unit, bool 
 		out.setError("CRS does not match");
 		return(out);
 	}
-	if (p.size() == 0) {
+	if (p.empty()) {
 		out.setError("no locations to compute distance from");
 		return(out);
 	}
@@ -738,7 +738,7 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double 
 		out = edges(false, "inner", 8, target, ops);
 	}
 	SpatVector p = out.as_points(false, true, false, opt);
-	if (p.size() == 0) {
+	if (p.empty()) {
 		out.setError("no cells to compute direction from or to");
 		return(out);
 	}

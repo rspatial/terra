@@ -112,7 +112,7 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 
 	SpatDataFrame out;
 	unsigned nr = nrow();
-	if (range.size() > 0) {
+	if (!range.empty()) {
 		for (int i = range.size(); i>0; i--) {
 			if (range[i-1] > nr) {
 				range.erase(range.begin() + i-1);
@@ -233,7 +233,7 @@ unsigned SpatDataFrame::ncol() {
 
 unsigned SpatDataFrame::nrow() {
 	unsigned n;
-	if (itype.size() == 0) {
+	if (itype.empty()) {
 		n = 0;
 	} else {
 		if (itype[0] == 0) {
@@ -350,7 +350,7 @@ void SpatDataFrame::resize_rows(unsigned n) {
 }
 
 void SpatDataFrame::remove_rows(std::vector<unsigned> r) {
-	if (r.size() == 0) return;
+	if (r.empty()) return;
 	//sort(r.begin(), r.end(), std::greater<unsigned>());
 	sort(r.begin(), r.end());
 	r.erase(std::unique(r.begin(), r.end()), r.end());

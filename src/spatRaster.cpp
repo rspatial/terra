@@ -39,7 +39,7 @@ SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<st
 SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> x) {
 // argument "x" is ignored. It is only there to have four arguments such that the  module
 // can distinguish this constructor from another with three arguments.
-	if (fname.size() == 0) {
+	if (fname.empty()) {
 		setError("no filename");
 		return;
 	}
@@ -163,7 +163,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	if (!s.srs.set( crs, msg )) {
 		setError(msg);
 		return;
-	} else if (msg != "") {
+	} else if (!msg.empty()) {
 		addWarning(msg);
 	}
 
@@ -203,7 +203,7 @@ SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, st
 	if (!s.srs.set(crs, msg )) {
 		setError(msg);
 		return;
-	} else if (msg != "") {
+	} else if (!msg.empty()) {
 		addWarning(msg);
 	}
 #else
@@ -289,7 +289,7 @@ SpatRaster SpatRaster::geometry_opt(long nlyrs, bool properties, bool time, bool
 
 	if (datatype && hasValues() && (!opt.datatype_set)) {
 		std::vector<std::string> dt = getDataType(true);
-		if ((dt.size() == 1) && (dt[0] != "")) {
+		if ((dt.size() == 1) && !dt[0].empty()) {
 			if (!hasScaleOffset()) {
 				opt.set_datatype(dt[0]);
 			}
@@ -335,18 +335,18 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 
 
 size_t SpatRaster::ncol() {
-	if (source.size() > 0) {
-		return source[0].ncol;
-	} else {
+	if (source.empty()) {
 		return 0;
+	} else {
+		return source[0].ncol;
 	}
 }
 
 size_t SpatRaster::nrow() {
-	if (source.size() > 0) {
-		return source[0].nrow;
+	if (source.empty()) {
+		return source[0].ncol;
 	} else {
-		return 0;
+		return source[0].nrow;
 	}
 }
 
@@ -516,7 +516,7 @@ bool SpatRaster::setSRS(std::string crs) {
 	if (!srs.set(crs, msg )) {
 		addWarning("Cannot set raster SRS: "+ msg);
 		return false;
-	} else if (msg != "") {
+	} else if (!msg.empty()) {
 		addWarning(msg);
 	}
 
@@ -758,7 +758,7 @@ std::string SpatRaster::getTimeZone() {
 
 bool SpatRaster::setTime(std::vector<int_64> time, std::string step, std::string zone) {
 
-	if (time.size() == 0 || step == "remove") {
+	if (time.empty() || step == "remove") {
 		for (size_t i=0; i<source.size(); i++)	{
 			source[i].time = std::vector<int_64> (source[i].nlyr);
 			source[i].timestep = "";
@@ -807,7 +807,7 @@ std::vector<double> SpatRaster::getDepth() {
 
 bool SpatRaster::setDepth(std::vector<double> depths) {
 
-	if (depths.size() == 0) {
+	if (depths.empty()) {
 		for (size_t i=0; i<source.size(); i++)	{
 			source[i].depth = std::vector<double>(source[i].nlyr);
 		}
@@ -837,7 +837,7 @@ bool SpatRaster::setDepth(std::vector<double> depths) {
 bool SpatRaster::setUnit(std::vector<std::string> units) {
 	if (units.size() == 1) {
 		bool hu = true;
-		if (units[0] == "") {
+		if (units[0].empty()) {
 			hu = false;
 		}
         for (size_t i=0; i<source.size(); i++)	{
@@ -899,7 +899,7 @@ bool SpatRaster::valid_sources(bool files, bool rotated) {
 	std::vector<std::string> ff;
 	for (size_t i=0; i<source.size(); i++) {
 		std::string f = source[i].filename;
-		if (f == "") continue;
+		if (f.empty()) continue;
 		if (files) {
 			std::size_t found = f.find(":"); // perhaps http: or PG:xxx
 			if ((found == 1) || (found == std::string::npos)) {
@@ -1176,7 +1176,7 @@ std::vector<std::vector<std::string>> SpatRaster::getMetadata() {
 	size_t n = nsrc();
 	d.reserve(nlyr());
 	for (size_t i=0; i<n; i++) {
-		if (source[i].mdata.size() == 0) {
+		if (source[i].mdata.empty()) {
 			d.resize(d.size() + source[i].nlyr);
 		} else {
 			d.insert(d.end(), source[i].mdata.begin(), source[i].mdata.end());
@@ -1197,7 +1197,7 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<long> values, std::vector
 		setError("size of values is not the same as the size of labels");
 		return(false);
 	}
-	if (values.size() == 0) {
+	if (values.empty()) {
 		addWarning("no labels");
 		return(true);
 	}

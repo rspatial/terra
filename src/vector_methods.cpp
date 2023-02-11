@@ -607,7 +607,7 @@ void rotit(std::vector<double> &x, std::vector<double> &y, const double &x0, con
 SpatVector SpatVector::rotate(double angle, std::vector<double> x0, std::vector<double> y0) {
 	angle = -M_PI * angle / 180;
 	size_t n = size();
-	if ((x0.size() == 0) || (y0.size() == 0)) {
+	if (x0.empty() || y0.empty()) {
 		SpatVector out;
 		out.setError("no center of rotation provided");
 		return out;

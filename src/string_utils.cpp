@@ -243,7 +243,7 @@ std::string lrtrim_copy(std::string s) {
 void make_valid_names(std::vector<std::string> &s) {
     for (size_t i=0; i<s.size(); i++) {
         lrtrim(s[i]);
-        if (s[i] == "") s[i] = "X";
+        if (s[i].empty()) s[i] = "X";
         if (isdigit(s[i][0])) s[i] = "X" + s[i];
 //        if ((s[i][0] == ".") & (s[i].size() > 1)) {
 //			if (isdigit(s[i][1])) s[i] = "X" + s[i];
