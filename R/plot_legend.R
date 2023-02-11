@@ -128,7 +128,10 @@ retro_labels <- function(x, lat=TRUE) {
 	sides <- sides[sides > 0 & sides < 5]
 	if (is.null(sides)) {
 		sides <- 1:2
-		graphics::box()
+		lines(ext(x$ext))
+		#graphics::box()
+	} else if (isTRUE(x$box)) { 
+		lines(ext(x$ext))	
 	}
 
 	ticks <- x$axs$tick 
@@ -140,11 +143,15 @@ retro_labels <- function(x, lat=TRUE) {
 		labs <- sides
 	} 
 
-	usr <- graphics::par("usr")
+#	usr <- graphics::par("usr")
+	usr <- x$ext
 	y <- x$axs
 	retro <- isTRUE(y$retro)
 	y$retro <- y$lab <- y$tick <- NULL
 
+	lnpts <- crds(as.points(ext(x$ext)))
+	lnpts <- rbind(lnpts[4,], lnpts)
+	
 	for (s in 1:4) {
 		y$side <- s
 		y$labels <- NULL
@@ -152,7 +159,8 @@ retro_labels <- function(x, lat=TRUE) {
 			ur <- usr[2] - usr[1]
 			edg <- c(usr[1]-10*ur, usr[2]+10*ur)
 			if (is.null(xat)) {
-				y$at <- graphics::axTicks(s)
+				axt <- graphics::axTicks(s)
+				y$at <- axt[axt >= usr[1] & axt <= usr[2]]
 			} else {
 				y$at <- xat
 			}
@@ -161,11 +169,14 @@ retro_labels <- function(x, lat=TRUE) {
 			} else {
 				y$labels <- xlab
 			}
+			y$pos <- ifelse(s==1, usr[3], usr[4])
+
 		} else {
 			ur <- usr[4] - usr[3]
 			edg <- c(usr[3]-10*ur, usr[4]+10*ur)
 			if (is.null(yat)) {
-				y$at <- graphics::axTicks(s)
+				axt <- graphics::axTicks(s)
+				y$at <- axt[axt >= usr[3] & axt <= usr[4]]
 			} else {
 				y$at <- yat
 			}
@@ -174,11 +185,12 @@ retro_labels <- function(x, lat=TRUE) {
 			} else {
 				y$labels <- ylab
 			}
+			y$pos <- ifelse(s==2, usr[1], usr[2])
 		}
 		z <- y
 		z$lwd <- 0
 
-		if (s %in% labs) {
+		if (s %in% labs) {			
 			z$lwd.ticks <- 0
 			do.call(graphics::axis, z)
 		}
@@ -190,11 +202,13 @@ retro_labels <- function(x, lat=TRUE) {
 			do.call(graphics::axis, z)
 		}
 		if (s %in% sides) {
-			d <- diff(edg) * 10
-			z$at <- edg + c(-d, d)
-			z$lwd.ticks <- 0
-			z$lwd <- y$lwd
-			do.call(graphics::axis, z)
+			lin <- lnpts[s:(s+1), ]
+			lines(lin, y$lwd)
+			#d <- diff(edg) * 10
+			#z$at <- edg + c(-d, d)
+			#z$lwd.ticks <- 0
+			#z$lwd <- y$lwd
+			#do.call(graphics::axis, z)
 		} 
 	}
 	x

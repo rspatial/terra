@@ -430,7 +430,7 @@ prettyNumbs <- function(x, digits) {
   sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
   xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=0.8, 
   line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
-  axes=TRUE, ...) {
+  axes=TRUE, box=FALSE, ...) {
 
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
@@ -510,6 +510,7 @@ prettyNumbs <- function(x, digits) {
 		out$legend_sort <- isTRUE(sort)
 	}
 	out$legend_sort_decreasing <- isTRUE(decreasing)
+	out$box <- isTRUE(box)
 
 	if (is.null(mar)) {
 		if (out$legend_draw) {
