@@ -479,7 +479,7 @@ class SpatRaster {
 
 		bool readStartMulti(unsigned src);
 		bool readStopMulti(unsigned src);
-		bool readValuesMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
+		bool readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
 
 
 
@@ -662,7 +662,7 @@ class SpatRaster {
 		SpatRaster rasterize(SpatVector x, std::string field, std::vector<double> values, double background, bool touches, bool add, bool weights, bool update, bool minmax, SpatOptions &opt);
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches, SpatOptions &opt);
 		//std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
-		SpatRaster rasterizeGeom(SpatVector x, std::string unit, std::string count, SpatOptions &opt);
+		SpatRaster rasterizeGeom(SpatVector x, std::string unit, std::string fun, SpatOptions &opt);
 		SpatRaster rasterizePoints(SpatVector x, std::string fun, std::vector<double> values, double background, SpatOptions &opt);
 
 		void rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 
@@ -728,8 +728,7 @@ class SpatRaster {
 		SpatRaster resample(SpatRaster x, std::string method, bool mask, bool agg, SpatOptions &opt);
 		
 		SpatRaster applyGCP(std::vector<double> fx, std::vector<double> fy, std::vector<double> tx, std::vector<double> ty, SpatOptions &opt);
-
-		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
+		SpatDataFrame zonal(SpatRaster z, std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
 		SpatRaster rgb2hsx(std::string type, SpatOptions &opt);	
 		SpatRaster hsx2rgb(SpatOptions &opt);	
