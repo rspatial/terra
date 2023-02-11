@@ -518,7 +518,7 @@ bool SpatVector::delete_layers(std::string filename, std::vector<std::string> la
 		if (poLayer == NULL) continue;
 		std::string lname = poLayer->GetName();
 		for (size_t j=0; j<m; j++) {
-			if (lname.compare(layers[j]) == 0) {
+			if (lname == layers[j]) {
 				OGRErr err = poDS->DeleteLayer(i);
 				if (err == OGRERR_UNSUPPORTED_OPERATION) {
 					setError("Deleting layer not supported for this file (format / driver)");
