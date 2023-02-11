@@ -162,7 +162,7 @@ std::vector<double> geotransform(std::string fname) {
 
 // [[Rcpp::export(name = ".gdal_setconfig")]]
 void gdal_setconfig(std::string option, std::string value) {
-	if (value == "") {
+	if (value.empty()) {
 		CPLSetConfigOption(option.c_str(), NULL);
 	} else {
 		CPLSetConfigOption(option.c_str(), value.c_str());
