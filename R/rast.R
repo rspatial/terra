@@ -10,10 +10,11 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 	if (ncols < 1) error("rast", "ncols < 1")
 	nrows <- round(nrows)
 	if (nrows < 1) error("rast", "nrows < 1")
-	
+
 	if (missing(extent)) {
-		e <- c(xmin, xmax, ymin, ymax) 
+		e <- c(xmin, xmax, ymin, ymax)
 	} else {
+		extent <- ext(extent)
 		e <- as.vector(extent)
 	}
 	if ((e[1] >= e[2]) || e[3] >= e[4]) {
@@ -29,7 +30,7 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 		crs <- character_crs(crs, "rast")
 	}
 	#check_proj4_datum(crs)
-	
+
 	r <- methods::new("SpatRaster")
 	r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
 	r <- messages(r, "rast")
@@ -65,28 +66,6 @@ setMethod("rast", signature(x="missing"),
 )
 
 
-setMethod("rast", signature(x="stars"),
-	function(x) {
-		x <- from_stars(x)
-		if (inherits(x, "SpatRasterDataset")) {
-			rast(x)
-		} else {
-			x
-		}
-	}
-)
-
-setMethod("rast", signature(x="stars_proxy"),
-	function(x) {
-		x <- from_stars(x)
-		if (inherits(x, "SpatRasterDataset")) {
-			rast(x)
-		} else {
-			x
-		}
-	}
-)
-
 setMethod("rast", signature(x="list"),
 	function(x, warn=TRUE) {
 		i <- sapply(x, function(i) inherits(i, "SpatRaster"))
@@ -109,16 +88,22 @@ setMethod("rast", signature(x="list"),
 		}
 		out <- messages(out, "rast")
 		lnms <- names(x)
-		i <- lnms != ""
-		if (any(i)) {
-			rnms <- names(out)
-			rnms[lnms != ""] <- lnms[lnms != ""]
-			names(out) <- rnms
+		if (!is.null(lnms)) {
+			if (any(lnms != "") && (length(lnms) == nlyr(out))) {
+				rnms <- names(out)
+				rnms[lnms != ""] <- lnms[lnms != ""]
+				names(out) <- rnms
+			} else if (all(lnms != "")) {
+				nl <- sapply(x, nlyr)
+				rnms <- sapply(1:length(nl), function(i) {
+							if (nl[i] > 1) paste0(lnms[i], "_", 1:nl[i]) else lnms[i]
+						})
+				names(out) <- unlist(rnms)
+			}
 		}
 		out
 	}
 )
-
 
 
 setMethod("rast", signature(x="SpatExtent"),
@@ -150,16 +135,21 @@ setMethod("rast", signature(x="SpatVector"),
 
 
 
-.fullFilename <- function(x, mustExist=TRUE) {
+.fullFilename <- function(x, mustExist=TRUE, vsi=TRUE) {
 	x <- trimws(x)
+	x <- x[x != ""]
+	
+	i <- substr(x, 1, 4) == "http" 
+	if (vsi) {
+		x[i] <- paste0("/vsicurl/", x[i])
+	}
+	if (all(i)) return(x)
+	
+	x <- enc2utf8(x)
 	p <- normalizePath(x, winslash = "/", mustWork = FALSE)
 	if (mustExist) {
 		i <- file.exists(p)
-		if (all(i)) {
-			return(p)
-		} else {
-			x[i] <- p[i]
-		}
+		x[i] <- p[i]
 	} else {
 		return(p)
 	}
@@ -173,51 +163,61 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, opts=NULL) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, vsi=TRUE) {
 
-		x <- trimws(x)
-		x <- x[x!=""]
-		if (length(x) == 0) {
+		f <- .fullFilename(x, TRUE, vsi=vsi)
+		if (length(f) == 0) {
 			error("rast", "filename is empty. Provide a valid filename")
 		}
+
+		if ((length(f) == 1) && grepl("\\.rds$", tolower(f[1]))) {
+			r <- unwrap(readRDS(x))
+			if (!inherits(r, "SpatRaster")) {
+				error("rast", "the rds file does not store a SpatRaster")
+			}
+			return(r)
+		}
+		
 		r <- methods::new("SpatRaster")
-		f <- .fullFilename(x)
-		f <- enc2utf8(f)
 		#subds <- subds[1]
 		if (is.null(opts)) opts <- ""[0]
+		if (is.null(drivers)) drivers <- ""[0]
 		if (length(subds) == 0) subds = 0
-		if (is.character(subds)) { 
+		if (is.character(subds)) {
 			#r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
-			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, opts, 0[])
+			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[])
 		} else {
-			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, opts, 0[])
+			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, drivers, opts, 0[])
 		}
 		r <- messages(r, "rast")
 		if (r@ptr$getMessage() == "ncdf extent") {
-			test <- try(r <- .ncdf_extent(r), silent=TRUE)
+			# could have used opts="IGNORE_XY_AXIS_NAME_CHECKS=YES"
+			test <- try(r <- .ncdf_extent(r, f), silent=TRUE)
 			if (inherits(test, "try-error")) {
-				warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
+				warn("rast", "GDAL did not find an extent. Cells not equally spaced?")
 			}
 		}
 		r <- messages(r, "rast")
-
 		if (crs(r) == "") {
 			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
-				crs(r) <- "OGC:CRS84"
+				if (!isTRUE(all(as.vector(ext(r)) == c(0,ncol(r),0,nrow(r))))) {
+					crs(r) <- "OGC:CRS84"
+				}
 			}
 		}
 
 		if (!is.null(lyrs)) {
-			r[[lyrs]]
-		} else {
-			r
+			r <- r[[lyrs]]
+		} 
+		if (!is.null(win)) {
+			window(r) <- win
 		}
-
+		r
 	}
 )
 
 
-multi <- function(x, subds=0, xyz=c(1,2,3)) {
+multi <- function(x, subds=0, xyz=3:1, drivers=NULL, opts=NULL) {
 
 	x <- trimws(x)
 	x <- x[x!=""]
@@ -226,16 +226,20 @@ multi <- function(x, subds=0, xyz=c(1,2,3)) {
 	}
 	r <- methods::new("SpatRaster")
 	f <- .fullFilename(x)
-	#subds <- subds[1]
-	if (is.character(subds)) { 
-		r@ptr <- SpatRaster$new(f, -1, subds, TRUE, xyz-1)
+	if (is.null(opts)) opts <- ""[0]
+	if (is.null(drivers)) drivers <- ""[0]
+	if (length(subds) == 0) subds = 1
+	subds <- subds[1]
+
+	if (is.character(subds)) {
+		r@ptr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, xyz-1)
 	} else {
-		r@ptr <- SpatRaster$new(f, subds-1, "", TRUE, xyz-1)
+		r@ptr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, xyz-1)
 	}
 	if (r@ptr$getMessage() == "ncdf extent") {
 		test <- try(r <- .ncdf_extent(r), silent=TRUE)
 		if (inherits(test, "try-error")) {
-			warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
+			warn("rast", "GDAL did not find an extent. Cells not equally spaced?")
 		}
 	}
 	r <- messages(r, "rast")
@@ -320,21 +324,20 @@ setMethod("rast", signature(x="ANY"),
 		if (inherits(x, "sf")) {
 			out <- rast(ext(x), ...)
 			if (is.null(list(...)$crs)) {
-				crs(out) <- crs(x)
+				sfi <- attr(x, "sf_column")
+				crs(out, warn=FALSE) <- attr(x[[sfi]], "crs")$wkt
 			}
-			out
 		} else {
-			methods::as(x, "SpatRaster")
+			out <- methods::as(x, "SpatRaster")
 		}
+		#g <- gc()
+		out
 	}
 )
 
 
 .rastFromXYZ <- function(xyz, digits=6, crs="", extent=NULL) {
 
-	if (!is.null(extent)) {
-		warn("rast", 'argument "extent" is ignored if type="xyz"')
-	}
 
 	ln <- colnames(xyz)
 	## xyz might not have colnames, or might have "" names
@@ -402,6 +405,11 @@ setMethod("rast", signature(x="ANY"),
 		v[cells, ] <- xyz[, -c(1:2)]
 		values(r) <- v
 	}
+
+	if (!is.null(extent)) {
+		ext(r) <- extent
+	}
+
 	return(r)
 }
 
@@ -437,7 +445,29 @@ setMethod("rast", signature(x="data.frame"),
 )
 
 
-setMethod("NAflag<-", signature(x="SpatRaster"), 
+setMethod("rast", signature(x="stars"),
+	function(x) {
+		x <- from_stars(x)
+		if (inherits(x, "SpatRasterDataset")) {
+			rast(x)
+		} else {
+			x
+		}
+	}
+)
+
+setMethod("rast", signature(x="stars_proxy"),
+	function(x) {
+		x <- from_stars(x)
+		if (inherits(x, "SpatRasterDataset")) {
+			rast(x)
+		} else {
+			x
+		}
+	}
+)
+
+setMethod("NAflag<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		value <- as.numeric(value)
 		if (!(x@ptr$setNAflag(value))) {
@@ -447,9 +477,10 @@ setMethod("NAflag<-", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("NAflag", signature(x="SpatRaster"), 
+setMethod("NAflag", signature(x="SpatRaster"),
 	function(x)  {
 		x@ptr$getNAflag()
 	}
 )
+
 

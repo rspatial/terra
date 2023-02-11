@@ -20,7 +20,7 @@ Compute correlation, (weighted) covariance, or similar summary statistics that c
 \arguments{
   \item{x}{SpatRaster}
 
-  \item{fun}{character. The statistic to compute: either "cov" (covariance), "weighted.cov" (weighted covariance), or "pearson" (correlation coefficient) or your own function that takes two vectors as argument to comptue a single number}
+  \item{fun}{character. The statistic to compute: either "cov" (covariance), "weighted.cov" (weighted covariance), or "pearson" (correlation coefficient) or your own function that takes two vectors as argument to compute a single number}
 
   \item{w}{SpatRaster with the weights  to compute the weighted covariance. It should have a single layer and the same geometry as \code{x}}
 

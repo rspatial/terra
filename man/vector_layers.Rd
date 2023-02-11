@@ -15,7 +15,7 @@ vector_layers(filename, delete="", return_error=FALSE)
 \arguments{
   \item{filename}{character. filename}
   \item{delete}{character. layers to be deleted (ignored if the value is \code{""}}
-  \item{return_error}{logical. If \code{TRUE}, an error occurs if some layers cannot be deleted. Otherwise a waring is given}
+  \item{return_error}{logical. If \code{TRUE}, an error occurs if some layers cannot be deleted. Otherwise a warning is given}
 }
 
 

@@ -8,6 +8,8 @@
 \alias{RGB<-,SpatRaster-method}
 \alias{colorize}
 \alias{colorize,SpatRaster-method}
+\alias{has.RGB}
+\alias{has.RGB,SpatRaster-method}
 
   
 \title{Layers representing colors}
@@ -25,17 +27,19 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 
 \S4method{colorize}{SpatRaster}(x, to="hsv", alpha=FALSE, stretch=NULL, 
 	grays=FALSE, NAzero=FALSE, filename="", overwrite=FALSE, ...)
+
+\S4method{has.RGB}{SpatRaster}(x)
 }
 
 
 \arguments{
   \item{x}{SpatRaster}
   
-  \item{value}{vector of three (or four) positive integers indicating the layers that are red, green and blue (and optionally a fourth transparancy layer). Or \code{NULL} to remove the RGB settings}
+  \item{value}{vector of three (or four) positive integers indicating the layers that are red, green and blue (and optionally a fourth transparency layer). Or \code{NULL} to remove the RGB settings}
   
-  \item{to}{character. The color space to transform the values to. If \code{x} has RGB set, you can transform these to "hsv", "hsi" and "hsl", or use "col" to create a single layer with a color table. You can also use "rgb" to backtransform to RGB}
+  \item{to}{character. The color space to transform the values to. If \code{x} has RGB set, you can transform these to "hsv", "hsi" and "hsl", or use "col" to create a single layer with a color table. You can also use "rgb" to back transform to RGB}
 
-  \item{alpha}{logical. Should an alpha (transparancy) channel be included? Only used if \code{x} has a color-table and \code{to="rgb"}}
+  \item{alpha}{logical. Should an alpha (transparency) channel be included? Only used if \code{x} has a color-table and \code{to="rgb"}}
 
   \item{stretch}{character. Option to stretch the values to increase contrast: "lin" (linear) or "hist" (histogram). Only used for transforming RGB to col}
   
@@ -52,7 +56,9 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   
 plot(r)
+has.RGB(r)
 RGB(r) <- NULL
+has.RGB(r)
 plot(r)
 RGB(r) <- c(3,1,2)
 plot(r)

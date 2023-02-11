@@ -9,8 +9,8 @@ Add a scale bar to a map
 }
 
 \usage{
-sbar(d, xy=NULL, type="line", divs=2, below="", 
-    lonlat=NULL, label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ...)
+sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, 
+	label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, ...)
 }
 
 \arguments{
@@ -24,6 +24,7 @@ sbar(d, xy=NULL, type="line", divs=2, below="",
 \item{adj}{adjustment for text placement}
 \item{lwd}{line width for the "line" type of the scale bar}
 \item{xpd}{logical. If \code{TRUE}, the scale bar can be outside the plotting area}
+\item{ticks}{logical or numeric. If not \code{FALSE}, tick marks are added to a "line" scale bar. The length of the tick marks can be specified}
 \item{...}{graphical arguments to be passed to other methods }
 }
 
@@ -39,7 +40,7 @@ r <- rast(f)
 plot(r)
 sbar()
 sbar(1000, xy=c(178500, 333500), type="bar", divs=4, cex=.8)
-sbar(1000, xy="bottomright", divs=4, cex=.8)
+sbar(1000, xy="bottomright", divs=3, cex=.8, ticks=TRUE)
 north(d=250, c(178550, 332500))
 
 

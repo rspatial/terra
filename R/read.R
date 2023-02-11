@@ -9,7 +9,7 @@ readAll <- function(x) {
 	invisible(ok)
 }
 
-setMethod("readStart", signature(x="SpatRaster"), 
+setMethod("readStart", signature(x="SpatRaster"),
 	function(x) {
 		success <- x@ptr$readStart()
 		messages(x, "readStart")
@@ -18,7 +18,7 @@ setMethod("readStart", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("readStart", signature(x="SpatRasterDataset"), 
+setMethod("readStart", signature(x="SpatRasterDataset"),
 	function(x) {
 		success <- x@ptr$readStart()
 		messages(x, "readStart")
@@ -27,7 +27,7 @@ setMethod("readStart", signature(x="SpatRasterDataset"),
 	}
 )
 
-#setMethod("readStart", signature(x="SpatRasterDataset"), 
+#setMethod("readStart", signature(x="SpatRasterDataset"),
 #	function(x, ...) {
 #		nsd <- length(x)
 #		for (i in 1:nsd) {
@@ -41,7 +41,7 @@ setMethod("readStart", signature(x="SpatRasterDataset"),
 #)
 
 
-setMethod("readStop", signature(x="SpatRaster"), 
+setMethod("readStop", signature(x="SpatRaster"),
 	function(x) {
 		success <- x@ptr$readStop()
 		messages(x, "readStop")
@@ -49,7 +49,7 @@ setMethod("readStop", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("readStop", signature(x="SpatRasterDataset"), 
+setMethod("readStop", signature(x="SpatRasterDataset"),
 	function(x) {
 		success <- x@ptr$readStop()
 		messages(x, "readStop")

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -51,7 +51,7 @@ bool SpatRaster::readStop() {
 			} else if (source[i].multidim) {
 				readStopMulti(i);
 			} else {
-				readStopGDAL(i); 
+				readStopGDAL(i);
 			}
 		}
 	}
@@ -71,8 +71,7 @@ void SpatRaster::readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, u
 }
 
 // BIP
-std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
-	std::vector<double> x; 
+void SpatRaster::readBlockIP(std::vector<double> &x, BlockSize bs, unsigned i) {
 	readValues(x, bs.row[i], bs.nrows[i], 0, ncol());
 	std::vector<double> v(x.size());
 	size_t off = bs.nrows[i] * ncol();
@@ -84,7 +83,7 @@ std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
 			v[jj] = lyr[j];
 		}
 	}
-	return(v);
+	x = std::move(v);
 }
 
 
@@ -190,7 +189,7 @@ std::vector<double> SpatRaster::readValuesR(size_t row, size_t nrows, size_t col
 			// read from file
 			#ifdef useGDAL
 
-/* 
+/*
 				if (source[0].window.expanded) {
 					std::vector<double> gout;
 					readChunkGDAL(gout, src, source[0].window.off_row, nrows, source[0].window.off_col, ncols);
@@ -262,10 +261,39 @@ void SpatRaster::readValues(std::vector<double> &out, size_t row, size_t nrows, 
 }
 
 
+void SpatRaster::readValuesWhileWriting(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols){
+
+	if (((row + nrows) > nrow()) || ((col + ncols) > ncol())) {
+		setError("invalid rows/columns");
+		return;
+	}
+
+	if ((nrows==0) | (ncols==0)) {
+		return;
+	}
+
+	unsigned n = nsrc();
+	out.resize(0);
+	out.reserve(nrows * ncols * nlyr());
+
+	for (size_t src=0; src<n; src++) {
+		if (source[src].memory) {
+			readChunkMEM(out, src, row, nrows, col, ncols);
+		} else {
+			// read from file
+			#ifdef useGDAL
+			readChunkGDAL(out, src, row, nrows, col, ncols);
+			#endif // useGDAL
+		}
+	}
+	return;
+}
+
+
 
 bool SpatRaster::readAll() {
 	if (!hasValues()) {
-		return true; 
+		return true;
 	}
 
 	size_t row =0, col=0, nrows=nrow(), ncols=ncol();
@@ -276,7 +304,7 @@ bool SpatRaster::readAll() {
 			readChunkGDAL(source[src].values, src, row, nrows, col, ncols);
 			source[src].memory = true;
 			source[src].filename = "";
-			std::iota(source[src].layers.begin(), source[src].layers.end(), 0);			
+			std::iota(source[src].layers.begin(), source[src].layers.end(), 0);
 		}
 		if (src > 0) {
 			if (!source[0].combine_sources(source[src])) {

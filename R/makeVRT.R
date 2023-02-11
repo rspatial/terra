@@ -11,29 +11,29 @@ gdalDType <- function(dtype) {
 	}
 	bytesize <- as.integer(substr(dtype, 4, 4))
 	size <- bytesize * 8
-	type <- substr(dtype, 1, 3) 
-	if (type == "INT") { 
-		type <- "Int" 
+	type <- substr(dtype, 1, 3)
+	if (type == "INT") {
+		type <- "Int"
 		if (size == 64) {
 			size <- 32
 			warning("8 byte integer values not supported by GDAL, changed to 4 byte integer values")
 		}
-		if (substr(dtype, 5, 5) == "U") { 
+		if (substr(dtype, 5, 5) == "U") {
 			if (size == 8) {
 				return(c("Byte", 1))
 			} else {
 				type <- paste("U", type, sep="")
 			}
 		}
-	} else { 
+	} else {
 		type <- "Float"
 	}
 	return(c(paste0(type, size), bytesize))
 }
 
- 
+
 makeVRT <- function(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres=xres, xycenter=TRUE, crs="+proj=longlat", lyrnms="", datatype, NAflag=NA, bandorder="BIL", byteorder="LSB", toptobottom=TRUE, offset=0, scale=1) {
-	
+
 	stopifnot(length(filename)==1)
 	stopifnot(file.exists(filename))
 	if (tolower(tools::file_ext(filename)) == "vrt") {
@@ -52,13 +52,13 @@ makeVRT <- function(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres
 			datatype <- "FLT4S"
 		} else if (bytes == 8) {
 			datatype <- "FLT8S"
-		}		
-	} 
+		}
+	}
 
 	gd <- gdalDType(datatype[1])
 	datatype <- gd[1]
 	pixsize <- as.integer(gd[2])
-	
+
 	if (bandorder[1] == "BIL") {
 		pixoff <- pixsize
 		lineoff <- pixsize * ncol * nlyr
@@ -70,33 +70,33 @@ makeVRT <- function(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres
 	} else if (bandorder[1] == "BIP") {
 		pixoff <- pixsize * nlyr
 		lineoff <- pixsize * ncol * nlyr
-		imgoff <- (1:nlyr)-1 
+		imgoff <- (1:nlyr)-1
 	} else {
 		stop("unknown bandorder")
 	}
 
-	stopifnot(byteorder[1] %in% c("LSB", "MSB")) 
+	stopifnot(byteorder[1] %in% c("LSB", "MSB"))
 	if (toptobottom[1]) { rotation <- 0 } else { rotation <- 180 }
 	res <- abs(c(xres, yres))
 	if (missing(extent)) {
 		if (xycenter) {
-			xmin <- xmin - res[1]/2 
-			ymin <- ymin - res[2]/2 
+			xmin <- xmin - res[1]/2
+			ymin <- ymin - res[2]/2
 		}
 		ymax <- ymin + nrow * res[2]
 	} else {
 		xmin <- xmin(extent)
 		ymax <- ymax(extent)
 	}
-	
-	f <- file(fvrt, "w") 
+
+	f <- file(fvrt, "w")
 	cat('<VRTDataset rasterXSize="', ncol, '" rasterYSize="', nrow, '">\n' , sep = "", file = f)
 	cat('<GeoTransform>', xmin, ', ', res[1], ', ', rotation, ', ', ymax, ', ', 0.0, ', ', -1*res[2], '</GeoTransform>\n', sep = "", file = f)
-	
+
 	if (! is.na(crs) ) {
 		cat('<SRS>', crs ,'</SRS>\n', sep = "", file = f)
 	}
-	
+
 	for (i in nlyr) {
 		cat('\t<VRTRasterBand dataType="', datatype, '" band="', i, '" subClass="VRTRawRasterBand">\n', sep = "" , file = f)
 		cat('\t\t<Description>', lyrnms[i], '</Description>\n', sep = "", file = f)
@@ -117,6 +117,6 @@ makeVRT <- function(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres
 	cat('</VRTDataset>\n', sep = "", file = f)
 	close(f)
 	return(fvrt)
-}  
+}
 
-# a = makeVRT(ff[1], 3601, 3601, 1, xmin=37, ymin=37, xres=1/3600, lyrnms="aspect", datatype="INT2U", byteorder="MSB") 
+# a = makeVRT(ff[1], 3601, 3601, 1, xmin=37, ymin=37, xres=1/3600, lyrnms="aspect", datatype="INT2U", byteorder="MSB")

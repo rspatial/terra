@@ -18,11 +18,11 @@ Clamp values to a minimum and maximum value. That is, all values below a lower t
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{lower}{numeric. lowest value}
-  \item{upper}{numeric. highest value}
+  \item{lower}{numeric. lowest value (you can specify a different value for each layer)}
+  \item{upper}{numeric. highest value (you can specify a different value for each layer)}
   \item{values}{logical. If \code{FALSE} values outside the clamping range become \code{NA}, if \code{TRUE}, they get the extreme values}
   \item{filename}{character. Output filename}
-  \item{...}{additional argumments for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{

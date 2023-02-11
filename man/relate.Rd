@@ -10,33 +10,46 @@
 \alias{relate,SpatVector,SpatExtent-method}
 \alias{relate,SpatExtent,SpatVector-method}
 \alias{relate,SpatExtent,SpatExtent-method}
+\alias{relate,SpatVector,SpatRaster-method}
+\alias{relate,SpatRaster,SpatVector-method}
+\alias{relate,SpatExtent,SpatRaster-method}
+\alias{relate,SpatRaster,SpatExtent-method}
+\alias{relate,SpatRaster,SpatRaster-method}
+
 \alias{is.related,SpatVector,SpatVector-method}
 \alias{is.related,SpatVector,SpatExtent-method}
 \alias{is.related,SpatExtent,SpatVector-method}
+\alias{is.related,SpatVector,SpatRaster-method}
+\alias{is.related,SpatRaster,SpatVector-method}
+\alias{is.related,SpatRaster,SpatRaster-method}
+\alias{is.related,SpatExtent,SpatRaster-method}
+\alias{is.related,SpatRaster,SpatExtent-method}
 
 
 \title{ 
-relate
+Spatial relationships between geometries
 }
 
 \description{
-Get a matrix indicating the presence or absence of spatial relationships between geometries.
+\code{relate} returns a logical matrix indicating the presence or absence of a specific spatial relationships between the geometries in \code{x} and \code{y}. 
+
+\code{is.related} returns a logical vector indicating the presence or absence of a specific spatial relationships between \code{x} and any of the geometries in \code{y}
 }
 
 \usage{
-\S4method{relate}{SpatVector,SpatVector}(x, y, relation)
+\S4method{relate}{SpatVector,SpatVector}(x, y, relation, pairs=FALSE, na.rm=TRUE)
+
+\S4method{relate}{SpatVector,missing}(x, y, relation, pairs=FALSE, na.rm=TRUE)
 
 \S4method{is.related}{SpatVector,SpatVector}(x, y, relation)
-
-\S4method{relate}{SpatVector,missing}(x, y, relation, pairs=FALSE, symmetrical=FALSE)
 }
 
 \arguments{
   \item{x}{SpatVector or SpatExtent}
   \item{y}{missing or as for \code{x}}
   \item{relation}{character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint". Or a "DE-9IM" string such as "FF*FF****". See \href{https://en.wikipedia.org/wiki/DE-9IM}{wikipedia} or \href{https://docs.geotools.org/stable/userguide/library/jts/dim9.html}{geotools doc}}
-  \item{pairs}{logical. If \code{TRUE} a "from", "to" matrix is returned for the cases where the requested relation is \code{TRUE}} 
-  \item{symmetrical}{logical. If \code{TRUE} and \code{pairs=TRUE}, the relation between a pair is only included once. For example, the relation between geometry 1 and 3 is included, but the relation between 3 and 1 is not. Note that whole some relationships are symmetrical (e.g. "touches"), but that others are not (e.g. "within")}
+  \item{pairs}{logical. If \code{TRUE} a two-column matrix is returned with the indices of the cases where the requested relation is \code{TRUE}. This is especially helpful when dealing with many geometries as the returned value is generally much smaller} 
+  \item{na.rm}{logical. If \code{TRUE} and \code{sparse=TRUE}, geometries in \code{x} for which there is no related geometry in \code{y} are omitted}
 } 
 
 \value{

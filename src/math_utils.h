@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -30,31 +30,6 @@ bool is_equal_range(double x, double y, double range, double tolerance);
 void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, int &imax);
 double roundn(double x, int n);
 double signif(double x, unsigned n);
-
-
-template <typename Iterator>
-void minmaxlim(Iterator start, Iterator end, double &vmin, double &vmax, const double &lmin, const double &lmax) {
-    vmin = std::numeric_limits<double>::max();
-    vmax = std::numeric_limits<double>::lowest();
-    bool none = true;
-	for (Iterator v = start; v !=end; ++v) {
-		if (!std::isnan(*v)) {
-			if (*v >= lmin && *v <= lmax) {
-				if (*v > vmax) {
-					vmax = *v;
-					none = false;
-				}
-				if (*v < vmin) {
-					vmin = *v;
-				}
-			}
-		}
-    }
-    if (none) {
-        vmin = NAN;
-        vmax = NAN;
-    }
-}
 
 
 template <typename Iterator>

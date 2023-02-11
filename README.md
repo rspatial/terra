@@ -40,7 +40,7 @@ And then continue based on the OS you are using.
 
 #### Windows
 
-On Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. 
+On Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. You need a recent version of Rtools42 (rtools42-5355-5357).
 
 Then, in R, install the package.
 
@@ -49,27 +49,32 @@ Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
 remotes::install_github("rspatial/terra")
 ```
 
-#### MacOS
+#### macOS
 
-On OSX, first install gdal and proj with homebrew
+On macOS, first install gdal and proj with homebrew
 
 ```
 brew install pkg-config
 brew install gdal
 ```
-Followed by
+
+Followed by (note the additional configuration argument needed for the current homebrew version of proj (9.1.0)
 
 ```
-Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
-remotes::install_github("rspatial/terra")
+remotes::install_github("rspatial/terra", configure.args = "--with-proj-lib=/opt/homebrew/Cellar/proj/9.1.0/lib/")
 ```
 
-This should work on **Catalina** and **Big Sur**
+To install the CRAN version from source you would do
 
+```
+install.packages("terra", configure.args = "--with-proj-lib=/opt/homebrew/Cellar/proj/9.1.0/lib/")
+```
 
 #### Linux
 
-C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3 are required, but more recent versions highly recommended.
+The *easy* way to install terra on linux is with [r2u](https://eddelbuettel.github.io/r2u/).
+
+The harder way: C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3 are required, but more recent versions highly recommended.
 
 To install these system requirements on Ubuntu you can do:
 

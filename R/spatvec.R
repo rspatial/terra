@@ -1,45 +1,45 @@
 
 
 
-setMethod("geomtype", signature(x="SpatVector"), 
-	function(x){ 
+setMethod("geomtype", signature(x="SpatVector"),
+	function(x){
 		x@ptr$type()
 	}
 )
-setMethod("geomtype", signature(x="SpatVectorProxy"), 
-	function(x){ 
+setMethod("geomtype", signature(x="SpatVectorProxy"),
+	function(x){
 		x@ptr$v$type()
 	}
 )
 
 
-setMethod("datatype", signature(x="SpatVector"), 
-	function(x){ 
+setMethod("datatype", signature(x="SpatVector"),
+	function(x){
 		x@ptr$df$get_datatypes()
 	}
 )
 
 
-setMethod("is.lines", signature(x="SpatVector"), 
+setMethod("is.lines", signature(x="SpatVector"),
 	function(x) {
 		geomtype(x) == "lines"
 	}
 )
 
-setMethod("is.polygons", signature(x="SpatVector"), 
+setMethod("is.polygons", signature(x="SpatVector"),
 	function(x) {
 		geomtype(x) == "polygons"
 	}
 )
-setMethod("is.points", signature(x="SpatVector"), 
+setMethod("is.points", signature(x="SpatVector"),
 	function(x) {
 		grepl("points", geomtype(x))
 	}
 )
 
 
-setMethod("geomtype", signature(x="Spatial"), 
-	function(x){ 
+setMethod("geomtype", signature(x="Spatial"),
+	function(x){
 		type <- sub("spatial", "", as.vector(tolower(class(x)[1])))
 		type <- sub("dataframe", "", type)
 		if (type %in% c("grid", "pixels")) type <- "raster"
@@ -47,14 +47,16 @@ setMethod("geomtype", signature(x="Spatial"),
 	}
 )
 
-setMethod("geom", signature(x="SpatVector"), 
-	function(x, wkt=FALSE, hex=FALSE, df=FALSE){
+setMethod("geom", signature(x="SpatVector"),
+	function(x, wkt=FALSE, hex=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y"){
 		if (hex) {
 			x@ptr$hex()
 		} else if (wkt) {
 			x@ptr$getGeometryWKT()
-			# or via geos with 
+			# or via geos with
 			# x@ptr$wkt()
+		} else if (list) {
+			x@ptr$get_geometryList(xnm, ynm)
 		} else {
 			g <- x@ptr$get_geometry()
 			g <- do.call(cbind, g)
@@ -68,7 +70,7 @@ setMethod("geom", signature(x="SpatVector"),
 	}
 )
 
-setMethod("crds", signature(x="SpatVector"), 
+setMethod("crds", signature(x="SpatVector"),
 	function(x, df=FALSE){
 		g <- x@ptr$coordinates()
 		g <- do.call(cbind, g)
@@ -81,7 +83,7 @@ setMethod("crds", signature(x="SpatVector"),
 	}
 )
 
-setMethod("crds", signature(x="SpatRaster"), 
+setMethod("crds", signature(x="SpatRaster"),
 	function(x, df=FALSE, na.rm=TRUE){
 		x <- as.points(x, na.rm=na.rm)
 		crds(x, df=df)
@@ -89,14 +91,14 @@ setMethod("crds", signature(x="SpatRaster"),
 )
 
 
-setMethod("dim", signature(x="SpatVector"), 
-	function(x){ 
+setMethod("dim", signature(x="SpatVector"),
+	function(x){
 		c(nrow(x), ncol(x))
 	}
 )
 
-setMethod("dim", signature(x="SpatVectorProxy"), 
-	function(x){ 
+setMethod("dim", signature(x="SpatVectorProxy"),
+	function(x){
 		c(x@ptr$v$geom_count, x@ptr$v$ncol())
 	}
 )
@@ -104,8 +106,8 @@ setMethod("dim", signature(x="SpatVectorProxy"),
 
 as.data.frame.SpatVector <- function(x, row.names=NULL, optional=FALSE, geom=NULL, ...) {
 	d <- .getSpatDF(x@ptr$df, ...)
-	# fix empty names 
-	colnames(d) <- x@ptr$names
+	# fix empty names
+	colnames(d)[1:ncol(x)] <- x@ptr$names
 	if (!is.null(geom)) {
 		geom <- match.arg(toupper(geom), c("WKT", "HEX", "XY"))
 		if (geom == "XY") {
@@ -140,17 +142,13 @@ get.data.frame <- function(x) {
 
 
 as.list.SpatVector <- function(x, geom=NULL, ...) {
-	if (is.null(geom)) {
-		x@ptr$df$values()
-	} else {
-		as.list(as.data.frame(x, geom=geom))
-	}
+	as.list(as.data.frame(x, geom=geom))
 }
 setMethod("as.list", signature(x="SpatVector"), as.list.SpatVector)
 
 
 
-setMethod ("expanse", "SpatVector", 
+setMethod ("expanse", "SpatVector",
 	function(x, unit="m", transform=TRUE) {
 		a <- x@ptr$area(unit, transform, double());
 		x <- messages(x, "expanse");
@@ -159,22 +157,22 @@ setMethod ("expanse", "SpatVector",
 )
 
 
-setMethod("perim", signature(x="SpatVector"), 
+setMethod("perim", signature(x="SpatVector"),
 	function(x) {
 		p <- x@ptr$length();
-		x <- messages(x, "length");
+		x <- messages(x, "perim");
 		return(p)
 	}
 )
 
-setMethod("length", signature(x="SpatVector"), 
+setMethod("length", signature(x="SpatVector"),
 	function(x) {
 		x@ptr$size()
 	}
 )
 
 
-setMethod("fillHoles", signature(x="SpatVector"), 
+setMethod("fillHoles", signature(x="SpatVector"),
 	function(x, inverse=FALSE) {
 		if (inverse) {
 			x@ptr <- x@ptr$get_holes()
@@ -187,7 +185,7 @@ setMethod("fillHoles", signature(x="SpatVector"),
 
 
 
-#setMethod("eliminate", signature(x="SpatVector"), 
+#setMethod("eliminate", signature(x="SpatVector"),
 #	function(x, y) {
 #		x@ptr <- x@ptr$eliminate(y@ptr)
 #		messages(x)
@@ -196,7 +194,7 @@ setMethod("fillHoles", signature(x="SpatVector"),
 
 
 
-setMethod("centroids", signature(x="SpatVector"), 
+setMethod("centroids", signature(x="SpatVector"),
 	function(x, inside=FALSE) {
 		if (inside) {
 			x@ptr <- x@ptr$point_on_surface(TRUE)
@@ -209,11 +207,31 @@ setMethod("centroids", signature(x="SpatVector"),
 
 
 
-
-setMethod("densify", signature(x="SpatVector"), 
-	function(x, interval, equalize=TRUE) {
-		x@ptr <- x@ptr$densify(interval, equalize)
+setMethod("densify", signature(x="SpatVector"),
+	function(x, interval, equalize=TRUE, flat=FALSE) {
+		x@ptr <- x@ptr$densify(interval, equalize, flat)
 		messages(x)
 	}
 )
+
+setMethod("normalize.longitude", signature(x="SpatVector"),
+	function(x) {
+		if (nrow(x) == 0) return(deepcopy(x))
+		nc <- ncol(x)
+		fname <- "uuu-_123_uqq_-agg_-id123"
+		x[[fname]] <- 1:nrow(x)
+		d <- values(x)
+		out <- x[,fname]
+		out@ptr <- out@ptr$normalize_longitude()
+		out <- messages(out)
+		a <- aggregate(out, fname, count=FALSE)
+		if (nc > 0) {
+			a <- merge(a, d, by=fname)
+		}
+		a[[fname]] <- NULL
+		a
+	}
+)
+
+
 

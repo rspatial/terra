@@ -1,3 +1,20 @@
+// Copyright (c) 2018-2023  Robert J. Hijmans
+//
+// This file is part of the "spat" library.
+//
+// spat is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// spat is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with spat. If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef SPATTIME_GUARD
 #define SPATTIME_GUARD
 
@@ -18,8 +35,10 @@ class SpatTime_v {
 };
 
 
+SpatTime_t get_time(long year, unsigned month, unsigned day, unsigned hr, unsigned min, unsigned sec);
 std::vector<int> get_date(SpatTime_t x);
 std::vector<int> getymd(std::string s);
+int getyear(std::string s);
 SpatTime_t get_time_string(std::string s);
 SpatTime_t time_from_day(int syear, int smonth, int sday, double ndays);
 SpatTime_t time_from_day_noleap(int syear, int smonth, int sday, double ndays);

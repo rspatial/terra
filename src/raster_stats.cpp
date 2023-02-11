@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -23,6 +23,8 @@
 #include <map>
 
 #include "vecmath.h"
+#include "vecmathse.h"
+
 #include "math_utils.h"
 #include "string_utils.h"
 
@@ -71,7 +73,7 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int 
 		std::vector<std::map<double, unsigned long long int>> tabs(nl);
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned nrc = bs.nrows[i] * nc;
-			std::vector<double> v; 
+			std::vector<double> v;
 			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
 			if (round) {
 				for(double& d : v) d = roundn(d, digits);
@@ -127,7 +129,7 @@ std::vector<size_t> SpatRaster::count(double value, bool bylayer, bool round, in
 			if (std::isnan(value)) {
 				for (size_t lyr=0; lyr<nl; lyr++) {
 					unsigned off = lyr*nrc;
-					out[lyr] += count_if(v.begin()+off, v.begin()+off+nrc, 
+					out[lyr] += count_if(v.begin()+off, v.begin()+off+nrc,
 							[](double d){return std::isnan(d);});
 				}
 			} else {
@@ -146,7 +148,7 @@ std::vector<size_t> SpatRaster::count(double value, bool bylayer, bool round, in
 				for (double& d : v) d = roundn(d, digits);
 			}
 			if (std::isnan(value)) {
-				out[0] += count_if(v.begin(), v.end(), 
+				out[0] += count_if(v.begin(), v.end(),
 								[](double d){return std::isnan(d);});
 			} else {
 				out[0] += std::count(v.begin(), v.end(), value);
@@ -172,8 +174,8 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 		return out;
 	}
 
-	double pmin = vmin(probs, false);
-	double pmax = vmin(probs, false);
+	double pmin = min_se(probs, 0, probs.size());
+	double pmax = max_se(probs, 0, probs.size());
 	if ((std::isnan(pmin)) || (std::isnan(pmax)) || (pmin < 0) || (pmax > 1)) {
 		SpatRaster out = geometry(1);
 		out.setError("intvalid probs");
@@ -187,7 +189,7 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 		out.setError(getError());
 		return(out);
 	}
-  	if (!out.writeStart(opt)) {
+  	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
 	}
@@ -382,7 +384,7 @@ void jointstats(const std::vector<double> &u, const std::vector<double> &v, cons
 
 
 
-SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOptions &opt) {
+SpatDataFrame SpatRaster::zonal_old(SpatRaster z, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
 	std::vector<std::string> f {"sum", "mean", "min", "max"};
@@ -407,7 +409,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		SpatOptions xopt(opt);
 		std::vector<unsigned> lyr = {0};
 		z = z.subset(lyr, xopt);
-		out.addWarning("only the first zonal layer is used"); 
+		out.addWarning("only the first zonal layer is used");
 	}
 
 	size_t nl = nlyr();
@@ -473,7 +475,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 				}
 			}
 		}
-	} 
+	}
 
 	else if (fun == "min") {
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
@@ -502,12 +504,12 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 }
 
 
-/*
+
 
 SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
-	std::vector<std::string> f {"sum", "mean", "min", "max"};
+	std::vector<std::string> f {"sum", "mean", "min", "max", "isNA", "notNA"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("not a valid function");
 		return(out);
@@ -520,31 +522,26 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		out.setError("zonal SpatRaster has no values");
 		return(out);
 	}
-	if (!compare_geom(z, false, true, opt.get_tolerance())) {
-		out.setError("dimensions and/or extent do not match");
+	if (!compare_geom(z, false, true, opt.get_tolerance(), true)) {
+		out.setError(getError());
 		return(out);
+	}
+	if (hasWarning()) {
+		std::vector<std::string> w = getWarnings();
+		for (size_t i=0; i<w.size(); i++) {
+			out.addWarning(w[i]);
+		}
 	}
 
 	if (z.nlyr() > 1) {
 		SpatOptions xopt(opt);
 		std::vector<unsigned> lyr = {0};
 		z = z.subset(lyr, xopt);
-		out.addWarning("only the first zonal layer is used"); 
+		out.addWarning("only the first zonal layer is used");
 	}
 
-	size_t nl = nlyr();
-	std::vector<std::vector<double>> uq = z.unique(true, opt);
-	std::vector<double> u = uq[0];
-	double initv = 0;
 	double posinf = std::numeric_limits<double>::infinity();
 	double neginf = -posinf;
-	if (fun == "max") initv = neginf;
-	if (fun == "min") initv = posinf;
-	std::vector<std::vector<double>> stats(nl, std::vector<double>(u.size(), initv));
-	std::vector<std::vector<double>> cnt;
-	if (fun == "mean") {
-		cnt = std::vector<std::vector<double>>(nl, std::vector<double>(u.size(), 0));
-	}
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -555,80 +552,554 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	}
 	opt.ncopies = 6;
 	BlockSize bs = getBlockSize(opt);
+
+	size_t nl = nlyr();
+	size_t nc = ncol();
+	std::vector<std::map<double, double>> m(nl);
+	std::vector<std::map<double, size_t>> cnt(nl);
+
 	for (size_t i=0; i<bs.n; i++) {
-		std::vector<double> v, zv;
-		readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
+		unsigned nrc = bs.nrows[i] * nc;
+		std::vector<double> vv, zv;
+		readValues(vv, bs.row[i], bs.nrows[i], 0, ncol());
 		z.readValues(zv, bs.row[i], bs.nrows[i], 0, ncol());
-		double zvold = zv[0];
-		if (!std::isnan(zv[0])) {
-			auto it = find(u.begin(), u.end(), zv[0]);
-			zv[0] = it - u.begin();
-		}
-		for (size_t j=1; j<zv.size(); j++)	 {
-			if (!std::isnan(zv[j])) {
-				if (zvold == zv[j]) {
-					zv[j] = zv[j-1];
-				} else {
-					zvold = zv[j];
-					auto it = find(u.begin(), u.end(), zv[j]);
-					zv[j] = it - u.begin();
+		if (fun == "sum") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							m[j][zv[k]] = 0;
+							cnt[j][zv[k]] = 0;
+						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] += v[k];
+						cnt[j][zv[k]] = 1; // may be necessary if the first case was NAN
+					}
 				}
 			}
-		}
-		unsigned off = bs.nrows[i] * ncol() ;
-		if (nl > 1) {
-			for (size_t lyr=0; lyr<nl; lyr++) {
-				unsigned offset = lyr * off;
-				std::vector<double> vx( v.begin()+offset, v.begin()+offset+off);
-				jointstats(u, vx, zv, fun, narm, stats[lyr], cnt[lyr]);
+		} else if (fun == "mean") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							m[j][zv[k]] = 0;
+							cnt[j][zv[k]] = 0;
+						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] += v[k];
+						cnt[j][zv[k]]++;
+					}
+				}
 			}
-		} else {
-			jointstats(u, v, zv, fun, narm, stats[0], cnt[0]);
+		} else if (fun == "min") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							m[j][zv[k]] = posinf;
+							cnt[j][zv[k]] = 0;
+						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] = std::min(v[k], m[j][zv[k]]);
+						cnt[j][zv[k]] = 1;
+					}
+				}
+			}
+		} else if (fun == "max") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							m[j][zv[k]] = neginf;
+							cnt[j][zv[k]] = 0;
+						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] = std::max(v[k], m[j][zv[k]]);
+						cnt[j][zv[k]] = 1;
+					}
+				}
+			}
+		} else if (fun == "isNA") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (!std::isnan(v[k])) {
+						if (cnt[j].find(zv[k]) == cnt[j].end()) {
+							cnt[j][zv[k]] = 0;
+						}
+					} else {
+						if (cnt[j].find(zv[k]) == cnt[j].end()) {
+							cnt[j][zv[k]] = 1;
+						} else {
+							cnt[j][zv[k]]++;
+						}
+					}
+				}
+			}
+		} else if (fun == "notNA") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) {
+					if (std::isnan(zv[k])) {
+						continue;
+					}
+					if (std::isnan(v[k])) {
+						if (cnt[j].find(zv[k]) == cnt[j].end()) {
+							cnt[j][zv[k]] = 0;
+						}
+					} else {
+						if (cnt[j].find(zv[k]) == cnt[j].end()) {
+							cnt[j][zv[k]] = 1;
+						} else {
+							cnt[j][zv[k]]++;
+						}
+					}
+				}
+			}
 		}
 	}
 	readStop();
 	z.readStop();
 
+	std::vector<double> zone;
+	std::vector<std::string> nms = getNames();
 
-	if (fun=="mean") {
-		for (size_t lyr=0; lyr<nlyr(); lyr++) {
-			for (size_t j=0; j<u.size(); j++) {
-				if (cnt[lyr][j] > 0) {
-					stats[lyr][j] = stats[lyr][j] / cnt[lyr][j];
+	if ((fun == "notNA") || (fun == "isNA")){
+		size_t n = cnt[0].size();
+		zone.reserve(n);
+		for (size_t i=0; i<nl; i++) {
+			std::vector<double> value;
+			value.reserve(n);
+			if (i==0) {
+				for (auto& it : cnt[0]) {
+					zone.push_back(it.first);
+					value.push_back(it.second);
+				}
+				out.add_column(zone, "zone");
+			} else {
+				for (auto& it : cnt[i]) {
+					value.push_back(it.second);
+				}
+			}
+			out.add_column(value, nms[i]);
+		}
+	} else {
+		size_t n = m[0].size();
+		zone.reserve(n);
+		for (size_t i=0; i<nl; i++) {
+			std::vector<double> value;
+			value.reserve(n);
+			if (i==0) {
+				for (auto& it : m[0]) {
+					zone.push_back(it.first);
+					value.push_back(it.second);
+				}
+				out.add_column(zone, "zone");
+			} else {
+				for (auto& it : m[i]) {
+					value.push_back(it.second);
+				}
+			}
+			size_t j = 0;
+			if (fun == "mean") {
+				for (auto& it : cnt[i]) {
+					double d = (double)it.second;
+					if (d > 0) {
+						value[j] /= d;
+					} else {
+						value[j] = NAN;
+					}
+					j++;
+				}
+			} else {
+				for (auto& it : cnt[i]) {
+					if (it.second == 0) {
+						value[j] = NAN;
+					}
+					j++;
+				}
+			}
+			out.add_column(value, nms[i]);
+		}
+	}
+//	std::vector<std::string> nms = getNames();
+//	for (size_t i=0; i<nlyr(); i++) {
+//		out.add_column(stats[i], nms[i]);
+//	}
+	return(out);
+}
+
+
+
+
+SpatDataFrame SpatRaster::zonal_weighted(SpatRaster z, SpatRaster w, bool narm, SpatOptions &opt) {
+
+	SpatDataFrame out;
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return(out);
+	}
+	if (!z.hasValues()) {
+		out.setError("zonal SpatRaster has no values");
+		return(out);
+	}
+	if (!w.hasValues()) {
+		out.setError("weights SpatRaster has no values");
+		return(out);
+	}
+	if (!compare_geom(z, false, true, opt.get_tolerance(), true)) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!compare_geom(w, false, true, opt.get_tolerance(), true)) {
+		out.setError(getError());
+		return(out);
+	}
+	if (hasWarning()) {
+		std::vector<std::string> w = getWarnings();
+		for (size_t i=0; i<w.size(); i++) {
+			out.addWarning(w[i]);
+		}
+	}
+
+	if (z.nlyr() > 1) {
+		SpatOptions xopt(opt);
+		std::vector<unsigned> lyr = {0};
+		z = z.subset(lyr, xopt);
+		out.addWarning("only the first zonal layer is used");
+	}
+	if (w.nlyr() > 1) {
+		SpatOptions xopt(opt);
+		std::vector<unsigned> lyr = {0};
+		w = w.subset(lyr, xopt);
+		out.addWarning("only the first weights layer is used");
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!z.readStart()) {
+		out.setError(z.getError());
+		return(out);
+	}
+	if (!w.readStart()) {
+		out.setError(z.getError());
+		return(out);
+	}
+	opt.ncopies = 8;
+	BlockSize bs = getBlockSize(opt);
+
+	size_t nl = nlyr();
+	size_t nc = ncol();
+	std::vector<std::map<double, double>> m(nl);
+	std::vector<std::map<double, size_t>> wsum(nl);
+
+	for (size_t i=0; i<bs.n; i++) {
+		unsigned nrc = bs.nrows[i] * nc;
+		std::vector<double> vv, zv, wv;
+		readValues(vv, bs.row[i], bs.nrows[i], 0, ncol());
+		z.readValues(zv, bs.row[i], bs.nrows[i], 0, ncol());
+		w.readValues(wv, bs.row[i], bs.nrows[i], 0, ncol());
+
+		for (size_t j=0; j<nl; j++) {
+			size_t off = j*nrc;
+			std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+			for (size_t k=0; k<nrc; k++) {
+				if (std::isnan(zv[k]) || std::isnan(wv[k]) || (wv[k] < 0)) {
+					continue;
+				}
+				if (narm && std::isnan(v[k])) {
+					if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = 0;
+						wsum[j][zv[k]] = 0;
+					}
+				} else if (m[j].find(zv[k]) == m[j].end()) {
+					m[j][zv[k]] = v[k] * wv[k];
+					wsum[j][zv[k]] = wv[k];
 				} else {
-					stats[lyr][j] = NAN;
-				}
-			}
-		}
-	} else if (fun == "min") {
-		for (size_t lyr=0; lyr<nlyr(); lyr++) {
-			for (size_t j=0; j<u.size(); j++) {
-				if (stats[lyr][j] == posinf) {
-					stats[lyr][j] = NAN;
-				}
-			}
-		}
-	} else if (fun == "max") {
-		for (size_t lyr=0; lyr<nlyr(); lyr++) {
-			for (size_t j=0; j<u.size(); j++) {
-				if (stats[lyr][j] == neginf) {
-					stats[lyr][j] = NAN;
+					m[j][zv[k]] += v[k] * wv[k];
+					wsum[j][zv[k]] += wv[k];
 				}
 			}
 		}
 	}
 
-	out.add_column(u, "zone");
+	readStop();
+	z.readStop();
+	w.readStop();
+
+	std::vector<double> zone;
 	std::vector<std::string> nms = getNames();
-	for (size_t i=0; i<nlyr(); i++) {
-		out.add_column(stats[i], nms[i]);
+
+	size_t n = m[0].size();
+	zone.reserve(n);
+	for (size_t i=0; i<nl; i++) {
+		std::vector<double> value;
+		value.reserve(n);
+		if (i==0) {
+			for (auto& it : m[0]) {
+				zone.push_back(it.first);
+				value.push_back(it.second);
+			}
+			out.add_column(zone, "zone");
+		} else {
+			for (auto& it : m[i]) {
+				value.push_back(it.second);
+			}
+		}
+		size_t j = 0;
+		for (auto& it : wsum[i]) {
+			double d = (double)it.second;
+			if (d > 0) {
+				value[j] /= d;
+			} else {
+				value[j] = NAN;
+			}
+			j++;
+		}
+		out.add_column(value, nms[i]);
 	}
 	return(out);
 }
 
 
-*/
+SpatDataFrame SpatRaster::zonal_poly(SpatVector x, std::string fun, bool weights, bool exact, bool touches,bool narm, SpatOptions &opt) {
+
+	SpatDataFrame out;
+	std::string gtype = x.type();
+	if (gtype != "polygons") {
+		out.setError("SpatVector must have polygon geometry");
+		return out;
+	}
+	
+	if (!hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}
+
+	if ((weights || exact)) {
+		if ((fun != "mean") && (fun!="min") && (fun!="max")) {
+			out.setError("fun should be 'min', 'max' or 'mean' when using weights/exact");
+			return out;			
+		}
+	}
+
+	if (!haveseFun(fun)) {
+		out.setError("Unknown function");
+		return out;
+	}
+	std::function<double(std::vector<double>&, double, double)> zfun= getseFun(fun, narm);
+
+    unsigned nl = nlyr();
+    unsigned ng = x.size();
+
+	std::vector<std::vector<double>> zv(nl, std::vector<double>(ng));
+	
+    SpatRaster r = geometry(1);
+    for (size_t i=0; i<ng; i++) {
+		SpatGeom g = x.getGeom(i);
+		SpatVector p(g);
+		p.srs = x.srs;
+		std::vector<double> cell, wgt;
+		if (weights) {
+			rasterizeCellsWeights(cell, wgt, p, opt);
+		} else if (exact) {
+			rasterizeCellsExact(cell, wgt, p, opt);
+		} else {
+			cell = rasterizeCells(p, touches, opt);
+        }
+		
+		std::vector<std::vector<double>> e = extractCell(cell);
+ 		if ((weights || exact) && fun == "mean") {
+			if (narm) {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						if (!std::isnan(e[j][k])) {
+							wsum += wgt[k];
+							vsum += (e[j][k] * wgt[k]);  
+						}
+					}
+					zv[j][i] = vsum / wsum;
+				}
+			} else {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						wsum += wgt[k];
+						vsum += (e[j][k] * wgt[k]);  
+					}
+					zv[j][i] = vsum / wsum;
+				}
+			}
+		} else {
+			for (size_t j=0; j<nl; j++) {
+				zv[j][i] = zfun(e[j], 0, e[j].size());
+			}
+		}
+	}
+	std::vector<std::string> nms = getNames();	
+	for (size_t j=0; j<nl; j++) {
+		out.add_column(zv[j], nms[j]);
+	}
+	
+	return out;
+}
 
 
+SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool weights, bool exact, bool touches, bool narm, SpatOptions &opt) {
+
+	SpatDataFrame out;
+	std::string gtype = x.type();
+	if (gtype != "polygons") {
+		out.setError("SpatVector must have polygon geometry");
+		return out;
+	}
+	
+	if (!compare_geom(w, false, true, opt.get_tolerance(), true)) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}
+	if (!w.hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}
+
+    unsigned nl = nlyr();
+    unsigned ng = x.size();
+
+	std::vector<std::vector<double>> zv(nl, std::vector<double>(ng));
+	
+    SpatRaster r = geometry(1);
+    for (size_t i=0; i<ng; i++) {
+		SpatGeom g = x.getGeom(i);
+		SpatVector p(g);
+		p.srs = x.srs;
+		std::vector<double> cell, wgt;
+		if (weights) {
+			rasterizeCellsWeights(cell, wgt, p, opt);
+		} else if (exact) {
+			rasterizeCellsExact(cell, wgt, p, opt);
+		} else {
+			cell = rasterizeCells(p, touches, opt);
+        }
+		
+		std::vector<std::vector<double>> e = extractCell(cell);
+		std::vector<std::vector<double>> we = w.extractCell(cell);
+		
+ 		if (weights || exact) {
+			if (narm) {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						if (!std::isnan(e[j][k])) {
+							wsum += we[0][k] * wgt[k];
+							vsum += (e[j][k] * we[0][k] * wgt[k]);  
+						}
+					}
+					zv[j][i] = vsum / wsum;
+				}
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						if ((!std::isnan(e[j][k])) && (!std::isnan(we[0][k]))) {
+							wsum += we[0][k] * wgt[k];
+							vsum += (e[j][k] * we[0][k] * wgt[k]);  
+						}
+					}
+					zv[j][i] = vsum / wsum;
+				}				
+
+
+			} else {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						wsum += we[0][k];
+						vsum += (e[j][k] * we[0][k]);  
+					}
+					zv[j][i] = vsum / wsum;
+				}
+			}
+		} else {
+			if (narm) {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						if ((!std::isnan(e[j][k])) && (!std::isnan(we[0][k]))) {
+							wsum += we[0][k];
+							vsum += (e[j][k] * we[0][k]);  
+						}
+					}
+					zv[j][i] = vsum / wsum;
+				}				
+			} else {
+				for (size_t j=0; j<nl; j++) {
+					double wsum = 0;
+					double vsum = 0;
+					for (size_t k=0; k<e[j].size(); k++) {
+						wsum += we[0][k];
+						vsum += (e[j][k] * we[0][k]);  
+					}
+					zv[j][i] = vsum / wsum;
+				}
+			}
+		}
+	}
+	std::vector<std::string> nms = getNames();	
+	for (size_t j=0; j<nl; j++) {
+		out.add_column(zv[j], nms[j]);
+	}
+	
+	return out;
+}
 
 

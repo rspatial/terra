@@ -16,7 +16,7 @@ Union SpatVector or SpatExtent objects
 
 Overlapping polygons (between, not within, objects) are intersected. Union for lines and points simply combines the two data sets; without any geometric intersections. This is equivalent to \code{\link{c}}. Attributes are joined. See \code{\link{c}} if you want to combine polygons without intersection. 
 
-If code{x} and \code{y} have a different geometry type, a SpatVectorCollection is returned.
+If \code{x} and \code{y} have a different geometry type, a SpatVectorCollection is returned.
 
 If a single SpatVector is supplied, overlapping polygons are intersected. Original attributes are lost. New attributes allow for determining how many, and which, polygons overlapped. 
 
@@ -41,13 +41,15 @@ SpatVector or SpatExtent
 }
 
 \seealso{
-\code{\link[terra]{intersect}})
+\code{\link[terra]{intersect}}
 
 \code{\link{merge}} and \code{\link{mosaic}} to union SpatRaster objects.
 
 \code{\link{crop}} and \code{\link{extend}} for the union of SpatRaster and SpatExtent.
 
 \code{\link[terra]{merge}} for merging a data.frame with attributes of a SpatVector.
+  
+\code{\link[terra]{aggregate}} to dissolve SpatVector objects. 
 }
 
 

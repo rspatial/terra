@@ -12,7 +12,7 @@
 
 \description{
 
-Change a categorical layer into one or more numerical layers. With \code{as.numeric} you can transfer the active category values to cell values in a non-categorical SpatRaster. \code{catalyze} createss new layers for each category.
+Change a categorical layer into one or more numerical layers. With \code{as.numeric} you can transfer the active category values to cell values in a non-categorical SpatRaster. \code{catalyze} creates new layers for each category.
 }
 
 \usage{

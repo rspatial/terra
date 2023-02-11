@@ -11,7 +11,7 @@
 \description{
 This method returns the length of lines or the perimeter of polygons.
 
-When the crs is not longitude/latitude, you may get more accurate results by first un-projecting the SpatVector (you can use \code{\link{project}} to transform the crs to longitude/latitude)
+When the crs is not longitude/latitude, you may get more accurate results by first unprojecting the SpatVector (you can use \code{\link{project}} to transform the crs to longitude/latitude)
 }
 
 \usage{

@@ -1,6 +1,6 @@
 
 
-setMethod("window<-", signature(x="SpatRaster"), 
+setMethod("window<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		if (inherits(value, "SpatExtent")) {
 			value <- value * ext(x)
@@ -18,7 +18,7 @@ setMethod("window<-", signature(x="SpatRaster"),
 )
 
 
-setMethod("window", signature(x="SpatRaster"), 
+setMethod("window", signature(x="SpatRaster"),
 	function(x)  {
 		x@ptr$hasWindow()
 	}

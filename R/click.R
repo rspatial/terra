@@ -23,8 +23,8 @@
 	}
 	cells <- cellFromXY(x, xyCoords)
 	cells <- unique(stats::na.omit(cells))
-	if (length(cells) == 0 ) { 
-		error("click", "no valid cells selected") 
+	if (length(cells) == 0 ) {
+		error("click", "no valid cells selected")
 	}
 	cells
 }
@@ -35,16 +35,16 @@ do_click <- function(type="p", id=FALSE, i=1, pch=20, ...) {
 	p <- graphics::locator(1)
 	if (is.null(p)) return(p) # ESC
 	points(p$x, p$y, type=type, pch=pch, ...)
-	if (id) { 
-		text(p$x, p$y, labels=i, pos=4, ...) 
-	} 
+	if (id) {
+		text(p$x, p$y, labels=i, pos=4, ...)
+	}
 	cbind(x=p$x, y=p$y)
 }
 
 
 
 
-setMethod("click", signature(x="missing"), 
+setMethod("click", signature(x="missing"),
 	function(x, n=10, id=FALSE, type="p", show=TRUE, ...) {
 		#loc <- graphics::locator(n, type, ...)
 		#cbind(x=loc$x, y=loc$y)
@@ -66,7 +66,7 @@ setMethod("click", signature(x="missing"),
 )
 
 
-setMethod("click", signature(x="SpatRaster"), 
+setMethod("click", signature(x="SpatRaster"),
 	function(x, n=10, id=FALSE, xy=FALSE, cell=FALSE, type="p", show=TRUE, ...) {
 	n <- max(round(n), 1)
 	values <- NULL
@@ -79,16 +79,16 @@ setMethod("click", signature(x="SpatRaster"),
 		if (cell) {
 			value <- data.frame(cell=celln, value)
 		}
-		if (xy) { 
+		if (xy) {
 			p <- xyFromCell(x, celln)
 			colnames(p) <- c("x", "y")
 			value <- data.frame(p, value)
-		} 
+		}
 		if (show) {
 			print(value)
 			utils::flush.console()
 		}
-		if (is.null(dim(value))) { 
+		if (is.null(dim(value))) {
 			value <- matrix(value)
 			colnames(value) <- names(x)
 		}
@@ -108,7 +108,7 @@ setMethod("click", signature(x="SpatRaster"),
 
 
 
-setMethod("click", signature(x="SpatVector"), 
+setMethod("click", signature(x="SpatVector"),
 	function(x, n=10, id=FALSE, xy=FALSE, type="p", show=TRUE, ...) {
 		n <- max(round(n), 1)
 		values <- xys <- NULL
@@ -116,9 +116,9 @@ setMethod("click", signature(x="SpatVector"),
 			p <- do_click(type=type, id=id, i=i, ...)
 			if (is.null(p)) break
 			e <- extract(x, vect(p))
-			if (xy) { 
+			if (xy) {
 				e <- cbind(e[,1], x=p$x, y=p$y, e[,-1,drop=FALSE])
-			} 
+			}
 			names(e)[1] <- "ID"
 			if (show) {
 				if (!id) {

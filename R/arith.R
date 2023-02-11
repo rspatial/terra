@@ -1,5 +1,5 @@
 
-# setMethod("arith", signature(x="SpatRaster"), 
+# setMethod("arith", signature(x="SpatRaster"),
 ## not exported
 arith <- function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
@@ -19,12 +19,12 @@ arith <- function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	}
 	if (!(is.numeric(r) | is.logical(r))) {
 		error("arith", "'fun' does not return a numeric vector")
-	} 
+	}
 	if (length(r) != length(v)) {
 		error("arith", "'fun' does not return the same number of values as the input")
 	}
 
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, sources=sources(x), wopt=wopt)
 	for (i in 1:b$n) {
 		v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
 		v <- fun(as.vector(v), ...)

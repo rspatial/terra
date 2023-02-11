@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -31,11 +31,8 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 
 #else
 
-
 #include "ogr_spatialref.h"
 #include <gdal_priv.h> // GDALDriver
-
-
 
 bool is_ogr_error(OGRErr err, std::string &msg) {
 	if (err != OGRERR_NONE) {
@@ -57,14 +54,13 @@ bool is_ogr_error(OGRErr err, std::string &msg) {
 }
 
 
-
-bool wkt_from_spatial_reference(const OGRSpatialReference *srs, std::string &wkt, std::string &msg) {
+bool wkt_from_spatial_reference(const OGRSpatialReference srs, std::string &wkt, std::string &msg) {
 	char *cp;
 #if GDAL_VERSION_MAJOR >= 3
 	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
-	OGRErr err = srs->exportToWkt(&cp, options);
+	OGRErr err = srs.exportToWkt(&cp, options);
 #else
-	OGRErr err = srs->exportToWkt(&cp);
+	OGRErr err = srs.exportToWkt(&cp);
 #endif
 	if (is_ogr_error(err, msg)) {
 		CPLFree(cp);
@@ -75,9 +71,11 @@ bool wkt_from_spatial_reference(const OGRSpatialReference *srs, std::string &wkt
 	return true;
 }
 
-bool prj_from_spatial_reference(const OGRSpatialReference *srs, std::string &prj, std::string &msg) {
+
+
+bool prj_from_spatial_reference(const OGRSpatialReference srs, std::string &prj, std::string &msg) {
 	char *cp;
-	OGRErr err = srs->exportToProj4(&cp);
+	OGRErr err = srs.exportToProj4(&cp);
 	if (is_ogr_error(err, msg)) {
 		CPLFree(cp);
 		return false;
@@ -86,7 +84,6 @@ bool prj_from_spatial_reference(const OGRSpatialReference *srs, std::string &prj
 	CPLFree(cp);
 	return true;
 }
-
 
 bool string_from_spatial_reference(const OGRSpatialReference *srs, std::vector<std::string> &out, std::string &msg) {
 	out = std::vector<std::string>(2, "");
@@ -131,8 +128,6 @@ bool SpatSRS::set(OGRSpatialReference *poSRS, std::string &msg) {
 	return true;
 }
 */
-
-
 
 
 double SpatSRS::to_meter() {
@@ -209,27 +204,25 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 	wkt="";
 	proj4="";
 	lrtrim(txt);
+
 	if (txt == "") {
 		return true;
 	} else {
-		OGRSpatialReference *srs = new OGRSpatialReference;
-		const char* s = txt.c_str();
-		if (is_ogr_error(srs->SetFromUserInput(s), msg)) {
-			delete srs;
+		OGRSpatialReference srs;
+		OGRErr e = srs.SetFromUserInput(txt.c_str());
+		if (is_ogr_error(e, msg)) {
 			msg = "empty srs";
 			return false;
 		}
 		if (! wkt_from_spatial_reference(srs, wkt, msg)) {
-			delete srs;
-			msg = "can't  get wkt from srs";
+			msg = "can't get wkt from srs";
 			return false;
 		};
 		if (! prj_from_spatial_reference(srs, proj4, msg)) {
-			delete srs;
-			msg = "can't  get proj4 from srs";
-			return false;
+			msg = "";
+			//msg = "can't get proj4 from srs";
+			//return false;
 		};
-		delete srs;
 		return true;
 	}
 	return false;
@@ -241,19 +234,42 @@ bool wkt_from_string(std::string input, std::string& wkt, std::string& msg) {
 	wkt="";
 	bool success = false;
 	if (input != "") {
-		OGRSpatialReference *srs = new OGRSpatialReference;
-		const char* s = input.c_str();
-		if (is_ogr_error(srs->SetFromUserInput(s), msg)) {
-			delete srs;
+		OGRSpatialReference srs;
+		OGRErr e = srs.SetFromUserInput(input.c_str());
+		if (is_ogr_error(e, msg)) {
 			return false;
 		}
 		success = wkt_from_spatial_reference(srs, wkt, msg);
-		delete srs;
 	}
 	return success;
 }
 
 
+
+
+bool can_transform(std::string fromCRS, std::string toCRS) {
+
+	OGRSpatialReference source, target;
+	const char *pszDefFrom = fromCRS.c_str();
+	OGRErr erro = source.SetFromUserInput(pszDefFrom);
+	if (erro != OGRERR_NONE) {
+		return false;
+	}
+	const char *pszDefTo = toCRS.c_str();
+	erro = target.SetFromUserInput(pszDefTo);
+	if (erro != OGRERR_NONE) {
+		return false;
+	}
+
+	OGRCoordinateTransformation *poCT;
+	poCT = OGRCreateCoordinateTransformation(&source, &target);
+	if( poCT == NULL )	{
+		OCTDestroyCoordinateTransformation(poCT);
+		return false;
+	}
+	OCTDestroyCoordinateTransformation(poCT);
+	return true;
+}
 
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
@@ -290,7 +306,7 @@ SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &
 		}
 	}
 
-	OCTDestroyCoordinateTransformation(poCT); 
+	OCTDestroyCoordinateTransformation(poCT);
 	if (failcount > 0) {
 		m.addWarning(std::to_string(failcount) + " failed transformations");
 	}
@@ -298,9 +314,19 @@ SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &
 }
 
 
+std::vector<double> SpatVector::project_xy(std::vector<double> x, std::vector<double> y, std::string fromCRS, std::string toCRS) {
+
+	msg = transform_coordinates(x, y, fromCRS, toCRS);
+	x.insert(x.end(), y.begin(), y.end());
+	return x;
+
+}
+
+
 SpatVector SpatVector::project(std::string crs) {
 
 	SpatVector s;
+	s.reserve(size());
 
     #ifndef useGDAL
 		s.setError("GDAL is not available");

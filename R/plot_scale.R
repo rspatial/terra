@@ -1,6 +1,6 @@
 
 .assume_lonlat <- function(pr) {
-	(pr$usr[1] > -181) && (pr$usr[2] < 181) && (pr$yaxp[1] > -200) && (pr$yaxp[2] < 200)
+	(pr$usr[1] > -300) && (pr$usr[2] < 300) && (pr$yaxp[1] > -200) && (pr$yaxp[2] < 200)
 }
 
 .get_dd <- function(pr, lonlat, d=NULL) {
@@ -9,7 +9,7 @@
 		if (is.null(d)) {
 			dx <- (pr$usr[2] - pr$usr[1]) / 6
 			d <- as.vector(distance(cbind(0, lat), cbind(dx, lat), TRUE))
-			d <- signif(d / 1000, 2) 
+			d <- signif(d / 1000, 2)
 		}
 		p <- cbind(0, lat)
 		dd <- .destPoint(p, d * 1000)
@@ -18,7 +18,7 @@
 		if (is.null(d)) {
 			d <- (pr$usr[2] - pr$usr[1]) / 6
 			digits <- floor(log10(d)) + 1
-			d <- round(d, -(digits-1))	
+			d <- round(d, -(digits-1))
 		}
 		dd <- d
 	}
@@ -26,12 +26,12 @@
 }
 
 .get_xy <- function(xy, dx=0, dy=0, pr, defpos="bottomleft", caller="") {
-    if(is.null(xy)) {
+    if (is.null(xy)) {
 		xy <- defpos
 	}
 	if (!is.character(xy)) {
 		return( cbind(xy[1], xy[2]) )
-	}	
+	}
 	xy <- tolower(xy)
 	parrange <- c(pr$usr[2] - pr$usr[1], pr$usr[4] - pr$usr[3])
 	pad=c(5,5) / 100
@@ -74,14 +74,14 @@
 add_N <- function(x, y, asp, label, type=0, user="", angle=0, cex=1, srt=0, xpd=TRUE, ...) {
 
 	type <- type[1]
-	if (type == 0) { symbol = user[1]  
-	} else if (type == 2) { symbol = "\u27A2" 
+	if (type == 0) { symbol = user[1]
+	} else if (type == 2) { symbol = "\u27A2"
 	} else if (type == 3) { symbol = "\u2799"
 	} else if (type == 4) { symbol = "\u27B2"
 	} else if (type == 5) { symbol = "\u27BE"
 	} else if (type == 6) { symbol = "\u27B8"
 	} else if (type == 7) { symbol = "\u27BB"
-	} else if (type == 8) { symbol = "\u27B5"	
+	} else if (type == 8) { symbol = "\u27B5"
 	} else if (type == 9) { symbol = "\u279F"
 	} else if (type == 10) { symbol = "\u261B"
 	} else if (type == 11) { symbol = "\u2708"
@@ -90,7 +90,7 @@ add_N <- function(x, y, asp, label, type=0, user="", angle=0, cex=1, srt=0, xpd=
 		rangle <- 45 - angle
 		mcex <- 1.5
 	} else {
-		rangle <- 90 - angle	
+		rangle <- 90 - angle
 		mcex <- 3
 	}
 	text(x, y, symbol, cex=cex*mcex, srt=rangle, xpd=xpd, ...)
@@ -103,7 +103,7 @@ add_N <- function(x, y, asp, label, type=0, user="", angle=0, cex=1, srt=0, xpd=
 #	yoff <- rys + 0.05 * graphics::strheight(label,cex=cex)
 	xoff = 0.1 * rxs
 	yoff = 0.8 * rys *  max(0.5, abs(cos(angle)))
-	
+
     if (type == 4) {
         .halo(x+xoff, y-0.2*yoff, label, cex = cex, srt = srt, xpd = xpd, ...)
 	} else if (type == 10) {
@@ -117,11 +117,11 @@ add_N <- function(x, y, asp, label, type=0, user="", angle=0, cex=1, srt=0, xpd=
 north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ...) {
 	pr <- graphics::par()
 	pa <- c(pr$usr[2] - pr$usr[1], pr$usr[4] - pr$usr[3])
-	asp <- pa[2]/pa[1]  
+	asp <- pa[2]/pa[1]
 	if (missing(d))	{
 		d <- 0.07 * pa[2]
 	}
-	xy <- .get_xy(xy, 0, d, pr, "topright", caller="arrow")	
+	xy <- .get_xy(xy, 0, d, pr, "topright", caller="arrow")
 
 	if (inherits(type, "character")) {
 		usertype <- type
@@ -137,13 +137,13 @@ north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ..
 			b <- b + pi
 			p1 <- xy + c(d * sin(b), d * cos(b))
 			if ((p2[1] - p1[1]) > (d/asp)) {
-				m <- xy[1] #p1[1] + (p2[1] - p1[1]) / 2 
+				m <- xy[1] #p1[1] + (p2[1] - p1[1]) / 2
 				slope = (p2[2] - p1[2])/(p2[1] - p1[1])
 				newx <- m - 0.5 * d / asp
-				p1[2] <- p1[2] + (newx-p1[1]) * slope  
+				p1[2] <- p1[2] + (newx-p1[1]) * slope
 				p1[1] <- newx
 				newx <- m + 0.5 * d / asp
-				p2[2] <- p2[2] - (p2[1]-newx) * slope  
+				p2[2] <- p2[2] - (p2[1]-newx) * slope
 				p2[1] <- newx
 			}
 		} else {
@@ -159,7 +159,7 @@ north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ..
 			if (is.null(list(...)$hw)) {
 				.halo(xy[1], xy[2], label, hw=.2, xpd=xpd, ... )
 			} else {
-				.halo(xy[1], xy[2], label, xpd=xpd, ... )		
+				.halo(xy[1], xy[2], label, xpd=xpd, ... )
 			}
 		}
 	} else {
@@ -168,7 +168,7 @@ north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ..
 }
 
 
-sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ...){
+sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, ...){
 
 	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
@@ -186,20 +186,38 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 
 	if (type == "line") {
 		lines(matrix(c(xy[1], xy[2], xy[1]+dd, xy[2]), byrow=T, nrow=2), lwd=lwd, xpd=xpd, ...)
-		if (missing(label)) {
-			label <- paste(d)
-		}
-		if (is.null(label)) {
-			label <- paste(d)
+		
+		if (missing(label) || is.null(label)) {
+			if (divs > 2) {
+				label <- c(0, round(d/2), d)
+			} else {
+				label <- paste(d)
+			}
 		}
 		if (missing(adj)) {
 			adj <- c(0.5, -0.2-lwd/20 )
 		}
-
+		tadd <- 0
+		if (!isFALSE(ticks)) {
+			if (isTRUE(ticks)) {
+				tadd <- dd / (15 * diff(pr$usr[1:2]) / diff(pr$usr[3:4]))
+			} else {
+				tadd <- ticks
+			}
+			if (length(label) == 1) {
+				xtick <- c(xy[1], xy[1]+dd)
+			} else {
+				xtick <- c(xy[1], xy[1]+dd/2, xy[1]+dd)			
+			}
+			for (i in 1:length(xtick)) {
+				lines(rbind(c(xtick[i], xy[2]), c(xtick[i], xy[2]+tadd)), lwd=ceiling(lwd/2), ...)
+			}
+		}
+		tadd <- max(0, tadd)
 		if (length(label) == 1) label =c("", label, "")
-		text(xy[1], xy[2],labels=label[1], xpd=xpd, adj=adj,...)
-		text(xy[1]+0.5*dd, xy[2],labels=label[2], xpd=xpd, adj=adj,...)
-		text(xy[1]+dd, xy[2],labels=label[3], xpd=xpd, adj=adj,...)
+		text(xy[1], xy[2]+tadd,labels=label[1], xpd=xpd, adj=adj, ...)
+		text(xy[1]+0.5*dd, xy[2]+tadd,labels=label[2], xpd=xpd, adj=adj,...)
+		text(xy[1]+dd, xy[2]+tadd,labels=label[3], xpd=xpd, adj=adj,...)
 
 		xy[2] <- xy[2] - dd/10
 
@@ -215,10 +233,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 			half <- xy[1] + dd / 2
 			graphics::polygon(c(xy[1], xy[1], half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd)
 			graphics::polygon(c(half, half, xy[1]+dd, xy[1]+dd ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black", xpd=xpd)
-			if (missing(label)) {
-				label <- c("0", "", d)
-			}
-			if (is.null(label)) {
+			if (missing(label) || is.null(label)) {
 				label <- c("0", "", d)
 			}
 
@@ -229,15 +244,12 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 			q1 <- xy[1] + dd / 4
 			half <- xy[1] + dd / 2
 			q3 <- xy[1] + 3 * dd / 4
-			end <- xy[1] + dd 
+			end <- xy[1] + dd
 			graphics::polygon(c(xy[1], xy[1], q1, q1), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd)
 			graphics::polygon(c(q1, q1, half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black", xpd=xpd)
 			graphics::polygon(c(half, half, q3, q3 ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd)
 			graphics::polygon(c(q3, q3, end, end), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black", xpd=xpd)
-			if (missing(label)) {
-				label <- c("0", round(0.5*d), d)
-			}
-			if (is.null(label)) {
+			if (missing(label) || is.null(label)) {
 				label <- c("0", round(0.5*d), d)
 			}
 			text(xy[1], xy[2], labels=label[1], xpd=xpd, adj=adj, ...)
@@ -250,3 +262,5 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 		text(xy[1]+(0.5*dd), xy[2], xpd=xpd, labels=below, adj=adj,...)
 	}
 }
+
+

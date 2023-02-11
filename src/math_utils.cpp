@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -92,7 +92,7 @@ double signif(double x, unsigned n) {
 		b = b / 10;
 	}
 	int d = n-i;
-	return roundn(x, d); 
+	return roundn(x, d);
 }
 
 bool is_equal(double a, double b, double tolerance=10.0) {

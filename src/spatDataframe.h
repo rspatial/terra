@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -16,11 +16,15 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 
+#ifndef SPATDATAFRAME_GUARD
+#define SPATDATAFRAME_GUARD
+
 #include <vector>
 #include <string>
 //#include "spatMessages.h"
 #include "spatBase.h"
 #include "spatTime.h"
+#include "spatFactor.h"
 
 class SpatDataFrame {
 	public:
@@ -34,17 +38,18 @@ class SpatDataFrame {
 		void addWarning(std::string s) { msg.addWarning(s); }
 		bool hasError() { return msg.has_error; }
 		bool hasWarning() { return msg.has_warning; }
-		std::string getWarnings() { return msg.getWarnings(); }
+		std::vector<std::string> getWarnings() { return msg.getWarnings(); }
 		std::string getError() { return msg.getError(); }
 	
 		std::vector<std::string> names;
-		std::vector<unsigned> itype; //0 double, 1 long, 2 string, 3 bool, 4 time
+		std::vector<unsigned> itype; //0 double, 1 long, 2 string, 3 bool, 4 time, 5 factor
 		std::vector<unsigned> iplace;
-		std::vector< std::vector<double>> dv;
-		std::vector< std::vector<long>> iv;
-		std::vector< std::vector<std::string>> sv;
-		std::vector< std::vector<int8_t>> bv;
-		std::vector< SpatTime_v > tv;
+		std::vector<std::vector<double>> dv;
+		std::vector<std::vector<long>> iv;
+		std::vector<std::vector<std::string>> sv;
+		std::vector<std::vector<int8_t>> bv;
+		std::vector<SpatTime_v> tv;
+		std::vector<SpatFactor> fv;		
 		std::string NAS = "____NA_+";
 		
 		unsigned nrow();
@@ -59,6 +64,7 @@ class SpatDataFrame {
 		std::vector<std::string> getS(unsigned i);
 		std::vector<int8_t> getB(unsigned i);
 		SpatTime_v getT(unsigned i);
+		SpatFactor getF(unsigned i);
 
 		std::vector<std::string> as_string(size_t v);
 		std::vector<long> as_long(size_t v);
@@ -69,6 +75,7 @@ class SpatDataFrame {
 		std::string getSvalue(unsigned i, unsigned j);
 		int8_t getBvalue(unsigned i, unsigned j);
 		SpatTime_t getTvalue(unsigned i, unsigned j);
+		SpatFactor getFvalue(unsigned i, unsigned j);
 	
 		void add_row();
 		void add_rows(size_t n);
@@ -84,6 +91,7 @@ class SpatDataFrame {
 		bool add_column(std::vector<std::string> x, std::string name);
 		bool add_column(std::vector<int8_t> x, std::string name);
 		bool add_column(SpatTime_v x, std::string name);
+		bool add_column(SpatFactor x, std::string name);
 		bool add_column_bool(std::vector<int> x, std::string name);
 		bool add_column_time(std::vector<SpatTime_t> x, std::string name, std::string step, std::string zone);
 		void insert_column(std::vector<double>, size_t i);
@@ -91,6 +99,7 @@ class SpatDataFrame {
 		void insert_column(std::vector<std::string>, size_t i);
 		void insert_column(std::vector<int8_t>, size_t i);
 		void insert_column(SpatTime_v, size_t i);
+		void insert_column(SpatFactor, size_t i);
 
 		bool remove_column(std::string field);
 		bool remove_column(int i);		
@@ -104,7 +113,7 @@ class SpatDataFrame {
 		bool rbind(SpatDataFrame &x);
 		bool cbind(SpatDataFrame &x);
 
-		SpatDataFrame unique(int col);
+		SpatDataFrame unique_col(int col);
 		std::vector<int> getIndex(int col, SpatDataFrame &x);
 
 		std::vector<std::string> get_names();
@@ -120,5 +129,12 @@ class SpatDataFrame {
 
 		bool field_exists(std::string field);
 		bool write_dbf(std::string filename, bool overwrite, SpatOptions &opt);
+
+		std::vector<std::vector<std::string>> to_strings();
+		std::vector<std::string> one_string();
+		SpatDataFrame unique();
+		size_t strwidth(unsigned i);
 };
+
+#endif //SPATDATAFRAME_GUARD
 

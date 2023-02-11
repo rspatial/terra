@@ -46,7 +46,7 @@ tmpFiles <- function(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE) {
 				}
 			}
 		}
-	} 
+	}
 
 	if (current) {
 		ff <- list.files(d, pattern="^spat", full.names=TRUE)
@@ -54,11 +54,11 @@ tmpFiles <- function(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE) {
 	} else if (orphan) {
 		fo <- .orphanTmpFiles()
 		f <- c(f, fo) # for if old=TRUE
-	} 
+	}
 
 
 	if (remove) {
-		file.remove(f) 
+		file.remove(f)
 		return(invisible(f))
 	} else {
 		return(f)

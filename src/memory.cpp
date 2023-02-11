@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -29,7 +29,7 @@ bool SpatRaster::canProcessInMemory(SpatOptions &opt) {
 	}
 	double supply;
 	if (opt.get_memmax() > 0) {
-		supply = opt.get_memmax() * opt.get_memfrac();		
+		supply = opt.get_memmax() * opt.get_memfrac();
 		//supply = std::min(supply, availableRAM());
 	} else {
 		supply = availableRAM() * opt.get_memfrac();
@@ -54,7 +54,7 @@ size_t SpatRaster::chunkSize(SpatOptions &opt) {
 	double supply;
 
 	if (opt.get_memmax() > 0) {
-		supply = opt.get_memmax() * opt.get_memfrac();		
+		supply = opt.get_memmax() * opt.get_memfrac();
 		//supply = std::min(supply, availableRAM());
 	} else {
 		supply = availableRAM() * opt.get_memfrac();
@@ -75,18 +75,18 @@ size_t SpatRaster::chunkSize(SpatOptions &opt) {
 
 std::vector<double> SpatRaster::mem_needs(SpatOptions &opt) {
 	//returning bytes
-	unsigned n = opt.ncopies; 
+	unsigned n = opt.ncopies;
 	double memneed  = ncell() * (nlyr() * n);
 	double memavail;
 	if (opt.get_memmax() > 0) {
 		memavail = opt.get_memmax();
-		//memavail = std::min(memavail, availableRAM()); 
+		//memavail = std::min(memavail, availableRAM());
 	} else {
-		memavail = availableRAM(); 
+		memavail = availableRAM();
 	}
 	double frac = opt.get_memfrac();
 	double csize = chunkSize(opt);
-	double inmem = canProcessInMemory(opt); 
+	double inmem = canProcessInMemory(opt);
 	std::vector<double> out = {memneed, memavail, frac, csize, inmem} ;
 	return out;
 }
@@ -94,20 +94,17 @@ std::vector<double> SpatRaster::mem_needs(SpatOptions &opt) {
 //BlockSize SpatRaster::getBlockSize(unsigned n, double frac, unsigned steps) {
 BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 
-	unsigned steps = opt.get_steps();
-
 	BlockSize bs;
-	size_t cs;
+	size_t cs = chunkSize(opt);
+	bs.n = std::ceil(nrow() / double(cs));
+	unsigned steps = opt.get_steps();
 
 	if (steps > 0) {
 		if (steps > nrow()) {
 			steps = nrow();
 		}
-		bs.n = steps;
-		cs = nrow() / steps;
-	} else {
-		cs = chunkSize(opt);
-		bs.n = std::ceil(nrow() / double(cs));
+		bs.n = std::max(steps, bs.n);
+		cs = nrow() / bs.n;
 	}
 	bs.row = std::vector<size_t>(bs.n);
 	bs.nrows = std::vector<size_t>(bs.n, cs);

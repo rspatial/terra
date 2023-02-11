@@ -12,14 +12,15 @@ Create a histogram of the values of a SpatRaster. For large datasets a sample of
 }
 
 \usage{
-\S4method{hist}{SpatRaster}(x, layer, maxcell=1000000, plot=TRUE, main, ...)
+\S4method{hist}{SpatRaster}(x, layer, maxcell=1000000, plot=TRUE, maxnl=16, main, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{layer}{integer (or character) to indicate layer number (or name). Can be used to subset the layers to plot in a multilayer SpatRaster} 
+  \item{layer}{positive integer or character to indicate layer numbers (or names). If missing, all layers up to \code{maxnl} are used} 
   \item{maxcell}{integer. To regularly sample very large objects}
   \item{plot}{logical. Plot the histogram or only return the histogram values}
+  \item{maxnl}{positive integer. The maximum number of layers to use. Ignored if \code{layer} is not missing}
   \item{main}{character. Main title(s) for the plot. Default is the value of \code{\link{names}}}
   \item{...}{additional arguments. See \code{\link[graphics]{hist}}}  
 }

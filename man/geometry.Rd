@@ -14,23 +14,26 @@ If \code{wkt=TRUE}, the "well-known text" representation is returned as a charac
 }
 
 \usage{
-\S4method{geom}{SpatVector}(x, wkt=FALSE, hex=FALSE, df=FALSE)
+\S4method{geom}{SpatVector}(x, wkt=FALSE, hex=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y")
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{wkt}{logical. If \code{TRUE} the WKT geometry is returned (unless \code{hex} is also \code{TRUE})}  
   \item{hex}{logical. If \code{TRUE} the hexadecimal geometry is returned}  
-  \item{df}{logical. If \code{TRUE} a \code{data.frame} is returned instead of a matrix (only for \code{wkt=FALSE} and \code{hex=FALSE})}  
+  \item{df}{logical. If \code{TRUE} a \code{data.frame} is returned instead of a matrix (only if \code{wkt=FALSE}, \code{hex=FALSE}, and \code{list=FALSE})} 
+  \item{list}{logical. If \code{TRUE} a nested \code{list} is returned with data.frames of coordinates}
+  \item{xnm}{character. If \code{list=TRUE} the "x" column name for the coordinates data.frame }  
+  \item{ynm}{character. If \code{list=TRUE} the "y" column name for the coordinates data.frame}  
 }
 
 
 \value{
-matrix
+matrix, vector, data.frame, or list
 }
 
 \seealso{
-See \code{\link{xyFromCell}} to get the coordinates of the cells of a SpatRaster
+\code{\link{crds}}, \code{\link{xyFromCell}}
 }
 
 

@@ -59,7 +59,7 @@ cppFunction(
 			}
 			out[i] = v * m;
 			start = end;
-		}		
+		}
 		return out;
 	}'
 )
@@ -87,7 +87,7 @@ R_sm_iter <- function(x, m, ni, nw) {
 	for (i in 1:ni) {
 		start <- (i-1) * nw + 1
 		out[i] <- sum(x[start:(start+nw-1)]) * m
-	}		
+	}
 	out
 }
 

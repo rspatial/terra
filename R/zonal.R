@@ -1,18 +1,26 @@
 
-setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"), 
-	function(x, z, fun="mean", ..., as.raster=FALSE, filename="", wopt=list())  {
+setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
+	function(x, z, fun="mean", ..., w=NULL, as.raster=FALSE, filename="", wopt=list())  {
 		if (nlyr(z) > 1) {
 			z <- z[[1]]
 		}
 		zname <- names(z)
-		txtfun <- .makeTextFun(match.fun(fun))
-		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum"))) {
+		txtfun <- .makeTextFun(fun)
+		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum", "notNA", "isNA"))) {
 			na.rm <- isTRUE(list(...)$na.rm)
 			opt <- spatOptions()
-			ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
-			messages(ptr, "zonal")
-			out <- .getSpatDF(ptr)
+			if (!is.null(w)) {
+				if (txtfun != "mean") {
+					error("zonal", "fun must be 'mean' when using weights")
+				}
+				sdf <- x@ptr$zonal_weighted(z@ptr, w@ptr, na.rm, opt)				
+			} else {
+				sdf <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
+			}
+			messages(sdf, "zonal")
+			out <- .getSpatDF(sdf)
 		} else {
+			fun <- match.fun(fun)
 			nl <- nlyr(x)
 			res <- list()
 			vz <- values(z)
@@ -33,10 +41,11 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			if (is.null(wopt$names)) {
 				wopt$names <- names(x)
 			}
+			levels(z) <- NULL
 			subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
 		} else {
 			if (is.factor(z)) {
-				levs <- active_cats(z)[[1]]
+				levs <- levels(z)[[1]]
 				m <- match(out$zone, levs[,1])
 				out$zone <- levs[m, 2]
 			}
@@ -46,8 +55,105 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 	}
 )
 
+setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
+	function(x, z, fun="mean", ..., w=NULL, weights=FALSE, exact=FALSE, touches=FALSE, as.raster=FALSE, filename="", wopt=list())  {
+		opt <- spatOptions()
+		narm <- isTRUE(list(...)$na.rm)
+		txtfun <- .makeTextFun(fun)
+		if (!inherits(txtfun, "character")) {
+			error("zonal", "this 'fun' is not supported. You can use extract instead")
+		} else {
+			if (is.null(w)) {
+				out <- x@ptr$zonal_poly(z@ptr, txtfun, weights[1], exact[1], touches[1], narm, opt)
+			} else {
+				if (txtfun != "mean") {
+					error("zonal", "fun must be 'mean' when using weights")
+				}
+				out <- x@ptr$zonal_poly_weighted(z@ptr, w@ptr, weights[1], exact[1], touches[1], narm, opt)
+			}
+			messages(out, "zonal")
+			out <- .getSpatDF(out)
+		}
+		if (as.raster) {
+			if (is.null(wopt$names)) {
+				wopt$names <- names(x)
+			}
+			x <- rasterize(z, x, 1:nrow(z))
+			subst(x, 1:nrow(out), out, filename=filename, wopt=wopt)
+		} else {
+			out
+		}
+	}
+)
 
-setMethod("global", signature(x="SpatRaster"), 
+
+setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
+	function(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE)  {
+		if (geomtype(z) != "polygons") {
+			error("zonal", "x must be points, and z must be polygons")
+		}
+		if (nrow(x) == 0) {
+			error("zonal", "x is empty")
+		}
+		isn <- which(sapply(values(x[1,]), is.numeric))
+		if (!any(isn)) {
+			error("zonal", "x has no numeric variables (attributes) to aggregate")
+		}
+		x <- x[,isn]
+		if (geomtype(x) == "points") {
+			r <- !relate(x, z, "disjoint", pairs=FALSE)
+			i <- apply(r, 1, function(i) if(any(i)) which(i) else (NA))
+			if (length(i) == 0) {
+				error("zonal", "there are no points in x that overlap with the polygons in z")
+			}
+			a <- aggregate(values(x), data.frame(zone=i), fun, ...)
+		} else {
+			if (as.polygons) {
+				zz <- z
+				values(zz) <- data.frame(zone = 1:nrow(zz))
+				i <- intersect(zz, x)
+			} else {
+				values(z) <- data.frame(zone = 1:nrow(z))
+				i <- intersect(z, x)
+			}
+			if (nrow(i) == 0) {
+				error("zonal", "the intersection of x and z is empty")
+			}
+			v <- values(i)
+			if (weighted) {
+				if (geomtype(i) == "lines") {
+					v$w <- perim(i)
+				} else {
+					v$w <- expanse(i)
+				}
+				s <- split(v, v$zone)
+				n <- ncol(v)-2
+				s <- lapply(s, function(d) {
+						out <- rep(NA, n)
+						for (i in 2:n) {
+							out[i-1] <- weighted.mean(d[[i]], w = d$w)
+						}
+						out
+					})
+				a <- data.frame(as.integer(names(s)), do.call(rbind, s))
+				colnames(a) <- names(v)[-ncol(v)]
+			} else {
+				a <- aggregate(v[,-1,drop=FALSE], v[,1,drop=FALSE], fun, ...)
+			}
+		}
+		if (as.polygons) {
+			f <- basename(tempfile())
+			z[[f]] <- 1:nrow(z)
+			names(a)[1] = f
+			a <- merge(z, a, by=f, all.x=TRUE)
+			a[[f]] <- NULL
+		}
+		a
+	}
+)
+
+
+setMethod("global", signature(x="SpatRaster"),
 	function(x, fun="mean", weights=NULL, ...)  {
 
 		nms <- names(x)
@@ -66,7 +172,7 @@ setMethod("global", signature(x="SpatRaster"),
 			return(res)
 		}
 
-		if (inherits(txtfun, "character")) { 
+		if (inherits(txtfun, "character")) {
 			if (txtfun %in% c("prod", "max", "min", "mean", "sum", "range", "rms", "sd", "sdpop", "notNA", "isNA")) {
 				na.rm <- isTRUE(list(...)$na.rm)
 				ptr <- x@ptr$global(txtfun, na.rm, opt)

@@ -13,7 +13,11 @@
 \alias{Arith,SpatRaster,missing-method}
 \alias{Arith,numeric,SpatRaster-method}
 \alias{Arith,SpatRaster,numeric-method}
+\alias{Arith,logical,SpatRaster-method}
+\alias{Arith,SpatRaster,logical-method}
 \alias{Arith,missing,SpatRaster-method}
+\alias{Arith,SpatRaster,matrix-method}
+\alias{Arith,matrix,SpatRaster-method}
 
 
 \title{Arithmetic}
@@ -24,13 +28,12 @@ Standard arithmetic operators for computations with SpatRasters. Computations ar
 
 \code{ +, -, *, /, ^, \%\%, \%/\% }
 
+You can also use a SpatRaster and a vector or a matrix. If you use a SpatRaster with a vector of multiple numbers, each element in the vector is considered a layer (with a constant value). If you use a SpatRaster with a matrix, the number of columns of the matrix must match the number of layers of the SpatRaster. The rows are used to match the cells. That is, if there are two rows, these match cells 1 and 2, and they are recycled to 3 and 4, etc. 
 
-The following methods have been implemented for \code{SpatExtent}: 
-
-for \code{(SpatExtent, SpatExtent)}: \code{+, -}, and for \code{(SpatExtent, numeric)}: \code{+, -, *, /, \%\%}
+The following methods have been implemented for \code{(SpatExtent, SpatExtent)}: \code{+, -}, and the following for \code{(SpatExtent, numeric)}: \code{+, -, *, /, \%\%}
 }
 
-\section{seealso}{
+\seealso{
 \code{\link{ifel}} to conveniently combine operations and \code{\link{Math-methods}} or \code{\link{app}} to use mathematical functions not implemented by the package.
 }
 

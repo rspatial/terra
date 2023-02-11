@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -31,7 +31,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	tolerance = opt.tolerance;
 
 	def_datatype = opt.def_datatype;
-	def_filetype = opt.def_filetype; 
+	def_filetype = opt.def_filetype;
 	filenames = {""};
 	overwrite = false;
 	progress = opt.progress;
@@ -67,15 +67,28 @@ SpatOptions SpatOptions::deepCopy() {
 //void SpatOptions::set_bandorder(std::string d) { bandorder = d; }
 //std::string SpatOptions::get_bandorder() {if (bandorder != "") {return bandorder;} else {return def_datatype;}}
 
-void SpatOptions::set_def_datatype(std::string d) { 
-	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT2S", "INT4S", "FLT4S", "FLT8S" } ;
-	if (is_in_vector(d, ss)) def_datatype = d; 
+void SpatOptions::set_def_datatype(std::string d) {
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 7
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT8U", "INT2S", "INT4S", "INT8S", "FLT4S", "FLT8S"} ;
+#else 
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT8U", "INT1S", "INT2S", "INT4S", "INT8S", "FLT4S", "FLT8S"};
+#endif
+	if (is_in_vector(d, ss)) def_datatype = d;
 }
 std::string SpatOptions::get_def_datatype() { return def_datatype; }
 
-void SpatOptions::set_datatype(std::string d) { 
-	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT2S", "INT4S", "FLT4S", "FLT8S" };
-	if (is_in_vector(d, ss)) datatype = d; 
+void SpatOptions::set_datatype(std::string d) {
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 7
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT8U", "INT2S", "INT4S", "INT8S", "FLT4S", "FLT8S"} ;
+#else 
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT8U", "INT1S", "INT2S", "INT4S", "INT8S", "FLT4S", "FLT8S"};
+#endif
+	if (is_in_vector(d, ss)) {
+		datatype = d;
+		datatype_set = TRUE;
+	} else {
+		msg.addWarning(d + " is not a valid datatype");
+	}
 }
 std::string SpatOptions::get_datatype() {if (datatype != "") {return datatype;} else {return def_datatype;}}
 
@@ -102,54 +115,54 @@ bool SpatOptions::get_def_verbose() { return def_verbose; }
 bool SpatOptions::get_verbose() { return verbose; }
 void SpatOptions::set_verbose(bool v) { verbose = v; }
 
-bool SpatOptions::has_NAflag(double &flag) { 
+bool SpatOptions::has_NAflag(double &flag) {
 	flag = NAflag;
-	return hasNAflag; 
+	return hasNAflag;
 }
 
-double SpatOptions::get_NAflag() { 
+double SpatOptions::get_NAflag() {
 	return NAflag;
 }
 
-void SpatOptions::set_NAflag(double flag) { 
-	NAflag = flag; 
+void SpatOptions::set_NAflag(double flag) {
+	NAflag = flag;
 	hasNAflag = true;
 }
 
 unsigned SpatOptions::get_progress() { return progress; }
-void SpatOptions::set_progress(unsigned p) { 
-	progress = p; 
+void SpatOptions::set_progress(unsigned p) {
+	progress = p;
 }
 
-bool SpatOptions::show_progress(unsigned n) { 
+bool SpatOptions::show_progress(unsigned n) {
 	return ((progress > 0) & (progress <= n));
 }
 
 
-//void SpatOptions::set_filename(std::string f) { 
-//	f = lrtrim_copy(f); 
-//	filenames = {f}; 
+//void SpatOptions::set_filename(std::string f) {
+//	f = lrtrim_copy(f);
+//	filenames = {f};
 //}
 
-void SpatOptions::set_filenames(std::vector<std::string> f) { 
+void SpatOptions::set_filenames(std::vector<std::string> f) {
 	for (size_t i=0; i<f.size(); i++) {
-		f[i] = lrtrim_copy(f[i]); 
+		f[i] = lrtrim_copy(f[i]);
 	}
-	filenames = f; 
+	filenames = f;
 }
 
-std::string SpatOptions::get_filename() { 
+std::string SpatOptions::get_filename() {
 	if (!filenames.empty() ) {
-		return filenames[0]; 
+		return filenames[0];
 	} else {
 		return "";
 	}
 }
 
 
-std::vector<std::string> SpatOptions::get_filenames() { 
+std::vector<std::string> SpatOptions::get_filenames() {
 	if (!filenames.empty() ) {
-		return filenames; 
+		return filenames;
 	} else {
 		return {""};
 	}
@@ -166,9 +179,9 @@ double SpatOptions::get_memfrac() { return memfrac; }
 
 void SpatOptions::set_memfrac(double d) {
 	// allowing very high values for testing purposes
-	if ((d >= 0) && (d <= 100)) { 
+	if ((d >= 0) && (d <= 100)) {
 		memfrac = d;
-	} 
+	}
 }
 
 double SpatOptions::get_memmax() { return memmax; }
@@ -178,7 +191,7 @@ void SpatOptions::set_memmax(double d) {
 		memmax = -1;
 	} else {
 		memmax = d * 1024 * 1024 * 1024 / 8;
-	} 
+	}
 }
 
 double SpatOptions::get_memmin() { return memmin; }
@@ -188,15 +201,15 @@ void SpatOptions::set_memmin(double d) {
 		memmin = 1024 * 1024 * 1024 / 8;
 	} else {
 		memmin = d * 1024 * 1024 * 1024 / 8;
-	} 
+	}
 }
 
 double SpatOptions::get_tolerance() { return tolerance; }
 
 void SpatOptions::set_tolerance(double d) {
-	if (d > 0) { 
+	if (d > 0) {
 		tolerance = d;
-	} 
+	}
 }
 
 
@@ -209,6 +222,14 @@ size_t SpatOptions::get_steps(){ return steps; }
 
 void SpatOptions::set_ncopies(size_t n) { ncopies = std::max((size_t)1, n); }
 size_t SpatOptions::get_ncopies(){ return ncopies; }
+
+
+
+void SpatOptions::set_offset(std::vector<double> d) { offset = d ; }
+std::vector<double> SpatOptions::get_offset() {return offset;}
+
+void SpatOptions::set_scale(std::vector<double> d) {scale=d;}
+std::vector<double> SpatOptions::get_scale(){return scale;}
 
 
 bool extent_operator(std::string oper) {
@@ -246,7 +267,7 @@ bool SpatExtent::compare(SpatExtent e, std::string oper, double tolerance) {
 		} else {
 			return (equal || smaller);
 		}
-	} 
+	}
 	if (oper == ">" || oper == ">=") {
 		bool c1 = xmax > e.xmax;
 		bool c2 = xmin < e.xmin;
@@ -290,7 +311,7 @@ SpatExtent SpatExtent::ceil() {
 	return e;
 }
 
-SpatExtent SpatRaster::getExtent() { 
+SpatExtent SpatRaster::getExtent() {
 	if (source.size() > 0) {
 		return source[0].extent;
 	} else {
@@ -301,7 +322,7 @@ SpatExtent SpatRaster::getExtent() {
 
 
 
-void SpatRaster::setExtent(SpatExtent e) { 
+void SpatRaster::setExtent(SpatExtent e) {
 	for (size_t i=0; i<nsrc(); i++) {
 		source[i].extent = e;
 		source[i].extset = true;
@@ -309,10 +330,12 @@ void SpatRaster::setExtent(SpatExtent e) {
 }
 
 
-void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
+void SpatRaster::setExtent(SpatExtent ext, bool keepRes, bool expand, std::string snap) {
 
 	if (snap != "") {
 		ext = align(ext, snap);
+	}
+	if (!expand) {
 		ext = ext.intersect(getExtent());
 	}
 
@@ -322,18 +345,19 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 		double yrs = res[1];
 		unsigned nc = std::max(1.0, round( (ext.xmax - ext.xmin) / xrs ));
 		unsigned nr = std::max(1.0, round( (ext.ymax - ext.ymin) / yrs ));
-		source[0].ncol = nc;
-		source[0].nrow = nr;
 		ext.xmax = ext.xmin + nc * xrs;
 		ext.ymax = ext.ymin + nr * yrs;
-		source[0].extent = ext;
-	}
-
-	for (size_t i=0; i<nsrc(); i++) {
-		source[i].extent = ext;
-		source[i].extset = true;
-		//source[i].nrow = source[0].nrow;
-		//source[i].ncol = source[0].ncol;
+		for (size_t i=0; i<nsrc(); i++) {
+			source[i].extent = ext;
+			source[i].extset = true;
+			source[i].nrow = nr;
+			source[i].ncol = nc;
+		}
+	} else {
+		for (size_t i=0; i<nsrc(); i++) {
+			source[i].extent = ext;
+			source[i].extset = true;
+		}
 	}
 }
 
@@ -352,7 +376,7 @@ SpatExtent SpatExtent::align(double d, std::string snap) {
 		if ((i == 0) | (i == 2)) {
 			if (x > e[i]) {
 				x -= d;
-			} 
+			}
 		} else {
 			if (x < e[i]) {
 				x += d;
@@ -369,7 +393,7 @@ SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 
 	snap = is_in_set_default(snap, std::vector<std::string> {"near", "in", "out"}, "near", true);
 	std::vector<double> res = resolution();
-	std::vector<double> orig = origin(); 
+	std::vector<double> orig = origin();
 
 	// snap points to cell boundaries
 	double xmn, xmx, ymn, ymx;
@@ -427,8 +451,7 @@ std::vector<double> SpatRaster::origin() {
 }
 
 
-
-bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, double tol, bool warncrs, bool ext, bool rowcol, bool res) {
+bool SpatRaster::compare_geom(SpatRaster &x, bool lyrs, bool crs, double tol, bool warncrs, bool ext, bool rowcol, bool res) {
 
 	tol = tol < 0 ? 0 : tol;
 
@@ -479,8 +502,10 @@ bool SpatCategories::combine(SpatCategories &x) {
 	if (!ok) {
 		return(false);
 	}
+	d = d.unique();
 	std::vector<long> ids = d.getI(0);
 	size_t n = ids.size();
+	std::sort(ids.begin(), ids.end());
 	ids.erase(std::unique(ids.begin(), ids.end()), ids.end());
 	if (ids.size() < n) {
 		return false;
@@ -488,4 +513,102 @@ bool SpatCategories::combine(SpatCategories &x) {
 	return true;
 }
 
-	
+
+bool SpatCategories::concatenate(SpatCategories &x) {
+
+	std::vector<long> ids = d.getI(0);
+	std::vector<long> xids = x.d.getI(0);
+	std::vector<std::string> labs = d.as_string(index);
+	std::vector<std::string> xlabs = x.d.as_string(x.index);
+	size_t n = ids.size() * xids.size();
+	std::vector<long> id1, id2;
+	std::vector<std::string> news;
+	id1.reserve(n);
+	id2.reserve(n);
+	news.reserve(n);
+	std::string nm = d.names[index] + "_" + x.d.names[index];
+
+	for (size_t i=0; i<ids.size(); i++) {
+		for (size_t j=0; j<xids.size(); j++) {
+			id1.push_back(ids[i]);
+			id2.push_back(xids[j]);
+			news.push_back(labs[i] + "_" + xlabs[j]);
+		}
+	}
+	std::vector<long> id(n);
+	std::iota(id.begin(), id.end(), 0);
+	SpatDataFrame dd;
+	dd.add_column(id, "ID");
+	dd.add_column(news, nm);
+	dd.add_column(id1, "idx");
+	dd.add_column(id2, "idy");
+	d = dd;
+	return true;
+}
+
+
+#ifdef useRcpp
+
+void SpatProgress::init(size_t n, int nmin) {
+
+	if ((nmin <= 0) || ((int)n < nmin)) {
+		show = false;
+		return;
+	} 
+
+	show = true;
+
+	std::string bar = "|---------|---------|---------|---------|";
+	Rcpp::Rcout << "\r" << bar << "\r";
+	R_FlushConsole();
+
+	nstep = n;
+	step = 0;
+	size_t width = bar.size();
+
+	double increment = (double) width / double(nstep);
+
+	steps.resize(0);
+	steps.reserve(nstep+1);
+	for (size_t i=0; i<nstep; i++) {
+		int val = round(i * increment);
+		steps.push_back(val);
+	}
+	steps.push_back(width);
+}
+
+void SpatProgress::stepit() {
+	if (show) {
+		if (step < nstep) {
+			int n = steps[step+1] - steps[step];
+			if (n > 0) {
+				for (int i=0; i<n; i++) Rcpp::Rcout << "=";
+			}
+		}
+		step++;
+		R_FlushConsole();
+	}
+}
+
+void SpatProgress::finish() {
+	if (show) {
+		Rcpp::Rcout << "\r                                          \r";
+		step++;
+		R_FlushConsole();
+	}
+}
+
+void SpatProgress::interrupt() {
+	if (show) {
+		Rcpp::Rcout << "\r                                          \r";
+		R_FlushConsole();
+	}
+}
+
+#else 
+
+void SpatProgress::init(size_t n, int nmin) {}
+void SpatProgress::stepit() {}
+void SpatProgress::interrupt() {}
+
+#endif
