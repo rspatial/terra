@@ -470,7 +470,7 @@ class SpatRaster {
 
 		bool readAll();
 
-		bool writeStart(SpatOptions &opt, const std::vector<std::string> srcnames);
+		bool writeStart(SpatOptions &opt, std::vector<std::string> srcnames);
 
 		bool writeBlock(std::vector<double> &v, unsigned i){ // inline
 			// for debugging?
@@ -805,7 +805,7 @@ class SpatRaster {
 		SpatRaster hsx2rgb(SpatOptions &opt);	
 
 		SpatRaster proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt);
-		SpatRaster viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt);
+		SpatRaster viewshed(std::vector<double> obs, std::vector<double> vals, double curvcoef, int mode, double maxdist, int heightmode, SpatOptions &opt);
 		SpatRaster sieveFilter(int threshold, int connections, SpatOptions &opt);	
 		
 //		SpatRaster panSharpen(SpatRaster pan, SpatOptions &opt);	
