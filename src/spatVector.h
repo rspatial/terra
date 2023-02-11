@@ -38,7 +38,8 @@ class SpatHole {
 		SpatHole();
 		SpatHole(std::vector<double> X, std::vector<double> Y);
 		//methods
-		size_t size() { return x.size(); }	
+		size_t size() { return x.size(); }
+		bool empty() { return x.empty(); }
 };
 
 class SpatPart {
@@ -55,6 +56,7 @@ class SpatPart {
 
 		//methods
 		size_t size() { return x.size(); }
+		bool empty() { return x.empty(); }
 		//holes, polygons only
 		bool addHole(std::vector<double> X, std::vector<double> Y);
 		bool addHole(SpatHole h);
@@ -89,6 +91,7 @@ class SpatGeom {
 		//double length_plane();
 		//double length_lonlat(double a, double f);
 		unsigned size() { return parts.size(); };
+		bool empty() { return parts.empty(); };
 		void remove_duplicate_nodes(int digits);
 		size_t ncoords();
 		std::vector<std::vector<double>> coordinates();
@@ -408,6 +411,7 @@ class SpatVectorCollection {
 		std::string getError() { return msg.getError();}
 
 		size_t size() { return v.size(); }
+		bool empty() { return v.empty(); }
 		void reserve(size_t n) { v.reserve(n); names.reserve(n); }
 		void resize(size_t n) { v.resize(n); names.resize(n); }
 		void push_back(SpatVector x) {
