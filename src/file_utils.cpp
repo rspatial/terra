@@ -171,7 +171,7 @@ bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> o
 	#endif
 
 	for (size_t i=0; i<inf.size(); i++) {
-		if (inf[i] == "") continue;
+		if (inf[i].empty()) continue;
 		#ifdef _WIN32
 		std::transform(inf[i].begin(), inf[i].end(), inf[i].begin(), ::tolower);
 		#endif
@@ -198,7 +198,7 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 	}
 
 	for (size_t i=0; i<filenames.size(); i++) {
-		if ((filenames[i] != "") && file_exists(filenames[i])) {
+		if (!filenames[i].empty() && file_exists(filenames[i])) {
 			if (overwrite) {
 				if (remove(filenames[i].c_str()) != 0) {
 					msg = ("cannot overwrite existing file");

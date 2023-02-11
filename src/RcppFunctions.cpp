@@ -162,7 +162,7 @@ std::vector<double> geotransform(std::string fname) {
 
 // [[Rcpp::export(name = ".gdal_setconfig")]]
 void gdal_setconfig(std::string option, std::string value) {
-	if (value == "") {
+	if (value.empty()) {
 		CPLSetConfigOption(option.c_str(), NULL);
 	} else {
 		CPLSetConfigOption(option.c_str(), value.c_str());
@@ -388,7 +388,7 @@ void gdal_init(std::string projpath, std::string datapath) {
 
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
-	if (projpath != "") {
+	if (!projpath.empty()) {
 		const char *cp = projpath.c_str();
 		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
 	}
@@ -490,7 +490,7 @@ std::vector<std::string> get_proj_search_paths() {
 
 // [[Rcpp::export(name = ".set_proj_search_paths")]]
 bool set_proj_search_paths(std::vector<std::string> paths) {
-	if (!paths.size()) {
+	if (paths.empty()) {
 		return false;
 	}
 #if GDAL_VERSION_NUM >= 3000000

@@ -411,7 +411,7 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filen
 	filename = opt.get_filename();
 	SpatOptions ops(opt);
 	ops.ncopies += 4;
-	if (filename == "") {
+	if (filename.empty()) {
 		if (canProcessInMemory(ops)) {
 			driver = "MEM";
 		} else {
@@ -422,7 +422,7 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filen
 	} else {
 		driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
-		if (driver == "") {
+		if (driver.empty()) {
 			out.setError("cannot guess file type from filename");
 			return false;
 		}
@@ -576,7 +576,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		out = hardCopy(opt);
 	} else {
 		out = geometry(1);
-		if (field == "") {
+		if (field.empty()) {
 			out.setNames({"layer"});
 		} else {
 			out.setNames({field});
@@ -596,7 +596,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		out.addWarning("you cannot use 'sum' and 'touches' at the same time");
 	}
 
-	if (field != "") {
+	if (!field.empty()) {
 		int i = x.df.get_fieldindex(field);
 		if (i < 0) {
 			out.setError("field " + field + " not found");
@@ -747,7 +747,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		out = SpatRaster(filename, {-1}, {""}, {}, {});
 	} else {
 		std::string fname = opt.get_filename();
-		if ((fname != "") && (!update)) {
+		if (!fname.empty() && (!update)) {
 			out = out.writeRaster(opt);
 		}
 	}
@@ -783,7 +783,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
     SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, ropt);
 	SpatVector pts = rcr.as_points(false, true, false, ropt);
 	std::vector<double> cells;
-	if (pts.size() == 0) {
+	if (pts.empty()) {
 		pts = v.as_points(false, true);
 		SpatDataFrame vd = pts.getGeometryDF();
 		std::vector<double> x = vd.getD(0);
@@ -793,7 +793,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
                     [](const double& value) { return std::isnan(value); }), cells.end());
 		std::sort( cells.begin(), cells.end() );
 		cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
-		if (cells.size() == 0) {
+		if (cells.empty()) {
 			cells.resize(1, NAN);
 		}
 	} else {
@@ -802,7 +802,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 		std::vector<double> y = vd.getD(1);
 		cells = r.cellFromXY(x, y);
 //		cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
-		if (cells.size() == 0) {
+		if (cells.empty()) {
 			cells.resize(1, NAN);
 		}
 	}
@@ -832,7 +832,7 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 	r = r.rasterize(v, "", feats, NAN, false, false, true, false, false, ropt);
 	std::vector<std::vector<double>> cv = r.cells_notna(ropt);
 
-	if (cv[0].size() == 0) {
+	if (cv[0].empty()) {
 		weights.resize(1);
 		weights[0] = NAN;
 		cells.resize(1);
@@ -861,7 +861,7 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 		r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt);
 
 		SpatVector pts = r.as_points(true, true, false, ropt);
-		if (pts.size() == 0) {
+		if (pts.empty()) {
 			weights.resize(1);
 			weights[0] = NAN;
 			cells.resize(1);

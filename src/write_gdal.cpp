@@ -43,7 +43,7 @@ void add_quotes(std::vector<std::string> &s) {
 
 std::string quoted_csv(const std::vector<std::string> &s) {
 	std::string ss;
-	if (s.size() == 0) {
+	if (s.empty()) {
 		ss = "";
 		return ss;
 	}
@@ -310,7 +310,7 @@ void removeVatJson(std::string filename) {
 bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string> &srcnames) {
 
 	std::string filename = opt.get_filename();
-	if (filename == "") {
+	if (filename.empty()) {
 		setError("empty filename");
 		return(false);
 	} else {
@@ -320,7 +320,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	std::string driver = opt.get_filetype();
 	getGDALdriver(filename, driver);
-	if (driver == "") {
+	if (driver.empty()) {
 		setError("cannot guess file type from filename");
 		return(false);
 	}
@@ -975,12 +975,14 @@ bool SpatRaster::writeStopGDAL() {
 		}
 	}
 
-	if (copy_driver != "") {
+	if (copy_driver.empty()) {
+		GDALClose( (GDALDatasetH) source[0].gdalconnection );
+	} else {
 		GDALDataset *newDS;
 		GDALDriver *poDriver;
 		char **papszOptions = set_GDAL_options(copy_driver, 0.0, false, gdal_options);
 		poDriver = GetGDALDriverManager()->GetDriverByName(copy_driver.c_str());
-		if (copy_filename == "") {
+		if (copy_filename.empty()) {
 			newDS = poDriver->CreateCopy(source[0].filename.c_str(),
 				source[0].gdalconnection, FALSE, papszOptions, NULL, NULL);
 			if( newDS == NULL )  {
@@ -1022,8 +1024,6 @@ bool SpatRaster::writeStopGDAL() {
 			GDALClose( (GDALDatasetH) newDS );
 		}
 		CSLDestroy(papszOptions);
-	} else {
-		GDALClose( (GDALDatasetH) source[0].gdalconnection );
 	}
 	source[0].hasValues = true;
 

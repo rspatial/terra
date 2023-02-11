@@ -470,7 +470,7 @@ class SpatRaster {
 
 		bool readAll();
 
-		bool writeStart(SpatOptions &opt, const std::vector<std::string> srcnames);
+		bool writeStart(SpatOptions &opt, std::vector<std::string> srcnames);
 
 		bool writeBlock(std::vector<double> &v, unsigned i){ // inline
 			// for debugging?
@@ -498,7 +498,7 @@ class SpatRaster {
 
 		bool readStartMulti(unsigned src);
 		bool readStopMulti(unsigned src);
-		bool readValuesMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
+		bool readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
 
 
 
@@ -721,10 +721,8 @@ class SpatRaster {
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches, SpatOptions &opt);
 		//std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
 		SpatRaster rasterizeGeom(SpatVector x, std::string unit, std::string count, SpatOptions &opt);
-
 		SpatRaster rasterizePoints(std::vector<double>&x, std::vector<double> &y, std::string fun, std::vector<double> &values, bool narm, double background, SpatOptions &opt);
 		SpatRaster rasterizePoints(SpatVector &x, std::string fun, std::vector<double> &values, bool narm, double background, SpatOptions &opt);
-
 		void rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 
 		void rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 
 		void rasterizeLinesLength(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt);
@@ -795,7 +793,7 @@ class SpatRaster {
 		
 		SpatRaster applyGCP(std::vector<double> fx, std::vector<double> fy, std::vector<double> tx, std::vector<double> ty, SpatOptions &opt);
 
-		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
+		SpatDataFrame zonal(SpatRaster z, std::string fun, bool narm, SpatOptions &opt);
 		SpatDataFrame zonal_weighted(SpatRaster x, SpatRaster w,  bool narm, SpatOptions &opt);
 
 		SpatDataFrame zonal_poly(SpatVector x, std::string fun, bool weights, bool exact, bool touches, bool narm, SpatOptions &opt);
@@ -807,7 +805,7 @@ class SpatRaster {
 		SpatRaster hsx2rgb(SpatOptions &opt);	
 
 		SpatRaster proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt);
-		SpatRaster viewshed(const std::vector<double> obs, const std::vector<double> vals, const double curvcoef, const int mode, const double maxdist, const int heightmode, SpatOptions &opt);
+		SpatRaster viewshed(std::vector<double> obs, std::vector<double> vals, double curvcoef, int mode, double maxdist, int heightmode, SpatOptions &opt);
 		SpatRaster sieveFilter(int threshold, int connections, SpatOptions &opt);	
 		
 //		SpatRaster panSharpen(SpatRaster pan, SpatOptions &opt);	

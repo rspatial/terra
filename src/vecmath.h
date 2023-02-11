@@ -67,7 +67,7 @@ static inline std::vector<double> vquantile(std::vector<double> v, const std::ve
         [](const double& value) { return std::isnan(value); }),
         std::end(v));
 
-	if (((!narm) && (v.size() < n)) || (v.size() == 0)) {
+	if (((!narm) && (v.size() < n)) || v.empty()) {
 		return std::vector<double>(probs.size(), NAN);
 	}
 

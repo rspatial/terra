@@ -28,6 +28,7 @@ std::string SpatRasterCollection::getError() { return msg.getError(); }
 SpatRasterCollection::SpatRasterCollection(size_t n) { ds.resize(n); };
 
 size_t SpatRasterCollection::size() { return ds.size(); }
+bool SpatRasterCollection::empty() { return ds.empty(); }
 
 void SpatRasterCollection::resize(size_t n) { ds.resize(n); }
 
@@ -47,7 +48,7 @@ void SpatRasterCollection::push_back(SpatRaster r, std::string name) {
 
 SpatExtent SpatRasterCollection::getExtent() { 
 	SpatExtent e;
-	if (ds.size() == 0) {
+	if (ds.empty()) {
 		e = SpatExtent();
 	} else {
 		e = ds[0].getExtent();
@@ -113,20 +114,20 @@ SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, 
 		return out;
 	}
 	SpatOptions ops(opt);
-	if (use.size() > 0) {
+	if (use.empty()) {
+		for (size_t i=0; i<size(); i++) {
+			SpatExtent xe = e.intersect(ds[i].getExtent());
+			if (xe.valid()) {
+				out.push_back(ds[i].crop(e, snap, expand, ops), "");
+			}
+		}
+	} else {
 		for (size_t i=0; i<use.size(); i++) {
 			SpatExtent xe = e.intersect(ds[use[i]].getExtent());
 			if (xe.valid()) {
 				SpatRaster r = ds[use[i]];
 				r = r.crop(e, snap, expand, ops);
 				out.push_back(r, "");
-			}
-		}
-	} else {
-		for (size_t i=0; i<size(); i++) {
-			SpatExtent xe = e.intersect(ds[i].getExtent());
-			if (xe.valid()) {
-				out.push_back(ds[i].crop(e, snap, expand, ops), "");
 			}
 		}
 	}
@@ -147,20 +148,20 @@ SpatRasterCollection SpatRasterCollection::cropmask(SpatVector v, std::string sn
 		return out;
 	}
 	SpatOptions ops(opt);
-	if (use.size() > 0) {
-		for (size_t i=0; i<use.size(); i++) {
-			SpatExtent xe = e.intersect(ds[use[i]].getExtent());
-			if (xe.valid()) {
-				SpatRaster r = ds[use[i]].cropmask(v, snap, touches, expand, ops);
-				out.push_back(r.source[0], names[use[i]]);
-			}
-		}
-	} else {
+	if (use.empty()) {
 		for (size_t i=0; i<size(); i++) {
 			SpatExtent xe = e.intersect(ds[i].getExtent());
 			if (xe.valid()) {
 				SpatRaster x = ds[i].cropmask(v, snap, touches, expand, ops);
 				out.push_back(x.source[0], names[i]);
+			}
+		}
+	} else {
+		for (size_t i=0; i<use.size(); i++) {
+			SpatExtent xe = e.intersect(ds[use[i]].getExtent());
+			if (xe.valid()) {
+				SpatRaster r = ds[use[i]].cropmask(v, snap, touches, expand, ops);
+				out.push_back(r.source[0], names[use[i]]);
 			}
 		}
 	}
@@ -218,17 +219,17 @@ SpatRasterStack::SpatRasterStack(SpatRaster r, std::string name, std::string lon
 
 
 std::vector<double> SpatRasterStack::resolution() {
-	if (ds.size() > 0) {
-		return ds[0].resolution();
-	} else {
+	if (ds.empty()) {
 		return {NAN, NAN};
+	} else {
+		return ds[0].resolution();
 	}
 }
 SpatExtent SpatRasterStack::getExtent() {
-	if (ds.size() > 0) {
-		return ds[0].getExtent();
-	} else {
+	if (ds.empty()) {
 		return SpatExtent();
+	} else {
+		return ds[0].getExtent();
 	}
 }
 
@@ -284,22 +285,22 @@ unsigned SpatRasterStack::nsds() {
 	return ds.size();
 }
 unsigned SpatRasterStack::nrow() {
-	if (ds.size() > 0) {
-		return ds[0].nrow();
-	} else {
+	if (ds.empty()) {
 		return 0;
+	} else {
+		return ds[0].nrow();
 	}
 }
 unsigned SpatRasterStack::ncol() {
-	if (ds.size() > 0) {
-		return ds[0].ncol();
-	} else {
+	if (ds.empty()) {
 		return 0;
+	} else {
+		return ds[0].ncol();
 	}
 }
 std::vector<unsigned> SpatRasterStack::nlyr() {
 	std::vector<unsigned> out;
-	if (ds.size() > 0) {
+	if (!ds.empty()) {
 		out.reserve(ds.size());
 		for (size_t i=0; i<ds.size(); i++) {
 			out.push_back(ds[i].nlyr());
@@ -309,15 +310,15 @@ std::vector<unsigned> SpatRasterStack::nlyr() {
 }
 
 std::string SpatRasterStack::getSRS(std::string s) {
-	if (ds.size() > 0) {
-		return ds[0].getSRS(s);
-	} else {
+	if (ds.empty()) {
 		return "";
+	} else {
+		return ds[0].getSRS(s);
 	}
 }
 		
 bool SpatRasterStack::push_back(SpatRaster r, std::string name, std::string longname, std::string unit, bool warn) { 
-	if (ds.size() > 0) {
+	if (!ds.empty()) {
 		if (!r.compare_geom(ds[0], false, false, true, true, true, false)) {
 //		if (!ds[0].compare_geom(r, false, false, true, true, false, false)) {
 			if (warn) {
@@ -346,6 +347,7 @@ bool SpatRasterStack::push_back(SpatRaster r, std::string name, std::string long
 };
 		
 size_t SpatRasterStack::size() { return ds.size(); }
+bool SpatRasterStack::empty() { return ds.empty(); }
 void SpatRasterStack::resize(size_t n) { 
 	if (n < ds.size()) {
 		ds.resize(n); 
@@ -406,7 +408,7 @@ void SpatRasterStack::replace(unsigned i, SpatRaster x) {
 		setError("invalid index");
 		return;				
 	}
-	if (ds.size() == 0) {
+	if (ds.empty()) {
 		setError("cannot replace on empty stack");
 		return;
 	}
@@ -424,7 +426,7 @@ void SpatRasterStack::replace(unsigned i, SpatRaster x) {
 SpatRaster SpatRasterStack::collapse() {
 	SpatRaster out;
 
-	if (ds.size() > 0) {
+	if (!ds.empty()) {
 		out = ds[0];
 		for (size_t i=1; i<ds.size(); i++) {
 			for (size_t j=0; j<ds[i].source.size(); j++) {

@@ -322,11 +322,11 @@ class SpatSRS {
 		}
 
 		bool is_empty() {
-			return (wkt == "");
+			return wkt.empty();
 		}
 
 		bool is_same(std::string other, bool ignoreempty);
-		bool is_same(SpatSRS x, bool ignoreempty);
+		bool is_same(SpatSRS other, bool ignoreempty);
 
 
 		bool is_lonlat(); // as below, but using GDAL

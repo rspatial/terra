@@ -28,6 +28,7 @@ class SpatTime_v {
 		std::string zone;
 		std::string step;
 		size_t size() { return(x.size());}
+		bool empty() { return(x.empty());}
 		void resize(size_t n) {x.resize(n);}
 		void resize(size_t n, SpatTime_t v) {x.resize(n, v);}
 		void reserve(size_t n) {x.reserve(n);}
