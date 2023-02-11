@@ -2,11 +2,16 @@
 
 \alias{serialize}
 \alias{saveRDS}
+\alias{unserialize}
+\alias{readRDS}
 
 \alias{serialize,SpatVector-method}
 \alias{serialize,SpatRaster-method}
+\alias{unserialize,ANY-method}
+
 \alias{saveRDS,SpatVector-method}
 \alias{saveRDS,SpatRaster-method}
+\alias{readRDS,character-method}
 
 
 \title{serialize and saveRDS for SpatRaster and SpatVector}
@@ -52,7 +57,6 @@ p <- serialize(v, NULL)
 head(p)
 x <- unserialize(p)
 x
-vect(x)
 }
 
 

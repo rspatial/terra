@@ -5,7 +5,7 @@
 
 
 
-setMethod("sel", signature(x="SpatRaster"), 
+setMethod("sel", signature(x="SpatRaster"),
 	function(x, ...) {
 		e <- draw(...)
 		int <- intersect(e, ext(x))
@@ -19,18 +19,18 @@ setMethod("sel", signature(x="SpatRaster"),
 )
 
 
-setMethod("sel", signature(x="SpatVector"), 
+setMethod("sel", signature(x="SpatVector"),
 	function(x, use="rec", draw=TRUE, col="cyan", ...) {
 		use <- substr(tolower(use), 1, 3)
-		use <- match.arg(use, c("rec", "pol")) 
+		use <- match.arg(use, c("rec", "pol"))
 		if (use == "rec") {
 			e <- draw()
 		#	e <- as.polygons(e)
 		} else {
 			e <- draw("pol")
 		}
-		i <- relate(x, e, "intersects")
-		x <- x[as.vector(i), ]
+		i <- is.related(x, e, "intersects")
+		x <- x[i, ]
 		if (draw) {
 			if (geomtype(x) == "points" || geomtype(x) == "multipoints") {
 				points(x, col=col, ...)

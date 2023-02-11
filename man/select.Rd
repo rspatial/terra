@@ -24,7 +24,7 @@ Geometrically subset SpatRaster or SpatVector (to be done) by drawing on a plot 
 \arguments{
 \item{x}{SpatRaster or SpatVector}
 \item{use}{character indicating what to draw. One of "rec" (rectangle) or "pol" (polygon)}
-\item{draw}{logial. If \code{TRUE} the selection is drawn on the map}
+\item{draw}{logical. If \code{TRUE} the selection is drawn on the map}
 \item{col}{color to be used for drawing if \code{draw=TRUE}}
 \item{...}{additional graphics arguments for drawing}
 }

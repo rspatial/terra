@@ -1,30 +1,38 @@
 \name{wrap}
 
 \alias{wrap}
+\alias{unwrap}
 
 \alias{wrap,SpatVector-method}
 \alias{wrap,SpatRaster-method}
-\alias{wrap,Spatial-method}
+\alias{unwrap,ANY-method}
+\alias{unwrap,PackedSpatRaster-method}
+\alias{unwrap,PackedSpatVector-method}
 
 
-\title{wrap (pack) a SpatRaster or SpatVector object}
+\title{wrap and unwrap}
 
 \description{
-Wrap a SpatRaster or SpatVector object to create a Packed* object. Packed objects can be saved as an R object to disk (.rds or .RData), or passed over a connection that serializes (e.g. to nodes on a computer cluster); but with large datasets passing a filename could be more sensible in that context. 
+Use \code{wrap} to pack a SpatRaster or SpatVector object to create a Packed* object. Packed objects can be passed over a connection that serializes (e.g. to nodes on a computer cluster). At the receiving end they need to be unpacked with \code{unwrap}.
 }
 
 \usage{
-\S4method{wrap}{SpatRaster}(x)
+\S4method{wrap}{SpatRaster}(x, proxy=FALSE)
 
 \S4method{wrap}{SpatVector}(x)
+
+\S4method{unwrap}{ANY}(x)
 }
 
 \arguments{
   \item{x}{SpatVector or SpatRaster}
+  \item{proxy}{logical. If \code{FALSE} raster cell values are forced to memory if possible. If \code{TRUE}, a reference to source filenames is stored for data sources that are not in memory}
 }
 
 \value{
-Packed* object 
+\code{wrap}: Packed* object
+
+\code{unwrap}: SpatRaster or SpatVector
 }
 
 

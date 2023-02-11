@@ -29,7 +29,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 }
 
 \usage{
-\S4method{rast}{character}(x, subds=0, lyrs=NULL, opts=NULL)
+\S4method{rast}{character}(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, vsi=TRUE)
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
           ymin=-90, ymax=90, crs, extent, resolution, vals, names, time, units)
@@ -55,7 +55,10 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \item{x}{filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects. For other types it will be attempted to create a SpatRaster via (`as(x, "SpatRaster")`}
 \item{subds}{positive integer or character to select a sub-dataset. If zero or "", all sub-datasets are returned (if possible)}
 \item{lyrs}{positive integer or character to select a subset of layers (a.k.a. "bands")}
+\item{drivers}{character. GDAL drivers to consider}
 \item{opts}{character. GDAL dataset open options}
+\item{win}{SpatExtent to set a \code{\link{window}} (area of interest)}
+\item{vsi}{logical. If \code{TRUE}, "\\vsicurl\\" is prepended to filenames that start with "http"}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}
@@ -63,17 +66,17 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \item{xmax}{maximum x coordinate (right border)}
 \item{ymin}{minimum y coordinate (bottom border)}
 \item{ymax}{maximum y coordinate (top border)}
-\item{crs}{character. Description of the Coordinate Reference System (map projection) in \code{PROJ.4}, \code{WKT} or \code{authority:code} notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned}
+\item{crs}{character. Description of the Coordinate Reference System (map projection) in \code{PROJ.4}, \code{WKT} or \code{authority:code} notation. See \code{\link{crs}}. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned}
 \item{keeptime}{logical. If \code{FALSE} the time stamps are discarded}
 \item{keepunits}{logical. If \code{FALSE} the layer units are discarded}
 \item{props}{logical. If \code{TRUE} the properties (categories and color-table) are kept}
 \item{extent}{object of class SpatExtent. If present, the arguments xmin, xmax, ymin and ymax are ignored}
-\item{resolution}{numeric vector of length 1 or 2 to set the resolution (see \code{\link{res}}). If this argument is used, arguments \code{ncol} and \code{nrow} are ignored }
+\item{resolution}{numeric vector of length 1 or 2 to set the spatial resolution (see \code{\link{res}}). If this argument is used, arguments \code{ncols} and \code{nrows} are ignored }
 \item{vals}{numeric. An optional vector with cell values (if fewer values are provided, these are recycled to reach the number of cells)}
 \item{names}{character. An optional vector with layer names (must match the number of layers)}
 \item{time}{time or date stamps for each layer}
 \item{units}{character. units for each layer}
-\item{type}{character. If the value is not \code{"xyz"}, the raster has the same number of rows and colums as the matrix. If the value is \code{"xyz"}, the matrix must have at least two columns, the first with \code{x} (or longitude) and the second with \code{y} (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells.}
+\item{type}{character. If the value is not \code{"xyz"}, the raster has the same number of rows and columns as the matrix. If the value is \code{"xyz"}, the matrix must have at least two columns, the first with \code{x} (or longitude) and the second with \code{y} (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells.}
 \item{digits}{integer to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when \code{type="xyz"}}
 \item{warn}{logical. If \code{TRUE}, a warnings about empty rasters may be emitted}
 \item{...}{additional arguments passed on to the \code{rast,missing-method}}  
@@ -85,7 +88,7 @@ SpatRaster
 }
 
 \details{
-Files are read with the GDAL library. GDAL guesses the file format from the name, and/or tries reading it with different "drivers" (see \code{\link{gdal}}) until it succeeds. In very few cases this may cause a file to be opened with the wrong driver, and some information may be lost. For example, when a netCDF file is opened with the HDF5 driver. You can avoid that by prepending the driver name to the filename like this: \code{rast('NETCDF:"filename.ncdf"')}
+Files are read with the GDAL library. GDAL guesses the file format from the name, and/or tries reading it with different "drivers" (see \code{\link{gdal}}) until it succeeds. In very few cases this may cause a file to be opened with the wrong driver, and some information may be lost. For example, when a netCDF file is opened with the HDF5 driver. You can avoid that by using argument \code{rast("filename.ncdf", drivers="NETCDF")}
 
 These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save SpatRaster objects to disk (and pass a filename or cell values ot cluster nodes). Also see \code{\link{wrap}}. 
 }

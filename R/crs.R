@@ -10,17 +10,17 @@ is.proj <- function(crs) {
 
 .check_proj4_datum <- function(crs) {
 	crs <- trimws(tolower(crs))
-	if (!is.proj(crs)) return() 
+	if (!is.proj(crs)) return()
 	x <- trimws(unlist(strsplit(crs, "\\+")))
 	d <- grep("datum=", x, value=TRUE)
-	if (length(d) > 0) {  
+	if (length(d) > 0) {
 		d <- gsub("datum=", "", d)
 		if (!(d %in% c("wgs84", "nad83", "nad27"))) {
 			warn("crs<-", "Only the WGS84, NAD83 and NAD27 datums can be used with a PROJ.4 string. Use WKT2, authority:code, or +towgs84= instead")
 		}
 	}
 	#d <- grep("towgs84=", x, value=TRUE)
-	#if (length(d) > 0) {  
+	#if (length(d) > 0) {
 	#	warn("crs<-", "+towgs84 parameters in a PROJ4 string are ignored")
 	#}
 }
@@ -30,14 +30,22 @@ is.proj <- function(crs) {
 	x@ptr$get_crs("proj4")
 }
 
+.name_from_wkt <- function(wkt) {
+	s = strsplit(wkt, ",")[[1]][1]
+	strsplit(s, "\"")[[1]][[2]]
+}
+
 .name_or_proj4 <- function(x) {
 	if (inherits(x, "SpatVectorProxy")) {
-		v <- vect()
-		v@ptr <- x@ptr$v
-		x <- v
+		ptr <- x@ptr$v
+	} else if (inherits(x, "Rcpp_SpatRaster")) {
+		ptr <- x	
+	} else {
+		ptr <- x@ptr
 	}
-	d <- .srs_describe(x@ptr$get_crs("wkt"))
-	r <- x@ptr$get_crs("proj4")
+	wkt <- ptr$get_crs("wkt")
+	d <- .srs_describe(wkt)
+	r <- ptr$get_crs("proj4")
 	if (!(d$name %in% c(NA, "unknown", "unnamed"))) {
 		if (substr(r, 1, 13) == "+proj=longlat") {
 			r <- paste("lon/lat", d$name)
@@ -46,8 +54,14 @@ is.proj <- function(crs) {
 		}
 		if (!is.na(d$code)) {
 			r <- paste0(r, " (", d$authority, ":", d$code, ")")
-		} 
-	} 
+		}
+	}
+	if (r == "") {
+		rr <- try(.name_from_wkt(wkt), silent=TRUE)
+		if (!inherits(rr, "try-error")) {
+			r <- rr
+		}
+	}
 	r
 }
 
@@ -89,13 +103,20 @@ is.proj <- function(crs) {
 }
 
 
-setMethod("crs", signature("SpatRaster"), 
+setMethod("crs", signature("character"),
+	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+		x <- rast(crs=x)
+		.get_CRS(x, proj=proj, describe=describe, parse=parse)
+	}
+)
+
+setMethod("crs", signature("SpatRaster"),
 	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
 		.get_CRS(x, proj=proj, describe=describe, parse=parse)
 	}
 )
 
-setMethod("crs", signature("SpatRasterDataset"), 
+setMethod("crs", signature("SpatRasterDataset"),
 	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
 		if (length(x) > 0) {
 			.get_CRS(x[[1]], proj=proj, describe=describe, parse=parse)
@@ -122,6 +143,12 @@ setMethod("crs", signature("SpatRasterDataset"),
 		x <- y
 	} else if (is.character(x)) {
 		x <- x[1]
+		lowx <- tolower(x)
+		if (lowx == "local") {
+			x = 'LOCAL_CS["Cartesian (Meter)", LOCAL_DATUM["Local Datum",0], UNIT["Meter",1.0], AXIS["X",EAST], AXIS["Y",NORTH]]'
+		} else if (lowx == "lonlat") {
+			x <- "+proj=longlat"
+		}
 	} else {
 		error("crs", "I do not know what to do with this argument (expected a character string)")
 	}
@@ -129,26 +156,34 @@ setMethod("crs", signature("SpatRasterDataset"),
 	x
 }
 
-setMethod("crs<-", signature("SpatRaster", "ANY"), 
-	function(x, value) {
+setMethod("crs<-", signature("SpatRaster", "ANY"),
+	function(x, warn=FALSE, value) {
+		if (missing(value)) {
+			value <- warn
+			warn <- FALSE
+		}
 		value <- .txtCRS(value)
+		if (warn && (crs(x) != "") && (value != "")) {
+			message("Assigning a new crs. Use 'project' to transform a SpatRaster to a new crs")
+		}
 		x@ptr <- x@ptr$deepcopy()
 		x@ptr$set_crs(value)
 		messages(x, "crs<-")
 	}
 )
 
-setMethod("set.crs", signature("SpatRaster"), 
+setMethod("set.crs", signature("SpatRaster"),
 	function(x, value) {
 		value <- .txtCRS(value)
 		x@ptr$set_crs(value)
 		messages(x, "set_crs")
+		invisible(TRUE)
 	}
 )
 
 
 
-#setMethod("crs<-", signature("SpatRaster", "character"), 
+#setMethod("crs<-", signature("SpatRaster", "character"),
 #	function(x, ..., value) {
 #		x@ptr$set_crs(value[1])
 #		messages(x, "crs<-")
@@ -156,13 +191,13 @@ setMethod("set.crs", signature("SpatRaster"),
 #)
 
 
-setMethod("crs", signature("SpatVector"), 
+setMethod("crs", signature("SpatVector"),
 	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
 		.get_CRS(x, proj=proj, describe=describe, parse=parse)
 	}
 )
 
-setMethod("crs", signature("SpatVectorProxy"), 
+setMethod("crs", signature("SpatVectorProxy"),
 	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
 		v <- vect()
 		v@ptr <- x@ptr$v
@@ -170,25 +205,33 @@ setMethod("crs", signature("SpatVectorProxy"),
 	}
 )
 
+# breaks stppSim 1.2.3
+#
+setMethod("crs", signature("sf"),
+  function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+	  xcrs <- attr(x[[ attr(x, "sf_column") ]], "crs")$wkt
+	  x <- vect(cbind(0,0), crs=xcrs)
+	  .get_CRS(x, proj=proj, describe=describe, parse=parse)
+  }
+)
 
-#setMethod("crs", signature("sf"), 
-#	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
-#		xcrs <- attr(x[[ attr(x, "sf_column") ]], "crs")$wkt
-#		x <- vect(cbind(0,0), crs=xcrs)
-#		.get_CRS(x, proj=proj, describe=describe, parse=parse)
-#	}
-#)
-
-setMethod("crs<-", signature("SpatVector", "ANY"), 
-	function(x, value) {
+setMethod("crs<-", signature("SpatVector", "ANY"),
+	function(x, warn=FALSE, value) {
+		if (missing(value)) {
+			value <- warn
+			warn <- FALSE
+		}
 		value <- .txtCRS(value)
+		if (warn && (crs(x) != "") && (value != "")) {
+			message("Assigning a new crs. Use 'project' to transform a SpatVector to a new crs")
+		}
 		x@ptr <- x@ptr$deepcopy()
 		x@ptr$set_crs(value)
 		messages(x, "crs<-")
 	}
 )
 
-setMethod("set.crs", signature("SpatVector"), 
+setMethod("set.crs", signature("SpatVector"),
 	function(x, value) {
 		value <- .txtCRS(value)
 		x@ptr$set_crs(value)
@@ -197,19 +240,21 @@ setMethod("set.crs", signature("SpatVector"),
 )
 
 
-setMethod("is.lonlat", signature("SpatRaster"), 
+setMethod("is.lonlat", signature("SpatRaster"),
 	function(x, perhaps=FALSE, warn=TRUE, global=FALSE) {
 		if (perhaps) {
 			ok <- x@ptr$isLonLat()
 			if (ok) {
+				messages(x, "is.lonlat")
 				if (global) {
 					return(x@ptr$isGlobalLonLat())
 				} else {
 					return(ok)
 				}
-			}
+			} 
 			ok <- x@ptr$couldBeLonLat()
 			if (ok) {
+				messages(x, "is.lonlat")
 				if (global) {
 					ok <- x@ptr$isGlobalLonLat()
 				}
@@ -219,11 +264,14 @@ setMethod("is.lonlat", signature("SpatRaster"),
 			}
 		} else {
 			ok <- x@ptr$isLonLat()
-			if (ok && global) {
-				ok <- x@ptr$isGlobalLonLat()
-			}
-			if ((!ok) && (crs(x) == "")) {
+			if (ok) {
+				messages(x, "is.lonlat")
+				if (global) {
+					ok <- x@ptr$isGlobalLonLat()
+				}
+			} else if (crs(x) == "") {
 				ok <- NA
+				warn("is.lonlat", "unknown crs")
 			}
 		}
 		ok
@@ -231,20 +279,16 @@ setMethod("is.lonlat", signature("SpatRaster"),
 )
 
 
-setMethod("is.lonlat", signature("SpatVector"), 
+setMethod("is.lonlat", signature("SpatVector"),
 	function(x, perhaps=FALSE, warn=TRUE) {
-		if (perhaps) {
-			ok <- x@ptr$couldBeLonLat()
-			if (ok && warn) {
-				if (crs(x) == "") warn("is.lonlat", "assuming lon/lat crs")
-			}
-		} else {
-			ok <- x@ptr$isLonLat()
-			if ((!ok) && (crs(x) == "")) {
-				ok <- NA
-			}
-		}
-		ok
+		x <- rast(x)
+		is.lonlat(x, perhaps=perhaps, warn=warn, global=FALSE)
 	}
 )
 
+setMethod("is.lonlat", signature("character"),
+	function(x, perhaps=FALSE, warn=TRUE) {
+		x <- rast(crs=x)
+		is.lonlat(x, perhaps=perhaps, warn=warn)
+	}
+)

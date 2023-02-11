@@ -17,8 +17,8 @@ Always use the \code{".nc"} or \code{".cdf"} file extension to assure that the f
 \usage{
 \S4method{writeCDF}{SpatRaster}(x, filename, varname, longname="", unit="", ...)
 
-\S4method{writeCDF}{SpatRasterDataset}(x, filename, overwrite=FALSE, zname="time",
-    prec="float", compression=NA, missval, ...)
+\S4method{writeCDF}{SpatRasterDataset}(x, filename, overwrite=FALSE, zname="time", atts="", 
+    gridmap="", prec="float", compression=NA, missval, ...)
 }
 
 \arguments{
@@ -27,12 +27,14 @@ Always use the \code{".nc"} or \code{".cdf"} file extension to assure that the f
   \item{varname}{character. Name of the dataset}
   \item{longname}{character. Long name of the dataset}
   \item{unit}{character. Unit of the data}
+  \item{atts}{character. A vector of additional global attributes to write. The must be formatted like c("x=a value", "y=abc")}
+  \item{gridmap}{character. The crs is always writting to the file in standard formats. With this argument you can also write the format commonly used in netcdf files. Something like \code{c("grid_mapping_name=lambert_azimuthal_equal_area", "longitude_of_projection_origin=10", "latitude_of_projection_origin=52", "false_easting=4321000", "false_northing=3210000")}}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{zname}{character. The name of the "time" dimension}
   \item{prec}{character. One of "double", "float", "integer", "short", "byte" or "char"}
   \item{compression}{Can be set to an integer between 1 (least compression) and 9 (most compression)}
   \item{missval}{numeric, the number used to indicate missing values}
-  \item{...}{additional arguments passed on to \code{\link[ncdf4]{ncvar_def}}}
+  \item{...}{additional arguments passed on to the SpatRasterDataset method, and from there possibly to \code{\link[ncdf4]{ncvar_def}}}
 }
 
 \value{

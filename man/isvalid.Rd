@@ -2,20 +2,23 @@
 
 \alias{is.valid}
 \alias{is.valid,SpatVector-method}
+\alias{is.valid,SpatExtent-method}
 \alias{makeValid}
 \alias{makeValid,SpatVector-method}
 
   
-\title{Check or fix polygon validity}
+\title{Check or fix polygon or extent validity}
 
 \description{
-Check the validity of polygons or attempt to fix it
+Check the validity of polygons or attempt to fix it. Or check the validity of a SpatExtent.
 }
 
 \usage{
 \S4method{is.valid}{SpatVector}(x, messages=FALSE, as.points=FALSE)
 
 \S4method{makeValid}{SpatVector}(x)
+
+\S4method{is.valid}{SpatExtent}(x)
 }
 
 \arguments{

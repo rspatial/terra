@@ -1,3 +1,20 @@
+// Copyright (c) 2018-2023  Robert J. Hijmans
+//
+// This file is part of the "spat" library.
+//
+// spat is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// spat is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with spat. If not, see <http://www.gnu.org/licenses/>.
+
 #define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
@@ -47,6 +64,14 @@ static PrepGeomPtr geos_ptr(const GEOSPreparedGeometry* pg, GEOSContextHandle_t 
 	return PrepGeomPtr(pg, deleter);
 }
 
+
+using TreePtr= std::unique_ptr<GEOSSTRtree, std::function<void(GEOSSTRtree*)> >;
+static TreePtr geos_ptr(GEOSSTRtree* t, GEOSContextHandle_t hGEOSctxt) {
+	auto deleter = std::bind(GEOSSTRtree_destroy_r, hGEOSctxt, std::placeholders::_1);
+	return TreePtr(t, deleter);
+}
+
+
 #ifdef useRcpp
 #include "Rcpp.h"
 
@@ -65,10 +90,12 @@ static void __errorHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	size_t n = BUFSIZ;
+	vsnprintf(buf, n, fmt, ap);
+//	vsprintf(buf, fmt, ap);
 	va_end(ap);
 	p = buf + strlen(buf) - 1;
-	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
+	if (strlen(buf) > 0 && *p == '\n') *p = '\0';
     errNoCall(buf); 
 	return; 
 } 
@@ -77,10 +104,12 @@ static void __warningHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	size_t n = BUFSIZ;
+	vsnprintf(buf, n, fmt, ap);
+//	vsprintf(buf, fmt, ap);
 	va_end(ap);
 	p = buf + strlen(buf) - 1;
-	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
+	if (strlen(buf) > 0 && *p == '\n') *p = '\0';
     warnNoCall(buf); 
 	return;
 }
@@ -92,7 +121,9 @@ static void __errorHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	size_t n = BUFSIZ;
+	vsnprintf(buf, n, fmt, ap);
+//	vsprintf(buf, fmt, ap);
 	va_end(ap);
 	p = buf + strlen(buf) - 1;
 	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
@@ -104,7 +135,9 @@ static void __warningHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	size_t n = BUFSIZ;
+	vsnprintf(buf, n, fmt, ap);
+//	vsprintf(buf, fmt, ap);
 	va_end(ap);
 	p = buf + strlen(buf) - 1;
 	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
@@ -443,7 +476,16 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 	if (npts < 0) {
 		msg = "GEOS exception 9";
 		return false;
-	}
+	} 
+	if (npts == 0) { // for #813
+		x.push_back(NAN);
+		y.push_back(NAN);
+		gid.push_back(i);			
+		gp.push_back(j);			
+		hole.push_back(0);
+		return true;
+	}	
+		
 	double xvalue = 0;
 	double yvalue = 0;
 	for (int p=0; p < npts; p++) {
@@ -473,6 +515,16 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 		msg = "exception 99";
 		return false;
 	}
+
+	if (npts == 0) { // for #813
+		x.push_back(NAN);
+		y.push_back(NAN);
+		gid.push_back(i);			
+		gp.push_back(j);			
+		hole.push_back(0);
+		return true;
+	}	
+
 	double xvalue = 0;
 	double yvalue = 0;
 	for (int p=0; p < npts; p++) {
@@ -559,7 +611,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					out.setError(msg);
 					return out;
 				}
-			}	
+			}
 			if (track_ids) pts_ids.push_back(ids[i]);
 			f++;
 		} else if (gt == "LineString" || gt == "MultiLineString") {
@@ -590,9 +642,6 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 			f++;
 
 		} else if (gt == "GeometryCollection") {
-
-			//Rcpp::Rcout << np << std::endl;
-
 
 			size_t kk = 0; // introduced for intersect
 			for(size_t j = 0; j<np; j++) {
@@ -672,9 +721,11 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 		out.push_back(v);
 		//Rcpp::Rcout << "lns" << std::endl;
 	}
+
 	if (pt_x.size() > 0) {
 		SpatVector v;
 		v.setGeometry("points", pt_gid, pt_gp, pt_x, pt_y, pt_hole);
+
 		if (track_ids) v.df.add_column(pts_ids, "ids");
 		out.push_back(v);
 		//Rcpp::Rcout << "pts" << std::endl;

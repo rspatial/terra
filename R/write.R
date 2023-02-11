@@ -1,9 +1,7 @@
 
 
-# not exported
-if (!isGeneric("blockSize")) {setGeneric("blockSize", function(x, ...) standardGeneric("blockSize"))}
-setMethod("blockSize", signature(x="SpatRaster"), 
-	function(x, n) {
+setMethod("blocks", signature(x="SpatRaster"),
+	function(x, n=4) {
 		opt <- spatOptions("", FALSE, ncopies=n)
 		b <- x@ptr$getBlockSizeR(n, opt$memfrac)
 		b$row <- b$row + 1
@@ -12,11 +10,11 @@ setMethod("blockSize", signature(x="SpatRaster"),
 )
 
 
-setMethod("writeStart", signature(x="SpatRaster", filename="character"), 
-	function(x, filename="", overwrite=FALSE, n=4, ...) {
+setMethod("writeStart", signature(x="SpatRaster", filename="character"),
+	function(x, filename="", overwrite=FALSE, n=4, sources="", ...) {
 		filename <- enc2utf8(filename)
 		opt <- spatOptions(filename, overwrite, ncopies=n, ...)
-		ok <- x@ptr$writeStart(opt)
+		ok <- x@ptr$writeStart(opt, unique(sources))
 		messages(x, "writeStart")
 		b <- x@ptr$getBlockSizeWrite()
 		b$row <- b$row + 1
@@ -25,7 +23,7 @@ setMethod("writeStart", signature(x="SpatRaster", filename="character"),
 )
 
 
-setMethod("writeStop", signature(x="SpatRaster"), 
+setMethod("writeStop", signature(x="SpatRaster"),
 	function(x) {
 		success <- x@ptr$writeStop()
 		messages(x, "writeStop")
@@ -34,10 +32,10 @@ setMethod("writeStop", signature(x="SpatRaster"),
 			x <- rast(f)
 		}
 		return(x)
-	} 
+	}
 )
 
-setMethod("writeValues", signature(x="SpatRaster", v="vector"), 
+setMethod("writeValues", signature(x="SpatRaster", v="vector"),
 	function(x, v, start, nrows) {
 		success <- x@ptr$writeValues(v, start-1, nrows)
 		messages(x, "writeValues")
@@ -46,14 +44,23 @@ setMethod("writeValues", signature(x="SpatRaster", v="vector"),
 )
 
 
-setMethod("writeRaster", signature(x="SpatRaster", filename="character"), 
+setMethod("writeRaster", signature(x="SpatRaster", filename="character"),
 function(x, filename="", overwrite=FALSE, ...) {
 	filename <- trimws(filename)
 	stopifnot(filename != "")
-	if (any(tools::file_ext(filename) %in% c("nc", "cdf")) || isTRUE(list(...)$filetype=="netCDF")) {
-		warn("consider writeCDF to write ncdf files")
-	}
 	filename <- enc2utf8(filename)
+
+	ftp <- list(...)$filetype[1]
+	fext <- tools::file_ext(filename)
+	if (any(fext %in% c("nc", "cdf")) && (is.null(ftp) || isTRUE(ftp=="netCDF"))) {
+		warn("writeRaster", "consider writeCDF to write ncdf files")
+	} 
+	#else if ((length(fext)==1) && (any(fext == "rds")) && ((is.null(ftp)) || isTRUE(ftp=="RDS"))) {
+	#	if ((!overwrite) && file.exists(filename)) {
+	#		error("writeRaster", "Use 'overwrite=TRUE' to overwrite an existing file")
+	#	}
+	#	return(saveRDS(x, filename))
+	#}
 	opt <- spatOptions(filename, overwrite, ...)
 	x@ptr <- x@ptr$writeRaster(opt)
 	x <- messages(x, "writeRaster")
@@ -80,24 +87,29 @@ get_filetype <- function(filename) {
 		"KML"
 	} else if (ext == "vct") {
 		"Idrisi"
+	} else if (ext == "rds") {
+		"rds"
 	} else {
 		error("writeVector", "cannot guess filetype from filename")
 	}
 }
 
-setMethod("writeVector", signature(x="SpatVector", filename="character"), 
+setMethod("writeVector", signature(x="SpatVector", filename="character"),
 function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, options="ENCODING=UTF-8") {
-	filename <- trimws(filename)
+	filename <- trimws(filename[1])
 	filename <- enc2utf8(filename)
 	if (filename == "") {
 		error("writeVector", "provide a filename")
 	}
 	if (is.null(filetype)) {
 		filetype <- get_filetype(filename)
+		if (filetype == "rds") {
+			return(saveRDS(x, filename))
+		}
 	}
 	if (is.null(layer)) layer <- tools::file_path_sans_ext(basename(filename))
 	layer <- trimws(layer)
-	
+
 	if (is.null(options)) { options <- ""[0] }
 
 	if (filetype == "ESRI Shapefile") {
@@ -126,7 +138,7 @@ function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, 
 
 
 
-# setMethod("writeVector", signature(x="SpatVectorProxy", filename="character"), 
+# setMethod("writeVector", signature(x="SpatVectorProxy", filename="character"),
 # function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, options="ENCODING=UTF-8") {
 	# filename <- trimws(filename)
 	# filename <- enc2utf8(filename)
@@ -138,7 +150,7 @@ function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, 
 	# }
 	# if (is.null(layer)) layer <- tools::file_path_sans_ext(basename(filename))
 	# layer <- trimws(layer)
-	
+
 	# if (is.null(options)) { options <- ""[0] }
 
 	# if (filetype == "ESRI Shapefile") {

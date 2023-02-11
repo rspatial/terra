@@ -4,7 +4,7 @@
 # License GPL v3
 
 
-setMethod("init", signature(x="SpatRaster"), 
+setMethod("init", signature(x="SpatRaster"),
 	function(x, fun, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		x <- rast(x)
@@ -24,8 +24,8 @@ setMethod("init", signature(x="SpatRaster"),
 			x@ptr <- x@ptr$initv(fun, opt)
 			messages(x, "init")
 		} else {
-			nc <- ncol(x)
-			b <- writeStart(x, filename, ...)
+			nc <- ncol(x) * nlyr(x)
+			b <- writeStart(x, filename, sources=sources(x), ...)
 			for (i in 1:b$n) {
 				n <- b$nrows[i] * nc;
 				r <- fun(n)

@@ -137,3 +137,22 @@ setClass("SpatOptions",
 	}
 )
 
+
+
+setClass("SpatGraticule",
+	representation (
+		ptr = "C++Object",
+		box = "C++Object"
+	),
+	prototype (
+		ptr = NULL,
+		ptr = NULL
+	),
+	validity = function(object)	{
+		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatVector")){
+			return(TRUE)
+		} else {
+			return(FALSE)
+		}
+	}
+)

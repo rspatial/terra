@@ -12,23 +12,23 @@ warn <- function(f, wmsg="", ...) {
 }
 
 messages <- function(x, f="") {
+	#g <- gc(verbose=FALSE)
 	if (methods::.hasSlot(x, "ptr")) {
-		if (x@ptr$has_warning()) { 
-			warn(f, paste(x@ptr$getWarnings(), collapse="\n"))
+		if (x@ptr$has_warning()) {
+			warn(f, paste(unique(x@ptr$getWarnings()), collapse="\n"))
 		}
 		if (x@ptr$has_error()) {
 			error(f, x@ptr$getError())
 		}
-		return(x)
-	} else { 
-		if (x$has_warning()) { 
-			warn(f, paste(x$getWarnings(), collapse="\n"))
+	} else {
+		if (x$has_warning()) {
+			warn(f, paste(unique(x$getWarnings()), collapse="\n"))
 		}
 		if (x$has_error()) {
 			error(f, x$getError())
 		}
-		return(x)
 	}
+	x
 }
 
 
@@ -41,7 +41,7 @@ mem_info <- function(x, n=1) {
 	memmin <- opt$memmin
 	memmax <- opt$memmax
 	#if (print) {
-		gb <- 1024^3 / 8  # 
+		gb <- 1024^3 / 8  #
 		cat("\n------------------------")
 		cat("\nMemory (GB) ")
 		cat("\n------------------------")
@@ -59,7 +59,7 @@ mem_info <- function(x, n=1) {
 		cat(paste("\nproc in memory  :", round(v[5]) != 0))
 		cat(paste("\nnr chunks       :", ceiling(nrow(x)/v[4])))
 		cat("\n------------------------\n")
-	#} 
+	#}
 	names(v) <- c("needed", "available", "memfrac", "chunksize")
 	invisible(v)
 }

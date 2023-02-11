@@ -53,7 +53,9 @@ setMethod("sds", signature(x="SpatRaster"),
 		nms <- rep_len(nms, length(dots))
 		for (i in seq_along(dots)) {
 			if (inherits(dots[[i]], "SpatRaster")) {
-				r@ptr$add(dots[[i]]@ptr, nms[i], "", "", FALSE)
+				vname <- nms[i]
+				if (vname == "") vname = varnames(dots[[i]])[1]
+				r@ptr$add(dots[[i]]@ptr, vname, longnames(dots[[i]])[1], units(dots[[i]])[1], FALSE)
 			}
 		}
 		messages(r, "sds")
@@ -102,7 +104,7 @@ setMethod("sds", signature(x="array"),
 
 setMethod("sds", signature(x="stars"),
 	function(x) {
-		s <- from_stars(x) 
+		s <- from_stars(x)
 		if (inherits(s, "SpatRaster")) {
 			sds(s)
 		} else {
@@ -113,7 +115,7 @@ setMethod("sds", signature(x="stars"),
 
 setMethod("sds", signature(x="stars_proxy"),
 	function(x) {
-		s <- from_stars(x) 
+		s <- from_stars(x)
 		if (inherits(s, "SpatRaster")) {
 			sds(s)
 		} else {
@@ -123,11 +125,11 @@ setMethod("sds", signature(x="stars_proxy"),
 )
 
 
-setMethod("c", signature(x="SpatRasterDataset"), 
+setMethod("c", signature(x="SpatRasterDataset"),
 	function(x, ...) {
 
 		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 ) # why? make a copy?
-	 
+
 		dots <- list(...)
 		nms <- names(dots)
 
@@ -147,7 +149,7 @@ setMethod("c", signature(x="SpatRasterDataset"),
 				}
 			} else {
 				error("c", "arguments must be SpatRaster or SpatRasterDataset")
-			} 
+			}
 		}
 		messages(x, "c")
 	}
@@ -174,8 +176,8 @@ setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 
 
 setMethod("[", c("SpatRasterDataset", "numeric", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
-	i <- positive_indices(i, length(x), " [ ")
+function(x, i, j, drop=TRUE) {
+	i <- positive_indices(i, length(x), TRUE, "`[`(i)")
 
 	if (drop && (length(i) == 1)) {
 		ptr <- x@ptr$getsds(i-1)
@@ -188,56 +190,77 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 setMethod("[", c("SpatRasterDataset", "numeric", "numeric"),
-function(x, i, j, ... ,drop=TRUE) {
-	y <- x[i,drop=drop]
-	if (inherits(y, "SpatRaster")) {
-		return(y[[j]])
+function(x, i, j, drop=TRUE) {
+	i <- positive_indices(i, length(x))
+	j <- positive_indices(j, min(nlyr(x)))	
+	nd <- i
+	if (drop) {
+		out <- lapply(nd, function(k) x[k][[j]])
+		out <- rast(out)
+	} else {
+		out <- sds()
+		nms <- x@ptr$names
+		for (k in nd) {
+			r <- y[k][[j]]
+			out@ptr$add(r@ptr, nms[k], "", "", FALSE)
+		}
 	}
-	nd <- y@ptr$nsds()
-	x@ptr <- SpatRasterStack$new()
-	nms <- y@ptr$names
-	for (k in seq_along(1:nd)) {
-		r <- y[k][[j]]
-		x@ptr$add(r@ptr, nms[k], "", "", FALSE)
-	}
-	messages(x, "`[`")
+	messages(out, "`[`")
+})
+
+setMethod("[", c("SpatRasterDataset", "numeric", "logical"),
+function(x, i, j, drop=TRUE) {
+	j <- positive_indices(j, min(nlyr(x)))
+	`[`(x, i=i, j=j, drop=drop)
+})
+
+setMethod("[", c("SpatRasterDataset", "missing", "numeric"),
+function(x, i, j, drop=TRUE) {
+	`[`(x, i=1:x@ptr$nsds(), j=j, drop=drop)
+})
+
+setMethod("[", c("SpatRasterDataset", "missing", "logical"),
+function(x, i, j, drop=TRUE) {
+	j <- positive_indices(j, min(nlyr(x)))
+	`[`(x, i=1:x@ptr$nsds(), j=j, drop=drop)
 })
 
 
 setMethod("[", c("SpatRasterDataset", "logical", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
-	x[which(i), ..., drop=drop]
+function(x, i, j,drop=TRUE) {
+	i <- positive_indices(j, length(x))
+	x[i, drop=drop]
 })
 
 setMethod("[", c("SpatRasterDataset", "character", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j, drop=TRUE) {
 	i <- match(i, names(x))
 	if (any(is.na(i))) {
 		error("`[`", "unknown name(s) provided")
 	}
-	x[i, ..., drop=drop]
+	x[i, drop=drop]
 })
 
 setMethod("[[", c("SpatRasterDataset", "ANY", "ANY"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j, drop=TRUE) {
 	mi <- missing(i)
 	mj <- missing(j)
 
 	if ((mi) && (mj)) {
-		`[`(x, ..., drop=drop)
+		`[`(x, drop=drop)
 	} else if (mi) {
-		`[`(x, j=j, ..., drop=drop)
+		`[`(x, j=j, drop=drop)
 	} else if (mj) {
-		`[`(x, i=i, ..., drop=drop)
+		`[`(x, i=i, drop=drop)
 	} else {
-		`[`(x, i=i, j=j, ..., drop=drop)
+		`[`(x, i=i, j=j, drop=drop)
 	}
 })
 
 
-setMethod("$", "SpatRasterDataset",  
-	function(x, name) { 
-		x[name] 
+setMethod("$", "SpatRasterDataset",
+	function(x, name) {
+		x[name]
 	}
 )
 
@@ -251,21 +274,21 @@ setMethod("sprc", signature(x="missing"),
 )
 
 
-setMethod("sprc", signature(x="SpatRaster"), 
+setMethod("sprc", signature(x="SpatRaster"),
 	function(x, ...) {
 		sprc(list(x, ...))
 	}
 )
 
 
-setMethod("sprc", signature(x="list"), 
+setMethod("sprc", signature(x="list"),
 	function(x) {
 		n <- length(x)
 		ptr <- SpatRasterCollection$new()
 		if (n > 0) {
 			for (i in 1:n) {
 				if (inherits(x[[i]], "SpatRaster")) {
-					ptr$add(x[[i]]@ptr)
+					ptr$add(x[[i]]@ptr, "")
 				} else {
 					name <- names(x[[i]])
 					cls <- class(x[[i]])
@@ -279,6 +302,33 @@ setMethod("sprc", signature(x="list"),
 	}
 )
 
+setMethod("sprc", signature(x="character"),
+	function(x, ids=0) {
+
+		if (length(x) > 1) {
+			r <- lapply(x, rast)
+			s <- sprc(r)
+			names(s) <- tools::file_path_sans_ext(basename(x))
+			return(s)
+		}
+
+		x <- trimws(x[1])
+		if (nchar(x) == 0) {
+			error("sprc", "provide valid file name(s)")
+		}
+		f <- .fullFilename(x)
+		r <- methods::new("SpatRasterCollection")
+		ids <- round(ids)-1
+		if (ids[1] < 0) {
+			useids <- FALSE
+		} else {
+			useids <- TRUE
+		}
+		r@ptr <- SpatRasterCollection$new(f, ids, useids)
+		messages(r, "sprc")
+	}
+)
+
 
 setMethod("length", signature(x="SpatRasterCollection"),
 	function(x) {
@@ -288,16 +338,16 @@ setMethod("length", signature(x="SpatRasterCollection"),
 
 setMethod("[", c("SpatRasterCollection", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	i <- positive_indices(i, length(x), " [ ")
+	i <- positive_indices(i, length(x), TRUE, "`[`(i)")
 	if (drop && (length(i) == 1)) {
-		ptr <- x@ptr$x[i][[1]]
+		ptr <- x@ptr$x[[i]]
 		x <- rast()
 		x@ptr <- ptr
 	} else {
 		s <- x@ptr$x[i]
 		ptr <- SpatRasterCollection$new()
 		for (i in 1:length(s)) {
-			ptr$add(s[[i]])
+			ptr$add(s[[i]], "")
 		}
 		x@ptr <- ptr
 	}

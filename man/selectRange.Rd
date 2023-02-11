@@ -9,7 +9,7 @@
 \description{
 Use a single layer SpatRaster to select cell values from different layers in a multi-layer SpatRaster. The values of the SpatRaster to select layers (\code{y}) should be whole numbers between \code{1} and \code{nlyr(x)} (values outside this range are ignored). 
 
-See \code{\link{rapp}} for applying af function to a range of variable size.
+See \code{\link{rapp}} for applying a function to a range of variable size.
 
 See \code{\link{extract}} for extraction of values by cell, point, or otherwise.
 }

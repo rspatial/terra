@@ -1,3 +1,20 @@
+// Copyright (c) 2018-2023  Robert J. Hijmans
+//
+// This file is part of the "spat" library.
+//
+// spat is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// spat is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with spat. If not, see <http://www.gnu.org/licenses/>.
+
 #include "spatBase.h"
 #include <fstream>
 #include <random>
@@ -33,7 +50,7 @@ std::vector<std::string> read_text(std::string filename) {
 			}
 		}
 		f.close();
-	} 
+	}
 	return s;
 }
 
@@ -98,7 +115,7 @@ bool path_exists(std::string path) {
 	stat(path.c_str(), &info );
 	if(info.st_mode & S_IFDIR) {
 		return true;
-	} 
+	}
 	return false;
 }
 
@@ -117,7 +134,7 @@ bool canWrite(std::string filename) {
 
 std::string get_path(const std::string filename) {
 	size_t found = filename.find_last_of("/\\");
-	std::string result = filename.substr(0, found); 
+	std::string result = filename.substr(0, found);
 	return result;
 }
 
@@ -128,34 +145,87 @@ bool filepath_exists(const std::string& name) {
 
 
 
-bool can_write(std::string filename, bool overwrite, std::string &msg) {
-	if (file_exists(filename)) {
-		if (overwrite) {
-			if (remove(filename.c_str()) != 0) {
-				msg = ("cannot overwrite existing file");
+
+/*
+# c++17
+#include <experimental/filesystem>
+bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
+	std::vector<std::string> inf = filenames();
+	for (size_t i=0; i<inf.size(); i++) {
+		if (inf[i] == "") continue;
+		std::experimental::filesystem::path pin = inf[i];
+		for (size_t j=0; j<outf.size(); j++) {
+			std::experimental::filesystem::path pout = outf[i];
+			if (pin.compare(pout) == 0) return false;
+		}
+	}
+	return true;
+}
+*/
+
+bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> outf, std::string &msg) {
+	#ifdef _WIN32
+	for (size_t j=0; j<outf.size(); j++) {
+		std::transform(outf[j].begin(), outf[j].end(), outf[j].begin(), ::tolower);
+	}
+	#endif
+
+	for (size_t i=0; i<inf.size(); i++) {
+		if (inf[i] == "") continue;
+		#ifdef _WIN32
+		std::transform(inf[i].begin(), inf[i].end(), inf[i].begin(), ::tolower);
+		#endif
+		for (size_t j=0; j<outf.size(); j++) {
+			if (inf[i] == outf[j]) {
+				msg = "source and target filename cannot be the same";
 				return false;
 			}
-			//std::string aux = filename + ".aux.xml";
-			//remove(aux.c_str());
-			std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json"};
-			for (size_t i=0; i<exts.size(); i++) {
-				std::string f = filename + exts[i];
-				if (file_exists(f)) {
-					remove(f.c_str());
+		}
+	}
+	size_t n = outf.size();
+	outf.erase(std::unique(outf.begin(), outf.end()), outf.end());
+	if (n > outf.size()) {
+		msg = "duplicate filenames";
+		return false;
+	}
+	return true;
+}
+
+bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg) {
+
+	if (!differentFilenames(srcnames, filenames, msg)) {
+		return false;
+	}
+
+	for (size_t i=0; i<filenames.size(); i++) {
+		if ((filenames[i] != "") && file_exists(filenames[i])) {
+			if (overwrite) {
+				if (remove(filenames[i].c_str()) != 0) {
+					msg = ("cannot overwrite existing file");
+					return false;
 				}
-			}		
-		} else {
-			msg = "file exists";
+				//std::string aux = filename + ".aux.xml";
+				//remove(aux.c_str());
+				std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json"};
+				for (size_t j=0; j<exts.size(); j++) {
+					std::string f = filenames[i] + exts[j];
+					if (file_exists(f)) {
+						remove(f.c_str());
+					}
+				}
+			} else {
+				msg = "file exists. You can use 'overwrite=TRUE' to overwrite it";
+				return false;
+			}
+		} else if (!canWrite(filenames[i])) {
+			std::string path = get_path(filenames[i]);
+			if (!path_exists(path)) {
+				msg = "path does not exist";
+			} else {
+				msg = "cannot write file";
+			}
 			return false;
 		}
-	} else if (!canWrite(filename)) {
-		std::string path = get_path(filename);
-		if (!path_exists(path)) {
-			msg = "path does not exist";
-		} else {
-			msg = "cannot write file";
-		}
-		return false;
 	}
 	return true;
 }

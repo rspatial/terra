@@ -50,7 +50,7 @@ std::string proj_version() {
 
 
 // [[Rcpp::export]]
-std::vector<unsigned char> hex2rgb(std::string s) { 
+std::vector<unsigned char> hex2rgb(std::string s) {
 	unsigned char r, g, b;
 	s = s.erase(0,1); // remove the "#"
 	sscanf(s.c_str(), "%02hhx%02hhx%02hhx", &r, &g, &b);
@@ -59,9 +59,9 @@ std::vector<unsigned char> hex2rgb(std::string s) {
 }
 
 // [[Rcpp::export]]
-std::string rgb2hex(std::vector<unsigned char> x) { 
-	std::stringstream ss; 
-	ss << "#" << std::hex << std::setw(6) << (x[0] << 16 | x[1] << 8 | x[2] ); 
+std::string rgb2hex(std::vector<unsigned char> x) {
+	std::stringstream ss;
+	ss << "#" << std::hex << std::setw(6) << (x[0] << 16 | x[1] << 8 | x[2] );
 	std::string s = ss.str();
 	//std::transform(s.begin(), s.end(), s.begin(), ::toupper);
 	str_replace_all(s, " ", "0");
@@ -164,7 +164,7 @@ std::vector<double> geotransform(std::string fname) {
 void gdal_setconfig(std::string option, std::string value) {
 	if (value == "") {
 		CPLSetConfigOption(option.c_str(), NULL);
-	} else { 
+	} else {
 		CPLSetConfigOption(option.c_str(), value.c_str());
 	}
 }
@@ -175,7 +175,7 @@ std::string gdal_getconfig(std::string option) {
 	std::string out = "";
 	if (value != NULL) {
 		out = value;
-	}	
+	}
 	return out;
 }
 
@@ -302,20 +302,20 @@ inline void NORET stopNoCall(const char* fmt, Args&&... args) {
 static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
 	switch ( eErrClass ) {
         case 0:
-            break; 
+            break;
         case 1:
         case 2:
-            warningNoCall("%s (GDAL %d)", msg, err_no); 
-            break; 
+            warningNoCall("%s (GDAL %d)", msg, err_no);
+            break;
         case 3:
-            warningNoCall("%s (GDAL error %d)", msg, err_no); 
+            warningNoCall("%s (GDAL error %d)", msg, err_no);
             break;
         case 4:
-            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no); 
-            break; 
+            warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no);
+            break;
     }
     return;
 }
@@ -325,16 +325,16 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
         case 0:
         case 1:
         case 2:
-            break; 
+            break;
         case 3:
-            warningNoCall("%s (GDAL error %d)", msg, err_no); 
+            warningNoCall("%s (GDAL error %d)", msg, err_no);
             break;
         case 4:
-            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
-            break; 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
+            break;
     }
     return;
 }
@@ -348,10 +348,10 @@ static void __err_fatal(CPLErr eErrClass, int err_no, const char *msg) {
         case 3:
             break;
         case 4:
-            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            break; 
+            break;
     }
     return;
 }
@@ -372,22 +372,24 @@ void set_gdal_warnings(int level) {
 		CPLSetErrorHandler((CPLErrorHandler)__err_error);
 	} else {
 		CPLSetErrorHandler((CPLErrorHandler)__err_fatal);
-	} 
+	}
 }
 
 
 // [[Rcpp::export(name = ".gdalinit")]]
-void gdal_init(std::string path) {
+void gdal_init(std::string projpath, std::string datapath) {
 	set_gdal_warnings(2);
     GDALAllRegister();
-    OGRRegisterAll(); 
+    OGRRegisterAll();
 	CPLSetConfigOption("GDAL_MAX_BAND_COUNT", "9999999");
 	CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
-	
+	CPLSetConfigOption("GDAL_DATA", datapath.c_str());
+
+
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
-	if (path != "") {
-		const char *cp = path.c_str();
+	if (projpath != "") {
+		const char *cp = projpath.c_str();
 		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
 	}
 #endif
@@ -406,7 +408,7 @@ std::vector<double> percRank(std::vector<double> x, std::vector<double> y, doubl
 		if (std::isnan(y[i]) ) {
 			out.push_back( NAN );
 		} else if ((y[i] < minc) || (y[i] > maxc )) {
-			out.push_back( 0 ); 
+			out.push_back( 0 );
 		} else {
 			size_t b = 0;
 			size_t t = 0;
@@ -423,7 +425,7 @@ std::vector<double> percRank(std::vector<double> x, std::vector<double> y, doubl
 			double z = (b + 0.5 * t) / nx;
 			if (tail == 1) { // both
 				if (z > 0.5) {
-					z = 2 * (1 - z); 
+					z = 2 * (1 - z);
 				} else {
 					z = 2 * z;
 				}
@@ -441,7 +443,7 @@ std::vector<double> percRank(std::vector<double> x, std::vector<double> y, doubl
 				}
 			}
 			out.push_back(z);
-		} 
+		}
 	}
 	return(out);
 }
@@ -519,5 +521,103 @@ std::string PROJ_network(bool enable, std::string url) {
 	}
 #endif
 	return s;
+}
+
+
+
+// [[Rcpp::export(name = ".weighted_pearson")]]
+double weighted_pearson_cor(std::vector<double> x, std::vector<double> y, std::vector<double> weights, bool narm=true) {
+  
+	if (narm) {
+		size_t n = x.size()-1;
+		for (long i=n; i >= 0; i--) {
+			if (std::isnan(x[i]) || std::isnan(y[i])) {
+				x.erase(x.begin()+i);
+				y.erase(y.begin()+i);
+				weights.erase(weights.begin()+i);
+			}
+		}	
+		if (x.size() < 2) {
+			return(NAN);
+		}
+	}
+	size_t n = x.size();
+	double sw = accumulate(weights.begin(), weights.end(), 0.0);
+	for (double &d : weights) d /= sw;
+	double sxw = 0;
+	double syw = 0;
+	for (size_t i=0; i<n; i++) {
+		sxw += x[i] * weights[i];
+		syw += y[i] * weights[i];
+	}
+	for (size_t i=0; i<n; i++) {
+		x[i] -= sxw;
+		y[i] -= syw;
+	}
+	double vx = 0;
+	double vy = 0;
+	double vxy = 0;
+	for (size_t i=0; i<n; i++) {
+		vx += weights[i] * x[i] * x[i];
+		vy += weights[i] * y[i] * y[i];
+		vxy += weights[i] * x[i] * y[i];
+	}
+	return  vxy / std::sqrt(vx * vy);
+}
+
+
+// [[Rcpp::export(name = ".pearson")]]
+double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
+ 
+	if (narm) {
+		size_t n = x.size()-1;
+		for (long i=n; i >= 0; i--) {
+			if (std::isnan(x[i]) || std::isnan(y[i])) {
+				x.erase(x.begin()+i);
+				y.erase(y.begin()+i);
+			}
+		}	
+		if (x.size() < 2) {
+			return(NAN);
+		}
+	}
+	size_t n = x.size();
+	double xbar = accumulate(x.begin(), x.end(), 0.0) / n;
+	double ybar = accumulate(y.begin(), y.end(), 0.0) / n;
+	double numer = 0;
+	for (size_t i=0; i<n; i++) {
+		numer += (x[i]-xbar) * (y[i]-ybar);
+	}
+	double s1 = 0;
+	double s2 = 0;
+	for (size_t i=0; i<n; i++) {
+		s1 += std::pow(x[i]-xbar, 2);
+		s2 += std::pow(y[i]-ybar, 2);
+	}
+	return numer / std::sqrt(s1 * s2);
+}
+
+
+# include "vecmathse.h"
+// [[Rcpp::export(name = ".stattest1")]]
+double stattest1(std::vector<double> x, std::string fun, bool narm) {
+	if (!haveseFun(fun)) {
+		Rcpp::Rcout << fun + " is not available" << std::endl;
+		return NAN;
+	}
+	std::function<double(std::vector<double>&, double, double)> f = getseFun(fun, narm);
+	return f(x, 0, x.size());
+}
+
+
+# include "vecmath.h"
+// [[Rcpp::export(name = ".stattest2")]]
+double stattest2(std::vector<double> x, std::string fun, bool narm) {
+	if (!haveFun(fun)) {
+		Rcpp::Rcout << fun + " is not available" << std::endl;
+		return NAN;
+	}
+	std::function<double(std::vector<double>&, bool)> f = getFun(fun);
+	return f(x, narm);
 }
 

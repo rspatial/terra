@@ -1,12 +1,12 @@
+# comment
 
-
-setMethod("animate", signature(x="SpatRaster"), 
+setMethod("animate", signature(x="SpatRaster"),
 function(x, pause=0.25, main, range, maxcell=50000, n=1, ...) {
 	if (missing(main)) {
 		main <- names(x)
 	}
 
-	x <- spatSample(x, size=maxcell, method="regular", as.raster=TRUE)
+	x <- spatSample(x, size=maxcell, method="regular", as.raster=TRUE, warn=FALSE)
 
 	if (missing(range)) {
 		mnmx <- minmax(x)

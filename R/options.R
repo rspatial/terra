@@ -1,7 +1,6 @@
-
 .terra_environment <- new.env(parent=emptyenv())
 
- 
+
 .create_options <- function() {
 	opt <- methods::new("SpatOptions")
 	opt@ptr <- SpatOptions$new()
@@ -9,17 +8,22 @@
 	tmpdir <- try(tempdir(check = TRUE), silent=TRUE)
 	opt@ptr$tempdir <- normalizePath(tempdir(), winslash="/")
 	.terra_environment$options <- opt
-}
- 
-.options_names <- function() {
-	c("progress", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid") #, "append") 
+
+	x <- options("terra_default")[[1]]
+	if (!is.null(x)) {
+		do.call(terraOptions, x)
+	}
+
 }
 
- 
+.options_names <- function() {
+	c("progress", "progressbar", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid", "threads", "scale", "offset") #, "append")
+}
+
+
 .setOptions <- function(x, wopt) {
 
 	nms <- names(wopt)
-
 	g <- which(nms == "gdal")
 	if (length(g) > 0) {
 		gopt <- unlist(wopt[g])
@@ -48,24 +52,34 @@
 			wopt <- wopt[-i]
 			nms <- nms[-i]
 		}
+		if ("tempdir" %in% nms) {
+			i <- which(nms == "tempdir")
+			if (!dir.exists(wopt[[i]])) {
+				warn("options", "you cannot set the tempdir to a path that does not exist")
+				wopt <- wopt[-i]
+				nms <- nms[-i]
+			}
+		}
 
 		for (i in seq_along(nms)) {
 			x[[nms[i]]] <- wopt[[i]]
 		}
-		if ("datatype" %in% nms) {
-			x$datatype_set = TRUE;
-		}
 	}
-
+	if (x$messages$has_warning) {
+		warn("options", paste(x$messages$getWarnings(), collapse="\n"))
+	}
+	if (x$messages$has_error) {
+		error("options", x$messages$getError())
+	}
 	x
-} 
- 
+}
+
 defaultOptions <- function() {
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
 	.terra_environment$options@ptr$deepcopy()
 }
- 
+
 spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
 	wopt <- c(list(...), wopt)
@@ -106,33 +120,59 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 #	}
 #}
 
-.showOptions <- function(opt) {
-	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance") 
-	for (n in nms) {
-		v <- eval(parse(text=paste0("opt$", n)))
-		cat(paste0(substr(paste(n, "         "), 1, 10), ": ", v, "\n"))
+
+.getOptions <- function() {
+	opt <- spatOptions()
+	nms <- names(opt)
+	nms <- nms[!grepl("^\\.", nms)]
+	nms <- nms[!(nms %in% c("initialize", "messages", "getClass", "finalize", "datatype_set", "pid", "statistics", "gdal_options", "scale", "offset", "threads", "filenames", "NAflag"))]
+	nms <- gsub("def_", "", nms)
+	out <- sapply(nms, function(n) eval(parse(text=paste0("opt$", n))))
+	out$memmin <- 8 * out$memmin / (1024^3)
+	if (out$memmax > 0) {
+		out$memmax <- 8 * out$memmax / (1024^3)
+	} 
+	out
+}
+
+.showOptions <- function(opt, print=TRUE) {
+	out <- .getOptions()
+	if (!print) return(out)
+	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance", "memmin", "memmax")
+	p <- out[names(out) %in% nms]
+	if (p$memmax <= 0) p$memmax <- NULL
+	nms <- names(p)
+	for (i in seq_along(nms)) {
+		cat(paste0(substr(paste(nms[i], "         "), 1, 10), ": ", p[i], "\n"))
 	}
-	cat(paste0("memmin    : ", 8 * opt$memmin / (1024^3), "\n"))	
-	if (opt$memmax > 0) {
-		cat(paste0("memmax    : ", 8 * opt$memmax / (1024^3), "\n"))	
-	}
+	invisible(out)
 }
 
 
 .default_option_names <- function() {
-	c("datatype", "filetype") #, "verbose") 
+	c("datatype", "filetype") #, "verbose")
 }
 
-
- 
-terraOptions <- function(...) {
+terraOptions <- function(..., print=TRUE) {
 	dots <- list(...)
 	if (is.null(.terra_environment$options)) .create_options()
 	opt <- .terra_environment$options@ptr
-	if (length(dots) == 0) {
-		.showOptions(opt)
-	} else {
-		nms <- names(dots)
+
+	nms <- names(dots)
+	ndots <- length(dots)
+
+	if ("tempdir" %in% nms) {
+		i <- which(nms == "tempdir")
+		if (!dir.exists(dots[[i]])) {
+			warn("options", "you cannot set the tempdir to a path that does not exist")
+			dots <- dots[-i]
+			nms <- nms[-i]
+		}
+	}
+
+	if (ndots == 0) {
+		.showOptions(opt, print=print)
+	} else if (length(dots) > 0) {
 		d <- nms %in% .default_option_names()
 		dnms <- paste0("def_", nms)
 		for (i in 1:length(nms)) {

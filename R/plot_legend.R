@@ -1,17 +1,19 @@
 
 .get_breaks <- function(x, n, method, r=NULL) {
+	#x <- x[!is.na(x)]
 	if (is.function(method)) {
 		if (!is.null(r)) {
-			x[x<r[1] | x>r[2]] <- NA
+			x[(x<r[1]) | (x>r[2])] <- NA
 		}
 		breaks <- method(x)
-	} else if (method=="cases") {
+	} else if (method[1]=="cases") {
 		if (!is.null(r)) {
-			x[x<r[1] | x>r[2]] <- NA
+			x[(x<r[1]) | (x>r[2])] <- NA
 		}
 		n <- n+1
 		i <- seq(0, 1, length.out=n)
 		breaks <- quantile(x, i, na.rm=TRUE)
+		breaks <- unique(breaks)
 		if ((breaks[1] %% 1) != 0) {
 			breaks[1] <- breaks[1] - 0.000001
 		}
@@ -46,7 +48,41 @@
 }
 
 
+retro_labels <- function(x, lat=TRUE) {
+	if ((is.null(x)) || (!is.numeric(x))) {
+		return(x)
+	}
+	if ((length(x) > 1) && (min(diff(x)) <= 1/120)) {
+		d <- floor(x)
+		m <- floor(60*(x - d))
+		s <- round(3600*(x - d - m/60))
+	} else {
+		d <- floor(x)
+		m <- round(60*(x - d))
+		s <- 0
+	}
+
+	if (lat) {
+		h <- c("S", "", "N")[sign(d)+2]
+	} else {
+		h <- c("W", "", "E")[sign(d)+2]
+	}
+	d <- abs(d)
+	i <- (s == 0) & (m == 0)
+	j <- (s == 0) & (m != 0)
+
+	m <- formatC(m, width=2, flag="0")
+	s <- formatC(s, width=2, flag="0")
+	r <- paste0(d, "\u00B0" , m, "'", s, '"', h)
+	r[i] <- paste0(d[i], "\u00B0" , h[i])
+	r[j] <- paste0(d[j], "\u00B0" , m[j], "'", h[j])	
+	r
+}
+
+
+
 .plot.axes <- function(x) {
+
 	if (is.null(x$axs$cex.axis)) {
 		x$axs$cex.axis = 0.7
 	}
@@ -60,37 +96,107 @@
 		x$axs$tck <- 1
 		x$axs$mgp = c(2, .15, 0)
 	}
-	
-	if (!is.null(x$axs$sides)) {
-		if (x$axs$sides[1] > 0) {
-			usr <- graphics::par("usr")
-			sides <- x$axs$sides
-			x$axs$sides <- NULL
-			sides <- round(unique(sides))
-			sides[sides > 1 & sides < 5]
-			for (s in sides) {
-				if (s %in% c(1,3)) {
-					ur <- usr[2] - usr[1]
-					at <- c(usr[1]-10*ur, usr[2]+10*ur)
-				} else {
-					ur <- usr[4] - usr[3]
-					at <- c(usr[3]-10*ur, usr[4]+10*ur)
-				}
-				graphics::axis(s, at=at, labels=c("",""), lwd.ticks=0, 
-					cex.axis=x$axs$cex.axis, mgp=x$axis$mgp)
-				x$axs$side <- s
-				do.call(graphics::axis, x$axs)
-			}
-			x$axs$sides <- x$sides
-		}
-	} else {
-		x$axs$side <- 1
-		do.call(graphics::axis, x$axs)
-		x$axs$side <- 2
-		do.call(graphics::axis, x$axs)
+
+	xlab <- ylab <- NULL
+	if (!is.null(x$axs$labels)) {
+		xlab <- ylab <- x$axs$labels
+	}
+	if (!is.null(x$axs$xlabs)) {
+		xlab <- x$axs$xlabs
+		x$axs$xlabs <- NULL
+	}
+	if (!is.null(x$axs$ylabs)) {
+		ylab <- x$axs$ylabs
+		x$axs$ylabs <- NULL
+	}
+
+	xat <- yat <- NULL
+	if (!is.null(x$axs$at)) {
+		xat <- yat <- x$axs$at
+	}
+	if (!is.null(x$axs$xat)) {
+		xat <- x$axs$xat
+		x$axs$xat <- NULL
+	}
+	if (!is.null(x$axs$yat)) {
+		yat <- x$axs$yat
+		x$axs$yat <- NULL
+	}
+
+	sides <- unique(x$axs$side)
+	if (!is.null(sides)) sides <- round(sides)
+	sides <- sides[sides > 0 & sides < 5]
+	if (is.null(sides)) {
+		sides <- 1:2
 		graphics::box()
 	}
-	x$axs$side <- NULL
+
+	ticks <- x$axs$tick 
+	if (is.null(ticks)) {
+		ticks <- sides
+	}
+	labs <- x$axs$lab
+	if (is.null(labs)) {
+		labs <- sides
+	} 
+
+	usr <- graphics::par("usr")
+	y <- x$axs
+	retro <- isTRUE(y$retro)
+	y$retro <- y$lab <- y$tick <- NULL
+
+	for (s in 1:4) {
+		y$side <- s
+		y$labels <- NULL
+		if (s %in% c(1,3)) {
+			ur <- usr[2] - usr[1]
+			edg <- c(usr[1]-10*ur, usr[2]+10*ur)
+			if (is.null(xat)) {
+				y$at <- graphics::axTicks(s)
+			} else {
+				y$at <- xat
+			}
+			if (is.null(xlab)) {
+				y$labels <- if (retro) retro_labels(y$at, lat=FALSE) else y$at
+			} else {
+				y$labels <- xlab
+			}
+		} else {
+			ur <- usr[4] - usr[3]
+			edg <- c(usr[3]-10*ur, usr[4]+10*ur)
+			if (is.null(yat)) {
+				y$at <- graphics::axTicks(s)
+			} else {
+				y$at <- yat
+			}
+			if (is.null(ylab)) {
+				y$labels <- if (retro) retro_labels(y$at, lat=TRUE) else y$at
+			} else {
+				y$labels <- ylab
+			}
+		}
+		z <- y
+		z$lwd <- 0
+
+		if (s %in% labs) {
+			z$lwd.ticks <- 0
+			do.call(graphics::axis, z)
+		}
+		z$labels <- FALSE
+		if (s %in% ticks) {
+			z$lwd <- 0
+			z$lwd.ticks <- y$lwd.ticks
+			if (is.null(z$lwd.ticks)) z$lwd.ticks <- 1
+			do.call(graphics::axis, z)
+		}
+		if (s %in% sides) {
+			d <- diff(edg) * 10
+			z$at <- edg + c(-d, d)
+			z$lwd.ticks <- 0
+			z$lwd <- y$lwd
+			do.call(graphics::axis, z)
+		} 
+	}
 	x
 }
 
@@ -115,18 +221,18 @@
 
 	if (is.null(x$leg$shrink)) {
 		leg.shrink <- c(0,0)
-	} else { 
+	} else {
 		leg.shrink <- rep_len(x$leg$shrink,2)
 	}
 	if (!is.null(x$leg$main)) {
 		n <- length(x$leg$main)
-		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n)) 
+		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n))
 	}
 
 	if (isTRUE(x$leg$loc=="bottom")) {
 		xd <- xmax - xmin
 		xmin <- xmin + xd * leg.shrink[1]
-		xmax <- xmax - xd * leg.shrink[2]	
+		xmax <- xmax - xd * leg.shrink[2]
 		yd <- ymax - ymin
 		ymin <- ymin + yd * leg.shrink[1]/1.5
 		ymax <- ymax - yd * leg.shrink[2]/1.5
@@ -229,8 +335,8 @@
 	cex <- x$leg$cex
 	if (is.null(cex)) cex <- 0.8
 	rotate <- isTRUE(x$leg$rotate)
-	srt <- ifelse(rotate, 90, 0) 
-	
+	srt <- ifelse(rotate, 90, 0)
+
 	cols <- rev(x$cols)
 	nc <- length(cols)
 
@@ -278,7 +384,7 @@
 }
 
 
-.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="", 
+.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="",
 	lty=1, lwd=1, pch=1, angle=45, density=NULL,
 	pt.cex = 1, pt.bg="black", pt.lwd=1, bty="n", border="black", seg.len=1,
 # catching
@@ -290,7 +396,7 @@
 		y <- usr[c(4)]
 	}
 	if (grepl("points", geomtype)) {
-		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, 
+		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch,
 		pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, ...)
 	} else if (geomtype == "lines") {
 		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, ...)

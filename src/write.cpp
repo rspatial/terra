@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -23,10 +23,14 @@
 
 bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size_t nrows) {
 
+	//if (source[0].has_scale_offset[0]) {
+	//	for (double &d : vals) d = d * source[0].scale[0] + source[0].offset[0];
+	//}
+
 	if (vals.size() == size()) {
 		source[0].values = std::move(vals);
 		return true;
-	} 
+	}
 
 	if (nlyr() == 1) {
 		source[0].values.insert(source[0].values.end(), vals.begin(), vals.end());
@@ -41,8 +45,8 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 	size_t ncols = ncol();
 	size_t chunk = nrows * ncols;
 	for (size_t i=0; i<nlyr(); i++) {
-		size_t off1 = i * chunk; 
-		size_t off2 = startrow * ncols + i * nc; 
+		size_t off1 = i * chunk;
+		size_t off2 = startrow * ncols + i * nc;
 		std::copy( vals.begin()+off1, vals.begin()+off1+chunk, source[0].values.begin()+off2 );
 	}
 	return true;
@@ -93,60 +97,10 @@ bool SpatRaster::isSource(std::string filename) {
 	return false;
 }
 
-/*
-#include <experimental/filesystem>
-bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
-	std::vector<std::string> inf = filenames();
-	for (size_t i=0; i<inf.size(); i++) {
-		if (inf[i] == "") continue;
-		std::experimental::filesystem::path pin = inf[i];
-		for (size_t j=0; j<outf.size(); j++) {
-			std::experimental::filesystem::path pout = outf[i];
-			if (pin.compare(pout) == 0) return false;
-		}
-	}
-	return true;
-}
-*/
-
-bool SpatRaster::differentFilenames(std::vector<std::string> outf, bool &duplicates, bool &empty) {
-	std::vector<std::string> inf = filenames();
-	duplicates = false;
-	empty = false;
-	for (size_t j=0; j<outf.size(); j++) {
-		if (outf[j] == "") {
-			empty = true;
-			return false;
-		}
-	}
-
-	for (size_t i=0; i<inf.size(); i++) {
-		if (inf[i] == "") continue;
-		#ifdef _WIN32
-		lowercase(inf[i]);
-		#endif
-		for (size_t j=0; j<outf.size(); j++) {
-			#ifdef _WIN32
-			lowercase(outf[j]);
-			#endif
-			if (inf[i] == outf[j]) return false;
-		}
-	}
-
-	size_t n = outf.size();
-	outf.erase(std::unique(outf.begin(), outf.end()), outf.end());
-	if (n > outf.size()) {
-		duplicates = true;
-		return false;
-	}
-	return true;
-}
-
-
 
 SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr(), true, true, true);
+	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, opt);
 	if (!hasValues()) {
 		out.setError("there are no cell values");
 		return out;
@@ -154,17 +108,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 	// recursive writing of layers
 	std::vector<std::string> fnames = opt.get_filenames();
-	bool dups, empty;
-	if (!differentFilenames(fnames, dups, empty)) {
-		if (dups) {
-			out.setError("duplicate filenames");
-		} else if (empty) {
-			out.setError("empty filename");
-		} else {
-			out.setError("source and target filename cannot be the same");
-		}
-		return(out);
-	}
+	std::string msg;
 
 	size_t nl = nlyr();
 	if (fnames.size() > 1) {
@@ -174,11 +118,9 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		} else {
 			bool overwrite = opt.get_overwrite();
 			std::string errmsg;
-			for (size_t i=0; i<nl; i++) {
-				if (!can_write(fnames[i], overwrite, errmsg)) {
-					out.setError(errmsg + " (" + fnames[i] +")");
-					return(out);
-				}
+			if (!can_write(fnames, filenames(), overwrite, errmsg)) {
+				out.setError(errmsg);
+				return(out);
 			}
 			for (unsigned i=0; i<nl; i++) {
 				opt.set_filenames({fnames[i]});
@@ -188,10 +130,10 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 				}
 				fnames[i] = out.source[0].filename;
 			}
-			SpatRaster out(fnames, {-1}, {""}, false, {}, {});
+			SpatRaster out(fnames, {-1}, {""}, false, {}, {}, {});
 			return out;
 		}
-	} 
+	}
 
 	if (!readStart()) {
 		out.setError(getError());
@@ -199,12 +141,13 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	}
 
 	opt.ncopies = 2;
-	if (!out.writeStart(opt)) { 
+	if (!out.writeStart(opt, filenames())) {
 		readStop();
-		return out; 
+		return out;
 	}
+
 	for (size_t i=0; i<out.bs.n; i++) {
-		std::vector<double> v; 
+		std::vector<double> v;
 		readBlock(v, out.bs, i);
 		if (!out.writeBlock(v, i)) {
 			readStop();
@@ -218,9 +161,15 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 }
 
 
+SpatRaster SpatRaster::writeTempRaster(SpatOptions &opt) {
+	SpatOptions xopt(opt);
+	std::string fname = tempFile(xopt.get_tempdir(), xopt.pid, "_temp_raster.tif");
+	xopt.set_filenames({fname});
+	return writeRaster(xopt);
+}
 
 
-bool SpatRaster::writeStart(SpatOptions &opt) {
+bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> srcnames) {
 
 	if (opt.names.size() == nlyr()) {
 		setNames(opt.names);
@@ -233,25 +182,29 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	std::string filename = fnames[0];
 	if (filename == "") {
 		if (!canProcessInMemory(opt)) {
-			std::string extension = ".tif";
-			filename = tempFile(opt.get_tempdir(), opt.pid, extension);
+			//std::string extension = ".tif";
+			//filename = tempFile(opt.get_tempdir(), opt.pid, extension);
+			std::string driver;
+			if (!getTempFile(filename, driver, opt)) {
+				return false;
+			}
 			opt.set_filenames({filename});
 			//opt.gdal_options = {"COMPRESS=NONE"};
 		}
 	}
-
+	size_t nl = nlyr();
 	bs = getBlockSize(opt);
 	if (filename != "") {
 		// open GDAL filestream
 		#ifdef useGDAL
-		if (! writeStartGDAL(opt) ) {
+		if (! writeStartGDAL(opt, srcnames) ) {
 			return false;
 		}
 		#else
 		setError("GDAL is not available");
 		return false;
 		#endif
-	} else if ((nlyr() == 1) && (bs.n > 1)) {
+	} else if ((nl == 1) && (bs.n > 1)) {
 		source[0].values.reserve(ncell());
 	}
 
@@ -263,8 +216,8 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	//bs = getBlockSize(opt);
     #ifdef useRcpp
 	if (opt.verbose) {
-		std::vector<double> mems = mem_needs(opt); 
-		double gb = 1073741824 / 8; 
+		std::vector<double> mems = mem_needs(opt);
+		double gb = 1073741824 / 8;
 		//{memneed, memavail, frac, csize, inmem} ;
 		// << "max vect size : " << roundn(mems.max_size() / gb, 2) << " GB" << std::endl;
 		Rcpp::Rcout<< "memory avail. : " << roundn(mems[1] / gb, 2) << " GB" << std::endl;
@@ -274,14 +227,11 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		Rcpp::Rcout<< "in memory     : " << inmem << std::endl;
 		Rcpp::Rcout<< "block size    : " << mems[3] << " rows" << std::endl;
 		Rcpp::Rcout<< "n blocks      : " << bs.n << std::endl;
-		Rcpp::Rcout<< "pb            : " << opt.show_progress(bs.n) << std::endl;
-		Rcpp::Rcout<< std::endl;
+		Rcpp::Rcout<< "pb            : " << opt.get_progress() << std::endl << std::endl;
 	}
 
 	if (opt.progressbar) {
-		unsigned long steps = bs.n+2;
-		pbar = new Progress(steps, opt.show_progress(bs.n));
-		pbar->increment();
+		pbar.init(bs.n, opt.get_progress());
 		progressbar = true;
 	} else {
 		progressbar = false;
@@ -290,6 +240,16 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	return true;
 }
 
+#ifdef useRcpp
+
+static void chkIntFn(void *dummy) {
+  R_CheckUserInterrupt();
+}
+bool checkInterrupt() {
+  return (R_ToplevelExec(chkIntFn, NULL) == FALSE);
+}
+
+#endif
 
 
 bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t nrows) {
@@ -305,9 +265,18 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 		return false;
 	}
 
+	size_t nv = nrows * ncol() * nlyr();
+	if (vals.size() != nv) {
+		if (nv > vals.size()) {
+			setError("incorrect number of values (too many) for writing");
+		} else {
+			setError("incorrect number of values (too few) for writing");
+		}
+		return false;
+	}
+
 	if (source[0].driver == "gdal") {
 		#ifdef useGDAL
-
 		success = writeValuesGDAL(vals, startrow, nrows, 0, ncol());
 		#else
 		setError("GDAL is not available");
@@ -317,15 +286,15 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 		success = writeValuesMem(vals, startrow, nrows);
 	}
 
+//return success;
 #ifdef useRcpp
+	if (checkInterrupt()) {
+		pbar.interrupt();
+		setError("interrupted");
+		return(false);
+	}
 	if (progressbar) {
-		if (Progress::check_abort()) {
-			pbar->cleanup();
-			delete pbar;
-			setError("aborted");
-			return(false);
-		}
-		pbar->increment();
+		pbar.stepit();
 	}
 #endif
 	return success;
@@ -358,14 +327,13 @@ bool SpatRaster::writeValuesRect(std::vector<double> &vals, size_t startrow, siz
 	}
 
 #ifdef useRcpp
+	if (checkInterrupt()) {
+		pbar.interrupt();
+		setError("aborted");
+		return(false);
+	}
 	if (progressbar) {
-		if (Progress::check_abort()) {
-			pbar->cleanup();
-			delete pbar;
-			setError("aborted");
-			return(false);
-		}
-		pbar->increment();
+		pbar.stepit();
 	}
 #endif
 	return success;
@@ -407,10 +375,15 @@ bool SpatRaster::writeStop(){
 
 #ifdef useRcpp
 	if (progressbar) {
+		pbar.finish();
+	}
+/*
+	if (progressbar) {
 		pbar->increment();
 		pbar->cleanup();
 		delete pbar;
 	}
+*/
 #endif
 
 	return success;
@@ -537,4 +510,49 @@ bool SpatRaster::writeStartFs(std::string filename, std::string format, std::str
 }
 */
 
+
+bool SpatRaster::writeDelim(std::string filename, std::string delim, bool cell, bool xy, SpatOptions &opt) {
+
+	if (!hasValues()) {
+		setError("there are no cell values");
+		return false;
+	}
+	if (!readStart()) {
+		setError(getError());
+		return(false);
+	}
+
+	std::ofstream f;
+	f.open(filename);
+	if (!f.is_open()) {
+		setError("could not open the csv file for writing");
+		return false;
+	}
+	std::vector<std::string> nms = getNames();
+	if (xy | cell) {
+		std::vector<std::string> add;
+		if (xy) {
+			add.push_back("x");
+			add.push_back("y");
+		} 
+		if (cell) {
+			add.push_back("cell");
+		}
+		nms.insert(nms.begin(), add.begin(), add.end());
+	}
+
+	std::string s = concatenate(nms, delim);
+	f << s << std::endl;
+
+	BlockSize bs = getBlockSize(opt);
+	for (size_t i=0; i<bs.n; i++) {
+		std::vector<double> v;
+		readBlock(v, bs, i);
+		//s = get_delim_string(v, delim);
+		//f << s << std::endl;
+	}
+	f.close();
+	readStop();
+	return true;
+}
 

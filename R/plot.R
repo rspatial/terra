@@ -13,13 +13,13 @@
 }
 
 
-setMethod("density", signature(x="SpatRaster"), 
+setMethod("density", signature(x="SpatRaster"),
 	function(x, maxcells=100000, plot=TRUE, main, ...) {
-		x <- spatSample(x, maxcells, method="regular", as.raster=TRUE)
+		x <- spatSample(x, maxcells, method="regular", as.raster=TRUE, warn=FALSE)
 		res <- list()
 		nl <- nlyr(x)
 		if (missing(main)) {
-			main=names(x) 
+			main=names(x)
 		} else {
 			main <- rep(main, length.out=nl)
 		}
@@ -38,7 +38,7 @@ setMethod("density", signature(x="SpatRaster"),
 			mfrow <- graphics::par("mfrow")
 			spots <- mfrow[1] * mfrow[2]
 			if (spots < nl) {
-				old.par <- graphics::par(no.readonly = TRUE) 
+				old.par <- graphics::par(no.readonly = TRUE)
 				on.exit(graphics::par(old.par))
 				graphics::par(mfrow=c(nr, nc))
 			}
@@ -52,9 +52,9 @@ setMethod("density", signature(x="SpatRaster"),
 )
 
 
-setMethod("persp", signature(x="SpatRaster"), 
+setMethod("persp", signature(x="SpatRaster"),
 	function(x, maxcells=100000, ...)  {
-		x <- spatSample(x, size=maxcells, method="regular", as.raster=TRUE)
+		x <- spatSample(x, size=maxcells, method="regular", as.raster=TRUE, warn=FALSE)
 		value <- t(as.matrix(x, wide=TRUE)[nrow(x):1,])
 		y <- yFromRow(x, nrow(x):1)
 		x <- xFromCol(x, 1:ncol(x))
@@ -65,7 +65,7 @@ setMethod("persp", signature(x="SpatRaster"),
 
 .plot.filled.contour <- function(x, maxcells=100000, ...) {
 
-	x <- spatSample(x[[1]], maxcells, method="regular", as.raster=TRUE)
+	x <- spatSample(x[[1]], maxcells, method="regular", as.raster=TRUE, warn=FALSE)
 	X <- xFromCol(x, 1:ncol(x))
 	Y <- yFromRow(x, nrow(x):1)
 	Z <- t( matrix( values(x), ncol=ncol(x), byrow=TRUE)[nrow(x):1,] )
@@ -79,12 +79,12 @@ setMethod("persp", signature(x="SpatRaster"),
 }
 
 
-setMethod("contour", signature(x="SpatRaster"), 
+setMethod("contour", signature(x="SpatRaster"),
 	function(x, maxcells=100000, filled=FALSE, ...)  {
 		if (filled) {
 			.plot.filled.contour(x, maxcells=maxcells, ...)
 		} else {
-			x <- spatSample(x[[1]], maxcells, method="regular", as.raster=TRUE)
+			x <- spatSample(x[[1]], maxcells, method="regular", as.raster=TRUE, warn=FALSE)
 			if (is.null(list(...)$asp)) {
 				asp <- ifelse(is.lonlat(x, perhaps=TRUE, warn=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
 				graphics::contour(x=xFromCol(x,1:ncol(x)), y=yFromRow(x, nrow(x):1), z=t(as.matrix(x, wide=TRUE)[nrow(x):1,]), asp=asp, ...)
@@ -96,11 +96,11 @@ setMethod("contour", signature(x="SpatRaster"),
 )
 
 
-setMethod("as.contour", signature(x="SpatRaster"), 
+setMethod("as.contour", signature(x="SpatRaster"),
 	function(x, maxcells=100000, ...) {
-		x <- spatSample(x[[1]], size=maxcells, method="regular", as.raster=TRUE)
+		x <- spatSample(x[[1]], size=maxcells, method="regular", as.raster=TRUE, warn=FALSE)
 		z <- grDevices::contourLines(x=xFromCol(x,1:ncol(x)), y=yFromRow(x, nrow(x):1), z=t(as.matrix(x, wide=TRUE)[nrow(x):1,]), ...)
-		y <- sapply(1:length(z), function(i) cbind(z[[i]]$level, i, z[[i]]$x, z[[i]]$y))
+		y <- lapply(1:length(z), function(i) cbind(z[[i]]$level, i, z[[i]]$x, z[[i]]$y))
 		y <- do.call(rbind, y)
 		y[] <- as.numeric(y)
 		u <- unique(y[,1])
@@ -110,9 +110,9 @@ setMethod("as.contour", signature(x="SpatRaster"),
 	}
 )
 
- 
 
-setMethod("pairs", signature(x="SpatRaster"), 
+
+setMethod("pairs", signature(x="SpatRaster"),
 	function(x, hist=TRUE, cor=TRUE, use="pairwise.complete.obs",  maxcells=100000, ...) {
 
 		if (nlyr(x) < 2) {
@@ -146,10 +146,9 @@ setMethod("pairs", signature(x="SpatRaster"),
 		if (hist) {dp <- panelhist} else {dp <- NULL}
 		if (cor) {up <- panelcor} else {up <- NULL}
 
+		d <- spatSample(x, maxcells, method="regular", as.raster=FALSE, warn=FALSE)
 
-		d <- spatSample(x, maxcells, method="regular", as.raster=FALSE)
-
-		dots <- list(...) 
+		dots <- list(...)
 		cex <- dots$cex
 		main <- dots$main
 		if (is.null(cex)) cex <- 0.5
@@ -166,7 +165,7 @@ setMethod("pairs", signature(x="SpatRaster"),
 	xo <- hw * graphics::strwidth("A")
 	yo <- hw * graphics::strheight("A")
 	n <- nchar(labels)
-	theta <- seq(pi/4, 2*pi, length.out=8*hw*10)  
+	theta <- seq(pi/4, 2*pi, length.out=8*hw*10)
 	for (i in theta) {
 		text( xy$x + cos(i)*xo, xy$y + sin(i)*yo, labels, col=hc, ... )
 	}
@@ -174,7 +173,7 @@ setMethod("pairs", signature(x="SpatRaster"),
 }
 
 
-setMethod("text", signature(x="SpatRaster"), 
+setMethod("text", signature(x="SpatRaster"),
 	function(x, labels, digits=0, halo=FALSE, ...) {
 		if (missing(labels)) {
 			labels <- 1
@@ -185,7 +184,7 @@ setMethod("text", signature(x="SpatRaster"),
 				i <- which(labels == names(x))
 				if (i == 0) {
 					i <- 1
-				} 
+				}
 			}
 			x <- x[[labels]]
 			labels <- as.data.frame(x)[,1]
@@ -208,12 +207,12 @@ setMethod("text", signature(x="SpatRaster"),
 )
 
 
-setMethod("text", signature(x="SpatVector"), 
-	function(x, labels, halo=FALSE, ...) {
+setMethod("text", signature(x="SpatVector"),
+	function(x, labels, halo=FALSE, inside=FALSE, ...) {
 		if (missing(labels)) {
 			labels <- 1:nrow(x)
 		} else if (length(labels) == 1) {
-			if (nrow(x) > 1) { 
+			if (nrow(x) > 1) {
 				labels <- as.data.frame(x)[,labels]
 			} else {
 				if (is.numeric(labels)) {
@@ -225,7 +224,7 @@ setMethod("text", signature(x="SpatVector"),
 				}
 			}
 		}
-		xy <- geom(centroids(x))[,c("x","y"),drop=FALSE]
+		xy <- geom(centroids(x, inside=inside))[,c("x","y"),drop=FALSE]
 		if (halo) {
 			.halo(xy[,1], xy[,2], labels, ...)
 		} else {
@@ -236,22 +235,22 @@ setMethod("text", signature(x="SpatVector"),
 
 
 
-setMethod("boxplot", signature(x="SpatRaster"), 
+setMethod("boxplot", signature(x="SpatRaster"),
 	function(x, y=NULL, maxcell=100000, ...) {
 		if (is.null(y)) {
 			cn <- names(x)
 			if ( ncell(x) > maxcell) {
 				warn("boxplot", "taking a sample of ", maxcell, " cells")
-				x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
-			} 
+				x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+			}
 			names(x) <- cn
 			boxplot(values(x), ...)
 		} else {
 			s <- c(x[[1]], y[[1]])
 			if ( ncell(x) > maxcell) {
 				warn("boxplot", "taking a regular sample of ", maxcell, " cells")
-				s <- spatSample(s, maxcell, method="regular", as.raster=TRUE)
-			} 
+				s <- spatSample(s, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+			}
 			s <- values(s, dataframe=TRUE)
 			cn <- colnames(s)
 			if (is.null(cn)) cn <- c("", "")
@@ -268,7 +267,7 @@ setMethod("boxplot", signature(x="SpatRaster"),
 
 
 
-setMethod("barplot", "SpatRaster", 
+setMethod("barplot", "SpatRaster",
 	function(height, maxcell=1000000, digits=0, breaks=NULL, col, ...) {
 
 		if (missing(col)) {
@@ -276,8 +275,8 @@ setMethod("barplot", "SpatRaster",
 		}
 		height <- height[[1]]
 		f <- is.factor(height)
-		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE, as.df=f)
-		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE, as.df=FALSE)
+#		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE, as.df=f)
+		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE, as.df=FALSE, warn=FALSE)
 		adj <- nrow(x) / ncell(height)
 		if (adj < 1) {
 			warn("barplot", "a sample of ", round(100*adj, 1), "% of the raster cells were used to estimate frequencies")
@@ -300,23 +299,35 @@ setMethod("barplot", "SpatRaster",
 
 
 
-
 shade <- function(slope, aspect, angle=45, direction=0, normalize=FALSE, filename="", overwrite=FALSE, ...) {
+	stopifnot(inherits(slope, "SpatRaster"))
+	opt <- spatOptions(filename, overwrite=overwrite, ...)
+	slope@ptr <- slope@ptr$hillshade(aspect@ptr, angle, direction, normalize[1], opt)
+	messages(slope, "shade")
+}
 
-	x <- c(slope[[1]], aspect[[1]])
 
-	direction <- direction[1] * pi/180
-	zenith <- (90 - angle[1]) * pi/180
-
-	if (normalize) {
-		fun <- function(slp, asp) { 
-			shade <- cos(slp) * cos(zenith) + sin(slp) * sin(zenith) * cos(direction-asp) 
-			shade[shade < 0] <- 0
-			shade * 255
-		}
-	} else {
-		fun <- function(slp, asp) { cos(slp) * cos(zenith) + sin(slp) * sin(zenith) * cos(direction-asp) }
+map.pal <- function(name, n=50, ...) { 
+	f <- system.file("colors/palettes.rds", package="terra")
+	v <- readRDS(f)
+	if (missing(name)) {
+		return(names(v))
 	}
-	lapp(x, fun=fun, filename=filename, overwrite=overwrite, wopt=list(...))
+	if (name %in% names(v)) {
+		r <- grDevices::colorRampPalette(v[[name]], ...)
+		r(n)
+	} else {
+		error("map.pal", paste(name, "is not a known palette"))
+	}
+}
+
+map.leg <- function(name) { 
+	f <- system.file("colors/legends.rds", package="terra")
+	v <- readRDS(f)
+	if (name %in% names(v)) {
+		v[[name]]
+	} else {
+		error("map.leg", paste(name, "is not a known legend"))
+	}
 }
 

@@ -1,12 +1,12 @@
 
-.ncdf_extent <- function(x) {
+.ncdf_extent <- function(x, f) {
 
 	if (!("ncdf4" %in% rownames(utils::installed.packages()))) {
 		warn("rast", "GDAL did not find an extent. installing the ncdf4 package may help")
 		return(x)
 	}
-	fname <- sources(x)[1]
-	zvar <- varnames(x)
+	fname <- f
+	zvar <- varnames(x)[1]
 
 	dims <- 1:3
 
@@ -16,7 +16,7 @@
 	ncols <- nc$var[[zvar]]$dim[[dims[1]]]$len
 	nrows <- nc$var[[zvar]]$dim[[dims[2]]]$len
 	if (!(ncol(x) == ncols) & (nrow(x) == nrows)) {
-		warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
+		warn("rast", "GDAL did not find an extent. Cells not equally spaced?")
 		return(x)
 	}
 	xx <- try(ncdf4::ncvar_get(nc, nc$var[[zvar]]$dim[[dims[1]]]$name), silent = TRUE)
@@ -25,7 +25,7 @@
 	}
 	rs <- xx[-length(xx)] - xx[-1]
 	if (! isTRUE ( all.equal( min(rs), max(rs), tolerance=0.025, scale= abs(min(rs))) ) ) {
-		warn("rast", "cells are not equally spaced; extent is not defined") 
+		warn("rast", "cells are not equally spaced; extent is not defined")
 		return(x)
 	}
 	xrange <- c(min(xx), max(xx))
@@ -38,7 +38,7 @@
 
 	rs <- yy[-length(yy)] - yy[-1]
 	if (! isTRUE ( all.equal( min(rs), max(rs), tolerance=0.025, scale= abs(min(rs))) ) ) {
-		warn("rast", "cells are not equally spaced; extent is not defined") 
+		warn("rast", "cells are not equally spaced; extent is not defined")
 		return(x)
 	}
 	yrange <- c(min(yy), max(yy))
@@ -54,11 +54,7 @@
 
 
 
-.write_cdf <- function(x, filename, overwrite=FALSE, zname="time", prec="float", compression=NA, missval, ...) {
-
-	dots <- list(...)
-	force_v4 <- isTRUE(dots$force_v4)
-	verbose  <- isTRUE(dots$verbose)
+.write_cdf <- function(x, filename, overwrite=FALSE, zname="time", atts="", gridmap="", prec="float", compression=NA, missval, force_v4=TRUE, verbose=FALSE, ...) {
 
 	n <- length(x)
 	y <- x[1]
@@ -89,7 +85,7 @@
 	}
 	prec <- rep_len(prec, n)
 	if (missing(missval)) {
-		miss_vals <- c(-32768, -2147483647, -1.175494e38, -1.7976931348623157e308, 255) 
+		miss_vals <- c(-32768, -2147483647, -1.175494e38, -1.7976931348623157e308, 255)
 		missval <- miss_vals[match(prec, valid_prec)]
 	} else {
 		missval <- rep_len(missval, n)
@@ -105,7 +101,7 @@
 			y <- x[i]
 			if (y@ptr$hasTime) {
 				zv <- y@ptr$time
-				tstep <- y@ptr$timestep 
+				tstep <- y@ptr$timestep
 				cal <- "standard"
 				if (tstep == "seconds") {
 					zunit <- "seconds since 1970-1-1 00:00:00"
@@ -114,13 +110,17 @@
 					zunit <- "days since 1970-1-1"
 					zv <- zv / (24 * 3600)
 					cal <- "standard"
+				} else if (tstep == "years") {
+					zunit <- "years since 1970"
+					zv <- time(y) - 1970
+					cal <- "standard"
 				} else {
 					zunit <- "unknown"
 				}
 			} else {
 				zv <- 1:nlyr(y)
 				zunit <- "unknown"
-			} 
+			}
 			zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
 			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval[i], lvar[i], prec = prec[i], compression=compression,...)
 		} else {
@@ -130,58 +130,86 @@
 	}
 
 	ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
-
+	
 	ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
 	on.exit(ncdf4::nc_close(ncobj))
 
+	haveprj <- FALSE
 	prj <- crs(x[1])
 	prj <- gsub("\n", "", prj)
 	if (prj != "") {
+		haveprj <- TRUE
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "crs_wkt", prj, prec="text")
 		# need for older gdal?
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
-		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", .proj4(x[1]), prec='text')
+		prj <- .proj4(x[1])
+		if (prj != "") {
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", prj, prec='text')
+		}
+		prj <- crs(x[1], describe=TRUE)[1,3]
+		if (!is.na(prj)) {
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "epsg_code", prj, prec='text')
+		}
 	}
+	gridmap <- grep("=", gridmap, value=TRUE)
+	if (length(gridmap)>0) {
+		gridmap <- strsplit(gridmap, "=")
+		for (i in 1:length(gridmap)) {		
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], gridmap[[i]][1], gridmap[[i]][2], prec="text")
+		}
+		haveprj <- TRUE
+	}
+
+
 	e <- ext(x)
 	rs <- res(x)
 	gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
-	ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "GeoTransform", gt, prec="text")
+	ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "geotransform", gt, prec="text")
 
 	opt <- spatOptions()
 	for (i in 1:n) {
 		y = x[i]
 		readStart(y)
-		b <- blockSize(y, 4)
+		b <- blocks(y, 4)
 		if (length(ncvars[[1]]$dim) == 3) {
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
+				d[is.nan(d)] <- NA
 				d <- array(d, c(nc, b$nrows[j], nl[i]))
 				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j], 1), count=c(nc, b$nrows[j], nl[i]))
 			}
 		} else {
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
+				d[is.nan(d)] <- NA
 				d <- matrix(d, ncol=b$nrows[j])
 				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]), count=c(nc, b$nrows[j]))
 			}
 		}
 		readStop(y)
-		if (prj != "") {
+		if (haveprj) {
 			ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
 		}
 	}
 
 	ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
 	pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
-	ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
+	ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
 	ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
 
+	atts <- grep("=", atts, value=TRUE)
+	if (length(atts) > 1) {
+		atts <- strsplit(atts, "=")
+		for (i in 1:length(atts)) {
+			ncdf4::ncatt_put(ncobj, 0, atts[[i]][1], atts[[i]][2], prec="text")
+		}
+	}
 	TRUE
 }
 
 
 
-setMethod("writeCDF", signature(x="SpatRaster"), 
+setMethod("writeCDF", signature(x="SpatRaster"),
 	function(x, filename, varname, longname="", unit="", ...) {
 		filename <- trimws(filename)
 		stopifnot(filename != "")
@@ -197,8 +225,8 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 )
 
 
-setMethod("writeCDF", signature(x="SpatRasterDataset"), 
-	function(x, filename, overwrite=FALSE, zname="time", prec="float", compression=NA, missval, ...) {
+setMethod("writeCDF", signature(x="SpatRasterDataset"),
+	function(x, filename, overwrite=FALSE, zname="time", atts="", gridmap="", prec="float", compression=NA, missval, ...) {
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		xt  <- tools::file_ext(filename)
@@ -208,7 +236,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		if (file.exists(filename) & !overwrite) {
 			error("writeCDF", "file exists, use 'overwrite=TRUE' to overwrite it")
 		}
-		ok <- .write_cdf(x, filename, zname=zname, prec=prec, compression=compression, missval=missval, ...)
+		ok <- .write_cdf(x, filename, zname=zname, atts=atts, gridmap=gridmap, prec=prec, compression=compression, missval=missval, ...)
 		if (ok) {
 			if (length(x) > 1) {
 				out <- sds(filename)
@@ -236,12 +264,12 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		dims <- dims[dims > 1]
 	}
 
-	if (varname=='') { 
+	if (varname=='') {
 		nv <- length(vars)
 		if (nv == 0) {
 			return('z')
-		} 
-		
+		}
+
 		if (nv  == 1) {
 			varname <- vars
 		} else {
@@ -280,23 +308,23 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		g$standard_parallel <- NULL
 	}
 
-	vals <- sapply(g, function(i) i[1]) 
+	vals <- sapply(g, function(i) i[1])
 	vars <- names(vals)
 	if (any(vars %in% c("proj4", "crs_wkt", "spatial_ref"))) {
 		crs=vals[vars %in% c("proj4", "crs_wkt", "spatial_ref")][1]
 		return(crs)
 	}
-# based on info at 
+# based on info at
 # http://trac.osgeo.org/gdal/wiki/NetCDF_ProjectionTestingStatus
 # accessed 7 October 2012
 	prj <- matrix(c("albers_conical_equal_area", "aea", "azimuthal_equidistant", "aeqd", "lambert_cylindrical_equal_area", "cea", "lambert_azimuthal_equal_area", "laea", "lambert_conformal_conic", "lcc", "latitude_longitude", "longlat", "mercator", "merc", "orthographic", "ortho", "polar_stereographic", "stere", "stereographic", "stere", "transverse_mercator", "tmerc"), ncol=2, byrow=TRUE)
-	
+
 	m <- matrix(c("grid_mapping_name", "+proj", "false_easting", "+x_0","false_northing", "+y_0", "scale_factor_at_projection_origin", "+k_0", "scale_factor_at_central_meridian", "+k_0", "standard_parallel", "+lat_1", "standard_parallel1", "+lat_1", "standard_parallel2", "+lat_2", "longitude_of_central_meridian", "+lon_0", "longitude_of_projection_origin", "+lon_0", "latitude_of_projection_origin", "+lat_0", "straight_vertical_longitude_from_pole", "+lon_0",
-	"longitude_of_prime_meridian", "+pm", "semi_major_axis", "+a", "semi_minor_axis", "+b", "inverse_flattening", "+rf", 
+	"longitude_of_prime_meridian", "+pm", "semi_major_axis", "+a", "semi_minor_axis", "+b", "inverse_flattening", "+rf",
 	"earth_radius", "+a"), ncol=2, byrow=TRUE)
 
 	# add logic that if prime merid is defined but not centr merid. centr merid is same as prime.
-		
+
 	i <- match(vars, m[,1])
 	if (all(is.na(i))) {
 		gg <- cbind(vars, vals)
@@ -311,7 +339,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		if (NROW(gg) > 0) {
 			mtxt <- paste(apply(gg, 1, function(x) paste(x, collapse='=')), collapse='\n')
 			warning("cannot process these parts of the crs:\n", mtxt)
-		}	
+		}
 		vars <- vars[!is.na(i)]
 		vals <- vals[!is.na(i)]
 		i <- stats::na.omit(i)
@@ -326,7 +354,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 	p <- which(tab[,2] == '+proj')
 	if (length(p) == 0) {
 		warning("cannot create a valid crs\n", mtxt)
-		return(NA)	
+		return(NA)
 	} else {
 		tab <- rbind(tab[p, ], tab[-p, ])
 	}
@@ -349,20 +377,20 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 	dohours <- FALSE
 	doseconds <- FALSE
 
-	un <- nc$var[[zvar]]$dim[[dim3]]$units	
-	if (substr(un, 1, 10) == "days since") { 
+	un <- nc$var[[zvar]]$dim[[dim3]]$units
+	if (substr(un, 1, 10) == "days since") {
 		startDate = as.Date(substr(un, 12, 22))
-	} else if (substr(un, 1, 11) == "hours since") { 
+	} else if (substr(un, 1, 11) == "hours since") {
 		dohours <- TRUE
 		dodays <- FALSE
 		startTime <- substr(un, 13, 30)
 		mult <- 3600
-	} else if (substr(un, 1, 13) == "seconds since") { 
+	} else if (substr(un, 1, 13) == "seconds since") {
 		doseconds <- TRUE
 		dodays <- FALSE
 		startTime = as.Date(substr(un, 15, 31))
 		mult <- 1
-	} else if (substr(un, 1, 12) == "seconds from") { 
+	} else if (substr(un, 1, 12) == "seconds from") {
 		doseconds <- TRUE
 		dodays <- FALSE
 		startTime = as.Date(substr(un, 14, 31))
@@ -379,7 +407,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		time <- as.character(time)
 		if (!is.na(time[1])) {
 			return(time)
-		}	
+		}
 	} else if (dodays) {
 		# cal = nc$var[[zvar]]$dim[[dim3]]$calendar ?
 		cal <- ncdf4::ncatt_get(nc, "time", "calendar")
@@ -389,10 +417,10 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 			cal <- cal$value
 			if (cal =='gregorian' | cal =='proleptic_gregorian' | cal=='standard') {
 				greg <- TRUE
-			} else if (cal == 'noleap' | cal == '365 day' | cal == '365_day') { 
+			} else if (cal == 'noleap' | cal == '365 day' | cal == '365_day') {
 				greg <- FALSE
 				nday <- 365
-			} else if (cal == '360_day') { 
+			} else if (cal == '360_day') {
 				greg <- FALSE
 				nday <- 360
 			} else {
@@ -409,7 +437,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 			year <- trunc( as.numeric(time)/nday )
 			doy <- (time - (year * nday))
 			origin <- paste(year+startyear, "-", startmonth, "-", startday, sep='')
-			time <- as.Date(doy, origin=origin)		
+			time <- as.Date(doy, origin=origin)
 		}
 		return(time)
 	}
@@ -444,10 +472,10 @@ pointsCDF <- function(filename, varname, polygons=FALSE) {
 
 	a <- ncdf4::ncatt_get(nc, zvar, "grid_mapping")
 	prj <- NA
-	if ( a$hasatt ) { 
+	if ( a$hasatt ) {
 		try(atts <- ncdf4::ncatt_get(nc, a$value), silent=TRUE)
 		try(prj <- .getCRSfromGridMap4(atts), silent=TRUE)
-	}		
+	}
 
 	dim3 <- dims[3]
 	dim3_vals <- try(ncdf4::ncvar_get(nc, nc$var[[zvar]]$dim[[dim3]]$name), silent = TRUE)
@@ -457,17 +485,17 @@ pointsCDF <- function(filename, varname, polygons=FALSE) {
 	nms <- NULL
 	if ( nc$var[[zvar]]$dim[[dim3]]$name == "time" ) {
 		try( nms <- .ncdfTime(nc, zvar, dim3, dim3_vals) )
-	} 
+	}
 
-	d <- ncdf4::ncvar_get( nc, varid=zvar)	
+	d <- ncdf4::ncvar_get( nc, varid=zvar)
 	nl <- dim(d)[3]
 	v <- sapply(1:nl, function(i) d[,,i])
-	
+
 	natest1 <- ncdf4::ncatt_get(nc, zvar, "_FillValue")
-	natest2 <- ncdf4::ncatt_get(nc, zvar, "missing_value")		
-	if (natest1$hasatt) { 
+	natest2 <- ncdf4::ncatt_get(nc, zvar, "missing_value")
+	if (natest1$hasatt) {
 		v[v==natest1$value] <- NA
-	} else if (natest2$hasatt) { 
+	} else if (natest2$hasatt) {
 		v[v==natest2$value] <- NA
 	}
 	if (!is.null(nms)) {

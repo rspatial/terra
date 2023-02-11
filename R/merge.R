@@ -3,7 +3,7 @@
 # Version 1.0
 # License GPL v3
 
-setMethod("merge", signature(x="SpatVector", y="data.frame"), 
+setMethod("merge", signature(x="SpatVector", y="data.frame"),
 	function(x, y, ...) {
 		v <- values(x)
 		v$unique_nique_ique_que_e <- 1:nrow(v)
@@ -19,40 +19,53 @@ setMethod("merge", signature(x="SpatVector", y="data.frame"),
 	}
 )
 
+setMethod("merge", signature(x="SpatVector", y="SpatVector"),
+	function(x, y, ...) {
+		merge(x, data.frame(y), ...)
+	}
+)
 
-setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
+setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y, ..., first=TRUE, na.rm=TRUE, filename="", overwrite=FALSE, wopt=list()) {
 		rc <- sprc(x, y, ...)
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
-		x@ptr <- rc@ptr$merge(opt)
+		x@ptr <- rc@ptr$merge(first[1], na.rm, opt)
 		messages(x, "merge")
 	}
 )
 
 
-setMethod("merge", signature(x="SpatRasterCollection", "missing"), 
-	function(x, filename="", ...) { 
+setMethod("merge", signature(x="SpatRasterCollection", "missing"),
+	function(x, first=TRUE, na.rm=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
-		out@ptr <- x@ptr$merge(opt)
+		out@ptr <- x@ptr$merge(first[1], na.rm, opt)
 		messages(out, "merge")
 	}
 )
 
 
-setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) { 
-		rc <- sprc(x, y, ...)
+setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) {
+		fun <- .makeTextFun(fun)
+		if (!inherits(fun, "character")) {
+			error("mosaic", "function 'fun' is not valid")
+		}
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
+		rc <- sprc(x, y, ...)
 		x@ptr <- rc@ptr$mosaic(fun, opt)
 		messages(x, "mosaic")
 	}
 )
 
-setMethod("mosaic", signature(x="SpatRasterCollection", "missing"), 
-	function(x, fun="mean", filename="", ...) { 
+setMethod("mosaic", signature(x="SpatRasterCollection", "missing"),
+	function(x, fun="mean", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
+		fun <- .makeTextFun(fun)
+		if (!inherits(fun, "character")) {
+			error("mosaic", "function 'fun' is not valid")
+		}
 		out@ptr <- x@ptr$mosaic(fun, opt)
 		messages(out, "mosaic")
 	}

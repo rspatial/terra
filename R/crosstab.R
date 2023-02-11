@@ -6,7 +6,7 @@
 # adapted November 2020
 
 
-setMethod("crosstab", signature(x="SpatRaster", y="missing"), 
+setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 	function(x, digits=0, long=FALSE, useNA=FALSE) {
 
 		nl <- nlyr(x)
@@ -14,9 +14,9 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 			error("crosstab", "needs at least 2 layers")
 		}
 		nms <- names(x)
-		opt <- terra:::spatOptions()
+		opt <- spatOptions()
 
-		b <- blockSize(x, 4)
+		b <- blocks(x, 4)
 		readStart(x)
 		on.exit(readStop(x))
 
@@ -32,12 +32,12 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 
 		res <- res[res$Freq > 0,  ,drop=FALSE]
 
-		# some complexity to aggregate keeping 
+		# some complexity to aggregate keeping
 		# variables that are NA
 		if (useNA) {
 			for (i in 1:(ncol(res)-1)) {
 				if (any(is.na(res[,i]))) {
-					res[,i] <- factor(res[,i], levels=c(levels(res[,i]), NA), exclude=NULL) 
+					res[,i] <- factor(res[,i], levels=c(levels(res[,i]), NA), exclude=NULL)
 				}
 			}
 		}
@@ -49,13 +49,23 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 		}
 		if (nrow(res) == 0) {
 			res <- data.frame(matrix(nrow=0, ncol=length(nms)+1))
-		} 
+		}
 		nms <- make.names(nms, unique=TRUE)
 		colnames(res) <- c(nms, "Freq")
 
 		if (! useNA ) {
 			i <- apply(res, 1, function(x) any(is.na(x)))
 			res <- res[!i,  ,drop=FALSE]
+		}
+
+		ff <- is.factor(x)
+		if (any(ff) && (digits >= 0)) {
+			ff <- which(ff)
+			v <- levels(x)
+			for (i in ff) {
+				j <- match(res[,i], v[[i]][,1])
+				res[,i] <- v[[i]][j,2]
+			}
 		}
 
 		if (!long) {
@@ -65,6 +75,7 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 			res <- res[res$Freq > 0,  ,drop=FALSE]
 			res <- res[order(res[,1], res[,2]), ]
 			rownames(res) <- NULL
+			colnames(res)[ncol(res)] <- "n"
 		}
 		return(res)
 	}

@@ -7,7 +7,7 @@
 #"gamma", "lgamma", "digamma", "trigamma")
 
 setMethod("log", signature(x="SpatRaster"),
-    function(x, base=exp(1)){ 
+    function(x, base=exp(1)){
 		opt <- spatOptions()
 		if (base == exp(1)) {
 			x@ptr <- x@ptr$math("log", opt)
@@ -25,11 +25,11 @@ setMethod("log", signature(x="SpatRaster"),
 
 #? "gamma", "lgamma", "digamma", "trigamma"
 setMethod("Math", signature(x="SpatRaster"),
-    function(x){ 
+    function(x){
 		oper <- as.vector(.Generic)[1]
 		opt <- spatOptions()
 		if (substr(oper, 1, 3) == "cum") {
-			x@ptr <- x@ptr$cum(substr(oper, 4, 10), FALSE, "", FALSE)
+			x@ptr <- x@ptr$cum(substr(oper, 4, 10), FALSE, opt)
 		} else if (oper %in% c("acos", "acosh", "asin", "asinh", "atan", "atanh", "cos", "cosh", "cospi", "sin", "sinh", "sinpi", "tan", "tanh", "tanpi")) {
 			x@ptr <- x@ptr$trig(oper, opt)
 		} else {
@@ -42,7 +42,7 @@ setMethod("Math", signature(x="SpatRaster"),
 
 
 setMethod("math", signature(x="SpatRaster"),
-    function(x, fun, digits=0, filename="", overwrite=FALSE, ...){ 
+    function(x, fun, digits=0, filename="", overwrite=FALSE, ...){
 		if (!is.character(fun)) {
 			error("math", "fun must be a character value")
 		}
@@ -65,7 +65,7 @@ setMethod("math", signature(x="SpatRaster"),
 
 
 setMethod("Math2", signature(x="SpatRaster"),
-    function(x, digits=0){ 
+    function(x, digits=0){
 		opt <- spatOptions()
 		oper <- as.vector(.Generic)[1]
 		x@ptr <- x@ptr$math2(oper, digits, opt)
@@ -75,7 +75,7 @@ setMethod("Math2", signature(x="SpatRaster"),
 
 
 setMethod("Math", signature(x="SpatExtent"),
-    function(x){ 
+    function(x){
 		oper <- as.vector(.Generic)[1]
 		if (oper == "floor") {
 			x@ptr <- x@ptr$floor()
@@ -92,7 +92,7 @@ setMethod("Math", signature(x="SpatExtent"),
 )
 
 setMethod("Math2", signature(x="SpatExtent"),
-    function(x, digits=0){ 
+    function(x, digits=0){
 		oper <- as.vector(.Generic)[1]
 		if (oper == "round") {
 			x@ptr <- x@ptr$round(digits)
@@ -107,7 +107,7 @@ setMethod("Math2", signature(x="SpatExtent"),
 )
 
 setMethod("Math2", signature(x="SpatVector"),
-    function(x, digits=4){ 
+    function(x, digits=4){
 		oper <- as.vector(.Generic)[1]
 		if (oper == "round") {
 			x@ptr <- x@ptr$round(digits)

@@ -3,13 +3,13 @@
 # Version 1.0
 # License GPL v3
 
-setMethod("ifel", signature(test="SpatRaster"), 
+setMethod("ifel", signature(test="SpatRaster"),
 	function(test, yes, no, filename="", ...) {
 		no_num <- FALSE
 		yes_num <- FALSE
 		if (!inherits(no, "SpatRaster")) {
-			# logical includes default NA 
-			if (!(is.numeric(no) || is.logical(no))) { 
+			# logical includes default NA
+			if (!(is.numeric(no) || is.logical(no))) {
 				error("ifel", "argument 'no' must be a SpatRaster, numeric or logical")
 			}
 			if (length(no) > 1) warn("ifel", 'only the first element of "no" is used')
@@ -17,7 +17,7 @@ setMethod("ifel", signature(test="SpatRaster"),
 			no_num <- TRUE
 		}
 		if (!inherits(yes, "SpatRaster")) {
-			if (!(is.numeric(yes) || is.logical(yes))) { 
+			if (!(is.numeric(yes) || is.logical(yes))) {
 				error("ifel", "argument 'yes' must be a SpatRaster, numeric or logical")
 			}
 			if (length(yes) > 1) warn("ifel", 'only the first element of "yes" is used')
