@@ -116,7 +116,7 @@ static void __warningHandler(const char *fmt, ...) {
 #endif 
 
 
-void geos_finish(GEOSContextHandle_t ctxt) {
+inline void geos_finish(GEOSContextHandle_t ctxt) {
 #ifdef GEOS350
 	GEOS_finish_r(ctxt);
 #else
@@ -125,7 +125,7 @@ void geos_finish(GEOSContextHandle_t ctxt) {
 }
 
 
-GEOSContextHandle_t geos_init(void) {
+inline GEOSContextHandle_t geos_init(void) {
 #ifdef GEOS350
 	GEOSContextHandle_t ctxt = GEOS_init_r();
 	GEOSContext_setNoticeHandler_r(ctxt, __warningHandler);
@@ -141,7 +141,7 @@ static void __warningIgnore(const char *fmt, ...) {
 	return;
 }
 
-GEOSContextHandle_t geos_init2(void) {
+inline GEOSContextHandle_t geos_init2(void) {
 
 #ifdef GEOS350
 	GEOSContextHandle_t ctxt = GEOS_init_r();
@@ -155,7 +155,7 @@ GEOSContextHandle_t geos_init2(void) {
 
 
 
-GEOSGeometry* geos_line(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
+inline GEOSGeometry* geos_line(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
 	size_t n = x.size();
 	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, 2);
@@ -170,7 +170,7 @@ GEOSGeometry* geos_line(const std::vector<double> &x, const std::vector<double> 
 
 
 
-GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
+inline GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
 	size_t n = x.size();
 	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, 2);
@@ -184,7 +184,7 @@ GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::vector<do
 }
 
 
-GEOSGeometry* geos_polygon(const std::vector<double> &x, const std::vector<double> &y, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy, GEOSContextHandle_t hGEOSCtxt) {
+inline GEOSGeometry* geos_polygon(const std::vector<double> &x, const std::vector<double> &y, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSGeometry* shell = geos_linearRing(x, y, hGEOSCtxt);
 	size_t nh = hx.size();
 	std::vector<GEOSGeometry*> holes;
@@ -203,7 +203,7 @@ GEOSGeometry* geos_polygon(const std::vector<double> &x, const std::vector<doubl
 
 
 
-void getHoles(SpatPart &p, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy) {
+inline void getHoles(SpatPart &p, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy) {
 	size_t nh = p.nHoles();
 	hx.resize(0);
 	hy.resize(0);
@@ -218,7 +218,7 @@ void getHoles(SpatPart &p, std::vector<std::vector<double>> &hx, std::vector<std
 	return;
 }
 
-GEOSGeometry* geos_polygon2(SpatPart g, GEOSContextHandle_t hGEOSCtxt) {
+inline GEOSGeometry* geos_polygon2(SpatPart g, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSGeometry* shell = geos_linearRing(g.x, g.y, hGEOSCtxt);
 
 	//getHoles(svp, hx, hy);
@@ -244,7 +244,7 @@ GEOSGeometry* geos_polygon2(SpatPart g, GEOSContextHandle_t hGEOSCtxt) {
 }
 
 
-std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSCtxt) {
+inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSCtxt) {
 	size_t n = v->size();
 	std::vector<GeomPtr> g;
 	g.reserve(n);
@@ -319,7 +319,7 @@ std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSCtxt) {
 
 
 
-SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEOSCtxt, std::string vt) {
+inline SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEOSCtxt, std::string vt) {
 
 	SpatVector out;
 	SpatVector v;
@@ -433,7 +433,7 @@ SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEO
 
 
 
-bool pointsFromGeom(GEOSContextHandle_t hGEOSCtxt, const GEOSGeometry* part, 
+inline bool pointsFromGeom(GEOSContextHandle_t hGEOSCtxt, const GEOSGeometry* part, 
 const unsigned i, const unsigned j, std::vector<double> &x, std::vector<double> &y, 
 std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &hole, std::string &msg) {
 
@@ -462,7 +462,7 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 
 
 
-bool polysFromGeom(GEOSContextHandle_t hGEOSCtxt, const GEOSGeometry* part, 
+inline bool polysFromGeom(GEOSContextHandle_t hGEOSCtxt, const GEOSGeometry* part, 
 const unsigned i, const unsigned j, std::vector<double> &x, std::vector<double> &y, 
 std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &hole, std::string &msg) {
 	const GEOSGeometry* ring = GEOSGetExteriorRing_r(hGEOSCtxt, part);
@@ -514,7 +514,7 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 }
 
 
-void emptyGeom(const unsigned i, std::vector<double> &x, std::vector<double> &y, 
+inline void emptyGeom(const unsigned i, std::vector<double> &x, std::vector<double> &y, 
 std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &hole) {
 	x.push_back(NAN);
 	y.push_back(NAN);
@@ -524,7 +524,7 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 }
 
 
-SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHandle_t hGEOSCtxt, const std::vector<long> &ids = std::vector<long>(), bool keepnull=true, bool increment = true) {
+inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHandle_t hGEOSCtxt, const std::vector<long> &ids = std::vector<long>(), bool keepnull=true, bool increment = true) {
 
 	SpatVectorCollection out;
 
