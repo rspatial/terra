@@ -455,7 +455,7 @@ std::string basename_sds(std::string f) {
 	if (std::string::npos != i) {
 		f.erase(0, i + 1);
 	}
-	const size_t j = f.find_last_of(":");
+	const size_t j = f.find_last_of(':');
 	if (std::string::npos != j) {
 		f.erase(0, j + 1);
 	}
