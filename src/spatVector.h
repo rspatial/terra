@@ -199,7 +199,7 @@ class SpatVector {
 
 
 		std::vector<double> distance(bool sequential, std::string unit);
-		std::vector<double> linedistLonLat(SpatVector pts);
+		std::vector<double> linedistLonLat(SpatVector x);
 
 		std::vector<std::vector<size_t>> knearest(size_t k);
 
@@ -336,7 +336,7 @@ class SpatVector {
 
 		SpatVector crop(SpatExtent e);
 		SpatVector crop(SpatVector e);
-		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
+		SpatVector voronoi(SpatVector bnd, double tolerance, int onlyEdges);		
 		SpatVector delaunay(double tolerance, int onlyEdges);		
 		SpatVector hull(std::string htype, std::string by="");
 		SpatVector intersect(SpatVector v, bool values);
