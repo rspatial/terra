@@ -28,6 +28,7 @@ std::string SpatRasterCollection::getError() { return msg.getError(); }
 SpatRasterCollection::SpatRasterCollection(size_t n) { ds.resize(n); };
 
 size_t SpatRasterCollection::size() { return ds.size(); }
+bool SpatRasterCollection::empty() { return ds.empty(); }
 
 void SpatRasterCollection::resize(size_t n) { ds.resize(n); }
 
@@ -346,6 +347,7 @@ bool SpatRasterStack::push_back(SpatRaster r, std::string name, std::string long
 };
 		
 size_t SpatRasterStack::size() { return ds.size(); }
+bool SpatRasterStack::empty() { return ds.empty(); }
 void SpatRasterStack::resize(size_t n) { 
 	if (n < ds.size()) {
 		ds.resize(n); 

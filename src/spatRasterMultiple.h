@@ -41,6 +41,7 @@ class SpatRasterCollection {
 		
 		SpatRasterCollection(size_t n);
 		size_t size();
+		bool empty();
 		void resize(size_t n);
 		void push_back(SpatRaster r, std::string name);
 		void erase(size_t i); 
@@ -103,6 +104,7 @@ class SpatRasterStack {
 		std::string getSRS(std::string s);
 		bool push_back(SpatRaster r, std::string name, std::string longname, std::string unit, bool warn); 
 		size_t size();
+		bool empty();
 		void resize(size_t n);
 		void erase(size_t i);
 
