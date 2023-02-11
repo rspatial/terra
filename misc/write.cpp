@@ -49,7 +49,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	bool overwrite = opt.get_overwrite();
 	SpatRaster out = geometry();
 
-	if (filename == "") {
+	if (filename.empty()) {
 		#ifdef useGDAL
 		std::string extension = ".tif";
 		#else
@@ -96,7 +96,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		setNames(opt.names);
 	}
 
-	if (filename == "") {
+	if (filename.empty()) {
 		if (!canProcessInMemory(4) || opt.get_todisk()) {
 			#ifdef useGDAL
 			std::string extension = ".tif";
@@ -107,7 +107,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		}
 	}
 
-	if (filename != "") {
+	if (!filename.empty()) {
 
 		std::string ext = getFileExt(filename);
 		std::string dtype = opt.get_datatype();
@@ -223,7 +223,7 @@ bool SpatRaster::writeStop(){
    		source[0].setRange();
 		source[0].driver = "memory";
 		source[0].memory = true;
-		if (source[0].values.size() > 0) {
+		if (!source[0].values.empty()) {
 			source[0].hasValues = true;
 		}
 	}

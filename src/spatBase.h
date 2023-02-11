@@ -322,7 +322,7 @@ class SpatSRS {
 		}
 
 		bool is_empty() {
-			return (wkt == "");
+			return wkt.empty();
 		}
 
 		bool is_same(std::string other, bool ignoreempty);

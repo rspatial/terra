@@ -796,7 +796,7 @@ SpatVector SpatVector::sample_geom(std::vector<unsigned> n, std::string method, 
 		out.setError("length of samples does not match number of geoms");
 		return out;
 	}
-	if (n.size() == 0) {
+	if (n.empty()) {
 		out.srs = srs;
 		return out;
 	}

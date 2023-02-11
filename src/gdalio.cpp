@@ -16,7 +16,7 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 	lrtrim(filename);
 	lrtrim(driver);
 
-	if (driver != "") {
+	if (!driver.empty()) {
 		if (driver == "RST") {
 			filename = noext(filename) + ".rst";
 		}
@@ -54,7 +54,7 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 bool SpatRaster::getTempFile(std::string &filename, std::string &driver, SpatOptions& opt) {
 
 	driver = opt.get_def_filetype();
-	if ((driver == "") || (driver == "GTiff")) {
+	if (driver.empty() || (driver == "GTiff")) {
 		driver = "GTiff";
 		filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
 		return true;
@@ -254,7 +254,7 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 	for (size_t i=0; metadata[i] != NULL; i++) {
 		meta.push_back(metadata[i]);
 	}
-	if (meta.size() == 0) {
+	if (meta.empty()) {
 		GDALClose( (GDALDatasetH) poDataset );
 		out[0] = std::vector<std::string> {"no subdatasets"};
 		return out;
@@ -332,7 +332,7 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<
 
 	SpatRaster out;
 	std::string outfile = opt.get_filename();
-	if (outfile == "") {
+	if (outfile.empty()) {
 		outfile = tempFile(opt.get_tempdir(), opt.pid, ".vrt");
 	} else if (file_exists(outfile) && (!opt.get_overwrite())) {
 		out.setError("output file exists. You can use 'overwrite=TRUE' to overwrite it");
@@ -761,7 +761,7 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 		if (!s.srs.set({wkt}, msg)) {
 			setError(msg);
 			return false;
-		} else if (msg != "") {
+		} else if (!msg.empty()) {
 			addWarning(msg);
 		}
 
@@ -965,7 +965,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 	GDALSetGeoTransform( hDS, adfGeoTransform);
 
 	std::string wkt = getSRS("wkt");
-	if (wkt != "") {
+	if (!wkt.empty()) {
 		OGRSpatialReferenceH hSRS = OSRNewSpatialReference( NULL );
 		OGRErr erro = OSRSetFromUserInput(hSRS, wkt.c_str());
 		if (erro == 4) {

@@ -90,7 +90,7 @@ void SpatOptions::set_datatype(std::string d) {
 		msg.addWarning(d + " is not a valid datatype");
 	}
 }
-std::string SpatOptions::get_datatype() {if (datatype != "") {return datatype;} else {return def_datatype;}}
+std::string SpatOptions::get_datatype() {if (datatype.empty()) {return def_datatype;} else {return datatype;}}
 
 void SpatOptions::set_def_filetype(std::string d) { def_filetype = d; }
 std::string SpatOptions::get_def_filetype() { return def_filetype;}
@@ -312,11 +312,11 @@ SpatExtent SpatExtent::ceil() {
 }
 
 SpatExtent SpatRaster::getExtent() {
-	if (source.size() > 0) {
-		return source[0].extent;
-	} else {
+	if (source.empty()) {
 		SpatExtent e;
 		return e;
+	} else {
+		return source[0].extent;
 	}
 }
 
@@ -332,7 +332,7 @@ void SpatRaster::setExtent(SpatExtent e) {
 
 void SpatRaster::setExtent(SpatExtent ext, bool keepRes, bool expand, std::string snap) {
 
-	if (snap != "") {
+	if (!snap.empty()) {
 		ext = align(ext, snap);
 	}
 	if (!expand) {

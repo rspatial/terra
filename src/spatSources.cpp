@@ -460,7 +460,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
     unsigned oldsize = lyrs.size();
     lyrs = validLayers(lyrs, nlyr());
 
-	if (lyrs.size() == 0) {
+	if (lyrs.empty()) {
 		out.setError("no (valid) layer selected");
 		return(out);
 	} else if (lyrs.size() != oldsize) {
@@ -488,7 +488,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
     }
 
     out.source.push_back( source[ss].subset(slyr) );
-    if (opt.get_filename() != "") {
+    if (!opt.get_filename().empty()) {
         out = out.writeRaster(opt);
     } //else {
 	//	out.collapse();

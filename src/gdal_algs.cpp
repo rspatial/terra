@@ -434,13 +434,13 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		out.source[0].time = getTime();
 	}
 
-	bool use_crs = crs != "";
+	bool use_crs = !crs.empty();
 	if (use_crs) {
 		align = false;
 		resample = false;
 	} else if (!hasValues()) {
 		std::string fname = opt.get_filename();
-		if (fname != "") {
+		if (!fname.empty()) {
 			out.addWarning("raster has no values, not writing to file");
 		}
 		return out;
@@ -450,7 +450,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	if (!resample) {
-		if (srccrs == "") {
+		if (srccrs.empty()) {
 			out.setError("input raster CRS not set");
 			return out;
 		}
@@ -628,7 +628,7 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 	std::string crsin = source[0].srs.wkt;
 	std::string crsout = out.source[0].srs.wkt;
 	bool do_prj = true;
-	if ((crsin == crsout) || (crsin == "") || (crsout == "")) {
+	if ((crsin == crsout) || crsin.empty() || crsout.empty()) {
 		do_prj = false;
 	}
 
@@ -935,7 +935,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	std::string filename = opt.get_filename();
 	opt.set_datatype("INT1U");
 	std::string driver;
-	if (filename == "") {
+	if (filename.empty()) {
 		if (canProcessInMemory(opt)) {
 			driver = "MEM";
 		} else {
@@ -946,7 +946,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	} else {
 		driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
-		if (driver == "") {
+		if (driver.empty()) {
 			out.setError("cannot guess file type from filename");
 			return out;
 		}
@@ -1097,13 +1097,13 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 
 	std::string filename = opt.get_filename();
 	std::string driver;
-	if (filename == "") {
+	if (filename.empty()) {
 		filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
 		driver = "GTiff";
 	} else {
 		driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
-		if (driver == "") {
+		if (driver.empty()) {
 			setError("cannot guess file type from filename");
 			return out;
 		}
@@ -1189,7 +1189,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 
 	std::string filename = opt.get_filename();
 	std::string driver;
-	if (filename == "") {
+	if (filename.empty()) {
 		if (canProcessInMemory(opt)) {
 			driver = "MEM";
 		} else {
@@ -1200,7 +1200,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 	} else {
 		driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
-		if (driver == "") {
+		if (driver.empty()) {
 			setError("cannot guess file type from filename");
 			return out;
 		}
@@ -1325,7 +1325,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 
 	std::string filename = opt.get_filename();
 	std::string driver;
-	if (filename == "") {
+	if (filename.empty()) {
 		if (canProcessInMemory(opt)) {
 			driver = "MEM";
 		} else {
@@ -1336,7 +1336,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 	} else {
 		driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
-		if (driver == "") {
+		if (driver.empty()) {
 			setError("cannot guess file type from filename");
 			return out;
 		}

@@ -52,7 +52,7 @@ void SpatRaster::gdalogrproj_init(std::string path) {
     OGRRegisterAll();
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
-	if (path != "") {
+	if (!path.empty()) {
 		const char *cp = path.c_str();
 		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
 	}
@@ -113,7 +113,7 @@ bool read_aux_json(std::string filename, std::vector<int_64> &time, std::string 
 				time = tm;
 			}
 		}
-		if ((istep >= 0) && (time.size() > 0)) {
+		if ((istep >= 0) && !time.empty()) {
 			std::vector<std::string> x = strsplit_first(s[istep], ":");
 			if (x.size() == 2) {
 				x = strsplit(x[1], ",");
@@ -446,14 +446,14 @@ SpatCategories GetCategories(char **pCat, std::string name) {
 	for (long i = 0; i<n; i++) {
 		const char *field = CSLGetField(pCat, i);
 		std::string s = field;
-		if (s != "") {
+		if (!s.empty()) {
 			id.push_back(i);
 			nms.push_back(field);
 		}
 	}
 
 	scat.d.add_column(id, "value");
-	name = name == "" ? "category" : name;
+	name = name.empty() ? "category" : name;
 	scat.d.add_column(nms, name);
 	scat.index = 1;
 	return(scat);
@@ -615,7 +615,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 				s.erase(0, pos + delim.length());
 				SpatRaster sub;
 				if (sub.constructFromFile(s, {-1}, {""}, {}, {})) {
-					std::string sname = (sub.source[0].source_name != "") ? sub.source[0].source_name : basename_sds(s);
+					std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
 					if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
 						addWarning("skipped (different geometry): " + s);
 					}
@@ -815,7 +815,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 */
 
 	std::string crs = getDsWKT(poDataset);
-	if (crs == "") {
+	if (crs.empty()) {
 		if (hasExtent && s.extent.xmin >= -180 && s.extent.xmax <= 360 && s.extent.ymin >= -90 && s.extent.ymax <= 90) {
 			crs = "OGC:CRS84";
 			s.parameters_changed = true;
@@ -837,12 +837,12 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		units.resize(0);
 		addWarning("could not parse aux.json");
 	}
-	if (timestamps.size() > 0) {
+	if (!timestamps.empty()) {
 		s.time = timestamps;
 		s.timestep = timestep;
 		s.hasTime = true;
 	}
-	if (units.size() > 0) {
+	if (!units.empty()) {
 		s.unit = units;
 		s.hasUnit = true;
 	}
@@ -985,8 +985,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		}
 		
-		if (nm == "") {
-			if (bandname != "") {
+		if (nm.empty()) {
+			if (!bandname.empty()) {
 				nm = bandname;
 			} else if (s.nlyr > 1) {
 				nm = s.source_name + "_" + std::to_string(i+1);
@@ -1148,10 +1148,10 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, size_t r
 		}
 	}
 
-	if (panBandMap.size() > 0) {
-		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
-	} else {
+	if (panBandMap.empty()) {
 		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
+	} else {
+		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 	}
 
 	GDALRasterBand  *poBand;
@@ -1235,10 +1235,10 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, size_t row, size_t 
 	int hasNA;
 	std::vector<double> naflags(nl, NAN);
 	CPLErr err = CE_None;
-	if (panBandMap.size() > 0) {
-		err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
-	} else {
+	if (panBandMap.empty()) {
 		err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
+	} else {
+		err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 	}
 
 	if (err == CE_None ) {
@@ -1308,10 +1308,10 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_
 	}
 */
 
-	if (panBandMap.size() > 0) {
-		err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], scols, srows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
-	} else {
+	if (panBandMap.empty()) {
 		err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], scols, srows, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
+	} else {
+		err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], scols, srows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 	}
 
 	if (err == CE_None ) {
@@ -1391,10 +1391,10 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::v
 	CPLErr err = CE_None;
 	for (size_t j=0; j < n; j++) {
 		if ((cols[j] < 0) || (rows[j] < 0)) continue;
-		if (panBandMap.size() > 0) {
-			err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
-		} else {
+		if (panBandMap.empty()) {
 			err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
+		} else {
+			err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 		}
 		if (err != CE_None ) {
 			break;
@@ -1472,10 +1472,10 @@ std::vector<double> SpatRaster::readRowColGDALFlat(unsigned src, std::vector<int
 	CPLErr err = CE_None;
 	for (size_t j=0; j < n; j++) {
 		if ((cols[j] < 0) || (rows[j] < 0)) continue;
-		if (panBandMap.size() > 0) {
-			err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
-		} else {
+		if (panBandMap.empty()) {
 			err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
+		} else {
+			err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 		}
 		if (err != CE_None ) {
 			break;
@@ -1558,7 +1558,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	std::vector<std::vector<std::string>> info = parse_metadata_sds(meta);
 	int n = info[0].size();
 
-	if (gtiff && (subds[0] < 0) && (subdsname[0] == "")) {
+	if (gtiff && (subds[0] < 0) && subdsname[0].empty()) {
 		subds.resize(n);
 		std::iota(subds.begin(), subds.end(), 0);
 	}
@@ -1567,11 +1567,11 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 // std::vector<unsigned> varnl;
 // for selection based on nlyr
 
-	if (info[0].size() == 0) {
+	if (info[0].empty()) {
 		return false;
 	}
 	// select sds by index
-	if (((subds.size() > 0) && (subds[0] >= 0))) {
+	if ((!subds.empty() && (subds[0] >= 0))) {
 		for (size_t i=0; i<subds.size(); i++) {
 			if (subds[i] >=0 && subds[i] < n) {
 				sd.push_back(info[0][subds[i]]);
@@ -1583,7 +1583,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 			}
 		}
 	// select by name
-	} else if ((subdsname.size() > 0) && (subdsname[0] != "")) {
+	} else if (!subdsname.empty() && !subdsname[0].empty()) {
 		for (size_t i=0; i<subdsname.size(); i++) {
 			int w = where_in_vector(subdsname[i], info[1], false);
 			if (w >= 0) {
@@ -1610,7 +1610,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 				cols.push_back(stoi(info[4][i]));
 			}
 		}
-		if (sd.size() == 0) { // all were removed
+		if (sd.empty()) { // all were removed
 			std::vector<size_t> nl(n);
 			for (size_t i=0; i<nl.size(); i++) {
 				nl[i] = stol(info[5][i]);
@@ -1662,7 +1662,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		}
 	}
 
-	if (skipped.size() > 0) {
+	if (!skipped.empty()) {
 		std::string s="skipped sub-datasets (see 'describe(sds=TRUE)'):\n" + skipped[0];
 		for (size_t i=1; i<skipped.size(); i++) {
 			s += ", " + skipped[i];
@@ -1679,7 +1679,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 			make_unique_names(nms);
 			lyrnames.insert(lyrnames.end(), nms.begin(), nms.end());
 		}
-		if (lyrnames.size() > 0) {
+		if (!lyrnames.empty()) {
 			setNames(lyrnames, false);
 		}
 	}
@@ -1725,7 +1725,7 @@ bool get_double(std::string input, double &output) {
 std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vector<std::string> vals, std::string &step, std::string &msg) {
 
 	std::vector<int_64> out, bad;
-	if (vals.size() < 1) {
+	if (vals.empty()) {
 		step = "";
 		return out;
 	}
@@ -1851,7 +1851,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<std::string>> &m) {
 
 	std::vector<std::vector<std::string>> out(3);
-	if (m.size() < 1) return out;
+	if (m.empty()) return out;
 
 	std::string vname, lname, units = "";
 	std::vector<std::string> b = m[0];
@@ -1873,7 +1873,7 @@ std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<s
 		}
 		pos = b[j].find("standard_name=");
 		if (pos != std::string::npos) {
-			if (lname == "") {
+			if (lname.empty()) {
 				lname = b[j].erase(0, pos+14);
 			}
 		}
@@ -1903,24 +1903,24 @@ std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<s
 
 void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
-	if (bandmeta.size() == 0) return;
+	if (bandmeta.empty()) return;
 	std::vector<std::vector<std::string>> nms = ncdf_names(bandmeta);
 
-	if (nms[1].size() > 0) {
+	if (!nms[1].empty()) {
 		names = nms[1];
 		make_unique_names(names);
 	}
 	source_name = nms[2][0];
 	source_name_long = nms[2][1];
 
-	if (nms[2][2].size() == 0) {
+	if (nms[2][2].empty()) {
 		unit = {""};
 	} else {
 		unit = {nms[2][2]};
 	}
 
 	recycle(unit, nlyr);
-	if (nms[0].size() > 0) {
+	if (!nms[0].empty()) {
 		std::string step;
 		std::vector<int_64> x = ncdf_time(metadata, nms[0], step, msg);
 		if (x.size() == nlyr) {
@@ -1937,7 +1937,7 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<std::string>> &m) {
 
 	std::vector<std::vector<std::string>> out(4);
-	if (m.size() < 1) return out;
+	if (m.empty()) return out;
 	
 	bool ft1 = false;
 	bool ft2 = false;
@@ -2007,7 +2007,7 @@ std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<s
 
 void SpatRasterSource::set_names_time_grib(std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
-	if (bandmeta.size() == 0) return;
+	if (bandmeta.empty()) return;
 	
 	std::vector<std::vector<std::string>> nms = grib_names(bandmeta);
 
@@ -2029,7 +2029,7 @@ void SpatRasterSource::set_names_time_grib(std::vector<std::vector<std::string>>
 		hastime = true;
 		int_64 tim;
 		for (size_t i=0; i<nms[2].size(); i++) {
-			if (nms[2][i] == "") {
+			if (nms[2][i].empty()) {
 				hastime = false;
 				break;
 			}
@@ -2056,7 +2056,7 @@ void SpatRasterSource::set_names_time_grib(std::vector<std::vector<std::string>>
 std::vector<std::vector<std::string>> tiff_names(const std::vector<std::vector<std::string>> &m) {
 
 	std::vector<std::vector<std::string>> out(4);
-	if (m.size() < 1) return out;
+	if (m.empty()) return out;
 	
 	for (size_t i=0; i<m.size(); i++) {
 
@@ -2103,7 +2103,7 @@ std::vector<std::vector<std::string>> tiff_names(const std::vector<std::vector<s
 
 void SpatRasterSource::set_names_time_tif(std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
-	if (bandmeta.size() == 0) return;
+	if (bandmeta.empty()) return;
 	
 	std::vector<std::vector<std::string>> nms = tiff_names(bandmeta);
 
@@ -2117,7 +2117,7 @@ void SpatRasterSource::set_names_time_tif(std::vector<std::vector<std::string>> 
 		hastime = true;
 		int_64 tim;
 		for (size_t i=0; i<nms[1].size(); i++) {
-			if (nms[1][i] == "") {
+			if (nms[1][i].empty()) {
 				hastime = false;
 				break;
 			}

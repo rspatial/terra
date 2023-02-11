@@ -37,7 +37,7 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 		return true;
 	}
 
-	if (source[0].values.size() == 0) { // && startrow != 0 && startcol != 0) {
+	if (source[0].values.empty()) { // && startrow != 0 && startcol != 0) {
 		source[0].values = std::vector<double>(size(), NAN);
 	}
 
@@ -54,7 +54,7 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 
 bool SpatRaster::writeValuesMemRect(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols) {
 
-	if (source[0].values.size() == 0) { // && startrow != 0 && startcol != 0) {
+	if (source[0].values.empty()) { // && startrow != 0 && startcol != 0) {
 		source[0].values = std::vector<double>(size(), NAN);
 	}
 
@@ -180,7 +180,7 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 		addWarning("only the first filename supplied is used");
 	}
 	std::string filename = fnames[0];
-	if (filename == "") {
+	if (filename.empty()) {
 		if (!canProcessInMemory(opt)) {
 			//std::string extension = ".tif";
 			//filename = tempFile(opt.get_tempdir(), opt.pid, extension);
@@ -194,7 +194,7 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 	}
 	size_t nl = nlyr();
 	bs = getBlockSize(opt);
-	if (filename != "") {
+	if (!filename.empty()) {
 		// open GDAL filestream
 		#ifdef useGDAL
 		if (! writeStartGDAL(opt, srcnames) ) {
@@ -368,7 +368,7 @@ bool SpatRaster::writeStop(){
    		source[0].setRange();
 		//source[0].driver = "memory";
 		source[0].memory = true;
-		if (source[0].values.size() > 0) {
+		if (!source[0].values.empty()) {
 			source[0].hasValues = true;
 		}
 	}

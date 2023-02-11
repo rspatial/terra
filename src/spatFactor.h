@@ -37,6 +37,7 @@ public:
 	std::vector<std::string> labels;
   
 	size_t size() { return v.size(); }
+	bool empty() { return v.empty(); }
 	
 	//void compute_levels();
 	void push_back(unsigned x) { v.push_back(x); }

@@ -55,7 +55,7 @@ SpatVector2 SpatVector2::from_old(SpatVector x) {
 	SpatVector2 out;
 
 	out.srs = x.srs;
-	if (x.size() > 0) out.gtype = x.geoms[0].gtype;
+	if (!x.empty()) out.gtype = x.geoms[0].gtype;
 	size_t nxy = x.nxy();
 	out.X.reserve(nxy);
 	out.Y.reserve(nxy);

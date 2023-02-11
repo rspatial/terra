@@ -341,7 +341,7 @@ std::vector<std::string> SpatVector::layer_names(std::string filename) {
 
 	std::vector<std::string> out;
 
-	if (filename == "") {
+	if (filename.empty()) {
 		setError("empty filename");
 		return out;
 	}
@@ -390,15 +390,8 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 
 	OGRLayer *poLayer;
 
-	if (query != "") {
-		poLayer = poDS->ExecuteSQL(query.c_str(), NULL, NULL);
-		if (poLayer == NULL) {
-			setError("Query failed");
-			return false;
-		}
-		read_query = query;
-	} else {
-		if (layer == "") {
+	if (query.empty()) {
+		if (layer.empty()) {
 			#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
 				// do nothing
 			#else
@@ -436,6 +429,13 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 				return false;
 			}
 		}
+	} else {
+		poLayer = poDS->ExecuteSQL(query.c_str(), NULL, NULL);
+		if (poLayer == NULL) {
+			setError("Query failed");
+			return false;
+		}
+		read_query = query;
 	}
 
 
@@ -480,7 +480,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 		}
 		OGRFeature::DestroyFeature( fFeature );
 		GDALClose(filterDS);
-	} else if (extent.size() > 0) {
+	} else if (!extent.empty()) {
 		poLayer->SetSpatialFilterRect(extent[0], extent[2], extent[1], extent[3]);
 		read_extent = extent;
 	}
@@ -489,7 +489,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 		df = readAttributes(poLayer, as_proxy);
 	}
 	if (what == "attributes") {
-		if (query != "") {
+		if (!query.empty()) {
 			poDS->ReleaseResultSet(poLayer);
 		}
 		return true;
@@ -643,7 +643,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 	}
 
 
-	if (query != "") {
+	if (!query.empty()) {
 		poDS->ReleaseResultSet(poLayer);
 	}
 

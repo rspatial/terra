@@ -168,9 +168,9 @@ bool SpatSRS::is_same(SpatSRS other, bool ignoreempty) {
 
 bool SpatSRS::is_same(std::string other, bool ignoreempty) {
 
-	if (wkt == "" && other == "") {
+	if (wkt.empty() && other.empty()) {
 		return true;
-	} else if (wkt == "" || other == "") {
+	} else if (wkt.empty() || other.empty()) {
 		return ignoreempty ? true : false;
 	}
 
@@ -205,7 +205,7 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 	proj4="";
 	lrtrim(txt);
 
-	if (txt == "") {
+	if (txt.empty()) {
 		return true;
 	} else {
 		OGRSpatialReference srs;
@@ -233,7 +233,7 @@ bool wkt_from_string(std::string input, std::string& wkt, std::string& msg) {
 	lrtrim(input);
 	wkt="";
 	bool success = false;
-	if (input != "") {
+	if (!input.empty()) {
 		OGRSpatialReference srs;
 		OGRErr e = srs.SetFromUserInput(input.c_str());
 		if (is_ogr_error(e, msg)) {
