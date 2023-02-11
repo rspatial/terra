@@ -303,7 +303,7 @@ size_t SpatVector::size() {
 }
 
 bool SpatVector::empty() {
-	return geoms.empty()
+	return geoms.empty();
 }
 
 bool SpatVector::is_lonlat() {
