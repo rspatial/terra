@@ -302,6 +302,10 @@ size_t SpatVector::size() {
 	return geoms.size();
 }
 
+bool SpatVector::empty() {
+	return geoms.empty()
+}
+
 bool SpatVector::is_lonlat() {
 	if (srs.is_lonlat()) {
 		SpatExtent e = getExtent();

@@ -201,6 +201,7 @@ class SpatVector {
 		std::vector<std::vector<size_t>> knearest(size_t k);
 
 		size_t size();
+		bool empty();
 		SpatVector as_lines();
 		SpatVector as_points(bool multi, bool skiplast=false);
 		SpatVector remove_holes();
