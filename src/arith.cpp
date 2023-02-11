@@ -386,7 +386,7 @@ SpatRaster SpatRaster::is_false(bool falseNA, SpatOptions &opt) {
 
 SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool reverse, bool falseNA, SpatOptions &opt) {
 
-	if (x.size() == 0) {
+	if (x.empty()) {
 		SpatRaster out;
 		out.setError("cannot compute with nothing");
 		return out;
@@ -1234,7 +1234,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 	}
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
-	if (add.size() > 0) v.insert( v.end(), add.begin(), add.end() );
+	if (!add.empty()) v.insert( v.end(), add.begin(), add.end() );
 
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
@@ -1398,7 +1398,7 @@ SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> ad
 		return out;
 	}
 	std::vector<double> v(ns);
-	if (add.size() > 0) v.insert( v.end(), add.begin(), add.end() );
+	if (!add.empty()) v.insert( v.end(), add.begin(), add.end() );
 
 	std::vector<std::vector<double>> a(ns);
 	for (size_t i=0; i < out.bs.n; i++) {
