@@ -882,14 +882,18 @@ RCPP_MODULE(spat){
 
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions&) )( &SpatRaster::logic ))
-		.method("mask_raster", ( SpatRaster (SpatRaster::*)(SpatRaster, bool, std::vector<double>, double, SpatOptions&) )( &SpatRaster::mask))
-		.method("mask_vector", ( SpatRaster (SpatRaster::*)(SpatVector, bool, double, bool, SpatOptions&) )( &SpatRaster::mask))
+		.method("mask_raster", ( SpatRaster (SpatRaster::*)(SpatRaster&, bool, std::vector<double>, double, SpatOptions&) )( &SpatRaster::mask))
+		.method("mask_vector", ( SpatRaster (SpatRaster::*)(SpatVector&, bool, double, bool, SpatOptions&) )( &SpatRaster::mask))
 		.method("math", &SpatRaster::math)
 		.method("math2", &SpatRaster::math2)
 		.method("modal", &SpatRaster::modal)
 		.method("quantile", &SpatRaster::quantile)
 		.method("rasterize", &SpatRaster::rasterize)
-		.method("rasterizePoints", &SpatRaster::rasterizePoints)
+		
+		.method("rasterizePointsV", ( SpatRaster (SpatRaster::*)(SpatVector&, std::string, std::vector<double>&, bool, double, SpatOptions&) )( &SpatRaster::rasterizePoints))
+
+		.method("rasterizePointsXY", ( SpatRaster (SpatRaster::*)(std::vector<double>&, std::vector<double>&, std::string, std::vector<double>&, bool, double, SpatOptions&) )( &SpatRaster::rasterizePoints))
+
 		.method("rasterizeLyr", &SpatRaster::rasterizeLyr)
 		.method("rasterizeGeom", &SpatRaster::rasterizeGeom)
 		.method("rasterizeWindow", &SpatRaster::rasterizeWindow)

@@ -950,7 +950,7 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 
 
 
-SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt) {
+SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true, true, true);
@@ -1020,7 +1020,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 
 
 
-SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, std::vector<double> maskvalues, double updatevalue, SpatOptions &opt) {
+SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, std::vector<double> maskvalues, double updatevalue, SpatOptions &opt) {
 
 	maskvalues = vunique(maskvalues);
 	if (maskvalues.size() == 1) {
@@ -1099,7 +1099,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, std::vector<double> mask
 }
 
 
-SpatRaster SpatRaster::mask(SpatVector x, bool inverse, double updatevalue, bool touches, SpatOptions &opt) {
+SpatRaster SpatRaster::mask(SpatVector &x, bool inverse, double updatevalue, bool touches, SpatOptions &opt) {
 
 	SpatRaster out;
 	if (!hasValues()) {
@@ -2840,7 +2840,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 }
 
 
-SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, bool touches, bool extend, SpatOptions &opt) {
+SpatRaster SpatRaster::cropmask(SpatVector &v, std::string snap, bool touches, bool extend, SpatOptions &opt) {
 	if (v.nrow() == 0) {
 		SpatRaster out;
 		out.setError("cannot crop a SpatRaster with an empty SpatVector");

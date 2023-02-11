@@ -13,15 +13,21 @@
 #include "gdalio.h"
 
 
-SpatRaster SpatRaster::rasterizePoints(const std::vector<double>&x, const std::vector<double> &y, std::string fun, std::vector<double> values, bool narm, double background, SpatOptions &opt) {
+SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double> &y, std::string fun, std::vector<double> &values, bool narm, double background, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1, false, false, false);
 	
 	if (!out.writeStart(opt, filenames())) {
 		return out;
 	}
-	if (fun != "count" && (values.size() != x.size())) {
-		out.setError("values do not match geometries");
+	
+	if (fun == "count") {
+		if ((values.size() != x.size()) && (values.size() != 0)) {
+			out.setError("number of values does not match the number of geometries");
+			return out;
+		}		
+	} else if (values.size() != x.size()) {
+		out.setError("number of values does not match the number of geometries");
 		return out;
 	}
 
@@ -43,6 +49,7 @@ SpatRaster SpatRaster::rasterizePoints(const std::vector<double>&x, const std::v
 
 
 	if (fun == "count") {
+		if (values.size() == 0) narm=false;
 		for (size_t i=0; i < out.bs.n; i++) {
 			double cmin = out.bs.row[i] * nc;
 			double cmax = (out.bs.row[i]+out.bs.nrows[i]) * nc - 1;
@@ -254,6 +261,15 @@ SpatRaster SpatRaster::rasterizePoints(const std::vector<double>&x, const std::v
 }
 
 
+SpatRaster SpatRaster::rasterizePoints(SpatVector &x, std::string fun, std::vector<double> &values, bool narm, double background, SpatOptions &opt) {
+	if ((values.size() == 0) && (fun != "count")) {
+		values = std::vector<double>(x.nrow(), 1);
+	}
+	std::vector<std::vector<double>> pxy = x.coordinates();
+	return rasterizePoints(pxy[0], pxy[1], fun, values, narm, background, opt);
+}
+
+
 SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string fun, SpatOptions &opt) {
 
 	if (x.type() != "points") {
@@ -344,8 +360,8 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 		return(out);
 
 	} else {
-		std::vector<std::vector<double>> pxy = x.coordinates();
-		return rasterizePoints(pxy[0], pxy[1], "count", {}, false, 0.0, opt);
+		std::vector<double> v;
+		return rasterizePoints(x, "count", v, false, 0.0, opt);
 	}
 }
 

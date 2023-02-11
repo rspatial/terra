@@ -9,6 +9,6 @@ g++ -o terra -std=c++11  -I../src/  ../src/crs.cpp  ../src/ram.cpp  ../src/extra
 	../src/gdal_algs.cpp ../src/raster_methods.cpp ../src/raster_stats.cpp ../src/rasterize.cpp \
 	../src/spatSources.cpp  ../src/spatTime.cpp ../src/spatDataframe.cpp ../src/spatFactor.cpp \
 	../src/vecmath.cpp ../src/vecmathse.cpp \
-	../src/vector_methods.cpp ../src/write.cpp ../src/write_gdal.cpp  ../src/write_ogr.cpp\
-	main.cpp show.cpp \
-	-lgeos_c -lgdal -lproj `gdal-config --cflags` `gdal-config --libs`  -Dstandalone
+	../src/vector_methods.cpp ../src/write.cpp ../src/write_gdal.cpp  ../src/write_ogr.cpp \
+	 main.cpp show.cpp \
+	-lgeos_c -lgdal -lproj `gdal-config --cflags` `gdal-config --libs` `gdal-config --dep-libs` -Dstandalone

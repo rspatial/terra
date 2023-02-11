@@ -606,7 +606,7 @@ class SpatRaster {
 		SpatRaster cover(SpatRaster x, std::vector<double> value, SpatOptions &opt);
 
 		SpatRaster crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt);
-		SpatRaster cropmask(SpatVector v, std::string snap, bool touches, bool expand, SpatOptions &opt);
+		SpatRaster cropmask(SpatVector &v, std::string snap, bool touches, bool expand, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
 		SpatRaster distance(double target, double exclude, std::string unit, bool remove_zero, bool haversine, SpatOptions &opt);
@@ -689,11 +689,11 @@ class SpatRaster {
 		std::vector<std::string> make_tiles(SpatRaster x, bool expand, bool narm, std::string filename, SpatOptions &opt);
 		std::vector<std::string> make_tiles_vect(SpatVector x, bool expand, bool narm, std::string filename, SpatOptions &opt);
 
-		SpatRaster mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
-		SpatRaster mask(SpatRaster x, bool inverse, std::vector<double> maskvalues, double updatevalue, SpatOptions &opt);
+		SpatRaster mask(SpatRaster &x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
+		SpatRaster mask(SpatRaster &x, bool inverse, std::vector<double> maskvalues, double updatevalue, SpatOptions &opt);
 
 
-		SpatRaster mask(SpatVector x, bool inverse, double updatevalue, bool touches, SpatOptions &opt);
+		SpatRaster mask(SpatVector &x, bool inverse, double updatevalue, bool touches, SpatOptions &opt);
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
 
@@ -721,7 +721,9 @@ class SpatRaster {
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches, SpatOptions &opt);
 		//std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
 		SpatRaster rasterizeGeom(SpatVector x, std::string unit, std::string count, SpatOptions &opt);
-		SpatRaster rasterizePoints(const std::vector<double>&x, const std::vector<double> &y, std::string fun, std::vector<double> values, bool narm, double background, SpatOptions &opt);
+
+		SpatRaster rasterizePoints(std::vector<double>&x, std::vector<double> &y, std::string fun, std::vector<double> &values, bool narm, double background, SpatOptions &opt);
+		SpatRaster rasterizePoints(SpatVector &x, std::string fun, std::vector<double> &values, bool narm, double background, SpatOptions &opt);
 
 		void rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 
 		void rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 

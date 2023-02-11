@@ -30,16 +30,24 @@ setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"),
 rasterize_points <- function(x, y, field, values, fun="last", background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 
 	if (missing(fun)) fun <- "last"
-	if (update) {
-		if (!hasValues(y)) {
-			update <- FALSE
-		}
-	}
+	if (update && (!hasValues(y))) update <- FALSE
 	nrx <- nrow(x)
-	cnms <- colnames(values)
-	if (!is.data.frame(values)) {
+
+	nrx <- nrow(x)
+	# also allow for multiple columns to multiple layers
+	if (field[1] != "") {
+		values <- x[[field]]
+	} else if (!is.data.frame(values)) {
 		values <- as.data.frame(values)
 	}
+
+	xy <- crds(x)
+	if (nrow(xy) != nrx) { # multi-points
+		g <- geom(x)
+		values <- values[g[,1], ,drop=FALSE]
+	}
+
+
 	if (nrow(values) == 1) {
 		values <- sapply(values, function(x) rep_len(x, nrx))
 		if (!is.data.frame(values)) { # dropped if nrx==1
@@ -48,7 +56,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 	} else if (nrow(values) != nrx) {
 		error("rasterize", paste0("the number or rows in values is ", nrow(values), "\nThat does not match the number of points: ", nrx))
 	}
-
+	cnms <- colnames(values)
 	nl <- ncol(values)
 	r <- rast(y, nlyrs=nl)	
 	levs <- list()
@@ -81,7 +89,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 				}
 				narm <- isTRUE(list(...)$na.rm)
 				r <- rast()
-				r@ptr <- y@ptr$rasterizePoints(x[,1], x[,2], txtfun, values[[1]], narm, background, ops)
+				r@ptr <- y@ptr$rasterizePointsXY(x[,1], x[,2], txtfun, values[[1]], narm, background, ops)
 				messages(r)
 				if (update) {
 					r <- cover(r, y, filename=filename, overwrite=overwrite, wopt)
@@ -219,18 +227,8 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
-			nrx <- nrow(x)
-			# also allow for multiple columns to multiple layers
-			if (field[1] != "") {
-				values <- x[[field]]
-			} 
-			xy <- crds(x)
-			if (nrow(xy) != nrx) { # multi-points
-				g <- geom(x)
-				values <- values[g[,1], ,drop=FALSE]
-			}
 			return(
-				rasterize_points(x=xy, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)
+				rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)
 			)
 		}
 
