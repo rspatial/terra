@@ -273,21 +273,22 @@ retro_labels <- function(x, lat=TRUE) {
 	usr <- graphics::par("usr")
 	dxy <- graphics::par("cxy") * graphics::par("cex")
 	loc <- x$leg$loc
+	xmin <- x$ext[1]
+	xmax <- x$ext[2]
+	ymin <- x$ext[3]
+	ymax <- x$ext[4]
 	p <- NULL
 	if (is.character(loc)) {
-		if (loc == "right") {
-			p <- c(usr[2]+dxy[1], usr[2]+2*dxy[1], usr[3], usr[4])
-		} else if (loc == "left") {
+		if (loc == "left") {
 			s <- .line.usr(trunc(graphics::par("mar")[2]), 2)
-			p <- c(s+4*dxy[1], s+5*dxy[1], usr[3], usr[4])
+			p <- c(s+4*dxy[1], s+5*dxy[1], ymin, ymax)
 		} else if (loc == "bottom") {
 			s <- .line.usr(trunc(graphics::par("mar")[1]), 1)
-			p <- c(usr[1], usr[2], s+2*dxy[2], s+3*dxy[2])
+			p <- c(xmin, xmax, s+2*dxy[2], s+3*dxy[2])
 		} else if (loc == "top") {
-			p <- c(usr[1], usr[2], usr[4]+dxy[2], usr[4]+2*dxy[2])
-		} else {
-			warn("plot", "invalid legend location:", loc)
-			p <- c(usr[1], usr[2], usr[4]+dxy[2], usr[4]+2*dxy[2])
+			p <- c(xmin, xmax, usr[4]+dxy[2], usr[4]+2*dxy[2])
+		} else { #if (loc == "right") {
+			p <- c(usr[2]+dxy[1], usr[2]+2*dxy[1], ymin, ymax)
 		}
 	}
 	x$leg$ext <- p
