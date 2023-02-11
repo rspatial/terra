@@ -259,7 +259,7 @@ std::vector<double> dist_only(const std::vector<double>& vx, const std::vector<d
 SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>& y, bool haversine, bool skip, bool setNA, std::string unit, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (x..empty()) {
+	if (x.empty()) {
 		out.setError("no locations to compute distance from");
 		return(out);
 	}
