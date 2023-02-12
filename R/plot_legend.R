@@ -252,7 +252,7 @@ retro_labels <- function(x, lat=TRUE) {
 
 	if (!is.null(x$leg$main)) {
 		n <- length(x$leg$main)
-		x$leg$size[2] <- max(x$leg$size[2], (.05*n))
+		x$leg$size[1] <- min(x$leg$size[1], (1 - .05*n))
 	}
 
 	horiz <- isTRUE(x$leg$x %in% c("top", "bottom"))
@@ -260,6 +260,7 @@ retro_labels <- function(x, lat=TRUE) {
 #		xd <- (xmax - xmin) * x$leg$size[2]
 #		xmin <- xmin + xd 
 #		xmax <- xmax - xd
+
 
 		rhalf <- (xmax - xmin) / 2
 		xmid <- xmin + rhalf
@@ -283,6 +284,7 @@ retro_labels <- function(x, lat=TRUE) {
 			xmax <- tmp
 		}
 	} else {
+
 		rhalf <- (ymax - ymin) / 2
 		ymid <- ymin + rhalf
 		yd <- rhalf * x$leg$size[1]

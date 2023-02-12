@@ -9,8 +9,8 @@ Add a scale bar to a map
 }
 
 \usage{
-sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, 
-	label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, ...)
+sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
+	adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, ...)
 }
 
 \arguments{
@@ -20,11 +20,12 @@ sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL,
 \item{divs}{number of divisions for a bar: 2 or 4}
 \item{below}{character. Text to go below the scale bar (e.g., "kilometers")}
 \item{lonlat}{logical or NULL. If logical, \code{TRUE} indicates if the plot is using longitude/latitude coordinates. If \code{NULL} this is guessed from the plot's coordinates}
-\item{label}{vector of three numbers to label the scale bar (beginning, midpoint, end)}
+\item{labels}{vector of three numbers to label the scale bar (beginning, midpoint, end)}
 \item{adj}{adjustment for text placement}
 \item{lwd}{line width for the "line" type of the scale bar}
 \item{xpd}{logical. If \code{TRUE}, the scale bar can be outside the plotting area}
 \item{ticks}{logical or numeric. If not \code{FALSE}, tick marks are added to a "line" scale bar. The length of the tick marks can be specified}
+\item{scaleby}{numeric. If \code{labels} is not provided. The labels are divided by this number. For example, use 1000 to go from m to km}
 \item{...}{graphical arguments to be passed to other methods }
 }
 
