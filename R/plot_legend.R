@@ -146,6 +146,7 @@ retro_labels <- function(x, lat=TRUE) {
 	y$retro <- y$lab <- y$tick <- NULL
 	y$line <- NA
 	y$outer <- FALSE
+	y$line.lab <- NULL
 	if (is.null(y$col)) y$col <- "black"
 	lnpts <- crds(as.points(ext(x$lim)))
 	lnpts <- rbind(lnpts[4,], lnpts)
@@ -207,6 +208,7 @@ retro_labels <- function(x, lat=TRUE) {
 				lty <- y$lty
 			}
 			lines(lin, y$lwd, lty=lty, col=y$col)
+		
 			#d <- diff(edg) * 10
 			#z$at <- edg + c(-d, d)
 			#z$lwd.ticks <- 0
@@ -214,6 +216,16 @@ retro_labels <- function(x, lat=TRUE) {
 			#do.call(graphics::axis, z)
 		} 
 	}
+	
+	if (x$xlab != "") {
+		posx <- usr[1] + diff(usr[1:2])/2
+		text(posx, usr[3], x$xlab, pos=1, offset=x$axs$line.lab, cex=x$axs$cex.lab, xpd=TRUE)
+	}
+	if (x$ylab != "") {
+		posy <- usr[3] + diff(usr[3:4])/2
+		text(usr[1], posy, x$ylab, pos=2, offset=x$axs$line.lab, srt=90, cex=x$axs$cex.lab, xpd=TRUE)
+	}
+	
 	x
 }
 

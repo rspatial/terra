@@ -328,21 +328,17 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 
-.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, main="", ...) {
+.plot.vect.map <- function(x, out, ...) {
 
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
-		plot(out$lim[1:2], out$lim[3:4], type="n", xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, main=main)
-
+		plot(out$lim[1:2], out$lim[3:4], type="n", xlab="", ylab="", asp=out$asp, xaxs="i", yaxs="i", axes=FALSE, main="")
 		if (!is.null(out$background)) {
 			#usr <- graphics::par("usr")
 			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background)
 		}
 	}
 
-	out$leg$density <- density
-	out$leg$angle <- angle
-	out$leg$border <- border
 
 	nuq <- length(out$uv)
 	if (out$legend_type == "none") {
@@ -353,7 +349,7 @@ setMethod("dots", signature(x="SpatVector"),
 		if (nuq < 2) {
 			out <- .vect.legend.classes(out, ...)
 		} else {
-			out <- .vect.legend.interval(out, dig.lab=dig.lab)
+			out <- .vect.legend.interval(out, dig.lab=out$dig.lab)
 		}
 	} else if (out$legend_type == "depends") {
 		if (nuq < 11) {
@@ -362,7 +358,7 @@ setMethod("dots", signature(x="SpatVector"),
 			#if (nuq < 21)
 			out <- .vect.legend.classes(out)
 		} else {
-			out <- .vect.legend.interval(out, dig.lab=dig.lab)
+			out <- .vect.legend.interval(out, dig.lab=out$dig.lab)
 		}
 	} else {
 		if (nuq == 1) {
@@ -373,7 +369,7 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 	if (!out$legend_only) {
-		clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
+		graphics::clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
 		out <- .vplot(x, out, ...)
 	}
 
@@ -393,16 +389,23 @@ setMethod("dots", signature(x="SpatVector"),
 		lines(ext(out$lim))	
 	}
 
-	clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
+	if (out$main != "") {
+		posx <- out$lim[1] + diff(out$lim[1:2])/2
+		text(posx, out$lim[4], out$main, pos=3, offset=out$line.main, cex=out$cex.main, 
+			font=out$font.main, col=out$col.main, xpd=TRUE)
+	}
+
+	graphics::clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
 	out
 }
 
 
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE,
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
-	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, buffer=TRUE, background=NULL,
+	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL,
-	box=TRUE, ...) {
+	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
+	density=NULL, angle=45, border="black", dig.lab=3, ...) {
 
 
 	if ((y == "") && (is.null(values))) {
@@ -438,14 +441,32 @@ setMethod("dots", signature(x="SpatVector"),
 		out$lim <- e
 	}
 
+	out$main <- main
+	out$cex.main  <- cex.main
+	out$font.main <- font.main
+	out$col.main  <- col.main
+	out$line.main <- line.main
+	out$dig.lab <- dig.lab
+
 	out$box <- isTRUE(box)
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)
+	out$xlab <- xlab
+	out$ylab <- ylab
 	out$axs <- as.list(pax)
 	if (is.null(out$axs$las)) out$axs$las <- las
+	if (is.null(out$axs$cex.lab)) out$axs$cex.lab <- cex.lab
+	if (is.null(out$axs$line.lab)) out$axs$line.lab <- line.lab
+	
 	out$draw_grid <- isTRUE(grid)
 	out$leg <- as.list(plg)
 	out$leg$geomtype <- geomtype(x)
+	
+	out$leg$density <- density
+	out$leg$angle <- angle
+	out$leg$border <- border
+	
+	
 	out$asp <- 1
 	out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
 	if (out$lonlat) {
@@ -561,7 +582,7 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 
-	.plot.vect.map(x, out, main=main, ...)
+	.plot.vect.map(x, out, ...)
 }
 
 

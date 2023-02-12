@@ -388,11 +388,14 @@ prettyNumbs <- function(x, digits) {
 		do.call(plot, arglist)
 		#plot(x$lim[1:2], x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=!x$values, ...)
 		#x$line.lab <- rep_len(x$line.lab, 2)
-		
-		
 		#graphics::mtext(side=1, text=x$xlab, line=x$line.lab[1], cex=x$cex.lab)
 		#graphics::mtext(side=2, text=x$ylab, line=x$line.lab[2], cex=x$cex.lab)
-		#		graphics::title(x$main, line=x$line.main, cex.main=x$cex.main, font.main=x$font.main, col.main=x$col.main)
+		#graphics::title(x$main, line=x$line.main, cex.main=x$cex.main, font.main=x$font.main, col.main=x$col.main)
+		if (x$main != "") {
+			posx <- x$lim[1] + diff(x$lim[1:2])/2
+			text(posx, x$lim[4], x$main, pos=3, offset=x$line.main, cex=x$cex.main, 
+				font=x$font.main, col=x$col.main, xpd=TRUE)
+		}
 	}
 	if (!x$values) {
 		graphics::clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
@@ -428,11 +431,11 @@ prettyNumbs <- function(x, digits) {
   levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
   sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
-  xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=0.8, 
+  xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=1.2, 
   line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
-  axes=TRUE, box=TRUE, ...) {
+  axes=TRUE, box=TRUE, cex=1, ...) {
 
-
+#cex is catch and kill
 	out <- list()
 
 	out$lim <- out$ext <- as.vector(ext(x))
@@ -453,8 +456,10 @@ prettyNumbs <- function(x, digits) {
 
 	out$add <- isTRUE(add)
 	out$axs <- as.list(pax)
-
 	if (is.null(out$axs$las)) out$axs$las <- las
+	if (is.null(out$axs$cex.lab)) out$axs$cex.lab <- cex.lab
+	if (is.null(out$axs$line.lab)) out$axs$line.lab <- line.lab
+
 	out$draw_grid <- isTRUE(grid)
 	out$leg$digits <- decimals
 
@@ -491,8 +496,6 @@ prettyNumbs <- function(x, digits) {
 	out$yaxs <- yaxs
 	out$xlab <- xlab
 	out$ylab <- ylab 
-	out$cex.lab <- cex.lab
-	out$line.lab <- line.lab 
 	out$cols <- cols
 	out$coltab <- coltab
 	out$cats <- cats
