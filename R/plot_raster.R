@@ -409,7 +409,7 @@ prettyNumbs <- function(x, digits) {
 #		} else if (x$legend_type == "classes") {
 		} else {
 			x$leg$plotlim <- x$lim
-			x <- do.call(.plot.class.legend, x$leg)
+			x$leg$used <- do.call(.plot.class.legend, x$leg)
 		}
 	}
 	if (isTRUE(x$box)) { 
@@ -553,6 +553,8 @@ prettyNumbs <- function(x, digits) {
 						} else {
 							out$mar <- c(2, 2, 2, 4)
 						}
+					} else if (out$leg$x == "default") {
+						out$mar <- c(2, 2, 2, 4)					
 					}
 				} 
 			}
