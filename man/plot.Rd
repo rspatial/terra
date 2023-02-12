@@ -54,6 +54,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{axes}{logical. Draw axes?}
   \item{buffer}{logical. If \code{TRUE} the plotting area is slightly larger than the extent of \code{x}}
   \item{background}{background color. Default is no color (white)}
+  \item{box}{logical. Should a box be drawn around the map?}
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}. Argument \code{digits} can be used to set the number of digits to print (after the decimal point for a continuous legend)}
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{side}, \code{tick} and \code{lab} can be used to indicate for which of the four axes to draw a line (side), tick mark, or label. The default is \code{c(1:4)} for side and \code{1:2} for the other two. If \code{side} is changed the other two default to that value. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
