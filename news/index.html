@@ -69,6 +69,8 @@
 <li>better warnings for <code>is.lonlat</code> <a href="https://github.com/rspatial/terra/issues/1006" class="external-link">#1006</a> by Andrew Gene Brown.</li>
 <li>argument <code>na.rm</code> to <code>merge&lt;SpatRaster&gt;</code>
 </li>
+<li>the axes of maps created with <code>plot</code> are now snug around the mapped area, instead of at the limits of the graphics device space.</li>
+<li>cpp code cleaning to avoid warnings by clang-tidy (e.g. now using <code>.empty()</code> instead of <code>.size()==0</code>). [#1013-1017] by Michael Chirico</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-8">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-8"></a></h3>
