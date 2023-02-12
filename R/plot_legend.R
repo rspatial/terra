@@ -128,7 +128,6 @@ retro_labels <- function(x, lat=TRUE) {
 	sides <- sides[sides > 0 & sides < 5]
 	if (is.null(sides)) {
 		x$axs$side <- sides <- 1:2
-		#graphics::box()
 	}
 
 	ticks <- x$axs$tick 
@@ -145,7 +144,9 @@ retro_labels <- function(x, lat=TRUE) {
 	y <- x$axs
 	retro <- isTRUE(y$retro)
 	y$retro <- y$lab <- y$tick <- NULL
-
+	y$line <- NA
+	y$outer <- FALSE
+	if (is.null(y$col)) y$col <- "black"
 	lnpts <- crds(as.points(ext(x$lim)))
 	lnpts <- rbind(lnpts[4,], lnpts)
 	
@@ -200,7 +201,12 @@ retro_labels <- function(x, lat=TRUE) {
 		}
 		if (s %in% sides) {
 			lin <- lnpts[s:(s+1), ]
-			lines(lin, y$lwd)
+			if (is.null(y$lty)) {
+				lty <- 1
+			} else {
+				lty <- y$lty
+			}
+			lines(lin, y$lwd, lty=lty, col=y$col)
 			#d <- diff(edg) * 10
 			#z$at <- edg + c(-d, d)
 			#z$lwd.ticks <- 0
@@ -234,7 +240,7 @@ retro_labels <- function(x, lat=TRUE) {
 		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n))
 	}
 
-	if (isTRUE(x$leg$loc=="bottom")) {
+	if (isTRUE(x$leg$x=="bottom")) {
 		xd <- xmax - xmin
 		xmin <- xmin + xd * leg.shrink[1]
 		xmax <- xmax - xd * leg.shrink[2]
@@ -277,7 +283,7 @@ retro_labels <- function(x, lat=TRUE) {
 .get.leg.extent <- function(x) {
 	#usr <- graphics::par("usr")
 	dxy <- graphics::par("cxy") * graphics::par("cex")
-	loc <- x$leg$loc
+	loc <- x$leg$x
 	xmin <- x$ext[1]
 	xmax <- x$ext[2]
 	ymin <- x$ext[3]
@@ -318,10 +324,10 @@ retro_labels <- function(x, lat=TRUE) {
 		ymax <- e$ymax + 0.05 * e$dy
 
 		for (i in 1:n) {
-			if (x$leg$loc == "right") {
+			if (x$leg$x == "right") {
 				text(x=e$xmax, y=ymax+(n-i)*0.05* e$dy,
 					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
-			} else if (x$leg$loc == "left") {
+			} else if (x$leg$x == "left") {
 				text(x=e$xmin, y=ymax+(n-i)*0.05* e$dy,
 					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
 			} else { # default
@@ -336,6 +342,12 @@ retro_labels <- function(x, lat=TRUE) {
 
 
 .plot.cont.legend <- function(x, ...) {
+
+	if (is.null(x$leg$x)) {
+		x$leg$x <- "right"
+	} else if (!(x$leg$x %in% c("left", "right", "top", "bottom"))) {
+		x$leg$x <- "right"	
+	}
 
 	if (is.null(x$leg$ext)) {
 		x <- .get.leg.extent(x)
@@ -365,11 +377,11 @@ retro_labels <- function(x, lat=TRUE) {
 		zztxt <- formatC(zz, digits=x$leg$digits, format = "f")
 	}
 	e <- x$leg$ext
-	if (x$leg$loc %in% c("left", "right")) {
+	if (x$leg$x %in% c("left", "right")) {
 		Y <- seq(e$ymin, e$ymax, length.out=nc+1)
 		graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=NA)
 		ypos <- e$ymin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dy
-		if (x$leg$loc == "right") {
+		if (x$leg$x == "right") {
 			graphics::segments(e$xmin, ypos, e$xmax+e$dx*0.25, ypos, xpd=NA)
 			text(e$xmax, ypos, zztxt, pos=4, xpd=NA, cex=cex, ...)
 		} else {
@@ -380,7 +392,7 @@ retro_labels <- function(x, lat=TRUE) {
 		X <- seq(e$xmin, e$xmax, length.out=nc+1)
 		graphics::rect(X[-(nc + 1)], e$ymin, X[-1], e$ymax, col=rev(cols), border=NA, xpd=NA)
 		xpos <- e$xmin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dx
-		if (x$leg$loc == "bottom") {
+		if (x$leg$x == "bottom") {
 			graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymax, xpd=NA)
 			text(xpos, e$ymin, zztxt, pos=1, xpd=NA, cex=cex)
 		} else {

@@ -98,33 +98,39 @@ plot(r, type="interval")
 e <- c(6.37, 6.41, 49.9, 50.1)
 plot(r, plg=list(ext=e, title="Title\n", title.cex=1.25), 
 		pax=list(side=1:4, retro=TRUE))
-north("topleft")
-	
+north(cbind(5.8, 50.1))	
 
 d <- classify(r, c(100,200,300,400,500,600))
 plot(d, type="classes")
 
 plot(d, type="interval", breaks=1:5) 
 plot(d, type="interval", breaks=c(1,4,5), plg=list(legend=c("1-4", "4-5"))) 
-plot(d, type="classes", plg=list(legend=c("Mr", "Xx", "As", "Zx", "Bb"), x="bottomright"))
+plot(d, type="classes", xlim=c(5.6, 6.6), 
+	plg=list(legend=c("Mr", "Xx", "As", "Zx", "Bb"), x="bottomleft"))
+
 
 x <- trunc(r/200)
 levels(x) <- data.frame(id=0:2, element=c("earth", "wind", "fire"))
 plot(x, plg=list(x="topright"),mar=c(2,2,2,2))
 
+oldpar <- par(no.readonly=TRUE)
+
 # two plots with the same legend
 dev.new(width=6, height=4, noRStudioGD = TRUE)
 par(mfrow=c(1,2))
-plot(r, range=c(50,600))
-plot(r/2, range=c(50,600))
+plot(r, range=c(50,600), mar=c(1,1,1,4))
+plot(r/2, range=c(50,600), mar=c(1,1,1,4))
 
-# as you only need one legend:
+# as we only need one legend:
 par(mfrow=c(1,2))
-plot(r, range=c(50,600), mar=c(4, 3, 4, 3), plg=list(shrink=0.9, cex=.8), 
-	pax=list(side=1:2, cex.axis=.6))
+plot(r, range=c(50,600), mar=c(2, 2, 2, 2), plg=list(shrink=0.9, cex=.8), 
+	pax=list(side=1:2, cex.axis=.6), box=FALSE)
 #text(182500, 335000, "Two maps, one plot", xpd=NA)
-plot(r/2, range=c(50,600), mar=c(4, 2, 4, 4), legend=FALSE, 
-	pax=list(side=c(1,4), cex.axis=.6))
+plot(r/2, range=c(50,600), mar=c(2, 2, 2, 2), legend=FALSE, 
+	pax=list(side=c(1,4), cex.axis=.6), box=FALSE, axes=T)
+
+
+par(oldpar)
 
 # multi-layer with RGB
 s <- rast(system.file("ex/logo.tif", package="terra"))   
@@ -156,11 +162,11 @@ plot(v)
 
 plot(v, "NAME_2", col=rainbow(12), border=c("gray", "blue"), lwd=3)
 
-plot(v, 2, pax=list(side=1:2), plg=list(x=6.2, y=50.1, cex=.7))
+plot(v, 2, pax=list(side=1:2), plg=list(x=6.16, y=50.17, cex=.8), xlim=c(5.7, 6.7))
 
 plot(v, 4, pax=list(side=1:2), plg=list(x=6.2, y=50.2, ncol=2), main="", box=FALSE)
  
-plot(v, 1, plg=list(x=5.9, y=49.37, horiz=TRUE, cex=1.1), main="", mar=c(5,2,0.5,0.5))
+plot(v, 1, plg=list(x=5.8, y=49.37, horiz=TRUE, cex=1.1), main="", mar=c(5,2,0.5,0.5))
 
 plot(v, density=1:12, angle=seq(18, 360, 20), col=rainbow(12))
 
@@ -169,7 +175,7 @@ plot(v, "AREA", type="interval", breaks=3, mar=c(3.1, 3.1, 2.1, 3.1),
   plg=list(x="topright"), main="")
 
 plot(v, "AREA", type="interval", breaks=c(0,200,250,350), 
-	mar=c(2,2,2,2), xlim=c(5.7, 6.7),
+	mar=c(2,2,2,2), xlim=c(5.7, 6.75),
 	plg=list(legend=c("<200", "200-250", ">250"), cex=1, bty="o", 
 	x=6.3, y=50.15, box.lwd=2, bg="light yellow", title="My Legend"))
 

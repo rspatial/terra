@@ -49,8 +49,7 @@
 			out$leg$digits <- max(0, -floor(log10(dif/10)))
 		}
 	}
-
-	if (is.null(out$leg$loc)) out$leg$loc <- "right"
+	if (is.null(out$leg$x)) out$leg$x <- "right"
 	out
 }
 
@@ -505,12 +504,19 @@ prettyNumbs <- function(x, digits) {
 	}
 	out$legend_sort_decreasing <- isTRUE(decreasing)
 	out$box <- isTRUE(box)
-
+	
+	if (!is.null(out$leg$loc)) {
+		out$leg$x <- out$leg$loc
+		out$leg$loc <- NULL
+	}
+	
 	if (is.null(mar)) {
+		out$mar <- c(3.1, 3.1, 2.1, 2.1)
 		if (out$legend_draw) {
-			out$mar <- c(3.1, 3.1, 2.1, 7.1)
-		} else {
-			out$mar <- c(3.1, 3.1, 2.1, 2.1)
+			if (is.null(out$leg$ext) && is.null(out$leg$x)) {
+				out$leg$x <- "default"
+				out$mar <- c(3.1, 3.1, 2.1, 7.1)
+			}
 		}
 	} else {
 		out$mar <- rep_len(mar, 4)

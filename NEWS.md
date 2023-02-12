@@ -14,6 +14,8 @@
 - it is now possible to save terra options across sessions [#995](https://github.com/rspatial/terra/issues/995) by Guillaume Patoine.
 - better warnings for `is.lonlat` [#1006](https://github.com/rspatial/terra/issues/1006) by Andrew Gene Brown.
 - argument `na.rm` to `merge<SpatRaster>`
+- the axes of maps created with `plot` are now snug around the mapped area, instead of at the limits of the graphics device space.
+- cpp code cleaning to avoid warnings by clang-tidy (e.g. now using `.empty()` instead of `.size()==0`). [#1013-1017] by Michael Chirico 
 
 ## bug fixes
 
@@ -23,6 +25,7 @@ https://github.com/rspatial/terra/issues/991) by srfall
 - `merge<SpatRaster>` did not ignore NAs [#1002](https://github.com/rspatial/terra/issues/1002) by jmmonnet.
 - `writeCDF` failed when using argument force_v4 [#1009](https://github.com/rspatial/terra/issues/1009) by R. Kyle Bocinsky
 - `predict` better handling of rasters with many NAs [#988](https://github.com/rspatial/terra/issues/998) by Lucas Johnson
+
 
 # version 1.7-3
 
