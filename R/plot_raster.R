@@ -138,14 +138,14 @@ prettyNumbs <- function(x, digits) {
 
 	if (is.null(out$leg$x)) {
 		if (is.null(out$leg$ext)) {
-			out$leg$x = "top"
+			out$leg$x = "default"
 			out$leg$y = NULL
 		} else {
 			if (length(out$leg$ext) == 4) {
 				out$leg$x = out$leg$ext[1]
 				out$leg$y = out$leg$ext[4]
 			} else {
-				out$leg$x = "top"
+				out$leg$x = "default"
 				out$leg$y = NULL
 			}
 		}
@@ -201,11 +201,11 @@ prettyNumbs <- function(x, digits) {
 			mi[is.na(mi)] <- 1
 			mc <- out$coltab[mi, ,drop=FALSE]
 			out$leg$fill <- grDevices::rgb(mc[,2], mc[,3], mc[,4], mc[,5], maxColorValue=255)
-			out$leg$legend <- na.omit(out$cats[, 2])
+			if (is.null(out$leg$legend)) out$leg$legend <- na.omit(out$cats[, 2])
 		} else {	
 			out$levels <- out$levels[!is.na(ilevels)]
 			m <- na.omit(match(out$cats[[1]][ilevels], out$coltab[,1]))
-			out$leg$legend <- na.omit(out$cats[ilevels, 2])
+			if (is.null(out$leg$legend)) out$leg$legend <- na.omit(out$cats[ilevels, 2])
 			out$coltab <- out$coltab[m, ,drop=FALSE]
 		}
 
@@ -213,7 +213,7 @@ prettyNumbs <- function(x, digits) {
 		i <- match(z, out$coltab[,1])
 		z <- out$cols[i]
 	} else {
-		out$leg$legend <- unique(na.omit(out$cats[ilevels, 2]))
+		if (is.null(out$leg$legend)) out$leg$legend <- unique(na.omit(out$cats[ilevels, 2]))
 		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
 		leglevs <- na.omit(unique(levlab[,2]))
 		if (length(leglevs) == 0) {
@@ -243,14 +243,14 @@ prettyNumbs <- function(x, digits) {
 	out$legend_type <- "classes"
 	if (is.null(out$leg$x)) {
 		if (is.null(out$leg$ext)) {
-			out$leg$x = "top"
+			out$leg$x = "default"
 			out$leg$y = NULL
 		} else {
 			if (length(out$leg$ext) == 4) {
 				out$leg$x = out$leg$ext[1]
 				out$leg$y = out$leg$ext[4]
 			} else {
-				out$leg$x = "top"
+				out$leg$x = "default"
 				out$leg$y = NULL
 			}
 		}
@@ -339,7 +339,7 @@ prettyNumbs <- function(x, digits) {
 		Z[] <- out$leg$fill[out$vcut]
 	}
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
-		out$leg$x <- "top"
+		out$leg$x <- "default"
 	}
 	out$r <- as.raster(Z)
 	out
@@ -363,14 +363,6 @@ prettyNumbs <- function(x, digits) {
 	out$r <- as.raster(z)
 	out
 }
-
-
-# legend
-#	border="black", box.lwd = graphics::par("lwd"), box.lty = graphics::par("lty"),
-#	box.col = graphics::par("fg"), bty = "o", bg = graphics::par("bg"), xjust = 0,
-#	yjust = 1, x.intersp = 1, y.intersp = 1, adj = c(0, 0.5), text.width = NULL,
-#	text.col = graphics::par("col"), text.font = NULL, ncol = 1, horiz = FALSE, title = NULL,
- #   inset = 0, title.col = text.col, title.adj = 0.5,
 
 
 .plotit <- function(x) {
@@ -414,12 +406,12 @@ prettyNumbs <- function(x, digits) {
 #		} else if (x$legend_type == "classes") {
 		} else {
 			#y <- do.call(.plot.class.legend, x$leg)
-			x$leg$plotext <- x$ext
-			leg <- do.call(.plot.class.legend, x$leg)
+			x$leg$plotlim <- x$lim
+			x$classleg <- do.call(.plot.class.legend, x$leg)
 		}
 	}
 	if (isTRUE(x$box)) { 
-		lines(ext(x$ext))	
+		lines(ext(x$lim))	
 	}
 	
 	invisible(x)
@@ -436,8 +428,6 @@ prettyNumbs <- function(x, digits) {
   line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
   axes=TRUE, box=TRUE, ...) {
 
-
-#mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
 
 	out <- list()
 
@@ -661,7 +651,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			}
 		}
 
-		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, sort=sort, decreasing=decreasing, ext=ext, all_levels=all_levels, breaks=breaks, breakby=breakby, add=add, background=background, ...)
+		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, sort=sort, decreasing=decreasing, ext=ext, all_levels=all_levels, breaks=breaks, breakby=breakby, add=add, background=background, box=box, ...)
 
 		if (!is.null(fun)) {
 			if (!is.null(formals(fun))) {

@@ -223,9 +223,8 @@ setMethod("dots", signature(x="SpatVector"),
 	out$legend_type <- "classes"
 
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
-		out$leg$x <- "top"
+		out$leg$x <- "default"
 	}
-
 
 	out
 }
@@ -315,7 +314,7 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
-		out$leg$x <- "top"
+		out$leg$x <- "default"
 	}
 
 	out$main_cols <- out$cols[out$vcut]
@@ -383,7 +382,7 @@ setMethod("dots", signature(x="SpatVector"),
 		if (out$legend_type == "continuous") {
 			out$legpars <- do.call(.plot.cont.legend, list(x=out))
 		} else {
-			out$leg$plotext <- out$ext
+			out$leg$plotlim <- out$lim
 			out$legpars <- do.call(.plot.class.legend, out$leg)
 		}
 	}
