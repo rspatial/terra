@@ -386,6 +386,10 @@ setMethod("dots", signature(x="SpatVector"),
 			out$legpars <- do.call(.plot.class.legend, out$leg)
 		}
 	}
+	if (out$box) { 
+		lines(ext(out$lim))	
+	}
+	
 	out
 }
 
@@ -393,7 +397,8 @@ setMethod("dots", signature(x="SpatVector"),
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE,
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, buffer=TRUE, background=NULL,
-	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL, ...) {
+	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL,
+	box=TRUE, ...) {
 
 
 	if ((y == "") && (is.null(values))) {
@@ -429,6 +434,7 @@ setMethod("dots", signature(x="SpatVector"),
 		out$lim <- e
 	}
 
+	out$box <- isTRUE(box)
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)
 	out$axs <- as.list(pax)
@@ -558,7 +564,7 @@ setMethod("dots", signature(x="SpatVector"),
 setMethod("plot", signature(x="SpatVector", y="character"),
 	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add,
 	main=y, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
-	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, ...) {
+	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, box=TRUE, ...) {
 
 		if (nrow(x) == 0) {
 			error("plot", "SpatVector has zero geometries")
@@ -599,7 +605,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			}
 			if (missing(col)) col <- NULL
 
-			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, colNA=colNA, alpha=alpha, ...)
+			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, colNA=colNA, alpha=alpha, box=box, ...)
 		}
 		invisible(out)
 	}

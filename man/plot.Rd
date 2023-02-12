@@ -28,7 +28,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
     maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE,
 	breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, 
 	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, background=NULL,
-	...)
+	box=TRUE, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend, ...)
 
@@ -36,7 +36,8 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 
 \S4method{plot}{SpatVector,character}(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, 
     main=y, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, sort=TRUE, 
-	decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, ...)
+	decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, 
+	box=TRUE, ...)
 
 \S4method{plot}{SpatVector,numeric}(x, y, ...)
 
@@ -152,22 +153,24 @@ v <- vect(f)
 
 plot(v)
 
-plot(v, 2, pax=list(side=1:2), plg=list(x=6.2, y=50.2, cex=1.2))
+plot(v, "NAME_2", col=rainbow(12), border=c("gray", "blue"), lwd=3)
 
-plot(v, 4, pax=list(side=1:2), plg=list(x=6.2, y=50.2, ncol=2), main="")
+plot(v, 2, pax=list(side=1:2), plg=list(x=6.2, y=50.1, cex=.7))
+
+plot(v, 4, pax=list(side=1:2), plg=list(x=6.2, y=50.2, ncol=2), main="", box=FALSE)
  
 plot(v, 1, plg=list(x=5.9, y=49.37, horiz=TRUE, cex=1.1), main="", mar=c(5,2,0.5,0.5))
 
 plot(v, density=1:12, angle=seq(18, 360, 20), col=rainbow(12))
 
-plot(v, "NAME_2", col=rainbow(12), border=c("gray", "blue"), lwd=3, type="classes")
 
 plot(v, "AREA", type="interval", breaks=3, mar=c(3.1, 3.1, 2.1, 3.1),
   plg=list(x="topright"), main="")
 
-plot(v, "AREA", type="interval", breaks=c(0,200,250,350), mar=c(2,2,2,2), 
-  plg=list(legend=c("<200", "200-250", ">250"), cex=1, 
-  bty="o", x=6.4, y=50.125, box.lwd=2, bg="light yellow", title="My Legend"))
+plot(v, "AREA", type="interval", breaks=c(0,200,250,350), 
+	mar=c(2,2,2,2), xlim=c(5.7, 6.7),
+	plg=list(legend=c("<200", "200-250", ">250"), cex=1, bty="o", 
+	x=6.3, y=50.15, box.lwd=2, bg="light yellow", title="My Legend"))
 
 }
 
