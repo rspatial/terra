@@ -20,6 +20,13 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			messages(sdf, "zonal")
 			out <- .getSpatDF(sdf)
 		} else {
+			if (!is.null(w)) {
+				error("zonal", "can only use weights when fun=mean")
+			}
+			compareGeom(x, z, lyrs=FALSE, crs=FALSE, ext=TRUE, rowcol=TRUE)
+			if (nlyr(z) > 1) {
+				z <- z[[1]]
+			}
 			fun <- match.fun(fun)
 			nl <- nlyr(x)
 			res <- list()
