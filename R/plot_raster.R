@@ -384,17 +384,18 @@ prettyNumbs <- function(x, digits) {
 			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background)			
 		}
 
-		arglist <- c(list(x=x$lim[1:2], y=x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=!x$values), x$dots)
+		arglist <- c(list(x=x$lim[1:2], y=x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=FALSE), x$dots)
 		do.call(plot, arglist)
 		#plot(x$lim[1:2], x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=!x$values, ...)
-		x$line.lab <- rep_len(x$line.lab, 2)
-		graphics::mtext(side=1, text=x$xlab, line=x$line.lab[1], cex=x$cex.lab)
-		graphics::mtext(side=2, text=x$ylab, line=x$line.lab[2], cex=x$cex.lab)
-
-		graphics::title(x$main, line=x$line.main, cex.main=x$cex.main, font.main=x$font.main, col.main=x$col.main)
+		#x$line.lab <- rep_len(x$line.lab, 2)
+		
+		
+		#graphics::mtext(side=1, text=x$xlab, line=x$line.lab[1], cex=x$cex.lab)
+		#graphics::mtext(side=2, text=x$ylab, line=x$line.lab[2], cex=x$cex.lab)
+		#		graphics::title(x$main, line=x$line.main, cex.main=x$cex.main, font.main=x$font.main, col.main=x$col.main)
 	}
 	if (!x$values) {
-		clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
+		graphics::clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
 		return(x)
 	}
 	if (!x$legend_only) {
@@ -416,7 +417,7 @@ prettyNumbs <- function(x, digits) {
 		lines(ext(x$lim))	
 	}
 
-	clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
+	graphics::clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
 	invisible(x)
 }
 
