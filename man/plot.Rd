@@ -127,8 +127,7 @@ plot(r, range=c(50,600), mar=c(2, 2, 2, 2), plg=list(shrink=0.9, cex=.8),
 	pax=list(side=1:2, cex.axis=.6), box=FALSE)
 #text(182500, 335000, "Two maps, one plot", xpd=NA)
 plot(r/2, range=c(50,600), mar=c(2, 2, 2, 2), legend=FALSE, 
-	pax=list(side=c(1,4), cex.axis=.6), box=FALSE, axes=T)
-
+	pax=list(side=c(1,4), cex.axis=.6), box=FALSE)
 
 par(oldpar)
 
