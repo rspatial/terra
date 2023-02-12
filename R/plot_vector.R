@@ -332,9 +332,10 @@ setMethod("dots", signature(x="SpatVector"),
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
 		plot(out$lim[1:2], out$lim[3:4], type="n", xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, main=main)
+
 		if (!is.null(out$background)) {
-			usr <- graphics::par("usr")
-			graphics::rect(usr[1], usr[3], usr[2], usr[4], col=out$background)
+			#usr <- graphics::par("usr")
+			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background)
 		}
 	}
 
@@ -389,7 +390,10 @@ setMethod("dots", signature(x="SpatVector"),
 	if (out$box) { 
 		lines(ext(out$lim))	
 	}
-	
+
+	if ((!out$add) & (!out$legend_only)) {
+		clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
+	}
 	out
 }
 

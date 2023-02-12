@@ -377,8 +377,11 @@ prettyNumbs <- function(x, digits) {
 		if (x$reset) on.exit(graphics::par(mar=old.mar))
 
 		if (!is.null(x$background)) {
-			usr <- graphics::par("usr")
-			graphics::rect(usr[1], usr[3], usr[2], usr[4], col=x$background)
+			# does not do anything because NA has a color?
+		
+			#usr <- graphics::par("usr")
+			#graphics::rect(usr[1], usr[3], usr[2], usr[4], col=x$background)
+			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background)			
 		}
 
 		arglist <- c(list(x=x$lim[1:2], y=x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=!x$values), x$dots)
@@ -391,6 +394,7 @@ prettyNumbs <- function(x, digits) {
 		graphics::title(x$main, line=x$line.main, cex.main=x$cex.main, font.main=x$font.main, col.main=x$col.main)
 	}
 	if (!x$values) {
+		clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
 		return(x)
 	}
 	if (!x$legend_only) {
@@ -411,7 +415,10 @@ prettyNumbs <- function(x, digits) {
 	if (isTRUE(x$box)) { 
 		lines(ext(x$lim))	
 	}
-	
+
+	if ((!x$add) & (!x$legend_only)) {
+		clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
+	}
 	invisible(x)
 }
 
@@ -546,7 +553,7 @@ prettyNumbs <- function(x, digits) {
 						} else if (out$leg$x == "left") {
 							out$mar <- c(2, 5, 2, 1)
 						} else {
-							out$mar <- c(2, 2, 4, 2)
+							out$mar <- c(2, 2, 2, 4)
 						}
 					}
 				} 
