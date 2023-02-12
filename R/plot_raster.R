@@ -416,9 +416,7 @@ prettyNumbs <- function(x, digits) {
 		lines(ext(x$lim))	
 	}
 
-	if ((!x$add) & (!x$legend_only)) {
-		clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
-	}
+	clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
 	invisible(x)
 }
 

@@ -137,6 +137,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 .vplot <- function(x, out, xlab="", ylab="", cex=0.7, pch=16, lty=1, lwd=1, ...) {
+
 	if (out$leg$geomtype == "points") {
 		points(x, col=out$main_cols, cex=cex, pch=pch, ...)
 		#if (!out$add) {
@@ -372,6 +373,7 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 	if (!out$legend_only) {
+		clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
 		out <- .vplot(x, out, ...)
 	}
 
@@ -391,9 +393,7 @@ setMethod("dots", signature(x="SpatVector"),
 		lines(ext(out$lim))	
 	}
 
-	if ((!out$add) & (!out$legend_only)) {
-		clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
-	}
+	clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
 	out
 }
 
