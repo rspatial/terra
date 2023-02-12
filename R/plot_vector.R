@@ -564,7 +564,7 @@ setMethod("dots", signature(x="SpatVector"),
 setMethod("plot", signature(x="SpatVector", y="character"),
 	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add,
 	main=y, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
-	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, box=TRUE, ...) {
+	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, box=axes, ...) {
 
 		if (nrow(x) == 0) {
 			error("plot", "SpatVector has zero geometries")

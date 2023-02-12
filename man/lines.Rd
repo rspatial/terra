@@ -10,20 +10,23 @@
 \alias{lines,SpatRaster-method}
 \alias{lines,SpatGraticule-method}
 \alias{lines,SpatExtent-method}
+\alias{lines,sf-method}
 
 \alias{points,SpatVector-method}
 \alias{points,SpatRaster-method}
 \alias{points,SpatExtent-method}
+\alias{points,sf-method}
 
 \alias{polys,SpatVector-method}
 \alias{polys,SpatRaster-method}
 \alias{polys,SpatExtent-method}
+\alias{polys,sf-method}
 
 
-\title{Add SpatVector data to a map}
+\title{Add points, lines, or polygons to a map}
 
 \description{
-Add a SpatVector to a plot (map) with \code{points}, \code{lines}, or \code{polys}. 
+Add a vector geometries to a plot (map) with \code{points}, \code{lines}, or \code{polys}. 
 
 These are simpler alternatives for \code{\link[terra:plot]{plot(x, add=TRUE)}}
 

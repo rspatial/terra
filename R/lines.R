@@ -136,3 +136,20 @@ setMethod("polys", signature(x="SpatVector"),
 )
 
 		
+setMethod("points", signature(x="sf"),
+function(x, ...) {
+		points(vect(x), ...)
+	}
+)				
+		
+setMethod("lines", signature(x="sf"),
+function(x, ...) {
+		lines(vect(x), ...)
+	}
+)
+
+setMethod("polys", signature(x="sf"),
+function(x, ...) {
+		polys(vect(x), ...)
+	}
+)
