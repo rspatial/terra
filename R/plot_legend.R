@@ -273,7 +273,6 @@ retro_labels <- function(x, lat=TRUE) {
 #		xmin <- xmin + xd 
 #		xmax <- xmax - xd
 
-
 		rhalf <- (xmax - xmin) / 2
 		xmid <- xmin + rhalf
 		xd <- rhalf * x$leg$size[1]
@@ -343,10 +342,10 @@ retro_labels <- function(x, lat=TRUE) {
 	#usr <- graphics::par("usr")
 	dxy <- graphics::par("cxy") * graphics::par("cex")
 	loc <- x$leg$x
-	xmin <- x$ext[1]
-	xmax <- x$ext[2]
-	ymin <- x$ext[3]
-	ymax <- x$ext[4]
+	xmin <- x$lim[1]
+	xmax <- x$lim[2]
+	ymin <- x$lim[3]
+	ymax <- x$lim[4]
 	p <- NULL
 	if (is.character(loc)) {
 		if (loc == "left") {
@@ -371,30 +370,16 @@ retro_labels <- function(x, lat=TRUE) {
 	.get.leg.coords(x)
 }
 
-
-
-
-
 .leg.main <- function(x) {
-	leg <- x$leg
-    if (!is.null(leg$title)) {
-		e <- leg$ext
-		n <- length(leg$title)
-		ymax <- e$ymax + 0.05 * e$dy
-
-		for (i in 1:n) {
-			if (x$leg$x == "right") {
-				text(x=e$xmax, y=ymax+(n-i)*0.05* e$dy,
-					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
-			} else if (x$leg$x == "left") {
-				text(x=e$xmin, y=ymax+(n-i)*0.05* e$dy,
-					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
-			} else { # default
-				ymax <- e$ymax + e$dy
-				text(x=(e$xmin+e$xmax)/2, y=ymax+(n-i)*0.05* e$dy,
-					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
-			}
+    if (!is.null(x$leg$title)) {
+		e <- x$leg$ext
+		if (x$leg$x %in% c("top", "bottom")) {
+			txt <- paste(x$leg$title, collapse=" ")
+		} else {
+			txt <- paste(x$leg$title, collapse="\n")		
 		}
+		text(x=e$xmax, y=e$ymax, labels = txt, pos=3, offset=0.5, 
+			cex = x$leg$title.cex, xpd=TRUE)
 	}
 	x
 }
@@ -485,8 +470,8 @@ get_legxy <- function(r, e, pos) {
 .plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="",
 	lty=1, lwd=1, pch=1, angle=45, density=NULL, pt.cex = 1, pt.bg="black", pt.lwd=1, 
 	bty="n", border="black", seg.len=1, plotlim,
-# catching
-	merge, trace,...) {
+# catch and kill
+	merge, trace, size, ...) {
 
 	if (x %in% c("top", "default")) {
 		#usr <- graphics::par("usr")

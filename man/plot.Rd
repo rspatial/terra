@@ -96,7 +96,7 @@ plot(r)
 plot(r, type="interval")
 
 e <- c(6.37, 6.41, 49.9, 50.1)
-plot(r, plg=list(ext=e, title="Title\n", title.cex=1.25), 
+plot(r, plg=list(ext=e, title="Legend\nTitle", title.cex=1.1), 
 		pax=list(side=1:4, retro=TRUE))
 north(cbind(5.8, 50.1))	
 
@@ -176,7 +176,7 @@ plot(v, "AREA", type="interval", breaks=3, mar=c(3.1, 3.1, 2.1, 3.1),
 plot(v, "AREA", type="interval", breaks=c(0,200,250,350), 
 	mar=c(2,2,2,2), xlim=c(5.7, 6.75),
 	plg=list(legend=c("<200", "200-250", ">250"), cex=1, bty="o", 
-	x=6.3, y=50.15, box.lwd=2, bg="light yellow", title="My Legend"))
+	x=6.3, y=50.15, box.lwd=2, bg="light yellow", title="My legend"))
 
 }
 

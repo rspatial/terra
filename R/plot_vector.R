@@ -339,7 +339,6 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 
-
 	nuq <- length(out$uv)
 	if (out$legend_type == "none") {
 		out <- .vect.legend.none(out)
