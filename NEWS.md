@@ -1,4 +1,4 @@
-# version 1.7-8
+# version 1.7-9
 
 ## new
 
@@ -14,8 +14,8 @@
 - it is now possible to save terra options across sessions [#995](https://github.com/rspatial/terra/issues/995) by Guillaume Patoine.
 - better warnings for `is.lonlat` [#1006](https://github.com/rspatial/terra/issues/1006) by Andrew Gene Brown.
 - argument `na.rm` to `merge<SpatRaster>`
-- the axes of maps created with `plot` are now snug around the mapped area, instead of at the limits of the graphics device space.
-- cpp code cleaning to avoid warnings by clang-tidy (e.g. now using `.empty()` instead of `.size()==0`). [#1013-1017] by Michael Chirico 
+- the axes of maps created with `plot` are now snug around the mapped area, instead of at the limits of the graphics figure region.
+- c++ cleaning to avoid warnings by clang-tidy (e.g. now using `.empty()` instead of `.size()==0`). [#1013-1017] by Michael Chirico 
 
 ## bug fixes
 
