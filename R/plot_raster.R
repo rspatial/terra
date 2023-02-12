@@ -516,7 +516,8 @@ prettyNumbs <- function(x, digits) {
 
 
 	if (!hasValues(x)) {
-		out$values = FALSE
+		out$values <- FALSE
+		out$legend_draw <- FALSE
 		warn("plot", "SpatRaster has no cell values")
 	} else {
 		out$values <- TRUE
