@@ -229,31 +229,76 @@ retro_labels <- function(x, lat=TRUE) {
 	xmax <- p[2]
 	ymin <- p[3]
 	ymax <- p[4]
-
-	if (is.null(x$leg$shrink)) {
-		leg.shrink <- c(0,0)
-	} else {
-		leg.shrink <- rep_len(x$leg$shrink,2)
+	flip <- FALSE
+	
+	if (!is.null(x$leg$shrink)) {
+		s <- x$leg$shrink
+		if ((s[1] <= 1) & (s[1] >= 0.5)) {
+			s[1] <- 2*(s[1] - 0.5)
+		} else if (s[1] < 0.5) {
+			s[1] <- (2*(0.5 - s[1]))
+			flip <- TRUE
+		}
+		x$leg$size <- s
+	} 
+	
+	if (is.null(x$leg$size)) {
+		x$leg$size <- c(1,1)
+	} else if (length(x$leg$size) == 1) {
+		x$leg$size <- c(x$leg$size, 1)
 	}
+	if (x$leg$size[1] < 0) flip <- TRUE
+	x$leg$size <- abs(x$leg$size)
+
 	if (!is.null(x$leg$main)) {
 		n <- length(x$leg$main)
-		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n))
+		x$leg$size[2] <- max(x$leg$size[2], (.05*n))
 	}
 
-	if (isTRUE(x$leg$x=="bottom")) {
-		xd <- xmax - xmin
-		xmin <- xmin + xd * leg.shrink[1]
-		xmax <- xmax - xd * leg.shrink[2]
+	horiz <- isTRUE(x$leg$x %in% c("top", "bottom"))
+	if (horiz) {
+#		xd <- (xmax - xmin) * x$leg$size[2]
+#		xmin <- xmin + xd 
+#		xmax <- xmax - xd
+
+		rhalf <- (xmax - xmin) / 2
+		xmid <- xmin + rhalf
+		xd <- rhalf * x$leg$size[1]
+		xmin <- xmid - xd 
+		xmax <- xmid + xd
+		
+#		yd <- (ymax - ymin) * x$leg$size[1]/1.5
+#		ymin <- ymin + yd
+#		ymax <- ymax - yd
+
 		yd <- ymax - ymin
-		ymin <- ymin + yd * leg.shrink[1]/1.5
-		ymax <- ymax - yd * leg.shrink[2]/1.5
+		if (x$leg$x == "top") {
+			ymax <- ymin + yd * x$leg$size[2] 		
+		} else {
+			ymin <- ymax - yd * x$leg$size[2] 
+		}
+		if (flip) {
+			tmp <- xmin
+			xmin <- xmax
+			xmax <- tmp
+		}
 	} else {
-		yd <- ymax - ymin
-		ymin <- ymin + yd * leg.shrink[1]
-		ymax <- ymax - yd * leg.shrink[1]
+		rhalf <- (ymax - ymin) / 2
+		ymid <- ymin + rhalf
+		yd <- rhalf * x$leg$size[1]
+		ymin <- ymid - yd 
+		ymax <- ymid + yd
+
 		xd <- xmax - xmin
-		xmin <- xmin + xd * leg.shrink[2]/5
-		xmax <- xmax - xd * leg.shrink[2]/5
+		#xmin <- xmin + xd * x$leg$size[2]/5
+		#xmax <- xmax - xd * x$leg$size[2]/5
+		xmax <- xmin + xd * x$leg$size[2] 
+		
+		if (flip) {
+			tmp <- ymin
+			ymin <- ymax
+			ymax <- tmp
+		}
     }
 	dx <- xmax - xmin
 	dy <- ymax - ymin
@@ -300,9 +345,9 @@ retro_labels <- function(x, lat=TRUE) {
 			}
 		} else if (loc == "bottom") {
 			s <- .line.usr(trunc(graphics::par("mar")[1]), 1)
-			p <- c(xmin, xmax, s+2*dxy[2], s+3*dxy[2])
+			p <- c(xmin, xmax, s+1.75*dxy[2], s+2.5*dxy[2])
 		} else if (loc == "top") {
-			p <- c(xmin, xmax, ymax+dxy[2], ymax+2*dxy[2])
+			p <- c(xmin, xmax, ymax+dxy[2], ymax+1.75*dxy[2])
 		} else { #if (loc == "right" or "default" 
 			p <- c(xmax+dxy[1], xmax+2*dxy[1], ymin, ymax)
 		}

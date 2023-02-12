@@ -401,12 +401,11 @@ prettyNumbs <- function(x, digits) {
 	}
 	if (x$legend_draw) {
 		if (x$legend_type == "continuous") {
-			leg <- do.call(.plot.cont.legend, list(x=x))
+			x <- do.call(.plot.cont.legend, list(x=x))
 #		} else if (x$legend_type == "classes") {
 		} else {
-			#y <- do.call(.plot.class.legend, x$leg)
 			x$leg$plotlim <- x$lim
-			x$classleg <- do.call(.plot.class.legend, x$leg)
+			x <- do.call(.plot.class.legend, x$leg)
 		}
 	}
 	if (isTRUE(x$box)) { 
@@ -509,19 +508,6 @@ prettyNumbs <- function(x, digits) {
 		out$leg$x <- out$leg$loc
 		out$leg$loc <- NULL
 	}
-	
-	if (is.null(mar)) {
-		out$mar <- c(3.1, 3.1, 2.1, 2.1)
-		if (out$legend_draw) {
-			if (is.null(out$leg$ext) && is.null(out$leg$x)) {
-				out$leg$x <- "default"
-				out$mar <- c(3.1, 3.1, 2.1, 7.1)
-			}
-		}
-	} else {
-		out$mar <- rep_len(mar, 4)
-	}
-
 
 
 	if (!hasValues(x)) {
@@ -544,6 +530,31 @@ prettyNumbs <- function(x, digits) {
 			out$range <- range
 			out <- .as.raster.continuous(out, x, type)
 		}
+
+		if (is.null(mar)) {
+			out$mar <- c(2, 2, 2, 2)
+			if (out$legend_draw) {
+				if (is.null(out$leg$ext)) {
+					if (is.null(out$leg$x)) {
+						out$leg$x <- "default"
+						out$mar <- c(2, 2, 2, 4)
+					} else if (out$legend_type == "continuous") {
+						if (out$leg$x == "top") {
+							out$mar <- c(2, 2, 4, 2)
+						} else if (out$leg$x == "bottom") {
+							out$mar <- c(4, 2, 2, 2)
+						} else if (out$leg$x == "left") {
+							out$mar <- c(2, 5, 2, 1)
+						} else {
+							out$mar <- c(2, 2, 4, 2)
+						}
+					}
+				} 
+			}
+		} else {
+			out$mar <- rep_len(mar, 4)
+		}
+
 
 		if (!is.null(colNA)) {
 			if (!is.na(colNA) && out$values) {
@@ -703,7 +714,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		old.par <- graphics::par(no.readonly = TRUE)
 		on.exit(graphics::par(old.par))
 		if (is.null(mar)) {
-			mar=c(1.5, 1.5, 1.5, 3)
+			mar=c(.5, 1, 1, 3)
 		}
 		graphics::par(mfrow=nrnc)
 		maxcell=maxcell/(nl/2)

@@ -55,7 +55,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{buffer}{logical. If \code{TRUE} the plotting area is slightly larger than the extent of \code{x}}
   \item{background}{background color. Default is no color (white)}
   \item{box}{logical. Should a box be drawn around the map?}
-  \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}. Argument \code{digits} can be used to set the number of digits to print (after the decimal point for a continuous legend)}
+  \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}. Parameter \code{digits} can be used to set the number of digits to print (after the decimal point for a continuous legend). Parameter \code{size} can be used to change the height and/or width of a continuous legend. The defaults are \code{c(1,1)}, negative values for size flip the order of the legend}
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{side}, \code{tick} and \code{lab} can be used to indicate for which of the four axes to draw a line (side), tick mark, or label. The default is \code{c(1:4)} for side and \code{1:2} for the other two. If \code{side} is changed the other two default to that value. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{smooth}{logical. If \code{TRUE} the cell values are smoothed (only if a continuous legend is used)}
@@ -123,7 +123,7 @@ plot(r/2, range=c(50,600), mar=c(1,1,1,4))
 
 # as we only need one legend:
 par(mfrow=c(1,2))
-plot(r, range=c(50,600), mar=c(2, 2, 2, 2), plg=list(shrink=0.9, cex=.8), 
+plot(r, range=c(50,600), mar=c(2, 2, 2, 2), plg=list(size=0.9, cex=.8), 
 	pax=list(side=1:2, cex.axis=.6), box=FALSE)
 #text(182500, 335000, "Two maps, one plot", xpd=NA)
 plot(r/2, range=c(50,600), mar=c(2, 2, 2, 2), legend=FALSE, 
