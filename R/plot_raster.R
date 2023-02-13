@@ -372,25 +372,18 @@ prettyNumbs <- function(x, digits) {
 
 	if ((!x$add) & (!x$legend_only)) {
 
+		#dev.new(noRStudioGD = TRUE)
 		old.mar <- graphics::par()$mar
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
 		if (x$reset) on.exit(graphics::par(mar=old.mar))
 
-		if (!is.null(x$background)) {
-			# does not do anything because NA has a color?
-		
-			#usr <- graphics::par("usr")
-			#graphics::rect(usr[1], usr[3], usr[2], usr[4], col=x$background)
-			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background)			
-		}
-
 		arglist <- c(list(x=x$lim[1:2], y=x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=FALSE), x$dots)
 		do.call(plot, arglist)
-		#plot(x$lim[1:2], x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=!x$values, ...)
-		#x$line.lab <- rep_len(x$line.lab, 2)
-		#graphics::mtext(side=1, text=x$xlab, line=x$line.lab[1], cex=x$cex.lab)
-		#graphics::mtext(side=2, text=x$ylab, line=x$line.lab[2], cex=x$cex.lab)
-		#graphics::title(x$main, line=x$line.main, cex.main=x$cex.main, font.main=x$font.main, col.main=x$col.main)
+
+		if (!is.null(x$background)) {
+			graphics::rect(x$lim[1], x$lim[3], x$lim[2], x$lim[4], col=x$background)			
+		}
+
 		if (x$main != "") {
 			posx <- x$lim[1] + diff(x$lim[1:2])/2
 			text(posx, x$lim[4], x$main, pos=3, offset=x$line.main, cex=x$cex.main, 
@@ -502,6 +495,7 @@ prettyNumbs <- function(x, digits) {
 	out$breaks <- breaks
 	out$breakby <- breakby
 	out$interpolate <- FALSE
+	out$background <- background
 	out$legend_draw <- isTRUE(legend)
 	out$legend_only <- isTRUE(legend.only)
 	if (!is.logical(sort)) {

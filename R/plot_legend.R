@@ -370,21 +370,6 @@ retro_labels <- function(x, lat=TRUE) {
 	.get.leg.coords(x)
 }
 
-.leg.main <- function(x) {
-    if (!is.null(x$leg$title)) {
-		e <- x$leg$ext
-		if (x$leg$x %in% c("top", "bottom")) {
-			txt <- paste(x$leg$title, collapse=" ")
-		} else {
-			txt <- paste(x$leg$title, collapse="\n")		
-		}
-		text(x=e$xmax, y=e$ymax, labels = txt, pos=3, offset=0.5, 
-			cex = x$leg$title.cex, xpd=TRUE)
-	}
-	x
-}
-
-
 .plot.cont.legend <- function(x, ...) {
 
 	if (is.null(x$leg$x)) {
@@ -446,7 +431,15 @@ retro_labels <- function(x, lat=TRUE) {
 	}
 	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border ="black", xpd=NA)
 
-	x$leg.main <- .leg.main(x)
+    if (!is.null(x$leg$title)) {
+		e <- x$leg$ext
+		if (x$leg$x %in% c("top", "bottom")) {
+			txt <- paste(x$leg$title, collapse=" ")
+		} else {
+			txt <- paste(x$leg$title, collapse="\n")		
+		}
+		text(x=e$xmax, y=e$ymax, labels=txt, pos=3, offset=1, cex=x$leg$title.cex, xpd=TRUE)
+	}
 	x
 }
 

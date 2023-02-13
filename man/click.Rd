@@ -9,6 +9,8 @@
 
 \description{
 Click on a map (plot) to get the coordinates or the values of a SpatRaster or SpatVector at that location. For a SpatRaster you can also get the coordinates and cell number of the location. 
+
+This does to work well on the default RStudio plotting device. To work around that, you can first run \code{dev.new(noRStudioGD = TRUE)} which will create a separate window for plotting, then use \code{plot()} followed by \code{click()} and click on the map .
 }
 
 
