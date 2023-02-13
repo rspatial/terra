@@ -136,15 +136,15 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 
-.vplot <- function(x, out, xlab="", ylab="", cex=0.7, pch=16, lty=1, lwd=1, ...) {
+.vplot <- function(x, out, xlab="", ylab="", pch=16, lty=1, lwd=1, ...) {
 
 	if (out$leg$geomtype == "points") {
-		points(x, col=out$main_cols, cex=cex, pch=pch, ...)
+		points(x, col=out$main_cols, cex=out$cex, pch=pch, ...)
 		#if (!out$add) {
 		#	e <- out$lim
 		#}
 		out$leg$pch = pch
-		out$leg$pt.cex = cex
+		out$leg$pt.cex = out$cex
 	} else if (out$leg$geomtype == "polygons") {
 		out <- .plotPolygons(x, out, density=out$leg$density, angle=out$leg$angle, lty=lty, lwd=lwd, ...)
 	} else {
@@ -332,7 +332,8 @@ setMethod("dots", signature(x="SpatVector"),
 
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
-		plot(out$lim[1:2], out$lim[3:4], type="n", xlab="", ylab="", asp=out$asp, xaxs="i", yaxs="i", axes=FALSE, main="")
+		plot(out$lim[1
+		:2], out$lim[3:4], type="n", xlab="", ylab="", asp=out$asp, xaxs="i", yaxs="i", axes=FALSE, main="")
 		if (!is.null(out$background)) {
 			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background)
 		}
@@ -403,7 +404,7 @@ setMethod("dots", signature(x="SpatVector"),
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL,
 	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
-	density=NULL, angle=45, border="black", dig.lab=3, ...) {
+	density=NULL, angle=45, border="black", dig.lab=3, cex=1, ...) {
 
 
 	if ((y == "") && (is.null(values))) {
@@ -452,6 +453,7 @@ setMethod("dots", signature(x="SpatVector"),
 	out$xlab <- xlab
 	out$ylab <- ylab
 	out$axs <- as.list(pax)
+	out$cex <- cex
 	if (is.null(out$axs$las)) out$axs$las <- las
 	if (is.null(out$axs$cex.lab)) out$axs$cex.lab <- cex.lab
 	if (is.null(out$axs$line.lab)) out$axs$line.lab <- line.lab

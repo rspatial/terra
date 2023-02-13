@@ -1248,7 +1248,7 @@ setMethod("sort", signature(x="SpatVector"),
 			v <- data.frame(x)[,v]
 			i <- do.call(order, lapply(v, function(i) i))
 		} else {
-			i <- order(x[[v]], decreasing=decreasing)
+			i <- order(x[[v]][[1]], decreasing=decreasing)
 		}
 		x[i, ]
 	}
