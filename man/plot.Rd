@@ -35,7 +35,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 \S4method{plot}{SpatRaster,character}(x, y, ...)
 
 \S4method{plot}{SpatVector,character}(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, 
-    main=y, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, sort=TRUE, 
+    main="", buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, sort=TRUE, 
 	decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, 
 	box=axes, ...)
 
