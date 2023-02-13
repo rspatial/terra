@@ -21,32 +21,29 @@ SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double
 		return out;
 	}
 	
-	if (fun == "count") {
-		if ((values.size() != x.size()) && (values.size() != 0)) {
-			out.setError("number of values does not match the number of geometries");
-			return out;
-		}		
+	if ((values.size() != x.size()) && (values.size() != 0)) {
+		out.setError("number of values does not match the number of geometries");
+		return out;
 	} else if (values.size() != x.size()) {
 		out.setError("number of values does not match the number of geometries");
 		return out;
 	}
 
 	size_t nc = ncol();
-	std::vector<double> cells = cellFromXY(x, y);
-	
-	// order for multiple chunks, but also to remove NAs
-	std::vector<std::size_t> so = sort_order_na_d(cells);
+	std::vector<double> cells = cellFromXY(x, y, -9);
+	// order for multiple chunks, but also to remove NAs (-9)
+	std::vector<std::size_t> so = sort_order_d(cells);
 	permute(cells, so);
 	permute(values, so);
+
 	size_t cellcnt = 0;
-	for (size_t i=0; i < cells.size(); i++) {
-		if (std::isnan(cells[i])) {
+	for (size_t i=0; i<cells.size(); i++) {
+		if (cells[i] < 0) {
 			cellcnt++;
 		} else {
 			break;
 		}
 	}
-
 
 	if (fun == "count") {
 		if (values.size() == 0) narm=false;

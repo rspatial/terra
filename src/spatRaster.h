@@ -383,8 +383,8 @@ class SpatRaster {
 		bool compare_origin(std::vector<double> x, double tol);
 		bool shared_basegeom(SpatRaster &x, double tol, bool test_overlap);
 
-		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y);
-		double cellFromXY(double x, double y);
+		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y, double missing=NAN);
+		double cellFromXY(double x, double y, double missing=NAN);
 		std::vector<double> cellFromRowCol(std::vector<int_64> row, std::vector<int_64> col);
 		double cellFromRowCol(int_64 row, int_64 col);
 		std::vector<double> cellFromRowColCombine(std::vector<int_64> row, std::vector<int_64> col);

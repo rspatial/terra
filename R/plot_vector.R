@@ -367,7 +367,7 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 	if (!out$legend_only) {
-		graphics::clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
+		if (!out$add) graphics::clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
 		out <- .vplot(x, out, ...)
 	}
 
@@ -393,7 +393,7 @@ setMethod("dots", signature(x="SpatVector"),
 			font=out$font.main, col=out$col.main, xpd=TRUE)
 	}
 
-	graphics::clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
+	if (!out$add) graphics::clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
 	out
 }
 

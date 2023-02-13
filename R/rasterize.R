@@ -218,13 +218,15 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		if (grepl("points", g)) {
 			nrx <- nrow(x)
 			# also allow for multiple columns to multiple layers
-			if (field[1] != "") {
-				values <- x[[field]]
-			} 
 			xy <- crds(x)
-			if (nrow(xy) != nrx) { # multi-points
-				g <- geom(x)
-				values <- values[g[,1], ,drop=FALSE]
+			if (field[1] == "") {
+				values <- matrix(1, ncol=1, nrow=nrx)
+			} else if (field[1] != "") {
+				values <- x[[field]]
+				if (nrow(xy) != nrx) { # multi-points
+					g <- geom(x)
+					values <- values[g[,1], ,drop=FALSE]
+				}
 			}
 			return(
 				rasterize_points(x=xy, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...)

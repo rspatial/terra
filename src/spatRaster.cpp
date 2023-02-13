@@ -1508,7 +1508,7 @@ std::vector<bool> SpatRaster::hasColors() {
 }
 
 
-std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<double> y) {
+std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<double> y, double missing) {
 // size of x and y should be the same
 
 	size_t size = x.size();
@@ -1535,7 +1535,7 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 		long nr = nrow();
 		long nc = ncol();
 		if (row < 0 || row >= nr || col < 0 || col >= nc) {
-			cells[i] = NAN;
+			cells[i] = missing;
 		} else {
 			cells[i] = row * ncol() + col;
 		}
@@ -1545,10 +1545,10 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 }
 
 
-double SpatRaster::cellFromXY (double x, double y) {
+double SpatRaster::cellFromXY (double x, double y, double missing) {
 	std::vector<double> X = {x};
 	std::vector<double> Y = {y};
-	std::vector<double> cell = cellFromXY(X, Y);
+	std::vector<double> cell = cellFromXY(X, Y, missing);
 	return  cell[0];
 }
 

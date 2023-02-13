@@ -9,15 +9,6 @@ std::vector<std::size_t> sort_order_d(const std::vector<T> &x){
 }
 
 template <typename T>
-std::vector<std::size_t> sort_order_na_d(const std::vector<T> &x){
-  std::vector<std::size_t> p(x.size());
-  std::iota(p.begin(), p.end(), 0);
-  std::sort(p.begin(), p.end(),
-            [&](std::size_t i, std::size_t j){ return (x[i] < x[j]) || std::isnan(x[i]); });
-  return p;
-}
-
-template <typename T>
 std::vector<std::size_t> sort_order_a(const std::vector<T> &x){
 	std::vector<std::size_t> p(x.size());
 	std::iota(p.begin(), p.end(), 0);
@@ -25,6 +16,8 @@ std::vector<std::size_t> sort_order_a(const std::vector<T> &x){
             [&](std::size_t i, std::size_t j){ return (x[i] > x[j]); });
 	return p;
 }
+
+
 
 template <typename T>
 void permute(std::vector<T> &x, const std::vector<std::size_t> &p) {
