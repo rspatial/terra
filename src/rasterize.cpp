@@ -21,7 +21,7 @@ SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double
 		return out;
 	}
 	
-	if ((values.size() != x.size()) && (values.size() != 0)) {
+	if ((fun == "count") && (values.size() != x.size()) && (!values.empty())) {
 		out.setError("number of values does not match the number of geometries");
 		return out;
 	} else if (values.size() != x.size()) {
@@ -46,7 +46,7 @@ SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double
 	}
 
 	if (fun == "count") {
-		if (values.size() == 0) narm=false;
+		if (values.empty()) narm=false;
 		for (size_t i=0; i < out.bs.n; i++) {
 			double cmin = out.bs.row[i] * nc;
 			double cmax = (out.bs.row[i]+out.bs.nrows[i]) * nc - 1;
@@ -259,7 +259,7 @@ SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double
 
 
 SpatRaster SpatRaster::rasterizePoints(SpatVector &x, std::string fun, std::vector<double> &values, bool narm, double background, SpatOptions &opt) {
-	if ((values.size() == 0) && (fun != "count")) {
+	if (values.empty()) {
 		values = std::vector<double>(x.nrow(), 1);
 	}
 	std::vector<std::vector<double>> pxy = x.coordinates();
@@ -269,7 +269,11 @@ SpatRaster SpatRaster::rasterizePoints(SpatVector &x, std::string fun, std::vect
 
 SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string fun, SpatOptions &opt) {
 
-	if (x.type() != "points") {
+	if (x.type() == "points") {
+		std::vector<double> v;
+		return rasterizePoints(x, "count", v, false, 0.0, opt);
+
+	} else {	
 
 		SpatRaster out = geometry(1, false, false, false);
 		SpatOptions ops(opt);
@@ -356,9 +360,6 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 		out.writeStop();
 		return(out);
 
-	} else {
-		std::vector<double> v;
-		return rasterizePoints(x, "count", v, false, 0.0, opt);
 	}
 }
 
