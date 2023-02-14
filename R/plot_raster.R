@@ -365,14 +365,14 @@ prettyNumbs <- function(x, digits) {
 
 set.clip <- function(lim) {
 	# remove non-existing ones
-	x <- dev.list()
+	x <- grDevices::dev.list()
 	x <- paste(names(x), x, sep="_")
 	e <- .terra_environment$devs
 	e <- e[e[,1] %in% x, ]
 
 	graphics::clip(lim[1], lim[2], lim[3], lim[4])
 
-	d <- dev.cur()
+	d <- grDevices::dev.cur()
 	d <- data.frame(dev=paste(names(d), d[[1]], sep="_"), rbind(lim), row.names="")
 	# remove one with the same name/number 
 	e <- e[!(e[,1] %in% d[1]), ]
@@ -381,7 +381,7 @@ set.clip <- function(lim) {
 }
 
 get.clip <- function() {
-	d <- dev.cur()
+	d <- grDevices::dev.cur()
 	dev <- paste(names(d), d[[1]], sep="_")
 	e <- .terra_environment$devs
 	i <- match(dev, e[,1])[1]
