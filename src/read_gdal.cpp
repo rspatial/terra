@@ -719,7 +719,7 @@ SpatRaster SpatRaster::fromFiles(std::vector<std::string> fname, std::vector<int
 
 bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 	int n = poDataset->GetGCPCount();
-	Rcpp::Rcout << "n GCP " << n << std::endl;
+//	Rcpp::Rcout << "n GCP " << n << std::endl;
 	if (n == 0) return false;
 	const GDAL_GCP *gcp;
 	gcp	= poDataset->GetGCPs();
@@ -782,10 +782,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	SpatRasterSource s;
 
 	char **metasrc = poDataset->GetMetadata();
-	for (size_t i=0; metasrc[i] != NULL; i++) {
-		s.smdata.push_back(metasrc[i]);
+	while (metasrc != nullptr && *metasrc != nullptr) {
+		s.smdata.push_back(*metasrc++);
 	}
-
 	s.ncol = poDataset->GetRasterXSize();
 	s.nrow = poDataset->GetRasterYSize();
 	s.nlyr = nl;
