@@ -3,7 +3,7 @@
 if (!isGeneric("logic")) {setGeneric("logic", function(x, ...) standardGeneric("logic"))}
 if (!isGeneric("compare")) {setGeneric("compare", function(x, y, ...) standardGeneric("compare"))}
 
-if (!isGeneric("metadata")) {setGeneric("metadata", function(x, ...) standardGeneric("metadata"))}
+if (!isGeneric("meta")) {setGeneric("meta", function(x, ...) standardGeneric("meta"))}
 
 if (!isGeneric("rangeFill")) {setGeneric("rangeFill", function(x, ...) standardGeneric("rangeFill"))}
 if (!isGeneric("roll")) {setGeneric("roll", function(x, ...) standardGeneric("roll"))}

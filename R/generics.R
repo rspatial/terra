@@ -12,8 +12,8 @@ setMethod("rangeFill", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("metadata", signature(x="SpatRaster"),
-	function(x) {
+setMethod("meta", signature(x="SpatRaster"),
+	function(x, layers=FALSE) {
 		f <- function(i) {
 			if (length(i) == 0) {
 				matrix(ncol=2, nrow=0)
@@ -21,7 +21,7 @@ setMethod("metadata", signature(x="SpatRaster"),
 				matrix(unlist(regmatches(i, regexpr("=", i), invert=TRUE)), ncol=2, byrow=TRUE)
 			}
 		}
-		lapply(x@ptr$metadata, f)
+		lapply(x@ptr$metadata(layers), f)
 	}
 )
 

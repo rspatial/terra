@@ -710,7 +710,7 @@ RCPP_MODULE(spat){
 		.property("timezone", &SpatRaster::getTimeZone)
 		.method("settime", &SpatRaster::setTime)
 		//.property("timestr", &SpatRaster::getTimeStr)
-		.property("metadata", &SpatRaster::getMetadata)
+		.method("metadata", &SpatRaster::getMetadata)
 
 		.property("depth", &SpatRaster::getDepth)
 		.method("set_depth", &SpatRaster::setDepth)

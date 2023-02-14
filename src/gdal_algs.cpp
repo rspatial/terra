@@ -712,12 +712,21 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 
 
 
+bool GCP_geotrans(GDALDataset *poDataset, double* adfGeoTransform) {
+	int n = poDataset->GetGCPCount();
+	if (n == 0) return false;
+	const GDAL_GCP *gcp;
+	gcp	= poDataset->GetGCPs();
+	return GDALGCPsToGeoTransform(n, gcp, adfGeoTransform, true);
+}
+
+
 
 SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned useaoi, bool snap, SpatOptions &opt) {
 	SpatRaster out = geometry(0);
 
 	if (nsrc() > 1) {
-		out.setError("you can transform only one data source at a time");
+		out.setError("you can rectify only one data source at a time");
 		return(out);
 	}
 	if (!source[0].rotated) {
@@ -732,11 +741,16 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	}
 	double gt[6];
 	if( poDataset->GetGeoTransform(gt) != CE_None ) {
-		out.setError("can't get geotransform");
-		GDALClose( (GDALDatasetH) poDataset );
-		return out;
+		if (!GCP_geotrans(poDataset, gt)) {
+			out.setError("can't get the geotransform");
+			GDALClose( (GDALDatasetH) poDataset );
+			return out;
+		}
 	}
 	GDALClose( (GDALDatasetH) poDataset );
+
+//	gt[1] = std::abs(gt[1]);
+	
 	//SpatExtent e = getExtent();
 	//std::vector<double> x = {e.xmin, e.xmin, e.xmax, e.xmax };
 	//std::vector<double> y = {e.ymin, e.ymax, e.ymin, e.ymax };
@@ -759,7 +773,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	out = out.setResolution(gt[1], -gt[5]);
 
 	out.setExtent(en, false, true, "out");
-	SpatExtent e = out.getExtent();
+	//SpatExtent e = out.getExtent();
 
 	if (useaoi == 1) { // use extent
 		en = aoi.getExtent();
@@ -773,7 +787,8 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 		out = aoi.geometry(0);
 	} // else { // if (useaoi == 0) // no aoi
 
-	e = out.getExtent();
+	//e = out.getExtent();
+
 	out = warper(out, "", method, false, false, true, opt);
 
 	return(out);

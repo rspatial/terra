@@ -717,6 +717,38 @@ SpatRaster SpatRaster::fromFiles(std::vector<std::string> fname, std::vector<int
 
 */
 
+bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
+	int n = poDataset->GetGCPCount();
+	Rcpp::Rcout << "n GCP " << n << std::endl;
+	if (n == 0) return false;
+	const GDAL_GCP *gcp;
+	gcp	= poDataset->GetGCPs();
+	
+	double adfGeoTransform[6];
+	if (GDALGCPsToGeoTransform(n, gcp, adfGeoTransform, true)) {
+		//for (size_t i=0; i<6; i++) {
+		//	Rcpp::Rcout << adfGeoTransform[i] << " ";
+		//}
+		//Rcpp::Rcout << std::endl;
+		double xmin = adfGeoTransform[0]; /* left x */
+		double xmax = xmin + std::abs(adfGeoTransform[1]) * s.ncol; /* w-e resolution */
+		double ymax = adfGeoTransform[3]; // top y
+		double ymin = ymax + s.nrow * adfGeoTransform[5];
+		if (adfGeoTransform[5] > 0) {
+			s.flipped = true;
+			std::swap(ymin, ymax);
+		}
+		SpatExtent e(xmin, xmax, ymin, ymax);
+		s.extent = e;
+		if (adfGeoTransform[2] != 0 || adfGeoTransform[4] != 0) {
+			s.rotated = true;
+		}
+		return true;
+	}
+	return false;
+}
+
+
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options) {
 
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, options);
@@ -747,8 +779,13 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		return false;
 	}
 
-
 	SpatRasterSource s;
+
+	char **metasrc = poDataset->GetMetadata();
+	for (size_t i=0; metasrc[i] != NULL; i++) {
+		s.smdata.push_back(metasrc[i]);
+	}
+
 	s.ncol = poDataset->GetRasterXSize();
 	s.nrow = poDataset->GetRasterYSize();
 	s.nlyr = nl;
@@ -781,7 +818,12 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			s.rotated = true;
 			addWarning("the data in this file are rotated. Use 'rectify' to fix that");
 		}
+	} else if (getGCPs(poDataset, s)) {
+		if (s.rotated) {
+			addWarning("the data in this file are rotated. Use 'rectify' to fix that");
+		}
 	} else {
+
 		hasExtent = false;
 		SpatExtent e(0, s.ncol, 0, s.nrow);
 		s.extent = e;
@@ -1019,7 +1061,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	// needs to get its own generic one 
 		s.set_names_time_tif(bandmeta, msg);
 	}
-	s.mdata = bandmeta;
+	s.bmdata = bandmeta;
 	if (msg.size() > 1) {
 		addWarning(msg);
 	}

@@ -1171,15 +1171,24 @@ std::vector<std::string> SpatRaster::dataType() {
 }
 
 
-std::vector<std::vector<std::string>> SpatRaster::getMetadata() {
+std::vector<std::vector<std::string>> SpatRaster::getMetadata(bool layers) {
 	std::vector<std::vector<std::string>> d;
 	size_t n = nsrc();
-	d.reserve(nlyr());
-	for (size_t i=0; i<n; i++) {
-		if (source[i].mdata.empty()) {
-			d.resize(d.size() + source[i].nlyr);
-		} else {
-			d.insert(d.end(), source[i].mdata.begin(), source[i].mdata.end());
+	if (layers) {
+		d.reserve(nlyr());
+		for (size_t i=0; i<n; i++) {
+			if (source[i].bmdata.empty()) {
+				d.resize(d.size() + source[i].nlyr);
+			} else {
+				d.insert(d.end(), source[i].bmdata.begin(), source[i].bmdata.end());
+			}
+		}
+	} else {
+		d.resize(n);
+		for (size_t i=0; i<n; i++) {
+			if (!source[i].smdata.empty()) {
+				d[i] = source[i].smdata;
+			}
 		}
 	}
 	return d;

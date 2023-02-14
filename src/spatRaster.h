@@ -98,7 +98,8 @@ class SpatRasterSource {
 		std::vector<size_t> m_subset;
 		bool m_hasNA = false;
 		double m_missing_value;
-		std::vector<std::vector<std::string>> mdata;
+		std::vector<std::vector<std::string>> bmdata;
+		std::vector<std::string> smdata;
 		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
 		SpatSRS srs;
@@ -333,7 +334,7 @@ class SpatRaster {
 		bool setNAflag(std::vector<double> flag);
 		std::vector<double> getNAflag();
 
-		std::vector<std::vector<std::string>> getMetadata();
+		std::vector<std::vector<std::string>> getMetadata(bool layers);
 
 
 ////////////////////////////////////////////////////

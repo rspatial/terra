@@ -1,3 +1,4 @@
+/*
 #include "gdalwarper.h"
 #include "gdal_priv.h"
 #include "cpl_string.h"
@@ -41,3 +42,4 @@ SpatRaster SpatRaster::applyGCP(std::vector<double> fx, std::vector<double> fy, 
 
 }
 
+*/
