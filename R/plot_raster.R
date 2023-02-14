@@ -442,7 +442,14 @@ reset.clip <- function() {
 			x <- do.call(.plot.cont.legend, list(x=x))
 #		} else if (x$legend_type == "classes") {
 		} else {
-			x$leg$plotlim <- x$lim
+			if (x$add) {
+				x$leg$plotlim <- get.clip()
+				if (is.null(x$leg$plotlim)) {
+					x$leg$plotlim <- x$lim			
+				}				
+			} else {
+				x$leg$plotlim <- x$lim			
+			}
 			x$leg$used <- do.call(.plot.class.legend, x$leg)
 		}
 	}
