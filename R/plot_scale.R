@@ -1,26 +1,26 @@
 
-.assume_lonlat <- function(pr) {
+..assume_lonlat <- function(pr) {
 	(pr$usr[1] > -300) && (pr$usr[2] < 300) && (pr$yaxp[1] > -200) && (pr$yaxp[2] < 200)
 }
 
 .get_dd <- function(pr, lonlat, d=NULL) {
 	if (lonlat) {
-		lat <- mean(pr$yaxp[1:2])
+		lat <- mean(pr$usr[3:4])
 		if (is.null(d)) {
 			dx <- (pr$usr[2] - pr$usr[1]) / 6
 			d <- as.vector(distance(cbind(0, lat), cbind(dx, lat), TRUE))
-			d <- signif(d / 1000, 2)
+			d <- max(1, 5 * round(d/5000))
 		}
 		p <- cbind(0, lat)
 		dd <- .destPoint(p, d * 1000)
-		dd <- dd[1,1]
+		dd <- c(dd[1,1], d)
 	} else {
 		if (is.null(d)) {
 			d <- (pr$usr[2] - pr$usr[1]) / 6
 			digits <- floor(log10(d)) + 1
 			d <- round(d, -(digits-1))
 		}
-		dd <- d
+		dd <- c(d, d)
 	}
 	dd
 }
@@ -116,6 +116,7 @@ add_N <- function(x, y, asp, label, type=0, user="", angle=0, cex=1, srt=0, xpd=
 
 north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ...) {
 	pr <- graphics::par()
+	pr$usr <- unlist(get.clip()[1:4])
 	pa <- c(pr$usr[2] - pr$usr[1], pr$usr[4] - pr$usr[3])
 	asp <- pa[2]/pa[1]
 	if (missing(d))	{
@@ -172,8 +173,10 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 
 	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
+	clp <- get.clip()
+	pr$usr <- unlist(clp[,1:4])
 	if (is.null(lonlat)) {
-		lonlat <- .assume_lonlat(pr)
+		lonlat <- isTRUE(clp[[5]])
 	}
 
 	if (missing(d)) {
@@ -181,7 +184,9 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 		d <- NULL
 	}
 	dd <- .get_dd(pr, lonlat, d)
-	if (is.null(d)) d <- dd
+	d <- dd[2]
+	dd <- dd[1]
+
 	xy <- .get_xy(xy, dd, 0, pr, "bottomleft", caller="sbar")
 
 	if (type == "line") {

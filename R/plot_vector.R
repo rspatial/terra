@@ -366,7 +366,7 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 	if (!out$legend_only) {
-		if (!out$add) try(set.clip(out$lim))
+		if (!out$add) try(set.clip(out$lim, out$lonlat))
 		out <- .vplot(x, out, ...)
 	}
 
@@ -379,7 +379,7 @@ setMethod("dots", signature(x="SpatVector"),
 			out$legpars <- do.call(.plot.cont.legend, list(x=out))
 		} else {
 			if (out$add) {
-				out$leg$plotlim <- get.clip()
+				out$leg$plotlim <- unlist(get.clip()[1:4])
 				if (is.null(out$leg$plotlim)) {
 					out$leg$plotlim <- out$lim			
 				}
@@ -399,7 +399,7 @@ setMethod("dots", signature(x="SpatVector"),
 			font=out$font.main, col=out$col.main, xpd=TRUE)
 	}
 
-	if (!out$add) try(set.clip(out$lim))
+	if (!out$add) try(set.clip(out$lim, out$lonlat))
 	out
 }
 

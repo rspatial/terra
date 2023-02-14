@@ -2,11 +2,11 @@ Package: terra
 Type: Package
 Title: Spatial Data Analysis
 Version: 1.7-9
-Date: 2023-02-12
+Date: 2023-02-14
 Depends: R (>= 3.5.0)
 Suggests: parallel, tinytest, ncdf4, sf (>= 0.9-8), deldir, XML, leaflet
 LinkingTo: Rcpp
-Imports: methods, Rcpp
+Imports: methods, Rcpp (>= 1.0-10)
 SystemRequirements: C++14, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3
 Encoding: UTF-8
 Language: en-US

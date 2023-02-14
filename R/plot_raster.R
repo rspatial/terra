@@ -363,17 +363,17 @@ prettyNumbs <- function(x, digits) {
 	out
 }
 
-set.clip <- function(lim) {
+set.clip <- function(clp, geo) {
 	# remove non-existing ones
 	x <- grDevices::dev.list()
 	x <- paste(names(x), x, sep="_")
 	e <- .terra_environment$devs
 	e <- e[e[,1] %in% x, ]
 
-	graphics::clip(lim[1], lim[2], lim[3], lim[4])
+	graphics::clip(clp[1], clp[2], clp[3], clp[4])
 
 	d <- grDevices::dev.cur()
-	d <- data.frame(dev=paste(names(d), d[[1]], sep="_"), rbind(lim), row.names="")
+	d <- data.frame(dev=paste(names(d), d[[1]], sep="_"), rbind(clp), geo=geo, row.names="")
 	# remove one with the same name/number 
 	e <- e[!(e[,1] %in% d[1]), ]
 	e <- rbind(e, d)
@@ -428,7 +428,7 @@ reset.clip <- function() {
 		}
 	}
 	if (!x$values) {
-		try(set.clip(x$lim))
+		try(set.clip(x$lim, x$lonlat))
 		return(x)
 	}
 	if (!x$legend_only) {
@@ -443,7 +443,7 @@ reset.clip <- function() {
 #		} else if (x$legend_type == "classes") {
 		} else {
 			if (x$add) {
-				x$leg$plotlim <- get.clip()
+				x$leg$plotlim <- unlist(get.clip()[1:4])
 				if (is.null(x$leg$plotlim)) {
 					x$leg$plotlim <- x$lim			
 				}				
@@ -456,7 +456,7 @@ reset.clip <- function() {
 	if (isTRUE(x$box)) { 
 		lines(ext(x$lim))	
 	}
-	try(set.clip(x$lim))
+	try(set.clip(x$lim, x$lonlat))
 
 	invisible(x)
 }
