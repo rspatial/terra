@@ -8,6 +8,7 @@
 	tmpdir <- try(tempdir(check = TRUE), silent=TRUE)
 	opt@ptr$tempdir <- normalizePath(tempdir(), winslash="/")
 	.terra_environment$options <- opt
+	.terra_environment$devs <- NULL
 
 	x <- options("terra_default")[[1]]
 	if (!is.null(x)) {

@@ -363,6 +363,41 @@ prettyNumbs <- function(x, digits) {
 	out
 }
 
+set.clip <- function(lim) {
+	# remove non-existing ones
+	x <- dev.list()
+	x <- paste(names(x), x, sep="_")
+	e <- .terra_environment$devs
+	e <- e[e[,1] %in% x, ]
+
+	graphics::clip(lim[1], lim[2], lim[3], lim[4])
+
+	d <- dev.cur()
+	d <- data.frame(dev=paste(names(d), d[[1]], sep="_"), rbind(lim), row.names="")
+	# remove one with the same name/number 
+	e <- e[!(e[,1] %in% d[1]), ]
+	e <- rbind(e, d)
+	.terra_environment$devs <- e
+}
+
+get.clip <- function() {
+	d <- dev.cur()
+	dev <- paste(names(d), d[[1]], sep="_")
+	e <- .terra_environment$devs
+	i <- match(dev, e[,1])[1]
+	if (is.na(i)) {
+		NULL
+	} else {
+		e[i[1],-1]
+	}
+}
+
+reset.clip <- function() {
+	g <- get.clip()
+	if (!is.null(g)) {
+		graphics::clip(g[[1]], g[[2]], g[[3]], g[[4]])
+	}
+}
 
 .plotit <- function(x) {
 
@@ -370,13 +405,15 @@ prettyNumbs <- function(x, digits) {
 		x$values = FALSE
 	}
 
+	if (x$add) reset.clip()
+
 	if ((!x$add) & (!x$legend_only)) {
 
 		#dev.new(noRStudioGD = TRUE)
 		old.mar <- graphics::par()$mar
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
 		if (x$reset) on.exit(graphics::par(mar=old.mar))
-
+		
 		arglist <- c(list(x=x$lim[1:2], y=x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=FALSE), x$dots)
 		do.call(plot, arglist)
 
@@ -391,7 +428,7 @@ prettyNumbs <- function(x, digits) {
 		}
 	}
 	if (!x$values) {
-		graphics::clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
+		try(set.clip(x$lim))
 		return(x)
 	}
 	if (!x$legend_only) {
@@ -412,8 +449,8 @@ prettyNumbs <- function(x, digits) {
 	if (isTRUE(x$box)) { 
 		lines(ext(x$lim))	
 	}
+	try(set.clip(x$lim))
 
-	graphics::clip(x$lim[1], x$lim[2], x$lim[3], x$lim[4])
 	invisible(x)
 }
 
@@ -427,16 +464,14 @@ prettyNumbs <- function(x, digits) {
   xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=1.2, 
   line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
   axes=TRUE, box=TRUE, cex=1, ...) {
-
 #cex is catch and kill
 	out <- list()
 
 	out$lim <- out$ext <- as.vector(ext(x))
 	if (!is.null(ext)) {
-		ext <- ext(ext)
+		ext <- align(ext(ext), x)
 		x <- crop(x, ext)
-		out$ext <- as.vector(ext(x))
-		out$lim <- ext
+		out$lim <- out$ext <- as.vector(ext(x))
 	}
 	if (!(is.null(xlim) & is.null(ylim))) {
 		e <- as.vector(ext(x))

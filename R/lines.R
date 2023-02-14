@@ -1,6 +1,7 @@
 
 setMethod("lines", signature(x="SpatRaster"),
 function(x, mx=10000, ...) {
+		reset.clip()
 		if(prod(dim(x)) > mx) {
 			error("lines", "too many lines (you can increase the value of mx or use as.polygons)")
 		}
@@ -12,6 +13,7 @@ function(x, mx=10000, ...) {
 
 setMethod("points", signature(x="SpatRaster"),
 function(x, ...) {
+		reset.clip()
 		p <- as.points(x[[1]])
 		points(p, ...)
 	}
@@ -19,6 +21,7 @@ function(x, ...) {
 
 setMethod("polys", signature(x="SpatRaster"),
 function(x, mx=10000, dissolve=TRUE, ...) {
+		reset.clip()
 		if(prod(dim(x)) > mx) {
 			error("lines", "too many lines (you can increase the value of mx or use as.polygons)")
 		}
@@ -30,6 +33,7 @@ function(x, mx=10000, dissolve=TRUE, ...) {
 
 setMethod("lines", signature(x="SpatVector"),
 	function(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)  {
+		reset.clip()
 		n <- nrow(x)
 		if (n == 0) return(invisible(NULL))
 		gtype <- geomtype(x)
@@ -91,6 +95,7 @@ setMethod("lines", signature(x="SpatVector"),
 
 setMethod("points", signature(x="SpatVector"),
 	function(x, col, cex=0.7, pch=16, alpha=1, ...)  {
+		reset.clip()
 		n <- length(x)
 		if (n == 0) return(invisible(NULL))
 		if (missing(col)) col <- "black"
@@ -120,6 +125,7 @@ setMethod("points", signature(x="SpatVector"),
 
 setMethod("polys", signature(x="SpatVector"),
 	function(x, col, border="black", lwd=1, lty=1, alpha=1, ...)  {
+		reset.clip()
 		gtype <- geomtype(x)
 		if (gtype != "polygons") {
 			error("polys", "expecting polygons")

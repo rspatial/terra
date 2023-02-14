@@ -6,6 +6,8 @@
 
 setMethod("dots", signature(x="SpatVector"),
 	function(x, field, size,  ...) {
+		reset.clip()
+
 		n <- length(x)
 		if (n < 1) return(NULL)
 		#method <- match.arg(tolower(method), c("regular", "random"))
@@ -317,9 +319,7 @@ setMethod("dots", signature(x="SpatVector"),
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
 		out$leg$x <- "default"
 	}
-
 	out$main_cols <- out$cols[out$vcut]
-
 	if (!is.null(out$colNA)) {
 		out$main_cols[is.na(out$main_cols)] <- out$colNA
 	}
@@ -327,13 +327,11 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 
-
 .plot.vect.map <- function(x, out, ...) {
 
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
-		plot(out$lim[1
-		:2], out$lim[3:4], type="n", xlab="", ylab="", asp=out$asp, xaxs="i", yaxs="i", axes=FALSE, main="")
+		plot(out$lim[1:2], out$lim[3:4], type="n", xlab="", ylab="", asp=out$asp, xaxs="i", yaxs="i", axes=FALSE, main="")
 		if (!is.null(out$background)) {
 			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background)
 		}
@@ -368,7 +366,7 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 	if (!out$legend_only) {
-		if (!out$add) graphics::clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
+		if (!out$add) try(set.clip(out$lim))
 		out <- .vplot(x, out, ...)
 	}
 
@@ -394,7 +392,7 @@ setMethod("dots", signature(x="SpatVector"),
 			font=out$font.main, col=out$col.main, xpd=TRUE)
 	}
 
-	if (!out$add) graphics::clip(out$lim[1], out$lim[2], out$lim[3], out$lim[4])
+	if (!out$add) try(set.clip(out$lim))
 	out
 }
 
@@ -421,7 +419,7 @@ setMethod("dots", signature(x="SpatVector"),
 		stopifnot(inherits(ext, "SpatExtent"))
 		x <- crop(x, ext)
 		out$ext <- as.vector(ext(x))
-		out$lim <- ext
+		out$lim <- as.vector(ext)
 	} else {
 		if (!is.null(xlim)) {
 			stopifnot(length(xlim) == 2)
@@ -587,13 +585,15 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 setMethod("plot", signature(x="SpatVector", y="character"),
-	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add,
+	function(x, y, col=NULL, type, mar=NULL, add=FALSE, legend=!add, axes=!add,
 	main="", buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
-	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, box=axes, ...) {
+	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, 
+	alpha=NULL, box=axes, ...) {
 
 		if (nrow(x) == 0) {
 			error("plot", "SpatVector has zero geometries")
 		}
+		if (add) reset.clip()
 
 		y <- trimws(y)
 		if (any(is.na(match(y, c("", names(x)))))) {
