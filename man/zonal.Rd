@@ -47,8 +47,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 A \code{data.frame} with a value for each zone, or a SpatRaster, or SpatVector of polygons.
 }
 
-\seealso{ See \code{\link{global}} for "global" statistics (i.e., all of \code{x} is considered a single zone), \code{\link{app}} for local statistics, and \code{\link{extract}} for summarizing values for polygons
-\code{\link{extract}} for an alternative way to summarize values of a SpatRaster with a SpatVector. 
+\seealso{ See \code{\link{global}} for "global" statistics (i.e., all of \code{x} is considered a single zone), \code{\link{app}} for local statistics, and \code{\link{extract}} for an alternative way to summarize values of a SpatRaster with a SpatVector. 
 }
 
 \examples{
