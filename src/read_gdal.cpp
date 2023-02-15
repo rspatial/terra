@@ -731,7 +731,10 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 		//}
 		//Rcpp::Rcout << std::endl;
 		double xmin = adfGeoTransform[0]; /* left x */
-		double xmax = xmin + std::abs(adfGeoTransform[1]) * s.ncol; /* w-e resolution */
+		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e resolution */
+		if (xmin > xmax) {
+			std::swap(xmin, xmax);			
+		}
 		double ymax = adfGeoTransform[3]; // top y
 		double ymin = ymax + s.nrow * adfGeoTransform[5];
 		if (adfGeoTransform[5] > 0) {

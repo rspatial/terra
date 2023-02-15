@@ -446,6 +446,7 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 
 	out$main <- main
+	if (is.null(out$main) || any(is.na(out$main))) out$main <- ""
 	out$cex.main  <- cex.main
 	out$font.main <- font.main
 	out$col.main  <- col.main
@@ -621,6 +622,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 
 		for (i in 1:length(y)) {
 			if (length(y) > 1) {
+				main <- rep_len(main, length(y))
 				newrow <- (nrnc[2] == 1) | ((i %% nrnc[2]) == 1)
 				lastrow <- i > (prod(nrnc) - nrnc[2])
 				if (lastrow) {

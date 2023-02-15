@@ -345,7 +345,7 @@ as.matrix.SpatRaster <- function(x, wide=FALSE, ...) {
 setMethod("as.matrix", signature(x="SpatRaster"), as.matrix.SpatRaster)
 
 
-as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=NA, ...) {
+as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=FALSE, ...) {
 
 	d <- NULL
 	if (xy) {

@@ -52,7 +52,7 @@ setMethod("lines", signature(x="SpatVector"),
 			} else {
 				a <- as.vector(t(cbind(p1[,1], p2[,1], NA)))
 				b <- as.vector(t(cbind(p1[,2], p2[,2], NA)))
-				lines(cbind(a, b), col=col, lwd=lwd, lty=lty, alpha=alpha, ...)
+				lines(cbind(a, b), col=col, lwd=lwd, lty=lty, ...)
 			}
 		} else {
 			if (gtype != "polygons") {

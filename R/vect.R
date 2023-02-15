@@ -5,19 +5,21 @@
 #	}
 #)
 
-character_crs <- function(crs, caller="") {
-	if (is.na(crs)) {
+character_crs <- function(x, caller="") {
+
+	if (!inherits(x, "character")) {
+		x <- crs(x)
+	}
+
+	if (is.na(x)) {
 		""
-	} else if (!inherits(crs, "character")) {
-		warn(caller, "argument 'crs' should be a character value")
-		as.character(crs)
 	} else {
-		if (tolower(crs) == "local") {
+		if (tolower(x) == "local") {
 			crs = 'LOCAL_CS["Cartesian (Meter)", LOCAL_DATUM["Local Datum",0], UNIT["Meter",1.0], AXIS["X",EAST], AXIS["Y",NORTH]]'
-		} else if (tolower(crs) == "lonlat") {
+		} else if (tolower(x) == "lonlat") {
 			x <- "+proj=longlat"
 		}
-		crs
+		x
 	}
 }
 
