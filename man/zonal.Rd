@@ -11,7 +11,7 @@
 \description{
 Compute zonal statistics, that is summarize values of a SpatRaster for each "zone" defined by another SpatRaster, or by a SpatVector with polygon geometry. 
 
-If \code{fun} is a true R \code{function}, the <SpatRaster,SpatRaster> method when using very large SpatRasters, except for the functions ("mean", "min", "max", "sum", "isNA", and "notNA"). 
+If \code{fun} is a true R \code{function}, the <SpatRaster,SpatRaster> method may fail when using very large SpatRasters, except for the functions ("mean", "min", "max", "sum", "isNA", and "notNA"). 
 
 You can also summarize values of a SpatVector for each polygon (zone) defined by another SpatVector. 
 }
