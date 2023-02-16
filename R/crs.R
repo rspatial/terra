@@ -4,6 +4,26 @@
 # License GPL v3
 
 
+character_crs <- function(x, caller="") {
+
+	if (!inherits(x, "character")) {
+		x <- crs(x)
+	}
+
+	if (is.na(x)) {
+		""
+	} else {
+		if (tolower(x) == "local") {
+			x <- 'LOCAL_CS["Cartesian (Meter)", LOCAL_DATUM["Local Datum",0], UNIT["Meter",1.0], AXIS["X",EAST], AXIS["Y",NORTH]]'
+		} else if (tolower(x) == "lonlat") {
+			x <- "+proj=longlat"
+		}
+		x
+	}
+}
+
+
+
 is.proj <- function(crs) {
 	substr(crs, 1, 6) == "+proj="
 }
