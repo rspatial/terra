@@ -747,8 +747,8 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 			std::string tmpfile = tempFile(opt.get_tempdir(), opt.pid, "_rect.tif");
 			//std::filesystem::copy_file(source[0].filename, tmpfile);	
 
-			std::ifstream  src("source[0].filename", std::ios::binary);
-			std::ofstream  dst("tmpfile",   std::ios::binary);
+			std::ifstream  src(source[0].filename, std::ios::binary);
+			std::ofstream  dst(tmpfile,   std::ios::binary);
 			dst << src.rdbuf();	
 		
 			GDALDataset *poDataset = openGDAL(tmpfile, GDAL_OF_RASTER | GDAL_OF_READONLY, source[0].open_drivers, source[0].open_ops);
