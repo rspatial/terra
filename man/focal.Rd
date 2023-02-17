@@ -46,7 +46,7 @@ Window values are typically 0 or 1, or a value between 0 and 1 if you are using 
 
 The "mean" function is a special case, as zero weights are ignored automatically. 
 
-The "sum" function returns \code{NA} if all focal cells are \code{NA} and \code{na.rm=TRUE}. R would normally return a zero in these cases. See the difference between \code{focal(x, fun=sum, na.rm=TRUE} and \code{focal(x, fun=\(i) sum(i, na.rm=TRUE))}
+The "sum" function returns \code{NA} if all focal cells are \code{NA} and \code{na.rm=TRUE}. R would normally return a zero in these cases. See the difference between \code{focal(x, fun=sum, na.rm=TRUE)} and \code{focal(x, fun=\(i) sum(i, na.rm=TRUE))}
 
 
 Example weight matrices
@@ -54,7 +54,9 @@ Example weight matrices
 Laplacian filter: \code{filter=matrix(c(0,1,0,1,-4,1,0,1,0), nrow=3)}
 
 Sobel filters (for edge detection):
+
 \code{fx=matrix(c(-1,-2,-1,0,0,0,1,2,1), nrow=3)}
+
 \code{fy=matrix(c(1,0,-1,2,0,-2,1,0,-1), nrow=3)}
 }
 
