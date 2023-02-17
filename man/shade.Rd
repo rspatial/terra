@@ -18,7 +18,7 @@ shade(slope, aspect, angle=45, direction=0, normalize=FALSE,
 \arguments{
   \item{slope}{SpatRasterwith slope values (in radians) }
   \item{aspect}{SpatRaster with aspect values (in radians) }
-  \item{angle}{ The the elevation angle(s) of the light source (sun), in degrees}
+  \item{angle}{ The elevation angle(s) of the light source (sun), in degrees}
   \item{direction}{ The direction (azimuth) angle(s) of the light source (sun), in degrees}
   \item{normalize}{Logical. If \code{TRUE}, values below zero are set to zero and the results are multiplied with 255}
   \item{filename}{character. Output filename}

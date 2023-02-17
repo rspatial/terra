@@ -27,7 +27,7 @@ See \code{\link{selectRange}} to create a new SpatRaster by extracting one or mo
   \item{fun}{function to be applied}
   \item{...}{additional arguments passed to \code{fun}} 
   \item{allyrs}{logical. If \code{TRUE}, values for all layers are passed to \code{fun} but the values outside of the range are set to \code{fill}}
-  \item{fill}{numeric. The fill value for the the values outside of the range, for when \code{allyrs=TRUE}} 
+  \item{fill}{numeric. The fill value for the values outside of the range, for when \code{allyrs=TRUE}} 
   \item{clamp}{logical. If \code{FALSE} and the specified range is outside \code{1:nlyr(x)} all cells are considered \code{NA}. Otherwise, the invalid part of the range is ignored} 
   \item{circular}{logical. If \code{TRUE} the values are considered circular, such as the days of the year. In that case, if first > last the layers used are c(first:nlyr(x), 1:last). Otherwise, the range would be considered invalid and \code{NA} would be returned} 
   \item{filename}{character. Output filename}
