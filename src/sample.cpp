@@ -83,12 +83,17 @@ std::vector<double> SpatRaster::readSample(unsigned src, size_t srows, size_t sc
 }
 
 
-SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
+SpatRaster SpatRaster::sampleRegularRaster(double size) {
 
-	if ((size >= ncell())) {
+	if (size >= ncell()) {
 		return( *this );
 	}
-
+	if (size < 0.5) {
+		SpatRaster out;
+		out.setError("sample size must be > 0");
+		return out;
+	}
+	
 	double f = std::min(1.0, sqrt(size / ncell()));
 	size_t nr = std::min((size_t)ceil(nrow() * f), nrow());
 	size_t nc = std::min((size_t)ceil(ncol() * f), ncol());
@@ -180,7 +185,7 @@ SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc, bool warn) {
 }
 
 
-std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::sampleRegularValues(double size, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
 	if (!source[0].hasValues) return (out);
@@ -426,7 +431,7 @@ std::vector<size_t> sample(size_t size, size_t N, bool replace, std::vector<doub
 
 
 
-std::vector<std::vector<double>> SpatRaster::sampleRandomValues(unsigned size, bool replace, unsigned seed) {
+std::vector<std::vector<double>> SpatRaster::sampleRandomValues(double size, bool replace, unsigned seed) {
 
 	double nc = ncell();
 	std::vector<size_t> cells;
@@ -443,7 +448,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRandomValues(unsigned size, b
 }
 
 
-SpatRaster SpatRaster::sampleRandomRaster(unsigned size, bool replace, unsigned seed) {
+SpatRaster SpatRaster::sampleRandomRaster(double size, bool replace, unsigned seed) {
 
 	unsigned nsize;
 	unsigned nr = nrow();
@@ -622,7 +627,7 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 }
 
 
-std::vector<size_t> SpatRaster::sampleCells(unsigned size, std::string method, bool replace, unsigned seed) {
+std::vector<size_t> SpatRaster::sampleCells(double size, std::string method, bool replace, unsigned seed) {
 
 	std::default_random_engine gen(seed);
 	std::vector<size_t> out;

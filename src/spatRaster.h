@@ -740,14 +740,14 @@ class SpatRaster {
 		std::vector<double> readSample(unsigned src, size_t srows, size_t scols);
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
-		std::vector<size_t> sampleCells(unsigned size, std::string method, bool replace, unsigned seed);
-		SpatRaster sampleRegularRaster(unsigned size);
+		std::vector<size_t> sampleCells(double size, std::string method, bool replace, unsigned seed);
+		SpatRaster sampleRegularRaster(double size);
 		SpatRaster sampleRowColRaster(size_t nr, size_t nc, bool warn);
-		SpatRaster sampleRandomRaster(unsigned size, bool replace, unsigned seed);
-		std::vector<std::vector<double>> sampleRegularValues(unsigned size, SpatOptions &opt);
+		SpatRaster sampleRandomRaster(double size, bool replace, unsigned seed);
+		std::vector<std::vector<double>> sampleRegularValues(double size, SpatOptions &opt);
 		std::vector<std::vector<double>> sampleRowColValues(size_t nr, size_t nc, SpatOptions &opt);
 		
-		std::vector<std::vector<double>> sampleRandomValues(unsigned size, bool replace, unsigned seed);
+		std::vector<std::vector<double>> sampleRandomValues(double size, bool replace, unsigned seed);
 		SpatRaster sort(bool decreasing, bool order, SpatOptions &opt);
 
 		SpatRaster scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt);

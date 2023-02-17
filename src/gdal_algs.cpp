@@ -720,7 +720,7 @@ bool GCP_geotrans(GDALDataset *poDataset, double* adfGeoTransform) {
 	return GDALGCPsToGeoTransform(n, gcp, adfGeoTransform, true);
 }
 
-#include <filesystem>
+//#include <filesystem>
 
 SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned useaoi, bool snap, SpatOptions &opt) {
 	SpatRaster out = geometry(0);
@@ -745,6 +745,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 		if (GCP_geotrans(poDataset, gt)) {
 			GDALClose( (GDALDatasetH) poDataset );
 			std::string tmpfile = tempFile(opt.get_tempdir(), opt.pid, "_rect.tif");
+			//++17 
 			//std::filesystem::copy_file(source[0].filename, tmpfile);	
 
 			std::ifstream  src(source[0].filename, std::ios::binary);

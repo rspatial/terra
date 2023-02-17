@@ -7,7 +7,12 @@
 character_crs <- function(x, caller="") {
 
 	if (!inherits(x, "character")) {
-		x <- crs(x)
+		if (is.atomic(x)) {
+			# for logical NA 
+			x <- as.character(x)
+		} else {
+			x <- crs(x)
+		}
 	}
 
 	if (is.na(x)) {
