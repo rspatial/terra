@@ -438,7 +438,7 @@ retro_labels <- function(x, lat=TRUE) {
 		} else {
 			txt <- paste(x$leg$title, collapse="\n")		
 		}
-		text(x=e$xmax, y=e$ymax, labels=txt, pos=3, offset=1, cex=x$leg$title.cex, xpd=TRUE)
+		text(x=e$xmax, y=e$ymax, labels=txt, pos=3, offset=.5, cex=x$leg$title.cex, xpd=TRUE)
 	}
 	x
 }

@@ -96,7 +96,7 @@ plot(r)
 plot(r, type="interval")
 
 e <- c(6.37, 6.41, 49.9, 50.1)
-plot(r, plg=list(ext=e, title="Legend\nTitle", title.cex=1.1), 
+plot(r, plg=list(ext=e, title="Legend\nTitle", title.cex=0.9), 
 		pax=list(side=1:4, retro=TRUE))
 north(cbind(5.8, 50.1))	
 

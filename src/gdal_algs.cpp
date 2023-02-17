@@ -743,6 +743,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	if( poDataset->GetGeoTransform(gt) != CE_None ) {
 	
 		if (GCP_geotrans(poDataset, gt)) {
+		
 			GDALClose( (GDALDatasetH) poDataset );
 			std::string tmpfile = tempFile(opt.get_tempdir(), opt.pid, "_rect.tif");
 			//++17 
@@ -787,9 +788,9 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	double ymax = vmax(yy, TRUE);
 
 	SpatExtent en(xmin, xmax, ymin, ymax);
-	out = out.setResolution(gt[1], -gt[5]);
+	out = out.setResolution(fabs(gt[1]), fabs(gt[5]));
 
-	out.setExtent(en, false, true, "out");
+	out.setExtent(en, true, true, "out");
 	//SpatExtent e = out.getExtent();
 
 	if (useaoi == 1) { // use extent
