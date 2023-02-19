@@ -23,7 +23,7 @@ When intersecting two SpatRasters these need to be aligned (have the same origin
 
 See \code{\link{crop}} for intersection of a SpatRaster with a SpatExtent (or the extent of a SpatRaster or SpatVector).
 
-See \code{\link{relate}} to find out which geometries of a SpatVector intersect.
+See \code{\link{is.related}(x, y, "intersects")} to find out which geometries of a SpatVector intersect. You can spatially subset a SpatVector with another one with \code{x\link{[}y]}
 }
 
 \usage{
@@ -48,7 +48,7 @@ Same as \code{x}
 }
 
 \seealso{
-\code{\link{union}}, \code{\link{crop}}, \code{\link{relate}}
+\code{\link{union}}, \code{\link{crop}}, \code{\link{relate}}, \code{\link{[}}
 }
 
 \examples{
@@ -68,8 +68,8 @@ values(p) <- data.frame(pid=1:2, area=expanse(p))
 y <- intersect(v, p)
 
 r <- s <- rast(ncol=5, nrow=5, xmin=1, xmax=5, ymin=1, ymax=5)
-r[5:20] = 5:20
-s[11:20] = 11:20
+r[5:20] <- 5:20
+s[11:20] <- 11:20
 rs <- intersect(r, s)
 
 u <- shift(r, .8)
