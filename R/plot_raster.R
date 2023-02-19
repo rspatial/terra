@@ -399,6 +399,7 @@ reset.clip <- function() {
 	}
 }
 
+
 .plotit <- function(x) {
 
 	if (is.null(x$r)) {
@@ -421,11 +422,6 @@ reset.clip <- function() {
 			graphics::rect(x$lim[1], x$lim[3], x$lim[2], x$lim[4], col=x$background)			
 		}
 
-		if (x$main != "") {
-			posx <- x$lim[1] + diff(x$lim[1:2])/2
-			text(posx, x$lim[4], x$main, pos=3, offset=x$line.main, cex=x$cex.main, 
-				font=x$font.main, col=x$col.main, xpd=TRUE)
-		}
 	}
 	if (!x$values) {
 		try(set.clip(x$lim, x$lonlat))
@@ -437,6 +433,8 @@ reset.clip <- function() {
 
 		if (x$axes) x <- .plot.axes(x)
 	}
+
+	
 	if (x$legend_draw) {
 		if (x$legend_type == "continuous") {
 			x <- do.call(.plot.cont.legend, list(x=x))
@@ -456,8 +454,20 @@ reset.clip <- function() {
 	if (isTRUE(x$box)) { 
 		lines(ext(x$lim))	
 	}
+	if ((x$main != "") && (!x$add) && (!x$legend_only)) {
+		pos <- 3
+		if (is.null(x$loc.main)) {
+			x$loc.main <- c(x$lim[1] + diff(x$lim[1:2]) / 2, x$lim[4])
+		} else if (inherits(x$loc.main, "character")) {
+			xyp <- .txt.loc(x)
+			x$loc.main <- xyp[1:2]
+			pos <- xyp[3]
+		}
+		text(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
+			font=x$font.main, col=x$col.main, xpd=TRUE)
+	}
+	
 	try(set.clip(x$lim, x$lonlat))
-
 	invisible(x)
 }
 
@@ -469,10 +479,11 @@ reset.clip <- function() {
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
   sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
   xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=1.2, 
-  line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
+  line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL,
   axes=TRUE, box=TRUE, cex=1, ...) {
 #cex is catch and kill
 	out <- list()
+
 
 	out$lim <- out$ext <- as.vector(ext(x))
 	if (!is.null(ext)) {
@@ -522,6 +533,7 @@ reset.clip <- function() {
 	out$dots  <- list(...)
 	out$reset <- reset
 	out$main  <- main
+	out$loc.main  <- loc.main
 	out$cex.main  <- cex.main
 	out$font.main <- font.main
 	out$col.main  <- col.main
@@ -602,7 +614,6 @@ reset.clip <- function() {
 		} else {
 			out$mar <- rep_len(mar, 4)
 		}
-
 
 		if (!is.null(colNA)) {
 			if (!is.na(colNA) && out$values) {
@@ -732,7 +743,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"),
-	function(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend, ...)  {
+	function(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, legend, axes, box, ...)  {
 
 
 		if (has.RGB(x)) {
@@ -751,10 +762,12 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		nl <- max(1, min(nlyr(x), maxnl))
 
 		if (missing(legend)) legend <- TRUE
+		if (missing(axes)) axes <- FALSE
+		if (missing(box)) box <- FALSE
 
 		if (nl==1) {
 			if (missing(main)) main = ""
-			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, legend=legend, ...)
+			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, legend=legend, axes=axes, ...)
 			return(invisible(out))
 		}
 
@@ -762,7 +775,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		old.par <- graphics::par(no.readonly = TRUE)
 		on.exit(graphics::par(old.par))
 		if (is.null(mar)) {
-			mar=c(.5, 1, 1, 3)
+			mar=c(1, 1, 1, 3)
 		}
 		graphics::par(mfrow=nrnc)
 		maxcell=maxcell/(nl/2)
@@ -795,4 +808,3 @@ setMethod("plot", signature(x="SpatRaster", y="character"),
 		plot(x, y, ...)
 	}
 )
-

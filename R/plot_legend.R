@@ -370,6 +370,26 @@ retro_labels <- function(x, lat=TRUE) {
 	.get.leg.coords(x)
 }
 
+.txt.loc <- function(x) {
+	dxy <- graphics::par("cxy") * x$cex.main
+	if (grepl("right", x$loc.main)) {
+		px <- x$lim[2]
+		pos <- 2
+	} else {
+		px <- x$lim[1]
+		pos <- 4	
+	}
+	if (grepl("bottom", x$loc.main)) {
+		py <- x$lim[3] + dxy[2]/2
+	} else {
+		py <- x$lim[4] - dxy[2]/2
+	}
+	out <- c(px, py, pos)
+	names(out) <- NULL
+	out
+}
+
+
 .plot.cont.legend <- function(x, ...) {
 
 	if (is.null(x$leg$x)) {
@@ -500,4 +520,3 @@ get_legxy <- function(r, e, pos) {
 	}
 	leg
 }
-

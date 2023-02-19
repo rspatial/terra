@@ -135,6 +135,12 @@ setMethod("crs", signature("character"),
 	}
 )
 
+setMethod("crs", signature("SpatExtent"),
+	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+		return("")
+	}
+)
+
 setMethod("crs", signature("SpatRaster"),
 	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
 		.get_CRS(x, proj=proj, describe=describe, parse=parse)

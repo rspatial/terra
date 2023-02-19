@@ -30,7 +30,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, background=NULL,
 	box=axes, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend, ...)
+\S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, legend, axes, box, , ...)
 
 \S4method{plot}{SpatRaster,character}(x, y, ...)
 
@@ -72,7 +72,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{grid}{logical. If \code{TRUE} grid lines are drawn. Their properties such as type and color can be set with the \code{pax} argument}
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
-  \item{main}{character. Main plot titles (one for each layer to be plotted)}
+  \item{main}{character. Main plot titles (one for each layer to be plotted). You can use arguments \code{cex.main}, \code{font.main}, \code{col.main} to change the appearance; and \code{loc.main} to change the location of the main title (either two coordinates, or a character value such as "topleft")}
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)}
   \item{add}{logical. If \code{TRUE} add the object to the current plot}
   \item{ext}{SpatExtent. Can be use instead of xlim and ylim to set the extent of the plot}
@@ -83,6 +83,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 
 \seealso{
  \code{\link{points}}, \code{\link{lines}}, \code{\link{polys}}, \code{\link{image}}, \code{scatter\link[terra:scatter]{plot}}, 
+ mulitple layers: \code{\link{panel}},
  scale bar: \code{\link{sbar}}, north arrow: \code{\link{north}}, 
 plot a \code{\link[=plot,SpatGraticule,missing-method]{SpatGraticule}} or \code{\link[=plot,SpatExtent,missing-method]{SpatExtent}}, \code{\link{plotRGB}}
 }

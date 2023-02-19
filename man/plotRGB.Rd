@@ -18,7 +18,7 @@ An alternative way to plot RGB images is to first use \code{\link{colorize}} to 
 
 \usage{
 \S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, 
-		stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, 
+		stretch=NULL, ext=NULL, smooth=TRUE, colNA="white", alpha, bgalpha, 
 		addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", 
 		asp=NULL, add=FALSE, xlim, ylim,...)
 }
