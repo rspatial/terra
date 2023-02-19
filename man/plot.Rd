@@ -30,7 +30,8 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, background=NULL,
 	box=axes, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, legend, axes, box, , ...)
+\S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, 
+	maxcell=500000, legend, axes, box, ...)
 
 \S4method{plot}{SpatRaster,character}(x, y, ...)
 

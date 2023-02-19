@@ -12,7 +12,7 @@ Make a panel map from the layers of a SpatRaster
 }
 
 \usage{
-\S4method{panel}{SpatRaster,missing}(x, main, loc.main="topleft", nc, nr, maxnl=16, maxcell=500000, box=FALSE, pax=list(), plg=list(), ...)
+\S4method{panel}{SpatRaster}(x, main, loc.main="topleft", nc, nr, maxnl=16, maxcell=500000, box=FALSE, pax=list(), plg=list(), ...)
 }
 
 \arguments{

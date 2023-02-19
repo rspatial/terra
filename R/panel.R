@@ -1,6 +1,7 @@
 
 setMethod("panel", signature(x="SpatRaster"),
-	function(x, main, loc.main="topleft", nc, nr, maxnl=16, maxcell=500000, box=FALSE, pax=list(), plg=list(), ...)  {
+	function(x, main, loc.main="topleft", nc, nr, maxnl=16, maxcell=500000, 
+		box=FALSE, pax=list(), plg=list(), ...)  {
 
 		nl <- max(1, min(nlyr(x), maxnl))
 
@@ -17,7 +18,7 @@ setMethod("panel", signature(x="SpatRaster"),
 		m <- rbind(1, cbind(1, m, max(m)+1), 1)
 		w <- c(0.05, rep(0.8/nrnc[2], nrnc[2]), 0.15)
 		h <- c(0.05, rep(0.94/nrnc[1], nrnc[1]), 0.05)
-		layout(m, w, h)
+		graphics::layout(m, w, h)
 		plot(0, type="n", axes=FALSE, xlab="", ylab="")
 
 		maxcell <- maxcell/nl
@@ -36,7 +37,12 @@ setMethod("panel", signature(x="SpatRaster"),
 		legi <- max(1, ceiling(nrnc[1] / 2)) * nrnc[2]
 		legend[legi] <- TRUE		
 		left <- c(0,2)[(((1:nl)-1) %% nrnc[2] == 0)+1]
-		bottom <- c(0,1)[((1:nl) > ((nrnc[1]-1) * nrnc[2]))+1]
+		b <- ((1:nl) > ((nrnc[1]-1) * nrnc[2]))+1
+		i <- (prod(nrnc) - nl)
+		if (i > 0) {
+			b[((nrnc[1]-2) * nrnc[2]) + ((nrnc[2]-(i-1)):nrnc[2])] <- 2
+		}
+		bottom <- c(0,1)[b]
 
 		rng <- range(minmax(x, FALSE))
 		if (any(is.na(rng))) {
