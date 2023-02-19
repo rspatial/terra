@@ -363,6 +363,10 @@ retro_labels <- function(x, lat=TRUE) {
 			p <- c(xmin, xmax, ymax+dxy[2], ymax+1.75*dxy[2])
 		} else { #if (loc == "right" or "default" 
 			p <- c(xmax+dxy[1], xmax+2*dxy[1], ymin, ymax)
+			if (isTRUE(x$leg$yshift)) {
+				hy <- (ymax - ymin) / 2
+				p[3:4] <- p[3:4] - hy
+			}
 		}
 	}
 	x$leg$ext <- p
@@ -463,7 +467,7 @@ retro_labels <- function(x, lat=TRUE) {
 	x
 }
 
-get_legxy <- function(r, e, pos) {
+get_legxy <- function(r, e, pos, yshift) {
 	xy <- c(r$left, r$top)
 	if (grepl("top", pos)) {
 		xy[2] <- e[4]
@@ -476,15 +480,20 @@ get_legxy <- function(r, e, pos) {
 	} else if (grepl("right", pos)) {
 		xy[1] <- e[2] - r$w
 	}
+	
+	if (!is.null(yshift)) {
+		hy <- (e[4] - e[3]) / 2
+		xy[2] <- xy[2] - hy
+	}
 	xy
 }
 
 
 .plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="",
 	lty=1, lwd=1, pch=1, angle=45, density=NULL, pt.cex = 1, pt.bg="black", pt.lwd=1, 
-	bty="n", border="black", seg.len=1, plotlim,
+	bty="n", border="black", seg.len=1, plotlim, yshift=NULL, ...,
 # catch and kill
-	merge, trace, size, ...) {
+	merge, trace, size) {
 
 	if (x %in% c("top", "default")) {
 		#usr <- graphics::par("usr")
@@ -496,7 +505,7 @@ get_legxy <- function(r, e, pos) {
 	if (grepl("points", geomtype)) {
 		if (inherits(x, "character")) {
 			r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, plot=FALSE, ...)$rect
-			xy <- get_legxy(r, plotlim, x)
+			xy <- get_legxy(r, plotlim, x, yshift)
 			leg <- legend(xy[1], xy[2], legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, ...)
 		} else {
 			leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, ...)
@@ -504,7 +513,7 @@ get_legxy <- function(r, e, pos) {
 	} else if (geomtype == "lines") {
 		if (inherits(x, "character")) {
 			r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, plot=FALSE, ...)$rect
-			xy <- get_legxy(r, plotlim, x)
+			xy <- get_legxy(r, plotlim, x, yshift)
 			leg <- legend(xy[1], xy[2], legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, ...)
 		} else {
 			leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, ...)
@@ -512,7 +521,7 @@ get_legxy <- function(r, e, pos) {
 	} else {
 		if (inherits(x, "character")) {
 			r <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, plot=FALSE, ...)$rect
-			xy <- get_legxy(r, plotlim, x)
+			xy <- get_legxy(r, plotlim, x, yshift)
 			leg <- legend(xy[1], xy[2], legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, ...)
 		} else {
 			leg <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, ...)

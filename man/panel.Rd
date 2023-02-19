@@ -8,11 +8,13 @@
 \title{Make a panel-map}
 
 \description{
-Make a panel map from the layers of a SpatRaster
+Make a panel map from the layers of a SpatRaster. That is, show multiple maps using a single legend. 
+
 }
 
 \usage{
-\S4method{panel}{SpatRaster}(x, main, loc.main="topleft", nc, nr, maxnl=16, maxcell=500000, box=FALSE, pax=list(), plg=list(), ...)
+\S4method{panel}{SpatRaster}(x, main, loc.main="topleft", nc, nr, maxnl=16, 
+	maxcell=500000, box=FALSE, pax=list(), plg=list(), ...)
 }
 
 \arguments{
@@ -34,9 +36,15 @@ Make a panel map from the layers of a SpatRaster
 }
 
 \examples{ 
-f <- system.file("ex/elev.tif", package="terra") 
-r <- rast(f)
-r <- c(r, r/2, r*2, r)
+
+r <- rast(system.file("ex/elev.tif", package="terra"))
+v <- vect(system.file("ex/lux.shp", package="terra"))
+x <- c(r, r/2, r*2, r)
+names(x) <- paste0("(", LETTERS[1:4], ")")
+panel(x, fun=\()lines(v), loc.main="topright")
+
+
+
 panel(r)
 }
 
