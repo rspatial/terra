@@ -5,11 +5,10 @@
 \alias{panel}
 \alias{panel,SpatRaster-method}
 
-\title{Make a panel-map}
+\title{Map panel}
 
 \description{
-Make a panel map from the layers of a SpatRaster. That is, show multiple maps using a single legend. 
-
+Show multiple maps that share a single legend. 
 }
 
 \usage{
