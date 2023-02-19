@@ -24,8 +24,8 @@ Make a panel map from the layers of a SpatRaster
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)} 
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{box}{logical. Should a box be drawn around the map?}
-  \item{plg}{see \code\link{plot}}
-  \item{pax}{see \code\link{plot}}
+  \item{plg}{see \code{\link{plot}}}
+  \item{pax}{see \code{\link{plot}}}
   \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and additional graphical arguments}  
 }
 
