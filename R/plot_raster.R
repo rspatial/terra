@@ -749,7 +749,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"),
-	function(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, legend, axes, box, ...)  {
+	function(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, ...)  {
 
 
 		if (has.RGB(x)) {
@@ -763,19 +763,15 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		nl <- max(1, min(nlyr(x), maxnl))
 		if (nl==1) {
 			if (missing(main)) main = ""
-			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, legend=legend, axes=axes, ...)
+			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, ...)
 			return(invisible(out))
 		}
-
-		if (missing(legend)) legend <- TRUE
-		if (missing(axes)) axes <- FALSE
-		if (missing(box)) box <- FALSE
 
 		nrnc <- .get_nrnc(nr, nc, nl)
 		old.par <- graphics::par(no.readonly = TRUE)
 		on.exit(graphics::par(old.par))
 		if (is.null(mar)) {
-			mar=c(1, 1, 1, 3)
+			mar=c(1.5, 1, 2.5, 3)
 		}
 		graphics::par(mfrow=nrnc)
 		maxcell=maxcell/(nl/2)
@@ -790,10 +786,8 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		} else {
 			main <- rep_len(main, nl)
 		}
-		#if (onelegend) { legend <- FALSE }
-		legend <- rep_len(legend, length.out=nl)
 		for (i in 1:nl) {
-			plot(x, i, main=main[i], mar=mar, legend=legend[i], ...)
+			plot(x, i, main=main[i], mar=mar, ...)
 		}
 	}
 )

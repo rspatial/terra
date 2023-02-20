@@ -60,7 +60,7 @@ setMethod("panel", signature(x="SpatRaster"),
 			xs <- spatSample(x, maxcell, ext=ext, method="regular", as.raster=TRUE, warn=FALSE)
 			rng <- range(minmax(xs, TRUE))
 		}
-		if (is.null(plg$size)) plg$size <- max(1, nrnc[1] * 0.75)
+		if (is.null(plg$size)) plg$size <- max(1, nrnc[1] * 0.66)
 		if (is.null(plg$cex))  plg$cex  <- 1.25 
 		plg$yshift <- (nrnc[1] %% 2 == 0) 
 		for (i in 1:nl) {
