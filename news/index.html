@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-11</span>
       </span>
     </div>
 
@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-9" id="version-17-9">version 1.7-9<a class="anchor" aria-label="anchor" href="#version-17-9"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-11" id="version-17-11">version 1.7-11<a class="anchor" aria-label="anchor" href="#version-17-11"></a></h2>
 <div class="section level3">
-<h3 id="new-1-7-9">new<a class="anchor" aria-label="anchor" href="#new-1-7-9"></a></h3>
+<h3 id="new-1-7-11">new<a class="anchor" aria-label="anchor" href="#new-1-7-11"></a></h3>
 <ul><li>argument <code>order=FALSE</code> to <code>sort&lt;SpatRaster&gt;</code>
 </li>
 <li>
@@ -62,9 +62,11 @@
 <code>compare&lt;SpatRaster&gt;</code> and <code>logic&lt;SpatRaster&gt;</code> methods</li>
 <li>
 <code>vect&lt;SpatExtent&gt;</code> method</li>
+<li>
+<code>panel&lt;SpatRaster&gt;</code> for “panel” plots (multiple layers, single legend)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-9">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-9"></a></h3>
+<h3 id="enhancements-1-7-11">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-11"></a></h3>
 <ul><li>it is now possible to save terra options across sessions <a href="https://github.com/rspatial/terra/issues/995" class="external-link">#995</a> by Guillaume Patoine.</li>
 <li>better warnings for <code>is.lonlat</code> <a href="https://github.com/rspatial/terra/issues/1006" class="external-link">#1006</a> by Andrew Gene Brown.</li>
 <li>argument <code>na.rm</code> to <code>merge&lt;SpatRaster&gt;</code>
@@ -73,7 +75,7 @@
 <li>c++ cleaning to avoid warnings by clang-tidy (e.g. now using <code>.empty()</code> instead of <code>.size()==0</code>). [#1013-1017] by Michael Chirico</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-9">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-9"></a></h3>
+<h3 id="bug-fixes-1-7-11">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-11"></a></h3>
 <ul><li>the legend created by <code>plet</code> was not always correct. <a href="https://github.com/rspatial/terra/issues/983" class="external-link">#983</a> by Simon Rolph</li>
 <li>
 <code>spatSample&lt;SpatRaster&gt;(regular=TRUE)</code> failed with providing two numbers (row, col) as sample size. <a href="https://github.com/rspatial/terra/issues/991" class="external-link">#991</a> by srfall</li>
