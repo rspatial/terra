@@ -761,16 +761,15 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		}
 
 		nl <- max(1, min(nlyr(x), maxnl))
-
-		if (missing(legend)) legend <- TRUE
-		if (missing(axes)) axes <- FALSE
-		if (missing(box)) box <- FALSE
-
 		if (nl==1) {
 			if (missing(main)) main = ""
 			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, legend=legend, axes=axes, ...)
 			return(invisible(out))
 		}
+
+		if (missing(legend)) legend <- TRUE
+		if (missing(axes)) axes <- FALSE
+		if (missing(box)) box <- FALSE
 
 		nrnc <- .get_nrnc(nr, nc, nl)
 		old.par <- graphics::par(no.readonly = TRUE)

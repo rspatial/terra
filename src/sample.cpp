@@ -437,9 +437,9 @@ std::vector<std::vector<double>> SpatRaster::sampleRandomValues(double size, boo
 	std::vector<size_t> cells;
 	std::vector<double> w;
 	if (replace) {
-		cells = sample(size, nc, false, w, seed);
+		cells = sample((size_t)size, nc, false, w, seed);
 	} else {
-		cells = sample(size, nc, true, w, seed);
+		cells = sample((size_t)size, nc, true, w, seed);
 	}
 
 	std::vector<double> dcells(cells.begin(), cells.end());

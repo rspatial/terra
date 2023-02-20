@@ -1,4 +1,4 @@
-# version 1.7-9
+# version 1.7-11
 
 ## new
 
@@ -8,6 +8,7 @@
 - `metadata<SpatRaster>` method
 - `compare<SpatRaster>` and `logic<SpatRaster>` methods
 - `vect<SpatExtent>` method
+- `panel<SpatRaster>` for "panel" plots (multiple layers, single legend)
 
 ## enhancements
 
