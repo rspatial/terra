@@ -463,8 +463,13 @@ reset.clip <- function() {
 			x$loc.main <- xyp[1:2]
 			pos <- xyp[3]
 		}
-		text(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
-			font=x$font.main, col=x$col.main, xpd=TRUE)
+		if (isTRUE(x$halo.main)) {
+			.halo(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
+				font=x$font.main, col=x$col.main, xpd=TRUE)
+		} else {
+			text(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
+				font=x$font.main, col=x$col.main, xpd=TRUE)
+		}
 	}
 	
 	try(set.clip(x$lim, x$lonlat))
@@ -479,8 +484,8 @@ reset.clip <- function() {
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
   sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
   xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=1.2, 
-  line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL,
-  axes=TRUE, box=TRUE, cex=1, ...) {
+  line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL, 
+  halo=FALSE, axes=TRUE, box=TRUE, cex=1, ...) {
 #cex is catch and kill
 	out <- list()
 
@@ -533,6 +538,7 @@ reset.clip <- function() {
 	out$dots  <- list(...)
 	out$reset <- reset
 	out$main  <- main
+	out$halo.main <- halo
 	out$loc.main  <- loc.main
 	out$cex.main  <- cex.main
 	out$font.main <- font.main
@@ -750,11 +756,6 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			i <- x@ptr$getRGB() + 1
 			if (missing(main)) main = ""
 			if (is.null(mar)) mar = 0
-			if (missing(legend)) {
-				legend <- FALSE
-			} else {
-				legend <- legend
-			}
 			plotRGB(x, i[1], i[2], i[3], maxcell=maxcell, mar=mar, main=main, ...)
 			return(invisible())
 		}
