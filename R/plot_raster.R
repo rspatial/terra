@@ -21,7 +21,7 @@
 		if (length(uzi) < 6) {
 			return (.as.raster.classes(out, x))
 		}
-	} else if (length(uzi) == 1) {
+	} else if ((length(uzi) == 1) && is.null(out$range)) {
 		return (.as.raster.classes(out, x))
 	}
 

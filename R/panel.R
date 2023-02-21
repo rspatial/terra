@@ -66,7 +66,7 @@ setMethod("panel", signature(x="SpatRaster"),
 		for (i in 1:nl) {
 			pax$side <- c(bottom[i], left[i])
 			plot(x, i, main=main[i], mar=mar, legend=legend[i], range=rng, pax=pax, box=box, 
-				loc.main=loc.main, plg=plg, ...)
+				loc.main=loc.main, plg=plg, type="continuous", ...)
 		}
 	}
 )
