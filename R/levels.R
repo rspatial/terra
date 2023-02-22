@@ -286,9 +286,6 @@ setMethod("cats" , "SpatRaster",
 }
 
 
-
-
-
 setMethod ("as.numeric", "SpatRaster",
 	function(x, index=NULL, filename="", ...) {
 		if (!any(is.factor(x))) {
@@ -302,16 +299,21 @@ setMethod ("as.numeric", "SpatRaster",
 		}
 		g <- cats(x)[[1]]
 		if (!is.null(index)) {
-			if (!((index > 1) & (index <= ncol(g)))) {
+			if (!((index > 0) & (index <= ncol(g)))) {
 				error("as.numeric", "invalid index")
 			}
 		} else {
 			index <- activeCat(x, 1)
 		}
 		from <- g[,1]
-		to <- g[,index]
+		to <- g[,index+1]
 		if (!is.numeric(to)) {
-			to <- as.integer(as.factor(to))
+			suppressWarnings(toto <- as.numeric(to))
+			if (sum(is.na(toto) > sum(is.na(to)))) {
+				to <- as.integer(as.factor(to))
+			} else {
+				to <- toto
+			}
 		}
 		m <- cbind(from, to)
 		m <- m[!is.na(m[,1]), ,drop=FALSE]
