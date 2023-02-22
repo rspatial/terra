@@ -294,12 +294,17 @@ setMethod ("as.numeric", "SpatRaster",
 			return(x)
 		}
 		if (nlyr(x) > 1) {
-			x <- lapply(1:nlyr(x), function(i) as.numeric(x[[i]]))
-			return( rast(x) )
+			x <- lapply(1:nlyr(x), function(i) as.numeric(x[[i]], index=index))
+			x <- rast(x)
+			if (filename != "") {
+				x <- writeRaster(x, filename, ...)
+			}
+			return(x)
 		}
 		g <- cats(x)[[1]]
 		if (!is.null(index)) {
-			if (!((index > 0) & (index <= ncol(g)))) {
+			index <- round(index[1])
+			if (!((index >= 1) & (index < ncol(g)))) {
 				error("as.numeric", "invalid index")
 			}
 		} else {
@@ -367,7 +372,7 @@ setMethod("catalyze", "SpatRaster",
 			gg <- g[[i]]
 			if (nrow(gg) > 0) {
 				for (j in 2:ncol(gg)) {
-					z <- as.numeric(y, index=j)
+					z <- as.numeric(y, index=j-1)
 					out <- c(out, z)
 				}
 			} else {
