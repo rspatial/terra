@@ -49,12 +49,14 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 		if (itype[i] == 0) {
 			out[i] = v->getD(i);
 		} else if (itype[i] == 1) {
+			//gives warning with NA #1031
+			// Rcpp::wrap(v->getI(i));
 			std::vector<long> ints = v->getI(i);
 			size_t n = ints.size();
-			Rcpp::IntegerVector iv(n, NA_INTEGER); // = Rcpp::wrap(v->getI(i));
+			Rcpp::IntegerVector iv(n, NA_INTEGER);
 			for (size_t j=0; j<n; j++) {
 				if (ints[j] != longNA) {
-					iv[j] = ints[j]; //.push_back[j] = NA_INTEGER;
+					iv[j] = ints[j]; 
 				}
 			}
 			out[i] = iv;

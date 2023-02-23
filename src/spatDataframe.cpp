@@ -676,7 +676,7 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 						long longNA = NA<long>::value;
 						for (size_t k=0; k<nr2; k++) {
 							if (x.iv[b][k] == longNA) {
-								sv[a].push_back("____NA_+");
+								sv[a].push_back(NAS);
 							} else {
 								sv[a].push_back(std::to_string(x.iv[b][k]));
 							}
