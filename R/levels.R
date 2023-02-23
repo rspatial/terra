@@ -322,7 +322,7 @@ setMethod ("as.numeric", "SpatRaster",
 		}
 		m <- cbind(from, to)
 		m <- m[!is.na(m[,1]), ,drop=FALSE]
-		classify(x, m, names=names(g)[index], filename, ...)
+		classify(x, m, names=names(g)[index+1], filename, ...)
 	}
 )
 

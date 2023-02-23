@@ -55,9 +55,9 @@
 		Encoding(d[[i]]) <- "UTF-8"
 	}
 	ints <- which(x$itype == 1)
-	for (i in ints) d[[i]] <- as.integer(d[[i]])
+	for (i in ints) d[[i]] <- suppressWarnings(as.integer(d[[i]]))
 	bools <- which(x$itype == 3)
-	for (i in bools) d[[i]] <- as.logical(d[[i]])
+	for (i in bools) d[[i]] <- suppressWarnings(as.logical(d[[i]]))
 	times <- x$itype == 4
 	if (any(times)) {
 		steps <- x$get_timesteps()
