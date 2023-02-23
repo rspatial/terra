@@ -39,36 +39,40 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 	if (n == 0) {
 		return(out);
 	}
-
+	long longNA = NA<long>::value;
+	std::string stringNA = v->NAS;
+	SpatTime_t timeNA = NA<SpatTime_t>::value;
+	
 	std::vector<std::string> nms = v->names;
 	std::vector<unsigned> itype = v->itype;
 	for (size_t i=0; i < n; i++) {
 		if (itype[i] == 0) {
 			out[i] = v->getD(i);
 		} else if (itype[i] == 1) {
-			Rcpp::NumericVector iv = Rcpp::wrap(v->getI(i));
-			long longNA = NA<long>::value;
-			for (R_xlen_t j=0; j<iv.size(); j++) {
-				if (iv[j] == longNA) {
-					iv[j] = NA_REAL;
+			std::vector<long> ints = v->getI(i);
+			size_t n = ints.size();
+			Rcpp::IntegerVector iv(n, NA_INTEGER); // = Rcpp::wrap(v->getI(i));
+			for (size_t j=0; j<n; j++) {
+				if (ints[j] != longNA) {
+					iv[j] = ints[j]; //.push_back[j] = NA_INTEGER;
 				}
 			}
 			out[i] = iv;
 
 		} else if (itype[i] == 2){
-			Rcpp::CharacterVector s = Rcpp::wrap(v->getS(i));
+			Rcpp::StringVector s = Rcpp::wrap(v->getS(i));
 			for (R_xlen_t j=0; j<s.size(); j++) {
-				if (s[j] == "____NA_+") {
+				if (s[j] == stringNA) {
 					s[j] = NA_STRING;
 				}
 			}
 			out[i] = s;
 		} else if (itype[i] == 3){
 			std::vector<int8_t> b = v->getB(i);
-			Rcpp::NumericVector d(b.size());
+			Rcpp::LogicalVector d(b.size());
 			for (size_t j=0; j<b.size(); j++) {
 				if (b[j] > 1) {
-					d[j] = NA_REAL;
+					d[j] = NA_LOGICAL;
 				} else {
 					d[j] = b[j];
 				}
@@ -77,7 +81,6 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 		} else if (itype[i] == 4){
 			SpatTime_v tx = v->getT(i);
 			Rcpp::NumericVector tv = Rcpp::wrap(tx.x);
-			SpatTime_t timeNA = NA<SpatTime_t>::value;
 			for (R_xlen_t j=0; j<tv.size(); j++) {
 				if (tv[j] == timeNA) {
 					tv[j] = NA_REAL;

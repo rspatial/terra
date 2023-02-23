@@ -5,7 +5,9 @@
 	nms <- colnames(d)
 	for (i in 1:ncol(d)) {
 		if (inherits(d[[i]], "character")) {
-			x$add_column_string(enc2utf8(d[[i]]), nms[i])
+			s <- d[[i]]
+			s[is.na(s)] <- "____NA_+"
+			x$add_column_string(enc2utf8(s), nms[i])
 		} else if (inherits(d[[i]], "integer")) {
 			v <- d[[i]]
 			# min long (should query what it is on the system?)
@@ -39,6 +41,7 @@
 
 .getSpatDF <- function(x, check.names = FALSE, stringsAsFactors=FALSE, ...) {
 	d <- x$values()
+
 	f <- sapply(d, class) == "Rcpp_SpatFactor"
 	if (any(f)) {
 		f <- which(f)
@@ -49,15 +52,15 @@
 	d <- data.frame(d, check.names=check.names, stringsAsFactors=stringsAsFactors, ...)
 	if (ncol(d) == 0) return(d)
 
-	s <- which(sapply(d, function(i) inherits(i, "character")))
-	for (i in s) {
-		d[[i]][d[[i]]=="NA"] <- NA
-		Encoding(d[[i]]) <- "UTF-8"
-	}
-	ints <- which(x$itype == 1)
-	for (i in ints) d[[i]] <- suppressWarnings(as.integer(d[[i]]))
-	bools <- which(x$itype == 3)
-	for (i in bools) d[[i]] <- suppressWarnings(as.logical(d[[i]]))
+	#s <- which(sapply(d, function(i) inherits(i, "character")))
+	#for (i in s) {
+	##	d[[i]][d[[i]]=="NA"] <- NA
+	#	Encoding(d[[i]]) <- "UTF-8"
+	#}
+	#ints <- which(x$itype == 1)
+	#for (i in ints) d[[i]] <- suppressWarnings(as.integer(d[[i]]))
+	#bools <- which(x$itype == 3)
+	#for (i in bools) d[[i]] <- suppressWarnings(as.logical(d[[i]]))
 	times <- x$itype == 4
 	if (any(times)) {
 		steps <- x$get_timesteps()
