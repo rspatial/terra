@@ -495,9 +495,14 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 				e <- ext(y)
 				x@ptr <- x@ptr$crop(e@ptr, snap[1], extend[1], mopt)
 				x <- messages(x, "crop")
-				if (!compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=FALSE, messages=TRUE)) {
+				if (compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=FALSE, messages=FALSE)) {
 					return(mask(x, y, filename=filename, ...))
 				} else {
+					warn("crop", "cannot mask with a raster that is not aligned to x")
+					# should check earlier if masking will be possible to avoid writing to disk twice.
+					if (filename != "") {
+						x <- writeRaster(x, filename, ...)
+					}
 					return(x)
 				}
 			} else {
