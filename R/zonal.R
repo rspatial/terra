@@ -46,7 +46,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 					wopt$names <- names(x)
 				}
 				levels(z) <- NULL
-				subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
+				out <- subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
 			} else {
 				if (is.factor(z)) {
 					levs <- levels(z)[[1]]
