@@ -1,10 +1,6 @@
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 	function(x, z, fun="mean", ..., w=NULL, as.raster=FALSE, filename="", wopt=list())  {
-		if (nlyr(z) > 1) {
-			z <- z[[1]]
-		}
-		zname <- names(z)
 		txtfun <- .makeTextFun(fun)
 		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum", "notNA", "isNA"))) {
 			na.rm <- isTRUE(list(...)$na.rm)
@@ -44,21 +40,25 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 				}
 			}
 		}
-		if (as.raster) {
-			if (is.null(wopt$names)) {
-				wopt$names <- names(x)
+		if (nlyr(z)==1) {
+			if (as.raster) {
+				if (is.null(wopt$names)) {
+					wopt$names <- names(x)
+				}
+				levels(z) <- NULL
+				subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
+			} else {
+				if (is.factor(z)) {
+					levs <- levels(z)[[1]]
+					m <- match(out$zone, levs[,1])
+					out$zone <- levs[m, 2]
+				}
+				colnames(out)[1] <- zname
 			}
-			levels(z) <- NULL
-			subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
 		} else {
-			if (is.factor(z)) {
-				levs <- levels(z)[[1]]
-				m <- match(out$zone, levs[,1])
-				out$zone <- levs[m, 2]
-			}
-			colnames(out)[1] <- zname
-			out
+			out <- cbind(out[,ncol(out),drop=FALSE]+1, out[,-ncol(out)])
 		}
+		out
 	}
 )
 

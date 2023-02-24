@@ -534,10 +534,22 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	}
 
 	if (z.nlyr() > 1) {
+		// this is not very efficient. Should deal with multiple z layers below.
 		SpatOptions xopt(opt);
-		std::vector<unsigned> lyr = {0};
-		z = z.subset(lyr, xopt);
-		out.addWarning("only the first zonal layer is used");
+		SpatDataFrame spout;
+		for (unsigned i=0; i<z.nlyr(); i++) {
+			std::vector<unsigned> lyr = {i};
+			SpatRaster zz = z.subset(lyr, xopt);
+			SpatDataFrame spd = zonal(zz, fun, narm, xopt);
+			std::vector<long> id(spd.nrow(), i);
+			spd.add_column(id, "zonelyr");
+			if (i == 0) {
+				spout = spd;
+			} else {
+				spout.rbind(spd);
+			}
+		}
+		return spout;
 	}
 
 	double posinf = std::numeric_limits<double>::infinity();
