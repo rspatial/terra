@@ -1098,6 +1098,54 @@ SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, std::vector<double> mas
 	return(out);
 }
 
+SpatRaster SpatRaster::mask(SpatOptions &opt) {
+	SpatRaster out = geometry();
+    if (!hasValues()) return out;
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+	size_t nl = nlyr();
+	size_t nc = ncol();
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> v;
+		std::vector<bool> w;
+		readBlock(v, out.bs, i);
+		size_t off = out.bs.nrows[i] * nc;
+		w.resize(off, false);
+		for (size_t j=0; j<off; j++) {
+			for (size_t k=0; k<nl; k++) {
+				size_t cell = j + k * off;
+				if (std::isnan(v[cell])) {
+					w[j] = true;
+					continue;
+				}
+			}
+		}
+		std::vector<size_t> koff;
+		koff.reserve(nl);
+		for (size_t k=0; k<nl; k++) {
+			koff.push_back(( size_t)k * off );
+		}
+		for (size_t j=0; j<w.size(); j++) {
+			if (w[j]) {
+				for (size_t k=0; k<nl; k++) {
+					v[j+koff[k]] = NAN;
+				}
+			}
+		}
+		if (!out.writeBlock(v, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+
+}
 
 SpatRaster SpatRaster::mask(SpatVector &x, bool inverse, double updatevalue, bool touches, SpatOptions &opt) {
 
@@ -1123,6 +1171,7 @@ SpatRaster SpatRaster::mask(SpatVector &x, bool inverse, double updatevalue, boo
 	}
 	return(out);
 }
+
 
 
 
