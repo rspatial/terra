@@ -53,7 +53,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 					m <- match(out$zone, levs[,1])
 					out$zone <- levs[m, 2]
 				}
-				colnames(out)[1] <- zname
+				colnames(out)[1] <- names(z)
 			}
 		} else {
 			out <- cbind(out[,ncol(out),drop=FALSE]+1, out[,-ncol(out)])
