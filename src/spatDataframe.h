@@ -25,6 +25,7 @@
 #include "spatBase.h"
 #include "spatTime.h"
 #include "spatFactor.h"
+#include <limits>
 
 class SpatDataFrame {
 	public:
@@ -51,6 +52,8 @@ class SpatDataFrame {
 		std::vector<SpatTime_v> tv;
 		std::vector<SpatFactor> fv;		
 		std::string NAS = "____NA_+";
+		long NAL = std::numeric_limits<long>::min();
+		SpatTime_t NAT = std::numeric_limits<SpatTime_t>::min();
 		
 		unsigned nrow();
 		unsigned ncol();

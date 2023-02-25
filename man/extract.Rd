@@ -26,7 +26,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE,
-    ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y),
+    ID=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y),
 	layer=NULL, bind=FALSE, raw=FALSE, ...)
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, cells=FALSE, xy=FALSE)
@@ -108,14 +108,14 @@ rf <- system.file("ex/elev.tif", package="terra")
 x <- rast(rf)
 extract(x, v, mean, na.rm=TRUE)
 
-e <- extract(z, v)
+e <- extract(z, v, ID=TRUE)
 e
 tapply(e[,2], e[,1], mean, na.rm=TRUE)
 
 x <- c(z, z*2, z/3)
 names(x) <- letters[1:3]
 
-e <- extract(x, v)
+e <- extract(x, v, ID=TRUE)
 de <- data.frame(e)
 aggregate(de[,2:4], de[,1,drop=FALSE], mean)
 }

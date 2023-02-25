@@ -3,13 +3,13 @@ f <- system.file("ex/lux.shp", package="terra")
 y <- vect(f)[1:2,]
 
 elev <- rast(system.file("ex/elev.tif", package = "terra"))
-e <- extract(elev, y, fun=mean, na.rm=TRUE)
+e <- extract(elev, y, fun=mean, na.rm=TRUE, ID=TRUE)
 expect_equal(e[,2], c(467.10517, 333.86294))
 
-e <- extract(elev, y, fun=mean, exact=TRUE, na.rm=TRUE)
-expect_equal(e[,2], c(467.379239, 334.685564))
+e <- extract(elev, y, fun=mean, exact=TRUE, na.rm=TRUE, ID=FALSE)
+expect_equal(e[,1], c(467.379239, 334.685564))
 
-e <- extract(elev, y, fun=mean, weights=TRUE, na.rm=TRUE)
+e <- extract(elev, y, fun=mean, weights=TRUE, na.rm=TRUE, ID=TRUE)
 expect_equal(e[,2], c(467.3933629, 334.65513085))
 
 
@@ -18,8 +18,8 @@ values(x) <- 1:ncell(x)
 expect_equal(cells(x, y), cbind(ID=c(1,2), cell=c(1,4)))
 expect_equal(as.vector(cells(x, y, weights=TRUE)), c(1, 1, 1, 2, 2, 2, 1, 2, 4, 2, 3, 4, 0.521988, 0.414648, 0.043812, 0.000240, 0.072960, 0.491532))
 
-expect_equivalent(unlist(extract(x, y)), c(1,2,1,4))
-expect_equivalent(unlist(extract(x, y, cells=TRUE, weights=TRUE)), c(1, 1, 1, 2, 2, 2, 1, 2, 4, 2, 3, 4, 1, 2, 4, 2, 3, 4, 0.521988, 0.414648, 0.043812, 0.000240, 0.072960, 0.491532))
+expect_equivalent(unlist(extract(x, y, ID=TRUE)), c(1,2,1,4))
+expect_equivalent(unlist(extract(x, y, cells=TRUE, weights=TRUE, ID=TRUE)), c(1, 1, 1, 2, 2, 2, 1, 2, 4, 2, 3, 4, 1, 2, 4, 2, 3, 4, 0.521988, 0.414648, 0.043812, 0.000240, 0.072960, 0.491532))
 
 
 r <- rast(nrows=5, ncols=5, xmin=0, xmax=1, ymin=0, ymax=1, names="test")
@@ -29,20 +29,20 @@ names(rr)[2] <- "half"
 xy <- cbind(x=0.3, y=c(0.9, 0.7))
 
 v <- vect(xy)
-e <- extract(r, v)
+e <- extract(r, v, ID=TRUE)
 expect_equal(e, data.frame(ID=1:2, test=c(15,20)))
-ee <- extract(rr, v)
+ee <- extract(rr, v, ID=TRUE)
 expect_equal(ee, data.frame(ID=1:2, test=c(15,20), half=c(7.5, 10)))
 
-e <- extract(r, v, cell=TRUE)
+e <- extract(r, v, cell=TRUE, ID=TRUE)
 expect_equal(e, data.frame(ID=1:2, test=c(15,20), cell=c(2,7)))
-ee <- extract(rr, v, cell=TRUE)
-expect_equal(ee, data.frame(ID=1:2, test=c(15,20), half=c(7.5, 10), cell=c(2,7)))
+ee <- extract(rr, v, cell=TRUE, ID=FALSE)
+expect_equal(ee, data.frame(test=c(15,20), half=c(7.5, 10), cell=c(2,7)))
 
-ee <- extract(rr, v, cell=TRUE, xy=TRUE)
+ee <- extract(rr, v, cell=TRUE, xy=TRUE, ID=TRUE)
 expect_equal(ee, data.frame(ID=1:2, test=c(15,20), half=c(7.5, 10), cell=c(2,7), xy))
 
-ee <- extract(rr, v, xy=TRUE)
+ee <- extract(rr, v, xy=TRUE, ID=TRUE)
 expect_equal(ee, data.frame(ID=1:2, test=c(15,20), half=c(7.5, 10), xy))
 
 f <- system.file("ex/meuse.tif", package="terra")
@@ -66,16 +66,16 @@ z <- rbind(cbind(object=1, part=1, x1, hole=0), cbind(object=3, part=1, x2, hole
 colnames(z)[3:4] <- c('x', 'y')
 p <- vect(z, "polygons", crs=crs(r))
 rr <- c(r, r*2)
-test <- terra::extract(r, p, fun = mean)
+test <- terra::extract(r, p, ID=TRUE, fun = mean)
 expect_equal(as.vector(as.matrix(test)), c(1,2,51.5,53))
 
-test <- terra::extract(rr, p, fun = mean)
+test <- terra::extract(rr, p, fun = mean, ID=TRUE)
 expect_equal(as.vector(as.matrix(test)), c(1,2,51.5,53,103,106))
 
-test <- terra::extract(r, p, fun = mean, exact=TRUE)
+test <- terra::extract(r, p, fun = mean, exact=TRUE, ID=TRUE)
 expect_equal(round(as.vector(as.matrix(test)),5), c(1,2, 51.80006, 52.21312))
 
-test <- terra::extract(rr, p, fun = mean, exact=TRUE)
+test <- terra::extract(rr, p, fun = mean, exact=TRUE, ID=TRUE)
 expect_equal(round(as.vector(as.matrix(test)),5), c(1,2, 51.80006, 52.21312, 103.60012, 104.42623))
 
 r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)

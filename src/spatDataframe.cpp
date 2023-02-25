@@ -260,9 +260,8 @@ void SpatDataFrame::add_row() {
 	for (size_t i=0; i < dv.size(); i++) {
 		dv[i].push_back(NAN);
 	}
-	long longNA = NA<long>::value;
 	for (size_t i=0; i < iv.size(); i++) {
-		iv[i].push_back(longNA);
+		iv[i].push_back(NAL);
 	}
 	for (size_t i=0; i < sv.size(); i++) {
 		sv[i].push_back(NAS);
@@ -270,9 +269,8 @@ void SpatDataFrame::add_row() {
 	for (size_t i=0; i < bv.size(); i++) {
 		bv[i].push_back(2);
 	}
-	SpatTime_t timeNA = NA<SpatTime_t>::value;
 	for (size_t i=0; i < tv.size(); i++) {
-		tv[i].push_back(timeNA);
+		tv[i].push_back(NAT);
 	}
 	for (size_t i=0; i < fv.size(); i++) {
 		fv[i].push_back(0);
@@ -630,6 +628,7 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 				} else if (itype[i] == 4) {
 					tv[j].x.insert(tv[j].x.end(), x.tv[j].x.begin(), x.tv[j].x.end());
 				} else {
+					//should check the levels, needs proper method
 					fv[j].v.insert(fv[j].v.end(), x.fv[j].v.begin(), x.fv[j].v.end());
 				}			
 			}
@@ -652,21 +651,27 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 			add_column(x.itype[i], xnms[i]);
 			if (x.itype[i] == 0) {
 				size_t a = dv.size()-1;
+				dv[a].resize(nr1, NAN);
 				dv[a].insert(dv[a].end(), x.dv[b].begin(), x.dv[b].end());
 			} else if (x.itype[i] == 1) {
 				size_t a = iv.size()-1;
+				iv[a].resize(nr1, NAL);
 				iv[a].insert(iv[a].end(), x.iv[b].begin(), x.iv[b].end());
 			} else if (x.itype[i] == 2) {
 				size_t a = sv.size()-1;
+				sv[a].resize(nr1, NAS);
 				sv[a].insert(sv[a].end(), x.sv[b].begin(), x.sv[b].end());
 			} else if (x.itype[i] == 3) {
 				size_t a = bv.size()-1;
+				bv[a].resize(nr1, 2);
 				bv[a].insert(bv[a].end(), x.bv[b].begin(), x.bv[b].end());
 			} else if (x.itype[i] == 4) {
 				size_t a = tv.size()-1;
+				tv[a].resize(nr1, NAT);
 				tv[a].x.insert(tv[a].x.end(), x.tv[b].x.begin(), x.tv[b].x.end());
 			} else {
 				size_t a = fv.size()-1;
+				fv[a].resize(nr1, 0);
 				fv[a].v.insert(fv[a].v.end(), x.fv[b].v.begin(), x.fv[b].v.end());
 			}
 		} else {
@@ -676,15 +681,16 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 				if (itype[j] == 0) {
 					dv[a].insert(dv[a].end(), x.dv[b].begin(), x.dv[b].end());
 				} else if (itype[j] == 1) {
-					iv[a].insert(iv[a].end(),	x.iv[b].begin(), x.iv[b].end());
+					iv[a].insert(iv[a].end(), x.iv[b].begin(), x.iv[b].end());
 				} else if (itype[j] == 2) {
-					sv[a].insert(sv[a].end(),	x.sv[b].begin(), x.sv[b].end());
+					sv[a].insert(sv[a].end(), x.sv[b].begin(), x.sv[b].end());
 				} else if (itype[j] == 3) {
-					bv[a].insert(bv[a].end(),	x.bv[b].begin(), x.bv[b].end());
+					bv[a].insert(bv[a].end(), x.bv[b].begin(), x.bv[b].end());
 				} else if (itype[j] == 4) {
-					tv[a].x.insert(tv[a].x.end(),	x.tv[b].x.begin(), x.tv[b].x.end());
+					tv[a].x.insert(tv[a].x.end(), x.tv[b].x.begin(), x.tv[b].x.end());
 				} else {
-					fv[a].v.insert(fv[a].v.end(),	x.fv[b].v.begin(), x.fv[b].v.end());
+					//should check the levels, needs proper method
+					fv[a].v.insert(fv[a].v.end(), x.fv[b].v.begin(), x.fv[b].v.end());
 				}
 			} else {
 				if (itype[j] == 2) {
