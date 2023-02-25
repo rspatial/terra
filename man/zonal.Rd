@@ -17,7 +17,8 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 }
 
 \usage{
-\S4method{zonal}{SpatRaster,SpatRaster}(x, z, fun=mean, ..., w=NULL, as.raster=FALSE, filename="", wopt=list())
+\S4method{zonal}{SpatRaster,SpatRaster}(x, z, fun=mean, ..., w=NULL, 
+		as.raster=FALSE, filename="", overwrite=FALSE, wopt=list())
 
 \S4method{zonal}{SpatRaster,SpatVector}(x, z, fun=mean, ..., w=NULL, weights=FALSE,
 		exact=FALSE, touches=FALSE, as.raster=FALSE, filename="", wopt=list())
@@ -33,6 +34,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
   \item{w}{SpatRaster with weights. Should have a single-layer with non-negative values}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned with the zonal statistic for each zone}  
   \item{filename}{character. Output filename (ignored if \code{as.raster=FALSE}}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with additional arguments for writing files as in \code{\link{writeRaster}}}
 
   \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean}

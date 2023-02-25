@@ -133,7 +133,7 @@ setMethod("intersect", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("cellSize", signature(x="SpatRaster"),
-	function(x, mask=TRUE, lyrs=FALSE, unit="m", transform=TRUE, rcx=100, filename="", ...) {
+	function(x, mask=FALSE, lyrs=FALSE, unit="m", transform=TRUE, rcx=100, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (!lyrs) x <- x[[1]]
 		x@ptr <- x@ptr$rst_area(mask, unit, transform, rcx, opt)

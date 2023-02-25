@@ -1,6 +1,6 @@
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
-	function(x, z, fun="mean", ..., w=NULL, as.raster=FALSE, filename="", wopt=list())  {
+	function(x, z, fun="mean", ..., w=NULL, as.raster=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 		txtfun <- .makeTextFun(fun)
 		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum", "notNA", "isNA"))) {
 			na.rm <- isTRUE(list(...)$na.rm)
@@ -57,6 +57,19 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			}
 		} else {
 			out <- cbind(out[,ncol(out),drop=FALSE]+1, out[,-ncol(out)])
+			if (as.raster) { 
+				x <- out
+				nl <- nlyr(z)
+				out <- vector("list", nl)
+				for (i in 1:nl) {
+					lyrout <- x[x[,1] == i, -1]
+					out[[i]] <- subst(z[[i]], lyrout[,1], lyrout[,-1], wopt=wopt)
+				}
+				out <- rast(out)
+				if (filename != "") {
+					out <- writeRaster(out, filename=filename, overwrite=overwrite, wopt)
+				}
+			} 
 		}
 		out
 	}

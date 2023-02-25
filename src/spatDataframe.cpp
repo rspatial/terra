@@ -598,68 +598,93 @@ bool SpatDataFrame::cbind(SpatDataFrame &x) {
 	return true;
 }
 
-
 bool SpatDataFrame::rbind(SpatDataFrame &x) {
 
 	size_t nr1 = nrow();
 	size_t nr2 = x.nrow();
-//	size_t nc1 = ncol();
+	size_t nc1 = ncol();
 	size_t nc2 = x.ncol();
+	std::vector<std::string> nms = names;
+	std::vector<std::string> xnms = x.names;
+
+	if (nc2 == nc1) {
+		bool same = true;
+		for (size_t i=0; i<nc2; i++) {
+			if ((nms[i] != xnms[i]) || (itype[i] != x.itype[i])) {
+				same = false;
+				break;
+			}
+		}
+		// the simplest case; no issue with duplicate names
+		if (same) {
+			for (size_t i=0; i<nc2; i++) {
+				size_t j = iplace[i];
+				if (itype[i] == 0) {
+					dv[j].insert(dv[j].end(), x.dv[j].begin(), x.dv[j].end());
+				} else if (itype[i] == 1) {
+					iv[j].insert(iv[j].end(), x.iv[j].begin(), x.iv[j].end());
+				} else if (itype[i] == 2) {
+					sv[j].insert(sv[j].end(), x.sv[j].begin(), x.sv[j].end());
+				} else if (itype[i] == 3) {
+					bv[j].insert(bv[j].end(), x.bv[j].begin(), x.bv[j].end());
+				} else if (itype[i] == 4) {
+					tv[j].x.insert(tv[j].x.end(), x.tv[j].x.begin(), x.tv[j].x.end());
+				} else {
+					fv[j].v.insert(fv[j].v.end(), x.fv[j].v.begin(), x.fv[j].v.end());
+				}			
+			}
+		}
+	}
+
+	make_unique_names(nms);
+	set_names(nms);
+	make_unique_names(xnms);
+	x.set_names(xnms);
+
+
+// should check for duplicate names and warn
 
 //first add new columns
-	std::vector<std::string> nms = names;
 	for (size_t i=0; i<nc2; i++) {
-		int j = where_in_vector(x.names[i], nms, false);
+		int j = where_in_vector(xnms[i], nms, false);
 		if (j < 0) { // not in df
 			size_t b = x.iplace[i];
-			add_column(x.itype[i], x.names[i]);
+			add_column(x.itype[i], xnms[i]);
 			if (x.itype[i] == 0) {
 				size_t a = dv.size()-1;
-				dv[a].insert(dv[a].begin()+nr1,
-					x.dv[b].begin(), x.dv[b].end());
+				dv[a].insert(dv[a].end(), x.dv[b].begin(), x.dv[b].end());
 			} else if (x.itype[i] == 1) {
 				size_t a = iv.size()-1;
-				iv[a].insert(iv[a].begin()+nr1,
-					x.iv[b].begin(), x.iv[b].end());
+				iv[a].insert(iv[a].end(), x.iv[b].begin(), x.iv[b].end());
 			} else if (x.itype[i] == 2) {
 				size_t a = sv.size()-1;
-				sv[a].insert(sv[a].begin()+nr1,
-					x.sv[b].begin(), x.sv[b].end());
+				sv[a].insert(sv[a].end(), x.sv[b].begin(), x.sv[b].end());
 			} else if (x.itype[i] == 3) {
 				size_t a = bv.size()-1;
-				bv[a].insert(bv[a].begin()+nr1,
-					x.bv[b].begin(), x.bv[b].end());
+				bv[a].insert(bv[a].end(), x.bv[b].begin(), x.bv[b].end());
 			} else if (x.itype[i] == 4) {
 				size_t a = tv.size()-1;
-				tv[a].x.insert(tv[a].x.begin()+nr1,
-					x.tv[b].x.begin(), x.tv[b].x.end());
+				tv[a].x.insert(tv[a].x.end(), x.tv[b].x.begin(), x.tv[b].x.end());
 			} else {
 				size_t a = fv.size()-1;
-				fv[a].v.insert(fv[a].v.begin()+nr1,
-					x.fv[b].v.begin(), x.fv[b].v.end());
+				fv[a].v.insert(fv[a].v.end(), x.fv[b].v.begin(), x.fv[b].v.end());
 			}
 		} else {
 			size_t a = iplace[j];
 			size_t b = x.iplace[i];
 			if (itype[j] == x.itype[i]) {
 				if (itype[j] == 0) {
-					dv[a].insert(dv[a].begin()+nr1,
-					x.dv[b].begin(), x.dv[b].end());
+					dv[a].insert(dv[a].end(), x.dv[b].begin(), x.dv[b].end());
 				} else if (itype[j] == 1) {
-					iv[a].insert(iv[a].begin()+nr1,
-					x.iv[b].begin(), x.iv[b].end());
+					iv[a].insert(iv[a].end(),	x.iv[b].begin(), x.iv[b].end());
 				} else if (itype[j] == 2) {
-					sv[a].insert(sv[a].begin()+nr1,
-					x.sv[b].begin(), x.sv[b].end());
+					sv[a].insert(sv[a].end(),	x.sv[b].begin(), x.sv[b].end());
 				} else if (itype[j] == 3) {
-					bv[a].insert(bv[a].begin()+nr1,
-					x.bv[b].begin(), x.bv[b].end());
+					bv[a].insert(bv[a].end(),	x.bv[b].begin(), x.bv[b].end());
 				} else if (itype[j] == 4) {
-					tv[a].x.insert(tv[a].x.begin()+nr1,
-					x.tv[b].x.begin(), x.tv[b].x.end());
+					tv[a].x.insert(tv[a].x.end(),	x.tv[b].x.begin(), x.tv[b].x.end());
 				} else {
-					fv[a].v.insert(fv[a].v.begin()+nr1,
-					x.fv[b].v.begin(), x.fv[b].v.end());
+					fv[a].v.insert(fv[a].v.end(),	x.fv[b].v.begin(), x.fv[b].v.end());
 				}
 			} else {
 				if (itype[j] == 2) {
