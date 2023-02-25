@@ -17,7 +17,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
 }
 
 \usage{
-\S4method{cellSize}{SpatRaster}(x, mask=TRUE, lyrs=FALSE, unit="m", transform=TRUE, rcx=100, filename="", ...)
+\S4method{cellSize}{SpatRaster}(x, mask=FALSE, lyrs=FALSE, unit="m", transform=TRUE, rcx=100, filename="", ...)
 }
 
 
