@@ -171,7 +171,7 @@ extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NUL
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
-function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, raw=FALSE, ...) {
+function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, raw=FALSE, ...) {
 
 #	value <- match.arg(tolower(value), c("data.frame", "matrix", "spatvector"))
 #	if (value == "matrix") {

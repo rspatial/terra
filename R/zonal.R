@@ -2,6 +2,11 @@
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 	function(x, z, fun="mean", ..., w=NULL, as.raster=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 		txtfun <- .makeTextFun(fun)
+		
+		if ((nlyr(z) > 1) && (nlyr(x) > 1)) {
+			error("zonal", "x and z cannot both have more than one layer")
+		}
+		
 		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum", "notNA", "isNA"))) {
 			na.rm <- isTRUE(list(...)$na.rm)
 			opt <- spatOptions()

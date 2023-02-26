@@ -26,7 +26,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE,
-    ID=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y),
+    ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y),
 	layer=NULL, bind=FALSE, raw=FALSE, ...)
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, cells=FALSE, xy=FALSE)
