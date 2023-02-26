@@ -20,7 +20,7 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-14</span>
       </span>
     </div>
 
@@ -159,7 +159,7 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
 <span class="r-out co"><span class="r-pr">#&gt;</span> min values  :     2,     2,   102 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max values  :   200,    20,   300 </span>
 <span class="r-in"><span><span class="co"># and as (but slower)</span></span></span>
-<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">app</span><span class="op">(</span><span class="va">sd</span>, \<span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="summarize-generics.html">max</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">app</span><span class="op">(</span><span class="va">sd</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="summarize-generics.html">max</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## also works for a single layer</span></span></span>
