@@ -62,7 +62,7 @@ a
 # same as 
 max(x, x*2, x/3)
 # and as (but slower)
-b <- app(sd, \(i) max(i))
+b <- app(sd, function(i) max(i))
 
 
 ## also works for a single layer
