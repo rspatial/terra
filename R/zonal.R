@@ -61,20 +61,24 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 				colnames(out)[1] <- names(z)
 			}
 		} else {
-			out <- cbind(out[,ncol(out),drop=FALSE]+1, out[,-ncol(out)])
+			nc <- ncol(out)
 			if (as.raster) { 
 				x <- out
 				nl <- nlyr(z)
 				out <- vector("list", nl)
 				for (i in 1:nl) {
-					lyrout <- x[x[,1] == i, -1]
+					lyrout <- x[x[,nc] == i, -nc]
 					out[[i]] <- subst(z[[i]], lyrout[,1], lyrout[,-1], wopt=wopt)
 				}
 				out <- rast(out)
 				if (filename != "") {
 					out <- writeRaster(out, filename=filename, overwrite=overwrite, wopt)
 				}
-			} 
+			} else {
+				nms <- names(out)
+				out <- stats::reshape(out, direction="wide", idvar=nms[1], timevar=nms[nc]) 
+				names(out)[-1] <- names(z)
+			}
 		}
 		out
 	}
