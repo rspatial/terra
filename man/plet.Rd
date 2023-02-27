@@ -27,16 +27,16 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
 
 \S4method{plet}{SpatVector}(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE,
    label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
-   wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)
+   wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL, ...)
 
 \S4method{plet}{SpatVectorCollection}(x, col, alpha=1, fill=0, cex=1, lwd=2, popup=TRUE, 
    label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE,
    legend="bottomright", collapse=FALSE, map=NULL)
 
 
-\S4method{lines}{leaflet}(x, y, col, lwd=2, alpha=1)
+\S4method{lines}{leaflet}(x, y, col, lwd=2, alpha=1, ...)
 
-\S4method{points}{leaflet}(x, y, col, cex=1, alpha=1, popup=FALSE)
+\S4method{points}{leaflet}(x, y, col, cex=1, alpha=1, popup=FALSE, ...)
 }
 
 \arguments{
@@ -53,6 +53,8 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
   
   \item{shared}{logical. Should the legend be the same for all rasters (if multiple layers of SpatRaster \code{x} are mapped)}  
   \item{map}{leaflet object}
+  \item{...}{additional arguments for drawing points, lines, or polygons passed on the the relevant leaflet function}
+
   \item{collapse}{logical. Should the layers "control" panel be collapsed?}
   \item{split}{logical. IF \code{TRUE} a check-box is created to toggle each value in code{y} (If \code{x} is a SpatVector)}
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
@@ -72,15 +74,16 @@ if (require(leaflet)) {
 if (packageVersion("leaflet") > "2.1.1") {
 
 v <- vect(system.file("ex/lux.shp", package="terra"))
-p <- spatSample(as.polygons(v, ext=T), 10)
-values(p) = data.frame(id=11:20, name=letters[1:10])
+p <- spatSample(as.polygons(v, ext=T), 30)
+values(p) = data.frame(id=11:40, name=letters[1:30])
 
-m <- plet(v, "NAME_1", alpha=.5, tiles="")
-m <- points(m, p, col="gray", cex=2, popup=T)
+m <- plet(v, "NAME_1", alpha=.4, tiles="")
+m <- points(m, p, col="red", cex=2, popup=T)
 lines(m, v)
 
 plet(v, "NAME_1", split=TRUE, alpha=.2) |> 
-  points(p, col="gray", cex=2, popup=T) |> lines(v)
+  points(p, col="gray", cex=2, popup=TRUE, 
+	clusterOptions = markerClusterOptions()	|> lines(v)
 
 s <- svc(v, p)
 names(s) <- c("the polys", "set of points")
