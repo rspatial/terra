@@ -31,7 +31,7 @@ SpatRaster
 }
 
 \examples{
-sigm <- \(x) { .8 / (1 + exp(-(x-10))) + runif(length(x))/4 }
+sigm <- function(x) { .8 / (1 + exp(-(x-10))) + runif(length(x))/4 }
 r <- rast(ncols=10, nrows=10, nlyr=50)
 s <- seq(5.2, 15,.2)
 set.seed(1)

@@ -11,7 +11,9 @@
 \description{
 Get the cell values of a SpatRaster or the attributes of a SpatVector.
 
-By default all values returned are numeric. This is because a vector or matrix can only store one data type, and a SpatRaster may consist of multiple data types. However, with \code{values(x, dataframe=TRUE)} and \code{\link[terra]{as.data.frame}(x)} the values returned match the type of each layer, and can be numeric, logical, integer, or factor.
+By default all values returned are numeric. This is because a vector or matrix can only store one data type, and a SpatRaster may consist of multiple data types. However, if all layers have integer or logical values, the returned values also have that datatype.  
+
+Note that with \code{values(x, dataframe=TRUE)} and \code{\link[terra]{as.data.frame}(x)} the values returned match the type of each layer, and can be a mix of numeric, logical, integer, and factor.
 }
 
 \usage{
