@@ -288,7 +288,7 @@ class SpatRaster {
 		bool replaceCellValues(std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt);
 		bool replaceCellValuesLayer(std::vector<size_t> layers, std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt);
 
-		void setRange(SpatOptions &opt);
+		void setRange(SpatOptions &opt, bool force);
 		
 ////////////////////////////////////////////////////
 // property like methods for RasterSources

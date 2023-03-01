@@ -354,7 +354,7 @@ setMethod("setMinMax", signature(x="SpatRaster"),
 	function(x, force=FALSE) {
 		opt <- spatOptions()
 		if (force) {
-			x@ptr$setRange(opt)
+			x@ptr$setRange(opt, TRUE)
 		} else if (!all(hasMinMax(x))) {
 			x@ptr$setRange(opt)
 		}

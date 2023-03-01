@@ -4172,7 +4172,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 
 			if (!hasR) {
 				SpatOptions xopt(opt);
-				setRange(xopt);
+				setRange(xopt, false);
 			}
 			std::vector<double> mn = range_min();
 			std::vector<double> mx = range_max();
