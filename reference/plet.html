@@ -64,7 +64,7 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
 <span><span class="co"># S4 method for SpatVector</span></span>
 <span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="st">""</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">1</span>, fill<span class="op">=</span><span class="fl">0</span>, main<span class="op">=</span><span class="va">y</span>, cex<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">2</span>, popup<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>   label<span class="op">=</span><span class="cn">FALSE</span>, split<span class="op">=</span><span class="cn">FALSE</span>, tiles<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Streets"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span><span class="op">)</span>, </span>
-<span>   wrap<span class="op">=</span><span class="cn">TRUE</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, collapse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
+<span>   wrap<span class="op">=</span><span class="cn">TRUE</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, collapse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatVectorCollection</span></span>
 <span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">1</span>, fill<span class="op">=</span><span class="fl">0</span>, cex<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">2</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, </span>
@@ -73,10 +73,10 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
 <span></span>
 <span></span>
 <span><span class="co"># S4 method for leaflet</span></span>
-<span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, lwd<span class="op">=</span><span class="fl">2</span>, alpha<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, lwd<span class="op">=</span><span class="fl">2</span>, alpha<span class="op">=</span><span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for leaflet</span></span>
-<span><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, cex<span class="op">=</span><span class="fl">1</span>, alpha<span class="op">=</span><span class="fl">1</span>, popup<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, cex<span class="op">=</span><span class="fl">1</span>, alpha<span class="op">=</span><span class="fl">1</span>, popup<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -118,6 +118,10 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
   <dt>map</dt>
 <dd><p>leaflet object</p></dd>
 
+  <dt>...</dt>
+<dd><p>additional arguments for drawing points, lines, or polygons passed on the the relevant leaflet function</p></dd>
+
+
   <dt>collapse</dt>
 <dd><p>logical. Should the layers "control" panel be collapsed?</p></dd>
 
@@ -147,42 +151,7 @@ These methods require that packageVersion("leaflet") &amp;gt; "2.1.1" or the dev
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/" class="external-link">leaflet</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"leaflet"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="st">"2.1.1"</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample.html">spatSample</a></span><span class="op">(</span><span class="fu"><a href="as.spatvector.html">as.polygons</a></span><span class="op">(</span><span class="va">v</span>, ext<span class="op">=</span><span class="cn">T</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id<span class="op">=</span><span class="fl">11</span><span class="op">:</span><span class="fl">20</span>, name<span class="op">=</span><span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">plet</span><span class="op">(</span><span class="va">v</span>, <span class="st">"NAME_1"</span>, alpha<span class="op">=</span><span class="fl">.5</span>, tiles<span class="op">=</span><span class="st">""</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">p</span>, col<span class="op">=</span><span class="st">"gray"</span>, cex<span class="op">=</span><span class="fl">2</span>, popup<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">v</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">plet</span><span class="op">(</span><span class="va">v</span>, <span class="st">"NAME_1"</span>, split<span class="op">=</span><span class="cn">TRUE</span>, alpha<span class="op">=</span><span class="fl">.2</span><span class="op">)</span> <span class="op">|&gt;</span> </span></span>
-<span class="r-in"><span>  <span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="st">"gray"</span>, cex<span class="op">=</span><span class="fl">2</span>, popup<span class="op">=</span><span class="cn">T</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="svc.html">svc</a></span><span class="op">(</span><span class="va">v</span>, <span class="va">p</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"the polys"</span>, <span class="st">"set of points"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">plet</span><span class="op">(</span><span class="va">s</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">plet</span><span class="op">(</span><span class="va">r</span>, main<span class="op">=</span><span class="st">"Hi\nthere"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">plet</span><span class="op">(</span><span class="va">r</span>, tiles<span class="op">=</span><span class="st">"Streets"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="fl">50</span><span class="op">*</span><span class="fu"><a href="classify.html">classify</a></span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"first"</span>, <span class="st">"second"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># each their own legend</span></span></span>
-<span class="r-in"><span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, tiles<span class="op">=</span><span class="st">"Streets"</span>, collapse<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># shared legend</span></span></span>
-<span class="r-in"><span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, tiles<span class="op">=</span><span class="st">"Streets"</span>, shared<span class="op">=</span><span class="cn">TRUE</span>, collapse<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="op">}</span><span class="op">}</span><span class="op">}</span></span></span>
-</code></pre></div>
+    
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
