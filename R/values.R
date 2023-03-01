@@ -336,7 +336,7 @@ setMethod("minmax", signature(x="SpatRaster"),
 		if (!all(have)) {
 			if (compute) {
 				opt <- spatOptions()
-				x@ptr$setRange(opt)
+				x@ptr$setRange(opt, FALSE)
 			} else {
 				warn("minmax", "min and max values not available for all layers. See 'setMinMax' or 'global'")
 			}
@@ -356,7 +356,7 @@ setMethod("setMinMax", signature(x="SpatRaster"),
 		if (force) {
 			x@ptr$setRange(opt, TRUE)
 		} else if (!all(hasMinMax(x))) {
-			x@ptr$setRange(opt)
+			x@ptr$setRange(opt, FALSE)
 		}
 		x <- messages(x, "setMinMax")
 	}
