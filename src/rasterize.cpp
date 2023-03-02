@@ -32,7 +32,7 @@ SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double
 	size_t nc = ncol();
 	std::vector<double> cells = cellFromXY(x, y, -9);
 	// order for multiple chunks, but also to remove NAs (-9)
-	std::vector<std::size_t> so = sort_order_d(cells);
+	std::vector<std::size_t> so = sort_order_a(cells);
 	permute(cells, so);
 	permute(values, so);
 
@@ -545,8 +545,8 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 
 
 SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values,
-	double background, bool touches, bool add, bool weights, bool update, bool minmax, SpatOptions &opt) {
-
+	double background, bool touches, std::string fun, bool weights, bool update, bool minmax, SpatOptions &opt) {
+	
 	std::string gtype = x.type();
 	bool ispol = gtype == "polygons";
 	if (weights) update = false;
@@ -563,10 +563,12 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		//unsigned agy = 100;
 		wout = wout.disaggregate({agx, agy}, sopts);
 		double f = agx * agy;
-		wout = wout.rasterize(x, field, {1/f}, background, touches, add, false, false, false, sopts);
+		wout = wout.rasterize(x, field, {1/f}, background, touches, fun, false, false, false, sopts);
 		wout = wout.aggregate({agx, agy}, "sum", true, opt);
 		return wout;
 	}
+
+	bool add = fun == "sum";
 
 	SpatRaster out;
 	if ( !hasValues() ) update = false;
@@ -778,7 +780,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 
 	SpatRaster rc = r.crop(e, "out", false, ropt);
 	std::vector<double> feats(1, 1) ;
-    SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, ropt);
+    SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, "", false, false, false, ropt);
 	SpatVector pts = rcr.as_points(false, true, false, ropt);
 	std::vector<double> cells;
 	if (pts.empty()) {
@@ -827,7 +829,7 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 		r = rc;
 	}
 	std::vector<double> feats;
-	r = r.rasterize(v, "", feats, NAN, false, false, true, false, false, ropt);
+	r = r.rasterize(v, "", feats, NAN, false, "", true, false, false, ropt);
 	std::vector<std::vector<double>> cv = r.cells_notna(ropt);
 
 	if (cv[0].empty()) {
@@ -856,7 +858,7 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 
 //	if (r.ncell() < 1000) {
 		std::vector<double> feats(1, 1) ;
-		r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt);
+		r = r.rasterize(v, "", feats, NAN, true, "", false, false, false, ropt);
 
 		SpatVector pts = r.as_points(true, true, false, ropt);
 		if (pts.empty()) {

@@ -21,6 +21,7 @@
 #include <string>
 #include "NA.h"
 #include "string_utils.h"
+#include "sort.h"
 
 
 SpatDataFrame::SpatDataFrame() {}
@@ -1194,5 +1195,78 @@ size_t SpatDataFrame::strwidth(unsigned i) {
 		}
 	}
 	return m;
+}
+
+
+
+SpatDataFrame SpatDataFrame::sortby(std::string field, bool descending) {
+	SpatDataFrame out = *this;
+
+	std::vector<std::string> nms = get_names();
+	int i = where_in_vector(field, nms, false);
+	if (i < 0) { // not in df
+		out.setError("unknown variable: " + field);
+		return out;
+	}
+	size_t j = iplace[i];
+	std::vector<std::size_t> order;
+	if (itype[i] == 0) {
+		if (descending) {
+			order = sort_order_nan_d(dv[j]);
+		} else {
+			order = sort_order_nan_a(dv[j]);			
+		}
+	} else if (itype[i] == 1) {
+		if (descending) {
+			order = sort_order_nal_d(iv[j]);
+		} else {
+			order = sort_order_nal_a(iv[j]);			
+		}
+	} else if (itype[i] == 2) {
+		if (descending) {
+			order = sort_order_nas_d(sv[j]);
+		} else {
+			order = sort_order_nas_a(sv[j]);			
+		}
+	} else if (itype[i] == 3) {
+		if (descending) {
+			order = sort_order_d(bv[j]);
+		} else {
+			order = sort_order_a(bv[j]);			
+		}
+	} else if (itype[i] == 4) {
+		if (descending) {
+			order = sort_order_d(tv[j].x);
+		} else {
+			order = sort_order_a(tv[j].x);			
+		}
+	} else {
+		if (descending) {
+			order = sort_order_d(fv[j].v);
+		} else {
+			order = sort_order_a(fv[j].v);			
+		}
+	}
+
+	for (size_t i=0; i<dv.size(); i++) {
+		permute(out.dv[i], order);
+	}
+	for (size_t i=0; i<iv.size(); i++) {
+		permute(out.iv[i], order);
+	}
+	for (size_t i=0; i<sv.size(); i++) {
+		permute(out.sv[i], order);
+	}
+	for (size_t i=0; i<bv.size(); i++) {
+		permute(out.bv[i], order);
+	}
+	for (size_t i=0; i<tv.size(); i++) {
+		permute(out.tv[i].x, order);
+	}
+	for (size_t i=0; i<fv.size(); i++) {
+		permute(out.fv[i].v, order);
+	}
+	
+	return out;
 }
 

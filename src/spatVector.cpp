@@ -17,6 +17,7 @@
 
 #include "spatVector.h"
 #include <numeric>
+#include "string_utils.h"
 #include "math_utils.h"
 #include "vecmath.h"
 #include "recycle.h"
@@ -1416,4 +1417,5 @@ std::vector<std::vector<std::vector<std::vector<double>>>> SpatVector::polygonsL
 	}
 	return out;
 }
+
 

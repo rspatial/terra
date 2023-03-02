@@ -27,12 +27,12 @@ inline double rarea(const double &Ax, const double &Ay, const double &Bx, const 
 
 
 void sortvecs(std::vector<double> &X, std::vector<double> &Y, std::vector<double> &Z) {  
-	std::vector<std::size_t> p = sort_order_d(X);
+	std::vector<std::size_t> p = sort_order_a(X);
 	permute(X, p);
 	permute(Y, p);
 	permute(Z, p);
   
-	p = sort_order_d(Y);
+	p = sort_order_a(Y);
 	permute(X, p);
 	permute(Y, p);
 	permute(Z, p);

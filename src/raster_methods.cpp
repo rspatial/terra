@@ -1155,10 +1155,10 @@ SpatRaster SpatRaster::mask(SpatVector &x, bool inverse, double updatevalue, boo
 		return out;
 	}
 	if (inverse) {
-		out = rasterize(x, "", {updatevalue}, NAN, touches, false, false, true, true, opt);
+		out = rasterize(x, "", {updatevalue}, NAN, touches, "", false, true, true, opt);
 	} else {
 		SpatOptions topt(opt);
-		out = rasterize(x, "", {1.0}, 0, touches, false, false, false, false, topt);
+		out = rasterize(x, "", {1.0}, 0, touches, "", false, false, false, topt);
 		if (out.hasError()) {
 			return out;
 		}
@@ -3252,7 +3252,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	for (size_t i=0; i<n; i++) {
 		rcnt[i] = rsti[i].size();
 	}
-	std::vector<std::size_t> ord = sort_order_d(rcnt);
+	std::vector<std::size_t> ord = sort_order_a(rcnt);
 	permute(rcnt, ord);
 	permute(rsti, ord);
 
@@ -5006,10 +5006,9 @@ SpatRaster SpatRaster::sort(bool decreasing, bool order, SpatOptions &opt) {
 					v[k] = a[j+knc[k]];
 				}
 				if (decreasing) {
-				// sort_order_d would make more sense!
-					ord = sort_order_a(v);
-				} else {
 					ord = sort_order_d(v);
+				} else {
+					ord = sort_order_a(v);
 				}
 				for (size_t k=0; k<v.size(); k++) {
 					a[j+knc[k]] = ord[k];

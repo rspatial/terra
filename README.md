@@ -51,32 +51,33 @@ remotes::install_github("rspatial/terra")
 
 #### macOS
 
-On macOS, first install gdal and proj with homebrew
+On macOS, first install gdal with Homebrew
 
 ```
 brew install pkg-config
 brew install gdal
 ```
 
-Followed by (note the additional configuration argument needed for the current homebrew version of proj (9.1.0)
+Followed by (note the additional configuration argument needed for Homebrew)
 
 ```
-remotes::install_github("rspatial/terra", configure.args = "--with-proj-lib=/opt/homebrew/Cellar/proj/9.1.0/lib/")
+remotes::install_github("rspatial/terra", configure.args = "--with-proj-lib=$(brew --prefix)/lib/")
 ```
 
 To install the CRAN version from source you would do
 
 ```
-install.packages("terra", configure.args = "--with-proj-lib=/opt/homebrew/Cellar/proj/9.1.0/lib/")
+install.packages("terra", type = "source", configure.args = "--with-proj-lib=$(brew --prefix)/lib/")
 ```
 
 #### Linux
 
-The *easy* way to install terra on linux is with [r2u](https://eddelbuettel.github.io/r2u/).
+The *easy* way to install terra on Ubuntu is with [r2u](https://eddelbuettel.github.io/r2u/).
 
-The harder way: C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3 are required, but more recent versions highly recommended.
+The harder way: 
 
-To install these system requirements on Ubuntu you can do:
+Install the system requirements GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3.
+
 
 ```
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
@@ -90,3 +91,4 @@ remotes::install_github("rspatial/terra")
 ```
 
 See the `sf` [instructions](https://github.com/r-spatial/sf) for installation on other linux systems --- and for possible updates/improvements on the above instructions.
+

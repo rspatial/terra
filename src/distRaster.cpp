@@ -264,7 +264,7 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 		return(out);
 	}
 	const double toRad = 0.0174532925199433;
-	std::vector<std::size_t> pm = sort_order_a(y);
+	std::vector<std::size_t> pm = sort_order_d(y);
 	permute(x, pm);
 	permute(y, pm);
 
@@ -379,7 +379,7 @@ SpatRaster SpatRaster::distance_spatvector(SpatVector p, std::string unit, bool 
 	SpatOptions ops(opt);
 	bool setNA = false;
 	if (p.type() == "polygons") {
-		SpatRaster x = rasterize(p, "", {1}, NAN, false, false, false, false, false, ops);
+		SpatRaster x = rasterize(p, "", {1}, NAN, false, "", false, false, false, ops);
 		x = x.edges(false, "inner", 8, 0, ops);
 		SpatRaster xp = x.replaceValues({1}, {NAN}, 1, false, NAN, false, ops);
 		out = x.distance_crds(pxy[0], pxy[1], haversine, true, setNA, unit, opt);
@@ -408,7 +408,7 @@ SpatRaster SpatRaster::distance_rasterize(SpatVector p, double target, double ex
 	std::string gtype = p.type();
 	bool poly = gtype == "polygons";
 
-	x = out.rasterize(p, "", {1}, NAN, false, false, false, false, false, ops);
+	x = out.rasterize(p, "", {1}, NAN, false, "", false, false, false, ops);
 
 	if (!lonlat) {
 		return x.distance(NAN, 0, unit, false, haversine, opt);
@@ -461,7 +461,7 @@ SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees
 	std::string gtype = p.type();
 	bool poly = gtype == "polygons";
 
-	x = out.rasterize(p, "", {1}, NAN, false, false, false, false, false, ops);
+	x = out.rasterize(p, "", {1}, NAN, false, "", false, false, false, ops);
 
 
 	if (poly) {
@@ -2230,7 +2230,7 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 		SpatVector p = e.as_points(false, true, false, ops);
 		p = p.buffer({d}, 10, "", "", NAN, false);
 		p = p.aggregate(true);
-		out = out.rasterize(p, "", {1}, background, false, false, false, false, true, opt);
+		out = out.rasterize(p, "", {1}, background, false, "", false, false, true, opt);
 		if (background == 0) {
 			out.setValueType(3);
 		}

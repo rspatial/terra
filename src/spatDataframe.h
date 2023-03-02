@@ -137,6 +137,8 @@ class SpatDataFrame {
 		std::vector<std::string> one_string();
 		SpatDataFrame unique();
 		size_t strwidth(unsigned i);
+
+		SpatDataFrame sortby(std::string field, bool descending);
 };
 
 #endif //SPATDATAFRAME_GUARD
