@@ -424,7 +424,7 @@ reset.clip <- function() {
 
 	}
 	if (!x$values) {
-		try(set.clip(x$lim, x$lonlat))
+		if (!x$add) try(set.clip(x$lim, x$lonlat))
 		return(x)
 	}
 	if (!x$legend_only) {
@@ -471,8 +471,7 @@ reset.clip <- function() {
 				font=x$font.main, col=x$col.main, xpd=TRUE)
 		}
 	}
-	
-	try(set.clip(x$lim, x$lonlat))
+	if (!x$add) try(set.clip(x$lim, x$lonlat))
 	invisible(x)
 }
 
