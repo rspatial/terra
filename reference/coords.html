@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector</span></span>
-<span><span class="fu">crds</span><span class="op">(</span><span class="va">x</span>, df<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">crds</span><span class="op">(</span><span class="va">x</span>, df<span class="op">=</span><span class="cn">FALSE</span>, list<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster</span></span>
 <span><span class="fu">crds</span><span class="op">(</span><span class="va">x</span>, df<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -67,6 +67,9 @@
 
   <dt>df</dt>
 <dd><p>logical. If <code>TRUE</code> a <code>data.frame</code> is returned instead of a matrix</p></dd>
+  
+  <dt>list</dt>
+<dd><p>logical. If <code>TRUE</code> a <code>list</code> is returned instead of a matrix</p></dd>
   
   <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code> cells that are <code>NA</code> are excluded</p></dd>
