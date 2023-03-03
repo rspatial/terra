@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-16</span>
       </span>
     </div>
 
@@ -55,7 +55,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector,SpatRaster</span></span>
 <span><span class="fu">rasterize</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, field<span class="op">=</span><span class="st">""</span>, <span class="va">fun</span>, <span class="va">...</span>, background<span class="op">=</span><span class="cn">NA</span>, touches<span class="op">=</span><span class="cn">FALSE</span>, update<span class="op">=</span><span class="cn">FALSE</span>, </span>
-<span>  sum<span class="op">=</span><span class="cn">FALSE</span>, cover<span class="op">=</span><span class="cn">FALSE</span>, by<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  cover<span class="op">=</span><span class="cn">FALSE</span>, by<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for matrix,SpatRaster</span></span>
 <span><span class="fu">rasterize</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, values<span class="op">=</span><span class="fl">1</span>, <span class="va">fun</span>, <span class="va">...</span>, background<span class="op">=</span><span class="cn">NA</span>, update<span class="op">=</span><span class="cn">FALSE</span>, </span>
@@ -81,10 +81,12 @@
 
   
   <dt>fun</dt>
-<dd><p>function, summarizing function that returns a single number; for when there are multiple points in one cell. For example <code>mean</code>, <code>length</code> (to get a count), <code>min</code> or <code>max</code>. Only used if <code>x</code> consists of points</p></dd>
+<dd><p>summarizing function for when there are multiple geometries in one cell. For lines and polygons you can only use  <code>"min"</code>, <code>"max"</code> and  <code>"sum"</code>
+  For points you can use any function that returns a single number; for example <code>mean</code>, <code>length</code> (to get a count), <code>min</code> or <code>max</code></p></dd>
 
+  
   <dt>...</dt>
-<dd><p>additional arguments passed to <code>fun</code> if <code>x</code> has point geometries</p></dd>
+<dd><p>additional arguments passed to <code>fun</code></p></dd>
 
   
   <dt>background</dt>
@@ -99,10 +101,6 @@
 <dd><p>logical. If <code>TRUE</code>, the values of the input SpatRaster are updated</p></dd>
 
   
-  <dt>sum</dt>
-<dd><p>logical. If <code>TRUE</code>, the values of overlapping geometries are summed instead of replaced; and <code>background</code> is set to zero. Only used if <code>x</code> does not consists of points</p></dd>
- 
-
   <dt>cover</dt>
 <dd><p>logical. If <code>TRUE</code> and the geometry of <code>x</code> is polygons, the fraction of a cell that is covered by the polygons is returned. This is estimated by determining presence/absence of the polygon in at least 100 sub-cells (more of there are very few cells)</p></dd>
  

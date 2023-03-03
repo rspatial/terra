@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-16</span>
       </span>
     </div>
 
@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-14" id="version-17-14">version 1.7-14<a class="anchor" aria-label="anchor" href="#version-17-14"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-16" id="version-17-16">version 1.7-16<a class="anchor" aria-label="anchor" href="#version-17-16"></a></h2>
 <div class="section level3">
-<h3 id="new-1-7-14">new<a class="anchor" aria-label="anchor" href="#new-1-7-14"></a></h3>
+<h3 id="new-1-7-16">new<a class="anchor" aria-label="anchor" href="#new-1-7-16"></a></h3>
 <ul><li>argument <code>order=FALSE</code> to <code>sort&lt;SpatRaster&gt;</code>
 </li>
 <li>
@@ -66,16 +66,18 @@
 <code>panel&lt;SpatRaster&gt;</code> for “panel” plots (multiple layers, single legend)</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-14">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-14"></a></h3>
+<h3 id="enhancements-1-7-16">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-16"></a></h3>
 <ul><li>it is now possible to save terra options across sessions <a href="https://github.com/rspatial/terra/issues/995" class="external-link">#995</a> by Guillaume Patoine.</li>
 <li>better warnings for <code>is.lonlat</code> <a href="https://github.com/rspatial/terra/issues/1006" class="external-link">#1006</a> by Andrew Gene Brown.</li>
 <li>argument <code>na.rm</code> to <code>merge&lt;SpatRaster&gt;</code>
 </li>
 <li>the axes of maps created with <code>plot</code> are now snug around the mapped area, instead of at the limits of the graphics figure region.</li>
 <li>c++ cleaning to avoid warnings by clang-tidy (e.g. now using <code>.empty()</code> instead of <code>.size()==0</code>). [#1013-1017] by Michael Chirico</li>
+<li>
+<code>rasterize</code> with lines and polygons can now use the “fun” argument (for min, max, mean, and sum) <a href="https://github.com/rspatial/terra/issues/1041" class="external-link">#1041</a> by Bart Huntley</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-14">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-14"></a></h3>
+<h3 id="bug-fixes-1-7-16">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-16"></a></h3>
 <ul><li>the legend created by <code>plet</code> was not always correct. <a href="https://github.com/rspatial/terra/issues/983" class="external-link">#983</a> by Simon Rolph</li>
 <li>
 <code>spatSample&lt;SpatRaster&gt;(regular=TRUE)</code> failed with providing two numbers (row, col) as sample size. <a href="https://github.com/rspatial/terra/issues/991" class="external-link">#991</a> by srfall</li>
@@ -85,6 +87,8 @@
 <code>writeCDF</code> failed when using argument force_v4 <a href="https://github.com/rspatial/terra/issues/1009" class="external-link">#1009</a> by R. Kyle Bocinsky</li>
 <li>
 <code>predict</code> better handling of rasters with many NAs <a href="https://github.com/rspatial/terra/issues/998" class="external-link">#988</a> by Lucas Johnson</li>
+<li>
+<code>layerCor</code> did not handle NAs well if they were in different cells across layers [#1034](<a href="https://github.com/rspatial/terra/issues/1034" class="external-link uri">https://github.com/rspatial/terra/issues/1034</a>} by François Rousseu.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -217,12 +221,12 @@
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-41">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-41"></a></h3>
-<ul><li>faster <code>mosaic</code> and <code>merge&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/issues/577" class="external-link">#577</a> by Jean-Romain</li>
+<ul><li>faster <code>mosaic</code> and <code>merge&lt;SpatRaster&gt;</code> [#577] by Jean-Romain</li>
 <li>
-<code>wrap&lt;SpatRaster&gt;</code> now uses file references if the data is deemed to large to all load into memory. <a href="https://github.com/rspatial/terra/issues/801" class="external-link">#801</a> by Jean-Romain</li>
+<code>wrap&lt;SpatRaster&gt;</code> now uses file references if the data is deemed to large to all load into memory. [#801] by Jean-Romain</li>
 <li>
 <code>readRDS</code> and <code>unserialize</code> now return a SpatRaster or SpatVector (instead of a PackedSpat*)</li>
-<li>better support for a “local” arbitrary Euclidean crs <a href="https://github.com/rspatial/terra/issues/797" class="external-link">#797</a> by Agustin Lobo</li>
+<li>better support for a “local” arbitrary Euclidean crs [#797] by Agustin Lobo</li>
 <li>
 <code>clamp</code> can now take low and high values for each layer</li>
 <li>The <code>pax</code> argument in <code>plot</code> now provides more control over what to draw on each axis via paramters <code>side</code>, <code>tick</code> and <code>lab</code>
@@ -231,30 +235,29 @@
 <li>
 <code>extend</code> has a new argument <code>fill=NA</code>
 </li>
-<li>A warning is now given when <code>c</code>ombining SpatRasters with different CRSs. <a href="https://github.com/rspatial/terra/issues/818" class="external-link">#818</a> by Andrew Marx</li>
+<li>A warning is now given when <code>c</code>ombining SpatRasters with different CRSs. [#818] by Andrew Marx</li>
 <li>
-<code>plotRGB</code> now accounts for the value of zlim when stretching; allowing to use the same coloring scheme across SpatRasters <a href="https://github.com/rspatial/terra/issues/810" class="external-link">#810</a> by Agustin Lobo.</li>
+<code>plotRGB</code> now accounts for the value of zlim when stretching; allowing to use the same coloring scheme across SpatRasters [#810] by Agustin Lobo.</li>
 <li>the center of rotation for <code>spin</code> is now vectorized</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-41">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-41"></a></h3>
-<ul><li>The annoying garbage collection messages <code>Error in x$.self$finalize() : attempt to apply non-function</code> is now suppressed in most cases. <a href="https://github.com/rspatial/terra/issues/218" class="external-link">#218</a> by Charlie Joey Hadley. This problem should go away altogether when a new version of “Rcpp” is released (ETA Jan 2023) thanks to a fix by Kevin Ushey <a href="https://github.com/rspatial/terra/issues/30" class="external-link">#30</a>
-</li>
+<ul><li>The annoying garbage collection messages <code>Error in x$.self$finalize() : attempt to apply non-function</code> is now suppressed in most cases. [#218] by Charlie Joey Hadley. This problem should go away altogether when a new version of “Rcpp” is released (ETA Jan 2023) thanks to a fix by Kevin Ushey [#30]</li>
 <li>
-<code>spatSample</code> with <code>na.rm</code> and SpatRasters with multiple layers did not work. <a href="https://github.com/rspatial/terra/issues/800" class="external-link">#800</a> by Andrea Manica</li>
+<code>spatSample</code> with <code>na.rm</code> and SpatRasters with multiple layers did not work. [#800] by Andrea Manica</li>
 <li>
-<code>adjacent&lt;SpatRaster&gt;</code> with <code>pairs=TRUE, include=TRUE</code> ignored <code>include=TRUE</code> <a href="https://github.com/rspatial/terra/issues/808" class="external-link">#808</a> by Joseph Lewis</li>
+<code>adjacent&lt;SpatRaster&gt;</code> with <code>pairs=TRUE, include=TRUE</code> ignored <code>include=TRUE</code> [#808] by Joseph Lewis</li>
 <li>
-<code>rasterize</code> did not accept “NA” as value for updating <a href="https://github.com/rspatial/terra/issues/809" class="external-link">#809</a> by Márcia Barbosa</li>
+<code>rasterize</code> did not accept “NA” as value for updating [#809] by Márcia Barbosa</li>
 <li>
-<code>extract</code> with a perfectly vertical or horizontal line failed in some cases <a href="https://github.com/rspatial/terra/issues/823" class="external-link">#823</a> by Dimitri Falk</li>
+<code>extract</code> with a perfectly vertical or horizontal line failed in some cases [#823] by Dimitri Falk</li>
 <li>
-<code>wrap&lt;SpatVector&gt;</code> failed if there was a single point geometry <a href="https://github.com/rspatial/terra/issues/815" class="external-link">#815</a> by Patrick Schaefer</li>
+<code>wrap&lt;SpatVector&gt;</code> failed if there was a single point geometry [#815] by Patrick Schaefer</li>
 <li>
-<code>extract&lt;SpatRaster&gt;</code> with <code>weights=TRUE</code> did not return values <a href="https://github.com/rspatial/terra/issues/814" class="external-link">#814</a> by Jean-Luc Dupouey.</li>
+<code>extract&lt;SpatRaster&gt;</code> with <code>weights=TRUE</code> did not return values [#814] by Jean-Luc Dupouey.</li>
 <li>
-<code>x[["newname"]] &lt;- r</code> for SpatRasters <code>x</code> and <code>r</code> did not work <a href="https://github.com/rspatial/terra/issues/795" class="external-link">#795</a> by Jim Shady</li>
-<li>fixed support for some non-conventional netCDF files <a href="https://github.com/rspatial/terra/issues/869" class="external-link">#869</a> by Mike Sumner, <a href="https://github.com/rspatial/terra/issues/864" class="external-link">#864</a> by eleanorecc, and <a href="https://github.com/rspatial/terra/issues/851" class="external-link">#851</a> by Philippe Massicotte.</li>
+<code>x[["newname"]] &lt;- r</code> for SpatRasters <code>x</code> and <code>r</code> did not work [#795] by Jim Shady</li>
+<li>fixed support for some non-conventional netCDF files [#869] by Mike Sumner, [#864] by eleanorecc, and [#851] by Philippe Massicotte.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="name-changes-1-6-41">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-6-41"></a></h3>
