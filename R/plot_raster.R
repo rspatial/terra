@@ -406,10 +406,9 @@ reset.clip <- function() {
 		x$values = FALSE
 	}
 
-	if (x$add) reset.clip()
-
-	if ((!x$add) & (!x$legend_only)) {
-
+	if (x$add) {
+		reset.clip()
+	} else if (!x$legend_only) {
 		#dev.new(noRStudioGD = TRUE)
 		old.mar <- graphics::par()$mar
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
@@ -421,7 +420,6 @@ reset.clip <- function() {
 		if (!is.null(x$background)) {
 			graphics::rect(x$lim[1], x$lim[3], x$lim[2], x$lim[4], col=x$background)			
 		}
-
 	}
 	if (!x$values) {
 		if (!x$add) try(set.clip(x$lim, x$lonlat))
@@ -433,7 +431,6 @@ reset.clip <- function() {
 
 		if (x$axes) x <- .plot.axes(x)
 	}
-
 	
 	if (x$legend_draw) {
 		if (x$legend_type == "continuous") {
@@ -484,25 +481,38 @@ reset.clip <- function() {
   sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
   xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=1.2, 
   line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL, 
-  halo=FALSE, axes=TRUE, box=TRUE, cex=1, ...) {
+  halo=FALSE, axes=TRUE, box=TRUE, cex=1, maxcell, buffer=FALSE, ...) {
 #cex is catch and kill
+
 	out <- list()
-
-
-	out$lim <- out$ext <- as.vector(ext(x))
-	if (!is.null(ext)) {
-		ext <- align(ext(ext), x)
-		x <- crop(x, ext)
-		out$lim <- out$ext <- as.vector(ext(x))
-	}
-	if (!(is.null(xlim) & is.null(ylim))) {
-		e <- as.vector(ext(x))
+	e <- out$lim <- out$ext <- as.vector(ext(x))
+	sext <- NULL
+	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
+		if (!is.null(ext)) {
+			e <- as.vector(align(ext(ext), x))
+		} 
 		if (!is.null(xlim)) e[1:2] <- sort(xlim)
 		if (!is.null(ylim)) e[3:4] <- sort(ylim)
-		x <- crop(x, ext(e))
-		out$ext <- as.vector(ext(x))
-		out$lim <- e
+		sext <- out$lim <- out$ext <- e
+	} 
+	if (ncell(x) > 1.1 * maxcell) {
+		if (inherits(alpha, "SpatRaster")) {
+			if (nlyr(alpha) > 1) {
+				alpha <- alpha[[y]]
+			}
+			alpha <- spatSample(alpha, maxcell, ext=sext, method="regular", as.raster=TRUE, warn=FALSE)
+		}
+		x <- spatSample(x, maxcell, ext=sext, method="regular", as.raster=TRUE, warn=FALSE)
+		out$lim <- out$ext <- as.vector(ext(x))
 	}
+	
+	if (buffer) {
+		dx <- diff(out$lim[1:2]) / 50
+		dy <- diff(out$lim[3:4]) / 50
+		out$lim[1:2] <- out$lim[1:2] + c(-dx, dx)
+		out$lim[3:4] <- out$lim[3:4] + c(-dy, dy)
+	}
+
 
 	out$add <- isTRUE(add)
 	out$axs <- as.list(pax)
@@ -641,7 +651,7 @@ reset.clip <- function() {
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"),
-	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, background=NULL, box=axes, ...) {
+	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, background=NULL, box=axes, ...) {
 
 		y <- round(y)
 		stopifnot((min(y) > 0) & (max(y) <= nlyr(x)))
@@ -653,7 +663,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 					alpha <- alpha[[y]]
 				}
 			}
-			plot(x, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=maxcell/(length(x)/2), smooth=smooth, range=range, levels=levels, all_levels=all_levels, breaks=breaks, breakby=breakby, fun=fun, colNA=colNA, alpha=alpha, grid=grid, sort=sort, decreasing=decreasing, ext=ext, reset=reset, add=add, background=background, box=box, ...)
+			plot(x, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=2*maxcell/length(y), smooth=smooth, range=range, levels=levels, all_levels=all_levels, breaks=breaks, breakby=breakby, fun=fun, colNA=colNA, alpha=alpha, grid=grid, sort=sort, decreasing=decreasing, ext=ext, reset=reset, add=add, buffer=buffer, background=background, box=box, ...)
 			return(invisible())
 		}
 
@@ -664,15 +674,6 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 
 		x <- x[[y]]
-		if (ncell(x) > 1.1 * maxcell) {
-			if (inherits(alpha, "SpatRaster")) {
-				if (nlyr(alpha) > 1) {
-					alpha <- alpha[[y]]
-				}
-				alpha <- spatSample(alpha, maxcell, ext=ext, method="regular", as.raster=TRUE, warn=FALSE)
-			}
-			x <- spatSample(x, maxcell, ext=ext, method="regular", as.raster=TRUE, warn=FALSE)
-		}
 
 		if (is.character(legend)) {
 			plg$x <- legend
@@ -732,7 +733,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			}
 		}
 
-		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, sort=sort, decreasing=decreasing, ext=ext, all_levels=all_levels, breaks=breaks, breakby=breakby, add=add, background=background, box=box, ...)
+		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, sort=sort, decreasing=decreasing, ext=ext, all_levels=all_levels, breaks=breaks, breakby=breakby, add=add, buffer=buffer, background=background, box=box, maxcell=maxcell, ...)
 
 		if (!is.null(fun)) {
 			if (!is.null(formals(fun))) {
@@ -773,7 +774,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			mar=c(1.5, 1, 2.5, 3)
 		}
 		graphics::par(mfrow=nrnc)
-		maxcell=maxcell/(nl/2)
+		maxcell= 2 * maxcell / nl
 
 		if (missing("main")) {
 			tm <- time(x)
@@ -786,7 +787,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			main <- rep_len(main, nl)
 		}
 		for (i in 1:nl) {
-			plot(x, i, main=main[i], mar=mar, ...)
+			plot(x, i, main=main[i], mar=mar, maxcell=maxcell, ...)
 		}
 	}
 )

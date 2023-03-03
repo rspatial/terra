@@ -27,8 +27,8 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), 
     maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE,
 	breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, 
-	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, background=NULL,
-	box=axes, ...)
+	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, 
+	background=NULL, box=axes, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, ...)
 
@@ -52,7 +52,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{mar}{numeric vector of length 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use \code{mar=NA} to not set the margins}
   \item{legend}{logical or character. If not \code{FALSE} a legend is drawn. The character value can be used to indicate where the legend is to be drawn. For example "topright" or "bottomleft". Use \code{plg} for more refined placement. Not supported for continuous legends (the default for raster data)}
   \item{axes}{logical. Draw axes?}
-  \item{buffer}{logical. If \code{TRUE} the plotting area is slightly larger than the extent of \code{x}}
+  \item{buffer}{logical. If \code{TRUE} the plotting area is made slightly larger than the extent of \code{x}}
   \item{background}{background color. Default is no color (white)}
   \item{box}{logical. Should a box be drawn around the map?}
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}. Parameter \code{digits} can be used to set the number of digits to print (after the decimal point for a continuous legend). Parameter \code{size} can be used to change the height and/or width of a continuous legend. The defaults are \code{c(1,1)}, negative values for size flip the order of the legend}

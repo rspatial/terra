@@ -385,7 +385,14 @@ set_factors <- function(x, ff, cts, asdf) {
 }
 
 
-sampleRaster <- function(x, size, method, replace, warn) {
+sampleRaster <- function(x, size, method, replace, ext, warn) {
+	hadWin <- FALSE
+	if (!is.null(ext)) {
+		hadWin <- window(x)
+		oldWin <- ext(x)
+		w <- intersect(ext(x), ext(ext))		
+		window(x) <- w
+	}
 	if (method == "regular") {
 		if (length(size) > 1) {
 			x@ptr <- x@ptr$sampleRowColRaster(size[1], size[2], warn[1])
@@ -396,6 +403,10 @@ sampleRaster <- function(x, size, method, replace, warn) {
 		x@ptr <- x@ptr$sampleRandomRaster(size, replace, .seed())
 	} else {
 		error("spatSample", "method must be 'regular' or 'random' if as.raster=TRUE")
+	}
+	if (hadWin) {
+		window(x) <- NULL
+		window(x) <- oldWin
 	}
 	messages(x, "spatSample")
 }
@@ -422,7 +433,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 		}
 
-		if (as.raster) return(sampleRaster(x, size, method, replace, warn))
+		if (as.raster) return(sampleRaster(x, size, method, replace, ext, warn))
 
 		if (method == "stratified") {
 			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights) )
