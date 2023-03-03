@@ -385,9 +385,10 @@ set_factors <- function(x, ff, cts, asdf) {
 }
 
 
-sampleRaster <- function(x, size, method, replace, ext, warn) {
-	hadWin <- FALSE
+sampleRaster <- function(x, size, method, replace, ext=NULL, warn) {
+	hadWin <- hasWin <- FALSE
 	if (!is.null(ext)) {
+		hasWin <- TRUE
 		hadWin <- window(x)
 		oldWin <- ext(x)
 		w <- intersect(ext(x), ext(ext))		
@@ -404,9 +405,11 @@ sampleRaster <- function(x, size, method, replace, ext, warn) {
 	} else {
 		error("spatSample", "method must be 'regular' or 'random' if as.raster=TRUE")
 	}
-	if (hadWin) {
+	if (hasWin) {
 		window(x) <- NULL
-		window(x) <- oldWin
+		if (hadWin) {
+			window(x) <- oldWin
+		}
 	}
 	messages(x, "spatSample")
 }

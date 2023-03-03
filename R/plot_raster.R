@@ -413,7 +413,6 @@ reset.clip <- function() {
 		old.mar <- graphics::par()$mar
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
 		if (x$reset) on.exit(graphics::par(mar=old.mar))
-		
 		arglist <- c(list(x=x$lim[1:2], y=x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=FALSE), x$dots)
 		do.call(plot, arglist)
 
@@ -486,23 +485,30 @@ reset.clip <- function() {
 
 	out <- list()
 	e <- out$lim <- out$ext <- as.vector(ext(x))
-	sext <- NULL
+	hadWin <- hasWin <- FALSE
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
-			e <- as.vector(align(ext(ext), x))
+			e <- as.vector(align( intersect(ext(ext), ext(x)), x))
+			out$lim <- out$ext <- e
 		} 
 		if (!is.null(xlim)) e[1:2] <- sort(xlim)
 		if (!is.null(ylim)) e[3:4] <- sort(ylim)
-		sext <- out$lim <- out$ext <- e
+		out$lim <- e
+		
+		hasWin <- TRUE
+		hadWin <- window(x)
+		oldWin <- ext(x)
+		w <- intersect(ext(x), ext(e))		
+		window(x) <- w
 	} 
 	if (ncell(x) > 1.1 * maxcell) {
 		if (inherits(alpha, "SpatRaster")) {
 			if (nlyr(alpha) > 1) {
 				alpha <- alpha[[y]]
 			}
-			alpha <- spatSample(alpha, maxcell, ext=sext, method="regular", as.raster=TRUE, warn=FALSE)
+			alpha <- spatSample(alpha, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
 		}
-		x <- spatSample(x, maxcell, ext=sext, method="regular", as.raster=TRUE, warn=FALSE)
+		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
 		out$lim <- out$ext <- as.vector(ext(x))
 	}
 	
@@ -512,7 +518,6 @@ reset.clip <- function() {
 		out$lim[1:2] <- out$lim[1:2] + c(-dx, dx)
 		out$lim[3:4] <- out$lim[3:4] + c(-dy, dy)
 	}
-
 
 	out$add <- isTRUE(add)
 	out$axs <- as.list(pax)
@@ -645,6 +650,13 @@ reset.clip <- function() {
 			nrow=nrow(out$r), byrow=TRUE)
 		}
 		out <- .plotit(out)
+	}
+	
+	if (hasWin) {
+		window(x) <- NULL
+		if (hadWin) {
+			window(x) <- oldWin
+		}
 	}
 	invisible(out)
 }
