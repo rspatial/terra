@@ -419,7 +419,7 @@ setMethod("dots", signature(x="SpatVector"),
 	e <- out$lim <- out$ext <- as.vector(ext(x))
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
-			stopifnot(inherits(ext, "SpatExtent"))
+			ext <- ext(ext)
 			x <- crop(x, ext)
 			out$ext <- as.vector(ext(x))
 			out$lim <- as.vector(ext)

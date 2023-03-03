@@ -451,7 +451,8 @@ prettyNumbs <- function(x, digits) {
 	hadWin <- hasWin <- FALSE
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
-			e <- as.vector(align( intersect(ext(ext), ext(x)), x))
+			ext <- ext(ext)
+			e <- as.vector(align( intersect(ext, ext(x)), x))
 			out$lim <- out$ext <- e
 		} 
 		if (!is.null(xlim)) {
