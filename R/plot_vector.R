@@ -416,7 +416,7 @@ setMethod("dots", signature(x="SpatVector"),
 		plg=list()
 	}
 	out <- list()
-	e <- out$lim <- out$ext <- as.vector(ext(x))
+	out$lim <- out$ext <- as.vector(ext(x))
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
 			ext <- ext(ext)
@@ -426,13 +426,12 @@ setMethod("dots", signature(x="SpatVector"),
 		} 
 		if (!is.null(xlim)) {
 			stopifnot(length(xlim) == 2)
-			e[1:2] <- sort(xlim)
+			out$lim[1:2] <- sort(xlim)
 		}
 		if (!is.null(ylim)) {
 			stopifnot(length(ylim) == 2)
-			e[3:4] <- sort(ylim)
+			out$lim[3:4] <- sort(ylim)
 		}
-		out$lim <- e
 	} 
 	out$ngeom <- nrow(x)
 
