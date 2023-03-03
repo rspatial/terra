@@ -2264,7 +2264,7 @@ if test $RVER_MAJOR = "development"; then
     CXX=`"${RBIN}" CMD config CXX`
 else
     if test $RVER_MAJOR -lt 3 -o $RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3; then
-        as_fn_error $? "sf is not compatible with R versions before 3.3.0" "$LINENO" 5
+        as_fn_error $? "terra is not compatible with R versions before 3.3.0" "$LINENO" 5
     else
         CXX=`"${RBIN}" CMD config CXX`
     fi
@@ -2418,7 +2418,7 @@ GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
 if test ${GDAL_MAJ_VER} -lt 2 ; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-  as_fn_error $? "sf is not compatible with GDAL versions below 2.0.1" "$LINENO" 5
+  as_fn_error $? "terra is not compatible with GDAL versions below 2.0.1" "$LINENO" 5
 else
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }

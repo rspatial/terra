@@ -23,7 +23,7 @@ if test [$RVER_MAJOR = "development"]; then
     CXX=`"${RBIN}" CMD config CXX`
 else
     if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
-        AC_MSG_ERROR([sf is not compatible with R versions before 3.3.0])
+        AC_MSG_ERROR([terra is not compatible with R versions before 3.3.0])
     else
         CXX=`"${RBIN}" CMD config CXX`
     fi
@@ -111,7 +111,7 @@ AC_MSG_CHECKING([GDAL version >= 2.0.1])
 GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
 if test ${GDAL_MAJ_VER} -lt 2 ; then
   AC_MSG_RESULT(no)
-  AC_MSG_ERROR([sf is not compatible with GDAL versions below 2.0.1])
+  AC_MSG_ERROR([terra is not compatible with GDAL versions below 2.0.1])
 else
    AC_MSG_RESULT(yes)
 fi
