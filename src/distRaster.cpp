@@ -922,11 +922,11 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 	std::vector<double> d;
 
 	if (srs.is_empty() || x.srs.is_empty()) {
-		setError("SRS not defined");
+		setError("crs not defined");
 		return(d);
 	}
 	if (! srs.is_same(x.srs, false) ) {
-		setError("SRS do not match");
+		setError("crs do not match");
 		return(d);
 	}
 
