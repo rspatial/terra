@@ -426,11 +426,14 @@ setMethod("dots", signature(x="SpatVector"),
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
 			ext <- ext(ext)
-			#x <- crop(x, ext)
-			x <- x[ext, ]
+			if (!is.null(xlim) | !is.null(ylim)) {
+				x <- crop(x, ext)
+			} else {
+				x <- x[ext, ]
+			}
 			out$ext <- as.vector(ext(x))
 			out$lim <- as.vector(ext)
-		} 
+		}
 		if (!is.null(xlim)) {
 			stopifnot(length(xlim) == 2)
 			out$lim[1:2] <- sort(xlim)
