@@ -73,9 +73,10 @@ setMethod("geom", signature(x="SpatVector"),
 setMethod("crds", signature(x="SpatVector"),
 	function(x, df=FALSE, list=FALSE){
 		if (list) {
-			if (geomtype(x) == "lines") {
+			gt <- geomtype(x) 
+			if (gt == "lines") {
 				x@ptr$linesNA()
-			} else if (geomtype(x) == "polygons") {
+			} else if (gt == "polygons") {
 				x@ptr$polygonsList()			
 			} else {
 				x@ptr$coordinates()
