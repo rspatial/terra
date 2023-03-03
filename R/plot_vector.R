@@ -336,7 +336,8 @@ setMethod("dots", signature(x="SpatVector"),
 			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background)
 		}
 	}
-
+	if (isTRUE(out$blank)) return(out)
+	
 	nuq <- length(out$uv)
 	if (out$legend_type == "none") {
 		out <- .vect.legend.none(out)
@@ -411,16 +412,22 @@ setMethod("dots", signature(x="SpatVector"),
 	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
 	density=NULL, angle=45, border="black", dig.lab=3, cex=1, ...) {
 
-	if ((y == "") && (is.null(values))) {
-		type="none"
-		plg=list()
-	}
 	out <- list()
+	out$blank <- FALSE
+	if ((y == "") && (is.null(values))) {
+		if (missing(type)) type <- "none"
+		if (type == "n") {
+			out$blank <- TRUE
+		}
+		type <- "none"
+		plg <- list()
+	}
 	out$lim <- out$ext <- as.vector(ext(x))
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
 			ext <- ext(ext)
-			x <- crop(x, ext)
+			#x <- crop(x, ext)
+			x <- x[ext, ]
 			out$ext <- as.vector(ext(x))
 			out$lim <- as.vector(ext)
 		} 
