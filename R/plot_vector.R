@@ -411,40 +411,38 @@ setMethod("dots", signature(x="SpatVector"),
 	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
 	density=NULL, angle=45, border="black", dig.lab=3, cex=1, ...) {
 
-
 	if ((y == "") && (is.null(values))) {
 		type="none"
 		plg=list()
 	}
-
 	out <- list()
-	out$ngeom <- nrow(x)
-
-	e <- as.vector(ext(x))
-	out$ext <- e
-	if (!is.null(ext)) {
-		stopifnot(inherits(ext, "SpatExtent"))
-		x <- crop(x, ext)
-		out$ext <- as.vector(ext(x))
-		out$lim <- as.vector(ext)
-	} else {
+	e <- out$lim <- out$ext <- as.vector(ext(x))
+	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
+		if (!is.null(ext)) {
+			stopifnot(inherits(ext, "SpatExtent"))
+			x <- crop(x, ext)
+			out$ext <- as.vector(ext(x))
+			out$lim <- as.vector(ext)
+		} 
 		if (!is.null(xlim)) {
 			stopifnot(length(xlim) == 2)
 			e[1:2] <- sort(xlim)
-		} else if (buffer) {
-			dx <- diff(e[1:2]) / 50
-			e[1:2] <- e[1:2] + c(-dx, dx)
 		}
 		if (!is.null(ylim)) {
 			stopifnot(length(ylim) == 2)
 			e[3:4] <- sort(ylim)
-		} else if (buffer) {
-			dy <- diff(e[3:4]) / 50
-			e[3:4] <- e[3:4] + c(-dy, dy)
 		}
 		out$lim <- e
-	}
+	} 
+	out$ngeom <- nrow(x)
 
+	if (buffer) {
+		dx <- diff(out$lim[1:2]) / 50
+		dy <- diff(out$lim[3:4]) / 50
+		out$lim[1:2] <- out$lim[1:2] + c(-dx, dx)
+		out$lim[3:4] <- out$lim[3:4] + c(-dy, dy)
+	}
+	
 	out$main <- main
 	if (is.null(out$main) || any(is.na(out$main))) out$main <- ""
 	out$cex.main  <- cex.main
