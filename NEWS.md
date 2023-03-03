@@ -9,6 +9,7 @@
 - `compare<SpatRaster>` and `logic<SpatRaster>` methods
 - `vect<SpatExtent>` method
 - `panel<SpatRaster>` for "panel" plots (multiple layers, single legend)
+- `rowSums`, `colSums`, `rowMeans`, `colMeans` for SpatRaster
 
 ## enhancements
 

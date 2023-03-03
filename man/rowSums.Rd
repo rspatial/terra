@@ -1,21 +1,27 @@
-\name{rowSums}
+\name{rcSumMean}
 
 \docType{methods}
 
 \alias{rowSums}
-\alias{rowSums,SpatRaster-method}
+\alias{rowMeans}
 \alias{colSums}
+\alias{colMeans}
+\alias{rowSums,SpatRaster-method}
 \alias{colSums,SpatRaster-method}
+\alias{rowMeans,SpatRaster-method}
+\alias{colMeans,SpatRaster-method}
 
-\title{rowSums and colSums for SpatRaster}
+\title{rowSums, colSums, rowMeans, colMeans for SpatRaster}
 
 \description{
-Sum values of a SpatRaster by row or column. 
+Sum or average values of a SpatRaster by row or column. 
 }
 
 \usage{
 \S4method{rowSums}{SpatRaster}(x, na.rm=FALSE, dims=1L,...) 
 \S4method{colSums}{SpatRaster}(x, na.rm=FALSE, dims=1L,...) 
+\S4method{rowMeans}{SpatRaster}(x, na.rm=FALSE, dims=1L,...) 
+\S4method{colMeans}{SpatRaster}(x, na.rm=FALSE, dims=1L,...) 
 }
 
 \arguments{
@@ -30,7 +36,7 @@ matrix
 }
 
 \seealso{
-See \code{\link{global}} for summing all cells values
+See \code{\link{global}} for summing or averaging all cell values
 }
 
 \examples{
@@ -39,6 +45,8 @@ values(r) <- 1:10
 as.matrix(r, wide=TRUE)
 rowSums(r)
 colSums(r)
+rowMeans(r)
+colMeans(r)
 }
 
 \keyword{spatial}
