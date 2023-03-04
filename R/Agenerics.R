@@ -1,6 +1,10 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
 if (!isGeneric("panel")) {setGeneric("panel", function(x, ...) standardGeneric("panel"))}
+#if (!isGeneric("colSums")) {setGeneric("colSums", function(x, ...) standardGeneric("colSums"))}	
+#if (!isGeneric("rowSums")) {setGeneric("rowSums", function(x, ...) standardGeneric("rowSums"))}	
+#if (!isGeneric("colMeans")) {setGeneric("colMeans", function(x, ...) standardGeneric("colMeans"))}	
+#if (!isGeneric("rowMeans")) {setGeneric("rowMeans", function(x, ...) standardGeneric("rowMeans"))}	
 
 if (!isGeneric("logic")) {setGeneric("logic", function(x, ...) standardGeneric("logic"))}
 if (!isGeneric("compare")) {setGeneric("compare", function(x, y, ...) standardGeneric("compare"))}

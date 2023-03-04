@@ -1,4 +1,4 @@
-# version 1.7-16
+# version 1.7-17
 
 ## new
 
@@ -9,7 +9,6 @@
 - `compare<SpatRaster>` and `logic<SpatRaster>` methods
 - `vect<SpatExtent>` method
 - `panel<SpatRaster>` for "panel" plots (multiple layers, single legend)
-- `rowSums`, `colSums`, `rowMeans`, `colMeans` for SpatRaster
 
 ## enhancements
 
