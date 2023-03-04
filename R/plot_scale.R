@@ -169,7 +169,7 @@ north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ..
 }
 
 
-sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels, adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, halo=FALSE, ...){
+sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels, adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, halo=TRUE, ...){
 
 	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
