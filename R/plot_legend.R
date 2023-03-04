@@ -84,8 +84,10 @@ retro_labels <- function(x, lat=TRUE) {
 .plot.axes <- function(x) {
 
 	if (is.null(x$axs$cex.axis)) {
-		x$axs$cex.axis = 0.7
+		x$axs$cex.axis = 1
 	}
+	x$axs$cex.axis <- x$axs$cex.axis * 0.7
+	
 	if (is.null(x$axs$mgp)) {
 		x$axs$mgp = c(2, .25, 0)
 	}
@@ -409,7 +411,9 @@ retro_labels <- function(x, lat=TRUE) {
 	}
 
 	cex <- x$leg$cex
-	if (is.null(cex)) cex <- 0.8
+	if (is.null(cex)) cex <- 1
+	cex <- cex * 0.8
+	
 	rotate <- isTRUE(x$leg$rotate)
 	srt <- ifelse(rotate, 90, 0)
 
@@ -462,7 +466,8 @@ retro_labels <- function(x, lat=TRUE) {
 		} else {
 			txt <- paste(x$leg$title, collapse="\n")		
 		}
-		text(x=e$xmax, y=e$ymax, labels=txt, pos=3, offset=1.5*graphics::strheight("A",cex=x$leg$title.cex), cex=x$leg$title.cex, xpd=NA)
+		# offset=.5*graphics::strheight("a",cex=x$leg$title.cex)
+		text(x=e$xmax, y=e$ymax, labels=txt, pos=3, cex=x$leg$title.cex, xpd=NA)
 	}
 	x
 }
@@ -489,12 +494,13 @@ get_legxy <- function(r, e, pos, yshift) {
 }
 
 
-.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="",
+.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=1, geomtype="",
 	lty=1, lwd=1, pch=1, angle=45, density=NULL, pt.cex = 1, pt.bg="black", pt.lwd=1, 
 	bty="n", border="black", seg.len=1, plotlim, yshift=NULL, ...,
 # catch and kill
 	merge, trace, size) {
 
+	cex <- cex * 0.8
 	if (x %in% c("top", "default")) {
 		#usr <- graphics::par("usr")
 		x <- plotlim[2]

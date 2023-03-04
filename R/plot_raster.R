@@ -18,7 +18,7 @@
 	uzi <- round(unique(z), 12)
 
 	if (type == "depends") {
-		if (length(uzi) < 6) {
+		if (length(uzi) < 9) {
 			return (.as.raster.classes(out, x))
 		}
 	} else if ((length(uzi) == 1) && is.null(out$range)) {
