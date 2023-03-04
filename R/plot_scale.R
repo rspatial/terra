@@ -169,7 +169,7 @@ north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ..
 }
 
 
-sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels, adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, ...){
+sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels, adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, halo=FALSE, ...){
 
 	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
@@ -190,6 +190,9 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 	xy <- .get_xy(xy, dd, 0, pr, "bottomleft", caller="sbar")
 
 	if (type == "line") {
+		if (halo) {
+			lines(matrix(c(xy[1], xy[2], xy[1]+dd, xy[2]), byrow=T, nrow=2), lwd=lwd+1, xpd=xpd, col="white")
+		}
 		lines(matrix(c(xy[1], xy[2], xy[1]+dd, xy[2]), byrow=T, nrow=2), lwd=lwd, xpd=xpd, ...)
 		
 		if (missing(labels) || is.null(labels)) {
@@ -221,10 +224,15 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 		}
 		tadd <- max(0, tadd)
 		if (length(labels) == 1) labels =c("", labels, "")
-		text(xy[1], xy[2]+tadd,labels=labels[1], xpd=xpd, adj=adj, ...)
-		text(xy[1]+0.5*dd, xy[2]+tadd,labels=labels[2], xpd=xpd, adj=adj,...)
-		text(xy[1]+dd, xy[2]+tadd,labels=labels[3], xpd=xpd, adj=adj,...)
-
+		if (halo) {
+			.halo(xy[1], xy[2]+tadd,labels=labels[1], xpd=xpd, adj=adj, ...)
+			.halo(xy[1]+0.5*dd, xy[2]+tadd,labels=labels[2], xpd=xpd, adj=adj,...)
+			.halo(xy[1]+dd, xy[2]+tadd,labels=labels[3], xpd=xpd, adj=adj,...)
+		} else {
+			text(xy[1], xy[2]+tadd,labels=labels[1], xpd=xpd, adj=adj, ...)
+			text(xy[1]+0.5*dd, xy[2]+tadd,labels=labels[2], xpd=xpd, adj=adj,...)
+			text(xy[1]+dd, xy[2]+tadd,labels=labels[3], xpd=xpd, adj=adj,...)
+		}
 		xy[2] <- xy[2] - dd/10
 
 	} else if (type == "bar") {
