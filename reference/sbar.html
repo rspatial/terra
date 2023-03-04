@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sbar</span><span class="op">(</span><span class="va">d</span>, xy<span class="op">=</span><span class="cn">NULL</span>, type<span class="op">=</span><span class="st">"line"</span>, divs<span class="op">=</span><span class="fl">2</span>, below<span class="op">=</span><span class="st">""</span>, lonlat<span class="op">=</span><span class="cn">NULL</span>, <span class="va">labels</span>,</span>
-<span>  adj<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">2</span>, xpd<span class="op">=</span><span class="cn">TRUE</span>, ticks<span class="op">=</span><span class="cn">FALSE</span>, scaleby<span class="op">=</span><span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span>  adj<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">2</span>, xpd<span class="op">=</span><span class="cn">TRUE</span>, ticks<span class="op">=</span><span class="cn">FALSE</span>, scaleby<span class="op">=</span><span class="fl">1</span>, halo<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -94,6 +94,9 @@
 
 <dt>scaleby</dt>
 <dd><p>numeric. If <code>labels</code> is not provided. The labels are divided by this number. For example, use 1000 to go from m to km</p></dd>
+
+<dt>halo</dt>
+<dd><p>logical. If <code>TRUE</code> the "line" type scale bar gets a white background</p></dd>
 
 <dt>...</dt>
 <dd><p>graphical arguments to be passed to other methods</p></dd>
