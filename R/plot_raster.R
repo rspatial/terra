@@ -443,7 +443,7 @@ prettyNumbs <- function(x, digits) {
   sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
   xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=1.2, 
   line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL, 
-  halo=FALSE, axes=TRUE, box=TRUE, cex=1, maxcell, buffer=FALSE, ...) {
+  halo=FALSE, axes=TRUE, box=TRUE, cex=1, maxcell=500000, buffer=FALSE, ...) {
 #cex is catch and kill
 
 	out <- list()
