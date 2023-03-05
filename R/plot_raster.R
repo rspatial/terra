@@ -687,8 +687,13 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				if (has.colors(x)) {
 					coltab <- coltab(x)[[1]]
 					if (is.factor(x)) {
-						cats <- levels(x)[[1]] 
-						type <- "factor"
+						if (activeCat(x) >= 0) {
+							cats <- levels(x)[[1]] 
+							type <- "factor"
+						} else {
+							type <- "colortable"
+							legend <- FALSE
+						}
 					} else {
 						type <- "colortable"
 						legend <- FALSE

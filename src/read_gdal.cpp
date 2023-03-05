@@ -140,7 +140,7 @@ bool read_aux_json(std::string filename, std::vector<int_64> &time, std::string 
 
 
 
-bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats) {
+bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::string &driver) {
 
 /*
 	const char *GFU_type_string[] = {"GFT_Integer", "GFT_Real","GFT_String"};
@@ -154,23 +154,21 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats) {
 	size_t nc = (int) pRAT->GetColumnCount();
 	size_t nr = (int) pRAT->GetRowCount();
 
-	std::vector<std::string> ss = {"histogram", "count", "red", "green", "blue", "opacity", "r", "g", "b", "alpha"};
+	std::vector<std::string> ss = {"histogram", "count", "red", "green", "blue", "alpha", "opacity", "r", "g", "b", "a"};
 
-	//std::vector<std::string> ratnms;
+	std::vector<std::string> ratnms;
 	std::vector<int> id, id2;
 
 	bool hasvalue=false;
-	//std::string valuename = "";
 	for (size_t i=0; i<nc; i++) {
 		std::string name = pRAT->GetNameOfCol(i);
+		ratnms.push_back(name);
 		lowercase(name);
-		//ratnms.push_back(name);
-		if (!hasvalue && ((name == "value") || (name == "id"))) {
+		if (!hasvalue && ((name == "value") || (name == "id") || (name == "ids"))) {
 			id.insert(id.begin(), i);
 			hasvalue = true;
-			//valuename = name;
 		} else {
-			int k = where_in_vector(name, ss, true);
+			int k = where_in_vector(name, ss, false);
 			if (k >= 0) {
 				id2.push_back(i);
 			} else {
@@ -178,12 +176,20 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats) {
 			}
 		}
 	}
-	bool out = true;
+	bool good_rat = true;
 	if (id.size() <= 1) {
 // #790 avoid having just "count" or "histogram" 
-		out = false;
+		good_rat = false;
 	}
 	id.insert(id.end(), id2.begin(), id2.end());
+
+	if (driver == "AIG") {
+		std::vector<std::string> compnms = {"ID", "VALUE", "COUNT"};
+		if ((id.size() == 3) && (ratnms == compnms)) {
+			cats.index = -1;
+			return false;
+		}
+	}
 
 	if (!hasvalue) {
 		std::vector<long> vid(nr);
@@ -219,9 +225,12 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats) {
 			}
 			cats.d.add_column(d, name);
 		}
+	}	
+	if (cats.d.nrow() == 0) {
+		return false;
 	}
-	cats.index = cats.d.ncol() > 1 ? 1 : 0;
-	return(out);
+	cats.index = good_rat ? (cats.d.ncol() > 1 ? 1 : 0) : -1;
+	return true;
 }
 
 
@@ -981,29 +990,14 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 
 		SpatCategories crat;
-		bool have_rat = false;
 		bool found_rat = false;
 		
 		if (!s.hasCategories[i]) {
 			GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 			if (rat != NULL) {
-				found_rat = true;
-				have_rat = GetRAT(rat, crat);
-				if (have_rat && crat.d.nrow() > 0) {
-					if (gdrv == "AIG") {
-						std::vector<std::string> catnms = crat.d.get_names();
-						std::vector<std::string> compnms = {"ID", "VALUE", "COUNT"};
-						if ((catnms.size() > 3) || (catnms != compnms)) {
-							s.cats[i] = crat;
-							s.hasCategories[i] = true;
-							have_rat = true;
-						}
-					} else {
-						s.cats[i] = crat;
-						s.hasCategories[i] = true;
-						have_rat = true;
-					}
-				}
+				found_rat = GetRAT(rat, crat, gdrv);
+				s.cats[i] = crat;
+				s.hasCategories[i] = true;
 			}
 		}
 		//	} else {
@@ -1014,7 +1008,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			if (GetVAT(fname, crat)) {
 				s.cats[i] = crat;
 				s.hasCategories[i] = true;
-				have_rat = true;
+				found_rat = true;
 			}
 		}
 
@@ -1028,7 +1022,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 		std::string nm = "";
 		if (s.hasCategories[i]) {
-			if (s.cats[i].index < s.cats[i].d.ncol()) {
+			if ((s.cats[i].index >= 0) && (s.cats[i].index < (int)s.cats[i].d.ncol())) {
 				std::vector<std::string> nms = s.cats[i].d.get_names();
 				nm = nms[s.cats[i].index];
 			}

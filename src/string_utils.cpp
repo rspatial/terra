@@ -103,6 +103,12 @@ bool ends_on(std::string const &s, std::string const &end) {
 }
 
 
+std::string lower_case(std::string s) {
+	std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+	return s;
+}
+
+
 void lowercase(std::string &s) {
 	std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 }
@@ -122,7 +128,7 @@ bool is_in_vector(std::string s, std::vector<std::string> ss) {
 }
 
 
-int where_in_vector(std::string s, std::vector<std::string> ss, bool tolower) {
+int where_in_vector(std::string s, const std::vector<std::string> &ss, const bool &tolower) {
 	int i = -1;
 	if (tolower) lowercase(s);
 	auto it = std::find (ss.begin(), ss.end(), s);

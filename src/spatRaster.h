@@ -37,8 +37,7 @@ class SpatCategories {
 	public:
 		virtual ~SpatCategories(){}
 		SpatDataFrame d;
-		unsigned index = 0;
-		
+		int index = 0;	
 		bool combine(SpatCategories &x);
 		bool concatenate(SpatCategories &x);
 };
@@ -425,7 +424,7 @@ class SpatRaster {
 		std::vector<std::string> getLabels(unsigned layer);
 		bool setLabels(unsigned layer, std::vector<long> value, std::vector<std::string> labels, std::string name);
 		int getCatIndex(unsigned layer);
-		bool setCatIndex(unsigned layer, unsigned index);
+		bool setCatIndex(unsigned layer, int index);
 		
 		bool hasScaleOffset();
 		bool setScaleOffset(std::vector<double> sc, std::vector<double> of);

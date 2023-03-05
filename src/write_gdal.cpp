@@ -160,6 +160,27 @@ bool is_rat(SpatDataFrame &d) {
 	return true;
 }
 
+
+bool is_ratct(SpatDataFrame &d) {
+
+	std::vector<std::string> ss = {"red", "green", "blue", "r", "g", "b"};
+	std::vector<std::string> nms = d.names;
+	size_t cnt = 0;
+	
+	for (size_t i=0; i<nms.size(); i++) {
+		std::string name = nms[i];
+		lowercase(name);
+		int k = where_in_vector(name, ss, true);
+		if (k >= 0) {
+			cnt++;
+		}
+	}
+	return (cnt >= 3);
+}
+
+
+
+
 /*
 bool setCats(GDALRasterBand *poBand, std::vector<std::string> &labels) {
 	char **labs = NULL;
@@ -386,7 +407,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		// other layers affected? etc.
 		warnCT = false;
 		if (hasCT[0]) {
-			if (ct[0].nrow() < 256) {
+			if (is_ratct(source[0].cats[0].d)) {
+				std::fill(hasCT.begin(), hasCT.end(), false);
+			} else if (ct[0].nrow() < 256) {
 				if (opt.datatype_set && (datatype != opt.get_datatype())) {
 					addWarning("change datatype to INT1U to write the color-table");
 				} else {
@@ -406,7 +429,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 				datatype = "INT4S";
 			}
 		}
-	} else if (hasCT[0] || cat) {
+	} else if (hasCT[0]) {
 		if (opt.datatype_set && (datatype != "INT1U")) {
 			addWarning("change datatype to INT1U to write the color-table");
 		} else {

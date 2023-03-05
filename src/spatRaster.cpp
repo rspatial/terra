@@ -1382,15 +1382,17 @@ std::vector<std::string> SpatRaster::getLabels(unsigned layer) {
 	return out;
 }
 
-bool SpatRaster::setCatIndex(unsigned layer, unsigned index) {
+bool SpatRaster::setCatIndex(unsigned layer, int index) {
 	if (layer > (nlyr()-1)) {
 		return(false);
 	}
     std::vector<unsigned> sl = findLyr(layer);
 	unsigned nc = source[sl[0]].cats[sl[1]].d.ncol();
 	if (index < nc) {
-		source[sl[0]].cats[sl[1]].index  = index;
-		source[sl[0]].names[sl[1]] = source[sl[0]].cats[sl[1]].d.names[index];
+		source[sl[0]].cats[sl[1]].index = index;
+		if (index >= 0) {
+			source[sl[0]].names[sl[1]] = source[sl[0]].cats[sl[1]].d.names[index];
+		}
 		return true;
 	} else {
 		return false;
@@ -1399,7 +1401,7 @@ bool SpatRaster::setCatIndex(unsigned layer, unsigned index) {
 
 int SpatRaster::getCatIndex(unsigned layer) {
 	if (layer > (nlyr()-1)) {
-		return(-1);
+		return( -1 );
 	}
     std::vector<unsigned> sl = findLyr(layer);
 	return source[sl[0]].cats[sl[1]].index;
