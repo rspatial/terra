@@ -14,9 +14,9 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 				if (txtfun != "mean") {
 					error("zonal", "fun must be 'mean' when using weights")
 				}
-				sdf <- x@ptr$zonal_weighted(z@ptr, w@ptr, na.rm, opt)				
+				sdf <- x@pnt$zonal_weighted(z@pnt, w@pnt, na.rm, opt)				
 			} else {
-				sdf <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
+				sdf <- x@pnt$zonal(z@pnt, txtfun, na.rm, opt)
 			}
 			messages(sdf, "zonal")
 			out <- .getSpatDF(sdf)
@@ -93,12 +93,12 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
 			error("zonal", "this 'fun' is not supported. You can use extract instead")
 		} else {
 			if (is.null(w)) {
-				out <- x@ptr$zonal_poly(z@ptr, txtfun, weights[1], exact[1], touches[1], narm, opt)
+				out <- x@pnt$zonal_poly(z@pnt, txtfun, weights[1], exact[1], touches[1], narm, opt)
 			} else {
 				if (txtfun != "mean") {
 					error("zonal", "fun must be 'mean' when using weights")
 				}
-				out <- x@ptr$zonal_poly_weighted(z@ptr, w@ptr, weights[1], exact[1], touches[1], narm, opt)
+				out <- x@pnt$zonal_poly_weighted(z@pnt, w@pnt, weights[1], exact[1], touches[1], narm, opt)
 			}
 			messages(out, "zonal")
 			out <- .getSpatDF(out)
@@ -194,7 +194,7 @@ setMethod("global", signature(x="SpatRaster"),
 			stopifnot(inherits(weights, "SpatRaster"))
 			stopifnot(txtfun %in% c("mean", "sum"))
 			na.rm <- isTRUE(list(...)$na.rm)
-			ptr <- x@ptr$global_weighted_mean(weights@ptr, txtfun, na.rm, opt)
+			ptr <- x@pnt$global_weighted_mean(weights@pnt, txtfun, na.rm, opt)
 			messages(ptr, "global")
 			res <- (.getSpatDF(ptr))
 			rownames(res) <- nms
@@ -204,7 +204,7 @@ setMethod("global", signature(x="SpatRaster"),
 		if (inherits(txtfun, "character")) {
 			if (txtfun %in% c("prod", "max", "min", "mean", "sum", "range", "rms", "sd", "sdpop", "notNA", "isNA")) {
 				na.rm <- isTRUE(list(...)$na.rm)
-				ptr <- x@ptr$global(txtfun, na.rm, opt)
+				ptr <- x@pnt$global(txtfun, na.rm, opt)
 				messages(ptr, "global")
 				res <- .getSpatDF(ptr)
 

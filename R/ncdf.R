@@ -97,11 +97,11 @@
 	ncvars <- list()
 	cal <- NA
 	for (i in 1:n) {
-		if ((nl[i] > 1) || (x[i]@ptr$hasTime)) {
+		if ((nl[i] > 1) || (x[i]@pnt$hasTime)) {
 			y <- x[i]
-			if (y@ptr$hasTime) {
-				zv <- y@ptr$time
-				tstep <- y@ptr$timestep
+			if (y@pnt$hasTime) {
+				zv <- y@pnt$time
+				tstep <- y@pnt$timestep
 				cal <- "standard"
 				if (tstep == "seconds") {
 					zunit <- "seconds since 1970-1-1 00:00:00"

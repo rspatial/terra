@@ -15,9 +15,10 @@ halo(x, y=NULL, labels, col="black", hc="white", hw=0.1, ...)
 \arguments{
   \item{x,y}{numeric. coordinates where the text labels should be written}
   \item{labels}{character. The text to be written}
-  \item{hc}{character, halo color}
-  \item{hw}{numeric, halo width}
-  \item{...}{additional arguments to pass to \code{\link[graphics]{txt}} }
+  \item{col}{character. The main color to be used}
+  \item{hc}{character. The halo color}
+  \item{hw}{numeric. The halo width}
+  \item{...}{additional arguments to pass to \code{\link[graphics]{text}} }
 }
 
 \seealso{
@@ -32,8 +33,7 @@ plot(r, col="blue", legend=FALSE)
 
 text(-100, 20, "hello", cex=2)
 halo(50, 20, "hello", cex=2)
-halo(100, -50, "你好世界", cex=2, col="red")
-halo(-100, -50, "😉​", cex=2, col="orange")
+#halo(100, -50, "你好世界", cex=2, col="red")
 
 halo(0, -20, "world", font=3, hc="light blue", cex=2, hw=.2)
 halo(0, 90, "world", font=2, cex=2, hw=.2, xpd=TRUE, pos=2)

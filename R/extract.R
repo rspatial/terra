@@ -116,12 +116,12 @@ extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NUL
 	cn <- names(x)
 	opt <- spatOptions()
 	if ((method == "bilinear") && (NCOL(y) > 1)) {
-		e <- x@ptr$bilinearValues(y[,1], y[,2])
+		e <- x@pnt$bilinearValues(y[,1], y[,2])
 	} else {
 		if (NCOL(y) == 2) {
 			y <- cellFromXY(x, y)
 		}
-		e <- x@ptr$extractCell(y-1)
+		e <- x@pnt$extractCell(y-1)
 	}
 
 	e <- do.call(cbind, e)
@@ -246,7 +246,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	opt <- spatOptions()
 
 	if (wfun) {
-		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+		e <- x@pnt$extractVector(y@pnt, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 		x <- messages(x, "extract")
 		e <- sapply(e, fun, ...)
 		e <- matrix(e, nrow=nrow(y), byrow=TRUE)
@@ -261,7 +261,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		return(e)
 	}
 
-	e <- x@ptr$extractVectorFlat(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+	e <- x@pnt$extractVectorFlat(y@pnt, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 	x <- messages(x, "extract")
 	nc <- nl
 	if (cells) {
@@ -421,7 +421,7 @@ function(x, y) {
 #	r <- relate(x, y, "covers")
 #	e <- apply(r, 2, which)
 
-#	e <- y@ptr$which_related(x@ptr, "coveredby")
+#	e <- y@pnt$which_related(x@pnt, "coveredby")
 #	if (length(e[[1]]) == 0) {
 #		e <- cbind(0,0)[0,,drop=FALSE]
 #	} else {

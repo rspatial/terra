@@ -132,11 +132,11 @@ setMethod ("show" , "SpatVector",
 		cat(" geometry    :", geomtype(object), "\n")
 		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" )
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		if (object@ptr$source != "") {
-			if (object@ptr$layer != tools::file_path_sans_ext(basename(object@ptr$source))) {
-				cat(" source      : ", basename(object@ptr$source), " (", object@ptr$layer, ")\n", sep="")
+		if (object@pnt$source != "") {
+			if (object@pnt$layer != tools::file_path_sans_ext(basename(object@pnt$source))) {
+				cat(" source      : ", basename(object@pnt$source), " (", object@pnt$layer, ")\n", sep="")
 			} else {
-				cat(" source      : ", basename(object@ptr$source), "\n", sep="")
+				cat(" source      : ", basename(object@pnt$source), "\n", sep="")
 			}
 		}
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
@@ -157,10 +157,10 @@ setMethod ("show" , "SpatVectorProxy",
 		cat(" geometry    :", geomtype(object), "\n")
 		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" )
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		if (object@ptr$v$layer != tools::file_path_sans_ext(basename(object@ptr$v$source))) {
-			cat(" source      : ", basename(object@ptr$v$source), " (", object@ptr$v$layer, ")\n", sep="")
+		if (object@pnt$v$layer != tools::file_path_sans_ext(basename(object@pnt$v$source))) {
+			cat(" source      : ", basename(object@pnt$v$source), " (", object@pnt$v$layer, ")\n", sep="")
 		} else {
-			cat(" source      : ", basename(object@ptr$v$source), "\n", sep="")
+			cat(" source      : ", basename(object@pnt$v$source), "\n", sep="")
 		}
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
 		dd <- get.data.frame(object)
@@ -188,7 +188,7 @@ setMethod ("show" , "SpatRaster",
 				txt <- "extent (win): "
 			}
 			cat(txt, w[1], ", ", w[2], ", ", w[3], ", ", w[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-			#e <- as.vector(object@ptr$source[[1]]$window$full_extent$vector)
+			#e <- as.vector(object@pnt$source[[1]]$window$full_extent$vector)
 			#cat("full extent : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		} else {
 			e <- as.vector(ext(object))
@@ -268,9 +268,9 @@ setMethod ("show" , "SpatRaster",
 			}
 			rgb <- RGB(object)
 			if (!is.null(rgb)) {
-				cat(paste("colors", toupper(object@ptr$rgbtype), " :"), paste(rgb, collapse=", "), "\n")
+				cat(paste("colors", toupper(object@pnt$rgbtype), " :"), paste(rgb, collapse=", "), "\n")
 			}
-			hasct <- object@ptr$hasColors()
+			hasct <- object@pnt$hasColors()
 			if (any(hasct)) {
 				cat("color table :", paste(which(hasct), collapse=", "), "\n")
 			}
@@ -306,7 +306,7 @@ setMethod ("show" , "SpatRaster",
 			isB <- is.bool(object)
 			if (any(hMM) || any(is.factor(object))) {
 				#r <- minmax(object)
-				rr <- r <- rbind(object@ptr$range_min, object@ptr$range_max)
+				rr <- r <- rbind(object@pnt$range_min, object@pnt$range_max)
 				r[,!hMM] <- c(Inf, -Inf)
 				#sc <- scoff(object)
 				#r <- r * sc[,1] + sc[,2]
@@ -396,10 +396,10 @@ setMethod ("show" , "SpatRaster",
 
 		}
 
-		if (object@ptr$hasTime) {
+		if (object@pnt$hasTime) {
 			label <- "time        "
 			rtim <- range(time(object))
-			tims <- object@ptr$timestep
+			tims <- object@pnt$timestep
 			if (tims == "yearmonths") {
 				rtim <- format_ym(rtim)
 				label <- "time (ymnts)"
@@ -515,7 +515,7 @@ setMethod("show" , "SpatRasterCollection",
 		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		
 		
-		crs <- .name_or_proj4(object@ptr$x[[1]])
+		crs <- .name_or_proj4(object@pnt$x[[1]])
 		if (crs != "") cat("crs (first) :", crs,	 "\n")
 		ln <- names(object)
 		if (any(ln != "")) {
@@ -532,7 +532,7 @@ setMethod("show" , "SpatGraticule",
 	function(object) {
 		cat("class       :" , class(object), "\n")
 		v <- vect()
-		v@ptr <- object@ptr
+		v@pnt <- object@pnt
 		cat("lon         :" , na.omit(v$lon), "\n")		
 		cat("lat         :" , na.omit(v$lat), "\n")		
 		cat("coord. ref. :", .name_or_proj4(v), "\n")
