@@ -1,3 +1,10 @@
+# version 1.7-19
+
+## new
+
+- `halo` function for adding halo-ed text to plots
+
+
 # version 1.7-18
 
 ## new
