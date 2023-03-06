@@ -361,9 +361,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	std::string datatype = opt.get_datatype();
 
 	bool writeRGB = (rgb && nlyr() == 3 && rgblyrs.size() == 3);
-	if (writeRGB) {
-		datatype = "INT1U";
-	}
+	//if (writeRGB) {
+	//	datatype = "INT1U";
+	//}
 	std::string errmsg;
 	if (!checkFormatRequirements(driver, filename, errmsg)) {
 		setError(errmsg);
