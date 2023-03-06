@@ -4,8 +4,15 @@
 
 - `halo` function for adding halo-ed text to plots
 
+## bug fixes
+
+a SpatRaster with RGB layers was forced to INT1U when writing [#1051](https://github.com/rspatial/terra/issues/1051) by Cesar Aybar
+
 
 # version 1.7-18
+
+Released 2023-03-06
+
 
 ## new
 
