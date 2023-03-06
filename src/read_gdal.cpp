@@ -177,7 +177,9 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::str
 		}
 	}
 	bool good_rat = true;
-	if (id.size() <= 1) {
+	size_t sid = id.size();
+//	Rcpp::Rcout << hasvalue << " " << sid << std::endl;
+	if ((hasvalue && sid == 1) || ((!hasvalue) && sid == 0)) {
 // #790 avoid having just "count" or "histogram" 
 		good_rat = false;
 	}
@@ -197,10 +199,11 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::str
 		cats.d.add_column(vid, "value");
 	}
 
+	int first_string = -1;
+
 	for (size_t k=0; k<id.size(); k++) {
 		size_t i = id[k];
 		std::string name = pRAT->GetNameOfCol(i);
-
 		GDALRATFieldType nc_type = pRAT->GetTypeOfCol(i);
 //		GFT_type.push_back(GFU_type_string[nc_types[i]]);
 //		GDALRATFieldUsage nc_usage = pRAT->GetUsageOfCol(i);
@@ -223,13 +226,14 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::str
 			for (size_t j=0; j<nr; j++) {
 				d[j] = (std::string) pRAT->GetValueAsString(j, i);
 			}
+			if (first_string < 0) first_string = cats.d.ncol();
 			cats.d.add_column(d, name);
 		}
 	}	
 	if (cats.d.nrow() == 0) {
 		return false;
 	}
-	cats.index = good_rat ? (cats.d.ncol() > 1 ? 1 : 0) : -1;
+	cats.index = good_rat ? (first_string >= 0 ? first_string :(cats.d.ncol() > 1 ? 1 : 0)) : -1;
 	return true;
 }
 
@@ -347,75 +351,64 @@ bool setIntCol(SpatDataFrame &d, SpatDataFrame &out, int k, std::string name) {
 
 bool colsFromRat(SpatDataFrame &d, SpatDataFrame &out) {
 
+	if ((d.nrow() == 0) || (d.ncol() == 0)) {
+		return false;
+	}
 
 	std::vector<std::string> ss = d.get_names();
 	for (size_t i=0; i<ss.size(); i++) {
 		lowercase(ss[i]);
 	}
-
 //	int k = where_in_vector("value", ss, true);
 //	if (k >= 0) {
 	int k = 0;  
-		size_t j = d.iplace[k];
+	size_t j = d.iplace[k];
 		
-		if (d.itype[k] == 1) {
-			out.add_column(d.iv[j], "value");
-		} else if (d.itype[k] == 0) {
-			std::vector<long> x;
-			x.reserve(d.nrow());
-			for (size_t i=0; i<d.nrow(); i++) {
-				x.push_back(d.dv[j][i]);
-			}
-			out.add_column(x, "value");
-		} else {
-			return false;
+	if (d.itype[k] == 1) {
+		out.add_column(d.iv[j], "value");
+	} else if (d.itype[k] == 0) {
+		std::vector<long> x;
+		x.reserve(d.nrow());
+		for (size_t i=0; i<d.nrow(); i++) {
+			x.push_back(d.dv[j][i]);
 		}
-//	} else {
-//		return false;
-//	}
+		out.add_column(x, "value");
+	} else {
+		return false;
+	}
 
-
-//	int k = where_in_vector("colors", ss, true);
-//	if (k >= 0) {
-		//col2rgb(d, out, k);
-//	} else {
-		std::vector<std::string> cols1 = {"red", "green", "blue"};
-		std::vector<std::string> cols2 = {"r", "g", "b"};
-		for (size_t i=0; i<3; i++) {
-			int k = where_in_vector(cols1[i], ss, true);
-			if (k >= 0) {
+	std::vector<std::string> cols1 = {"red", "green", "blue"};
+	std::vector<std::string> cols2 = {"r", "g", "b"};
+	for (size_t i=0; i<3; i++) {
+		int k = where_in_vector(cols1[i], ss, true);
+		if (k >= 0) {
+			if (!setIntCol(d, out, k, cols1[i])) return false;
+		} else {
+				int k = where_in_vector(cols2[i], ss, true);
+		if (k >= 0) {
 				if (!setIntCol(d, out, k, cols1[i])) return false;
 			} else {
-				int k = where_in_vector(cols2[i], ss, true);
-				if (k >= 0) {
-					if (!setIntCol(d, out, k, cols1[i])) return false;
-				} else {
-					return false;
-				}
+				return false;
 			}
 		}
-
-		bool have_alpha = false;
-		k = where_in_vector("alpha", ss, true);
+	}
+	k = where_in_vector("alpha", ss, true);
+	if (k >= 0) {
+		setIntCol(d, out, k, "alpha");
+	} else {
+		int k = where_in_vector("transparency", ss, true);
 		if (k >= 0) {
-			if (setIntCol(d, out, k, "alpha")) have_alpha = true;
-		}
-
-		if (!have_alpha) {
-			int k = where_in_vector("transparency", ss, true);
+			setIntCol(d, out, k, "alpha");
+		} else {
+			int k = where_in_vector("opacity", ss, true);
 			if (k >= 0) {
-				if (setIntCol(d, out, k, "alpha")) have_alpha = true;
+				setIntCol(d, out, k, "alpha");
+			} else {
+				std::vector<long> a(out.nrow(), 255);
+				out.add_column(a, "alpha");
 			}
 		}
-
-		if (!have_alpha) {
-			std::vector<long> a(out.nrow(), 255);
-			out.add_column(a, "alpha");
-		}
-//	}
-	
-	d = out;
-
+	}
 	return true;
 }
 
