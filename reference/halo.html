@@ -64,14 +64,17 @@
   <dt>labels</dt>
 <dd><p>character. The text to be written</p></dd>
 
+  <dt>col</dt>
+<dd><p>character. The main color to be used</p></dd>
+
   <dt>hc</dt>
-<dd><p>character, halo color</p></dd>
+<dd><p>character. The halo color</p></dd>
 
   <dt>hw</dt>
-<dd><p>numeric, halo width</p></dd>
+<dd><p>numeric. The halo width</p></dd>
 
   <dt>...</dt>
-<dd><p>additional arguments to pass to <code>txt</code></p></dd>
+<dd><p>additional arguments to pass to <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></code></p></dd>
 
 </dl></div>
     <div id="see-also">
@@ -87,8 +90,7 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">20</span>, <span class="st">"hello"</span>, cex<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">halo</span><span class="op">(</span><span class="fl">50</span>, <span class="fl">20</span>, <span class="st">"hello"</span>, cex<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">halo</span><span class="op">(</span><span class="fl">100</span>, <span class="op">-</span><span class="fl">50</span>, <span class="st">"你好世界"</span>, cex<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="st">"red"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">halo</span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="op">-</span><span class="fl">50</span>, <span class="st">"😉​"</span>, cex<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="st">"orange"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#halo(100, -50, "你好世界", cex=2, col="red")</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">halo</span><span class="op">(</span><span class="fl">0</span>, <span class="op">-</span><span class="fl">20</span>, <span class="st">"world"</span>, font<span class="op">=</span><span class="fl">3</span>, hc<span class="op">=</span><span class="st">"light blue"</span>, cex<span class="op">=</span><span class="fl">2</span>, hw<span class="op">=</span><span class="fl">.2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">halo</span><span class="op">(</span><span class="fl">0</span>, <span class="fl">90</span>, <span class="st">"world"</span>, font<span class="op">=</span><span class="fl">2</span>, cex<span class="op">=</span><span class="fl">2</span>, hw<span class="op">=</span><span class="fl">.2</span>, xpd<span class="op">=</span><span class="cn">TRUE</span>, pos<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
