@@ -196,7 +196,7 @@ setMethod("text", signature(x="SpatRaster"),
 		} else {
 			p <- as.points(x, values=FALSE, na.rm=FALSE)
 		}
-		xy <- geom(p)[, c("x", "y")]
+		xy <- geom(p)[, c("x", "y"), drop=FALSE]
 		if (is.factor(labels)) {
 			labels <- substr(as.character(labels), 1, max(1, digits))
 		} else if (is.numeric(labels)) {
