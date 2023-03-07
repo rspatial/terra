@@ -3,6 +3,7 @@
 ## new
 
 - The `halo` function for adding halo-ed text to plots is now exposed
+- `add_legend` for adding a custom legend using a keyword to position it.
 
 ## bug fixes
 
@@ -20,7 +21,7 @@ Released 2023-03-06
 - argument `order=FALSE` to `sort<SpatRaster>` 
 - `sort<SpatVector>` (and `<data.frame>` method
 - argument `by=NULL` to `rasterize>` [#986](https://github.com/rspatial/terra/issues/986) by Sam Weber
-- `metadata<SpatRaster>` method
+- `meta<SpatRaster>` method to get metadata
 - `compare<SpatRaster>` and `logic<SpatRaster>` methods
 - `vect<SpatExtent>` method
 - `panel<SpatRaster>` for "panel" plots (multiple layers, single legend)

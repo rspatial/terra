@@ -163,6 +163,9 @@ Also see the methods in section VIII
   \tabular{ll}{
     \code{\link{predict}} \tab Predict a non-spatial model to a SpatRaster \cr
     \code{\link{interpolate}} \tab Predict a spatial model to a SpatRaster \cr
+    \code{\link{interpIDW}} \tab Inverse-distance-weighted interpolation \cr
+    \code{\link{interpNear}} \tab Nearst neighbor interpolation \cr
+	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
@@ -413,6 +416,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{as.list}} \tab get attributes as a list\cr
   \code{\link{values}} \tab Get the attributes of a SpatVector \cr
   \code{\link{values<-}} \tab Set new attributes to the geometries of a SpatRaster \cr  
+  \code{\link{sort}} \tab sort SpatVector by the values in a field \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
@@ -520,14 +524,16 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 \subsection{Maps}{
   \tabular{ll}{
     \code{\link{plot}} \tab Plot a SpatRaster or SpatVector. The main method to create a map \cr
+    \code{\link{panel}} \tab Combine multiple plots \cr	
 	\code{\link{points}} \tab Add points to a map\cr
 	\code{\link{lines}} \tab Add lines to a map\cr
 	\code{\link{polys}} \tab Add polygons to a map \cr
     \code{\link{text}} \tab Add text (such as the values of a SpatRaster or SpatVector) to a map \cr
+    \code{\link{halo}} \tab Add text with a halo to a map \cr
     \code{\link{image}} \tab Alternative to plot to make a map with a SpatRaster \cr
     \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" plot \cr
 	\code{\link[=plot,SpatGraticule,missing-method]{plot<SpatGraticule>}} \tab plot a graticule \cr
-    \code{\link{sbar}} \tab Add a scalebar to a map\cr
+    \code{\link{sbar}} \tab Add a scale bar to a map\cr
     \code{\link{north}} \tab Add a north arrow to a map\cr
     \code{\link{inset}} \tab Add a small inset (overview) map\cr
     \code{\link{dots}} \tab Make a dot-density map \cr

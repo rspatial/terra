@@ -26,9 +26,9 @@ setMethod("inext", signature(x="SpatVector"),
 )
 
 
-.inset <- function(x, e, loc="", scale=0.2, background="white", perimeter="black", pper, box=NULL, pbox, ...) {
+.inset <- function(x, e, loc="", scale=0.2, background="white", perimeter="black", pper, box=NULL, pbox, xpd=NA, ...) {
 
-	usr <- graphics::par("usr")
+	usr <- unlist(get.clip()[1:4])
 	if (missing(e)) {
 		e <- ext(usr)
 		r <- diff(e[1:2]) / diff(e[3:4])
@@ -49,7 +49,7 @@ setMethod("inext", signature(x="SpatVector"),
 	y  <- shift(y, dx, dy)
 	if (!is.null(box)) {
 		ex <- ext(x)
-		box  <- rescale(as.polygons(box), scale, x0=ex[1]+diff(ex[1:2])/2, y0=ex[3]+diff(ex[3:4])/2)
+		box <- rescale(as.polygons(box), scale, x0=ex[1]+diff(ex[1:2])/2, y0=ex[3]+diff(ex[3:4])/2)
 		box <- shift(box, dx, dy)
 	}
 
@@ -78,16 +78,17 @@ setMethod("inext", signature(x="SpatVector"),
 		}
 	}
 	if (!is.na(background)) {
-		polys(as.polygons(e), col=background, lty=0)
+		polys(as.polygons(e), col=background, lty=0, xpd=xpd)
 	}
 
-	plot(y, ..., axes=FALSE, legend=FALSE, add=TRUE)
+	plot(y, ..., axes=FALSE, legend=FALSE, add=TRUE, xpd=xpd)
 
 	if (isTRUE(perimeter)) {
 		if (missing(pper) || !is.list(pper)) {
 			pper <- list()
 		}
 		pper$x <- e
+		pper$xpd <- xpd
 		do.call(lines, pper)
 		#lines(e, col=perimeter)
 	}
@@ -97,6 +98,7 @@ setMethod("inext", signature(x="SpatVector"),
 			pbox <- list()
 		}
 		pbox$x <- box
+		pbox$xpd <- xpd
 		do.call(lines, pbox)
 	}
 	invisible(y)

@@ -535,3 +535,17 @@ get_legxy <- function(r, e, pos, yshift) {
 	}
 	leg
 }
+
+
+add_legend <- function(x, y, ...) {
+	if (inherits(x, "character")) {
+		r <- legend(x=x, y=y, plot=FALSE, ...)$rect
+		e <- unlist(get.clip()[1:4])
+		xy <- get_legxy(r, e, x, NULL)
+		legend(x=xy[1], y=xy[2], ...)
+	} else {
+		legend(x=x, y=y, ...)
+	}
+}
+
+
