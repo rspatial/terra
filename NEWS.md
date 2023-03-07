@@ -15,7 +15,6 @@
 
 Released 2023-03-06
 
-
 ## new
 
 - argument `order=FALSE` to `sort<SpatRaster>` 

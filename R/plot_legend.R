@@ -539,12 +539,16 @@ get_legxy <- function(r, e, pos, yshift) {
 
 add_legend <- function(x, y, ...) {
 	if (inherits(x, "character")) {
-		r <- legend(x=x, y=y, plot=FALSE, ...)$rect
-		e <- unlist(get.clip()[1:4])
-		xy <- get_legxy(r, e, x, NULL)
-		legend(x=xy[1], y=xy[2], ...)
+		e <- unlist(get.clip())
+		if (!is.null(e)) {
+			rct <- graphics::legend(x=x, y=y, plot=FALSE, ...)$rect
+			xy <- get_legxy(rct, e[1:4], x, NULL)
+			graphics::legend(x=xy[1], y=xy[2], ...)
+		} else {
+			graphics::legend(x=x, y=y, ...)
+		}
 	} else {
-		legend(x=x, y=y, ...)
+		graphics::legend(x=x, y=y, ...)
 	}
 }
 
