@@ -438,8 +438,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 		read_query = query;
 	}
 
-
-	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
+	OGRSpatialReference *poSRS = poLayer->GetSpatialRef();
 
 	if (poSRS) {
 		char *psz = NULL;
