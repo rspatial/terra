@@ -8,7 +8,7 @@
 \title{meta}
 
 \description{ 
-Return metadata associated with the sources or layers of a SpatRaster 
+Get metadata associated with the sources or layers of a SpatRaster 
 }
 
 \usage{
