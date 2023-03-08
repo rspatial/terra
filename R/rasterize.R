@@ -302,10 +302,9 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 
 setMethod("rasterize", signature(x="sf", y="SpatRaster"),
-	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, cover=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list()) {
+	function(x, y, ...) {
 		x <- vect(x)
-		rasterize(x, y, field=field, fun=fun, ..., background=background, touches=touches, 
-		update=update, cover=cover, by=by, filename=filename, overwrite=overwrite, wopt=wopt)
+		rasterize(x, y, ...)
 	}
 )
 
