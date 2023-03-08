@@ -586,7 +586,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				} else {
 					out = out[1:size, ,drop=FALSE]
 				}
-				out <- set_factors(out, ff, lv, as.df)
+				#out <- set_factors(out, ff, lv, as.df)
 				return(out)
 			}
 		}
