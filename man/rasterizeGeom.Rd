@@ -8,9 +8,9 @@
 \title{Rasterize geometric properties of vector data}
 
 \description{
-Rasterization of geometric properties of vector data. You can get the count of the number of geometries in each cell; the area covered by polygons; the length of the lines; or the number of lines that cross each cell. See \code{\link{rasterize}} for standard rasterization (of attribute values associated with geometries).
+Rasterization of geometric properties of vector data. You can get the count of the number of geometries in each cell; the area covered by polygons; the length of the lines; or the number of lines that cross the boundary of each cell. See \code{\link{rasterize}} for standard rasterization (of attribute values associated with geometries).
 
-The area of polygons is intended for summing the area of polygons that are relatively small relative to the raster cells, and for when there may be multiple polygons per cell. See \code{rasterize(sum=TRUE)} for counting large polygons and \code{rasterize(cover=TRUE)} to get the fraction that is covered by larger polygons.
+The area of polygons is intended for summing the area of polygons that are relatively small relative to the raster cells, and for when there may be multiple polygons per cell. See \code{rasterize(fun="sum")} for counting large polygons and \code{rasterize(cover=TRUE)} to get the fraction that is covered by larger polygons.
 }
 
 \usage{
