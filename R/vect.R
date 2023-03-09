@@ -75,7 +75,7 @@ setMethod("vect", signature(x="character"),
 		}
 		#if (proxy) query <- ""
 		if (is.null(filter)) {
-			filter <- vect()@pnt
+			filter <- SpatVector$new()
 		} else {
 			if (proxy) {
 				error("vect", "you cannot use 'filter' when proxy=TRUE")
@@ -417,6 +417,9 @@ setMethod("query", signature(x="SpatVectorProxy"),
 	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL) {
 		f <- x@pnt$v$source
 		layer <- x@pnt$v$layer
+		#1058
+		layer <- paste0("\"", layer, "\"")
+
 		e <- x@pnt$v$read_extent
 		if (is.null(extent)) {
 			if (length(e) == 4) {
@@ -467,8 +470,12 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			qy <- paste(qy, "LIMIT", n)
 		}
 
-		if ((qy != "") && (x@pnt$v$read_query != "")) {
-			error("query", "A query was used to create 'x'; you can only subset it with extent or filter")
+		if (qy != "") {
+			if (x@pnt$v$read_query != "") {
+				error("query", "A query was used to create 'x'; you can only subset it with extent or filter")
+			}
+		} else {
+			layer <- x@pnt$v$layer
 		}
 
 		vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE)
