@@ -4916,6 +4916,7 @@ SpatRaster SpatRaster::hsx2rgb(SpatOptions &opt) {
 	out.setNames(nms);
 	out.rgb = true;
 	out.rgblyrs = {0,1,2};
+	out.rgbtype = "rgb";
 
 	if (!readStart()) {
 		out.setError(getError());

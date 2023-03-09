@@ -295,7 +295,7 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			k <- NA
 		}
 
-		if (m[1] & m[2]) {
+		if (all(m)) {
 			return(.replace_all(x, value))
 		} 
 
@@ -324,10 +324,14 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 				j <- make_replace_index(j, ncol(x), "j")
 				i <- cellFromRowColCombine(x, i, j)
 			}
-		} else { #if (!m[2]) {
+		} else if (!m[2]) {
 			#col
+			print(j)
+			print("?")
 			j <- make_replace_index(j, ncol(x), "j")
 			i <- cellFromRowColCombine(x, 1:nrow(x), j)
+		} else {
+			i <- 1:ncell(x)
 		}
 		return(.replace_cell(x, i, k, value))
 	} 

@@ -5,21 +5,26 @@
 
 
 setMethod ("has.RGB" , "SpatRaster",
-	function(x) {
-		x@pnt$rgb
+	function(x, strict=TRUE) {
+		if (strict) {
+			x@pnt$rgbtype == "rgb"
+		} else {
+			x@pnt$rgbtype != ""
+		}
 	}
 )
 
+
 setMethod("set.RGB", signature(x="SpatRaster"),
-	function(x, value) {
+	function(x, value=1:3, type="rgb") {
 		if (is.null(value[1]) || is.na(value[1])) {
 			x@pnt$removeRGB()
 		} else {
 			stopifnot(all(value %in% 1:nlyr(x)))
 			if (length(value) == 3) {
-				x@pnt$setRGB(value[1]-1, value[2]-1, value[3]-1, -99, "rgb")
+				x@pnt$setRGB(value[1]-1, value[2]-1, value[3]-1, -99, type)
 			} else if (length(value) == 4) {
-				x@pnt$setRGB(value[1]-1, value[2]-1, value[3]-1, value[4]-1, "rgb")
+				x@pnt$setRGB(value[1]-1, value[2]-1, value[3]-1, value[4]-1, type)
 			} else {
 				error("set.RGB", "value must have length 3 or 4")
 			}
@@ -30,9 +35,9 @@ setMethod("set.RGB", signature(x="SpatRaster"),
 )
 
 setMethod("RGB<-", signature(x="SpatRaster"),
-	function(x, value) {
+	function(x, type="rgb", value) {
 		x@pnt <- x@pnt$deepcopy()
-		set.RGB(x, value)
+		set.RGB(x, value, type)
 		x
 	}
 )

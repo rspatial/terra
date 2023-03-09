@@ -266,9 +266,11 @@ setMethod ("show" , "SpatRaster",
 					cat("source      :", sources[1], "\n")
 				}
 			}
-			rgb <- RGB(object)
-			if (!is.null(rgb)) {
-				cat(paste("colors", toupper(object@pnt$rgbtype), " :"), paste(rgb, collapse=", "), "\n")
+			rgbtype <- object@pnt$rgbtype
+			if (rgbtype != "") {
+				rdgb <- RGB(object)
+				if (is.null(rdgb)) rdgb <- 1:3
+				cat(paste("colors", toupper(object@pnt$rgbtype), " :"), paste(rdgb, collapse=", "), "\n")
 			}
 			hasct <- object@pnt$hasColors()
 			if (any(hasct)) {

@@ -54,7 +54,11 @@ setMethod("$<-", "SpatRaster",
 
 setReplaceMethod("[[", c("SpatRaster", "character"),
 	function(x, i, value) {
-		if (inherits(value, "SpatRaster")) {
+		if (inherits(value, "numeric")) {
+			r <- rast(x, nlyr=length(i))
+			value <- init(r, value)
+			names(value) <- i
+		} else if (inherits(value, "SpatRaster")) {
 			if (nlyr(value) != length(i)) {
 				error("`[[`", "length of names must be equal to the number of layers")
 			}
@@ -78,8 +82,11 @@ setReplaceMethod("[[", c("SpatRaster", "character"),
 
 setReplaceMethod("[[", c("SpatRaster", "numeric"),
 	function(x, i, value) {
-		if (!inherits(value, "SpatRaster")) {
-			error("`[[<-`", "Expected a SpatRaster as replacement value")
+		if (inherits(value, "numeric")) {
+			r <- rast(x, nlyr=length(i))
+			value <- init(r, value)
+		} else if (!inherits(value, "SpatRaster")) {
+			error("`[[<-`", "Expected a SpatRaster or numeric as replacement value")
 		}
 		if (nlyr(value) < length(i)) {
 			if (nlyr(value) > 1) {
