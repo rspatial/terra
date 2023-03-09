@@ -14,6 +14,10 @@ setMethod("layerCor", signature(x="SpatRaster"),
 
 		stopifnot(is.logical(asSample) & !is.na(asSample))
 		nl <- nlyr(x)
+		if (nl < 2) {
+			error("layerCor", "x must have at least 2 layers")
+		}
+		
 		n <- ncell(x)
 		mat <- matrix(NA, nrow=nl, ncol=nl)
 		colnames(mat) <- rownames(mat) <- names(x)
@@ -85,27 +89,31 @@ setMethod("layerCor", signature(x="SpatRaster"),
 
 		} else if (fun == "pearson") {
 			if (na.rm) {
-				for(i in 1:nl) {
-					for(j in i:nl) {
+				means <- matrix(NA, nrow=2, ncol=nlyr(x))
+				for(i in 1:(nl-1)) {
+					for(j in (i+1):nl) {
 						m <- anyNA(x[[c(i,j)]])
 						a <- mask(x[[i]], m, maskvalue=TRUE)
 						b <- mask(x[[j]], m, maskvalue=TRUE)
 						xx <- c(a, b)
-						means <- unlist(global(xx, fun="mean", na.rm=na.rm) )
+						mns <- unlist(global(xx, fun="mean", na.rm=na.rm) )
+						means[2,i] <- mns[1]
+						means[1,j] <- mns[2]						
 						sds <- unlist(global(xx, fun="sd", na.rm=na.rm) )
-						r <- prod(xx - means)
+						r <- prod(xx - mns)
 						nas <- unlist(global(is.na(r), fun="sum"))
 						v <- unlist(global(r, fun="sum", na.rm=na.rm))
-						v <- v / ((n - nas - asSample) * sds[i] * sds[j])
+						v <- v / ((n - nas - asSample) * sds[1] * sds[2])
 						mat[j,i] <- mat[i,j] <- v
 					}
 				}
+				colnames(means) <- names(x)
 			} else {
 				means <- unlist(global(x, fun="mean", na.rm=na.rm) )
 				sds <- unlist(global(x, fun="sd", na.rm=na.rm) )
 				x <- (x - means)
 				
-				for(i in 1:nl) {
+				for(i in 1:(nl-1)) {
 					for(j in i:nl) {
 						r <- x[[i]] * x[[j]]
 						v <- unlist(global(r, fun="sum", na.rm=na.rm))
@@ -113,8 +121,10 @@ setMethod("layerCor", signature(x="SpatRaster"),
 						mat[j,i] <- mat[i,j] <- v
 					}
 				}
+				means <- matrix(means, nrow=1)
+				colnames(means) <- names(x)
 			}
-			names(means) <- names(x)
+			diag(mat) <- 1
 			covar <- list(mat, means)
 			names(covar) <- c("pearson", "mean")
 			return(covar)
