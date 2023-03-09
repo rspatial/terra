@@ -1422,9 +1422,8 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 	}
 	
 	double adfMinMax[2];
-	if (GDALComputeRasterMinMax(hTargetBand, true, adfMinMax) == CE_None) {
-		GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
-	}
+	GDALComputeRasterMinMax(hTargetBand, true, adfMinMax);
+	GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
 	GDALClose(hDstDS);
 	return SpatRaster(filename, {-1}, {""}, {}, {});
 }
