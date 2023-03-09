@@ -1329,10 +1329,12 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 			GDALClose(hDstDS);
 			return out;
 		}
+		GDALClose(hDstDS);
 	} else {
+		GDALClose(hDstDS);
 		out = SpatRaster(filename, {-1}, {""}, {}, {});
 	}
-	GDALClose(hDstDS);
+	
 	if (mask) {
 		out = out.mask(*this, false, mvals, NAN, opt);
 	}
@@ -1394,7 +1396,6 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 	}
 
 	//opt.datatype = "INT4S";
-
 	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
 		out.setError("cannot create new dataset");
 		GDALClose(hSrcDS);
@@ -1415,14 +1416,17 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 	if (driver == "MEM") {
 		if (!out.from_gdalMEM(hDstDS, false, true)) {
 			out.setError("conversion failed (mem)");
-			GDALClose(hDstDS);
-			return out;
 		}
-	} else {
-		out = SpatRaster(filename, {-1}, {""}, {}, {});
+		GDALClose(hDstDS);
+		return out;
+	}
+	
+	double adfMinMax[2];
+	if (GDALComputeRasterMinMax(hTargetBand, true, adfMinMax) == CE_None) {
+		GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
 	}
 	GDALClose(hDstDS);
-	return out;
+	return SpatRaster(filename, {-1}, {""}, {}, {});
 }
 
 
