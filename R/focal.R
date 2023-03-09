@@ -132,13 +132,13 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 				}
 
 				if (checkNA) {
-					vv <- readValues(x, b$row[i], b$nrows[i])
+					mv <- readValues(x, b$row[i], b$nrows[i])
 					if (na.only) {
-						j <- !is.na(vv)
+						k <- !is.na(mv)
 					} else {
-						j <- is.na(vv)
+						k <- is.na(mv)
 					}
-					v[j] <- vv[j]
+					v[k] <- vv[k]
 				}
 				if (nl > 1) {
 					if (outnl > 1) {
@@ -300,13 +300,13 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 				vout <- t(vout)
 			}
 			if (checkNA) {
-				vv <- readValues(x, b$row[i], b$nrows[i])
+				mv <- readValues(x[[j]], b$row[i], b$nrows[i])
 				if (na.only) {
-					j <- !is.na(vv)
+					k <- !is.na(mv)
 				} else {
-					j <- is.na(vv)
+					k <- is.na(mv)
 				}
-				vout[j] <- vv[j]
+				vout[k] <- vv[k]
 			}
 			vv <- c(vv, as.vector(vout))
 		}
