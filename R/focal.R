@@ -138,7 +138,7 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 					} else {
 						k <- is.na(mv)
 					}
-					v[k] <- vv[k]
+					v[k] <- mv[k]
 				}
 				if (nl > 1) {
 					if (outnl > 1) {
@@ -306,7 +306,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 				} else {
 					k <- is.na(mv)
 				}
-				vout[k] <- vv[k]
+				vout[k] <- mv[k]
 			}
 			vv <- c(vv, as.vector(vout))
 		}
