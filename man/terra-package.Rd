@@ -606,6 +606,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 \code{NAvalue}\tab\code{\link{NAflag}}\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
+\code{unstack}\tab\code{\link{as.list}}\cr
 \code{projectRaster}\tab\code{\link{project}}\cr
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr

@@ -416,9 +416,9 @@ setMethod("vect", signature(x="list"),
 setMethod("query", signature(x="SpatVectorProxy"),
 	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL) {
 		f <- x@pnt$v$source
-		layer <- x@pnt$v$layer
+		slayer <- x@pnt$v$layer
 		#1058
-		layer <- paste0("\"", layer, "\"")
+		layer <- paste0("\"", slayer, "\"")
 
 		e <- x@pnt$v$read_extent
 		if (is.null(extent)) {
@@ -475,7 +475,7 @@ setMethod("query", signature(x="SpatVectorProxy"),
 				error("query", "A query was used to create 'x'; you can only subset it with extent or filter")
 			}
 		} else {
-			layer <- x@pnt$v$layer
+			layer <- slayer
 		}
 
 		vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE)
