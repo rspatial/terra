@@ -3349,7 +3349,7 @@ void notisnan(const std::vector<double> &x, double &n) {
 
 
 
-void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, double &stat2,double &n, size_t step) {
+void do_stat(std::vector<double> &v, std::string fun, bool narm, double &stat, double &stat2,double &n, size_t step) {
 	if (v.empty()) return;
 	if (fun == "sum") {
 		double s = vsum(v, narm);
@@ -3438,10 +3438,352 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 			stat = s1;
 			stat2 = s2;
 		}
-	} else if (fun == "notNA" || fun == "isNA") {
+	} else if (fun == "notNA") {
+		notisnan(v, n);
+	} else if (fun == "isNA") {
 		notisnan(v, n);
 	}
 }
+
+
+
+void do_mstats(std::vector<double> &v, size_t start, size_t end, std::vector<std::string> funs, bool narm, std::vector<double> &stat, std::vector<double> &stat2, double &n, bool first, bool last) {
+	
+	size_t nstat = funs.size();
+	
+	if (first) {
+		stat.resize(0);
+		stat.resize(nstat);
+		stat2.resize(0);
+		stat2.resize(nstat);
+		n = 0;
+	}
+	
+	if (v.empty()) return;
+
+	double sum = 0;
+
+	if (is_in_vector("sum", funs) || is_in_vector("mean", funs) || 
+				is_in_vector("sd", funs) || is_in_vector("std", funs)) {
+		if (narm) {
+			sum = sum_se_rm(v, start, end);
+		} else {
+			sum = sum_se(v, start, end);
+		}
+				}
+	if (is_in_vector("mean", funs) || is_in_vector("rms", funs) || is_in_vector("sd", funs) || 
+			is_in_vector("std", funs) || is_in_vector("notNA", funs) || is_in_vector("isNA", funs)) {
+		if (narm) {
+			n += isnotna_se(v, start, end);
+		} else {
+			n += (end - start);
+		}
+	}
+	
+	for (size_t i=0; i<nstat; i++) {
+		std::string fun = funs[i];
+		if (fun == "sum") {
+			if (first) {
+				stat[i] = sum;
+			} else {
+				std::vector<double> ss = {stat[i], sum};
+				stat[i] = vsum(ss, narm);
+			}
+		} else if (fun == "mean") {
+			if (first) {
+				stat[i] = sum;
+			} else {
+				std::vector<double> ss = {stat[i], sum};
+				stat[i] = vsum(ss, narm);
+			}
+			if (last) {
+				if (n > 0) {
+					stat[i] = stat[i] / n;
+				} else {
+					stat[i] = NAN;
+				}
+			}
+
+		} else if (fun == "prod") {
+			double p;
+			if (narm) {
+				 p = prod_se_rm(v, start, end);
+			} else {
+				p = prod_se(v, start, end);				
+			}
+			if (first) {
+				stat[i] = p;
+			} else {
+				std::vector<double> pp = {stat[i], p};
+				stat[i] = vprod(pp, narm);
+			}
+		} else if (fun == "rms") {
+			double s;
+			if (narm) {
+				s = sum2_se_rm(v, start, end);
+			} else {
+				s = sum2_se(v, start, end);
+			}
+			if (first) {
+				stat[i] = s;
+			} else {
+				std::vector<double> ss = {stat[i], s};
+				stat[i] = vsum(ss, narm);
+			}
+
+			if (last) {
+				// rms = sqrt(sum(x^2)/(n-1))
+				if (n > 0) {
+					stat[i] = sqrt(stat[i] / (n-1));
+				} else {
+					stat[i] = NAN;
+				}
+			}
+		} else if (fun == "min") {
+			double s;
+			if (narm) {
+				s = min_se_rm(v, start, end);
+			} else {
+				s = min_se(v, start, end);
+			}
+			if (first) {
+				stat[i] = s;
+			} else {
+				std::vector<double> ss = {stat[i], s};
+				stat[i] = vmin(ss, narm);
+			}
+		} else if (fun == "max") {
+			double s;
+			if (narm) {
+				s = max_se_rm(v, start, end);
+			} else {
+				s = max_se(v, start, end);
+			}
+			if (first) {
+				stat[i] = s;
+			} else {
+				std::vector<double> ss = {stat[i], s};
+				stat[i] = vmax(ss, narm);
+			}
+		} else if ((fun == "sd") || (fun == "std")) {
+			double s2;
+			if (narm) {
+				s2 = sum2_se_rm(v, start, end);
+			} else {
+				s2 = sum2_se(v, start, end);
+			}
+			if (first) {
+				stat[i] = sum;
+				stat2[i] = s2;
+			} else {
+				std::vector<double> ss1 = {stat[i], sum};
+				stat[i] = vsum(ss1, narm);
+				std::vector<double> ss2 = {stat2[i], s2};
+				stat2[i] = vsum(ss2, narm);
+			}
+
+			if (last) {
+				if (n > 0) {
+					double mn = stat[i] / n;
+					double mnsq = mn * mn;
+					double mnsumsq = stat2[i] / n;
+					if (fun == "std") {
+						stat[i] = sqrt(mnsumsq - mnsq);
+					} else {
+						stat[i] = sqrt((mnsumsq - mnsq) * n/(n-1));
+					}
+				} else {
+					stat[i] = NAN;
+				}
+			}
+		} else if (fun == "notNA") {
+			stat[i] += n;
+		} else if (fun == "isNA") {
+			stat[i] += v.size() - n;
+		}
+	}
+}
+
+
+
+SpatDataFrame SpatRaster::mglobal(std::vector<std::string> funs, bool narm, SpatOptions &opt) {
+
+	SpatDataFrame out;
+	std::vector<std::string> f {"sum", "mean", "min", "max", "prod", "rms", "sd", "std", "isNA", "notNA"};
+
+	size_t nf = funs.size();
+	for (size_t i=0; i<nf; i++) {
+		if (std::find(f.begin(), f.end(), funs[i]) == f.end()) {
+			out.setError(funs[i] + " is not a valid function");
+			return(out);
+		}
+	}
+
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return(out);
+	}
+
+	size_t nl = nlyr();
+	
+	std::vector<std::vector<double>> stats(nl, std::vector<double>(nf));
+	std::vector<std::vector<double>> stats2(nl, std::vector<double>(nf));
+
+	std::vector<double> n(nl);
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	
+	BlockSize bs = getBlockSize(opt);
+	for (size_t i=0; i<bs.n; i++) {
+		std::vector<double> v;
+		readBlock(v, bs, i);
+		unsigned off = bs.nrows[i] * ncol() ;
+		for (size_t lyr=0; lyr<nl; lyr++) {
+			unsigned offset = lyr * off;
+			//std::vector<double> vv = { v.begin()+offset, v.begin()+offset+off };
+			do_mstats(v, offset, (offset+off), funs, narm, stats[lyr], stats2[lyr], n[lyr], i==0, i==(bs.n-1));
+		}
+	}
+	readStop();
+
+	// transpose
+	std::vector<std::vector<double>> tstat(nf, std::vector<double>(nl));
+	std::vector<std::vector<double>> tstat2(nf, std::vector<double>(nl));
+	for (size_t i=0; i<nl; i++) {
+		for (size_t j=0; j<nf; j++) {
+			tstat[j][i] = stats[i][j]; 
+			tstat2[j][i] = stats2[i][j]; 
+		}
+	}
+
+	for (size_t i=0; i<nf; i++) {
+		if (funs[i]=="range") {
+			out.add_column(tstat[i], "min");
+			out.add_column(tstat2[i], "max");
+		} else {
+			out.add_column(tstat[i], funs[i]);
+		}
+	}
+	
+	return(out);
+}
+
+
+
+std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm, bool asSample, SpatOptions &opt) {
+
+	std::vector<std::vector<double>> out(2);
+	
+	if (!hasValues()) {
+		setError("SpatRaster has no values");
+		return(out);
+	}
+
+	size_t nl = nlyr();
+
+	//if (fun == "pearson") {
+		std::vector<double> means, cor;
+		means.reserve(nl * (nl-1));
+		cor.reserve(nl-1);
+		SpatOptions topt(opt);
+		
+		
+		if (narm) {
+			std::vector<std::string> gfuns = {"mean", "sd", "isNA"};
+			for (unsigned i=0; i<(nl-1); i++) {
+				for (unsigned j=(i+1); j<nl; j++) {
+					SpatRaster xi = subset({i}, topt);
+					SpatRaster xj = subset({j}, topt);
+					std::vector<double> n(nl);
+					if (!xi.readStart()) {
+						setError(getError());
+						return(out);
+					}
+					if (!xj.readStart()) {
+						setError(getError());
+						return(out);
+					}
+					
+					BlockSize bs = getBlockSize(topt);
+					for (size_t k=0; k<bs.n; k++) {
+						std::vector<std::vector<double>> stats(nl);
+						std::vector<std::vector<double>> stats2(nl);
+						std::vector<double> vi, vj;
+						xi.readBlock(vi, bs, k);
+						xj.readBlock(vj, bs, k);
+						for (size_t m=0; m<vi.size(); m++) {
+							if (std::isnan(vi[m]) || std::isnan(vj[m])) {
+								vi[m] = NAN;
+								vj[m] = NAN;
+							} 
+						}
+						do_mstats(vi, 0, vi.size(), gfuns, narm, stats[0], stats2[0], n[0], k==0, k==(bs.n-1));
+						do_mstats(vj, 0, vj.size(), gfuns, narm, stats[1], stats2[1], n[1], k==0, k==(bs.n-1));
+						double value = 0;
+						for (size_t m=0; m<vi.size(); m++) {
+							if (!std::isnan(vi[m])) {
+								value += (vi[m] - stats[1][0]) * (vj[m]  - stats[1][0]);
+							}
+						}
+						value /= (ncell() - n[0] - asSample) * (stats[0][1] * stats[1][1]);
+						means.push_back(stats[0][0]);
+						means.push_back(stats[1][0]);
+						cor.push_back(value);
+					}
+					xi.readStop();
+					xj.readStop();
+				}
+			//	colnames(means) = names(x)
+			}
+		} else {
+			std::vector<std::string> gfuns = {"mean", "sd"};
+			for (unsigned i=0; i<(nl-1); i++) {
+				for (unsigned j=(i+1); j<nl; j++) {
+					SpatRaster xi = subset({i}, topt);
+					SpatRaster xj = subset({j}, topt);
+					
+					std::vector<double> n(nl);
+					if (!xi.readStart()) {
+						setError(getError());
+						return(out);
+					}
+					if (!xj.readStart()) {
+						setError(getError());
+						return(out);
+					}
+					
+					BlockSize bs = getBlockSize(topt);
+					for (size_t k=0; k<bs.n; k++) {
+						std::vector<std::vector<double>> stats(nl);
+						std::vector<std::vector<double>> stats2(nl);
+						std::vector<double> vi, vj;
+						xi.readBlock(vi, bs, k);
+						xj.readBlock(vj, bs, k);
+						do_mstats(vi, 0, vi.size(), gfuns, narm, stats[0], stats2[0], n[0], i==0, i==(bs.n-1));
+						do_mstats(vj, 0, vj.size(), gfuns, narm, stats[1], stats2[1], n[1], i==0, i==(bs.n-1));
+						double value = 0;
+						for (size_t m=0; m<vi.size(); m++) {
+							value += (vi[m] - stats[0][0]) * (vj[m]  - stats[0][1]);
+						}
+						value /= (ncell() - asSample) * (stats[1][0] * stats[1][1]);
+						means.push_back(stats[0][0]);
+						means.push_back(stats[1][0]);
+						cor.push_back(value);
+					}
+					xi.readStop();
+					xj.readStop();
+				}
+			}
+		}
+		out[0] = cor;	
+		out[1] = means;	
+	return(out);	
+}
+
+
+
 
 
 SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
@@ -3463,10 +3805,11 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 		sdfun = "std";
 		fun = "sd";
 	}
-	std::vector<double> stats(nlyr());
-	std::vector<double> stats2(nlyr());
+	size_t nl = nlyr();
+	std::vector<double> stats(nl);
+	std::vector<double> stats2(nl);
 
-	std::vector<double> n(nlyr());
+	std::vector<double> n(nl);
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -3476,10 +3819,10 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 		std::vector<double> v;
 		readBlock(v, bs, i);
 		unsigned off = bs.nrows[i] * ncol() ;
-		for (size_t lyr=0; lyr<nlyr(); lyr++) {
+		for (size_t lyr=0; lyr<nl; lyr++) {
 			unsigned offset = lyr * off;
 			std::vector<double> vv = { v.begin()+offset, v.begin()+offset+off };
-			do_stats(vv, fun, narm, stats[lyr], stats2[lyr], n[lyr], i);
+			do_stat(vv, fun, narm, stats[lyr], stats2[lyr], n[lyr], i);
 		}
 	}
 	readStop();
@@ -3517,13 +3860,13 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 				stats[lyr] = NAN;
 			}
 		}
-	} else if (fun == "notNA") {
-		for (size_t lyr=0; lyr<nlyr(); lyr++) {
+	} else if ((fun == "notNA") || (fun == "isNA")) {
+		for (size_t lyr=0; lyr<nl; lyr++) {
 			stats[lyr] = n[lyr];
 		}
 	} else if (fun == "isNA") {
-		size_t nc = ncell();
-		for (size_t lyr=0; lyr<nlyr(); lyr++) {
+		double nc = ncell();
+		for (size_t lyr=0; lyr<nl; lyr++) {
 			stats[lyr] = nc - n[lyr];
 		}
 	}
@@ -3592,7 +3935,7 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 					vv[j] = NAN;
 				}
 			}
-			do_stats(vv, fun, narm, stats[lyr], stats2, n[lyr], i);
+			do_stat(vv, fun, narm, stats[lyr], stats2, n[lyr], i);
 			w[lyr] += wsum;
 		}
 	}

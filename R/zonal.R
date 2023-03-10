@@ -196,15 +196,25 @@ setMethod("global", signature(x="SpatRaster"),
 			na.rm <- isTRUE(list(...)$na.rm)
 			ptr <- x@pnt$global_weighted_mean(weights@pnt, txtfun, na.rm, opt)
 			messages(ptr, "global")
-			res <- (.getSpatDF(ptr))
+			res <- .getSpatDF(ptr)
 			rownames(res) <- nms
 			return(res)
 		}
 
 		if (inherits(txtfun, "character")) {
-			if (txtfun %in% c("prod", "max", "min", "mean", "sum", "range", "rms", "sd", "sdpop", "notNA", "isNA")) {
+			if (all(txtfun %in% c("prod", "max", "min", "mean", "sum", "range", "rms", "sd", "std", "notNA", "isNA"))) {
+				i <- grep("range", txtfun)
+				if (length(i) > 0) {
+					txtfun <- txtfun[-i]
+					txtfun <- c(txtfun, "min", "max")
+				}
+				txtfun <- unique(txtfun)
 				na.rm <- isTRUE(list(...)$na.rm)
-				ptr <- x@pnt$global(txtfun, na.rm, opt)
+				if (length(txtfun) > 1) {
+					ptr <- x@pnt$mglobal(txtfun, na.rm, opt)
+				} else {
+					ptr <- x@pnt$global(txtfun, na.rm, opt)				
+				}
 				messages(ptr, "global")
 				res <- .getSpatDF(ptr)
 

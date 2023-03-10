@@ -649,6 +649,9 @@ class SpatRaster {
 		std::vector<unsigned> get_aggregate_dims2(std::vector<unsigned> fact);
 		std::vector<std::vector<double> > get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim);
 //		std::vector<double> compute_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim, std::function<double(std::vector<double>&, bool)> fun, bool narm);
+
+		SpatDataFrame mglobal(std::vector<std::string> funs, bool narm, SpatOptions &opt);
+
 		SpatDataFrame global(std::string fun, bool narm, SpatOptions &opt);
 		SpatDataFrame global_weighted_mean(SpatRaster &weights, std::string fun, bool narm, SpatOptions &opt);
 
@@ -678,6 +681,8 @@ class SpatRaster {
 		SpatRaster anynan(bool falseNA, SpatOptions &opt);
 		SpatRaster nonan(bool falseNA, SpatOptions &opt);
 		SpatRaster which(SpatOptions &opt);
+
+		std::vector<std::vector<double>> layerCor(std::string fun, bool narm, bool asSample, SpatOptions &opt);
 
 		std::vector<double> line_cells(SpatGeom& g);
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);

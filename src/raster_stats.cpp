@@ -1118,4 +1118,3 @@ SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool w
 	return out;
 }
 
-

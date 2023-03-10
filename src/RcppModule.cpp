@@ -869,6 +869,8 @@ RCPP_MODULE(spat){
 		.method("get_aggregates", &SpatRaster::get_aggregates)
 		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims2)
 		.method("global", &SpatRaster::global)
+		.method("mglobal", &SpatRaster::mglobal)
+		.method("layerCor", &SpatRaster::layerCor)
 		.method("global_weighted_mean", &SpatRaster::global_weighted_mean)
 
 		.method("initf", ( SpatRaster (SpatRaster::*)(std::string, bool, SpatOptions&) )( &SpatRaster::init ), "init fun")

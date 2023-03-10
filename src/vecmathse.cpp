@@ -526,22 +526,22 @@ double modal_se(std::vector<double>& v, size_t s, size_t e) {
 }
 
 
-std::vector<bool> isna_se(const std::vector<double>& v, size_t s, size_t e) {
-	std::vector<bool> x(e, false);
+double isna_se(const std::vector<double>& v, size_t s, size_t e) {
+	double x = 0;
 	for (size_t i=s; i<e; i++) {
 		if (std::isnan(v[i])) {
-			x[i] = true;
+			x++;
 		}
 	}
 	return x;
 }
 
 
-std::vector<bool> isnotna_se(const std::vector<double>& v, size_t s, size_t e) {
-	std::vector<bool> x(e, true);
+double isnotna_se(const std::vector<double>& v, size_t s, size_t e) {
+	double x = 0;
 	for (size_t i=s; i<e; i++) {
-		if (std::isnan(v[i])) {
-			x[i] = false;
+		if (!std::isnan(v[i])) {
+			x++;
 		}
 	}
 	return x;
