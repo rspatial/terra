@@ -73,7 +73,7 @@ SpatTime_t get_time(long year, unsigned month, unsigned day, unsigned hr, unsign
 SpatTime_t get_time_str(std::vector<std::string> s) {
 	std::vector<long> d(6, 0);
 	for (size_t i=0; i<s.size(); i++) {
-		d[i] = stoi(s[i]);
+		d[i] = stoll(s[i]);
 	}
 	return get_time(d[0], d[1], d[2], d[3], d[4], d[5]);
 }
@@ -275,7 +275,7 @@ SpatTime_t parse_time(std::string x) {
 
 	std::vector<std::string> time = strsplit(s[0], "-");
 	if (time.size() == 1) {
-		return stoi(time[0]);
+		return stoll(time[0]);
 	} else if (time.size() != 3) {
 		return 0;
 	}
