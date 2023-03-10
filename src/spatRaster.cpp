@@ -2463,6 +2463,7 @@ std::vector<int> SpatRaster::getRGB(){
 
 void SpatRaster::removeRGB(){
 	rgblyrs = std::vector<int>(0);
+	rgbtype = "";
 	rgb = false;
 }
 

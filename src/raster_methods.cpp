@@ -3696,7 +3696,6 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 				for (unsigned j=(i+1); j<nl; j++) {
 					SpatRaster xi = subset({i}, topt);
 					SpatRaster xj = subset({j}, topt);
-					std::vector<double> n(nl);
 					if (!xi.readStart()) {
 						setError(getError());
 						return(out);
@@ -3705,11 +3704,13 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 						setError(getError());
 						return(out);
 					}
+
+					std::vector<std::vector<double>> stats(nl);
+					std::vector<std::vector<double>> stats2(nl);
+					std::vector<double> n(nl);
 					
 					BlockSize bs = getBlockSize(topt);
 					for (size_t k=0; k<bs.n; k++) {
-						std::vector<std::vector<double>> stats(nl);
-						std::vector<std::vector<double>> stats2(nl);
 						std::vector<double> vi, vj;
 						xi.readBlock(vi, bs, k);
 						xj.readBlock(vj, bs, k);
@@ -3744,7 +3745,6 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 					SpatRaster xi = subset({i}, topt);
 					SpatRaster xj = subset({j}, topt);
 					
-					std::vector<double> n(nl);
 					if (!xi.readStart()) {
 						setError(getError());
 						return(out);
@@ -3754,10 +3754,12 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 						return(out);
 					}
 					
+					std::vector<double> n(nl);
+					std::vector<std::vector<double>> stats(nl);
+					std::vector<std::vector<double>> stats2(nl);
 					BlockSize bs = getBlockSize(topt);
+
 					for (size_t k=0; k<bs.n; k++) {
-						std::vector<std::vector<double>> stats(nl);
-						std::vector<std::vector<double>> stats2(nl);
 						std::vector<double> vi, vj;
 						xi.readBlock(vi, bs, k);
 						xj.readBlock(vj, bs, k);

@@ -210,14 +210,13 @@ setMethod("global", signature(x="SpatRaster"),
 				}
 				txtfun <- unique(txtfun)
 				na.rm <- isTRUE(list(...)$na.rm)
-				if (length(txtfun) > 1) {
-					ptr <- x@pnt$mglobal(txtfun, na.rm, opt)
-				} else {
+				if (isTRUE(list(...)$old)) {
 					ptr <- x@pnt$global(txtfun, na.rm, opt)				
+				} else {
+					ptr <- x@pnt$mglobal(txtfun, na.rm, opt)
 				}
 				messages(ptr, "global")
 				res <- .getSpatDF(ptr)
-
 				rownames(res) <- nms
 				return(res)
 			}

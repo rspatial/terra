@@ -17,7 +17,7 @@ setMethod ("has.RGB" , "SpatRaster",
 
 setMethod("set.RGB", signature(x="SpatRaster"),
 	function(x, value=1:3, type="rgb") {
-		if (is.null(value[1]) || is.na(value[1])) {
+		if (is.null(value[1]) || is.na(value[1]) || any(value < 1)) {
 			x@pnt$removeRGB()
 		} else {
 			stopifnot(all(value %in% 1:nlyr(x)))
@@ -35,8 +35,9 @@ setMethod("set.RGB", signature(x="SpatRaster"),
 )
 
 setMethod("RGB<-", signature(x="SpatRaster"),
-	function(x, type="rgb", value) {
+	function(x, value, type="rgb") {
 		x@pnt <- x@pnt$deepcopy()
+		
 		set.RGB(x, value, type)
 		x
 	}

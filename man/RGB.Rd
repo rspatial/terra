@@ -28,7 +28,7 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 \S4method{colorize}{SpatRaster}(x, to="hsv", alpha=FALSE, stretch=NULL, 
 	grays=FALSE, NAzero=FALSE, filename="", overwrite=FALSE, ...)
 
-\S4method{has.RGB}{SpatRaster}(x)
+\S4method{has.RGB}{SpatRaster}(x, strict=TRUE)
 }
 
 
@@ -48,6 +48,8 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
   \item{grays}{logical. If \code{TRUE}, a gray-scale color-table is created. Only used for transforming RGB to col}
 
   \item{NAzero}{logical. If \code{TRUE}, NAs are treated as zeros such that a color can be returned if at least one of the three channels has a value. Only used for transforming RGB to (\code{"col"})}
+
+  \item{strict}{logical. If \code{TRUE}, the function returns \code{FALSE} if a color space such as "hsv", "hsi" and "hsl" is used}
   
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}  
