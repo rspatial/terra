@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-19</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-20</span>
       </span>
     </div>
 
@@ -87,9 +87,13 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## the equivalent, computed in steps</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="global.html">global</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"mean"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .local(x, ...):</span> object 'i' not found</span>
 <span class="r-in"><span><span class="va">rr</span> <span class="op">&lt;-</span> <span class="va">r</span> <span class="op">-</span> <span class="va">m</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'm' not found</span>
 <span class="r-in"><span><span class="va">rms</span> <span class="op">&lt;-</span> <span class="fu"><a href="global.html">global</a></span><span class="op">(</span><span class="va">rr</span>, <span class="st">"rms"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'global': object 'rr' not found</span>
 <span class="r-in"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">rr</span> <span class="op">/</span> <span class="va">rms</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'rr' not found</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

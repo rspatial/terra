@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-19</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-20</span>
       </span>
     </div>
 
@@ -48,17 +48,34 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-19" id="version-17-19">version 1.7-19<a class="anchor" aria-label="anchor" href="#version-17-19"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-20" id="version-17-20">version 1.7-20<a class="anchor" aria-label="anchor" href="#version-17-20"></a></h2>
 <div class="section level3">
-<h3 id="new-1-7-19">new<a class="anchor" aria-label="anchor" href="#new-1-7-19"></a></h3>
+<h3 id="new-1-7-20">new<a class="anchor" aria-label="anchor" href="#new-1-7-20"></a></h3>
 <ul><li>The <code>halo</code> function for adding halo-ed text to plots is now exposed</li>
 <li>
 <code>add_legend</code> for adding a custom legend using a keyword to position it.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-19">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-19"></a></h3>
+<h3 id="enhancements-1-7-20">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-20"></a></h3>
+<ul><li>better support for other color spaces than RGB <a href="https://github.com/rspatial/terra/issues/1060" class="external-link">#1060</a> by Dominic Royé</li>
+<li>path expansion in writeVector <a href="https://github.com/rspatial/terra/issues/1055" class="external-link">#1055</a> by Andrew Gene Brown.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-7-20">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-20"></a></h3>
 <ul><li>A SpatRaster with RGB layers was forced to INT1U when writing <a href="https://github.com/rspatial/terra/issues/1051" class="external-link">#1051</a> by Cesar Aybar</li>
 <li>In files with multiple vector layers, the crs of the first layer was always used; ignoring that the crs could be different for other layers <a href="https://github.com/rspatial/terra/issues/1052" class="external-link">#1052</a> by Andrew Gene Brown</li>
+<li>
+<code>sieve</code> was not able to write to file <a href="https://github.com/rspatial/terra/issues/1061" class="external-link">#1061</a> by leo</li>
+<li>
+<code>rasterize</code> did not work with sf objects <a href="https://github.com/rspatial/terra/issues/1054" class="external-link">#1054</a> by Jakub Nowosad</li>
+<li>
+<code>query</code> did not work for hyphenated layer names <a href="https://github.com/rspatial/terra/issues/1058" class="external-link">#1058</a> by Robbie Price</li>
+<li>
+<code>focal3D</code> na.policy did not work <a href="https://github.com/rspatial/terra/issues/1057" class="external-link">#1057</a> by Flávio Mota</li>
+<li>
+<code>layerCor</code> with <code>na.rm=TRUE</code> failed for a SpatRaster with more than 2 layers <a href="https://github.com/rspatial/terra/issues/1056" class="external-link">#1056</a> by Alex Ilich.</li>
+<li>inset with keyword positioning did not work well <a href="https://github.com/rspatial/terra/issues/1053" class="external-link">#1053</a> by Márcia Barbosa</li>
+<li>yearmonths were not read from file for years &gt; 2037 <a href="https://github.com/rspatial/terra/issues/1062" class="external-link">#1062</a> by Colin Brust</li>
 </ul></div>
 </div>
     <div class="section level2">
