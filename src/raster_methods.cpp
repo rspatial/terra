@@ -3683,104 +3683,68 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 
 	size_t nl = nlyr();
 
-	//if (fun == "pearson") {
-		std::vector<double> means, cor;
-		means.reserve(nl * (nl-1));
-		cor.reserve(nl-1);
+	if (fun == "pearson") {
+		std::vector<double> means(nl*nl, NAN);
+		std::vector<double> cor(nl*nl, 1);
 		SpatOptions topt(opt);
-		
-		
-		if (narm) {
-			std::vector<std::string> gfuns = {"mean", "sd", "isNA"};
-			for (unsigned i=0; i<(nl-1); i++) {
-				for (unsigned j=(i+1); j<nl; j++) {
-					SpatRaster xi = subset({i}, topt);
-					SpatRaster xj = subset({j}, topt);
-					if (!xi.readStart()) {
-						setError(getError());
-						return(out);
-					}
-					if (!xj.readStart()) {
-						setError(getError());
-						return(out);
-					}
-
+				
+		std::vector<std::string> gfuns = {"mean", "sd"};
+		for (unsigned i=0; i<(nl-1); i++) {
+			for (unsigned j=(i+1); j<nl; j++) {
+				SpatRaster xi = subset({i}, topt);
+				SpatRaster xj = subset({j}, topt);
+				if (!xi.readStart()) {
+					setError(getError());
+					return(out);
+				}
+				if (!xj.readStart()) {
+					setError(getError());
+					return(out);
+				}
 					std::vector<std::vector<double>> stats(nl);
-					std::vector<std::vector<double>> stats2(nl);
-					std::vector<double> n(nl);
-					
-					BlockSize bs = getBlockSize(topt);
-					for (size_t k=0; k<bs.n; k++) {
-						std::vector<double> vi, vj;
-						xi.readBlock(vi, bs, k);
-						xj.readBlock(vj, bs, k);
+				std::vector<std::vector<double>> stats2(nl);
+				std::vector<double> n(nl);
+				
+				BlockSize bs = getBlockSize(topt);
+				for (size_t k=0; k<bs.n; k++) {
+					std::vector<double> vi, vj;
+					xi.readBlock(vi, bs, k);
+					xj.readBlock(vj, bs, k);
+					if (narm) {
 						for (size_t m=0; m<vi.size(); m++) {
 							if (std::isnan(vi[m]) || std::isnan(vj[m])) {
 								vi[m] = NAN;
 								vj[m] = NAN;
 							} 
 						}
-						do_mstats(vi, 0, vi.size(), gfuns, narm, stats[0], stats2[0], n[0], k==0, k==(bs.n-1));
-						do_mstats(vj, 0, vj.size(), gfuns, narm, stats[1], stats2[1], n[1], k==0, k==(bs.n-1));
-						double value = 0;
+					}
+					do_mstats(vi, 0, vi.size(), gfuns, narm, stats[0], stats2[0], n[0], k==0, k==(bs.n-1));
+					do_mstats(vj, 0, vj.size(), gfuns, narm, stats[1], stats2[1], n[1], k==0, k==(bs.n-1));
+					double value = 0;
+					if (narm) {
 						for (size_t m=0; m<vi.size(); m++) {
 							if (!std::isnan(vi[m])) {
-								value += (vi[m] - stats[1][0]) * (vj[m]  - stats[1][0]);
+								value += (vi[m] - stats[0][0]) * (vj[m]  - stats[1][0]);
 							}
 						}
-						value /= (ncell() - n[0] - asSample) * (stats[0][1] * stats[1][1]);
-						means.push_back(stats[0][0]);
-						means.push_back(stats[1][0]);
-						cor.push_back(value);
-					}
-					xi.readStop();
-					xj.readStop();
-				}
-			//	colnames(means) = names(x)
-			}
-		} else {
-			std::vector<std::string> gfuns = {"mean", "sd"};
-			for (unsigned i=0; i<(nl-1); i++) {
-				for (unsigned j=(i+1); j<nl; j++) {
-					SpatRaster xi = subset({i}, topt);
-					SpatRaster xj = subset({j}, topt);
-					
-					if (!xi.readStart()) {
-						setError(getError());
-						return(out);
-					}
-					if (!xj.readStart()) {
-						setError(getError());
-						return(out);
-					}
-					
-					std::vector<double> n(nl);
-					std::vector<std::vector<double>> stats(nl);
-					std::vector<std::vector<double>> stats2(nl);
-					BlockSize bs = getBlockSize(topt);
-
-					for (size_t k=0; k<bs.n; k++) {
-						std::vector<double> vi, vj;
-						xi.readBlock(vi, bs, k);
-						xj.readBlock(vj, bs, k);
-						do_mstats(vi, 0, vi.size(), gfuns, narm, stats[0], stats2[0], n[0], i==0, i==(bs.n-1));
-						do_mstats(vj, 0, vj.size(), gfuns, narm, stats[1], stats2[1], n[1], i==0, i==(bs.n-1));
-						double value = 0;
+					} else {
 						for (size_t m=0; m<vi.size(); m++) {
-							value += (vi[m] - stats[0][0]) * (vj[m]  - stats[0][1]);
+							value += (vi[m] - stats[0][0]) * (vj[m]  - stats[1][0]);
 						}
-						value /= (ncell() - asSample) * (stats[1][0] * stats[1][1]);
-						means.push_back(stats[0][0]);
-						means.push_back(stats[1][0]);
-						cor.push_back(value);
 					}
-					xi.readStop();
-					xj.readStop();
+					value /= (n[0] - asSample) * (stats[0][1] * stats[1][1]);
+					means[i*nl+j] = stats[0][0];
+					means[j*nl+i] = stats[0][0];
+					cor[i*nl+j] = value;
+					cor[j*nl+i] = value;
 				}
+				xi.readStop();
+				xj.readStop();
 			}
 		}
 		out[0] = cor;	
 		out[1] = means;	
+	}
 	return(out);	
 }
 
