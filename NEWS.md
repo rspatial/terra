@@ -9,6 +9,20 @@
 
 - A SpatRaster with RGB layers was forced to INT1U when writing [#1051](https://github.com/rspatial/terra/issues/1051) by Cesar Aybar
 - In files with multiple vector layers, the crs of the first layer was always used; ignoring that the crs could be different for other layers [#1052](https://github.com/rspatial/terra/issues/1052) by Andrew Gene Brown
+- `sieve` was not able to write to file [#1061](https://github.com/rspatial/terra/issues/1061) by leo
+- `rasterize` did not work with sf objects [#1054](https://github.com/rspatial/terra/issues/1054) by Jakub Nowosad
+- `query` did not work for hyphenated layer names [#1058](https://github.com/rspatial/terra/issues/1058) by Robbie Price
+- `focal3D` na.policy did not work [#1057](https://github.com/rspatial/terra/issues/1057) by Flávio Mota
+- `layerCor` with `na.rm=TRUE` failed for a SpatRaster with more than 2 layers [#1056](https://github.com/rspatial/terra/issues/1056) by Alex Ilich.
+- inset with keyword positioning did not work well [#1053](https://github.com/rspatial/terra/issues/1053) by Márcia Barbosa
+
+h
+## enhancements
+
+- better support for other color spaces than RGB [#1060](https://github.com/rspatial/terra/issues/1060) by Dominic Royé
+- path expansion in writeVector [#1055](https://github.com/rspatial/terra/issues/1055) by Andrew Gene Brown.
+
+
 
 
 # version 1.7-18
