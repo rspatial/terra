@@ -49,7 +49,9 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 	fun <- .makeTextFun(fun)
 	toc <- FALSE
 	if (inherits(fun, "character")) {
-		if (fun %in% c("sum", "mean", "min", "max", "median", "modal", "sd", "sdpop")) {
+		if (fun %in% c("sum", "mean", "min", "max", "median", "modal","prod", "which.min", "which.max",
+				"any", "all", "sd", "std", "sdpop")) {
+			fun[fun == "sdpop"] <- "std"
 			toc <- TRUE
 		} else {
 			fun <- match.fun(fun)

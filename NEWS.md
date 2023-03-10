@@ -1,9 +1,14 @@
-# version 1.7-19
+# version 1.7-20
 
 ## new
 
 - The `halo` function for adding halo-ed text to plots is now exposed
 - `add_legend` for adding a custom legend using a keyword to position it.
+
+## enhancements
+
+- better support for other color spaces than RGB [#1060](https://github.com/rspatial/terra/issues/1060) by Dominic Royé
+- path expansion in writeVector [#1055](https://github.com/rspatial/terra/issues/1055) by Andrew Gene Brown.
 
 ## bug fixes
 
@@ -15,14 +20,7 @@
 - `focal3D` na.policy did not work [#1057](https://github.com/rspatial/terra/issues/1057) by Flávio Mota
 - `layerCor` with `na.rm=TRUE` failed for a SpatRaster with more than 2 layers [#1056](https://github.com/rspatial/terra/issues/1056) by Alex Ilich.
 - inset with keyword positioning did not work well [#1053](https://github.com/rspatial/terra/issues/1053) by Márcia Barbosa
-
-h
-## enhancements
-
-- better support for other color spaces than RGB [#1060](https://github.com/rspatial/terra/issues/1060) by Dominic Royé
-- path expansion in writeVector [#1055](https://github.com/rspatial/terra/issues/1055) by Andrew Gene Brown.
-
-
+- yearmonths were not read from file for years > 2037 [#1062](https://github.com/rspatial/terra/issues/1062) by Colin Brust
 
 
 # version 1.7-18

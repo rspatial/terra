@@ -202,7 +202,12 @@ setMethod("global", signature(x="SpatRaster"),
 		}
 
 		if (inherits(txtfun, "character")) {
-			if (all(txtfun %in% c("prod", "max", "min", "mean", "sum", "range", "rms", "sd", "std", "notNA", "isNA"))) {
+			if (any(is.na(txtfun))) error("global", "fun cannot be NA")
+			if (all(txtfun %in% c("prod", "max", "min", "mean", "sum", "range", "rms", "sd", "std", "sdpop", "notNA", "isNA"))) {
+				txtfun[txtfun == "sdpop"] <- "std"
+				if (length(i) > 0) {
+					txtfun <- txtfun[-i]
+				}
 				i <- grep("range", txtfun)
 				if (length(i) > 0) {
 					txtfun <- txtfun[-i]
