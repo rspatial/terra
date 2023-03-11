@@ -243,3 +243,134 @@ setMethod("global", signature(x="SpatRaster"),
 		res
 	}
 )
+
+
+
+setMethod("freq", signature(x="SpatRaster"),
+	function(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE, zones=NULL, wide=FALSE) {
+
+		if (!is.null(zones)) {
+			if (inherits(zones, "SpatVector")) {
+				out <- vector("list", nrow(zones))
+				for (i in 1:nrow(zones)) {
+					z <- zones[i,]
+					e <- align(ext(z), x, snap="near")
+					if (!is.null(intersect(e, ext(x)))) {
+						r <- crop(x, zones[i,], mask=TRUE)
+						out[[i]] <- freq(r, digits=digits, value=value, bylayer=bylayer, usenames=usenames, zones=NULL)
+						out[[i]]$zone <- i
+					}
+				}
+			} else if (inherits(zones, "SpatRaster")) {
+				compareGeom(x, zones, crs=FALSE)
+				if (nlyr(zones) > 1) zones <- zones[[1]]
+				u <- unlist(unique(zones))
+				out <- vector("list", length(u))
+				for (i in 1:length(u)) {
+					r <- mask(x, zones, maskvalues=u[i], inverse=TRUE)
+					out[[i]] <- freq(r, digits=digits, value=value, bylayer=bylayer, usenames=usenames, zones=NULL, wide=FALSE)
+					out[[i]]$zone <- i
+				}
+			} else {
+				error("freq", "zones must be a SpatVector or a SpatRaster")
+			}
+			out <- do.call(rbind, out)
+			if (is.null(out)) return(out)
+			out <- out[!is.na(out$count), ]
+			if (nrow(out) == 0) return(out)
+			out <- out[order(out$layer), ]
+			if (wide) {
+				out$count[is.na(out$count)] <- 0
+				out <- reshape(out, idvar=c("layer", "zone"), timevar="value", direction="wide")
+				colnames(out) <- gsub("count.", "", colnames(out))
+				out[is.na(out)] <- 0
+			}
+			return(out)
+		}
+
+		opt <- spatOptions()
+		if (!bylayer) usenames <- FALSE
+
+		if (!is.null(value)) {
+			value <- unique(value)
+			if (length(value) > 1) {
+				error("freq", "value must have a length of one")
+			}
+			if (is.character(value)) {
+				value <- value[value != ""]
+				if (length(value) == 0) {
+					error("freq", "no valid value")
+				}
+				ff <- is.factor(x)
+				if (!any(ff)) {
+					error("freq", "a character value is only meaningful for categorical rasters")
+				}
+				f <- freq(x[[ff]])
+				if (usenames) {
+					f$layer <- names(x)[f$layer]
+				}
+				f <- f[f$label == value,]
+				return(f)
+			}
+
+			if (is.na(digits)) {
+				v <- x@pnt$count(value, bylayer[1], FALSE, 0, opt)
+			} else {
+				v <- x@pnt$count(value, bylayer[1], TRUE, digits, opt)
+				value <- round(value, digits)
+			}
+			if (bylayer) {
+				v <- data.frame(layer=1:nlyr(x), value=value, count=v)
+			} else {
+				v <- data.frame(value=value, count=v)
+			}
+
+		} else {
+			if (is.na(digits)) {
+				v <- x@pnt$freq(bylayer[1], FALSE, 0, opt)
+			} else {
+				v <- x@pnt$freq(bylayer[1], TRUE, digits, opt)
+			}
+			v <- lapply(v, function(i) if (length(i) == 0) NA else i)
+
+			v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
+			v <- do.call(rbind, v)
+			v <- as.data.frame(v)
+			colnames(v) <- c("layer", "value", "count")
+			ff <- is.factor(x)
+			if (any(ff)) {
+				cgs <- cats(x)
+				v <- data.frame(v)
+				for (f in which(ff)) {
+					cg <- cgs[[f]]
+					j <- which(v[,1] == f)
+					i <- match(v[j,2], cg[,1])
+					act <- activeCat(x, f) + 1
+					if (!inherits(cg[[act]], "numeric")) {
+						v[j, 2] <- as.character(factor(cg[i, act], levels=unique(cg[[act]])))
+					} else {
+						v[j, 2] <- cg[i, act]
+					}
+				}
+			}
+			if (!bylayer) {
+#				if (nlyr(x) > 1)
+#					v <- aggregate(v[,"count",drop=FALSE], v[,"value", drop=FALSE], sum)
+#				} 
+				v <- v[,-1]
+			}
+		}
+		if (usenames) {
+			v$layer <- names(x)[v$layer]
+		}
+		if (wide) {
+			v$count[is.na(v$count)] <- 0
+			v <- reshape(v, idvar="layer", timevar="value", direction="wide")
+			colnames(v) <- gsub("count.", "", colnames(v))
+			v[is.na(v)] <- 0
+		}
+		
+		v
+	}
+)
+
