@@ -193,9 +193,9 @@ std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string
 					size_t ds = d.size()-1;
 					size_t nls = 0;
 					try {
-						nls = stoi(d[ds-2]);
+						nls = std::stol(d[ds-2]);
 						for (size_t i=0; i<(ds-2); i++) {
-							nls *= stoi(d[i]);
+							nls *= std::stol(d[i]);
 						}
 					} catch(...) {}
 					nl.push_back(std::to_string(nls));

@@ -1642,8 +1642,8 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 				sd.push_back(info[0][i]);
 				varname.push_back(info[1][i]);
 				srcname.push_back(info[2][i]);
-				rows.push_back(stoi(info[3][i]));
-				cols.push_back(stoi(info[4][i]));
+				rows.push_back(std::stol(info[3][i]));
+				cols.push_back(std::stol(info[4][i]));
 			}
 		}
 		if (sd.empty()) { // all were removed
@@ -1657,8 +1657,8 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 					sd.push_back(info[0][i]);
 					varname.push_back(info[1][i]);
 					srcname.push_back(info[2][i]);
-					rows.push_back(stoi(info[3][i]));
-					cols.push_back(stoi(info[4][i]));
+					rows.push_back(std::stol(info[3][i]));
+					cols.push_back(std::stol(info[4][i]));
 				}
 			}
 		}
@@ -1740,7 +1740,7 @@ std::vector<int_64> ncdf_str2int64v(std::string s, std::string delim) {
 
 bool get_long(std::string input, long &output) {
     try  {
-		output = std::stoi(input);
+		output = std::stol(input);
 		return true;
     } catch (std::invalid_argument &e)  {
 		return false;
