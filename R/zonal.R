@@ -250,13 +250,19 @@ setMethod("freq", signature(x="SpatRaster"),
 	function(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE, zones=NULL, wide=FALSE) {
 
 		if (!is.null(zones)) {
+			vna <- (!is.null(value) && is.na(value[1]))
+#			if (vna) levels(x) <- NULL
 			if (inherits(zones, "SpatVector")) {
 				out <- vector("list", nrow(zones))
 				for (i in 1:nrow(zones)) {
 					z <- zones[i,]
 					e <- align(ext(z), x, snap="near")
 					if (!is.null(intersect(e, ext(x)))) {
-						r <- crop(x, zones[i,], mask=TRUE)
+						r <- crop(x, zones[i,], mask=TRUE, touches=FALSE)
+						if (vna) {
+							ra <- rasterize(zones[i,], r, NA, background=0, touches=FALSE)
+							r <- cover(ra, r)
+						}
 						out[[i]] <- freq(r, digits=digits, value=value, bylayer=bylayer, usenames=usenames, zones=NULL)
 						out[[i]]$zone <- i
 					}
@@ -281,6 +287,9 @@ setMethod("freq", signature(x="SpatRaster"),
 			out <- out[order(out$layer), ]
 			if (wide) {
 				out$count[is.na(out$count)] <- 0
+				if (vna) {
+					out$value <- "NA"
+				}
 				out <- reshape(out, idvar=c("layer", "zone"), timevar="value", direction="wide")
 				colnames(out) <- gsub("count.", "", colnames(out))
 				out[is.na(out)] <- 0
@@ -365,6 +374,9 @@ setMethod("freq", signature(x="SpatRaster"),
 		}
 		if (wide) {
 			v$count[is.na(v$count)] <- 0
+			if ((!is.null(value)) && is.na(value)) {
+				v$value <- "NA"
+			}
 			v <- reshape(v, idvar="layer", timevar="value", direction="wide")
 			colnames(v) <- gsub("count.", "", colnames(v))
 			v[is.na(v)] <- 0
