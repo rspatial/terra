@@ -60,7 +60,9 @@
 <ul><li>better support for other color spaces than RGB <a href="https://github.com/rspatial/terra/issues/1060" class="external-link">#1060</a> by Dominic Royé</li>
 <li>path expansion in writeVector <a href="https://github.com/rspatial/terra/issues/1055" class="external-link">#1055</a> by Andrew Gene Brown.</li>
 <li>
-<code>clamp&lt;SpatRaster&gt;</code> now also accepts SpatRasters to set the lower and upper boundaries.</li>
+<code>clamp&lt;SpatRaster&gt;</code> now also accepts cSpatRasters to set the lower and upper boundaries.</li>
+<li>
+<code>freq</code> has new arguments “zones=NULL” and “wide=FALSE”, to allow tabulation of values by zone.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-20">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-20"></a></h3>
@@ -77,7 +79,9 @@
 <li>
 <code>layerCor</code> with <code>na.rm=TRUE</code> failed for a SpatRaster with more than 2 layers <a href="https://github.com/rspatial/terra/issues/1056" class="external-link">#1056</a> by Alex Ilich.</li>
 <li>inset with keyword positioning did not work well <a href="https://github.com/rspatial/terra/issues/1053" class="external-link">#1053</a> by Márcia Barbosa</li>
-<li>yearmonths were not read from file for years &gt; 2037 <a href="https://github.com/rspatial/terra/issues/1062" class="external-link">#1062</a> by Colin Brust</li>
+<li>yearmonths time stamps were not read from file for years &lt;1970 and &gt;2037 <a href="https://github.com/rspatial/terra/issues/1062" class="external-link">#1062</a> by Colin Brust</li>
+<li>
+<code>compareGeom</code> did not work for more than three SpatRasters at a time.</li>
 </ul></div>
 </div>
     <div class="section level2">
