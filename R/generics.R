@@ -324,10 +324,28 @@ setMethod("rep", signature(x="SpatRaster"),
 setMethod("clamp", signature(x="SpatRaster"),
 	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@pnt <- x@pnt$clamp(lower, upper, values[1], opt)
+		rlow <- inherits(lower, "SpatRaster")
+		rupp <- inherits(upper, "SpatRaster")
+		r <- rast()
+		if (rlow & rupp) {
+			x@pnt <- x@pnt$clamp_raster(lower@pnt, upper@pnt, NA, NA, values[1], opt)
+		} else if (rlow) {
+			if (any(is.na(upper))) error("clamp", "upper limit cannot be NA")
+			x@pnt <- x@pnt$clamp_raster(lower@pnt, r@pnt, NA, upper, values[1], opt)
+		} else if (rupp) {
+			if (any(is.na(lower))) error("clamp", "lower limit cannot be NA")
+			x@pnt <- x@pnt$clamp_raster(r@pnt, upper@pnt, lower, NA, values[1], opt)
+		} else {
+			if (any(is.na(lower))) error("clamp", "lower limit cannot be NA")
+			if (any(is.na(upper))) error("clamp", "upper limit cannot be NA")
+			x@pnt <- x@pnt$clamp_raster(r@pnt, r@pnt, lower, upper, values[1], opt)
+			#x@pnt <- x@pnt$clamp(lower, upper, values[1], opt)
+		}
 		messages(x, "clamp")
 	}
 )
+
+
 
 setMethod("clamp_ts", signature(x="SpatRaster"),
 	function(x, min=FALSE, max=TRUE, filename="", ...) {

@@ -1681,6 +1681,234 @@ SpatRaster SpatRaster::clamp(std::vector<double> low, std::vector<double> high, 
 	return(out);
 }
 
+SpatRaster SpatRaster::clamp_raster(SpatRaster &x, SpatRaster &y, std::vector<double> low, std::vector<double> high, bool usevalue, SpatOptions &opt) {
+
+	SpatRaster out = geometry(nlyr(), true);
+	if (!hasValues()) {
+		out.setError("cannot clamp a raster with no values");
+		return out;
+	}
+	size_t nl = nlyr();
+	bool do_one = true;
+	bool rA = false;
+	bool rB = false;
+	bool onex = true;
+	bool oney = true;
+	if (std::isnan(low[0])) {
+		rA = true;
+		if (!x.hasValues()) {
+			out.setError("cannot clamp with raster that has no values");
+			return out;
+		}
+		if (x.nlyr() > 1) {
+			if (x.nlyr() != nl) {
+				out.setError("clamp raster must have one layer or the same number of layers as x");
+				return out;			
+			} else {
+				onex = false;
+			}
+		}
+	} else {
+		if (low.size() > nl) {
+			out.setError("there are more low values than layers");
+			return out;
+		}
+	}
+
+	if (std::isnan(high[0])) {
+		rB = true;
+		if (!y.hasValues()) {
+			out.setError("cannot clamp with raster that has no values");
+			return out;
+		}
+		if (y.nlyr() > 1) {
+			if (y.nlyr() != nl) {
+				out.setError("clamp raster must have one layer or the same number of layers as x");
+				return out;			
+			} else {
+				oney = false;
+			}
+		}
+	} else {
+		if (high.size() > nl) {
+			out.setError("there are more high values than layers");
+			return out;
+		}
+	}
+	
+	if ((low.size() > 1) || (high.size() > 1) || rA || rB) {
+		do_one = false;
+		recycle(low, nl);
+		recycle(high, nl);
+	}
+	if (!(rA | rB)) {
+		for (size_t i=0; i<low.size(); i++) {
+			if (low[i] > high[i]) {
+				out.setError("lower clamp value cannot be larger than the higher clamp value");
+				return out;
+			}
+		}
+	}
+	
+	if (rA) {
+		if (!x.readStart()) {
+			out.setError(x.getError());
+			return(out);
+		}		
+	}
+	if (rB) {
+		if (!y.readStart()) {
+			out.setError(y.getError());
+			return(out);
+		}		
+	}
+	
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+	if (!(rA | rB)) {
+		if (do_one) {
+			for (size_t i = 0; i < out.bs.n; i++) {
+				std::vector<double> v;
+				readBlock(v, out.bs, i);
+				clamp_vector(v, low[0], high[0], usevalue);
+				if (!out.writeBlock(v, i)) return out;
+			}
+		} else {
+			size_t nc = ncol();
+			for (size_t i = 0; i < out.bs.n; i++) {
+				size_t off = out.bs.nrows[i] * nc;
+				std::vector<double> v;
+				readBlock(v, out.bs, i);
+				if (usevalue) {
+					for (size_t j=0; j<nl; j++) {
+						size_t start = j * off;
+						size_t end = start + off;
+						for (size_t k=start; k<end; k++) {
+							if (v[k] < low[j] ) {
+								v[k] = low[j];
+							} else if ( v[k] > high[j] ) {
+								v[k] = high[j];
+							}
+						}
+					}
+				} else {
+					for (size_t j=0; j<nl; j++) {
+						size_t start = j * off;
+						size_t end = start + off;
+						for (size_t k=start; k<end; k++) {
+							if ((v[k] < low[j] ) || (v[k] > high[j])) {
+								v[k] = NAN;
+							}
+						}
+					}
+				}
+				if (!out.writeBlock(v, i)) return out;
+			}
+		}
+	} else if (rA & rB) {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v, vx, vy;
+			readBlock(v, out.bs, i);
+			x.readBlock(vx, out.bs, i);
+			y.readBlock(vy, out.bs, i);
+			size_t ncl = vx.size();
+			if (usevalue) {
+				for (size_t j=0; j<v.size(); j++) {
+					size_t kx = onex ? j % ncl : j;
+					size_t ky = oney ? j % ncl : j;
+					if (v[j] < vx[kx] ) {
+						v[j] = vx[kx];
+					} else if ( v[j] > vy[ky] ) {
+						v[j] = vy[ky];
+					}
+				}
+			} else {
+				for (size_t j=0; j<v.size(); j++) {
+					size_t kx = onex ? j % ncl : j;
+					size_t ky = oney ? j % ncl : j;
+					if (v[j] < vx[kx] ) {
+						v[j] = NAN;
+					} else if ( v[j] > vy[ky] ) {
+						v[j] = NAN;
+					}
+				}
+			}
+			if (!out.writeBlock(v, i)) return out;
+		}
+	} else if (rA) {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v, vx;
+			readBlock(v, out.bs, i);
+			x.readBlock(vx, out.bs, i);
+			size_t ncl = vx.size();
+			if (usevalue) {
+				for (size_t j=0; j<v.size(); j++) {
+					size_t k = onex ? j % ncl : j;
+					size_t lyr = j / ncl;
+					if (v[j] < vx[k] ) {
+						v[j] = vx[k];
+					} else if ( v[j] > high[lyr] ) {
+						v[j] = high[lyr];
+					}
+				}
+			} else {
+				for (size_t j=0; j<v.size(); j++) {
+					size_t k = onex ? j % ncl : j;
+					size_t lyr = j / ncl;
+					if (v[j] < vx[k] ) {
+						v[j] = NAN;
+					} else if ( v[j] > high[lyr] ) {
+						v[j] = NAN;
+					}
+				}
+			}
+			if (!out.writeBlock(v, i)) return out;
+		}
+	} else if (rB) {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v, vy;
+			readBlock(v, out.bs, i);
+			y.readBlock(vy, out.bs, i);
+			size_t ncl = vy.size();
+			if (usevalue) {
+				for (size_t j=0; j<v.size(); j++) {
+					size_t k = oney ? j % ncl : j;
+					size_t lyr = j / ncl;
+					if (v[j] < low[lyr]) {
+						v[j] = low[lyr];
+					} else if (v[j] > vy[k]) {
+						v[j] = vy[k];
+					}
+				}
+			} else {
+				for (size_t j=0; j<v.size(); j++) {
+					size_t k = oney ? j % ncl : j;
+					size_t lyr = j / ncl;
+					if (v[j] < low[lyr]) {
+						v[j] = NAN;
+					} else if (v[j] > vy[k]) {
+						v[j] = NAN;
+					}
+				}
+			}
+			if (!out.writeBlock(v, i)) return out;
+		}
+	}
+
+	readStop();
+	out.writeStop();	
+	return(out);
+}
+
+
 
 std::vector<double> bip2bil(const std::vector<double> &v, size_t nl) {
 	

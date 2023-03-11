@@ -100,7 +100,9 @@
 
 		old.par <- graphics::par(no.readonly = TRUE)
 		on.exit(graphics::par(old.par))
-		graphics::par(mfrow=c(nr, nc), mar=c(4, 4, 2, 2))
+		px <- trunc(sqrt(nl))
+		py <- ceiling(nl / px)
+		graphics::par(mfrow=c(px, py), mar=c(3, 3, 1, 1))
 
 		if (smooth) {
 			for (i in 1:nl) {

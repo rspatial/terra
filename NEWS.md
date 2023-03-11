@@ -9,6 +9,7 @@
 
 - better support for other color spaces than RGB [#1060](https://github.com/rspatial/terra/issues/1060) by Dominic Royé
 - path expansion in writeVector [#1055](https://github.com/rspatial/terra/issues/1055) by Andrew Gene Brown.
+- `clamp<SpatRaster>` now also accepts SpatRasters to set the lower and upper boundaries.
 
 ## bug fixes
 
