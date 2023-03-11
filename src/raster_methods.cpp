@@ -1767,7 +1767,8 @@ SpatRaster SpatRaster::clamp_raster(SpatRaster &x, SpatRaster &y, std::vector<do
 		out.setError(getError());
 		return(out);
 	}
-
+	
+	opt.ncopies = (1 + oney + onex) * opt.ncopies; 
   	if (!out.writeStart(opt, filenames())) {
 		readStop();
 		return out;
@@ -1904,6 +1905,9 @@ SpatRaster SpatRaster::clamp_raster(SpatRaster &x, SpatRaster &y, std::vector<do
 	}
 
 	readStop();
+	if (rA) x.readStop();
+	if (rB) y.readStop();
+	
 	out.writeStop();	
 	return(out);
 }
