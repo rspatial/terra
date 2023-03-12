@@ -1061,45 +1061,41 @@ SpatRaster SpatRaster::replace(SpatRaster x, unsigned layer, SpatOptions &opt) {
 }
 
 
-SpatRaster SpatRaster::makeCategorical(unsigned layer, SpatOptions &opt) {
+SpatRaster SpatRaster::makeCategorical(long layer, SpatOptions &opt) {
 
+	SpatRaster out;
 	if (!hasValues()) {
-		SpatRaster out;
 		out.setError("cannot make categories if the raster has no values");
 		return out;
 	}
 
-	std::vector<unsigned> lyrs = {layer};
+	SpatRaster r;
 	SpatOptions fopt(opt);
-	SpatRaster r = subset(lyrs, fopt);
-
+	if (layer >= 0) {
+		if (layer > (long) nlyr()) {
+			out.setError("layer number is too high");
+			return out;
+		}
+		std::vector<unsigned> lyrs = {(unsigned) layer};
+		r = subset(lyrs, fopt);
+	} else {
+		r = *this;
+	}	
 	r.math2("round", 0, fopt);
-
-	std::vector<std::vector<double>> u = r.unique(false, true, fopt);
-/*
-	std::vector<double> id(u[0].size());
-	std::iota(id.begin(), id.end(), 0);
-	std::vector<std::vector<double>> rcl(2);
-	rcl[0] = u[0];
-	rcl[1] = id;
-	r = r.reclassify(rcl, true, true, true, false, false, fopt);
-
-	std::vector<std::string> s(id.size());
-	for (size_t i=0; i<s.size(); i++) {
-		s[i] = std::to_string((int)u[0][i]);
-	}
-*/
-
-	std::vector<long> uu;
-	std::vector<std::string> s(u[0].size());
-	for (size_t i=0; i<s.size(); i++) {
-		uu[i] = (long)u[0][i];
-		s[i] = std::to_string(uu[i]);
-	}
+	std::vector<std::vector<double>> u = r.unique(true, true, fopt);
 	std::vector<std::string> names = r.getNames();
-	r.setLabels(0, uu, s, names[0]);
-
-	if (nlyr() == 1) {
+	
+	for (size_t i=0; i<r.nlyr(); i++) { 
+		std::vector<long> uu(u[i].size());
+		std::vector<std::string> s(u[i].size());
+		for (size_t j=0; j<s.size(); j++) {
+			uu[j] = (long)u[i][j];
+			s[j] = std::to_string(uu[j]);
+		}
+		r.setLabels(i, uu, s, names[i]);
+	}
+	
+	if (nlyr() == r.nlyr()) {
 		return r;
 	} else {
 		return replace(r, layer, opt);
@@ -1214,7 +1210,7 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<long> values, std::vector
     std::vector<unsigned> sl = findLyr(layer);
 
 	SpatCategories cats;
-	cats.d.add_column(values, "value");
+	cats.d.add_column(values, "ID");
 	cats.d.add_column(labels, name);
 	cats.index = 1;
 

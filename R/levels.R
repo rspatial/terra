@@ -27,15 +27,17 @@ setMethod("is.factor", signature(x="SpatRaster"),
 
 setMethod("as.factor", signature(x="SpatRaster"),
 	function(x) {
-		if (!hasValues(x)) {
-			error("as.factor", "x has no values")
-		}
-		x <- round(x)
-		u <- unique(x, TRUE)
-		for (i in 1:nlyr(x)) {
-			set.cats(x, i, data.frame(ID=u[[i]], label=u[[i]], stringsAsFactors=FALSE))
-		}
-		x
+		x@pnt = x@pnt$makeCategorical(-1, spatOptions())
+		messages(x)
+		#if (!hasValues(x)) {
+		#	error("as.factor", "x has no values")
+		#}
+		#x <- round(x)
+		#u <- unique(x, TRUE)
+		#for (i in 1:nlyr(x)) {
+		#	set.cats(x, i, data.frame(ID=u[[i]], label=u[[i]], stringsAsFactors=FALSE))
+		#}
+		#x
 	}
 )
 

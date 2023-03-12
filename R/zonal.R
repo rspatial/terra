@@ -1,22 +1,29 @@
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
-	function(x, z, fun="mean", ..., w=NULL, as.raster=FALSE, filename="", overwrite=FALSE, wopt=list())  {
+	function(x, z, fun="mean", ..., w=NULL, group=NULL, as.raster=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 		txtfun <- .makeTextFun(fun)
-		
-		if ((nlyr(z) > 1) && (nlyr(x) > 1)) {
-			error("zonal", "x and z cannot both have more than one layer")
+		if (is.null(group)) {
+			nogroup <- TRUE
+			group <- rast()
+		} else {
+			nogroup <- FALSE
 		}
-		
-		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum", "notNA", "isNA"))) {
+		if (inherits(txtfun, "character") && 
+				(txtfun %in% c("max", "min", "mean", "sum", "notNA", "isNA"))) {
+
+			if ((nlyr(z) > 1) && (nlyr(x) > 1)) {
+				error("zonal", "x and z cannot both have more than one layer")
+			}
+
 			na.rm <- isTRUE(list(...)$na.rm)
 			opt <- spatOptions()
 			if (!is.null(w)) {
 				if (txtfun != "mean") {
 					error("zonal", "fun must be 'mean' when using weights")
 				}
-				sdf <- x@pnt$zonal_weighted(z@pnt, w@pnt, na.rm, opt)				
+				sdf <- x@pnt$zonal_weighted(z@pnt, w@pnt, na.rm, opt)			
 			} else {
-				sdf <- x@pnt$zonal(z@pnt, txtfun, na.rm, opt)
+				sdf <- x@pnt$zonal(z@pnt, group@pnt, txtfun, na.rm, opt)
 			}
 			messages(sdf, "zonal")
 			out <- .getSpatDF(sdf)
@@ -26,43 +33,50 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			}
 			compareGeom(x, z, lyrs=FALSE, crs=FALSE, ext=TRUE, rowcol=TRUE)
 			if (nlyr(z) > 1) {
+				warn("zonal", "z can only have one layer with this function")
 				z <- z[[1]]
 			}
+
 			fun <- match.fun(fun)
 			nl <- nlyr(x)
-			res <- list()
-			vz <- values(z)
 			nms <- names(x)
-			for (i in 1:nl) {
-				d <- stats::aggregate(values(x[[i]]), list(zone=vz), fun, ...)
-				colnames(d)[2] <- nms[i]
-				res[[i]] <- d
-			}
-			out <- res[[1]]
-			if (nl > 1) {
-				for (i in 2:nl) {
-					out <- merge(out, res[[i]])
+			if (nogroup) {
+				for (i in 1:nl) {
+					xz <- c(x[[i]], group, z)
+					v <- as.data.frame(xz, na.rm=TRUE)
+					d <- stats::aggregate(v[,1], v[,2,drop=FALSE], fun, ...)
+					colnames(d)[2] <- nms[i]
+					if (i == 1) {
+						out <- d
+					} else {
+						out <- merge(out, d, by=1)				
+					}
+				}
+			} else {
+				for (i in 1:nl) {
+					xzg <- c(x[[i]], group, z)
+					v <- as.data.frame(xzg, na.rm=TRUE)
+					d <- stats::aggregate(v[,1], v[,2:3], fun, ...)
+					colnames(d)[3] <- nms[i]
+					if (i == 1) {
+						out <- d
+					} else {
+						out <- merge(out, d, by=1:2)
+					}
 				}
 			}
 		}
 		if (nlyr(z)==1) {
-			if (as.raster) {
+			if (nogroup && as.raster) {
 				if (is.null(wopt$names)) {
 					wopt$names <- names(x)
 				}
 				levels(z) <- NULL
 				out <- subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
-			} else {
-				if (is.factor(z)) {
-					levs <- levels(z)[[1]]
-					m <- match(out$zone, levs[,1])
-					out$zone <- levs[m, 2]
-				}
-				colnames(out)[1] <- names(z)
 			}
 		} else {
 			nc <- ncol(out)
-			if (as.raster) { 
+			if (nogroup && as.raster) { 
 				x <- out
 				nl <- nlyr(z)
 				out <- vector("list", nl)
@@ -213,7 +227,7 @@ setMethod("global", signature(x="SpatRaster"),
 				txtfun <- unique(txtfun)
 				na.rm <- isTRUE(list(...)$na.rm)
 				if (isTRUE(list(...)$old)) {
-					ptr <- x@pnt$global(txtfun, na.rm, opt)				
+					ptr <- x@pnt$global(txtfun, na.rm, opt)			
 				} else {
 					ptr <- x@pnt$mglobal(txtfun, na.rm, opt)
 				}
@@ -381,7 +395,7 @@ setMethod("freq", signature(x="SpatRaster"),
 			colnames(v) <- gsub("count.", "", colnames(v))
 			v[is.na(v)] <- 0
 		}
-		
+	
 		v
 	}
 )

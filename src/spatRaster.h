@@ -414,7 +414,7 @@ class SpatRaster {
         std::vector<unsigned> lyrsBySource();
         unsigned nsrc();
 
-		SpatRaster makeCategorical(unsigned layer, SpatOptions &opt);
+		SpatRaster makeCategorical(long layer, SpatOptions &opt);
 		bool createCategories(unsigned layer, SpatOptions &opt);
 		std::vector<bool> hasCategories();
 		bool setCategories(unsigned layer, SpatDataFrame d, unsigned index);
@@ -799,13 +799,13 @@ class SpatRaster {
 		
 		SpatRaster applyGCP(std::vector<double> fx, std::vector<double> fy, std::vector<double> tx, std::vector<double> ty, SpatOptions &opt);
 
-		SpatDataFrame zonal(SpatRaster z, std::string fun, bool narm, SpatOptions &opt);
+		SpatDataFrame zonal(SpatRaster z, SpatRaster g, std::string fun, bool narm, SpatOptions &opt);
 		SpatDataFrame zonal_weighted(SpatRaster x, SpatRaster w,  bool narm, SpatOptions &opt);
 
 		SpatDataFrame zonal_poly(SpatVector x, std::string fun, bool weights, bool exact, bool touches, bool narm, SpatOptions &opt);
 		SpatDataFrame zonal_poly_weighted(SpatVector x, SpatRaster w, bool weights, bool exact, bool touches, bool narm, SpatOptions &opt);
 
-		SpatDataFrame zonal_old(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
+//		SpatDataFrame zonal_old(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
 		SpatRaster rgb2hsx(std::string type, SpatOptions &opt);	
 		SpatRaster hsx2rgb(SpatOptions &opt);	
