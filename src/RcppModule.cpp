@@ -806,7 +806,7 @@ RCPP_MODULE(spat){
 		
 		.method("rst_area", &SpatRaster::rst_area)
 		.method("sum_area", &SpatRaster::sum_area)
-		.method("area_by_value", &SpatRaster::area_by_value)
+		.method("sum_area_group", &SpatRaster::sum_area_group)
 
 		.method("as_points", &SpatRaster::as_points)
 		.method("as_points_value", &SpatRaster::as_points_value)

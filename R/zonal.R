@@ -304,7 +304,7 @@ setMethod("freq", signature(x="SpatRaster"),
 				if (vna) {
 					out$value <- "NA"
 				}
-				out <- reshape(out, idvar=c("layer", "zone"), timevar="value", direction="wide")
+				out <- stats::reshape(out, idvar=c("layer", "zone"), timevar="value", direction="wide")
 				colnames(out) <- gsub("count.", "", colnames(out))
 				out[is.na(out)] <- 0
 			}
@@ -391,7 +391,7 @@ setMethod("freq", signature(x="SpatRaster"),
 			if ((!is.null(value)) && is.na(value)) {
 				v$value <- "NA"
 			}
-			v <- reshape(v, idvar="layer", timevar="value", direction="wide")
+			v <- stats::reshape(v, idvar="layer", timevar="value", direction="wide")
 			colnames(v) <- gsub("count.", "", colnames(v))
 			v[is.na(v)] <- 0
 		}
@@ -399,4 +399,89 @@ setMethod("freq", signature(x="SpatRaster"),
 		v
 	}
 )
+
+
+
+
+
+replace_with_label <- function(x, v, colnr) {
+	ff <- is.factor(x)
+	if (any(ff)) {
+		cgs <- cats(x)
+		for (f in which(ff)) {
+			cg <- cgs[[f]]
+			if (length(ff) == 1) {
+				r <- 1:nrow(v)
+			} else {
+				r <- which(v[,1] == f)
+			}
+			i <- match(v[r,colnr], cg[,1])
+			act <- activeCat(x, f) + 1
+			if (!inherits(cg[[act]], "numeric")) {
+				v[r, colnr] <- as.character(factor(cg[i, act], levels=unique(cg[[act]])))
+			} else {
+				v[r, colnr] <- cg[i, act]
+			}
+		}
+	}
+	v
+}
+
+
+setMethod ("expanse", "SpatRaster",
+	function(x, unit="m", transform=TRUE, byValue=FALSE, zones=NULL, wide=FALSE) {
+		opt <- spatOptions()
+		if (!is.null(zones)) {
+			if (!inherits(zones, "SpatRaster")) {
+				error("expanse", "zones must be a SpatRaster")
+			}
+			compareGeom(x, zones, lyrs=FALSE, crs=FALSE, ext=TRUE, rowcol=TRUE)
+			v <- x@pnt$sum_area_group(zones@pnt, unit[1], transform[1], byValue[1], opt)
+			messages(x)
+			v <- lapply(v, function(i) matrix(i, ncol=4, byrow=TRUE))
+			v <- data.frame(do.call(rbind, v))
+			colnames(v) <- c("layer", "value", "zone", "area")
+			v[,1] <- v[,1] + 1
+			if (byValue) {
+				v <- replace_with_label(x, v, 2)	
+				v <- replace_with_label(zones, v, 3)	
+			} else {
+				v <- replace_with_label(zones, v, 3)	
+				v$value <- NULL
+			}
+			if (wide) {
+				if (byValue) {
+					v <- stats::reshape(v, idvar=c("layer", "zone"), timevar="value", direction="wide")
+					colnames(v) <- gsub("area.", "", colnames(v))
+				} else {
+					v <- stats::reshape(v, idvar=c("layer"), timevar="zone", direction="wide")
+					colnames(v) <- gsub("area.", "", colnames(v))
+				}
+				v[is.na(v)] <- 0
+			}
+			return(v)
+		} else {
+			v <- x@pnt$sum_area(unit, isTRUE(transform[1]), isTRUE(byValue[1]), opt)
+			x <- messages(x, "expanse")
+			if (byValue) {
+				v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2, byrow=TRUE)))
+				v <- data.frame(do.call(rbind, v))
+				colnames(v) <- c("layer", "value", "area")
+				v <- replace_with_label(x, v, 2)	
+			} else {
+				v <- v[[1]]
+				v <- data.frame(layer=1:length(v), area=v)
+			}
+			if (wide) {
+				if (byValue) {
+					v <- stats::reshape(v, idvar="layer", timevar="value", direction="wide")
+					colnames(v) <- gsub("area.", "", colnames(v))
+				}
+				v[is.na(v)] <- 0
+			}
+			v
+		}
+	}
+)
+
 

@@ -142,25 +142,6 @@ setMethod("cellSize", signature(x="SpatRaster"),
 )
 
 
-
-setMethod ("expanse", "SpatRaster",
-	function(x, unit="m", transform=TRUE, byValue=FALSE) {
-		opt <- spatOptions()
-		v <- x@pnt$sum_area(unit, isTRUE(transform[1]), isTRUE(byValue[1]), opt)
-		x <- messages(x, "expanse")
-		if (byValue) {
-			v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2, byrow=TRUE)))
-			v <- do.call(rbind, v)
-			colnames(v) <- c("layer", "value", "area")
-		} else {
-			v <- v[[1]]
-		}
-		v
-	}
-)
-
-
-
 setMethod("atan2", signature(y="SpatRaster", x="SpatRaster"),
 	function(y, x) {
 		opt <- spatOptions(filename="", overwrite=TRUE)

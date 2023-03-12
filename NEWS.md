@@ -11,6 +11,7 @@
 - path expansion in writeVector [#1055](https://github.com/rspatial/terra/issues/1055) by Andrew Gene Brown.
 - `clamp<SpatRaster>` now also accepts cSpatRasters to set the lower and upper boundaries.
 - `freq` has new arguments "zones=NULL" and "wide=FALSE", to allow tabulation of values by zone.
+- `expanse<SpatRaster>` has new arguments "zones=NULL" and "wide=FALSE", to allow tabulation of values by zone.
 
 
 ## bug fixes
