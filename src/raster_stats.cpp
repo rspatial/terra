@@ -1033,12 +1033,13 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, SpatRaster g, std::string fun, boo
 		cnter.reserve(n);
 		if ((fun == "notNA") || (fun == "isNA")){
 			for (size_t i=0; i<nl; i++) {
-				for (size_t j=0; j<gcnt[i].size(); j++) {
-					for (auto& it : gcnt[i][j]) {
+				for (auto& it1:gcnt[i]) {
+					std::map<double, size_t> mcnt = it1.second;
+					for (auto& it2:mcnt) {
 						layer.push_back(i);
-						group.push_back(j);
-						zone.push_back(it.first);
-						value.push_back((double)it.second);
+						group.push_back(it1.first);
+						zone.push_back(it2.first);
+						value.push_back(it2.second);
 					}
 				}
 			}
