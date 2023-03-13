@@ -1064,12 +1064,12 @@ setMethod("trans", signature(x="SpatRaster"),
 
 
 setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
-	function(x, incomparables=FALSE, na.rm=TRUE, as.raster=FALSE) {
+	function(x, incomparables=FALSE, digits=NA, na.rm=TRUE, as.raster=FALSE) {
 
 		opt <- spatOptions()
 
 		if (as.raster) incomparables = FALSE
-		u <- x@pnt$unique(incomparables, na.rm[1], opt)
+		u <- x@pnt$unique(incomparables, digits, na.rm[1], opt)
 
 		isfact <- is.factor(x)
 		if (any(isfact)) {
@@ -1105,6 +1105,9 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 				return(u)
 			}
 			uid <- 1:nrow(u)
+			if (!is.na(digits)) {
+				x <- round(x, digits)
+			}
 			x <- subst(x, u, uid-1)
 			lab <- apply(u, 1, function(i) paste(i, collapse="_"))
 			set.cats(x, 1, data.frame(ID=uid-1, label=lab, u))

@@ -772,7 +772,7 @@ class SpatRaster {
 		SpatRaster trig(std::string fun, SpatOptions &opt);
 		SpatRaster trim1(double value, unsigned padding, SpatOptions &opt);
 		SpatRaster trim2(double value, unsigned padding, SpatOptions &opt);
-		std::vector<std::vector<double>> unique(bool bylayer, bool narm, SpatOptions &opt);
+		std::vector<std::vector<double>> unique(bool bylayer, double digits, bool narm, SpatOptions &opt);
 		SpatRaster project1(std::string newcrs, std::string method, SpatOptions &opt);
 		SpatRaster project2(SpatRaster &x, std::string method, SpatOptions &opt);
 		void project3(SpatRaster &out, std::string method, SpatOptions &opt);

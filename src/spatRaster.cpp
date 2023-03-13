@@ -1082,7 +1082,7 @@ SpatRaster SpatRaster::makeCategorical(long layer, SpatOptions &opt) {
 		r = *this;
 	}	
 	r.math2("round", 0, fopt);
-	std::vector<std::vector<double>> u = r.unique(true, true, fopt);
+	std::vector<std::vector<double>> u = r.unique(true, NAN, true, fopt);
 	std::vector<std::string> names = r.getNames();
 	
 	for (size_t i=0; i<r.nlyr(); i++) { 
@@ -1111,7 +1111,7 @@ bool SpatRaster::createCategories(unsigned layer, SpatOptions &opt) {
 	}
 	std::vector<unsigned> lyrs(1, layer);
 	SpatRaster r = subset(lyrs, opt);
-	std::vector<std::vector<double>> u = r.unique(false, true, opt);
+	std::vector<std::vector<double>> u = r.unique(false, NAN, true, opt);
     std::vector<unsigned> sl = findLyr(layer);
 
 	std::vector<std::string> s(u[0].size());
@@ -1417,7 +1417,7 @@ SpatRaster SpatRaster::dropLevels() {
 	std::vector<SpatCategories> cats = getCategories();
 	SpatOptions opt;
 	SpatRaster out = *this;
-	std::vector<std::vector<double>> uvv = unique(true, true, opt);
+	std::vector<std::vector<double>> uvv = unique(true, NAN, true, opt);
 	for (size_t i=0; i<hascats.size(); i++) {
 		if (hascats[i]) {
 			SpatCategories lyrcats = cats[i];

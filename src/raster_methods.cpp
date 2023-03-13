@@ -603,7 +603,7 @@ SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, d
 	}
 	if (classes.empty()) {
 		SpatOptions topt(opt);
-		std::vector<std::vector<double>> rc = unique(false, true, topt);
+		std::vector<std::vector<double>> rc = unique(false, NAN, true, topt);
 		classes = rc[0];
 	}
 

@@ -4,6 +4,7 @@
 # License GPL v3
 
 
+
 character_crs <- function(x, caller="") {
 
 	if (!inherits(x, "character")) {
@@ -323,3 +324,38 @@ setMethod("is.lonlat", signature("character"),
 		is.lonlat(x, perhaps=perhaps, warn=warn)
 	}
 )
+
+same.crs <- function(x, y) {
+	if (!is.character(x)) {
+		x <- crs(x)
+	}
+	if (!is.character(y)) {
+		y <- crs(y)
+	}
+	if (inherits(x, "CRS")) {
+           if (!is.null(comment(x))) {
+			x <- comment(x)
+		} else {
+			x <- x@projargs
+           } 
+	}
+	if (inherits(y, "CRS")) {
+           if (!is.null(comment(y))) {
+			y <- comment(y)
+		} else {
+			y <- y@projargs
+           } 
+	}
+	if (is.na(x)) x <- ""
+	if (is.na(y)) x <- ""
+	if (!is.character(x)) {
+		x <- as.character(x)
+	}
+	if (!is.character(y)) {
+		y <- as.character(y)
+	}
+	.sameSRS(x, y)
+}
+
+
+
