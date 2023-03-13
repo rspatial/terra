@@ -345,10 +345,11 @@ std::vector<std::string> SpatVector::layer_names(std::string filename) {
 		setError("empty filename");
 		return out;
 	}
-	if (!file_exists(filename)) {
-		setError("file does not exist");
-		return out;
-	}
+	// a gdb is a folder...
+	//if (!file_exists(filename)) {
+	//	setError("file does not exist");
+	//	return out;
+	//}
 
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx(filename.c_str(), GDAL_OF_VECTOR,
 				NULL, NULL, NULL ));
