@@ -59,7 +59,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,SpatRaster</span></span>
 <span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, w<span class="op">=</span><span class="cn">NULL</span>, </span>
-<span>    as.raster<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>    group<span class="op">=</span><span class="cn">FALSE</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster,SpatVector</span></span>
 <span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, w<span class="op">=</span><span class="cn">NULL</span>, weights<span class="op">=</span><span class="cn">FALSE</span>,</span>
@@ -86,6 +86,9 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
   <dt>w</dt>
 <dd><p>SpatRaster with weights. Should have a single-layer with non-negative values</p></dd>
 
+  <dt>group</dt>
+<dd><p>logical. Should multiple layers in <code>z</code> be considered additional groups (sub-zones)?</p></dd>
+  
   <dt>as.raster</dt>
 <dd><p>logical. If <code>TRUE</code>, a SpatRaster is returned with the zonal statistic for each zone</p></dd>
   

@@ -58,7 +58,7 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">expanse</span><span class="op">(</span><span class="va">x</span>, unit<span class="op">=</span><span class="st">"m"</span>, transform<span class="op">=</span><span class="cn">TRUE</span>, byValue<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">expanse</span><span class="op">(</span><span class="va">x</span>, unit<span class="op">=</span><span class="st">"m"</span>, transform<span class="op">=</span><span class="cn">TRUE</span>, byValue<span class="op">=</span><span class="cn">FALSE</span>, zones<span class="op">=</span><span class="cn">NULL</span>, wide<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatVector</span></span>
 <span><span class="fu">expanse</span><span class="op">(</span><span class="va">x</span>, unit<span class="op">=</span><span class="st">"m"</span>, transform<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -70,7 +70,7 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 <dd><p>SpatRaster or SpatVector</p></dd>
 
   <dt>unit</dt>
-<dd><p>character. One of "m", "km", or "ha"</p></dd>
+<dd><p>character. Output unit of area. One of "m", "km", or "ha"</p></dd>
 
   <dt>transform</dt>
 <dd><p>logical. If <code>TRUE</code>, planar CRS are transformed to lon/lat for accuracy</p></dd>
@@ -78,19 +78,25 @@ For vector data, the best way to compute area is to use the longitude/latitude C
   <dt>byValue</dt>
 <dd><p>logical. If <code>TRUE</code>, the area for each unique cell value is returned</p></dd>
 
+  <dt>zones</dt>
+<dd><p>NULL or SpatRaster with the same geometry identifying zones in <code>x</code></p></dd>
+
+  <dt>wide</dt>
+<dd><p>logical. Should the results be in "wide" rather than "long" format?</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>numeric.  If <code>x</code> has no values, the total size of all cells. Otherwise, the total area size of all cells that are not <code>NA</code>, expressed in square meters, square kilometers, or hectares.</p>
+<p><b>SpatRaster</b>: <code>data.frame</code> with at least two columns ("layer" and "area") and possibly also "value" (if <code>byValue</code> is <code>TRUE</code>, and "zone" (if <code>zones</code> is <code>TRUE</code>). If <code>x</code> has no values, the total area of all cells is returned. Otherwise, the area of all cells that are not <code>NA</code> is returned.</p>
 
 
-<p>If <code>byValue=TRUE</code> a matrix is returned with three columns (layer, value, area)</p>
+<p><b>SpatVector</b>: numeric (one value for each (multi-) polygon geometry.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="cellSize.html">cellSize</a></code> for a the size of individual cells of a raster, that can be summed with <code><a href="global.html">global</a></code> or with <code><a href="zonal.html">zonal</a></code> to get the area for different categories.</p></div>
+    <div class="dont-index"><p><code><a href="cellSize.html">cellSize</a></code> for a the size of individual cells of a raster, that can be summed with <code><a href="global.html">global</a></code> or with <code><a href="zonal.html">zonal</a></code> to get the area for different zones.</p></div>
     </div>
 
     <div id="ref-examples">
@@ -104,32 +110,51 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># summed area in km2</span></span></span>
 <span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">r</span>, unit<span class="op">=</span><span class="st">"km"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 273986501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   layer      area</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 273986501</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># all cells </span></span></span>
 <span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, unit<span class="op">=</span><span class="st">"km"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 510065622</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   layer      area</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 510065622</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">90</span>, nrows<span class="op">=</span><span class="fl">45</span>, ymin<span class="op">=</span><span class="op">-</span><span class="fl">80</span>, ymax<span class="op">=</span><span class="fl">80</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="project.html">project</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"+proj=merc"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">m</span>, unit<span class="op">=</span><span class="st">"km"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 498751903</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   layer      area</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 498751903</span>
 <span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">m</span>, unit<span class="op">=</span><span class="st">"km"</span>, transform<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1241591858</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   layer       area</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 1241591858</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="cn">NA</span>,<span class="cn">NA</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">11</span><span class="op">:</span><span class="fl">14</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[setValues] values were recycled</span>
-<span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">m2</span>, unit<span class="op">=</span><span class="st">"km"</span>, byValue<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      layer value     area</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]     1     1 10182145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]     1     2 10182145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]     2    11 10182145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]     2    12 10182145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]     2    13 10182145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,]     2    14 10182145</span>
+<span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">m2</span>, unit<span class="op">=</span><span class="st">"km"</span>, byValue<span class="op">=</span><span class="cn">TRUE</span>, wide<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   layer        1        2       11       12       13       14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 10182145 10182145        0        0        0        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     2        0        0 10182145 10182145 10182145 10182145</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">r</span><span class="op">-</span><span class="fl">50</span><span class="op">)</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="factors.html">levels</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, name<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"forest"</span>, <span class="st">"water"</span>, <span class="st">"urban"</span>, <span class="st">"crops"</span>, <span class="st">"grass"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">r</span>, byValue<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   layer  value       area</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 forest   50778375</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1  water  715780779</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     1  urban 1118216460</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     1  crops  617965652</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     1  grass   60868836</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">v</span>, <span class="va">r</span>, <span class="st">"NAME_1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">expanse</span><span class="op">(</span><span class="va">r</span>, byValue<span class="op">=</span><span class="cn">TRUE</span>, zones<span class="op">=</span><span class="va">g</span>, wide<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   layer         zone   forest     water     urban     crops    grass</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1     Diekirch  1110530 146734320 332045014 584531527 58106847</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1 Grevenmacher 46327739 247619382 219364571   1670053        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     1   Luxembourg        0 315854211 555664543  25106417        0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### SpatVector</span></span></span>

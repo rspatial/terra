@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">unique</span><span class="op">(</span><span class="va">x</span>, incomparables<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> </span>
+<span><span class="fu">unique</span><span class="op">(</span><span class="va">x</span>, incomparables<span class="op">=</span><span class="cn">FALSE</span>, digits<span class="op">=</span><span class="cn">NA</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># S4 method for SpatVector</span></span>
 <span><span class="fu">unique</span><span class="op">(</span><span class="va">x</span>, incomparables<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -67,6 +67,9 @@
 
   <dt>incomparables</dt>
 <dd><p>logical. If <code>FALSE</code> and <code>x</code> is a SpatRaster: the unique values are determined for all layers together, and the result is a matrix. If <code>TRUE</code>, each layer is evaluated separately, and a list is returned. If <code>x</code> is a SpatVector this argument is as for a <code>data.frame</code></p></dd>
+
+  <dt>digits</dt>
+<dd><p>integer. The number of digits for rounding the values before finding the unique values. Use <code>NA</code> means to not do any rounding</p></dd>
 
   <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>NaN</code> is included if there are any missing values</p></dd>
