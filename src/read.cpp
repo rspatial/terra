@@ -236,17 +236,15 @@ void SpatRaster::readValues(std::vector<double> &out, size_t row, size_t nrows, 
 		return;
 	}
 
+	out.resize(0);
 	if (!hasValues()) {
 		out.resize(nrows * ncols * nlyr(), NAN);
 		addWarning("raster has no values");
 		return; // or NAs?
 	}
 
-
 	unsigned n = nsrc();
-	out.resize(0);
 	out.reserve(nrows * ncols * nlyr());
-
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {
 			readChunkMEM(out, src, row, nrows, col, ncols);
