@@ -127,7 +127,8 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	nms <- names(opt)
 	nms <- nms[!grepl("^\\.", nms)]
 	nms <- nms[!(nms %in% c("initialize", "messages", "getClass", "finalize", "datatype_set", "pid", "statistics", "gdal_options", "scale", "offset", "threads", "filenames", "NAflag"))]
-	nms <- gsub("def_", "", nms)
+	defnms <- grepl("^def_", nms)
+	nms <- nms[!defnms]
 	out <- sapply(nms, function(n) eval(parse(text=paste0("opt$", n))))
 	out$memmin <- 8 * out$memmin / (1024^3)
 	if (out$memmax > 0) {
