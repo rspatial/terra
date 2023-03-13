@@ -3919,7 +3919,9 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 		std::vector<double> means(nl*nl, NAN);
 		std::vector<double> cor(nl*nl, 1);
 		SpatOptions topt(opt);
-				
+
+		BlockSize bs = getBlockSize(topt);
+		
 		std::vector<std::string> gfuns = {"mean", "sd"};
 		for (unsigned i=0; i<(nl-1); i++) {
 			for (unsigned j=(i+1); j<nl; j++) {
@@ -3933,13 +3935,11 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 					setError(getError());
 					return(out);
 				}
-					std::vector<std::vector<double>> stats(nl);
+				std::vector<std::vector<double>> stats(nl);
 				std::vector<std::vector<double>> stats2(nl);
 				std::vector<double> n(nl);
-				
-				BlockSize bs = getBlockSize(topt);
+				std::vector<double> vi, vj;				
 				for (size_t k=0; k<bs.n; k++) {
-					std::vector<double> vi, vj;
 					xi.readBlock(vi, bs, k);
 					xj.readBlock(vj, bs, k);
 					if (narm) {
@@ -3952,7 +3952,14 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 					}
 					do_mstats(vi, 0, vi.size(), gfuns, narm, stats[0], stats2[0], n[0], k==0, k==(bs.n-1));
 					do_mstats(vj, 0, vj.size(), gfuns, narm, stats[1], stats2[1], n[1], k==0, k==(bs.n-1));
-					double value = 0;
+				}
+				double value = 0;
+				for (long kk=bs.n; kk>0; kk--) {
+					size_t k = kk-1;
+					if (k < (bs.n-1)) {
+						xi.readBlock(vi, bs, k);
+						xj.readBlock(vj, bs, k);
+					}
 					if (narm) {
 						for (size_t m=0; m<vi.size(); m++) {
 							if (!std::isnan(vi[m])) {
@@ -3964,12 +3971,12 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 							value += (vi[m] - stats[0][0]) * (vj[m]  - stats[1][0]);
 						}
 					}
-					value /= (n[0] - asSample) * (stats[0][1] * stats[1][1]);
-					means[i*nl+j] = stats[0][0];
-					means[j*nl+i] = stats[0][0];
-					cor[i*nl+j] = value;
-					cor[j*nl+i] = value;
 				}
+				value /= (n[0] - asSample) * (stats[0][1] * stats[1][1]);
+				means[i*nl+j] = stats[0][0];
+				means[j*nl+i] = stats[0][0];
+				cor[i*nl+j] = value;
+				cor[j*nl+i] = value;
 				xi.readStop();
 				xj.readStop();
 			}
