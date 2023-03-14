@@ -1089,12 +1089,8 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 		}
 
 		if ((!incomparables) && (na.rm || as.raster)) {
-			if (ncol(u) > 1) {
-				i <- rowSums(is.na(u)) < ncol(u)
-				u <- u[i, , drop=FALSE]
-			} else {
-				u <- u[!is.na(u)]
-			}
+			i <- rowSums(is.na(u)) < ncol(u)
+			u <- u[i, , drop=FALSE]
 		}
 
 		if (as.raster) {
