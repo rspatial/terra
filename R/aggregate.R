@@ -26,8 +26,8 @@
 			if (test1 && test2 && test3) return("sd")
 			if (isTRUE(try( fun@generic == "which.min", silent=TRUE))) return("which.min")
 			if (isTRUE(try( fun@generic == "which.max", silent=TRUE))) return("which.max")
-			if (isTRUE(all(depf == deparse(base::which)))) return("which")
-			if (isTRUE(all(depf == deparse(base::table)))) return("table")
+			if (isTRUE(all(depf[1] == deparse(base::which)))) return("which")
+			if (isTRUE(all(depf[1] == deparse(base::table)))) return("table")
 		}
 	}
 	return(fun)

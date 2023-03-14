@@ -384,6 +384,9 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 		dots <- list(...)
 		if (length(dots) > 0) {
 			for (i in 1:length(dots)) {
+				if (!inherits(dots[[i]], "SpatRaster")) {
+					error("compareGeom", "all additional arguments must be a SpatRaster")
+				}
 				bool <- x@pnt$compare_geom(dots[[i]]@pnt, lyrs, crs, opt$tolerance, warncrs, ext, rowcol, res)
 				if (stopOnError) messages(x, "compareGeom")
 				res <- bool & out
