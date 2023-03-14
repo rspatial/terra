@@ -24,16 +24,23 @@ replace_with_label <- function(x, v, colnr) {
 
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
-	function(x, z, fun="mean", ..., w=NULL, as.raster=FALSE, filename="", overwrite=FALSE, wopt=list())  {
+	function(x, z, fun="mean", ..., w=NULL, wide=TRUE, as.raster=FALSE, filename="", overwrite=FALSE, wopt=list())  {
+
+		group <- FALSE
 		made_unique <- FALSE
 		grast <- rast()
-		group <- TRUE
 		if (nlyr(z) == 1) {
 			group <- FALSE
-		} else if (nlyr(z) == 2) {
+		} else if ((!as.raster) && (nlyr(z) == 2)) {
 			grast <- z[[2]]
 			z <- z[[1]]
+			group <- TRUE
 		} else {
+			ff <- is.factor(z)
+			if (any(ff)) {
+				levs <- levels(z)
+				levels(z) <- NULL
+			}
 			z <- unique(z, as.raster=TRUE)
 			made_unique <- TRUE
 		}
@@ -44,7 +51,6 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			if ((nlyr(z) > 1) && (nlyr(x) > 1)) {
 				error("zonal", "x and z cannot both have more than one layer")
 			}
-
 			na.rm <- isTRUE(list(...)$na.rm)
 			opt <- spatOptions()
 			if (!is.null(w)) {
@@ -57,10 +63,26 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			}
 			messages(sdf, "zonal")
 			out <- .getSpatDF(sdf)
+			nz <- 1
 			if (group) {
 				out$layer <- out$layer + 1
 				out <- replace_with_label(z, out, 2)
 				out <- replace_with_label(grast, out, 3)
+				nz <- 2
+			} else {
+				if (made_unique && (!as.raster)) {
+					ulevs <- cats(z)[[1]][, -c(1:2)]
+					if (any(ff)) {
+						for (f in which(ff)) {
+							i <- match(ulevs[,f], levs[[f]][,1])
+							ulevs[,f] <- levs[[f]][i,2]
+						}
+					}
+					out <- data.frame(ulevs, out[,-1,drop=FALSE])
+					nz <- ncol(ulevs)
+				} else {
+					out <- replace_with_label(z, out, 1)
+				}
 			}
 		} else {
 			if (!is.null(w)) {
@@ -75,7 +97,12 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			fun <- match.fun(fun)
 			nl <- nlyr(x)
 			nms <- names(x)
-			if (!group) {
+			if (group) {
+				xzg <- c(grast, z, x)
+				v <- as.data.frame(xzg, na.rm=TRUE)
+				out <- stats::aggregate(v[,-c(1:2)], v[,1:2], fun, ...)
+				colnames(out)[-c(1:2)] <- nms			
+			} else {
 				for (i in 1:nl) {
 					xz <- c(x[[i]], group, z)
 					v <- as.data.frame(xz, na.rm=TRUE)
@@ -87,45 +114,32 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 						out <- merge(out, d, by=1)				
 					}
 				}
-			} else {
-				xzg <- c(grast, z, x)
-				v <- as.data.frame(xzg, na.rm=TRUE)
-				d <- stats::aggregate(v[,-c(1:2)], v[,1:2], fun, ...)
-				colnames(d)[-c(1:2)] <- nms
 			}
-		}
-		if (group) {
-			out$layer
-		}
-		if (nlyr(z)==1) {
-			if (!group && as.raster) {
-				if (is.null(wopt$names)) {
-					wopt$names <- names(x)
-				}
-				levels(z) <- NULL
-				out <- subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
-			} else if (made_unique) {
-				# do something
+		}		
+		if (as.raster) {
+			if (is.null(wopt$names) && (nlyr(x) == 1)) {
+				wopt$names <- names(x)
 			}
-		} else {
-			nc <- ncol(out)
-			if (!group && as.raster) { 
-				x <- out
-				nl <- nlyr(z)
-				out <- vector("list", nl)
-				for (i in 1:nl) {
-					lyrout <- x[x[,nc] == i, -nc]
-					out[[i]] <- subst(z[[i]], lyrout[,1], lyrout[,-1], wopt=wopt)
-				}
-				out <- rast(out)
-				if (filename != "") {
-					out <- writeRaster(out, filename=filename, overwrite=overwrite, wopt)
-				}
-			} else {
+			levels(z) <- NULL
+			out <- subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
+		}		
+		if (wide) {
+			if (group) {
 				nms <- names(out)
-				out <- stats::reshape(out, direction="wide", idvar=nms[1], timevar=nms[nc]) 
-				names(out)[-1] <- names(z)
+				isch <- inherits(out[,2], "character")
+				out <- stats::reshape(out, direction="wide", idvar=nms[c(1,3)], timevar=nms[2])
+				if (isch) {
+					colnames(out) <- gsub("value.", "", colnames(out))
+				}
+				if (inherits(txtfun, "character") && (txtfun == "sum")) {
+					out[is.na(out)] <- 0
+				}
 			}
+		} else if (nz == 1){
+			nls <- as.character(1:nlyr(x))
+			colnames(out)[-1] <- nls
+			out <- stats::reshape(out, direction="long", varying=nls, timevar="layer",v.names="value")
+			out <- out[, c(2,1,3)]
 		}
 		out
 	}

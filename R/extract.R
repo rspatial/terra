@@ -298,10 +298,26 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	cn <- c("ID", cn)
 	colnames(e) <- cn
 	if (hasfun) {
-		fun <- match.fun(fun)
 		e <- data.frame(e)
+		if (inherits(fun, "character") && fun == "table") {
+			id <- e[,1,drop=FALSE]
+			e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE]))
+			out <- vector("list", ncol(e)-1)
+			for (i in 2:ncol(e)) {
+				fixname <- TRUE
+				if (!is.factor(e[,i])) {
+					fixname <- FALSE
+					e[,i]  <- as.factor(e[,i])
+				}
+				tb <- aggregate(e[,i,drop=FALSE], e[,1,drop=FALSE], fun, ...)
+				if (fixname) colnames(tb) <- gsub(cn[2], "", colnames(e))
+				out[[i-1]] <- tb
+			}
+			if (ncol(e) == 2) return(out[[1]]) else return(out)
+		}
+		
+		fun <- match.fun(fun)
 		e <- aggregate(e[,-1,drop=FALSE], e[,1,drop=FALSE], fun, ...)
-
 		m <- sapply(e, NCOL)
 		if (any(m > 1)) {
 			e <- do.call(cbind, as.list(e))

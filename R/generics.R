@@ -1071,17 +1071,10 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 		if (as.raster) incomparables = FALSE
 		u <- x@pnt$unique(incomparables, digits, na.rm[1], opt)
 
-		isfact <- is.factor(x)
-		if (any(isfact)) {
-			ff <- which(isfact)
-			levs <- levels(x)
-			for (f in ff) {
-				lvs <- levs[[f]]
-				fv <- factor(lvs[,2])
-				i <- match(u[[f]], lvs[,1])
-				u[[f]] = fv[i]
-			}
+		if (!as.raster) {
+			u <- get_labels(x, u)
 		}
+		
 		if (!incomparables) {
 			#if (!length(u)) return(u)
 			u <- do.call(data.frame, u)
@@ -1095,21 +1088,24 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 			}
 		}
 
-		if (na.rm & (NCOL(u) > 1)) {
-			i <- apply(is.na(u), 1, all)
-			u <- u[!i, , drop=FALSE]
-		}
-		if (as.raster) {
-			if (any(isfact)) {
-				warn("unique", "cannot do 'as.raster=TRUE' with categorical rasters (but you can use 'concats' for that)")
-				return(u)
+		if (na.rm || as.raster) {
+			if (ncol(u) > 1) {
+				i <- rowSums(is.na(u)) < ncol(u)
+				u <- u[i, , drop=FALSE]
+			} else {
+				u <- u[!is.na(u)]
 			}
-			uid <- 1:nrow(u)
+		}
+
+		if (as.raster) {
+			lab <- apply(get_labels(x, u), 1, function(i) paste(i, collapse="_"))
 			if (!is.na(digits)) {
 				x <- round(x, digits)
+			} else {
+				levels(x) <- NULL
 			}
+			uid <- 1:nrow(u)		
 			x <- subst(x, u, uid-1)
-			lab <- apply(u, 1, function(i) paste(i, collapse="_"))
 			set.cats(x, 1, data.frame(ID=uid-1, label=lab, u))
 			return(x)
 		}

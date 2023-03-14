@@ -16,27 +16,18 @@
 			depf <- deparse(fun)
 			test1 <- isTRUE(try( depf[2] == 'UseMethod(\"mean\")', silent=TRUE))
 			test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
-			if (test1 | test2) {
-				return("mean")
-			}
+			if (test1 | test2) return("mean")
 			test1 <- isTRUE(try( depf[2] == 'UseMethod(\"median\")', silent=TRUE))
 			test2 <- isTRUE(try( fun@generic == "median", silent=TRUE))
-			if (test1 | test2) {
-				return("median")
-			}
+			if (test1 | test2) return("median")
 			test1 <- isTRUE(try( depf[1] == "function (x, na.rm = FALSE) ", silent=TRUE))
 			test2 <- isTRUE(try( depf[2] == "sqrt(var(if (is.vector(x) || is.factor(x)) x else as.double(x), ", silent=TRUE))
 			test3 <- isTRUE(try( depf[3] == "    na.rm = na.rm))", silent=TRUE))
-			if (test1 && test2 && test3) {
-				return("sd")
-			}
-			if (isTRUE(try( fun@generic == "which.min", silent=TRUE))) {
-				return("which.min")
-			}
-			if (isTRUE(try( fun@generic == "which.max", silent=TRUE))) {
-				return("which.max")
-			}
-			if (isTRUE(depf[3] == "    wh <- .Internal(which(x))")) return("which")
+			if (test1 && test2 && test3) return("sd")
+			if (isTRUE(try( fun@generic == "which.min", silent=TRUE))) return("which.min")
+			if (isTRUE(try( fun@generic == "which.max", silent=TRUE))) return("which.max")
+			if (isTRUE(all(depf == deparse(base::which)))) return("which")
+			if (isTRUE(all(depf == deparse(base::table)))) return("table")
 		}
 	}
 	return(fun)
