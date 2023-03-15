@@ -39,7 +39,7 @@
 \alias{anyNA,SpatRaster-method}
 \alias{allNA,SpatRaster-method}
 \alias{noNA,SpatRaster-method}
-\alias{sumNA,SpatRaster-method}
+\alias{countNA,SpatRaster-method}
 
 \alias{stdev}
 \alias{stdev,SpatRaster-method}

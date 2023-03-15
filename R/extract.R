@@ -230,7 +230,7 @@ extract_weights_fun <- function(x, y, fun=NULL, ID=TRUE, weights=FALSE, exact=FA
 		for (i in 1:nlyr(x)) {
 			ee <- e[e$layer == i, ]
 			if (!raw) {
-				ee <- terra:::replace_with_label(x[[i]], ee, 3)
+				ee <- replace_with_label(x[[i]], ee, 3)
 			}
 			ee <- stats::reshape(ee, idvar=c("ID", "layer"), timevar="group", direction="wide")
 			colnames(ee) <- gsub("value.", "", colnames(ee))
@@ -255,6 +255,7 @@ extract_weights_fun <- function(x, y, fun=NULL, ID=TRUE, weights=FALSE, exact=FA
 	if (!raw) {
 		e <- data.frame(e)
 	}
+	nl <- nlyr(x)
 	e <- use_layer(e, y, layer, nl)
 	if (bind) {
 		if (nrow(e) == nrow(y)) {
@@ -275,9 +276,7 @@ extract_weights_fun <- function(x, y, fun=NULL, ID=TRUE, weights=FALSE, exact=FA
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
 function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, raw=FALSE, ...) {
 
-	nl <- nlyr(x)
 	hasfun <- !is.null(fun)
-
 	geo <- geomtype(y)
 	if (geo == "points") {		
 		if (weights || exact) {
@@ -295,7 +294,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	opt <- spatOptions()
 	e <- x@pnt$extractVectorFlat(y@pnt, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 	x <- messages(x, "extract")
-	nc <- nl
+	nc <- nl <- nlyr(x)
 	if (cells) {
 		cn <- c(cn, "cell")
 		nc <- nc + 1
