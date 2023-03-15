@@ -89,14 +89,15 @@ predfun <- function(model, data) {
 r2 <- predict(logo, model, fun=predfun)
 
 # principal components of a SpatRaster
-# here using sampling to simulate an object too large
-# to feed all its values to prcomp
+pca <- prcomp(logo)
 
-sr <- values(spatSample(logo, 100, as.raster=TRUE))
+# or use sampling if cannot process all cell values
+sr <- spatSample(logo, 100000, "regular")
 pca <- prcomp(sr)
 
 x <- predict(logo, pca)
 plot(x)
+
 
 ## parallelization
 \dontrun{
