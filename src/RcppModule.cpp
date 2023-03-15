@@ -882,6 +882,7 @@ RCPP_MODULE(spat){
 		.method("nonan", &SpatRaster::nonan)
 		.method("allnan", &SpatRaster::allnan)
 		.method("isnan", &SpatRaster::isnan)
+		.method("countnan", &SpatRaster::countnan)
 		.method("not_na", &SpatRaster::isnotnan)
 		.method("isfinite", &SpatRaster::isfinite)
 		.method("isinfinite", &SpatRaster::isinfinite)

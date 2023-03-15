@@ -28,6 +28,7 @@ if (!isGeneric("normalize.longitude")) {setGeneric("normalize.longitude", functi
 
 if (!isGeneric("allNA")) {setGeneric("allNA", function(x, ...) standardGeneric("allNA"))}
 if (!isGeneric("noNA")) {setGeneric("noNA", function(x, ...) standardGeneric("noNA"))}
+if (!isGeneric("countNA")) {setGeneric("countNA", function(x, ...) standardGeneric("countNA"))}
 
 if (!isGeneric("scoff")) {setGeneric("scoff", function(x, ...) standardGeneric("scoff"))}
 if (!isGeneric("scoff<-")) {setGeneric("scoff<-", function(x, ..., value) standardGeneric("scoff<-"))}

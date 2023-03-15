@@ -672,6 +672,8 @@ class SpatRaster {
 		SpatRaster isnot(bool falseNA, SpatOptions &opt);
 		SpatRaster isnan(bool falseNA, SpatOptions &opt);
 		SpatRaster isnotnan(bool falseNA, SpatOptions &opt);
+		SpatRaster countnan(long n, SpatOptions &opt);
+
 		SpatRaster isfinite(bool falseNA, SpatOptions &opt);
 		SpatRaster isinfinite(bool falseNA, SpatOptions &opt);
 		SpatRaster is_true(bool falseNA, SpatOptions &opt);

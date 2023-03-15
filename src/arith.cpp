@@ -1623,6 +1623,76 @@ SpatRaster SpatRaster::isnotnan(bool falseNA, SpatOptions &opt) {
 }
 
 
+SpatRaster SpatRaster::countnan(long n, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	if (n > 0) {
+		out.setValueType(3);
+	}
+
+    if (!hasValues()) return out;
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+	size_t nl = nlyr();
+	size_t nc = ncol();
+	if (n > ((long) nlyr())) {
+		out.addWarning("n > nlyr(x)");
+		std::vector<double> w;
+		for (size_t i=0; i<out.bs.n; i++) {
+			size_t off = out.bs.nrows[i] * nc;
+			w.resize(off, 0);
+			if (!out.writeBlock(w, i)) return out;
+		}
+	} else if (n > 0) {
+		for (size_t i=0; i<out.bs.n; i++) {
+			std::vector<double> v, w;
+			readBlock(v, out.bs, i);
+			size_t off = out.bs.nrows[i] * nc;
+			w.resize(off, 0);
+			for (size_t j=0; j<off; j++) {
+				long cnt = 0;
+				for (size_t k=0; k<nl; k++) {
+					size_t cell = j + k * off;
+					if (std::isnan(v[cell])) {
+						cnt++;
+						if (cnt == n) {
+							w[j] = 1;
+						}
+					}
+				}
+			}
+			if (!out.writeBlock(w, i)) return out;
+		}
+	} else {
+		for (size_t i=0; i<out.bs.n; i++) {
+			std::vector<double> v, w;
+			readBlock(v, out.bs, i);
+			size_t off = out.bs.nrows[i] * nc;
+			w.resize(off, 0);
+			for (size_t j=0; j<off; j++) {
+				for (size_t k=0; k<nl; k++) {
+					size_t cell = j + k * off;
+					if (std::isnan(v[cell])) {
+						w[j]++;
+					}
+				}
+			}
+			if (!out.writeBlock(w, i)) return out;
+		}
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
 SpatRaster SpatRaster::isfinite(bool falseNA, SpatOptions &opt) {
 	SpatRaster out = geometry();
 	out.setValueType(3);

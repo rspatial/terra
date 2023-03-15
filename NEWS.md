@@ -1,10 +1,11 @@
-# version 1.7-20
+# version 1.7-21
 
 ## new
 
 - The `halo` function for adding halo-ed text to plots is now exposed
 - `add_legend` to allow using a keyword such as "topleft" to position a custom legend. [#1053](https://github.com/rspatial/terra/issues/1053) by Márcia Barbosa
-- `same.crs` function is now exported
+- the `same.crs` function is now exported
+- `countNA<SpatRaster>` method
 
 ## enhancements
 
@@ -14,6 +15,7 @@
 - `freq` has new arguments "zones=NULL" and "wide=FALSE", to allow tabulation of values by zone.
 - `expanse<SpatRaster>` has new arguments "zones=NULL" and "wide=FALSE", to allow tabulation of values by zone.
 - `unique<SpatRaster>` has new argument "digits=NA"
+- `rasterize<SpatRaster,SpatVector>` now accepts fun="table" to tabulate cells by cell value
 
 
 ## bug fixes

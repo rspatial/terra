@@ -18,6 +18,7 @@
 \alias{anyNA}
 \alias{allNA}
 \alias{noNA}
+\alias{countNA}
 
 \alias{mean,SpatRaster-method}
 \alias{mean,SpatVector-method}
@@ -38,6 +39,7 @@
 \alias{anyNA,SpatRaster-method}
 \alias{allNA,SpatRaster-method}
 \alias{noNA,SpatRaster-method}
+\alias{sumNA,SpatRaster-method}
 
 \alias{stdev}
 \alias{stdev,SpatRaster-method}
@@ -92,10 +94,11 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \S4method{anyNA}{SpatRaster}(x)
 
+\S4method{countNA}{SpatRaster}(x, n=0)
+
 \S4method{noNA}{SpatRaster}(x, falseNA=FALSE)
 
 \S4method{allNA}{SpatRaster}(x, falseNA=FALSE)
-
 }
 
 
@@ -106,6 +109,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
   \item{trim}{ignored}
   \item{pop}{logical. If \code{TRUE}, the population standard deviation is computed. Otherwise the sample standard deviation is computed}
   \item{falseNA}{logical. If \code{TRUE}, cells that would otherwise be \code{FALSE} are set to \code{NA}}
+  \item{n}{integer. If \code{n > 0}, cell values are \code{TRUE} if at least \code{n} of its layers are \code{NA}}
 }
 
 
@@ -147,6 +151,17 @@ yy <- app(r, sd)
 z <- stdev(r, r*2)
 
 x <- mean(r, filename=paste0(tempfile(), ".tif"))
+
+
+v <- values(r)
+set.seed(3)
+v[sample(length(v), 50)] <- NA
+values(r) <- v
+is.na(r)
+anyNA(r)
+allNA(r)
+countNA(r)
+countNA(r, 2)
 }
 
 \keyword{methods}
