@@ -3974,7 +3974,7 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 				}
 				value /= (n[0] - asSample) * (stats[0][1] * stats[1][1]);
 				means[i*nl+j] = stats[0][0];
-				means[j*nl+i] = stats[0][0];
+				means[j*nl+i] = stats[1][0];
 				cor[i*nl+j] = value;
 				cor[j*nl+i] = value;
 				xi.readStop();
