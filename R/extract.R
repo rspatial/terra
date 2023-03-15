@@ -141,7 +141,7 @@ use_layer <- function(e, y, layer, nl) {
 	e
 }
 
-extract_weights_fun <- function(x, y, fun=NULL, ID=TRUE, weights=FALSE, exact=FALSE, touches=FALSE, layer=NULL, bind=FALSE, raw=FALSE, ...) {
+extract_weights_fun <- function(x, y, fun=NULL, ID=TRUE, weights=FALSE, exact=FALSE, touches=FALSE, layer=NULL, bind=FALSE, raw=FALSE, na.rm=FALSE) {
 
 	wmean <- function(p, na.rm=FALSE) {
 		n <- length(p)
@@ -222,7 +222,7 @@ extract_weights_fun <- function(x, y, fun=NULL, ID=TRUE, weights=FALSE, exact=FA
 	e <- x@pnt$extractVector(y@pnt, touches[1], "simple", FALSE, FALSE, isTRUE(weights[1]), isTRUE(exact[1]), opt)
 	x <- messages(x, "extract")
 	if (fun == "table") {
-		e <- lapply(e, wfun, ...)
+		e <- lapply(e, wfun, na.rm=na.rm)
 		e <- lapply(1:length(e), function(i) cbind(ID=i, e[[i]]))
 		e <- do.call(rbind, e)
 		colnames(e)[3:4] <- c("group", "value")
@@ -237,12 +237,15 @@ extract_weights_fun <- function(x, y, fun=NULL, ID=TRUE, weights=FALSE, exact=FA
 			if (!ID) {
 				ee$ID <- NULL
 			}
+			if (na.rm) {
+				ee[is.na(ee)] <- 0
+			}
 			out[[i]] <- ee
 		}
 		if (nlyr(x) == 1) return(out[[1]]) else return(out)
 	} 
 	
-	e <- sapply(e, wfun, ...)
+	e <- sapply(e, wfun, na.rm=na.rm)
 	e <- matrix(e, nrow=nrow(y), byrow=TRUE)
 	cn <- names(x)
 	if (ncol(e) == length(cn)) {
@@ -309,10 +312,10 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		nc <- nc + 1
 	}
 	if (geo == "points") {
-	## this was? should be fixed upstream
-	if (nc == nl) {
-		e <- matrix(e, ncol=nc)
-	} else {
+		## this was? should be fixed upstream
+		if (nc == nl) {
+			e <- matrix(e, ncol=nc)
+		} else {
 			e <- matrix(e, ncol=nc, byrow=TRUE)
 		}
 		e <- cbind(1:nrow(e), e)
@@ -337,7 +340,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 					fixname <- FALSE
 					e[,i]  <- as.factor(e[,i])
 				}
-				tb <- aggregate(e[,i,drop=FALSE], e[,1,drop=FALSE], fun, ...)
+				tb <- aggregate(e[,i,drop=FALSE], e[,1,drop=FALSE], table)
 				if (fixname) colnames(tb) <- gsub(cn[2], "", colnames(e))
 				if (!ID) {
 					tb$ID <- NULL
