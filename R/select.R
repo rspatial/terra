@@ -20,14 +20,15 @@ setMethod("sel", signature(x="SpatRaster"),
 
 
 setMethod("sel", signature(x="SpatVector"),
-	function(x, use="rec", draw=TRUE, col="cyan", ...) {
+	function(x, use="rec", draw=TRUE, col="cyan", show=TRUE, ...) {
 		use <- substr(tolower(use), 1, 3)
 		use <- match.arg(use, c("rec", "pol"))
+		scol <- ifelse(show, "red", NA)
 		if (use == "rec") {
-			e <- draw()
+			e <- draw(col=scol)
 		#	e <- as.polygons(e)
 		} else {
-			e <- draw("pol")
+			e <- draw("pol", col=scol)
 		}
 		i <- is.related(x, e, "intersects")
 		x <- x[i, ]
