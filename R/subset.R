@@ -272,10 +272,25 @@ function(x, i, j,  drop=FALSE) {
 
 setMethod("[", c("SpatVector", "matrix", "missing"),
 function(x, i, j, drop=FALSE) {
+	if (ncol(i) > 1) warn("`[`", "using the first column of i to subset x")
 	x[i[,1]]
 })
 
 setMethod("[", c("SpatVector", "data.frame", "missing"),
 function(x, i, j, drop=FALSE) {
+	if (ncol(i) > 1) warn("`[`", "using the first column of i to subset x")
 	x[i[,1]]
 })
+
+
+setMethod("[", c("SpatVector", "data.frame", "ANY"),
+function(x, i, j, drop=FALSE) {
+	x <- x[i[,1], j]
+})
+
+setMethod("[", c("SpatVector", "character", "missing"),
+function(x, i, j, ... , drop=FALSE) {
+	x[, i]
+})
+
+

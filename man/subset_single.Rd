@@ -24,6 +24,7 @@
 \alias{[,SpatVector,missing,numeric-method}
 \alias{[,SpatVector,missing,character-method}
 \alias{[,SpatVector,missing,logical-method}
+\alias{[,SpatVector,character,missing-method}
 \alias{[,SpatVector,numeric,missing-method}
 \alias{[,SpatVector,numeric,numeric-method}
 \alias{[,SpatVector,numeric,character-method}
@@ -33,6 +34,7 @@
 \alias{[,SpatVector,logical,numeric-method}
 \alias{[,SpatVector,logical,logical-method}
 \alias{[,SpatVector,data.frame,missing-method}
+\alias{[,SpatVector,data.frame,ANY-method}
 \alias{[,SpatVector,matrix,missing-method}
 
 \alias{[,SpatVector,SpatVector,missing-method}
