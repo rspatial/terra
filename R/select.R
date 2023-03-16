@@ -20,10 +20,10 @@ setMethod("sel", signature(x="SpatRaster"),
 
 
 setMethod("sel", signature(x="SpatVector"),
-	function(x, use="rec", draw=TRUE, col="cyan", show=TRUE, ...) {
+	function(x, use="rec", show=TRUE, col="cyan", draw=TRUE, ...) {
 		use <- substr(tolower(use), 1, 3)
 		use <- match.arg(use, c("rec", "pol"))
-		scol <- ifelse(show, "red", NA)
+		scol <- ifelse(draw, "red", NA)
 		if (use == "rec") {
 			e <- draw(col=scol)
 		#	e <- as.polygons(e)
@@ -32,7 +32,7 @@ setMethod("sel", signature(x="SpatVector"),
 		}
 		i <- is.related(x, e, "intersects")
 		x <- x[i, ]
-		if (draw) {
+		if (show) {
 			if (geomtype(x) == "points" || geomtype(x) == "multipoints") {
 				points(x, col=col, ...)
 			} else {

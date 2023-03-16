@@ -18,15 +18,15 @@ Geometrically subset SpatRaster or SpatVector (to be done) by drawing on a plot 
 \usage{
 \S4method{sel}{SpatRaster}(x, ...)
 
-\S4method{sel}{SpatVector}(x, use="rec", draw=TRUE, col="cyan", show=TRUE, ...)
+\S4method{sel}{SpatVector}(x, use="rec", show=TRUE, col="cyan", draw=TRUE, ...)
 }
 
 \arguments{
 \item{x}{SpatRaster or SpatVector}
 \item{use}{character indicating what to draw. One of "rec" (rectangle) or "pol" (polygon)}
-\item{draw}{logical. If \code{TRUE} the selected geometries are drawn on the map}
+\item{show}{logical. If \code{TRUE} the selected geometries are shown on the map}
 \item{col}{color to be used for drawing if \code{draw=TRUE}}
-\item{show}{logical. If \code{TRUE} the area used to select geometries is drawn on the map}
+\item{draw}{logical. If \code{TRUE} the area drawn to select geometries is shown on the map}
 \item{...}{additional graphics arguments for drawing the selected geometries}
 }
 
