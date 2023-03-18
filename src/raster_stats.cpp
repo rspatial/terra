@@ -1308,7 +1308,11 @@ SpatDataFrame SpatRaster::zonal_poly(SpatVector x, std::string fun, bool weights
 		out.setError("Unknown function");
 		return out;
 	}
-	std::function<double(std::vector<double>&, double, double)> zfun= getseFun(fun, narm);
+	std::function<double(std::vector<double>&, size_t, size_t)> zfun;
+	if (!getseFun(zfun, fun, narm)) {
+		out.setError("Unknown function");
+		return out;
+	}
 
     unsigned nl = nlyr();
     unsigned ng = x.size();

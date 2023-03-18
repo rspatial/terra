@@ -20,6 +20,7 @@
 #include "spatRasterMultiple.h"
 #include "distance.h"
 #include "vecmath.h"
+#include "vecmathse.h"
 
 
 
@@ -756,8 +757,8 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 	return out;
 }
 
-
-std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
+/*
+std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun, bool narm, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
 
 	std::vector<double> flat;
 	std::string gtype = v.type();
@@ -774,14 +775,6 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 		setError("raster has no values");
 		return flat;
 	}
-/*
-	#if GDAL_VERSION_MAJOR < 3
-	if (weights) {
-		setError("extract with weights not supported for your GDAL version");
-		return out;
-	}
-	#endif
-*/
 
     std::vector<std::vector<std::vector<double>>> out;
 	if (gtype != "points") {
@@ -817,6 +810,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 				}
 			}
 			return flat;
+		*/
 		/*
 		} else { // multipoint
 			std::vector<double> x = vd.getD(0);
@@ -843,7 +837,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 			}
 		}
 		*/
-	} else {
+/*	} else {
 	    SpatRaster r = geometry(1);
 		//std::vector<double> feats(1, 1) ;
         for (size_t i=0; i<ng; i++) {
@@ -884,6 +878,175 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
         }
 	}
 
+	size_t fsize = 0;
+	for (size_t i=0; i<out.size(); i++) { // geoms
+		fsize += (out[i].size()+1) * nl;
+	}
+	flat.reserve(fsize);
+
+	for (size_t i=0; i<out.size(); i++) { // geoms
+		for (size_t j=0; j<out[i][0].size(); j++) { // cells
+			flat.push_back(i+1);
+			for (size_t k=0; k<out[i].size(); k++) { // layers
+				flat.push_back(out[i][k][j]);
+			}
+		}
+	}
+	return flat;
+}
+*/
+
+
+std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun, bool narm, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
+
+	std::vector<double> flat;
+	std::string gtype = v.type();
+	if (gtype == "points") {
+		weights = false;
+		exact = false;
+	}
+	if (exact) weights = false;
+
+    unsigned nl = nlyr();
+    unsigned ng = v.size();
+
+	if (!hasValues()) {
+		setError("raster has no values");
+		return flat;
+	}
+
+ 	if (gtype == "points") {
+		if (method != "bilinear") method = "simple";
+			SpatDataFrame vd = v.getGeometryDF();
+			//if (vd.nrow() == ng) {  // single point geometry
+			std::vector<double> x = vd.getD(0);
+			std::vector<double> y = vd.getD(1);
+			std::vector<std::vector<double>> xycells;
+			if (xy) {
+				std::vector<double> cellxy = cellFromXY(x, y);
+				xycells = xyFromCell(cellxy);
+			}
+			if (!cells & !xy) {
+				return( extractXYFlat(x, y, method, cells));
+			} else {
+				std::vector<std::vector<double>> srcout = extractXY(x, y, method, cells);
+				nl += cells;
+				flat.reserve(ng * nl);
+				for (size_t i=0; i<ng; i++) {
+					//flat.push_back( i+1 );//no id for points
+					for (size_t j=0; j<nl; j++) {
+						flat.push_back( srcout[j][i] );
+					}
+					if (xy) {
+						flat.push_back(xycells[0][i]);
+						flat.push_back(xycells[1][i]);
+					}
+				}
+			}
+			return flat;
+		/*
+		} else { // multipoint
+			std::vector<double> x = vd.getD(0);
+			std::vector<double> y = vd.getD(1);
+			if (!cells & !xy & !weights) {
+				return( extractXYFlat(x, y, method, cells));
+			}
+			for (size_t i=0; i<ng; i++) {
+				SpatVector vv = v.subset_rows(i);
+				SpatDataFrame vd = vv.getGeometryDF();
+				std::vector<double> x = vd.getD(0);
+				std::vector<double> y = vd.getD(1);
+				srcout = extractXY(x, y, method, cells);
+
+				out.push_back(srcout);
+
+				if (cells) {
+					out[i][nl] = srcout[nl];
+				}
+				if (xy) {
+					out[i][nl+cells]   = x;
+					out[i][nl+cells+1] = y;
+				}
+			}
+		}
+		*/
+	} 
+
+	std::vector<std::vector<std::vector<double>>> out;
+
+	SpatRaster r = geometry(1);
+	//std::vector<double> feats(1, 1) ;
+	std::function<double(std::vector<double>&, size_t, size_t)> efun;
+	std::function<double(std::vector<double>&, std::vector<double>&, size_t, size_t)> wfun;
+	bool havefun = false;
+	if (!fun.empty()) {
+		if (weights | exact) {
+			if (!getseWfun(wfun, fun, narm)) {
+				setError("not a valid function");
+				return flat;
+			}
+		} else {
+			if (!getseFun(efun, fun, narm)) {
+				setError("not a valid function");
+				return flat;
+			}
+		}
+		havefun = true;
+		flat.reserve(nl*ng);
+	} else {
+		out.resize(ng);
+	}	
+	for (size_t i=0; i<ng; i++) {
+		SpatGeom g = v.getGeom(i);
+		SpatVector p(g);
+		p.srs = v.srs;
+		std::vector<double> cell, wgt;
+		if (weights) {
+			if (gtype == "lines") {
+				rasterizeLinesLength(cell, wgt, p, opt);
+			} else {
+				rasterizeCellsWeights(cell, wgt, p, opt);
+			}
+		} else if (exact) {
+			if (gtype == "lines") {
+				rasterizeLinesLength(cell, wgt, p, opt);
+			} else {
+				rasterizeCellsExact(cell, wgt, p, opt);
+			}
+		} else {
+			cell = rasterizeCells(p, touches, opt);
+		}
+		
+		if (havefun) {
+			std::vector<std::vector<double>> cvals = extractCell(cell);
+			if (weights | exact) {
+				for (size_t j=0; j<nl; j++) {
+					flat.push_back( wfun(cvals[j], wgt, 0, cvals[j].size()) );
+				}											
+			} else {
+				for (size_t j=0; j<nl; j++) {
+					flat.push_back( efun(cvals[j], 0, cvals[j].size()) );
+				}						
+			}
+			
+		} else {
+			out[i] = extractCell(cell);
+			if (cells) {
+				out[i].push_back(cell);
+			}
+			if (xy) {
+				std::vector<std::vector<double>> crds = xyFromCell(cell);
+				out[i].push_back(crds[0]);
+				out[i].push_back(crds[1]);
+			}
+			if (weights || exact) {
+				out[i].push_back(wgt);
+			}
+		}
+	}
+
+	if (havefun) return flat;
+	
 	size_t fsize = 0;
 	for (size_t i=0; i<out.size(); i++) { // geoms
 		fsize += (out[i].size()+1) * nl;

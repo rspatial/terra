@@ -60,6 +60,9 @@ setMethod("ext", signature(x="numeric"),
 
 setMethod("ext", signature(x="matrix"),
 	function(x){
+		if ((ncol(x) == 2) && (nrow(x) > 2)) {
+			x <- apply(x, 2, range, na.rm=TRUE)
+		}
 		ext(as.vector(x))
 	}
 )
@@ -69,9 +72,6 @@ setMethod("ext", signature(x="bbox"),
 		ext(x[c(1,3,2,4)])
 	}
 )
-
-
-
 
 
 setMethod("ext", signature(x="SpatRaster"),

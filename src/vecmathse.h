@@ -47,8 +47,20 @@ void cummax_se(std::vector<double>& v, size_t s, size_t e);
 void cummin_se_rm(std::vector<double>& v, size_t s, size_t e);
 void cummin_se(std::vector<double>& v, size_t s, size_t e);
 
+//double sum_se_rm(const std::vector<double>& v, const std::vector<double> &w, size_t s, size_t e);
+//double sum_se(const std::vector<double>& v, const std::vector<double> &w, size_t s, size_t e);
+//double mean_se_rm(const std::vector<double>& v, const std::vector<double> &w, size_t s, size_t e);
+//double mean_se(const std::vector<double>& v, const std::vector<double> &w, size_t s, size_t e);
+//double min_se_rm(const std::vector<double>& v, const std::vector<double> &w, size_t s, size_t e);
+//double min_se(const std::vector<double>& v, const std::vector<double> &w, size_t s, size_t e);
+//double max_se_rm(const std::vector<double>& v, const std::vector<double> &w, size_t s, size_t e);
+//double max_se(const std::vector<double>& v, const std::vector<double> &w, size_t s, size_t e);
+
 bool haveseFun(std::string fun);
-std::function<double(std::vector<double>&, double, double)> getseFun(std::string fun, bool narm);
+bool getseFun(std::function<double(std::vector<double>&, size_t, size_t)> &fun, std::string fname, bool narm);
+
+bool haveseWFun(std::string fun);
+bool getseWfun(std::function<double(std::vector<double>&, std::vector<double>&, size_t, size_t)> &fun, std::string fname, bool narm);
 
 #endif
 

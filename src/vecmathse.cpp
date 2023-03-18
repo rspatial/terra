@@ -645,43 +645,141 @@ bool haveseFun(std::string fun) {
 	return true;
 }
 
-std::function<double(std::vector<double>&, double, double)> getseFun(std::string fun, bool narm) {
-	std::function<double(std::vector<double>&, double, double)> theFun;
-	if (fun == "mean") {
-		theFun = narm ? mean_se_rm : mean_se;
-	} else if (fun == "sum") {
-		theFun = narm ? sum_se_rm : sum_se;
-	} else if (fun == "sum2") {
-		theFun = narm ? sum2_se_rm : sum2_se;
-	} else if (fun == "min") {
-		theFun = narm ? min_se_rm : min_se;
-	} else if (fun == "max") {
-		theFun = narm ? max_se_rm : max_se;
-	} else if (fun == "median") {
-		theFun = narm ? median_se_rm : median_se;
-	} else if (fun == "modal") {
-		theFun = narm ? modal_se_rm : modal_se;
-	} else if (fun == "prod") {
-		theFun = narm ? prod_se_rm : prod_se;
-	} else if (fun == "which") {
-		theFun = narm ? which_se_rm : which_se;
-	} else if (fun == "which.min") {
-		theFun = narm ? whichmin_se_rm : whichmin_se;
-	} else if (fun == "which.max") {
-		theFun = narm ? whichmax_se_rm : whichmax_se;
-	} else if (fun == "any") {
-		theFun = narm ? any_se_rm : any_se;
-	} else if (fun == "all") {
-		theFun = narm ? all_se_rm : all_se;
-	} else if (fun == "sd") {
-		theFun = narm ? sd_se_rm : sd_se;
-	} else if (fun == "std") {
-		theFun = narm ? sdpop_se_rm : sdpop_se;
-	} else if (fun == "first") {
-		theFun = narm ? first_se_rm : first_se;
+
+bool getseFun(std::function<double(std::vector<double>&, size_t, size_t)> &fun,
+				std::string fname, bool narm) {
+					
+	if (fname == "mean") {
+		fun = narm ? mean_se_rm : mean_se;
+	} else if (fname == "sum") {
+		fun = narm ? sum_se_rm : sum_se;
+	} else if (fname == "sum2") {
+		fun = narm ? sum2_se_rm : sum2_se;
+	} else if (fname == "min") {
+		fun = narm ? min_se_rm : min_se;
+	} else if (fname == "max") {
+		fun = narm ? max_se_rm : max_se;
+	} else if (fname == "median") {
+		fun = narm ? median_se_rm : median_se;
+	} else if (fname == "modal") {
+		fun = narm ? modal_se_rm : modal_se;
+	} else if (fname == "prod") {
+		fun = narm ? prod_se_rm : prod_se;
+	} else if (fname == "which") {
+		fun = narm ? which_se_rm : which_se;
+	} else if (fname == "which.min") {
+		fun = narm ? whichmin_se_rm : whichmin_se;
+	} else if (fname == "which.max") {
+		fun = narm ? whichmax_se_rm : whichmax_se;
+	} else if (fname == "any") {
+		fun = narm ? any_se_rm : any_se;
+	} else if (fname == "all") {
+		fun = narm ? all_se_rm : all_se;
+	} else if (fname == "sd") {
+		fun = narm ? sd_se_rm : sd_se;
+	} else if (fname == "std") {
+		fun = narm ? sdpop_se_rm : sdpop_se;
+	} else if (fname == "first") {
+		fun = narm ? first_se_rm : first_se;
 	} else {
-		theFun = narm ? mean_se_rm : mean_se;
+		return false;
 	}
-	return theFun;
+	return true;
+}
+
+
+
+double wsum_se_rm(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
+	if (w.size() == 0) return NAN;
+	double x = 0;
+	bool allna = true;
+	for (size_t i=s; i<e; i++) {
+		if (!std::isnan(v[i])) {
+			x += v[i] * w[i];
+			allna = false;
+		}
+	}
+	if (allna) {
+		return NAN;
+	} else {
+		return x;
+	}
+}
+
+
+double wsum_se(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
+	if (w.size() == 0) return NAN;
+	double x = 0;
+	for (size_t i=s; i<e; i++) {
+		x += v[i] * w[i];
+	}
+	return x;
+}
+
+
+double wmean_se_rm(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
+	double sv = 0;
+	double sw = 0;
+	for (size_t i=s; i<e; i++) {
+		if (!std::isnan(v[i])) {
+			sv += v[i] * w[i];
+			sw += w[i];			
+		}
+	}
+	return sv / sw;
+}
+
+
+double wmean_se(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
+	double sv = 0;
+	double sw = 0;
+	for (size_t i=s; i<e; i++) {
+		sv += v[i] * w[i];
+		sw += w[i];			
+	}
+	return sv / sw;
+}
+
+double wmin_se_rm(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
+	return min_se_rm(v, s, e);
+}
+
+double wmin_se(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
+	return min_se(v, s, e);
+}
+
+double wmax_se_rm(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
+	return min_se_rm(v, s, e);
+}
+
+double wmax_se(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
+	return min_se(v, s, e);
+}
+
+
+bool haveseWFun(std::string fun) {
+	std::vector<std::string> f {"sum", "mean", "min", "max"};
+	auto it = std::find(f.begin(), f.end(), fun);
+	if (it == f.end()) {
+		return false;
+	}
+	return true;
+}
+
+
+bool getseWfun(std::function<double(std::vector<double>&, std::vector<double>&, size_t, size_t)> &fun, 
+			std::string fname, bool narm) {
+	if (fname == "mean") {
+		fun = narm ? wmean_se_rm : wmean_se;
+	} else if (fname == "sum") {
+		fun = narm ? wsum_se_rm : wsum_se;
+	} else if (fname == "min") {
+		fun = narm ? wmin_se_rm : wmin_se;
+	} else if (fname == "max") {
+		fun = narm ? wmax_se_rm : wmax_se;
+	} else {
+		return false;
+	}
+	return true;
 }
 

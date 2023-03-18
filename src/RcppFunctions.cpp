@@ -605,7 +605,11 @@ double stattest1(std::vector<double> x, std::string fun, bool narm) {
 		Rcpp::Rcout << fun + " is not available" << std::endl;
 		return NAN;
 	}
-	std::function<double(std::vector<double>&, double, double)> f = getseFun(fun, narm);
+	std::function<double(std::vector<double>&, size_t, size_t)> f;
+	if (!getseFun(f, fun, narm)) {
+		Rcpp::Rcout << "Unknown function" << std::endl;
+		return NAN;
+	}
 	return f(x, 0, x.size());
 }
 

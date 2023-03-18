@@ -41,7 +41,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 \arguments{
 \item{x}{SpatRaster or SpatVector of polygons}
 \item{y}{SpatVector (points, lines, or polygons). Alternatively, for points, a 2-column matrix or data.frame (x, y) or (lon, lat). Or a vector with cell numbers}
-\item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min} and \code{max} are accepted).}
+\item{fun}{function to summarize the data by geometry. You can use \code{fun=table} to tabulate raster values for each line or polygon geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min}, \code{max} and \code{table} are accepted)}
 \item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}
 \item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{xyFromCell}}}
