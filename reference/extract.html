@@ -84,7 +84,7 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <dd><p>SpatVector (points, lines, or polygons). Alternatively, for points, a 2-column matrix or data.frame (x, y) or (lon, lat). Or a vector with cell numbers</p></dd>
 
 <dt>fun</dt>
-<dd><p>function to summarize the data by geometry. If <code>weights=TRUE</code> or <code>exact=TRUE</code> only <code>mean</code>, <code>sum</code>, <code>min</code> and <code>max</code> are accepted).</p></dd>
+<dd><p>function to summarize the data by geometry. You can use <code>fun=table</code> to tabulate raster values for each line or polygon geometry. If <code>weights=TRUE</code> or <code>exact=TRUE</code> only <code>mean</code>, <code>sum</code>, <code>min</code>, <code>max</code> and <code>table</code> are accepted)</p></dd>
 
 <dt>method</dt>
 <dd><p>character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells</p></dd>
