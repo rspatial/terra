@@ -294,7 +294,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	if (!is.null(fun)) {
 		txtfun <- .makeTextFun(fun)
 		if (inherits(txtfun, "character")) {
-			if (fun == "table") {
+			if (txtfun == "table") {
 				if (!is.null(layer)) {
 					warn("extract", "argument 'layer' is ignored when 'fun=table'")
 				}
