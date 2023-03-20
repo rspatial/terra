@@ -142,128 +142,89 @@ use_layer <- function(e, y, layer, nl) {
 }
 
 
-
-extract_weights_fun <- function(x, y, fun=NULL, ID=TRUE, weights=FALSE, exact=FALSE, touches=FALSE, layer=NULL, bind=FALSE, na.rm=FALSE) {
-
-	wtable <- function(p, na.rm=FALSE) {
-		n <- length(p)
-		w <- p[[n]]
-		p[[n]] <- NULL
-		do.call( rbind, 
-			lapply(1:length(p), function(i) {
-				x <- p[[i]]
-				j <- is.na(x)
-				if (na.rm) {
-					x <- x[!j]
-					w <- w[!j]
-				} else if (any(j)) {
-					w[] <- NA
-				}
-				data.frame(layer=i, aggregate(w, list(x), sum, na.rm=FALSE))
-			})
-		)
-	}
-
-	if (weights && exact) {
-		exact = TRUE
-	}
-
-	if (!inherits(fun, "character")) {
-		error("extract", "not a valid function for extracting with weights")
-	}
-	
-	opt <- spatOptions()
-	if (fun == "table") {
-		if (!is.null(layer)) {
-			warn("extract", "argument 'layer' is ignored when 'fun=table'")
-		}
-		e <- x@pnt$extractVector(y@pnt, touches[1], "simple", FALSE, FALSE, isTRUE(weights[1]), isTRUE(exact[1]), opt)
-		x <- messages(x, "extract")
-		if (fun == "table") {
-			e <- lapply(e, wtable, na.rm=na.rm)
-			e <- lapply(1:length(e), function(i) cbind(ID=i, e[[i]]))
-			e <- do.call(rbind, e)
-			colnames(e)[3:4] <- c("group", "value")
-			out <- vector("list", nlyr(x))
-			for (i in 1:nlyr(x)) {
-				ee <- e[e$layer == i, ]
-				ee <- replace_with_label(x[[i]], ee, 3)
-				ee <- stats::reshape(ee, idvar=c("ID", "layer"), timevar="group", direction="wide")
-				colnames(ee) <- gsub("value.", "", colnames(ee))
-				if (!ID) {
-					ee$ID <- NULL
-				}
-				if (na.rm) {
-					ee[is.na(ee)] <- 0
-				}
-				out[[i]] <- ee
-			}
-			if (nlyr(x) == 1) return(out[[1]]) else return(out)
-		} 
-	} 
-
-	e <- x@pnt$extractVectorFlat(y@pnt, fun, na.rm, touches[1], "", FALSE, FALSE, isTRUE(weights[1]), isTRUE(exact[1]), opt)
-	x <- messages(x, "extract")	
-	e <- data.frame(matrix(e, nrow=nrow(y), byrow=TRUE))
-	colnames(e) <- names(x)
-	
-	if (!is.null(layer)) {
-		e <- cbind(ID=1:nrow(e), e)
-		e <- use_layer(e, y, layer, nlyr(x))
-		if (!ID || bind) {
-			e$ID <- NULL
-		}
-		ID <- FALSE
-	} 
-	if (bind) {
-		if (nrow(e) == nrow(y)) {
-			e <- cbind(y, e[,-1,drop=FALSE])
-		} else {
-			warn("extract", "cannot return a SpatVector because the number of records extracted does not match he number of rows in y (perhaps you need to use a summarizing function")
-		}
-	} else if (ID) {
-		e <- cbind(ID=1:nrow(e), e)
-	}
-	e
-}
-
-
-
-extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=FALSE, layer=NULL, bind=FALSE, na.rm=FALSE) {
+extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FALSE, na.rm=FALSE) {
 
 	if (weights && exact) {
 		exact = FALSE
 	}
 	opt <- spatOptions()
 
-	if (fun == "table") {
-		if (!is.null(layer)) {
-			warn("extract", "argument 'layer' is ignored when 'fun=table'")
+	if (weights | exact) {
+		wtable <- function(p, na.rm=FALSE) {
+			n <- length(p)
+			w <- p[[n]]
+			p[[n]] <- NULL
+			do.call( rbind, 
+				lapply(1:length(p), function(i) {
+					x <- p[[i]]
+					j <- is.na(x)
+					if (na.rm) {
+						x <- x[!j]
+						w <- w[!j]
+					} else if (any(j)) {
+						w[] <- NA
+					}
+					data.frame(layer=i, aggregate(w, list(x), sum, na.rm=FALSE))
+				})
+			)
 		}
+		
+		e <- x@pnt$extractVector(y@pnt, touches[1], "simple", FALSE, FALSE, 
+			isTRUE(weights[1]), isTRUE(exact[1]), opt)
+		x <- messages(x, "extract")
+		e <- lapply(e, wtable, na.rm=na.rm)
+		e <- lapply(1:length(e), function(i) cbind(ID=i, e[[i]]))
+		e <- do.call(rbind, e)
+		colnames(e)[3:4] <- c("group", "value")
+		out <- vector("list", nlyr(x))
+		for (i in 1:nlyr(x)) {
+			ee <- e[e[,2] == i, ]
+			ee <- replace_with_label(x[[i]], ee, 3)
+			ee <- stats::reshape(ee, idvar=c("ID", "layer"), timevar="group", direction="wide")
+			colnames(ee) <- gsub("value.", "", colnames(ee))
+			ee$layer <- NULL
+			if (!ID) {
+				ee$ID <- NULL
+			}
+			if (na.rm) {
+				ee[is.na(ee)] <- 0
+			}
+			out[[i]] <- ee
+		}
+		if (nlyr(x) == 1) return(out[[1]]) else return(out)
+	} else {
 		e <- x@pnt$extractVectorFlat(y@pnt, "", FALSE, touches[1], "", FALSE, FALSE, FALSE, FALSE, opt)
 		x <- messages(x, "extract")
 		e <- data.frame(matrix(e, ncol=nlyr(x)+1, byrow=TRUE))
 		colnames(e) <- c("ID", names(x))
-		
 		id <- e[,1,drop=FALSE]
 		e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE]))
+		cn <- colnames(e)
 		out <- vector("list", ncol(e)-1)
 		for (i in 2:ncol(e)) {
 			fixname <- TRUE
 			if (!is.factor(e[,i])) {
-			#	fixname <- FALSE
+				fixname <- FALSE
 				e[,i]  <- as.factor(e[,i])
 			}
 			tb <- aggregate(e[,i,drop=FALSE], e[,1,drop=FALSE], table)
-			tb <- data.frame(tb[,1,drop=FALSE], tb[,2,drop=FALSE])
-			#if (fixname) colnames(tb) <- gsub(cn[2], "", colnames(e))
+			tb <- cbind(tb[,1,drop=FALSE], tb[,2,drop=FALSE])
+			if (fixname) colnames(tb) <- gsub(cn[i], "", colnames(tb))
 			if (!ID) {
 				tb$ID <- NULL
 			}
+			tb$layer <- NULL
 			out[[i-1]] <- tb
 		}
 		if (ncol(e) == 2) return(out[[1]]) else return(out)
 	}
+}
+
+
+
+extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=FALSE, layer=NULL, bind=FALSE, na.rm=FALSE) {
+
+	opt <- spatOptions()
 
 	e <- x@pnt$extractVectorFlat(y@pnt, fun, na.rm, touches[1], "", FALSE, FALSE, FALSE, FALSE, opt)
 	x <- messages(x, "extract")
@@ -333,18 +294,19 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	if (!is.null(fun)) {
 		txtfun <- .makeTextFun(fun)
 		if (inherits(txtfun, "character")) {
-			if (weights || exact) {
-				return( 
-				  extract_weights_fun(x, y, txtfun, ID=ID, weights=weights, exact=exact, touches=touches, bind=bind, layer=layer, ...)
-				)
+			if (fun == "table") {
+				if (!is.null(layer)) {
+					warn("extract", "argument 'layer' is ignored when 'fun=table'")
+				}
+				e <- extract_table(x, y, ID=ID, weights=weights, exact=exact, touches=touches, ...)
 			} else {
-				return(
-				  extract_fun(x, y, txtfun, ID=ID, weights=weights, exact=exact, touches=touches, bind=bind, layer=layer, ...)
-				)
+				e <- extract_fun(x, y, txtfun, ID=ID, weights=weights, exact=exact, touches=touches, bind=bind
+				, layer=layer, ...)
 			}
 		} else if (weights || exact) {
 			error("extract", "if 'weights' or 'exact' is TRUE, you can only use functions mean, sum, min, max and table")
 		}
+		return(e)
 	} 
 	
 	opt <- spatOptions()
