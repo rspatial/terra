@@ -407,7 +407,8 @@ setMethod("rast", signature(x="ANY"),
 	}
 
 	if (!is.null(extent)) {
-		ext(r) <- extent
+		r <- extend(r, extent)
+		r <- crop(r, extent)
 	}
 
 	return(r)
