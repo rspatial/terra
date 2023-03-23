@@ -276,6 +276,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 				xopt = spatOptions()
 				y@pnt <- y@pnt$rasterize(x@pnt, field, values, background, touches[1], fun, FALSE, update[1], TRUE, xopt)
 				messages(y, "rasterize")
+				xopt = spatOptions()
 				yy <- rast(y)
 				yy@pnt <- y@pnt$rasterize(x@pnt, "", values, NA, touches[1], ""	, FALSE, update[1], TRUE, xopt)
 				messages(yy, "rasterize")
