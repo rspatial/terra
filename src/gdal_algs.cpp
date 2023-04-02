@@ -593,7 +593,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	out.writeStop();
 	if (mask) {
 		SpatVector v = dense_extent(true, true);
-		v = v.project(out.getSRS("wkt"));
+		v = v.project(out.getSRS("wkt"), true);
 		if (v.nrow() > 0) {
 			out = out.mask(v, false, NAN, true, mopt);
 		} else {
@@ -698,7 +698,7 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 
 	if (mask) {
 		SpatVector v = dense_extent(true, true);
-		v = v.project(out.getSRS("wkt"));
+		v = v.project(out.getSRS("wkt"), true);
 		if (v.nrow() > 0) {
 			out = out.mask(v, false, NAN, true, mopt);
 		} else {

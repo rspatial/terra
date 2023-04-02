@@ -887,9 +887,9 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 		#endif
 		if (is_lonlat()) {
 			if ((extent.ymin > -85) && (extent.ymax < 85)) {
-				SpatVector tmp = project("+proj=merc");
+				SpatVector tmp = project("+proj=merc", false);
 				tmp = tmp.hull(htype, "");
-				tmp = tmp.project(srs.wkt);
+				tmp = tmp.project(srs.wkt, false);
 				return tmp;
 			}
 		}

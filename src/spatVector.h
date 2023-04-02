@@ -174,7 +174,7 @@ class SpatVector {
 		size_t ncoords();
 		std::vector<std::vector<double>> coordinates();
 
-		SpatVector project(std::string crs);
+		SpatVector project(std::string crs, bool partial);
 		std::vector<double> project_xy(std::vector<double> x, std::vector<double> y, std::string fromCRS, std::string toCRS);
 
 		SpatVector subset_cols(int i);

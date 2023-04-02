@@ -421,6 +421,7 @@ SpatVector SpatVector::densify(double interval, bool adjust, bool ignorelonlat) 
 			out.addGeom(g);
 		}
 	}
+	out.df = df;
 	return out;
 }
 

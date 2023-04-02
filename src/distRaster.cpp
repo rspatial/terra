@@ -2618,7 +2618,7 @@ std::vector<double> SpatVector::area(std::string unit, bool transform, std::vect
 	} else {
 		if (!srs.is_lonlat()) {
 			if (transform && can_transform(srs.wkt, "EPSG:4326")) {
-				SpatVector v = project("EPSG:4326");
+				SpatVector v = project("EPSG:4326", false);
 				return v.area(unit, false, mask);
 			} else {
 				transform = false;
@@ -2970,7 +2970,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool tra
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 				SpatRaster onechunk = x.crop(e, "near", false, popt);
 				SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
-				p = p.project("EPSG:4326");
+				p = p.project("EPSG:4326", false);
 				std::vector<double> v = p.area(unit, true, 	{});
 				out[0] += accumulate(v.begin(), v.end(), 0.0);
 			}
@@ -2981,7 +2981,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool tra
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 				SpatRaster onechunk = x.crop(e, "near", false, popt);
 				SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
-				p = p.project("EPSG:4326");
+				p = p.project("EPSG:4326", false);
 				std::vector<double> ar = p.area(unit, true, {});
 				std::vector<double> v;
 				readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
@@ -3172,7 +3172,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 			SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 			SpatRaster onechunk = x.crop(e, "near", false, popt);
 			SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
-			p = p.project("EPSG:4326");
+			p = p.project("EPSG:4326", false);
 			std::vector<double> ar = p.area(unit, true, {});
 			std::vector<double> v, g;
 			readValues(v, bs.row[i], bs.nrows[i], 0, ncol());

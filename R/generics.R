@@ -670,17 +670,19 @@ setMethod("project", signature(x="SpatRaster"),
 
 
 setMethod("project", signature(x="SpatVector"),
-	function(x, y)  {
+	function(x, y, partial=FALSE)  {
 		if (!is.character(y)) {
 			y <- as.character(crs(y))
 		}
-		x@pnt <- x@pnt$project(y)
+		x@pnt <- x@pnt$project(y, partial)
 		messages(x, "project")
 	}
 )
 
 setMethod("project", signature(x="SpatExtent"),
 	function(x, from, to)  {
+		if (missing(from)) error("project", "'from' cannot be missing")
+		if (missing(to)) error("project", "'to' cannot be missing")
 		x <- as.polygons(x, crs=from)
 		x <- densify(x, 10000)
 		ext(project(x, to))
