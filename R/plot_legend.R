@@ -94,10 +94,10 @@ retro_labels <- function(x, lat=TRUE) {
 	if (is.null(x$axs$tcl)) {
 		x$axs$tcl <- -0.25
 	}
-	if (x$draw_grid) {
-		x$axs$tck <- 1
-		x$axs$mgp = c(2, .15, 0)
-	}
+#	if (x$draw_grid) {
+#		x$axs$tck <- 1
+#		x$axs$mgp = c(2, .15, 0)
+#	}
 
 	xlab <- ylab <- NULL
 	if (!is.null(x$axs$labels)) {
@@ -172,6 +172,14 @@ retro_labels <- function(x, lat=TRUE) {
 			}
 			y$pos <- ifelse(s==1, usr[3], usr[4])
 
+			if (x$draw_grid && s == 1) {
+				clp <- get.clip()
+				if (!is.null(clp)) {
+					for (i in seq_along(y$at)) {
+						lines(rbind(c(y$at[i], clp[3]), c(y$at[i], clp[4])), col=y$col)
+					}
+				}
+			}
 		} else {
 			ur <- usr[4] - usr[3]
 			edg <- c(usr[3]-10*ur, usr[4]+10*ur)
@@ -187,6 +195,15 @@ retro_labels <- function(x, lat=TRUE) {
 				y$labels <- ylab
 			}
 			y$pos <- ifelse(s==2, usr[1], usr[2])
+
+			if (x$draw_grid && s == 2) {
+				clp <- get.clip()
+				if (!is.null(clp)) {
+					for (i in seq_along(y$at)) {
+						lines(rbind(c(clp[1], y$at[i]), c(clp[2], y$at[i])), col=y$col)
+					}
+				}
+			}
 		}
 		z <- y
 		z$lwd <- 0
