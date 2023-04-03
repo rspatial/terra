@@ -144,7 +144,11 @@ retro_labels <- function(x, lat=TRUE) {
 #	usr <- graphics::par("usr")
 	usr <- x$lim
 	y <- x$axs
-	retro <- isTRUE(y$retro)
+	retro <- isTRUE(y$retro) 
+	if (retro && (!x$lonlat)) {
+		warn("plot", "'retro' labels can only be used with lonlat data") 
+		retro <- FALSE
+	}
 	y$retro <- y$lab <- y$tick <- NULL
 	y$line <- NA
 	y$outer <- FALSE
