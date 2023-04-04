@@ -123,7 +123,9 @@ prettyNumbs <- function(x, digits) {
 		out$leg$fill <- out$cols[i,2]
 	} else {
 		ncols <- length(out$cols)
-		if (nlevs < ncols) {
+		if (nlevs == 1) {
+			cols <- out$cols[length(out$cols)]
+		} else if (nlevs < ncols) {
 			i <- round(seq(1, ncols, length.out = nlevs))
 			cols <- out$cols[i]
 		} else {
