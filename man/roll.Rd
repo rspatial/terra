@@ -19,9 +19,9 @@ Compute "rolling" or "moving" functions, such as the "rolling average"
 
 \arguments{
   \item{x}{SpatRaster or numeric}
-  \item{n}{integer > 1. The size of the "window", that is, the number of sequential elements to use in the \code{fun}. This is normally an odd number}
+  \item{n}{integer > 1. The size of the "window", that is, the number of sequential cells to use in \code{fun}}
   \item{fun}{a function like mean, min, max, sum}
-  \item{type}{character. One of "around", "to", or "from". The choice indicates which values should be used in the computation. The focal element is always used. If \code{type} is "around", the other elements are before and after the focal element. Alternatively, you can select the elements preceding the focal element ("to") or those coming after it {"from"}. For example, when using \code{n=3} for element 5 of a vector; "around" used elements 4,5,6; "to" used elements 3,4,5, and "from" uses elements 5,6,7}
+  \item{type}{character. One of "around", "to", or "from". The choice indicates which values should be used in the computation. The focal cell is always used. If type is "around", \code{(n-1)/2} before and after the focal cell are also included. If type = "from", \code{n-1} cells are after the focal cell are included. If type = "to", \code{n-1} cells before the focal cell are included. For example, when using n=3 for element 5 of a vector; "around" used elements 4,5,6; "to" used elements 3,4,5, and "from" uses elements 5,6,7}
   \item{circular}{logical. If \code{TRUE}, the data are considered to have a circular nature (e.g. days or months of the year), such that there are no missing values before first or after the last value.}
   \item{na.rm}{logical. If \code{TRUE}, \code{NA} values should be ignored (by \code{fun})}
   \item{filename}{character. Output filename}

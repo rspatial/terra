@@ -3129,7 +3129,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 						for (size_t k=0; k<nc; k++) {
 							double vk = v[k+offset];
 							double gk = g[k+rowoff];
-							if (!(std::isnan(vk) | std::isnan(gk))) {
+							if (!(std::isnan(vk) || std::isnan(gk))) {
 								if (m[lyr].find(vk) == m[lyr].end() || 
 										m[lyr][vk].find(gk) == m[lyr][vk].end()) {	
 									m[lyr][vk][gk] = ar[row];
@@ -3147,7 +3147,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 						for (size_t k=0; k<nc; k++) {
 							double vk = v[k+offset];
 							double gk = g[k+rowoff];
-							if (!(std::isnan(vk) | std::isnan(gk))) {
+							if (!(std::isnan(vk) || std::isnan(gk))) {
 								vk = 0;
 								if (m[lyr].find(vk) == m[lyr].end() || 
 										m[lyr][vk].find(gk) == m[lyr][vk].end()) {	
@@ -3188,7 +3188,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 						for (size_t k=0; k<nc; k++) {
 							double vk = v[k+offset];
 							double gk = g[k+rowoff];							
-							if (!(std::isnan(vk) | std::isnan(gk))) {
+							if (!(std::isnan(vk) || std::isnan(gk))) {
 								if (m[lyr].find(vk) == m[lyr].end() ||
 										m[lyr][vk].find(gk) == m[lyr][vk].end()) {	
 									m[lyr][vk][gk] = ar[row];
@@ -3206,7 +3206,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 						for (size_t k=0; k<nc; k++) {
 							double vk = v[k+offset];
 							double gk = g[k+rowoff];							
-							if (!(std::isnan(vk) | std::isnan(gk))) {
+							if (!(std::isnan(vk) || std::isnan(gk))) {
 								vk = 0;
 								if (m[lyr].find(vk) == m[lyr].end() ||
 										m[lyr][vk].find(gk) == m[lyr][vk].end()) {	
@@ -3236,7 +3236,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 					for (size_t k=0; k<blockoff; k++) {
 						double vk = v[offset+k];
 						double gk = g[blockoff+k];
-						if (!(std::isnan(vk) | std::isnan(gk))) {
+						if (!(std::isnan(vk) || std::isnan(gk))) {
 							if (m[lyr].find(vk) == m[lyr].end() || 
 									m[lyr][vk].find(gk) == m[lyr][vk].end()) {	
 								m[lyr][vk][gk] = ar;
@@ -3249,7 +3249,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 					for (size_t k=0; k<blockoff; k++) {
 						double vk = v[offset+k];
 						double gk = g[blockoff+k];
-						if (!(std::isnan(vk) | std::isnan(gk))) {
+						if (!(std::isnan(vk) || std::isnan(gk))) {
 							vk = 0;
 							if (m[lyr].find(vk) == m[lyr].end() ||
 									m[lyr][vk].find(gk) == m[lyr][vk].end()) {	
