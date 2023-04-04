@@ -422,7 +422,18 @@ setMethod("dots", signature(x="SpatVector"),
 		type <- "none"
 		plg <- list()
 	}
-	out$lim <- out$ext <- as.vector(ext(x))
+	
+	e <- as.vector(ext(x))
+	if (e[1] == e[2]) {
+		e[1] = e[1] - 0.5
+		e[2] = e[2] + 0.5
+	}
+	if (e[3] == e[4]) {
+		e[3] = e[3] - 0.5
+		e[4] = e[4] + 0.5
+	}
+	
+	out$lim <- out$ext <- e
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
 			ext <- ext(ext)

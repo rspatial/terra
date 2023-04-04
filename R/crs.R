@@ -313,8 +313,29 @@ setMethod("is.lonlat", signature("SpatRaster"),
 
 setMethod("is.lonlat", signature("SpatVector"),
 	function(x, perhaps=FALSE, warn=TRUE) {
-		x <- rast(x)
-		is.lonlat(x, perhaps=perhaps, warn=warn, global=FALSE)
+		if (perhaps) {
+			ok <- x@pnt$isLonLat()
+			if (ok) {
+				messages(x, "is.lonlat")
+				return(ok)
+			} 
+			ok <- x@pnt$couldBeLonLat()
+			if (ok) {
+				messages(x, "is.lonlat")
+			}
+			if (ok && warn) {
+				warn("is.lonlat", "assuming lon/lat crs")
+			}
+		} else {
+			ok <- x@pnt$isLonLat()
+			if (ok) {
+				messages(x, "is.lonlat")
+			} else if (crs(x) == "") {
+				ok <- NA
+				warn("is.lonlat", "unknown crs")
+			}
+		}
+		ok
 	}
 )
 
