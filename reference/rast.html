@@ -58,7 +58,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for character</span></span>
-<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, subds<span class="op">=</span><span class="fl">0</span>, lyrs<span class="op">=</span><span class="cn">NULL</span>, drivers<span class="op">=</span><span class="cn">NULL</span>, opts<span class="op">=</span><span class="cn">NULL</span>, win<span class="op">=</span><span class="cn">NULL</span>, vsi<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, subds<span class="op">=</span><span class="fl">0</span>, lyrs<span class="op">=</span><span class="cn">NULL</span>, drivers<span class="op">=</span><span class="cn">NULL</span>, opts<span class="op">=</span><span class="cn">NULL</span>, win<span class="op">=</span><span class="cn">NULL</span>, snap<span class="op">=</span><span class="st">"near"</span>, vsi<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for missing</span></span>
 <span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, nrows<span class="op">=</span><span class="fl">180</span>, ncols<span class="op">=</span><span class="fl">360</span>, nlyrs<span class="op">=</span><span class="fl">1</span>, xmin<span class="op">=</span><span class="op">-</span><span class="fl">180</span>, xmax<span class="op">=</span><span class="fl">180</span>, </span>
@@ -108,6 +108,9 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
 <dt>win</dt>
 <dd><p>SpatExtent to set a <code><a href="window.html">window</a></code> (area of interest)</p></dd>
+
+<dt>snap</dt>
+<dd><p>character to indicate how the extent of <code>win</code> should be snapped</p></dd>
 
 <dt>vsi</dt>
 <dd><p>logical. If <code>TRUE</code>, "\vsicurl\" is prepended to filenames that start with "http"</p></dd>
