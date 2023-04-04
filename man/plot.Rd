@@ -28,7 +28,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
     maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE,
 	breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, 
 	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, 
-	background=NULL, box=axes, ...)
+	background=NULL, box=axes, clip=TRUE, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, ...)
 
@@ -37,7 +37,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 \S4method{plot}{SpatVector,character}(x, y, col=NULL, type, mar=NULL, add=FALSE, legend=!add, axes=!add, 
     main="", buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, sort=TRUE, 
 	decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, 
-	box=axes, ...)
+	box=axes, clip=TRUE, ...)
 
 \S4method{plot}{SpatVector,numeric}(x, y, ...)
 
@@ -55,6 +55,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{buffer}{logical. If \code{TRUE} the plotting area is made slightly larger than the extent of \code{x}}
   \item{background}{background color. Default is no color (white)}
   \item{box}{logical. Should a box be drawn around the map?}
+  \item{clip}{logical. Should the axes be clipped to the extent of \code{x}?}
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}. Parameter \code{digits} can be used to set the number of digits to print (after the decimal point for a continuous legend). Parameter \code{size} can be used to change the height and/or width of a continuous legend. The defaults are \code{c(1,1)}, negative values for size flip the order of the legend}
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{side}, \code{tick} and \code{lab} can be used to indicate for which of the four axes to draw a line (side), tick-mark, and/or the tick-mark labels. The default is \code{c(1:4)} for side and \code{1:2} for the other two. If \code{side} is changed the other two default to that value. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}

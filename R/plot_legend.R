@@ -94,10 +94,10 @@ retro_labels <- function(x, lat=TRUE) {
 	if (is.null(x$axs$tcl)) {
 		x$axs$tcl <- -0.25
 	}
-#	if (x$draw_grid) {
-#		x$axs$tck <- 1
-#		x$axs$mgp = c(2, .15, 0)
-#	}
+	if ((!x$clip) & x$draw_grid) {
+		x$axs$tck <- 1
+		x$axs$mgp <- c(2, .15, 0)
+	}
 
 	xlab <- ylab <- NULL
 	if (!is.null(x$axs$labels)) {
@@ -139,10 +139,14 @@ retro_labels <- function(x, lat=TRUE) {
 	labs <- x$axs$lab
 	if (is.null(labs)) {
 		x$axs$lab <- labs <- sides
-	} 
+	}
 
-#	usr <- graphics::par("usr")
-	usr <- x$lim
+	if (x$clip) {
+		usr <- x$lim
+	} else {
+		usr <- graphics::par("usr")
+	}
+	
 	y <- x$axs
 	retro <- isTRUE(y$retro) 
 	if (retro && (!x$lonlat)) {
@@ -154,9 +158,13 @@ retro_labels <- function(x, lat=TRUE) {
 	y$outer <- FALSE
 	y$line.lab <- NULL
 	if (is.null(y$col)) y$col <- "black"
-	lnpts <- crds(as.points(ext(x$lim)))
-	lnpts <- rbind(lnpts[4,], lnpts)
-	
+	if (x$clip) {
+		lnpts <- crds(as.points(ext(x$lim)))
+		lnpts <- rbind(lnpts[4,], lnpts)
+	} else {
+		lnpts <- crds(as.points(ext(usr)))
+		lnpts <- rbind(lnpts[4,], lnpts)
+	}
 	for (s in 1:4) {
 		y$side <- s
 		y$labels <- NULL
@@ -176,7 +184,7 @@ retro_labels <- function(x, lat=TRUE) {
 			}
 			y$pos <- ifelse(s==1, usr[3], usr[4])
 
-			if (x$draw_grid && s == 1) {
+			if (x$clip && x$draw_grid && s == 1) {
 				clp <- get.clip()
 				if (!is.null(clp)) {
 					for (i in seq_along(y$at)) {
@@ -200,7 +208,7 @@ retro_labels <- function(x, lat=TRUE) {
 			}
 			y$pos <- ifelse(s==2, usr[1], usr[2])
 
-			if (x$draw_grid && s == 2) {
+			if (x$clip && x$draw_grid && s == 2) {
 				clp <- get.clip()
 				if (!is.null(clp)) {
 					for (i in seq_along(y$at)) {
@@ -256,7 +264,11 @@ retro_labels <- function(x, lat=TRUE) {
 .get.leg.coords <- function(x) {
 
 	if (is.null(x$leg$ext)) {
-		p <- x$leg$ext <- x$lim
+		if (x$clip) {
+			p <- x$leg$ext <- x$lim
+		} else {
+			p <- x$leg$ext <- graphics::par("usr")		
+		}
 	} else {
 		p <- as.vector(x$leg$ext)
 	}
@@ -365,10 +377,15 @@ retro_labels <- function(x, lat=TRUE) {
 	#usr <- graphics::par("usr")
 	dxy <- graphics::par("cxy") * graphics::par("cex")
 	loc <- x$leg$x
-	xmin <- x$lim[1]
-	xmax <- x$lim[2]
-	ymin <- x$lim[3]
-	ymax <- x$lim[4]
+	if (x$clip) {
+		usr <- x$lim
+	} else {
+		usr <- graphics::par("usr")
+	}
+	xmin <- usr[1]
+	xmax <- usr[2]
+	ymin <- usr[3]
+	ymax <- usr[4]
 	p <- NULL
 	if (is.character(loc)) {
 		if (loc == "left") {

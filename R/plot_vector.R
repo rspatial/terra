@@ -367,7 +367,9 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 	if (!out$legend_only) {
-		if (!out$add) try(set.clip(out$lim, out$lonlat))
+		if (!out$add) {
+			try(set.clip(out$lim, out$lonlat))
+		}
 		out <- .vplot(x, out, ...)
 	}
 
@@ -380,18 +382,30 @@ setMethod("dots", signature(x="SpatVector"),
 			out$legpars <- do.call(.plot.cont.legend, list(x=out))
 		} else {
 			if (out$add) {
-				out$leg$plotlim <- unlist(get.clip()[1:4])
+				if (out$clip) {
+					out$leg$plotlim <- unlist(get.clip()[1:4])
+				} else {
+					out$leg$plotlim <- graphics::par("usr")
+				}
 				if (is.null(out$leg$plotlim)) {
 					out$leg$plotlim <- out$lim			
 				}
 			} else {
-				out$leg$plotlim <- out$lim			
+				if (out$clip) {
+					out$leg$plotlim <- out$lim
+				} else {
+					out$leg$plotlim <- graphics::par("usr")
+				}
 			}			
 			out$legpars <- do.call(.plot.class.legend, out$leg)
 		}
 	}
-	if (out$box) { 
-		lines(ext(out$lim))	
+	if (isTRUE(out$box)) { 
+		if (out$clip) {
+			lines(ext(out$lim))	
+		} else {
+			lines(ext(par("usr")))		
+		}
 	}
 
 	if (out$main != "") {
@@ -400,7 +414,9 @@ setMethod("dots", signature(x="SpatVector"),
 			font=out$font.main, col=out$col.main, xpd=TRUE)
 	}
 
-	if (!out$add) try(set.clip(out$lim, out$lonlat))
+	if (!out$add) {
+		try(set.clip(out$lim, out$lonlat))
+	}
 	out
 }
 
@@ -410,7 +426,7 @@ setMethod("dots", signature(x="SpatVector"),
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL,
 	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
-	density=NULL, angle=45, border="black", dig.lab=3, cex=1, ...) {
+	density=NULL, angle=45, border="black", dig.lab=3, cex=1, clip=TRUE, ...) {
 
 	out <- list()
 	out$blank <- FALSE
@@ -455,6 +471,7 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	} 
 	out$ngeom <- nrow(x)
+	out$clip <- isTRUE(clip)
 
 	if (buffer) {
 		dx <- diff(out$lim[1:2]) / 50
@@ -558,7 +575,7 @@ setMethod("dots", signature(x="SpatVector"),
 		type <- match.arg(type, c("continuous", "classes", "interval", "depends", "none"))
 	}
 	out$levels <- levels
-
+	
 	if (type=="none") {
 		legend <- FALSE
 		legend_only <- FALSE
@@ -614,7 +631,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 	function(x, y, col=NULL, type, mar=NULL, add=FALSE, legend=!add, axes=!add,
 	main="", buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
 	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, 
-	alpha=NULL, box=axes, ...) {
+	alpha=NULL, box=axes, clip=TRUE, ...) {
 
 		if (nrow(x) == 0) {
 			error("plot", "SpatVector has zero geometries")
@@ -657,7 +674,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			}
 			if (missing(col)) col <- NULL
 
-			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, colNA=colNA, alpha=alpha, box=box, ...)
+			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, colNA=colNA, alpha=alpha, box=box, clip=clip, ...)
 		}
 		invisible(out)
 	}
