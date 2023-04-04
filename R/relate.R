@@ -269,6 +269,12 @@ setMethod("adjacent", signature(x="SpatVector"),
 
 setMethod("nearby", signature(x="SpatVector"),
 	function(x, y=NULL, distance=0, k=1, centroids=TRUE, symmetrical=TRUE) {
+		
+		k <- round(k)
+		if (distance <= 0 && k < 1) {
+			error("nearby", "either distance or k must be a positive number")
+		}
+
 		if ((geomtype(x) == "polygons") && centroids) {
 			x <- centroids(x)
 		}
@@ -292,7 +298,7 @@ setMethod("nearby", signature(x="SpatVector"),
 			} else {
 				k <- max(1, min(round(k), (nrow(x)-1)))
 			}
-			if (k > 1) {
+#			if (k > 1) {
 				if (hasy) {
 					d <- distance(x, y)
 				} else {
@@ -302,10 +308,10 @@ setMethod("nearby", signature(x="SpatVector"),
 				d <- t(apply(d, 1, function(i) order(i)[1:k]))
 				if (k==1) d <- t(d)
 				d <- cbind(1:length(x), d)
-			} else {
-				d <- nearest(x)
-				d <- values(d)[, c("from_id", "to_id")]
-			}
+#			} else {
+#				d <- nearest(x)
+#				d <- values(d)[, c("from_id", "to_id")]
+#			}
 			colnames(d) <- c("id", paste0("k", 1:k))
 			d
 		}

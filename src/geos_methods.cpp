@@ -2825,8 +2825,8 @@ SpatVector SpatVector::nearest_point() {
 		return out;
 	}
 	if ((size() == 1)) {
-		out.addWarning("single geometry");
-		//return *this;
+		out.setError("single geometry");
+		return out;
 	}
 	size_t n = size();
 	out.srs = srs;
