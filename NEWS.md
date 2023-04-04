@@ -6,6 +6,8 @@
 - `add_legend` to allow using a keyword such as "topleft" to position a custom legend. [#1053](https://github.com/rspatial/terra/issues/1053) by Márcia Barbosa
 - the `same.crs` function is now exported
 - `countNA<SpatRaster>` method
+- `rast<character>` has argument "snap" to snap the window in or out. [#1094](https://github.com/rspatial/terra/issues/1094) by Derek Friend
+
 
 ## enhancements
 
