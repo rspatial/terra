@@ -303,19 +303,17 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 				e <- extract_fun(x, y, txtfun, ID=ID, weights=weights, exact=exact, touches=touches, bind=bind
 				, layer=layer, ...)
 			}
+			return(e)
 		} else if (weights || exact) {
 			error("extract", "if 'weights' or 'exact' is TRUE, you can only use functions mean, sum, min, max and table")
 		}
-		return(e)
+		xy <- cells <- FALSE
+		raw <- TRUE
 	} 
 	
 	opt <- spatOptions()
 	e <- x@pnt$extractVectorFlat(y@pnt, "", FALSE, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 	x <- messages(x, "extract")
-
-	if (!is.null(fun)) {
-		return(do_fun(x, e, fun, ...))
-	}
 
 	cn <- c("ID", names(x))
 	nc <- nl <- nlyr(x)
@@ -350,6 +348,10 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		e <- matrix(e, ncol=nc+1, byrow=TRUE)
 	}
 	colnames(e) <- cn
+	if (!is.null(fun)) {
+		e <- as.data.frame(e)
+		e <- do_fun(x, e, fun, ...)
+	}
 	
 	if (cells) {
 		cncell <- cn =="cell"
