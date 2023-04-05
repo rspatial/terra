@@ -424,7 +424,7 @@ prettyNumbs <- function(x, digits) {
 		if (x$clip) {
 			lines(ext(x$lim))	
 		} else {
-			lines(ext(par("usr")))		
+			lines(ext(graphics::par("usr")))		
 		}
 	}
 	

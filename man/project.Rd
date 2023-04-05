@@ -13,7 +13,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 }
 
 \usage{
-\S4method{project}{SpatVector}(x, y)
+\S4method{project}{SpatVector}(x, y, partial = FALSE)
 
 \S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, 
 		gdal=TRUE, res=NULL, origin=NULL, threads=FALSE, filename="", ...)
@@ -30,6 +30,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   You can use the following formats to define coordinate reference systems: WKT,  PROJ.4 (e.g., \code{+proj=longlat +datum=WGS84}), or an EPSG code (e.g., \code{"epsg:4326"}). But note that the PROJ.4 notation has been deprecated, and you can only use it with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored. 
   
   If \code{x} is a SpatVector, you can provide a crs definition as discussed above, or any other object from which such a crs can be extracted with \code{\link{crs}}}
+
+  \item{partial}{logical. If \code{TRUE}, geometries that can only partially be represented in the output crs are included in the output}
   
   \item{method}{character. Method used for estimating the new cell values of a SpatRaster. One of: 
   

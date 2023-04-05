@@ -58,7 +58,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \item{drivers}{character. GDAL drivers to consider}
 \item{opts}{character. GDAL dataset open options}
 \item{win}{SpatExtent to set a \code{\link{window}} (area of interest)}
-\item{snap}{character. One of "near", "in", or "out", to indicate how the extent of \code{\link{win}} should be "snapped" to \code{x}}
+\item{snap}{character. One of "near", "in", or "out", to indicate how the extent of \code{\link{window}} should be "snapped" to \code{x}}
 \item{vsi}{logical. If \code{TRUE}, "\\vsicurl\\" is prepended to filenames that start with "http"}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}

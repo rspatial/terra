@@ -404,7 +404,7 @@ setMethod("dots", signature(x="SpatVector"),
 		if (out$clip) {
 			lines(ext(out$lim))	
 		} else {
-			lines(ext(par("usr")))		
+			lines(ext(graphics::par("usr")))		
 		}
 	}
 

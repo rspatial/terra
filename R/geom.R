@@ -264,8 +264,8 @@ setMethod("buffer", signature(x="SpatVector"),
 
 
 setMethod("crop", signature(x="SpatVector", y="ANY"),
-	function(x, y, extent=FALSE) {
-		if (extent) {
+	function(x, y, ext=FALSE) {
+		if (ext) {
 			y <- ext(y)
 			x@pnt <- x@pnt$crop_ext(y@pnt, TRUE)
 			return(x)
