@@ -384,7 +384,6 @@ set_factors <- function(x, ff, cts, asdf) {
 	s
 }
 
-
 sampleRaster <- function(x, size, method, replace, ext=NULL, warn) {
 #	hadWin <- hasWin <- FALSE
 	if (!is.null(ext)) {
