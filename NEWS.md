@@ -6,7 +6,6 @@
 - `add_legend` to allow using a keyword such as "topleft" to position a custom legend. [#1053](https://github.com/rspatial/terra/issues/1053) by Márcia Barbosa
 - the `same.crs` function is now exported
 - `countNA<SpatRaster>` method
-- `rast<character>` has argument "snap" to snap the window in or out. [#1094](https://github.com/rspatial/terra/issues/1094) by Derek Friend
 
 
 ## enhancements
@@ -18,6 +17,8 @@
 - `expanse<SpatRaster>` has new arguments "zones=NULL" and "wide=FALSE", to allow tabulation of values by zone.
 - `unique<SpatRaster>` has new argument "digits=NA"
 - `rasterize<SpatRaster,SpatVector>` now accepts fun="table" to tabulate cells by cell value
+- `rast<character>` has new argument "snap" to snap the window in or out. [#1094](https://github.com/rspatial/terra/issues/1094) by Derek Friend
+- `plot` has new argument "clip=TRUE" that can be set to FALSE to avoid clipping the axes to the mapped area [#1080](https://github.com/rspatial/terra/issues/1080) by Márcia Barbosa
 
 
 ## bug fixes
