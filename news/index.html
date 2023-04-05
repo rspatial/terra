@@ -57,8 +57,6 @@
 <li>the <code>same.crs</code> function is now exported</li>
 <li>
 <code>countNA&lt;SpatRaster&gt;</code> method</li>
-<li>
-<code>rast&lt;character&gt;</code> has argument “snap” to snap the window in or out. <a href="https://github.com/rspatial/terra/issues/1094" class="external-link">#1094</a> by Derek Friend</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-21">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-21"></a></h3>
@@ -74,6 +72,10 @@
 <code>unique&lt;SpatRaster&gt;</code> has new argument “digits=NA”</li>
 <li>
 <code>rasterize&lt;SpatRaster,SpatVector&gt;</code> now accepts fun=“table” to tabulate cells by cell value</li>
+<li>
+<code>rast&lt;character&gt;</code> has new argument “snap” to snap the window in or out. <a href="https://github.com/rspatial/terra/issues/1094" class="external-link">#1094</a> by Derek Friend</li>
+<li>
+<code>plot</code> has new argument “clip=TRUE” that can be set to FALSE to avoid clipping the axes to the mapped area <a href="https://github.com/rspatial/terra/issues/1080" class="external-link">#1080</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-21">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-21"></a></h3>

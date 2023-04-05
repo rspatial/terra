@@ -67,7 +67,7 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
 <span><span class="fu">crop</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, snap<span class="op">=</span><span class="st">"near"</span>, extend<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatVector</span></span>
-<span><span class="fu">crop</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu">crop</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, ext<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatGraticule</span></span>
 <span><span class="fu">crop</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
@@ -98,6 +98,9 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
 
   <dt>...</dt>
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
+  <dt>ext</dt>
+<dd><p>logical. Use the extent of <code>y</code> instead of <code>y</code>. This also changes the behavior when <code>y</code> is an extent in two ways: (1) points that are on the extent boundary are removed and (2) lon/lat extents that go beyond -180 or 180 degrees longitude are wrapped around the earth to include areas at the other end of the dateline</p></dd>
 
 </dl></div>
     <div id="value">
