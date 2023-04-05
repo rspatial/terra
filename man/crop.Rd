@@ -27,7 +27,7 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
 
 \S4method{crop}{SpatRasterCollection}(x, y, snap="near", extend=FALSE)
 
-\S4method{crop}{SpatVector}(x, y)
+\S4method{crop}{SpatVector}(x, y, ext=FALSE)
 
 \S4method{crop}{SpatGraticule}(x, y)
 }
@@ -41,6 +41,7 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
   \item{extend}{logical. Should rows and/or columns be added if \code{y} is beyond the extent of \code{x}? Also see \code{\link{extend}}}  
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{ext}{logical. Use the extent of \code{y} instead of \code{y}. This also changes the behavior when \code{y} is an extent in two ways: (1) points that are on the extent boundary are removed and (2) lon/lat extents that go beyond -180 or 180 degrees longitude are wrapped around the earth to include areas at the other end of the dateline}
 }
 
 
