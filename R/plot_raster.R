@@ -782,7 +782,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 
 		if (missing("main")) {
 			tm <- time(x)
-			if (!any(is.na(tm))) {
+			if ((!any(is.na(tm))) && (length(unique(tm)) > 1)) {
 				main <- as.character(time(x))
 			} else {
 				main <- names(x)
