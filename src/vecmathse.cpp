@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <string>
 #include <functional>
+#include <map>
 
 
 double median_se_rm(const std::vector<double>& v, size_t s, size_t e) {
@@ -501,28 +502,34 @@ std::vector<double> range_se(std::vector<double>& v, size_t s, size_t e) {
 
 double modal_se_rm(std::vector<double>& v, size_t s, size_t e) {
 
-	size_t n = (e-s) + 1;
-    std::vector<unsigned> counts(n, 0);
-	std::sort(v.begin()+s, v.begin()+e);
-    for (size_t i = 0; i < n; ++i) {
-        //counts[i] = 0;
-        size_t j = 0;
-        while ((j < i) && (v[i+s] != v[j+s])) {
-            ++j;
-        }
-        ++(counts[j]);
-    }
-    size_t maxCount = 0;
-	for (size_t i = 1; i < n; ++i) {
-		if (counts[i] > counts[maxCount]) {
-			maxCount = i;
+	std::map<double, size_t> count;
+	for_each( v.begin()+s, v.begin()+e, [&count]( double val ){
+			if(!std::isnan(val)) count[val]++;
 		}
-	}
-    return v[maxCount];
+	);
+
+    std::map<double, size_t>::iterator mode =	
+        std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
+		const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
+		
+    return mode->first;
 }
 
 double modal_se(std::vector<double>& v, size_t s, size_t e) {
-	return modal_se_rm(v, s, e);
+	std::map<double, size_t> count;
+	for(size_t i=s; i<e; i++) {
+		if (std::isnan(v[i])) {
+			return NAN;
+		} else {
+			count[v[i]]++;
+		}
+	}
+
+    std::map<double, size_t>::iterator mode =	
+        std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
+		const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
+		
+    return mode->first;
 }
 
 

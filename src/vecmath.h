@@ -26,6 +26,9 @@
 #include "NA.h"
 #include <math.h>
 
+#include <map>
+#include <algorithm>
+
 
 bool haveFun(std::string fun);
 std::function<double(std::vector<double>&, bool)> getFun(std::string fun);
@@ -552,7 +555,7 @@ std::vector<T> vrange(const std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-T vmodal(std::vector<T>& v, bool narm) {
+T vmodal_old(std::vector<T>& v, bool narm) {
 
 	size_t n = v.size();
     std::vector<unsigned> counts(n, 0);
@@ -577,6 +580,44 @@ T vmodal(std::vector<T>& v, bool narm) {
 	
     return v[maxCount];
 }
+
+
+template <typename T>
+T vmodal(std::vector<T>& v, bool narm) {
+
+	if (narm) {
+		std::map<double, size_t> count;
+		for_each( v.begin(), v.end(), [&count]( double val ){
+				if(!std::isnan(val)) count[val]++;
+			}
+		);
+
+		std::map<double, size_t>::iterator mode =	
+			std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
+			const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
+			
+		return mode->first;
+
+	}  else {
+	
+		std::map<double, size_t> count;
+		for(size_t i=0; i<v.size(); i++) {
+			if (std::isnan(v[i])) {
+				return NAN;
+			} else {
+				count[v[i]]++;
+			}
+		}
+
+		std::map<double, size_t>::iterator mode =	
+			std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
+			const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
+			
+		return mode->first;
+	}
+	}
+
+
 
 
 

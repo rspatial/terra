@@ -37,6 +37,13 @@ setMethod("vect", signature(x="SpatExtent"),
 	}
 )
 
+setMethod("vect", signature(x="SpatVectorCollection"),
+	function(x) {
+		vect(as.list(x))
+	}
+)
+
+
 setMethod("vect", signature(x="character"),
 	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="") {
 
@@ -405,7 +412,9 @@ setMethod("vect", signature(x="list"),
 		x <- svc(x)
 		v <- methods::new("SpatVector")
 		v@pnt <- x@pnt$append()
-		crs(v) <- crs
+		if (crs != "") {
+			crs(v) <- crs
+		}
 		messages(v, "vect")
 	}
 )
