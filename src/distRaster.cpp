@@ -2270,9 +2270,9 @@ void SpatVector::fix_lonlat_overflow() {
 				if (geoms[i].extent.xmax <= -180) {
 					v = v.shift(360, 0);
 				} else {
-					SpatVector add = v.crop(east);
+					SpatVector add = v.crop(east, false);
 					add = add.shift(360, 0);
-					v = v.crop(world);
+					v = v.crop(world, false);
 					v.geoms[i].addPart(add.geoms[0].parts[0]);
 				}
 				replaceGeom(v.geoms[0], i);
@@ -2282,9 +2282,9 @@ void SpatVector::fix_lonlat_overflow() {
 				if (geoms[i].extent.xmin >= 180) {
 					v = v.shift(-360, 0);
 				} else {
-					SpatVector add = v.crop(west);
+					SpatVector add = v.crop(west, false);
 					add = add.shift(-360, 0);
-					v = v.crop(world);
+					v = v.crop(world, false);
 					v.geoms[i].addPart(add.geoms[0].parts[0]);
 				}
 				replaceGeom(v.geoms[0], i);
@@ -2293,7 +2293,7 @@ void SpatVector::fix_lonlat_overflow() {
 	}
 
 	if ((extent.ymax > 90) || (extent.ymin < -90)) {
-		SpatVector out = crop(world);
+		SpatVector out = crop(world, false);
 		geoms = out.geoms;
 		extent = out.extent;
 		df = out.df;

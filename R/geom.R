@@ -264,7 +264,12 @@ setMethod("buffer", signature(x="SpatVector"),
 
 
 setMethod("crop", signature(x="SpatVector", y="ANY"),
-	function(x, y) {
+	function(x, y, extent=FALSE) {
+		if (extent) {
+			y <- ext(y)
+			x@pnt <- x@pnt$crop_ext(y@pnt, TRUE)
+			return(x)
+		}
 		if (inherits(y, "SpatVector")) {
 			x@pnt <- x@pnt$crop_vct(y@pnt)
 		} else {

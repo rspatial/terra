@@ -1267,7 +1267,7 @@ SpatVector SpatVector::round(int digits) {
 SpatVector SpatVector::normalize_longitude() {
 	SpatVector out = *this;
 	SpatExtent e = {180, 361, -91, 91};
-	SpatVector x = out.crop(e);
+	SpatVector x = out.crop(e, false);
 	if (x.nrow() > 0) {
 		x = x.shift(-360, 0);
 		SpatVector v(e, "");
@@ -1275,7 +1275,7 @@ SpatVector SpatVector::normalize_longitude() {
 		out = out.append(x, true);
 	}
 	e = {-360, -180, -91, 91};
-	x = out.crop(e);
+	x = out.crop(e, false);
 	if (x.nrow() > 0) {
 		x = x.shift(360, 0);
 		SpatVector v(e, "");

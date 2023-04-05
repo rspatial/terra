@@ -334,7 +334,7 @@ class SpatVector {
 		SpatVector centroid(bool check_lonlat);
 		SpatVector point_on_surface(bool check_lonlat);
 
-		SpatVector crop(SpatExtent e);
+		SpatVector crop(SpatExtent e, bool wrap);
 		SpatVector crop(SpatVector e);
 		SpatVector voronoi(SpatVector bnd, double tolerance, int onlyEdges);		
 		SpatVector delaunay(double tolerance, int onlyEdges);		
