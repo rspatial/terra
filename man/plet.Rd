@@ -16,7 +16,7 @@
 \description{
 Plot the values of a SpatRaster or SpatVector to make an interactive leaflet map that is displayed in a browser.
 
-These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the development version of leaflet that you can install with \code{remotes::install_github("rstudio/leaflet")}.
+These methods require the development version of leaflet that you can install with \code{remotes::install_github("rstudio/leaflet")}.
 }
 
 \usage{

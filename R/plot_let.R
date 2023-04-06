@@ -48,9 +48,12 @@ baselayers <- function(tiles, wrap=TRUE) {
 setMethod("plet", signature(x="SpatVector"),
 	function(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL, ...)  {
 
-		stopifnot(utils::packageVersion("leaflet") > "2.1.1")
+		v <- utils::packageVersion("leaflet")
+		if ((v < "2.1.1.9000") || (v == "2.1.2")) {
+			error("plet", "plet needs the development version of leaflet")
+		}
 		
-		if (missing(col)) col = grDevices::rainbow
+		if (missing(col)) col <- grDevices::rainbow
 		alpha <- max(0, min(1, alpha))
 		fill <- max(0, min(1, alpha))
 		x <- makelonlat(x)
@@ -157,7 +160,10 @@ setMethod("plet", signature(x="SpatVector"),
 setMethod("plet", signature(x="SpatVectorCollection"),
 	function(x, col, alpha=1, fill=0, cex=1, lwd=2, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
 
-		stopifnot(utils::packageVersion("leaflet") > "2.1.1")
+		v <- utils::packageVersion("leaflet")
+		if ((v < "2.1.1.9000") || (v == "2.1.2")) {
+			error("plet", "plet needs the development version of leaflet")
+		}
 
 		if (is.null(map)) {
 			tiles <- unique(as.character(tiles))
