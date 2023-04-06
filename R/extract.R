@@ -226,7 +226,7 @@ extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=
 
 	opt <- spatOptions()
 
-	e <- x@pnt$extractVectorFlat(y@pnt, fun, na.rm, touches[1], "", FALSE, FALSE, FALSE, FALSE, opt)
+	e <- x@pnt$extractVectorFlat(y@pnt, fun, na.rm, touches[1], "", FALSE, FALSE, weights, exact, opt)
 	x <- messages(x, "extract")
 
 	nl <- nlyr(x)

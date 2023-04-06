@@ -728,8 +728,8 @@ double wmean_se_rm(const std::vector<double>& v, const std::vector<double>& w, s
 	double sv = 0;
 	double sw = 0;
 	for (size_t i=s; i<e; i++) {
-		if (!std::isnan(v[i])) {
-			sv += v[i] * w[i];
+		if ((!std::isnan(v[i])) && (!std::isnan(w[i]))) {
+			sv += (v[i] * w[i]);
 			sw += w[i];			
 		}
 	}
@@ -741,26 +741,74 @@ double wmean_se(const std::vector<double>& v, const std::vector<double>& w, size
 	double sv = 0;
 	double sw = 0;
 	for (size_t i=s; i<e; i++) {
-		sv += v[i] * w[i];
-		sw += w[i];			
+		if (!std::isnan(w[i])) {
+			sv += (v[i] * w[i]);
+			sw += w[i];			
+		}
 	}
 	return sv / sw;
 }
 
 double wmin_se_rm(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
-	return min_se_rm(v, s, e);
+	double x = NAN;
+	for (size_t i=(s); i<e; i++) {
+		if (!std::isnan(w[i]) && !std::isnan(v[i])) {
+			if (std::isnan(x)) {
+				x = v[i];
+			} else {
+				x = std::min(x, v[i]);
+			}
+		}
+	}
+	return x;
 }
 
 double wmin_se(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
-	return min_se(v, s, e);
+	double x = NAN;
+	for (size_t i=(s); i<e; i++) {
+		if (!std::isnan(w[i])) {
+			if (std::isnan(v[i])) {
+				return NAN;
+			}
+			if (std::isnan(x)) {
+				x = v[i];
+			} else {
+				x = std::min(x, v[i]);
+			}
+		}
+	}
+	return x;
 }
 
 double wmax_se_rm(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
-	return min_se_rm(v, s, e);
+	double x = NAN;
+	for (size_t i=(s); i<e; i++) {
+		if (!std::isnan(w[i]) && !std::isnan(v[i])) {
+			if (std::isnan(x)) {
+				x = v[i];
+			} else {
+				x = std::max(x, v[i]);
+			}
+		}
+	}
+	return x;
 }
 
 double wmax_se(const std::vector<double>& v, const std::vector<double>& w, size_t s, size_t e) {
-	return min_se(v, s, e);
+	double x = NAN;
+	for (size_t i=(s); i<e; i++) {
+		if (!std::isnan(w[i])) {
+			if (std::isnan(v[i])) {
+				return NAN;
+			}
+			if (std::isnan(x)) {
+				x = v[i];
+			} else {
+				x = std::max(x, v[i]);
+			}
+		}
+	}
+	return x;
 }
 
 
