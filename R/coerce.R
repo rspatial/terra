@@ -419,9 +419,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 }
 
 
-.from_sf <- function(from) {
-	sfi <- attr(from, "sf_column")
-	geom <- from[[sfi]]
+.from_sf <- function(from, geom, sfi) {
 	crs <- attr(geom, "crs")$wkt
 	if (is.na(crs)) crs <- ""
 	#geom <- st_as_text(geom)
@@ -462,7 +460,15 @@ setAs("sf", "SpatRaster",
 
 setAs("sf", "SpatVector",
 	function(from) {
-		v <- try(.from_sf(from), silent=TRUE)
+		sfi <- attr(from, "sf_column")
+		if (is.null("sfi")) {
+			error("as,sf", "the object has no sf_column")
+		}
+		geom <- from[[sfi]]
+		if (inherits(geom, "list")) {
+			error("as,sf", "the geometry column is not valid (perhaps first load the sf package)")
+		}
+		v <- try(.from_sf(from, geom, sfi), silent=TRUE)
 		if (inherits(v, "try-error")) {
 			error("as,sf", "coercion failed. You can try coercing via a Spatial* (sp) class")
 		}
