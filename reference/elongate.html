@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector</span></span>
-<span><span class="fu">elongate</span><span class="op">(</span><span class="va">x</span>, length<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">elongate</span><span class="op">(</span><span class="va">x</span>, length<span class="op">=</span><span class="fl">1</span>, flat<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -65,6 +65,9 @@
   <dt>length</dt>
 <dd><p>positive number indicating how much the lines should be elongated at each end. The unit is meter is the crs is lonlat and it is the same as the linear unit of the crs on other cases (also meter in most cases)</p></dd>
 
+  <dt>flat</dt>
+<dd><p>logical. If <code>TRUE</code>, the earth's curvature is ignored for lonlat data, and the distance unit is degrees, not meter</p></dd>
+  
 </dl></div>
     <div id="value">
     <h2>Value</h2>
