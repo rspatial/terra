@@ -3,19 +3,19 @@
 
 setMethod("geomtype", signature(x="SpatVector"),
 	function(x){
-		x@pnt$type()
+		x@ptr$type()
 	}
 )
 setMethod("geomtype", signature(x="SpatVectorProxy"),
 	function(x){
-		x@pnt$v$type()
+		x@ptr$v$type()
 	}
 )
 
 
 setMethod("datatype", signature(x="SpatVector"),
 	function(x){
-		x@pnt$df$get_datatypes()
+		x@ptr$df$get_datatypes()
 	}
 )
 
@@ -50,15 +50,15 @@ setMethod("geomtype", signature(x="Spatial"),
 setMethod("geom", signature(x="SpatVector"),
 	function(x, wkt=FALSE, hex=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y"){
 		if (hex) {
-			x@pnt$hex()
+			x@ptr$hex()
 		} else if (wkt) {
-			x@pnt$getGeometryWKT()
+			x@ptr$getGeometryWKT()
 			# or via geos with
-			# x@pnt$wkt()
+			# x@ptr$wkt()
 		} else if (list) {
-			x@pnt$get_geometryList(xnm, ynm)
+			x@ptr$get_geometryList(xnm, ynm)
 		} else {
-			g <- x@pnt$get_geometry()
+			g <- x@ptr$get_geometry()
 			g <- do.call(cbind, g)
 			colnames(g) <- c("geom", "part", "x", "y", "hole")[1:ncol(g)]
 			if (df) {
@@ -75,14 +75,14 @@ setMethod("crds", signature(x="SpatVector"),
 		if (list) {
 			gt <- geomtype(x) 
 			if (gt == "lines") {
-				x@pnt$linesNA()
+				x@ptr$linesNA()
 			} else if (gt == "polygons") {
-				x@pnt$polygonsList()			
+				x@ptr$polygonsList()			
 			} else {
-				x@pnt$coordinates()
+				x@ptr$coordinates()
 			}
 		} else {
-			g <- x@pnt$coordinates()
+			g <- x@ptr$coordinates()
 			g <- do.call(cbind, g)
 			colnames(g) <- c("x", "y")
 			if (df) {
@@ -110,15 +110,15 @@ setMethod("dim", signature(x="SpatVector"),
 
 setMethod("dim", signature(x="SpatVectorProxy"),
 	function(x){
-		c(x@pnt$v$geom_count, x@pnt$v$ncol())
+		c(x@ptr$v$geom_count, x@ptr$v$ncol())
 	}
 )
 
 
 as.data.frame.SpatVector <- function(x, row.names=NULL, optional=FALSE, geom=NULL, ...) {
-	d <- .getSpatDF(x@pnt$df, ...)
+	d <- .getSpatDF(x@ptr$df, ...)
 	# fix empty names
-	colnames(d)[1:ncol(x)] <- x@pnt$names
+	colnames(d)[1:ncol(x)] <- x@ptr$names
 	if (!is.null(geom)) {
 		geom <- match.arg(toupper(geom), c("WKT", "HEX", "XY"))
 		if (geom == "XY") {
@@ -146,7 +146,7 @@ setMethod("as.data.frame", signature(x="SpatVector"), as.data.frame.SpatVector)
 
 get.data.frame <- function(x) {
 	v <- vect()
-	v@pnt <- x@pnt$v
+	v@ptr <- x@ptr$v
 	d <- as.data.frame(v)
 	d[0,,drop=FALSE]
 }
@@ -161,7 +161,7 @@ setMethod("as.list", signature(x="SpatVector"), as.list.SpatVector)
 
 setMethod ("expanse", "SpatVector",
 	function(x, unit="m", transform=TRUE) {
-		a <- x@pnt$area(unit, transform, double());
+		a <- x@ptr$area(unit, transform, double());
 		x <- messages(x, "expanse");
 		return(abs(a))
 	}
@@ -170,7 +170,7 @@ setMethod ("expanse", "SpatVector",
 
 setMethod("perim", signature(x="SpatVector"),
 	function(x) {
-		p <- x@pnt$length();
+		p <- x@ptr$length();
 		x <- messages(x, "perim");
 		return(p)
 	}
@@ -178,7 +178,7 @@ setMethod("perim", signature(x="SpatVector"),
 
 setMethod("length", signature(x="SpatVector"),
 	function(x) {
-		x@pnt$size()
+		x@ptr$size()
 	}
 )
 
@@ -186,9 +186,9 @@ setMethod("length", signature(x="SpatVector"),
 setMethod("fillHoles", signature(x="SpatVector"),
 	function(x, inverse=FALSE) {
 		if (inverse) {
-			x@pnt <- x@pnt$get_holes()
+			x@ptr <- x@ptr$get_holes()
 		} else {
-			x@pnt <- x@pnt$remove_holes()
+			x@ptr <- x@ptr$remove_holes()
 		}
 		messages(x)
 	}
@@ -198,7 +198,7 @@ setMethod("fillHoles", signature(x="SpatVector"),
 
 #setMethod("eliminate", signature(x="SpatVector"),
 #	function(x, y) {
-#		x@pnt <- x@pnt$eliminate(y@pnt)
+#		x@ptr <- x@ptr$eliminate(y@ptr)
 #		messages(x)
 #	}
 #)
@@ -208,9 +208,9 @@ setMethod("fillHoles", signature(x="SpatVector"),
 setMethod("centroids", signature(x="SpatVector"),
 	function(x, inside=FALSE) {
 		if (inside) {
-			x@pnt <- x@pnt$point_on_surface(TRUE)
+			x@ptr <- x@ptr$point_on_surface(TRUE)
 		} else {
-			x@pnt <- x@pnt$centroid(TRUE)
+			x@ptr <- x@ptr$centroid(TRUE)
 		}
 		messages(x)
 	}
@@ -220,7 +220,7 @@ setMethod("centroids", signature(x="SpatVector"),
 
 setMethod("densify", signature(x="SpatVector"),
 	function(x, interval, equalize=TRUE, flat=FALSE) {
-		x@pnt <- x@pnt$densify(interval, equalize, flat)
+		x@ptr <- x@ptr$densify(interval, equalize, flat)
 		messages(x)
 	}
 )
@@ -233,7 +233,7 @@ setMethod("normalize.longitude", signature(x="SpatVector"),
 		x[[fname]] <- 1:nrow(x)
 		d <- values(x)
 		out <- x[,fname]
-		out@pnt <- out@pnt$normalize_longitude()
+		out@ptr <- out@ptr$normalize_longitude()
 		out <- messages(out)
 		a <- aggregate(out, fname, count=FALSE)
 		if (nc > 0) {
