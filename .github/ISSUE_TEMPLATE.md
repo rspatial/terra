@@ -1,2 +1,1 @@
-Here you can report bugs are ask for new features. For "how-to" questions, please go to stackoverflow.com.
-When reporting a bug, please include a minimal, self-contained example that reproduces the problem.
+Here you can report bugs or ask for new features. [Stack Overflow](https://stackoverflow.com) is a better place for "how-to" questions. When reporting a bug, please include a minimal, self-contained example that reproduces the problem.
