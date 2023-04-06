@@ -609,7 +609,7 @@ setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"),
 
 
 
-setMethod("split", signature(x="SpatVector"),
+setMethod("split", signature(x="SpatVector", f="ANY"),
 	function(x, f) {
 		if (length(f) > 1) {
 			x <- deepcopy(x)

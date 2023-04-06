@@ -4,7 +4,7 @@
 
 \alias{split}
 \alias{split,SpatRaster-method}
-\alias{split,SpatVector-method}
+\alias{split,SpatVector,ANY-method}
 \alias{split,SpatVector,SpatVector-method}
 
 
@@ -17,7 +17,7 @@ Split a SpatRaster by layer, or a SpatVector by attributes. You can also split t
 \usage{
 \S4method{split}{SpatRaster}(x, f)
 
-\S4method{split}{SpatVector}(x, f)
+\S4method{split}{SpatVector,ANY}(x, f)
 
 \S4method{split}{SpatVector,SpatVector}(x, f)
 }
@@ -45,7 +45,8 @@ x <- split(v, "NAME_1")
 
 ## split geometries
 v <- v[1:5,]
-line <- vect(matrix(c(5.79, 6.22, 5.75, 6.1, 5.8, 50.14, 50.05, 49.88, 49.85, 49.71), ncol=2), "line")
+line <- vect(matrix(c(5.79, 6.22, 5.75, 6.1, 5.8, 
+	50.14, 50.05, 49.88, 49.85, 49.71), ncol=2), "line")
 s <- split(v, line)
 }
 
