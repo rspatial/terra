@@ -6,6 +6,7 @@
 \alias{vect,character-method}
 \alias{vect,list-method}
 \alias{vect,SpatVector-method}
+\alias{vect,SpatVectorCollection-method}
 \alias{vect,SpatExtent-method}
 \alias{vect,data.frame-method}
 \alias{vect,matrix-method}
@@ -42,6 +43,8 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \S4method{vect}{list}(x, type="points", crs="")
 
 \S4method{vect}{SpatExtent}(x, crs="")
+
+\S4method{vect}{SpatVectorCollection}(x)
 
 \S4method{vect}{sf}(x)
 }
