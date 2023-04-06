@@ -3,7 +3,7 @@
 \docType{methods}
 
 \alias{split}
-\alias{split,SpatRaster-method}
+\alias{split,SpatRaster,ANY-method}
 \alias{split,SpatVector,ANY-method}
 \alias{split,SpatVector,SpatVector-method}
 
@@ -15,7 +15,7 @@ Split a SpatRaster by layer, or a SpatVector by attributes. You can also split t
 }
 
 \usage{
-\S4method{split}{SpatRaster}(x, f)
+\S4method{split}{SpatRaster,ANY}(x, f)
 
 \S4method{split}{SpatVector,ANY}(x, f)
 
