@@ -129,8 +129,8 @@ use_layer <- function(e, y, layer, nl) {
 			if (any(is.na(layer))) error("extract", "names in argument 'layer' do not match names(x)")
 		}
 
-		idx <- cbind(e[,1], layer[e[,1]]+1)
-		ee <- cbind(e[,1,drop=FALSE], names(x)[idx[,2]-1], value=e[idx])
+		idx <- cbind(e[,1], layer[e[,1]])
+		ee <- data.frame(e[,1,drop=FALSE], names(e)[idx[,2]-1], value=e[idx])
 		colnames(ee)[2] <- lyr_name
 		if (ncol(e) > (nl+1)) {
 			e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
@@ -284,7 +284,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	geo <- geomtype(y)
 	if (geo == "points") {		
 		if (weights || exact) {
-			method == "bilinear"
+			method <- "bilinear"
 			weights <- FALSE
 			exact <- FALSE
 		} 
