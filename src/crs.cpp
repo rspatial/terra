@@ -341,6 +341,8 @@ void transform_coordinates_partial(std::vector<double> &x, std::vector<double> &
 
 SpatVector SpatVector::project(std::string crs, bool partial) {
 
+	bool remove_empty = false;
+
 	SpatVector s;
 	s.reserve(size());
 
@@ -385,7 +387,7 @@ SpatVector SpatVector::project(std::string crs, bool partial) {
 			SpatGeom g = getGeom(i);
 			SpatGeom gg;
 			gg.gtype = g.gtype;
-			bool keep = false;
+			bool empty = true;
 			for (size_t j=0; j < g.size(); j++) {
 				SpatPart p = g.getPart(j);
 				transform_coordinates_partial(p.x, p.y, poCT);	
@@ -401,13 +403,18 @@ SpatVector SpatVector::project(std::string crs, bool partial) {
 						}
 					}
 					gg.addPart(pp);
-					keep = true;
+					empty = false;
 				}
 			}
-			if (keep) {
-				keeprows.push_back(i);
+			if (empty) {
+				if (remove_empty) {
+					keeprows.push_back(i);
+				} else {
+					s.addGeom(gg);
+				}
+			} else {	
 				s.addGeom(gg);
-			}	
+			}
 		}
 		
 		
@@ -417,7 +424,7 @@ SpatVector SpatVector::project(std::string crs, bool partial) {
 			SpatGeom g = getGeom(i);
 			SpatGeom gg;
 			gg.gtype = g.gtype;
-			bool keep = false;
+			bool empty = true;
 			for (size_t j=0; j < g.size(); j++) {
 				SpatPart p = g.getPart(j);
 				if (poCT->Transform(p.x.size(), &p.x[0], &p.y[0]) ) {
@@ -431,19 +438,28 @@ SpatVector SpatVector::project(std::string crs, bool partial) {
 						}
 					}
 					gg.addPart(pp);
-					keep = true;
+					empty = false;
 				}
 			}
-			if (keep) {
-				keeprows.push_back(i);
+			if (empty) {
+				if (remove_empty) {
+					keeprows.push_back(i);
+				} else {
+					s.addGeom(gg);
+				}
+			} else {
 				s.addGeom(gg);
 			}
 		}
 	}
 	
-	s.df = df.subset_rows(keeprows);
 	OCTDestroyCoordinateTransformation(poCT);
 
+	if (remove_empty) {
+		s.df = df.subset_rows(keeprows);
+	} else {
+		s.df = df;		
+	}
 	#endif
 	return s;
 }

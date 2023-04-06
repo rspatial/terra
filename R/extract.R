@@ -125,7 +125,7 @@ use_layer <- function(e, y, layer, nl) {
 			layer <- round(layer)
 			stopifnot(min(layer) > 0 & max(layer) <= nl)
 		} else {
-			layer <- match(layer, names(x))
+			layer <- match(layer, colnames(e))
 			if (any(is.na(layer))) error("extract", "names in argument 'layer' do not match names(x)")
 		}
 
