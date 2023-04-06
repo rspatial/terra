@@ -12,12 +12,13 @@ Elongate SpatVector lines
 }
 
 \usage{
-\S4method{elongate}{SpatVector}(x, length=1)
+\S4method{elongate}{SpatVector}(x, length=1, flat=FALSE)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{length}{positive number indicating how much the lines should be elongated at each end. The unit is meter is the crs is lonlat and it is the same as the linear unit of the crs on other cases (also meter in most cases)}
+  \item{flat}{logical. If \code{TRUE}, the earth's curvature is ignored for lonlat data, and the distance unit is degrees, not meter}  
 }
 
 

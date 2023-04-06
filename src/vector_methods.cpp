@@ -208,7 +208,7 @@ void extend_line(const double &x1, const double &y1, const double &x2, const dou
 	}
 }
 
-SpatVector SpatVector::elongate(double length) {
+SpatVector SpatVector::elongate(double length, bool flat) {
 
 	SpatVector out = *this;
 	size_t n = size();
@@ -228,7 +228,7 @@ SpatVector SpatVector::elongate(double length) {
 	}
 
 	double x, y;
-	bool geo = is_lonlat();
+	bool geo = (!flat) && is_lonlat();
 	
 	for (size_t i=0; i<n; i++) {
 		for (size_t j=0; j < out.geoms[i].size(); j++) {

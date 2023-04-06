@@ -345,7 +345,7 @@ class SpatVector {
 		SpatVector erase_agg(SpatVector v);
 		SpatVector erase(SpatVector v);
 		SpatVector erase(bool sequential);
-		SpatVector elongate(double length);
+		SpatVector elongate(double length, bool flat);
 		SpatVector mask(SpatVector x, bool inverse);
 		SpatVector gaps();		
 		SpatVector cover(SpatVector v, bool identity, bool expand);

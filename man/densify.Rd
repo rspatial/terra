@@ -21,7 +21,7 @@ Add additional nodes to lines or polygons. This can be useful to do prior to usi
   \item{x}{SpatVector}
   \item{interval}{positive number, specifying the desired minimum distance between nodes. The unit is meter for lonlat data, and in the linear unit of the crs for planar data}
   \item{equalize}{logical. If \code{TRUE}, new nodes are spread at equal intervals between old nodes}
-  \item{flat}{logical. If \code{TRUE}, the earth's curvature is ignored for lonlat data}
+  \item{flat}{logical. If \code{TRUE}, the earth's curvature is ignored for lonlat data, and the distance unit is degrees, not meter}
 } 
 
 \value{

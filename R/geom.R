@@ -392,8 +392,8 @@ setMethod("voronoi", signature(x="SpatVector"),
 )
 
 setMethod("elongate", signature(x="SpatVector"),
-	function(x, length=1) {
-		x@ptr <- x@ptr$elongate(length)
+	function(x, length=1, flat=FALSE) {
+		x@ptr <- x@ptr$elongate(length, flat)
 		messages(x, "elongate")
 	}
 )
@@ -626,6 +626,7 @@ setMethod("split", signature(x="SpatVector", f="SpatVector"),
 	function(x, f) {
 		if (geomtype(x) != "polygons") error("split", "first argument must be polygons")
 		if (geomtype(f) != "lines") error("split", "second argument must be lines")
+		values(f) <- NULL
 		u <- union(ext(f), ext(x)) + 10
 		e <- ext(u)
 		md <- max(e$xmax-e$xmin, e$ymax-e$ymin)

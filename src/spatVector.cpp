@@ -1227,7 +1227,7 @@ SpatVector SpatVectorCollection::append() {
 		} else {
 			std::vector<unsigned> r0;
 			out.df = v[i].df.subset_rows(r0);
-			out.df.add_rows(out.size());
+			out.df.add_rows(out.size()-v[i].size());
 			out.df.rbind(v[i].df);
 		}
 	}
