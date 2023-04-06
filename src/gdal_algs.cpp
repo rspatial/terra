@@ -1128,28 +1128,27 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 		x = replaceValues({NAN}, {minval}, 0, false, NAN, false, topt);
 	}
 
-	std::string filename = opt.get_filename();
+	std::string fname = opt.get_filename();
 	std::string driver;
-	if (filename.empty()) {
-		filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
-		driver = "GTiff";
-	} else {
+	if (!fname.empty()) {
 		driver = opt.get_filetype();
-		getGDALdriver(filename, driver);
+		getGDALdriver(fname, driver);
 		if (driver.empty()) {
 			setError("cannot guess file type from filename");
 			return out;
 		}
 		std::string errmsg;
-		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
+		if (!can_write({fname}, filenames(), opt.get_overwrite(), errmsg)) {
 			out.setError(errmsg);
 			return out;
 		}
 	}
 
+	std::string filename = tempFile(topt.get_tempdir(), topt.pid, ".tif");
+	driver = "GTiff";
+
 	GDALDatasetH hSrcDS;
-	SpatOptions ops(opt);
-	if (!x.open_gdal(hSrcDS, 0, false, ops)) {
+	if (!x.open_gdal(hSrcDS, 0, false, topt)) {
 		out.setError("cannot open input dataset");
 		return out;
 	}
@@ -1161,7 +1160,7 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 	}
 
 	GIntBig diskNeeded = ncell() * 4;
-	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, topt.gdal_options);
 
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
 
