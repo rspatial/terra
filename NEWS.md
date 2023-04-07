@@ -6,6 +6,7 @@
 - `add_legend` to allow using a keyword such as "topleft" to position a custom legend. [#1053](https://github.com/rspatial/terra/issues/1053) by Márcia Barbosa
 - the `same.crs` function is now exported
 - `countNA<SpatRaster>` method
+- `split<SpatVector,SpatVector>` to split polygons with lines
 
 
 ## enhancements
@@ -19,6 +20,8 @@
 - `rasterize<SpatRaster,SpatVector>` now accepts fun="table" to tabulate cells by cell value
 - `rast<character>` has new argument "snap" to snap the window in or out. [#1094](https://github.com/rspatial/terra/issues/1094) by Derek Friend
 - `plot` has new argument "clip=TRUE" that can be set to FALSE to avoid clipping the axes to the mapped area [#1080](https://github.com/rspatial/terra/issues/1080) by Márcia Barbosa
+- better error message when coercing an sf object that is not fully formed [#1098](https://github.com/rspatial/terra/issues/1098) by Brandon McNellis
+- `writeCDF<SpatRaster>` had new argument "split" allowing to treat each layer as a subdataset [#1077](https://github.com/rspatial/terra/issues/1077) by Andrea Manica
 
 
 ## bug fixes
@@ -33,6 +36,7 @@
 - inset with keyword positioning did not work well [#1053](https://github.com/rspatial/terra/issues/1053) by Márcia Barbosa
 - yearmonths time stamps were not read from file for years <1970 and >2037 [#1062](https://github.com/rspatial/terra/issues/1062) by Colin Brust
 - `compareGeom` did not work for multiple SpatRasters [#1063](https://github.com/rspatial/terra/issues/1064)
+- `viewshed` could not handle a filename argument. [#1100](https://github.com/rspatial/terra/issues/1100) by kamistick
 
 
 # version 1.7-18

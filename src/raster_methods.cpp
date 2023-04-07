@@ -1154,6 +1154,11 @@ SpatRaster SpatRaster::mask(SpatVector &x, bool inverse, double updatevalue, boo
 		out.setError("SpatRaster has no values");
 		return out;
 	}
+	
+	if (!source[0].srs.is_equal(x.srs)) {
+		out.addWarning("SRS do not match");
+	}
+	
 	if (inverse) {
 		out = rasterize(x, "", {updatevalue}, NAN, touches, "", false, true, true, opt);
 	} else {
