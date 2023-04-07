@@ -47,14 +47,17 @@ Select geometries of \code{x} that intersect, or not intersect, with the geometr
 
 
 \examples{
-r <- rast(ncols=10, nrows=10)
-m <- rast(ncols=10, nrows=10)
-values(r) <- 1:100
-set.seed(1965)
-x <- round(3 * runif(ncell(r)))
-x[x==0] <- NA
-values(m) <- x
-mr <- mask(r, m)
+f <- system.file("ex/elev.tif", package="terra")
+r <- rast(f)
+msk <- ifel(r < 400, NA, 1)
+
+m <- mask(r, msk)
+
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)[1,]
+
+mv1 <- mask(r, v)
+mv2 <- crop(r, v, mask=TRUE)
 }
 
 \keyword{methods}

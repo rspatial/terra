@@ -486,9 +486,9 @@ bool SpatRaster::compare_geom(SpatRaster &x, bool lyrs, bool crs, double tol, bo
 	if (crs) {
 		if (!source[0].srs.is_equal(x.source[0].srs)) {
 			if (warncrs) {
-				addWarning("SRS do not match");
+				addWarning("CRS do not match");
 			} else {
-				setError("SRS do not match");
+				setError("CRS do not match");
 				return false;
 			}
 		}
