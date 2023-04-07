@@ -177,7 +177,7 @@ SpatVector SpatVector::aggregate(bool dissolve) {
 
 #include "geodesic.h"
 
-void extend_line(const double &x1, const double &y1, const double &x2, const double &y2, double &x, double &y, const bool &geo, const double &distance) {
+void extend_line(const double &x1, const double &y1, const double &x2, const double &y2, double &x, double &y, const bool &geo, const double &distance, const bool &plus) {
 	if (geo) {
 		double a = 6378137.0;
 		double f = 1/298.257223563;
@@ -198,13 +198,13 @@ void extend_line(const double &x1, const double &y1, const double &x2, const dou
 		} else {
 			bearing = atan((y2-y1)/dx);
 		}
-//		if (plus) {
-			x = x2 + distance * sin(bearing);
-			y = y2 + distance * cos(bearing);
-//		} else {
-//			x = x2 - distance * sin(bearing);
-//			y = y2 - distance * cos(bearing);			
-//		}
+		if (plus) {
+			x = x2 + distance * cos(bearing);
+			y = y2 + distance * sin(bearing);
+		} else {
+			x = x2 - distance * cos(bearing);
+			y = y2 - distance * sin(bearing);			
+		}
 	}
 }
 
@@ -235,11 +235,11 @@ SpatVector SpatVector::elongate(double length, bool flat) {
 			SpatPart p = out.geoms[i].parts[j];
 			size_t n = p.x.size();
 			if (n < 2) continue;
-			extend_line(p.x[1], p.y[1], p.x[0], p.y[0], x, y, geo, length);
+			extend_line(p.x[1], p.y[1], p.x[0], p.y[0], x, y, geo, length, false);
 			p.x.insert(p.x.begin(), x);
 			p.y.insert(p.y.begin(), y);
 			
-			extend_line(p.x[n-1], p.y[n-1], p.x[n], p.y[n], x, y, geo, length);
+			extend_line(p.x[n-1], p.y[n-1], p.x[n], p.y[n], x, y, geo, length, false);
 			p.x.push_back(x);			
 			p.y.push_back(y);
 			
