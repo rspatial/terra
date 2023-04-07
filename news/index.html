@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-23</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-24</span>
       </span>
     </div>
 
@@ -57,6 +57,8 @@
 <li>the <code>same.crs</code> function is now exported</li>
 <li>
 <code>countNA&lt;SpatRaster&gt;</code> method</li>
+<li>
+<code>split&lt;SpatVector,SpatVector&gt;</code> to split polygons with lines</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-23">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-23"></a></h3>
@@ -76,6 +78,9 @@
 <code>rast&lt;character&gt;</code> has new argument “snap” to snap the window in or out. <a href="https://github.com/rspatial/terra/issues/1094" class="external-link">#1094</a> by Derek Friend</li>
 <li>
 <code>plot</code> has new argument “clip=TRUE” that can be set to FALSE to avoid clipping the axes to the mapped area <a href="https://github.com/rspatial/terra/issues/1080" class="external-link">#1080</a> by Márcia Barbosa</li>
+<li>better error message when coercing an sf object that is not fully formed <a href="https://github.com/rspatial/terra/issues/1098" class="external-link">#1098</a> by Brandon McNellis</li>
+<li>
+<code>writeCDF&lt;SpatRaster&gt;</code> had new argument “split” allowing to treat each layer as a subdataset <a href="https://github.com/rspatial/terra/issues/1077" class="external-link">#1077</a> by Andrea Manica</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-23">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-23"></a></h3>
@@ -96,6 +101,8 @@
 <li>
 <code>compareGeom</code> did not work for multiple SpatRasters <a href="https://github.com/rspatial/terra/issues/1064" class="external-link">#1063</a>
 </li>
+<li>
+<code>viewshed</code> could not handle a filename argument. <a href="https://github.com/rspatial/terra/issues/1100" class="external-link">#1100</a> by kamistick</li>
 </ul></div>
 </div>
     <div class="section level2">
