@@ -6,16 +6,16 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 		if (filename == "") error("makeTiles", "filename cannot be empty")
 		opt <- spatOptions(filename="", ...)
 		if (inherits(y, "SpatRaster")) {
-			ff <- x@ptr$make_tiles(y@ptr, extend[1], na.rm[1], filename, opt)
+			ff <- x@pnt$make_tiles(y@pnt, extend[1], na.rm[1], filename, opt)
 		} else if (inherits(y, "SpatVector")) {
-			ff <- x@ptr$make_tiles_vect(y@ptr, extend[1], na.rm[1], filename, opt)		
+			ff <- x@pnt$make_tiles_vect(y@pnt, extend[1], na.rm[1], filename, opt)		
 		} else if (is.numeric(y)) {
 			if (length(y) > 2) {
 				error("makeTiles", "expected one or two numbers")
 			}
 			y <- rep_len(y, 2)
 			y <- aggregate(rast(x), y)
-			ff <- x@ptr$make_tiles(y@ptr, extend[1], na.rm[1], filename, opt)			
+			ff <- x@pnt$make_tiles(y@pnt, extend[1], na.rm[1], filename, opt)			
 		} else {
 			error("makeTiles", "y must be a SpatRaster or SpatVector")
 		}
@@ -51,7 +51,7 @@ setMethod("vrt", signature(x="character"),
 		if (is.null(options)) {
 			options=""[0]
 		} 
-		r@ptr <- r@ptr$make_vrt(x, options, opt)
+		r@pnt <- r@pnt$make_vrt(x, options, opt)
 		messages(r, "vrt")
 	}
 )
