@@ -409,27 +409,17 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 .getRegFun <- function(fun, weighted=FALSE, wopt, nmsx, nl, na.rm=FALSE, intercept=TRUE, ...) {
 
 	ols <- function(x, y, ...) {
-		v <- cbind(y, x)
-		if (any(is.na(v))) return( cbind(rep(NA, NCOL(x)+1)) )
-		X <- cbind(1, v[,-1])
-		XtX <- t(X) %*% X
-		if (det(XtX) == 0) {
-			return(rep(NA, NCOL(y)+1))
+		if (any(is.na(x)) || any(is.na(y)) || (NROW(y) < (NCOL(x) + 1))) { 
+			return(rep(NA, NCOL(x)+1))
 		}
-		invXtX <- solve(XtX) %*% t(X)
-		invXtX %*% v[,1]
+		stats::.lm.fit(cbind(1, x), y)$coefficients
 	}
 
 	ols_noi <- function(x, y, ...) {
-		v <- cbind(y, x)
-		if (any(is.na(v))) return( cbind (rep(NA, NCOL(x))) )
-		X <- v[,-1,drop=FALSE]
-		XtX <- t(X) %*% X
-		if (det(XtX) == 0) {
-			return(rep(NA, ncol(y)+1))
+		if (any(is.na(x)) || any(is.na(y)) || (NROW(y) < (NCOL(x)))) { 
+			return(rep(NA, NCOL(x)))
 		}
-		invXtX <- solve(XtX) %*% t(X)
-		invXtX %*% v[,1]
+		stats::.lm.fit(as.matrix(x), y)$coefficients
 	}
 
 	ols_narm <- function(x, y, ...) {
@@ -437,59 +427,132 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 		if (nrow(v) < (NCOL(x) + 1)) {
 			return( cbind(rep(NA, NCOL(x)+1)) )
 		}
-		X <- cbind(1, v[,-1])
-		XtX <- t(X) %*% X
-		if (det(XtX) == 0) {
-			return(NA)
-		}
-		invXtX <- solve(XtX) %*% t(X)
-		invXtX %*% v[,1]
+		stats::.lm.fit(cbind(1, v[,-1]), v[,1])$coefficients
 	}
 	
 	ols_noi_narm <- function(x, y, ...) {
 		v <- na.omit(cbind(y, x))
-		if (nrow(v) < NCOL(x)) {
-			return( cbind(rep(NA, NCOL(y))) )
+		if (nrow(v) < (NCOL(x))) {
+			return( cbind(rep(NA, NCOL(x))) )
 		}
-		X <- v[,-1,drop=FALSE]
-		XtX <- t(X) %*% X
-		if (det(XtX) == 0) {
-			return(NA)
-		}
-		invXtX <- solve(XtX) %*% t(X)
-		invXtX %*% v[,1]
+		stats::.lm.fit(v[,-1,drop=FALSE], v[,1])$coefficients
 	}
 
 	weighted_ols <- function(x, y, weights, ...) {
-		if (any(is.na(x)) || any(is.na(y))) { 
-			return(rep(NA, NCOL(y)+1))
+		if (any(is.na(x)) || any(is.na(y)) || any(is.na(weights)) || (NROW(y) < (NCOL(x) + 1))) { 
+			return(rep(NA, NCOL(x)+1))
 		}
-		stats::coefficients(stats::glm(y~x, weights=weights))
+		stats::lm.wfit(cbind(1, x), y, weights)$coefficients		
 	}
 
 	weighted_ols_noi <- function(x, y, weights, ...) {
-		if (any(is.na(x)) || any(is.na(y))) { 
-			return(rep(NA, NCOL(y)))
+		if (any(is.na(x)) || any(is.na(y)) || any(is.na(weights)) || (NROW(y) < (NCOL(x) + 1))) { 
+			return(rep(NA, NCOL(x)))
 		}
-		v <- na.omit(data.frame(y=y, x, weights=weights))
-		stats::coefficients(stats::glm(y ~ -1 + ., weights=weights))
+		stats::lm.wfit(as.matrix(x), y, weights)$coefficients		
 	}
 
 	weighted_ols_narm <- function(x, y, weights, ...) {
-		v <- na.omit(data.frame(y=y, x, weights=weights))
+		v <- na.omit(cbind(y, weights, x))
 		if (nrow(v) < (NCOL(x) + 1)) {
-			return(rep(NA, NCOL(y)+1))
+			return(rep(NA, NCOL(x)+1))
 		}
-		stats::coefficients(stats::glm(y ~ ., data=v, weights=v$weights))
+		stats::lm.wfit(cbind(1, v[,-c(1:2)]), v[,1], v[,2])$coefficients		
 	}	
 
 	weighted_ols_noi_narm <- function(x, y, weights, ...) {
-		v <- na.omit(data.frame(y=y, x, weights=weights))
-		if (nrow(v) < (NCOL(x) + 1)) {
-			return(rep(NA, NCOL(y)+1))
+		v <- na.omit(cbind(y, weights, x))
+		if (nrow(v) < (NCOL(x))) {
+			return(rep(NA, NCOL(x)))
 		}
-		stats::coefficients(stats::glm(y ~ -1 + ., data=v, weights=v$weights))
+		stats::lm.wfit(v[,-c(1:2), drop=FALSE], v[,1], v[,2])$coefficients		
 	}	
+
+	# ..ols <- function(x, y, ...) {
+		# v <- cbind(y, x)
+		# if (any(is.na(v))) return( cbind(rep(NA, NCOL(x)+1)) )
+		# X <- cbind(1, v[,-1])
+		# XtX <- t(X) %*% X
+		# if (det(XtX) == 0) {
+			# return(rep(NA, NCOL(y)+1))
+		# }
+		# invXtX <- solve(XtX) %*% t(X)
+		# invXtX %*% v[,1]
+	# }
+
+	# ..ols_noi <- function(x, y, ...) {
+		# v <- cbind(y, x)
+		# if (any(is.na(v))) return( cbind (rep(NA, NCOL(x))) )
+		# X <- v[,-1,drop=FALSE]
+		# XtX <- t(X) %*% X
+		# if (det(XtX) == 0) {
+			# return(rep(NA, ncol(y)+1))
+		# }
+		# invXtX <- solve(XtX) %*% t(X)
+		# invXtX %*% v[,1]
+	# }
+
+	# ..ols_narm <- function(x, y, ...) {
+		# v <- na.omit(cbind(y, x))
+		# if (nrow(v) < (NCOL(x) + 1)) {
+			# return( cbind(rep(NA, NCOL(x)+1)) )
+		# }
+		# X <- cbind(1, v[,-1])
+		# XtX <- t(X) %*% X
+		# if (det(XtX) == 0) {
+			# return(NA)
+		# }
+		# invXtX <- solve(XtX) %*% t(X)
+		# invXtX %*% v[,1]
+	# }
+	
+	# ..ols_noi_narm <- function(x, y, ...) {
+		# v <- na.omit(cbind(y, x))
+		# if (nrow(v) < NCOL(x)) {
+			# return( cbind(rep(NA, NCOL(y))) )
+		# }
+		# X <- v[,-1,drop=FALSE]
+		# XtX <- t(X) %*% X
+		# if (det(XtX) == 0) {
+			# return(NA)
+		# }
+		# invXtX <- solve(XtX) %*% t(X)
+		# invXtX %*% v[,1]
+	# }
+
+	# ..weighted_ols <- function(x, y, weights, ...) {
+		# if (any(is.na(x)) || any(is.na(y))) { 
+			# return(rep(NA, NCOL(x)+1))
+		# }
+		# stats::coefficients(stats::glm(y~x, weights=weights))
+	# }
+
+	# ..weighted_ols_noi <- function(x, y, weights, ...) {
+		# if (any(is.na(x)) || any(is.na(y))) { 
+			# return(rep(NA, NCOL(x)))
+		# }	
+		# stats::coefficients(stats::glm(y ~ -1 + ., weights=weights))
+	# }
+
+	# ..weighted_ols_narm <- function(x, y, weights, ...) {
+		# v <- na.omit(data.frame(y=y, x, weights=weights))
+		# if (nrow(v) < (NCOL(x) + 1)) {
+			# return(rep(NA, NCOL(x)+1))
+		# }
+		# weights <- v$weights
+		# v$weights <- NULL
+		# stats::coefficients(stats::glm(y ~ ., data=v, weights=weights))
+	# }	
+
+	# ..weighted_ols_noi_narm <- function(x, y, weights, ...) {
+		# v <- na.omit(data.frame(y=y, x, weights=weights))
+		# if (nrow(v) < (NCOL(x))) {
+			# return(rep(NA, NCOL(x)))
+		# }
+		# weights <- v$weights
+		# v$weights <- NULL
+		# stats::coefficients(stats::glm(y ~ -1 + ., data=v, weights=weights))
+	# }	
 
 	fun <- tolower(fun[1])
 	if (fun != "ols") {
