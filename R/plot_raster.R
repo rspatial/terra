@@ -530,8 +530,9 @@ prettyNumbs <- function(x, digits) {
 	}
 	if (!is.null(alpha)) {
 		if (!inherits(alpha, "SpatRaster")) {
-			cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha[1]*255, maxColorValue=255)
-		}
+			alpha <- alpha[1] * 255
+			cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
+		} 
 	} else {
 		alpha <- 255
 	}
