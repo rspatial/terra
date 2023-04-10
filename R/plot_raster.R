@@ -431,7 +431,12 @@ prettyNumbs <- function(x, digits) {
 	if ((x$main != "") && (!x$add) && (!x$legend_only)) {
 		pos <- 3
 		if (is.null(x$loc.main)) {
-			x$loc.main <- c(x$lim[1] + diff(x$lim[1:2]) / 2, x$lim[4])
+			if (isTRUE(x$clip)) {
+				x$loc.main <- c(x$lim[1] + diff(x$lim[1:2]) / 2, x$lim[4])
+			} else {
+				usr <- graphics::par("usr")			
+				x$loc.main <- c(usr[1] + diff(usr[1:2]) / 2, usr[4])			
+			}
 		} else if (inherits(x$loc.main, "character")) {
 			xyp <- .txt.loc(x)
 			x$loc.main <- xyp[1:2]

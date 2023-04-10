@@ -415,18 +415,35 @@ retro_labels <- function(x, lat=TRUE) {
 }
 
 .txt.loc <- function(x) {
-	dxy <- graphics::par("cxy") * x$cex.main
-	if (grepl("right", x$loc.main)) {
-		px <- x$lim[2]
-		pos <- 2
+	if (isTRUE(x$clip)) {
+		dxy <- graphics::par("cxy") * x$cex.main
+		if (grepl("right", x$loc.main)) {
+			px <- x$lim[2]
+			pos <- 2
+		} else {
+			px <- x$lim[1]
+			pos <- 4	
+		}
+		if (grepl("bottom", x$loc.main)) {
+			py <- x$lim[3] + dxy[2]/2
+		} else {
+			py <- x$lim[4] - dxy[2]/2
+		}
 	} else {
-		px <- x$lim[1]
-		pos <- 4	
-	}
-	if (grepl("bottom", x$loc.main)) {
-		py <- x$lim[3] + dxy[2]/2
-	} else {
-		py <- x$lim[4] - dxy[2]/2
+		dxy <- graphics::par("cxy") * x$cex.main
+		usr <- graphics::par("usr")
+		if (grepl("right", x$loc.main)) {
+			px <- usr[2]
+			pos <- 2
+		} else {
+			px <- usr[1]
+			pos <- 4	
+		}
+		if (grepl("bottom", x$loc.main)) {
+			py <- usr[3] + dxy[2]/2
+		} else {
+			py <- usr[4] - dxy[2]/2
+		}
 	}
 	out <- c(px, py, pos)
 	names(out) <- NULL

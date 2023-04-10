@@ -1,5 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("regress")) {setGeneric("regress", function(x, y, ...) standardGeneric("regress"))}
+
 if (!isGeneric("panel")) {setGeneric("panel", function(x, ...) standardGeneric("panel"))}
 #if (!isGeneric("colSums")) {setGeneric("colSums", function(x, ...) standardGeneric("colSums"))}	
 #if (!isGeneric("rowSums")) {setGeneric("rowSums", function(x, ...) standardGeneric("rowSums"))}	
