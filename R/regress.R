@@ -101,7 +101,7 @@ function(y, x, formula=y~x, na.rm=FALSE, cores=1, filename="", overwrite=FALSE, 
 
 setMethod("regress", signature(x="SpatRaster", y="SpatRaster"),
 function(y, x, formula=y~x, ..., filename="", overwrite=FALSE, wopt=list()) {
-	error("regress", "to be implemented"
+	error("regress", "to be implemented")
 })
 
 
