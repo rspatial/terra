@@ -3,9 +3,9 @@ set.seed(500)
 r <- rast(ext=c(0, 3, 0, 3), ncol = 3, nrow = 3, nlyr=2, vals=runif(18))
 pts <- cbind(c(0.5, 1.5), c(0.5, 1.5))
 vct <- terra::vect(pts)
-e <- terra::extract(r, v, ID = FALSE)
+e <- terra::extract(r, vct, ID = FALSE)
 expect_equal(e[,1], c(0.5121819, 0.81227813))
-e <- terra::extract(r, v, ID = FALSE, fun=sum)
+e <- terra::extract(r, vct, ID = FALSE, fun=sum)
 expect_equal(e[,1], c(0.5121819, 0.81227813))
 
 
