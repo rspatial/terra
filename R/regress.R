@@ -13,10 +13,10 @@
 	if (na.rm) {
 		ols <- function(y, ...) {
 			m <- na.omit(cbind(y, mm))
-			if (nrow(m < (nl))) {
+			if (nrow(m == 0)) {
 				return(nas)
 			}
-			stats::.lm.fit(m[,-1], m[,1])$coefficients
+			stats::.lm.fit(m[,-1,drop=FALSE], m[,1])$coefficients
 		}
 	} else {
 		ols <- function(y, ...) {
