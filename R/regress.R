@@ -13,7 +13,7 @@
 	if (na.rm) {
 		ols <- function(y, ...) {
 			m <- na.omit(cbind(y, mm))
-			if (nrow(m == 0)) {
+			if (nrow(m) == 0) {
 				return(nas)
 			}
 			stats::.lm.fit(m[,-1,drop=FALSE], m[,1])$coefficients
@@ -30,6 +30,7 @@
 }
 
 
+
 setMethod("regress", signature(x="SpatRaster", y="numeric"),
 function(x, y, formula=y~x, ..., cores=1, filename="", overwrite=FALSE, wopt=list()) {
 
@@ -40,7 +41,7 @@ function(x, y, formula=y~x, ..., cores=1, filename="", overwrite=FALSE, wopt=lis
 	dat <- data.frame(y=y, x=1)
 	mm <- model.matrix(formula, data=dat)
 	outnl <- ncol(mm)		
-	regfun <- .get_conY_MM(formula, Y=y, nl=outnl, ...)
+	regfun <- .get_conY_MM(formula, X=y, nl=outnl, ...)
 	
 	out <- rast(x)
 	nlyr(out) <- outnl
