@@ -289,9 +289,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 			exact <- FALSE
 		} 
 		# method <- match.arg(tolower(method), c("simple", "bilinear"))
-	}
-
-	if (!is.null(fun)) {
+	} else if (!is.null(fun)) { # nothing to summarize for points
 		txtfun <- .makeTextFun(fun)
 		if (inherits(txtfun, "character")) {
 			if (txtfun == "table") {
