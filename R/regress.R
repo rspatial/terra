@@ -5,26 +5,25 @@
 
 
 
-.get_conY_MM <- function(formula, Y, na.rm=FALSE, nl) {
+.get_conY_MM <- function(formula, X, na.rm=FALSE, nl) {
 	formula <- eval(as.formula(formula))
 	nas <- eval(rep(NA, nl))
+	d <- data.frame(x=X, y=X)
+	mm <- eval(model.matrix(formula, data=d))
 	if (na.rm) {
-		ols <- function(x, ...) {
-			d <- na.omit(data.frame(y=Y, x=x))
-			mm <- model.matrix(formula, data=d)
-			if (nrow(mm < (nl))) {
+		ols <- function(y, ...) {
+			m <- na.omit(cbind(y, mm))
+			if (nrow(m < (nl))) {
 				return(nas)
 			}
-			stats::.lm.fit(mm, d$y)$coefficients
+			stats::.lm.fit(m[,-1], m[,1])$coefficients
 		}
 	} else {
-		ols <- function(x, ...) {
-			if (any(is.na(x))) {
+		ols <- function(y, ...) {
+			if (any(is.na(y))) {
 				return(nas)
 			}
-			d <- data.frame(y=Y, x=x)
-			mm <- model.matrix(formula, data=d)
-			stats::.lm.fit(mm, Y)$coefficients
+			stats::.lm.fit(mm, y)$coefficients
 		}
 	}
 	ols
