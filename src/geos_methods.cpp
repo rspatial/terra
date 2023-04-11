@@ -2255,7 +2255,7 @@ std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel, std::
 				std::swap(nx, ny);
 				nyone = true;
 			} else {
-				setError("vectors have different lengths");
+				setError("SpatVectors have different lengths");
 				return out;
 			}
 		}
