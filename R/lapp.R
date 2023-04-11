@@ -114,14 +114,18 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 )
 
 
-.lapp_test_stack <- function(v, fun, recycle, ...) {
+
+
+.lapp_test_stack_call <- function(v, fun, recycle, ...) {
 # figure out the shape of the output
-	nms = ""
+	nms <- msg <- ""
 	nr <- nrow(v[[1]])
 	if (recycle) {
 		v <- lapply(v, as.vector)
 	}
 	vtst <- try(do.call(fun, c(v, list(...))), silent=FALSE)
+#	vtst2 <- try(apply(v, fun, ...), silent=TRUE)
+
 	if (inherits(vtst, "try-error")) {
 		nl <- -1
 		msg <- "cannot use 'fun'"
@@ -145,16 +149,59 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 		}
 		nl <- -1
 	}
-	if (nl < 0) {
-		error("lapp", msg)
+	if (nl > 0) {
+		if (is.matrix(vtst)) {
+			nms <- colnames(vtst)
+		}
 	}
-
-	if (is.matrix(vtst)) {
-		nms <- colnames(vtst)
-	}
-	list(nl=nl, names=nms)
+	list(nl=nl, names=nms, msg=msg)
 }
 
+
+
+.lapp_test_stack_mapp <- function(v, fun, recycle, ...) {
+# figure out the shape of the output
+	nms <- msg <- ""
+	nr <- nrow(v[[1]])
+	if (recycle) {
+		v <- lapply(v, as.vector)
+	}
+	v <- lapply(v, function(i) data.frame(t(i)))
+	vtst <- try(do.call(mapply, c(v, list(...), FUN=fun)), silent=FALSE)
+	if (inherits(vtst, "try-error")) {
+		return(list(nl=-10, names="", msg="cannot use 'fun'", trans=FALSE))
+	}
+	trans <- FALSE
+	if (!is.null(dim(vtst))) {
+		trans <- TRUE
+		vtst <- as.vector(t(vtst))
+	}
+	if (length(vtst) >= nr) {
+		if ((length(vtst) %% nr) == 0) {
+			nl <- length(vtst) / nr
+		} else {
+			if (is.null(dim(vtst))) {
+				msg <- paste0("cannot use 'fun'. The number of values returned is not divisible by the number of input cells (returning: ", length(vtst), ", expecting :", nr, ")")
+			} else {
+				msg <- paste0("cannot use 'fun'. The number of rows returned is not divisible by the number of input cells (returning: ", nrow(vtst), ", expecting: ", nr, ")")
+			}
+			nl <- -1
+		}
+	} else {
+		if (is.null(dim(vtst))) {
+			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells.\n(returning: ", length(vtst), ", expecting: ", nr, ")\nPerhaps the function is not properly vectorized.")
+		} else {
+			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells.\n(returning:", nrow(vtst), ", expecting:", nr, ")\nPerhaps the function is not properly vectorized.")
+		}
+		nl <- -10
+	}
+	if (nl > 0) {
+		if (is.matrix(vtst)) {
+			nms <- colnames(vtst)
+		}
+	}
+	list(nl=nl, names=nms, msg=msg, trans=trans)
+}
 
 
 setMethod("lapp", signature(x="SpatRasterDataset"),
@@ -175,7 +222,19 @@ function(x, fun, ..., usenames=FALSE, recycle=FALSE, filename="", overwrite=FALS
 	nms <- names(x)
 	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.51*nrx), 1, 1, ncx, mat=TRUE))
 	if (usenames) names(v) <- nms
-	test <- .lapp_test_stack(v, fun, recycle, ...)
+	mapp <- FALSE
+	trans <- FALSE
+	test <- .lapp_test_stack_call(v, fun, recycle, ...)
+	if (test$nl < 1) {
+		oldtst <- test
+		test <- .lapp_test_stack_mapp(v, fun, recycle, ...)
+		if (test$nl == 0) {
+			error("lapp", paste0(oldtest$msg, "\n", test$msg))
+		}
+		mapp <- TRUE
+		trans <- test$trans
+	}
+	
 	out <- rast(x[1])
 	nlyr(out) <- test$nl
 	if (length(test$names == test$nl)) {
@@ -185,16 +244,34 @@ function(x, fun, ..., usenames=FALSE, recycle=FALSE, filename="", overwrite=FALS
 	fact <- max(4, 4 * nltot / nlyr(out))
 	b <- writeStart(out, filename, overwrite, sources=unlist(sources(x)), wopt=wopt, n=fact)
 
-	for (i in 1:b$n) {
-		v <- lapply(1:length(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
-		if (recycle) {
-			v <- lapply(v, as.vector)
+	if (mapp) {
+		for (i in 1:b$n) {
+			v <- lapply(1:length(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
+			if (recycle) {
+				v <- lapply(v, as.vector)
+			}
+			if (usenames) {
+				names(v) <- nms
+			}
+			v <- lapply(v, function(j) data.frame(t(j)))
+			v <- do.call(mapply, c(v, list(...), FUN=fun))
+			if (test$trans) {
+				v <- as.vector(t(v))
+			}
+			writeValues(out, v, b$row[i], b$nrows[i])
 		}
-		if (usenames) {
-			names(v) <- nms
+	} else {
+		for (i in 1:b$n) {
+			v <- lapply(1:length(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
+			if (recycle) {
+				v <- lapply(v, as.vector)
+			}
+			if (usenames) {
+				names(v) <- nms
+			}
+			v <- do.call(fun, c(v, list(...)))
+			writeValues(out, v, b$row[i], b$nrows[i])
 		}
-		v <- do.call(fun, c(v, list(...)))
-		writeValues(out, v, b$row[i], b$nrows[i])
 	}
 	out <- writeStop(out)
 	return(out)
