@@ -243,7 +243,7 @@ extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=
 	} 
 	if (bind) {
 		if (nrow(e) == nrow(y)) {
-			e <- cbind(y, e[,-1,drop=FALSE])
+			e <- cbind(y, e)
 		} else {
 			warn("extract", "cannot return a SpatVector because the number of records extracted does not match he number of rows in y (perhaps you need to use a summarizing function")
 		}
