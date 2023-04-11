@@ -978,6 +978,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		char **cat = poBand->GetCategoryNames();
 		if( cat != NULL )	{
 			SpatCategories scat = GetCategories(cat, bandname);
+
 			s.cats[i] = scat;
 			s.hasCategories[i] = true;
 		}
@@ -989,8 +990,12 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 			if (rat != NULL) {
 				found_rat = GetRAT(rat, crat, gdrv);
-				s.cats[i] = crat;
-				s.hasCategories[i] = true;
+				if (crat.d.nrow() > 0) {
+					s.cats[i] = crat;
+					s.hasCategories[i] = true;
+				} else {
+					found_rat = false;
+				}
 			}
 		}
 		//	} else {
