@@ -1288,7 +1288,11 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 		mask = true;
 	} else if (remove_zero) {
 		x = replaceValues({0}, {1}, 1, false, NAN, false, ops);
+	} else {
+		x = *this;
 	}
+	// to avoid truncation of (-0.5, 0.5) to 0
+	x = x.math("sign", ops);
 
 	if (x.hasValues()) {
 		if (!x.open_gdal(hSrcDS, 0, false, ops)) {
