@@ -3676,9 +3676,7 @@ void do_stat(std::vector<double> &v, std::string fun, bool narm, double &stat, d
 			stat = s1;
 			stat2 = s2;
 		}
-	} else if (fun == "notNA") {
-		notisnan(v, n);
-	} else if (fun == "isNA") {
+	} else if (fun == "notNA" || fun == "isNA") {
 		notisnan(v, n);
 	}
 }
@@ -3708,7 +3706,7 @@ void do_mstats(std::vector<double> &v, size_t start, size_t end, std::vector<std
 		} else {
 			sum = sum_se(v, start, end);
 		}
-				}
+	}
 	if (is_in_vector("mean", funs) || is_in_vector("rms", funs) || is_in_vector("sd", funs) || 
 			is_in_vector("std", funs) || is_in_vector("notNA", funs) || is_in_vector("isNA", funs)) {
 		if (narm) {
@@ -3835,9 +3833,17 @@ void do_mstats(std::vector<double> &v, size_t start, size_t end, std::vector<std
 				}
 			}
 		} else if (fun == "notNA") {
-			stat[i] += n;
+			if (narm) {
+				stat[i] += n;
+			} else {
+				stat[i] += isnotna_se(v, start, end);
+			}
 		} else if (fun == "isNA") {
-			stat[i] += v.size() - n;
+			if (narm) {
+				stat[i] += v.size() - n;
+			} else {
+				stat[i] += v.size() - isnotna_se(v, start, end);
+			}
 		}
 	}
 }
