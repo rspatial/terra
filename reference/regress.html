@@ -54,10 +54,10 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,numeric</span></span>
-<span><span class="fu">regress</span><span class="op">(</span><span class="va">y</span>, x<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">nlyr</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, formula<span class="op">=</span><span class="va">y</span><span class="op">~</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, cores<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">regress</span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span>, formula<span class="op">=</span><span class="va">y</span><span class="op">~</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, cores<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster,SpatRaster</span></span>
-<span><span class="fu">regress</span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span>, formula<span class="op">=</span><span class="va">y</span><span class="op">~</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, cores<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">regress</span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span>, formula<span class="op">=</span><span class="va">y</span><span class="op">~</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, cores<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -66,7 +66,7 @@
 <dd><p>SpatRaster</p></dd>
 
 <dt>x</dt>
-<dd><p>SpatRaster or numeric. If missing, <code>as.numeric(time(y)</code> is used or <code>1:nlyr(y)</code> if <code>y</code> does not have timestamps</p></dd>
+<dd><p>SpatRaster or numeric (of the same length as <code>nlyr(x)</code></p></dd>
 
 <dt>formula</dt>
 <dd><p>regression formula in the general form of <code>y ~ x</code>. You can add additional terms such as <code>I(x^2)</code></p></dd>
@@ -83,7 +83,7 @@
 <dt>overwrite</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
 
-<dt>wopt</dt>
+<dt>...</dt>
 <dd><p>list with named options for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
 
 </dl></div>
@@ -95,8 +95,7 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span>   </span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">regress</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in (function (classes, fdef, mtable) {    methods &lt;- .findInheritedMethods(classes, fdef, mtable)    if (length(methods) == 1L)         return(methods[[1L]])    else if (length(methods) == 0L) {        cnames &lt;- paste0("\"", vapply(classes, as.character,             ""), "\"", collapse = ", ")        stop(gettextf("unable to find an inherited method for function %s for signature %s",             sQuote(fdef@generic), sQuote(cnames)), domain = NA)    }    else stop("Internal error in finding inherited methods; didn't return a unique method",         domain = NA)})(list(structure("SpatRaster", package = "terra"), structure("missing", package = "methods")),     new("standardGeneric", .Data = function (y, x, ...)     standardGeneric("regress"), generic = structure("regress", package = "terra"),         package = "terra", group = list(), valueClass = character(0),         signature = c("y", "x"), default = NULL, skeleton = (function (y,             x, ...)         stop(gettextf("invalid call in method dispatch to '%s' (no default method)",             "regress"), domain = NA))(y, x, ...)), &lt;environment&gt;):</span> unable to find an inherited method for function ‘regress’ for signature ‘"SpatRaster", "missing"’</span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">regress</span><span class="op">(</span><span class="va">s</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">nlyr</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
