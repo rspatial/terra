@@ -6,10 +6,10 @@
 
 
 .reg_constX <- function(formula, X, na.rm=FALSE, nl) {
-	formula <- eval(as.formula(formula))
+	formula <- eval(stats::as.formula(formula))
 	nas <- eval(rep(NA, nl))
 	d <- data.frame(x=X, y=X)
-	mm <- eval(model.matrix(formula, data=d))
+	mm <- eval(stats::model.matrix(formula, data=d))
 	if (na.rm) {
 		ols <- function(y, ...) {
 			m <- na.omit(cbind(y, mm))
@@ -37,9 +37,9 @@ function(y, x, formula=y~x, na.rm=FALSE, cores=1, filename="", overwrite=FALSE, 
 	if (any(is.na(x))) {
 		error("regress", "y cannot have NAs")
 	}
-	formula <- as.formula(formula)
+	formula <- stats::as.formula(formula)
 	dat <- data.frame(x=x, y=1)
-	mm <- model.matrix(formula, data=dat)
+	mm <- stats::model.matrix(formula, data=dat)
 	outnl <- ncol(mm)		
 	regfun <- .reg_constX(formula, X=x, na.rm=na.rm, nl=outnl)
 	
@@ -86,28 +86,16 @@ function(y, x, formula=y~x, na.rm=FALSE, cores=1, filename="", overwrite=FALSE, 
 })
 
 
-setMethod("regress", signature(x="SpatRaster", y="missing"),
-function(y, x, formula=y~x, na.rm=FALSE, cores=1, filename="", overwrite=FALSE, ...) {
-	tm <- time(y)
-	if (any(is.na(tm))) {
-		x <- 1:nlyr(y)
-	} else {
-		x <- as.numeric(tm)
-	}
-	regress(y, x=x, formula=formula, na.rm=na.rm, cores=cores, filename=filename, overwrite=overwrite, ...)
-})
-
-
 
 .reg_mod <- function(formula, na.rm=FALSE, nl) {
-	formula <- eval(as.formula(formula))
+	formula <- eval(stats::as.formula(formula))
 	nas <- eval(rep(NA, nl))
 	yi <- eval(1:nl)
 	xi <- eval((nl+1):(nl+nl))
 	if (na.rm) {
 		ols <- function(v, ...) {
 			d  <- data.frame(matrix(v, ncol=2, dimnames=list(NULL, c("y", "x"))))
-			mm <- eval(model.matrix(formula, data=d))
+			mm <- eval(stats::model.matrix(formula, data=d))
 			m  <- na.omit(cbind(d$y, mm))
 			if (nrow(m) == 0) {
 				return(nas)
@@ -120,7 +108,7 @@ function(y, x, formula=y~x, na.rm=FALSE, cores=1, filename="", overwrite=FALSE, 
 				return(nas)
 			}
 			d  <- data.frame(matrix(v, ncol=2, dimnames=list(NULL, c("y", "x"))))
-			mm <- eval(model.matrix(formula, data=d))
+			mm <- eval(stats::model.matrix(formula, data=d))
 			stats::.lm.fit(mm, d$y)$coefficients
 		}
 	}
@@ -134,9 +122,9 @@ function(y, x, formula=y~x, na.rm=FALSE, cores=1, filename="", overwrite=FALSE, 
 	if (nlyr(y) != nlyr(x)) {
 		error("regress", "nlyr(x) != nlyr(y)")
 	}
-	formula <- as.formula(formula)
+	formula <- stas::as.formula(formula)
 	dat <- data.frame(x=1:nlyr(x), y=1)
-	mm <- model.matrix(formula, data=dat)
+	mm <- stats::model.matrix(formula, data=dat)
 	outnl <- ncol(mm)		
 	
 	regfun <- .reg_mod(formula, na.rm=na.rm, nl=outnl)

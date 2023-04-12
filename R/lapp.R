@@ -229,7 +229,7 @@ function(x, fun, ..., usenames=FALSE, recycle=FALSE, filename="", overwrite=FALS
 		oldtst <- test
 		test <- .lapp_test_stack_mapp(v, fun, recycle, ...)
 		if (test$nl == 0) {
-			error("lapp", paste0(oldtest$msg, "\n", test$msg))
+			error("lapp", paste0(oldtst$msg, "\n", test$msg))
 		}
 		mapp <- TRUE
 		trans <- test$trans
