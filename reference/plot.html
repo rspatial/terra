@@ -58,7 +58,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster,numeric</span></span>
-<span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, <span class="va">type</span>, mar<span class="op">=</span><span class="cn">NULL</span>, legend<span class="op">=</span><span class="cn">TRUE</span>, axes<span class="op">=</span><span class="cn">TRUE</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, </span>
+<span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, type<span class="op">=</span><span class="cn">NULL</span>, mar<span class="op">=</span><span class="cn">NULL</span>, legend<span class="op">=</span><span class="cn">TRUE</span>, axes<span class="op">=</span><span class="cn">TRUE</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, </span>
 <span>    maxcell<span class="op">=</span><span class="fl">500000</span>, smooth<span class="op">=</span><span class="cn">FALSE</span>, range<span class="op">=</span><span class="cn">NULL</span>, levels<span class="op">=</span><span class="cn">NULL</span>, all_levels<span class="op">=</span><span class="cn">FALSE</span>,</span>
 <span>  breaks<span class="op">=</span><span class="cn">NULL</span>, breakby<span class="op">=</span><span class="st">"eqint"</span>, fun<span class="op">=</span><span class="cn">NULL</span>, colNA<span class="op">=</span><span class="cn">NULL</span>, alpha<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, </span>
 <span>  decreasing<span class="op">=</span><span class="cn">FALSE</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, reset<span class="op">=</span><span class="cn">FALSE</span>, add<span class="op">=</span><span class="cn">FALSE</span>, buffer<span class="op">=</span><span class="cn">FALSE</span>, </span>
@@ -71,7 +71,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatVector,character</span></span>
-<span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, col<span class="op">=</span><span class="cn">NULL</span>, <span class="va">type</span>, mar<span class="op">=</span><span class="cn">NULL</span>, add<span class="op">=</span><span class="cn">FALSE</span>, legend<span class="op">=</span><span class="op">!</span><span class="va">add</span>, axes<span class="op">=</span><span class="op">!</span><span class="va">add</span>, </span>
+<span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, col<span class="op">=</span><span class="cn">NULL</span>, type<span class="op">=</span><span class="cn">NULL</span>, mar<span class="op">=</span><span class="cn">NULL</span>, add<span class="op">=</span><span class="cn">FALSE</span>, legend<span class="op">=</span><span class="op">!</span><span class="va">add</span>, axes<span class="op">=</span><span class="op">!</span><span class="va">add</span>, </span>
 <span>    main<span class="op">=</span><span class="st">""</span>, buffer<span class="op">=</span><span class="cn">TRUE</span>, background<span class="op">=</span><span class="cn">NULL</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">TRUE</span>, </span>
 <span>  decreasing<span class="op">=</span><span class="cn">FALSE</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">nr</span>, <span class="va">nc</span>, colNA<span class="op">=</span><span class="cn">NA</span>, alpha<span class="op">=</span><span class="cn">NULL</span>, </span>
 <span>  box<span class="op">=</span><span class="va">axes</span>, clip<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -266,30 +266,11 @@ plot a <code><a href="plot_graticule.html">SpatGraticule</a></code> or <code><a 
 <span class="r-out co"><span class="r-pr">#&gt;</span> min values  :   0,     0,    0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 255,   255,  255 </span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $zcol</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $colNA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "white"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># remove RGB</span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">s</span><span class="op">*</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># or use layers</span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">s</span>, <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $zcol</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $colNA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "white"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in minmax(x)[, 1:3]:</span> subscript out of bounds</span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">s</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $zcol</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $colNA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "white"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># fix legend by linking values and colors</span></span></span>
 <span class="r-in"><span></span></span>

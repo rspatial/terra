@@ -60,7 +60,7 @@ An alternative way to plot RGB images is to first use colorize to create a singl
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
 <span><span class="fu">plotRGB</span><span class="op">(</span><span class="va">x</span>, r<span class="op">=</span><span class="fl">1</span>, g<span class="op">=</span><span class="fl">2</span>, b<span class="op">=</span><span class="fl">3</span>, a<span class="op">=</span><span class="cn">NULL</span>, scale<span class="op">=</span><span class="cn">NULL</span>, mar<span class="op">=</span><span class="fl">0</span>, </span>
 <span>    stretch<span class="op">=</span><span class="cn">NULL</span>, smooth<span class="op">=</span><span class="cn">TRUE</span>, colNA<span class="op">=</span><span class="st">"white"</span>, alpha<span class="op">=</span><span class="cn">NULL</span>, bgalpha<span class="op">=</span><span class="cn">NULL</span>, </span>
-<span>    zlim<span class="op">=</span><span class="cn">NULL</span>, zcol<span class="op">=</span><span class="cn">NULL</span>, axes<span class="op">=</span><span class="cn">FALSE</span> ,<span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span>    zlim<span class="op">=</span><span class="cn">NULL</span>, zcol<span class="op">=</span><span class="cn">FALSE</span>, axes<span class="op">=</span><span class="cn">FALSE</span> ,<span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -69,16 +69,16 @@ An alternative way to plot RGB images is to first use colorize to create a singl
 <dd><p>SpatRaster</p></dd>
 
   <dt>r</dt>
-<dd><p>positive integer. Index of the Red channel, between 1 and nlyr(x)</p></dd>
+<dd><p>integer between 1 and <code>nlyr(x)</code>. Layer to use as the Red channel</p></dd>
 
   <dt>g</dt>
-<dd><p>positive integer. Index of the Green channel, between 1 and nlyr(x)</p></dd>
+<dd><p>integer between 1 and <code>nlyr(x)</code>. Layer to use as the Green channel</p></dd>
 
   <dt>b</dt>
-<dd><p>positive integer. Index of the Blue channel, between 1 and nlyr(x)</p></dd>
+<dd><p>integer between 1 and <code>nlyr(x)</code>. Layer to use as the Blue channel</p></dd>
 
   <dt>a</dt>
-<dd><p>positive integer. Index of the alpha (transparency) channel, between 1 and nlyr(x). If not NULL, argument <code>alpha</code> is ignored</p></dd>
+<dd><p>NULL or integer between 1 and <code>nlyr(x)</code>. Layer to use as the alpha (transparency) channel. If not NULL, argument <code>alpha</code> is ignored</p></dd>
 
   <dt>scale</dt>
 <dd><p>integer. Maximum (possible) value in the three channels. Defaults to 255 or to the maximum value of <code>x</code> if that is known and larger than 255</p></dd>
@@ -91,6 +91,9 @@ An alternative way to plot RGB images is to first use colorize to create a singl
 
   <dt>smooth</dt>
 <dd><p>logical. If <code>TRUE</code>, smooth the image when drawing to get the appearance of a higher spatial resolution</p></dd>
+
+  <dt>colNA</dt>
+<dd><p>color. The color used for cells that have NA values</p></dd>
 
   <dt>alpha</dt>
 <dd><p>transparency. Integer between 0 (transparent) and 255 (opaque)</p></dd>
@@ -120,40 +123,13 @@ An alternative way to plot RGB images is to first use colorize to create a singl
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span>   </span></span>
 <span class="r-in"><span><span class="fu">plotRGB</span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $zcol</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $colNA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "white"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">plotRGB</span><span class="op">(</span><span class="va">b</span>, mar<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $zcol</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $colNA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "white"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="fu">plotRGB</span><span class="op">(</span><span class="va">b</span>, mar<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plotRGB-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu">plotRGB</span><span class="op">(</span><span class="va">b</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $zcol</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $colNA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "white"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-plt img"><img src="plotRGB-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">b</span><span class="op">[</span><span class="fl">1000</span><span class="op">:</span><span class="fl">2000</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span></span>
 <span class="r-in"><span><span class="fu">plotRGB</span><span class="op">(</span><span class="va">b</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, stretch<span class="op">=</span><span class="st">"hist"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $stretch</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hist"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $zcol</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $colNA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "white"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-plt img"><img src="plotRGB-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
