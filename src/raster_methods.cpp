@@ -3044,8 +3044,9 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 		out.setError("cannot crop a SpatRaster with an empty extent");
 		return out;
 	}
-	SpatExtent fext = e;
-	e = e.intersect(out.getExtent());
+	SpatExtent ein = getExtent();
+	SpatExtent fext = e;	
+	e = e.intersect(ein);
 	if ( !e.valid() ) {
 		out.setError("extents do not overlap");
 		return out;
@@ -3053,10 +3054,10 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 
 	SpatOptions ops;
 	if (expand) {
-		if ((fext.xmax <= e.xmax)  && (fext.xmin >= e.xmin) && (fext.ymax <= e.ymax)  && (fext.ymin >= e.ymin)) {
+		if ((fext.xmax <= ein.xmax)  && (fext.xmin >= ein.xmin) && (fext.ymax <= ein.ymax)  && (fext.ymin >= ein.ymin)) {
 			expand = false;
-		} else if ((fext.xmax >= e.xmax)  && (fext.xmin <= e.xmin) && (fext.ymax >= e.ymax)  && (fext.ymin <= e.ymin)) {
-			return extend(e, snap, NAN, opt);
+		} else if ((fext.xmax >= ein.xmax)  && (fext.xmin <= ein.xmin) && (fext.ymax >= ein.ymax)  && (fext.ymin <= ein.ymin)) {
+			return extend(fext, snap, NAN, opt);
 		} else {
 			ops = opt;
 			opt = SpatOptions(opt);
@@ -3066,8 +3067,15 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 	out.setExtent(e, true, false, snap);
 
 	if (!hasValues() ) {
-		if (!opt.get_filename().empty()) {
-			out.addWarning("ignoring filename argument because there are no cell values");
+		if (expand) {
+			if (!ops.get_filename().empty()) {
+				out.addWarning("ignoring filename argument because there are no cell values");
+			}
+			out = out.extend(fext, snap, NAN, opt);
+		} else {
+			if (!opt.get_filename().empty()) {
+				out.addWarning("ignoring filename argument because there are no cell values");
+			}
 		}
 		return(out);
 	}
