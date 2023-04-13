@@ -17,6 +17,7 @@
 - `extract<SpatRaster,SpatVector>` with point geometries and a "fun" returned values in the wrong order
 - `plot<SpatRaster>` argument "colNA" did not work when "alpha" was also set [#1102](https://github.com/rspatial/terra/issues/1102) by Márcia Barbosa
 - a problem with reading empty categories in .img files created buggy SpatRasters
+- `crop<SpatRaster>` with "extend=TRUE" did not extend the SpatRaster if the input had no cell values. [#1114](https://github.com/rspatial/terra/issues/1114) by Jasper van Doninck
 
 
 # version 1.7-23
