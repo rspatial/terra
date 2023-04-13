@@ -561,7 +561,7 @@ prettyNumbs <- function(x, digits) {
 		hadWin <- window(x)
 		oldWin <- ext(x)
 		w <- intersect(ext(x), ext(e))		
-		window(x) <- w
+		window(x) <- out$ext <- w
 	} 
 	if (ncell(x) > 1.1 * maxcell) {
 		if (inherits(alpha, "SpatRaster")) {
