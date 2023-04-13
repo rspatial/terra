@@ -266,11 +266,30 @@ plot a <code><a href="plot_graticule.html">SpatGraticule</a></code> or <code><a 
 <span class="r-out co"><span class="r-pr">#&gt;</span> min values  :   0,     0,    0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 255,   255,  255 </span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $zcol</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $colNA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "white"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># remove RGB</span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">s</span><span class="op">*</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># or use layers</span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">s</span>, <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $zcol</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $colNA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "white"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in minmax(x)[, 1:3]:</span> subscript out of bounds</span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">s</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $zcol</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $colNA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "white"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># fix legend by linking values and colors</span></span></span>
 <span class="r-in"><span></span></span>
