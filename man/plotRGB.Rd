@@ -18,20 +18,21 @@ An alternative way to plot RGB images is to first use \code{\link{colorize}} to 
 \usage{
 \S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, a=NULL, scale=NULL, mar=0, 
 		stretch=NULL, smooth=TRUE, colNA="white", alpha=NULL, bgalpha=NULL, 
-		zlim=NULL, zcol=NULL, axes=FALSE ,...)
+		zlim=NULL, zcol=FALSE, axes=FALSE ,...)
 }
 
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{r}{positive integer. Index of the Red channel, between 1 and nlyr(x)}
-  \item{g}{positive integer. Index of the Green channel, between 1 and nlyr(x)}
-  \item{b}{positive integer. Index of the Blue channel, between 1 and nlyr(x)}
-  \item{a}{positive integer. Index of the alpha (transparency) channel, between 1 and nlyr(x). If not NULL, argument \code{alpha} is ignored}
+  \item{r}{integer between 1 and \code{nlyr(x)}. Layer to use as the Red channel}
+  \item{g}{integer between 1 and \code{nlyr(x)}. Layer to use as the Green channel}
+  \item{b}{integer between 1 and \code{nlyr(x)}. Layer to use as the Blue channel}
+  \item{a}{NULL or integer between 1 and \code{nlyr(x)}. Layer to use as the alpha (transparency) channel. If not NULL, argument \code{alpha} is ignored}
   \item{scale}{integer. Maximum (possible) value in the three channels. Defaults to 255 or to the maximum value of \code{x} if that is known and larger than 255}
   \item{mar}{numeric vector recycled to length 4 to set the margins of the plot. Use \code{mar=NULL} or \code{mar=NA} to not set the margins}
   \item{stretch}{character. Option to stretch the values to increase contrast: "lin" (linear) or "hist" (histogram)}
   \item{smooth}{logical. If \code{TRUE}, smooth the image when drawing to get the appearance of a higher spatial resolution}
+  \item{colNA}{color. The color used for cells that have NA values}
   \item{alpha}{transparency. Integer between 0 (transparent) and 255 (opaque)}
   \item{bgalpha}{Background transparency. Integer between 0 (transparent) and 255 (opaque)}
   \item{zlim}{numeric vector of length 2. Range of values to plot (optional). If this is set, and \code{stretch="lin"} is used, then the values are stretched within the range of \code{zlim}. This allows creating consistent coloring between SpatRasters with different cell-value ranges, even when stretching the colors for improved contrast}
@@ -46,7 +47,7 @@ An alternative way to plot RGB images is to first use \code{\link{colorize}} to 
 \examples{
 b <- rast(system.file("ex/logo.tif", package="terra"))   
 plotRGB(b)
-plotRGB(b, mar=c(2,2,2,2))
+plotRGB(b, mar=2)
 plotRGB(b, 3, 2, 1)
 
 b[1000:2000] <- NA

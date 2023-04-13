@@ -421,7 +421,7 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 
-.prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE,
+.prep.vect.data <- function(x, y, type=NULL, cols=NULL, mar=NULL, legend=TRUE,
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL,
@@ -431,7 +431,7 @@ setMethod("dots", signature(x="SpatVector"),
 	out <- list()
 	out$blank <- FALSE
 	if ((y == "") && (is.null(values))) {
-		if (missing(type)) type <- "none"
+		if (is.null(type)) type <- "none"
 		if (type == "n") {
 			out$blank <- TRUE
 		}
@@ -569,7 +569,7 @@ setMethod("dots", signature(x="SpatVector"),
 		out$legend_sort_decreasing <- isTRUE(decreasing)
 	}
 
-	if (missing(type)) {
+	if (is.null(type)) {
 		type <- "depends"
 	} else {
 		type <- match.arg(type, c("continuous", "classes", "interval", "depends", "none"))
@@ -628,7 +628,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 setMethod("plot", signature(x="SpatVector", y="character"),
-	function(x, y, col=NULL, type, mar=NULL, add=FALSE, legend=!add, axes=!add,
+	function(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=!add, axes=!add,
 	main="", buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
 	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, 
 	alpha=NULL, box=axes, clip=TRUE, ...) {

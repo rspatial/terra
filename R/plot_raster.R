@@ -1,8 +1,6 @@
 
 .as.raster.rgb <- function(out, x) {
 
-	print(out$rgb)
-	
 	if (is.null(out$rgb$scale)) {
 		scale <- 255
 		if ( all(hasMinMax(x)) ) {
@@ -740,23 +738,22 @@ prettyNumbs <- function(x, digits) {
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"),
-	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, ...) {
+	function(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, ...) {
 
 		y <- round(y)
+		hasRGB <- FALSE		
+		if (has.RGB(x) && ((is.null(type) && (y[1] < 0)))) {
+			type <- "rgb"
+			legend <- FALSE
+			if (is.null(mar)) {
+				mar <- 0
+				axes <- FALSE
+			}
+			hasRGB <- TRUE
+			y <- RGB(x)
+		}
 		stopifnot((min(y) > 0) & (max(y) <= nlyr(x)))
 
-		hasRGB <- FALSE
-		if (missing(type)) {
-			hasRGB <- (has.RGB(x))
-			if (hasRGB) {
-				type <- "rgb"
-				legend <- FALSE
-				if (is.null(mar)) {
-					mar <- 0
-					axes <- FALSE
-				}
-			}
-		}
 		if ((!hasRGB) && (length(y) > 1)) {
 			x <- x[[y]]
 			if (inherits(alpha, "SpatRaster")) {
@@ -796,13 +793,13 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		coltab <- NULL
 		cats  <- NULL
 		if (!is.null(breaks)) {
-			if (missing(type)) {
+			if (is.null(type)) {
 				type <- "interval"
 			} else {
 				range <- range(breaks)
 			}
 		} else {
-			if (missing(type)) {
+			if (is.null(type)) {
 				if (has.colors(x)) {
 					coltab <- coltab(x)[[1]]
 					if (is.factor(x)) {
@@ -857,11 +854,9 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 setMethod("plot", signature(x="SpatRaster", y="missing"),
 	function(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, ...)  {
 
-
 		if (has.RGB(x)) {
-			i <- x@pnt$getRGB() + 1
 			if (missing(main)) main = ""
-			p <- plot(x, i, main=main, mar=mar, maxcell=maxcell, ...)
+			p <- plot(x, -1, main=main, mar=mar, maxcell=maxcell, ...)
 			return(invisible(p))
 		}
 
@@ -915,7 +910,7 @@ setMethod("plotRGB", signature(x="SpatRaster"),
 	
 	x <- x[[c(r, g, b, a)]]
 	RGB(x) <- 1:nlyr(x)
-	plot(x, 1:nlyr(x), scale=scale, mar=mar, stretch=stretch, smooth=smooth, colNA=colNA,
+	plot(x, -1, scale=scale, mar=mar, stretch=stretch, smooth=smooth, colNA=colNA,
 		alpha=alpha, bgalpha=bgalpha, zlim=zlim, zcol=zcol, axes=axes, ...)
 }
 )
