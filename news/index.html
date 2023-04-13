@@ -51,13 +51,31 @@
 <h2 class="page-header" data-toc-text="1.7-24" id="version-17-24">version 1.7-24<a class="anchor" aria-label="anchor" href="#version-17-24"></a></h2>
 <div class="section level3">
 <h3 id="new-1-7-24">new<a class="anchor" aria-label="anchor" href="#new-1-7-24"></a></h3>
-</div>
+<ul><li>
+<code>regress&lt;SpatRaster,numeric&gt;</code> to get regression model coefficients for each cell, with a fixed “X”.</li>
+<li>
+<code>regress&lt;SpatRaster,SpatRaster&gt;</code> to get regression model coefficients for each cell.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-24">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-24"></a></h3>
-</div>
+<ul><li>
+<code>lapp&lt;SpatRasterDataset&gt;</code> is more flexible in that it can now also use functions that are vectorized by cell, not by chunk. See <a href="https://github.com/rspatial/terra/issues/1029" class="external-link">#1029</a>
+</li>
+<li>
+<code>project&lt;SpatVector&gt;</code> has new argument “partial=FALSE” that can be used to keep geometries that can only be partially included in the output crs.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-24">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-24"></a></h3>
-</div>
+<ul><li>
+<code>global</code> with fun=“notNA” was wrong <a href="https://github.com/rspatial/terra/issues/1111" class="external-link">#111</a> by Jeffrey Hanson</li>
+<li>
+<code>extract&lt;SpatRaster,SpatVector&gt;</code> with “bind=TRUE” did not work</li>
+<li>
+<code>extract&lt;SpatRaster,SpatVector&gt;</code> with point geometries and a “fun” returned values in the wrong order</li>
+<li>
+<code>plot&lt;SpatRaster&gt;</code> argument “colNA” did not work when “alpha” was also set <a href="https://github.com/rspatial/terra/issues/1102" class="external-link">#1102</a> by Márcia Barbosa</li>
+<li>a problem with reading empty categories in .img files created buggy SpatRasters</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.7-23" id="version-17-23">version 1.7-23<small>2023-04-08</small><a class="anchor" aria-label="anchor" href="#version-17-23"></a></h2>
@@ -94,6 +112,8 @@
 <li>better error message when coercing an sf object that is not fully formed <a href="https://github.com/rspatial/terra/issues/1098" class="external-link">#1098</a> by Brandon McNellis</li>
 <li>
 <code>writeCDF&lt;SpatRaster&gt;</code> had new argument “split” allowing to treat each layer as a subdataset <a href="https://github.com/rspatial/terra/issues/1077" class="external-link">#1077</a> by Andrea Manica</li>
+<li>
+<code>global</code> now accepts multiple summarizing functions</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-23">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-23"></a></h3>
@@ -223,35 +243,35 @@
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-6-47">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-47"></a></h3>
-<ul><li>argument <code>exhaustive</code> to <code>spatSample&lt;SpatRaster&gt;</code> for large sparse rasters. <a href="https://github.com/rspatial/terra/issues/905" class="external-link">#905</a> by PetiteTong.</li>
+<ul><li>argument <code>exhaustive</code> to <code>spatSample&lt;SpatRaster&gt;</code> for large sparse rasters. [#905] by PetiteTong.</li>
 <li>
-<code>focalPairs</code> and <code>focalReg</code> can now use the values in custom windows as weights. <a href="https://github.com/rspatial/terra/issues/907" class="external-link">#907</a> by Fabian Fischer.</li>
+<code>focalPairs</code> and <code>focalReg</code> can now use the values in custom windows as weights. [#907] by Fabian Fischer.</li>
 <li>
-<code>focalReg</code> now has additional arugment “intercept=TRUE”. <a href="https://github.com/rspatial/terra/issues/916" class="external-link">#916</a> by Jordan Adamson</li>
+<code>focalReg</code> now has additional arugment “intercept=TRUE”. [#916] by Jordan Adamson</li>
 <li>
-<code>crs(x, warn=TRUE)&lt;-</code> now emits a warning about the difference between transforming and setting a crs when x already had a crs. <a href="https://github.com/rspatial/terra/issues/897" class="external-link">#897</a> by Márcia Barbosa.</li>
-<li>it is now possible to write a scale and offset with <code>writeRaster</code> <a href="https://github.com/rspatial/terra/issues/900" class="external-link">#900</a> by Kyle David</li>
+<code>crs(x, warn=TRUE)&lt;-</code> now emits a warning about the difference between transforming and setting a crs when x already had a crs. [#897] by Márcia Barbosa.</li>
+<li>it is now possible to write a scale and offset with <code>writeRaster</code> [#900] by Kyle David</li>
 <li>
-<code>crosstab</code> now shows the labels names for a categorical SpatRaster. <a href="https://github.com/rspatial/terra/issues/895" class="external-link">895</a> by Derek Corcoran Barrios</li>
+<code>crosstab</code> now shows the labels names for a categorical SpatRaster. [895] by Derek Corcoran Barrios</li>
 <li>
-<code>makeTiles</code> can now take a SpatVector to define the tiles. <a href="https://github.com/rspatial/terra/issues/920" class="external-link">920</a> by Tristan Goodbody</li>
+<code>makeTiles</code> can now take a SpatVector to define the tiles. [920] by Tristan Goodbody</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-47">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-47"></a></h3>
 <ul><li>
-<code>focalPairs</code> and <code>focalReg</code> now work for custom windows <a href="https://github.com/rspatial/terra/issues/907" class="external-link">#907</a> by Fabian Fischer</li>
-<li>argument “alpha” in <code>plot&lt;SpatVector&gt;</code> was not working properly. <a href="https://github.com/rspatial/terra/issues/906" class="external-link">#906</a> by Márcia Barbosa.</li>
+<code>focalPairs</code> and <code>focalReg</code> now work for custom windows [#907] by Fabian Fischer</li>
+<li>argument “alpha” in <code>plot&lt;SpatVector&gt;</code> was not working properly. [#906] by Márcia Barbosa.</li>
 <li>
-<code>time&lt;-</code> with time-step “years” could not handle negative years. <a href="https://github.com/rspatial/terra/issues/911" class="external-link">#911</a> by Andrea Manica</li>
+<code>time&lt;-</code> with time-step “years” could not handle negative years. [#911] by Andrea Manica</li>
 <li>
-<code>wrap</code>/<code>unwrap</code> (and by extension <code>saveRDS</code>/<code>readRDS</code>) did not handle categorical rasters well <a href="https://github.com/rspatial/terra/issues/912" class="external-link">#912</a> by Christine Anderson.</li>
+<code>wrap</code>/<code>unwrap</code> (and by extension <code>saveRDS</code>/<code>readRDS</code>) did not handle categorical rasters well [#912] by Christine Anderson.</li>
 <li>
-<code>interpIDW</code> failed with GDAL 3.6 <a href="https://github.com/rspatial/terra/issues/910" class="external-link">#910</a> by Roger Bivand</li>
+<code>interpIDW</code> failed with GDAL 3.6 [#910] by Roger Bivand</li>
 <li>
-<code>spatSample</code> with strata bug fix “unable to find an inherited method for function ‘trim’” <a href="https://github.com/rspatial/terra/issues/919" class="external-link">#919</a> by Alfredo Ascanio</li>
-<li>it is possible to slice a SpatRaster with a SpatExtent <a href="https://github.com/rspatial/terra/issues/914" class="external-link">#914</a> by Jakub Nowosad.</li>
+<code>spatSample</code> with strata bug fix “unable to find an inherited method for function ‘trim’” [#919] by Alfredo Ascanio</li>
+<li>it is possible to slice a SpatRaster with a SpatExtent [#914] by Jakub Nowosad.</li>
 <li>
-<code>merge</code>/<code>mosaic</code> did not handle NAs when using two layers <a href="https://github.com/rspatial/terra/issues/913" class="external-link">#913</a> by Joao Carreiras.</li>
+<code>merge</code>/<code>mosaic</code> did not handle NAs when using two layers [#913] by Joao Carreiras.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="name-changes-1-6-47">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-6-47"></a></h3>
