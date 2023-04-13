@@ -12,13 +12,11 @@
 
 ## bug fixes
 
-- a problem with reading ".img" files broke code in ModelMap	
 - `global` with fun="notNA" was wrong [#111](https://github.com/rspatial/terra/issues/1111) by Jeffrey Hanson
 - `extract<SpatRaster,SpatVector>` with "bind=TRUE" did not work
 - `extract<SpatRaster,SpatVector>` with point geometries and a "fun" returned values in the wrong order
 - `plot<SpatRaster>` argument "colNA" did not work when "alpha" was also set [#1102](https://github.com/rspatial/terra/issues/1102) by Márcia Barbosa
-- a problem with reading empty categories in .img files broke code in the ModelMap package
-
+- a problem with reading empty categories in .img files created buggy SpatRasters
 
 
 # version 1.7-23

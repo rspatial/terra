@@ -110,6 +110,7 @@ Also see the methods in section VIII
     \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr
     \code{\link{segregate}} \tab Make a 0/1 layer for each unique value \cr
     \code{\link{rangeFill}} \tab Make a 0/1 SpatRaster for a time series \cr
+    \code{\link{regress}} \tab Cell-based regression models \cr
 	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
