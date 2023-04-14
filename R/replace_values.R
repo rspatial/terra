@@ -233,7 +233,7 @@ make_replace_index <- function(v, vmx, name="i") {
 			mask(x, i, maskvalues=TRUE, updatevalue=value[1])
 		} else {
 			i <- as.logical(values(i))
-			i[is.na(i)] <- TRUE
+			i[is.na(i)] <- FALSE #TRUE, for #1115
 			i <- which(i)
 			x[i] <- value
 			x
