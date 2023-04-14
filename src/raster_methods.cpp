@@ -3715,10 +3715,12 @@ void do_mstats(std::vector<double> &v, size_t start, size_t end, std::vector<std
 			sum = sum_se(v, start, end);
 		}
 	}
+	size_t notna = 0;
 	if (is_in_vector("mean", funs) || is_in_vector("rms", funs) || is_in_vector("sd", funs) || 
 			is_in_vector("std", funs) || is_in_vector("notNA", funs) || is_in_vector("isNA", funs)) {
 		if (narm) {
-			n += isnotna_se(v, start, end);
+			notna = isnotna_se(v, start, end);
+			n += notna;
 		} else {
 			n += (end - start);
 		}
@@ -3842,13 +3844,14 @@ void do_mstats(std::vector<double> &v, size_t start, size_t end, std::vector<std
 			}
 		} else if (fun == "notNA") {
 			if (narm) {
-				stat[i] += n;
+				// if (last) {
+				stat[i] = n;
 			} else {
 				stat[i] += isnotna_se(v, start, end);
 			}
 		} else if (fun == "isNA") {
 			if (narm) {
-				stat[i] += v.size() - n;
+				stat[i] += v.size() - notna;
 			} else {
 				stat[i] += v.size() - isnotna_se(v, start, end);
 			}
@@ -3888,6 +3891,7 @@ SpatDataFrame SpatRaster::mglobal(std::vector<std::string> funs, bool narm, Spat
 	}
 	
 	BlockSize bs = getBlockSize(opt);
+
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, bs, i);
