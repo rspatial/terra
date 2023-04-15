@@ -3,8 +3,12 @@
 
 popUp <- function(x) {
 	nms <- names(x)
-	s <- sapply(1:length(nms), function(i) paste0(nms[i], ": ", x[[i, drop=TRUE]]))
-	apply(s, 1, function(i) paste(i, collapse="<br>"))
+	if (length(nms) > 0) {
+		s <- sapply(1:length(nms), function(i) paste0(nms[i], ": ", x[[i, drop=TRUE]]))
+		apply(s, 1, function(i) paste(i, collapse="<br>"))
+	} else {
+		paste("geom", 1:nrow(x))
+	}
 }
 
 makelonlat <- function(x) {
