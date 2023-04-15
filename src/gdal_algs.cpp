@@ -1293,15 +1293,15 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 			mask = true;
 		}
 	}
-//	if (x.hasValues()) {
+	if (x.hasValues()) {
 		if (!x.open_gdal(hSrcDS, 0, false, ops)) {
 			out.setError("cannot open input dataset");
 			return out;
 		}
-//	} else if (!open_gdal(hSrcDS, 0, false, ops)) {
-//		out.setError("cannot open input dataset");
-//		return out;
-//	}
+	} else if (!open_gdal(hSrcDS, 0, false, ops)) {
+		out.setError("cannot open input dataset");
+		return out;
+	}
 
 	std::string tmpfile = tempFile(opt.get_tempdir(), opt.pid, ".tif");
 	std::string fname = mask ? tmpfile : filename;
