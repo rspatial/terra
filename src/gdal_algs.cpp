@@ -1207,7 +1207,7 @@ std::string doubleToAlmostChar(double value){
 	return out;
 }
 
-SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt) {
+SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (nlyr() > 1) {
@@ -1243,6 +1243,9 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 		}
 	}
 
+	// GDAL proximity algo fails with other drivers? See #1116
+//	driver = "MEM";
+
 	GDALDatasetH hSrcDS, hDstDS;
 
 	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
@@ -1261,52 +1264,48 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 	std::vector<double> mvals;
 	if (buffer) {
 		if (remove_zero) {
-			x = replaceValues({0}, {1}, 1, false, NAN, false, ops);
-		}
+			x = isnotnan(true, ops);
+		}		
 		papszOptions = CSLSetNameValue(papszOptions, "MAXDIST", doubleToAlmostChar(maxdist).c_str());
 		papszOptions = CSLSetNameValue(papszOptions, "FIXED_BUF_VAL", doubleToAlmostChar(1.0).c_str());
-	} else if (!std::isnan(target)) {
-		x = replaceValues({target}, {NAN}, 1, false, NAN, false, ops);
-		mvals.push_back(NAN);
-		if (!std::isnan(exclude) && (exclude != 0)) {
-			if (remove_zero) {
-				x = x.replaceValues({0, exclude}, {1, 0}, 1, false, NAN, false, ops);
-			} else {
-				x = x.replaceValues({exclude}, {0}, 1, false, NAN, false, ops);
-			}
+	} else if (std::isnan(target)) {
+		if (std::isnan(exclude)) { // no exclusions
+			x = isnotnan(false, ops);
+		} else { // exclusion becomes target and is masked later
+			x = replaceValues({exclude, NAN}, {0, 0}, 1, true, 1, false, ops);
 			mvals.push_back(exclude);
+			mask = true;
 		}
-		mask = true;
-	} else if (!std::isnan(exclude) && (exclude != 0)) {
-		if (remove_zero) {
-			x = replaceValues({0, exclude}, {1, 0}, 1, false, NAN, false, ops);
-		} else {
-			x = replaceValues({exclude}, {0}, 1, false, NAN, false, ops);
-		}
-
-		mvals.push_back(exclude);
-		mask = true;
-	} else if (remove_zero) {
-		x = replaceValues({0}, {1}, 1, false, NAN, false, ops);
 	} else {
-		x = *this;
+		//option for keepNA does not work, perhaps because of int conversion
+		//papszOptions = CSLSetNameValue(papszOptions, "USE_INPUT_NODATA", "YES");
+		if (std::isnan(exclude)) {
+			if (keepNA) {
+				x = replaceValues({target, NAN}, {0, 0}, 1, true, 1, false, ops);
+				mvals.push_back(exclude);
+				mask = true;
+			} else {
+				x = replaceValues({target}, {0}, 1, true, 1, false, ops);
+			}
+		} else {
+			x = replaceValues({exclude, target}, {0, 0}, 1, true, 1, false, ops);
+			mvals.push_back(exclude);
+			mask = true;
+		}
 	}
-	// to avoid truncation of (-0.5, 0.5) to 0
-	x = x.math("sign", ops);
-
-	if (x.hasValues()) {
+//	if (x.hasValues()) {
 		if (!x.open_gdal(hSrcDS, 0, false, ops)) {
 			out.setError("cannot open input dataset");
 			return out;
 		}
-	} else if (!open_gdal(hSrcDS, 0, false, ops)) {
-		out.setError("cannot open input dataset");
-		return out;
-	}
+//	} else if (!open_gdal(hSrcDS, 0, false, ops)) {
+//		out.setError("cannot open input dataset");
+//		return out;
+//	}
 
 	std::string tmpfile = tempFile(opt.get_tempdir(), opt.pid, ".tif");
 	std::string fname = mask ? tmpfile : filename;
-	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, ops)) {
+	if (!out.create_gdalDS(hDstDS, fname, driver, false, 0, {false}, {1}, {0}, ops)) {
 		out.setError("cannot create new dataset");
 		GDALClose(hSrcDS);
 		return out;
@@ -1316,7 +1315,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
 
 	if (GDALComputeProximity(hSrcBand, hTargetBand, papszOptions, NULL, NULL) != CE_None) {
-		out.setError("proximity failed");
+		out.setError("proximity algorithm failed");
 		GDALClose(hSrcDS);
 		GDALClose(hDstDS);
 		CSLDestroy( papszOptions );
@@ -1334,13 +1333,18 @@ SpatRaster SpatRaster::proximity(double target, double exclude, std::string unit
 		}
 		GDALClose(hDstDS);
 	} else {
+		if (!mask) {
+			double adfMinMax[2];
+			GDALComputeRasterMinMax(hTargetBand, true, adfMinMax);
+			GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
+		}
 		GDALClose(hDstDS);
-		out = SpatRaster(filename, {-1}, {""}, {}, {});
+		out = SpatRaster(fname, {-1}, {""}, {}, {});
 	}
 	
 	if (mask) {
 		out = out.mask(*this, false, mvals, NAN, opt);
-	}
+	} 
 	return out;
 }
 
