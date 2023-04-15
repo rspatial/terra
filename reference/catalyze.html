@@ -70,7 +70,7 @@ Change a categorical layer into one or more numerical layers. With as.numeric yo
 <dd><p>SpatRaster</p></dd>
 
   <dt>index</dt>
-<dd><p>positive integer, indicating the column in <code>data.frame</code> <code>value</code> to be used as the category, skipping the first column with the ID. If <code>NULL</code> the active category is used</p></dd>
+<dd><p>positive integer or category indicating the category to use. If <code>NULL</code> the active category is used</p></dd>
 
   <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
@@ -116,9 +116,9 @@ Change a categorical layer into one or more numerical layers. With as.numeric yo
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : value </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :    11 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :    13 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : letters </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :       1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :       3 </span>
 </code></pre></div>
     </div>
   </div>
