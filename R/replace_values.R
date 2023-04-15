@@ -326,8 +326,6 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			}
 		} else if (!m[2]) {
 			#col
-			print(j)
-			print("?")
 			j <- make_replace_index(j, ncol(x), "j")
 			i <- cellFromRowColCombine(x, 1:nrow(x), j)
 		} else {

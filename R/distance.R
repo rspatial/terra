@@ -4,7 +4,6 @@
 # License GPL v3
 
 
-
 setMethod("buffer", signature(x="SpatRaster"),
 	function(x, width, background=0, filename="", ...) {
 		opt <- spatOptions(filename, ...)
@@ -21,15 +20,19 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 		}
 		opt <- spatOptions(filename, ...)
 		target <- as.numeric(target[1])
+		keepNA <- FALSE
 		if (!is.null(exclude)) {
 			exclude <- as.numeric(exclude[1])
 			if ((is.na(exclude) && is.na(target)) || isTRUE(exclude == target)) {
 				error("distance", "'target' and 'exclude' must be different") 
 			}
+			if (is.na(exclude)) {
+				keepNA <- TRUE
+			}
 		} else {
 			exclude <- NA
 		}
-		x@pnt <- x@pnt$rastDistance(target, exclude, tolower(unit), TRUE, haversine, opt)
+		x@pnt <- x@pnt$rastDistance(target, exclude, keepNA, tolower(unit), TRUE, haversine, opt)
 		messages(x, "distance")
 	}
 )

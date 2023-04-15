@@ -610,7 +610,9 @@ class SpatRaster {
 		SpatRaster cropmask(SpatVector &v, std::string snap, bool touches, bool expand, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
-		SpatRaster distance(double target, double exclude, std::string unit, bool remove_zero, bool haversine, SpatOptions &opt);
+		SpatRaster distance(double target, double exclude, bool keepNA, std::string unit, bool remove_zero, bool haversine, SpatOptions &opt);
+		SpatRaster proximity(double target, double exclude, bool keepNA, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt);
+		
 		SpatRaster distance_rasterize(SpatVector p, double target, double exclude, std::string unit, bool haversine, SpatOptions &opt);
 		SpatRaster direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude,  SpatOptions &opt);
 		
@@ -813,7 +815,6 @@ class SpatRaster {
 		SpatRaster rgb2hsx(std::string type, SpatOptions &opt);	
 		SpatRaster hsx2rgb(SpatOptions &opt);	
 
-		SpatRaster proximity(double target, double exclude, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt);
 		SpatRaster viewshed(std::vector<double> obs, std::vector<double> vals, double curvcoef, int mode, double maxdist, int heightmode, SpatOptions &opt);
 		SpatRaster sieveFilter(int threshold, int connections, SpatOptions &opt);	
 		
