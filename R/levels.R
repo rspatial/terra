@@ -309,20 +309,39 @@ setMethod ("as.numeric", "SpatRaster",
 		}
 		g <- cats(x)[[1]]
 		if (!is.null(index)) {
-			index <- round(index[1])
-			if (!((index >= 1) & (index < ncol(g)))) {
-				error("as.numeric", "invalid index")
+			if (is.character(index)) {
+				index <- match(index, colnames(g))
+				if (is.na(index)) {
+					error("as.numeric", "index is not category name")				
+				}
+				if (index == 1) {
+					levels(x) <- NULL
+					x@pnt$setValueType(0)
+					if (filename != "") {
+						x <- writeRaster(x, filename, ...)
+					}
+					return(x)
+				}		
+			} else {
+				index <- round(index[1])
+				if (!((index >= 1) & (index < ncol(g)))) {
+					error("as.numeric", "index out of range")
+				}
+				index <- index + 1
 			}
 		} else {
 			index <- activeCat(x, 1)
-			if (index < 0)
-			x <- deepcopy(x)
-			levels(x) <- NULL
-			x@pnt$setValueType(0)
-			return(x)
+			if (index <= 1) {
+				levels(x) <- NULL
+				x@pnt$setValueType(0)
+				if (filename != "") {
+					x <- writeRaster(x, filename, ...)
+				}
+				return(x)
+			}
 		}
 		from <- g[,1]
-		to <- g[,index+1]
+		to <- g[,index]
 		if (!is.numeric(to)) {
 			suppressWarnings(toto <- as.numeric(to))
 			if (sum(is.na(toto) > sum(is.na(to)))) {
@@ -333,7 +352,7 @@ setMethod ("as.numeric", "SpatRaster",
 		}
 		m <- cbind(from, to)
 		m <- m[!is.na(m[,1]), ,drop=FALSE]
-		classify(x, m, names=names(g)[index+1], filename, ...)
+		classify(x, m, names=names(g)[index], filename, ...)
 	}
 )
 

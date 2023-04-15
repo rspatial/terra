@@ -24,7 +24,7 @@ Change a categorical layer into one or more numerical layers. With \code{as.nume
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{index}{positive integer, indicating the column in \code{data.frame} \code{value} to be used as the category, skipping the first column with the ID. If \code{NULL} the active category is used}
+  \item{index}{positive integer or category indicating the category to use. If \code{NULL} the active category is used}
   \item{filename}{character. Output filename}  
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
 }  

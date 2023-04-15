@@ -135,17 +135,17 @@ setMethod("plet", signature(x="SpatVector"),
 				if (isTRUE(popup[1])) pop <- popUp(x)
 				if (isTRUE(label[1])) lab <- v
 				if (g == "polygons") {
-					map <- leaflet::addPolygons(map, data=x, label=lab,  
+					map <- leaflet::addPolygons(map, data=x, label=lab, group=y[1],
 						col=vcols, opacity=alpha, fillOpacity=fill, popup=pop, ...)
 				} else if (g == "lines") {
-					map <- leaflet::addPolylines(map, data=x, label=lab,  
+					map <- leaflet::addPolylines(map, data=x, label=lab, group=y[1],  
 						col=vcols, popup=pop, opacity=alpha, ...)
 				} else {
-					map <- leaflet::addCircleMarkers(map, data=x, label=lab,  
+					map <- leaflet::addCircleMarkers(map, data=x, label=lab, group=y[1], 
 						col=vcols, radius=cex, popup=pop, fillOpacity=fill, opacity=alpha, ...)
 				}
 				if (length(tiles) > 1) {
-					map <- leaflet::addLayersControl(map, baseGroups = tiles, 
+					map <- leaflet::addLayersControl(map, baseGroups = tiles, overlayGroups = u, 
 						options = leaflet::layersControlOptions(collapsed=collapse))
 				}
 
