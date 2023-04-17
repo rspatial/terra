@@ -210,7 +210,8 @@ setMethod("vect", signature(x="matrix"),
 
 setMethod("$", "SpatVector",  function(x, name) {
 	if (!(name %in% names(x))) {
-		error("$", paste(name, "is not a variable name in x"))
+		return(NULL)
+		#error("$", paste(name, "is not a variable name in x"))
 	}
 	s <- .subset_cols(x, name, drop=TRUE)
 	s[,1,drop=TRUE]
