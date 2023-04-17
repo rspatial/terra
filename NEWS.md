@@ -1,4 +1,4 @@
-# version 1.7-24
+# version 1.7-25
 
 ## new
 
@@ -12,12 +12,14 @@
 
 ## bug fixes
 
+- a problem with reading empty categories in .img files created buggy SpatRasters
 - `global` with fun="notNA" was wrong [#111](https://github.com/rspatial/terra/issues/1111) by Jeffrey Hanson
 - `extract<SpatRaster,SpatVector>` with "bind=TRUE" did not work
 - `extract<SpatRaster,SpatVector>` with point geometries and a "fun" returned values in the wrong order
 - `plot<SpatRaster>` argument "colNA" did not work when "alpha" was also set [#1102](https://github.com/rspatial/terra/issues/1102) by Márcia Barbosa
-- a problem with reading empty categories in .img files created buggy SpatRasters
 - `crop<SpatRaster>` with "extend=TRUE" did not extend the SpatRaster if the input had no cell values. [#1114](https://github.com/rspatial/terra/issues/1114) by Jasper van Doninck
+- setting a factor or date/time variable in a SpatVector did not work [#1117](https://github.com/rspatial/terra/issues/1117) by MK Schneider
+- `focalMat` did not work well when using terraOptions(todisk=T) [#1116](https://github.com/rspatial/terra/issues/1116)
 
 
 # version 1.7-23

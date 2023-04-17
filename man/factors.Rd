@@ -12,6 +12,8 @@
 \alias{cats,SpatRaster-method}
 \alias{categories}
 \alias{categories,SpatRaster-method}
+\alias{addCats}
+\alias{addCats,SpatRaster-method}
   
   
 \title{Categorical rasters}
@@ -29,6 +31,8 @@ If there are multiple columns with categories, you can set the "active" category
 To set categories for the first layer of a SpatRaster, you can provide \code{levels<-} with a data.frame or a list with a data.frame. To set categories for multiple layers you can provide \code{levels<-} with a list with one element (that either has a \code{data.frame} or is \code{NULL}) for each layer. Use \code{categories} to set the categories for a specific layer or specific layers.
 
 \code{droplevels} removes categories that are not used (declared but not present as values in the raster) if \code{levels=NULL}.
+
+\code{addCats} adds additional categories to a layer that already is categorical. It adds new variables, not new levels of an existing categorical variable.
 }
 
 \usage{
@@ -38,9 +42,11 @@ To set categories for the first layer of a SpatRaster, you can provide \code{lev
 
 \S4method{cats}{SpatRaster}(x, layer)
 
-\S4method{categories}{SpatRaster}(x, layer=1, value, active=1, ...)
+\S4method{categories}{SpatRaster}(x, layer=1, value, active=1)
 
 \S4method{droplevels}{SpatRaster}(x, level=NULL, layer=1)
+
+\S4method{addCats}{SpatRaster}(x, value, merge=FALSE, layer=1)
 }
 
 
@@ -50,7 +56,7 @@ To set categories for the first layer of a SpatRaster, you can provide \code{lev
   \item{value}{a data.frame (ID, category) that define the categories. Or \code{NULL} to remove them}
   \item{active}{positive integer, indicating the column in \code{value} to be used as the active category (zero based to skip the first column with the cell values; that is 1 is the second column in \code{value})}
   \item{level}{the categories to remove for the layer specified with \code{layer}}
-  \item{...}{additional arguments}
+  \item{merge}{logical. If \code{TRUE}, the categories are combined with \code{\link[base]{merge}} using the first column of \code{value} as ID. If \code{FALSE} the categories are combined with \code{cbind}}
 }  
 
 
