@@ -6,7 +6,8 @@ The categories can be inspected with levels and cats. They are represented by a 
 If there are multiple columns with categories, you can set the "active" category to choose the one you want to use.
 cats returns the entire data.frame, whereas levels only return two columns: the index and the active category.
 To set categories for the first layer of a SpatRaster, you can provide levels&amp;lt;- with a data.frame or a list with a data.frame. To set categories for multiple layers you can provide levels&amp;lt;- with a list with one element (that either has a data.frame or is NULL) for each layer. Use categories to set the categories for a specific layer or specific layers.
-droplevels removes categories that are not used (declared but not present as values in the raster) if levels=NULL.'><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+droplevels removes categories that are not used (declared but not present as values in the raster) if levels=NULL.
+addCats adds additional categories to a layer that already is categorical. It adds new variables, not new levels of an existing categorical variable.'><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -24,7 +25,7 @@ droplevels removes categories that are not used (declared but not present as val
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-24</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-25</span>
       </span>
     </div>
 
@@ -64,6 +65,7 @@ droplevels removes categories that are not used (declared but not present as val
 <p><code>cats</code> returns the entire data.frame, whereas <code>levels</code> only return two columns: the index and the active category.</p>
 <p>To set categories for the first layer of a SpatRaster, you can provide <code>levels&lt;-</code> with a data.frame or a list with a data.frame. To set categories for multiple layers you can provide <code>levels&lt;-</code> with a list with one element (that either has a <code>data.frame</code> or is <code>NULL</code>) for each layer. Use <code>categories</code> to set the categories for a specific layer or specific layers.</p>
 <p><code>droplevels</code> removes categories that are not used (declared but not present as values in the raster) if <code>levels=NULL</code>.</p>
+<p><code>addCats</code> adds additional categories to a layer that already is categorical. It adds new variables, not new levels of an existing categorical variable.</p>
     </div>
 
     <div id="ref-usage">
@@ -77,10 +79,13 @@ droplevels removes categories that are not used (declared but not present as val
 <span><span class="fu">cats</span><span class="op">(</span><span class="va">x</span>, <span class="va">layer</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">categories</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">categories</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">droplevels</span><span class="op">(</span><span class="va">x</span>, level<span class="op">=</span><span class="cn">NULL</span>, layer<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">droplevels</span><span class="op">(</span><span class="va">x</span>, level<span class="op">=</span><span class="cn">NULL</span>, layer<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for SpatRaster</span></span>
+<span><span class="fu">addCats</span><span class="op">(</span><span class="va">x</span>, <span class="va">value</span>, merge<span class="op">=</span><span class="cn">FALSE</span>, layer<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -100,8 +105,8 @@ droplevels removes categories that are not used (declared but not present as val
   <dt>level</dt>
 <dd><p>the categories to remove for the layer specified with <code>layer</code></p></dd>
 
-  <dt>...</dt>
-<dd><p>additional arguments</p></dd>
+  <dt>merge</dt>
+<dd><p>logical. If <code>TRUE</code>, the categories are combined with <code><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></code> using the first column of <code>value</code> as ID. If <code>FALSE</code> the categories are combined with <code>cbind</code></p></dd>
 
 </dl></div>
     <div id="value">
