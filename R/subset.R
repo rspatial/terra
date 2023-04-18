@@ -4,7 +4,7 @@
 # License GPL v3
 
 positive_indices <- function(i, n, na.rm=TRUE, caller="`[`") {
-	i <- na.omit(i)
+	i <- stats::na.omit(i)
 	if (!is.logical(i)) {
 		stopifnot(is.numeric(i))
 		if (!(all(i <= 0) || all(i >= 0))) {

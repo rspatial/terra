@@ -133,7 +133,7 @@ grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 			labs <- paste0(x$lat,"\u00B0")		
 		}	
 		if (!is.null(atlat)) {
-			atlat <- round(na.omit(atlat))
+			atlat <- round(stats::na.omit(atlat))
 			atlat <- atlat[(atlat > 0) & (atlat <= length(labs))] 
 			labs <- labs[atlat]
 		}
@@ -168,7 +168,7 @@ grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 			labs <- paste0(x$lon,"\u00B0")		
 		}
 		if (!is.null(atlon)) {
-			atlon <- round(na.omit(atlon))
+			atlon <- round(stats::na.omit(atlon))
 			atlon <- atlon[(atlon > 0) & (atlon <= length(labs))] 
 			labs <- labs[atlon]
 		}

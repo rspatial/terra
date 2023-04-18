@@ -535,8 +535,8 @@ setMethod("show" , "SpatGraticule",
 		cat("class       :" , class(object), "\n")
 		v <- vect()
 		v@ptr <- object@ptr
-		cat("lon         :" , na.omit(v$lon), "\n")		
-		cat("lat         :" , na.omit(v$lat), "\n")		
+		cat("lon         :" , stats::na.omit(v$lon), "\n")		
+		cat("lat         :" , stats::na.omit(v$lat), "\n")		
 		cat("coord. ref. :", .name_or_proj4(v), "\n")
 		e <- as.vector(ext(v))
 		cat("extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")

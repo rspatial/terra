@@ -540,7 +540,7 @@ setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"),
 				if (nrow(a) > 0) {
 					if (erase) {
 						ye <- erase(y, x)
-						i <- na.omit(match(a$idy, ye$idy))
+						i <- stats::na.omit(match(a$idy, ye$idy))
 						if (length(i) > 0) {
 							yi <- ye[i,]
 							values(yi) <- data.frame(idx=a$idx[i])

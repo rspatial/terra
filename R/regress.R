@@ -12,7 +12,7 @@
 	mm <- eval(stats::model.matrix(formula, data=d))
 	if (na.rm) {
 		ols <- function(y, ...) {
-			m <- na.omit(cbind(y, mm))
+			m <- stats::na.omit(cbind(y, mm))
 			if (nrow(m) == 0) {
 				return(nas)
 			}
@@ -96,7 +96,7 @@ function(y, x, formula=y~x, na.rm=FALSE, cores=1, filename="", overwrite=FALSE, 
 		ols <- function(v, ...) {
 			d  <- data.frame(matrix(v, ncol=2, dimnames=list(NULL, c("y", "x"))))
 			mm <- eval(stats::model.matrix(formula, data=d))
-			m  <- na.omit(cbind(d$y, mm))
+			m  <- stats::na.omit(cbind(d$y, mm))
 			if (nrow(m) == 0) {
 				return(nas)
 			}

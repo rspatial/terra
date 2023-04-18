@@ -453,7 +453,7 @@ setMethod("query", signature(x="SpatVectorProxy"),
 		if (is.null(vars)) {
 			vars <- "*"
 		} else {
-			vars <- na.omit(unique(vars))
+			vars <- stats::na.omit(unique(vars))
 			nms <- names(x)
 			if (!all(vars %in% nms)) {
 				error("query", "not all vars are variable names")

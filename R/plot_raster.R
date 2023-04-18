@@ -251,7 +251,7 @@ prettyNumbs <- function(x, digits) {
 
 	if (!is.null(out$coltab)) {
 		# avoid multiple colors for the same category
-		ilevs <- na.omit(ilevels)
+		ilevs <- stats::na.omit(ilevels)
 		ulevs <- unique(out$cats[ilevs,2])
 		if (length(ulevs) < length(ilevs)) {
 			z <- out$cats[match(z, out$cats[,1]),2]
@@ -274,11 +274,11 @@ prettyNumbs <- function(x, digits) {
 			mi[is.na(mi)] <- 1
 			mc <- out$coltab[mi, ,drop=FALSE]
 			out$leg$fill <- grDevices::rgb(mc[,2], mc[,3], mc[,4], mc[,5], maxColorValue=255)
-			if (is.null(out$leg$legend)) out$leg$legend <- na.omit(out$cats[, 2])
+			if (is.null(out$leg$legend)) out$leg$legend <- stats::na.omit(out$cats[, 2])
 		} else {	
 			out$levels <- out$levels[!is.na(ilevels)]
-			m <- na.omit(match(out$cats[[1]][ilevels], out$coltab[,1]))
-			if (is.null(out$leg$legend)) out$leg$legend <- na.omit(out$cats[ilevels, 2])
+			m <- stats::na.omit(match(out$cats[[1]][ilevels], out$coltab[,1]))
+			if (is.null(out$leg$legend)) out$leg$legend <- stats::na.omit(out$cats[ilevels, 2])
 			out$coltab <- out$coltab[m, ,drop=FALSE]
 		}
 
@@ -286,7 +286,7 @@ prettyNumbs <- function(x, digits) {
 		i <- match(z, out$coltab[,1])
 		z <- out$cols[i]
 	} else {
-		if (is.null(out$leg$legend)) out$leg$legend <- unique(na.omit(out$cats[ilevels, 2]))
+		if (is.null(out$leg$legend)) out$leg$legend <- unique(stats::na.omit(out$cats[ilevels, 2]))
 		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
 		leglevs <- na.omit(unique(levlab[,2]))
 		if (length(leglevs) == 0) {
@@ -848,7 +848,6 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		invisible(x)
 	}
 )
-
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"),

@@ -171,7 +171,7 @@ setMethod("setValues", signature("SpatRaster"),
 		make_factor <- FALSE
 		set_coltab <- FALSE
 		if (is.character(values)) {
-			if (all(substr(na.omit(values), 1, 1) == "#")) {
+			if (all(substr(stats::na.omit(values), 1, 1) == "#")) {
 				fv <- as.factor(values)
 				if (length(levels(fv)) <= 256) {
 					values <- as.integer(fv) #-1

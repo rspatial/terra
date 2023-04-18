@@ -166,28 +166,28 @@ setMethod("predict", signature(object="SpatRaster"),
 		} else {
 			allna <- FALSE
 			if (na.rm) {
-				allna <- all(nrow(na.omit(d)) == 0)
+				allna <- all(nrow(stats::na.omit(d)) == 0)
 				if (allna) {
 					testrow <- ceiling(testrow - 0.25*nr)
 					d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-					allna <- all(nrow(na.omit(d)) == 0)
+					allna <- all(nrow(stats::na.omit(d)) == 0)
 				}
 				if (allna) {
 					testrow <- floor(testrow + 0.5*nr)
 					if ((testrow + rnr) > nr) rnr = nr - testrow + 1
 					d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-					allna <- all(nrow(na.omit(d)) == 0)
+					allna <- all(nrow(stats::na.omit(d)) == 0)
 				}
 				if (allna && (ncell(object) < 1000)) {
 					d <- readValues(object, 1, nr, 1, nc, TRUE, TRUE)
-					allna <- all(nrow(na.omit(d)) == 0)
+					allna <- all(nrow(stats::na.omit(d)) == 0)
 					#if (allna) {
 					#	error("predict", "all predictor values are NA")
 					#}
 				}
 				if (allna) {
 					d <- spatSample(object, min(1000, ncell(object)), "regular", warn=FALSE)
-					allna <- all(nrow(na.omit(d)) == 0)
+					allna <- all(nrow(stats::na.omit(d)) == 0)
 				}
 				if (allna) {
 					d[] <- stats::runif(prod(dim(d)))

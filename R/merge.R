@@ -9,7 +9,7 @@ setMethod("merge", signature(x="SpatVector", y="data.frame"),
 		v$unique_nique_ique_que_e <- 1:nrow(v)
 		m <- merge(v, y, ...)
 		m <- m[order(m$unique_nique_ique_que_e), ]
-		x <- x[na.omit(m$unique_nique_ique_que_e), ]
+		x <- x[stats::na.omit(m$unique_nique_ique_que_e), ]
 		m$unique_nique_ique_que_e <- NULL
 		if (nrow(m) > nrow(x)) {
 			error("merge", "using 'all.y=TRUE' is not allowed. Should it be?")

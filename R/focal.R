@@ -423,7 +423,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 	}
 
 	ols_narm <- function(x, y, ...) {
-		v <- na.omit(cbind(y, x))
+		v <- stats::na.omit(cbind(y, x))
 		if (nrow(v) < (NCOL(x) + 1)) {
 			return( cbind(rep(NA, NCOL(x)+1)) )
 		}
@@ -431,7 +431,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 	}
 	
 	ols_noi_narm <- function(x, y, ...) {
-		v <- na.omit(cbind(y, x))
+		v <- stats::na.omit(cbind(y, x))
 		if (nrow(v) < (NCOL(x))) {
 			return( cbind(rep(NA, NCOL(x))) )
 		}
@@ -453,7 +453,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 	}
 
 	weighted_ols_narm <- function(x, y, weights, ...) {
-		v <- na.omit(cbind(y, weights, x))
+		v <- stats::na.omit(cbind(y, weights, x))
 		if (nrow(v) < (NCOL(x) + 1)) {
 			return(rep(NA, NCOL(x)+1))
 		}
@@ -461,7 +461,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 	}	
 
 	weighted_ols_noi_narm <- function(x, y, weights, ...) {
-		v <- na.omit(cbind(y, weights, x))
+		v <- stats::na.omit(cbind(y, weights, x))
 		if (nrow(v) < (NCOL(x))) {
 			return(rep(NA, NCOL(x)))
 		}
@@ -530,7 +530,7 @@ function(x, w=3, fun="ols", ..., fillvalue=NA, filename="", overwrite=FALSE, wop
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
 		m[m==0] <- NA
-		test <- na.omit(m)
+		test <- stats::na.omit(m)
 		if (length(test) == 0) {
 			error("focalReg", "all values in w are NA and/or zero")
 		}
@@ -655,7 +655,7 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
 		m[m==0] <- NA
-		test <- na.omit(m)
+		test <- stats::na.omit(m)
 		if (length(test) == 0) {
 			error("focalPairs", "all values in w are NA and/or zero")
 		}
