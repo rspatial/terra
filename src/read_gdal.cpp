@@ -1322,8 +1322,13 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_
 	}
 
 	std::vector<std::string> openops = source[src].open_ops;
+	
+	#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 3
+	// do nothing
+	#else 
 	openops.push_back("OVERVIEW_LEVEL=NONE");
-
+	#endif
+	
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, openops);
     if( poDataset == NULL )  {
 		setError("no data");
