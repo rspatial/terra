@@ -1321,7 +1321,10 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_
 		scols = std::min(scols, ncols);
 	}
 
-    GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, source[src].open_ops);
+	std::vector<std::string> openops = source[src].open_ops;
+	openops.push_back("OVERVIEW_LEVEL=NONE");
+
+    GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, openops);
     if( poDataset == NULL )  {
 		setError("no data");
 		return errout;
