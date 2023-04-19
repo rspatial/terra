@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-25</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-27</span>
       </span>
     </div>
 
@@ -48,24 +48,25 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-25" id="version-17-25">version 1.7-25<a class="anchor" aria-label="anchor" href="#version-17-25"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-26" id="version-17-26">version 1.7-26<a class="anchor" aria-label="anchor" href="#version-17-26"></a></h2>
 <div class="section level3">
-<h3 id="new-1-7-25">new<a class="anchor" aria-label="anchor" href="#new-1-7-25"></a></h3>
+<h3 id="new-1-7-26">new<a class="anchor" aria-label="anchor" href="#new-1-7-26"></a></h3>
 <ul><li>
 <code>regress&lt;SpatRaster,numeric&gt;</code> to get regression model coefficients for each cell, with a fixed “X”.</li>
 <li>
 <code>regress&lt;SpatRaster,SpatRaster&gt;</code> to get regression model coefficients for each cell.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-25">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-25"></a></h3>
+<h3 id="enhancements-1-7-26">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-26"></a></h3>
 <ul><li>
-<code>lapp&lt;SpatRasterDataset&gt;</code> is more flexible in that it can now also use functions that are vectorized by cell, not by chunk. See <a href="https://github.com/rspatial/terra/issues/1029" class="external-link">#1029</a>
+<code>lapp&lt;SpatRasterDataset&gt;</code> is now more flexible in that it can now also use functions that are vectorized by cell, not by chunk. See <a href="https://github.com/rspatial/terra/issues/1029" class="external-link">#1029</a>
 </li>
 <li>
 <code>project&lt;SpatVector&gt;</code> has new argument “partial=FALSE” that can be used to keep geometries that can only be partially included in the output crs.</li>
+<li>extracting a SpatVector column with a non-existing variable name now returns NULL (because that is what a data.frame does) instead of throwing an error. <a href="https://github.com/rspatial/terra/issues/1118" class="external-link">#1118</a> by Derek Friend.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-25">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-25"></a></h3>
+<h3 id="bug-fixes-1-7-26">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-26"></a></h3>
 <ul><li>a problem with reading empty categories in .img files created buggy SpatRasters</li>
 <li>
 <code>global</code> with fun=“notNA” was wrong <a href="https://github.com/rspatial/terra/issues/1111" class="external-link">#111</a> by Jeffrey Hanson</li>
@@ -473,9 +474,9 @@
 <code>project</code> crashed when erroneously projecting raster data from one celestial body to another [#688] by Mike Sumner</li>
 <li>you can now set a color table with a two column (value, ID) data.frame</li>
 <li>categorical rasters can now be updated more easily [#667] by Alex Ilich</li>
-<li>more control over matching values with colors when using <code>plot</code>. [673] by Jakub Nowosad.</li>
-<li>SpatVector attributes can now also be a factor, date, or POSIXct. [697] by Grant Williamson</li>
-<li>improved handling of missing values in <code>extract(method="bilinear")</code>. [693] by swooping-magpie</li>
+<li>more control over matching values with colors when using <code>plot</code>. [#673] by Jakub Nowosad.</li>
+<li>SpatVector attributes can now also be a factor, date, or POSIXct. [#697] by Grant Williamson</li>
+<li>improved handling of missing values in <code>extract(method="bilinear")</code>. [#693] by swooping-magpie</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-6-3">new<a class="anchor" aria-label="anchor" href="#new-1-6-3"></a></h3>
@@ -488,7 +489,7 @@
 <li>
 <code>cover</code> can now combine categorical rasters</li>
 <li>
-<code>concats</code> to combine the levels of two SpatRaster into new categories [663] by Alex Ilich</li>
+<code>concats</code> to combine the levels of two SpatRaster into new categories [#663] by Alex Ilich</li>
 <li>
 <code>zonal&lt;SpatVector,SpatVector&gt;</code> method to aggregate SpatVector attributes by polygons</li>
 </ul></div>

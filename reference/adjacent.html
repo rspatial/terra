@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-25</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-27</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">adjacent</span><span class="op">(</span><span class="va">x</span>, <span class="va">cells</span>, directions<span class="op">=</span><span class="st">"rook"</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, include<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">adjacent</span><span class="op">(</span><span class="va">x</span>, <span class="va">cells</span>, directions<span class="op">=</span><span class="st">"rook"</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, include<span class="op">=</span><span class="cn">FALSE</span>, symmetrical<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatVector</span></span>
 <span><span class="fu">adjacent</span><span class="op">(</span><span class="va">x</span>, type<span class="op">=</span><span class="st">"rook"</span>, pairs<span class="op">=</span><span class="cn">TRUE</span>, symmetrical<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -81,7 +81,7 @@
 <dd><p>character. One of "rook", "queen", "touches", or "intersects". "queen" and "touches" are synonyms. "rook" exclude polygons that touch at a single node only. "intersects" includes polygons that touch or overlap</p></dd>
 
   <dt>symmetrical</dt>
-<dd><p>logical. If <code>TRUE</code>, an adjacent pair is only included once. For example, if polygon 1 is adjacent to polygon 3, the implied adjacency between 3 and 1 is not reported</p></dd>
+<dd><p>logical. If <code>TRUE</code> and <code>pairs=TRUE</code>, an adjacent pair is only included once. For example, if polygon 1 is adjacent to polygon 3, the implied adjacency between 3 and 1 is not reported</p></dd>
 
 </dl></div>
     <div id="see-also">

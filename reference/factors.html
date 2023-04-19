@@ -25,7 +25,7 @@ addCats adds additional categories to a layer that already is categorical. It ad
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-25</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-27</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@ addCats adds additional categories to a layer that already is categorical. It ad
 <span><span class="fu">cats</span><span class="op">(</span><span class="va">x</span>, <span class="va">layer</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">categories</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu">categories</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster</span></span>
 <span><span class="fu">droplevels</span><span class="op">(</span><span class="va">x</span>, level<span class="op">=</span><span class="cn">NULL</span>, layer<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
@@ -107,6 +107,9 @@ addCats adds additional categories to a layer that already is categorical. It ad
 
   <dt>merge</dt>
 <dd><p>logical. If <code>TRUE</code>, the categories are combined with <code><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></code> using the first column of <code>value</code> as ID. If <code>FALSE</code> the categories are combined with <code>cbind</code></p></dd>
+
+  <dt>...</dt>
+<dd><p>additional arguments (none)</p></dd>
 
 </dl></div>
     <div id="value">
