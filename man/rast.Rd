@@ -29,7 +29,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 }
 
 \usage{
-\S4method{rast}{character}(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=TRUE)
+\S4method{rast}{character}(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE)
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
           ymin=-90, ymax=90, crs, extent, resolution, vals, names, time, units)

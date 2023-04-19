@@ -135,7 +135,7 @@ setMethod("rast", signature(x="SpatVector"),
 
 
 
-.fullFilename <- function(x, mustExist=TRUE, vsi=TRUE) {
+.fullFilename <- function(x, mustExist=TRUE, vsi=FALSE) {
 	x <- trimws(x)
 	x <- x[x != ""]
 	
@@ -163,7 +163,7 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=TRUE) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE) {
 
 		f <- .fullFilename(x, TRUE, vsi=vsi)
 		if (length(f) == 0) {
