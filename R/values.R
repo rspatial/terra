@@ -397,6 +397,7 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 )
 
 
+
 setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, tolerance=0) {
 		out <- x@ptr$equals_between(y@ptr, tolerance)
@@ -416,6 +417,17 @@ setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
 	}
 )
 
+
+setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"),
+	function(target, current, maxcell=10000, ...) {
+		a <- base::all.equal(rast(target), rast(current))
+		if (isTRUE(a) && maxcell > 0) {
+			s <- spatSample(c(target, current), maxcell, "regular")
+			a <- all.equal(s[,1], s[,2], ...)
+		}
+		a
+	}
+)
 
 
 
