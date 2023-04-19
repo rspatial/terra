@@ -122,7 +122,7 @@ function(y, x, formula=y~x, na.rm=FALSE, cores=1, filename="", overwrite=FALSE, 
 	if (nlyr(y) != nlyr(x)) {
 		error("regress", "nlyr(x) != nlyr(y)")
 	}
-	formula <- stas::as.formula(formula)
+	formula <- stats::as.formula(formula)
 	dat <- data.frame(x=1:nlyr(x), y=1)
 	mm <- stats::model.matrix(formula, data=dat)
 	outnl <- ncol(mm)		
