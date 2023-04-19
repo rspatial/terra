@@ -422,8 +422,18 @@ setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"),
 	function(target, current, maxcell=10000, ...) {
 		a <- base::all.equal(rast(target), rast(current))
 		if (isTRUE(a) && maxcell > 0) {
-			s <- spatSample(c(target, current), maxcell, "regular")
-			a <- all.equal(s[,1], s[,2], ...)
+			hvT <- hasValues(target)
+			hvC <- hasValues(current)
+			if (hvT && hvC) {
+				s <- spatSample(c(target, current), maxcell, "regular")
+				a <- all.equal(s[,1], s[,2], ...)
+			} else if (hvT || hvC) {
+				if (hvT) {
+					a <- "target has cell values, current does not"
+				} else {
+					a <- "current has cell values, target does not"				
+				}
+			}
 		}
 		a
 	}
