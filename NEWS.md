@@ -1,4 +1,4 @@
-# version 1.7-25
+# version 1.7-26
 
 ## new
 
@@ -9,7 +9,7 @@
 
 - `lapp<SpatRasterDataset>` is now more flexible in that it can now also use functions that are vectorized by cell, not by chunk. See [#1029](https://github.com/rspatial/terra/issues/1029)
 - `project<SpatVector>` has new argument "partial=FALSE" that can be used to keep geometries that can only be partially included in the output crs.
-- extracting a SpatVector column with a non-existing variable name now returns NULL (becaus that is what a data.frame does) instead of throwing an error. [#1118](https://github.com/rspatial/terra/issues/1118) by Derek Friend.
+- extracting a SpatVector column with a non-existing variable name now returns NULL (because that is what a data.frame does) instead of throwing an error. [#1118](https://github.com/rspatial/terra/issues/1118) by Derek Friend.
 
 
 ## bug fixes
@@ -313,9 +313,9 @@ Released 2022-07-25
 - `project` crashed when erroneously projecting raster data from one celestial body to another [#688] by Mike Sumner
 - you can now set a color table with a two column (value, ID) data.frame
 - categorical rasters can now be updated more easily [#667] by Alex Ilich
-- more control over matching values with colors when using `plot`. [673] by Jakub Nowosad.
-- SpatVector attributes can now also be a factor, date, or POSIXct. [697] by Grant Williamson
-- improved handling of missing values in `extract(method="bilinear")`. [693] by swooping-magpie
+- more control over matching values with colors when using `plot`. [#673] by Jakub Nowosad.
+- SpatVector attributes can now also be a factor, date, or POSIXct. [#697] by Grant Williamson
+- improved handling of missing values in `extract(method="bilinear")`. [#693] by swooping-magpie
 
 ## new
 
@@ -323,7 +323,7 @@ Released 2022-07-25
 - `sort<SpatRaster>` to sort cell values across layers.
 - `has.colors` and `has.RGB` for SpatRaster
 - `cover` can now combine categorical rasters 
-- `concats` to combine the levels of two SpatRaster into new categories [663] by Alex Ilich
+- `concats` to combine the levels of two SpatRaster into new categories [#663] by Alex Ilich
 - `zonal<SpatVector,SpatVector>` method to aggregate SpatVector attributes by polygons
 
 
