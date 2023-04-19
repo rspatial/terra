@@ -2302,12 +2302,13 @@ void SpatVector::fix_lonlat_overflow() {
 	return;
 }
 
-
+/*
 void sort_unique_2d(std::vector<double> &x, std::vector<double> &y) {
 	std::vector<std::vector<double>> v(x.size());
 	for (size_t i=0; i<v.size(); i++) {
 		v[i] = {x[i], y[i]};
 	}
+
 	std::sort(v.begin(), v.end(), []
 		(const std::vector<double> &a, const std::vector<double> &b)
 			{ return a[0] < b[0];});
@@ -2320,7 +2321,7 @@ void sort_unique_2d(std::vector<double> &x, std::vector<double> &y) {
 		y[i] = v[i][1];
 	}
 }
-
+*/
 
 void split_dateline(SpatVector &v) {
 	SpatExtent e1 = {-1,  180, -91, 91};

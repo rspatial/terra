@@ -19,6 +19,8 @@
 #include <vector>
 #include <random>
 
+
+
 double modal_value(std::vector<double> values, unsigned ties, bool narm, std::default_random_engine rgen, std::uniform_real_distribution<double> dist);
 
 void na_omit(std::vector<double> &x);
@@ -52,4 +54,23 @@ void minmax(Iterator start, Iterator end, double &vmin, double &vmax) {
         vmin = NAN;
         vmax = NAN;
     }
+}
+
+
+template <typename T> 
+void sort_unique_2d(std::vector<T> &x, std::vector<T> &y) {
+
+	std::vector<std::vector<T>> v(x.size());
+	for (size_t i=0; i<v.size(); i++) {
+		v[i] = {x[i], y[i]};
+	}
+
+    std::sort(v.begin(), v.end());
+	v.erase(std::unique(v.begin(), v.end()), v.end());
+	x.resize(v.size());
+	y.resize(v.size());
+	for (size_t i=0; i<x.size(); i++) {
+		x[i] = v[i][0];
+		y[i] = v[i][1];
+	}
 }

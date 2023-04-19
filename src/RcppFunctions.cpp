@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include "spatRasterMultiple.h"
 #include "string_utils.h"
+#include "math_utils.h"
 
 #include "gdal_priv.h"
 #include "gdalio.h"
@@ -623,5 +624,26 @@ double stattest2(std::vector<double> x, std::string fun, bool narm) {
 	}
 	std::function<double(std::vector<double>&, bool)> f = getFun(fun);
 	return f(x, narm);
+}
+
+
+
+// [[Rcpp::export(name = ".unique_symmetric_rows")]]
+Rcpp::IntegerMatrix uniqueSymmetricRows(std::vector<size_t> x, std::vector<size_t> y) {
+	size_t n = x.size();
+	for (size_t i=0; i<n; i++) {
+		if (x[i] > y[i]) {
+			double tmp = x[i];
+			x[i] = y[i];
+			y[i] = tmp;
+		}
+	}
+	sort_unique_2d(x, y);
+	Rcpp::IntegerMatrix mat(x.size(), 2); 
+    std::copy(x.begin(), x.end(), mat.begin());  	
+    std::copy(y.begin(), y.end(), mat.begin()+x.size());  	
+	return mat;
+//	x.insert(x.end(), y.begin(), y.end());
+///	return(x);
 }
 

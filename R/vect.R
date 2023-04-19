@@ -227,7 +227,7 @@ function(x, i, j,drop=FALSE) {
 
 setMethod("[[", c("SpatVector", "character", "missing"),
 function(x, i, j, drop=FALSE) {
-	if (!(i %in% names(x))) {
+	if (!(any(i %in% names(x)))) {
 		return(NULL)
 	}
 	s <- .subset_cols(x, i, drop=TRUE)

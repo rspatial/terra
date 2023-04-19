@@ -117,6 +117,10 @@ rgb2hex <- function(x) {
     .Call(`_terra_stattest2`, x, fun, narm)
 }
 
+.unique_symmetric_rows <- function(x, y) {
+    .Call(`_terra_uniqueSymmetricRows`, x, y)
+}
+
 dist_lonlat <- function(lon1, lat1, lon2, lat2) {
     .Call(`_terra_dist_lonlat`, lon1, lat1, lon2, lat2)
 }

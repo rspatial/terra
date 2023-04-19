@@ -221,7 +221,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			if (field[1] == "") {
 				values <- matrix(1, ncol=1, nrow=nrx)
 			} else if (field[1] != "") {
-				values <- x[[field]]
+				values <- x[, field, drop=TRUE]
 				if (nrow(xy) != nrx) { # multi-points
 					g <- geom(x)
 					values <- values[g[,1], ,drop=FALSE]

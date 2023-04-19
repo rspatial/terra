@@ -238,7 +238,8 @@ setMethod("adjacent", signature(x="SpatRaster"),
 			v <- cbind(from=rep(cells, each=length(v)/length(cells)), to=v)
 			v <- v[!is.na(v[,2]), ]
 			if (symmetrical) {
-				v <- unique(cbind(pmin(v[,1], v[,2]), pmax(v[,1], v[,2])))
+				#v <- unique(cbind(pmin(v[,1], v[,2]), pmax(v[,1], v[,2])))
+				v <- .unique_symmetric_rows(v[,1], v[,2])
 			}
 		} else {
 			v <- matrix(v, nrow=length(cells), byrow=TRUE)
