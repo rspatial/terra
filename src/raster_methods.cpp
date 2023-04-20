@@ -446,7 +446,6 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 #endif
 #endif
 */
-
 	std::function<double(std::vector<double>&, bool)> agFun = getFun(fun);
 
 	//BlockSize bs = getBlockSize(4, opt.get_memfrac());

@@ -1,4 +1,4 @@
-# version 1.7-26
+# version 1.7-28
 
 ## new
 
@@ -10,7 +10,6 @@
 - `lapp<SpatRasterDataset>` is now more flexible in that it can now also use functions that are vectorized by cell, not by chunk. See [#1029](https://github.com/rspatial/terra/issues/1029)
 - `project<SpatVector>` has new argument "partial=FALSE" that can be used to keep geometries that can only be partially included in the output crs.
 - extracting a SpatVector column with a non-existing variable name now returns NULL (because that is what a data.frame does) instead of throwing an error. [#1118](https://github.com/rspatial/terra/issues/1118) by Derek Friend.
-
 
 ## bug fixes
 
