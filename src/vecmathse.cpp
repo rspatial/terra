@@ -508,6 +508,8 @@ double modal_se_rm(std::vector<double>& v, size_t s, size_t e) {
 		}
 	);
 
+	if (count.size() == 0) return NAN;
+	
     std::map<double, size_t>::iterator mode =	
         std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
 		const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
