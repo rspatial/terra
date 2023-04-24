@@ -446,7 +446,6 @@ prettyNumbs <- function(x, digits) {
 	if (x$add) {
 		reset.clip()
 	} else if (!x$legend_only) {
-		#dev.new(noRStudioGD = TRUE)
 		old.mar <- graphics::par()$mar
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
 		if (x$reset) on.exit(graphics::par(mar=old.mar))
@@ -455,12 +454,15 @@ prettyNumbs <- function(x, digits) {
 		if (!is.null(x$background)) {
 			graphics::rect(x$lim[1], x$lim[3], x$lim[2], x$lim[4], col=x$background)			
 		}
-		if (x$values) {
-			graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4],
-				angle = 0, interpolate = x$interpolate)		
-		} else {
-			x$legend_draw <- FALSE
-		}
+	}
+	if (!x$values) {
+		if (!x$add) try(set.clip(x$lim, x$lonlat))
+		return(x)
+	}
+	if (!x$legend_only) {
+		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4],
+			angle = 0, interpolate = x$interpolate)
+
 		if (x$axes) x <- .plot.axes(x)
 	}
 	
