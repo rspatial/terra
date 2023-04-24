@@ -8,9 +8,9 @@ my_basename <- function(x) {
 	if (grepl("Windows", osVersion)) {
 		if (nchar(x) > 256) {
 			x <- strsplit(x, "/")
-			x <- x[[lenght(x)]]
+			x <- x[[length(x)]]
 			x <- strsplit(x, "\\\\")
-			x[[lenght(x)]]
+			x[[length(x)]]
 		} else {
 			basename(x)
 		}
