@@ -143,7 +143,7 @@
 		# #}
 		# bylyr = FALSE
 		# if (!is.null(dim(value))) {
-			# #x@ptr <- x@ptr$replaceValues(i, value, ncol(value))
+			# #x@pnt <- x@pnt$replaceValues(i, value, ncol(value))
 			# stopifnot(ncol(value) == nlyr(x))
 			# bylyr <- TRUE
 			# if (inherits(value, "data.frame")) {
@@ -152,9 +152,9 @@
 			# value <- as.vector(value)
 		# }
 
-		# x@ptr <- x@ptr$deepcopy()
+		# x@pnt <- x@pnt$deepcopy()
 		# opt <- spatOptions()
-		# if (!x@ptr$replaceCellValues(i-1, value, bylyr, opt)) {
+		# if (!x@pnt$replaceCellValues(i-1, value, bylyr, opt)) {
 			# messages(x, "`[<-`")
 		# } else {
 			# x
@@ -202,7 +202,7 @@
 				# #}
 				# values <- as.vector(values)
 			# }
-			# ok <- x@ptr$replaceCellValuesLayer(layer-1, cells-1, values, bylyr, spatOptions())
+			# ok <- x@pnt$replaceCellValuesLayer(layer-1, cells-1, values, bylyr, spatOptions())
 			# messages(x)
 			# invisible(TRUE)
 		# } else {
@@ -210,7 +210,7 @@
 				# error("set.values", "some (but not all) layer numbers are < 1")
 			# }
 			# if (missing(cells) && missing(values)) {
-				# x@ptr$readAll()
+				# x@pnt$readAll()
 				# return(invisible(TRUE));
 			# }
 			# bylyr <- FALSE
@@ -224,7 +224,7 @@
 				# #}
 				# values <- as.vector(values)
 			# }
-			# ok <- x@ptr$replaceCellValues(cells-1, values, bylyr, spatOptions())
+			# ok <- x@pnt$replaceCellValues(cells-1, values, bylyr, spatOptions())
 			# messages(x)
 		# }
 		# invisible(TRUE)
