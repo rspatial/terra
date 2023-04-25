@@ -6,10 +6,8 @@
 
 win_basename <- function(x) {
 	if ((grepl("Windows", osVersion)) && (nchar(x) > 256)) {
-		x <- strsplit(x, "/")
+		x <- strsplit(x, "[\\/]+")[[1]]
 		x <- x[[length(x)]]
-		x <- strsplit(x, "\\\\")
-		x[[length(x)]]
 	} else {
 		basename(x)	
 	}
