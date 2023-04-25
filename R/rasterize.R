@@ -126,7 +126,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 	}
 	nc <- ncol(r)
 	for (i in 1:b$n) {
-		w <- matrix(background, nrow=b$nrows * nc, ncol=nl)
+		w <- matrix(background, nrow=b$nrows[i] * nc, ncol=nl)
 		mincell <- cellFromRowCol(r, b$row[i], 1)
 		maxcell <- cellFromRowCol(r, b$row[i] + b$nrows[i]-1, nc)
 		vv <- values[values[,1] >= mincell & values[,1] <= maxcell, ,drop=FALSE]
