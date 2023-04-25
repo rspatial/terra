@@ -3140,12 +3140,7 @@ SpatRaster SpatRaster::cropmask(SpatVector &v, std::string snap, bool touches, b
 		out.setError("cannot crop a SpatRaster with an empty SpatVector");
 		return out;
 	}
-	if (hasValues() && (!opt.datatype_set)) {
-		std::vector<std::string> dt = getDataType(true);
-		if ((dt.size() == 1) && !dt[0].empty()) {
-			opt.set_datatype(dt[0]);
-		}
-	}	
+
 	SpatOptions copt(opt);
 	SpatRaster out = crop(v.extent, snap, extend, copt);
 	return out.mask(v, false, NAN, touches, opt);
