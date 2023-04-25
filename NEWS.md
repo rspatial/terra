@@ -1,5 +1,10 @@
 # version 1.7-30
 
+## bug fixes
+
+- `rasterize` with points and a custom function did not work for large rasters. [#1127](https://github.com/rspatial/terra/issues/1127) by Skip Woolley
+- `crop<SpatRaster, SpatVector>` with "mask=TRUE" did not work well if the raster had a scale/offset[#1128](https://github.com/rspatial/terra/issues/1128) by Monika Anna Tomaszewska
+
 
 
 # version 1.7-29
