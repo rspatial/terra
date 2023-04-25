@@ -52,11 +52,17 @@ void SpatRaster::gdalogrproj_init(std::string path) {
     OGRRegisterAll();
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
+ #ifdef PROJ_6
 	if (!path.empty()) {
 		const char *cp = path.c_str();
 		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
 	}
+ #endif
+ #ifdef PROJ_71
+	proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+ #endif
 #endif
+
 }
 
 /*
