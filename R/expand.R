@@ -9,7 +9,8 @@ function(x, y) {
 	} else if (! length(y) == 4 ) {
 		error("extend", 'argument "y" should be a vector of 1, 2, or 4 elements')
 	}
-	e <- abs(as.vector(x))
+	y <- abs(y)
+	e <- as.vector(x)
 	e[1] <- e[1] - y[1]
 	e[2] <- e[2] + y[2]
 	e[3] <- e[3] - y[3]
