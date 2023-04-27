@@ -93,7 +93,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 				if (na.rm) {
 					i <- na.omit(i)
 				}
-				if (lenght(i) > 0) {
+				if (length(i) > 0) {
 					i[i]
 				} else {
 					NA
@@ -104,7 +104,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 				if (na.rm) {
 					i <- na.omit(i)
 				}
-				if (lenght(i) > 0) {
+				if (length(i) > 0) {
 					i[length(i)]
 				} else {
 					NA

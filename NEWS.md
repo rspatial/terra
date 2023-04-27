@@ -4,7 +4,7 @@
 
 - `rasterize` with points and a custom function did not work for large rasters. [#1127](https://github.com/rspatial/terra/issues/1127) by Skip Woolley
 - `crop<SpatRaster, SpatVector>` with "mask=TRUE" did not work well if the raster had a scale/offset[#1128](https://github.com/rspatial/terra/issues/1128) by Monika Anna Tomaszewska
-
+- `zonal<SpatRaster>` with a custom function always removed NAs. [#1133](https://github.com/rspatial/terra/issues/1133) by  Matthias Weigand
 
 
 # version 1.7-29
@@ -14,7 +14,7 @@ Released 2023-04-22
 ## new
 
 - `regress<SpatRaster,numeric>` to get regression model coefficients for each cell, with a fixed "X".
-- `regress<SpatRaster,SpatRaster>`  to get regression model coefficients for each cell.
+- `regress<SpatRaster,SpatRaster>` to get regression model coefficients for each cell.
 
 ## enhancements
 

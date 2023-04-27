@@ -5,7 +5,7 @@
 
 
 win_basename <- function(x) {
-	if (grepl("Windows", osVersion)) {
+	if (grepl("Windows", utils::osVersion)) {
 		large <- nchar(x) > 256
 		if (any(large)) {
 			for (i in 1:length(large)) {
