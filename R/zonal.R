@@ -110,14 +110,14 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			nl <- nlyr(x)
 			nms <- names(x)
 			if (group) {
-				xzg <- c(grast, z, x)
-				v <- as.data.frame(xzg, na.rm=TRUE)
+				gzx <- c(grast, z, x)
+				v <- as.data.frame(gzx, na.rm=FALSE)
 				out <- stats::aggregate(v[,-c(1:2)], v[,1:2], fun, ...)
 				colnames(out)[-c(1:2)] <- nms			
 			} else {
 				for (i in 1:nl) {
-					xz <- c(x[[i]], group, z)
-					v <- as.data.frame(xz, na.rm=TRUE)
+					xz <- c(x[[i]], z)
+					v <- as.data.frame(xz, na.rm=FALSE)
 					d <- stats::aggregate(v[,1], v[,2,drop=FALSE], fun, ...)
 					colnames(d)[2] <- nms[i]
 					if (i == 1) {
