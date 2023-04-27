@@ -191,13 +191,17 @@ inline GEOSContextHandle_t geos_init2(void) {
 inline GEOSGeometry* geos_line(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
 	size_t n = x.size();
+	if (n < 2) {
+		pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 0, 2);
+		GEOSGeometry* g = GEOSGeom_createLineString_r(hGEOSCtxt, pseq);
+		return g;	
+	}
 	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, 2);
 	for (size_t i = 0; i < n; i++) {
 		GEOSCoordSeq_setX_r(hGEOSCtxt, pseq, i, x[i]);
 		GEOSCoordSeq_setY_r(hGEOSCtxt, pseq, i, y[i]);
 	}
 	GEOSGeometry* g = GEOSGeom_createLineString_r(hGEOSCtxt, pseq);
-	// GEOSCoordSeq_destroy(pseq); 
 	return g;
 }
 
@@ -206,13 +210,17 @@ inline GEOSGeometry* geos_line(const std::vector<double> &x, const std::vector<d
 inline GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
 	size_t n = x.size();
+	if (n < 3) {
+		pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 0, 2);
+		GEOSGeometry* g = GEOSGeom_createLinearRing_r(hGEOSCtxt, pseq);
+		return g;	
+	}
 	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, 2);
 	for (size_t i = 0; i < n; i++) {
 		GEOSCoordSeq_setX_r(hGEOSCtxt, pseq, i, x[i]);
 		GEOSCoordSeq_setY_r(hGEOSCtxt, pseq, i, y[i]);
 	}
 	GEOSGeometry* g = GEOSGeom_createLinearRing_r(hGEOSCtxt, pseq);
-	// GEOSCoordSeq_destroy(pseq); 
 	return g;
 }
 

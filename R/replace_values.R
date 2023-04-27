@@ -73,7 +73,6 @@ setMethod("set.values", signature(x="SpatRaster"),
 
 
 make_replace_index <- function(v, vmx, name="i") {
-
 	caller <- paste0("`[<-`(", name, ")")
 
 	if (inherits(v, "SpatRaster")) {
@@ -124,8 +123,17 @@ make_replace_index <- function(v, vmx, name="i") {
 		}
 	}
 
-	vv <- stats::na.omit(v)
-	if (any(vv < 1 | vv > vmx)) {
+	if (any(is.na(v))) {
+		error(caller, "NAs are not allowed in subscripted assignments")
+	}
+	#vv <- stats::na.omit(v)
+	if (all(v < 0)) {
+		if (any(v < -vmx)) {
+			error(caller, paste(name, "is out of its valid range"))
+		}
+		v <- (1:vmx)[v]
+	} 
+	if (any(v < 1 | v > vmx)) {
 		error(caller, paste(name, "is out of its valid range"))
 	}
 	v

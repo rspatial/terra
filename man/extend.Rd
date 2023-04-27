@@ -21,9 +21,9 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 
 \arguments{
   \item{x}{SpatRaster or SpatExtent}
-  \item{y}{If \code{x} is a SpatRaster, \code{y} should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide two positive integers indicating the number of rows and columns that need to be added at each side (or a single positive integer when the number of rows and columns is equal)
+  \item{y}{If \code{x} is a SpatRaster, \code{y} should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide one, two or four non-negative integers indicating the number of rows and columns that need to be added at each side (a single positive integer when the number of rows and columns to be added is equal; or 2 number (columns, rows), or four (left column, right column, bottom row, top row).
+  If \code{x} is a SpatExtent, \code{y} should likewise be a numeric vector of 1, 2, or 4 elements}
   
-  If \code{x} is a SpatExtent, \code{y} should be a numeric vector of 1, 2, or 4 elements}
   \item{snap}{character. One of "near", "in", or "out". Used to align \code{y} to the geometry of \code{x}} 
   \item{fill}{numeric. The value used to for the new raster cells}
   \item{filename}{character. Output filename}

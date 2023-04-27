@@ -5,9 +5,21 @@
 
 
 win_basename <- function(x) {
-	if ((grepl("Windows", osVersion)) && (nchar(x) > 256)) {
-		x <- strsplit(x, "[\\/]+")[[1]]
-		x <- x[[length(x)]]
+	if (grepl("Windows", osVersion)) {
+		large <- nchar(x) > 256
+		if (any(large)) {
+			for (i in 1:length(large)) {
+				if (large[i]) {
+					r <- strsplit(x[i], "[\\/]+")[[1]]
+					x[i] <- r[[length(r)]]
+				} else {
+					x[i] <- basename(x)	
+				}
+			}
+		} else {
+			x <- basename(x)
+		}
+		x
 	} else {
 		basename(x)	
 	}

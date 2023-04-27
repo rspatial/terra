@@ -87,8 +87,39 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 			}
 		}
 	}
-
-
+	if (inherits(fun, "character")) {
+		if (fun == "first") {
+			fun <- function(i, na.rm=FALSE) {
+				if (na.rm) {
+					i <- na.omit(i)
+				}
+				if (lenght(i) > 0) {
+					i[i]
+				} else {
+					NA
+				}
+			}
+		} else if (fun == "last") {
+			fun <- function(i, na.rm=FALSE) {
+				if (na.rm) {
+					i <- na.omit(i)
+				}
+				if (lenght(i) > 0) {
+					i[length(i)]
+				} else {
+					NA
+				}
+			}
+		} else if (fun == "count") {
+			fun <- function(i, na.rm=FALSE) {
+				if (na.rm) {
+					i <- na.omit(i)
+				}
+				length(i)
+			}
+		}
+	}
+	
 	g <- cellFromXY(y, x)
 	i <- which(!is.na(g))
 	g <- g[i]
