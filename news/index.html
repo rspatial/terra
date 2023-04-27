@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-27</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-30</span>
       </span>
     </div>
 
@@ -48,16 +48,27 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-26" id="version-17-26">version 1.7-26<a class="anchor" aria-label="anchor" href="#version-17-26"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-30" id="version-17-30">version 1.7-30<a class="anchor" aria-label="anchor" href="#version-17-30"></a></h2>
 <div class="section level3">
-<h3 id="new-1-7-26">new<a class="anchor" aria-label="anchor" href="#new-1-7-26"></a></h3>
+<h3 id="bug-fixes-1-7-30">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-30"></a></h3>
+<ul><li>
+<code>rasterize</code> with points and a custom function did not work for large rasters. <a href="https://github.com/rspatial/terra/issues/1127" class="external-link">#1127</a> by Skip Woolley</li>
+<li>
+<code>crop&lt;SpatRaster, SpatVector&gt;</code> with “mask=TRUE” did not work well if the raster had a scale/offset<a href="https://github.com/rspatial/terra/issues/1128" class="external-link">#1128</a> by Monika Anna Tomaszewska</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.7-29" id="version-17-29">version 1.7-29<small>2023-04-21</small><a class="anchor" aria-label="anchor" href="#version-17-29"></a></h2>
+<p>Released 2023-04-22</p>
+<div class="section level3">
+<h3 id="new-1-7-29">new<a class="anchor" aria-label="anchor" href="#new-1-7-29"></a></h3>
 <ul><li>
 <code>regress&lt;SpatRaster,numeric&gt;</code> to get regression model coefficients for each cell, with a fixed “X”.</li>
 <li>
 <code>regress&lt;SpatRaster,SpatRaster&gt;</code> to get regression model coefficients for each cell.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-26">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-26"></a></h3>
+<h3 id="enhancements-1-7-29">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-29"></a></h3>
 <ul><li>
 <code>lapp&lt;SpatRasterDataset&gt;</code> is now more flexible in that it can now also use functions that are vectorized by cell, not by chunk. See <a href="https://github.com/rspatial/terra/issues/1029" class="external-link">#1029</a>
 </li>
@@ -66,7 +77,7 @@
 <li>extracting a SpatVector column with a non-existing variable name now returns NULL (because that is what a data.frame does) instead of throwing an error. <a href="https://github.com/rspatial/terra/issues/1118" class="external-link">#1118</a> by Derek Friend.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-26">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-26"></a></h3>
+<h3 id="bug-fixes-1-7-29">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-29"></a></h3>
 <ul><li>a problem with reading empty categories in .img files created buggy SpatRasters</li>
 <li>
 <code>global</code> with fun=“notNA” was wrong <a href="https://github.com/rspatial/terra/issues/1111" class="external-link">#111</a> by Jeffrey Hanson</li>

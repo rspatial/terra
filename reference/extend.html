@@ -18,7 +18,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-27</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-30</span>
       </span>
     </div>
 
@@ -68,9 +68,10 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 <dd><p>SpatRaster or SpatExtent</p></dd>
 
   <dt>y</dt>
-<dd><p>If <code>x</code> is a SpatRaster, <code>y</code> should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide two positive integers indicating the number of rows and columns that need to be added at each side (or a single positive integer when the number of rows and columns is equal)</p>  
-<p>If <code>x</code> is a SpatExtent, <code>y</code> should be a numeric vector of 1, 2, or 4 elements</p></dd>
+<dd><p>If <code>x</code> is a SpatRaster, <code>y</code> should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide one, two or four non-negative integers indicating the number of rows and columns that need to be added at each side (a single positive integer when the number of rows and columns to be added is equal; or 2 number (columns, rows), or four (left column, right column, bottom row, top row).
+  If <code>x</code> is a SpatExtent, <code>y</code> should likewise be a numeric vector of 1, 2, or 4 elements</p></dd>
 
+  
   <dt>snap</dt>
 <dd><p>character. One of "near", "in", or "out". Used to align <code>y</code> to the geometry of <code>x</code></p></dd>
  
@@ -113,9 +114,9 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 <span class="r-in"><span><span class="va">e</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : -150, -120, 30, 60 (xmin, xmax, ymin, ymax)</span>
 <span class="r-in"><span><span class="fu">extend</span><span class="op">(</span><span class="va">e</span>, <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : -160, -110, 20, 70 (xmin, xmax, ymin, ymax)</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [ext] invalid extent</span>
 <span class="r-in"><span><span class="fu">extend</span><span class="op">(</span><span class="va">e</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : -160, -130, 30, 80 (xmin, xmax, ymin, ymax)</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [ext] invalid extent</span>
 </code></pre></div>
     </div>
   </div>
