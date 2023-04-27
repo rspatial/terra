@@ -42,6 +42,11 @@ setMethod("timeInfo", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("timeInfo", signature(x="SpatRasterDataset"),
+          function(x) {
+            lapply(x,timeInfo)
+          }
+)
 
 time_as_seconds <- function(x) {
 	d <- x@pnt$time
@@ -101,6 +106,12 @@ setMethod("time", signature(x="SpatRaster"),
 			d
 		}
 	}
+)
+
+setMethod("time", signature(x="SpatRasterDataset"),
+          function(x, format="") {
+            lapply(x,time, format=format)
+          }
 )
 
 posix_from_ym <- function(y, m) {
