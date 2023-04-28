@@ -42,11 +42,13 @@ setMethod("timeInfo", signature(x="SpatRaster"),
 	}
 )
 
+
 setMethod("timeInfo", signature(x="SpatRasterDataset"),
-          function(x) {
-            lapply(x,timeInfo)
-          }
+	function(x) {
+		t(sapply(w, timeInfo))
+	}
 )
+
 
 time_as_seconds <- function(x) {
 	d <- x@pnt$time
@@ -109,9 +111,9 @@ setMethod("time", signature(x="SpatRaster"),
 )
 
 setMethod("time", signature(x="SpatRasterDataset"),
-          function(x, format="") {
-            lapply(x,time, format=format)
-          }
+	function(x, format="") {
+		lapply(x,time, format=format)
+	}
 )
 
 posix_from_ym <- function(y, m) {
@@ -215,6 +217,35 @@ setMethod("time<-", signature(x="SpatRaster"),
 	}
 )
 
+
+setMethod("time<-", signature(x="SpatRasterDataset"),
+	function(x, tstep="", value)  {
+
+		if (missing(value)) {
+			value <- tstep
+			tstep <- ""
+		}
+		tstep <- rep_len(tstep, length(x))
+
+		if (is.list(value)) {
+			if (length(x) != length(value)) {
+				error("time<-", "the list should have the same length as 'x'")
+			}
+			z <- lapply(1:length(x), function(i) { 
+				time(x[i], tstep=tstep[i]) <- value[[i]]
+			})
+			
+		} else {
+			if (length(unique(nlyr(x))) > 1) {
+				error("time<-", "not all SpatRasters have the same number of layers")
+			}
+			z <- lapply(1:length(x), function(i) { 
+				time(x[i], tstep=tstep[i]) <- value
+			})
+		}
+		x
+	}
+)
 
 
 setMethod("depth", signature(x="SpatRaster"),

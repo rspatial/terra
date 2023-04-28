@@ -2,10 +2,13 @@
 
 \alias{time}
 \alias{time<-}
-\alias{time,SpatRaster-method}
 \alias{time<-,SpatRaster-method}
+\alias{time<-,SpatRasterDataset-method}
+\alias{time,SpatRaster-method}
+\alias{time,SpatRasterDataset-method}
 \alias{timeInfo}
 \alias{timeInfo,SpatRaster-method}
+\alias{timeInfo,SpatRasterDataset-method}
 
   
 \title{time of SpatRaster layers}
@@ -26,7 +29,7 @@ Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\
 
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster or SpatRasterDataset}
   \item{format}{One of "", "seconds" (POSIXlt), "days" (Date), "yearmonths" (decimal years), "years", "months". If "", the returned format is (based on) the format that was used to set the time}
   \item{value}{\code{Date}, \code{POSIXt}, \code{yearmon} (defined in package zoo), or numeric}
   \item{tstep}{One of "years", "months", "yearmonths". Used when \code{value} is numeric. Ignored when \code{value} is of type \code{Date}, \code{POSIXt}, or \code{yearmon}}
