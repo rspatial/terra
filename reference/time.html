@@ -70,7 +70,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>SpatRaster</p></dd>
+<dd><p>SpatRaster or SpatRasterDataset</p></dd>
 
   <dt>format</dt>
 <dd><p>One of "", "seconds" (POSIXlt), "days" (Date), "yearmonths" (decimal years), "years", "months". If "", the returned format is (based on) the format that was used to set the time</p></dd>
@@ -108,8 +108,8 @@
 <span class="r-in"><span><span class="co"># with time zone</span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXlt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"America/New_York"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2023-04-27 00:52:53 EDT" "2023-04-27 00:52:54 EDT"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "2023-04-27 00:52:55 EDT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2023-04-27 22:34:44 EDT" "2023-04-27 22:34:45 EDT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "2023-04-27 22:34:46 EDT"</span>
 <span class="r-in"><span><span class="fu">timeInfo</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   time    step             zone</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 TRUE seconds America/New_York</span>
