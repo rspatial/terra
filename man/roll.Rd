@@ -7,7 +7,9 @@
 \title{Rolling (moving) functions}
 
 \description{
-Compute "rolling" or "moving" functions, such as the "rolling average"
+Compute "rolling" or "moving" values, such as the "rolling average" for each cell in a SpatRaster.
+
+See \code{\link{focal}} for spatially moving averages and similar computations. And see \code{\link{cumsum}} and other cum* functions to compute cumulate values.
 }
 
 \usage{
@@ -33,7 +35,7 @@ Compute "rolling" or "moving" functions, such as the "rolling average"
 Same as \code{x}
 }
 
-\seealso{\code{\link{cumsum}}}
+\seealso{\code{\link{cumsum}}, \code{\link{focal}}}
 
 \examples{
 ## numeric
@@ -41,7 +43,7 @@ roll(1:12, 3, mean)
 roll(1:12, 3, mean, "to")
 roll(1:12, 3, mean, circular=TRUE)
 
-## SpatVector
+## SpatRaster
 r <- rast(ncol=2, nrow=2, nlyr=10, vals=1)
 r[1,2] = 2
 r[2,2] = 4
