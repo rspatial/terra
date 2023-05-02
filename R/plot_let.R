@@ -1,6 +1,13 @@
 
 # these methods require the dev version of leaflet
 
+checkLeafLetVersion <- function() {
+	v <- utils::packageVersion("leaflet")
+	if (v < "2.1.2.9000") {
+		error("plet", "plet needs the development version of leaflet")
+	}
+}
+
 popUp <- function(x) {
 	nms <- names(x)
 	if (length(nms) > 0) {
@@ -52,10 +59,7 @@ baselayers <- function(tiles, wrap=TRUE) {
 setMethod("plet", signature(x="SpatVector"),
 	function(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL, ...)  {
 
-		v <- utils::packageVersion("leaflet")
-		if ((v < "2.1.1.9000") || (v == "2.1.2")) {
-			error("plet", "plet needs the development version of leaflet")
-		}
+		checkLeafLetVersion()
 		
 		if (missing(col)) col <- grDevices::rainbow
 		alpha <- max(0, min(1, alpha))
@@ -164,10 +168,7 @@ setMethod("plet", signature(x="SpatVector"),
 setMethod("plet", signature(x="SpatVectorCollection"),
 	function(x, col, alpha=1, fill=0, cex=1, lwd=2, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
 
-		v <- utils::packageVersion("leaflet")
-		if ((v < "2.1.1.9000") || (v == "2.1.2")) {
-			error("plet", "plet needs the development version of leaflet")
-		}
+		checkLeafLetVersion()
 
 		if (is.null(map)) {
 			tiles <- unique(as.character(tiles))
@@ -337,7 +338,7 @@ make.panel <- function(x, maxcell) {
 setMethod("plet", signature(x="SpatRaster"),
 	function(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, wrap=TRUE, maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
 
-		stopifnot(utils::packageVersion("leaflet") > "2.1.1")
+		checkLeafLetVersion()
 
 		if (is.na(crs(x))) {
 			error("plet", "x must have a crs")

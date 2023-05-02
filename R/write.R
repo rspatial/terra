@@ -75,6 +75,8 @@ get_filetype <- function(filename) {
 		"ESRI Shapefile"
 	} else if (ext == "gpkg") {
 		"GPKG"
+	} else if (ext == "gdb") {
+		"OpenFileGDB"
 	} else if (ext == "gml") {
 		"GML"
 	} else if (ext == "json") {
