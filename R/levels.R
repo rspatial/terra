@@ -155,6 +155,9 @@ setMethod ("set.cats" , "SpatRaster",
 			if (ncol(value) == 1) {
 				error("set.cats", "value should have at least two columns")
 			} else {
+				if (!is.numeric(value[,1])) {
+					error("set.cats", "the first column of value must be integer or numeric")
+				}
 				value[,1] <- round(value[,1])
 				if (length(unique(value[,1,drop=TRUE])) != nrow(value)) {
 					error("set.cats", "duplicate values (IDs) supplied")
