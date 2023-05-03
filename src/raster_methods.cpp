@@ -3502,27 +3502,45 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	sopt.progressbar = false;
 
 	for (size_t i=0; i<n; i++) {
+Rcpp::Rcout << i << ": ";	
 		SpatRaster r;
+Rcpp::Rcout << rcnt[i] << ": ";	
 		if (rcnt[i] == 1) {
+Rcpp::Rcout << "a: ";	
 			r = ds[rsti[i][0]];
 		} else if (rcnt[i] > 1) {
+Rcpp::Rcout << "b: ";	
 			SpatVector vi = ve.subset_rows(ord[i]);
-			SpatRasterCollection x;
-			x = crop(vi.extent, "near", true, rsti[i], sopt);
+
+Rcpp::Rcout << "crop " << vi.extent.xmin << " " << vi.extent.xmax << " " << 
+			vi.extent.ymin << " " << vi.extent.ymax << " ";
+			
+SpatRasterCollection x = crop(vi.extent, "near", true, rsti[i], sopt);
+
 			if (x.empty()) {
 				continue;
 			} 
 			SpatRasterStack s;
 			s.ds = x.ds;
+			
+if ((i == 233) && (rcnt[i] == 6)) {
+    Rcpp::Rcout << x.ds.size() << " done\n";	
+//	SpatRaster out = s.collapse();
+//return out;	
+}	
 
+Rcpp::Rcout << "summary ";	
 			r = s.summary(fun, true, sopt);
+
 			if (r.hasError()) {
 				return r;
 			}
 		}
+Rcpp::Rcout << " write ";	
 		if (!write_part(out, r, hxr, nl, false, warn, sopt)) {
 			return out;
 		}
+Rcpp::Rcout << std::endl;	
 	}
 	out.writeStop();
 
@@ -3845,9 +3863,9 @@ void do_mstats(std::vector<double> &v, size_t start, size_t end, std::vector<std
 			}
 		} else if (fun == "isNA") {
 			if (narm) {
-				stat[i] += v.size() - notna;
+				stat[i] += end - start - notna;
 			} else {
-				stat[i] += v.size() - isnotna_se(v, start, end);
+				stat[i] += end - start - isnotna_se(v, start, end);
 			}
 		}
 	}
