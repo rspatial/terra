@@ -314,6 +314,19 @@ setMethod("saveRDS", signature(object="SpatRaster"),
 	}
 )
 
+setMethod("saveRDS", signature(object="SpatRasterDataset"),
+	function(object, file="", ascii = FALSE, version = NULL, compress=TRUE, refhook = NULL) {
+		object <- wrap(object)
+		saveRDS(object, file=file, ascii = ascii, version = version, compress=compress, refhook = refhook)
+	}
+)
+
+setMethod("saveRDS", signature(object="SpatRasterCollection"),
+	function(object, file="", ascii = FALSE, version = NULL, compress=TRUE, refhook = NULL) {
+		object <- wrap(object)
+		saveRDS(object, file=file, ascii = ascii, version = version, compress=compress, refhook = refhook)
+	}
+)
 
 
 setMethod("readRDS", signature(file="character"),
