@@ -20,7 +20,7 @@ setMethod("panel", signature(x="SpatRaster"),
 			}
 			lv <- unique(lv)
 			if (length(unique(lv[,1])) < nrow(lv)) {
-				error("panel", "cannot use conflicting categorical rasters")			
+				error("panel", "cannot use rasters with conflicting categories")			
 			}
 			categorical <- TRUE
 		}
