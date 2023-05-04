@@ -26,6 +26,16 @@ setClass("PackedSpatRaster",
 	)
 )
 
+setClass("PackedSpatRasterDC",
+	representation (
+		type = "character",
+		rasters = "list"
+	),
+	prototype (
+		rasters = list()
+	)
+)
+
 
 
 setMethod("wrap", signature(x="SpatVector"),
@@ -207,6 +217,39 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 	}
 )
 
+
+setMethod("wrap", signature(x="SpatRasterDataset"),
+	function(x, proxy=FALSE) {
+		r <- methods::new("PackedSpatRasterDC")
+		r@type <- "SpatRasterDataset"
+		r@rasters <- lapply(x, wrap)
+		r
+	}
+)
+
+setMethod("wrap", signature(x="SpatRasterCollection"),
+	function(x, proxy=FALSE) {
+		r <- methods::new("PackedSpatRasterDC")
+		r@type <- "SpatRasterCollection"
+		r@rasters <- lapply(x, wrap)
+		r
+	}
+)
+
+setMethod("unwrap", signature(x="PackedSpatRasterDC"),
+	function(x) {
+		type <- x@type
+		x <- lapply(x@rasters, unwrap)
+		if (type == "SpatRasterCollection") {
+			sprc(x)
+		} else {
+			sds(x)
+		}
+	}
+)
+
+
+
 setMethod("rast", signature(x="PackedSpatRaster"),
 	function(x) {
 		unwrap(x)
@@ -219,7 +262,11 @@ setMethod("show", signature(object="PackedSpatRaster"),
 	}
 )
 
-
+setMethod("show", signature(object="PackedSpatRasterDC"),
+	function(object) {
+		print(paste("This is a", class(object), "object. Use 'terra::unwrap()' to unpack it"))
+	}
+)
 
 
 setMethod("unwrap", signature(x="ANY"),
