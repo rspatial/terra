@@ -5,6 +5,14 @@
 - `rasterize` with points and a custom function did not work for large rasters. [#1127](https://github.com/rspatial/terra/issues/1127) by Skip Woolley
 - `crop<SpatRaster, SpatVector>` with "mask=TRUE" did not work well if the raster had a scale/offset[#1128](https://github.com/rspatial/terra/issues/1128) by Monika Anna Tomaszewska
 - `zonal<SpatRaster>` with a custom function always removed NAs. [#1133](https://github.com/rspatial/terra/issues/1133) by  Matthias Weigand
+- `wrap<SpatRaster>` lost changed layer names if the source was from disk; and information on some time-step in some cases. [#1144](https://github.com/rspatial/terra/issues/1144) by Pascal Führlich
+- `global(fun="isNA")` was not correct when the SpatRaster had multiple layers [#1141] (https://github.com/rspatial/terra/issues/1141) by Robin Freeman
+
+
+## enhancements
+
+- `panel` for categorical SpatRasters [#1143](https://github.com/rspatial/terra/issues/1143) by Jason Flower
+- argument "ext" in `plot<SpatRaster>` can now also expand the plot. [#1136](https://github.com/rspatial/terra/issues/1136) by Jakub Nowosad.
 
 
 # version 1.7-29
