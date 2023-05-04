@@ -3502,18 +3502,13 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	sopt.progressbar = false;
 
 	for (size_t i=0; i<n; i++) {
-//Rcpp::Rcout << i << ": ";	
 		SpatRaster r;
-//Rcpp::Rcout << rcnt[i] << ": ";	
+
 		if (rcnt[i] == 1) {
-//Rcpp::Rcout << "a: ";	
 			r = ds[rsti[i][0]];
 		} else if (rcnt[i] > 1) {
-//Rcpp::Rcout << "b: ";	
 			SpatVector vi = ve.subset_rows(ord[i]);
 
-////Rcpp::Rcout << "crop " << vi.extent.xmin << " " << vi.extent.xmax << " " << 
-			vi.extent.ymin << " " << vi.extent.ymax << " ";
 			
 SpatRasterCollection x = crop(vi.extent, "near", true, rsti[i], sopt);
 
@@ -3522,25 +3517,20 @@ SpatRasterCollection x = crop(vi.extent, "near", true, rsti[i], sopt);
 			} 
 			SpatRasterStack s;
 			s.ds = x.ds;
+
+//			if (i == 57 || i == 79 | i == 269) { // && (rcnt[i] == 6)) {
+			//r = s.summary(fun, true, sopt);
+
+			r = s.collapse();
+			r = r.summary(fun, true, sopt);
 			
-//if ((i == 233) && (rcnt[i] == 6)) {
- //   Rcpp::Rcout << x.ds.size() << " done\n";	
-//	SpatRaster out = s.collapse();
-//return out;	
-//}	
-
-//Rcpp::Rcout << "summary ";	
-			r = s.summary(fun, true, sopt);
-
 			if (r.hasError()) {
 				return r;
 			}
 		}
-//Rcpp::Rcout << " write ";	
 		if (!write_part(out, r, hxr, nl, false, warn, sopt)) {
 			return out;
 		}
-//Rcpp::Rcout << std::endl;	
 	}
 	out.writeStop();
 
