@@ -141,6 +141,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 		v <- time(x)
 		if (any(!is.na(v))) {
 			r@attributes$time <- v
+			r@attributes$tinfo <- timeInfo(x)
 		}
 		v <- units(x)
 		if (all(v != "")) {
@@ -159,10 +160,11 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 	function(x) {
 
 		r <- eval(parse(text=x@definition))
-		if (!is.null(x@attributes$filename)) {
+		if (!is.null(x@attributes$filename)) { # backwards compatibility
 			rr <- rast(x@attributes$filename)
 			ext(rr) <- ext(r)
 			crs(rr, warn=FALSE) <- crs(r)
+			names(rr) <- names(r)
 			r <- rr
 		} else if (!is.null(x@attributes$sources)) {
 			s <- x@attributes$sources
@@ -175,6 +177,7 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 			rr <- rast(rr)
 			ext(rr) <- ext(r)
 			crs(rr, warn=FALSE) <- crs(r)
+			names(rr) <- names(r)
 			r <- rr
 		} else {
 			values(r) <- x@values
@@ -182,7 +185,15 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 
 		if (length(x@attributes) > 0) {
 			nms <- names(x@attributes)
-			if (any(nms %in% c("levels", "time", "units", "depth"))) {
+			if ("time" %in% nms) {
+				tinfo <- x@attributes$tinfo
+				if (!is.null(tinfo)) {
+					time(r, tinfo$step) <- x@attributes$time
+				} else {
+					time(r) <- x@attributes$time
+				}
+			}
+			if (any(nms %in% c("levels", "units", "depth"))) {
 				time(r) <- x@attributes$time
 				units(r) <- x@attributes$units	
 				depth(r) <- x@attributes$depth
