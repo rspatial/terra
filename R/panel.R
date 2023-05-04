@@ -8,10 +8,21 @@ setMethod("panel", signature(x="SpatRaster"),
 			error("panel", "you cannot set the plot type")
 		}
 		if (!is.null(dots$breaks)) {
-			error("panel", "you cannot use breaks")
+			error("panel", "you cannot use argument 'breaks'")
 		}
+		categorical <- FALSE
 		if (any(is.factor(x))) {
-			error("panel", "cannot use categorical rasters")
+		    lv <- levels(x)
+			lv <- lv[sapply(lv, is.data.frame)]
+			lv <- try(do.call(rbind, lv), silent=TRUE)
+			if (inherits(lv, "try-error")) {
+				error("panel", "cannot use non-matching categorical rasters")
+			}
+			lv <- unique(lv)
+			if (length(unique(lv[,1])) < nrow(lv)) {
+				error("panel", "cannot use conflicting categorical rasters")			
+			}
+			categorical <- TRUE
 		}
 
 		nl <- max(1, min(nlyr(x), maxnl))
@@ -65,8 +76,15 @@ setMethod("panel", signature(x="SpatRaster"),
 		plg$yshift <- (nrnc[1] %% 2 == 0) 
 		for (i in 1:nl) {
 			pax$side <- c(bottom[i], left[i])
-			plot(x, i, main=main[i], mar=mar, legend=legend[i], range=rng, pax=pax, box=box, 
-				loc.main=loc.main, plg=plg, type="continuous", ...)
+			if (categorical) {
+				y <- x[[i]]
+				levels(y) <- lv
+				plot(y, 1, main=main[i], mar=mar, legend=legend[i], range=rng, pax=pax, box=box, 
+					loc.main=loc.main, plg=plg, type="classes", ...)
+			} else {
+				plot(x, i, main=main[i], mar=mar, legend=legend[i], range=rng, pax=pax, box=box, 
+					loc.main=loc.main, plg=plg, type="continuous", ...)
+			}
 		}
 	}
 )
