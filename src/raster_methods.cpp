@@ -3510,7 +3510,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 			SpatVector vi = ve.subset_rows(ord[i]);
 
 			
-SpatRasterCollection x = crop(vi.extent, "near", true, rsti[i], sopt);
+			SpatRasterCollection x = crop(vi.extent, "near", true, rsti[i], sopt);
 
 			if (x.empty()) {
 				continue;
@@ -3518,9 +3518,9 @@ SpatRasterCollection x = crop(vi.extent, "near", true, rsti[i], sopt);
 			SpatRasterStack s;
 			s.ds = x.ds;
 
-//			if (i == 57 || i == 79 | i == 269) { // && (rcnt[i] == 6)) {
 			//r = s.summary(fun, true, sopt);
-
+// see #1159
+//			if (i == 57 || i == 79 | i == 269) { // && (rcnt[i] == 6)) {
 			r = s.collapse();
 			r = r.summary(fun, true, sopt);
 			

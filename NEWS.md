@@ -1,4 +1,4 @@
-# version 1.7-30
+# version 1.7-31
 
 ## bug fixes
 
@@ -8,11 +8,13 @@
 - `wrap<SpatRaster>` lost changed layer names if the source was from disk; and information on some time-step in some cases. [#1144](https://github.com/rspatial/terra/issues/1144) by Pascal Führlich
 - `global(fun="isNA")` was not correct when the SpatRaster had multiple layers [#1141] (https://github.com/rspatial/terra/issues/1141) by Robin Freeman
 
-
 ## enhancements
 
 - `panel` for categorical SpatRasters [#1143](https://github.com/rspatial/terra/issues/1143) by Jason Flower
 - argument "ext" in `plot<SpatRaster>` can now also expand the plot. [#1136](https://github.com/rspatial/terra/issues/1136) by Jakub Nowosad.
+
+## new
+- `wrap<SpatRasterDataset>` and `wrap<SpatRasterCollection>` methods. [#954](https://github.com/rspatial/terra/issues/954) by James Camac
 
 
 # version 1.7-29
