@@ -118,7 +118,10 @@ SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, 
 		for (size_t i=0; i<size(); i++) {
 			SpatExtent xe = e.intersect(ds[i].getExtent());
 			if (xe.valid()) {
-				out.push_back(ds[i].crop(e, snap, expand, ops), "");
+				SpatRaster r = ds[i].crop(e, snap, expand, ops);
+				if ((r.ncol() > 0) && (r.nrow() > 0)) {
+					out.push_back(r, "");
+				}
 			}
 		}
 	} else {
