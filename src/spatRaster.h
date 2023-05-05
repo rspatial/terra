@@ -482,6 +482,8 @@ class SpatRaster {
 
 		bool writeValues(std::vector<double> &vals, size_t startrow, size_t nrows);
 		bool writeValuesRect(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
+		bool writeValuesRectRast(SpatRaster &r, SpatOptions& opt);
+		
 		//bool writeValues2(std::vector<std::vector<double>> &vals, size_t startrow, size_t nrows);
 		bool writeStop();
 		bool writeHDR(std::string filename);

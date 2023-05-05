@@ -19,6 +19,7 @@
 #include "file_utils.h"
 #include "string_utils.h"
 #include "math_utils.h"
+#include "recycle.h"
 
 
 bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size_t nrows) {
@@ -339,6 +340,65 @@ bool SpatRaster::writeValuesRect(std::vector<double> &vals, size_t startrow, siz
 	return success;
 }
 
+
+bool SpatRaster::writeValuesRectRast(SpatRaster &r, SpatOptions& opt) {
+	bool success = true;
+
+	if (!compare_geom(r, false, false, opt.get_tolerance(), false, false, false, true)) {
+		return(false);
+	}
+	double hxr = xres() / 2;
+	double hyr = yres() / 2;
+
+	SpatExtent e = r.getExtent();
+	size_t row1  = rowFromY(e.ymax - hyr);
+	size_t row2  = rowFromY(e.ymin + hyr);
+	size_t col1  = colFromX(e.xmin + hxr);
+	size_t col2  = colFromX(e.xmax - hxr);
+	size_t ncols = col2-col1+1;
+	size_t nrows = row2-row1+1;
+
+	std::vector<double> vals = r.getValues(-1, opt);
+	recycle(vals, ncols * nrows * nlyr());
+
+	if (!source[0].open_write) {
+		setError("cannot write (no open file)");
+		return false;
+	}
+
+	if ((row1 + nrows) > nrow()) {
+		setError("incorrect start row and/or nrows value");
+		return false;
+	}
+	if ((col1 + ncols) > ncol()) {
+		setError("incorrect start col and/or ncols value");
+		return false;
+	}
+
+	if (source[0].driver == "gdal") {
+		#ifdef useGDAL
+
+		success = writeValuesGDAL(vals, row1, nrows, col1, ncols);
+		#else
+		setError("GDAL is not available");
+		return false;
+		#endif
+	} else {
+		success = writeValuesMemRect(vals, row1, nrows, col1, ncols);
+	}
+
+#ifdef useRcpp
+	if (checkInterrupt()) {
+		pbar.interrupt();
+		setError("aborted");
+		return(false);
+	}
+	if (progressbar) {
+		pbar.stepit();
+	}
+#endif
+	return success;
+}
 
 
 

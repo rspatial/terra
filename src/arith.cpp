@@ -1226,7 +1226,6 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 		return(out);
 	}
 
-
 	opt.ncopies = std::max(opt.ncopies, nlyr() * 2);
 	if (!out.writeStart(opt, filenames())) {
 		readStop();

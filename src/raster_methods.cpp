@@ -3283,7 +3283,7 @@ bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, unsigned& nl,
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v, vout;
 		r.readBlock(v, bs, i);
-		unsigned row1  = out.rowFromY(r.yFromRow(bs.row[i]));
+		unsigned row1  = out.rowFromY(r.yFromRow(bs.row[i])); 
 		unsigned row2  = out.rowFromY(r.yFromRow(bs.row[i]+bs.nrows[i]-1));
 		unsigned col1  = out.colFromX(re.xmin + hxr);
 		unsigned col2  = out.colFromX(re.xmax - hxr);
@@ -3400,7 +3400,116 @@ bool overlaps(const std::vector<unsigned>& r1, const std::vector<unsigned>& r2,
 }
 
 
+SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
+	SpatRaster out;
+	std::vector<std::string> f {"first", "last", "sum", "mean", "median", "min", "max"};
+	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+		out.setError("argument 'fun' is not a valid function name");
+		return out;
+	}
+	if (fun == "first") {
+		return merge(true, true, opt);
+	}
+	if (fun == "last") {
+		return merge(false, true, opt);
+	}
+	unsigned n = size();
+
+	if (n == 0) {
+		out.setError("empty collection");
+		return(out);
+	}
+	if (n == 1) {
+		out = ds[0].deepCopy();
+		return(out);
+	}
+
+	std::vector<bool> hvals(n);
+	hvals[0] = ds[0].hasValues();
+	SpatExtent e = ds[0].getExtent();
+	unsigned nl = ds[0].nlyr();
+//std::vector<bool> resample(n, false);
+		
+	for (size_t i=1; i<n; i++) {
+		SpatExtent ee = ds[i].getExtent();
+									//  lyrs, crs, warncrs, ext, rowcol, res
+		if (!ds[0].compare_geom(ds[i], false, false, opt.get_tolerance(), false, false, false, true)) {
+			out.setError(ds[0].msg.error);
+			return(out);
+		}
+		e.unite(ee);
+		hvals[i] = ds[i].hasValues();
+		nl = std::max(nl, ds[i].nlyr());
+	}
+	out = ds[0].geometry(nl, false);
+	out.setExtent(e, true, true, "");
+
+	for (int i=(n-1); i>=0; i--) {
+		if (!hvals[i]) {
+			erase(i);
+		}
+	}
+
+	n = size();
+	if (size() == 0) {
+		return out;
+	}
+
+//	if (!overlaps(r1, r2, c1, c2)) {
+//		return merge(true, true, opt);
+//	}
+
+	double ncl = 1000;
+	if (n > 50) ncl = 500;
+	if (n > 100) ncl = 250;
+	double     ar = std::ceil(out.nrow() / ncl);
+	unsigned arow = std::ceil(out.nrow() / ar);
+	double     ac = std::ceil(out.ncol() / ncl);
+	unsigned acol = std::ceil(out.ncol() / ac);
+
+	SpatOptions sopt(opt);
+	SpatRaster aout = out.aggregate({arow, acol}, "", true, sopt);
+	SpatVector ve = aout.as_polygons(false, false, false, false, false, sopt);
+
+	SpatVector vcrp(out.getExtent(), "");
+	ve = ve.intersect(vcrp, false);
+	n = ve.nrow();
+	bool warn = false;
+
+ 	if (!out.writeStart(opt, filenames())) { return out; }
+	sopt.progressbar = false;
+
+	std::vector<unsigned> use; 
+	SpatRasterStack s;
+	for (size_t i=0; i<n; i++) {
+		SpatVector vi = ve.subset_rows(i);
+		SpatExtent ce = vi.getExtent();
+		SpatRasterCollection x = crop(ce, "near", true, use, sopt);
+		if (x.empty()) {
+			continue;
+		} 
+		s.ds = x.ds;
+			//r = s.summary(fun, true, sopt);
+// see #1159
+//			if (i == 57 || i == 79 | i == 269) { // && (rcnt[i] == 6)) {
+		SpatRaster r = s.collapse();
+		r = r.summary(fun, true, sopt);	
+		if (r.hasError()) {
+			return r;
+		}	
+		if (!out.writeValuesRectRast(r, opt)) {
+			return out;
+		}
+	}
+	out.writeStop();
+
+	if (warn) out.addWarning("rasters did not align and were resampled");
+	return out;
+}
+
+
+/*
 SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out;
@@ -3511,13 +3620,11 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 			
 			SpatRasterCollection x = crop(vi.extent, "near", true, rsti[i], sopt);
-
 			if (x.empty()) {
 				continue;
 			} 
 			SpatRasterStack s;
 			s.ds = x.ds;
-
 			//r = s.summary(fun, true, sopt);
 // see #1159
 //			if (i == 57 || i == 79 | i == 269) { // && (rcnt[i] == 6)) {
@@ -3537,7 +3644,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	if (warn) out.addWarning("rasters did not align and were resampled");
 	return out;
 }
-
+*/
 
 SpatRaster SpatRasterCollection::morph(SpatRaster &x, SpatOptions &opt) {
 
