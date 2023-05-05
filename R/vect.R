@@ -55,6 +55,7 @@ setMethod("vect", signature(x="character"),
 			p <- methods::new("SpatVector")
 #		if (all(grepl("\\(", x) & grepl("\\)", x))) {
 			p@pnt <- SpatVector$new(gsub("\n", "", x))
+			messages(p, "vect")
 			crs(p, warn=FALSE) <- crs
 			return(p)
 		} 
@@ -78,7 +79,7 @@ setMethod("vect", signature(x="character"),
 		p@pnt <- SpatVector$new()
 		proxy <- isTRUE(proxy)
 			if ((what=="attributes") && proxy) {
-			error("vect", "you cannot use 'what==attribtues' when proxy=TRUE")
+			error("vect", "you cannot use 'what==attributes' when proxy=TRUE")
 		}
 		#if (proxy) query <- ""
 		if (is.null(filter)) {

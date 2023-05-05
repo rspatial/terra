@@ -466,3 +466,15 @@ function(x, y) {
 	extract(x, as.matrix(y))
 })
 
+
+setMethod("extract", signature(x="SpatRasterCollection", y="ANY"),
+function(x, y, ...) {
+	lapply(x, function(r) extract(r, y, ...))
+}
+)
+
+setMethod("extract", signature(x="SpatRasterDataset", y="ANY"),
+function(x, y, ...) {
+	lapply(x, function(r) extract(r, y, ...))
+}
+)

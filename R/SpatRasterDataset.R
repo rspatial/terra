@@ -125,6 +125,7 @@ setMethod("sds", signature(x="stars_proxy"),
 )
 
 
+
 setMethod("c", signature(x="SpatRasterDataset"),
 	function(x, ...) {
 
@@ -156,7 +157,7 @@ setMethod("c", signature(x="SpatRasterDataset"),
 )
 
 
-setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
+setReplaceMethod("[", c("SpatRasterDataset", "numeric", "missing"),
 	function(x, i, j, value) {
 		if (any(!is.finite(i)) | any(i<1)) {
 			error("`[`", "invalid index")
@@ -354,3 +355,20 @@ function(x, i, j, ... ,drop=TRUE) {
 	messages(x, "`[`")
 })
 
+
+setMethod("add<-", signature("SpatRasterCollection", "SpatRaster"),
+	function(x, value) {
+		x <- x@pnt$deepcopy()
+		x@pnt$add(value@pnt, "")
+		messages(x, "add")
+	}
+)
+
+
+setMethod("add<-", signature("SpatRasterDataset", "SpatRaster"),
+	function(x, value) {
+		x <- x@pnt$deepcopy()
+		x@pnt$add(value@pnt, "")
+		messages(x, "add")
+	}
+)
