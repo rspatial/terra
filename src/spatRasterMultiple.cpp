@@ -109,7 +109,7 @@ SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, 
 		out.setError("invalid extent");
 		return out;
 	}
-	if ((e.xmin == e.xmax) && (e.ymin == e.ymax)) {
+	if (!e.valid_notempty()) {
 		out.setError("cannot crop with an empty extent");
 		return out;
 	}
@@ -117,9 +117,9 @@ SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, 
 	if (use.empty()) {
 		for (size_t i=0; i<size(); i++) {
 			SpatExtent xe = e.intersect(ds[i].getExtent());
-			if (xe.valid()) {
+			if (xe.valid_notempty()) {
 				SpatRaster r = ds[i].crop(e, snap, expand, ops);
-				if ((r.ncol() > 0) && (r.nrow() > 0)) {
+				if (!r.hasError()) {
 					out.push_back(r, "");
 				}
 			}
@@ -127,10 +127,11 @@ SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, 
 	} else {
 		for (size_t i=0; i<use.size(); i++) {
 			SpatExtent xe = e.intersect(ds[use[i]].getExtent());
-			if (xe.valid()) {
-				SpatRaster r = ds[use[i]];
-				r = r.crop(e, snap, expand, ops);
-				out.push_back(r, "");
+			if (xe.valid_notempty()) {
+				SpatRaster r = ds[use[i]].crop(e, snap, expand, ops);
+				if (!r.hasError()) {
+					out.push_back(r, "");
+				}
 			}
 		}
 	}

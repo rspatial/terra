@@ -351,40 +351,49 @@ bool SpatRaster::writeValuesRectRast(SpatRaster &r, SpatOptions& opt) {
 	double hyr = yres() / 2;
 
 	SpatExtent e = r.getExtent();
-	size_t row1  = rowFromY(e.ymax - hyr);
-	size_t row2  = rowFromY(e.ymin + hyr);
-	size_t col1  = colFromX(e.xmin + hxr);
-	size_t col2  = colFromX(e.xmax - hxr);
+	int_64 row1  = rowFromY(e.ymax - hyr);
+	int_64 row2  = rowFromY(e.ymin + hyr);
+	int_64 col1  = colFromX(e.xmin + hxr);
+	int_64 col2  = colFromX(e.xmax - hxr);
+	if ((row1 < 0) || (row2 < 0) || (col1 < 0) || (col2 < 0)) {
+		setError("block outside raster");
+		return(false);		
+	}
 	size_t ncols = col2-col1+1;
 	size_t nrows = row2-row1+1;
-
-	std::vector<double> vals = r.getValues(-1, opt);
-	recycle(vals, ncols * nrows * nlyr());
-
+	size_t startrow = row1;
+	size_t startcol = col1;
+	
+	if ((startrow + nrows) > nrow()) {
+		setError("incorrect start row and/or nrows value");
+		return false;
+	}
+	if ((startcol + ncols) > ncol()) {
+		setError("incorrect start col and/or ncols value");
+		return false;
+	}
 	if (!source[0].open_write) {
 		setError("cannot write (no open file)");
 		return false;
 	}
+	std::vector<double> vals = r.getValues(-1, opt);
+	recycle(vals, ncols * nrows * nlyr());
 
-	if ((row1 + nrows) > nrow()) {
-		setError("incorrect start row and/or nrows value");
+	if ((nrows * ncols * nlyr()) != vals.size()) {
+		setError("incorrect row/col size");
 		return false;
 	}
-	if ((col1 + ncols) > ncol()) {
-		setError("incorrect start col and/or ncols value");
-		return false;
-	}
+
 
 	if (source[0].driver == "gdal") {
 		#ifdef useGDAL
-
-		success = writeValuesGDAL(vals, row1, nrows, col1, ncols);
+		success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);
 		#else
 		setError("GDAL is not available");
 		return false;
 		#endif
 	} else {
-		success = writeValuesMemRect(vals, row1, nrows, col1, ncols);
+		success = writeValuesMemRect(vals, startrow, nrows, startcol, ncols);
 	}
 
 #ifdef useRcpp

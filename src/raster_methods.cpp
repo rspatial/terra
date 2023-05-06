@@ -3046,7 +3046,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 	SpatExtent ein = getExtent();
 	SpatExtent fext = e;	
 	e = e.intersect(ein);
-	if ( !e.valid() ) {
+	if ( !e.valid_notempty() ) {
 		out.setError("extents do not overlap");
 		return out;
 	}
@@ -3079,13 +3079,13 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 		return(out);
 	}
 
-	double xr = xres();
-	double yr = yres();
+	double hxr = xres() / 2;
+	double hyr = yres() / 2;
 	SpatExtent outext = out.getExtent();
-	unsigned col1 = colFromX(outext.xmin + 0.5 * xr);
-	unsigned col2 = colFromX(outext.xmax - 0.5 * xr);
-	unsigned row1 = rowFromY(outext.ymax - 0.5 * yr);
-	unsigned row2 = rowFromY(outext.ymin + 0.5 * yr);
+	unsigned col1 = colFromX(outext.xmin + hxr);
+	unsigned col2 = colFromX(outext.xmax - hxr);
+	unsigned row1 = rowFromY(outext.ymax - hyr);
+	unsigned row2 = rowFromY(outext.ymin + hyr);
 
 	std::vector<bool> hw = hasWindow();
 	bool haswin = hw[0];

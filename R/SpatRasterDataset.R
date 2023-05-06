@@ -358,7 +358,7 @@ function(x, i, j, ... ,drop=TRUE) {
 
 setMethod("add<-", signature("SpatRasterCollection", "SpatRaster"),
 	function(x, value) {
-		x <- x@pnt$deepcopy()
+		x@pnt <- x@pnt$deepcopy()
 		x@pnt$add(value@pnt, "")
 		messages(x, "add")
 	}
@@ -367,7 +367,7 @@ setMethod("add<-", signature("SpatRasterCollection", "SpatRaster"),
 
 setMethod("add<-", signature("SpatRasterDataset", "SpatRaster"),
 	function(x, value) {
-		x <- x@pnt$deepcopy()
+		x@pnt <- x@pnt$deepcopy()
 		x@pnt$add(value@pnt, "")
 		messages(x, "add")
 	}
