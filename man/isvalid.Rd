@@ -18,7 +18,7 @@ Check the validity of polygons or attempt to fix it. Or check the validity of a 
 
 \S4method{makeValid}{SpatVector}(x)
 
-\S4method{is.valid}{SpatExtent}(x, empty=FALSE)
+\S4method{is.valid}{SpatExtent}(x)
 }
 
 \arguments{
@@ -43,6 +43,11 @@ is.valid(w, TRUE)
 plot(w)
 points(cbind(4.54, -2.72), cex=2, col="red")
 
+
+e <- ext(0, 1, 0, 1)
+is.valid(e)
+e <- ext(0, 0, 0, 0)
+is.valid(e)
 }
 \keyword{spatial}
 

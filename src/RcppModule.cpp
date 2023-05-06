@@ -237,6 +237,7 @@ RCPP_MODULE(spat){
 		.method("deepcopy", &SpatExtent::deepCopy, "deepCopy")
 		.property("vector", &SpatExtent::asVector)
 		.property("valid", &SpatExtent::valid)
+		.property("valid_notempty", &SpatExtent::valid_notempty)
 		.method("align", &SpatExtent::align, "align")
 		.method("intersect", &SpatExtent::intersect, "intersect")
 		.method("as.points", &SpatExtent::asPoints, "as.points")

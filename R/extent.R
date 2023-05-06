@@ -350,11 +350,8 @@ setReplaceMethod("[", c("SpatExtent", "numeric", "missing"),
 
 
 setMethod("is.valid", signature(x="SpatExtent"),
-	function(x, empty=FALSE) {
-		if (empty) {
-			x@pnt$valid
-		} else {
-			x@pnt$valid_notempty
-		}
+	function(x) {
+		#x@pnt$valid
+		x@pnt$valid_notempty
 	}
 )
