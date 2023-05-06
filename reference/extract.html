@@ -19,7 +19,7 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-30</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-31</span>
       </span>
     </div>
 
@@ -177,10 +177,10 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <span class="r-in"><span><span class="va">xy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">179000</span>, <span class="fl">330000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">xy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">xy</span><span class="op">-</span><span class="fl">100</span>, <span class="va">xy</span>, <span class="va">xy</span><span class="op">+</span><span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">extract</span><span class="op">(</span><span class="va">r</span>, <span class="va">xy</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   test</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  378</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  251</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   meuse</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   208</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">xy</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="geometry.html">geom</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
@@ -191,36 +191,36 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    3    1 180000 331000    0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">extract</span><span class="op">(</span><span class="va">r</span>, <span class="va">p</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ID test</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1  378</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2  251</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3  208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ID meuse</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1   378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2   251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3   208</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">r</span> <span class="op">+</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">p</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ID test</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1  388</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2  261</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3  218</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ID meuse</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1   388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2   261</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3   218</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="xyCellFrom.html">cellFromXY</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">xy</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   test</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  388</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  261</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  218</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   meuse</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   261</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   218</span>
 <span class="r-in"><span><span class="va">r</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   test</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  378</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  251</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   meuse</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   208</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">x</span><span class="op">*</span><span class="fl">2</span>,<span class="va">x</span><span class="op">*</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   test test test</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  388  776 1164</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  261  522  783</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  218  436  654</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   meuse meuse meuse</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   388   776  1164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   261   522   783</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   218   436   654</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## extract with a polygon</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>

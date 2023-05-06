@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-30</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-31</span>
       </span>
     </div>
 
@@ -48,15 +48,30 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-30" id="version-17-30">version 1.7-30<a class="anchor" aria-label="anchor" href="#version-17-30"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-31" id="version-17-31">version 1.7-31<a class="anchor" aria-label="anchor" href="#version-17-31"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-30">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-30"></a></h3>
+<h3 id="bug-fixes-1-7-31">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-31"></a></h3>
 <ul><li>
 <code>rasterize</code> with points and a custom function did not work for large rasters. <a href="https://github.com/rspatial/terra/issues/1127" class="external-link">#1127</a> by Skip Woolley</li>
 <li>
 <code>crop&lt;SpatRaster, SpatVector&gt;</code> with “mask=TRUE” did not work well if the raster had a scale/offset<a href="https://github.com/rspatial/terra/issues/1128" class="external-link">#1128</a> by Monika Anna Tomaszewska</li>
 <li>
 <code>zonal&lt;SpatRaster&gt;</code> with a custom function always removed NAs. <a href="https://github.com/rspatial/terra/issues/1133" class="external-link">#1133</a> by Matthias Weigand</li>
+<li>
+<code>wrap&lt;SpatRaster&gt;</code> lost changed layer names if the source was from disk; and information on some time-step in some cases. <a href="https://github.com/rspatial/terra/issues/1144" class="external-link">#1144</a> by Pascal Führlich</li>
+<li>
+<code>global(fun="isNA")</code> was not correct when the SpatRaster had multiple layers [#1141] (<a href="https://github.com/rspatial/terra/issues/1141" class="external-link uri">https://github.com/rspatial/terra/issues/1141</a>) by Robin Freeman</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-1-7-31">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-31"></a></h3>
+<ul><li>
+<code>panel</code> for categorical SpatRasters <a href="https://github.com/rspatial/terra/issues/1143" class="external-link">#1143</a> by Jason Flower</li>
+<li>argument “ext” in <code>plot&lt;SpatRaster&gt;</code> can now also expand the plot. <a href="https://github.com/rspatial/terra/issues/1136" class="external-link">#1136</a> by Jakub Nowosad.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-1-7-31">new<a class="anchor" aria-label="anchor" href="#new-1-7-31"></a></h3>
+<ul><li>
+<code>wrap&lt;SpatRasterDataset&gt;</code> and <code>wrap&lt;SpatRasterCollection&gt;</code> methods. <a href="https://github.com/rspatial/terra/issues/954" class="external-link">#954</a> by James Camac</li>
 </ul></div>
 </div>
     <div class="section level2">
