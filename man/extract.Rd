@@ -12,6 +12,8 @@
 \alias{extract,SpatVector,SpatVector-method}
 \alias{extract,SpatVector,matrix-method}
 \alias{extract,SpatVector,data.frame-method}
+\alias{extract,SpatRasterCollection,ANY-method}
+\alias{extract,SpatRasterDataset,ANY-method}
 
 
 \title{Extract values from a SpatRaster}

@@ -299,12 +299,28 @@ setMethod("serialize", signature(object="SpatRaster"),
 	}
 )
 
+setMethod("serialize", signature(object="SpatRasterDataset"),
+	function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, refhook = NULL) {
+		object <- wrap(object, proxy=TRUE)
+		serialize(object, connection=connection, ascii = ascii, xdr = xdr, version = version, refhook = refhook)
+	}
+)
+
+setMethod("serialize", signature(object="SpatRasterCollection"),
+	function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, refhook = NULL) {
+		object <- wrap(object, proxy=TRUE)
+		serialize(object, connection=connection, ascii = ascii, xdr = xdr, version = version, refhook = refhook)
+	}
+)
+
+
 setMethod("unserialize", signature(connection="ANY"),
 	function(connection, refhook = NULL) {
 		x <- base::unserialize(connection, refhook)
 		unwrap(x)
 	}
 )
+
 
 
 setMethod("saveRDS", signature(object="SpatRaster"),

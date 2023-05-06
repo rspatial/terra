@@ -45,7 +45,7 @@ setMethod("timeInfo", signature(x="SpatRaster"),
 
 setMethod("timeInfo", signature(x="SpatRasterDataset"),
 	function(x) {
-		t(sapply(w, timeInfo))
+		t(sapply(x, timeInfo))
 	}
 )
 

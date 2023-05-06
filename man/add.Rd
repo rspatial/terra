@@ -4,8 +4,11 @@
 
 \alias{add<-}
 \alias{add<-,SpatRaster,SpatRaster-method}
+\alias{add<-,SpatRasterCollection,SpatRaster-method}
+\alias{add<-,SpatRasterDataset,SpatRaster-method}
 
-\title{Add (in place) a SpatRaster to another SpatRaster object}
+
+\title{Add (in place) a SpatRaster to another SpatRaster object or to a SpatRasterDataset or SpatRasterCollection}
 
 \description{
 Add (in place) a SpatRaster to another SpatRaster object. Comparable with \code{\link{c}}, but without copying the object. 
@@ -13,10 +16,14 @@ Add (in place) a SpatRaster to another SpatRaster object. Comparable with \code{
 
 \usage{
 \S4method{add}{SpatRaster,SpatRaster}(x)<-value
+
+\S4method{add}{SpatRasterDataset,SpatRaster}(x)<-value
+
+\S4method{add}{SpatRasterCollection,SpatRaster}(x)<-value
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster, SpatRasterDataset or SpatRasterCollection}
   \item{value}{SpatRaster}
 }
 
