@@ -18,13 +18,14 @@ Check the validity of polygons or attempt to fix it. Or check the validity of a 
 
 \S4method{makeValid}{SpatVector}(x)
 
-\S4method{is.valid}{SpatExtent}(x)
+\S4method{is.valid}{SpatExtent}(x, empty=FALSE)
 }
 
 \arguments{
-\item{x}{SpatVector}
+\item{x}{SpatVector or SpatExtent}
 \item{messages}{logical. If \code{TRUE} the error messages are returned}
 \item{as.points}{logical. If \code{TRUE}, it is attempted to return locations where polygons are invalid as a SpatVector or points}
+\item{empty}{logical. If \code{TRUE} an empty SpatExtent (\code{xmin==xmax OR ymin==ymax}) is considered valid}
 }
 
 \value{
