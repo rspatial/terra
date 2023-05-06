@@ -1205,7 +1205,7 @@ SpatVector SpatVectorCollection::append() {
 			gtype = out.type();
 			continue;
 		}
-		if (v[i].type() != gtype) {
+		if ((v[i].type() != gtype) && (v[i].type() != "none") && (v[i].type() != "null")) {
 			out.setError("all SpatVectors must have the same geometry type");
 			return out;
 		}
