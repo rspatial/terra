@@ -60,19 +60,22 @@
 <span><span class="fu">makeValid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatExtent</span></span>
-<span><span class="fu">is.valid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">is.valid</span><span class="op">(</span><span class="va">x</span>, empty<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>SpatVector</p></dd>
+<dd><p>SpatVector or SpatExtent</p></dd>
 
 <dt>messages</dt>
 <dd><p>logical. If <code>TRUE</code> the error messages are returned</p></dd>
 
 <dt>as.points</dt>
 <dd><p>logical. If <code>TRUE</code>, it is attempted to return locations where polygons are invalid as a SpatVector or points</p></dd>
+
+<dt>empty</dt>
+<dd><p>logical. If <code>TRUE</code> an empty SpatExtent (<code>xmin==xmax OR ymin==ymax</code>) is considered valid</p></dd>
 
 </dl></div>
     <div id="value">
