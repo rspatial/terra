@@ -145,7 +145,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 				if (isTRUE(overwrite)) {
 					file.copy(s, fnames)
 				} else if (isFALSE(overwrite) && (any(fex))) {
-					error("wrap", "file exists, use 'overwrite=TRUE' to overwrite it")
+					error("wrap", "file exists and 'overwrite=FALSE'")
 				} else if (!all(fex)) {
 					file.copy(s[!fex], fnames[!fex])					
 				}
