@@ -668,7 +668,7 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 
 	SpatGeom g;
 	bool haveGeomt = false;
-	SpatGeomType geomt;
+	SpatGeomType geomt = null;
 	for (size_t i=0; i<wkt.size(); i++) {
 		if (wkt[i] == "EMPTY") {
 			g = emptyGeom();
