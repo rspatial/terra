@@ -442,6 +442,9 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 	
 	e <- as.vector(ext(x))
+	if (any(is.na(e))) {
+		error("plot", "SpatVector has no valid geometries")
+	}
 	if (e[1] == e[2]) {
 		e[1] = e[1] - 0.5
 		e[2] = e[2] + 0.5
@@ -633,7 +636,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 setMethod("plot", signature(x="SpatVector", y="character"),
 	function(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=!add, axes=!add,
-	main="", buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
+	main, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
 	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, 
 	alpha=NULL, box=axes, clip=TRUE, ...) {
 
@@ -659,9 +662,14 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			legend <- TRUE
 		}
 
+
 		for (i in 1:length(y)) {
 			if (length(y) > 1) {
-				main <- rep_len(main, length(y))
+				if (missing("main")) {
+					main <- names(x)
+				} else {
+					main <- rep_len(main, length(y))
+				}
 				newrow <- (nrnc[2] == 1) | ((i %% nrnc[2]) == 1)
 				lastrow <- i > (prod(nrnc) - nrnc[2])
 				if (lastrow) {
@@ -675,7 +683,10 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 				} else {
 					pax$side <- 0
 				}
+			} else if (missing("main")) {
+				main <- ""
 			}
+
 			if (missing(col)) col <- NULL
 
 			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, colNA=colNA, alpha=alpha, box=box, clip=clip, leg_i=i, ...)
