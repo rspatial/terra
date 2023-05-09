@@ -188,8 +188,8 @@ setMethod("intersect", signature(x="SpatVector", y="SpatVector"),
 
 setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"),
 	function(x, y) {
-		x@pnt = x@pnt$intersect(y@pnt)
-		if (!x@pnt$valid) {
+		x@pnt <- x@pnt$intersect(y@pnt)
+		if (!valid(x)) {
 			return(NULL)
 		}
 		x
@@ -218,20 +218,21 @@ setMethod("mask", signature(x="SpatVector", mask="SpatVector"),
 	}
 )
 
+setMethod("intersect", signature(x="SpatExtent", y="SpatRaster"),
+	function(x, y) {
+		x <- align(x, y, snap="near")
+		intersect(x, ext(y))
+	}
+)
 
-#setMethod("mask", signature(x="SpatVector", mask="sf"),
-#	function(x, mask, inverse=FALSE) {
-#		mask(x, vect(mask), inverse=inverse)
-#	}
-#)
+setMethod("intersect", signature(x="SpatRaster", y="SpatExtent"),
+	function(x, y) {
+		intersect(y, x)
+	}
+)
 
-#setMethod("intersect", signature(x="SpatRaster", y="SpatRaster"),
-#	function(x, y) {
-#		a <- crop(x, y)
-#		b <- crop(y, x)
-#		c(a, b)
-#	}
-#)
+
+
 
 setMethod("buffer", signature(x="SpatVector"),
 	function(x, width, quadsegs=10, capstyle="round", joinstyle="round", mitrelimit=NA, singlesided=FALSE) {

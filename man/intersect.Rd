@@ -9,6 +9,8 @@
 \alias{intersect,SpatExtent,SpatVector-method}
 \alias{intersect,SpatExtent,SpatExtent-method}
 \alias{intersect,SpatRaster,SpatRaster-method}
+\alias{intersect,SpatRaster,SpatExtent-method}
+\alias{intersect,SpatExtent,SpatRaster-method}
 
 \title{ 
 Intersection
@@ -17,11 +19,13 @@ Intersection
 \description{
 You can intersect SpatVectors with each other or with a SpatExtent. Intersecting points with points uses the extent of \code{y} to get the intersection. Intersecting of points and lines is not supported because of numerical inaccuracies with that. You can use \code{\link{buffer}}, to create polygons from lines and use these with intersect. 
 
-You can also intersect two SpatExtents. 
+You can also intersect two SpatExtents.
 
 When intersecting two SpatRasters these need to be aligned (have the same origin and spatial resolution). The values of the returned SpatRaster are \code{TRUE} where both have input rasters have values, \code{FALSE} where one has values, and \code{NA} in all other cells. 
 
-See \code{\link{crop}} for intersection of a SpatRaster with a SpatExtent (or the extent of a SpatRaster or SpatVector).
+When intersecting a SpatExtent and a SpatRaster, the SpatExtent is first aligned to the raster cell boundaries.
+
+See \code{\link{crop}} for the intersection of a SpatRaster with a SpatExtent (or the extent of a SpatRaster or SpatVector) if you want a SpatRaster (not a SpatExtent) as output .
 
 See \code{\link{is.related}(x, y, "intersects")} to find out which geometries of a SpatVector intersect. You can spatially subset a SpatVector with another one with \code{x\link{[}y]}
 }
@@ -36,11 +40,15 @@ See \code{\link{is.related}(x, y, "intersects")} to find out which geometries of
 \S4method{intersect}{SpatExtent,SpatExtent}(x, y)
 
 \S4method{intersect}{SpatRaster,SpatRaster}(x, y)
+
+\S4method{intersect}{SpatRaster,SpatExtent}(x, y)
+
+\S4method{intersect}{SpatExtent,SpatRaster}(x, y)
 }
 
 \arguments{
   \item{x}{SpatVector, SpatExtent, or SpatRaster}
-  \item{y}{SpatVector, SpatExtent, or SpatRaster if \code{x} is a SpatRaster}
+  \item{y}{SpatVector, SpatExtent, or SpatRaster}
 } 
 
 \value{
