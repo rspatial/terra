@@ -54,7 +54,7 @@ class SpatVector2 {
 		std::vector<size_t> P; // part offsets
 		std::vector<long long> H; // hole
 
-		SpatGeomType gtype = unknown;
+		SpatGeomType gtype = none;
 		SpatExtent extent;
 		SpatDataFrame df;
 		//std::vector<std::string> crs;
