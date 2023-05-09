@@ -126,7 +126,7 @@ setMethod("as.character", signature(x="SpatRaster"),
 
 
 setMethod("wrap", signature(x="SpatRaster"),
-	function(x, proxy=FALSE) {
+	function(x, proxy=FALSE, path=NULL, overwrite=FALSE) {
 		r <- methods::new("PackedSpatRaster")
 		r@definition <- as.character(x)
 
@@ -137,9 +137,27 @@ setMethod("wrap", signature(x="SpatRaster"),
 		if (can || (all(s == ""))) {
 			r@values <- values(x)
 		} else if (all(s != "")) {
-			r@attributes$sources <- sources(x, TRUE, TRUE)
+			xs <- sources(x, TRUE, TRUE)
+			if (!is.null(path)) {
+				path <- normalizePath(path, mustWork=TRUE)
+				fnames <- file.path(path, basename(s))
+				fex <- file.exists(fnames)
+				if (isTRUE(overwrite)) {
+					file.copy(s, fnames)
+				} else if (isFALSE(overwrite) && (any(fex))) {
+					error("wrap", "file exists, use 'overwrite=TRUE' to overwrite it")
+				} else if (!all(fex)) {
+					file.copy(s[!fex], fnames[!fex])					
+				}
+				xs$source <- fnames 
+			} 
+			r@attributes$sources <- xs
 		} else {
 			fname <- paste0(tempfile(), ".tif")
+			if (!is.null(path)) {
+				path <- normalizePath(path, mustWork=TRUE)
+				fname <- file.path(path, basename(fname))
+			}
 			x <- writeRaster(x, fname)
 			r@attributes$filename <- fname
 		}
@@ -170,7 +188,7 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 	function(x) {
 
 		r <- eval(parse(text=x@definition))
-		if (!is.null(x@attributes$filename)) { # backwards compatibility
+		if (!is.null(x@attributes$filename)) { # single file, all layers
 			rr <- rast(x@attributes$filename)
 			ext(rr) <- ext(r)
 			crs(rr, warn=FALSE) <- crs(r)
