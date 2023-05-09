@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">wrap</span><span class="op">(</span><span class="va">x</span>, proxy<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">wrap</span><span class="op">(</span><span class="va">x</span>, proxy<span class="op">=</span><span class="cn">FALSE</span>, path<span class="op">=</span><span class="cn">NULL</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRasterDataset</span></span>
 <span><span class="fu">wrap</span><span class="op">(</span><span class="va">x</span>, proxy<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
@@ -76,6 +76,12 @@
 
   <dt>proxy</dt>
 <dd><p>logical. If <code>FALSE</code> raster cell values are forced to memory if possible. If <code>TRUE</code>, a reference to source filenames is stored for data sources that are not in memory</p></dd>
+
+  <dt>path</dt>
+<dd><p>character. If not <code>NULL</code>, the path where raster files are copied to. This should normally not be used</p></dd>
+
+  <dt>overwrite</dt>
+<dd><p>Should existing files be overwritten when <code>path</code> is not <code>NULL</code>? If this value is not TRUE or FALSE, only files that do not exist are copied</p></dd>
 
 </dl></div>
     <div id="value">
