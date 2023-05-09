@@ -344,16 +344,20 @@ std::string SpatVector::getPRJ(){
 std::string SpatVector::type(){
 	if (size() == 0) {
 		return "none";
-	} else if (geoms[0].gtype == points) {
-		return "points";
-	} else if (geoms[0].gtype == lines) {
-		return "lines";
-	} else if (geoms[0].gtype == polygons) {
-		return "polygons";
-	} else if (geoms[0].gtype == null) {
-		return("null");
 	} else {
-		return("unknown");
+		size_t n = size();
+		for (size_t i = 0; i<n; i++) {
+			if (geoms[i].gtype != null) {	
+				if (geoms[i].gtype == points) {
+					return "points";
+				} else if (geoms[i].gtype == lines) {
+					return "lines";
+				} else if (geoms[i].gtype == polygons) {
+					return "polygons";
+				}
+			}
+		}
+		return("none");
 	}
 }
 
@@ -397,7 +401,7 @@ void SpatVector::computeExtent() {
 std::vector<unsigned> SpatVector::nullGeoms(){
 	std::vector<unsigned> ids;
 	for (size_t i=0; i<geoms.size(); i++) {
-		if ((geoms[i].gtype == null) || (geoms[i].gtype == unknown)) {
+		if (geoms[i].gtype == null) {
 			ids.push_back(i);
 		}
 	}
@@ -708,7 +712,7 @@ SpatGeomType SpatVector::getGType(std::string &type) {
 	if (type == "points") { return points; }
 	else if (type == "lines") { return lines; }
 	else if (type == "polygons") { return polygons; }
-	else { return unknown; }
+	else { return null; }
 }
 
 
@@ -1205,7 +1209,7 @@ SpatVector SpatVectorCollection::append() {
 			gtype = out.type();
 			continue;
 		}
-		if ((v[i].type() != gtype) && (v[i].type() != "none") && (v[i].type() != "null")) {
+		if ((v[i].type() != gtype) && (v[i].type() != "null")) {
 			out.setError("all SpatVectors must have the same geometry type");
 			return out;
 		}

@@ -526,9 +526,6 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiPointGeom(poGeometry);
 				}
 			} else {
-				//SpatPart p;
-				//g = SpatGeom();
-				//g.addPart(p);
 				g = emptyGeom();
 			}
 			addGeom(g);
@@ -542,9 +539,6 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiLinesGeom(poGeometry);
 				}
 			} else {
-				//SpatPart p;
-				//g = SpatGeom();
-				//g.addPart(p);
 				g = emptyGeom();
 			}
 			addGeom(g);
@@ -557,9 +551,8 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getPolygonsGeom(poGeometry);
 				} else if (wkbgeom == wkbMultiPolygon ) {
 					g = getMultiPolygonsGeom(poGeometry);
-				}
+				} // else ?
 			} else {
-				//g = SpatGeom();
 				g = emptyGeom();
 			}
 			addGeom(g);
@@ -591,9 +584,6 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiPointGeom(poGeometry);
 				}
 			} else {
-				//SpatPart p;
-				//g = SpatGeom();
-				//g.addPart(p);
 				g = emptyGeom();
 			}
 			addGeom(g);
@@ -609,9 +599,6 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiLinesGeom(poGeometry);
 				}
 			} else {
-				//SpatPart p;
-				//g = SpatGeom();
-				//g.addPart(p);
 				g = emptyGeom();
 			}
 			addGeom(g);
@@ -628,7 +615,6 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiPolygonsGeom(poGeometry);
 				}
 			} else {
-				//g = SpatGeom();
 				g = emptyGeom();
 			}
 			addGeom(g);
@@ -681,7 +667,14 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 	OGRGeometryFactory ogr;
 
 	SpatGeom g;
+	bool haveGeomt = false;
+	SpatGeomType geomt;
 	for (size_t i=0; i<wkt.size(); i++) {
+		if (wkt[i] == "EMPTY") {
+			g = emptyGeom();
+			addGeom(g);
+			continue;
+		}
 
 		OGRGeometry *poGeometry;
 
@@ -717,9 +710,15 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 					setError(s);
 					return;
 				}
+				if (!haveGeomt) {
+					haveGeomt = true;
+					geomt = g.gtype;
+				} else if (geomt != g.gtype) {
+					setError("a SpatVector can only have a single geometry type");
+					return;			
+				}
 				addGeom(g);
 				OGRGeometryFactory::destroyGeometry(poGeometry);
-
 			}
 		} else {
 			setError("not WKT");

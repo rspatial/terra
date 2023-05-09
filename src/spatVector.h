@@ -25,7 +25,7 @@
 #endif
 
 
-enum SpatGeomType { points, lines, polygons, unknown, null };
+enum SpatGeomType { points, lines, polygons, null};
 
 
 class SpatHole {
@@ -75,7 +75,7 @@ class SpatGeom {
 		SpatGeom(SpatPart p, SpatGeomType type);
 		virtual ~SpatGeom(){}
 
-		SpatGeomType gtype = unknown;
+		SpatGeomType gtype = null;
 		std::vector<SpatPart> parts;
 		SpatExtent extent;
 

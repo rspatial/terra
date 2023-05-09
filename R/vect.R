@@ -51,7 +51,7 @@ setMethod("vect", signature(x="character"),
 		if (what != "") what <- match.arg(trimws(tolower(what)), c("geoms", "attributes"))
 		
 		s <- substr(x[1], 1, 5)
-		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
+		if (s %in% c("POINT", "MULTI", "LINES", "POLYG", "EMPTY")) {
 			p <- methods::new("SpatVector")
 #		if (all(grepl("\\(", x) & grepl("\\)", x))) {
 			p@pnt <- SpatVector$new(gsub("\n", "", x))
