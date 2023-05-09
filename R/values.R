@@ -342,7 +342,9 @@ setMethod("minmax", signature(x="SpatRaster"),
 			}
 		}
 		r <- rbind(x@pnt$range_min, x@pnt$range_max)
-		r[,!have] <- c(Inf, -Inf)
+		if (!compute) {
+			r[,!have] <- c(Inf, -Inf)
+		}
 		colnames(r) <- names(x)
 		rownames(r) <- c("min", "max")
 		r
