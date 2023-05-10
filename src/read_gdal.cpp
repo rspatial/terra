@@ -1825,6 +1825,8 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 
 	bool years = false;
 	bool yearsbp = false;
+	bool yearmonths = false;
+	bool months = false;
 	bool days = false;
 	bool hours = false;
 	bool seconds = false;
@@ -1840,6 +1842,12 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 			seconds = true;
 		} else if ((origin.find("years before present")) != std::string::npos) {
 			yearsbp = true;
+			foundorigin = true;
+		} else if ((origin.find("months since")) != std::string::npos) {
+			yearmonths = true;
+			foundorigin = true;
+		} else if ((origin.find("months")) != std::string::npos) {
+			months = true;
 			foundorigin = true;
 		} else if ((origin.find("years")) != std::string::npos) {
 			years = true;
@@ -1888,6 +1896,19 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 			step = "years";
 			int syear = 1950;
 			for (size_t i=0; i<raw.size(); i++) out.push_back(get_time(syear+raw[i], 6, 30, 0, 0, 0));
+		} else if (yearmonths) {
+			step = "yearmonths";
+			int syear = getyear(origin);
+			Rcpp::Rcout << syear << std::endl;
+			for (size_t i=0; i<raw.size(); i++) {
+				long year = std::floor(raw[i] / 12.0);
+				int month = raw[i] - (12 * year) + 1;
+				Rcpp::Rcout << raw[i] << " " << year << " " << month << std::endl;
+				out.push_back(get_time(syear+year, month, 15, 0, 0, 0));
+			}
+		} else if (months) {
+			step = "months";
+			for (size_t i=0; i<raw.size(); i++) out.push_back(get_time(1970, raw[i], 15, 0, 0, 0));
 		} else {
 			step = "raw";
 			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]);

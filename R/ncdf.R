@@ -105,15 +105,20 @@
 				cal <- "standard"
 				if (tstep == "seconds") {
 					zunit <- "seconds since 1970-1-1 00:00:00"
-					cal <- "standard"
 				} else if (tstep == "days") {
 					zunit <- "days since 1970-1-1"
 					zv <- zv / (24 * 3600)
-					cal <- "standard"
+				} else if (tstep == "months") {
+					zunit <- "months"
+					zv <- time(y)
+				} else if (tstep == "yearmonths") {
+					zunit <- "months since 1970"
+					tm <- time(y) - 1970
+					yr <- tm %/% 1
+					zv <- (yr*12) + round(12 * (tm %% 1))
 				} else if (tstep == "years") {
 					zunit <- "years since 1970"
 					zv <- time(y) - 1970
-					cal <- "standard"
 				} else {
 					zunit <- "unknown"
 				}
