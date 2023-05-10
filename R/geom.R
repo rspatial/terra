@@ -189,7 +189,7 @@ setMethod("intersect", signature(x="SpatVector", y="SpatVector"),
 setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"),
 	function(x, y) {
 		x@pnt <- x@pnt$intersect(y@pnt)
-		if (!valid(x)) {
+		if (!is.valid(x)) {
 			return(NULL)
 		}
 		x

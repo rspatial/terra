@@ -44,7 +44,7 @@ setMethod("Arith", signature(e1="SpatExtent", e2="numeric"),
 		} else {
 			error(oper, "only +, -, *, / and %% are supported")
 		}
-		if (!e1@pnt$valid) {
+		if (!is.valid(e1)) {
 			error(oper, "this would create an invalid extent")
 		}
 		e1
@@ -68,7 +68,7 @@ setMethod("Arith", signature(e1="numeric", e2="SpatExtent"),
 		} else {
 			error(oper, "only +, -, *, / and %% are supported")
 		}
-		if (!e1@pnt$valid) {
+		if (!is.valid(e1)) {
 			error(oper, "this would create an invalid extent")
 		}
 		e1
@@ -91,7 +91,7 @@ setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
 		} else {
 			error(oper, "only +, *, and / are supported for SpatExtent")
 		}
-		if (!e1@pnt$valid) {
+		if (!is.valid(e1)) {
 			error(oper, "this would create an invalid extent")
 		}
 		e1

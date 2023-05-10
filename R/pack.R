@@ -143,6 +143,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 				fnames <- file.path(path, basename(s))
 				fex <- file.exists(fnames)
 				if (isTRUE(overwrite)) {
+					#i <- s != fnames
 					file.copy(s, fnames)
 				} else if (isFALSE(overwrite) && (any(fex))) {
 					error("wrap", "file exists and 'overwrite=FALSE'")

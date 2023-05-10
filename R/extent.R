@@ -51,7 +51,7 @@ setMethod("ext", signature(x="numeric"),
 		} else {
 			e@pnt <- SpatExtent$new(x[1], x[2], x[3], x[4])
 		}
-		if (!e@pnt$valid) {
+		if (!is.valid(e)) {
 			error("ext", "invalid extent")
 		}
 		e

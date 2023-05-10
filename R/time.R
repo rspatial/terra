@@ -73,17 +73,15 @@ setMethod("time", signature(x="SpatRaster"),
 				error("time", "cannot extract months from years-time")
 			} else if ((format == "years") && (tstep %in% c("months"))) {
 				error("time", "cannot extract years from months-time")
-			} else if ((format == "yearmonthis") && (tstep %in% c("months", "years"))) {
-				error("time", "cannot extract yearmon from this type of time data")
+			} else if ((format == "yearmonths") && (tstep %in% c("months", "years"))) {
+				error("time", "cannot extract yearmonths from this type of time data")
 			} else if ((format == "seconds") && (tstep != "seconds")) {
 				error("time", "cannot extract seconds from this type of time data")
 			} else if ((format == "days") && (!(tstep %in% c("seconds", "days")))) {
 				error("time", "cannot extract days from this type of time data")
 			}
 			tstep <- format
-		} else {
-			tstep <- x@pnt$timestep
-		}
+		} 
 		if (tstep == "seconds") {
 			d <- strptime("1970-01-01", "%Y-%m-%d", tz="UTC") + d
 			tz <- x@pnt$timezone
@@ -194,7 +192,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 				value <- posix_from_ym(1970, value)
 			} else if (tstep == "yearmonths") {
 				if (is.numeric(value)) {
-					y <- round(value, -2)
+					y <- as.integer(substr(value, 1, 4))
 					m <- value - (y * 100)
 				} else {
 					y <- as.integer(strftime(value, format = "%Y"))
