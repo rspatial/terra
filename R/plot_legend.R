@@ -379,7 +379,7 @@ get_legxy <- function(r, e, pos, yshift) {
 
 .plot.class.legend <- function(x, y, legend, fill, xpd=NA, cex=1, geomtype="",
 	lty=1, lwd=1, pch=1, angle=45, density=NULL, pt.cex = 1, pt.bg="black", pt.lwd=1, 
-	bty="n", border="black", seg.len=1, plotlim, yshift=NULL, title="", leg_i=1, ...,
+	bty="n", border="black", seg.len=1, plotlim, yshift=NULL, title=NULL, leg_i=1, ...,
 # catch and kill
 	merge, trace, size) {
 
