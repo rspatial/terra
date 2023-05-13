@@ -166,8 +166,9 @@ setMethod ("set.cats" , "SpatRaster",
 		}
 		value[[1]] <- as.integer(value[[1]])
 		for (i in seq_along(value)) {
-			if (is.factor(value[[i]])) {
+			if (is.factor(value[[i]]) && !is.ordered(value[[i]])) {
 				value[[i]] <- as.character(value[[i]])
+				# ordered factors are preserved
 			}
 		}
 

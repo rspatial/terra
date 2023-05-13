@@ -286,12 +286,34 @@ prettyNumbs <- function(x, digits) {
 		i <- match(z, out$coltab[,1])
 		z <- out$cols[i]
 	} else {
-		if (is.null(out$leg$legend)) out$leg$legend <- unique(stats::na.omit(out$cats[ilevels, 2]))
-		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
-		leglevs <- na.omit(unique(levlab[,2]))
+	  idv <- out$levels
+	  oll <- out$cats[ilevels, 2]
+	  
+	  if (is.null(out$leg$legend)) {
+	    if (is.factor(oll)) {
+	      out$leg$legend <- levels(oll)
+	      if (length(idv) < length(out$leg$legend)) {
+	        idb <- rep(NA, length(out$leg$legend))
+	        idb[seq_along(idv)] <- idv
+	        idv <- idb
+	      }
+	    } else {
+	      out$leg$legend <- as.character(unique(stats::na.omit(oll)))
+	    }
+	  }
+	  
+	  levlab <- data.frame(
+	    id = idv[match(out$leg$legend, oll)],
+	    lab = out$leg$legend,
+	    stringsAsFactors = FALSE
+	  )
+	  
+	  leglevs <- na.omit(unique(levlab[,2]))
+		
 		if (length(leglevs) == 0) {
 			error("plot", "something is wrong with the categories")
 		}
+		
 		nlevs <- length(leglevs)
 		ncols <- length(out$cols)
 		#ncats <- nrow(out$cats)
