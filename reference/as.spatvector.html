@@ -18,7 +18,7 @@ And conversion of a SpatVector to another SpatVector type."><meta property="og:i
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-32</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-33</span>
       </span>
     </div>
 
@@ -56,8 +56,8 @@ And conversion of a SpatVector to another SpatVector type."><meta property="og:i
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">as.polygons</span><span class="op">(</span><span class="va">x</span>, trunc<span class="op">=</span><span class="cn">TRUE</span>, dissolve<span class="op">=</span><span class="cn">TRUE</span>, values<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>    na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.all<span class="op">=</span><span class="cn">FALSE</span>, extent<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">as.polygons</span><span class="op">(</span><span class="va">x</span>, round<span class="op">=</span><span class="cn">TRUE</span>, aggregate<span class="op">=</span><span class="cn">TRUE</span>, values<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>    na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.all<span class="op">=</span><span class="cn">FALSE</span>, extent<span class="op">=</span><span class="cn">FALSE</span>, digits<span class="op">=</span><span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster</span></span>
 <span><span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
@@ -89,10 +89,10 @@ And conversion of a SpatVector to another SpatVector type."><meta property="og:i
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatVector</p></dd>
 
-<dt>trunc</dt>
-<dd><p>logical; truncate values to integers. Cells with the same value are merged. Therefore, if <code>trunc=FALSE</code> the object returned can have many cells and can be very large</p></dd>
+<dt>round</dt>
+<dd><p>logical; If <code>TRUE</code> and <code>aggregate=TRUE</code>, values are rounded before aggregation. If this value is <code>FALSE</code> the SpatVector returned can have very many polygons and can be very large</p></dd>
 
-<dt>dissolve</dt>
+<dt>aggregate</dt>
 <dd><p>logical; combine cells with the same values? If <code>TRUE</code> only the first layer in <code>x</code> is processed</p></dd>
 
 <dt>values</dt>
@@ -115,6 +115,9 @@ And conversion of a SpatVector to another SpatVector type."><meta property="og:i
 
 <dt>crs</dt>
 <dd><p>character. The coordinate reference system (see <code><a href="crs.html">crs</a></code>)</p></dd>
+
+<dt>digits</dt>
+<dd><p>integer. The number of digits for rounding (when <code>round=TRUE</code></p></dd>
 
 </dl></div>
     <div id="value">
