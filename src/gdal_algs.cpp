@@ -837,11 +837,12 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 		mask = tmp.isfinite(false, mopt);
 	} 
 
-/*		
-	if (round) {
-		tmp = tmp.math2("round", 0, topt);
-//		tmp = tmp.math("trunc", topt);
+		
+	if (round && (digits > 0)) {
+		tmp = tmp.math2("round", digits, topt);
 		round = false;
+	}
+/*
 	} else if (tmp.sources_from_file()) {
 		// for NAN and INT files. Should have a check for that
 		//tmp = tmp.arith(0, "+", false, topt);
