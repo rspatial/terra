@@ -70,13 +70,19 @@
     <loc>/reference/as.data.frame.html</loc>
   </url>
   <url>
+    <loc>/reference/as.lines.html</loc>
+  </url>
+  <url>
     <loc>/reference/as.list.html</loc>
   </url>
   <url>
-    <loc>/reference/as.raster.html</loc>
+    <loc>/reference/as.points.html</loc>
   </url>
   <url>
-    <loc>/reference/as.spatvector.html</loc>
+    <loc>/reference/as.polygons.html</loc>
+  </url>
+  <url>
+    <loc>/reference/as.raster.html</loc>
   </url>
   <url>
     <loc>/reference/atan2.html</loc>
