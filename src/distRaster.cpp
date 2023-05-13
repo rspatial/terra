@@ -2786,7 +2786,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 		}
 		SpatExtent e = {extent.xmin, extent.xmin+out.xres(), extent.ymin, extent.ymax};
 		SpatRaster onecol = out.crop(e, "near", false, xopt);
-		SpatVector p = onecol.as_polygons(false, false, false, false, false, xopt);
+		SpatVector p = onecol.as_polygons(false, false, false, false, false, 0, xopt);
 		if (p.hasError()) {
 			out.setError(p.getError());
 			return out;
@@ -2848,7 +2848,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 				double ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - dy;
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 				SpatRaster chunk = empty.crop(e, "near", false, xopt);
-				SpatVector p = chunk.as_polygons(false, false, false, false, false, xopt);
+				SpatVector p = chunk.as_polygons(false, false, false, false, false, 0, xopt);
 				std::vector<double> v = p.area(unit, true, {});
 				if (!out.writeBlock(v, i)) return out;
 				out.writeStop();
@@ -2916,7 +2916,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool tra
 		}
 		SpatExtent e = {extent.xmin, extent.xmin+x.xres(), extent.ymin, extent.ymax};
 		SpatRaster onecol = x.crop(e, "near", false, opt);
-		SpatVector p = onecol.as_polygons(false, false, false, false, false, opt);
+		SpatVector p = onecol.as_polygons(false, false, false, false, false, 0, opt);
 		std::vector<double> ar = p.area(unit, true, {});
 		if (!hasValues()) {
 			out.resize(1);
@@ -2970,7 +2970,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool tra
 				double ymin = x.yFromRow(bs.row[i] + bs.nrows[i]-1) - dy;
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 				SpatRaster onechunk = x.crop(e, "near", false, popt);
-				SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
+				SpatVector p = onechunk.as_polygons(false, false, false, false, false, 0, popt);
 				p = p.project("EPSG:4326", false);
 				std::vector<double> v = p.area(unit, true, 	{});
 				out[0] += accumulate(v.begin(), v.end(), 0.0);
@@ -2981,7 +2981,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool tra
 				double ymin = x.yFromRow(bs.row[i] + bs.nrows[i]-1) - dy;
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 				SpatRaster onechunk = x.crop(e, "near", false, popt);
-				SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
+				SpatVector p = onechunk.as_polygons(false, false, false, false, false, 0, popt);
 				p = p.project("EPSG:4326", false);
 				std::vector<double> ar = p.area(unit, true, {});
 				std::vector<double> v;
@@ -3113,7 +3113,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 		}
 		SpatExtent e = {extent.xmin, extent.xmin+x.xres(), extent.ymin, extent.ymax};
 		SpatRaster onecol = x.crop(e, "near", false, opt);
-		SpatVector p = onecol.as_polygons(false, false, false, false, false, opt);
+		SpatVector p = onecol.as_polygons(false, false, false, false, false, 0, opt);
 		std::vector<double> ar = p.area(unit, true, {});
 		for (size_t i=0; i<bs.n; i++) {
 			std::vector<double> v, g;
@@ -3172,7 +3172,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 			double ymin = x.yFromRow(bs.row[i] + bs.nrows[i]-1) - dy;
 			SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 			SpatRaster onechunk = x.crop(e, "near", false, popt);
-			SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
+			SpatVector p = onechunk.as_polygons(false, false, false, false, false, 0, popt);
 			p = p.project("EPSG:4326", false);
 			std::vector<double> ar = p.area(unit, true, {});
 			std::vector<double> v, g;

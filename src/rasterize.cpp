@@ -322,7 +322,7 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 			e.ymin = yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1) - rsy;
 			SpatRaster tmp = empty.crop(e, "near", false, ops);
 
-			SpatVector p = tmp.as_polygons(true, false, false, false, false, ops);
+			SpatVector p = tmp.as_polygons(true, false, false, false, false, 0, ops);
 			std::vector<double> v(out.bs.nrows[i] * out.ncol(), 0);
 
 			if (fun == "crosses") {
@@ -872,7 +872,7 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 			std::vector<double> y = vd.getD(1);
 			cells = cellFromXY(x, y);
 
-			SpatVector rv = r.as_polygons(false, false, false, true, false, ropt);
+			SpatVector rv = r.as_polygons(false, false, false, true, false, 0, ropt);
 			std::vector<double> csize = rv.area("m", true, {});
 			rv.df.add_column(csize, "area");
 			rv.df.add_column(cells, "cells");
@@ -969,7 +969,7 @@ void SpatRaster::rasterizeLinesLength(std::vector<double> &cells, std::vector<do
 		std::iota(cell.begin(), cell.end(), 0);
 		std::vector<std::vector<double>> xy = tmp.xyFromCell(cell);
 		cell = cellFromXY(xy[0], xy[1]);
-		SpatVector p = tmp.as_polygons(true, false, false, false, false, xopt);
+		SpatVector p = tmp.as_polygons(true, false, false, false, false, 0, xopt);
 		p.df.add_column(cell, "cell");
 		p = p.intersect(v, true);
 		if (p.nrow() > 1) {

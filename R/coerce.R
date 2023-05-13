@@ -207,17 +207,21 @@ get_labels <- function(x, p, dissolve=FALSE) {
 
 
 setMethod("as.polygons", signature(x="SpatRaster"),
-	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, na.rm=TRUE, na.all=FALSE, extent=FALSE) {
+	function(x, round=TRUE, aggregate=TRUE, values=TRUE, na.rm=TRUE, na.all=FALSE, extent=FALSE, digits=0, ...) {
+		if (isFALSE(list(...)$dissolve)) {
+			aggregate <- FALSE
+		}
+	
 		p <- methods::new("SpatVector")
 		if (extent) {
 			p@pnt <- x@pnt$dense_extent(FALSE, FALSE)
 			x <- messages(x, "as.polygons")
 		} else {
 			opt <- spatOptions()
-			p@pnt <- x@pnt$as_polygons(trunc[1], dissolve[1], values[1], na.rm[1], na.all[1], opt)
+			p@pnt <- x@pnt$as_polygons(round[1], aggregate[1], values[1], na.rm[1], na.all[1], digits, opt)
 			x <- messages(x, "as.polygons")
 			if (values) {
-				p <- get_labels(x, p, dissolve)
+				p <- get_labels(x, p, aggregate[1])
 			}
 		}
 		messages(p, "as.polygons")

@@ -814,7 +814,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 
 
 
-SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggregate, SpatOptions &opt) {
+SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggregate, int digits, SpatOptions &opt) {
 
 	SpatVector out;
 	out.srs = source[0].srs;
@@ -835,15 +835,21 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 		SpatOptions mopt(topt);
 		mopt.set_datatype("INT1U");
 		mask = tmp.isfinite(false, mopt);
-	} else if (trunc) {
-		tmp = tmp.math("trunc", topt);
-		trunc = false;
+	} 
+
+/*		
+	if (round) {
+		tmp = tmp.math2("round", 0, topt);
+//		tmp = tmp.math("trunc", topt);
+		round = false;
 	} else if (tmp.sources_from_file()) {
 		// for NAN and INT files. Should have a check for that
 		//tmp = tmp.arith(0, "+", false, topt);
 		// riskier
 		tmp.readAll();
 	}
+*/
+	
 	if (tmp.source[0].extset) {
 		tmp = tmp.hardCopy(topt);
 	}
@@ -900,7 +906,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
     }
 	if (SRS != NULL) SRS->Release();
 
-	OGRFieldDefn oField(name.c_str(), trunc ?  OFTInteger : OFTReal);
+	OGRFieldDefn oField(name.c_str(), round ? OFTInteger : OFTReal);
 	if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
 		out.setError( "Creating field failed");
 		return out;
@@ -916,14 +922,14 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	if (narm) {
 		GDALRasterBand *maskBand;
 		maskBand = maskDS->GetRasterBand(1);
-		if (trunc) {
+		if (round) {
 			err = GDALPolygonize(poBand, maskBand, poLayer, 0, NULL, NULL, NULL);
 		} else {
 			err = GDALFPolygonize(poBand, maskBand, poLayer, 0, NULL, NULL, NULL);
 		}
 		GDALClose(maskDS);
 	} else {
-		if (trunc) {
+		if (round) {
 			err = GDALPolygonize(poBand, NULL, poLayer, 0, NULL, NULL, NULL);
 		} else {
 			err = GDALFPolygonize(poBand, NULL, poLayer, 0, NULL, NULL, NULL);

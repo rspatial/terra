@@ -25,8 +25,8 @@ And conversion of a SpatVector to another SpatVector type.
 }
 
 \usage{
-\S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE,
-		na.rm=TRUE, na.all=FALSE, extent=FALSE)
+\S4method{as.polygons}{SpatRaster}(x, round=TRUE, aggregate=TRUE, values=TRUE,
+		na.rm=TRUE, na.all=FALSE, extent=FALSE, digits=0, ...)
 
 \S4method{as.lines}{SpatRaster}(x)
 
@@ -48,8 +48,8 @@ And conversion of a SpatVector to another SpatVector type.
 
 \arguments{
 \item{x}{SpatRaster or SpatVector}
-\item{trunc}{logical; truncate values to integers. Cells with the same value are merged. Therefore, if \code{trunc=FALSE} the object returned can have many cells and can be very large}
-\item{dissolve}{logical; combine cells with the same values? If \code{TRUE} only the first layer in \code{x} is processed}
+\item{round}{logical; If \code{TRUE} and \code{aggregate=TRUE}, values are rounded before aggregation. If this value is \code{FALSE} the SpatVector returned can have very many polygons and can be very large}
+\item{aggregate}{logical; combine cells with the same values? If \code{TRUE} only the first layer in \code{x} is processed}
 \item{values}{logical; include cell values as attributes?}
 \item{multi}{logical. If \code{TRUE} a multi-point geometry is returned}
 \item{skiplast}{logical. If \code{TRUE} the last point of a polygon (which is the same as the first point) is not included}
@@ -57,6 +57,7 @@ And conversion of a SpatVector to another SpatVector type.
 \item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are ignored}
 \item{na.all}{logical. If \code{TRUE} cells are only ignored if \code{na.rm=TRUE} and their value is \code{NA} for \bold{all} layers instead of for \code{any} layer}
 \item{crs}{character. The coordinate reference system (see \code{\link{crs}})}
+\item{digits}{integer. The number of digits for rounding (when \code{round=TRUE}}
 }
 
 \value{

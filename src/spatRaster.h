@@ -582,8 +582,9 @@ class SpatRaster {
 		std::vector<std::vector<double>> rappvals(SpatRaster x, double first, double last, bool clamp, bool all, double fill, size_t startrow, size_t nrows, bool circular);
 		SpatRaster fill_range(long limit, bool circular, SpatOptions &opt);
 
-		SpatVector as_polygons(bool trunc, bool dissolve, bool values, bool narm, bool nall, SpatOptions &opt);
-		SpatVector polygonize(bool trunc, bool values, bool narm, bool aggregate, SpatOptions &opt);
+		SpatVector as_polygons(bool round, bool dissolve, bool values, bool narm, bool nall, int digits, SpatOptions &opt);
+		SpatVector polygonize(bool round, bool values, bool narm, bool aggregate, int digits, SpatOptions &opt);
+		
 		SpatVector as_lines(SpatOptions &opt);
 		SpatVector as_points(bool values, bool narm, bool nall, SpatOptions &opt);
 		std::vector<std::vector<double>> as_points_value(const double& target, SpatOptions &opt);

@@ -3470,7 +3470,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 	SpatOptions sopt(opt);
 	SpatRaster aout = out.aggregate({arow, acol}, "", true, sopt);
-	SpatVector ve = aout.as_polygons(false, false, false, false, false, sopt);
+	SpatVector ve = aout.as_polygons(false, false, false, false, false, 0, sopt);
 
 	SpatVector vcrp(out.getExtent(), "");
 	ve = ve.intersect(vcrp, false);
