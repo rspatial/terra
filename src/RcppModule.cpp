@@ -751,6 +751,7 @@ RCPP_MODULE(spat){
 		.method("setUnit", &SpatRaster::setUnit)
 		.method("set_resolution", &SpatRaster::setResolution)
 		.method("subset", &SpatRaster::subset)
+		.method("subsetSource", &SpatRaster::subsetSource)
 
 		.method("cellFromXY", ( std::vector<double> (SpatRaster::*)(std::vector<double>,std::vector<double>, double) )( &SpatRaster::cellFromXY ))
 		.method("vectCells", &SpatRaster::vectCells)

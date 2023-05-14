@@ -253,6 +253,10 @@ setMethod("inMemory", signature(x="SpatRaster"),
 #..inMemory <- function(x) { x@pnt$inMemory }
 #..filenames <- function(x) {	x@pnt$filenames }
 
+subsetSource <- function(x, i) {
+	x@pnt <- x@pnt$subsetSource(i-1)
+	messages(x)
+}
 
 setMethod("sources", signature(x="SpatRaster"),
 	function(x, nlyr=FALSE, bands=FALSE) {

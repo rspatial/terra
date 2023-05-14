@@ -126,6 +126,17 @@ SpatRaster SpatRaster::dropSource() {
 }
 */
 
+
+SpatRaster SpatRaster::subsetSource(size_t snr) {
+	if (snr >= source.size()) {
+		SpatRaster out;
+		out.setError("invalid source number");
+		return out;
+	}
+	SpatRaster out(source[snr]);
+	return out;
+}
+
 bool SpatRaster::hasValues() {
 //	if (source.size() == 0) {
 //		return false;

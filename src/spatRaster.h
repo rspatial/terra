@@ -361,6 +361,7 @@ class SpatRaster {
 		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options);
 		bool constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz);
 		bool constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, std::string driver);
+
 		
 		//SpatRaster fromFiles(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, std::string drivers, std::vector<std::string> options);
 		
@@ -371,6 +372,7 @@ class SpatRaster {
 		SpatRaster combineSources(SpatRaster &x, bool warn);
 		void combine(SpatRaster &x);
 		
+		SpatRaster subsetSource(size_t snr);
 		SpatRaster subset(std::vector<unsigned> lyrs, SpatOptions &opt);
 		SpatRaster replace(SpatRaster x, unsigned layer, SpatOptions &opt);
 ////////////////////////////////////////////////////

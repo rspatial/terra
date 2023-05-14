@@ -20,7 +20,7 @@ Use \code{wrap} to pack a SpatVector or SpatRaster* to create a Packed* object. 
 }
 
 \usage{
-\S4method{wrap}{SpatRaster}(x, proxy=FALSE, path=NULL, overwrite=FALSE)
+\S4method{wrap}{SpatRaster}(x, proxy=FALSE)
 
 \S4method{wrap}{SpatRasterDataset}(x, proxy=FALSE)
 
@@ -34,8 +34,6 @@ Use \code{wrap} to pack a SpatVector or SpatRaster* to create a Packed* object. 
 \arguments{
   \item{x}{SpatVector, SpatRaster, SpatRasterDataset or SpatRasterCollection}
   \item{proxy}{logical. If \code{FALSE} raster cell values are forced to memory if possible. If \code{TRUE}, a reference to source filenames is stored for data sources that are not in memory}
-  \item{path}{character. If not \code{NULL}, the path where raster files are copied to. This should normally not be used}
-  \item{overwrite}{Should existing files be overwritten when \code{path} is not \code{NULL}? If this value is not TRUE or FALSE, only files that do not exist are copied}
 }
 
 \value{

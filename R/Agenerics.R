@@ -188,6 +188,7 @@ if (!isGeneric("minmax")) {setGeneric("minmax", function(x, ...) standardGeneric
 if (!isGeneric("nsrc")) { setGeneric("nsrc", function(x) standardGeneric("nsrc")) }
 if (!isGeneric("perim")) {setGeneric("perim", function(x, ...) standardGeneric("perim"))}
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}
+if (!isGeneric("wrapCache")) {setGeneric("wrapCache", function(x, ...) standardGeneric("wrapCache"))}
 if (!isGeneric("wrap")) {setGeneric("wrap", function(x, ...) standardGeneric("wrap"))}
 if (!isGeneric("unwrap")) {setGeneric("unwrap", function(x, ...) standardGeneric("unwrap"))}
 if (!isGeneric("cats")) { setGeneric("cats", function(x, ...) standardGeneric("cats")) }
