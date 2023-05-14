@@ -160,13 +160,13 @@
     <loc>/reference/convhull.html</loc>
   </url>
   <url>
-    <loc>/reference/coords.html</loc>
-  </url>
-  <url>
     <loc>/reference/costDist.html</loc>
   </url>
   <url>
     <loc>/reference/cover.html</loc>
+  </url>
+  <url>
+    <loc>/reference/crds.html</loc>
   </url>
   <url>
     <loc>/reference/crop.html</loc>
