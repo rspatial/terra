@@ -22,7 +22,7 @@ Get the coordinates of a SpatVector or SpatRaster cells. A matrix or data.frame 
   \item{x}{SpatRaster or SpatVector}
   \item{df}{logical. If \code{TRUE} a \code{data.frame} is returned instead of a matrix}  
   \item{list}{logical. If \code{TRUE} a \code{list} is returned instead of a matrix}  
-  \item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are excluded}  
+  \item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are excluded. Ignored if the SpatRaster is a template with no associated cell values}  
 }
 
 
