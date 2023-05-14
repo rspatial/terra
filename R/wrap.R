@@ -172,9 +172,6 @@ setMethod("wrapCache", signature(x="SpatRaster"),
 		r <- methods::new("PackedSpatRaster")
 		r@definition <- as.character(x)
 
-		opt <- spatOptions(ncopies=2)
-		can <- (!proxy) && x@pnt$canProcessInMemory(opt)
-
 		s <- sources(x)
 		if (!is.null(filename)) {
 			if ((length(filename) != 1) && (nrow(xs) != length(filename))) {
@@ -212,7 +209,7 @@ setMethod("wrapCache", signature(x="SpatRaster"),
 )
 
 setMethod("wrap", signature(x="SpatRaster"),
-	function(x, proxy=FALSE, overwrite=FALSE) {
+	function(x, proxy=FALSE) {
 		r <- methods::new("PackedSpatRaster")
 		r@definition <- as.character(x)
 
