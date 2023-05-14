@@ -35,7 +35,7 @@ PackedSpatRaster
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 
-x <- wrapCache(r, folder=tempdir())
+x <- wrapCache(r, path=tempdir())
 x
 
 }

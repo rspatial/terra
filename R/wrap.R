@@ -172,7 +172,8 @@ setMethod("wrapCache", signature(x="SpatRaster"),
 		r <- methods::new("PackedSpatRaster")
 		r@definition <- as.character(x)
 
-		s <- sources(x)
+		xs <- sources(x, TRUE, TRUE)
+		s <- xs$source
 		if (!is.null(filename)) {
 			if ((length(filename) != 1) && (nrow(xs) != length(filename))) {
 				error("wrap", "length(files) does not match the number of sources")
