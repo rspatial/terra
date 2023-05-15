@@ -10,7 +10,7 @@
 \description{
 Use \code{wrap} to pack a SpatRaster with caching options. See \code{\link{wrap}} for the general approach that is easier and better to use in most cases. 
 
-This method allows for specifying a folder, or filenames, to cache all sources of a SpatRaster in a specific location (on disk)
+This method allows for specifying a folder, or filenames, to cache all sources of a SpatRaster in a specific location (on disk).
 }
 
 \usage{
