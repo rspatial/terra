@@ -54,7 +54,7 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 
 	} else {
 		if (expand) {
-			warn(focal, "expand is ignored for non-standard functions")
+			warn("focal", "expand is ignored for non-standard functions")
 		}
 		checkNA <- na.only || na.omit
 
