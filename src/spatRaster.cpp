@@ -1710,6 +1710,27 @@ int_64 SpatRaster::rowFromY(double y) {
 }
 
 
+void SpatRaster::xyFromCell( std::vector<std::vector<double>> &xy ) {
+	
+	SpatExtent extent = getExtent();
+	double xmin = extent.xmin;
+	double ymax = extent.ymax;
+	double yr = yres();
+	double xr = xres();
+	size_t nr = nrow();
+	size_t nc = ncol();
+
+	xy[0].reserve(ncell()+2); 
+	xy[1].reserve(ncell()+2); 
+	for (size_t i = 0; i<nr; i++) {
+		for (size_t j = 0; j<nc; j++) {
+			xy[0].push_back( xmin + (j + 0.5) * xr );
+			xy[1].push_back( ymax - (i + 0.5) * yr );
+		}
+	}
+}
+
+
 std::vector<std::vector<double>> SpatRaster::xyFromCell( std::vector<double> &cell) {
 	size_t n = cell.size();
 	SpatExtent extent = getExtent();
@@ -2142,6 +2163,63 @@ std::vector<std::vector<double>> SpatRaster::as_points_value(const double& targe
 	readStop();
 	return xyFromCell(cells);
 }
+
+
+
+std::vector<std::vector<double>> SpatRaster::coordinates(bool narm, bool nall, SpatOptions &opt) {
+
+    std::vector<std::vector<double>> xy(2);
+
+	if ( !(narm) || (!hasValues()) ) {
+        xyFromCell(xy);
+		return xy;
+	}
+
+	BlockSize bs = getBlockSize(opt);
+
+	if (!readStart()) {
+		return(xy);
+	}
+	size_t nc = ncol();
+	unsigned nl = nlyr();
+	std::vector<double> v;
+	for (size_t i = 0; i < bs.n; i++) {
+		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
+        size_t off1 = (bs.row[i] * nc);
+ 		size_t vnc = bs.nrows[i] * nc;
+		for (size_t j=0; j<vnc; j++) {
+			if (nall) {
+				bool allna = true;
+				size_t off2 = 0;
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					if (!std::isnan(v[off2+j])) {
+						allna = false;
+						continue;
+					}
+					off2 += vnc;
+				}
+				if (allna) continue;
+			} else {
+				bool foundna = false;
+				size_t off2 = 0;
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					if (std::isnan(v[off2+j])) {
+						foundna = true;
+						continue;
+					}
+					off2 += vnc;
+				}
+				if (foundna) continue;
+			}
+			std::vector<std::vector<double>> xyc = xyFromCell( off1+j );
+			xy[0].push_back(xyc[0][0]);
+			xy[1].push_back(xyc[1][0]);
+		}
+	}
+	readStop();
+	return(xy);
+}
+
 
 std::vector<std::vector<double>> SpatRaster::cells_notna(SpatOptions &opt) {
 

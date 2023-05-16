@@ -400,12 +400,13 @@ class SpatRaster {
 		int_64 colFromX(double x);
 		std::vector<int_64> rowFromY(const std::vector<double> &y);
 		int_64 rowFromY(double y);
+		void xyFromCell( std::vector<std::vector<double>> &xy );
 		std::vector<std::vector<double>> xyFromCell( std::vector<double> &cell);
 		std::vector<std::vector<double>> xyFromCell( double cell);
 		std::vector<std::vector<int_64>> rowColFromCell(std::vector<double> &cell);
 		std::vector<int_64> rowColFromY(std::vector<double> &y);
 		std::vector<std::vector<int_64>> rowColFromExtent(SpatExtent e);
-	
+		std::vector<std::vector<double>> coordinates(bool narm, bool nall, SpatOptions &opt);
 		
         std::vector<unsigned> sourcesFromLyrs(std::vector<unsigned> lyrs);
 		int sourceFromLyr(unsigned lyr);
