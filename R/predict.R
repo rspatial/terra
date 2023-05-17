@@ -131,6 +131,75 @@ parfun <- function(cls, d, fun, model, ...) {
 	}
 }
 
+
+find_dims <- function(object, model, nc, fun, const, na.rm, index, ...) {
+	nr <- nrow(object)
+	nl <- 1
+	testrow <- round(0.51*nr)
+	rnr <- 1
+	if (nc==1) rnr <- min(nr, 20) - testrow + 1
+	d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
+	cn <- NULL
+	levs <- NULL
+	if (!is.null(index)) {
+		nl <- length(index)
+	} else {
+		allna <- FALSE
+		if (na.rm) {
+			allna <- all(nrow(stats::na.omit(d)) == 0)
+			if (allna) {
+				testrow <- ceiling(testrow - 0.25*nr)
+				d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
+				allna <- all(nrow(stats::na.omit(d)) == 0)
+			}
+			if (allna) {
+				testrow <- floor(testrow + 0.5*nr)
+				if ((testrow + rnr) > nr) rnr = nr - testrow + 1
+				d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
+				allna <- all(nrow(stats::na.omit(d)) == 0)
+			}
+			if (allna && (ncell(object) < 1000)) {
+				d <- readValues(object, 1, nr, 1, nc, TRUE, TRUE)
+				allna <- all(nrow(stats::na.omit(d)) == 0)
+				#if (allna) {
+				#	error("predict", "all predictor values are NA")
+				#}
+			}
+			if (allna) {
+				d <- spatSample(object, min(1000, ncell(object)), "regular", warn=FALSE)
+				allna <- all(nrow(stats::na.omit(d)) == 0)
+			}
+			if (allna) {
+				d[] <- stats::runif(prod(dim(d)))
+			}
+		}
+		r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL, ...)
+		if (ncell(object) > 1) {
+			rdim <- dim(r)
+			if (is.null(rdim)) {
+				nl <- 1
+				cn <- ""
+			} else {
+				if (isTRUE(any(rdim == 1))) {
+					nl <- 1
+					cn <- colnames(r)[1]
+				} else {
+					nl <- ncol(r)
+					cn <- colnames(r)
+				}
+			}
+		} else {
+			nl <- length(r)
+		}
+		levs <- .getFactors(model, fun, d, nl, const, na.rm, index, ...)
+	}
+	out <- rast(object, nlyrs=nl)
+	if (!all(sapply(levs, is.null))) levels(out) <- levs
+	if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
+	out
+}
+
+
 setMethod("predict", signature(object="SpatRaster"),
 	function(object, model, fun=predict, ..., const=NULL, na.rm=FALSE, index=NULL, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list()) {
 
@@ -140,75 +209,13 @@ setMethod("predict", signature(object="SpatRaster"),
 			error("predict", "duplicate names in SpatRaster: ", tab[tab>1])
 		}
 
-		#factors should come with the SpatRaster
-		#haveFactor <- FALSE
-		#if (!is.null(factors)) {
-		#	factors <- .getFactors(model, factors, nms)
-		#	fnames <- names(f)
-		#	haveFactor <- TRUE
-		#}
-
-		nl <- 1
 		nc <- ncol(object)
-		nr <- nrow(object)
-		tomat <- FALSE
+		#tomat <- FALSE
 		readStart(object)
 		on.exit(readStop(object))
 
-		testrow <- round(0.51*nr)
-		rnr <- 1
-		if (nc==1) rnr <- min(nr, 20) - testrow + 1
-		d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-		cn <- NULL
-		levs <- NULL
-		if (!is.null(index)) {
-			nl <- length(index)
-		} else {
-			allna <- FALSE
-			if (na.rm) {
-				allna <- all(nrow(stats::na.omit(d)) == 0)
-				if (allna) {
-					testrow <- ceiling(testrow - 0.25*nr)
-					d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-					allna <- all(nrow(stats::na.omit(d)) == 0)
-				}
-				if (allna) {
-					testrow <- floor(testrow + 0.5*nr)
-					if ((testrow + rnr) > nr) rnr = nr - testrow + 1
-					d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-					allna <- all(nrow(stats::na.omit(d)) == 0)
-				}
-				if (allna && (ncell(object) < 1000)) {
-					d <- readValues(object, 1, nr, 1, nc, TRUE, TRUE)
-					allna <- all(nrow(stats::na.omit(d)) == 0)
-					#if (allna) {
-					#	error("predict", "all predictor values are NA")
-					#}
-				}
-				if (allna) {
-					d <- spatSample(object, min(1000, ncell(object)), "regular", warn=FALSE)
-					allna <- all(nrow(stats::na.omit(d)) == 0)
-				}
-				if (allna) {
-					d[] <- stats::runif(prod(dim(d)))
-				}
-			}
-#			if (!allna) {
-				r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL, ...)
-				if (ncell(object) > 1) {
-					nl <- ncol(r)
-					cn <- colnames(r)
-				} else {
-					nl <- length(r)
-				}
-				levs <- .getFactors(model, fun, d, nl, const, na.rm, index, ...)
-#			} else {
-#				warn("predict", "Cannot determine the number of output variables. Assuming 1. Use argument 'index' to set it manually")
-#			}
-		}
-		out <- rast(object, nlyrs=nl)
-		levels(out) <- levs
-		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
+		out <- find_dims(object, model, nc, fun, const, na.rm, index, ...)
+		nl <- nlyr(out)
 
 		doclust <- FALSE
 		if (inherits(cores, "cluster")) {
@@ -234,14 +241,14 @@ setMethod("predict", signature(object="SpatRaster"),
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
 			r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=cores, ...)
 			if (prod(NROW(r), NCOL(r)) != prod(b$nrows[i], nc, nl)) {
-				msg <- "the number of values returned by the predict function does not match the input."
+				msg <- "the number of values returned by 'fun' (model predict function) does not match the input."
 				if (!na.rm) msg <- paste(msg, "Try na.rm=TRUE?")
 				error("predict", msg)
 			}
 			writeValues(out, r, b$row[i], b$nrows[i])
 		}
 		writeStop(out)
-		return(out)
+#		return(out)
 	}
 )
 
