@@ -55,7 +55,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVectorProxy</span></span>
 <span><span class="fu">query</span><span class="op">(</span><span class="va">x</span>, start<span class="op">=</span><span class="fl">1</span>, n<span class="op">=</span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, vars<span class="op">=</span><span class="cn">NULL</span>, where<span class="op">=</span><span class="cn">NULL</span>, </span>
-<span>    extent<span class="op">=</span><span class="cn">NULL</span>, filter<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span>    extent<span class="op">=</span><span class="cn">NULL</span>, filter<span class="op">=</span><span class="cn">NULL</span>, sql<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -80,6 +80,9 @@
 
 <dt>filter</dt>
 <dd><p>SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points)</p></dd>
+
+<dt>sql</dt>
+<dd><p>character. Aribrary SQL statement. If used, arguments "start", "n", "vars" and "where" are ignored</p></dd>
 
 </dl></div>
     <div id="see-also">
