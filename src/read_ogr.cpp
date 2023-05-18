@@ -864,12 +864,12 @@ SpatVectorCollection::SpatVectorCollection(std::string filename, std::string lay
 
 
 	OGRFeature::DestroyFeature( poFeature );
+	SpatDataFrame df = readAttributes(poLayer, false);
 	poLayer->ResetReading();
-	SpatGeom g;
 
 	SpatVector points, lines, polygons;
 	std::vector<unsigned> pnt, lin, pol;
-
+	SpatGeom g;
 	size_t i = 0;
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
@@ -910,11 +910,14 @@ SpatVectorCollection::SpatVectorCollection(std::string filename, std::string lay
 		poDS->ReleaseResultSet(poLayer);
 	}
 
+
+
 	if (points.size() > 0) {
 		points.setSRS(crs);
 		points.read_query = read_query;
 		points.read_extent= read_extent;
 		points.source_layer = source_layer;
+		if (df.ncol() > 0) points.df = df.subset_rows(pnt);
 		v.push_back(points);
 	}
 	if (lines.size() > 0) {
@@ -922,6 +925,7 @@ SpatVectorCollection::SpatVectorCollection(std::string filename, std::string lay
 		lines.read_query = read_query;
 		lines.read_extent= read_extent;
 		lines.source_layer = source_layer;
+		if (df.ncol() > 0) lines.df = df.subset_rows(lin);
 		v.push_back(lines);
 	}
 	if (polygons.size() > 0) {
@@ -929,6 +933,7 @@ SpatVectorCollection::SpatVectorCollection(std::string filename, std::string lay
 		polygons.read_query = read_query;
 		polygons.read_extent= read_extent;
 		polygons.source_layer = source_layer;
+		if (df.ncol() > 0) polygons.df = df.subset_rows(pol);
 		v.push_back(polygons);
 	}
 

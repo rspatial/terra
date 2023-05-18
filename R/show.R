@@ -126,23 +126,27 @@ setMethod ("show" , "SpatVectorCollection",
 		if (n > 15) {
 			nn <- 15
 		}
-		for (i in 1:nn) {
-			v <- object[i]
-			if (i==1) {
-				cat(" geometry    : ", geomtype(v), " (", nrow(v) , ")\n", sep="")
-			} else {
-				cat("               ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+		if (n > 0) {
+			for (i in 1:nn) {
+				v <- object[i]
+				if (i==1) {
+					cat(" geometry    : ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+				} else {
+					cat("               ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+				}
 			}
+			if (n > nn) {
+				cat("               ", "   and ", n-nn, "more\n", sep="")
+			}
+			crs <- .name_or_proj4(object[1])
+			if (crs != "") cat(" crs (first) :", crs,	 "\n")
+			nms <- names(object)
+			if (length(nms) > 10) {
+				nms <- c(nms[1:9], "...")
+			}
+			nms <- paste(nms, collapse=", ")
+			cat(" names       :", nms, "\n")
 		}
-		if (n > nn) {
-			cat("               ", "   and ", n-nn, "more\n", sep="")
-		}
-		nms <- names(object)
-		if (length(nms) > 10) {
-			nms <- c(nms[1:9], "...")
-		}
-		nms <- paste(nms, collapse=", ")
-		cat(" names       :", nms, "\n")
 	}
 )
 

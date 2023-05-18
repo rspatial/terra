@@ -159,6 +159,7 @@ setMethod("crs", signature("SpatRasterDataset"),
 )
 
 
+
 .txtCRS <- function(x, warn=TRUE) {
 	if (inherits(x, "SpatVector") | inherits(x, "SpatRaster")) {
 		x <- crs(x)
@@ -237,8 +238,16 @@ setMethod("crs", signature("SpatVectorProxy"),
 	}
 )
 
-# breaks stppSim 1.2.3
-#
+setMethod("crs", signature("SpatVectorCollection"),
+	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+		if (length(x) > 0) {
+			.get_CRS(x[[1]], proj=proj, describe=describe, parse=parse)
+		} else {
+			NULL
+		}
+	}
+)
+
 setMethod("crs", signature("sf"),
   function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
 	  xcrs <- attr(x[[ attr(x, "sf_column") ]], "crs")$wkt
@@ -262,6 +271,7 @@ setMethod("crs<-", signature("SpatVector", "ANY"),
 		messages(x, "crs<-")
 	}
 )
+
 
 setMethod("set.crs", signature("SpatVector"),
 	function(x, value) {

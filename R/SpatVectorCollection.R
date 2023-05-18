@@ -14,7 +14,7 @@ setMethod("svc", signature(x="missing"),
 )
 
 setMethod("svc", signature(x="character"),
-	function(x, layer="", query="", extent=NULL, filter=NULL, crs="") {
+	function(x, layer="", query="", extent=NULL, filter=NULL) {
 
 		if (is.null(filter)) {
 			filter <- SpatVector$new()
@@ -31,12 +31,7 @@ setMethod("svc", signature(x="character"),
 		}
 	
 		v <- methods::new("SpatVectorCollection")
-		v@pnt <- SpatVectorCollection$new(x, layer, query, extent, filter)
-		
-		if (isTRUE(crs != "")) {
-			crs(v, warn=FALSE) <- crs
-		}
-
+		v@pnt <- SpatVectorCollection$new(x, layer, query, extent, filter)	
 		v
 	}
 )

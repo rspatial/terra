@@ -92,6 +92,8 @@ get_filetype <- function(filename) {
 		"Idrisi"
 	} else if (ext == "rds") {
 		"rds"
+	} else if (ext == "tab") {
+		"MapInfo File"
 	} else {
 		error("writeVector", "cannot guess filetype from filename")
 	}
