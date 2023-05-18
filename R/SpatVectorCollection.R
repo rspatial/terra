@@ -13,6 +13,35 @@ setMethod("svc", signature(x="missing"),
 	}
 )
 
+setMethod("svc", signature(x="character"),
+	function(x, layer="", query="", extent=NULL, filter=NULL, crs="") {
+
+		if (is.null(filter)) {
+			filter <- SpatVector$new()
+		} else {
+			if (proxy) {
+				error("vect", "you cannot use 'filter' when proxy=TRUE")
+			}
+			filter <- filter@pnt
+		}
+		if (is.null(extent)) {
+			extent <- double()
+		} else {
+			extent <- as.vector(ext(extent))
+		}
+	
+		v <- methods::new("SpatVectorCollection")
+		v@pnt <- SpatVectorCollection$new(x, layer, query, extent, filter)
+		
+		if (isTRUE(crs != "")) {
+			crs(v, warn=FALSE) <- crs
+		}
+
+		v
+	}
+)
+
+
 
 setMethod("svc", signature(x="SpatVector"),
 	function(x, ...) {

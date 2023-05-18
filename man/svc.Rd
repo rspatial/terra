@@ -4,6 +4,7 @@
 
 \alias{svc}
 \alias{svc,missing-method}
+\alias{svc,character-method}
 \alias{svc,list-method}
 \alias{svc,sf-method}
 \alias{svc,SpatVector-method}
@@ -25,6 +26,8 @@ Methods to create a SpatVectorCollection. This is an object to hold "sub-dataset
 \S4method{svc}{SpatVector}(x, ...) 
 
 \S4method{svc}{list}(x) 
+
+\S4method{svc}{character}(x, layer="", query="", extent=NULL, filter=NULL, crs="")
 }
 
 \arguments{

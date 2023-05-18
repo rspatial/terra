@@ -12,6 +12,7 @@ setMethod("blocks", signature(x="SpatRaster"),
 
 setMethod("writeStart", signature(x="SpatRaster", filename="character"),
 	function(x, filename="", overwrite=FALSE, n=4, sources="", ...) {
+		filename <- path.expand(trimws(filename[1]))
 		filename <- enc2utf8(filename)
 		opt <- spatOptions(filename, overwrite, ncopies=n, ...)
 		ok <- x@pnt$writeStart(opt, unique(sources))

@@ -361,6 +361,7 @@ RCPP_MODULE(spat){
 
     class_<SpatVectorCollection>("SpatVectorCollection")
 		.constructor()
+		.constructor<std::string, std::string, std::string, std::vector<double>, SpatVector>()
 
 		//.property("names", &SpatVectorCollection::get_names, &SpatVectorCollection::set_names)
 		.method("deepcopy", &SpatVectorCollection::deepCopy, "deepCopy")

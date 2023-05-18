@@ -396,7 +396,13 @@ class SpatVectorCollection {
 
 	public:
 		virtual ~SpatVectorCollection(){}
+		SpatVectorCollection();
+		SpatVectorCollection(std::string filename, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
+		
+		
 		SpatVectorCollection deepCopy() { return *this; }
+
+		SpatVectorCollection create(std::string filename);
 
 		std::vector<SpatVector> v;
 		std::vector<std::string> names;

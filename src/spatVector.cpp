@@ -1193,6 +1193,8 @@ SpatVector SpatVector::remove_duplicate_nodes(int digits) {
 }
 
 
+SpatVectorCollection::SpatVectorCollection() {}
+
 SpatVector SpatVectorCollection::append() {
 	SpatVector out;
 	size_t n = size();
