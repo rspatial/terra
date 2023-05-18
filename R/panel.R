@@ -67,10 +67,11 @@ setMethod("panel", signature(x="SpatRaster"),
 		bottom <- c(0,1)[b]
 
 		if (!categorical) {
-			rng <- range(minmax(x, FALSE))
-			if (any(is.na(rng))) {
-				xs <- spatSample(x, maxcell, ext=ext, method="regular", as.raster=TRUE, warn=FALSE)
-				rng <- range(minmax(xs, TRUE))
+			if (all(hasMinMax(x))) {
+				rng <- range(minmax(x, FALSE))
+			} else {
+				x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+				rng <- range(minmax(x, TRUE))
 			}
 			if (diff(rng) > 0) {
 				ptype <- "continuous"
