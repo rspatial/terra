@@ -115,7 +115,7 @@ SpatExtent SpatRaster::ext_from_cell(double cell) {
 }
 
 
-std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool narm, std::string filename, SpatOptions &opt) {
+std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool narm, int skip, std::string filename, SpatOptions &opt) {
 
 	std::vector<std::string> ff;
 	if (!hasValues()) {
@@ -137,7 +137,7 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool 
 	std::string f = noext(filename);
 	ff.reserve(d.size());
 	size_t nl = nlyr();
-	for (size_t i=0; i<d.size(); i++) {
+	for (size_t i=skip; i<d.size(); i++) {
 		std::string fout = f + std::to_string(d[i]) + fext;
 		SpatExtent exi = x.ext_from_cell(i);
 		opt.set_filenames({fout});

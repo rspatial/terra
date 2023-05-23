@@ -702,7 +702,7 @@ class SpatRaster {
 		SpatExtent ext_from_rc(int_64 r1, int_64 r2, int_64 c1, int_64 c2);
 		SpatExtent ext_from_cell(double cell);
 
-		std::vector<std::string> make_tiles(SpatRaster x, bool expand, bool narm, std::string filename, SpatOptions &opt);
+		std::vector<std::string> make_tiles(SpatRaster x, bool expand, bool narm, int skip, std::string filename, SpatOptions &opt);
 		std::vector<std::string> make_tiles_vect(SpatVector x, bool expand, bool narm, std::string filename, SpatOptions &opt);
 
 		SpatRaster mask(SpatRaster &x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
