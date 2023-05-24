@@ -85,6 +85,9 @@ setMethod("vect", signature(x="character"),
 		if (is.null(filter)) {
 			filter <- SpatVector$new()
 		} else {
+			if (!inherits(filter, "SpatVector")) {
+				error("vect", "'filter' must be a SpatVector")			
+			}
 			if (proxy) {
 				error("vect", "you cannot use 'filter' when proxy=TRUE")
 			}

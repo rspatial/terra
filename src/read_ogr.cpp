@@ -385,11 +385,7 @@ SpatGeom emptyGeom() {
 }
 
 
-bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
-
-	std::string crs = "";
-
-	OGRLayer *poLayer;
+bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer, std::string &query, std::vector<double> &extent, SpatVector &filter, std::string &errmsg, std::vector<std::string> &wrms) {
 
 	if (query.empty()) {
 		if (layer.empty()) {
@@ -404,60 +400,39 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 				std::string lyrsel = lyrnms[0];
 				lyrnms.erase(lyrnms.begin());
 				std::string ccat = concatenate(lyrnms, ", ");
-				std::string msg = "Reading layer: " + lyrsel + "\nOther layers: " + ccat;
-				addWarning(msg);
+				wrms.push_back("Reading layer: " + lyrsel + "\nOther layers: " + ccat);
 			}
 			#endif
-			poLayer = poDS->GetLayer(0);
+			// caller already set it to 0
+			// poLayer = poDS->GetLayer(0);
 			if (poLayer == NULL) {
-				setError("dataset has no layers");
+				errmsg = "dataset has no layers";
 				return false;
 			}
 		} else {
 			poLayer = poDS->GetLayerByName(layer.c_str());
 			if (poLayer == NULL) {
-				std::string msg = layer + " is not a valid layer name";
+				errmsg = layer + " is not a valid layer name";
 			#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
 				// do nothing
 			#else
-				msg += "\nChoose one of: ";
+				errmsg += "\nChoose one of: ";
 				for ( auto&& poLayer: poDS->GetLayers() ) {
-					msg += (std::string)poLayer->GetName() + ", ";
+					errmsg += (std::string)poLayer->GetName() + ", ";
 				}
-				msg = msg.substr(0, msg.size()-2);
+				errmsg = errmsg.substr(0, errmsg.size()-2);
 			#endif
-				setError(msg);
 				return false;
 			}
 		}
 	} else {
 		poLayer = poDS->ExecuteSQL(query.c_str(), NULL, NULL);
 		if (poLayer == NULL) {
-			setError("Query failed");
+			errmsg = "Query failed";
 			return false;
 		}
-		read_query = query;
 	}
-
-	OGRSpatialReference *poSRS = poLayer->GetSpatialRef();
-
-	if (poSRS) {
-		char *psz = NULL;
-	#if GDAL_VERSION_MAJOR >= 3
-		const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
-		OGRErr err = poSRS->exportToWkt(&psz, options);
-	#else
-		OGRErr err = poSRS->exportToWkt(&psz);
-	#endif
-
-		if (err == OGRERR_NONE) {
-			crs = psz;
-		}
-		setSRS(crs);
-		CPLFree(psz);
-	}
-
-
+	
 	if (filter.nrow() > 0) {
 		if (filter.type() != "polygons") {
 			filter = filter.hull("convex");
@@ -466,8 +441,9 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 		}
 		GDALDataset *filterDS = filter.write_ogr("", "lyr", "Memory", false, true, std::vector<std::string>());
 		if (filter.hasError()) {
-			setError(filter.getError());
+			//setError(filter.getError());
 			GDALClose(filterDS);
+			errmsg = "filter has error";
 			return false;
 		}
 		OGRLayer *fLayer = filterDS->GetLayer(0);
@@ -482,7 +458,49 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 		GDALClose(filterDS);
 	} else if (!extent.empty()) {
 		poLayer->SetSpatialFilterRect(extent[0], extent[2], extent[1], extent[3]);
-		read_extent = extent;
+	}
+
+	return true;
+}
+
+
+bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
+
+	if (poDS == NULL) {
+		setError("dataset is empty");
+		return false;
+	}
+
+	std::string crs = "";
+	OGRLayer *poLayer;
+	poLayer = poDS->GetLayer(0);
+
+	read_query = query;
+	read_extent = extent;
+	std::string errmsg;
+	std::vector<std::string> wrnmsg;
+
+	if (!layerQueryFilter(poDS, poLayer, layer, query, extent, filter, errmsg, wrnmsg)) {
+		setError(errmsg);
+		return false;
+	} else if (!wrnmsg.empty()) {
+		for (size_t i=0; i < wrnmsg.size(); i++) addWarning(wrnmsg[i]);
+	}
+
+	OGRSpatialReference *poSRS = poLayer->GetSpatialRef();
+	if (poSRS) {
+		char *psz = NULL;
+	#if GDAL_VERSION_MAJOR >= 3
+		const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+		OGRErr err = poSRS->exportToWkt(&psz, options);
+	#else
+		OGRErr err = poSRS->exportToWkt(&psz);
+	#endif
+		if (err == OGRERR_NONE) {
+			crs = psz;
+		}
+		setSRS(crs);
+		CPLFree(psz);
 	}
 
 	if (what != "geoms") { 
@@ -621,8 +639,21 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 			OGRFeature::DestroyFeature( poFeature );
 		}
 	} else if (wkbgeom == wkbUnknown) {
-		std::string s = "cannot read a file with 'unknown' geometry type as SpatVector. Read as SpatVectorCollection?";
-		setError(s);
+		SpatVectorCollection sv;
+		std::vector<double> dempty;
+		SpatVector filter2;
+		sv.read_ogr(poDS, "", "", dempty, filter2); 
+
+		if (sv.size() > 0) {
+			*this = sv.v[0];
+			if (sv.size() > 1) {
+				addWarning("ignoring additional geometry types. See 'svc'");
+			}
+			return true;
+		}
+		if (sv.hasError()) {
+			setError(sv.getError());
+		}
 		return false;
 	} else if (wkbgeom != wkbNone) {
 		const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
@@ -634,7 +665,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 
 
 	if (!query.empty()) {
-		poDS->ReleaseResultSet(poLayer);
+	//	poDS->ReleaseResultSet(poLayer);
 	}
 
  	return true;
@@ -731,76 +762,22 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 	}
 }
 
-
-SpatVectorCollection::SpatVectorCollection(std::string filename, std::string layer, std::string query, std::vector<double> extent, SpatVector filter) {
-
-    GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx(filename.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
-    if( poDS == NULL ) {
-		if (!file_exists(filename)) {
-			setError("file does not exist: " + filename);
-		} else {
-			setError("Cannot open this file as a SpatVector: " + filename);
-		}
-		return;
-    }
-
-
-	std::string read_query = "";
-	std::vector<double> read_extent;
-	std::string crs = "";
-	std::string source_layer = "";
+bool SpatVectorCollection::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter) {
 	
 	OGRLayer *poLayer;
-	if (query.empty()) {
-		if (layer.empty()) {
-			#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-				// do nothing
-			#else
-			std::vector<std::string> lyrnms;
-			for ( auto&& poLayer: poDS->GetLayers() ) {
-				lyrnms.push_back((std::string)poLayer->GetName());
-			}
-			if (lyrnms.size() > 1) {
-				std::string lyrsel = lyrnms[0];
-				lyrnms.erase(lyrnms.begin());
-				std::string ccat = concatenate(lyrnms, ", ");
-				std::string msg = "Reading layer: " + lyrsel + "\nOther layers: " + ccat;
-				addWarning(msg);
-			}
-			#endif
-			poLayer = poDS->GetLayer(0);
-			if (poLayer == NULL) {
-				setError("dataset has no layers");
-				return;
-			}
-		} else {
-			poLayer = poDS->GetLayerByName(layer.c_str());
-			if (poLayer == NULL) {
-				std::string msg = layer + " is not a valid layer name";
-			#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-				// do nothing
-			#else
-				msg += "\nChoose one of: ";
-				for ( auto&& poLayer: poDS->GetLayers() ) {
-					msg += (std::string)poLayer->GetName() + ", ";
-				}
-				msg = msg.substr(0, msg.size()-2);
-			#endif
-				setError(msg);
-				return;
-			}
-		}
-	} else {
-		poLayer = poDS->ExecuteSQL(query.c_str(), NULL, NULL);
-		if (poLayer == NULL) {
-			setError("Query failed");
-			return;
-		}
-		read_query = query;
+	poLayer = poDS->GetLayer(0);
+	
+	std::string errmsg;
+	std::vector<std::string> wrnmsg;
+
+	if (!layerQueryFilter(poDS, poLayer, layer, query, extent, filter, errmsg, wrnmsg)) {
+		setError(errmsg);
+		return false;
+	} else if (!wrnmsg.empty()) {
+		for (size_t i=0; i < wrnmsg.size(); i++) addWarning(wrnmsg[i]);
 	}
-
+	std::string crs = "";
 	OGRSpatialReference *poSRS = poLayer->GetSpatialRef();
-
 	if (poSRS) {
 		char *psz = NULL;
 	#if GDAL_VERSION_MAJOR >= 3
@@ -809,38 +786,10 @@ SpatVectorCollection::SpatVectorCollection(std::string filename, std::string lay
 	#else
 		OGRErr err = poSRS->exportToWkt(&psz);
 	#endif
-
 		if (err == OGRERR_NONE) {
 			crs = psz;
 		}
 		CPLFree(psz);
-	}
-
-	if (filter.nrow() > 0) {
-		if (filter.type() != "polygons") {
-			filter = filter.hull("convex");
-		} else if (filter.nrow() > 1) {
-			filter = filter.aggregate(true);
-		}
-		GDALDataset *filterDS = filter.write_ogr("", "lyr", "Memory", false, true, std::vector<std::string>());
-		if (filter.hasError()) {
-			setError(filter.getError());
-			GDALClose(filterDS);
-			return;
-		}
-		OGRLayer *fLayer = filterDS->GetLayer(0);
-		fLayer->ResetReading();
-		OGRFeature *fFeature = fLayer->GetNextFeature();
-		if (fFeature != NULL ) {
-			OGRGeometry *fGeometry = fFeature->StealGeometry();
-			poLayer->SetSpatialFilter(fGeometry);
-			OGRGeometryFactory::destroyGeometry(fGeometry);
-		}
-		OGRFeature::DestroyFeature( fFeature );
-		GDALClose(filterDS);
-	} else if (!extent.empty()) {
-		poLayer->SetSpatialFilterRect(extent[0], extent[2], extent[1], extent[3]);
-		read_extent = extent;
 	}
 
 	//const char* lname = poLayer->GetName();
@@ -860,8 +809,8 @@ SpatVectorCollection::SpatVectorCollection(std::string filename, std::string lay
 			}
 		}
 	}
-	source_layer = poLayer->GetName();
 
+	std::string source_layer = poLayer->GetName();
 
 	OGRFeature::DestroyFeature( poFeature );
 	SpatDataFrame df = readAttributes(poLayer, false);
@@ -910,32 +859,51 @@ SpatVectorCollection::SpatVectorCollection(std::string filename, std::string lay
 		poDS->ReleaseResultSet(poLayer);
 	}
 
-
-
-	if (points.size() > 0) {
-		points.setSRS(crs);
-		points.read_query = read_query;
-		points.read_extent= read_extent;
-		points.source_layer = source_layer;
-		if (df.ncol() > 0) points.df = df.subset_rows(pnt);
-		v.push_back(points);
-	}
-	if (lines.size() > 0) {
-		lines.setSRS(crs);
-		lines.read_query = read_query;
-		lines.read_extent= read_extent;
-		lines.source_layer = source_layer;
-		if (df.ncol() > 0) lines.df = df.subset_rows(lin);
-		v.push_back(lines);
-	}
 	if (polygons.size() > 0) {
 		polygons.setSRS(crs);
-		polygons.read_query = read_query;
-		polygons.read_extent= read_extent;
+		polygons.read_query = query;
+		polygons.read_extent= extent;
 		polygons.source_layer = source_layer;
 		if (df.ncol() > 0) polygons.df = df.subset_rows(pol);
 		v.push_back(polygons);
 	}
-
+	if (lines.size() > 0) {
+		lines.setSRS(crs);
+		lines.read_query = query;
+		lines.read_extent= extent;
+		lines.source_layer = source_layer;
+		if (df.ncol() > 0) lines.df = df.subset_rows(lin);
+		v.push_back(lines);
+	}
+	if (points.size() > 0) {
+		points.setSRS(crs);
+		points.read_query = query;
+		points.read_extent= extent;
+		points.source_layer = source_layer;
+		if (df.ncol() > 0) points.df = df.subset_rows(pnt);
+		v.push_back(points);
+	}
+	return true;
 }
 
+
+bool SpatVectorCollection::read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter) {
+    //OGRRegisterAll();
+    GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
+    if( poDS == NULL ) {
+		if (!file_exists(fname)) {
+			setError("file does not exist: " + fname);
+		} else {
+			setError("Cannot open this file as a SpatVector: " + fname);
+		}
+		return false;
+    }
+	bool success = read_ogr(poDS, layer, query, extent, filter);
+	if (poDS != NULL) GDALClose( poDS );
+	return success;
+}
+
+
+SpatVectorCollection::SpatVectorCollection(std::string filename, std::string layer, std::string query, std::vector<double> extent, SpatVector filter) {
+	read(filename, layer, query, extent, filter);
+}

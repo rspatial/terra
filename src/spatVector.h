@@ -401,8 +401,11 @@ class SpatVectorCollection {
 		
 		
 		SpatVectorCollection deepCopy() { return *this; }
+		bool read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
+		
+		bool read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
 
-		SpatVectorCollection create(std::string filename);
+//		SpatVectorCollection create(std::string filename);
 
 		std::vector<SpatVector> v;
 		std::vector<std::string> names;
