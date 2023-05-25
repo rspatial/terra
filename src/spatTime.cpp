@@ -95,7 +95,7 @@ std::vector<int> get_date(SpatTime_t x) {
 			x += yeartime(year);
 		}
 	} else if (x > 0) {
-		while (x > 0) {
+		while (x >= 0) {
 			x -= yeartime(year);
 			year++;
 		}
@@ -103,8 +103,9 @@ std::vector<int> get_date(SpatTime_t x) {
 		x += yeartime(year);
 	}
 	int month;
+	int leap = isleap(year);
 	for (month=1; month<13; month++) {
-		if (x < (secdays[isleap(year)][month])) {
+		if (x < (secdays[leap][month])) {
 			break;
 		}
 	}
