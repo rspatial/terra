@@ -19,9 +19,6 @@ setMethod("svc", signature(x="character"),
 		if (is.null(filter)) {
 			filter <- SpatVector$new()
 		} else {
-			if (proxy) {
-				error("vect", "you cannot use 'filter' when proxy=TRUE")
-			}
 			filter <- filter@pnt
 		}
 		if (is.null(extent)) {
