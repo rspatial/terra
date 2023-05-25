@@ -219,7 +219,7 @@ class SpatVector {
 #ifdef useGDAL
 		GDALDataset* write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options);
 		GDALDataset* GDAL_ds();
-		bool read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what);
+		bool read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what);
 		SpatVector fromDS(GDALDataset *poDS);
 		bool ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &message);		
 		bool delete_layers(std::string filename, std::vector<std::string> layers, bool return_error);		
@@ -403,7 +403,7 @@ class SpatVectorCollection {
 		SpatVectorCollection deepCopy() { return *this; }
 		bool read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
 		
-		bool read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
+		bool read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
 
 //		SpatVectorCollection create(std::string filename);
 

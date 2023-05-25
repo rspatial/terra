@@ -464,7 +464,7 @@ bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer
 }
 
 
-bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
+bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
 
 	if (poDS == NULL) {
 		setError("dataset is empty");
@@ -646,8 +646,9 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 
 		if (sv.size() > 0) {
 			*this = sv.v[0];
-			if (sv.size() > 1) {
-				addWarning("ignoring additional geometry types. See 'svc'");
+			if (sv.v.size() > 1) {
+				std::string gt = type();
+				addWarning("returning " + gt + " ignoring additional geometry types. Use 'svc' to get all geometries");
 			}
 			return true;
 		}
@@ -762,7 +763,7 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 	}
 }
 
-bool SpatVectorCollection::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter) {
+bool SpatVectorCollection::read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter) {
 	
 	OGRLayer *poLayer;
 	poLayer = poDS->GetLayer(0);

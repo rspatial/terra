@@ -966,7 +966,7 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 		v = GEOSVoronoiDiagram_r(hGEOSCtxt, g[0].get(), NULL, tolerance, onlyEdges);
 	} else {
 		if (bnd.type() != "polygons") {
-			out.setError("boundary must be polygon");
+			out.setError("boundary must have a polygon geometry");
 			geos_finish(hGEOSCtxt);
 			return out;
 		}

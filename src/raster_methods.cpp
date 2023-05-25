@@ -954,6 +954,15 @@ SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, double maskvalue, doubl
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true, true, true);
 
+	if (!hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}
+	if (!x.hasValues()) {
+		out.setError("mask raster has no values");
+		return out;
+	}
+
 	if (!out.compare_geom(x, false, true, opt.get_tolerance(), true, true, true, false)) {
 		return(out);
 	}
@@ -1029,6 +1038,15 @@ SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, std::vector<double> mas
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true);
 
+	if (!hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}
+	if (!x.hasValues()) {
+		out.setError("mask raster has no values");
+		return out;
+	}
+
 	if (!out.compare_geom(x, false, true, opt.get_tolerance(), true, true, true, false)) {
 		return(out);
 	}
@@ -1099,6 +1117,7 @@ SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, std::vector<double> mas
 
 SpatRaster SpatRaster::mask(SpatOptions &opt) {
 	SpatRaster out = geometry();
+
     if (!hasValues()) return out;
 	if (!readStart()) {
 		out.setError(getError());
