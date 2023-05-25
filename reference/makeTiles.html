@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-33</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-34</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">makeTiles</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, filename<span class="op">=</span><span class="st">"tile_.tif"</span>, extend<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">makeTiles</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, filename<span class="op">=</span><span class="st">"tile_.tif"</span>, extend<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -73,6 +73,9 @@
 
   <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code>, tiles with only missing values are ignored</p></dd>
+
+  <dt>overwrite</dt>
+<dd><p>logical. If <code>TRUE</code>, existing tiles are overwritten; otherwise they are skipped (without error or warning)</p></dd>
 
   <dt>...</dt>
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
@@ -97,10 +100,10 @@
 <span class="r-in"><span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"_.tif"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu">makeTiles</span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span>, <span class="va">filename</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpU0zQSU/file89ff6c7ee997_1.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpU0zQSU/file89ff6c7ee997_2.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpU0zQSU/file89ff6c7ee997_3.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpU0zQSU/file89ff6c7ee997_4.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmphXR5wT/fileb822523fcf3c_1.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmphXR5wT/fileb822523fcf3c_2.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmphXR5wT/fileb822523fcf3c_3.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmphXR5wT/fileb822523fcf3c_4.tif"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="vrt.html">vrt</a></span><span class="op">(</span><span class="va">ff</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
@@ -108,8 +111,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 3.6, 1.8  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : spat_hoLRGsxb0Bj2SKZ_35327.vrt </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : spat_hoLRGsxb0Bj2SKZ_35327 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : spat_MlrvCwDlt6LgrqY_47138.vrt </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : spat_MlrvCwDlt6LgrqY_47138 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min value   :                          1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max value   :                      10000 </span>
 </code></pre></div>
