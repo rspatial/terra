@@ -14,7 +14,7 @@ Query a SpatVectorProxy to extract a subset
 
 \usage{
 \S4method{query}{SpatVectorProxy}(x, start=1, n=nrow(x), vars=NULL, where=NULL, 
-    extent=NULL, filter=NULL, sql=NULL)
+    extent=NULL, filter=NULL, sql=NULL, what="")
 }
 
 \arguments{
@@ -26,6 +26,7 @@ Query a SpatVectorProxy to extract a subset
 \item{extent}{Spat* object. The extent of the object is used as a spatial filter to select the geometries to read. Ignored if \code{filter} is not \code{NULL}}
 \item{filter}{SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points)}
 \item{sql}{character. Aribrary SQL statement. If used, arguments "start", "n", "vars" and "where" are ignored}
+\item{what}{character indicating what to read. Either \code{""} for geometries and attributes, or \code{"geoms"} to only read the geometries, \code{"attributes"} to only read the attributes (that are returned as a data.frame)}
 }
 
 \seealso{\code{\link{vect}}}

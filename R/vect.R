@@ -435,7 +435,7 @@ setMethod("vect", signature(x="list"),
 
 
 setMethod("query", signature(x="SpatVectorProxy"),
-	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL, sql=NULL) {
+	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL, sql=NULL, what="") {
 		f <- x@pnt$v$source
 		slayer <- x@pnt$v$layer
 		#1058
@@ -504,7 +504,11 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			layer <- slayer
 		}
 
-		vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE)
+		p <- vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE, what=what)
+		if (what == "attributes") {
+			p <- values(p)
+		}
+		p
 	}
 )
 
