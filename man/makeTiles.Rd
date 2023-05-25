@@ -15,7 +15,7 @@ Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with
 }
 
 \usage{
-\S4method{makeTiles}{SpatRaster}(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, ...)
+\S4method{makeTiles}{SpatRaster}(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, overwrite=FALSE, ...)
 }
 
 \arguments{
@@ -24,6 +24,7 @@ Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with
   \item{filename}{character. Output filename template. Filenames will be altered by adding the tile number for each tile}
   \item{extend}{logical. If \code{TRUE}, the extent of \code{y} is expanded to assure that it covers all of \code{x}}
   \item{na.rm}{logical. If \code{TRUE}, tiles with only missing values are ignored}
+  \item{overwrite}{logical. If \code{TRUE}, existing tiles are overwritten; otherwise they are skipped (without error or warning)}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 

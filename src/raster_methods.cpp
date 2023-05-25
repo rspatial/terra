@@ -137,8 +137,13 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool 
 	std::string f = noext(filename);
 	ff.reserve(d.size());
 	size_t nl = nlyr();
+	bool overwrite = opt.get_overwrite();
 	for (size_t i=0; i<d.size(); i++) {
 		std::string fout = f + std::to_string(d[i]) + fext;
+		if (file_exists(fout) && (!overwrite)) {
+			ff.push_back(fout);			
+			continue;
+		}
 		SpatExtent exi = x.ext_from_cell(i);
 		opt.set_filenames({fout});
 		SpatRaster out = crop(exi, "near", false, opt);
@@ -186,11 +191,16 @@ std::vector<std::string> SpatRaster::make_tiles_vect(SpatVector x, bool expand, 
 	std::string f = noext(filename);
 	ff.reserve(d.size());
 	size_t nl = nlyr();
+	bool overwrite = opt.get_overwrite();
 	for (size_t i=0; i<d.size(); i++) {
-		SpatExtent exi = x.geoms[i].extent;
 		std::string fout = f + std::to_string(d[i]) + fext;
+		if (file_exists(fout) && (!overwrite)) {
+			ff.push_back(fout);			
+			continue;
+		}
 		opt.set_filenames( {fout} );
 		SpatRaster out;
+		SpatExtent exi = x.geoms[i].extent;
 		if (!e.intersects(exi)) continue;
 		if (expand) {
 			out = crop(exi, "near", false, ops);
