@@ -591,7 +591,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 \code{cellStats}\tab\code{\link{global}}\cr
 \code{clump}\tab\code{\link{patches}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
-\code{corLocal}\tab\code{\link{focalCor}}\cr
+\code{corLocal}\tab\code{\link{focalPairs}}\cr
 \code{coordinates}\tab\code{\link{crds}}\cr
 \code{couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
 \code{disaggregate} \tab\code{\link{disagg}}\cr

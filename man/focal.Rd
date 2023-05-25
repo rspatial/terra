@@ -64,7 +64,7 @@ Sobel filters (for edge detection):
 \value{SpatRaster}
 
 
-\seealso{ \code{\link{focalMat}}, \code{\link{focalValues}}, \code{\link{focal3D}}, \code{\link{focalCor}}, \code{\link{focalReg}}, \code{\link{focalCpp}} }
+\seealso{ \code{\link{focalMat}}, \code{\link{focalValues}}, \code{\link{focal3D}}, \code{\link{focalPairs}}, \code{\link{focalReg}}, \code{\link{focalCpp}} }
 
 
 \examples{
