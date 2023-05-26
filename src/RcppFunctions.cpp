@@ -388,7 +388,7 @@ void gdal_init(std::string projpath, std::string datapath) {
 	CPLSetConfigOption("GDAL_MAX_BAND_COUNT", "9999999");
 	CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
 	CPLSetConfigOption("GDAL_DATA", datapath.c_str());
-
+	CPLSetConfigOption("CPL_VSIL_USE_TEMP_FILE_FOR_RANDOM_WRITE", "YES");
 
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
