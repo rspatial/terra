@@ -139,6 +139,9 @@ setMethod("rast", signature(x="SpatVector"),
 	x <- trimws(x)
 	x <- x[x != ""]
 	
+	i <- substr(x, 1, 5) == "s3://" 
+	x[i] <- paste0("/vsis3/", substr(x[i], 6, nchar(x[i])))
+	
 	i <- substr(x, 1, 4) == "http" 
 	if (vsi) {
 		x[i] <- paste0("/vsicurl/", x[i])
