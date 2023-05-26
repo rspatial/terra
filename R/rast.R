@@ -148,7 +148,7 @@ setMethod("rast", signature(x="SpatVector"),
 	x <- enc2utf8(x)
 	p <- normalizePath(x, winslash = "/", mustWork = FALSE)
 	if (mustExist) {
-		i <- file.exists(p)
+		i <- file.exists(dirname(p))
 		x[i] <- p[i]
 	} else {
 		return(p)
