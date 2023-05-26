@@ -90,7 +90,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
 	opt <- .terra_environment$options@pnt$deepcopy()
 	opt$pid <- Sys.getpid()
-	filename <- .fullFilename(filename, mustExist=FALSE)
+	filename <- .fullFilename(filename, mustExist=TRUE)
 	if (!is.null(unlist(wopt))) {
 		wopt$filenames <- filename
 		wopt$overwrite <- overwrite[1]

@@ -191,6 +191,7 @@ bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> o
 	return true;
 }
 
+
 bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg) {
 
 	if (!differentFilenames(srcnames, filenames, msg)) {
@@ -218,6 +219,7 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 				return false;
 			}
 		} else if (!canWrite(filenames[i])) {
+			if (filenames[i].substr(0, 4) == "/vsi") continue; 
 			std::string path = get_path(filenames[i]);
 			if (!path_exists(path)) {
 				msg = "path does not exist";
