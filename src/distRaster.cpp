@@ -3294,7 +3294,7 @@ void do_flowdir(std::vector<double> &val, std::vector<double> const &d, size_t n
 	}
 
 	std::vector<double> r = {0, 0, 0, 0, 0, 0, 0, 0};
-	std::vector<double> p = {1, 2, 4, 8, 16, 32, 64, 128}; // pow(2, j)
+	std::vector<double> p = {0, 1, 2, 4, 8, 16, 32, 64, 128}; // pow(2, j)
 	double dxy = sqrt(dx * dx + dy * dy);
 
 	std::default_random_engine generator(seed);
@@ -3314,16 +3314,16 @@ void do_flowdir(std::vector<double> &val, std::vector<double> const &d, size_t n
 				r[6] = (d[i] - d[i-ncol]) / dy;
 				r[7] = (d[i] - d[i+1-ncol]) / dxy;
 				// using the lowest neighbor, even if it is higher than the focal cell.
-				double dmin = r[0];
+				double dmin = 0;
 				int k = 0;
-				for (size_t j=1; j<8; j++) {
+				for (size_t j=0; j<8; j++) {
 					if (r[j] > dmin) {
 						dmin = r[j];
-						k = j;
+						k = j + 1;
 					} else if (r[j] == dmin) {
 						if (U(generator)) {
 							dmin = r[j];
-							k = j;
+							k = j + 1;
 						}
 					}
 				}
