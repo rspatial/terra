@@ -24,7 +24,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 }
 
 \usage{
-\S4method{plot}{SpatRaster,numeric}(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), 
+\S4method{plot}{SpatRaster,numeric}(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), 
     maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE,
 	breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, 
 	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, 
@@ -34,7 +34,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 
 \S4method{plot}{SpatRaster,character}(x, y, ...)
 
-\S4method{plot}{SpatVector,character}(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=!add, axes=!add, 
+\S4method{plot}{SpatVector,character}(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=TRUE, axes=!add, 
     main="", buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, sort=TRUE, 
 	decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, 
 	box=axes, clip=TRUE, ...)

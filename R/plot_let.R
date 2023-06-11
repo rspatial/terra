@@ -235,7 +235,7 @@ setMethod("plet", signature(x="SpatVector"),
 
 
 setMethod("plet", signature(x="SpatVectorCollection"),
-	function(x, col, fill=0, cex=1, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL, ...)  {
+	function(x, col, fill=0, cex=1, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
 
 		checkLeafLetVersion()
 
