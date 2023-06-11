@@ -61,7 +61,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	int_64 nc = ncol();
 	int_64 wr = w[0] / 2;
 	int_64 wc = w[1] / 2;
-	//may be unexptected
+	//may be unexpected
 	//wr = std::min(wr, nr-1);
 	//wc = std::min(wc, nc-1);
 

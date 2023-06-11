@@ -723,13 +723,14 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 	unsigned lastpart = part[0];
 	unsigned lasthole = hole[0];
 	bool isHole = lasthole > 0;
+	bool isPoly = type == "polygons";
 
 	std::vector<double> X, Y;
 	SpatGeom g;
 	g.gtype = getGType(type);
-
+	
 	for (size_t i=0; i<gid.size(); i++) {
-		if ((lastgeom != gid[i]) || (lastpart != part[i]) || (lasthole != hole[i])) {
+		if ((lastgeom != gid[i]) || (lastpart != part[i]) || (isPoly && (lasthole != hole[i]))) {
 			if (X.empty()) {
 				SpatPart p(NAN, NAN);
 				g.addPart(p);

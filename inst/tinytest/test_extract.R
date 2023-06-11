@@ -205,3 +205,14 @@ expect_equal(round(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "
 m = rast(nrow = 2, ncol = 2, vals=1:4)
 expect_equal(cells(m), 1:4)
 
+
+v <- vect(system.file("ex/lux.shp", package="terra"))
+r <- rast(system.file("ex/elev.tif", package="terra"))
+
+fun <- function(x, ...) c(min(x, ...), mean(x, ...), max(x, ...))
+e <- extract(r, v, fun, na.rm=TRUE)[6,]
+expect_equivalent(round(e, 4), c(6, 164, 314.9969, 403))
+
+e <- extract(r, v, quantile, na.rm=TRUE)[12,]
+expect_equivalent(round(e), c(12, 213, 274, 317, 352, 413))
+

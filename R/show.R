@@ -44,7 +44,7 @@ printDF <- function(x, n=6, first=FALSE) {
 	cls <- gsub("character", "chr", cls)
 	cls <- gsub("factor", "fact", cls)
 	cls <- paste0("<", cls, ">")
-	cls <- data.frame(rbind(class=cls))
+	cls <- data.frame(rbind(class=cls), stringsAsFactors=FALSE)
 	names(cls) <- NULL
 
 	nms <- colnames(x)
@@ -64,7 +64,7 @@ printDF <- function(x, n=6, first=FALSE) {
 			}
 		}
 	}
-	x <- data.frame(lapply(x, as.character), check.names=FALSE)
+	x <- data.frame(lapply(x, as.character), check.names=FALSE, stringsAsFactors=FALSE)
 	x <- rbind(x[1,,drop=FALSE], x)
 	x[1,] <- cls
 	if (nrow(x) < d[1]) {
