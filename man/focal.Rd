@@ -60,6 +60,9 @@ Sobel filters (for edge detection):
 \code{fy=matrix(c(1,0,-1,2,0,-2,1,0,-1), nrow=3)}
 }
 
+\note{
+When using global lon/lat rasters, the focal window "wraps around" the date-line.
+}
 
 \value{SpatRaster}
 
