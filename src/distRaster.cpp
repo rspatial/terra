@@ -3282,28 +3282,69 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 	return out;
 }
 
+	
 
 
+size_t get_k(const std::vector<double> &r, std::default_random_engine &generator, std::uniform_int_distribution<> &U) {
+	double dmin = 0;
+	size_t k = 0;
+	for (size_t j=0; j<8; j++) {
+		if (r[j] > dmin) {
+			dmin = r[j];
+			k = j + 1;
+		} else if (r[j] == dmin) {
+			if (U(generator)) {
+				dmin = r[j];
+				k = j + 1;
+			}
+		}
+	}
+	return k;
+}
 
 
-
-void do_flowdir(std::vector<double> &val, std::vector<double> const &d, size_t nrow, size_t ncol, double dx, double dy, unsigned seed, bool before, bool after) {
+void do_flowdir(std::vector<double> &val, std::vector<double> &d, size_t nrow, size_t ncol, double dx, double dy, unsigned seed, bool before, bool after) {
 
 	if (!before) {
-		val.resize(val.size() + ncol, NAN);
+	//	val.resize(val.size() + ncol, NAN);
+		std::vector<double> rna(ncol, NAN);
+		d.insert(d.begin(), rna.begin(), rna.end());
+		nrow++;
+	}
+	if (!after) {
+	//	val.resize(val.size() + ncol, NAN);
+		d.resize(d.size()+ncol, NAN);
+		nrow++;
 	}
 
-	std::vector<double> r = {0, 0, 0, 0, 0, 0, 0, 0};
+	std::vector<double> r(8);
 	std::vector<double> p = {0, 1, 2, 4, 8, 16, 32, 64, 128}; // pow(2, j)
+	//std::vector<double> p2 = {0, 1, 2, 3, 4, 5, 6, 7, 8}; 
 	double dxy = sqrt(dx * dx + dy * dy);
 
 	std::default_random_engine generator(seed);
 	std::uniform_int_distribution<> U(0, 1);
 
-	for (size_t row=1; row< (nrow-1); row++) {
-		val.push_back(NAN);
-		for (size_t col=1; col< (ncol-1); col++) {
-			size_t i = row * ncol + col;
+	size_t nc1 = ncol - 1;
+	for (size_t row=1; row<(nrow-1); row++) {
+		//first col
+		size_t i = row * ncol;
+		if (std::isnan(d[i])) {
+			val.push_back( NAN );
+		} else {
+			r[0] = (d[i] - d[i+1]) / dx;
+			r[1] = (d[i] - d[i+1+ncol]) / dxy;
+			r[2] = (d[i] - d[i+ncol]) / dy;
+			r[3] = NAN;
+			r[4] = NAN;
+			r[5] = NAN;
+			r[6] = (d[i] - d[i-ncol]) / dy;
+			r[7] = (d[i] - d[i+1-ncol]) / dxy;
+			size_t k = get_k(r, generator, U);
+			val.push_back( p[k] );
+		}
+		for (size_t col=1; col<nc1; col++) {
+			i = row * ncol + col;
 			if (!std::isnan(d[i])) {
 				r[0] = (d[i] - d[i+1]) / dx;
 				r[1] = (d[i] - d[i+1+ncol]) / dxy;
@@ -3313,31 +3354,43 @@ void do_flowdir(std::vector<double> &val, std::vector<double> const &d, size_t n
 				r[5] = (d[i] - d[i-1-ncol]) / dxy;
 				r[6] = (d[i] - d[i-ncol]) / dy;
 				r[7] = (d[i] - d[i+1-ncol]) / dxy;
-				// using the lowest neighbor, even if it is higher than the focal cell.
-				double dmin = 0;
-				int k = 0;
-				for (size_t j=0; j<8; j++) {
-					if (r[j] > dmin) {
-						dmin = r[j];
-						k = j + 1;
-					} else if (r[j] == dmin) {
-						if (U(generator)) {
-							dmin = r[j];
-							k = j + 1;
-						}
-					}
-				}
+				size_t k = get_k(r, generator, U);
 				val.push_back( p[k] );
 			} else {
 				val.push_back( NAN );
 			}
+		}	
+		//last col
+		i = row * ncol + nc1;
+		if (!std::isnan(d[i])) {
+			r[0] = NAN;
+			r[1] = NAN;
+			r[2] = (d[i] - d[i+ncol]) / dy;
+			r[3] = (d[i] - d[i-1+ncol]) / dxy;
+			r[4] = (d[i] - d[i-1]) / dx;
+			r[5] = (d[i] - d[i-1-ncol]) / dxy;
+			r[6] = (d[i] - d[i-ncol]) / dy;
+			r[7] = NAN;
+			size_t k = get_k(r, generator, U);
+			val.push_back( p[k] );
+		} else {
+			val.push_back( NAN );
 		}
-		val.push_back(NAN);
 	}
-
-	if (!after) {
-		val.resize(val.size() + ncol, NAN);
+/*	
+	if (!before) {
+		if (!after) {
+			val = std::vector<double>(val.begin()+ncol, val.end()-ncol);
+		} else {
+			val = std::vector<double>(val.begin()+ncol, val.end());
+		}
+	} else if (!after) {
+		val = std::vector<double>(val.begin(), val.end()-ncol);
 	}
+*/
+//	if (!after) {
+//		val.resize(val.size() + ncol, NAN);
+//	}
 
 }
 
@@ -3776,6 +3829,9 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 		if (v[i] == "slope" || v[i] == "aspect") {
 			aspslope=true;
 		}
+	}
+	if ((v.size() == 1) && (v[0] == "flowdir")) {
+		out.setValueType(1);
 	}
 
 	if ((neighbors != 4) && (neighbors != 8)) {
