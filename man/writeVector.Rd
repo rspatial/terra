@@ -32,13 +32,13 @@ crs(v) <- "+proj=longlat +datum=WGS84"
 v$id <- 1:length(v)
 v$name <- letters[1:length(v)]
 tmpf1 <- paste0(tempfile(), ".gpkg")
-writeVector(v, tmpf1)
+writeVector(v, tmpf1, overwrite=TRUE)
 x <- vect(tmpf1)
 
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 tmpf2 <- paste0(tempfile(), ".gpkg")
-writeVector(v, tmpf2)
+writeVector(v, tmpf2, overwrite=TRUE)
 y <- vect(tmpf2)
 }
 
