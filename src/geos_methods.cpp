@@ -1126,7 +1126,7 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 
 	quadsegs = std::min(quadsegs, (unsigned) 180);
 	SpatVector out;
-	out.srs = srs;
+//	out.srs = srs;
 	if (srs.is_empty()) {
 		out.addWarning("unknown CRS. Results may be wrong");
 	} 
@@ -1171,6 +1171,7 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 				out = out.append(p, true);
 			}
 			out.df = df;
+			out.srs = srs;
 			return out;
 		}
 	}
