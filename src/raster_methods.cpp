@@ -3172,6 +3172,7 @@ SpatRaster SpatRaster::cropmask(SpatVector &v, std::string snap, bool touches, b
 
 	SpatOptions copt(opt);
 	SpatRaster out = crop(v.extent, snap, extend, copt);
+	if (out.hasError()) return out;
 	return out.mask(v, false, NAN, touches, opt);
 }
 
