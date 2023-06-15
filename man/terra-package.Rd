@@ -148,11 +148,11 @@ Also see the methods in section VIII
     \code{\link{focal3D}} \tab Three dimensional (row, col, lyr) focal functions \cr
     \code{\link{focalCpp}} \tab Faster focal by using custom C++ functions \cr
     \code{\link{focalReg}} \tab Regression between layers for focal areas \cr
-    \code{\link{focalPairs}} \tab Apply a function (e.g. a correlation coeffient) to focal values for pairs of layers \cr
+    \code{\link{focalPairs}} \tab Apply a function (e.g. a correlation coefficient) to focal values for pairs of layers \cr
     \code{\link{patches}} \tab Find patches (clumps) \cr
     \code{\link{sieve}} \tab Sieve filter to remove small patches\cr
     \code{\link{terrain}} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr
-    \code{\link{viewshed}} \tab Compute vieshed (showing areas that are visible from a particular location \cr
+    \code{\link{viewshed}} \tab Compute viewshed (showing areas that are visible from a particular location \cr
     \code{\link{shade}} \tab Compute hill shade from slope and aspect layers \cr
     \code{\link{autocor}} \tab Compute global or local spatial autocorrelation  \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -165,7 +165,7 @@ Also see the methods in section VIII
     \code{\link{predict}} \tab Predict a non-spatial model to a SpatRaster \cr
     \code{\link{interpolate}} \tab Predict a spatial model to a SpatRaster \cr
     \code{\link{interpIDW}} \tab Inverse-distance-weighted interpolation \cr
-    \code{\link{interpNear}} \tab Nearst neighbor interpolation \cr
+    \code{\link{interpNear}} \tab Nearest neighbor interpolation \cr
 	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
@@ -452,7 +452,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{erase} (single argument)} \tab remove parts of geometries that overlap \cr
   \code{\link{union} (single argument)} \tab create new polygons such that there are no overlapping polygons \cr
   \code{\link{rotate}} \tab rotate to (dis-) connect them across the date-line \cr
-  \code{\link{normalize.longitude}} \tab move geomtries that are outside of the -180 to 180 degrees range.  \cr
+  \code{\link{normalize.longitude}} \tab move geometries that are outside of the -180 to 180 degrees range.  \cr
   \code{\link{elongate}} \tab make lines longer by extending both sides \cr
   \code{\link{combineGeoms}} \tab combine geometries that overlap, share a border, or are within a minimum distance of each other \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
