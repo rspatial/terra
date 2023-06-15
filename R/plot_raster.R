@@ -288,7 +288,7 @@ prettyNumbs <- function(x, digits) {
 	} else {
 		if (is.null(out$leg$legend)) out$leg$legend <- unique(stats::na.omit(out$cats[ilevels, 2]))
 		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
-		leglevs <- na.omit(unique(levlab[,2]))
+		leglevs <- stats::na.omit(unique(levlab[,2]))
 		if (length(leglevs) == 0) {
 			error("plot", "something is wrong with the categories")
 		}

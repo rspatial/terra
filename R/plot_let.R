@@ -12,9 +12,13 @@ popUp <- function(x) {
 	nms <- names(x)
 	if (length(nms) > 0) {
 		s <- sapply(1:length(nms), function(i) paste0(nms[i], ": ", x[[i, drop=TRUE]]))
-		apply(s, 1, function(i) paste(i, collapse="<br>"))
+		if (is.null(dim(s))) {
+			paste(s, collapse="<br>")
+		} else {
+			apply(s, 1, function(i) paste(i, collapse="<br>"))		
+		}
 	} else {
-		paste("geom", 1:nrow(x), collapse="_")
+		paste("geom", 1:nrow(x), sep="_")
 	}
 }
 
