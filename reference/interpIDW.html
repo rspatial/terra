@@ -81,7 +81,6 @@ Interpolate points within a moving window using inverse distance weighting. The 
 <dd><p>numeric. The radius of the circle (single number). If <code>near=FALSE</code>, it is also possible to use two or three numbers. Two numbers are interpreted as the radii of an ellipse (x and y-axis). A third number should indicated the desired, counter clockwise, rotation of the ellipse (in degrees)</p></dd>
 
 
-  
   <dt>power</dt>
 <dd><p>numeric. Weighting power</p></dd>
 
@@ -95,7 +94,7 @@ Interpolate points within a moving window using inverse distance weighting. The 
 <dd><p>numeric. The maximum number of points to consider in a search area. Additional points are ignored. If fewer points are found, the fill value is returned</p></dd>
 
   <dt>near</dt>
-<dd><p>logical. If <code>maxPoints</code> is reached, should the nearest points within the neighborhood be used?</p></dd>
+<dd><p>logical. Should the nearest points within the neighborhood be used if <code>maxPoints</code> is reached?</p></dd>
 
   <dt>fill</dt>
 <dd><p>numeric. value to use to fill empty cells</p></dd>
