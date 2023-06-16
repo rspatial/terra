@@ -1521,14 +1521,15 @@ void *invDistPowerNNOps(std::vector<double> op) {
 
 	#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 6
 	#else
-	poOptions->nSizeOfStructure =  sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions);
+	poOptions->nSizeOfStructure = sizeof(GDALGridInverseDistanceToAPowerNearestNeighborOptions);
+	//poOptions->nMaxPointsPerQuadrant = 
+	//poOptions->nMinPointsPerQuadrant = 
 	#endif
-
 	poOptions->dfPower = op[0];
-	poOptions->dfRadius = op[1];
-	poOptions->dfSmoothing = op[2];
+	poOptions->dfSmoothing = op[1];
+	poOptions->dfRadius = op[2];
 	poOptions->nMaxPoints = std::max(0.0, op[3]);
-	poOptions->nMinPoints = std::max(op[4], 0.0);
+	poOptions->nMinPoints = std::max(0.0, op[4]);
 	poOptions->dfNoDataValue = op[5];
 	return poOptions;
 }
