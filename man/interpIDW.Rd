@@ -15,10 +15,10 @@ Interpolate points within a moving window using inverse distance weighting. The 
 
 \usage{
 \S4method{interpIDW}{SpatRaster,SpatVector}(x, y, field, radius, power=2, smooth=0,
-       maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...)
+       maxPoints=Inf, minPoints=1, near=TRUE, fill=NA, filename="", ...)
 
 \S4method{interpIDW}{SpatRaster,matrix}(x, y, radius, power=2, smooth=0, 
-       maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...)
+       maxPoints=Inf, minPoints=1, near=TRUE, fill=NA, filename="", ...)
 }
 
 \arguments{
