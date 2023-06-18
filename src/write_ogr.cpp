@@ -76,7 +76,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		}
 	} else {
 		GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
-		if( poDriver == NULL )  {
+		if ( poDriver == NULL )  {
 			setError( driver + " driver not available");
 			return poDS;
 		}
