@@ -403,8 +403,8 @@ bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer
 				wrms.push_back("Reading layer: " + lyrsel + "\nOther layers: " + ccat);
 			}
 			#endif
-			// caller already set it to 0
-			// poLayer = poDS->GetLayer(0);
+
+			poLayer = poDS->GetLayer(0);
 			if (poLayer == NULL) {
 				errmsg = "dataset has no layers";
 				return false;
@@ -666,7 +666,7 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 
 
 	if (!query.empty()) {
-	//	poDS->ReleaseResultSet(poLayer);
+		poDS->ReleaseResultSet(poLayer);
 	}
 
  	return true;
