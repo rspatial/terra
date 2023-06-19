@@ -22,6 +22,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+
 #if defined __has_include
 #	if __has_include (<filesystem>)
 # 		include <filesystem>
@@ -30,7 +31,15 @@
 #		include <experimental/filesystem>
 		namespace filesyst = std::experimental::filesystem;
 #	endif
-#else
+#elif defined __GNUC__
+#	if __GNUC__ < 8
+#		include <experimental/filesystem>
+		namespace filesyst = std::experimental::filesystem;
+#	else 
+# 		include <filesystem>
+		namespace filesyst = std::filesystem;	
+#	endif
+#else 
 #	include <filesystem>
     namespace filesyst = std::filesystem;
 #endif
