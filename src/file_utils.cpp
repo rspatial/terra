@@ -136,7 +136,7 @@ bool file_exists(const std::string& name) {
 bool path_exists(std::string path) {
 
 	filesyst::path filepath = path;
-	return filesyst::exists(path);
+	return filesyst::exists(filepath);
 
 //	std::filesystem::exists( const std::filesystem::path& p
 //	struct stat info;
