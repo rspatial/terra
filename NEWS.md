@@ -19,12 +19,12 @@ Released 2023-06-18
 
 ## enhancements
 
-- `panel` for categorical SpatRasters [#1143](https://github.com/rspatial/terra/issues/1143) by Jason Flower
+- `panel` for categorical SpatRasters. [#1143](https://github.com/rspatial/terra/issues/1143) by Jason Flower
 - argument "ext" in `plot<SpatRaster>` can now also expand the plot. [#1136](https://github.com/rspatial/terra/issues/1136) by Jakub Nowosad.
-- argument `overwrite=FALSE` to `makeTiles` [#1167](https://github.com/rspatial/terra/issues/1167) by Gray Martin.
-- legend options for `<plet,SpatVector`> [#1177](https://github.com/rspatial/terra/issues/1177) by Agustin Lobo.
-- better handling of mixed geometry type vector data by `vect` and `svc` [#1160](https://github.com/rspatial/terra/issues/1160)
-- new argument `sql` to `query<SpatVectorProxy>` [#1157](https://github.com/rspatial/terra/issues/1157) by Carl Boettiger
+- argument `overwrite=FALSE` to `makeTiles`. [#1167](https://github.com/rspatial/terra/issues/1167) by Gray Martin.
+- legend options for `<plet,SpatVector`>. [#1177](https://github.com/rspatial/terra/issues/1177) by Agustin Lobo.
+- better handling of mixed geometry type vector data by `vect` and `svc`. [#1160](https://github.com/rspatial/terra/issues/1160) by Mike Sumner.
+- new argument `sql` to `query<SpatVectorProxy>`. [#1157](https://github.com/rspatial/terra/issues/1157) by Carl Boettiger
  
 
 ## new
