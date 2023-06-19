@@ -20,7 +20,7 @@ windows/
 inst/gdal/
 inst/proj/
 
-#src/Makevars
+src/Makevars
 config.log
 config.status
 packrat/lib*/
