@@ -367,7 +367,7 @@ else
   fi
 fi
 
-CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS} ${PROJ_CPPFLAGS}"
+CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS} ${PROJ_CPPFLAGS} -lstdc++fs"
 
 if test "${PROJH}" = no
 then
