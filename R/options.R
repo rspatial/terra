@@ -165,11 +165,12 @@ terraOptions <- function(..., print=TRUE) {
 
 	if ("tempdir" %in% nms) {
 		i <- which(nms == "tempdir")
+		dots[i] <- path.expand(trimws(dots[i]))
 		if (!dir.exists(dots[[i]])) {
 			warn("options", "you cannot set the tempdir to a path that does not exist")
 			dots <- dots[-i]
 			nms <- nms[-i]
-		}
+		}		
 	}
 
 	if (ndots == 0) {
