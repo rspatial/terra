@@ -173,7 +173,7 @@ terraOptions <- function(..., print=TRUE) {
 		warn("terraOptions<-", paste("unknown option(s):", bad))
 		dots <- dots[ok]
 		nms <- nms[ok]			
-		if (length(dots) == 0) return()
+		if (length(dots) == 0) return(invisible())
 	}
 
 	if ("tempdir" %in% nms) {
@@ -183,7 +183,7 @@ terraOptions <- function(..., print=TRUE) {
 			warn("options", "you cannot set the tempdir to a path that does not exist")
 			dots <- dots[-i]
 			nms <- nms[-i]
-			if (length(dots) == 0) return()
+			if (length(dots) == 0) return(invisible())
 		}
 	}
 
