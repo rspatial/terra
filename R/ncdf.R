@@ -217,6 +217,11 @@
 setMethod("writeCDF", signature(x="SpatRaster"),
 	function(x, filename, varname, longname="", unit="", split=FALSE, ...) {
 		filename <- trimws(filename)
+		if (length(filename) > 1) {
+			if (length(filename) != nlyr(x)) {
+				stop("either provide a single filename, or the same number as nlyr(x)")
+			}
+		}
 		stopifnot(filename != "")
 		if (split) {
 			y <- sds(as.list(x))
