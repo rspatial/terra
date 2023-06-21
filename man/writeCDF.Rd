@@ -63,7 +63,7 @@ b <- sqrt(a)
 s <- sds(a, b)
 names(s) <- c("temp", "prec")
 longnames(s) <- c("temperature (C)", "precipitation (mm)")
-units(s) <- c("degree_C", "mm")
+units(s) <- c("°C", "mm")
 #ss <- writeCDF(s, fname, overwrite=TRUE)
 
 # for CRAN
