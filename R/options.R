@@ -17,7 +17,7 @@
 
 }
 
-.options_names <- function() {
+.option_names <- function() {
 	c("progress", "progressbar", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid", "threads", "scale", "offset") #, "append")
 }
 
@@ -36,7 +36,7 @@
 		x$gdal_options <- gopt
 	}
 
-	s <- nms %in% .options_names()
+	s <- nms %in% .option_names()
 
 	if (any(!s)) {
 		bad <- paste(nms[!s], collapse=",")
