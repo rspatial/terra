@@ -35,9 +35,8 @@ setMethod("set.RGB", signature(x="SpatRaster"),
 )
 
 setMethod("RGB<-", signature(x="SpatRaster"),
-	function(x, value, type="rgb") {
+	function(x, ..., type="rgb", value) {
 		x@ptr <- x@ptr$deepcopy()
-		
 		set.RGB(x, value, type)
 		x
 	}
