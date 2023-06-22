@@ -80,7 +80,7 @@ parfun <- function(cls, d, fun, model, ...) {
 		}
 	}
 	if (!is.null(index)) {
-		r <- r[, index,drop=FALSE]
+		r <- r[, index, drop=FALSE]
 	}
 	r
 }
@@ -143,6 +143,13 @@ find_dims <- function(object, model, nc, fun, const, na.rm, index, ...) {
 	levs <- NULL
 	if (!is.null(index)) {
 		nl <- length(index)
+		r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL, ...)
+		rdim <- dim(r)
+		if (is.null(rdim)) {
+			cn <- ""
+		} else {
+			cn <- colnames(r)
+		}
 	} else {
 		allna <- FALSE
 		if (na.rm) {
@@ -216,7 +223,7 @@ setMethod("predict", signature(object="SpatRaster"),
 
 		out <- find_dims(object, model, nc, fun, const, na.rm, index, ...)
 		nl <- nlyr(out)
-
+		
 		doclust <- FALSE
 		if (inherits(cores, "cluster")) {
 			doclust <- TRUE
