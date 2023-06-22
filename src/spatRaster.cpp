@@ -2475,11 +2475,11 @@ bool SpatRaster::setRGB(int r, int g, int b, int alpha, std::string type) {
 		size_t mnlyr =  vmin( channels, false );;
 		if (mnlyr >= 0) {
 			rgblyrs = channels;
-			std::vector<std::string> f = {"RGB", "HSV", "HSI", "HSL"};
-			std::transform(type.begin(), type.end(), type.begin(), ::toupper);
+			std::vector<std::string> f = {"rgb", "hsv", "hsi", "hsl"};
+			std::transform(type.begin(), type.end(), type.begin(), ::tolower);
 			if (std::find(f.begin(), f.end(), type) == f.end()) {
-				addWarning("color type must be one of: 'RGB', 'HSV', 'HSI', 'HSL'");
-				type = "RGB";
+				addWarning("color type must be one of: 'rgb', 'hsv', 'hsi', 'hsl'");
+				type = "rgb";
 			}
 			rgbtype = type; 
 			rgb = true;
