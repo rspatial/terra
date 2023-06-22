@@ -18,7 +18,7 @@ Get or set color table(s) associated with a SpatRaster. Color tables are used fo
 \usage{
 \S4method{coltab}{SpatRaster}(x)
 
-\S4method{coltab}{SpatRaster}(x, layer=1)<-value
+\S4method{coltab}{SpatRaster}(x, ..., layer=1)<-value
 
 \S4method{has.colors}{SpatRaster}(x)
 }

@@ -23,7 +23,7 @@ setMethod ("coltab" , "SpatRaster",
 
 
 setMethod ("coltab<-" , "SpatRaster",
-	function(x, value, layer=1) {
+	function(x, ..., layer=1, value) {
 
 		x@ptr <- x@ptr$deepcopy()
 
