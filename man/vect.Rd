@@ -79,7 +79,7 @@ v
 
 ## subsetting (large) files
 ## with attribute query 
-# v <- vect(f, query="SELECT NAME_1, NAME_2, ID_2 FROM lux WHERE ID_2 < 4")
+v <- vect(f, query="SELECT NAME_1, NAME_2, ID_2 FROM lux WHERE ID_2 < 4")
 
 ## with an extent
 e <- ext(5.9, 6.3, 49.9, 50) 
