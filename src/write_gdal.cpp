@@ -523,11 +523,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	CSLDestroy( papszOptions );
 	if (poDS == NULL) {
-		if (!filepath_exists(filename)) {
-			setError("failed writing "+ driver + " file. Path does not exist:\n   " + filename);
-		} else {
+		//if (!filepath_exists(filename)) {
+		//	setError("failed writing "+ driver + " file. Path does not exist:\n   " + filename);
+		//} else {
 			setError("failed writing "+ driver + " file");
-		}
+		//}
 		GDALClose( (GDALDatasetH) poDS );
 		return false;
 	}

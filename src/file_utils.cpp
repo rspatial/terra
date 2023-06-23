@@ -22,7 +22,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-
+/*
 #if defined __has_include
 #	if __has_include (<filesystem>)
 # 		include <filesystem>
@@ -43,7 +43,7 @@
 #	include <filesystem>
     namespace filesyst = std::filesystem;
 #endif
-
+*/
 
 bool write_text(std::string filename, std::vector<std::string> s) {
 	std::ofstream f;
@@ -135,16 +135,16 @@ bool file_exists(const std::string& name) {
 
 bool path_exists(std::string path) {
 
+/*
 	filesyst::path filepath = path;
 	return filesyst::exists(filepath);
-
-//	std::filesystem::exists( const std::filesystem::path& p
-//	struct stat info;
-//	stat(path.c_str(), &info);
-//	if (info.st_mode & S_IFDIR) {
-//		return true;
-//	}
-//	return false;
+*/
+	struct stat info;
+	stat(path.c_str(), &info);
+	if (info.st_mode & S_IFDIR) {
+		return true;
+	}
+	return false;
 }
 
 
