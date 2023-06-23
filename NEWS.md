@@ -1,5 +1,11 @@
-# version 1.7-38
+# version 1.7-39
 
+## bug fixes
+
+- the tempdir option did not use path.expand. [#1195](https://github.com/rspatial/terra/issues/1195) by Alex Ilich
+- the layer names returned by predict where inconsistent when using argument "index". [#1194](https://github.com/rspatial/terra/issues/1194) by Michael Mahoney
+- compilation failed with older compilers because of use of std::filesystem [#1191](https://github.com/rspatial/terra/issues/1191)
+- Small changes to `RGB<-` and `coltab<-` so that terra can be installed with r-Revel (after a bug fix https://bugs.r-project.org/show_bug.cgi?id=18538)
 
 
 # version 1.7-37
