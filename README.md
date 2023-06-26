@@ -51,7 +51,15 @@ remotes::install_github("rspatial/terra")
 
 #### macOS
 
-On macOS, first install gdal with Homebrew
+On macOS, you can use [MacPorts](https://www.macports.org/) or [Homebrew](https://brew.sh/).
+
+With MacPorts you can do 
+
+```
+sudo port install R-terra
+```
+
+With Homebrew, you need to first install GDAL:
 
 ```
 brew install pkg-config
