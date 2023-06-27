@@ -2,13 +2,17 @@
 
 \alias{compareGeom}
 \alias{compareGeom,SpatRaster,SpatRaster-method}
+\alias{compareGeom,SpatRaster,list-method}
+
 \alias{compareGeom,SpatVector,SpatVector-method}
 \alias{compareGeom,SpatVector,missing-method}
   
 \title{Compare geometries of SpatRasters}
 
 \description{
-Evaluate whether two SpatRasters have the same extent, number of rows and columns, projection, resolution, and origin (or a subset of these comparisons). Or whether two SpatVectors have the same geometries, or whether a SpatVector has duplicated geometries. 
+Evaluate whether two SpatRasters have the same extent, number of rows and columns, projection, resolution, and origin (or a subset of these comparisons). 
+
+Or evaluate whether two SpatVectors have the same geometries, or whether a SpatVector has duplicated geometries. 
 }
 
 \usage{
@@ -21,8 +25,8 @@ Evaluate whether two SpatRasters have the same extent, number of rows and column
 }
 
 \arguments{
-  \item{x}{SpatRaster}
-  \item{y}{SpatRaster}
+  \item{x}{SpatRaster or SpatVector}
+  \item{y}{Same as \code{x}. If \code{x} is a SpatRaster, \code{y} can also be a list of SpatRasters. If code{x} is a SpatVector, \code{y} can be missing}
   \item{...}{Additional SpatRasters}
   \item{lyrs}{logical. If \code{TRUE}, the number of layers is compared}
   \item{crs}{logical. If \code{TRUE}, coordinate reference systems are compared}

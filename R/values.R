@@ -403,6 +403,31 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 )
 
 
+setMethod("compareGeom", signature(x="SpatRaster", y="list"),
+	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=FALSE) {
+		isr <- sapply(y, inherits, "SpatRaster")
+		if (!all(isr)) {
+			y <- y[isr]
+			if (length(y) == 0) error("compareGeom", "none of the elements of y is a SpatRaster")
+			n <- sum(!isr)
+			if (n > 1) {
+				warn("compareGeom", paste(n, "elements of y are not a SpatRaster"))
+			} else {
+				warn("compareGeom", paste("1 element of y is not a SpatRaster"))
+			}
+		}
+		out <- sapply(y, compareGeom, y=x, lyrs=lyrs, crs=crs, warncrs=warncrs, ext=ext, rowcol=rowcol, res=res, stopOnError=stopOnError, messages=messages)
+		if (!all(isr)) {
+			res <- rep(NA, length(isr))
+			res[isr] <- out
+			return(res)
+		}
+		out
+	}
+)
+
+
+
 
 setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, tolerance=0) {
