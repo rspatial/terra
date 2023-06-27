@@ -19,7 +19,7 @@ Always use the ".nc" or ".cdf" file extension to assure that the file can be pro
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-36</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-40</span>
       </span>
     </div>
 
@@ -126,24 +126,25 @@ Always use the ".nc" or ".cdf" file extension to assure that the file can be pro
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">".nc"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">#rr &lt;- writeCDF(r, fname, overwrite=TRUE, varname="alt", </span></span></span>
-<span class="r-in"><span><span class="co">#      longname="elevation in m above sea level", unit="m")</span></span></span>
+<span class="r-in"><span><span class="va">rr</span> <span class="op">&lt;-</span> <span class="fu">writeCDF</span><span class="op">(</span><span class="va">r</span>, <span class="va">fname</span>, overwrite<span class="op">=</span><span class="cn">TRUE</span>, varname<span class="op">=</span><span class="st">"alt"</span>, </span></span>
+<span class="r-in"><span>      longname<span class="op">=</span><span class="st">"elevation in m above sea level"</span>, unit<span class="op">=</span><span class="st">"m"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">5</span>, nrows<span class="op">=</span><span class="fl">5</span>, nl<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="summarize-generics.html">prod</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">dim</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="time.html">time</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-12-31"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">nlyr</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">#aa &lt;- writeCDF(a, fname, overwrite=TRUE, varname="power", </span></span></span>
-<span class="r-in"><span><span class="co">#      longname="my nice data", unit="U/Pa")</span></span></span>
+<span class="r-in"><span><span class="va">aa</span> <span class="op">&lt;-</span> <span class="fu">writeCDF</span><span class="op">(</span><span class="va">a</span>, <span class="va">fname</span>, overwrite<span class="op">=</span><span class="cn">TRUE</span>, varname<span class="op">=</span><span class="st">"power"</span>, </span></span>
+<span class="r-in"><span>      longname<span class="op">=</span><span class="st">"my nice data"</span>, unit<span class="op">=</span><span class="st">"U/Pa"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="math-generics.html">sqrt</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="sds.html">sds</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"temp"</span>, <span class="st">"prec"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="names.html">longnames</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"temperature (C)"</span>, <span class="st">"precipitation (mm)"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="units.html">units</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="st">"mm"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">#ss &lt;- writeCDF(s, fname, overwrite=TRUE)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="units.html">units</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"°C"</span>, <span class="st">"mm"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu">writeCDF</span><span class="op">(</span><span class="va">s</span>, <span class="va">fname</span>, overwrite<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># for CRAN</span></span></span>
-<span class="r-in"><span><span class="co">#file.remove(fname)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="va">fname</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>
     </div>
   </div>

@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-36</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-40</span>
       </span>
     </div>
 
@@ -104,7 +104,10 @@
 <div class="section level4">
 <h4 id="macos">macOS<a class="anchor" aria-label="anchor" href="#macos"></a>
 </h4>
-<p>On macOS, first install gdal with Homebrew</p>
+<p>On macOS, you can use <a href="https://www.macports.org/" class="external-link">MacPorts</a> or <a href="https://brew.sh/" class="external-link">Homebrew</a>.</p>
+<p>With MacPorts you can do</p>
+<pre><code>sudo port install R-terra</code></pre>
+<p>With Homebrew, you need to first install GDAL:</p>
 <pre><code>brew install pkg-config
 brew install gdal</code></pre>
 <p>Followed by (note the additional configuration argument needed for Homebrew)</p>

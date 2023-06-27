@@ -19,7 +19,7 @@ This approach of using model predictions is commonly used in remote sensing (for
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-36</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-40</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 <dd><p>logical. If <code>TRUE</code>, cells with <code>NA</code> values in the any of the layers of <code>x</code> are removed from the computation (even if the <code>NA</code> cell is in a layer that is not used as a variable in the model). This option prevents errors with models that cannot handle <code>NA</code> values when makeing predictions. In most other cases this will not affect the output. However, there are some models that return predicted values even if some (or all) variables are <code>NA</code></p></dd>
 
   <dt>index</dt>
-<dd><p>integer. To select subset of output variables</p></dd>
+<dd><p>integer or character. Can be used to to select a subset of the model output variables</p></dd>
 
   <dt>cores</dt>
 <dd><p>positive integer. If <code>cores &gt; 1</code>, a 'parallel' package cluster with that many cores is created and used</p></dd>

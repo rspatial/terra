@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-36</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-40</span>
       </span>
     </div>
 
@@ -48,35 +48,51 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-36" id="version-17-36">version 1.7-36<a class="anchor" aria-label="anchor" href="#version-17-36"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-40" id="version-17-40">version 1.7-40<a class="anchor" aria-label="anchor" href="#version-17-40"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.7-39" id="version-17-39">version 1.7-39<small>2023-06-23</small><a class="anchor" aria-label="anchor" href="#version-17-39"></a></h2>
+<p>Released 2023-06-23</p>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-36">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-36"></a></h3>
+<h3 id="bug-fixes-1-7-39">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-39"></a></h3>
+<ul><li>the tempdir option did not use path.expand. <a href="https://github.com/rspatial/terra/issues/1195" class="external-link">#1195</a> by Alex Ilich</li>
+<li>the layer names returned by predict where inconsistent when using argument “index”. <a href="https://github.com/rspatial/terra/issues/1194" class="external-link">#1194</a> by Michael Mahoney</li>
+<li>compilation failed with older compilers because of use of std::filesystem <a href="https://github.com/rspatial/terra/issues/1191" class="external-link">#1191</a>
+</li>
+<li>Small changes to <code>RGB&lt;-</code> and <code>coltab&lt;-</code> so that terra can be installed with R-devel (after a bug fix <a href="https://bugs.r-project.org/show_bug.cgi?id=18538" class="external-link uri">https://bugs.r-project.org/show_bug.cgi?id=18538</a>)</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.7-37" id="version-17-37">version 1.7-37<small>2023-06-18</small><a class="anchor" aria-label="anchor" href="#version-17-37"></a></h2>
+<p>Released 2023-06-18</p>
+<div class="section level3">
+<h3 id="bug-fixes-1-7-37">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-37"></a></h3>
 <ul><li>
 <code>rasterize</code> with points and a custom function did not work for large rasters. <a href="https://github.com/rspatial/terra/issues/1127" class="external-link">#1127</a> by Skip Woolley</li>
 <li>
-<code>crop&lt;SpatRaster, SpatVector&gt;</code> with “mask=TRUE” did not work well if the raster had a scale/offset<a href="https://github.com/rspatial/terra/issues/1128" class="external-link">#1128</a> by Monika Anna Tomaszewska</li>
+<code>crop&lt;SpatRaster, SpatVector&gt;</code> with “mask=TRUE” did not work well if the raster had a scale/offset <a href="https://github.com/rspatial/terra/issues/1128" class="external-link">#1128</a> by Monika Anna Tomaszewska</li>
 <li>
 <code>zonal&lt;SpatRaster&gt;</code> with a custom function always removed NAs. <a href="https://github.com/rspatial/terra/issues/1133" class="external-link">#1133</a> by Matthias Weigand</li>
 <li>
 <code>wrap&lt;SpatRaster&gt;</code> lost changed layer names if the source was from disk; and information on some time-step in some cases. <a href="https://github.com/rspatial/terra/issues/1144" class="external-link">#1144</a> by Pascal Führlich</li>
 <li>
-<code>global(fun="isNA")</code> was not correct when the SpatRaster had multiple layers [#1141] (<a href="https://github.com/rspatial/terra/issues/1141" class="external-link uri">https://github.com/rspatial/terra/issues/1141</a>) by Robin Freeman</li>
+<code>global(fun="isNA")</code> was not correct when the SpatRaster had multiple layers <a href="https://github.com/rspatial/terra/issues/1141" class="external-link">#1141</a> by Robin Freeman</li>
 <li>
 <code>interpIDW</code> with <code>near=TRUE</code> did not work properly (near=TRUE is now the default). <a href="https://github.com/rspatial/terra/issues/1186" class="external-link">#1186</a> by Hugh Graham</li>
 <li>“YYYY-1-1” was sometimes encoded as “YYYY-13-1”. <a href="https://github.com/rspatial/terra/issues/1168" class="external-link">#1168</a> by Colin Brust</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-36">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-36"></a></h3>
+<h3 id="enhancements-1-7-37">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-37"></a></h3>
 <ul><li>
-<code>panel</code> for categorical SpatRasters <a href="https://github.com/rspatial/terra/issues/1143" class="external-link">#1143</a> by Jason Flower</li>
+<code>panel</code> for categorical SpatRasters. <a href="https://github.com/rspatial/terra/issues/1143" class="external-link">#1143</a> by Jason Flower</li>
 <li>argument “ext” in <code>plot&lt;SpatRaster&gt;</code> can now also expand the plot. <a href="https://github.com/rspatial/terra/issues/1136" class="external-link">#1136</a> by Jakub Nowosad.</li>
-<li>argument <code>overwrite=FALSE</code> to <code>makeTiles</code> <a href="https://github.com/rspatial/terra/issues/1167" class="external-link">#1167</a> by Gray Martin.</li>
-<li>legend options for <code>&lt;plet,SpatVector</code>&gt; <a href="https://github.com/rspatial/terra/issues/1177" class="external-link">#1177</a> by Agustin Lobo.</li>
-<li>better handling of mixed geometry type vector data by <code>vect</code> and <code>svc</code> <a href="https://github.com/rspatial/terra/issues/1160" class="external-link">#1160</a>
-</li>
+<li>argument <code>overwrite=FALSE</code> to <code>makeTiles</code>. <a href="https://github.com/rspatial/terra/issues/1167" class="external-link">#1167</a> by Gray Martin.</li>
+<li>legend options for <code>&lt;plet,SpatVector</code>&gt;. <a href="https://github.com/rspatial/terra/issues/1177" class="external-link">#1177</a> by Agustin Lobo.</li>
+<li>better handling of mixed geometry type vector data by <code>vect</code> and <code>svc</code>. <a href="https://github.com/rspatial/terra/issues/1160" class="external-link">#1160</a> by Mike Sumner.</li>
+<li>new argument <code>sql</code> to <code>query&lt;SpatVectorProxy&gt;</code>. <a href="https://github.com/rspatial/terra/issues/1157" class="external-link">#1157</a> by Carl Boettiger</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-7-36">new<a class="anchor" aria-label="anchor" href="#new-1-7-36"></a></h3>
+<h3 id="new-1-7-37">new<a class="anchor" aria-label="anchor" href="#new-1-7-37"></a></h3>
 <ul><li>
 <code>wrap&lt;SpatRasterDataset&gt;</code> and <code>wrap&lt;SpatRasterCollection&gt;</code> methods. <a href="https://github.com/rspatial/terra/issues/954" class="external-link">#954</a> by James Camac</li>
 </ul></div>
