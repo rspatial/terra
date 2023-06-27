@@ -375,6 +375,9 @@ voronoi_deldir <- function(x, bnd=NULL, eps=1e-09, ...){
 
 setMethod("voronoi", signature(x="SpatVector"),
 	function(x, bnd=NULL, tolerance=0, as.lines=FALSE, deldir=FALSE) {
+		if (nrow(x) ==0) {
+			error("voronoi", "input has no geometries")
+		}
 		if (geomtype(x) != "points") {
 			x <- as.points(x)
 		}

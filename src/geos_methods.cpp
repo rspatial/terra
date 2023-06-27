@@ -953,6 +953,11 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) {
 	SpatVector out;
 
+	if (nrow() == 0) {
+		out.addWarning("input SpatVector has no geometries");
+		return out;
+	}
+
 #ifndef GEOS350
 	out.setError("GEOS 3.5 required for voronoi");
 	return out;
@@ -1012,6 +1017,10 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 
 SpatVector SpatVector::delaunay(double tolerance, int onlyEdges) {
 	SpatVector out;
+	if (nrow() == 0) {
+		out.addWarning("input SpatVector has no geometries");
+		return out;
+	}
 
 #ifndef GEOS350
 	out.setError("GEOS 3.5 required for delaunay");
@@ -3002,6 +3011,10 @@ SpatVector SpatVector::cross_dateline(bool &fixed) {
 SpatVector SpatVector::centroid(bool check_lonlat) {
 
 	SpatVector out;
+	if (out.nrow() == 0) {
+		out.setError("input has no geometries");
+		return out;
+	}
 
 	if (check_lonlat && could_be_lonlat()) {
 		bool changed = false;
@@ -3037,6 +3050,10 @@ SpatVector SpatVector::centroid(bool check_lonlat) {
 SpatVector SpatVector::point_on_surface(bool check_lonlat) {
 
 	SpatVector out;
+	if (out.nrow() == 0) {
+		out.setError("input has no geometries");
+		return out;
+	}
 
 	if (check_lonlat && could_be_lonlat()) {
 		bool changed = false;

@@ -1024,6 +1024,12 @@ SpatVector SpatVector::cbind(SpatDataFrame d) {
 
 
 SpatVector SpatVector::as_points(bool multi, bool skiplast) {
+	if (nrow() == 0) {
+		SpatVector v;
+		v.setError("input has no geometries");
+		return v;
+	}
+	
 	if (geoms[0].gtype == points) {
 		SpatVector v = *this;
 		v.addWarning("returning a copy");
