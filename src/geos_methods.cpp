@@ -3011,7 +3011,7 @@ SpatVector SpatVector::cross_dateline(bool &fixed) {
 SpatVector SpatVector::centroid(bool check_lonlat) {
 
 	SpatVector out;
-	if (out.nrow() == 0) {
+	if (nrow() == 0) {
 		out.setError("input has no geometries");
 		return out;
 	}
@@ -3050,7 +3050,7 @@ SpatVector SpatVector::centroid(bool check_lonlat) {
 SpatVector SpatVector::point_on_surface(bool check_lonlat) {
 
 	SpatVector out;
-	if (out.nrow() == 0) {
+	if (nrow() == 0) {
 		out.setError("input has no geometries");
 		return out;
 	}
