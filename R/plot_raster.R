@@ -605,6 +605,7 @@ prettyNumbs <- function(x, digits) {
 		}
 	} else {
 		out$asp <- asp
+		out$lonlat <- FALSE
 	}
 	if (!is.null(alpha)) {
 		if (!inherits(alpha, "SpatRaster")) {
