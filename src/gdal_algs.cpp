@@ -20,6 +20,8 @@
 #include "gdal_alg.h"
 #include "ogrsf_frmts.h"
 
+#include "gdal_utils.h"  // for GDALWarpApp
+
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "file_utils.h"
@@ -538,6 +540,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - halfy;
 		SpatRaster crop_out = out.crop(eout, "near", false, sopt);
 		GDALDatasetH hDstDS;
+		GDALDatasetH hWarpedDS;
 
 		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, has_so, scale, offset, sopt)) {
 			return crop_out;
@@ -554,35 +557,60 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			std::vector<unsigned> dstbands(srcbands.size());
 			std::iota (dstbands.begin(), dstbands.end(), bandstart);
 			bandstart += dstbands.size();
+			
+      //--------------------------------------------------------------------------
+      // (tentative replace of set_warp_options() and use of ChunkAndWarpImage())
+      // 
+      // - checks size of srcbands and dstbands
+      // - sets resample alg
+      // - sets source and dest DS in options (we don't need)
+      // - sets band count (we don't need)
+      // - sets srcbands and dstbands, checks and carries over NA flag (or NAN), and Imag nodata
+      // - sets INIT_DEST=NO_DATA
+      // - sets WRITE_FLUSH=YES
+      // - sets NUM_THREADS=ALL_CPUS (if threads)
+      // - sets ProjTransformer (we don't need)
 
-			GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
-			bool ok = set_warp_options(psWarpOptions, hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose(), opt.threads);
-			if (!ok) {
-				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
-				out.setError(errmsg);
-				return out;
-			}
-			//ok = gdal_warper(psWarpOptions, hSrcDS, hDstDS);
-			GDALWarpOperation oOperation;
-			if (oOperation.Initialize( psWarpOptions ) != CE_None) {
-				ok = false;
-			} else if (oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(hDstDS), GDALGetRasterYSize(hDstDS)) != CE_None) {
-				ok = false;
-			}
-			GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
-			GDALDestroyWarpOptions( psWarpOptions );
-
-			if( hSrcDS != NULL ) GDALClose( (GDALDatasetH) hSrcDS );
-			if (!ok) {
-				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
-				out.setError("warp failure");
-				return out;
-			}
+      bool ok = true; 
+      if (srcbands.size() != dstbands.size()) {
+      	errmsg = "number of source bands must match number of dest bands";
+      	ok =  false;
+      }
+      int nbands = srcbands.size();
+      
+      GDALResampleAlg a;
+      if (!getAlgo(a, method)) {
+      	ok = false; 
+      	if ((method=="sum") || (method=="rms")) {
+      		errmsg = method + " not available in your version of GDAL";
+      	} else {
+      		errmsg = "unknown resampling algorithm";
+      	}
+      }
+      if (!ok) {
+      	if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
+      	out.setError(errmsg);
+      	return out;
+      }
+      GDALWarpAppOptions *psWarpAppOptions = GDALWarpAppOptionsNew(nullptr, nullptr);
+      GDALWarpAppOptionsSetProgress(psWarpAppOptions, NULL, NULL );
+      // assume we've validate method because of getAlgo() above
+      GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "-r", method.c_str()); 
+      GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "INIT_DEST", "NO_DATA"); 
+      GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "WRITE_FLUSH", "YES"); 
+      if (opt.threads) {
+      	GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "NUM_THREADS", "ALL_CPUS"); 
+      }
+      //--------------------------------------------------------------------------
+      
+      hWarpedDS = GDALWarp("", hDstDS, 1 , &hSrcDS, psWarpAppOptions, 0);
+      GDALWarpAppOptionsFree(psWarpAppOptions); 
+      if( hSrcDS != NULL ) GDALClose( (GDALDatasetH) hSrcDS );
 		}
-
-
-		bool ok = crop_out.from_gdalMEM(hDstDS, false, true);
-		if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
+		
+		
+		bool ok = crop_out.from_gdalMEM(hWarpedDS, false, true);
+		if( hWarpedDS != NULL ) GDALClose( (GDALDatasetH) hWarpedDS );
 		if (!ok) {
 			out.setError("cannot do this transformation (warp)");
 			return out;
