@@ -151,6 +151,10 @@ finalizeWrap <- function(x, r) {
 		r@attributes$levels <- cats(x)
 		r@attributes$levindex <- activeCat(x, 0)
 	}
+	if (any(has.colors(x))) {
+		r@attributes$colors <- coltab(x)
+	}
+	
 	v <- time(x)
 	if (any(!is.na(v))) {
 		r@attributes$time <- v
@@ -284,6 +288,14 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 					set.cats(r, layer=0, x@attributes$levels, active=x@attributes$levindex)
 				}
 			}
+			if (any(nms=="colors")) {
+				for (i in seq_along(x@attributes$colors)) {
+					if (!is.null(x@attributes$colors[[i]])) {
+						d <- terra:::.makeSpatDF(x@attributes$colors[[i]])
+						if (!r@ptr$setColors(i-1, d)) messages("cols<-", r)
+					}
+				}
+			}			
 		}
 		r
 	}
