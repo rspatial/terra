@@ -12,16 +12,16 @@ setMethod("init", signature(x="SpatRaster"),
 			x <- rast(x, 1)
 			fun <- fun[1]
 			if (fun %in% c("x", "y", "row", "col", "cell", "chess")) {
-				x@ptr <- x@ptr$initf(fun, TRUE, opt)
+				x@pnt <- x@pnt$initf(fun, TRUE, opt)
 				messages(x, "init")
 			} else if (is.na(fun)) {
-				x@ptr <- x@ptr$initv(as.numeric(NA), opt)
+				x@pnt <- x@pnt$initv(as.numeric(NA), opt)
 				messages(x, "init")
 			} else {
 				error("init", "unknown function")
 			}
 		} else if (is.numeric(fun) || is.logical(fun)) {
-			x@ptr <- x@ptr$initv(fun, opt)
+			x@pnt <- x@pnt$initv(fun, opt)
 			messages(x, "init")
 		} else {
 			nc <- ncol(x) * nlyr(x)

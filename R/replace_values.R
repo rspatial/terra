@@ -42,7 +42,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 				#}
 				values <- as.vector(values)
 			}
-			ok <- x@ptr$replaceCellValuesLayer(layer-1, cells-1, values, bylyr, spatOptions())
+			ok <- x@pnt$replaceCellValuesLayer(layer-1, cells-1, values, bylyr, spatOptions())
 			messages(x)
 			invisible(TRUE)
 		} else {
@@ -50,7 +50,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 				error("set.values", "some (but not all) layer numbers are < 1")
 			}
 			if (missing(cells) && missing(values)) {
-				x@ptr$readAll()
+				x@pnt$readAll()
 				return(invisible(TRUE));
 			}
 			bylyr <- FALSE
@@ -64,7 +64,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 				#}
 				values <- as.vector(values)
 			}
-			ok <- x@ptr$replaceCellValues(cells-1, values, bylyr, spatOptions())
+			ok <- x@pnt$replaceCellValues(cells-1, values, bylyr, spatOptions())
 			messages(x)
 		}
 		invisible(TRUE)
@@ -180,13 +180,13 @@ make_replace_index <- function(v, vmx, nreps, name="i") {
 		value <- as.vector(value)
 	}
 	opt <- spatOptions()
-	x@ptr <- x@ptr$deepcopy()
+	x@pnt <- x@pnt$deepcopy()
 	if (is.na(k[1])) {
-		if (!x@ptr$replaceCellValues(i-1, value, bylyr, opt)) {
+		if (!x@pnt$replaceCellValues(i-1, value, bylyr, opt)) {
 			messages(x, "`[<-`")
 		} 
 	} else {
-		if (!x@ptr$replaceCellValuesLayer(k-1, i-1, value, bylyr, opt)) {
+		if (!x@pnt$replaceCellValuesLayer(k-1, i-1, value, bylyr, opt)) {
 			messages(x, "`[<-`")
 		}
 	}
@@ -199,7 +199,7 @@ make_replace_index <- function(v, vmx, nreps, name="i") {
 	for (lyr in ulyrs) {
 		y <- x[[lyr]]
 		i <- which(lyrs == lyr)
-		if (!y@ptr$replaceCellValues(cell[i]-1, value[i], FALSE, opt)) {
+		if (!y@pnt$replaceCellValues(cell[i]-1, value[i], FALSE, opt)) {
 			messages(y, "`[<-`")
 		}
 		x[[lyr]] <- y

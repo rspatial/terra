@@ -18,7 +18,7 @@ Calculate values for a moving-window by comparing the value in one layers with t
 
 \item{w}{numeric or matrix to define the focal window. The window an be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in \code{\link{focal}}. Note that if a matrix with numbers other than zero or one are used, the values are used as weights. For this to work, \code{fun} must have an argument \code{weights}}
 
-\item{fun}{a function with at least two arguments (one for each layer). There is a built-in function "ols" for both the weighted and unweighted Ordinary Least Square regression. This function has an additionals argument \code{na.rm=FALSE} and \code{intercept=TRUE}}
+\item{fun}{a function with at least two arguments (one for each layer). There is a built-in function "ols" for both the weighted and unweighted Ordinary Least Square regression. This function has an additional argument \code{na.rm=FALSE} and \code{intercept=TRUE}}
 
 \item{...}{additional arguments for \code{fun}}
 

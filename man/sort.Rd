@@ -13,7 +13,7 @@
 \description{
 Sort the cell values of a SpatRaster across layers. You can also compute the sorting order. 
 
-Or sort the records of SpatVector (or data.frame) by specifiying the column number(s) or names(s) to sort on.
+Or sort the records of SpatVector (or data.frame) by specifying the column number(s) or names(s) to sort on.
 }
 
 \usage{

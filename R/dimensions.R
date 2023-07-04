@@ -10,13 +10,13 @@ setMethod("dim", signature(x="SpatRaster"),
 
 setMethod("dim", signature(x="SpatRasterDataset"),
 	function(x) {
-		c(x@ptr$nrow(), x@ptr$ncol())
+		c(x@pnt$nrow(), x@pnt$ncol())
 	}
 )
 
 setMethod("dim", signature(x="SpatRasterCollection"),
 	function(x) {
-		m <- matrix(x@ptr$dims(), ncol=3)
+		m <- matrix(x@pnt$dims(), ncol=3)
 		colnames(m) <- c("nrow", "ncol", "nlyr")
 		m
 	}
@@ -42,27 +42,27 @@ setMethod("nlyr", signature(x="SpatRasterCollection"),
 
 
 setMethod("nrow", signature(x="SpatRaster"),
-	function(x){ return(x@ptr$nrow())}
+	function(x){ return(x@pnt$nrow())}
 )
 
 setMethod("nrow", signature(x="SpatRasterDataset"),
-	function(x){ return(x[1]@ptr$nrow())}
+	function(x){ return(x[1]@pnt$nrow())}
 )
 
 setMethod("nrow", signature(x="SpatVector"),
-	function(x){ return(x@ptr$nrow())}
+	function(x){ return(x@pnt$nrow())}
 )
 
 setMethod("ncol", signature(x="SpatRaster"),
-	function(x){ return(x@ptr$ncol()) }
+	function(x){ return(x@pnt$ncol()) }
 )
 
 setMethod("ncol", signature(x="SpatRasterDataset"),
-	function(x){ return(x[1]@ptr$ncol())}
+	function(x){ return(x[1]@pnt$ncol())}
 )
 
 setMethod("ncol", signature(x="SpatVector"),
-	function(x){ return(x@ptr$ncol())}
+	function(x){ return(x@pnt$ncol())}
 )
 
 
@@ -107,32 +107,32 @@ setMethod("ncell", signature(x="ANY"),
 
 setMethod("size", signature(x="SpatRaster"),
 	function(x) {
-		x@ptr$size()
+		x@pnt$size()
 	}
 )
 
 
 setMethod("nlyr", signature(x="SpatRaster"),
 	function(x){
-		return(x@ptr$nlyr() )
+		return(x@pnt$nlyr() )
     }
 )
 
 setMethod("nlyr", signature(x="SpatRasterDataset"),
 	function(x){
-		return(x@ptr$nlyr() )
+		return(x@pnt$nlyr() )
     }
 )
 
 
 setMethod("nsrc", signature(x="SpatRaster"),
 	function(x){
-		return(x@ptr$nsrc() )
+		return(x@pnt$nsrc() )
     }
 )
 
 .nlyrBySource <- function(x) {
-	x@ptr$nlyrBySource();
+	x@pnt$nlyrBySource();
 }
 
 
@@ -160,13 +160,13 @@ setMethod("nlyr<-", signature("SpatRaster", "numeric"),
 
 setMethod("res", signature(x="SpatRaster"),
 function(x) {
-		x@ptr$res
+		x@pnt$res
 	}
 )
 
 setMethod("res", signature(x="SpatRasterDataset"),
 function(x) {
-		x@ptr$res()
+		x@pnt$res()
 	}
 )
 
@@ -177,7 +177,7 @@ setMethod("res<-", signature(x="SpatRaster"),
 		} else if (length(value) > 2) {
 			warn("res<-", "value should have length 1 or 2. Additional values ignored")
 		}
-		x@ptr <- x@ptr$set_resolution(value[1], value[2])
+		x@pnt <- x@pnt$set_resolution(value[1], value[2])
 		messages(x, "resolution")
 	}
 )
@@ -198,7 +198,7 @@ function(x) {
 
 setMethod("datatype", signature(x="SpatRaster"),
 	function(x, bylyr=TRUE){
-		d <- x@ptr$getDataType(FALSE);
+		d <- x@pnt$getDataType(FALSE);
 		if (bylyr) {
 			d <- rep(d, sources(x, TRUE)$nlyr)
 		}
