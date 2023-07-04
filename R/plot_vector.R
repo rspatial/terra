@@ -673,7 +673,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 		for (i in 1:length(y)) {
 			if (length(y) > 1) {
 				if (missing("main")) {
-					main <- names(x)
+					main <- y
 				} else {
 					main <- rep_len(main, length(y))
 				}
