@@ -945,6 +945,7 @@ RCPP_MODULE(spat){
 		.method("rectify", &SpatRaster::rectify)
 		.method("stretch", &SpatRaster::stretch)
 		.method("warp", &SpatRaster::warper)
+    .method("warp_by_util", &SpatRaster::warper_by_util)
 		.method("resample", &SpatRaster::resample)
 		.method("zonal", &SpatRaster::zonal)
 		.method("zonal_weighted", &SpatRaster::zonal_weighted)
