@@ -258,7 +258,7 @@ setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
 
 
 setMethod("global", signature(x="SpatRaster"),
-	function(x, fun="mean", weights=NULL, ...)  {
+	function(x, fun="mean", weights=NULL, maxcell=Inf, ...)  {
 
 		nms <- names(x)
 		nms <- make.unique(nms)
@@ -301,6 +301,11 @@ setMethod("global", signature(x="SpatRaster"),
 
 		nl <- nlyr(x)
 		res <- list()
+		if (is.finite(maxcell)) {
+			maxcell <- round(maxcell)
+			if (maxcell < 1) error("global", "maxcell should be positive")
+			x <- spatSample(x, maxcell, "regular", as.raster=TRUE)
+		}
 		for (i in 1:nl) {
 			res[[i]] <- fun(values(x[[i]]), ...)
 		}
