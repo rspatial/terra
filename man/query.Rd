@@ -25,7 +25,7 @@ Query a SpatVectorProxy to extract a subset
 \item{where}{character. expression like "NAME_1='California' AND ID > 3" , to subset records. Note that start and n are applied after executing the where statement}
 \item{extent}{Spat* object. The extent of the object is used as a spatial filter to select the geometries to read. Ignored if \code{filter} is not \code{NULL}}
 \item{filter}{SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points)}
-\item{sql}{character. Aribrary SQL statement. If used, arguments "start", "n", "vars" and "where" are ignored}
+\item{sql}{character. Arbitrary SQL statement. If used, arguments "start", "n", "vars" and "where" are ignored}
 \item{what}{character indicating what to read. Either \code{""} for geometries and attributes, or \code{"geoms"} to only read the geometries, \code{"attributes"} to only read the attributes (that are returned as a data.frame)}
 }
 

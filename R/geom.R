@@ -3,10 +3,10 @@
 roundtrip <- function(x, coll=FALSE) {
 	if (coll) {
 		p <- methods::new("SpatVectorCollection")
-		p@ptr <- x@ptr$bienvenue()
+		p@pnt <- x@pnt$bienvenue()
 		return(p)
 	} else {
-		x@ptr <- x@ptr$allerretour()
+		x@pnt <- x@pnt$allerretour()
 		return(x)
 	}
 }
@@ -33,7 +33,7 @@ setMethod("is.valid", signature(x="SpatVector"),
 	function(x, messages=FALSE, as.points=FALSE) {
 		if (as.points) messages = TRUE
 		if (messages) {
-			r <- x@ptr$geos_isvalid_msg()
+			r <- x@pnt$geos_isvalid_msg()
 			d <- data.frame(matrix(r, ncol=2, byrow=TRUE))
 			d[,1] = d[,1] == "\001"
 			colnames(d) <- c("valid", "reason")
@@ -48,14 +48,14 @@ setMethod("is.valid", signature(x="SpatVector"),
 			}
 			d
 		} else {
-			x@ptr$geos_isvalid()
+			x@pnt$geos_isvalid()
 		}
 	}
 )
 
 setMethod("makeValid", signature(x="SpatVector"),
 	function(x) {
-		x@ptr <- x@ptr$make_valid2()
+		x@pnt <- x@pnt$make_valid2()
 		messages(x)
 	}
 )
@@ -87,7 +87,7 @@ setMethod("na.omit", signature("SpatVector"),
 
 setMethod("deepcopy", signature("SpatVector"),
 	function(x) {
-		x@ptr <- x@ptr$deepcopy()
+		x@pnt <- x@pnt$deepcopy()
 		x
 	}
 )
@@ -97,7 +97,7 @@ as.list.svc <- function(x) {
 	v <- vect()
 	lapply(1:x$size(),
 		function(i) {
-			v@ptr <- x$get(i-1)
+			v@pnt <- x$get(i-1)
 			v
 		})
 }
@@ -106,7 +106,7 @@ as.list.svc <- function(x) {
 
 setMethod("cover", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, identity=FALSE, expand=TRUE) {
-		x@ptr <- x@ptr$cover(y@ptr, identity[1], expand[1])
+		x@pnt <- x@pnt$cover(y@pnt, identity[1], expand[1])
 		messages(x, "cover")
 	}
 )
@@ -114,21 +114,21 @@ setMethod("cover", signature(x="SpatVector", y="SpatVector"),
 
 setMethod("symdif", signature(x="SpatVector", y="SpatVector"),
 	function(x, y) {
-		x@ptr <- x@ptr$symdif(y@ptr)
+		x@pnt <- x@pnt$symdif(y@pnt)
 		messages(x, "symdif")
 	}
 )
 
 setMethod("erase", signature(x="SpatVector", y="SpatVector"),
 	function(x, y) {
-		x@ptr <- x@ptr$erase_agg(y@ptr)
+		x@pnt <- x@pnt$erase_agg(y@pnt)
 		messages(x, "erase")
 	}
 )
 
 setMethod("erase", signature(x="SpatVector", y="missing"),
 	function(x, sequential=TRUE) {
-		x@ptr <- x@ptr$erase_self(sequential)
+		x@pnt <- x@pnt$erase_self(sequential)
 		messages(x, "erase")
 	}
 )
@@ -136,14 +136,14 @@ setMethod("erase", signature(x="SpatVector", y="missing"),
 setMethod("erase", signature(x="SpatVector", y="SpatExtent"),
 	function(x, y) {
 		y <- as.polygons(y)
-		x@ptr <- x@ptr$erase(y@ptr)
+		x@pnt <- x@pnt$erase(y@pnt)
 		messages(x, "erase")
 	}
 )
 
 setMethod("gaps", signature(x="SpatVector"),
 	function(x) {
-		x@ptr <- x@ptr$gaps()
+		x@pnt <- x@pnt$gaps()
 		messages(x, "gaps")
 	}
 )
@@ -151,7 +151,7 @@ setMethod("gaps", signature(x="SpatVector"),
 
 setMethod("union", signature(x="SpatVector", y="missing"),
 	function(x, y) {
-		x@ptr <- x@ptr$union_self()
+		x@pnt <- x@pnt$union_self()
 		messages(x, "union")
 	}
 )
@@ -159,7 +159,7 @@ setMethod("union", signature(x="SpatVector", y="missing"),
 
 setMethod("union", signature(x="SpatVector", y="SpatVector"),
 	function(x, y) {
-		x@ptr <- x@ptr$union(y@ptr)
+		x@pnt <- x@pnt$union(y@pnt)
 		messages(x, "union")
 	}
 )
@@ -167,7 +167,7 @@ setMethod("union", signature(x="SpatVector", y="SpatVector"),
 setMethod("union", signature(x="SpatVector", y="SpatExtent"),
 	function(x, y) {
 		y <- as.vector(y)
-		x@ptr <- x@ptr$union(y@ptr)
+		x@pnt <- x@pnt$union(y@pnt)
 		messages(x, "union")
 	}
 )
@@ -181,14 +181,14 @@ setMethod("union", signature(x="SpatExtent", y="SpatExtent"),
 
 setMethod("intersect", signature(x="SpatVector", y="SpatVector"),
 	function(x, y) {
-		x@ptr <- x@ptr$intersect(y@ptr, TRUE)
+		x@pnt <- x@pnt$intersect(y@pnt, TRUE)
 		messages(x, "intersect")
 	}
 )
 
 setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"),
 	function(x, y) {
-		x@ptr <- x@ptr$intersect(y@ptr)
+		x@pnt <- x@pnt$intersect(y@pnt)
 		if (!is.valid(x)) {
 			return(NULL)
 		}
@@ -198,7 +198,7 @@ setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"),
 
 setMethod("intersect", signature(x="SpatVector", y="SpatExtent"),
 	function(x, y) {
-		#x@ptr <- x@ptr$crop_ext(y@ptr)
+		#x@pnt <- x@pnt$crop_ext(y@pnt)
 		#x
 		crop(x, y)
 	}
@@ -213,7 +213,7 @@ setMethod("intersect", signature(x="SpatExtent", y="SpatVector"),
 
 setMethod("mask", signature(x="SpatVector", mask="SpatVector"),
 	function(x, mask, inverse=FALSE) {
-		x@ptr <- x@ptr$mask(mask@ptr, inverse)
+		x@pnt <- x@pnt$mask(mask@pnt, inverse)
 		messages(x, "mask")
 	}
 )
@@ -245,7 +245,7 @@ setMethod("buffer", signature(x="SpatVector"),
 		if (!is.numeric(width)) {
 			error("buffer", "width is not numeric")
 		}
-		x@ptr <- x@ptr$buffer(width, quadsegs, tolower(capstyle), tolower(joinstyle), mitrelimit, singlesided)
+		x@pnt <- x@pnt$buffer(width, quadsegs, tolower(capstyle), tolower(joinstyle), mitrelimit, singlesided)
 		messages(x, "buffer")
 	}
 )
@@ -255,11 +255,11 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 	function(x, y, ext=FALSE) {
 		if (ext) {
 			y <- ext(y)
-			x@ptr <- x@ptr$crop_ext(y@ptr, TRUE)
+			x@pnt <- x@pnt$crop_ext(y@pnt, TRUE)
 			return(x)
 		}
 		if (inherits(y, "SpatVector")) {
-			x@ptr <- x@ptr$crop_vct(y@ptr)
+			x@pnt <- x@pnt$crop_vct(y@pnt)
 		} else {
 			if (!inherits(y, "SpatExtent")) {
 				y <- try(ext(y), silent=TRUE)
@@ -269,9 +269,9 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 			}
 			## crop_ext does not include points on the borders
 			## https://github.com/rspatial/raster/issues/283
-			#x@ptr <- x@ptr$crop_ext(y@ptr)
+			#x@pnt <- x@pnt$crop_ext(y@pnt)
 			y <- as.polygons(y)
-			x@ptr <- x@ptr$crop_vct(y@ptr)
+			x@pnt <- x@pnt$crop_vct(y@pnt)
 		}
 		messages(x, "crop")
 	}
@@ -280,14 +280,14 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 
 setMethod("convHull", signature(x="SpatVector"),
 	function(x, by="") {
-		x@ptr <- x@ptr$hull("convex", by[1])
+		x@pnt <- x@pnt$hull("convex", by[1])
 		messages(x, "convHull")
 	}
 )
 
 setMethod("minRect", signature(x="SpatVector"),
 	function(x, by="") {
-		x@ptr <- x@ptr$hull("minrot", by[1])
+		x@pnt <- x@pnt$hull("minrot", by[1])
 		messages(x, "minRect")
 	}
 )
@@ -295,7 +295,7 @@ setMethod("minRect", signature(x="SpatVector"),
 
 setMethod("disagg", signature(x="SpatVector"),
 	function(x, segments=FALSE) {
-		x@ptr <- x@ptr$disaggregate(segments[1])
+		x@pnt <- x@pnt$disaggregate(segments[1])
 		messages(x, "disagg")
 	}
 )
@@ -306,7 +306,7 @@ setMethod("disagg", signature(x="SpatVector"),
 setMethod("flip", signature(x="SpatVector"),
 	function(x, direction="vertical") {
 		d <- match.arg(direction, c("vertical", "horizontal"))
-		x@ptr <- x@ptr$flip(d == "vertical")
+		x@pnt <- x@pnt$flip(d == "vertical")
 		messages(x, "flip")
 	}
 )
@@ -324,7 +324,7 @@ setMethod("spin", signature(x="SpatVector"),
 		}
 		angle <- angle[1]
 		stopifnot(is.numeric(angle) && !is.nan(angle))
-		x@ptr <- x@ptr$rotate(angle, x0, y0)
+		x@pnt <- x@pnt$rotate(angle, x0, y0)
 		messages(x, "spin")
 	}
 )
@@ -332,7 +332,7 @@ setMethod("spin", signature(x="SpatVector"),
 
 setMethod("delaunay", signature(x="SpatVector"),
 	function(x, tolerance=0, as.lines=FALSE) {
-		x@ptr <- x@ptr$delaunay(tolerance, as.lines)
+		x@pnt <- x@pnt$delaunay(tolerance, as.lines)
 		messages(x, "delaunay")
 	}
 )
@@ -389,7 +389,7 @@ setMethod("voronoi", signature(x="SpatVector"),
 			} else {
 				bnd <- as.polygons(ext(bnd))
 			}
-			x@ptr <- x@ptr$voronoi(bnd@ptr, tolerance, as.lines)
+			x@pnt <- x@pnt$voronoi(bnd@pnt, tolerance, as.lines)
 			messages(x, "voronoi")
 		}
 	}
@@ -397,7 +397,7 @@ setMethod("voronoi", signature(x="SpatVector"),
 
 setMethod("elongate", signature(x="SpatVector"),
 	function(x, length=1, flat=FALSE) {
-		x@ptr <- x@ptr$elongate(length, flat)
+		x@pnt <- x@pnt$elongate(length, flat)
 		messages(x, "elongate")
 	}
 )
@@ -405,7 +405,7 @@ setMethod("elongate", signature(x="SpatVector"),
 
 setMethod("width", signature(x="SpatVector"),
 	function(x, as.lines=FALSE) {
-		x@ptr <- x@ptr$width()
+		x@pnt <- x@pnt$width()
 		x <- messages(x, "width")
 		if (!as.lines) {
 			x <- perim(x)
@@ -417,7 +417,7 @@ setMethod("width", signature(x="SpatVector"),
 
 setMethod("clearance", signature(x="SpatVector"),
 	function(x, as.lines=FALSE) {
-		x@ptr <- x@ptr$clearance()
+		x@pnt <- x@pnt$clearance()
 		x <- messages(x, "clearance")
 		if (!as.lines) {
 			x <- perim(x)
@@ -431,21 +431,21 @@ setMethod("clearance", signature(x="SpatVector"),
 
 setMethod("mergeLines", signature(x="SpatVector"),
 	function(x) {
-		x@ptr <- x@ptr$line_merge()
+		x@pnt <- x@pnt$line_merge()
 		messages(x, "line_merge")
 	}
 )
 
 setMethod("makeNodes", signature(x="SpatVector"),
 	function(x) {
-		x@ptr <- x@ptr$make_nodes()
+		x@pnt <- x@pnt$make_nodes()
 		messages(x, "makeNodes")
 	}
 )
 
 setMethod("removeDupNodes", signature(x="SpatVector"),
 	function(x, digits=-1) {
-		x@ptr <- x@ptr$remove_duplicate_nodes(digits)
+		x@pnt <- x@pnt$remove_duplicate_nodes(digits)
 		messages(x, "removeDupNodes")
 	}
 )
@@ -453,7 +453,7 @@ setMethod("removeDupNodes", signature(x="SpatVector"),
 
 setMethod("simplifyGeom", signature(x="SpatVector"),
 	function(x, tolerance=0.1, preserveTopology=TRUE, makeValid=TRUE) {
-		x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
+		x@pnt <- x@pnt$simplify(tolerance, preserveTopology)
 		x <- messages(x, "simplifyGeom")
 		if (makeValid) {
 			x <- makeValid(x)
@@ -464,7 +464,7 @@ setMethod("simplifyGeom", signature(x="SpatVector"),
 
 setMethod("thinGeom", signature(x="SpatVector"),
 	function(x, threshold=1e-6, makeValid=TRUE) {
-		x@ptr <- x@ptr$thin(threshold)
+		x@pnt <- x@pnt$thin(threshold)
 		x <- messages(x, "thinGeom")
 		if (makeValid) {
 			x <- makeValid(x)
@@ -476,9 +476,9 @@ setMethod("thinGeom", signature(x="SpatVector"),
 setMethod("sharedPaths", signature(x="SpatVector"),
 	function(x, y=NULL) {
 		if (is.null(y)) {
-			x@ptr <- x@ptr$shared_paths(TRUE)
+			x@pnt <- x@pnt$shared_paths(TRUE)
 		} else {
-			x@ptr <- x@ptr$shared_paths2(y@ptr, TRUE)
+			x@pnt <- x@pnt$shared_paths2(y@pnt, TRUE)
 		}
 		x <- messages(x, "sharedPaths")
 		# sort data to ensure consistent order with spatial indices
@@ -491,9 +491,9 @@ setMethod("sharedPaths", signature(x="SpatVector"),
 setMethod("snap", signature(x="SpatVector"),
 	function(x, y=NULL, tolerance) {
 		if (is.null(y)) {
-			x@ptr <- x@ptr$snap(tolerance)
+			x@pnt <- x@pnt$snap(tolerance)
 		} else {
-			x@ptr <- x@ptr$snapto(y@ptr, tolerance)
+			x@pnt <- x@pnt$snapto(y@pnt, tolerance)
 		}
 		messages(x, "snap")
 	}
@@ -620,7 +620,7 @@ setMethod("split", signature(x="SpatVector", f="ANY"),
 			x$f <- f
 			f <- "f"
 		}
-		x <- messages(x@ptr$split(f), "split")
+		x <- messages(x@pnt$split(f), "split")
 		as.list.svc(x)
 	}
 )

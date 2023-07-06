@@ -214,11 +214,11 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 	
 		p <- methods::new("SpatVector")
 		if (extent) {
-			p@ptr <- x@ptr$dense_extent(FALSE, FALSE)
+			p@pnt <- x@pnt$dense_extent(FALSE, FALSE)
 			x <- messages(x, "as.polygons")
 		} else {
 			opt <- spatOptions()
-			p@ptr <- x@ptr$as_polygons(round[1], aggregate[1], values[1], na.rm[1], na.all[1], digits, opt)
+			p@pnt <- x@pnt$as_polygons(round[1], aggregate[1], values[1], na.rm[1], na.all[1], digits, opt)
 			x <- messages(x, "as.polygons")
 			if (values) {
 				p <- get_labels(x, p, aggregate[1])
@@ -232,7 +232,7 @@ setMethod("as.lines", signature(x="SpatRaster"),
 	function(x) {
 		p <- methods::new("SpatVector")
 		opt <- spatOptions()
-		p@ptr <- x@ptr$as_lines(opt)
+		p@pnt <- x@pnt$as_lines(opt)
 		messages(p, "as.lines")
 	}
 )
@@ -242,7 +242,7 @@ setMethod("as.polygons", signature(x="SpatExtent"),
 	function(x, crs="") {
 		p <- methods::new("SpatVector")
 		crs <- character_crs(crs, "as.polygons")
-		p@ptr <- SpatVector$new(x@ptr, crs)
+		p@pnt <- SpatVector$new(x@pnt, crs)
 		messages(p, "as.polygons")
 	}
 )
@@ -257,7 +257,7 @@ setMethod("as.lines", signature(x="SpatExtent"),
 
 setMethod("as.points", signature(x="SpatExtent"),
 	function(x, crs="") {
-		#vect(do.call(cbind, x@ptr$as.points()), "points", crs=crs)
+		#vect(do.call(cbind, x@pnt$as.points()), "points", crs=crs)
 		as.points(as.polygons(x, crs))
 	}
 )
@@ -265,7 +265,7 @@ setMethod("as.points", signature(x="SpatExtent"),
 
 setMethod("as.lines", signature(x="SpatVector"),
 	function(x) {
-		x@ptr <- x@ptr$as_lines()
+		x@pnt <- x@pnt$as_lines()
 		messages(x, "as.lines")
 	}
 )
@@ -275,7 +275,7 @@ setMethod("as.polygons", signature(x="SpatVector"),
 		if (extent) {
 			as.polygons(ext(x), crs=crs(x))
 		} else {
-			x@ptr <- x@ptr$polygonize()
+			x@pnt <- x@pnt$polygonize()
 			messages(x, "as.polygons")
 		}
 	}
@@ -284,7 +284,7 @@ setMethod("as.polygons", signature(x="SpatVector"),
 setMethod("as.points", signature(x="SpatVector"),
 	function(x, multi=FALSE, skiplast=TRUE) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$as_points(multi, skiplast)
+		x@pnt <- x@pnt$as_points(multi, skiplast)
 		messages(x, "as.points")
 	}
 )
@@ -294,7 +294,7 @@ setMethod("as.points", signature(x="SpatRaster"),
 	function(x, values=TRUE, na.rm=TRUE, na.all=FALSE) {
 		p <- methods::new("SpatVector")
 		opt <- spatOptions()
-		p@ptr <- x@ptr$as_points(values, na.rm, na.all, opt)
+		p@pnt <- x@pnt$as_points(values, na.rm, na.all, opt)
 		x <- messages(x, "as.points")
 
 		if (values) {
@@ -307,7 +307,7 @@ setMethod("as.points", signature(x="SpatRaster"),
 # mode argument is ignored as mode=mode gave an error on R-devel
 setMethod("as.vector", signature(x="SpatExtent"),
 	function(x, mode="any") {
-		v <- x@ptr$vector
+		v <- x@pnt$vector
 		names(v) <- c("xmin", "xmax", "ymin", "ymax")
 		if (mode == "list") {
 			v <- as.list(v)
@@ -410,7 +410,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 # to sf from SpatVector
 # available in sf
 #.v2sf <- function(from) {
-#	txt <- 'sf::st_as_sf(as.data.frame(from, geom=TRUE), wkt="geometry", crs=from@ptr$get_crs("wkt"))'
+#	txt <- 'sf::st_as_sf(as.data.frame(from, geom=TRUE), wkt="geometry", crs=from@pnt$get_crs("wkt"))'
 #	eval(parse(text = txt))
 #}
 
@@ -429,7 +429,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 	#geom <- st_as_text(geom)
 	#v <- vect(geom, crs=crs)
 	v <- vect()
-	v@ptr <- v@ptr$from_hex(sf::rawToHex(sf::st_as_binary(geom)), crs)
+	v@pnt <- v@pnt$from_hex(sf::rawToHex(sf::st_as_binary(geom)), crs)
 	v <- messages(v, "SpatVector from sf")
 	if (ncol(from) > 1) {
 		from[[sfi]] <- NULL
@@ -446,7 +446,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 	#geom <- st_as_text(geom)
 	#v <- vect(geom, crs=crs)
 	v <- svc()
-	v@ptr <- v@ptr$from_hex_col(sf::rawToHex(sf::st_as_binary(geom)), crs)
+	v@pnt <- v@pnt$from_hex_col(sf::rawToHex(sf::st_as_binary(geom)), crs)
 	#if (ncol(from) > 1) {
 	#	from[[sfi]] <- NULL
 	#	values(v) <- as.data.frame(from)
@@ -482,7 +482,7 @@ setAs("sf", "SpatVector",
 
 .from_sfc <- function(from) {
 	v <- vect()
-	v@ptr <- v@ptr$from_hex(sf::rawToHex(sf::st_as_binary(from)), "")
+	v@pnt <- v@pnt$from_hex(sf::rawToHex(sf::st_as_binary(from)), "")
 	crs(v, warn=FALSE) <- attr(from, "crs")$wkt
 	v
 }

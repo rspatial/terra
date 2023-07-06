@@ -606,6 +606,11 @@ SpatRaster SpatRaster::weighted_mean(std::vector<double> w, bool narm, SpatOptio
 SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, double othervalue, bool round, int digits, SpatOptions &opt) {
 
 	SpatRaster out;
+	if (!hasValues()) {
+		out.setError("input has no values");
+		return out;
+	}
+
 	if (nlyr() > 1) {
 		out.setError("input may only have one layer");
 		return out;

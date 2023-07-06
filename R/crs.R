@@ -53,7 +53,7 @@ is.proj <- function(crs) {
 
 
 .proj4 <- function(x) {
-	x@ptr$get_crs("proj4")
+	x@pnt$get_crs("proj4")
 }
 
 .name_from_wkt <- function(wkt) {
@@ -63,11 +63,11 @@ is.proj <- function(crs) {
 
 .name_or_proj4 <- function(x) {
 	if (inherits(x, "SpatVectorProxy")) {
-		ptr <- x@ptr$v
+		ptr <- x@pnt$v
 	} else if (inherits(x, "Rcpp_SpatRaster")) {
 		ptr <- x	
 	} else {
-		ptr <- x@ptr
+		ptr <- x@pnt
 	}
 	wkt <- ptr$get_crs("wkt")
 	d <- .srs_describe(wkt)
@@ -111,15 +111,15 @@ is.proj <- function(crs) {
 
 .get_CRS <- function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
 	if (describe) {
-		d <- .srs_describe(x@ptr$get_crs("wkt"))
+		d <- .srs_describe(x@pnt$get_crs("wkt"))
 		if (proj) {
-			d$proj <- x@ptr$get_crs("proj4")
+			d$proj <- x@pnt$get_crs("proj4")
 		}
 		d
 	} else if (proj) {
-		x@ptr$get_crs("proj4")
+		x@pnt$get_crs("proj4")
 	} else {
-		r <- x@ptr$get_crs("wkt")
+		r <- x@pnt$get_crs("wkt")
 		if (parse) {
 			unlist(strsplit(r, "\n"))
 		} else {
@@ -199,8 +199,8 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 		if (warn && (crs(x) != "") && (value != "")) {
 			message("Assigning a new crs. Use 'project' to transform a SpatRaster to a new crs")
 		}
-		x@ptr <- x@ptr$deepcopy()
-		x@ptr$set_crs(value)
+		x@pnt <- x@pnt$deepcopy()
+		x@pnt$set_crs(value)
 		messages(x, "crs<-")
 	}
 )
@@ -208,7 +208,7 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 setMethod("set.crs", signature("SpatRaster"),
 	function(x, value) {
 		value <- .txtCRS(value)
-		x@ptr$set_crs(value)
+		x@pnt$set_crs(value)
 		messages(x, "set_crs")
 		invisible(TRUE)
 	}
@@ -218,7 +218,7 @@ setMethod("set.crs", signature("SpatRaster"),
 
 #setMethod("crs<-", signature("SpatRaster", "character"),
 #	function(x, ..., value) {
-#		x@ptr$set_crs(value[1])
+#		x@pnt$set_crs(value[1])
 #		messages(x, "crs<-")
 #	}
 #)
@@ -233,7 +233,7 @@ setMethod("crs", signature("SpatVector"),
 setMethod("crs", signature("SpatVectorProxy"),
 	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
 		v <- vect()
-		v@ptr <- x@ptr$v
+		v@pnt <- x@pnt$v
 		.get_CRS(v, proj=proj, describe=describe, parse=parse)
 	}
 )
@@ -266,8 +266,8 @@ setMethod("crs<-", signature("SpatVector", "ANY"),
 		if (warn && (crs(x) != "") && (value != "")) {
 			message("Assigning a new crs. Use 'project' to transform a SpatVector to a new crs")
 		}
-		x@ptr <- x@ptr$deepcopy()
-		x@ptr$set_crs(value)
+		x@pnt <- x@pnt$deepcopy()
+		x@pnt$set_crs(value)
 		messages(x, "crs<-")
 	}
 )
@@ -276,7 +276,7 @@ setMethod("crs<-", signature("SpatVector", "ANY"),
 setMethod("set.crs", signature("SpatVector"),
 	function(x, value) {
 		value <- .txtCRS(value)
-		x@ptr$set_crs(value)
+		x@pnt$set_crs(value)
 		messages(x, "set_crs")
 	}
 )
@@ -285,31 +285,31 @@ setMethod("set.crs", signature("SpatVector"),
 setMethod("is.lonlat", signature("SpatRaster"),
 	function(x, perhaps=FALSE, warn=TRUE, global=FALSE) {
 		if (perhaps) {
-			ok <- x@ptr$isLonLat()
+			ok <- x@pnt$isLonLat()
 			if (ok) {
 				messages(x, "is.lonlat")
 				if (global) {
-					return(x@ptr$isGlobalLonLat())
+					return(x@pnt$isGlobalLonLat())
 				} else {
 					return(ok)
 				}
 			} 
-			ok <- x@ptr$couldBeLonLat()
+			ok <- x@pnt$couldBeLonLat()
 			if (ok) {
 				messages(x, "is.lonlat")
 				if (global) {
-					ok <- x@ptr$isGlobalLonLat()
+					ok <- x@pnt$isGlobalLonLat()
 				}
 			}
 			if (ok && warn) {
 				warn("is.lonlat", "assuming lon/lat crs")
 			}
 		} else {
-			ok <- x@ptr$isLonLat()
+			ok <- x@pnt$isLonLat()
 			if (ok) {
 				messages(x, "is.lonlat")
 				if (global) {
-					ok <- x@ptr$isGlobalLonLat()
+					ok <- x@pnt$isGlobalLonLat()
 				}
 			} else if (crs(x) == "") {
 				ok <- NA
@@ -324,12 +324,12 @@ setMethod("is.lonlat", signature("SpatRaster"),
 setMethod("is.lonlat", signature("SpatVector"),
 	function(x, perhaps=FALSE, warn=TRUE) {
 		if (perhaps) {
-			ok <- x@ptr$isLonLat()
+			ok <- x@pnt$isLonLat()
 			if (ok) {
 				messages(x, "is.lonlat")
 				return(ok)
 			} 
-			ok <- x@ptr$couldBeLonLat()
+			ok <- x@pnt$couldBeLonLat()
 			if (ok) {
 				messages(x, "is.lonlat")
 			}
@@ -337,7 +337,7 @@ setMethod("is.lonlat", signature("SpatVector"),
 				warn("is.lonlat", "assuming lon/lat crs")
 			}
 		} else {
-			ok <- x@ptr$isLonLat()
+			ok <- x@pnt$isLonLat()
 			if (ok) {
 				messages(x, "is.lonlat")
 			} else if (crs(x) == "") {

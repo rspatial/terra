@@ -43,14 +43,14 @@ setMethod("dots", signature(x="SpatVector"),
 #	cols <- out$cols
 #	if (is.null(cols)) cols = rep("black", n)
 
-#	g <- lapply(x@ptr$linesList(), function(i) { names(i)=c("x", "y"); i } )
+#	g <- lapply(x@pnt$linesList(), function(i) { names(i)=c("x", "y"); i } )
 
 #	g <- geom(x, df=TRUE)
 #	g <- split(g, g[,1])
 #	g <- lapply(g, function(x) split(x[,3:4], x[,2]))
 #	n <- length(g)
 
-	g <- x@ptr$linesList()
+	g <- x@pnt$linesList()
 	lty <- rep_len(lty, n)
 	lwd <- rep_len(lwd, n)
 	for (i in 1:n) {
@@ -119,7 +119,7 @@ setMethod("dots", signature(x="SpatVector"),
 #				# g[[i]][[1]] <- a
 #			}
 
-	g <- x@ptr$polygonsList()
+	g <- x@pnt$polygonsList()
 	if (is.null(out$leg$density)) {
 		for (i in seq_along(g)) {
 			for (j in seq_along(g[[i]])) {
@@ -428,7 +428,7 @@ setMethod("dots", signature(x="SpatVector"),
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL,
 	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
-	density=NULL, angle=45, border="black", dig.lab=3, cex=1, clip=TRUE, leg_i=1, ...) {
+	density=NULL, angle=45, border="black", dig.lab=3, cex=1, clip=TRUE, leg_i=1, asp=NULL, ...) {
 
 	out <- list()
 	out$blank <- FALSE
@@ -513,11 +513,18 @@ setMethod("dots", signature(x="SpatVector"),
 	out$leg$border <- border
 	
 	
-	out$asp <- 1
-	out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
-	if (out$lonlat) {
-		out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
+	if (is.null(asp)) {
+		out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
+		if (out$lonlat) {
+			out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
+		} else {
+			out$asp <- 1
+		}
+	} else {
+		out$asp <- asp
+		out$lonlat <- FALSE
 	}
+	
 	out$breaks <- breaks
 	out$breakby <- breakby
 	out$background <- background
@@ -666,7 +673,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 		for (i in 1:length(y)) {
 			if (length(y) > 1) {
 				if (missing("main")) {
-					main <- names(x)
+					main <- y
 				} else {
 					main <- rep_len(main, length(y))
 				}

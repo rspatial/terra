@@ -3,10 +3,10 @@
 
 .create_options <- function() {
 	opt <- methods::new("SpatOptions")
-	opt@ptr <- SpatOptions$new()
+	opt@pnt <- SpatOptions$new()
 	# check=T does not exist in ancient R
 	tmpdir <- try(tempdir(check = TRUE), silent=TRUE)
-	opt@ptr$tempdir <- normalizePath(tempdir(), winslash="/")
+	opt@pnt$tempdir <- normalizePath(tempdir(), winslash="/")
 	.terra_environment$options <- opt
 	.terra_environment$devs <- NULL
 
@@ -78,7 +78,7 @@
 defaultOptions <- function() {
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
-	.terra_environment$options@ptr$deepcopy()
+	.terra_environment$options@pnt$deepcopy()
 }
 
 spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
@@ -88,7 +88,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
 
-	opt <- .terra_environment$options@ptr$deepcopy()
+	opt <- .terra_environment$options@pnt$deepcopy()
 	opt$pid <- Sys.getpid()
 	filename <- .fullFilename(filename, mustExist=TRUE)
 	if (!is.null(unlist(wopt))) {
@@ -159,7 +159,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 terraOptions <- function(..., print=TRUE) {
 	dots <- list(...)
 	if (is.null(.terra_environment$options)) .create_options()
-	opt <- .terra_environment$options@ptr
+	opt <- .terra_environment$options@pnt
 
 	nms <- names(dots)
 
@@ -202,6 +202,6 @@ terraOptions <- function(..., print=TRUE) {
 			warn("terraOptions", "memfrac > 0.9")
 		}
 	}
-	.terra_environment$options@ptr <- opt
+	.terra_environment$options@pnt <- opt
 }
 

@@ -7,9 +7,9 @@
 setMethod ("has.RGB" , "SpatRaster",
 	function(x, strict=TRUE) {
 		if (strict) {
-			x@ptr$rgbtype == "rgb"
+			x@pnt$rgbtype == "rgb"
 		} else {
-			x@ptr$rgbtype != ""
+			x@pnt$rgbtype != ""
 		}
 	}
 )
@@ -18,13 +18,13 @@ setMethod ("has.RGB" , "SpatRaster",
 setMethod("set.RGB", signature(x="SpatRaster"),
 	function(x, value=1:3, type="rgb") {
 		if (is.null(value[1]) || is.na(value[1]) || any(value < 1)) {
-			x@ptr$removeRGB()
+			x@pnt$removeRGB()
 		} else {
 			stopifnot(all(value %in% 1:nlyr(x)))
 			if (length(value) == 3) {
-				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, -99, type)
+				x@pnt$setRGB(value[1]-1, value[2]-1, value[3]-1, -99, type)
 			} else if (length(value) == 4) {
-				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, value[4]-1, type)
+				x@pnt$setRGB(value[1]-1, value[2]-1, value[3]-1, value[4]-1, type)
 			} else {
 				error("set.RGB", "value must have length 3 or 4")
 			}
@@ -36,7 +36,7 @@ setMethod("set.RGB", signature(x="SpatRaster"),
 
 setMethod("RGB<-", signature(x="SpatRaster"),
 	function(x, ..., type="rgb", value) {
-		x@ptr <- x@ptr$deepcopy()
+		x@pnt <- x@pnt$deepcopy()
 		set.RGB(x, value, type)
 		x
 	}
@@ -44,8 +44,8 @@ setMethod("RGB<-", signature(x="SpatRaster"),
 
 setMethod("RGB", signature(x="SpatRaster"),
 	function(x) {
-		if (x@ptr$rgb) {
-			x@ptr$getRGB() + 1
+		if (x@pnt$rgb) {
+			x@pnt$getRGB() + 1
 		} else {
 			return(NULL)
 		}
@@ -135,7 +135,7 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, NAzero=FALSE, filename=
 
 	if (grays) {
 		opt <- spatOptions(filename, overwrite, ...)
-		x@ptr <- x@ptr$rgb2col(0, 1, 2, opt)
+		x@pnt <- x@pnt$rgb2col(0, 1, 2, opt)
 		return(messages(x, "colorize"))
 	}
 
@@ -181,7 +181,7 @@ terra_col2rgb <- function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
 	if (is.null(wopt$names)) {
 		wopt$names <- nms
 	}
-	out <- subst(x, from=ct[,1], to=ct[,-1], raw=TRUE, filename="", overwrite=FALSE, wopt=wopt)
+	out <- subst(x, from=ct[,1], to=ct[,-1], raw=TRUE, filename=filename, overwrite=overwrite, wopt=wopt)
 	set.RGB(out, rgbidx)
 	out
 }
@@ -193,17 +193,17 @@ setMethod("colorize", signature(x="SpatRaster"),
 		to <- tolower(to)
 		if (to %in% c("hsi", "hsl", "hsv")) {
 			opt <- spatOptions(filename, overwrite, ...)
-			x@ptr <- x@ptr$rgb2hsx(to, opt)
+			x@pnt <- x@pnt$rgb2hsx(to, opt)
 		} else if (to == "rgb") {
 			if (nlyr(x) == 1) {
 				return(terra_col2rgb(x, alpha=alpha, filename=filename, overwrite=overwrite, ...))
 			} else {
 				opt <- spatOptions(filename, overwrite, ...)
-				x@ptr <- x@ptr$hsx2rgb(opt)
+				x@pnt <- x@pnt$hsx2rgb(opt)
 			}
 		} else if (to == "hsl") {
 			opt <- spatOptions(filename, overwrite, ...)
-			x@ptr <- x@ptr$hsx2rgb(to, opt)
+			x@pnt <- x@pnt$hsx2rgb(to, opt)
 		} else if (to == "col") {
 			return(rgb2col(x, stretch=stretch, grays=grays, NAzero=NAzero, filename=filename, overwrite=overwrite, ...))
 		}
