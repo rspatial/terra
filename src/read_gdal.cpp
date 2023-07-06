@@ -1899,11 +1899,9 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		} else if (yearmonths) {
 			step = "yearmonths";
 			int syear = getyear(origin);
-			Rcpp::Rcout << syear << std::endl;
 			for (size_t i=0; i<raw.size(); i++) {
 				long year = std::floor(raw[i] / 12.0);
 				int month = raw[i] - (12 * year) + 1;
-				Rcpp::Rcout << raw[i] << " " << year << " " << month << std::endl;
 				out.push_back(get_time(syear+year, month, 15, 0, 0, 0));
 			}
 		} else if (months) {
