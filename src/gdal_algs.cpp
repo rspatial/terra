@@ -20,6 +20,8 @@
 #include "gdal_alg.h"
 #include "ogrsf_frmts.h"
 
+#include "gdal_utils.h"  // for GDALWarp() in warper_by_util
+
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "file_utils.h"
@@ -605,7 +607,244 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 
 
-#endif
+SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
+
+	size_t ns = nsrc();
+	bool fixext = false;
+	for (size_t j=0; j<ns; j++) {
+		if (source[j].extset && (!source[j].memory)) {
+			fixext = true;
+			break;
+		}
+	}
+	if (fixext) {
+		SpatRaster r = *this;
+		for (size_t j=0; j<ns; j++) {
+			if (r.source[j].extset && (!r.source[j].memory)) {
+				SpatRaster tmp(source[j]);
+				//if (tmp.canProcessInMemory(opt)) {
+				//	tmp.readAll();
+				//} else {
+				tmp = tmp.writeTempRaster(opt);
+				r.source[j] = tmp.source[0]; 
+			}
+		}
+		return r.warper_by_util(x, crs, method, mask, align, resample, opt);
+	}
+	
+	
+	SpatRaster out = x.geometry(nlyr(), false, false);
+	if (!is_valid_warp_method(method)) {
+		out.setError("not a valid warp method");
+		return out;
+	}
+	std::string srccrs = getSRS("wkt");
+	if (resample) {
+		out.setSRS(srccrs);
+	}
+	
+	out.setNames(getNames());
+	if (method == "near") {
+		out.source[0].hasColors = hasColors();
+		out.source[0].cols = getColors();
+		out.source[0].hasCategories = hasCategories();
+		out.source[0].cats = getCategories();
+		out.rgb = rgb;
+		out.rgblyrs = rgblyrs;
+		out.rgbtype = rgbtype;
+	}
+	if (hasTime()) {
+		out.source[0].hasTime = true;
+		out.source[0].timestep = getTimeStep();
+		out.source[0].timezone = getTimeZone();
+		out.source[0].time = getTime();
+	}
+	
+	bool use_crs = !crs.empty();
+	if (use_crs) {
+		align = false;
+		resample = false;
+	} else if (!hasValues()) {
+		std::string fname = opt.get_filename();
+		if (!fname.empty()) {
+			out.addWarning("raster has no values, not writing to file");
+		}
+		return out;
+	}
+	if (align) {
+		crs = out.getSRS("wkt");
+	}
+	
+	if (!resample) {
+		if (srccrs.empty()) {
+			out.setError("input raster CRS not set");
+			return out;
+		}
+	}
+	
+	lrtrim(crs);
+	SpatOptions sopt(opt);
+	if (use_crs || align) {
+		GDALDatasetH hSrcDS;
+		SpatRaster g = geometry(1);
+		if (!g.open_gdal(hSrcDS, 0, false, sopt)) {
+			out.setError("cannot create dataset from source");
+			return out;
+		}
+		out.setSRS(crs);
+		if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
+			GDALClose( hSrcDS );
+			out.setError("cannot get output boundaries");
+			return out;
+		}
+		GDALClose( hSrcDS );
+	} else if (!resample) {
+		OGRSpatialReference source, target;
+		const char *pszDefFrom = srccrs.c_str();
+		OGRErr erro = source.SetFromUserInput(pszDefFrom);
+		if (erro != OGRERR_NONE) {
+			out.setError("input crs is not valid");
+			return out;
+		}
+		std::string targetcrs = out.getSRS("wkt");
+		const char *pszDefTo = targetcrs.c_str();
+		erro = target.SetFromUserInput(pszDefTo);
+		if (erro != OGRERR_NONE) {
+			out.setError("output crs is not valid");
+			return out;
+		}
+		OGRCoordinateTransformation *poCT;
+		poCT = OGRCreateCoordinateTransformation(&source, &target);
+		if( poCT == NULL )	{
+			out.setError( "Cannot do this transformation" );
+			return(out);
+		}
+		OCTDestroyCoordinateTransformation(poCT);
+	}
+	
+	if (align) {
+		SpatExtent e = out.getExtent();
+		e = x.align(e, "out");
+		out.setExtent(e, false, true, "");
+		std::vector<double> res = x.resolution();
+		out = out.setResolution(res[0], res[1]);
+	}
+	if (!hasValues()) {
+		return out;
+	}
+	
+	SpatOptions mopt;
+	if (mask) {
+		mopt = opt;
+		opt = SpatOptions(opt);
+	}
+	
+	opt.ncopies += 4;
+	if (!out.writeStart(opt, filenames())) {
+		return out;
+	}
+	
+	std::string errmsg;
+	SpatExtent eout = out.getExtent();
+	
+	
+	std::vector<bool> has_so = source[0].has_scale_offset;
+	std::vector<double> scale = source[0].scale;
+	std::vector<double> offset = source[0].offset;
+	for (size_t i=1; i<ns; i++) {
+		has_so.insert(has_so.end(), source[0].has_scale_offset.begin(), source[0].has_scale_offset.end());
+		scale.insert(scale.end(), source[0].scale.begin(), source[0].scale.end());
+		offset.insert(offset.end(), source[0].offset.begin(), source[0].offset.end());
+	}
+	
+	double halfy = out.yres() / 2;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		int bandstart = 0;
+		eout.ymax = out.yFromRow(out.bs.row[i]) + halfy;
+		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - halfy;
+		SpatRaster crop_out = out.crop(eout, "near", false, sopt);
+		GDALDatasetH hDstDS;
+		GDALDatasetH hWarpedDS;
+		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, has_so, scale, offset, sopt)) {
+			return crop_out;
+		}
+		
+		for (size_t j=0; j<ns; j++) {
+			GDALDatasetH hSrcDS;
+			if (!open_gdal(hSrcDS, j, false, sopt)) {
+				out.setError("cannot create dataset from source");
+				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
+				return out;
+			}
+			std::vector<unsigned> srcbands = source[j].layers;
+			std::vector<unsigned> dstbands(srcbands.size());
+			std::iota (dstbands.begin(), dstbands.end(), bandstart);
+			bandstart += dstbands.size();
+			
+			bool ok = true; 
+			if (srcbands.size() != dstbands.size()) {
+				errmsg = "number of source bands must match number of dest bands";
+				ok =  false;
+			}
+			int nbands = srcbands.size();
+			
+			GDALResampleAlg a;
+			if (!getAlgo(a, method)) {
+				ok = false; 
+				if ((method=="sum") || (method=="rms")) {
+					errmsg = method + " not available in your version of GDAL";
+				} else {
+					errmsg = "unknown resampling algorithm";
+				}
+			}
+			if (!ok) {
+				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
+				out.setError(errmsg);
+				return out;
+			}
+			GDALWarpAppOptions *psWarpAppOptions = GDALWarpAppOptionsNew(nullptr, nullptr);
+			GDALWarpAppOptionsSetProgress(psWarpAppOptions, NULL, NULL );
+			// assume we've validate method because of getAlgo() above
+			GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "-r", method.c_str()); 
+			GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "INIT_DEST", "NO_DATA"); 
+			GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "WRITE_FLUSH", "YES"); 
+			if (opt.threads) {
+				GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "NUM_THREADS", "ALL_CPUS"); 
+			}
+			//--------------------------------------------------------------------------
+			
+			hWarpedDS = GDALWarp("", hDstDS, 1 , &hSrcDS, psWarpAppOptions, 0);
+			GDALWarpAppOptionsFree(psWarpAppOptions); 
+			if( hSrcDS != NULL ) GDALClose( (GDALDatasetH) hSrcDS );
+			
+		}
+		
+		bool ok = crop_out.from_gdalMEM(hWarpedDS, false, true);
+		if( hWarpedDS != NULL ) GDALClose( (GDALDatasetH) hWarpedDS );
+		if (!ok) {
+			out.setError("cannot do this transformation (warp)");
+			return out;
+		}
+		std::vector<double> v = crop_out.getValues(-1, opt);
+		if (!out.writeBlock(v, i)) return out;
+	}
+	out.writeStop();
+	if (mask) {
+		SpatVector v = dense_extent(true, true);
+		v = v.project(out.getSRS("wkt"), true);
+		if (v.nrow() > 0) {
+			out = out.mask(v, false, NAN, true, mopt);
+		} else {
+			out.addWarning("masking failed");
+		}
+	}
+	return out;
+}
+
+
+
+
+#endif  // GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 2
 
 
 
