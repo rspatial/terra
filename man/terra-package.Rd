@@ -357,6 +357,8 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
   \code{\link{voronoi}} \tab Voronoi diagram \cr
   \code{\link{delaunay}} \tab Delaunay triangles\cr
   \code{\link{convHull}} \tab Compute the convex hull of a SpatVector \cr  
+  \code{\link{minRect}} \tab Compute the minimum minimal bounding rotated rectangle of a SpatVector \cr  
+  \code{\link{minCircle}} \tab Compute the minimal bounding circle of a SpatVector \cr
   \code{\link{fillHoles}}\tab Remove or extract holes from polygons\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}

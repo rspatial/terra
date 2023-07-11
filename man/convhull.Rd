@@ -10,11 +10,11 @@
 \alias{minCircle,SpatVector-method}
 
 \title{ 
-Convex hull, minimal rotated rectangle, and minimal bounding circle
+Convex hull, minimal bounding rotated rectangle, and minimal bounding circle
 }
 
 \description{
-Get the convex hull, the minimal rotated rectangle, or minimal bounding circle of a SpatVector
+Get the convex hull, the minimal bounding rotated rectangle, or minimal bounding circle of a SpatVector
 }
 
 \usage{
