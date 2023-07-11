@@ -1176,6 +1176,11 @@ setMethod("sort", signature(x="SpatRaster"),
 
 setMethod("sort", signature(x="SpatVector"),
 	function (x, v, decreasing=FALSE) {
+		if (is.logical(v)) {
+			tmp <- v
+			v <- decreasing 
+			decreasing <- tmp
+		}
 		if (length(v) > 1) {
 			v <- data.frame(x)[,v]
 			i <- do.call(order, lapply(v, function(i) i))

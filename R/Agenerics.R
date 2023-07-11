@@ -114,6 +114,8 @@ if (!isGeneric("delaunay")) {setGeneric("delaunay", function(x, ...) standardGen
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x, ...) standardGeneric("voronoi"))}
 if (!isGeneric("convHull")) {setGeneric("convHull", function(x, ...) standardGeneric("convHull"))}
 if (!isGeneric("minRect")) {setGeneric("minRect", function(x, ...) standardGeneric("minRect"))}
+if (!isGeneric("minCircle")) {setGeneric("minCircle", function(x, ...) standardGeneric("minCircle"))}
+
 #if (!isGeneric("which.related")) {setGeneric("which.related", function(x, y, ...) standardGeneric("which.related"))}
 if (!isGeneric("is.related")) {setGeneric("is.related", function(x, y, ...) standardGeneric("is.related"))}
 if (!isGeneric("relate")) {setGeneric("relate", function(x, y, ...) standardGeneric("relate"))}

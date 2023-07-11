@@ -930,6 +930,13 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 	GEOSGeometry* h;
 	if (htype == "convex") {
 		h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
+	} else if (htype == "circle") {
+	#ifndef GEOS380
+		out.setError("GEOS 3.8 required for bounding circle");
+		return out;
+	#else
+		h = GEOSMinimumBoundingCircle_r(hGEOSCtxt, g[0].get(), NULL, NULL);
+	#endif
 	} else {
 	#ifndef GEOS361
 		out.setError("GEOS 3.6.1 required for rotated rectangle");
@@ -938,6 +945,9 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 		h = GEOSMinimumRotatedRectangle_r(hGEOSCtxt, g[0].get());
 	#endif
 	}
+	
+	
+	
 	std::vector<GeomPtr> b(1);
 	b[0] = geos_ptr(h, hGEOSCtxt);
 	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);

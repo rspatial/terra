@@ -292,6 +292,13 @@ setMethod("minRect", signature(x="SpatVector"),
 	}
 )
 
+setMethod("minCircle", signature(x="SpatVector"),
+	function(x, by="") {
+		x@pnt <- x@pnt$hull("circle", by[1])
+		messages(x, "minCircle")
+	}
+)
+
 
 setMethod("disagg", signature(x="SpatVector"),
 	function(x, segments=FALSE) {
