@@ -731,9 +731,9 @@ prettyNumbs <- function(x, digits) {
 		out <- .plotit(out)
 	}
 	
-	if (hasWin) {
+	if (any(hasWin)) {
 		window(x) <- NULL
-		if (hadWin) {
+		if (any(hadWin)) {
 			window(x) <- oldWin
 		}
 	}
