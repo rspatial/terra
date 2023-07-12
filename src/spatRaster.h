@@ -268,6 +268,8 @@ class SpatRaster {
 		double ncell() { return nrow() * ncol(); }
 		double size() { return ncol() * nrow() * nlyr() ; }
 
+		std::vector<bool> is_rotated();
+
 		double xres();
 		double yres();
 		std::vector<double> origin();

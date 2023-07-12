@@ -125,6 +125,8 @@ if (!isGeneric("not.na")) {setGeneric("not.na", function(x, ...) standardGeneric
 
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
 if (!isGeneric("gaps")) {setGeneric("gaps", function(x, ...) standardGeneric("gaps"))}
+if (!isGeneric("is.rotated")) {setGeneric("is.rotated", function(x, ...) standardGeneric("is.rotated"))}
+
 if (!isGeneric("is.int")) {setGeneric("is.int", function(x) standardGeneric("is.int"))}
 if (!isGeneric("as.int")) {setGeneric("as.int", function(x, ...) standardGeneric("as.int"))}
 if (!isGeneric("is.bool")) {setGeneric("is.bool", function(x) standardGeneric("is.bool"))}

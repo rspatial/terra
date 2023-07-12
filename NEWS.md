@@ -14,7 +14,7 @@
 
 ## new
 `compareGeom` for list and SpatRasterCollection [#1207](https://github.com/rspatial/terra/issues/1207) by Sarah Endicott
-
+`is.rotated<SpatRaster>` method [#1229](https://github.com/rspatial/terra/issues/1229) by Andy Lyons
 
 
 # version 1.7-39

@@ -651,6 +651,8 @@ RCPP_MODULE(spat){
 		//.field_readonly("prj", &SpatRaster::prj)
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
 
+		.method("is_rotated", &SpatRaster::is_rotated)
+
 		.method("setWindow", &SpatRaster::setWindow, "")
 		.method("removeWindow", &SpatRaster::removeWindow, "")
 		.method("hasWindow", &SpatRaster::hasWindow, "")

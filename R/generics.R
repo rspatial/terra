@@ -3,6 +3,12 @@
 # Version 1.0
 # License GPL v3
 
+setMethod("is.rotated", signature(x="SpatRaster"),
+	function(x) {
+		x@pnt$is_rotated()
+	}
+)
+
 
 setMethod("rangeFill", signature(x="SpatRaster"),
 	function(x, limit, circular=FALSE, filename="", ...) {

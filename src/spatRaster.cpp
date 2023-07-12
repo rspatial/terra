@@ -906,6 +906,17 @@ double SpatRaster::yres() {
 }
 
 
+std::vector<bool> SpatRaster::is_rotated() {
+	std::vector<bool> b(source.size(), false);
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].rotated) {
+			b[i] = true;
+		}
+	}
+	return b;
+}
+
+
 bool SpatRaster::valid_sources(bool files, bool rotated) {
 	std::vector<std::string> ff;
 	for (size_t i=0; i<source.size(); i++) {
