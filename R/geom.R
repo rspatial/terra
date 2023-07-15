@@ -581,13 +581,15 @@ setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"),
 				if (erase) {
 					i <- p$id1
 					yi <- ye[p$id1,]
+					yi$idx <- p$id2
+					yi$idy <- NULL
 				} else {
 					i <- ye$idy[p$id1]
 					i <- match(i, y$idy)
 					yi <- y[i,]
+					yi$idx <- 0
+					yi$idx[i] <- p$id2[i]
 				}
-				yi$idx <- 0
-				yi$idx[i] <- p$id2
 				yi$idy <- NULL
 				x <- aggregate(rbind(x, yi), "idx", dissolve=dissolve, counts=FALSE)
 				y <- y[-i,]
@@ -617,7 +619,6 @@ setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"),
 		x
 	}
 )
-
 
 
 setMethod("split", signature(x="SpatVector", f="ANY"),
