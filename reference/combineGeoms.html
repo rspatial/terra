@@ -83,9 +83,9 @@ To append SpatVectors use `rbind` and see methods like intersect and union for "
 <dd><p>logical. Should remaining geometries be appended to the output? Not relevant if <code>distance=TRUE</code></p></dd>
 
   <dt>minover</dt>
-<dd><p>numeric</p></dd>
-</dl><p>The fraction of the geometry in codey that overlaps with a geometry in <code>x</code>. Below this threshold, geometries are not considered overlapping</p>
-<dl><dt>maxdist</dt>
+<dd><p>numeric. The fraction of the geometry in <code>y</code> that overlaps with a geometry in <code>x</code>. Below this threshold, geometries are not considered overlapping</p></dd>
+
+  <dt>maxdist</dt>
 <dd><p>numeric. Geometries further away from each other than this distance (in meters) will not be combined</p></dd>
 
   <dt>dissolve</dt>
