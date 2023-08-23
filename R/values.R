@@ -44,8 +44,8 @@ setMethod("hasValues", signature(x="SpatRaster"),
 	}
 	dd <- !(bb | ii | ff)
 	if (any(dd)) {
-		d = which(dd)
-		v[,d] = replace(v[,d], is.na(v[,d]), NA)
+		d <- which(dd)
+		v[,d] <- replace(v[,d], is.na(v[,d]), NA)
 	}
 	v
 }
