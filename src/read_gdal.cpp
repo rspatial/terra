@@ -59,7 +59,9 @@ void SpatRaster::gdalogrproj_init(std::string path) {
 	}
  #endif
  #ifdef PROJ_71
-	proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+	#ifndef __EMSCRIPTEN__
+		proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+	#endif
  #endif
 #endif
 
