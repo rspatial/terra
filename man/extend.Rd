@@ -51,6 +51,14 @@ e <- ext(r)
 e
 extend(e, 10)
 extend(e, c(10, -10, 0, 20))
+
+
+# add 10 columns / rows on all sides
+e + 10
+# double extent
+e * 2
+# increase extent by 25%
+e * 1.25
 }
 
 \keyword{spatial}
