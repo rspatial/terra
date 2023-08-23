@@ -149,6 +149,7 @@ bool SpatRaster::hasValues() {
 SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs) {
 
 	SpatRasterSource s;
+	rcl.resize(3, 1);
 	s.nrow=rcl[0];
 	s.ncol=rcl[1];
 	s.extent.xmin = ext[0];

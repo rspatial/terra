@@ -298,6 +298,9 @@ setMethod("rast", signature(x="SpatRasterDataset"),
 setMethod("rast", signature(x="array"),
 	function(x, crs="", extent=NULL) {
 		dims <- dim(x)
+		if (length(dims) < 3) {
+			error("rast,array", "cannot handle an array with less than 3 dimensions")
+		}
 		if (length(dims) > 3) {
 			if (length(dims) == 4) {
 				if (dims[4] == 1) {
