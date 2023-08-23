@@ -18,7 +18,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-42</span>
       </span>
     </div>
 
@@ -117,6 +117,17 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 <span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : -160, -110, 20, 70 (xmin, xmax, ymin, ymax)</span>
 <span class="r-in"><span><span class="fu">extend</span><span class="op">(</span><span class="va">e</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span>, <span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : -160, -110, 30, 80 (xmin, xmax, ymin, ymax)</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># add 10 columns / rows on all sides</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">+</span> <span class="fl">10</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : -160, -110, 20, 70 (xmin, xmax, ymin, ymax)</span>
+<span class="r-in"><span><span class="co"># double extent</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">*</span> <span class="fl">2</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : -165, -105, 15, 75 (xmin, xmax, ymin, ymax)</span>
+<span class="r-in"><span><span class="co"># increase extent by 25%</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">*</span> <span class="fl">1.25</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : -153.75, -116.25, 26.25, 63.75 (xmin, xmax, ymin, ymax)</span>
 </code></pre></div>
     </div>
   </div>
