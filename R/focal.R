@@ -132,11 +132,11 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 				}
 
 				if (checkNA) {
-				  if (nl > 1) {
-				    mv <- readValues(x[[j]], b$row[i], b$nrows[i])
-				  } else {
-				    mv <- readValues(x, b$row[i], b$nrows[i])
-				  }
+					if (nl > 1) {
+						mv <- readValues(x[[j]], b$row[i], b$nrows[i])
+					} else {
+						mv <- readValues(x, b$row[i], b$nrows[i])
+					}
 					
 					if (na.only) {
 						k <- !is.na(mv)
