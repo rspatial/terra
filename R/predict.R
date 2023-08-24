@@ -73,10 +73,12 @@ parfun <- function(cls, d, fun, model, ...) {
 		r <- as.matrix(r)
 	}
 	if (inherits(model, "gstat")) {
-		nr <- max(nrow(d), 5)
-		xy <- as.matrix(d[1:nr,1:2])
-		if (all(xy == r[1:nr, 1:2])) {
-			r <- r[,-c(1:2)]   # x, y
+		if (ncol(r) > 2) {
+			nr <- max(nrow(d), 5)
+			xy <- as.matrix(d[1:nr,1:2])
+			if (all(xy == r[1:nr, 1:2])) {
+				r <- r[,-c(1:2)]   # x, y
+			}
 		}
 	}
 	if (!is.null(index)) {
