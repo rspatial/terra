@@ -106,9 +106,10 @@
     <div id="details">
     <h2>Details</h2>
     <p><code>focal</code> 
-The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row with weights of zero.</p>
-<p>Window values are typically 0 or 1, or a value between 0 and 1 if you are using a rectangular area and/or the "sum" function. They can also be <code>NA</code>; these are ignored in the computation. That can be useful to compute, for example, the minimum or maximum value for a non-rectangular area.</p>
-<p>The "mean" function is a special case, as zero weights are ignored automatically.</p>
+The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row of <code>NA</code>'s to mask out values.</p>
+<p>Window values are typically 1 or <code>NA</code> to indicate whether a value is used or ignored in computations, respectively. <code>NA</code> values in <code>w</code> can be useful for creating non-rectangular (e.g. circular) windows.</p>
+<p>A weights matrix of numeric values can also be supplied to <code>w</code>. In the case of a weights matrix, cells with <code>NA</code> weights will be ignored, and the rest of the values in the focal window will be multiplied by the corresponding weight prior to `fun` being applied. Note, <code>na.rm</code> does not need to be <code>TRUE</code> if <code>w</code> contains <code>NA</code> values as these cells are ignored in computations.</p>
+<p>The "mean" function is a special case, where supplying weights to <code>w</code> will instead calculate a weighted mean.</p>
 <p>The "sum" function returns <code>NA</code> if all focal cells are <code>NA</code> and <code>na.rm=TRUE</code>. R would normally return a zero in these cases. See the difference between <code>focal(x, fun=sum, na.rm=TRUE)</code> and <code>focal(x, fun=\(i) sum(i, na.rm=TRUE))</code></p>
 
 <p>Example weight matrices</p>
