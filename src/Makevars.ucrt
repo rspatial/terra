@@ -7,13 +7,13 @@ PKG_LIBS =  \
 
 CXX_STD = CXX
 
-#all: clean winlibs
+all: clean winlibs
 
-#winlibs:
-#	cp -r "$(R_TOOLS_SOFT)/share/gdal" ../inst/
-#	cp -r "$(R_TOOLS_SOFT)/share/proj" ../inst/
+winlibs:
+	cp -r "$(R_TOOLS_SOFT)/share/gdal" ../inst/
+	cp -r "$(R_TOOLS_SOFT)/share/proj" ../inst/
 
-#clean:
-#	rm -f $(SHLIB) $(OBJECTS)
+clean:
+	rm -f $(SHLIB) $(OBJECTS)
 
-#.PHONY: all winlibs clean
+.PHONY: all winlibs clean
