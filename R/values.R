@@ -485,7 +485,9 @@ setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"),
 			hvC <- hasValues(current)
 			if (hvT && hvC) {
 				s <- spatSample(c(target, current), maxcell, "regular")
-				a <- all.equal(s[,1], s[,2], ...)
+				s1 <- unlist(s[,1:nlyr(target)], use.names = FALSE)
+				s2 <- unlist(s[,(nlyr(target)+1):(nlyr(target) +nlyr(current))], use.names = FALSE)
+				a <- all.equal(s1, s2, ...)
 			} else if (hvT || hvC) {
 				if (hvT) {
 					a <- "target has cell values, current does not"
