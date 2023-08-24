@@ -3194,3 +3194,27 @@ SpatVector SpatVector::clearance() {
 }
 
 
+bool SpatPart::is_CCW() {
+#ifndef GEOS370
+	return true;
+#else
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	GEOSCoordSequence *pseq;
+	size_t n = size();
+	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, 2);
+	for (size_t i = 0; i < n; i++) {
+		GEOSCoordSeq_setX_r(hGEOSCtxt, pseq, i, x[i]);
+		GEOSCoordSeq_setY_r(hGEOSCtxt, pseq, i, y[i]);
+	}
+	char is_ccw;
+	bool success = GEOSCoordSeq_isCCW_r(hGEOSCtxt, pseq, &is_ccw);
+	geos_finish(hGEOSCtxt);
+	if (success) {
+		Rcpp::Rcout << is_ccw << std::endl;
+		return is_ccw != 0;
+	} else {
+		return true;
+	}
+#endif
+}

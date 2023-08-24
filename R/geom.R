@@ -655,3 +655,12 @@ setMethod("split", signature(x="SpatVector", f="SpatVector"),
 		intersect(x, p)
 	}
 )
+
+
+setMethod("forceCCW", signature(x="SpatVector"),
+	function(x) {
+		x <- deepcopy(x)
+		x@pnt$make_CCW()
+		x
+	}
+)

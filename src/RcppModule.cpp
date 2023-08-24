@@ -582,6 +582,7 @@ RCPP_MODULE(spat){
 
 		.method("densify", &SpatVector::densify)
 		.method("round", &SpatVector::round)
+		.method("make_CCW", &SpatVector::make_CCW)
 	;
 
 
