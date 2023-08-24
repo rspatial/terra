@@ -17,7 +17,7 @@
 ## new
 `compareGeom` for list and SpatRasterCollection [#1207](https://github.com/rspatial/terra/issues/1207) by Sarah Endicott
 `is.rotated<SpatRaster>` method [#1229](https://github.com/rspatial/terra/issues/1229) by Andy Lyons
-
+`forceCCW<SpatVector>` method to force counter-clockwise orientation [#1249](https://github.com/rspatial/terra/issues/1249) by srfall.
 
 # version 1.7-39
 

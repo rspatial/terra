@@ -661,6 +661,6 @@ setMethod("forceCCW", signature(x="SpatVector"),
 	function(x) {
 		x <- deepcopy(x)
 		x@pnt$make_CCW()
-		x
+		messages(x)
 	}
 )

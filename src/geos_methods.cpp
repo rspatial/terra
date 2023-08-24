@@ -3218,3 +3218,30 @@ bool SpatPart::is_CCW() {
 	}
 #endif
 }
+
+
+
+void SpatVector::make_CCW() {
+	#ifndef GEOS370
+		setError("GEOS >= 3.7 needed for CCW");
+		return;
+	#else
+	size_t n = size();
+	if (n == 0) return;
+	if (geoms[0].gtype != polygons) return;
+	for (size_t i=0; i<n; i++) {
+		for (size_t j=0; j<geoms[i].parts.size(); j++) {
+			if (!geoms[i].parts[j].is_CCW()) {
+				std::reverse(geoms[i].parts[j].x.begin(), geoms[i].parts[j].x.end());
+				std::reverse(geoms[i].parts[j].y.begin(), geoms[i].parts[j].y.end());
+				for (size_t k=0; k<geoms[i].parts[j].nHoles(); k++) {
+					std::reverse(geoms[i].parts[j].holes[k].x.begin(), geoms[i].parts[j].holes[k].x.end());
+					std::reverse(geoms[i].parts[j].holes[k].y.begin(), geoms[i].parts[j].holes[k].y.end());
+				}
+			}
+		}
+	}
+	#endif
+}
+
+
