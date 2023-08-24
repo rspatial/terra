@@ -40,11 +40,13 @@ Calculate focal ("moving window") values for each cell.
 
 \details{
 \code{focal} 
-The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row with weights of zero.
+The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row of \code{NA}'s to mask out values.
 
-Window values are typically 0 or 1, or a value between 0 and 1 if you are using a rectangular area and/or the "sum" function. They can also be \code{NA}; these are ignored in the computation. That can be useful to compute, for example, the minimum or maximum value for a non-rectangular area.  
+Window values are typically 1 or \code{NA} to indicate whether a value is used or ignored in computations, respectively. \code{NA} values in \code{w} can be useful for creating non-rectangular (e.g. circular) windows. 
 
-The "mean" function is a special case, as zero weights are ignored automatically. 
+A weights matrix of numeric values can also be supplied to \code{w}. In the case of a weights matrix, cells with \code{NA} weights will be ignored, and the rest of the values in the focal window will be multiplied by the corresponding weight prior to `fun` being applied. Note, \code{na.rm} does not need to be \code{TRUE} if \code{w} contains \code{NA} values as these cells are ignored in computations. 
+
+The "mean" function is a special case, where supplying weights to \code{w} will instead calculate a weighted mean.
 
 The "sum" function returns \code{NA} if all focal cells are \code{NA} and \code{na.rm=TRUE}. R would normally return a zero in these cases. See the difference between \code{focal(x, fun=sum, na.rm=TRUE)} and \code{focal(x, fun=\(i) sum(i, na.rm=TRUE))}
 
