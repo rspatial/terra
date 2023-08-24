@@ -23,13 +23,13 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
-		if (!all(m %in% c(0, 1, NA))) {
-			if (isTRUE(list(...)$na.rm)) {
-				if (txtfun != "sum") {
+		#if (!all(m %in% c(0, 1, NA))) {
+			#if (isTRUE(list(...)$na.rm)) {
+			#	if (txtfun != "sum") {
 					# error("focal", 'with "na.rm=TRUE" and weights other than 0, 1, or NA, only fun="sum" is allowed')
-				}
-			}
-		}
+			#	}
+			#}
+		#}
 		w <- dim(w)
 	} else {
 		w <- rep_len(w, 2)
