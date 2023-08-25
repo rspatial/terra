@@ -10,7 +10,7 @@ f <- focal(r, t(m), na.rm=TRUE)
 e <- c(-2, -2, 2, -5, -2, 5, -8, -2, 8)
 expect_equal(e, as.vector(values(f)))
 
-expect_error(focal(r, m, fun=mean, na.rm=TRUE), pattern="[focal]")
+#expect_error(focal(r, m, fun=mean, na.rm=TRUE), pattern="[focal]")
 
 #e <- c(-4, -5, -6, -3, -3, -3, 4, 5, 6)
 #expect_equal(e, as.vector(values(f)))

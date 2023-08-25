@@ -2,7 +2,10 @@
 
 \alias{compareGeom}
 \alias{compareGeom,SpatRaster,SpatRaster-method}
+\alias{compareGeom,SpatRaster,SpatRasterCollection-method}
+
 \alias{compareGeom,SpatRaster,list-method}
+\alias{compareGeom,SpatRasterCollection,missing-method}
 
 \alias{compareGeom,SpatVector,SpatVector-method}
 \alias{compareGeom,SpatVector,missing-method}
