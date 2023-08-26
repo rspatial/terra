@@ -1158,7 +1158,9 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 	if (vt == "points" || vt == "lines") {
 		for (size_t i=0; i<d.size(); i++) {
 			if (d[i] <= 0) {
-				d[i] = -d[i];
+				out.setError("a negative buffer is only meaningful with polygons");
+				return out;
+				//d[i] = -d[i];
 			}
 		}
 	}
