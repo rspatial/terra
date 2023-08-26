@@ -4,22 +4,26 @@
 
 \alias{vrt}
 \alias{vrt,character-method}
-
+\alias{vrt_tiles} 
 
 \title{Virtual Raster Dataset}
 
 \description{ 
 Create a Virtual Raster Dataset (VRT) from a collection of file-based raster datasets (tiles). See 
 \href{https://gdal.org/programs/gdalbuildvrt.html}{gdalbuildvrt} for details.
+
+\code{vrt_tiles} returns the filenames of the tiles in a VRT.
 }
 
 \usage{
 \S4method{vrt}{character}(x, filename="", options=NULL, overwrite=FALSE, set_names=FALSE, return_filename=FALSE)
+
+vrt_tiles(filename)
 }
 
 \arguments{
   \item{x}{character. Filenames of raster "tiles". See \code{\link{tiles}}}
-  \item{filename}{character. Output VRT filename}  
+  \item{filename}{character. VRT filename}  
   \item{options}{character. All arguments as separate vector elements. Options as for \href{https://gdal.org/programs/gdalbuildvrt.html}{gdalbuildvrt}}
   \item{overwrite}{logical. Should \code{filename} be overwritten if it exists?}
   \item{set_names}{logical. Add the layer names of the first tile to the vrt?}

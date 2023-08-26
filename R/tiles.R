@@ -68,3 +68,28 @@ setMethod("vrt", signature(x="character"),
 	}
 )
 
+
+vrt_tiles <- function(x) {
+	if (inherits(x, "SpatRaster")) {
+		x <- sources(x)
+	}
+	if (!inherits(x, "character")) {
+		error("vrt_sources", "x must be a filename (character) or SpatRaster)")
+	}
+	x <- grep(".vrt$", x, ignore.case =TRUE, value=TRUE)
+	if (length(x) == 0) {
+		error("vrt_sources", 'no filenames with extension ".vrt"')	
+	}
+	tiles <- lapply(x, function(f) {
+			v <- readLines(f)
+			v <- v[grep("SourceFilename", v)]
+			s <- strsplit(v, "\"")
+			rel <- sapply(s, \(x) x[2])
+			ff <- strsplit(sapply(s, \(x)x[3]), "<")
+			ff <- gsub(">", "", sapply(ff, \(x) x[1]))
+			ff[rel=="1"] <- file.path(dirname(f), ff[rel=="1"])
+			ff
+		})
+	unlist(tiles)
+}
+
