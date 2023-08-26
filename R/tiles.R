@@ -45,14 +45,26 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 
 
 setMethod("vrt", signature(x="character"),
-	function(x, filename="", options=NULL, overwrite=FALSE) {
+	function(x, filename="", options=NULL, overwrite=FALSE, set_names=FALSE, return_filename=FALSE) {
 		opt <- spatOptions(filename, overwrite=overwrite)
 		r <- rast()
 		if (is.null(options)) {
 			options=""[0]
 		} 
-		r@pnt <- r@pnt$make_vrt(x, options, opt)
+		f <- r@pnt$make_vrt(x, options, opt)
 		messages(r, "vrt")
+		if (set_names) {
+			v <- readLines(f)
+			nms <- names(rast(x[1]))
+			i <- grep("band=", v)
+			if (length(i) == length(nms)) {
+				nms <- paste0("<Description>", nms, "</Description>")
+				v[i] <- paste(v[i], nms)
+				writeLines(v, f)
+			}
+		}
+		if (return_filename) return(f)
+		rast(f)
 	}
 )
 

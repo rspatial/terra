@@ -311,10 +311,9 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 1
 
-SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<std::string> options, SpatOptions &opt) {
-	SpatRaster out;
-	out.setError( "GDAL version >= 2.1 required for vrt");
-	return out;
+std::string SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<std::string> options, SpatOptions &opt) {
+	setError( "GDAL version >= 2.1 required for vrt");
+	return("");
 }
 
 
@@ -328,15 +327,14 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 
 # include "gdal_utils.h" // requires >= 2.1
 
-SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<std::string> options, SpatOptions &opt) {
+std::string SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<std::string> options, SpatOptions &opt) {
 
-	SpatRaster out;
 	std::string outfile = opt.get_filename();
 	if (outfile.empty()) {
 		outfile = tempFile(opt.get_tempdir(), opt.pid, ".vrt");
 	} else if (file_exists(outfile) && (!opt.get_overwrite())) {
-		out.setError("output file exists. You can use 'overwrite=TRUE' to overwrite it");
-		return(out);
+		setError("output file exists. You can use 'overwrite=TRUE' to overwrite it");
+		return("");
 	}
 
 /*
@@ -377,9 +375,9 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<
 	std::vector <char *> vops = string_to_charpnt(options);
 	GDALBuildVRTOptions* vrtops = GDALBuildVRTOptionsNew(vops.data(), NULL);
 	if (vrtops == NULL) {
-		out.setError("options error");
+		setError("options error");
 		CSLDestroy( names );
-		return(out);
+		return("");
 	}
 	int pbUsageError;
 //	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), tiles.size(), (GDALDatasetH *) tiles.data(), nullptr, vrtops, &pbUsageError);
@@ -391,15 +389,11 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<
 
 	//for (size_t i= 0; i<tiles.size(); i++) GDALClose(tiles[i]);
 	if(ds == NULL )  {
-		out.setError("cannot create vrt. Error #"+ std::to_string(pbUsageError));
-		return out;
+		setError("cannot create vrt. Error #"+ std::to_string(pbUsageError));
+		return("");
 	}
 	GDALClose(ds);
-	if (!out.constructFromFile(outfile, {-1}, {""}, {}, {})) {
-		out.setError("cannot open created vrt");
-		return out;
-	}
-	return out;
+	return(outfile);
 }
 
 
