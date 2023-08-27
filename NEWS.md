@@ -2,23 +2,28 @@
 
 ## bug fixes
 
-`plot<SpatVector>` used the wrong main label in some cases [#1210](https://github.com/rspatial/terra/issues/1210) by Márcia Barbosa
-`plotRGB` failed with an "ext=" argument [#1228](https://github.com/rspatial/terra/issues/1228) by Dave Edge
-`rast<array>` failed badly when the array had less than three dimensions. [#1254](https://github.com/rspatial/terra/issues/1254) by andreimirt.
-`all.equal` for a SpatRaster with multiple layers [#1236](https://github.com/rspatial/terra/issues/1236) by Sarah Endicott
-`zonal(wide=FALSE)` could give wrong results if the zonal SpatRaster had "layer" as layername. [#1251](https://github.com/rspatial/terra/issues/1251) by Jeff Hanson
+- `plot<SpatVector>` used the wrong main label in some cases [#1210](https://github.com/rspatial/terra/issues/1210) by Márcia Barbosa
+- `plotRGB` failed with an "ext=" argument [#1228](https://github.com/rspatial/terra/issues/1228) by Dave Edge
+- `rast<array>` failed badly when the array had less than three dimensions. [#1254](https://github.com/rspatial/terra/issues/1254) by andreimirt.
+- `all.equal` for a SpatRaster with multiple layers [#1236](https://github.com/rspatial/terra/issues/1236) by Sarah Endicott
+- `zonal(wide=FALSE)` could give wrong results if the zonal SpatRaster had "layer" as layername. [#1251](https://github.com/rspatial/terra/issues/1251) by Jeff Hanson
+- `panel` now support argument "range" [#141](https://github.com/rspatial/terra/issues/1241) by Jakub Nowosad
+
 
 ## enhancements
 
-`wrap<SpatRaster>` now stores color tables [#1215](https://github.com/rspatial/terra/issues/1215) by Patrick Brown
-`global` now has a "maxcell" argument [#1213](https://github.com/rspatial/terra/issues/1213) by Alex Ilich
-`layerCor` with fun='pearson' now returns output with the layer names [#1206](https://github.com/rspatial/terra/issues/1206)
+- `wrap<SpatRaster>` now stores color tables [#1215](https://github.com/rspatial/terra/issues/1215) by Patrick Brown
+- `global` now has a "maxcell" argument [#1213](https://github.com/rspatial/terra/issues/1213) by Alex Ilich
+- `layerCor` with fun='pearson' now returns output with the layer names [#1206](https://github.com/rspatial/terra/issues/1206)
+- `vrt` now has argument "set_names" [#1244](https://github.com/rspatial/terra/issues/1244) by sam-a-levy
+- `vrt` now has argument "return_filename" [#1258](https://github.com/rspatial/terra/issues/1258) by Krzysztof Dyba
 
 
 ## new
-`compareGeom` for list and SpatRasterCollection [#1207](https://github.com/rspatial/terra/issues/1207) by Sarah Endicott
-`is.rotated<SpatRaster>` method [#1229](https://github.com/rspatial/terra/issues/1229) by Andy Lyons
-`forceCCW<SpatVector>` method to force counter-clockwise orientation [#1249](https://github.com/rspatial/terra/issues/1249) by srfall.
+- `compareGeom` for list and SpatRasterCollection [#1207](https://github.com/rspatial/terra/issues/1207) by Sarah Endicott
+- `is.rotated<SpatRaster>` method [#1229](https://github.com/rspatial/terra/issues/1229) by Andy Lyons
+- `forceCCW<SpatVector>` method to force counter-clockwise orientation [#1249](https://github.com/rspatial/terra/issues/1249) by srfall.
+- `vrt_tiles` returns the filenames of the tiles in a vrt file [#1261](https://github.com/rspatial/terra/issues/1261) by Derek Friend
 
 
 # version 1.7-39
