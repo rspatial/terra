@@ -478,7 +478,7 @@ function(x, y, ...) {
 
 
 
-extractAlong <- function(x, y, ID=TRUE, cells=FALSE) { 
+extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE) { 
 
 	stopifnot(inherits(x, "SpatRaster"))
 	if (inherits(y, "sf")) {
@@ -495,9 +495,13 @@ extractAlong <- function(x, y, ID=TRUE, cells=FALSE) {
 	res <- vector(mode = "list", length = nlns)
 
 	if (spbb[1,1] > rsbb[1,2] | spbb[1,2] < rsbb[1,1] | spbb[2,1] > rsbb[2,2] | spbb[2,2] < rsbb[2,1]) {
-		res <- data.frame(matrix(ncol=nlyr(x)+2, nrow=0))
-		colnames(res) <- c("ID", "cell", names(x))
+		res <- data.frame(matrix(ncol=nlyr(x)+4, nrow=0))
+		colnames(res) <- c("ID", "cell", "x", "y", names(x))
 		if (!cells) res$cell <- NULL
+		if (!xy) {
+			res$x <- NULL
+			res$y <- NULL
+		}
 		if (!ID) res$ID <- NULL
 		return(res)
 	}
@@ -518,8 +522,8 @@ extractAlong <- function(x, y, ID=TRUE, cells=FALSE) {
 					lns <- vect(ppp, "lines")
 					rc <- crop(rr, ext(lns) + addres)
 					rc <- rasterize(lns, rc, touches=TRUE)
-					xy <- crds(rc)
-					v <- cbind(row=rowFromY(rr, xy[,2]), col=colFromX(rr, xy[,1]))
+					cxy <- crds(rc)
+					v <- cbind(row=rowFromY(rr, cxy[,2]), col=colFromX(rr, cxy[,1]))
 					#up or down?
 					updown <- c(1,-1)[(ppp[1,2] < ppp[2,2]) + 1]
 					rightleft <- c(-1,1)[(ppp[1,1] < ppp[2,1]) + 1]
@@ -537,9 +541,19 @@ extractAlong <- function(x, y, ID=TRUE, cells=FALSE) {
 	
 	res <- do.call(rbind, res)
 	if (is.null(res)) {
-		res <- data.frame(matrix(ncol=nlyr(x)+2, nrow=0))
-	} 
-	colnames(res) <- c("ID", "cell", names(x))
+		if (xy) {
+			res <- data.frame(matrix(ncol=nlyr(x)+4, nrow=0))		
+			colnames(res) <- c("ID", "cell", "x", "y", names(x))
+		} else {
+			res <- data.frame(matrix(ncol=nlyr(x)+2, nrow=0))
+			colnames(res) <- c("ID", "cell", names(x))
+		}
+	} else {
+		colnames(res) <- c("ID", "cell", names(x))
+		if (xy) {
+			res <- data.frame(res[,1:2], xyFromCell(x, res$cell), res[, -c(1:2), drop=FALSE])
+		}
+	}
 	if (!cells) res$cell <- NULL
 	if (!ID) res$ID <- NULL
 	res
