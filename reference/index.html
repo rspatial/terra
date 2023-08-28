@@ -203,9 +203,9 @@
         </td>
         <td><p>Query by clicking on a map</p></td>
       </tr><tr><td>
-          <p><code><a href="coerce.html">as.vector(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="coerce.html">as.matrix(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="coerce.html">as.array(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
+          <p><code><a href="coerce.html">as.vector(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="coerce.html">as.matrix(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="coerce.html">as.array(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="coerce.html">as.vector(<i>&lt;SpatExtent&gt;</i>)</a></code> <code><a href="coerce.html">as.matrix(<i>&lt;SpatExtent&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Coercion of a SpatRaster to a vector, matrix or array</p></td>
+        <td><p>Coercion to vector, matrix or array</p></td>
       </tr><tr><td>
           <p><code><a href="collapse.html">tighten(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="collapse.html">tighten(<i>&lt;SpatRasterDataset&gt;</i>)</a></code> </p>
         </td>
@@ -338,6 +338,10 @@
           <p><code><a href="extract.html">extract(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="extract.html">extract(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatExtent&gt;</i>)</a></code> <code><a href="extract.html">extract(<i>&lt;SpatRaster&gt;</i>,<i>&lt;matrix&gt;</i>)</a></code> <code><a href="extract.html">extract(<i>&lt;SpatRaster&gt;</i>,<i>&lt;numeric&gt;</i>)</a></code> <code><a href="extract.html">extract(<i>&lt;SpatVector&gt;</i>,<i>&lt;SpatVector&gt;</i>)</a></code> </p>
         </td>
         <td><p>Extract values from a SpatRaster</p></td>
+      </tr><tr><td>
+          <p><code><a href="extractAlong.html">extractAlong()</a></code> </p>
+        </td>
+        <td><p>extract values along lines</p></td>
       </tr><tr><td>
           <p><code><a href="factors.html">levels(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">`levels&lt;-`(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">cats(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">categories(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">droplevels(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">addCats(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
@@ -931,9 +935,13 @@
         </td>
         <td><p>Voronoi diagram and Delaunay triangles</p></td>
       </tr><tr><td>
-          <p><code><a href="vrt.html">vrt(<i>&lt;character&gt;</i>)</a></code> <code><a href="vrt.html">vrt_tiles()</a></code> </p>
+          <p><code><a href="vrt.html">vrt(<i>&lt;character&gt;</i>)</a></code> </p>
         </td>
         <td><p>Virtual Raster Dataset</p></td>
+      </tr><tr><td>
+          <p><code><a href="vrt_tiles.html">vrt_tiles()</a></code> </p>
+        </td>
+        <td><p>filenames of VRT tiles</p></td>
       </tr><tr><td>
           <p><code><a href="weighted.mean.html">weighted.mean(<i>&lt;SpatRaster&gt;</i>,<i>&lt;numeric&gt;</i>)</a></code> <code><a href="weighted.mean.html">weighted.mean(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>

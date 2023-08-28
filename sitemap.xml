@@ -235,6 +235,9 @@
     <loc>/reference/extract.html</loc>
   </url>
   <url>
+    <loc>/reference/extractAlong.html</loc>
+  </url>
+  <url>
     <loc>/reference/factors.html</loc>
   </url>
   <url>
@@ -683,6 +686,9 @@
   </url>
   <url>
     <loc>/reference/vrt.html</loc>
+  </url>
+  <url>
+    <loc>/reference/vrt_tiles.html</loc>
   </url>
   <url>
     <loc>/reference/weighted.mean.html</loc>
