@@ -481,7 +481,11 @@ function(x, y, ...) {
 extractAlong <- function(x, y) { 
 
 	stopifnot(inherits(x, "SpatRaster"))
-	stopifnot(inherits(y, "SpatVector"))
+	if (inherits(y, "sf")) {
+		y <- vect(y)
+	} else {
+		stopifnot(inherits(y, "SpatVector"))
+	}
 	stopifnot(geomtype(y) == "lines")
 	
 	spbb <- as.matrix(ext(y))
@@ -504,12 +508,12 @@ extractAlong <- function(x, y) {
 		nparts <- max(yp$part)
 		vv <- NULL
 		for (j in 1:nparts) {
-			pp <- yp[yp$part==j, c("x", "y"), ]
+			pp <- as.matrix(yp[yp$part==j, c("x", "y"), ])
 			for (k in 1:(nrow(pp)-1)) {
 				ppp <- pp[k:(k+1), ]
-				spbb <- t(as.matrix(ppp))
+				spbb <- t(ppp)
 				if (! (spbb[1,1] > rsbb[1,2] | spbb[1,2] < rsbb[1,1] | spbb[2,1] > rsbb[2,2] | spbb[2,2] < rsbb[2,1]) ) {
-					lns <- vect(spbb, "lines")
+					lns <- vect(ppp, "lines")
 					rc <- crop(rr, ext(lns) + addres)
 					rc <- rasterize(lns, rc, touches=TRUE)
 					xy <- crds(rc)
