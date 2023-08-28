@@ -353,6 +353,17 @@ as.matrix.SpatRaster <- function(x, wide=FALSE, ...) {
 setMethod("as.matrix", signature(x="SpatRaster"), as.matrix.SpatRaster)
 
 
+
+
+as.matrix.SpatExtent <- function(x, ...) {
+	v <- matrix(as.vector(x), ncol=2, byrow=TRUE)
+	colnames(v) <- c("min", "max")
+	v
+}
+setMethod("as.matrix", signature(x="SpatExtent"), as.matrix.SpatExtent)
+
+
+
 as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=NA, ...) {
 
 	d <- NULL

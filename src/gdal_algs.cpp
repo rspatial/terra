@@ -764,7 +764,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - halfy;
 		SpatRaster crop_out = out.crop(eout, "near", false, sopt);
 		GDALDatasetH hDstDS;
-		GDALDatasetH hWarpedDS;
+		GDALDatasetH hWarpedDS = NULL;
 		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, has_so, scale, offset, sopt)) {
 			return crop_out;
 		}
@@ -786,7 +786,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 				errmsg = "number of source bands must match number of dest bands";
 				ok =  false;
 			}
-			int nbands = srcbands.size();
+//			int nbands = srcbands.size();
 			
 			GDALResampleAlg a;
 			if (!getAlgo(a, method)) {
