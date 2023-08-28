@@ -478,7 +478,7 @@ function(x, y, ...) {
 
 
 
-extractAlong <- function(x, y) { 
+extractAlong <- function(x, y, ID=TRUE, cells=FALSE) { 
 
 	stopifnot(inherits(x, "SpatRaster"))
 	if (inherits(y, "sf")) {
@@ -495,13 +495,15 @@ extractAlong <- function(x, y) {
 	res <- vector(mode = "list", length = nlns)
 
 	if (spbb[1,1] > rsbb[1,2] | spbb[1,2] < rsbb[1,1] | spbb[2,1] > rsbb[2,2] | spbb[2,2] < rsbb[2,1]) {
-		res <- matrix(ncol=nlyr(x)+2, nrow=0)
+		res <- data.frame(matrix(ncol=nlyr(x)+2, nrow=0))
 		colnames(res) <- c("ID", "cell", names(x))
+		if (!cells) res$cell <- NULL
+		if (!ID) res$ID <- NULL
 		return(res)
 	}
 	
 	rr <- rast(x)
-	g <- data.frame(geom(y)	)
+	g <- data.frame(geom(y))
 	
 	for (i in 1:nlns) {
 		yp <- g[g$geom == i, ]
@@ -535,9 +537,11 @@ extractAlong <- function(x, y) {
 	
 	res <- do.call(rbind, res)
 	if (is.null(res)) {
-		res <- matrix(ncol=nlyr(x)+2, nrow=0)
+		res <- data.frame(matrix(ncol=nlyr(x)+2, nrow=0))
 	} 
 	colnames(res) <- c("ID", "cell", names(x))
+	if (!cells) res$cell <- NULL
+	if (!ID) res$ID <- NULL
 	res
 }
 
