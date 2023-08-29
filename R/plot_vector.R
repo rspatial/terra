@@ -486,7 +486,7 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 	
 	out$main <- main
-	if (is.null(out$main) || any(is.na(out$main))) out$main <- ""
+	if ((!is.expression(main)) && (is.null(out$main) || any(is.na(out$main)))) out$main <- ""
 	out$cex.main  <- cex.main
 	out$font.main <- font.main
 	out$col.main  <- col.main
