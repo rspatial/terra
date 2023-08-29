@@ -13,7 +13,7 @@ Show multiple maps that share a single legend.
 
 \usage{
 \S4method{panel}{SpatRaster}(x, main, loc.main="topleft", nc, nr, maxnl=16, 
-	maxcell=500000, box=FALSE, pax=list(), plg=list(), ...)
+	maxcell=500000, box=FALSE, pax=list(), plg=list(), range=NULL, ...)
 }
 
 \arguments{
@@ -27,6 +27,7 @@ Show multiple maps that share a single legend.
   \item{box}{logical. Should a box be drawn around the map?}
   \item{plg}{see \code{\link{plot}}}
   \item{pax}{see \code{\link{plot}}}
+  \item{range}{numeric. minimum and maximum values to be used for the continuous legend }  
   \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and additional graphical arguments}  
 }
 

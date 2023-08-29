@@ -1,7 +1,7 @@
 
 setMethod("panel", signature(x="SpatRaster"),
 	function(x, main, loc.main="topleft", nc, nr, maxnl=16, maxcell=500000, 
-		box=FALSE, pax=list(), plg=list(), ...)  {
+		box=FALSE, pax=list(), plg=list(), range=NULL, ...)  {
 
 		dots <- list(...)
 		if (!is.null(dots$type)) {
@@ -67,13 +67,15 @@ setMethod("panel", signature(x="SpatRaster"),
 		bottom <- c(0,1)[b]
 
 		if (!categorical) {
-			if (all(hasMinMax(x))) {
-				rng <- range(minmax(x, FALSE))
-			} else {
-				x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
-				rng <- range(minmax(x, TRUE))
+			if (is.null(range)) {
+				if (all(hasMinMax(x))) {
+					range <- range(minmax(x, FALSE))
+				} else {
+					x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+					range <- range(minmax(x, TRUE))
+				}
 			}
-			if (diff(rng) > 0) {
+			if (diff(range) > 0) {
 				ptype <- "continuous"
 			} else {
 				ptype <- "classes"
@@ -90,7 +92,7 @@ setMethod("panel", signature(x="SpatRaster"),
 				plot(y, 1, main=main[i], mar=mar, legend=legend[i], pax=pax, box=box, 
 					loc.main=loc.main, plg=plg, type="classes", ...)
 			} else {
-				plot(x, i, main=main[i], mar=mar, legend=legend[i], range=rng, pax=pax, box=box, 
+				plot(x, i, main=main[i], mar=mar, legend=legend[i], range=range, pax=pax, box=box, 
 					loc.main=loc.main, plg=plg, type=ptype, ...)
 			}
 		}

@@ -474,3 +474,89 @@ function(x, y, ...) {
 	lapply(x, function(r) extract(r, y, ...))
 }
 )
+
+
+
+
+extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE) { 
+
+	stopifnot(inherits(x, "SpatRaster"))
+	if (inherits(y, "sf")) {
+		y <- vect(y)
+	} else {
+		stopifnot(inherits(y, "SpatVector"))
+	}
+	stopifnot(geomtype(y) == "lines")
+	
+	spbb <- as.matrix(ext(y))
+	rsbb <- as.matrix(ext(x))
+	addres <- 2 * max(res(x))
+	nlns <- nrow(y)
+	res <- vector(mode = "list", length = nlns)
+
+	if (spbb[1,1] > rsbb[1,2] | spbb[1,2] < rsbb[1,1] | spbb[2,1] > rsbb[2,2] | spbb[2,2] < rsbb[2,1]) {
+		res <- data.frame(matrix(ncol=nlyr(x)+4, nrow=0))
+		colnames(res) <- c("ID", "cell", "x", "y", names(x))
+		if (!cells) res$cell <- NULL
+		if (!xy) {
+			res$x <- NULL
+			res$y <- NULL
+		}
+		if (!ID) res$ID <- NULL
+		return(res)
+	}
+	
+	rr <- rast(x)
+	g <- data.frame(geom(y))
+	
+	for (i in 1:nlns) {
+		yp <- g[g$geom == i, ]
+		nparts <- max(yp$part)
+		vv <- NULL
+		for (j in 1:nparts) {
+			pp <- as.matrix(yp[yp$part==j, c("x", "y"), ])
+			for (k in 1:(nrow(pp)-1)) {
+				ppp <- pp[k:(k+1), ]
+				spbb <- t(ppp)
+				if (! (spbb[1,1] > rsbb[1,2] | spbb[1,2] < rsbb[1,1] | spbb[2,1] > rsbb[2,2] | spbb[2,2] < rsbb[2,1]) ) {
+					lns <- vect(ppp, "lines")
+					rc <- crop(rr, ext(lns) + addres)
+					rc <- rasterize(lns, rc, touches=TRUE)
+					cxy <- crds(rc)
+					v <- cbind(row=rowFromY(rr, cxy[,2]), col=colFromX(rr, cxy[,1]))
+					#up or down?
+					updown <- c(1,-1)[(ppp[1,2] < ppp[2,2]) + 1]
+					rightleft <- c(-1,1)[(ppp[1,1] < ppp[2,1]) + 1]
+
+					v <- v[order(updown*v[,1], rightleft*v[,2]), ]
+					vv <- rbind(vv, v)
+				}
+			} 
+		}
+		if (!is.null(vv)) {
+			cell <- cellFromRowCol(rr, vv[,1], vv[,2])
+			res[[i]] <- data.frame(i, cell, extract(x, cell))
+		}
+	}
+	
+	res <- do.call(rbind, res)
+	if (is.null(res)) {
+		if (xy) {
+			res <- data.frame(matrix(ncol=nlyr(x)+4, nrow=0))		
+			colnames(res) <- c("ID", "cell", "x", "y", names(x))
+		} else {
+			res <- data.frame(matrix(ncol=nlyr(x)+2, nrow=0))
+			colnames(res) <- c("ID", "cell", names(x))
+		}
+	} else {
+		colnames(res) <- c("ID", "cell", names(x))
+		if (xy) {
+			res <- data.frame(res[,1:2], xyFromCell(x, res$cell), res[, -c(1:2), drop=FALSE])
+		}
+	}
+	if (!cells) res$cell <- NULL
+	if (!ID) res$ID <- NULL
+	res
+}
+
+

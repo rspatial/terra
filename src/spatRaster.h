@@ -492,7 +492,7 @@ class SpatRaster {
 		//bool writeValues2(std::vector<std::vector<double>> &vals, size_t startrow, size_t nrows);
 		bool writeStop();
 		bool writeHDR(std::string filename);
-		SpatRaster make_vrt(std::vector<std::string> filenames, std::vector<std::string> options, SpatOptions &opt);
+		std::string make_vrt(std::vector<std::string> filenames, std::vector<std::string> options, SpatOptions &opt);
 		bool write_aux_json(std::string filename);
 
 		//bool writeStartGDAL(std::string filename, std::string driver, std::string datatype, bool overwrite, SpatOptions &opt);
