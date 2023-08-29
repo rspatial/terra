@@ -59,7 +59,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
 \item{crs}{character. The coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see \code{\link{crs}}). See \code{\link{crs}}}
 \item{proxy}{logical. If \code{TRUE} a SpatVectorProxy is returned}
-\item{what}{character indicating what to read. Either \code{""} for geometries and attributes, \code{geoms} to only read the geometries, \code{attributes} to only read the attributes (that are returned as a data.frame)}
+\item{what}{character indicating what to read. Either \code{""} for geometries and attributes, or \code{"geoms"} to only read the geometries, \code{"attributes"} to only read the attributes (that are returned as a data.frame)}
 \item{geom}{character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)}
 \item{keepgeom}{logical. If \code{TRUE} the geom variable(s) is (are) also included in the attributes}
 }
@@ -80,7 +80,6 @@ v
 ## subsetting (large) files
 ## with attribute query 
 v <- vect(f, query="SELECT NAME_1, NAME_2, ID_2 FROM lux WHERE ID_2 < 4")
-v
 
 ## with an extent
 e <- ext(5.9, 6.3, 49.9, 50) 

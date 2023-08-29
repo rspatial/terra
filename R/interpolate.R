@@ -26,7 +26,16 @@ setMethod("interpolate", signature(object="SpatRaster"),
 			xy <- cbind(xy, d)
 		}
 		r <- .runModel(model, fun, xy, 1, const, (na.rm & hv), index, cores=NULL, ...)
-		nl <- ncol(r)
+		rdim <- dim(r)
+		if (!is.null(rdim)) {
+			if (rdim[1] == 1) {
+				nl <- rdim[1]
+			} else {
+				nl <- rdim[2]
+			}
+		} else {
+			nl <- 1
+		}
 		out <- rast(object, nlyrs=nl)
 		cn <- colnames(r)
 		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
@@ -61,8 +70,7 @@ setMethod("interpolate", signature(object="SpatRaster"),
 			v <- .runModel(model, fun, xy, nl, const, (na.rm & hv), index, cores=cores, ...)
 			writeValues(out, v, b$row[i], b$nrows[i])
 		}
-		out <- writeStop(out)
-		return(out)
+		writeStop(out)
 	}
 )
 

@@ -22,6 +22,29 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+/*
+#if defined __has_include
+#	if __has_include (<filesystem>)
+# 		include <filesystem>
+		namespace filesyst = std::filesystem;
+#	else
+#		include <experimental/filesystem>
+		namespace filesyst = std::experimental::filesystem;
+#	endif
+#elif defined __GNUC__
+#	if __GNUC__ < 8
+#		include <experimental/filesystem>
+		namespace filesyst = std::experimental::filesystem;
+#	else 
+# 		include <filesystem>
+		namespace filesyst = std::filesystem;	
+#	endif
+#else 
+#	include <filesystem>
+    namespace filesyst = std::filesystem;
+#endif
+*/
+
 bool write_text(std::string filename, std::vector<std::string> s) {
 	std::ofstream f;
 	f.open(filename);
@@ -111,9 +134,14 @@ bool file_exists(const std::string& name) {
 
 
 bool path_exists(std::string path) {
+
+/*
+	filesyst::path filepath = path;
+	return filesyst::exists(filepath);
+*/
 	struct stat info;
-	stat(path.c_str(), &info );
-	if(info.st_mode & S_IFDIR) {
+	stat(path.c_str(), &info);
+	if (info.st_mode & S_IFDIR) {
 		return true;
 	}
 	return false;
@@ -191,6 +219,7 @@ bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> o
 	return true;
 }
 
+
 bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg) {
 
 	if (!differentFilenames(srcnames, filenames, msg)) {
@@ -218,6 +247,7 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 				return false;
 			}
 		} else if (!canWrite(filenames[i])) {
+			if (filenames[i].substr(0, 4) == "/vsi") continue; 
 			std::string path = get_path(filenames[i]);
 			if (!path_exists(path)) {
 				msg = "path does not exist";

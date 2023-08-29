@@ -428,7 +428,7 @@ setMethod("dots", signature(x="SpatVector"),
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL,
 	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
-	density=NULL, angle=45, border="black", dig.lab=3, cex=1, clip=TRUE, leg_i=1, ...) {
+	density=NULL, angle=45, border="black", dig.lab=3, cex=1, clip=TRUE, leg_i=1, asp=NULL, ...) {
 
 	out <- list()
 	out$blank <- FALSE
@@ -513,11 +513,18 @@ setMethod("dots", signature(x="SpatVector"),
 	out$leg$border <- border
 	
 	
-	out$asp <- 1
-	out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
-	if (out$lonlat) {
-		out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
+	if (is.null(asp)) {
+		out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
+		if (out$lonlat) {
+			out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
+		} else {
+			out$asp <- 1
+		}
+	} else {
+		out$asp <- asp
+		out$lonlat <- FALSE
 	}
+	
 	out$breaks <- breaks
 	out$breakby <- breakby
 	out$background <- background
@@ -635,7 +642,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 setMethod("plot", signature(x="SpatVector", y="character"),
-	function(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=!add, axes=!add,
+	function(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=TRUE, axes=!add,
 	main, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
 	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, 
 	alpha=NULL, box=axes, clip=TRUE, ...) {
@@ -666,7 +673,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 		for (i in 1:length(y)) {
 			if (length(y) > 1) {
 				if (missing("main")) {
-					main <- names(x)
+					main <- y
 				} else {
 					main <- rep_len(main, length(y))
 				}

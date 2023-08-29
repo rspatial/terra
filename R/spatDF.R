@@ -52,11 +52,11 @@
 	d <- data.frame(d, check.names=check.names, stringsAsFactors=stringsAsFactors, ...)
 	if (ncol(d) == 0) return(d)
 
-	#s <- which(sapply(d, function(i) inherits(i, "character")))
-	#for (i in s) {
-	##	d[[i]][d[[i]]=="NA"] <- NA
-	#	Encoding(d[[i]]) <- "UTF-8"
-	#}
+	s <- which(sapply(d, function(i) inherits(i, "character")))
+	for (i in s) {
+		d[[i]][d[[i]]=="NA"] <- NA
+		Encoding(d[[i]]) <- "UTF-8"
+	}
 	#ints <- which(x$itype == 1)
 	#for (i in ints) d[[i]] <- suppressWarnings(as.integer(d[[i]]))
 	#bools <- which(x$itype == 3)

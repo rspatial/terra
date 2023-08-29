@@ -331,13 +331,13 @@ void removeVatJson(std::string filename) {
 bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string> &srcnames) {
 
 	std::string filename = opt.get_filename();
+	
 	if (filename.empty()) {
 		setError("empty filename");
 		return(false);
-	} else {
-		// make sure filename won't be used again
-		opt.set_filenames({""});
-	}
+	} 
+	// assure filename won't be used again
+	opt.set_filenames({""});
 
 	std::string driver = opt.get_filetype();
 	getGDALdriver(filename, driver);
@@ -523,11 +523,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	CSLDestroy( papszOptions );
 	if (poDS == NULL) {
-		if (!filepath_exists(filename)) {
-			setError("failed writing "+ driver + " file. Path does not exist:\n   " + filename);
-		} else {
+		//if (!filepath_exists(filename)) {
+		//	setError("failed writing "+ driver + " file. Path does not exist:\n   " + filename);
+		//} else {
 			setError("failed writing "+ driver + " file");
-		}
+		//}
 		GDALClose( (GDALDatasetH) poDS );
 		return false;
 	}

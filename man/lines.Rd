@@ -64,7 +64,7 @@ These methods also work for a small(!) SpatRaster. Only cells that are not NA in
   \item{lwd}{numeric, line-width. See \code{\link{par}}}
   \item{lty}{positive integer, line type. See \code{\link{par}}}
   \item{arrows}{logical. If \code{TRUE} and \code{y} is a SpatVector, arrows are drawn intead of lines. See \code{?\link{arrows}} for additional arguments}
-  \item{mx}{postive number. If the number of cells of SpatRaster \code{x} is higher, the method will fail with an error message}
+  \item{mx}{positive number. If the number of cells of SpatRaster \code{x} is higher, the method will fail with an error message}
   \item{dissolve}{logical. Should boundaries between cells with the same value be removed?} 
   \item{...}{additional graphical arguments such as \code{lwd}, \code{cex} and \code{pch}}  
 }

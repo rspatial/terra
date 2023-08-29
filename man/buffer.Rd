@@ -8,7 +8,7 @@
 \title{Create a buffer around vector geometries or raster patches}
 
 \description{
-Calculate a buffer around all cells that are not \code{NA} in a SpatRaster, or around the geometries of a SpatVector)
+Calculate a buffer around all cells that are not \code{NA} in a SpatRaster, or around the geometries of a SpatVector.
 
 SpatRaster cells inside the buffer distance get a value of 1.
  

@@ -28,6 +28,11 @@ Identify cells that are adjacent to a set of raster cells. Or identify adjacent 
   \item{symmetrical}{logical. If \code{TRUE} and \code{pairs=TRUE}, an adjacent pair is only included once. For example, if polygon 1 is adjacent to polygon 3, the implied adjacency between 3 and 1 is not reported}
 }
 
+\note{
+When using global lon/lat rasters, adjacent cells at the other side of the date-line are included.
+}
+
+
 \seealso{\code{\link{relate}}, \code{\link{nearby}}}
 
 \value{

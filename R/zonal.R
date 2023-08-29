@@ -63,7 +63,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			} else {
 				sdf <- x@pnt$zonal(z@pnt, grast@pnt, txtfun, na.rm, opt)
 			}
-			messages(sdf, "zonal")
+			sdf <- messages(sdf, "zonal")
 			out <- .getSpatDF(sdf)
 			nz <- 1
 			if (group) {
@@ -151,8 +151,10 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 		} else if (nz == 1){
 			nls <- as.character(1:nlyr(x))
 			colnames(out)[-1] <- nls
+			if (colnames(out)[1] == "layer") colnames(out)[1] <- "zone"
 			out <- stats::reshape(out, direction="long", varying=nls, timevar="layer",v.names="value")
 			out <- out[, c(2,1,3)]
+			rownames(out) <- NULL
 		}
 		out
 	}
@@ -258,7 +260,7 @@ setMethod("zonal", signature(x="SpatVector", z="SpatVector"),
 
 
 setMethod("global", signature(x="SpatRaster"),
-	function(x, fun="mean", weights=NULL, ...)  {
+	function(x, fun="mean", weights=NULL, maxcell=Inf, ...)  {
 
 		nms <- names(x)
 		nms <- make.unique(nms)
@@ -301,6 +303,11 @@ setMethod("global", signature(x="SpatRaster"),
 
 		nl <- nlyr(x)
 		res <- list()
+		if (is.finite(maxcell)) {
+			maxcell <- round(maxcell)
+			if (maxcell < 1) error("global", "maxcell should be positive")
+			x <- spatSample(x, maxcell, "regular", as.raster=TRUE)
+		}
 		for (i in 1:nl) {
 			res[[i]] <- fun(values(x[[i]]), ...)
 		}

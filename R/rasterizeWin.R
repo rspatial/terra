@@ -330,7 +330,7 @@ setMethod("interpNear", signature(x="SpatRaster", y="SpatVector"),
 
 
 setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
-	function(x, y, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...) {
+	function(x, y, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=TRUE, fill=NA, filename="", ...) {
 
 		if (ncol(y) != 3) {
 			error("interpIDW", "expecting a matrix with three columns")
@@ -355,7 +355,7 @@ setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
 
 
 setMethod("interpIDW", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...) {
+	function(x, y, field, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=TRUE, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
 			error("interpIDW", "SpatVector y must have a point geometry")
 		}

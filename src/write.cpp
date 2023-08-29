@@ -268,10 +268,10 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 
 	size_t nv = nrows * ncol() * nlyr();
 	if (vals.size() != nv) {
-		if (nv > vals.size()) {
-			setError("incorrect number of values (too many) for writing");
+		if (vals.size() > nv) {
+			setError("too many values for writing: " + std::to_string(vals.size()) + " > " + std::to_string(nv));
 		} else {
-			setError("incorrect number of values (too few) for writing");
+			setError("too few values for writing: " + std::to_string(vals.size()) + " < " + std::to_string(nv));
 		}
 		return false;
 	}

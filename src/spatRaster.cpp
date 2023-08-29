@@ -126,6 +126,17 @@ SpatRaster SpatRaster::dropSource() {
 }
 */
 
+
+SpatRaster SpatRaster::subsetSource(size_t snr) {
+	if (snr >= source.size()) {
+		SpatRaster out;
+		out.setError("invalid source number");
+		return out;
+	}
+	SpatRaster out(source[snr]);
+	return out;
+}
+
 bool SpatRaster::hasValues() {
 //	if (source.size() == 0) {
 //		return false;
@@ -138,6 +149,7 @@ bool SpatRaster::hasValues() {
 SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs) {
 
 	SpatRasterSource s;
+	rcl.resize(3, 1);
 	s.nrow=rcl[0];
 	s.ncol=rcl[1];
 	s.extent.xmin = ext[0];
@@ -895,6 +907,17 @@ double SpatRaster::yres() {
 }
 
 
+std::vector<bool> SpatRaster::is_rotated() {
+	std::vector<bool> b(source.size(), false);
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].rotated) {
+			b[i] = true;
+		}
+	}
+	return b;
+}
+
+
 bool SpatRaster::valid_sources(bool files, bool rotated) {
 	std::vector<std::string> ff;
 	for (size_t i=0; i<source.size(); i++) {
@@ -1462,9 +1485,11 @@ std::vector<SpatDataFrame> SpatRaster::getColors() {
 
 bool SpatRaster::setColors(size_t layer, SpatDataFrame cols) {
 	if (cols.ncol() < 4 || cols.ncol() > 5) {
+		setError("n columns should be 4 or 5");
 		return false;
 	}
 	if (layer >= nlyr()) {
+		setError("layer > nlyr");
 		return false;
 	}
 	if (cols.ncol() == 4) {
@@ -1696,6 +1721,27 @@ std::vector<int_64> SpatRaster::rowFromY(const std::vector<double> &y) {
 int_64 SpatRaster::rowFromY(double y) {
 	std::vector<double> Y = {y};
 	return rowFromY(Y)[0];
+}
+
+
+void SpatRaster::xyFromCell( std::vector<std::vector<double>> &xy ) {
+	
+	SpatExtent extent = getExtent();
+	double xmin = extent.xmin;
+	double ymax = extent.ymax;
+	double yr = yres();
+	double xr = xres();
+	size_t nr = nrow();
+	size_t nc = ncol();
+
+	xy[0].reserve(ncell()+2); 
+	xy[1].reserve(ncell()+2); 
+	for (size_t i = 0; i<nr; i++) {
+		for (size_t j = 0; j<nc; j++) {
+			xy[0].push_back( xmin + (j + 0.5) * xr );
+			xy[1].push_back( ymax - (i + 0.5) * yr );
+		}
+	}
 }
 
 
@@ -2132,6 +2178,63 @@ std::vector<std::vector<double>> SpatRaster::as_points_value(const double& targe
 	return xyFromCell(cells);
 }
 
+
+
+std::vector<std::vector<double>> SpatRaster::coordinates(bool narm, bool nall, SpatOptions &opt) {
+
+    std::vector<std::vector<double>> xy(2);
+
+	if ( !(narm) || (!hasValues()) ) {
+        xyFromCell(xy);
+		return xy;
+	}
+
+	BlockSize bs = getBlockSize(opt);
+
+	if (!readStart()) {
+		return(xy);
+	}
+	size_t nc = ncol();
+	unsigned nl = nlyr();
+	std::vector<double> v;
+	for (size_t i = 0; i < bs.n; i++) {
+		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
+        size_t off1 = (bs.row[i] * nc);
+ 		size_t vnc = bs.nrows[i] * nc;
+		for (size_t j=0; j<vnc; j++) {
+			if (nall) {
+				bool allna = true;
+				size_t off2 = 0;
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					if (!std::isnan(v[off2+j])) {
+						allna = false;
+						continue;
+					}
+					off2 += vnc;
+				}
+				if (allna) continue;
+			} else {
+				bool foundna = false;
+				size_t off2 = 0;
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					if (std::isnan(v[off2+j])) {
+						foundna = true;
+						continue;
+					}
+					off2 += vnc;
+				}
+				if (foundna) continue;
+			}
+			std::vector<std::vector<double>> xyc = xyFromCell( off1+j );
+			xy[0].push_back(xyc[0][0]);
+			xy[1].push_back(xyc[1][0]);
+		}
+	}
+	readStop();
+	return(xy);
+}
+
+
 std::vector<std::vector<double>> SpatRaster::cells_notna(SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out(2);
@@ -2386,7 +2489,13 @@ bool SpatRaster::setRGB(int r, int g, int b, int alpha, std::string type) {
 		size_t mnlyr =  vmin( channels, false );;
 		if (mnlyr >= 0) {
 			rgblyrs = channels;
-			rgbtype = type; // check validity
+			std::vector<std::string> f = {"rgb", "hsv", "hsi", "hsl"};
+			std::transform(type.begin(), type.end(), type.begin(), ::tolower);
+			if (std::find(f.begin(), f.end(), type) == f.end()) {
+				addWarning("color type must be one of: 'rgb', 'hsv', 'hsi', 'hsl'");
+				type = "rgb";
+			}
+			rgbtype = type; 
 			rgb = true;
 		} else {
 			rgb = false;

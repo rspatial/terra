@@ -85,6 +85,9 @@ setMethod("vect", signature(x="character"),
 		if (is.null(filter)) {
 			filter <- SpatVector$new()
 		} else {
+			if (!inherits(filter, "SpatVector")) {
+				error("vect", "'filter' must be a SpatVector")			
+			}
 			if (proxy) {
 				error("vect", "you cannot use 'filter' when proxy=TRUE")
 			}
@@ -432,7 +435,7 @@ setMethod("vect", signature(x="list"),
 
 
 setMethod("query", signature(x="SpatVectorProxy"),
-	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL) {
+	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL, sql=NULL, what="") {
 		f <- x@pnt$v$source
 		slayer <- x@pnt$v$layer
 		#1058
@@ -463,31 +466,36 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			}
 		}
 
-		qy <- ""
-		if (!is.null(where)) {
-			qy <- paste("SELECT", vars, "FROM", layer, "WHERE", where[1])
-		}
+		if (!is.null(sql)) {
+			qy <- as.character(sql)
+		
+		} else {
+			qy <- ""
+			if (!is.null(where)) {
+				qy <- paste("SELECT", vars, "FROM", layer, "WHERE", where[1])
+			}
 
-		nr <- nrow(x)
-		start <- start-1
-		if (start > 0) {
-			if (qy == "") {
-				qy <- paste("SELECT", vars, "FROM", layer)
+			nr <- nrow(x)
+			start <- start-1
+			if (start > 0) {
+				if (qy == "") {
+					qy <- paste("SELECT", vars, "FROM", layer)
+				}
+				if (n >= (nr-start)) {
+					qy <- paste(qy, "OFFSET", start)
+				} else {
+					n <- min(n, nr-start)
+					qy <- paste(qy, layer, "LIMIT", n, "OFFSET", start)
+				}
+			} else if (n < nr) {
+				if (qy == "") {
+					qy <- paste("SELECT", vars, "FROM", layer)
+				}
+				n <- min(n, nr)
+				qy <- paste(qy, "LIMIT", n)
 			}
-			if (n >= (nr-start)) {
-				qy <- paste(qy, "OFFSET", start)
-			} else {
-				n <- min(n, nr-start)
-				qy <- paste(qy, layer, "LIMIT", n, "OFFSET", start)
-			}
-		} else if (n < nr) {
-			if (qy == "") {
-				qy <- paste("SELECT", vars, "FROM", layer)
-			}
-			n <- min(n, nr)
-			qy <- paste(qy, "LIMIT", n)
 		}
-
+		
 		if (qy != "") {
 			if (x@pnt$v$read_query != "") {
 				error("query", "A query was used to create 'x'; you can only subset it with extent or filter")
@@ -496,7 +504,11 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			layer <- slayer
 		}
 
-		vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE)
+		p <- vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE, what=what)
+		if (what == "attributes") {
+			p <- values(p)
+		}
+		p
 	}
 )
 

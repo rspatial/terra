@@ -34,6 +34,7 @@ Conversion of a SpatRaster, SpatVector or SpatExtent to a SpatVector of polygons
 \item{na.all}{logical. If \code{TRUE} cells are only ignored if \code{na.rm=TRUE} and their value is \code{NA} for \bold{all} layers instead of for \code{any} layer}
 \item{digits}{integer. The number of digits for rounding (if \code{round=TRUE}}
 \item{crs}{character. The coordinate reference system (see \code{\link{crs}})}
+\item{...}{additional arguments. For backward compatibility. Will be removed in the future}
 }
 
 \value{

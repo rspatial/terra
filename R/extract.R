@@ -259,20 +259,16 @@ do_fun <- function(x, e, fun, ...) {
 	e <- aggregate(e[,-1,drop=FALSE], e[,1,drop=FALSE], fun, ...)
 	m <- sapply(e, NCOL)
 	if (any(m > 1)) {
-		cn <- names(x)
-		e <- do.call(cbind, as.list(e))
-		skip <- (length(cn) - nlyr(x))
-		nms <- colnames(e)
-		snms <- nms[(skip+1):length(nms)]
-		mr <- max(m)
-		if (!all(snms=="")) {
-			snms <- paste0(rep(names(x), each=mr), ".", snms)
-		} else {
-			snms <- paste0(rep(names(x), each=mr), ".", rep(1:mr))
+		cn <- names(e)
+		e  <- do.call(cbind, as.list(e))
+		i <- rep(1, length(cn))
+		i[m>1] <- m[m>1]
+		cn <- rep(cn, i)
+		cn <- make.names(cn, TRUE)
+		if (length(cn) == ncol(e)) {
+			colnames(e) <- cn
 		}
-		snms <- c(cn[1:skip], snms)
-		colnames(e) <- snms
-		e <- data.frame(e)
+		#e <- data.frame(e)
 	}
 	e
 }

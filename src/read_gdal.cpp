@@ -59,7 +59,9 @@ void SpatRaster::gdalogrproj_init(std::string path) {
 	}
  #endif
  #ifdef PROJ_71
-	proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+	#ifndef __EMSCRIPTEN__
+		proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+	#endif
  #endif
 #endif
 
@@ -1899,11 +1901,9 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		} else if (yearmonths) {
 			step = "yearmonths";
 			int syear = getyear(origin);
-			Rcpp::Rcout << syear << std::endl;
 			for (size_t i=0; i<raw.size(); i++) {
 				long year = std::floor(raw[i] / 12.0);
 				int month = raw[i] - (12 * year) + 1;
-				Rcpp::Rcout << raw[i] << " " << year << " " << month << std::endl;
 				out.push_back(get_time(syear+year, month, 15, 0, 0, 0));
 			}
 		} else if (months) {

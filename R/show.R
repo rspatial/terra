@@ -44,7 +44,7 @@ printDF <- function(x, n=6, first=FALSE) {
 	cls <- gsub("character", "chr", cls)
 	cls <- gsub("factor", "fact", cls)
 	cls <- paste0("<", cls, ">")
-	cls <- data.frame(rbind(class=cls))
+	cls <- data.frame(rbind(class=cls), stringsAsFactors=FALSE)
 	names(cls) <- NULL
 
 	nms <- colnames(x)
@@ -64,7 +64,7 @@ printDF <- function(x, n=6, first=FALSE) {
 			}
 		}
 	}
-	x <- data.frame(lapply(x, as.character), check.names=FALSE)
+	x <- data.frame(lapply(x, as.character), check.names=FALSE, stringsAsFactors=FALSE)
 	x <- rbind(x[1,,drop=FALSE], x)
 	x[1,] <- cls
 	if (nrow(x) < d[1]) {
@@ -126,23 +126,27 @@ setMethod ("show" , "SpatVectorCollection",
 		if (n > 15) {
 			nn <- 15
 		}
-		for (i in 1:nn) {
-			v <- object[i]
-			if (i==1) {
-				cat(" geometry    : ", geomtype(v), " (", nrow(v) , ")\n", sep="")
-			} else {
-				cat("               ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+		if (n > 0) {
+			for (i in 1:nn) {
+				v <- object[i]
+				if (i==1) {
+					cat(" geometry    : ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+				} else {
+					cat("               ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+				}
 			}
+			if (n > nn) {
+				cat("               ", "   and ", n-nn, "more\n", sep="")
+			}
+			crs <- .name_or_proj4(object[1])
+			if (crs != "") cat(" crs (first) :", crs,	 "\n")
+			nms <- names(object)
+			if (length(nms) > 10) {
+				nms <- c(nms[1:9], "...")
+			}
+			nms <- paste(nms, collapse=", ")
+			cat(" names       :", nms, "\n")
 		}
-		if (n > nn) {
-			cat("               ", "   and ", n-nn, "more\n", sep="")
-		}
-		nms <- names(object)
-		if (length(nms) > 10) {
-			nms <- c(nms[1:9], "...")
-		}
-		nms <- paste(nms, collapse=", ")
-		cat(" names       :", nms, "\n")
 	}
 )
 
@@ -184,6 +188,7 @@ setMethod ("show" , "SpatVectorProxy",
 		} else {
 			cat(" source      : ", win_basename(object@pnt$v$source), "\n", sep="")
 		}
+		cat(" layer       :", object@pnt$v$layer, "\n")
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
 		dd <- get.data.frame(object)
 		printDF(dd, 0, TRUE)

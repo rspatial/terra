@@ -42,7 +42,7 @@ It is possible to set your own default options in "etc/.Rprofile.site" of your R
 
 \code{options(terra_default=list(tempdir="d:/temp", memfrac=.4))}
 
-But that may not be a good practise. It is clearer to set your favorite options at the beginning of each script.
+But that may not be a good practice. It is clearer to set your favorite options at the beginning of each script.
 }
 
 \value{

@@ -302,13 +302,8 @@ prettyNumbs <- function(x, digits) {
 	    }
 	  }
 	  
-	  levlab <- data.frame(
-	    id = idv[match(out$leg$legend, oll)],
-	    lab = out$leg$legend,
-	    stringsAsFactors = FALSE
-	  )
-	  
-	  leglevs <- na.omit(unique(levlab[,2]))
+	  levlab <- data.frame(id=idv[match(out$leg$legend, oll)], lab=out$leg$legend, stringsAsFactors=FALSE)
+	  leglevs <- stats::na.omit(unique(levlab[,2]))
 		
 		if (length(leglevs) == 0) {
 			error("plot", "something is wrong with the categories")
@@ -627,6 +622,7 @@ prettyNumbs <- function(x, digits) {
 		}
 	} else {
 		out$asp <- asp
+		out$lonlat <- FALSE
 	}
 	if (!is.null(alpha)) {
 		if (!inherits(alpha, "SpatRaster")) {
@@ -752,9 +748,9 @@ prettyNumbs <- function(x, digits) {
 		out <- .plotit(out)
 	}
 	
-	if (hasWin) {
+	if (any(hasWin)) {
 		window(x) <- NULL
-		if (hadWin) {
+		if (any(hadWin)) {
 			window(x) <- oldWin
 		}
 	}
@@ -763,7 +759,7 @@ prettyNumbs <- function(x, digits) {
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"),
-	function(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, ...) {
+	function(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, ...) {
 
 		y <- round(y)
 		hasRGB <- FALSE		

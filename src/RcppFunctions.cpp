@@ -388,7 +388,8 @@ void gdal_init(std::string projpath, std::string datapath) {
 	CPLSetConfigOption("GDAL_MAX_BAND_COUNT", "9999999");
 	CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
 	CPLSetConfigOption("GDAL_DATA", datapath.c_str());
-
+	CPLSetConfigOption("CPL_VSIL_USE_TEMP_FILE_FOR_RANDOM_WRITE", "YES");
+	//GDAL_NETCDF_IGNORE_XY_AXIS_NAME_CHECKS
 
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
@@ -400,7 +401,9 @@ void gdal_init(std::string projpath, std::string datapath) {
  #endif
 #endif
 #ifdef PROJ_71
-	proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+	#ifndef __EMSCRIPTEN__
+		proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+	#endif
 #endif
 }
 

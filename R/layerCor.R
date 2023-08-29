@@ -146,6 +146,8 @@ setMethod("layerCor", signature(x="SpatRaster"),
 				x <- messages(x)
 				mat <- matrix(m[[1]], nrow=nl, byrow=TRUE)
 				means <- matrix(m[[2]], nrow=nl, byrow=TRUE)
+				colnames(mat) <- rownames(mat) <- names(x)
+				colnames(means) <- rownames(means) <- names(x)
 				return( list(pearson=mat, mean=means) )
 			}
 		} else {

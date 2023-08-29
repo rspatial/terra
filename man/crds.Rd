@@ -15,14 +15,15 @@ Get the coordinates of a SpatVector or SpatRaster cells. A matrix or data.frame 
 \usage{
 \S4method{crds}{SpatVector}(x, df=FALSE, list=FALSE)
 
-\S4method{crds}{SpatRaster}(x, df=FALSE, na.rm=TRUE)
+\S4method{crds}{SpatRaster}(x, df=FALSE, na.rm=TRUE, na.all=FALSE)
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{df}{logical. If \code{TRUE} a \code{data.frame} is returned instead of a matrix}  
   \item{list}{logical. If \code{TRUE} a \code{list} is returned instead of a matrix}  
-  \item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are excluded}  
+  \item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are excluded. Ignored if the SpatRaster is a template with no associated cell values}  
+  \item{na.all}{logical. If \code{TRUE} cells are only ignored if \code{na.rm=TRUE} and their value is \code{NA} for \bold{all} layers instead of for \code{any} layer}
 }
 
 

@@ -137,8 +137,13 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool 
 	std::string f = noext(filename);
 	ff.reserve(d.size());
 	size_t nl = nlyr();
+	bool overwrite = opt.get_overwrite();
 	for (size_t i=0; i<d.size(); i++) {
 		std::string fout = f + std::to_string(d[i]) + fext;
+		if (file_exists(fout) && (!overwrite)) {
+			ff.push_back(fout);			
+			continue;
+		}
 		SpatExtent exi = x.ext_from_cell(i);
 		opt.set_filenames({fout});
 		SpatRaster out = crop(exi, "near", false, opt);
@@ -186,11 +191,16 @@ std::vector<std::string> SpatRaster::make_tiles_vect(SpatVector x, bool expand, 
 	std::string f = noext(filename);
 	ff.reserve(d.size());
 	size_t nl = nlyr();
+	bool overwrite = opt.get_overwrite();
 	for (size_t i=0; i<d.size(); i++) {
-		SpatExtent exi = x.geoms[i].extent;
 		std::string fout = f + std::to_string(d[i]) + fext;
+		if (file_exists(fout) && (!overwrite)) {
+			ff.push_back(fout);			
+			continue;
+		}
 		opt.set_filenames( {fout} );
 		SpatRaster out;
+		SpatExtent exi = x.geoms[i].extent;
 		if (!e.intersects(exi)) continue;
 		if (expand) {
 			out = crop(exi, "near", false, ops);
@@ -596,6 +606,11 @@ SpatRaster SpatRaster::weighted_mean(std::vector<double> w, bool narm, SpatOptio
 SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, double othervalue, bool round, int digits, SpatOptions &opt) {
 
 	SpatRaster out;
+	if (!hasValues()) {
+		out.setError("input has no values");
+		return out;
+	}
+
 	if (nlyr() > 1) {
 		out.setError("input may only have one layer");
 		return out;
@@ -954,6 +969,15 @@ SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, double maskvalue, doubl
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true, true, true);
 
+	if (!hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}
+	if (!x.hasValues()) {
+		out.setError("mask raster has no values");
+		return out;
+	}
+
 	if (!out.compare_geom(x, false, true, opt.get_tolerance(), true, true, true, false)) {
 		return(out);
 	}
@@ -1029,6 +1053,15 @@ SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, std::vector<double> mas
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true);
 
+	if (!hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}
+	if (!x.hasValues()) {
+		out.setError("mask raster has no values");
+		return out;
+	}
+
 	if (!out.compare_geom(x, false, true, opt.get_tolerance(), true, true, true, false)) {
 		return(out);
 	}
@@ -1099,6 +1132,7 @@ SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, std::vector<double> mas
 
 SpatRaster SpatRaster::mask(SpatOptions &opt) {
 	SpatRaster out = geometry();
+
     if (!hasValues()) return out;
 	if (!readStart()) {
 		out.setError(getError());
@@ -3143,6 +3177,8 @@ SpatRaster SpatRaster::cropmask(SpatVector &v, std::string snap, bool touches, b
 
 	SpatOptions copt(opt);
 	SpatRaster out = crop(v.extent, snap, extend, copt);
+	if (out.hasError()) return out;
+	// transfer warnings?
 	return out.mask(v, false, NAN, touches, opt);
 }
 

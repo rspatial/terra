@@ -124,9 +124,97 @@ setMethod("as.character", signature(x="SpatRaster"),
 )
 #eval(parse(text=as.character(s)))
 
+writeSources <- function(x, fsource, ftarget, overwrite, ...) {
+	fex <- file.exists(ftarget)
+	k <- fsource == ""
+	if (isTRUE(overwrite)) {
+		file.copy(fsource[!k], ftarget[!k])
+	} else if (isFALSE(overwrite) && (any(fex))) {
+		error("wrap", "file(s) exist(s) and 'overwrite=FALSE'")
+	} else if (!all(fex)) {
+		k[fex] <- FALSE
+		fex[k] <- TRUE
+		file.copy(fsource[!fex], ftarget[!fex])					
+	}
+	if (any(k)) {
+		for (i in which(k)) {
+			r <- subsetSource(x, i)
+			writeRaster(r, ftarget[i], ...)
+		}
+	}
+}
+
+
+finalizeWrap <- function(x, r) {
+
+	if (any(is.factor(x))) {
+		r@attributes$levels <- cats(x)
+		r@attributes$levindex <- activeCat(x, 0)
+	}
+	if (any(has.colors(x))) {
+		r@attributes$colors <- coltab(x)
+	}
+	
+	v <- time(x)
+	if (any(!is.na(v))) {
+		r@attributes$time <- v
+		r@attributes$tinfo <- timeInfo(x)
+	}
+	v <- units(x)
+	if (all(v != "")) {
+		r@attributes$units <- v
+	}
+	v <- depth(x)
+	if (!all(v ==0)) {
+		r@attributes$depth <- v
+	}
+	r
+}
+
+setMethod("wrapCache", signature(x="SpatRaster"),
+	function(x, filename=NULL, path=NULL, overwrite=FALSE, ...) {
+		r <- methods::new("PackedSpatRaster")
+		r@definition <- as.character(x)
+
+		xs <- sources(x, TRUE, TRUE)
+		s <- xs$source
+		if (!is.null(filename)) {
+			if ((length(filename) != 1) && (nrow(xs) != length(filename))) {
+				error("wrap", "length(files) does not match the number of sources")
+			}
+			if (any(filename == "")) {
+				error("wrap", "filenames cannot be empty")
+			}
+			filename <- file.path(normalizePath(dirname(filename), mustWork=TRUE), basename(filename))
+			if (length(filename) == 1) {
+				if (is.logical(overwrite)) {
+					writeRaster(x, filename, overwrite=overwrite, ...)
+				} else if (!file.exists(filename)) {
+					writeRaster(x, filename, overwrite=FALSE, ...)				
+				}
+			} else {
+				writeSources(x, s, filename, overwrite, ...)
+			}
+			xs$source <- filename 
+		} else if (!is.null(path)) {
+			path <- normalizePath(path, mustWork=TRUE)
+			fnames <- file.path(path, basename(s))
+			i <- s == ""
+			if (any(i)) {
+				fnames[i] <- file.path(path, paste0(basename(tempfile()), "_", 1:sum(i), ".tif"))
+			}
+			writeSources(x, s, fnames, overwrite)
+			xs$source <- fnames 
+		} else {
+			error("wrapCache", "both path and files are NULL")
+		}
+		r@attributes$sources <- xs
+		finalizeWrap(x, r)		
+	}
+)
 
 setMethod("wrap", signature(x="SpatRaster"),
-	function(x, proxy=FALSE, path=NULL, overwrite=FALSE) {
+	function(x, proxy=FALSE) {
 		r <- methods::new("PackedSpatRaster")
 		r@definition <- as.character(x)
 
@@ -138,20 +226,6 @@ setMethod("wrap", signature(x="SpatRaster"),
 			r@values <- values(x)
 		} else if (all(s != "")) {
 			xs <- sources(x, TRUE, TRUE)
-			if (!is.null(path)) {
-				path <- normalizePath(path, mustWork=TRUE)
-				fnames <- file.path(path, basename(s))
-				fex <- file.exists(fnames)
-				if (isTRUE(overwrite)) {
-					#i <- s != fnames
-					file.copy(s, fnames)
-				} else if (isFALSE(overwrite) && (any(fex))) {
-					error("wrap", "file exists and 'overwrite=FALSE'")
-				} else if (!all(fex)) {
-					file.copy(s[!fex], fnames[!fex])					
-				}
-				xs$source <- fnames 
-			} 
 			r@attributes$sources <- xs
 		} else {
 			fname <- paste0(tempfile(), ".tif")
@@ -162,25 +236,8 @@ setMethod("wrap", signature(x="SpatRaster"),
 			x <- writeRaster(x, fname)
 			r@attributes$filename <- fname
 		}
-
-		if (any(is.factor(x))) {
-			r@attributes$levels <- cats(x)
-			r@attributes$levindex <- activeCat(x, 0)
-		}
-		v <- time(x)
-		if (any(!is.na(v))) {
-			r@attributes$time <- v
-			r@attributes$tinfo <- timeInfo(x)
-		}
-		v <- units(x)
-		if (all(v != "")) {
-			r@attributes$units <- v
-		}
-		v <- depth(x)
-		if (!all(v ==0)) {
-			r@attributes$depth <- v
-		}
-		r
+		
+		finalizeWrap(x, r)		
 	}
 )
 
@@ -231,6 +288,14 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 					set.cats(r, layer=0, x@attributes$levels, active=x@attributes$levindex)
 				}
 			}
+			if (any(nms=="colors")) {
+				for (i in seq_along(x@attributes$colors)) {
+					if (!is.null(x@attributes$colors[[i]])) {
+						d <- terra:::.makeSpatDF(x@attributes$colors[[i]])
+						if (!r@pnt$setColors(i-1, d)) messages("cols<-", r)
+					}
+				}
+			}			
 		}
 		r
 	}

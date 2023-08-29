@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
 AC_INIT
-AC_CONFIG_SRCDIR([src/write_ogr.cpp])
+AC_CONFIG_SRCDIR([src/read_ogr.cpp])
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -79,7 +79,6 @@ else
   fi
 fi
 
-
 AC_MSG_CHECKING(gdal-config usability)
 if test `${GDAL_CONFIG} --version`;
 then
@@ -109,11 +108,17 @@ AC_MSG_NOTICE([GDAL: ${GDAL_VERSION}])
 AC_MSG_CHECKING([GDAL version >= 2.0.1])
 
 GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
+GDAL_MIN_VER=`echo $GDAL_VERSION | cut -d "." -f2`
+GDAL_PATCH_VER=`echo $GDAL_VERSION | cut -d "." -f3`
 if test ${GDAL_MAJ_VER} -lt 2 ; then
   AC_MSG_RESULT(no)
   AC_MSG_ERROR([terra is not compatible with GDAL versions below 2.0.1])
 else
    AC_MSG_RESULT(yes)
+fi
+
+if test [${GDAL_MAJ_VER} -eq 3] -a [${GDAL_MIN_VER} -eq 6] -a [${GDAL_PATCH_VER} -eq 0] ; then
+  AC_MSG_ERROR([GDAL version 3.6.0 has been withdrawn, please update GDAL])
 fi
 
 INLIBS="${LIBS}"
@@ -283,7 +288,7 @@ if test "${gdal_has_proj}" = no; then
    AC_MSG_ERROR([cannot link projection code])
 fi
 
-AC_MSG_CHECKING(GDAL: checking whether PROJ is available fur running:)
+AC_MSG_CHECKING(GDAL: checking whether PROJ is available for running:)
 ./gdal_proj
 if test `echo $?` -ne 0 ; then
 gdal_has_proj=no

@@ -12,9 +12,13 @@ popUp <- function(x) {
 	nms <- names(x)
 	if (length(nms) > 0) {
 		s <- sapply(1:length(nms), function(i) paste0(nms[i], ": ", x[[i, drop=TRUE]]))
-		apply(s, 1, function(i) paste(i, collapse="<br>"))
+		if (is.null(dim(s))) {
+			paste(s, collapse="<br>")
+		} else {
+			apply(s, 1, function(i) paste(i, collapse="<br>"))		
+		}
 	} else {
-		paste("geom", 1:nrow(x), collapse="_")
+		paste("geom", 1:nrow(x), sep="_")
 	}
 }
 
@@ -37,6 +41,11 @@ setMethod("plet", signature(x="missing"),
 	}
 )
 
+#.leaflet-container {
+#    background: #FFF;
+#}
+
+
 baselayers <- function(tiles, wrap=TRUE) {
 	map <- leaflet::leaflet()
 	if ((!is.null(tiles)) && (length(tiles) > 0)) {
@@ -56,14 +65,62 @@ baselayers <- function(tiles, wrap=TRUE) {
 }
 
 
+.get_leg <- function(v, type="", dig.lab=3, cols, breaks=NULL, breakby="eqint", sort=TRUE, decreasing=FALSE,  ...) {
+	out <- list(v=v, leg=list())
+	
+	if (is.null(type)) type <- ""
+	if (type == "continuous") type <- "interval"	
+	if ((!is.numeric(v)) || (length(unique(v)) < 11)) {
+		type <- "classes"
+	} else if (type == "") {
+		type <- "interval"
+	} else {
+		type <- match.arg(type, c("interval", "classes"))
+	}
+	out$legend_type <- type
+
+	out$uv <- unique(v)
+	
+	if (inherits(cols, "function")) {
+		cols <- cols(100)
+	}
+	out$cols <- cols
+		
+	if (out$legend_type == "classes") {
+		out$legend_sort <- sort[1]
+		out$legend_sort_decreasing <- decreasing[1]
+		out <- .vect.legend.classes(out)
+	} else if (out$legend_type == "interval") {
+		out$breaks <- breaks
+		out$breakby <- breakby
+		out$range <- range(v, na.rm=TRUE)
+		out <- .vect.legend.interval(out, dig.lab=dig.lab)
+	}
+
+	out
+}
+
+
 setMethod("plet", signature(x="SpatVector"),
-	function(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL, ...)  {
+	function(x, y="", col, fill=0.2, main=y, cex=1, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL, breakby="eqint", sort=TRUE, decreasing=FALSE, map=NULL, ...)  {
 
 		checkLeafLetVersion()
+		y <- unique(y)
+		if (length(y) > 1) {
+			y = y[1]
+#			xvc <- svc(lapply(y, \(i) x[,i]))
+#			if (is.numeric(y)) {
+#				names(xvc) <- names(x)[y]
+#			} else {
+#				names(xvc) <- y			
+#			}
+#			plet(xvc, col=col, fill=0.2, alpha=alpha, cex=cex, lwd=lwd, border=border, popup=popup, label=label, split=split, tiles=tiles, wrap=wrap, legend=legend, collapse=collapse,  map=map, ...)	
+#type=type, breaks=breaks, breakby=breakby, sort=sort, decreasing=decreasing,
+		}
 		
 		if (missing(col)) col <- grDevices::rainbow
 		alpha <- max(0, min(1, alpha))
-		fill <- max(0, min(1, alpha))
+		fill <- max(0, min(1, fill))
 		x <- makelonlat(x)
 
 		if (is.null(map)) {
@@ -74,31 +131,36 @@ setMethod("plet", signature(x="SpatVector"),
 			tiles <- NULL
 		}
 		g <- geomtype(x)
-		y <- y[1]
+		leg <- NULL
 		if (y == "") { # no legend
+			group <- x@pnt$layer
+			if (group == "") group = g
 			cols <- .getCols(nrow(x), col)
-			pop <- lab <- NULL
+			pop  <- lab <- NULL
 			if (isTRUE(popup[1])) pop <- popUp(x)
 			if (isTRUE(label[1])) lab <- 1:nrow(x)
 			if (g == "polygons") {
-				map <- leaflet::addPolygons(map, data=x, label=lab,  
-							col=cols, fillOpacity=fill, opacity=alpha, popup=pop, ...)
+				map <- leaflet::addPolygons(map, data=x, label=lab, group=group, 
+							fillColor=cols, fillOpacity=fill, opacity=alpha, 
+							popup=pop, color=border, weight=lwd, ...)
 			} else if (g == "lines") {
-				map <- leaflet::addPolylines(map, data=x, label=lab,  
-							col=cols, opacity=alpha,  popup=pop, ...)
+				map <- leaflet::addPolylines(map, data=x, label=lab, group=group,  
+							color=cols, opacity=alpha,  popup=pop, weight=lwd, ...)
 			} else {
-				map <- leaflet::addCircleMarkers(map, data=x, radius=cex, popup=pop, 
-								label=lab, opacity=alpha, col=cols, ...)
+				map <- leaflet::addCircleMarkers(map, data=x, radius=cex, popup=pop, group=group, 
+							label=lab, opacity=alpha, color=cols, ...)
+			}
 
-	#			map <- leaflet::addMarkers(map, data=x, label=lab)  
-	##						col=cols, fillOpacity=fill, opacity=alpha, popup=pop)
-			}
 			if (length(tiles) > 1) {
-				map <- leaflet::addLayersControl(map, baseGroups = tiles, 
+				map <- leaflet::addLayersControl(map, baseGroups = tiles, overlayGroups=group,
 						options = leaflet::layersControlOptions(collapsed=collapse))
-			}
+			} else {
+				map <- leaflet::addLayersControl(map, overlayGroups = group, 
+						options = leaflet::layersControlOptions(collapsed=collapse))
+			}			
 			map
 		} else { # legend
+			y <- y[1]
 			if (is.numeric(y)) {
 				y <- round(y)
 				stopifnot((y > 0) && (y <= nlyr(x)))
@@ -107,9 +169,10 @@ setMethod("plet", signature(x="SpatVector"),
 			stopifnot(y %in% names(x))
 			x <- x[, y]
 			v <- values(x)[,1]
-			u <- unique(v)
-			cols <- .getCols(length(u), col)
+
 			if (split) { 
+				u <- unique(v)
+				cols <- .getCols(length(u), col)
 				for (i in seq_along(u)) {
 					s <- x[v == u[i], ]
 					pop <- lab <- NULL
@@ -117,7 +180,8 @@ setMethod("plet", signature(x="SpatVector"),
 					if (isTRUE(label[1])) lab <- u
 					if (g == "polygons") {
 						map <- leaflet::addPolygons(map, data=s, label=lab[i], group=u[i], 
-							col=cols[i],  fillOpacity=fill, opacity=alpha, popup=pop, ...)
+							fillColor=cols[i],  fillOpacity=fill, opacity=alpha, popup=pop, 
+							col=border, ...)
 					} else if (g == "lines") {
 						map <- leaflet::addPolylines(map, data=s, label=lab[i], group=u[i], 
 							col=cols[i], opacity=alpha, popup=pop, ...)
@@ -134,29 +198,38 @@ setMethod("plet", signature(x="SpatVector"),
 						options = leaflet::layersControlOptions(collapsed=collapse))
 				}
 			} else { # do not split
-				vcols <- cols[1:length(v)]
+				#vcols <- cols[1:length(v)]
+				leg <- .get_leg(v, type=type, dig.lab=3, cols=col, breaks=breaks, breakby=breakby, sort=sort, decreasing=decreasing, ...)
 				pop <- lab <- NULL
 				if (isTRUE(popup[1])) pop <- popUp(x)
 				if (isTRUE(label[1])) lab <- v
 				if (g == "polygons") {
-					map <- leaflet::addPolygons(map, data=x, label=lab,  
-						col=vcols, opacity=alpha, fillOpacity=fill, popup=pop, ...)
+					map <- leaflet::addPolygons(map, data=x, label=lab, group=y, 
+						fillColor=leg$main_cols, opacity=alpha, fillOpacity=fill, 
+						col = border, popup=pop, ...)
 				} else if (g == "lines") {
-					map <- leaflet::addPolylines(map, data=x, label=lab,  
-						col=vcols, popup=pop, opacity=alpha, ...)
+					map <- leaflet::addPolylines(map, data=x, label=lab, group=y, 
+						col=leg$main_cols, popup=pop, opacity=alpha, ...)
 				} else {
-					map <- leaflet::addCircleMarkers(map, data=x, label=lab,  
-						col=vcols, radius=cex, popup=pop, fillOpacity=fill, opacity=alpha, ...)
+					map <- leaflet::addCircleMarkers(map, data=x, label=lab, group=y, 
+						col=leg$main_cols, radius=cex, popup=pop, fillOpacity=fill, opacity=alpha, ...)
 				}
 				if (length(tiles) > 1) {
-					map <- leaflet::addLayersControl(map, baseGroups = tiles, 
+					map <- leaflet::addLayersControl(map, baseGroups = tiles, overlayGroups=y,
+						options = leaflet::layersControlOptions(collapsed=collapse))
+				} else {
+					map <- leaflet::addLayersControl(map, overlayGroups = y, 
 						options = leaflet::layersControlOptions(collapsed=collapse))
 				}
 
 			}
-			if (!is.null(legend)) {
-				main <- gsub("\n", "</br>", main[1])
-				map <- leaflet::addLegend(map, position=legend, colors=cols, labels=u, opacity=1, title=main)
+			if ((!is.null(legend)) && (!is.null(leg))) {
+				if (leg$legend_type != "") {
+					main <- gsub("\n", "</br>", main[1])
+					op = ifelse(g == "polygons", fill, 1)
+					map <- leaflet::addLegend(map, position=legend, colors=leg$leg$fill, 
+							labels=as.character(leg$leg$legend), opacity=op, title=main)
+				}
 			}
 			map
 		}
@@ -166,7 +239,7 @@ setMethod("plet", signature(x="SpatVector"),
 
 
 setMethod("plet", signature(x="SpatVectorCollection"),
-	function(x, col, alpha=1, fill=0, cex=1, lwd=2, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
+	function(x, col, fill=0, cex=1, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
 
 		checkLeafLetVersion()
 
@@ -181,14 +254,14 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 		nms[nchar(nms) == 0] <- "X"
 		nms <- make.unique(nms)
 
+		if (missing(col)) col <- grDevices::rainbow
 		n <- length(x)
-		if (missing(col)) {
-			cols <- rep("black", n)
-		} else if (is.function(col)) {
+		if (is.function(col)) {
 			cols <- col(n)
 		} else {
 			cols <- rep_len(col, n) 
 		}
+
 		lwd <- rep_len(lwd, n) 
 
 		alpha <- rep_len(alpha, n) 
@@ -197,6 +270,7 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 		fill <- pmax(0, min(1, fill))
 		popup <- rep_len(popup, n) 
 		label <- rep_len(label, n) 
+		border <- rep_len(border, n) 
 
 		for (i in 1:n) {
 			v <- x[i]
@@ -211,9 +285,12 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 				lab <- 1:nrow(v)
 			}
 			if (g == "polygons") {
-				map <- leaflet::addPolygons(map, data=v, weight=lwd[i], col=cols[i], fillOpacity=fill[i], opacity=alpha[i], popup=pop, label=lab, group=nms[i])
+				map <- leaflet::addPolygons(map, data=v, weight=lwd[i], fillColor=cols[i], 
+				fillOpacity=fill[i], col=border[i], opacity=alpha[i], popup=pop, 
+				label=lab, group=nms[i])
 			} else if (g == "lines") {
-				map <- leaflet::addPolylines(map, data=v, weight=lwd[i], opacity=alpha[i], col=cols[i], group=nms[i], popup=pop, label=lab)
+				map <- leaflet::addPolylines(map, data=v, weight=lwd[i], opacity=alpha[i], 
+				col=cols[i], group=nms[i], popup=pop, label=lab)
 			} else {
 				map <- leaflet::addCircleMarkers(map, data=v, radius=cex[i], popup=pop, label=lab, opacity=alpha[i], col=cols[i], group=nms[i])
 			}

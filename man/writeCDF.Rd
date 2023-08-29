@@ -50,24 +50,24 @@ see \code{\link{writeRaster}} for writing other file formats
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 fname <- paste0(tempfile(), ".nc")
-#rr <- writeCDF(r, fname, overwrite=TRUE, varname="alt", 
-#      longname="elevation in m above sea level", unit="m")
+rr <- writeCDF(r, fname, overwrite=TRUE, varname="alt", 
+      longname="elevation in m above sea level", unit="m")
 
 a <- rast(ncols=5, nrows=5, nl=50)
 values(a) <- 1:prod(dim(a))
 time(a) <- as.Date("2020-12-31") + 1:nlyr(a)
-#aa <- writeCDF(a, fname, overwrite=TRUE, varname="power", 
-#      longname="my nice data", unit="U/Pa")
+aa <- writeCDF(a, fname, overwrite=TRUE, varname="power", 
+      longname="my nice data", unit="U/Pa")
 
 b <- sqrt(a)
 s <- sds(a, b)
 names(s) <- c("temp", "prec")
 longnames(s) <- c("temperature (C)", "precipitation (mm)")
-units(s) <- c("C", "mm")
-#ss <- writeCDF(s, fname, overwrite=TRUE)
+units(s) <- c("°C", "mm")
+ss <- writeCDF(s, fname, overwrite=TRUE)
 
 # for CRAN
-#file.remove(fname)
+file.remove(fname)
 }
 
 \keyword{ spatial }

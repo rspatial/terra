@@ -3,6 +3,12 @@
 # Version 1.0
 # License GPL v3
 
+setMethod("is.rotated", signature(x="SpatRaster"),
+	function(x) {
+		x@pnt$is_rotated()
+	}
+)
+
 
 setMethod("rangeFill", signature(x="SpatRaster"),
 	function(x, limit, circular=FALSE, filename="", ...) {
@@ -620,7 +626,7 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 )
 
 setMethod("project", signature(x="SpatRaster"),
-	function(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, res=NULL, origin=NULL, threads=FALSE, filename="", ...)  {
+	function(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, res=NULL, origin=NULL, threads=FALSE, filename="", ..., by_util = FALSE)  {
 
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@pnt$rgb)) {
@@ -639,7 +645,12 @@ setMethod("project", signature(x="SpatRaster"),
 
 		if (inherits(y, "SpatRaster")) {
 			if (gdal) {
-				x@pnt <- x@pnt$warp(y@pnt, "", method, mask[1], align[1], FALSE, opt)
+
+				if (by_util) {
+						x@pnt <- x@pnt$warp_by_util(y@pnt, "", method, mask[1], align[1], FALSE, opt)
+				} else {
+					x@pnt <- x@pnt$warp(y@pnt, "", method, mask[1], align[1], FALSE, opt)
+				}
 			} else {
 				if (align) {
 					y <- project(rast(x), y, align=TRUE)
@@ -658,7 +669,13 @@ setMethod("project", signature(x="SpatRaster"),
 				return(project(x, tmp, method=method, mask=mask, align=align, gdal=gdal, filename=filename, ...))
 			}
 			if (gdal) {
-				x@pnt <- x@pnt$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, opt)
+
+				if (by_util) {
+					x@pnt <- x@pnt$warp_by_util(SpatRaster$new(), y, method, mask, FALSE, FALSE, opt)
+					
+				} else {
+					x@pnt <- x@pnt$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, opt)
+				}
 			} else {
 				y <- project(rast(x), y)
 				x@pnt <- x@pnt$resample(y@pnt, method, mask[1], TRUE, opt)
@@ -1165,6 +1182,11 @@ setMethod("sort", signature(x="SpatRaster"),
 
 setMethod("sort", signature(x="SpatVector"),
 	function (x, v, decreasing=FALSE) {
+		if (is.logical(v)) {
+			tmp <- v
+			v <- decreasing 
+			decreasing <- tmp
+		}
 		if (length(v) > 1) {
 			v <- data.frame(x)[,v]
 			i <- do.call(order, lapply(v, function(i) i))

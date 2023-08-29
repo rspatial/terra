@@ -268,6 +268,8 @@ class SpatRaster {
 		double ncell() { return nrow() * ncol(); }
 		double size() { return ncol() * nrow() * nlyr() ; }
 
+		std::vector<bool> is_rotated();
+
 		double xres();
 		double yres();
 		std::vector<double> origin();
@@ -361,6 +363,7 @@ class SpatRaster {
 		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options);
 		bool constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz);
 		bool constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, std::string driver);
+
 		
 		//SpatRaster fromFiles(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, std::string drivers, std::vector<std::string> options);
 		
@@ -371,6 +374,7 @@ class SpatRaster {
 		SpatRaster combineSources(SpatRaster &x, bool warn);
 		void combine(SpatRaster &x);
 		
+		SpatRaster subsetSource(size_t snr);
 		SpatRaster subset(std::vector<unsigned> lyrs, SpatOptions &opt);
 		SpatRaster replace(SpatRaster x, unsigned layer, SpatOptions &opt);
 ////////////////////////////////////////////////////
@@ -398,12 +402,13 @@ class SpatRaster {
 		int_64 colFromX(double x);
 		std::vector<int_64> rowFromY(const std::vector<double> &y);
 		int_64 rowFromY(double y);
+		void xyFromCell( std::vector<std::vector<double>> &xy );
 		std::vector<std::vector<double>> xyFromCell( std::vector<double> &cell);
 		std::vector<std::vector<double>> xyFromCell( double cell);
 		std::vector<std::vector<int_64>> rowColFromCell(std::vector<double> &cell);
 		std::vector<int_64> rowColFromY(std::vector<double> &y);
 		std::vector<std::vector<int_64>> rowColFromExtent(SpatExtent e);
-	
+		std::vector<std::vector<double>> coordinates(bool narm, bool nall, SpatOptions &opt);
 		
         std::vector<unsigned> sourcesFromLyrs(std::vector<unsigned> lyrs);
 		int sourceFromLyr(unsigned lyr);
@@ -803,6 +808,8 @@ class SpatRaster {
 		SpatRaster weighted_mean(std::vector<double> w, bool narm, SpatOptions &opt);
 
 		SpatRaster warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt);
+		SpatRaster warper_by_util(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt);
+		
 		SpatRaster resample(SpatRaster x, std::string method, bool mask, bool agg, SpatOptions &opt);
 		
 		SpatRaster applyGCP(std::vector<double> fx, std::vector<double> fy, std::vector<double> tx, std::vector<double> ty, SpatOptions &opt);

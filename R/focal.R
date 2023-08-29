@@ -23,13 +23,13 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
-		if (!all(m %in% c(0, 1, NA))) {
-			if (isTRUE(list(...)$na.rm)) {
-				if (txtfun != "sum") {
-					error("focal", 'with "na.rm=TRUE" and weights other than 0, 1, or NA, only fun="sum" is allowed')
-				}
-			}
-		}
+		#if (!all(m %in% c(0, 1, NA))) {
+			#if (isTRUE(list(...)$na.rm)) {
+			#	if (txtfun != "sum") {
+					# error("focal", 'with "na.rm=TRUE" and weights other than 0, 1, or NA, only fun="sum" is allowed')
+			#	}
+			#}
+		#}
 		w <- dim(w)
 	} else {
 		w <- rep_len(w, 2)
@@ -54,7 +54,7 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 
 	} else {
 		if (expand) {
-			warn(focal, "expand is ignored for non-standard functions")
+			warn("focal", "expand is ignored for functions that are not 'built-in'")
 		}
 		checkNA <- na.only || na.omit
 
@@ -132,7 +132,12 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 				}
 
 				if (checkNA) {
-					mv <- readValues(x, b$row[i], b$nrows[i])
+					if (nl > 1) {
+						mv <- readValues(x[[j]], b$row[i], b$nrows[i])
+					} else {
+						mv <- readValues(x, b$row[i], b$nrows[i])
+					}
+					
 					if (na.only) {
 						k <- !is.na(mv)
 					} else {

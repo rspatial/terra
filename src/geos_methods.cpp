@@ -930,6 +930,13 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 	GEOSGeometry* h;
 	if (htype == "convex") {
 		h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
+	} else if (htype == "circle") {
+	#ifndef GEOS380
+		out.setError("GEOS 3.8 required for bounding circle");
+		return out;
+	#else
+		h = GEOSMinimumBoundingCircle_r(hGEOSCtxt, g[0].get(), NULL, NULL);
+	#endif
 	} else {
 	#ifndef GEOS361
 		out.setError("GEOS 3.6.1 required for rotated rectangle");
@@ -938,6 +945,9 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 		h = GEOSMinimumRotatedRectangle_r(hGEOSCtxt, g[0].get());
 	#endif
 	}
+	
+	
+	
 	std::vector<GeomPtr> b(1);
 	b[0] = geos_ptr(h, hGEOSCtxt);
 	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
@@ -953,6 +963,11 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) {
 	SpatVector out;
 
+	if (nrow() == 0) {
+		out.addWarning("input SpatVector has no geometries");
+		return out;
+	}
+
 #ifndef GEOS350
 	out.setError("GEOS 3.5 required for voronoi");
 	return out;
@@ -966,7 +981,7 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 		v = GEOSVoronoiDiagram_r(hGEOSCtxt, g[0].get(), NULL, tolerance, onlyEdges);
 	} else {
 		if (bnd.type() != "polygons") {
-			out.setError("boundary must be polygon");
+			out.setError("boundary must have a polygon geometry");
 			geos_finish(hGEOSCtxt);
 			return out;
 		}
@@ -1012,6 +1027,10 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 
 SpatVector SpatVector::delaunay(double tolerance, int onlyEdges) {
 	SpatVector out;
+	if (nrow() == 0) {
+		out.addWarning("input SpatVector has no geometries");
+		return out;
+	}
 
 #ifndef GEOS350
 	out.setError("GEOS 3.5 required for delaunay");
@@ -1126,7 +1145,7 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 
 	quadsegs = std::min(quadsegs, (unsigned) 180);
 	SpatVector out;
-	out.srs = srs;
+//	out.srs = srs;
 	if (srs.is_empty()) {
 		out.addWarning("unknown CRS. Results may be wrong");
 	} 
@@ -1171,6 +1190,7 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 				out = out.append(p, true);
 			}
 			out.df = df;
+			out.srs = srs;
 			return out;
 		}
 	}
@@ -2341,7 +2361,8 @@ std::vector<double> SpatVector::geos_distance(bool sequential, std::string fun) 
 SpatVector SpatVector::unite(SpatVector v) {
 
 	SpatVector out;
-	if (type() != v.type()) {
+	std::string gtp = type();
+	if (gtp != v.type()) {
 		out.setError("cannot unite different geom types");
 		return out;
 	}
@@ -2353,14 +2374,16 @@ SpatVector SpatVector::unite(SpatVector v) {
 	if (out.nrow() == 0) {
 		return append(v, true);
 	}
-
+	if (gtp != out.type()) {
+		SpatVector empty;
+		out = empty;
+	}
 	SpatVector sdif = symdif(v);
 	if (sdif.hasError()) {
 		return sdif;
 	}
-
-	if (sdif.type() == type()) {
-		return out.append(sdif, true);
+	if ((sdif.nrow() > 0) && (gtp == sdif.type())) {	
+		return sdif.append(out, true);
 	}
 	return out;
 }
@@ -2998,6 +3021,10 @@ SpatVector SpatVector::cross_dateline(bool &fixed) {
 SpatVector SpatVector::centroid(bool check_lonlat) {
 
 	SpatVector out;
+	if (nrow() == 0) {
+		out.setError("input has no geometries");
+		return out;
+	}
 
 	if (check_lonlat && could_be_lonlat()) {
 		bool changed = false;
@@ -3033,6 +3060,10 @@ SpatVector SpatVector::centroid(bool check_lonlat) {
 SpatVector SpatVector::point_on_surface(bool check_lonlat) {
 
 	SpatVector out;
+	if (nrow() == 0) {
+		out.setError("input has no geometries");
+		return out;
+	}
 
 	if (check_lonlat && could_be_lonlat()) {
 		bool changed = false;
@@ -3160,6 +3191,57 @@ SpatVector SpatVector::clearance() {
 	return tmp;
 
 #endif
+}
+
+
+bool SpatPart::is_CCW() {
+#ifndef GEOS370
+	return true;
+#else
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	GEOSCoordSequence *pseq;
+	size_t n = size();
+	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, 2);
+	for (size_t i = 0; i < n; i++) {
+		GEOSCoordSeq_setX_r(hGEOSCtxt, pseq, i, x[i]);
+		GEOSCoordSeq_setY_r(hGEOSCtxt, pseq, i, y[i]);
+	}
+	char is_ccw;
+	bool success = GEOSCoordSeq_isCCW_r(hGEOSCtxt, pseq, &is_ccw);
+	geos_finish(hGEOSCtxt);
+	if (success) {
+		Rcpp::Rcout << is_ccw << std::endl;
+		return is_ccw != 0;
+	} else {
+		return true;
+	}
+#endif
+}
+
+
+
+void SpatVector::make_CCW() {
+	#ifndef GEOS370
+		setError("GEOS >= 3.7 needed for CCW");
+		return;
+	#else
+	size_t n = size();
+	if (n == 0) return;
+	if (geoms[0].gtype != polygons) return;
+	for (size_t i=0; i<n; i++) {
+		for (size_t j=0; j<geoms[i].parts.size(); j++) {
+			if (!geoms[i].parts[j].is_CCW()) {
+				std::reverse(geoms[i].parts[j].x.begin(), geoms[i].parts[j].x.end());
+				std::reverse(geoms[i].parts[j].y.begin(), geoms[i].parts[j].y.end());
+				for (size_t k=0; k<geoms[i].parts[j].nHoles(); k++) {
+					std::reverse(geoms[i].parts[j].holes[k].x.begin(), geoms[i].parts[j].holes[k].x.end());
+					std::reverse(geoms[i].parts[j].holes[k].y.begin(), geoms[i].parts[j].holes[k].y.end());
+				}
+			}
+		}
+	}
+	#endif
 }
 
 

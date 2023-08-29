@@ -1,17 +1,60 @@
-# version 1.7-31
+# version 1.7-43
+
+## bug fixes
+
+`plot<SpatVector>` used the wrong main label in some cases [#1210](https://github.com/rspatial/terra/issues/1210) by Márcia Barbosa
+`plotRGB` failed with an "ext=" argument [#1228](https://github.com/rspatial/terra/issues/1228) by Dave Edge
+`rast<array>` failed badly when the array had less than three dimensions. [#1254](https://github.com/rspatial/terra/issues/1254) by andreimirt.
+`all.equal` for a SpatRaster with multiple layers [#1236](https://github.com/rspatial/terra/issues/1236) by Sarah Endicott
+
+## enhancements
+
+`wrap<SpatRaster>` now stores color tables [#1215](https://github.com/rspatial/terra/issues/1215) by Patrick Brown
+`global` now has a "maxcell" argument [#1213](https://github.com/rspatial/terra/issues/1213) by Alex Ilich
+`layerCor` with fun='pearson' now returns output with the layer names [#1206](https://github.com/rspatial/terra/issues/1206)
+
+
+## new
+`compareGeom` for list and SpatRasterCollection [#1207](https://github.com/rspatial/terra/issues/1207) by Sarah Endicott
+`is.rotated<SpatRaster>` method [#1229](https://github.com/rspatial/terra/issues/1229) by Andy Lyons
+`forceCCW<SpatVector>` method to force counter-clockwise orientation [#1249](https://github.com/rspatial/terra/issues/1249) by srfall.
+
+# version 1.7-39
+
+Released 2023-06-23
+
+## bug fixes
+
+- the tempdir option did not use path.expand. [#1195](https://github.com/rspatial/terra/issues/1195) by Alex Ilich
+- the layer names returned by predict where inconsistent when using argument "index". [#1194](https://github.com/rspatial/terra/issues/1194) by Michael Mahoney
+- compilation failed with older compilers because of use of std::filesystem [#1191](https://github.com/rspatial/terra/issues/1191)
+- Small changes to `RGB<-` and `coltab<-` so that terra can be installed with R-devel (after a bug fix https://bugs.r-project.org/show_bug.cgi?id=18538)
+
+
+# version 1.7-37
+
+Released 2023-06-18
 
 ## bug fixes
 
 - `rasterize` with points and a custom function did not work for large rasters. [#1127](https://github.com/rspatial/terra/issues/1127) by Skip Woolley
-- `crop<SpatRaster, SpatVector>` with "mask=TRUE" did not work well if the raster had a scale/offset[#1128](https://github.com/rspatial/terra/issues/1128) by Monika Anna Tomaszewska
+- `crop<SpatRaster, SpatVector>` with "mask=TRUE" did not work well if the raster had a scale/offset [#1128](https://github.com/rspatial/terra/issues/1128) by Monika Anna Tomaszewska
 - `zonal<SpatRaster>` with a custom function always removed NAs. [#1133](https://github.com/rspatial/terra/issues/1133) by  Matthias Weigand
 - `wrap<SpatRaster>` lost changed layer names if the source was from disk; and information on some time-step in some cases. [#1144](https://github.com/rspatial/terra/issues/1144) by Pascal Führlich
-- `global(fun="isNA")` was not correct when the SpatRaster had multiple layers [#1141] (https://github.com/rspatial/terra/issues/1141) by Robin Freeman
+- `global(fun="isNA")` was not correct when the SpatRaster had multiple layers [#1141](https://github.com/rspatial/terra/issues/1141) by Robin Freeman
+- `interpIDW` with `near=TRUE` did not work properly (near=TRUE is now the default). [#1186](https://github.com/rspatial/terra/issues/1186) by Hugh Graham
+- "YYYY-1-1" was sometimes encoded as "YYYY-13-1". [#1168](https://github.com/rspatial/terra/issues/1168) by Colin Brust
+
 
 ## enhancements
 
-- `panel` for categorical SpatRasters [#1143](https://github.com/rspatial/terra/issues/1143) by Jason Flower
+- `panel` for categorical SpatRasters. [#1143](https://github.com/rspatial/terra/issues/1143) by Jason Flower
 - argument "ext" in `plot<SpatRaster>` can now also expand the plot. [#1136](https://github.com/rspatial/terra/issues/1136) by Jakub Nowosad.
+- argument `overwrite=FALSE` to `makeTiles`. [#1167](https://github.com/rspatial/terra/issues/1167) by Gray Martin.
+- legend options for `<plet,SpatVector`>. [#1177](https://github.com/rspatial/terra/issues/1177) by Agustin Lobo.
+- better handling of mixed geometry type vector data by `vect` and `svc`. [#1160](https://github.com/rspatial/terra/issues/1160) by Mike Sumner.
+- new argument `sql` to `query<SpatVectorProxy>`. [#1157](https://github.com/rspatial/terra/issues/1157) by Carl Boettiger
+- support for writing raster data to a vitual file system [#1209](https://github.com/rspatial/terra/issues/1209) by Carl Boettiger
 
 ## new
 - `wrap<SpatRasterDataset>` and `wrap<SpatRasterCollection>` methods. [#954](https://github.com/rspatial/terra/issues/954) by James Camac
@@ -60,7 +103,7 @@ Released 2023-04-08
 
 - better support for other color spaces than RGB [#1060](https://github.com/rspatial/terra/issues/1060) by Dominic Royé
 - path expansion in writeVector [#1055](https://github.com/rspatial/terra/issues/1055) by Andrew Gene Brown.
-- `clamp<SpatRaster>` now also accepts cSpatRasters to set the lower and upper boundaries.
+- `clamp<SpatRaster>` now also accepts SpatRasters to set the lower and upper boundaries.
 - `freq` has new arguments "zones=NULL" and "wide=FALSE", to allow tabulation of values by zone.
 - `expanse<SpatRaster>` has new arguments "zones=NULL" and "wide=FALSE", to allow tabulation of values by zone.
 - `unique<SpatRaster>` has new argument "digits=NA"
@@ -174,7 +217,7 @@ Released 2022-12-02
 
 - argument `exhaustive` to `spatSample<SpatRaster>` for large sparse rasters. [#905] by PetiteTong.
 - `focalPairs` and `focalReg` can now use the values in custom windows as weights. [#907] by Fabian Fischer.
-- `focalReg` now has additional arugment "intercept=TRUE". [#916] by Jordan Adamson
+- `focalReg` now has additional argument "intercept=TRUE". [#916] by Jordan Adamson
 - `crs(x, warn=TRUE)<-` now emits a warning about the difference between transforming and setting a crs when x already had a crs. [#897] by Márcia Barbosa.
 - it is now possible to write a scale and offset with `writeRaster` [#900] by Kyle David
 - `crosstab` now shows the labels names for a categorical SpatRaster. [895] by Derek Corcoran Barrios
@@ -225,7 +268,7 @@ Released 2022-11-18
 - `readRDS` and `unserialize` now return a SpatRaster or SpatVector (instead of a PackedSpat*)
 - better support for a "local" arbitrary Euclidean crs [#797] by Agustin Lobo
 - `clamp` can now take low and high values for each layer 
-- The `pax` argument in `plot` now provides more control over what to draw on each axis via paramters `side`, `tick` and `lab`
+- The `pax` argument in `plot` now provides more control over what to draw on each axis via parameters `side`, `tick` and `lab`
 - The `pax` argument in `plot` now has argument `retro` to use a sexagesimal notation of degrees
 - `extend` has a new argument `fill=NA`
 - A warning is now given when `c`ombining SpatRasters with different CRSs. [#818] by Andrew Marx

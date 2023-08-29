@@ -28,7 +28,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 
   \item{const}{data.frame. Can be used to add a constant value as a predictor variable so that you do not need to make a SpatRaster layer for it}
   \item{na.rm}{logical. If \code{TRUE}, cells with \code{NA} values in the any of the layers of \code{x} are removed from the computation (even if the \code{NA} cell is in a layer that is not used as a variable in the model). This option prevents errors with models that cannot handle \code{NA} values when makeing predictions. In most other cases this will not affect the output. However, there are some models that return predicted values even if some (or all) variables are \code{NA} }
-  \item{index}{integer. To select subset of output variables}
+  \item{index}{integer or character. Can be used to to select a subset of the model output variables}
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used}
   \item{cpkgs}{character. The package(s) that need to be loaded on the nodes to be able to run the model.predict function (see examples)}
   \item{filename}{character. Output filename}

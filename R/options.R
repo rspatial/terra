@@ -17,7 +17,7 @@
 
 }
 
-.options_names <- function() {
+.option_names <- function() {
 	c("progress", "progressbar", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid", "threads", "scale", "offset") #, "append")
 }
 
@@ -36,7 +36,7 @@
 		x$gdal_options <- gopt
 	}
 
-	s <- nms %in% .options_names()
+	s <- nms %in% .option_names()
 
 	if (any(!s)) {
 		bad <- paste(nms[!s], collapse=",")
@@ -90,7 +90,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
 	opt <- .terra_environment$options@pnt$deepcopy()
 	opt$pid <- Sys.getpid()
-	filename <- .fullFilename(filename, mustExist=FALSE)
+	filename <- .fullFilename(filename, mustExist=TRUE)
 	if (!is.null(unlist(wopt))) {
 		wopt$filenames <- filename
 		wopt$overwrite <- overwrite[1]
@@ -155,41 +155,53 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	c("datatype", "filetype") #, "verbose")
 }
 
+
 terraOptions <- function(..., print=TRUE) {
 	dots <- list(...)
 	if (is.null(.terra_environment$options)) .create_options()
 	opt <- .terra_environment$options@pnt
 
 	nms <- names(dots)
-	ndots <- length(dots)
+
+	if (length(dots) == 0) {
+		return(.showOptions(opt, print=print))
+	}
+
+	ok <- nms %in% .option_names()
+	if (any(!ok)) {
+		bad <- paste(nms[!ok], collapse=", ")
+		warn("terraOptions<-", paste("unknown option(s):", bad))
+		dots <- dots[ok]
+		nms <- nms[ok]			
+		if (length(dots) == 0) return(invisible())
+	}
 
 	if ("tempdir" %in% nms) {
 		i <- which(nms == "tempdir")
+		dots[i] <- path.expand(trimws(dots[i]))
 		if (!dir.exists(dots[[i]])) {
 			warn("options", "you cannot set the tempdir to a path that does not exist")
 			dots <- dots[-i]
 			nms <- nms[-i]
+			if (length(dots) == 0) return(invisible())
 		}
 	}
 
-	if (ndots == 0) {
-		.showOptions(opt, print=print)
-	} else if (length(dots) > 0) {
-		d <- nms %in% .default_option_names()
-		dnms <- paste0("def_", nms)
-		for (i in 1:length(nms)) {
-			if (d[i]) {
-				opt[[ dnms[i] ]] <- dots[[ i ]]
-			} else {
-				opt[[ nms[i] ]] <- dots[[ i ]]
-			}
+	d <- nms %in% .default_option_names()
+	dnms <- paste0("def_", nms)
+	for (i in 1:length(nms)) {
+		if (d[i]) {
+			opt[[ dnms[i] ]] <- dots[[ i ]]
+		} else {
+			opt[[ nms[i] ]] <- dots[[ i ]]
 		}
-		if ("memfrac" %in% nms) {
-			if (dots$memfrac > 0.9) {
-				warn("terraOptions", "memfrac > 0.9")
-			}
-		}
-		.terra_environment$options@pnt <- opt
 	}
+		
+	if ("memfrac" %in% nms) {
+		if (dots$memfrac > 0.9) {
+			warn("terraOptions", "memfrac > 0.9")
+		}
+	}
+	.terra_environment$options@pnt <- opt
 }
 

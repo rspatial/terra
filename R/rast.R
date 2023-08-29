@@ -139,6 +139,9 @@ setMethod("rast", signature(x="SpatVector"),
 	x <- trimws(x)
 	x <- x[x != ""]
 	
+	i <- substr(x, 1, 5) == "s3://" 
+	x[i] <- paste0("/vsis3/", substr(x[i], 6, nchar(x[i])))
+	
 	i <- substr(x, 1, 4) == "http" 
 	if (vsi) {
 		x[i] <- paste0("/vsicurl/", x[i])
@@ -148,7 +151,7 @@ setMethod("rast", signature(x="SpatVector"),
 	x <- enc2utf8(x)
 	p <- normalizePath(x, winslash = "/", mustWork = FALSE)
 	if (mustExist) {
-		i <- file.exists(p)
+		i <- file.exists(dirname(p))
 		x[i] <- p[i]
 	} else {
 		return(p)
@@ -295,6 +298,9 @@ setMethod("rast", signature(x="SpatRasterDataset"),
 setMethod("rast", signature(x="array"),
 	function(x, crs="", extent=NULL) {
 		dims <- dim(x)
+		if (length(dims) < 3) {
+			error("rast,array", "cannot handle an array with less than 3 dimensions")
+		}
 		if (length(dims) > 3) {
 			if (length(dims) == 4) {
 				if (dims[4] == 1) {

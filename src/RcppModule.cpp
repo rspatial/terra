@@ -361,6 +361,7 @@ RCPP_MODULE(spat){
 
     class_<SpatVectorCollection>("SpatVectorCollection")
 		.constructor()
+		.constructor<std::string, std::string, std::string, std::vector<double>, SpatVector>()
 
 		//.property("names", &SpatVectorCollection::get_names, &SpatVectorCollection::set_names)
 		.method("deepcopy", &SpatVectorCollection::deepCopy, "deepCopy")
@@ -581,6 +582,7 @@ RCPP_MODULE(spat){
 
 		.method("densify", &SpatVector::densify)
 		.method("round", &SpatVector::round)
+		.method("make_CCW", &SpatVector::make_CCW)
 	;
 
 
@@ -649,6 +651,8 @@ RCPP_MODULE(spat){
 		.method("set_crs", (bool (SpatRaster::*)(std::string crs))( &SpatRaster::setSRS))
 		//.field_readonly("prj", &SpatRaster::prj)
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
+
+		.method("is_rotated", &SpatRaster::is_rotated)
 
 		.method("setWindow", &SpatRaster::setWindow, "")
 		.method("removeWindow", &SpatRaster::removeWindow, "")
@@ -751,6 +755,7 @@ RCPP_MODULE(spat){
 		.method("setUnit", &SpatRaster::setUnit)
 		.method("set_resolution", &SpatRaster::setResolution)
 		.method("subset", &SpatRaster::subset)
+		.method("subsetSource", &SpatRaster::subsetSource)
 
 		.method("cellFromXY", ( std::vector<double> (SpatRaster::*)(std::vector<double>,std::vector<double>, double) )( &SpatRaster::cellFromXY ))
 		.method("vectCells", &SpatRaster::vectCells)
@@ -766,6 +771,7 @@ RCPP_MODULE(spat){
 		.method("colFromX", ( std::vector<int_64> (SpatRaster::*)(const std::vector<double>&) )( &SpatRaster::colFromX ))
 		.method("rowFromY", ( std::vector<int_64> (SpatRaster::*)(const std::vector<double>&) )( &SpatRaster::rowFromY ))
 		.method("xyFromCell", ( std::vector< std::vector<double> > (SpatRaster::*)(std::vector<double>&) )( &SpatRaster::xyFromCell ))
+		.method("crds", &SpatRaster::coordinates)
 		.method("rowColFromCell", ( std::vector< std::vector<int_64> > (SpatRaster::*)(std::vector<double>) )( &SpatRaster::rowColFromCell ))
 		.method("readStart", &SpatRaster::readStart)
 		.method("readStop", &SpatRaster::readStop)
@@ -942,6 +948,7 @@ RCPP_MODULE(spat){
 		.method("rectify", &SpatRaster::rectify)
 		.method("stretch", &SpatRaster::stretch)
 		.method("warp", &SpatRaster::warper)
+    .method("warp_by_util", &SpatRaster::warper_by_util)
 		.method("resample", &SpatRaster::resample)
 		.method("zonal", &SpatRaster::zonal)
 		.method("zonal_weighted", &SpatRaster::zonal_weighted)

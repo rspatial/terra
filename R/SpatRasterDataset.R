@@ -71,6 +71,14 @@ setMethod("sds", signature(x="list"),
 		for (i in seq_along(x)) {
 			if (inherits(x[[i]], "SpatRaster")) {
 				r@pnt$add(x[[i]]@pnt, nms[i], "", "", FALSE)
+			} else if (inherits(x[[i]], "SpatRasterDataset")) {
+				y <- as.list(x[[i]])
+				ynms <- names(x[[i]])
+				s <- sapply(y, \(j) r@pnt$add(j@pnt, ynms[j], "", "", FALSE))
+			} else {
+				name <- names(x[[i]])
+				cls <- paste(class(x[[i]]), collapse=", ")
+				error("sds", "list element", name, "is a: ", cls)
 			}
 		}
 		messages(r, "sds")
@@ -290,10 +298,14 @@ setMethod("sprc", signature(x="list"),
 			for (i in 1:n) {
 				if (inherits(x[[i]], "SpatRaster")) {
 					ptr$add(x[[i]]@pnt, "")
+				} else if (inherits(x[[i]], "SpatRasterCollection") | 
+							inherits(x[[i]], "SpatRasterDataset")) {
+					y <- as.list(x[[i]])
+					s <- sapply(y, \(j) ptr$add(j@pnt, ""))
 				} else {
 					name <- names(x[[i]])
-					cls <- class(x[[i]])
-					error("sprc", "list elements should be 'SpatRaster'\n", name, "is of class: ", cls)
+					cls <- paste(class(x[[i]]), collapse=", ")
+					error("sprc", "list element", name, "is a: ", cls)
 				}
 			}
 		}
@@ -370,3 +382,41 @@ setMethod("add<-", signature("SpatRasterDataset", "SpatRaster"),
 		messages(x, "add")
 	}
 )
+
+
+setMethod("c", signature(x="SpatRasterCollection"),
+	function(x, ..., warn=TRUE) {
+		y <- list(...)
+		sprc(c(as.list(x), ...))
+	}
+)
+
+
+setMethod("c", signature(x="SpatRasterCollection"),
+	function(x, ...) {
+
+		x@pnt <- x@pnt$deepcopy()
+
+		dots <- list(...)
+		nms <- names(dots)
+		for (i in seq_along(dots)) {
+			if (inherits(dots[[i]], "SpatRasterCollection") | inherits(dots[[i]], "SpatRasterDataset")) {
+				sdsnms <- names(dots[[i]])
+				for (j in 1:(length(dots[[i]]))) {
+					x@pnt$add(dots[[i]][[j]]@pnt, sdsnms[j])
+				}
+			} else if (inherits(dots[[i]], "SpatRaster")) {
+				if (is.null(nms)) { 
+					name <- paste0("d", i)
+				} else { 
+					name <- nms[i] 
+				}
+				x@pnt$add(dots[[i]]@pnt, name)
+			} else {
+				error("c", "arguments must be SpatRaster, SpatRasterCollection, or SpatRasterDataset")
+			}
+		}
+		messages(x, "c")
+	}
+)
+

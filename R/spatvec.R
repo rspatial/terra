@@ -94,10 +94,20 @@ setMethod("crds", signature(x="SpatVector"),
 	}
 )
 
+
 setMethod("crds", signature(x="SpatRaster"),
-	function(x, df=FALSE, na.rm=TRUE){
-		x <- as.points(x, na.rm=na.rm)
-		crds(x, df=df)
+	function(x, df=FALSE, na.rm=TRUE, na.all=FALSE){
+#		crds( as.points(x, values=(hasValues(x) || (na.rm)), na.rm=na.rm, na.all=na.all), df=df)
+		opt <- spatOptions()
+		out <- x@pnt$crds(na.rm, na.all, opt)
+		messages(x)
+		if (df) {
+			out <- data.frame(out)
+		} else {
+			out <- do.call(cbind, out)
+		}
+		colnames(out) <- c("x", "y")
+		out
 	}
 )
 

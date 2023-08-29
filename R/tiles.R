@@ -1,10 +1,10 @@
 
 setMethod("makeTiles", signature(x="SpatRaster"),
-	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, ...) {
+	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, overwrite=FALSE, ...) {
 		filename <- trimws(filename[1])
 		filename <- filename[!is.na(filename)]
 		if (filename == "") error("makeTiles", "filename cannot be empty")
-		opt <- spatOptions(filename="", ...)
+		opt <- spatOptions(filename="", overwrite=overwrite, ...)
 		if (inherits(y, "SpatRaster")) {
 			ff <- x@pnt$make_tiles(y@pnt, extend[1], na.rm[1], filename, opt)
 		} else if (inherits(y, "SpatVector")) {

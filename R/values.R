@@ -44,8 +44,8 @@ setMethod("hasValues", signature(x="SpatRaster"),
 	}
 	dd <- !(bb | ii | ff)
 	if (any(dd)) {
-		d = which(dd)
-		v[,d] = replace(v[,d], is.na(v[,d]), NA)
+		d <- which(dd)
+		v[,d] <- replace(v[,d], is.na(v[,d]), NA)
 	}
 	v
 }
@@ -253,6 +253,10 @@ setMethod("inMemory", signature(x="SpatRaster"),
 #..inMemory <- function(x) { x@pnt$inMemory }
 #..filenames <- function(x) {	x@pnt$filenames }
 
+subsetSource <- function(x, i) {
+	x@pnt <- x@pnt$subsetSource(i-1)
+	messages(x)
+}
 
 setMethod("sources", signature(x="SpatRaster"),
 	function(x, nlyr=FALSE, bands=FALSE) {
@@ -365,6 +369,7 @@ setMethod("setMinMax", signature(x="SpatRaster"),
 )
 
 
+
 setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=FALSE) {
 		opt <- spatOptions("")
@@ -389,15 +394,67 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 				if (!inherits(dots[[i]], "SpatRaster")) {
 					error("compareGeom", "all additional arguments must be a SpatRaster")
 				}
-				bool <- x@pnt$compare_geom(dots[[i]]@pnt, lyrs, crs, opt$tolerance, warncrs, ext, rowcol, res)
-				if (stopOnError) messages(x, "compareGeom")
-				res <- bool & out
+				out <- out & 
+					compareGeom(x, dots[[i]], lyrs=lyrs, crs=crs, warncrs=warncrs, ext=ext, rowcol=rowcol, res=res, stopOnError=stopOnError, messages=messages)
 			}
 		}
 		out
 	}
 )
 
+
+setMethod("compareGeom", signature(x="SpatRaster", y="list"),
+	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=FALSE) {
+		dots <- list(...)
+		if (length(dots) > 0) {
+			y <- c(y, dots)
+		}
+		isr <- sapply(y, inherits, "SpatRaster")
+		if (!all(isr)) {
+			y <- y[isr]
+			if (length(y) == 0) error("compareGeom", "none of the elements of y is a SpatRaster")
+			n <- sum(!isr)
+			if (n > 1) {
+				warn("compareGeom", paste(n, "elements of y are not a SpatRaster"))
+			} else {
+				warn("compareGeom", paste("1 element of y is not a SpatRaster"))
+			}
+		}
+		out <- sapply(y, compareGeom, y=x, lyrs=lyrs, crs=crs, warncrs=warncrs, ext=ext, rowcol=rowcol, res=res, stopOnError=stopOnError, messages=messages)
+		if (!all(isr)) {
+			res <- rep(NA, length(isr))
+			res[isr] <- out
+			return(res)
+		}
+		all(out)
+	}
+)
+
+
+setMethod("compareGeom", signature(x="SpatRasterCollection", y="missing"),
+	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=FALSE, messages=FALSE) {
+		x <- as.list(x)
+		dots <- list(...)
+		if (length(dots) > 0) {
+			error("compareGeom", "when x is a SpatRasterCollection, additional arguments are ignored")
+		}
+		if (length(x) == 1) return(TRUE)
+		out <- sapply(x[-1], compareGeom, y=x[1], lyrs=lyrs, crs=crs, warncrs=warncrs, ext=ext, rowcol=rowcol, res=res, stopOnError=stopOnError, messages=messages)
+		out
+	}
+)
+
+
+setMethod("compareGeom", signature(x="SpatRaster", y="SpatRasterCollection"),
+	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=FALSE, messages=FALSE) {
+		dots <- list(...)
+		if (length(dots) > 0) {
+			error("compareGeom", "when y is a SpatRasterCollection, additional arguments are ignored")
+		}
+		out <- sapply(as.list(y), compareGeom, y=x, lyrs=lyrs, crs=crs, warncrs=warncrs, ext=ext, rowcol=rowcol, res=res, stopOnError=stopOnError, messages=messages)
+		all(out)
+	}
+)
 
 
 setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
@@ -427,8 +484,9 @@ setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"),
 			hvT <- hasValues(target)
 			hvC <- hasValues(current)
 			if (hvT && hvC) {
-				s <- spatSample(c(target, current), maxcell, "regular")
-				a <- all.equal(s[,1], s[,2], ...)
+				s1 <- spatSample(current, maxcell, "regular")
+				s2 <- spatSample(target, maxcell, "regular")
+				a <- all.equal(s1, s2, ...)
 			} else if (hvT || hvC) {
 				if (hvT) {
 					a <- "target has cell values, current does not"

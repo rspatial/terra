@@ -15,10 +15,10 @@ Interpolate points within a moving window using inverse distance weighting. The 
 
 \usage{
 \S4method{interpIDW}{SpatRaster,SpatVector}(x, y, field, radius, power=2, smooth=0,
-       maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...)
+       maxPoints=Inf, minPoints=1, near=TRUE, fill=NA, filename="", ...)
 
 \S4method{interpIDW}{SpatRaster,matrix}(x, y, radius, power=2, smooth=0, 
-       maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...)
+       maxPoints=Inf, minPoints=1, near=TRUE, fill=NA, filename="", ...)
 }
 
 \arguments{
@@ -27,12 +27,11 @@ Interpolate points within a moving window using inverse distance weighting. The 
   \item{field}{character. field name in SpatVector \code{y}}
   \item{radius}{numeric. The radius of the circle (single number). If \code{near=FALSE}, it is also possible to use two or three numbers. Two numbers are interpreted as the radii of an ellipse (x and y-axis). A third number should indicated the desired, counter clockwise, rotation of the ellipse (in degrees)}
 
-  
   \item{power}{numeric. Weighting power}
   \item{smooth}{numeric. Smoothing parameter}
   \item{minPoints}{numeric. The minimum number of points to use. If fewer points are found in a search ellipse it is considered empty and the fill value is returned}
   \item{maxPoints}{numeric. The maximum number of points to consider in a search area. Additional points are ignored. If fewer points are found, the fill value is returned}
-  \item{near}{logical. If \code{maxPoints} is reached, should the nearest points within the neighborhood be used?}
+  \item{near}{logical. Should the nearest points within the neighborhood be used if \code{maxPoints} is reached?}
   \item{fill}{numeric. value to use to fill empty cells}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

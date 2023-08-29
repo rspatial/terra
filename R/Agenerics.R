@@ -1,5 +1,6 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("forceCCW")) {setGeneric("forceCCW", function(x, ...) standardGeneric("forceCCW"))}
 if (!isGeneric("addCats")) {setGeneric("addCats", function(x, ...) standardGeneric("addCats"))}
 if (!isGeneric("regress")) {setGeneric("regress", function(y, x, ...) standardGeneric("regress"))}
 
@@ -114,6 +115,8 @@ if (!isGeneric("delaunay")) {setGeneric("delaunay", function(x, ...) standardGen
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x, ...) standardGeneric("voronoi"))}
 if (!isGeneric("convHull")) {setGeneric("convHull", function(x, ...) standardGeneric("convHull"))}
 if (!isGeneric("minRect")) {setGeneric("minRect", function(x, ...) standardGeneric("minRect"))}
+if (!isGeneric("minCircle")) {setGeneric("minCircle", function(x, ...) standardGeneric("minCircle"))}
+
 #if (!isGeneric("which.related")) {setGeneric("which.related", function(x, y, ...) standardGeneric("which.related"))}
 if (!isGeneric("is.related")) {setGeneric("is.related", function(x, y, ...) standardGeneric("is.related"))}
 if (!isGeneric("relate")) {setGeneric("relate", function(x, y, ...) standardGeneric("relate"))}
@@ -123,6 +126,8 @@ if (!isGeneric("not.na")) {setGeneric("not.na", function(x, ...) standardGeneric
 
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
 if (!isGeneric("gaps")) {setGeneric("gaps", function(x, ...) standardGeneric("gaps"))}
+if (!isGeneric("is.rotated")) {setGeneric("is.rotated", function(x, ...) standardGeneric("is.rotated"))}
+
 if (!isGeneric("is.int")) {setGeneric("is.int", function(x) standardGeneric("is.int"))}
 if (!isGeneric("as.int")) {setGeneric("as.int", function(x, ...) standardGeneric("as.int"))}
 if (!isGeneric("is.bool")) {setGeneric("is.bool", function(x) standardGeneric("is.bool"))}
@@ -188,6 +193,7 @@ if (!isGeneric("minmax")) {setGeneric("minmax", function(x, ...) standardGeneric
 if (!isGeneric("nsrc")) { setGeneric("nsrc", function(x) standardGeneric("nsrc")) }
 if (!isGeneric("perim")) {setGeneric("perim", function(x, ...) standardGeneric("perim"))}
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}
+if (!isGeneric("wrapCache")) {setGeneric("wrapCache", function(x, ...) standardGeneric("wrapCache"))}
 if (!isGeneric("wrap")) {setGeneric("wrap", function(x, ...) standardGeneric("wrap"))}
 if (!isGeneric("unwrap")) {setGeneric("unwrap", function(x, ...) standardGeneric("unwrap"))}
 if (!isGeneric("cats")) { setGeneric("cats", function(x, ...) standardGeneric("cats")) }

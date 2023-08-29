@@ -292,6 +292,13 @@ setMethod("minRect", signature(x="SpatVector"),
 	}
 )
 
+setMethod("minCircle", signature(x="SpatVector"),
+	function(x, by="") {
+		x@pnt <- x@pnt$hull("circle", by[1])
+		messages(x, "minCircle")
+	}
+)
+
 
 setMethod("disagg", signature(x="SpatVector"),
 	function(x, segments=FALSE) {
@@ -375,6 +382,9 @@ voronoi_deldir <- function(x, bnd=NULL, eps=1e-09, ...){
 
 setMethod("voronoi", signature(x="SpatVector"),
 	function(x, bnd=NULL, tolerance=0, as.lines=FALSE, deldir=FALSE) {
+		if (nrow(x) ==0) {
+			error("voronoi", "input has no geometries")
+		}
 		if (geomtype(x) != "points") {
 			x <- as.points(x)
 		}
@@ -571,13 +581,15 @@ setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"),
 				if (erase) {
 					i <- p$id1
 					yi <- ye[p$id1,]
+					yi$idx <- p$id2
+					yi$idy <- NULL
 				} else {
 					i <- ye$idy[p$id1]
 					i <- match(i, y$idy)
 					yi <- y[i,]
+					yi$idx <- 0
+					yi$idx[i] <- p$id2[i]
 				}
-				yi$idx <- 0
-				yi$idx[i] <- p$id2
 				yi$idy <- NULL
 				x <- aggregate(rbind(x, yi), "idx", dissolve=dissolve, counts=FALSE)
 				y <- y[-i,]
@@ -607,7 +619,6 @@ setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"),
 		x
 	}
 )
-
 
 
 setMethod("split", signature(x="SpatVector", f="ANY"),
@@ -642,5 +653,14 @@ setMethod("split", signature(x="SpatVector", f="SpatVector"),
 		nds <- makeNodes(uf)
 		p <- as.polygons(nds)
 		intersect(x, p)
+	}
+)
+
+
+setMethod("forceCCW", signature(x="SpatVector"),
+	function(x) {
+		x <- deepcopy(x)
+		x@pnt$make_CCW()
+		messages(x)
 	}
 )
