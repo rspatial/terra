@@ -1,4 +1,4 @@
-# version 1.7-43
+# version 1.7-44
 
 ## bug fixes
 
@@ -8,6 +8,8 @@
 - `all.equal` for a SpatRaster with multiple layers [#1236](https://github.com/rspatial/terra/issues/1236) by Sarah Endicott
 - `zonal(wide=FALSE)` could give wrong results if the zonal SpatRaster had "layer" as layername. [#1251](https://github.com/rspatial/terra/issues/1251) by Jeff Hanson
 - `panel` now support argument "range" [#141](https://github.com/rspatial/terra/issues/1241) by Jakub Nowosad
+- `rasterize` with `by=` returned wrong layernames if the by field was not sorted [#1266](https://github.com/rspatial/terra/issues/1266) by Sebastian Dunnett
+- `mosaic` with multiple layers was not correct [#1262](https://github.com/rspatial/terra/issues/1262) by Jean-Romain
 
 
 ## enhancements
