@@ -3200,7 +3200,6 @@ bool SpatPart::is_CCW() {
 #ifndef GEOS370
 	return true;
 #else
-
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	GEOSCoordSequence *pseq;
 	size_t n = size();
@@ -3211,9 +3210,9 @@ bool SpatPart::is_CCW() {
 	}
 	char is_ccw;
 	bool success = GEOSCoordSeq_isCCW_r(hGEOSCtxt, pseq, &is_ccw);
+	GEOSCoordSeq_destroy_r(hGEOSCtxt, pseq);
 	geos_finish(hGEOSCtxt);
 	if (success) {
-		Rcpp::Rcout << is_ccw << std::endl;
 		return is_ccw != 0;
 	} else {
 		return true;
