@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-42</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-44</span>
       </span>
     </div>
 
@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-43" id="version-17-43">version 1.7-43<a class="anchor" aria-label="anchor" href="#version-17-43"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-44" id="version-17-44">version 1.7-44<a class="anchor" aria-label="anchor" href="#version-17-44"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-43">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-43"></a></h3>
+<h3 id="bug-fixes-1-7-44">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-44"></a></h3>
 <ul><li>
 <code>plot&lt;SpatVector&gt;</code> used the wrong main label in some cases <a href="https://github.com/rspatial/terra/issues/1210" class="external-link">#1210</a> by Márcia Barbosa</li>
 <li>
@@ -63,9 +63,13 @@
 <code>zonal(wide=FALSE)</code> could give wrong results if the zonal SpatRaster had “layer” as layername. <a href="https://github.com/rspatial/terra/issues/1251" class="external-link">#1251</a> by Jeff Hanson</li>
 <li>
 <code>panel</code> now support argument “range” <a href="https://github.com/rspatial/terra/issues/1241" class="external-link">#141</a> by Jakub Nowosad</li>
+<li>
+<code>rasterize</code> with <code>by=</code> returned wrong layernames if the by field was not sorted <a href="https://github.com/rspatial/terra/issues/1266" class="external-link">#1266</a> by Sebastian Dunnett</li>
+<li>
+<code>mosaic</code> with multiple layers was not correct <a href="https://github.com/rspatial/terra/issues/1262" class="external-link">#1262</a> by Jean-Romain</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-43">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-43"></a></h3>
+<h3 id="enhancements-1-7-44">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-44"></a></h3>
 <ul><li>
 <code>wrap&lt;SpatRaster&gt;</code> now stores color tables <a href="https://github.com/rspatial/terra/issues/1215" class="external-link">#1215</a> by Patrick Brown</li>
 <li>
@@ -79,7 +83,7 @@
 <code>vrt</code> now has argument “return_filename” <a href="https://github.com/rspatial/terra/issues/1258" class="external-link">#1258</a> by Krzysztof Dyba</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-7-43">new<a class="anchor" aria-label="anchor" href="#new-1-7-43"></a></h3>
+<h3 id="new-1-7-44">new<a class="anchor" aria-label="anchor" href="#new-1-7-44"></a></h3>
 <ul><li>
 <code>compareGeom</code> for list and SpatRasterCollection <a href="https://github.com/rspatial/terra/issues/1207" class="external-link">#1207</a> by Sarah Endicott</li>
 <li>

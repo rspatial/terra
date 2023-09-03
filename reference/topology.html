@@ -4,7 +4,7 @@
 makeNodes create nodes on lines
 mergeLines connect lines to form polygons
 removeDupNodes removes duplicate nodes in geometries and optionally rounds the coordinates
-emptyGeoms returns the indices of empty (null) geometries
+emptyGeoms returns the indices of empty (null) geometries. is.na also checks if any of the coordinates is NA.
 snap makes boundaries of geometries identical if they are very close to each other."><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -23,7 +23,7 @@ snap makes boundaries of geometries identical if they are very close to each oth
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-42</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-44</span>
       </span>
     </div>
 
@@ -60,7 +60,7 @@ snap makes boundaries of geometries identical if they are very close to each oth
 <p><code>makeNodes</code> create nodes on lines</p>
 <p><code>mergeLines</code> connect lines to form polygons</p>
 <p><code>removeDupNodes</code> removes duplicate nodes in geometries and optionally rounds the coordinates</p>
-<p><code>emptyGeoms</code> returns the indices of empty (null) geometries</p>
+<p><code>emptyGeoms</code> returns the indices of empty (null) geometries. <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></code> also checks if any of the coordinates is <code>NA</code>.</p>
 <p><code>snap</code> makes boundaries of geometries identical if they are very close to each other.</p>
     </div>
 
