@@ -389,6 +389,7 @@ class SpatVector {
 		SpatVector densify(double interval, bool adjust, bool ignorelonlat);
 		SpatVector round(int digits);
 		std::vector<unsigned> nullGeoms();
+		std::vector<bool> naGeoms();
 				
 };
 

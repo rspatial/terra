@@ -61,6 +61,14 @@ setMethod("makeValid", signature(x="SpatVector"),
 )
 
 
+
+setMethod("is.na", signature(x="SpatVector"),
+	function(x) {
+		x@pnt$naGeoms()
+	}
+)
+
+
 setMethod("na.omit", signature("SpatVector"),
 	function(object, field=NA, geom=FALSE) {
 		if (geom) {
@@ -70,9 +78,11 @@ setMethod("na.omit", signature("SpatVector"),
 				object <- object[-g, ]
 			}
 		}
-		if (!is.na(field)) {
+		stopifnot(is.vector(field))
+		if (!is.na(field[1])) {
+			field <- field[!is.na(field)]
 			v <- values(object)
-			if (field != "") {
+			if (!any(field == "")) {
 				v <- v[, field, drop=FALSE]
 			}
 			i <- apply(v, 1, function(i) any(is.na(i)))

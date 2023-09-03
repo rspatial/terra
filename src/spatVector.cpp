@@ -408,6 +408,25 @@ std::vector<unsigned> SpatVector::nullGeoms(){
 	return ids;
 }
 
+std::vector<bool> SpatVector::naGeoms(){
+	std::vector<bool> nas(geoms.size(), true);
+	for (size_t i=0; i<geoms.size(); i++) {
+		if (geoms[i].gtype == null) continue;
+		for (size_t j=0; j<geoms[i].parts.size(); j++) {
+			for (size_t k=0; k<geoms[i].parts[j].x.size(); k++) {
+				nas[i] = false;
+				if (std::isnan(geoms[i].parts[j].x[k]) | 
+						std::isnan(geoms[i].parts[j].y[k])) {
+					nas[i] = true;
+					goto contin;
+				}
+			}
+			// check holes
+		}
+		contin: {};
+	}
+	return nas;
+}
 
 
 bool SpatVector::replaceGeom(SpatGeom p, unsigned i) {
