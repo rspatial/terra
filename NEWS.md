@@ -19,6 +19,7 @@
 - `layerCor` with fun='pearson' now returns output with the layer names [#1206](https://github.com/rspatial/terra/issues/1206)
 - `vrt` now has argument "set_names" [#1244](https://github.com/rspatial/terra/issues/1244) by sam-a-levy
 - `vrt` now has argument "return_filename" [#1258](https://github.com/rspatial/terra/issues/1258) by Krzysztof Dyba
+- `project<SpatRaster>` has new argument "by_util" exposing the GDAL warp utility [#1222](https://github.com/rspatial/terra/pull/1222) by Michael Sumner.
 
 
 ## new

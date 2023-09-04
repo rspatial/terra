@@ -15,8 +15,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 \usage{
 \S4method{project}{SpatVector}(x, y, partial = FALSE)
 
-\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, 
-		gdal=TRUE, res=NULL, origin=NULL, threads=FALSE, filename="", ...)
+\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, 
+	res=NULL, origin=NULL, threads=FALSE, filename="", ..., by_util = FALSE)
 
 \S4method{project}{SpatExtent}(x, from, to)
 
@@ -64,6 +64,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   \item{filename}{character. Output filename}
   
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+
+  \item{by_util}{logical. If \code{TRUE} and \code{gdal=TRUE}, the GDAL warp utility is used}
 
   \item{from}{character. Coordinate reference system of \code{x}}
 
