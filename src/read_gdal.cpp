@@ -587,7 +587,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, ops, ops);
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
-			setError("file does not exist");
+			setError("file does not exist: " + fname);
 		} else {
 			setError("cannot read from " + fname );
 		}
@@ -648,7 +648,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, ops, ops);
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
-			setError("file does not exist");
+			setError("file does not exist: " + fname);
 		} else {
 			setError("cannot read from " + fname );
 		}
@@ -1091,7 +1091,7 @@ bool SpatRaster::readStartGDAL(unsigned src) {
 
     if( poDataset == NULL )  {
 		if (!file_exists(source[src].filename )) {
-			setError("file does not exist");
+			setError("file does not exist: " + source[src].filename);
 		} else {
 			setError("cannot read from " + source[src].filename  );
 		}
@@ -1267,7 +1267,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, size_t row, size_t 
 	
     if( poDataset == NULL )  {
 		if (!file_exists(source[src].filename )) {
-			setError("file does not exist");
+			setError("file does not exist: " + source[src].filename);
 		} else {
 			setError("cannot read from " + source[src].filename  );
 		}
@@ -1353,7 +1353,7 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_
 
     if( poDataset == NULL )  {
 		if (!file_exists(source[src].filename )) {
-			setError("file does not exist");
+			setError("file does not exist: " + source[src].filename);
 		} else {
 			setError("cannot read from " + source[src].filename  );
 		}
@@ -1439,7 +1439,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::v
 
     if( poDataset == NULL )  {
 		if (!file_exists(source[src].filename )) {
-			setError("file does not exist");
+			setError("file does not exist: " + source[src].filename);
 		} else {
 			setError("cannot read from " + source[src].filename  );
 		}
@@ -1525,7 +1525,7 @@ std::vector<double> SpatRaster::readRowColGDALFlat(unsigned src, std::vector<int
 
     if( poDataset == NULL )  {
 		if (!file_exists(source[src].filename )) {
-			setError("file does not exist");
+			setError("file does not exist: " + source[src].filename);
 		} else {
 			setError("cannot read from " + source[src].filename  );
 		}
