@@ -3457,7 +3457,11 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		return(out);
 	}
 	if (n == 1) {
-		out = ds[0].deepCopy();
+		if (opt.get_filename() != "") {
+			out = ds[0].writeRaster(opt);
+		} else {
+			out = ds[0].deepCopy();
+		}
 		return(out);
 	}
 
@@ -3489,7 +3493,12 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 	n = size();
 	if (size() == 0) {
-		return out;
+		if (opt.get_filename() != "") {
+			out = out.writeRaster(opt);
+		} else {
+			out = ds[0].deepCopy();
+		}
+		return(out);
 	}
 
 //	if (!overlaps(r1, r2, c1, c2)) {
