@@ -1088,10 +1088,16 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 bool SpatRaster::readStartGDAL(unsigned src) {
 
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, source[src].open_ops);
-	if( poDataset == NULL )  {
-		setError("cannot read from " + source[src].filename );
+
+    if( poDataset == NULL )  {
+		if (!file_exists(source[src].filename )) {
+			setError("file does not exist");
+		} else {
+			setError("cannot read from " + source[src].filename  );
+		}
 		return false;
 	}
+
     source[src].gdalconnection = poDataset;
 	source[src].open_read = true;
 	return(true);
@@ -1258,12 +1264,18 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, size_t row, size_t 
 	}
 
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, source[src].open_ops);
-	GDALRasterBand *poBand;
-
+	
     if( poDataset == NULL )  {
-		setError("cannot read values. Does the file still exist?");
+		if (!file_exists(source[src].filename )) {
+			setError("file does not exist");
+		} else {
+			setError("cannot read from " + source[src].filename  );
+		}
 		return errout;
 	}
+
+	GDALRasterBand *poBand;
+
 	unsigned ncell = ncols * nrows;
 	unsigned nl;
 	std::vector<int> panBandMap;
@@ -1338,10 +1350,16 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_
 	#endif
 	
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, openops);
+
     if( poDataset == NULL )  {
-		setError("no data");
+		if (!file_exists(source[src].filename )) {
+			setError("file does not exist");
+		} else {
+			setError("cannot read from " + source[src].filename  );
+		}
 		return errout;
 	}
+
 	unsigned ncell = scols * srows;
 	unsigned nl = source[src].nlyr;
 	std::vector<double> out(ncell*nl);
@@ -1419,11 +1437,16 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::v
 
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, source[src].open_ops);
 
-	GDALRasterBand *poBand;
-
     if( poDataset == NULL )  {
+		if (!file_exists(source[src].filename )) {
+			setError("file does not exist");
+		} else {
+			setError("cannot read from " + source[src].filename  );
+		}
 		return errout;
 	}
+
+	GDALRasterBand *poBand;
 
 	std::vector<unsigned> lyrs = source[src].layers;
 	unsigned nl = lyrs.size();
@@ -1500,11 +1523,16 @@ std::vector<double> SpatRaster::readRowColGDALFlat(unsigned src, std::vector<int
 
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, source[src].open_ops);
 
-	GDALRasterBand *poBand;
-
     if( poDataset == NULL )  {
+		if (!file_exists(source[src].filename )) {
+			setError("file does not exist");
+		} else {
+			setError("cannot read from " + source[src].filename  );
+		}
 		return errout;
 	}
+
+	GDALRasterBand *poBand;
 
 	std::vector<unsigned> lyrs = source[src].layers;
 	unsigned nl = lyrs.size();
