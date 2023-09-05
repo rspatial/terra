@@ -1,4 +1,11 @@
-# version 1.7-45
+# version 1.7-47
+
+## bug fixes
+
+- Attempting to use `extract` with a raster file that had been deleted crashed R. [#1268](https://github.com/rspatial/terra/issues/1268) by Derek Friend
+
+
+# version 1.7-46
 
 ## bug fixes
 

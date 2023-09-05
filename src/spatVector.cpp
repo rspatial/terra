@@ -415,7 +415,7 @@ std::vector<bool> SpatVector::naGeoms(){
 		for (size_t j=0; j<geoms[i].parts.size(); j++) {
 			for (size_t k=0; k<geoms[i].parts[j].x.size(); k++) {
 				nas[i] = false;
-				if (std::isnan(geoms[i].parts[j].x[k]) | 
+				if (std::isnan(geoms[i].parts[j].x[k]) || 
 						std::isnan(geoms[i].parts[j].y[k])) {
 					nas[i] = true;
 					goto contin;
