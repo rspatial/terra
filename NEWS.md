@@ -6,7 +6,14 @@
 - Attempting to use `extract` with a raster file that had been deleted crashed R. [#1268](https://github.com/rspatial/terra/issues/1268) by Derek Friend
 
 
+## enhancements
+
+- argument "gdal" in `project` was renamed to "use_gdal" [#1269](https://github.com/rspatial/terra/issues/1269) by Stuart Brown.
+
+
 # version 1.7-46
+
+Released 2023-09-06
 
 ## bug fixes
 

@@ -626,7 +626,7 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 )
 
 setMethod("project", signature(x="SpatRaster"),
-	function(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, res=NULL, origin=NULL, threads=FALSE, filename="", ..., by_util = FALSE)  {
+	function(x, y, method, mask=FALSE, align=FALSE, res=NULL, origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)  {
 
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@pnt$rgb)) {
@@ -644,7 +644,7 @@ setMethod("project", signature(x="SpatRaster"),
 		opt <- spatOptions(filename, threads=threads, ...)
 
 		if (inherits(y, "SpatRaster")) {
-			if (gdal) {
+			if (use_gdal) {
 
 				if (by_util) {
 						x@pnt <- x@pnt$warp_by_util(y@pnt, "", method, mask[1], align[1], FALSE, opt)
@@ -666,9 +666,9 @@ setMethod("project", signature(x="SpatRaster"),
 				tmp <- project(rast(x), y)
 				if (!is.null(res)) res(tmp) <- res
 				if (!is.null(origin)) origin(tmp) <- origin
-				return(project(x, tmp, method=method, mask=mask, align=align, gdal=gdal, filename=filename, ...))
+				return(project(x, tmp, method=method, mask=mask, align=align, filename=filename, use_gdal=use_gdal, by_util=by_util, ...))
 			}
-			if (gdal) {
+			if (use_gdal) {
 
 				if (by_util) {
 					x@pnt <- x@pnt$warp_by_util(SpatRaster$new(), y, method, mask, FALSE, FALSE, opt)

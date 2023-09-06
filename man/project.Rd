@@ -15,8 +15,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 \usage{
 \S4method{project}{SpatVector}(x, y, partial = FALSE)
 
-\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, 
-	res=NULL, origin=NULL, threads=FALSE, filename="", ..., by_util = FALSE)
+\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, res=NULL, 
+	origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)
 
 \S4method{project}{SpatExtent}(x, from, to)
 
