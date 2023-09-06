@@ -1,4 +1,4 @@
-# Author: Robert J. Hijmans, r.hijmans@gmail.com
+# Author: Robert J. Hijmans, r.hijmans@gmail.com 
 # Date : November 2017
 # Version 0
 # License GPL v3
