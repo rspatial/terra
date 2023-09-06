@@ -18,7 +18,7 @@
 \description{
 Plot the values of a SpatRaster or SpatVector to make a map. 
 
-See \code{\link{points}}, \code{\link{lines}} or \code{\link{polys}} to add a SpatVector to an existing map (or use argument \code{add=TRUE}.
+See \code{\link{points}}, \code{\link{lines}} or \code{\link{polys}} to add a SpatVector to an existing map (or use argument \code{add=TRUE}).
 
 There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,missing-method]{SpatGraticule}} or \code{\link[=plot,SpatExtent,missing-method]{SpatExtent}}.
 }
