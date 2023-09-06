@@ -40,6 +40,10 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install macOS system dependencies
+        if: runner.os == 'macOS'
+        run: brew install gdal proj
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
