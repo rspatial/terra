@@ -5,7 +5,7 @@
 
 setMethod("ext", signature(x="SpatExtent"),
 	function(x){
-		x@pnt <- x@pnt$deepcopy()
+		x@cpp <- x@cpp$deepcopy()
 		x
 	}
 )
@@ -13,7 +13,7 @@ setMethod("ext", signature(x="SpatExtent"),
 setMethod("ext", signature(x="SpatRasterCollection"),
 	function(x){
 		e <- methods::new("SpatExtent")
-		e@pnt <- x@pnt$extent()
+		e@cpp <- x@cpp$extent()
 		e
 	}
 )
@@ -31,7 +31,7 @@ setMethod("ext", signature(x="sf"),
 setMethod("ext", signature(x="missing"),
 	function(x){
 		e <- methods::new("SpatExtent")
-		e@pnt <- SpatExtent$new()
+		e@cpp <- SpatExtent$new()
 		e
 	}
 )
@@ -47,11 +47,11 @@ setMethod("ext", signature(x="numeric"),
 		names(x) <- NULL
 		e <- methods::new("SpatExtent")
 		if (xy) {
-			e@pnt <- SpatExtent$new(x[1], x[3], x[2], x[4])
+			e@cpp <- SpatExtent$new(x[1], x[3], x[2], x[4])
 		} else {
-			e@pnt <- SpatExtent$new(x[1], x[2], x[3], x[4])
+			e@cpp <- SpatExtent$new(x[1], x[2], x[3], x[4])
 		}
-		if (!e@pnt$valid) {
+		if (!e@cpp$valid) {
 			error("ext", "invalid extent")
 		}
 		e
@@ -88,7 +88,7 @@ setMethod("ext", signature(x="SpatRaster"),
 			ext(range(xFromCell(x, cells)) + dx, range(yFromCell(x, cells)) + dy)
 		} else {
 			e <- methods::new("SpatExtent")
-			e@pnt <- x@pnt$extent
+			e@cpp <- x@cpp$extent
 			return(e)
 		}
 	}
@@ -99,7 +99,7 @@ setMethod("ext", signature(x="SpatRaster"),
 setMethod("ext", signature(x="SpatRasterDataset"),
 	function(x){
 		e <- methods::new("SpatExtent")
-		e@pnt <- x@pnt$ext()
+		e@cpp <- x@cpp$ext()
 		return(e)
 	}
 )
@@ -108,7 +108,7 @@ setMethod("ext", signature(x="SpatRasterDataset"),
 
 setMethod("ext<-", signature("SpatRaster", "SpatExtent"),
 	function(x, value) {
-		x@pnt$extent <- value@pnt
+		x@cpp$extent <- value@cpp
 		messages(x, "ext<-")
 	}
 )
@@ -117,8 +117,8 @@ setMethod("ext<-", signature("SpatRaster", "SpatExtent"),
 setMethod("ext<-", signature("SpatRaster", "numeric"),
 	function(x, value) {
 		e <- ext(value)
-		x@pnt <- x@pnt$deepcopy()
-		x@pnt$extent <- e@pnt
+		x@cpp <- x@cpp$deepcopy()
+		x@cpp$extent <- e@cpp
 		messages(x, "ext<-")
 	}
 )
@@ -126,7 +126,7 @@ setMethod("ext<-", signature("SpatRaster", "numeric"),
 setMethod("set.ext", signature("SpatRaster"),
 	function(x, value) {
 		e <- ext(value)
-		x@pnt$extent <- e@pnt
+		x@cpp$extent <- e@cpp
 		messages(x, "set_ext")
 		invisible(TRUE)
 	}
@@ -136,7 +136,7 @@ setMethod("set.ext", signature("SpatRaster"),
 setMethod("ext", signature(x="SpatVector"),
 	function(x) {
 		e <- methods::new("SpatExtent")
-		e@pnt <- x@pnt$extent()
+		e@cpp <- x@cpp$extent()
 		e
 	}
 )
@@ -144,7 +144,7 @@ setMethod("ext", signature(x="SpatVector"),
 setMethod("ext", signature(x="SpatVectorProxy"),
 	function(x) {
 		e <- methods::new("SpatExtent")
-		e@pnt <- x@pnt$v$extent()
+		e@cpp <- x@cpp$v$extent()
 		e
 	}
 )
@@ -172,22 +172,22 @@ setMethod("ext", signature(x="Spatial"),
 
 setMethod("xmin", signature(x="SpatExtent"),
 	function(x){
-		x@pnt$vector[1]
+		x@cpp$vector[1]
 	}
 )
 setMethod("xmax", signature(x="SpatExtent"),
 	function(x){
-		x@pnt$vector[2]
+		x@cpp$vector[2]
 	}
 )
 setMethod("ymin", signature(x="SpatExtent"),
 	function(x){
-		x@pnt$vector[3]
+		x@cpp$vector[3]
 	}
 )
 setMethod("ymax", signature(x="SpatExtent"),
 	function(x){
-		x@pnt$vector[4]
+		x@cpp$vector[4]
 	}
 )
 
@@ -248,7 +248,7 @@ setMethod("xmin<-", signature("SpatRaster", "numeric"),
 	function(x, value){
 		v <- as.vector(ext(x))
 		v[1] <- value
-		x@pnt <- x@pnt$deepcopy()
+		x@cpp <- x@cpp$deepcopy()
 		ext(x) <- ext(v)
 		x
 	}
@@ -259,7 +259,7 @@ setMethod("xmax<-", signature("SpatRaster", "numeric"),
 	function(x, value){
 		v <- as.vector(ext(x))
 		v[2] <- value
-		x@pnt <- x@pnt$deepcopy()
+		x@cpp <- x@cpp$deepcopy()
 		ext(x) <- ext(v)
 		x
 	}
@@ -268,7 +268,7 @@ setMethod("ymin<-", signature("SpatRaster", "numeric"),
 	function(x, value){
 		v <- as.vector(ext(x))
 		v[3] <- value
-		x@pnt <- x@pnt$deepcopy()
+		x@cpp <- x@cpp$deepcopy()
 		ext(x) <- ext(v)
 		x
 	}
@@ -278,7 +278,7 @@ setMethod("ymax<-", signature("SpatRaster", "numeric"),
 	function(x, value){
 		v <- as.vector(ext(x))
 		v[4] <- value
-		x@pnt <- x@pnt$deepcopy()
+		x@cpp <- x@cpp$deepcopy()
 		ext(x) <- ext(v)
 		x
 	}
@@ -351,7 +351,7 @@ setReplaceMethod("[", c("SpatExtent", "numeric", "missing"),
 
 setMethod("is.valid", signature(x="SpatExtent"),
 	function(x) {
-		#x@pnt$valid
-		x@pnt$valid_notempty
+		#x@cpp$valid
+		x@cpp$valid_notempty
 	}
 )

@@ -79,9 +79,9 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, ...) {
 			e$ymin <- yFromRow(out, b$row[i]  + b$nrows[i] - 1) - hy
 			rbe <- crop(rb, e)
 			if (win == "rectangle") {
-				p <- rbe@pnt$winrect(y[,1], y[,2], y[,3], pars, opt)
+				p <- rbe@cpp$winrect(y[,1], y[,2], y[,3], pars, opt)
 			} else {
-				p <- rbe@pnt$wincircle(y[,1], y[,2], y[,3], pars, opt)
+				p <- rbe@cpp$wincircle(y[,1], y[,2], y[,3], pars, opt)
 			}
 
 			if ((pars[4] > 1) && (length(p[[1]]) > 0)) {
@@ -108,9 +108,9 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, ...) {
 			e$ymin <- yFromRow(out, b$row[i]  + b$nrows[i] - 1) - hy
 			rbe <- crop(rb, e)
 			if (win == "rectangle") {
-				p <- rbe@pnt$winrect(y[,1], y[,2], id, pars, opt)
+				p <- rbe@cpp$winrect(y[,1], y[,2], id, pars, opt)
 			} else {
-				p <- rbe@pnt$wincircle(y[,1], y[,2], id, pars, opt)
+				p <- rbe@cpp$wincircle(y[,1], y[,2], id, pars, opt)
 			}
 
 			if ((pars[4] > 1) && (length(p[[1]]) > 0)) {
@@ -270,7 +270,7 @@ setMethod("rasterizeWin", signature(x="data.frame", y="SpatRaster"),
 					error("rasterizeWin", paste(fun, "not yet available for 'win=rectangle'"))
 				} else {
 					opt <- spatOptions(filename, wopt=wopt)
-					x@pnt <- x@pnt$rasterizeWindow(x[,1], x[,2], x[,3], algo, pars, opt)
+					x@cpp <- x@cpp$rasterizeWindow(x[,1], x[,2], x[,3], algo, pars, opt)
 					return(messages(x, "rasterizeWin"))
 				}
 			} 
@@ -311,7 +311,7 @@ setMethod("interpNear", signature(x="SpatRaster", y="matrix"),
 		}
 
 		opt <- spatOptions(filename, ...)
-		x@pnt <- x@pnt$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
+		x@cpp <- x@cpp$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
 		messages(x, "interpNear")
 	}
 )
@@ -348,7 +348,7 @@ setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
 		}
 
 		opt <- spatOptions(filename, ...)
-		x@pnt <- x@pnt$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
+		x@cpp <- x@cpp$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
 		messages(x, "interpIDW")
 	}
 )

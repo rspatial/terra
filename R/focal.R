@@ -48,7 +48,7 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 		} else {
 			narm <- isTRUE(list(...)$na.rm)
 		}
-		x@pnt <- x@pnt$focal(w, m, fillvalue, narm, na.only, na.omit, txtfun, expand, opt)
+		x@cpp <- x@cpp$focal(w, m, fillvalue, narm, na.only, na.omit, txtfun, expand, opt)
 		messages(x, "focal")
 		return(x)
 
@@ -114,9 +114,9 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 			vv <- NULL
 			for (j in 1:nl) {
 				if (nl > 1) {
-					v <- x[[j]]@pnt$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
+					v <- x[[j]]@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
 				} else {
-					v <- x@pnt$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
+					v <- x@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
 				}
 				if (dow) {
 					if (any(is.na(m))) {
@@ -262,19 +262,19 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 		nc <- b$nrows[i]*ncol(x)
 		vv <- NULL
 		if (expand) {
-			v <- list(matrix(x[[1]]@pnt$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
+			v <- list(matrix(x[[1]]@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
 			v <- do.call(rbind, rep(v, halfway+1))
 			for (k in 2:(1+halfway)) {
-				v <- rbind(v,  matrix(x[[k]]@pnt$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
+				v <- rbind(v,  matrix(x[[k]]@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
 			}
 		} else if (pad) {
 			v <- matrix(padvalue, ncol=b$nrows[i]*ncol(x), nrow=nread*halfway)
 			for (k in 1:(1+halfway)) {
-				v <- rbind(v,  matrix(x[[k]]@pnt$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
+				v <- rbind(v,  matrix(x[[k]]@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
 			}
 		} else {
 			v <- lapply(1:w[3],
-				function(k) matrix(x[[k]]@pnt$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
+				function(k) matrix(x[[k]]@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
 			v <- do.call(rbind, v)
 		}
 		for (j in startlyr:endlyr) {
@@ -288,7 +288,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 						v <- rbind(v, v[(nrow(v)-nread):nrow(v), ])
 					}
 				} else {
-					v <- rbind(v, matrix(x[[k]]@pnt$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=ncol(v)))
+					v <- rbind(v, matrix(x[[k]]@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=ncol(v)))
 				}
 			}
 			if (dow) {
@@ -355,7 +355,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 
 	opt <- spatOptions()
 	nl <- nlyr(x)
-	v <- x@pnt$focalValues(w, fillvalue, max(0, trunc(nrow(x)/2)), 1, opt)[1:prod(w)]
+	v <- x@cpp$focalValues(w, fillvalue, max(0, trunc(nrow(x)/2)), 1, opt)[1:prod(w)]
 	if (dow) {
 		if (any(is.na(m))) {
 			v <- v[k] * mm
@@ -379,9 +379,9 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 		vv <- NULL
 		for (j in 1:nl) {
 			if (nl > 1) {
-				v <- x[[j]]@pnt$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
+				v <- x[[j]]@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
 			} else {
-				v <- x@pnt$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
+				v <- x@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
 			}
 			sst <- messages(x)
 			if (dow) {

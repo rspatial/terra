@@ -42,13 +42,13 @@ function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, clamp=FALSE, circular=
 			if (txtfun %in% .cpp_funs) {
 				opt <- spatOptions(filename, overwrite, wopt=wopt)
 				na.rm <- isTRUE(list(...)$na.rm)
-				x@pnt <- x@pnt$rapply(index@pnt, firstval, lastval, txtfun, clamp, na.rm, circular, opt)
+				x@cpp <- x@cpp$rapply(index@cpp, firstval, lastval, txtfun, clamp, na.rm, circular, opt)
 				return(messages(x, "rapp"))
 			}
 		}
 	}
 	out <- rast(x)
-	v <- x@pnt$rappvals(index@pnt, firstval, lastval, clamp, allyrs, fill, 0, 1, circular)
+	v <- x@cpp$rappvals(index@cpp, firstval, lastval, clamp, allyrs, fill, 0, 1, circular)
 	v <- sapply(v, fun, ...)
 	if (is.list(v)) { error("rapp", "values returned by 'fun' do not have the same length for each cell") }
 	nc <- ncol(out)
@@ -63,7 +63,7 @@ function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, clamp=FALSE, circular=
 	}
 	b <- writeStart(out, filename, overwrite, sources=sources(x), wopt=wopt, n=nlyr(x)*3)
 	for (i in 1:b$n) {
-		v <- x@pnt$rappvals(index@pnt, firstval, lastval, clamp, allyrs, fill, b$row[i]-1, b$nrows[i], circular)
+		v <- x@cpp$rappvals(index@cpp, firstval, lastval, clamp, allyrs, fill, b$row[i]-1, b$nrows[i], circular)
 		v <- sapply(v, fun, ...)
 		if (trans) v = t(v)
 		writeValues(out, as.vector(v), b$row[i], b$nrows[i])

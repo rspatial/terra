@@ -4,14 +4,14 @@
 # License GPL v3
 
 readAll <- function(x) {
-	ok <- x@pnt$readAll()
+	ok <- x@cpp$readAll()
 	x <- messages(x, "readAll")
 	invisible(ok)
 }
 
 setMethod("readStart", signature(x="SpatRaster"),
 	function(x) {
-		success <- x@pnt$readStart()
+		success <- x@cpp$readStart()
 		messages(x, "readStart")
 		if (!success) error("readStart,SpatRaster", "cannot open file for reading")
 		invisible(success)
@@ -20,7 +20,7 @@ setMethod("readStart", signature(x="SpatRaster"),
 
 setMethod("readStart", signature(x="SpatRasterDataset"),
 	function(x) {
-		success <- x@pnt$readStart()
+		success <- x@cpp$readStart()
 		messages(x, "readStart")
 		if (!success) error("readStart,SpatRasterDataset", "cannot open file for reading")
 		invisible(success)
@@ -43,7 +43,7 @@ setMethod("readStart", signature(x="SpatRasterDataset"),
 
 setMethod("readStop", signature(x="SpatRaster"),
 	function(x) {
-		success <- x@pnt$readStop()
+		success <- x@cpp$readStop()
 		messages(x, "readStop")
 		invisible(success)
 	}
@@ -51,7 +51,7 @@ setMethod("readStop", signature(x="SpatRaster"),
 
 setMethod("readStop", signature(x="SpatRasterDataset"),
 	function(x) {
-		success <- x@pnt$readStop()
+		success <- x@cpp$readStop()
 		messages(x, "readStop")
 		invisible(success)
 	}

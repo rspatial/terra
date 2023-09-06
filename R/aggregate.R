@@ -55,15 +55,15 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
 		narm <- isTRUE(list(...)$na.rm)
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
-		x@pnt <- x@pnt$aggregate(fact, fun, narm, opt)
+		x@cpp <- x@cpp$aggregate(fact, fun, narm, opt)
 		return (messages(x, "aggregate"))
 	} else {
 		out <- rast(x)
 		nl <- nlyr(out)
 		opt <- spatOptions()
-		out@pnt <- out@pnt$aggregate(fact, "sum", TRUE, opt)
+		out@cpp <- out@cpp$aggregate(fact, "sum", TRUE, opt)
 		out <- messages(out, "aggregate")
-		dims <- x@pnt$get_aggregate_dims(fact)
+		dims <- x@cpp$get_aggregate_dims(fact)
 
 		vtest <- values(x, dataframe=TRUE, row=1, nrows=dims[1], col=1, ncols=dims[2])
 		vtest <- as.list(vtest)
@@ -118,7 +118,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		if (doPar) {
 			for (i in 1:b$n) {
 				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
-				v <- x@pnt$get_aggregates(v, b$nrows[i], dims)
+				v <- x@cpp$get_aggregates(v, b$nrows[i], dims)
 				v <- parallel::parSapply(cores, v, fun, ...)
 				if (length(v) != outnr[i] * mpl) {
 					error("aggregate", "this function does not return the correct number of values")
@@ -131,7 +131,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		} else {
 			for (i in 1:b$n) {
 				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
-				v <- x@pnt$get_aggregates(v, b$nrows[i], dims)
+				v <- x@cpp$get_aggregates(v, b$nrows[i], dims)
 				v <- sapply(v, fun, ...)
 				if (length(v) != outnr[i] * mpl) {
 					error("aggregate", "this function does not return the correct number of values")
@@ -212,7 +212,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 		}
 		if (is.null(by)) {
 			x$aggregate_by_variable = 1;
-			x@pnt <- x@pnt$aggregate("aggregate_by_variable", dissolve)
+			x@cpp <- x@cpp$aggregate("aggregate_by_variable", dissolve)
 			x$aggregate_by_variable = NULL;
 		} else {
 			if (is.character(by)) {
@@ -245,7 +245,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 				by <- names(x)[iby]
 			}
 
-			x@pnt <- x@pnt$aggregate(by, dissolve)
+			x@cpp <- x@cpp$aggregate(by, dissolve)
 			messages(x)
 
 			if (mvars) {

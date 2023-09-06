@@ -1,14 +1,14 @@
 
 setMethod("length", signature(x="SpatVectorCollection"),
 	function(x) {
-		x@pnt$size()
+		x@cpp$size()
 	}
 )
 
 setMethod("svc", signature(x="missing"),
 	function(x) {
 		v <- methods::new("SpatVectorCollection")
-		v@pnt <- SpatVectorCollection$new()
+		v@cpp <- SpatVectorCollection$new()
 		v
 	}
 )
@@ -19,7 +19,7 @@ setMethod("svc", signature(x="character"),
 		if (is.null(filter)) {
 			filter <- SpatVector$new()
 		} else {
-			filter <- filter@pnt
+			filter <- filter@cpp
 		}
 		if (is.null(extent)) {
 			extent <- double()
@@ -28,7 +28,7 @@ setMethod("svc", signature(x="character"),
 		}
 	
 		v <- methods::new("SpatVectorCollection")
-		v@pnt <- SpatVectorCollection$new(x, layer, query, extent, filter)	
+		v@cpp <- SpatVectorCollection$new(x, layer, query, extent, filter)	
 		v
 	}
 )
@@ -38,13 +38,13 @@ setMethod("svc", signature(x="character"),
 setMethod("svc", signature(x="SpatVector"),
 	function(x, ...) {
 		r <- methods::new("SpatVectorCollection")
-		r@pnt <- SpatVectorCollection$new()
-		r@pnt$push_back(x@pnt)
+		r@cpp <- SpatVectorCollection$new()
+		r@cpp$push_back(x@cpp)
 		dots <- list(...)
 		if (length(dots) > 0) {
 			for (i in 1:length(dots)) {
 				if (inherits(dots[[i]], "SpatVector")) {
-					r@pnt$push_back(dots[[i]]@pnt)
+					r@cpp$push_back(dots[[i]]@cpp)
 				} else {
 					warn("svc", "cannot add objects of class: ", class(dots[[i]]))
 				}
@@ -65,10 +65,10 @@ setMethod("svc", signature(x="sf"),
 setMethod("svc", signature(x="list"),
 	function(x) {
 		r <- methods::new("SpatVectorCollection")
-		r@pnt <- SpatVectorCollection$new()
+		r@cpp <- SpatVectorCollection$new()
 		for (i in seq_along(x)) {
 			if (inherits(x[[i]], "SpatVector")) {
-				r@pnt$push_back(x[[i]]@pnt)
+				r@cpp$push_back(x[[i]]@cpp)
 			}
 		}
 		messages(r, "svc")
@@ -85,9 +85,9 @@ setReplaceMethod("[", c("SpatVectorCollection", "numeric", "missing"),
 		i <- sort(i)
 		for (j in i) {
 			if (j == (length(x)+1)) {
-				x@pnt$push_back(value@pnt)
+				x@cpp$push_back(value@cpp)
 			} else {
-				x@pnt$replace(value@pnt, j-1)
+				x@cpp$replace(value@cpp, j-1)
 			}
 		}
 		messages(x, "`[<-`")
@@ -99,11 +99,11 @@ setMethod("[", c("SpatVectorCollection", "numeric", "missing"),
 function(x, i, j, drop=TRUE) {
 	if (i < 0) {i <- (1:length(x))[i]}
 	if (drop && (length(i) == 1)) {
-		ptr <- x@pnt$get(i-1)
+		ptr <- x@cpp$get(i-1)
 		x <- methods::new("SpatVector")
-		x@pnt <- ptr
+		x@cpp <- ptr
 	} else {
-		x@pnt <- x@pnt$subset(i-1)
+		x@cpp <- x@cpp$subset(i-1)
 	}
 	messages(x, "`[`")
 })
@@ -123,15 +123,15 @@ setMethod("c", signature(x="SpatVector"),
 setMethod("c", signature(x="SpatVectorCollection"),
 	function(x, ...) {
 
-		x@pnt <- x@pnt$subset(0:(x@pnt$size()-1) ) ## deep copy
+		x@cpp <- x@cpp$subset(0:(x@cpp$size()-1) ) ## deep copy
 		dots <- list(...)
 		for (i in seq_along(dots)) {
 			if (inherits(dots[[i]], "SpatVectorCollection")) {
 				for (j in 1:length(dots[[i]])) {
-					x@pnt$push_back(dots[[i]][[j]]@pnt)
+					x@cpp$push_back(dots[[i]][[j]]@cpp)
 				}
 			} else if (inherits(dots[[i]], "SpatVector")) {
-				x@pnt$push_back(dots[[i]]@pnt)
+				x@cpp$push_back(dots[[i]]@cpp)
 			} else {
 				error("c", "arguments must be SpatVector or SpatVectorCollection")
 			}

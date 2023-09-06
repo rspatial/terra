@@ -6,13 +6,13 @@
 
 setClass("SpatRaster",
 	representation (
-		pnt = "C++Object"
+		cpp = "C++Object"
 	),
 	prototype (
-		pnt = NULL
+		cpp = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@pnt) || is(object@pnt, "Rcpp_SpatRaster")){
+		if (is.null(object@cpp) || is(object@cpp, "Rcpp_SpatRaster")){
 			return(TRUE)
 		} else {
 			return(FALSE)
@@ -22,13 +22,13 @@ setClass("SpatRaster",
 
 setClass("SpatRasterDataset",
 	representation (
-		pnt = "C++Object"
+		cpp = "C++Object"
 	),
 	prototype (
-		pnt = NULL
+		cpp = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@pnt) || is(object@pnt, "Rcpp_SpatRasterStack")){
+		if (is.null(object@cpp) || is(object@cpp, "Rcpp_SpatRasterStack")){
 			return(TRUE)
 		} else {
 			return(FALSE)
@@ -38,13 +38,13 @@ setClass("SpatRasterDataset",
 
 setClass("SpatRasterCollection",
 	representation (
-		pnt = "C++Object"
+		cpp = "C++Object"
 	),
 	prototype (
-		pnt = NULL
+		cpp = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@pnt) || is(object@pnt, "Rcpp_SpatRasterCollection")){
+		if (is.null(object@cpp) || is(object@cpp, "Rcpp_SpatRasterCollection")){
 			return(TRUE)
 		} else {
 			return(FALSE)
@@ -55,13 +55,13 @@ setClass("SpatRasterCollection",
 
 setClass("SpatVector",
 	representation (
-		pnt = "C++Object"
+		cpp = "C++Object"
 	),
 	prototype (
-		pnt = NULL
+		cpp = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@pnt) || is(object@pnt, "Rcpp_SpatVector")){
+		if (is.null(object@cpp) || is(object@cpp, "Rcpp_SpatVector")){
 			return(TRUE)
 		} else {
 			return(FALSE)
@@ -71,13 +71,13 @@ setClass("SpatVector",
 
 setClass("SpatVectorProxy",
 	representation (
-		pnt = "C++Object"
+		cpp = "C++Object"
 	),
 	prototype (
-		pnt = NULL
+		cpp = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@pnt) || is(object@pnt, "Rcpp_SpatVectorProxy")){
+		if (is.null(object@cpp) || is(object@cpp, "Rcpp_SpatVectorProxy")){
 			return(TRUE)
 		} else {
 			return(FALSE)
@@ -88,13 +88,13 @@ setClass("SpatVectorProxy",
 
 setClass("SpatVectorCollection",
 	representation (
-		pnt = "C++Object"
+		cpp = "C++Object"
 	),
 	prototype (
-		pnt = NULL
+		cpp = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@pnt) || is(object@pnt, "Rcpp_SpatVectorCollection")){
+		if (is.null(object@cpp) || is(object@cpp, "Rcpp_SpatVectorCollection")){
 			return(TRUE)
 		} else {
 			return(FALSE)
@@ -106,13 +106,13 @@ setClass("SpatVectorCollection",
 
 setClass("SpatExtent",
 	representation (
-		pnt = "C++Object"
+		cpp = "C++Object"
 	),
 	prototype (
-		pnt = NULL
+		cpp = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@pnt) || is(object@pnt, "Rcpp_SpatExtent")){
+		if (is.null(object@cpp) || is(object@cpp, "Rcpp_SpatExtent")){
 			return(TRUE)
 		} else {
 			return(FALSE)
@@ -123,13 +123,13 @@ setClass("SpatExtent",
 
 setClass("SpatOptions",
 	representation (
-		pnt = "C++Object"
+		cpp = "C++Object"
 	),
 	prototype (
-		pnt = NULL
+		cpp = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@pnt) || is(object@pnt, "Rcpp_SpatOptions")){
+		if (is.null(object@cpp) || is(object@cpp, "Rcpp_SpatOptions")){
 			return(TRUE)
 		} else {
 			return(FALSE)
@@ -141,15 +141,15 @@ setClass("SpatOptions",
 
 setClass("SpatGraticule",
 	representation (
-		pnt = "C++Object",
+		cpp = "C++Object",
 		box = "C++Object"
 	),
 	prototype (
-		pnt = NULL,
-		pnt = NULL
+		cpp = NULL,
+		cpp = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@pnt) || is(object@pnt, "Rcpp_SpatVector")){
+		if (is.null(object@cpp) || is(object@cpp, "Rcpp_SpatVector")){
 			return(TRUE)
 		} else {
 			return(FALSE)

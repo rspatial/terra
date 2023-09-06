@@ -3,7 +3,7 @@
 setMethod("blocks", signature(x="SpatRaster"),
 	function(x, n=4) {
 		opt <- spatOptions("", FALSE, ncopies=n)
-		b <- x@pnt$getBlockSizeR(n, opt$memfrac)
+		b <- x@cpp$getBlockSizeR(n, opt$memfrac)
 		b$row <- b$row + 1
 		b
 	}
@@ -15,9 +15,9 @@ setMethod("writeStart", signature(x="SpatRaster", filename="character"),
 		filename <- path.expand(trimws(filename[1]))
 		filename <- enc2utf8(filename)
 		opt <- spatOptions(filename, overwrite, ncopies=n, ...)
-		ok <- x@pnt$writeStart(opt, unique(sources))
+		ok <- x@cpp$writeStart(opt, unique(sources))
 		messages(x, "writeStart")
-		b <- x@pnt$getBlockSizeWrite()
+		b <- x@cpp$getBlockSizeWrite()
 		b$row <- b$row + 1
 		b
 	}
@@ -26,7 +26,7 @@ setMethod("writeStart", signature(x="SpatRaster", filename="character"),
 
 setMethod("writeStop", signature(x="SpatRaster"),
 	function(x) {
-		success <- x@pnt$writeStop()
+		success <- x@cpp$writeStop()
 		messages(x, "writeStop")
 		f <- sources(x)
 		if (f != "") {
@@ -38,7 +38,7 @@ setMethod("writeStop", signature(x="SpatRaster"),
 
 setMethod("writeValues", signature(x="SpatRaster", v="vector"),
 	function(x, v, start, nrows) {
-		success <- x@pnt$writeValues(v, start-1, nrows)
+		success <- x@cpp$writeValues(v, start-1, nrows)
 		messages(x, "writeValues")
 		invisible(success)
 	}
@@ -63,7 +63,7 @@ function(x, filename="", overwrite=FALSE, ...) {
 	#	return(saveRDS(x, filename))
 	#}
 	opt <- spatOptions(filename, overwrite, ...)
-	x@pnt <- x@pnt$writeRaster(opt)
+	x@cpp <- x@cpp$writeRaster(opt)
 	x <- messages(x, "writeRaster")
 	invisible(rast(filename))
 }
@@ -132,11 +132,11 @@ function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, 
 				newnms[j] <- paste0(newnms[j], "0")
 				nms[i] <- newnms
 			}
-			x@pnt <- x@pnt$deepcopy()
+			x@cpp <- x@cpp$deepcopy()
 			names(x) <- nms
 		}
 	}
-	success <- x@pnt$write(filename, layer, filetype, insert[1], overwrite[1], options)
+	success <- x@cpp$write(filename, layer, filetype, insert[1], overwrite[1], options)
 	messages(x, "writeVector")
 	invisible(TRUE)
 }
@@ -173,11 +173,11 @@ function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, 
 				# newnms[j] <- paste0(newnms[j], "0")
 				# nms[i] <- newnms
 			# }
-			# x@pnt <- x@pnt$deepcopy()
+			# x@cpp <- x@cpp$deepcopy()
 			# names(x) <- nms
 		# }
 	# }
-	# success <- x@pnt$write_proxy(filename, layer, filetype, insert[1], FALSE, overwrite[1], options)
+	# success <- x@cpp$write_proxy(filename, layer, filetype, insert[1], FALSE, overwrite[1], options)
 	# messages(x, "writeVector")
 	# invisible(TRUE)
 # }

@@ -53,8 +53,6 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent (see example with Robinson projection)}
   \item{align}{logical. If \code{TRUE}, and \code{y} is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of \code{x} is included}
 
-  \item{gdal}{logical. If \code{TRUE} the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the \code{near} and \code{bilinear} algorithms are available for the internal algorithm}
-
   \item{res}{numeric. Can be used to set the resolution of the output raster if \code{y} is a CRS}
 
   \item{origin}{numeric. Can be used to set the origin of the output raster if \code{y} is a CRS}
@@ -64,6 +62,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   \item{filename}{character. Output filename}
   
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+
+  \item{use_gdal}{logical. If \code{TRUE} the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the \code{near} and \code{bilinear} algorithms are available for the internal algorithm}
 
   \item{by_util}{logical. If \code{TRUE} and \code{gdal=TRUE}, the GDAL warp utility is used}
 

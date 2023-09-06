@@ -59,9 +59,9 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 				if (txtfun != "mean") {
 					error("zonal", "fun must be 'mean' when using weights")
 				}
-				sdf <- x@pnt$zonal_weighted(z@pnt, w@pnt, na.rm, opt)			
+				sdf <- x@cpp$zonal_weighted(z@cpp, w@cpp, na.rm, opt)			
 			} else {
-				sdf <- x@pnt$zonal(z@pnt, grast@pnt, txtfun, na.rm, opt)
+				sdf <- x@cpp$zonal(z@cpp, grast@cpp, txtfun, na.rm, opt)
 			}
 			sdf <- messages(sdf, "zonal")
 			out <- .getSpatDF(sdf)
@@ -170,12 +170,12 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
 			error("zonal", "this 'fun' is not supported. You can use extract instead")
 		} else {
 			if (is.null(w)) {
-				out <- x@pnt$zonal_poly(z@pnt, txtfun, weights[1], exact[1], touches[1], narm, opt)
+				out <- x@cpp$zonal_poly(z@cpp, txtfun, weights[1], exact[1], touches[1], narm, opt)
 			} else {
 				if (txtfun != "mean") {
 					error("zonal", "fun must be 'mean' when using weights")
 				}
-				out <- x@pnt$zonal_poly_weighted(z@pnt, w@pnt, weights[1], exact[1], touches[1], narm, opt)
+				out <- x@cpp$zonal_poly_weighted(z@cpp, w@cpp, weights[1], exact[1], touches[1], narm, opt)
 			}
 			messages(out, "zonal")
 			out <- .getSpatDF(out)
@@ -271,7 +271,7 @@ setMethod("global", signature(x="SpatRaster"),
 			stopifnot(inherits(weights, "SpatRaster"))
 			stopifnot(txtfun %in% c("mean", "sum"))
 			na.rm <- isTRUE(list(...)$na.rm)
-			ptr <- x@pnt$global_weighted_mean(weights@pnt, txtfun, na.rm, opt)
+			ptr <- x@cpp$global_weighted_mean(weights@cpp, txtfun, na.rm, opt)
 			messages(ptr, "global")
 			res <- .getSpatDF(ptr)
 			rownames(res) <- nms
@@ -290,9 +290,9 @@ setMethod("global", signature(x="SpatRaster"),
 				txtfun <- unique(txtfun)
 				na.rm <- isTRUE(list(...)$na.rm)
 				if (isTRUE(list(...)$old)) {
-					ptr <- x@pnt$global(txtfun, na.rm, opt)			
+					ptr <- x@cpp$global(txtfun, na.rm, opt)			
 				} else {
-					ptr <- x@pnt$mglobal(txtfun, na.rm, opt)
+					ptr <- x@cpp$mglobal(txtfun, na.rm, opt)
 				}
 				messages(ptr, "global")
 				res <- .getSpatDF(ptr)
@@ -405,9 +405,9 @@ setMethod("freq", signature(x="SpatRaster"),
 			}
 
 			if (is.na(digits)) {
-				v <- x@pnt$count(value, bylayer[1], FALSE, 0, opt)
+				v <- x@cpp$count(value, bylayer[1], FALSE, 0, opt)
 			} else {
-				v <- x@pnt$count(value, bylayer[1], TRUE, digits, opt)
+				v <- x@cpp$count(value, bylayer[1], TRUE, digits, opt)
 				value <- round(value, digits)
 			}
 			if (bylayer) {
@@ -418,9 +418,9 @@ setMethod("freq", signature(x="SpatRaster"),
 
 		} else {
 			if (is.na(digits)) {
-				v <- x@pnt$freq(bylayer[1], FALSE, 0, opt)
+				v <- x@cpp$freq(bylayer[1], FALSE, 0, opt)
 			} else {
-				v <- x@pnt$freq(bylayer[1], TRUE, digits, opt)
+				v <- x@cpp$freq(bylayer[1], TRUE, digits, opt)
 			}
 			v <- lapply(v, function(i) if (length(i) == 0) NA else i)
 
@@ -480,7 +480,7 @@ setMethod ("expanse", "SpatRaster",
 				error("expanse", "zones must be a SpatRaster")
 			}
 			compareGeom(x, zones, lyrs=FALSE, crs=FALSE, ext=TRUE, rowcol=TRUE)
-			v <- x@pnt$sum_area_group(zones@pnt, unit[1], transform[1], byValue[1], opt)
+			v <- x@cpp$sum_area_group(zones@cpp, unit[1], transform[1], byValue[1], opt)
 			messages(x)
 			v <- lapply(v, function(i) matrix(i, ncol=4, byrow=TRUE))
 			v <- data.frame(do.call(rbind, v))
@@ -505,7 +505,7 @@ setMethod ("expanse", "SpatRaster",
 			}
 			return(v)
 		} else {
-			v <- x@pnt$sum_area(unit, isTRUE(transform[1]), isTRUE(byValue[1]), opt)
+			v <- x@cpp$sum_area(unit, isTRUE(transform[1]), isTRUE(byValue[1]), opt)
 			x <- messages(x, "expanse")
 			if (byValue) {
 				v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2, byrow=TRUE)))

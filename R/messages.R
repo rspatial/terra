@@ -13,12 +13,12 @@ warn <- function(f, wmsg="", ...) {
 
 messages <- function(x, f="") {
 	#g <- gc(verbose=FALSE)
-	if (methods::.hasSlot(x, "pnt")) {
-		if (x@pnt$has_warning()) {
-			warn(f, paste(unique(x@pnt$getWarnings()), collapse="\n"))
+	if (methods::.hasSlot(x, "cpp")) {
+		if (x@cpp$has_warning()) {
+			warn(f, paste(unique(x@cpp$getWarnings()), collapse="\n"))
 		}
-		if (x@pnt$has_error()) {
-			error(f, x@pnt$getError())
+		if (x@cpp$has_error()) {
+			error(f, x@cpp$getError())
 		}
 	} else {
 		if (x$has_warning()) {
@@ -37,7 +37,7 @@ mem_info <- function(x, n=1) {
 	n <- max(0,n)
 	opt <- spatOptions()
 	opt$ncopies = n;
-	v <- x@pnt$mem_needs(opt)
+	v <- x@cpp$mem_needs(opt)
 	memmin <- opt$memmin
 	memmax <- opt$memmax
 	#if (print) {
@@ -68,7 +68,7 @@ mem_info <- function(x, n=1) {
 free_RAM <- function() {
 	opt <- spatOptions()
 	x <- rast()
-	v <- x@pnt$mem_needs(opt)
+	v <- x@cpp$mem_needs(opt)
 	v[2] / 128
 }
 

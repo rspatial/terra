@@ -142,7 +142,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 				old_pearson(x, asSample=asSample, na.rm=na.rm, nl=nl, n=n, mat=mat)
 			} else {
 				opt <- spatOptions()
-				m <- x@pnt$layerCor("pearson", na.rm, asSample, opt)
+				m <- x@cpp$layerCor("pearson", na.rm, asSample, opt)
 				x <- messages(x)
 				mat <- matrix(m[[1]], nrow=nl, byrow=TRUE)
 				means <- matrix(m[[2]], nrow=nl, byrow=TRUE)

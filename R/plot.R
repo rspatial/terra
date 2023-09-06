@@ -306,7 +306,7 @@ setMethod("barplot", "SpatRaster",
 shade <- function(slope, aspect, angle=45, direction=0, normalize=FALSE, filename="", overwrite=FALSE, ...) {
 	stopifnot(inherits(slope, "SpatRaster"))
 	opt <- spatOptions(filename, overwrite=overwrite, ...)
-	slope@pnt <- slope@pnt$hillshade(aspect@pnt, angle, direction, normalize[1], opt)
+	slope@cpp <- slope@cpp$hillshade(aspect@cpp, angle, direction, normalize[1], opt)
 	messages(slope, "shade")
 }
 

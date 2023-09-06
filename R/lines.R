@@ -60,15 +60,15 @@ setMethod("lines", signature(x="SpatVector"),
 			}
 			if ((length(col) == 1) && (length(lty)==1) && (length(lwd)==1)) {
 				col <- .getCols(1, col, alpha)
-				g <- x@pnt$linesNA()
+				g <- x@cpp$linesNA()
 				names(g) <- c("x", "y")
 				graphics::plot.xy(g, type="l", lty=lty, col=col, lwd=lwd, ...)
 			} else {
 				col <- .getCols(n, col, alpha)
 				lwd <- rep_len(lwd, n)
 				lty <- rep_len(lty, n)
-#				g <- lapply(x@pnt$linesList(), function(i) { names(i)=c("x", "y"); i } )
-				g <- x@pnt$linesList()
+#				g <- lapply(x@cpp$linesList(), function(i) { names(i)=c("x", "y"); i } )
+				g <- x@cpp$linesList()
 				for (i in 1:n) {
 					if (length(g[[i]]) > 0) {
 						names(g[[i]]) = c("x", "y")
