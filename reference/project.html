@@ -100,10 +100,6 @@
 <dd><p>logical. If <code>TRUE</code>, and <code>y</code> is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of <code>x</code> is included</p></dd>
 
 
-  <dt>gdal</dt>
-<dd><p>logical. If <code>TRUE</code> the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the <code>near</code> and <code>bilinear</code> algorithms are available for the internal algorithm</p></dd>
-
-
   <dt>res</dt>
 <dd><p>numeric. Can be used to set the resolution of the output raster if <code>y</code> is a CRS</p></dd>
 
@@ -122,6 +118,10 @@
   
   <dt>...</dt>
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
+
+  <dt>use_gdal</dt>
+<dd><p>logical. If <code>TRUE</code> the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the <code>near</code> and <code>bilinear</code> algorithms are available for the internal algorithm</p></dd>
 
 
   <dt>by_util</dt>
