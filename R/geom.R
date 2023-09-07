@@ -647,36 +647,65 @@ setMethod("split", signature(x="SpatVector", f="ANY"),
 setMethod("split", signature(x="SpatVector", f="SpatVector"),
 	function(x, f) {
 		if (geomtype(x) != "polygons") error("split", "first argument must be polygons")
-		if (geomtype(f) != "lines") error("split", "second argument must be lines")
+		if (!(geomtype(f) %in% c("lines", "polygons"))) {
+			error("split", "argument 'f' must have a lines or polygons geometry")
+		}
 		values(f) <- NULL
 		ex <- ext(x)
 		i <- intersect(ext(x), ext(f))
 		if (is.null(i)) {
-			error("split", "x and f do not intersect")
+			warn("split", "x and f do not intersect")
+			return(x)
 		}
 		r <- relate(x, f, "intersects")
 		if (sum(r) == 0) {
-			error("split", "x and f do not intersect")
+			warn("split", "x and f do not intersect")
+			return(x)
 		}
-		rr <- r[rowSums(r) > 0, ,drop=FALSE]
-		xx <- x
-		values(xx) <- NULL
-		ss <- vector("list", nrow(rr))
-		for (i in 1:nrow(rr)) {
-			ri <- which(rr[i,])
-			xi <- xx[i,]
-			lin <- intersect(f[ri,], xi)
-			uf <- rbind(as.lines(xi), lin)
-			uf <- aggregate(uf)
-			nds <- makeNodes(uf)
-			v <- as.polygons(nds)
-			v$id <- i
-			ss[[i]] <- v
+		r <- r[rowSums(r) > 0, ,drop=FALSE]
+		y <- x	
+		values(y) <- NULL
+		ss <- vector("list", nrow(r))
+		if (geomtype(f) == "lines") {
+			for (i in 1:nrow(r)) {
+				yi <- y[i]
+				yi <- disagg(yi)
+				add <- NULL
+				if (nrow(yi) > 1) {
+					ri <- relate(yi, f, "intersects")
+					if (any(!ri)) {
+						add <- yi[!ri]
+						yi <- yi[ri]
+					}
+				}
+				lin <- intersect(f[r[i,],], yi)
+				v <- rbind(as.lines(yi), lin)
+				v <- makeNodes( aggregate(v) )
+				v <- as.polygons(v)
+				if (!is.null(add)) {
+					v <- combineGeoms(v, add, overlap=FALSE, boundary=FALSE, distance=TRUE, dissolve=FALSE, erase=FALSE)
+				}
+				v$id <- i
+				ss[[i]] <- v
+			}
+			ss <- vect(ss)
+			v <- values(x)
+			values(ss) <- v[ss$id, ]
+			rbind(x[-i,], ss)
+		} else { #if (geomtype(f) == "polygons") {
+			for (i in 1:nrow(r)) {
+				yi <- y[i]
+				v <- rbind(intersect(yi, f[r[i,],]),
+							   erase(yi, f[r[i,],]))
+				v$id <- i
+				ss[[i]] <- v
+			}
+			ss <- vect(ss)
+			v <- values(x)
+			values(ss) <- v[ss$id, ]
+			rbind(x[-i,], ss)
+		
 		}
-		ss <- vect(ss)
-		v <- values(x)
-		values(ss) <- v[ss$id, ]
-		rbind(x[-i,], ss)
 	}
 )
 

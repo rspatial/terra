@@ -11,7 +11,7 @@
 \title{Split}
 
 \description{ 
-Split a SpatRaster by layer, or a SpatVector by attributes. You can also split the geometry of a polygon SpatVector with a line SpatVector. 
+Split a SpatRaster by layer, or a SpatVector by attributes. You can also split the geometry of a polygon SpatVector with another SpatVector. 
 }
 
 \usage{
@@ -24,7 +24,7 @@ Split a SpatRaster by layer, or a SpatVector by attributes. You can also split t
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{f}{If \code{x} is a SpatRaster: a vector of the length \code{nlyr(x)}. If \code{x} is a SpatVector: a field (variable) name or a vector of the same length as \code{x}; or, if \code{x} is a SpatVector of polygons, a SpatVector of lines to split the polygon gemetries}
+  \item{f}{If \code{x} is a SpatRaster: a vector of the length \code{nlyr(x)}. If \code{x} is a SpatVector: a field (variable) name or a vector of the same length as \code{x}; or, if \code{x} is a SpatVector of polygons, a SpatVector of lines or polygons to split the polygon geometries}
 }
 
 \value{
