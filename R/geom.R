@@ -199,7 +199,7 @@ setMethod("intersect", signature(x="SpatVector", y="SpatVector"),
 setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"),
 	function(x, y) {
 		x@cpp <- x@cpp$intersect(y@cpp)
-		if (!is.valid(x)) {
+		if (!x@cpp$valid) {
 			return(NULL)
 		}
 		x
@@ -650,21 +650,40 @@ setMethod("split", signature(x="SpatVector", f="SpatVector"),
 		if (geomtype(f) != "lines") error("split", "second argument must be lines")
 		values(f) <- NULL
 		ex <- ext(x)
-		i <- intersect(ex, ext(f))
+		i <- intersect(ext(x), ext(f))
 		if (is.null(i)) {
-			error("split", "the extents of x and f do not intersect")
+			error("split", "x and f do not intersect")
 		}
-		ex <- ex + 10
-		e <- ext(ex)
-		mxd <- sqrt((e$xmax-e$xmin)^2 + (e$ymax-e$ymin)^2)
-		lin <- elongate(f, mxd, flat=TRUE)
-		uf <- rbind(as.lines(ex), lin)
-		uf <- aggregate(uf)
-		nds <- makeNodes(uf)
-		p <- as.polygons(nds)
-		intersect(x, p)
+		r <- relate(x, f, "intersects")
+		if (sum(r) == 0) {
+			error("split", "x and f do not intersect")
+		}
+		rr <- r[rowSums(r) > 0, ,drop=FALSE]
+		xx <- x
+		values(xx) <- NULL
+		ss <- vector("list", nrow(rr))
+		for (i in 1:nrow(rr)) {
+			ri <- which(rr[i,])
+			xi <- xx[i,]
+			s <- vector("list", length(ri))
+			for (j in i:length(ri)) {
+				lin <- intersect(f[ri[j],], xi)
+				uf <- rbind(as.lines(xi), lin)
+				uf <- aggregate(uf)
+				nds <- makeNodes(uf)
+				s[[j]] <- as.polygons(nds)
+			}
+			v <- vect(s)
+			v$id <- i
+			ss[[i]] <- v
+		}
+		ss <- vect(ss)
+		v <- values(x)
+		values(ss) <- v[ss$id, ]
+		rbind(x[-i,], ss)
 	}
 )
+
 
 
 setMethod("forceCCW", signature(x="SpatVector"),
