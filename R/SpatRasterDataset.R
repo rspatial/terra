@@ -74,7 +74,7 @@ setMethod("sds", signature(x="list"),
 			} else if (inherits(x[[i]], "SpatRasterDataset")) {
 				y <- as.list(x[[i]])
 				ynms <- names(x[[i]])
-				s <- sapply(y, \(j) r@cpp$add(j@cpp, ynms[j], "", "", FALSE))
+				s <- sapply(y, function(j) r@cpp$add(j@cpp, ynms[j], "", "", FALSE))
 			} else {
 				name <- names(x[[i]])
 				cls <- paste(class(x[[i]]), collapse=", ")
@@ -301,7 +301,7 @@ setMethod("sprc", signature(x="list"),
 				} else if (inherits(x[[i]], "SpatRasterCollection") | 
 							inherits(x[[i]], "SpatRasterDataset")) {
 					y <- as.list(x[[i]])
-					s <- sapply(y, \(j) ptr$add(j@cpp, ""))
+					s <- sapply(y, function(j) ptr$add(j@cpp, ""))
 				} else {
 					name <- names(x[[i]])
 					cls <- paste(class(x[[i]]), collapse=", ")
