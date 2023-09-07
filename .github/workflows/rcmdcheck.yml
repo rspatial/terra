@@ -3,7 +3,7 @@
 on:
   push:
     paths:
-    - '**.R'
+      - '**.R'
     branches: [main, master]
   pull_request:
     branches: [main, master]
