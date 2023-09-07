@@ -665,15 +665,11 @@ setMethod("split", signature(x="SpatVector", f="SpatVector"),
 		for (i in 1:nrow(rr)) {
 			ri <- which(rr[i,])
 			xi <- xx[i,]
-			s <- vector("list", length(ri))
-			for (j in i:length(ri)) {
-				lin <- intersect(f[ri[j],], xi)
-				uf <- rbind(as.lines(xi), lin)
-				uf <- aggregate(uf)
-				nds <- makeNodes(uf)
-				s[[j]] <- as.polygons(nds)
-			}
-			v <- vect(s)
+			lin <- intersect(f[ri,], xi)
+			uf <- rbind(as.lines(xi), lin)
+			uf <- aggregate(uf)
+			nds <- makeNodes(uf)
+			v <- as.polygons(nds)
 			v$id <- i
 			ss[[i]] <- v
 		}
