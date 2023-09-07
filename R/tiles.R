@@ -84,9 +84,9 @@ vrt_tiles <- function(x) {
 			v <- readLines(f)
 			v <- v[grep("SourceFilename", v)]
 			s <- strsplit(v, "\"")
-			rel <- sapply(s, \(x) x[2])
-			ff <- strsplit(sapply(s, \(x)x[3]), "<")
-			ff <- gsub(">", "", sapply(ff, \(x) x[1]))
+			rel <- sapply(s, function(x) x[2])
+			ff <- strsplit(sapply(s, function(x) x[3]), "<")
+			ff <- gsub(">", "", sapply(ff, function(x) x[1]))
 			ff[rel=="1"] <- file.path(dirname(f), ff[rel=="1"])
 			ff
 		})
