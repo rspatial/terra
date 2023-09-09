@@ -53,7 +53,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extractAlong</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, ID<span class="op">=</span><span class="cn">TRUE</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, online<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extractAlong</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, ID<span class="op">=</span><span class="cn">TRUE</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, online<span class="op">=</span><span class="cn">FALSE</span>, bilinear<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -75,6 +75,9 @@
 
   <dt>online</dt>
 <dd><p>logical. If <code>TRUE</code> the returned coordinates are snapped to <code>y</code></p></dd>
+ 
+  <dt>bilinear</dt>
+<dd><p>logical. If <code>TRUE</code> the returned raster values computed with bilinear interpolation from the nearest four cells. Only relevant if <code>online=TRUE</code></p></dd>
  
 </dl></div>
     <div id="value">
