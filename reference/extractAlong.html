@@ -53,7 +53,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extractAlong</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, ID<span class="op">=</span><span class="cn">TRUE</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extractAlong</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, ID<span class="op">=</span><span class="cn">TRUE</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, online<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -71,8 +71,11 @@
 <dd><p>logical. If <code>TRUE</code> the cell numbers are also returned</p></dd>
 
   <dt>xy</dt>
-<dd><p>logical. If <code>TRUE</code> the coordinates of the cells are also returned. See <code><a href="xyCellFrom.html">xyFromCell</a></code></p></dd>
+<dd><p>logical. If <code>TRUE</code> the coordinates of the cells traversed by <code>y</code> are also returned. See <code><a href="xyCellFrom.html">xyFromCell</a></code></p></dd>
 
+  <dt>online</dt>
+<dd><p>logical. If <code>TRUE</code> the returned coordinates are snapped to <code>y</code></p></dd>
+ 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
