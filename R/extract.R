@@ -478,7 +478,7 @@ function(x, y, ...) {
 
 
 
-extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE) { 
+extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE) { 
 
 	stopifnot(inherits(x, "SpatRaster"))
 	if (inherits(y, "sf")) {
@@ -551,7 +551,14 @@ extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE) {
 	} else {
 		colnames(res) <- c("ID", "cell", names(x))
 		if (xy) {
-			res <- data.frame(res[,1:2], xyFromCell(x, res$cell), res[, -c(1:2), drop=FALSE])
+			xycrd <- xyFromCell(x, res$cell)
+			if (online) {
+				pts <- vect(xycrd, crs="local")
+				crs(y) <- "local"
+				n <- nearest(pts, y)
+				xycrd <- crds(n)
+			}
+			res <- data.frame(res[,1:2], xycrd, res[, -c(1:2), drop=FALSE])
 		}
 	}
 	if (!cells) res$cell <- NULL

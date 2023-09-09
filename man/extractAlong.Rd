@@ -9,7 +9,7 @@ Extract raster values along a line. That is, the returned values are ordered alo
 }
 
 \usage{
-extractAlong(x, y, ID=TRUE, cells=FALSE, xy=FALSE)
+extractAlong(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE)
 }
 
 \arguments{
@@ -17,7 +17,8 @@ extractAlong(x, y, ID=TRUE, cells=FALSE, xy=FALSE)
   \item{y}{SpatVector with lines geometry}
   \item{ID}{logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of input SpatVector \code{y}}
   \item{cells}{logical. If \code{TRUE} the cell numbers are also returned}
-  \item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned. See \code{\link{xyFromCell}}}
+  \item{xy}{logical. If \code{TRUE} the coordinates of the cells traversed by \code{y} are also returned. See \code{\link{xyFromCell}}}
+  \item{online}{logical. If \code{TRUE} the returned coordinates are snapped to \code{y}} 
 }
 
 \value{
