@@ -478,7 +478,7 @@ function(x, y, ...) {
 
 
 
-extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE) { 
+extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE, bilinear=TRUE) { 
 
 	stopifnot(inherits(x, "SpatRaster"))
 	if (inherits(y, "sf")) {
@@ -535,7 +535,7 @@ extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE) {
 		}
 		if (!is.null(vv)) {
 			cell <- cellFromRowCol(rr, vv[,1], vv[,2])
-			res[[i]] <- data.frame(i, cell, extract(x, cell))
+			res[[i]] <- data.frame(i, cell)
 		}
 	}
 	
@@ -549,21 +549,30 @@ extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE) {
 			colnames(res) <- c("ID", "cell", names(x))
 		}
 	} else {
-		colnames(res) <- c("ID", "cell", names(x))
+		colnames(res) <- c("ID", "cell")
 		if (xy) {
 			xycrd <- xyFromCell(x, res$cell)
+			method <- "simple"
 			if (online) {
 				pts <- vect(xycrd, crs="local")
 				crs(y) <- "local"
 				n <- nearest(pts, y)
 				xycrd <- crds(n)
+				if (bilinear) method <- "bilinear"
+				res <- data.frame(res, xycrd, extract(x, xycrd, method=method))
+			} else {
+				res <- data.frame(res, xycrd, extract(x, res$cell))
 			}
-			res <- data.frame(res[,1:2], xycrd, res[, -c(1:2), drop=FALSE])
+		} else {
+			res <- data.frame(res, extract(x, res$cell))		
 		}
 	}
+
 	if (!cells) res$cell <- NULL
 	if (!ID) res$ID <- NULL
+	
 	res
+
 }
 
 

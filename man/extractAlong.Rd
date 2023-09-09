@@ -9,7 +9,7 @@ Extract raster values along a line. That is, the returned values are ordered alo
 }
 
 \usage{
-extractAlong(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE)
+extractAlong(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE, bilinear=TRUE)
 }
 
 \arguments{
@@ -19,6 +19,7 @@ extractAlong(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE)
   \item{cells}{logical. If \code{TRUE} the cell numbers are also returned}
   \item{xy}{logical. If \code{TRUE} the coordinates of the cells traversed by \code{y} are also returned. See \code{\link{xyFromCell}}}
   \item{online}{logical. If \code{TRUE} the returned coordinates are snapped to \code{y}} 
+  \item{bilinear}{logical. If \code{TRUE} the returned raster values computed with bilinear interpolation from the nearest four cells. Only relevant if \code{online=TRUE}} 
 }
 
 \value{
