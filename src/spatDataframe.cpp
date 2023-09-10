@@ -586,7 +586,7 @@ bool SpatDataFrame::cbind(SpatDataFrame &x) {
 		} else if (x.itype[i] == 3) {
 			std::vector<int8_t> d = x.getB(i);
 			if (!add_column(d, nms[i])) return false;
-		} else if (x.itype[i] == 3) {
+		} else if (x.itype[i] == 4) {
 			SpatTime_v d = x.getT(i);
 			if (!add_column(d, nms[i])) return false;
 		} else {
