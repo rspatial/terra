@@ -15,7 +15,7 @@ The package implements two main classes (data types): \code{SpatRaster} and \cod
 
 Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are equivalent to lists of \code{SpatRaster} or \code{SpatVector} objects. There is also a \code{SpatGraticule} class to assist in adding a longitude/latitude lines and labels to a map with another coordinate reference system.
 
-These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save \code{SpatRaster} objects to disk (and pass a filename or cell values to cluster nodes). Also see \code{\link{wrap}}. 
+These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save \code{SpatRaster} objects to disk (and pass a filename or cell values to cluster nodes). Also see \code{\link{wrap}}. Also, package developers should not directly access this pointer, as its user-interface is not stable.
 
 The \code{terra} package is conceived as a replacement of the \code{raster} package. \code{terra} has a very similar, but simpler, interface, and it is faster than \code{raster}. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
 
@@ -182,7 +182,8 @@ Apart from the function listed below, you can also use indexing with \code{[} wi
     \code{\link{setValues}} \tab Set new values to the cells of a SpatRaster \cr
     \code{\link{as.matrix}} \tab Get cell values as a matrix \cr
     \code{\link{as.array}} \tab Get cell values as an array \cr
-    \code{\link{extract}} \tab Extract cell values from a SpatRaster (e.g., by cell, coordinates, polygon)\cr
+    \code{\link{extract}} \tab Extract cell values from a SpatRaster (with cell numbers, coordinates, points, lines, or polygons)\cr
+    \code{\link{extractAlong}} \tab Extract cell values along a line such that the values are in the right order\cr
     \code{\link{spatSample}} \tab Regular or random sample \cr
     \code{\link{minmax}} \tab Get the minimum and maximum value of the cells of a SpatRaster (if known) \cr
     \code{\link{setMinMax}} \tab Compute the minimum and maximum value of a SpatRaster if these are not known \cr

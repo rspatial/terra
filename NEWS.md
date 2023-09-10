@@ -12,6 +12,7 @@ https://github.com/rspatial/terra/issues/1273) by Dave Dixon
 
 - argument "gdal" in `project` was renamed to "use_gdal" [#1269](https://github.com/rspatial/terra/issues/1269) by Stuart Brown.
 
+
 # version 1.7-46
 
 Released 2023-09-06
@@ -41,7 +42,7 @@ Released 2023-09-06
 ## new
 - `compareGeom` for list and SpatRasterCollection [#1207](https://github.com/rspatial/terra/issues/1207) by Sarah Endicott
 - `is.rotated<SpatRaster>` method [#1229](https://github.com/rspatial/terra/issues/1229) by Andy Lyons
-- `forceCCW<SpatVector>` method to force counter-clockwise orientation [#1249](https://github.com/rspatial/terra/issues/1249) by srfall.
+- `forceCCW<SpatVector>` method to force counter-clockwise orientation of polygons [#1249](https://github.com/rspatial/terra/issues/1249) by srfall.
 - `vrt_tiles` returns the filenames of the tiles in a vrt file [#1261](https://github.com/rspatial/terra/issues/1261) by Derek Friend
 - `extractAlong` to extract raster cell values for a line that are ordered along the line. [#1257](https://github.com/rspatial/terra/issues/1257) by adamkc.
 
