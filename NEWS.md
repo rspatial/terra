@@ -1,10 +1,12 @@
-# version 1.7-47
+# version 1.7-48
 
 ## bug fixes
 
 - `mosaic` ignored the filename argument if the SpatRasterCollection only had a single SpatRaster [#1267](https://github.com/rspatial/terra/issues/1267) by Michael Mahoney
 - Attempting to use `extract` with a raster file that had been deleted crashed R. [#1268](https://github.com/rspatial/terra/issues/1268) by Derek Friend
 - `split<SpatVector,SpatVector>` did not work well in all cases. [#1256](https://github.com/rspatial/terra/issues/1256) by Derek Corcoran Barrios
+- `intersect` with two SpatVectors crashed R if there was a date/time variable [#1273](
+https://github.com/rspatial/terra/issues/1273) by Dave Dixon
 
 ## enhancements
 
