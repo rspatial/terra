@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-47</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.7-48</span>
       </span>
     </div>
 
@@ -48,17 +48,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.7-47" id="version-17-47">version 1.7-47<a class="anchor" aria-label="anchor" href="#version-17-47"></a></h2>
+<h2 class="page-header" data-toc-text="1.7-48" id="version-17-48">version 1.7-48<a class="anchor" aria-label="anchor" href="#version-17-48"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-47">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-47"></a></h3>
+<h3 id="bug-fixes-1-7-48">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-48"></a></h3>
 <ul><li>
 <code>mosaic</code> ignored the filename argument if the SpatRasterCollection only had a single SpatRaster <a href="https://github.com/rspatial/terra/issues/1267" class="external-link">#1267</a> by Michael Mahoney</li>
 <li>Attempting to use <code>extract</code> with a raster file that had been deleted crashed R. <a href="https://github.com/rspatial/terra/issues/1268" class="external-link">#1268</a> by Derek Friend</li>
 <li>
 <code>split&lt;SpatVector,SpatVector&gt;</code> did not work well in all cases. <a href="https://github.com/rspatial/terra/issues/1256" class="external-link">#1256</a> by Derek Corcoran Barrios</li>
+<li>
+<code>intersect</code> with two SpatVectors crashed R if there was a date/time variable <a href="https://github.com/rspatial/terra/issues/1273" class="external-link">#1273</a> by Dave Dixon</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-47">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-47"></a></h3>
+<h3 id="enhancements-1-7-48">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-48"></a></h3>
 <ul><li>argument “gdal” in <code>project</code> was renamed to “use_gdal” <a href="https://github.com/rspatial/terra/issues/1269" class="external-link">#1269</a> by Stuart Brown.</li>
 </ul></div>
 </div>
@@ -107,7 +109,7 @@
 <li>
 <code>is.rotated&lt;SpatRaster&gt;</code> method <a href="https://github.com/rspatial/terra/issues/1229" class="external-link">#1229</a> by Andy Lyons</li>
 <li>
-<code>forceCCW&lt;SpatVector&gt;</code> method to force counter-clockwise orientation <a href="https://github.com/rspatial/terra/issues/1249" class="external-link">#1249</a> by srfall.</li>
+<code>forceCCW&lt;SpatVector&gt;</code> method to force counter-clockwise orientation of polygons <a href="https://github.com/rspatial/terra/issues/1249" class="external-link">#1249</a> by srfall.</li>
 <li>
 <code>vrt_tiles</code> returns the filenames of the tiles in a vrt file <a href="https://github.com/rspatial/terra/issues/1261" class="external-link">#1261</a> by Derek Friend</li>
 <li>
