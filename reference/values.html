@@ -101,6 +101,10 @@ Note that with values(x, dataframe=TRUE) and as.data.frame(x) the values returne
     <h2>Details</h2>
     <p>If <code>x</code> is a <code>SpatRaster</code>, and <code>mat=FALSE</code>, the values are returned as a vector. In cell-order by layer. If <code>mat=TRUE</code>, a matrix is returned in which the values of each layer are represented by a column (with <code>ncell(x)</code> rows). The values per layer are in cell-order, that is, from top-left, to top-right and then down by row. Use <code><a href="coerce.html">as.matrix</a>(x, wide=TRUE)</code> for an alternative matrix representation where the number of rows and columns matches that of <code>x</code>.</p>
     </div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>raster values that are <code>NA</code> (missing) are represented by <code>NaN</code> (not-a-number) unless argument <code>dataframe</code> is <code>TRUE</code>.</p>
+    </div>
     <div id="value">
     <h2>Value</h2>
     
@@ -109,7 +113,7 @@ Note that with values(x, dataframe=TRUE) and as.data.frame(x) the values returne
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code>values&lt;-</code>, <code><a href="focalValues.html">focalValues</a></code></p></div>
+    <div class="dont-index"><p><code>values&lt;-</code>, <code><a href="focalValues.html">focalValues</a></code>, <code><a href="as.data.frame.html">as.data.frame</a></code></p></div>
     </div>
 
     <div id="ref-examples">
