@@ -82,12 +82,16 @@
 .makeSpatFactor <- function(x) {
 	i <- as.integer(x)
 	i[is.na(i)] <- 0
-	SpatFactor$new(i, levels(x))
+	SpatFactor$new(i, levels(x), is.ordered(x))
 }
 
 .getSpatFactor <- function(x) {
 	i <- x$values
 	i[i==0] <- NA
-	factor(x$labels[i], x$labels)
+	if (isTRUE(x$ordered)) {
+		ordered(x$labels[i], x$labels)	
+	} else {
+		factor(x$labels[i], x$labels)
+	}
 }
 

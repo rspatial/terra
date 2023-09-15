@@ -27,6 +27,7 @@ public:
 		v.resize(_size, _value);
 	};
 
+	SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _labels, bool _ordered);
 	SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _labels);
 	SpatFactor(std::vector<unsigned> _values);
 	SpatFactor(std::vector<std::string> _values);
@@ -35,6 +36,7 @@ public:
 	std::vector<unsigned> v;
 	//std::vector<unsigned> levels;
 	std::vector<std::string> labels;
+	bool ordered = false;
   
 	size_t size() { return v.size(); }
 	bool empty() { return v.empty(); }
