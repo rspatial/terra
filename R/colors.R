@@ -28,7 +28,7 @@ setMethod ("coltab<-" , "SpatRaster",
 		x@cpp <- x@cpp$deepcopy()
 		if (inherits(value, "list")) {
 			for (i in seq_along(value)) {
-				layer <- i
+				layer <- i-1
 				if (is.null(value[[i]])) {
 					x@cpp$removeColors(layer)
 				}
@@ -51,9 +51,9 @@ setMethod ("coltab<-" , "SpatRaster",
 
 				d <- .makeSpatDF(value[[i]])
 				if (!x@cpp$setColors(layer, d)) {
-					error("coltab<-", "cannot set these values")
+					messages(x, "cols<-")
 				}
-			}		
+			}
 		} else {
 			layer <- layer[1]-1
 			if (is.null(value)) {
@@ -71,7 +71,7 @@ setMethod ("coltab<-" , "SpatRaster",
 			}
 			if (ncol(value) == 2) {
 				value <- data.frame(values=value[,1], t(grDevices::col2rgb(value[,2], alpha=TRUE)), stringsAsFactors=FALSE)
-			} else {
+			} #else {
 			#	nms <- tolower(names(value))
 			#	if (!(grepl("value", nms))) {
 			#		value <- cbind(values=(1:nrow(value))-1, value)
@@ -80,7 +80,7 @@ setMethod ("coltab<-" , "SpatRaster",
 			#	if (ncol(value) == 4) {
 			#		value <- cbind(value, alpha=255)
 			#	}
-			}
+			#}
 			value[, 1] <- as.integer(value[, 1])
 			for (i in 2:ncol(value)) {
 				value[, i] <- as.integer(clamp(value[, i], 0, 255))
@@ -88,10 +88,10 @@ setMethod ("coltab<-" , "SpatRaster",
 			value[is.na(value)] <- 255
 			d <- .makeSpatDF(value)
 			if (!x@cpp$setColors(layer, d)) {
-				messages("cols<-", x)
+				messages(x, "cols<-")
 			}
-			x
 		}
+		x
 	}
 )
 
