@@ -45,12 +45,16 @@ If \code{x} is a \code{SpatRaster}, and \code{mat=FALSE}, the values are returne
 }
 
 
+\note{
+raster values that are \code{NA} (missing) are represented by \code{NaN} (not-a-number) unless argument \code{dataframe} is \code{TRUE}. 
+}
+
 \value{
 matrix or data.frame
 }
 
 
-\seealso{\code{\link{values<-}}, \code{\link{focalValues}}}
+\seealso{\code{\link{values<-}}, \code{\link{focalValues}}, \code{\link[terra]{as.data.frame}}}
 
 \examples{
 f <- system.file("ex/elev.tif", package="terra")
