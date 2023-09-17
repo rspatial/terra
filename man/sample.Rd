@@ -36,7 +36,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
   \item{as.df}{logical. If \code{TRUE}, a data.frame is returned instead of a matrix}
   \item{as.points}{logical. If \code{TRUE}, a SpatVector of points is returned}
-  \item{values}{logical. If \code{TRUE} cell values are returned}
+  \item{values}{logical. If \code{TRUE} raster cell values are returned}
   \item{cells}{logical. If \code{TRUE}, cell numbers are returned. If \code{method="stratified"} this is always set to \code{TRUE} if \code{xy=FALSE}}
   \item{xy}{logical. If \code{TRUE}, cell coordinates are returned}
   \item{ext}{SpatExtent or NULL to restrict sampling to a subset of the area of \code{x}}

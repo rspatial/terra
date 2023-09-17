@@ -1,4 +1,4 @@
-# version 1.7-48
+# version 1.7-49
 
 ## bug fixes
 
@@ -7,11 +7,14 @@
 - `split<SpatVector,SpatVector>` did not work well in all cases. [#1256](https://github.com/rspatial/terra/issues/1256) by Derek Corcoran Barrios
 - `intersect` with two SpatVectors crashed R if there was a date/time variable [#1273](
 https://github.com/rspatial/terra/issues/1273) by Dave Dixon
+- "values=FALSE" was ignored by `spatSample<SpatRaster>(method="weights")` [#1275]()https://github.com/rspatial/terra/issues/1275 by François Rousseu
+- `coltab<-` again works with a list as value [#1280](https://github.com/rspatial/terra/issues/1280) by Diego
+Hernangómez
 
 ## enhancements
 
 - argument "gdal" in `project` was renamed to "use_gdal" [#1269](https://github.com/rspatial/terra/issues/1269) by Stuart Brown.
-
+- SpatVector attributes can now be stored as an ordered factor [#1277](https://github.com/rspatial/terra/issues/1277) by Ben Notkin
 
 # version 1.7-46
 
