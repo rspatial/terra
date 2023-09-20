@@ -22,6 +22,8 @@ expect_equal(e[,1], c(467.379239, 334.685564))
 e <- extract(elev, y, fun=mean, weights=TRUE, na.rm=TRUE, ID=TRUE)
 expect_equal(e[,2], c(467.3933629, 334.65513085))
 
+e <- extract(elev, 1, raw=TRUE)
+expect_true(inherits(e, "array"))
 
 x <- rast(y, res=.2)
 values(x) <- 1:ncell(x)
