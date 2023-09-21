@@ -35,7 +35,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 
 \S4method{extract}{SpatRaster,matrix}(x, y, cells=FALSE, method="simple")
 
-\S4method{extract}{SpatRaster,numeric}(x, y, xy=FALSE)
+\S4method{extract}{SpatRaster,numeric}(x, y, xy=FALSE, raw=FALSE)
 
 \S4method{extract}{SpatVector,SpatVector}(x, y)
 }
