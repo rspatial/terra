@@ -1,4 +1,3 @@
-
 # these methods require the dev version of leaflet
 
 checkLeafLetVersion <- function() {
@@ -108,7 +107,7 @@ setMethod("plet", signature(x="SpatVector"),
 		y <- unique(y)
 		if (length(y) > 1) {
 			y = y[1]
-#			xvc <- svc(lapply(y, \(i) x[,i]))
+#			xvc <- svc(lapply(y, function(i) x[,i]))
 #			if (is.numeric(y)) {
 #				names(xvc) <- names(x)[y]
 #			} else {
