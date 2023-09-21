@@ -647,8 +647,9 @@ std::vector<double> SpatRaster::extractXYFlat(const std::vector<double> &x, cons
 // <geom<layer<values>>>
 std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
 
-	if (!source[0].srs.is_same(v.srs, false)) {
-		addWarning("CRS of raster and vector data do not match");
+	if (!source[0].srs.is_same(v.srs, true)) {
+		v = v.project(getSRS("wkt"), false);
+		addWarning("transforming vector to CRS of raster");
 	}
 
 	std::string gtype = v.type();
@@ -899,8 +900,10 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun,
 
 std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun, bool narm, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
 
-	if (!source[0].srs.is_same(v.srs, false)) {
-		addWarning("CRS of raster and vector data do not match");
+	if (!source[0].srs.is_same(v.srs, true)) {
+		v = v.project(getSRS("wkt"), false);
+		addWarning("transforming vector to CRS of raster");
+//		addWarning("CRS of raster and vector data do not match");
 	}
 
 	std::vector<double> flat;
