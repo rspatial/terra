@@ -899,6 +899,10 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun,
 
 std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun, bool narm, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
 
+	if (!source[0].srs.is_same(v.srs, false)) {
+		addWarning("CRS of raster and vector data do not match");
+	}
+
 	std::vector<double> flat;
 	std::string gtype = v.type();
 	if (gtype == "points") {
