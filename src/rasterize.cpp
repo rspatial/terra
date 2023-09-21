@@ -568,6 +568,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		return wout;
 	}
 
+//	Rcpp::Rcout << "x" << std::endl;
+
 	bool add = fun == "sum";
 
 	SpatRaster out;
