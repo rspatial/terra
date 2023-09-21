@@ -69,7 +69,7 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <span><span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, method<span class="op">=</span><span class="st">"simple"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster,numeric</span></span>
-<span><span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, xy<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, raw<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatVector,SpatVector</span></span>
 <span><span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
@@ -191,6 +191,7 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    3    1 180000 331000    0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">extract</span><span class="op">(</span><span class="va">r</span>, <span class="va">p</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[extract] CRS of raster and vector data do not match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ID meuse</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  1   378</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  2   251</span>
@@ -198,6 +199,7 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">r</span> <span class="op">+</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">p</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[extract] CRS of raster and vector data do not match</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ID meuse</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  1   388</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  2   261</span>
