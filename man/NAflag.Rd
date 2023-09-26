@@ -1,4 +1,4 @@
-\name{NAflag} 
+\name{NAflag}
 
 \alias{NAflag<-}
 \alias{NAflag}
