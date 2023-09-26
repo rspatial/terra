@@ -1,735 +1,735 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://rspatial.github.io/terra/404.html</loc>
   </url>
   <url>
-    <loc>/ISSUE_TEMPLATE.html</loc>
+    <loc>https://rspatial.github.io/terra/ISSUE_TEMPLATE.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
+    <loc>https://rspatial.github.io/terra/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://rspatial.github.io/terra/authors.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://rspatial.github.io/terra/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://rspatial.github.io/terra/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/NAflag.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/NAflag.html</loc>
   </url>
   <url>
-    <loc>/reference/RGB.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/RGB.html</loc>
   </url>
   <url>
-    <loc>/reference/SpatExtent-class.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/SpatExtent-class.html</loc>
   </url>
   <url>
-    <loc>/reference/SpatRaster-class.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/SpatRaster-class.html</loc>
   </url>
   <url>
-    <loc>/reference/SpatVector-class.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/SpatVector-class.html</loc>
   </url>
   <url>
-    <loc>/reference/activeCat.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/activeCat.html</loc>
   </url>
   <url>
-    <loc>/reference/add.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/add.html</loc>
   </url>
   <url>
-    <loc>/reference/adjacent.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/adjacent.html</loc>
   </url>
   <url>
-    <loc>/reference/aggregate.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/aggregate.html</loc>
   </url>
   <url>
-    <loc>/reference/align.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/align.html</loc>
   </url>
   <url>
-    <loc>/reference/all.equal.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/all.equal.html</loc>
   </url>
   <url>
-    <loc>/reference/animate.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/animate.html</loc>
   </url>
   <url>
-    <loc>/reference/app.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/app.html</loc>
   </url>
   <url>
-    <loc>/reference/approximate.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/approximate.html</loc>
   </url>
   <url>
-    <loc>/reference/arith-generic.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/arith-generic.html</loc>
   </url>
   <url>
-    <loc>/reference/as.character.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/as.character.html</loc>
   </url>
   <url>
-    <loc>/reference/as.data.frame.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/as.data.frame.html</loc>
   </url>
   <url>
-    <loc>/reference/as.lines.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/as.lines.html</loc>
   </url>
   <url>
-    <loc>/reference/as.list.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/as.list.html</loc>
   </url>
   <url>
-    <loc>/reference/as.points.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/as.points.html</loc>
   </url>
   <url>
-    <loc>/reference/as.polygons.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/as.polygons.html</loc>
   </url>
   <url>
-    <loc>/reference/as.raster.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/as.raster.html</loc>
   </url>
   <url>
-    <loc>/reference/atan2.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/atan2.html</loc>
   </url>
   <url>
-    <loc>/reference/autocor.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/autocor.html</loc>
   </url>
   <url>
-    <loc>/reference/barplot.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/barplot.html</loc>
   </url>
   <url>
-    <loc>/reference/boundaries.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/boundaries.html</loc>
   </url>
   <url>
-    <loc>/reference/boxplot.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/boxplot.html</loc>
   </url>
   <url>
-    <loc>/reference/buffer.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/buffer.html</loc>
   </url>
   <url>
-    <loc>/reference/c.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/c.html</loc>
   </url>
   <url>
-    <loc>/reference/cartogram.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/cartogram.html</loc>
   </url>
   <url>
-    <loc>/reference/catalyze.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/catalyze.html</loc>
   </url>
   <url>
-    <loc>/reference/cellSize.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/cellSize.html</loc>
   </url>
   <url>
-    <loc>/reference/cells.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/cells.html</loc>
   </url>
   <url>
-    <loc>/reference/centroids.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/centroids.html</loc>
   </url>
   <url>
-    <loc>/reference/clamp.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/clamp.html</loc>
   </url>
   <url>
-    <loc>/reference/clamp_ts.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/clamp_ts.html</loc>
   </url>
   <url>
-    <loc>/reference/classify.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/classify.html</loc>
   </url>
   <url>
-    <loc>/reference/click.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/click.html</loc>
   </url>
   <url>
-    <loc>/reference/coerce.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/coerce.html</loc>
   </url>
   <url>
-    <loc>/reference/collapse.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/collapse.html</loc>
   </url>
   <url>
-    <loc>/reference/colors.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/colors.html</loc>
   </url>
   <url>
-    <loc>/reference/combineGeoms.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/combineGeoms.html</loc>
   </url>
   <url>
-    <loc>/reference/compare-generics.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/compare-generics.html</loc>
   </url>
   <url>
-    <loc>/reference/compareGeom.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/compareGeom.html</loc>
   </url>
   <url>
-    <loc>/reference/concats.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/concats.html</loc>
   </url>
   <url>
-    <loc>/reference/contour.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/contour.html</loc>
   </url>
   <url>
-    <loc>/reference/convhull.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/convhull.html</loc>
   </url>
   <url>
-    <loc>/reference/costDist.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/costDist.html</loc>
   </url>
   <url>
-    <loc>/reference/cover.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/cover.html</loc>
   </url>
   <url>
-    <loc>/reference/crds.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/crds.html</loc>
   </url>
   <url>
-    <loc>/reference/crop.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/crop.html</loc>
   </url>
   <url>
-    <loc>/reference/crosstab.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/crosstab.html</loc>
   </url>
   <url>
-    <loc>/reference/crs.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/crs.html</loc>
   </url>
   <url>
-    <loc>/reference/deepcopy.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/deepcopy.html</loc>
   </url>
   <url>
-    <loc>/reference/densify.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/densify.html</loc>
   </url>
   <url>
-    <loc>/reference/density.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/density.html</loc>
   </url>
   <url>
-    <loc>/reference/deprecated.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/deprecated.html</loc>
   </url>
   <url>
-    <loc>/reference/depth.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/depth.html</loc>
   </url>
   <url>
-    <loc>/reference/describe.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/describe.html</loc>
   </url>
   <url>
-    <loc>/reference/diff.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/diff.html</loc>
   </url>
   <url>
-    <loc>/reference/dimensions.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/dimensions.html</loc>
   </url>
   <url>
-    <loc>/reference/direction.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/direction.html</loc>
   </url>
   <url>
-    <loc>/reference/disaggregate.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/disaggregate.html</loc>
   </url>
   <url>
-    <loc>/reference/distance.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/distance.html</loc>
   </url>
   <url>
-    <loc>/reference/dots.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/dots.html</loc>
   </url>
   <url>
-    <loc>/reference/draw.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/draw.html</loc>
   </url>
   <url>
-    <loc>/reference/elongate.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/elongate.html</loc>
   </url>
   <url>
-    <loc>/reference/erase.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/erase.html</loc>
   </url>
   <url>
-    <loc>/reference/expanse.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/expanse.html</loc>
   </url>
   <url>
-    <loc>/reference/ext.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/ext.html</loc>
   </url>
   <url>
-    <loc>/reference/extend.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/extend.html</loc>
   </url>
   <url>
-    <loc>/reference/extract.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/extract.html</loc>
   </url>
   <url>
-    <loc>/reference/extractAlong.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/extractAlong.html</loc>
   </url>
   <url>
-    <loc>/reference/factors.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/factors.html</loc>
   </url>
   <url>
-    <loc>/reference/fill.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/fill.html</loc>
   </url>
   <url>
-    <loc>/reference/fillTime.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/fillTime.html</loc>
   </url>
   <url>
-    <loc>/reference/flip.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/flip.html</loc>
   </url>
   <url>
-    <loc>/reference/focal.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/focal.html</loc>
   </url>
   <url>
-    <loc>/reference/focal3D.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/focal3D.html</loc>
   </url>
   <url>
-    <loc>/reference/focalCpp.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/focalCpp.html</loc>
   </url>
   <url>
-    <loc>/reference/focalMat.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/focalMat.html</loc>
   </url>
   <url>
-    <loc>/reference/focalPairs.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/focalPairs.html</loc>
   </url>
   <url>
-    <loc>/reference/focalReg.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/focalReg.html</loc>
   </url>
   <url>
-    <loc>/reference/focalValues.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/focalValues.html</loc>
   </url>
   <url>
-    <loc>/reference/forceCCW.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/forceCCW.html</loc>
   </url>
   <url>
-    <loc>/reference/freq.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/freq.html</loc>
   </url>
   <url>
-    <loc>/reference/gaps.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/gaps.html</loc>
   </url>
   <url>
-    <loc>/reference/gdal.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/gdal.html</loc>
   </url>
   <url>
-    <loc>/reference/geometry.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/geometry.html</loc>
   </url>
   <url>
-    <loc>/reference/geomtype.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/geomtype.html</loc>
   </url>
   <url>
-    <loc>/reference/global.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/global.html</loc>
   </url>
   <url>
-    <loc>/reference/graticule.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/graticule.html</loc>
   </url>
   <url>
-    <loc>/reference/gridDist.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/gridDist.html</loc>
   </url>
   <url>
-    <loc>/reference/halo.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/halo.html</loc>
   </url>
   <url>
-    <loc>/reference/headtail.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/headtail.html</loc>
   </url>
   <url>
-    <loc>/reference/hist.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/hist.html</loc>
   </url>
   <url>
-    <loc>/reference/ifelse.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/ifelse.html</loc>
   </url>
   <url>
-    <loc>/reference/image.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/image.html</loc>
   </url>
   <url>
-    <loc>/reference/impose.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/impose.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/init.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/init.html</loc>
   </url>
   <url>
-    <loc>/reference/inplace.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/inplace.html</loc>
   </url>
   <url>
-    <loc>/reference/inset.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/inset.html</loc>
   </url>
   <url>
-    <loc>/reference/interpIDW.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/interpIDW.html</loc>
   </url>
   <url>
-    <loc>/reference/interpNear.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/interpNear.html</loc>
   </url>
   <url>
-    <loc>/reference/interpolate.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/interpolate.html</loc>
   </url>
   <url>
-    <loc>/reference/intersect.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/intersect.html</loc>
   </url>
   <url>
-    <loc>/reference/is.bool.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/is.bool.html</loc>
   </url>
   <url>
-    <loc>/reference/is.lonlat.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/is.lonlat.html</loc>
   </url>
   <url>
-    <loc>/reference/is.rotated.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/is.rotated.html</loc>
   </url>
   <url>
-    <loc>/reference/is.valid.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/is.valid.html</loc>
   </url>
   <url>
-    <loc>/reference/lapp.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/lapp.html</loc>
   </url>
   <url>
-    <loc>/reference/layerCor.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/layerCor.html</loc>
   </url>
   <url>
-    <loc>/reference/legend.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/legend.html</loc>
   </url>
   <url>
-    <loc>/reference/linearUnits.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/linearUnits.html</loc>
   </url>
   <url>
-    <loc>/reference/lines.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/lines.html</loc>
   </url>
   <url>
-    <loc>/reference/makeTiles.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/makeTiles.html</loc>
   </url>
   <url>
-    <loc>/reference/makeVRT.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/makeVRT.html</loc>
   </url>
   <url>
-    <loc>/reference/mappal.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/mappal.html</loc>
   </url>
   <url>
-    <loc>/reference/mask.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/mask.html</loc>
   </url>
   <url>
-    <loc>/reference/match.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/match.html</loc>
   </url>
   <url>
-    <loc>/reference/math-generics.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/math-generics.html</loc>
   </url>
   <url>
-    <loc>/reference/mem.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/mem.html</loc>
   </url>
   <url>
-    <loc>/reference/merge.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/merge.html</loc>
   </url>
   <url>
-    <loc>/reference/mergeTime.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/mergeTime.html</loc>
   </url>
   <url>
-    <loc>/reference/meta.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/meta.html</loc>
   </url>
   <url>
-    <loc>/reference/minmax.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/minmax.html</loc>
   </url>
   <url>
-    <loc>/reference/modal.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/modal.html</loc>
   </url>
   <url>
-    <loc>/reference/mosaic.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/mosaic.html</loc>
   </url>
   <url>
-    <loc>/reference/na.omit.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/na.omit.html</loc>
   </url>
   <url>
-    <loc>/reference/names.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/names.html</loc>
   </url>
   <url>
-    <loc>/reference/nearby.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/nearby.html</loc>
   </url>
   <url>
-    <loc>/reference/normalize.longitude.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/normalize.longitude.html</loc>
   </url>
   <url>
-    <loc>/reference/north.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/north.html</loc>
   </url>
   <url>
-    <loc>/reference/not.na.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/not.na.html</loc>
   </url>
   <url>
-    <loc>/reference/origin.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/origin.html</loc>
   </url>
   <url>
-    <loc>/reference/pairs.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/pairs.html</loc>
   </url>
   <url>
-    <loc>/reference/panel.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/panel.html</loc>
   </url>
   <url>
-    <loc>/reference/patches.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/patches.html</loc>
   </url>
   <url>
-    <loc>/reference/perim.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/perim.html</loc>
   </url>
   <url>
-    <loc>/reference/persp.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/persp.html</loc>
   </url>
   <url>
-    <loc>/reference/plet.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/plet.html</loc>
   </url>
   <url>
-    <loc>/reference/plot.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/plot.html</loc>
   </url>
   <url>
-    <loc>/reference/plotRGB.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/plotRGB.html</loc>
   </url>
   <url>
-    <loc>/reference/plot_extent.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/plot_extent.html</loc>
   </url>
   <url>
-    <loc>/reference/plot_graticule.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/plot_graticule.html</loc>
   </url>
   <url>
-    <loc>/reference/predict.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/predict.html</loc>
   </url>
   <url>
-    <loc>/reference/project.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/project.html</loc>
   </url>
   <url>
-    <loc>/reference/quantile.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/quantile.html</loc>
   </url>
   <url>
-    <loc>/reference/query.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/query.html</loc>
   </url>
   <url>
-    <loc>/reference/rangeFill.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rangeFill.html</loc>
   </url>
   <url>
-    <loc>/reference/rapp.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rapp.html</loc>
   </url>
   <url>
-    <loc>/reference/rast.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rast.html</loc>
   </url>
   <url>
-    <loc>/reference/rasterize.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rasterize.html</loc>
   </url>
   <url>
-    <loc>/reference/rasterizeGeom.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rasterizeGeom.html</loc>
   </url>
   <url>
-    <loc>/reference/rasterizeWin.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rasterizeWin.html</loc>
   </url>
   <url>
-    <loc>/reference/rcl.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rcl.html</loc>
   </url>
   <url>
-    <loc>/reference/readwrite.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/readwrite.html</loc>
   </url>
   <url>
-    <loc>/reference/rectify.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rectify.html</loc>
   </url>
   <url>
-    <loc>/reference/regress.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/regress.html</loc>
   </url>
   <url>
-    <loc>/reference/relate.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/relate.html</loc>
   </url>
   <url>
-    <loc>/reference/rep.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rep.html</loc>
   </url>
   <url>
-    <loc>/reference/replace_dollar.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/replace_dollar.html</loc>
   </url>
   <url>
-    <loc>/reference/replace_layers.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/replace_layers.html</loc>
   </url>
   <url>
-    <loc>/reference/replace_values.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/replace_values.html</loc>
   </url>
   <url>
-    <loc>/reference/resample.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/resample.html</loc>
   </url>
   <url>
-    <loc>/reference/rescale.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rescale.html</loc>
   </url>
   <url>
-    <loc>/reference/roll.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/roll.html</loc>
   </url>
   <url>
-    <loc>/reference/rotate.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/rotate.html</loc>
   </url>
   <url>
-    <loc>/reference/same.crs.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/same.crs.html</loc>
   </url>
   <url>
-    <loc>/reference/sample.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/sample.html</loc>
   </url>
   <url>
-    <loc>/reference/sapp.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/sapp.html</loc>
   </url>
   <url>
-    <loc>/reference/sbar.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/sbar.html</loc>
   </url>
   <url>
-    <loc>/reference/scale.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/scale.html</loc>
   </url>
   <url>
-    <loc>/reference/scatter.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/scatter.html</loc>
   </url>
   <url>
-    <loc>/reference/scoff.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/scoff.html</loc>
   </url>
   <url>
-    <loc>/reference/sds.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/sds.html</loc>
   </url>
   <url>
-    <loc>/reference/segregate.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/segregate.html</loc>
   </url>
   <url>
-    <loc>/reference/select.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/select.html</loc>
   </url>
   <url>
-    <loc>/reference/selectHigh.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/selectHigh.html</loc>
   </url>
   <url>
-    <loc>/reference/selectRange.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/selectRange.html</loc>
   </url>
   <url>
-    <loc>/reference/serialize.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/serialize.html</loc>
   </url>
   <url>
-    <loc>/reference/setValues.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/setValues.html</loc>
   </url>
   <url>
-    <loc>/reference/shade.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/shade.html</loc>
   </url>
   <url>
-    <loc>/reference/sharedPaths.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/sharedPaths.html</loc>
   </url>
   <url>
-    <loc>/reference/shift.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/shift.html</loc>
   </url>
   <url>
-    <loc>/reference/sieve.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/sieve.html</loc>
   </url>
   <url>
-    <loc>/reference/simplify.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/simplify.html</loc>
   </url>
   <url>
-    <loc>/reference/sort.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/sort.html</loc>
   </url>
   <url>
-    <loc>/reference/sources.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/sources.html</loc>
   </url>
   <url>
-    <loc>/reference/spin.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/spin.html</loc>
   </url>
   <url>
-    <loc>/reference/split.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/split.html</loc>
   </url>
   <url>
-    <loc>/reference/src.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/src.html</loc>
   </url>
   <url>
-    <loc>/reference/stretch.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/stretch.html</loc>
   </url>
   <url>
-    <loc>/reference/subset.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/subset.html</loc>
   </url>
   <url>
-    <loc>/reference/subset_dollar.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/subset_dollar.html</loc>
   </url>
   <url>
-    <loc>/reference/subset_double.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/subset_double.html</loc>
   </url>
   <url>
-    <loc>/reference/subset_single.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/subset_single.html</loc>
   </url>
   <url>
-    <loc>/reference/subst.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/subst.html</loc>
   </url>
   <url>
-    <loc>/reference/summarize-generics.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/summarize-generics.html</loc>
   </url>
   <url>
-    <loc>/reference/summary.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/summary.html</loc>
   </url>
   <url>
-    <loc>/reference/svc.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/svc.html</loc>
   </url>
   <url>
-    <loc>/reference/symdif.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/symdif.html</loc>
   </url>
   <url>
-    <loc>/reference/tapp.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/tapp.html</loc>
   </url>
   <url>
-    <loc>/reference/terra-package.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/terra-package.html</loc>
   </url>
   <url>
-    <loc>/reference/terraOptions.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/terraOptions.html</loc>
   </url>
   <url>
-    <loc>/reference/terrain.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/terrain.html</loc>
   </url>
   <url>
-    <loc>/reference/text.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/text.html</loc>
   </url>
   <url>
-    <loc>/reference/time.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/time.html</loc>
   </url>
   <url>
-    <loc>/reference/tmpFile.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/tmpFile.html</loc>
   </url>
   <url>
-    <loc>/reference/topology.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/topology.html</loc>
   </url>
   <url>
-    <loc>/reference/transpose.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/transpose.html</loc>
   </url>
   <url>
-    <loc>/reference/trim.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/trim.html</loc>
   </url>
   <url>
-    <loc>/reference/union.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/union.html</loc>
   </url>
   <url>
-    <loc>/reference/unique.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/unique.html</loc>
   </url>
   <url>
-    <loc>/reference/units.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/units.html</loc>
   </url>
   <url>
-    <loc>/reference/update.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/update.html</loc>
   </url>
   <url>
-    <loc>/reference/values.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/values.html</loc>
   </url>
   <url>
-    <loc>/reference/vect.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/vect.html</loc>
   </url>
   <url>
-    <loc>/reference/vector_layers.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/vector_layers.html</loc>
   </url>
   <url>
-    <loc>/reference/viewshed.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/viewshed.html</loc>
   </url>
   <url>
-    <loc>/reference/voronoi.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/voronoi.html</loc>
   </url>
   <url>
-    <loc>/reference/vrt.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/vrt.html</loc>
   </url>
   <url>
-    <loc>/reference/vrt_tiles.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/vrt_tiles.html</loc>
   </url>
   <url>
-    <loc>/reference/weighted.mean.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/weighted.mean.html</loc>
   </url>
   <url>
-    <loc>/reference/where.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/where.html</loc>
   </url>
   <url>
-    <loc>/reference/which.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/which.html</loc>
   </url>
   <url>
-    <loc>/reference/width.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/width.html</loc>
   </url>
   <url>
-    <loc>/reference/window.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/window.html</loc>
   </url>
   <url>
-    <loc>/reference/wrap.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/wrap.html</loc>
   </url>
   <url>
-    <loc>/reference/wrapCache.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/wrapCache.html</loc>
   </url>
   <url>
-    <loc>/reference/writeCDF.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/writeCDF.html</loc>
   </url>
   <url>
-    <loc>/reference/writeRaster.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/writeRaster.html</loc>
   </url>
   <url>
-    <loc>/reference/writeVector.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/writeVector.html</loc>
   </url>
   <url>
-    <loc>/reference/xmin.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/xmin.html</loc>
   </url>
   <url>
-    <loc>/reference/xyCellFrom.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/xyCellFrom.html</loc>
   </url>
   <url>
-    <loc>/reference/zonal.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/zonal.html</loc>
   </url>
   <url>
-    <loc>/reference/zoom.html</loc>
+    <loc>https://rspatial.github.io/terra/reference/zoom.html</loc>
   </url>
 </urlset>
