@@ -1,12 +1,15 @@
-url: https://kadyb.github.io/terra/
+url: https://rspatial.github.io/terra/
 template:
   bootstrap: 5
 
 navbar:
   structure:
-    left:  [description, reference, news]
+    left:  [description, tutorial, reference, news]
     right: [search, github]
   components:
+    tutorial:
+      text: Tutorials
+      href: https://rspatial.org
     description:
       text: Description
-      href: https://rspatial.github.io/terra/reference/terra-package.html
+      href: reference/terra-package.html
