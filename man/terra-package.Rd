@@ -624,7 +624,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 
 \section{XXIX. Changed behavior}{
 
-Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
+Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). In other cases it simply seemed better. Here are some examples:
 
 \tabular{ll}{
 \code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved polygons\cr
