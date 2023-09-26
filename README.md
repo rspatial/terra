@@ -1,17 +1,15 @@
-# terra
+# terra <img align="right" width="250" src="man/figures/logo.png">
+
+<p align="right"; style="font-size:11px">logo by Zane Dax</p>
 
 [![rcmdcheck](https://github.com/rspatial/terra/actions/workflows/rcmdcheck.yml/badge.svg)](https://github.com/rspatial/terra/actions/workflows/rcmdcheck.yml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/terra)](http://www.r-pkg.org/pkg/terra)
 
-<p align="right"; style="font-size:11px">logo by Zane Dax</p>
-
-<img align="right" width="250" src="man/figures/logo.png">
-
 `terra` is an *R* package for spatial data analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
 
-[stackoverflow](https://stackoverflow.com/questions/tagged/terra) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/terra/issues).
+[Stack Overflow](https://stackoverflow.com/questions/tagged/terra) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/terra/issues).
 
 `terra` replaces the [raster](https://github.com/rspatial/raster) package. The interfaces of `terra` and `raster` are similar, but `terra` is simpler, faster and can do more. 
 
