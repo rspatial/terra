@@ -1,0 +1,11 @@
+url: ~
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left:  [description, reference, changelog]
+    right: [search, github]
+  components:
+    description:
+      href: https://rspatial.github.io/terra/reference/terra-package.html
