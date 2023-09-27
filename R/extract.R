@@ -207,8 +207,8 @@ extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FA
 				fixname <- FALSE
 				e[,i]  <- as.factor(e[,i])
 			}
-			tb <- aggregate(e[,i,drop=FALSE], e[,1,drop=FALSE], table)
-			tb <- cbind(tb[,1,drop=FALSE], tb[,2,drop=FALSE])
+			tb <- table(e[,1], e[,i])
+			tb <- cbind(ID = rownames(tb), as.data.frame.matrix(tb))
 			if (fixname) colnames(tb) <- gsub(cn[i], "", colnames(tb))
 			if (!ID) {
 				tb$ID <- NULL
