@@ -156,8 +156,10 @@ int getyear(std::string s) {
 
 
 std::vector<int> getymd(std::string s) {
+
 //	s = std::regex_replace(s, std::regex("T"), " ");
-	replace_one_char(s, 'T', ' ');
+	lowercase(s);
+	replace_one_char(s, 't', ' ');
 
 	size_t ncolon = std::count(s.begin(), s.end(), ':');
 	std::vector<std::string> x;
@@ -166,10 +168,7 @@ std::vector<int> getymd(std::string s) {
 		x = splitstr(s, " ");
 		s = x[0];
 		if (x.size() > 1) {
-			std::string f = s;
-			f.erase(std::remove(f.begin(), f.end(), 'Z'), f.end());
-			x[1] = f;
-			//x[1] = std::regex_replace(s, std::regex("Z"), "");
+			x[1].erase(std::remove(x[1].begin(), x[1].end(), 'z'), x[1].end());
 			y = splitstr(x[1], ":");
 		}
 	}
@@ -178,12 +177,13 @@ std::vector<int> getymd(std::string s) {
 	if (ndash == 2) {
 		x = splitstr(s, "-");
 	}
-	x.insert( x.end(), y.begin(), y.end() );
+	x.insert(x.end(), y.begin(), y.end() );
 	std::vector<int> out(x.size());
 
 	for (size_t i=0; i<out.size(); i++){
 		out[i] = std::stoi(x[i]);
 	}
+	out.resize(6, 0);
 	return out;
 }
 
