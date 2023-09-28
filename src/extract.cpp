@@ -649,7 +649,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 
 	if (!source[0].srs.is_same(v.srs, true)) {
 		v = v.project(getSRS("wkt"), false);
-		addWarning("transforming vector to CRS of raster");
+		addWarning("transforming vector data to the CRS of the raster");
 	}
 
 	std::string gtype = v.type();
@@ -902,7 +902,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun,
 
 	if (!source[0].srs.is_same(v.srs, true)) {
 		v = v.project(getSRS("wkt"), false);
-		addWarning("transforming vector to CRS of raster");
+		addWarning("transforming vector data to the CRS of the raster");
 //		addWarning("CRS of raster and vector data do not match");
 	}
 
