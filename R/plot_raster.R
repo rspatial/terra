@@ -744,6 +744,9 @@ prettyNumbs <- function(x, digits) {
 setMethod("plot", signature(x="SpatRaster", y="numeric"),
 	function(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, ...) {
 
+		old.mar <- graphics::par()$mar
+		on.exit(graphics::par(mar=old.mar))
+
 		y <- round(y)
 		hasRGB <- FALSE		
 		if (has.RGB(x) && ((is.null(type) && (y[1] < 0)))) {

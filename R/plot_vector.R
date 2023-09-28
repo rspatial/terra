@@ -647,6 +647,9 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, 
 	alpha=NULL, box=axes, clip=TRUE, ...) {
 
+		old.mar <- graphics::par()$mar
+		on.exit(graphics::par(mar=old.mar))
+
 		if (nrow(x) == 0) {
 			error("plot", "SpatVector has zero geometries")
 		}
