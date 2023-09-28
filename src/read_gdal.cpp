@@ -1859,6 +1859,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 	bool months = false;
 	bool days = false;
 	bool hours = false;
+	bool minutes = false;
 	bool seconds = false;
 	bool foundorigin = false;
 
@@ -1881,6 +1882,8 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 			foundorigin = true;
 		} else if ((origin.find("years")) != std::string::npos) {
 			years = true;
+		} else if ((origin.find("minutes")) != std::string::npos) {
+			minutes = true;
 		}
 		if (!foundorigin) {
 			size_t pos;		
@@ -1897,6 +1900,26 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 	if (foundorigin) {
 		step = "seconds";
 		out.reserve(raw.size());
+		
+		// this shortcut means that 360/noleap calendars loose only have dates, no time
+		// to be refined
+		if ((hours || minutes || seconds) && (calendar == "noleap" || calendar == "365_day" || calendar == "365 day" || calendar == "360_day" || calendar == "360 day")) {
+			int div = 24;
+			if (hours) {
+				hours = false;
+			} else if (minutes) {
+				div = 1440; // 24 * 60
+				minutes = false;
+			} else if (seconds) {
+				div = 86400; // 24 * 3600
+				seconds = false;
+			}
+			for (size_t i=0; i<raw.size(); i++) {
+				raw[i] /= div;
+			}
+			days = true;
+		} 
+		
 		if (days) {
 			step = "days";
 			std::vector<int> ymd = getymd(origin);
@@ -1918,6 +1941,9 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		} else if (seconds) {
 			offset = get_time_string(origin);
 			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]+offset);
+		} else if (minutes) {
+			offset = get_time_string(origin);
+			for (size_t i=0; i<raw.size(); i++) out.push_back(60*raw[i]+offset);
 		} else if (years) {
 			step = "years";
 			int syear = getyear(origin);
