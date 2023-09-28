@@ -1904,7 +1904,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		// this shortcut means that 360/noleap calendars loose only have dates, no time
 		// to be refined
 		if ((hours || minutes || seconds) && (calendar == "noleap" || calendar == "365_day" || calendar == "365 day" || calendar == "360_day" || calendar == "360 day")) {
-			int div = 24;
+			double div = 24;
 			if (hours) {
 				hours = false;
 			} else if (minutes) {
@@ -1915,7 +1915,8 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 				seconds = false;
 			}
 			for (size_t i=0; i<raw.size(); i++) {
-				raw[i] /= div;
+				double x = raw[i] / div; 
+				raw[i] = std::round(x);
 			}
 			days = true;
 		} 
