@@ -35,7 +35,7 @@ Select a subset of layers from a SpatRaster or select a subset of records (row) 
   \item{i}{
   if \code{x} is a \code{SpatRaster}: integer, logical, or character to select layers
 
-  if \code{x} is a \code{SpatVector}: integer, logical, or character to select variables)
+  if \code{x} is a \code{SpatVector}: integer, logical, or character to select variables
   }
   \item{j}{missing, or, for SpatRasterDataset only, numeric}
 
@@ -49,7 +49,7 @@ if \code{x} is a \code{SpatVector}: a \code{data.frame}.
 }
 
 
-\seealso{\code{link{subset}, link{$}, link{[}, link{extract}}}
+\seealso{\code{\link{subset}}, \code{\link{$}}, \code{\link{[}}, \code{\link{extract}}}
 
 \examples{
 ### SpatRaster

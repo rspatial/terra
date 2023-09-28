@@ -16,7 +16,6 @@ Select a subset of layers from a SpatRaster or select a subset of records (row) 
 
 \usage{
 \S4method{$}{SpatExtent}(x, name)
-
 }
 
 \arguments{
@@ -31,7 +30,7 @@ if \code{x} is a \code{SpatVector}: SpatVector or, if \code{drop=TRUE}, a \code{
 }
 
 
-\seealso{\code{link{subset}, link{[}, link{[[}, link{extract}}}
+\seealso{\code{\link{subset}}, \code{\link{[}}, \code{\link{[[}}, \code{\link{extract}}}
 
 \examples{
 ### SpatRaster

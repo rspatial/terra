@@ -91,7 +91,7 @@ numeric if \code{x} is a SpatExtent.
 Same as \code{x} if \code{drop=FALSE}. Otherwise a data.frame
 }
 
-\seealso{link{extract}, \code{link{subset}, link{$}, link{[[}, }}
+\seealso{\code{\link{extract}}, \code{\link{subset}}, \code{\link{$}}, \code{\link{[[}}}
 
 \examples{
 ### SpatRaster
