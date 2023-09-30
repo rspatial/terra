@@ -99,13 +99,23 @@
 
 	if (is.null(out$range)) {
 		out$range <- range(z)
+#		out$fill_range <- FALSE
 	} else {
 		stopifnot(length(out$range) == 2)
 		stopifnot(out$range[2] > out$range[1])
 	}
 
 	breaks <- .get_breaks(z, length(out$cols), "eqint", out$range)
+#	if (isTRUE(out$fill_range)) {
+#		zrng <- range(z)
+#		breaks[1] <- zrng[1]
+#		breaks[length(breaks)] <- zrng[2]
+#		out$frange <- zrng
+#	} else {
+#		out$frange <- out$range	
+#	}
 	Z[] <- out$cols[as.integer(cut(Z, breaks, include.lowest=TRUE, right=FALSE))]
+
 	out$r <- as.raster(Z)
 
 	out$legend_type <- "continuous"
@@ -685,6 +695,7 @@ prettyNumbs <- function(x, digits) {
 		} else {
 			out$interpolate <- isTRUE(interpolate)
 			out$range <- range
+			#out$fill_range <- fill_range
 			out <- .as.raster.continuous(out, x, type)
 		}
 

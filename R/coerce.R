@@ -483,7 +483,7 @@ setAs("sf", "SpatVector",
 		if (inherits(geom, "list")) {
 			error("as,sf", "the geometry column is not valid (perhaps first load the sf package)")
 		}
-		v <- try(.from_sf(from, geom, sfi), silent=TRUE)
+		v <- try(.from_sf(from, geom, sfi), silent=FALSE)
 		if (inherits(v, "try-error")) {
 			error("as,sf", "coercion failed. You can try coercing via a Spatial* (sp) class")
 		}
