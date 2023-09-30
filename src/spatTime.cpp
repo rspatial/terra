@@ -18,7 +18,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-//#include <regex>
+#include <cmath>
 #include "string_utils.h"
 
 
@@ -38,7 +38,7 @@ SpatTime_t yeartime(const long &year) {
 
 
 
-SpatTime_t get_time(long year, unsigned month, unsigned day, unsigned hr, unsigned min, unsigned sec) {
+SpatTime_t get_time(long year, unsigned month, unsigned day, int hr, int min, int sec) {
 
     static const unsigned mdays[2][12] = {
         {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334},
@@ -180,10 +180,15 @@ std::vector<int> getymd(std::string s) {
 	x.insert(x.end(), y.begin(), y.end() );
 	std::vector<int> out(x.size());
 
-	for (size_t i=0; i<out.size(); i++){
-		out[i] = std::stoi(x[i]);
+	try {
+		for (size_t i=0; i<out.size(); i++){
+			out[i] = std::stoi(x[i]);
+		}
+		out.resize(6, 0);
+	} catch(...) {
+		out = std::vector<int>(6);
 	}
-	out.resize(6, 0);
+	
 	return out;
 }
 
@@ -191,6 +196,7 @@ std::vector<int> getymd(std::string s) {
 
 SpatTime_t get_time_string(std::string s) {
 
+/*
 	std::vector<std::string> ss;
 	size_t ncolon = std::count(s.begin(), s.end(), ':');
 	if (ncolon > 0) {
@@ -204,16 +210,15 @@ SpatTime_t get_time_string(std::string s) {
 	} else {
 		return time;
 	}
-	time = get_time(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]), 0, 0, 0);
+*/
 
-//	} else {
-//		time = get_time_noleap(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]));
-//	}
-	return time;
+	std::vector<int> d = getymd(s);
+	return get_time(d[0], d[1], d[2], d[3], d[4], d[5]);
+
 }
 
-SpatTime_t time_from_hour(int syear, int smonth, int sday, double nhours) {
-	SpatTime_t time = get_time(syear, smonth, sday, 0, 0, 0);
+SpatTime_t time_from_hour(int syear, int smonth, int sday, int shour, double nhours) {
+	SpatTime_t time = get_time(syear, smonth, sday, shour, 0, 0);
 	time += nhours * 3600;
 	return time;
 }
@@ -233,21 +238,51 @@ SpatTime_t time_from_day(int syear, int smonth, int sday, double ndays) {
 }
 
 
-SpatTime_t time_from_day_noleap(int syear, int smonth, int sday, double ndays) {
-    static const int md[13] =  {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+
+SpatTime_t get_time_noleap(int syear, int smonth, int sday, int shour, int smin, int ssec, double n, std::string step) {
+
+	static const int md[13] =  {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+
+	// set start to beginning of year 
+	double s = ssec + smin * 60 + shour * 3600 + (sday-1) * 24 * 3600;
+	for (int i=0; i < smonth; i++) {
+		s += (md[i] * 24 * 3600);
+	}
+
+	double ndays;
+	if (step == "hours") {
+		ndays = (n + s/3600) / 24;
+	} else if (step == "minutes") {
+		n += s/60;
+		ndays = n / 1440;
+	} else if (step == "seconds") {
+		ndays = (n+s) / 86400;
+	} else if (step == "days") {
+		ndays = n + s/86400;
+	} else {
+		return 0;
+	}
+
 	int year = ndays / 365;
-	//int doy = ndays % 365;
-	int doy = ndays - (year * 365);
+	double rem = ndays - (floor(year) * 365);
 	int month;
 	for (month=1; month<13; month++) {
-		if (doy < md[month]) {
+		if (rem < md[month]) {
 			break;
 		}
 	}
-	month--;
-	int day = doy - md[month];
-	SpatTime_t time = get_time(year+syear, month+smonth, day+sday, 0, 0, 0);
-	return time;
+	rem -= md[month-1];
+	int day = rem;
+	rem -= day;
+	day++;
+	rem *= 24;
+	int hr = rem;
+	rem -= hr;
+	int mn = rem * 60;
+	rem -= mn;
+	int sc = rem * 60;
+	
+	return get_time(year+syear, month, day, hr, mn, sc);
 }
 
 

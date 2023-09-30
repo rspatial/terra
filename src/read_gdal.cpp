@@ -1865,25 +1865,25 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 
 	if (fu) {
 		lowercase(origin);
-		if ((origin.find("hours")) != std::string::npos) {
+		if ((origin.find("seconds")) != std::string::npos) {
+			seconds = true;
+		} else if ((origin.find("minutes")) != std::string::npos) {
+			minutes = true;
+		} else if ((origin.find("hours")) != std::string::npos) {
 			hours = true;
 		} else if ((origin.find("days")) != std::string::npos) {
 			days = true;
-		} else if ((origin.find("seconds")) != std::string::npos) {
-			seconds = true;
-		} else if ((origin.find("years before present")) != std::string::npos) {
-			yearsbp = true;
-			foundorigin = true;
 		} else if ((origin.find("months since")) != std::string::npos) {
 			yearmonths = true;
 			foundorigin = true;
 		} else if ((origin.find("months")) != std::string::npos) {
 			months = true;
 			foundorigin = true;
+		} else if ((origin.find("years before present")) != std::string::npos) {
+			yearsbp = true;
+			foundorigin = true;
 		} else if ((origin.find("years")) != std::string::npos) {
 			years = true;
-		} else if ((origin.find("minutes")) != std::string::npos) {
-			minutes = true;
 		}
 		if (!foundorigin) {
 			size_t pos;		
@@ -1900,10 +1900,22 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 	if (foundorigin) {
 		step = "seconds";
 		out.reserve(raw.size());
+		std::string cal = "366";
+		if (calendar == "360_day" || calendar == "360 day") {
+			cal = "360";
+		} else if (calendar == "noleap" || calendar == "365_day" || calendar == "365 day") {
+			cal = "365";		
+		} else if (calendar =="gregorian" || calendar =="proleptic_gregorian" || calendar=="standard" || calendar == "julian") {
+			cal = "366";
+		} else {
+			//cal = "366";
+			msg = "unknown calendar (assuming standard): " + calendar;			
+		}
 		
 		// this shortcut means that 360/noleap calendars loose only have dates, no time
 		// to be refined
-		if ((hours || minutes || seconds) && (calendar == "noleap" || calendar == "365_day" || calendar == "365 day" || calendar == "360_day" || calendar == "360 day")) {
+		// calendar == "noleap" || calendar == "365_day" || calendar == "365 day" ||
+		if ((hours || minutes || seconds) && (cal == "360")) {
 			int div = 24;
 			double add = 0;
 			std::vector<int> ymd = getymd(origin);
@@ -1928,27 +1940,47 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		if (days) {
 			step = "days";
 			std::vector<int> ymd = getymd(origin);
-			if (calendar == "noleap" || calendar == "365_day" || calendar == "365 day") {
-				for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_day_noleap(ymd[0], ymd[1], ymd[2], raw[i]));
-			} else if (calendar == "360_day" || calendar == "360 day") {
-				for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_day_360(ymd[0], ymd[1], ymd[2], raw[i]));
+			if (cal == "365") {
+				for (size_t i=0; i<raw.size(); i++) out.push_back(
+					get_time_noleap(ymd[0], ymd[1], ymd[2], 0, 0, 0, raw[i], "days"));
+			} else if (cal == "360") {
+				for (size_t i=0; i<raw.size(); i++) out.push_back(
+					time_from_day_360(ymd[0], ymd[1], ymd[2], raw[i]));
 			} else {
-				if (!(calendar =="gregorian" || calendar =="proleptic_gregorian" || calendar=="standard" || calendar == "julian")) {
-					// julian is perhaps questionable it can mean different things.
-					msg = "unknown calendar (assuming standard): " + calendar;
-				}
-				for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_day(ymd[0], ymd[1], ymd[2], raw[i]));
+				for (size_t i=0; i<raw.size(); i++) out.push_back(
+					time_from_day(ymd[0], ymd[1], ymd[2], raw[i]));
 			}
 		} else if (hours) {
-			//hours_to_time(out, origin);
-			std::vector<int> ymd = getymd(origin);
-			for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_hour(ymd[0], ymd[1], ymd[2], raw[i]));
-		} else if (seconds) {
-			offset = get_time_string(origin);
-			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]+offset);
+			if (cal == "365") {
+				std::vector<int> ymd = getymd(origin);
+				for (size_t i=0; i<raw.size(); i++) out.push_back(
+						get_time_noleap(ymd[0], ymd[1], ymd[2], ymd[3], 0, 0, raw[i], "hours")
+					);
+			} else {
+				offset = get_time_string(origin);
+				for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]*3600+offset);
+			}
 		} else if (minutes) {
-			offset = get_time_string(origin);
-			for (size_t i=0; i<raw.size(); i++) out.push_back(60*raw[i]+offset);
+			if (cal == "365") {
+				std::vector<int> ymd = getymd(origin);
+//				Rcpp::Rcout << origin << std::endl;
+				for (size_t i=0; i<raw.size(); i++) out.push_back(
+						get_time_noleap(ymd[0], ymd[1], ymd[2], ymd[3], ymd[4], 0, raw[i], "minutes")
+					);
+			} else {
+				offset = get_time_string(origin);
+				for (size_t i=0; i<raw.size(); i++) out.push_back(60*raw[i]+offset);
+			}
+		} else if (seconds) {
+			if (cal == "365") {
+				std::vector<int> ymd = getymd(origin);
+				for (size_t i=0; i<raw.size(); i++) out.push_back(
+						get_time_noleap(ymd[0], ymd[1], ymd[2], ymd[3], ymd[4], 0, raw[i], "minutes")
+					);
+			} else {
+				offset = get_time_string(origin);
+				for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]+offset);
+			}
 		} else if (years) {
 			step = "years";
 			int syear = getyear(origin);
