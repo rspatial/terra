@@ -6,9 +6,6 @@
 \alias{geomtype,SpatVector-method}
 \alias{geomtype,SpatVectorProxy-method}
 \alias{geomtype,Spatial-method}
-\alias{datatype}
-\alias{datatype,SpatVector-method}
-\alias{datatype,SpatRaster-method}
 \alias{is.points}
 \alias{is.lines}
 \alias{is.polygons}
@@ -19,7 +16,7 @@
 \title{Geometry type of a SpatVector}
 
 \description{
-Get the geometry type (points, lines, or polygons) of a SpatVector or the data types of the fields (attributes, variables) of a SpatVector.
+Get the geometry type (points, lines, or polygons) of a SpatVector. See \code{\link{datatype}} for the data types of the fields (attributes, variables) of a SpatVector.
 } 
 
 \usage{
@@ -32,14 +29,10 @@ Get the geometry type (points, lines, or polygons) of a SpatVector or the data t
 \S4method{is.lines}{SpatVector}(x)
 
 \S4method{is.polygons}{SpatVector}(x)
-
-\S4method{datatype}{SpatRaster}(x, bylyr=TRUE)
 }
 
 \arguments{
-\item{x}{SpatVector or SpatRaster}
-
-\item{bylyr}{logical. If \code{TRUE} a value is returned for each layer. Otherwise, a value is returned for each data source (such as a file)}
+\item{x}{SpatVector}
 }
 
 \value{character}
