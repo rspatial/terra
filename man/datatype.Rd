@@ -26,6 +26,9 @@ Get the data types of the fields (attributes, variables) of a SpatVector or of t
 
 \value{character}
 
+\seealso{
+ \code{\link[=is.bool]{Raster value types}} to check / set the type of SpatRaster values in memory.
+}
 
 \examples{
 f <- system.file("ex/lux.shp", package="terra")
@@ -36,7 +39,7 @@ f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 datatype(r)
 
-datatype(rast())
+datatype(rast()) # no data type
 }
 
 \keyword{methods}
