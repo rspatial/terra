@@ -45,7 +45,7 @@ See \code{\link{levels}} and \code{\link{cats}} to create categorical layers by 
 }
 
 \description{
-\code{as.bool} and \code{as.int} force the values into the correct range (e.g. whole integers)  but in-memory cell values are still stored as numeric. They will behave like the assigned types, though, and will be written to files with that data type (if the file type supports it). 
+\code{as.bool} and \code{as.int} force the values into the correct range (e.g. whole integers) but in-memory cell values are still stored as numeric. They will behave like the assigned types, though, and will be written to files with that data type (if the file type supports it). 
 }
 
 \arguments{
