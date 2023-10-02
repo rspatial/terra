@@ -35,6 +35,27 @@ class SpatTime_v {
 		void push_back(SpatTime_t v) {x.push_back(v);}
 };
 
+class SpatTimeP {
+	long year;
+	short int month;
+	short int day;
+	short int hour;
+	short int minute;
+	short int second;
+};
+
+class SpatTimeP_v {
+	public:
+		std::vector<SpatTimeP> x;
+		std::string zone;
+		std::string step;
+		size_t size() { return(x.size());}
+		bool empty() { return(x.empty());}
+		void resize(size_t n) {x.resize(n);}
+		void resize(size_t n, SpatTimeP v) {x.resize(n, v);}
+		void reserve(size_t n) {x.reserve(n);}
+		void push_back(SpatTimeP v) {x.push_back(v);}
+};
 
 SpatTime_t get_time(long year, unsigned month, unsigned day, int hr, int min, int sec);
 std::vector<int> get_date(SpatTime_t x);
