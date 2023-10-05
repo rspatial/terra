@@ -261,6 +261,7 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 	long nl = nlyr();
 	bool keepnlyr = ((nlyrs == nl) || (nlyrs < 1));
 	nlyrs = (keepnlyr) ? nlyr(): nlyrs;
+	
 	if (properties) {
 		s.hasColors = hasColors();
 		s.cols = getColors();
@@ -280,6 +281,10 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 		if (units && hasUnit()) {
 			s.hasUnit = true;
 			s.unit = getUnit();
+		}
+		if (nsrc() == 1) {
+			s.source_name = source[0].source_name;
+			s.source_name_long = source[0].source_name_long;
 		}
 	} else {
 		for (size_t i=0; i < s.nlyr; i++) {

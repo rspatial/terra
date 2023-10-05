@@ -2081,8 +2081,10 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 
 	if (nms[2][2].empty()) {
 		unit = {""};
+		hasUnit = false;
 	} else {
 		unit = {nms[2][2]};
+		hasUnit = true;
 	}
 
 	recycle(unit, nlyr);
