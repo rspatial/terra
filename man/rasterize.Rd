@@ -30,7 +30,7 @@ Transfer values associated with the geometries of vector data to a raster
 
   \item{values}{typically a numeric vector of length \code{1} or \code{nrow(x)}. If the length is below \code{nrow(x)} the values will be recycled to \code{nrow(x)}. Only used when \code{x} is a matrix. Can also be a matrix or data.frame}
   
-  \item{fun}{summarizing function for when there are multiple geometries in one cell. For lines and polygons you can only use  \code{"min"}, \code{"max"} and  \code{"sum"}
+  \item{fun}{summarizing function for when there are multiple geometries in one cell. For lines and polygons you can only use  \code{"min"}, \code{"max"}, \code{"mean"}, \code{"count"} and \code{"sum"}
   For points you can use any function that returns a single number; for example \code{mean}, \code{length} (to get a count), \code{min} or \code{max}}
   
   \item{...}{additional arguments passed to \code{fun}}

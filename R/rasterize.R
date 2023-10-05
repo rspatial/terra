@@ -273,7 +273,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			if (missing(fun)) {
 				if (!is.null(dots$sum)) {
 					# backward compatibility
-					fun <- dots$sum				
+					if (isTRUE(dots$sum)) fun <- "sum"
 				} else {
 					fun <- ""
 				}
@@ -281,15 +281,19 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			if (!inherits(fun, "character")) {
 				fun <- .makeTextFun(fun)
 				if (!inherits(fun, "character")) {
-					error("rasterize", "'fun' must be 'min', 'max', 'mean', or 'sum'")
+					error("rasterize", "'fun' must be 'min', 'max', 'mean', 'count', or 'sum'")
 				}
 			}
 			if (fun != "") {
 				fun <- tolower(fun)
-				if (!(fun %in% c("sum", "mean", "min", "max"))) {
-					error("rasterize", "'fun' must be 'min', 'max' 'mean', or 'sum'")
+				if (!(fun %in% c("sum", "mean", "min", "max", "count"))) {
+					error("rasterize", "'fun' must be 'min', 'max' 'mean', 'count', or 'sum'")
 				}
-				if (field != "") {
+				if (fun == "count") {
+					fun <- "sum"
+					field <- ""
+					values <- 1
+				} else if (field != "") {
 					if (fun == "min") {
 						x <- sort(x[,field], field, TRUE)
 						fun <- ""
