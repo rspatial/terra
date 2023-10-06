@@ -282,9 +282,18 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 			s.hasUnit = true;
 			s.unit = getUnit();
 		}
-		if (nsrc() == 1) {
-			s.source_name = source[0].source_name;
-			s.source_name_long = source[0].source_name_long;
+		
+		std::vector<std::string> un = getSourceNames();
+		std::sort(un.begin(), un.end() );
+		un.erase(std::unique(un.begin(), un.end()), un.end());
+		if (un.size() == 1) {
+			s.source_name = un[0];
+		}
+		un = getLongSourceNames();
+		std::sort(un.begin(), un.end() );
+		un.erase(std::unique(un.begin(), un.end()), un.end());
+		if (un.size() == 1) {
+			s.source_name_long = un[0];
 		}
 	} else {
 		for (size_t i=0; i < s.nlyr; i++) {
