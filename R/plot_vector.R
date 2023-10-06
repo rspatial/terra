@@ -352,7 +352,9 @@ setMethod("dots", signature(x="SpatVector"),
 			out <- .vect.legend.interval(out, dig.lab=out$dig.lab)
 		}
 	} else if (out$legend_type == "depends") {
-		if (nuq < 11) {
+		if (!is.null(out$breaks)) {
+			out <- .vect.legend.interval(out, dig.lab=out$dig.lab)			
+		} else if (nuq < 11) {
 			out <- .vect.legend.classes(out)
 		} else if (!is.numeric(out$uv)) {
 			#if (nuq < 21)
