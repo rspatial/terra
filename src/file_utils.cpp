@@ -211,6 +211,7 @@ bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> o
 		}
 	}
 	size_t n = outf.size();
+	std::sort( outf.begin(), outf.end() );
 	outf.erase(std::unique(outf.begin(), outf.end()), outf.end());
 	if (n > outf.size()) {
 		msg = "duplicate filenames";
