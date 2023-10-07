@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-49</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-50</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,9 +51,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-49" id="version-17-49">version 1.7-49<a class="anchor" aria-label="anchor" href="#version-17-49"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.7-50" id="version-17-50">version 1.7-50<a class="anchor" aria-label="anchor" href="#version-17-50"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-49">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-49"></a></h3>
+<h3 id="bug-fixes-1-7-50">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-50"></a></h3>
 <ul><li>
 <code>mosaic</code> ignored the filename argument if the SpatRasterCollection only had a single SpatRaster <a href="https://github.com/rspatial/terra/issues/1267" class="external-link">#1267</a> by Michael Mahoney</li>
 <li>Attempting to use <code>extract</code> with a raster file that had been deleted crashed R. <a href="https://github.com/rspatial/terra/issues/1268" class="external-link">#1268</a> by Derek Friend</li>
@@ -64,11 +64,21 @@
 <li>“values=FALSE” was ignored by <code>spatSample&lt;SpatRaster&gt;(method="weights")</code> <a href="">#1275</a><a href="https://github.com/rspatial/terra/issues/1275" class="external-link uri">https://github.com/rspatial/terra/issues/1275</a> by François Rousseu</li>
 <li>
 <code>coltab&lt;-</code> again works with a list as value <a href="https://github.com/rspatial/terra/issues/1280" class="external-link">#1280</a> by Diego Hernangómez</li>
+<li>
+<code>stretch</code> with histogram equalization was not memory-safe <a href="https://github.com/rspatial/terra/issues/1305" class="external-link">#1305</a> by Evan Hersh</li>
+<li>
+<code>plot</code> now resets the “mar” parameter <a href="https://github.com/rspatial/terra/issues/1297" class="external-link">#1297</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-49">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-49"></a></h3>
+<h3 id="enhancements-1-7-50">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-50"></a></h3>
 <ul><li>argument “gdal” in <code>project</code> was renamed to “use_gdal” <a href="https://github.com/rspatial/terra/issues/1269" class="external-link">#1269</a> by Stuart Brown.</li>
 <li>SpatVector attributes can now be stored as an ordered factor <a href="https://github.com/rspatial/terra/issues/1277" class="external-link">#1277</a> by Ben Notkin</li>
+<li>
+<code>plot&lt;SpatVector&gt;</code> now uses an “interval” legend when breaks are supplied <a href="https://github.com/rspatial/terra/issues/1303" class="external-link">#1303</a> by Gonzalo Rizzo</li>
+<li>
+<code>crop&lt;SpatRaster&gt;</code> now keeps more metadata, including variable names <a href="https://github.com/rspatial/terra/issues/1302" class="external-link">#1302</a> by rhgof</li>
+<li>
+<code>extract(fun="table")</code> now returns an easier to use data.frame [#1294] (<a href="https://github.com/rspatial/terra/issues/1294" class="external-link uri">https://github.com/rspatial/terra/issues/1294</a>} by Fernando Aramburu.</li>
 </ul></div>
 </div>
     <div class="section level2">
