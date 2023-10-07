@@ -971,15 +971,23 @@ setMethod("scale", signature(x="SpatRaster"),
 
 
 setMethod("stretch", signature(x="SpatRaster"),
-	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, histeq=FALSE, scale=1, filename="", ...) {
-		opt <- spatOptions(filename, ...)
+	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, histeq=FALSE, scale=1, maxcell=500000, filename="", ...) {
 		if (histeq) {
-			eqStretch <- function(x){
-				ecdfun <- stats::ecdf(x)(x)
-				ecdfun(x)
+			if (nlyr(x) > 1) {
+				warn("stretch", "only the first layer of x is used")
+				x <- x[[1]]
 			}
-			setValues(x, apply(values(x), 2, function(i) stats::ecdf(i)(i))) * scale
+			if (scale == 1) {
+				ecdfun <- stats::ecdf(na.omit(spatSample(x, maxcell, "regular")[,1]))
+			} else {
+				ecdfun <- function(y) {
+					f <- stats::ecdf(na.omit(spatSample(x, maxcell, "regular")[,1]))
+					f(y) * scale
+				}
+			}
+			app(x, ecdfun, filename=filename, ...)
 		} else {
+			opt <- spatOptions(filename, ...)
 			x@cpp <- x@cpp$stretch(minv, maxv, minq, maxq, smin, smax, opt)
 			messages(x, "stretch")
 		}
