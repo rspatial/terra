@@ -1,4 +1,4 @@
-# version 1.7-49
+# version 1.7-50
 
 ## bug fixes
 
@@ -10,11 +10,17 @@ https://github.com/rspatial/terra/issues/1273) by Dave Dixon
 - "values=FALSE" was ignored by `spatSample<SpatRaster>(method="weights")` [#1275]()https://github.com/rspatial/terra/issues/1275 by François Rousseu
 - `coltab<-` again works with a list as value [#1280](https://github.com/rspatial/terra/issues/1280) by Diego
 Hernangómez
+- `stretch` with histogram equalization was not memory-safe [#1305](https://github.com/rspatial/terra/issues/1305) by Evan Hersh
+- `plot` now resets the "mar" parameter [#1297](https://github.com/rspatial/terra/issues/1297) by Márcia Barbosa
 
 ## enhancements
 
 - argument "gdal" in `project` was renamed to "use_gdal" [#1269](https://github.com/rspatial/terra/issues/1269) by Stuart Brown.
 - SpatVector attributes can now be stored as an ordered factor [#1277](https://github.com/rspatial/terra/issues/1277) by Ben Notkin
+- `plot<SpatVector>` now uses an "interval" legend when breaks are supplied [#1303](https://github.com/rspatial/terra/issues/1303) by Gonzalo Rizzo
+- `crop<SpatRaster>` now keeps more metadata, including variable names [#1302](https://github.com/rspatial/terra/issues/1302) by rhgof
+- `extract(fun="table")` now returns an easier to use data.frame [#1294] (https://github.com/rspatial/terra/issues/1294} by Fernando Aramburu.
+
 
 # version 1.7-46
 
