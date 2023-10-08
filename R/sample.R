@@ -14,17 +14,17 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, v
 	} else {
 		i <- sample.int(nrow(res), size, prob=res[,ncol(res)], replace=replace)
 	}
-	res <- res[i,]
-	if (!values) res <- res[ , 1:(cells + 2*(xy | as.points))]
+	res <- res[i, , drop=FALSE]
+	if (!values) res <- res[ , 1:(cells + 2*(xy | as.points)), drop=FALSE]
 	if (as.points) {
 		res <- vect(res, c("x", "y"), crs=crs(x))
 		if (!xy) {
 			res$x <- NULL
 			res$y <- NULL
 		}
-	} else if (as.df) {
-		res <- data.frame(res)
-	}
+	} #else if (as.df) {
+		#res <- data.frame(res)
+	#}
 	res
 }
 

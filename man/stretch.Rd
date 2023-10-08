@@ -30,6 +30,8 @@ For histogram equalization, these arguments are ignored, but you can provide the
 \item{histeq}{logical. If \code{TRUE} histogram equalization is used instead of linear stretch}
 \item{scale}{numeric. The scale (maximum value) of the output if \code{histeq=TRUE}}
 
+\item{maxcell}{positive integer. The size of the regular sample used to compute the histogram}
+
 \item{filename}{character. Output filename}
 \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

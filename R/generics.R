@@ -977,6 +977,7 @@ setMethod("stretch", signature(x="SpatRaster"),
 				warn("stretch", "only the first layer of x is used")
 				x <- x[[1]]
 			}
+			scale <- scale[1]
 			if (scale == 1) {
 				ecdfun <- stats::ecdf(na.omit(spatSample(x, maxcell, "regular")[,1]))
 			} else {
