@@ -1,5 +1,6 @@
 \name{is.valid}
 
+\alias{is.empty}
 \alias{is.valid}
 \alias{is.valid,SpatVector-method}
 \alias{is.valid,SpatExtent-method}
@@ -19,6 +20,10 @@ Check the validity of polygons or attempt to fix it. Or check the validity of a 
 \S4method{makeValid}{SpatVector}(x)
 
 \S4method{is.valid}{SpatExtent}(x)
+
+\S4method{is.empty}{SpatExtent}(x)
+
+\S4method{is.empty}{SpatVector}(x)
 }
 
 \arguments{

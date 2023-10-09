@@ -22,8 +22,6 @@ Get the geometry type (points, lines, or polygons) of a SpatVector. See \code{\l
 \usage{
 \S4method{geomtype}{SpatVector}(x)
 
-\S4method{datatype}{SpatVector}(x)
-
 \S4method{is.points}{SpatVector}(x)
 
 \S4method{is.lines}{SpatVector}(x)

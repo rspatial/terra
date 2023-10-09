@@ -974,8 +974,12 @@ setMethod("stretch", signature(x="SpatRaster"),
 	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, histeq=FALSE, scale=1, maxcell=500000, filename="", ...) {
 		if (histeq) {
 			if (nlyr(x) > 1) {
-				warn("stretch", "only the first layer of x is used")
-				x <- x[[1]]
+				x <- lapply(1:nlyr(x), function(i) stretch(x[[i]], histeq=TRUE, scale=scale, maxcell=maxcell))
+				x <- rast(x)
+				if (filename != "") {
+					x <- writeRaster(x, filename=filename, ...)
+				}
+				return(x)
 			}
 			scale <- scale[1]
 			if (scale == 1) {

@@ -27,6 +27,8 @@ The values in a SpatRaster layer are by default numeric, but they can also be se
 
 For a \code{SpatRaster}, \code{as.logical} and \code{isTRUE} is equivalent to \code{as.bool}. \code{isFALSE} is equivalent to \code{!as.bool}, and \code{as.integer} is the same as \code{as.int}.
 
+\code{as.bool} and \code{as.int} force the values into the correct range (e.g. whole integers) but in-memory cell values are still stored as numeric. They will behave like the assigned types, though, and will be written to files with that data type (if the file type supports it). 
+
 See \code{\link{levels}} and \code{\link{cats}} to create categorical layers by setting labels. 
 }
 
@@ -44,9 +46,6 @@ See \code{\link{levels}} and \code{\link{cats}} to create categorical layers by 
 \S4method{as.factor}{SpatRaster}(x)
 }
 
-\description{
-\code{as.bool} and \code{as.int} force the values into the correct range (e.g. whole integers) but in-memory cell values are still stored as numeric. They will behave like the assigned types, though, and will be written to files with that data type (if the file type supports it). 
-}
 
 \arguments{
   \item{x}{SpatRaster}

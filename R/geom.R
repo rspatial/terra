@@ -718,3 +718,10 @@ setMethod("forceCCW", signature(x="SpatVector"),
 		messages(x)
 	}
 )
+
+
+setMethod("is.empty", signature(x="SpatVector"),
+	function(x) {
+		nrow(x) == 0
+	}
+)
