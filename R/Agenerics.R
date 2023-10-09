@@ -176,6 +176,7 @@ if (!isGeneric("datatype")) {setGeneric("datatype", function(x, ...) standardGen
 if (!isGeneric("global")) {setGeneric("global", function(x, ...) standardGeneric("global"))}
 if (!isGeneric("makeValid")) {setGeneric("makeValid", function(x,...) standardGeneric("makeValid"))}
 if (!isGeneric("is.valid")) {setGeneric("is.valid", function(x,...) standardGeneric("is.valid"))}
+if (!isGeneric("is.empty")) {setGeneric("is.empty", function(x,...) standardGeneric("is.empty"))}
 if (!isGeneric("is.points")) {setGeneric("is.points", function(x,...) standardGeneric("is.points"))}
 if (!isGeneric("is.lines")) {setGeneric("is.lines", function(x,...) standardGeneric("is.lines"))}
 if (!isGeneric("is.polygons")) {setGeneric("is.polygons", function(x,...) standardGeneric("is.polygons"))}

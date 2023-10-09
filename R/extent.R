@@ -351,7 +351,14 @@ setReplaceMethod("[", c("SpatExtent", "numeric", "missing"),
 
 setMethod("is.valid", signature(x="SpatExtent"),
 	function(x) {
-		#x@cpp$valid
-		x@cpp$valid_notempty
+		x@cpp$valid
+		#x@cpp$valid_notempty
+	}
+)
+
+
+setMethod("is.empty", signature(x="SpatExtent"),
+	function(x) {
+		x@cpp$empty
 	}
 )

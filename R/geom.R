@@ -199,7 +199,7 @@ setMethod("intersect", signature(x="SpatVector", y="SpatVector"),
 setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"),
 	function(x, y) {
 		x@cpp <- x@cpp$intersect(y@cpp)
-		if (!x@cpp$valid) {
+		if (!x@cpp$valid_notempty) {
 			return(NULL)
 		}
 		x
