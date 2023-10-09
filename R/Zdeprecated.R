@@ -25,7 +25,7 @@ setMethod ("area" , "SpatRaster",
 #)
 
 setMethod("gridDistance", signature(x="SpatRaster"),
-	function(x, target=0, scale=1, maxiter=50, filename="", ...) {
+	function(x, ...) {
 		error("gridDistance", "'gridDistance' was renamed to 'gridDist'")
 		#. 'gridDistance' will be removed in a future version")
 		#gridDist(x, target=target, scale=scale, maxiter=maxiter, filename=filename, ...) 
