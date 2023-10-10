@@ -2567,3 +2567,38 @@ std::vector<int> SpatRaster::getFileBlocksize() {
 }
 
 
+bool SpatRaster::addTag(std::string name, std::string value) {
+	lrtrim(name);
+	lrtrim(value);
+	if (value == "") {
+		return removeTag(name);
+	} else if (name != "") {
+		tags[name] = value;
+		return true;
+	} 
+	return false;
+}
+
+bool SpatRaster::removeTag(std::string name) {
+	std::map<std::string, std::string>::iterator it = tags.find(name);
+	if (it == tags.end()) return false;
+	tags.erase(it);
+	return true;
+}
+
+std::string SpatRaster::getTag(std::string name) {
+	std::map<std::string, std::string>::iterator it = tags.find(name);
+	if (it != tags.end()) return it->second;
+	return "";
+}
+
+std::vector<std::string> SpatRaster::getTags() {
+	std::vector<std::string> out;
+	out.reserve(2 * tags.size());
+	for(auto e : tags) {
+		out.push_back(e.first);
+		out.push_back(e.second);
+	}
+	return out;
+}
+

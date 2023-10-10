@@ -638,6 +638,9 @@ RCPP_MODULE(spat){
 		.method("getWarnings", &SpatRaster::getWarnings)
 		.method("getMessage", &SpatRaster::getMessage)
 
+		.method("addTag", &SpatRaster::addTag)
+		.method("getTags", &SpatRaster::getTags)
+
 		//.field("name", &SpatRaster::name)
 		.method("getFileBlocksize", &SpatRaster::getFileBlocksize)
 

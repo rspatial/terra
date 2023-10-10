@@ -227,6 +227,12 @@ class SpatRaster {
 		std::string getError() { return msg.getError();}
 		std::string getMessage() { return msg.getMessage();}
 
+		std::map<std::string, std::string> tags;
+		bool addTag(std::string name, std::string value);
+		bool removeTag(std::string name);
+		std::string getTag(std::string name);
+		std::vector<std::string> getTags();
+
 		//double NA = std::numeric_limits<double>::quiet_NaN();
 
 		size_t ncol();

@@ -3,6 +3,34 @@
 # Version 1.0
 # License GPL v3
 
+setMethod("tags", signature(x="SpatRaster"),
+	function(x) {
+		v <- x@cpp$getTags()
+		matrix(v, ncol=2, byrow=TRUE, dimnames = list(NULL, c("name", "value")))
+	}
+)
+
+setMethod("set.tags", signature(x="SpatRaster"),
+	function(x, name, value) {
+		if (is.null(name)) {
+			v <- tags(x)
+			v[,2] <- ""
+		} else {
+			if (is.null(value)) value <- ""
+			v <- cbind(name, value)
+			v[is.na(v)] <- ""
+		}
+		x <- deepcopy(x)
+		if (nrow(v) > 0) {
+			out <- sapply(1:nrow(v), function(i) {
+				x@cpp$addTag(v[i,1], v[i,2])
+			})
+		}
+		x
+	}
+)
+
+
 setMethod("is.rotated", signature(x="SpatRaster"),
 	function(x) {
 		x@cpp$is_rotated()
