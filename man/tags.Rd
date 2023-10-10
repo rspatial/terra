@@ -31,7 +31,7 @@ SpatRaster (\code{tags<-}), matrix (\code{tags}) or character (\code{tags} and \
 }
 
 \examples{
-r <- rast()
+r <- rast(ncol=5, nrow=5)
 m <- cbind(c("one", "two", "three"), c("ABC", "123", "hello"))
 tags(r) <- m
 tags(r)

@@ -363,8 +363,8 @@ class SpatRaster {
 
         SpatRaster deepCopy();
 		SpatRaster hardCopy(SpatOptions &opt);
-        SpatRaster geometry(long nlyrs=-1, bool properties=false, bool time=true, bool units=false);
-		SpatRaster geometry_opt(long nlyrs, bool properties, bool time, bool units, bool datatype, SpatOptions &opt);
+        SpatRaster geometry(long nlyrs=-1, bool properties=false, bool time=true, bool units=false, bool tags=false);
+		SpatRaster geometry_opt(long nlyrs, bool properties, bool time, bool units, bool tags, bool datatype, SpatOptions &opt);
 
 		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options);
 		bool constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz);

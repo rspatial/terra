@@ -248,7 +248,7 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 
 
-SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool units) {
+SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool units, bool tags) {
 	SpatRasterSource s;
 	//s.values.resize(0);
 	s.nrow = nrow();
@@ -311,7 +311,7 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 }
 
 
-SpatRaster SpatRaster::geometry_opt(long nlyrs, bool properties, bool time, bool units, bool datatype, SpatOptions &opt) {
+SpatRaster SpatRaster::geometry_opt(long nlyrs, bool properties, bool time, bool units, bool tags, bool datatype, SpatOptions &opt) {
 
 	if (datatype && hasValues() && (!opt.datatype_set)) {
 		std::vector<std::string> dt = getDataType(true);
@@ -322,7 +322,7 @@ SpatRaster SpatRaster::geometry_opt(long nlyrs, bool properties, bool time, bool
 		}
 	}	
 	
-	return geometry(nlyrs, properties, time, units);
+	return geometry(nlyrs, properties, time, units, tags);
 }
 
 SpatRaster SpatRaster::deepCopy() {

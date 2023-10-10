@@ -967,7 +967,7 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
-	SpatRaster out = geometry(nl, true, true, true);
+	SpatRaster out = geometry(nl, true, true, true, true);
 
 	if (!hasValues()) {
 		out.setError("raster has no values");
@@ -3013,7 +3013,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 
 SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, double fill, SpatOptions &opt) {
 
-	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, opt);
+	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, true, opt);
 	e = out.align(e, snap);
 	SpatExtent extent = getExtent();
 	e.unite(extent);
@@ -3067,7 +3067,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, double fill, SpatO
 
 SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt) {
 
-	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, opt);
+	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, true, opt);
 
 	if ( !e.valid() ) {
 		out.setError("invalid extent");
@@ -3186,7 +3186,7 @@ SpatRaster SpatRaster::cropmask(SpatVector &v, std::string snap, bool touches, b
 
 SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 
-	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, opt);
+	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, true, opt);
 	if (!hasValues()) return out;
 	if (!readStart()) {
 		out.setError(getError());
@@ -3239,7 +3239,7 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 
 SpatRaster SpatRaster::reverse(SpatOptions &opt) {
 
-	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, opt);
+	SpatRaster out = geometry_opt(nlyr(), true, true, true, true, true, opt);
 	if (!hasValues()) return out;
 	if (!readStart()) {
 		out.setError(getError());

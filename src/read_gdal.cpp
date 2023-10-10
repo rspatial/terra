@@ -795,6 +795,20 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		return false;
 	}
 
+	char **meterra = poDataset->GetMetadata("USER_TAGS");
+	if (meterra != NULL) {
+		std::vector<std::string> meta;
+		for (size_t i=0; meterra[i] != NULL; i++) {
+			std::string s = meterra[i];
+			size_t pos = s.find("=");
+			if (pos != std::string::npos) {
+				std::string name = s.substr(0, pos);
+				std::string value = s.substr(pos+1); 
+				addTag(name, value);
+			}
+		}
+	}
+
 	SpatRasterSource s;
 
 	char **metasrc = poDataset->GetMetadata();

@@ -598,6 +598,15 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	}
 
 	bool scoffwarning = false;
+
+	if (driver == "GTiff") {
+		std::vector<std::string> m = getTags();
+		if (m.size() > 0) {
+			for (size_t i=0; i<m.size(); i+=2) {
+				poDS->SetMetadataItem(m[i].c_str(), m[i+1].c_str(), "USER_TAGS");
+			}
+		}
+	}
 	
 	for (size_t i=0; i < nlyr(); i++) {
 
