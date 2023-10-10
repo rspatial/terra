@@ -9,7 +9,7 @@
 \title{Set or get tags}
 
 \description{
-You can set arbitrary tags metadata to a SpatRaster. Each tag has a name and a value.
+You can set arbitrary metadata to a SpatRaster using "name=value" tags. 
 }
 
 \usage{
