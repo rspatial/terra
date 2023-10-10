@@ -259,11 +259,11 @@ multi <- function(x, subds=0, xyz=3:1, drivers=NULL, opts=NULL) {
 
 
 setMethod("rast", signature(x="SpatRaster"),
-	function(x, nlyrs=nlyr(x), names, vals, keeptime=TRUE, keepunits=FALSE, props=FALSE) {
+	function(x, nlyrs=nlyr(x), names, vals, keeptime=TRUE, keepunits=FALSE, props=FALSE, tags=FALSE) {
 		if (inherits(nlyrs, "SpatRaster")) {
 			error("rast", "use 'c()' to combine SpatRasters")
 		}
-		x@cpp <- x@cpp$geometry(nlyrs, props, keeptime, keepunits)
+		x@cpp <- x@cpp$geometry(nlyrs, props, keeptime, keepunits, tags)
 		x <- messages(x, "rast")
 		if (!missing(names)) {
 			if (length(names) == nlyr(x)) names(x) <- names

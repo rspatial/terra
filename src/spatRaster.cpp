@@ -248,7 +248,7 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 
 
-SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool units, bool tags) {
+SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool units, bool keeptags) {
 	SpatRasterSource s;
 	//s.values.resize(0);
 	s.nrow = nrow();
@@ -307,6 +307,9 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 		out.rgbtype = rgbtype;
 		out.rgblyrs = rgblyrs;
 	}	
+	if (keeptags) {
+		out.tags = tags;
+	}
 	return out;
 }
 
