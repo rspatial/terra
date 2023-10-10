@@ -27,7 +27,7 @@ You can set arbitrary metadata to a SpatRaster using "name=value" tags.
 }
 
 \value{
-SpatRaster (\code{tags<-}), matrix (\code{tags}) or character (\code{tags} and \code{name} is not NULL)
+SpatRaster (\code{tags<-}), or named character (\code{tags})
 }
 
 \examples{

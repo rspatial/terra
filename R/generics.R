@@ -7,19 +7,20 @@ setMethod("tags", signature(x="SpatRaster"),
 	function(x, name=NULL) {
 		v <- x@cpp$getTags()
 		m <- matrix(v, ncol=2, byrow=TRUE, dimnames = list(NULL, c("name", "value")))
+		out <- m[,2]
+		names(out) <- m[,1]
 		if (!is.null(name)) {
-			i <- match(name, m[,1])
-			m[i,2]
-		} else {
-			m
-		}
+			out <- out[name]
+		} 
+		out
 	}
 )
+
 
 setMethod("tags<-", signature(x="SpatRaster"),
 	function(x, value) {
 		if (is.null(value)) {
-			value <- tags(x)
+			value <- matrix(x@cpp$getTags(), ncol=2, byrow=TRUE)
 			value[,2] <- ""
 		} else if (NCOL(value) == 1) {
 			value <- strsplit(value, "=")
