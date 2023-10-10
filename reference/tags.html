@@ -82,7 +82,7 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>SpatRaster (<code>tags&lt;-</code>), matrix (<code>tags</code>) or character (<code>tags</code> and <code>name</code> is not NULL)</p>
+<p>SpatRaster (<code>tags&lt;-</code>), or named character (<code>tags</code>)</p>
     </div>
 
     <div class="section level2">
@@ -91,37 +91,29 @@
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"one"</span>, <span class="st">"two"</span>, <span class="st">"three"</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"ABC"</span>, <span class="st">"123"</span>, <span class="st">"hello"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">tags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">m</span></span></span>
 <span class="r-in"><span><span class="fu">tags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      name    value  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] "one"   "ABC"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] "three" "hello"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] "two"   "123"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     one   three     two </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   "ABC" "hello"   "123" </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">tags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"another_tag=another_value"</span>, <span class="st">"one more=this value"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">tags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      name          value          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] "another_tag" "another_value"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] "one"         "ABC"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] "one more"    "this value"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] "three"       "hello"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] "two"         "123"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     another_tag             one        one more           three             two </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "another_value"           "ABC"    "this value"         "hello"           "123" </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">tags</span><span class="op">(</span><span class="va">r</span>, <span class="st">"two"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> value </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   two </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> "123" </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># remove a tag</span></span></span>
 <span class="r-in"><span><span class="fu">tags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="st">"one"</span>, <span class="st">""</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">tags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"two="</span></span></span>
 <span class="r-in"><span><span class="fu">tags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      name          value          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] "another_tag" "another_value"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] "one more"    "this value"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] "three"       "hello"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     another_tag        one more           three </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "another_value"    "this value"         "hello" </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># remove all tags</span></span></span>
 <span class="r-in"><span><span class="fu">tags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
 <span class="r-in"><span><span class="fu">tags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      name value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> named character(0)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
