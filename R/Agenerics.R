@@ -1,7 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
 if (!isGeneric("tags")) {setGeneric("tags", function(x, ...) standardGeneric("tags"))}
-if (!isGeneric("set.tags")) {setGeneric("set.tags", function(x, ...) standardGeneric("set.tags"))}
+if (!isGeneric("tags<-")) {setGeneric("tags<-", function(x, ..., value) standardGeneric("tags<-"))}
 
 if (!isGeneric("forceCCW")) {setGeneric("forceCCW", function(x, ...) standardGeneric("forceCCW"))}
 if (!isGeneric("addCats")) {setGeneric("addCats", function(x, ...) standardGeneric("addCats"))}

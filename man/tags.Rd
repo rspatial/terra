@@ -2,8 +2,8 @@
 
 \alias{tags}
 \alias{tags,SpatRaster-method}
-\alias{set.tags}
-\alias{set.tags,SpatRaster-method}
+\alias{tags<-}
+\alias{tags<-,SpatRaster-method}
 
   
 \title{Set or get tags}
@@ -13,7 +13,7 @@ You can set arbitrary metadata to a SpatRaster using "name=value" tags.
 }
 
 \usage{
-\S4method{set.tags}{SpatRaster}(x, name, value)
+\S4method{tags}{SpatRaster}(x)<-value
 
 \S4method{tags}{SpatRaster}(x, name=NULL)
 }
@@ -23,29 +23,31 @@ You can set arbitrary metadata to a SpatRaster using "name=value" tags.
 
 \item{name}{character}
 
-\item{value}{character}
+\item{value}{character of "name=value" or two-column matrix}
 }
 
 \value{
-SpatRaster (\code{set.tags}), matrix (\code{tags}) or character (\code{tags} and \code{name} is not NULL)
+SpatRaster (\code{tags<-}), matrix (\code{tags}) or character (\code{tags} and \code{name} is not NULL)
 }
 
 \examples{
 r <- rast()
-r <- set.tags(r, c("one", "two", "three"), c("ABC", "123", "hello"))
+m <- cbind(c("one", "two", "three"), c("ABC", "123", "hello"))
+tags(r) <- m
 tags(r)
 
-r <- set.tags(r, "another_tag", "another_value")
+tags(r) <- c("another_tag=another_value", "one more=this value")
 tags(r)
 
 tags(r, "two")
 
-# remove one tag
-r <- set.tags(r, c("one"), c(""))
+# remove a tag
+tags(r) <- cbind("one", "")
+tags(r) <- "two="
 tags(r)
 
 # remove all tags
-r <- set.tags(r, NULL)
+tags(r) <- NULL
 tags(r)
 }
 

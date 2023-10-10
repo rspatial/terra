@@ -16,20 +16,28 @@ setMethod("tags", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("set.tags", signature(x="SpatRaster"),
-	function(x, name, value) {
-		if (is.null(name)) {
-			v <- tags(x)
-			v[,2] <- ""
-		} else {
-			if (is.null(value)) value <- ""
-			v <- cbind(name, value)
-			v[is.na(v)] <- ""
+setMethod("tags<-", signature(x="SpatRaster"),
+	function(x, value) {
+		if (is.null(value)) {
+			value <- tags(x)
+			value[,2] <- ""
+		} else if (NCOL(value) == 1) {
+			value <- strsplit(value, "=")
+			i <- sapply(value, length) == 1
+			if (length(i) > 0) {
+				j <- which(i)
+				for (i in j) value[[i]] <- c(value[[i]], "")
+			}
+			i <- sapply(value, length) == 2
+			value <- do.call(rbind, value[i])
+		} else if (NCOL(value) != 2) {
+			error("tags<-", "expecting a vector of 'name=value' or a two column matrix")
 		}
+		value[is.na(value)] <- ""
 		x <- deepcopy(x)
-		if (nrow(v) > 0) {
-			out <- sapply(1:nrow(v), function(i) {
-				x@cpp$addTag(v[i,1], v[i,2])
+		if (NROW(value) > 0) {
+			sapply(1:nrow(value), function(i) {
+				x@cpp$addTag(value[i,1], value[i,2])
 			})
 		}
 		x

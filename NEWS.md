@@ -1,5 +1,6 @@
 # version 1.7-50
 
+
 ## bug fixes
 
 - `mosaic` ignored the filename argument if the SpatRasterCollection only had a single SpatRaster [#1267](https://github.com/rspatial/terra/issues/1267) by Michael Mahoney
@@ -20,6 +21,10 @@ Hernangómez
 - `plot<SpatVector>` now uses an "interval" legend when breaks are supplied [#1303](https://github.com/rspatial/terra/issues/1303) by Gonzalo Rizzo
 - `crop<SpatRaster>` now keeps more metadata, including variable names [#1302](https://github.com/rspatial/terra/issues/1302) by rhgof
 - `extract(fun="table")` now returns an easier to use data.frame [#1294] (https://github.com/rspatial/terra/issues/1294) by Fernando Aramburu.
+
+
+## new
+- `tags<-` and `tags` to set arbitrary metadata [#1304](https://github.com/rspatial/terra/issues/1304) by Francesco Chianucci 
 
 
 # version 1.7-46
