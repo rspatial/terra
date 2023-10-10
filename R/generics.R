@@ -4,9 +4,15 @@
 # License GPL v3
 
 setMethod("tags", signature(x="SpatRaster"),
-	function(x) {
+	function(x, name=NULL) {
 		v <- x@cpp$getTags()
-		matrix(v, ncol=2, byrow=TRUE, dimnames = list(NULL, c("name", "value")))
+		m <- matrix(v, ncol=2, byrow=TRUE, dimnames = list(NULL, c("name", "value")))
+		if (!is.null(name)) {
+			i <- match(name, m[,1])
+			m[i,2]
+		} else {
+			m
+		}
 	}
 )
 

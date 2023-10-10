@@ -6,16 +6,16 @@
 \alias{set.tags,SpatRaster-method}
 
   
-\title{Set or get tags to a SpatRaster}
+\title{Set or get tags}
 
 \description{
-You can set arbitrary tags to a SpatRaster. Each tag has a name and a value.
+You can set arbitrary tags metadata to a SpatRaster. Each tag has a name and a value.
 }
 
 \usage{
 \S4method{set.tags}{SpatRaster}(x, name, value)
 
-\S4method{tags}{SpatRaster}(x)
+\S4method{tags}{SpatRaster}(x, name=NULL)
 }
 
 \arguments{
@@ -27,7 +27,7 @@ You can set arbitrary tags to a SpatRaster. Each tag has a name and a value.
 }
 
 \value{
-SpatRaster (\code{set.tags}) or matrix (\code{tags})
+SpatRaster (\code{set.tags}), matrix (\code{tags}) or character (\code{tags} and \code{name} is not NULL)
 }
 
 \examples{
@@ -37,6 +37,8 @@ tags(r)
 
 r <- set.tags(r, "another_tag", "another_value")
 tags(r)
+
+tags(r, "two")
 
 # remove one tag
 r <- set.tags(r, c("one"), c(""))
