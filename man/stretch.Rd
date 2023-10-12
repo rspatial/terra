@@ -10,7 +10,7 @@ Linear or histogram equalization stretch of values in a SpatRaster.
 
 For linear stretch, provide the desired output range (\code{minv} and \code{maxv}) and the lower and upper bounds in the original data, either as quantiles (\code{minq} and \code{maxq}, or as cell values (\code{smin} and \code{smax}). If \code{smin} and \code{smax} are both not \code{NA}, \code{minq} and \code{maxq} are ignored.
 
-For histogram equalization, these arguments are ignored, but you can provide the desired scale of the output and the maximum number of cells that is used to compute the histogram (empirical cumulative distribution function). Only the first layer of the input SpatRaster is processed when using histogram equalization.
+For histogram equalization, these arguments are ignored, but you can provide the desired scale of the output and the maximum number of cells that is used to compute the histogram (empirical cumulative distribution function). 
 }
 
 \usage{
