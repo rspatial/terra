@@ -13,9 +13,11 @@
 \title{Cut out a geographic subset}
 
 \description{
-Cut out a part of a SpatRaster with a SpatExtent, or another object from which an extent can be obtained. 
+Cut out a part of a SpatRaster or SpatVector. 
 
-You can only crop rectangular areas, but see \code{\link{mask}} for setting cell values within SpatRaster to \code{NA}. Also note that the SpatRaster returned may not have the exactly the same extent as the SpatExtent supplied because you can only select entire cells (rows and columns), and you cannot add new areas. See methods like \code{\link{resample}} and \code{\link{disagg}} to force SpatRasters to align and \code{\link{extend}} to add rows and/or columns.
+You can crop a SpatRaster with a SpatExtent, or with another object from which an extent can be obtained. Note that the SpatRaster returned may not have the exactly the same extent as the SpatExtent supplied because you can only select entire cells (rows and columns), and you cannot add new areas. See methods like \code{\link{resample}} and \code{\link{disagg}} to force SpatRasters to align and \code{\link{extend}} to add rows and/or columns.
+
+You can only crop rectangular areas of a SpatRaster, but see argument \code{mask=TRUE} for setting cell values within SpatRaster to \code{NA}; or use the \code{\link{mask}} method after crop for additional masking options.
 
 You can crop a SpatVector with another SpatVector. If these are not polygons, the minimum convex hull is used). Unlike with \code{\link{intersect}} the geometries and attributes of \code{y} are not transferred to the output. You can also crop a SpatVector with a rectangle (SpatRaster, SpatExtent).
 }
