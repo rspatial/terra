@@ -1,4 +1,4 @@
-# version 1.7-50
+# version 1.7-51
 
 
 ## bug fixes
@@ -13,6 +13,8 @@ https://github.com/rspatial/terra/issues/1273) by Dave Dixon
 Hernangómez
 - `stretch` with histogram equalization was not memory-safe [#1305](https://github.com/rspatial/terra/issues/1305) by Evan Hersh
 - `plot` now resets the "mar" parameter [#1297](https://github.com/rspatial/terra/issues/1297) by Márcia Barbosa
+- `plotRGB` ignored the "stretch" argument [#1307](https://github.com/rspatial/terra/issues/1307) by Timothée Giraud
+
 
 ## enhancements
 

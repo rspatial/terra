@@ -685,6 +685,7 @@ prettyNumbs <- function(x, digits) {
 			out <- .as.raster.factor(out, x)
 		} else if (type=="rgb") {
 			out <- .as.raster.rgb(out, x)
+			out$interpolate <- isTRUE(interpolate)
 		} else if (type=="colortable") {
 			out <- .as.raster.colortable(out, x)
 		} else if (type=="classes") {
