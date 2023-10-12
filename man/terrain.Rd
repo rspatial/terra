@@ -51,7 +51,7 @@ TRI <- focal(x, w=3, fun=\(x) sum(abs(x[-5]-x[5]))/8)
 
 TPI <- focal(x, w=3, fun=\(x) x[5] - mean(x[-5]))
 
-rough <- focal(x, w=3, fun=\(x) {max(x) - min(x)})
+rough <- focal(x, w=3, fun=\(x) max(x) - min(x))
 }
 
 \seealso{\code{\link{viewshed}}}

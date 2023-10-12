@@ -61,7 +61,7 @@ These methods require the development version of leaflet that you can install wi
 
   \item{border}{character. Color for the polygon borders}
   \item{collapse}{logical. Should the layers "control" panel be collapsed?}
-  \item{split}{logical. IF \code{TRUE} a check-box is created to toggle each value in code{y} (If \code{x} is a SpatVector)}
+  \item{split}{logical. If \code{TRUE} a check-box is created to toggle each value in \code{y} (If \code{x} is a SpatVector)}
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
   \item{lwd}{numeric, line-width. See \code{\link{par}}}
   \item{popup}{logical. Should pop-ups be created?}

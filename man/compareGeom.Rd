@@ -29,7 +29,7 @@ Or evaluate whether two SpatVectors have the same geometries, or whether a SpatV
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{y}{Same as \code{x}. If \code{x} is a SpatRaster, \code{y} can also be a list of SpatRasters. If code{x} is a SpatVector, \code{y} can be missing}
+  \item{y}{Same as \code{x}. If \code{x} is a SpatRaster, \code{y} can also be a list of SpatRasters. If \code{x} is a SpatVector, \code{y} can be missing}
   \item{...}{Additional SpatRasters}
   \item{lyrs}{logical. If \code{TRUE}, the number of layers is compared}
   \item{crs}{logical. If \code{TRUE}, coordinate reference systems are compared}
