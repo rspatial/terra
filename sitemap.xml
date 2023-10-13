@@ -403,6 +403,9 @@
     <loc>https://rspatial.github.io/terra/reference/meta.html</loc>
   </url>
   <url>
+    <loc>https://rspatial.github.io/terra/reference/metags.html</loc>
+  </url>
+  <url>
     <loc>https://rspatial.github.io/terra/reference/minmax.html</loc>
   </url>
   <url>
@@ -632,9 +635,6 @@
   </url>
   <url>
     <loc>https://rspatial.github.io/terra/reference/symdif.html</loc>
-  </url>
-  <url>
-    <loc>https://rspatial.github.io/terra/reference/tags.html</loc>
   </url>
   <url>
     <loc>https://rspatial.github.io/terra/reference/tapp.html</loc>

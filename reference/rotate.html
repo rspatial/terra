@@ -12,7 +12,7 @@ Rotate a SpatVector as for a SpatRaster split=TRUE, or to correct for coordinate
     
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-53</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-55</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,6 +110,7 @@ Rotate a SpatVector as for a SpatRaster split=TRUE, or to correct for coordinate
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">v</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">rotate</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co">#SpatVector</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">3847903</span>, <span class="fl">1983584</span> <span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">3847903</span>, <span class="fl">5801864</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">8301883</span>, <span class="fl">5801864</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">8301883</span>, <span class="fl">1983584</span> <span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">"polygons"</span>, crs<span class="op">=</span><span class="st">"+init=EPSG:3347"</span><span class="op">)</span></span></span>
@@ -119,7 +120,7 @@ Rotate a SpatVector as for a SpatRaster split=TRUE, or to correct for coordinate
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">rotate</span><span class="op">(</span><span class="va">g</span>, <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, col<span class="op">=</span><span class="st">"red"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="rotate-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## rotate countries to 0-360 longitude</span></span></span>
 <span class="r-in"><span><span class="co">#w &lt;- geodata::world(path=".")</span></span></span>
