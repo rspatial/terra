@@ -3,7 +3,7 @@
 # Version 1.0
 # License GPL v3
 
-setMethod("tags", signature(x="SpatRaster"),
+setMethod("metags", signature(x="SpatRaster"),
 	function(x, name=NULL) {
 		v <- x@cpp$getTags()
 		m <- matrix(v, ncol=2, byrow=TRUE, dimnames = list(NULL, c("name", "value")))
@@ -17,7 +17,7 @@ setMethod("tags", signature(x="SpatRaster"),
 )
 
 
-setMethod("tags<-", signature(x="SpatRaster"),
+setMethod("metags<-", signature(x="SpatRaster"),
 	function(x, value) {
 		if (is.null(value)) {
 			value <- matrix(x@cpp$getTags(), ncol=2, byrow=TRUE)
@@ -32,7 +32,7 @@ setMethod("tags<-", signature(x="SpatRaster"),
 			i <- sapply(value, length) == 2
 			value <- do.call(rbind, value[i])
 		} else if (NCOL(value) != 2) {
-			error("tags<-", "expecting a vector of 'name=value' or a two column matrix")
+			error("metags<-", "expecting a vector with 'name=value' or a two column matrix")
 		}
 		value[is.na(value)] <- ""
 		x <- deepcopy(x)
