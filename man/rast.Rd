@@ -72,7 +72,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \item{keeptime}{logical. If \code{FALSE} the time stamps are discarded}
 \item{keepunits}{logical. If \code{FALSE} the layer units are discarded}
 \item{props}{logical. If \code{TRUE} the properties (categories and color-table) are kept}
-\item{tags}{logical. If \code{TRUE} the user specified metadata \code{\link{tags}} are kept}
+\item{tags}{logical. If \code{TRUE} the user specified metadata tags are kept (see \code{\link{metags}}).}
 \item{extent}{object of class SpatExtent. If present, the arguments xmin, xmax, ymin and ymax are ignored}
 \item{resolution}{numeric vector of length 1 or 2 to set the spatial resolution (see \code{\link{res}}). If this argument is used, arguments \code{ncols} and \code{nrows} are ignored }
 \item{vals}{numeric. An optional vector with cell values (if fewer values are provided, these are recycled to reach the number of cells)}
