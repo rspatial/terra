@@ -1,5 +1,10 @@
-# version 1.7-54
+# version 1.7-56
 
+
+
+# version 1.7-55
+
+Released 2023-10-14
 
 ## bug fixes
 
@@ -26,7 +31,7 @@ Hernangómez
 
 
 ## new
-- `tags<-` and `tags` to set arbitrary metadata [#1304](https://github.com/rspatial/terra/issues/1304) by Francesco Chianucci 
+- `metags<-` and `metags` to set arbitrary metadata [#1304](https://github.com/rspatial/terra/issues/1304) by Francesco Chianucci 
 
 
 # version 1.7-46
