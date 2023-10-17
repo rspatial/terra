@@ -3439,11 +3439,12 @@ bool overlaps(const std::vector<unsigned>& r1, const std::vector<unsigned>& r2,
 SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out;
-	std::vector<std::string> f {"first", "last", "sum", "mean", "median", "min", "max"};
+	std::vector<std::string> f {"first", "last", "sum", "mean", "median", "min", "max", "modal"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("argument 'fun' is not a valid function name");
 		return out;
 	}
+	
 	if (fun == "first") {
 		return merge(true, true, opt);
 	}
