@@ -1,5 +1,9 @@
-# version 1.7-56
+# version 1.7-57
 
+## bug fixes
+
+- `flip` with argument `direction="vertical"` filed in some cases with large rasters processed in chunks [0b714b0](https://github.com/rspatial/terra/commit/0b714b038b101011ce27391133a7a1f9a91821cc) by Dulci on [stackoveflow](
+https://stackoverflow.com/questions/77304534/rspatial-terraflip-error-when-flipping-a-multi-layer-spatrast-object) 
 
 
 # version 1.7-55
