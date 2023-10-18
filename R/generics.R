@@ -1016,9 +1016,11 @@ setMethod("scale", signature(x="SpatRaster"),
 setMethod("stretch", signature(x="SpatRaster"),
 	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, histeq=FALSE, scale=1, maxcell=500000, filename="", ...) {
 		if (histeq) {
+			nms <- names(x)
 			if (nlyr(x) > 1) {
 				x <- lapply(1:nlyr(x), function(i) stretch(x[[i]], histeq=TRUE, scale=scale, maxcell=maxcell))
 				x <- rast(x)
+				names(x) <- nms 
 				if (filename != "") {
 					x <- writeRaster(x, filename=filename, ...)
 				}
@@ -1033,7 +1035,11 @@ setMethod("stretch", signature(x="SpatRaster"),
 					f(y) * scale
 				}
 			}
-			app(x, ecdfun, filename=filename, ...)
+			wopt <- list(...)
+			if (is.null(wopt$names)) {
+				wopt$names <- nms
+			}
+			app(x, ecdfun, filename=filename, wopt=wopt)
 		} else {
 			opt <- spatOptions(filename, ...)
 			x@cpp <- x@cpp$stretch(minv, maxv, minq, maxq, smin, smax, opt)
