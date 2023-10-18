@@ -27,7 +27,7 @@ setMethod("k_means", signature(x="SpatRaster"),
 			}
 			v <- na.omit(spatSample(x, maxcell, "regular"))
 			km <- kmeans(v, centers=centers, ...)
-			r <- predict(logo, km, fun=pkmeans, na.rm=TRUE, filename=filename, overwrite=overwrite, wopt=wopt)
+			r <- predict(x, km, fun=pkmeans, na.rm=TRUE, filename=filename, overwrite=overwrite, wopt=wopt)
 		}
 		r
 	}
