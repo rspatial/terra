@@ -972,6 +972,20 @@ SpatRaster SpatRaster::atan_2(SpatRaster x, SpatOptions &opt) {
 }
 
 
+/* 
+// no NAN handling
+template <typename T>
+std::vector<T> operator|(const std::vector<T>& a, const std::vector<T>& b) {
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::logical_or<T>());
+	for (size_t i=0; i<a.size(); i++) {
+		if (std::isnan(a[i]) || std::isnan(b[i])) {
+			result[i] = NAN;
+		}
+	}
+    return result;
+}
 
 template <typename T>
 std::vector<T> operator&(const std::vector<T>& a, const std::vector<T>& b) {
@@ -985,20 +999,41 @@ std::vector<T> operator&(const std::vector<T>& a, const std::vector<T>& b) {
 	}
     return result;
 }
+*/
 
-
-template <typename T>
-std::vector<T> operator|(const std::vector<T>& a, const std::vector<T>& b) {
-    std::vector<T> result;
-    result.reserve(a.size());
-    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::logical_or<T>());
+inline void logical_and(std::vector<double>& a, const std::vector<double>& b) {
 	for (size_t i=0; i<a.size(); i++) {
-		if (std::isnan(a[i]) || std::isnan(b[i])) {
-			result[i] = NAN;
+		if (std::isnan(a[i])) {
+			if (!std::isnan(b[i]) && (b[i] != 1)) {
+				a[i] = 0; // NA & false = false
+			}	
+		} else if (std::isnan(b[i])) {
+			a[i] = (a[i] != 1) ? 0 : NAN;
+
+		} else {
+			a[i] = (a[i]==1) && (b[i]==1);
 		}
 	}
-    return result;
 }
+
+
+
+inline void logical_or(std::vector<double>& a, const std::vector<double>& b) {
+	for (size_t i=0; i<a.size(); i++) {
+		if (std::isnan(a[i])) {
+			if (b[i] == 1) {
+				a[i] = 1; // NA | true = true
+			}	
+		} else {
+			if (std::isnan(b[i])) {
+				a[i] = (a[i] == 1) ? 1 : NAN; // NA | true = true
+			} else {
+				a[i] = (a[i]==1) || (b[i]==1);
+			}
+		}
+	}
+}
+
 
 
 SpatRaster SpatRaster::isnot(bool falseNA, SpatOptions &opt) {
@@ -1077,11 +1112,9 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		x.readBlock(b, out.bs, i);
 		recycle(a, b);
 		if (oper == "&") {
-			a = a & b;
+			logical_and(a, b); // replaces a
 		} else if (oper == "|") {
-			a = a | b;
-		} else {
-			// stop
+			logical_or(a, b); // replaces a
 		}
 		if (!out.writeBlock(a, i)) return out;
 
@@ -1094,10 +1127,17 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 
 
 
-SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
+SpatRaster SpatRaster::logic(double x, std::string oper, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	out.setValueType(3);
+
+	std::vector<std::string> f {"&", "|", "istrue", "isfalse"};
+	if (std::find(f.begin(), f.end(), oper) == f.end()) {
+		out.setError("unknown logic function");
+		return out;
+	}
+
 
 	if (!readStart()) {
 		out.setError(getError());
@@ -1112,20 +1152,51 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
+		// x = NAN
 		if (std::isnan(x)) {
-			for(double& d : a)  d = NAN;
+			if (oper == "&") {
+				for (size_t j=0; j<a.size(); j++) {
+					if ((!std::isnan(a[j])) && (a[j] != 1)) {
+						a[j] = 0;
+					} else {
+						a[j] = NAN;						
+					}
+				}
+			} else if (oper == "|") {
+				for (size_t j=0; j<a.size(); j++) {
+					if (a[j] != 1) {
+						a[j] = 1;
+					} else {
+						a[j] = NAN;						
+					}
+				}
+			} else {
+				for(double& d : a)  d = NAN;
+			}
+		// x != NAN	
 		} else if (oper == "&") {
-			for(double& d : a)  d = (d==1) & x;
+			bool b = x;
+			for (size_t j=0; j<a.size(); j++) {
+				if (std::isnan(a[j])) {
+					a[j] = !b ? 0 : NAN;	
+				} else {
+					a[j] = (a[j] == 1) && b;
+				}
+			}
 		} else if (oper == "|") {
-			for(double& d : a)  d = (d==1) | x;
+			bool b = x;
+			if (b) {
+				for(double& d : a) d = 1;
+			} else {
+				for(double& d : a) {
+					d = std::isnan(d) ? NAN : (d==1);
+				}
+			}
 		} else if (oper == "istrue") {
 			for(double& d : a)  d = d==1 ? 1 : 0;
-		} else if (oper == "isfalse") {
+		} else { // if (oper == "isfalse") {
 			for(double& d : a)  d = d!=1 ? 1 : 0;
-		} else {
-			out.setError("unknown operator: " + oper);
-			return out;
-		}
+		} 
 		if (!out.writeBlock(a, i)) return out;
 	}
 	out.writeStop();
@@ -1133,6 +1204,55 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 	return(out);
 }
 
+
+SpatRaster SpatRaster::logic(std::vector<double> x, std::string oper, SpatOptions &opt) {
+
+	if (x.size() == 1) {
+		return logic(x[0], oper, opt);
+	}
+
+	SpatRaster out = geometry();
+	out.setValueType(3);
+
+	if (x.size() == 0) {
+		out.setError("logical operator has length 0");
+		return out;
+	}
+	std::vector<std::string> f {"&", "|", "istrue", "isfalse"};
+	if (std::find(f.begin(), f.end(), oper) == f.end()) {
+		out.setError("unknown logic function");
+		return out;
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+	std::vector<double> v, m;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a;
+		readBlock(a, out.bs, i);
+		recycle(x, a.size());
+		if (oper == "&") {
+			logical_and(a, x);
+		} else if (oper == "|") {
+			logical_or(a, x);
+		} else if (oper == "istrue") {
+			for(double& d : a)  d = std::isnan(d) ? NAN : (d==1 ? 1 : 0);
+		} else { //if (oper == "isfalse") {
+			for(double& d : a)  d = std::isnan(d) ? NAN : (d!=1 ? 1 : 0);
+		} 
+		if (!out.writeBlock(a, i)) return out;
+	}
+	out.writeStop();
+	readStop();
+	return(out);
+}
 
 SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 

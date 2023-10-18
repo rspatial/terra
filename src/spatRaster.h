@@ -705,7 +705,8 @@ class SpatRaster {
 
 		std::vector<double> line_cells(SpatGeom& g);
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
-		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
+		SpatRaster logic(double x, std::string oper, SpatOptions &opt);
+		SpatRaster logic(std::vector<double> x, std::string oper, SpatOptions &opt);
 
 		SpatExtent ext_from_rc(int_64 r1, int_64 r2, int_64 c1, int_64 c2);
 		SpatExtent ext_from_cell(double cell);
