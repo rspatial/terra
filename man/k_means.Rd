@@ -12,7 +12,7 @@ Compute kmeans clusters for a SpatRaster
 }
 
 \usage{
-\S4method{k_means}{SpatRaster}(x, centers, ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{k_means}{SpatRaster}(x, centers=3, ..., maxcell=1000000, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
