@@ -162,20 +162,19 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
-	function(x, z, fun="mean", ..., w=NULL, weights=FALSE, exact=FALSE, touches=FALSE, as.raster=FALSE, filename="", wopt=list())  {
+	function(x, z, fun="mean", na.rm=FALSE, w=NULL, weights=FALSE, exact=FALSE, touches=FALSE, as.raster=FALSE, as.polygons=FALSE, filename="", wopt=list())  {
 		opt <- spatOptions()
-		narm <- isTRUE(list(...)$na.rm)
 		txtfun <- .makeTextFun(fun)
 		if (!inherits(txtfun, "character")) {
 			error("zonal", "this 'fun' is not supported. You can use extract instead")
 		} else {
 			if (is.null(w)) {
-				out <- x@cpp$zonal_poly(z@cpp, txtfun, weights[1], exact[1], touches[1], narm, opt)
+				out <- x@cpp$zonal_poly(z@cpp, txtfun, weights[1], exact[1], touches[1], na.rm, opt)
 			} else {
 				if (txtfun != "mean") {
 					error("zonal", "fun must be 'mean' when using weights")
 				}
-				out <- x@cpp$zonal_poly_weighted(z@cpp, w@cpp, weights[1], exact[1], touches[1], narm, opt)
+				out <- x@cpp$zonal_poly_weighted(z@cpp, w@cpp, weights[1], exact[1], touches[1], na.rm, opt)
 			}
 			messages(out, "zonal")
 			out <- .getSpatDF(out)
@@ -186,6 +185,8 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
 			}
 			x <- rasterize(z, x, 1:nrow(z))
 			subst(x, 1:nrow(out), out, filename=filename, wopt=wopt)
+		} else if (as.polygons) {
+			cbind(z, out)	
 		} else {
 			out
 		}
