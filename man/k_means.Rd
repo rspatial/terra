@@ -8,7 +8,7 @@
 \title{k_means}
 
 \description{
-Compute kmeans clusters for a SpatRaster
+Compute kmeans clusters for a SpatRaster. For large SpatRasters (with \code{ncell(x) > maxcell}) this is done in two steps. First a sample of the cells is used to compute the cluster centers. Then each cell is assigned to a cluster by computing the distance to these centers. 
 }
 
 \usage{
@@ -29,7 +29,7 @@ Compute kmeans clusters for a SpatRaster
 SpatRaster
 }
 
-\seealso{ \code{\link[stats]{k_means}}
+\seealso{ \code{\link[stats]{kmeans}}
 }
 
 \examples{

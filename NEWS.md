@@ -11,6 +11,10 @@ https://stackoverflow.com/questions/77304534/rspatial-terraflip-error-when-flipp
 
 - `mosaic` can now use `fun="modal"`
 
+## new
+
+- `k_means<SpatRaster>` method [#1314](https://github.com/rspatial/terra/issues/1314) by Agustin Lobo
+
 
 # version 1.7-55
 
