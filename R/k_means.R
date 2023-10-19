@@ -12,24 +12,33 @@ setMethod("k_means", signature(x="SpatRaster"),
 			v <- na.omit(as.matrix(x))
 			omit <- as.vector(attr(v, "na.action"))
 			km <- kmeans(v, centers=centers, ...)
-			r <- rast(x, nlyr=1)
+			out <- rast(x, nlyr=1)
 			if (is.null(omit)) {
-				values(r) <- km$cluster
+				values(out) <- km$cluster
 			} else {
-				r[-omit] <- km$cluster
+				out[-omit] <- km$cluster
 			}
 			if (filename != "") {
-				r <- writeRaster(r, filename=filename, overwrite=overwrite, wopt=wopt)
+				out <- writeRaster(out, filename=filename, overwrite=overwrite, wopt=wopt)
 			}
 		} else {
-			pkmeans = function(x, newdata) {
-				apply(newdata, 1, function(i) which.min(colSums((t(x$centers) - i)^2)))
-			}
+			#pkmeans = function(x, newdata) {
+			#	apply(newdata, 1, function(i) which.min(colSums((t(x$centers) - i)^2)))
+			#}
+
+			pkmeans <- function(x, newdata) {
+				vec <- integer(nrow(newdata))
+				newdata <- as.matrix(newdata)
+				for (i in seq_len(nrow(newdata))) {
+					vec[i] <- which.min(colSums((t(x) - newdata[i, ])^2))
+				}
+				vec
+			}			
 			v <- na.omit(spatSample(x, maxcell, "regular"))
-			km <- kmeans(v, centers=centers, ...)
-			r <- predict(x, km, fun=pkmeans, na.rm=TRUE, filename=filename, overwrite=overwrite, wopt=wopt)
+			km <- kmeans(v, centers=centers, ...)$centers		
+			out <- predict(x, km, fun=pkmeans, filename=filename, overwrite=overwrite, wopt=wopt)
 		}
-		r
+		out
 	}
 )
 
