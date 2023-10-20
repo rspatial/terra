@@ -139,6 +139,7 @@ class SpatRasterSource {
 
 		std::vector<bool> hasColors;
 		std::vector<SpatDataFrame> cols;
+		SpatDataFrame legend;
 
 		bool memory=true;
 		bool hasValues=false;
@@ -436,6 +437,11 @@ class SpatRaster {
 		bool setLabels(unsigned layer, std::vector<long> value, std::vector<std::string> labels, std::string name);
 		int getCatIndex(unsigned layer);
 		bool setCatIndex(unsigned layer, int index);
+
+		bool hasLegend();
+		bool setLegend(SpatDataFrame x);
+		SpatDataFrame getLegend();
+
 		
 		bool hasScaleOffset();
 		bool setScaleOffset(std::vector<double> sc, std::vector<double> of);
@@ -776,6 +782,8 @@ class SpatRaster {
 		SpatRaster sort(bool decreasing, bool order, SpatOptions &opt);
 
 		SpatRaster scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt);
+		SpatRaster similarity(std::vector<double> x, SpatOptions &opt);
+
 		SpatRaster terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, unsigned seed, SpatOptions &opt);
 		SpatRaster hillshade(SpatRaster aspect, std::vector<double> angle, std::vector<double> direction, bool normalize, SpatOptions &opt);
 

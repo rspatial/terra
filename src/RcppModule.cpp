@@ -5,7 +5,7 @@
 #include <memory> //std::addressof
 #include "NA.h"
 #include "spatTime.h"
-#include "spatVector2.h"
+//#include "spatVector2.h"
 
 //static void SpatRaster_finalizer( SpatRaster* ptr ){
 //}
@@ -186,12 +186,13 @@ RCPP_EXPOSED_CLASS(SpatVector)
 RCPP_EXPOSED_CLASS(SpatVectorProxy)
 RCPP_EXPOSED_CLASS(SpatVectorCollection)
 RCPP_EXPOSED_CLASS(SpatGraph)
-RCPP_EXPOSED_CLASS(SpatVector2)
+//RCPP_EXPOSED_CLASS(SpatVector2)
 
 RCPP_MODULE(spat){
 
     using namespace Rcpp;
 
+/*
     class_<SpatVector2>("SpatVector2")
 	
 		.constructor()
@@ -204,6 +205,7 @@ RCPP_MODULE(spat){
 		.method("from_old", &SpatVector2::from_old)
 		.method("to_old", &SpatVector2::to_old)
 	;
+*/
 
     class_<SpatTime_v>("SpatTime_v")
 		.constructor()
@@ -938,6 +940,7 @@ RCPP_MODULE(spat){
 		.method("sampleRandomValues", &SpatRaster::sampleRandomValues)
 		.method("scale", &SpatRaster::scale)
 		.method("shift", &SpatRaster::shift)
+		.method("similarity", &SpatRaster::similarity)
 		.method("terrain", &SpatRaster::terrain)
 		.method("hillshade", &SpatRaster::hillshade)
 		.method("summary", &SpatRaster::summary)

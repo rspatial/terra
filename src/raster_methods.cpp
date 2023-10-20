@@ -5985,3 +5985,63 @@ SpatRaster SpatRaster::fill_range(long limit, bool circular, SpatOptions &opt) {
 	return(out);
 	
 }
+
+
+
+SpatRaster SpatRaster::similarity(std::vector<double> x, SpatOptions &opt) {
+	
+	SpatRaster out = geometry(1);
+	if (!hasValues()) {
+		out.setError("the input raster must have values");
+		return out;		
+	}
+	
+	size_t nl = nlyr();
+	size_t ncls = x.size() / nl;
+	
+	if ((nl*ncls) != x.size()) {
+		out.setError("the number of layers does not match the values provided");
+		return out;		
+	}
+		
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+	
+	for (size_t i=0; i<out.bs.n; i++) {
+		size_t nc = out.bs.nrows[i] * ncol();
+		std::vector<double> v;
+		readValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		std::vector<double> d;
+		d.reserve(nc);
+		std::vector<double> dist(nl);
+		std::vector<size_t> offsets(nl);
+		for (size_t k=0; k<nl; k++) {
+			offsets[k] = k * nc;
+		}
+		
+		for (size_t j=0; j<nc; j++) {
+			if (std::isnan(v[j])) {
+				d[j] = NAN;
+			} else {
+				for (size_t k=0; k<nl; k++) {
+					// not correct
+					// also need to loop over clusters
+					dist[k] = pow((x[k] - v[j + offsets[k]]), 2);
+				}
+				d[j] = vwhichmin(dist, false);
+			}
+		}
+		if (!out.writeBlock(d, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+	
+}

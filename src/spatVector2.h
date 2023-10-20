@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-
+/*
 
 #ifndef SPATVECTOR2_GUARD
 #define SPATVECTOR2_GUARD
@@ -66,7 +66,7 @@ class SpatVector2 {
 		
 		size_t ngeoms();
 };
-
+*/
 
 
 /*
@@ -428,6 +428,7 @@ class SpatVectorProxy {
 		SpatVectorProxy deepCopy() {return *this;}
 		SpatVector query_filter(std::string query, std::vector<double> extent, SpatVector filter);
 };
-*/
 
 #endif // SPATVECTOR2_GUARD
+*/
+
