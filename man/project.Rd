@@ -24,7 +24,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatVector}
+  \item{x}{SpatRaster, SpatVector, SpatExtent or matrix (with x and y columns) whose coordinates to project}
   \item{y}{if (\code{x} is a SpatRaster, the preferred approach is for \code{y} to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (CRS) description. 
     
   You can use the following formats to define coordinate reference systems: WKT,  PROJ.4 (e.g., \code{+proj=longlat +datum=WGS84}), or an EPSG code (e.g., \code{"epsg:4326"}). But note that the PROJ.4 notation has been deprecated, and you can only use it with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored. 
