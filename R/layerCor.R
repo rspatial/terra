@@ -52,9 +52,6 @@ old_pearson <- function(x, asSample, na.rm, nl, n, mat) {
 }
 	
 
-
-if (!isGeneric("layerCor")) {setGeneric("layerCor", function(x, ...) standardGeneric("layerCor"))}
-
 setMethod("layerCor", signature(x="SpatRaster"),
 	function(x, fun, w, asSample=TRUE, na.rm=FALSE, maxcell=Inf, ...) {
 
@@ -145,9 +142,8 @@ setMethod("layerCor", signature(x="SpatRaster"),
 				m <- x@cpp$layerCor("pearson", na.rm, asSample, opt)
 				x <- messages(x)
 				mat <- matrix(m[[1]], nrow=nl, byrow=TRUE)
-				means <- matrix(m[[2]], nrow=nl, byrow=TRUE)
-				colnames(mat) <- rownames(mat) <- names(x)
-				colnames(means) <- rownames(means) <- names(x)
+				means <- apply(matrix(m[[2]], nrow=nl, byrow=TRUE), 1, mean, na.rm=TRUE)
+				names(means) <- colnames(mat) <- rownames(mat) <- names(x)
 				return( list(pearson=mat, mean=means) )
 			}
 		} else {
