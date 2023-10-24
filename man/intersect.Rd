@@ -21,13 +21,13 @@ You can intersect SpatVectors with each other or with a SpatExtent. Intersecting
 
 You can also intersect two SpatExtents.
 
-When intersecting two SpatRasters these need to be aligned (have the same origin and spatial resolution). The values of the returned SpatRaster are \code{TRUE} where both have input rasters have values, \code{FALSE} where one has values, and \code{NA} in all other cells. 
+When intersecting two SpatRasters these need to be aligned (have the same origin and spatial resolution). The values of the returned SpatRaster are \code{TRUE} where both input rasters have values, \code{FALSE} where one has values, and \code{NA} in all other cells. 
 
 When intersecting a SpatExtent and a SpatRaster, the SpatExtent is first aligned to the raster cell boundaries.
 
-See \code{\link{crop}} for the intersection of a SpatRaster with a SpatExtent (or the extent of a SpatRaster or SpatVector) if you want a SpatRaster (not a SpatExtent) as output .
+See \code{\link{crop}} for the intersection of a SpatRaster with a SpatExtent (or the extent of a SpatRaster or SpatVector) if you want a SpatRaster (not a SpatExtent) as output.
 
-See \code{\link{is.related}(x, y, "intersects")} to find out which geometries of a SpatVector intersect. You can spatially subset a SpatVector with another one with \code{x\link{[}y]}
+See \code{\link{is.related}(x, y, "intersects")} to find out which geometries of a SpatVector intersect. You can spatially subset a SpatVector with another one with \code{x\link{[}y]}.
 }
 
 \usage{
