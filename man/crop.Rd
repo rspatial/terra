@@ -19,7 +19,7 @@ You can crop a SpatRaster with a SpatExtent, or with another object from which a
 
 You can only crop rectangular areas of a SpatRaster, but see argument \code{mask=TRUE} for setting cell values within SpatRaster to \code{NA}; or use the \code{\link{mask}} method after crop for additional masking options.
 
-You can crop a SpatVector with another SpatVector. If these are not polygons, the minimum convex hull is used). Unlike with \code{\link{intersect}} the geometries and attributes of \code{y} are not transferred to the output. You can also crop a SpatVector with a rectangle (SpatRaster, SpatExtent).
+You can crop a SpatVector with another SpatVector. If these are not polygons, the minimum convex hull is used. Unlike with \code{\link{intersect}} the geometries and attributes of \code{y} are not transferred to the output. You can also crop a SpatVector with a rectangle (SpatRaster, SpatExtent).
 }
 
 \usage{

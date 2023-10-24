@@ -32,7 +32,7 @@ Conversion of a SpatRaster, SpatVector or SpatExtent to a SpatVector of polygons
 \item{extent}{logical. if \code{TRUE}, a polygon for the extent of the SpatRaster or SpatVector is returned. If \code{x} is a SpatRaster, the polygon has vertices for each row and column, not just the four corners of the raster. This can be useful for more precise projection. If that is not required, it is more efficient to get the extent represented by only the four corners with \code{as.polygons(ext(x), crs=crs(x))}}
 \item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are ignored}
 \item{na.all}{logical. If \code{TRUE} cells are only ignored if \code{na.rm=TRUE} and their value is \code{NA} for \bold{all} layers instead of for \code{any} layer}
-\item{digits}{integer. The number of digits for rounding (if \code{round=TRUE}}
+\item{digits}{integer. The number of digits for rounding (if \code{round=TRUE})}
 \item{crs}{character. The coordinate reference system (see \code{\link{crs}})}
 \item{...}{additional arguments. For backward compatibility. Will be removed in the future}
 }

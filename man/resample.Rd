@@ -48,7 +48,7 @@ SpatRaster
 }
 
 
-\seealso{ \code{\link{aggregate}}, \code{\link{disagg}}, \code{\link{crop}}, \code{\link{project}},
+\seealso{ \code{\link{aggregate}}, \code{\link{disagg}}, \code{\link{crop}}, \code{\link{project}}
 }
 
 
