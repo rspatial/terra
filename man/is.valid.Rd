@@ -31,6 +31,8 @@ Check the validity of polygons or attempt to fix it. Or check the validity of a 
 logical
 }
 
+\seealso{\code{\link{topology}}}
+
 \examples{
 w <- vect("POLYGON ((0 -5, 10 0, 10 -10, 0 -5))")
 is.valid(w)
