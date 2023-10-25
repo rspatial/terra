@@ -6,7 +6,9 @@
 \title{Sieve filter}
 
 \description{
-Apply a sieve filter. That is, remove "noise", by changing small clumps of cells with a value that is different from the surrounding cells, to the value of the largest neighbouring clump.
+Apply a sieve filter. That is, remove "noise", by changing small clumps of cells with a value that is different from the surrounding cells, to the value of the largest neighboring clump.
+
+Note that the input raster data is rounded to integers.
 }
 
 \usage{
