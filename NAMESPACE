@@ -19,3 +19,6 @@ export(focalMat, gdal, getGDALconfig, setGDALconfig, north, sbar, terraOptions, 
 ## EC 20210702
 exportMethods(watershed2)
 ## END EC 20210702
+## EC 20220809
+exportMethods(pitfinder2)
+## END EC 20220809

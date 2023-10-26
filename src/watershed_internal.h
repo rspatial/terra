@@ -1,6 +1,6 @@
 // C/C++ code
-// Author: Ezio Crestaz
-// Data: Febrary 2021
+// Author: EJX
+// Date: February 2021
 // Scope: compute watershed upstream of point i,j
 // p: pointer to an integer 1D array storing a 2D raster
 // nx,ny: number of cells in x (longitude) and in y (latitude)
@@ -73,3 +73,6 @@ int* resizeQueue(int* q, int n);
 // void watershed_v2(int* p, int nx, int ny, int x, int y, int* pOut)
 void watershed_v2(double* p, int nx, int ny, int pp_offset, double* pOut);
 
+
+
+void pitfinder(double* p, int nx, int ny, double* pOut);

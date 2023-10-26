@@ -698,6 +698,7 @@ class SpatRaster {
 		SpatRaster scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt);
 		SpatRaster terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, unsigned seed, SpatOptions &opt);
 		SpatRaster watershed2(int pp_offset,SpatOptions &opt); // modified ecor 20210317 // EC 20210702 
+		SpatRaster pitfinder2(SpatOptions &opt); // modified // EC 20220809
 		
 		SpatRaster selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt);
 		SpatRaster selectHighest(size_t n, bool low, SpatOptions &opt);

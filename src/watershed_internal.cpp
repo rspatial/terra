@@ -322,7 +322,7 @@ void watershed_v2(double* p, int nx, int ny, int pp_offset, double* pOut)
   q[0] = delta;
   n++;
   
-  printf("BEFORE n=%d and size(n)=%d\n", n, sizeof(n));
+  printf("BEFORE n=%d and size(n)=%ld\n", n, sizeof(n));
   
   // Process all pending (until any) raster cells in the queue
   while (n > 0) {
@@ -445,7 +445,7 @@ SpatRaster  SpatRaster::watershed2(int pp_offset,SpatOptions &opt) {
   //out.setNames(oname);
   int nx=ncol();
   int ny=nrow();
-  printf("nx=%d ny=%d\n",nx,ny);
+  //printf("nx=%d ny=%d\n",nx,ny);
   //Rcpp::IntegerVector pOut(nx*ny);
    // https://www.codeguru.com/cpp/cpp/cpp_mfc/stl/article.php/c4027/C-Tutorial-A-Beginners-Guide-to-stdvector-Part-1.htm 
   std::vector<double> p=getValues(0,opt); //EC 20211203 //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/
@@ -472,12 +472,255 @@ SpatRaster  SpatRaster::watershed2(int pp_offset,SpatOptions &opt) {
     readStop();
     return out;
   }
-  out.writeValues(pOutv,0,ny,0,nx);
+  // out.writeValues(pOutv,0,ny,0,nx); UNTIL 20220725
+  out.writeValues(pOutv,0,ny); //,0,nx); // LOOK AT writeValuesGDAL
   out.writeStop();
   return out;
 
   //return(pOut);
   
+}
+
+/// 20220809
+/// PITFINDER 
+
+
+
+
+// TO INSERT::: std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
+//Rcpp::IntegerVector SpatRaster::watershed2(int pp_offset,SpatOptions opt) {
+SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
+  // DA TESTARE
+  SpatRaster out=geometry();
+  //std::vector<std::string> oname="watershed";
+  //out.setNames(oname);
+  int nx=ncol();
+  int ny=nrow();
+  //printf("nx=%d ny=%d\n",nx,ny);
+  //Rcpp::IntegerVector pOut(nx*ny);
+  // https://www.codeguru.com/cpp/cpp/cpp_mfc/stl/article.php/c4027/C-Tutorial-A-Beginners-Guide-to-stdvector-Part-1.htm 
+  std::vector<double> p=getValues(0,opt); //EC 20211203 //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/
+  
+  
+  //SEE HERE https://stackoverflow.com/questions/26488480/how-can-i-trust-casting-from-double-to-integer
+  
+  //int *q=p.begin();
+  //int *qOut=pOut.begin();
+  // https://www.google.com/search?q=how+to+express+NumericVector+as+a+pointer&oq=how+to+express+NumericVector+as+a+pointer&aqs=chrome..69i57j33i160.13306j0j15&sourceid=chrome&ie=UTF-8
+  // https://dirk.eddelbuettel.com/code/rcpp/Rcpp-quickref.pdf
+  // http://adv-r.had.co.nz/Rcpp.html
+  
+  std::vector<double> pOutv(nx*ny,0);
+  // EC 20210319 pOutv.reserve(nx*ny);
+  // EC 20210319 std::fill(pOutv.begin(), pOutv.end(), trunc(0));
+  
+  
+  
+  ///see
+  pitfinder(&p[0],nx,ny,&pOutv[0]);
+  if (!out.writeStart(opt)) {
+    readStop();
+    return out;
+  }
+  // out.writeValues(pOutv,0,ny,0,nx); UNTIL 20220725
+  out.writeValues(pOutv,0,ny); //,0,nx); // LOOK AT writeValuesGDAL
+  out.writeStop();
+  return out;
+  
+  //return(pOut);
+  
+}
+
+// void watershed_v2(int* p, int nx, int ny, int x, int y, int* pOut)
+void pitfinder(double* p, int nx, int ny, double* pOut)
+{
+  //int* q;           // A pointer to a queue of raster cells (offset in memory) to be processed
+  //  int qSize = 50;   // Starting queue size, that can be dinamically incremented if needed
+  //int delta;        // Offset in memory from base queue address of a raster cell
+  //int n = 0;        // Number of raster cells to be processed in queue
+  //  int nLoop = 0;    // Counter for loops over cells
+  int x,y;
+  int cnt=1;
+  //  int pdown;
+  //hu int 
+  
+  //  printf("DEBUG: col=%d,row=%d\n", x, y);
+  
+  // ####
+  //   
+  // ## TROVARE HLOS / BUCHI !!! 
+  // #FROM THE CELL(x):  (see help terrein)
+  // ##   ## 
+  // ## 32	64	128
+  // ## 16	x	1
+  // ## 8	4	2
+  // ##TO THE CELL (y):
+  // ## 2 4 8
+  // ## 1 y 16
+  // ##128   64   32
+  //   
+  // ####  
+  //   
+  
+  // q = (int*)CPLMalloc(sizeof(int)*qSize);
+  
+  // printf("TEST Row, cell 60: %d,%d\n", getRow(nx,ny,60), getCol(nx,ny,60));
+  // Set raster cell in the output file
+  //delta = pp_offset; // delta=offset(nx, ny, x, y);
+  //*(pOut + delta) = 1;
+  //*(p + delta) = -10; // EC 20210316
+  // Store raster cell offset in the queue  and update number of elements
+  //q[0] = delta;
+  //n++;
+  
+//  printf("BEFORE n=%d and size(n)=%d\n", n, sizeof(n));
+  for (int i = 0; i < nx*ny; i++) {
+    *(pOut+i)=0;
+    
+  }  
+  for (int i = 0; i < nx*ny; i++) {
+  
+   // *(pOut+i)=0; 
+   
+    // ## 32	64	128
+    // ## 16	x	1
+    // ## 8	4	2
+    
+    
+    // ## 2 4 8
+    // ## 1 y 16
+    // ##128   64   32    
+    
+    x = getCol(nx, ny,i);  
+    y = getRow(nx, ny,i);
+    printf("\n x=%d ",x);
+    printf("y=%d ",y);
+    printf("i=%d \n",i);
+  //  printf("p=%f ",*(p+i));
+  //  printf("cnt=%d ",cnt);
+  //  printf("pout=%f ",*(pOut+i));
+    if (*(p+i) == 1) {
+      // if (inRaster(nx, ny, x + 1, y)) {
+      //   printf("pit p=%f ,,",*(p+i));
+      //   printf("pit p=%f ,,",*(p+offset(nx, ny, x + 1, y)));
+      // }
+      if (inRaster(nx, ny, x + 1, y) && *(p+offset(nx, ny, x + 1, y)) == 16) {
+        
+       
+        *(pOut+i)=*(pOut+offset(nx, ny, x + 1, y));
+        if (*(pOut+i)==0) {
+          *(pOut+i)=(double)cnt;
+          cnt++;
+        }
+      // *(pOut+i)=1;   // TO COMMENT          
+      } 
+    } else if (*(p+i) == 2) {
+      // if (inRaster(nx, ny, x + 1, y+1)) {
+      //   printf("pit p=%f ,,",*(p+i));
+      //   printf("pit p=%f ,,",*(p+offset(nx, ny, x + 1, y+1)));
+      // }
+      if (inRaster(nx, ny, x + 1, y+1) && *(p+offset(nx, ny, x + 1, y+1)) == 32) {
+      
+        *(pOut+i)=*(pOut+offset(nx, ny, x + 1, y+1));
+        if (*(pOut+i)==0) {
+          *(pOut+i)=(double)cnt;
+          cnt++;
+        }
+      // *(pOut+i)=1;   // TO COMMENT 
+      } 
+            
+    } else if (*(p+i) == 4) {
+      // if (inRaster(nx, ny, x , y-1)) {
+      //   printf("pit p=%f ,,",*(p+i));
+      //   printf("pit p=%f ,,",*(p+offset(nx, ny, x , y+1)));
+      // }
+      if (inRaster(nx, ny, x, y+1) && *(p+offset(nx, ny, x, y+1)) == 64) {
+        //printf("pit p=%f \n",*(p+i));
+        *(pOut+i)=*(pOut+offset(nx, ny, x, y+1));
+        
+        if (*(pOut+i)==0) {
+          *(pOut+i)=(double)cnt;
+        cnt++;
+        }
+        // *(pOut+i)=1;   // TO COMMENT 
+      } 
+            
+    } else if (*(p+i) == 8) {
+      // if (inRaster(nx, ny, x - 1, y+1)) {
+      //   printf("pit p=%f ,,",*(p+i));
+      //   printf("pit p=%f ,,",*(p+offset(nx, ny, x - 1, y+1)));
+      // }
+      if (inRaster(nx, ny, x-1, y+1) && *(p+offset(nx, ny, x - 1, y+1)) == 128) {
+        
+        *(pOut+i)=*(pOut+offset(nx, ny, x-1, y+1));
+        if (*(pOut+i)==0) {
+          *(pOut+i)=(double)cnt;
+          cnt++;
+        }
+        // *(pOut+i)=1;   // TO COMMENT 
+      } 
+    } else if (*(p+i) == 16) {
+      // if (inRaster(nx, ny, x - 1, y)) {
+      //   printf("pit p=%f ,,",*(p+i));
+      //   printf("pit p=%f ,,",*(p+offset(nx, ny, x - 1, y)));
+      // }
+      if (inRaster(nx, ny, x-1, y) && *(p+offset(nx, ny, x - 1, y)) == 1) {
+       
+        *(pOut+i)=*(pOut+offset(nx, ny, x-1,y));
+        if (*(pOut+i)==0) {
+          *(pOut+i)=(double)cnt;
+          cnt++;
+        }
+        // *(pOut+i)=1;   // TO COMMENT 
+      } 
+    } else if (*(p+i) == 32) {
+      // if (inRaster(nx, ny, x - 1, y-1)) {
+      //   printf("pit p=%f ,,",*(p+i));
+      //   printf("pit p=%f ,,",*(p+offset(nx, ny, x - 1, y-1)));
+      // }
+      if (inRaster(nx, ny, x - 1, y-1) && *(p+offset(nx, ny, x-1, y-1)) == 2) {
+      
+        *(pOut+i)=*(pOut+offset(nx, ny, x-1,y-1));
+        if (*(pOut+i)==0) {
+         *(pOut+i)=(double)cnt;
+         cnt++;
+        }
+        // *(pOut+i)=1;   // TO COMMENT 
+        
+      } 
+    } else if (*(p+i) == 64) {
+      // if (inRaster(nx, ny, x , y-1)) {
+      //   printf("pit p=%f ,,",*(p+i));
+      //   printf("pit p=%f ,,",*(p+offset(nx, ny, x, y-1)));
+      // }
+      if (inRaster(nx, ny, x, y-1) && *(p+offset(nx, ny, x, y-1)) == 4) {
+       
+        *(pOut+i)=*(pOut+offset(nx, ny, x,y-1));
+        if (*(pOut+i)==0) {
+          *(pOut+i)=(double)cnt;
+          cnt++;
+        }
+      } 
+    } else if (*(p+i) == 128) {
+      // if (inRaster(nx, ny, x + 1, y-1)) {
+      //   printf("pit p=%f ,,",*(p+i));
+      //   printf("pit p=%f ,,",*(p+offset(nx, ny, x + 1, y-1)));
+      // }
+      if (inRaster(nx, ny, x + 1, y-1) && *(p+offset(nx, ny, x + 1, y-1)) == 8) {
+      
+        *(pOut+i)=*(pOut+offset(nx, ny, x+1,y+1));
+        if (*(pOut+i)==0) {
+          *(pOut+i)=(double)cnt;
+          cnt++;
+        }
+        // *(pOut+i)=1;   // TO COMMENT 
+      } 
+    }
+    
+   // printf("pout=%f",*(pOut+i));
+   //  printf("cnt=%d \n",cnt);
+  }
+
 }
 
 

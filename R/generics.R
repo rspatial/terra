@@ -1129,5 +1129,17 @@ setMethod("watershed2", signature(p="SpatRaster",pp_offset="integer"),
 
 #### END EC 20210702
 
-
-
+#### EC 20220809
+setMethod("pitfinder2", signature(p="SpatRaster"), 
+          function(p,filename="", ...) { 
+      
+            opt <- spatOptions(filename, ...)
+            p@ptr <- p@ptr$pitfinder2(opt)
+            messages(p, "pitfinder2") ## EC 20210318
+            return(p)
+            ## p@ptr <- uu
+            ##messages(p, "watershed2")
+          }
+          
+)
+#### END EC 20220809

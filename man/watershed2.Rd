@@ -5,7 +5,7 @@
 \alias{watershed2,SpatRaster-method}
 
 
-\title{Waterhed Extraction}
+\title{Watershed Extraction}
 
 \description{
 It extractions a watershed mask from a flow direction input raster point a pour-point cell.
