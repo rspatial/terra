@@ -10,11 +10,14 @@
 \alias{as.matrix,SpatRaster-method}
 \alias{as.array,SpatRaster-method}
 
+\alias{as.vector,SpatExtent-method}
+\alias{as.matrix,SpatExtent-method}
 
-\title{Coercion of a SpatRaster to a vector, matrix or array}
+
+\title{Coercion to vector, matrix or array}
 
 \description{
-Coercion to other object types
+Coercion of a SpatRaster to a vector, matrix or array. Or coerce a SpatExtent to a vector or matrix
 }
 
 \usage{
@@ -23,6 +26,10 @@ Coercion to other object types
 \S4method{as.matrix}{SpatRaster}(x, wide=FALSE, ...)
 
 \S4method{as.array}{SpatRaster}(x)
+
+\S4method{as.vector}{SpatExtent}(x, mode='any')
+
+\S4method{as.matrix}{SpatExtent}(x, ...)
 }
 
 
@@ -50,6 +57,8 @@ as.matrix(r, wide=TRUE)
 as.data.frame(r, xy=TRUE)
 as.array(r)
 
+as.vector(ext(r))
+as.matrix(ext(r))
 }
 
 \keyword{spatial}

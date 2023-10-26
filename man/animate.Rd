@@ -22,7 +22,7 @@ This does not work with R-Studio.
   \item{pause}{numeric. How long should be the pause be between layers?}  
   \item{main}{title for each layer. If not supplied the z-value is used if available. Otherwise the names are used.}  
   \item{range}{numeric vector of length 2. Range of values to plot}
-  \item{maxcell}{integer > 0. Maximum number of cells to use for the plot. If \code{maxcell < ncell(x)}, \code{spatSample(type="regular")} is used before plotting}
+  \item{maxcell}{positive integer. Maximum number of cells to use for the plot. If \code{maxcell < ncell(x)}, \code{spatSample(type="regular")} is used before plotting}
   \item{n}{integer > 0. Number of loops}
   \item{...}{Additional arguments passed to \code{\link{plot}}}
 }

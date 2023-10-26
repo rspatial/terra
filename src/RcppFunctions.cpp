@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include "spatRasterMultiple.h"
 #include "string_utils.h"
+#include "math_utils.h"
 
 #include "gdal_priv.h"
 #include "gdalio.h"
@@ -13,6 +14,9 @@
 #if GDAL_VERSION_MAJOR >= 3
 #include "proj.h"
 #define projh
+#if PROJ_VERSION_MAJOR >=6
+# define PROJ_6
+#endif
 #if PROJ_VERSION_MAJOR > 7
 # define PROJ_71
 #else
@@ -162,7 +166,7 @@ std::vector<double> geotransform(std::string fname) {
 
 // [[Rcpp::export(name = ".gdal_setconfig")]]
 void gdal_setconfig(std::string option, std::string value) {
-	if (value == "") {
+	if (value.empty()) {
 		CPLSetConfigOption(option.c_str(), NULL);
 	} else {
 		CPLSetConfigOption(option.c_str(), value.c_str());
@@ -384,17 +388,22 @@ void gdal_init(std::string projpath, std::string datapath) {
 	CPLSetConfigOption("GDAL_MAX_BAND_COUNT", "9999999");
 	CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
 	CPLSetConfigOption("GDAL_DATA", datapath.c_str());
-
+	CPLSetConfigOption("CPL_VSIL_USE_TEMP_FILE_FOR_RANDOM_WRITE", "YES");
+	//GDAL_NETCDF_IGNORE_XY_AXIS_NAME_CHECKS
 
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
-	if (projpath != "") {
+ #ifdef PROJ_6
+	if (!projpath.empty()) {
 		const char *cp = projpath.c_str();
 		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
 	}
+ #endif
 #endif
-#ifdef PROJ71
-	proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+#ifdef PROJ_71
+	#ifndef __EMSCRIPTEN__
+		proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+	#endif
 #endif
 }
 
@@ -490,7 +499,7 @@ std::vector<std::string> get_proj_search_paths() {
 
 // [[Rcpp::export(name = ".set_proj_search_paths")]]
 bool set_proj_search_paths(std::vector<std::string> paths) {
-	if (!paths.size()) {
+	if (paths.empty()) {
 		return false;
 	}
 #if GDAL_VERSION_NUM >= 3000000
@@ -521,5 +530,128 @@ std::string PROJ_network(bool enable, std::string url) {
 	}
 #endif
 	return s;
+}
+
+
+
+// [[Rcpp::export(name = ".weighted_pearson")]]
+double weighted_pearson_cor(std::vector<double> x, std::vector<double> y, std::vector<double> weights, bool narm=true) {
+  
+	if (narm) {
+		size_t n = x.size()-1;
+		for (long i=n; i >= 0; i--) {
+			if (std::isnan(x[i]) || std::isnan(y[i])) {
+				x.erase(x.begin()+i);
+				y.erase(y.begin()+i);
+				weights.erase(weights.begin()+i);
+			}
+		}	
+		if (x.size() < 2) {
+			return(NAN);
+		}
+	}
+	size_t n = x.size();
+	double sw = accumulate(weights.begin(), weights.end(), 0.0);
+	for (double &d : weights) d /= sw;
+	double sxw = 0;
+	double syw = 0;
+	for (size_t i=0; i<n; i++) {
+		sxw += x[i] * weights[i];
+		syw += y[i] * weights[i];
+	}
+	for (size_t i=0; i<n; i++) {
+		x[i] -= sxw;
+		y[i] -= syw;
+	}
+	double vx = 0;
+	double vy = 0;
+	double vxy = 0;
+	for (size_t i=0; i<n; i++) {
+		vx += weights[i] * x[i] * x[i];
+		vy += weights[i] * y[i] * y[i];
+		vxy += weights[i] * x[i] * y[i];
+	}
+	return  vxy / std::sqrt(vx * vy);
+}
+
+
+// [[Rcpp::export(name = ".pearson")]]
+double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
+ 
+	if (narm) {
+		size_t n = x.size()-1;
+		for (long i=n; i >= 0; i--) {
+			if (std::isnan(x[i]) || std::isnan(y[i])) {
+				x.erase(x.begin()+i);
+				y.erase(y.begin()+i);
+			}
+		}	
+		if (x.size() < 2) {
+			return(NAN);
+		}
+	}
+	size_t n = x.size();
+	double xbar = accumulate(x.begin(), x.end(), 0.0) / n;
+	double ybar = accumulate(y.begin(), y.end(), 0.0) / n;
+	double numer = 0;
+	for (size_t i=0; i<n; i++) {
+		numer += (x[i]-xbar) * (y[i]-ybar);
+	}
+	double s1 = 0;
+	double s2 = 0;
+	for (size_t i=0; i<n; i++) {
+		s1 += std::pow(x[i]-xbar, 2);
+		s2 += std::pow(y[i]-ybar, 2);
+	}
+	return numer / std::sqrt(s1 * s2);
+}
+
+
+# include "vecmathse.h"
+// [[Rcpp::export(name = ".stattest1")]]
+double stattest1(std::vector<double> x, std::string fun, bool narm) {
+	if (!haveseFun(fun)) {
+		Rcpp::Rcout << fun + " is not available" << std::endl;
+		return NAN;
+	}
+	std::function<double(std::vector<double>&, size_t, size_t)> f;
+	if (!getseFun(f, fun, narm)) {
+		Rcpp::Rcout << "Unknown function" << std::endl;
+		return NAN;
+	}
+	return f(x, 0, x.size());
+}
+
+
+# include "vecmath.h"
+// [[Rcpp::export(name = ".stattest2")]]
+double stattest2(std::vector<double> x, std::string fun, bool narm) {
+	if (!haveFun(fun)) {
+		Rcpp::Rcout << fun + " is not available" << std::endl;
+		return NAN;
+	}
+	std::function<double(std::vector<double>&, bool)> f = getFun(fun);
+	return f(x, narm);
+}
+
+
+
+// [[Rcpp::export(name = ".unique_symmetric_rows")]]
+Rcpp::IntegerMatrix uniqueSymmetricRows(std::vector<size_t> x, std::vector<size_t> y) {
+	size_t n = x.size();
+	for (size_t i=0; i<n; i++) {
+		if (x[i] > y[i]) {
+			double tmp = x[i];
+			x[i] = y[i];
+			y[i] = tmp;
+		}
+	}
+	sort_unique_2d(x, y);
+	Rcpp::IntegerMatrix mat(x.size(), 2); 
+    std::copy(x.begin(), x.end(), mat.begin());  	
+    std::copy(y.begin(), y.end(), mat.begin()+x.size());  	
+	return mat;
+//	x.insert(x.end(), y.begin(), y.end());
+///	return(x);
 }
 

@@ -9,7 +9,7 @@ setMethod("merge", signature(x="SpatVector", y="data.frame"),
 		v$unique_nique_ique_que_e <- 1:nrow(v)
 		m <- merge(v, y, ...)
 		m <- m[order(m$unique_nique_ique_que_e), ]
-		x <- x[na.omit(m$unique_nique_ique_que_e), ]
+		x <- x[stats::na.omit(m$unique_nique_ique_que_e), ]
 		m$unique_nique_ique_que_e <- NULL
 		if (nrow(m) > nrow(x)) {
 			error("merge", "using 'all.y=TRUE' is not allowed. Should it be?")
@@ -26,20 +26,20 @@ setMethod("merge", signature(x="SpatVector", y="SpatVector"),
 )
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
-	function(x, y, ..., first=TRUE, filename="", overwrite=FALSE, wopt=list()) {
+	function(x, y, ..., first=TRUE, na.rm=TRUE, filename="", overwrite=FALSE, wopt=list()) {
 		rc <- sprc(x, y, ...)
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
-		x@ptr <- rc@ptr$merge(first[1], opt)
+		x@cpp <- rc@cpp$merge(first[1], na.rm, opt)
 		messages(x, "merge")
 	}
 )
 
 
 setMethod("merge", signature(x="SpatRasterCollection", "missing"),
-	function(x, first=TRUE, filename="", ...) {
+	function(x, first=TRUE, na.rm=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
-		out@ptr <- x@ptr$merge(first[1], opt)
+		out@cpp <- x@cpp$merge(first[1], na.rm, opt)
 		messages(out, "merge")
 	}
 )
@@ -53,7 +53,7 @@ setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
 		}
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		rc <- sprc(x, y, ...)
-		x@ptr <- rc@ptr$mosaic(fun, opt)
+		x@cpp <- rc@cpp$mosaic(fun, opt)
 		messages(x, "mosaic")
 	}
 )
@@ -66,7 +66,7 @@ setMethod("mosaic", signature(x="SpatRasterCollection", "missing"),
 		if (!inherits(fun, "character")) {
 			error("mosaic", "function 'fun' is not valid")
 		}
-		out@ptr <- x@ptr$mosaic(fun, opt)
+		out@cpp <- x@cpp$mosaic(fun, opt)
 		messages(out, "mosaic")
 	}
 )

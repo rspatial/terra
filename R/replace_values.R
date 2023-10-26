@@ -42,7 +42,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 				#}
 				values <- as.vector(values)
 			}
-			ok <- x@ptr$replaceCellValuesLayer(layer-1, cells-1, values, bylyr, spatOptions())
+			ok <- x@cpp$replaceCellValuesLayer(layer-1, cells-1, values, bylyr, spatOptions())
 			messages(x)
 			invisible(TRUE)
 		} else {
@@ -50,7 +50,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 				error("set.values", "some (but not all) layer numbers are < 1")
 			}
 			if (missing(cells) && missing(values)) {
-				x@ptr$readAll()
+				x@cpp$readAll()
 				return(invisible(TRUE));
 			}
 			bylyr <- FALSE
@@ -64,7 +64,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 				#}
 				values <- as.vector(values)
 			}
-			ok <- x@ptr$replaceCellValues(cells-1, values, bylyr, spatOptions())
+			ok <- x@cpp$replaceCellValues(cells-1, values, bylyr, spatOptions())
 			messages(x)
 		}
 		invisible(TRUE)
@@ -72,8 +72,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 )
 
 
-make_replace_index <- function(v, vmx, name="i") {
-
+make_replace_index <- function(v, vmx, nreps, name="i") {
 	caller <- paste0("`[<-`(", name, ")")
 
 	if (inherits(v, "SpatRaster")) {
@@ -124,8 +123,21 @@ make_replace_index <- function(v, vmx, name="i") {
 		}
 	}
 
-	vv <- na.omit(v)
-	if (any(vv < 1 | vv > vmx)) {
+	if (any(is.na(v))) {
+		if (nreps > 1) {
+			error(caller, "NAs are not allowed in subscripted assignments")
+		} else {
+			v <- v[!is.na(v)]
+		}
+	}
+	#vv <- stats::na.omit(v)
+	if (all(v < 0)) {
+		if (any(v < -vmx)) {
+			error(caller, paste(name, "is out of its valid range"))
+		}
+		v <- (1:vmx)[v]
+	} 
+	if (any(v < 1 | v > vmx)) {
 		error(caller, paste(name, "is out of its valid range"))
 	}
 	v
@@ -168,13 +180,13 @@ make_replace_index <- function(v, vmx, name="i") {
 		value <- as.vector(value)
 	}
 	opt <- spatOptions()
-	x@ptr <- x@ptr$deepcopy()
+	x@cpp <- x@cpp$deepcopy()
 	if (is.na(k[1])) {
-		if (!x@ptr$replaceCellValues(i-1, value, bylyr, opt)) {
+		if (!x@cpp$replaceCellValues(i-1, value, bylyr, opt)) {
 			messages(x, "`[<-`")
 		} 
 	} else {
-		if (!x@ptr$replaceCellValuesLayer(k-1, i-1, value, bylyr, opt)) {
+		if (!x@cpp$replaceCellValuesLayer(k-1, i-1, value, bylyr, opt)) {
 			messages(x, "`[<-`")
 		}
 	}
@@ -187,7 +199,7 @@ make_replace_index <- function(v, vmx, name="i") {
 	for (lyr in ulyrs) {
 		y <- x[[lyr]]
 		i <- which(lyrs == lyr)
-		if (!y@ptr$replaceCellValues(cell[i]-1, value[i], FALSE, opt)) {
+		if (!y@cpp$replaceCellValues(cell[i]-1, value[i], FALSE, opt)) {
 			messages(y, "`[<-`")
 		}
 		x[[lyr]] <- y
@@ -233,7 +245,7 @@ make_replace_index <- function(v, vmx, name="i") {
 			mask(x, i, maskvalues=TRUE, updatevalue=value[1])
 		} else {
 			i <- as.logical(values(i))
-			i[is.na(i)] <- TRUE
+			i[is.na(i)] <- FALSE #TRUE, for #1115
 			i <- which(i)
 			x[i] <- value
 			x
@@ -248,9 +260,9 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 
 		m <- c(missing(i), missing(j), missing(k))
 		s <- rep(FALSE, 3)
-		if (!m[1]) s[1] <- is.list(i)
-		if (!m[2]) s[2] <- is.list(j)
-		if (!m[3]) s[3] <- is.list(k)
+		if (!m[1]) s[1] <- inherits(i, "list")
+		if (!m[2]) s[2] <- inherits(j, "list")
+		if (!m[3]) s[3] <- inherits(k, "list")
 		if (any(s)) {
 			if (m[1]) i <- NULL 
 			if (m[2]) j <- NULL 
@@ -289,13 +301,13 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 					stop()
 				}
 			} else {
-				k <- make_replace_index(k, nlyr(x), "k")
+				k <- make_replace_index(k, nlyr(x), length(value), "k")
 			}
 		} else {
 			k <- NA
 		}
 
-		if (m[1] & m[2]) {
+		if (all(m)) {
 			return(.replace_all(x, value))
 		} 
 
@@ -313,21 +325,27 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			narg <- length(theCall)-length(match.call(call=theCall))
 			if ((narg==0) && m[2]) {
 				# cell
-				i <- make_replace_index(i, ncell(x), "i")
+				i <- make_replace_index(i, ncell(x), length(value), "i")
 			} else if (m[2]) {
 				# row
-				i <- make_replace_index(i, nrow(x), "i")
+				i <- make_replace_index(i, nrow(x), length(value), "i")
 				i <- cellFromRowColCombine(x, i, 1:ncol(x))
 			} else {
 				#row,col
-				i <- make_replace_index(i, nrow(x), "i")
-				j <- make_replace_index(j, ncol(x), "j")
+				i <- make_replace_index(i, nrow(x), length(value), "i")
+				j <- make_replace_index(j, ncol(x), length(value), "j")
 				i <- cellFromRowColCombine(x, i, j)
 			}
-		} else { #if (!m[2]) {
+		} else if (!m[2]) {
 			#col
-			j <- make_replace_index(j, ncol(x), "j")
+			j <- make_replace_index(j, ncol(x), length(value), "j")
 			i <- cellFromRowColCombine(x, 1:nrow(x), j)
+		} else {
+			if (inherits(value, "SpatRaster")) {
+				x[[k]] <- value
+				return(x)
+			}
+			i <- 1:ncell(x)
 		}
 		return(.replace_cell(x, i, k, value))
 	} 

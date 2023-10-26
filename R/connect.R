@@ -5,7 +5,7 @@ get_groups <- function(x, y) {
 
 	for (i in 1:length(x)) {
 		if (is.na(x[i])) next
-		gx <- na.omit(x[x[i] == x] )
+		gx <- stats::na.omit(x[x[i] == x] )
 		gy <- y[x %in% gx]
 		nx <- ny <- 0
 		while(TRUE) {

@@ -16,11 +16,12 @@ parfun <- function(cls, d, fun, model, ...) {
 }
 
 
-.runModel <- function(model, fun, d, nl, const, na.rm, index, cores=1, cls=NULL, ...) {
+.runModel <- function(model, fun, d, nl, const, na.rm, index, cores, ...) {
+	doPar <- !is.null(cores)
 	if (!is.data.frame(d)) {
 		d <- data.frame(d)
 	}
-	if (! is.null(const)) {
+	if (!is.null(const)) {
 		for (i in 1:ncol(const)) {
 			d <- cbind(d, const[,i,drop=FALSE])
 		}
@@ -30,29 +31,21 @@ parfun <- function(cls, d, fun, model, ...) {
 		i <- rowSums(is.na(d)) == 0
 		d <- d[i,,drop=FALSE]
 		if (nrow(d) > 0) {
-			if (cores > 1) {
-				r <- parfun(cls, d, fun, model, ...)
+			if (doPar) {
+				r <- parfun(cores, d, fun, model, ...)
 			} else {
 				r <- fun(model, d, ...)
 			}
 			if (is.list(r)) {
-				r <- as.data.frame(lapply(r, as.numeric))
+				r <- as.data.frame(r)
+				# data.frame(lapply) instead of sapply to catch a one-row case
+				r <- data.frame(lapply(r, as.numeric))
 			} else if (is.factor(r)) {
 				r <- as.integer(r)
-			} else if (is.data.frame(r)) {
-				r <- sapply(r, as.numeric)
-			}
-			#how could it not be numeric?
-			#else if (is.data.frame(r)) {
-			#	if (nrow(r) > 1) {
-			#		r <- apply(r, as.numeric)
-			#	} else {
-			#		r[] <- as.numeric(r)
-			#	}
-			#}
+			} 
 			r <- as.matrix(r)
 			if (!all(i)) {
-				m <- matrix(NA, nrow=nl*n, ncol=ncol(r))
+				m <- matrix(NA, nrow=n, ncol=ncol(r))
 				m[i,] <- r
 				colnames(m) <- colnames(r)
 				r <- m
@@ -65,8 +58,8 @@ parfun <- function(cls, d, fun, model, ...) {
 			}
 		}
 	} else {
-		if (cores > 1) {
-			r <- parfun(cls, d, fun, model, ...)
+		if (doPar) {
+			r <- parfun(cores, d, fun, model, ...)
 		} else {
 			r <- fun(model, d, ...)
 		}
@@ -80,14 +73,16 @@ parfun <- function(cls, d, fun, model, ...) {
 		r <- as.matrix(r)
 	}
 	if (inherits(model, "gstat")) {
-		nr <- max(nrow(d), 5)
-		xy <- as.matrix(d[1:nr,1:2])
-		if (all(xy == r[1:nr, 1:2])) {
-			r <- r[,-c(1:2)]   # x, y
+		if (ncol(r) > 2) {
+			nr <- max(nrow(d), 5)
+			xy <- as.matrix(d[1:nr,1:2])
+			if (all(xy == r[1:nr, 1:2])) {
+				r <- r[,-c(1:2)]   # x, y
+			}
 		}
 	}
 	if (!is.null(index)) {
-		r <- r[, index,drop=FALSE]
+		r <- r[, index, drop=FALSE]
 	}
 	r
 }
@@ -121,7 +116,11 @@ parfun <- function(cls, d, fun, model, ...) {
 		}
 	}
 
-	if (is.list(r) || is.data.frame(r)) {
+	if (is.factor(r)) {
+		levs <- levels(r)
+		data.frame(value=1:length(levs), class=levs)
+	} else if (is.list(r) || is.data.frame(r)) {
+		r <- as.data.frame(r)
 		out <- sapply(r, levels)
 		for (i in 1:length(out)) {
 			if (!is.null(out[[i]])) {
@@ -134,8 +133,84 @@ parfun <- function(cls, d, fun, model, ...) {
 	}
 }
 
+
+find_dims <- function(object, model, nc, fun, const, na.rm, index, ...) {
+	nr <- nrow(object)
+	nl <- 1
+	testrow <- round(0.51*nr)
+	rnr <- 1
+	if (nc==1) rnr <- min(nr, 20) - testrow + 1
+	d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
+	cn <- NULL
+	levs <- NULL
+	if (!is.null(index)) {
+		nl <- length(index)
+		r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL, ...)
+		rdim <- dim(r)
+		if (is.null(rdim)) {
+			cn <- ""
+		} else {
+			cn <- colnames(r)
+		}
+	} else {
+		allna <- FALSE
+		if (na.rm) {
+			allna <- all(nrow(stats::na.omit(d)) == 0)
+			if (allna) {
+				testrow <- ceiling(testrow - 0.25*nr)
+				d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
+				allna <- all(nrow(stats::na.omit(d)) == 0)
+			}
+			if (allna) {
+				testrow <- floor(testrow + 0.5*nr)
+				if ((testrow + rnr) > nr) rnr = nr - testrow + 1
+				d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
+				allna <- all(nrow(stats::na.omit(d)) == 0)
+			}
+			if (allna && (ncell(object) < 1000)) {
+				d <- readValues(object, 1, nr, 1, nc, TRUE, TRUE)
+				allna <- all(nrow(stats::na.omit(d)) == 0)
+				#if (allna) {
+				#	error("predict", "all predictor values are NA")
+				#}
+			}
+			if (allna) {
+				d <- spatSample(object, min(1000, ncell(object)), "regular", warn=FALSE)
+				allna <- all(nrow(stats::na.omit(d)) == 0)
+			}
+			if (allna) {
+				d[] <- stats::runif(prod(dim(d)))
+			}
+		}
+		r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL, ...)
+		if (ncell(object) > 1) {
+			rdim <- dim(r)
+			if (is.null(rdim)) {
+				nl <- 1
+				cn <- ""
+			} else {
+				if (isTRUE(any(rdim == 1))) {
+					nl <- 1
+					cn <- colnames(r)[1]
+				} else {
+					nl <- ncol(r)
+					cn <- colnames(r)
+				}
+			}
+		} else {
+			nl <- length(r)
+		}
+		levs <- .getFactors(model, fun, d, nl, const, na.rm, index, ...)
+	}
+	out <- rast(object, nlyrs=nl)
+	if (!all(sapply(levs, is.null))) levels(out) <- levs
+	if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
+	out
+}
+
+
 setMethod("predict", signature(object="SpatRaster"),
-	function(object, model, fun=predict, ..., factors=NULL, const=NULL, na.rm=FALSE, index=NULL, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list()) {
+	function(object, model, fun=predict, ..., const=NULL, na.rm=FALSE, index=NULL, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list()) {
 
 		nms <- names(object)
 		if (length(unique(nms)) != length(nms)) {
@@ -143,99 +218,46 @@ setMethod("predict", signature(object="SpatRaster"),
 			error("predict", "duplicate names in SpatRaster: ", tab[tab>1])
 		}
 
-		#factors should come with the SpatRaster
-		#haveFactor <- FALSE
-		#if (!is.null(factors)) {
-		#	factors <- .getFactors(model, factors, nms)
-		#	fnames <- names(f)
-		#	haveFactor <- TRUE
-		#}
-
-		nl <- 1
 		nc <- ncol(object)
-		nr <- nrow(object)
-		tomat <- FALSE
+		#tomat <- FALSE
 		readStart(object)
 		on.exit(readStop(object))
 
-		testrow <- round(0.51*nr)
-		rnr <- 1
-		if (nc==1) rnr <- min(nr, 20) - testrow + 1
-		d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-		cn <- NULL
-		if (!is.null(index)) {
-			nl <- length(index)
-		} else {
-			allna <- FALSE
-			if (na.rm) {
-				allna <- all(is.na(d))
-				if (allna) {
-					testrow <- ceiling(testrow - 0.25*nr)
-					d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-					allna <- all(is.na(d))
-				}
-				if (allna) {
-					testrow <- floor(testrow + 0.5*nr)
-					if ((testrow + rnr) > nr) rnr = nr - testrow + 1
-					d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-					allna <- all(is.na(d))
-				}
-				if (allna && (ncell(object) < 1000)) {
-					d <- readValues(object, 1, nr, 1, nc, TRUE, TRUE)
-					allna <- all(is.na(d))
-					#if (allna) {
-					#	error("predict", "all predictor values are NA")
-					#}
-				}
-				if (allna) {
-					d <- spatSample(object, min(1000, ncell(object)), "regular")
-					allna <- all(is.na(d))
-				}
-			}
-			if (!allna) {
-				r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
-				if (ncell(object) > 1) {
-					nl <- ncol(r)
-					cn <- colnames(r)
-				} else {
-					nl <- length(r)
-				}
-				levs <- .getFactors(model, fun, d, nl, const, na.rm, index, ...)
-			} else {
-				warn("predict", "Cannot determine the number of output variables. Assuming 1. Use argument 'index' to set it manually")
-				levs <- NULL
-			}
+		out <- find_dims(object, model, nc, fun, const, na.rm, index, ...)
+		nl <- nlyr(out)
+		
+		doclust <- FALSE
+		if (inherits(cores, "cluster")) {
+			doclust <- TRUE
+		} else if (cores > 1) {
+			doclust <- TRUE
+			cores <- parallel::makeCluster(cores)
+			on.exit(parallel::stopCluster(cores), add=TRUE)
 		}
-		out <- rast(object, nlyrs=nl)
-		levels(out) <- levs
-		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
-
-		if (cores > 1) {
-			cls <- parallel::makeCluster(cores)
-			on.exit(parallel::stopCluster(cls), add=TRUE)
-			parallel::clusterExport(cls, c("model", "fun"), environment())
+		if (doclust) {
+			parallel::clusterExport(cores, c("model", "fun"), environment())
 			if (!is.null(cpkgs)) {
-				parallel::clusterExport(cls, "cpkgs", environment())
-				parallel::clusterCall(cls, function() for (i in 1:length(cpkgs)) {library(cpkgs[i], character.only=TRUE) })
+				parallel::clusterExport(cores, "cpkgs", environment())
+				parallel::clusterCall(cores, function() for (i in 1:length(cpkgs)) {library(cpkgs[i], character.only=TRUE) })
 			}
-			dots <- list(...)
-			if (length(dots) > 0) {
-				nms <- names(dots)
-				dotsenv <- new.env()
-				lapply(1:length(dots), function(i) assign(nms[i], dots[[i]], envir=dotsenv))
-				parallel::clusterExport(cls, nms, dotsenv)
-			}
+			export_args(cores, ..., caller="predict")
+			
 		} else {
-			cls <- NULL
+			cores <- NULL
 		}
 		b <- writeStart(out, filename, overwrite, wopt=wopt, n=max(nlyr(out), nlyr(object))*4, sources=sources(object))
 		for (i in 1:b$n) {
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
-			r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=cores, cls=cls, ...)
+			r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=cores, ...)
+			if (prod(NROW(r), NCOL(r)) != prod(b$nrows[i], nc, nl)) {
+				msg <- "the number of values returned by 'fun' (model predict function) does not match the input."
+				if (!na.rm) msg <- paste(msg, "Try na.rm=TRUE?")
+				error("predict", msg)
+			}
 			writeValues(out, r, b$row[i], b$nrows[i])
 		}
 		writeStop(out)
-		return(out)
+#		return(out)
 	}
 )
 

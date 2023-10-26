@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -93,7 +93,6 @@ std::vector<double> SpatRaster::mem_needs(SpatOptions &opt) {
 
 //BlockSize SpatRaster::getBlockSize(unsigned n, double frac, unsigned steps) {
 BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
-
 
 	BlockSize bs;
 	size_t cs = chunkSize(opt);

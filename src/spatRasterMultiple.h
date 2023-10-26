@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -41,12 +41,15 @@ class SpatRasterCollection {
 		
 		SpatRasterCollection(size_t n);
 		size_t size();
+		bool empty();
 		void resize(size_t n);
 		void push_back(SpatRaster r, std::string name);
 		void erase(size_t i); 
 		SpatRasterCollection crop(SpatExtent e, std::string snap, bool expand, std::vector<unsigned> use, SpatOptions &opt);
 		SpatRasterCollection cropmask(SpatVector v, std::string snap, bool touches, bool expand, std::vector<unsigned> use, SpatOptions &opt);
-		SpatRaster merge(bool first, SpatOptions &opt);
+		std::vector<int> getValueType(bool unique);
+
+		SpatRaster merge(bool first, bool narm, SpatOptions &opt);
 		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
 		SpatRaster summary(std::string fun, SpatOptions &opt);
@@ -101,6 +104,7 @@ class SpatRasterStack {
 		std::string getSRS(std::string s);
 		bool push_back(SpatRaster r, std::string name, std::string longname, std::string unit, bool warn); 
 		size_t size();
+		bool empty();
 		void resize(size_t n);
 		void erase(size_t i);
 

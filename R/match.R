@@ -9,7 +9,7 @@ getCatIDs <- function(x, table, sender="%in%") {
 		error(sender, "matching with character values is only supported for single layer SpatRaster")
 	}
 	d <- cats(x)[[1]]
-	m <- na.omit(match(table, d[,2]))
+	m <- stats::na.omit(match(table, d[,2]))
 	d[m,1]
 }
 
@@ -39,7 +39,7 @@ setMethod("%in%", signature(x="SpatRaster"),
 			}
 		}
 		opt <- spatOptions("", FALSE, list())
-		x@ptr <- x@ptr$is_in(table, opt)
+		x@cpp <- x@cpp$is_in(table, opt)
 		messages(x, "%in%")
 	}
 )

@@ -19,7 +19,7 @@ Coerce a SpatRaster or SpatVector to a data.frame
 
 \arguments{
  \item{x}{SpatRaster or SpatVector}
- \item{geom}{character or NULL. If not NULL, either "WKT" or "HEX", to get the geometry included in Well-Known-Text or hexadecimal notation. If \code{x} has point geometry, it can also bey "XY" to add the coordinates of each point}
+ \item{geom}{character or NULL. If not NULL, either "WKT" or "HEX", to get the geometry included in Well-Known-Text or hexadecimal notation. If \code{x} has point geometry, it can also be "XY" to add the coordinates of each point}
  \item{xy}{logical. If \code{TRUE}, the coordinates of each raster cell are included}
  \item{cells}{logical. If \code{TRUE}, the cell numbers of each raster cell are included}
  \item{na.rm}{logical. If \code{TRUE}, cells that have a NA value in at least one layer are removed. If the argument is set to \code{NA} only cells that have NA values in all layers are removed}

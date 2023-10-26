@@ -43,6 +43,7 @@ v <- rep(as.vector(t(matrix(1:ncell(x), nrow=9, ncol=18))), 3)
 values(x) <- v
 z <- rotate(x)
 
+\dontrun{
 #SpatVector
 p <- rbind(c(3847903, 1983584 ), c(3847903, 5801864), c(8301883, 5801864), c(8301883, 1983584 ))
 p <- vect(p, "polygons", crs="+init=EPSG:3347")
@@ -52,6 +53,7 @@ g <- project(d, "+proj=longlat")
 x <- rotate(g, 50)
 plot(g)
 lines(x, col="red")
+}
 
 ## rotate countries to 0-360 longitude
 #w <- geodata::world(path=".")

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -27,6 +27,7 @@ public:
 		v.resize(_size, _value);
 	};
 
+	SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _labels, bool _ordered);
 	SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _labels);
 	SpatFactor(std::vector<unsigned> _values);
 	SpatFactor(std::vector<std::string> _values);
@@ -35,8 +36,10 @@ public:
 	std::vector<unsigned> v;
 	//std::vector<unsigned> levels;
 	std::vector<std::string> labels;
+	bool ordered = false;
   
 	size_t size() { return v.size(); }
+	bool empty() { return v.empty(); }
 	
 	//void compute_levels();
 	void push_back(unsigned x) { v.push_back(x); }

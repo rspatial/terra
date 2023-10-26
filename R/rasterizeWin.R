@@ -44,7 +44,7 @@ get_z <- function(y, field, caller="rasterizeWin") {
 		#if (!is.numeric(field)) {
 		#	error(caller, paste(field, "is not numeric"))
 		#}
-		z <- rep_len(field, nrow(y))
+		z <- data.frame(field=rep_len(field, nrow(y)))
 	}
 	z
 }
@@ -79,9 +79,9 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, ...) {
 			e$ymin <- yFromRow(out, b$row[i]  + b$nrows[i] - 1) - hy
 			rbe <- crop(rb, e)
 			if (win == "rectangle") {
-				p <- rbe@ptr$winrect(y[,1], y[,2], y[,3], pars, opt)
+				p <- rbe@cpp$winrect(y[,1], y[,2], y[,3], pars, opt)
 			} else {
-				p <- rbe@ptr$wincircle(y[,1], y[,2], y[,3], pars, opt)
+				p <- rbe@cpp$wincircle(y[,1], y[,2], y[,3], pars, opt)
 			}
 
 			if ((pars[4] > 1) && (length(p[[1]]) > 0)) {
@@ -108,9 +108,9 @@ rastWinR <- function(x, y, win, pars, fun, nl, cvars, filename, wopt, ...) {
 			e$ymin <- yFromRow(out, b$row[i]  + b$nrows[i] - 1) - hy
 			rbe <- crop(rb, e)
 			if (win == "rectangle") {
-				p <- rbe@ptr$winrect(y[,1], y[,2], id, pars, opt)
+				p <- rbe@cpp$winrect(y[,1], y[,2], id, pars, opt)
 			} else {
-				p <- rbe@ptr$wincircle(y[,1], y[,2], id, pars, opt)
+				p <- rbe@cpp$wincircle(y[,1], y[,2], id, pars, opt)
 			}
 
 			if ((pars[4] > 1) && (length(p[[1]]) > 0)) {
@@ -270,7 +270,7 @@ setMethod("rasterizeWin", signature(x="data.frame", y="SpatRaster"),
 					error("rasterizeWin", paste(fun, "not yet available for 'win=rectangle'"))
 				} else {
 					opt <- spatOptions(filename, wopt=wopt)
-					x@ptr <- x@ptr$rasterizeWindow(x[,1], x[,2], x[,3], algo, pars, opt)
+					x@cpp <- x@cpp$rasterizeWindow(x[,1], x[,2], x[,3], algo, pars, opt)
 					return(messages(x, "rasterizeWin"))
 				}
 			} 
@@ -311,7 +311,7 @@ setMethod("interpNear", signature(x="SpatRaster", y="matrix"),
 		}
 
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
+		x@cpp <- x@cpp$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
 		messages(x, "interpNear")
 	}
 )
@@ -323,19 +323,20 @@ setMethod("interpNear", signature(x="SpatRaster", y="SpatVector"),
 			error("interpNear", "SpatVector y must have a point geometry")
 		}
 		y <- cbind(crds(y), get_z(y, field, "interpNear"))
+		y <- as.matrix(y)
 		interpNear(x, y, radius=radius, interpolate=interpolate, fill=fill, filename=filename, ...)
 	}
 )
 
 
 setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
-	function(x, y, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...) {
+	function(x, y, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=TRUE, fill=NA, filename="", ...) {
 
 		if (ncol(y) != 3) {
 			error("interpIDW", "expecting a matrix with three columns")
 		}
 		if (!is.numeric(y)) {
-			error("interpNear", "values must be numeric")
+			error("interpIDW", "values must be numeric")
 		}
 
 		if (near) {
@@ -347,18 +348,19 @@ setMethod("interpIDW", signature(x="SpatRaster", y="matrix"),
 		}
 
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
+		x@cpp <- x@cpp$rasterizeWindow(y[,1], y[,2], y[,3], algo, pars, opt)
 		messages(x, "interpIDW")
 	}
 )
 
 
 setMethod("interpIDW", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, field, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=FALSE, fill=NA, filename="", ...) {
+	function(x, y, field, radius, power=2, smooth=0, maxPoints=Inf, minPoints=1, near=TRUE, fill=NA, filename="", ...) {
 		if (geomtype(y) != "points") {
 			error("interpIDW", "SpatVector y must have a point geometry")
 		}
 		y <- cbind(crds(y), get_z(y, field, "interpIDW"))
+		y <- as.matrix(y)
 		interpIDW(x, y, radius, power=power, smooth=smooth, maxPoints=maxPoints, minPoints=minPoints, near=near, fill=fill, filename=filename, ...)
 	}
 )

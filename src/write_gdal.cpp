@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -20,6 +20,7 @@
 #include "string_utils.h"
 #include "file_utils.h"
 #include "vecmath.h"
+#include "recycle.h"
 
 #include <unordered_map>
 #include <vector>
@@ -42,7 +43,7 @@ void add_quotes(std::vector<std::string> &s) {
 
 std::string quoted_csv(const std::vector<std::string> &s) {
 	std::string ss;
-	if (s.size() == 0) {
+	if (s.empty()) {
 		ss = "";
 		return ss;
 	}
@@ -158,6 +159,27 @@ bool is_rat(SpatDataFrame &d) {
 	}
 	return true;
 }
+
+
+bool is_ratct(SpatDataFrame &d) {
+
+	std::vector<std::string> ss = {"red", "green", "blue", "r", "g", "b"};
+	std::vector<std::string> nms = d.names;
+	size_t cnt = 0;
+	
+	for (size_t i=0; i<nms.size(); i++) {
+		std::string name = nms[i];
+		lowercase(name);
+		int k = where_in_vector(name, ss, true);
+		if (k >= 0) {
+			cnt++;
+		}
+	}
+	return (cnt >= 3);
+}
+
+
+
 
 /*
 bool setCats(GDALRasterBand *poBand, std::vector<std::string> &labels) {
@@ -309,17 +331,17 @@ void removeVatJson(std::string filename) {
 bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string> &srcnames) {
 
 	std::string filename = opt.get_filename();
-	if (filename == "") {
+	
+	if (filename.empty()) {
 		setError("empty filename");
 		return(false);
-	} else {
-		// make sure filename won't be used again
-		opt.set_filenames({""});
-	}
+	} 
+	// assure filename won't be used again
+	opt.set_filenames({""});
 
 	std::string driver = opt.get_filetype();
 	getGDALdriver(filename, driver);
-	if (driver == "") {
+	if (driver.empty()) {
 		setError("cannot guess file type from filename");
 		return(false);
 	}
@@ -339,9 +361,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	std::string datatype = opt.get_datatype();
 
 	bool writeRGB = (rgb && nlyr() == 3 && rgblyrs.size() == 3);
-	if (writeRGB) {
-		datatype = "INT1U";
-	}
+	//if (writeRGB) {
+	//	datatype = "INT1U";
+	//}
 	std::string errmsg;
 	if (!checkFormatRequirements(driver, filename, errmsg)) {
 		setError(errmsg);
@@ -377,14 +399,22 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	std::vector<bool> hasCats = hasCategories();
 	std::vector<SpatDataFrame> ct = getColors();
 	bool cat = hasCats[0];
+	bool warnCT = true;
 
 	bool rat = cat ? is_rat(source[0].cats[0].d) : false;
 	if (rat) {
+		// needs redesign. Is CT also part of RAT? 
+		// other layers affected? etc.
+		warnCT = false;
 		if (hasCT[0]) {
-			if (opt.datatype_set && (datatype != opt.get_datatype())) {
-				addWarning("change datatype to INT1U to write the color-table");
-			} else {
-				datatype = "INT1U";
+			if (is_ratct(source[0].cats[0].d)) {
+				std::fill(hasCT.begin(), hasCT.end(), false);
+			} else if (ct[0].nrow() < 256) {
+				if (opt.datatype_set && (datatype != opt.get_datatype())) {
+					addWarning("change datatype to INT1U to write the color-table");
+				} else {
+					datatype = "INT1U";
+				}
 			}
 		} else {
 			//if (opt.datatype_set) {
@@ -399,7 +429,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 				datatype = "INT4S";
 			}
 		}
-	} else if (hasCT[0] || cat) {
+	} else if (hasCT[0]) {
 		if (opt.datatype_set && (datatype != "INT1U")) {
 			addWarning("change datatype to INT1U to write the color-table");
 		} else {
@@ -426,8 +456,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	GIntBig diskAvailable = VSIGetDiskFreeSpace(dname.c_str());
 	if ((diskAvailable > -1) && (diskAvailable < diskNeeded)) {
 		long gb = 1073741824;
-		setError("insufficient disk space. Estimated need: " + std::to_string(diskNeeded/gb) + "GB. Available: " + std::to_string(diskAvailable/gb) + " GB.");
-		return false;
+		std::string msg = "Estimated disk space needed without compression: " + std::to_string(diskNeeded/gb) + "GB. Available: " + std::to_string(diskAvailable/gb) + " GB.";
+		// was an error, but actual file size is not known
+		addWarning(msg);
 	}
 
 	stat_options(opt.get_statistics(), compute_stats, gdal_stats, gdal_minmax, gdal_approx);
@@ -492,11 +523,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	CSLDestroy( papszOptions );
 	if (poDS == NULL) {
-		if (!filepath_exists(filename)) {
-			setError("failed writing "+ driver + " file. Path does not exist:\n   " + filename);
-		} else {
+		//if (!filepath_exists(filename)) {
+		//	setError("failed writing "+ driver + " file. Path does not exist:\n   " + filename);
+		//} else {
 			setError("failed writing "+ driver + " file");
-		}
+		//}
 		GDALClose( (GDALDatasetH) poDS );
 		return false;
 	}
@@ -542,13 +573,49 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	if (writeRGB) nms = {"red", "green", "blue"};
 
+	std::vector<double> scale = opt.get_scale();
+	std::vector<double> offset = opt.get_offset();
+	size_t nl = nlyr();
+	if (((scale.size() > 1) || (offset.size())) || 
+		((scale[0] != 1) || (offset[0] != 0))) {	
+		recycle(scale, nl);
+		recycle(offset, nl);
+	}
+	bool scoff = false;
+	for (size_t i=0; i<scale.size(); i++) {
+		//if (scale[i] == 0) scale[i] = 1;
+		if ((scale[i] != 1) || (offset[i] != 0)) {
+			if (!scoff) {
+				source[0].has_scale_offset = std::vector<bool>(nl, false);
+				scoff = true;
+			}
+			source[0].has_scale_offset[i] = true;
+		}
+	}
+	if (scoff) {
+		source[0].scale  = scale;
+		source[0].offset = offset;
+	}
+
+	bool scoffwarning = false;
+
+	if (driver == "GTiff") {
+		std::vector<std::string> m = getTags();
+		if (m.size() > 0) {
+			for (size_t i=0; i<m.size(); i+=2) {
+				poDS->SetMetadataItem(m[i].c_str(), m[i+1].c_str(), "USER_TAGS");
+			}
+		}
+	}
+	
 	for (size_t i=0; i < nlyr(); i++) {
 
 		poBand = poDS->GetRasterBand(i+1);
-
 		if ((i==0) && hasCT[i]) {
 			if (!setCT(poBand, ct[i])) {
-				addWarning("could not write the color table");
+				if (warnCT) {
+					addWarning("could not write the color table");
+				}
 			}
 		}
 		if (hasCats[i]) {
@@ -587,13 +654,27 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			} else if (datatype == "INT2S") {
 				poBand->SetNoDataValue(INT16_MIN);
 			} else if (datatype == "INT4U") {
-				//double na = (double)UINT32_MAX;
 				poBand->SetNoDataValue(UINT32_MAX);
 			} else if (datatype == "INT2U") {
 				//double na = (double)INT16_MAX * 2 - 1;
 				poBand->SetNoDataValue(UINT16_MAX);
 			} else if (datatype == "INT1U") {
 				poBand->SetNoDataValue(255);
+			} else if (datatype == "INT1S") {
+				poBand->SetNoDataValue(-128); //GDT_Int8
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 5
+// no Int64
+#else 
+			} else if (datatype == "INT8S") {
+				//INT64_MIN == -9223372036854775808;
+				if (poBand->SetNoDataValueAsInt64(INT64_MIN) != CE_None) {
+					addWarning("no data problem");
+				}			
+			} else if (datatype == "INT8U") {
+				if (poBand->SetNoDataValueAsUInt64(UINT64_MAX-1101) != CE_None) {
+					addWarning("no data problem");
+				}			
+#endif
 			} else {
 				poBand->SetNoDataValue(NAN);
 			}
@@ -608,9 +689,27 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 				poBand->SetColorInterpretation(GCI_BlueBand);
 			}
 		}
-
+		
+		if (scoff) {
+			if (source[0].has_scale_offset[i]) {
+				bool failed = (poBand->SetScale(scale[i])) != CE_None;
+				if (!failed) {
+					failed = ((poBand->SetOffset(offset[i])) != CE_None);
+				}
+				if (failed) {
+					source[0].has_scale_offset[i] = false;
+					source[0].scale[i]  = 1;
+					source[0].offset[i] = 0;
+					scoffwarning = true;
+				}
+			}
+		}
 	}
 
+	if (scoffwarning) {
+		addWarning("could not set offset");
+	}
+	
 	std::vector<double> rs = resolution();
 	SpatExtent extent = getExtent();
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
@@ -715,6 +814,8 @@ void minmaxlim(Iterator start, Iterator end, double &vmin, double &vmax, const d
         vmin = NAN;
         vmax = NAN;
     }
+	vmin = std::trunc(vmin);	
+	vmax = std::trunc(vmax);	
 }
 
 
@@ -727,22 +828,42 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 	size_t nl = nlyr();
 	std::string datatype = source[0].dtype;
 
+	size_t n = vals.size() / nl;
+	for (size_t i=0; i<nl; i++) {
+		if (source[0].has_scale_offset[i]) {
+			size_t start = i*n;
+			for (size_t j=start; j<(start+n); j++) {
+				vals[j] = (vals[j] - source[0].offset[i]) / source[0].scale[i];
+			}
+		}
+	}
+
 	if ((compute_stats) && (!gdal_stats)) {
 		bool invalid = false;
 		for (size_t i=0; i < nl; i++) {
 			size_t start = nc * i;
-			if (datatype == "INT4S") {
+			if (datatype == "INT8S") {
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT64_MIN, (double)INT64_MAX, invalid);
+			} else if (datatype == "INT4S") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT32_MAX, invalid);
 			} else if (datatype == "INT2S") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT16_MIN, (double)INT16_MAX, invalid);
+			} else if (datatype == "INT8U") {
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT64_MAX, invalid);
 			} else if (datatype == "INT4U") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT32_MAX, invalid);
 			} else if (datatype == "INT2U") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT16_MAX, invalid);
 			} else if (datatype == "INT1U") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, 255.0, invalid);
+			} else if (datatype == "INT1S") {
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, -128.0, 127.0, invalid);
 			} else {
 				minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
+			}
+			if (source[0].has_scale_offset[i]) {
+				vmin = vmin * source[0].scale[i] + source[0].offset[i];
+				vmax = vmax * source[0].scale[i] + source[0].offset[i];
 			}
 			if (!std::isnan(vmin)) {
 				if (std::isnan(source[0].range_min[i])) {
@@ -759,7 +880,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		}
 	}
 
-	int hasNA=0;
+	int hasNA = 0;
 	double na = source[0].gdalconnection->GetRasterBand(1)->GetNoDataValue(&hasNA);
 	if ((datatype == "FLT8S") || (datatype == "FLT4S")) {
 		if (hasNA) {
@@ -770,7 +891,17 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		}
 		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vals[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL );
 	} else {
-		if (datatype == "INT4S") {
+		if (datatype == "INT8S") {
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 5
+			setError("cannot write INT8S values with GDAL < 3.5");
+			GDALClose( source[0].gdalconnection );
+			return false;	
+#else 			
+			std::vector<int64_t> vv;
+			tmp_min_max_na(vv, vals, na, (double)INT64_MIN, (double)INT64_MAX);
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int64, nl, NULL, 0, 0, 0, NULL );
+#endif
+		} else if (datatype == "INT4S") {
 			//min_max_na(vals, na, (double)INT32_MIN, (double)INT32_MAX);
 			//std::vector<int32_t> vv(vals.begin(), vals.end());
 			std::vector<int32_t> vv;
@@ -782,6 +913,27 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			std::vector<int16_t> vv;
 			tmp_min_max_na(vv, vals, na, (double)INT16_MIN, (double)INT16_MAX);
 			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int16, nl, NULL, 0, 0, 0, NULL );
+		} else if (datatype == "INT1S") {
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 7
+			setError("cannot write INT1S values with GDAL < 3.7");
+			GDALClose( source[0].gdalconnection );
+			return false;	
+#else 			
+			std::vector<int8_t> vv;
+			tmp_min_max_na(vv, vals, na, -127.0, 128.0);
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int8, nl, NULL, 0, 0, 0, NULL );
+#endif
+
+		} else if (datatype == "INT8U") {
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 5
+			setError("cannot write INT8U values with GDAL < 3.5");
+			GDALClose( source[0].gdalconnection );
+			return false;	
+#else 			
+			std::vector<uint64_t> vv;
+			tmp_min_max_na(vv, vals, na, 0, (double)UINT64_MAX);
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_UInt64, nl, NULL, 0, 0, 0, NULL );
+#endif			
 		} else if (datatype == "INT4U") {
 			//min_max_na(vals, na, 0, (double)INT32_MAX * 2 - 1);
 			//std::vector<uint32_t> vv(vals.begin(), vals.end());
@@ -819,7 +971,6 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 
 bool SpatRaster::writeStopGDAL() {
 
-
 	GDALRasterBand *poBand;
 	source[0].hasRange.resize(nlyr());
 	std::string datatype = source[0].dtype;
@@ -838,7 +989,7 @@ bool SpatRaster::writeStopGDAL() {
 					mx = adfMinMax[1];
 				} else {
 					poBand->ComputeStatistics(gdal_approx, &mn, &mx, &av, &sd, NULL, NULL);
-				}
+				}		
 				poBand->SetStatistics(mn, mx, av, sd);
 			} else {
 				if (datatype.substr(0,3) == "INT") {
@@ -856,12 +1007,14 @@ bool SpatRaster::writeStopGDAL() {
 		}
 	}
 
-	if (copy_driver != "") {
+	if (copy_driver.empty()) {
+		GDALClose( (GDALDatasetH) source[0].gdalconnection );
+	} else {
 		GDALDataset *newDS;
 		GDALDriver *poDriver;
 		char **papszOptions = set_GDAL_options(copy_driver, 0.0, false, gdal_options);
 		poDriver = GetGDALDriverManager()->GetDriverByName(copy_driver.c_str());
-		if (copy_filename == "") {
+		if (copy_filename.empty()) {
 			newDS = poDriver->CreateCopy(source[0].filename.c_str(),
 				source[0].gdalconnection, FALSE, papszOptions, NULL, NULL);
 			if( newDS == NULL )  {
@@ -903,8 +1056,6 @@ bool SpatRaster::writeStopGDAL() {
 			GDALClose( (GDALDatasetH) newDS );
 		}
 		CSLDestroy(papszOptions);
-	} else {
-		GDALClose( (GDALDatasetH) source[0].gdalconnection );
 	}
 	source[0].hasValues = true;
 
@@ -992,4 +1143,3 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 	}
 	return true;
 }
-

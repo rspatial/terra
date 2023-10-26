@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -168,9 +168,9 @@ bool SpatSRS::is_same(SpatSRS other, bool ignoreempty) {
 
 bool SpatSRS::is_same(std::string other, bool ignoreempty) {
 
-	if (wkt == "" && other == "") {
+	if (wkt.empty() && other.empty()) {
 		return true;
-	} else if (wkt == "" || other == "") {
+	} else if (wkt.empty() || other.empty()) {
 		return ignoreempty ? true : false;
 	}
 
@@ -205,7 +205,7 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 	proj4="";
 	lrtrim(txt);
 
-	if (txt == "") {
+	if (txt.empty()) {
 		return true;
 	} else {
 		OGRSpatialReference srs;
@@ -233,7 +233,7 @@ bool wkt_from_string(std::string input, std::string& wkt, std::string& msg) {
 	lrtrim(input);
 	wkt="";
 	bool success = false;
-	if (input != "") {
+	if (!input.empty()) {
 		OGRSpatialReference srs;
 		OGRErr e = srs.SetFromUserInput(input.c_str());
 		if (is_ogr_error(e, msg)) {
@@ -323,7 +323,25 @@ std::vector<double> SpatVector::project_xy(std::vector<double> x, std::vector<do
 }
 
 
-SpatVector SpatVector::project(std::string crs) {
+void transform_coordinates_partial(std::vector<double> &x, std::vector<double> &y, OGRCoordinateTransformation *poCT) {
+	std::vector<double> X, Y;
+	X.reserve(x.size());
+	Y.reserve(y.size());
+	std::vector<size_t> fails;
+	for (size_t i=0; i < x.size(); i++) {
+		if( poCT->Transform( 1, &x[i], &y[i] ) ) {
+			X.push_back(x[i]);
+			Y.push_back(y[i]);
+		}
+	}
+	x = X;
+	y = Y;
+}
+
+
+SpatVector SpatVector::project(std::string crs, bool partial) {
+
+	bool remove_empty = false;
 
 	SpatVector s;
 	s.reserve(size());
@@ -356,37 +374,92 @@ SpatVector SpatVector::project(std::string crs) {
 		s.setError( "Cannot do this transformation" );
 		return(s);
 	}
-
+	
 	s.setSRS(crs);
 	s.df = df;
 	std::vector<unsigned> keeprows;
-
-
-	for (size_t i=0; i < size(); i++) {
-		SpatGeom g = getGeom(i);
-		SpatGeom gg;
-		gg.gtype = g.gtype;
-		for (size_t j=0; j < g.size(); j++) {
-			SpatPart p = g.getPart(j);
-			if (poCT->Transform(p.x.size(), &p.x[0], &p.y[0]) ) {
-				SpatPart pp(p.x, p.y);
-				if (p.hasHoles()) {
-					for (size_t k=0; k < p.nHoles(); k++) {
-						SpatHole h = p.getHole(k);
-						if (poCT->Transform(h.x.size(), &h.x[0], &h.y[0])) {
-							pp.addHole(h.x, h.y);
+	
+	if (partial) {
+		poCT->SetEmitErrors(false);
+		std::string gt = type();
+		size_t minpts = gt == "polygons" ? 3 : (gt == "lines" ? 2 : 1);
+		for (size_t i=0; i < size(); i++) {
+			SpatGeom g = getGeom(i);
+			SpatGeom gg;
+			gg.gtype = g.gtype;
+			bool empty = true;
+			for (size_t j=0; j < g.size(); j++) {
+				SpatPart p = g.getPart(j);
+				transform_coordinates_partial(p.x, p.y, poCT);	
+				if (p.x.size() >= minpts) {
+					SpatPart pp(p.x, p.y);
+					if (p.hasHoles()) {
+						for (size_t k=0; k < p.nHoles(); k++) {
+							SpatHole h = p.getHole(k);
+							transform_coordinates_partial(h.x, h.y, poCT);				
+							if (h.x.size() >= 3) {
+								pp.addHole(h.x, h.y);
+							}
 						}
 					}
+					gg.addPart(pp);
+					empty = false;
 				}
-				gg.addPart(pp);
+			}
+			if (empty) {
+				if (remove_empty) {
+					keeprows.push_back(i);
+				} else {
+					s.addGeom(gg);
+				}
+			} else {	
+				s.addGeom(gg);
 			}
 		}
-		keeprows.push_back(i);
-		s.addGeom(gg);
+		
+		
+	} else {
+
+		for (size_t i=0; i < size(); i++) {
+			SpatGeom g = getGeom(i);
+			SpatGeom gg;
+			gg.gtype = g.gtype;
+			bool empty = true;
+			for (size_t j=0; j < g.size(); j++) {
+				SpatPart p = g.getPart(j);
+				if (poCT->Transform(p.x.size(), &p.x[0], &p.y[0]) ) {
+					SpatPart pp(p.x, p.y);
+					if (p.hasHoles()) {
+						for (size_t k=0; k < p.nHoles(); k++) {
+							SpatHole h = p.getHole(k);
+							if (poCT->Transform(h.x.size(), &h.x[0], &h.y[0])) {
+								pp.addHole(h.x, h.y);
+							}
+						}
+					}
+					gg.addPart(pp);
+					empty = false;
+				}
+			}
+			if (empty) {
+				if (remove_empty) {
+					keeprows.push_back(i);
+				} else {
+					s.addGeom(gg);
+				}
+			} else {
+				s.addGeom(gg);
+			}
+		}
 	}
-	s.df = df.subset_rows(keeprows);
+	
 	OCTDestroyCoordinateTransformation(poCT);
 
+	if (remove_empty) {
+		s.df = df.subset_rows(keeprows);
+	} else {
+		s.df = df;		
+	}
 	#endif
 	return s;
 }

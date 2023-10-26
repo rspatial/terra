@@ -1,5 +1,5 @@
 
-sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=FALSE, xy=FALSE, ext=NULL) {
+sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL) {
 	if (!is.null(ext)) {
 		x <- crop(x, ext)
 	}
@@ -14,23 +14,29 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, c
 	} else {
 		i <- sample.int(nrow(res), size, prob=res[,ncol(res)], replace=replace)
 	}
-	res <- res[i,]
+	res <- res[i, , drop=FALSE]
+	if (!values) res <- res[ , 1:(cells + 2*(xy | as.points)), drop=FALSE]
 	if (as.points) {
 		res <- vect(res, c("x", "y"), crs=crs(x))
 		if (!xy) {
 			res$x <- NULL
 			res$y <- NULL
 		}
-	} else if (as.df) {
-		res <- data.frame(res)
-	}
+	} #else if (as.df) {
+		#res <- data.frame(res)
+	#}
 	res
 }
+
 
 sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, warn=TRUE) {
 	if (!is.null(ext)) {
 		x <- crop(x, ext)
+		if (!is.null(weights)) {
+			weights <- crop(weights, ext)
+		}
 	}
+	
 	if (!is.null(weights)) {
 		if (!inherits(weights, "SpatRaster")) {
 			error("spatSample", "weights must be a SpatRaster")
@@ -93,15 +99,24 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 
 
 
+sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=5, weights=NULL) {
 
-sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=5, weights=NULL) {
+	if (nlyr(x) > 1) {
+		x <- x[[1]]
+		warn("spatSample", "only the first layer of x is used")
+	}
+	if (!hasValues(x)) {
+		error("spatSample", "x has no values")
+	}
 
 	lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
+
 	if (blocks(x, n=4)$n == 1) {
-		res <- sampleStratMemory(x, size, replace, lonlat, ext)
+	
+		res <- sampleStratMemory(x, size, replace, lonlat, ext, weights, warn)
+
 	} else {
 
-		#f <- freq(x)
 		f <- unique(x)[,1]
 		exp <- max(1, exp)
 		ss <- exp * size * length(f)
@@ -127,7 +142,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			for (i in 1:length(f)) {
 				r <- x == f[i]
 				r <- mask(weights, r, maskvalue=TRUE, inverse=TRUE)
-				sr[[i]] <- sampleWeights(r, size, replace=replace, cells=TRUE, ext=ext)[,1]
+				sr[[i]] <- sampleWeights(r, size, replace=replace, values=FALSE, cells=TRUE, ext=ext)
 			}
 			sr <- unlist(sr)
 			sr <- cbind(cell=sr, extract(x, sr))
@@ -160,6 +175,10 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 		pts <- xyFromCell(x, res[,1])
 		res <- cbind(res[,1,drop=FALSE], pts, res[,2,drop=FALSE])
 	}
+	if (!values) {
+		res <- res[,1:(1 + 2*(xy|as.points)), drop=FALSE]
+	}
+
 	if (as.points) {
 		if (!xy) {
 			pts <- xyFromCell(x, res[,1])
@@ -314,6 +333,8 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 
 
 set_factors <- function(x, ff, cts, asdf) {
+	if (!asdf) return(x)
+	
 	if (any(ff)) {
 		x <- data.frame(x)
 		for (i in which(ff)) {
@@ -325,45 +346,118 @@ set_factors <- function(x, ff, cts, asdf) {
 				x[[i]] <- ct[m,2]
 			}
 		}
-	} else if (asdf) {
-		x <- data.frame(x)
 	}
-	x
+	data.frame(x)
 }
 
 
-setMethod("spatSample", signature(x="SpatRaster"),
-	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5) {
-		exp <- max(c(1, exp), na.rm=TRUE)
-		size <- round(size)
-		if (any(size < 1)) {
-			error("spatSample", "sample size must be a positive integer")
+
+.sampleCellsExhaustive <- function(x, size, replace, ext=NULL, weights=NULL, warn=TRUE) {
+
+	if (!is.null(ext)) {
+		x <- crop(x, ext)
+	}
+	rx <- rast(x)
+	x <- cells(x)
+	if (length(x) < size) {
+		if (!replace) {
+			warn("spatSample", "fewer samples than requested are available")
+			return(x)
 		}
-		if ((size > ncell(x)) & (!replace)) {
-			size <- ncell(x)
+		size <- length(x)
+	}
+	
+	if (!is.null(weights)) {
+		if (!inherits(weights, "SpatRaster")) {
+			error("spatSample", "weights must be a SpatRaster")
+		}
+		weights <- weights[[1]]
+		if (!is.null(ext)) {
+			weights <- crop(weights, ext)
+		}
+		if (!compareGeom(x, weights)) {
+			error("spatSample", "geometry of weights does not match the geometry of x")
+		}
+		weights <- weights[x]
+		s <- sample.int(x, size, prob=weights, replace=replace)
+
+	} else if (is.lonlat(rx)) {	
+		y <- xyFromCell(rx, x)[,2]
+		weights <- abs(cos(pi * y / 360))
+		s <- sample(x, size, prob=weights, replace=replace)
+	} else {
+		s <- sample(x, size, replace=replace)
+	}
+	s
+}
+
+sampleRaster <- function(x, size, method, replace, ext=NULL, warn) {
+#	hadWin <- hasWin <- FALSE
+	if (!is.null(ext)) {
+#		hasWin <- TRUE
+#		hadWin <- window(x)
+#		oldWin <- ext(x)
+		w <- intersect(ext(x), ext(ext))		
+		x <- deepcopy(x)
+		window(x) <- w
+	}
+	if (method == "regular") {
+		if (length(size) > 1) {
+			x@cpp <- x@cpp$sampleRowColRaster(size[1], size[2], warn[1])
+		} else {
+			x@cpp <- x@cpp$sampleRegularRaster(size)
+		}
+	} else if (method == "random") {
+		x@cpp <- x@cpp$sampleRandomRaster(size, replace, .seed())
+	} else {
+		error("spatSample", "method must be 'regular' or 'random' if as.raster=TRUE")
+	}
+#	if (hasWin) {
+#		window(x) <- NULL
+#		if (any(hadWin)) {
+#			window(x) <- oldWin
+#		}
+#	}
+	messages(x, "spatSample")
+}
+	
+
+
+setMethod("spatSample", signature(x="SpatRaster"),
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE) {
+
+		if (!as.points) {
+			if (!(values || cells || xy)) {
+				error("spatSample", "at least one of 'values', 'cells', or 'xy' must be TRUE; or 'as.points' must be TRUE")
+			}
 		}
 
+		exp <- max(c(1, exp), na.rm=TRUE)
+		size <- round(size)
+		if (isTRUE(any(size < 1)) || isTRUE(any(is.na(size)))) {
+			error("spatSample", "sample size must be a positive integer")
+		}
 		method <- match.arg(tolower(method), c("random", "regular", "stratified", "weights"))
+
+		if ((!replace) && (method != "regular")) {
+			if (length(size) > 1) {
+				error("spatSample", "sample size must be a single number")
+			}
+			if (warn && (size > ncell(x))) {
+				warn("spatSample", "requested sample size is larger than the number of cells")
+				size <- ncell(x)
+			}
+		}
+
+		if (as.raster) return(sampleRaster(x, size, method, replace, ext, warn))
+
 		if (method == "stratified") {
-			if (as.raster) {
-				error("spatSample", "as.raster is not valid for method='stratified'")
-			}
-			if (nlyr(x) > 1) {
-				x <- x[[1]]
-				warn("spatSample", "only the first layer of x is used")
-			}
-			if (!hasValues(x)) {
-				error("spatSample", "x has no values")
-			}
-			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights) )
+			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, values=values, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights) )
 		} else if (!is.null(weights)) {
 			error("spatSample", "argument weights is only used when method='stratified'")
 		}
 
 		if (method == "weights") {
-			if (as.raster) {
-				error("spatSample", "as.raster is not valid for method='weights'")
-			}
 			if (nlyr(x) > 1) {
 				x <- x[[1]]
 				warn("spatSample", "only the first layer of x is used")
@@ -371,34 +465,39 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			if (!hasValues(x)) {
 				error("spatSample", "x has no values")
 			}
-			out <- try(sampleWeights(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext) )
+			out <- try(sampleWeights(x, size, replace=replace, as.df=as.df, values=values, as.points=as.points, cells=cells, xy=xy, ext=ext) )
 			if (inherits(out, "try-error")) {
 				error("spatSample", "weighted sample failed. Perhaps the data set is too big")
 			}
 			return (out)
 		}
 
-		if (!as.raster) {
-			ff <- is.factor(x)
-			lv <- levels(x)
-		}
+		ff <- is.factor(x)
+		lv <- levels(x)
 
 		if (cells || xy || as.points) {
 
 			size <- size[1]
-			cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
+			if (exhaustive && (method=="random") && na.rm) {
+				cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
+			} else {
+				cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
+			}
+			
 			if (method == "random") {
-				if (length(cnrs) < size && warn) {
+				if ((length(cnrs) < size) && warn) {
 					warn("spatSample", "fewer cells returned than requested")
 				} else if (length(cnrs) > size) {
 					cnrs <- cnrs[1:size]
 				}
 			}
 			out <- NULL
+			
 			if (cells) {
 				out <- matrix(cnrs, ncol=1)
 				colnames(out) <- "cell"
 			}
+			
 			if (xy) {
 				out <- cbind(out, xyFromCell(x, cnrs))
 			}
@@ -424,47 +523,37 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 			return(out)
 		}
-		if (!hasValues(x) & !as.raster) {
+		if (!hasValues(x)) {
 			error("spatSample", "SpatRaster has no values")
 		}
 
-		method <- tolower(method)
-		stopifnot(method %in% c("random", "regular"))
-		if (!replace) size <- pmin(ncell(x), size)
-
+		#method <- tolower(method)
+		#stopifnot(method %in% c("random", "regular"))
+	
 		if (!is.null(ext)) x <- crop(x, ext)
 
 		if (method == "regular") {
-			if (as.raster) {
-				if (length(size) > 1) {
-					x@ptr <- x@ptr$sampleRowColRaster(size[1], size[2])
-				} else {
-					x@ptr <- x@ptr$sampleRegularRaster(size)
-				}
-				return (messages(x, "spatSample"))
+			opt <- spatOptions()
+			if (length(size) > 1) {
+				v <- x@cpp$sampleRowColValues(size[1], size[2], opt)
 			} else {
-				opt <- spatOptions()
-				if (length(size) > 1) {
-					v <- x@ptr$sampleRowColValues(size[1], size[2], opt)
-				} else {
-					v <- x@ptr$sampleRegularValues(size, opt)
-				}
-				x <- messages(x, "spatSample")
-				if (length(v) > 0) {
-					v <- do.call(cbind, v)
-					colnames(v) <- names(x)
-				}
-				v <- set_factors(v, ff, lv, as.df)
-				return(v)
+				v <- x@cpp$sampleRegularValues(size, opt)
 			}
+			x <- messages(x, "spatSample")
+			if (length(v) > 0) {
+				v <- do.call(cbind, v)
+				colnames(v) <- names(x)
+			}
+			v <- set_factors(v, ff, lv, as.df)
+			return(v)
 		} else { # random
 			size <- size[1]
-			if (as.raster) {
-				x@ptr <- x@ptr$sampleRandomRaster(size, replace, .seed())
-				x <- messages(x, "spatSample")
-				return(x);
+
+			if (exhaustive && na.rm) {
+				cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
+				out <- x[cnrs]	
 			} else {
-				#v <- x@ptr$sampleRandomValues(size, replace, seed)
+				#v <- x@cpp$sampleRandomValues(size, replace, seed)
 				if (size > 0.75 * ncell(x)) {
 					if (na.rm) {
 						out <- stats::na.omit(values(x))
@@ -490,7 +579,8 @@ setMethod("spatSample", signature(x="SpatRaster"),
 						if ((i>1) && (!replace)) {
 							scells <- unique(scells)
 						}
-						out <- stats::na.omit(x[scells])
+						out <- extractCells(x, scells, raw=!as.df)   
+						out <- stats::na.omit(out)
 						if (nrow(out) >= size) {
 							out <- out[1:size, ,drop=FALSE]
 							attr(out, "na.action") <- NULL
@@ -500,17 +590,16 @@ setMethod("spatSample", signature(x="SpatRaster"),
 					}
 				} else {
 					scells <- .sampleCells(x, size, method, replace)
-					out <- x[scells]
+					out <- extractCells(x, scells, raw=!as.df)   
 				}
 				if (NROW(out) < size) {
 					if (warn) warn("spatSample", "fewer values returned than requested")
-				} else if (method == "random") {
-					if (is.null(dim(out))) {
-						out = out[1:size]
-					} else {
-						out = out[1:size, ,drop=FALSE]
-					}
+				} else if (is.null(dim(out))) {
+					out = out[1:size]
+				} else {
+					out = out[1:size, ,drop=FALSE]
 				}
+				#out <- set_factors(out, ff, lv, as.df)
 				return(out)
 			}
 		}
@@ -530,9 +619,9 @@ setMethod("spatSample", signature(x="SpatExtent"),
 		size <- round(size)
 		stopifnot(size > 0)
 		if (method=="random") {
-			s <- x@ptr$sampleRandom(size, lonlat, .seed())
+			s <- x@cpp$sampleRandom(size, lonlat, .seed())
 		} else {
-			s <- x@ptr$sampleRegular(size, lonlat)
+			s <- x@cpp$sampleRegular(size, lonlat)
 		}
 		s <- do.call(cbind, s)
 		colnames(s) <- c("x", "y")
@@ -552,7 +641,7 @@ setMethod("spatSample", signature(x="SpatExtent"),
 	cell <- cellFromXY(r, xy)
     uc <- unique(stats::na.omit(cell))
 
-	chess <- trim(chess)
+	chess <- trimws(chess)
 	if (chess != "") {
 		chess <- match.arg(tolower(chess), c("white", "black"))
 		nc <- ncol(r)
@@ -600,7 +689,7 @@ setMethod("spatSample", signature(x="SpatExtent"),
 
 
 #coordinates <- function(x) {
-#	do.call(cbind, x@ptr$coordinates())
+#	do.call(cbind, x@cpp$coordinates())
 #}
 
 get_field_name <- function(x, nms, sender="") {
@@ -624,6 +713,7 @@ get_field_name <- function(x, nms, sender="") {
 setMethod("spatSample", signature(x="SpatVector"),
 	function(x, size, method="random", strata=NULL, chess="") {
 		method = match.arg(tolower(method), c("regular", "random"))
+		size <- round(size)
 		stopifnot(size > 0)
 		gtype <- geomtype(x)
 		if (gtype == "polygons") {
@@ -651,12 +741,14 @@ setMethod("spatSample", signature(x="SpatVector"),
 				r <- do.call(rbind, r)
 				return(r)
 			}
+			out <- vect()
 			if (length(size) == 1) {
-				x@ptr = x@ptr$sample(size, method[1], .seed())
+				out@cpp <- x@cpp$sample(size, method[1], .seed())
 			} else {
-				x@ptr = x@ptr$sampleGeom(size, method[1], .seed())
+				out@cpp <- x@cpp$sampleGeom(size, method[1], .seed())	
 			}
-			return(messages(x))
+			messages(x, "spatSample")
+			return(messages(out, "spatSample"))
 		} else if (grepl(gtype, "points")) {
 			if (!is.null(strata)) {
 				if (inherits(strata, "SpatRaster")) {

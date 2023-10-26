@@ -28,7 +28,7 @@ Compute correlation, (weighted) covariance, or similar summary statistics that c
     
   \item{na.rm}{logical. Should missing values be removed?}
   
-  \item{maxcell}{postive integer. The number of cells to be regularly sampled. Only used when \code{fun} is a function}
+  \item{maxcell}{positive integer. The number of cells to be regularly sampled. Only used when \code{fun} is a function}
 
   \item{...}{additional arguments for \code{fun} (if it is a proper function)}
 }

@@ -5,6 +5,8 @@
 \alias{crs}
 \alias{crs<-}
 
+\alias{crs,SpatExtent-method}
+
 \alias{crs,SpatRaster-method}
 \alias{crs,SpatRasterDataset-method}
 \alias{crs<-,SpatRaster-method}
@@ -12,10 +14,12 @@
 
 \alias{crs,SpatVector-method}
 \alias{crs,SpatVectorProxy-method}
+\alias{crs,SpatVectorCollection-method}
 \alias{crs<-,SpatVector-method}
 \alias{crs<-,SpatVector,ANY-method}
 
 \alias{crs,sf-method}
+\alias{crs,character-method}
 
 \title{ Get or set a coordinate reference system }
 
@@ -30,15 +34,18 @@ Setting a new CRS does not change the data itself, it just changes the label. So
 
 \S4method{crs}{SpatVector}(x, proj=FALSE, describe=FALSE, parse=FALSE)
 
-\S4method{crs}{SpatRaster}(x)<-value
+\S4method{crs}{character}(x, proj=FALSE, describe=FALSE, parse=FALSE)
 
-\S4method{crs}{SpatVector}(x)<-value
+\S4method{crs}{SpatRaster}(x, warn=FALSE)<-value
+
+\S4method{crs}{SpatVector}(x, warn=FALSE)<-value
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{proj}{logical. If \code{TRUE} the crs is returned in PROJ-string notation}
   \item{describe}{logical. If \code{TRUE} the name, EPSG code, and the name and extent of the area of use are returned if known}
+  \item{warn}{logical. If \code{TRUE}, a message is printed when the object already has a non-empty crs}
   \item{value}{character string describing a coordinate reference system. This can be in a WKT format, as a <authority:number> code such as "EPSG:4326", or a PROJ-string format such as "+proj=utm +zone=12" (see Note)}
   \item{parse}{logical. If \code{TRUE}, wkt parts are parsed into a vector (each line becomes an element)}
 }
@@ -66,9 +73,11 @@ crs(r, describe=TRUE, proj=TRUE)
 crs(r) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 crs(r)
 
-# You can also use epsg codes
+# You can use epsg codes
 crs(r)  <- "epsg:25831"
 crs(r, describe=TRUE)$area
+
+crs("epsg:25831", describe=TRUE)
 }
 
 \keyword{ spatial }

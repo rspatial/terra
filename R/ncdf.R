@@ -6,7 +6,7 @@
 		return(x)
 	}
 	fname <- f
-	zvar <- varnames(x)
+	zvar <- varnames(x)[1]
 
 	dims <- 1:3
 
@@ -54,11 +54,7 @@
 
 
 
-.write_cdf <- function(x, filename, overwrite=FALSE, zname="time", prec="float", compression=NA, missval, ...) {
-
-	dots <- list(...)
-	force_v4 <- isTRUE(dots$force_v4)
-	verbose  <- isTRUE(dots$verbose)
+.write_cdf <- function(x, filename, overwrite=FALSE, zname="time", atts="", gridmap="", prec="float", compression=NA, missval, force_v4=TRUE, verbose=FALSE, ...) {
 
 	n <- length(x)
 	y <- x[1]
@@ -101,19 +97,28 @@
 	ncvars <- list()
 	cal <- NA
 	for (i in 1:n) {
-		if ((nl[i] > 1) || (x[i]@ptr$hasTime)) {
+		if ((nl[i] > 1) || (x[i]@cpp$hasTime)) {
 			y <- x[i]
-			if (y@ptr$hasTime) {
-				zv <- y@ptr$time
-				tstep <- y@ptr$timestep
+			if (y@cpp$hasTime) {
+				zv <- y@cpp$time
+				tstep <- y@cpp$timestep
 				cal <- "standard"
 				if (tstep == "seconds") {
 					zunit <- "seconds since 1970-1-1 00:00:00"
-					cal <- "standard"
 				} else if (tstep == "days") {
 					zunit <- "days since 1970-1-1"
 					zv <- zv / (24 * 3600)
-					cal <- "standard"
+				} else if (tstep == "months") {
+					zunit <- "months"
+					zv <- time(y)
+				} else if (tstep == "yearmonths") {
+					zunit <- "months since 1970"
+					tm <- time(y) - 1970
+					yr <- tm %/% 1
+					zv <- (yr*12) + round(12 * (tm %% 1))
+				} else if (tstep == "years") {
+					zunit <- "years since 1970"
+					zv <- time(y) - 1970
 				} else {
 					zunit <- "unknown"
 				}
@@ -130,22 +135,41 @@
 	}
 
 	ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
-
+	
 	ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
 	on.exit(ncdf4::nc_close(ncobj))
 
+	haveprj <- FALSE
 	prj <- crs(x[1])
 	prj <- gsub("\n", "", prj)
 	if (prj != "") {
+		haveprj <- TRUE
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "crs_wkt", prj, prec="text")
 		# need for older gdal?
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
-		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", .proj4(x[1]), prec='text')
+		prj <- .proj4(x[1])
+		if (prj != "") {
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", prj, prec='text')
+		}
+		prj <- crs(x[1], describe=TRUE)[1,3]
+		if (!is.na(prj)) {
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "epsg_code", prj, prec='text')
+		}
 	}
+	gridmap <- grep("=", gridmap, value=TRUE)
+	if (length(gridmap)>0) {
+		gridmap <- strsplit(gridmap, "=")
+		for (i in 1:length(gridmap)) {		
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], gridmap[[i]][1], gridmap[[i]][2], prec="text")
+		}
+		haveprj <- TRUE
+	}
+
+
 	e <- ext(x)
 	rs <- res(x)
 	gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
-	ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "GeoTransform", gt, prec="text")
+	ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "geotransform", gt, prec="text")
 
 	opt <- spatOptions()
 	for (i in 1:n) {
@@ -155,50 +179,81 @@
 		if (length(ncvars[[1]]$dim) == 3) {
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
+				d[is.nan(d)] <- NA
 				d <- array(d, c(nc, b$nrows[j], nl[i]))
 				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j], 1), count=c(nc, b$nrows[j], nl[i]))
 			}
 		} else {
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
+				d[is.nan(d)] <- NA
 				d <- matrix(d, ncol=b$nrows[j])
 				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]), count=c(nc, b$nrows[j]))
 			}
 		}
 		readStop(y)
-		if (prj != "") {
+		if (haveprj) {
 			ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
 		}
 	}
 
 	ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
 	pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
-	ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
+	ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
 	ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
 
+	atts <- grep("=", atts, value=TRUE)
+	if (length(atts) > 1) {
+		atts <- strsplit(atts, "=")
+		for (i in 1:length(atts)) {
+			ncdf4::ncatt_put(ncobj, 0, atts[[i]][1], atts[[i]][2], prec="text")
+		}
+	}
 	TRUE
 }
 
 
 
 setMethod("writeCDF", signature(x="SpatRaster"),
-	function(x, filename, varname, longname="", unit="", ...) {
+	function(x, filename, varname, longname="", unit="", split=FALSE, ...) {
 		filename <- trimws(filename)
-		stopifnot(filename != "")
-		if (missing(varname)) {
-			varname <- tools::file_path_sans_ext(basename(filename))
+		if (length(filename) > 1) {
+			if (length(filename) != nlyr(x)) {
+				stop("either provide a single filename, or the same number as nlyr(x)")
+			}
 		}
-		varnames(x) <- varname
-		longnames(x) <- longname
-		units(x) <- unit
-		x <- sds(x)
-		invisible( writeCDF(x, filename=filename, ...) )
+		stopifnot(filename != "")
+		if (split) {
+			y <- sds(as.list(x))
+			names(y) <- names(x)
+			if (!missing(varname)) {
+				varnames(y) <- varname
+			}
+			if (!missing(longname)) {
+				longnames(y) <- longname
+			}
+			if (!missing(unit)) {
+				units(y) <- unit
+			} else {
+				units(y) <- units(x)
+			}
+			invisible( writeCDF(y, filename=filename, ...) )
+		} else {
+			if (missing(varname)) {
+				varname <- tools::file_path_sans_ext(basename(filename))
+			}
+			varnames(x) <- varname
+			longnames(x) <- longname
+			units(x) <- unit
+			x <- sds(x)
+			invisible( writeCDF(x, filename=filename, ...) )
+		}
 	}
 )
 
 
 setMethod("writeCDF", signature(x="SpatRasterDataset"),
-	function(x, filename, overwrite=FALSE, zname="time", prec="float", compression=NA, missval, ...) {
+	function(x, filename, overwrite=FALSE, zname="time", atts="", gridmap="", prec="float", compression=NA, missval, ...) {
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		xt  <- tools::file_ext(filename)
@@ -208,7 +263,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		if (file.exists(filename) & !overwrite) {
 			error("writeCDF", "file exists, use 'overwrite=TRUE' to overwrite it")
 		}
-		ok <- .write_cdf(x, filename, zname=zname, prec=prec, compression=compression, missval=missval, ...)
+		ok <- .write_cdf(x, filename, zname=zname, atts=atts, gridmap=gridmap, prec=prec, compression=compression, missval=missval, ...)
 		if (ok) {
 			if (length(x) > 1) {
 				out <- sds(filename)

@@ -13,10 +13,10 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 }
 
 \usage{
-\S4method{project}{SpatVector}(x, y)
+\S4method{project}{SpatVector}(x, y, partial = FALSE)
 
-\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, 
-		gdal=TRUE, res=NULL, origin=NULL, threads=FALSE, filename="", ...)
+\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, res=NULL, 
+	origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)
 
 \S4method{project}{SpatExtent}(x, from, to)
 
@@ -24,12 +24,14 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatVector}
+  \item{x}{SpatRaster, SpatVector, SpatExtent or matrix (with x and y columns) whose coordinates to project}
   \item{y}{if (\code{x} is a SpatRaster, the preferred approach is for \code{y} to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (CRS) description. 
     
   You can use the following formats to define coordinate reference systems: WKT,  PROJ.4 (e.g., \code{+proj=longlat +datum=WGS84}), or an EPSG code (e.g., \code{"epsg:4326"}). But note that the PROJ.4 notation has been deprecated, and you can only use it with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored. 
   
   If \code{x} is a SpatVector, you can provide a crs definition as discussed above, or any other object from which such a crs can be extracted with \code{\link{crs}}}
+
+  \item{partial}{logical. If \code{TRUE}, geometries that can only partially be represented in the output crs are included in the output}
   
   \item{method}{character. Method used for estimating the new cell values of a SpatRaster. One of: 
   
@@ -40,12 +42,16 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 	\code{cubic}: cubic interpolation.
 
 	\code{cubicspline}: cubic spline interpolation.
+
+	\code{lanczos}: Lanczos windowed sinc resampling.
+
+	\code{sum}: the weighted sum of all non-NA contributing grid cells.	
+	
+	\code{min, q1, med, q3, max, average, mode, rms}: the minimum, first quartile, median, third quartile, maximum, mean, mode, or root-mean-square value of all non-NA contributing grid cells.	
   }
 
   \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent (see example with Robinson projection)}
   \item{align}{logical. If \code{TRUE}, and \code{y} is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of \code{x} is included}
-
-  \item{gdal}{logical. If \code{TRUE} the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the \code{near} and \code{bilinear} algorithms are available for the internal algorithm}
 
   \item{res}{numeric. Can be used to set the resolution of the output raster if \code{y} is a CRS}
 
@@ -56,6 +62,10 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   \item{filename}{character. Output filename}
   
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+
+  \item{use_gdal}{logical. If \code{TRUE} the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the \code{near} and \code{bilinear} algorithms are available for the internal algorithm}
+
+  \item{by_util}{logical. If \code{TRUE} and \code{gdal=TRUE}, the GDAL warp utility is used}
 
   \item{from}{character. Coordinate reference system of \code{x}}
 
@@ -70,7 +80,7 @@ SpatVector or SpatRaster
 \seealso{\code{\link{crs}}, \code{\link{resample}}}
 
 \note{
-The PROJ.4 notation of coordinate reference systems has been partly deprecated in the GDAL/PROJ library that is used by this function. You can still use this notation, but *only* with the the WGS84 datum. Other datums are silently ignored. 
+The PROJ.4 notation of coordinate reference systems has been partly deprecated in the GDAL/PROJ library that is used by this function. You can still use this notation, but *only* with the WGS84 datum. Other datums are silently ignored. 
 
 Transforming (projecting) raster data is fundamentally different from transforming vector data. Vector data can be transformed and back-transformed without loss in precision and without changes in the values. This is not the case with raster data. In each transformation the values for the new cells are estimated in some fashion. Therefore, if you need to match raster and vector data for analysis, you should generally transform the vector data. 
 

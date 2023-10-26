@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -103,6 +103,12 @@ bool ends_on(std::string const &s, std::string const &end) {
 }
 
 
+std::string lower_case(std::string s) {
+	std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+	return s;
+}
+
+
 void lowercase(std::string &s) {
 	std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 }
@@ -122,7 +128,7 @@ bool is_in_vector(std::string s, std::vector<std::string> ss) {
 }
 
 
-int where_in_vector(std::string s, std::vector<std::string> ss, bool tolower) {
+int where_in_vector(std::string s, const std::vector<std::string> &ss, const bool &tolower) {
 	int i = -1;
 	if (tolower) lowercase(s);
 	auto it = std::find (ss.begin(), ss.end(), s);
@@ -243,7 +249,7 @@ std::string lrtrim_copy(std::string s) {
 void make_valid_names(std::vector<std::string> &s) {
     for (size_t i=0; i<s.size(); i++) {
         lrtrim(s[i]);
-        if (s[i] == "") s[i] = "X";
+        if (s[i].empty()) s[i] = "X";
         if (isdigit(s[i][0])) s[i] = "X" + s[i];
 //        if ((s[i][0] == ".") & (s[i].size() > 1)) {
 //			if (isdigit(s[i][1])) s[i] = "X" + s[i];

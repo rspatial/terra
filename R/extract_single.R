@@ -65,7 +65,11 @@ make_extract_index <- function(v, vmx, name="i") {
 	}
 
 	if (!compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
-		return (x[ext(i), drop=drop])
+		if (!drop) {
+			return(crop(x, i))
+		}
+		i <- cells(x, ext(i))
+		return (x[i, drop=drop])
 	}
 	if (drop) {
 		i <- which(values(i)==1)
@@ -131,16 +135,19 @@ make_extract_index <- function(v, vmx, name="i") {
 
 
 
-.extract_cell <- function(x, i, drop=TRUE) {
+.extract_cell <- function(x, i, drop=TRUE, raw=FALSE) {
 	if (!drop) {
 		rc <- rowColFromCell(x, i)
 		e <- ext_from_rc(x, min(rc[,1]), max(rc[,1]), min(rc[,2]), max(rc[,2]))
 		crop(x, e)
 	} else {
-		e <- x@ptr$extractCell(i-1)
+		e <- x@cpp$extractCell(i-1)
 		messages(x, "extract")
 		e <- do.call(cbind, e)
 		colnames(e) <- names(x)
+		if (raw) {
+			return(e)
+		}
 		.makeDataFrame(x, e)
 	}
 }
@@ -148,7 +155,7 @@ make_extract_index <- function(v, vmx, name="i") {
 
 .extract_cell_layer <- function(x, i, lyrs, drop) {
 	if (drop) {
-		e <- x@ptr$extractCell(i-1)
+		e <- x@cpp$extractCell(i-1)
 		messages(x, "extract")
 		e <- do.call(cbind, e)
 		colnames(e) <- names(x)

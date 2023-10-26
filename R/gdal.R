@@ -1,7 +1,7 @@
 
 
 fileBlocksize <- function(x) {
-	v <- x@ptr$getFileBlocksize()
+	v <- x@cpp$getFileBlocksize()
 	m <- matrix(v, ncol=2)
 	colnames(m) <- c("rows", "cols")
 	m
@@ -112,7 +112,8 @@ gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
 setMethod("describe", signature(x="character"),
 	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="") {
 
-		x <- .fullFilename(x[1], FALSE)
+		#x <- .fullFilename(x[1], FALSE)
+		x <- x[1]
 		if (meta) {
 			if (sds) {
 				return(.meta_sds(x, parse))

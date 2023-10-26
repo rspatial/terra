@@ -1,16 +1,39 @@
 
 setMethod("lines", signature(x="SpatRaster"),
 function(x, mx=10000, ...) {
+		reset.clip()
 		if(prod(dim(x)) > mx) {
 			error("lines", "too many lines (you can increase the value of mx or use as.polygons)")
 		}
-		v <- as.polygons(x, dissolve=FALSE, values=FALSE)
+		v <- as.polygons(x[[1]], dissolve=FALSE, values=FALSE)
 		lines(v, ...)
 	}
 )
 
+
+setMethod("points", signature(x="SpatRaster"),
+function(x, ...) {
+		reset.clip()
+		p <- as.points(x[[1]])
+		points(p, ...)
+	}
+)
+
+setMethod("polys", signature(x="SpatRaster"),
+function(x, mx=10000, dissolve=TRUE, ...) {
+		reset.clip()
+		if(prod(dim(x)) > mx) {
+			error("lines", "too many lines (you can increase the value of mx or use as.polygons)")
+		}
+		p <- as.polygons(x[[1]], dissolve=dissolve)
+		polys(p, ...)
+	}
+)
+
+
 setMethod("lines", signature(x="SpatVector"),
 	function(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)  {
+		reset.clip()
 		n <- nrow(x)
 		if (n == 0) return(invisible(NULL))
 		gtype <- geomtype(x)
@@ -29,7 +52,7 @@ setMethod("lines", signature(x="SpatVector"),
 			} else {
 				a <- as.vector(t(cbind(p1[,1], p2[,1], NA)))
 				b <- as.vector(t(cbind(p1[,2], p2[,2], NA)))
-				lines(cbind(a, b), col=col, lwd=lwd, lty=lty, alpha=alpha, ...)
+				lines(cbind(a, b), col=col, lwd=lwd, lty=lty, ...)
 			}
 		} else {
 			if (gtype != "polygons") {
@@ -37,16 +60,20 @@ setMethod("lines", signature(x="SpatVector"),
 			}
 			if ((length(col) == 1) && (length(lty)==1) && (length(lwd)==1)) {
 				col <- .getCols(1, col, alpha)
-				g <- x@ptr$linesNA()
+				g <- x@cpp$linesNA()
 				names(g) <- c("x", "y")
 				graphics::plot.xy(g, type="l", lty=lty, col=col, lwd=lwd, ...)
 			} else {
 				col <- .getCols(n, col, alpha)
 				lwd <- rep_len(lwd, n)
 				lty <- rep_len(lty, n)
-				g <- lapply(x@ptr$linesList(), function(i) { names(i)=c("x", "y"); i } )
+#				g <- lapply(x@cpp$linesList(), function(i) { names(i)=c("x", "y"); i } )
+				g <- x@cpp$linesList()
 				for (i in 1:n) {
-					graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=col[i], lwd=lwd[i], ...)
+					if (length(g[[i]]) > 0) {
+						names(g[[i]]) = c("x", "y")
+						graphics::plot.xy(g[[i]], type="l", lty=lty[i], col=col[i], lwd=lwd[i])
+					}
 				}
 			}
 			#g <- geom(x, df=TRUE)
@@ -68,6 +95,7 @@ setMethod("lines", signature(x="SpatVector"),
 
 setMethod("points", signature(x="SpatVector"),
 	function(x, col, cex=0.7, pch=16, alpha=1, ...)  {
+		reset.clip()
 		n <- length(x)
 		if (n == 0) return(invisible(NULL))
 		if (missing(col)) col <- "black"
@@ -97,6 +125,7 @@ setMethod("points", signature(x="SpatVector"),
 
 setMethod("polys", signature(x="SpatVector"),
 	function(x, col, border="black", lwd=1, lty=1, alpha=1, ...)  {
+		reset.clip()
 		gtype <- geomtype(x)
 		if (gtype != "polygons") {
 			error("polys", "expecting polygons")
@@ -112,3 +141,21 @@ setMethod("polys", signature(x="SpatVector"),
 	}
 )
 
+		
+setMethod("points", signature(x="sf"),
+function(x, ...) {
+		points(vect(x), ...)
+	}
+)				
+		
+setMethod("lines", signature(x="sf"),
+function(x, ...) {
+		lines(vect(x), ...)
+	}
+)
+
+setMethod("polys", signature(x="sf"),
+function(x, ...) {
+		polys(vect(x), ...)
+	}
+)

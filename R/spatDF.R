@@ -5,7 +5,9 @@
 	nms <- colnames(d)
 	for (i in 1:ncol(d)) {
 		if (inherits(d[[i]], "character")) {
-			x$add_column_string(enc2utf8(d[[i]]), nms[i])
+			s <- d[[i]]
+			s[is.na(s)] <- "____NA_+"
+			x$add_column_string(enc2utf8(s), nms[i])
 		} else if (inherits(d[[i]], "integer")) {
 			v <- d[[i]]
 			# min long (should query what it is on the system?)
@@ -39,6 +41,7 @@
 
 .getSpatDF <- function(x, check.names = FALSE, stringsAsFactors=FALSE, ...) {
 	d <- x$values()
+
 	f <- sapply(d, class) == "Rcpp_SpatFactor"
 	if (any(f)) {
 		f <- which(f)
@@ -54,10 +57,10 @@
 		d[[i]][d[[i]]=="NA"] <- NA
 		Encoding(d[[i]]) <- "UTF-8"
 	}
-	ints <- which(x$itype == 1)
-	for (i in ints) d[[i]] <- as.integer(d[[i]])
-	bools <- which(x$itype == 3)
-	for (i in bools) d[[i]] <- as.logical(d[[i]])
+	#ints <- which(x$itype == 1)
+	#for (i in ints) d[[i]] <- suppressWarnings(as.integer(d[[i]]))
+	#bools <- which(x$itype == 3)
+	#for (i in bools) d[[i]] <- suppressWarnings(as.logical(d[[i]]))
 	times <- x$itype == 4
 	if (any(times)) {
 		steps <- x$get_timesteps()
@@ -79,12 +82,16 @@
 .makeSpatFactor <- function(x) {
 	i <- as.integer(x)
 	i[is.na(i)] <- 0
-	SpatFactor$new(i, levels(x))
+	SpatFactor$new(i, levels(x), is.ordered(x))
 }
 
 .getSpatFactor <- function(x) {
 	i <- x$values
 	i[i==0] <- NA
-	factor(x$labels[i], x$labels)
+	if (isTRUE(x$ordered)) {
+		ordered(x$labels[i], x$labels)	
+	} else {
+		factor(x$labels[i], x$labels)
+	}
 }
 

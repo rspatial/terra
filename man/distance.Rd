@@ -15,7 +15,7 @@
 
 If \code{x} is a \bold{SpatRaster}:
 
-If \code{y} is \code{missing} this method computes the distance, for all cells that are \code{NA} in SpatRaster \code{x} to the nearest cell that is not \code{NA} (or other values, see arguments "target" and "exclude". 
+If \code{y} is \code{missing} this method computes the distance, for all cells that are \code{NA} in SpatRaster \code{x} to the nearest cell that is not \code{NA} (or other values, see arguments "target" and "exclude"). 
 
 If \code{y} is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed (only if \code{grid=FALSE}).
 
@@ -27,7 +27,7 @@ Results are more precise, sometimes much more precise, when using longitude/lati
 
 If \code{x} is a \bold{SpatVector}:
 
-If \code{y} is \code{missing}, a distance matrix between all object in \code{x} is computed. An distance matrix object of class "dist" is returned. 
+If \code{y} is \code{missing}, a distance matrix between all objects in \code{x} is computed. A distance matrix object of class "dist" is returned. 
 
 If \code{y} is a SpatVector the geographic distance between all objects is computed (and a matrix is returned). If both sets have the same number of points, and \code{pairwise=TRUE}, the distance between each pair of objects is computed, and a vector is returned.
 

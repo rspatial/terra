@@ -17,7 +17,7 @@ For accuracy, always compute these values on the original data (do not first cha
 
 \arguments{
   \item{x}{SpatRaster, single layer with elevation values. Values should have the same unit as the map units, or in meters when the crs is longitude/latitude}
-  \item{v}{character. One or more of these options: slope, aspect, TPI, TRI, roughness, flowdir (see Details)}
+  \item{v}{character. One or more of these options: slope, aspect, TPI, TRI, TRIriley, TRIrmsd, roughness, flowdir (see Details)}
   \item{unit}{character. "degrees" or "radians" for the output of "slope" and "aspect"}
   \item{neighbors}{integer. Indicating how many neighboring cells to use to compute slope or aspect with. Either 8 (queen case) or 4 (rook case)}
   \item{filename}{character. Output filename}
@@ -37,19 +37,21 @@ flowdir returns the "flow direction" (of water), that is the direction of the gr
 16 \tab x \tab 1 \cr 
  8 \tab 4 \tab 2 \cr }
 
-If two cells have the same drop in elevation, a random cell is picked. That is not ideal as it may prevent the creation of connected flow networks. ArcGIS implements the approach of Greenlee (1987) and I might adopt that in the future.
+Cells without lower neighboring cells are encoded as zero. 
 
-The terrain indices are according to Wilson et al. (2007), as in \href{https://gdal.org/programs/gdaldem.html}{gdaldem}. TRI (Terrain Ruggedness Index) is the mean of the absolute differences between the value of a cell and the value of its 8 surrounding cells. TPI (Topographic Position Index) is the difference between the value of a cell and the mean value of its 8 surrounding cells. Roughness is the difference between the maximum and the minimum value of a cell and its 8 surrounding cells.
+If two cells have the same drop in elevation, a random cell is picked. That is not ideal as it may prevent the creation of connected flow networks. ArcGIS implements the approach of Greenlee (1987) and I might adopt that in the future. 
+
+Most terrain indices are according to Wilson et al. (2007), as in \href{https://gdal.org/programs/gdaldem.html}{gdaldem}. TRI (Terrain Ruggedness Index) is the mean of the absolute differences between the value of a cell and its 8 surrounding cells. TPI (Topographic Position Index) is the difference between the value of a cell and the mean value of its 8 surrounding cells. Roughness is the difference between the maximum and the minimum value of a cell and its 8 surrounding cells. 
+
+TRIriley (TRI according to Riley et al. (2007)) returns the square root of summed squared differences between the value of a cell and its 8 surrounding cells. TRIrmsd computes the square root of the mean of the squared differences between these cells. The benefit of  TRIrmsd
 
 Such measures can also be computed with the \code{\link{focal}} function:
 
-f <- matrix(1, nrow=3, ncol=3)
+TRI <- focal(x, w=3, fun=\(x) sum(abs(x[-5]-x[5]))/8)
 
-TRI <- focal(x, w=f, fun=function(x, ...) sum(abs(x[-5]-x[5]))/8)
+TPI <- focal(x, w=3, fun=\(x) x[5] - mean(x[-5]))
 
-TPI <- focal(x, w=f, fun=function(x, ...) x[5] - mean(x[-5]))
-
-rough <- focal(x, w=f, fun=function(x, ...) {max(x) - min(x)}, na.rm=TRUE)
+rough <- focal(x, w=3, fun=\(x) max(x) - min(x))
 }
 
 \seealso{\code{\link{viewshed}}}
@@ -61,11 +63,15 @@ Fleming, M.D. and Hoffer, R.M., 1979. Machine processing of Landsat MSS data and
 
 Horn, B.K.P., 1981. Hill shading and the reflectance map. Proceedings of the IEEE 69:14-47
 
-Jones, K.H., 1998. A comparison of algorithms used to compute hill terrain as a property of the DEM. Computers & Geosciences 24: 315-323 
+Jones, K.H., 1998. A comparison of algorithms used to compute hill slope as a property of the DEM. Computers & Geosciences 24: 315-323 
 
 Karney, C.F.F., 2013. Algorithms for geodesics, J. Geodesy 87: 43-55. doi:10.1007/s00190-012-0578-z.
 
+Riley, S.J., De Gloria, S.D., Elliot, R. (1999): A Terrain Ruggedness that Quantifies Topographic Heterogeneity. Intermountain Journal of Science 5: 23-27.
+
 Ritter, P., 1987. A vector-based terrain and aspect generation algorithm. Photogrammetric Engineering and Remote Sensing 53: 1109-1111
+
+Wilson et al 2007, Multiscale Terrain Analysis of Multibeam Bathymetry Data for Habitat Mapping on the Continental Slope. Marine Geodesy 30:3-35
 }
 
 \examples{

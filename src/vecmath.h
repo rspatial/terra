@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -25,6 +25,9 @@
 #include <vector>
 #include "NA.h"
 #include <math.h>
+
+#include <map>
+#include <algorithm>
 
 
 bool haveFun(std::string fun);
@@ -67,7 +70,7 @@ static inline std::vector<double> vquantile(std::vector<double> v, const std::ve
         [](const double& value) { return std::isnan(value); }),
         std::end(v));
 
-	if (((!narm) && (v.size() < n)) || (v.size() == 0)) {
+	if (((!narm) && (v.size() < n)) || v.empty()) {
 		return std::vector<double>(probs.size(), NAN);
 	}
 
@@ -130,19 +133,22 @@ T vmedian(std::vector<T>& v, bool narm) {
 	if (n == 1) {
 		return(vv[0]);
 	}
+
 	size_t n2 = n / 2;
-	std::nth_element(vv.begin(), vv.begin()+n2, vv.end());
 	if (n % 2) {
+		std::nth_element(vv.begin(), vv.begin()+n2, vv.end());
 		return vv[n2];
 	} else {
+		std::sort(vv.begin(), vv.end());
 		return (vv[n2] + vv[n2-1]) / 2;
 	}
+	
 }
 
 
 
 template <typename T>
-T vsum(std::vector<T>& v, bool narm) {
+T vsum(const std::vector<T>& v, bool narm) {
 	T x = v[0];
 	if (narm) {		
 		for (size_t i=1; i<v.size(); i++) {
@@ -153,14 +159,15 @@ T vsum(std::vector<T>& v, bool narm) {
 			}
 		}
 	} else {
+		if (is_NA(x)) {
+			return(x);
+		}
 		for (size_t i=1; i<v.size(); i++) {
-			if (!is_NA(x)) {
-				if (is_NA(v[i])) {
-					x = NA<T>::value;
-					break;
-				} else {
-					x += v[i];
-				}
+			if (is_NA(v[i])) {
+				x = NA<T>::value;
+				return(x);
+			} else {
+				x += v[i];
 			}
 		}
 	}
@@ -168,7 +175,7 @@ T vsum(std::vector<T>& v, bool narm) {
 }
 
 template <typename T>
-T vsum2(std::vector<T>& v, bool narm) {
+T vsum2(const std::vector<T>& v, bool narm) {
 	T x = v[0] * v[0];
 	if (narm) {		
 		for (size_t i=1; i<v.size(); i++) {
@@ -179,14 +186,15 @@ T vsum2(std::vector<T>& v, bool narm) {
 			}
 		}
 	} else {
+		if (is_NA(v[0])) {
+			return(v[0]);
+		}
 		for (size_t i=1; i<v.size(); i++) {
-			if (!is_NA(x)) {
-				if (is_NA(v[i])) {
-					x = NA<T>::value;
-					break;
-				} else {
-					x += v[i] * v[i];
-				}
+			if (is_NA(v[i])) {
+				x = NA<T>::value;
+				return(x);
+			} else {
+				x += v[i] * v[i];
 			}
 		}
 	}
@@ -195,7 +203,7 @@ T vsum2(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-T vprod(std::vector<T>& v, bool narm) {
+T vprod(const std::vector<T>& v, bool narm) {
 	T x = v[0];
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
@@ -210,7 +218,7 @@ T vprod(std::vector<T>& v, bool narm) {
 			if (!is_NA(x)) {
 				if (is_NA(v[i])) {
 					x = NA<T>::value;
-					break;
+					return(x);
 				} else {
 					x *= v[i];
 				}
@@ -223,7 +231,7 @@ T vprod(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-double vmean(std::vector<T>& v, bool narm) {
+double vmean(const std::vector<T>& v, bool narm) {
 	double x = 0;
 	unsigned d = 0;
 	if (narm) {
@@ -235,20 +243,16 @@ double vmean(std::vector<T>& v, bool narm) {
 		}
 	} else {
 		for (size_t i=0; i<v.size(); i++) {
-			if (!std::isnan(x)) {
-				if (is_NA(v[i])) {
-					x = NAN;
-					d = 0;
-					break;
-				} else {
-					x += v[i];
-					d++;
-				}
+			if (is_NA(v[i])) {
+				return(NAN);
+			} else {
+				x += v[i];
+				d++;
 			}
 		}
 	}
 	if (d > 0) {
-		x /= d;
+		x /= (double) d;
 	} else {
 		x = NAN;
 	}
@@ -256,7 +260,7 @@ double vmean(std::vector<T>& v, bool narm) {
 }
 
 template <typename T>
-double vsd(std::vector<T>& v, bool narm) {
+double vsd(const std::vector<T>& v, bool narm) {
 	double m = vmean(v, narm);
 	if (std::isnan(m)) return m;
 	double x = 0;
@@ -269,7 +273,7 @@ double vsd(std::vector<T>& v, bool narm) {
 		}
 	}
 	n--;
-	if (n==0) return NAN;
+	//if (n==0) return NAN;
 	x = sqrt(x / n);
 	return x;
 }
@@ -277,10 +281,11 @@ double vsd(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-double vsdpop(std::vector<T>& v, bool narm) {
+double vsdpop(const std::vector<T>& v, bool narm) {
 	double m = vmean(v, narm);
 	if (std::isnan(m)) return m;
-	double x = v[0];
+	//double x = v[0];
+	double x = 0;
 	size_t n = 0;
 	for (size_t i=0; i<v.size(); i++) {
 		if (!is_NA(v[i])) {
@@ -296,7 +301,7 @@ double vsdpop(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-T vmin(std::vector<T>& v, bool narm) {
+T vmin(const std::vector<T>& v, bool narm) {
 	T x = v[0];
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
@@ -323,7 +328,7 @@ T vmin(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-T vfirst(std::vector<T>& v, bool narm) {
+T vfirst(const std::vector<T>& v, bool narm) {
 	if (narm) {
 		for (size_t i=0; i<v.size(); i++) {
 			if (!is_NA(v[i])) {
@@ -336,7 +341,7 @@ T vfirst(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-T vmax(std::vector<T>& v, bool narm) {
+T vmax(const std::vector<T>& v, bool narm) {
 	T x = v[0];
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
@@ -421,7 +426,6 @@ T vwhichmin(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vwhichmax(const std::vector<T>& v, bool narm) {
-
 	T x = v[0];
 	T out;
 	if (is_NA(x)) {
@@ -468,14 +472,14 @@ template <typename T>
 T vall(const std::vector<T>& v, bool narm) {
 	T x;
 	if (narm) {
-		x = 1;
+		x = NA<T>::value;
         for (size_t i=0; i<v.size(); i++) {
 			if (!is_NA(v[i])) {
 				if (v[i] == 0) {
 					x = 0;
 					break;
 				} else {
-					x = 1;
+					x = 1;					
 				}
 			}
         }
@@ -496,22 +500,19 @@ T vall(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vany(const std::vector<T>& v, bool narm) {
-	T x = 0;
-	bool hasnd = false;
+	T x = NA<T>::value;
 	for (size_t i=0; i<v.size(); i++) {
 		if (!is_NA(v[i])) {
 			if (v[i] != 0) {
 				x = 1;
 				break;
 			} else {
-				x = 0;
+				x = 0;				
 			}
-		} else {
-			hasnd = true;
+		} else if (!narm) {
+			x = NA<T>::value;
+			break;
 		}
-	}
-	if (hasnd & (x == 0) & (!narm)) {
-		x = NA<T>::value;;
 	}
 	return x;
 }
@@ -519,7 +520,8 @@ T vany(const std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-std::vector<T> vrange(std::vector<T>& v, bool narm) {
+std::vector<T> vrange(const std::vector<T>& v, bool narm) {
+	
 	std::vector<T> x = { v[0], v[0] };
 
 	if (narm) {
@@ -535,15 +537,15 @@ std::vector<T> vrange(std::vector<T>& v, bool narm) {
 			}
 		}
 	} else {
+		if (is_NA(x[0])) { return(x); }
 		for (size_t i=1; i<v.size(); i++) {
-			if (!is_NA(x[0])) {
-				if (is_NA(v[i])) {
-					x[0] = NA<T>::value;
-					x[1] = NA<T>::value;
-				} else {
-					x[0] = std::min(x[0], v[i]);
-					x[1] = std::max(x[1], v[i]);
-				}
+			if (is_NA(v[i])) {
+				x[0] = NA<T>::value;
+				x[1] = NA<T>::value;
+				return(x);
+			} else {
+				x[0] = std::min(x[0], v[i]);
+				x[1] = std::max(x[1], v[i]);
 			}
 		}
 	}
@@ -553,7 +555,7 @@ std::vector<T> vrange(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-T vmodal(std::vector<T>& v, bool narm) {
+T vmodal_old(std::vector<T>& v, bool narm) {
 
 	size_t n = v.size();
     std::vector<unsigned> counts(n, 0);
@@ -580,9 +582,48 @@ T vmodal(std::vector<T>& v, bool narm) {
 }
 
 
+template <typename T>
+T vmodal(std::vector<T>& v, bool narm) {
+
+	if (narm) {
+		std::map<double, size_t> count;
+		for_each( v.begin(), v.end(), [&count]( double val ){
+				if(!std::isnan(val)) count[val]++;
+			}
+		);
+		if (count.size() == 0) return NAN;
+		
+		std::map<double, size_t>::iterator mode =	
+			std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
+			const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
+			
+		return mode->first;
+
+	}  else {
+	
+		std::map<double, size_t> count;
+		for(size_t i=0; i<v.size(); i++) {
+			if (std::isnan(v[i])) {
+				return NAN;
+			} else {
+				count[v[i]]++;
+			}
+		}
+
+		std::map<double, size_t>::iterator mode =	
+			std::max_element(count.begin(), count.end(),[] (const std::pair<double, size_t>& a, 
+			const std::pair<double, size_t>& b)->bool{ return a.second < b.second; } );
+			
+		return mode->first;
+	}
+	}
+
+
+
+
 
 template <typename T>
-std::vector<bool> visna(std::vector<T>& v) {
+std::vector<bool> visna(const std::vector<T>& v) {
 	std::vector<bool> x(v.size(), false);
 	for (size_t i=0; i<v.size(); i++) {
 		if (is_NA(v[i])) {
@@ -594,7 +635,7 @@ std::vector<bool> visna(std::vector<T>& v) {
 
 
 template <typename T>
-std::vector<bool> visnotna(std::vector<T>& v) {
+std::vector<bool> visnotna(const std::vector<T>& v) {
 	std::vector<bool> x(v.size(), true);
 	for (size_t i=0; i<v.size(); i++) {
 		if (is_NA(v[i])) {
@@ -705,6 +746,8 @@ std::vector<size_t> order(const std::vector<T> &v) {
 	return idx;
 }
 */
+
+
 
 #endif
 

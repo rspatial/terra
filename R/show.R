@@ -4,6 +4,28 @@
 # License GPL v3
 
 
+win_basename <- function(x) {
+	if (grepl("Windows", utils::osVersion)) {
+		large <- nchar(x) > 256
+		if (any(large)) {
+			for (i in 1:length(large)) {
+				if (large[i]) {
+					r <- strsplit(x[i], "[\\/]+")[[1]]
+					x[i] <- r[[length(r)]]
+				} else {
+					x[i] <- basename(x)	
+				}
+			}
+		} else {
+			x <- basename(x)
+		}
+		x
+	} else {
+		basename(x)	
+	}
+}
+
+
 printDF <- function(x, n=6, first=FALSE) {
 	n <- min(nrow(x), max(n, 0))
 	old <- dim(x)
@@ -22,7 +44,7 @@ printDF <- function(x, n=6, first=FALSE) {
 	cls <- gsub("character", "chr", cls)
 	cls <- gsub("factor", "fact", cls)
 	cls <- paste0("<", cls, ">")
-	cls <- data.frame(rbind(class=cls))
+	cls <- data.frame(rbind(class=cls), stringsAsFactors=FALSE)
 	names(cls) <- NULL
 
 	nms <- colnames(x)
@@ -42,7 +64,7 @@ printDF <- function(x, n=6, first=FALSE) {
 			}
 		}
 	}
-	x <- data.frame(lapply(x, as.character), check.names=FALSE)
+	x <- data.frame(lapply(x, as.character), check.names=FALSE, stringsAsFactors=FALSE)
 	x <- rbind(x[1,,drop=FALSE], x)
 	x[1,] <- cls
 	if (nrow(x) < d[1]) {
@@ -104,23 +126,27 @@ setMethod ("show" , "SpatVectorCollection",
 		if (n > 15) {
 			nn <- 15
 		}
-		for (i in 1:nn) {
-			v <- object[i]
-			if (i==1) {
-				cat(" geometry    : ", geomtype(v), " (", nrow(v) , ")\n", sep="")
-			} else {
-				cat("               ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+		if (n > 0) {
+			for (i in 1:nn) {
+				v <- object[i]
+				if (i==1) {
+					cat(" geometry    : ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+				} else {
+					cat("               ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+				}
 			}
+			if (n > nn) {
+				cat("               ", "   and ", n-nn, "more\n", sep="")
+			}
+			crs <- .name_or_proj4(object[1])
+			if (crs != "") cat(" crs (first) :", crs,	 "\n")
+			nms <- names(object)
+			if (length(nms) > 10) {
+				nms <- c(nms[1:9], "...")
+			}
+			nms <- paste(nms, collapse=", ")
+			cat(" names       :", nms, "\n")
 		}
-		if (n > nn) {
-			cat("               ", "   and ", n-nn, "more\n", sep="")
-		}
-		nms <- names(object)
-		if (length(nms) > 10) {
-			nms <- c(nms[1:9], "...")
-		}
-		nms <- paste(nms, collapse=", ")
-		cat(" names       :", nms, "\n")
 	}
 )
 
@@ -132,11 +158,11 @@ setMethod ("show" , "SpatVector",
 		cat(" geometry    :", geomtype(object), "\n")
 		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" )
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		if (object@ptr$source != "") {
-			if (object@ptr$layer != tools::file_path_sans_ext(basename(object@ptr$source))) {
-				cat(" source      : ", basename(object@ptr$source), " (", object@ptr$layer, ")\n", sep="")
+		if (object@cpp$source != "") {
+			if (object@cpp$layer != tools::file_path_sans_ext(win_basename(object@cpp$source))) {
+				cat(" source      : ", win_basename(object@cpp$source), " (", object@cpp$layer, ")\n", sep="")
 			} else {
-				cat(" source      : ", basename(object@ptr$source), "\n", sep="")
+				cat(" source      : ", win_basename(object@cpp$source), "\n", sep="")
 			}
 		}
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
@@ -157,11 +183,12 @@ setMethod ("show" , "SpatVectorProxy",
 		cat(" geometry    :", geomtype(object), "\n")
 		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" )
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		if (object@ptr$v$layer != tools::file_path_sans_ext(basename(object@ptr$v$source))) {
-			cat(" source      : ", basename(object@ptr$v$source), " (", object@ptr$v$layer, ")\n", sep="")
+		if (object@cpp$v$layer != tools::file_path_sans_ext(win_basename(object@cpp$v$source))) {
+			cat(" source      : ", win_basename(object@cpp$v$source), " (", object@cpp$v$layer, ")\n", sep="")
 		} else {
-			cat(" source      : ", basename(object@ptr$v$source), "\n", sep="")
+			cat(" source      : ", win_basename(object@cpp$v$source), "\n", sep="")
 		}
+		cat(" layer       :", object@cpp$v$layer, "\n")
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
 		dd <- get.data.frame(object)
 		printDF(dd, 0, TRUE)
@@ -188,7 +215,7 @@ setMethod ("show" , "SpatRaster",
 				txt <- "extent (win): "
 			}
 			cat(txt, w[1], ", ", w[2], ", ", w[3], ", ", w[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-			#e <- as.vector(object@ptr$source[[1]]$window$full_extent$vector)
+			#e <- as.vector(object@cpp$source[[1]]$window$full_extent$vector)
 			#cat("full extent : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		} else {
 			e <- as.vector(ext(object))
@@ -231,10 +258,10 @@ setMethod ("show" , "SpatRaster",
 				}
 			}
 			hdf5 <- substr(f, 1, 5) == "HDF5:"
-			f[!hdf5] <- basename(f[!hdf5])
+			f[!hdf5] <- win_basename(f[!hdf5])
 			if (any(hdf5)) {
 				ff <- strsplit(f[hdf5], "://")
-				ff <- sapply(ff, function(i) paste(basename(i), collapse="://"))
+				ff <- sapply(ff, function(i) paste(win_basename(i), collapse="://"))
 				ff <- gsub('\"', "", ff)
 				f[hdf5] <- ff
 			}
@@ -266,11 +293,13 @@ setMethod ("show" , "SpatRaster",
 					cat("source      :", sources[1], "\n")
 				}
 			}
-			rgb <- RGB(object)
-			if (!is.null(rgb)) {
-				cat(paste("colors", toupper(object@ptr$rgbtype), " :"), paste(rgb, collapse=", "), "\n")
+			rgbtype <- object@cpp$rgbtype
+			if (rgbtype != "") {
+				rdgb <- RGB(object)
+				if (is.null(rdgb)) rdgb <- 1:3
+				cat(paste("colors", toupper(object@cpp$rgbtype), " :"), paste(rdgb, collapse=", "), "\n")
 			}
-			hasct <- object@ptr$hasColors()
+			hasct <- object@cpp$hasColors()
 			if (any(hasct)) {
 				cat("color table :", paste(which(hasct), collapse=", "), "\n")
 			}
@@ -306,8 +335,10 @@ setMethod ("show" , "SpatRaster",
 			isB <- is.bool(object)
 			if (any(hMM) || any(is.factor(object))) {
 				#r <- minmax(object)
-				rr <- r <- rbind(object@ptr$range_min, object@ptr$range_max)
+				rr <- r <- rbind(object@cpp$range_min, object@cpp$range_max)
 				r[,!hMM] <- c(Inf, -Inf)
+				#sc <- scoff(object)
+				#r <- r * sc[,1] + sc[,2]
 				r <- sapply(data.frame(r), format)
 				minv <- r[1,]
 				maxv <- r[2,]
@@ -363,8 +394,10 @@ setMethod ("show" , "SpatRaster",
 				}
 				if (ncol(m) == 1) {
 					if (is.factor(object)) {
-						g <- cats(object)[[1]]
-						cat("categories  :", paste(colnames(g)[-1], collapse=", "), "\n")
+						if (activeCat(object) > -1) {
+							g <- cats(object)[[1]]
+							cat("categories  :", paste(colnames(g)[-1], collapse=", "), "\n")
+						}
 					}
 					cat("name        :", paste(m[1,], collapse=", "), "\n")
 					cat("min value   :", paste(m[2,], collapse=", "), "\n")
@@ -392,10 +425,10 @@ setMethod ("show" , "SpatRaster",
 
 		}
 
-		if (object@ptr$hasTime) {
+		if (object@cpp$hasTime) {
 			label <- "time        "
 			rtim <- range(time(object))
-			tims <- object@ptr$timestep
+			tims <- object@cpp$timestep
 			if (tims == "yearmonths") {
 				rtim <- format_ym(rtim)
 				label <- "time (ymnts)"
@@ -434,11 +467,11 @@ setMethod ("show" , "SpatRaster",
 .sources <- function(x) {
 	#m <- inMemory(x)
 	f <- sources(x)
-	f <- gsub("\"", "", basename(f))
+	f <- gsub("\"", "", win_basename(f))
 	i <- grep(":", f)
 	if (length(i) > 0) {
 		for (j in i) {
-			ff <- try(basename( strsplit(f[j], ':')[[1]][1]), silent=TRUE)
+			ff <- try(win_basename( strsplit(f[j], ':')[[1]][1]), silent=TRUE)
 			if (!inherits(ff, "try-error")) {
 				f[j] <- ff
 			}
@@ -473,6 +506,9 @@ setMethod("show" , "SpatRasterDataset",
 		cat("coord. ref. :" , .name_or_proj4(object), "\n")
 
 		s <- .sources(object)
+		if (length(s) > 6) {
+			s <- c(s[1:6], "...")
+		}
 		cat("source(s)   :", paste(s, collapse=", "), "\n")
 
 		ln <- names(object)
@@ -508,7 +544,7 @@ setMethod("show" , "SpatRasterCollection",
 		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		
 		
-		crs <- .name_or_proj4(object@ptr$x[[1]])
+		crs <- .name_or_proj4(object@cpp$x[[1]])
 		if (crs != "") cat("crs (first) :", crs,	 "\n")
 		ln <- names(object)
 		if (any(ln != "")) {
@@ -520,6 +556,19 @@ setMethod("show" , "SpatRasterCollection",
 	}
 )
 
+
+setMethod("show" , "SpatGraticule",
+	function(object) {
+		cat("class       :" , class(object), "\n")
+		v <- vect()
+		v@cpp <- object@cpp
+		cat("lon         :" , stats::na.omit(v$lon), "\n")		
+		cat("lat         :" , stats::na.omit(v$lat), "\n")		
+		cat("coord. ref. :", .name_or_proj4(v), "\n")
+		e <- as.vector(ext(v))
+		cat("extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+	}
+)
 
 setMethod ("head" , "SpatVector",
 	function(x, n=6L, ...) {
@@ -568,23 +617,25 @@ setMethod ("tail" , "SpatRaster",
 )
 
 
-setMethod ("str", "SpatRaster",
-	function(object, default=FALSE, ...) {
-		if (default) {
-			utils::str(object)
-		} else {
-			cat("Formal class 'SpatRaster' [package \"terra\"] with 1 slot\n  ..@ ptr:Reference class 'Rcpp_SpatRaster' [package \"terra\"] with 1 field\n")
-		}
-	}
-)
 
-setMethod ("str", "SpatVector",
-	function(object, default=FALSE, ...) {
-		if (default) {
-			utils::str(object)
-		} else {
-			cat("Formal class 'SpatVector' [package \"terra\"] with 1 slot\n  ..@ ptr:Reference class 'Rcpp_SpatVector' [package \"terra\"] with 1 field\n")
-		}
-	}
-)
+str.SpatRaster <- function(object, ...) {
+	cat("S4 class 'SpatRaster' [package \"terra\"]\n")
+}
+setMethod("str", signature(object="SpatRaster"), str.SpatRaster)
 
+
+str.SpatVector <- function(object, ...) {
+	cat("S4 class 'SpatVector' [package \"terra\"]\n")
+}
+setMethod("str", signature(object="SpatVector"), str.SpatVector)
+
+
+str.SpatExtent <- function(object, ...) {
+	cat("S4 class 'SpatExtent' [package \"terra\"]\n")
+}
+setMethod("str", signature(object="SpatExtent"), str.SpatExtent)
+
+str.SpatGraticule <- function(object, ...) {
+	cat("S4 class 'SpatGraticule' [package \"terra\"]\n")
+}
+setMethod("str", signature(object="SpatGraticule"), str.SpatGraticule)

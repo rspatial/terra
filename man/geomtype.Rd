@@ -6,8 +6,6 @@
 \alias{geomtype,SpatVector-method}
 \alias{geomtype,SpatVectorProxy-method}
 \alias{geomtype,Spatial-method}
-\alias{datatype}
-\alias{datatype,SpatVector-method}
 \alias{is.points}
 \alias{is.lines}
 \alias{is.polygons}
@@ -18,13 +16,11 @@
 \title{Geometry type of a SpatVector}
 
 \description{
-Get the geometry type (points, lines, or polygons) of a SpatVector or the data types of the fields (attributes, variables) of a SpatVector.
+Get the geometry type (points, lines, or polygons) of a SpatVector. See \code{\link{datatype}} for the data types of the fields (attributes, variables) of a SpatVector.
 } 
 
 \usage{
 \S4method{geomtype}{SpatVector}(x)
-
-\S4method{datatype}{SpatVector}(x)
 
 \S4method{is.points}{SpatVector}(x)
 

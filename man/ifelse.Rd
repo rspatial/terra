@@ -16,7 +16,7 @@ Implementation of \code{\link[base]{ifelse}} for SpatRasters. This method allows
 }
 
 \arguments{
-  \item{test}{SpatRaster}
+  \item{test}{SpatRaster with logical (TRUE/FALSE) values}
   \item{yes}{SpatRaster or numeric}
   \item{no}{SpatRaster or numeric}
   \item{filename}{character. Output filename}

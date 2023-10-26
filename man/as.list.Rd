@@ -5,12 +5,13 @@
 \alias{as.list,SpatRasterDataset-method}
 \alias{as.list,SpatRasterCollection-method}
 \alias{as.list,SpatVector-method}
+\alias{as.list,SpatVectorCollection-method}
   
 
-\title{SpatRaster* or SpatVector to list}
+\title{Coerce a Spat* object to a list}
 
 \description{
-Coerce a SpatRaster, SpatRasterCollection, SpatRasterDataset, or SpatVector to a list. With a SpatRaster, each layer becomes a list element. With a SpatRasterCollection or SpatRasterDataset, each SpatRaster becomes a list element. With a SpatVector, each variable (attribute) becomes a list element.
+Coerce a SpatRaster, SpatRasterCollection, SpatRasterDataset, SpatVector or SpatVectorCollection to a list. With a SpatRaster, each layer becomes a list element. With a SpatRasterCollection or SpatRasterDataset, each SpatRaster becomes a list element. With a SpatVector, each variable (attribute) becomes a list element. With a SpatVectorCollection, each SpatVector becomes a list element.
 }
 
 \usage{
@@ -19,6 +20,8 @@ Coerce a SpatRaster, SpatRasterCollection, SpatRasterDataset, or SpatVector to a
 \S4method{as.list}{SpatRasterCollection}(x, ...)
 
 \S4method{as.list}{SpatVector}(x, geom=NULL, ...)
+
+\S4method{as.list}{SpatVectorCollection}(x, ...)
 }
 
 \arguments{

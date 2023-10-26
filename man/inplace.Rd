@@ -54,9 +54,9 @@ These "in-place" replacement methods assign new value to an object without makin
 
 \S4method{set.values}{SpatRaster}(x, cells, values, layer=0)
 
-\S4method{set.cats}{SpatRaster}(x, layer=1, value, active=2)
+\S4method{set.cats}{SpatRaster}(x, layer=1, value, active=1)
 
-\S4method{set.RGB}{SpatRaster}(x, value)
+\S4method{set.RGB}{SpatRaster}(x, value, type="rgb")
 }
 
 \arguments{
@@ -70,7 +70,9 @@ These "in-place" replacement methods assign new value to an object without makin
 
   \item{layer}{positive integer(s) indicating to which layer(s) to you want to assign these categories or to which you want to set these values. A number < 1 indicates "all layers"}
   
-  \item{active}{positive integer indicating the active category (column number in \code{value}}
+  \item{active}{positive integer indicating the active category (column number in \code{value}, but not counting the first column}
+  
+  \item{type}{character. The color space. One of "rgb" "hsv", "hsi" and "hsl"}  
 }
 
 \value{logical (invisibly)}

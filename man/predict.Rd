@@ -16,7 +16,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 }
 
 \usage{
-\S4method{predict}{SpatRaster}(object, model, fun=predict, ..., factors=NULL, const=NULL, na.rm=FALSE,
+\S4method{predict}{SpatRaster}(object, model, fun=predict, ..., const=NULL, na.rm=FALSE,
           index=NULL, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list())
 }
 
@@ -27,9 +27,8 @@ This approach of using model predictions is commonly used in remote sensing (for
   \item{...}{additional arguments for \code{fun}}    
 
   \item{const}{data.frame. Can be used to add a constant value as a predictor variable so that you do not need to make a SpatRaster layer for it}
- \item{factors}{list with levels for factor variables. The list elements should be named with names that correspond to names in \code{object} such that they can be matched. This argument may be omitted for standard models such as "glm" as the predict function will extract the levels from the \code{model} object, but it is necessary in some other cases (e.g. cforest models from the party package)}
-  \item{na.rm}{logical. If \code{TRUE}, cells with \code{NA} values in the predictors are removed from the computation. This option prevents errors with models that cannot handle \code{NA} values. In most other cases this will not affect the output. An exception is when predicting with a model that returns predicted values even if some (or all!) variables are \code{NA} }
-  \item{index}{integer. To select subset of output variables}
+  \item{na.rm}{logical. If \code{TRUE}, cells with \code{NA} values in the any of the layers of \code{x} are removed from the computation (even if the \code{NA} cell is in a layer that is not used as a variable in the model). This option prevents errors with models that cannot handle \code{NA} values when makeing predictions. In most other cases this will not affect the output. However, there are some models that return predicted values even if some (or all) variables are \code{NA} }
+  \item{index}{integer or character. Can be used to to select a subset of the model output variables}
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used}
   \item{cpkgs}{character. The package(s) that need to be loaded on the nodes to be able to run the model.predict function (see examples)}
   \item{filename}{character. Output filename}
@@ -42,6 +41,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 SpatRaster
 }
 
+\seealso{ \code{\link{interpolate}} for spatial model prediction }
 
 \examples{
 logo <- rast(system.file("ex/logo.tif", package="terra"))   
@@ -88,11 +88,12 @@ predfun <- function(model, data) {
 
 r2 <- predict(logo, model, fun=predfun)
 
-# principal components of a SpatRaster
-# here using sampling to simulate an object too large
-# to feed all its values to prcomp
+### principal components of a SpatRaster
+pca <- prcomp(logo)
 
-sr <- values(spatSample(logo, 100, as.raster=TRUE))
+# or use sampling if you have a large raster 
+# and cannot process all cell values
+sr <- spatSample(logo, 100000, "regular")
 pca <- prcomp(sr)
 
 x <- predict(logo, pca)

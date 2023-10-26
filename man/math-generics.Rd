@@ -60,7 +60,7 @@ The following methods have been implemented for \code{SpatExtent}: \code{round, 
 }
 
 \seealso{
-See \code{\link{app}} to use mathematical functions not implemented by the package, and \code{\link{Arith-methods}} for arithmetical operations
+See \code{\link{app}} to use mathematical functions not implemented by the package, and \code{\link{Arith-methods}} for arithmetical operations. Use \code{\link{roll}} for rolling functions.
 }
 
 

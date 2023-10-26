@@ -18,11 +18,6 @@ Objects of class SpatExtent are used to define the spatial extent (extremes) of 
 You can use the \code{\link{ext}} function to create SpatExtent objects, or to extract them from SpatRaster objects.
 }
 
-\section{Slots}{
-	 \describe{
-    \item{\code{ptr}:}{pointer to the C++ class} 
-  }
-}
 
 \section{Methods}{
   \describe{

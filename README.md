@@ -1,17 +1,15 @@
-# terra
+# terra <img align="right" width="250" src="man/figures/logo.png">
+
+<p align="right"; style="font-size:11px">logo by Zane Dax</p>
 
 [![rcmdcheck](https://github.com/rspatial/terra/actions/workflows/rcmdcheck.yml/badge.svg)](https://github.com/rspatial/terra/actions/workflows/rcmdcheck.yml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/terra)](http://www.r-pkg.org/pkg/terra)
 
-<p align="right"; style="font-size:11px">logo by Zane Dax</p>
-
-<img align="right" width="250" src="man/figures/logo.png">
-
 `terra` is an *R* package for spatial data analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
 
-[stackoverflow](https://stackoverflow.com/questions/tagged/terra) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/terra/issues).
+[Stack Overflow](https://stackoverflow.com/questions/tagged/terra) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/terra/issues).
 
 `terra` replaces the [raster](https://github.com/rspatial/raster) package. The interfaces of `terra` and `raster` are similar, but `terra` is simpler, faster and can do more. 
 
@@ -51,32 +49,41 @@ remotes::install_github("rspatial/terra")
 
 #### macOS
 
-On macOS, first install gdal and proj with homebrew
+On macOS, you can use [MacPorts](https://www.macports.org/) or [Homebrew](https://brew.sh/).
+
+With MacPorts you can do 
+
+```
+sudo port install R-terra
+```
+
+With Homebrew, you need to first install GDAL:
 
 ```
 brew install pkg-config
 brew install gdal
 ```
 
-Followed by (note the additional configuration argument needed for the current homebrew version of proj (9.1.0)
+Followed by (note the additional configuration argument needed for Homebrew)
 
 ```
-remotes::install_github("rspatial/terra", configure.args = "--with-proj-lib=/opt/homebrew/Cellar/proj/9.1.0/lib/")
+remotes::install_github("rspatial/terra", configure.args = "--with-proj-lib=$(brew --prefix)/lib/")
 ```
 
 To install the CRAN version from source you would do
 
 ```
-install.packages("terra", configure.args = "--with-proj-lib=/opt/homebrew/Cellar/proj/9.1.0/lib/")
+install.packages("terra", type = "source", configure.args = "--with-proj-lib=$(brew --prefix)/lib/")
 ```
 
 #### Linux
 
-The *easy* way to install terra on linux is with [r2u](https://eddelbuettel.github.io/r2u/).
+The *easy* way to install terra on Ubuntu is with [r2u](https://eddelbuettel.github.io/r2u/).
 
-The harder way: C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3 are required, but more recent versions highly recommended.
+The harder way: 
 
-To install these system requirements on Ubuntu you can do:
+Install the system requirements GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3.
+
 
 ```
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
@@ -90,3 +97,4 @@ remotes::install_github("rspatial/terra")
 ```
 
 See the `sf` [instructions](https://github.com/r-spatial/sf) for installation on other linux systems --- and for possible updates/improvements on the above instructions.
+

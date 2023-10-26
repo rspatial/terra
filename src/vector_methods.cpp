@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -173,6 +173,78 @@ SpatVector SpatVector::aggregate(bool dissolve) {
 	out.srs = srs;
 	return out;
 }
+
+
+#include "geodesic.h"
+
+void extend_line(const double &x1, const double &y1, double &x2, double &y2, const bool &geo, const double &distance) {
+	if (geo) {
+		double a = 6378137.0;
+		double f = 1/298.257223563;
+		double s12, azi1, azi2;
+		struct geod_geodesic g;
+		geod_init(&g, a, f);
+		geod_inverse(&g, y1, x1, y2, x2, &s12, &azi1, &azi2);		
+		geod_direct(&g, y2, x2, azi2, distance, &y2, &x2, &azi1);
+	} else {
+		double bearing;
+		double dx = x2 - x1;
+		double dy = y2 - y1;
+		if (dx == 0) {
+			if (y2 > y1) {
+				bearing = -M_PI / 2;
+			} else {
+				bearing = M_PI / 2;				
+			}
+		} else {
+			bearing = atan(dy/dx);
+		}
+		if (x2 > x1) {
+			x2 += distance * cos(bearing);
+			y2 += distance * sin(bearing);			
+		} else {
+			x2 -= distance * cos(bearing);			
+			y2 -= distance * sin(bearing);						
+		}
+	}
+}
+
+SpatVector SpatVector::elongate(double length, bool flat) {
+
+	SpatVector out = *this;
+	size_t n = size();
+	if (n == 0) {
+		return out;
+	}
+	if (geoms[0].gtype != lines) {
+		out.setError("you can only elongate lines");
+		return out;
+	}
+	if (length < 0) {
+		out.setError("length must be > 0");
+		return out;
+	}
+	if (length == 0) {
+		return out;
+	}
+
+	bool geo = (!flat) && is_lonlat();
+	
+	for (size_t i=0; i<n; i++) {
+		for (size_t j=0; j < out.geoms[i].size(); j++) {
+			SpatPart p = out.geoms[i].parts[j];
+			size_t pn = p.x.size();
+			if (pn < 2) continue;
+			extend_line(p.x[1]   , p.y[1]   , p.x[0] , p.y[0] , geo, length);
+			extend_line(p.x[pn-2], p.y[pn-2], p.x[pn-1], p.y[pn-1], geo, length);		
+			out.geoms[i].parts[j] = p;
+		}
+		out.geoms[i].computeExtent();
+	}
+	out.computeExtent();
+	return out;
+}
+
 
 
 SpatVectorCollection SpatVector::split(std::string field) {
@@ -529,7 +601,7 @@ void rotit(std::vector<double> &x, std::vector<double> &y, const double &x0, con
 SpatVector SpatVector::rotate(double angle, std::vector<double> x0, std::vector<double> y0) {
 	angle = -M_PI * angle / 180;
 	size_t n = size();
-	if ((x0.size() == 0) || (y0.size() == 0)) {
+	if (x0.empty() || y0.empty()) {
 		SpatVector out;
 		out.setError("no center of rotation provided");
 		return out;
@@ -672,6 +744,9 @@ SpatVector SpatVector::thin(double threshold) {
 
 	return out;
 }
+
+
+
 
 
 

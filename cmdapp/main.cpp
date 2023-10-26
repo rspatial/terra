@@ -19,8 +19,7 @@ int main(int argc, char *argv[]) {
 	std::string method = arguments[1];
 	//SpatRaster input(arguments[2], {-1}, {""});
     //show(input);
-
-    if (method == "show") out = SpatRaster(arguments[2], {-1}, {""}, {""});
+    if (method == "show") out = SpatRaster(arguments[2], {-1}, {""}, {""}, {""});
     if (method == "aggregate") out = aggregate(arguments);
  
     if (out.hasError()) {

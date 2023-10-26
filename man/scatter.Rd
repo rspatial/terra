@@ -13,7 +13,7 @@ Scatterplot of the values of two SpatRaster layers
 
 \usage{
 \S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, warn=TRUE, nc, nr, 
-   maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
+   maxnl=16, smooth=FALSE, gridded=FALSE, ncol=25, nrow=25, ...)
 
 }
 
@@ -24,6 +24,7 @@ Scatterplot of the values of two SpatRaster layers
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
   \item{maxnl}{positive integer. Maximum number of layers to plot (for multi-layer objects)}
+  \item{smooth}{logical. If \code{TRUE} show a smooth scatterplot}
   \item{gridded}{logical. If \code{TRUE} the scatterplot is gridded (counts by cells)}
   \item{warn}{boolean. Show a warning if a sample of the pixels is used (for scatterplot only)}
 

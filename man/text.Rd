@@ -28,7 +28,7 @@ Plots labels, that is a textual (rather than color) representation of values, on
 }
 
 \seealso{
-\code{\link[graphics]{text}, \link{plot}}
+\code{\link[graphics]{text}, \link{plot}, \link{halo}}
 }
 
 

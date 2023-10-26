@@ -20,14 +20,20 @@
 	i <- which(name == names(x))[1]
 	if (is.null(value)) {
 		if (is.na(i)) {
-				return(x)
+			return(x)
 		} else {
 			return(subset(x, -i, NSE=FALSE))
 		}
 	}
 
 	if (is.na(i)) {
-		c(x, value)
+		if (hasValues(x)) {
+			c(x, value)
+		} else if (hasValues(value)) {
+			value
+		} else {
+			c(x, value)			
+		}
 	} else if (nlyr(x) == 1) {
 		value$deepcopy()
 	} else if (i == 1) {
@@ -48,7 +54,11 @@ setMethod("$<-", "SpatRaster",
 
 setReplaceMethod("[[", c("SpatRaster", "character"),
 	function(x, i, value) {
-		if (inherits(value, "SpatRaster")) {
+		if (inherits(value, "numeric")) {
+			r <- rast(x, nlyr=length(i))
+			value <- init(r, value)
+			names(value) <- i
+		} else if (inherits(value, "SpatRaster")) {
 			if (nlyr(value) != length(i)) {
 				error("`[[`", "length of names must be equal to the number of layers")
 			}
@@ -72,11 +82,19 @@ setReplaceMethod("[[", c("SpatRaster", "character"),
 
 setReplaceMethod("[[", c("SpatRaster", "numeric"),
 	function(x, i, value) {
-		if (!inherits(value, "SpatRaster")) {
-			error("`[[<-`", "Expected a SpatRaster as replacement value")
+		if (inherits(value, "numeric")) {
+			r <- rast(x, nlyr=length(i))
+			value <- init(r, value)
+		} else if (!inherits(value, "SpatRaster")) {
+			error("`[[<-`", "Expected a SpatRaster or numeric as replacement value")
 		}
-		if (nlyr(value) != length(i)) {
-			error("`[[`", "length of indices must be equal to the number of layers")
+		if (nlyr(value) < length(i)) {
+			if (nlyr(value) > 1) {
+				j <- rep_len(1:nlyr(value), length(i))
+				value <- value[[j]]
+			}
+		} else if (nlyr(value) > length(i)) {
+			error("`[[`", "length of indices must be <= the number of layers")
 		}
 		if (any(i<1) | any(i > nlyr(x))) {
 			error("`[[`", "indices must be between 1 and the number of layers")
@@ -85,13 +103,25 @@ setReplaceMethod("[[", c("SpatRaster", "numeric"),
 			compareGeom(x, value, crs=FALSE, warncrs=TRUE)
 			return(value)
 		}
-		for (k in 1:length(i)) {
-			if (i[k] == 1) {
-				x <- c(value[[k]], x[[2:nlyr(x)]])
-			} else if (i[k] == nlyr(x)) {
-				x <- c(x[[1:(nlyr(x)-1)]], value[[k]])
-			} else {
-				x <- c(x[[1:(i[k]-1)]], value[[k]], x[[(i[k]+1):nlyr(x)]])
+		if (nlyr(value) == 1) {
+			for (k in 1:length(i)) {
+				if (i[k] == 1) {
+					x <- c(value, x[[2:nlyr(x)]])
+				} else if (i[k] == nlyr(x)) {
+					x <- c(x[[1:(nlyr(x)-1)]], value)
+				} else {
+					x <- c(x[[1:(i[k]-1)]], value, x[[(i[k]+1):nlyr(x)]])
+				}
+			}
+		} else {
+			for (k in 1:length(i)) {
+				if (i[k] == 1) {
+					x <- c(value[[k]], x[[2:nlyr(x)]])
+				} else if (i[k] == nlyr(x)) {
+					x <- c(x[[1:(nlyr(x)-1)]], value[[k]])
+				} else {
+					x <- c(x[[1:(i[k]-1)]], value[[k]], x[[(i[k]+1):nlyr(x)]])
+				}
 			}
 		}
 		#g <- gc()

@@ -12,19 +12,8 @@
 \alias{extract,SpatVector,SpatVector-method}
 \alias{extract,SpatVector,matrix-method}
 \alias{extract,SpatVector,data.frame-method}
-
-
-\alias{[,SpatVector,SpatVector,missing-method}
-\alias{[,SpatVector,SpatExtent,missing-method}
-\alias{[,SpatRaster,SpatVector,missing-method}
-\alias{[,SpatRaster,missing,missing-method}
-\alias{[,SpatRaster,numeric,missing-method}
-\alias{[,SpatRaster,missing,numeric-method}
-\alias{[,SpatRaster,numeric,numeric-method}
-\alias{[,SpatRaster,data.frame,missing-method}
-\alias{[,SpatRaster,matrix,missing-method}
-\alias{[,SpatRaster,SpatRaster,missing-method}
-\alias{[,SpatRaster,SpatExtent,missing-method}
+\alias{extract,SpatRasterCollection,ANY-method}
+\alias{extract,SpatRasterDataset,ANY-method}
 
 
 \title{Extract values from a SpatRaster}
@@ -33,6 +22,8 @@
 Extract values from a SpatRaster for a set of locations. The locations can be a SpatVector (points, lines, polygons), a matrix with (x, y) or (longitude, latitude -- in that order!) coordinates, or a vector with cell numbers.  
 
 When argument \code{y} is a \code{SpatVector} the first column has the ID (record number) of the \code{SpatVector} used (unless you set \code{ID=FALSE}).
+
+Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize}} with a \code{SpatVector} (this may be more efficient in some cases).
 } 
 
 \usage{
@@ -42,20 +33,20 @@ When argument \code{y} is a \code{SpatVector} the first column has the ID (recor
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, cells=FALSE, xy=FALSE)
 
-\S4method{extract}{SpatRaster,numeric}(x, y, xy=FALSE)
+\S4method{extract}{SpatRaster,matrix}(x, y, cells=FALSE, method="simple")
 
-\S4method{extract}{SpatRaster,matrix}(x, y, cells=FALSE)
+\S4method{extract}{SpatRaster,numeric}(x, y, xy=FALSE, raw=FALSE)
 
 \S4method{extract}{SpatVector,SpatVector}(x, y)
 }
 
 \arguments{
 \item{x}{SpatRaster or SpatVector of polygons}
-\item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
-\item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min} and \code{max} are accepted).}
+\item{y}{SpatVector (points, lines, or polygons). Alternatively, for points, a 2-column matrix or data.frame (x, y) or (lon, lat). Or a vector with cell numbers}
+\item{fun}{function to summarize the extracted data by line or polygon geometry. You can use \code{fun=table} to tabulate raster values for each line or polygon geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min}, \code{max} and \code{table} are accepted). Ignored if \code{y} has point geometry}
 \item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}
-\item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{xyFromCell}}}
+\item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. See \code{\link{xyFromCell}}}
 \item{ID}{logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of input SpatVector \code{y}}
 \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
@@ -68,7 +59,7 @@ When argument \code{y} is a \code{SpatVector} the first column has the ID (recor
 
 \value{data.frame, matrix or SpatVector}
 
-\seealso{\link{values}}
+\seealso{\link{values}, \link{zonal}}
 
 \examples{
 r <- rast(ncols=5, nrows=5, xmin=0, xmax=5, ymin=0, ymax=5)
@@ -112,21 +103,21 @@ y[i]
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 v <- v[1:2,]
-z <- rast(v, resolution=.1, names="test")
-values(z) <- 1:ncell(z)
 
 rf <- system.file("ex/elev.tif", package="terra")
 x <- rast(rf)
 extract(x, v, mean, na.rm=TRUE)
 
-e <- extract(z, v)
+z <- rast(v, resolution=.1, names="test")
+values(z) <- 1:ncell(z)
+e <- extract(z, v, ID=TRUE)
 e
 tapply(e[,2], e[,1], mean, na.rm=TRUE)
 
 x <- c(z, z*2, z/3)
 names(x) <- letters[1:3]
 
-e <- extract(x, v)
+e <- extract(x, v, ID=TRUE)
 de <- data.frame(e)
 aggregate(de[,2:4], de[,1,drop=FALSE], mean)
 }

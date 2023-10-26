@@ -15,7 +15,7 @@ This method returns the unique values in a SpatRaster, or removes duplicates rec
 }
 
 \usage{
-\S4method{unique}{SpatRaster}(x, incomparables=FALSE, na.rm=TRUE, as.raster=FALSE) 
+\S4method{unique}{SpatRaster}(x, incomparables=FALSE, digits=NA, na.rm=TRUE, as.raster=FALSE) 
 
 \S4method{unique}{SpatVector}(x, incomparables=FALSE, ...) 
 }
@@ -23,6 +23,7 @@ This method returns the unique values in a SpatRaster, or removes duplicates rec
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{incomparables}{logical. If \code{FALSE} and \code{x} is a SpatRaster: the unique values are determined for all layers together, and the result is a matrix. If \code{TRUE}, each layer is evaluated separately, and a list is returned. If \code{x} is a SpatVector this argument is as for a \code{data.frame}}
+  \item{digits}{integer. The number of digits for rounding the values before finding the unique values. Use \code{NA} means to not do any rounding}
   \item{na.rm}{logical. If \code{TRUE}, \code{NaN} is included if there are any missing values}  
   \item{as.raster}{logical. If \code{TRUE}, a single-layer categorical SpatRaster with the unique values is returned}  
   \item{...}{additional arguments passed on to \code{\link[base]{unique}}}  

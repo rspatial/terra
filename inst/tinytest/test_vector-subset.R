@@ -13,3 +13,5 @@ expect_equal(ncol(x), 2)
 expect_equal(unique(x$NAME_1), "Luxembourg")
 expect_equivalent(unlist(x[,2,drop=TRUE]), 8:11)	
 
+lux$ID_1 <- factor(LETTERS[1:12])
+expect_equal(class(lux$ID_1), "factor")

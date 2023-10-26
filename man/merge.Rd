@@ -5,37 +5,33 @@
 \alias{merge}
 \alias{merge,SpatRaster,SpatRaster-method}
 \alias{merge,SpatRasterCollection,missing-method}
-\alias{merge,SpatExtent,SpatExtent-method}
 \alias{merge,SpatVector,SpatVector-method}
 \alias{merge,SpatVector,data.frame-method}
 
 \title{ 
-Merge multiple SpatRaster objects or SpatExtent objects, or merge a SpatVector with a data.frame
+Merge SpatRasters, or merge a SpatVector with a data.frame
 }
 
 \description{
-Merge multiple SpatRasters to create a new SpatRaster object with a larger spatial extent. The SpatRasters must have the same origin and spatial resolution. In areas where the SpatRasters overlap, the values of the SpatRaster that is first in the sequence of arguments (or in the SpatRasterCollection) will be retained (unless \code{first=FALSE}. 
+Merge multiple SpatRasters to create a new SpatRaster object with a larger spatial extent. The SpatRasters must have the same origin and spatial resolution. In areas where the SpatRasters overlap, the values of the SpatRaster that is first in the sequence of arguments (or in the SpatRasterCollection) will be retained (unless \code{first=FALSE}). Cells that are \code{NA} are ignored unless \code{na.rm=FALSE}
 
-See \code{\link{classify}} to merge a \code{SpatRaster} and a \code{data.frame}. You can also merge SpatExtent objects. 
-
-There is a also a method for merging SpatVector with a data.frame; that is, to join the data.frame to the attribute table of the SpatVector.
+There is also a method for merging SpatVector with a data.frame; that is, to join the data.frame to the attribute table of the SpatVector.
 }
 
 \usage{
-\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, filename="", overwrite=FALSE, wopt=list())
+\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, filename="", ...)
-
-\S4method{merge}{SpatExtent,SpatExtent}(x, y, ...)
+\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, filename="", ...)
 
 \S4method{merge}{SpatVector,data.frame}(x, y, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatExtent}
-  \item{y}{object of same class as \code{x}}
+  \item{x}{SpatRaster, SpatRasterCollection, or SpatVector}
+  \item{y}{missing if \code{x} is a SpatRasterCollection. SpatRaster if \code{x} is a SpatRaster. data.frame if \code{x} is a SpatVector}
   \item{...}{if \code{x} is a SpatRaster: additional objects of the same class as \code{x}. If \code{x} is a SpatRasterCollection: options for writing files as in \code{\link{writeRaster}}. If \code{x} is a SpatVector, the same arguments as in \code{\link[base]{merge}}}
-  \item{first}{logical. If \code{TRUE}, in areas where rasters overlap, the first value that is not \code{NA} is used. Otherwise the last value that is not \code{NA} is used}
+  \item{first}{logical. If \code{TRUE}, in areas where rasters overlap, the first value is used. Otherwise the last value is used}
+  \item{na.rm}{logical. If \code{TRUE} values that are \code{NA} are ignored}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
@@ -43,15 +39,13 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
 
 
 \value{
-SpatRaster or SpatExtent
+SpatRaster or SpatVector
 }
 
 \seealso{
-Combining tiles with \code{\link{vrt}} may be more efficient. See \code{\link{mosaic}} for averaging overlapping regions. 
-}
+Combining tiles with \code{\link{vrt}} may be more efficient than using \code{merge}. See \code{\link{mosaic}} for averaging overlapping regions. 
 
-\note{
-You can use \code{merge} with \code{do.call} to merge a list of SpatRasters (see example). But note that if the list is named, these names are used by \code{merge}. So if all elements are named, there should be one element with a SpatRaster called \code{x} and another one called \code{y}. For example with \code{names(x)[1:2] <- c("x"m "y")}. You can also removed the names of the the first two elements (assuming these are SpatRasters) with \code{names(x)[1:2] <- ""}.
+See \code{\link{classify}} to merge a \code{SpatRaster} and a \code{data.frame} and \code{\link{union}} to combine SpatExtent objects. 
 }
 
 
@@ -64,7 +58,8 @@ m1 <- merge(x, y, z)
 m2 <- merge(z, y, x)
 m3 <- merge(y, x, z)
 
-# if you have many SpatRasters make a SpatRasterCollection from a list
+# if you have many SpatRasters, it may be convenient
+# to make a SpatRasterCollection
 rlist <- list(x, y, z)
 rsrc <- sprc(rlist)
 

@@ -101,6 +101,26 @@ rgb2hex <- function(x) {
     .Call(`_terra_PROJ_network`, enable, url)
 }
 
+.weighted_pearson <- function(x, y, weights, narm = TRUE) {
+    .Call(`_terra_weighted_pearson_cor`, x, y, weights, narm)
+}
+
+.pearson <- function(x, y, narm) {
+    .Call(`_terra_pearson_cor`, x, y, narm)
+}
+
+.stattest1 <- function(x, fun, narm) {
+    .Call(`_terra_stattest1`, x, fun, narm)
+}
+
+.stattest2 <- function(x, fun, narm) {
+    .Call(`_terra_stattest2`, x, fun, narm)
+}
+
+.unique_symmetric_rows <- function(x, y) {
+    .Call(`_terra_uniqueSymmetricRows`, x, y)
+}
+
 dist_lonlat <- function(lon1, lat1, lon2, lat2) {
     .Call(`_terra_dist_lonlat`, lon1, lat1, lon2, lat2)
 }

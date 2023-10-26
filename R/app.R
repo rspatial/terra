@@ -4,12 +4,7 @@
 
 setMethod("sapp", signature(x="SpatRaster"),
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
-#	x <- rast(lapply(as.list(x), function(i, ...) messages(fun(i, ..., wopt=wopt))))
-	if ((length(list(...))) > 1) {
-		x <- lapply(as.list(x), function(r, ...) fun(r, ...))
-	} else {
-		x <- lapply(as.list(x), fun)
-	}
+	x <- lapply(x, function(r) fun(r, ...))
 	x <- rast(x)
 	if (filename != "") {
 		writeRaster(x, filename, overwrite, wopt=wopt)
@@ -19,9 +14,11 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 }
 )
 
+
+
 setMethod("sapp", signature(x="SpatRasterDataset"),
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
-	x <- lapply(as.list(x), function(r, ...) app(r, fun, ...))
+	x <- lapply(as.list(x), function(r) app(r, fun, ...))
 	x <- rast(x)
 	if (filename != "") {
 		writeRaster(x, filename, overwrite, wopt=wopt)
@@ -30,6 +27,29 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	}
 }
 )
+
+
+export_args <- function(cores, ..., caller="app") {
+	vals <- list(...)
+	if (length(vals) < 1) return(NULL)
+	nms <- names(vals)
+	if (any(nms == "")) {
+		error(caller, "additional arguments must be named when using multiple cores")
+	}
+	for (i in seq_along(vals)) {
+		assign(nms[i], force(vals[i])) 
+	}
+	parallel::clusterExport(cores, nms, envir=environment())
+}
+
+## similar from predict
+#	dots <- list(...)
+#	if (length(dots) > 0) {
+#		nms <- names(dots)
+#		dotsenv <- new.env()
+#		lapply(1:length(dots), function(i) assign(nms[i], dots[[i]], envir=dotsenv))
+#		parallel::clusterExport(cls, nms, dotsenv)
+#	}
 
 
 setMethod("app", signature(x="SpatRaster"),
@@ -40,7 +60,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
-			x@ptr <- x@ptr$summary(txtfun, na.rm, opt)
+			x@cpp <- x@cpp$summary(txtfun, na.rm, opt)
 			return(messages(x, "app"))
 		}
 	}
@@ -115,14 +135,10 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	doclust <- FALSE
 	if (inherits(cores, "cluster")) {
 		doclust <- TRUE
-		ncores <- length(cores)
 	} else if (cores > 1) {
 		doclust <- TRUE
-		ncores <- cores
 		cores <- parallel::makeCluster(cores)
 		on.exit(parallel::stopCluster(cores), add=TRUE)
-		expnms <- names(list(...))
-		lapply(expnms, function(n) parallel::clusterExport(cores, n))
 	}
 
 	ncops <- nlyr(x) / nlyr(out)
@@ -130,6 +146,8 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=ncops, sources=sources(x))
 
 	if (doclust) {
+		ncores <- length(cores)
+		export_args(cores, ...)
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
 			icsz <- max(min(100, ceiling(b$nrows[i] / ncores)), b$nrows[i])
@@ -254,7 +272,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)
 			r <- rast()
-			r@ptr <- x@ptr$summary(txtfun, narm, opt)
+			r@cpp <- x@cpp$summary(txtfun, narm, opt)
 			return (messages(r, "app") )
 		}
 	}
@@ -278,14 +296,25 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	nc <- ifelse(nc > 1, ceiling(nc), 1) * 3
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nc, sources=unlist(sources(x)))
 
-	if (cores > 1) {
-		cls <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cls), add=TRUE)
+
+	if (inherits(cores, "cluster")) {
+		doclust <- TRUE
+	} else if (cores > 1) {
+		doclust <- TRUE
+		cores <- parallel::makeCluster(cores)
+		on.exit(parallel::stopCluster(cores), add=TRUE)
+	} else {
+		doclust <- FALSE
+	}
+
+	if (doclust) {
+		ncores <- length(cores)
+		export_args(cores, ...)
 		for (i in 1:b$n) {
 			v <- lapply(1:length(x), function(s) as.vector(readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)))
 			v <- do.call(cbind, v)
-			icsz <- max(min(100, ceiling(b$nrows[i] / cores)), b$nrows[i])
-			r <- parallel::parRapply(cls, v, fun, ..., chunk.size=icsz)
+			icsz <- max(min(100, ceiling(b$nrows[i] / ncores)), b$nrows[i])
+			r <- parallel::parRapply(cores, v, fun, ..., chunk.size=icsz)
 			if (test$trans) {
 				r <- t(r)
 			}

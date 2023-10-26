@@ -30,14 +30,15 @@ see \code{\link{writeCDF}} for writing NetCDF files.
 }
 
 \details{
-In writeRaster, and in other methods that generate SpatRaster objects, options for writing raster files to disk can be provided as additional arguments or, in a few cases, as the \code{wopt} argument (a named list) if the additional arguments are already used for a different purpose. The following options are available: 
+In writeRaster, and in other methods that generate SpatRaster objects, options for writing raster files to disk can be provided as additional arguments or, in a few cases, as the \code{wopt} argument (a named list) if the additional arguments are already used for a different purpose. See \code{\link{terraOptions}} to get or set default values. The following options are available: 
 
 \tabular{ll}{
 \bold{name} \tab \bold{description}\cr
 
-\code{datatype}\tab values for \code{datatype} are "INT1U", "INT2U", "INT2S", "INT4U", "INT4S", "FLT4S", "FLT8S". The first three letters indicate whether the datatype is integer (whole numbers) of a real number (decimal numbers), the fourth character indicates the number of bytes used (allowing for large numbers and/or more precision), and the  "S" or "U" indicate whether the values are signed (both negative and positive) or unsigned (positive values only).\cr
+\code{datatype}\tab values accepted are "INT1U", "INT2U", "INT2S", "INT4U", "INT4S", "FLT4S", "FLT8S". With GDAL >= 3.5 you can also use "INT8U" and "INT8S". And with GDAL >= 3.7 you can use also use "INT1S". See \code{\link{gdal}} to discover the GDAL version you are using.
+The first three letters indicate whether the datatype is an integer (whole numbers) of a real number ("float", decimal numbers), the fourth character indicates the number of bytes used for each number. Higher values allow for storing larger numbers and/or more precision; but create larger files. The  "S" or "U" indicate whether the values are signed (both negative and positive) or unsigned (zero and positive values only).\cr
 
-\code{filetype}\tab file format expresses as \href{https://gdal.org/drivers/raster/index.html}{GDAL driver names}. If this argument is not supplied, the driver is derived from the filename.\cr
+\code{filetype}\tab file format expresses as \href{https://gdal.org/drivers/raster/index.html}{GDAL driver names}. If this argument is not supplied, the driver is derived from the filename. You can use \code{gdal(drivers=TRUE)} to see what drivers are available in your installation\cr
 
 \code{gdal}\tab GDAL driver specific datasource creation options. See the GDAL documentation. For example, with the \href{https://gdal.org/drivers/raster/gtiff.html}{GeoTiff file format} you can use \code{gdal=c("COMPRESS=DEFLATE", "TFW=YES")}.\cr
 
@@ -53,11 +54,17 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 
 \code{NAflag}\tab numeric. value to represent missing (\code{NA} or \code{NaN}) values. See note\cr
 
-\code{verbose}\tab logical. If \code{TRUE} debugging information is printed.\cr
+\code{scale}\tab numeric. Cell values written to disk are divided by this value (default is 1). See \code{\link{scoff}}\cr
+
+\code{offset}\tab numeric. Value that is subtracted from the cell values written to disk (default is 0). See 
+\code{\link{scoff}} \cr
+
+\code{verbose}\tab logical. If \code{TRUE} debugging information is printed\cr
 
 \code{steps}\tab positive integers. In how many steps (chunks) do you want to process the data (for debugging)\cr
 
 \code{todisk}\tab logical. If \code{TRUE} processing operates as if the dataset is very large and needs to be written to a temporary file (for debugging).\cr
+
 }
 }
 

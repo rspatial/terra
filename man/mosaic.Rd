@@ -28,7 +28,7 @@ This method is similar to the simpler, but much faster, \code{\link{merge}} meth
   \item{x}{SpatRaster}
   \item{y}{object of same class as \code{x}}
   \item{...}{additional SpatRasters}
-  \item{fun}{character. One of "sum", "mean", "median", "min", "max"}
+  \item{fun}{character. One of "mean", "median", "min", "max", "modal", "sum", "first", "last"}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}

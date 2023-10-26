@@ -9,6 +9,8 @@
 \alias{intersect,SpatExtent,SpatVector-method}
 \alias{intersect,SpatExtent,SpatExtent-method}
 \alias{intersect,SpatRaster,SpatRaster-method}
+\alias{intersect,SpatRaster,SpatExtent-method}
+\alias{intersect,SpatExtent,SpatRaster-method}
 
 \title{ 
 Intersection
@@ -17,13 +19,15 @@ Intersection
 \description{
 You can intersect SpatVectors with each other or with a SpatExtent. Intersecting points with points uses the extent of \code{y} to get the intersection. Intersecting of points and lines is not supported because of numerical inaccuracies with that. You can use \code{\link{buffer}}, to create polygons from lines and use these with intersect. 
 
-You can also intersect two SpatExtents. 
+You can also intersect two SpatExtents.
 
-When intersecting two SpatRasters these need to be aligned (have the same origin and spatial resolution). The values of the returned SpatRaster are \code{TRUE} where both have input rasters have values, \code{FALSE} where one has values, and \code{NA} in all other cells. 
+When intersecting two SpatRasters these need to be aligned (have the same origin and spatial resolution). The values of the returned SpatRaster are \code{TRUE} where both input rasters have values, \code{FALSE} where one has values, and \code{NA} in all other cells. 
 
-See \code{\link{crop}} for intersection of a SpatRaster with a SpatExtent (or the extent of a SpatRaster or SpatVector).
+When intersecting a SpatExtent and a SpatRaster, the SpatExtent is first aligned to the raster cell boundaries.
 
-See \code{\link{relate}} to find out which geometries of a SpatVector intersect.
+See \code{\link{crop}} for the intersection of a SpatRaster with a SpatExtent (or the extent of a SpatRaster or SpatVector) if you want a SpatRaster (not a SpatExtent) as output.
+
+See \code{\link{is.related}(x, y, "intersects")} to find out which geometries of a SpatVector intersect. You can spatially subset a SpatVector with another one with \code{x\link{[}y]}.
 }
 
 \usage{
@@ -36,11 +40,15 @@ See \code{\link{relate}} to find out which geometries of a SpatVector intersect.
 \S4method{intersect}{SpatExtent,SpatExtent}(x, y)
 
 \S4method{intersect}{SpatRaster,SpatRaster}(x, y)
+
+\S4method{intersect}{SpatRaster,SpatExtent}(x, y)
+
+\S4method{intersect}{SpatExtent,SpatRaster}(x, y)
 }
 
 \arguments{
   \item{x}{SpatVector, SpatExtent, or SpatRaster}
-  \item{y}{SpatVector, SpatExtent, or SpatRaster if \code{x} is a SpatRaster}
+  \item{y}{SpatVector, SpatExtent, or SpatRaster}
 } 
 
 \value{
@@ -48,7 +56,7 @@ Same as \code{x}
 }
 
 \seealso{
-\code{\link{union}}, \code{\link{crop}}, \code{\link{relate}}
+\code{\link{union}}, \code{\link{crop}}, \code{\link{relate}}, \code{\link{[}}
 }
 
 \examples{
@@ -68,8 +76,8 @@ values(p) <- data.frame(pid=1:2, area=expanse(p))
 y <- intersect(v, p)
 
 r <- s <- rast(ncol=5, nrow=5, xmin=1, xmax=5, ymin=1, ymax=5)
-r[5:20] = 5:20
-s[11:20] = 11:20
+r[5:20] <- 5:20
+s[11:20] <- 11:20
 rs <- intersect(r, s)
 
 u <- shift(r, .8)

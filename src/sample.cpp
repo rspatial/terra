@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -83,12 +83,17 @@ std::vector<double> SpatRaster::readSample(unsigned src, size_t srows, size_t sc
 }
 
 
-SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
+SpatRaster SpatRaster::sampleRegularRaster(double size) {
 
-	if ((size >= ncell())) {
+	if (size >= ncell()) {
 		return( *this );
 	}
-
+	if (size < 0.5) {
+		SpatRaster out;
+		out.setError("sample size must be > 0");
+		return out;
+	}
+	
 	double f = std::min(1.0, sqrt(size / ncell()));
 	size_t nr = std::min((size_t)ceil(nrow() * f), nrow());
 	size_t nc = std::min((size_t)ceil(ncol() * f), ncol());
@@ -99,9 +104,7 @@ SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
 
-	std::vector<int> vt = getValueType();
-	std::sort(vt.begin(), vt.end());
-	vt.erase(std::unique(vt.begin(), vt.end()), vt.end());
+	std::vector<int> vt = getValueType(true);
 	if (vt.size() == 1) {
 		out.setValueType(vt[0]);
 	}
@@ -130,24 +133,30 @@ SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 }
 
 
-SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc) {
+SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc, bool warn) {
 
 	SpatRaster out = geometry(nlyr(), true);
 	if ((nr == 0) || (nc ==0)) {
 		out.setError("number of rows and columns must be > 0");
 	}
 
-	nr = std::min(nr, nrow());
-	nc = std::min(nc, ncol());
+	if (nr > nrow()) {
+		if (warn) out.addWarning("number of rows cannot be larger than nrow(x)");
+		nr = nrow();
+	}
+	if (nc > ncol()) {
+		if (warn) out.addWarning("number of rows cannot be larger than nrow(x)");
+		nc = ncol();
+	}
+
 	if ((nc == ncol()) && (nr == nrow())) {
 		return( *this );
 	}
+
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
 
-	std::vector<int> vt = getValueType();
-	std::sort(vt.begin(), vt.end());
-	vt.erase(std::unique(vt.begin(), vt.end()), vt.end());
+	std::vector<int> vt = getValueType(true);
 	if (vt.size() == 1) {
 		out.setValueType(vt[0]);
 	}
@@ -176,7 +185,7 @@ SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc) {
 }
 
 
-std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::sampleRegularValues(double size, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
 	if (!source[0].hasValues) return (out);
@@ -267,7 +276,6 @@ std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_
 }
 
 
-
 std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){
 	std::default_random_engine gen(seed);
 	std::uniform_int_distribution<> U(0, N-1);
@@ -279,62 +287,15 @@ std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){
 	return sample;
 }
 
-
 std::vector<size_t> sample_replace_weights(size_t size, size_t N, std::vector<double> prob, unsigned seed){
-
-	// normalize prob
-	double maxw = *max_element(prob.begin(), prob.end());
-	for (double& d : prob)  d /= maxw;
-	double minw = *min_element(prob.begin(), prob.end());
-
-	std::default_random_engine gen(seed);
-	std::uniform_int_distribution<> U(0, N-1);
-	std::vector<size_t> sample;
-	sample.reserve(size);
-
-	std::uniform_real_distribution<> Uw(minw, 1);
-	size_t cnt = 0;
-	size_t cnt2 = 0;
-	size_t ssize = size * 10;
-	while (cnt < size) {
-		double w = Uw(gen);
-		double v = U(gen);
-		if (prob[v] >= w) {
-			sample.push_back(v);
-			cnt++;
-		} else {
-			cnt2++;
-			if (cnt2 > ssize) cnt = size;
-		}
-	}
+	std::discrete_distribution<int> dist(std::begin(prob), std::end(prob));
+	std::mt19937 gen;
+	gen.seed(seed);
+	std::vector<size_t> sample(size);
+	for(auto & i: sample) i = dist(gen);
 	return sample;
 }
 
-/*
-std::vector<size_t> sample_replace_weights_gen(size_t size, size_t N, std::vector<double> prob, std::default_random_engine gen){
-
-	// normalize prob
-	double minw = *min_element(prob.begin(),prob.end());
-	double maxw = *max_element(prob.begin(),prob.end()) - minw;
-	for (double& d : prob)  d = (d - minw) / maxw;
-
-	std::uniform_int_distribution<> U(0, N-1);
-	std::vector<size_t> sample;
-	sample.reserve(size);
-
-	std::uniform_real_distribution<> Uw(0, 1);
-	size_t cnt = 0;
-	while (cnt < size) {
-		double w = Uw(gen);
-		double v = U(gen);
-		if (prob[v] >= w) {
-			sample.push_back(v);
-			cnt++;
-		}
-	}
-	return sample;
-}
-*/
 
 std::vector<size_t> sample_no_replace(size_t size, size_t N, unsigned seed){
 	size_t one = 1;
@@ -470,15 +431,15 @@ std::vector<size_t> sample(size_t size, size_t N, bool replace, std::vector<doub
 
 
 
-std::vector<std::vector<double>> SpatRaster::sampleRandomValues(unsigned size, bool replace, unsigned seed) {
+std::vector<std::vector<double>> SpatRaster::sampleRandomValues(double size, bool replace, unsigned seed) {
 
 	double nc = ncell();
 	std::vector<size_t> cells;
 	std::vector<double> w;
 	if (replace) {
-		cells = sample(size, nc, false, w, seed);
+		cells = sample((size_t)size, nc, false, w, seed);
 	} else {
-		cells = sample(size, nc, true, w, seed);
+		cells = sample((size_t)size, nc, true, w, seed);
 	}
 
 	std::vector<double> dcells(cells.begin(), cells.end());
@@ -487,7 +448,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRandomValues(unsigned size, b
 }
 
 
-SpatRaster SpatRaster::sampleRandomRaster(unsigned size, bool replace, unsigned seed) {
+SpatRaster SpatRaster::sampleRandomRaster(double size, bool replace, unsigned seed) {
 
 	unsigned nsize;
 	unsigned nr = nrow();
@@ -532,11 +493,8 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 		std::vector<double> w;
 		w.reserve(r.size());
 		for (size_t i=0; i<r.size(); i++) {
-			if (i == 0) {
-			}
 			double ww = std::abs(cos(M_PI * r[i]/180.0));
 			w.push_back(ww );
-
 		}
 
 		std::vector	<size_t> x = sample(size, r.size(), true, w, seed);
@@ -669,7 +627,7 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 }
 
 
-std::vector<size_t> SpatRaster::sampleCells(unsigned size, std::string method, bool replace, unsigned seed) {
+std::vector<size_t> SpatRaster::sampleCells(double size, std::string method, bool replace, unsigned seed) {
 
 	std::default_random_engine gen(seed);
 	std::vector<size_t> out;
@@ -843,7 +801,7 @@ SpatVector SpatVector::sample_geom(std::vector<unsigned> n, std::string method, 
 		out.setError("length of samples does not match number of geoms");
 		return out;
 	}
-	if (n.size() == 0) {
+	if (n.empty()) {
 		out.srs = srs;
 		return out;
 	}

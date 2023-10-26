@@ -14,7 +14,7 @@ The number of layers in the output SpatRaster equals the number of unique values
 
 For example, if you have a SpatRaster with 6 layers, you can use \code{index=c(1,1,1,2,2,2)} and \code{fun=sum}. This will return a SpatRaster with two layers. The first layer is the sum of the first three layers in the input SpatRaster, and the second layer is the sum of the last three layers in the input SpatRaster. Indices are recycled such that \code{index=c(1,2)} would also return a SpatRaster with two layers (one based on the odd layers (1,3,5), the other based on the even layers (2,4,6)). 
 
-The index can also be one of the following values to group by time period (if \code{x} has the appropriate \code{\link{time}} values): "years", "months", "yearmonths", "days", "week" (ISO 8601 week number), or "doy" (day of the year).
+The index can also be one of the following values to group by time period (if \code{x} has the appropriate \code{\link{time}} values): "years", "months", "yearmonths", "week" (the ISO 8601 week number, see Details), "yearweeks", "days", "doy" (day of the year), "7days" (seven-day periods starting at Jan 1 of each year), "10days", or "15days". It can also be a function that makes groups from time values.
 
 See \code{\link{app}} or \code{\link{Summary-methods}} if you want to use a more efficient function that returns multiple layers based on \bold{all} layers in the SpatRaster.
 }
@@ -36,6 +36,10 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to use a more
 
 \value{
 SpatRaster
+}
+
+\details{
+"week" follows the ISO 8601 definition. Weeks start on Monday. If the week containing 1 January has four or more days in the new year, then it is considered week "01". Otherwise, it is the last week of the previous year (week "52" or "53", and the next week is week 1.
 }
 
 \seealso{\code{\link{app}}, \code{\link{Summary-methods}}}

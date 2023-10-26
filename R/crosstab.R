@@ -58,6 +58,16 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 			res <- res[!i,  ,drop=FALSE]
 		}
 
+		ff <- is.factor(x)
+		if (any(ff) && (digits >= 0)) {
+			ff <- which(ff)
+			v <- levels(x)
+			for (i in ff) {
+				j <- match(res[,i], v[[i]][,1])
+				res[,i] <- v[[i]][j,2]
+			}
+		}
+
 		if (!long) {
 			f <- eval(parse(text=paste("Freq ~ ", paste(nms , collapse="+"))))
 			res <- stats::xtabs(f, data=res, addNA=useNA)
@@ -65,6 +75,7 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 			res <- res[res$Freq > 0,  ,drop=FALSE]
 			res <- res[order(res[,1], res[,2]), ]
 			rownames(res) <- NULL
+			colnames(res)[ncol(res)] <- "n"
 		}
 		return(res)
 	}

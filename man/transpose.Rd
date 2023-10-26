@@ -11,7 +11,7 @@
 \title{Transpose}
 
 \description{
-Transpose a SpatRaster
+Transpose a SpatRaster or SpatVector
 }
 
 \usage{
@@ -23,7 +23,7 @@ Transpose a SpatRaster
 }
 
 \arguments{
- \item{x}{SpatRaster}
+ \item{x}{SpatRaster or SpatVector}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

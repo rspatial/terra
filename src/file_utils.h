@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -19,6 +19,7 @@
 #define FILEUTILS_GUARD
 
 bool file_exists(const std::string& name);
+bool path_exists(std::string path);
 bool filepath_exists(const std::string& name);
 bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg);
 std::string getFileExt(const std::string& s);

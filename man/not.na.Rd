@@ -13,11 +13,12 @@ Shortcut method to avoid the two-step \code{!is.na(x)}
 }
 
 \usage{
-\S4method{not.na}{SpatRaster}(x, filename="", ...)
+\S4method{not.na}{SpatRaster}(x, falseNA, filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
+  \item{falseNA}{logical. Should the result be \code{TRUE, NA} instead of \code{TRUE, FALSE}?}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

@@ -9,6 +9,7 @@ function(x, y) {
 	} else if (! length(y) == 4 ) {
 		error("extend", 'argument "y" should be a vector of 1, 2, or 4 elements')
 	}
+	y <- abs(y)
 	e <- as.vector(x)
 	e[1] <- e[1] - y[1]
 	e[2] <- e[2] + y[2]
@@ -27,7 +28,7 @@ function(x, y, snap="near", fill=NA, filename="", overwrite=FALSE, ...) {
 
 		if (is.vector(y)) {
 			if (length(y) <= 2) {
-				y <- round(y)
+				y <- rep_len(round(y), 2)
 				stopifnot(all(y >= 0))
 				adj <- rev(y) * res(x)
 				y <- as.vector(ext(x))
@@ -37,6 +38,10 @@ function(x, y, snap="near", fill=NA, filename="", overwrite=FALSE, ...) {
 				y[4] <- y[4] + adj[2]
 				y <- ext(y)
 			} else if (length(y) == 4) {
+				y[1] <- y[1] - adj[1]
+				y[2] <- y[2] + adj[2]
+				y[3] <- y[3] - adj[3]
+				y[4] <- y[4] + adj[4]
 				y <- ext(y)
 			} else {
 				error("extend", "if 'y' is a vector it should have 1, 2, or four numbers")
@@ -50,7 +55,7 @@ function(x, y, snap="near", fill=NA, filename="", overwrite=FALSE, ...) {
 	}
 
 	opt <- spatOptions(filename, overwrite, ...)
-	x@ptr <- x@ptr$expand(y@ptr, snap[1], fill[1], opt)
+	x@cpp <- x@cpp$expand(y@cpp, snap[1], fill[1], opt)
 	messages(x, "extend")
 }
 )

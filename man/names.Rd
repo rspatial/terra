@@ -4,25 +4,12 @@
 \alias{name<-}
 \alias{names}
 \alias{names<-}
-\alias{varnames}
-\alias{varnames<-}
-\alias{longnames}
-\alias{longnames<-}
 
 \alias{names,SpatRaster-method}
 \alias{names<-,SpatRaster-method}
-\alias{varnames,SpatRaster-method}
-\alias{varnames<-,SpatRaster-method}
-
-\alias{longnames,SpatRaster-method}
-\alias{longnames<-,SpatRaster-method}
 
 \alias{names,SpatRasterDataset-method}
 \alias{names<-,SpatRasterDataset-method}
-\alias{varnames,SpatRasterDataset-method}
-\alias{varnames<-,SpatRasterDataset-method}
-\alias{longnames,SpatRasterDataset-method}
-\alias{longnames<-,SpatRasterDataset-method}
 
 \alias{names,SpatRasterCollection-method}
 \alias{names<-,SpatRasterCollection-method}
@@ -36,9 +23,7 @@
 \title{Names of Spat* objects}
 
 \description{
-Get or set the names of the layers of a SpatRaster or the attributes of a SpatVector. With \code{longnames} you can get or set the "long names" of a SpatRaster or SpatRasterDataset. 
-
-For a SpatRaster, you can also get/set a variable name or long name (one per data source).
+Get or set the names of the layers of a SpatRaster or the attributes of a SpatVector. 
 
 See \code{\link{set.names}} for in-place setting of names.
 }
@@ -48,26 +33,9 @@ See \code{\link{set.names}} for in-place setting of names.
 
 \S4method{names}{SpatRaster}(x)<-value
 
-\S4method{varnames}{SpatRaster}(x)
-
-\S4method{varnames}{SpatRaster}(x)<-value
-
-\S4method{longnames}{SpatRaster}(x)
-
-\S4method{longnames}{SpatRaster}(x)<-value
-
-
 \S4method{names}{SpatRasterDataset}(x)
 
 \S4method{names}{SpatRasterDataset}(x)<-value
-
-\S4method{varnames}{SpatRasterDataset}(x)
-
-\S4method{varnames}{SpatRasterDataset}(x)<-value
-
-\S4method{longnames}{SpatRasterDataset}(x)
-
-\S4method{longnames}{SpatRasterDataset}(x)<-value
 
 \S4method{names}{SpatVector}(x)
 
@@ -92,14 +60,6 @@ s <- rast(ncols=5, nrows=5, nlyrs=3)
 nlyr(s)
 names(s)
 names(s) <- c("a", "b", "c")
-names(s)
-
-# space is not valid
-names(s)[2] <- "hello world"
-names(s)
-
-# two invalid names
-names(s) <- c("a", "  a  ", "3")
 names(s)
 
 # SpatVector names

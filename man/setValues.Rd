@@ -35,7 +35,9 @@ Set cell values of a SpatRaster or the attributes of a SpatVector. For large Spa
 
 \arguments{
  \item{x}{SpatRaster or SpatVector}
- \item{value}{For SpatRaster: numeric, matrix or data.frame. The length of the numeric values must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. The number of columns of the matrix or data.frame must match the number of layers of \code{x}, and the number of rows must match the number of cells of \code{x}. For SpatVector: data.frame, matrix, vector, or NULL}
+ \item{value}{For SpatRaster: numeric, matrix or data.frame. The length of the numeric values must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. The number of columns of the matrix or data.frame must match the number of layers of \code{x}, and the number of rows must match the number of cells of \code{x}. It is also possible to use a matrix with the same number of rows as \code{x} and the number of columns that matches \code{ncol(x) * nlyr(x)}. 
+
+ For SpatVector: data.frame, matrix, vector, or NULL}
  \item{values}{Same as for \code{value}}
  \item{keeptime}{logical. If \code{TRUE} the time stamps are kept}
  \item{keepunits}{logical. If \code{FALSE} the units are discarded}

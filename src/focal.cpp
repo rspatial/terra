@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -61,7 +61,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	int_64 nc = ncol();
 	int_64 wr = w[0] / 2;
 	int_64 wc = w[1] / 2;
-	//may be unexptected
+	//may be unexpected
 	//wr = std::min(wr, nr-1);
 	//wc = std::min(wc, nc-1);
 
@@ -89,7 +89,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	readValues(d, startrow, readnrows, 0, nc);
 	std::vector<double> out(n, fillvalue);
 
-//Rcpp::Rcout << "sr " << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl;
+// << "sr " << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl;
 
 
 	for (int_64 r=0; r < nrows; r++) {
@@ -593,5 +593,4 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 	readStop();
 	return(out);
 }
-
 
