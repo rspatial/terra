@@ -39,10 +39,12 @@ SpatRaster
 
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra")) + 1  
-x <- sapp(s, terrain)
 
+#SpatRasterDataset
 sd <- sds(s*2, s/2)
 y <- sapp(sd, mean)
+z <- sapp(sd, \(i) 2 * mean(i))
+
 }
  
 \keyword{methods}

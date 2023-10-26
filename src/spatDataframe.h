@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -16,12 +16,16 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 
+#ifndef SPATDATAFRAME_GUARD
+#define SPATDATAFRAME_GUARD
+
 #include <vector>
 #include <string>
 //#include "spatMessages.h"
 #include "spatBase.h"
 #include "spatTime.h"
 #include "spatFactor.h"
+#include <limits>
 
 class SpatDataFrame {
 	public:
@@ -35,19 +39,21 @@ class SpatDataFrame {
 		void addWarning(std::string s) { msg.addWarning(s); }
 		bool hasError() { return msg.has_error; }
 		bool hasWarning() { return msg.has_warning; }
-		std::string getWarnings() { return msg.getWarnings(); }
+		std::vector<std::string> getWarnings() { return msg.getWarnings(); }
 		std::string getError() { return msg.getError(); }
 	
 		std::vector<std::string> names;
 		std::vector<unsigned> itype; //0 double, 1 long, 2 string, 3 bool, 4 time, 5 factor
 		std::vector<unsigned> iplace;
-		std::vector< std::vector<double>> dv;
-		std::vector< std::vector<long>> iv;
-		std::vector< std::vector<std::string>> sv;
-		std::vector< std::vector<int8_t>> bv;
-		std::vector< SpatTime_v> tv;
-		std::vector< SpatFactor> fv;		
+		std::vector<std::vector<double>> dv;
+		std::vector<std::vector<long>> iv;
+		std::vector<std::vector<std::string>> sv;
+		std::vector<std::vector<int8_t>> bv;
+		std::vector<SpatTime_v> tv;
+		std::vector<SpatFactor> fv;		
 		std::string NAS = "____NA_+";
+		long NAL = std::numeric_limits<long>::min();
+		SpatTime_t NAT = std::numeric_limits<SpatTime_t>::min();
 		
 		unsigned nrow();
 		unsigned ncol();
@@ -131,5 +137,9 @@ class SpatDataFrame {
 		std::vector<std::string> one_string();
 		SpatDataFrame unique();
 		size_t strwidth(unsigned i);
+
+		SpatDataFrame sortby(std::string field, bool descending);
 };
+
+#endif //SPATDATAFRAME_GUARD
 

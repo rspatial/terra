@@ -26,6 +26,8 @@ Rectify a rotated SpatRaster into a non-rotated object
 }
 
 
+\seealso{\code{\link{is.rotated}}}
+
 \value{
 SpatRaster
 }

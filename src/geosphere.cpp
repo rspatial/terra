@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -40,6 +40,8 @@
 #endif
 
 
+#include "Rcpp.h"
+
 inline void normLon(double &lon) {
 	lon = fmod(lon + 180, 360.) - 180;
 }
@@ -67,6 +69,7 @@ double dist_lonlat(const double &lon1, const double &lat1, const double &lon2, c
 }
 
 
+// [[Rcpp::export]]
 void dest_lonlat(double slon, double slat, double sazi, double dist, double &dlon, double &dlat, double &dazi) {
 	double a = 6378137.0;
 	double f = 1/298.257223563;
@@ -131,7 +134,6 @@ double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, do
 
 
 
-#include "Rcpp.h"
 
 // [[Rcpp::export]]
 double dist2segment(double plon, double plat, double lon1, double lat1, double lon2, double lat2) {
@@ -200,7 +202,7 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 		std::vector<int> insect;
 		for (size_t g=0; g<ng; g++) {
 			pg.geoms = { geoms[g] };
-			insect = pg.relate(x, "intersects");
+			insect = pg.relate(x, "intersects", true, true);
 			std::vector<std::vector<double>> xy = geoms[g].coordinates();
 			size_t nseg = xy[0].size() - 1;
 			for (size_t i=0; i<np; i++) {
@@ -280,7 +282,7 @@ std::vector<std::vector<double>> intermediate(double lon1, double lat1, double l
 }
 
 
-void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, double &interval, bool &adjust, geod_geodesic &g) {
+void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, const double &interval, const bool &adjust, geod_geodesic &g) {
 	size_t np = lon.size();
 	if (np < 2) {
 		return;
@@ -296,6 +298,11 @@ void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, doubl
 			yout.reserve(sz);
 		}
 		double d, azi1, azi2;
+		//double hlat = lat[i] + (lat[i+1] - lat[i])/2;
+		//double hlon = lon[i] + (lon[i+1] - lon[i])/2;
+		//geod_inverse(&g, lat[i], lon[i], hlat, hlon, &d1, &azi1, &azi2);
+		//geod_inverse(&g, hlat, hlon, lat[i+1], lon[i+1], &d2, &azi1, &azi2);
+		//double d = d1 + d2;
 		geod_inverse(&g, lat[i], lon[i], lat[i+1], lon[i+1], &d, &azi1, &azi2);
 		size_t n = floor(d / interval);
 		xout.push_back(lon[i]);
@@ -303,10 +310,12 @@ void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, doubl
 		if (n < 2) {
 			continue;
 		}
-		double step = adjust ? d / n : d;
+		double step = adjust ? d / n : interval;
 		double newlat, newlon;
 		for (size_t j=1; j<n; j++) {
 			geod_direct(&g, lat[i], lon[i], azi1, step*j, &newlat, &newlon, &azi2);
+			// avoid -180 to 180 jumps
+			if ((lon[i] == -180) && (newlon == 180)) newlon = -180;
 			xout.push_back(newlon);
 			yout.push_back(newlat);
 		}
@@ -359,7 +368,7 @@ void make_dense_planar(std::vector<double> &x, std::vector<double> &y, double &i
 }
 
 
-SpatVector SpatVector::densify(double interval, bool adjust) {
+SpatVector SpatVector::densify(double interval, bool adjust, bool ignorelonlat) {
 
 	SpatVector out;
 	if (type() == "points") {
@@ -378,7 +387,7 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 	}
 	size_t n = size();
 	out.reserve(n);
-	if (is_lonlat()) {
+	if (is_lonlat() && (!ignorelonlat)) {
 		double a = 6378137.0;
 		double f = 1/298.257223563;
 		struct geod_geodesic geod;
@@ -394,6 +403,7 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 					}
 				}
 			}
+			g.computeExtent();
 			out.addGeom(g);
 		}
 	} else {
@@ -411,6 +421,7 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 			out.addGeom(g);
 		}
 	}
+	out.df = df;
 	return out;
 }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -18,7 +18,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-//#include <regex>
+#include <cmath>
 #include "string_utils.h"
 
 
@@ -38,7 +38,7 @@ SpatTime_t yeartime(const long &year) {
 
 
 
-SpatTime_t get_time(long year, unsigned month, unsigned day, unsigned hr, unsigned min, unsigned sec) {
+SpatTime_t get_time(long year, unsigned month, unsigned day, int hr, int min, int sec) {
 
     static const unsigned mdays[2][12] = {
         {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334},
@@ -73,7 +73,7 @@ SpatTime_t get_time(long year, unsigned month, unsigned day, unsigned hr, unsign
 SpatTime_t get_time_str(std::vector<std::string> s) {
 	std::vector<long> d(6, 0);
 	for (size_t i=0; i<s.size(); i++) {
-		d[i] = stoi(s[i]);
+		d[i] = stol(s[i]);
 	}
 	return get_time(d[0], d[1], d[2], d[3], d[4], d[5]);
 }
@@ -95,7 +95,7 @@ std::vector<int> get_date(SpatTime_t x) {
 			x += yeartime(year);
 		}
 	} else if (x > 0) {
-		while (x > 0) {
+		while (x >= 0) {
 			x -= yeartime(year);
 			year++;
 		}
@@ -103,8 +103,9 @@ std::vector<int> get_date(SpatTime_t x) {
 		x += yeartime(year);
 	}
 	int month;
+	int leap = isleap(year);
 	for (month=1; month<13; month++) {
-		if (x < (secdays[isleap(year)][month])) {
+		if (x < (secdays[leap][month])) {
 			break;
 		}
 	}
@@ -143,9 +144,22 @@ void replace_one_char(std::string& s, char from, char to) {
 }
 
 
+int getyear(std::string s) {
+	int y;
+	try {
+		y = stoi(s);
+	} catch(...) {
+		y = 1970;
+	}
+	return y;
+}
+
+
 std::vector<int> getymd(std::string s) {
+
 //	s = std::regex_replace(s, std::regex("T"), " ");
-	replace_one_char(s, 'T', ' ');
+	lowercase(s);
+	replace_one_char(s, 't', ' ');
 
 	size_t ncolon = std::count(s.begin(), s.end(), ':');
 	std::vector<std::string> x;
@@ -154,10 +168,7 @@ std::vector<int> getymd(std::string s) {
 		x = splitstr(s, " ");
 		s = x[0];
 		if (x.size() > 1) {
-			std::string f = s;
-			f.erase(std::remove(f.begin(), f.end(), 'Z'), f.end());
-			x[1] = f;
-			//x[1] = std::regex_replace(s, std::regex("Z"), "");
+			x[1].erase(std::remove(x[1].begin(), x[1].end(), 'z'), x[1].end());
 			y = splitstr(x[1], ":");
 		}
 	}
@@ -166,12 +177,18 @@ std::vector<int> getymd(std::string s) {
 	if (ndash == 2) {
 		x = splitstr(s, "-");
 	}
-	x.insert( x.end(), y.begin(), y.end() );
+	x.insert(x.end(), y.begin(), y.end() );
 	std::vector<int> out(x.size());
 
-	for (size_t i=0; i<out.size(); i++){
-		out[i] = std::stoi(x[i]);
+	try {
+		for (size_t i=0; i<out.size(); i++){
+			out[i] = std::stoi(x[i]);
+		}
+		out.resize(6, 0);
+	} catch(...) {
+		out = std::vector<int>(6);
 	}
+	
 	return out;
 }
 
@@ -179,6 +196,7 @@ std::vector<int> getymd(std::string s) {
 
 SpatTime_t get_time_string(std::string s) {
 
+/*
 	std::vector<std::string> ss;
 	size_t ncolon = std::count(s.begin(), s.end(), ':');
 	if (ncolon > 0) {
@@ -192,16 +210,15 @@ SpatTime_t get_time_string(std::string s) {
 	} else {
 		return time;
 	}
-	time = get_time(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]), 0, 0, 0);
+*/
 
-//	} else {
-//		time = get_time_noleap(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]));
-//	}
-	return time;
+	std::vector<int> d = getymd(s);
+	return get_time(d[0], d[1], d[2], d[3], d[4], d[5]);
+
 }
 
-SpatTime_t time_from_hour(int syear, int smonth, int sday, double nhours) {
-	SpatTime_t time = get_time(syear, smonth, sday, 0, 0, 0);
+SpatTime_t time_from_hour(int syear, int smonth, int sday, int shour, double nhours) {
+	SpatTime_t time = get_time(syear, smonth, sday, shour, 0, 0);
 	time += nhours * 3600;
 	return time;
 }
@@ -221,21 +238,90 @@ SpatTime_t time_from_day(int syear, int smonth, int sday, double ndays) {
 }
 
 
-SpatTime_t time_from_day_noleap(int syear, int smonth, int sday, double ndays) {
-    static const int md[13] =  {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+
+SpatTime_t get_time_noleap(int syear, int smonth, int sday, int shour, int smin, int ssec, double n, std::string step) {
+
+	static const int md[13] =  {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+
+	// set start to beginning of year 
+	double s = ssec + smin * 60 + shour * 3600 + (sday-1) * 24 * 3600;
+	for (int i=0; i < smonth; i++) {
+		s += (md[i] * 24 * 3600);
+	}
+
+	double ndays;
+	if (step == "hours") {
+		ndays = (n + s/3600) / 24;
+	} else if (step == "minutes") {
+		n += s/60;
+		ndays = n / 1440;
+	} else if (step == "seconds") {
+		ndays = (n+s) / 86400;
+	} else if (step == "days") {
+		ndays = n + s/86400;
+	} else {
+		return 0;
+	}
+
 	int year = ndays / 365;
-	//int doy = ndays % 365;
-	int doy = ndays - (year * 365);
+	double rem = ndays - year * 365;
 	int month;
 	for (month=1; month<13; month++) {
-		if (doy < md[month]) {
+		if (rem < md[month]) {
 			break;
 		}
 	}
-	month--;
-	int day = doy - md[month];
-	SpatTime_t time = get_time(year+syear, month+smonth, day+sday, 0, 0, 0);
-	return time;
+	rem -= md[month-1];
+	int day = rem;
+	rem -= day;
+	day++;
+	rem *= 24;
+	int hr = rem;
+	rem -= hr;
+	int mn = rem * 60;
+	rem -= mn;
+	int sc = rem * 60;
+	
+	return get_time(year+syear, month, day, hr, mn, sc);
+}
+
+
+
+SpatTime_t get_time_360(int syear, int smonth, int sday, int shour, int smin, int ssec, double n, std::string step) {
+
+	// set start to beginning of year 
+	double s = ssec + smin * 60 + shour * 3600 + (sday-1) * 24 * 3600 + (smonth-1) * 30;
+
+	double ndays;
+	if (step == "hours") {
+		ndays = (n + s/3600) / 24;
+	} else if (step == "minutes") {
+		n += s/60;
+		ndays = n / 1440;
+	} else if (step == "seconds") {
+		ndays = (n+s) / 86400;
+	} else if (step == "days") {
+		ndays = n + s/86400;
+	} else {
+		return 0;
+	}
+
+	int year = ndays / 360;
+	double rem = ndays - year * 360;
+	int month = rem / 30;
+	rem -= month * 30;
+	month++;
+	int day = rem;
+	rem -= day;
+	day++;
+	rem *= 24;
+	int hr = rem;
+	rem -= hr;
+	int mn = rem * 60;
+	rem -= mn;
+	int sc = rem * 60;
+	
+	return get_time(year+syear, month, day, hr, mn, sc);
 }
 
 
@@ -262,9 +348,15 @@ SpatTime_t parse_time(std::string x) {
 	lrtrim(x);
 	std::vector<std::string> s = strsplit(x, " ");
 
-	std::vector<std::string> time = strsplit(s[0], "-");
+	std::vector<std::string> time;
+	if ((!s[0].empty()) && (s[0].substr(0, 1) != "-")) {
+		time = strsplit(s[0], "-");
+	} else {
+		time = {s[0]};		
+	}
+
 	if (time.size() == 1) {
-		return stoi(time[0]);
+		return stoll(time[0]);
 	} else if (time.size() != 3) {
 		return 0;
 	}
@@ -279,76 +371,3 @@ SpatTime_t parse_time(std::string x) {
 	return get_time_str(time);
 }
 
-
-/*
-
-SpatTime_t get_time_noleap(long year, unsigned month, unsigned day=15, unsigned hr=0, unsigned min=0, unsigned sec=0) {
-
-    static const unsigned mdays[12] =
-		{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
-	// the first day does not count, we start at 1970-01-01
-    // 24 * 3600 = 86400
-	SpatTime_t time = -86400;
-
-	if (year < 1970) {
-		for (long y = year; y < 1970; y++){
-			time -= 31536000;
-		}
-	} else {
-		for (long y = 1970; y < year; y++) {
-			time += 31536000;
-		}
-	}
-	time += (mdays[month-1] + day) * 86400;
-	time += (hr * 3600) + (min * 60) + sec;
-    return time;
-}
-
-
-
-SpatTime_t get_time_noleap_day(long long day, SpatTime_t offset=0) {
-
-    static const int cumdays[12] =
-        {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
-
-	int year = day / 365;
-	int doy = day % 365;
-
-	int month;
-	for (month=1; month<13; month++) {
-		if (doy < cumdays[month]) {
-			break;
-		}
-	}
-	day = day - cumdays[month-1];
-	SpatTime_t time = get_time(year, month, day, 0, 0, 0);
-	return (offset + time);
-}
-
-
-
-SpatTime_t get_time360(long year, unsigned month, unsigned day=15, unsigned hr=0, unsigned min=0, unsigned sec=0) {
-
-    static const unsigned mdays[12] =
-        {0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330};
-	// the first day does not count, we start at 1970-01-01
-    // 24 * 3600 = 86400
-	SpatTime_t time = -86400;
-
-	if (year < 1970) {
-		for (long y = year; y < 1970; y++){
-			time -=  31104000; //360 * 86400;
-		}
-	} else {
-		for (long y = 1970; y < year; y++) {
-			time += 31104000;
-		}
-	}
-
-	time += (mdays[month-1] + day) * 86400;
-
-	time += (hr * 3600) + (min * 60) + sec;
-    return time;
-}
-
-*/

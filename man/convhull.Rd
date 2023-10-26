@@ -6,24 +6,28 @@
 \alias{convHull,SpatVector-method}
 \alias{minRect}
 \alias{minRect,SpatVector-method}
+\alias{minCircle}
+\alias{minCircle,SpatVector-method}
 
 \title{ 
-Convex hull and minimal rotated rectangle
+Convex hull, minimal bounding rotated rectangle, and minimal bounding circle
 }
 
 \description{
-Get the convex hull or the minimal rotated rectangle of a SpatVector
+Get the convex hull, the minimal bounding rotated rectangle, or minimal bounding circle of a SpatVector
 }
 
 \usage{
 \S4method{convHull}{SpatVector}(x, by="")
 
 \S4method{minRect}{SpatVector}(x, by="")
+
+\S4method{minCircle}{SpatVector}(x, by="")
 }
 
 \arguments{
   \item{x}{SpatVector}
-  \item{by}{character (variable name), to make convex hulls by group}
+  \item{by}{character (variable name), to get a new geometry for groups of input geometries}
 }
 
 \value{

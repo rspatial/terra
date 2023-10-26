@@ -28,7 +28,7 @@ Vector topology methods
 
 \code{removeDupNodes} removes duplicate nodes in geometries and optionally rounds the coordinates
 
-\code{emptyGeoms} returns the indices of empty (null) geometries
+\code{emptyGeoms} returns the indices of empty (null) geometries. \code{\link{is.na}} also checks if any of the coordinates is \code{NA}.
 
 \code{snap} makes boundaries of geometries identical if they are very close to each other.
 }

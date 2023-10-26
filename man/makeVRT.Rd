@@ -15,16 +15,16 @@ makeVRT(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres=xres, xycen
 }
 
 \arguments{
-  \item{filename}{character. raster filename (without ".vrt" exension)}
+  \item{filename}{character. raster filename (without the ".vrt" extension)}
   \item{nrow}{positive integer, the number of rows}
   \item{ncol}{positive integer, the number of columns}
   \item{nlyr}{positive integer, the number of layers}
   \item{extent}{SpatExtent or missing}
   \item{xmin}{numeric. minimum x coordinate (only used if \code{extent} is missing)}
   \item{ymin}{numeric. minimum y coordinate (only used if \code{extent} is missing)}
-  \item{xres}{postive number. x resolution}
-  \item{yres}{postive number. y resolution)}
-  \item{xycenter}{logical. If \code{TRUE}, \code{xmin} and \code{xmax} represent the coordinates of the center of the ext	reme cell, in stead of the coordinates of the outside corner. Only used of \code{extent} is missing}
+  \item{xres}{positive number. x resolution}
+  \item{yres}{positive number. y resolution)}
+  \item{xycenter}{logical. If \code{TRUE}, \code{xmin} and \code{xmax} represent the coordinates of the center of the extreme cell, in stead of the coordinates of the outside corner. Only used of \code{extent} is missing}
   \item{crs}{character. Coordinate reference system description}
   \item{lyrnms}{character. Layer names}
   \item{datatype}{character. One of "INT2S", "INT4S", "INT1U", "INT2U", "INT4U", "FLT4S", "FLT8S". If missing, this is guessed from the file size (INT1U for 1 byte per value, INT2S for 2 bytes and FLT4S for 4 bytes per value). This may be wrong because, for example, 2 bytes per value may in fact be INT2U (with the U for unsigned) values}

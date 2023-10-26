@@ -1,3 +1,4 @@
+#include <iterator>
 #include <vector>
 #include <string>
 #include <numeric>
@@ -48,11 +49,19 @@ SpatFactor::SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _
 	//std::iota(levels.begin(), levels.end(), 0);
 }
 
+SpatFactor::SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _labels, bool _ordered) {
+	v = _values;
+	labels = _labels;
+	ordered = _ordered;
+}
+
+
+
 SpatFactor::SpatFactor(std::vector<unsigned> _values) {
 	std::vector<unsigned> u = unique_values(_values);
 	size_t n = _values.size();
 	size_t un = u.size();
-		
+
 	labels = string_values(u);
 	//levels.resize(un);
 	//std::iota(levels.begin(), levels.end(), 0);
@@ -70,7 +79,7 @@ SpatFactor::SpatFactor(std::vector<std::string> _values) {
 	std::vector<std::string> u = unique_values(_values);
 	size_t n = _values.size();
 	size_t un = u.size();
-		
+
 	labels = string_values(u);
 	//levels.resize(un);
 	//std::iota(levels.begin(), levels.end(), 0);

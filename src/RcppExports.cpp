@@ -209,12 +209,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // gdal_init
-void gdal_init(std::string path);
-RcppExport SEXP _terra_gdal_init(SEXP pathSEXP) {
+void gdal_init(std::string projpath, std::string datapath);
+RcppExport SEXP _terra_gdal_init(SEXP projpathSEXP, SEXP datapathSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type path(pathSEXP);
-    gdal_init(path);
+    Rcpp::traits::input_parameter< std::string >::type projpath(projpathSEXP);
+    Rcpp::traits::input_parameter< std::string >::type datapath(datapathSEXP);
+    gdal_init(projpath, datapath);
     return R_NilValue;
 END_RCPP
 }
@@ -286,6 +287,71 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// weighted_pearson_cor
+double weighted_pearson_cor(std::vector<double> x, std::vector<double> y, std::vector<double> weights, bool narm);
+RcppExport SEXP _terra_weighted_pearson_cor(SEXP xSEXP, SEXP ySEXP, SEXP weightsSEXP, SEXP narmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<double> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<double> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< std::vector<double> >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< bool >::type narm(narmSEXP);
+    rcpp_result_gen = Rcpp::wrap(weighted_pearson_cor(x, y, weights, narm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pearson_cor
+double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm);
+RcppExport SEXP _terra_pearson_cor(SEXP xSEXP, SEXP ySEXP, SEXP narmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<double> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<double> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< bool >::type narm(narmSEXP);
+    rcpp_result_gen = Rcpp::wrap(pearson_cor(x, y, narm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// stattest1
+double stattest1(std::vector<double> x, std::string fun, bool narm);
+RcppExport SEXP _terra_stattest1(SEXP xSEXP, SEXP funSEXP, SEXP narmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<double> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::string >::type fun(funSEXP);
+    Rcpp::traits::input_parameter< bool >::type narm(narmSEXP);
+    rcpp_result_gen = Rcpp::wrap(stattest1(x, fun, narm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// stattest2
+double stattest2(std::vector<double> x, std::string fun, bool narm);
+RcppExport SEXP _terra_stattest2(SEXP xSEXP, SEXP funSEXP, SEXP narmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<double> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::string >::type fun(funSEXP);
+    Rcpp::traits::input_parameter< bool >::type narm(narmSEXP);
+    rcpp_result_gen = Rcpp::wrap(stattest2(x, fun, narm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// uniqueSymmetricRows
+Rcpp::IntegerMatrix uniqueSymmetricRows(std::vector<size_t> x, std::vector<size_t> y);
+RcppExport SEXP _terra_uniqueSymmetricRows(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<size_t> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<size_t> >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(uniqueSymmetricRows(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dist_lonlat
 double dist_lonlat(const double& lon1, const double& lat1, const double& lon2, const double& lat2);
 RcppExport SEXP _terra_dist_lonlat(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP) {
@@ -298,6 +364,22 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double& >::type lat2(lat2SEXP);
     rcpp_result_gen = Rcpp::wrap(dist_lonlat(lon1, lat1, lon2, lat2));
     return rcpp_result_gen;
+END_RCPP
+}
+// dest_lonlat
+void dest_lonlat(double slon, double slat, double sazi, double dist, double& dlon, double& dlat, double& dazi);
+RcppExport SEXP _terra_dest_lonlat(SEXP slonSEXP, SEXP slatSEXP, SEXP saziSEXP, SEXP distSEXP, SEXP dlonSEXP, SEXP dlatSEXP, SEXP daziSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type slon(slonSEXP);
+    Rcpp::traits::input_parameter< double >::type slat(slatSEXP);
+    Rcpp::traits::input_parameter< double >::type sazi(saziSEXP);
+    Rcpp::traits::input_parameter< double >::type dist(distSEXP);
+    Rcpp::traits::input_parameter< double& >::type dlon(dlonSEXP);
+    Rcpp::traits::input_parameter< double& >::type dlat(dlatSEXP);
+    Rcpp::traits::input_parameter< double& >::type dazi(daziSEXP);
+    dest_lonlat(slon, slat, sazi, dist, dlon, dlat, dazi);
+    return R_NilValue;
 END_RCPP
 }
 // dir_lonlat
@@ -419,14 +501,20 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_sdsmetatdataparsed", (DL_FUNC) &_terra_sdsmetatdataparsed, 1},
     {"_terra_gdal_drivers", (DL_FUNC) &_terra_gdal_drivers, 0},
     {"_terra_set_gdal_warnings", (DL_FUNC) &_terra_set_gdal_warnings, 1},
-    {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 1},
+    {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 2},
     {"_terra_percRank", (DL_FUNC) &_terra_percRank, 5},
     {"_terra_setGDALCacheSizeMB", (DL_FUNC) &_terra_setGDALCacheSizeMB, 1},
     {"_terra_getGDALCacheSizeMB", (DL_FUNC) &_terra_getGDALCacheSizeMB, 0},
     {"_terra_get_proj_search_paths", (DL_FUNC) &_terra_get_proj_search_paths, 0},
     {"_terra_set_proj_search_paths", (DL_FUNC) &_terra_set_proj_search_paths, 1},
     {"_terra_PROJ_network", (DL_FUNC) &_terra_PROJ_network, 2},
+    {"_terra_weighted_pearson_cor", (DL_FUNC) &_terra_weighted_pearson_cor, 4},
+    {"_terra_pearson_cor", (DL_FUNC) &_terra_pearson_cor, 3},
+    {"_terra_stattest1", (DL_FUNC) &_terra_stattest1, 3},
+    {"_terra_stattest2", (DL_FUNC) &_terra_stattest2, 3},
+    {"_terra_uniqueSymmetricRows", (DL_FUNC) &_terra_uniqueSymmetricRows, 2},
     {"_terra_dist_lonlat", (DL_FUNC) &_terra_dist_lonlat, 4},
+    {"_terra_dest_lonlat", (DL_FUNC) &_terra_dest_lonlat, 7},
     {"_terra_dir_lonlat", (DL_FUNC) &_terra_dir_lonlat, 4},
     {"_terra_dist2track", (DL_FUNC) &_terra_dist2track, 7},
     {"_terra_alongTrackDistance", (DL_FUNC) &_terra_alongTrackDistance, 6},

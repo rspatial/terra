@@ -8,7 +8,7 @@
 \title{Linear units of the coordinate reference system}
 
 \description{
-Get the linear units of the coordinate reference system (crs) of a SpatRaster or SpatVector expressed in m. The value returned is used internally to transform area and perimenter measures to meters. The value returned for longitude/latitude crs is zero.
+Get the linear units of the coordinate reference system (crs) of a SpatRaster or SpatVector expressed in m. The value returned is used internally to transform area and perimeter measures to meters. The value returned for longitude/latitude crs is zero.
 }
 
 \usage{

@@ -6,6 +6,7 @@
 \alias{erase,SpatVector,SpatVector-method}
 \alias{erase,SpatVector,missing-method}
 \alias{erase,SpatVector,SpatExtent-method}
+\alias{erase,SpatGraticule,SpatVector-method}
 
 \title{ Erase parts of a SpatVector object}
 
@@ -17,7 +18,7 @@ Erase parts of a SpatVector with another SpatVector or with a SpatExtent. You ca
 \usage{
 \S4method{erase}{SpatVector,SpatVector}(x, y)
 
-\S4method{erase}{SpatVector,missing}(x)
+\S4method{erase}{SpatVector,missing}(x, sequential=TRUE)
 
 \S4method{erase}{SpatVector,SpatExtent}(x, y)
 }
@@ -25,6 +26,7 @@ Erase parts of a SpatVector with another SpatVector or with a SpatExtent. You ca
 \arguments{
   \item{x}{SpatVector}
   \item{y}{SpatVector or SpatExtent}
+  \item{sequential}{logical. Should areas be erased sequentially? See Details}
 }
 
 \value{
@@ -35,6 +37,12 @@ SpatVector or SpatExtent
 \code{\link{crop}} and \code{\link{intersect}} for the inverse. 
 
 The equivalent for SpatRaster is \code{\link{mask}}
+}
+
+\details{
+If polygons are erased sequentially, everything that is covered by the first polygon is removed from all other polygons, then everything that is covered by (what is remaining of) the second polygon is removed, etc. 
+
+If polygons are not erased sequentially, all overlapping areas are erased and only the areas covered by a single geometry are returned.
 }
 
 

@@ -1,19 +1,45 @@
 
+## from htmltools for future use with knitr
+## method = c(package, genname, class).
+#registerMethods <- function(methods) {
+#	lapply(methods, function(method) {
+#		pkg <- method[[1]]
+#		generic <- method[[2]]
+#		class <- method[[3]]
+#		func <- get(paste(generic, class, sep="."))
+#		if (pkg %in% loadedNamespaces()) {
+#			registerS3method(generic, class, func, envir = asNamespace(pkg))
+#		}
+#		setHook(
+#			packageEvent(pkg, "onLoad"),
+#				function(...) {
+#					registerS3method(generic, class, func, envir = asNamespace(pkg))
+#				}
+#			)
+#		}
+#	)
+#}
+
+
+
 .gdinit <- function() {
 	path = ""
-	if (file.exists(system.file("proj/nad.lst", package = "terra")[1])) {
+	sf <- system.file("", package="terra")
+	if (file.exists(file.path(sf, "proj/nad.lst"))) {
 		path <- system.file("proj", package="terra")
 	}
-	.gdalinit(path)
+	.gdalinit(path, file.path(sf, "gdal"))
+	if (gdal() == "3.6.0") {
+		message("Using GDAL version 3.6.0 which was retracted because it cannot write large GPKG files")
+	}
 }
 
 loadModule("spat", TRUE)
 
-
 .onLoad <- function(libname, pkgname) {
 	.gdinit()
+	#registerMethods(list(c(package, genname, class)))
 }
-
 
 
 .onAttach <- function(libname, pkgname) {

@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
 AC_INIT
-AC_CONFIG_SRCDIR([src/write_ogr.cpp])
+AC_CONFIG_SRCDIR([src/read_ogr.cpp])
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -20,25 +20,17 @@ RVER_MINOR=`echo ${RVER} | cut  -f2 -d"."`
 RVER_PATCH=`echo ${RVER} | cut  -f3 -d"."`
 
 if test [$RVER_MAJOR = "development"]; then
-    CXX11=`"${RBIN}" CMD config CXX11`
-    CXX11STD=`"${RBIN}" CMD config CXX11STD`
+    CXX=`"${RBIN}" CMD config CXX`
 else
     if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
         AC_MSG_ERROR([terra is not compatible with R versions before 3.3.0])
     else
-        if test [$RVER_MAJOR -eq 3 -a $RVER_MINOR -eq 3]; then
-            CXX11=`"${RBIN}" CMD config CXX1X`
-            CXX11STD=`"${RBIN}" CMD config CXX1XSTD`
-        else
-            CXX11=`"${RBIN}" CMD config CXX11`
-            CXX11STD=`"${RBIN}" CMD config CXX11STD`
-        fi
+        CXX=`"${RBIN}" CMD config CXX`
     fi
 fi
 
 # pick all flags for testing from R
 : ${CC=`"${RBIN}" CMD config CC`}
-: ${CXX=${CXX11} ${CXX11STD}}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
 : ${CXXFLAGS=`"${RBIN}" CMD config CXXFLAGS`}
@@ -87,7 +79,6 @@ else
   fi
 fi
 
-
 AC_MSG_CHECKING(gdal-config usability)
 if test `${GDAL_CONFIG} --version`;
 then
@@ -117,11 +108,17 @@ AC_MSG_NOTICE([GDAL: ${GDAL_VERSION}])
 AC_MSG_CHECKING([GDAL version >= 2.0.1])
 
 GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
+GDAL_MIN_VER=`echo $GDAL_VERSION | cut -d "." -f2`
+GDAL_PATCH_VER=`echo $GDAL_VERSION | cut -d "." -f3`
 if test ${GDAL_MAJ_VER} -lt 2 ; then
   AC_MSG_RESULT(no)
   AC_MSG_ERROR([terra is not compatible with GDAL versions below 2.0.1])
 else
    AC_MSG_RESULT(yes)
+fi
+
+if test [${GDAL_MAJ_VER} -eq 3] -a [${GDAL_MIN_VER} -eq 6] -a [${GDAL_PATCH_VER} -eq 0] ; then
+  AC_MSG_ERROR([GDAL version 3.6.0 has been withdrawn, please update GDAL])
 fi
 
 INLIBS="${LIBS}"
@@ -150,7 +147,7 @@ LIBS="${INLIBS} ${PKG_LIBS}"
 #ifdef __cplusplus
 extern "C" {
 #endif
-int main() {
+int main(void) {
 GDALAllRegister();
 }
 #ifdef __cplusplus
@@ -291,7 +288,7 @@ if test "${gdal_has_proj}" = no; then
    AC_MSG_ERROR([cannot link projection code])
 fi
 
-AC_MSG_CHECKING(GDAL: checking whether PROJ is available fur running:)
+AC_MSG_CHECKING(GDAL: checking whether PROJ is available for running:)
 ./gdal_proj
 if test `echo $?` -ne 0 ; then
 gdal_has_proj=no
@@ -420,7 +417,7 @@ if test "${PROJH}" = no; then
 #include <stdlib.h>
 #include <proj_api.h>
 
-int main() {
+int main(void) {
     printf("%d\n", PJ_VERSION);
     exit(0);
 }
@@ -431,7 +428,7 @@ else
 #include <stdlib.h>
 #include <proj.h>
 
-int main() {
+int main(void) {
 	proj_context_create();
     exit(0);
 }
@@ -455,7 +452,7 @@ _EOCONF]
 #include <stdlib.h>
 #include <proj.h>
 
-int main() {
+int main(void) {
     printf("%d.%d.%d\n", PROJ_VERSION_MAJOR, PROJ_VERSION_MINOR, PROJ_VERSION_PATCH);
     exit(0);
 }
@@ -484,7 +481,7 @@ if test ${PROJ6} = "no"; then
 FILE *pj_open_lib(projCtx, const char *, const char *);
 #endif
 
-int main() {
+int main(void) {
 #if PJ_VERSION <= 480
     FILE *fp;
 #else
@@ -540,7 +537,7 @@ if test "${PROJH}" = no; then
 #include <stdio.h>
 #include <proj_api.h>
 
-int main() {
+int main(void) {
     PAFile fp;
     projCtx ctx;
     ctx = pj_get_default_ctx();
@@ -585,7 +582,7 @@ fi
 FILE *pj_open_lib(projCtx, const char *, const char *);
 #endif
 
-int main() {
+int main(void) {
 #if PJ_VERSION <= 480
     FILE *fp;
 #else
@@ -730,7 +727,7 @@ static void __errorHandler(const char *fmt, ...) {
 static void __warningHandler(const char *fmt, ...) {
     return;
 }
-int main() {
+int main(void) {
     GEOSContextHandle_t r = initGEOS_r((GEOSMessageHandler) __warningHandler, (GEOSMessageHandler) __errorHandler);
     finishGEOS_r(r);
 }

@@ -16,7 +16,7 @@
 \description{
 Plot the values of a SpatRaster or SpatVector to make an interactive leaflet map that is displayed in a browser.
 
-These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the development version of leaflet that you can install with \code{remotes::install_github("rstudio/leaflet")}.
+These methods require the development version of leaflet that you can install with \code{remotes::install_github("rstudio/leaflet")}.
 }
 
 \usage{
@@ -25,18 +25,21 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
    shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
 
 
-\S4method{plet}{SpatVector}(x, y="", col, alpha=1, fill=0, main=y, cex=1, lwd=2, popup=TRUE,
-   label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
-   wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)
+\S4method{plet}{SpatVector}(x, y="", col,fill=0.2, main=y, cex=1, lwd=2, 
+	border="black", alpha=1, popup=TRUE, label=FALSE, split=FALSE,
+	tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
+	wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL,
+	breakby="eqint", sort=TRUE, decreasing=FALSE, map=NULL, ...)
 
-\S4method{plet}{SpatVectorCollection}(x, col, alpha=1, fill=0, cex=1, lwd=2, popup=TRUE, 
+
+\S4method{plet}{SpatVectorCollection}(x, col, fill=0, cex=1, lwd=2, border="black", alpha=1, popup=TRUE, 
    label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE,
    legend="bottomright", collapse=FALSE, map=NULL)
 
 
-\S4method{lines}{leaflet}(x, y, col, lwd=2, alpha=1)
+\S4method{lines}{leaflet}(x, y, col, lwd=2, alpha=1, ...)
 
-\S4method{points}{leaflet}(x, y, col, cex=1, alpha=1, popup=FALSE)
+\S4method{points}{leaflet}(x, y, col, cex=1, alpha=1, popup=FALSE, ...)
 }
 
 \arguments{
@@ -53,34 +56,45 @@ These methods require that \code{packageVersion("leaflet") > "2.1.1"} or the dev
   
   \item{shared}{logical. Should the legend be the same for all rasters (if multiple layers of SpatRaster \code{x} are mapped)}  
   \item{map}{leaflet object}
+  \item{...}{additional arguments for drawing points, lines, or polygons passed on the the relevant leaflet function}
+
+
+  \item{border}{character. Color for the polygon borders}
   \item{collapse}{logical. Should the layers "control" panel be collapsed?}
-  \item{split}{logical. IF \code{TRUE} a check-box is created to toggle each value in code{y} (If \code{x} is a SpatVector)}
+  \item{split}{logical. If \code{TRUE} a check-box is created to toggle each value in \code{y} (If \code{x} is a SpatVector)}
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
   \item{lwd}{numeric, line-width. See \code{\link{par}}}
   \item{popup}{logical. Should pop-ups be created?}
   \item{label}{logical. Should mouse-over labels be added?}
   \item{panel}{logical. Should SpatRaster layers be shown as a panel"}
+
+  \item{type}{character. Type of map/legend. One of "classes", or "interval". If not specified, the type is chosen based on the data. Use "" to suppress the legend}
+  \item{breaks}{numeric. Either a single number to indicate the number of breaks desired, or the actual breaks. When providing this argument, the default legend becomes "interval"}
+  \item{breakby}{character or function. Either "eqint" for equal interval breaks, "cases" for equal quantile breaks. If a function is supplied it should take a single argument (a vector of values) and create groups}
+    \item{sort}{logical. If \code{TRUE} legends with character values are sorted. You can also supply a vector of the unique values, in the order in which you want them to appear in the legend}
+  \item{decreasing}{logical. If \code{TRUE}, legends are sorted in decreasing order}
 }
 
 \seealso{
  \code{\link{plot}}
 }
 
+
 \examples{ 
 \dontrun{
-if (require(leaflet)) {
-if (packageVersion("leaflet") > "2.1.1") {
+if (require(leaflet) && (packageVersion("leaflet") > "2.1.1")) {
 
 v <- vect(system.file("ex/lux.shp", package="terra"))
-p <- spatSample(as.polygons(v, ext=T), 10)
-values(p) = data.frame(id=11:20, name=letters[1:10])
+p <- spatSample(as.polygons(v, ext=T), 30)
+values(p) = data.frame(id=11:40, name=letters[1:30])
 
-m <- plet(v, "NAME_1", alpha=.5, tiles="")
-m <- points(m, p, col="gray", cex=2, popup=T)
-lines(m, v)
+m <- plet(v, "NAME_1", tiles="", border="blue")
+m <- points(m, p, col="red", cex=2, popup=T)
+lines(m, v, lwd=1, col="white")
 
 plet(v, "NAME_1", split=TRUE, alpha=.2) |> 
-  points(p, col="gray", cex=2, popup=T) |> lines(v)
+  points(p, col="gray", cex=2, popup=TRUE,
+  	clusterOptions = markerClusterOptions())
 
 s <- svc(v, p)
 names(s) <- c("the polys", "set of points")
@@ -101,7 +115,7 @@ plet(x, 1:2, tiles="Streets", collapse=FALSE) |> lines(v, lwd=2, col="blue")
 # shared legend
 plet(x, 1:2, tiles="Streets", shared=TRUE, collapse=FALSE) |> lines(v, lwd=2, col="blue")
 
-}}}}
+}}}
 
 \keyword{methods}
 \keyword{spatial}

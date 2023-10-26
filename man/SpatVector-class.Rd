@@ -4,6 +4,13 @@
 
 \alias{SpatVector}
 \alias{SpatVector-class}
+
+\alias{SpatVectorCollection}
+\alias{SpatVectorCollection-class}
+
+\alias{SpatVectorProxy}
+\alias{SpatVectorProxy-class}
+
 \alias{Rcpp_SpatVector-class}
 \alias{PackedSpatVector-class}
 
@@ -12,26 +19,12 @@
 \title{Class "SpatVector" }
 
 \description{
-Objects of class SpatVector. 
+\code{SpatVector} can represent points, lines or polygons.
+
+\code{SpatVectorCollection} can hold a collection of SpatVectors
+
+\code{SpatVectorProxy} is a SpatVector for which the data are on-disk in-stead of in memory. 
 }
-
-\section{Objects from the Class}{
-You can use the \code{\link{vect}} method to create SpatVector objects.
-}
-
-\section{Slots}{
-	 \describe{
-    \item{\code{ptr}:}{pointer to the C++ class} 
-  }
-}
-
-\section{Methods}{
-  \describe{
-  \item{show}{display values of a SpatVector}
- }
-}
-
-
 
 \keyword{classes}
 \keyword{spatial}

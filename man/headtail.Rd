@@ -1,4 +1,4 @@
-\name{head and tail}
+\name{headtail}
 
 \docType{methods}
 
@@ -9,7 +9,7 @@
 \alias{tail,SpatRaster-method}
 \alias{tail,SpatVector-method}
 
-\title{Show the head or tail of a Spat* object}
+\title{head and tail of a SpatRaster or SpatVector}
 
 \description{
 Show the head (first values) or tail (last values) of a SpatRaster or of the attributes of a SpatVector. 

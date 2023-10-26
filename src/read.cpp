@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -71,8 +71,7 @@ void SpatRaster::readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, u
 }
 
 // BIP
-std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
-	std::vector<double> x;
+void SpatRaster::readBlockIP(std::vector<double> &x, BlockSize bs, unsigned i) {
 	readValues(x, bs.row[i], bs.nrows[i], 0, ncol());
 	std::vector<double> v(x.size());
 	size_t off = bs.nrows[i] * ncol();
@@ -84,7 +83,7 @@ std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
 			v[jj] = lyr[j];
 		}
 	}
-	return(v);
+	x = std::move(v);
 }
 
 
@@ -237,12 +236,39 @@ void SpatRaster::readValues(std::vector<double> &out, size_t row, size_t nrows, 
 		return;
 	}
 
+	out.resize(0);
 	if (!hasValues()) {
 		out.resize(nrows * ncols * nlyr(), NAN);
 		addWarning("raster has no values");
 		return; // or NAs?
 	}
 
+	unsigned n = nsrc();
+	out.reserve(nrows * ncols * nlyr());
+	for (size_t src=0; src<n; src++) {
+		if (source[src].memory) {
+			readChunkMEM(out, src, row, nrows, col, ncols);
+		} else {
+			// read from file
+			#ifdef useGDAL
+			readChunkGDAL(out, src, row, nrows, col, ncols);
+			#endif // useGDAL
+		}
+	}
+	return;
+}
+
+
+void SpatRaster::readValuesWhileWriting(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols){
+
+	if (((row + nrows) > nrow()) || ((col + ncols) > ncol())) {
+		setError("invalid rows/columns");
+		return;
+	}
+
+	if ((nrows==0) | (ncols==0)) {
+		return;
+	}
 
 	unsigned n = nsrc();
 	out.resize(0);

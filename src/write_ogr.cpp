@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -27,15 +27,16 @@
 #include "ogrsf_frmts.h"
 
 
-
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
     GDALDataset *poDS = NULL;
-	if (filename != "") {
-		if (file_exists(filename)) {
+	if (!filename.empty()) {
+		if (file_exists(filename)) { // || path_exists(filename)) {
 			if ((!overwrite) && (!append)) {
 				setError("file exists. Use 'overwrite=TRUE' to overwrite it");
 				return(poDS);
+			} else {
+				options.push_back("OVERWRITE=YES");
 			}
 		} else {
 			append = false;
@@ -75,7 +76,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		}
 	} else {
 		GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
-		if( poDriver == NULL )  {
+		if ( poDriver == NULL )  {
 			setError( driver + " driver not available");
 			return poDS;
 		}
@@ -114,7 +115,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
 	OGRSpatialReference *SRS = NULL;
-	if (s != "") {
+	if (!s.empty()) {
 		SRS = new OGRSpatialReference;
 		OGRErr err = SRS->SetFromUserInput(s.c_str());
 #if GDAL_VERSION_NUM >= 2050000
@@ -131,7 +132,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
     OGRLayer *poLayer;
 	char** papszOptions = NULL;
-	if (options.size() > 0) {
+	if (!options.empty()) {
 		for (size_t i=0; i<options.size(); i++) {
 			std::vector<std::string> gopt = strsplit(options[i], "=");
 			if (gopt.size() == 2) {
@@ -227,7 +228,12 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 					poFeature->SetField(j, (GIntBig)ival);
 				}
 			} else if (tps[j] == "bool") {
-				poFeature->SetField(j, df.getBvalue(i, j));
+				int8_t b = df.getBvalue(i, j);
+				if (b < 2) {
+					poFeature->SetField(j, b);
+				} else {
+					poFeature->SetFieldNull(j);
+				}
 			} else if (tps[j] == "time") {
 				SpatTime_t tval = df.getTvalue(i, j);
 				if (tval != longNA) {
@@ -383,7 +389,7 @@ bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions 
 // filename is here "raster.tif"
 // to write "raster.tif.vat.dbf"
 
-	if (filename != "") {
+	if (!filename.empty()) {
 		if (file_exists(filename) & (!overwrite)) {
 			setError("file exists. Use 'overwrite=TRUE' to overwrite it");
 			return(false);
@@ -483,7 +489,7 @@ bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions 
 
 bool SpatVector::delete_layers(std::string filename, std::vector<std::string> layers, bool return_error) {
 
-	if (filename == "") {
+	if (filename.empty()) {
 		setError("empty filename");
 		return false;
 	}
@@ -491,7 +497,7 @@ bool SpatVector::delete_layers(std::string filename, std::vector<std::string> la
 		setError("file does not exist");
 		return false;
 	}
-	if (layers.size() == 0) return(true);
+	if (layers.empty()) return(true);
 
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx(filename.c_str(), GDAL_OF_VECTOR | GDAL_OF_UPDATE,
 				NULL, NULL, NULL ));
@@ -512,7 +518,7 @@ bool SpatVector::delete_layers(std::string filename, std::vector<std::string> la
 		if (poLayer == NULL) continue;
 		std::string lname = poLayer->GetName();
 		for (size_t j=0; j<m; j++) {
-			if (lname.compare(layers[j]) == 0) {
+			if (lname == layers[j]) {
 				OGRErr err = poDS->DeleteLayer(i);
 				if (err == OGRERR_UNSUPPORTED_OPERATION) {
 					setError("Deleting layer not supported for this file (format / driver)");
@@ -520,10 +526,10 @@ bool SpatVector::delete_layers(std::string filename, std::vector<std::string> la
 					return(false);
 				}
 				if (err != OGRERR_NONE) {
-					if (fails.size() > 0) {
-						fails += ", " + layers[j];
-					} else {
+					if (fails.empty()) {
 						fails = layers[j];
+					} else {
+						fails += ", " + layers[j];
 					}
 				}
 				layers.erase(layers.begin() + j);
@@ -532,10 +538,10 @@ bool SpatVector::delete_layers(std::string filename, std::vector<std::string> la
 		}
 	}
 	GDALClose(poDS);
-	if (layers.size() > 0) {
+	if (!layers.empty()) {
 		fails += concatenate(layers, ", ");
 	}
-	if (fails.size() > 0) {
+	if (!fails.empty()) {
 		if (return_error) {
 			setError("deleting failed for: " + fails);
 		} else {

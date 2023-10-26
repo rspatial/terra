@@ -5,15 +5,16 @@
 \title{Options}
 
 \description{
-Class and methods for showing and setting general options for terra.
+Get or set general options.
 }
 
 \usage{
-terraOptions(...)
+terraOptions(..., print=TRUE)
 }
 
 \arguments{
-  \item{...}{option names and values (see Details). Or missing, to show the current options}  
+  \item{...}{option names and values (see Details). Or missing, to get or show the current options}  
+  \item{print}{logical. If \code{TRUE} the option names and values are printed }  
 } 
 
 \details{
@@ -36,6 +37,18 @@ The following options are available.
 \bold{verbose} - logical. If \code{TRUE} debugging info is printed for some functions
 }
 
+\note{
+It is possible to set your own default options in "etc/.Rprofile.site" of your R installation like this
+
+\code{options(terra_default=list(tempdir="d:/temp", memfrac=.4))}
+
+But that may not be a good practice. It is clearer to set your favorite options at the beginning of each script.
+}
+
+\value{
+list. Invisibly if \code{print=TRUE}
+}
+
 \examples{
 terraOptions()
 terraOptions(memfrac=0.5, tempdir = "c:/temp")
@@ -45,3 +58,4 @@ terraOptions()
 
 \keyword{classes}
 \keyword{spatial}
+

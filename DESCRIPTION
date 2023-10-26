@@ -1,26 +1,25 @@
 Package: terra
 Type: Package
 Title: Spatial Data Analysis
-Version: 1.6-4
-Date: 2022-07-22
+Version: 1.7-57
+Date: 2023-10-17
 Depends: R (>= 3.5.0)
-Suggests: parallel, tinytest, ncdf4, sf (>= 0.9-8), deldir, XML, leaflet
+Suggests: parallel, tinytest, ncdf4, sf (>= 0.9-8), deldir, XML, leaflet, htmlwidgets
 LinkingTo: Rcpp
-Imports: methods, Rcpp
-SystemRequirements: C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3
+Imports: methods, Rcpp (>= 1.0-10)
+SystemRequirements: C++17, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3
 Encoding: UTF-8
+Language: en-US
 Maintainer: Robert J. Hijmans <r.hijmans@gmail.com>
-Description: Methods for spatial data analysis with raster and vector data. Raster methods allow for low-level data manipulation as well as high-level global, local, zonal, and focal computation. The predict and interpolate methods facilitate the use of regression type (interpolation, machine learning) models for spatial prediction, including with satellite remote sensing data. Processing of very large files is supported. See the manual and tutorials on <https://rspatial.org/terra/> to get started. 'terra' is very similar to the 'raster' package; but 'terra' can do more, is easier to use, and it is faster.
+Description: Methods for spatial data analysis with vector (points, lines, polygons) and raster (grid) data. Methods for vector data include geometric operations such as intersect and buffer. Raster methods include local, focal, global, zonal and geometric operations. The predict and interpolate methods facilitate the use of regression type (interpolation, machine learning) models for spatial prediction, including with satellite remote sensing data. Processing of very large files is supported. See the manual and tutorials on <https://rspatial.org/> to get started. 'terra' replaces the 'raster' package ('terra' can do more, and it is faster and easier to use).
 License: GPL (>=3)
-URL: https://rspatial.org/terra/
+URL: https://rspatial.org/
 BugReports: https://github.com/rspatial/terra/issues/
 LazyLoad: yes
 Authors@R: c(
 	person("Robert J.", "Hijmans", role = c("cre", "aut"),  
 			email = "r.hijmans@gmail.com", comment = c(ORCID = "0000-0001-5872-2872")),
     person("Roger", "Bivand",  role = "ctb", comment = c(ORCID = "0000-0003-2392-6140")),
-	person("Karl", "Forner", role = "ctb"),
-	person("Jeroen", "Ooms", role = "ctb", comment = c(ORCID = "0000-0002-4035-0289")),
     person("Edzer", "Pebesma", role = "ctb", comment = c(ORCID = "0000-0001-8049-7069")),
     person("Michael D.", "Sumner", role = "ctb"))
 

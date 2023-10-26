@@ -4,69 +4,83 @@
 # License GPL v3
 
 
-
 setMethod("buffer", signature(x="SpatRaster"),
-	function(x, width, filename="", ...) {
+	function(x, width, background=0, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$buffer(width, opt)
+		x@cpp <- x@cpp$buffer(width, background, opt)
 		messages(x, "buffer")
 	}
 )
 
 
 setMethod("distance", signature(x="SpatRaster", y="missing"),
-	function(x, y, grid=FALSE, filename="", ...) {
-		opt <- spatOptions(filename, ...)
-		if (grid) {
-			#if (is.lonlat(x)) {
-			#	return(gridDistance(x, filename=filename, ...))
-			#} else {
-			x@ptr <- x@ptr$gridDistance(opt)
-			#}
-		} else {
-			x@ptr <- x@ptr$rastDistance(opt)
+	function(x, y, target=NA, exclude=NULL, unit="m", haversine=TRUE, filename="", ...) {
+		if (!is.null(list(...)$grid)) {
+			error("distance", "use 'gridDistance(x)' instead of  'distance(x, grid=TRUE)'")
 		}
+		opt <- spatOptions(filename, ...)
+		target <- as.numeric(target[1])
+		keepNA <- FALSE
+		if (!is.null(exclude)) {
+			exclude <- as.numeric(exclude[1])
+			if ((is.na(exclude) && is.na(target)) || isTRUE(exclude == target)) {
+				error("distance", "'target' and 'exclude' must be different") 
+			}
+			if (is.na(exclude)) {
+				keepNA <- TRUE
+			}
+		} else {
+			exclude <- NA
+		}
+		x@cpp <- x@cpp$rastDistance(target, exclude, keepNA, tolower(unit), TRUE, haversine, opt)
 		messages(x, "distance")
 	}
 )
 
-setMethod("costDistance", signature(x="SpatRaster"),
-	function(x, target=0, scale=1000, maxiter=50, filename="", ...) {
+
+setMethod("costDist", signature(x="SpatRaster"),
+	function(x, target=0, scale=1, maxiter=50, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		maxiter <- max(maxiter[1], 2)
-		x@ptr <- x@ptr$costDistance(target[1], scale[1], maxiter, FALSE, opt)
-		messages(x, "costDistance")
+		x@cpp <- x@cpp$costDistance(target[1], scale[1], maxiter, FALSE, opt)
+		messages(x, "costDist")
 	}
 )
 
 
-setMethod("gridDistance", signature(x="SpatRaster"),
-	function(x, target=0, scale=1000, maxiter=50, filename="", ...) {
+setMethod("gridDist", signature(x="SpatRaster"),
+	function(x, target=0, scale=1, maxiter=50, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (is.na(target)) {
-			x@ptr <- x@ptr$gridDistance(opt)
+			x@cpp <- x@cpp$gridDistance(scale[1]	, opt)
 		} else {
 			maxiter <- max(maxiter[1], 2)
-			x@ptr <- x@ptr$costDistance(target[1], scale[1], maxiter, TRUE, opt)
+			x@cpp <- x@cpp$costDistance(target[1], scale[1], maxiter, TRUE, opt)
 		}
-		messages(x, "gridDistance")
+		messages(x, "gridDist")
 	}
 )
 
 
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, filename="", ...) {
+	function(x, y, unit="m", rasterize=FALSE, haversine=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		if (is.lonlat(x, perhaps=TRUE)) {
-			x <- rast(x)
-			x@ptr <- x@ptr$vectDisdirRasterize(y@ptr, TRUE, TRUE, FALSE, FALSE, opt)
+		unit <- as.character(unit[1])
+		if (rasterize) {
+			x@cpp <- x@cpp$vectDistanceRasterize(y@cpp, NA, NA, unit, haversine, opt)
 		} else {
-			x@ptr <- x@ptr$vectDistanceDirect(y@ptr, opt)
+			x@cpp <- x@cpp$vectDistanceDirect(y@cpp, unit, haversine, opt)
 		}
 		messages(x, "distance")
 	}
 )
 
+
+setMethod("distance", signature(x="SpatRaster", y="sf"),
+	function(x, y, unit="m", rasterize=FALSE, haversine=TRUE, filename="", ...) {
+		distance(x, vect(y), unit=unit, rasterize=rasterize, haversine=haversine, filename=filename, ...) 
+	}
+)
 
 
 mat2wide <- function(m, sym=TRUE, keep=NULL) {
@@ -91,15 +105,16 @@ mat2wide <- function(m, sym=TRUE, keep=NULL) {
 }
 
 setMethod("distance", signature(x="SpatVector", y="ANY"),
-	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE) {
+	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m") {
 		if (!missing(y)) {
 			error("distance", "If 'x' is a SpatVector, 'y' should be a SpatVector or missing")
 		}
 
 		if (sequential) {
-			return( x@ptr$distance_self(sequential))
+			return( x@cpp$distance_self(sequential, unit))
 		}
-		d <- x@ptr$distance_self(sequential)
+		unit <- as.character(unit[1])
+		d <- x@cpp$distance_self(sequential, unit)
 		messages(x, "distance")
 		class(d) <- "dist"
 		attr(d, "Size") <- nrow(x)
@@ -117,8 +132,9 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 
 
 setMethod("distance", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, pairwise=FALSE) {
-		d <- x@ptr$distance_other(y@ptr, pairwise)
+	function(x, y, pairwise=FALSE, unit="m") {
+		unit <- as.character(unit[1])
+		d <- x@cpp$distance_other(y@cpp, pairwise, unit)
 		messages(x, "distance")
 		if (!pairwise) {
 			d <- matrix(d, nrow=nrow(x), ncol=nrow(y), byrow=TRUE)
@@ -135,24 +151,27 @@ setMethod("distance", signature(x="matrix", y="matrix"),
 		}
 		stopifnot(ncol(x) == 2)
 		stopifnot(ncol(y) == 2)
-		crs <- ifelse(lonlat, "+proj=longlat +datum=WGS84",
-							  "+proj=utm +zone=1 +datum=WGS84")
-		x <- vect(x, crs=crs)
-		y <- vect(y, crs=crs)
-		distance(x, y, pairwise)
+		v <- vect()
+		d <- v@cpp$point_distance(x[,1], x[,2], y[,1], y[,2], pairwise[1], 1, lonlat)
+		messages(v)
+		if (pairwise) {
+			d
+		} else {
+			matrix(d, nrow=nrow(x), ncol=nrow(y), byrow=TRUE)
+		}
 	}
 )
 
 
 setMethod("distance", signature(x="matrix", y="missing"),
-	function(x, y, lonlat=NULL, sequential=FALSE) {
+	function(x, y, lonlat=NULL, sequential=FALSE, pairs=FALSE, symmetrical=TRUE) {
 		if (is.null(lonlat)) {
 			error("distance", "lonlat should be TRUE or FALSE")
 		}
 		crs <- ifelse(isTRUE(lonlat), "+proj=longlat +datum=WGS84",
-							  "+proj=utm +zone=1 +datum=WGS84")
+							          "+proj=utm +zone=1 +datum=WGS84")
 		x <- vect(x, crs=crs)
-		distance(x, sequential=sequential)
+		distance(x, sequential=sequential, pairs=pairs, symmetrical=symmetrical)
 	}
 )
 
@@ -160,7 +179,7 @@ setMethod("distance", signature(x="matrix", y="missing"),
 setMethod("direction", signature(x="SpatRaster"),
 	function(x, from=FALSE, degrees=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$rastDirection(from[1], degrees[1], opt)
+		x@cpp <- x@cpp$rastDirection(from[1], degrees[1], NA, NA, opt)
 		messages(x, "direction")
 	}
 )

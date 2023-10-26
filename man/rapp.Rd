@@ -5,14 +5,14 @@
 \alias{rapp}
 \alias{rapp,SpatRaster-method}
 
-\title{Range-Apply}
+\title{Range-apply}
 
 \description{
-Apply a function to a range of the layers of a SpatRaster that varies by cell. The range is specified for each cell one or two SpatRasters (arguments \code{first} and \code{last}). For either \code{first} or \code{last} you can use a numeric constant instead. 
+Apply a function to a range of the layers of a SpatRaster that varies by cell. The range is specified for each cell with one or two SpatRasters (arguments \code{first} and \code{last}). For either \code{first} or \code{last} you can use a single number instead. 
+
+You cannot use single numbers for both \code{first} and \code{last} because in that case you could use \code{\link{app}} or \code{\link{Summary-methods}}, perhaps \code{\link{subset}}ting the layers of a SpatRaster.
 
 See \code{\link{selectRange}} to create a new SpatRaster by extracting one or more values starting at a cell-varying layer.
-
-See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a function to all cells (not a range), perhaps after making a \code{\link{subset}} of a SpatRaster.
 }
 
 \usage{
@@ -27,7 +27,7 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a fu
   \item{fun}{function to be applied}
   \item{...}{additional arguments passed to \code{fun}} 
   \item{allyrs}{logical. If \code{TRUE}, values for all layers are passed to \code{fun} but the values outside of the range are set to \code{fill}}
-  \item{fill}{numeric. The fill value for the the values outside of the range, for when \code{allyrs=TRUE}} 
+  \item{fill}{numeric. The fill value for the values outside of the range, for when \code{allyrs=TRUE}} 
   \item{clamp}{logical. If \code{FALSE} and the specified range is outside \code{1:nlyr(x)} all cells are considered \code{NA}. Otherwise, the invalid part of the range is ignored} 
   \item{circular}{logical. If \code{TRUE} the values are considered circular, such as the days of the year. In that case, if first > last the layers used are c(first:nlyr(x), 1:last). Otherwise, the range would be considered invalid and \code{NA} would be returned} 
   \item{filename}{character. Output filename}

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -68,16 +68,29 @@ SpatOptions SpatOptions::deepCopy() {
 //std::string SpatOptions::get_bandorder() {if (bandorder != "") {return bandorder;} else {return def_datatype;}}
 
 void SpatOptions::set_def_datatype(std::string d) {
-	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT2S", "INT4S", "FLT4S", "FLT8S" } ;
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 7
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT8U", "INT2S", "INT4S", "INT8S", "FLT4S", "FLT8S"} ;
+#else 
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT8U", "INT1S", "INT2S", "INT4S", "INT8S", "FLT4S", "FLT8S"};
+#endif
 	if (is_in_vector(d, ss)) def_datatype = d;
 }
 std::string SpatOptions::get_def_datatype() { return def_datatype; }
 
 void SpatOptions::set_datatype(std::string d) {
-	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT2S", "INT4S", "FLT4S", "FLT8S" };
-	if (is_in_vector(d, ss)) datatype = d;
+#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 7
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT8U", "INT2S", "INT4S", "INT8S", "FLT4S", "FLT8S"} ;
+#else 
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT8U", "INT1S", "INT2S", "INT4S", "INT8S", "FLT4S", "FLT8S"};
+#endif
+	if (is_in_vector(d, ss)) {
+		datatype = d;
+		datatype_set = TRUE;
+	} else {
+		msg.addWarning(d + " is not a valid datatype");
+	}
 }
-std::string SpatOptions::get_datatype() {if (datatype != "") {return datatype;} else {return def_datatype;}}
+std::string SpatOptions::get_datatype() {if (datatype.empty()) {return def_datatype;} else {return datatype;}}
 
 void SpatOptions::set_def_filetype(std::string d) { def_filetype = d; }
 std::string SpatOptions::get_def_filetype() { return def_filetype;}
@@ -211,6 +224,14 @@ void SpatOptions::set_ncopies(size_t n) { ncopies = std::max((size_t)1, n); }
 size_t SpatOptions::get_ncopies(){ return ncopies; }
 
 
+
+void SpatOptions::set_offset(std::vector<double> d) { offset = d ; }
+std::vector<double> SpatOptions::get_offset() {return offset;}
+
+void SpatOptions::set_scale(std::vector<double> d) {scale=d;}
+std::vector<double> SpatOptions::get_scale(){return scale;}
+
+
 bool extent_operator(std::string oper) {
 	std::vector<std::string> f {"==", "!=", ">", "<", ">=", "<="};
 	return (std::find(f.begin(), f.end(), oper) != f.end());
@@ -291,11 +312,11 @@ SpatExtent SpatExtent::ceil() {
 }
 
 SpatExtent SpatRaster::getExtent() {
-	if (source.size() > 0) {
-		return source[0].extent;
-	} else {
+	if (source.empty()) {
 		SpatExtent e;
 		return e;
+	} else {
+		return source[0].extent;
 	}
 }
 
@@ -309,13 +330,13 @@ void SpatRaster::setExtent(SpatExtent e) {
 }
 
 
-void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
+void SpatRaster::setExtent(SpatExtent ext, bool keepRes, bool expand, std::string snap) {
 
-
-	if (snap != "") {
+	if (!snap.empty()) {
 		ext = align(ext, snap);
-// why? breaks rectify
-//		ext = ext.intersect(getExtent());
+	}
+	if (!expand) {
+		ext = ext.intersect(getExtent());
 	}
 
 	if (keepRes) {
@@ -324,18 +345,19 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 		double yrs = res[1];
 		unsigned nc = std::max(1.0, round( (ext.xmax - ext.xmin) / xrs ));
 		unsigned nr = std::max(1.0, round( (ext.ymax - ext.ymin) / yrs ));
-		source[0].ncol = nc;
-		source[0].nrow = nr;
 		ext.xmax = ext.xmin + nc * xrs;
 		ext.ymax = ext.ymin + nr * yrs;
-		source[0].extent = ext;
-	}
-
-	for (size_t i=0; i<nsrc(); i++) {
-		source[i].extent = ext;
-		source[i].extset = true;
-		//source[i].nrow = source[0].nrow;
-		//source[i].ncol = source[0].ncol;
+		for (size_t i=0; i<nsrc(); i++) {
+			source[i].extent = ext;
+			source[i].extset = true;
+			source[i].nrow = nr;
+			source[i].ncol = nc;
+		}
+	} else {
+		for (size_t i=0; i<nsrc(); i++) {
+			source[i].extent = ext;
+			source[i].extset = true;
+		}
 	}
 }
 
@@ -429,8 +451,7 @@ std::vector<double> SpatRaster::origin() {
 }
 
 
-
-bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, double tol, bool warncrs, bool ext, bool rowcol, bool res) {
+bool SpatRaster::compare_geom(SpatRaster &x, bool lyrs, bool crs, double tol, bool warncrs, bool ext, bool rowcol, bool res) {
 
 	tol = tol < 0 ? 0 : tol;
 
@@ -465,9 +486,9 @@ bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, double tol, boo
 	if (crs) {
 		if (!source[0].srs.is_equal(x.source[0].srs)) {
 			if (warncrs) {
-				addWarning("SRS do not match");
+				addWarning("CRS do not match");
 			} else {
-				setError("SRS do not match");
+				setError("CRS do not match");
 				return false;
 			}
 		}
@@ -525,3 +546,69 @@ bool SpatCategories::concatenate(SpatCategories &x) {
 	return true;
 }
 
+
+#ifdef useRcpp
+
+void SpatProgress::init(size_t n, int nmin) {
+
+	if ((nmin <= 0) || ((int)n < nmin)) {
+		show = false;
+		return;
+	} 
+
+	show = true;
+
+	std::string bar = "|---------|---------|---------|---------|";
+	Rcpp::Rcout << "\r" << bar << "\r";
+	R_FlushConsole();
+
+	nstep = n;
+	step = 0;
+	size_t width = bar.size();
+
+	double increment = (double) width / double(nstep);
+
+	steps.resize(0);
+	steps.reserve(nstep+1);
+	for (size_t i=0; i<nstep; i++) {
+		int val = round(i * increment);
+		steps.push_back(val);
+	}
+	steps.push_back(width);
+}
+
+void SpatProgress::stepit() {
+	if (show) {
+		if (step < nstep) {
+			int n = steps[step+1] - steps[step];
+			if (n > 0) {
+				for (int i=0; i<n; i++) Rcpp::Rcout << "=";
+			}
+		}
+		step++;
+		R_FlushConsole();
+	}
+}
+
+void SpatProgress::finish() {
+	if (show) {
+		Rcpp::Rcout << "\r                                          \r";
+		step++;
+		R_FlushConsole();
+	}
+}
+
+void SpatProgress::interrupt() {
+	if (show) {
+		Rcpp::Rcout << "\r                                          \r";
+		R_FlushConsole();
+	}
+}
+
+#else 
+
+void SpatProgress::init(size_t n, int nmin) {}
+void SpatProgress::stepit() {}
+void SpatProgress::interrupt() {}
+
+#endif

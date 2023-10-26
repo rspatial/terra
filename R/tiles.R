@@ -1,16 +1,30 @@
 
 setMethod("makeTiles", signature(x="SpatRaster"),
-	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, ...) {
-		filename = trimws(filename[1])
+	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, overwrite=FALSE, ...) {
+		filename <- trimws(filename[1])
 		filename <- filename[!is.na(filename)]
 		if (filename == "") error("makeTiles", "filename cannot be empty")
-		if (!inherits(y, "SpatRaster")) error("makeTiles", "y must be a SpatRaster")
-		opt <- spatOptions(filename="", ...)
-		ff <- x@ptr$make_tiles(y@ptr, extend[1], na.rm[1], filename, opt)
+		opt <- spatOptions(filename="", overwrite=overwrite, ...)
+		if (inherits(y, "SpatRaster")) {
+			ff <- x@cpp$make_tiles(y@cpp, extend[1], na.rm[1], filename, opt)
+		} else if (inherits(y, "SpatVector")) {
+			ff <- x@cpp$make_tiles_vect(y@cpp, extend[1], na.rm[1], filename, opt)		
+		} else if (is.numeric(y)) {
+			if (length(y) > 2) {
+				error("makeTiles", "expected one or two numbers")
+			}
+			y <- rep_len(y, 2)
+			y <- aggregate(rast(x), y)
+			ff <- x@cpp$make_tiles(y@cpp, extend[1], na.rm[1], filename, opt)			
+		} else {
+			error("makeTiles", "y must be a SpatRaster or SpatVector")
+		}
 		messages(x, "makeTiles")
-		return (ff)
+		ff
 	}
 )
+
+
 
 
 #		if (!hasValues(x)) error("makeTiles", "x has no values")
@@ -31,18 +45,51 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 
 
 setMethod("vrt", signature(x="character"),
-	function(x, filename="", options=NULL, overwrite=FALSE) {
+	function(x, filename="", options=NULL, overwrite=FALSE, set_names=FALSE, return_filename=FALSE) {
 		opt <- spatOptions(filename, overwrite=overwrite)
 		r <- rast()
 		if (is.null(options)) {
 			options=""[0]
-		} else {
-			if (any(substr(options, 1, 1) != "-")) {
-				warn("vrt", "options that do not start with '-' are ignored")
+		} 
+		f <- r@cpp$make_vrt(x, options, opt)
+		messages(r, "vrt")
+		if (set_names) {
+			v <- readLines(f)
+			nms <- names(rast(x[1]))
+			i <- grep("band=", v)
+			if (length(i) == length(nms)) {
+				nms <- paste0("<Description>", nms, "</Description>")
+				v[i] <- paste(v[i], nms)
+				writeLines(v, f)
 			}
 		}
-		r@ptr <- r@ptr$make_vrt(x, options, opt)
-		messages(r, "vrt")
+		if (return_filename) return(f)
+		rast(f)
 	}
 )
+
+
+vrt_tiles <- function(x) {
+	if (inherits(x, "SpatRaster")) {
+		x <- sources(x)
+	}
+	if (!inherits(x, "character")) {
+		error("vrt_sources", "x must be a filename (character) or SpatRaster)")
+	}
+	x <- grep(".vrt$", x, ignore.case =TRUE, value=TRUE)
+	if (length(x) == 0) {
+		error("vrt_sources", 'no filenames with extension ".vrt"')	
+	}
+	tiles <- lapply(x, function(f) {
+			v <- readLines(f)
+			v <- v[grep("SourceFilename", v)]
+			s <- strsplit(v, "\"")
+			rel <- sapply(s, function(x) x[2])
+			ff <- strsplit(sapply(s, function(x) x[3]), "<")
+			ff <- gsub(">", "", sapply(ff, function(x) x[1]))
+			ff[rel=="1"] <- file.path(dirname(f), ff[rel=="1"])
+			ff
+		})
+	unlist(tiles)
+}
 

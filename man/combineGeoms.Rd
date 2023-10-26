@@ -29,7 +29,7 @@ To append SpatVectors use `rbind` and see methods like \code{intersect} and \cod
   \item{boundary}{logical. If \code{TRUE}, a geometry is combined with the geometry it has most shared border with}
   \item{distance}{logical. If \code{TRUE}, a geometry is combined with the geometry it is nearest to}
   \item{append}{logical. Should remaining geometries be appended to the output? Not relevant if \code{distance=TRUE}}
-  \item{minover}{numeric}{The fraction of the geometry in code{y} that overlaps with a geometry in \code{x}. Below this threshold, geometries are not considered overlapping}
+  \item{minover}{numeric. The fraction of the geometry in \code{y} that overlaps with a geometry in \code{x}. Below this threshold, geometries are not considered overlapping}
   \item{maxdist}{numeric. Geometries further away from each other than this distance (in meters) will not be combined}
   \item{dissolve}{logical. Should internal boundaries be dissolved?}
   \item{erase}{logical. If \code{TRUE} no new overlapping areas are created}

@@ -15,41 +15,30 @@ Note that the margins of the plot are set to zero (no axes or titles are visible
 An alternative way to plot RGB images is to first use \code{\link{colorize}} to create a single layer SpatRaster with a color-table and then use \code{\link[terra]{plot}}.
 
 }
-
-
-
 \usage{
-\S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, 
-		stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, 
-		addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", 
-		asp=NULL, add=FALSE, interpolate, ...)
+\S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, a=NULL, scale=NULL, mar=0, 
+		stretch=NULL, smooth=TRUE, colNA="white", alpha=NULL, bgalpha=NULL, 
+		zlim=NULL, zcol=FALSE, axes=FALSE ,...)
 }
+
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{r}{integer. Index of the Red channel, between 1 and nlyr(x)}
-  \item{g}{integer. Index of the Green channel, between 1 and nlyr(x)}
-  \item{b}{integer. Index of the Blue channel, between 1 and nlyr(x)}
-  \item{a}{integer. Index of the alpha (transparancy) channel, between 1 and nlyr(x). If not NULL, argument \code{alpha} is ignored}
+  \item{r}{integer between 1 and \code{nlyr(x)}. Layer to use as the Red channel}
+  \item{g}{integer between 1 and \code{nlyr(x)}. Layer to use as the Green channel}
+  \item{b}{integer between 1 and \code{nlyr(x)}. Layer to use as the Blue channel}
+  \item{a}{NULL or integer between 1 and \code{nlyr(x)}. Layer to use as the alpha (transparency) channel. If not NULL, argument \code{alpha} is ignored}
   \item{scale}{integer. Maximum (possible) value in the three channels. Defaults to 255 or to the maximum value of \code{x} if that is known and larger than 255}
-  \item{maxcell}{integer > 0. Maximum number of pixels to use}
   \item{mar}{numeric vector recycled to length 4 to set the margins of the plot. Use \code{mar=NULL} or \code{mar=NA} to not set the margins}
   \item{stretch}{character. Option to stretch the values to increase contrast: "lin" (linear) or "hist" (histogram)}
-  \item{ext}{An \code{\link{SpatExtent}} object to zoom in to a region of interest (see \code{\link{draw}})}
   \item{smooth}{logical. If \code{TRUE}, smooth the image when drawing to get the appearance of a higher spatial resolution}
-  \item{colNA}{color for the background (\code{NA} values)}
+  \item{colNA}{color. The color used for cells that have NA values}
   \item{alpha}{transparency. Integer between 0 (transparent) and 255 (opaque)}
   \item{bgalpha}{Background transparency. Integer between 0 (transparent) and 255 (opaque)}
-  \item{addfun}{Function to add additional items such as points or polygons to the plot (map). See \code{\link{plot}}}
-  \item{zlim}{numeric vector of length 2. Range of values to plot (optional)}
-  \item{zlimcol}{If \code{NULL} the values outside the range of zlim get the color of the extremes of the range. If zlimcol has any other value, the values outside the zlim range get the color of \code{NA} values (see colNA)}
+  \item{zlim}{numeric vector of length 2. Range of values to plot (optional). If this is set, and \code{stretch="lin"} is used, then the values are stretched within the range of \code{zlim}. This allows creating consistent coloring between SpatRasters with different cell-value ranges, even when stretching the colors for improved contrast}
+  \item{zcol}{logical. If \code{TRUE} the values outside the range of zlim get the color of the extremes of the range. Otherwise, the values outside the zlim range get the color of \code{NA} values (see argument "colNA")}
   \item{axes}{logical. If \code{TRUE} axes are drawn (and arguments such as \code{main="title"} will be honored)}
-  \item{xlab}{character. Label of x-axis}
-  \item{ylab}{character. Label of y-axis}
-  \item{asp}{numeric. Aspect (ratio of x and y. If NULL, and appropriate value is computed to match data for the longitude/latitude coordinate reference system, and 1 for planar coordinate reference systems}
-  \item{add}{logical. If \code{TRUE} add values to current plot}
-  \item{interpolate}{logical. Do not use, to be removed}
-  \item{...}{graphical parameters as in \code{\link{plot}} or \code{\link{rasterImage}}}
+  \item{...}{graphical parameters as in \code{\link{plot}}<SpatRaster-method>}
 }
 
 
@@ -58,11 +47,11 @@ An alternative way to plot RGB images is to first use \code{\link{colorize}} to 
 \examples{
 b <- rast(system.file("ex/logo.tif", package="terra"))   
 plotRGB(b)
-plotRGB(b, mar=c(2,2,2,2))
+plotRGB(b, mar=2)
 plotRGB(b, 3, 2, 1)
 
 b[1000:2000] <- NA
-plotRGB(b, 3, 2, 1, stretch='hist')
+plotRGB(b, 3, 2, 1, stretch="hist")
 }
 
 \keyword{methods}

@@ -5,7 +5,7 @@ get_groups <- function(x, y) {
 
 	for (i in 1:length(x)) {
 		if (is.na(x[i])) next
-		gx <- na.omit(x[x[i] == x] )
+		gx <- stats::na.omit(x[x[i] == x] )
 		gy <- y[x %in% gx]
 		nx <- ny <- 0
 		while(TRUE) {
@@ -53,7 +53,7 @@ connect_dateline <- function(x) {
 					next
 				}
 			}
-			if (relate(xx[i,], yy[j,], "touches")) {
+			if (is.related(xx[i,], yy[j,], "touches")) {
 				px <- c(px, i)
 				py <- c(py, j)
 			}

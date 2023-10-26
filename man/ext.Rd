@@ -2,12 +2,6 @@
 
 \docType{methods}
 
-\alias{$,SpatExtent-method}
-\alias{$<-,SpatExtent-method}
-\alias{[,SpatExtent,missing,missing-method}
-\alias{[,SpatExtent,numeric,missing-method}
-\alias{[<-,SpatExtent,numeric,missing-method}
-
 \alias{ext}
 \alias{ext<-}
 \alias{ext,SpatExtent-method}
@@ -19,19 +13,20 @@
 \alias{ext<-,SpatRaster,SpatExtent-method}
 \alias{ext<-,SpatRaster,numeric-method}
 \alias{ext,numeric-method}
+\alias{ext,matrix-method}
 \alias{ext,missing-method}
 \alias{ext,Spatial-method}
 \alias{ext,Raster-method}
 \alias{ext,Extent-method}
 \alias{ext,sf-method}
-
+\alias{ext,bbox-method}
 
 \title{Create, get or set a SpatExtent}
 
 \description{
-Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create a SpatExtent from a vector (length=4; order= xmin, xmax, ymin, ymax)
+Get a SpatExtent of a SpatRaster, SpatVector, or other spatial objects. Or create a SpatExtent from a vector (length=4; order=xmin, xmax, ymin, ymax)
 
-See \code{\link{set.ext}} to set the extent in place.
+You can set the extent of a SpatRaster, but you cannot set the extent of a SpatVector (see \code{\link{rescale}} for that). See \code{\link{set.ext}} to set the extent in place.
 }
 
 \usage{
@@ -39,23 +34,19 @@ See \code{\link{set.ext}} to set the extent in place.
 
 \S4method{ext}{SpatVector}(x)
 
-\S4method{ext}{numeric}(x, ...)
+\S4method{ext}{numeric}(x, ..., xy=FALSE)
 
 \S4method{ext}{SpatRaster,SpatExtent}(x)<-value
 
 \S4method{ext}{SpatRaster,numeric}(x)<-value
-
-\S4method{$}{SpatExtent}(x, name)
-
-\S4method{$}{SpatExtent}(x, name)<-value
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{cells}{postive integer (cell) numbers to subset the extent to area covered by these cells}
-  \item{value}{SpatExtent, or numeric vector of lenght four (xmin, xmax, ymin, ymax), or a single number with the \code{$} method}  
-  \item{name}{charcter, one of xmin, xmax, ymin, or ymax}  
+  \item{cells}{positive integer (cell) numbers to subset the extent to area covered by these cells}
+  \item{value}{SpatExtent, or numeric vector of length four (xmin, xmax, ymin, ymax)}  
   \item{...}{if \code{x} is a single numeric value, additional numeric values for xmax, ymin, and ymax}  
+  \item{xy}{logical. Set this to \code{TRUE} to indicate that coordinates are in (xmin, ymin, xmax, ymax) order, instead of in the terra standard order of (xmin, xmax, ymin, ymax)}
 }
  
 \value{

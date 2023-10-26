@@ -16,27 +16,18 @@
 			depf <- deparse(fun)
 			test1 <- isTRUE(try( depf[2] == 'UseMethod(\"mean\")', silent=TRUE))
 			test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
-			if (test1 | test2) {
-				return("mean")
-			}
+			if (test1 | test2) return("mean")
 			test1 <- isTRUE(try( depf[2] == 'UseMethod(\"median\")', silent=TRUE))
 			test2 <- isTRUE(try( fun@generic == "median", silent=TRUE))
-			if (test1 | test2) {
-				return("median")
-			}
+			if (test1 | test2) return("median")
 			test1 <- isTRUE(try( depf[1] == "function (x, na.rm = FALSE) ", silent=TRUE))
 			test2 <- isTRUE(try( depf[2] == "sqrt(var(if (is.vector(x) || is.factor(x)) x else as.double(x), ", silent=TRUE))
 			test3 <- isTRUE(try( depf[3] == "    na.rm = na.rm))", silent=TRUE))
-			if (test1 && test2 && test3) {
-				return("sd")
-			}
-			if (isTRUE(try( fun@generic == "which.min", silent=TRUE))) {
-				return("which.min")
-			}
-			if (isTRUE(try( fun@generic == "which.max", silent=TRUE))) {
-				return("which.max")
-			}
-			if (isTRUE(depf[3] == "    wh <- .Internal(which(x))")) return("which")
+			if (test1 && test2 && test3) return("sd")
+			if (isTRUE(try( fun@generic == "which.min", silent=TRUE))) return("which.min")
+			if (isTRUE(try( fun@generic == "which.max", silent=TRUE))) return("which.max")
+			if (isTRUE(all(depf[1] == deparse(base::which)[1]))) return("which")
+			if (isTRUE(all(depf[1] == deparse(base::table)[1]))) return("table")
 		}
 	}
 	return(fun)
@@ -49,7 +40,9 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 	fun <- .makeTextFun(fun)
 	toc <- FALSE
 	if (inherits(fun, "character")) {
-		if (fun %in% c("sum", "mean", "min", "max", "median", "modal", "sd", "sdpop")) {
+		if (fun %in% c("sum", "mean", "min", "max", "median", "modal","prod", "which.min", "which.max",
+				"any", "all", "sd", "std", "sdpop")) {
+			fun[fun == "sdpop"] <- "std"
 			toc <- TRUE
 		} else {
 			fun <- match.fun(fun)
@@ -62,15 +55,15 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
 		narm <- isTRUE(list(...)$na.rm)
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
-		x@ptr <- x@ptr$aggregate(fact, fun, narm, opt)
+		x@cpp <- x@cpp$aggregate(fact, fun, narm, opt)
 		return (messages(x, "aggregate"))
 	} else {
 		out <- rast(x)
 		nl <- nlyr(out)
 		opt <- spatOptions()
-		out@ptr <- out@ptr$aggregate(fact, "sum", TRUE, opt)
+		out@cpp <- out@cpp$aggregate(fact, "sum", TRUE, opt)
 		out <- messages(out, "aggregate")
-		dims <- x@ptr$get_aggregate_dims(fact)
+		dims <- x@cpp$get_aggregate_dims(fact)
 
 		vtest <- values(x, dataframe=TRUE, row=1, nrows=dims[1], col=1, ncols=dims[2])
 		vtest <- as.list(vtest)
@@ -93,7 +86,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 			}
 		}
 
-		b <- blockSize(x, 4)
+		b <- blocks(x, 4)
 
 		nr <- max(1, floor(b$nrows[1] / fact[1])) * fact[1]
 		nrs <- rep(nr, floor(nrow(x)/nr))
@@ -106,25 +99,27 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		outrows  <- c(0, cumsum(outnr))[1:length(outnr)] + 1
 		nc <- ncol(x)
 
-		if (cores > 1) {
+
+		if (inherits(cores, "cluster")) {
 			doPar <- TRUE
-			cls <- parallel::makeCluster(cores)
-			on.exit(parallel::stopCluster(cls))
-			#f <- function(v, ...) parallel::parSapply(cls, v, fun, ...)
+		} else if (cores > 1) {
+			doPar <- TRUE
+			cores <- parallel::makeCluster(cores)
+			on.exit(parallel::stopCluster(cores))
+			export_args(cores, ..., caller="aggregate")
 		} else {
 			doPar <- FALSE
-			#f <- function(v, ...) sapply(v, fun, ...)
 		}
 
 		mpl <- prod(dims[5:6]) * fun_ret
 		readStart(x)
 		on.exit(readStop(x))
-		ignore <- writeStart(out, filename, overwrite, wopt=wopt)
+		ignore <- writeStart(out, filename, overwrite, sources=sources(x), wopt=wopt)
 		if (doPar) {
 			for (i in 1:b$n) {
 				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
-				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
-				v <- parallel::parSapply(cls, v, fun, ...)
+				v <- x@cpp$get_aggregates(v, b$nrows[i], dims)
+				v <- parallel::parSapply(cores, v, fun, ...)
 				if (length(v) != outnr[i] * mpl) {
 					error("aggregate", "this function does not return the correct number of values")
 				}
@@ -136,7 +131,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		} else {
 			for (i in 1:b$n) {
 				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
-				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
+				v <- x@cpp$get_aggregates(v, b$nrows[i], dims)
 				v <- sapply(v, fun, ...)
 				if (length(v) != outnr[i] * mpl) {
 					error("aggregate", "this function does not return the correct number of values")
@@ -195,7 +190,7 @@ aggregate_attributes <- function(d, by, fun=NULL, count=TRUE, ...) {
 	if (count) {
 		dn <- aggregate(d[, by[1],drop=FALSE], d[, by, drop=FALSE], length)
 		colnames(dn)[ncol(dn)] = "agg_n"
-		if (NCOL(da ) > 1) {
+		if (NCOL(da) > 1) {
 			if (nrow(dn) > 0) {
 				dn <- merge(da, dn, by=by)
 			} else {
@@ -217,7 +212,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 		}
 		if (is.null(by)) {
 			x$aggregate_by_variable = 1;
-			x@ptr <- x@ptr$aggregate("aggregate_by_variable", dissolve)
+			x@cpp <- x@cpp$aggregate("aggregate_by_variable", dissolve)
 			x$aggregate_by_variable = NULL;
 		} else {
 			if (is.character(by)) {
@@ -238,7 +233,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 				error("aggregate", "by should be character or numeric")
 			}
 
-			d <- as.data.frame(x)
+			d <- values(x)
 			mvars <- FALSE
 			if (length(iby) > 1) {
 				cvar <- apply(d[, iby], 1, function(i) paste(i, collapse="_"))
@@ -250,7 +245,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 				by <- names(x)[iby]
 			}
 
-			x@ptr <- x@ptr$aggregate(by, dissolve)
+			x@cpp <- x@cpp$aggregate(by, dissolve)
 			messages(x)
 
 			if (mvars) {
@@ -270,7 +265,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 			if (mvars) {
 				a[[by]] <- NULL
 			}
-			values(x) <- a[i,]
+			values(x) <- a[i,,drop=FALSE]
 		}
 		x
 	}

@@ -5,7 +5,7 @@
 
 
 setMethod("interpolate", signature(object="SpatRaster"),
-	function(object, model, fun=predict, ..., xyNames=c("x", "y"), factors=NULL, const=NULL, index=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
+	function(object, model, fun=predict, ..., xyNames=c("x", "y"), factors=NULL, const=NULL, index=NULL, cores=1, cpkgs=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 		out <- rast(object)
 		hv <- hasValues(object)
@@ -25,13 +25,41 @@ setMethod("interpolate", signature(object="SpatRaster"),
 			d <- readValues(object, testrow, 1, 1, ntest, TRUE, TRUE)
 			xy <- cbind(xy, d)
 		}
-		r <- .runModel(model, fun, xy, 1, const, (na.rm & hv), index, ...)
-		nl <- ncol(r)
+		r <- .runModel(model, fun, xy, 1, const, (na.rm & hv), index, cores=NULL, ...)
+		rdim <- dim(r)
+		if (!is.null(rdim)) {
+			if (rdim[1] == 1) {
+				nl <- rdim[1]
+			} else {
+				nl <- rdim[2]
+			}
+		} else {
+			nl <- 1
+		}
 		out <- rast(object, nlyrs=nl)
 		cn <- colnames(r)
 		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
 
-		b <- writeStart(out, filename, overwrite, wopt=wopt)
+		doclust <- FALSE
+		if (inherits(cores, "cluster")) {
+			doclust <- TRUE
+		} else if (cores > 1) {
+			doclust <- TRUE
+			cores <- parallel::makeCluster(cores)
+			on.exit(parallel::stopCluster(cores), add=TRUE)
+		}
+		if (doclust) {
+			parallel::clusterExport(cores, c("model", "fun"), environment())
+			if (!is.null(cpkgs)) {
+				parallel::clusterExport(cores, "cpkgs", environment())
+				parallel::clusterCall(cores, function() for (i in 1:length(cpkgs)) {library(cpkgs[i], character.only=TRUE) })
+			}
+			export_args(cores, ..., caller="interpolate")			
+		} else {
+			cores <- NULL
+		}
+		
+		b <- writeStart(out, filename, overwrite, sources=sources(object), wopt=wopt)
 		for (i in 1:b$n) {
 			xy <- xyFromCell(out, cellFromRowCol(out, b$row[i], 1):cellFromRowCol(out, b$row[i]+b$nrows[i]-1, nc))
 			colnames(xy) <- xyNames
@@ -39,11 +67,10 @@ setMethod("interpolate", signature(object="SpatRaster"),
 				d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
 				xy <- cbind(xy, d)
 			}
-			v <- .runModel(model, fun, xy, nl, const, (na.rm & hv), index, ...)
+			v <- .runModel(model, fun, xy, nl, const, (na.rm & hv), index, cores=cores, ...)
 			writeValues(out, v, b$row[i], b$nrows[i])
 		}
-		out <- writeStop(out)
-		return(out)
+		writeStop(out)
 	}
 )
 

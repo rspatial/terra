@@ -3,6 +3,7 @@
 \alias{distance}
 \alias{distance,SpatRaster,missing-method}
 \alias{distance,SpatRaster,SpatVector-method}
+\alias{distance,SpatRaster,sf-method}
 \alias{distance,SpatVector,ANY-method}
 \alias{distance,SpatVector,SpatVector-method}
 \alias{distance,matrix,matrix-method}
@@ -12,9 +13,11 @@
 
 \description{
 
-\bold{If \code{x} is a SpatRaster:}
+If \code{x} is a \bold{SpatRaster}:
 
-If \code{y} is \code{missing} this method computes the distance, for all cells that are \code{NA} in SpatRaster \code{x} to the nearest cell that is not \code{NA}. If argument \code{grid=TRUE}, the distance is computed using a path that goes through the centers of the 8 neighboring cells.
+If \code{y} is \code{missing} this method computes the distance, for all cells that are \code{NA} in SpatRaster \code{x} to the nearest cell that is not \code{NA} (or other values, see arguments "target" and "exclude"). 
+
+If \code{y} is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed (only if \code{grid=FALSE}).
 
 If \code{y} is a SpatVector, the distance to that SpatVector is computed for all cells. For lines and polygons this is done after rasterization; and only the overlapping areas of the vector and raster are considered (for now).
 
@@ -22,33 +25,46 @@ The distance is always expressed in meter if the coordinate reference system is 
 
 Results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance. 
 
-\bold{If \code{x} is a SpatVector:}
+If \code{x} is a \bold{SpatVector}:
 
-If \code{y} is \code{missing}, a distance matrix between all object in \code{x} is computed. An distance matrix object of class "dist" is returned. 
+If \code{y} is \code{missing}, a distance matrix between all objects in \code{x} is computed. A distance matrix object of class "dist" is returned. 
 
 If \code{y} is a SpatVector the geographic distance between all objects is computed (and a matrix is returned). If both sets have the same number of points, and \code{pairwise=TRUE}, the distance between each pair of objects is computed, and a vector is returned.
 
 The distance is always expressed in meter, except when the coordinate reference system is longitude/latitude AND one of the SpatVector(s) consists of lines or polygons. In that case the distance is in degrees, and thus not very useful (this will be fixed soon). Otherwise, results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance. 
+
+
+If \code{x} is a \bold{matrix}:
+
+\code{x} should consist of two columns, the first with "x" (or longitude) and the second with "y" coordinates (or latitude). If \code{y} is a also a matrix, the distance between each points in \code{x} and all points in \code{y} is computed, unless \code{pairwise=TRUE}
+
+If \code{y} is missing, the distance between each points in \code{x} with all other points in \code{x} is computed, unless \code{sequential=TRUE}
 }
 
+
+
 \usage{
-\S4method{distance}{SpatRaster,missing}(x, y, grid=FALSE, filename="", ...)
+\S4method{distance}{SpatRaster,missing}(x, y, target=NA, exclude=NULL, unit="m", haversine=TRUE, filename="", ...)
 
-\S4method{distance}{SpatRaster,SpatVector}(x, y, filename="", ...)
+\S4method{distance}{SpatRaster,SpatVector}(x, y, unit="m", rasterize=FALSE, haversine=TRUE, filename="", ...)
 
-\S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE)
+\S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m")
 
-\S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE)
+\S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, unit="m")
 
 \S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE)
 
-\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE)
+\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE, pairs=FALSE, symmetrical=TRUE)
 }
 
 \arguments{
   \item{x}{SpatRaster, SpatVector, or two-column matrix with coordinates (x,y) or (lon,lat)}
-  \item{y}{missing or SpatVector, or two-column matrix}
-  \item{grid}{logical. If \code{TRUE}, distance is computed using a path that goes through the centers of the 8 neighboring cells}
+  \item{y}{missing, numeric, SpatVector, or two-column matrix}
+  \item{target}{numeric. The value of the cells for which distances to cells that are not \code{NA} should be computed}
+  \item{exclude}{numeric. The value of the cells that should not be considered for computing distances}
+  \item{unit}{character. Can be either "m" or "km"}
+  \item{haversine}{logical. Use the haversine formula for lon/lat data use the haversine formula? If \code{FALSE}, the more precise but slower method of Karney (2003) is used}  
+  \item{rasterize}{logical. If \code{TRUE} distance is computed from the cells covered by the geometries after rasterization. This can be much faster in some cases}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
   \item{sequential}{logical. If \code{TRUE}, the distance between sequential geometries is returned}
@@ -83,6 +99,9 @@ plot(d / 100000)
 rr <- rast(ncols=36, nrows=18, crs="+proj=utm +zone=1 +datum=WGS84")
 rr[500] <- 1
 d <- distance(rr) 
+
+rr[3:10, 3:10] <- 99
+e <- distance(rr, exclude=99) 
 
 p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="+proj=longlat +datum=WGS84")
 dp <- distance(r, p1) 

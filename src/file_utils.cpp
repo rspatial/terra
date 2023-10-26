@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -21,6 +21,29 @@
 #include <chrono>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+/*
+#if defined __has_include
+#	if __has_include (<filesystem>)
+# 		include <filesystem>
+		namespace filesyst = std::filesystem;
+#	else
+#		include <experimental/filesystem>
+		namespace filesyst = std::experimental::filesystem;
+#	endif
+#elif defined __GNUC__
+#	if __GNUC__ < 8
+#		include <experimental/filesystem>
+		namespace filesyst = std::experimental::filesystem;
+#	else 
+# 		include <filesystem>
+		namespace filesyst = std::filesystem;	
+#	endif
+#else 
+#	include <filesystem>
+    namespace filesyst = std::filesystem;
+#endif
+*/
 
 bool write_text(std::string filename, std::vector<std::string> s) {
 	std::ofstream f;
@@ -111,9 +134,14 @@ bool file_exists(const std::string& name) {
 
 
 bool path_exists(std::string path) {
+
+/*
+	filesyst::path filepath = path;
+	return filesyst::exists(filepath);
+*/
 	struct stat info;
-	stat(path.c_str(), &info );
-	if(info.st_mode & S_IFDIR) {
+	stat(path.c_str(), &info);
+	if (info.st_mode & S_IFDIR) {
 		return true;
 	}
 	return false;
@@ -145,34 +173,90 @@ bool filepath_exists(const std::string& name) {
 
 
 
-bool can_write(std::string filename, bool overwrite, std::string &msg) {
-	if (file_exists(filename)) {
-		if (overwrite) {
-			if (remove(filename.c_str()) != 0) {
-				msg = ("cannot overwrite existing file");
+
+/*
+# c++17
+#include <experimental/filesystem>
+bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
+	std::vector<std::string> inf = filenames();
+	for (size_t i=0; i<inf.size(); i++) {
+		if (inf[i] == "") continue;
+		std::experimental::filesystem::path pin = inf[i];
+		for (size_t j=0; j<outf.size(); j++) {
+			std::experimental::filesystem::path pout = outf[i];
+			if (pin.compare(pout) == 0) return false;
+		}
+	}
+	return true;
+}
+*/
+
+bool differentFilenames(std::vector<std::string> inf, std::vector<std::string> outf, std::string &msg) {
+	#ifdef _WIN32
+	for (size_t j=0; j<outf.size(); j++) {
+		std::transform(outf[j].begin(), outf[j].end(), outf[j].begin(), ::tolower);
+	}
+	#endif
+
+	for (size_t i=0; i<inf.size(); i++) {
+		if (inf[i].empty()) continue;
+		#ifdef _WIN32
+		std::transform(inf[i].begin(), inf[i].end(), inf[i].begin(), ::tolower);
+		#endif
+		for (size_t j=0; j<outf.size(); j++) {
+			if (inf[i] == outf[j]) {
+				msg = "source and target filename cannot be the same";
 				return false;
 			}
-			//std::string aux = filename + ".aux.xml";
-			//remove(aux.c_str());
-			std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json"};
-			for (size_t i=0; i<exts.size(); i++) {
-				std::string f = filename + exts[i];
-				if (file_exists(f)) {
-					remove(f.c_str());
+		}
+	}
+	size_t n = outf.size();
+	std::sort( outf.begin(), outf.end() );
+	outf.erase(std::unique(outf.begin(), outf.end()), outf.end());
+	if (n > outf.size()) {
+		msg = "duplicate filenames";
+		return false;
+	}
+	return true;
+}
+
+
+bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg) {
+
+	if (!differentFilenames(srcnames, filenames, msg)) {
+		return false;
+	}
+
+	for (size_t i=0; i<filenames.size(); i++) {
+		if (!filenames[i].empty() && file_exists(filenames[i])) {
+			if (overwrite) {
+				if (remove(filenames[i].c_str()) != 0) {
+					msg = ("cannot overwrite existing file");
+					return false;
 				}
+				//std::string aux = filename + ".aux.xml";
+				//remove(aux.c_str());
+				std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json"};
+				for (size_t j=0; j<exts.size(); j++) {
+					std::string f = filenames[i] + exts[j];
+					if (file_exists(f)) {
+						remove(f.c_str());
+					}
+				}
+			} else {
+				msg = "file exists. You can use 'overwrite=TRUE' to overwrite it";
+				return false;
 			}
-		} else {
-			msg = "file exists";
+		} else if (!canWrite(filenames[i])) {
+			if (filenames[i].substr(0, 4) == "/vsi") continue; 
+			std::string path = get_path(filenames[i]);
+			if (!path_exists(path)) {
+				msg = "path does not exist";
+			} else {
+				msg = "cannot write file";
+			}
 			return false;
 		}
-	} else if (!canWrite(filename)) {
-		std::string path = get_path(filename);
-		if (!path_exists(path)) {
-			msg = "path does not exist";
-		} else {
-			msg = "cannot write file";
-		}
-		return false;
 	}
 	return true;
 }

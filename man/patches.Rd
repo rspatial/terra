@@ -76,7 +76,7 @@ x <- classify(r, cbind(-Inf, 400, NA))
 y <- patches(x)
 # remove patches smaller than 100 ha
 rz <- zonal(cellSize(y, unit="ha"), y, sum, as.raster=TRUE)
-s <- ifel(rz < 100, NA, y)
+s <- ifel(rz < 250, NA, y)
 }
 
 \keyword{methods}

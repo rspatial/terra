@@ -12,7 +12,7 @@
 
 \description{
 
-Change a categorical layer into one or more numerical layers. With \code{as.numeric} you can transfer the active category values to cell values in a non-categorical SpatRaster. \code{catalyze} createss new layers for each category.
+Change a categorical layer into one or more numerical layers. With \code{as.numeric} you can transfer the active category values to cell values in a non-categorical SpatRaster. \code{catalyze} creates new layers for each category.
 }
 
 \usage{
@@ -24,7 +24,7 @@ Change a categorical layer into one or more numerical layers. With \code{as.nume
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{index}{positive integer, indicating the column in \code{data.frame} \code{value} to be used as the category, skipping the first column with the ID. If \code{NULL} the active category is used}
+  \item{index}{positive integer or category indicating the category to use. If \code{NULL} the active category is used}
   \item{filename}{character. Output filename}  
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
 }  

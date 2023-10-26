@@ -13,7 +13,8 @@ src/Makevars.ucrt.rej
 *.zip
 .Rproj.user
 af_acc*
-
+.Rbuildignore
+.RData
 revdep/
 python/
 cmdapp/terra
@@ -29,3 +30,4 @@ packrat/src/
 
 C/terra
 
+docs

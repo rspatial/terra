@@ -21,14 +21,15 @@ Use \code{\link{app}} for summarize functions such as \code{sum}, that take any 
 \usage{
 \S4method{lapp}{SpatRaster}(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{lapp}{SpatRasterDataset}(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())
+\S4method{lapp}{SpatRasterDataset}(x, fun, ..., usenames=FALSE, recycle=FALSE, 
+    filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatRasterDataset}
   \item{fun}{a function that takes a vector and can be applied to each cell of \code{x}}
   \item{...}{additional arguments to be passed to \code{fun}} 
-  \item{usenames}{logical. Use the layer names to match the function arguments? If \code{FALSE} matching is by position}
+  \item{usenames}{logical. Use the layer names (or dataset names if \code{x} is a SpatRasterDataset) to match the function arguments? If \code{FALSE}, argument matching is by position}
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used. You can also supply a cluster object}
   \item{recycle}{logical. Recycle layers to match the subdataset with the largest number of layers}
   \item{filename}{character. Output filename}

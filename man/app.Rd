@@ -15,7 +15,7 @@ This is generally used to summarize the values of multiple layers into one layer
 
 \code{app} calls function \code{fun} with the raster data as first argument. Depending on the function supplied, the raster data is represented as either a matrix in which each layer is a column, or a vector representing a cell. The function should return a vector or matrix that is divisible by ncell(x). Thus, both "sum" and "rowSums" can be used, but "colSums" cannot be used.
 
-You can also apply a function \code{fun} across datasets by layer of a \code{SpatRasterDataset}. In that case, summarization is across SpatRasters, not across layers.
+You can also apply a function \code{fun} across datasets by layer of a \code{SpatRasterDataset}. In that case, summarization is by layer across SpatRasters. 
 }
 
 \usage{
@@ -42,7 +42,7 @@ SpatRaster
 To speed things up, parallelization is supported, but this is often not helpful, and it may actually be slower. There is only a speed gain if you have many cores (> 8) and/or a very complex (slow) function \code{fun}. If you write \code{fun} yourself, consider supplying a \code{cppFunction} made with the Rcpp package instead (or go have a cup of tea while the computer works for you).
 }
 
-\seealso{ \code{\link{lapp}}, \code{\link{tapp}}, \code{\link[terra]{Math-methods}} }
+\seealso{ \code{\link{lapp}}, \code{\link{tapp}}, \code{\link[terra]{Math-methods}}, \code{\link{roll}} }
 
 
 \examples{
@@ -61,6 +61,9 @@ a <- app(sd, max)
 a
 # same as 
 max(x, x*2, x/3)
+# and as (but slower)
+b <- app(sd, function(i) max(i))
+
 
 ## also works for a single layer
 f <- function(i) (i+1) * 2 * i + sqrt(i)

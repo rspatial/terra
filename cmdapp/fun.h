@@ -21,7 +21,7 @@ SpatRaster aggregate(std::vector<std::string> args) {
 	return(out);
     }
 
-    SpatRaster input(args[2], {-1}, {""}, {""});
+    SpatRaster input(args[2], {-1}, {""}, {""}, {""});
     opts.set_filenames({args[3]});
     // need to split the fact arguments
     // for now assume a single argument

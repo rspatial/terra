@@ -11,7 +11,7 @@
 \description{
 Combines data sources within a SpatRaster object (that are in memory, or from the same file) to allow for faster processing. 
 
-Or combine sub-datsets into a SpatRaster.
+Or combine sub-datasets into a SpatRaster.
 }
 \usage{
 

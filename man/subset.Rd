@@ -2,38 +2,7 @@
 
 \alias{subset}
 \alias{subset,SpatRaster-method}
-\alias{[[,SpatRaster,numeric,missing-method}
-\alias{[[,SpatRaster,logical,missing-method}
-\alias{[[,SpatRaster,character,missing-method}
-\alias{[,SpatRaster,character,missing-method}
-\alias{[,SpatRasterDataset,numeric,missing-method}
-\alias{[,SpatRasterDataset,numeric,numeric-method}
-\alias{[,SpatRasterDataset,logical,missing-method}
-\alias{[,SpatRasterDataset,character,missing-method}
-\alias{[[,SpatRasterDataset,ANY,ANY-method}
-
-\alias{[,SpatRasterCollection,numeric,missing-method}
-
-\alias{$,SpatRaster-method}
-\alias{$,SpatRasterDataset-method}
-
 \alias{subset,SpatVector-method}
-\alias{[,SpatVector,missing,missing-method}
-\alias{[,SpatVector,missing,numeric-method}
-\alias{[,SpatVector,missing,character-method}
-\alias{[,SpatVector,missing,logical-method}
-\alias{[,SpatVector,numeric,missing-method}
-\alias{[,SpatVector,numeric,numeric-method}
-\alias{[,SpatVector,numeric,character-method}
-\alias{[,SpatVector,numeric,logical-method}
-\alias{[,SpatVector,logical,missing-method}
-\alias{[,SpatVector,logical,character-method}
-\alias{[,SpatVector,logical,numeric-method}
-\alias{[,SpatVector,logical,logical-method}
-\alias{[,SpatVector,data.frame,missing-method}
-\alias{[,SpatVector,matrix,missing-method}
-
-
 
 \title{Subset a SpatRaster or a SpatVector}
 
@@ -75,6 +44,7 @@ if \code{x} is a \code{SpatVector}: SpatVector or, if \code{drop=TRUE}, a \code{
 s <- rast(system.file("ex/logo.tif", package="terra"))   
 subset(s, 2:3)
 subset(s, c(3,2,3,1))
+
 #equivalent to 
 s[[ c(3,2,3,1) ]]
 
@@ -92,12 +62,15 @@ s["^re"]
 ### SpatVector
 
 v <- vect(system.file("ex/lux.shp", package="terra"))
-v[2:3,]
-v[1:2, 2:3]
 
 subset(v, v$NAME_1 == "Diekirch", c("NAME_1", "NAME_2"))
 
 subset(v, NAME_1 == "Diekirch", c(NAME_1, NAME_2), NSE=TRUE)
+
+# or like this
+v[2:3,]
+v[1:2, 2:3]
+v[1:2, c("NAME_1", "NAME_2")]
 }
 
 \keyword{ spatial }

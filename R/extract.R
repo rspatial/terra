@@ -36,66 +36,10 @@ ext_from_rc <- function(x, r1, r2, c1, c2){
 }
 
 
-#setlabs <- function(x, labs) {
-#	x[ (x<1) | (x>length(labs))] <- NA
-#	x <- factor(x, levels=1:length(labs))
-#	levels(x) <- labs
-#	x
-#}
 
+extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NULL, raw=FALSE) {
 
-wmean <- function(p, na.rm=FALSE) {
-	n <- length(p)
-	w <- p[[n]]
-	p[[n]] <- NULL
-	sapply(p, function(x) {
-		stats::weighted.mean(x, w, na.rm=na.rm)
-	})
-}
-
-wsum <- function(p, na.rm=FALSE) {
-	n <- length(p)
-	w <- p[[n]]
-	p[[n]] <- NULL
-	sapply(p, function(x) {
-		sum(x * w, na.rm=na.rm)
-	})
-}
-
-wmin <- function(p, na.rm=FALSE) {
-	n <- length(p)
-	p[[n]] <- NULL
-	sapply(p, function(x) {
-		min(x, na.rm=na.rm)
-	})
-}
-
-wmax <- function(p, na.rm=FALSE) {
-	n <- length(p)
-	p[[n]] <- NULL
-	sapply(p, function(x) {
-		max(x, na.rm=na.rm)
-	})
-}
-
-
-		#if (!list) {
-			#if (geomtype(y) == "points")  {
-			#	e <- cbind(ID=1:length(e), matrix(unlist(e), ncol=nlyr(x), byrow=TRUE))
-			#} else {
-			#	e <- lapply(1:length(e), function(i) {
-			#		ee <- unlist(e[[i]])
-			#		if (length(ee) == 0) ee <- NA
-			#		cbind(ID=i, matrix(ee, ncol=length(e[[i]])))
-			#	})
-			#	e <- do.call(rbind, e)
-			#}
-		#}
-
-
-
-extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, layer=NULL) {
-
+	#value <- match.arg(tolower(value), c("data.frame", "list", "matrix"))
 	method <- match.arg(tolower(method), c("simple", "bilinear"))
 
 	nl <- nlyr(x)
@@ -115,18 +59,14 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	cn <- names(x)
 	opt <- spatOptions()
 	if ((method == "bilinear") && (NCOL(y) > 1)) {
-		e <- x@ptr$bilinearValues(y[,1], y[,2])
+		e <- x@cpp$bilinearValues(y[,1], y[,2])
 	} else {
 		if (NCOL(y) == 2) {
 			y <- cellFromXY(x, y)
 		}
-		e <- x@ptr$extractCell(y-1)
+		e <- x@cpp$extractCell(y-1)
 	}
 
-	if (list) {
-		messages(x, "extract")
-		return(e)
-	}
 	e <- do.call(cbind, e)
 	cn <- names(x)
 	nc <- nl
@@ -149,11 +89,11 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	}
 	colnames(e) <- cn
 
-	if (factors) {
+	if (!raw) {
 		if (method != "simple") {
 			e <- as.data.frame(e)
 		} else {
-			e <- .makeDataFrame(x, e, TRUE)
+			e <- .makeDataFrame(x, e)
 		}
 	}
 
@@ -171,48 +111,7 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	}
 }
 
-setMethod("extract", signature(x="SpatRaster", y="matrix"),
-function(x, y, ...) {
-	.checkXYnames(colnames(y))
-	extractCells(x, y, ...)
-})
-
-
-setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
-function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, ID=TRUE, as.spatvector=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
-
-	nl <- nlyr(x)
-	useLyr <- FALSE
-	method <- match.arg(tolower(method), c("simple", "bilinear"))
-	hasfun <- !is.null(fun)
-	if (weights && exact) {
-		exact = FALSE
-	}
-	if (hasfun) {
-		cells <- FALSE
-		xy <- FALSE
-		if (weights || exact) {
-			list <- TRUE
-			fun <- .makeTextFun(fun)
-			bad <- FALSE
-			if (is.character(fun)) {
-				if (!(fun %in% c("sum", "mean", "min", "max"))) {
-					bad <- TRUE
-				} else if (fun == "mean") {
-					fun <- wmean
-				} else if (fun == "sum") {
-					fun <- wsum
-				} else if (fun == "min") {
-					fun <- wmin
-				} else if (fun == "max") {
-					fun <- wmax
-				}
-			} else {
-				bad <- TRUE
-			}
-			if (bad) error("extract", 'if weights or exact=TRUE, "fun" must be "sum", "mean", "min", or "max"')
-		}
-	}
+use_layer <- function(e, y, layer, nl) {
 	if (!is.null(layer) && nl > 1) {
 		if (any(is.na(layer))) {error("extract", "argument 'layer' cannot have NAs")}
 		if (length(layer) == 1) {
@@ -226,36 +125,199 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 			layer <- round(layer)
 			stopifnot(min(layer) > 0 & max(layer) <= nl)
 		} else {
-			layer <- match(layer, names(x))
+			layer <- match(layer, colnames(e))
 			if (any(is.na(layer))) error("extract", "names in argument 'layer' do not match names(x)")
 		}
-		useLyr <- TRUE
-	}
 
-	#f <- function(i) if(length(i)==0) { NA } else { i }
-	#e <- rapply(e, f, how="replace")
-	cn <- names(x)
-	opt <- spatOptions()
-	if (list) {
-		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
-		x <- messages(x, "extract")
-		if (weights || exact) {
-			if (hasfun) {
-				e <- sapply(e, fun, ...)
-				e <- matrix(e, nrow=nrow(y), byrow=TRUE)
-				colnames(e) <- cn
-				e <- cbind(ID=1:nrow(e), e)
-			}
+		idx <- cbind(e[,1], layer[e[,1]])
+		ee <- data.frame(e[,1,drop=FALSE], names(e)[idx[,2]-1], value=e[idx])
+		colnames(ee)[2] <- lyr_name
+		if (ncol(e) > (nl+1)) {
+			e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
+		} else {
+			e <- ee
 		}
-		return(e)
 	}
+	e
+}
 
-	e <- x@ptr$extractVectorFlat(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+
+extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FALSE, na.rm=FALSE) {
+
+	if (weights && exact) {
+		exact = FALSE
+	}
+	opt <- spatOptions()
+
+	if (weights | exact) {
+		wtable <- function(p, na.rm=FALSE) {
+			n <- length(p)
+			w <- p[[n]]
+			p[[n]] <- NULL
+			do.call( rbind, 
+				lapply(1:length(p), function(i) {
+					x <- p[[i]]
+					j <- is.na(x)
+					if (na.rm) {
+						x <- x[!j]
+						w <- w[!j]
+					} else if (any(j)) {
+						w[] <- NA
+					}
+					data.frame(layer=i, aggregate(w, list(x), sum, na.rm=FALSE))
+				})
+			)
+		}
+		
+		e <- x@cpp$extractVector(y@cpp, touches[1], "simple", FALSE, FALSE, 
+			isTRUE(weights[1]), isTRUE(exact[1]), opt)
+		x <- messages(x, "extract")
+		e <- lapply(e, wtable, na.rm=na.rm)
+		e <- lapply(1:length(e), function(i) cbind(ID=i, e[[i]]))
+		e <- do.call(rbind, e)
+		colnames(e)[3:4] <- c("group", "value")
+		out <- vector("list", nlyr(x))
+		for (i in 1:nlyr(x)) {
+			ee <- e[e[,2] == i, ]
+			ee <- replace_with_label(x[[i]], ee, 3)
+			ee <- stats::reshape(ee, idvar=c("ID", "layer"), timevar="group", direction="wide")
+			colnames(ee) <- gsub("value.", "", colnames(ee))
+			ee$layer <- NULL
+			if (!ID) {
+				ee$ID <- NULL
+			}
+			if (na.rm) {
+				ee[is.na(ee)] <- 0
+			}
+			out[[i]] <- ee
+		}
+		if (nlyr(x) == 1) return(out[[1]]) else return(out)
+	} else {
+		e <- x@cpp$extractVectorFlat(y@cpp, "", FALSE, touches[1], "", FALSE, FALSE, FALSE, FALSE, opt)
+		x <- messages(x, "extract")
+		e <- data.frame(matrix(e, ncol=nlyr(x)+1, byrow=TRUE))
+		colnames(e) <- c("ID", names(x))
+		id <- e[,1,drop=FALSE]
+		e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE]))
+		cn <- colnames(e)
+		out <- vector("list", ncol(e)-1)
+		for (i in 2:ncol(e)) {
+			fixname <- TRUE
+			if (!is.factor(e[,i])) {
+				fixname <- FALSE
+				e[,i]  <- as.factor(e[,i])
+			}
+			tb <- table(e[,1], e[,i])
+			tb <- cbind(ID = rownames(tb), as.data.frame.matrix(tb))
+			if (fixname) colnames(tb) <- gsub(cn[i], "", colnames(tb))
+			if (!ID) {
+				tb$ID <- NULL
+			}
+			tb$layer <- NULL
+			out[[i-1]] <- tb
+		}
+		if (ncol(e) == 2) return(out[[1]]) else return(out)
+	}
+}
+
+
+
+extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=FALSE, layer=NULL, bind=FALSE, na.rm=FALSE) {
+
+	opt <- spatOptions()
+
+	e <- x@cpp$extractVectorFlat(y@cpp, fun, na.rm, touches[1], "", FALSE, FALSE, weights, exact, opt)
 	x <- messages(x, "extract")
-	nc <- nl
+
+	nl <- nlyr(x)
+	e <- data.frame(matrix(e, ncol=nl, byrow=TRUE))
+	colnames(e) <- names(x)
+
+	if (!is.null(layer)) {
+		e <- cbind(ID=1:nrow(e), e)
+		e <- use_layer(e, y, layer, nlyr(x))
+		if (!ID || bind) {
+			e$ID <- NULL
+		}
+		ID <- FALSE
+	} 
+	if (bind) {
+		if (nrow(e) == nrow(y)) {
+			e <- cbind(y, e)
+		} else {
+			warn("extract", "cannot return a SpatVector because the number of records extracted does not match he number of rows in y (perhaps you need to use a summarizing function")
+		}
+	} else if (ID) {
+		e <- cbind(ID=1:nrow(e), e)
+	}
+	e
+}
+
+
+do_fun <- function(x, e, fun, ...) {		
+	fun <- match.fun(fun)
+	e <- aggregate(e[,-1,drop=FALSE], e[,1,drop=FALSE], fun, ...)
+	m <- sapply(e, NCOL)
+	if (any(m > 1)) {
+		cn <- names(e)
+		e  <- do.call(cbind, as.list(e))
+		i <- rep(1, length(cn))
+		i[m>1] <- m[m>1]
+		cn <- rep(cn, i)
+		cn <- make.names(cn, TRUE)
+		if (length(cn) == ncol(e)) {
+			colnames(e) <- cn
+		}
+		#e <- data.frame(e)
+	}
+	e
+}
+
+
+setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
+function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, raw=FALSE, ...) {
+
+	geo <- geomtype(y)
+	if (geo == "points") {		
+		if (weights || exact) {
+			method <- "bilinear"
+			weights <- FALSE
+			exact <- FALSE
+		} 
+		# method <- match.arg(tolower(method), c("simple", "bilinear"))
+	} else if (!is.null(fun)) { # nothing to summarize for points
+		txtfun <- .makeTextFun(fun)
+		if (inherits(txtfun, "character")) {
+			if (txtfun == "table") {
+				if (!is.null(layer)) {
+					warn("extract", "argument 'layer' is ignored when 'fun=table'")
+				}
+				e <- extract_table(x, y, ID=ID, weights=weights, exact=exact, touches=touches, ...)
+			} else {
+				e <- extract_fun(x, y, txtfun, ID=ID, weights=weights, exact=exact, touches=touches, bind=bind
+				, layer=layer, ...)
+			}
+			return(e)
+		} else if (weights || exact) {
+			error("extract", "if 'weights' or 'exact' is TRUE, you can only use functions mean, sum, min, max and table")
+		}
+		xy <- cells <- FALSE
+		raw <- TRUE
+	} 
+	
+	opt <- spatOptions()
+	e <- x@cpp$extractVectorFlat(y@cpp, "", FALSE, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+	x <- messages(x, "extract")
+
+	cn <- c("ID", names(x))
+	nc <- nl <- nlyr(x)
 	if (cells) {
 		cn <- c(cn, "cell")
 		nc <- nc + 1
+	}
+	if (xy) {
+		cn <- c(cn, "x", "y")
+		nc <- nc + 2
 	}
 	if (weights) {
 		cn <- c(cn, "weight")
@@ -264,12 +326,6 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		cn <- c(cn, "fraction")
 		nc <- nc + 1
 	}
-	if (xy) {
-		cn <- c(cn, "x", "y")
-		nc <- nc + 2
-	}
-
-	geo <- geomtype(y)
 	if (geo == "points") {
 		## this was? should be fixed upstream
 		if (nc == nl) {
@@ -285,98 +341,49 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	} else {
 		e <- matrix(e, ncol=nc+1, byrow=TRUE)
 	}
-	cn <- c("ID", cn)
 	colnames(e) <- cn
-	if (hasfun) {
-		fun <- match.fun(fun)
-		e <- data.frame(e)
-		e <- aggregate(e[,-1,drop=FALSE], e[,1,drop=FALSE], fun, ...)
-
-		m <- sapply(e, NCOL)
-		if (any(m > 1)) {
-			e <- do.call(cbind, as.list(e))
-			skip <- (length(cn) - nlyr(x))
-			nms <- colnames(e)
-			snms <- nms[(skip+1):length(nms)]
-			mr <- max(m)
-			if (!all(snms=="")) {
-				snms <- paste0(rep(names(x), each=mr), ".", snms)
-			} else {
-				snms <- paste0(rep(names(x), each=mr), ".", rep(1:mr))
-			}
-			snms <- c(cn[1:skip], snms)
-			colnames(e) <- snms
-			e <- data.frame(e)
-		}
-	} else if (cells) {
+	if (!is.null(fun)) {
+		e <- as.data.frame(e)
+		e <- do_fun(x, e, fun, ...)
+	}
+	
+	if (cells) {
 		cncell <- cn =="cell"
 		e[, cncell] <- e[, cncell] + 1
 	}
 
-	if (factors) {
-		if (hasfun || method != "simple") {
+	if (!raw) {
+		if (method != "simple") {
 			e <- as.data.frame(e)
 		} else {
 			id <- data.frame(e[,1,drop=FALSE])
-			e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE], TRUE))
+			e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE]))
 		}
 	}
+	
+	e <- use_layer(e, y, layer, nl)
 
-	if (useLyr) {
-		idx <- cbind(e[,1], layer[e[,1]]+1)
-		ee <- cbind(e[,1,drop=FALSE], names(x)[idx[,2]-1], value=e[idx])
-		colnames(ee)[2] <- lyr_name
-		if (ncol(e) > (nl+1)) {
-			e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
-		} else {
-			e <- ee
-		}
-	}
-	if (as.spatvector) {
+	if (bind) {
 		if (nrow(e) == nrow(y)) {
 			e <- cbind(y, e[,-1,drop=FALSE])
 		} else {
 			warn("extract", "cannot return a SpatVector because the number of records extracted does not match the number of rows in y (perhaps you need to use a summarizing function")
 		}
 	} else if (!ID) {
-		if (ncol(e) > nlyr(x)) {
-			e$ID <- NULL
-		}
+		e <- e[,-1,drop=FALSE]
 	}
 	e
 })
 
+
+
 setMethod("extract", signature(x="SpatRaster", y="sf"),
-	function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, ID=TRUE, as.spatvector=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) {
+	function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, ...) {
 		y <- vect(y)
-		extract(x, y, fun=fun, method=method, list=list, factors=factors, cells=cells, xy=xy, ID=TRUE, as.spatvector=FALSE, weights=weights, exact=exact, touches=touches, layer=layer, ...)
+		extract(x, y, fun=fun, method=method, cells=cells, xy=xy, ID=ID, weights=weights, exact=exact, touches=touches, layer=layer, bind=bind, ...)
 	}
 )
 
-
-
-setMethod("[", c("SpatRaster", "SpatVector", "missing"),
-function(x, i, j, ... , drop=FALSE) {
-	v <- extract(x, i)
-	if (drop) {
-		as.vector(v)
-	} else {
-		v
-	}
-})
-
-setMethod("[", c("SpatVector", "SpatVector", "missing"),
-function(x, i, j, ... , drop=FALSE) {
-	r <- !relate(x, i, "disjoint")
-	r <- which(apply(r, 1, any))
-	x[r, ]
-})
-
-
-setMethod("[", c("SpatVector", "SpatExtent", "missing"),
-function(x, i, j, ... , drop=FALSE) {
-	x[as.polygons(i)]
-})
 
 
 setMethod("extract", signature(x="SpatRaster", y="data.frame"),
@@ -390,179 +397,47 @@ function(x, y, ...) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="numeric"),
-function(x, y, ...) {
+function(x, y, xy=FALSE, raw=FALSE) {
 	y <- round(y)
 	y[(y < 1) | (y > ncell(x))] <- NA
-	extract_cell(x, y)	
+	v <- .extract_cell(x, y, drop=TRUE, raw=raw)
+	if (xy) {
+		v <- cbind(xyFromCell(x, y), v)
+	}
+	v
+})
+
+setMethod("extract", signature(x="SpatRaster", y="matrix"),
+function(x, y, cells=FALSE, method="simple") {
+	.checkXYnames(colnames(y))
+	method <- match.arg(tolower(method), c("simple", "bilinear"))
+	if (method != "simple") {
+		y <- vect(y)
+		return(extract(x, y, method=method, ID=FALSE))
+	}
+	y <- cellFromXY(x, y)
+	if (cells) {
+		cbind(cell=y, extract(x, y))
+	} else {
+		extract(x, y)
+	}
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),
-function(x, y, factors=TRUE, cells=FALSE, xy=FALSE) {
+function(x, y, cells=FALSE, xy=FALSE) {
 	y <- cells(x, y)
-	if (factors) dataframe = TRUE
-	v <- extract_cell(x, y, factors=factors)
+	v <- extract(x, y, xy=xy)
 	if (cells) {
-		v$cell <- y
+		v <- cbind(cell=y, v)
 	}
-	if (xy) {
-		v <- cbind(v, xyFromCell(x, y))
-	}
-	v
 }
 )
 
 
-setMethod("[", c("SpatRaster", "missing", "missing"),
-function(x, i, j, ... , drop=FALSE) {
-	values(x, mat=!drop)
-})
-
-setMethod("[", c("SpatRaster", "logical", "missing"),
-function(x, i, j, ... , drop=FALSE) {
-	x[which(i),, drop=drop]
-})
-
-
-extract_cell <- function(x, cells, drop=FALSE, factors=TRUE) {
-	e <- x@ptr$extractCell(cells-1)
-	messages(x, "extract_cell")
-	e <- do.call(cbind, e)
-	colnames(e) <- names(x)
-	.makeDataFrame(x, e, factors)[,,drop]
-}
-
-
-setMethod("[", c("SpatRaster", "numeric", "missing"),
-function(x, i, j, ... , drop=TRUE) {
-
-	add <- any(grepl("drop", names(match.call())))
-	if (!drop) {
-		if (nargs() == 3) {
-			i <- positive_indices(i, ncell(x), caller=" [ ")
-			rc <- rowColFromCell(x, i)
-			e <- ext_from_rc(x, min(rc[,1]), max(rc[,1]), min(rc[,2]), max(rc[,2]))
-		} else {
-			i <- positive_indices(i, nrow(x), caller=" [ ")
-			e <- ext_from_rc(x, min(i), max(i), 1, ncol(x))
-		}
-		return(crop(x, e))
-	}
-	if (nargs() > (2+add)) {
-		i <- positive_indices(i, nrow(x), caller=" [ ")
-		i <- cellFromRowColCombine(x, i, 1:ncol(x))
-	} else {
-		i <- positive_indices(i, ncell(x), caller=" [ ")	
-	}
-	extract_cell(x, i, drop=FALSE)
-})
-
-
-setMethod("[", c("SpatRaster", "data.frame", "missing"),
-function(x, i, j, ... , drop=TRUE) {
-	if (ncol(i) == 1) {
-		i <- i[,1]
-	} else if (ncol(i) == 2) {
-		i <- cellFromXY(x, i)
-	} else {
-		error(" [", "cannot extract values with this data.frame")
-	}
-	`[`(x, i, drop=drop)
-})
-
-setMethod("[", c("SpatRaster", "matrix", "missing"),
-function(x, i, j, ... , drop=TRUE) {
-	if (ncol(i) == 1) {
-		i <- i[,1]
-	} else if ((nrow(i) == 1) && (ncol(i) != 2)) {
-		i <- i[1,]
-	} else if (ncol(i) == 2) {
-		i <- cellFromXY(x, i)
-	} else {
-		error(" [", "cannot extract values with a ` of these dimensions")
-	}
-	`[`(x, i, drop=drop)
-})
-
-
-setMethod("[", c("SpatRaster", "missing", "numeric"),
-function(x, i, j, ... , drop=TRUE) {
-	if (!drop) {
-		e <- ext_from_rc(x, 1, nrow(x), min(j), max(j))
-		return(crop(x, e))
-	}
-
-	i <- cellFromRowColCombine(x, 1:nrow(x), j)
-	extract_cell(x, i, drop=FALSE)
-})
-
-
-setMethod("[", c("SpatRaster", "numeric", "numeric"),
-function(x, i, j, ..., drop=TRUE) {
-	if (!drop) {
-		e <- ext_from_rc(x, min(i), max(i), min(j), max(j))
-		return(crop(x, e))
-	}
-	i <- cellFromRowColCombine(x, i, j)
-	extract_cell(x, i, drop=FALSE)
-})
-
-
-setMethod("[", c("SpatRaster", "SpatRaster", "missing"),
-function(x, i, j, ..., drop=TRUE) {
-
-	if (!compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
-		return (x[ext(i), drop=drop])
-	}
-	if (drop) {
-		if (is.bool(i)) {
-			i <- as.logical(values(i))
-		} else {
-			i <- !is.na(values(i))
-		}
-		values(x)[i,]
-	} else {
-		if (is.bool(i)) {
-			mask(x, i, maskvalues=FALSE)
-		} else {
-			mask(x, i)
-		}
-	}
-})
-
-
-setMethod("[", c("SpatRaster", "SpatExtent", "missing"),
-function(x, i, j, ..., drop=FALSE) {
-	x <- crop(x, i)
-	if (drop) {
-		values(x)
-	} else {
-		x
-	}
-})
-
-
 setMethod("extract", c("SpatVector", "SpatVector"),
-function(x, y, ...) {
+function(x, y) {
 
-	#r <- relate(y, x, "within")
-	#e <- apply(r, 1, which)
-	r <- relate(x, y, "covers")
-	e <- apply(r, 2, which)
-	if (length(e) == 0) {
-		e <- list(e)
-	}
-	if (is.list(e)) {
-		e <- lapply(1:length(e), function(i) {
-			if (length(e[[i]]) == 0) {
-				cbind(i, NA)
-			} else {
-				cbind(i, e[[i]])
-			}
-		})
-		e <- do.call(rbind, e)
-	} else {
-		e <- cbind(1:nrow(y), e)
-	}
+	e <- relate(y, x, "coveredby", pairs=TRUE, na.rm=FALSE)
 	if (ncol(x) > 0) {
 		d <- as.data.frame(x)
 		e <- data.frame(id.y=e[,1], d[e[,2], ,drop=FALSE])
@@ -572,4 +447,132 @@ function(x, y, ...) {
 	}
 	e
 })
+
+
+setMethod("extract", signature(x="SpatVector", y="matrix"),
+function(x, y) {
+	stopifnot(ncol(y) == 2)
+	.checkXYnames(colnames(y))
+	y <- vect(y)
+	extract(x, y)
+})
+
+setMethod("extract", signature(x="SpatVector", y="data.frame"),
+function(x, y) {
+	extract(x, as.matrix(y))
+})
+
+
+setMethod("extract", signature(x="SpatRasterCollection", y="ANY"),
+function(x, y, ...) {
+	lapply(x, function(r) extract(r, y, ...))
+}
+)
+
+setMethod("extract", signature(x="SpatRasterDataset", y="ANY"),
+function(x, y, ...) {
+	lapply(x, function(r) extract(r, y, ...))
+}
+)
+
+
+
+
+extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE, bilinear=TRUE) { 
+
+	stopifnot(inherits(x, "SpatRaster"))
+	if (inherits(y, "sf")) {
+		y <- vect(y)
+	} else {
+		stopifnot(inherits(y, "SpatVector"))
+	}
+	stopifnot(geomtype(y) == "lines")
+	
+	spbb <- as.matrix(ext(y))
+	rsbb <- as.matrix(ext(x))
+	addres <- 2 * max(res(x))
+	nlns <- nrow(y)
+	res <- vector(mode = "list", length = nlns)
+
+	if (spbb[1,1] > rsbb[1,2] | spbb[1,2] < rsbb[1,1] | spbb[2,1] > rsbb[2,2] | spbb[2,2] < rsbb[2,1]) {
+		res <- data.frame(matrix(ncol=nlyr(x)+4, nrow=0))
+		colnames(res) <- c("ID", "cell", "x", "y", names(x))
+		if (!cells) res$cell <- NULL
+		if (!xy) {
+			res$x <- NULL
+			res$y <- NULL
+		}
+		if (!ID) res$ID <- NULL
+		return(res)
+	}
+	
+	rr <- rast(x)
+	g <- data.frame(geom(y))
+	
+	for (i in 1:nlns) {
+		yp <- g[g$geom == i, ]
+		nparts <- max(yp$part)
+		vv <- NULL
+		for (j in 1:nparts) {
+			pp <- as.matrix(yp[yp$part==j, c("x", "y"), ])
+			for (k in 1:(nrow(pp)-1)) {
+				ppp <- pp[k:(k+1), ]
+				spbb <- t(ppp)
+				if (! (spbb[1,1] > rsbb[1,2] | spbb[1,2] < rsbb[1,1] | spbb[2,1] > rsbb[2,2] | spbb[2,2] < rsbb[2,1]) ) {
+					lns <- vect(ppp, "lines")
+					rc <- crop(rr, ext(lns) + addres)
+					rc <- rasterize(lns, rc, touches=TRUE)
+					cxy <- crds(rc)
+					v <- cbind(row=rowFromY(rr, cxy[,2]), col=colFromX(rr, cxy[,1]))
+					#up or down?
+					updown <- c(1,-1)[(ppp[1,2] < ppp[2,2]) + 1]
+					rightleft <- c(-1,1)[(ppp[1,1] < ppp[2,1]) + 1]
+
+					v <- v[order(updown*v[,1], rightleft*v[,2]), ]
+					vv <- rbind(vv, v)
+				}
+			} 
+		}
+		if (!is.null(vv)) {
+			cell <- cellFromRowCol(rr, vv[,1], vv[,2])
+			res[[i]] <- data.frame(i, cell)
+		}
+	}
+	
+	res <- do.call(rbind, res)
+	if (is.null(res)) {
+		if (xy) {
+			res <- data.frame(matrix(ncol=nlyr(x)+4, nrow=0))		
+			colnames(res) <- c("ID", "cell", "x", "y", names(x))
+		} else {
+			res <- data.frame(matrix(ncol=nlyr(x)+2, nrow=0))
+			colnames(res) <- c("ID", "cell", names(x))
+		}
+	} else {
+		colnames(res) <- c("ID", "cell")
+		if (xy) {
+			xycrd <- xyFromCell(x, res$cell)
+			method <- "simple"
+			if (online) {
+				pts <- vect(xycrd, crs="local")
+				crs(y) <- "local"
+				n <- nearest(pts, y)
+				xycrd <- crds(n)
+				if (bilinear) method <- "bilinear"
+				res <- data.frame(res, xycrd, extract(x, xycrd, method=method))
+			} else {
+				res <- data.frame(res, xycrd, extract(x, res$cell))
+			}
+		} else {
+			res <- data.frame(res, extract(x, res$cell))		
+		}
+	}
+
+	if (!cells) res$cell <- NULL
+	if (!ID) res$ID <- NULL
+	
+	res
+
+}
+
 

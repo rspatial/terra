@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -14,6 +14,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
+
+#ifndef SPATBASE_GUARD
+#define SPATBASE_GUARD
 
 #include <vector>
 #include <algorithm>
@@ -71,11 +74,8 @@ class SpatMessages {
 			warnings.push_back(s);
 		}
 
-		std::string getWarnings() {
-			std::string w = "";
-			for (size_t i = 0; i<warnings.size(); i++) {
-				w += warnings[i] + "\n" ;
-			}
+		std::vector<std::string> getWarnings() {
+			std::vector<std::string> w = warnings; 		
 			warnings.resize(0);
 			has_warning = false;
 			return w;
@@ -90,13 +90,14 @@ class SpatMessages {
 			message = s;
 		}
 		
-		std::vector<std::string> getAll() {
+/*		std::vector<std::string> getAll() {
 			std::string warns = getWarnings();
 			std::string error = getError();
 			std::string msg = getMessage();
 			std::vector<std::string> amsgs = { error, warns, msg};
 			return amsgs;
 		}
+*/
 };
 
 
@@ -108,6 +109,8 @@ class SpatOptions {
 		double memmin = 134217728; // 1024^3 / 8
 		double memfrac = 0.6;
 		double tolerance = 0.1;
+		std::vector<double> offset = {0};
+		std::vector<double> scale = {1};
 		
 	public:
 		SpatOptions();
@@ -199,6 +202,11 @@ class SpatOptions {
 		void set_ncopies(size_t n);
 		size_t get_ncopies();
 
+		void set_offset(std::vector<double> d);
+		std::vector<double> get_offset();
+		void set_scale(std::vector<double> d);
+		std::vector<double> get_scale();
+
 		SpatMessages msg;
 };
 
@@ -214,6 +222,13 @@ class SpatExtent {
 		SpatExtent deepCopy() {return *this;}
 		SpatExtent align(double d, std::string snap);
 
+		bool intersects(SpatExtent e) { 
+			if ((xmin > e.xmax) || (xmax < e.xmin) || (ymin > e.ymax) || (ymax < e.ymin)) {
+				return false;
+			}
+			return true;
+		}
+
 		SpatExtent intersect(SpatExtent e) { // check first if intersects?
 			SpatExtent out;
 			out.xmin = std::max(xmin, e.xmin);
@@ -222,6 +237,7 @@ class SpatExtent {
 			out.ymax = std::min(ymax, e.ymax);
 			return out;
 		}
+
 
 		void unite(SpatExtent e) {
 			if (std::isnan(xmin)) {
@@ -258,8 +274,11 @@ class SpatExtent {
 		bool valid() {
 			return ((xmax >= xmin) && (ymax >= ymin));
 		}
-		bool valid_notequal() {
+		bool valid_notempty() {
 			return ((xmax > xmin) && (ymax > ymin));
+		}
+		bool empty() {
+			return ((xmax <= xmin) || (ymax <= ymin));
 		}
 
 		bool compare(SpatExtent e, std::string oper, double tolerance);
@@ -303,11 +322,11 @@ class SpatSRS {
 		}
 
 		bool is_empty() {
-			return (wkt == "");
+			return wkt.empty();
 		}
 
 		bool is_same(std::string other, bool ignoreempty);
-		bool is_same(SpatSRS x, bool ignoreempty);
+		bool is_same(SpatSRS other, bool ignoreempty);
 
 
 		bool is_lonlat(); // as below, but using GDAL
@@ -340,3 +359,19 @@ class SpatSRS {
 		}
 };
 
+
+class SpatProgress {
+	public:
+		virtual ~SpatProgress(){}		
+		size_t nstep;
+		size_t step;
+		std::vector<int> steps;
+		void init(size_t n, int nmin);
+		bool show = false;
+		void stepit();
+		void finish();
+		void interrupt();
+};
+
+
+#endif

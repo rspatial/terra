@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022  Robert J. Hijmans
+// Copyright (c) 2018-2023  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -247,4 +247,6 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
 
     return values[maxCount];
 }
+
+
 
