@@ -177,7 +177,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 <dd><p>character. units for each layer</p></dd>
 
 <dt>type</dt>
-<dd><p>character. If the value is not <code>"xyz"</code>, the raster has the same number of rows and columns as the matrix. If the value is <code>"xyz"</code>, the matrix must have at least two columns, the first with <code>x</code> (or longitude) and the second with <code>y</code> (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells.</p></dd>
+<dd><p>character. If the value is <code>"xyz"</code>, the matrix or data.frame <code>x</code> must have at least two columns, the first with <code>x</code> (or longitude) and the second with <code>y</code> (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells. If the value is <code>"xylz"</code>, <code>x</code> must have four columns with the third representing the layer and the fourth the cell values. If the value is <code>""</code>, the resulting SpatRaster will have the same number of rows and columns as <code>x</code>.</p></dd>
 
 <dt>digits</dt>
 <dd><p>integer to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when <code>type="xyz"</code></p></dd>

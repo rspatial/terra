@@ -61,7 +61,8 @@
 <span><span class="fu">as.data.frame</span><span class="op">(</span><span class="va">x</span>, row.names<span class="op">=</span><span class="cn">NULL</span>, optional<span class="op">=</span><span class="cn">FALSE</span>, geom<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">as.data.frame</span><span class="op">(</span><span class="va">x</span>, row.names<span class="op">=</span><span class="cn">NULL</span>, optional<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">NA</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">as.data.frame</span><span class="op">(</span><span class="va">x</span>, row.names<span class="op">=</span><span class="cn">NULL</span>, optional<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, </span>
+<span>  cells<span class="op">=</span><span class="cn">FALSE</span>, time<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">NA</span>, wide<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,11 +76,17 @@
  <dt>xy</dt>
 <dd><p>logical. If <code>TRUE</code>, the coordinates of each raster cell are included</p></dd>
 
+ <dt>time</dt>
+<dd><p>logical. If <code>TRUE</code>, the time data is included (if available)</p></dd>
+
+ <dt>na.rm</dt>
+<dd><p>logical. If <code>TRUE</code>, cells that have a <code>NA</code> value in at least one layer are removed. If the argument is set to <code>NA</code> only cells that have <code>NA</code> values in all layers are removed</p></dd>
+
  <dt>cells</dt>
 <dd><p>logical. If <code>TRUE</code>, the cell numbers of each raster cell are included</p></dd>
 
- <dt>na.rm</dt>
-<dd><p>logical. If <code>TRUE</code>, cells that have a NA value in at least one layer are removed. If the argument is set to <code>NA</code> only cells that have NA values in all layers are removed</p></dd>
+ <dt>wide</dt>
+<dd><p>logical. If <code>FALSE</code>, the data.frame returned has a "long" format</p></dd>
 
  <dt>...</dt>
 <dd><p>Additional arguments passed to the <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></code></p></dd>
