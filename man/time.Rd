@@ -1,6 +1,7 @@
 \name{time}
 
 \alias{time}
+\alias{has.time}
 \alias{time<-}
 \alias{time<-,SpatRaster-method}
 \alias{time<-,SpatRasterDataset-method}
@@ -15,9 +16,13 @@
 
 \description{
 Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\link{POSIXlt}} (date and time, with  a resolution of seconds, and a time zone), \code{\link{Date}}, "months", "years", or "yearmonths". 
+
+\code{timeInfo} and \code{has.time} are helper functions to understand what a time data a SpatRaster has.
 }
 
 \usage{
+\S4method{has.time}{SpatRaster}(x)
+
 \S4method{time}{SpatRaster}(x, format="")
 
 \S4method{time}{SpatRaster}(x, tstep="")<-value
@@ -38,6 +43,7 @@ Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\
 \value{
 \code{time}: POSIXlt, Date, or numeric
 \code{timeInfo}: data.frame
+\code{has.time}: logical
 }
 
 
