@@ -42,7 +42,7 @@ Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\
 
 \value{
 \code{time}: POSIXlt, Date, or numeric
-\code{timeInfo}: data.frame
+\code{timeInfo}: data.frame with time step and time zone information (if available)
 \code{has.time}: logical
 }
 

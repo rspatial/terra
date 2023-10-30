@@ -1314,10 +1314,9 @@ SpatVector SpatVector::intersect(SpatVector v, bool values) {
 			}
 		}
 
-
 	//SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
 		if (!result.empty()) {
-			SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids, true, false);
+			SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids, false, false);
 			out = coll.get(0);
 			out.srs = srs;
 		}
