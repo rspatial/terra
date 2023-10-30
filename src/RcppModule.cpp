@@ -932,25 +932,7 @@ RCPP_MODULE(spat){
 		.method("reverse", &SpatRaster::reverse)
 		.method("rotate", &SpatRaster::rotate)
 		//.method("sampleCells", &SpatRaster::sampleCells, "sampleCells")
-<<<<<<< HEAD
-		.method("sampleRegularRaster", &SpatRaster::sampleRegularRaster, "sampleRegular")
-		.method("sampleRowColRaster", &SpatRaster::sampleRowColRaster, "sampleRowCol")
-		.method("sampleRegularValues", &SpatRaster::sampleRegularValues, "sampleValues")
-		.method("sampleRowColValues", &SpatRaster::sampleRowColValues, "sampleRowCol")
-		.method("sampleRandomRaster", &SpatRaster::sampleRandomRaster, "sampleRandom")
-		.method("sampleRandomValues", &SpatRaster::sampleRandomValues, "sampleValues")
-		.method("scale", &SpatRaster::scale, "scale")
-		.method("shift", &SpatRaster::shift, "shift")
-		.method("terrain", &SpatRaster::terrain, "terrain")
-    .method("watershed2", &SpatRaster::watershed2, "watershed2") //EC 20210311 // EC 20210702
-    .method("pitfinder2", &SpatRaster::pitfinder2, "pitfinder2") //EC 20220810 // EC 20220810	
-		
-		.method("summary", &SpatRaster::summary, "summary")
-		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
-		.method("transpose", &SpatRaster::transpose, "transpose")
-		.method("trig", &SpatRaster::trig, "trig")
-		.method("trim", &SpatRaster::trim)
-=======
+
 		.method("sampleRegularRaster", &SpatRaster::sampleRegularRaster)
 		.method("sampleRowColRaster", &SpatRaster::sampleRowColRaster)
 		.method("sampleRegularValues", &SpatRaster::sampleRegularValues)
@@ -968,7 +950,7 @@ RCPP_MODULE(spat){
 		.method("trig", &SpatRaster::trig)
 		.method("trim1", &SpatRaster::trim1)
 		.method("trim", &SpatRaster::trim2)
->>>>>>> 3a4c0c96ab3cdb5931c677d85ea65469491928f7
+
 		.method("unique", &SpatRaster::unique)
 		.method("where", &SpatRaster::where)
 		.method("sieve", &SpatRaster::sieveFilter)
@@ -985,6 +967,8 @@ RCPP_MODULE(spat){
 		.method("zonal_poly", &SpatRaster::zonal_poly)		
 		.method("zonal_poly_weighted", &SpatRaster::zonal_poly_weighted)		
 //		.method("zonal_old", &SpatRaster::zonal_old)
+    .method("watershed2", &SpatRaster::watershed2, "watershed2") //EC 20210311 // EC 20210702
+    .method("pitfinder2", &SpatRaster::pitfinder2, "pitfinder2") //EC 20220810 // EC 20220810	
 	;
 
     class_<SpatRasterCollection>("SpatRasterCollection")

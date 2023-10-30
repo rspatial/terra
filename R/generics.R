@@ -1260,43 +1260,6 @@ setMethod("sort", signature(x="SpatVector"),
 )
 
 
-<<<<<<< HEAD
-
-#### EC 20210702
-setMethod("watershed2", signature(p="SpatRaster",pp_offset="integer"), 
-          function(p,pp_offset,filename="", ...) { 
-            ##  v <- match.arg(unique(v), c("aspect", "flowdir", "roughness", "slope", "TPI", "TRI"))
-            ##  unit <- match.arg(unit, c("degrees", "radians"))
-            ##  opt <- spatOptions(filename, ...)
-            ##  seed <- ifelse("flowdirection" %in% v, .seed(), 0)
-            print("watershed")
-            opt <- spatOptions(filename, ...)
-            p@ptr <- p@ptr$watershed2(as.integer(pp_offset-1),opt)
-            messages(p, "watershed2") ## EC 20210318
-            return(p)
-            ## p@ptr <- uu
-            ##messages(p, "watershed2")
-          }
-          
-)
-
-#### END EC 20210702
-
-#### EC 20220809
-setMethod("pitfinder2", signature(p="SpatRaster"), 
-          function(p,filename="", ...) { 
-      
-            opt <- spatOptions(filename, ...)
-            p@ptr <- p@ptr$pitfinder2(opt)
-            messages(p, "pitfinder2") ## EC 20210318
-            return(p)
-            ## p@ptr <- uu
-            ##messages(p, "watershed2")
-          }
-          
-)
-#### END EC 20220809
-=======
 setMethod("sort", signature(x="data.frame"),
 	function (x, v, decreasing=FALSE) {
 		if (length(v) > 1) {
@@ -1308,4 +1271,25 @@ setMethod("sort", signature(x="data.frame"),
 		x[i, ]
 	}
 )
->>>>>>> 3a4c0c96ab3cdb5931c677d85ea65469491928f7
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

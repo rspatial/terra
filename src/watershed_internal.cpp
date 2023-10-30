@@ -468,7 +468,7 @@ SpatRaster  SpatRaster::watershed2(int pp_offset,SpatOptions &opt) {
   ///see
   //watershed_v1(&p[0],nx,ny,pp_offset,pOut.begin());
   watershed_v2(&p[0],nx,ny,pp_offset,&pOutv[0]);
-  if (!out.writeStart(opt)) {
+  if (!out.writeStart(opt,filenames())) {
     readStop();
     return out;
   }
@@ -518,7 +518,7 @@ SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
   
   ///see
   pitfinder(&p[0],nx,ny,&pOutv[0]);
-  if (!out.writeStart(opt)) {
+  if (!out.writeStart(opt,filenames())) {
     readStop();
     return out;
   }
@@ -712,10 +712,30 @@ void pitfinder(double* p, int nx, int ny, double* pOut)
         if (*(pOut+i)==0) {
           *(pOut+i)=(double)cnt;
           cnt++;
-        }
-        // *(pOut+i)=1;   // TO COMMENT 
+        } 
+       
       } 
-    }
+    } else if (*(p+i)==0){
+        
+         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x+1,y+1));
+         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x,y+1));
+         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x-1,y+1));
+         
+         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x+1,y));
+         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x,y));
+         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x-1,y));
+         
+         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x+1,y-1));
+         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x,y-1));
+         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x-1,y-1));
+         if (*(pOut+i)==0) {
+           *(pOut+i)=(double)cnt;
+           cnt++;
+         } 
+         
+      
+      // da finire 
+      }
     
    // printf("pout=%f",*(pOut+i));
    //  printf("cnt=%d \n",cnt);

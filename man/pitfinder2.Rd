@@ -12,7 +12,7 @@ It extractions a watershed mask from a flow direction input raster point a pour-
 }
 
 \usage{
-\S4method{pitfinder2}{SpatRaster}(p,pp_offset,filename, filename="",...) 
+\S4method{pitfinder2}{SpatRaster}(p,filename="",...) 
 }
 
 \arguments{
