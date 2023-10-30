@@ -371,22 +371,7 @@ if (!isGeneric("xmin<-")) { setGeneric("xmin<-", function(x, ..., value) standar
 if (!isGeneric("xmax<-")) { setGeneric("xmax<-", function(x, ..., value) standardGeneric("xmax<-"))}
 if (!isGeneric("ymin<-")) { setGeneric("ymin<-", function(x, ..., value) standardGeneric("ymin<-"))}
 if (!isGeneric("ymax<-")) { setGeneric("ymax<-", function(x, ..., value) standardGeneric("ymax<-"))}
-#<<<<<<< HEAD
-
-
-#### EC 20210702
-if (!isGeneric("watershed2")) {setGeneric("watershed2", function(p,pp_offset, ...) standardGeneric("watershed2"))}
-#### END EC 20210702
-
-
-#### EC 20220809
-if (!isGeneric("pitfinder2")) {setGeneric("pitfinder2", function(p, ...) standardGeneric("pitfinder2"))}
-#### END EC 20220809
-
-#if (!isGeneric("zoom")) {setGeneric("zoom", function(x, ...)standardGeneric("zoom"))}	
-
-#=======
 if (!isGeneric("zoom")) {setGeneric("zoom", function(x, ...)standardGeneric("zoom"))}
-#>>>>>>> cdca9d28e6e5d3be78ad2f56bea8d004a7b306ba
 
-if (!isGeneric("pitfinder2")) {setGeneric("pitfinder2", function(p,pp_offset, ...) standardGeneric("watershed2"))}
+
+
