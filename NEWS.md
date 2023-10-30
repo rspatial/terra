@@ -10,11 +10,13 @@ https://stackoverflow.com/questions/77304534/rspatial-terraflip-error-when-flipp
 ## enhancements
 
 - `mosaic` can now use `fun="modal"`
+- `rast<matrix> and rast<data.frame>` now have option 'type="xylz" [#1318](https://github.com/rspatial/terra/issues/1318) by Agustin Lobo
+
 
 ## new
 
 - `k_means<SpatRaster>` method [#1314](https://github.com/rspatial/terra/issues/1314) by Agustin Lobo
-
+- `has.time<SpatRaster>` method 
 
 # version 1.7-55
 
