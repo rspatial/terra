@@ -651,6 +651,7 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 
 		} else if (gt == "GeometryCollection") {
 
+			bool first=true;
 			size_t kk = 0; // introduced for intersect
 			for(size_t j = 0; j<np; j++) {
 
@@ -686,21 +687,29 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 							out.setError(msg);
 							return out;
 						}
-						if (track_ids) pol_ids.push_back(ids[i]);
-						
+						if (track_ids && first) {
+							pol_ids.push_back(ids[i]);
+							first=false;
+						}
 					} else if (ggt == "Point" || ggt == "MultiPoint") {
 						if (!pointsFromGeom(hGEOSCtxt, part, f, k, pt_x, pt_y, pt_gid, pt_gp, pt_hole, msg)) {
 							out.setError(msg);
 							return out;
 						}
-						if (track_ids) pts_ids.push_back(ids[i]);
+						if (track_ids && first) {
+							pts_ids.push_back(ids[i]);
+							first=false;
+						}
 
 					} else if (ggt == "LineString" || ggt == "MultiLineString") {
 						if (!pointsFromGeom(hGEOSCtxt, part, f, k, ln_x, ln_y, ln_gid, ln_gp, ln_hole, msg)) {
 							out.setError(msg);
 							return out;
 						}
-						if (track_ids) lin_ids.push_back(ids[i]);
+						if (track_ids && first) {
+							lin_ids.push_back(ids[i]);
+							first=false;
+						}
 
 					} else {
 						out.addWarning("unhandeled Collection geom: " + ggt);

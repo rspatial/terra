@@ -35,9 +35,9 @@ Compute correlation, (weighted) covariance, or similar summary statistics that c
 
 
 \value{
-If \code{fun} is one of the three standard statistics, you get a list with two items: the correlation or (weighted) covariance matrix, and the (weighted) means.
+If \code{fun} is one of the three standard statistics, you get a list with two items: the correlation or (weighted) covariance matrix, and the (weighted) means. The means are also a matrix because they may depend on the combination of layers if different cells have NAs and are excluded from the computation. The rows of the mean matrix represent the layer whose (weighted) mean is being calculated and the columns represent the layer it is being paired with. Only cells with complete pair observations for both layers are used in the calculation of the (weighted) mean. The diagonal of the mean matrices are assigned NA.
 
-If \code{fun} is a function, you get a matrix.
+If \code{fun} is a function, you get a single matrix.
 }
 
 \references{

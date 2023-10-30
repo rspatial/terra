@@ -423,13 +423,43 @@ setMethod("rast", signature(x="ANY"),
 }
 
 
+.rastFromXYLZ <- function(x, digits=6, crs="", extent=NULL) {
+	if (ncol(x) != 4) {
+		error("rast", "a 'xylz' structure must have 4 columns")
+	}
+	nms <- names(x)
+	names(x)[1:3] <- c("x", "y", "l")
+	w <- stats::reshape(x, timevar="l", idvar=c("x", "y"), direction="wide")
+	w <- rast(w, type="xyz", digits=digits, crs=crs, extent=extent)
+	names(w) <- gsub(paste0(nms[4], "."), "", names(w))
+	if (inherits(x[,3], "Date") || inherits(x[,3], "POSIXlt") || inherits(x[,3], "POSIXct")) {
+		time(w) <- unique(x[,3])
+		names(w) <- paste0(nms[4], ".", 1:nlyr(w))
+	} else if (inherits(x[,3], "numeric")) {
+		u <- unique(x[,3])
+		if (all(u == trunc(u))) {
+			su <- sort(u)
+			if ((su[1] == 1) && (su[length(su)] == length(su))) {
+				if (!all(su == u)) {
+					w <- w[[order(u)]]
+				}
+			}
+		}
+	}
+	w
+}
 
+	
 
 setMethod("rast", signature(x="matrix"),
 	function(x, type="", crs="", digits=6, extent=NULL) {
 		stopifnot(prod(dim(x)) > 0)
 		if (type == "xyz") {
 			r <- .rastFromXYZ(x, crs=crs, digits=digits, extent=extent)
+		} else if (type == "xylz") {
+			r <- .rastFromXYLZ(x, crs=crs, digits=digits, extent=extent)
+		} else if (type != "") {
+			error("rast", 'argument type should be one of "", "xyz", or "xylz"')
 		} else {
 			if (is.null(extent)) {
 				r <- rast(nrows=nrow(x), ncols=ncol(x), extent=ext(c(0, ncol(x), 0, nrow(x))), crs=crs)
@@ -447,6 +477,10 @@ setMethod("rast", signature(x="data.frame"),
 	function(x, type="xyz", crs="", digits=6, extent=NULL) {
 		if (type == "xyz") {
 			.rastFromXYZ(x, crs=crs, digits=digits, extent=extent)
+		} else if (type == "xylz") {
+			r <- .rastFromXYLZ(x, crs=crs, digits=digits, extent=extent)
+		} else if (type != "") {
+			error("rast", 'argument type should be one of "", "xyz", or "xylz"')
 		} else {
 			rast(as.matrix(x), type=type, crs=crs, digits=digits, extent=extent)
 		}

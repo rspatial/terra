@@ -162,10 +162,11 @@ Also see the methods in section VIII
 \section{VI. Model predictions}{
 
   \tabular{ll}{
-    \code{\link{predict}} \tab Predict a non-spatial model to a SpatRaster \cr
+    \code{\link{predict}} \tab Predict a non-spatial (regression or classification) model to a SpatRaster \cr
     \code{\link{interpolate}} \tab Predict a spatial model to a SpatRaster \cr
     \code{\link{interpIDW}} \tab Inverse-distance-weighted interpolation \cr
     \code{\link{interpNear}} \tab Nearest neighbor interpolation \cr
+    \code{\link{k_means}} \tab kmeans clustering \cr
 	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }

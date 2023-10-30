@@ -364,7 +364,7 @@ setMethod("as.matrix", signature(x="SpatExtent"), as.matrix.SpatExtent)
 
 
 
-as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=NA, ...) {
+as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, time=FALSE,na.rm=NA, wide=TRUE, ...) {
 
 	d <- NULL
 	if (xy) {
@@ -386,6 +386,32 @@ as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE
 	} else if (isTRUE(na.rm)) {
 		d <- stats::na.omit(d)
 		attr(d, "na.action") <- NULL
+	}
+	if (!wide) {
+		nr <- nrow(d)
+		if (!(xy || cells)) {
+			d <- data.frame(layer=rep(names(x), each=nr), values=as.vector(as.matrix(d)))
+		} else {
+			idv <- NULL
+			if (xy) idv <- c("x", "y", idv)
+			if (cells) idv <- c("cell", idv)
+			nms <- names(x)
+			d <- reshape(d, direction="long", idvar=idv, varying=nms, v.names="values")
+			d$time <- nms[d$time]
+			names(d)[names(d) == "time"] <- "layer"
+		}
+		rownames(d) <- NULL
+		if (time) {
+			d$time <- NULL
+			vals <- d$values
+			d$values <- NULL
+			d$time <- rep(time(x), each=nr)
+			d$values <- vals
+		}
+	} else if (time && has.time(x)) {
+		tm <- as.character(time(x))
+		nc <- ncol(d)
+		colnames(d)[(1+nc-length(tm)):nc] <- tm
 	}
 	d
 }

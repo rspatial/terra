@@ -25,6 +25,12 @@ yearweek <- function(d) {
 	paste0(yy, w)
 }
 
+setMethod("has.time", signature(x="SpatRaster"),
+	function(x) {
+		x@cpp$hasTime
+	}
+)
+
 
 setMethod("timeInfo", signature(x="SpatRaster"),
 	function(x) {

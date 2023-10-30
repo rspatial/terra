@@ -52,6 +52,8 @@ old_pearson <- function(x, asSample, na.rm, nl, n, mat) {
 }
 	
 
+
+
 setMethod("layerCor", signature(x="SpatRaster"),
 	function(x, fun, w, asSample=TRUE, na.rm=FALSE, maxcell=Inf, ...) {
 
@@ -61,11 +63,6 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			error("layerCor", "x must have at least 2 layers")
 		}
 		
-		n <- ncell(x)
-		mat <- matrix(NA, nrow=nl, ncol=nl)
-		colnames(mat) <- rownames(mat) <- names(x)
-
-
 		if (inherits(fun, "character")) {
 			fun <- tolower(fun)
 			stopifnot(fun %in% c("cov", "weighted.cov", "pearson"))
@@ -74,65 +71,69 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			fun <- ""
 		}
 
-		if (maxcell < Inf) {
+		n <- ncell(x)
+		if (maxcell < n) {
 			x <- spatSample(x, size=maxcell, "regular", as.raster=TRUE)
 		}
 		
 		if (fun == "weighted.cov") {
+			means <- mat <- matrix(NA, nrow=nl, ncol=nl)
+			colnames(means) <- rownames(means) <- colnames(mat) <- rownames(mat) <- names(x)
+
 			if (missing(w))	{
 				stop("to compute weighted covariance a weights layer should be provided")
 			}
 			stopifnot( nlyr(w) == 1 )
 
-			sumw <- unlist(global(w, fun="sum", na.rm=na.rm) )
-			means <- unlist(global(x * w, fun="sum", na.rm=na.rm)) / sumw
-			sumw <- sumw - asSample
-			x <- (x - means) * sqrt(w)
-
+			sqrtw <- sqrt(w)
 			for(i in 1:nl) {
 				for(j in i:nl) {
+					s <- c(x[[c(i,j)]])
 					if (na.rm) {
-						m <- anyNA(x[[c(i,j)]])
-						a <- mask(x[[i]], m, maskvalue=TRUE)
-						b <- mask(x[[j]], m, maskvalue=TRUE)
-						r <- a * b
+						s <- mask(c(s, w), anyNA(s), maskvalue=TRUE)
+						ww <- s[[3]]
+						s <- s[[1:2]]
+						sumw <- unlist(global(ww, fun="sum", na.rm=na.rm) )
+						avg <- unlist(global(s * ww, fun="sum", na.rm=na.rm)) / sumw
 					} else {
-						r <- x[[i]] * x[[j]]
-					}
-					v <- unlist(global(r, fun="sum", na.rm=na.rm)) / sumw
+						sumw <- unlist(global(w, fun="sum", na.rm=na.rm) )
+						avg <- unlist(global(s * w, fun="sum", na.rm=na.rm)) / sumw
+					}					
+					sumw <- sumw - asSample
+					s <- prod( (s - avg) * sqrtw )
+					v <- unlist(global(s, fun="sum", na.rm=na.rm)) / sumw
 					mat[j,i] <- mat[i,j] <- v
+					means[i,j] <- avg[1]
+					means[j,i] <- avg[2]
 				}
 			}
-			names(means) <- names(x)
-			cov.w <- list(mat, means)
-			names(cov.w) <- c("weighted_covariance", "weighted_mean")
-			return(cov.w)
+			return( list(weighted_covariance=mat, weighted_mean=means) )
 
 		} else if (fun == "cov") {
-
-			means <- unlist(global(x, fun="mean", na.rm=na.rm) )
-			x <- (x - means)
+			means <- mat <- matrix(NA, nrow=nl, ncol=nl)
+			colnames(means) <- rownames(means) <- colnames(mat) <- rownames(mat) <- names(x)
 
 			for(i in 1:nl) {
 				for(j in i:nl) {
+					s <- x[[c(i,j)]]
 					if (na.rm) {
-						m <- anyNA(x[[c(i,j)]])
-						a <- mask(x[[i]], m, maskvalue=TRUE)
-						b <- mask(x[[j]], m, maskvalue=TRUE)
-						r <- x[[i]] * x[[j]]
+						m <- anyNA(s)
+						s <- mask(s, m, maskvalue=TRUE)
+						avg <- unlist(global(s, fun="mean", na.rm=na.rm) )
+						r <- prod(s - avg)
 						v <- unlist(global(r, fun="sum", na.rm=na.rm)) / (n - unlist(global(r, fun="isNA")) - asSample)
 					} else {
-						r <- x[[i]] * x[[j]]
+						avg <- unlist(global(s, fun="mean", na.rm=na.rm) )
+						r <- prod(s - avg)
 						v <- unlist(global(r, fun="sum", na.rm=na.rm)) / (n - asSample)
 					}
 					mat[j,i] <- mat[i,j] <- v
+					means[i,j] <- avg[1]
+					means[j,i] <- avg[2]
 				}
 			}
 
-			names(means) <- names(x)
-			covar <- list(mat, means)
-			names(covar) <- c("covariance", "mean")
-			return(covar)
+			return( list(covariance=mat, mean=means) )
 
 		} else if (fun == "pearson") {
 			if (isTRUE(list(...)$old)) {
@@ -142,12 +143,12 @@ setMethod("layerCor", signature(x="SpatRaster"),
 				m <- x@cpp$layerCor("pearson", na.rm, asSample, opt)
 				x <- messages(x)
 				mat <- matrix(m[[1]], nrow=nl, byrow=TRUE)
-				means <- apply(matrix(m[[2]], nrow=nl, byrow=TRUE), 1, mean, na.rm=TRUE)
-				names(means) <- colnames(mat) <- rownames(mat) <- names(x)
+				means <- matrix(m[[2]], nrow=nl, byrow=TRUE)
+				colnames(mat) <- rownames(mat) <- names(x)
+				colnames(means) <- rownames(means) <- names(x)
 				return( list(pearson=mat, mean=means) )
 			}
 		} else {
-
 			v <- spatSample(x, size=maxcell, "regular", na.rm=na.rm, warn=FALSE)
 			for(i in 1:nl) {
 				for(j in i:nl) {
