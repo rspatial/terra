@@ -332,7 +332,7 @@ class SpatVector {
 
 		SpatVector buffer(std::vector<double> d, unsigned quadsegs, std::string capstyle, std::string joinstyle, double mitrelimit, bool singlesided);
 
-		SpatVector point_buffer(std::vector<double>	 d, unsigned quadsegs, bool no_multipolygons);
+		SpatVector point_buffer(std::vector<double>	d, unsigned quadsegs, bool no_multipolygons, bool wrap);
 
 		SpatVector centroid(bool check_lonlat);
 		SpatVector point_on_surface(bool check_lonlat);

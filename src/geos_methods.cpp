@@ -1101,7 +1101,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 		p.srs = x.srs;
 		p = p.as_points(false, true);
 		std::vector<double> d(p.size(), dist);
-		SpatVector b = p.point_buffer(d, quadsegs, true);
+		SpatVector b = p.point_buffer(d, quadsegs, true, false);
 		if (b.size() <= p.size()) {
 			SpatGeom g = hullify(b, ispol);
 			tmp.addGeom(g);
@@ -1128,6 +1128,8 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 	}
 	tmp = tmp.aggregate(true);
 
+	tmp.fix_lonlat_overflow();
+	
 	if (ispol) {
 		if (dist < 0) {
 			tmp = !ishole ? tmp.get_holes() : tmp.remove_holes();
@@ -1168,7 +1170,7 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 
 	if (islonlat) {
 		if (vt == "points") {
-			return point_buffer(d, quadsegs, false);
+			return point_buffer(d, quadsegs, false, true);
 		} else {
 			SpatVector p;
 			bool ispol = vt == "polygons";
