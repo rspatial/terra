@@ -140,18 +140,19 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, NAzero=FALSE, filename=
 	}
 
 	v <- cbind(id=1:ncell(x), values(x))
-	v <- median_cut(stats::na.omit(v))
+	v <- terra:::median_cut(stats::na.omit(v))
 
 	a <- aggregate(v[,-c(1:2)], list(v[,1]), median)
-	if (n==3) {
-		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], maxColorValue=255)
-	} else {
-		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], a[,5], maxColorValue=255)
-	}
-	m <- merge(v[,1:2], a[, c(1,n+2)], by=1)
+#	if (n==3) {
+#		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], maxColorValue=255)
+#	} else {
+#		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], a[,5], maxColorValue=255)
+#	}
+	m <- merge(v[,1:2], a, by=1)
+	m[,1] <- m[,1] - 1
 	r <- rast(x, 1)
-	r[m$id] <- m$group - 1
-	coltab(r) <- a$cols
+	r[m$id] <- m$group
+	coltab(r) <- m[,-2]
 	if (filename != "") {
 		r <- writeRaster(r, filename, overwrite, ...)
 	}

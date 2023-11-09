@@ -2369,7 +2369,7 @@ bool fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double
 }
 
 
-SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bool no_multipolygons) {
+SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bool no_multipolygons, bool wrap) {
 
 	SpatVector out;
 	out.reserve(size());
@@ -2421,10 +2421,18 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 				} else {
 					ptx.reserve(n);
 					pty.reserve(n);
-					for (size_t j=0; j < n; j++) {
-						geod_direct(&gd, xy[1][i], xy[0][i], brng[j], d[i], &lat, &lon, &azi);
-						ptx.push_back(lon);
-						pty.push_back(lat);
+					if (wrap) {
+						for (size_t j=0; j < n; j++) {
+							geod_direct(&gd, xy[1][i], xy[0][i], brng[j], d[i], &lat, &lon, &azi);
+							ptx.push_back(lon);
+							pty.push_back(lat);
+						}
+					} else {
+						for (size_t j=0; j < n; j++) {
+							geod_direct(&gd, xy[1][i], 0, brng[j], d[i], &lat, &lon, &azi);
+							ptx.push_back(lon+xy[0][i]);
+							pty.push_back(lat);
+						}
 					}
 					if (npole) {
 						sort_unique_2d(ptx, pty);
@@ -2465,17 +2473,23 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 					} else {
 						ptx.push_back(ptx[0]);
 						pty.push_back(pty[0]);
-						bool split = false;
-						try {
-							split = fix_date_line(g, ptx, pty);
-						} catch(...) {}
-						if (split & no_multipolygons) {
-							for (size_t j=0; j<g.parts.size(); j++) {
-								SpatGeom gg(g.parts[j], polygons);
-								out.addGeom(gg);
+						if (wrap) {
+							bool split = false;
+							try {
+								split = fix_date_line(g, ptx, pty);
+							} catch(...) {}
+							
+							if (split & no_multipolygons) {
+								for (size_t j=0; j<g.parts.size(); j++) {
+									SpatGeom gg(g.parts[j], polygons);
+									out.addGeom(gg);
+								}
+							} else {
+								out.addGeom(g);
 							}
 						} else {
-							out.addGeom(g);
+							g.reSetPart(SpatPart(ptx, pty));
+							out.addGeom(g);		
 						}
 					}
 				}
