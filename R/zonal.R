@@ -179,7 +179,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
 				v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
 				v <- do.call(rbind, v)
 				v <- as.data.frame(v)
-				colnames(v) <- c("polygon", "value", "count")
+				colnames(v) <- c("zone", "value", "count")
 				ff <- is.factor(x)[1]
 				if (ff) {
 					cg <- cats(x)[[1]]
