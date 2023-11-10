@@ -14,7 +14,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
     
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-58</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-60</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,8 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 <span></span>
 <span><span class="co"># S4 method for SpatRaster,SpatVector</span></span>
 <span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="st">"mean"</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, w<span class="op">=</span><span class="cn">NULL</span>, weights<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span>    exact<span class="op">=</span><span class="cn">FALSE</span>, touches<span class="op">=</span><span class="cn">FALSE</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span>, as.vector<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>    exact<span class="op">=</span><span class="cn">FALSE</span>, touches<span class="op">=</span><span class="cn">FALSE</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span>, as.vector<span class="op">=</span><span class="cn">FALSE</span>, wide<span class="op">=</span><span class="cn">TRUE</span>, </span>
+<span>    filename<span class="op">=</span><span class="st">""</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatVector,SpatVector</span></span>
 <span><span class="fu">zonal</span><span class="op">(</span><span class="va">x</span>, <span class="va">z</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, weighted<span class="op">=</span><span class="cn">FALSE</span>, as.polygons<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -93,7 +94,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 <dd><p>SpatRaster with weights. Should have a single-layer with non-negative values</p></dd>
 
   <dt>wide</dt>
-<dd><p>logical. Should the values returned in a wide format? This only affects the results when <code>nlyr(z) == 2</code></p></dd>
+<dd><p>logical. Should the values returned in a wide format? For the <code>SpatRaster, SpatRaster</code> method this only affects the results when <code>nlyr(z) == 2</code>. For the <code>SpatRaster, SpatVector</code> method this only affects the results when <code>fun=table</code></p></dd>
 
   <dt>as.raster</dt>
 <dd><p>logical. If <code>TRUE</code>, a SpatRaster is returned with the zonal statistic for each zone</p></dd>
