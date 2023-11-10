@@ -21,7 +21,8 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 		as.raster=FALSE, filename="", overwrite=FALSE, wopt=list())
 
 \S4method{zonal}{SpatRaster,SpatVector}(x, z, fun="mean", na.rm=FALSE, w=NULL, weights=FALSE,
-		exact=FALSE, touches=FALSE, as.raster=FALSE, as.vector=FALSE, filename="", wopt=list())
+		exact=FALSE, touches=FALSE, as.raster=FALSE, as.vector=FALSE, wide=TRUE, 
+		filename="", wopt=list())
 
 \S4method{zonal}{SpatVector,SpatVector}(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE) 
 }
@@ -32,7 +33,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
   \item{fun}{function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", "isNA", and "notNA" and, for relatively small SpatRasters, a proper function}
   \item{...}{additional arguments passed to fun, such as \code{na.rm=TRUE}}  
   \item{w}{SpatRaster with weights. Should have a single-layer with non-negative values}
-  \item{wide}{logical. Should the values returned in a wide format? This only affects the results when \code{nlyr(z) == 2}}
+  \item{wide}{logical. Should the values returned in a wide format? For the \code{SpatRaster, SpatRaster} method this only affects the results when \code{nlyr(z) == 2}. For the \code{SpatRaster, SpatVector} method this only affects the results when \code{fun=table}}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned with the zonal statistic for each zone}  
   \item{filename}{character. Output filename (ignored if \code{as.raster=FALSE}}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

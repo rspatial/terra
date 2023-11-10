@@ -963,6 +963,7 @@ RCPP_MODULE(spat){
 		.method("zonal", &SpatRaster::zonal)
 		.method("zonal_weighted", &SpatRaster::zonal_weighted)
 		.method("zonal_poly", &SpatRaster::zonal_poly)		
+		.method("zonal_poly_table", &SpatRaster::zonal_poly_table)		
 		.method("zonal_poly_weighted", &SpatRaster::zonal_poly_weighted)		
 //		.method("zonal_old", &SpatRaster::zonal_old)
 	;
