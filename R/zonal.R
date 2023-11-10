@@ -192,6 +192,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
 					v <- reshape(v, direction="wide", idvar=nms[1], timevar=nms[2])
 					names(v) <- gsub("count.", "", names(v))
 					v[is.na(v)] <- 0
+					rownames(v) <- NULL
 				}
 				if (as.polygons) {
 					values(z) <- v
