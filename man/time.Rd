@@ -5,6 +5,7 @@
 \alias{time<-}
 \alias{time<-,SpatRaster-method}
 \alias{time<-,SpatRasterDataset-method}
+\alias{has.time,SpatRasterDataset-method}
 \alias{time,SpatRaster-method}
 \alias{time,SpatRasterDataset-method}
 \alias{timeInfo}
