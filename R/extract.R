@@ -112,31 +112,31 @@ extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NUL
 }
 
 use_layer <- function(e, y, layer, nl) {
-	if (!is.null(layer) && nl > 1) {
-		if (any(is.na(layer))) {error("extract", "argument 'layer' cannot have NAs")}
-		if (length(layer) == 1) {
-			lyr_name <- layer
-			layer <- as.character(y[[layer,drop=TRUE]])
-		} else {
-			lyr_name <- "layer"
-			stopifnot(length(layer) == nrow(y))
-		}
-		if (is.numeric(layer)) {
-			layer <- round(layer)
-			stopifnot(min(layer) > 0 & max(layer) <= nl)
-		} else {
-			layer <- match(layer, colnames(e))
-			if (any(is.na(layer))) error("extract", "names in argument 'layer' do not match names(x)")
-		}
-
-		idx <- cbind(e[,1], layer[e[,1]])
-		ee <- data.frame(e[,1,drop=FALSE], names(e)[idx[,2]-1], value=e[idx])
-		colnames(ee)[2] <- lyr_name
-		if (ncol(e) > (nl+1)) {
-			e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
-		} else {
-			e <- ee
-		}
+	if (is.null(layer) || (nl < 2)) {
+		return(e)
+	}
+	if (any(is.na(layer))) {error("extract", "argument 'layer' cannot have NAs")}
+	if (length(layer) == 1) {
+		lyr_name <- layer
+		layer <- as.character(y[[layer,drop=TRUE]])
+	} else {
+		lyr_name <- "layer"
+		stopifnot(length(layer) == nrow(y))
+	}
+	if (is.numeric(layer)) {
+		layer <- round(layer)
+		stopifnot(min(layer) > 0 & max(layer) <= nl)
+	} else {
+		layer <- match(layer, colnames(e))
+		if (any(is.na(layer))) error("extract", "names in argument 'layer' do not match names(x)")
+	}
+	idx <- cbind(1:nrow(e), layer[e[,1]] + 1)
+	ee <- data.frame(e[,1,drop=FALSE], names(e)[idx[,2]], value=e[idx])
+	colnames(ee)[2] <- lyr_name
+	if (ncol(e) > (nl+1)) {
+		e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
+	} else {
+		e <- ee
 	}
 	e
 }
