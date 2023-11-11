@@ -21,7 +21,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 		as.raster=FALSE, filename="", overwrite=FALSE, wopt=list())
 
 \S4method{zonal}{SpatRaster,SpatVector}(x, z, fun="mean", na.rm=FALSE, w=NULL, weights=FALSE,
-		exact=FALSE, touches=FALSE, as.raster=FALSE, as.vector=FALSE, wide=TRUE, 
+		exact=FALSE, touches=FALSE, as.raster=FALSE, as.polygons=FALSE, wide=TRUE, 
 		filename="", wopt=list())
 
 \S4method{zonal}{SpatVector,SpatVector}(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE) 
@@ -44,7 +44,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
   \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
 
   \item{weighted}{logical. If \code{TRUE}, a weighted.mean is computed and \code{fun} is ignored. Weights are based on the length of the lines or the area of the polygons in \code{x} that intersect with \code{z}. This argument is ignored of \code{x} is a SpatVector or points}  
-  \item{as.polygons}{logical. Should the results be merged with the attributes of \code{z}?}
+  \item{as.polygons}{logical. Should the zonal statistics be combined with the geometry of \code{z}?}
   \item{na.rm}{logical. If \code{TRUE}, \code{NA}s are removed}
 }
 

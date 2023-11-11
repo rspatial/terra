@@ -162,7 +162,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
-	function(x, z, fun="mean", na.rm=FALSE, w=NULL, weights=FALSE, exact=FALSE, touches=FALSE, as.raster=FALSE, as.polygons=FALSE, wide=FALSE, filename="", wopt=list())  {
+	function(x, z, fun="mean", na.rm=FALSE, w=NULL, weights=FALSE, exact=FALSE, touches=FALSE, as.raster=FALSE, as.polygons=FALSE, wide=TRUE, filename="", wopt=list())  {
 		opt <- spatOptions()
 		txtfun <- .makeTextFun(fun)
 		if (!inherits(txtfun, "character")) {

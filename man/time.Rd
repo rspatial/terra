@@ -1,13 +1,14 @@
 \name{time}
 
 \alias{time}
+\alias{time,SpatRaster-method}
+\alias{time,SpatRasterDataset-method}
 \alias{has.time}
+\alias{has.time,SpatRaster-method}
+\alias{has.time,SpatRasterDataset-method}
 \alias{time<-}
 \alias{time<-,SpatRaster-method}
 \alias{time<-,SpatRasterDataset-method}
-\alias{has.time,SpatRasterDataset-method}
-\alias{time,SpatRaster-method}
-\alias{time,SpatRasterDataset-method}
 \alias{timeInfo}
 \alias{timeInfo,SpatRaster-method}
 \alias{timeInfo,SpatRasterDataset-method}
