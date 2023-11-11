@@ -1,17 +1,18 @@
-# version 1.7-57
+# version 1.7-60
 
 ## bug fixes
 
 - `flip` with argument `direction="vertical"` filed in some cases with large rasters processed in chunks [0b714b0](https://github.com/rspatial/terra/commit/0b714b038b101011ce27391133a7a1f9a91821cc) by Dulci on [stackoveflow](
 https://stackoverflow.com/questions/77304534/rspatial-terraflip-error-when-flipping-a-multi-layer-spatrast-object) 
 - SpatRaster now correctly handles `NA & FALSE` and `NA | TRUE` [#1316](https://github.com/rspatial/terra/issues/1316) by John Baums
-
+- `set.names` wasn't working properly for SpatRasterDataset or SpatRasterCollection [#1333](https://github.com/rspatial/terra/pull/1333) by Derek Friend
 
 ## enhancements
 
 - `mosaic` can now use `fun="modal"`
 - `rast<matrix> and rast<data.frame>` now have option 'type="xylz" [#1318](https://github.com/rspatial/terra/issues/1318) by Agustin Lobo
-
+- `extract<SpatRaster,SpatVector>` can now use multiple summarizing functions [#1335](https://github.com/rspatial/terra/issues/1335) by Derek Friend
+- `disagg` and `focal` have more optimistic memory requirement estimation [#1334](https://github.com/rspatial/terra/issues/1334) by Mikko Kuronen
 
 ## new
 
