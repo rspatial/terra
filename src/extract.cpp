@@ -986,7 +986,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::vector<std:
 	std::vector<std::function<double(std::vector<double>&, size_t, size_t)>> efuns;
 	std::vector<std::function<double(std::vector<double>&, std::vector<double>&, size_t, size_t)>> wfuns;
 	bool havefun = false;
-	if (!funs.empty()) {
+	if (!funs[0].empty()) {
 		if (weights | exact) {
 			wfuns.resize(funs.size());
 			for (size_t i=0; i<funs.size(); i++) {
