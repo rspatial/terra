@@ -143,11 +143,17 @@ setMethod("distance", signature(x="SpatVector", y="SpatVector"),
 	}
 )
 
+test.for.lonlat <- function(xy) {
+	x <- range(xy[,1], na.rm=TRUE)
+	y <- range(xy[,2], na.rm=TRUE)
+	x[1] >= -180 && x[2] <= 180 && y[1] > -90 && y[2] < 90
+}
 
 setMethod("distance", signature(x="matrix", y="matrix"),
 	function(x, y, lonlat, pairwise=FALSE) {
 		if (missing(lonlat)) {
-			error("distance", "you must set lonlat to TRUE or FALSE")
+			lonlat <- test.for.lonlat(x) & test.for.lonlat(y)
+			warn("distance", paste0("lonlat not set. Assuming lonlat=", lonlat))
 		}
 		stopifnot(ncol(x) == 2)
 		stopifnot(ncol(y) == 2)
@@ -162,16 +168,31 @@ setMethod("distance", signature(x="matrix", y="matrix"),
 	}
 )
 
+setMethod("distance", signature(x="data.frame", y="data.frame"),
+	function(x, y, lonlat, pairwise=FALSE) {
+		distance(as.matrix(x), as.matrix(y), lonlat, pairwise=pairwise)
+	}
+)
+
 
 setMethod("distance", signature(x="matrix", y="missing"),
 	function(x, y, lonlat=NULL, sequential=FALSE, pairs=FALSE, symmetrical=TRUE) {
-		if (is.null(lonlat)) {
-			error("distance", "lonlat should be TRUE or FALSE")
+
+		if (missing(lonlat)) {
+			lonlat <- test.for.lonlat(x) & test.for.lonlat(y)
+			warn("distance", paste0("lonlat not set. Assuming lonlat=", lonlat))
 		}
+
 		crs <- ifelse(isTRUE(lonlat), "+proj=longlat +datum=WGS84",
 							          "+proj=utm +zone=1 +datum=WGS84")
 		x <- vect(x, crs=crs)
 		distance(x, sequential=sequential, pairs=pairs, symmetrical=symmetrical)
+	}
+)
+
+setMethod("distance", signature(x="data.frame", y="missing"),
+	function(x, y, lonlat=NULL, sequential=FALSE, pairs=FALSE, symmetrical=TRUE) {
+		distance(as.matrix(x), lonlat=lonlat, sequential=sequential, pairs=pairs, symmetrical=symmetrical)
 	}
 )
 
