@@ -32,14 +32,14 @@ setMethod("names<-", signature(x="SpatRaster"),
 )
 
 
-.raster_names_check <- function(x, value, index, validate) {
+.names_check <- function(x, value, index, validate, lengthfx) {
 	value <- enc2utf8(as.character(value))
-	if (!all(index == 1:nlyr(x))) {
+	if (!all(index == 1:lengthfx(x))) {
 		n <- names(x)
 		n[index] <- value
 		value <- n
 	}
-	if (length(value) != nlyr(x)) {
+	if (length(value) != lengthfx(x)) {
 		error("names<-", "incorrect number of names")
 	}
 	if (validate) {
@@ -48,25 +48,10 @@ setMethod("names<-", signature(x="SpatRaster"),
 	value
 }
 
-.vector_names_check <- function(x, value, index, validate) {
-	value <- enc2utf8(as.character(value))
-	if (!all(index == 1:ncol(x))) {
-		n <- names(x)
-		n[index] <- value
-		value <- n
-	}
-	if (length(value) != ncol(x)) {
-		error("names<-", "incorrect number of names")
-	}
-	if (validate) {
-		value <- make.names(value, unique = TRUE)
-	}
-	value
-}
 
 setMethod("set.names", signature(x="SpatRaster"),
 	function(x, value, index=1:nlyr(x), validate=FALSE)  {
-		value <- .raster_names_check(x, value, index, validate)
+		value <- .names_check(x, value, index, validate, nlyr)
 		if (!x@cpp$setNames(value, FALSE)) {
 			error("set.names", "cannot set these names")
 		}
@@ -94,7 +79,7 @@ setMethod("names<-", signature(x="SpatRasterCollection"),
 
 setMethod("set.names", signature(x="SpatRasterCollection"),
 	function(x, value, index=1:length(x), validate=FALSE)  {
-		value <- .raster_names_check(x, value, index, validate)
+		value <- .names_check(x, value, index, validate, length)
 		x@cpp$names <- value
 		invisible(TRUE)
 	}
@@ -121,7 +106,7 @@ setMethod("names<-", signature(x="SpatRasterDataset"),
 
 setMethod("set.names", signature(x="SpatRasterDataset"),
 	function(x, value, index=1:length(x), validate=FALSE)  {
-		value <- .raster_names_check(x, value, index, validate)
+		value <- .names_check(x, value, index, validate, length)
 		x@cpp$names <- value
 		invisible(TRUE)
 	}
@@ -181,7 +166,7 @@ setMethod("names<-", signature(x="SpatVector"),
 
 setMethod("set.names", signature(x="SpatVector"),
 	function(x, value, index=1:ncol(x), validate=FALSE)  {
-		value <- .vector_names_check(x, value, index, validate)
+		value <- .names_check(x, value, index, validate, ncol)
 		x@cpp$names <- value
 		invisible(TRUE)
 	}
