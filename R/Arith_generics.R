@@ -103,12 +103,15 @@ setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
 setMethod("Arith", signature(e1="SpatVector", e2="SpatVector"),
     function(e1, e2){
 		oper <- as.vector(.Generic)[1]
+		if (geomtype(e1) != geomtype(e2)) {
+			error(oper, "geometry types do not match")
+		}
 		if (oper == "+") {
-			e1@cpp <- e1@cpp$union(e2@cpp)
+			union(e1, e2)
 		} else if (oper == "*") {
-			e1@cpp <- e1@cpp$intersect(e2@cpp)
+			intersect(e1, e2)
 		} else if (oper == "-") {
-			e1@cpp <- e1@cpp$erase(e2@cpp)
+			erase(e1, e2)
 		} else {
 			error(oper, "only operators +, *, and - are supported for SpatVector")
 		}
