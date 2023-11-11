@@ -441,7 +441,7 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 		out.setError(getError());
 		return(out);
 	}
-	opt.ncopies += 2;
+//	opt.ncopies += 2;
 	opt.minrows = w[0] > nr ? nr : w[0];
 
  	if (!out.writeStart(opt, filenames())) {
