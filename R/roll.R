@@ -3,7 +3,7 @@
 # License GPL3
 
 
-movingFun <- function(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE)  { 
+movingFun <- function(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE, ...)  { 
 	n <- round(abs(n))
     if (n == 0) { stop("n == 0")  }
     x = as.vector(x)
@@ -33,9 +33,9 @@ movingFun <- function(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE
 	m <- matrix(ncol=n, nrow=lng)
     for (i in 1:n) { m[,i] <- x[i:(lng+i-1)] }
 	if (na.rm) {
-		apply(m, MARGIN=1, FUN=fun, na.rm=na.rm)
+		apply(m, MARGIN=1, FUN=fun, na.rm=na.rm, ...)
 	} else {
-		apply(m, MARGIN=1, FUN=fun)	
+		apply(m, MARGIN=1, FUN=fun, ...)	
 	}
 }
 
@@ -47,15 +47,15 @@ movingFun <- function(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE
 
 
 setMethod("roll", signature(x="numeric"),
-	function(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE) {
-		movingFun(x, n, fun, type=type, circular=circular, na.rm=na.rm)
+	function(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE, ...) {
+		movingFun(x, n, fun, type=type, circular=circular, na.rm=na.rm, ...)
 	}
 )
 
 
 
 setMethod("roll", signature(x="SpatRaster"),
-	function(x, n, fun="mean", type="around", circular=FALSE, na.rm=FALSE, filename="", ...) {
+	function(x, n, fun="mean", type="around", circular=FALSE, na.rm=FALSE, filename="", ..., wopt=list()) {
 		txtfun <- .makeTextFun(match.fun(fun))
 		if (inherits(txtfun, "character")) {
 			if (txtfun %in% .cpp_funs) {
@@ -64,8 +64,10 @@ setMethod("roll", signature(x="SpatRaster"),
 				return (messages(x, "roll")	)
 			}
 		} else {
-			f <- function(i) movingFun(i, n, fun, type=type, circular=circular, na.rm=na.rm)
-			app(x, f, filename=filename, ...)
+			f <- function(i) {
+				movingFun(i, n, fun, type=type, circular=circular, na.rm=na.rm, ...)
+			}
+			app(x, f, filename=filename, ..., wopt=wopt)
 		}
 	}
 )
