@@ -111,6 +111,7 @@ extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NUL
 	}
 }
 
+
 use_layer <- function(e, y, layer, nl) {
 	if (is.null(layer) || (nl < 2)) {
 		return(e)
@@ -127,11 +128,11 @@ use_layer <- function(e, y, layer, nl) {
 		layer <- round(layer)
 		stopifnot(min(layer) > 0 & max(layer) <= nl)
 	} else {
-		layer <- match(layer, colnames(e))
+		layer <- match(layer, colnames(e)) - 1
 		if (any(is.na(layer))) error("extract", "names in argument 'layer' do not match names(x)")
 	}
 	idx <- cbind(1:nrow(e), layer[e[,1]] + 1)
-	ee <- data.frame(e[,1,drop=FALSE], names(e)[idx[,2]], value=e[idx])
+	ee <- data.frame(e[,1,drop=FALSE], colnames(e)[idx[,2]], value=e[idx])
 	colnames(ee)[2] <- lyr_name
 	if (ncol(e) > (nl+1)) {
 		e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
