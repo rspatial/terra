@@ -52,7 +52,7 @@ character
 }
 
 \note{
-terra enforces neither unique nor valid names. See \code{\link{make.unique}} to create unique names and \code{{make.names}} to make syntactically valid names.
+terra enforces neither unique nor valid names. See \code{\link{make.unique}} to create unique names and \code{\link{make.names}} to make syntactically valid names.
 }
 
 \examples{
