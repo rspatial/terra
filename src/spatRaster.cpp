@@ -2605,3 +2605,46 @@ std::vector<std::string> SpatRaster::getTags() {
 	return out;
 }
 
+
+
+bool SpatRaster::addLyrTag(size_t lyr, std::string name, std::string value) {
+	lrtrim(name);
+	lrtrim(value);
+	if (value == "") {
+		return removeLyrTag(lyr, name);
+	}
+	if (lyr >= nlyr()) return false;
+	if (lyr >= lyrTags.size()) lyrTags.resize(lyr+1);
+	if (name != "") {
+		lyrTags[lyr][name] = value;
+		return true;
+	} 
+	return false;
+}
+
+bool SpatRaster::removeLyrTag(size_t lyr, std::string name) {
+	if (lyr >= lyrTags.size()) return false;
+	std::map<std::string, std::string>::iterator it = lyrTags[lyr].find(name);
+	if (it == lyrTags[lyr].end()) return false;
+	lyrTags[lyr].erase(it);
+	return true;
+}
+
+std::string SpatRaster::getLyrTag(size_t lyr, std::string name) {
+	if (lyr >= lyrTags.size()) return "";
+	std::map<std::string, std::string>::iterator it = lyrTags[lyr].find(name);
+	if (it != lyrTags[lyr].end()) return it->second;
+	return "";
+}
+
+std::vector<std::string> SpatRaster::getLyrTags(size_t lyr) {
+	std::vector<std::string> out;
+	if (lyr >= lyrTags.size()) return out;
+	out.reserve(2 * lyrTags[lyr].size());
+	for(auto e : lyrTags[lyr]) {
+		out.push_back(e.first);
+		out.push_back(e.second);
+	}
+	return out;
+}
+

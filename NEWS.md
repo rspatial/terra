@@ -50,8 +50,7 @@ Hernangómez
 
 
 ## new
-- `metags<-` and `metags` to set arbitrary metadata  [#1071](
-https://github.com/rspatial/terra/issues/1071) by Mike Koontz and [#1304](https://github.com/rspatial/terra/issues/1304) by Francesco Chianucci 
+- `metags<-` and `metags` to set arbitrary SpatRaster/file level metadata [#1304](https://github.com/rspatial/terra/issues/1304) by Francesco Chianucci 
 
 
 # version 1.7-46

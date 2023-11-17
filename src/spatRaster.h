@@ -234,6 +234,11 @@ class SpatRaster {
 		std::string getTag(std::string name);
 		std::vector<std::string> getTags();
 
+		std::vector<std::map<std::string, std::string>> lyrTags;
+		bool addLyrTag(size_t lyr, std::string name, std::string value);
+		bool removeLyrTag(size_t lyr, std::string name);
+		std::string getLyrTag(size_t lyr, std::string name);
+		std::vector<std::string> getLyrTags(size_t lyr);
 		//double NA = std::numeric_limits<double>::quiet_NaN();
 
 		size_t ncol();
