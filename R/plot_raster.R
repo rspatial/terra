@@ -579,7 +579,7 @@ prettyNumbs <- function(x, digits) {
 	if (ncell(x) > 1.1 * maxcell) {
 		if (inherits(alpha, "SpatRaster")) {
 			if (nlyr(alpha) > 1) {
-				alpha <- alpha[[y]]
+				alpha <- alpha[[1]]
 			}
 			alpha <- spatSample(alpha, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
 		}

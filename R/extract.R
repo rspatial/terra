@@ -111,32 +111,33 @@ extractCells <- function(x, y, method="simple", cells=FALSE, xy=FALSE, layer=NUL
 	}
 }
 
-use_layer <- function(e, y, layer, nl) {
-	if (!is.null(layer) && nl > 1) {
-		if (any(is.na(layer))) {error("extract", "argument 'layer' cannot have NAs")}
-		if (length(layer) == 1) {
-			lyr_name <- layer
-			layer <- as.character(y[[layer,drop=TRUE]])
-		} else {
-			lyr_name <- "layer"
-			stopifnot(length(layer) == nrow(y))
-		}
-		if (is.numeric(layer)) {
-			layer <- round(layer)
-			stopifnot(min(layer) > 0 & max(layer) <= nl)
-		} else {
-			layer <- match(layer, colnames(e))
-			if (any(is.na(layer))) error("extract", "names in argument 'layer' do not match names(x)")
-		}
 
-		idx <- cbind(e[,1], layer[e[,1]])
-		ee <- data.frame(e[,1,drop=FALSE], names(e)[idx[,2]-1], value=e[idx])
-		colnames(ee)[2] <- lyr_name
-		if (ncol(e) > (nl+1)) {
-			e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
-		} else {
-			e <- ee
-		}
+use_layer <- function(e, y, layer, nl) {
+	if (is.null(layer) || (nl < 2)) {
+		return(e)
+	}
+	if (any(is.na(layer))) {error("extract", "argument 'layer' cannot have NAs")}
+	if (length(layer) == 1) {
+		lyr_name <- layer
+		layer <- as.character(y[[layer,drop=TRUE]])
+	} else {
+		lyr_name <- "layer"
+		stopifnot(length(layer) == nrow(y))
+	}
+	if (is.numeric(layer)) {
+		layer <- round(layer)
+		stopifnot(min(layer) > 0 & max(layer) <= nl)
+	} else {
+		layer <- match(layer, colnames(e)) - 1
+		if (any(is.na(layer))) error("extract", "names in argument 'layer' do not match names(x)")
+	}
+	idx <- cbind(1:nrow(e), layer[e[,1]] + 1)
+	ee <- data.frame(e[,1,drop=FALSE], colnames(e)[idx[,2]], value=e[idx])
+	colnames(ee)[2] <- lyr_name
+	if (ncol(e) > (nl+1)) {
+		e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
+	} else {
+		e <- ee
 	}
 	e
 }
@@ -224,15 +225,21 @@ extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FA
 
 extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=FALSE, layer=NULL, bind=FALSE, na.rm=FALSE) {
 
-	opt <- spatOptions()
+	nl <- nlyr(x)
+	nf <- length(fun)
+	if ((nf > 1) & (!is.null(layer))) {
+		error("extract", "you cannot use argument 'layer' when using multiple functions")
+	}
 
+	opt <- spatOptions()
 	e <- x@cpp$extractVectorFlat(y@cpp, fun, na.rm, touches[1], "", FALSE, FALSE, weights, exact, opt)
 	x <- messages(x, "extract")
-
-	nl <- nlyr(x)
-	e <- data.frame(matrix(e, ncol=nl, byrow=TRUE))
-	colnames(e) <- names(x)
-
+	e <- data.frame(matrix(e, ncol=nl*nf, byrow=TRUE))
+	if (nf == 1) {
+		colnames(e) <- names(x)
+	} else {
+		colnames(e) <- apply(cbind(rep(fun, each=nl), names(x)), 1, function(i) paste(i, collapse="_"))
+	}
 	if (!is.null(layer)) {
 		e <- cbind(ID=1:nrow(e), e)
 		e <- use_layer(e, y, layer, nlyr(x))
@@ -245,6 +252,7 @@ extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=
 		if (nrow(e) == nrow(y)) {
 			e <- cbind(y, e)
 		} else {
+			#? can this occur?
 			warn("extract", "cannot return a SpatVector because the number of records extracted does not match he number of rows in y (perhaps you need to use a summarizing function")
 		}
 	} else if (ID) {
@@ -288,7 +296,10 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	} else if (!is.null(fun)) { # nothing to summarize for points
 		txtfun <- .makeTextFun(fun)
 		if (inherits(txtfun, "character")) {
-			if (txtfun == "table") {
+			if (any(txtfun == "table")) {
+				if (length(fun) > 1) {
+					warn("extract", "'table' cannot be combined with other functions")
+				}			
 				if (!is.null(layer)) {
 					warn("extract", "argument 'layer' is ignored when 'fun=table'")
 				}

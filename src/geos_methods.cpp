@@ -2370,6 +2370,11 @@ SpatVector SpatVector::unite(SpatVector v) {
 		return out;
 	}
 
+	if (gtp != "polygons") {
+		// should make records unique here. This is now done in R
+		return append(v, true);
+	}
+
 	out = intersect(v, true);
 	if (out.hasError()) {
 		return out;
@@ -2377,6 +2382,7 @@ SpatVector SpatVector::unite(SpatVector v) {
 	if (out.nrow() == 0) {
 		return append(v, true);
 	}
+
 	if (gtp != out.type()) {
 		SpatVector empty;
 		out = empty;

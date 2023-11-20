@@ -11,7 +11,7 @@ setMethod("k_means", signature(x="SpatRaster"),
 		if (ncell(x) <= maxcell) {
 			v <- na.omit(as.matrix(x))
 			omit <- as.vector(attr(v, "na.action"))
-			km <- kmeans(v, centers=centers, ...)
+			km <- stats::kmeans(v, centers=centers, ...)
 			out <- rast(x, nlyr=1)
 			if (is.null(omit)) {
 				values(out) <- km$cluster
@@ -34,8 +34,8 @@ setMethod("k_means", signature(x="SpatRaster"),
 				}
 				vec
 			}			
-			v <- na.omit(spatSample(x, maxcell, "regular"))
-			km <- kmeans(v, centers=centers, ...)$centers		
+			v <- unique(na.omit(spatSample(x, maxcell, "regular")))
+			km <- stats::kmeans(v, centers=centers, ...)$centers		
 			out <- predict(x, km, fun=pkmeans, filename=filename, overwrite=overwrite, wopt=wopt)
 		}
 		out

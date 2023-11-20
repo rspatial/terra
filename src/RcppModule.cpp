@@ -642,6 +642,9 @@ RCPP_MODULE(spat){
 
 		.method("addTag", &SpatRaster::addTag)
 		.method("getTags", &SpatRaster::getTags)
+		.method("addLyrTag", &SpatRaster::addLyrTag)
+		.method("getLyrTags", &SpatRaster::getLyrTags)
+
 
 		//.field("name", &SpatRaster::name)
 		.method("getFileBlocksize", &SpatRaster::getFileBlocksize)
@@ -885,7 +888,7 @@ RCPP_MODULE(spat){
 
 		.method("get_aggregates", &SpatRaster::get_aggregates)
 		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims2)
-		.method("global", &SpatRaster::global)
+	//	.method("global", &SpatRaster::global)
 		.method("mglobal", &SpatRaster::mglobal)
 		.method("layerCor", &SpatRaster::layerCor)
 		.method("global_weighted_mean", &SpatRaster::global_weighted_mean)
@@ -965,6 +968,7 @@ RCPP_MODULE(spat){
 		.method("zonal", &SpatRaster::zonal)
 		.method("zonal_weighted", &SpatRaster::zonal_weighted)
 		.method("zonal_poly", &SpatRaster::zonal_poly)		
+		.method("zonal_poly_table", &SpatRaster::zonal_poly_table)		
 		.method("zonal_poly_weighted", &SpatRaster::zonal_poly_weighted)		
 //		.method("zonal_old", &SpatRaster::zonal_old)
     .method("watershed2", &SpatRaster::watershed2, "watershed2") //EC 20210311 // EC 20210702

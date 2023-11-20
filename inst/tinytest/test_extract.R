@@ -218,3 +218,12 @@ expect_equivalent(round(e, 4), c(6, 164, 314.9969, 403))
 e <- extract(r, v, quantile, na.rm=TRUE)[12,]
 expect_equivalent(round(e), c(12, 213, 274, 317, 352, 413))
 
+fun <- c("min", "max")
+e <- extract(r, v[1:2, ], fun, na.rm=TRUE)
+expect_equivalent(unlist(e), c(1, 2, 339, 195, 547, 514))
+
+x <- rast(ncol=4, nrow=4, nlyr=3, extent=ext(-2, 2, -2, 2))
+values(x) <- rbind(11:13)
+xy <- data.frame(x=-1:1,y=-1:1)
+e <- extract(x, xy, ID=TRUE, layer=1:3)
+expect_equal(e$value, 11:13)

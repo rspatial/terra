@@ -234,6 +234,11 @@ class SpatRaster {
 		std::string getTag(std::string name);
 		std::vector<std::string> getTags();
 
+		std::vector<std::map<std::string, std::string>> lyrTags;
+		bool addLyrTag(size_t lyr, std::string name, std::string value);
+		bool removeLyrTag(size_t lyr, std::string name);
+		std::string getLyrTag(size_t lyr, std::string name);
+		std::vector<std::string> getLyrTags(size_t lyr);
 		//double NA = std::numeric_limits<double>::quiet_NaN();
 
 		size_t ncol();
@@ -647,7 +652,7 @@ class SpatRaster {
 		SpatRaster edges(bool classes, std::string type, unsigned directions, double falseval, SpatOptions &opt);
 		SpatRaster extend(SpatExtent e, std::string snap, double fill, SpatOptions &opt);
 		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
-		std::vector<double> extractVectorFlat(SpatVector v, std::string fun, bool narm, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
+		std::vector<double> extractVectorFlat(SpatVector v, std::vector<std::string> funs, bool narm, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
 		
 		
 		std::vector<double> vectCells(SpatVector v, bool touches, std::string method, bool weights, bool exact, SpatOptions &opt);
@@ -841,6 +846,10 @@ class SpatRaster {
 
 		SpatDataFrame zonal_poly(SpatVector x, std::string fun, bool weights, bool exact, bool touches, bool narm, SpatOptions &opt);
 		SpatDataFrame zonal_poly_weighted(SpatVector x, SpatRaster w, bool weights, bool exact, bool touches, bool narm, SpatOptions &opt);
+		
+		std::vector<std::vector<double>> zonal_poly_table(SpatVector x, bool weights, bool exact, bool touches,bool narm, SpatOptions &opt);
+
+
 
 //		SpatDataFrame zonal_old(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);

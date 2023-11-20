@@ -2602,7 +2602,7 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
         return out;
     }
 
-	opt.ncopies = 2*fact[0]*fact[1]*fact[2];
+	opt.ncopies = 4 + fact[0]*fact[1]*fact[2];
 	BlockSize bs = getBlockSize(opt);
 	opt.steps = bs.n;
 	//opt.set_blocksizemp();

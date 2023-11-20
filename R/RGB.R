@@ -140,7 +140,7 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, NAzero=FALSE, filename=
 	}
 
 	v <- cbind(id=1:ncell(x), values(x))
-	v <- terra:::median_cut(stats::na.omit(v))
+	v <- median_cut(stats::na.omit(v))
 
 	a <- aggregate(v[,-c(1:2)], list(v[,1]), median)
 #	if (n==3) {
