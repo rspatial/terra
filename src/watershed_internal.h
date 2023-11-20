@@ -1,5 +1,5 @@
 // C/C++ code
-// Author: EJX
+// Author: Ezio Crestaz,Emanuele Cordano
 // Date: February 2021
 // Scope: compute watershed upstream of point i,j
 // p: pointer to an integer 1D array storing a 2D raster

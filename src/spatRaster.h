@@ -788,7 +788,9 @@ class SpatRaster {
     // watershed2 extension 
 		SpatRaster watershed2(int pp_offset,SpatOptions &opt); // modified ecor 20210317 // EC 20210702 
 		SpatRaster pitfinder2(SpatOptions &opt); // modified // EC 20220809
-		
+		SpatRaster NIDP2(SpatOptions &opt); // modified // EC 20231031
+		SpatRaster flowAccu2(SpatOptions &opt); // modified // EC 20231108
+		SpatRaster flowAccu2_weight(SpatRaster weight,SpatOptions &opt); // modified // EC 20231108
 		// END watershed2 extension
 		SpatRaster hillshade(SpatRaster aspect, std::vector<double> angle, std::vector<double> direction, bool normalize, SpatOptions &opt);
 

@@ -29,7 +29,6 @@ A \code{\link{SpatRaster-class}} (raster) map containing value 1 for the pits  a
 Lorem Ipsum. You can insert information about tha algorithm
 }
 
-
 \author{
 
 Emanuele Cordano
@@ -37,11 +36,37 @@ Emanuele Cordano
 
 \examples{
 
+## Creation of a Digital Elevation Model 
 
-## TO DO
+elev <- array(NA,c(9,9))
+dx <- 1
+dy <- 1 
+for (r in 1:nrow(elev)) {
+  x <- (r-5)*dx
+  for (c in 1:ncol(elev)) {
+    
+    y <- (c-5)*dy
+    elev[r,c] <- 10+5*(x^2+y^2)
+    }
+  } 
+  
+elev <- cbind(elev,elev,elev,elev) 
+elev <- rbind(elev,elev,elev,elev) 
+elev <- rast(elev)
+
+## Flow Directions
+
+flowdir<- terrain(elev,v="flowdir")
+t(array(flowdir[],rev(dim(flowdir)[1:2])))
+
+## Pit Detect
+
+pits <- pitfinder2(flowdir)
 
 
 }
+
+
 
 
 \references{

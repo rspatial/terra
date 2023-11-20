@@ -38,3 +38,56 @@ setMethod("pitfinder2", signature(p="SpatRaster"),
           
 )
 #### END EC 20220809
+
+
+#### EC 20231031
+setMethod("NIDP2", signature(p="SpatRaster"), 
+          function(p,filename="", ...) { 
+            
+            opt <- spatOptions(filename, ...)
+         
+            p@cpp <- p@cpp$NIDP2(opt)
+            messages(p, "NIDP2") ## EC 20231031
+            return(p)
+         
+          }
+          
+)
+#### END EC 20231031
+
+#### EC 20231104
+setMethod("flowAccu2", signature(p="SpatRaster"), 
+          function(p,filename="", ...) { 
+            
+            opt <- spatOptions(filename, ...)
+            
+            p@cpp <- p@cpp$flowAccu2(opt)
+            messages(p, "flowAccu2") ## EC 20231104
+            return(p)
+            
+          }
+          
+)
+#### END EC 20231104
+
+
+#### EC 2023114
+setMethod("flowAccu2_weight", signature(p="SpatRaster",weight="SpatRaster"), 
+          function(p,weight,filename="", ...) { 
+            
+            opt <- terra:::spatOptions(filename,...)
+            print("ba")
+            p@cpp <- p@cpp$flowAccu2_weight(weight@cpp,opt)
+            messages(p, "flowAccu2_weight") ## EC 20231104
+            return(p)
+            
+          }
+          
+)
+#### END EC 20231104
+
+
+
+
+
+

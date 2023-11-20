@@ -20,9 +20,8 @@ README.md
 ^\.github$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-<<<<<<< HEAD
-=======
+
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
->>>>>>> 3a4c0c96ab3cdb5931c677d85ea65469491928f7
+

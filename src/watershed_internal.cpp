@@ -717,17 +717,17 @@ void pitfinder(double* p, int nx, int ny, double* pOut)
       } 
     } else if (*(p+i)==0){
         
-         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x+1,y+1));
-         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x,y+1));
-         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x-1,y+1));
+         if (*(pOut+i)==0 && inRaster(nx, ny, x + 1, y+1)) *(pOut+i)=*(pOut+offset(nx, ny, x+1,y+1));
+         if (*(pOut+i)==0 && inRaster(nx, ny, x , y+1)) *(pOut+i)=*(pOut+offset(nx, ny, x,y+1));
+         if (*(pOut+i)==0 && inRaster(nx, ny, x - 1, y+1)) *(pOut+i)=*(pOut+offset(nx, ny, x-1,y+1));
          
-         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x+1,y));
-         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x,y));
-         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x-1,y));
+         if (*(pOut+i)==0 && inRaster(nx, ny, x + 1, y)) *(pOut+i)=*(pOut+offset(nx, ny, x+1,y));
+         if (*(pOut+i)==0 && inRaster(nx, ny, x , y)) *(pOut+i)=*(pOut+offset(nx, ny, x,y));
+         if (*(pOut+i)==0 && inRaster(nx, ny, x - 1, y)) *(pOut+i)=*(pOut+offset(nx, ny, x-1,y));
          
-         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x+1,y-1));
-         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x,y-1));
-         if (*(pOut+i)==0) *(pOut+i)=*(pOut+offset(nx, ny, x-1,y-1));
+         if (*(pOut+i)==0 && inRaster(nx, ny, x + 1, y-1)) *(pOut+i)=*(pOut+offset(nx, ny, x+1,y-1));
+         if (*(pOut+i)==0 && inRaster(nx, ny, x , y-1)) *(pOut+i)=*(pOut+offset(nx, ny, x,y-1));
+         if (*(pOut+i)==0 && inRaster(nx, ny, x - 1, y-1)) *(pOut+i)=*(pOut+offset(nx, ny, x-1,y-1));
          if (*(pOut+i)==0) {
            *(pOut+i)=(double)cnt;
            cnt++;
