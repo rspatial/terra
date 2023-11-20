@@ -1373,6 +1373,63 @@ SpatDataFrame SpatRaster::zonal_poly(SpatVector x, std::string fun, bool weights
 }
 
 
+std::vector<double> tabfun(std::vector<double> x, std::vector<double> w) {
+//	if (w.size() == 0) {
+		std::map<double, long long unsigned> tab = table(x);
+		return vtable(tab);
+//	} else {
+		
+//	}
+}
+
+
+std::vector<std::vector<double>> SpatRaster::zonal_poly_table(SpatVector x, bool weights, bool exact, bool touches,bool narm, SpatOptions &opt) {
+
+	std::vector<std::vector<double>> out;
+	std::string gtype = x.type();
+	if (gtype != "polygons") {
+		setError("SpatVector must have polygon geometry");
+		return out;
+	}
+	
+	if (!hasValues()) {
+		setError("raster has no values");
+		return out;
+	}
+
+    unsigned nl = nlyr();
+	if (nl > 1) {
+		SpatOptions ops(opt);
+		SpatRaster r = subset({0}, ops);
+		out = r.zonal_poly_table(x, weights, exact, touches, narm, opt);
+		addWarning("only the first layer of the raster is used");		
+		return out;
+	}
+
+    unsigned ng = x.size();
+	std::vector<std::vector<double>> zv(nl, std::vector<double>(ng));
+	out.resize(ng);
+    SpatRaster r = geometry(1);
+    for (size_t i=0; i<ng; i++) {
+		SpatGeom g = x.getGeom(i);
+		SpatVector p(g);
+		p.srs = x.srs;
+		std::vector<double> cell, wgt;
+		if (weights) {
+			rasterizeCellsWeights(cell, wgt, p, opt);
+		} else if (exact) {
+			rasterizeCellsExact(cell, wgt, p, opt);
+		} else {
+			cell = rasterizeCells(p, touches, opt);
+        }	
+		std::vector<std::vector<double>> e = extractCell(cell);
+		out[i] = tabfun(e[0], wgt);
+	}
+
+	return out;
+}
+
+
 SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool weights, bool exact, bool touches, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;

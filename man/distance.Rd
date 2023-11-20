@@ -8,6 +8,8 @@
 \alias{distance,SpatVector,SpatVector-method}
 \alias{distance,matrix,matrix-method}
 \alias{distance,matrix,missing-method}
+\alias{distance,data.frame,data.frame-method}
+\alias{distance,data.frame,missing-method}
 
 \title{Geographic distance}
 

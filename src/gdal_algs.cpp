@@ -435,6 +435,10 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		out.source[0].timezone = getTimeZone();
 		out.source[0].time = getTime();
 	}
+	if (hasUnit()) {
+		out.source[0].hasUnit = true;
+		out.source[0].unit = getUnit();
+	}
 
 	bool use_crs = !crs.empty();
 	if (use_crs) {

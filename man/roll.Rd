@@ -13,9 +13,9 @@ See \code{\link{focal}} for spatially moving averages and similar computations. 
 }
 
 \usage{
-\S4method{roll}{SpatRaster}(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE, filename="", ...) 
+\S4method{roll}{SpatRaster}(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE, filename="", ..., wopt=list()) 
 
-\S4method{roll}{numeric}(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE) 
+\S4method{roll}{numeric}(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE, ...) 
 }
  
 
@@ -27,7 +27,8 @@ See \code{\link{focal}} for spatially moving averages and similar computations. 
   \item{circular}{logical. If \code{TRUE}, the data are considered to have a circular nature (e.g. days or months of the year), such that there are no missing values before first or after the last value.}
   \item{na.rm}{logical. If \code{TRUE}, \code{NA} values should be ignored (by \code{fun})}
   \item{filename}{character. Output filename}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments for \code{fun}}
+  \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
 }
 
 

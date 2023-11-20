@@ -169,8 +169,12 @@ setMethod("union", signature(x="SpatVector", y="missing"),
 
 setMethod("union", signature(x="SpatVector", y="SpatVector"),
 	function(x, y) {
-		x@cpp <- x@cpp$union(y@cpp)
-		messages(x, "union")
+		if (geomtype(x) != "polygons") {
+			unique(rbind(x, y))
+		} else {
+			x@cpp <- x@cpp$union(y@cpp)
+			messages(x, "union")
+		}
 	}
 )
 

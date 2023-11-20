@@ -396,7 +396,7 @@ as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE
 			if (xy) idv <- c("x", "y", idv)
 			if (cells) idv <- c("cell", idv)
 			nms <- names(x)
-			d <- reshape(d, direction="long", idvar=idv, varying=nms, v.names="values")
+			d <- stats::reshape(d, direction="long", idvar=idv, varying=nms, v.names="values")
 			d$time <- nms[d$time]
 			names(d)[names(d) == "time"] <- "layer"
 		}

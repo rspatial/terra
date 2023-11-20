@@ -898,7 +898,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun,
 */
 
 
-std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun, bool narm, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
+std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::vector<std::string> funs, bool narm, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
 
 	if (!source[0].srs.is_same(v.srs, true)) {
 		v = v.project(getSRS("wkt"), false);
@@ -983,19 +983,25 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun,
 
 	SpatRaster r = geometry(1);
 	//std::vector<double> feats(1, 1) ;
-	std::function<double(std::vector<double>&, size_t, size_t)> efun;
-	std::function<double(std::vector<double>&, std::vector<double>&, size_t, size_t)> wfun;
+	std::vector<std::function<double(std::vector<double>&, size_t, size_t)>> efuns;
+	std::vector<std::function<double(std::vector<double>&, std::vector<double>&, size_t, size_t)>> wfuns;
 	bool havefun = false;
-	if (!fun.empty()) {
+	if (!funs[0].empty()) {
 		if (weights | exact) {
-			if (!getseWfun(wfun, fun, narm)) {
-				setError("not a valid function");
-				return flat;
+			wfuns.resize(funs.size());
+			for (size_t i=0; i<funs.size(); i++) {
+				if (!getseWfun(wfuns[i], funs[i], narm)) {
+					setError(funs[i] + " is not a valid function");
+					return flat;
+				}
 			}
 		} else {
-			if (!getseFun(efun, fun, narm)) {
-				setError("not a valid function");
-				return flat;
+			efuns.resize(funs.size());
+			for (size_t i=0; i<funs.size(); i++) {
+				if (!getseFun(efuns[i], funs[i], narm)) {
+					setError(funs[i] + " is not a valid function");
+					return flat;
+				}
 			}
 		}
 		havefun = true;
@@ -1027,15 +1033,18 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun,
 		if (havefun) {
 			std::vector<std::vector<double>> cvals = extractCell(cell);
 			if (weights | exact) {
-				for (size_t j=0; j<nl; j++) {
-					flat.push_back( wfun(cvals[j], wgt, 0, cvals[j].size()) );
-				}											
+				for (size_t j=0; j<funs.size(); j++) {
+					for (size_t k=0; k<nl; k++) {
+						flat.push_back( wfuns[j](cvals[k], wgt, 0, cvals[k].size()) );
+					}
+				}
 			} else {
-				for (size_t j=0; j<nl; j++) {
-					flat.push_back( efun(cvals[j], 0, cvals[j].size()) );
-				}						
-			}
-			
+				for (size_t j=0; j<funs.size(); j++) {
+					for (size_t k=0; k<nl; k++) {
+						flat.push_back( efuns[j](cvals[k], 0, cvals[k].size()) );
+					}						
+				}
+			}			
 		} else {
 			out[i] = extractCell(cell);
 			if (cells) {

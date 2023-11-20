@@ -162,22 +162,55 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
-	function(x, z, fun="mean", na.rm=FALSE, w=NULL, weights=FALSE, exact=FALSE, touches=FALSE, as.raster=FALSE, as.polygons=FALSE, filename="", wopt=list())  {
+	function(x, z, fun="mean", na.rm=FALSE, w=NULL, weights=FALSE, exact=FALSE, touches=FALSE, as.raster=FALSE, as.polygons=FALSE, wide=TRUE, filename="", wopt=list())  {
 		opt <- spatOptions()
 		txtfun <- .makeTextFun(fun)
 		if (!inherits(txtfun, "character")) {
 			error("zonal", "this 'fun' is not supported. You can use extract instead")
 		} else {
-			if (is.null(w)) {
-				out <- x@cpp$zonal_poly(z@cpp, txtfun, weights[1], exact[1], touches[1], na.rm, opt)
-			} else {
-				if (txtfun != "mean") {
-					error("zonal", "fun must be 'mean' when using weights")
+			if (txtfun == "table") {
+				if (!is.null(w)) {
+					error("cannot use 'w' when 'fun=table'")
 				}
-				out <- x@cpp$zonal_poly_weighted(z@cpp, w@cpp, weights[1], exact[1], touches[1], na.rm, opt)
+				v <- x@cpp$zonal_poly_table(z@cpp, weights[1], exact[1], touches[1], na.rm, opt)
+				messages(x, "zonal")
+
+				v <- lapply(v, function(i) if (length(i) == 0) NA else i)
+				v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
+				v <- do.call(rbind, v)
+				v <- as.data.frame(v)
+				colnames(v) <- c("zone", "value", "count")
+				ff <- is.factor(x)[1]
+				if (ff) {
+					cg <- cats(x)[[1]]
+					i <- match(v$value, cg[,1])
+					act <- activeCat(x, 1) + 1
+					v$value <- cg[i, act]
+				}
+				if (as.polygons | wide) {
+					nms <- names(v)
+					v <- stats::reshape(v, direction="wide", idvar=nms[1], timevar=nms[2])
+					names(v) <- gsub("count.", "", names(v))
+					v[is.na(v)] <- 0
+					rownames(v) <- NULL
+				}
+				if (as.polygons) {
+					values(z) <- v
+					return(z)
+				}
+				return(v)
+			} else {
+				if (is.null(w)) {
+					out <- x@cpp$zonal_poly(z@cpp, txtfun, weights[1], exact[1], touches[1], na.rm, opt)
+				} else {
+					if (txtfun != "mean") {
+						error("zonal", "fun must be 'mean' when using weights")
+					}
+					out <- x@cpp$zonal_poly_weighted(z@cpp, w@cpp, weights[1], exact[1], touches[1], na.rm, opt)
+				}
+				messages(out, "zonal")
+				out <- .getSpatDF(out)
 			}
-			messages(out, "zonal")
-			out <- .getSpatDF(out)
 		}
 		if (as.raster) {
 			if (is.null(wopt$names)) {
@@ -290,11 +323,11 @@ setMethod("global", signature(x="SpatRaster"),
 				}
 				txtfun <- unique(txtfun)
 				na.rm <- isTRUE(list(...)$na.rm)
-				if (isTRUE(list(...)$old)) {
-					ptr <- x@cpp$global(txtfun, na.rm, opt)			
-				} else {
-					ptr <- x@cpp$mglobal(txtfun, na.rm, opt)
-				}
+				#if (isTRUE(list(...)$old)) {
+				#	ptr <- x@cpp$global(txtfun, na.rm, opt)			
+				#} else {
+				ptr <- x@cpp$mglobal(txtfun, na.rm, opt)
+				#}
 				messages(ptr, "global")
 				res <- .getSpatDF(ptr)
 				rownames(res) <- nms
