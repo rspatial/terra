@@ -940,6 +940,19 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			while (m != nullptr && *m != nullptr) {
 				bandmeta[i].push_back(*m++);
 			}
+			char **meterra = poBand->GetMetadata("LYR_TAGS");
+			if (meterra != NULL) {
+//				std::vector<std::string> meta;
+				for (size_t i=0; meterra[i] != NULL; i++) {
+					std::string s = meterra[i];
+					size_t pos = s.find("=");
+					if (pos != std::string::npos) {
+						std::string name = s.substr(0, pos);
+						std::string value = s.substr(pos+1); 
+						addLyrTag(i, name, value);
+					}
+				}
+			}
 		}
 
 		int success;
@@ -965,6 +978,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				s.has_scale_offset[i] = true;
 			}
 		}
+
 
 		poBand->GetBlockSize(&bs1, &bs2);
 		s.blockcols[i] = bs1;

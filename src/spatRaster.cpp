@@ -309,6 +309,7 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 	}	
 	if (keeptags) {
 		out.tags = tags;
+		out.lyrTags = lyrTags;
 	}
 	return out;
 }
