@@ -1,4 +1,4 @@
-# version 1.7-60
+# version 1.7-61
 
 ## bug fixes
 
@@ -20,6 +20,8 @@ https://stackoverflow.com/questions/77304534/rspatial-terraflip-error-when-flipp
 
 - `k_means<SpatRaster>` method [#1314](https://github.com/rspatial/terra/issues/1314) by Agustin Lobo
 - `has.time<SpatRaster>` method 
+- new argument "raw=FALSE" to `rast`, `sds`, and `sprc` to ignore scale and offset [1354](https://github.com/rspatial/terra/issues/1354) by Insang Song
+
 
 # version 1.7-55
 
