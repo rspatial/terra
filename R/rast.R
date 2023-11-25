@@ -135,24 +135,28 @@ setMethod("rast", signature(x="SpatVector"),
 
 
 
-.fullFilename <- function(x, mustExist=TRUE, vsi=FALSE) {
+.fullFilename <- function(x, mustExist=FALSE, vsi=FALSE) {
 	x <- trimws(x)
 	x <- x[x != ""]
+	x <- enc2utf8(x)
 	
 	i <- substr(x, 1, 5) == "s3://" 
 	x[i] <- paste0("/vsis3/", substr(x[i], 6, nchar(x[i])))
+	if (all(i)) return(x)
 	
 	i <- substr(x, 1, 4) == "http" 
 	if (vsi) {
 		x[i] <- paste0("/vsicurl/", x[i])
 	}
 	if (all(i)) return(x)
+
+	i <- grepl(":", x)
+	if (all(i)) return(x)
 	
-	x <- enc2utf8(x)
-	p <- normalizePath(x, winslash = "/", mustWork = FALSE)
+	p <- normalizePath(x[!i], winslash = "/", mustWork = FALSE)
 	if (mustExist) {
-		i <- file.exists(dirname(p))
-		x[i] <- p[i]
+		j <- file.exists(dirname(p))
+		x[j] <- p[j]
 	} else {
 		return(p)
 	}
@@ -166,9 +170,9 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE) {
 
-		f <- .fullFilename(x, TRUE, vsi=vsi)
+		f <- .fullFilename(x, vsi=vsi)
 		if (length(f) == 0) {
 			error("rast", "filename is empty. Provide a valid filename")
 		}
@@ -184,11 +188,12 @@ setMethod("rast", signature(x="character"),
 		r <- methods::new("SpatRaster")
 		#subds <- subds[1]
 		if (is.null(opts)) opts <- ""[0]
+		if (raw) opts <- c(opts, "so=false")
 		if (is.null(drivers)) drivers <- ""[0]
 		if (length(subds) == 0) subds = 0
 		if (is.character(subds)) {
 			#r@cpp <- SpatRaster$new(f, -1, subds, FALSE, 0[])
-			r@cpp <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[])
+			r@cpp <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[], so[1])
 		} else {
 			r@cpp <- SpatRaster$new(f, subds-1, "", FALSE, drivers, opts, 0[])
 		}

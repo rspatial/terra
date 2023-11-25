@@ -630,6 +630,7 @@ RCPP_MODULE(spat){
 		.constructor()
 	 // .constructor<std::string, int>()
 	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<std::string>, std::vector<size_t>>()
+		
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 		//.finalizer(&SpatRaster_finalizer)
 
@@ -973,7 +974,7 @@ RCPP_MODULE(spat){
 
     class_<SpatRasterCollection>("SpatRasterCollection")
 		.constructor()
-	    .constructor<std::string, std::vector<int>, bool>()
+	    .constructor<std::string, std::vector<int>, bool, std::vector<std::string>>()
 
 		.property("names", &SpatRasterCollection::get_names, &SpatRasterCollection::set_names)
 
@@ -999,7 +1000,7 @@ RCPP_MODULE(spat){
 
     class_<SpatRasterStack>("SpatRasterStack")
 		.constructor()
-	    .constructor<std::string, std::vector<int>, bool>()
+	    .constructor<std::string, std::vector<int>, bool, std::vector<std::string>>()
 	    .constructor<SpatRaster, std::string, std::string, std::string>()
 		.method("deepcopy", &SpatRasterStack::deepCopy)
 
