@@ -318,7 +318,7 @@ setMethod("sprc", signature(x="list"),
 )
 
 setMethod("sprc", signature(x="character"),
-	function(x, ids=0) {
+	function(x, ids=0, opts=NULL, raw=FALSE) {
 
 		if (length(x) > 1) {
 			r <- lapply(x, rast)
@@ -339,7 +339,10 @@ setMethod("sprc", signature(x="character"),
 		} else {
 			useids <- TRUE
 		}
-		r@cpp <- SpatRasterCollection$new(f, ids, useids)
+		if (is.null(opts)) opts <- ""[0]
+		if (raw) opts <- c(opts, "so=false")		
+		
+		r@cpp <- SpatRasterCollection$new(f, ids, useids, opts)
 		messages(r, "sprc")
 	}
 )

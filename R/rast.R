@@ -193,7 +193,7 @@ setMethod("rast", signature(x="character"),
 		if (length(subds) == 0) subds = 0
 		if (is.character(subds)) {
 			#r@cpp <- SpatRaster$new(f, -1, subds, FALSE, 0[])
-			r@cpp <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[], so[1])
+			r@cpp <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[])
 		} else {
 			r@cpp <- SpatRaster$new(f, subds-1, "", FALSE, drivers, opts, 0[])
 		}
