@@ -17,15 +17,21 @@ setMethod("metags", signature(x="SpatRaster"),
 	function(x, layer=NULL, name=NULL) {
 		if (!is.null(layer)) {
 			v <- x@cpp$getLyrTags(layer-1)
+			out <- matrix(v, ncol=3, byrow=TRUE, dimnames = list(NULL, c("layer", "name", "value")))
+			out <- data.frame(out)
+			out$layer <- as.numeric(out$layer) + 1
+			if (!is.null(name)) {
+				out <- out[out$name == name, , drop=FALSE]
+			} 
 		} else {
 			v <- x@cpp$getTags()
+			m <- matrix(v, ncol=2, byrow=TRUE, dimnames = list(NULL, c("name", "value")))
+			out <- m[,2]
+			names(out) <- m[,1]
+			if (!is.null(name)) {
+				out <- out[name]
+			} 
 		}
-		m <- matrix(v, ncol=2, byrow=TRUE, dimnames = list(NULL, c("name", "value")))
-		out <- m[,2]
-		names(out) <- m[,1]
-		if (!is.null(name)) {
-			out <- out[name]
-		} 
 		out
 	}
 )
@@ -62,9 +68,7 @@ setMethod("metags<-", signature(x="SpatRaster"),
 		x <- deepcopy(x)
 		if (NROW(value) > 0) {
 			if (!is.null(layer)) {
-				sapply(1:nrow(value), function(i) {
-						x@cpp$addLyrTags(layer-1, value[i,1], value[i,2])
-					})
+				x@cpp$addLyrTags(layer-1, value[,1], value[,2])
 			} else {
 				sapply(1:nrow(value), function(i) {
 						x@cpp$addTag(value[i,1], value[i,2])
