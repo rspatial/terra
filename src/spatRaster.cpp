@@ -2608,19 +2608,29 @@ std::vector<std::string> SpatRaster::getTags() {
 
 
 
-bool SpatRaster::addLyrTag(size_t lyr, std::string name, std::string value) {
-	lrtrim(name);
-	lrtrim(value);
-	if (value == "") {
-		return removeLyrTag(lyr, name);
+void SpatRaster::addLyrTags(std::vector<size_t> lyrs, std::vector<std::string> names, std::vector<std::string> values) {
+
+	size_t n = std::max(std::max(lyrs.size(), names.size()), values.size());
+	if (n == 0) return;
+	
+	recycle(lyrs, n);
+	recycle(names, n);
+	recycle(values, n);
+	
+	size_t nl = nlyr();
+	for (size_t i=0; i<lyrs.size(); i++) {
+		if (lyrs[i] >= nl) continue;
+		lrtrim(names[i]);
+		lrtrim(values[i]);
+		if (values[i] == "") {
+			removeLyrTag(lyrs[i], names[i]);
+		} else {
+			if (lyrs[i] >= lyrTags.size()) lyrTags.resize(lyrs[i]+1);
+			if (names[i] != "") {
+				lyrTags[lyrs[i]][names[i]] = values[i];
+			} 
+		}
 	}
-	if (lyr >= nlyr()) return false;
-	if (lyr >= lyrTags.size()) lyrTags.resize(lyr+1);
-	if (name != "") {
-		lyrTags[lyr][name] = value;
-		return true;
-	} 
-	return false;
 }
 
 bool SpatRaster::removeLyrTag(size_t lyr, std::string name) {
@@ -2631,6 +2641,12 @@ bool SpatRaster::removeLyrTag(size_t lyr, std::string name) {
 	return true;
 }
 
+bool SpatRaster::removeLyrTags() {
+	lyrTags.resize(0);
+	return true;
+}
+
+
 std::string SpatRaster::getLyrTag(size_t lyr, std::string name) {
 	if (lyr >= lyrTags.size()) return "";
 	std::map<std::string, std::string>::iterator it = lyrTags[lyr].find(name);
@@ -2638,13 +2654,17 @@ std::string SpatRaster::getLyrTag(size_t lyr, std::string name) {
 	return "";
 }
 
-std::vector<std::string> SpatRaster::getLyrTags(size_t lyr) {
+std::vector<std::string> SpatRaster::getLyrTags(std::vector<size_t> lyrs) {
 	std::vector<std::string> out;
-	if (lyr >= lyrTags.size()) return out;
-	out.reserve(2 * lyrTags[lyr].size());
-	for(auto e : lyrTags[lyr]) {
-		out.push_back(e.first);
-		out.push_back(e.second);
+	out.reserve(lyrs.size());
+	for (size_t i=0; i<lyrs.size(); i++) {
+		if (lyrs[i] < lyrTags.size()) {
+			for(auto e : lyrTags[lyrs[i]]) {
+				out.push_back(std::to_string(lyrs[i]));
+				out.push_back(e.first);
+				out.push_back(e.second);
+			}
+		}
 	}
 	return out;
 }

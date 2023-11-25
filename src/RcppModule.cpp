@@ -643,7 +643,7 @@ RCPP_MODULE(spat){
 
 		.method("addTag", &SpatRaster::addTag)
 		.method("getTags", &SpatRaster::getTags)
-		.method("addLyrTag", &SpatRaster::addLyrTag)
+		.method("addLyrTags", &SpatRaster::addLyrTags)
 		.method("getLyrTags", &SpatRaster::getLyrTags)
 
 

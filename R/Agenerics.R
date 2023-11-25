@@ -6,10 +6,6 @@ if (!isGeneric("layerCor")) {setGeneric("layerCor", function(x, ...) standardGen
 if (!isGeneric("metags")) {setGeneric("metags", function(x, ...) standardGeneric("metags"))}
 if (!isGeneric("metags<-")) {setGeneric("metags<-", function(x, ..., value) standardGeneric("metags<-"))}
 
-if (!isGeneric("lyrtags")) {setGeneric("lyrtags", function(x, ...) standardGeneric("lyrtags"))}
-if (!isGeneric("lyrtags<-")) {setGeneric("lyrtags<-", function(x, ..., value) standardGeneric("lyrtags<-"))}
-
-
 if (!isGeneric("forceCCW")) {setGeneric("forceCCW", function(x, ...) standardGeneric("forceCCW"))}
 if (!isGeneric("addCats")) {setGeneric("addCats", function(x, ...) standardGeneric("addCats"))}
 if (!isGeneric("regress")) {setGeneric("regress", function(y, x, ...) standardGeneric("regress"))}

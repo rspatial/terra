@@ -958,7 +958,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 					if (pos != std::string::npos) {
 						std::string name = s.substr(0, pos);
 						std::string value = s.substr(pos+1); 
-						addLyrTag(i, name, value);
+						addLyrTags({i}, {name}, {value});
 					}
 				}
 			}

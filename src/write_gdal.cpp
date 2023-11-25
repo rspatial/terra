@@ -646,7 +646,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		poBand->SetDescription(nms[i].c_str());
 
 		if (driver == "GTiff") {
-			std::vector<std::string> m = getLyrTags(i);
+			std::vector<std::string> m = getLyrTags({i});
 			if (m.size() > 0) {
 				for (size_t i=0; i<m.size(); i+=2) {
 					poBand->SetMetadataItem(m[i].c_str(), m[i+1].c_str());
