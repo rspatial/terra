@@ -284,8 +284,10 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 				units(r) <- x@attributes$units	
 				depth(r) <- x@attributes$depth
 				if (!is.null(x@attributes$levels)) {
+					lyrnms <- names(r)
 					if (is.null(x@attributes$levindex)) x@attributes$levindex <- 1
 					set.cats(r, layer=0, x@attributes$levels, active=x@attributes$levindex)
+					names(r) <- lyrnms
 				}
 			}
 			if (any(nms=="colors")) {

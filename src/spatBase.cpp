@@ -27,6 +27,8 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	tempdir = opt.tempdir;
 	memfrac = opt.memfrac;
 	memmax = opt.memmax;
+	memmin = opt.memmin;
+
 	todisk = opt.todisk;
 	tolerance = opt.tolerance;
 

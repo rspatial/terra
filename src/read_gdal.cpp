@@ -581,10 +581,9 @@ inline std::string dtypename(const std::string &d) {
 
 
 
-SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids) {
+SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options) {
 
-	std::vector<std::string> ops;
-    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, ops, ops);
+    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, {});
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
@@ -627,7 +626,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				SpatRaster sub;
-				if (sub.constructFromFile(s, {-1}, {""}, {}, {})) {
+				if (sub.constructFromFile(s, {-1}, {""}, {}, options)) {
 					std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
 					if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
 						addWarning("skipped (different geometry): " + s);
@@ -642,10 +641,10 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 }
 
 
-SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids) {
+SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options) {
 
-	std::vector<std::string> ops;
-    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, ops, ops);
+//	std::vector<std::string> ops;
+    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, {});
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);
@@ -688,7 +687,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				SpatRaster sub;
-				if (sub.constructFromFile(s, {-1}, {""}, {}, {})) {
+				if (sub.constructFromFile(s, {-1}, {""}, {}, options)) {
 					push_back(sub, basename_sds(s));
 				} else {
 					addWarning("skipped (fail): " + s);
@@ -767,7 +766,17 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options) {
 
-    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, options);
+	std::vector<std::string> clean_ops = options;
+	bool app_so = true;
+	size_t opsz = options.size();
+	if (opsz > 0) {
+		if (options[opsz-1] == "so=false") {
+			app_so = false;
+			clean_ops.resize(opsz-1); 
+		}
+	}
+
+    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
 
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
@@ -940,6 +949,19 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			while (m != nullptr && *m != nullptr) {
 				bandmeta[i].push_back(*m++);
 			}
+			char **meterra = poBand->GetMetadata("LYR_TAGS");
+			if (meterra != NULL) {
+//				std::vector<std::string> meta;
+				for (size_t i=0; meterra[i] != NULL; i++) {
+					std::string s = meterra[i];
+					size_t pos = s.find("=");
+					if (pos != std::string::npos) {
+						std::string name = s.substr(0, pos);
+						std::string value = s.substr(pos+1); 
+						addLyrTags({i}, {name}, {value});
+					}
+				}
+			}
 		}
 
 		int success;
@@ -951,18 +973,20 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	//	}
 
 		s.has_scale_offset[i] = false;
-		double offset = poBand->GetOffset(&success);
-		if (success) {
-			if (offset != 0) {
-				s.offset[i] = offset;
-				s.has_scale_offset[i] = true;
+		if (app_so) {
+			double offset = poBand->GetOffset(&success);
+			if (success) {
+				if (offset != 0) {
+					s.offset[i] = offset;
+					s.has_scale_offset[i] = true;
+				}
 			}
-		}
-		double scale = poBand->GetScale(&success);
-		if (success) {
-			if (scale != 1) {
-				s.scale[i] = scale;
-				s.has_scale_offset[i] = true;
+			double scale = poBand->GetScale(&success);
+			if (success) {
+				if (scale != 1) {
+					s.scale[i] = scale;
+					s.has_scale_offset[i] = true;
+				}
 			}
 		}
 
@@ -1746,7 +1770,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	SpatOptions opt;
     for (size_t i=(cnt+1); i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
-		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, {});
+		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options);
 		if (success) {
 			if (out.compare_geom(*this, false, false, 0.1)) {
 //				out.source	[0].source_name = srcname[i];
