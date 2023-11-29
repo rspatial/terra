@@ -1,8 +1,8 @@
 \docType{methods}
-\name{FlowAccu_weight}
+\name{flowAccu2_weight}
 
-\alias{FlowAccu_weight}
-\alias{FlowAccu_weight,SpatRaster-method}
+\alias{flowAccu2_weight}
+\alias{flowAccu2_weight,SpatRaster,SpatRaster-method}
 
 
 \title{Flow accumulation or Total contributing Area  (Waterhed Analysis)}
@@ -12,7 +12,7 @@ It computes Flow accumulation or Total contributing Area in terms of numbers of 
 }
 
 \usage{
-\S4method{FlowAccu_weight}{SpatRaster}(p,weight,filename="",...) 
+\S4method{flowAccu2_weight}{SpatRaster,SpatRaster}(p,weight,filename="",...) 
 }
 
 \arguments{

@@ -246,11 +246,11 @@ SpatRaster  SpatRaster::flowAccu2_weight(SpatRaster weight,SpatOptions &opt) {
   std::vector<double> nidp_value(nx*ny,0);
   std::vector<double> flowaccu_value(nx*ny,1);
   
-  printf("start1\n");
+
   NextCell(&p[0],nx,ny,&pnext[0]);
   NIDP(&pnext[0],nx,ny,&nidp_value[0]); 
   FlowAccu_weight(&pnext[0],nx,ny,&nidp_value[0],&flowaccu_value[0],&weigh[0]);
-  printf("start2\n");
+  
   if (!out.writeStart(opt,filenames())) {
     readStop();
     return out;
