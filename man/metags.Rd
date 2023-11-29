@@ -13,13 +13,14 @@ You can set arbitrary metadata to a SpatRaster using "name=value" tags.
 }
 
 \usage{
-\S4method{metags}{SpatRaster}(x)<-value
+\S4method{metags}{SpatRaster}(x, layer=NULL)<-value
 
-\S4method{metags}{SpatRaster}(x, name=NULL)
+\S4method{metags}{SpatRaster}(x, layer=NULL, name=NULL)
 }
 
 \arguments{
 \item{x}{SpatRaster}
+\item{layer}{NULL or positive integer. If the value is NULL, the tags assigned or returned are for the SpatRaster. Otherwise for the layer number(s)}
 
 \item{name}{character}
 
@@ -39,7 +40,11 @@ metags(r)
 metags(r) <- c("another_tag=another_value", "one more=this value")
 metags(r)
 
-metags(r, "two")
+metags(r) <- c(another_tag="44", `one more`="that value")
+metags(r)
+
+
+metags(r, name="two")
 
 # remove a tag
 metags(r) <- cbind("one", "")

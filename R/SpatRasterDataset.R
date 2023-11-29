@@ -7,10 +7,10 @@ setMethod("length", signature(x="SpatRasterDataset"),
 
 
 setMethod("sds", signature(x="character"),
-	function(x, ids=0) {
+	function(x, ids=0, opts=NULL, raw=FALSE) {
 
 		if (length(x) > 1) {
-			r <- lapply(x, rast)
+			r <- lapply(x, rast, opts=opts, raw=raw)
 			s <- sds(r)
 			names(s) <- tools::file_path_sans_ext(basename(x))
 			return(s)
@@ -28,7 +28,9 @@ setMethod("sds", signature(x="character"),
 		} else {
 			useids <- TRUE
 		}
-		r@cpp <- SpatRasterStack$new(f, ids, useids)
+		if (is.null(opts)) opts <- ""[0]
+		if (raw) opts <- c(opts, "so=false")		
+		r@cpp <- SpatRasterStack$new(f, ids, useids, opts)
 		messages(r, "sds")
 	}
 )
@@ -316,7 +318,7 @@ setMethod("sprc", signature(x="list"),
 )
 
 setMethod("sprc", signature(x="character"),
-	function(x, ids=0) {
+	function(x, ids=0, opts=NULL, raw=FALSE) {
 
 		if (length(x) > 1) {
 			r <- lapply(x, rast)
@@ -337,7 +339,10 @@ setMethod("sprc", signature(x="character"),
 		} else {
 			useids <- TRUE
 		}
-		r@cpp <- SpatRasterCollection$new(f, ids, useids)
+		if (is.null(opts)) opts <- ""[0]
+		if (raw) opts <- c(opts, "so=false")		
+		
+		r@cpp <- SpatRasterCollection$new(f, ids, useids, opts)
 		messages(r, "sprc")
 	}
 )

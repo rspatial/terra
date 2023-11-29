@@ -793,6 +793,7 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 			}
 
 
+// mem should never has scale/offset? 
 			bool has_so = false;;
 			int success;
 			double moffset = GDALGetRasterOffset(hBand, &success);

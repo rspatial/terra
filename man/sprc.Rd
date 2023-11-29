@@ -20,18 +20,21 @@ You can create a SpatRasterCollection from a file with subdatasets.
 }
 
 \usage{
+\S4method{sprc}{character}(x, ids=0, opts=NULL, raw=FALSE) 
+
 \S4method{sprc}{SpatRaster}(x, ...) 
 
 \S4method{sprc}{list}(x) 
 
 \S4method{sprc}{missing}(x) 
 
-\S4method{sprc}{character}(x, ids=0) 
 }
 
 \arguments{
 \item{x}{SpatRaster, list with SpatRaster objects, missing, or filename}
 \item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a positive integer}
+\item{opts}{character. GDAL dataset open options}
+\item{raw}{logical. If \code{TRUE}, scale and offset values are ignored}
 \item{...}{additional SpatRaster objects} 
 }
 
