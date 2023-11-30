@@ -46,7 +46,7 @@ mem_info <- function(x, n=1) {
 		cat("\nMemory (GB) ")
 		cat("\n------------------------")
 
-		cat(paste("\ncheck threshold :", opt$memmin / gb, " (memmin)"))
+		cat(paste("\ncheck threshold :", opt$memmin / gb, "(memmin)"))
 		if (memmax > 0) {
 			cat(paste("\navailable       :",  round(v[2] / gb, 2), "(memmax)"))
 		} else {

@@ -77,7 +77,7 @@ static TreePtr geos_ptr(GEOSSTRtree* t, GEOSContextHandle_t hGEOSctxt) {
 
 template <typename... Args>
 inline void warnNoCall(const char* fmt, Args&&... args ) {
-    Rf_warningcall(R_NilValue, tfm::format(fmt, std::forward<Args>(args)... ).c_str());
+    Rf_warningcall(R_NilValue, "%s", tfm::format(fmt, std::forward<Args>(args)... ).c_str());
 }
 
 template <typename... Args>

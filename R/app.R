@@ -6,7 +6,7 @@ setMethod("sapp", signature(x="SpatRaster"),
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	x <- lapply(x, function(r) fun(r, ...))
 	x <- rast(x)
-	if (filename != "") {
+	if (filename[1] != "") {
 		writeRaster(x, filename, overwrite, wopt=wopt)
 	} else {
 		tighten(x)
