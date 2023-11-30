@@ -295,7 +295,7 @@ std::vector<std::vector<std::string>> gdal_drivers() {
 
 template <typename... Args>
 inline void warningNoCall(const char* fmt, Args&&... args ) {
-    Rf_warningcall(R_NilValue, tfm::format(fmt, std::forward<Args>(args)... ).c_str());
+    Rf_warningcall(R_NilValue, "%s", tfm::format(fmt, std::forward<Args>(args)... ).c_str());
 }
 
 template <typename... Args>
