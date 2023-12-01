@@ -12,13 +12,13 @@ Alternatively, you can use \code{stats::\link[stats]{princomp}} or \code{stats::
 }
 
 \usage{
-\S4method{princomp}{SpatRaster}(x, cor=FALSE, nobs=FALSE)
+\S4method{princomp}{SpatRaster}(x, cor=FALSE, fix_sign=TRUE)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{cor}{logical. If \code{FALSE}, the covariance matrix is used. Otherwise the correlation matrix is used (should only be used if there are no constant variables}   
-  \item{nobs}{logical. Compute the number of observations? Ignored (and always \code{TRUE}) when \code{cor=TRUE}}
+  \item{fix_sign}{logical.  If \code{TRUE}, the signs of the loadings and scores are chosen so that the first element of each loading is non-negative}
 }
 
 \value{
