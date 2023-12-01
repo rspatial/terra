@@ -4,7 +4,7 @@ setMethod("princomp", signature(x="SpatRaster"),
 	function(x, cor=FALSE) {
 		stopifnot(nlyr(x) > 1)
 		xcov <- layerCor(x, fun="cov", na.rm=TRUE)
-		model <- princomp(covmat = xcov$covariance)
+		model <- princomp(covmat = xcov$covariance, cor=cor)
 		model$center <- diag(xcov$mean)
 		if (cor) {
 		## Calculate scale as population sd like in in princomp
