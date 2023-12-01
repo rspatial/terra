@@ -110,30 +110,29 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			return( list(weighted_covariance=mat, weighted_mean=means) )
 
 		} else if (fun == "cov") {
-			means <- mat <- matrix(NA, nrow=nl, ncol=nl)
+			means <- mat <- nn <- matrix(NA, nrow=nl, ncol=nl)
 			colnames(means) <- rownames(means) <- colnames(mat) <- rownames(mat) <- names(x)
 
+			n_ij <- n
 			for(i in 1:nl) {
 				for(j in i:nl) {
 					s <- x[[c(i,j)]]
 					if (na.rm) {
 						m <- anyNA(s)
 						s <- mask(s, m, maskvalue=TRUE)
-						avg <- unlist(global(s, fun="mean", na.rm=na.rm) )
-						r <- prod(s - avg)
-						v <- unlist(global(r, fun="sum", na.rm=na.rm)) / (n - unlist(global(r, fun="isNA")) - asSample)
-					} else {
-						avg <- unlist(global(s, fun="mean", na.rm=na.rm) )
-						r <- prod(s - avg)
-						v <- unlist(global(r, fun="sum", na.rm=na.rm)) / (n - asSample)
+						nij <- n - global(m, fun="sum")$sum
 					}
+					avg <- unlist(global(s, fun="mean", na.rm=na.rm) )
+					r <- prod(s - avg)
+					v <- unlist(global(r, fun="sum", na.rm=na.rm)) / (n_ij - asSample)
 					mat[j,i] <- mat[i,j] <- v
 					means[i,j] <- avg[1]
 					means[j,i] <- avg[2]
+					nn[i,j] <- nn[j,i] <- n_ij
 				}
 			}
 
-			return( list(covariance=mat, mean=means) )
+			return( list(covariance=mat, mean=means, n=nn) )
 
 		} else if (fun == "pearson") {
 			if (isTRUE(list(...)$old)) {
@@ -142,11 +141,11 @@ setMethod("layerCor", signature(x="SpatRaster"),
 				opt <- spatOptions()
 				m <- x@cpp$layerCor("pearson", na.rm, asSample, opt)
 				x <- messages(x)
-				mat <- matrix(m[[1]], nrow=nl, byrow=TRUE)
-				means <- matrix(m[[2]], nrow=nl, byrow=TRUE)
-				colnames(mat) <- rownames(mat) <- names(x)
-				colnames(means) <- rownames(means) <- names(x)
-				return( list(pearson=mat, mean=means) )
+				m <- lapply(m, function(i) {
+					matrix(i, nrow=nl, byrow=TRUE, dimnames=list(names(x), names(x)))
+				})
+				names(m) <- c("correlation", "mean", "n")
+				return(m)
 			}
 		} else {
 			v <- spatSample(x, size=maxcell, "regular", na.rm=na.rm, warn=FALSE)
