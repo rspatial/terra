@@ -25,6 +25,9 @@ Alternatively, you can use \code{stats::\link[stats]{princomp}} or \code{stats::
 princomp object
 }
 
+\author{Based on a similar method by Benjamin Leutner}
+
+
 \seealso{ \code{\link[stats]{princomp}}}
 
 \examples{
