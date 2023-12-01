@@ -64,7 +64,7 @@ Alternatively, you can use <code>stats::<a href="https://rdrr.io/r/stats/princom
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">princomp</span><span class="op">(</span><span class="va">x</span>, cor<span class="op">=</span><span class="cn">FALSE</span>, nobs<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">princomp</span><span class="op">(</span><span class="va">x</span>, cor<span class="op">=</span><span class="cn">FALSE</span>, fix_sign<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,8 +75,8 @@ Alternatively, you can use <code>stats::<a href="https://rdrr.io/r/stats/princom
   <dt>cor</dt>
 <dd><p>logical. If <code>FALSE</code>, the covariance matrix is used. Otherwise the correlation matrix is used (should only be used if there are no constant variables</p></dd>
    
-  <dt>nobs</dt>
-<dd><p>logical. Compute the number of observations? Ignored (and always <code>TRUE</code>) when <code>cor=TRUE</code></p></dd>
+  <dt>fix_sign</dt>
+<dd><p>logical.  If <code>TRUE</code>, the signs of the loadings and scores are chosen so that the first element of each loading is non-negative</p></dd>
 
 </dl></div>
     <div class="section level2">

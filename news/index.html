@@ -51,9 +51,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-61" id="version-17-61">version 1.7-61<a class="anchor" aria-label="anchor" href="#version-17-61"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.7-62" id="version-17-62">version 1.7-62<a class="anchor" aria-label="anchor" href="#version-17-62"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-61">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-61"></a></h3>
+<h3 id="bug-fixes-1-7-62">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-62"></a></h3>
 <ul><li>
 <code>flip</code> with argument <code>direction="vertical"</code> filed in some cases with large rasters processed in chunks <a href="https://github.com/rspatial/terra/commit/0b714b038b101011ce27391133a7a1f9a91821cc" class="external-link">0b714b0</a> by Dulci on <a href="https://stackoverflow.com/questions/77304534/rspatial-terraflip-error-when-flipping-a-multi-layer-spatrast-object" class="external-link">stackoveflow</a>
 </li>
@@ -66,7 +66,7 @@
 <code>terraOptions</code> did not capture “memmin” on <a href="https://stackoverflow.com/questions/77552234/controlling-chunk-size-in-terra" class="external-link">stackoverflow</a> by dww</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-61">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-61"></a></h3>
+<h3 id="enhancements-1-7-62">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-62"></a></h3>
 <ul><li>
 <code>mosaic</code> can now use <code>fun="modal"</code>
 </li>
@@ -78,12 +78,14 @@
 <code>disagg</code> and <code>focal</code> have more optimistic memory requirement estimation <a href="https://github.com/rspatial/terra/issues/1334" class="external-link">#1334</a> by Mikko Kuronen</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-7-61">new<a class="anchor" aria-label="anchor" href="#new-1-7-61"></a></h3>
+<h3 id="new-1-7-62">new<a class="anchor" aria-label="anchor" href="#new-1-7-62"></a></h3>
 <ul><li>
 <code>k_means&lt;SpatRaster&gt;</code> method <a href="https://github.com/rspatial/terra/issues/1314" class="external-link">#1314</a> by Agustin Lobo</li>
 <li>
+<code>princomp&lt;SpatRaster&gt;</code> method <a href="https://github.com/rspatial/terra/issues/1361" class="external-link">#1361</a> by Alex Ilich</li>
+<li>
 <code>has.time&lt;SpatRaster&gt;</code> method</li>
-<li>new argument “raw=FALSE” to <code>rast</code>, <code>sds</code>, and <code>sprc</code> to ignore scale and offset <a href="https://github.com/rspatial/terra/issues/1354" class="external-link">1354</a> by Insang Song</li>
+<li>new argument “raw=FALSE” to <code>rast</code>, <code>sds</code>, and <code>sprc</code> to allow ignoring scale and offset <a href="https://github.com/rspatial/terra/issues/1354" class="external-link">1354</a> by Insang Song</li>
 </ul></div>
 </div>
     <div class="section level2">
