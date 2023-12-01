@@ -120,7 +120,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 					if (na.rm) {
 						m <- anyNA(s)
 						s <- mask(s, m, maskvalue=TRUE)
-						nij <- n - global(m, fun="sum")$sum
+						n_ij <- n - global(m, fun="sum")$sum
 					}
 					avg <- unlist(global(s, fun="mean", na.rm=na.rm) )
 					r <- prod(s - avg)
