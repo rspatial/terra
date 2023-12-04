@@ -98,8 +98,9 @@
 
 
   <dt>mask</dt>
-<dd><p>logical. If <code>TRUE</code>, mask out areas outside the input extent (see example with Robinson projection)</p></dd>
+<dd><p>logical. If <code>TRUE</code>, mask out areas outside the input extent. For example to avoid data wrapping around the date-line (see example with Robinson projection). To remove cells that are <code>NA</code> in <code>y</code> (if <code>y</code> is a SpatRaster) you can use the <code><a href="mask.html">mask</a> method</code> after calling <code>project</code> (this function)</p></dd>
 
+  
   <dt>align</dt>
 <dd><p>logical. If <code>TRUE</code>, and <code>y</code> is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of <code>x</code> is included</p></dd>
 
