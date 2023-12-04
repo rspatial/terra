@@ -313,9 +313,12 @@ bool SpatRaster::readAll() {
 		}
 	}
 	readStop();
-	if (n>1) source.resize(1);
+	if (n > 1) source.resize(1);
+
+	source[0].hasWindow = false;
 	return true;
 }
+
 
 
 std::vector<double> SpatRaster::getValues(long lyr, SpatOptions &opt) {
