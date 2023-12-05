@@ -40,11 +40,15 @@ x <- predict(r, pca)
 # use "index" to get a subset of the components
 p <- predict(r, pca, index=1:2)
 
-### use princomp directly (or use prcomp instead)
-pca <- princomp(r)
-# may need to use sampling with a large raster 
+### use princomp directly
+pca2 <- princomp(values(r),  fix_sign = TRUE)
+p2 <- predict(r, pca2)
+
+### may need to use sampling with a large raster 
+### here with prcomp instead of princomp
 sr <- spatSample(r, 100000, "regular")
-pca <- prcomp(sr)
+pca3 <- prcomp(sr)
+p3 <- predict(r, pca3)
 }
 
 \keyword{spatial}

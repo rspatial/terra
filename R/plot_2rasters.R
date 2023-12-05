@@ -13,7 +13,7 @@
 	nly <- nlyr(y)
 
 	maxnl <- max(1, round(maxnl))
-	nl <- max(nlx, nly)
+	nl <- min(max(nlx, nly), maxnl)
 	if (nl > maxnl) {
 		nl <- maxnl
 		if (nlx > maxnl) {
@@ -24,6 +24,14 @@
 			y <- y[[1:maxnl]]
 			nly <- maxnl
 		}
+	}
+
+	if (nlx < nly) {
+		x <- x[[rep_len(1:nlx, nly)]]
+		nlx <- nly
+	} else if (nly < nlx) {
+		y <- y[[rep_len(1:nly, nlx)]]	
+		nly <- nlx
 	}
 
 
