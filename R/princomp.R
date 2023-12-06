@@ -25,7 +25,7 @@ setMethod("princomp", signature(x="SpatRaster"),
 			S <- diag(xcov$covariance)
 			model$scale <- sqrt(S)
 		}
-		model$n.obs <- as.dist(xcov$n)
+		model$n.obs <- dist::as.dist(xcov$n)
 		model
 	}
 )

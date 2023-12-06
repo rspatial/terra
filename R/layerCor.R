@@ -86,7 +86,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			fun <- ""
 		}
 
-		if (maxcell < n) {
+		if (maxcell < ncell(x)) {
 			x <- spatSample(x, size=maxcell, "regular", as.raster=TRUE)
 		}
 		n <- ncell(x)
