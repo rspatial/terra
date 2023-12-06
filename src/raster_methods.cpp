@@ -4114,7 +4114,7 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, std::stri
 		narm = false;		
 	}
 
-	if (fun == "pearson") {
+	if (fun == "cor") { // pearson
 		std::vector<double> means(nl*nl, NAN);
 		std::vector<double> cor(nl*nl, 1);
 		std::vector<double> nn(nl*nl, NAN);

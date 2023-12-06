@@ -20,14 +20,14 @@ Compute correlation, (weighted) covariance, or similar summary statistics that c
 \arguments{
   \item{x}{SpatRaster}
 
-  \item{fun}{character. The statistic to compute: either "cov" (covariance), "weighted.cov" (weighted covariance), or "pearson" (correlation coefficient) or your own function that takes two vectors as argument to compute a single number}
+  \item{fun}{character. The statistic to compute: either "cov" (covariance), "weighted.cov" (weighted covariance), or "cor" (pearson correlation coefficient) or your own function that takes two vectors as argument to compute a single number}
 
   \item{w}{SpatRaster with the weights  to compute the weighted covariance. It should have a single layer and the same geometry as \code{x}}
 
   \item{asSample}{logical. If \code{TRUE}, the statistic for a sample (denominator is \code{n-1}) is computed, rather than for the population (denominator is \code{n}). Only for the standard functions}
    
-  \item{use}{character. To decide how to handle missing values. This must be (an abbreviation of) one of the strings "everything", "complete.obs", or "pairwise.complete.obs"}
-  
+  \item{use}{character. To decide how to handle missing values. This must be (an abbreviation of) one of "everything", "complete.obs", "pairwise.complete.obs", "masked.complete". With "pairwise.complete.obs", the value for a pair of layers is computed for all cells that are not \code{NA} in that pair. Therefore, it may be that the (number of) cells used varies between pairs. The benefit of this approach is that all available data is used. Use "complete.obs", if you want to only use the values from cells that are not \code{NA} in any of the layers. By using "masked.complete" you indicate that all layers have NA values in the same cells}
+    
   \item{maxcell}{positive integer. The number of cells to be regularly sampled. Only used when \code{fun} is a function}
 
   \item{...}{additional arguments for \code{fun} (if it is a proper function)}

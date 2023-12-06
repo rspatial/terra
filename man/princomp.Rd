@@ -19,7 +19,7 @@ Alternatively, you can use \code{stats::\link[stats]{princomp}} or \code{stats::
   \item{x}{SpatRaster}
   \item{cor}{logical. If \code{FALSE}, the covariance matrix is used. Otherwise the correlation matrix is used}   
   \item{fix_sign}{logical.  If \code{TRUE}, the signs of the loadings and scores are chosen so that the first element of each loading is non-negative}  
-  \item{use}{character. To decide how to handle missing values. This must be (an abbreviation of) one of the strings "everything", "complete.obs", or "pairwise.complete.obs". With "pairwise.complete.obs", the covariance between a pair of layers is computed for all cells that are not \code{NA} in that pair. Therefore, it may be that the (number of) cells used varies between pairs. The benefit of this approach is that all available data is used. Use "complete.obs", if you want to only use the values from cells that are not \code{NA} in any of the layers. "complete.obs" is most efficient, but it can only be use if there are no missing values in \code{x}}
+  \item{use}{character. To decide how to handle missing values. This must be (an abbreviation of) one of the strings "everything", "complete.obs", "pairwise.complete.obs", or "masked.complete". With "pairwise.complete.obs", the covariance between a pair of layers is computed for all cells that are not \code{NA} in that pair. Therefore, it may be that the (number of) cells used varies between pairs. The benefit of this approach is that all available data is used. Use "complete.obs", if you want to only use the values from cells that are not \code{NA} in any of the layers. By using "masked.complete" you indicate that all layers have NA values in the same cells}
 }
 
 \value{

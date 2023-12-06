@@ -56,7 +56,7 @@ old_pearson <- function(x, asSample, na.rm, nl, n, mat) {
 setMethod("layerCor", signature(x="SpatRaster"),
 	function(x, fun, w, asSample=TRUE, use="everything", maxcell=Inf, ...) {
 
-		ops <- c("everything", "complete.obs", "pairwise.complete.obs")
+		ops <- c("everything", "complete.obs", "pairwise.complete.obs", "complete.masked")
 
 		# backwards compatibility 
 		na.rm <- list(...)$na.rm
@@ -80,7 +80,11 @@ setMethod("layerCor", signature(x="SpatRaster"),
 		
 		if (inherits(fun, "character")) {
 			fun <- tolower(fun)
-			stopifnot(fun %in% c("cov", "weighted.cov", "pearson"))
+			if (!(fun %in% c("cov", "weighted.cov", "pearson", "cor"))) {
+				error("layerCor", "character function names must be one of: 'cor', 'cov', or 'weighted.cov'")
+			}
+			# backwards compatibility
+			if (fun == "pearson") fun = "cor"
 		} else {
 			FUN <- fun
 			fun <- ""
@@ -90,7 +94,8 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			x <- spatSample(x, size=maxcell, "regular", as.raster=TRUE)
 		}
 		n <- ncell(x)
-		if ((use == "complete.obs") && (fun != "pearson")) {
+		# for cor masking is done in cpp code
+		if ((use == "complete.obs") && (fun != "cor")) { 
 			x <- mask(x, anyNA(x), maskvalue=TRUE)
 		}
 		
@@ -152,12 +157,12 @@ setMethod("layerCor", signature(x="SpatRaster"),
 
 			return( list(covariance=mat, mean=means, n=nn) )
 
-		} else if (fun == "pearson") {
+		} else if (fun == "cor") {
 			if (isTRUE(list(...)$old)) {
 				old_pearson(x, asSample=asSample, na.rm=na.rm, nl=nl, n=n, mat=mat)
 			} else {			
 				opt <- spatOptions()
-				m <- x@cpp$layerCor("pearson", use, asSample, opt)
+				m <- x@cpp$layerCor("cor", use, asSample, opt)
 				x <- messages(x)
 				m <- lapply(m, function(i) {
 					matrix(i, nrow=nl, byrow=TRUE, dimnames=list(names(x), names(x)))
@@ -167,10 +172,14 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			}
 		} else {
 			v <- spatSample(x, size=maxcell, "regular", na.rm=na.rm, warn=FALSE)
+			if (use %in% c("complete.obs", "complete.masked")) {
+				v <- na.omit(v)
+			}
 			for(i in 1:nl) {
 				for(j in i:nl) {
 					if (use == "pairwise.complete.obs") {
-
+						vij <- na.omit(v[,c(i,j)])
+						mat[j,i] <- mat[i,j] <- FUN(vij[,1], vij[,2], ...)
 					} else {
 						mat[j,i] <- mat[i,j] <- FUN(v[,i], v[,j], ...)
 					}
