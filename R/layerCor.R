@@ -53,11 +53,26 @@ old_pearson <- function(x, asSample, na.rm, nl, n, mat) {
 	
 
 
-
 setMethod("layerCor", signature(x="SpatRaster"),
-	function(x, fun, w, asSample=TRUE, na.rm=FALSE, maxcell=Inf, ...) {
+	function(x, fun, w, asSample=TRUE, use="everything", maxcell=Inf, ...) {
+
+		ops <- c("everything", "complete.obs", "pairwise.complete.obs")
+
+		# backwards compatibility 
+		na.rm <- list(...)$na.rm
+		if (isTRUE(na.rm)) {
+			use <- "pairwise.complete.obs"
+		} else {
+			use <- match.arg(use, ops)
+			if (use != "everything") {
+				na.rm <- TRUE
+			} else {
+				na.rm <- FALSE			
+			}
+		}
 
 		stopifnot(is.logical(asSample) & !is.na(asSample))
+		
 		nl <- nlyr(x)
 		if (nl < 2) {
 			error("layerCor", "x must have at least 2 layers")
@@ -71,9 +86,12 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			fun <- ""
 		}
 
-		n <- ncell(x)
 		if (maxcell < n) {
 			x <- spatSample(x, size=maxcell, "regular", as.raster=TRUE)
+		}
+		n <- ncell(x)
+		if ((use == "complete.obs") && (fun != "pearson")) {
+			x <- mask(x, anyNA(x), maskvalue=TRUE)
 		}
 		
 		if (fun == "weighted.cov") {
@@ -85,16 +103,17 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			}
 			stopifnot( nlyr(w) == 1 )
 
+
 			sqrtw <- sqrt(w)
 			for(i in 1:nl) {
 				for(j in i:nl) {
 					s <- c(x[[c(i,j)]])
-					if (na.rm) {
+					if (use == "pairwise.complete.obs") {
 						s <- mask(c(s, w), anyNA(s), maskvalue=TRUE)
 						ww <- s[[3]]
 						s <- s[[1:2]]
-						sumw <- unlist(global(ww, fun="sum", na.rm=na.rm) )
-						avg <- unlist(global(s * ww, fun="sum", na.rm=na.rm)) / sumw
+						sumw <- unlist(global(ww, fun="sum", na.rm=TRUE) )
+						avg <- unlist(global(s * ww, fun="sum", na.rm=TRUE)) / sumw
 					} else {
 						sumw <- unlist(global(w, fun="sum", na.rm=na.rm) )
 						avg <- unlist(global(s * w, fun="sum", na.rm=na.rm)) / sumw
@@ -112,12 +131,11 @@ setMethod("layerCor", signature(x="SpatRaster"),
 		} else if (fun == "cov") {
 			means <- mat <- nn <- matrix(NA, nrow=nl, ncol=nl)
 			colnames(means) <- rownames(means) <- colnames(mat) <- rownames(mat) <- names(x)
-
 			n_ij <- n
 			for(i in 1:nl) {
 				for(j in i:nl) {
 					s <- x[[c(i,j)]]
-					if (na.rm) {
+					if (use == "pairwise.complete.obs") {
 						m <- anyNA(s)
 						s <- mask(s, m, maskvalue=TRUE)
 						n_ij <- n - global(m, fun="sum")$sum
@@ -137,9 +155,9 @@ setMethod("layerCor", signature(x="SpatRaster"),
 		} else if (fun == "pearson") {
 			if (isTRUE(list(...)$old)) {
 				old_pearson(x, asSample=asSample, na.rm=na.rm, nl=nl, n=n, mat=mat)
-			} else {
+			} else {			
 				opt <- spatOptions()
-				m <- x@cpp$layerCor("pearson", na.rm, asSample, opt)
+				m <- x@cpp$layerCor("pearson", use, asSample, opt)
 				x <- messages(x)
 				m <- lapply(m, function(i) {
 					matrix(i, nrow=nl, byrow=TRUE, dimnames=list(names(x), names(x)))
@@ -151,7 +169,11 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			v <- spatSample(x, size=maxcell, "regular", na.rm=na.rm, warn=FALSE)
 			for(i in 1:nl) {
 				for(j in i:nl) {
-					mat[j,i] <- mat[i,j] <- FUN(v[,i], v[,j], ...)
+					if (use == "pairwise.complete.obs") {
+
+					} else {
+						mat[j,i] <- mat[i,j] <- FUN(v[,i], v[,j], ...)
+					}
 				}
 			}
 			mat

@@ -6,19 +6,20 @@
 \title{SpatRaster PCA}
 
 \description{
-Compute principal components for SpatRaster layers. The benefit of this method is that it uses all values to compute the principal components, even for very large rasters. This is because it computes the covariance matrix by processing the data in chunks, if necessary, using \code{\link{layerCor}}. The population covariance is used (not the sample, with \code{n-1} denominator, covariance). The covariance between a pair of layers is computed for all cells that are not \code{NA} in these two layers. Therefore, it may be that the (number of) cells used varies between pairs. The benefit of this approach is that all available data is used. If you want to only use the values from cells that are not \code{NA} in any of the layers, first run \code{mask(x, anyNA(x), maskvalue=TRUE)} on the input SpatRaster.
+Compute principal components for SpatRaster layers. The benefit of this method is that it uses all values to compute the principal components, even for very large rasters. This is because it computes the covariance matrix by processing the data in chunks, if necessary, using \code{\link{layerCor}}. The population covariance is used (not the sample, with \code{n-1} denominator, covariance). 
 
 Alternatively, you can use \code{stats::\link[stats]{princomp}} or \code{stats::\link[stats]{prcomp}} with a data.frame of the raster values, using a sample for very large rasters (see the examples below). 
 }
 
 \usage{
-\S4method{princomp}{SpatRaster}(x, cor=FALSE, fix_sign=TRUE)
+\S4method{princomp}{SpatRaster}(x, cor=FALSE, fix_sign=TRUE, use="pairwise.complete.obs")
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{cor}{logical. If \code{FALSE}, the covariance matrix is used. Otherwise the correlation matrix is used}   
-  \item{fix_sign}{logical.  If \code{TRUE}, the signs of the loadings and scores are chosen so that the first element of each loading is non-negative}
+  \item{fix_sign}{logical.  If \code{TRUE}, the signs of the loadings and scores are chosen so that the first element of each loading is non-negative}  
+  \item{use}{character. To decide how to handle missing values. This must be (an abbreviation of) one of the strings "everything", "complete.obs", or "pairwise.complete.obs". With "pairwise.complete.obs", the covariance between a pair of layers is computed for all cells that are not \code{NA} in that pair. Therefore, it may be that the (number of) cells used varies between pairs. The benefit of this approach is that all available data is used. Use "complete.obs", if you want to only use the values from cells that are not \code{NA} in any of the layers. "complete.obs" is most efficient, but it can only be use if there are no missing values in \code{x}}
 }
 
 \value{

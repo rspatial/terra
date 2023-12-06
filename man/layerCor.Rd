@@ -13,7 +13,7 @@ Compute correlation, (weighted) covariance, or similar summary statistics that c
 
 
 \usage{
-\S4method{layerCor}{SpatRaster}(x, fun, w, asSample=TRUE, na.rm=FALSE, maxcell=Inf, ...)
+\S4method{layerCor}{SpatRaster}(x, fun, w, asSample=TRUE, use="everything", maxcell=Inf, ...)
 }
 
 
@@ -25,8 +25,8 @@ Compute correlation, (weighted) covariance, or similar summary statistics that c
   \item{w}{SpatRaster with the weights  to compute the weighted covariance. It should have a single layer and the same geometry as \code{x}}
 
   \item{asSample}{logical. If \code{TRUE}, the statistic for a sample (denominator is \code{n-1}) is computed, rather than for the population (denominator is \code{n}). Only for the standard functions}
-    
-  \item{na.rm}{logical. Should missing values be removed?}
+   
+  \item{use}{character. To decide how to handle missing values. This must be (an abbreviation of) one of the strings "everything", "complete.obs", or "pairwise.complete.obs"}
   
   \item{maxcell}{positive integer. The number of cells to be regularly sampled. Only used when \code{fun} is a function}
 
