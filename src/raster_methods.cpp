@@ -4090,7 +4090,7 @@ SpatDataFrame SpatRaster::mglobal(std::vector<std::string> funs, bool narm, Spat
 
 std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm, bool asSample, SpatOptions &opt) {
 
-	std::vector<std::vector<double>> out(2);
+	std::vector<std::vector<double>> out(3);
 	
 	if (!hasValues()) {
 		setError("SpatRaster has no values");
@@ -4102,6 +4102,7 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 	if (fun == "pearson") {
 		std::vector<double> means(nl*nl, NAN);
 		std::vector<double> cor(nl*nl, 1);
+		std::vector<double> nn(nl*nl, NAN);
 		SpatOptions topt(opt);
 
 		BlockSize bs = getBlockSize(topt);
@@ -4119,9 +4120,9 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 					setError(getError());
 					return(out);
 				}
-				std::vector<std::vector<double>> stats(nl);
-				std::vector<std::vector<double>> stats2(nl);
-				std::vector<double> n(nl);
+				std::vector<std::vector<double>> stats(2);
+				std::vector<std::vector<double>> stats2(2);
+				std::vector<double> n(2);
 				std::vector<double> vi, vj;				
 				for (size_t k=0; k<bs.n; k++) {
 					xi.readBlock(vi, bs, k);
@@ -4146,7 +4147,7 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 					}
 					if (narm) {
 						for (size_t m=0; m<vi.size(); m++) {
-							if (!std::isnan(vi[m])) {
+							if ((!std::isnan(vi[m])) && (!std::isnan(vj[m]))) {
 								value += (vi[m] - stats[0][0]) * (vj[m]  - stats[1][0]);
 							}
 						}
@@ -4161,12 +4162,15 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 				means[j*nl+i] = stats[1][0];
 				cor[i*nl+j] = value;
 				cor[j*nl+i] = value;
+				nn[i*nl+j] = n[0];
+				nn[j*nl+i] = n[1];
 				xi.readStop();
 				xj.readStop();
 			}
 		}
 		out[0] = cor;	
 		out[1] = means;	
+		out[2] = nn;
 	}
 	return(out);	
 }
