@@ -68,7 +68,7 @@
 
 
   <dt>fun</dt>
-<dd><p>character. The statistic to compute: either "cov" (covariance), "weighted.cov" (weighted covariance), or "pearson" (correlation coefficient) or your own function that takes two vectors as argument to compute a single number</p></dd>
+<dd><p>character. The statistic to compute: either "cov" (covariance), "weighted.cov" (weighted covariance), or "cor" (pearson correlation coefficient) or your own function that takes two vectors as argument to compute a single number</p></dd>
 
 
   <dt>w</dt>
@@ -80,9 +80,9 @@
 
    
   <dt>use</dt>
-<dd><p>character. To decide how to handle missing values. This must be (an abbreviation of) one of the strings "everything", "complete.obs", or "pairwise.complete.obs"</p></dd>
+<dd><p>character. To decide how to handle missing values. This must be (an abbreviation of) one of "everything", "complete.obs", "pairwise.complete.obs", "masked.complete". With "pairwise.complete.obs", the value for a pair of layers is computed for all cells that are not <code>NA</code> in that pair. Therefore, it may be that the (number of) cells used varies between pairs. The benefit of this approach is that all available data is used. Use "complete.obs", if you want to only use the values from cells that are not <code>NA</code> in any of the layers. By using "masked.complete" you indicate that all layers have NA values in the same cells</p></dd>
 
-  
+    
   <dt>maxcell</dt>
 <dd><p>positive integer. The number of cells to be regularly sampled. Only used when <code>fun</code> is a function</p></dd>
 

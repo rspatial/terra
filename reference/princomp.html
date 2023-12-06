@@ -76,7 +76,7 @@ Alternatively, you can use stats::princomp or stats::prcomp with a data.frame of
 <dd><p>logical.  If <code>TRUE</code>, the signs of the loadings and scores are chosen so that the first element of each loading is non-negative</p></dd>
   
   <dt>use</dt>
-<dd><p>character. To decide how to handle missing values. This must be (an abbreviation of) one of the strings "everything", "complete.obs", or "pairwise.complete.obs". With "pairwise.complete.obs", the covariance between a pair of layers is computed for all cells that are not <code>NA</code> in that pair. Therefore, it may be that the (number of) cells used varies between pairs. The benefit of this approach is that all available data is used. Use "complete.obs", if you want to only use the values from cells that are not <code>NA</code> in any of the layers. "complete.obs" is most efficient, but it can only be use if there are no missing values in <code>x</code></p></dd>
+<dd><p>character. To decide how to handle missing values. This must be (an abbreviation of) one of the strings "everything", "complete.obs", "pairwise.complete.obs", or "masked.complete". With "pairwise.complete.obs", the covariance between a pair of layers is computed for all cells that are not <code>NA</code> in that pair. Therefore, it may be that the (number of) cells used varies between pairs. The benefit of this approach is that all available data is used. Use "complete.obs", if you want to only use the values from cells that are not <code>NA</code> in any of the layers. By using "masked.complete" you indicate that all layers have NA values in the same cells</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -99,13 +99,10 @@ Alternatively, you can use stats::princomp or stats::prcomp with a data.frame of
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pca</span> <span class="op">&lt;-</span> <span class="fu">princomp</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘dist’</span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="predict.html">predict</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">pca</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'predict': object 'pca' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># use "index" to get a subset of the components</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="predict.html">predict</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">pca</span>, index<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'predict': object 'pca' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### use princomp directly</span></span></span>
 <span class="r-in"><span><span class="va">pca2</span> <span class="op">&lt;-</span> <span class="fu">princomp</span><span class="op">(</span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>,  fix_sign <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
