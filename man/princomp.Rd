@@ -6,7 +6,9 @@
 \title{SpatRaster PCA}
 
 \description{
-Compute principal components for SpatRaster layers. The benefit of this method is that it uses all values to compute the principal components, even for very large rasters. Alternatively, you can use \code{stats::\link[stats]{princomp}} or \code{stats::\link[stats]{prcomp}} directly, perhaps using a sample. 
+Compute principal components for SpatRaster layers. The benefit of this method is that it uses all values to compute the principal components, even for very large rasters. This is because it computes the covariance matrix by processing the data in chunks, if necessary, using \code{\link{layerCor}}. The population covariance is used (not the sample, with \code{n-1} denominator, covariance). The covariance between a pair of layers is computed for all cells that are not \code{NA} in these two layers. Therefore, it may be that the (number of) cells used varies between pairs. The benefit of this approach is that all available data is used. If you want to only use the values from cells that are not \code{NA} in any of the layers, first run \code{mask(x, anyNA(x), maskvalue=TRUE)} on the input SpatRaster.
+
+Alternatively, you can use \code{stats::\link[stats]{princomp}} or \code{stats::\link[stats]{prcomp}} with a data.frame of the raster values, using a sample for very large rasters (see the examples below). 
 }
 
 \usage{
@@ -23,11 +25,8 @@ Compute principal components for SpatRaster layers. The benefit of this method i
 princomp object
 }
 
-\author{Based on a similar method by Benjamin Leutner}
+\author{Alex Ilich and Robert Hijmans, based on a similar method by Benjamin Leutner}
 
-\note{
-Use \code{mask(x, anyNA(x), maskvalue=TRUE)} if you want to assure that values from the same cells are used for all layers. Otherwise, the covariance matrix is computed for all cells in pairs of layers that are not \code{NA} in those two layers.
-}
 
 \seealso{ \code{\link[stats]{princomp}}}
 
