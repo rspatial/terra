@@ -9,9 +9,6 @@ setMethod("princomp", signature(x="SpatRaster"),
 		if (nlyr(x) < 2) {
 			error("princomp", "The number of layers of x must be > 1")
 		}
-		ops <- c("everything", "complete.obs", "pairwise.complete.obs")
-		use <- match.arg(use, ops)
-
 		xcov <- layerCor(x, fun="cov", use=use, asSample=FALSE)
 		if (any(is.na(xcov[["covariance"]]))) {
 			error("princomp", "the covariance matrix has missing values")		

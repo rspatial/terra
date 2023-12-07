@@ -56,19 +56,19 @@ old_pearson <- function(x, asSample, na.rm, nl, n, mat) {
 setMethod("layerCor", signature(x="SpatRaster"),
 	function(x, fun, w, asSample=TRUE, use="everything", maxcell=Inf, ...) {
 
-		ops <- c("everything", "complete.obs", "pairwise.complete.obs", "complete.masked")
+		ops <- c("everything", "complete.obs", "pairwise.complete.obs", "masked.complete")
 
 		# backwards compatibility 
 		na.rm <- list(...)$na.rm
-		if (isTRUE(na.rm)) {
+		if (isTRUE(na.rm) && (use == "everything")) {
 			use <- "pairwise.complete.obs"
+		} 
+
+		use <- match.arg(use, ops)
+		if (use != "everything") {
+			na.rm <- TRUE
 		} else {
-			use <- match.arg(use, ops)
-			if (use != "everything") {
-				na.rm <- TRUE
-			} else {
-				na.rm <- FALSE			
-			}
+			na.rm <- FALSE			
 		}
 
 		stopifnot(is.logical(asSample) & !is.na(asSample))
