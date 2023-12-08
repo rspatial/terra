@@ -4,53 +4,9 @@
 # Licence GPL v3
 
 # Computation of the weighted covariance and (optionally) weighted means of bands in an Raster.
+# based on code for "raster" by Jonathan Greenberg and Robert Hijmans
+# partly based on code by Mort Canty
 
-# based on code for "raster" by Jonathan Greenberg and Robert Hijmans partly based on code by Mort Canty
-
-
-old_pearson <- function(x, asSample, na.rm, nl, n, mat) {
-	if (na.rm) {
-		means <- matrix(NA, nrow=2, ncol=nlyr(x))
-		for(i in 1:(nl-1)) {
-			for(j in (i+1):nl) {
-				m <- anyNA(x[[c(i,j)]])
-				a <- mask(x[[i]], m, maskvalue=TRUE)
-				b <- mask(x[[j]], m, maskvalue=TRUE)
-				xx <- c(a, b)
-				mns <- unlist(global(xx, fun="mean", na.rm=na.rm) )
-				means[2,i] <- mns[1]
-				means[1,j] <- mns[2]						
-				sds <- unlist(global(xx, fun="sd", na.rm=na.rm) )
-				r <- prod(xx - mns)
-				nas <- unlist(global(is.na(r), fun="sum"))
-				v <- unlist(global(r, fun="sum", na.rm=na.rm))
-				v <- v / ((n - nas - asSample) * sds[1] * sds[2])
-				mat[j,i] <- mat[i,j] <- v
-			}
-		}
-		colnames(means) <- names(x)
-	} else {
-		means <- unlist(global(x, fun="mean", na.rm=na.rm) )
-		sds <- unlist(global(x, fun="sd", na.rm=na.rm) )
-		x <- (x - means)
-		
-		for(i in 1:(nl-1)) {
-			for(j in i:nl) {
-				r <- x[[i]] * x[[j]]
-				v <- unlist(global(r, fun="sum", na.rm=na.rm))
-				v <- v / ((n - asSample) * sds[i] * sds[j])
-				mat[j,i] <- mat[i,j] <- v
-			}
-		}
-		means <- matrix(means, nrow=1)
-		colnames(means) <- names(x)
-	}
-	diag(mat) <- 1
-	covar <- list(mat, means)
-	names(covar) <- c("pearson", "mean")
-	return(covar)
-}
-	
 
 
 setMethod("layerCor", signature(x="SpatRaster"),
@@ -85,30 +41,34 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			}
 			# backwards compatibility
 			if (fun == "pearson") fun = "cor"
+			if (fun == "weighted.cov") {
+				if (missing(w))	{
+					error("layerCor", "to compute weighted covariance a weights layer should be provided")
+				}
+				stopifnot( nlyr(w) == 1 )
+				x <- c(w, x)
+			}
 		} else {
 			FUN <- fun
 			fun <- ""
 		}
-
+		
 		if (maxcell < ncell(x)) {
 			x <- spatSample(x, size=maxcell, "regular", as.raster=TRUE)
 		}
 		n <- ncell(x)
-		# for cor masking is done in cpp code
+
+		# for "cor" masking is done in cpp code
 		if ((use == "complete.obs") && (fun != "cor")) { 
 			x <- mask(x, anyNA(x), maskvalue=TRUE)
 		}
 		
 		if (fun == "weighted.cov") {
+			w <- x[[1]]
+			x <- x[[-1]]
+
 			means <- mat <- matrix(NA, nrow=nl, ncol=nl)
 			colnames(means) <- rownames(means) <- colnames(mat) <- rownames(mat) <- names(x)
-
-			if (missing(w))	{
-				stop("to compute weighted covariance a weights layer should be provided")
-			}
-			stopifnot( nlyr(w) == 1 )
-
-
 			sqrtw <- sqrt(w)
 			for(i in 1:nl) {
 				for(j in i:nl) {
@@ -132,7 +92,6 @@ setMethod("layerCor", signature(x="SpatRaster"),
 				}
 			}
 			return( list(weighted_covariance=mat, weighted_mean=means) )
-
 		} else if (fun == "cov") {
 			means <- mat <- nn <- matrix(NA, nrow=nl, ncol=nl)
 			colnames(means) <- rownames(means) <- colnames(mat) <- rownames(mat) <- names(x)
@@ -190,3 +149,49 @@ setMethod("layerCor", signature(x="SpatRaster"),
 	}
 )
 
+
+
+
+old_pearson <- function(x, asSample, na.rm, nl, n, mat) {
+	if (na.rm) {
+		means <- matrix(NA, nrow=2, ncol=nlyr(x))
+		for(i in 1:(nl-1)) {
+			for(j in (i+1):nl) {
+				m <- anyNA(x[[c(i,j)]])
+				a <- mask(x[[i]], m, maskvalue=TRUE)
+				b <- mask(x[[j]], m, maskvalue=TRUE)
+				xx <- c(a, b)
+				mns <- unlist(global(xx, fun="mean", na.rm=na.rm) )
+				means[2,i] <- mns[1]
+				means[1,j] <- mns[2]						
+				sds <- unlist(global(xx, fun="sd", na.rm=na.rm) )
+				r <- prod(xx - mns)
+				nas <- unlist(global(is.na(r), fun="sum"))
+				v <- unlist(global(r, fun="sum", na.rm=na.rm))
+				v <- v / ((n - nas - asSample) * sds[1] * sds[2])
+				mat[j,i] <- mat[i,j] <- v
+			}
+		}
+		colnames(means) <- names(x)
+	} else {
+		means <- unlist(global(x, fun="mean", na.rm=na.rm) )
+		sds <- unlist(global(x, fun="sd", na.rm=na.rm) )
+		x <- (x - means)
+		
+		for(i in 1:(nl-1)) {
+			for(j in i:nl) {
+				r <- x[[i]] * x[[j]]
+				v <- unlist(global(r, fun="sum", na.rm=na.rm))
+				v <- v / ((n - asSample) * sds[i] * sds[j])
+				mat[j,i] <- mat[i,j] <- v
+			}
+		}
+		means <- matrix(means, nrow=1)
+		colnames(means) <- names(x)
+	}
+	diag(mat) <- 1
+	covar <- list(mat, means)
+	names(covar) <- c("pearson", "mean")
+	return(covar)
+}
+	
