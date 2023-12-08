@@ -27,7 +27,11 @@
 # endif
 #endif
 #else
+#if PROJ_VERSION_MAJOR >=8
+#include "proj.h"
+#else
 #include <proj_api.h>
+#endif
 #endif
 
 //from sf
