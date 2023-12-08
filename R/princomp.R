@@ -1,7 +1,7 @@
 
 
 setMethod("princomp", signature(x="SpatRaster"),
-	function(x, cor=FALSE, fix_sign=TRUE, use="pairwise.complete.obs") {
+	function(x, cor=FALSE, fix_sign=TRUE, use="pairwise.complete.obs", maxcell=Inf) {
 
 		if (!hasValues(x)) {
 			error("princomp", "x has no values")
@@ -9,7 +9,7 @@ setMethod("princomp", signature(x="SpatRaster"),
 		if (nlyr(x) < 2) {
 			error("princomp", "The number of layers of x must be > 1")
 		}
-		xcov <- layerCor(x, fun="cov", use=use, asSample=FALSE)
+		xcov <- layerCor(x, fun="cov", use=use, asSample=FALSE, maxcell=maxcell)
 		if (any(is.na(xcov[["covariance"]]))) {
 			error("princomp", "the covariance matrix has missing values")		
 		}

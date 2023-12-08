@@ -28,7 +28,7 @@ Compute correlation, (weighted) covariance, or similar summary statistics that c
    
   \item{use}{character. To decide how to handle missing values. This must be (an abbreviation of) one of "everything", "complete.obs", "pairwise.complete.obs", "masked.complete". With "pairwise.complete.obs", the value for a pair of layers is computed for all cells that are not \code{NA} in that pair. Therefore, it may be that the (number of) cells used varies between pairs. The benefit of this approach is that all available data is used. Use "complete.obs", if you want to only use the values from cells that are not \code{NA} in any of the layers. By using "masked.complete" you indicate that all layers have NA values in the same cells}
     
-  \item{maxcell}{positive integer. The number of cells to be regularly sampled. Only used when \code{fun} is a function}
+  \item{maxcell}{positive integer. The maximum number of cells to be used. If this is smaller than ncell(x), a regular sample of \code{x} is used}
 
   \item{...}{additional arguments for \code{fun} (if it is a proper function)}
 }
