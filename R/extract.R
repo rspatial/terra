@@ -528,13 +528,13 @@ setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 
 		first <- getLyrNrs(first, names(x), nrow(y)) + 1 
 		last  <- getLyrNrs(last,  names(x), nrow(y)) + 1	
-		e <- extract(x, y, space_fun, ID=TRUE, na.rm=na.rm, ...)
+		e <- extract(x, y, geom_fun, ID=TRUE, na.rm=na.rm, ...)
 		if (nrow(e) != nrow(y)) {
-			error("range_extract", "space_fun must return a single value for each geometry/layer")
+			error("range_extract", "geom_fun must return a single value for each geometry/layer")
 		}
 		a <- lapply(1:nrow(e), function(i) e[i, c(first[i]:last[i])])
-		if (!is.null(time_fun)) {
-			a <- sapply(a, time_fun, na.rm=na.rm)
+		if (!is.null(lyr_fun)) {
+			a <- sapply(a, lyr_fun, na.rm=na.rm)
 		}
 		if (ID) {
 			if (is.vector(a)) {

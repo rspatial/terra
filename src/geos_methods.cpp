@@ -1096,7 +1096,8 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 	x = x.disaggregate(false);
 	SpatVector tmp;
 	tmp.reserve(x.size());
-	for (size_t i =0; i<x.geoms.size(); i++) {
+	Rcpp::Rcout << x.geoms.size() << std::endl;
+	for (size_t i=0; i<x.geoms.size(); i++) {
 		SpatVector p(x.geoms[i]);
 		p.srs = x.srs;
 		p = p.as_points(false, true);
@@ -1137,7 +1138,6 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 			tmp = ishole ? tmp.get_holes() : tmp.remove_holes();
 		}
 	}
-
 	return tmp;
 }
 
@@ -1169,31 +1169,55 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 	recycle(d, size());
 
 	if (islonlat) {
+		std::vector<unsigned> keep;
+		keep.reserve(size());
 		if (vt == "points") {
 			return point_buffer(d, quadsegs, false, true);
 		} else {
 			SpatVector p;
-			bool ispol = vt == "polygons";
-			for (size_t i =0; i<size(); i++) {
-				p = subset_rows(i);
-				if (ispol) {
-					SpatVector h = p.get_holes();
-					p = p.remove_holes();
-					p = lonlat_buf(p, d[i], quadsegs, true, false);
-					if (!h.empty()) {
-						h = lonlat_buf(h, d[i], quadsegs, true, true);
-						if (!h.empty()) {
-							for (size_t j=0; j<h.geoms[0].parts.size(); j++) {
-								p.geoms[0].parts[0].addHole(h.geoms[0].parts[j].x, h.geoms[0].parts[j].y);
+			if (vt == "polygons") {
+				for (size_t i =0; i<size(); i++) {
+					p = subset_rows(i).disaggregate(false);
+					SpatVector tmp;
+					for (size_t j =0; j<p.size(); j++) {
+						SpatVector pp = p.subset_rows(j);			
+						SpatVector h = pp.get_holes();
+						pp = pp.remove_holes();
+						pp = lonlat_buf(pp, d[i], quadsegs, true, false);
+						if (!(pp.empty() || h.empty())) {
+							h = lonlat_buf(h, d[i], quadsegs, true, true);
+							if (!h.empty()) {
+								if (d[i] < 0) {
+									pp = pp.erase(h);
+									if (!pp.empty()) {
+										h = h.crop(pp);
+									}
+									if (h.empty()) continue;
+								}
+								for (size_t k=0; k<h.geoms[0].parts.size(); k++) {
+									pp.geoms[0].parts[0].addHole(h.geoms[0].parts[k].x, h.geoms[0].parts[k].y);
+								}
 							}
 						}
+						tmp = tmp.append(pp, true);
 					}
-				} else {
-					p = lonlat_buf(p, d[i], quadsegs, false, false);
+					if (!tmp.empty()) {
+						keep.push_back(i);
+						out = out.append(tmp, true);
+					}
 				}
-				out = out.append(p, true);
+			} else {
+				for (size_t i =0; i<size(); i++) {
+					p = subset_rows(i);
+					p = lonlat_buf(p, d[i], quadsegs, false, false);
+					out = out.append(p, true);
+				}
 			}
-			out.df = df;
+			if (keep.size() < size()) {
+				out.df = df.subset_rows(keep);
+			} else {
+				out.df = df;
+			}
 			out.srs = srs;
 			return out;
 		}
