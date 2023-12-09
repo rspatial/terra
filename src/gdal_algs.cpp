@@ -539,7 +539,6 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 	double halfy = out.yres() / 2;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		int bandstart = 0;
 		eout.ymax = out.yFromRow(out.bs.row[i]) + halfy;
 		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - halfy;
 		SpatRaster crop_out = out.crop(eout, "near", false, sopt);
@@ -549,6 +548,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			return crop_out;
 		}
 
+		int bandstart = 0;
 		for (size_t j=0; j<ns; j++) {
 			GDALDatasetH hSrcDS;
 			if (!open_gdal(hSrcDS, j, false, sopt)) {
@@ -593,8 +593,10 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			out.setError("cannot do this transformation (warp)");
 			return out;
 		}
-		std::vector<double> v = crop_out.getValues(-1, opt);
-		if (!out.writeBlock(v, i)) return out;
+//		std::vector<double> v = crop_out.getValues(-1, opt);
+//		if (!out.writeBlock(v, i)) return out;
+		if (!out.writeBlock(crop_out.source[0].values, i)) return out;
+
 	}
 	out.writeStop();
 	if (mask) {
