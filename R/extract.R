@@ -537,12 +537,14 @@ setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 			a <- sapply(a, lyr_fun, na.rm=na.rm)
 		}
 		if (ID) {
-			if (is.vector(a)) {
-				a <- data.frame(ID=1:nrow(y), value=a)
-			} else if (length(a) == nrow(y)) {
+			if (is.list(a)) {
 				names(a) <- 1:nrow(y)
+			} else {
+				a <- data.frame(ID=1:nrow(y), value=a)
 			}
 		}
 		a
+		
 	}
 )
+
