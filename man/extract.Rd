@@ -19,7 +19,7 @@
 \title{Extract values from a SpatRaster}
 
 \description{
-Extract values from a SpatRaster for a set of locations. The locations can be a SpatVector (points, lines, polygons), a matrix with (x, y) or (longitude, latitude -- in that order!) coordinates, or a vector with cell numbers.  
+Extract values from a SpatRaster for a set of locations. The locations can be a SpatVector (points, lines, polygons), a data.frame or matrix with (x, y) or (longitude, latitude -- in that order!) coordinates, or a vector with cell numbers.  
 
 When argument \code{y} is a \code{SpatVector} the first column has the ID (record number) of the \code{SpatVector} used (unless you set \code{ID=FALSE}).
 
@@ -47,7 +47,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 \item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}
 \item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. See \code{\link{xyFromCell}}}
-\item{ID}{logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of input SpatVector \code{y}}
+\item{ID}{logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of \code{y}}
 \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
@@ -59,7 +59,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 
 \value{data.frame, matrix or SpatVector}
 
-\seealso{\link{values}, \link{zonal}}
+\seealso{\code{\link{values}, \link{zonal}, \link{extractAlong}, \link{extractRange}, \link{rapp}}}
 
 \examples{
 r <- rast(ncols=5, nrows=5, xmin=0, xmax=5, ymin=0, ymax=5)
