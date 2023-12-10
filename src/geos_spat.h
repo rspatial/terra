@@ -64,13 +64,19 @@ static PrepGeomPtr geos_ptr(const GEOSPreparedGeometry* pg, GEOSContextHandle_t 
 	return PrepGeomPtr(pg, deleter);
 }
 
-
 using TreePtr= std::unique_ptr<GEOSSTRtree, std::function<void(GEOSSTRtree*)> >;
 static TreePtr geos_ptr(GEOSSTRtree* t, GEOSContextHandle_t hGEOSctxt) {
 	auto deleter = std::bind(GEOSSTRtree_destroy_r, hGEOSctxt, std::placeholders::_1);
 	return TreePtr(t, deleter);
 }
 
+/*
+using wkbPtr = std::unique_ptr<unsigned char, std::function<void(unsigned char*)> >;
+static wkbPtr geos_wkb(unsigned char wkb, GEOSContextHandle_t hGEOSctxt) {
+	auto deleter = std::bind(GEOSFree_r, hGEOSctxt, std::placeholders::_1);
+	return wkbPtr(wkb, deleter);
+}
+*/
 
 #ifdef useRcpp
 #include "Rcpp.h"
@@ -114,6 +120,30 @@ static void __warningHandler(const char *fmt, ...) {
 	return;
 }
 
+static void __checkInterruptFn(void*) {
+	R_CheckUserInterrupt();
+}
+
+static void __checkInterrupt() {
+	// Adapted (in sf) from Rcpp/Interrupt.h
+	if (!R_ToplevelExec(__checkInterruptFn, nullptr)) {
+		GEOS_interruptRequest();
+	}
+}
+
+inline GEOSContextHandle_t geos_init(void) {
+#ifdef GEOS350
+	GEOSContextHandle_t ctxt = GEOS_init_r();
+	GEOSContext_setNoticeHandler_r(ctxt, __warningHandler);
+	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
+	GEOS_interruptRegisterCallback(__checkInterrupt);
+	return ctxt;
+#else
+	return initGEOS_r((GEOSMessageHandler) __warningHandler, (GEOSMessageHandler) __errorHandler);
+#endif
+}
+
+
 #else 
 
 #include <iostream>
@@ -145,6 +175,17 @@ static void __warningHandler(const char *fmt, ...) {
 	return;
 }
 
+inline GEOSContextHandle_t geos_init(void) {
+#ifdef GEOS350
+	GEOSContextHandle_t ctxt = GEOS_init_r();
+	GEOSContext_setNoticeHandler_r(ctxt, __warningHandler);
+	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
+	return ctxt;
+#else
+	return initGEOS_r((GEOSMessageHandler) __warningHandler, (GEOSMessageHandler) __errorHandler);
+#endif
+}
+
 
 #endif 
 
@@ -158,16 +199,6 @@ inline void geos_finish(GEOSContextHandle_t ctxt) {
 }
 
 
-inline GEOSContextHandle_t geos_init(void) {
-#ifdef GEOS350
-	GEOSContextHandle_t ctxt = GEOS_init_r();
-	GEOSContext_setNoticeHandler_r(ctxt, __warningHandler);
-	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
-	return ctxt;
-#else
-	return initGEOS_r((GEOSMessageHandler) __warningHandler, (GEOSMessageHandler) __errorHandler);
-#endif
-}
 
 
 static void __warningIgnore(const char *fmt, ...) {
@@ -225,7 +256,7 @@ inline GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::ve
 }
 
 
-inline GEOSGeometry* geos_polygon2(SpatPart g, GEOSContextHandle_t hGEOSCtxt) {
+inline GEOSGeometry* geos_polygon(SpatPart g, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSGeometry* shell = geos_linearRing(g.x, g.y, hGEOSCtxt);
 
 	if (g.hasHoles()) {
@@ -297,7 +328,7 @@ inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSC
 
 	} else { // polygons
 
-		std::vector<std::vector<double>> hx, hy;
+//		std::vector<std::vector<double>> hx, hy;
 		for (size_t i=0; i<n; i++) {
 			SpatGeom svg = v->getGeom(i);
 			size_t np = svg.size();
@@ -305,7 +336,7 @@ inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSC
 			geoms.reserve(np);
 			for (size_t j=0; j < np; j++) {
 				SpatPart svp = svg.getPart(j);
-				GEOSGeometry* gp = geos_polygon2(svp, hGEOSCtxt);
+				GEOSGeometry* gp = geos_polygon(svp, hGEOSCtxt);
 
 				if (gp != NULL) {
 					geoms.push_back(gp);

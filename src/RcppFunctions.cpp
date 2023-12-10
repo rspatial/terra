@@ -241,34 +241,6 @@ std::vector<std::vector<std::string>> sdsmetatdataparsed(std::string filename) {
 	std::vector<std::vector<std::string>> s = parse_metadata_sds(m);
 	return s;
 }
-/*
-// [[Rcpp::export(name = ".gdaldrivers")]]
-std::vector<std::vector<std::string>> gdal_drivers() {
-	size_t n = GetGDALDriverManager()->GetDriverCount();
-	std::vector<std::vector<std::string>> s(5);
-	for (size_t i=0; i<s.size(); i++) {
-		s[i].reserve(n);
-	}
-    GDALDriver *poDriver;
-    char **papszMetadata;
-	for (size_t i=0; i<n; i++) {
-	    poDriver = GetGDALDriverManager()->GetDriver(i);
-		s[0].push_back(poDriver->GetDescription());
-		s[4].push_back(poDriver->GetMetadataItem( GDAL_DMD_LONGNAME ) );
-
-		papszMetadata = poDriver->GetMetadata();
-		bool rst = CSLFetchBoolean( papszMetadata, GDAL_DCAP_RASTER, FALSE);
-		s[1].push_back(std::to_string(rst));
-		bool create = CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE);
-		bool copy = CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE);
-		s[2].push_back(std::to_string(create + copy));
-		bool vsi = CSLFetchBoolean( papszMetadata, GDAL_DCAP_VIRTUALIO, FALSE);
-		s[3].push_back(std::to_string(vsi));
-
-	}
-	return s;
-}
-*/
 
 
 // [[Rcpp::export(name = ".gdaldrivers")]]
@@ -536,6 +508,37 @@ std::string PROJ_network(bool enable, std::string url) {
 	return s;
 }
 
+// [[Rcpp::export(name = ".pearson")]]
+double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
+ 
+	if (narm) {
+		size_t n = x.size()-1;
+		for (long i=n; i >= 0; i--) {
+			if (std::isnan(x[i]) || std::isnan(y[i])) {
+				x.erase(x.begin()+i);
+				y.erase(y.begin()+i);
+			}
+		}	
+		if (x.size() < 2) {
+			return(NAN);
+		}
+	}
+	size_t n = x.size();
+	double xbar = accumulate(x.begin(), x.end(), 0.0) / n;
+	double ybar = accumulate(y.begin(), y.end(), 0.0) / n;
+	double numer = 0;
+	for (size_t i=0; i<n; i++) {
+		numer += (x[i]-xbar) * (y[i]-ybar);
+	}
+	double s1 = 0;
+	double s2 = 0;
+	for (size_t i=0; i<n; i++) {
+		s1 += std::pow(x[i]-xbar, 2);
+		s2 += std::pow(y[i]-ybar, 2);
+	}
+	return numer / std::sqrt(s1 * s2);
+}
+
 
 
 // [[Rcpp::export(name = ".weighted_pearson")]]
@@ -579,37 +582,31 @@ double weighted_pearson_cor(std::vector<double> x, std::vector<double> y, std::v
 }
 
 
-// [[Rcpp::export(name = ".pearson")]]
-double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
- 
-	if (narm) {
-		size_t n = x.size()-1;
-		for (long i=n; i >= 0; i--) {
-			if (std::isnan(x[i]) || std::isnan(y[i])) {
-				x.erase(x.begin()+i);
-				y.erase(y.begin()+i);
-			}
-		}	
-		if (x.size() < 2) {
-			return(NAN);
+
+// [[Rcpp::export(name = ".unique_symmetric_rows")]]
+Rcpp::IntegerMatrix uniqueSymmetricRows(std::vector<size_t> x, std::vector<size_t> y) {
+	size_t n = x.size();
+	for (size_t i=0; i<n; i++) {
+		if (x[i] > y[i]) {
+			double tmp = x[i];
+			x[i] = y[i];
+			y[i] = tmp;
 		}
 	}
-	size_t n = x.size();
-	double xbar = accumulate(x.begin(), x.end(), 0.0) / n;
-	double ybar = accumulate(y.begin(), y.end(), 0.0) / n;
-	double numer = 0;
-	for (size_t i=0; i<n; i++) {
-		numer += (x[i]-xbar) * (y[i]-ybar);
-	}
-	double s1 = 0;
-	double s2 = 0;
-	for (size_t i=0; i<n; i++) {
-		s1 += std::pow(x[i]-xbar, 2);
-		s2 += std::pow(y[i]-ybar, 2);
-	}
-	return numer / std::sqrt(s1 * s2);
+	sort_unique_2d(x, y);
+	Rcpp::IntegerMatrix mat(x.size(), 2); 
+    std::copy(x.begin(), x.end(), mat.begin());  	
+    std::copy(y.begin(), y.end(), mat.begin()+x.size());  	
+	return mat;
+//	x.insert(x.end(), y.begin(), y.end());
+///	return(x);
 }
 
+
+
+
+
+/*
 
 # include "vecmathse.h"
 // [[Rcpp::export(name = ".stattest1")]]
@@ -638,24 +635,4 @@ double stattest2(std::vector<double> x, std::string fun, bool narm) {
 	return f(x, narm);
 }
 
-
-
-// [[Rcpp::export(name = ".unique_symmetric_rows")]]
-Rcpp::IntegerMatrix uniqueSymmetricRows(std::vector<size_t> x, std::vector<size_t> y) {
-	size_t n = x.size();
-	for (size_t i=0; i<n; i++) {
-		if (x[i] > y[i]) {
-			double tmp = x[i];
-			x[i] = y[i];
-			y[i] = tmp;
-		}
-	}
-	sort_unique_2d(x, y);
-	Rcpp::IntegerMatrix mat(x.size(), 2); 
-    std::copy(x.begin(), x.end(), mat.begin());  	
-    std::copy(y.begin(), y.end(), mat.begin()+x.size());  	
-	return mat;
-//	x.insert(x.end(), y.begin(), y.end());
-///	return(x);
-}
-
+*/

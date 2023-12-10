@@ -32,6 +32,68 @@
 #include "recycle.h"
 #include <sstream>
 
+
+SpatGeom getPolygonsGeom2(OGRGeometry *poGeometry) {
+	SpatGeom g(polygons);
+	OGRPoint ogrPt;
+//	OGRwkbGeometryType geomtype = poGeometry->getGeometryType();
+//	if ( geomtype == wkbPolygon ) {
+		OGRPolygon *poGeom = ( OGRPolygon * )poGeometry;
+		OGRLinearRing *poRing = poGeom->getExteriorRing();
+		unsigned np = poRing->getNumPoints();
+		std::vector<double> X(np);
+		std::vector<double> Y(np);
+		for (size_t i=0; i<np; i++) {
+			poRing->getPoint(i, &ogrPt);
+			X[i] = ogrPt.getX();
+			Y[i] = ogrPt.getY();
+		}
+		SpatPart p(X, Y);
+		unsigned nh = poGeom->getNumInteriorRings();
+		for (size_t i=0; i<nh; i++) {
+			OGRLinearRing *poHole = poGeom->getInteriorRing(i);
+			unsigned np = poHole->getNumPoints();
+			std::vector<double> X(np);
+			std::vector<double> Y(np);
+			for (size_t j=0; j<np; j++) {
+				poHole->getPoint(j, &ogrPt);
+				X[j] = ogrPt.getX();
+				Y[j] = ogrPt.getY();
+			}
+			p.addHole(X, Y);
+		}
+		g.addPart(p);
+//	}
+	return g;
+}
+
+
+SpatVector SpatVector::buffer3(std::vector<double> d, unsigned quadsegs) {
+
+	SpatVector out;
+	recycle(d, size());
+	GDALDataset* v = write_ogr("", "layer", "Memory", false, true, std::vector<std::string>());
+
+	OGRLayer *poLayer = v->GetLayer(0);
+	poLayer->ResetReading();
+
+	OGRFeature *poFeature;
+	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+		if (poGeometry != NULL) {
+			// using d[0] for now
+			OGRGeometry *bufGeom = poGeometry->Buffer(d[0], quadsegs);
+			SpatGeom g = getPolygonsGeom2(bufGeom);
+			out.addGeom(g);
+		}
+		OGRFeature::DestroyFeature( poFeature );
+	}
+	GDALClose(v);
+	
+	return out;
+}
+
+
 SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
 
 	SpatExtent e = getExtent();
