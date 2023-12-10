@@ -1142,17 +1142,72 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 }
 
 
-//, std::vector<std::string> pars
+SpatVector SpatVector::buffer_lonlat(std::string vt, std::vector<double> d, unsigned quadsegs) {
+
+	SpatVector out;
+	std::vector<unsigned> keep;
+	keep.reserve(size());
+	if (vt == "points") {
+		return point_buffer(d, quadsegs, false, true);
+	} else {
+		SpatVector p;
+		if (vt == "polygons") {
+			for (size_t i =0; i<size(); i++) {
+				p = subset_rows(i).disaggregate(false);
+				SpatVector tmp;
+				for (size_t j =0; j<p.size(); j++) {
+					SpatVector pp = p.subset_rows(j);			
+					SpatVector h = pp.get_holes();
+					pp = pp.remove_holes();
+					pp = lonlat_buf(pp, d[i], quadsegs, true, false);
+					if (!(pp.empty() || h.empty())) {
+						h = lonlat_buf(h, d[i], quadsegs, true, true);
+						if (!h.empty()) {
+							if (d[i] < 0) {
+								pp = pp.erase(h);
+								if (!pp.empty()) {
+									h = h.crop(pp);
+								}
+								if (h.empty()) continue;
+							}
+							for (size_t k=0; k<h.geoms[0].parts.size(); k++) {
+								pp.geoms[0].parts[0].addHole(h.geoms[0].parts[k].x, h.geoms[0].parts[k].y);
+							}
+						}
+					}
+					tmp = tmp.append(pp, true);
+				}
+				if (!tmp.empty()) {
+					keep.push_back(i);
+					out = out.append(tmp, true);
+				}
+			}
+		} else {
+			for (size_t i =0; i<size(); i++) {
+				p = subset_rows(i);
+				p = lonlat_buf(p, d[i], quadsegs, false, false);
+				out = out.append(p, true);
+			}
+		}
+		if (keep.size() < size()) {
+			out.df = df.subset_rows(keep);
+		} else {
+			out.df = df;
+		}
+		out.srs = srs;
+		return out;
+	}
+}
+
+
 SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::string capstyle, std::string joinstyle, double mitrelimit, bool singlesided) {
 
-	quadsegs = std::min(quadsegs, (unsigned) 180);
+//	quadsegs = std::min(quadsegs, (unsigned) 180);
 	SpatVector out;
-//	out.srs = srs;
 	if (srs.is_empty()) {
 		out.addWarning("unknown CRS. Results may be wrong");
 	} 
 	bool islonlat = is_lonlat();
-	
 	if (d.size() == 1 && d[0] == 0) {
 		islonlat = false; //faster
 	}
@@ -1162,70 +1217,15 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 			if (d[i] <= 0) {
 				out.setError("a negative buffer is only meaningful with polygons");
 				return out;
-				//d[i] = -d[i];
 			}
 		}
 	}
 	recycle(d, size());
-
 	if (islonlat) {
-		std::vector<unsigned> keep;
-		keep.reserve(size());
-		if (vt == "points") {
-			return point_buffer(d, quadsegs, false, true);
-		} else {
-			SpatVector p;
-			if (vt == "polygons") {
-				for (size_t i =0; i<size(); i++) {
-					p = subset_rows(i).disaggregate(false);
-					SpatVector tmp;
-					for (size_t j =0; j<p.size(); j++) {
-						SpatVector pp = p.subset_rows(j);			
-						SpatVector h = pp.get_holes();
-						pp = pp.remove_holes();
-						pp = lonlat_buf(pp, d[i], quadsegs, true, false);
-						if (!(pp.empty() || h.empty())) {
-							h = lonlat_buf(h, d[i], quadsegs, true, true);
-							if (!h.empty()) {
-								if (d[i] < 0) {
-									pp = pp.erase(h);
-									if (!pp.empty()) {
-										h = h.crop(pp);
-									}
-									if (h.empty()) continue;
-								}
-								for (size_t k=0; k<h.geoms[0].parts.size(); k++) {
-									pp.geoms[0].parts[0].addHole(h.geoms[0].parts[k].x, h.geoms[0].parts[k].y);
-								}
-							}
-						}
-						tmp = tmp.append(pp, true);
-					}
-					if (!tmp.empty()) {
-						keep.push_back(i);
-						out = out.append(tmp, true);
-					}
-				}
-			} else {
-				for (size_t i =0; i<size(); i++) {
-					p = subset_rows(i);
-					p = lonlat_buf(p, d[i], quadsegs, false, false);
-					out = out.append(p, true);
-				}
-			}
-			if (keep.size() < size()) {
-				out.df = df.subset_rows(keep);
-			} else {
-				out.df = df;
-			}
-			out.srs = srs;
-			return out;
-		}
+		return buffer_lonlat(vt, d, quadsegs);
 	}
 
-
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
-//	SpatVector f = remove_holes();
 
 	GEOSBufferParams* bufparms = GEOSBufferParams_create_r(hGEOSCtxt);	
 	GEOSBufferParams_setQuadrantSegments_r(hGEOSCtxt, bufparms, quadsegs);
@@ -1264,16 +1264,45 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 	}
 	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
 
-
 	GEOSBufferParams_destroy_r(hGEOSCtxt, bufparms);	
-
-//	out = spat_from_geom(hGEOSCtxt, g, "points");
 	geos_finish(hGEOSCtxt);
 	out = coll.get(0);
 	out.srs = srs;
 	out.df = df;
 	return out;
 }
+
+
+
+// basic version of buffer, for debugging
+SpatVector SpatVector::buffer2(std::vector<double> d, unsigned quadsegs) {
+
+	SpatVector out;
+	recycle(d, size());
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> b(size());
+	for (size_t i = 0; i < g.size(); i++) {
+		
+		Rcpp::Rcout << "buffer " << i;		
+		GEOSGeometry* pt = GEOSBuffer_r(hGEOSCtxt, g[i].get(), d[i], quadsegs);
+		Rcpp::Rcout << " done" << std::endl;
+
+		if (pt == NULL) {
+			out.setError("GEOS exception");
+			geos_finish(hGEOSCtxt);
+			return(out);
+		}
+		b[i] = geos_ptr(pt, hGEOSCtxt);
+	}
+	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
+	geos_finish(hGEOSCtxt);
+	out = coll.get(0);
+	out.srs = srs;
+	out.df = df;
+	return out;
+}
+
 
 
 SpatVector SpatVector::intersect(SpatVector v, bool values) {

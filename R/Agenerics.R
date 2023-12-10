@@ -1,5 +1,8 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("buffer2")) {setGeneric("buffer2", function(x, ...) standardGeneric("buffer2"))}
+
+
 if (!isGeneric("k_means")) {setGeneric("k_means", function(x, ...) standardGeneric("k_means"))}
 if (!isGeneric("princomp")) {setGeneric("princomp", function(x, ...) standardGeneric("princomp"))}
 if (!isGeneric("extractRange")) { setGeneric("extractRange", function(x, y, ...) standardGeneric("extractRange"))}

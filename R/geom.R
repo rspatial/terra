@@ -1,4 +1,21 @@
 
+setMethod("buffer2", signature(x="SpatVector"),
+	function(x, width, quadsegs=10) {
+		if (is.character(width)) {
+			if (!(width %in% names(x))) {
+				error("buffer", paste(width, "is not a field in x"))
+			}
+			width <- x[[width, drop=TRUE]]
+		}
+		if (!is.numeric(width)) {
+			error("buffer", "width is not numeric")
+		}
+		x@cpp <- x@cpp$buffer2(width, quadsegs)
+		messages(x, "buffer")
+	}
+)
+
+
 
 roundtrip <- function(x, coll=FALSE) {
 	if (coll) {
@@ -263,6 +280,7 @@ setMethod("buffer", signature(x="SpatVector"),
 		messages(x, "buffer")
 	}
 )
+
 
 
 setMethod("crop", signature(x="SpatVector", y="ANY"),

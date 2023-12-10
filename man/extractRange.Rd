@@ -3,6 +3,7 @@
 \docType{methods}
 
 \alias{extractRange}
+\alias{extractRange,SpatRaster-method}
 \alias{extractRange,SpatRaster,ANY-method}
 
 \title{Extract values for a range of layers from a SpatRaster}
@@ -12,7 +13,7 @@ Extract values from a SpatRaster for a set of locations and a range of layers. T
 } 
 
 \usage{
-\S4method{extractRange}{SpatRaster,ANY}(x, y, first, last, lyr_fun=NULL, 
+\S4method{extractRange}{SpatRaster}(x, y, first, last, lyr_fun=NULL, 
 		geom_fun=NULL, ID=FALSE, na.rm=TRUE, ...)
 }
 
