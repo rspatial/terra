@@ -3,19 +3,50 @@ setMethod("buffer2", signature(x="SpatVector"),
 	function(x, width, quadsegs=10) {
 		if (is.character(width)) {
 			if (!(width %in% names(x))) {
-				error("buffer", paste(width, "is not a field in x"))
+				error("buffer2", paste(width, "is not a field in x"))
 			}
 			width <- x[[width, drop=TRUE]]
 		}
 		if (!is.numeric(width)) {
-			error("buffer", "width is not numeric")
+			error("buffer2", "width is not numeric")
 		}
 		x@cpp <- x@cpp$buffer2(width, quadsegs)
-		messages(x, "buffer")
+		messages(x, "buffer2")
 	}
 )
 
 
+setMethod("buffer3", signature(x="SpatVector"),
+	function(x, width, quadsegs=10) {
+		if (is.character(width)) {
+			if (!(width %in% names(x))) {
+				error("buffer3", paste(width, "is not a field in x"))
+			}
+			width <- x[[width, drop=TRUE]]
+		}
+		if (!is.numeric(width)) {
+			error("buffer3", "width is not numeric")
+		}
+		x@cpp <- x@cpp$buffer3(width, quadsegs)
+		messages(x, "buffer3")
+	}
+)
+
+setMethod("buffer4", signature(x="SpatVector"),
+	function(x, width, jointype="round", miter_limit=2, precision=-1, arc_tolerance=0) {
+		if (is.character(width)) {
+			if (!(width %in% names(x))) {
+				error("buffer4", paste(width, "is not a field in x"))
+			}
+			width <- x[[width, drop=TRUE]]
+		}
+		if (!is.numeric(width)) {
+			error("buffer4", "width is not numeric")
+		}
+		x@cpp <- x@cpp$buffer4(width, jointype, miter_limit, precision, arc_tolerance)
+		messages(x, "buffer4")
+	}
+)
 
 roundtrip <- function(x, coll=FALSE) {
 	if (coll) {

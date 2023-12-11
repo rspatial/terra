@@ -15,4 +15,5 @@ winlibs:
 
 clean:
 	rm -f $(SHLIB) $(OBJECTS)
+
 .PHONY: all winlibs clean

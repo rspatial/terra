@@ -1,6 +1,8 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
 if (!isGeneric("buffer2")) {setGeneric("buffer2", function(x, ...) standardGeneric("buffer2"))}
+if (!isGeneric("buffer3")) {setGeneric("buffer3", function(x, ...) standardGeneric("buffer3"))}
+if (!isGeneric("buffer4")) {setGeneric("buffer4", function(x, ...) standardGeneric("buffer4"))}
 
 
 if (!isGeneric("k_means")) {setGeneric("k_means", function(x, ...) standardGeneric("k_means"))}

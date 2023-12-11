@@ -89,7 +89,6 @@ SpatVector SpatVector::buffer3(std::vector<double> d, unsigned quadsegs) {
 		OGRFeature::DestroyFeature( poFeature );
 	}
 	GDALClose(v);
-	
 	return out;
 }
 
