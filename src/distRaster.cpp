@@ -2617,13 +2617,15 @@ SpatVector SpatVector::buffer_lonlat(std::string vt, std::vector<double> d, unsi
 	if (vt == "points") {
 		return point_buffer(d, quadsegs, false, true);
 	} else {
-		SpatVector p;
 		if (vt == "polygons") {
 			for (size_t i =0; i<size(); i++) {
-				p = subset_rows(i).disaggregate(false);
+				SpatVector p;
+				p.addGeom(geoms[i]);
+				p = p.disaggregate(false);
 				SpatVector tmp;
 				for (size_t j =0; j<p.size(); j++) {
-					SpatVector pp = p.subset_rows(j);			
+					SpatVector pp;
+					pp.addGeom(p.geoms[j]);			
 					SpatVector h = pp.get_holes();
 					pp = pp.remove_holes();
 					pp = lonlat_buf(pp, d[i], quadsegs, true, false);
@@ -2645,20 +2647,23 @@ SpatVector SpatVector::buffer_lonlat(std::string vt, std::vector<double> d, unsi
 					tmp = tmp.append(pp, true);
 				}
 				if (!tmp.empty()) {
+					tmp = tmp.aggregate(true);
 					keep.push_back(i);
 					out = out.append(tmp, true);
 				}
 			}
+			if (keep.size() < size()) {
+				out.df = df.subset_rows(keep);
+			} else {
+				out.df = df;
+			}
 		} else {
 			for (size_t i =0; i<size(); i++) {
-				p = subset_rows(i);
+				SpatVector p;
+				p.addGeom(geoms[i]);
 				p = lonlat_buf(p, d[i], quadsegs, false, false);
 				out = out.append(p, true);
 			}
-		}
-		if (keep.size() < size()) {
-			out.df = df.subset_rows(keep);
-		} else {
 			out.df = df;
 		}
 		out.srs = srs;
