@@ -21,11 +21,15 @@ SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double
 		return out;
 	}
 	
+	if (y.size() != x.size()) {
+		out.setError("number of x and y coordinates do not match");
+		return out;
+	}
 	if ((fun == "count") && (values.size() != x.size()) && (!values.empty())) {
-		out.setError("number of values does not match the number of geometries");
+		out.setError("number of values does not match the number of points");
 		return out;
 	} else if (values.size() != x.size()) {
-		out.setError("number of values does not match the number of geometries");
+		out.setError("number of values does not match the number of points");
 		return out;
 	}
 
@@ -46,13 +50,14 @@ SpatRaster SpatRaster::rasterizePoints(std::vector<double>&x, std::vector<double
 	}
 
 	if (fun == "count") {
-		if (values.empty()) narm=false;
+		bool dotest = (!values.empty()) && narm;
 		for (size_t i=0; i < out.bs.n; i++) {
 			double cmin = out.bs.row[i] * nc;
 			double cmax = (out.bs.row[i]+out.bs.nrows[i]) * nc - 1;
 			std::vector<double> v(out.bs.nrows[i] * out.ncol(), 0);
+
 			for (size_t j=cellcnt; j<cells.size(); j++) {
-				if (narm && std::isnan(values[j])) continue;
+				if (dotest && std::isnan(values[j])) continue;
 				if (cells[j] <= cmax) {
 					size_t k = cells[j] - cmin;
 					v[k]++;

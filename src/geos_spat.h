@@ -64,13 +64,19 @@ static PrepGeomPtr geos_ptr(const GEOSPreparedGeometry* pg, GEOSContextHandle_t 
 	return PrepGeomPtr(pg, deleter);
 }
 
-
 using TreePtr= std::unique_ptr<GEOSSTRtree, std::function<void(GEOSSTRtree*)> >;
 static TreePtr geos_ptr(GEOSSTRtree* t, GEOSContextHandle_t hGEOSctxt) {
 	auto deleter = std::bind(GEOSSTRtree_destroy_r, hGEOSctxt, std::placeholders::_1);
 	return TreePtr(t, deleter);
 }
 
+/*
+using wkbPtr = std::unique_ptr<unsigned char, std::function<void(unsigned char*)> >;
+static wkbPtr geos_wkb(unsigned char wkb, GEOSContextHandle_t hGEOSctxt) {
+	auto deleter = std::bind(GEOSFree_r, hGEOSctxt, std::placeholders::_1);
+	return wkbPtr(wkb, deleter);
+}
+*/
 
 #ifdef useRcpp
 #include "Rcpp.h"
@@ -114,6 +120,30 @@ static void __warningHandler(const char *fmt, ...) {
 	return;
 }
 
+static void __checkInterruptFn(void*) {
+	R_CheckUserInterrupt();
+}
+
+static void __checkInterrupt() {
+	// Adapted (in sf) from Rcpp/Interrupt.h
+	if (!R_ToplevelExec(__checkInterruptFn, nullptr)) {
+		GEOS_interruptRequest();
+	}
+}
+
+inline GEOSContextHandle_t geos_init(void) {
+#ifdef GEOS350
+	GEOSContextHandle_t ctxt = GEOS_init_r();
+	GEOSContext_setNoticeHandler_r(ctxt, __warningHandler);
+	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
+	GEOS_interruptRegisterCallback(__checkInterrupt);
+	return ctxt;
+#else
+	return initGEOS_r((GEOSMessageHandler) __warningHandler, (GEOSMessageHandler) __errorHandler);
+#endif
+}
+
+
 #else 
 
 #include <iostream>
@@ -145,6 +175,17 @@ static void __warningHandler(const char *fmt, ...) {
 	return;
 }
 
+inline GEOSContextHandle_t geos_init(void) {
+#ifdef GEOS350
+	GEOSContextHandle_t ctxt = GEOS_init_r();
+	GEOSContext_setNoticeHandler_r(ctxt, __warningHandler);
+	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
+	return ctxt;
+#else
+	return initGEOS_r((GEOSMessageHandler) __warningHandler, (GEOSMessageHandler) __errorHandler);
+#endif
+}
+
 
 #endif 
 
@@ -158,16 +199,6 @@ inline void geos_finish(GEOSContextHandle_t ctxt) {
 }
 
 
-inline GEOSContextHandle_t geos_init(void) {
-#ifdef GEOS350
-	GEOSContextHandle_t ctxt = GEOS_init_r();
-	GEOSContext_setNoticeHandler_r(ctxt, __warningHandler);
-	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
-	return ctxt;
-#else
-	return initGEOS_r((GEOSMessageHandler) __warningHandler, (GEOSMessageHandler) __errorHandler);
-#endif
-}
 
 
 static void __warningIgnore(const char *fmt, ...) {
@@ -225,45 +256,9 @@ inline GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::ve
 }
 
 
-inline GEOSGeometry* geos_polygon(const std::vector<double> &x, const std::vector<double> &y, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy, GEOSContextHandle_t hGEOSCtxt) {
-	GEOSGeometry* shell = geos_linearRing(x, y, hGEOSCtxt);
-	size_t nh = hx.size();
-	std::vector<GEOSGeometry*> holes;
-	holes.reserve(nh);
-	size_t nh2 = 0;
-	for (size_t i=0; i<nh; i++) {
-		GEOSGeometry* glr = geos_linearRing(hx[i], hy[i], hGEOSCtxt);
-		if (glr != NULL) {
-			holes.push_back(glr);
-			nh2++;
-		}
-	}
-	GEOSGeometry* g = GEOSGeom_createPolygon_r(hGEOSCtxt, shell, &holes[0], nh2);
-	return g;
-}
-
-
-
-inline void getHoles(SpatPart &p, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy) {
-	size_t nh = p.nHoles();
-	hx.resize(0);
-	hy.resize(0);
-	hx.reserve(nh);
-	hy.reserve(nh);
-	if (nh == 0) return;
-	for (size_t i=0; i<nh; i++) {
-		SpatHole h = p.getHole(i);
-		hx.push_back(h.x);
-		hy.push_back(h.y);
-	}
-	return;
-}
-
-inline GEOSGeometry* geos_polygon2(SpatPart g, GEOSContextHandle_t hGEOSCtxt) {
+inline GEOSGeometry* geos_polygon(SpatPart g, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSGeometry* shell = geos_linearRing(g.x, g.y, hGEOSCtxt);
 
-	//getHoles(svp, hx, hy);
-	//GEOSGeometry* gp = geos_polygon(svp.x, svp.y, hx, hy, hGEOSCtxt);
 	if (g.hasHoles()) {
 		size_t nh=0;
 		std::vector<GEOSGeometry*> holes;
@@ -333,7 +328,7 @@ inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSC
 
 	} else { // polygons
 
-		std::vector<std::vector<double>> hx, hy;
+//		std::vector<std::vector<double>> hx, hy;
 		for (size_t i=0; i<n; i++) {
 			SpatGeom svg = v->getGeom(i);
 			size_t np = svg.size();
@@ -341,9 +336,7 @@ inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSC
 			geoms.reserve(np);
 			for (size_t j=0; j < np; j++) {
 				SpatPart svp = svg.getPart(j);
-				//getHoles(svp, hx, hy);
-				//GEOSGeometry* gp = geos_polygon(svp.x, svp.y, hx, hy, hGEOSCtxt);
-				GEOSGeometry* gp = geos_polygon2(svp, hGEOSCtxt);
+				GEOSGeometry* gp = geos_polygon(svp, hGEOSCtxt);
 
 				if (gp != NULL) {
 					geoms.push_back(gp);
@@ -750,146 +743,4 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 	return out;
 }
 
-
-/*
-
-old version no ids
-
-SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHandle_t hGEOSCtxt, bool keepnull=true, bool increment = true) {
-
-	SpatVectorCollection out;
-
-	std::vector<unsigned> pt_gid, pt_gp, pt_hole;
-	std::vector<unsigned> ln_gid, ln_gp, ln_hole;
-	std::vector<unsigned> pl_gid, pl_gp, pl_hole;
-	std::vector<double> pt_x, pt_y, ln_x, ln_y, pl_x, pl_y;
-
-	std::string msg;
-	size_t ng = geoms.size();
-	size_t f = 0;
-	for(size_t i = 0; i < ng; i++) {
-		const GEOSGeometry* g = geoms[i].get();
-		char* geostype = GEOSGeomType_r(hGEOSCtxt, g);
-		std::string gt = geostype;
-		free(geostype);
-		size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
-
-		if (gt == "Point" || gt == "MultiPoint") {
-			if (np == 0 && keepnull) {
-				emptyGeom(f, pt_x, pt_y, pt_gid, pt_gp, pt_hole);
-			}
-			for(size_t j = 0; j<np; j++) {
-				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
-				if (!pointsFromGeom(hGEOSCtxt, part, f, j, pt_x, pt_y, pt_gid, pt_gp, pt_hole, msg)) {
-					out.setError(msg);
-					return out;
-				}
-			}	
-			f++;
-		} else if (gt == "LineString" || gt == "MultiLineString") {
-			if (np == 0 && keepnull) {
-				emptyGeom(f, ln_x, ln_y, ln_gid, ln_gp, ln_hole);
-			}
-			for(size_t j = 0; j<np; j++) {
-				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
-				if (!pointsFromGeom(hGEOSCtxt, part, f, j, ln_x, ln_y, ln_gid, ln_gp, ln_hole, msg)) {
-					out.setError(msg);
-					return out;
-				}
-			}
-			f++;
-		} else if (gt == "Polygon" || gt == "MultiPolygon") {
-			if (np == 0 && keepnull) {
-				emptyGeom(f, pl_x, pl_y, pl_gid, pl_gp, pl_hole);
-			}
-			for(size_t j = 0; j<np; j++) {
-				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
-				if (!polysFromGeom(hGEOSCtxt, part, f, j, pl_x, pl_y, pl_gid, pl_gp, pl_hole, msg)) {
-					out.setError(msg);
-					return out;
-				}
-			}
-			f++;
-
-		} else if (gt == "GeometryCollection") {
-
-			//Rcpp::Rcout << np << std::endl;
-
-
-			for(size_t j = 0; j<np; j++) {
-
-				const GEOSGeometry* gg = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
-
-				char* geostype = GEOSGeomType_r(hGEOSCtxt, gg);
-				std::string ggt = geostype;
-				free(geostype);
-				size_t npp = GEOSGetNumGeometries_r(hGEOSCtxt, gg);
-
-				//Rcpp::Rcout << geostype << " " << npp << std::endl;
-
-				if (npp == 0 && keepnull) {
-					if (ggt == "Polygon" || ggt == "MultiPolygon") {
-						emptyGeom(f, pl_x, pl_y, pl_gid, pl_gp, pl_hole);
-					} else if (ggt == "Point" || ggt == "MultiPoint") {
-						emptyGeom(f, pt_x, pt_y, pt_gid, pt_gp, pt_hole);
-					} else if (ggt == "LineString" || ggt == "MultiLineString") {
-						emptyGeom(f, ln_x, ln_y, ln_gid, ln_gp, ln_hole);
-					}
-					if (increment) f++;
-				}
-
-	
-				for(size_t k = 0; k<npp; k++) {
-
-					const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, gg, k);
-
-					if (ggt == "Polygon" || ggt == "MultiPolygon") {
-						if (!polysFromGeom(hGEOSCtxt, part, f, k, pl_x, pl_y, pl_gid, pl_gp, pl_hole, msg)) {
-							out.setError(msg);
-							return out;
-						}
-					} else if (ggt == "Point" || ggt == "MultiPoint") {
-						if (!pointsFromGeom(hGEOSCtxt, part, f, k, pt_x, pt_y, pt_gid, pt_gp, pt_hole, msg)) {
-							out.setError(msg);
-							return out;
-						}
-					} else if (ggt == "LineString" || ggt == "MultiLineString") {
-						if (!pointsFromGeom(hGEOSCtxt, part, f, k, ln_x, ln_y, ln_gid, ln_gp, ln_hole, msg)) {
-							out.setError(msg);
-							return out;
-						}
-					} else {
-						out.addWarning("unhandeled Collection geom: " + ggt);
-					}
-					if (increment) f++;
-				}
-				if (!increment) f++;
-			}
-		} else {
-			out.setError("what is this: " + gt + "?");
-		}
-	}
-
-	if (pl_x.size() > 0) {
-		SpatVector v;
-		v.setGeometry("polygons", pl_gid, pl_gp, pl_x, pl_y, pl_hole);
-		out.push_back(v);
-		//Rcpp::Rcout << "pls" << std::endl;
-	}
-	if (ln_x.size() > 0) {
-		SpatVector v;
-		v.setGeometry("lines", ln_gid, ln_gp, ln_x, ln_y, ln_hole);
-		out.push_back(v);
-		//Rcpp::Rcout << "lns" << std::endl;
-	}
-	if (pt_x.size() > 0) {
-		SpatVector v;
-		v.setGeometry("points", pt_gid, pt_gp, pt_x, pt_y, pt_hole);
-		out.push_back(v);
-		//Rcpp::Rcout << "pts" << std::endl;
-	}
-	return out;
-}
-
-*/
 

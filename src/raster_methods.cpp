@@ -4088,18 +4088,33 @@ SpatDataFrame SpatRaster::mglobal(std::vector<std::string> funs, bool narm, Spat
 
 
 
-std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm, bool asSample, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, std::string use, bool asSample, SpatOptions &opt) {
 
-	std::vector<std::vector<double>> out(3);
-	
+	std::vector<std::vector<double>> out(3);	
 	if (!hasValues()) {
 		setError("SpatRaster has no values");
 		return(out);
 	}
-
+	
 	size_t nl = nlyr();
+	if (nl < 2) {
+		setError("SpatRaster must have at least two layers");
+		return(out);
+	}
 
-	if (fun == "pearson") {
+	if (use == "complete.observations") {
+		SpatOptions sopt(opt);
+		SpatRaster x = anynan(true, sopt);
+		x = mask(x, false, NAN, NAN, sopt);
+		return x.layerCor(fun, "", asSample, opt);
+	}
+
+	bool narm = true;
+	if (use == "all.observations") {
+		narm = false;		
+	}
+
+	if (fun == "cor") { // pearson
 		std::vector<double> means(nl*nl, NAN);
 		std::vector<double> cor(nl*nl, 1);
 		std::vector<double> nn(nl*nl, NAN);
@@ -4127,7 +4142,7 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, bool narm
 				for (size_t k=0; k<bs.n; k++) {
 					xi.readBlock(vi, bs, k);
 					xj.readBlock(vj, bs, k);
-					if (narm) {
+					if (use == "pairwise.complete.observations") {
 						for (size_t m=0; m<vi.size(); m++) {
 							if (std::isnan(vi[m]) || std::isnan(vj[m])) {
 								vi[m] = NAN;

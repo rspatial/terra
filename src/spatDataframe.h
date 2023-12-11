@@ -25,6 +25,7 @@
 #include "spatBase.h"
 #include "spatTime.h"
 #include "spatFactor.h"
+#include <cstdint>
 #include <limits>
 
 class SpatDataFrame {
