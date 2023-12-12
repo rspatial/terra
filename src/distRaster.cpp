@@ -2634,9 +2634,8 @@ SpatVector SpatVector::buffer_lonlat(std::string vt, std::vector<double> d, unsi
 						if (!h.empty()) {
 							if (d[i] < 0) {
 								pp = pp.erase(h);
-								if (!pp.empty()) {
-									h = h.crop(pp);
-								}
+								if (pp.empty()) continue;
+								h = h.crop(pp);
 								if (h.empty()) continue;
 							}
 							for (size_t k=0; k<h.geoms[0].parts.size(); k++) {
