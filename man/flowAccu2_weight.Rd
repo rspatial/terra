@@ -1,0 +1,139 @@
+\docType{methods}
+\name{flowAccu2_weight}
+
+\alias{flowAccu2_weight}
+\alias{flowAccu2_weight,SpatRaster,SpatRaster-method}
+
+
+\title{Flow accumulation or Total contributing Area  (Watershed Analysis)}
+
+\description{
+It computes Flow accumulation or Total contributing Area (Waterhed Analysis) or a cumulation value in function of a weight value asspciated to each cell. 
+}
+
+\usage{
+\S4method{flowAccu2_weight}{SpatRaster,SpatRaster}(p,weight,filename="",...) 
+}
+
+\arguments{
+  \item{p}{Flow Direction raster map, a \code{\link{SpatRaster-class}} object, see also \code{\link{terrain}}. }
+  \item{weight}{Weight/Score raster map, a \code{\link{SpatRaster-class}} object,  e.g call area map or Averaged Precipitation Map. }
+  \item{filename,...}{list. Options for writing files as in \code{\link{writeRaster}}}
+}
+
+\value{ 
+
+A \code{\link{SpatRaster-class}} (raster) map containing the value for each cell. 
+}
+
+\details{
+The implemented algorthm for flow accumulation is inspired by the one published on:
+Ref \url{https://link.springer.com/article/10.1007/s11707-018-0725-9},
+Ref \url{https://ica-abs.copernicus.org/articles/1/434/2019/}
+
+This function takes into account that each cell can contain a value/weight/score, see \code{weight} argument, e.g. the planar area of each cell (in square kilometres) or a precipitation runoff value, in this case the flow accumulations is the total contributing area or the total contributing runoff W. In \code{\link{flowAccu2}} ,istead, each cell contains a value equal to 1 and  the flow accumulation corresponds only to the number of upslope cells. 
+
+ArGIS impletation: \url{https://pro.arcgis.com/en/pro-app/latest/tool-reference/spatial-analyst/flow-accumulation.html}
+}
+
+\seealso{\code{\link{flowAccu2}}}
+\author{
+
+Emanuele Cordano
+}
+
+\examples{
+
+
+##source("~/local/rpackages/jrc/terra/R/generics_watershed2_extension.R")
+
+
+elev1 <- array(NA,c(9,9))
+elev2 <- elev1
+
+dx <- 1
+dy <- 1 
+for (r in 1:nrow(elev1)) {
+  y <- (r-5)*dx
+  for (c in 1:ncol(elev1)) {
+    
+    x <- (c-5)*dy
+    elev1[r,c] <- 5*(x^2+y^2)
+    elev2[r,c] <- 10+5*(abs(x))-0.001*y ### 5*(x^2+y^2)
+  }
+} 
+
+
+## Elevation Raster Maps
+elev1 <- rast(elev1)
+elev2 <- rast(elev2)
+##
+weight <- elev1*0+10
+
+t(array(elev1[],rev(dim(elev1)[1:2])))
+t(array(elev2[],rev(dim(elev2)[1:2])))
+
+plot(elev1)
+plot(elev2)
+
+## Flow Direction Raster Maps
+flowdir1<- terrain(elev1,v="flowdir")
+flowdir2<- terrain(elev2,v="flowdir")
+
+
+t(array(flowdir1[],rev(dim(flowdir1)[1:2])))
+t(array(flowdir2[],rev(dim(flowdir2)[1:2])))
+
+plot(flowdir1)
+plot(flowdir2)
+
+## 
+
+flow_acc1 <- flowAccu2(flowdir1)
+flow_acc2 <- flowAccu2(flowdir2)
+
+t(array(flow_acc1[],rev(dim(flow_acc1)[1:2])))
+t(array(flow_acc2[],rev(dim(flow_acc2)[1:2])))
+
+plot(flow_acc1)
+plot(flow_acc2)
+
+
+
+
+flow_acc1w <- flowAccu2_weight(flowdir1,weight)
+flow_acc2w <- flowAccu2_weight(flowdir2,weight)
+
+t(array(flow_acc1w[],rev(dim(flow_acc1w)[1:2])))
+t(array(flow_acc2w[],rev(dim(flow_acc2w)[1:2])))
+
+plot(flow_acc1w)
+plot(flow_acc2w)
+
+
+## Application to Central Africa
+
+
+#### 
+flowdir_f30 <- rast(system.file('ecor/data/flowdir/nigrb_dir_30s.tif',package="terra")) 
+
+
+weight_f30_1 <- cellSize(flowdir_f30,unit="km")
+flowacc_v_f30w_1 <- flowAccu2_weight(flowdir_f30,weight_f30_1)
+flowacc_v_f30_1 <- flowAccu2(flowdir_f30)
+
+
+
+
+}
+
+
+
+
+\references{
+Ref \url{https://link.springer.com/article/10.1007/s11707-018-0725-9}
+}
+
+
+
+\keyword{spatial}
