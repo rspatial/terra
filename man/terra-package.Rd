@@ -1,4 +1,5 @@
 \name{terra-package}
+
 \alias{terra-package}
 
 \alias{terra}
@@ -166,7 +167,8 @@ Also see the methods in section VIII
     \code{\link{interpolate}} \tab Predict a spatial model to a SpatRaster \cr
     \code{\link{interpIDW}} \tab Inverse-distance-weighted interpolation \cr
     \code{\link{interpNear}} \tab Nearest neighbor interpolation \cr
-    \code{\link{k_means}} \tab kmeans clustering \cr
+    \code{\link{k_means}} \tab k-means clustering of SpatRaster data \cr
+    \code{\link{princomp}} \tab Principal Component Analysis (PCA) with raster data\cr
 	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }

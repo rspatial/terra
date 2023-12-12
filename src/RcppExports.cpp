@@ -287,20 +287,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// weighted_pearson_cor
-double weighted_pearson_cor(std::vector<double> x, std::vector<double> y, std::vector<double> weights, bool narm);
-RcppExport SEXP _terra_weighted_pearson_cor(SEXP xSEXP, SEXP ySEXP, SEXP weightsSEXP, SEXP narmSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::vector<double> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< std::vector<double> >::type y(ySEXP);
-    Rcpp::traits::input_parameter< std::vector<double> >::type weights(weightsSEXP);
-    Rcpp::traits::input_parameter< bool >::type narm(narmSEXP);
-    rcpp_result_gen = Rcpp::wrap(weighted_pearson_cor(x, y, weights, narm));
-    return rcpp_result_gen;
-END_RCPP
-}
 // pearson_cor
 double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm);
 RcppExport SEXP _terra_pearson_cor(SEXP xSEXP, SEXP ySEXP, SEXP narmSEXP) {
@@ -314,29 +300,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// stattest1
-double stattest1(std::vector<double> x, std::string fun, bool narm);
-RcppExport SEXP _terra_stattest1(SEXP xSEXP, SEXP funSEXP, SEXP narmSEXP) {
+// weighted_pearson_cor
+double weighted_pearson_cor(std::vector<double> x, std::vector<double> y, std::vector<double> weights, bool narm);
+RcppExport SEXP _terra_weighted_pearson_cor(SEXP xSEXP, SEXP ySEXP, SEXP weightsSEXP, SEXP narmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::vector<double> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< std::string >::type fun(funSEXP);
+    Rcpp::traits::input_parameter< std::vector<double> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< std::vector<double> >::type weights(weightsSEXP);
     Rcpp::traits::input_parameter< bool >::type narm(narmSEXP);
-    rcpp_result_gen = Rcpp::wrap(stattest1(x, fun, narm));
-    return rcpp_result_gen;
-END_RCPP
-}
-// stattest2
-double stattest2(std::vector<double> x, std::string fun, bool narm);
-RcppExport SEXP _terra_stattest2(SEXP xSEXP, SEXP funSEXP, SEXP narmSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::vector<double> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< std::string >::type fun(funSEXP);
-    Rcpp::traits::input_parameter< bool >::type narm(narmSEXP);
-    rcpp_result_gen = Rcpp::wrap(stattest2(x, fun, narm));
+    rcpp_result_gen = Rcpp::wrap(weighted_pearson_cor(x, y, weights, narm));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -508,10 +482,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_get_proj_search_paths", (DL_FUNC) &_terra_get_proj_search_paths, 0},
     {"_terra_set_proj_search_paths", (DL_FUNC) &_terra_set_proj_search_paths, 1},
     {"_terra_PROJ_network", (DL_FUNC) &_terra_PROJ_network, 2},
-    {"_terra_weighted_pearson_cor", (DL_FUNC) &_terra_weighted_pearson_cor, 4},
     {"_terra_pearson_cor", (DL_FUNC) &_terra_pearson_cor, 3},
-    {"_terra_stattest1", (DL_FUNC) &_terra_stattest1, 3},
-    {"_terra_stattest2", (DL_FUNC) &_terra_stattest2, 3},
+    {"_terra_weighted_pearson_cor", (DL_FUNC) &_terra_weighted_pearson_cor, 4},
     {"_terra_uniqueSymmetricRows", (DL_FUNC) &_terra_uniqueSymmetricRows, 2},
     {"_terra_dist_lonlat", (DL_FUNC) &_terra_dist_lonlat, 4},
     {"_terra_dest_lonlat", (DL_FUNC) &_terra_dest_lonlat, 7},

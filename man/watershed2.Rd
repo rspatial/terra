@@ -2,17 +2,17 @@
 \name{watershed2}
 
 \alias{watershed2}
-\alias{watershed2,SpatRaster-method}
+\alias{watershed2,SpatRaster,integer-method}
 
 
 \title{Watershed Extraction}
 
 \description{
-It extractions a watershed mask from a flow direction input raster point a pour-point cell.
+It extracts a watershed mask from a flow direction input raster map and  a pour-point cell (watershed outlet).
 }
 
 \usage{
-\S4method{watershed2}{SpatRaster}(p,pp_offset,filename, filename="",...) 
+\S4method{watershed2}{SpatRaster,integer}(p,pp_offset,filename="",...) 
 }
 
 \arguments{

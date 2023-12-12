@@ -32,6 +32,67 @@
 #include "recycle.h"
 #include <sstream>
 
+
+SpatGeom getPolygonsGeom2(OGRGeometry *poGeometry) {
+	SpatGeom g(polygons);
+	OGRPoint ogrPt;
+//	OGRwkbGeometryType geomtype = poGeometry->getGeometryType();
+//	if ( geomtype == wkbPolygon ) {
+		OGRPolygon *poGeom = ( OGRPolygon * )poGeometry;
+		OGRLinearRing *poRing = poGeom->getExteriorRing();
+		unsigned np = poRing->getNumPoints();
+		std::vector<double> X(np);
+		std::vector<double> Y(np);
+		for (size_t i=0; i<np; i++) {
+			poRing->getPoint(i, &ogrPt);
+			X[i] = ogrPt.getX();
+			Y[i] = ogrPt.getY();
+		}
+		SpatPart p(X, Y);
+		unsigned nh = poGeom->getNumInteriorRings();
+		for (size_t i=0; i<nh; i++) {
+			OGRLinearRing *poHole = poGeom->getInteriorRing(i);
+			unsigned np = poHole->getNumPoints();
+			std::vector<double> X(np);
+			std::vector<double> Y(np);
+			for (size_t j=0; j<np; j++) {
+				poHole->getPoint(j, &ogrPt);
+				X[j] = ogrPt.getX();
+				Y[j] = ogrPt.getY();
+			}
+			p.addHole(X, Y);
+		}
+		g.addPart(p);
+//	}
+	return g;
+}
+
+
+SpatVector SpatVector::buffer3(std::vector<double> d, unsigned quadsegs) {
+
+	SpatVector out;
+	recycle(d, size());
+	GDALDataset* v = write_ogr("", "layer", "Memory", false, true, std::vector<std::string>());
+
+	OGRLayer *poLayer = v->GetLayer(0);
+	poLayer->ResetReading();
+
+	OGRFeature *poFeature;
+	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+		if (poGeometry != NULL) {
+			// using d[0] for now
+			OGRGeometry *bufGeom = poGeometry->Buffer(d[0], quadsegs);
+			SpatGeom g = getPolygonsGeom2(bufGeom);
+			out.addGeom(g);
+		}
+		OGRFeature::DestroyFeature( poFeature );
+	}
+	GDALClose(v);
+	return out;
+}
+
+
 SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
 
 	SpatExtent e = getExtent();
@@ -539,7 +600,6 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 	double halfy = out.yres() / 2;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		int bandstart = 0;
 		eout.ymax = out.yFromRow(out.bs.row[i]) + halfy;
 		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - halfy;
 		SpatRaster crop_out = out.crop(eout, "near", false, sopt);
@@ -549,6 +609,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			return crop_out;
 		}
 
+		int bandstart = 0;
 		for (size_t j=0; j<ns; j++) {
 			GDALDatasetH hSrcDS;
 			if (!open_gdal(hSrcDS, j, false, sopt)) {
@@ -593,8 +654,10 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			out.setError("cannot do this transformation (warp)");
 			return out;
 		}
-		std::vector<double> v = crop_out.getValues(-1, opt);
-		if (!out.writeBlock(v, i)) return out;
+//		std::vector<double> v = crop_out.getValues(-1, opt);
+//		if (!out.writeBlock(v, i)) return out;
+		if (!out.writeBlock(crop_out.source[0].values, i)) return out;
+
 	}
 	out.writeStop();
 	if (mask) {

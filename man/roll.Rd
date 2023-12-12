@@ -13,7 +13,8 @@ See \code{\link{focal}} for spatially moving averages and similar computations. 
 }
 
 \usage{
-\S4method{roll}{SpatRaster}(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE, filename="", ..., wopt=list()) 
+\S4method{roll}{SpatRaster}(x, n, fun=mean, type="around", circular=FALSE,
+			na.rm=FALSE, filename="", ..., wopt=list()) 
 
 \S4method{roll}{numeric}(x, n, fun=mean, type="around", circular=FALSE, na.rm=FALSE, ...) 
 }

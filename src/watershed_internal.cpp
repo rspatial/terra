@@ -281,7 +281,7 @@ int* resizeQueue(int* q, int n)
 {
   int* tmp = (int*)CPLMalloc(2*n*sizeof(int));
   
-  printf("resizeQueue function: %d\n", n);
+  //printf("resizeQueue function: %d\n", n); //EC 20231129
   
   // Copy input queue to the new one element by element. Not initialized elements
   // in the second half of the queue do not need any further action at this stage
@@ -322,13 +322,13 @@ void watershed_v2(double* p, int nx, int ny, int pp_offset, double* pOut)
   q[0] = delta;
   n++;
   
-  printf("BEFORE n=%d and size(n)=%ld\n", n, sizeof(n));
+ // commented by EC 20231129 printf("BEFORE n=%d and size(n)=%ld\n", n, sizeof(n));
   
   // Process all pending (until any) raster cells in the queue
   while (n > 0) {
     //printf("DEBUG: IN THE LOOP n=%d\n", n);
     nLoop++;
-    if (nLoop % 100000 == 0) printf("%d\n", nLoop);  // Print number of internal loops
+   // EC 20231129 if (nLoop % 100000 == 0) printf("%d\n", nLoop);  // Print number of internal loops
     
     //printf("%d\n", n);
     // Pick up top raster cell
@@ -593,9 +593,9 @@ void pitfinder(double* p, int nx, int ny, double* pOut)
     
     x = getCol(nx, ny,i);  
     y = getRow(nx, ny,i);
-    printf("\n x=%d ",x);
-    printf("y=%d ",y);
-    printf("i=%d \n",i);
+  // printf("\n x=%d ",x);
+  // printf("y=%d ",y);
+  // printf("i=%d \n",i);
   //  printf("p=%f ",*(p+i));
   //  printf("cnt=%d ",cnt);
   //  printf("pout=%f ",*(pOut+i));

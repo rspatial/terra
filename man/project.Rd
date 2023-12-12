@@ -50,7 +50,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 	\code{min, q1, med, q3, max, average, mode, rms}: the minimum, first quartile, median, third quartile, maximum, mean, mode, or root-mean-square value of all non-NA contributing grid cells.	
   }
 
-  \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent (see example with Robinson projection)}
+  \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent. For example to avoid data wrapping around the date-line (see example with Robinson projection). To remove cells that are \code{NA} in \code{y} (if \code{y} is a SpatRaster) you can use the \code{\link{mask} method} after calling \code{project} (this function)}
+  
   \item{align}{logical. If \code{TRUE}, and \code{y} is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of \code{x} is included}
 
   \item{res}{numeric. Can be used to set the resolution of the output raster if \code{y} is a CRS}

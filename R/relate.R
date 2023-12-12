@@ -228,6 +228,7 @@ setMethod("adjacent", signature(x="SpatRaster"),
 	function(x, cells, directions="rook", pairs=FALSE, include=FALSE, symmetrical=FALSE) {
 		cells <- cells - 1
 		if (inherits(directions, "matrix")) {
+			directions[!is.finite(directions)] <- 0
 			v <- x@cpp$adjacentMat(cells, as.logical(directions), dim(directions), include)
 		} else {
 			#if (pairs) include <- FALSE

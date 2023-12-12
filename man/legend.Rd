@@ -15,7 +15,7 @@ add_legend(x, y, ...)
 \arguments{
   \item{x}{The keyword to be used to position the legend (or the x coordinate)}
   \item{y}{The y coordinate to be used to position the legend (is x is also a coordinate)}
-  \item{...}{arguments passed to \code{link{legend}}}
+  \item{...}{arguments passed to \code{\link{legend}}}
 }
 
 

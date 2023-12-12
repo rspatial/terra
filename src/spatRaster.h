@@ -715,7 +715,7 @@ class SpatRaster {
 		SpatRaster nonan(bool falseNA, SpatOptions &opt);
 		SpatRaster which(SpatOptions &opt);
 
-		std::vector<std::vector<double>> layerCor(std::string fun, bool narm, bool asSample, SpatOptions &opt);
+		std::vector<std::vector<double>> layerCor(std::string fun, std::string use, bool asSample, SpatOptions &opt);
 
 		std::vector<double> line_cells(SpatGeom& g);
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
