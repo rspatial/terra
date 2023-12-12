@@ -380,7 +380,7 @@ SpatVector SpatVector::project(std::string crs, bool partial) {
 	std::vector<unsigned> keeprows;
 	
 	if (partial) {
-		#if GDAL_VERSION_MAJOR >= 2 && GDAL_VERSION_MINOR >= 1
+		#if GDAL_VERSION_MAJOR >= 2 && GDAL_VERSION_MINOR > 1
 		poCT->SetEmitErrors(false);
 		#endif
 		std::string gt = type();
