@@ -113,10 +113,6 @@ rgb2hex <- function(x) {
     .Call(`_terra_uniqueSymmetricRows`, x, y)
 }
 
-.terrawktbuffer <- function(wkt, d) {
-    .Call(`_terra_wktbuffer`, wkt, d)
-}
-
 dist_lonlat <- function(lon1, lat1, lon2, lat2) {
     .Call(`_terra_dist_lonlat`, lon1, lat1, lon2, lat2)
 }
