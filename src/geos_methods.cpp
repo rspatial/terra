@@ -863,7 +863,13 @@ SpatVector SpatVector::crop(SpatVector v) {
 	} else if (v.nrow() > 1) {
 		v = v.aggregate(false);
 	}
+	
+	return intersect(v, false);
+
+	
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+	Rcpp::Rcout << "ysize " << y.size() << std::endl;
+
 	std::vector<GeomPtr> result;
 	std::vector<long> ids;
 	size_t nx = size();

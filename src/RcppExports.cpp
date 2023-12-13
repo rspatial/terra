@@ -326,6 +326,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// wktbuffer
+std::vector<std::string> wktbuffer(std::vector<std::string> wkt, double d);
+RcppExport SEXP _terra_wktbuffer(SEXP wktSEXP, SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type wkt(wktSEXP);
+    Rcpp::traits::input_parameter< double >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(wktbuffer(wkt, d));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dist_lonlat
 double dist_lonlat(const double& lon1, const double& lat1, const double& lon2, const double& lat2);
 RcppExport SEXP _terra_dist_lonlat(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP) {
@@ -485,6 +497,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_pearson_cor", (DL_FUNC) &_terra_pearson_cor, 3},
     {"_terra_weighted_pearson_cor", (DL_FUNC) &_terra_weighted_pearson_cor, 4},
     {"_terra_uniqueSymmetricRows", (DL_FUNC) &_terra_uniqueSymmetricRows, 2},
+    {"_terra_wktbuffer", (DL_FUNC) &_terra_wktbuffer, 2},
     {"_terra_dist_lonlat", (DL_FUNC) &_terra_dist_lonlat, 4},
     {"_terra_dest_lonlat", (DL_FUNC) &_terra_dest_lonlat, 7},
     {"_terra_dir_lonlat", (DL_FUNC) &_terra_dir_lonlat, 4},

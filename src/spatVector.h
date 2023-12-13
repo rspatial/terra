@@ -334,6 +334,7 @@ class SpatVector {
 		SpatVector buffer3(std::vector<double> d, unsigned quadsegs);
 		
 		SpatVector buffer4(std::vector<double> d, std::string jointype, double miter_limit, int precision, double arc_tolerance);
+		SpatVector buffer5(double d);
 		
 		SpatVector buffer(std::vector<double> d, unsigned quadsegs, std::string capstyle, std::string joinstyle, double mitrelimit, bool singlesided);
 		SpatVector buffer_lonlat(std::string vt, std::vector<double> d, unsigned quadsegs);
