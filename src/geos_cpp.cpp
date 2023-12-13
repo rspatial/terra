@@ -1,10 +1,5 @@
-#include <iostream>
-
-/* For geometry operations */
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/Geometry.h>
-
-/* For WKT read/write */
 #include <geos/io/WKTReader.h>
 #include <geos/io/WKTWriter.h>
 
