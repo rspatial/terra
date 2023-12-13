@@ -28,8 +28,7 @@ buffer3 <- function(x, width, quadsegs=10) {
 	messages(x, "buffer3")
 }
 
-
-buffer4 <- function(x, width, jointype="round", miter_limit=2, precision=-1, arc_tolerance=0) {
+buffer4 <- function(x, width, quadsegs=10) {
 	if (is.character(width)) {
 		if (!(width %in% names(x))) {
 			error("buffer4", paste(width, "is not a field in x"))
@@ -39,22 +38,8 @@ buffer4 <- function(x, width, jointype="round", miter_limit=2, precision=-1, arc
 	if (!is.numeric(width)) {
 		error("buffer4", "width is not numeric")
 	}
-	x@cpp <- x@cpp$buffer4(width, jointype, miter_limit, precision, arc_tolerance)
+	x@cpp <- x@cpp$buffer4(width, quadsegs)
 	messages(x, "buffer4")
-}
-
-buffer5 <- function(x, width, quadsegs=10) {
-	if (is.character(width)) {
-		if (!(width %in% names(x))) {
-			error("buffer5", paste(width, "is not a field in x"))
-		}
-		width <- x[[width, drop=TRUE]]
-	}
-	if (!is.numeric(width)) {
-		error("buffer5", "width is not numeric")
-	}
-	x@cpp <- x@cpp$buffer5(width, quadsegs)
-	messages(x, "buffer5")
 }
 
 roundtrip <- function(x, coll=FALSE) {
@@ -306,7 +291,7 @@ setMethod("intersect", signature(x="SpatRaster", y="SpatExtent"),
 
 
 setMethod("buffer", signature(x="SpatVector"),
-	function(x, width, quadsegs=10, capstyle="round", joinstyle="round", mitrelimit=NA, singlesided=FALSE) {
+	function(x, width, quadsegs=90, capstyle="round", joinstyle="round", mitrelimit=NA, singlesided=FALSE) {
 		if (is.character(width)) {
 			if (!(width %in% names(x))) {
 				error("buffer", paste(width, "is not a field in x"))

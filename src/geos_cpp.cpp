@@ -1,3 +1,7 @@
+
+#define GEOS_DEBUG 1
+
+
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/Geometry.h>
 #include <geos/io/WKTReader.h>
@@ -7,7 +11,7 @@
 
 #include "Rcpp.h"
 
-SpatVector SpatVector::buffer5(double d) {
+SpatVector SpatVector::buffer4(double d) {
 	Rcpp::Rcout << "geos cpp module\n";
 	std::vector<std::string> out;
 	out.reserve(size());

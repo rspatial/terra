@@ -531,7 +531,6 @@ RCPP_MODULE(spat){
 		.method("buffer2", &SpatVector::buffer2)
 		.method("buffer3", &SpatVector::buffer3)
 		.method("buffer4", &SpatVector::buffer4)
-		.method("buffer5", &SpatVector::buffer5)
 		.method("centroid", &SpatVector::centroid)
 		.method("point_on_surface", &SpatVector::point_on_surface)
 		.method("make_valid2", &SpatVector::make_valid2)

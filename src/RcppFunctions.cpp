@@ -7,7 +7,7 @@
 #include "gdalio.h"
 #include "ogr_spatialref.h"
 
-#define GEOS_USE_ONLY_R_API
+//#define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
 
