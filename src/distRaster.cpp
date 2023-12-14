@@ -2619,13 +2619,12 @@ SpatVector SpatVector::buffer_lonlat(std::string vt, std::vector<double> d, unsi
 		return point_buffer(d, quadsegs, false, true);
 	} else if (vt == "polygons") {
 		for (size_t i =0; i<size(); i++) {
-			SpatVector p;
-			p.addGeom(geoms[i]);
+			SpatVector p(geoms[i]);
 			p = p.disaggregate(false);
 			SpatVector tmp;
 			for (size_t j =0; j<p.size(); j++) {
-				SpatVector pp;
-				pp.addGeom(p.geoms[j]);			
+				SpatVector pp(p.geoms[j]);			
+				pp.srs = srs;
 				SpatVector h = pp.get_holes();
 				pp = pp.remove_holes();
 				pp = lonlat_buf(pp, d[i], quadsegs, true, false);
