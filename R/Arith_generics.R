@@ -107,11 +107,11 @@ setMethod("Arith", signature(e1="SpatVector", e2="SpatVector"),
 			error(oper, "geometry types do not match")
 		}
 		if (oper == "+") {
-			union(e1, e2)
+			e1 <- union(e1, e2)
 		} else if (oper == "*") {
-			intersect(e1, e2)
+			e1 <- intersect(e1, e2)
 		} else if (oper == "-") {
-			erase(e1, e2)
+			e1 <- erase(e1, e2)
 		} else {
 			error(oper, "only operators +, *, and - are supported for SpatVector")
 		}
