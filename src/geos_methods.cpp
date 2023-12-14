@@ -847,8 +847,6 @@ SpatVector SpatVector::snapto(SpatVector y, double tolerance) {
 //Geometry * GEOSPolygonize_full_r(GEOSContextHandle_t extHandle, const Geometry* g, Geometry** cuts, Geometry** dangles, Geometry** invalid)
 
 
-
-
 SpatVector SpatVector::crop(SpatVector v) {
 
 	SpatVector out;
@@ -864,12 +862,8 @@ SpatVector SpatVector::crop(SpatVector v) {
 		v = v.aggregate(false);
 	}
 	
-	return intersect(v, false);
-
-	
+//	return intersect(v, false);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
-	Rcpp::Rcout << "ysize " << y.size() << std::endl;
-
 	std::vector<GeomPtr> result;
 	std::vector<long> ids;
 	size_t nx = size();
