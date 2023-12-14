@@ -433,8 +433,20 @@ function(x, from, to, others=NULL, raw=FALSE, filename="", ...) {
 			}
 		}
 		keepcats <- TRUE
-	} else if (fromc || toc) {
-		error("subst", "from or to has character values but x is not categorical")
+	} else {
+		if (fromc) {
+			error("subst", "from has character values but x is not categorical")
+		}
+		if (!tom) {
+			if (toc) {
+				to <- as.factor(to)
+				levels(x) <- data.frame(ID=1:length(levels(to)), value=levels(to))
+				keepcats <- TRUE
+			} else if (is.factor(to)) {
+				levels(x) <- data.frame(ID=1:length(levels(to)), value=levels(to))
+				keepcats <- TRUE			
+			}
+		}
 	}
 	
 	if (is.null(others)) {
@@ -450,7 +462,7 @@ function(x, from, to, others=NULL, raw=FALSE, filename="", ...) {
 		if (!is.null(nms)) 	opt$names = nms
 		x@cpp <- x@cpp$replaceValues(from, to, ncol(to), setothers, others, keepcats, opt)
 	} else if (frm) {
-		x@cpp <- x@cpp$replaceValues(as.vector(t(from)), to, -ncol(from), setothers, others, FALSE, opt)
+		x@cpp <- x@cpp$replaceValues(as.vector(t(from)), to, -ncol(from), setothers, others, keepcats, opt)
 	} else {
 		x@cpp <- x@cpp$replaceValues(from, to, 0, setothers, others, keepcats, opt)
 	}
