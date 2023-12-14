@@ -18,7 +18,7 @@ Note that the distance unit of the buffer \code{width} parameter is meters if th
 \usage{
 \S4method{buffer}{SpatRaster}(x, width, background=0, filename="", ...)
 
-\S4method{buffer}{SpatVector}(x, width, quadsegs=90, capstyle="round", 
+\S4method{buffer}{SpatVector}(x, width, quadsegs=10, capstyle="round", 
 		joinstyle="round", mitrelimit=NA, singlesided=FALSE)
 }
 

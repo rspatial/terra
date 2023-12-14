@@ -291,7 +291,7 @@ setMethod("intersect", signature(x="SpatRaster", y="SpatExtent"),
 
 
 setMethod("buffer", signature(x="SpatVector"),
-	function(x, width, quadsegs=90, capstyle="round", joinstyle="round", mitrelimit=NA, singlesided=FALSE) {
+	function(x, width, quadsegs=10, capstyle="round", joinstyle="round", mitrelimit=NA, singlesided=FALSE) {
 		if (is.character(width)) {
 			if (!(width %in% names(x))) {
 				error("buffer", paste(width, "is not a field in x"))

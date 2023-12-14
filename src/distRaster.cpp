@@ -2387,7 +2387,6 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 	g.addPart(SpatPart(0, 0));
 
 	std::vector<std::vector<double>> xy = coordinates();
-
 	if (is_lonlat()) {
 		std::vector<double> brng(n);
 		for (size_t i=0; i<n; i++) {
@@ -2547,7 +2546,9 @@ SpatGeom hullify(SpatVector b, bool ispoly) {
 SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, bool ishole) {
 
 
-	if ((x.extent.ymin > -60) && (x.extent.ymax < 60) && ((x.extent.ymax - x.extent.ymin) < 1) && dist < 110000) {
+	if ((x.extent.ymin > -60) && (x.extent.ymax < 60) && 
+			((x.extent.ymax - x.extent.ymin) < 1) && dist < 110000) {
+				
 		SpatSRS insrs = x.srs;
 		x.setSRS("+proj=merc");
 		double f = 0.5 - (dist / 220000);
@@ -2563,7 +2564,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 	x = x.disaggregate(false);
 	SpatVector tmp;
 	tmp.reserve(x.size());
-	Rcpp::Rcout << x.geoms.size() << std::endl;
+	//Rcpp::Rcout << x.geoms.size() << std::endl;
 	for (size_t i=0; i<x.geoms.size(); i++) {
 		SpatVector p(x.geoms[i]);
 		p.srs = x.srs;
@@ -2616,58 +2617,57 @@ SpatVector SpatVector::buffer_lonlat(std::string vt, std::vector<double> d, unsi
 	keep.reserve(size());
 	if (vt == "points") {
 		return point_buffer(d, quadsegs, false, true);
-	} else {
-		if (vt == "polygons") {
-			for (size_t i =0; i<size(); i++) {
-				SpatVector p;
-				p.addGeom(geoms[i]);
-				p = p.disaggregate(false);
-				SpatVector tmp;
-				for (size_t j =0; j<p.size(); j++) {
-					SpatVector pp;
-					pp.addGeom(p.geoms[j]);			
-					SpatVector h = pp.get_holes();
-					pp = pp.remove_holes();
-					pp = lonlat_buf(pp, d[i], quadsegs, true, false);
-					if (!(pp.empty() || h.empty())) {
-						h = lonlat_buf(h, d[i], quadsegs, true, true);
-						if (!h.empty()) {
-							if (d[i] < 0) {
-								pp = pp.erase(h);
-								if (pp.empty()) continue;
-								h = h.crop(pp);
-								if (h.empty()) continue;
-							}
-							for (size_t k=0; k<h.geoms[0].parts.size(); k++) {
-								pp.geoms[0].parts[0].addHole(h.geoms[0].parts[k].x, h.geoms[0].parts[k].y);
-							}
+	} else if (vt == "polygons") {
+		for (size_t i =0; i<size(); i++) {
+			SpatVector p;
+			p.addGeom(geoms[i]);
+			p = p.disaggregate(false);
+			SpatVector tmp;
+			for (size_t j =0; j<p.size(); j++) {
+				SpatVector pp;
+				pp.addGeom(p.geoms[j]);			
+				SpatVector h = pp.get_holes();
+				pp = pp.remove_holes();
+				pp = lonlat_buf(pp, d[i], quadsegs, true, false);
+				if (!(pp.empty() || h.empty())) {
+					h = lonlat_buf(h, d[i], quadsegs, true, true);
+					if (!h.empty()) {
+						if (d[i] < 0) {
+							pp = pp.erase(h);
+							if (pp.empty()) continue;
+							h = h.crop(pp);
+							if (h.empty()) continue;
+						}
+						for (size_t k=0; k<h.geoms[0].parts.size(); k++) {
+							pp.geoms[0].parts[0].addHole(h.geoms[0].parts[k].x, 
+														 h.geoms[0].parts[k].y);
 						}
 					}
-					tmp = tmp.append(pp, true);
 				}
-				if (!tmp.empty()) {
-					tmp = tmp.aggregate(true);
-					keep.push_back(i);
-					out = out.append(tmp, true);
-				}
+				tmp = tmp.append(pp, true);
 			}
-			if (keep.size() < size()) {
-				out.df = df.subset_rows(keep);
-			} else {
-				out.df = df;
+			if (!tmp.empty()) {
+				tmp = tmp.aggregate(true);
+				keep.push_back(i);
+				out = out.append(tmp, true);
 			}
+		}
+		if (keep.size() < size()) {
+			out.df = df.subset_rows(keep);
 		} else {
-			for (size_t i =0; i<size(); i++) {
-				SpatVector p;
-				p.addGeom(geoms[i]);
-				p = lonlat_buf(p, d[i], quadsegs, false, false);
-				out = out.append(p, true);
-			}
 			out.df = df;
 		}
-		out.srs = srs;
-		return out;
+	} else {
+		for (size_t i =0; i<size(); i++) {
+			SpatVector p(geoms[i]);
+			p.srs = srs;
+			p = lonlat_buf(p, d[i], quadsegs, false, false);
+			out = out.append(p, true);
+		}
+		out.df = df;
 	}
+	out.srs = srs;
+	return out;
 }
 
 
