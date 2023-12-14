@@ -65,7 +65,9 @@ extractCells <- function(x, y, raw=FALSE) {
 
 
 use_layer <- function(e, y, layer, nl) {
-	if (is.null(layer)) {
+# 	if (is.null(layer)) {
+# temporarily, for inlabru
+	if (is.null(layer) || (nl == 1)) {
 		return(e)
 	}
 	layer <- getLyrNrs(layer, colnames(e)[-1], nrow(y)) 
