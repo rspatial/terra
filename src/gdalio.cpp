@@ -427,7 +427,7 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 #endif
 
 
-bool getNAvalue(GDALDataType gdt, double & naval) {
+bool getNAvalue(GDALDataType gdt, double &naval) {
 	if (gdt == GDT_Float32) {
 		naval = NAN;
 	} else if (gdt == GDT_Int32) {
@@ -447,7 +447,7 @@ bool getNAvalue(GDALDataType gdt, double & naval) {
 // no Int64
 #else 
 	} else if (gdt == GDT_UInt64) {
-		naval = UINT64_MAX - 1101; 
+		naval = 18446744073709549568.; //UINT64_MAX - 1101; 
 	} else if (gdt == GDT_Int64) {
 		naval = INT64_MIN;
 #endif
