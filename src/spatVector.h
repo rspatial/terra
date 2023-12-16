@@ -154,6 +154,7 @@ class SpatVector {
 				addWarning("Cannot set SRS to vector: "+ msg);
 				return false;
 			}
+			source = "";
 			return true;	
 		}
 
