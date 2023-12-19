@@ -16,17 +16,17 @@ The sample size used can be increased with the \code{maxcell} argument. You can 
 }
 
 \usage{
-\S4method{all.equal}{SpatRaster,SpatRaster}(target, current, maxcell=10000, ...)
+\S4method{all.equal}{SpatRaster,SpatRaster}(target, current, maxcell=100000, ...)
 }
 
 \arguments{
   \item{target}{SpatRaster}
   \item{current}{SpatRaster}
   \item{maxcell}{positive integer. The size of the regular sample used to compare cell values}
-  \item{...}{additional arguments passed to all.equal.numeric to compare cell values}
+  \item{...}{additional arguments passed to \code{\link{all.equal.numeric}} to compare cell values}
 }
 
-\seealso{\code{\link{compareGeom}}}
+\seealso{\code{\link{identical}}, \code{\link{compareGeom}}}
 
 \value{
 Either \code{TRUE} or a character vector describing the differences between target and current.

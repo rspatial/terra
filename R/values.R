@@ -478,14 +478,21 @@ setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
 
 
 setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"),
-	function(target, current, maxcell=10000, ...) {
+	function(target, current, maxcell=100000, ...) {
 		a <- base::all.equal(rast(target), rast(current))
+		maxcell <- round(maxcell)
 		if (isTRUE(a) && maxcell > 0) {
 			hvT <- hasValues(target)
 			hvC <- hasValues(current)
 			if (hvT && hvC) {
-				s1 <- spatSample(current, maxcell, "regular")
-				s2 <- spatSample(target, maxcell, "regular")
+				if (maxcell < ncell(target)) {
+					warn(paste("all.equal", "taking a sample of ", maxcell, "cells"))
+					s1 <- spatSample(current, maxcell, "regular")
+					s2 <- spatSample(target, maxcell, "regular")
+				} else {
+					s1 <- values(current)
+					s2 <- values(target)
+				}
 				a <- all.equal(s1, s2, ...)
 			} else if (hvT || hvC) {
 				if (hvT) {
@@ -499,6 +506,19 @@ setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"),
 	}
 )
 
+
+
+
+setMethod("identical", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y) {
+		a <- isTRUE(all.equal(x, y, maxcell=0))
+		if (a && hasValues(x))  {
+			v <- unique(unlist(unique(x - y) ))
+			a <- identical(v, 0)
+		}
+		a
+	}
+)
 
 
 setMethod("values", signature("SpatVector"),
