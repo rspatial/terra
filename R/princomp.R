@@ -31,7 +31,7 @@ setMethod("princomp", signature(x="SpatRaster"),
 
 setMethod("prcomp", signature(x="SpatRaster"),
 	function(x, retx = TRUE, center = TRUE, scale. = FALSE, tol = NULL, rank. = NULL, maxcell=Inf, ...) {
-		x = na.omit(spatSample(x, maxcell, "regular"))
+		x <- na.omit(spatSample(x, maxcell, "regular"))
 		prcomp(x, retx=retx, center=center, scale.=scale., tol=tol, rank.=rank., ...)
 	}
 )
