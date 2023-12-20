@@ -114,8 +114,10 @@ Alternatively, you can use stats::princomp or stats::prcomp with a data.frame of
 <span class="r-in"><span><span class="co">### may need to use sampling with a large raster </span></span></span>
 <span class="r-in"><span><span class="co">### here with prcomp instead of princomp</span></span></span>
 <span class="r-in"><span><span class="va">sr</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample.html">spatSample</a></span><span class="op">(</span><span class="va">r</span>, <span class="fl">100000</span>, <span class="st">"regular"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">pca3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">sr</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pca3</span> <span class="op">&lt;-</span> <span class="fu"><a href="prcomp.html">prcomp</a></span><span class="op">(</span><span class="va">sr</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in prcomp(sr):</span> call to standardGeneric("princomp") apparently not from the body of that generic function</span>
 <span class="r-in"><span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="predict.html">predict</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">pca3</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'predict': object 'pca3' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
