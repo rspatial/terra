@@ -3,7 +3,7 @@
 \alias{princomp}
 \alias{princomp,SpatRaster-method}
 
-\title{SpatRaster PCA}
+\title{SpatRaster PCA with princomp}
 
 \description{
 Compute principal components for SpatRaster layers. The benefit of this method is that it uses all values to compute the principal components, even for very large rasters. This is because it computes the covariance matrix by processing the data in chunks, if necessary, using \code{\link{layerCor}}. The population covariance is used (not the sample, with \code{n-1} denominator, covariance). 

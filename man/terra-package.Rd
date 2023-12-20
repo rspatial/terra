@@ -168,7 +168,7 @@ Also see the methods in section VIII
     \code{\link{interpIDW}} \tab Inverse-distance-weighted interpolation \cr
     \code{\link{interpNear}} \tab Nearest neighbor interpolation \cr
     \code{\link{k_means}} \tab k-means clustering of SpatRaster data \cr
-    \code{\link{princomp}} \tab Principal Component Analysis (PCA) with raster data\cr
+    \code{\link{princomp} and \link{prcomp}} \tab Principal Component Analysis (PCA) with raster data\cr
 	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }

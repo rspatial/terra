@@ -3,7 +3,7 @@
 \alias{prcomp}
 \alias{prcomp,SpatRaster-method}
 
-\title{SpatRaster PCA}
+\title{SpatRaster PCA with prcomp}
 
 \description{
 Compute principal components for SpatRaster layers. For very large rasters this can only be done with a sample. This may be good enough but see \code{\link{prcomp}} if you want to use all values. 

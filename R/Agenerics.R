@@ -1,5 +1,5 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
-if (!isGeneric("prcomp")) {setGeneric("prcomp", function(x, ...) standardGeneric("princomp"))}
+#if (!isGeneric("prcomp")) {setGeneric("prcomp", function(x, ...) standardGeneric("princomp"))}
 
 if (!isGeneric("k_means")) {setGeneric("k_means", function(x, ...) standardGeneric("k_means"))}
 if (!isGeneric("princomp")) {setGeneric("princomp", function(x, ...) standardGeneric("princomp"))}
