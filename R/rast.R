@@ -158,6 +158,8 @@ setMethod("rast", signature(x="SpatVector"),
 		j <- file.exists(dirname(p))
 		x[j] <- p[j]
 	} else {
+		i <- !file.exists(p)
+		p[i] <- x[i]
 		return(p)
 	}
 	#if (identical(basename(x), x)) {
