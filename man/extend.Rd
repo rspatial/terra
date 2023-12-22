@@ -10,7 +10,9 @@
 \description{
 Enlarge the spatial extent of a SpatRaster. See \code{\link{crop}} if you (also) want to remove rows or columns. 
 
-You can also enlarge a SpatExtent with this method, or with algebraic notation (see examples)
+Note that you can only enlarge SpatRasters with entire rows and columns. Therefore, the extent of the output SpatRaster may not be exactly the same as the requested. Depending on argument \code{snap} it may be a bit smaller or larger. 
+
+You can also enlarge a SpatExtent with this method, or with an algebraic notation (see examples)
 }
 
 \usage{
@@ -35,7 +37,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 SpatRaster or SpatExtent
 }
 
-\seealso{\code{\link{crop}}, \code{\link{merge}}, \code{\link{ext}}}
+\seealso{\code{\link{crop}}, \code{\link{merge}}, \code{\link{ext}}, \code{\link{resample}}}
 
 \examples{
 r <- rast(xmin=-150, xmax=-120, ymin=30, ymax=60, ncols=36, nrows=18)
