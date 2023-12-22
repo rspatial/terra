@@ -380,7 +380,9 @@ SpatVector SpatVector::project(std::string crs, bool partial) {
 	std::vector<unsigned> keeprows;
 	
 	if (partial) {
+		#if GDAL_VERSION_MAJOR >= 2 && GDAL_VERSION_MINOR > 1
 		poCT->SetEmitErrors(false);
+		#endif
 		std::string gt = type();
 		size_t minpts = gt == "polygons" ? 3 : (gt == "lines" ? 2 : 1);
 		for (size_t i=0; i < size(); i++) {

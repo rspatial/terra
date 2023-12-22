@@ -1047,24 +1047,8 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	}
 	double gt[6];
 	if( poDataset->GetGeoTransform(gt) != CE_None ) {
-	
 		if (GCP_geotrans(poDataset, gt)) {
-		
-			GDALClose( (GDALDatasetH) poDataset );
-			std::string tmpfile = tempFile(opt.get_tempdir(), opt.pid, "_rect.tif");
-			//++17 
-			//std::filesystem::copy_file(source[0].filename, tmpfile);	
-
-			std::ifstream  src(source[0].filename, std::ios::binary);
-			std::ofstream  dst(tmpfile,   std::ios::binary);
-			dst << src.rdbuf();	
-		
-			GDALDataset *poDataset = openGDAL(tmpfile, GDAL_OF_RASTER | GDAL_OF_READONLY, source[0].open_drivers, source[0].open_ops);
 			poDataset->SetGeoTransform(gt);
-			GDALClose( (GDALDatasetH) poDataset );
-			SpatRaster tmp(tmpfile,  {-1}, {""}, {}, {});
-			return tmp.rectify(method, aoi, useaoi, snap, opt);
-
 		} else {
 			out.setError("can't get the geotransform");
 			GDALClose( (GDALDatasetH) poDataset );

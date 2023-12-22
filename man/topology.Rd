@@ -52,7 +52,7 @@ SpatVector
 }
 
 
-\seealso{\code{\link{sharedPaths}}, \code{\link{gaps}}, \code{\link{simplifyGeom}}}
+\seealso{\code{\link{sharedPaths}}, \code{\link{gaps}}, \code{\link{simplifyGeom}}, \code{\link{forceCCW}}}
 
 
 

@@ -168,7 +168,7 @@ Also see the methods in section VIII
     \code{\link{interpIDW}} \tab Inverse-distance-weighted interpolation \cr
     \code{\link{interpNear}} \tab Nearest neighbor interpolation \cr
     \code{\link{k_means}} \tab k-means clustering of SpatRaster data \cr
-    \code{\link{princomp}} \tab Principal Component Analysis (PCA) with raster data\cr
+    \code{\link{princomp} and \link{prcomp}} \tab Principal Component Analysis (PCA) with raster data\cr
 	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
@@ -461,6 +461,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{normalize.longitude}} \tab move geometries that are outside of the -180 to 180 degrees range.  \cr
   \code{\link{elongate}} \tab make lines longer by extending both sides \cr
   \code{\link{combineGeoms}} \tab combine geometries that overlap, share a border, or are within a minimum distance of each other \cr
+  \code{\link{forceCCW}} \tab force counter-clockwise polygon winding \cr 
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }}
 

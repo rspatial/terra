@@ -20,6 +20,7 @@
 #include "recycle.h"
 #include "math_utils.h"
 #include "vecmath.h"
+#include <cmath>
 
 //#include "modal.h"
 

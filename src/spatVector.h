@@ -154,6 +154,7 @@ class SpatVector {
 				addWarning("Cannot set SRS to vector: "+ msg);
 				return false;
 			}
+			source = "";
 			return true;	
 		}
 
@@ -332,8 +333,8 @@ class SpatVector {
 
 		SpatVector buffer2(std::vector<double> d, unsigned quadsegs);
 		SpatVector buffer3(std::vector<double> d, unsigned quadsegs);
-		
-		SpatVector buffer4(std::vector<double> d, std::string jointype, double miter_limit, int precision, double arc_tolerance);
+//		SpatVector buffer4(double d);
+//		SpatVector bufferclip(std::vector<double> d, std::string jointype, double miter_limit, int precision, double arc_tolerance);
 		
 		SpatVector buffer(std::vector<double> d, unsigned quadsegs, std::string capstyle, std::string joinstyle, double mitrelimit, bool singlesided);
 		SpatVector buffer_lonlat(std::string vt, std::vector<double> d, unsigned quadsegs);
