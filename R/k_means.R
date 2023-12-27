@@ -36,7 +36,7 @@ setMethod("k_means", signature(x="SpatRaster"),
 			}			
 			v <- unique(na.omit(spatSample(x, maxcell, "regular")))
 			km <- stats::kmeans(v, centers=centers, ...)$centers		
-			out <- predict(x, km, fun=pkmeans, filename=filename, overwrite=overwrite, wopt=wopt)
+			out <- predict(x, km, fun=pkmeans, na.rm=TRUE, filename=filename, overwrite=overwrite, wopt=wopt)
 		}
 		out
 	}
