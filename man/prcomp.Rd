@@ -6,7 +6,7 @@
 \title{SpatRaster PCA with prcomp}
 
 \description{
-Compute principal components for SpatRaster layers. For very large rasters this can only be done with a sample. This may be good enough but see \code{\link{princomp}} if you want to use all values. 
+Compute principal components for SpatRaster layers. This method is may be preferred due to greater numerical accuracy, however it is slower and for very large rasters it can only be done with a sample. This may be good enough but see \code{\link{princomp}} if you want to use all values. 
 }
 
 \usage{
