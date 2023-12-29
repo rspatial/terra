@@ -6,7 +6,7 @@
 \title{SpatRaster PCA with prcomp}
 
 \description{
-Compute principal components for SpatRaster layers. For very large rasters this can only be done with a sample. This may be good enough but see \code{\link{prcomp}} if you want to use all values. 
+Compute principal components for SpatRaster layers. For very large rasters this can only be done with a sample. This may be good enough but see \code{\link{princomp}} if you want to use all values. 
 }
 
 \usage{
@@ -28,7 +28,7 @@ Compute principal components for SpatRaster layers. For very large rasters this 
 prcomp object
 }
 
-\author{Alex Ilich and Robert Hijmans, based on a similar method by Benjamin Leutner}
+\author{Robert Hijmans}
 
 
 \seealso{ \code{\link{princomp}}, \code{\link[stats]{prcomp}}}
