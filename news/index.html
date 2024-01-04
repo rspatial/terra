@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-67</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-68</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,26 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-67" id="version-17-67">version 1.7-67<a class="anchor" aria-label="anchor" href="#version-17-67"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.7-68" id="version-17-68">version 1.7-68<a class="anchor" aria-label="anchor" href="#version-17-68"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-1-7-68">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-68"></a></h3>
+<ul><li>k_means did not work if there were NAs <a href="https://github.com/rspatial/terra/issues/1314" class="external-link">#1314</a> by Jakub Nowosad</li>
+<li>
+<code>layerCor</code> with a custom function did not work anymore <a href="https://github.com/rspatial/terra/issues/1387" class="external-link">#1387</a> by Jakub Nowosad</li>
+<li>
+<code>plet</code> broke when using “panel=TRUE” <a href="https://github.com/rspatial/terra/issues/1384" class="external-link">#1384</a> by Elise Hellwig</li>
+<li>using /vis3/ to open a SpatRaster did not work <a href="https://github.com/rspatial/terra/issues/1382" class="external-link">#1382</a> by Mike Koontz</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-1-7-68">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-68"></a></h3>
+<ul><li>
+<code>vect&lt;character&gt;</code> now has argument “opts” for GDAL open options, e.g. to declare a file encoding. <a href="https://github.com/rspatial/terra/issues/1389" class="external-link">#1389</a> by Mats Blomqvist</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-1-7-68">new<a class="anchor" aria-label="anchor" href="#new-1-7-68"></a></h3>
+<ul><li>
+<code>prcomp&lt;SpatRaster&gt;</code> method <a href="https://github.com/rspatial/terra/issues/1361#issuecomment-1860311029" class="external-link">#1361</a> by Jakub Nowosad</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.7-65" id="version-17-65">version 1.7-65<a class="anchor" aria-label="anchor" href="#version-17-65"></a></h2><p class="text-muted">CRAN release: 2023-12-15</p>
