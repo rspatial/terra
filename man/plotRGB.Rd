@@ -30,7 +30,7 @@ An alternative way to plot RGB images is to first use \code{\link{colorize}} to 
   \item{a}{NULL or integer between 1 and \code{nlyr(x)}. Layer to use as the alpha (transparency) channel. If not NULL, argument \code{alpha} is ignored}
   \item{scale}{integer. Maximum (possible) value in the three channels. Defaults to 255 or to the maximum value of \code{x} if that is known and larger than 255}
   \item{mar}{numeric vector recycled to length 4 to set the margins of the plot. Use \code{mar=NULL} or \code{mar=NA} to not set the margins}
-  \item{stretch}{character. Option to stretch the values to increase contrast: "lin" (linear) or "hist" (histogram)}
+  \item{stretch}{character. Option to stretch the values to increase contrast: "lin" (linear) or "hist" (histogram). The linear stretch uses \code{\link{stretch}} with arguments \code{minq=0.02} and \code{maxq=0.98}}
   \item{smooth}{logical. If \code{TRUE}, smooth the image when drawing to get the appearance of a higher spatial resolution}
   \item{colNA}{color. The color used for cells that have NA values}
   \item{alpha}{transparency. Integer between 0 (transparent) and 255 (opaque)}
