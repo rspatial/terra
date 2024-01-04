@@ -8,7 +8,8 @@
 \description{
 Compute principal components for SpatRaster layers. The benefit of this method is that it uses all values to compute the principal components, even for very large rasters. This is because it computes the covariance matrix by processing the data in chunks, if necessary, using \code{\link{layerCor}}. The population covariance is used (not the sample, with \code{n-1} denominator, covariance). 
 
-Alternatively, you can use \code{stats::\link[stats]{princomp}} or \code{stats::\link[stats]{prcomp}} with a data.frame of the raster values, using a sample for very large rasters (see the examples below). 
+Alternatively, you can specify \code{maxcell} or sample raster values to a data.frame to speed up calculations for very large rasters (see the examples below). 
+See \code{\link{princomp}} for an alternative method that has better numerical accuracy, but is slower, and for very large rasters can only be accomplished with a sample since all values must be read into memory.
 }
 
 \usage{
@@ -30,7 +31,7 @@ princomp object
 \author{Alex Ilich and Robert Hijmans, based on a similar method by Benjamin Leutner}
 
 
-\seealso{ \code{\link[stats]{princomp}}}
+\seealso{ \code{\link{prcomp}} \code{\link[stats]{princomp}}}
 
 \examples{
 f <- system.file("ex/logo.tif", package = "terra")
