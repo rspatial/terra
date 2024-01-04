@@ -6,7 +6,7 @@
 \title{SpatRaster PCA with prcomp}
 
 \description{
-Compute principal components for SpatRaster layers. This method is may be preferred due to greater numerical accuracy, however it is slower and for very large rasters it can only be done with a sample. This may be good enough but see \code{\link{princomp}} if you want to use all values. Unlike \code{\link{princomp}}, in this method the sample variances are used with \code{n-1} as the denominator.  
+Compute principal components for SpatRaster layers. This method may be preferred to \code{\link{princomp}} for its greater numerical accuracy. However, it is slower and for very large rasters it can only be done with a sample. This may be good enough but see \code{\link{princomp}} if you want to use all values. Unlike \code{\link{princomp}}, in this method the sample variances are used with \code{n-1} as the denominator.  
 }
 
 \usage{
@@ -27,8 +27,6 @@ Compute principal components for SpatRaster layers. This method is may be prefer
 \value{
 prcomp object
 }
-
-\author{Robert Hijmans}
 
 
 \seealso{ \code{\link{princomp}}, \code{\link[stats]{prcomp}}}

@@ -1,6 +1,21 @@
-# version 1.7-67
+# version 1.7-68
 
 
+## bug fixes
+
+- k_means did not work if there were NAs [#1314](https://github.com/rspatial/terra/issues/1314) by Jakub Nowosad
+- `layerCor` with a custom function did not work anymore [#1387](https://github.com/rspatial/terra/issues/1387) by Jakub Nowosad
+- `plet` broke when using "panel=TRUE" [#1384](https://github.com/rspatial/terra/issues/1384) by Elise Hellwig
+- using /vis3/ to open a SpatRaster did not work [#1382](https://github.com/rspatial/terra/issues/1382) by Mike Koontz
+
+
+## enhancements
+
+- `vect<character>` now has argument "opts" for GDAL open options, e.g. to declare a file encoding. [#1389](https://github.com/rspatial/terra/issues/1389) by Mats Blomqvist
+
+## new 
+
+- `prcomp<SpatRaster>` method [#1361](https://github.com/rspatial/terra/issues/1361#issuecomment-1860311029) by Jakub Nowosad
 
 
 
