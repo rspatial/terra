@@ -36,11 +36,11 @@
 \title{Coordinates from a row, column or cell number and vice versa}
 
 \description{
-Get coordinates of the center of raster cells for a row, column, or cell number of a SpatRaster object.
+Get coordinates of the center of raster cells for a row, column, or cell number of a SpatRaster.
 Or get row, column, or cell numbers from coordinates or from each other.
 
 Cell numbers start at 1 in the upper left corner, and increase from left to right, and then from top to bottom.
-The last cell number equals the number of cells of the SpatRaster object.
+The last cell number equals the number of cells of the SpatRaster.
 row numbers start at 1 at the top, column numbers start at 1 at the left.
 }
 

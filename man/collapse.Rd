@@ -9,7 +9,7 @@
 \title{tighten SpatRaster or SpatRasterDataset objects}
 
 \description{
-Combines data sources within a SpatRaster object (that are in memory, or from the same file) to allow for faster processing. 
+Combines data sources within a SpatRaster (that are in memory, or from the same file) to allow for faster processing. 
 
 Or combine sub-datasets into a SpatRaster.
 }

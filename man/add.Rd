@@ -8,10 +8,10 @@
 \alias{add<-,SpatRasterDataset,SpatRaster-method}
 
 
-\title{Add (in place) a SpatRaster to another SpatRaster object or to a SpatRasterDataset or SpatRasterCollection}
+\title{Add (in place) a SpatRaster to another SpatRaster or to a SpatRasterDataset or SpatRasterCollection}
 
 \description{
-Add (in place) a SpatRaster to another SpatRaster object. Comparable with \code{\link{c}}, but without copying the object. 
+Add (in place) a SpatRaster to another SpatRaster. Comparable with \code{\link{c}}, but without copying the object. 
 }
 
 \usage{

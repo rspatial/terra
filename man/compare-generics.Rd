@@ -36,7 +36,7 @@
 
 \description{
 
-Standard comparison and logical operators for computations with SpatRasters. Computations are local (applied on a cell by cell basis). If multiple SpatRaster objects are used, these must have the same geometry (extent and resolution). These operators have been implemented:
+Standard comparison and logical operators for computations with SpatRasters. Computations are local (applied on a cell by cell basis). If multiple SpatRasters are used, these must have the same geometry (extent and resolution). These operators have been implemented:
 
 \bold{Logical}: \code{!, &, |, isTRUE, isFALSE}
 

@@ -104,7 +104,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{...}{additional SpatRaster objects or numeric values; and arguments \code{par} for parallel summarization (see Details), and \code{filename}, \code{overwrite} and \code{wopt} as for \code{\link{writeRaster}}}
+  \item{...}{additional SpatRasters or numeric values; and arguments \code{par} for parallel summarization (see Details), and \code{filename}, \code{overwrite} and \code{wopt} as for \code{\link{writeRaster}}}
   \item{na.rm}{logical. If \code{TRUE}, \code{NA} values are ignored. If \code{FALSE}, \code{NA} is returned if \code{x} has any \code{NA} values}
   \item{trim}{ignored}
   \item{pop}{logical. If \code{TRUE}, the population standard deviation is computed. Otherwise the sample standard deviation is computed}

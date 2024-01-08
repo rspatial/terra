@@ -43,7 +43,7 @@ SpatVector or SpatExtent
 \seealso{
 \code{\link[terra]{intersect}}
 
-\code{\link{merge}} and \code{\link{mosaic}} to union SpatRaster objects.
+\code{\link{merge}} and \code{\link{mosaic}} to union SpatRasters.
 
 \code{\link{crop}} and \code{\link{extend}} for the union of SpatRaster and SpatExtent.
 

@@ -21,7 +21,7 @@
 \title{Set the values of raster cells or of geometry attributes}
 
 \description{
-Set cell values of a SpatRaster or the attributes of a SpatVector. For large SpatRaster objects use \code{\link{init}} instead to set values. 
+Set cell values of a SpatRaster or the attributes of a SpatVector. For large SpatRasters use \code{\link{init}} instead to set values. 
 }
 
 \usage{

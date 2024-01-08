@@ -34,7 +34,7 @@ See \code{\link{describe}} for getting information about the sub-datasets presen
 }
 
 \arguments{
-\item{x}{character (filename), or SpatRaster, or list of SpatRaster objects, or missing. If multiple filenames are provided, it is attempted to make SpatRasters from these, and combine them into a SpatRasterDataset}
+\item{x}{character (filename), or SpatRaster, or list of SpatRasters, or missing. If multiple filenames are provided, it is attempted to make SpatRasters from these, and combine them into a SpatRasterDataset}
 \item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a positive integer}
 \item{opts}{character. GDAL dataset open options}
 \item{raw}{logical. If \code{TRUE}, scale and offset values are ignored}
