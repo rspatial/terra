@@ -125,7 +125,12 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <dd><p>logical. Should the axes be clipped to the extent of <code>x</code>?</p></dd>
 
   <dt>plg</dt>
-<dd><p>list with parameters for drawing the legend. See the arguments for <code><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></code>. Parameter <code>digits</code> can be used to set the number of digits to print (after the decimal point for a continuous legend). Parameter <code>size</code> can be used to change the height and/or width of a continuous legend. The defaults are <code>c(1,1)</code>, negative values for size flip the order of the legend</p></dd>
+<dd><p>list with parameters for drawing the legend. For the classes and interval type legend see the arguments for <code><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></code>. For example <code>x</code> and <code>y</code> can be used to place the legend. You can also use keywords such as "topleft" and "bottomright" to place the legend at these locations inside the map rectangle.</p>  
+<p>Some of these do not apply to a continuous legend, or they behave a little differently. For example, only the placement keywords "left", "right", "top", and "bottom" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. Additional parameters for continuous legends include:</p>  
+<p></p><ul><li><p><code>digits</code> to set the number of digits to print after the decimal point. <code>size</code> to change the height and/or width; the defaults are <code>c(1,1)</code>, negative values for size flip the order of the legend.</p></li>
+<li><p><code>at</code> to set the location of the tic-marks</p></li>
+<li><p><code>tic</code> (one of "through", "in", "out", or "none") to choose a tic-mark placement/length that is different from the default through and out.</p></li>
+</ul><p></p></dd>
 
   <dt>pax</dt>
 <dd><p>list with parameters for drawing axes. See the arguments for <code><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></code>. Arguments <code>side</code>, <code>tick</code> and <code>lab</code> can be used to indicate for which of the four axes to draw a line (side), tick-mark, and/or the tick-mark labels. The default is <code>c(1:4)</code> for side and <code>1:2</code> for the other two. If <code>side</code> is changed the other two default to that value. Logical argument <code>retro</code> can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation</p></dd>
