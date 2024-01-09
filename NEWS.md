@@ -8,6 +8,7 @@
 - `plet` broke when using "panel=TRUE" [#1384](https://github.com/rspatial/terra/issues/1384) by Elise Hellwig
 - using /vis3/ to open a SpatRaster did not work [#1382](https://github.com/rspatial/terra/issues/1382) by Mike Koontz
 - `plot<SpatRaster>(add=TRUE)` sampled the raster data without considering the extent of the map. [#1394](https://github.com/rspatial/terra/issues/1394) by Márcia Barbosa
+- `plot<SpatRaster>(add=TRUE)` now only considers the first layer of a multi-layer SpatRaster [1395](https://github.com/rspatial/terra/issues/1395) by Márcia Barbosa
 
 
 ## enhancements
@@ -18,7 +19,7 @@
 ## new 
 
 - `prcomp<SpatRaster>` method [#1361](https://github.com/rspatial/terra/issues/1361#issuecomment-1860311029) by Jakub Nowosad
-
+- `add_box` to add a box around the map. The box is drawn where the axes are, not around the plotting region.
 
 
 # version 1.7-65

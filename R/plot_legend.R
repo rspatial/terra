@@ -489,3 +489,17 @@ add_legend <- function(x, y, ...) {
 }
 
 
+add_box <- function(...) {
+	e <- unlist(get.clip())
+	if (!is.null(e)) {
+		bx <- rbind(
+			cbind(e[1], e[3:4]),
+			cbind(e[2], e[4:3]),
+			cbind(e[1], e[3])
+		)
+		lines(bx, ...)
+	}
+}
+
+
+
