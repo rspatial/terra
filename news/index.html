@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-68</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-69</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,16 +60,24 @@
 <li>
 <code>plet</code> broke when using “panel=TRUE” <a href="https://github.com/rspatial/terra/issues/1384" class="external-link">#1384</a> by Elise Hellwig</li>
 <li>using /vis3/ to open a SpatRaster did not work <a href="https://github.com/rspatial/terra/issues/1382" class="external-link">#1382</a> by Mike Koontz</li>
+<li>
+<code>plot&lt;SpatRaster&gt;(add=TRUE)</code> sampled the raster data without considering the extent of the map. <a href="https://github.com/rspatial/terra/issues/1394" class="external-link">#1394</a> by Márcia Barbosa</li>
+<li>
+<code>plot&lt;SpatRaster&gt;(add=TRUE)</code> now only considers the first layer of a multi-layer SpatRaster <a href="https://github.com/rspatial/terra/issues/1395" class="external-link">1395</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-68">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-68"></a></h3>
 <ul><li>
 <code>vect&lt;character&gt;</code> now has argument “opts” for GDAL open options, e.g. to declare a file encoding. <a href="https://github.com/rspatial/terra/issues/1389" class="external-link">#1389</a> by Mats Blomqvist</li>
+<li>
+<code>plot(plg=list(tic=""))</code> now allows chosing alternative continuous legend tic-mark styles (“in”, “out”, “through” or “none”)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-7-68">new<a class="anchor" aria-label="anchor" href="#new-1-7-68"></a></h3>
 <ul><li>
 <code>prcomp&lt;SpatRaster&gt;</code> method <a href="https://github.com/rspatial/terra/issues/1361#issuecomment-1860311029" class="external-link">#1361</a> by Jakub Nowosad</li>
+<li>
+<code>add_box</code> to add a box around the map. The box is drawn where the axes are, not around the plotting region.</li>
 </ul></div>
 </div>
     <div class="section level2">
