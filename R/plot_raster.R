@@ -553,6 +553,10 @@ prettyNumbs <- function(x, digits) {
 	out <- list()
 	e <- out$lim <- out$ext <- as.vector(ext(x))
 	hadWin <- hasWin <- FALSE
+	if (add && is.null(ext)) {
+		ext <- unlist(get.clip())[1:4]
+	}
+	
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
 			ext <- ext(ext)
