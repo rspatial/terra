@@ -11,7 +11,7 @@ Compute principal components for SpatRaster layers. This method may be preferred
 
 \usage{
 \S4method{prcomp}{SpatRaster}(x, retx=TRUE, center=TRUE, scale.=FALSE, 
-		tol=NULL, rank.=NULL, maxcell=Inf, ...)
+		tol=NULL, rank.=NULL, maxcell=Inf)
 }
 
 \arguments{

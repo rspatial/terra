@@ -14,7 +14,7 @@ First the attributes of the objects are compared. If these are the same, a the r
 }
 
 \usage{
-\S4method{identical}{SpatRaster,SpatRaster}(x, y, maxcell=100000, ...)
+\S4method{identical}{SpatRaster,SpatRaster}(x, y)
 }
 
 \arguments{

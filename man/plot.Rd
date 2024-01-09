@@ -30,7 +30,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, 
 	background=NULL, box=axes, clip=TRUE, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, ...)
+\S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, ...)
 
 \S4method{plot}{SpatRaster,character}(x, y, ...)
 
@@ -63,7 +63,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \itemize{
     \item \code{digits} to set the number of digits to print after the decimal point. \code{size} to change the height and/or width; the defaults are \code{c(1,1)}, negative values for size flip the order of the legend. 
 	\item \code{at} to set the location of the tic-marks
-	\item \code{tic} (one of "through", "in", "out", or "none") to choose a tic-mark placement/length that is different from the default through and out. 
+	\item \code{tic} One of these partially matched values: "through", "in", "out", or "none", to choose a tic-mark placement/length that is different from the default "through and out". 
 	}
   }
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{side}, \code{tick} and \code{lab} can be used to indicate for which of the four axes to draw a line (side), tick-mark, and/or the tick-mark labels. The default is \code{c(1:4)} for side and \code{1:2} for the other two. If \code{side} is changed the other two default to that value. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation}  
@@ -92,10 +92,15 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 }
 
 \seealso{
- \code{\link{points}}, \code{\link{lines}}, \code{\link{polys}}, \code{\link{image}}, \code{scatter\link[terra:scatter]{plot}}, 
- mulitple layers: \code{\link{panel}},
- scale bar: \code{\link{sbar}}, north arrow: \code{\link{north}}, 
-plot a \code{\link[=plot,SpatGraticule,missing-method]{SpatGraticule}} or \code{\link[=plot,SpatExtent,missing-method]{SpatExtent}}, \code{\link{plotRGB}}
+\code{\link{points}, \link{lines}, \link{polys}, \link{image}}
+
+Add map elements: \code{\link{text}, \link{sbar}, \link{north}, \link{add_legend}, \link{add_box}}
+ 
+plot a \code{\link[=plot,SpatGraticule,missing-method]{SpatGraticule}} or \code{\link[=plot,SpatExtent,missing-method]{SpatExtent}}, 
+
+mulitple layers: \code{\link{plotRGB}}, \code{\link{panel}}
+
+other plot types: scatter\code{\link[terra:scatter]{plot}, \link{hist}, \link{pairs}, \link{density}, \link{persp}, \link{contour}, \link{boxplot}, \link{barplot}} 
 }
 
 \examples{ 
