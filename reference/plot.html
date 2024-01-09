@@ -71,7 +71,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <span>  background<span class="op">=</span><span class="cn">NULL</span>, box<span class="op">=</span><span class="va">axes</span>, clip<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster,missing</span></span>
-<span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">main</span>, mar<span class="op">=</span><span class="cn">NULL</span>, <span class="va">nc</span>, <span class="va">nr</span>, maxnl<span class="op">=</span><span class="fl">16</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">main</span>, mar<span class="op">=</span><span class="cn">NULL</span>, <span class="va">nc</span>, <span class="va">nr</span>, maxnl<span class="op">=</span><span class="fl">16</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, add<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster,character</span></span>
 <span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -129,7 +129,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <p>Some of these do not apply to a continuous legend, or they behave a little differently. For example, only the placement keywords "left", "right", "top", and "bottom" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. Additional parameters for continuous legends include:</p>  
 <p></p><ul><li><p><code>digits</code> to set the number of digits to print after the decimal point. <code>size</code> to change the height and/or width; the defaults are <code>c(1,1)</code>, negative values for size flip the order of the legend.</p></li>
 <li><p><code>at</code> to set the location of the tic-marks</p></li>
-<li><p><code>tic</code> (one of "through", "in", "out", or "none") to choose a tic-mark placement/length that is different from the default through and out.</p></li>
+<li><p><code>tic</code> One of these partially matched values: "through", "in", "out", or "none", to choose a tic-mark placement/length that is different from the default "through and out".</p></li>
 </ul><p></p></dd>
 
   <dt>pax</dt>
@@ -204,10 +204,11 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 </dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="lines.html">points</a></code>, <code><a href="lines.html">lines</a></code>, <code><a href="lines.html">polys</a></code>, <code><a href="image.html">image</a></code>, <code>scatterplot</code>, 
- mulitple layers: <code><a href="panel.html">panel</a></code>,
- scale bar: <code><a href="sbar.html">sbar</a></code>, north arrow: <code><a href="north.html">north</a></code>, 
-plot a <code><a href="plot_graticule.html">SpatGraticule</a></code> or <code><a href="plot_extent.html">SpatExtent</a></code>, <code><a href="plotRGB.html">plotRGB</a></code></p></div>
+    <div class="dont-index"><p><code><a href="lines.html">points</a>, <a href="lines.html">lines</a>, <a href="lines.html">polys</a>, <a href="image.html">image</a></code></p>
+<p>Add map elements: <code><a href="text.html">text</a>, <a href="sbar.html">sbar</a>, <a href="north.html">north</a>, <a href="legend.html">add_legend</a>, <a href="box.html">add_box</a></code></p> 
+<p>plot a <code><a href="plot_graticule.html">SpatGraticule</a></code> or <code><a href="plot_extent.html">SpatExtent</a></code>,</p>
+<p>mulitple layers: <code><a href="plotRGB.html">plotRGB</a></code>, <code><a href="panel.html">panel</a></code></p>
+<p>other plot types: scatter<code>plot, <a href="hist.html">hist</a>, <a href="pairs.html">pairs</a>, <a href="density.html">density</a>, <a href="persp.html">persp</a>, <a href="contour.html">contour</a>, <a href="boxplot.html">boxplot</a>, <a href="barplot.html">barplot</a></code></p></div>
     </div>
 
     <div class="section level2">
