@@ -7,11 +7,13 @@
 - `layerCor` with a custom function did not work anymore [#1387](https://github.com/rspatial/terra/issues/1387) by Jakub Nowosad
 - `plet` broke when using "panel=TRUE" [#1384](https://github.com/rspatial/terra/issues/1384) by Elise Hellwig
 - using /vis3/ to open a SpatRaster did not work [#1382](https://github.com/rspatial/terra/issues/1382) by Mike Koontz
+- `plot<SpatRaster>(add=TRUE)` sampled the raster data without considering the extent of the map. [#1394](https://github.com/rspatial/terra/issues/1394) by Márcia Barbosa
 
 
 ## enhancements
 
 - `vect<character>` now has argument "opts" for GDAL open options, e.g. to declare a file encoding. [#1389](https://github.com/rspatial/terra/issues/1389) by Mats Blomqvist
+- `plot(plg=list(tic=""))` now allows chosing alternative continuous legend tic-mark styles ("in", "out", "through" or "none")
 
 ## new 
 

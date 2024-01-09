@@ -281,6 +281,12 @@ retro_labels <- function(x, lat=TRUE) {
 	} else {
 		tics <- "throughout"
 	}
+
+	if (!is.null(x$leg$tic.box.col)) {
+		ticboxcol <- x$leg$tic.box.col
+	} else {
+		ticboxcol <- "black"
+	}
 	
 	if (is.null(x$leg$x)) {
 		x$leg$x <- "right"
@@ -373,7 +379,7 @@ retro_labels <- function(x, lat=TRUE) {
 			text(xpos, e$ymax+e$dy*0.25, zztxt, pos=3, xpd=NA, cex=cex)
 		}
 	}
-	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border ="black", xpd=NA)
+	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border=ticboxcol, xpd=NA)
 
 
     if (!is.null(x$leg$title)) {
