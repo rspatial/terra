@@ -6,12 +6,12 @@
 \title{SpatRaster PCA with prcomp}
 
 \description{
-Compute principal components for SpatRaster layers. For very large rasters this can only be done with a sample. This may be good enough but see \code{\link{prcomp}} if you want to use all values. 
+Compute principal components for SpatRaster layers. This method may be preferred to \code{\link{princomp}} for its greater numerical accuracy. However, it is slower and for very large rasters it can only be done with a sample. This may be good enough but see \code{\link{princomp}} if you want to use all values. Unlike \code{\link{princomp}}, in this method the sample variances are used with \code{n-1} as the denominator.  
 }
 
 \usage{
 \S4method{prcomp}{SpatRaster}(x, retx=TRUE, center=TRUE, scale.=FALSE, 
-		tol=NULL, rank.=NULL, maxcell=Inf, ...)
+		tol=NULL, rank.=NULL, maxcell=Inf)
 }
 
 \arguments{
@@ -27,8 +27,6 @@ Compute principal components for SpatRaster layers. For very large rasters this 
 \value{
 prcomp object
 }
-
-\author{Alex Ilich and Robert Hijmans, based on a similar method by Benjamin Leutner}
 
 
 \seealso{ \code{\link{princomp}}, \code{\link[stats]{prcomp}}}

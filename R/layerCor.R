@@ -134,6 +134,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			if (use %in% c("complete.obs", "complete.masked")) {
 				v <- na.omit(v)
 			}
+			mat <- matrix(NA, nrow=nl, ncol=nl)			
 			for(i in 1:nl) {
 				for(j in i:nl) {
 					if (use == "pairwise.complete.obs") {

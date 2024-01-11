@@ -31,7 +31,7 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 }
 
 \value{
-\bold{SpatRaster}: \code{data.frame} with at least two columns ("layer" and "area") and possibly also "value" (if \code{byValue} is \code{TRUE}, and "zone" (if \code{zones} is \code{TRUE}). If \code{x} has no values, the total area of all cells is returned. Otherwise, the area of all cells that are not \code{NA} is returned. 
+\bold{SpatRaster}: \code{data.frame} with at least two columns ("layer" and "area") and possibly also "value" (if \code{byValue} is \code{TRUE}), and "zone" (if \code{zones} is \code{TRUE}). If \code{x} has no values, the total area of all cells is returned. Otherwise, the area of all cells that are not \code{NA} is returned. 
 
 \bold{SpatVector}: numeric (one value for each (multi-) polygon geometry.
 }

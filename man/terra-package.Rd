@@ -199,7 +199,7 @@ Apart from the function listed below, you can also use indexing with \code{[} wi
 
 \section{VIII. Getting and setting dimensions }{
 
-Get or set basic parameters of SpatRasters. If there are values associated with a SpatRaster object (either in memory or via a link to a file) these are lost when you change the number of columns or rows or the resolution. This is not the case when the extent is changed (as the number of columns and rows will not be affected). Similarly, with \bold{crs} you can set the coordinate reference system, but this does not transform the data (see \link{project} for that).   
+Get or set basic parameters of SpatRasters. If there are values associated with a SpatRaster (either in memory or via a link to a file) these are lost when you change the number of columns or rows or the resolution. This is not the case when the extent is changed (as the number of columns and rows will not be affected). Similarly, with \bold{crs} you can set the coordinate reference system, but this does not transform the data (see \link{project} for that).   
 
   \tabular{ll}{
     \code{\link{ncol}}\tab The number of columns \cr
@@ -318,10 +318,10 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
 \section{XIV. SpatRasterDataset}{
 
-A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.
+A SpatRasterDataset contains SpatRasters that represent sub-datasets for the same area. They all have the same extent and resolution.
 
 \tabular{ll}{
-  \code{\link{sds}} \tab Create a SpatRasterDataset from a file with subdatasets (ncdf or hdf) or from SpatRaster objects \cr
+  \code{\link{sds}} \tab Create a SpatRasterDataset from a file with subdatasets (ncdf or hdf) or from SpatRasters \cr
   \code{[} or \code{$} \tab Extract a SpatRaster \cr
   \code{\link{names}} \tab Get the names of the sub-datasets \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -332,7 +332,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the SpatRasters do not need to match each other. 
 
 \tabular{ll}{
-\code{\link{sprc}} \tab create a SpatRasterCollection from (a list of) SpatRaster objects\cr
+\code{\link{sprc}} \tab create a SpatRasterCollection from (a list of) SpatRasters\cr
 \code{\link{length}} \tab how many SpatRasters does the SpatRasterCollection have?\cr
 \code{\link{crop}} \tab crop a SpatRasterCollection\cr
 \code{\link{impose}} \tab force the members of SpatRasterCollection to the same geometry\cr

@@ -45,7 +45,7 @@ setMethod("vect", signature(x="SpatVectorCollection"),
 
 
 setMethod("vect", signature(x="character"),
-	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="") {
+	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="", opts=NULL) {
 
 		what <- trimws(tolower(what))
 		if (what != "") what <- match.arg(trimws(tolower(what)), c("geoms", "attributes"))
@@ -98,7 +98,8 @@ setMethod("vect", signature(x="character"),
 		} else {
 			extent <- as.vector(ext(extent))
 		}
-		p@cpp$read(x, layer, query, extent, filter, proxy, what)
+		if (is.null(opts)) opts <- ""[0]
+		p@cpp$read(x, layer, query, extent, filter, proxy, what, opts)
 		if (isTRUE(crs != "")) {
 			crs(p, warn=FALSE) <- crs
 		}

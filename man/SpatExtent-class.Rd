@@ -15,7 +15,7 @@ Objects of class SpatExtent are used to define the spatial extent (extremes) of 
 }
 
 \section{Objects from the Class}{
-You can use the \code{\link{ext}} function to create SpatExtent objects, or to extract them from SpatRaster objects.
+You can use the \code{\link{ext}} function to create SpatExtent objects, or to extract them from a SpatRaster, SpatVector or related objects.
 }
 
 

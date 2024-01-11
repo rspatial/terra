@@ -553,6 +553,10 @@ prettyNumbs <- function(x, digits) {
 	out <- list()
 	e <- out$lim <- out$ext <- as.vector(ext(x))
 	hadWin <- hasWin <- FALSE
+	if (add && is.null(ext)) {
+		ext <- unlist(get.clip())[1:4]
+	}
+	
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
 			ext <- ext(ext)
@@ -759,8 +763,10 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		old.mar <- graphics::par()$mar
 		on.exit(graphics::par(mar=old.mar))
 
+		
 		y <- round(y)
 		hasRGB <- FALSE		
+
 		if (has.RGB(x) && ((is.null(type) && (y[1] < 0)))) {
 			type <- "rgb"
 			legend <- FALSE
@@ -771,9 +777,11 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			hasRGB <- TRUE
 			y <- RGB(x)
 		}
-		stopifnot((min(y) > 0) & (max(y) <= nlyr(x)))
+		nlx <- nlyr(x)
+		stopifnot((min(y) > 0) & (max(y) <= nlx))
 
 		if ((!hasRGB) && (length(y) > 1)) {
+
 			x <- x[[y]]
 			if (inherits(alpha, "SpatRaster")) {
 				if (nlyr(alpha) > 1) {
@@ -870,18 +878,24 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"),
-	function(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, ...)  {
+	function(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, ...)  {
 
 		if (has.RGB(x)) {
 			if (missing(main)) main = ""
-			p <- plot(x, -1, main=main, mar=mar, maxcell=maxcell, ...)
+			p <- plot(x, -1, main=main, mar=mar, maxcell=maxcell, add=add, ...)
 			return(invisible(p))
 		}
 
 		nl <- max(1, min(nlyr(x), maxnl))
+
+		if (add && (nl > 1)) {
+			nl <- 1
+			warn("plot", "adding the first layer of x")
+		}
+
 		if (nl==1) {
 			if (missing(main)) main = ""
-			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, ...)
+			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, add=add, ...)
 			return(invisible(out))
 		}
 
@@ -905,7 +919,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			main <- rep_len(main, nl)
 		}
 		for (i in 1:nl) {
-			plot(x, i, main=main[i], mar=mar, maxcell=maxcell, ...)
+			plot(x, i, main=main[i], mar=mar, maxcell=maxcell, add=add, ...)
 		}
 	}
 )

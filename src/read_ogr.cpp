@@ -673,9 +673,17 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 }
 
 
-bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
-    //OGRRegisterAll();
-    GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
+bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what, std::vector<std::string> options) {
+
+	char ** openops = NULL;
+	for (size_t i=0; i<options.size(); i++) {
+		std::vector<std::string> opt = strsplit(options[i], "=");
+		if (opt.size() == 2) {
+			openops = CSLSetNameValue(openops, opt[0].c_str(), opt[1].c_str());
+		}
+	}
+		
+    GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, openops, NULL ));
     if( poDS == NULL ) {
 		if (!file_exists(fname)) {
 			setError("file does not exist: " + fname);

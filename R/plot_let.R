@@ -363,6 +363,8 @@ setMethod("points", signature(x="leaflet"),
 
 
 make.panel <- function(x, maxcell) {
+
+	nl <- nlyr(x)
 	x <- spatSample(x, maxcell/nl, "regular", as.raster=TRUE, warn=FALSE)
 	if (is.lonlat(x)) {
 		asp <- 1/cos((mean(ext(x)[3:4]) * pi)/180)
@@ -379,7 +381,6 @@ make.panel <- function(x, maxcell) {
 	#	}
 	#}
 
-	nl <- nlyr(x)
 	asp <- asp * nrow(x) / ncol(x)
 	nc <- ceiling(2*sqrt(nl/2) * asp)
 	nr <- ceiling(nl / nc)

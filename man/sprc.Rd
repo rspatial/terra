@@ -12,7 +12,7 @@
 \title{Create a SpatRasterCollection}
 
 \description{
-Methods to create a SpatRasterCollection. This is an object to hold a collection (list) of SpatRaster objects. There are no restrictions on the similarity of the SpatRaster geometry. 
+Methods to create a SpatRasterCollection. This is an object to hold a collection (list) of SpatRasters. There are no restrictions on the similarity of the SpatRaster geometry. 
 
 They can be used to combine several SpatRasters to be used with \code{\link{merge}} or \code{\link{mosaic}}
 
@@ -31,11 +31,11 @@ You can create a SpatRasterCollection from a file with subdatasets.
 }
 
 \arguments{
-\item{x}{SpatRaster, list with SpatRaster objects, missing, or filename}
+\item{x}{SpatRaster, list with SpatRasters, missing, or filename}
 \item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a positive integer}
 \item{opts}{character. GDAL dataset open options}
 \item{raw}{logical. If \code{TRUE}, scale and offset values are ignored}
-\item{...}{additional SpatRaster objects} 
+\item{...}{additional SpatRasters} 
 }
 
 \value{

@@ -271,8 +271,23 @@ retro_labels <- function(x, lat=TRUE) {
 }
 
 
+
+
 .plot.cont.legend <- function(x, ...) {
 
+	if (!is.null(x$leg$tic)) {
+		accepted <- c("in", "out", "none", "through", "throughout")
+		tics <- accepted[pmatch(x$leg$tic[1], accepted[-5], 5)]
+	} else {
+		tics <- "throughout"
+	}
+
+	if (!is.null(x$leg$tic.box.col)) {
+		ticboxcol <- x$leg$tic.box.col
+	} else {
+		ticboxcol <- "black"
+	}
+	
 	if (is.null(x$leg$x)) {
 		x$leg$x <- "right"
 	} else if (!(x$leg$x %in% c("left", "right", "top", "bottom"))) {
@@ -314,10 +329,26 @@ retro_labels <- function(x, lat=TRUE) {
 		graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=NA)
 		ypos <- e$ymin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dy
 		if (x$leg$x == "right") {
-			graphics::segments(e$xmin, ypos, e$xmax+e$dx*0.25, ypos, xpd=NA)
+			if (tics == "throughout") {
+				graphics::segments(e$xmin, ypos, e$xmax+e$dx*0.25, ypos, xpd=NA)
+			} else if (tics == "through") {
+				graphics::segments(e$xmin, ypos, e$xmax, ypos, xpd=NA)
+			} else if (tics == "in") {
+				graphics::segments(e$xmax-e$dx*0.25, ypos, e$xmax, ypos, xpd=NA)			
+			} else if (tics == "out") {
+				graphics::segments(e$xmax, ypos, e$xmax+e$dx*0.25, ypos, xpd=NA)
+			}
 			text(e$xmax, ypos, zztxt, pos=4, xpd=NA, cex=cex, ...)
 		} else {
-			graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmax, ypos, xpd=NA)
+			if (tics == "throughout") {
+				graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmax, ypos, xpd=NA)
+			} else if (tics == "through") {
+				graphics::segments(e$xmin, ypos, e$xmax, ypos, xpd=NA)
+			} else if (tics == "in") {
+				graphics::segments(e$xmin, ypos, e$xmin+e$dx*0.25, ypos, xpd=NA)
+			} else if (tics == "out") {
+				graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmin, ypos, xpd=NA)
+			}
 			text(e$xmin, ypos, zztxt, pos=2, xpd=NA, cex=cex, ...)
 		}
 	} else {
@@ -325,14 +356,30 @@ retro_labels <- function(x, lat=TRUE) {
 		graphics::rect(X[-(nc + 1)], e$ymin, X[-1], e$ymax, col=rev(cols), border=NA, xpd=NA)
 		xpos <- e$xmin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dx
 		if (x$leg$x == "bottom") {
-			graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymax, xpd=NA)
+			if (tics == "throughout") {
+				graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymax, xpd=NA)
+			} else if (tics == "through") {
+				graphics::segments(xpos, e$ymin, xpos, e$ymax, xpd=NA)
+			} else if (tics == "in") {
+				graphics::segments(xpos, e$ymin+e$dy*0.25, xpos, e$ymin, xpd=NA)
+			} else if (tics == "out") {
+				graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymin, xpd=NA)
+			}
 			text(xpos, e$ymin, zztxt, pos=1, xpd=NA, cex=cex)
 		} else {
-			graphics::segments(xpos, e$ymin, xpos, e$ymax+e$dy*0.25, xpd=NA)
+			if (tics == "throughout") {
+				graphics::segments(xpos, e$ymin, xpos, e$ymax+e$dy*0.25, xpd=NA)
+			} else if (tics == "through") {
+				graphics::segments(xpos, e$ymin, xpos, e$ymax, xpd=NA)
+			} else if (tics == "in") {
+				graphics::segments(xpos, e$ymax, xpos, e$ymax-e$dy*0.25, xpd=NA)
+			} else if (tics == "out") {
+				graphics::segments(xpos, e$ymax, xpos, e$ymax+e$dy*0.25, xpd=NA)
+			}
 			text(xpos, e$ymax+e$dy*0.25, zztxt, pos=3, xpd=NA, cex=cex)
 		}
 	}
-	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border ="black", xpd=NA)
+	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border=ticboxcol, xpd=NA)
 
 
     if (!is.null(x$leg$title)) {
@@ -440,5 +487,19 @@ add_legend <- function(x, y, ...) {
 		graphics::legend(x=x, y=y, ...)
 	}
 }
+
+
+add_box <- function(...) {
+	e <- unlist(get.clip())
+	if (!is.null(e)) {
+		bx <- rbind(
+			cbind(e[1], e[3:4]),
+			cbind(e[2], e[4:3]),
+			cbind(e[1], e[3])
+		)
+		lines(bx, ...)
+	}
+}
+
 
 

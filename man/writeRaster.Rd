@@ -7,7 +7,7 @@
 \title{Write raster data to a file}
 
 \description{
-Write a SpatRaster object to a file. 
+Write a SpatRaster to a file. 
 }
 
 \usage{
@@ -30,7 +30,7 @@ see \code{\link{writeCDF}} for writing NetCDF files.
 }
 
 \details{
-In writeRaster, and in other methods that generate SpatRaster objects, options for writing raster files to disk can be provided as additional arguments or, in a few cases, as the \code{wopt} argument (a named list) if the additional arguments are already used for a different purpose. See \code{\link{terraOptions}} to get or set default values. The following options are available: 
+In writeRaster, and in other methods that generate SpatRasters, options for writing raster files to disk can be provided as additional arguments or, in a few cases, as the \code{wopt} argument (a named list) if the additional arguments are already used for a different purpose. See \code{\link{terraOptions}} to get or set default values. The following options are available: 
 
 \tabular{ll}{
 \bold{name} \tab \bold{description}\cr

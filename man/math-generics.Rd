@@ -33,7 +33,7 @@
 
 \description{
 
-Standard mathematical methods for computations with SpatRaster objects. Computations are local (applied on a cell by cell basis). If multiple SpatRaster objects are used, these must have the same extent and resolution. These have been implemented:
+Standard mathematical methods for computations with SpatRasters. Computations are local (applied on a cell by cell basis). If multiple SpatRasters are used, these must have the same extent and resolution. These have been implemented:
  
 \code{abs, sign, sqrt, ceiling, floor, trunc,  cummax, cummin, cumprod, cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh, exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif}
 

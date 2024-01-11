@@ -38,16 +38,22 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 	if (!missing(resolution)) {
 		res(r) <- resolution
 	}
-	if (!missing(names)) {
-		names(r) <- names
-	}
 	if (!missing(vals)) {
 		if (length(vals) == 1) {
 			if (is.na(vals[1])) {
 				vals <- as.numeric(NA)
 			}
 		}
+		if (!is.null(ncol(vals))) {
+			nms <- colnames(vals)
+			if (length(nms) == nlyr(r)) {
+				names(r) <- nms
+			}
+		}
 		values(r) <- vals
+	}
+	if (!missing(names)) {
+		names(r) <- names
 	}
 	if (!missing(time)) {
 		time(r) <- time

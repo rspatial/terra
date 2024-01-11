@@ -10,9 +10,9 @@
 \title{Contour plot}
 
 \description{
-Contour lines of a SpatRaster. Use \code{add=TRUE} to add the lines to the current plot.  See \code{\link[graphics]{contour}} for details. 
+Contour lines of a SpatRaster. Use \code{add=TRUE} to add the lines to the current plot.  See \code{graphics::\link[graphics]{contour}} for details. 
 
-if \code{filled=TRUE}, a new filled contour plot is made. See \code{\link[graphics]{filled.contour}} for details.
+if \code{filled=TRUE}, a new filled contour plot is made. See \code{graphics::\link[graphics]{filled.contour}} for details.
 
 \code{as.contour} returns the contour lines as a SpatVector.
 }

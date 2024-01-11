@@ -16,7 +16,7 @@ tmpFiles(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE)
 
 \arguments{
   \item{current}{logical. If \code{TRUE}, temporary files from the current R session are included}
-  \item{orphan}{logical. If \code{TRUE}, temporary files from the current R session that are no longer associated with a SpatRaster object (if \code{current} is \code{TRUE} these are also included)}
+  \item{orphan}{logical. If \code{TRUE}, temporary files from the current R session that are no longer associated with a SpatRaster (if \code{current} is \code{TRUE} these are also included)}
   \item{old}{logical. If \code{TRUE}, temporary files from other "R" sessions. Unless you are running multiple instances of R at the same time, these are from old (possibly crashed) R  sessions and should be removed}
   \item{remove}{logical. If \code{TRUE}, temporary files are removed}
 }

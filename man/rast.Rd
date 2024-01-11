@@ -54,7 +54,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 }
 
 \arguments{
-\item{x}{filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects. For other types it will be attempted to create a SpatRaster via (`as(x, "SpatRaster")`}
+\item{x}{filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRasters. For other types it will be attempted to create a SpatRaster via (`as(x, "SpatRaster")`}
 \item{subds}{positive integer or character to select a sub-dataset. If zero or "", all sub-datasets are returned (if possible)}
 \item{lyrs}{positive integer or character to select a subset of layers (a.k.a. "bands")}
 \item{drivers}{character. GDAL drivers to consider}

@@ -8,7 +8,7 @@
 \title{Spatial model predictions}
 
 \description{
-Make a SpatRaster object with predictions from a fitted model object (for example, obtained with \code{glm} or \code{randomForest}). The first argument is a SpatRaster object with the predictor variables. The \code{\link{names}} in the Raster object should exactly match those expected by the model. Any regression like model for which a predict method has been implemented (or can be implemented) can be used. 
+Make a SpatRaster with predictions from a fitted model object (for example, obtained with \code{glm} or \code{randomForest}). The first argument is a SpatRaster object with the predictor variables. The \code{\link{names}} in the SpatRaster should exactly match those expected by the model. Any regression like model for which a predict method has been implemented (or can be implemented) can be used. 
 
 The method should work if the model's predict function returns a vector, matrix or data.frame (or a list that can be coerced to a data.frame). In other cases it may be necessary to provide a custom "predict" function that wraps the model's predict function to return the values in the required form. See the examples.
 

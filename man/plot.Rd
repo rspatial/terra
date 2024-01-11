@@ -30,7 +30,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, 
 	background=NULL, box=axes, clip=TRUE, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, ...)
+\S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, ...)
 
 \S4method{plot}{SpatRaster,character}(x, y, ...)
 
@@ -56,7 +56,16 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{background}{background color. Default is no color (white)}
   \item{box}{logical. Should a box be drawn around the map?}
   \item{clip}{logical. Should the axes be clipped to the extent of \code{x}?}
-  \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}. Parameter \code{digits} can be used to set the number of digits to print (after the decimal point for a continuous legend). Parameter \code{size} can be used to change the height and/or width of a continuous legend. The defaults are \code{c(1,1)}, negative values for size flip the order of the legend}
+  \item{plg}{list with parameters for drawing the legend. For the classes and interval type legend see the arguments for \code{\link{legend}}. For example \code{x} and \code{y} can be used to place the legend. You can also use keywords such as "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. 
+  
+  Some of these do not apply to a continuous legend, or they behave a little differently. For example, only the placement keywords "left", "right", "top", and "bottom" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. Additional parameters for continuous legends include: 
+  
+  \itemize{
+    \item \code{digits} to set the number of digits to print after the decimal point. \code{size} to change the height and/or width; the defaults are \code{c(1,1)}, negative values for size flip the order of the legend. 
+	\item \code{at} to set the location of the tic-marks
+	\item \code{tic} One of these partially matched values: "through", "in", "out", or "none", to choose a tic-mark placement/length that is different from the default "through and out". 
+	}
+  }
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{side}, \code{tick} and \code{lab} can be used to indicate for which of the four axes to draw a line (side), tick-mark, and/or the tick-mark labels. The default is \code{c(1:4)} for side and \code{1:2} for the other two. If \code{side} is changed the other two default to that value. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{smooth}{logical. If \code{TRUE} the cell values are smoothed (only if a continuous legend is used)}
@@ -83,10 +92,15 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 }
 
 \seealso{
- \code{\link{points}}, \code{\link{lines}}, \code{\link{polys}}, \code{\link{image}}, \code{scatter\link[terra:scatter]{plot}}, 
- mulitple layers: \code{\link{panel}},
- scale bar: \code{\link{sbar}}, north arrow: \code{\link{north}}, 
-plot a \code{\link[=plot,SpatGraticule,missing-method]{SpatGraticule}} or \code{\link[=plot,SpatExtent,missing-method]{SpatExtent}}, \code{\link{plotRGB}}
+\code{\link{points}, \link{lines}, \link{polys}, \link{image}}
+
+Add map elements: \code{\link{text}, \link{sbar}, \link{north}, \link{add_legend}, \link{add_box}}
+ 
+plot a \code{\link[=plot,SpatGraticule,missing-method]{SpatGraticule}} or \code{\link[=plot,SpatExtent,missing-method]{SpatExtent}}, 
+
+mulitple layers: \code{\link{plotRGB}}, \code{\link{panel}}
+
+other plot types: scatter\code{\link[terra:scatter]{plot}, \link{hist}, \link{pairs}, \link{density}, \link{persp}, \link{contour}, \link{boxplot}, \link{barplot}} 
 }
 
 \examples{ 

@@ -1,8 +1,8 @@
 Package: terra
 Type: Package
 Title: Spatial Data Analysis
-Version: 1.7-67
-Date: 2023-12-15
+Version: 1.7-69
+Date: 2024-01-09
 Depends: R (>= 3.5.0)
 Suggests: parallel, tinytest, ncdf4, sf (>= 0.9-8), deldir, XML, leaflet, htmlwidgets
 LinkingTo: Rcpp
@@ -13,7 +13,7 @@ Language: en-US
 Maintainer: Robert J. Hijmans <r.hijmans@gmail.com>
 Description: Methods for spatial data analysis with vector (points, lines, polygons) and raster (grid) data. Methods for vector data include geometric operations such as intersect and buffer. Raster methods include local, focal, global, zonal and geometric operations. The predict and interpolate methods facilitate the use of regression type (interpolation, machine learning) models for spatial prediction, including with satellite remote sensing data. Processing of very large files is supported. See the manual and tutorials on <https://rspatial.org/> to get started. 'terra' replaces the 'raster' package ('terra' can do more, and it is faster and easier to use).
 License: GPL (>=3)
-URL: https://rspatial.org/
+URL: https://rspatial.org/, https://rspatial.github.io/terra/
 BugReports: https://github.com/rspatial/terra/issues/
 LazyLoad: yes
 Authors@R: c(
