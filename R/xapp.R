@@ -2,6 +2,10 @@
 setMethod("xapp", signature(x="SpatRaster", y="SpatRaster"),
 function(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
+	compareGeom(x, y, crs=FALSE, warncrs=TRUE)
+	if (!hasValues(x)) error("xapp", "x does not have values")
+	if (!hasValues(y)) error("xapp", "y does not have values")
+
 	fun <- match.fun(fun)
 	out <- rast(x)
 	nc <- ncol(x)
