@@ -42,34 +42,42 @@ do_click <- function(type="p", id=FALSE, i=1, pch=20, ...) {
 }
 
 
-
-
 setMethod("click", signature(x="missing"),
 	function(x, n=10, id=FALSE, type="p", show=TRUE, ...) {
 		#loc <- graphics::locator(n, type, ...)
 		#cbind(x=loc$x, y=loc$y)
 		n <- max(1, round(n))
 		X <- NULL
+		if (show) {
+			on.exit(return(invisible(X)))
+		} else {
+			on.exit(return(X))
+		}
 		for (i in 1:n) {
 			x <- do_click(type=type, id=id, i=i, ...)
 			if (is.null(x)) break
 			X <- rbind(X, x)
-			if (show) print(x); utils::flush.console()
 			if (show) {
-				on.exit(return(invisible(X)))
-			} else {
-				on.exit(return(X))
+				rownames(x) <- i
+				print(x); 
+				utils::flush.console()
 			}
 		}
-		if (show) invisible(X) else X
 	}
 )
 
 
 setMethod("click", signature(x="SpatRaster"),
 	function(x, n=10, id=FALSE, xy=FALSE, cell=FALSE, type="p", show=TRUE, ...) {
+
 	n <- max(round(n), 1)
 	values <- NULL
+	if (show) {
+		on.exit(return(invisible(values)))
+	} else {
+		on.exit(return(values))
+	}
+
 	for (i in 1:n) {
 		p <- do_click(type=type, id=id, i=i, ...)
 		if (is.null(p)) break
@@ -85,24 +93,15 @@ setMethod("click", signature(x="SpatRaster"),
 			value <- data.frame(p, value)
 		}
 		if (show) {
+			rownames(value) <- i
 			print(value)
 			utils::flush.console()
 		}
-		if (is.null(dim(value))) {
-			value <- matrix(value)
-			colnames(value) <- names(x)
-		}
+#		if (is.null(dim(value))) {
+#			value <- matrix(value)
+#			colnames(value) <- names(x)
+#		}
 		values <- rbind(values, value)
-		if (show) {
-			on.exit(return(invisible(values)))
-		} else {
-			on.exit(return(values))
-		}
-	}
-	if (show) {
-		invisible(values)
-	} else {
-		values
 	}
 })
 
@@ -112,6 +111,12 @@ setMethod("click", signature(x="SpatVector"),
 	function(x, n=10, id=FALSE, xy=FALSE, type="p", show=TRUE, ...) {
 		n <- max(round(n), 1)
 		values <- xys <- NULL
+		if (show) {
+			on.exit(return(invisible(values)))
+		} else {
+			on.exit(return(values))
+		}
+
 		for (i in 1:n) {
 			p <- do_click(type=type, id=id, i=i, ...)
 			if (is.null(p)) break
@@ -121,6 +126,7 @@ setMethod("click", signature(x="SpatVector"),
 			}
 			names(e)[1] <- "ID"
 			if (show) {
+				rownames(e) <- i
 				if (!id) {
 					print(e[,-1])
 				} else {
@@ -129,13 +135,7 @@ setMethod("click", signature(x="SpatVector"),
 				utils::flush.console()
 			}
 			values <- rbind(values, e)
-			if (show) {
-				on.exit(return(invisible(values)))
-			} else {
-				on.exit(return(values))
-			}
 		}
-		if (show) { invisible(values) } else { values }
 	}
 )
 
