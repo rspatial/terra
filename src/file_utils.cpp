@@ -19,6 +19,8 @@
 #include <fstream>
 #include <random>
 #include <chrono>
+#include <thread>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -262,14 +264,15 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 }
 
 
+std::string tempFile(std::string tmpdir, std::string fname, std::string ext) {
+	return tmpdir + "/spat_" + fname + ext;
+}
 
+/*
 std::string tempFile(std::string tmpdir, unsigned pid, std::string ext) {
     std::vector<char> characters = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K',
     'L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m',
     'n','o','p','q','r','s','t','u','v','w','x','y','z' };
-    std::default_random_engine generator(std::random_device{}());
-	double seed = std::chrono::system_clock::now().time_since_epoch().count();
-    generator.seed(seed);
     std::uniform_int_distribution<> distrib(0, characters.size()-1);
     auto draw = [ characters, &distrib, &generator ]() {
 		return characters[ distrib(generator) ];
@@ -277,6 +280,11 @@ std::string tempFile(std::string tmpdir, unsigned pid, std::string ext) {
     std::string filename(15, 0);
     std::generate_n(filename.begin(), 15, draw);
 	filename = tmpdir + "/spat_" + filename + "_" + std::to_string(pid) + ext;
+	if (file_exists(filename)) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		tempFile(tmpdir, pid, ext);
+	}
 	return filename;
 }
+*/
 

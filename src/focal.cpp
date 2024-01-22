@@ -48,11 +48,24 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 		s.focal_values(w, fillvalue, row, nrows, ops);
 	}
 
+	if (w.size() != 2) {
+		setError("weights matrix must have two sides");
+		std::vector<double> d;
+		return(d);
+	}
+
 	if ((w[0] % 2 == 0) || (w[1] % 2 == 0)) {
 		setError("weights matrix must have uneven sides");
 		std::vector<double> d;
 		return(d);
 	}
+	
+	if ((w[0] < 1) || (w[1] < 1)) {
+		setError("weights matrix must have dimensions larger than 0");
+		std::vector<double> d;
+		return(d);
+	}
+
 	const bool global = is_global_lonlat();
 
 	int_64 nr = nrow();

@@ -18,7 +18,7 @@
 }
 
 .option_names <- function() {
-	c("progress", "progressbar", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid", "threads", "scale", "offset") #, "append")
+	c("progress", "progressbar", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "tmpfile", "threads", "scale", "offset") #, "append")
 }
 
 
@@ -89,7 +89,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	if (is.null(.terra_environment$options)) .create_options()
 
 	opt <- .terra_environment$options@cpp$deepcopy()
-	opt$pid <- Sys.getpid()
+	opt$tmpfile <- paste0(gsub("^file", "", basename(tempfile())),  "_", Sys.getpid())
 	filename <- .fullFilename(filename, mustExist=TRUE)
 	if (!is.null(unlist(wopt))) {
 		wopt$filenames <- filename
@@ -126,7 +126,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	opt <- spatOptions()
 	nms <- names(opt)
 	nms <- nms[!grepl("^\\.", nms)]
-	nms <- nms[!(nms %in% c("initialize", "messages", "getClass", "finalize", "datatype_set", "pid", "statistics", "gdal_options", "scale", "offset", "threads", "filenames", "NAflag"))]
+	nms <- nms[!(nms %in% c("initialize", "messages", "getClass", "finalize", "datatype_set", "tmpfile", "statistics", "gdal_options", "scale", "offset", "threads", "filenames", "NAflag"))]
 	defnms <- grepl("^def_", nms)
 	nms <- nms[!defnms]
 	out <- sapply(nms, function(n) eval(parse(text=paste0("opt$", n))))

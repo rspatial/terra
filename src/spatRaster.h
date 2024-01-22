@@ -33,6 +33,7 @@
 typedef long long int_64;
 
 
+
 class SpatCategories {
 	public:
 		virtual ~SpatCategories(){}

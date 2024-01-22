@@ -308,7 +308,7 @@ RCPP_MODULE(spat){
 		.property("todisk", &SpatOptions::get_todisk, &SpatOptions::set_todisk)
 		.field("messages", &SpatOptions::msg, "messages")
 		.field("gdal_options", &SpatOptions::gdal_options)
-		.field("pid", &SpatOptions::pid )
+		.field("tmpfile", &SpatOptions::tmpfile )
 		.field("names", &SpatOptions::names)
 		.property("steps", &SpatOptions::get_steps, &SpatOptions::set_steps)
 	//	.property("overwrite", &SpatOptions::set_overwrite, &SpatOptions::get_overwrite )

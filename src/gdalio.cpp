@@ -56,10 +56,10 @@ bool SpatRaster::getTempFile(std::string &filename, std::string &driver, SpatOpt
 	driver = opt.get_def_filetype();
 	if (driver.empty() || (driver == "GTiff")) {
 		driver = "GTiff";
-		filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+		filename = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
 		return true;
 	}
-	filename = tempFile(opt.get_tempdir(), opt.pid, "");
+	filename = tempFile(opt.get_tempdir(), opt.tmpfile, "");
 	std::unordered_map<std::string, std::string>
 	exts = {
 		{"GTiff", ".tif"},
@@ -331,7 +331,7 @@ std::string SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector
 
 	std::string outfile = opt.get_filename();
 	if (outfile.empty()) {
-		outfile = tempFile(opt.get_tempdir(), opt.pid, ".vrt");
+		outfile = tempFile(opt.get_tempdir(), opt.tmpfile, ".vrt");
 	} else if (file_exists(outfile) && (!opt.get_overwrite())) {
 		setError("output file exists. You can use 'overwrite=TRUE' to overwrite it");
 		return("");
