@@ -320,6 +320,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 				xopt = spatOptions()
 				y@cpp <- y@cpp$rasterize(x@cpp, field, values, background, touches[1], "sum", FALSE, update[1], TRUE, xopt)
 				messages(y, "rasterize")
+				xopt = spatOptions()
 				yy <- rast(y)
 				yy@cpp <- y@cpp$rasterize(x@cpp, "", values, NA, touches[1], "sum", FALSE, update[1], TRUE, xopt)
 				messages(yy, "rasterize")
