@@ -115,15 +115,34 @@ SpatExtent SpatRaster::ext_from_cell(double cell) {
 }
 
 
-std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool narm, std::string filename, SpatOptions &opt) {
+std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, std::vector<int> buffer, bool narm, std::string filename, SpatOptions &opt) {
 
 	std::vector<std::string> ff;
 	if (!hasValues()) {
 		setError("input raster has no values");
 		return ff;
 	}
+
+
 	x = x.geometry(1, false, false, false);
 	SpatExtent e = getExtent();
+
+	recycle(buffer, 2);
+//	if ((buffer[0] < 0) | (buffer[1] < 0)) {
+//		setError("buffer cannot be negative");
+//		return ff;
+//	}
+	std::vector<double> ebuf = {buffer[0] * xres(), buffer[1] * yres()};	
+
+/*
+	if ((buffer[0] > 0) || (buffer[1] > 0)) {
+		e.xmin = e.xmin - ebuf[0];
+		e.xmax = e.xmax + ebuf[0];
+		e.ymin = e.ymin - ebuf[1];
+		e.ymax = e.ymax + ebuf[1];
+	}
+*/
+	
 	SpatOptions ops(opt);
 	if (expand) {
 		x = x.extend(e, "out", NAN, ops);
@@ -145,6 +164,11 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool 
 			continue;
 		}
 		SpatExtent exi = x.ext_from_cell(i);
+		exi.xmin = exi.xmin - ebuf[0];
+		exi.xmax = exi.xmax + ebuf[0];
+		exi.ymin = exi.ymin - ebuf[1];
+		exi.ymax = exi.ymax + ebuf[1];
+
 		opt.set_filenames({fout});
 		SpatRaster out = crop(exi, "near", false, opt);
 		if (out.hasError()) {

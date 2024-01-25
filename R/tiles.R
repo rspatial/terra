@@ -1,13 +1,16 @@
 
 setMethod("makeTiles", signature(x="SpatRaster"),
-	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, overwrite=FALSE, ...) {
+	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, buffer=0, overwrite=FALSE, ...) {
 		filename <- trimws(filename[1])
 		filename <- filename[!is.na(filename)]
 		if (filename == "") error("makeTiles", "filename cannot be empty")
 		opt <- spatOptions(filename="", overwrite=overwrite, ...)
 		if (inherits(y, "SpatRaster")) {
-			ff <- x@cpp$make_tiles(y@cpp, extend[1], na.rm[1], filename, opt)
+			ff <- x@cpp$make_tiles(y@cpp, extend[1], buffer, na.rm[1], filename, opt)
 		} else if (inherits(y, "SpatVector")) {
+			if (!all(buffer == 0)) {
+				warn("makeTiles", "argument 'buffer' is ignored if y is a SpatVector")
+			}
 			ff <- x@cpp$make_tiles_vect(y@cpp, extend[1], na.rm[1], filename, opt)		
 		} else if (is.numeric(y)) {
 			if (length(y) > 2) {
@@ -15,9 +18,9 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 			}
 			y <- rep_len(y, 2)
 			y <- aggregate(rast(x), y)
-			ff <- x@cpp$make_tiles(y@cpp, extend[1], na.rm[1], filename, opt)			
+			ff <- x@cpp$make_tiles(y@cpp, extend[1], buffer, na.rm[1], filename, opt)			
 		} else {
-			error("makeTiles", "y must be a SpatRaster or SpatVector")
+			error("makeTiles", "y must be numeric or a SpatRaster or SpatVector")
 		}
 		messages(x, "makeTiles")
 		ff
