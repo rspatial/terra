@@ -155,11 +155,11 @@ setMethod ("set.cats" , "SpatRaster",
 			if (ncol(value) == 1) {
 				error("set.cats", "value should have at least two columns")
 			} else {
-				if (!is.numeric(value[,1])) {
+				if (!is.numeric(value[[1]])) {
 					error("set.cats", "the first column of 'value' must be numeric")
 				}
-				value[,1] <- round(value[,1])
-				if (length(unique(value[,1,drop=TRUE])) != nrow(value)) {
+				value[,1] <- round(value[[1]])
+				if (length(unique(value[[1]])) != nrow(value)) {
 					error("set.cats", "duplicate values (IDs) supplied")
 				}
 			}
@@ -182,10 +182,10 @@ setMethod ("set.cats" , "SpatRaster",
 				}
 			}
 		}
-		if (any(is.na(value[,1]))) {
+		if (any(is.na(value[[1]]))) {
 			error("set.cats", "you cannot associate a category with NA")
 		}
-		if (any(table(value[,1]) > 1)) {
+		if (any(table(value[[1]]) > 1)) {
 			error("set.cats", "you cannot have duplicate IDs")
 		}
 
