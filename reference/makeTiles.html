@@ -58,7 +58,7 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">makeTiles</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, filename<span class="op">=</span><span class="st">"tile_.tif"</span>, extend<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">makeTiles</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, filename<span class="op">=</span><span class="st">"tile_.tif"</span>, extend<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, buffer<span class="op">=</span><span class="fl">0</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -77,6 +77,9 @@
 
   <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code>, tiles with only missing values are ignored</p></dd>
+
+  <dt>buffer</dt>
+<dd><p>integer. The number of cells to add around each tile. Ignored if <code>y</code> is a SpatVector. Can be a single number, or two numbers to specify a separate buffer for the rows and for the columns. This allows for creating overlapping tiles that can be used for computing spatial context dependent values with e.g. <code><a href="focal.html">focal</a></code>. The expansion is only inside <code>x</code>, no rows or columns outside of <code>x</code> are added</p></dd>
 
   <dt>overwrite</dt>
 <dd><p>logical. If <code>TRUE</code>, existing tiles are overwritten; otherwise they are skipped (without error or warning)</p></dd>
@@ -104,10 +107,10 @@
 <span class="r-in"><span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"_.tif"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu">makeTiles</span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span>, <span class="va">filename</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmp1EuGRi/file35af79bc984f_1.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmp1EuGRi/file35af79bc984f_2.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmp1EuGRi/file35af79bc984f_3.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmp1EuGRi/file35af79bc984f_4.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmplogwbg/file214839f597a0_1.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmplogwbg/file214839f597a0_2.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmplogwbg/file214839f597a0_3.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmplogwbg/file214839f597a0_4.tif"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="vrt.html">vrt</a></span><span class="op">(</span><span class="va">ff</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
@@ -115,10 +118,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 3.6, 1.8  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : spat_o4gBsDa7KPSJQJt_13743.vrt </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : spat_o4gBsDa7KPSJQJt_13743 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :                          1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :                      10000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : spat_21487bedb1dd_8520.vrt </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : spat_21487bedb1dd_8520 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :                      1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :                  10000 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
