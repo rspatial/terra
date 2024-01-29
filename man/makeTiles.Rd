@@ -15,7 +15,8 @@ Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with
 }
 
 \usage{
-\S4method{makeTiles}{SpatRaster}(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, buffer=0, overwrite=FALSE, ...)
+\S4method{makeTiles}{SpatRaster}(x, y, filename="tile_.tif", extend=FALSE,
+		na.rm=FALSE, buffer=0, overwrite=FALSE, ...)
 }
 
 \arguments{

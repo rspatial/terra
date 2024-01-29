@@ -3,7 +3,7 @@
 \docType{methods}
 
 \alias{xapp}
-\alias{xapp,SpatRaster-method}
+\alias{xapp,SpatRaster,SpatRaster-method}
 
 \title{Apply a function to the cells of a two SpatRasters}
 
@@ -12,7 +12,7 @@ Apply a function to the values of each cell of two (multilayer) SpatRasters.
 }
 
 \usage{
-\S4method{xapp}{SpatRaster}(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{xapp}{SpatRaster,SpatRaster}(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{

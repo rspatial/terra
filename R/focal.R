@@ -274,7 +274,13 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 			}
 		} else {
 			v <- lapply(1:w[3],
-				function(k) matrix(x[[k]]@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
+				function(k) {
+					y <- x[[k]]
+					z <- y@cpp$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
+					y <- messages(y, "focal3D")
+					matrix(z, ncol=nc)
+				})
+				
 			v <- do.call(rbind, v)
 		}
 		for (j in startlyr:endlyr) {
