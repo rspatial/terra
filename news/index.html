@@ -64,6 +64,8 @@
 <code>plot&lt;SpatRaster&gt;(add=TRUE)</code> sampled the raster data without considering the extent of the map. <a href="https://github.com/rspatial/terra/issues/1394" class="external-link">#1394</a> by Márcia Barbosa</li>
 <li>
 <code>plot&lt;SpatRaster&gt;(add=TRUE)</code> now only considers the first layer of a multi-layer SpatRaster <a href="https://github.com/rspatial/terra/issues/1395" class="external-link">1395</a> by Márcia Barbosa</li>
+<li>
+<code>set.cats</code> failed with a tibble was used instead of a data.frame <a href="https://github.com/rspatial/terra/issues/1406" class="external-link">#1406</a> by Mike Koontz</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-68">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-68"></a></h3>
@@ -71,6 +73,8 @@
 <code>vect&lt;character&gt;</code> now has argument “opts” for GDAL open options, e.g. to declare a file encoding. <a href="https://github.com/rspatial/terra/issues/1389" class="external-link">#1389</a> by Mats Blomqvist</li>
 <li>
 <code>plot(plg=list(tic=""))</code> now allows chosing alternative continuous legend tic-mark styles (“in”, “out”, “through” or “none”)</li>
+<li>
+<code>makeTiles</code> has new argument “buffer” <a href="https://github.com/rspatial/terra/issues/1408" class="external-link">#1408</a> by Joy Flowers.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-7-68">new<a class="anchor" aria-label="anchor" href="#new-1-7-68"></a></h3>
