@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-69</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-70</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,9 +51,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-68" id="version-17-68">version 1.7-68<a class="anchor" aria-label="anchor" href="#version-17-68"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.7-70" id="version-17-70">version 1.7-70<a class="anchor" aria-label="anchor" href="#version-17-70"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-68">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-68"></a></h3>
+<h3 id="bug-fixes-1-7-70">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-70"></a></h3>
 <ul><li>k_means did not work if there were NAs <a href="https://github.com/rspatial/terra/issues/1314" class="external-link">#1314</a> by Jakub Nowosad</li>
 <li>
 <code>layerCor</code> with a custom function did not work anymore <a href="https://github.com/rspatial/terra/issues/1387" class="external-link">#1387</a> by Jakub Nowosad</li>
@@ -66,9 +66,15 @@
 <code>plot&lt;SpatRaster&gt;(add=TRUE)</code> now only considers the first layer of a multi-layer SpatRaster <a href="https://github.com/rspatial/terra/issues/1395" class="external-link">1395</a> by Márcia Barbosa</li>
 <li>
 <code>set.cats</code> failed with a tibble was used instead of a data.frame <a href="https://github.com/rspatial/terra/issues/1406" class="external-link">#1406</a> by Mike Koontz</li>
+<li>
+<code>polys</code> argument “alpha” was ignored if a single color was used. <a href="https://github.com/rspatial/terra/issues/1413" class="external-link">#1413</a> by Derek Friend</li>
+<li>
+<code>query</code> ignore the “vars” argument if all rows were selected. <a href="https://github.com/rspatial/terra/issues/1398" class="external-link">#1398</a> by erkent-carb.</li>
+<li>
+<code>spatSample</code> ignored “replace=TRUE” with random sampling, na.rm=TRUE, and a sample size larger than the non NA cells. <a href="https://github.com/rspatial/terra/issues/1411" class="external-link">#1411</a> by Babak Naimi</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-68">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-68"></a></h3>
+<h3 id="enhancements-1-7-70">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-70"></a></h3>
 <ul><li>
 <code>vect&lt;character&gt;</code> now has argument “opts” for GDAL open options, e.g. to declare a file encoding. <a href="https://github.com/rspatial/terra/issues/1389" class="external-link">#1389</a> by Mats Blomqvist</li>
 <li>
@@ -77,7 +83,7 @@
 <code>makeTiles</code> has new argument “buffer” <a href="https://github.com/rspatial/terra/issues/1408" class="external-link">#1408</a> by Joy Flowers.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-7-68">new<a class="anchor" aria-label="anchor" href="#new-1-7-68"></a></h3>
+<h3 id="new-1-7-70">new<a class="anchor" aria-label="anchor" href="#new-1-7-70"></a></h3>
 <ul><li>
 <code>prcomp&lt;SpatRaster&gt;</code> method <a href="https://github.com/rspatial/terra/issues/1361#issuecomment-1860311029" class="external-link">#1361</a> by Jakub Nowosad</li>
 <li>
