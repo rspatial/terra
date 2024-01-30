@@ -132,7 +132,7 @@ setMethod("polys", signature(x="SpatVector"),
 		}
 		if (missing(col)) {
 			col <- NULL
-		} else if (length(col) > 1) {
+		} else {
 			col <- .getCols(length(x), col, alpha)
 		}
 		out <- list(main_cols=col)
