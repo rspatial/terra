@@ -474,14 +474,12 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			qy <- ""
 			if (!is.null(where)) {
 				qy <- paste("SELECT", vars, "FROM", layer, "WHERE", where[1])
+			} else {
+				qy <- paste("SELECT", vars, "FROM", layer)
 			}
-
 			nr <- nrow(x)
 			start <- start-1
 			if (start > 0) {
-				if (qy == "") {
-					qy <- paste("SELECT", vars, "FROM", layer)
-				}
 				if (n >= (nr-start)) {
 					qy <- paste(qy, "OFFSET", start)
 				} else {
@@ -489,9 +487,6 @@ setMethod("query", signature(x="SpatVectorProxy"),
 					qy <- paste(qy, layer, "LIMIT", n, "OFFSET", start)
 				}
 			} else if (n < nr) {
-				if (qy == "") {
-					qy <- paste("SELECT", vars, "FROM", layer)
-				}
 				n <- min(n, nr)
 				qy <- paste(qy, "LIMIT", n)
 			}

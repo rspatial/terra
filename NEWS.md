@@ -11,7 +11,7 @@
 - `plot<SpatRaster>(add=TRUE)` now only considers the first layer of a multi-layer SpatRaster [1395](https://github.com/rspatial/terra/issues/1395) by Márcia Barbosa
 - `set.cats` failed with a tibble was used instead of a data.frame [#1406](https://github.com/rspatial/terra/issues/1406) by Mike Koontz
 - `polys` argument "alpha" was ignored if a single color was used. [#1413](https://github.com/rspatial/terra/issues/1413) by Derek Friend
-
+- `query` ignore the "vars" argument if all rows were selected. [#1398](https://github.com/rspatial/terra/issues/1398) by erkent-carb.
 
 ## enhancements
 
