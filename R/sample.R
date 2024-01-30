@@ -206,14 +206,17 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	if (nlyr(x) > 1) {
 		x <- subst(anyNA(x), 1, NA)
 	}
+
 	if (lonlat) {
 		v <- cbind(cell=1:ncell(x), abs(cos(pi * values(init(x, "y")) / 360)), values(x))
 		v <- v[!is.na(v[,3]),]
-		i <- sample.int(nrow(v), min(size, nrow(v)), prob=v[,2], replace=replace)
+		ssize <- ifelse(replace, size, min(size, nrow(v)))
+		i <- sample.int(nrow(v), ssize, prob=v[,2], replace=replace)
 	} else {
 		v <- cbind(cell=1:ncell(x), values(x))
 		v <- v[!is.na(v[,2]),]
-		i <- sample.int(nrow(v), min(size, nrow(v)), replace=replace)
+		ssize <- ifelse(replace, size, min(size, nrow(v)))
+		i <- sample.int(nrow(v), ssize, replace=replace)
 	}
 	v[i,1]
 }
@@ -235,9 +238,9 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			esize <- size
 		}
 		if (na.rm && (blocks(x, n=4)$n == 1)) {
-			cells <- .sampleCellsMemory(x, size, replace, lonlat, ext)
+			cells <- .sampleCellsMemory(x, esize, replace, lonlat, ext)
 		} else if (lonlat) {
-			m <- ifelse(replace, 1.5, 1.25)
+			m <- ifelse(replace, 1.5, 2)
 			n <- m * esize
 			y <- yFromRow(r, 1:nrow(r))
 			rows <- sample.int(nrow(r), n, replace=TRUE, prob=abs(cos(pi*y/180)))
