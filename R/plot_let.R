@@ -103,7 +103,7 @@ baselayers <- function(tiles, wrap=TRUE) {
 setMethod("plet", signature(x="SpatVector"),
 	function(x, y="", col, fill=0.2, main=y, cex=1, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL, breakby="eqint", sort=TRUE, decreasing=FALSE, map=NULL, ...)  {
 
-		checkLeafLetVersion()
+		#checkLeafLetVersion()
 		y <- unique(y)
 		if (length(y) > 1) {
 			y = y[1]
@@ -240,7 +240,7 @@ setMethod("plet", signature(x="SpatVector"),
 setMethod("plet", signature(x="SpatVectorCollection"),
 	function(x, col, fill=0, cex=1, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, map=NULL)  {
 
-		checkLeafLetVersion()
+		#checkLeafLetVersion()
 
 		if (is.null(map)) {
 			tiles <- unique(as.character(tiles))
@@ -415,7 +415,7 @@ make.panel <- function(x, maxcell) {
 setMethod("plet", signature(x="SpatRaster"),
 	function(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, wrap=TRUE, maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
 
-		checkLeafLetVersion()
+		#checkLeafLetVersion()
 
 		if (is.na(crs(x))) {
 			error("plet", "x must have a crs")
