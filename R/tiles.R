@@ -8,10 +8,7 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 		if (inherits(y, "SpatRaster")) {
 			ff <- x@cpp$make_tiles(y@cpp, extend[1], buffer, na.rm[1], filename, opt)
 		} else if (inherits(y, "SpatVector")) {
-			if (!all(buffer == 0)) {
-				warn("makeTiles", "argument 'buffer' is ignored if y is a SpatVector")
-			}
-			ff <- x@cpp$make_tiles_vect(y@cpp, extend[1], na.rm[1], filename, opt)		
+			ff <- x@cpp$make_tiles_vect(y@cpp, extend[1], buffer, na.rm[1], filename, opt)		
 		} else if (is.numeric(y)) {
 			if (length(y) > 2) {
 				error("makeTiles", "expected one or two numbers")
@@ -27,6 +24,31 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 	}
 )
 
+
+setMethod("getTileExtents", signature(x="SpatRaster"),
+	function(x, y, extend=FALSE, na.rm=FALSE, buffer=0) {
+
+		opt <- spatOptions(filename="")
+		if (inherits(y, "SpatRaster")) {
+			e <- x@cpp$get_tiles_ext(y@cpp, extend[1], buffer)
+		} else if (inherits(y, "SpatVector")) {
+			e <- x@cpp$get_tiles_ext_vect(y@cpp, extend[1], buffer)		
+		} else if (is.numeric(y)) {
+			if (length(y) > 2) {
+				error("getTileExtents", "expected one or two numbers")
+			}
+			y <- rep_len(y, 2)
+			y <- aggregate(rast(x), y)
+			e <- x@cpp$get_tiles_ext(y@cpp, extend[1], buffer)
+		} else {
+			error("getTileExtents", "y must be numeric or a SpatRaster or SpatVector")
+		}
+		messages(x, "getTileExtents")
+		e <- matrix(e, ncol=4, byrow=TRUE)
+		colnames(e) <- c("xmin", "xmax", "ymin", "ymax")
+		e
+	}
+)
 
 
 

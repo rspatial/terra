@@ -108,10 +108,51 @@ SpatExtent SpatRaster::ext_from_rc(int_64 r1, int_64 r2, int_64 c1, int_64 c2) {
 }
 
 
-SpatExtent SpatRaster::ext_from_cell(double cell) {
+SpatExtent SpatRaster::ext_from_cell(	double cell) {
 	std::vector<double> cells = {cell};
 	std::vector<std::vector<int_64>> rc = rowColFromCell(cells);
 	return ext_from_rc(rc[0][0], rc[0][0], rc[1][0], rc[1][0]);
+}
+
+
+std::vector<double> SpatRaster::get_tiles_extent(SpatRaster x, bool expand, std::vector<int> buffer) {
+
+	std::vector<double> ee;
+
+	x = x.geometry(1, false, false, false);
+	SpatExtent e = getExtent();
+
+	recycle(buffer, 2);
+	std::vector<double> ebuf = {buffer[0] * xres(), buffer[1] * yres()};	
+
+	SpatOptions opt;
+	if (expand) {
+		x = x.extend(e, "out", NAN, opt);
+	}
+	x = x.crop(e, "out", false, opt);
+
+	std::vector<size_t> d(x.ncell());
+	std::iota(d.begin(), d.end(), 1);
+
+	ee.reserve(d.size()*4);
+
+	SpatRaster y = geometry(1, false, false, false);
+
+	for (size_t i=0; i<d.size(); i++) {
+		SpatExtent exi = x.ext_from_cell(i);
+		exi.xmin = exi.xmin - ebuf[0];
+		exi.xmax = exi.xmax + ebuf[0];
+		exi.ymin = exi.ymin - ebuf[1];
+		exi.ymax = exi.ymax + ebuf[1];
+		SpatRaster out = y.crop(exi, "near", false, opt);
+		SpatExtent ye = out.getExtent();
+
+		ee.push_back(ye.xmin);			
+		ee.push_back(ye.xmax);			
+		ee.push_back(ye.ymin);			
+		ee.push_back(ye.ymax);			
+	}
+	return ee;
 }
 
 
@@ -128,21 +169,8 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, std::
 	SpatExtent e = getExtent();
 
 	recycle(buffer, 2);
-//	if ((buffer[0] < 0) | (buffer[1] < 0)) {
-//		setError("buffer cannot be negative");
-//		return ff;
-//	}
 	std::vector<double> ebuf = {buffer[0] * xres(), buffer[1] * yres()};	
 
-/*
-	if ((buffer[0] > 0) || (buffer[1] > 0)) {
-		e.xmin = e.xmin - ebuf[0];
-		e.xmax = e.xmax + ebuf[0];
-		e.ymin = e.ymin - ebuf[1];
-		e.ymax = e.ymax + ebuf[1];
-	}
-*/
-	
 	SpatOptions ops(opt);
 	if (expand) {
 		x = x.extend(e, "out", NAN, ops);
@@ -195,7 +223,57 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, std::
 
 
 
-std::vector<std::string> SpatRaster::make_tiles_vect(SpatVector x, bool expand, bool narm, std::string filename, SpatOptions &opt) {
+
+std::vector<double> SpatRaster::get_tiles_extent_vect(SpatVector x, bool expand, std::vector<int> buffer) {
+	
+	std::vector<double> ee;
+
+	if (x.type() != "polygons") {
+		setError("The SpatVector must have a polygons geometry");
+		return ee;		
+	}
+	SpatExtent e = getExtent();
+	std::vector<size_t> d(x.size());
+	std::iota(d.begin(), d.end(), 1);
+
+	ee.reserve(d.size() * 4);
+	SpatOptions opt;
+	SpatRaster y = geometry(1, false, false, false);
+
+	recycle(buffer, 2);
+	std::vector<double> ebuf = {buffer[0] * xres(), buffer[1] * yres()};	
+	
+	for (size_t i=0; i<d.size(); i++) {
+		SpatRaster out;
+		SpatExtent exi = x.geoms[i].extent;
+		exi.xmin = exi.xmin - ebuf[0];
+		exi.xmax = exi.xmax + ebuf[0];
+		exi.ymin = exi.ymin - ebuf[1];
+		exi.ymax = exi.ymax + ebuf[1];
+
+		if (!e.intersects(exi)) continue;
+		if (expand) {
+			out = y.crop(exi, "near", false, opt);
+			out = out.extend(exi, "out", NAN, opt);
+		} else {
+			out = y.crop(exi, "near", false, opt);
+		}
+		if (out.hasError()) {
+			setError(out.getError());
+			return ee;
+		}
+		SpatExtent xe = out.getExtent();
+
+		ee.push_back(xe.xmin);			
+		ee.push_back(xe.xmax);			
+		ee.push_back(xe.ymin);			
+		ee.push_back(xe.ymax);			
+	}
+
+	return ee;
+}
+
+std::vector<std::string> SpatRaster::make_tiles_vect(SpatVector x, bool expand, std::vector<int> buffer, bool narm, std::string filename, SpatOptions &opt) {
 
 	std::vector<std::string> ff;
 	if (!hasValues()) {
@@ -216,6 +294,10 @@ std::vector<std::string> SpatRaster::make_tiles_vect(SpatVector x, bool expand, 
 	ff.reserve(d.size());
 	size_t nl = nlyr();
 	bool overwrite = opt.get_overwrite();
+
+	recycle(buffer, 2);
+	std::vector<double> ebuf = {buffer[0] * xres(), buffer[1] * yres()};	
+
 	for (size_t i=0; i<d.size(); i++) {
 		std::string fout = f + std::to_string(d[i]) + fext;
 		if (file_exists(fout) && (!overwrite)) {
@@ -225,6 +307,12 @@ std::vector<std::string> SpatRaster::make_tiles_vect(SpatVector x, bool expand, 
 		opt.set_filenames( {fout} );
 		SpatRaster out;
 		SpatExtent exi = x.geoms[i].extent;
+		exi.xmin = exi.xmin - ebuf[0];
+		exi.xmax = exi.xmax + ebuf[0];
+		exi.ymin = exi.ymin - ebuf[1];
+		exi.ymax = exi.ymax + ebuf[1];
+
+
 		if (!e.intersects(exi)) continue;
 		if (expand) {
 			out = crop(exi, "near", false, ops);

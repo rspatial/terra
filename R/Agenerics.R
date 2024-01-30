@@ -5,6 +5,8 @@ if (!isGeneric("k_means")) {setGeneric("k_means", function(x, ...) standardGener
 if (!isGeneric("princomp")) {setGeneric("princomp", function(x, ...) standardGeneric("princomp"))}
 if (!isGeneric("extractRange")) { setGeneric("extractRange", function(x, y, ...) standardGeneric("extractRange"))}
 
+if (!isGeneric("getTileExtents")) {setGeneric("getTileExtents", function(x, ...) standardGeneric("getTileExtents"))}
+
 if (!isGeneric("layerCor")) {setGeneric("layerCor", function(x, ...) standardGeneric("layerCor"))}
 
 if (!isGeneric("metags")) {setGeneric("metags", function(x, ...) standardGeneric("metags"))}
