@@ -557,9 +557,13 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				if (size > 0.75 * ncell(x)) {
 					if (na.rm) {
 						out <- stats::na.omit(values(x))
-						attr(x, "na.action") <- NULL
+						attr(out, "na.action") <- NULL
 						if (nrow(out) < size) {
-							warn("spatSample", "more non-NA cells requested than available")
+							if (replace) {
+								out <- out[sample.int(nrow(out), size, replace=TRUE), ,drop=FALSE]
+							} else {
+								warn("spatSample", "more non-NA cells requested than available")
+							}
 						} else {
 							out <- out[sample.int(nrow(out), size), ,drop=FALSE]
 						}

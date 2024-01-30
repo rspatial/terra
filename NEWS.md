@@ -1,4 +1,4 @@
-# version 1.7-68
+# version 1.7-70
 
 
 ## bug fixes
@@ -12,6 +12,8 @@
 - `set.cats` failed with a tibble was used instead of a data.frame [#1406](https://github.com/rspatial/terra/issues/1406) by Mike Koontz
 - `polys` argument "alpha" was ignored if a single color was used. [#1413](https://github.com/rspatial/terra/issues/1413) by Derek Friend
 - `query` ignore the "vars" argument if all rows were selected. [#1398](https://github.com/rspatial/terra/issues/1398) by erkent-carb.
+- `spatSample` ignored "replace=TRUE" with random sampling, na.rm=TRUE, and a sample size larger than the non NA cells. [#1411](https://github.com/rspatial/terra/issues/1411) by Babak Naimi
+
 
 ## enhancements
 
