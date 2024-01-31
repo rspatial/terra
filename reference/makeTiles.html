@@ -74,7 +74,7 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
 <dd><p>SpatRaster</p></dd>
 
   <dt>y</dt>
-<dd><p>SpatRaster, SpatVector, or numeric</p></dd>
+<dd><p>SpatRaster or SpatVector defining the zones; or numeric specifying the number of rows and columns for each zone (1 or 2 numbers if the number of rows and columns is not the same)</p></dd>
 
   <dt>filename</dt>
 <dd><p>character. Output filename template. Filenames will be altered by adding the tile number for each tile</p></dd>
@@ -111,13 +111,28 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">100</span>, nrows<span class="op">=</span><span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">2</span>, nrows<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">getTileExtents</span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      xmin xmax ymin ymax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -180    0    0   90</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0  180    0   90</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -180    0  -90    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    0  180  -90    0</span>
+<span class="r-in"><span><span class="fu">getTileExtents</span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span>, buffer<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        xmin  xmax  ymin ymax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -180.0  10.8  -5.4 90.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  -10.8 180.0  -5.4 90.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -180.0  10.8 -90.0  5.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  -10.8 180.0 -90.0  5.4</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"_.tif"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu">makeTiles</span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span>, <span class="va">filename</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmp5TFnUt/file2236154705d5_1.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmp5TFnUt/file2236154705d5_2.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmp5TFnUt/file2236154705d5_3.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/var/folders/qv/pdh5wsgn0lq3dp77zj602b5c0000gn/T//Rtmp5TFnUt/file2236154705d5_4.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/folders/kx/gw6dssyn19d9qjs9mvh4hkz80000gn/T//RtmpdYSGKE/file32e54748dfd_1.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/var/folders/kx/gw6dssyn19d9qjs9mvh4hkz80000gn/T//RtmpdYSGKE/file32e54748dfd_2.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/var/folders/kx/gw6dssyn19d9qjs9mvh4hkz80000gn/T//RtmpdYSGKE/file32e54748dfd_3.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/var/folders/kx/gw6dssyn19d9qjs9mvh4hkz80000gn/T//RtmpdYSGKE/file32e54748dfd_4.tif"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="vrt.html">vrt</a></span><span class="op">(</span><span class="va">ff</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
@@ -125,10 +140,10 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 3.6, 1.8  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : spat_223652093cc9_8758.vrt </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : spat_223652093cc9_8758 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :                      1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :                  10000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : spat_32e51bf903d7_13029.vrt </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : spat_32e51bf903d7_13029 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :                       1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :                   10000 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

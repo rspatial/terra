@@ -72,6 +72,8 @@
 <code>query</code> ignore the “vars” argument if all rows were selected. <a href="https://github.com/rspatial/terra/issues/1398" class="external-link">#1398</a> by erkent-carb.</li>
 <li>
 <code>spatSample</code> ignored “replace=TRUE” with random sampling, na.rm=TRUE, and a sample size larger than the non NA cells. <a href="https://github.com/rspatial/terra/issues/1411" class="external-link">#1411</a> by Babak Naimi</li>
+<li>
+<code>spatSample</code> sometimes returned fewer values than requested and available for lonlat rasters. <a href="https://github.com/rspatial/terra/issues/1396" class="external-link">#1396</a> by Márcia Barbosa.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-70">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-70"></a></h3>
@@ -88,6 +90,8 @@
 <code>prcomp&lt;SpatRaster&gt;</code> method <a href="https://github.com/rspatial/terra/issues/1361#issuecomment-1860311029" class="external-link">#1361</a> by Jakub Nowosad</li>
 <li>
 <code>add_box</code> to add a box around the map. The box is drawn where the axes are, not around the plotting region.</li>
+<li>
+<code>getTileExtents</code> provides the extents of for tiles. These may be used in parallelization. See <a href="https://github.com/rspatial/terra/issues/1391" class="external-link">#1391</a> by Alex Ilich.</li>
 </ul></div>
 </div>
     <div class="section level2">
