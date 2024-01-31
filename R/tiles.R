@@ -26,7 +26,7 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 
 
 setMethod("getTileExtents", signature(x="SpatRaster"),
-	function(x, y, extend=FALSE, na.rm=FALSE, buffer=0) {
+	function(x, y, extend=FALSE, buffer=0) {
 
 		opt <- spatOptions(filename="")
 		if (inherits(y, "SpatRaster")) {

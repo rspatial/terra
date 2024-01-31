@@ -13,6 +13,7 @@
 - `polys` argument "alpha" was ignored if a single color was used. [#1413](https://github.com/rspatial/terra/issues/1413) by Derek Friend
 - `query` ignore the "vars" argument if all rows were selected. [#1398](https://github.com/rspatial/terra/issues/1398) by erkent-carb.
 - `spatSample` ignored "replace=TRUE" with random sampling, na.rm=TRUE, and a sample size larger than the non NA cells. [#1411](https://github.com/rspatial/terra/issues/1411) by Babak Naimi
+- `spatSample` sometimes returned fewer values than requested and available for lonlat rasters. [#1396](https://github.com/rspatial/terra/issues/1396) by Márcia Barbosa.
 
 
 ## enhancements
@@ -26,6 +27,7 @@
 
 - `prcomp<SpatRaster>` method [#1361](https://github.com/rspatial/terra/issues/1361#issuecomment-1860311029) by Jakub Nowosad
 - `add_box` to add a box around the map. The box is drawn where the axes are, not around the plotting region.
+- `getTileExtents` provides the extents of for tiles. These may be used in parallelization. See [#1391](https://github.com/rspatial/terra/issues/1391) by Alex Ilich.
 
 
 # version 1.7-65

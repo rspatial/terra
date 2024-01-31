@@ -27,7 +27,7 @@ Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{y}{SpatRaster, SpatVector, or numeric}
+  \item{y}{SpatRaster or SpatVector defining the zones; or numeric specifying the number of rows and columns for each zone (1 or 2 numbers if the number of rows and columns is not the same)}
   \item{filename}{character. Output filename template. Filenames will be altered by adding the tile number for each tile}
   \item{extend}{logical. If \code{TRUE}, the extent of \code{y} is expanded to assure that it covers all of \code{x}}
   \item{na.rm}{logical. If \code{TRUE}, tiles with only missing values are ignored}
@@ -51,6 +51,11 @@ character (filenames) or matrix (extents)
 r <- rast(ncols=100, nrows=100)
 values(r) <- 1:ncell(r)
 x <- rast(ncols=2, nrows=2)
+
+getTileExtents(r, x)
+getTileExtents(r, x, buffer=3)
+
+
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
