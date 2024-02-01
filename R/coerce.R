@@ -158,7 +158,9 @@ as.list.SpatRaster <- function(x, geom=NULL) {
 			ymax=e[4],
 			xres=xres(x),
 			yres=yres(x),
-			nms=paste(names(x), collapse="', '"),
+			nms = paste(names(x), collapse="', '"),
+			units = paste(units(x), collapse="', '"),
+			time = paste(time(x), collapse="', '"),
 			crs=crs
 		)
 	} else {
