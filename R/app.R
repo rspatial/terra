@@ -60,7 +60,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
-			x@cpp <- x@cpp$summary(txtfun, na.rm, opt)
+			x@ptr <- x@ptr$summary(txtfun, na.rm, opt)
 			return(messages(x, "app"))
 		}
 	}
@@ -272,7 +272,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)
 			r <- rast()
-			r@cpp <- x@cpp$summary(txtfun, narm, opt)
+			r@ptr <- x@ptr$summary(txtfun, narm, opt)
 			return (messages(r, "app") )
 		}
 	}

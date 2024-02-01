@@ -53,7 +53,7 @@ setMethod("subset", signature(x="SpatRaster"),
 		if (negate) subset = -subset
 		subset <- positive_indices(subset, nlyr(x), TRUE, "subset")
 		opt <- spatOptions(filename, overwrite, ...)
-		x@cpp <- x@cpp$subset(subset-1, opt)
+		x@ptr <- x@ptr$subset(subset-1, opt)
 		messages(x, "subset")
 	}
 )
@@ -140,10 +140,10 @@ setMethod("subset", signature(x="SpatVector"),
 			i <- 0
 		}
 	}
-	x@cpp <- x@cpp$subset_cols(i-1)
+	x@ptr <- x@ptr$subset_cols(i-1)
 	x <- messages(x, "subset")
 	if (drop) {	# drop geometry
-		.getSpatDF(x@cpp$df)
+		.getSpatDF(x@ptr$df)
 	} else {
 		x
 	}
@@ -153,7 +153,7 @@ setMethod("subset", signature(x="SpatVector"),
 setMethod("[", c("SpatVector", "numeric", "missing"),
 function(x, i, j, ... , drop=FALSE) {
 	i <- positive_indices(i, nrow(x), TRUE, "`[`")
-	x@cpp <- x@cpp$subset_rows(i-1)
+	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- messages(x, "[")
 	if (drop) {
 		as.data.frame(x)
@@ -172,7 +172,7 @@ function(x, i, j, drop=FALSE) {
 setMethod("[", c("SpatVector", "logical", "missing"),
 function(x, i, j, drop=FALSE) {
 	i <- which(rep_len(i, nrow(x)))
-	x@cpp <- x@cpp$subset_rows(i-1)
+	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- messages(x, "[")
 	if (drop) {
 		as.data.frame(x)
@@ -185,8 +185,8 @@ setMethod("[", c("SpatVector", "numeric", "numeric"),
 function(x, i, j, drop=FALSE) {
 	i <- positive_indices(i, nrow(x), TRUE, "`[`")
 	j <- positive_indices(j, ncol(x), TRUE, "`[`")
-	p <- x@cpp$subset_rows(i-1)
-	x@cpp <- p$subset_cols(j-1)
+	p <- x@ptr$subset_rows(i-1)
+	x@ptr <- p$subset_cols(j-1)
 	x <- messages(x, "'['")
 	if (drop) {
 		as.data.frame(x)
@@ -199,7 +199,7 @@ function(x, i, j, drop=FALSE) {
 setMethod("[", c("SpatVector", "missing", "numeric"),
 function(x, i, j, drop=FALSE) {
 	j <- positive_indices(j, ncol(x), TRUE, "`[`")
-	x@cpp <- x@cpp$subset_cols(j-1)
+	x@ptr <- x@ptr$subset_cols(j-1)
 	x <- messages(x, "[")
 	if (drop) {
 		as.data.frame(x)

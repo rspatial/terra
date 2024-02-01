@@ -6,16 +6,16 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 		if (filename == "") error("makeTiles", "filename cannot be empty")
 		opt <- spatOptions(filename="", overwrite=overwrite, ...)
 		if (inherits(y, "SpatRaster")) {
-			ff <- x@cpp$make_tiles(y@cpp, extend[1], buffer, na.rm[1], filename, opt)
+			ff <- x@ptr$make_tiles(y@ptr, extend[1], buffer, na.rm[1], filename, opt)
 		} else if (inherits(y, "SpatVector")) {
-			ff <- x@cpp$make_tiles_vect(y@cpp, extend[1], buffer, na.rm[1], filename, opt)		
+			ff <- x@ptr$make_tiles_vect(y@ptr, extend[1], buffer, na.rm[1], filename, opt)		
 		} else if (is.numeric(y)) {
 			if (length(y) > 2) {
 				error("makeTiles", "expected one or two numbers")
 			}
 			y <- rep_len(y, 2)
 			y <- aggregate(rast(x), y)
-			ff <- x@cpp$make_tiles(y@cpp, extend[1], buffer, na.rm[1], filename, opt)			
+			ff <- x@ptr$make_tiles(y@ptr, extend[1], buffer, na.rm[1], filename, opt)			
 		} else {
 			error("makeTiles", "y must be numeric or a SpatRaster or SpatVector")
 		}
@@ -30,16 +30,16 @@ setMethod("getTileExtents", signature(x="SpatRaster"),
 
 		opt <- spatOptions(filename="")
 		if (inherits(y, "SpatRaster")) {
-			e <- x@cpp$get_tiles_ext(y@cpp, extend[1], buffer)
+			e <- x@ptr$get_tiles_ext(y@ptr, extend[1], buffer)
 		} else if (inherits(y, "SpatVector")) {
-			e <- x@cpp$get_tiles_ext_vect(y@cpp, extend[1], buffer)		
+			e <- x@ptr$get_tiles_ext_vect(y@ptr, extend[1], buffer)		
 		} else if (is.numeric(y)) {
 			if (length(y) > 2) {
 				error("getTileExtents", "expected one or two numbers")
 			}
 			y <- rep_len(y, 2)
 			y <- aggregate(rast(x), y)
-			e <- x@cpp$get_tiles_ext(y@cpp, extend[1], buffer)
+			e <- x@ptr$get_tiles_ext(y@ptr, extend[1], buffer)
 		} else {
 			error("getTileExtents", "y must be numeric or a SpatRaster or SpatVector")
 		}
@@ -76,7 +76,7 @@ setMethod("vrt", signature(x="character"),
 		if (is.null(options)) {
 			options=""[0]
 		} 
-		f <- r@cpp$make_vrt(x, options, opt)
+		f <- r@ptr$make_vrt(x, options, opt)
 		messages(r, "vrt")
 		if (set_names) {
 			v <- readLines(f)

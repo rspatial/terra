@@ -42,7 +42,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 				#}
 				values <- as.vector(values)
 			}
-			ok <- x@cpp$replaceCellValuesLayer(layer-1, cells-1, values, bylyr, spatOptions())
+			ok <- x@ptr$replaceCellValuesLayer(layer-1, cells-1, values, bylyr, spatOptions())
 			messages(x)
 			invisible(TRUE)
 		} else {
@@ -63,7 +63,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 				#}
 				values <- as.vector(values)
 			}
-			ok <- x@cpp$replaceCellValues(cells-1, values, bylyr, spatOptions())
+			ok <- x@ptr$replaceCellValues(cells-1, values, bylyr, spatOptions())
 			messages(x)
 		}
 		invisible(TRUE)
@@ -179,13 +179,13 @@ make_replace_index <- function(v, vmx, nreps, name="i") {
 		value <- as.vector(value)
 	}
 	opt <- spatOptions()
-	x@cpp <- x@cpp$deepcopy()
+	x@ptr <- x@ptr$deepcopy()
 	if (is.na(k[1])) {
-		if (!x@cpp$replaceCellValues(i-1, value, bylyr, opt)) {
+		if (!x@ptr$replaceCellValues(i-1, value, bylyr, opt)) {
 			messages(x, "`[<-`")
 		} 
 	} else {
-		if (!x@cpp$replaceCellValuesLayer(k-1, i-1, value, bylyr, opt)) {
+		if (!x@ptr$replaceCellValuesLayer(k-1, i-1, value, bylyr, opt)) {
 			messages(x, "`[<-`")
 		}
 	}
@@ -198,7 +198,7 @@ make_replace_index <- function(v, vmx, nreps, name="i") {
 	for (lyr in ulyrs) {
 		y <- x[[lyr]]
 		i <- which(lyrs == lyr)
-		if (!y@cpp$replaceCellValues(cell[i]-1, value[i], FALSE, opt)) {
+		if (!y@ptr$replaceCellValues(cell[i]-1, value[i], FALSE, opt)) {
 			messages(y, "`[<-`")
 		}
 		x[[lyr]] <- y

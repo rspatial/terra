@@ -59,7 +59,7 @@ setMethod("wrap", signature(x="SpatVector"),
 setMethod("unwrap", signature(x="PackedSpatVector"),
 	function(x) {
 		p <- methods::new("SpatVector")
-		p@cpp <- SpatVector$new()
+		p@ptr <- SpatVector$new()
 		if (!is.na(x@crs)) {
 			crs(p, warn=FALSE) <- x@crs
 		}
@@ -71,9 +71,9 @@ setMethod("unwrap", signature(x="PackedSpatVector"),
 		reps <- diff(c(x@index[,n], nrow(x@coordinates)+1))
 		i <- rep(1:nrow(x@index), reps)
 		if (n == 2) {
-			p@cpp$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], rep(0, nrow(x@coordinates)))
+			p@ptr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], rep(0, nrow(x@coordinates)))
 		} else {
-			p@cpp$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], x@index[i,3])
+			p@ptr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], x@index[i,3])
 		}
 		if (nrow(x@attributes) > 0) {
 			values(p) <- x@attributes
@@ -219,7 +219,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 		r@definition <- as.character(x)
 
 		opt <- spatOptions(ncopies=2)
-		can <- (!proxy) && x@cpp$canProcessInMemory(opt)
+		can <- (!proxy) && x@ptr$canProcessInMemory(opt)
 
 		s <- sources(x)
 		if (can || (all(s == ""))) {
@@ -294,7 +294,7 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 				for (i in seq_along(x@attributes$colors)) {
 					if (!is.null(x@attributes$colors[[i]])) {
 						d <- terra:::.makeSpatDF(x@attributes$colors[[i]])
-						if (!r@cpp$setColors(i-1, d)) messages("cols<-", r)
+						if (!r@ptr$setColors(i-1, d)) messages("cols<-", r)
 					}
 				}
 			}			
