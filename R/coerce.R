@@ -139,9 +139,33 @@ setAs("ggmap", "SpatRaster",
 
 
 
-as.list.SpatRaster <- function(x, ...) {
-	lapply(1:nlyr(x), function(i) x[[i]])
+as.list.SpatRaster <- function(x, geom=NULL) {
+	if (!is.null(geom)) {
+		e <- as.vector(ext(x))
+		d <- crs(x, describe=TRUE)
+		if (!(is.na(d$authority) || is.na(d$code))) {
+			crs <- paste0(d$authority, ":", d$code)
+		} else {
+			crs <- gsub("\n[ ]+", "", crs(x))
+		}
+		list(
+			ncols=ncol(x),
+			nrows=nrow(x),
+			nlyrs=nlyr(x),
+			xmin=e[1],
+			xmax=e[2],
+			ymin=e[3],
+			ymax=e[4],
+			xres=xres(x),
+			yres=yres(x),
+			nms=paste(names(x), collapse="', '"),
+			crs=crs
+		)
+	} else {
+		lapply(1:nlyr(x), function(i) x[[i]])
+	}
 }
+
 setMethod("as.list", signature(x="SpatRaster"), as.list.SpatRaster)
 
 as.list.SpatRasterCollection <- function(x, ...) {
