@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-70</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-72</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">as.list</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">as.list</span><span class="op">(</span><span class="va">x</span>, geom<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRasterCollection</span></span>
 <span><span class="fu">as.list</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -76,12 +76,9 @@
 <dd><p>SpatRaster, SpatRasterDataset, SpatRasterCollection, or SpatVector</p></dd>
 
  <dt>geom</dt>
-<dd><p>character or NULL. If not NULL, either "WKT" or "HEX", to get the geometry included in Well-Known-Text or hexadecimal notation. If <code>x</code> has point geometry, it can also bey "XY" to add the coordinates of each point</p></dd>
+<dd><p>character or NULL. If not NULL, and <code>x</code> is a SpatVector, it should be either "WKT" or "HEX", to get the geometry included in Well-Known-Text or hexadecimal notation. If <code>x</code> has point geometry, it can also bey "XY" to add the coordinates of each point. If <code>x</code> is a SpatRaster, any value that is not NULL will return a list with the the parameters describing the geometry of the SpatRaster are returned</p></dd>
 
- <dt>...</dt>
-<dd><p>Additional arguments. These are ignored</p></dd>
-
-</dl></div>
+ </dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>see <code>coerce</code> for <code>as.data.frame</code> with a SpatRaster; and <code><a href="geometry.html">geom</a></code> to only extract the geometry of a SpatVector</p></div>
