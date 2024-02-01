@@ -27,7 +27,6 @@ Coerce a SpatRaster, SpatRasterCollection, SpatRasterDataset, SpatVector or Spat
 \arguments{
  \item{x}{SpatRaster, SpatRasterDataset, SpatRasterCollection, or SpatVector}
  \item{geom}{character or NULL. If not NULL, and \code{x} is a SpatVector, it should be either "WKT" or "HEX", to get the geometry included in Well-Known-Text or hexadecimal notation. If \code{x} has point geometry, it can also bey "XY" to add the coordinates of each point. If \code{x} is a SpatRaster, any value that is not NULL will return a list with the the parameters describing the geometry of the SpatRaster are returned}
- }
  \item{...}{additional arguments. These are ignored}
 }
   
