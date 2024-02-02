@@ -61,7 +61,7 @@
 <span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, partial <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">method</span>, mask<span class="op">=</span><span class="cn">FALSE</span>, align<span class="op">=</span><span class="cn">FALSE</span>, res<span class="op">=</span><span class="cn">NULL</span>, </span>
+<span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">method</span>, mask<span class="op">=</span><span class="cn">FALSE</span>, align_only<span class="op">=</span><span class="cn">FALSE</span>, res<span class="op">=</span><span class="cn">NULL</span>, </span>
 <span>  origin<span class="op">=</span><span class="cn">NULL</span>, threads<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span>, use_gdal<span class="op">=</span><span class="cn">TRUE</span>, by_util <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatExtent</span></span>
@@ -101,7 +101,7 @@
 <dd><p>logical. If <code>TRUE</code>, mask out areas outside the input extent. For example to avoid data wrapping around the date-line (see example with Robinson projection). To remove cells that are <code>NA</code> in <code>y</code> (if <code>y</code> is a SpatRaster) you can use the <code><a href="mask.html">mask</a> method</code> after calling <code>project</code> (this function)</p></dd>
 
   
-  <dt>align</dt>
+  <dt>align_only</dt>
 <dd><p>logical. If <code>TRUE</code>, and <code>y</code> is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of <code>x</code> is included</p></dd>
 
 
