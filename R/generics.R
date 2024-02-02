@@ -626,7 +626,7 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 )
 
 setMethod("project", signature(x="SpatRaster"),
-	function(x, y, method, mask=FALSE, align=FALSE, res=NULL, origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)  {
+	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)  {
 
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@ptr$rgb)) {
@@ -647,13 +647,13 @@ setMethod("project", signature(x="SpatRaster"),
 			if (use_gdal) {
 
 				if (by_util) {
-						x@ptr <- x@ptr$warp_by_util(y@ptr, "", method, mask[1], align[1], FALSE, opt)
+						x@ptr <- x@ptr$warp_by_util(y@ptr, "", method, mask[1], align_only[1], FALSE, opt)
 				} else {
-					x@ptr <- x@ptr$warp(y@ptr, "", method, mask[1], align[1], FALSE, opt)
+					x@ptr <- x@ptr$warp(y@ptr, "", method, mask[1], align_only[1], FALSE, opt)
 				}
 			} else {
-				if (align) {
-					y <- project(rast(x), y, align=TRUE)
+				if (align_only) {
+					y <- project(rast(x), y, align_only=TRUE)
 				}
 				x@ptr <- x@ptr$resample(y@ptr, method, mask[1], TRUE, opt)
 			}
@@ -666,7 +666,7 @@ setMethod("project", signature(x="SpatRaster"),
 				tmp <- project(rast(x), y)
 				if (!is.null(res)) res(tmp) <- res
 				if (!is.null(origin)) origin(tmp) <- origin
-				return(project(x, tmp, method=method, mask=mask, align=align, filename=filename, use_gdal=use_gdal, by_util=by_util, ...))
+				return(project(x, tmp, method=method, mask=mask, align_only=align_only, filename=filename, use_gdal=use_gdal, by_util=by_util, ...))
 			}
 			if (use_gdal) {
 

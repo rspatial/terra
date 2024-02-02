@@ -15,7 +15,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 \usage{
 \S4method{project}{SpatVector}(x, y, partial = FALSE)
 
-\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, res=NULL, 
+\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
 	origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)
 
 \S4method{project}{SpatExtent}(x, from, to)
@@ -52,7 +52,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 
   \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent. For example to avoid data wrapping around the date-line (see example with Robinson projection). To remove cells that are \code{NA} in \code{y} (if \code{y} is a SpatRaster) you can use the \code{\link{mask} method} after calling \code{project} (this function)}
   
-  \item{align}{logical. If \code{TRUE}, and \code{y} is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of \code{x} is included}
+  \item{align_only}{logical. If \code{TRUE}, and \code{y} is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of \code{x} is included}
 
   \item{res}{numeric. Can be used to set the resolution of the output raster if \code{y} is a CRS}
 
