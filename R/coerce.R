@@ -586,6 +586,10 @@ setAs("im", "SpatRaster",
 	function(from) {
 		r <- rast(nrows=from$dim[1], ncols=from$dim[2], xmin=from$xrange[1], xmax=from$xrange[2], ymin=from$yrange[1], ymax=from$yrange[2], crs="")
 		values(r) <- from$v
+		units(r) <- im$units$singular
+		if (im$units$multiplier != 1) {
+			r <- r * im$units$multiplier
+		}
 		flip(r, direction="vertical")
 	}
 )

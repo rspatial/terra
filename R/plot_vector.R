@@ -579,6 +579,9 @@ setMethod("dots", signature(x="SpatVector"),
 		out$legend_sort <- FALSE
 	} else {
 		out$uv <- unique(out$v)
+		if (is.factor(out$v)) {
+			out$uv <- levels(out$v)[levels(out$v) %in% out$uv]
+		}
 		out$legend_sort <- isTRUE(sort)
 		out$legend_sort_decreasing <- isTRUE(decreasing)
 	}
