@@ -139,7 +139,7 @@ setAs("ggmap", "SpatRaster",
 
 
 
-as.list.SpatRaster <- function(x, geom=NULL) {
+as.list.SpatRaster <- function(x, geom=NULL, ...) {
 	if (!is.null(geom)) {
 		e <- as.vector(ext(x))
 		d <- crs(x, describe=TRUE)

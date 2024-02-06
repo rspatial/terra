@@ -160,7 +160,7 @@ extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FA
 
 
 
-extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=FALSE, layer=NULL, bind=FALSE, na.rm=FALSE) {
+extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=FALSE, small=TRUE, layer=NULL, bind=FALSE, na.rm=FALSE) {
 
 	nl <- nlyr(x)
 	nf <- length(fun)
