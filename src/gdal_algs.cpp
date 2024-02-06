@@ -1269,7 +1269,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		if (canProcessInMemory(opt)) {
 			driver = "MEM";
 		} else {
-			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+			filename = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
 			opt.set_filenames({filename});
 			driver = "GTiff";
 		}
@@ -1441,7 +1441,7 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 		}
 	}
 
-	std::string filename = tempFile(topt.get_tempdir(), topt.pid, ".tif");
+	std::string filename = tempFile(topt.get_tempdir(), topt.tmpfile, ".tif");
 	driver = "GTiff";
 
 	GDALDatasetH hSrcDS;
@@ -1522,7 +1522,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 		if (canProcessInMemory(opt)) {
 			driver = "MEM";
 		} else {
-			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+			filename = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
 			opt.set_filenames({filename});
 			driver = "GTiff";
 		}
@@ -1600,7 +1600,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 		return out;
 	}
 
-	std::string tmpfile = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+	std::string tmpfile = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
 	std::string fname = mask ? tmpfile : filename;
 	if (!out.create_gdalDS(hDstDS, fname, driver, false, 0, {false}, {1}, {0}, ops)) {
 		out.setError("cannot create new dataset");
@@ -1668,7 +1668,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 		if (canProcessInMemory(opt)) {
 			driver = "MEM";
 		} else {
-			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
+			filename = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
 			opt.set_filenames({filename});
 			driver = "GTiff";
 		}

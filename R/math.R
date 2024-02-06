@@ -10,11 +10,11 @@ setMethod("log", signature(x="SpatRaster"),
     function(x, base=exp(1)){
 		opt <- spatOptions()
 		if (base == exp(1)) {
-			x@cpp <- x@cpp$math("log", opt)
+			x@ptr <- x@ptr$math("log", opt)
 		} else if (base == 2) {
-			x@cpp <- x@cpp$math("log2", opt)
+			x@ptr <- x@ptr$math("log2", opt)
 		} else if (base == 10) {
-			x@cpp <- x@cpp$math("log10", opt)
+			x@ptr <- x@ptr$math("log10", opt)
 		} else {
 			x <- app(x, function(i) log(i, base))
 		}
@@ -29,11 +29,11 @@ setMethod("Math", signature(x="SpatRaster"),
 		oper <- as.vector(.Generic)[1]
 		opt <- spatOptions()
 		if (substr(oper, 1, 3) == "cum") {
-			x@cpp <- x@cpp$cum(substr(oper, 4, 10), FALSE, opt)
+			x@ptr <- x@ptr$cum(substr(oper, 4, 10), FALSE, opt)
 		} else if (oper %in% c("acos", "acosh", "asin", "asinh", "atan", "atanh", "cos", "cosh", "cospi", "sin", "sinh", "sinpi", "tan", "tanh", "tanpi")) {
-			x@cpp <- x@cpp$trig(oper, opt)
+			x@ptr <- x@ptr$trig(oper, opt)
 		} else {
-			x@cpp <- x@cpp$math(oper, opt)
+			x@ptr <- x@ptr$math(oper, opt)
 		}
 		messages(x, oper)
 	}
@@ -49,12 +49,12 @@ setMethod("math", signature(x="SpatRaster"),
 		fun = fun[1]
 		opt <- spatOptions(filename, overwrite, ...)
 		if (substr(fun, 1, 3) == "cum") {
-			x@cpp <- x@cpp$cum(substr(fun, 4, 10), FALSE, "", FALSE)
+			x@ptr <- x@ptr$cum(substr(fun, 4, 10), FALSE, "", FALSE)
 		} else if (fun %in% c("acos", "acosh", "asin", "asinh", "atan", "atanh", "cos", "cosh", "cospi", "sin", "sinh", "sinpi", "tan", "tanh", "tanpi")) {
-			x@cpp <- x@cpp$trig(fun, opt)
-		} else if (fun %in% c("abs", "sign", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2")) {		x@cpp <- x@cpp$math(fun, opt)
+			x@ptr <- x@ptr$trig(fun, opt)
+		} else if (fun %in% c("abs", "sign", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2")) {		x@ptr <- x@ptr$math(fun, opt)
 		} else if (fun %in% c("round", "signif")) {
-			x@cpp <- x@cpp$math2(fun, digits, opt)
+			x@ptr <- x@ptr$math2(fun, digits, opt)
 		} else {
 			error("math", "unknown function")
 		}
@@ -68,7 +68,7 @@ setMethod("Math2", signature(x="SpatRaster"),
     function(x, digits=0){
 		opt <- spatOptions()
 		oper <- as.vector(.Generic)[1]
-		x@cpp <- x@cpp$math2(oper, digits, opt)
+		x@ptr <- x@ptr$math2(oper, digits, opt)
 		messages(x, oper)
 	}
 )
@@ -78,9 +78,9 @@ setMethod("Math", signature(x="SpatExtent"),
     function(x){
 		oper <- as.vector(.Generic)[1]
 		if (oper == "floor") {
-			x@cpp <- x@cpp$floor()
+			x@ptr <- x@ptr$floor()
 		} else if (oper == "ceiling") {
-			x@cpp <- x@cpp$ceil()
+			x@ptr <- x@ptr$ceil()
 		} else {
 			error(oper, "not implemented for SpatExtent")
 		}
@@ -95,7 +95,7 @@ setMethod("Math2", signature(x="SpatExtent"),
     function(x, digits=0){
 		oper <- as.vector(.Generic)[1]
 		if (oper == "round") {
-			x@cpp <- x@cpp$round(digits)
+			x@ptr <- x@ptr$round(digits)
 			if (!is.valid(x)) {
 				error(oper, "invalid extent")
 			}
@@ -110,7 +110,7 @@ setMethod("Math2", signature(x="SpatVector"),
     function(x, digits=4){
 		oper <- as.vector(.Generic)[1]
 		if (oper == "round") {
-			x@cpp <- x@cpp$round(digits)
+			x@ptr <- x@ptr$round(digits)
 			return(x)
 		} else {
 			error(oper, "not implemented for SpatVector")

@@ -43,14 +43,14 @@ setMethod("dots", signature(x="SpatVector"),
 #	cols <- out$cols
 #	if (is.null(cols)) cols = rep("black", n)
 
-#	g <- lapply(x@cpp$linesList(), function(i) { names(i)=c("x", "y"); i } )
+#	g <- lapply(x@ptr$linesList(), function(i) { names(i)=c("x", "y"); i } )
 
 #	g <- geom(x, df=TRUE)
 #	g <- split(g, g[,1])
 #	g <- lapply(g, function(x) split(x[,3:4], x[,2]))
 #	n <- length(g)
 
-	g <- x@cpp$linesList()
+	g <- x@ptr$linesList()
 	lty <- rep_len(lty, n)
 	lwd <- rep_len(lwd, n)
 	for (i in 1:n) {
@@ -119,7 +119,7 @@ setMethod("dots", signature(x="SpatVector"),
 #				# g[[i]][[1]] <- a
 #			}
 
-	g <- x@cpp$polygonsList()
+	g <- x@ptr$polygonsList()
 	if (is.null(out$leg$density)) {
 		for (i in seq_along(g)) {
 			for (j in seq_along(g[[i]])) {
@@ -579,6 +579,9 @@ setMethod("dots", signature(x="SpatVector"),
 		out$legend_sort <- FALSE
 	} else {
 		out$uv <- unique(out$v)
+		if (is.factor(out$v)) {
+			out$uv <- levels(out$v)[levels(out$v) %in% out$uv]
+		}
 		out$legend_sort <- isTRUE(sort)
 		out$legend_sort_decreasing <- isTRUE(decreasing)
 	}

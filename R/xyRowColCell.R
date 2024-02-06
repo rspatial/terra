@@ -13,32 +13,32 @@ point_on_border <- function(r, x, y, tolerance = sqrt(.Machine$double.eps)) {
 
 setMethod("yFromRow", signature(object="SpatRaster", row="numeric"),
 	function(object, row) {
-		object@cpp$yFromRow(row - 1)
+		object@ptr$yFromRow(row - 1)
 	}
 )
 
 setMethod("yFromRow", signature(object="SpatRaster", row="missing"),
 	function(object, row) {
-	  row <- seq_len(object@cpp$nrow())
-		object@cpp$yFromRow(row - 1)
+	  row <- seq_len(object@ptr$nrow())
+		object@ptr$yFromRow(row - 1)
 	}
 )
 
 setMethod(xFromCol, signature(object="SpatRaster", col="numeric"),
 	function(object, col) {
-		object@cpp$xFromCol(col - 1)
+		object@ptr$xFromCol(col - 1)
 	}
 )
 setMethod(xFromCol, signature(object="SpatRaster", col="missing"),
 	function(object, col) {
-	  col <- seq_len(object@cpp$ncol())
-		object@cpp$xFromCol(col - 1)
+	  col <- seq_len(object@ptr$ncol())
+		object@ptr$xFromCol(col - 1)
 	}
 )
 
 setMethod(colFromX, signature(object="SpatRaster", x="numeric"),
 	function(object, x)	{
-		cols <- object@cpp$colFromX(x) + 1
+		cols <- object@ptr$colFromX(x) + 1
 		cols[cols==0] <- NA
 		cols
 	}
@@ -46,7 +46,7 @@ setMethod(colFromX, signature(object="SpatRaster", x="numeric"),
 
 setMethod(rowFromY, signature(object="SpatRaster", y="numeric"),
 	function(object, y)	{
-		rows <- object@cpp$rowFromY(y) + 1
+		rows <- object@ptr$rowFromY(y) + 1
 		rows[rows==0] <- NA
 		rows
 	}
@@ -56,7 +56,7 @@ setMethod(cellFromXY, signature(object="SpatRaster", xy="matrix"),
 	function(object, xy) {
 		stopifnot(ncol(xy) == 2)
 		#.checkXYnames(colnames(xy))
-		object@cpp$cellFromXY(xy[,1], xy[,2], NA) + 1
+		object@ptr$cellFromXY(xy[,1], xy[,2], NA) + 1
 	}
 )
 
@@ -64,7 +64,7 @@ setMethod(cellFromXY, signature(object="SpatRaster", xy="data.frame"),
 	function(object, xy) {
 		stopifnot(ncol(xy) == 2)
 		#.checkXYnames(colnames(xy))
-		object@cpp$cellFromXY(xy[,1], xy[,2], NA) + 1
+		object@ptr$cellFromXY(xy[,1], xy[,2], NA) + 1
 	}
 )
 
@@ -72,20 +72,20 @@ setMethod(cellFromXY, signature(object="SpatRaster", xy="data.frame"),
 
 setMethod(cellFromRowCol, signature(object="SpatRaster", row="numeric", col="numeric"),
 	function(object, row, col) {
-		object@cpp$cellFromRowCol(row-1, col-1) + 1
+		object@ptr$cellFromRowCol(row-1, col-1) + 1
 	}
 )
 
 setMethod(cellFromRowColCombine, signature(object="SpatRaster", row="numeric", col="numeric"),
 	function(object, row, col) {
-		object@cpp$cellFromRowColCombine(row-1, col-1) + 1
+		object@ptr$cellFromRowColCombine(row-1, col-1) + 1
 	}
 )
 
 setMethod(rowColCombine, signature(object="SpatRaster", row="numeric", col="numeric"),
 	function(object, row, col) {
-		cell <- object@cpp$cellFromRowColCombine(row-1, col-1)
-		rc <- object@cpp$rowColFromCell(cell)
+		cell <- object@ptr$cellFromRowColCombine(row-1, col-1)
+		rc <- object@ptr$rowColFromCell(cell)
 		rc <- do.call(cbind, rc)
 		rc[rc < 0] <- NA
 		rc+1
@@ -95,7 +95,7 @@ setMethod(rowColCombine, signature(object="SpatRaster", row="numeric", col="nume
 
 setMethod(xyFromCell, signature(object="SpatRaster", cell="numeric"),
 	function(object, cell) {
-		xy <- object@cpp$xyFromCell(cell-1)
+		xy <- object@ptr$xyFromCell(cell-1)
 		xy <- do.call(cbind, xy)
 		colnames(xy) <- c("x", "y")
 		xy
@@ -117,7 +117,7 @@ setMethod(xFromCell, signature(object="SpatRaster", cell="numeric"),
 
 setMethod(rowColFromCell, signature(object="SpatRaster", cell="numeric"),
 	function(object, cell) {
-		rc <- object@cpp$rowColFromCell(cell-1)
+		rc <- object@ptr$rowColFromCell(cell-1)
 		rc <- do.call(cbind, rc)
 		rc[rc < 0] <- NA
 		rc+1

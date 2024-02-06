@@ -1,5 +1,15 @@
-# version 1.7-68
+# version 1.7-72
 
+## enhancements
+
+- `extract` has new argument "small=TRUE" to allow for strict use of "touches=FALSE" [#1419](https://github.com/rspatial/terra/issues/1419) by Floris Vanderhaeghe.
+- `as.list<SpatRaster>` has new argument "geom=NULL"
+
+
+
+# version 1.7-71
+
+Released 2023-01-31
 
 ## bug fixes
 
@@ -9,17 +19,25 @@
 - using /vis3/ to open a SpatRaster did not work [#1382](https://github.com/rspatial/terra/issues/1382) by Mike Koontz
 - `plot<SpatRaster>(add=TRUE)` sampled the raster data without considering the extent of the map. [#1394](https://github.com/rspatial/terra/issues/1394) by Márcia Barbosa
 - `plot<SpatRaster>(add=TRUE)` now only considers the first layer of a multi-layer SpatRaster [1395](https://github.com/rspatial/terra/issues/1395) by Márcia Barbosa
+- `set.cats` failed with a tibble was used instead of a data.frame [#1406](https://github.com/rspatial/terra/issues/1406) by Mike Koontz
+- `polys` argument "alpha" was ignored if a single color was used. [#1413](https://github.com/rspatial/terra/issues/1413) by Derek Friend
+- `query` ignore the "vars" argument if all rows were selected. [#1398](https://github.com/rspatial/terra/issues/1398) by erkent-carb.
+- `spatSample` ignored "replace=TRUE" with random sampling, na.rm=TRUE, and a sample size larger than the non NA cells. [#1411](https://github.com/rspatial/terra/issues/1411) by Babak Naimi
+- `spatSample` sometimes returned fewer values than requested and available for lonlat rasters. [#1396](https://github.com/rspatial/terra/issues/1396) by Márcia Barbosa.
 
 
 ## enhancements
 
 - `vect<character>` now has argument "opts" for GDAL open options, e.g. to declare a file encoding. [#1389](https://github.com/rspatial/terra/issues/1389) by Mats Blomqvist
 - `plot(plg=list(tic=""))` now allows chosing alternative continuous legend tic-mark styles ("in", "out", "through" or "none")
+- `makeTiles` has new argument "buffer" [#1408](https://github.com/rspatial/terra/issues/1408) by Joy Flowers.
+
 
 ## new 
 
 - `prcomp<SpatRaster>` method [#1361](https://github.com/rspatial/terra/issues/1361#issuecomment-1860311029) by Jakub Nowosad
 - `add_box` to add a box around the map. The box is drawn where the axes are, not around the plotting region.
+- `getTileExtents` provides the extents of for tiles. These may be used in parallelization. See [#1391](https://github.com/rspatial/terra/issues/1391) by Alex Ilich.
 
 
 # version 1.7-65

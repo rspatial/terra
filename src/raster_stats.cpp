@@ -1283,7 +1283,7 @@ SpatDataFrame SpatRaster::zonal_weighted(SpatRaster z, SpatRaster w, bool narm, 
 }
 
 
-SpatDataFrame SpatRaster::zonal_poly(SpatVector x, std::string fun, bool weights, bool exact, bool touches,bool narm, SpatOptions &opt) {
+SpatDataFrame SpatRaster::zonal_poly(SpatVector x, std::string fun, bool weights, bool exact, bool touches,bool small, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
 	std::string gtype = x.type();
@@ -1330,7 +1330,7 @@ SpatDataFrame SpatRaster::zonal_poly(SpatVector x, std::string fun, bool weights
 		} else if (exact) {
 			rasterizeCellsExact(cell, wgt, p, opt);
 		} else {
-			cell = rasterizeCells(p, touches, opt);
+			cell = rasterizeCells(p, touches, small, opt);
         }
 		
 		std::vector<std::vector<double>> e = extractCell(cell);
@@ -1383,7 +1383,7 @@ std::vector<double> tabfun(std::vector<double> x, std::vector<double> w) {
 }
 
 
-std::vector<std::vector<double>> SpatRaster::zonal_poly_table(SpatVector x, bool weights, bool exact, bool touches,bool narm, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::zonal_poly_table(SpatVector x, bool weights, bool exact, bool touches, bool small, bool narm, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
 	std::string gtype = x.type();
@@ -1401,7 +1401,7 @@ std::vector<std::vector<double>> SpatRaster::zonal_poly_table(SpatVector x, bool
 	if (nl > 1) {
 		SpatOptions ops(opt);
 		SpatRaster r = subset({0}, ops);
-		out = r.zonal_poly_table(x, weights, exact, touches, narm, opt);
+		out = r.zonal_poly_table(x, weights, exact, touches, small, narm, opt);
 		addWarning("only the first layer of the raster is used");		
 		return out;
 	}
@@ -1420,7 +1420,7 @@ std::vector<std::vector<double>> SpatRaster::zonal_poly_table(SpatVector x, bool
 		} else if (exact) {
 			rasterizeCellsExact(cell, wgt, p, opt);
 		} else {
-			cell = rasterizeCells(p, touches, opt);
+			cell = rasterizeCells(p, touches, small, opt);
         }	
 		std::vector<std::vector<double>> e = extractCell(cell);
 		out[i] = tabfun(e[0], wgt);
@@ -1430,7 +1430,7 @@ std::vector<std::vector<double>> SpatRaster::zonal_poly_table(SpatVector x, bool
 }
 
 
-SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool weights, bool exact, bool touches, bool narm, SpatOptions &opt) {
+SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool weights, bool exact, bool touches, bool small, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
 	std::string gtype = x.type();
@@ -1468,7 +1468,7 @@ SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool w
 		} else if (exact) {
 			rasterizeCellsExact(cell, wgt, p, opt);
 		} else {
-			cell = rasterizeCells(p, touches, opt);
+			cell = rasterizeCells(p, touches, small, opt);
         }
 		
 		std::vector<std::vector<double>> e = extractCell(cell);

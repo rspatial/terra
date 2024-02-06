@@ -121,7 +121,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 				old_pearson(x, asSample=asSample, na.rm=na.rm, nl=nl, n=n, mat=mat)
 			} else {			
 				opt <- spatOptions()
-				m <- x@cpp$layerCor("cor", use, asSample, opt)
+				m <- x@ptr$layerCor("cor", use, asSample, opt)
 				x <- messages(x)
 				m <- lapply(m, function(i) {
 					matrix(i, nrow=nl, byrow=TRUE, dimnames=list(names(x), names(x)))

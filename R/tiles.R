@@ -1,29 +1,54 @@
 
 setMethod("makeTiles", signature(x="SpatRaster"),
-	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, overwrite=FALSE, ...) {
+	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, buffer=0, overwrite=FALSE, ...) {
 		filename <- trimws(filename[1])
 		filename <- filename[!is.na(filename)]
 		if (filename == "") error("makeTiles", "filename cannot be empty")
 		opt <- spatOptions(filename="", overwrite=overwrite, ...)
 		if (inherits(y, "SpatRaster")) {
-			ff <- x@cpp$make_tiles(y@cpp, extend[1], na.rm[1], filename, opt)
+			ff <- x@ptr$make_tiles(y@ptr, extend[1], buffer, na.rm[1], filename, opt)
 		} else if (inherits(y, "SpatVector")) {
-			ff <- x@cpp$make_tiles_vect(y@cpp, extend[1], na.rm[1], filename, opt)		
+			ff <- x@ptr$make_tiles_vect(y@ptr, extend[1], buffer, na.rm[1], filename, opt)		
 		} else if (is.numeric(y)) {
 			if (length(y) > 2) {
 				error("makeTiles", "expected one or two numbers")
 			}
 			y <- rep_len(y, 2)
 			y <- aggregate(rast(x), y)
-			ff <- x@cpp$make_tiles(y@cpp, extend[1], na.rm[1], filename, opt)			
+			ff <- x@ptr$make_tiles(y@ptr, extend[1], buffer, na.rm[1], filename, opt)			
 		} else {
-			error("makeTiles", "y must be a SpatRaster or SpatVector")
+			error("makeTiles", "y must be numeric or a SpatRaster or SpatVector")
 		}
 		messages(x, "makeTiles")
 		ff
 	}
 )
 
+
+setMethod("getTileExtents", signature(x="SpatRaster"),
+	function(x, y, extend=FALSE, buffer=0) {
+
+		opt <- spatOptions(filename="")
+		if (inherits(y, "SpatRaster")) {
+			e <- x@ptr$get_tiles_ext(y@ptr, extend[1], buffer)
+		} else if (inherits(y, "SpatVector")) {
+			e <- x@ptr$get_tiles_ext_vect(y@ptr, extend[1], buffer)		
+		} else if (is.numeric(y)) {
+			if (length(y) > 2) {
+				error("getTileExtents", "expected one or two numbers")
+			}
+			y <- rep_len(y, 2)
+			y <- aggregate(rast(x), y)
+			e <- x@ptr$get_tiles_ext(y@ptr, extend[1], buffer)
+		} else {
+			error("getTileExtents", "y must be numeric or a SpatRaster or SpatVector")
+		}
+		messages(x, "getTileExtents")
+		e <- matrix(e, ncol=4, byrow=TRUE)
+		colnames(e) <- c("xmin", "xmax", "ymin", "ymax")
+		e
+	}
+)
 
 
 
@@ -51,7 +76,7 @@ setMethod("vrt", signature(x="character"),
 		if (is.null(options)) {
 			options=""[0]
 		} 
-		f <- r@cpp$make_vrt(x, options, opt)
+		f <- r@ptr$make_vrt(x, options, opt)
 		messages(r, "vrt")
 		if (set_names) {
 			v <- readLines(f)

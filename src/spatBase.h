@@ -136,7 +136,7 @@ class SpatOptions {
 		bool datatype_set = false;
 		//bool ncdfcopy = false;
 		unsigned char value_type = 0;
-		unsigned pid=0;
+		std::string tmpfile = "";
 		
 		std::string datatype = "";
 		//std::string bandorder = "";

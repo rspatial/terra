@@ -400,7 +400,7 @@ bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions 
 		}
 	}
 
-	std::string fbase = tempFile(opt.get_tempdir(), opt.pid, "");
+	std::string fbase = tempFile(opt.get_tempdir(), opt.tmpfile, "");
 	std::string f = fbase + ".shp";
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "ESRI Shapefile" );
     GDALDataset *poDS = NULL;

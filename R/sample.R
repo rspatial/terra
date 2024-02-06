@@ -206,14 +206,17 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	if (nlyr(x) > 1) {
 		x <- subst(anyNA(x), 1, NA)
 	}
+
 	if (lonlat) {
 		v <- cbind(cell=1:ncell(x), abs(cos(pi * values(init(x, "y")) / 360)), values(x))
 		v <- v[!is.na(v[,3]),]
-		i <- sample.int(nrow(v), min(size, nrow(v)), prob=v[,2], replace=replace)
+		ssize <- ifelse(replace, size, min(size, nrow(v)))
+		i <- sample.int(nrow(v), ssize, prob=v[,2], replace=replace)
 	} else {
 		v <- cbind(cell=1:ncell(x), values(x))
 		v <- v[!is.na(v[,2]),]
-		i <- sample.int(nrow(v), min(size, nrow(v)), replace=replace)
+		ssize <- ifelse(replace, size, min(size, nrow(v)))
+		i <- sample.int(nrow(v), ssize, replace=replace)
 	}
 	v[i,1]
 }
@@ -235,9 +238,9 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			esize <- size
 		}
 		if (na.rm && (blocks(x, n=4)$n == 1)) {
-			cells <- .sampleCellsMemory(x, size, replace, lonlat, ext)
+			cells <- .sampleCellsMemory(x, esize, replace, lonlat, ext)
 		} else if (lonlat) {
-			m <- ifelse(replace, 1.5, 1.25)
+			m <- ifelse(replace, 1.5, 2)
 			n <- m * esize
 			y <- yFromRow(r, 1:nrow(r))
 			rows <- sample.int(nrow(r), n, replace=TRUE, prob=abs(cos(pi*y/180)))
@@ -403,12 +406,12 @@ sampleRaster <- function(x, size, method, replace, ext=NULL, warn) {
 	}
 	if (method == "regular") {
 		if (length(size) > 1) {
-			x@cpp <- x@cpp$sampleRowColRaster(size[1], size[2], warn[1])
+			x@ptr <- x@ptr$sampleRowColRaster(size[1], size[2], warn[1])
 		} else {
-			x@cpp <- x@cpp$sampleRegularRaster(size)
+			x@ptr <- x@ptr$sampleRegularRaster(size)
 		}
 	} else if (method == "random") {
-		x@cpp <- x@cpp$sampleRandomRaster(size, replace, .seed())
+		x@ptr <- x@ptr$sampleRandomRaster(size, replace, .seed())
 	} else {
 		error("spatSample", "method must be 'regular' or 'random' if as.raster=TRUE")
 	}
@@ -535,9 +538,9 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (method == "regular") {
 			opt <- spatOptions()
 			if (length(size) > 1) {
-				v <- x@cpp$sampleRowColValues(size[1], size[2], opt)
+				v <- x@ptr$sampleRowColValues(size[1], size[2], opt)
 			} else {
-				v <- x@cpp$sampleRegularValues(size, opt)
+				v <- x@ptr$sampleRegularValues(size, opt)
 			}
 			x <- messages(x, "spatSample")
 			if (length(v) > 0) {
@@ -553,13 +556,17 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
 				out <- x[cnrs]	
 			} else {
-				#v <- x@cpp$sampleRandomValues(size, replace, seed)
+				#v <- x@ptr$sampleRandomValues(size, replace, seed)
 				if (size > 0.75 * ncell(x)) {
 					if (na.rm) {
 						out <- stats::na.omit(values(x))
-						attr(x, "na.action") <- NULL
+						attr(out, "na.action") <- NULL
 						if (nrow(out) < size) {
-							warn("spatSample", "more non-NA cells requested than available")
+							if (replace) {
+								out <- out[sample.int(nrow(out), size, replace=TRUE), ,drop=FALSE]
+							} else {
+								warn("spatSample", "more non-NA cells requested than available")
+							}
 						} else {
 							out <- out[sample.int(nrow(out), size), ,drop=FALSE]
 						}
@@ -619,9 +626,9 @@ setMethod("spatSample", signature(x="SpatExtent"),
 		size <- round(size)
 		stopifnot(size > 0)
 		if (method=="random") {
-			s <- x@cpp$sampleRandom(size, lonlat, .seed())
+			s <- x@ptr$sampleRandom(size, lonlat, .seed())
 		} else {
-			s <- x@cpp$sampleRegular(size, lonlat)
+			s <- x@ptr$sampleRegular(size, lonlat)
 		}
 		s <- do.call(cbind, s)
 		colnames(s) <- c("x", "y")
@@ -689,7 +696,7 @@ setMethod("spatSample", signature(x="SpatExtent"),
 
 
 #coordinates <- function(x) {
-#	do.call(cbind, x@cpp$coordinates())
+#	do.call(cbind, x@ptr$coordinates())
 #}
 
 get_field_name <- function(x, nms, sender="") {
@@ -743,9 +750,9 @@ setMethod("spatSample", signature(x="SpatVector"),
 			}
 			out <- vect()
 			if (length(size) == 1) {
-				out@cpp <- x@cpp$sample(size, method[1], .seed())
+				out@ptr <- x@ptr$sample(size, method[1], .seed())
 			} else {
-				out@cpp <- x@cpp$sampleGeom(size, method[1], .seed())	
+				out@ptr <- x@ptr$sampleGeom(size, method[1], .seed())	
 			}
 			messages(x, "spatSample")
 			return(messages(out, "spatSample"))

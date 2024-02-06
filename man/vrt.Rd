@@ -17,7 +17,7 @@ Create a Virtual Raster Dataset (VRT) from a collection of file-based raster dat
 }
 
 \arguments{
-  \item{x}{character. Filenames of raster "tiles". See \code{\link{tiles}}}
+  \item{x}{character. Filenames of raster "tiles". That is, files that have data for, typically non-overlapping, sub-regions of an raster. See \code{\link{makeTiles}}}
   \item{filename}{character. output VRT filename}  
   \item{options}{character. All arguments as separate vector elements. Options as for \href{https://gdal.org/programs/gdalbuildvrt.html}{gdalbuildvrt}}
   \item{overwrite}{logical. Should \code{filename} be overwritten if it exists?}

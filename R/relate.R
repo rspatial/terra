@@ -1,7 +1,7 @@
 
 setMethod("is.related", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, relation) {
-		out <- x@cpp$is_related(y@cpp, relation)
+		out <- x@ptr$is_related(y@ptr, relation)
 		x <- messages(x, "is.related")
 		out
 	}
@@ -10,7 +10,7 @@ setMethod("is.related", signature(x="SpatVector", y="SpatVector"),
 setMethod("is.related", signature(x="SpatVector", y="SpatExtent"),
 	function(x, y, relation) {
 		y <- as.polygons(y)
-		out <- x@cpp$is_related(y@cpp, relation)
+		out <- x@ptr$is_related(y@ptr, relation)
 		x <- messages(x, "is.related")
 		out
 	}
@@ -19,7 +19,7 @@ setMethod("is.related", signature(x="SpatVector", y="SpatExtent"),
 setMethod("is.related", signature(x="SpatExtent", y="SpatVector"),
 	function(x, y, relation) {
 		x <- as.polygons(x)
-		out <- x@cpp$is_related(y@cpp, relation)
+		out <- x@ptr$is_related(y@ptr, relation)
 		x <- messages(x, "is.related")
 		out
 	}
@@ -29,7 +29,7 @@ setMethod("is.related", signature(x="SpatExtent", y="SpatVector"),
 setMethod("is.related", signature(x="SpatVector", y="SpatRaster"),
 	function(x, y, relation) {
 		y <- as.polygons(y, ext=TRUE)
-		out <- x@cpp$is_related(y@cpp, relation)
+		out <- x@ptr$is_related(y@ptr, relation)
 		x <- messages(x, "is.related")
 		out
 	}
@@ -38,7 +38,7 @@ setMethod("is.related", signature(x="SpatVector", y="SpatRaster"),
 setMethod("is.related", signature(x="SpatRaster", y="SpatVector"),
 	function(x, y, relation) {
 		x <- as.polygons(x, ext=TRUE)
-		out <- x@cpp$is_related(y@cpp, relation)
+		out <- x@ptr$is_related(y@ptr, relation)
 		x <- messages(x, "is.related")
 		out
 	}
@@ -49,7 +49,7 @@ setMethod("is.related", signature(x="SpatExtent", y="SpatRaster"),
 	function(x, y, relation) {
 		x <- as.polygons(x)
 		y <- as.polygons(y, ext=TRUE)
-		out <- x@cpp$is_related(y@cpp, relation)
+		out <- x@ptr$is_related(y@ptr, relation)
 		x <- messages(x, "is.related")
 		out
 	}
@@ -59,7 +59,7 @@ setMethod("is.related", signature(x="SpatRaster", y="SpatExtent"),
 	function(x, y, relation) {
 		x <- as.polygons(x, ext=TRUE)
 		y <- as.polygons(y)
-		out <- x@cpp$is_related(y@cpp, relation)
+		out <- x@ptr$is_related(y@ptr, relation)
 		x <- messages(x, "is.related")
 		out
 	}
@@ -69,7 +69,7 @@ setMethod("is.related", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, relation) {
 		x <- as.polygons(x, ext=TRUE)
 		y <- as.polygons(y, ext=TRUE)
-		out <- x@cpp$is_related(y@cpp, relation)
+		out <- x@ptr$is_related(y@ptr, relation)
 		x <- messages(x, "is.related")
 		out
 	}
@@ -79,7 +79,7 @@ setMethod("is.related", signature(x="SpatRaster", y="SpatRaster"),
 setMethod("relate", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, relation, pairs=FALSE, na.rm=TRUE) {
 		if (pairs) {
-			out <- x@cpp$related_between(y@cpp, relation[1], na.rm[1])
+			out <- x@ptr$related_between(y@ptr, relation[1], na.rm[1])
 			messages(x, "relate")
 			if (length(out[[1]]) == 0) {
 				cbind(id.x=0,id.y=0)[0,,drop=FALSE]
@@ -88,7 +88,7 @@ setMethod("relate", signature(x="SpatVector", y="SpatVector"),
 				do.call(cbind, out) + 1
 			}
 		} else {
-			out <- x@cpp$related_between(y@cpp, relation[1], TRUE)
+			out <- x@ptr$related_between(y@ptr, relation[1], TRUE)
 			messages(x, "relate")
 			m <- matrix(FALSE, nrow(x), nrow(y))
 			if (length(out[[1]]) > 0) {
@@ -96,7 +96,7 @@ setMethod("relate", signature(x="SpatVector", y="SpatVector"),
 			}
 			m
 
-#			out <- x@cpp$relate_between(y@cpp, relation, TRUE, TRUE)
+#			out <- x@ptr$relate_between(y@ptr, relation, TRUE, TRUE)
 #			messages(x, "relate")
 #			out[out == 2] <- NA
 #			matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
@@ -106,7 +106,7 @@ setMethod("relate", signature(x="SpatVector", y="SpatVector"),
 
 #setMethod("which.related", signature(x="SpatVector", y="SpatVector"),
 #	function(x, y, relation) {
-#		out <- x@cpp$which_related(y@cpp, relation)
+#		out <- x@ptr$which_related(y@ptr, relation)
 #		x <- messages(x, "which.related")
 #		out <- do.call(cbind, out) + 1
 #		colnames(out) <- c("id.x", "id.y")
@@ -183,7 +183,7 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 	function(x, y, relation, pairs=FALSE, na.rm=TRUE) {
 
 		if (pairs) {
-			out <- x@cpp$related_within(relation, na.rm[1])
+			out <- x@ptr$related_within(relation, na.rm[1])
 			messages(x, "relate")
 			if (length(out[[1]]) == 0) {
 				cbind(id.1=0,id.2=0)[0,,drop=FALSE]
@@ -192,7 +192,7 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 				do.call(cbind, out) + 1
 			}
 		} else {
-			out <- x@cpp$related_within(relation, TRUE)
+			out <- x@ptr$related_within(relation, TRUE)
 			messages(x, "relate")
 			out <- do.call(cbind, out) + 1
 			m <- matrix(FALSE, nrow(x), nrow(x))
@@ -205,7 +205,7 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 			#}
 		}
 
-		#out <- x@cpp$relate_within(relation, symmetrical)
+		#out <- x@ptr$relate_within(relation, symmetrical)
 		#out[out == 2] <- NA
 		#if (symmetrical) {
 		#	class(out) <- "dist"
@@ -229,10 +229,10 @@ setMethod("adjacent", signature(x="SpatRaster"),
 		cells <- cells - 1
 		if (inherits(directions, "matrix")) {
 			directions[!is.finite(directions)] <- 0
-			v <- x@cpp$adjacentMat(cells, as.logical(directions), dim(directions), include)
+			v <- x@ptr$adjacentMat(cells, as.logical(directions), dim(directions), include)
 		} else {
 			#if (pairs) include <- FALSE
-			v <- x@cpp$adjacent(cells,  as.character(directions)[1], include)
+			v <- x@ptr$adjacent(cells,  as.character(directions)[1], include)
 		}
 		messages(x, "adjacent")
 		if (pairs) {
@@ -255,7 +255,7 @@ setMethod("adjacent", signature(x="SpatVector"),
 	function(x, type="rook", pairs=TRUE, symmetrical=FALSE) {
 		type <- match.arg(tolower(type), c("intersects", "touches", "queen", "rook"))
 		stopifnot(geomtype(x) == "polygons")
-		a <- x@cpp$relate_within(type, TRUE)
+		a <- x@ptr$relate_within(type, TRUE)
 		x <- messages(x, "relate")
 		a[a == 2] <- NA
 		class(a) <- "dist"
@@ -339,9 +339,9 @@ setMethod("nearest", signature(x="SpatVector"),
 		}
 		z <- x
 		if (within) {
-			z@cpp <- x@cpp$near_within()
+			z@ptr <- x@ptr$near_within()
 		} else {
-			z@cpp <- x@cpp$near_between(y@cpp, pairs)
+			z@ptr <- x@ptr$near_between(y@ptr, pairs)
 		}
 		z <- messages(z, "nearest")
 		if (geomtype(z) == "points") { #lonlat points

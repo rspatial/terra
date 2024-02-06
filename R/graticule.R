@@ -48,8 +48,8 @@ graticule <- function(lon=30, lat=30, crs="") {
 	}
 
 	g <- new("SpatGraticule")
-	g@cpp <- v@cpp
-	g@box <- e@cpp 
+	g@ptr <- v@ptr
+	g@box <- e@ptr 
 	g
 }
 
@@ -57,12 +57,12 @@ graticule <- function(lon=30, lat=30, crs="") {
 #setMethod("project", signature(x="SpatGraticule"),
 #	function(x, y) {
 #		v <- vect()
-#		v@cpp <- x@cpp
+#		v@ptr <- x@ptr
 #		v <- project(v, y)
-#		x@cpp <- v@cpp
-#		v@cpp <- x@box
+#		x@ptr <- v@ptr
+#		v@ptr <- x@box
 #		v <- project(v, y)
-#		x@box <- v@cpp
+#		x@box <- v@ptr
 #		x
 #	}
 #)
@@ -71,13 +71,13 @@ setMethod("crop", signature(x="SpatGraticule"),
 	function(x, y) {
 		v <- vect()
 
-		v@cpp <- x@cpp
+		v@ptr <- x@ptr
 		v <- crop(v, y)
-		x@cpp <- v@cpp
+		x@ptr <- v@ptr
 
-		v@cpp <- x@box
+		v@ptr <- x@box
 		v <- crop(v, y)
-		x@box <- v@cpp
+		x@box <- v@ptr
 		x
 	}
 )
@@ -86,15 +86,15 @@ setMethod("erase", signature(x="SpatGraticule", y="SpatVector"),
 	function(x, y) {
 		v <- vect()
 	
-		v@cpp <- x@cpp
+		v@ptr <- x@ptr
 		y <- project(y, v)
 
 		v <- erase(v, y)
-		x@cpp <- v@cpp
+		x@ptr <- v@ptr
 
-		v@cpp <- x@box
+		v@ptr <- x@box
 		v <- erase(v, y)
-		x@box <- v@cpp
+		x@box <- v@ptr
 		x
 	}
 )
@@ -199,7 +199,7 @@ grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 setMethod("plot", signature(x="SpatGraticule", y="missing"),
 	function(x, y, background=NULL, col="black", mar=NULL, labels=TRUE, retro=FALSE, lab.loc=c(1,1), lab.lon=NULL, lab.lat=NULL, lab.cex=.65, lab.col="black", off.lat=0.25, off.lon=0.25, box=FALSE, box.col="black", add=FALSE, ...) {
 		b <- vect()
-		b@cpp <- x@box
+		b@ptr <- x@box
 		if (!is.null(mar)) mar <- rep_len(mar, 4)
 		if (!is.null(background)) {
 			plot(b, col=background, border=NA, axes=FALSE, mar=mar, add=add)
@@ -209,7 +209,7 @@ setMethod("plot", signature(x="SpatGraticule", y="missing"),
 			}
 		}
 		v <- vect()
-		v@cpp <- x@cpp
+		v@ptr <- x@ptr
 		lines(v, col=col, ...)
 		if (box) {
 			lwd <- list(...)$lwd
@@ -224,7 +224,7 @@ setMethod("plot", signature(x="SpatGraticule", y="missing"),
 setMethod("lines", signature(x="SpatGraticule"),
 	function(x, ...) {
 		v <- vect()
-		v@cpp <- x@cpp
+		v@ptr <- x@ptr
 		lines(v, ...)
 	}
 )

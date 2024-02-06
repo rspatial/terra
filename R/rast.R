@@ -32,7 +32,7 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 	#check_proj4_datum(crs)
 
 	r <- methods::new("SpatRaster")
-	r@cpp <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
+	r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
 	r <- messages(r, "rast")
 
 	if (!missing(resolution)) {
@@ -90,7 +90,7 @@ setMethod("rast", signature(x="list"),
 		}
 		opt <- spatOptions()
 		for (i in 2:length(x)) {
-			out@cpp$addSource(x[[i]]@cpp, warn, opt)
+			out@ptr$addSource(x[[i]]@ptr, warn, opt)
 		}
 		out <- messages(out, "rast")
 		lnms <- names(x)
@@ -200,13 +200,13 @@ setMethod("rast", signature(x="character"),
 		if (is.null(drivers)) drivers <- ""[0]
 		if (length(subds) == 0) subds = 0
 		if (is.character(subds)) {
-			#r@cpp <- SpatRaster$new(f, -1, subds, FALSE, 0[])
-			r@cpp <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[])
+			#r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
+			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[])
 		} else {
-			r@cpp <- SpatRaster$new(f, subds-1, "", FALSE, drivers, opts, 0[])
+			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, drivers, opts, 0[])
 		}
 		r <- messages(r, "rast")
-		if (r@cpp$getMessage() == "ncdf extent") {
+		if (r@ptr$getMessage() == "ncdf extent") {
 			# could have used opts="IGNORE_XY_AXIS_NAME_CHECKS=YES"
 			test <- try(r <- .ncdf_extent(r, f), silent=TRUE)
 			if (inherits(test, "try-error")) {
@@ -250,11 +250,11 @@ multi <- function(x, subds=0, xyz=3:1, drivers=NULL, opts=NULL) {
 	subds <- subds[1]
 
 	if (is.character(subds)) {
-		r@cpp <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, xyz-1)
+		r@ptr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, xyz-1)
 	} else {
-		r@cpp <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, xyz-1)
+		r@ptr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, xyz-1)
 	}
-	if (r@cpp$getMessage() == "ncdf extent") {
+	if (r@ptr$getMessage() == "ncdf extent") {
 		test <- try(r <- .ncdf_extent(r), silent=TRUE)
 		if (inherits(test, "try-error")) {
 			warn("rast", "GDAL did not find an extent. Cells not equally spaced?")
@@ -276,7 +276,7 @@ setMethod("rast", signature(x="SpatRaster"),
 		if (inherits(nlyrs, "SpatRaster")) {
 			error("rast", "use 'c()' to combine SpatRasters")
 		}
-		x@cpp <- x@cpp$geometry(nlyrs, props, keeptime, keepunits, tags)
+		x@ptr <- x@ptr$geometry(nlyrs, props, keeptime, keepunits, tags)
 		x <- messages(x, "rast")
 		if (!missing(names)) {
 			if (length(names) == nlyr(x)) names(x) <- names
@@ -297,7 +297,7 @@ setMethod("rast", signature(x="SpatRasterDataset"),
 			x[1]
 		} else {
 			r <- methods::new("SpatRaster")
-			r@cpp <- x@cpp$collapse()
+			r@ptr <- x@ptr$collapse()
 			nms <- names(x)
 			if (any(nms != "")) {
 				names(r) <- paste(rep(nms, nlyr(x)), names(r), sep="_")
@@ -332,7 +332,7 @@ setMethod("rast", signature(x="array"),
 			e <- c(0, dims[2], 0, dims[1])
 		}
 		crs <- character_crs(crs, "rast")
-		r@cpp <- SpatRaster$new(dims, e, crs)
+		r@ptr <- SpatRaster$new(dims, e, crs)
 		values(r) <- x
 		messages(r, "rast")
 	}
@@ -526,7 +526,7 @@ setMethod("rast", signature(x="stars_proxy"),
 setMethod("NAflag<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		value <- as.numeric(value)
-		if (!(x@cpp$setNAflag(value))) {
+		if (!(x@ptr$setNAflag(value))) {
 			error("NAflag<-", "cannot set this value")
 		}
 		x
@@ -535,7 +535,7 @@ setMethod("NAflag<-", signature(x="SpatRaster"),
 
 setMethod("NAflag", signature(x="SpatRaster"),
 	function(x)  {
-		x@cpp$getNAflag()
+		x@ptr$getNAflag()
 	}
 )
 

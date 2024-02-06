@@ -28,7 +28,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE,
-    ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y),
+    ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE,
 	layer=NULL, bind=FALSE, raw=FALSE, ...)
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, cells=FALSE, xy=FALSE)
@@ -51,6 +51,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
+\item{small}{logical. If \code{TRUE}, values for all cells in touched polygons are extracted if none of the cells center points is within the polygon; even if \code{touches=FALSE}}
 \item{layer}{character or numeric to select the layer to extract from for each geometry. If \code{layer} is a character it can be a name in \code{y} or a vector of layer names. If it is numeric, it must be integer values between \code{1} and \code{nlyr(x)}}
 \item{bind}{logical. If \code{TRUE}, a SpatVector is returned consisting of the input SpatVector \code{y} and the \code{cbind}-ed extracted values}
 \item{raw}{logical. If \code{TRUE}, a matrix is returned with the "raw" numeric cell values. If \code{FALSE}, a data.frame is returned and the cell values are transformed to factor, logical, or integer values, where appropriate}
