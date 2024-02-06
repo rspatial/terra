@@ -80,7 +80,7 @@ use_layer <- function(e, y, layer, nl) {
 }
 
 
-extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FALSE, na.rm=FALSE) {
+extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FALSE, small=TRUE, na.rm=FALSE) {
 
 	if (weights && exact) {
 		exact = FALSE
@@ -107,7 +107,7 @@ extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FA
 			)
 		}
 		
-		e <- x@ptr$extractVector(y@ptr, touches[1], "simple", FALSE, FALSE, 
+		e <- x@ptr$extractVector(y@ptr, touches[1], small[1], "simple", FALSE, FALSE, 
 			isTRUE(weights[1]), isTRUE(exact[1]), opt)
 		x <- messages(x, "extract")
 		e <- lapply(e, wtable, na.rm=na.rm)
@@ -131,7 +131,7 @@ extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FA
 		}
 		if (nlyr(x) == 1) return(out[[1]]) else return(out)
 	} else {
-		e <- x@ptr$extractVectorFlat(y@ptr, "", FALSE, touches[1], "", FALSE, FALSE, FALSE, FALSE, opt)
+		e <- x@ptr$extractVectorFlat(y@ptr, "", FALSE, touches[1], small[1], "", FALSE, FALSE, FALSE, FALSE, opt)
 		x <- messages(x, "extract")
 		e <- data.frame(matrix(e, ncol=nlyr(x)+1, byrow=TRUE))
 		colnames(e) <- c("ID", names(x))
@@ -169,7 +169,7 @@ extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=
 	}
 
 	opt <- spatOptions()
-	e <- x@ptr$extractVectorFlat(y@ptr, fun, na.rm, touches[1], "", FALSE, FALSE, weights, exact, opt)
+	e <- x@ptr$extractVectorFlat(y@ptr, fun, na.rm, touches[1], small[1], "", FALSE, FALSE, weights, exact, opt)
 	x <- messages(x, "extract")
 	e <- data.frame(matrix(e, ncol=nl*nf, byrow=TRUE))
 	if (nf == 1) {
@@ -220,7 +220,7 @@ do_fun <- function(x, e, fun, ...) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
-function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, bind=FALSE, raw=FALSE, ...) {
+function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE, layer=NULL, bind=FALSE, raw=FALSE, ...) {
 
 	geo <- geomtype(y)
 	if (geo == "points") {		
@@ -240,9 +240,9 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 				if (!is.null(layer)) {
 					warn("extract", "argument 'layer' is ignored when 'fun=table'")
 				}
-				e <- extract_table(x, y, ID=ID, weights=weights, exact=exact, touches=touches, ...)
+				e <- extract_table(x, y, ID=ID, weights=weights, exact=exact, touches=touches, small=small, ...)
 			} else {
-				e <- extract_fun(x, y, txtfun, ID=ID, weights=weights, exact=exact, touches=touches, bind=bind, layer=layer, ...)
+				e <- extract_fun(x, y, txtfun, ID=ID, weights=weights, exact=exact, touches=touches, small=small, bind=bind, layer=layer, ...)
 			}
 			return(e)
 		} else if (weights || exact) {
@@ -253,7 +253,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	} 
 	
 	opt <- spatOptions()
-	e <- x@ptr$extractVectorFlat(y@ptr, "", FALSE, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+	e <- x@ptr$extractVectorFlat(y@ptr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 	x <- messages(x, "extract")
 
 	cn <- c("ID", names(x))

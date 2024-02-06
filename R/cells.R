@@ -29,10 +29,10 @@ setMethod("cells", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("cells", signature("SpatRaster", "SpatVector"),
-	function(x, y, method="simple", weights=FALSE, exact=FALSE, touches=is.lines(y)) {
+	function(x, y, method="simple", weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE) {
 		method = match.arg(tolower(method), c("simple", "bilinear"))
 		opt <- spatOptions()
-		d <- x@ptr$vectCells(y@ptr, touches[1], method[1], weights[1], exact[1], opt)
+		d <- x@ptr$vectCells(y@ptr, touches[1], small[1], method[1], weights[1], exact[1], opt)
 		if (geomtype(y) == "points") {
 			d <- matrix(d, nrow=nrow(y), byrow=TRUE)
 			d <- cbind(1:nrow(y), d)

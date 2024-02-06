@@ -162,7 +162,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
-	function(x, z, fun="mean", na.rm=FALSE, w=NULL, weights=FALSE, exact=FALSE, touches=FALSE, as.raster=FALSE, as.polygons=FALSE, wide=TRUE, filename="", wopt=list())  {
+	function(x, z, fun="mean", na.rm=FALSE, w=NULL, weights=FALSE, exact=FALSE, touches=FALSE, small=TRUE, as.raster=FALSE, as.polygons=FALSE, wide=TRUE, filename="", wopt=list())  {
 		opt <- spatOptions()
 		txtfun <- .makeTextFun(fun)
 		if (!inherits(txtfun, "character")) {
@@ -172,7 +172,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
 				if (!is.null(w)) {
 					error("cannot use 'w' when 'fun=table'")
 				}
-				v <- x@ptr$zonal_poly_table(z@ptr, weights[1], exact[1], touches[1], na.rm, opt)
+				v <- x@ptr$zonal_poly_table(z@ptr, weights[1], exact[1], touches[1], small[1], na.rm, opt)
 				messages(x, "zonal")
 
 				v <- lapply(v, function(i) if (length(i) == 0) NA else i)
@@ -201,12 +201,12 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
 				return(v)
 			} else {
 				if (is.null(w)) {
-					out <- x@ptr$zonal_poly(z@ptr, txtfun, weights[1], exact[1], touches[1], na.rm, opt)
+					out <- x@ptr$zonal_poly(z@ptr, txtfun, weights[1], exact[1], touches[1], small[1], na.rm, opt)
 				} else {
 					if (txtfun != "mean") {
 						error("zonal", "fun must be 'mean' when using weights")
 					}
-					out <- x@ptr$zonal_poly_weighted(z@ptr, w@ptr, weights[1], exact[1], touches[1], na.rm, opt)
+					out <- x@ptr$zonal_poly_weighted(z@ptr, w@ptr, weights[1], exact[1], touches[1], small[1], na.rm, opt)
 				}
 				messages(out, "zonal")
 				out <- .getSpatDF(out)

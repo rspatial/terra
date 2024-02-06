@@ -1,5 +1,8 @@
 # version 1.7-72
 
+## enhancements
+
+- `extract` has new argument "small=TRUE" to allow for strict use of "touches=FALSE" [#1419](https://github.com/rspatial/terra/issues/1419) by Floris Vanderhaeghe.
 
 
 # version 1.7-71
