@@ -72,11 +72,52 @@ setMethod("rast", signature(x="missing"),
 )
 
 
+
+
+rast_from_image <- function(x) { 
+	# list should represent an "image"
+	if (! all(dim(x$z) == c(length(x$x), length(x$y)))) {
+		error("rast", '"z" does not have the right dimensions') 
+	}
+	# omitted "-1" bug fix by Barry Rowlingson 
+	resx <- ( x$x[length(x$x)] - x$x[1] ) / (length(x$x)-1)
+	resy <- ( x$y[length(x$y)] - x$y[1] ) / (length(x$y)-1)
+	xmn <- min(x$x) - 0.5 * resx
+	xmx <- max(x$x) + 0.5 * resx
+	ymn <- min(x$y) - 0.5 * resy
+	ymx <- max(x$y) + 0.5 * resy
+
+	dx <- abs(max(abs((x$x[-1] - x$x[-length(x$x)])) / resx) - 1)
+	dy <- abs(max(abs((x$y[-1] - x$y[-length(x$y)])) / resy) - 1)
+	if (is.na(dx) | is.na(dy)) {
+		error("rast", "missing values in coordinates")
+	} 
+	if (dx > 0.01 | dy > 0.01) {
+		error("rast", "data are not on a regular grid")
+	}
+	if (xmn > -360.1 & xmx < 360.1 & ymn > -90.1 & ymx < 90.1) { 
+		crs <- "+proj=longlat +datum=WGS84"
+	} else {
+		crs <- ""
+	}
+	x <- t(x$z)
+	x <- x[nrow(x):1, ]
+	
+	r <- rast(nrows=nrow(x), ncols=ncol(x), extent=ext(xmn, xmx, ymn, ymx), crs=crs)
+	values(r) <- as.vector(t(x))
+	r
+}
+
+
+
 setMethod("rast", signature(x="list"),
 	function(x, warn=TRUE) {
 		i <- sapply(x, function(i) inherits(i, "SpatRaster"))
 		if (!all(i)) {
 			if (!any(i)) {
+				if ((length(x) == 3) && all(c("x", "y", "z") %in% names(x))) {
+					return(rast_from_image(x))
+				}
 				error("rast,list", "none of the elements of x are a SpatRaster")
 			} else {
 				warn("rast", sum(!i), " out of ", length(x), " elements of x are not a SpatRaster")

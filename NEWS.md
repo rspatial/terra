@@ -4,7 +4,7 @@
 
 - `extract` has new argument "small=TRUE" to allow for strict use of "touches=FALSE" [#1419](https://github.com/rspatial/terra/issues/1419) by Floris Vanderhaeghe.
 - `as.list<SpatRaster>` has new argument "geom=NULL"
-
+- `rast<list>` now recognizes (x, y, z) base R "image" structures
 
 
 # version 1.7-71
