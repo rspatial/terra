@@ -12,7 +12,7 @@ setMethod("watershed2", signature(p="SpatRaster",pp_offset="integer"),
             print("watershed")
             opt <- spatOptions(filename, ...)
            ## p@ptr <- p@ptr$watershed2(as.integer(pp_offset-1),opt)
-            p@cpp <- p@cpp$watershed2(as.integer(pp_offset-1),opt)
+            p@ptr <- p@ptr$watershed2(as.integer(pp_offset-1),opt)
             messages(p, "watershed2") ## EC 20210318
             return(p)
             ## p@ptr <- uu
@@ -29,7 +29,7 @@ setMethod("pitfinder2", signature(p="SpatRaster"),
             
             opt <- spatOptions(filename, ...)
            # p@ptr <- p@ptr$pitfinder2(opt)# EC 20231026
-            p@cpp <- p@cpp$pitfinder2(opt)
+            p@ptr <- p@ptr$pitfinder2(opt)
             messages(p, "pitfinder2") ## EC 20210318
             return(p)
             ## p@ptr <- uu
@@ -46,7 +46,7 @@ setMethod("NIDP2", signature(p="SpatRaster"),
             
             opt <- spatOptions(filename, ...)
          
-            p@cpp <- p@cpp$NIDP2(opt)
+            p@ptr <- p@ptr$NIDP2(opt)
             messages(p, "NIDP2") ## EC 20231031
             return(p)
          
@@ -61,7 +61,7 @@ setMethod("flowAccu2", signature(p="SpatRaster"),
             
             opt <- spatOptions(filename, ...)
             
-            p@cpp <- p@cpp$flowAccu2(opt)
+            p@ptr <- p@ptr$flowAccu2(opt)
             messages(p, "flowAccu2") ## EC 20231104
             return(p)
             
@@ -77,7 +77,7 @@ setMethod("flowAccu2_weight", signature(p="SpatRaster",weight="SpatRaster"),
             
             opt <- terra:::spatOptions(filename,...)
             print("ba")
-            p@cpp <- p@cpp$flowAccu2_weight(weight@cpp,opt)
+            p@ptr <- p@ptr$flowAccu2_weight(weight@ptr,opt)
             messages(p, "flowAccu2_weight") ## EC 20231104
             return(p)
             
