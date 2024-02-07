@@ -75,7 +75,7 @@ setMethod("rast", signature(x="missing"),
 
 
 rast_from_image <- function(x) { 
-	# list should represent an "image"
+	# list representing an "image"
 	if (! all(dim(x$z) == c(length(x$x), length(x$y)))) {
 		error("rast", '"z" does not have the right dimensions') 
 	}
@@ -95,17 +95,14 @@ rast_from_image <- function(x) {
 	if (dx > 0.01 | dy > 0.01) {
 		error("rast", "data are not on a regular grid")
 	}
-	if (xmn > -360.1 & xmx < 360.1 & ymn > -90.1 & ymx < 90.1) { 
-		crs <- "+proj=longlat +datum=WGS84"
-	} else {
-		crs <- ""
-	}
+#	if (xmn > -360.1 & xmx < 360.1 & ymn > -90.1 & ymx < 90.1) { 
+#		crs <- "+proj=longlat +datum=WGS84"
+#	} else {
+#		crs <- ""
+#	}
 	x <- t(x$z)
 	x <- x[nrow(x):1, ]
-	
-	r <- rast(nrows=nrow(x), ncols=ncol(x), extent=ext(xmn, xmx, ymn, ymx), crs=crs)
-	values(r) <- as.vector(t(x))
-	r
+	rast(x, extent=ext(xmn, xmx, ymn, ymx), crs="")
 }
 
 
