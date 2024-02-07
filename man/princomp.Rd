@@ -10,7 +10,7 @@ Compute principal components for SpatRaster layers. This method can use all valu
 
 Alternatively, you can specify \code{maxcell} or sample raster values to a data.frame to speed up calculations for very large rasters (see the examples below). 
 
-See \code{\link{princomp}} for an alternative method that has higher numerical accuracy, but is slower, and for very large rasters can only be accomplished with a sample since all values must be read into memory.
+See \code{\link{prcomp}} for an alternative method that has higher numerical accuracy, but is slower, and for very large rasters can only be accomplished with a sample since all values must be read into memory.
 }
 
 \usage{
