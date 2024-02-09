@@ -205,3 +205,49 @@ setMethod("direction", signature(x="SpatRaster"),
 	}
 )
 
+
+
+setMethod("similarity", signature(x="SpatRaster", y="SpatVector"),
+	function(x, y, labels=NULL, filename="", ...) {
+		e <- as.matrix(extract(x, y, fun="mean", na.rm=TRUE, ID=FALSE))
+		d <- list()
+		for (i in 1:nrow(e)) {
+		  d[[i]] <- sum((x - e[i,])^2)
+		}	
+		out <- which.min(rast(d))
+		if (!is.null(labels)) {
+			levels(out) <- data.frame(ID=1:nrow(y), label=labels)
+		}
+		if (filename!="") {
+			out <- writeRaster(out, filename, ...)
+		}
+		out
+	}
+)
+
+setMethod("similarity", signature(x="SpatRaster", y="data.frame"),
+	function(x, y, labels=NULL, filename="", ...) {
+		
+		if (!(all(names(y) %in% names(x)) && (all(names(x) %in% names(y))))) {
+			error("similarity", "names of x and y must match")
+		}
+		y <- y[, names(x)]
+		i <- unique(sapply(y, class))
+		if (any(i != "numeric")) {
+			error("similarity", "all values in y must be numeric")
+		}
+		y <- as.matrix(y)
+		d <- list()
+		for (i in 1:nrow(y)) {
+		  d[[i]] <- sum((x - y[i,])^2)
+		}	
+		out <- which.min(rast(d))
+		if (!is.null(labels)) {
+			levels(out) <- data.frame(ID=1:nrow(y), label=labels)
+		}
+		if (filename!="") {
+			out <- writeRaster(out, filename, ...)
+		}
+		out
+	}
+)
