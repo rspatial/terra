@@ -639,6 +639,15 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 			OGRFeature::DestroyFeature( poFeature );
 		}
 	} else if (wkbgeom == wkbUnknown) {
+
+		long long fcnt = poLayer->GetFeatureCount(true);
+		if (fcnt == 0) return true;
+		if (fcnt < 0) {
+			if ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+				return true;
+			}	
+		}
+
 		SpatVectorCollection sv;
 		std::vector<double> dempty;
 		SpatVector filter2;
