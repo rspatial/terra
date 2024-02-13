@@ -461,8 +461,6 @@ bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer
 }
 
 
-#include "Rcpp.h"
-
 bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
 
 	if (poDS == NULL) {
@@ -574,6 +572,19 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
+		} else if (wkbgeom == wkbUnknown) {
+			long long fcnt = poLayer->GetFeatureCount(true);
+			if (fcnt == 0) return true;
+			if (fcnt < 0) {
+				if ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+					return true;
+				}	
+			} 
+			const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
+			std::string strgeomtype = geomtypechar;
+			std::string s = "cannot read this geometry type: "+ strgeomtype;
+			setError(s);
+			return false;			
 		} else if (wkbgeom != wkbNone) {
 			const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
 			std::string strgeomtype = geomtypechar;
@@ -646,8 +657,6 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 				return true;
 			}	
 		}
-
-Rcpp::Rcout << fcnt << "\n";
 
 		SpatVectorCollection sv;
 		std::vector<double> dempty;
