@@ -26,18 +26,21 @@ setMethod("inext", signature(x="SpatVector"),
 )	
 
 
-.inset <- function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, pper, box=NULL, pbox, add=TRUE, xpd=NA, ...) {
+.inset <- function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, pper, box=NULL, pbox, add=TRUE, xpd=NA, offset=0.1, ...) {
 
 	usr <- unlist(get.clip()[1:4])
 	if (missing(e)) {
 		e <- ext(usr)
-		r <- diff(e[1:2]) / diff(e[3:4])
-		e[2] <- e[1] + scale * diff(e[1:2]) 
-		e[3] <- e[4] - scale * diff(e[3:4]) * r
+		xe <- ext(x)
+		r <- diff(xe[1:2]) / diff(xe[3:4])
+		n <- scale * diff(e[1:2])
+		e[2] <- e[1] + n
+		e[3] <- e[4] - n / r
 	}
 
-	offset <- 0.9
-	#offset <- max(0.1, min(1, offset))
+	#offset <- 0.9
+	offset <- 1 - offset
+	offset <- max(0.1, min(1, offset))
 	scale  <- offset * min(e / ext(x))
 
 	y  <- rescale(x, scale)
@@ -110,14 +113,14 @@ setMethod("inext", signature(x="SpatVector"),
 
 
 setMethod("inset", signature(x="SpatVector"),
-	function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, box=NULL, pper, pbox, add=TRUE, ...) {
-		.inset(x, e, loc=loc, scale=scale, background=background, perimeter=perimeter, pper=pper, box=box, pbox=pbox, add=add, ...)
+	function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, box=NULL, pper, pbox, offset=0.1, add=TRUE, ...) {
+		.inset(x, e, loc=loc, scale=scale, background=background, perimeter=perimeter, pper=pper, box=box, pbox=pbox, offset=offset, add=add, ...)
 	}
 )
 
 
 setMethod("inset", signature(x="SpatRaster"),
-	function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, box=NULL, pper, pbox, add=TRUE, ...) {
-		.inset(x, e, loc=loc, scale=scale, background=background, perimeter=perimeter, pper=pper, box=box, pbox=pbox, add=add, ...)
+	function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, box=NULL, pper, pbox, offset=0.1, add=TRUE, ...) {
+		.inset(x, e, loc=loc, scale=scale, background=background, perimeter=perimeter, pper=pper, box=box, pbox=pbox, offset=offset, add=add, ...)
 	}
 )
