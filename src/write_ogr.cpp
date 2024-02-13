@@ -41,10 +41,10 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		} else {
 			append = false;
 		}
-		if (nrow() == 0) {
-			setError("no geometries to write");
-			return(poDS);
-		}
+//		if (nrow() == 0) {
+//			addWarning("no geometries to write");
+			//return(poDS);
+//		}
 	}
 
 	if (append) {
@@ -94,25 +94,28 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	}
 
     if( poDS == NULL ) {
-        setError("Creation of output dataset failed" );
+        setError("Creation of output dataset failed");
         return poDS;
     }
 
 	OGRwkbGeometryType wkb;
-	SpatGeomType geomtype = geoms[0].gtype;
-	if (geomtype == points) {
-		wkb = wkbPoint;
-	} else if (geomtype == lines) {
-		wkb = wkbMultiLineString;
-	} else if (geomtype == polygons) {
-		wkb = wkbMultiPolygon;
+	if (nrow() > 0) {
+		SpatGeomType geomtype = geoms[0].gtype;
+		if (geomtype == points) {
+			wkb = wkbPoint;
+		} else if (geomtype == lines) {
+			wkb = wkbMultiLineString;
+		} else if (geomtype == polygons) {
+			wkb = wkbMultiPolygon;
+		} else {
+			setError("this geometry type is not supported: " + type());
+			return poDS;
+		}
 	} else {
-        setError("this geometry type is not supported: " + type());
-        return poDS;
+		wkb = wkbUnknown;
 	}
-
+	
 	std::string s = srs.wkt;
-
 
 	OGRSpatialReference *SRS = NULL;
 	if (!s.empty()) {
@@ -192,6 +195,12 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			return poDS;
 		}
 	}
+
+	
+	if (ngeoms == 0) {
+		return poDS;
+	}
+
 
 	// use a single transaction as in sf
 	// makes a big difference for gpkg by avoiding many INSERTs
@@ -353,10 +362,12 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			}
 		}
     }
+	
 	if (transaction && (gcntr>0) && (poDS->CommitTransaction() != OGRERR_NONE)) {
 		poDS->RollbackTransaction();
 		setError("transaction commit failed");
 	}
+	
 	return poDS;
 }
 
@@ -364,10 +375,10 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
-	if (nrow() == 0) {
-		addWarning("nothing to write");
-		return false;
-	}
+//	if (nrow() == 0) {
+//		setError("nothing to write");
+//		return false;
+//	}
 
 	GDALDataset *poDS = write_ogr(filename, lyrname, driver, append, overwrite, options);
     if (poDS != NULL) GDALClose( poDS );

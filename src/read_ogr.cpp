@@ -50,35 +50,32 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 	if (nfields == 0) return df;
 
 	OGRFieldType ft;
-    poLayer->ResetReading();
-    OGRFeature *poFeature;
 	OGRFieldDefn *poFieldDefn;
 	df.resize_cols(nfields);
-	bool first = true;
 	unsigned dtype;
 	long longNA = NA<long>::value;
 
-    while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-		if (first) {
-			for (size_t i = 0; i < nfields; i++ ) {
-				poFieldDefn = poFDefn->GetFieldDefn(i);
-				std::string fname = poFieldDefn->GetNameRef();
-				ft = poFieldDefn->GetType();
-				if (ft == OFTReal) {
-					dtype = 0;
-				} else if ((ft == OFTInteger) | (ft == OFTInteger64)) {
-					if (poFieldDefn->GetSubType() == OFSTBoolean) {
-						dtype = 3;
-					} else {
-						dtype = 1;
-					}
-				} else {
-					dtype = 2;
-				}
-				df.add_column(dtype, fname);
+	for (size_t i = 0; i < nfields; i++ ) {
+		poFieldDefn = poFDefn->GetFieldDefn(i);
+		std::string fname = poFieldDefn->GetNameRef();
+		ft = poFieldDefn->GetType();
+		if (ft == OFTReal) {
+			dtype = 0;
+		} else if ((ft == OFTInteger) | (ft == OFTInteger64)) {
+			if (poFieldDefn->GetSubType() == OFSTBoolean) {
+				dtype = 3;
+			} else {
+				dtype = 1;
 			}
-			first = false;
+		} else {
+			dtype = 2;
 		}
+		df.add_column(dtype, fname);
+	}
+
+    OGRFeature *poFeature;
+    poLayer->ResetReading();
+    while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 
 		for (size_t i = 0; i < nfields; i++ ) {
 			poFieldDefn = poFDefn->GetFieldDefn( i );
@@ -464,6 +461,8 @@ bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer
 }
 
 
+#include "Rcpp.h"
+
 bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
 
 	if (poDS == NULL) {
@@ -647,6 +646,8 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 				return true;
 			}	
 		}
+
+Rcpp::Rcout << fcnt << "\n";
 
 		SpatVectorCollection sv;
 		std::vector<double> dempty;
