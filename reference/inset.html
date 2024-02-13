@@ -59,11 +59,11 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatVector</span></span>
 <span><span class="fu">inset</span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span>, loc<span class="op">=</span><span class="st">""</span>, scale<span class="op">=</span><span class="fl">0.2</span>, background<span class="op">=</span><span class="st">"white"</span>, </span>
-<span>  perimeter<span class="op">=</span><span class="cn">TRUE</span>, box<span class="op">=</span><span class="cn">NULL</span>, <span class="va">pper</span>, <span class="va">pbox</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  perimeter<span class="op">=</span><span class="cn">TRUE</span>, box<span class="op">=</span><span class="cn">NULL</span>, <span class="va">pper</span>, <span class="va">pbox</span>, offset<span class="op">=</span><span class="fl">0.1</span>, add<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster</span></span>
 <span><span class="fu">inset</span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span>, loc<span class="op">=</span><span class="st">""</span>, scale<span class="op">=</span><span class="fl">0.2</span>, background<span class="op">=</span><span class="st">"white"</span>, </span>
-<span>  perimeter<span class="op">=</span><span class="cn">TRUE</span>, box<span class="op">=</span><span class="cn">NULL</span>, <span class="va">pper</span>, <span class="va">pbox</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  perimeter<span class="op">=</span><span class="cn">TRUE</span>, box<span class="op">=</span><span class="cn">NULL</span>, <span class="va">pper</span>, <span class="va">pbox</span>, offset<span class="op">=</span><span class="fl">0.1</span>, add<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatVector</span></span>
 <span><span class="fu">inext</span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span>, y<span class="op">=</span><span class="cn">NULL</span>, gap<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
@@ -97,6 +97,12 @@
 
   <dt>pbox</dt>
 <dd><p>list with graphical parameters (arguments) such as <code>col</code> and <code>lwd</code> for the box (line)</p></dd>
+
+  <dt>offset</dt>
+<dd><p>numeric. Value between 0.1 and 1 to indicate the relative distance between what is mapped and the bounding box</p></dd>
+
+  <dt>add</dt>
+<dd><p>logical. Add the inset to the map?</p></dd>
 
   <dt>...</dt>
 <dd><p>additional arguments passed to plot for the drawing of <code>x</code></p></dd>
@@ -165,7 +171,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 12, 6  (geometries, attributes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 6.255333, 6.321333, 49.93245, 49.99422  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 6.255333, 6.321333, 49.9348, 49.99657  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  source      : lux.shp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA   POP</span>
