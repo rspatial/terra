@@ -20,7 +20,8 @@ Get the cell numbers covered by a SpatVector or SpatExtent. Or that match values
 
 \S4method{cells}{SpatRaster,numeric}(x, y)
 
-\S4method{cells}{SpatRaster,SpatVector}(x, y, method="simple", weights=FALSE, exact=FALSE, touches=is.lines(y))
+\S4method{cells}{SpatRaster,SpatVector}(x, y, method="simple", weights=FALSE, exact=FALSE, 
+				touches=is.lines(y), small=TRUE)
 
 \S4method{cells}{SpatRaster,SpatExtent}(x, y)
 }
