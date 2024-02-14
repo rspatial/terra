@@ -17,10 +17,10 @@ Make an inset map or scale the extent of a SpatVector
 
 \usage{
 \S4method{inset}{SpatVector}(x, e, loc="", scale=0.2, background="white", 
-	perimeter=TRUE, box=NULL, pper, pbox, ...)
+	perimeter=TRUE, box=NULL, pper, pbox, offset=0.1, add=TRUE, ...)
 
 \S4method{inset}{SpatRaster}(x, e, loc="", scale=0.2, background="white", 
-	perimeter=TRUE, box=NULL, pper, pbox, ...)
+	perimeter=TRUE, box=NULL, pper, pbox, offset=0.1, add=TRUE, ...)
 
 \S4method{inext}{SpatVector}(x, e, y=NULL, gap=0)
 }
@@ -35,6 +35,8 @@ Make an inset map or scale the extent of a SpatVector
   \item{box}{SpatExtent or missing, to draw a box on the inset, e.g. to show where the map is located in a larger area}
   \item{pper}{list with graphical parameters (arguments) such as \code{col} and \code{lwd} for the perimeter line}
   \item{pbox}{list with graphical parameters (arguments) such as \code{col} and \code{lwd} for the box (line)}
+  \item{offset}{numeric. Value between 0.1 and 1 to indicate the relative distance between what is mapped and the bounding box}
+  \item{add}{logical. Add the inset to the map?}
   \item{...}{additional arguments passed to plot for the drawing of \code{x}}
   \item{y}{SpatVector. If not NULL, \code{y} is scaled based with the parameters for \code{x}. This is useful, for example, when \code{x} represent boundaries, and \code{y} points within these boundaries}
   \item{gap}{numeric to add space between the SpatVector and the SpatExtent}
@@ -42,6 +44,7 @@ Make an inset map or scale the extent of a SpatVector
 
 
 \seealso{\code{\link{sbar}}, \code{\link{rescale}}, \code{\link{shift}}}
+
 
 \value{scaled and shifted SpatVector or SpatRaster (returned invisibly)}
 

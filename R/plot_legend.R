@@ -497,7 +497,11 @@ add_box <- function(...) {
 			cbind(e[2], e[4:3]),
 			cbind(e[1], e[3])
 		)
-		lines(bx, ...)
+		if (is.null(list(...)$xpd)) {
+			lines(bx, xpd=TRUE, ...)
+		} else {
+			lines(bx, ...)		
+		}
 	}
 }
 

@@ -1100,6 +1100,19 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		}
 		s.set_names_time_ncdf(metadata, bandmeta, msg);
+		if (s.srs.is_empty()) {
+			bool lat = false;
+			bool lon = false;
+			for (size_t i=0; i<metadata.size(); i++) {
+				if (!lat) lat = metadata[i].find("long_name=latitude");
+				if (!lon) lon = metadata[i].find("long_name=longitude");
+			}
+			if (lon && lat) {
+				if (s.srs.set("+proj=longlat", msg)) {
+					s.parameters_changed = true;
+				}
+			}
+		}
 	} else if (gdrv == "GRIB") {	
 		s.set_names_time_grib(bandmeta, msg);
 	} else if (gdrv == "GTiff") {	

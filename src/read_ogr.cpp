@@ -50,35 +50,32 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 	if (nfields == 0) return df;
 
 	OGRFieldType ft;
-    poLayer->ResetReading();
-    OGRFeature *poFeature;
 	OGRFieldDefn *poFieldDefn;
 	df.resize_cols(nfields);
-	bool first = true;
 	unsigned dtype;
 	long longNA = NA<long>::value;
 
-    while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-		if (first) {
-			for (size_t i = 0; i < nfields; i++ ) {
-				poFieldDefn = poFDefn->GetFieldDefn(i);
-				std::string fname = poFieldDefn->GetNameRef();
-				ft = poFieldDefn->GetType();
-				if (ft == OFTReal) {
-					dtype = 0;
-				} else if ((ft == OFTInteger) | (ft == OFTInteger64)) {
-					if (poFieldDefn->GetSubType() == OFSTBoolean) {
-						dtype = 3;
-					} else {
-						dtype = 1;
-					}
-				} else {
-					dtype = 2;
-				}
-				df.add_column(dtype, fname);
+	for (size_t i = 0; i < nfields; i++ ) {
+		poFieldDefn = poFDefn->GetFieldDefn(i);
+		std::string fname = poFieldDefn->GetNameRef();
+		ft = poFieldDefn->GetType();
+		if (ft == OFTReal) {
+			dtype = 0;
+		} else if ((ft == OFTInteger) | (ft == OFTInteger64)) {
+			if (poFieldDefn->GetSubType() == OFSTBoolean) {
+				dtype = 3;
+			} else {
+				dtype = 1;
 			}
-			first = false;
+		} else {
+			dtype = 2;
 		}
+		df.add_column(dtype, fname);
+	}
+
+    OGRFeature *poFeature;
+    poLayer->ResetReading();
+    while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 
 		for (size_t i = 0; i < nfields; i++ ) {
 			poFieldDefn = poFDefn->GetFieldDefn( i );
@@ -575,6 +572,19 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
+		} else if (wkbgeom == wkbUnknown) {
+			long long fcnt = poLayer->GetFeatureCount(true);
+			if (fcnt == 0) return true;
+			if (fcnt < 0) {
+				if ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+					return true;
+				}	
+			} 
+			const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
+			std::string strgeomtype = geomtypechar;
+			std::string s = "cannot read this geometry type: "+ strgeomtype;
+			setError(s);
+			return false;			
 		} else if (wkbgeom != wkbNone) {
 			const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
 			std::string strgeomtype = geomtypechar;
@@ -639,6 +649,15 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 			OGRFeature::DestroyFeature( poFeature );
 		}
 	} else if (wkbgeom == wkbUnknown) {
+
+		long long fcnt = poLayer->GetFeatureCount(true);
+		if (fcnt == 0) return true;
+		if (fcnt < 0) {
+			if ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+				return true;
+			}	
+		}
+
 		SpatVectorCollection sv;
 		std::vector<double> dempty;
 		SpatVector filter2;
