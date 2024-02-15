@@ -26,16 +26,16 @@ A \code{\link{SpatRaster-class}} (raster) map containing the value for each cell
 }
 
 \details{
-The implemented algorthm is inspired by the one published on:
-Ref \url{https://link.springer.com/article/10.1007/s11707-018-0725-9},
-Ref \url{https://ica-abs.copernicus.org/articles/1/434/2019/}
+The algoritm is an adaptation of the one proposed by Zhou at al, 2019. 
+
+
 
 ArGIS impletation (same result but different algorithm):  \url{https://pro.arcgis.com/en/pro-app/latest/tool-reference/spatial-analyst/flow-accumulation.html}
 }
-\seealso{\code{\link{flowAccu2_weight}},\code{\link{terrain}},\code{\link{watershed2}}}
+\seealso{\code{\link{flowAccu2_weight}},\code{\link{terrain}},\code{\link{watershed2}},\code{\link{NIDP2}}}
 \author{
 
-Emanuele Cordano
+Emanuele Cordano (implementation of the algorithm within the package)
 }
 
 \examples{
@@ -100,7 +100,9 @@ plot(acc_f30>100)
 
 
 \references{
-Ref \url{https://link.springer.com/article/10.1007/s11707-018-0725-9}
+Zhou, G., Wei, H. & Fu, S. A fast and simple algorithm for calculating flow accumulation matrices from raster digital elevation. Front. Earth Sci. 13, 317–326 (2019). https://doi.org/10.1007/s11707-018-0725-9
+\url{https://link.springer.com/article/10.1007/s11707-018-0725-9}
+Further references: \url{https://ica-abs.copernicus.org/articles/1/434/2019/}
 }
 
 

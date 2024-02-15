@@ -26,13 +26,15 @@ A \code{\link{SpatRaster-class}} (raster) map containing the value for each cell
 }
 
 \details{
-Lorem Ipsum. You can insert information about tha algorithm 
-Ref \url{https://link.springer.com/article/10.1007/s11707-018-0725-9}
+NDIP is computed to preliminarly to compute Flow Accumulation area in the algorithm proposed by Zhouo at al,2019. 
+
+
 }
 
+\seealso{\code{\link{flowAccu2}},\code{\link{flowAccu2_weight}}}
 \author{
 
-Emanuele Cordano
+Emanuele Cordano (implementation of the algorithm within the package)
 }
 
 \examples{
@@ -90,7 +92,8 @@ plot(nidp2)
 
 
 \references{
-Ref \url{https://link.springer.com/article/10.1007/s11707-018-0725-9}
+Zhou, G., Wei, H. & Fu, S. A fast and simple algorithm for calculating flow accumulation matrices from raster digital elevation. Front. Earth Sci. 13, 317–326 (2019). https://doi.org/10.1007/s11707-018-0725-9
+\url{https://link.springer.com/article/10.1007/s11707-018-0725-9}
 }
 
 

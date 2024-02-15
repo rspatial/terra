@@ -27,16 +27,15 @@ A \code{\link{SpatRaster-class}} (raster) map containing the value for each cell
 }
 
 \details{
-The implemented algorthm for flow accumulation is inspired by the one published on:
-Ref \url{https://link.springer.com/article/10.1007/s11707-018-0725-9},
-Ref \url{https://ica-abs.copernicus.org/articles/1/434/2019/}
+The algoritm is an adaptation of the one proposed by Zhou et al, 2019
 
-This function takes into account that each cell can contain a value/weight/score, see \code{weight} argument, e.g. the planar area of each cell (in square kilometres) or a precipitation runoff value, in this case the flow accumulations is the total contributing area or the total contributing runoff W. In \code{\link{flowAccu2}} ,istead, each cell contains a value equal to 1 and  the flow accumulation corresponds only to the number of upslope cells. 
 
-ArGIS impletation: \url{https://pro.arcgis.com/en/pro-app/latest/tool-reference/spatial-analyst/flow-accumulation.html}
+Respect to the one of \code{\link{flowAccu2}}, this function  takes into account that each cell can contain a value/weight/score, see \code{weight} argument, e.g. the planar area of each cell (in square kilometres) or a precipitation runoff value, in this case the flow accumulations is the total contributing area or the total contributing runoff W. In \code{\link{flowAccu2}} ,instead, each cell contains a value equal to 1 and  the flow accumulation corresponds only to the number of upslope cells. 
+
+Further ArGIS implementation of this index: \url{https://pro.arcgis.com/en/pro-app/latest/tool-reference/spatial-analyst/flow-accumulation.html}
 }
 
-\seealso{\code{\link{flowAccu2}}}
+\seealso{\code{\link{flowAccu2}},\code{\link{NIDP2}}}
 \author{
 
 Emanuele Cordano
@@ -131,7 +130,11 @@ flowacc_v_f30_1 <- flowAccu2(flowdir_f30)
 
 
 \references{
-Ref \url{https://link.springer.com/article/10.1007/s11707-018-0725-9}
+
+Zhou, G., Wei, H. & Fu, S. A fast and simple algorithm for calculating flow accumulation matrices from raster digital elevation. Front. Earth Sci. 13, 317–326 (2019). https://doi.org/10.1007/s11707-018-0725-9
+\url{https://link.springer.com/article/10.1007/s11707-018-0725-9}
+Further references: \url{https://ica-abs.copernicus.org/articles/1/434/2019/}
+
 }
 
 

@@ -25,15 +25,13 @@ It extractions a watershed mask from a flow direction input raster point a pour-
 A \code{\link{SpatRaster-class}} (raster) map containing value 1 for the pits  and value 0 elsewhere. 
 }
 
-\details{
-Lorem Ipsum. You can insert information about tha algorithm
-}
 
 \author{
 
 Emanuele Cordano
 }
 
+\seealso{\code{\link{terrain}},\code{\link{watershed2}},\code{\link{flowAccu2}},\code{\link{flowAccu2_weight}},\code{\link{NIDP2}}}
 \examples{
 
 ## Creation of a Digital Elevation Model 
@@ -66,12 +64,6 @@ pits <- pitfinder2(flowdir)
 
 }
 
-
-
-
-\references{
-Lorem Ipsum
-}
 
 
 

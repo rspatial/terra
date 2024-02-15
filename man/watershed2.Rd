@@ -27,7 +27,8 @@ A \code{\link{SpatRaster-class}} (raster) map containing value 1 in the extracte
 }
 
 \details{
-Lorem Ipsum. You can insert information about tha algorithm
+
+This algorithm was created and tested by the authors. 
 }
 
 
@@ -75,10 +76,6 @@ poutv <- st_as_sf(as.polygons(poutr))
 
 }
 
-
-\references{
-Lorem Ipsum
-}
 
 
 
