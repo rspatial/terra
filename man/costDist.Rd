@@ -1,13 +1,9 @@
 \name{costDist}
 
-\alias{costDistance}
-\alias{costDistance,SpatRaster-method}
-
 \alias{costDist}
 \alias{costDist,SpatRaster-method}
 
-
-\title{Cost distance}
+\title{Cost-distance}
 
 \description{
 

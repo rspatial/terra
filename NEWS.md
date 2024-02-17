@@ -1,10 +1,15 @@
 # version 1.7-73
 
+## bug fixes
+
+- `writeVector` and `readVector` better handle empty geopackage layers [#1426](https://github.com/rspatial/terra/issues/1426) by Andrew Gene Brown.
+
 ## enhancements
 
 - `extract` has new argument "small=TRUE" to allow for strict use of "touches=FALSE" [#1419](https://github.com/rspatial/terra/issues/1419) by Floris Vanderhaeghe.
 - `as.list<SpatRaster>` has new argument "geom=NULL"
 - `rast<list>` now recognizes (x, y, z) base R "image" structures [stackoverflow](https://stackoverflow.com/questions/77949551/rspatial-convert-a-grid-list-to-a-raster-using-terra) by Ignacio Marzan.
+- `inset` has new arguments "offset" and "add" [#1422](https://github.com/rspatial/terra/issues/1422) by Armand-CT
 
 ## new 
 
