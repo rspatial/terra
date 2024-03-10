@@ -904,6 +904,10 @@ SpatVector SpatVector::crop(SpatVector v) {
 SpatVector SpatVector::hull(std::string htype, std::string by) {
 
 	SpatVector out;
+	if (nrow() == 0) {
+		out.srs = srs;
+		return out;
+	}
 
 	if (!by.empty()) {
 		SpatVector tmp = aggregate(by, false);
@@ -968,8 +972,6 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 		h = GEOSMinimumRotatedRectangle_r(hGEOSCtxt, g[0].get());
 	#endif
 	}
-	
-	
 	
 	std::vector<GeomPtr> b(1);
 	b[0] = geos_ptr(h, hGEOSCtxt);
