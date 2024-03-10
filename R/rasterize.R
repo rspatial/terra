@@ -222,7 +222,8 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 		if (!is.null(by)) {
 			x <- split(x, by)
-			uby <- sapply(x, function(i) i[[by]][1])			
+			uby <- names(x)
+			##uby <- sapply(x, function(i) i[[by]][1])			
 			out <- rast(lapply(x, function(i) rasterize(i, y, field=field, fun, background=background, touches=touches, update=update, cover=cover, ...)))
 			names(out) <- uby
 			if (filename != "") {
