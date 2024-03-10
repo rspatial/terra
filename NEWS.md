@@ -1,4 +1,4 @@
-# version 1.7-73
+# version 1.7-74
 
 ## bug fixes
 
@@ -10,6 +10,8 @@
 - `as.list<SpatRaster>` has new argument "geom=NULL"
 - `rast<list>` now recognizes (x, y, z) base R "image" structures [stackoverflow](https://stackoverflow.com/questions/77949551/rspatial-convert-a-grid-list-to-a-raster-using-terra) by Ignacio Marzan.
 - `inset` has new arguments "offset" and "add" [#1422](https://github.com/rspatial/terra/issues/1422) by Armand-CT
+- `expanse<SpatRaster>` has argument `usenames` [#1446](https://github.com/rspatial/terra/issues/1446) by Bappa Das
+
 
 ## new 
 
