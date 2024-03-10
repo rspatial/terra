@@ -549,9 +549,6 @@ setMethod ("expanse", "SpatRaster",
 				v <- v[[1]]
 				v <- data.frame(layer=1:length(v), area=v)
 			}
-			if (usenames) {
-				v$layer <- names(x)[v$layer]
-			}
 			if (wide) {
 				if (byValue) {
 					v <- stats::reshape(v, idvar="layer", timevar="value", direction="wide")
