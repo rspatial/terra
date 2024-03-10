@@ -4,6 +4,8 @@
 
 - `writeVector` and `readVector` better handle empty geopackage layers [#1426](https://github.com/rspatial/terra/issues/1426) by Andrew Gene Brown.
 - `writeCDF` only wrote global variables if there was more than one [#1443](https://github.com/rspatial/terra/issues/1443) by Daniel Schlaepfer
+- `rasterize` with "by" returned odd layernames [#1435](https://github.com/rspatial/terra/issues/1435) by Philippe Massicotte
+- `convHull`, `minCircle` and `minRect` with a zero-row SpatVector crashed R [#1445](https://github.com/rspatial/terra/issues/1445) by Andrew Gene Brown
 
 
 ## enhancements
