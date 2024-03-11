@@ -49,7 +49,7 @@ Spatial relationships between geometries
   \item{y}{missing or as for \code{x}}
   \item{relation}{character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint". Or a "DE-9IM" string such as "FF*FF****". See \href{https://en.wikipedia.org/wiki/DE-9IM}{wikipedia} or \href{https://docs.geotools.org/stable/userguide/library/jts/dim9.html}{geotools doc}}
   \item{pairs}{logical. If \code{TRUE} a two-column matrix is returned with the indices of the cases where the requested relation is \code{TRUE}. This is especially helpful when dealing with many geometries as the returned value is generally much smaller} 
-  \item{na.rm}{logical. If \code{TRUE} geometries in \code{x} for which there is no related geometry in \code{y} are omitted}
+  \item{na.rm}{logical. If \code{TRUE} and \code{pairs=TRUE}, geometries in \code{x} for which there is no related geometry in \code{y} are omitted}
 } 
 
 \value{
