@@ -21,8 +21,8 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 		as.raster=FALSE, filename="", overwrite=FALSE, wopt=list())
 
 \S4method{zonal}{SpatRaster,SpatVector}(x, z, fun="mean", na.rm=FALSE, w=NULL, weights=FALSE,
-		exact=FALSE, touches=FALSE, small=TRUE, as.raster=FALSE, as.polygons=FALSE, wide=TRUE, 
-		filename="", wopt=list())
+		exact=FALSE, touches=FALSE, small=TRUE, as.raster=FALSE, as.polygons=FALSE, 
+		wide=TRUE, filename="", wopt=list())
 
 \S4method{zonal}{SpatVector,SpatVector}(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE) 
 }

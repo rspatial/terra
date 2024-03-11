@@ -16,7 +16,8 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 }
 
 \usage{
-\S4method{expanse}{SpatRaster}(x, unit="m", transform=TRUE, byValue=FALSE, zones=NULL, wide=FALSE, usenames=FALSE)
+\S4method{expanse}{SpatRaster}(x, unit="m", transform=TRUE, byValue=FALSE,
+			zones=NULL, wide=FALSE, usenames=FALSE)
 
 \S4method{expanse}{SpatVector}(x, unit="m", transform=TRUE)
 }
