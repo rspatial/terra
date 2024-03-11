@@ -199,7 +199,7 @@ extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=
 }
 
 
-do_fun <- function(x, e, fun, ...) {		
+do_fun <- function(e, fun, ...) {		
 	fun <- match.fun(fun)
 	e <- aggregate(e[,-1,drop=FALSE], e[,1,drop=FALSE], fun, ...)
 	m <- sapply(e, NCOL)
@@ -213,7 +213,7 @@ do_fun <- function(x, e, fun, ...) {
 		if (length(cn) == ncol(e)) {
 			colnames(e) <- cn
 		}
-		#e <- data.frame(e)
+		e <- data.frame(e)
 	}
 	e
 }
@@ -291,7 +291,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	colnames(e) <- cn
 	if (!is.null(fun)) {
 		e <- as.data.frame(e)
-		e <- do_fun(x, e, fun, ...)
+		e <- do_fun(e, fun, ...)
 	}
 	
 	if (cells) {
