@@ -56,6 +56,12 @@
 <h3 id="bug-fixes-1-7-74">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-74"></a></h3>
 <ul><li>
 <code>writeVector</code> and <code>readVector</code> better handle empty geopackage layers <a href="https://github.com/rspatial/terra/issues/1426" class="external-link">#1426</a> by Andrew Gene Brown.</li>
+<li>
+<code>writeCDF</code> only wrote global variables if there was more than one <a href="https://github.com/rspatial/terra/issues/1443" class="external-link">#1443</a> by Daniel Schlaepfer</li>
+<li>
+<code>rasterize</code> with “by” returned odd layernames <a href="https://github.com/rspatial/terra/issues/1435" class="external-link">#1435</a> by Philippe Massicotte</li>
+<li>
+<code>convHull</code>, <code>minCircle</code> and <code>minRect</code> with a zero-row SpatVector crashed R <a href="https://github.com/rspatial/terra/issues/1445" class="external-link">#1445</a> by Andrew Gene Brown</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-74">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-74"></a></h3>
