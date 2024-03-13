@@ -73,7 +73,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{levels}{character. labels for the legend when \code{type="classes"} }
   \item{all_levels}{logical. If \code{TRUE}, the legend shows all levels of a categorical raster, even if they are not present in the data}
   \item{breaks}{numeric. Either a single number to indicate the number of breaks desired, or the actual breaks. When providing this argument, the default legend becomes "interval"}
-  \item{breakby}{character or function. Either "eqint" for equal interval breaks, "cases" for equal quantile breaks. If a function is supplied it should take a single argument (a vector of values) and create groups}
+  \item{breakby}{character or function. Either "eqint" for equal interval breaks, "cases" for equal quantile breaks. If a function is supplied, it should take a single argument (a vector of values) and create groups}
   \item{fun}{function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector \code{v}, you could do \code{fun=function() lines(v)}. The function may have one argument, representing the layer that is plotted (1 to the number of layers) }  
   \item{colNA}{character. color for the NA values}
   \item{alpha}{Either a single numeric between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque) or a SpatRaster with values between 0 and 1 to set the transparency by cell. To set the transparency for a given color, set it to the colors directly}
@@ -86,7 +86,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)}
   \item{add}{logical. If \code{TRUE} add the object to the current plot}
   \item{ext}{SpatExtent. Can be use instead of xlim and ylim to set the extent of the plot}
-  \item{reset}{logical. If \code{TRUE} add the margins (see argument \code{mar}) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  \code{\link{lines}}}
+  \item{reset}{logical. If \code{TRUE} add the margins (see argument \code{mar}) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  \code{\link{lines}})}
   \item{values}{Either a vector with values to be used for plotting or a two-column data.frame, where the first column matches a variable in \code{x} and the second column has the values to be plotted}
   \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and additional graphical arguments}  
 }
@@ -98,9 +98,9 @@ Add map elements: \code{\link{text}, \link{sbar}, \link{north}, \link{add_legend
  
 plot a \code{\link[=plot,SpatGraticule,missing-method]{SpatGraticule}} or \code{\link[=plot,SpatExtent,missing-method]{SpatExtent}}, 
 
-mulitple layers: \code{\link{plotRGB}}, \code{\link{panel}}
+multiple layers: \code{\link{plotRGB}}, \code{\link{panel}}
 
-other plot types: scatter\code{\link[terra:scatter]{plot}, \link{hist}, \link{pairs}, \link{density}, \link{persp}, \link{contour}, \link{boxplot}, \link{barplot}} 
+other plot types: \code{\link[=plot,SpatRaster,SpatRaster-method]{scatterplot}, \link{hist}, \link{pairs}, \link{density}, \link{persp}, \link{contour}, \link{boxplot}, \link{barplot}} 
 }
 
 \examples{ 
