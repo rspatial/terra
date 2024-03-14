@@ -267,10 +267,16 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		pols <- grepl("polygons", g)
 
+		dots <- list(...)
+		nms <- names(dots)
+		nms <- nms[!(nms %in% c("na.rm", "fun", "sum"))]
+		if (length(nms) > 0) {
+			warn("rasterize", paste("unexpected additional argument(s):", paste(nms, collapse=", ")))
+		}
+
 		if (cover[1] && pols) {
 			y@ptr <- y@ptr$rasterize(x@ptr, "", 1, background, touches[1], "", TRUE, FALSE, TRUE, opt)
 		} else {
-			dots <- list(...)
 			if (missing(fun)) {
 				if (!is.null(dots$sum)) {
 					# backward compatibility
