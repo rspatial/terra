@@ -154,7 +154,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <dd><p>numeric. Either a single number to indicate the number of breaks desired, or the actual breaks. When providing this argument, the default legend becomes "interval"</p></dd>
 
   <dt>breakby</dt>
-<dd><p>character or function. Either "eqint" for equal interval breaks, "cases" for equal quantile breaks. If a function is supplied it should take a single argument (a vector of values) and create groups</p></dd>
+<dd><p>character or function. Either "eqint" for equal interval breaks, "cases" for equal quantile breaks. If a function is supplied, it should take a single argument (a vector of values) and create groups</p></dd>
 
   <dt>fun</dt>
 <dd><p>function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector <code>v</code>, you could do <code>fun=function() lines(v)</code>. The function may have one argument, representing the layer that is plotted (1 to the number of layers)</p></dd>
@@ -193,7 +193,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <dd><p>SpatExtent. Can be use instead of xlim and ylim to set the extent of the plot</p></dd>
 
   <dt>reset</dt>
-<dd><p>logical. If <code>TRUE</code> add the margins (see argument <code>mar</code>) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  <code><a href="lines.html">lines</a></code></p></dd>
+<dd><p>logical. If <code>TRUE</code> add the margins (see argument <code>mar</code>) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  <code><a href="lines.html">lines</a></code>)</p></dd>
 
   <dt>values</dt>
 <dd><p>Either a vector with values to be used for plotting or a two-column data.frame, where the first column matches a variable in <code>x</code> and the second column has the values to be plotted</p></dd>
@@ -207,8 +207,8 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
     <div class="dont-index"><p><code><a href="lines.html">points</a>, <a href="lines.html">lines</a>, <a href="lines.html">polys</a>, <a href="image.html">image</a></code></p>
 <p>Add map elements: <code><a href="text.html">text</a>, <a href="sbar.html">sbar</a>, <a href="north.html">north</a>, <a href="legend.html">add_legend</a>, <a href="box.html">add_box</a></code></p> 
 <p>plot a <code><a href="plot_graticule.html">SpatGraticule</a></code> or <code><a href="plot_extent.html">SpatExtent</a></code>,</p>
-<p>mulitple layers: <code><a href="plotRGB.html">plotRGB</a></code>, <code><a href="panel.html">panel</a></code></p>
-<p>other plot types: scatter<code>plot, <a href="hist.html">hist</a>, <a href="pairs.html">pairs</a>, <a href="density.html">density</a>, <a href="persp.html">persp</a>, <a href="contour.html">contour</a>, <a href="boxplot.html">boxplot</a>, <a href="barplot.html">barplot</a></code></p></div>
+<p>multiple layers: <code><a href="plotRGB.html">plotRGB</a></code>, <code><a href="panel.html">panel</a></code></p>
+<p>other plot types: <code><a href="scatter.html">scatterplot</a>, <a href="hist.html">hist</a>, <a href="pairs.html">pairs</a>, <a href="density.html">density</a>, <a href="persp.html">persp</a>, <a href="contour.html">contour</a>, <a href="boxplot.html">boxplot</a>, <a href="barplot.html">barplot</a></code></p></div>
     </div>
 
     <div class="section level2">
