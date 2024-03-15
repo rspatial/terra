@@ -243,7 +243,8 @@ cbind.SpatVector <- function(x, y, ...) {
 		if (inherits(y, "SpatVector")) {
 			y <- y@ptr$df
 		} else {
-			stopifnot(inherits(y, "data.frame"))
+			# stopifnot(inherits(y, "data.frame"))
+			y <- as.data.frame(y)
 			y <- .makeSpatDF(y)
 		}
 		x@ptr <- x@ptr$cbind(y)
