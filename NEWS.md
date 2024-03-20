@@ -1,10 +1,22 @@
-# version 1.7-73
+# version 1.7-74
+
+## bug fixes
+
+- `writeVector` and `readVector` better handle empty geopackage layers [#1426](https://github.com/rspatial/terra/issues/1426) by Andrew Gene Brown.
+- `writeCDF` only wrote global variables if there was more than one [#1443](https://github.com/rspatial/terra/issues/1443) by Daniel Schlaepfer
+- `rasterize` with "by" returned odd layernames [#1435](https://github.com/rspatial/terra/issues/1435) by Philippe Massicotte
+- `convHull`, `minCircle` and `minRect` with a zero-row SpatVector crashed R [#1445](https://github.com/rspatial/terra/issues/1445) by Andrew Gene Brown
+- `rangeFill` with argument `circular=TRUE` did not work properly [#1460](https://github.com/rspatial/terra/issues/1460) by Alice
+
 
 ## enhancements
 
 - `extract` has new argument "small=TRUE" to allow for strict use of "touches=FALSE" [#1419](https://github.com/rspatial/terra/issues/1419) by Floris Vanderhaeghe.
 - `as.list<SpatRaster>` has new argument "geom=NULL"
 - `rast<list>` now recognizes (x, y, z) base R "image" structures [stackoverflow](https://stackoverflow.com/questions/77949551/rspatial-convert-a-grid-list-to-a-raster-using-terra) by Ignacio Marzan.
+- `inset` has new arguments "offset" and "add" [#1422](https://github.com/rspatial/terra/issues/1422) by Armand-CT
+- `expanse<SpatRaster>` has argument `usenames` [#1446](https://github.com/rspatial/terra/issues/1446) by Bappa Das
+
 
 ## new 
 

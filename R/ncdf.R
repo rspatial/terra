@@ -203,7 +203,7 @@
 	ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
 
 	atts <- grep("=", atts, value=TRUE)
-	if (length(atts) > 1) {
+	if (length(atts) > 0) {
 		atts <- strsplit(atts, "=")
 		for (i in 1:length(atts)) {
 			ncdf4::ncatt_put(ncobj, 0, atts[[i]][1], atts[[i]][2], prec="text")

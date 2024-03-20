@@ -16,7 +16,8 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 }
 
 \usage{
-\S4method{expanse}{SpatRaster}(x, unit="m", transform=TRUE, byValue=FALSE, zones=NULL, wide=FALSE)
+\S4method{expanse}{SpatRaster}(x, unit="m", transform=TRUE, byValue=FALSE,
+			zones=NULL, wide=FALSE, usenames=FALSE)
 
 \S4method{expanse}{SpatVector}(x, unit="m", transform=TRUE)
 }
@@ -28,7 +29,8 @@ For vector data, the best way to compute area is to use the longitude/latitude C
   \item{byValue}{logical. If \code{TRUE}, the area for each unique cell value is returned}
   \item{zones}{NULL or SpatRaster with the same geometry identifying zones in \code{x}}
   \item{wide}{logical. Should the results be in "wide" rather than "long" format?}
-}
+  \item{usenames}{logical. If \code{TRUE} layers are identified by their names instead of their numbers}
+}  
 
 \value{
 \bold{SpatRaster}: \code{data.frame} with at least two columns ("layer" and "area") and possibly also "value" (if \code{byValue} is \code{TRUE}), and "zone" (if \code{zones} is \code{TRUE}). If \code{x} has no values, the total area of all cells is returned. Otherwise, the area of all cells that are not \code{NA} is returned. 

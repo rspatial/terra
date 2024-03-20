@@ -6072,25 +6072,23 @@ SpatRaster SpatRaster::fill_range(long limit, bool circular, SpatOptions &opt) {
 				} else {
 					bool circ = false;
 					if (start > end) {
-						std::swap(start, end);
+						//std::swap(start, end);
 						circ = true;
 					}
-					if (end > nl) {
+					if ((start > nl) | (end > nl)) {
 						for (size_t k=0; k<nl; k++) {
 							d[k*nc+j] = NAN;
 						}
+					} else if (circ) {
+						for (size_t k=start; k<nl; k++) {
+							d[k*nc+j] = 1;
+						}
+						for (size_t k=0; k<end; k++) {
+							d[k*nc+j] = 1;
+						}
 					} else {
-						if (circ) {
-							for (size_t k=start; k<nl; k++) {
-								d[k*nc+j] = 1;
-							}
-							for (size_t k=0; k<end; k++) {
-								d[k*nc+j] = 1;
-							}
-						} else {
-							for (size_t k=start; k<end; k++) {
-								d[k*nc+j] = 1;
-							}
+						for (size_t k=start; k<end; k++) {
+							d[k*nc+j] = 1;
 						}
 					}
 				}

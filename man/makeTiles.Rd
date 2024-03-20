@@ -42,7 +42,7 @@ character (filenames) or matrix (extents)
 
 
 \seealso{
-\code{\link{vrt}} to create a virtual raster from tiles
+\code{\link{vrt}} to create a virtual raster from tiles and \code{\link{crop}} for sub-setting arbitrary parts of a SpatRaster.
 }
 
 

@@ -187,6 +187,7 @@ extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=
 	} 
 	if (bind) {
 		if (nrow(e) == nrow(y)) {
+			e <- data.frame(e)
 			e <- cbind(y, e)
 		} else {
 			#? can this occur?
@@ -199,7 +200,7 @@ extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=
 }
 
 
-do_fun <- function(x, e, fun, ...) {		
+do_fun <- function(e, fun, ...) {		
 	fun <- match.fun(fun)
 	e <- aggregate(e[,-1,drop=FALSE], e[,1,drop=FALSE], fun, ...)
 	m <- sapply(e, NCOL)
@@ -213,7 +214,6 @@ do_fun <- function(x, e, fun, ...) {
 		if (length(cn) == ncol(e)) {
 			colnames(e) <- cn
 		}
-		#e <- data.frame(e)
 	}
 	e
 }
@@ -291,7 +291,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	colnames(e) <- cn
 	if (!is.null(fun)) {
 		e <- as.data.frame(e)
-		e <- do_fun(x, e, fun, ...)
+		e <- do_fun(e, fun, ...)
 	}
 	
 	if (cells) {
@@ -312,6 +312,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 
 	if (bind) {
 		if (nrow(e) == nrow(y)) {
+			e <- data.frame(e)
 			e <- cbind(y, e[,-1,drop=FALSE])
 		} else {
 			warn("extract", "cannot return a SpatVector because the number of records extracted does not match the number of rows in y (perhaps you need to use a summarizing function")

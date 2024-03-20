@@ -147,11 +147,13 @@ setMethod("deepcopy", signature("SpatVector"),
 
 as.list.svc <- function(x) {
 	v <- vect()
-	lapply(1:x$size(),
+	out <- lapply(1:x$size(),
 		function(i) {
 			v@ptr <- x$get(i-1)
 			v
 		})
+	names(out) <- x$names
+	out
 }
 
 

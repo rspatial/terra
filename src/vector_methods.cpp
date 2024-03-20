@@ -271,6 +271,7 @@ SpatVectorCollection SpatVector::split(std::string field) {
 		v.srs = srs;
 		v.df = df.subset_rows(r);
 		out.push_back(v);
+		out.names[out.names.size()-1] = v.df.getSvalue(i, 0);
 	}
 	return out;
 }

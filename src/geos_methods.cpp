@@ -904,6 +904,10 @@ SpatVector SpatVector::crop(SpatVector v) {
 SpatVector SpatVector::hull(std::string htype, std::string by) {
 
 	SpatVector out;
+	if (nrow() == 0) {
+		out.srs = srs;
+		return out;
+	}
 
 	if (!by.empty()) {
 		SpatVector tmp = aggregate(by, false);
@@ -968,8 +972,6 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 		h = GEOSMinimumRotatedRectangle_r(hGEOSCtxt, g[0].get());
 	#endif
 	}
-	
-	
 	
 	std::vector<GeomPtr> b(1);
 	b[0] = geos_ptr(h, hGEOSCtxt);
@@ -2369,6 +2371,7 @@ SpatVector SpatVector::unite() {
 
 
 SpatVector SpatVector::symdif(SpatVector v) {
+
 	if ((type() != "polygons") || (v.type() != "polygons")) {
 		SpatVector out;
 		out.setError("expected two polygon geometries");
@@ -2462,6 +2465,11 @@ SpatVector SpatVector::cover(SpatVector v, bool identity, bool expand) {
 
 SpatVector SpatVector::erase_agg(SpatVector v) {
 
+	if ((nrow()==0) || (v.nrow() == 0)) {
+		return(*this);
+	}
+
+
 	if ((type() == "points") || (v.type() == "points")) {
 		std::vector<bool> b = is_related(v, "intersects");
 		std::vector<unsigned> r;
@@ -2521,6 +2529,10 @@ SpatVector SpatVector::erase_agg(SpatVector v) {
 
 
 SpatVector SpatVector::erase(SpatVector v) {
+
+	if ((nrow()==0) || (v.nrow() == 0)) {
+		return(*this);
+	}
 
 	if ((type() == "points") || (v.type() == "points")) {
 		std::vector<bool> b = is_related(v, "intersects");
@@ -2641,6 +2653,11 @@ SpatVector SpatVector::erase(SpatVector v) {
 */
 
 SpatVector SpatVector::erase(bool sequential) {
+
+	if (nrow()==0) {
+		return(*this);
+	}
+
 	SpatVector out;
 
 	if (type() != "polygons") {

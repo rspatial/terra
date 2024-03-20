@@ -507,7 +507,7 @@ setMethod("freq", signature(x="SpatRaster"),
 
 
 setMethod ("expanse", "SpatRaster",
-	function(x, unit="m", transform=TRUE, byValue=FALSE, zones=NULL, wide=FALSE) {
+	function(x, unit="m", transform=TRUE, byValue=FALSE, zones=NULL, wide=FALSE, usenames=FALSE) {
 		opt <- spatOptions()
 		if (!is.null(zones)) {
 			if (!inherits(zones, "SpatRaster")) {
@@ -537,7 +537,6 @@ setMethod ("expanse", "SpatRaster",
 				}
 				v[is.na(v)] <- 0
 			}
-			return(v)
 		} else {
 			v <- x@ptr$sum_area(unit, isTRUE(transform[1]), isTRUE(byValue[1]), opt)
 			x <- messages(x, "expanse")
@@ -557,8 +556,11 @@ setMethod ("expanse", "SpatRaster",
 				}
 				v[is.na(v)] <- 0
 			}
-			v
 		}
+		if (usenames) {
+			v$layer <- names(x)[v$layer]
+		}
+		v
 	}
 )
 

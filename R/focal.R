@@ -578,7 +578,11 @@ function(x, w=3, fun="ols", ..., fillvalue=NA, filename="", overwrite=FALSE, wop
 		outnl <- funopt$nl
 	} else {
 		# need to test
-		#outnl <- 
+		out <- fun(1:msz, sample(msz))
+		outnl <- length(out)
+		if (is.null(wopt$names) && (length(names(out)) == outnl)) {
+			wopt$names <- names(out)
+		}
 	}
 	out <- rast(x, nlyr=outnl)
 	
