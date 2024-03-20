@@ -34,7 +34,7 @@ This algorithm was created and tested by the authors.
 
 \author{
 
-Ezio Crestaz, Emanuele Cordano
+Ezio Crestaz, Emanuele Cordano, Roman Seliger
 }
 
 \examples{
