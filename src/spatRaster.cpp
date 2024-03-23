@@ -1193,9 +1193,17 @@ std::vector<std::string> SpatRaster::getDataType(bool unique, bool memtype) {
 			std::sort(v.begin(), v.end());
 			v.erase(std::unique(v.begin(), v.end()), v.end());	
 			if (v.size() == 1) {
-				d.push_back("INT4S");	
+				if (v[0] == 1) {
+					if (vmax(source[i].range_min, false) > 0) {
+						d.push_back("INT4U");						
+					} else {
+						d.push_back("INT4S");	
+					}
+				} else if (v[0] == 3) {
+					d.push_back("INT1U");	
+				}
 			} else {
-				d.push_back("INT1U");	
+				d.push_back("FLT4S");
 			}
 		} else {
 			d.push_back(source[i].dtype);
