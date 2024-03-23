@@ -462,7 +462,7 @@ prettyNumbs <- function(x, digits) {
 		arglist <- c(list(x=x$lim[1:2], y=x$lim[3:4], type="n", xlab="", ylab="", asp=x$asp, xaxs=x$xaxs, yaxs=x$yaxs, axes=FALSE), x$dots)
 		do.call(plot, arglist)
 		if (!is.null(x$background)) {
-			graphics::rect(x$lim[1], x$lim[3], x$lim[2], x$lim[4], col=x$background)			
+			graphics::rect(x$lim[1], x$lim[3], x$lim[2], x$lim[4], col=x$background, border=TRUE)			
 		}
 	}
 	if (!x$values) {
