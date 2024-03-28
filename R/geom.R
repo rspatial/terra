@@ -312,6 +312,9 @@ setMethod("buffer", signature(x="SpatVector"),
 		if (!is.numeric(width)) {
 			error("buffer", "width is not numeric")
 		}
+		if (length(width) == 0) {
+			error("buffer", "width is empty")
+		}
 		x@ptr <- x@ptr$buffer(width, quadsegs, tolower(capstyle), tolower(joinstyle), mitrelimit, singlesided)
 		messages(x, "buffer")
 	}
