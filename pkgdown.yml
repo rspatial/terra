@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles: {}
-last_built: 2024-03-15T14:41Z
+last_built: 2024-03-28T01:50Z
 urls:
   reference: https://rspatial.github.io/terra/reference
   article: https://rspatial.github.io/terra/articles
