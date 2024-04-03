@@ -520,7 +520,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
     \code{\link{rasterizeWin}} \tab Rasterize points with a moving window\cr
     \code{\link{rasterizeGeom}} \tab Rasterize attributes of geometries such as "count", "area", or "length"\cr
     \code{\link{as.points}} \tab Create points from a SpatRaster or SpatVector \cr
-    \code{\link{as.lines}} \tab Create points from a SpatRaster or SpatVector\cr
+    \code{\link{as.lines}} \tab Create lines from a SpatRaster or SpatVector\cr
     \code{\link{as.polygons}} \tab Create polygons from a SpatRaster \cr
     \code{\link{as.contour}}  \tab Contour lines from a SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr

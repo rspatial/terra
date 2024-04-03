@@ -136,6 +136,8 @@ class SpatRasterSource {
 		std::vector<bool> hasCategories;
 		std::vector<SpatCategories> cats;
 		std::vector<unsigned char> valueType;
+		// 0:double; 1:int; 3:bool
+
 		//std::vector<std::string> dataType;
 
 		std::vector<bool> hasColors;
@@ -697,7 +699,7 @@ class SpatRaster {
 		SpatRaster is_in(std::vector<double> m, SpatOptions &opt);
 		std::vector<std::vector<double>> is_in_cells(std::vector<double> m, SpatOptions &opt);
 
-		std::vector<std::string> getDataType(bool unique);
+		std::vector<std::string> getDataType(bool unique, bool memtype);
 		std::vector<std::string> dataType();
 
 		SpatRaster isnot(bool falseNA, SpatOptions &opt);

@@ -318,7 +318,7 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 SpatRaster SpatRaster::geometry_opt(long nlyrs, bool properties, bool time, bool units, bool tags, bool datatype, SpatOptions &opt) {
 
 	if (datatype && hasValues() && (!opt.datatype_set)) {
-		std::vector<std::string> dt = getDataType(true);
+		std::vector<std::string> dt = getDataType(true, true);
 		if ((dt.size() == 1) && !dt[0].empty()) {
 			if (!hasScaleOffset()) {
 				opt.set_datatype(dt[0]);
@@ -1183,12 +1183,31 @@ std::vector<bool> SpatRaster::hasCategories() {
 	return b;
 }
 
-std::vector<std::string> SpatRaster::getDataType(bool unique) {
+std::vector<std::string> SpatRaster::getDataType(bool unique, bool memtype) {
 	std::vector<std::string> d;
 	size_t n = nsrc();
 	d.reserve(n);
 	for (size_t i=0; i<n; i++) {
-		d.push_back(source[i].dtype);
+		if (memtype && source[i].memory) {			
+			std::vector<unsigned char> v = source[i].valueType;
+			std::sort(v.begin(), v.end());
+			v.erase(std::unique(v.begin(), v.end()), v.end());	
+			if (v.size() == 1) {
+				if (v[0] == 1) {
+					if (vmax(source[i].range_min, false) > 0) {
+						d.push_back("INT4U");						
+					} else {
+						d.push_back("INT4S");	
+					}
+				} else if (v[0] == 3) {
+					d.push_back("INT1U");	
+				}
+			} else {
+				d.push_back("FLT4S");
+			}
+		} else {
+			d.push_back(source[i].dtype);
+		}
 	}
 	if (unique) {
 		std::sort(d.begin(), d.end());

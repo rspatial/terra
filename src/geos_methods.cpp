@@ -1094,6 +1094,11 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 	if (srs.is_empty()) {
 		out.addWarning("unknown CRS. Results may be wrong");
 	} 
+	if (d.empty()) {
+		out.setError("no buffer distance provided");
+		return out;
+	} 
+	
 	bool islonlat = is_lonlat();
 	if (d.size() == 1 && d[0] == 0) {
 		islonlat = false; //faster

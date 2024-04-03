@@ -45,13 +45,13 @@ gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
 	} else if (drivers) {
 		x <- .gdaldrivers()
 		x <- do.call(cbind, x)
-		x[,2] = c("vector", "raster")[as.integer(x[,2])+1]
-		#x[,3] = c("read", "read/copy-write", "read/write")[as.integer(x[,3])+1]
-		x[,3] = c("read", "read/write", "read/write")[as.integer(x[,3])+1]
-		colnames(x) <- c("name", "type", "can", "vsi", "long.name")
 		x <- data.frame(x)
-		x[,4] <- x[,4] == 1
-		x <- x[order(x$type, x$name), ]
+		x[,2] = c(FALSE, TRUE)[as.integer(x[,2])+1]
+		x[,3] = c(FALSE, TRUE)[as.integer(x[,3])+1]
+		x[,4] = c("read", "read/write", "read/write")[as.integer(x[,4])+1]
+		colnames(x) <- c("name", "raster", "vector", "can", "vsi", "long.name")
+		x[,5] <- x[,5] == 1
+		x <- x[order(x$name), ]
 		rownames(x) <- NULL
 		x
 	} else {

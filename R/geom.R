@@ -276,6 +276,15 @@ setMethod("mask", signature(x="SpatVector", mask="SpatVector"),
 	}
 )
 
+setMethod("mask", signature(x="SpatVector", mask="SpatExtent"),
+	function(x, mask, inverse=FALSE) {
+		mask <- vect(mask, crs=crs(x))
+		x@ptr <- x@ptr$mask(mask@ptr, inverse)
+		messages(x, "mask")
+	}
+)
+
+
 setMethod("intersect", signature(x="SpatExtent", y="SpatRaster"),
 	function(x, y) {
 		x <- align(x, y, snap="near")

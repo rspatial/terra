@@ -11,7 +11,7 @@ Determine for each grid cell the location/record it is most similar to.
 }
 
 \usage{
-\S4method{similarity}{SpatRaster,SpatRaster}(x, y, labels="", filename="", ...)
+\S4method{similarity}{SpatRaster,SpatVector}(x, y, labels="", filename="", ...)
 
 \S4method{similarity}{SpatRaster,data.frame}(x, y, labels="", filename="", ...)
 }

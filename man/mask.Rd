@@ -5,17 +5,19 @@
 \alias{mask}
 \alias{mask,SpatRaster,SpatRaster-method}
 \alias{mask,SpatRaster,SpatVector-method}
+\alias{mask,SpatRaster,SpatExtent-method}
 \alias{mask,SpatRaster,sf-method}
 \alias{mask,SpatVector,SpatVector-method}
+\alias{mask,SpatVector,SpatExtent-method}
 \alias{mask,SpatVector,sf-method}
 
 \title{Mask values in a SpatRaster or SpatVector}
 
 \description{
 If \code{x} is a \code{SpatRaster}: 
-Create a new SpatRaster that has the same values as SpatRaster \code{x}, except for the cells that are \code{NA} (or other \code{maskvalue}) in another SpatRaster (the 'mask'), or the cells that are not covered by a SpatVector. These cells become \code{NA} (or another \code{updatevalue}).
+Create a new SpatRaster that has the same values as SpatRaster \code{x}, except for the cells that are \code{NA} (or other \code{maskvalue}) in another SpatRaster (the 'mask'), or the cells that are not covered by a SpatVector or SpatExtent. These cells become \code{NA} (or another \code{updatevalue}).
 
-If \code{x} is a \code{SpatVector}: 
+If \code{x} is a SpatVector or SpatExtent: 
 Select geometries of \code{x} that intersect, or not intersect, with the geometries of \code{y}.
 } 
 
@@ -26,7 +28,12 @@ Select geometries of \code{x} that intersect, or not intersect, with the geometr
 \S4method{mask}{SpatRaster,SpatVector}(x, mask, inverse=FALSE, updatevalue=NA,
 	touches=TRUE, filename="", ...)
 
+\S4method{mask}{SpatRaster,SpatExtent}(x, mask, inverse=FALSE, updatevalue=NA,
+	touches=TRUE, filename="", ...)
+
 \S4method{mask}{SpatVector,SpatVector}(x, mask, inverse=FALSE)
+
+\S4method{mask}{SpatVector,SpatExtent}(x, mask, inverse=FALSE)
 }
 
 
