@@ -88,11 +88,6 @@ plot(flow_acc1)
 plot(flow_acc2)
 
 
-## Application to Central Africa
-flowdir_f30 <- rast(system.file('ecor/data/flowdir/nigrb_dir_30s.tif',package="terra")) 
-acc_f30 <- flowAccu2(flowdir_f30)
-plot(acc_f30>100)
-
 
 }
 

@@ -61,6 +61,16 @@ t(array(flowdir[],rev(dim(flowdir)[1:2])))
 
 pits <- pitfinder2(flowdir)
 
+## Application wth example DEM
+
+elev <- rast(system.file('ex/elev.tif',package="terra"))
+flowdir <- terrain(elev,"flowdir")
+
+pits <- pitfinder2(flowdir)
+
+
+
+
 
 }
 

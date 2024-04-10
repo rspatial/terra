@@ -5,11 +5,8 @@
 
 setMethod("watershed2", signature(p="SpatRaster",pp_offset="integer"), 
           function(p,pp_offset,filename="", ...) { 
-            ##  v <- match.arg(unique(v), c("aspect", "flowdir", "roughness", "slope", "TPI", "TRI"))
-            ##  unit <- match.arg(unit, c("degrees", "radians"))
-            ##  opt <- spatOptions(filename, ...)
-            ##  seed <- ifelse("flowdirection" %in% v, .seed(), 0)
-            print("watershed")
+            
+            
             opt <- spatOptions(filename, ...)
            ## p@ptr <- p@ptr$watershed2(as.integer(pp_offset-1),opt)
             p@ptr <- p@ptr$watershed2(as.integer(pp_offset-1),opt)
@@ -76,7 +73,6 @@ setMethod("flowAccu2_weight", signature(p="SpatRaster",weight="SpatRaster"),
           function(p,weight,filename="", ...) { 
             
             opt <- terra:::spatOptions(filename,...)
-            print("ba")
             p@ptr <- p@ptr$flowAccu2_weight(weight@ptr,opt)
             messages(p, "flowAccu2_weight") ## EC 20231104
             return(p)

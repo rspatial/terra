@@ -7,8 +7,8 @@ using namespace Rcpp;
 
 
 // C/C++ code
-// Author: Ezio Crestaz
-// Data: Febrary 2021
+// Author: Ezio Crestaz,Emanuele Cordano
+// Date: February 2021 - April 2024
 // Scope: compute watershed upstream of point i,j
 // p: pointer to an integer 1D array storing a 2D raster
 // nx,ny: number of cells in x (longitude) and in y (latitude)
@@ -733,8 +733,7 @@ void pitfinder(double* p, int nx, int ny, double* pOut)
            cnt++;
          } 
          
-      
-      // da finire 
+     
       }
     
    // printf("pout=%f",*(pOut+i));

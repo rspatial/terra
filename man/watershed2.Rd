@@ -39,38 +39,23 @@ Ezio Crestaz, Emanuele Cordano, Roman Seliger
 
 \examples{
 
-
 library(sf)
 
 
 
-
-flowdir_f30 <- system.file('ecor/data/flowdir/nigrb_dir_30s.tif',package="terra") 
-
-## path to Pourpoint shapefile:
-pourpoint_f <- system.file('ecor/data/points/nigrb_pp_3s.shp',package="terra") 
-
-###
+elev <- rast(system.file('ex/elev.tif',package="terra"))
+flowdir <- terrain(elev,"flowdir")
+flowacc  <- flowAccu2(flowdir)
+## pourpoint with maximum accumulation. 
+pp <- which.max(flowacc[])
 
 
-flowdir <- rast(flowdir_f30)
+poutr <- watershed2((flowdir),as.integer(pp))
 
-
-
-pourpoint <- st_read(pourpoint_f)
-
-
-
-offset_pp <- cellFromXY(flowdir,st_coordinates(pourpoint))
-poutr <- watershed2((flowdir),as.integer(offset_pp))
-
-\dontrun{
-## Raster to Vector (polygons)
 poutr[poutr==0] <- NA
 poutv <- st_as_sf(as.polygons(poutr))
-
-}
-
+plot(st_geometry(poutv))
+plot(elev+poutr*0,add=TRUE)
 
 
 

@@ -110,16 +110,14 @@ plot(flow_acc1w)
 plot(flow_acc2w)
 
 
-## Application to Central Africa
+## Application wth example DEM
 
+elev <- rast(system.file('ex/elev.tif',package="terra"))
+flowdir <- terrain(elev,"flowdir")
 
-#### 
-flowdir_f30 <- rast(system.file('ecor/data/flowdir/nigrb_dir_30s.tif',package="terra")) 
-
-
-weight_f30_1 <- cellSize(flowdir_f30,unit="km")
-flowacc_v_f30w_1 <- flowAccu2_weight(flowdir_f30,weight_f30_1)
-flowacc_v_f30_1 <- flowAccu2(flowdir_f30)
+weight <- cellSize(elev,unit="km")
+flowacc_weight <- flowAccu2_weight(flowdir,weight)
+flowacc  <- flowAccu2(flowdir)
 
 
 
