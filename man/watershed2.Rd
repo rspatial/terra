@@ -42,20 +42,22 @@ Ezio Crestaz, Emanuele Cordano, Roman Seliger
 library(sf)
 
 
-
-elev <- rast(system.file('ex/elev.tif',package="terra"))
+elev <- rast(system.file('ex/elev_vinschgau.tif',package="terra"))
 flowdir <- terrain(elev,"flowdir")
-flowacc  <- flowAccu2(flowdir)
-## pourpoint with maximum accumulation. 
-pp <- which.max(flowacc[])
-
-
-poutr <- watershed2((flowdir),as.integer(pp))
+flowacc <- flowAccu2(flowdir)
+## pour point at Naturns 
+pp_lonlat <- st_sfc(st_point(x=c(11.004167,46.65)),crs=4326) 
+pp <- st_transform(pp_lonlat,crs=crs(flowacc))
+## 
+ipp <-cellFromXY(flowacc,st_coordinates(pp))
+poutr <- watershed2((flowdir),as.integer(ipp))
 
 poutr[poutr==0] <- NA
 poutv <- st_as_sf(as.polygons(poutr))
 plot(st_geometry(poutv))
 plot(elev+poutr*0,add=TRUE)
+
+
 
 
 
