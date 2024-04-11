@@ -8,7 +8,7 @@
 \title{Flow accumulation or Total contributing Area  (Watershed Analysis)}
 
 \description{
-It computes Flow accumulation or Total contributing Area (Waterhed Analysis) or a cumulation value in function of a weight value asspciated to each cell. 
+It computes Flow accumulation or Total contributing Area (Watershed Analysis) or a cumulation value in function of a weight value asspciated to each cell. 
 }
 
 \usage{

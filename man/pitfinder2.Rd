@@ -5,7 +5,7 @@
 \alias{pitfinder2,SpatRaster-method}
 
 
-\title{Pit Finder in a Flow Dir Raster map for Waterhed Extraction}
+\title{Pit Finder in a Flow Dir Raster map for Watershed Extraction}
 
 \description{
 It extractions a watershed mask from a flow direction input raster point a pour-point cell.

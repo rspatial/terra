@@ -5,10 +5,10 @@
 \alias{NIDP2,SpatRaster-method}
 
 
-\title{Number of immediate adjacent cell flowing into each cell (Waterhed Analysis)}
+\title{Number of immediate adjacent cell flowing into each cell (Watershed Analysis)}
 
 \description{
-It computes the number of immediate adjacent cell flowing into each cell (Waterhed Analysis)
+It computes the number of immediate adjacent cell flowing into each cell (Watershed Analysis)
 }
 
 \usage{
