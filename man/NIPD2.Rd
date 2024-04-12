@@ -34,7 +34,7 @@ NDIP is computed to preliminarly to compute Flow Accumulation area in the algori
 \seealso{\code{\link{flowAccu2}},\code{\link{flowAccu2_weight}}}
 \author{
 
-Emanuele Cordano (implementation of the algorithm within the package)
+Emanuele Cordano (implementation of the algorithm within the package),Guiyun Zhou, Wenyan Dong and Hongqiang Wei
 }
 
 \examples{

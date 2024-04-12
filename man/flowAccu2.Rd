@@ -35,7 +35,7 @@ ArGIS impletation (same result but different algorithm):  \url{https://pro.arcgi
 \seealso{\code{\link{flowAccu2_weight}},\code{\link{terrain}},\code{\link{watershed2}},\code{\link{NIDP2}}}
 \author{
 
-Emanuele Cordano (implementation of the algorithm within the package)
+Emanuele Cordano (implementation of the algorithm within the package),Guiyun Zhou, Wenyan Dong, and Hongqiang Wei
 }
 
 \examples{

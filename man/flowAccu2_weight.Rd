@@ -38,7 +38,7 @@ Further ArGIS implementation of this index: \url{https://pro.arcgis.com/en/pro-a
 \seealso{\code{\link{flowAccu2}},\code{\link{NIDP2}}}
 \author{
 
-Emanuele Cordano
+Emanuele Cordano,Guiyun Zhou, Wenyan Dong, and Hongqiang Wei
 }
 
 \examples{
