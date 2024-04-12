@@ -69,7 +69,7 @@ baselayers <- function(tiles, wrap=TRUE) {
 	
 	if (is.null(type)) type <- ""
 	if (type == "continuous") type <- "interval"	
-	if ((!is.numeric(v)) || (length(unique(v)) < 11)) {
+	if (!is.numeric(v)) {
 		type <- "classes"
 	} else if (type == "") {
 		type <- "interval"
