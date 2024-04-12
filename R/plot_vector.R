@@ -295,12 +295,16 @@ setMethod("dots", signature(x="SpatVector"),
 
 	cols <- out$cols
 	ncols <- length(cols)
-	if (nlevs < ncols) {
-		i <- trunc((ncols / nlevs) * 1:nlevs)
-		cols <- cols[i]
+
+	if (out$legend_type == "classes" && nlevs > ncols) {
+    # more classes than colors: cycle from beginning
+		cols_idx <- rep_len(cols, nlevs)
 	} else {
-		cols <- rep_len(cols, nlevs)
+    # else we interpolate the colors (better for continuous ramp)
+		cols_idx <- trunc(seq(1, ncols, length.out = nlevs))
 	}
+	cols <- cols[cols_idx]
+	
 	out$cols <- cols
 	out$leg$fill <- cols
 	out$legend_type <- "classes"
