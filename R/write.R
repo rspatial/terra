@@ -70,11 +70,13 @@ function(x, filename="", overwrite=FALSE, ...) {
 )
 
 
-get_filetype <- function(filename) {
-	ext <- tolower(tools::file_ext(filename))
-	if (ext == "shp" || ext == "") {
+get_filetype <- function(filename) {  
+	fn <- tolower(filename)
+	ext <- tools::file_ext(fn)
+	ext2 <- gsub("^[^.]*\\.(.*).*$", "\\1", fn)
+	if (ext == "shp" || ext == "shz" || (ext == "zip" && ext2 == "shp.zip") || ext == "") {
 		"ESRI Shapefile"
-	} else if (ext == "gpkg") {
+	} else if (ext == "gpkg" || (ext == "zip" && ext2 == "gpkg.zip")) {
 		"GPKG"
 	} else if (ext == "gdb") {
 		"OpenFileGDB"
