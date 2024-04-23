@@ -54,9 +54,9 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
 
 \S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, unit="m")
 
-\S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE)
+\S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE, unit="m")
 
-\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE, pairs=FALSE, symmetrical=TRUE)
+\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m")
 }
 
 \arguments{
@@ -81,9 +81,7 @@ SpatRaster or numeric or matrix or distance matrix (object of class "dist")
 }
 
 \note{
-The distance unit is in meters.
-
-A distance matrix can be coerced into a matrix with \code{as.matrix}
+A distance matrix can be coerced into a regular matrix with \code{as.matrix}
 }
 
 \references{

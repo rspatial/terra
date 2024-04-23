@@ -1,4 +1,4 @@
-# version 1.7-74
+# version 1.7-75
 
 ## bug fixes
 
@@ -7,6 +7,7 @@
 - `rasterize` with "by" returned odd layernames [#1435](https://github.com/rspatial/terra/issues/1435) by Philippe Massicotte
 - `convHull`, `minCircle` and `minRect` with a zero-row SpatVector crashed R [#1445](https://github.com/rspatial/terra/issues/1445) by Andrew Gene Brown
 - `rangeFill` with argument `circular=TRUE` did not work properly [#1460](https://github.com/rspatial/terra/issues/1460) by Alice
+- `crs(describe = TRUE)` returned an mis-ordered extent [#1485](https://github.com/rspatial/terra/issues/1485) by Dimitri Falk
 
 
 ## enhancements
