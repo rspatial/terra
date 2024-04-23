@@ -150,7 +150,7 @@ test.for.lonlat <- function(xy) {
 }
 
 setMethod("distance", signature(x="matrix", y="matrix"),
-	function(x, y, lonlat, pairwise=FALSE) {
+	function(x, y, lonlat, pairwise=FALSE, unit="m") {
 		if (missing(lonlat)) {
 			lonlat <- test.for.lonlat(x) & test.for.lonlat(y)
 			warn("distance", paste0("lonlat not set. Assuming lonlat=", lonlat))
@@ -158,6 +158,8 @@ setMethod("distance", signature(x="matrix", y="matrix"),
 		stopifnot(ncol(x) == 2)
 		stopifnot(ncol(y) == 2)
 		v <- vect()
+		stopifnot(unit %in% c("m", "km"))
+		m <- ifelse(unit == "m", 1, 0.001)
 		d <- v@ptr$point_distance(x[,1], x[,2], y[,1], y[,2], pairwise[1], 1, lonlat)
 		messages(v)
 		if (pairwise) {
@@ -169,14 +171,14 @@ setMethod("distance", signature(x="matrix", y="matrix"),
 )
 
 setMethod("distance", signature(x="data.frame", y="data.frame"),
-	function(x, y, lonlat, pairwise=FALSE) {
+	function(x, y, lonlat, pairwise=FALSE, unit="m") {
 		distance(as.matrix(x), as.matrix(y), lonlat, pairwise=pairwise)
 	}
 )
 
 
 setMethod("distance", signature(x="matrix", y="missing"),
-	function(x, y, lonlat=NULL, sequential=FALSE, pairs=FALSE, symmetrical=TRUE) {
+	function(x, y, lonlat=NULL, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m") {
 
 		if (missing(lonlat)) {
 			lonlat <- test.for.lonlat(x) & test.for.lonlat(y)
@@ -186,13 +188,13 @@ setMethod("distance", signature(x="matrix", y="missing"),
 		crs <- ifelse(isTRUE(lonlat), "+proj=longlat +datum=WGS84",
 							          "+proj=utm +zone=1 +datum=WGS84")
 		x <- vect(x, crs=crs)
-		distance(x, sequential=sequential, pairs=pairs, symmetrical=symmetrical)
+		distance(x, sequential=sequential, pairs=pairs, symmetrical=symmetrical, unit=unit)
 	}
 )
 
 setMethod("distance", signature(x="data.frame", y="missing"),
-	function(x, y, lonlat=NULL, sequential=FALSE, pairs=FALSE, symmetrical=TRUE) {
-		distance(as.matrix(x), lonlat=lonlat, sequential=sequential, pairs=pairs, symmetrical=symmetrical)
+	function(x, y, lonlat=NULL, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m") {
+		distance(as.matrix(x), lonlat=lonlat, sequential=sequential, pairs=pairs, symmetrical=symmetrical, unit=unit)
 	}
 )
 

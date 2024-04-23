@@ -570,6 +570,13 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	std::vector<std::string> nms = getNames();
 	double naflag=NAN;
 	bool hasNAflag = opt.has_NAflag(naflag);
+	
+//	if (driver == "AAIGrid" && std::isnan(naflag)) {
+		// avoid nan as flag
+//		naflag = -3.40282347E+38;
+//		hasNAflag = true;
+// set opt.NAflag?
+//	}
 
 	if (writeRGB) nms = {"red", "green", "blue"};
 

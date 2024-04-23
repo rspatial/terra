@@ -1973,6 +1973,97 @@ SpatRaster SpatRaster::fillna(int threshold, int connections, SpatOptions &opt) 
 CPLErr GDALFillNodata(GDALRasterBandH hTargetBand, GDALRasterBandH hMaskBand, doubledfMaxSearchDist, intbDeprecatedOption, intnSmoothingIterations, char**papszOptions, GDALProgressFuncpfnProgress, void*pProgressArg)
 */
 
+
+SpatRaster SpatRaster::fillNA(double missing, double maxdist, int niter, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1, true, true, true);
+
+	if (!hasValues()) {
+		out.setError("input raster has no values");
+		return out;
+	}
+	if (maxdist <= 0) {
+		out.setError("maxdist should be > 0");
+		return out;
+	}
+	if (niter < 0) {
+		out.setError("niter should be >= 0");
+		return out;
+	}
+
+	std::string filename = opt.get_filename();
+	std::string driver;
+	if (filename.empty()) {
+		if (canProcessInMemory(opt)) {
+			driver = "MEM";
+		} else {
+			filename = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
+			opt.set_filenames({filename});
+			driver = "GTiff";
+		}
+	} else {
+		driver = opt.get_filetype();
+		getGDALdriver(filename, driver);
+		if (driver.empty()) {
+			setError("cannot guess file type from filename");
+			return out;
+		}
+		std::string errmsg;
+		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
+			return out;
+		}
+	}
+
+	SpatOptions ops(opt);
+	GDALDatasetH hSrcDS, hDstDS;
+	if (!open_gdal(hSrcDS, 0, false, ops)) {
+		out.setError("cannot open input dataset");
+		return out;
+	}
+
+	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
+	if ( hDriver == NULL ) {
+		out.setError("empty driver");
+		return out;
+	}
+
+	//opt.datatype = "INT4S";
+	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
+		out.setError("cannot create new dataset");
+		GDALClose(hSrcDS);
+		return out;
+	}
+
+	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
+	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
+
+	if (GDALFillNodata(hTargetBand, hSrcBand, maxdist, 0, niter, NULL, NULL, NULL) != CE_None) {
+		out.setError("fillNA failed");
+		GDALClose(hSrcDS);
+		GDALClose(hDstDS);
+		return out;
+	}
+
+	GDALClose(hSrcDS);
+	if (driver == "MEM") {
+		if (!out.from_gdalMEM(hDstDS, false, true)) {
+			out.setError("conversion failed (mem)");
+		}
+		GDALClose(hDstDS);
+		return out;
+	}
+	
+	double adfMinMax[2];
+	GDALComputeRasterMinMax(hTargetBand, true, adfMinMax);
+	GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
+	GDALClose(hDstDS);
+	return SpatRaster(filename, {-1}, {""}, {}, {});
+}
+
+
+
+
 /*
 #include <gdalpansharpen.h>
 SpatRaster SpatRaster::panSharpen(SpatRaster pan, SpatOptions &opt) {

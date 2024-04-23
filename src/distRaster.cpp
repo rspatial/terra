@@ -847,7 +847,7 @@ std::vector<double> SpatVector::pointdistance(const std::vector<double>& px, con
 		if (szp == szs) {
 			if (lonlat) {
 				for (size_t i = 0; i < szs; i++) {
-					d.push_back( distance_lonlat(px[i], py[i], sx[i], sy[i]) );
+					d.push_back( distance_lonlat(px[i], py[i], sx[i], sy[i]) * m);
 				}
 			} else { // not reached
 				for (size_t i = 0; i < szs; i++) {
@@ -857,7 +857,7 @@ std::vector<double> SpatVector::pointdistance(const std::vector<double>& px, con
 		} else if (szp == 1) {  // to avoid recycling.
 			if (lonlat) {
 				for (size_t i = 0; i < szs; i++) {
-					d.push_back(  distance_lonlat(px[0], py[0], sx[i], sy[i]));
+					d.push_back( distance_lonlat(px[0], py[0], sx[i], sy[i]) * m);
 				}
 			} else { // not reached
 				for (size_t i = 0; i < szs; i++) {
@@ -867,11 +867,11 @@ std::vector<double> SpatVector::pointdistance(const std::vector<double>& px, con
 		} else { // if (szs == 1) {
 			if (lonlat) {
 				for (size_t i = 0; i < szp; i++) {
-					d.push_back(  distance_lonlat(px[i], py[i], sx[0], sy[0]));
+					d.push_back(  distance_lonlat(px[i], py[i], sx[0], sy[0]) * m);
 				}
 			} else { // not reached
 				for (size_t i = 0; i < szp; i++) {
-					d.push_back(  distance_plane(px[i], py[i], sx[0], sy[0]) * m );
+					d.push_back(  distance_plane(px[i], py[i], sx[0], sy[0]) * m);
 				}
 			}
 		}
@@ -879,7 +879,7 @@ std::vector<double> SpatVector::pointdistance(const std::vector<double>& px, con
 		if (lonlat) {
 			for (size_t i=0; i<szp; i++) {
 				for (size_t j=0; j<szs; j++) {
-					d.push_back(distance_lonlat(px[i], py[i], sx[j], sy[j]));
+					d.push_back(distance_lonlat(px[i], py[i], sx[j], sy[j]) * m);
 				}
 			}
 		} else { // not reached
@@ -974,7 +974,7 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 
 		std::string distfun="";
 		d = geos_distance(x, pairwise, distfun);
-		if ((!lonlat) && (m != 1)) {
+		if (m != 1) {
 			for (double &i : d) i *= m;
 		}
 		return d;
@@ -993,7 +993,7 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 		if (s == sx) {
 			if (lonlat) {
 				for (size_t i = 0; i < s; i++) {
-					d[i] = distance_lonlat(p[0][i], p[1][i], px[0][i], px[1][i]);
+					d[i] = distance_lonlat(p[0][i], p[1][i], px[0][i], px[1][i]) * m;
 				}
 			} else { // not reached
 				for (size_t i = 0; i < s; i++) {
@@ -1003,7 +1003,7 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 		} else if (s == 1) {  // to avoid recycling.
 			if (lonlat) {
 				for (size_t i = 0; i < sx; i++) {
-					d[i] = distance_lonlat(p[0][0], p[1][0], px[0][i], px[1][i]);
+					d[i] = distance_lonlat(p[0][0], p[1][0], px[0][i], px[1][i]) * m;
 				}
 			} else { // not reached
 				for (size_t i = 0; i < sx; i++) {
@@ -1013,7 +1013,7 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 		} else { // if (sx == 1) {
 			if (lonlat) {
 				for (size_t i = 0; i < s; i++) {
-					d[i] = distance_lonlat(p[0][i], p[1][i], px[0][0], px[1][0]);
+					d[i] = distance_lonlat(p[0][i], p[1][i], px[0][0], px[1][0]) * m;
 				}
 			} else { // not reached
 				for (size_t i = 0; i < s; i++) {
@@ -1026,7 +1026,7 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 			for (size_t i=0; i<s; i++) {
 				size_t k = i * sx;
 				for (size_t j=0; j<sx; j++) {
-					d[k+j] = distance_lonlat(p[0][i], p[1][i], px[0][j], px[1][j]);
+					d[k+j] = distance_lonlat(p[0][i], p[1][i], px[0][j], px[1][j]) * m;
 				}
 			}
 		} else { // not reached

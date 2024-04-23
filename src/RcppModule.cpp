@@ -962,6 +962,7 @@ RCPP_MODULE(spat){
 		.method("sieve", &SpatRaster::sieveFilter)
 		.method("view", &SpatRaster::viewshed)
 		.method("proximity", &SpatRaster::proximity)
+		.method("fillNA", &SpatRaster::fillNA)
 
 		.method("rectify", &SpatRaster::rectify)
 		.method("stretch", &SpatRaster::stretch)
