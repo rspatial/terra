@@ -61,7 +61,7 @@
 <span><span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster,numeric</span></span>
-<span><span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, pairs<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster,SpatVector</span></span>
 <span><span class="fu">cells</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, method<span class="op">=</span><span class="st">"simple"</span>, weights<span class="op">=</span><span class="cn">FALSE</span>, exact<span class="op">=</span><span class="cn">FALSE</span>, </span>
@@ -84,6 +84,9 @@
 
   <dt>weights</dt>
 <dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the approximate fraction of each cell that is covered is returned as well</p></dd>
+
+  <dt>pairs</dt>
+<dd><p>logical. If <code>TRUE</code> the cell values matched area also returned</p></dd>
 
   <dt>exact</dt>
 <dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the exact fraction of each cell that is covered is returned as well</p></dd>
