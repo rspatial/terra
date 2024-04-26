@@ -80,7 +80,7 @@ get_filetype <- function(filename) {
 		"OpenFileGDB"
 	} else if (ext == "gml") {
 		"GML"
-	} else if (ext == "json") {
+	} else if (ext == "json" || ext == "geojson") {
 		"GeoJSON"
 	} else if (ext == "cdf") {
 		"netCDF"
