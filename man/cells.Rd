@@ -18,7 +18,7 @@ Get the cell numbers covered by a SpatVector or SpatExtent. Or that match values
 \usage{
 \S4method{cells}{SpatRaster,missing}(x, y)
 
-\S4method{cells}{SpatRaster,numeric}(x, y)
+\S4method{cells}{SpatRaster,numeric}(x, y, pairs=FALSE)
 
 \S4method{cells}{SpatRaster,SpatVector}(x, y, method="simple", weights=FALSE, exact=FALSE, 
 				touches=is.lines(y), small=TRUE)
@@ -32,6 +32,7 @@ Get the cell numbers covered by a SpatVector or SpatExtent. Or that match values
   \item{y}{SpatVector, SpatExtent, 2-column matrix representing points, numeric representing values to match, or missing}
   \item{method}{character. Method for getting cell numbers for points. The default is "simple", the alternative is "bilinear". If it is "bilinear", the four nearest cells and their weights are returned}
   \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well}
+  \item{pairs}{logical. If \code{TRUE} the cell values matched area also returned}
   \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well}
   \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points}
   \item{small}{logical. If \code{TRUE}, values for all cells in touched polygons are extracted if none of the cells center points is within the polygon; even if \code{touches=FALSE}}

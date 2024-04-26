@@ -698,7 +698,7 @@ class SpatRaster {
 		SpatRaster init(std::vector<double> values, SpatOptions &opt);
 		
 		SpatRaster is_in(std::vector<double> m, SpatOptions &opt);
-		std::vector<std::vector<double>> is_in_cells(std::vector<double> m, SpatOptions &opt);
+		std::vector<std::vector<double>> is_in_cells(std::vector<double> m, bool keepvalue, SpatOptions &opt);
 
 		std::vector<std::string> getDataType(bool unique, bool memtype);
 		std::vector<std::string> dataType();

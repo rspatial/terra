@@ -861,9 +861,10 @@ SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
 
 
 
-std::vector<std::vector<double>> SpatRaster::is_in_cells(std::vector<double> m, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::is_in_cells(std::vector<double> m, bool keepvalue, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out(nlyr());
+	std::vector<std::vector<double>> outval(nlyr());
 
 	if (m.empty()) {
 		return(out);
@@ -894,14 +895,20 @@ std::vector<std::vector<double>> SpatRaster::is_in_cells(std::vector<double> m, 
 		readBlock(v, bs, i);
 		size_t cellperlayer = bs.nrows[i] * nc;
 		for (size_t j=0; j<v.size(); j++) {
-			size_t lyr = j / cellperlayer;
-			size_t cell = j % cellperlayer + bs.row[i] * nc;
 			if (std::isnan(v[j])) {
-				if (hasNAN)	out[lyr].push_back(cell);
+				if (hasNAN)	{
+					size_t cell = j % cellperlayer + bs.row[i] * nc;
+					size_t lyr = j / cellperlayer;
+					out[lyr].push_back(cell);
+					if (keepvalue) outval[lyr].push_back(NAN);
+				}
 			} else {
 				for (size_t k=0; k<m.size(); k++) {
 					if (v[j] == m[k]) {
+						size_t cell = j % cellperlayer + bs.row[i] * nc;
+						size_t lyr = j / cellperlayer;
 						out[lyr].push_back(cell);
+						if (keepvalue) outval[lyr].push_back(v[j]);
 						break;
 					}
 				}
@@ -909,6 +916,11 @@ std::vector<std::vector<double>> SpatRaster::is_in_cells(std::vector<double> m, 
 		}
 	}
 	readStop();
+	if (keepvalue) {
+		for (size_t i=0; i<nlyr(); i++) {
+			out[i].insert( out[i].end(), outval[i].begin(), outval[i].end() );
+		}
+	}
 	return(out);
 }
 
