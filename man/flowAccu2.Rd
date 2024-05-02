@@ -69,7 +69,7 @@ plot(elev2)
 ## Flow Direction Raster Maps
 flowdir1<- terrain(elev1,v="flowdir")
 flowdir2<- terrain(elev2,v="flowdir")
-
+u <- terrain(flowdir2,"flowacc")
 
 t(array(flowdir1[],rev(dim(flowdir1)[1:2])))
 t(array(flowdir2[],rev(dim(flowdir2)[1:2])))
@@ -80,7 +80,10 @@ plot(flowdir2)
 ## 
 flow_acc1 <- flowAccu2((flowdir1))
 flow_acc2 <- flowAccu2((flowdir2))
+## Alternative option 
+## here the argument of "terrain"functions is not elevation but flow directions.
 
+flow_acc2a <- terrain(flowdir2,"flowacc") 
 t(array(flow_acc1[],rev(dim(flow_acc1)[1:2])))
 t(array(flow_acc2[],rev(dim(flow_acc2)[1:2])))
 
