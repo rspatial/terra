@@ -8,6 +8,9 @@
 - `convHull`, `minCircle` and `minRect` with a zero-row SpatVector crashed R [#1445](https://github.com/rspatial/terra/issues/1445) by Andrew Gene Brown
 - `rangeFill` with argument `circular=TRUE` did not work properly [#1460](https://github.com/rspatial/terra/issues/1460) by Alice
 - `crs(describe = TRUE)` returned an mis-ordered extent [#1485](https://github.com/rspatial/terra/issues/1485) by Dimitri Falk
+- `tapp` with a custom function and an index like "yearmonths" could shift time for not considering the time zone. [#1483](https://github.com/rspatial/terra/issues/1483) by Finn Roberts
+- `plot<SpatRaster>` could fail when there were multiple values with very small differences [#1491](https://github.com/rspatial/terra/issues/1491) by srfall
+- `as.data.frame<SpatRaster>` with "xy=TRUE" and "wide=FALSE" could fail if coordinates were very similar [#1476](https://github.com/rspatial/terra/issues/1476) by Pascal Oettli
 
 
 ## enhancements
@@ -22,6 +25,7 @@
 ## new 
 
 - `similarity<SpatRaster>` method
+- argument "pairs=TRUE" to `cells` [https://github.com/rspatial/terra/issues/1487](https://github.com/rspatial/terra/issues/1487) by Floris Vanderhaeghe
 
 
 # version 1.7-71
