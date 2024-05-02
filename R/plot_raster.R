@@ -114,8 +114,12 @@
 #	} else {
 #		out$frange <- out$range	
 #	}
-	Z[] <- out$cols[as.integer(cut(Z, breaks, include.lowest=TRUE, right=FALSE))]
-
+	if (length(breaks) == 1) {
+		Z[] <- out$cols[ceiling(length(out$cols)/2)]
+	} else {
+		Z[] <- out$cols[as.integer(cut(Z, breaks, include.lowest=TRUE, right=FALSE))]
+	}
+	
 	out$r <- as.raster(Z)
 
 	out$legend_type <- "continuous"
