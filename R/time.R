@@ -201,8 +201,8 @@ setMethod("time<-", signature(x="SpatRaster"),
 					y <- as.integer(substr(value, 1, 4))
 					m <- value - (y * 100)
 				} else {
-					y <- as.integer(strftime(value, format = "%Y"))
-					m <- as.integer(strftime(value, format = "%m"))
+					y <- as.integer(strftime(value, format = "%Y", tz=tzone))
+					m <- as.integer(strftime(value, format = "%m", tz=tzone))
 				}
 				if (!all(m %in% 1:12)) {
 					error("date<-", "months should be between 1 and 12")
