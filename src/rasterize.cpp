@@ -312,12 +312,7 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 			tom = std::isnan(tom) ? 1 : tom;
 			m *= tom;
 		}
-		if (x.type() == "lines") {
-			out.setNames({"length"});
-		} else {
-			out.setNames({"area"});
-			m *= m;
-		}
+		out.setNames({fun});
 		opt.ncopies = std::max(opt.ncopies, (unsigned)4) * 8;
 		if (!out.writeStart(opt, filenames())) {
 			return out;
