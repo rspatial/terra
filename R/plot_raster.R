@@ -2,7 +2,7 @@
 .default.pal <- function() {
 	opt.pal <- options("terra.pal")[[1]]
 	if (is.null(opt.pal))  {
-		map.pal("viridis")
+		map.pal("viridis", 100)
 	} else {
 		opt.pal
 	}
