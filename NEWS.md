@@ -11,6 +11,7 @@
 - `tapp` with a custom function and an index like "yearmonths" could shift time for not considering the time zone. [#1483](https://github.com/rspatial/terra/issues/1483) by Finn Roberts
 - `plot<SpatRaster>` could fail when there were multiple values with very small differences [#1491](https://github.com/rspatial/terra/issues/1491) by srfall
 - `as.data.frame<SpatRaster>` with "xy=TRUE" and "wide=FALSE" could fail if coordinates were very similar [#1476](https://github.com/rspatial/terra/issues/1476) by Pascal Oettli
+- `rasterizeGeom` now returns the correct layer name [#1472](https://github.com/rspatial/terra/issues/1472) by HRodenhizer
 
 
 ## enhancements
@@ -20,6 +21,7 @@
 - `rast<list>` now recognizes (x, y, z) base R "image" structures [stackoverflow](https://stackoverflow.com/questions/77949551/rspatial-convert-a-grid-list-to-a-raster-using-terra) by Ignacio Marzan.
 - `inset` has new arguments "offset" and "add" [#1422](https://github.com/rspatial/terra/issues/1422) by Armand-CT
 - `expanse<SpatRaster>` has argument `usenames` [#1446](https://github.com/rspatial/terra/issues/1446) by Bappa Das
+- the default color palette is now `terra::map.pal("viridis")` instead of `terrain.colors`. The default can be changes with `options(terra.pal=...)` [#1474](https://github.com/rspatial/terra/issues/1474) by Derek Friend
 
 
 ## new 
