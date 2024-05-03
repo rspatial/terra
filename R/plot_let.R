@@ -68,11 +68,14 @@ baselayers <- function(tiles, wrap=TRUE) {
 	out <- list(v=v, leg=list())
 	
 	if (is.null(type)) type <- ""
-	if (type == "continuous") type <- "interval"	
-	if ((!is.numeric(v)) || (length(unique(v)) < 11)) {
-		type <- "classes"
+	if (type == "continuous") {
+		type <- "interval"	
 	} else if (type == "") {
-		type <- "interval"
+		if ((!is.numeric(v)) || (length(unique(v)) < 11)) {
+			type <- "classes"
+		} else {
+			type <- "interval"
+		}
 	} else {
 		type <- match.arg(type, c("interval", "classes"))
 	}
