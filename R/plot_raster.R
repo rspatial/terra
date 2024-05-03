@@ -71,11 +71,17 @@
 }
 
 
-.as.raster.continuous <- function(out, x, type) {
+.as.raster.continuous <- function(out, x, type, Z=NULL) {
+
+	if (is.null(Z)) {
+		Z <- as.matrix(x, wide=TRUE)
+		Z[is.nan(Z) | is.infinite(Z)] <- NA
+	}
 
 	Z <- as.matrix(x, wide=TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
-
+	Z[] <- round(Z, 12)
+	
 # loss of precision
 #	z <- stats::na.omit(round(as.vector(Z), 12))
 	z <- stats::na.omit(as.vector(Z))
@@ -87,14 +93,14 @@
 		return(out)
 	}
 
-	uzi <- round(unique(z), 12)
+	uzi <- unique(z)
 
 	if (type == "depends") {
 		if (length(uzi) < 9) {
-			return (.as.raster.classes(out, x))
+			return (.as.raster.classes(out, x, Z=Z))
 		}
 	} else if ((length(uzi) == 1) && is.null(out$range)) {
-		return (.as.raster.classes(out, x))
+		return (.as.raster.classes(out, x, Z=Z))
 	}
 
 	if (is.null(out$range)) {
@@ -146,10 +152,12 @@ prettyNumbs <- function(x, digits) {
 	gsub("\\.$", "", x)
 }
 
-.as.raster.classes <- function(out, x, ...) {
+.as.raster.classes <- function(out, x, Z=NULL, ...) {
 
-	Z <- as.matrix(x, wide=TRUE)
-	Z[is.nan(Z) | is.infinite(Z)] <- NA
+	if (is.null(Z)) {
+		Z <- as.matrix(x, wide=TRUE)
+		Z[is.nan(Z) | is.infinite(Z)] <- NA
+	}
 	if (all(is.na(Z))) {
 		#out$values = FALSE
 		out$range <- c(NA, NA)
