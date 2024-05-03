@@ -293,16 +293,23 @@ setMethod("dots", signature(x="SpatVector"),
 	levs <- levels(fz)
 	nlevs <- length(levs)
 
-	cols <- out$cols
-	ncols <- length(cols)
-	if (nlevs < ncols) {
-		i <- trunc((ncols / nlevs) * 1:nlevs)
-		cols <- cols[i]
+#	cols <- out$cols
+#	ncols <- length(cols)
+#	if (nlevs < ncols) {
+#		i <- trunc((ncols / nlevs) * 1:nlevs)
+#		cols <- cols[i]
+#	} else {
+#		cols <- rep_len(cols, nlevs)
+#	}
+	
+	if (out$legend_type == "classes" && nlevs > length(out$cols)) {
+		# more classes than colors: cycle from beginning
+		cols_idx <- rep_len(out$cols, nlevs)
 	} else {
-		cols <- rep_len(cols, nlevs)
+		# else sample the colors
+		cols_idx <- trunc(seq(1, length(out$cols), length.out = nlevs))
 	}
-	out$cols <- cols
-	out$leg$fill <- cols
+	out$leg$fill <- out$cols <- out$cols[cols_idx]
 	out$legend_type <- "classes"
 
 	if (!is.null(out$leg$legend)) {
