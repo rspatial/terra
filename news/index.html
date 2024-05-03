@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-75</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-76</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,9 +51,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-75" id="version-17-75">version 1.7-75<a class="anchor" aria-label="anchor" href="#version-17-75"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.7-76" id="version-17-76">version 1.7-76<a class="anchor" aria-label="anchor" href="#version-17-76"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-75">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-75"></a></h3>
+<h3 id="bug-fixes-1-7-76">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-76"></a></h3>
 <ul><li>
 <code>writeVector</code> and <code>readVector</code> better handle empty geopackage layers <a href="https://github.com/rspatial/terra/issues/1426" class="external-link">#1426</a> by Andrew Gene Brown.</li>
 <li>
@@ -66,9 +66,17 @@
 <code>rangeFill</code> with argument <code>circular=TRUE</code> did not work properly <a href="https://github.com/rspatial/terra/issues/1460" class="external-link">#1460</a> by Alice</li>
 <li>
 <code>crs(describe = TRUE)</code> returned an mis-ordered extent <a href="https://github.com/rspatial/terra/issues/1485" class="external-link">#1485</a> by Dimitri Falk</li>
+<li>
+<code>tapp</code> with a custom function and an index like “yearmonths” could shift time for not considering the time zone. <a href="https://github.com/rspatial/terra/issues/1483" class="external-link">#1483</a> by Finn Roberts</li>
+<li>
+<code>plot&lt;SpatRaster&gt;</code> could fail when there were multiple values with very small differences <a href="https://github.com/rspatial/terra/issues/1491" class="external-link">#1491</a> by srfall</li>
+<li>
+<code>as.data.frame&lt;SpatRaster&gt;</code> with “xy=TRUE” and “wide=FALSE” could fail if coordinates were very similar <a href="https://github.com/rspatial/terra/issues/1476" class="external-link">#1476</a> by Pascal Oettli</li>
+<li>
+<code>rasterizeGeom</code> now returns the correct layer name <a href="https://github.com/rspatial/terra/issues/1472" class="external-link">#1472</a> by HRodenhizer</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-75">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-75"></a></h3>
+<h3 id="enhancements-1-7-76">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-76"></a></h3>
 <ul><li>
 <code>extract</code> has new argument “small=TRUE” to allow for strict use of “touches=FALSE” <a href="https://github.com/rspatial/terra/issues/1419" class="external-link">#1419</a> by Floris Vanderhaeghe.</li>
 <li>
@@ -79,11 +87,13 @@
 <code>inset</code> has new arguments “offset” and “add” <a href="https://github.com/rspatial/terra/issues/1422" class="external-link">#1422</a> by Armand-CT</li>
 <li>
 <code>expanse&lt;SpatRaster&gt;</code> has argument <code>usenames</code> <a href="https://github.com/rspatial/terra/issues/1446" class="external-link">#1446</a> by Bappa Das</li>
+<li>the default color palette is now <code>terra::map.pal("viridis")</code> instead of <code>terrain.colors</code>. The default can be changes with <code>options(terra.pal=...)</code> <a href="https://github.com/rspatial/terra/issues/1474" class="external-link">#1474</a> by Derek Friend</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-7-75">new<a class="anchor" aria-label="anchor" href="#new-1-7-75"></a></h3>
+<h3 id="new-1-7-76">new<a class="anchor" aria-label="anchor" href="#new-1-7-76"></a></h3>
 <ul><li>
 <code>similarity&lt;SpatRaster&gt;</code> method</li>
+<li>argument “pairs=TRUE” to <code>cells</code> <a href="https://github.com/rspatial/terra/issues/1487" class="external-link">https://github.com/rspatial/terra/issues/1487</a> by Floris Vanderhaeghe</li>
 </ul></div>
 </div>
     <div class="section level2">

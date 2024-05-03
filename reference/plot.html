@@ -14,7 +14,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
     
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-75</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-76</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,7 +98,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <dd><p>missing or positive integer or name indicating the layer(s) to be plotted</p></dd>
 
   <dt>col</dt>
-<dd><p>character. Colors. The default is <code>rev(grDevices::terrain.colors(50))</code>. If <code>x</code> is a <code>SpatRaster</code>, it can also be a <code>data.frame</code> with two columns (value, color) to get a "classes" type legend or with three columns (from, to, color) to get an "interval" type legend</p></dd>
+<dd><p>character vector to specify the colors to use. The default is <code>map.pal("viridis", 100)</code>. The default can be changed with the <code>terra.pal</code> option. For example: <code>options(terra.pal=terrain.colors(10))</code>. If <code>x</code> is a <code>SpatRaster</code>, it can also be a <code>data.frame</code> with two columns (value, color) to get a "classes" type legend or with three columns (from, to, color) to get an "interval" type legend</p></dd>
 
   <dt>type</dt>
 <dd><p>character. Type of map/legend. One of "continuous", "classes", or "interval". If not specified, the type is chosen based on the data</p></dd>
