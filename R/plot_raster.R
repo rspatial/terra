@@ -1,4 +1,13 @@
 
+.default.pal <- function() {
+	opt.pal <- options("terra.pal")[[1]]
+	if (is.null(opt.pal))  {
+		map.pal("viridis")
+	} else {
+		opt.pal
+	}
+}
+
 .as.raster.rgb <- function(out, x) {
 
 	if (is.null(out$rgb$scale)) {
@@ -818,7 +827,8 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 
 		if (missing(col)) {
-			col <- rev(grDevices::terrain.colors(255))
+			col <- .default.pal()
+			#col <- rev(grDevices::terrain.colors(255))
 		} else if (inherits(col, "data.frame")) {
 			if (ncol(col) == 2) {
 				type <- "classes"

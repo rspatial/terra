@@ -472,7 +472,8 @@ setMethod("plet", signature(x="SpatRaster"),
 			tiles <- NULL
 		}
 		if (missing(col)) {
-			col <- rev(grDevices::terrain.colors(255))
+			col <- .default.pal()
+			#col <- rev(grDevices::terrain.colors(255))
 		}
 
 		main <- gsub("\n", "</br>", main)
