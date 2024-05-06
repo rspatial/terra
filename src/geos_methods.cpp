@@ -1154,7 +1154,8 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 		}
 		b[i] = geos_ptr(pt, hGEOSCtxt);
 	}
-	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
+	const std::vector<long> ids = std::vector<long>();
+	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt, ids, false);
 
 	GEOSBufferParams_destroy_r(hGEOSCtxt, bufparms);	
 	geos_finish(hGEOSCtxt);
@@ -1163,6 +1164,7 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 	out.df = df;
 	return out;
 }
+
 
 
 // basic version of buffer, for debugging
@@ -2982,7 +2984,6 @@ SpatVector SpatVector::cross_dateline(bool &fixed) {
 	out.df = df;
 	return out;
 }
-
 
 
 

@@ -200,7 +200,7 @@ setMethod("fillHoles", signature(x="SpatVector"),
 		} else {
 			x@ptr <- x@ptr$remove_holes()
 		}
-		messages(x)
+		messages(x, "fillHoles")
 	}
 )
 
@@ -222,7 +222,7 @@ setMethod("centroids", signature(x="SpatVector"),
 		} else {
 			x@ptr <- x@ptr$centroid(TRUE)
 		}
-		messages(x)
+		messages(x, "centroids")
 	}
 )
 
@@ -231,7 +231,7 @@ setMethod("centroids", signature(x="SpatVector"),
 setMethod("densify", signature(x="SpatVector"),
 	function(x, interval, equalize=TRUE, flat=FALSE) {
 		x@ptr <- x@ptr$densify(interval, equalize, flat)
-		messages(x)
+		messages(x, "densify")
 	}
 )
 

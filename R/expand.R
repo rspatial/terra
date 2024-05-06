@@ -27,25 +27,25 @@ function(x, y, snap="near", fill=NA, filename="", overwrite=FALSE, ...) {
 	if (!inherits(y, "SpatExtent")) {
 
 		if (is.vector(y)) {
+			stopifnot(all(y >= 0))
+			rs <- res(x)
+			e <- as.vector(ext(x))
 			if (length(y) <= 2) {
 				y <- rep_len(round(y), 2)
-				stopifnot(all(y >= 0))
-				adj <- rev(y) * res(x)
-				y <- as.vector(ext(x))
-				y[1] <- y[1] - adj[1]
-				y[2] <- y[2] + adj[1]
-				y[3] <- y[3] - adj[2]
-				y[4] <- y[4] + adj[2]
-				y <- ext(y)
+				adj <- rev(y) * rs
+				e[1] <- e[1] - adj[1]
+				e[2] <- e[2] + adj[1]
+				e[3] <- e[3] - adj[2]
+				e[4] <- e[4] + adj[2]
 			} else if (length(y) == 4) {
-				y[1] <- y[1] - adj[1]
-				y[2] <- y[2] + adj[2]
-				y[3] <- y[3] - adj[3]
-				y[4] <- y[4] + adj[4]
-				y <- ext(y)
+				e[1] <- e[1] - y[1] * rs[1]
+				e[2] <- e[2] + y[2] * rs[1]
+				e[3] <- e[3] - y[3] * rs[2]
+				e[4] <- e[4] + y[4] * rs[2]
 			} else {
-				error("extend", "if 'y' is a vector it should have 1, 2, or four numbers")
+				error("extend", "if 'y' is a vector it should have 1, 2, or 4 numbers")
 			}
+			y <- ext(e)
 		} else {
 			test <- try ( y <- ext(y), silent=TRUE )
 			if (inherits(test, "try-error")) {

@@ -643,6 +643,7 @@ class SpatRaster {
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
 		SpatRaster distance(double target, double exclude, bool keepNA, std::string unit, bool remove_zero, bool haversine, SpatOptions &opt);
 		SpatRaster proximity(double target, double exclude, bool keepNA, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt);
+		SpatRaster fillNA(double missing, double maxdist, int niter, SpatOptions &opt);
 		
 		SpatRaster distance_rasterize(SpatVector p, double target, double exclude, std::string unit, bool haversine, SpatOptions &opt);
 		SpatRaster direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude,  SpatOptions &opt);
@@ -697,7 +698,7 @@ class SpatRaster {
 		SpatRaster init(std::vector<double> values, SpatOptions &opt);
 		
 		SpatRaster is_in(std::vector<double> m, SpatOptions &opt);
-		std::vector<std::vector<double>> is_in_cells(std::vector<double> m, SpatOptions &opt);
+		std::vector<std::vector<double>> is_in_cells(std::vector<double> m, bool keepvalue, SpatOptions &opt);
 
 		std::vector<std::string> getDataType(bool unique, bool memtype);
 		std::vector<std::string> dataType();

@@ -17,11 +17,20 @@ setMethod("cells", signature(x="SpatRaster", y="missing"),
 )
 
 setMethod("cells", signature(x="SpatRaster", y="numeric"),
-	function(x, y) {
+	function(x, y, pairs=FALSE) {
 		opt <- spatOptions()
-		v <- x@ptr$is_in_cells(y, opt)
+		v <- x@ptr$is_in_cells(y, pairs, opt)
 		x <- messages(x, "cells")
-		v <- lapply(v, function(i) i+1)
+		if (pairs) {
+			v <- lapply(v, function(i) {
+				m <- matrix(i, ncol=2)
+				m[,1] <- m[,1] + 1
+				colnames(m) <- c("cell", "value")
+				m
+			})
+		} else {
+			v <- lapply(v, function(i) i+1)
+		}
 		names(v) <- names(x)
 		v
 	}

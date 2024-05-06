@@ -68,11 +68,14 @@ baselayers <- function(tiles, wrap=TRUE) {
 	out <- list(v=v, leg=list())
 	
 	if (is.null(type)) type <- ""
-	if (type == "continuous") type <- "interval"	
-	if ((!is.numeric(v)) || (length(unique(v)) < 11)) {
-		type <- "classes"
+	if (type == "continuous") {
+		type <- "interval"	
 	} else if (type == "") {
-		type <- "interval"
+		if ((!is.numeric(v)) || (length(unique(v)) < 11)) {
+			type <- "classes"
+		} else {
+			type <- "interval"
+		}
 	} else {
 		type <- match.arg(type, c("interval", "classes"))
 	}
@@ -469,7 +472,8 @@ setMethod("plet", signature(x="SpatRaster"),
 			tiles <- NULL
 		}
 		if (missing(col)) {
-			col <- rev(grDevices::terrain.colors(255))
+			col <- .default.pal()
+			#col <- rev(grDevices::terrain.colors(255))
 		}
 
 		main <- gsub("\n", "</br>", main)

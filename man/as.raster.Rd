@@ -17,7 +17,7 @@ Implementation of the generic \code{\link[grDevices]{as.raster}} function to cre
 \arguments{
  \item{x}{ SpatRaster }
  \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
- \item{col}{vector of colors. Default is col=rev(terrain.colors(255)))}
+ \item{col}{vector of colors. The default is \code{map.pal("viridis", 100)}}
 }
 
  

@@ -29,7 +29,7 @@
 		if ((r[2] %% 1) != 0) { r[2] <- r[2] + small }
 		breaks <- seq(r[1] , r[2], length.out=n+1)
 	}
-	breaks
+	unique(breaks)
 }
 
 .get_nrnc <- function(nr, nc, nl) {

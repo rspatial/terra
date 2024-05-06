@@ -191,7 +191,8 @@ setMethod("as.list", signature(x="SpatVectorCollection"), as.list.SpatVectorColl
 setMethod("as.raster", signature(x="SpatRaster"),
 	function(x, maxcell=500000, col) {
 		if (missing(col)) {
-			col <- rev(grDevices::terrain.colors(255))
+			#col <- rev(grDevices::terrain.colors(255))
+			col <- .default.pal()
 		}
 		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
 		x <- as.matrix(x, wide=TRUE)
@@ -421,18 +422,24 @@ as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE
 			idv <- NULL
 			if (xy) idv <- c("x", "y", idv)
 			if (cells) idv <- c("cell", idv)
+			add <- d[idv]
+			rownames(add) <- NULL
+			for (i in 1:length(idv)) {
+				d[[idv[i]]] <- NULL
+			}
+			d <- data.frame(add, layer=rep(names(x), each=nr), values=as.vector(as.matrix(d)))
 			nms <- names(x)
-			d <- stats::reshape(d, direction="long", idvar=idv, varying=nms, v.names="values")
-			d$time <- nms[d$time]
-			names(d)[names(d) == "time"] <- "layer"
+#			d <- stats::reshape(d, direction="long", idvar=idv, varying=nms, v.names="values")
+#			d$time <- nms[d$time]
+#			names(d)[names(d) == "time"] <- "layer"
 		}
 		rownames(d) <- NULL
 		if (time) {
-			d$time <- NULL
-			vals <- d$values
-			d$values <- NULL
+		#	d$time <- NULL
+		#	vals <- d$values
+		#	d$values <- NULL
 			d$time <- rep(time(x), each=nr)
-			d$values <- vals
+		#	d$values <- vals
 		}
 	} else if (time && has.time(x)) {
 		tm <- as.character(time(x))

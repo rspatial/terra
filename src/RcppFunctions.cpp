@@ -130,7 +130,7 @@ std::vector<std::string> getCRSname(std::string s) {
 		if (value != NULL) {
 			if (west > -1000) {
 				aoi	= value;
-				box = std::to_string(west) + ", " + std::to_string(east) + ", " + std::to_string(north) + ", " + std::to_string(south);
+				box = std::to_string(west) + ", " + std::to_string(east) + ", " + std::to_string(south) + ", " + std::to_string(north);
 			}
 		}
 	}
