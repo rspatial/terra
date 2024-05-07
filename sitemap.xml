@@ -94,6 +94,9 @@
     <loc>https://rspatial.github.io/terra/reference/barplot.html</loc>
   </url>
   <url>
+    <loc>https://rspatial.github.io/terra/reference/bestMatch.html</loc>
+  </url>
+  <url>
     <loc>https://rspatial.github.io/terra/reference/boundaries.html</loc>
   </url>
   <url>
@@ -605,9 +608,6 @@
   </url>
   <url>
     <loc>https://rspatial.github.io/terra/reference/sieve.html</loc>
-  </url>
-  <url>
-    <loc>https://rspatial.github.io/terra/reference/similarity.html</loc>
   </url>
   <url>
     <loc>https://rspatial.github.io/terra/reference/simplify.html</loc>
