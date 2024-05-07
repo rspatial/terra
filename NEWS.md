@@ -26,7 +26,7 @@
 
 ## new 
 
-- `similarity<SpatRaster>` method
+- `bestMatch<SpatRaster>` method
 - argument "pairs=TRUE" to `cells` [https://github.com/rspatial/terra/issues/1487](https://github.com/rspatial/terra/issues/1487) by Floris Vanderhaeghe
 
 
