@@ -52,7 +52,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	datatype_set = opt.datatype_set;
 	datatype = opt.datatype;
 	filetype = opt.filetype;
-	tmpfile = tmpfile + "_2";
+	tmpfile = opt.tmpfile + "_2";
 }
 
 SpatOptions SpatOptions::deepCopy() {
