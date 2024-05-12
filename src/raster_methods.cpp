@@ -1304,6 +1304,7 @@ SpatRaster SpatRaster::mask(SpatOptions &opt) {
 
 }
 
+
 SpatRaster SpatRaster::mask(SpatVector &x, bool inverse, double updatevalue, bool touches, SpatOptions &opt) {
 
 	SpatRaster out;
@@ -1334,7 +1335,6 @@ SpatRaster SpatRaster::mask(SpatVector &x, bool inverse, double updatevalue, boo
 
 	return(out);
 }
-
 
 
 

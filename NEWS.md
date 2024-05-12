@@ -12,8 +12,10 @@
 - `plot<SpatRaster>` could fail when there were multiple values with very small differences [#1491](https://github.com/rspatial/terra/issues/1491) by srfall
 - `as.data.frame<SpatRaster>` with "xy=TRUE" and "wide=FALSE" could fail if coordinates were very similar [#1476](https://github.com/rspatial/terra/issues/1476) by Pascal Oettli
 - `rasterizeGeom` now returns the correct layer name [#1472](https://github.com/rspatial/terra/issues/1472) by HRodenhizer
-
-
+- `cellSize` with "mask=TRUE" failed if the output was to be written to a temp file [#1496](https://github.com/rspatial/terra/issues/1496) by Pascal Sauer
+- `ext<SpatVectorProxy>` did not return the full extent [#1501](https://github.com/rspatial/terra/issues/1501) by erkent-carb 
+ 
+ 
 ## enhancements
 
 - `extract` has new argument "small=TRUE" to allow for strict use of "touches=FALSE" [#1419](https://github.com/rspatial/terra/issues/1419) by Floris Vanderhaeghe.
