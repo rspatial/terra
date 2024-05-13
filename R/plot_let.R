@@ -416,7 +416,8 @@ make.panel <- function(x, maxcell) {
 
 
 setMethod("plet", signature(x="SpatRaster"),
-	function(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, wrap=TRUE, maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
+	function(x, y=1, col, alpha=0.8, main=names(x), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
+		wrap=TRUE, maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
 
 		#checkLeafLetVersion()
 

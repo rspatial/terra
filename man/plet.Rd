@@ -18,9 +18,10 @@ Plot the values of a SpatRaster or SpatVector to make an interactive leaflet map
 }
 
 \usage{
-\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, main=names(x), tiles=NULL, 
-   wrap=TRUE, maxcell=500000, legend="bottomright", 
-   shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
+\S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, main=names(x), 
+	tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
+	wrap=TRUE, maxcell=500000, legend="bottomright", 
+	shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
 
 
 \S4method{plet}{SpatVector}(x, y="", col,fill=0.2, main=y, cex=1, lwd=2, 
@@ -100,18 +101,18 @@ plet(s, col=c("red", "blue"), lwd=1)
 
 
 r <- rast(system.file("ex/elev.tif", package="terra"))
-plet(r, main="Hi\nthere") |> lines(v, lwd=1)
+plet(r, main="Hi\nthere", tiles=NULL) |> lines(v, lwd=1)
 
-plet(r, tiles="Streets") |> lines(v, lwd=2, col="blue")
+plet(r, tiles="OpenTopoMap") |> lines(v, lwd=2, col="blue")
 
 x <- c(r, 50*classify(r, 5))
 names(x) <- c("first", "second")
 
 # each their own legend
-plet(x, 1:2, tiles="Streets", collapse=FALSE) |> lines(v, lwd=2, col="blue")
+plet(x, 1:2, collapse=FALSE) |> lines(v, lwd=2, col="blue")
 
 # shared legend
-plet(x, 1:2, tiles="Streets", shared=TRUE, collapse=FALSE) |> lines(v, lwd=2, col="blue")
+plet(x, 1:2, shared=TRUE, collapse=FALSE) |> lines(v, lwd=2, col="blue")
 
 }}}
 
