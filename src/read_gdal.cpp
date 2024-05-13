@@ -788,6 +788,12 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	int nl = poDataset->GetRasterCount();
+	if (nl == 0) {
+		// for https://github.com/rspatial/terra/issues/1505
+		setError("there are no raster layers in this file: " + fname);
+		return false;		
+	}
+
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
 
 	char **metasds = poDataset->GetMetadata("SUBDATASETS");
@@ -805,6 +811,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	char **meterra = poDataset->GetMetadata("USER_TAGS");
+
 	if (meterra != NULL) {
 		std::vector<std::string> meta;
 		for (size_t i=0; meterra[i] != NULL; i++) {
