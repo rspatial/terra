@@ -101,7 +101,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 <dd><p>character. layer name to select a layer from a file (database) with multiple layers</p></dd>
 
 <dt>query</dt>
-<dd><p>character. An query to subset the dataset in the <a href="https://gdal.org/user/ogr_sql_dialect.html" class="external-link">OGR-SQL dialect</a></p></dd>
+<dd><p>character. A query to subset the dataset in the <a href="https://gdal.org/user/ogr_sql_dialect.html" class="external-link">OGR-SQL dialect</a></p></dd>
 
 <dt>extent</dt>
 <dd><p>Spat* object. The extent of the object is used as a spatial filter to select the geometries to read. Ignored if <code>filter</code> is not <code>NULL</code></p></dd>
@@ -116,7 +116,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 <dd><p>data.frame with the attributes. The number of rows must match the number of geometrical elements</p></dd>
 
 <dt>crs</dt>
-<dd><p>character. The coordinate reference system in one of the following formats: WKT/WKT2, &lt;authority&gt;:&lt;code&gt;, or PROJ-string notation (see <code><a href="crs.html">crs</a></code>). See <code><a href="crs.html">crs</a></code></p></dd>
+<dd><p>character. The coordinate reference system in one of the following formats: WKT/WKT2, &lt;authority&gt;:&lt;code&gt;, or PROJ-string notation (see <code><a href="crs.html">crs</a></code>)</p></dd>
 
 <dt>proxy</dt>
 <dd><p>logical. If <code>TRUE</code> a SpatVectorProxy is returned</p></dd>
@@ -128,7 +128,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 <dd><p>character. GDAL dataset open options</p></dd>
 
 <dt>geom</dt>
-<dd><p>character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)</p></dd>
+<dd><p>character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries</p></dd>
 
 <dt>keepgeom</dt>
 <dd><p>logical. If <code>TRUE</code> the geom variable(s) is (are) also included in the attributes</p></dd>

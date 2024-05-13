@@ -74,6 +74,10 @@
 <code>as.data.frame&lt;SpatRaster&gt;</code> with “xy=TRUE” and “wide=FALSE” could fail if coordinates were very similar <a href="https://github.com/rspatial/terra/issues/1476" class="external-link">#1476</a> by Pascal Oettli</li>
 <li>
 <code>rasterizeGeom</code> now returns the correct layer name <a href="https://github.com/rspatial/terra/issues/1472" class="external-link">#1472</a> by HRodenhizer</li>
+<li>
+<code>cellSize</code> with “mask=TRUE” failed if the output was to be written to a temp file <a href="https://github.com/rspatial/terra/issues/1496" class="external-link">#1496</a> by Pascal Sauer</li>
+<li>
+<code>ext&lt;SpatVectorProxy&gt;</code> did not return the full extent <a href="https://github.com/rspatial/terra/issues/1501" class="external-link">#1501</a> by erkent-carb</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-76">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-76"></a></h3>
@@ -127,7 +131,7 @@
 <ul><li>
 <code>vect&lt;character&gt;</code> now has argument “opts” for GDAL open options, e.g. to declare a file encoding. <a href="https://github.com/rspatial/terra/issues/1389" class="external-link">#1389</a> by Mats Blomqvist</li>
 <li>
-<code>plot(plg=list(tic=""))</code> now allows chosing alternative continuous legend tic-mark styles (“in”, “out”, “through” or “none”)</li>
+<code>plot(plg=list(tic=""))</code> now allows choosing alternative continuous legend tic-mark styles (“in”, “out”, “through” or “none”)</li>
 <li>
 <code>makeTiles</code> has new argument “buffer” <a href="https://github.com/rspatial/terra/issues/1408" class="external-link">#1408</a> by Joy Flowers.</li>
 </ul></div>
@@ -138,7 +142,7 @@
 <li>
 <code>add_box</code> to add a box around the map. The box is drawn where the axes are, not around the plotting region.</li>
 <li>
-<code>getTileExtents</code> provides the extents of for tiles. These may be used in parallelization. See <a href="https://github.com/rspatial/terra/issues/1391" class="external-link">#1391</a> by Alex Ilich.</li>
+<code>getTileExtents</code> provides the extents of tiles. These may be used in parallelization. See <a href="https://github.com/rspatial/terra/issues/1391" class="external-link">#1391</a> by Alex Ilich.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -213,7 +217,7 @@
 <li>
 <code>crop&lt;SpatRaster&gt;</code> now keeps more metadata, including variable names <a href="https://github.com/rspatial/terra/issues/1302" class="external-link">#1302</a> by rhgof</li>
 <li>
-<code>extract(fun="table")</code> now returns an easier to use data.frame [#1294] (<a href="https://github.com/rspatial/terra/issues/1294" class="external-link uri">https://github.com/rspatial/terra/issues/1294</a>) by Fernando Aramburu.</li>
+<code>extract(fun="table")</code> now returns an easier to use data.frame <a href="https://github.com/rspatial/terra/issues/1294" class="external-link">#1294</a> by Fernando Aramburu.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-7-55">new<a class="anchor" aria-label="anchor" href="#new-1-7-55"></a></h3>
@@ -597,7 +601,7 @@
 <h3 id="enhancements-1-6-41">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-41"></a></h3>
 <ul><li>faster <code>mosaic</code> and <code>merge&lt;SpatRaster&gt;</code> [#577] by Jean-Romain</li>
 <li>
-<code>wrap&lt;SpatRaster&gt;</code> now uses file references if the data is deemed to large to all load into memory. [#801] by Jean-Romain</li>
+<code>wrap&lt;SpatRaster&gt;</code> now uses file references if the data is deemed too large to all load into memory. [#801] by Jean-Romain</li>
 <li>
 <code>readRDS</code> and <code>unserialize</code> now return a SpatRaster or SpatVector (instead of a PackedSpat*)</li>
 <li>better support for a “local” arbitrary Euclidean crs [#797] by Agustin Lobo</li>
@@ -869,7 +873,7 @@
 <li>
 <code>as.data.frame&lt;SpatRaster&gt;</code> returned integers if the file stored values as integers, even if there was a scale/offset that creates decimal numbers [#509] by Kodi Arfer</li>
 <li>
-<code>project</code> opened the input raster file in read/write mode intead of read mode. That did not work with files that cannot be updated.</li>
+<code>project</code> opened the input raster file in read/write mode instead of read mode. That did not work with files that cannot be updated.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-5-17">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-17"></a></h3>
@@ -928,7 +932,7 @@
 <li>
 <code>patches(directions=8)</code> now connects in NE/SW direction [#451] by Jean-François Bourdon.</li>
 <li>
-<code>centroids</code> now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridian [#366] by Hirscht</li>
+<code>centroids</code> now considers cases where SpatVector parts are nearest to each other when crossing the date line instead of the zero-meridian [#366] by Hirscht</li>
 <li>
 <code>terrain</code> created empty (<code>NA</code>) rows between chunks used for processing large rasters. [#453] by Robert Ritson.</li>
 <li>
