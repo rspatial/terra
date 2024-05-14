@@ -788,11 +788,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	int nl = poDataset->GetRasterCount();
-	if (nl == 0) {
+//	if (nl == 0) {
 		// for https://github.com/rspatial/terra/issues/1505
-		setError("there are no raster layers in this file: " + fname);
-		return false;		
-	}
+//		setError("there are no raster layers in this file: " + fname);
+//		return false;		
+//	}
 
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
 
