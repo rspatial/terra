@@ -766,6 +766,12 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options) {
 
+	if (fname == "WCS:") {
+		// for https://github.com/rspatial/terra/issues/1505
+		setError("no raster data in WCS:");
+		return false;
+	}
+	
 	std::vector<std::string> clean_ops = options;
 	bool app_so = true;
 	size_t opsz = options.size();
@@ -788,15 +794,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	int nl = poDataset->GetRasterCount();
-//	if (nl == 0) {
-		// for https://github.com/rspatial/terra/issues/1505
-//		setError("there are no raster layers in this file: " + fname);
-//		return false;		
-//	}
-
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
 
 	char **metasds = poDataset->GetMetadata("SUBDATASETS");
+	
 	if (metasds != NULL) {
 		std::vector<std::string> meta;
 		for (size_t i=0; metasds[i] != NULL; i++) {
