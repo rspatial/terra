@@ -646,7 +646,7 @@ void cummin_se(std::vector<double>& v, size_t s, size_t e) {
 
 
 bool haveseFun(std::string fun) {
-	std::vector<std::string> f {"sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first"};
+	std::vector<std::string> f {"sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first", "isNA", "notNA"};
 	auto it = std::find(f.begin(), f.end(), fun);
 	if (it == f.end()) {
 		return false;
@@ -690,6 +690,10 @@ bool getseFun(std::function<double(std::vector<double>&, size_t, size_t)> &fun,
 		fun = narm ? sdpop_se_rm : sdpop_se;
 	} else if (fname == "first") {
 		fun = narm ? first_se_rm : first_se;
+	} else if (fname == "isNA") {
+		fun = isna_se;
+	} else if (fname == "notNA") {
+		fun = isnotna_se;
 	} else {
 		return false;
 	}
