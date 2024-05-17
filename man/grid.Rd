@@ -11,8 +11,7 @@ Also see \code{\link{graticule}}
 }
 
 \usage{
-add_grid(nx = NULL, ny = nx, col = "lightgray", lty = "dotted",
-     lwd = par("lwd"), equilogs = TRUE)
+add_grid(nx=NULL, ny=nx, col="lightgray", lty="dotted", lwd=par("lwd"))
 }
 
 \arguments{
@@ -20,7 +19,6 @@ add_grid(nx = NULL, ny = nx, col = "lightgray", lty = "dotted",
   \item{col}{character or (integer) numeric; color of the grid lines}
   \item{lty}{character or (integer) numeric; line type of the grid lines}
   \item{lwd}{non-negative numeric giving line width of the grid lines}
-  \item{equilogs}{logical, only used when log coordinates and alignment with the axis tick marks are active. Setting equilogs = FALSE in that case gives non equidistant tick aligned grid lines}
 }
 
 \seealso{ \code{\link{graticule}}, \code{\link{add_box}}, \code{\link{add_grid}}}
