@@ -506,4 +506,33 @@ add_box <- function(...) {
 }
 
 
+add_grid <- function(nx = NULL, ny = nx, col = "lightgray", lty = "dotted", lwd = par("lwd"), equilogs = TRUE) {
+
+
+	p <- terra:::get.clip()
+
+	## adapted from graphics::grid 
+	g.grid.at <- function (side, n, log, equilogs, axp, usr2) {
+		if (is.null(n)) {
+			stopifnot(is.numeric(ax <- axp), length(ax) == 3L)
+			if (log && equilogs && ax[3L] > 0) 
+				ax[3L] <- 1
+			axTicks(side, axp = ax, usr = usr2, log = log)
+		}
+		else if (!is.na(n) && (n <- as.integer(n)) >= 1L) {
+			at <- seq.int(usr2[1L], usr2[2L], length.out = n + 1L)
+			(if (log) 
+				10^at
+			else at)[-c(1L, n + 1L)]
+		}
+	}
+
+    atx <- if (is.null(nx) || (!is.na(nx) && nx >= 1)) 
+        g.grid.at(1L, nx, log = par("xlog"), equilogs, axp = par("xaxp"), usr2 = p[1:2])
+    aty <- if (is.null(ny) || (!is.na(ny) && ny >= 1)) 
+        g.grid.at(2L, ny, log = par("ylog"), equilogs, axp = par("yaxp"), usr2 = p[3:4])
+    abline(v = atx, h = aty, col = col, lty = lty, lwd = lwd)
+    invisible(list(atx = atx, aty = aty))
+}
+
 
