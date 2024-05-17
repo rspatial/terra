@@ -2,7 +2,7 @@
 
 \alias{add_grid}
 
-\title{add a grid to an existing terra plot}
+\title{add a grid to a map made with terra}
 
 \description{ 
 Wrapper around \code{\link[graphics]{grid}} that allows adding a grid to a map. This function will place the legend in the locations within the mapped area as delineated by the axes.
