@@ -23,7 +23,7 @@ add_grid(nx = NULL, ny = nx, col = "lightgray", lty = "dotted",
   \item{equilogs}{logical, only used when log coordinates and alignment with the axis tick marks are active. Setting equilogs = FALSE in that case gives non equidistant tick aligned grid lines}
 }
 
-\seealso{\code{\link{add_box}}, \code{\link{add_grid}}, \code{\link{graticule}}
+\seealso{ \code{\link{graticule}}, \code{\link{add_box}}, \code{\link{add_grid}}}
 
 \examples{
 v <- vect(system.file("ex/lux.shp", package="terra"))
