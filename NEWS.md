@@ -30,6 +30,7 @@
 
 - `bestMatch<SpatRaster>` method
 - argument "pairs=TRUE" to `cells` [https://github.com/rspatial/terra/issues/1487](https://github.com/rspatial/terra/issues/1487) by Floris Vanderhaeghe
+- `add_grid` to add a grid to a map
 
 
 # version 1.7-71
