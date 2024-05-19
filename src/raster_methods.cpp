@@ -2896,8 +2896,15 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 
 
 SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
+	
+	
 	SpatRaster out = geometry();
- 	if (!out.writeStart(opt, filenames())) { return out; }
+ 	if (values.empty()) {
+		out.setError("no value supplied");
+		return(out);
+	}
+	
+	if (!out.writeStart(opt, filenames())) { return out; }
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	if (values.size() == 1) {
