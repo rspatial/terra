@@ -167,21 +167,29 @@ as.list.SpatRaster <- function(x, geom=NULL, ...) {
 		lapply(1:nlyr(x), function(i) x[[i]])
 	}
 }
-
 setMethod("as.list", signature(x="SpatRaster"), as.list.SpatRaster)
 
+
 as.list.SpatRasterCollection <- function(x, ...) {
-	lapply(1:length(x), function(i) x[i])
+	out <- lapply(1:length(x), function(i) x[i])
+	names(out) <- names(x)
+	out
 }
 setMethod("as.list", signature(x="SpatRasterCollection"), as.list.SpatRasterCollection)
 
+
 as.list.SpatRasterDataset <- function(x, ...) {
-	lapply(1:length(x), function(i) x[i])
+	out <- lapply(1:length(x), function(i) x[i])
+	names(out) <- names(x)
+	out
 }
 setMethod("as.list", signature(x="SpatRasterDataset"), as.list.SpatRasterDataset)
 
+
 as.list.SpatVectorCollection <- function(x, ...) {
-	lapply(1:length(x), function(i) x[i])
+	out <- lapply(1:length(x), function(i) x[i])
+	names(out) <- names(x)
+	out
 }
 setMethod("as.list", signature(x="SpatVectorCollection"), as.list.SpatVectorCollection)
 
