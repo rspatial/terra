@@ -1169,13 +1169,19 @@ SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, double maskvalue, doubl
 
 SpatRaster SpatRaster::mask(SpatRaster &x, bool inverse, std::vector<double> maskvalues, double updatevalue, SpatOptions &opt) {
 
+
 	maskvalues = vunique(maskvalues);
 	if (maskvalues.size() == 1) {
 		return mask(x, inverse, maskvalues[0], updatevalue, opt);
-	}
-
+	} 
+	
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true);
+
+	if (maskvalues.empty()) {
+		out.setError("no mask value supplied");
+		return(out);
+	}
 
 	if (!hasValues()) {
 		out.setError("raster has no values");
@@ -2896,8 +2902,15 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 
 
 SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
+	
+	
 	SpatRaster out = geometry();
- 	if (!out.writeStart(opt, filenames())) { return out; }
+ 	if (values.empty()) {
+		out.setError("no value supplied");
+		return(out);
+	}
+	
+	if (!out.writeStart(opt, filenames())) { return out; }
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	if (values.size() == 1) {

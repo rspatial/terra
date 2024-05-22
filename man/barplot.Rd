@@ -7,7 +7,7 @@
 
 \title{Bar plot of a SpatRaster}
 
-\description{Create a barplot of the values of a the first layer of a SpatRaster. For large datasets a regular sample with a size of approximately \code{maxcells} is used.}
+\description{Create a barplot of the values of the first layer of a SpatRaster. For large datasets a regular sample with a size of approximately \code{maxcells} is used.}
 
 \usage{
 \S4method{barplot}{SpatRaster}(height, maxcell=1000000, digits=0, breaks=NULL, col, ...)

@@ -2925,12 +2925,12 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 			mask = false;
 		} else {
 			mopt.filenames = opt.filenames;
-			opt = SpatOptions(opt);
+			opt.filenames = {""};
 		}
 	}
 
+	SpatOptions xopt(mopt);
 
-	SpatOptions xopt(opt);
 	if (lonlat) {
 		bool disagg = false;
 		SpatExtent extent = getExtent();

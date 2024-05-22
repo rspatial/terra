@@ -209,7 +209,7 @@ setMethod("direction", signature(x="SpatRaster"),
 
 
 
-setMethod("similarity", signature(x="SpatRaster", y="SpatVector"),
+setMethod("bestMatch", signature(x="SpatRaster", y="SpatVector"),
 	function(x, y, labels=NULL, filename="", ...) {
 		e <- as.matrix(extract(x, y, fun="mean", na.rm=TRUE, ID=FALSE))
 		d <- list()
@@ -227,16 +227,16 @@ setMethod("similarity", signature(x="SpatRaster", y="SpatVector"),
 	}
 )
 
-setMethod("similarity", signature(x="SpatRaster", y="data.frame"),
+setMethod("bestMatch", signature(x="SpatRaster", y="data.frame"),
 	function(x, y, labels=NULL, filename="", ...) {
 		
 		if (!(all(names(y) %in% names(x)) && (all(names(x) %in% names(y))))) {
-			error("similarity", "names of x and y must match")
+			error("bestMatch", "names of x and y must match")
 		}
 		y <- y[, names(x)]
 		i <- unique(sapply(y, class))
 		if (any(i != "numeric")) {
-			error("similarity", "all values in y must be numeric")
+			error("bestMatch", "all values in y must be numeric")
 		}
 		y <- as.matrix(y)
 		d <- list()

@@ -10,7 +10,7 @@
 \description{
 Click on a map (plot) to get the coordinates or the values of a SpatRaster or SpatVector at that location. For a SpatRaster you can also get the coordinates and cell number of the location. 
 
-This does to work well on the default RStudio plotting device. To work around that, you can first run \code{dev.new(noRStudioGD = TRUE)} which will create a separate window for plotting, then use \code{plot()} followed by \code{click()} and click on the map .
+This does to work well on the default RStudio plotting device. To work around that, you can first run \code{dev.new(noRStudioGD = TRUE)} which will create a separate window for plotting, then use \code{plot()} followed by \code{click()} and click on the map.
 }
 
 
@@ -29,9 +29,9 @@ This does to work well on the default RStudio plotting device. To work around th
   \item{id}{logical. If \code{TRUE}, a numeric ID is shown on the map that corresponds to the row number of the output}
   \item{xy}{logical. If \code{TRUE}, xy coordinates are included in the output}
   \item{cell}{logical. If \code{TRUE}, cell numbers are included in the output}
-  \item{type}{one of "n", "p", "l" or "o". If "p" or "o" the points are plotted; if "l" or "o" they are joined by lines. See ?locator}
+  \item{type}{one of "n", "p", "l" or "o". If "p" or "o" the points are plotted; if "l" or "o" they are joined by lines. See \code{\link[graphics]{locator}}}
   \item{show}{logical. Print the values after each click?}
-  \item{...}{additional graphics parameters used if type != "n" for plotting the locations. See ?locator}   
+  \item{...}{additional graphics parameters used if type != "n" for plotting the locations. See \code{\link[graphics]{locator}}}   
  }
  
 \value{
@@ -40,9 +40,9 @@ A \code{data.frame} with the value(s) of all layers of SpatRaster \code{x} for t
 } 
 
 \note{
-The plot only provides the coordinates for a spatial query, the values are read from the SpatRaster or SpatVector that is passed as an argument. Thus you can extract values from an object that has not been plotted, as long as it spatially overlaps with with the extent of the plot.
+The plot only provides the coordinates for a spatial query, the values are read from the SpatRaster or SpatVector that is passed as an argument. Thus, you can extract values from an object that has not been plotted, as long as it spatially overlaps with the extent of the plot.
   
-Unless the process is terminated prematurely values at at most \code{n} positions are determined. The identification process can be terminated, depending on how you interact with R, by hitting Esc, or by clicking the right mouse button and selecting "Stop" from the menu, or from the "Stop" menu on the graphics window. 
+Unless the process is terminated prematurely values at most \code{n} positions are determined. The identification process can be terminated, depending on how you interact with R, by hitting Esc, or by clicking the right mouse button and selecting "Stop" from the menu, or from the "Stop" menu on the graphics window. 
 }
 
 

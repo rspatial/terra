@@ -12,8 +12,10 @@
 - `plot<SpatRaster>` could fail when there were multiple values with very small differences [#1491](https://github.com/rspatial/terra/issues/1491) by srfall
 - `as.data.frame<SpatRaster>` with "xy=TRUE" and "wide=FALSE" could fail if coordinates were very similar [#1476](https://github.com/rspatial/terra/issues/1476) by Pascal Oettli
 - `rasterizeGeom` now returns the correct layer name [#1472](https://github.com/rspatial/terra/issues/1472) by HRodenhizer
-
-
+- `cellSize` with "mask=TRUE" failed if the output was to be written to a temp file [#1496](https://github.com/rspatial/terra/issues/1496) by Pascal Sauer
+- `ext<SpatVectorProxy>` did not return the full extent [#1501](https://github.com/rspatial/terra/issues/1501) by erkent-carb 
+ 
+ 
 ## enhancements
 
 - `extract` has new argument "small=TRUE" to allow for strict use of "touches=FALSE" [#1419](https://github.com/rspatial/terra/issues/1419) by Floris Vanderhaeghe.
@@ -26,8 +28,9 @@
 
 ## new 
 
-- `similarity<SpatRaster>` method
+- `bestMatch<SpatRaster>` method
 - argument "pairs=TRUE" to `cells` [https://github.com/rspatial/terra/issues/1487](https://github.com/rspatial/terra/issues/1487) by Floris Vanderhaeghe
+- `add_grid` to add a grid to a map
 
 
 # version 1.7-71
@@ -52,7 +55,7 @@ Released 2023-01-31
 ## enhancements
 
 - `vect<character>` now has argument "opts" for GDAL open options, e.g. to declare a file encoding. [#1389](https://github.com/rspatial/terra/issues/1389) by Mats Blomqvist
-- `plot(plg=list(tic=""))` now allows chosing alternative continuous legend tic-mark styles ("in", "out", "through" or "none")
+- `plot(plg=list(tic=""))` now allows choosing alternative continuous legend tic-mark styles ("in", "out", "through" or "none")
 - `makeTiles` has new argument "buffer" [#1408](https://github.com/rspatial/terra/issues/1408) by Joy Flowers.
 
 
@@ -60,7 +63,7 @@ Released 2023-01-31
 
 - `prcomp<SpatRaster>` method [#1361](https://github.com/rspatial/terra/issues/1361#issuecomment-1860311029) by Jakub Nowosad
 - `add_box` to add a box around the map. The box is drawn where the axes are, not around the plotting region.
-- `getTileExtents` provides the extents of for tiles. These may be used in parallelization. See [#1391](https://github.com/rspatial/terra/issues/1391) by Alex Ilich.
+- `getTileExtents` provides the extents of tiles. These may be used in parallelization. See [#1391](https://github.com/rspatial/terra/issues/1391) by Alex Ilich.
 
 
 # version 1.7-65
@@ -118,7 +121,7 @@ Hernangómez
 - SpatVector attributes can now be stored as an ordered factor [#1277](https://github.com/rspatial/terra/issues/1277) by Ben Notkin
 - `plot<SpatVector>` now uses an "interval" legend when breaks are supplied [#1303](https://github.com/rspatial/terra/issues/1303) by Gonzalo Rizzo
 - `crop<SpatRaster>` now keeps more metadata, including variable names [#1302](https://github.com/rspatial/terra/issues/1302) by rhgof
-- `extract(fun="table")` now returns an easier to use data.frame [#1294] (https://github.com/rspatial/terra/issues/1294) by Fernando Aramburu.
+- `extract(fun="table")` now returns an easier to use data.frame [#1294](https://github.com/rspatial/terra/issues/1294) by Fernando Aramburu.
 
 
 ## new
@@ -404,7 +407,7 @@ Released 2022-11-18
 ## enhancements
 
 - faster `mosaic` and `merge<SpatRaster>` [#577] by Jean-Romain
-- `wrap<SpatRaster>` now uses file references if the data is deemed to large to all load into memory. [#801] by Jean-Romain
+- `wrap<SpatRaster>` now uses file references if the data is deemed too large to all load into memory. [#801] by Jean-Romain
 - `readRDS` and `unserialize` now return a SpatRaster or SpatVector (instead of a PackedSpat*)
 - better support for a "local" arbitrary Euclidean crs [#797] by Agustin Lobo
 - `clamp` can now take low and high values for each layer 
@@ -611,7 +614,7 @@ Released 2022-01-30
 - writing raster files with a color table could lead to a crash [#501] by Kodi Arfer
 - `crds` replicated the coordinates [#504] by Murray Efford
 - `as.data.frame<SpatRaster>` returned integers if the file stored values as integers, even if there was a scale/offset that creates decimal numbers [#509] by Kodi Arfer
-- `project` opened the input raster file in read/write mode intead of read mode. That did not work with files that cannot be updated.
+- `project` opened the input raster file in read/write mode instead of read mode. That did not work with files that cannot be updated.
 
 ## enhancements 
 
@@ -662,7 +665,7 @@ Released 2022-01-13
 - `classify` with `right=FALSE` ignored `include.lowest=TRUE` [#442] by Alex Ilich
 - `patches` now combines patches that connect across the data line [#366] by Hirscht
 - `patches(directions=8)` now connects in NE/SW direction [#451] by Jean-François Bourdon.
-- `centroids` now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridian [#366] by Hirscht 
+- `centroids` now considers cases where SpatVector parts are nearest to each other when crossing the date line instead of the zero-meridian [#366] by Hirscht 
 - `terrain` created empty (`NA`) rows between chunks used for processing large rasters. [#453] by Robert Ritson.
 - `inset` did not draw the "box" correctly. [#457] by Márcia Barbosa
 - `as.lines` now works with a points SpatVector [#464] by Márcia Barbosa 

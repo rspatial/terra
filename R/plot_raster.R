@@ -581,8 +581,8 @@ prettyNumbs <- function(x, digits) {
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
 			ext <- ext(ext)
-			#e <- as.vector(align( intersect(ext, ext(x)), x))
-			e <- as.vector(align(ext, x))
+			#e <- as.vector(align(ext, x))
+			e <- as.vector(ext)
 			out$lim <- out$ext <- e
 		} 
 		if (!is.null(xlim)) {

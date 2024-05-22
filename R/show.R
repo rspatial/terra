@@ -188,7 +188,6 @@ setMethod ("show" , "SpatVectorProxy",
 		} else {
 			cat(" source      : ", win_basename(object@ptr$v$source), "\n", sep="")
 		}
-		cat(" layer       :", object@ptr$v$layer, "\n")
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
 		dd <- get.data.frame(object)
 		printDF(dd, 0, TRUE)

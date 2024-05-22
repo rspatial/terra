@@ -12,12 +12,15 @@ Wrapper around \code{\link{legend}} that allows adding a custom legend to a map 
 add_legend(x, y, ...)
 }
 
+
 \arguments{
   \item{x}{The keyword to be used to position the legend (or the x coordinate)}
   \item{y}{The y coordinate to be used to position the legend (is x is also a coordinate)}
   \item{...}{arguments passed to \code{\link{legend}}}
 }
 
+
+\seealso{\code{\link{add_box}}, \code{\link{add_grid}}}
 
 \examples{
 v <- vect(system.file("ex/lux.shp", package="terra"))

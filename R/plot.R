@@ -319,7 +319,7 @@ map.pal <- function(name, n=50, ...) {
 	}
 	if (name %in% names(v)) {
 		v <- v[[name]]
-		if (length(v) != n) {
+		if ((n > 0) && ((length(v) != n))) {
 			grDevices::colorRampPalette(v, ...)(n)
 		} else {
 			v

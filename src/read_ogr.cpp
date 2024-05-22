@@ -382,7 +382,7 @@ SpatGeom emptyGeom() {
 }
 
 
-bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer, std::string &query, std::vector<double> &extent, SpatVector &filter, std::string &errmsg, std::vector<std::string> &wrms) {
+bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer, std::string &query, std::vector<double> &ext, SpatVector &filter, std::string &errmsg, std::vector<std::string> &wrms) {
 
 	if (query.empty()) {
 		if (layer.empty()) {
@@ -453,15 +453,15 @@ bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer
 		}
 		OGRFeature::DestroyFeature( fFeature );
 		GDALClose(filterDS);
-	} else if (!extent.empty()) {
-		poLayer->SetSpatialFilterRect(extent[0], extent[2], extent[1], extent[3]);
+	} else if (!ext.empty()) {
+		poLayer->SetSpatialFilterRect(ext[0], ext[2], ext[1], ext[3]);
 	}
 
 	return true;
 }
 
 
-bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what) {
+bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::vector<double> ext, SpatVector filter, bool as_proxy, std::string what) {
 
 	if (poDS == NULL) {
 		setError("dataset is empty");
@@ -473,11 +473,11 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 	poLayer = poDS->GetLayer(0);
 
 	read_query = query;
-	read_extent = extent;
+	read_extent = ext;
 	std::string errmsg;
 	std::vector<std::string> wrnmsg;
 
-	if (!layerQueryFilter(poDS, poLayer, layer, query, extent, filter, errmsg, wrnmsg)) {
+	if (!layerQueryFilter(poDS, poLayer, layer, query, ext, filter, errmsg, wrnmsg)) {
 		setError(errmsg);
 		return false;
 	} else if (!wrnmsg.empty()) {
@@ -593,6 +593,23 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 			return false;
 		}
 		geom_count = poLayer->GetFeatureCount();
+		
+		// not checking for multiple geom fields
+        // int nGeomFieldCount = poLayer->GetLayerDefn()->GetGeomFieldCount();
+
+		OGREnvelope oExt;
+		if (poLayer->GetExtent(&oExt, FALSE) == OGRERR_NONE) {
+			extent.xmin = oExt.MinX; 
+            extent.xmax = oExt.MaxX;
+			extent.ymin = oExt.MinY;
+			extent.ymax = oExt.MaxY;
+		} else {
+			extent.xmin = NAN; 
+            extent.xmax = NAN;
+			extent.ymin = NAN;
+			extent.ymax = NAN;			
+		}
+		
 		is_proxy = true;
 		return true;
 	}
@@ -692,7 +709,7 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 }
 
 
-bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy, std::string what, std::vector<std::string> options) {
+bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> ext, SpatVector filter, bool as_proxy, std::string what, std::vector<std::string> options) {
 
 	char ** openops = NULL;
 	for (size_t i=0; i<options.size(); i++) {
@@ -711,7 +728,7 @@ bool SpatVector::read(std::string fname, std::string layer, std::string query, s
 		}
 		return false;
     }
-	bool success = read_ogr(poDS, layer, query, extent, filter, as_proxy, what);
+	bool success = read_ogr(poDS, layer, query, ext, filter, as_proxy, what);
 	if (poDS != NULL) GDALClose( poDS );
 	source = fname;
 	return success;
