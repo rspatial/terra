@@ -24,6 +24,7 @@
 - `inset` has new arguments "offset" and "add" [#1422](https://github.com/rspatial/terra/issues/1422) by Armand-CT
 - `expanse<SpatRaster>` has argument `usenames` [#1446](https://github.com/rspatial/terra/issues/1446) by Bappa Das
 - the default color palette is now `terra::map.pal("viridis")` instead of `terrain.colors`. The default can be changes with `options(terra.pal=...)` [#1474](https://github.com/rspatial/terra/issues/1474) by Derek Friend
+- `as.list<SpatRasterDataset>` now returns a named list. [#1513](https://github.com/rspatial/terra/issues/1513) by Eric R. Scott
 
 
 ## new 
