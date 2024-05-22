@@ -506,9 +506,9 @@ add_box <- function(...) {
 }
 
 
-add_grid <- function(nx=NULL, ny=nx, col="lightgray", lty="dotted", lwd=par("lwd")) {
+add_grid <- function(nx=NULL, ny=nx, col="lightgray", lty="dotted", lwd=1) {
 
-	p <- terra::get.clip()
+	p <- get.clip()
 
 	## adapted from graphics::grid 
 	g.grid.at <- function (side, n, axp, usr2) {

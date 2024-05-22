@@ -5,13 +5,13 @@
 \title{add a grid to a map made with terra}
 
 \description{ 
-Wrapper around \code{\link[graphics]{grid}} that allows adding a grid to a map. This function will place the legend in the locations within the mapped area as delineated by the axes.
+Adaptation of \code{\link[graphics]{grid}} that allows adding a grid to a map. This function will place the legend in the locations within the mapped area as delineated by the axes.
 
 Also see \code{\link{graticule}}
 }
 
 \usage{
-add_grid(nx=NULL, ny=nx, col="lightgray", lty="dotted", lwd=par("lwd"))
+add_grid(nx=NULL, ny=nx, col="lightgray", lty="dotted", lwd=1)
 }
 
 \arguments{
