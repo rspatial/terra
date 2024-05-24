@@ -319,7 +319,7 @@ setMethod("sprc", signature(x="list"),
 		}
 		r <- new("SpatRasterCollection")
 		r@ptr <- ptr
-		if (length(r) == lenght(x)) names(r) <- names(x)
+		if (length(r) == length(x)) names(r) <- names(x)
 		r
 	}
 )
