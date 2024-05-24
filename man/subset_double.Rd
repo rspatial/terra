@@ -14,7 +14,7 @@
 \alias{[[,SpatVector,logical,missing-method}
 \alias{[[,SpatVector,character,missing-method}
 
-\alias{[[,SpatVectorCollection,character,missing-method}
+\alias{[[,SpatVectorCollection,ANY,missing-method}
 
 
 
