@@ -2,7 +2,14 @@
 
 ## bug fixes
 
+- `flip(direction="vertical")` failed in some cases [#1518](https://github.com/rspatial/terra/issues/1518) by Ed Carnell
+- `zonal(as.raster=TRUE)` failed when the zonal raster was categorical [1514](https://github.com/rspatial/terra/issues/1514) by Jessi L Brown
+
+
 ## enhancements
+
+- `as.list<SpatRasterDataset>` sets the names of the list [#1513](https://github.com/rspatial/terra/issues/1513)
+- a SpatVectorCollection can now be subsetted with the names; and if made from a list it takes the names from the list.  [1515](https://github.com/rspatial/terra/issues/1515) by jedgroev
 
 ## new 
 
