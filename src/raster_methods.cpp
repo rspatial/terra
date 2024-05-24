@@ -3340,17 +3340,17 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 	if (vertical) {
 		for (size_t i=0; i < out.bs.n; i++) {
 			std::vector<double> a, b;
-			size_t ii = out.bs.n - 1 - i;
-			readBlock(a, out.bs, ii);
+			size_t startrow = nrow() - out.bs.row[i] - out.bs.nrows[i];
+			readValues(a, startrow, out.bs.nrows[i], 0, ncol());
 			b.reserve(a.size());
 			for (size_t j=0; j < nl; j++) {
-				size_t offset = j * out.bs.nrows[ii] * nc;
-				for (size_t k=0; k < out.bs.nrows[ii]; k++) {
-					unsigned start = offset + (out.bs.nrows[ii] - 1 - k) * nc;
+				size_t offset = j * out.bs.nrows[i] * nc;
+				for (size_t k=0; k < out.bs.nrows[i]; k++) {
+					unsigned start = offset + (out.bs.nrows[i] - 1 - k) * nc;
 					b.insert(b.end(), a.begin()+start, a.begin()+start+nc);
 				}
 			}
-			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[ii])) return out;
+			if (!out.writeBlock(b, i)) return out;
 		}
 	} else {
 		for (size_t i=0; i < out.bs.n; i++) {
