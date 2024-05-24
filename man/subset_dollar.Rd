@@ -6,7 +6,7 @@
 \alias{$,SpatRasterDataset-method}
 \alias{$,SpatVector-method}
 \alias{$,SpatExtent-method}
-
+\alias{$,SpatVectorCollection-method}
 
 \title{Subset a SpatRaster or a SpatVector}
 

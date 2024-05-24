@@ -14,6 +14,8 @@
 \alias{[[,SpatVector,logical,missing-method}
 \alias{[[,SpatVector,character,missing-method}
 
+\alias{[[,SpatVectorCollection,character,missing-method}
+
 
 
 \title{Subset a SpatRaster or a SpatVector}

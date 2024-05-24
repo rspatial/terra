@@ -111,14 +111,18 @@ function(x, i, j, drop=TRUE) {
 })
 
 
-setMethod("[[", c("SpatVectorCollection", "character", "missing"),
+
+setMethod("[[", c("SpatVectorCollection", "ANY", "missing"),
 function(x, i, j, drop=TRUE) {
-	i <- na.omit(match(i, names(x)))
-	if (length(i) == 0) {
-		error("[[", "no matching names")
+	if (inherits(i, "character")) {
+		i <- na.omit(match(i, names(x)))
+		if (length(i) == 0) {
+			error("[[", "no matching names")
+		}
 	}
 	x[i, drop=drop]
 })
+
 
 
 setMethod("$", c("SpatVectorCollection"),
