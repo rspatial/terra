@@ -35,3 +35,8 @@ reset.clip <- function() {
 	}
 }
 
+
+map_region <- function() {
+	get.clip()
+}
+

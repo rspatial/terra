@@ -20,6 +20,7 @@
 	xlab <- ylab <- NULL
 	if (!is.null(x$axs$labels)) {
 		xlab <- ylab <- x$axs$labels
+		x$axs$labels <- NULL
 	}
 	if (!is.null(x$axs$xlabs)) {
 		xlab <- x$axs$xlabs
@@ -29,7 +30,7 @@
 		ylab <- x$axs$ylabs
 		x$axs$ylabs <- NULL
 	}
-
+	
 	xat <- yat <- NULL
 	if (!is.null(x$axs$at)) {
 		xat <- yat <- x$axs$at
@@ -177,4 +178,5 @@
 	
 	x
 }
+
 
