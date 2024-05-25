@@ -36,7 +36,7 @@ reset.clip <- function() {
 }
 
 
-map_region <- function() {
+map_extent <- function() {
 	get.clip()
 }
 
