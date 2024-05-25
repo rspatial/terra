@@ -1,6 +1,6 @@
-\name{map_region}
+\name{map_extent}
 
-\alias{map_region}
+\alias{map_extent}
 
 \title{Get the coordinates of the extent of a map}
 
@@ -15,7 +15,7 @@ This function only returns meaningful results of the active plot (canvas) was cr
 }
 
 \usage{
-map_region(...)
+map_extent(...)
 }
 
 \seealso{\code{\link{add_legend}}, \code{\link{add_grid}}, \code{\link{add_box}}}
@@ -24,7 +24,7 @@ map_region(...)
 r <- rast(xmin=0, xmax=10, ymin=0, ymax=10, res=1, vals=1:100)
 plot(r)
 
-map_region()
+map_extent()
 par()$usr
 }
 
