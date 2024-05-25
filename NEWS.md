@@ -9,10 +9,11 @@
 ## enhancements
 
 - `as.list<SpatRasterDataset>` sets the names of the list [#1513](https://github.com/rspatial/terra/issues/1513)
-- a SpatVectorCollection can now be subsetted with the names; and if made from a list it takes the names from the list.  [1515](https://github.com/rspatial/terra/issues/1515) by jedgroev
+- a SpatVectorCollection can now be subset with its names; and if made from a list it takes the names from the list.  [1515](https://github.com/rspatial/terra/issues/1515) by jedgroev
 
 ## new 
 
+- `map-region` returns the coordinates of the axes position of a map created with `plot<Spat*>` [https://github.com/rspatial/terra/issues/1517](https://github.com/rspatial/terra/issues/1517) by Daniel Schuch
 
 
 # version 1.7-78
