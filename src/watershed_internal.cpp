@@ -1,5 +1,5 @@
-#include <Rcpp.h>
-using namespace Rcpp;
+//#include <Rcpp.h>
+//using namespace Rcpp;
 #include "watershed_internal.h"
 #include "spatRaster.h"
 
@@ -22,15 +22,10 @@ using namespace Rcpp;
 // Scope: return offset of a raster cell stored in a 1D integers array with respect to base address
 // nx,ny: number of cells in x (longitude) and in y (latitude)
 // x,y: indexes of cell upstream of which the watershed must be computed
-//
-// not exported [[Rcpp::export]]
-int offset(int nx, int ny, int x, int y)
-{
+int offset(int nx, int ny, int x, int y) {
   return y * nx + x; //according to original Ezio's code BY ROWS 
   //return x * ny + y; // according offset defintion in Rccp for IntergerMatrix // BY COLS
 }
-
-
 
 //
 // Functions: getRow, getCol
@@ -40,18 +35,13 @@ int offset(int nx, int ny, int x, int y)
 // NOTE: it assumes the offset is a valid value
 //
 
-
-
-int getRow(int nx, int ny, int offset)
-
-{
+int getRow(int nx, int ny, int offset) {
   return offset/nx;// according to Ezio's original code // BY ROWS
   //return offset % ny; // according offset definition in Rccp for IntergerMatrix // BY COLS
 }
 
-int getCol(int nx, int ny, int offset)// according to Ezio's original code
-
-{
+int getCol(int nx, int ny, int offset) {
+// according to Ezio's original code
   return offset % nx;// according to Ezio's original code // BY ROWS
   //return offset/ny; // according offset definition in Rccp for IntergerMatrix // BY COLS
 }
@@ -416,26 +406,6 @@ void watershed_v2(double* p, int nx, int ny, int pp_offset, double* pOut)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // TO INSERT::: std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
 //Rcpp::IntegerVector SpatRaster::watershed2(int pp_offset,SpatOptions opt) {
 SpatRaster  SpatRaster::watershed2(int pp_offset,SpatOptions &opt) {
@@ -532,8 +502,7 @@ SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
 }
 
 // void watershed_v2(int* p, int nx, int ny, int x, int y, int* pOut)
-void pitfinder(double* p, int nx, int ny, double* pOut)
-{
+void pitfinder(double* p, int nx, int ny, double* pOut) {
   //int* q;           // A pointer to a queue of raster cells (offset in memory) to be processed
   //  int qSize = 50;   // Starting queue size, that can be dinamically incremented if needed
   //int delta;        // Offset in memory from base queue address of a raster cell

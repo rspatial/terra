@@ -15,7 +15,7 @@ This function only returns meaningful results of the active plot (canvas) was cr
 }
 
 \usage{
-map_extent(...)
+map_extent()
 }
 
 \seealso{\code{\link{add_legend}}, \code{\link{add_grid}}, \code{\link{add_box}}}
