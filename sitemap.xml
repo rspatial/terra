@@ -22,6 +22,9 @@
     <loc>https://rspatial.github.io/terra/reference/NAflag.html</loc>
   </url>
   <url>
+    <loc>https://rspatial.github.io/terra/reference/NIPD.html</loc>
+  </url>
+  <url>
     <loc>https://rspatial.github.io/terra/reference/RGB.html</loc>
   </url>
   <url>
@@ -262,6 +265,9 @@
     <loc>https://rspatial.github.io/terra/reference/flip.html</loc>
   </url>
   <url>
+    <loc>https://rspatial.github.io/terra/reference/flowAccumulaion.html</loc>
+  </url>
+  <url>
     <loc>https://rspatial.github.io/terra/reference/focal.html</loc>
   </url>
   <url>
@@ -470,6 +476,9 @@
   </url>
   <url>
     <loc>https://rspatial.github.io/terra/reference/persp.html</loc>
+  </url>
+  <url>
+    <loc>https://rspatial.github.io/terra/reference/pitfinder.html</loc>
   </url>
   <url>
     <loc>https://rspatial.github.io/terra/reference/plet.html</loc>
@@ -728,6 +737,9 @@
   </url>
   <url>
     <loc>https://rspatial.github.io/terra/reference/vrt_tiles.html</loc>
+  </url>
+  <url>
+    <loc>https://rspatial.github.io/terra/reference/watershed.html</loc>
   </url>
   <url>
     <loc>https://rspatial.github.io/terra/reference/weighted.mean.html</loc>
