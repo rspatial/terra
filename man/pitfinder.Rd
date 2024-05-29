@@ -1,23 +1,24 @@
 \docType{methods}
-\name{pitfinder2}
+\name{pitfinder}
 
-\alias{pitfinder2}
-\alias{pitfinder2,SpatRaster-method}
+\alias{pitfinder}
+\alias{pitfinder,SpatRaster-method}
 
 
-\title{Pit Finder in a Flow Dir Raster map for Watershed Extraction}
+\title{Pit Finder in a Flow Dir SpatRaster for Watershed Extraction}
 
 \description{
-It extractions a watershed mask from a flow direction input raster point a pour-point cell.
+find pits (depressions with no outlet )
 }
 
 \usage{
-\S4method{pitfinder2}{SpatRaster}(p,filename="",...) 
+\S4method{pitfinder}{SpatRaster}(x,filename="",...) 
 }
 
 \arguments{
-  \item{p}{Flow Direction raster map, a \code{\link{SpatRaster-class}} object, see also \code{\link{terrain}}. }
-  \item{filename,...}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{p}{SpatRaster wih flow-direcion. See \code{\link{terrain}}}
+  \item{filename}{character. Output filename}
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
 }
 
 \value{ 

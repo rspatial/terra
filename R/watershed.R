@@ -4,10 +4,12 @@
 # License GPL v3
 
 setMethod("watershed", signature(x="SpatRaster"), 
-    function(x, pourpoin, filename="", ...) { 
-        opt <- spatOptions(filename, ...)
-        x@ptr <- x@ptr$watershed2(as.integer(offset-1), opt)
-        messages(x, "watershed2") ## EC 20210318
+    function(x, pourpoint, filename="", ...) { 
+        opt <- spatOptions(filename, ...)		
+		cell <- cellFromXY(x, pourpoint)
+		if (is.na(cell)) error("watershed", "pourpoint not on raster")
+        x@ptr <- x@ptr$watershed2(as.integer(cell-1), opt)
+        messages(x, "watershed") ## EC 20210318
     }
 )
 
@@ -35,7 +37,7 @@ setMethod("flowAccumulation", signature(x="SpatRaster"),
 	    } else {
 			x@ptr <- x@ptr$flowAccu2_weight(weight@ptr, opt)
 		} 
-		messages(x, "flowAccu2") 
+		messages(x, "flowAccumulation") 
     }      
 )
 

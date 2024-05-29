@@ -1,44 +1,49 @@
 \docType{methods}
-\name{NIDP2}
+\name{NIDP}
 
-\alias{NIDP2}
-\alias{NIDP2,SpatRaster-method}
+\alias{NIDP}
+\alias{NIDP,SpatRaster-method}
 
 
-\title{Number of immediate adjacent cells flowing into each cell (Watershed Analysis)}
+\title{Number of immediate adjacent cells flowing into each cell}
 
 \description{
-It computes the number of immediate adjacent cells flowing into each cell (Watershed Analysis)
+Compute the number of immediate adjacent cells flowing into each cell
 }
 
 \usage{
-\S4method{NIDP2}{SpatRaster}(p,filename="",...) 
+\S4method{NIDP}{SpatRaster}(x, filename="",...) 
 }
 
 \arguments{
-  \item{p}{Flow Direction raster map, a \code{\link{SpatRaster-class}} object, see also \code{\link{terrain}}. }
-  \item{filename,...}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{x}{SpatRaster with flow-direction. see \code{\link{terrain}}}
+  \item{filename}{character. Output filename}
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{ 
-
-A \code{\link{SpatRaster-class}} (raster) map containing the value for each cell. 
+SpatRaster
 }
 
 \details{
-NDIP is computed to preliminarly to compute Flow Accumulation area in the algorithm proposed by Zhouo at al,2019. 
-
-
+NDIP is computed first to compute flow-accumulation with the algorithm by Zhou at al, 2019. 
 }
 
-\seealso{\code{\link{flowAccu2}},\code{\link{flowAccu2_weight}}}
-\author{
 
-Emanuele Cordano (implementation of the algorithm within the package),Guiyun Zhou, Wenyan Dong and Hongqiang Wei
+
+
+\references{
+Zhou, G., Wei, H. & Fu, S. A fast and simple algorithm for calculating flow accumulation matrices from raster digital elevation. Front. Earth Sci. 13, 317–326 (2019). https://doi.org/10.1007/s11707-018-0725-9
+\url{https://link.springer.com/article/10.1007/s11707-018-0725-9}
 }
+
+
+
+\seealso{\code{\link{flowAccumulation}}}
+
+\author{Emanuele Cordano }
 
 \examples{
-
 
 elev1 <- array(NA,c(9,9))
 elev2 <- elev1
@@ -55,7 +60,7 @@ for (r in 1:nrow(elev1)) {
 } 
 
 
-## Elevation Raster Maps
+## Elevation Raster 
 elev1 <- rast(elev1)
 elev2 <- rast(elev2)
 
@@ -65,7 +70,7 @@ t(array(elev2[],rev(dim(elev2)[1:2])))
 plot(elev1)
 plot(elev2)
 
-## Flow Direction Raster Maps
+## Flow Direction Raster
 flowdir1<- terrain(elev1,v="flowdir")
 flowdir2<- terrain(elev2,v="flowdir")
 
@@ -86,14 +91,6 @@ t(array(nidp2[],rev(dim(nidp2)[1:2])))
 plot(nidp1)
 plot(nidp2)
 
-}
-
-
-
-
-\references{
-Zhou, G., Wei, H. & Fu, S. A fast and simple algorithm for calculating flow accumulation matrices from raster digital elevation. Front. Earth Sci. 13, 317–326 (2019). https://doi.org/10.1007/s11707-018-0725-9
-\url{https://link.springer.com/article/10.1007/s11707-018-0725-9}
 }
 
 
