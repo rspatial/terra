@@ -21,3 +21,24 @@ S3method(str, SpatGraticule)
 
 export(add_box, add_legend, add_grid, focalMat, extractAlong, gdal, getGDALconfig, graticule, halo, setGDALconfig, map.pal, map_extent, north, sbar, terraOptions, tmpFiles, makeVRT, mem_info, free_RAM, same.crs, shade, gdalCache, fileBlocksize, vector_layers, vrt_tiles, names, round)
 
+## EC 20210702 ecor
+exportMethods(watershed2)
+## END EC 20210702 ecor
+## EC 20220809
+exportMethods(pitfinder2)
+## END EC 20220809 ecor
+
+## EC 20231031 ecor
+exportMethods(NIDP2)
+## END EC 20231031
+
+## EC 20231031 ecor
+exportMethods(flowAccu2)
+## END EC 20231031
+
+## EC 20231114 ecor
+exportMethods(flowAccu2_weight)
+## END EC 2023114
+
+
+

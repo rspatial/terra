@@ -940,6 +940,7 @@ RCPP_MODULE(spat){
 		.method("reverse", &SpatRaster::reverse)
 		.method("rotate", &SpatRaster::rotate)
 		//.method("sampleCells", &SpatRaster::sampleCells, "sampleCells")
+
 		.method("sampleRegularRaster", &SpatRaster::sampleRegularRaster)
 		.method("sampleRowColRaster", &SpatRaster::sampleRowColRaster)
 		.method("sampleRegularValues", &SpatRaster::sampleRegularValues)
@@ -957,6 +958,7 @@ RCPP_MODULE(spat){
 		.method("trig", &SpatRaster::trig)
 		.method("trim1", &SpatRaster::trim1)
 		.method("trim", &SpatRaster::trim2)
+
 		.method("unique", &SpatRaster::unique)
 		.method("where", &SpatRaster::where)
 		.method("sieve", &SpatRaster::sieveFilter)
@@ -975,6 +977,11 @@ RCPP_MODULE(spat){
 		.method("zonal_poly_table", &SpatRaster::zonal_poly_table)		
 		.method("zonal_poly_weighted", &SpatRaster::zonal_poly_weighted)		
 //		.method("zonal_old", &SpatRaster::zonal_old)
+    .method("watershed2", &SpatRaster::watershed2, "watershed2") //EC 20210311 // EC 20210702
+    .method("pitfinder2", &SpatRaster::pitfinder2, "pitfinder2") //EC 20220810 // EC 20220810	
+    .method("NIDP2", &SpatRaster::NIDP2, "NIDP2") //EC 20231031
+    .method("flowAccu2", &SpatRaster::flowAccu2) //, "flowAccu2") //EC 20231031
+    .method("flowAccu2_weight", &SpatRaster::flowAccu2_weight) //, "flowAccu2_weight") //EC 20231114
 	;
 
     class_<SpatRasterCollection>("SpatRasterCollection")

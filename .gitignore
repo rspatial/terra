@@ -12,7 +12,9 @@ src/Makevars.ucrt.rej
 *.dll
 *.zip
 .Rproj.user
-
+af_acc*
+.Rbuildignore
+.RData
 revdep/
 python/
 cmdapp/terra
