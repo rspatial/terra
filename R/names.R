@@ -72,6 +72,9 @@ setMethod("names", signature(x="SpatRasterCollection"),
 setMethod("names<-", signature(x="SpatRasterCollection"),
 	function(x, value) {
 		x@ptr <- x@ptr$deepcopy()
+		if (is.null(value)) {
+			value <- rep("", length(x))
+		}
 		x@ptr$names <- enc2utf8(as.character(value))
 		x
 	}
@@ -99,6 +102,9 @@ setMethod("names", signature(x="SpatRasterDataset"),
 setMethod("names<-", signature(x="SpatRasterDataset"),
 	function(x, value) {
 		x@ptr <- x@ptr$deepcopy()
+		if (is.null(value)) {
+			value <- rep("", length(x))
+		}		
 		x@ptr$names <- enc2utf8(as.character(value))
 		x
 	}
@@ -154,6 +160,7 @@ setMethod("names<-", signature(x="SpatVector"),
 		if (length(value) != ncol(x)) {
 			error("names<-,SpatVector", "incorrect number of names")
 		}
+
 		value <- enc2utf8(as.character(value))
 		x@ptr <- x@ptr$deepcopy()
 		x@ptr$names <- value
@@ -242,6 +249,9 @@ setMethod("names", signature(x="SpatVectorCollection"),
 setMethod("names<-", signature(x="SpatVectorCollection"),
 	function(x, value) {
 		x@ptr <- x@ptr$deepcopy()
+		if (is.null(value)) {
+			value <- rep("", length(x))
+		}
 		x@ptr$setNames(enc2utf8(as.character(value)), FALSE)
 		x
 	}

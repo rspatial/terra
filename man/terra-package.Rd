@@ -544,6 +544,9 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
     \code{\link{sbar}} \tab Add a scale bar to a map\cr
     \code{\link{north}} \tab Add a north arrow to a map\cr
     \code{\link{inset}} \tab Add a small inset (overview) map\cr
+    \code{\link{add_legend}} \tab Add a legend to a map\cr
+    \code{\link{add_box}} \tab Add a bounding box to a map\cr
+    \code{\link{map_extent}} \tab Get the coordinates of a map's axes positions\cr
     \code{\link{dots}} \tab Make a dot-density map \cr
     \code{\link{cartogram}} \tab Make a cartogram \cr
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr

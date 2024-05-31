@@ -1,10 +1,8 @@
-#include <Rcpp.h>
-using namespace Rcpp;
+//#include <Rcpp.h>
+//using namespace Rcpp;
 #include "watershed_internal.h"
 #include "spatRaster.h"
 #include "watershed_internal_flow_acc.h"
-
-
 
 
 void NextCell(double* p, int nx, int ny,int* pnext) {
@@ -14,7 +12,6 @@ void NextCell(double* p, int nx, int ny,int* pnext) {
     //int delta;        // Offset in memory from base queue address of a raster cell
     //int n = 0;        // Number of raster cells to be processed in queue
     //  int nLoop = 0;    // Counter for loops over cells
-    int x,y,yr;
     int i;
    
     // ## 32	64	128
@@ -51,6 +48,8 @@ void NextCell(double* p, int nx, int ny,int* pnext) {
   }  
    
 }  
+
+
 // NIPD 
 void NIDP(int* pnext, int nx, int ny,double* nidp_value) {
   
@@ -123,16 +122,16 @@ void NIDP(int* pnext, int nx, int ny,double* nidp_value) {
 // Reference: https://link.springer.com/article/10.1007/s11707-018-0725-9
 void FlowAccu(int* pnext, int nx, int ny,double* nidp_value,double* flowaccu_value) {
   
-  int i=0,pp=0,n=0,flowpath_cond;
-  int x,y;
-  double cnt0,nAccu=0; 
+  int n=0,flowpath_cond;
+//  int x,y;
+  double nAccu=0; 
   
-  for (i=0;i<nx*ny;i++) {
+  for (int i=0;i<nx*ny;i++) {
     
     *(flowaccu_value+i)=1;
     
   }  
-  for (i=0;i<nx*ny;i++) if (*(nidp_value+i)==0) {
+  for (int i=0;i<nx*ny;i++) if (*(nidp_value+i)==0) {
     //printf("i=%d \n",i);
     //printf("flowpath_cond=%d \n",flowpath_cond);
     n=i;
@@ -159,16 +158,15 @@ void FlowAccu(int* pnext, int nx, int ny,double* nidp_value,double* flowaccu_val
 // It is added an array of weight to each cell (e.g. area, averaged precipitation)
 void FlowAccu_weight(int* pnext, int nx, int ny,double* nidp_value,double* flowaccu_value,double* weight) {
   
-  int i=0,pp=0,n=0,flowpath_cond;
-  int x,y;
-  double cnt0,nAccu=0; 
+  int n=0, flowpath_cond;
+  double nAccu=0; 
   
-  for (i=0;i<nx*ny;i++) {
+  for (int i=0;i<nx*ny;i++) {
     
     *(flowaccu_value+i)=*(weight+i);
     
   }  
-  for (i=0;i<nx*ny;i++) if (*(nidp_value+i)==0) {
+  for (int i=0;i<nx*ny;i++) if (*(nidp_value+i)==0) {
     //printf("i=%d \n",i);
     //printf("flowpath_cond=%d \n",flowpath_cond);
     n=i;

@@ -306,7 +306,7 @@ setMethod("interpNear", signature(x="SpatRaster", y="matrix"),
 			algo <- "linear"
 			pars <- c(radius[1], fill)
 		} else {
-			algo <- "nearest"
+			algo <- "nearest"	
 			pars <- c(get_rad(radius, "interpNear"), fill)
 		}
 

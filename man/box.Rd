@@ -5,7 +5,7 @@
 \title{draw a box}
 
 \description{ 
-Similar to \code{\link[graphics]{box}} allowing adding a box around a map. This function will place the legend in the locations within the mapped area as delineated by the axes.
+Similar to \code{\link[graphics]{box}} allowing adding a box around a map. This function will place the box around the mapped area.
 }
 
 \usage{

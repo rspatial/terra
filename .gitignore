@@ -2,6 +2,9 @@ install_time_patches/
 src/Makevars.ucrt.orig
 src/Makevars.ucrt.rej
 
+proj_conf_test
+.Rproj
+
 *.tar.gz
 *Rcheck/
 *.o
@@ -13,7 +16,6 @@ src/Makevars.ucrt.rej
 *.zip
 .Rproj.user
 af_acc*
-.Rbuildignore
 .RData
 revdep/
 python/

@@ -71,7 +71,9 @@ setMethod("svc", signature(x="list"),
 				r@ptr$push_back(x[[i]]@ptr)
 			}
 		}
-		messages(r, "svc")
+		r <- messages(r, "svc")
+		names(r) <- names(x)
+		r
 	}
 )
 
@@ -108,8 +110,33 @@ function(x, i, j, drop=TRUE) {
 	messages(x, "`[`")
 })
 
+
+
+setMethod("[[", c("SpatVectorCollection", "ANY", "missing"),
+function(x, i, j, drop=TRUE) {
+	if (inherits(i, "character")) {
+		i <- na.omit(match(i, names(x)))
+		if (length(i) == 0) {
+			error("[[", "no matching names")
+		}
+	}
+	x[i, drop=drop]
+})
+
+
+
+setMethod("$", c("SpatVectorCollection"),
+function(x, name) {
+	i <- na.omit(grep(name, names(x)))
+	if (length(i) == 0) {
+		error("$", "no matching names")
+	}
+	x[i,drop=TRUE]
+})
+
+
 setMethod("[[", c("SpatVectorCollection", "numeric", "missing"),
-function(x, i, drop=TRUE) {
+function(x, i, j, drop=TRUE) {
 	x[i,drop=drop]
 })
 

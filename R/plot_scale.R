@@ -122,7 +122,7 @@ north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ..
 	if (missing(d))	{
 		d <- 0.07 * pa[2]
 	}
-	xy <- .get_xy(xy, 0, d, pr, "topright", caller="arrow")
+	xy <- .get_xy(xy, 0, d, pr, "topright", caller="north")
 
 	if (inherits(type, "character")) {
 		usertype <- type

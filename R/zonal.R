@@ -79,8 +79,8 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 				}
 				colnames(out) <- c(znms, names(x))
 				nz <- 2
-			} else {
-				if (made_unique && (!as.raster)) {
+			} else if (!as.raster) {
+				if (made_unique) { # && (!as.raster)) {
 					ulevs <- cats(z)[[1]][, -c(1:2)]
 					if (any(ff)) {
 						for (f in which(ff)) {

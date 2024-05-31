@@ -3315,8 +3315,11 @@ SpatRaster SpatRaster::cropmask(SpatVector &v, std::string snap, bool touches, b
 	SpatOptions copt(opt);
 	SpatRaster out = crop(v.extent, snap, extend, copt);
 	if (out.hasError()) return out;
-	// transfer warnings?
-	return out.mask(v, false, NAN, touches, opt);
+
+	SpatOptions ropt(copt);
+	SpatRaster msk = out.geometry(1, false, false, false, false);
+	msk = out.rasterize(v, "", {1}, 0, touches, "", false, false, false, ropt);
+	return out.mask(msk, false, 0, NAN, opt);	
 }
 
 
@@ -3340,17 +3343,17 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 	if (vertical) {
 		for (size_t i=0; i < out.bs.n; i++) {
 			std::vector<double> a, b;
-			size_t ii = out.bs.n - 1 - i;
-			readBlock(a, out.bs, ii);
+			size_t startrow = nrow() - out.bs.row[i] - out.bs.nrows[i];
+			readValues(a, startrow, out.bs.nrows[i], 0, ncol());
 			b.reserve(a.size());
 			for (size_t j=0; j < nl; j++) {
-				size_t offset = j * out.bs.nrows[ii] * nc;
-				for (size_t k=0; k < out.bs.nrows[ii]; k++) {
-					unsigned start = offset + (out.bs.nrows[ii] - 1 - k) * nc;
+				size_t offset = j * out.bs.nrows[i] * nc;
+				for (size_t k=0; k < out.bs.nrows[i]; k++) {
+					unsigned start = offset + (out.bs.nrows[i] - 1 - k) * nc;
 					b.insert(b.end(), a.begin()+start, a.begin()+start+nc);
 				}
 			}
-			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[ii])) return out;
+			if (!out.writeBlock(b, i)) return out;
 		}
 	} else {
 		for (size_t i=0; i < out.bs.n; i++) {
