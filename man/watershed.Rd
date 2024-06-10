@@ -16,7 +16,7 @@ delineate the area covered by a catchment from a SpatRaster with flow direction 
 }
 
 \arguments{
-  \item{p}{SpatRaster with flow direction. See \code{\link{terrain}}. }
+  \item{x}{SpatRaster with flow direction. See \code{\link{terrain}}. }
   \item{pourpoint}{matrix or SpatVector with the pour point location}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

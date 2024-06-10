@@ -82,8 +82,8 @@ plot(flowdir1)
 plot(flowdir2)
 
 ## 
-nidp1 <- NIDP2((flowdir1))
-nidp2 <- NIDP2((flowdir2))
+nidp1 <- NIDP((flowdir1))
+nidp2 <- NIDP((flowdir2))
 
 t(array(nidp1[],rev(dim(nidp1)[1:2])))
 t(array(nidp2[],rev(dim(nidp2)[1:2])))

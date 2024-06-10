@@ -5,6 +5,8 @@ src/Makevars.ucrt.rej
 proj_conf_test
 .Rproj
 
+proj_conf_test*
+*.Rproj
 *.tar.gz
 *Rcheck/
 *.o

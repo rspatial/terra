@@ -1060,15 +1060,16 @@ setMethod("terrain", signature(x="SpatRaster"),
 	function(x, v="slope", neighbors=8, unit="degrees", filename="", ...) {
 	  
 	  if (v=="flowacc") {
-	       flowAccu2(x,filename=filename,...)
+	       flowAccumulation(x,filename=filename,...)
 	  
 	  } else {
 		  unit <- match.arg(unit, c("degrees", "radians"))
 		  opt <- spatOptions(filename, ...)
 		  seed <- ifelse("flowdir" %in% v, .seed(), 0)
 		  x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", seed, opt)
-		  messages(x, "terrain")
+		  
 	  }
+	  messages(x, "terrain")
 	}
 )
 
