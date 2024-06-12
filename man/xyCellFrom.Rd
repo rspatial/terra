@@ -40,8 +40,10 @@ Get coordinates of the center of raster cells for a row, column, or cell number 
 Or get row, column, or cell numbers from coordinates or from each other.
 
 Cell numbers start at 1 in the upper left corner, and increase from left to right, and then from top to bottom.
-The last cell number equals the number of cells of the SpatRaster.
-row numbers start at 1 at the top, column numbers start at 1 at the left.
+The last cell number equals the number of cells of the SpatRaster (see \code{\link{ncell}}).
+Row numbers start at 1 at the top, column numbers start at 1 at the left.
+
+When computing row, column, or cell numbers from coordinates, and coordinates fall on the edge of two or four cells, they are assigned to the right-most and/or lowest cell. That is, in these cases of ambiguity, the highest row, column, or cell number is returned.
 }
 
 \usage{
@@ -85,10 +87,6 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
   \item{xy}{matrix of x and y coordinates}
 }
 
-\details{
-Cell numbers start at 1 in the upper left corner, and increase from left to right, and then from top to bottom.
-The last cell number equals the number of cells of the SpatRaster (see \code{\link{ncell}}).
-}
 
 \value{
 xFromCol, yFromCol, xFromCell, yFromCell: vector of x or y coordinates
