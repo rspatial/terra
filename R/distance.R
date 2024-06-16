@@ -160,7 +160,7 @@ setMethod("distance", signature(x="matrix", y="matrix"),
 		v <- vect()
 		stopifnot(unit %in% c("m", "km"))
 		m <- ifelse(unit == "m", 1, 0.001)
-		d <- v@ptr$point_distance(x[,1], x[,2], y[,1], y[,2], pairwise[1], 1, lonlat)
+		d <- v@ptr$point_distance(x[,1], x[,2], y[,1], y[,2], pairwise[1], m, lonlat)
 		messages(v)
 		if (pairwise) {
 			d
@@ -172,7 +172,7 @@ setMethod("distance", signature(x="matrix", y="matrix"),
 
 setMethod("distance", signature(x="data.frame", y="data.frame"),
 	function(x, y, lonlat, pairwise=FALSE, unit="m") {
-		distance(as.matrix(x), as.matrix(y), lonlat, pairwise=pairwise)
+		distance(as.matrix(x), as.matrix(y), lonlat, pairwise=pairwise, unit=unit)
 	}
 )
 
