@@ -63,7 +63,7 @@
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>p</dt>
+    <dl><dt>x</dt>
 <dd><p>SpatRaster wih flow-direcion. See <code><a href="terrain.html">terrain</a></code></p></dd>
 
   <dt>filename</dt>
@@ -88,7 +88,7 @@
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="terrain.html">terrain</a></code>,<code>watershed2</code>,<code>flowAccu2</code>,<code>flowAccu2_weight</code>,<code>NIDP2</code></p></div>
+    <div class="dont-index"><p><code><a href="terrain.html">terrain</a></code>,<code><a href="watershed.html">watershed</a></code>,<code><a href="flowAccumulation.html">flowAccumulation</a></code>,<code><a href="NIPD.html">NIDP</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -230,16 +230,14 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Pit Detect</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">pits</span> <span class="op">&lt;-</span> <span class="fu">pitfinder2</span><span class="op">(</span><span class="va">flowdir</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in pitfinder2(flowdir):</span> could not find function "pitfinder2"</span>
+<span class="r-in"><span><span class="va">pits</span> <span class="op">&lt;-</span> <span class="fu">pitfinder</span><span class="op">(</span><span class="va">flowdir</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Application wth example DEM</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">elev</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'ex/elev.tif'</span>,package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">flowdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev</span>,<span class="st">"flowdir"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">pits</span> <span class="op">&lt;-</span> <span class="fu">pitfinder2</span><span class="op">(</span><span class="va">flowdir</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in pitfinder2(flowdir):</span> could not find function "pitfinder2"</span>
+<span class="r-in"><span><span class="va">pits</span> <span class="op">&lt;-</span> <span class="fu">pitfinder</span><span class="op">(</span><span class="va">flowdir</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

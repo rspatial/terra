@@ -48,7 +48,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Flow accumulation</h1>
       
-      <div class="d-none name"><code>flowAccumulaion.Rd</code></div>
+      <div class="d-none name"><code>flowAccumulation.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
@@ -58,7 +58,7 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for SpatRaster</span></span>
-<span><span class="fu">flowAccu2</span><span class="op">(</span><span class="va">x</span>, weight<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">flowAccumulation</span><span class="op">(</span><span class="va">x</span>, weight<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -88,7 +88,7 @@
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="terrain.html">terrain</a></code>,<code>watershed2</code>,<code>NIDP2</code></p></div>
+    <div class="dont-index"><p><code><a href="terrain.html">terrain</a></code>,<code><a href="watershed.html">watershed</a></code>,<code><a href="NIPD.html">NIDP</a></code></p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -111,7 +111,7 @@
 <span class="r-in"><span>    </span></span>
 <span class="r-in"><span>    <span class="va">x</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">c</span><span class="op">-</span><span class="fl">5</span><span class="op">)</span><span class="op">*</span><span class="va">dy</span></span></span>
 <span class="r-in"><span>    <span class="va">elev1</span><span class="op">[</span><span class="va">r</span>,<span class="va">c</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">5</span><span class="op">*</span><span class="op">(</span><span class="va">x</span><span class="op">^</span><span class="fl">2</span><span class="op">+</span><span class="va">y</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="va">elev2</span><span class="op">[</span><span class="va">r</span>,<span class="va">c</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">+</span><span class="fl">5</span><span class="op">*</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">-</span><span class="fl">0.001</span><span class="op">*</span><span class="va">y</span> <span class="co">### 5*(x^2+y^2)</span></span></span>
+<span class="r-in"><span>    <span class="va">elev2</span><span class="op">[</span><span class="va">r</span>,<span class="va">c</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">+</span><span class="fl">5</span><span class="op">*</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">-</span><span class="fl">0.001</span><span class="op">*</span><span class="va">y</span> </span></span>
 <span class="r-in"><span>  <span class="op">}</span></span></span>
 <span class="r-in"><span><span class="op">}</span> </span></span>
 <span class="r-in"><span></span></span>
@@ -144,15 +144,14 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 29.996 24.996 19.996 14.996  9.996 14.996 19.996 24.996 29.996</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">elev1</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="flowAccumulaion-1.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="flowAccumulation-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">elev2</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="flowAccumulaion-2.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="flowAccumulation-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Flow direction raster</span></span></span>
 <span class="r-in"><span><span class="va">flowdir1</span><span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev1</span>,v<span class="op">=</span><span class="st">"flowdir"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">flowdir2</span><span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev2</span>,v<span class="op">=</span><span class="st">"flowdir"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">u</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">flowdir2</span>,<span class="st">"flowacc"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in flowAccu2(x, filename = filename, ...):</span> could not find function "flowAccu2"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="transpose.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">flowdir1</span><span class="op">[</span><span class="op">]</span>,<span class="fu"><a href="flip.html">rev</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">dim</a></span><span class="op">(</span><span class="va">flowdir1</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
@@ -178,47 +177,78 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]    1    1    1    1    0   16   16   16   16</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">flowdir1</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="flowAccumulaion-3.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="flowAccumulation-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">flowdir2</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="flowAccumulaion-4.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="flowAccumulation-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## </span></span></span>
-<span class="r-in"><span><span class="va">flow_acc1</span> <span class="op">&lt;-</span> <span class="fu">flowAccu2</span><span class="op">(</span><span class="op">(</span><span class="va">flowdir1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in flowAccu2((flowdir1)):</span> could not find function "flowAccu2"</span>
-<span class="r-in"><span><span class="va">flow_acc2</span> <span class="op">&lt;-</span> <span class="fu">flowAccu2</span><span class="op">(</span><span class="op">(</span><span class="va">flowdir2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in flowAccu2((flowdir2)):</span> could not find function "flowAccu2"</span>
+<span class="r-in"><span><span class="va">flow_acc1</span> <span class="op">&lt;-</span> <span class="fu">flowAccumulation</span><span class="op">(</span><span class="op">(</span><span class="va">flowdir1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">flow_acc2</span> <span class="op">&lt;-</span> <span class="fu">flowAccumulation</span><span class="op">(</span><span class="op">(</span><span class="va">flowdir2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Alternative option </span></span></span>
-<span class="r-in"><span><span class="co">## here the argument of "terrain"functions is not elevation but flow directions.</span></span></span>
+<span class="r-in"><span><span class="co">## here the argument of "terrain" functions is  flow directions instead of elevation.</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">flow_acc2a</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">flowdir2</span>,<span class="st">"flowacc"</span><span class="op">)</span> </span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in flowAccu2(x, filename = filename, ...):</span> could not find function "flowAccu2"</span>
 <span class="r-in"><span><span class="fu"><a href="transpose.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">flow_acc1</span><span class="op">[</span><span class="op">]</span>,<span class="fu"><a href="flip.html">rev</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">dim</a></span><span class="op">(</span><span class="va">flow_acc1</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 't': object 'flow_acc1' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]    1    1    1    1    1    1    1    1    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]    1    2    2    3    2    3    2    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]    1    2    3    6    3    6    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]    1    3    6   16    4   16    6    3    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]    1    2    3    4   81    4    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]    1    3    6   16    4   16    6    3    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]    1    2    3    6    3    6    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]    1    2    2    3    2    3    2    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]    1    1    1    1    1    1    1    1    1</span>
 <span class="r-in"><span><span class="fu"><a href="transpose.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">flow_acc2</span><span class="op">[</span><span class="op">]</span>,<span class="fu"><a href="flip.html">rev</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">dim</a></span><span class="op">(</span><span class="va">flow_acc2</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 't': object 'flow_acc2' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]    1    2    3    4    9    4    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]    1    2    3    4   18    4    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]    1    2    3    4   27    4    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]    1    2    3    4   36    4    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]    1    2    3    4   45    4    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]    1    2    3    4   54    4    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]    1    2    3    4   63    4    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]    1    2    3    4   72    4    3    2    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]    1    2    3    4   81    4    3    2    1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">flow_acc1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'flow_acc1' not found</span>
+<span class="r-plt img"><img src="flowAccumulation-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">flow_acc2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'flow_acc2' not found</span>
+<span class="r-plt img"><img src="flowAccumulation-6.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">weight</span> <span class="op">&lt;-</span> <span class="va">elev1</span><span class="op">*</span><span class="fl">0</span><span class="op">+</span><span class="fl">10</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">flow_acc1w</span> <span class="op">&lt;-</span> <span class="fu">flowAccu2_weight</span><span class="op">(</span><span class="va">flowdir1</span>,<span class="va">weight</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in flowAccu2_weight(flowdir1, weight):</span> could not find function "flowAccu2_weight"</span>
-<span class="r-in"><span><span class="va">flow_acc2w</span> <span class="op">&lt;-</span> <span class="fu">flowAccu2_weight</span><span class="op">(</span><span class="va">flowdir2</span>,<span class="va">weight</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in flowAccu2_weight(flowdir2, weight):</span> could not find function "flowAccu2_weight"</span>
+<span class="r-in"><span><span class="va">flow_acc1w</span> <span class="op">&lt;-</span> <span class="fu">flowAccumulation</span><span class="op">(</span><span class="va">flowdir1</span>,<span class="va">weight</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">flow_acc2w</span> <span class="op">&lt;-</span> <span class="fu">flowAccumulation</span><span class="op">(</span><span class="va">flowdir2</span>,<span class="va">weight</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="transpose.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">flow_acc1w</span><span class="op">[</span><span class="op">]</span>,<span class="fu"><a href="flip.html">rev</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">dim</a></span><span class="op">(</span><span class="va">flow_acc1w</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 't': object 'flow_acc1w' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]   10   10   10   10   10   10   10   10   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]   10   20   20   30   20   30   20   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]   10   20   30   60   30   60   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]   10   30   60  160   40  160   60   30   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]   10   20   30   40  810   40   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]   10   30   60  160   40  160   60   30   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]   10   20   30   60   30   60   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]   10   20   20   30   20   30   20   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]   10   10   10   10   10   10   10   10   10</span>
 <span class="r-in"><span><span class="fu"><a href="transpose.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="va">flow_acc2w</span><span class="op">[</span><span class="op">]</span>,<span class="fu"><a href="flip.html">rev</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">dim</a></span><span class="op">(</span><span class="va">flow_acc2w</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 't': object 'flow_acc2w' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]   10   20   30   40   90   40   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]   10   20   30   40  180   40   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]   10   20   30   40  270   40   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]   10   20   30   40  360   40   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]   10   20   30   40  450   40   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]   10   20   30   40  540   40   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]   10   20   30   40  630   40   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]   10   20   30   40  720   40   30   20   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]   10   20   30   40  810   40   30   20   10</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">flow_acc1w</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'flow_acc1w' not found</span>
+<span class="r-plt img"><img src="flowAccumulation-7.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">flow_acc2w</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'flow_acc2w' not found</span>
+<span class="r-plt img"><img src="flowAccumulation-8.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Application wth example elevation data</span></span></span>
@@ -227,10 +257,8 @@
 <span class="r-in"><span><span class="va">flowdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev</span>,<span class="st">"flowdir"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">weight</span> <span class="op">&lt;-</span> <span class="fu"><a href="cellSize.html">cellSize</a></span><span class="op">(</span><span class="va">elev</span>,unit<span class="op">=</span><span class="st">"km"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">flowacc_weight</span> <span class="op">&lt;-</span> <span class="fu">flowAccu2_weight</span><span class="op">(</span><span class="va">flowdir</span>,<span class="va">weight</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in flowAccu2_weight(flowdir, weight):</span> could not find function "flowAccu2_weight"</span>
-<span class="r-in"><span><span class="va">flowacc</span>  <span class="op">&lt;-</span> <span class="fu">flowAccu2</span><span class="op">(</span><span class="va">flowdir</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in flowAccu2(flowdir):</span> could not find function "flowAccu2"</span>
+<span class="r-in"><span><span class="va">flowacc_weight</span> <span class="op">&lt;-</span> <span class="fu">flowAccumulation</span><span class="op">(</span><span class="va">flowdir</span>,<span class="va">weight</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">flowacc</span>  <span class="op">&lt;-</span> <span class="fu">flowAccumulation</span><span class="op">(</span><span class="va">flowdir</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
