@@ -950,11 +950,13 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 	int bs1, bs2;
 	for (size_t i = 0; i < s.nlyr; i++) {
+		
 		poBand = poDataset->GetRasterBand(i+1);
 
 		if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
 			char **m = poBand->GetMetadata();
 			while (m != nullptr && *m != nullptr) {
+
 				bandmeta[i].push_back(*m++);
 			}
 			char **meterra = poBand->GetMetadata("LYR_TAGS");
@@ -1100,6 +1102,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 	msg = "";
 	if ((gdrv=="netCDF") || (gdrv == "HDF5"))  {
+		
 		std::vector<std::string> metadata;
 		char **m = poDataset->GetMetadata();
 		if (m) {
@@ -1108,7 +1111,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		}
 		s.set_names_time_ncdf(metadata, bandmeta, msg);
+
 		if (s.srs.is_empty()) {
+
 			bool lat = false;
 			bool lon = false;
 			for (size_t i=0; i<metadata.size(); i++) {
@@ -1877,6 +1882,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 	std::vector<double> raw;
 	raw.reserve(vals.size());
 	for (size_t i=0; i<vals.size(); i++) {
+		
 		double dval;
 		if (get_double(vals[i], dval)) {
 			raw.push_back(dval);
@@ -1891,6 +1897,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 	std::string origin;
 	std::string calendar = "standard";
 	for (size_t i=0; i<metadata.size(); i++) {
+
 		if (!fc) {
 			std::string pattern = "time#calendar=";
 			std::size_t found = metadata[i].find(pattern);
@@ -1955,8 +1962,10 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 			}
 		}
 	}
+
 	SpatTime_t offset = 0;
 	if (foundorigin) {
+
 		step = "seconds";
 		out.reserve(raw.size());
 		std::string cal = "366";
@@ -1966,11 +1975,11 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 			cal = "365";		
 		} else if (calendar =="gregorian" || calendar =="proleptic_gregorian" || calendar=="standard" || calendar == "julian") {
 			cal = "366";
-		} else {
+		} else if (!(months || years || yearmonths || yearsbp)) {
 			//cal = "366";
 			msg = "unknown calendar (assuming standard): " + calendar;			
 		}
-		
+
 		// this shortcut means that 360/noleap calendars loose only have dates, no time
 		// to be refined
 		if ((hours || minutes || seconds) && (cal == "360")) {
@@ -1994,7 +2003,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 			}
 			days = true;
 		} 
-		
+	
 		if (days) {
 			step = "days";
 			std::vector<int> ymd = getymd(origin);
@@ -2021,7 +2030,6 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		} else if (minutes) {
 			if (cal == "365") {
 				std::vector<int> ymd = getymd(origin);
-//				Rcpp::Rcout << origin << std::endl;
 				for (size_t i=0; i<raw.size(); i++) out.push_back(
 						get_time_noleap(ymd[0], ymd[1], ymd[2], ymd[3], ymd[4], 0, raw[i], "minutes")
 					);
@@ -2057,7 +2065,12 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 			}
 		} else if (months) {
 			step = "months";
-			for (size_t i=0; i<raw.size(); i++) out.push_back(get_time(1970, raw[i], 15, 0, 0, 0));
+			// check for 0..11 range
+			int zero = vmin(raw, true) == 0.0;
+			for (size_t i=0; i<raw.size(); i++) {
+				unsigned m = std::ceil(raw[i] + zero);
+				out.push_back(get_time(1970, m, 15, 0, 0, 0));
+			}
 		} else {
 			step = "raw";
 			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]);
@@ -2149,11 +2162,16 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 	recycle(unit, nlyr);
 	if (!nms[0].empty()) {
 		std::string step;
-		std::vector<int_64> x = ncdf_time(metadata, nms[0], step, msg);
-		if (x.size() == nlyr) {
-			time = x;
-			timestep = step;
-			hasTime = true;
+		std::vector<int_64> x;
+		try {
+			x = ncdf_time(metadata, nms[0], step, msg);
+			if (x.size() == nlyr) {
+				time = x;
+				timestep = step;
+				hasTime = true;
+			}
+		} catch(...) {
+			msg = "could not extract time scale";
 		}
 	}
 }
