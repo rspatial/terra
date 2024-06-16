@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-79</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-80</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,23 +51,25 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-79" id="version-17-79">version 1.7-79<a class="anchor" aria-label="anchor" href="#version-17-79"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.7-80" id="version-17-80">version 1.7-80<a class="anchor" aria-label="anchor" href="#version-17-80"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-7-79">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-79"></a></h3>
+<h3 id="bug-fixes-1-7-80">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-80"></a></h3>
 <ul><li>
 <code>flip(direction="vertical")</code> failed in some cases <a href="https://github.com/rspatial/terra/issues/1518" class="external-link">#1518</a> by Ed Carnell</li>
 <li>
 <code>zonal(as.raster=TRUE)</code> failed when the zonal raster was categorical <a href="https://github.com/rspatial/terra/issues/1514" class="external-link">1514</a> by Jessi L Brown</li>
+<li>
+<code>distance&lt;data.frame,data.frame&gt;</code> and <code>&lt;matrix,matrix&gt;</code> ignored the unit argument. <a href="https://github.com/rspatial/terra/issues/1545" class="external-link">#1545</a> by Wencheng Lau-Medrano</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-7-79">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-79"></a></h3>
+<h3 id="enhancements-1-7-80">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-80"></a></h3>
 <ul><li>
 <code>as.list&lt;SpatRasterDataset&gt;</code> sets the names of the list <a href="https://github.com/rspatial/terra/issues/1513" class="external-link">#1513</a>
 </li>
 <li>a SpatVectorCollection can now be subset with its names; and if made from a list it takes the names from the list. <a href="https://github.com/rspatial/terra/issues/1515" class="external-link">1515</a> by jedgroev</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-7-79">new<a class="anchor" aria-label="anchor" href="#new-1-7-79"></a></h3>
+<h3 id="new-1-7-80">new<a class="anchor" aria-label="anchor" href="#new-1-7-80"></a></h3>
 <ul><li>
 <code>map-region</code> returns the coordinates of the axes position of a map created with <code>plot&lt;Spat*&gt;</code> <a href="https://github.com/rspatial/terra/issues/1517" class="external-link">https://github.com/rspatial/terra/issues/1517</a> by Daniel Schuch</li>
 </ul></div>
