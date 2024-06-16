@@ -245,7 +245,7 @@ SpatVector SpatVector::elongate(double length, bool flat) {
 	return out;
 }
 
-
+#include "Rcpp.h"
 
 SpatVectorCollection SpatVector::split(std::string field) {
 
@@ -271,8 +271,8 @@ SpatVectorCollection SpatVector::split(std::string field) {
 		v.srs = srs;
 		v.df = df.subset_rows(r);
 		out.push_back(v);
-		out.names[out.names.size()-1] = v.df.getSvalue(i, 0);
 	}
+	out.names = uv.as_string(0);
 	return out;
 }
 
