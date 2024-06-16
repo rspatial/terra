@@ -309,6 +309,52 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 )
 
 
+
+setMethod("polys", signature(x="leaflet"),
+	function(x, y, col, fill=0.2, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, ...)  {
+
+		if (inherits(y, "SpatVector")) {
+			if (nrow(y) == 0) return(x)
+			y <- makelonlat(y)
+			if (missing(col)) col <- "black"
+			if (geomtype(y) != "polygons") {
+				error("polys", "SpatVector y must have polygons geometry")
+			}
+			leaflet::addPolygons(x, data=y, weight=lwd, fillColor=col, 
+					fillOpacity=fill, col=border, opacity=alpha, popup=popup, 
+					label=label, ...)			
+			
+		} else if (inherits(y, "SpatVectorCollection")) {
+			nms <- names(y)
+			n <- length(y)
+			nms[nchar(nms) == 0] <- "X"
+			nms <- make.unique(nms)
+			if (is.function(col)) {
+				cols <- col(n)
+			} else {
+				cols <- rep_len(col, n) 
+			}	
+			lwd <- rep_len(lwd, n) 
+			alpha <- rep_len(alpha, n) 
+			fill <- rep_len(fill, n) 
+			border <- rep_len(border, n) 
+			popup <- rep_len(popup, n) 
+			label <- rep_len(label, n) 
+
+			for (i in 1:length(nms)) {
+				x <- leaflet::addPolygons(x, data=y[i], weight=lwd[i], fillColor=cols[i], 
+					fillOpacity=fill[i], col=border[i], opacity=alpha[i], popup=popup[i], 
+					label=label[i], group=nms[i], ...)			
+			}
+			collapse=FALSE
+			leaflet::addLayersControl(x, overlayGroups = nms, options = leaflet::layersControlOptions(collapsed=collapse))
+		} else {
+			error("plet", "y should be a SpatVector or SpatVectorCollection")
+		}	
+	}
+)
+
+
 setMethod("lines", signature(x="leaflet"),
 	function(x, y, col, lwd=2, alpha=1, ...)  {
 		if (inherits(y, "SpatVector")) {
@@ -336,7 +382,9 @@ setMethod("lines", signature(x="leaflet"),
 			}
 			collapse=FALSE
 			leaflet::addLayersControl(x, overlayGroups = nms, options = leaflet::layersControlOptions(collapsed=collapse))
-		}
+		} else {
+			error("plet", "y should be a SpatVector or SpatVectorCollection")
+		}	
 	}
 )
 
