@@ -752,3 +752,34 @@ setMethod("plot", signature(x="SpatVectorProxy", y="missing"),
 	}
 )
 
+
+
+setMethod("plot", signature(x="SpatVectorCollection", y="missing"),
+	function(x, y, main, mar=NULL, nc, nr, maxnl=16, ...) {
+		nl <- max(1, min(length(x), maxnl))
+
+		if (nl==1) {
+			if (missing(main)) main = ""
+			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, add=add, ...)
+			return(invisible(out))
+		}
+
+		nrnc <- .get_nrnc(nr, nc, nl)
+		old.par <- graphics::par(no.readonly = TRUE)
+		on.exit(graphics::par(old.par))
+		if (is.null(mar)) {
+			mar=c(1.5, 1, 2.5, 3)
+		}
+		graphics::par(mfrow=nrnc)
+
+		if (missing("main")) {
+			main <- names(x)
+		} else {
+			main <- rep_len(main, nl)
+		}
+		for (i in 1:nl) {
+			plot(x[i], main=main[i], mar=mar, ...)
+		}
+	}
+)
+
