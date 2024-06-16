@@ -16,7 +16,7 @@ find pits (depressions with no outlet )
 }
 
 \arguments{
-  \item{p}{SpatRaster wih flow-direcion. See \code{\link{terrain}}}
+  \item{x}{SpatRaster wih flow-direcion. See \code{\link{terrain}}}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
 }
@@ -32,7 +32,7 @@ A \code{\link{SpatRaster-class}} (raster) map containing value 1 for the pits  a
 Emanuele Cordano
 }
 
-\seealso{\code{\link{terrain}},\code{\link{watershed2}},\code{\link{flowAccu2}},\code{\link{flowAccu2_weight}},\code{\link{NIDP2}}}
+\seealso{\code{\link{terrain}},\code{\link{watershed}},\code{\link{flowAccumulation}},\code{\link{NIDP}}}
 \examples{
 
 ## Creation of a Digital Elevation Model 
@@ -60,14 +60,14 @@ t(array(flowdir[],rev(dim(flowdir)[1:2])))
 
 ## Pit Detect
 
-pits <- pitfinder2(flowdir)
+pits <- pitfinder(flowdir)
 
 ## Application wth example DEM
 
 elev <- rast(system.file('ex/elev.tif',package="terra"))
 flowdir <- terrain(elev,"flowdir")
 
-pits <- pitfinder2(flowdir)
+pits <- pitfinder(flowdir)
 
 
 

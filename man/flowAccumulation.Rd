@@ -12,7 +12,7 @@ Computes flow accumulation or the total contributing area in terms of numbers of
 }
 
 \usage{
-\S4method{flowAccu2}{SpatRaster}(x, weight=NULL, filename="", ...) 
+\S4method{flowAccumulation}{SpatRaster}(x, weight=NULL, filename="", ...) 
 }
 
 \arguments{
@@ -30,7 +30,7 @@ SpatRaster
 The algorithm is an adaptation of the one proposed by Zhou at al, 2019. 
 }
 
-\seealso{\code{\link{terrain}},\code{\link{watershed2}},\code{\link{NIDP2}}}
+\seealso{\code{\link{terrain}},\code{\link{watershed}},\code{\link{NIDP}}}
 
 \author{
 Emanuele Cordano
@@ -53,7 +53,7 @@ for (r in 1:nrow(elev1)) {
     
     x <- (c-5)*dy
     elev1[r,c] <- 5*(x^2+y^2)
-    elev2[r,c] <- 10+5*(abs(x))-0.001*y ### 5*(x^2+y^2)
+    elev2[r,c] <- 10+5*(abs(x))-0.001*y 
   }
 } 
 
@@ -80,10 +80,10 @@ plot(flowdir1)
 plot(flowdir2)
 
 ## 
-flow_acc1 <- flowAccu2((flowdir1))
-flow_acc2 <- flowAccu2((flowdir2))
+flow_acc1 <- flowAccumulation((flowdir1))
+flow_acc2 <- flowAccumulation((flowdir2))
 ## Alternative option 
-## here the argument of "terrain"functions is not elevation but flow directions.
+## here the argument of "terrain" functions is  flow directions instead of elevation.
 
 flow_acc2a <- terrain(flowdir2,"flowacc") 
 t(array(flow_acc1[],rev(dim(flow_acc1)[1:2])))
@@ -95,8 +95,8 @@ plot(flow_acc2)
 weight <- elev1*0+10
 
 
-flow_acc1w <- flowAccu2_weight(flowdir1,weight)
-flow_acc2w <- flowAccu2_weight(flowdir2,weight)
+flow_acc1w <- flowAccumulation(flowdir1,weight)
+flow_acc2w <- flowAccumulation(flowdir2,weight)
 
 t(array(flow_acc1w[],rev(dim(flow_acc1w)[1:2])))
 t(array(flow_acc2w[],rev(dim(flow_acc2w)[1:2])))
@@ -111,8 +111,8 @@ elev <- rast(system.file('ex/elev.tif',package="terra"))
 flowdir <- terrain(elev,"flowdir")
 
 weight <- cellSize(elev,unit="km")
-flowacc_weight <- flowAccu2_weight(flowdir,weight)
-flowacc  <- flowAccu2(flowdir)
+flowacc_weight <- flowAccumulation(flowdir,weight)
+flowacc  <- flowAccumulation(flowdir)
 
 
 }

@@ -30,7 +30,7 @@ flowdir<- terrain(elev,v="flowdir")
 
 ## Pit Detect
 
-pits1 <- pitfinder2(flowdir)
+pits1 <- pitfinder(flowdir)
 
 xypit <- as.data.frame(pits1,xy=TRUE)
 names(xypit) <- c("x","y","pit")

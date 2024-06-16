@@ -27,7 +27,7 @@ flowacc0 <- c(001,001,001,001,001,001,
 
 
 flowdir1 <- terrain(elev,"flowdir")
-flowacc1 <- flowAccu2(flowdir1)
+flowacc1 <- flowAccumulation(flowdir1)
 
 result <- (flowacc1==flowacc0) & (flowdir1==flowdir0)
 

@@ -5,7 +5,9 @@ exportMethods("[", "[[", "!", "%in%", activeCat, "activeCat<-", "add<-", addCats
 
 ## EC 20210702 ecor
 exportMethods(watershed, pitfinder, NIDP, flowAccumulation)
-
+## EC 20250606 ecor
+###exportMethods(watershed2,pitfinder2,NIDP2,flowAccu2,flowAccu2_weight)
+## END EC 
 
 S3method(cbind, SpatVector)
 S3method(rbind, SpatVector)
@@ -24,6 +26,7 @@ S3method(str, SpatExtent)
 S3method(str, SpatGraticule)
 
 export(add_box, add_legend, add_grid, focalMat, extractAlong, gdal, getGDALconfig, graticule, halo, setGDALconfig, map.pal, map_extent, north, sbar, terraOptions, tmpFiles, makeVRT, mem_info, free_RAM, same.crs, shade, gdalCache, fileBlocksize, vector_layers, vrt_tiles, names, round)
+
 
 
 
