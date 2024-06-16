@@ -1,10 +1,10 @@
-# version 1.7-79
+# version 1.7-80
 
 ## bug fixes
 
 - `flip(direction="vertical")` failed in some cases [#1518](https://github.com/rspatial/terra/issues/1518) by Ed Carnell
 - `zonal(as.raster=TRUE)` failed when the zonal raster was categorical [1514](https://github.com/rspatial/terra/issues/1514) by Jessi L Brown
-
+- `distance<data.frame,data.frame>` and `<matrix,matrix>` ignored the unit argument. [#1545](https://github.com/rspatial/terra/issues/1545) by Wencheng Lau-Medrano
 
 ## enhancements
 
