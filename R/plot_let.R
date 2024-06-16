@@ -466,7 +466,7 @@ setMethod("plet", signature(x="SpatRaster"),
 			tiles <- tiles[tiles!=""]
 			if (length(tiles) > 1) {
 				tiles <- tiles[1]
-				warn("plet", "only a single tileset can be used with raster data")
+				#warn("plet", "only a single tileset can be used with raster data")
 			}
 			map <- baselayers(tiles, wrap)
 		} else {
