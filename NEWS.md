@@ -5,7 +5,8 @@
 - `flip(direction="vertical")` failed in some cases [#1518](https://github.com/rspatial/terra/issues/1518) by Ed Carnell
 - `zonal(as.raster=TRUE)` failed when the zonal raster was categorical [1514](https://github.com/rspatial/terra/issues/1514) by Jessi L Brown
 - `distance<data.frame,data.frame>` and `<matrix,matrix>` ignored the unit argument. [#1545](https://github.com/rspatial/terra/issues/1545) by Wencheng Lau-Medrano
-
+- NetCDF files with month time-step encode from 0-11 made R crash [#1544](https://github.com/rspatial/terra/issues/1544) by Martin Holdrege
+ ·
 ## enhancements
 
 - `as.list<SpatRasterDataset>` sets the names of the list [#1513](https://github.com/rspatial/terra/issues/1513)
@@ -14,6 +15,7 @@
 ## new 
 
 - `map-region` returns the coordinates of the axes position of a map created with `plot<Spat*>` [https://github.com/rspatial/terra/issues/1517](https://github.com/rspatial/terra/issues/1517) by Daniel Schuch
+- `polys<leaflet>` method [#1543](https://github.com/rspatial/terra/issues/1543) by Márcia Barbosa
 
 
 # version 1.7-78
