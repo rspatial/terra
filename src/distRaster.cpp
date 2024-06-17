@@ -1503,7 +1503,7 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, boo
 		std::vector<unsigned> lyr = {0};
 		out = subset(lyr, ops);
 		out = out.costDistance(target, m, maxiter, grid, opt);
-		out.addWarning("cost distance computations are only done for the first input layer");
+		out.addWarning("distance computations are only done for the first input layer");
 		return out;
 	}
 
@@ -1537,7 +1537,7 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, boo
 		out = out.writeRaster(opt);
 	}
 	if (i == maxiter) {
-		out.addWarning("costDistance did not converge");
+		out.addWarning("distance algorithm did not converge");
 	}
 	return(out);
 }
