@@ -139,7 +139,9 @@ make_extract_index <- function(v, vmx, name="i") {
 	if (!drop) {
 		rc <- rowColFromCell(x, i)
 		e <- ext_from_rc(x, min(rc[,1]), max(rc[,1]), min(rc[,2]), max(rc[,2]))
-		crop(x, e)
+		y <- crop(rast(x), e)
+		y[cellFromXY(y, xyFromCell(x, i))] <- x[i]
+		y
 	} else {
 		e <- x@ptr$extractCell(i-1)
 		messages(x, "extract")
