@@ -50,7 +50,7 @@ Select geometries of \code{x} that intersect, or not intersect, with the geometr
 
 \value{SpatRaster}
 
-\seealso{\link{crop}}
+\seealso{\code{\link{subst}},  \code{\link{crop}}}
 
 
 \examples{
