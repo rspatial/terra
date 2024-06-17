@@ -265,7 +265,24 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 
 
 std::string tempFile(std::string tmpdir, std::string fname, std::string ext) {
-	return tmpdir + "/spat_" + fname + ext;
+
+    std::vector<char> characters = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K',
+    'L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m',
+    'n','o','p','q','r','s','t','u','v','w','x','y','z' };
+	
+	size_t n = characters.size() - 1;
+    std::string randname;
+	randname.reserve(15);
+    for (int i = 0; i < 15; ++i) {
+        randname += characters[rand() % n];
+    }
+  
+	std::string filename =  tmpdir + "/spat_" + fname + "_" + randname + ext;
+	if (file_exists(filename)) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		filename = tempFile(tmpdir, fname, ext);
+	}
+	return filename;
 }
 
 /*
@@ -282,7 +299,7 @@ std::string tempFile(std::string tmpdir, unsigned pid, std::string ext) {
 	filename = tmpdir + "/spat_" + filename + "_" + std::to_string(pid) + ext;
 	if (file_exists(filename)) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		tempFile(tmpdir, pid, ext);
+		return tempFile(tmpdir, pid, ext);
 	}
 	return filename;
 }
