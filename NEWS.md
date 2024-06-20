@@ -7,6 +7,8 @@
 - `distance<data.frame,data.frame>` and `<matrix,matrix>` ignored the unit argument. [#1545](https://github.com/rspatial/terra/issues/1545) by Wencheng Lau-Medrano
 - NetCDF files with month time-step encode from 0-11 made R crash [#1544](https://github.com/rspatial/terra/issues/1544) by Martin Holdrege
 - `split<SpatVector>` only worked well if the split field was of type character. [#1530](https://github.com/rspatial/terra/issues/1530) by Igor Graczykowski
+- `gridDist` (and probably some other methods) emitted a "cannot overwrite existing file" error when processing large datasets [#1522](https://github.com/rspatial/terra/issues/1522) by Clare Pearson
+
  
 ## enhancements
 
