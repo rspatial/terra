@@ -120,7 +120,7 @@ setMethod("plet", signature(x="SpatVector"),
 #type=type, breaks=breaks, breakby=breakby, sort=sort, decreasing=decreasing,
 		}
 		
-		if (missing(col)) col <- grDevices::rainbow
+		if (missing(col)) col <- \(n) grDevices::rainbow(n, start=.2)
 		alpha <- max(0, min(1, alpha))
 		fill <- max(0, min(1, fill))
 		x <- makelonlat(x)

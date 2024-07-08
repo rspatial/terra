@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#include "spatRaster.h"
+#include "spatRasterMultiple.h"
 
 bool SpatRaster::readStart() {
 
@@ -405,4 +405,31 @@ bool SpatRaster::getValuesSource(size_t src, std::vector<double> &out) {
 	}
 	return true;
 }
+
+
+SpatRasterStack SpatRasterCollection::read_into(SpatRaster &tmp, size_t row, size_t nrows) {
+
+	size_t n = size();
+	double nan = NAN;
+	std::vector<double> v(nan, nrows * tmp.ncol() * n);
+	SpatRasterStack out;
+
+	SpatExtent e = tmp.getExtent();
+	e.ymax = tmp.source[0].extent.ymax - row * tmp.yres(); 	
+	e.ymin = tmp.source[0].extent.ymax - (row + nrows) * tmp.yres(); 
+	SpatOptions ops;
+	for (size_t i=0; i<n; i++) {
+		SpatExtent ee = ds[i].getExtent();
+		if ((ee.ymax > e.ymin) & (ee.ymin < e.ymax)) {
+			if (!tmp.compare_geom(ds[i], false, false, opt.get_tolerance(), false, false, false, true)) {
+				out.setError(tmp.msg.error);
+				return(out);
+			}
+			SpatRaster x = ds[i].crop(e, "near", true, ops);
+			out.ds.push_back(x);
+		}
+	}
+	return out;
+}
+
 

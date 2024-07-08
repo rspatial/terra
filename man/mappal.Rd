@@ -2,7 +2,7 @@
 
 \alias{map.pal}
   
-\title{map.pal arrow}
+\title{color palettes for mapping}
 
 \description{
 Get a color palette for mapping. These palettes were copied from GRASS.

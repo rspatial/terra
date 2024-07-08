@@ -3611,6 +3611,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	SpatExtent e = ds[0].getExtent();
 	unsigned nl = ds[0].nlyr();
 //std::vector<bool> resample(n, false);
+
 		
 	for (size_t i=1; i<n; i++) {
 		SpatExtent ee = ds[i].getExtent();
@@ -3645,7 +3646,6 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 //	if (!overlaps(r1, r2, c1, c2)) {
 //		return merge(true, true, opt);
 //	}
-
 	double ncl = 1000;
 	if (n > 50) ncl = 500;
 	if (n > 100) ncl = 250;
@@ -3668,6 +3668,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 	std::vector<unsigned> use; 
 	SpatRasterStack s;
+	
 	for (size_t i=0; i<n; i++) {
 		SpatVector vi = ve.subset_rows(i);
 		SpatExtent ce = vi.getExtent();
@@ -3675,6 +3676,12 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		if (x.empty()) {
 			continue;
 		} 
+
+		for (size_t j=0; j<x.size(); j++) {
+			Rcpp::Rcout << "ext " << j << ": " << x.ds[j].source[0].extent.xmin << " " << x.ds[j].source[0].extent.xmax 
+				<<  " " << x.ds[j].source[0].extent.ymin <<  " " << x.ds[j].source[0].extent.ymax <<  " " << std::endl;
+		}
+		
 		s.ds = x.ds;
 		SpatRaster r;
 		if (nl == 1) { 

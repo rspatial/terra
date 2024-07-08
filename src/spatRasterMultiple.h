@@ -17,49 +17,6 @@
 
 #include "spatRaster.h"
 
-
-// A collection of (perhaps non matching) SpatRasters 
-class SpatRasterCollection {
-	public:
-		virtual ~SpatRasterCollection(){}	
-		SpatMessages msg;
-		SpatRasterCollection deepCopy();
-		void setError(std::string s);
-		void addWarning(std::string s);
-		bool has_error();
-		bool has_warning();
-		std::vector<std::string> getWarnings();
-		std::string getError();
-	
-		std::vector<SpatRaster> ds;
-//		SpatExtent extent;
-		std::vector<std::string> names;
-		SpatRasterCollection() {};
-		SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options);
-//		void setExtent();
-		SpatExtent getExtent();
-		
-		SpatRasterCollection(size_t n);
-		size_t size();
-		bool empty();
-		void resize(size_t n);
-		void push_back(SpatRaster r, std::string name);
-		void erase(size_t i); 
-		SpatRasterCollection crop(SpatExtent e, std::string snap, bool expand, std::vector<unsigned> use, SpatOptions &opt);
-		SpatRasterCollection cropmask(SpatVector v, std::string snap, bool touches, bool expand, std::vector<unsigned> use, SpatOptions &opt);
-		std::vector<int> getValueType(bool unique);
-
-		SpatRaster merge(bool first, bool narm, SpatOptions &opt);
-		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
-		SpatRaster mosaic(std::string fun, SpatOptions &opt);
-		SpatRaster summary(std::string fun, SpatOptions &opt);
-		std::vector<unsigned> dims();
-		std::vector<std::string> get_names();
-		void set_names(std::vector<std::string> nms);
-		std::vector<std::string> filenames();
-		
-};
-
 // A class for "sub-datasets" 
 class SpatRasterStack {
 	public:
@@ -119,4 +76,50 @@ class SpatRasterStack {
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 };
 
+
+
+// A collection of (perhaps non matching) SpatRasters 
+class SpatRasterCollection {
+	public:
+		virtual ~SpatRasterCollection(){}	
+		SpatMessages msg;
+		SpatRasterCollection deepCopy();
+		void setError(std::string s);
+		void addWarning(std::string s);
+		bool has_error();
+		bool has_warning();
+		std::vector<std::string> getWarnings();
+		std::string getError();
+	
+		std::vector<SpatRaster> ds;
+//		SpatExtent extent;
+		std::vector<std::string> names;
+		SpatRasterCollection() {};
+		SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options);
+//		void setExtent();
+		SpatExtent getExtent();
+		
+		SpatRasterCollection(size_t n);
+		size_t size();
+		bool empty();
+		void resize(size_t n);
+		void push_back(SpatRaster r, std::string name);
+		void erase(size_t i); 
+		SpatRasterCollection crop(SpatExtent e, std::string snap, bool expand, std::vector<unsigned> use, SpatOptions &opt);
+		SpatRasterCollection cropmask(SpatVector v, std::string snap, bool touches, bool expand, std::vector<unsigned> use, SpatOptions &opt);
+		std::vector<int> getValueType(bool unique);
+
+		SpatRaster merge(bool first, bool narm, SpatOptions &opt);
+		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
+		SpatRaster mosaic(std::string fun, SpatOptions &opt);
+		SpatRaster summary(std::string fun, SpatOptions &opt);
+		std::vector<unsigned> dims();
+		std::vector<std::string> get_names();
+		void set_names(std::vector<std::string> nms);
+		std::vector<std::string> filenames();
+		
+
+		SpatRasterStack read_into(SpatRaster &tmp, size_t row, size_t nrows);
+
+};
 
