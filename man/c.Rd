@@ -8,6 +8,10 @@
 \alias{c,SpatRasterCollection-method}
 \alias{c,SpatVector-method}
 \alias{c,SpatVectorCollection-method}
+\alias{c,SpatVector-method}
+
+\alias{rbind.SpatVector}
+\alias{rbind}
 
 
 \title{Combine SpatRaster or SpatVector objects}
