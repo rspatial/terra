@@ -421,7 +421,7 @@ SpatRasterStack SpatRasterCollection::read_into(SpatRaster &tmp, size_t row, siz
 	for (size_t i=0; i<n; i++) {
 		SpatExtent ee = ds[i].getExtent();
 		if ((ee.ymax > e.ymin) & (ee.ymin < e.ymax)) {
-			if (!tmp.compare_geom(ds[i], false, false, opt.get_tolerance(), false, false, false, true)) {
+			if (!tmp.compare_geom(ds[i], false, false, ops.get_tolerance(), false, false, false, true)) {
 				out.setError(tmp.msg.error);
 				return(out);
 			}
