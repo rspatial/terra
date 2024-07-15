@@ -31,12 +31,12 @@ setMethod("princomp", signature(x="SpatRaster"),
 
 setMethod("prcomp", signature(x="SpatRaster"),
 	function(x, retx = TRUE, center = TRUE, scale. = FALSE, tol = NULL, rank. = NULL, maxcell=Inf) {
-		x <- na.omit(spatSample(x, maxcell, "regular"))
-		p <- prcomp(x, retx=retx, center=center, scale.=scale., tol=tol, rank.=rank.)
+		d <- na.omit(spatSample(x, maxcell, "regular"))
+		p <- prcomp(d, retx=retx, center=center, scale.=scale., tol=tol, rank.=rank.)
 		nms <- names(p$center)
 		nms <- nms[!(nms %in% names(x))]
 		if (length(nms) > 0) {
-			warn("prcomp", "layer names were changed to make them valid. See 'valid.names'")
+			warn("prcomp", "names were changed to make them valid. See 'valid.names'")
 		}
 		p
 	}
