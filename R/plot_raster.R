@@ -118,6 +118,10 @@
 	} else {
 		stopifnot(length(out$range) == 2)
 		stopifnot(out$range[2] > out$range[1])
+		if (out$fill_range) {
+			Z[ Z < out$range[1] ] <- out$range[1]
+			Z[ Z > out$range[2] ] <- out$range[2]
+		}
 	}
 
 	breaks <- .get_breaks(z, length(out$cols), "eqint", out$range)
@@ -561,7 +565,7 @@ prettyNumbs <- function(x, digits) {
 
 .prep.plot.data <- function(x, type, cols, mar=NULL, draw=FALSE,
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(),
-  levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
+  levels=NULL, add=FALSE, range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint",
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
   sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
   xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=1.2, 
@@ -721,7 +725,7 @@ prettyNumbs <- function(x, digits) {
 		} else {
 			out$interpolate <- isTRUE(interpolate)
 			out$range <- range
-			#out$fill_range <- fill_range
+			out$fill_range <- fill_range
 			out <- .as.raster.continuous(out, x, type)
 		}
 
