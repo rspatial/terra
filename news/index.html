@@ -48,6 +48,10 @@
 <code>split&lt;SpatVector&gt;</code> only worked well if the split field was of type character. <a href="https://github.com/rspatial/terra/issues/1530" class="external-link">#1530</a> by Igor Graczykowski</li>
 <li>
 <code>gridDist</code> (and probably some other methods) emitted a “cannot overwrite existing file” error when processing large datasets <a href="https://github.com/rspatial/terra/issues/1522" class="external-link">#1522</a> by Clare Pearson</li>
+<li>
+<code>terrain</code> did not accept multiple variables <a href="https://github.com/rspatial/terra/issues/1561" class="external-link">#1561</a> by Michael Mahoney</li>
+<li>
+<code>rotate</code> was vulnarable to an integer overflow <a href="https://github.com/rspatial/terra/issues/1562" class="external-link">#1562</a> by Sacha Ruzzante</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-80">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-80"></a></h3>
@@ -55,6 +59,7 @@
 <code>as.list&lt;SpatRasterDataset&gt;</code> sets the names of the list <a href="https://github.com/rspatial/terra/issues/1513" class="external-link">#1513</a>
 </li>
 <li>a SpatVectorCollection can now be subset with its names; and if made from a list it takes the names from the list. <a href="https://github.com/rspatial/terra/issues/1515" class="external-link">1515</a> by jedgroev</li>
+<li>argument <code>fill_range</code> to plot<spatraster> and <code>plot&lt;SpatVector&gt;</code> to use the color of the extreme values of the specified range <a href="https://github.com/rspatial/terra/issues/1553" class="external-link">#1553</a> by Mike Koontz</spatraster></li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-7-80">new<a class="anchor" aria-label="anchor" href="#new-1-7-80"></a></h3>
