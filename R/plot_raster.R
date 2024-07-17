@@ -117,11 +117,35 @@
 #		out$fill_range <- FALSE
 	} else {
 		stopifnot(length(out$range) == 2)
-		stopifnot(out$range[2] > out$range[1])
 		if (out$fill_range) {
-			Z[ Z < out$range[1] ] <- out$range[1]
-			Z[ Z > out$range[2] ] <- out$range[2]
+			out$range_filled <- c(FALSE, FALSE)
+			if (!is.na(out$range[1])) {
+				if (out$range[1] > min(z)) {
+					out$range_filled[1] <- TRUE
+					Z[ Z < out$range[1] ] <- out$range[1]
+				} 
+			} else {
+				out$range[1] <- min(z, na.rm=TRUE)
+			}
+			if (!is.na(out$range[2])) {
+				if (out$range[2] < max(z)) {
+					Z[ Z > out$range[2] ] <- out$range[2]
+					out$range_filled[2] <- TRUE
+				} 
+			} else {
+				out$range[2] <- max(z, na.rm=TRUE)
+			}
+		} else {
+			if (all(is.na(out$range))) {
+				out$range <- range(z)
+			} else if (is.na(out$range[1])) {
+				out$range[1] <- min(z)
+			} else if (is.na(out$range[2])) {
+				out$range[2] <- max(z)
+			}
 		}
+		
+		if (!any(out$range_filled)) out$fill_range <- FALSE
 	}
 
 	breaks <- .get_breaks(z, length(out$cols), "eqint", out$range)

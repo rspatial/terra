@@ -433,7 +433,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 .prep.vect.data <- function(x, y, type=NULL, cols=NULL, mar=NULL, legend=TRUE,
-	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
+	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL,
 	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
@@ -573,6 +573,7 @@ setMethod("dots", signature(x="SpatVector"),
 			out$range <- range
 		}
 		out$range_set <- TRUE
+		out$fill_range <- fill_range
 	} else {
 		if (!is.null(v)) {
 			out$range <- range(v, na.rm=TRUE)
