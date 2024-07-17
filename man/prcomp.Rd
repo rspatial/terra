@@ -29,7 +29,7 @@ prcomp object
 }
 
 \note{
-\code{prcomp} may change the layer names if they are not valid. See \code{\link{make.names}}. In that case, you will get a warning, and would need to also make the layernames of \code{x} valid before using \code{predict}. Even better would be to change them before calling \code{prcomp}.
+\code{prcomp} may change the layer names if they are not valid. See \code{\link{make.names}}. In that case, you will get a warning, and would need to also make the layer names of \code{x} valid before using \code{predict}. Even better would be to change them before calling \code{prcomp}.
 }
 
 \seealso{ \code{\link{princomp}}, \code{\link[stats]{prcomp}}}
