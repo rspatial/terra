@@ -2947,9 +2947,9 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 
 SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 
-	unsigned nc = ncol();
-	unsigned nl = nlyr();
-	unsigned hnc = (nc / 2);
+	size_t nc = ncol();
+	size_t nl = nlyr();
+	size_t hnc = (nc / 2);
 	double addx = hnc * xres();
 	if (left) {
 		addx = -addx;
@@ -2978,8 +2978,8 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 		b.reserve(a.size());
 		for (size_t j=0; j < nl; j++) {
 			for (size_t r=0; r < out.bs.nrows[i]; r++) {
-				unsigned s1 = j * out.bs.nrows[i] * nc + r * nc;
-				unsigned e1 = s1 + hnc;
+				size_t s1 = j * out.bs.nrows[i] * nc + r * nc;
+				size_t e1 = s1 + hnc;
 				b.insert(b.end(), a.begin()+e1, a.begin()+s1+nc);
 				b.insert(b.end(), a.begin()+s1, a.begin()+e1);
 			}
