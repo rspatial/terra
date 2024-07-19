@@ -73,6 +73,10 @@ rgb2hex <- function(x) {
     invisible(.Call(`_terra_set_gdal_warnings`, level))
 }
 
+.seedinit <- function(seed_val) {
+    invisible(.Call(`_terra_seed_init`, seed_val))
+}
+
 .gdalinit <- function(projpath, datapath) {
     invisible(.Call(`_terra_gdal_init`, projpath, datapath))
 }

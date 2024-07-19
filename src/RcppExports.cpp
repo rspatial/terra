@@ -208,6 +208,16 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// seed_init
+void seed_init(uint32_t seed_val);
+RcppExport SEXP _terra_seed_init(SEXP seed_valSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< uint32_t >::type seed_val(seed_valSEXP);
+    seed_init(seed_val);
+    return R_NilValue;
+END_RCPP
+}
 // gdal_init
 void gdal_init(std::string projpath, std::string datapath);
 RcppExport SEXP _terra_gdal_init(SEXP projpathSEXP, SEXP datapathSEXP) {
@@ -475,6 +485,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_sdsmetatdataparsed", (DL_FUNC) &_terra_sdsmetatdataparsed, 1},
     {"_terra_gdal_drivers", (DL_FUNC) &_terra_gdal_drivers, 0},
     {"_terra_set_gdal_warnings", (DL_FUNC) &_terra_set_gdal_warnings, 1},
+    {"_terra_seed_init", (DL_FUNC) &_terra_seed_init, 1},
     {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 2},
     {"_terra_percRank", (DL_FUNC) &_terra_percRank, 5},
     {"_terra_setGDALCacheSizeMB", (DL_FUNC) &_terra_setGDALCacheSizeMB, 1},

@@ -357,6 +357,22 @@ void set_gdal_warnings(int level) {
 	}
 }
 
+#include "common.h"
+
+std::mt19937 my_rgen;
+
+// [[Rcpp::export(name = ".seedinit")]]
+void seed_init(uint32_t seed_val) {
+  my_rgen.seed(seed_val);
+}
+
+/*
+[[Rcpp::export(name = ".rnumb")]]
+int rnumb() {
+    std::uniform_int_distribution<std::mt19937::result_type> rand_nr(0, 9); 
+	return  rand_nr(my_rgen);
+}
+*/
 
 // [[Rcpp::export(name = ".gdalinit")]]
 void gdal_init(std::string projpath, std::string datapath) {
@@ -638,3 +654,4 @@ double stattest2(std::vector<double> x, std::string fun, bool narm) {
 }
 
 */
+

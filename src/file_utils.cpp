@@ -263,18 +263,21 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 	return true;
 }
 
+#include "common.h"
 
 std::string tempFile(std::string tmpdir, std::string fname, std::string ext) {
+
 
     std::vector<char> characters = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K',
     'L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m',
     'n','o','p','q','r','s','t','u','v','w','x','y','z' };
+
+    std::uniform_int_distribution<std::mt19937::result_type> rand_nr(0, characters.size()-1); 
 	
-	size_t n = characters.size() - 1;
     std::string randname;
 	randname.reserve(15);
-    for (int i = 0; i < 15; ++i) {
-        randname += characters[rand() % n];
+    for (int i = 0; i < 15; i++) {
+        randname += characters[rand_nr(my_rgen)];
     }
   
 	std::string filename =  tmpdir + "/spat_" + fname + "_" + randname + ext;
@@ -284,6 +287,8 @@ std::string tempFile(std::string tmpdir, std::string fname, std::string ext) {
 	}
 	return filename;
 }
+
+
 
 /*
 std::string tempFile(std::string tmpdir, unsigned pid, std::string ext) {
