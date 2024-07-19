@@ -30,7 +30,7 @@ SpatRaster
 The algorithm is an adaptation of the one proposed by Zhou at al, 2019. 
 }
 
-\seealso{\code{\link{terrain}},\code{\link{watershed}},\code{\link{NIDP}}}
+\seealso{\code{\link{terrain}},\code{\link{watershed}}, \code{\link{NIDP}}}
 
 \author{
 Emanuele Cordano
@@ -71,7 +71,6 @@ plot(elev2)
 ## Flow direction raster
 flowdir1<- terrain(elev1,v="flowdir")
 flowdir2<- terrain(elev2,v="flowdir")
-u <- terrain(flowdir2,"flowacc")
 
 t(array(flowdir1[],rev(dim(flowdir1)[1:2])))
 t(array(flowdir2[],rev(dim(flowdir2)[1:2])))

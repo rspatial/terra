@@ -761,7 +761,7 @@ setMethod("plot", signature(x="SpatVectorCollection", y="missing"),
 
 		if (nl==1) {
 			if (missing(main)) main = ""
-			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, add=add, ...)
+			out <- plot(x[1], main=main[1], mar=mar, ...)
 			return(invisible(out))
 		}
 
