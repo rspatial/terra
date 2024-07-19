@@ -28,10 +28,10 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 
 \usage{
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), 
-    maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, all_levels=FALSE,
-	breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, 
-	decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, add=FALSE, buffer=FALSE, 
-	background=NULL, box=axes, clip=TRUE, ...)
+    maxcell=500000, smooth=FALSE, range=NULL, fill_range=FALSE, 
+	levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, 
+	colNA=NULL, alpha=NULL, sort=FALSE,  decreasing=FALSE, grid=FALSE, ext=NULL, 
+	reset=FALSE, add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, ...)
 
@@ -75,6 +75,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{smooth}{logical. If \code{TRUE} the cell values are smoothed (only if a continuous legend is used)}
   \item{range}{numeric. minimum and maximum values to be used for the continuous legend }
+  \item{fill_range}{logical. If \code{TRUE}, values outside of \code{range} get the colors of the extreme values; otherwise they get colored as \code{NA}}
   \item{levels}{character. labels for the legend when \code{type="classes"} }
   \item{all_levels}{logical. If \code{TRUE}, the legend shows all levels of a categorical raster, even if they are not present in the data}
   \item{breaks}{numeric. Either a single number to indicate the number of breaks desired, or the actual breaks. When providing this argument, the default legend becomes "interval"}

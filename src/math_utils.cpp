@@ -224,8 +224,8 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
 				tieCount = 1;
 			} else if (counts[i] == counts[maxCount]) {
 				tieCount++;
-				double rand = dist(rgen);
-				if (rand < (1 / tieCount)) {
+				double randnr = dist(rgen);
+				if (randnr < (1 / tieCount)) {
 					maxCount = i;
 				}
 			}

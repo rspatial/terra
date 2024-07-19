@@ -9,7 +9,7 @@ Helper function for creating custom map elements that are aligned with the axes 
 
 Unlike the standard base plot, terra keeps the axis aligned with the data. For that reason you cannot use \code{par()$usr} to get these coordinates.
 
-The coordinates returned by this function are used in, for example, code{\link{add_legend}} such that a legend can be automatically placed in the a particular corner.
+The coordinates returned by this function are used in, for example, \code{\link{add_legend}} such that a legend can be automatically placed in the a particular corner.
 
 This function only returns meaningful results of the active plot (canvas) was create with a call to \code{plot} with a SpatRaster or SpatVector as first argument.
 }
