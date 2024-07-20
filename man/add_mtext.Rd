@@ -14,8 +14,8 @@ add_mtext(text, side=3, line=0, ...)
 
 \arguments{
   \item{text}{character or expression vector specifying the text to be written}
-  \side{side} integer indicating the margin to use (1=bottom, 2=left, 3=top, 4=right).
-  \side{line} numeric to move the text in or outwards.
+  \item{side}{ integer indicating the margin to use (1=bottom, 2=left, 3=top, 4=right)}
+  \item{line}{ numeric to move the text in or outwards.}
   \item{...}{arguments passed to \code{\link{text}}}
 }
 
