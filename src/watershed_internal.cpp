@@ -70,10 +70,9 @@ bool inRaster(int nx, int ny, int x, int y)
 
 //  Function: watershed (version 0, recursive)
 
-void watershed(double* p, int nx, int ny, int x, int y, int* pOut)
-{
-  static int nCall = 0;
-  nCall++;
+void watershed(double* p, int nx, int ny, int x, int y, int* pOut) {
+//  static int nCall = 0;
+//  nCall++;
   ///printf("%d \n", nCall);
   ///printf("%d %d %d %d \n",nx,ny,x,y);
   
@@ -148,12 +147,11 @@ void watershed(double* p, int nx, int ny, int x, int y, int* pOut)
 //
 //void watershed_v1(int* p, int nx, int ny, int x, int y, int* pOut)
 //  void watershed_v1(double* p, int nx, int ny, int pp_offset, int* pOut)
-  void watershed_v1(double* p, int nx, int ny, int pp_offset, double* pOut)
-{
+void watershed_v1(double* p, int nx, int ny, int pp_offset, double* pOut) {
   int q[10000];    // Queue of raster cells (offset in memory) to be processed
   int delta;      // Offset in memory from base queue address of a raster cell
   int n = 0;      // Number of raster cells to be processed in queue
-  int nLoop = 0;  // Counter for loops over cells
+//  int nLoop = 0;  // Counter for loops over cells
   int x,y;
   ///printf("DEBUG: col=%d,row=%d\n",x,y);
   
@@ -172,7 +170,7 @@ void watershed(double* p, int nx, int ny, int x, int y, int* pOut)
   //for (int i = 0; i < n; i++) {
   while (n > 0) {
     //printf("DEBUG: IN THE LOOP n=%d\n", n); // REMOVE PRINTF ?? 
-    nLoop++;
+   // nLoop++;
    // if (nLoop % 10000 == 0) printf("%d ", nLoop);  // Print number of internal loops
     
     // Pick up top raster cell
@@ -291,13 +289,12 @@ int* resizeQueue(int* q, int n)
 // Current version implements a dinamic queue, up to the basin boundaries
  //
 // void watershed_v2(int* p, int nx, int ny, int x, int y, int* pOut)
-void watershed_v2(double* p, int nx, int ny, int pp_offset, double* pOut)
-{
+void watershed_v2(double* p, int nx, int ny, int pp_offset, double* pOut) {
   int* q;           // A pointer to a queue of raster cells (offset in memory) to be processed
   int qSize = 50;   // Starting queue size, that can be dinamically incremented if needed
   int delta;        // Offset in memory from base queue address of a raster cell
   int n = 0;        // Number of raster cells to be processed in queue
-  int nLoop = 0;    // Counter for loops over cells
+//  int nLoop = 0;    // Counter for loops over cells
   int x,y;
 //  printf("DEBUG: col=%d,row=%d\n", x, y);
   
@@ -317,7 +314,7 @@ void watershed_v2(double* p, int nx, int ny, int pp_offset, double* pOut)
   // Process all pending (until any) raster cells in the queue
   while (n > 0) {
     //printf("DEBUG: IN THE LOOP n=%d\n", n);
-    nLoop++;
+ //   nLoop++;
    // EC 20231129 if (nLoop % 100000 == 0) printf("%d\n", nLoop);  // Print number of internal loops
     
     //printf("%d\n", n);
