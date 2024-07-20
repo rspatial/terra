@@ -7,7 +7,7 @@
 status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/terra)](http://www.r-pkg.org/pkg/terra)
 
-`terra` is an *R* package for spatial data analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
+`terra` is an *R* package for spatial data analysis. There are tutorials at [rspatial.org](https://rspatial.org/index.html). 
 
 [Stack Overflow](https://stackoverflow.com/questions/tagged/terra) is a good place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, or if you want to request a new feature, please file an [issue](https://github.com/rspatial/terra/issues).
 
