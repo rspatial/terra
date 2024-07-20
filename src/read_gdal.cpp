@@ -882,6 +882,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		} else {
 			addWarning("unknown extent");
 		}
+		try {
+			s.flipped = adfGeoTransform[5] > 0;
+		} catch(...) {}
 	}
 
 	s.memory = false;

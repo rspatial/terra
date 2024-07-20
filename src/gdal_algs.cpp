@@ -1141,7 +1141,7 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 	}
 */
 	
-	if (tmp.source[0].extset) {
+	if (tmp.source[0].extset || tmp.source[0].flipped) {
 		tmp = tmp.hardCopy(topt);
 	}
 
