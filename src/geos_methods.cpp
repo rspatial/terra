@@ -214,7 +214,7 @@ SpatVector SpatVector::make_valid2() {
 		if (r != NULL) {
 			if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
 				x[i] = geos_ptr(r, hGEOSCtxt);
-				ids.push_back(i);
+				//ids.push_back(i);
 			} else {
 				GEOSGeom_destroy_r(hGEOSCtxt, r);
 			}
@@ -224,11 +224,11 @@ SpatVector SpatVector::make_valid2() {
 	out = coll.get(0);
 	geos_finish(hGEOSCtxt);
 	out.srs = srs;
-	if (ids.size() != n) {
-		out.df = df.subset_rows(out.df.iv[0]);
-	} else {
+//	if (ids.size() != n) {
+//		out.df = df.subset_rows(out.df.iv[0]);
+//	} else {
 		out.df = df;
-	}
+//	}
 #endif
 	return out;
 }
