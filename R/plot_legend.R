@@ -550,8 +550,11 @@ add_grid <- function(nx=NULL, ny=nx, col="lightgray", lty="dotted", lwd=1) {
 
 
 add_mtext <- function(text, side=3, line=0, ...) {
-	p <- unlist(terra:::get.clip())
-	h <- strheight(text, units = "user", ...)	
+
+	stopifnot(side %in% 1:4)
+
+	p <- unlist(get.clip())
+	h <- graphics::strheight(text, units = "user", ...)	
 	
 	srt <- 0
 	if (side==1) {
@@ -564,13 +567,11 @@ add_mtext <- function(text, side=3, line=0, ...) {
 	} else 	if (side==3) {
 		x <- mean(p[1:2])
 		y <- p[4] + h + line * h
-	} else 	if (side==4) {
+	} else {
 		x <- p[2] + 1.25 * h + line * h
 		y <- mean(p[3:4])
 		srt <- 270
-	} else {
-		stop("not a valid side")
-	}
+	} 
 	
 	text(x=x, y=y, labels=text, xpd=TRUE, srt=srt, ...)
 }
