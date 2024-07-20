@@ -21,7 +21,7 @@ add_grid(nx=NULL, ny=nx, col="lightgray", lty="dotted", lwd=1)
   \item{lwd}{non-negative numeric giving line width of the grid lines}
 }
 
-\seealso{ \code{\link{graticule}}, \code{\link{add_box}}, \code{\link{add_grid}}}
+\seealso{\code{\link{graticule}}, \code{\link{add_legend}}, \code{\link{add_box}}, \code{\link{add_grid}}, \code{\link{add_mtext}}}
 
 \examples{
 v <- vect(system.file("ex/lux.shp", package="terra"))

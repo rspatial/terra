@@ -20,7 +20,8 @@ add_legend(x, y, ...)
 }
 
 
-\seealso{\code{\link{add_box}}, \code{\link{add_grid}}}
+\seealso{\code{\link{add_box}}, \code{\link{add_grid}}, \code{\link{add_mtext}}}
+
 
 \examples{
 v <- vect(system.file("ex/lux.shp", package="terra"))
