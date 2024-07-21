@@ -146,7 +146,7 @@ bool SpatRaster::hasValues() {
 }
 
 
-SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs) {
+SpatRaster::SpatRaster(std::vector<size_t> rcl, std::vector<double> ext, std::string crs) {
 
 	SpatRasterSource s;
 	rcl.resize(3, 1);
@@ -183,7 +183,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	s.srs.proj4 = lrtrim_copy(crs);
 #endif
 
-	for (unsigned i=0; i < rcl[2]; i++) {
+	for (size_t i=0; i < rcl[2]; i++) {
 		s.names.push_back("lyr." + std::to_string(i+1)) ;
 	}
 
@@ -192,7 +192,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 
 
 
-SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs) {
+SpatRaster::SpatRaster(size_t nr, size_t nc, size_t nl, SpatExtent ext, std::string crs) {
 
 	SpatRasterSource s;
 	s.nrow = nr;
@@ -221,7 +221,7 @@ SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, st
 #else
 	s.srs.proj4 = lrtrim_copy(crs);
 #endif
-	for (unsigned i=0; i < nl; i++) {
+	for (size_t i=0; i < nl; i++) {
 		s.names.push_back("lyr." + std::to_string(i+1)) ;
 	}
 	setSource(s);
@@ -349,13 +349,13 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 		return(out);
 	}
 	SpatExtent e = getExtent();
-	unsigned nc = std::max(1., round((e.xmax-e.xmin) / xres));
-	unsigned nr = std::max(1., round((e.ymax-e.ymin) / yres));
+	size_t nc = std::max(1., round((e.xmax-e.xmin) / xres));
+	size_t nr = std::max(1., round((e.ymax-e.ymin) / yres));
 
 	double xmax = e.xmin + nc * xres;
 	double ymax = e.ymin + nr * yres;
-	unsigned nl = nlyr();
-	std::vector<unsigned> rcl = {nr, nc, nl};
+	size_t nl = nlyr();
+	std::vector<size_t> rcl = {nr, nc, nl};
 	std::vector<double> ext = {e.xmin, xmax, e.ymin, ymax};
 
 	out = SpatRaster(rcl, ext, {""});
@@ -381,8 +381,8 @@ size_t SpatRaster::nrow() {
 }
 
 
-unsigned SpatRaster::nlyr() {
-	unsigned x = 0;
+size_t SpatRaster::nlyr() {
+	size_t x = 0;
 	for (size_t i=0; i<source.size(); i++) {
 		x += source[i].nlyr;
 	}
@@ -1064,7 +1064,7 @@ bool SpatRaster::setWindow(SpatExtent x) {
 	return true;
 }
 
-SpatRaster SpatRaster::replace(SpatRaster x, unsigned layer, SpatOptions &opt) {
+SpatRaster SpatRaster::replace(SpatRaster x, size_t layer, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (!out.compare_geom(x, false, true, opt.get_tolerance())) {
@@ -1076,7 +1076,7 @@ SpatRaster SpatRaster::replace(SpatRaster x, unsigned layer, SpatOptions &opt) {
 	if (n == 1) {
 		return x;
 	}
-	std::vector<unsigned> lyrs;
+	std::vector<size_t> lyrs;
 	if (layer == 0) {
 		out = x;
 		lyrs.resize(n-1);
@@ -1117,7 +1117,7 @@ SpatRaster SpatRaster::makeCategorical(long layer, SpatOptions &opt) {
 			out.setError("layer number is too high");
 			return out;
 		}
-		std::vector<unsigned> lyrs = {(unsigned) layer};
+		std::vector<size_t> lyrs = {(size_t) layer};
 		r = subset(lyrs, fopt);
 	} else {
 		r = *this;
@@ -1145,15 +1145,15 @@ SpatRaster SpatRaster::makeCategorical(long layer, SpatOptions &opt) {
 
 
 
-bool SpatRaster::createCategories(unsigned layer, SpatOptions &opt) {
+bool SpatRaster::createCategories(size_t layer, SpatOptions &opt) {
 	if (layer > (nlyr()-1)) {
 		setError("invalid layer number");
 		return(false);
 	}
-	std::vector<unsigned> lyrs(1, layer);
+	std::vector<size_t> lyrs(1, layer);
 	SpatRaster r = subset(lyrs, opt);
 	std::vector<std::vector<double>> u = r.unique(false, NAN, true, opt);
-    std::vector<unsigned> sl = findLyr(layer);
+    std::vector<size_t> sl = findLyr(layer);
 
 	std::vector<std::string> s(u[0].size());
 	for (size_t i=0; i<s.size(); i++) {
@@ -1174,7 +1174,7 @@ bool SpatRaster::createCategories(unsigned layer, SpatOptions &opt) {
 std::vector<bool> SpatRaster::hasCategories() {
 	std::vector<bool> b;
 	b.reserve(nlyr());
-	std::vector<unsigned> ns = nlyrBySource();
+	std::vector<size_t> ns = nlyrBySource();
 	for (size_t i=0; i<ns.size(); i++) {
 		for (size_t j=0; j<ns[i]; j++) {
 			b.push_back(source[i].hasCategories[j]);
@@ -1252,7 +1252,7 @@ std::vector<std::vector<std::string>> SpatRaster::getMetadata(bool layers) {
 
 
 
-bool SpatRaster::setLabels(unsigned layer, std::vector<long> values, std::vector<std::string> labels, std::string name) {
+bool SpatRaster::setLabels(size_t layer, std::vector<long> values, std::vector<std::string> labels, std::string name) {
 
 	if (layer > (nlyr()-1)) {
 		setError("invalid layer number");
@@ -1267,7 +1267,7 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<long> values, std::vector
 		return(true);
 	}
 
-    std::vector<unsigned> sl = findLyr(layer);
+    std::vector<size_t> sl = findLyr(layer);
 
 	SpatCategories cats;
 	cats.d.add_column(values, "ID");
@@ -1286,13 +1286,13 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<long> values, std::vector
 
 
 
-bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index) {
+bool SpatRaster::setCategories(size_t layer, SpatDataFrame d, size_t index) {
 
 	if (layer >= nlyr()) {
 		setError("invalid layer number");
 		return(false);
 	}
-    std::vector<unsigned> sl = findLyr(layer);
+    std::vector<size_t> sl = findLyr(layer);
 
 	SpatCategories cats;
 	cats.d = d;
@@ -1321,15 +1321,15 @@ bool SpatRaster::removeCategories(long layer) {
 			}
 		}
 	} else {
-		std::vector<unsigned> sl = findLyr(layer);
+		std::vector<size_t> sl = findLyr(layer);
 		source[sl[0]].cats[sl[1]] = s;
 		source[sl[0]].hasCategories[sl[1]] = false;
 	}
 	return true;
 }
 
-SpatCategories SpatRaster::getLayerCategories(unsigned layer) {
-    std::vector<unsigned> sl = findLyr(layer);
+SpatCategories SpatRaster::getLayerCategories(size_t layer) {
+    std::vector<size_t> sl = findLyr(layer);
 	SpatCategories cat = source[sl[0]].cats[sl[1]];
 	return cat;
 }
@@ -1420,7 +1420,7 @@ bool SpatRaster::setScaleOffset(std::vector<double> sc, std::vector<double> of) 
 }
 
 
-std::vector<std::string> SpatRaster::getLabels(unsigned layer) {
+std::vector<std::string> SpatRaster::getLabels(size_t layer) {
 	std::vector<std::string> out;
 	if (layer >= nlyr()) return out;
 
@@ -1438,11 +1438,11 @@ std::vector<std::string> SpatRaster::getLabels(unsigned layer) {
 	return out;
 }
 
-bool SpatRaster::setCatIndex(unsigned layer, int index) {
+bool SpatRaster::setCatIndex(size_t layer, int index) {
 	if (layer > (nlyr()-1)) {
 		return(false);
 	}
-    std::vector<unsigned> sl = findLyr(layer);
+    std::vector<size_t> sl = findLyr(layer);
 	int nc = source[sl[0]].cats[sl[1]].d.ncol();
 	if (index < nc) {
 		source[sl[0]].cats[sl[1]].index = index;
@@ -1455,11 +1455,11 @@ bool SpatRaster::setCatIndex(unsigned layer, int index) {
 	}
 }
 
-int SpatRaster::getCatIndex(unsigned layer) {
+int SpatRaster::getCatIndex(size_t layer) {
 	if (layer > (nlyr()-1)) {
 		return( -1 );
 	}
-    std::vector<unsigned> sl = findLyr(layer);
+    std::vector<size_t> sl = findLyr(layer);
 	return source[sl[0]].cats[sl[1]].index;
 }
 
@@ -1534,7 +1534,7 @@ bool SpatRaster::setColors(size_t layer, SpatDataFrame cols) {
 		cols.add_column(a, "alpha");
 	}
 
-    std::vector<unsigned> sl = findLyr(layer);
+    std::vector<size_t> sl = findLyr(layer);
 	if (source[sl[0]].cols.size() < (sl[1]+1)) {
 		source[sl[0]].cols.resize(sl[1]+1);
 	}
@@ -1552,7 +1552,7 @@ bool SpatRaster::removeColors(size_t layer) {
 	if (layer >= nlyr()) {
 		return false;
 	}
-    std::vector<unsigned> sl = findLyr(layer);
+    std::vector<size_t> sl = findLyr(layer);
 	if (source[sl[0]].hasColors[sl[1]]) {
 		SpatDataFrame d;
 		source[sl[0]].cols[sl[1]] = d;
@@ -1565,8 +1565,8 @@ bool SpatRaster::removeColors(size_t layer) {
 
 std::vector<bool> SpatRaster::hasColors() {
 	std::vector<bool> b(nlyr());
-	std::vector<unsigned> ns = nlyrBySource();
-	unsigned k = 0;
+	std::vector<size_t> ns = nlyrBySource();
+	size_t k = 0;
 	for (size_t i=0; i<source.size(); i++) {
 		for (size_t j=0; j<ns[i]; j++) {
 			b[k] = source[i].hasColors[j];
@@ -1833,7 +1833,7 @@ std::vector<std::vector<int_64>>  SpatRaster::rowColFromExtent(SpatExtent e) {
 }
 
 
-std::vector<double> SpatRaster::adjacentMat(std::vector<double> cells, std::vector<bool> mat, std::vector<unsigned> dim, bool include) {
+std::vector<double> SpatRaster::adjacentMat(std::vector<double> cells, std::vector<bool> mat, std::vector<size_t> dim, bool include) {
 	std::vector<double> out;
 	if ((dim.size() != 2) || (dim[0] % 2 == 0) || (dim[1] %2 == 0)) {
 		setError("invalid matrix dimensions (must be odd sized)");
@@ -1847,7 +1847,7 @@ std::vector<double> SpatRaster::adjacentMat(std::vector<double> cells, std::vect
 	int dy = dim[0] / 2;
 	int dx = dim[1] / 2;
 
-	unsigned n = cells.size();
+	size_t n = cells.size();
 	int nngb = std::accumulate(mat.begin(), mat.end(), 0);
 	out.reserve(n * (nngb + include));
 
@@ -1907,9 +1907,9 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
         setError("argument directions is not valid");
         return(out);
 	}
-	unsigned n = cells.size();
+	size_t n = cells.size();
 
-	unsigned nngb = (directions=="queen" || directions=="8") ? 8 : (directions=="16" ? 16 : 4);
+	size_t nngb = (directions=="queen" || directions=="8") ? 8 : (directions=="16" ? 16 : 4);
 	nngb += include;
 	out.reserve(n * nngb);
 
@@ -2022,7 +2022,7 @@ SpatVector SpatRaster::as_multipoints(bool narm, bool nall, SpatOptions &opt) {
 	}
 
 	size_t nc = ncol();
-	unsigned nl = nlyr();
+	size_t nl = nlyr();
 	std::vector<double> v, x, y;
 	for (size_t i = 0; i < bs.n; i++) {
 		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
@@ -2105,7 +2105,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
 	}
 
 	size_t nc = ncol();
-	unsigned nl = nlyr();
+	size_t nl = nlyr();
 	std::vector<double> v;
 	for (size_t i = 0; i < bs.n; i++) {
 		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
@@ -2145,7 +2145,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
                 pv.addGeom(g);
                 if (values) {
                     for (size_t lyr=0; lyr<nl; lyr++) {
-                        unsigned off2 = lyr*vnc;
+                        size_t off2 = lyr*vnc;
                         pv.df.dv[lyr].push_back(v[off2+j]);
                     }
                 }
@@ -2232,7 +2232,7 @@ std::vector<std::vector<double>> SpatRaster::coordinates(bool narm, bool nall, S
 		return(xy);
 	}
 	size_t nc = ncol();
-	unsigned nl = nlyr();
+	size_t nl = nlyr();
 	std::vector<double> v;
 	for (size_t i = 0; i < bs.n; i++) {
 		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
@@ -2386,8 +2386,8 @@ SpatVector SpatRaster::as_polygons(bool round, bool dissolve, bool values, bool 
 		values=true;
 	}
 
-	unsigned nl = nlyr();
-	unsigned nc = ncell();
+	size_t nl = nlyr();
+	size_t nc = ncell();
 	if (values) {
 		std::vector<double> v = getValues(-1, opt);
 		std::vector<std::string> nms = getNames();

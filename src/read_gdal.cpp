@@ -1152,7 +1152,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 }
 
 
-bool SpatRaster::readStartGDAL(unsigned src) {
+bool SpatRaster::readStartGDAL(size_t src) {
 
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, source[src].open_ops);
 
@@ -1170,7 +1170,7 @@ bool SpatRaster::readStartGDAL(unsigned src) {
 	return(true);
 }
 
-bool SpatRaster::readStopGDAL(unsigned src) {
+bool SpatRaster::readStopGDAL(size_t src) {
 	if (source[src].gdalconnection != NULL) {
 		GDALClose( (GDALDatasetH) source[src].gdalconnection);
 	}
@@ -1228,7 +1228,7 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 }
 
 
-void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, size_t row, unsigned nrows, size_t col, unsigned ncols) {
+void SpatRaster::readChunkGDAL(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 
 	if (source[src].flipped) {
 		row = nrow() - row - nrows;
@@ -1255,8 +1255,8 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, size_t r
 		return;
 	}
 
-	unsigned ncell = ncols * nrows;
-	unsigned nl = source[src].nlyr;
+	size_t ncell = ncols * nrows;
+	size_t nl = source[src].nlyr;
 	std::vector<double> out(ncell * nl);
 	int hasNA;
 	std::vector<double> naflags(nl, NAN);
@@ -1314,7 +1314,7 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, size_t r
 
 
 
-std::vector<double> SpatRaster::readValuesGDAL(unsigned src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr) {
+std::vector<double> SpatRaster::readValuesGDAL(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -1392,7 +1392,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, size_t row, size_t 
 
 
 
-std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_t scols) {
+std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t scols) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -1427,8 +1427,8 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_
 		return errout;
 	}
 
-	unsigned ncell = scols * srows;
-	unsigned nl = source[src].nlyr;
+	size_t ncell = scols * srows;
+	size_t nl = source[src].nlyr;
 	std::vector<double> out(ncell*nl);
 	int hasNA;
 	CPLErr err = CE_None;
@@ -1494,7 +1494,7 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_
 
 
 
-std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+std::vector<std::vector<double>> SpatRaster::readRowColGDAL(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
 
 	std::vector<std::vector<double>> errout;
 	if (source[src].rotated) {
@@ -1515,9 +1515,9 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::v
 
 	GDALRasterBand *poBand;
 
-	std::vector<unsigned> lyrs = source[src].layers;
-	unsigned nl = lyrs.size();
-	unsigned n = rows.size();
+	std::vector<size_t> lyrs = source[src].layers;
+	size_t nl = lyrs.size();
+	size_t n = rows.size();
 
 	size_t fnr = nrow() - 1;
 	if (source[src].flipped) {
@@ -1580,7 +1580,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::v
 
 
 
-std::vector<double> SpatRaster::readRowColGDALFlat(unsigned src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+std::vector<double> SpatRaster::readRowColGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -1601,9 +1601,9 @@ std::vector<double> SpatRaster::readRowColGDALFlat(unsigned src, std::vector<int
 
 	GDALRasterBand *poBand;
 
-	std::vector<unsigned> lyrs = source[src].layers;
-	unsigned nl = lyrs.size();
-	unsigned n = rows.size();
+	std::vector<size_t> lyrs = source[src].layers;
+	size_t nl = lyrs.size();
+	size_t n = rows.size();
 
 	size_t fnr = nrow() - 1;
 	if (source[src].flipped) {

@@ -925,8 +925,8 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, SpatRaster g, std::string fun, boo
 		make_unique_names(nms);
 		z.setNames(nms);
 		
-		for (unsigned i=0; i<z.nlyr(); i++) {
-			std::vector<unsigned> lyr = {i};
+		for (size_t i=0; i<z.nlyr(); i++) {
+			std::vector<size_t> lyr = {i};
 			SpatRaster zz = z.subset(lyr, xopt);
 			SpatDataFrame spd = zonal(zz, g, fun, narm, xopt);
 			std::vector<long> id(spd.nrow(), i);
@@ -1183,13 +1183,13 @@ SpatDataFrame SpatRaster::zonal_weighted(SpatRaster z, SpatRaster w, bool narm, 
 
 	if (z.nlyr() > 1) {
 		SpatOptions xopt(opt);
-		std::vector<unsigned> lyr = {0};
+		std::vector<size_t> lyr = {0};
 		z = z.subset(lyr, xopt);
 		out.addWarning("only the first zonal layer is used");
 	}
 	if (w.nlyr() > 1) {
 		SpatOptions xopt(opt);
-		std::vector<unsigned> lyr = {0};
+		std::vector<size_t> lyr = {0};
 		w = w.subset(lyr, xopt);
 		out.addWarning("only the first weights layer is used");
 	}

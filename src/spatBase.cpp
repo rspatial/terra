@@ -131,12 +131,13 @@ void SpatOptions::set_NAflag(double flag) {
 	hasNAflag = true;
 }
 
-unsigned SpatOptions::get_progress() { return progress; }
-void SpatOptions::set_progress(unsigned p) {
+size_t SpatOptions::get_progress() { return progress; }
+
+void SpatOptions::set_progress(size_t p) {
 	progress = p;
 }
 
-bool SpatOptions::show_progress(unsigned n) {
+bool SpatOptions::show_progress(size_t n) {
 	return ((progress > 0) & (progress <= n));
 }
 

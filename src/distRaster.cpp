@@ -648,8 +648,8 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 			nms = opt.names;
 		}
 		out.source.resize(nl);
-		for (unsigned i=0; i<nl; i++) {
-			std::vector<unsigned> lyr = {i};
+		for (size_t i=0; i<nl; i++) {
+			std::vector<size_t> lyr = {i};
 			SpatRaster r = subset(lyr, ops);
 			ops.names = {nms[i]};
 			r = r.distance(target, exclude, keepNA, unit, remove_zero, haversine, ops);
@@ -717,8 +717,8 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double 
 		if (ops.names.size() == nms.size()) {
 			nms = opt.names;
 		}
-		for (unsigned i=0; i<nl; i++) {
-			std::vector<unsigned> lyr = {i};
+		for (size_t i=0; i<nl; i++) {
+			std::vector<size_t> lyr = {i};
 			SpatRaster r = subset(lyr, ops);
 			ops.names = {nms[i]};
 			r = r.direction(from, degrees, target, exclude, ops);
@@ -1500,7 +1500,7 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, boo
 
 	SpatOptions ops(opt);
 	if (nlyr() > 1) {
-		std::vector<unsigned> lyr = {0};
+		std::vector<size_t> lyr = {0};
 		out = subset(lyr, ops);
 		out = out.costDistance(target, m, maxiter, grid, opt);
 		out.addWarning("distance computations are only done for the first input layer");
@@ -1848,8 +1848,8 @@ SpatRaster SpatRaster::gridDistance(double m, SpatOptions &opt) {
 	size_t nl = nlyr();
 	if (nl > 1) {
 		out.source.resize(nl);
-		for (unsigned i=0; i<nl; i++) {
-			std::vector<unsigned> lyr = {i};
+		for (size_t i=0; i<nl; i++) {
+			std::vector<size_t> lyr = {i};
 			SpatRaster r = subset(lyr, ops);
 			r = r.gridDistance(m, ops);
 			out.source[i] = r.source[0];
@@ -2099,7 +2099,7 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 
 	SpatRaster out = geometry();
 	if (nlyr() > 1) {
-		std::vector<unsigned> lyr = {0};
+		std::vector<size_t> lyr = {0};
 		SpatOptions ops(opt);
 		out = subset(lyr, ops);
 		out = out.edges(classes, type, directions, falseval, opt);
@@ -2200,8 +2200,8 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 			nms = opt.names;
 		}
 		out.source.resize(nl);
-		for (unsigned i=0; i<nl; i++) {
-			std::vector<unsigned> lyr = {i};
+		for (size_t i=0; i<nl; i++) {
+			std::vector<size_t> lyr = {i};
 			SpatRaster r = subset(lyr, ops);
 			ops.names = {nms[i]};
 			r = r.buffer(d, background, ops);
@@ -2936,7 +2936,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 		SpatExtent extent = getExtent();
 		if ((out.ncol() == 1) && ((extent.xmax - extent.xmin) > 180)) {
 			disagg = true;
-			std::vector<unsigned> fact = {1,2};
+			std::vector<size_t> fact = {1,2};
 			out = out.disaggregate(fact, xopt);
 		}
 		SpatExtent e = {extent.xmin, extent.xmin+out.xres(), extent.ymin, extent.ymax};
@@ -2966,7 +2966,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 		out.writeStop();
 		if (disagg) {
 			SpatRaster tmp = out.to_memory_copy(xopt);
-			std::vector<unsigned> fact = {1,2};
+			std::vector<size_t> fact = {1,2};
 			opt.overwrite=true;
 			out = tmp.aggregate(fact, "sum", true, opt);
 		}
@@ -2982,7 +2982,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 			bool resample = false;
 //			SpatRaster empty = out.geometry(1);
 			size_t rcx = std::max(rcmax, 10);
-			unsigned frow = 1, fcol = 1;
+			size_t frow = 1, fcol = 1;
 			SpatRaster target = out.geometry(1);
 			if ((nrow() > rcx) || (ncol() > rcx)) {
 				resample = true;
@@ -3066,7 +3066,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool tra
 		SpatRaster x = geometry(1);
 		SpatExtent extent = x.getExtent();
 		if ((nc == 1) && ((extent.xmax - extent.xmin) > 180)) {
-			std::vector<unsigned> fact= {1,2};
+			std::vector<size_t> fact= {1,2};
 			x = x.disaggregate(fact, opt);
 		}
 		SpatExtent e = {extent.xmin, extent.xmin+x.xres(), extent.ymin, extent.ymax};
@@ -3263,7 +3263,7 @@ std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, st
 		SpatRaster x = geometry(1);
 		SpatExtent extent = x.getExtent();
 		if ((nc == 1) && ((extent.xmax - extent.xmin) > 180)) {
-			std::vector<unsigned> fact= {1,2};
+			std::vector<size_t> fact= {1,2};
 			x = x.disaggregate(fact, opt);
 		}
 		SpatExtent e = {extent.xmin, extent.xmin+x.xres(), extent.ymin, extent.ymax};

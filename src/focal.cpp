@@ -43,7 +43,7 @@ std::vector<double> rcValue(std::vector<double> &d, const int& nrow, const int& 
 std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fillvalue, int_64 row, int_64 nrows, SpatOptions &ops) {
 
 	if (nlyr() > 1) {
-		std::vector<unsigned> lyr = {0};
+		std::vector<size_t> lyr = {0};
 		SpatRaster s = subset(lyr, ops);
 		s.focal_values(w, fillvalue, row, nrows, ops);
 	}

@@ -402,8 +402,8 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		return(arith(x[0], oper, reverse, falseNA, opt));
 	}
 
-	unsigned innl = nlyr();
-	unsigned outnl = innl;
+	size_t innl = nlyr();
+	size_t outnl = innl;
 
 	if (x.size() > innl) {
 		outnl = x.size();
@@ -446,7 +446,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		return out;
 	}
 
-	unsigned nc = ncol();
+	size_t nc = ncol();
 	recycle(x, outnl);
 
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -456,9 +456,9 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 			recycle(v, outnl * out.bs.nrows[i] * nc);
 		}
 		//std::vector<double> vv;
-		unsigned off = out.bs.nrows[i] * nc;
+		size_t off = out.bs.nrows[i] * nc;
 		for (size_t j=0; j<outnl; j++) {
-			unsigned s = j * off;
+			size_t s = j * off;
 			if (std::isnan(x[j])) {
 				for (size_t k=0; k<off; k++) {
 					v[s+k] = NAN;
@@ -635,12 +635,12 @@ SpatRaster SpatRaster::arith_m(std::vector<double> x, std::string oper, std::vec
 		return out;
 	}
 
-	unsigned nc = ncol();
+	size_t nc = ncol();
 	
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, out.bs, i);
-		unsigned off = out.bs.nrows[i] * nc;
+		size_t off = out.bs.nrows[i] * nc;
 		for (size_t j=0; j<nl; j++) {
 			size_t s = j * off;
 			size_t d = j * dim[0];
@@ -1279,9 +1279,9 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 		readStop();
 		return out;
 	}
-	unsigned nl = out.nlyr();
+	size_t nl = out.nlyr();
 	std::vector<double> v(nl);
-	unsigned nc;
+	size_t nc;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
@@ -1352,14 +1352,14 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 		readStop();
 		return out;
 	}
-	unsigned nl = nlyr();
+	size_t nl = nlyr();
 	std::vector<double> v(nl);
 	if (!add.empty()) v.insert( v.end(), add.begin(), add.end() );
 
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
-		unsigned nc = out.bs.nrows[i] * out.ncol();
+		size_t nc = out.bs.nrows[i] * out.ncol();
 		std::vector<double> b(nc);
 		for (size_t j=0; j<nc; j++) {
 			for (size_t k=0; k<nl; k++) {
@@ -1413,14 +1413,14 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 	std::default_random_engine rgen(seed);
 	std::uniform_real_distribution<double> dist (0.0,1.0);
 
-	unsigned nl = nlyr();
+	size_t nl = nlyr();
 	std::vector<double> v(nl);
 	v.insert( v.end(), add.begin(), add.end() );
 
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
-		unsigned nc = out.bs.nrows[i] * out.ncol();
+		size_t nc = out.bs.nrows[i] * out.ncol();
 		std::vector<double> b(nc);
 		for (size_t j=0; j<nc; j++) {
 			for (size_t k=0; k<nl; k++) {
@@ -1454,14 +1454,14 @@ SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &op
 		readStop();
 		return out;
 	}
-	unsigned nl = nlyr();
+	size_t nl = nlyr();
 	std::vector<double> v(nl);
 	v.insert( v.end(), add.begin(), add.end() );
 
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
-		unsigned nc = out.bs.nrows[i] * out.ncol();
+		size_t nc = out.bs.nrows[i] * out.ncol();
 		std::vector<double> b(nc * 2);
 		for (size_t j=0; j<nc; j++) {
 			for (size_t k=0; k<nl; k++) {
@@ -1484,9 +1484,9 @@ SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &op
 SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt) {
 
 	std::vector<unsigned> vnl = nlyr();
-	unsigned nl = vmax(vnl, false);
+	size_t nl = vmax(vnl, false);
 	SpatRaster out = ds[0].geometry(nl);
-	unsigned ns = nsds();
+	size_t ns = nsds();
 
 	if (fun == "range") {
 		out.setError("parallel range not implemented, use min and max");
@@ -1522,7 +1522,7 @@ SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> ad
 
 	std::vector<std::vector<double>> a(ns);
 	for (size_t i=0; i < out.bs.n; i++) {
-		unsigned nc = out.bs.nrows[i] * out.ncol() * nl;
+		size_t nc = out.bs.nrows[i] * out.ncol() * nl;
 		for (size_t j=0; j < ns; j++) {
 			ds[j].readBlock(a[j], out.bs, i);
 			recycle(a[j], nc);
@@ -1884,7 +1884,7 @@ SpatRaster SpatRaster::isinfinite(bool falseNA, SpatOptions &opt) {
 
 std::vector<std::vector<double>> SpatRaster::where(std::string what, bool values, SpatOptions &opt) {
 
-	unsigned nl = nlyr();
+	size_t nl = nlyr();
 	std::vector<std::vector<double>> out(nl);
 
 	std::vector<std::string> f {"min", "max"};

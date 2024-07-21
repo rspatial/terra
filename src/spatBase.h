@@ -118,14 +118,14 @@ class SpatOptions {
 		SpatOptions deepCopy();
 		virtual ~SpatOptions(){}
 
-		unsigned ncopies = 4;
-		unsigned minrows = 1;
+		size_t ncopies = 4;
+		size_t minrows = 1;
 		bool threads=false;
 		std::string def_datatype = "FLT4S";
 		std::string def_filetype = "GTiff";
 		//std::string def_bandorder = "BIL";
 		bool overwrite = false;
-		unsigned progress = 3;
+		size_t progress = 3;
 		size_t steps = 0;
 		bool hasNAflag = false;
 		double NAflag = NAN;
@@ -181,7 +181,7 @@ class SpatOptions {
 		//void set_bandorder(std::string d);
 		void set_overwrite(bool b);
 		//void set_append(bool b);
-		void set_progress(unsigned p);
+		void set_progress(size_t p);
 		std::string get_filename();
 		std::vector<std::string> get_filenames();
 		std::string get_filetype();
@@ -194,8 +194,8 @@ class SpatOptions {
 		bool has_NAflag(double &flag);
 		bool get_overwrite();
 		//bool get_append();
-		unsigned get_progress();
-		bool show_progress(unsigned n);
+		size_t get_progress();
+		bool show_progress(size_t n);
 		bool progressbar=true;
 		void set_steps(size_t n);
 		size_t get_steps();

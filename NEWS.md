@@ -9,7 +9,8 @@
 - `split<SpatVector>` only worked well if the split field was of type character. [#1530](https://github.com/rspatial/terra/issues/1530) by Igor Graczykowski
 - `gridDist` (and probably some other methods) emitted a "cannot overwrite existing file" error when processing large datasets [#1522](https://github.com/rspatial/terra/issues/1522) by Clare Pearson
 - `terrain` did not accept multiple variables [#1561](https://github.com/rspatial/terra/issues/1561) by Michael Mahoney
-- `rotate` was vulnarable to an integer overflow [#1562](https://github.com/rspatial/terra/issues/1562) by Sacha Ruzzante
+- `rotate` was vulnerable to an integer overflow [#1562](https://github.com/rspatial/terra/issues/1562) by Sacha Ruzzante
+- `getTileExtents` could return overlapping tiles or tiles with gaps due to floating point imprecision. [#1564](https://github.com/rspatial/terra/issues/1564) by Michael Sumner
 
  
 ## enhancements

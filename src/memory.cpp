@@ -97,7 +97,7 @@ BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 	BlockSize bs;
 	size_t cs = chunkSize(opt);
 	bs.n = std::ceil(nrow() / double(cs));
-	unsigned steps = opt.get_steps();
+	size_t steps = opt.get_steps();
 
 	if (steps > 0) {
 		if (steps > nrow()) {

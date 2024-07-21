@@ -346,7 +346,7 @@ bool is_valid_warp_method(const std::string &method) {
 }
 
 
-bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigned> srcbands, std::vector<unsigned> dstbands, std::string method, std::string srccrs, std::string msg, bool verbose, bool threads) {
+bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<size_t> srcbands, std::vector<size_t> dstbands, std::string method, std::string srccrs, std::string msg, bool verbose, bool threads) {
 
 	if (srcbands.size() != dstbands.size()) {
 		msg = "number of source bands must match number of dest bands";
@@ -617,8 +617,8 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
 				return out;
 			}
-			std::vector<unsigned> srcbands = source[j].layers;
-			std::vector<unsigned> dstbands(srcbands.size());
+			std::vector<size_t> srcbands = source[j].layers;
+			std::vector<size_t> dstbands(srcbands.size());
 			std::iota (dstbands.begin(), dstbands.end(), bandstart);
 			bandstart += dstbands.size();
 
@@ -843,8 +843,8 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
 				return out;
 			}
-			std::vector<unsigned> srcbands = source[j].layers;
-			std::vector<unsigned> dstbands(srcbands.size());
+			std::vector<size_t> srcbands = source[j].layers;
+			std::vector<size_t> dstbands(srcbands.size());
 			std::iota (dstbands.begin(), dstbands.end(), bandstart);
 			bandstart += dstbands.size();
 			
@@ -917,7 +917,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 
 SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, bool agg, SpatOptions &opt) {
 
-	unsigned nl = nlyr();
+	size_t nl = nlyr();
 	SpatRaster out = x.geometry(nl);
 	out.setNames(getNames());
 
@@ -954,12 +954,12 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 			//    a) disaggregate "x", warp, and aggregate the results
 			//    b) or give a warning?
 		} else {
-			unsigned xq = x.xres() / xres();
-			unsigned yq = x.yres() / yres();
+			size_t xq = x.xres() / xres();
+			size_t yq = x.yres() / yres();
 			if (std::max(xq, yq) > 1) {
 				xq = xq == 0 ? 1 : xq;
 				yq = yq == 0 ? 1 : yq;
-				std::vector<unsigned> agf = {yq, xq, 1};
+				std::vector<size_t> agf = {yq, xq, 1};
 				SpatOptions agopt(opt);
 				SpatRaster xx;
 				if (method == "bilinear") {
@@ -978,11 +978,11 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 		opt = SpatOptions(opt);
 	}
 
-	unsigned nc = out.ncol();
+	size_t nc = out.ncol();
   	if (!out.writeStart(opt, filenames())) { return out; }
 	for (size_t i = 0; i < out.bs.n; i++) {
-        unsigned firstcell = out.cellFromRowCol(out.bs.row[i], 0);
-		unsigned lastcell  = out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, nc-1);
+        size_t firstcell = out.cellFromRowCol(out.bs.row[i], 0);
+		size_t lastcell  = out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, nc-1);
 		std::vector<double> cells(1+lastcell-firstcell);
 		std::iota (std::begin(cells), std::end(cells), firstcell);
         std::vector<std::vector<double>> xy = out.xyFromCell(cells);
@@ -1288,7 +1288,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		}
 	}
 
-	std::vector<unsigned> lyrs = {(unsigned)r, (unsigned)g, (unsigned)b};
+	std::vector<size_t> lyrs = {r, g, b};
 	SpatOptions ops(opt);
 	*this = subset(lyrs, ops);
 	*this = collapse_sources();

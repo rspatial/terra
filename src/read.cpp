@@ -60,7 +60,7 @@ bool SpatRaster::readStop() {
 
 
 // 2D BSQ
-void SpatRaster::readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, unsigned i) {
+void SpatRaster::readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, size_t i) {
 	std::vector<double> x;
 	readValues(x, bs.row[i], bs.nrows[i], 0, ncol());
 	v.resize(nlyr());
@@ -71,7 +71,7 @@ void SpatRaster::readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, u
 }
 
 // BIP
-void SpatRaster::readBlockIP(std::vector<double> &x, BlockSize bs, unsigned i) {
+void SpatRaster::readBlockIP(std::vector<double> &x, BlockSize bs, size_t i) {
 	readValues(x, bs.row[i], bs.nrows[i], 0, ncol());
 	std::vector<double> v(x.size());
 	size_t off = bs.nrows[i] * ncol();
@@ -358,7 +358,7 @@ std::vector<double> SpatRaster::getValues(long lyr, SpatOptions &opt) {
 			}
 		}
 	} else { // read one lyr
-		std::vector<unsigned> sl = findLyr(lyr);
+		std::vector<size_t> sl = findLyr(lyr);
 		unsigned src=sl[0];
 		if (source[src].memory) {
 			size_t start = sl[1] * ncell();

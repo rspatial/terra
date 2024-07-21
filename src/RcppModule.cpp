@@ -34,7 +34,7 @@ bool sameObject(SpatRaster* a, SpatRaster* b) {
 
 
 Rcpp::List getDataFrame(SpatDataFrame* v) {
-	unsigned n = v->ncol();
+	size_t n = v->ncol();
 	Rcpp::List out(n);
 	if (n == 0) {
 		return(out);
@@ -633,7 +633,7 @@ RCPP_MODULE(spat){
 	 // .constructor<std::string, int>()
 	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<std::string>, std::vector<size_t>>()
 		
-		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
+		.constructor<std::vector<size_t>, std::vector<double>, std::string>()
 		//.finalizer(&SpatRaster_finalizer)
 
 		//.method("fromFiles", &SpatRaster::fromFiles)
@@ -866,7 +866,7 @@ RCPP_MODULE(spat){
 		.method("clamp_raster", &SpatRaster::clamp_raster)
 		.method("clamp_ts", &SpatRaster::clamp_ts)
 		.method("replaceValues", &SpatRaster::replaceValues)
-		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, double, bool, bool, bool, SpatOptions&) )( &SpatRaster::reclassify))
+		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, size_t, unsigned, bool, bool, double, bool, bool, bool, SpatOptions&) )( &SpatRaster::reclassify))
 		//.method("source_collapse", &SpatRaster::collapse, "collapse")
 		.method("selRange", &SpatRaster::selRange)
 		.method("separate", &SpatRaster::separate)

@@ -321,11 +321,11 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	return false;
 }
 
-bool SpatRaster::readStartMulti(unsigned src) {
+bool SpatRaster::readStartMulti(size_t src) {
 	setError("multidim is not supported by GDAL < 3.1");
 	return false;
 }
-bool SpatRaster::readStopMulti(unsigned src) {
+bool SpatRaster::readStopMulti(size_t src) {
 	setError("multidim is not supported by GDAL < 3.1");
 	return false;
 }

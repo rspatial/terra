@@ -313,7 +313,7 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 			m *= tom;
 		}
 		out.setNames({fun});
-		opt.ncopies = std::max(opt.ncopies, (unsigned)4) * 8;
+		opt.ncopies = std::max(opt.ncopies, (size_t)4) * 8;
 		if (!out.writeStart(opt, filenames())) {
 			return out;
 		}
@@ -958,7 +958,7 @@ void SpatRaster::rasterizeLinesLength(std::vector<double> &cells, std::vector<do
 */
 
 	SpatOptions xopt(opt);
-	xopt.ncopies = std::max(xopt.ncopies, (unsigned)4) * 8;
+	xopt.ncopies = std::max(xopt.ncopies, (size_t)4) * 8;
 	SpatRaster x = geometry(1);
 
 	SpatExtent ev = v.getExtent();

@@ -163,17 +163,17 @@ void SpatRaster::addSource(SpatRaster &x, bool warn, SpatOptions &opt) {
 }
 
 
-unsigned SpatRaster::nsrc() {
+size_t SpatRaster::nsrc() {
     return source.size();
 }
 
 
-int SpatRaster::sourceFromLyr(unsigned lyr) {
+int SpatRaster::sourceFromLyr(size_t lyr) {
     if (lyr >= nlyr()) {
         return(-1);
     }
-    unsigned nsrc = 0;
-    unsigned nlyrs = -1;
+    size_t nsrc = 0;
+    size_t nlyrs = -1;
     for (size_t i=0; i<source.size(); i++) {
         nlyrs += source[i].nlyr;
         if (nlyrs >= lyr) break;
@@ -183,20 +183,20 @@ int SpatRaster::sourceFromLyr(unsigned lyr) {
 }
 
 
-std::vector<unsigned> SpatRaster::nlyrBySource() {
-    std::vector<unsigned> lyrs(source.size());
+std::vector<size_t> SpatRaster::nlyrBySource() {
+    std::vector<size_t> lyrs(source.size());
     for (size_t i=0; i<source.size(); i++) {
         lyrs[i] = source[i].nlyr;
     }
     return lyrs;
 }
 
-std::vector<unsigned> SpatRaster::lyrsBySource() {
-    std::vector<unsigned> lyrs(nlyr());
-    unsigned start = 0;
+std::vector<size_t> SpatRaster::lyrsBySource() {
+    std::vector<size_t> lyrs(nlyr());
+    size_t start = 0;
     for (size_t i=0; i<source.size(); i++) {
-        unsigned n = source[i].nlyr;
-        unsigned stop = start + n;
+        size_t n = source[i].nlyr;
+        size_t stop = start + n;
         for (size_t j=start; j<stop; j++) {
             lyrs[j] = i;
         }
@@ -206,10 +206,10 @@ std::vector<unsigned> SpatRaster::lyrsBySource() {
 }
 
 
-std::vector<unsigned> SpatRaster::findLyr(unsigned lyr) {
-    std::vector<unsigned> sl(2);
-    unsigned nlyrs = 0;
-    unsigned start = 0;
+std::vector<size_t> SpatRaster::findLyr(size_t lyr) {
+    std::vector<size_t> sl(2);
+    size_t nlyrs = 0;
+    size_t start = 0;
 	bool done = false;
     for (size_t i=0; i<source.size(); i++) {
 		if ((nlyrs + source[i].nlyr) >= lyr) {
@@ -228,8 +228,8 @@ std::vector<unsigned> SpatRaster::findLyr(unsigned lyr) {
     return sl;
 }
 
-std::vector<unsigned> SpatRaster::getBands() {
-	std::vector<unsigned> out;
+std::vector<size_t> SpatRaster::getBands() {
+	std::vector<size_t> out;
     for (size_t i=0; i<source.size(); i++) {
 		out.insert(out.end(), source[i].layers.begin(), source[i].layers.end());
 	}
@@ -241,9 +241,9 @@ std::vector<unsigned> SpatRaster::getBands() {
 
 
 
-std::vector<unsigned> SpatRaster::sourcesFromLyrs(std::vector<unsigned> lyrs) {
-    std::vector<unsigned> s(lyrs.size());
-    std::vector<unsigned> slyrs = lyrsBySource();
+std::vector<size_t> SpatRaster::sourcesFromLyrs(std::vector<size_t> lyrs) {
+    std::vector<size_t> s(lyrs.size());
+    std::vector<size_t> slyrs = lyrsBySource();
     for (size_t i=0; i<lyrs.size(); i++) {
         s[i] = slyrs[ lyrs[i] ];
     }
@@ -252,7 +252,7 @@ std::vector<unsigned> SpatRaster::sourcesFromLyrs(std::vector<unsigned> lyrs) {
 
 
 /*
-void SpatRasterSource::getValues(std::vector<double> &v, unsigned lyr) {
+void SpatRasterSource::getValues(std::vector<double> &v, size_t lyr) {
 	size_t nc ;
 	if (hasWindow) {
 		nc = window.full_ncol * window.full_nrow;
@@ -265,7 +265,7 @@ void SpatRasterSource::getValues(std::vector<double> &v, unsigned lyr) {
 */
 
 
-void SpatRasterSource::appendValues(std::vector<double> &v, unsigned lyr) {
+void SpatRasterSource::appendValues(std::vector<double> &v, size_t lyr) {
 	size_t nc ;
 	if (hasWindow) {
 		nc = window.full_ncol * window.full_nrow;
@@ -289,7 +289,7 @@ bool SpatRasterSource::in_order() {
 }
 
 
-void SpatRasterSource::resize(unsigned n) {
+void SpatRasterSource::resize(size_t n) {
 	names.resize(n, "");
 	time.resize(n);
 	unit.resize(n);
@@ -318,7 +318,7 @@ void SpatRasterSource::resize(unsigned n) {
 }
 
 
-void SpatRasterSource::reserve(unsigned n) {
+void SpatRasterSource::reserve(size_t n) {
 	names.reserve(n);
 	time.reserve(n);
 	unit.reserve(n);
@@ -346,10 +346,10 @@ void SpatRasterSource::reserve(unsigned n) {
 }
 
 
-//std::vector<SpatRasterSource> SpatRasterSource::subset(std::vector<unsigned> lyrs) {
-SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
+//std::vector<SpatRasterSource> SpatRasterSource::subset(std::vector<size_t> lyrs) {
+SpatRasterSource SpatRasterSource::subset(std::vector<size_t> lyrs) {
 
-    unsigned nl = lyrs.size();
+    size_t nl = lyrs.size();
     bool all = true;
     if (lyrs.size() == nlyr) {
         for (size_t i=0; i<nl; i++) {
@@ -396,7 +396,7 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 
 	out.reserve(nl);
     for (size_t i=0; i<nl; i++) {
-        unsigned j = lyrs[i];
+        size_t j = lyrs[i];
 		out.names.push_back(names[j]);
 		out.time.push_back(time[j]);
 		out.depth.push_back(depth[j]);
@@ -431,17 +431,17 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 }
 
 
-std::vector<unsigned> validLayers( std::vector<unsigned> lyrs , unsigned nl) {
-    unsigned s = lyrs.size();
+std::vector<size_t> validLayers( std::vector<size_t> lyrs , size_t nl) {
+    size_t s = lyrs.size();
     for (size_t i=0; i<s; i++) {
-        unsigned j = s - i - 1; // start from the back
+        size_t j = s - i - 1; // start from the back
         if (lyrs[j] >= nl) {
 			lyrs.erase(lyrs.begin() + j);
 		}
 	}
 
 	/* or
-    unsigned s = lyrs.size() - 1;
+    size_t s = lyrs.size() - 1;
     for (long i=s; i>=0; i--) {
         if ((lyrs[i] < 0) | (lyrs[i] >= nl)) {
 			lyrs.erase(lyrs.begin() + i);
@@ -452,12 +452,12 @@ std::vector<unsigned> validLayers( std::vector<unsigned> lyrs , unsigned nl) {
 }
 
 
-SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
+SpatRaster SpatRaster::subset(std::vector<size_t> lyrs, SpatOptions &opt) {
 
     SpatRaster out = geometry(1);
     out.source.resize(0);
 
-    unsigned oldsize = lyrs.size();
+    size_t oldsize = lyrs.size();
     lyrs = validLayers(lyrs, nlyr());
 
 	if (lyrs.empty()) {
@@ -467,12 +467,12 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
         out.addWarning("ignored " + std::to_string(oldsize - lyrs.size()) + " invalid layer reference(s)");
 	}
 
-    std::vector<unsigned> srcs = sourcesFromLyrs(lyrs);
-    unsigned ss = srcs[0];
-    std::vector<unsigned> slyr;
-    std::vector<unsigned> lyrbys = nlyrBySource();
+    std::vector<size_t> srcs = sourcesFromLyrs(lyrs);
+    size_t ss = srcs[0];
+    std::vector<size_t> slyr;
+    std::vector<size_t> lyrbys = nlyrBySource();
 //    SpatRasterSource rs;
-    unsigned offset = 0;
+    size_t offset = 0;
     for (size_t i=0; i<ss; i++) { offset += lyrbys[i]; }
 
     for (size_t i=0; i<lyrs.size(); i++) {
