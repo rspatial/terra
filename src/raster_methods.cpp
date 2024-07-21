@@ -117,7 +117,6 @@ SpatExtent SpatRaster::ext_from_cell(	double cell) {
 
 std::vector<double> SpatRaster::get_tiles_extent(SpatRaster x, bool expand, std::vector<int> buffer) {
 
-	std::vector<double> ee;
 
 	x = x.geometry(1, false, false, false);
 	SpatExtent e = getExtent();
@@ -134,25 +133,54 @@ std::vector<double> SpatRaster::get_tiles_extent(SpatRaster x, bool expand, std:
 	std::vector<size_t> d(x.ncell());
 	std::iota(d.begin(), d.end(), 1);
 
-	ee.reserve(d.size()*4);
-
+	std::vector<std::vector<double>> ee(4);
+	for (size_t i=0; i<4; i++) {
+		ee[i].reserve(d.size());
+	}
+	
 	SpatRaster y = geometry(1, false, false, false);
 
 	for (size_t i=0; i<d.size(); i++) {
 		SpatExtent exi = x.ext_from_cell(i);
-		exi.xmin = exi.xmin - ebuf[0];
-		exi.xmax = exi.xmax + ebuf[0];
-		exi.ymin = exi.ymin - ebuf[1];
-		exi.ymax = exi.ymax + ebuf[1];
 		SpatRaster out = y.crop(exi, "near", false, opt);
 		SpatExtent ye = out.getExtent();
-
-		ee.push_back(ye.xmin);			
-		ee.push_back(ye.xmax);			
-		ee.push_back(ye.ymin);			
-		ee.push_back(ye.ymax);			
+		ee[0].push_back(ye.xmin);			
+		ee[1].push_back(ye.xmax);			
+		ee[2].push_back(ye.ymin);			
+		ee[3].push_back(ye.ymax);			
 	}
-	return ee;
+	
+	size_t nc = x.ncol();
+	size_t nr = x.nrow();
+	
+	//avoid under- and overshoots introduced by rounding, #1564
+	for (size_t i=0; i<nr; i++) {
+		for (size_t j=0; j<nc; j++) {
+			size_t k = (i*nc) + j;
+			if (j > 0) {
+				ee[0][k] = ee[1][k-1];
+			}
+			if (i > 0) {
+				ee[3][k] = ee[2][k-nc];
+			}
+		}
+	}
+
+	for (size_t i=0; i<ee[0].size(); i++) {
+		ee[0][i] = ee[0][i] - ebuf[0];
+		ee[1][i] = ee[1][i] + ebuf[0];
+		ee[2][i] = ee[2][i] - ebuf[1];
+		ee[3][i] = ee[3][i] + ebuf[1];
+	}
+
+	std::vector<double> out;
+	out.reserve(ee[0].size() * 4);
+
+	for (size_t i=0; i<4; i++) {
+		out.insert(out.end(), ee[i].begin(), ee[i].end());
+	}
+
+	return out;
 }
 
 

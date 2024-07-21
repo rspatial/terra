@@ -44,7 +44,7 @@ setMethod("getTileExtents", signature(x="SpatRaster"),
 			error("getTileExtents", "y must be numeric or a SpatRaster or SpatVector")
 		}
 		messages(x, "getTileExtents")
-		e <- matrix(e, ncol=4, byrow=TRUE)
+		e <- matrix(e, ncol=4, byrow=FALSE)
 		colnames(e) <- c("xmin", "xmax", "ymin", "ymax")
 		e
 	}
