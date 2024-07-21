@@ -2481,7 +2481,7 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 		out.setError("index raster has no values");
 		return out;
 	}
-	unsigned expnl = 2 - (sval + eval);
+	size_t expnl = 2 - (sval + eval);
 	if (x.nlyr() != expnl) {
 		out.setError("index raster must have " + std::to_string(expnl) + "layer(s)");
 		return out;
@@ -2600,7 +2600,7 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first
 		setError("index raster has no values");
 		return r;
 	}
-	unsigned expnl = 2 - (sval + eval);
+	size_t expnl = 2 - (sval + eval);
 	if (x.nlyr() != expnl) {
 		setError("index raster must have " + std::to_string(expnl) + "layer(s)");
 		return r;
@@ -3619,7 +3619,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	if (fun == "last") {
 		return merge(false, true, opt);
 	}
-	unsigned n = size();
+	size_t n = size();
 
 	if (n == 0) {
 		out.setError("empty collection");
@@ -3678,9 +3678,9 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	if (n > 50) ncl = 500;
 	if (n > 100) ncl = 250;
 	double     ar = std::ceil(out.nrow() / ncl);
-	unsigned arow = std::ceil(out.nrow() / ar);
+	size_t arow = std::ceil(out.nrow() / ar);
 	double     ac = std::ceil(out.ncol() / ncl);
-	unsigned acol = std::ceil(out.ncol() / ac);
+	size_t acol = std::ceil(out.ncol() / ac);
 
 	SpatOptions sopt(opt);
 	SpatRaster aout = out.aggregate({arow, acol}, "", true, sopt);
@@ -3875,7 +3875,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 SpatRaster SpatRasterCollection::morph(SpatRaster &x, SpatOptions &opt) {
 
 	SpatRaster out;
-	unsigned n = size();
+	size_t n = size();
 	if (n == 0) {
 		out.setError("empty collection");
 		return(out);
@@ -4230,9 +4230,9 @@ SpatDataFrame SpatRaster::mglobal(std::vector<std::string> funs, bool narm, Spat
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, bs, i);
-		unsigned off = bs.nrows[i] * ncol() ;
+		size_t off = bs.nrows[i] * ncol() ;
 		for (size_t lyr=0; lyr<nl; lyr++) {
-			unsigned offset = lyr * off;
+			size_t offset = lyr * off;
 			//std::vector<double> vv = { v.begin()+offset, v.begin()+offset+off };
 			do_mstats(v, offset, (offset+off), funs, narm, stats[lyr], stats2[lyr], n[lyr], i==0, i==(bs.n-1));
 		}
@@ -4298,8 +4298,8 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, std::stri
 		BlockSize bs = getBlockSize(topt);
 		
 		std::vector<std::string> gfuns = {"mean", "sd"};
-		for (unsigned i=0; i<(nl-1); i++) {
-			for (unsigned j=(i+1); j<nl; j++) {
+		for (size_t i=0; i<(nl-1); i++) {
+			for (size_t j=(i+1); j<nl; j++) {
 				SpatRaster xi = subset({i}, topt);
 				SpatRaster xj = subset({j}, topt);
 				if (!xi.readStart()) {
@@ -4401,9 +4401,9 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, bs, i);
-		unsigned off = bs.nrows[i] * ncol() ;
+		size_t off = bs.nrows[i] * ncol() ;
 		for (size_t lyr=0; lyr<nl; lyr++) {
-			unsigned offset = lyr * off;
+			size_t offset = lyr * off;
 			std::vector<double> vv = { v.begin()+offset, v.begin()+offset+off };
 			do_stat(vv, fun, narm, stats[lyr], stats2[lyr], n[lyr], i);
 		}
@@ -4505,10 +4505,10 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 		readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
 		weights.readValues(wv, bs.row[i], bs.nrows[i], 0, ncol());
 
-		unsigned off = bs.nrows[i] * ncol() ;
+		size_t off = bs.nrows[i] * ncol() ;
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			double wsum = 0;
-			unsigned offset = lyr * off;
+			size_t offset = lyr * off;
 			std::vector<double> vv(v.begin()+offset,  v.begin()+offset+off);
 			for (size_t j=0; j<vv.size(); j++) {
 				if (!std::isnan(vv[j]) && !std::isnan(wv[j])) {
@@ -4780,7 +4780,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 	double NAval = NAN;
 
 	size_t n = v.size();
-	unsigned nr = rcl[0].size();
+	size_t nr = rcl[0].size();
 
 	if (nc == 1) {
 		std::vector<double> rc = rcl[0];
@@ -5165,11 +5165,11 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 			lyrrcl[i] = rcl[i];
 		}
 		for (size_t i = 0; i < out.bs.n; i++) {
-			unsigned off = bs.nrows[i] * ncol() ;
+			size_t off = bs.nrows[i] * ncol() ;
 			std::vector<double> v;
 			readBlock(v, out.bs, i);
 			for (size_t lyr = 0; lyr < nl; lyr++) {
-				unsigned offset = lyr * off;
+				size_t offset = lyr * off;
 				lyrrcl[rcldim] = rcl[rcldim+lyr];
 				std::vector<double> vx(v.begin()+offset, v.begin()+offset+off);
 				reclass_vector(vx, lyrrcl, right, leftright, lowest, others, othersValue);
@@ -5201,7 +5201,7 @@ SpatRaster SpatRaster::reclassify(std::vector<double> rcl, size_t nc, unsigned o
 		return(out);
 	}
 	size_t maxnc = 3 + bylayer * (nlyr() - 1);
-	unsigned nr = rcl.size() / nc;
+	size_t nr = rcl.size() / nc;
 	if (nc > maxnc) {
 		out.setError("incorrect number of columns in reclassify matrix");
 		return(out);
@@ -5914,9 +5914,9 @@ SpatRaster SpatRaster::sort(bool decreasing, bool order, SpatOptions &opt) {
 		readStop();
 		return out;
 	}
-	unsigned nl = out.nlyr();
+	size_t nl = out.nlyr();
 	std::vector<double> v(nl);
-	unsigned nc;
+	size_t nc;
 	if (order) {
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> a;
@@ -5975,7 +5975,7 @@ SpatRaster SpatRaster::sort(bool decreasing, bool order, SpatOptions &opt) {
 SpatRaster SpatRaster::combineCats(SpatRaster x, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
-	unsigned nl = std::max(nlyr(), x.nlyr());
+	size_t nl = std::max(nlyr(), x.nlyr());
 	if (nl > 1) {
 		out.setError("can only do this for a single layer SpatRasters");
 	}
