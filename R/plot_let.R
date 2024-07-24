@@ -468,8 +468,16 @@ setMethod("plet", signature(x="SpatRaster"),
 		wrap=TRUE, maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
 
 		#checkLeafLetVersion()
-
-		if (is.na(crs(x))) {
+		
+		if (grep("^Cartesian", terra:::.name_or_proj4(x))) {
+			tiles <- ""
+			e <- ext(x)
+			rx <- diff(e[1:2])
+			ry <- diff(e[3:4])
+			m <- max(rx, ry)
+			ext(x) <- c(0, rx/m, 0, ry/m)
+			crs(x) <- "EPSG:3857"
+		} else if (is.na(crs(x))) {
 			error("plet", "x must have a crs")
 		}
 
