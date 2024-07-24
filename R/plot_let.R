@@ -469,6 +469,10 @@ setMethod("plet", signature(x="SpatRaster"),
 
 		#checkLeafLetVersion()
 		
+		if (has.RGB(x)) {
+			x <- colorize(x, "col")		
+		}
+		
 		if (is.na(crs(x)) | (grepl("^Cartesian", .name_or_proj4(x)))) {
 			tiles <- ""
 			e <- ext(x)
