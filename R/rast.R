@@ -480,6 +480,7 @@ setMethod("rast", signature(x="ANY"),
 	}
 	nms <- names(x)
 	names(x)[1:3] <- c("x", "y", "l")
+	x <- as.data.frame(x) # so that this also works for tibble #1582
 	w <- stats::reshape(x, timevar="l", idvar=c("x", "y"), direction="wide")
 	w <- rast(w, type="xyz", digits=digits, crs=crs, extent=extent)
 	names(w) <- gsub(paste0(nms[4], "."), "", names(w))
