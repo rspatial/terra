@@ -407,7 +407,7 @@ SpatRasterStack SpatRasterStack::crop(SpatExtent e, std::string snap, bool expan
 	return out;
 }
 
-void SpatRasterStack::replace(unsigned i, SpatRaster x) {
+void SpatRasterStack::replace(unsigned i, SpatRaster x, bool setname) {
 	if (i > (ds.size()-1)) {
 		setError("invalid index");
 		return;				
@@ -422,9 +422,12 @@ void SpatRasterStack::replace(unsigned i, SpatRaster x) {
 	}
 	
 	ds[i] = x;
-	names[i] = x.getNames()[0];
-	long_names[i] = x.getLongSourceNames()[0];
-	units[i] = x.getUnit()[0];
+//  for clause for #1604
+	if (setname) {
+		names[i] = x.getNames()[0];
+		long_names[i] = x.getLongSourceNames()[0];
+		units[i] = x.getUnit()[0];
+	}
 }
 
 SpatRaster SpatRasterStack::collapse() {

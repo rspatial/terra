@@ -70,7 +70,7 @@ class SpatRasterStack {
 		SpatRasterStack subset(std::vector<unsigned> x);
 
 		SpatRasterStack crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt);
-		void replace(unsigned i, SpatRaster x);
+		void replace(unsigned i, SpatRaster x, bool setname);
 		SpatRaster collapse();
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);

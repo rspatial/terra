@@ -178,7 +178,7 @@ setReplaceMethod("[", c("SpatRasterDataset", "numeric", "missing"),
 			if (j == (length(x)+1)) {
 				x@ptr$add(value@ptr, "", "", "", FALSE)
 			} else {
-				x@ptr$replace(j-1, value@ptr)
+				x@ptr$replace(j-1, value@ptr, FALSE)
 			}
 		}
 		messages(x, "`[`")
