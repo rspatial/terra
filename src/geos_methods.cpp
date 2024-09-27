@@ -22,7 +22,7 @@
 #include "recycle.h"
 #include "string_utils.h"
 
-
+#include <Rcpp.h>
 void callbck(void *item, void *userdata) { // callback function for tree selection
 	std::vector<size_t> *ret = (std::vector<size_t> *) userdata;
 	ret->push_back(*((size_t *) item));
@@ -95,7 +95,21 @@ std::vector<std::string> SpatVector::wkb() {
 	return out;
 }
 
-	
+Rcpp::List SpatVector::wkb_raw() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	Rcpp::List out; 
+	size_t len = 0;
+	for (size_t i = 0; i < g.size(); i++) {
+		unsigned char *hex = GEOSGeomToWKB_buf_r(hGEOSCtxt, g[i].get(), &len);
+		Rcpp::RawVector raw(len);
+		memcpy(&(raw[0]), hex, len);
+		out.push_back(raw);
+		free(hex);
+	}
+	geos_finish(hGEOSCtxt);
+	return out;
+}	
 	
 std::vector<std::string> SpatVector::hex() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
