@@ -48,7 +48,7 @@ setMethod("geomtype", signature(x="Spatial"),
 )
 
 setMethod("geom", signature(x="SpatVector"),
-	function(x, wkt=FALSE, hex=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y"){
+	function(x, wkt=FALSE, hex=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y", wkb=FALSE){
 		if (hex) {
 			x@ptr$hex()
 		} else if (wkt) {
@@ -57,7 +57,9 @@ setMethod("geom", signature(x="SpatVector"),
 			# x@ptr$wkt()
 		} else if (list) {
 			x@ptr$get_geometryList(xnm, ynm)
-		} else {
+		} else if (wkb) {
+			x@ptr$wkb_raw()
+		}	else {
 			g <- x@ptr$get_geometry()
 			g <- do.call(cbind, g)
 			colnames(g) <- c("geom", "part", "x", "y", "hole")[1:ncol(g)]
