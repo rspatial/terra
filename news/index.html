@@ -51,7 +51,9 @@
 <li>
 <code>terrain</code> did not accept multiple variables <a href="https://github.com/rspatial/terra/issues/1561" class="external-link">#1561</a> by Michael Mahoney</li>
 <li>
-<code>rotate</code> was vulnarable to an integer overflow <a href="https://github.com/rspatial/terra/issues/1562" class="external-link">#1562</a> by Sacha Ruzzante</li>
+<code>rotate</code> was vulnerable to an integer overflow <a href="https://github.com/rspatial/terra/issues/1562" class="external-link">#1562</a> by Sacha Ruzzante</li>
+<li>
+<code>getTileExtents</code> could return overlapping tiles or tiles with gaps due to floating point imprecision. <a href="https://github.com/rspatial/terra/issues/1564" class="external-link">#1564</a> by Michael Sumner</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-81">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-81"></a></h3>
@@ -1450,7 +1452,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>
