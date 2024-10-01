@@ -22,7 +22,6 @@
 #include "recycle.h"
 #include "string_utils.h"
 
-
 void callbck(void *item, void *userdata) { // callback function for tree selection
 	std::vector<size_t> *ret = (std::vector<size_t> *) userdata;
 	ret->push_back(*((size_t *) item));
@@ -95,7 +94,21 @@ std::vector<std::string> SpatVector::wkb() {
 	return out;
 }
 
-	
+std::vector<std::vector<unsigned char>> SpatVector::wkb_raw() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<std::vector<unsigned char>> out; 
+	size_t len = 0;
+	for (size_t i = 0; i < g.size(); i++) {
+		unsigned char *hex = GEOSGeomToWKB_buf_r(hGEOSCtxt, g[i].get(), &len);
+		std::vector<unsigned char> raw; 
+		raw = std::vector<unsigned char>(hex, hex+len);
+		out.push_back(raw);
+		free(hex);
+	}
+	geos_finish(hGEOSCtxt);
+	return out;
+}	
 	
 std::vector<std::string> SpatVector::hex() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();

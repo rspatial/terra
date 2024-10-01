@@ -412,6 +412,7 @@ RCPP_MODULE(spat){
 		.method("deepcopy", &SpatVector::deepCopy)
 		.method("wkt", &SpatVector::wkt)
 		.method("wkb", &SpatVector::wkb)
+		.method("wkb_raw", &SpatVector::wkb_raw)
 		.method("hex", &SpatVector::hex)
 		.method("from_hex", &SpatVector::from_hex)
 		.method("make_nodes", &SpatVector::make_nodes)

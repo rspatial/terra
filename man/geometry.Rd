@@ -11,16 +11,19 @@
 Get the geometry of a SpatVector. If \code{wkt=FALSE}, this is a five-column matrix or data.frame: the vector object ID, the IDs for the parts of each object (e.g. five polygons that together are one spatial object), the x (longitude) and y (latitude) coordinates, and a flag indicating whether the part is a "hole" (only relevant for polygons). 
 
 If \code{wkt=TRUE}, the "well-known text" representation is returned as a character vector.
+If \code{hex=TRUE}, the "hexademical" representation is returned as a character vector.
+If \code{wkb=TRUE}, the "well-known binary" representation is returned as a list of raw vectors.
 }
 
 \usage{
-\S4method{geom}{SpatVector}(x, wkt=FALSE, hex=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y")
+\S4method{geom}{SpatVector}(x, wkt=FALSE, hex=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y", wkb=FALSE)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{wkt}{logical. If \code{TRUE} the WKT geometry is returned (unless \code{hex} is also \code{TRUE})}  
   \item{hex}{logical. If \code{TRUE} the hexadecimal geometry is returned}  
+  \item{wkb}{logical. If \code{TRUE} the raw WKB geometry is returned (unless either of \code{hex} or \code{wkt} is also \code{TRUE})}  
   \item{df}{logical. If \code{TRUE} a \code{data.frame} is returned instead of a matrix (only if \code{wkt=FALSE}, \code{hex=FALSE}, and \code{list=FALSE})} 
   \item{list}{logical. If \code{TRUE} a nested \code{list} is returned with data.frames of coordinates}
   \item{xnm}{character. If \code{list=TRUE} the "x" column name for the coordinates data.frame }  

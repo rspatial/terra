@@ -24,7 +24,6 @@
 #include "gdal_priv.h"
 #endif
 
-
 enum SpatGeomType { points, lines, polygons, null};
 
 
@@ -313,6 +312,8 @@ class SpatVector {
 		std::vector<std::string> wkt();
 		std::vector<std::string> wkb();
 		std::vector<std::string> hex();
+		std::vector<std::vector<unsigned char>> wkb_raw(); 
+		
 		SpatVector from_hex(std::vector<std::string> x, std::string srs);
 		SpatVector make_nodes();
 		SpatVector polygonize();
