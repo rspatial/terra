@@ -9,7 +9,7 @@
 
 \description{ 
 Create a Virtual Raster Dataset (VRT) from a collection of file-based raster datasets (tiles). See 
-\href{https://gdal.org/programs/gdalbuildvrt.html}{gdalbuildvrt} for details.
+\href{https://gdal.org/en/latest/programs/gdalbuildvrt.html}{gdalbuildvrt} for details.
 }
 
 \usage{
@@ -19,7 +19,7 @@ Create a Virtual Raster Dataset (VRT) from a collection of file-based raster dat
 \arguments{
   \item{x}{character. Filenames of raster "tiles". That is, files that have data for, typically non-overlapping, sub-regions of an raster. See \code{\link{makeTiles}}}
   \item{filename}{character. output VRT filename}  
-  \item{options}{character. All arguments as separate vector elements. Options as for \href{https://gdal.org/programs/gdalbuildvrt.html}{gdalbuildvrt}}
+  \item{options}{character. All arguments as separate vector elements. Options as for \href{https://gdal.org/en/latest/programs/gdalbuildvrt.html}{gdalbuildvrt}}
   \item{overwrite}{logical. Should \code{filename} be overwritten if it exists?}
   \item{set_names}{logical. Add the layer names of the first tile to the vrt?}
   \item{return_filename}{logical. If \code{TRUE} the filename is returned, otherwise a SpatRaster is returned}  

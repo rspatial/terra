@@ -52,7 +52,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \arguments{
 \item{x}{character. A filename; or a "Well Known Text" string; SpatExtent, data.frame (to make a SpatVector of points); a "geom" matrix to make a SpatVector of any supported geometry (see examples and \code{\link{geom}}); a spatial vector data object defined in the \code{sf} or \code{sp} packages; or a list with matrices with coordinates}
 \item{layer}{character. layer name to select a layer from a file (database) with multiple layers}
-\item{query}{character. A query to subset the dataset in the \href{https://gdal.org/user/ogr_sql_dialect.html}{OGR-SQL dialect}}
+\item{query}{character. A query to subset the dataset in the \href{https://gdal.org/en/latest/user/ogr_sql_dialect.html}{OGR-SQL dialect}}
 \item{extent}{Spat* object. The extent of the object is used as a spatial filter to select the geometries to read. Ignored if \code{filter} is not \code{NULL}}
 \item{filter}{SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points). It is guaranteed that all features that overlap with the extent of filter will be returned. It can happen that additional geometries are returned}
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
