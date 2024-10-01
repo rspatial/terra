@@ -48,7 +48,7 @@ setMethod("geomtype", signature(x="Spatial"),
 )
 
 setMethod("geom", signature(x="SpatVector"),
-	function(x, wkt=FALSE, hex=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y", wkb=FALSE){
+	function(x, wkt=FALSE, hex=FALSE, wkb=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y"){
 		if (hex) {
 			x@ptr$hex()
 		} else if (wkt) {

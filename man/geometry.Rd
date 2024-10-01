@@ -16,7 +16,7 @@ If \code{wkb=TRUE}, the "well-known binary" representation is returned as a list
 }
 
 \usage{
-\S4method{geom}{SpatVector}(x, wkt=FALSE, hex=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y", wkb=FALSE)
+\S4method{geom}{SpatVector}(x, wkt=FALSE, hex=FALSE, wkb=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y")
 }
 
 \arguments{
