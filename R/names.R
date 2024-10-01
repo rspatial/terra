@@ -121,7 +121,7 @@ setMethod("names<-", signature(x="SpatRasterDataset"),
 		} else {
 			x@ptr$names <- enc2utf8(as.character(value))
 		}
-		messages("names<-", x)
+		messages(x, "names<-")
 	}
 )
 
