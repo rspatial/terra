@@ -469,10 +469,6 @@ setMethod("plet", signature(x="SpatRaster"),
 
 		#checkLeafLetVersion()
 		
-		if (has.RGB(x)) {
-			x <- colorize(x, "col")		
-		}
-		
 		if (is.na(crs(x)) | (grepl("^Cartesian", .name_or_proj4(x)))) {
 			tiles <- ""
 			e <- ext(x)
@@ -481,8 +477,11 @@ setMethod("plet", signature(x="SpatRaster"),
 			m <- max(rx, ry)
 			ext(x) <- c(0, rx/m, 0, ry/m)
 			crs(x) <- "EPSG:3857"
-		}
+			notmerc <- FALSE
 
+		} else {
+			notmerc <- isTRUE(crs(x, describe=TRUE)$code != "3857")
+		}
 
 #		if (!is.null(add)) {
 #			if (inherits(add, "SpatVector")) {
@@ -541,9 +540,8 @@ setMethod("plet", signature(x="SpatRaster"),
 		}
 
 
-		notmerc <- isTRUE(crs(x, describe=TRUE)$code != "3857")
 
-		if (nlyr(x) == 1) {
+		if (has.RGB(x) | nlyr(x) == 1) {
 			map <- leaflet::addRasterImage(map, x, colors=col, opacity=alpha, project=notmerc)
 			if (!is.null(legend)) {
 				if (!all(hasMinMax(x))) setMinMax(x)

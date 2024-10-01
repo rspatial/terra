@@ -101,7 +101,8 @@ setMethod("subset", signature(x="SpatVector"),
 			r <- if (missing(subset)) {
 					TRUE
 				} else {
-					r <- eval(substitute(subset), d, parent.frame())
+					e <- substitute(subset)
+					r <- eval(e, d, parent.frame())
 					if (!is.logical(r)) error("subset", "argument 'subset' must be logical")
 					r & !is.na(r)
 				}

@@ -45,12 +45,16 @@ class SpatRasterStack {
 		SpatExtent getExtent();
 
 		std::vector<std::string> get_names();
-		void set_names(std::vector<std::string> nms);
+		void set_names(std::vector<std::string> nms);	
 		std::vector<std::string> get_longnames();
 		void set_longnames(std::vector<std::string> nms);
 		std::vector<std::string> get_units();
 		void set_units(std::vector<std::string> u);
 		std::vector<std::string> filenames();
+
+		void set_layernames(std::vector<std::string> nms, long id);
+		std::vector<std::vector<std::string>> get_layernames();
+
 		bool readStart();
 		bool readStop();
 		unsigned nsds();

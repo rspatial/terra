@@ -104,11 +104,27 @@ setMethod("names<-", signature(x="SpatRasterDataset"),
 		x@ptr <- x@ptr$deepcopy()
 		if (is.null(value)) {
 			value <- rep("", length(x))
-		}		
-		x@ptr$names <- enc2utf8(as.character(value))
-		x
+		}
+		if (is.list(value)) {
+			nl <- nlyr(x)
+			if (lenght(value) == 1) {
+				if (length(unique(nl)) > 1) {
+					error("names<-", "the number of layers varies between datasets")
+				}
+				x@ptr$set_layernames(enc2utf8(as.character(value[[1]])), -1)
+			} else {
+				if (length(value) != length(x)) {
+					error("names<-", "the number of list elements does not match the number of datasets")				
+				}
+				for (i in seq_along(length(x))) x@ptr$set_layernames(enc2utf8(as.character(value[[i]]), i-1))
+			}
+		} else {
+			x@ptr$names <- enc2utf8(as.character(value))
+		}
+		messages("names<-", x)
 	}
 )
+
 
 setMethod("set.names", signature(x="SpatRasterDataset"),
 	function(x, value, index=1:length(x), validate=FALSE)  {

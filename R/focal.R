@@ -578,7 +578,8 @@ function(x, w=3, fun="ols", ..., fillvalue=NA, filename="", overwrite=FALSE, wop
 		outnl <- funopt$nl
 	} else {
 		# need to test
-		out <- fun(1:msz, sample(msz))
+		X <- matrix(sample(msz * (nl-1), replace=TRUE), ncol=nl-1)
+		out <- fun(1:msz, X)
 		outnl <- length(out)
 		if (is.null(wopt$names) && (length(names(out)) == outnl)) {
 			wopt$names <- names(out)

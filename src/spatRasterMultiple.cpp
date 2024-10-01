@@ -261,6 +261,36 @@ void SpatRasterStack::set_units(std::vector<std::string> u) {
 		units = u;
 	}
 }
+
+void SpatRasterStack::set_layernames(std::vector<std::string> nms, long id) {
+	if (id < 0) {
+		for (size_t i=0; i<ds.size(); i++) {
+			if (ds[i].nlyr() != nms.size()) {
+				setError("length of names does not match the number of layers");
+			} else {
+				ds[i].setNames(nms);
+			}
+		}
+	} else {
+		if (ds[id].nlyr() != nms.size()) {
+			setError("length of names does not match the number of layers");
+		} else {
+			ds[id].setNames(nms);
+		}
+	}
+}
+
+std::vector<std::vector<std::string>> SpatRasterStack::get_layernames() {
+	size_t nd = ds.size();
+	std::vector<std::vector<std::string>> out(nd);
+	for (size_t i = 0; i<nd; i++) {
+		out[i] = ds[i].getNames();
+	}		
+	return out;
+}
+
+
+
 std::vector<std::string> SpatRasterStack::filenames() {
 	size_t n =0;
 	for (size_t i=0; i<ds.size(); i++) { 
