@@ -23,7 +23,7 @@
 
 
 bool haveFun(std::string fun) {
-	std::vector<std::string> f {"sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first"};
+	std::vector<std::string> f {"sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first", "expH"};
 	auto it = std::find(f.begin(), f.end(), fun);
 	if (it == f.end()) {
 		return false;

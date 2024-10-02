@@ -774,6 +774,40 @@ std::vector<size_t> order(const std::vector<T> &v) {
 */
 
 
+template <typename T>
+double expH(std::vector<T> d, bool narm) {
+  
+	std::unordered_map<T, unsigned int> counts;
+	double s = 0;
+	if (narm) {
+		for (int v : d) {
+			if (!is_NA(v)) {
+				counts[v]++;
+				s++;
+			}
+		}
+	} else {
+		for (int v : d) {
+			if (is_NA(v)) {
+				return NAN;
+			} else {
+				counts[v]++;
+				s++;
+			}
+		}
+	}
+	if (s == 0) {
+		return NAN;
+	} 
+
+	double sump = 0;
+	for (auto const& pair : counts) { 
+		double p = pair.second / s;
+		sump += p * log(p);
+	}
+  
+	return exp(-sump);
+}
 
 #endif
 
