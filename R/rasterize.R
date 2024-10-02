@@ -33,7 +33,6 @@ rasterize_points <- function(x, y, values, fun="last", background=NA, update=FAL
 	if (update && (!hasValues(y))) update <- FALSE
 	nrx <- nrow(x)
 
-
 	if (!is.data.frame(values)) {
 		values <- as.data.frame(values)
 	}
@@ -72,7 +71,7 @@ rasterize_points <- function(x, y, values, fun="last", background=NA, update=FAL
 					wopt$names <- txtfun
 				}
 				if (update) {
-					ops <- spatOptions("", TRUE, wopt)	
+					ops <- spatOptions("", TRUE, wopt=wopt)	
 				} else {
 					ops <- spatOptions(filename, overwrite, wopt=wopt)				
 				}
