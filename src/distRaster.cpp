@@ -2386,7 +2386,9 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 	SpatGeom g(polygons);
 	g.addPart(SpatPart(0, 0));
 
-	std::vector<std::vector<double>> xy = coordinates();
+//  not good for multipoints
+//	std::vector<std::vector<double>> xy = coordinates();
+	
 	if (is_lonlat()) {
 		std::vector<double> brng(n);
 		for (size_t i=0; i<n; i++) {
@@ -2398,103 +2400,114 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 		geod_init(&gd, a, f);
 		double lat, lon, azi, s12, azi2;
 
-		// not checking for empty points
-		for (size_t i=0; i<npts; i++) {
-			if (std::isnan(xy[0][i] || std::isnan(xy[1][i]) || (xy[1][i]) > 90) || (xy[1][i] < -90)) {
-				out.addGeom(SpatGeom(polygons));
-			} else {
-				std::vector<double> ptx;
-				std::vector<double> pty;
-				geod_inverse(&gd, xy[1][i], xy[0][i],  90, xy[0][i], &s12, &azi, &azi2);
-				bool npole = s12 < d[i];
-				geod_inverse(&gd, xy[1][i], xy[0][i], -90, xy[0][i], &s12, &azi, &azi2);
-				bool spole = s12 < d[i];
-
-				if (npole && spole) {
-					ptx = std::vector<double> {-180,  0, 180, 180, 180,   0, -180, -180, -180};
-					pty = std::vector<double> {  90, 90,  90,   0, -90, -90,  -90,    0,   90};
-					g.reSetPart(SpatPart(ptx, pty));
-					out.addGeom(g);
-					//npole = false;
-					//spole = false;
+	// not checking for empty points
+		for (size_t p=0; p<npts; p++) { 
+			std::vector<std::vector<double>> xy = geoms[p].coordinates();
+			SpatVector tmp;
+			for (size_t i=0; i<xy[0].size(); i++) {
+				if (std::isnan(xy[0][i] || std::isnan(xy[1][i]) || (xy[1][i]) > 90) || (xy[1][i] < -90)) { 
+					tmp.addGeom(SpatGeom(polygons));
 				} else {
-					ptx.reserve(n);
-					pty.reserve(n);
-					if (wrap) {
-						for (size_t j=0; j < n; j++) {
-							geod_direct(&gd, xy[1][i], xy[0][i], brng[j], d[i], &lat, &lon, &azi);
-							ptx.push_back(lon);
-							pty.push_back(lat);
-						}
-					} else {
-						for (size_t j=0; j < n; j++) {
-							geod_direct(&gd, xy[1][i], 0, brng[j], d[i], &lat, &lon, &azi);
-							ptx.push_back(lon+xy[0][i]);
-							pty.push_back(lat);
-						}
-					}
-					if (npole) {
-						sort_unique_2d(ptx, pty);
-						if (ptx[ptx.size()-1] < 180) {
-							ptx.push_back(180);
-							pty.push_back(pty[pty.size()-1]);
-						}
-						ptx.push_back(180);
-						pty.push_back(90);
-						ptx.push_back(-180);
-						pty.push_back(90);
-						if (ptx[0] > -180) {
-							ptx.push_back(-180);
-							pty.push_back(pty[0]);
-						}
-						ptx.push_back(ptx[0]);
-						pty.push_back(pty[0]);
+					std::vector<double> ptx;
+					std::vector<double> pty;
+					geod_inverse(&gd, xy[1][i], xy[0][i],  90, xy[0][i], &s12, &azi, &azi2);
+					bool npole = s12 < d[p];
+					geod_inverse(&gd, xy[1][i], xy[0][i], -90, xy[0][i], &s12, &azi, &azi2);
+					bool spole = s12 < d[p];
+
+					if (npole && spole) {
+						ptx = std::vector<double> {-180,  0, 180, 180, 180,   0, -180, -180, -180};
+						pty = std::vector<double> {  90, 90,  90,   0, -90, -90,  -90,    0,   90};
 						g.reSetPart(SpatPart(ptx, pty));
-						out.addGeom(g);
-					} else if (spole) {
-						sort_unique_2d(ptx, pty);
-						if (ptx[ptx.size()-1] < 180) {
-							ptx.push_back(180);
-							pty.push_back(pty[pty.size()-1]);
-						}
-						ptx.push_back(180);
-						pty.push_back(-90);
-						ptx.push_back(-180);
-						pty.push_back(-90);
-						if (ptx[0] > -180) {
-							ptx.push_back(-180);
-							pty.push_back(pty[0]);
-						}
-						ptx.push_back(ptx[0]);
-						pty.push_back(pty[0]);
-						g.reSetPart(SpatPart(ptx, pty));
-						out.addGeom(g);
+						tmp.addGeom(g);
+						//npole = false;
+						//spole = false;
 					} else {
-						ptx.push_back(ptx[0]);
-						pty.push_back(pty[0]);
+						ptx.reserve(n);
+						pty.reserve(n);
 						if (wrap) {
-							bool split = false;
-							try {
-								split = fix_date_line(g, ptx, pty);
-							} catch(...) {}
-							
-							if (split & no_multipolygons) {
-								for (size_t j=0; j<g.parts.size(); j++) {
-									SpatGeom gg(g.parts[j], polygons);
-									out.addGeom(gg);
-								}
-							} else {
-								out.addGeom(g);
+							for (size_t j=0; j < n; j++) {
+								geod_direct(&gd, xy[1][i], xy[0][i], brng[j], d[p], &lat, &lon, &azi);
+								ptx.push_back(lon);
+								pty.push_back(lat);
 							}
 						} else {
+							for (size_t j=0; j < n; j++) {
+								geod_direct(&gd, xy[1][i], 0, brng[j], d[p], &lat, &lon, &azi);
+								ptx.push_back(lon+xy[0][i]);
+								pty.push_back(lat);
+							}
+						}
+						if (npole) {
+							sort_unique_2d(ptx, pty);
+							if (ptx[ptx.size()-1] < 180) {
+								ptx.push_back(180);
+								pty.push_back(pty[pty.size()-1]);
+							}
+							ptx.push_back(180);
+							pty.push_back(90);
+							ptx.push_back(-180);
+							pty.push_back(90);
+							if (ptx[0] > -180) {
+								ptx.push_back(-180);
+								pty.push_back(pty[0]);
+							}
+							ptx.push_back(ptx[0]);
+							pty.push_back(pty[0]);
 							g.reSetPart(SpatPart(ptx, pty));
-							out.addGeom(g);		
+							tmp.addGeom(g);
+						} else if (spole) {
+							sort_unique_2d(ptx, pty);
+							if (ptx[ptx.size()-1] < 180) {
+								ptx.push_back(180);
+								pty.push_back(pty[pty.size()-1]);
+							}
+							ptx.push_back(180);
+							pty.push_back(-90);
+							ptx.push_back(-180);
+							pty.push_back(-90);
+							if (ptx[0] > -180) {
+								ptx.push_back(-180);
+								pty.push_back(pty[0]);
+							}
+							ptx.push_back(ptx[0]);
+							pty.push_back(pty[0]);
+							g.reSetPart(SpatPart(ptx, pty));
+							tmp.addGeom(g);
+						} else {
+							ptx.push_back(ptx[0]);
+							pty.push_back(pty[0]);
+							if (wrap) {
+								bool split = false;
+								try {
+									split = fix_date_line(g, ptx, pty);
+								} catch(...) {}
+								
+								if (split & no_multipolygons) {
+									for (size_t j=0; j<g.parts.size(); j++) {
+										SpatGeom gg(g.parts[j], polygons);
+										tmp.addGeom(gg);
+									}
+								} else {
+									tmp.addGeom(g);
+								}
+							} else {
+								g.reSetPart(SpatPart(ptx, pty));
+								tmp.addGeom(g);		
+							}
 						}
 					}
 				}
 			}
+			if (tmp.size() > 1) {
+				tmp = tmp.aggregate(true);
+			}
+			out.addGeom(tmp.geoms[0]);
 		}
-	} else {
+		
+	} else { // not used (GEOS used for planar). Would need to be fixed for multipoints
+		std::vector<std::vector<double>> xy = coordinates();
+
 		std::vector<double> cosb(n);
 		std::vector<double> sinb(n);
 		std::vector<double> px(n+1);
