@@ -61,7 +61,7 @@
 <dd><p>SpatRaster, SpatVector, SpatExtent or matrix (with x and y columns) whose coordinates to project</p></dd>
 
   <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>if (<code>x</code> is a SpatRaster, the preferred approach is for <code>y</code> to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (CRS) description.</p>
+<dd><p>if <code>x</code> is a SpatRaster, the preferred approach is for <code>y</code> to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (CRS) description.</p>
 <p>You can use the following formats to define coordinate reference systems: WKT,  PROJ.4 (e.g., <code>+proj=longlat +datum=WGS84</code>), or an EPSG code (e.g., <code>"epsg:4326"</code>). But note that the PROJ.4 notation has been deprecated, and you can only use it with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored.</p>
 <p>If <code>x</code> is a SpatVector, you can provide a crs definition as discussed above, or any other object from which such a crs can be extracted with <code><a href="crs.html">crs</a></code></p></dd>
 
@@ -82,7 +82,7 @@
 
 
   <dt id="arg-mask">mask<a class="anchor" aria-label="anchor" href="#arg-mask"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, mask out areas outside the input extent. For example to avoid data wrapping around the date-line (see example with Robinson projection). To remove cells that are <code>NA</code> in <code>y</code> (if <code>y</code> is a SpatRaster) you can use the <code><a href="mask.html">mask</a> method</code> after calling <code>project</code> (this function)</p></dd>
+<dd><p>logical. If <code>TRUE</code>, mask out areas outside the input extent. For example, to avoid data wrapping around the date-line (see example with Robinson projection). To remove cells that are <code>NA</code> in <code>y</code> (if <code>y</code> is a SpatRaster) you can use the <code><a href="mask.html">mask</a> method</code> after calling <code>project</code> (this function)</p></dd>
 
 
   <dt id="arg-align-only">align_only<a class="anchor" aria-label="anchor" href="#arg-align-only"></a></dt>
@@ -110,7 +110,7 @@
 
 
   <dt id="arg-use-gdal">use_gdal<a class="anchor" aria-label="anchor" href="#arg-use-gdal"></a></dt>
-<dd><p>logical. If <code>TRUE</code> the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the <code>near</code> and <code>bilinear</code> algorithms are available for the internal algorithm</p></dd>
+<dd><p>logical. If <code>TRUE</code> the GDAL-warp algorithm is used. Otherwise, a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the <code>near</code> and <code>bilinear</code> algorithms are available for the internal algorithm</p></dd>
 
 
   <dt id="arg-by-util">by_util<a class="anchor" aria-label="anchor" href="#arg-by-util"></a></dt>
