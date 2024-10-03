@@ -80,7 +80,7 @@ rasterize_points <- function(x, y, values, fun="last", background=NA, update=FAL
 				r@ptr <- y@ptr$rasterizePointsXY(x[,1], x[,2], txtfun, values[[1]], narm, background, ops)
 				messages(r)
 				if (update) {
-					r <- cover(r, y, filename=filename, overwrite=overwrite, wopt)
+					r <- cover(r, y, filename=filename, overwrite=overwrite, wopt=wopt)
 				}
 				return(r)
 			}
