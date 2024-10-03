@@ -52,7 +52,8 @@ parfun <- function(cls, d, fun, model, ...) {
 			}
 		} else {
 			if (!is.null(index)) {
-				r <- matrix(NA, nrow=nl*n, ncol=max(index))
+				r <- matrix(NA, nrow=nl*n, ncol=length(index))
+				index <- NULL
 			} else {
 				r <- matrix(NA, nrow=nl*n, ncol=1)
 			}
