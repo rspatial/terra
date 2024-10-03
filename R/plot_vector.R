@@ -573,13 +573,13 @@ setMethod("dots", signature(x="SpatVector"),
 			out$range <- range
 		}
 		out$range_set <- TRUE
-		out$fill_range <- fill_range
 	} else {
 		if (!is.null(v)) {
 			out$range <- range(v, na.rm=TRUE)
 		}
 		out$range_set <- FALSE
 	}
+	out$fill_range <- fill_range
 	out$v <- v
 
 	if (!is.logical(sort)) {
