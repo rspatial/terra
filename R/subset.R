@@ -102,7 +102,9 @@ setMethod("subset", signature(x="SpatVector"),
 					TRUE
 				} else {
 					e <- substitute(subset)
-					r <- eval(e, d, parent.frame())
+					# r <- eval(e, d, parent.frame())
+					# for #1600
+					r <- eval(e, d, globalenv())
 					if (!is.logical(r)) error("subset", "argument 'subset' must be logical")
 					r & !is.na(r)
 				}
@@ -111,7 +113,8 @@ setMethod("subset", signature(x="SpatVector"),
 				} else {
 					nl <- as.list(seq_along(d))
 					names(nl) <- names(d)
-					eval(substitute(select), nl, parent.frame())
+					# eval(substitute(select), nl, parent.frame())
+					eval(substitute(select), nl, globalenv())
 				}
 			x <- x[r, v, drop=drop]
 		} else {
