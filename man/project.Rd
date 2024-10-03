@@ -25,7 +25,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 
 \arguments{
   \item{x}{SpatRaster, SpatVector, SpatExtent or matrix (with x and y columns) whose coordinates to project}
-  \item{y}{if (\code{x} is a SpatRaster, the preferred approach is for \code{y} to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (CRS) description. 
+  \item{y}{if \code{x} is a SpatRaster, the preferred approach is for \code{y} to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (CRS) description. 
     
   You can use the following formats to define coordinate reference systems: WKT,  PROJ.4 (e.g., \code{+proj=longlat +datum=WGS84}), or an EPSG code (e.g., \code{"epsg:4326"}). But note that the PROJ.4 notation has been deprecated, and you can only use it with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored. 
   
@@ -50,7 +50,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 	\code{min, q1, med, q3, max, average, mode, rms}: the minimum, first quartile, median, third quartile, maximum, mean, mode, or root-mean-square value of all non-NA contributing grid cells.	
   }
 
-  \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent. For example to avoid data wrapping around the date-line (see example with Robinson projection). To remove cells that are \code{NA} in \code{y} (if \code{y} is a SpatRaster) you can use the \code{\link{mask} method} after calling \code{project} (this function)}
+  \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent. For example, to avoid data wrapping around the date-line (see example with Robinson projection). To remove cells that are \code{NA} in \code{y} (if \code{y} is a SpatRaster) you can use the \code{\link{mask} method} after calling \code{project} (this function)}
   
   \item{align_only}{logical. If \code{TRUE}, and \code{y} is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of \code{x} is included}
 
@@ -64,7 +64,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 
-  \item{use_gdal}{logical. If \code{TRUE} the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the \code{near} and \code{bilinear} algorithms are available for the internal algorithm}
+  \item{use_gdal}{logical. If \code{TRUE} the GDAL-warp algorithm is used. Otherwise, a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the \code{near} and \code{bilinear} algorithms are available for the internal algorithm}
 
   \item{by_util}{logical. If \code{TRUE} and \code{gdal=TRUE}, the GDAL warp utility is used}
 
