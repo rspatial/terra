@@ -5,7 +5,7 @@
 [![rcmdcheck](https://github.com/rspatial/terra/actions/workflows/rcmdcheck.yml/badge.svg)](https://github.com/rspatial/terra/actions/workflows/rcmdcheck.yml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
-[![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/terra)](http://www.r-pkg.org/pkg/terra)
+[![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/terra)](https://www.r-pkg.org/pkg/terra)
 
 `terra` is an *R* package for spatial data analysis. There are tutorials at [rspatial.org](https://rspatial.org/index.html). 
 
