@@ -886,6 +886,32 @@ void SpatVector::setPointsDF(SpatDataFrame &x, std::vector<unsigned> geo, std::s
 	df = x;
 }
 
+void SpatVector::setLinesStartEnd(std::vector<double> &x, std::string crs) {
+	size_t n = x.size() / 4;
+	if (n == 0) return;
+	size_t n2 = 2 * n;
+	size_t n3 = 3 * n;
+	SpatGeom g;
+	g.gtype = lines;
+	SpatPart p({x[0], x[n]},{x[n2], x[n3]});
+	g.addPart(p);
+	geoms.resize(n, g);
+	for (size_t i=1; i<n; i++) {
+		geoms[i].parts[0].x[0] = x[i];
+		geoms[i].parts[0].x[1] = x[i+n];
+		geoms[i].parts[0].y[0] = x[i+n2];
+		geoms[i].parts[0].y[1] = x[i+n3];
+		geoms[i].extent.xmin = *std::min_element(geoms[i].parts[0].x.begin(), geoms[i].parts[0].x.end());
+		geoms[i].extent.xmax = *std::max_element(geoms[i].parts[0].x.begin(), geoms[i].parts[0].x.end());
+		geoms[i].extent.ymin = *std::min_element(geoms[i].parts[0].y.begin(), geoms[i].parts[0].y.end());
+		geoms[i].extent.ymax = *std::max_element(geoms[i].parts[0].y.begin(), geoms[i].parts[0].y.end());
+	}
+	computeExtent();
+	setSRS( {crs} );
+}
+
+
+
 
 SpatVector SpatVector::subset_rows(std::vector<int> range) {
 

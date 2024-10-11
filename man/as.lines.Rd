@@ -7,6 +7,7 @@
 \alias{as.lines,SpatRaster-method}
 \alias{as.lines,SpatVector-method}
 \alias{as.lines,SpatExtent-method}
+\alias{as.lines,matrix-method}
 
 \title{Conversion to a SpatVector of lines}
 
@@ -20,11 +21,13 @@ Conversion of a SpatRaster, SpatVector or SpatExtent to a SpatVector of lines.
 \S4method{as.lines}{SpatVector}(x)
 
 \S4method{as.lines}{SpatExtent}(x, crs="")
+
+\S4method{as.lines}{matrix}(x, crs="")
 }
 
 
 \arguments{
-\item{x}{SpatRaster, SpatVector or SpatExtent}
+\item{x}{SpatRaster, SpatVector, SpatExtent or matrix. If \code{x} is a matrix it should have two columns for a single line, or four columns, where each row has the start and end coordinates (x, y) for lines}
 \item{crs}{character. The coordinate reference system (see \code{\link{crs}})}
 }
 
@@ -49,6 +52,15 @@ if  (gdal() >= "3.0.0") {
 	p <- as.polygons(r)
 	as.lines(p)
 }
+
+
+## with a matrix
+s <- cbind(1:5, 1:5)
+e <- cbind(1:5, 0)
+
+as.lines(s)
+as.lines(cbind(s, e), "+proj=longlat")
+
 }
 
 \keyword{spatial}

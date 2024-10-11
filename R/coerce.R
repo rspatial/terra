@@ -305,6 +305,23 @@ setMethod("as.lines", signature(x="SpatVector"),
 	}
 )
 
+
+setMethod("as.lines", signature(x="matrix"),
+	function(x, crs="") {
+		p <- vect()
+		if (ncol(x) == 2) {
+			nr <- nrow(x)
+			p@ptr$setGeometry("lines", rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
+		} else if (ncol(x) == 4) {
+			p@ptr$setLinesStartEnd(x, crs)
+		} else {
+			error("expecting a two or four column matrix", "as.lines")
+		}
+		messages(p, "vect")
+	}
+)
+
+
 setMethod("as.polygons", signature(x="SpatVector"),
 	function(x, extent=FALSE) {
 		if (extent) {
