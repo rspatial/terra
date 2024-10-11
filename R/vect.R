@@ -401,8 +401,7 @@ setMethod("vect", signature(x="data.frame"),
 			x <- .makeSpatDF(x)
 
 			p@ptr$setPointsDF(x, geom-1, crs, keepgeom)
-			messages(p, "vect")
-			return(p)
+			return(messages(p, "vect"))
 		} else if (length(geom) == 1) {
 			v <- vect(unlist(x[,geom]), crs=crs)
 			if (!keepgeom) {
