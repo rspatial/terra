@@ -1,4 +1,13 @@
+# version 1.8-0
+
+## bug fixes
+## enhancements
+## new 
+
+
 # version 1.7-83
+
+Released 2024-10-14
 
 ## bug fixes
 
@@ -29,7 +38,7 @@
 
 # version 1.7-78
 
-Released 2023-05-22
+Released 2024-05-22
 
 ## bug fixes
 
@@ -67,7 +76,7 @@ Released 2023-05-22
 
 # version 1.7-71
 
-Released 2023-01-31
+Released 2024-01-31
 
 ## bug fixes
 
