@@ -1,4 +1,4 @@
-# version 1.7-81
+# version 1.7-83
 
 ## bug fixes
 
@@ -26,7 +26,6 @@
 - `polys<leaflet>` method [#1543](https://github.com/rspatial/terra/issues/1543) by Márcia Barbosa
 - `plot<SpatVectorCollection>` method [#1532](https://github.com/rspatial/terra/issues/1532) by jedgroev
 - `add_mtext` to add text around the margins of a map. [#1567](https://github.com/rspatial/terra/issues/1567) by Daniel Schuch
-
 
 # version 1.7-78
 
