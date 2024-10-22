@@ -669,6 +669,9 @@ SpatRaster SpatRaster::weighted_mean(SpatRaster w, bool narm, SpatOptions &opt) 
 		w = w.mask(*this, false, NAN, NAN, topt);
 	}
 	SpatRaster wsum = w.summary("sum", narm, topt);
+	if (opt.names.empty()) {
+		opt.names = {"weighted.mean"};
+	}	
 	return out.arith(wsum, "/", false, opt);
 }
 

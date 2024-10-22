@@ -409,17 +409,15 @@ retro_labels <- function(x, lat=TRUE) {
 			legtitle <- x$leg$title[1]		
 		}
 		e <- x$leg$ext
-		if (length(legtitle) > 1) {
+		if (length(legtitle) > 1) { # or perhaps !inherits(legtitle, "expression")
 			if (x$leg$x %in% c("top", "bottom")) {
-				txt <- paste(legtitle, collapse=" ")
+				legtitle <- paste(legtitle, collapse=" ")
 			} else {
-				txt <- paste(legtitle, collapse="\n")		
+				legtitle <- paste(legtitle, collapse="\n")		
 			}
-		} else {
-			txt <- legtitle
-		}
+		} 
 		# offset=.5*graphics::strheight("a",cex=x$leg$title.cex)
-		text(x=e$xmax, y=e$ymax, labels=txt, pos=3, cex=x$leg$title.cex, xpd=NA)
+		text(x=e$xmax, y=e$ymax, labels=legtitle, pos=3, cex=x$leg$title.cex, xpd=NA)
 	}
 	x
 }
