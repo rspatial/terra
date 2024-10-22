@@ -735,37 +735,59 @@ SpatVector SpatVector::split_polygons(SpatVector lns) {
 		g = v.geoms[0];
 */
 
+
+
+SpatVector polygonize_one(const GEOSGeometry* gi, GEOSContextHandle_t hGEOSCtxt) {
+
+	size_t ngeoms = 1;
+	std::vector<GeomPtr> p(1);
+	SpatVector out;
+
+	GEOSGeometry* r = GEOSPolygonize_r(hGEOSCtxt, &gi, ngeoms);
+	if (r == NULL) {
+		out.setError("something bad happened");
+		geos_finish(hGEOSCtxt);
+		return out;
+	}
+	if (GEOSisEmpty_r(hGEOSCtxt, r)) {
+		GEOSGeom_destroy_r(hGEOSCtxt, r);
+	} else {
+		p[0] = geos_ptr(r, hGEOSCtxt);
+		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt);
+		out = coll.get(0);
+		out.aggregate(false);
+	}
+	return out;
+}
+
 SpatVector SpatVector::polygonize() {
+
+	if (type() == "polygons") {
+		return *this;
+	}
 
 	SpatVector out;
 	out.srs = srs;
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
-	std::vector<GeomPtr> p;
-	p.reserve(g.size());
-	size_t ngeoms = 1;
-	for (size_t i = 0; i < g.size(); i++) {
+
+	const GEOSGeometry* gi = g[0].get();
+	out = polygonize_one(gi, hGEOSCtxt);
+
+	for (size_t i = 1; i < g.size(); i++) {
 		const GEOSGeometry* gi = g[i].get();
-		GEOSGeometry* r = GEOSPolygonize_r(hGEOSCtxt, &gi, ngeoms);
-		if (r == NULL) {
-			out.setError("something bad happened");
-			geos_finish(hGEOSCtxt);
-			return out;
-		}
-		if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
-			p.push_back(geos_ptr(r, hGEOSCtxt));
-		} else {
-			GEOSGeom_destroy_r(hGEOSCtxt, r);
-		}
-	}
-	if (!p.empty()) {
-		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt);
-		out = coll.get(0);
-		out.srs = srs;
-		out.df = df;
+		SpatVector onegeom = polygonize_one(gi, hGEOSCtxt);
+		out.addGeom(onegeom.getGeom(0));
 	}
 	geos_finish(hGEOSCtxt);
+
+	out.srs = srs;
+	if (df.nrow() != out.size()) {
+		out.addWarning("dropped attributes");
+	} else {
+		out.df = df;
+	}
 	return out;
 }
 
