@@ -285,7 +285,7 @@ setMethod ("show" , "SpatRaster",
 						if (nsr == (mxsrc+1)) {
 							cat("             ", sources[mxsrc+1], lbsprint[mxsrc+1], "\n")
 						} else {
-							cat("             ", "... and", nsr-mxsrc, "more source(s)\n")
+							cat("             ", "... and", nsr-mxsrc, "more sources\n")
 						}
 					}
 				} else {
