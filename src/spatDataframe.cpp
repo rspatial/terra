@@ -112,14 +112,15 @@ SpatDataFrame SpatDataFrame::subset_rows(unsigned i) {
 SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 
 	SpatDataFrame out;
-	unsigned nr = nrow();
-	if (!range.empty()) {
-		for (int i = range.size(); i>0; i--) {
-			if (range[i-1] > nr) {
-				range.erase(range.begin() + i-1);
-			}
+	unsigned n = nrow();
+	std::vector<unsigned> r;
+	r.reserve(range.size());
+	for (size_t i=0; i<range.size(); i++) {
+		if ((range[i] >= 0) && (range[i] < n)) {
+			r.push_back(range[i]);
 		}
 	}
+		
 	out.names = names;
 	out.itype = itype;
 	out.iplace = iplace;
@@ -130,26 +131,26 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 	out.bv.resize(bv.size());
 	out.tv.resize(tv.size());
 	out.fv.resize(fv.size());
-	out.reserve(range.size());
+	out.reserve(r.size());
 
-	for (size_t i=0; i < range.size(); i++) {
+	for (size_t i=0; i < r.size(); i++) {
 		for (size_t j=0; j < dv.size(); j++) {
-			out.dv[j].push_back(dv[j][range[i]]);
+			out.dv[j].push_back(dv[j][r[i]]);
 		}
 		for (size_t j=0; j < iv.size(); j++) {
-			out.iv[j].push_back(iv[j][range[i]]);
+			out.iv[j].push_back(iv[j][r[i]]);
 		}
 		for (size_t j=0; j < sv.size(); j++) {
-			out.sv[j].push_back(sv[j][range[i]]);
+			out.sv[j].push_back(sv[j][r[i]]);
 		}
 		for (size_t j=0; j < bv.size(); j++) {
-			out.bv[j].push_back(bv[j][range[i]]);
+			out.bv[j].push_back(bv[j][r[i]]);
 		}
 		for (size_t j=0; j < fv.size(); j++) {
-			out.fv[j].v.push_back(fv[j].v[range[i]]);
+			out.fv[j].v.push_back(fv[j].v[r[i]]);
 		}
 		for (size_t j=0; j < tv.size(); j++) {
-			out.tv[j].x.push_back(tv[j].x[range[i]]);
+			out.tv[j].x.push_back(tv[j].x[r[i]]);
 		}
 	}
 	for (size_t j=0; j < fv.size(); j++) {
