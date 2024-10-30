@@ -21,6 +21,7 @@
 #include "math_utils.h"
 #include "vecmath.h"
 #include "recycle.h"
+#include <unordered_map>
 
 #ifdef useGDAL
 	#include "crs.h"

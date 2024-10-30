@@ -28,6 +28,7 @@
 
 #include <map>
 #include <algorithm>
+#include <unordered_map>
 
 
 bool haveFun(std::string fun);
