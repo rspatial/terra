@@ -1906,28 +1906,10 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, bool values
 	std::vector<double> val;
 	bool do_min = what == "min";
 
-	std::vector<bool> hr = hasRange();
-	bool hasR = true;
-	for (size_t i=0; i<hr.size(); i++) {
-		if (!hr[i]) {
-			hasR = false;
-			break;
-		}
-	}
-	if (hasR) {
-		if (do_min) {
-			val = range_min();
-			for (double &d : val) d *= 1.00001;
-		} else {
-			val = range_max();
-			for (double &d : val) d *= 0.99999;
-		}
+	if (do_min) {
+		val.resize(nl, std::numeric_limits<double>::max());
 	} else {
-		if (do_min) {
-			val.resize(nl, std::numeric_limits<double>::max());
-		} else {
-			val.resize(nl, std::numeric_limits<double>::lowest());
-		}
+		val.resize(nl, std::numeric_limits<double>::lowest());
 	}
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v;
