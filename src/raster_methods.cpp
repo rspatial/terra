@@ -3467,7 +3467,7 @@ bool SpatRaster::compare_origin(std::vector<double> x, double tol) {
 
 
 
-bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, size_t& nl, bool notfirstlyr, bool warn, SpatOptions &opt) {
+bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, size_t& nl, bool notfirstlyr, bool &warn, SpatOptions &opt) {
 	BlockSize bs = r.getBlockSize(opt);
 	if (!r.readStart()) {
 	out.setError(r.getError());
