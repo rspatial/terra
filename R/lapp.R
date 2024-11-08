@@ -54,7 +54,11 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 
 	if (usenames) {
 		fnames <- names(formals(fun))
-		x <- x[[names(x) %in% fnames]]
+		i <- names(x) %in% fnames
+		if (!all(i)) {
+			warn("lapp", paste(names(x)[!i], "are not used"))
+			x <- x[[names(x) %in% fnames]]
+		}
 	}
 
 
