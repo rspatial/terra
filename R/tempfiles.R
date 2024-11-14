@@ -15,7 +15,9 @@
 	pattrn <- "^spat_.*tif$"
 	i <- grep(pattrn, basename(ftmp))
 	ftmp <- ftmp[i]
-	ff <- list.files(tempdir(), pattern=pattrn, full.names=TRUE)
+	ff1 <- list.files(tempdir(), pattern=pattrn, full.names=TRUE)
+	ff2 <- list.files(terraOptions(print=FALSE)$tempdir, pattern = pattrn, full.names = TRUE)
+	ff <- unique(c(ff1, ff2))
 	i <- !(basename(ff) %in% basename(ftmp))
 	ff[i]
 
