@@ -3708,10 +3708,10 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 			continue;
 		} 
 
-		for (size_t j=0; j<x.size(); j++) {
-			Rcpp::Rcout << "ext " << j << ": " << x.ds[j].source[0].extent.xmin << " " << x.ds[j].source[0].extent.xmax 
-				<<  " " << x.ds[j].source[0].extent.ymin <<  " " << x.ds[j].source[0].extent.ymax <<  " " << std::endl;
-		}
+//		for (size_t j=0; j<x.size(); j++) {
+//			Rcpp::Rcout << "ext " << j << ": " << x.ds[j].source[0].extent.xmin << " " << x.ds[j].source[0].extent.xmax 
+//				<<  " " << x.ds[j].source[0].extent.ymin <<  " " << x.ds[j].source[0].extent.ymax <<  " " << std::endl;
+//		}
 		
 		s.ds = x.ds;
 		SpatRaster r;
