@@ -70,9 +70,9 @@
 		if (is.null(out$rgb$bgalpha)) out$rgb$bgalpha <- 255
 		bg <- grDevices::rgb(bg[1], bg[2], bg[3], alpha=out$rgb$bgalpha, maxColorValue=255)
 		z <- rep( bg, times=ncell(x))
-		z[-naind] <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=out$alpha, maxColorValue=scale)
+		z[-naind] <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=out$rgb$alpha, maxColorValue=scale)
 	} else {
-		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=out$alpha, maxColorValue=scale)
+		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=out$rgb$alpha, maxColorValue=scale)
 	}
 	
 	out$r <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
@@ -672,14 +672,21 @@ prettyNumbs <- function(x, digits) {
 	}
 	if (!is.null(alpha)) {
 		if (!inherits(alpha, "SpatRaster")) {
-			alpha <- alpha[1] * 255
+			alpha <- alpha[1]
+			if (alpha < 0 || alpha > 1) {
+				warn("plot", "alpha should be between 0 and 1")
+				alpha <- 255
+			} else {
+				alpha <- alpha[1] * 255
+			}
 			cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
-		} 
+		}
 	} else {
 		alpha <- 255
 	}
 	out$rgb$stretch <- stretch
 	out$rgb$scale <- scale
+	out$rgb$alpha <- alpha
 	out$rgb$bgalpha <- bgalpha
 	out$rgb$zlim <- zlim
 	out$rgb$zcol <- isTRUE(zcol)
