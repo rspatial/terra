@@ -11,7 +11,7 @@ This method is similar to the simpler, but much faster, merge method."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-82</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,23 +95,14 @@ This method is similar to the simpler, but much faster, merge method."><meta pro
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>xmin<span class="op">=</span><span class="op">-</span><span class="fl">80</span>, xmax<span class="op">=</span><span class="op">-</span><span class="fl">30</span>, ymax<span class="op">=</span><span class="fl">50</span>, ymin<span class="op">=</span><span class="fl">20</span>, res<span class="op">=</span><span class="fl">1</span>, vals<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ext 0: -110 -30 20 70 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ext 1: -110 -30 20 70 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ext 2: -110 -30 20 70 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="op">(</span><span class="va">z</span>, <span class="va">y</span>, <span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ext 0: -110 -30 20 70 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ext 1: -110 -30 20 70 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ext 2: -110 -30 20 70 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># with many SpatRasters, make a SpatRasterCollection from a list</span></span></span>
 <span class="r-in"><span><span class="va">rlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rsrc</span> <span class="op">&lt;-</span> <span class="fu"><a href="sprc.html">sprc</a></span><span class="op">(</span><span class="va">rlist</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="op">(</span><span class="va">rsrc</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ext 0: -110 -30 20 70 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ext 1: -110 -30 20 70 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ext 2: -110 -30 20 70 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
