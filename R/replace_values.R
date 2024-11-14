@@ -258,6 +258,11 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 	function(x, i, j, k, value) {
 
 		m <- c(missing(i), missing(j), missing(k))
+		if (all(m) && is.matrix(value) && ((nrow(value) == nrow(x)) && (ncol(value) == ncol(x) * nlyr(x)))) {
+			values(x) <- value
+			return(x)
+		}
+		
 		s <- rep(FALSE, 3)
 		if (!m[1]) s[1] <- inherits(i, "list")
 		if (!m[2]) s[2] <- inherits(j, "list")
@@ -276,7 +281,7 @@ setReplaceMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 			m[3] <- TRUE
 		}
 
-		if ((!m[1]) && (inherits(i, "matrix"))) {
+		if ((!m[1]) && (inherits(i, "matrix"))) {		
 			if (ncol(i) == 1) {
 				i <- i[,1]
 			} else if (ncol(i) == 2) {
