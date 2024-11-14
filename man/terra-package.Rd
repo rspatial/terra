@@ -102,6 +102,7 @@ Also see the methods in section VIII
   \tabular{ll}{
     \code{\link{approximate}} \tab Compute missing values for cells by interpolation across layers \cr
     \code{\link{roll}} \tab Rolling functions such as the rolling mean \cr
+    \code{\link{clamp}} \tab Restrict cell values to a minimum and/or maximum value \cr
     \code{\link{cellSize}} \tab Compute the area of cells \cr
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{subst}} \tab Substitute (replace) cell values \cr

@@ -50,7 +50,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 SpatRaster
 }
 
-\seealso{\code{\link{subst}} for simpler from-to replacement}
+\seealso{\code{\link{subst}} for simpler from-to replacement, and \code{\link{clamp}}}
 
 \note{
 classify works with the "raw" values of categorical rasters, ignoring the levels (labels, categories). To change the labels of categorical rasters, use \code{\link{subst}} instead.

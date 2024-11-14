@@ -30,7 +30,7 @@ SpatRaster
 }
 
 \seealso{
-\code{\link{classify}}
+\code{\link{classify}, \link{subst}}
 }
 
 \examples{

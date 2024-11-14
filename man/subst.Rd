@@ -29,7 +29,7 @@ Substitute(replace) cell values of a SpatRaster with a new value. See \code{\lin
 SpatRaster
 }
 
-\seealso{\code{\link{classify}}}
+\seealso{\code{\link{classify}}, \code{\link{clamp}}}
 
 \examples{
 r <- rast(ncols=5, nrows=5, xmin=0, xmax=1, ymin=0, ymax=1, crs="")

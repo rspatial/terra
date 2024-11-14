@@ -8,7 +8,7 @@
 \alias{split,SpatVector,SpatVector-method}
 
 
-\title{Split}
+\title{Split a SpatRaster or SpatVector}
 
 \description{ 
 Split a SpatRaster by layer, or a SpatVector by attributes. You can also split the geometry of a polygon SpatVector with another SpatVector. 
