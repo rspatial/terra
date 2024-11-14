@@ -52,14 +52,14 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 		# otherwise .lapp_test may crash!
 	}
 
-	if (usenames) {
-		fnames <- names(formals(fun))
-		i <- names(x) %in% fnames
-		if (!all(i)) {
-			warn("lapp", paste(names(x)[!i], "are not used"))
-			x <- x[[names(x) %in% fnames]]
-		}
-	}
+#	if (usenames) {
+#		fnames <- names(formals(fun))
+#		i <- names(x) %in% fnames
+#		if (!all(i)) {
+#			warn("lapp", paste(paste(names(x)[!i], collapse=","), "are not used", collapse=", "))
+#			x <- x[[names(x) %in% fnames]]
+#		}
+#	}
 
 
 	doclust <- FALSE

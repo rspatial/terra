@@ -22,8 +22,10 @@ parfun <- function(cls, d, fun, model, ...) {
 		d <- data.frame(d)
 	}
 	if (!is.null(const)) {
+		nms <- names(const)
 		for (i in 1:ncol(const)) {
-			d <- cbind(d, const[,i,drop=FALSE])
+			# avoid rowname recycling warnings
+			d[[ nms[i] ]] <- const[[ nms[i] ]]
 		}
 	}
 	if (na.rm) {
@@ -223,8 +225,11 @@ setMethod("predict", signature(object="SpatRaster"),
 		#tomat <- FALSE
 		readStart(object)
 		on.exit(readStop(object))
-
-		out <- find_dims(object, model, nc, fun, const, na.rm, index, ...)
+		if (!is.null(const)) {
+			const <- data.frame(const)[1,,drop=FALSE]
+			rownames(const) <- NULL
+		}
+		out <- terra:::find_dims(object, model, nc, fun, const, na.rm, index, ...)
 		nl <- nlyr(out)
 		
 		doclust <- FALSE
