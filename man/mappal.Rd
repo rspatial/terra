@@ -39,24 +39,22 @@ elevation \tab maps relative ranges of raster values to elevation color ramp\cr
 grass \tab GRASS GIS green (perceptually uniform)\cr
 greens \tab white to green\cr
 grey \tab grey scale\cr
-grey.eq \tab histogram-equalized grey scale\cr
-grey.log \tab histogram logarithmic transformed grey scale\cr
 gyr \tab green through yellow to red\cr
 haxby \tab relative colors for bathymetry or topography\cr
-inferno \tab perceptually uniform sequential color table inferno\cr
-magma \tab perceptually uniform sequential color table magma\cr
+inferno \tab perceptually uniform sequential colors inferno\cr
+magma \tab perceptually uniform sequential colors\cr
 oranges \tab white to orange\cr
-plasma \tab perceptually uniform sequential color table plasma\cr
-rainbow \tab rainbow color table\cr
+plasma \tab perceptually uniform sequential colors\cr
+rainbow \tab rainbow colors\cr
 ramp \tab color ramp\cr
-random \tab random color table\cr
+random \tab random colors\cr
 reds \tab white to red\cr
 roygbiv \tab \cr
 rstcurv \tab terrain curvature\cr
 ryb \tab red through yellow to blue\cr
 ryg \tab red through yellow to green\cr
 sepia \tab yellowish-brown through to white\cr
-viridis \tab perceptually uniform sequential color table viridis\cr
+viridis \tab perceptually uniform sequential colors\cr
 water \tab water depth\cr
 wave \tab color wave\cr
 }
