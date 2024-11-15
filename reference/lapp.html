@@ -133,16 +133,9 @@ Use app for summarize functions such as sum, that take any number of arguments; 
 <span class="r-in"><span><span class="co"># x1 and x2 are the same, despite the change in the order of the layers</span></span></span>
 <span class="r-in"><span><span class="co"># x4 is also the same, but x3 is not</span></span></span>
 <span class="r-in"><span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="fl">2</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x4</span> <span class="op">&lt;-</span> <span class="fu">lapp</span><span class="op">(</span><span class="va">s</span>, <span class="va">fvi2</span>, usenames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error in (function (red, green)  : </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   unused argument (blue = c(248, 222, 162, 142, 154, 150, 178, 130, 105, 97, 125, 164, 184, 188, 188, 184, 132, 76, 35, 39, 49, 210, 251, 254, 245, 254, 254, 256, 256, 243, 256, 256, 256, 256, 256, 255, 256, 256, 256, 256, 187, 181, 199, 212, 208, 160, 172, 179, 196, 238, 230, 229, 206, 112, 71, 60, 82, 256, 256, 255, 256, 253, 256, 256, 255, 252, 254, 256, 256, 256, 256, 247, 218, 214, 215, 256, 161, 167, 174, 198, 233, 235, 244, 221, 140, 87, 56, 62, 153, 256, 256, 256, 251, 251, 241, 245, 187, 150, 135, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127, 254))</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [lapp] cannot use 'fun'. The number of values returned is less than the number of input cells.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> (returning: 1, expecting: 101)</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> Perhaps the function is not properly vectorized</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># while this would fail because </span></span></span>
-<span class="r-in"><span><span class="co"># there are too many layers in s</span></span></span>
+<span class="r-in"><span><span class="co"># these fail because there are too many layers in s</span></span></span>
+<span class="r-in"><span><span class="co"># x4 &lt;- lapp(s, fvi2, usenames=TRUE)</span></span></span>
 <span class="r-in"><span><span class="co"># x5 &lt;- lapp(s, fvi2, usenames=FALSE)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="pairs.html">pairs</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, <span class="va">x3</span>, <span class="va">x4</span><span class="op">)</span><span class="op">)</span></span></span>
