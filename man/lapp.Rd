@@ -76,10 +76,9 @@ x2 <- lapp(s[[2:1]], fvi2, usenames=TRUE)
 # x1 and x2 are the same, despite the change in the order of the layers
 # x4 is also the same, but x3 is not
 x3 <- lapp(s[[2:1]], fvi2, usenames=FALSE)
-x4 <- lapp(s, fvi2, usenames=TRUE)
 
-# while this would fail because 
-# there are too many layers in s
+# these fail because there are too many layers in s
+# x4 <- lapp(s, fvi2, usenames=TRUE)
 # x5 <- lapp(s, fvi2, usenames=FALSE)
 
 pairs(c(x1, x2, x3, x4))
