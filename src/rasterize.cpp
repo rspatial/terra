@@ -698,9 +698,11 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		return out;
 	}
 
+	bool hasError = false;
 	SpatExtent e = temp.getExtent();
+	SpatRaster tmp;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		SpatRaster tmp = temp;
+		tmp = temp;
 		if (out.bs.n > 1) {
 			SpatOptions topt(opt);
 			double halfres = tmp.yres() / 2;
@@ -726,10 +728,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			if ( err != CE_None ) {
 				tmp.setError("rasterization failed");
 				GDALClose(rstDS);
-				for (size_t i=0; i<ogrGeoms.size(); i++) {
-					OGR_G_DestroyGeometry(ogrGeoms[i]);
-				}
-				return tmp;
+				hasError = true; break;
 			}
 			//GDALFlushCache(rstDS);
 			// second time to fix the internal area
@@ -757,46 +756,25 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		if ( err != CE_None ) {
 			tmp.setError("rasterization failed");
 			GDALClose(rstDS);
-			return tmp;
+			hasError = true; break;
 		}
 
-		bool hasError = false;
-//		if (driver == "MEM") {
-			if (!tmp.from_gdalMEM(rstDS, false, true)) {
-				tmp.setError("rasterization failed");
-				GDALClose(rstDS);
-				return(tmp);
-			}
-//		}
-
-//		GDALRasterBandH band = GDALGetRasterBand(rstDS, 1);
-
-//		if (minmax) {
-//			double adfMinMax[2];
-//			GDALComputeRasterMinMax(band, false, adfMinMax);
-//			GDALSetRasterStatistics(band, adfMinMax[0], adfMinMax[1], -9999, -9999);
-//		}
-
+		if (!tmp.from_gdalMEM(rstDS, false, true)) {
+			tmp.setError("rasterization failed");
+			GDALClose(rstDS);
+			hasError = true; break;
+		}
 		GDALClose(rstDS);
-		//if (driver != "MEM") {
-		//	out = SpatRaster(filename, {-1}, {""}, {}, {});
-		//} else {
-		//	std::string fname = opt.get_filename();
-		//	if (!fname.empty() && (!update)) {
-		//		out = out.writeRaster(opt);
-		//	}
-		//}
 
-		if (hasError) return tmp;
 		if (!out.writeBlock(tmp.source[0].values, i)) return out;
 	}
 	
+	out.writeStop();
 	for (size_t i=0; i<ogrGeoms.size(); i++) {
 		OGR_G_DestroyGeometry(ogrGeoms[i]);
 	}
-	out.writeStop();
-	
-//	if (update) {}
+	// if (rstDS != NULL) GDALClose(rstDS);
+	if (hasError) return tmp; 
 		
 	return out;
 }

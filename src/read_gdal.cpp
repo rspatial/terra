@@ -764,7 +764,7 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 }
 
 
-bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool flipped) {
+bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options) {
 
 	if (fname == "WCS:") {
 		// for https://github.com/rspatial/terra/issues/1505

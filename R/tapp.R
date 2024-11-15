@@ -12,7 +12,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	out_tz <- "UTC"
 	if (length(index) == 1) {
 		if (is.character(index)) {
-			choices <- c("years", "months", "week", "days", "doy", "yearmonths", "yearweeks", "7days", "10days", "15days")
+			choices <- c("years", "months", "dekads", "weeks", "days", "doy", "yearmonths", "yeardekads", "yearweeks", "7days", "10days", "15days")
 			i <- pmatch(tolower(index), choices)
 			if (is.na(i)) {
 				error("tapp", paste("invalid time step. Use one of:", paste(choices, collapse=", ")))
@@ -25,7 +25,16 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 				# or POSIXlt$yday
 				index <- format(time(x, "days"), "%j")
 				prename <- "doy_"
-			} else if (choice == "week") {
+			} else if (choice == "dekads") {
+				index <- floor(as.integer(format(time(x, "days"), "%j")) / 10) + 1
+				prename <- "dekad_"
+			} else if (choice == "yeardekads") {
+				year <- time(res, "years")
+				year <- formatC(year, width=4, flag = "0")
+				dekad <- floor(as.integer(format(time(x, "days"), "%j")) / 10) + 1
+				index <- paste0(year, dekad)
+				prename <- "yd_"				
+			} else if (choice == "weeks") {
 				index <- strftime(time(x, "days"), format = "%V")
 				prename <- "week_"
 			} else if (choice == "yearweeks") {
