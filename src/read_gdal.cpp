@@ -764,7 +764,7 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 }
 
 
-bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options) {
+bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool flipped) {
 
 	if (fname == "WCS:") {
 		// for https://github.com/rspatial/terra/issues/1505
@@ -882,9 +882,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		} else {
 			addWarning("unknown extent");
 		}
-		try {
-			s.flipped = adfGeoTransform[5] > 0;
-		} catch(...) {}
+		// seems to cause more harm then benefit #1627
+		//try {
+		//	s.flipped = adfGeoTransform[5] > 0;
+		//} catch(...) {}
 	}
 
 	s.memory = false;
