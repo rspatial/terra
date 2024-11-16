@@ -81,7 +81,7 @@ x3 <- lapp(s[[2:1]], fvi2, usenames=FALSE)
 # x4 <- lapp(s, fvi2, usenames=TRUE)
 # x5 <- lapp(s, fvi2, usenames=FALSE)
 
-pairs(c(x1, x2, x3, x4))
+pairs(c(x1, x2, x3))
 
 ## SpatRasterDataset
 x <- sds(s, s[[1]]+50)
