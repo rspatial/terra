@@ -157,7 +157,10 @@ setMethod("rast", signature(x="SpatExtent"),
 		dots$xmax=x[2]
 		dots$ymin=x[3]
 		dots$ymax=x[4]
-		do.call(new_rast, dots)
+		r <- do.call(new_rast, dots)
+		# re-apply extent to avoid mimute differences
+		ext(r) <- x
+		r
 	}
 )
 
