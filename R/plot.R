@@ -333,7 +333,7 @@ map.pal <- function(name, n=50, ...) {
 			error("map.pal", "you cannot get more than 433 random colors")
 		}
 		s <- sample(grDevices::colors()[grep('gr(a|e)y', grDevices::colors(), invert = TRUE)], n)
-		rgb(t(col2rgb(s))/255)
+		rgb(t(grDevices::col2rgb(s))/255)
 
 	} else {
 		error("map.pal", paste(name, "is not a known palette"))
