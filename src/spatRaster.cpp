@@ -724,7 +724,12 @@ std::vector<double> SpatRaster::getTimeDbl() {
 }
 */
 
-std::vector<std::string> SpatRaster::getTimeStr(bool addstep) {
+std::string make_string(int i, size_t n = 2) {
+	std::string s = std::to_string(i);
+	return std::string(n - std::min(n, s.length()), '0') + s;	
+}
+
+std::vector<std::string> SpatRaster::getTimeStr(bool addstep, std::string timesep) {
 	std::vector<std::string> out;
 	std::vector<int_64> time = getTime();
 	out.reserve(time.size()+addstep);
@@ -733,12 +738,12 @@ std::vector<std::string> SpatRaster::getTimeStr(bool addstep) {
 		for (size_t i=0; i < time.size(); i++) {
 			std::vector<int> x = get_date(time[i]);
 			if (x.size() > 2) {
-				out.push_back( std::to_string(x[0]) + "-"
-						  + std::to_string(x[1]) + "-"
-						  + std::to_string(x[2]) + " "
-						  + std::to_string(x[3]) + ":"
-						  + std::to_string(x[4]) + ":"
-						  + std::to_string(x[5]) );
+				out.push_back( make_string(x[0], 4) + "-"
+						  + make_string(x[1]) + "-"
+						  + make_string(x[2]) + timesep
+						  + make_string(x[3]) + ":"
+						  + make_string(x[4]) + ":"
+						  + make_string(x[5]) );
 
 			} else {
 				out.push_back("");
@@ -748,9 +753,9 @@ std::vector<std::string> SpatRaster::getTimeStr(bool addstep) {
 		for (size_t i=0; i < time.size(); i++) {
 			std::vector<int> x = get_date(time[i]);
 			if (x.size() > 2) {
-				out.push_back( std::to_string(x[0]) + "-"
-						  + std::to_string(x[1]) + "-"
-						  + std::to_string(x[2]) );
+				out.push_back( make_string(x[0], 4) + "-"
+						  + make_string(x[1]) + "-"
+						  + make_string(x[2]) );
 
 			} else {
 				out.push_back("");

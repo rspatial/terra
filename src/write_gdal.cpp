@@ -64,7 +64,7 @@ bool SpatRaster::write_aux_json(std::string filename) {
 		if (f.is_open()) {
 			f << "{" << std::endl;
 			if (wtime) {
-				std::vector<std::string> tstr = getTimeStr(false);
+				std::vector<std::string> tstr = getTimeStr(false, " ");
 				std::string ss = quoted_csv(tstr);
 				f << "\"time\":[" << ss << "]," << std::endl;
 				f << "\"timestep\":\"" << source[0].timestep << "\"";
@@ -614,6 +614,14 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			}
 		}
 	}
+
+
+	std::vector<std::string> tstr;
+	bool wtime = false;
+	if (hasTime()) {
+		tstr = getTimeStr(false, "T");
+		wtime = true;
+	}
 	
 	for (size_t i=0; i < nlyr(); i++) {
 
@@ -655,9 +663,12 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		if (driver == "GTiff") {
 			std::vector<std::string> m = getLyrTags({i});
 			if (m.size() > 0) {
-				for (size_t i=0; i<m.size(); i+=2) {
-					poBand->SetMetadataItem(m[i].c_str(), m[i+1].c_str());
+				for (size_t j=0; j<m.size(); j+=2) {
+					poBand->SetMetadataItem(m[j].c_str(), m[j+1].c_str());
 				}
+			}
+			if (wtime) {
+				poBand->SetMetadataItem("DATE_TIME", tstr[i].c_str());				
 			}
 		}
 
@@ -711,7 +722,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			if (source[0].has_scale_offset[i]) {
 				bool failed = (poBand->SetScale(scale[i])) != CE_None;
 				if (!failed) {
-					failed = ((poBand->SetOffset(offset[i])) != CE_None);
+					failed = (poBand->SetOffset(offset[i])) != CE_None;
 				}
 				if (failed) {
 					source[0].has_scale_offset[i] = false;
@@ -763,8 +774,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	source[0].driver = "gdal" ;
 	source[0].filename = filename;
 	source[0].memory = false;
-	write_aux_json(filename);
 
+	if (driver != "GTiff") write_aux_json(filename);
 /*
 	if (append) {
 		GDALClose( (GDALDatasetH) poDS );
@@ -1124,7 +1135,9 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 		if (names) {
 			for (size_t b=0; b < source[i].nlyr; b++) {
 				poBand = GDALGetRasterBand(hDS, b+1);
-				GDALSetDescription(poBand, source[i].names[b].c_str());
+				if (GDALGetRasterAccess(poBand) == GA_Update) {
+					GDALSetDescription(poBand, source[i].names[b].c_str());
+				}
 			}
 		} 
 		if (crs) {

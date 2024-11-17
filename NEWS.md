@@ -1,7 +1,11 @@
-# version 1.8-0
+# version 1.8-1
 
 ## bug fixes
+
 ## enhancements
+
+- improved documentation of `writeVector` overwrite when using layers. [#1573](https://github.com/rspatial/terra/issues/1573) by Todd West
+
 ## new 
 
 

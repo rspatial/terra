@@ -918,27 +918,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		addWarning(msg);
 	}
 
-	std::vector<int_64> timestamps;
-	std::string timestep="raw";
-	std::vector<std::string> units;
-
-	try {
-		read_aux_json(fname, timestamps, timestep, units, s.nlyr);
-	} catch(...) {
-		timestamps.resize(0);
-		units.resize(0);
-		addWarning("could not parse aux.json");
-	}
-	if (!timestamps.empty()) {
-		s.time = timestamps;
-		s.timestep = timestep;
-		s.hasTime = true;
-	}
-	if (!units.empty()) {
-		s.unit = units;
-		s.hasUnit = true;
-	}
-
 	GDALRasterBand  *poBand;
 	//int nBlockXSize, nBlockYSize;
 	double adfMinMax[2];
@@ -952,10 +931,25 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	bool getCols = s.nlyr == 3;
 	std::vector<unsigned> rgb_lyrs(3, -99);
 
+	s.hasTime = true;
+	std::vector<std::string> datm;
+	datm.reserve(s.nlyr);
+	
 	int bs1, bs2;
 	for (size_t i = 0; i < s.nlyr; i++) {
 		
 		poBand = poDataset->GetRasterBand(i+1);
+
+		if (s.hasTime) {
+			const char * dtm = poBand->GetMetadataItem("DATE_TIME");
+			if (dtm != NULL) {
+				std::string dt = poBand->GetMetadataItem("DATE_TIME");
+				datm.push_back(dt);
+			} else {
+				s.hasTime = false;
+			}
+		}
+
 
 		if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
 			char **m = poBand->GetMetadata();
@@ -1035,6 +1029,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 
 		std::string bandname = poBand->GetDescription();
+
 		char **cat = poBand->GetCategoryNames();
 		if( cat != NULL )	{
 			SpatCategories scat = GetCategories(cat, bandname);
@@ -1102,6 +1097,39 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 		s.names[i] = nm;
 	}
+
+
+	if (s.hasTime) {
+		if (datm[0].find('T') != std::string::npos) {
+			s.timestep = "seconds";
+		} else {
+			s.timestep = "days";
+		}
+		for (size_t i=0; i<datm.size(); i++) {
+			s.time[i] = parse_time(datm[i]);
+		}
+	} else {
+		std::vector<int_64> timestamps;
+		std::string timestep="raw";
+		std::vector<std::string> units;
+		try {
+			read_aux_json(fname, timestamps, timestep, units, s.nlyr);
+		} catch(...) {
+			timestamps.resize(0);
+			units.resize(0);
+			addWarning("could not parse aux.json");
+		}
+		if (!timestamps.empty()) {
+			s.time = timestamps;
+			s.timestep = timestep;
+			s.hasTime = true;
+		}
+		if (!units.empty()) {
+			s.unit = units;
+			s.hasUnit = true;
+		}
+	}
+
 
 
 	msg = "";

@@ -47,7 +47,7 @@ SpatVectorCollection SpatVector::bienvenue() {
 std::vector<std::string> SpatVector::wkt() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
-	std::vector<std::string> out;
+	std::vector<std::string> out::crop
 	out.reserve(g.size());
 	char * wkt;
 	for (size_t i = 0; i < g.size(); i++) {
@@ -927,6 +927,8 @@ SpatVector SpatVector::crop(SpatVector v) {
 //		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
 		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids);
 		out = coll.get(0);
+//		std::vector<std::string> nms = out.get_names();
+//		out = out.aggregate(nms[0], true);
 		out.df = df.subset_rows(out.df.iv[0]);
 		out.srs = srs;
 	}

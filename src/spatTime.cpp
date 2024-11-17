@@ -347,6 +347,9 @@ SpatTime_t time_from_day_360(int syear, int smonth, int sday, double ndays) {
 SpatTime_t parse_time(std::string x) {
 	lrtrim(x);
 	std::vector<std::string> s = strsplit(x, " ");
+	if (s.size() == 1) {
+		s = strsplit(x, "T");
+	}
 
 	std::vector<std::string> time;
 	if ((!s[0].empty()) && (s[0].substr(0, 1) != "-")) {
