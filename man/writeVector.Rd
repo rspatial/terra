@@ -20,11 +20,10 @@ Write a SpatVector to a file. You can choose one of many file formats.
   \item{filename}{character. Output filename}
   \item{filetype}{character. A file format associated with a GDAL "driver" such as "ESRI Shapefile". See \code{gdal(drivers=TRUE)} or the \href{https://gdal.org/en/latest/drivers/vector/index.html}{GDAL docs}. If \code{NULL} it is attempted to guess the filetype from the filename extension}
   \item{layer}{character. Output layer name. If \code{NULL} the filename is used}
-  \item{insert}{logical. If \code{TRUE}, a new layer is inserted into the file, if the format allows it (e.g. GPKG allows that). See \code{\link{vector_layers}} to remove a layer}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{insert}{logical. If \code{TRUE}, a new layer is inserted into the file, or an existing layer overwritten (if \code{overwrite=TRUE}), if the format supports it (e.g. GPKG allows that). See \code{\link{vector_layers}} to remove a layer}
+  \item{overwrite}{logical. If \code{TRUE} and \code{insert=FALSE}, \code{filename} is overwritten if the file format and layer structure permits it. If \code{TRUE} and \code{insert=TRUE}, only the target layer is overwritten if the format supports it (e.g. GPKG).}
   \item{options}{character. Format specific GDAL options such as "ENCODING=UTF-8". Use NULL or "" to not use any options}
 }
-
 
 \examples{
 v <- vect(cbind(1:5,1:5))
