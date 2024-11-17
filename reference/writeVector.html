@@ -61,10 +61,10 @@
 <dd><p>character. Output layer name. If <code>NULL</code> the filename is used</p></dd>
 
   <dt id="arg-insert">insert<a class="anchor" aria-label="anchor" href="#arg-insert"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, a new layer is inserted into the file, if the format allows it (e.g. GPKG allows that). See <code><a href="vector_layers.html">vector_layers</a></code> to remove a layer</p></dd>
+<dd><p>logical. If <code>TRUE</code>, a new layer is inserted into the file, or an existing layer overwritten (if <code>overwrite=TRUE</code>), if the format supports it (e.g. GPKG allows that). See <code><a href="vector_layers.html">vector_layers</a></code> to remove a layer</p></dd>
 
   <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
+<dd><p>logical. If <code>TRUE</code> and <code>insert=FALSE</code>, <code>filename</code> is overwritten if the file format and layer structure permits it. If <code>TRUE</code> and <code>insert=TRUE</code>, only the target layer is overwritten if the format supports it (e.g. GPKG).</p></dd>
 
   <dt id="arg-options">options<a class="anchor" aria-label="anchor" href="#arg-options"></a></dt>
 <dd><p>character. Format specific GDAL options such as "ENCODING=UTF-8". Use NULL or "" to not use any options</p></dd>
