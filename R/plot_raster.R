@@ -1,4 +1,16 @@
 
+
+hexcols <- function(cols, alpha=FALSE) {
+	if (alpha) {
+		m <- col2rgb(cols, alpha=TRUE)/255
+		rgb(m[1,], m[2,], m[3,], m[4,])
+	} else {
+		m <- col2rgb(cols, alpha=FALSE)/255
+		rgb(m[1,], m[2,], m[3,])	
+	}
+}
+
+
 .default.pal <- function() {
 	opt.pal <- options("terra.pal")[[1]]
 	if (is.null(opt.pal))  {
@@ -157,10 +169,12 @@
 #	} else {
 #		out$frange <- out$range	
 #	}
+
+	out$cols <- hexcols(out$cols)
 	if (length(breaks) == 1) {
 		Z[] <- out$cols[ceiling(length(out$cols)/2)]
 	} else {
-		Z[] <- out$cols[as.integer(cut(Z, breaks, include.lowest=TRUE, right=FALSE))]
+		Z[] <- out$cols[as.integer(cut(as.numeric(Z), breaks, include.lowest=TRUE, right=FALSE))]
 	}
 	
 	out$r <- as.raster(Z)
@@ -246,13 +260,15 @@ prettyNumbs <- function(x, digits) {
 	stopifnot(length(out$leg$legend) == length(out$levels))
 	nlevs <- length(levs)
 
+
 	if (NCOL(out$cols) == 2) {
-		out$cols[,2] <- as.character(out$cols[,2])
+		out$cols[,2] <- hexcols(as.character(out$cols[,2]))
 		i <- match(Z, as.numeric(levs))
 		Z[] <- out$cols[,2][i]
 		i <- match(as.numeric(levs), out$cols[,1])
 		out$leg$fill <- out$cols[i,2]
 	} else {
+		out$cols <- hexcols(as.character(out$cols))
 		ncols <- length(out$cols)
 		if (nlevs == 1) {
 			cols <- out$cols[length(out$cols)]
@@ -262,6 +278,7 @@ prettyNumbs <- function(x, digits) {
 		} else {
 			cols <- rep_len(out$cols, nlevs)
 		}
+		cols <- hexcols(cols)
 		out$leg$fill <- cols
 		Z[] <- cols[as.numeric(fz)]
 	}
@@ -343,8 +360,9 @@ prettyNumbs <- function(x, digits) {
 
 		out$cols <- grDevices::rgb(out$coltab[,2], out$coltab[,3], out$coltab[,4], out$coltab[,5], maxColorValue=255)
 		i <- match(z, out$coltab[,1])
-		z <- out$cols[i]
+		z <- hexcols(out$cols[i])
 	} else {
+		out$cols <- hexcols(out$cols)
 		if (is.null(out$leg$legend)) out$leg$legend <- unique(stats::na.omit(out$cats[ilevels, 2]))
 		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
 		leglevs <- stats::na.omit(unique(levlab[,2]))
@@ -411,9 +429,9 @@ prettyNumbs <- function(x, digits) {
 
 	if (!is.null(out$leg$digits)) {
 #		out$leg$legend <- substr(formatC(levs, digits=digits, format = "f", flag="#"), 1, digits+1)
-		fz <- cut(Z, out$breaks, include.lowest=TRUE, right=FALSE, dig.lab=out$leg$digits)
+		fz <- cut(as.numeric(Z), out$breaks, include.lowest=TRUE, right=FALSE, dig.lab=out$leg$digits)
 	} else {
-		fz <- cut(Z, out$breaks, include.lowest=TRUE, right=FALSE)
+		fz <- cut(as.numeric(Z), out$breaks, include.lowest=TRUE, right=FALSE)
 	}
 
 
@@ -421,6 +439,7 @@ prettyNumbs <- function(x, digits) {
 	levs <- levels(fz)
 	nlevs <- length(levs)
 
+	out$cols <- hexcols(out$cols)
 	cols <- out$cols
 	ncols <- length(cols)
 	if (nlevs < ncols) {
@@ -429,6 +448,7 @@ prettyNumbs <- function(x, digits) {
 	} else {
 		cols <- rep_len(cols, nlevs)
 	}
+	
 	#out$cols <- cols
 	out$leg$fill <- cols
 	#out$leg$levels <- levels(fz)
@@ -455,7 +475,7 @@ prettyNumbs <- function(x, digits) {
 	out$legend_type <- "classes"
 
 	if (NCOL(out$cols) == 3) {
-		out$cols[,3] <- as.character(out$cols[,3])
+		out$cols[,3] <- hexcols(as.character(out$cols[,3]))
 		rcl <- cbind(as.matrix(out$cols[,1:2]), 1:nrow(out$cols))
 		x <- classify(x, rcl, include.lowest=TRUE, others=NA)
 		m <- apply(out$cols[,1:2], 1, function(i) paste(i, collapse=" - "))
