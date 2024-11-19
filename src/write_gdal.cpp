@@ -616,11 +616,19 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	}
 
 
-	std::vector<std::string> tstr;
+	std::vector<std::string> tstr, ustr;
 	bool wtime = false;
+	bool have_date_time=false;
+	std::string tstep = getTimeStep();
 	if (hasTime()) {
 		tstr = getTimeStr(false, "T");
-		wtime = true;
+		wtime = true;	
+		have_date_time = (tstep == "seconds") || (tstep == "days") || (tstep == "years") || (tstep == "yearmonths");
+ 	}
+	bool wunit = false;
+	if (hasUnit()) {
+		ustr = getUnit();
+		wunit = true;
 	}
 	
 	for (size_t i=0; i < nlyr(); i++) {
@@ -668,7 +676,15 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 				}
 			}
 			if (wtime) {
-				poBand->SetMetadataItem("DATE_TIME", tstr[i].c_str());				
+				if (have_date_time) {
+					poBand->SetMetadataItem("DATE_TIME", tstr[i].c_str());				
+				} else {
+					poBand->SetMetadataItem("TIMESTAMP", tstr[i].c_str());									
+					poBand->SetMetadataItem("TIMEUNIT", tstep.c_str());									
+				}
+			}
+			if (wunit) {
+				poBand->SetMetadataItem("UNIT", ustr[i].c_str());				
 			}
 		}
 

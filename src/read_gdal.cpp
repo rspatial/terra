@@ -931,9 +931,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	bool getCols = s.nlyr == 3;
 	std::vector<unsigned> rgb_lyrs(3, -99);
 
+	s.hasUnit = true;
 	s.hasTime = true;
-	std::vector<std::string> datm;
+	std::vector<std::string> datm, unts;
 	datm.reserve(s.nlyr);
+	unts.reserve(s.nlyr);
 	
 	int bs1, bs2;
 	for (size_t i = 0; i < s.nlyr; i++) {
@@ -941,22 +943,32 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		poBand = poDataset->GetRasterBand(i+1);
 
 		if (s.hasTime) {
-			const char * dtm = poBand->GetMetadataItem("DATE_TIME");
+			const char* dtm = poBand->GetMetadataItem("DATE_TIME");
 			if (dtm != NULL) {
-				std::string dt = poBand->GetMetadataItem("DATE_TIME");
-				datm.push_back(dt);
+				datm.push_back(dtm);
 			} else {
 				s.hasTime = false;
 			}
 		}
-
+		if (s.hasUnit) {
+			const char* ut = poBand->GetMetadataItem("UNIT");
+			if (ut != NULL) {
+				unts.push_back(ut);
+			} else {
+				s.hasUnit = false;
+			}
+		}
 
 		if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
 			char **m = poBand->GetMetadata();
 			while (m != nullptr && *m != nullptr) {
-
 				bandmeta[i].push_back(*m++);
 			}
+			//for (size_t j = 0; j<bandmeta[i].size(); j++) {
+			//	Rcpp::Rcout << bandmeta[i][j] << std::endl;
+			//}
+			
+			
 			char **meterra = poBand->GetMetadata("LYR_TAGS");
 			if (meterra != NULL) {
 //				std::vector<std::string> meta;
@@ -1098,12 +1110,17 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		s.names[i] = nm;
 	}
 
-
 	if (s.hasTime) {
 		if (datm[0].find('T') != std::string::npos) {
 			s.timestep = "seconds";
 		} else {
-			s.timestep = "days";
+			if (datm[0].length() == 4) {
+				s.timestep = "years";
+			} else if (datm[0].length() == 7) {
+				s.timestep = "yearmonths";
+			} else {
+				s.timestep = "days";
+			}
 		}
 		for (size_t i=0; i<datm.size(); i++) {
 			s.time[i] = parse_time(datm[i]);
@@ -1129,8 +1146,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			s.hasUnit = true;
 		}
 	}
-
-
+	if (s.hasUnit) {
+		s.unit = unts;
+	}
 
 	msg = "";
 	if ((gdrv=="netCDF") || (gdrv == "HDF5"))  {
@@ -1162,7 +1180,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		s.set_names_time_grib(bandmeta, msg);
 	} else if (gdrv == "GTiff") {	
 	// needs to get its own generic one 
-		s.set_names_time_tif(bandmeta, msg);
+	//	s.set_names_time_tif(bandmeta, msg);
 	}
 	s.bmdata = bandmeta;
 	if (msg.size() > 1) {

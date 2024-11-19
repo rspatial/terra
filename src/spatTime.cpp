@@ -64,6 +64,8 @@ SpatTime_t get_time(long year, unsigned month, unsigned day, int hr, int min, in
 		}
 	}
 
+	if (month == 0) month = 6;
+	if (day == 0) day = 15;
 	time += (mdays[isleap(year)][month-1] + day) * 86400;
 	time += (hr * 3600) + (min * 60) + sec;
     return time;
@@ -354,15 +356,16 @@ SpatTime_t parse_time(std::string x) {
 	std::vector<std::string> time;
 	if ((!s[0].empty()) && (s[0].substr(0, 1) != "-")) {
 		time = strsplit(s[0], "-");
-	} else {
-		time = {s[0]};		
+	//} else {
+	//	time = {s[0]};		
 	}
+	time.resize(3, "0");
 
-	if (time.size() == 1) {
-		return stoll(time[0]);
-	} else if (time.size() != 3) {
-		return 0;
-	}
+//	if (time.size() == 1) {
+//		return stoll(time[0]);
+//	} else if (time.size() != 3) {
+//		return 0;
+//	}
 
 	if (s.size() > 1) {
 		std::vector<std::string> secs = strsplit(s[1], ":");

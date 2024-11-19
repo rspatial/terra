@@ -735,19 +735,23 @@ std::vector<std::string> SpatRaster::getTimeStr(bool addstep, std::string timese
 	out.reserve(time.size()+addstep);
 	if (addstep) out.push_back(source[0].timestep);
 	if (source[0].timestep == "seconds") {
+		std::string tz = getTimeZone();
 		for (size_t i=0; i < time.size(); i++) {
 			std::vector<int> x = get_date(time[i]);
-			if (x.size() > 2) {
-				out.push_back( make_string(x[0], 4) + "-"
+//			if (x.size() > 2) {
+				std::string s = make_string(x[0], 4) + "-"
 						  + make_string(x[1]) + "-"
 						  + make_string(x[2]) + timesep
 						  + make_string(x[3]) + ":"
 						  + make_string(x[4]) + ":"
-						  + make_string(x[5]) );
-
-			} else {
-				out.push_back("");
-			}
+						  + make_string(x[5]);
+				if (tz != "") {
+					s = s + "z" + tz;
+				}
+				out.push_back(s);
+//			} else {
+//				out.push_back("");
+//			}
 		}
 	} else if (source[0].timestep == "days") {
 		for (size_t i=0; i < time.size(); i++) {
@@ -760,6 +764,16 @@ std::vector<std::string> SpatRaster::getTimeStr(bool addstep, std::string timese
 			} else {
 				out.push_back("");
 			}
+		}
+	} else if (source[0].timestep == "years") {
+		for (size_t i=0; i < time.size(); i++) {
+			std::vector<int> x = get_date(time[i]);
+			out.push_back( make_string(x[0], 4) ); // + "-00-00");
+		}
+	} else if (source[0].timestep == "yearmonths") {
+		for (size_t i=0; i < time.size(); i++) {
+			std::vector<int> x = get_date(time[i]);
+			out.push_back( make_string(x[0], 4) + "-" + make_string(x[1], 2)); //  + "-00" );
 		}
 	} else {
 		for (size_t i=0; i < time.size(); i++) {
@@ -906,12 +920,12 @@ bool SpatRaster::hasUnit() {
 std::vector<std::string> SpatRaster::getUnit() {
 	std::vector<std::string> x;
 	for (size_t i=0; i<source.size(); i++) {
-		if (source[i].unit.size() != source[i].nlyr) {
-			std::vector<std::string> nas(source[i].nlyr, "");
-			x.insert(x.end(), nas.begin(), nas.end());
-		} else {
+//		if (source[i].unit.size() != source[i].nlyr) {
+//			std::vector<std::string> nas(source[i].nlyr, "");
+//			x.insert(x.end(), nas.begin(), nas.end());
+//		} else {
 			x.insert(x.end(), source[i].unit.begin(), source[i].unit.end());
-		}
+//		}
 	}
 	return(x);
 }
