@@ -327,6 +327,10 @@ std::vector<std::vector<unsigned>> SpatVector::index_sparse(SpatVector v) {
 SpatVector SpatVector::crop(SpatExtent e, bool wrap) {
 
 	SpatVector out;
+	if ((e.xmin == e.xmax) || (e.ymin == e.ymax)) {
+		return *this;	
+	}
+
 
 #ifndef GEOS350
 	out.setError("GEOS 3.5 required for crop");
@@ -886,6 +890,7 @@ SpatVector SpatVector::crop(SpatVector v) {
 
 	SpatVector out;
 	out.srs = srs;
+	if (v.empty()) return *this;
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 

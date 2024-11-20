@@ -2744,7 +2744,7 @@ double area_plane(const SpatGeom &geom) {
 std::vector<double> SpatVector::area(std::string unit, bool transform, std::vector<double> mask) {
 
 	if (type() != "polygons") { // area is zero
-		std::vector<double>	out(nrow());
+		std::vector<double>	out(nrow(), 0);
 		return out;
 	}
 

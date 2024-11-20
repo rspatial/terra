@@ -596,21 +596,23 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	SpatRaster out;
 	if ( !hasValues() ) update = false;
 	if (update) {
-		out = hardCopy(opt);
+		out = geometry();
 	} else {
 		out = geometry(1);
-		if (field.empty()) {
-			out.setNames({"layer"});
-		} else {
-			out.setNames({field});
-		}
+	}
+	if (field.empty()) {
+		out.setNames({"layer"});
+	} else {
+		out.setNames({field});
 	}
 
 	size_t nGeoms = x.size();
 	if (nGeoms == 0) {
-		if (!update) {
+		if (update) {
+			out = *this;
+		} else {
 			out = out.init({background}, opt);
-		}
+		} 
 		return out;
 	}
 
@@ -689,22 +691,21 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	if (add) {	background = 0;	}
 	std::vector<int> bands(out.nlyr());
 	std::iota(bands.begin(), bands.end(), 1);
-	for (double &d : values) d = std::isnan(d) ? naval : d;
 	rep_each(values, out.nlyr());
 	
 	SpatRaster temp = out;
   	if (!out.writeStart(opt, filenames())) {
-		readStop();
 		return out;
 	}
-
+	
 	bool hasError = false;
 	SpatExtent e = temp.getExtent();
 	SpatRaster tmp;
+	SpatOptions topt(opt);
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		tmp = temp;
 		if (out.bs.n > 1) {
-			SpatOptions topt(opt);
 			double halfres = tmp.yres() / 2;
 			e.ymax = tmp.yFromRow(out.bs.row[i]) + halfres;
 			e.ymin = tmp.yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1) - halfres;
@@ -713,6 +714,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		if (!tmp.getDShMEM(rstDS, tmp, naval, background, opt)) {
 			return tmp;
 		}
+		if (i==1) for (double &d : values) d = std::isnan(d) ? naval : d;
+
 		char** papszOptions = NULL;
 		CPLErr err;
 		if (ispol && touches && (nGeoms > 1)) {
@@ -766,15 +769,22 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		}
 		GDALClose(rstDS);
 
+		if (update) {
+			setWindow(e);
+			tmp = tmp.cover(*this, {background}, topt);
+			removeWindow();
+		}
 		if (!out.writeBlock(tmp.source[0].values, i)) return out;
 	}
 	
+	if (update) readStop();
 	out.writeStop();
 	for (size_t i=0; i<ogrGeoms.size(); i++) {
 		OGR_G_DestroyGeometry(ogrGeoms[i]);
 	}
 	// if (rstDS != NULL) GDALClose(rstDS);
 	if (hasError) return tmp; 
+	
 		
 	return out;
 }
