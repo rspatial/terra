@@ -704,16 +704,32 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	SpatOptions topt(opt);
 
 	for (size_t i = 0; i < out.bs.n; i++) {
-		tmp = temp;
 		if (out.bs.n > 1) {
 			double halfres = tmp.yres() / 2;
 			e.ymax = tmp.yFromRow(out.bs.row[i]) + halfres;
 			e.ymin = tmp.yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1) - halfres;
-			tmp = tmp.crop(e, "near", false, topt);
-		} 
-		if (!tmp.getDShMEM(rstDS, tmp, naval, background, opt)) {
+			if (update) {
+				tmp = crop(e, "near", false, topt);	
+			} else {
+				tmp = temp.crop(e, "near", false, topt);
+			}
+		} else {
+			if (update) {
+				tmp = hardCopy(topt);
+			} else {
+				tmp = temp;
+			}
+		}
+		if (update) {
+			std::string filename;
+			if (!tmp.getDSh(rstDS, tmp, filename, driver, naval, update, background, topt)) {
+				return tmp;
+			}
+		} else if (!tmp.getDShMEM(rstDS, tmp, naval, background, opt)) {
 			return tmp;
 		}
+		
+	
 		if (i==1) for (double &d : values) d = std::isnan(d) ? naval : d;
 
 		char** papszOptions = NULL;
@@ -769,12 +785,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		}
 		GDALClose(rstDS);
 
-		if (update) {
-			setWindow(e);
-			tmp = tmp.cover(*this, {background}, topt);
-			removeWindow();
-		}
-		if (!out.writeBlock(tmp.source[0].values, i)) return out;
+		std::vector<double> v = tmp.getValues(-1, topt);
+		if (!out.writeBlock(v, i)) return out;
 	}
 	
 	if (update) readStop();

@@ -1349,15 +1349,14 @@ SpatRaster SpatRaster::mask(SpatVector &x, bool inverse, double updatevalue, boo
 		return out;
 	}
 		
-	SpatOptions topt(opt);
-	out = rasterize(x, "", {1.0}, 0, touches, "", false, false, false, topt);
-	if (out.hasError()) {
-		return out;
-	}
-
 	if (inverse) {
-		out = mask(out, false, 1, updatevalue, opt);
+		out = rasterize(x, "", {updatevalue}, NAN, touches, "", false, true, true, opt);
 	} else {
+		SpatOptions topt(opt);
+		out = rasterize(x, "", {1.0}, 0, touches, "", false, false, false, topt);
+		if (out.hasError()) {
+			return out;
+		}
 		if (std::isnan(updatevalue)) {
 			out = mask(out, false, 0, updatevalue, opt);
 		} else {
