@@ -592,10 +592,9 @@ class SpatRaster {
  		SpatRaster aggregate(std::vector<size_t> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatExtent align(SpatExtent e, std::string snap);
 		SpatRaster rst_area(bool mask, std::string unit, bool transform, int rcmax, SpatOptions &opt);
-
 		std::vector<std::vector<double>> sum_area(std::string unit, bool transform, bool by_value, SpatOptions &opt);
-
 		std::vector<std::vector<double>> sum_area_group(SpatRaster group, std::string unit, bool transform, bool by_value, SpatOptions &opt);
+		SpatRaster surfaceArea(SpatOptions &opt);
 
 		SpatRaster roll(size_t n, std::string fun, std::string type, bool circular, bool narm, SpatOptions &opt);
 

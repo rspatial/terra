@@ -1,10 +1,10 @@
 
-if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}
-setMethod ("area" , "SpatRaster",
-	function (x, ...) {
-		error("area", "this method was removed. Use expanse or cellSize")
-	}
-)
+#if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}
+#setMethod ("area" , "SpatRaster",
+#	function (x, ...) {
+#		error("area", "this method was removed. Use expanse or cellSize")
+#	}
+#)
 
 
 #if (!isGeneric("setCats")) { setGeneric("setCats", function(x, ...) standardGeneric("setCats")) }
@@ -24,18 +24,19 @@ setMethod ("area" , "SpatRaster",
 #	}
 #)
 
-setMethod("gridDistance", signature(x="SpatRaster"),
-	function(x, ...) {
-		error("gridDistance", "'gridDistance' was renamed to 'gridDist'")
-		#. 'gridDistance' will be removed in a future version")
-		#gridDist(x, target=target, scale=scale, maxiter=maxiter, filename=filename, ...) 
-	}
-)
+#setMethod("gridDistance", signature(x="SpatRaster"),
+#	function(x, ...) {
+#		error("gridDistance", "'gridDistance' was renamed to 'gridDist'")
+#		#. 'gridDistance' will be removed in a future version")
+#		#gridDist(x, target=target, scale=scale, maxiter=maxiter, filename=filename, ...) 
+#	}
+#)
 
 
-setMethod("focalCor", signature(x="SpatRaster"),
-	function(x, ...) {
-		error("focalCor", "'focalCor' was renamed to 'focalPairs'")
-		# focalPairs(x, ...)
-	}
-)
+#if (!isGeneric("focalCor")) { setGeneric("focalCor", function(x, ...) standardGeneric("focalCor")) }
+#setMethod("focalCor", signature(x="SpatRaster"),
+#	function(x, ...) {
+#		error("focalCor", "'focalCor' was renamed to 'focalPairs'")
+#		# focalPairs(x, ...)
+#	}
+#)

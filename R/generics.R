@@ -136,6 +136,15 @@ setMethod("cellSize", signature(x="SpatRaster"),
 )
 
 
+setMethod("surfaceArea", signature(x="SpatRaster"),
+	function(x, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$surface_area(opt)
+		messages(x, "surfaceArea")
+	}
+)
+
+
 setMethod("atan2", signature(y="SpatRaster", x="SpatRaster"),
 	function(y, x) {
 		opt <- spatOptions(filename="", overwrite=TRUE)
