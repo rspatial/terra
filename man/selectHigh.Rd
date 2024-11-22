@@ -8,7 +8,7 @@
 \title{select cells with high or low values}
 
 \description{
-Identify n cells that have the highest of lowest values in the first layer of a SpatRaster. 
+Identify n cells that have the highest or lowest values in the first layer of a SpatRaster. 
 }
 
 \usage{
