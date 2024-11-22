@@ -114,7 +114,7 @@ if (!isGeneric("weighted.mean")) {setGeneric("weighted.mean", function(x, w, ...
 
 if (!isGeneric("split")) {setGeneric("split", function(x, f, drop = FALSE, ...) standardGeneric("split"))}
 if (!isGeneric("cellSize")) {setGeneric("cellSize", function(x, ...) standardGeneric("cellSize"))}
-if (!isGeneric("surfArea")) {setGeneric("surfaceArea", function(x, ...) standardGeneric("surfaceArea"))}
+if (!isGeneric("surfArea")) {setGeneric("surfArea", function(x, ...) standardGeneric("surfArea"))}
 
 if (!isGeneric("na.omit")) {setGeneric("na.omit", function(object, ...) standardGeneric("na.omit"))}
 if (!isGeneric("catalyze")) {setGeneric("catalyze", function(x, ...) standardGeneric("catalyze"))}

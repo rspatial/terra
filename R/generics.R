@@ -136,11 +136,11 @@ setMethod("cellSize", signature(x="SpatRaster"),
 )
 
 
-setMethod("surfaceArea", signature(x="SpatRaster"),
+setMethod("surfArea", signature(x="SpatRaster"),
 	function(x, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$surface_area(opt)
-		messages(x, "surfaceArea")
+		messages(x, "surfArea")
 	}
 )
 
