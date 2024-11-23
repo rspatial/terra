@@ -25,6 +25,7 @@ Jeff S. Jenness, 2004. Calculating Landscape Surface Area from Digital Elevation
 With edge adjustments. 
 
 From C code in R package "sp" by Barry Rowlingson 2010 <b.rowlingson@lancaster.ac.uk>
+
 Adapted for terra by Robert Hijmans (C++, support for lonlat) 
 */
 
@@ -50,51 +51,43 @@ void sarea(std::vector<double> &heights, const size_t &nrow, const long &ncol, c
 
 // given an nx by ny matrix of heights with single-cell edge border, compute the surface area.
 
-// point values
-	double z1, z2, z3;
-// side lengths
-	double l1, l2, l3; 
-// diagonal length
-	double s2 = sqrt((w[0]*w[0])+(h*h));
-
 // offsets to neighbours
 	std::vector<int> dyv = {-1, -1, -1, 0, 1, 1, 1, 0, -1};
 	std::vector<int> dxv = {-1, 0, 1, 1, 1, 0, -1, -1, -1};
 
-// triangle side lengths
-// first the radial sides
+// triangle diagonal length
+	double s2 = sqrt((w[0]*w[0]) + (h*h));
+// radial side lengths
 	std::vector<double> side = {s2, h, s2, w[0], s2, h, s2, w[0], s2};
-// outer edges
+// outer edges lengths
 	std::vector<double> l3v = {w[0], w[0], h, h, w[0], w[0], h, h};
 
-	size_t outsize = heights.size() - 2*ncol;
-	sa = std::vector<double>(outsize, NAN);
-	size_t cell = 0;
+	sa = std::vector<double>(heights.size() - 2*ncol, NAN);
 
+	size_t cell = 0;
 	for (size_t i=1; i<(nrow-1); i++){
 		if (lonlat) {
 			size_t k = i - 1;
-			double s2 = sqrt((w[k]*w[k])+(h*h));
-			std::vector<double> side = {s2, h, s2, w[k], s2, h, s2, w[k], s2};
-			std::vector<double> l3v = {w[k], w[k], h, h, w[k], w[k], h, h};
+			s2 = sqrt((w[k]*w[k]) + (h*h));
+			side = {s2, h, s2, w[k], s2, h, s2, w[k], s2};
+			l3v = {w[k], w[k], h, h, w[k], w[k], h, h};
 		}
 
 		for (long j=0; j<ncol; j++) {
-			z1 = height(heights, ncol, i, j);
+			double z1 = height(heights, ncol, i, j);
 			if (!std::isnan(z1)) {
-				double cellArea = 0;
+				sa[cell] = 0;
 				for (size_t tri=0; tri<8; tri++){
-					z2 = height(heights, ncol, i+dxv[tri], j+dyv[tri]);
+					double z2 = height(heights, ncol, i+dxv[tri], j+dyv[tri]);
 					// replace missing adjacent values with the current cell value
 					if (std::isnan(z2)) z2=z1;
-					z3 = height(heights, ncol, i+dxv[tri+1], j+dyv[tri+1]);
+					double z3 = height(heights, ncol, i+dxv[tri+1], j+dyv[tri+1]);
 					if (std::isnan(z3)) z3=z1;
-					l1 = 0.5 * sqrt(side[tri] * side[tri] + (z1-z2) * (z1-z2));
-					l2 = 0.5 * sqrt(side[tri+1] * side[tri+1] + (z1-z3) * (z1-z3));
-					l3 = 0.5 * sqrt(l3v[tri] * l3v[tri] + (z2-z3) * (z2-z3));
-					cellArea += triarea(l1, l2, l3);
+					double l1 = 0.5 * sqrt(side[tri] * side[tri] + (z1-z2) * (z1-z2));
+					double l2 = 0.5 * sqrt(side[tri+1] * side[tri+1] + (z1-z3) * (z1-z3));
+					double l3 = 0.5 * sqrt(l3v[tri] * l3v[tri] + (z2-z3) * (z2-z3));
+					sa[cell] += triarea(l1, l2, l3);
 				}
-				sa[cell] = cellArea;
 			}
 			cell++;
 		}	
@@ -144,6 +137,7 @@ SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
 	if (lonlat) {
 		resy = distance_lonlat(0, 0, 0, resy);		
 	} 
+	std::vector<int_64> rows;
 
 	for (size_t i = 0; i < cbs.n; i++) {
 		std::vector<double> v;
@@ -155,7 +149,6 @@ SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
 			v.insert(v.end(), v.end()-nc, v.end());
 		}
 		if (lonlat) {
-			std::vector<int_64> rows;
 			rows.resize(out.bs.nrows[i]);
 			std::iota(rows.begin(), rows.end(), out.bs.row[i]);
 			std::vector<double> y = yFromRow(rows);
