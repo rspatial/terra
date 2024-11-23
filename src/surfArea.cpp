@@ -17,13 +17,15 @@
 
 
 #include "spatRaster.h"
+#include "distance.h"
 
 /* Compute surface area, using method from:
 Jeff S. Jenness, 2004. Calculating Landscape Surface Area from Digital Elevation Models. Wildlife Society Bulletin 32(3):829-839. http://www.jstor.org/stable/3784807
 
 With edge adjustments. 
 
-Adapted by Robert Hijmans from code in R package "sp" by Barry Rowlingson 2010 <b.rowlingson@lancaster.ac.uk>
+From C code in R package "sp" by Barry Rowlingson 2010 <b.rowlingson@lancaster.ac.uk>
+Adapted for terra by Robert Hijmans (C++, support for lonlat) 
 */
 
 inline double height(const std::vector<double> &heights, const long &ncols, const size_t &row, const long &col) {
@@ -44,8 +46,7 @@ inline double triarea(const double &a, const double &b, const double &c) {
 }
 
 
-void sarea(std::vector<double> &heights, const size_t &nrow, const long &ncol, const double &w, const double &h, 
-	std::vector<double> &sa) {
+void sarea(std::vector<double> &heights, const size_t &nrow, const long &ncol, const std::vector<double> &w, const double &h, bool lonlat, std::vector<double> &sa) {
 
 // given an nx by ny matrix of heights with single-cell edge border, compute the surface area.
 
@@ -54,7 +55,7 @@ void sarea(std::vector<double> &heights, const size_t &nrow, const long &ncol, c
 // side lengths
 	double l1, l2, l3; 
 // diagonal length
-	double s2 = sqrt((w*w)+(h*h));
+	double s2 = sqrt((w[0]*w[0])+(h*h));
 
 // offsets to neighbours
 	std::vector<int> dyv = {-1, -1, -1, 0, 1, 1, 1, 0, -1};
@@ -62,15 +63,22 @@ void sarea(std::vector<double> &heights, const size_t &nrow, const long &ncol, c
 
 // triangle side lengths
 // first the radial sides
-	double side[] = {s2, h, s2, w, s2, h, s2, w, s2};
+	std::vector<double> side = {s2, h, s2, w[0], s2, h, s2, w[0], s2};
 // outer edges
-	double l3v[] = {w, w, h, h, w, w, h, h};
+	std::vector<double> l3v = {w[0], w[0], h, h, w[0], w[0], h, h};
 
 	size_t outsize = heights.size() - 2*ncol;
 	sa = std::vector<double>(outsize, NAN);
 	size_t cell = 0;
 
 	for (size_t i=1; i<(nrow-1); i++){
+		if (lonlat) {
+			size_t k = i - 1;
+			double s2 = sqrt((w[k]*w[k])+(h*h));
+			std::vector<double> side = {s2, h, s2, w[k], s2, h, s2, w[k], s2};
+			std::vector<double> l3v = {w[k], w[k], h, h, w[k], w[k], h, h};
+		}
+
 		for (long j=0; j<ncol; j++) {
 			z1 = height(heights, ncol, i, j);
 			if (!std::isnan(z1)) {
@@ -94,14 +102,9 @@ void sarea(std::vector<double> &heights, const size_t &nrow, const long &ncol, c
 }
 
 
-
 SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
 
 	SpatRaster out = geometry(1, false);
-	if (is_lonlat()) {
-		out.setError("not yet implemented for lonlat data");
-		return out;
-	}
 	
 	if (!hasValues()) {
 		out.setError("cannot compute surfaceArea for a raster with no values");
@@ -133,8 +136,15 @@ SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
 		cbs.nrows[i] += 1;
 	}
 	
-	size_t nc = ncol();
-	std::vector<double> wh = resolution();
+	size_t nc = ncol();	
+	bool lonlat = is_lonlat();
+	double xr = xres();	
+	std::vector<double> resx = { xr };	
+	double resy = yres();
+	if (lonlat) {
+		resy = distance_lonlat(0, 0, 0, resy);		
+	} 
+
 	for (size_t i = 0; i < cbs.n; i++) {
 		std::vector<double> v;
 		readBlock(v, cbs, i);
@@ -144,8 +154,15 @@ SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
 		if (i == (cbs.n - 1)) {
 			v.insert(v.end(), v.end()-nc, v.end());
 		}
+		if (lonlat) {
+			std::vector<int_64> rows;
+			rows.resize(out.bs.nrows[i]);
+			std::iota(rows.begin(), rows.end(), out.bs.row[i]);
+			std::vector<double> y = yFromRow(rows);
+			resx = distance_lon(xr, y);
+		}
 		std::vector<double> sa;
-		sarea(v, out.bs.nrows[i]+2, nc, wh[0], wh[1], sa);
+		sarea(v, out.bs.nrows[i]+2, nc, resx, resy, lonlat, sa);
 		if (!out.writeBlock(sa, i)) return out;
 	}
 	readStop();

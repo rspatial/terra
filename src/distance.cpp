@@ -40,14 +40,17 @@ double distance_lonlat(const double &lon1, const double &lat1, const double &lon
 std::vector<double> distance_lonlat(std::vector<double> &lon1, std::vector<double> &lat1, std::vector<double> &lon2, std::vector<double> &lat2) {
 	double a = 6378137.0;
 	double f = 1/298.257223563;
-
-    recycle(lon1, lon2);
-    recycle(lat1, lat2);
-	std::vector<double> r (lon1.size());
+	
+	size_t n = std::max(std::max(std::max(lon1.size(), lat1.size()), lon2.size()), lat2.size());
+    recycle(lon1, n);
+    recycle(lon2, n);
+    recycle(lat1, n);
+    recycle(lat2, n);
+	
+	std::vector<double> r(n);
 	double azi1, azi2;
 	struct geod_geodesic g;
 	geod_init(&g, a, f);
-	size_t n = lat1.size();
   	for (size_t i=0; i < n; i++) {
 		geod_inverse(&g, lat1[i], lon1[i], lat2[i], lon2[i], &r[i], &azi1, &azi2);
 	}
@@ -59,6 +62,22 @@ std::vector<double> distance_lonlat_vd(std::vector<double> &lon1, std::vector<do
 	std::vector<double> vlon2(lon1.size(), lon2);
 	std::vector<double> vlat2(lat1.size(), lat2);
     return distance_lonlat(lon1, lat1, vlon2, vlat2);
+}
+
+
+std::vector<double> distance_lon(double &lon, std::vector<double> &lat) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	
+	size_t n = lat.size();
+	std::vector<double> r(n);
+	double azi1, azi2;
+	struct geod_geodesic g;
+	geod_init(&g, a, f);
+  	for (size_t i=0; i < n; i++) {
+		geod_inverse(&g, lat[i], 0, lat[i], lon, &r[i], &azi1, &azi2);
+	}
+  	return r;
 }
 
 
