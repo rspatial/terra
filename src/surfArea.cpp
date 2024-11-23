@@ -80,9 +80,9 @@ void sarea(std::vector<double> &heights, const size_t &nrow, const long &ncol, c
 				for (size_t tri=0; tri<8; tri++){
 					double z2 = height(heights, ncol, i+dxv[tri], j+dyv[tri]);
 					// replace missing adjacent values with the current cell value
-					if (std::isnan(z2)) z2=z1;
+					if (std::isnan(z2)) z2 = z1;
 					double z3 = height(heights, ncol, i+dxv[tri+1], j+dyv[tri+1]);
-					if (std::isnan(z3)) z3=z1;
+					if (std::isnan(z3)) z3 = z1;
 					double l1 = 0.5 * sqrt(side[tri] * side[tri] + (z1-z2) * (z1-z2));
 					double l2 = 0.5 * sqrt(side[tri+1] * side[tri+1] + (z1-z3) * (z1-z3));
 					double l3 = 0.5 * sqrt(l3v[tri] * l3v[tri] + (z2-z3) * (z2-z3));
@@ -98,14 +98,16 @@ void sarea(std::vector<double> &heights, const size_t &nrow, const long &ncol, c
 SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
 
 	SpatRaster out = geometry(1, false);
-	
+	bool lonlat = is_lonlat();
+	if (lonlat) {
+		out.setError("not implemented for lonlat rasters");
+		return out;		
+	}
 	if (!hasValues()) {
 		out.setError("cannot compute surfaceArea for a raster with no values");
 		return out;
 	}
-
-	size_t nl = nlyr();
-	if (nl != 1) {
+	if (nlyr() != 1) {
 		out.setError("can only compute surfaceArea for a single raster layer");
 		return out;		
 	}
@@ -130,7 +132,6 @@ SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
 	}
 	
 	size_t nc = ncol();	
-	bool lonlat = is_lonlat();
 	double xr = xres();	
 	std::vector<double> resx = { xr };	
 	double resy = yres();
