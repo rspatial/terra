@@ -37,10 +37,13 @@ setMethod("weighted.mean", signature(x="SpatRaster", w="SpatRaster"),
 	}
 )
 
-
-
 setMethod("patches", signature(x="SpatRaster"),
-	function(x, directions=4, zeroAsNA=FALSE, allowGaps=TRUE, filename="", ...) {
+	function(x, directions=4, values=FALSE, zeroAsNA=FALSE, allowGaps=TRUE, filename="", ...) {
+		if (values) {
+			opt <- spatOptions(filename, ...)
+			x@ptr <- x@ptr$patches2(directions, opt)
+			return(messages(x, "patches"))			
+		}
 		if (allowGaps) {
 			opt <- spatOptions(filename, ...)
 			x@ptr <- x@ptr$patches(directions[1], zeroAsNA[1], opt)

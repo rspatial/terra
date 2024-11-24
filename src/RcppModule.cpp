@@ -6,7 +6,6 @@
 #include "NA.h"
 #include "spatTime.h"
 //#include "spatVector2.h"
-
 //static void SpatRaster_finalizer( SpatRaster* ptr ){
 //}
 
@@ -848,6 +847,7 @@ RCPP_MODULE(spat){
 		.method("bilinearValues", &SpatRaster::bilinearValues)
 
 		.method("patches", &SpatRaster::clumps)
+		.method("patches2", &SpatRaster::patches)
 		.method("boundaries", &SpatRaster::edges)
 		.method("buffer", &SpatRaster::buffer)
 		.method("gridDistance", &SpatRaster::gridDistance)

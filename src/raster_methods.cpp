@@ -5108,6 +5108,8 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 			double mnv = vmin(mn, true);
 			double mxv = vmax(mx, true);
 			rcl[0] = seq_steps(mnv, mxv, breaks);
+			lowest = true;
+
 		}
 
 		size_t rn = rcl[0].size();

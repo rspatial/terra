@@ -654,6 +654,8 @@ class SpatRaster {
 		SpatRaster direction_vector(SpatVector p, bool from, bool degrees, SpatOptions &opt);
 		
 		SpatRaster clumps(int directions, bool zeroAsNA, SpatOptions &opt);
+		SpatRaster patches(size_t directions, SpatOptions &opt);
+
 
 		SpatRaster edges(bool classes, std::string type, unsigned directions, double falseval, SpatOptions &opt);
 		SpatRaster extend(SpatExtent e, std::string snap, double fill, SpatOptions &opt);
