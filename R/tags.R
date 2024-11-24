@@ -79,3 +79,65 @@ setMethod("metags<-", signature(x="SpatRaster"),
 	}
 )
 
+
+
+setMethod("metags", signature(x="SpatRasterDataset"),
+	function(x, dataset=NULL, name=NULL) {
+		if (!is.null(dataset)) {
+			return(metags(x[[dataset]], name=name))
+		} else {
+			v <- x@ptr$getTags()
+			m <- matrix(v, ncol=2, byrow=TRUE, dimnames = list(NULL, c("name", "value")))
+			out <- m[,2]
+			names(out) <- m[,1]
+			if (!is.null(name)) {
+				out <- out[name]
+			} 
+		}
+		out
+	}
+)
+
+
+setMethod("metags<-", signature(x="SpatRasterDataset"),
+	function(x, ..., dataset=NULL, value) {
+		if (is.null(value)) {
+			if (!is.null(dataset)) {
+				value <- matrix(x[[dataset]]@ptr$getTags(), ncol=2, byrow=TRUE)
+			} else {
+				value <- matrix(x@ptr$getTags(), ncol=2, byrow=TRUE)
+			}
+			value[,2] <- ""
+			value[is.na(value)] <- ""
+		} else if (NCOL(value) == 1) {
+			if (!is.null(names(value)) && (!any(grepl("=", value)))) {
+				value <- cbind(names(value), value)	
+			} else {	
+				value <- strsplit(value, "=")
+				i <- sapply(value, length) == 1
+				if (length(i) > 0) {
+					j <- which(i)
+					for (i in j) value[[i]] <- c(value[[i]], "")
+				}
+				i <- sapply(value, length) == 2
+				value <- do.call(rbind, value[i])
+			}
+		} else if (NCOL(value) != 2) {
+			error("metags<-", "expecting a vector with 'name=value' or a two column matrix")
+		}
+		value[is.na(value[,2]), 2] <- ""
+		value <- na.omit(value)
+		x@ptr <- x@ptr$deepcopy()
+		if (NROW(value) > 0) {
+			if (!is.null(dataset)) {
+				x[[dataset]]@ptr$addTag(value[,1], value[,2])
+			} else {
+				sapply(1:nrow(value), function(i) {
+						x@ptr$addTag(value[i,1], value[i,2])
+					})
+			}
+		}
+		x
+	}
+)
+

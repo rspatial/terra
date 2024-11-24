@@ -2,14 +2,16 @@
 
 \alias{metags}
 \alias{metags,SpatRaster-method}
+\alias{metags,SpatRasterDataset-method}
 \alias{metags<-}
 \alias{metags<-,SpatRaster-method}
+\alias{metags<-,SpatRasterDataset-method}
 
   
 \title{Set or get metadata}
 
 \description{
-You can set arbitrary metadata to a SpatRaster using "name=value" tags. 
+You can set arbitrary metadata to (layers of) a SpatRaster using "name=value" tags. When wring a SpatRaster to a GTiff file, these tags are written to file.
 }
 
 \usage{
