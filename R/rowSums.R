@@ -1,7 +1,7 @@
-Author: Robert J. Hijmans
-Date : April 2015
-Version 1.0
-Licence GPL v3
+#Author: Robert J. Hijmans
+#Date : April 2015
+#Version 1.0
+#Licence GPL v3
 
 
 setMethod("rowSums", signature(x="SpatRaster"), 
