@@ -2,10 +2,10 @@
 
 hexcols <- function(cols, alpha=FALSE) {
 	if (alpha) {
-		m <- col2rgb(cols, alpha=TRUE)/255
+		m <- grDevices::col2rgb(cols, alpha=TRUE)/255
 		rgb(m[1,], m[2,], m[3,], m[4,])
 	} else {
-		m <- col2rgb(cols, alpha=FALSE)/255
+		m <- grDevices::col2rgb(cols, alpha=FALSE)/255
 		rgb(m[1,], m[2,], m[3,])	
 	}
 }

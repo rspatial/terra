@@ -318,32 +318,36 @@ setMethod("buffer", signature(x="SpatVector"),
 )
 
 
-
-setMethod("crop", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, ext=FALSE) {
-		if (ext) {
-			return(crop(x, ext(y)))
-		}
-		x@ptr <- x@ptr$crop_vct(y@ptr)
-		messages(x, "crop")
-	}
-)
-
 setMethod("crop", signature(x="SpatVector", y="ANY"),
 	function(x, y) {
-		y <- ext(y)
-		if (geomtype(x) == "points") {
+		#if (ext) {
+		#	y <- ext(y)
+		#	x@ptr <- x@ptr$crop_ext(y@ptr, TRUE)
+		#	return(x)
+		#}
+		if (inherits(y, "SpatVector")) {
+			x@ptr <- x@ptr$crop_vct(y@ptr)
+		} else {
+			if (!inherits(y, "SpatExtent")) {
+				y <- try(ext(y), silent=TRUE)
+				if (inherits(y, "try-error")) {
+					stop("y does not have a SpatExtent")
+				}
+			}
 			## crop_ext does not include points on the borders
 			## https://github.com/rspatial/raster/issues/283
 			#x@ptr <- x@ptr$crop_ext(y@ptr)
-			y <- as.polygons(y)
-			x@ptr <- x@ptr$crop_vct(y@ptr)
-		} else {
-			x@ptr <- x@ptr$crop_ext(y@ptr, TRUE)
+			if (geomtype(x) == "points") {
+				y <- as.polygons(y)
+				x@ptr <- x@ptr$crop_vct(y@ptr)
+			} else {
+				x@ptr <- x@ptr$crop_ext(y@ptr, TRUE)
+			}
 		}
 		messages(x, "crop")
 	}
 )
+
 
 
 setMethod("convHull", signature(x="SpatVector"),

@@ -17,7 +17,8 @@ surfArea(x, filename="", ...)
 
 \arguments{
   \item{x}{SpatRaster with elevation values. Currently the raster CRS must be planar and have the same distance units (e.g. m) as the elevation values}
-
+  \item{filename}{character. Output filename}
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{SpatRaster}

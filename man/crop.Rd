@@ -6,8 +6,7 @@
 \alias{crop,SpatRaster-method}
 \alias{crop,SpatRasterDataset-method}
 \alias{crop,SpatRasterCollection-method}
-\alias{crop,SpatVector,SpatVector-method}
-\alias{crop,SpatVector,ANY-method}
+\alias{crop,SpatVector-method}
 \alias{crop,SpatGraticule-method}
 
 
@@ -30,9 +29,7 @@ You can crop a SpatVector with another SpatVector. If these are not polygons, th
 
 \S4method{crop}{SpatRasterCollection}(x, y, snap="near", extend=FALSE)
 
-\S4method{crop}{SpatVector,SpatVector}(x, y, ext=FALSE)
-
-\S4method{crop}{SpatVector,ANY}(x, y)
+\S4method{crop}{SpatVector}(x, y)
 
 \S4method{crop}{SpatGraticule}(x, y)
 }
