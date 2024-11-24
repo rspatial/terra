@@ -12,7 +12,7 @@ It is often said that if Wales was flattened out it would have an area bigger th
 }
 
 \usage{
-surfArea(x, filename="", ...)
+\S4method{surfArea}{SpatRaster}(x, filename="", ...)
 }
 
 \arguments{
