@@ -248,7 +248,7 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 
 
-SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool units, bool keeptags) {
+SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool units, bool tags) {
 	SpatRasterSource s;
 	//s.values.resize(0);
 	s.nrow = nrow();
@@ -295,21 +295,27 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 		if (un.size() == 1) {
 			s.source_name_long = un[0];
 		}
+		if (tags) {
+			s.lyrTags = getAllLyrTags();
+		}
+
+
 	} else {
 		for (size_t i=0; i < s.nlyr; i++) {
 			nms.push_back("lyr" + std::to_string(i+1));
 		}
 	}
 	s.names = nms;
+
+
 	SpatRaster out(s);
 	if (properties) {
 		out.rgb = rgb;
 		out.rgbtype = rgbtype;
 		out.rgblyrs = rgblyrs;
 	}	
-	if (keeptags) {
-		out.tags = tags;
-		out.lyrTags = lyrTags;
+	if (tags) {
+		out.user_tags = user_tags;
 	}
 	return out;
 }
@@ -2615,35 +2621,43 @@ bool SpatRaster::addTag(std::string name, std::string value) {
 	if (value == "") {
 		return removeTag(name);
 	} else if (name != "") {
-		tags[name] = value;
+		user_tags[name] = value;
 		return true;
 	} 
 	return false;
 }
 
 bool SpatRaster::removeTag(std::string name) {
-	std::map<std::string, std::string>::iterator it = tags.find(name);
-	if (it == tags.end()) return false;
-	tags.erase(it);
+	std::map<std::string, std::string>::iterator it = user_tags.find(name);
+	if (it == user_tags.end()) return false;
+	user_tags.erase(it);
 	return true;
 }
 
 std::string SpatRaster::getTag(std::string name) {
-	std::map<std::string, std::string>::iterator it = tags.find(name);
-	if (it != tags.end()) return it->second;
+	std::map<std::string, std::string>::iterator it = user_tags.find(name);
+	if (it != user_tags.end()) return it->second;
 	return "";
 }
 
 std::vector<std::string> SpatRaster::getTags() {
 	std::vector<std::string> out;
-	out.reserve(2 * tags.size());
-	for(auto e : tags) {
+	out.reserve(2 * user_tags.size());
+	for (auto e : user_tags) {
 		out.push_back(e.first);
 		out.push_back(e.second);
 	}
 	return out;
 }
 
+
+
+void SpatRasterSource::addLyrTag(size_t slyr, std::string name, std::string value) {
+	if (name != "") {
+		if (slyr >= lyrTags.size()) lyrTags.resize(slyr+1);
+		lyrTags[slyr][name] = value;
+	} 
+}
 
 
 void SpatRaster::addLyrTags(std::vector<size_t> lyrs, std::vector<std::string> names, std::vector<std::string> values) {
@@ -2663,32 +2677,34 @@ void SpatRaster::addLyrTags(std::vector<size_t> lyrs, std::vector<std::string> n
 		if (values[i] == "") {
 			removeLyrTag(lyrs[i], names[i]);
 		} else {
-			if (lyrs[i] >= lyrTags.size()) lyrTags.resize(lyrs[i]+1);
-			if (names[i] != "") {
-				lyrTags[lyrs[i]][names[i]] = values[i];
-			} 
+			std::vector<size_t> sl = findLyr(lyrs[i]);
+			source[sl[0]].addLyrTag(sl[1], names[i], values[i]);
 		}
 	}
 }
 
 bool SpatRaster::removeLyrTag(size_t lyr, std::string name) {
-	if (lyr >= lyrTags.size()) return false;
-	std::map<std::string, std::string>::iterator it = lyrTags[lyr].find(name);
-	if (it == lyrTags[lyr].end()) return false;
-	lyrTags[lyr].erase(it);
+	std::vector<size_t> sl = findLyr(lyr);
+	if (sl[1] >= source[sl[0]].lyrTags.size()) return false;
+	std::map<std::string, std::string>::iterator it = source[sl[0]].lyrTags[sl[1]].find(name);
+	if (it == source[sl[0]].lyrTags[sl[1]].end()) return false;
+	source[sl[0]].lyrTags[sl[1]].erase(it);
 	return true;
 }
 
 bool SpatRaster::removeLyrTags() {
-	lyrTags.resize(0);
+	for (size_t i=0; i<nsrc(); i++) {
+		source[i].lyrTags.resize(0);
+	}
 	return true;
 }
 
 
 std::string SpatRaster::getLyrTag(size_t lyr, std::string name) {
-	if (lyr >= lyrTags.size()) return "";
-	std::map<std::string, std::string>::iterator it = lyrTags[lyr].find(name);
-	if (it != lyrTags[lyr].end()) return it->second;
+	std::vector<size_t> sl = findLyr(lyr);
+	if (sl[1] >= source[sl[0]].lyrTags[sl[1]].size()) return "";
+	std::map<std::string, std::string>::iterator it = source[sl[0]].lyrTags[sl[1]].find(name);
+	if (it != source[sl[0]].lyrTags[sl[1]].end()) return it->second;
 	return "";
 }
 
@@ -2696,8 +2712,9 @@ std::vector<std::string> SpatRaster::getLyrTags(std::vector<size_t> lyrs) {
 	std::vector<std::string> out;
 	out.reserve(lyrs.size());
 	for (size_t i=0; i<lyrs.size(); i++) {
-		if (lyrs[i] < lyrTags.size()) {
-			for(auto e : lyrTags[lyrs[i]]) {
+		std::vector<size_t> sl = findLyr(lyrs[i]);
+		if (sl[1] < source[sl[0]].lyrTags.size()) {
+			for(auto e : source[sl[0]].lyrTags[sl[1]]) {
 				out.push_back(std::to_string(lyrs[i]));
 				out.push_back(e.first);
 				out.push_back(e.second);
@@ -2706,4 +2723,25 @@ std::vector<std::string> SpatRaster::getLyrTags(std::vector<size_t> lyrs) {
 	}
 	return out;
 }
+
+std::vector<std::map<std::string, std::string>> SpatRaster::getAllLyrTags() {
+	std::vector<std::map<std::string, std::string>> out;
+	bool found = false;
+	for (size_t i=0; i<nsrc(); i++) {
+		if (source[i].lyrTags.size() > 0) {
+			found = true;
+			break;
+		}
+	}	
+	if (found) {
+		out.reserve(nlyr());
+		for (size_t i=0; i<nsrc(); i++) {
+			std::vector<std::map<std::string, std::string>> tags = source[i].lyrTags;
+			tags.resize(source[i].nlyr);
+			out.insert(out.end(), tags.begin(), tags.end());
+		}
+	}
+	return out;
+}
+
 

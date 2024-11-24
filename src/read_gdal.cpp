@@ -969,16 +969,16 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			//}
 			
 			
-			char **meterra = poBand->GetMetadata("LYR_TAGS");
+			char **meterra = poBand->GetMetadata("USER_TAGS");
 			if (meterra != NULL) {
 //				std::vector<std::string> meta;
-				for (size_t i=0; meterra[i] != NULL; i++) {
-					std::string s = meterra[i];
-					size_t pos = s.find("=");
+				for (size_t j=0; meterra[j] != NULL; j++) {
+					std::string ms = meterra[j];
+					size_t pos = ms.find("=");
 					if (pos != std::string::npos) {
-						std::string name = s.substr(0, pos);
-						std::string value = s.substr(pos+1); 
-						addLyrTags({i}, {name}, {value});
+						std::string name = ms.substr(0, pos);
+						std::string value = ms.substr(pos+1); 
+						s.addLyrTag(i, name, value);
 					}
 				}
 			}

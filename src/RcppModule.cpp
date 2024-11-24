@@ -1049,6 +1049,9 @@ RCPP_MODULE(spat){
 		.method("extractCell", &SpatRasterStack::extractCell)
 		.method("extractVector", &SpatRasterStack::extractVector)
 		.method("crop", &SpatRasterStack::crop)
+		.method("addTag", &SpatRasterStack::addTag)
+		.method("getTags", &SpatRasterStack::getTags)
+
 	;
 }
 

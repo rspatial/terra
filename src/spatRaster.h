@@ -177,6 +177,10 @@ class SpatRasterSource {
 		void set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg);
 		void set_names_time_grib(std::vector<std::vector<std::string>> bandmeta, std::string &msg);
 		void set_names_time_tif(std::vector<std::vector<std::string>> bandmeta, std::string &msg);
+		
+		std::vector<std::map<std::string, std::string>> lyrTags;
+		void addLyrTag(size_t slyr, std::string name, std::string value);
+		
 };
 
 
@@ -231,20 +235,19 @@ class SpatRaster {
 		std::string getError() { return msg.getError();}
 		std::string getMessage() { return msg.getMessage();}
 
-		std::map<std::string, std::string> tags;
+		std::map<std::string, std::string> user_tags;
 		bool addTag(std::string name, std::string value);
 		bool removeTag(std::string name);
 		std::string getTag(std::string name);
 		std::vector<std::string> getTags();
 
-		std::vector<std::map<std::string, std::string>> lyrTags;
 		void addLyrTags(std::vector<size_t> lyrs, std::vector<std::string> names, std::vector<std::string> values);
 
 		bool removeLyrTags();
 		bool removeLyrTag(size_t lyr, std::string name);
 		std::string getLyrTag(size_t lyr, std::string name);
 		std::vector<std::string> getLyrTags(std::vector<size_t> lyrs);
-
+		std::vector<std::map<std::string, std::string>> getAllLyrTags();
 		//double NA = std::numeric_limits<double>::quiet_NaN();
 
 		size_t ncol();

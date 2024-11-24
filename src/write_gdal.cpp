@@ -615,7 +615,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		}
 	}
 
-
 	std::vector<std::string> tstr, ustr;
 	bool wtime = false;
 	bool have_date_time=false;
@@ -671,8 +670,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		if (driver == "GTiff") {
 			std::vector<std::string> m = getLyrTags({i});
 			if (m.size() > 0) {
-				for (size_t j=0; j<m.size(); j+=2) {
-					poBand->SetMetadataItem(m[j].c_str(), m[j+1].c_str());
+				for (size_t j=0; j<m.size(); j+=3) {
+					poBand->SetMetadataItem(m[j+1].c_str(), m[j+2].c_str(), "USER_TAGS");
 				}
 			}
 			if (wtime) {
