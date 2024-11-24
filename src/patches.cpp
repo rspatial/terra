@@ -54,6 +54,11 @@ SpatRaster SpatRaster::patches(size_t dirs, SpatOptions &opt) {
 		return out;		
 	}
 
+	if (!canProcessInMemory(opt)) {
+		out.setError("cannot do this for large rasters");
+		return out;		
+	}
+
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -63,22 +68,22 @@ SpatRaster SpatRaster::patches(size_t dirs, SpatOptions &opt) {
 		return out;
 	}
 
-	
     size_t patch = 1; 
-
 	size_t nc = ncol();
 	std::vector<double> v;
-	std::vector<double> patches(out.bs.nrows[0] * nc, NAN);
 
+/*
+	std::vector<double> patches(out.bs.nrows[0] * nc, NAN);
 	for (size_t i = 0; i < out.bs.n; i++) {
 		if (i > 0) {
 			readValues(v, out.bs.row[i]-1, out.bs.nrows[i]+1, 0, nc);
-			patches = std::vector<double>(patches.end()-nc, patches.end());
-			patches.resize(v.size(), NAN);
-//			for (size_t i=0; i<(nc); i++) {
-			for (size_t i=nc; i<(2*nc); i++) {
-				if (!std::isnan(v[i])) {
-					patch_search(v, patches, i, nc, patches[i], dirs); 
+
+			std::vector<double> old_p(patches.end()-nc, patches.end());
+			patches = std::vector<double>(v.size(), NAN);
+
+			for (size_t j=0; j<nc; j++) {
+				if (!std::isnan(v[j])) {
+					patch_search(v, patches, j, nc, old_p[j], dirs); 
 				}
 			}
 			patches.erase(patches.begin(), patches.begin()+nc);
@@ -86,15 +91,26 @@ SpatRaster SpatRaster::patches(size_t dirs, SpatOptions &opt) {
 		} else {
 			readBlock(v, out.bs, i);
 		}
-
-		for (size_t i = 0; i < v.size(); i++) {
-			if ((!std::isnan(v[i])) && std::isnan(patches[i])) {
-				patch_search(v, patches, i, nc, patch, dirs); 
+		for (size_t j=0; j<v.size(); j++) {
+			if ((!std::isnan(v[j])) && std::isnan(patches[j])) {
+				patch_search(v, patches, j, nc, patch, dirs); 
 				patch++; 
 			}
 		}
+		
 		if (!out.writeBlock(patches, i)) return out;
 	}
+*/
+
+	std::vector<double> patches(nrow() * nc, NAN);
+	readValues(v, 0, nrow(), 0, nc);
+	for (size_t j=0; j<v.size(); j++) {
+		if ((!std::isnan(v[j])) && std::isnan(patches[j])) {
+			patch_search(v, patches, j, nc, patch, dirs); 
+			patch++; 
+		}
+	}
+	if (!out.writeValues(patches, 0, nrow())) return out;
 	
 	readStop();
 	out.writeStop();
