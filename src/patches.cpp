@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2023  Robert J. Hijmans
+// Copyright (c) 2018-2025  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -16,8 +16,6 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRaster.h"
-#include "distance.h"
-
 
 void patch_search(const std::vector<double> &m, std::vector<double> &patches, const int &i, const long &ncol, const int &patch, const size_t &dirs) {
 // DFS
@@ -74,10 +72,11 @@ SpatRaster SpatRaster::patches(size_t dirs, SpatOptions &opt) {
 
 	for (size_t i = 0; i < out.bs.n; i++) {
 		if (i > 0) {
-			readValues(v, out.bs.row[i]-1, out.bs.nrows[i]+1, 0, ncol());
+			readValues(v, out.bs.row[i]-1, out.bs.nrows[i]+1, 0, nc);
 			patches = std::vector<double>(patches.end()-nc, patches.end());
 			patches.resize(v.size(), NAN);
-			for (size_t i = 0; i < nc; i++) {
+//			for (size_t i=0; i<(nc); i++) {
+			for (size_t i=nc; i<(2*nc); i++) {
 				if (!std::isnan(v[i])) {
 					patch_search(v, patches, i, nc, patches[i], dirs); 
 				}

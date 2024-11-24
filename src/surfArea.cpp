@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2023  Robert J. Hijmans
+// Copyright (c) 2018-2025  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -24,7 +24,7 @@ Jeff S. Jenness, 2004. Calculating Landscape Surface Area from Digital Elevation
 
 With edge adjustments. 
 
-From C code in R package "sp" by Barry Rowlingson 2010 <b.rowlingson@lancaster.ac.uk>
+From C code in R package "sp" by Barry Rowlingson <b.rowlingson@lancaster.ac.uk> (copyright 2010)
 
 Adapted for terra by Robert Hijmans (C++, support for lonlat) 
 */
