@@ -1,7 +1,5 @@
-\name{gridDistance}
+\name{gridDist}
 
-\alias{gridDistance}
-\alias{gridDistance,SpatRaster-method}
 \alias{gridDist}
 \alias{gridDist,SpatRaster-method}
 

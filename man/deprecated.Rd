@@ -1,9 +1,10 @@
 \name{deprecated}
 
-\alias{setCats}
-\alias{setCats,SpatRaster-method}
 \alias{area}
 \alias{area,SpatRaster-method}
+\alias{gridDistance}
+\alias{gridDistance,SpatRaster-method}
+
 
 \title{deprecated methods}
 
@@ -12,9 +13,10 @@ These methods are deprecated and will be removed in future versions
 }
 
 \usage{
-\S4method{setCats}{SpatRaster}(x, ...)
-
 \S4method{area}{SpatRaster}(x, ...)
+
+\S4method{gridDistance}{SpatRaster}(x, ...)
+
 }
 
 \arguments{
