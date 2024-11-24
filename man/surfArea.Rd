@@ -31,9 +31,8 @@ Barry Rowlingson <b.rowlingson@lancaster.ac.uk>
 }
 
 \examples{
-f <- system.file("ex/elev.tif", package="terra")
-r <- rast(f)
-surfArea(r)
+v <- rast(volcano, crs="local")
+x <- terra::surfArea(v)
 }
 
 \keyword{spatial}
