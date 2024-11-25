@@ -12,10 +12,10 @@ setMethod("rowSums", signature(x="SpatRaster"),
 		readStart(x)
 		on.exit(readStop(x))
 		b <- blocks(x, n=4)
-		s <- list()
+		s <- vector("list", b$n)
 		for (i in 1:b$n) {
 			v <- readValues(x, row=b$row[i], nrows=b$nrows[i])
-			s[[i]] <- .colSums(v, nc, b$nrows[i]*nl, na.rm=na.rm, ...)
+			s[[i]] <- .colSums(v, nc, b$nrows[i]*nl, na.rm=na.rm)
 		}
 		s <- t(matrix(unlist(s), nrow=nl, byrow=TRUE))
 		colnames(s) <- names(x)
@@ -37,7 +37,7 @@ setMethod("colSums", signature(x="SpatRaster"),
 			for (j in 1:nl) {
 				k <- (j-1) * nc + 1
 				k <- k:(k+nc-1)
-				s[i, k] <- .colSums(matrix(v[,j], nrow=b$nrows[i], byrow=TRUE), b$nrows[i], nc, na.rm=na.rm, ...)
+				s[i, k] <- .colSums(matrix(v[,j], nrow=b$nrows[i], byrow=TRUE), b$nrows[i], nc, na.rm=na.rm)
 			}
 		}
 		s <- matrix(.colSums(s, nrow(s), ncol(s), na.rm=na.rm), ncol=nl)
@@ -56,10 +56,10 @@ setMethod("rowMeans", signature(x="SpatRaster"),
 		readStart(x)
 		on.exit(readStop(x))
 		b <- blocks(x, n=4)
-		s <- list()
+		s <- vector("list", b$n)
 		for (i in 1:b$n) {
 			v <- readValues(x, row=b$row[i], nrows=b$nrows[i])
-			s[[i]] <- .colMeans(v, nc, b$nrows[i]*nl, na.rm=na.rm, ...)
+			s[[i]] <- .colMeans(v, nc, b$nrows[i]*nl, na.rm=na.rm)
 		}
 		s <- t(matrix(unlist(s), nrow=nl, byrow=TRUE))
 		colnames(s) <- names(x)
@@ -81,7 +81,7 @@ setMethod("colMeans", signature(x="SpatRaster"),
 			for (j in 1:nl) {
 				k <- (j-1) * nc + 1
 				k <- k:(k+nc-1)
-				s[i, k] <- .colMeans(matrix(v[,j], nrow=b$nrows[i], byrow=TRUE), b$nrows[i], nc, na.rm=na.rm, ...)
+				s[i, k] <- .colMeans(matrix(v[,j], nrow=b$nrows[i], byrow=TRUE), b$nrows[i], nc, na.rm=na.rm)
 			}
 		}
 		s <- matrix(.colSums(s, nrow(s), ncol(s), na.rm=na.rm), ncol=nl)

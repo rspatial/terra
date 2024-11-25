@@ -703,6 +703,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	SpatRaster tmp;
 	SpatOptions topt(opt);
 
+	char** papszOptions = NULL;
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		if (out.bs.n > 1) {
 			double halfres = tmp.yres() / 2;
@@ -732,17 +734,15 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	
 		if (i==1) for (double &d : values) d = std::isnan(d) ? naval : d;
 
-		char** papszOptions = NULL;
 		CPLErr err;
 		if (ispol && touches && (nGeoms > 1)) {
 			// first to get the touches
-			papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE");
+			if (i == 0) papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE");
 			err = GDALRasterizeGeometries(rstDS,
 					static_cast<int>(bands.size()), &(bands[0]),
 					static_cast<int>(ogrGeoms.size()),
 					(OGRGeometryH *) &(ogrGeoms[0]),
 					NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
-			CSLDestroy(papszOptions);
 
 			if ( err != CE_None ) {
 				tmp.setError("rasterization failed");
@@ -758,10 +758,12 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 					NULL, NULL, &(values[0]), NULL, NULL, NULL);
 
 		} else {
-			if (touches) {
-				papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE");
-			} else if (add) {
-				papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD");
+			if (i == 0)  {
+				if (touches) {
+					papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE");
+				} else if (add) {
+					papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD");
+				}
 			}
 			err = GDALRasterizeGeometries(rstDS,
 					static_cast<int>(bands.size()), &(bands[0]),
@@ -769,7 +771,6 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 					(OGRGeometryH *) &(ogrGeoms[0]),
 					NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
 
-			CSLDestroy(papszOptions);
 		}
 
 		if ( err != CE_None ) {
@@ -789,14 +790,14 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		if (!out.writeBlock(v, i)) return out;
 	}
 	
-	if (update) readStop();
-	out.writeStop();
+	CSLDestroy(papszOptions);	
 	for (size_t i=0; i<ogrGeoms.size(); i++) {
 		OGR_G_DestroyGeometry(ogrGeoms[i]);
 	}
-	// if (rstDS != NULL) GDALClose(rstDS);
-	if (hasError) return tmp; 
+	if (update) readStop();
+	out.writeStop();
 	
+	if (hasError) return tmp; 
 		
 	return out;
 }

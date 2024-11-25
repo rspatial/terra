@@ -5,4 +5,4 @@ z <- rasterize(v, r, cover = TRUE, by = "ID_2")
 v <- unlist(z[30*75+28])
 e <- c(0.01538462, NA, NA, NA, 0.9846154, NA, NA, NA, NA, NA, NA, NA)
 
-tinytest::expect_equivalent(v, e, tolerance=2e-07)
+expect_equivalent(v, e, tolerance=2e-07)
