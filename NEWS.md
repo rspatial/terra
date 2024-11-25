@@ -1,12 +1,29 @@
-# version 1.8-1
+# version 1.8-2
 
 ## bug fixes
+
+- `spatSample(method='stratified', ext=e)` returned the wrong sampling coordinates [#1628](https://github.com/rspatial/terra/issues/1628) by Barnabas Harris
+- transparency (alpha) did not work with RGB plotting. [#1642](https://github.com/rspatial/terra/issues/1642) by Timothée Giraud.
+- rasterization failed on very large rasters [#1636](https://github.com/rspatial/terra/issues/1636) by Mary Fisher, [#1463](https://github.com/rspatial/terra/issues/1463) by Nic Spono and [#1281](https://github.com/rspatial/terra/issues/1281) by Sebastian Dunnett
+- `tmpFiles` only looked in the default temp files folder [#1630](https://github.com/rspatial/terra/issues/1630) by smckenzie1986
+- `where.min` did not work well if there were negative values [#1634](https://github.com/rspatial/terra/issues/1634) by Michael Sumner.
+
 
 ## enhancements
 
 - improved documentation of `writeVector` overwrite when using layers. [#1573](https://github.com/rspatial/terra/issues/1573) by Todd West
+- improved treatment of (supposedly) flipped rasters by Timothée Giraud [#1627](https://github.com/rspatial/terra/issues/1627) and fchianucci [#1646](https://github.com/rspatial/terra/issues/1646)
+- added `map.pal("random")` [#1631](https://github.com/rspatial/terra/issues/1631) by Agustin Lobo
+- expressions can now be used in legend titles [#1626](https://github.com/rspatial/terra/issues/1626) by Noah Goodkind
+
+
 
 ## new 
+
+- `patches` with option `valus=TRUE` can now distinguish regions based on their cell values (instead of only NA vs not-NA) [#495](https://github.com/rspatial/terra/issues/495) by Jakub Nowosad and [#1632](https://github.com/rspatial/terra/issues/1632) by Agustin Lobo
+- `rowSums`, `rowMeans`, `colSums` and `colMeans` for SpatRaster
+- `metags` for SpatRasterDataset [#1624](https://github.com/rspatial/terra/issues/1624) by Andrea Manica
+- `metags` for layers (bands) of SpatRaster are now saved to and read from GTiff files [#1071](https://github.com/rspatial/terra/issues/1071) by Mike Koontz
 
 
 # version 1.7-83
@@ -24,6 +41,8 @@ Released 2024-10-14
 - `terrain` did not accept multiple variables [#1561](https://github.com/rspatial/terra/issues/1561) by Michael Mahoney
 - `rotate` was vulnerable to an integer overflow [#1562](https://github.com/rspatial/terra/issues/1562) by Sacha Ruzzante
 - `getTileExtents` could return overlapping tiles or tiles with gaps due to floating point imprecision. [#1564](https://github.com/rspatial/terra/issues/1564) by Michael Sumner
+- `rasterize` with points failed when using `update=TRUE` [#1611](https://github.com/rspatial/terra/issues/1611) by Jordan Adamson
+- `buffer` on a lonlat multipoint SpatVector returned a buffer around a single point. [#1607](https://github.com/rspatial/terra/issues/1607) by Márcia Barbosa
 
  
 ## enhancements
@@ -31,7 +50,9 @@ Released 2024-10-14
 - `as.list<SpatRasterDataset>` sets the names of the list [#1513](https://github.com/rspatial/terra/issues/1513)
 - a SpatVectorCollection can now be subset with its names; and if made from a list it takes the names from the list.  [1515](https://github.com/rspatial/terra/issues/1515) by jedgroev
 - argument `fill_range` to plot<SpatRaster> and `plot<SpatVector>` to use the color of the extreme values of the specified range [#1553](https://github.com/rspatial/terra/issues/1553) by Mike Koontz
-- plet<SpatRaster> can now handle rasters with a "local" (Cartesian) CRS. [#1570](https://github.com/rspatial/terra/issues/1570) by Augustin Lobo.
+- `plet<SpatRaster>` can now handle rasters with a "local" (Cartesian) CRS. [#1570](https://github.com/rspatial/terra/issues/1570) by Augustin Lobo.
+- `geom` can now return "wkb" [#1609](https://github.com/rspatial/terra/issues/1609)
+
 
 ## new 
 

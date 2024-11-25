@@ -168,7 +168,7 @@ setMethod ("show" , "SpatVector",
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
 		if (d[2] > 0) {
 			nr <- min(d[1], 3)
-			dd <- as.data.frame(object[1:nr,])
+			dd <- as.data.frame(object)[1:nr, , drop=FALSE]
 			printDF(dd, 3, TRUE)
 		}
 	}
