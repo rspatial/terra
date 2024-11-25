@@ -31,10 +31,14 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, v
 
 sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, warn=TRUE) {
 	if (!is.null(ext)) {
+		xold <- rast(x)
 		x <- crop(x, ext)
+		cells <- cells(xold, ext)
 		if (!is.null(weights)) {
 			weights <- crop(weights, ext)
 		}
+	} else {
+		cells <- 1:ncell(x)	
 	}
 	
 	if (!is.null(weights)) {
@@ -44,7 +48,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 		if (!compareGeom(x, weights)) {
 			error("spatSample", "geometry of weights does not match the geometry of x")
 		}
-		v <- cbind(cell=1:ncell(x), values(x), values(weights))
+		v <- cbind(cell=cells, values(x), values(weights))
 		v <- v[!is.na(v[,2]), ]
 		uv <- sort(unique(v[,2]))
 		ys <- vector(mode="list", length=length(uv))
@@ -58,7 +62,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 			ys[[i]] <- vv[s,-3]
 		}
 	} else if (lonlat) {
-		v <- cbind(cell=1:ncell(x), values(x), abs(cos(pi * values(init(x, "y")) / 360)))
+		v <- cbind(cell=cells, values(x), abs(cos(pi * values(init(x, "y")) / 360)))
 		v <- v[!is.na(v[,2]), ]
 		uv <- sort(unique(v[,2]))
 		ys <- vector(mode="list", length=length(uv))
@@ -72,7 +76,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 			ys[[i]] <- vv[s,-3]
 		}
 	} else {
-		v <- cbind(cell=1:ncell(x), values(x))
+		v <- cbind(cell=cells, values(x))
 		v <- v[!is.na(v[,2]), ]
 		uv <- sort(unique(v[,2]))
 		ys <- vector(mode="list", length=length(uv))
@@ -94,6 +98,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 			warn("spatSample", 'fewer samples than requested are available for group(s): ', paste(ta, collapse=', '))
 		}
 	}
+
 	ys
 }
 
