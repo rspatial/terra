@@ -3,13 +3,13 @@
 \docType{methods}
 
 \alias{rowSums}
-\alias{rowSums,Raster-method}
+\alias{rowSums,SpatRaster-method}
 \alias{colSums}
-\alias{colSums,Raster-method}
+\alias{colSums,SpatRaster-method}
 \alias{rowMeans}
-\alias{rowMeans,Raster-method}
+\alias{rowMeans,SpatRaster-method}
 \alias{colMeans}
-\alias{colMeans,Raster-method}
+\alias{colMeans,SpatRaster-method}
 
 \title{row/col sums and means for SpatRaster}
 
@@ -43,6 +43,7 @@ See \code{\link{global}} for summing all cells values
 r <- rast(ncols=2, nrows=5, nl=2, vals=1:20)
 rowSums(r)
 colSums(r)
+colMeans(r)
 }
 
 \keyword{spatial}
