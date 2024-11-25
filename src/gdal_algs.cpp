@@ -1662,17 +1662,20 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 		return out;
 	}
 
+
 	std::string filename = opt.get_filename();
+
 	std::string driver;
-	if (filename.empty()) {
+//	if (filename.empty()) {
 		if (canProcessInMemory(opt)) {
+			filename = "";
 			driver = "MEM";
 		} else {
 			filename = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
 			opt.set_filenames({filename});
 			driver = "GTiff";
 		}
-	} else {
+/*	} else {
 		driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
 		if (driver.empty()) {
@@ -1685,6 +1688,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 			return out;
 		}
 	}
+*/
 
 	SpatOptions ops(opt);
 	GDALDatasetH hSrcDS, hDstDS;
@@ -1709,7 +1713,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
 	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
 
-	if (GDALSieveFilter(hSrcBand, nullptr, hTargetBand, threshold, connections, nullptr, NULL, NULL) != CE_None) {
+	if (GDALSieveFilter(hSrcBand, hSrcBand, hTargetBand, threshold, connections, nullptr, NULL, NULL) != CE_None) {
 		out.setError("sieve failed");
 		GDALClose(hSrcDS);
 		GDALClose(hDstDS);
@@ -1722,14 +1726,14 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 			out.setError("conversion failed (mem)");
 		}
 		GDALClose(hDstDS);
-		return out;
+	} else {
+//		double adfMinMax[2];
+//		GDALComputeRasterMinMax(hTargetBand, true, adfMinMax);
+//		GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
+		GDALClose(hDstDS);
+		out = SpatRaster(filename, {-1}, {""}, {}, {});
 	}
-	
-	double adfMinMax[2];
-	GDALComputeRasterMinMax(hTargetBand, true, adfMinMax);
-	GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
-	GDALClose(hDstDS);
-	return SpatRaster(filename, {-1}, {""}, {}, {});
+	return out.mask(*this, false, NAN, NAN, opt);
 }
 
 
