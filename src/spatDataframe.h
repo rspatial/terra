@@ -97,6 +97,7 @@ class SpatDataFrame {
 		bool add_column(SpatTime_v x, std::string name);
 		bool add_column(SpatFactor x, std::string name);
 		bool add_column_bool(std::vector<int> x, std::string name);
+		bool add_column_bool(std::vector<bool> x, std::string name);
 		bool add_column_time(std::vector<SpatTime_t> x, std::string name, std::string step, std::string zone);
 		void insert_column(std::vector<double>, size_t i);
 		void insert_column(std::vector<long>, size_t i);		

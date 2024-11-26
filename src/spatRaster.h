@@ -692,6 +692,7 @@ class SpatRaster {
 		SpatDataFrame mglobal(std::vector<std::string> funs, bool narm, SpatOptions &opt);
 
 		SpatDataFrame global(std::string fun, bool narm, SpatOptions &opt);
+		SpatDataFrame globalTF(std::string fun, SpatOptions &opt);
 		SpatDataFrame global_weighted_mean(SpatRaster &weights, std::string fun, bool narm, SpatOptions &opt);
 
 		SpatRaster gridDistance(double m, SpatOptions &opt);

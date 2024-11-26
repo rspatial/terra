@@ -4266,6 +4266,61 @@ SpatDataFrame SpatRaster::mglobal(std::vector<std::string> funs, bool narm, Spat
 }
 
 
+SpatDataFrame SpatRaster::globalTF(std::string fun, SpatOptions &opt) {
+
+	SpatDataFrame out;
+	std::vector<std::string> f {"anyNA", "anynotNA"};
+	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+		out.setError("not a valid function");
+		return(out);
+	}
+
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return(out);
+	}
+
+	size_t nl = nlyr();
+	std::vector<bool> stats(nl, false);
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	BlockSize bs = getBlockSize(opt);
+	for (size_t i=0; i<bs.n; i++) {
+		std::vector<double> v;
+		readBlock(v, bs, i);
+		size_t off = bs.nrows[i] * ncol() ;
+		if (fun == "anyNA") {
+			for (size_t lyr=0; lyr<nl; lyr++) {
+				if (stats[0]) break;
+				size_t offset = lyr * off;
+				for (size_t j=offset; j<(offset+off); j++) {
+					if (std::isnan(v[j])) {
+						stats[0] = true;
+						break;
+					}
+				}
+			}
+		} else {
+			for (size_t lyr=0; lyr<nl; lyr++) {
+				if (stats[0]) break;
+				size_t offset = lyr * off;
+				for (size_t j=offset; j<(offset+off); j++) {
+					if (!std::isnan(v[j])) {
+						stats[0] = true;
+						break;
+					}
+				}
+			}
+		}	
+	}
+	readStop();
+
+	out.add_column_bool(stats, fun);
+	return(out);
+}
+
 
 std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, std::string use, bool asSample, SpatOptions &opt) {
 
@@ -4372,9 +4427,12 @@ std::vector<std::vector<double>> SpatRaster::layerCor(std::string fun, std::stri
 
 
 
-
 SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 
+	if ((fun == "anyNA") || (fun == "anynotNA")) {
+		return globalTF(fun, opt);
+	}
+	
 	SpatDataFrame out;
 	std::vector<std::string> f {"sum", "mean", "min", "max", "range", "prod", "rms", "sd", "std", "stdpop", "isNA", "notNA"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
