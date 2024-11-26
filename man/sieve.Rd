@@ -16,7 +16,7 @@ Note that the input raster data is rounded to integers.
 }
 
 \arguments{
-  \item{x}{SpatRaster, single layer with elevation values. Values should have the same unit as the map units}
+  \item{x}{SpatRaster, single layer with preferred categories (factors)}
   
   \item{threshold}{positive integer. Only clumps smaller than this threshold will be removed}
   
