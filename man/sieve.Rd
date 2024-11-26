@@ -17,7 +17,7 @@ Note that the numerical input values are truncated to integers.
 
 \arguments{
   \item{x}{SpatRaster, single layer with integer or categorical values }
-  
+ 
   \item{threshold}{positive integer. Only clumps smaller than this threshold will be removed}
   
   \item{directions}{numeric to indicate which cells are connected. Either \code{4} to only consider the horizontal and vertical neighbors ("rook"), or \code{8} to consider the vertical, horizontal and diagonal neighbors}
