@@ -1691,11 +1691,20 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 */
 
 	SpatOptions ops(opt);
-	GDALDatasetH hSrcDS, hDstDS;
+	GDALDatasetH hSrcDS, hMskDS, hDstDS;
+	
+	SpatOptions topt(opt);
+	SpatRaster mask = isnotnan(false, topt);
+
 	if (!open_gdal(hSrcDS, 0, false, ops)) {
 		out.setError("cannot open input dataset");
 		return out;
 	}
+	if (!mask.open_gdal(hMskDS, 0, false, ops)) {
+		out.setError("cannot open mask dataset");
+		return out;
+	}
+
 
 	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
 	if ( hDriver == NULL ) {
@@ -1711,16 +1720,20 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 	}
 
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
+	GDALRasterBandH hMskBand = GDALGetRasterBand(hMskDS, 1);
 	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
 
-	if (GDALSieveFilter(hSrcBand, hSrcBand, hTargetBand, threshold, connections, nullptr, NULL, NULL) != CE_None) {
-		out.setError("sieve failed");
+	if (GDALSieveFilter(hSrcBand, hMskBand, hTargetBand, threshold, connections, nullptr, NULL, NULL) != CE_None) {
 		GDALClose(hSrcDS);
+		GDALClose(hMskDS);
 		GDALClose(hDstDS);
+		out.setError("sieve failed");
 		return out;
 	}
 
 	GDALClose(hSrcDS);
+	GDALClose(hMskDS);
+
 	if (driver == "MEM") {
 		if (!out.from_gdalMEM(hDstDS, false, true)) {
 			out.setError("conversion failed (mem)");
