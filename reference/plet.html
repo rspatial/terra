@@ -43,7 +43,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, main<span class="op">=</span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, </span>
 <span>  tiles<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Streets"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span><span class="op">)</span>, </span>
-<span>  wrap<span class="op">=</span><span class="cn">TRUE</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, </span>
+<span>  wrap<span class="op">=</span><span class="cn">TRUE</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, stretch<span class="op">=</span><span class="cn">NULL</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, </span>
 <span>  shared<span class="op">=</span><span class="cn">FALSE</span>, panel<span class="op">=</span><span class="cn">FALSE</span>, collapse<span class="op">=</span><span class="cn">TRUE</span>, map<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span> </span>
 <span></span>
 <span></span>
@@ -97,6 +97,10 @@
 
   <dt id="arg-maxcell">maxcell<a class="anchor" aria-label="anchor" href="#arg-maxcell"></a></dt>
 <dd><p>positive integer. Maximum number of cells to use for the plot</p></dd>
+
+  <dt id="arg-stretch">stretch<a class="anchor" aria-label="anchor" href="#arg-stretch"></a></dt>
+<dd><p>NULL or character ("lin" or "hist") to stretch RGB rasters. See <code><a href="plotRGB.html">plotRGB</a></code></p></dd>
+
 
   <dt id="arg-legend">legend<a class="anchor" aria-label="anchor" href="#arg-legend"></a></dt>
 <dd><p>character to indicate the legend position ("bottomleft", "bottomright", "topleft" or "topright") or NULL to suppress the legend</p></dd>
