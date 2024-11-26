@@ -261,7 +261,8 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 	long nl = nlyr();
 	bool keepnlyr = ((nlyrs == nl) || (nlyrs < 1));
 	nlyrs = (keepnlyr) ? nlyr(): nlyrs;
-	
+
+// should be within "if (keepnlyr)" block?
 	if (properties) {
 		s.hasColors = hasColors();
 		s.cols = getColors();
@@ -309,7 +310,7 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 
 
 	SpatRaster out(s);
-	if (properties) {
+	if (keepnlyr && properties) {
 		out.rgb = rgb;
 		out.rgbtype = rgbtype;
 		out.rgblyrs = rgblyrs;

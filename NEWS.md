@@ -3,6 +3,7 @@
 ## bug fixes
 
 - `spatSample(method='stratified', ext=e)` returned the wrong sampling coordinates [#1628](https://github.com/rspatial/terra/issues/1628) by Barnabas Harris
+- `spatSample(method='stratified')` could fail with small sample sizes [#1503](https://github.com/rspatial/terra/issues/1503) by karluf
 - transparency (alpha) did not work with RGB plotting. [#1642](https://github.com/rspatial/terra/issues/1642) by Timothée Giraud.
 - rasterization failed on very large rasters [#1636](https://github.com/rspatial/terra/issues/1636) by Mary Fisher, [#1463](https://github.com/rspatial/terra/issues/1463) by Nic Spono and [#1281](https://github.com/rspatial/terra/issues/1281) by Sebastian Dunnett
 - `tmpFiles` only looked in the default temp files folder [#1630](https://github.com/rspatial/terra/issues/1630) by smckenzie1986
@@ -15,6 +16,8 @@
 - improved treatment of (supposedly) flipped rasters by Timothée Giraud [#1627](https://github.com/rspatial/terra/issues/1627) and fchianucci [#1646](https://github.com/rspatial/terra/issues/1646)
 - added `map.pal("random")` [#1631](https://github.com/rspatial/terra/issues/1631) by Agustin Lobo
 - expressions can now be used in legend titles [#1626](https://github.com/rspatial/terra/issues/1626) by Noah Goodkind
+- `app` and `tapp` now emit a warning when factors are coerced to numeric [#1566](https://github.com/rspatial/terra/issues/1566) by shuysman
+- `plet<SpatRaster>` now has argument "stretch" for RGB rasters [#1596](https://github.com/rspatial/terra/issues/1596) by Agustin 
 
 ## new 
 
@@ -50,11 +53,11 @@ Released 2024-10-14
 - argument `fill_range` to plot<SpatRaster> and `plot<SpatVector>` to use the color of the extreme values of the specified range [#1553](https://github.com/rspatial/terra/issues/1553) by Mike Koontz
 - `plet<SpatRaster>` can now handle rasters with a "local" (Cartesian) CRS. [#1570](https://github.com/rspatial/terra/issues/1570) by Augustin Lobo.
 - `geom` can now return "wkb" [#1609](https://github.com/rspatial/terra/issues/1609)
-
+- faster plotting when color names are used. In response to question by Olle on [gis.stackexchange.com](https://gis.stackexchange.com/questions/487112/plotting-discrete-categorical-rasters-with-custom-colors-slows-down-r-terra/488012#488012)
 
 ## new 
 
-- `map-region` returns the coordinates of the axes position of a map created with `plot<Spat*>` [https://github.com/rspatial/terra/issues/1517](https://github.com/rspatial/terra/issues/1517) by Daniel Schuch
+- `map-region` returns the coordinates of the axes position of a map created with `plot<Spat*>` [#1517](https://github.com/rspatial/terra/issues/1517) by Daniel Schuch
 - `polys<leaflet>` method [#1543](https://github.com/rspatial/terra/issues/1543) by Márcia Barbosa
 - `plot<SpatVectorCollection>` method [#1532](https://github.com/rspatial/terra/issues/1532) by jedgroev
 - `add_mtext` to add text around the margins of a map. [#1567](https://github.com/rspatial/terra/issues/1567) by Daniel Schuch
@@ -93,7 +96,7 @@ Released 2024-05-22
 ## new 
 
 - `bestMatch<SpatRaster>` method
-- argument "pairs=TRUE" to `cells` [https://github.com/rspatial/terra/issues/1487](https://github.com/rspatial/terra/issues/1487) by Floris Vanderhaeghe
+- argument "pairs=TRUE" to `cells` [#1487](https://github.com/rspatial/terra/issues/1487) by Floris Vanderhaeghe
 - `add_grid` to add a grid to a map
 
 

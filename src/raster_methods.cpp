@@ -960,7 +960,8 @@ std::vector<std::vector<double>> SpatRaster::is_in_cells(std::vector<double> m, 
 
 SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+    SpatRaster out = geometry(-1, true, true, true, true);
+
 	if (!hasValues()) return(out);
 
 	size_t nl = nlyr();
