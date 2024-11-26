@@ -465,7 +465,7 @@ make.panel <- function(x, maxcell) {
 
 setMethod("plet", signature(x="SpatRaster"),
 	function(x, y=1, col, alpha=0.8, main=names(x), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
-		wrap=TRUE, maxcell=500000, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
+		wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
 
 		#checkLeafLetVersion()
 		
@@ -497,7 +497,6 @@ setMethod("plet", signature(x="SpatRaster"),
 
 		alpha <- max(0, min(1, alpha))
 		
-		ny <- length(y)
 		hasRGB <- has.RGB(x)
 
 		if (hasRGB) {
@@ -550,6 +549,13 @@ setMethod("plet", signature(x="SpatRaster"),
 		}
 
 		if (hasRGB) {
+			if (!is.null(stretch)) {
+				if (stretch == "lin") {
+					x <- stretch(x, minq=0.02, maxq=0.98)
+				} else {
+					x <- stretch(x, histeq=TRUE, scale=255)
+				}
+			}
 			RGB(x) <- 1:length(y)
 			x <- colorize(x, "col")
 		}

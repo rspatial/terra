@@ -21,7 +21,7 @@ Plot the values of a SpatRaster or SpatVector to make an interactive leaflet map
 \usage{
 \S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, main=names(x), 
 	tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
-	wrap=TRUE, maxcell=500000, legend="bottomright", 
+	wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", 
 	shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
 
 
@@ -53,7 +53,9 @@ Plot the values of a SpatRaster or SpatVector to make an interactive leaflet map
   \item{fill}{Number between 0 and 1 to set the transparency for polygon areas (0 is transparent, 1 is opaque)}
   \item{tiles}{character or NULL. Names of background tile providers}
   \item{wrap}{logical. if \code{TRUE}, tiles wrap around}
-  \item{maxcell}{positive integer. Maximum number of cells to use for the plot}  
+  \item{maxcell}{positive integer. Maximum number of cells to use for the plot} 
+  \item{stretch}{NULL or character ("lin" or "hist") to stretch RGB rasters. See \code{\link{plotRGB}}} 
+  
   \item{legend}{character to indicate the legend position ("bottomleft", "bottomright", "topleft" or "topright") or NULL to suppress the legend}
   \item{main}{character. Title for the legend. The length should be 1 if \code{x} is a SpatVector and length nlyr(x) if \code{x} is a SpatVector}
   
