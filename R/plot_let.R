@@ -496,11 +496,17 @@ setMethod("plet", signature(x="SpatRaster"),
 #		}
 
 		alpha <- max(0, min(1, alpha))
+		
+		ny <- length(y)
 		hasRGB <- has.RGB(x)
-		if (hasRGB && (y==1)) {
+
+		if (hasRGB) {
 			y <- RGB(x)
-			legend <- NULL
+			legend <- NULL		
+		} else if (!is.null(terra::coltab(x)[[1]])) {
+			legend <- NULL		
 		}
+		
 		e <- ext(x)
 		if (is.lonlat(x) && ((e$ymin < -85) || (e$ymax > 85))) {
 			yr1 <- e$ymax - e$ymin

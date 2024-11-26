@@ -1,4 +1,4 @@
-# version 1.8-2
+# version 1.8-3
 
 ## bug fixes
 
@@ -7,7 +7,7 @@
 - rasterization failed on very large rasters [#1636](https://github.com/rspatial/terra/issues/1636) by Mary Fisher, [#1463](https://github.com/rspatial/terra/issues/1463) by Nic Spono and [#1281](https://github.com/rspatial/terra/issues/1281) by Sebastian Dunnett
 - `tmpFiles` only looked in the default temp files folder [#1630](https://github.com/rspatial/terra/issues/1630) by smckenzie1986
 - `where.min` did not work well if there were negative values [#1634](https://github.com/rspatial/terra/issues/1634) by Michael Sumner.
-
+- `plet<SpatRaster>` now works for RGB rasters and rasters with a color table [#1596](https://github.com/rspatial/terra/issues/1596) by Agustin Lobo.
 
 ## enhancements
 
@@ -15,8 +15,6 @@
 - improved treatment of (supposedly) flipped rasters by Timothée Giraud [#1627](https://github.com/rspatial/terra/issues/1627) and fchianucci [#1646](https://github.com/rspatial/terra/issues/1646)
 - added `map.pal("random")` [#1631](https://github.com/rspatial/terra/issues/1631) by Agustin Lobo
 - expressions can now be used in legend titles [#1626](https://github.com/rspatial/terra/issues/1626) by Noah Goodkind
-
-
 
 ## new 
 
