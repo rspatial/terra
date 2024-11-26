@@ -39,6 +39,8 @@
 <h3 id="bug-fixes-1-8-3">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-3"></a></h3>
 <ul><li>
 <code>spatSample(method='stratified', ext=e)</code> returned the wrong sampling coordinates <a href="https://github.com/rspatial/terra/issues/1628" class="external-link">#1628</a> by Barnabas Harris</li>
+<li>
+<code>spatSample(method='stratified')</code> could fail with small sample sizes <a href="https://github.com/rspatial/terra/issues/1503" class="external-link">#1503</a> by karluf</li>
 <li>transparency (alpha) did not work with RGB plotting. <a href="https://github.com/rspatial/terra/issues/1642" class="external-link">#1642</a> by Timothée Giraud.</li>
 <li>rasterization failed on very large rasters <a href="https://github.com/rspatial/terra/issues/1636" class="external-link">#1636</a> by Mary Fisher, <a href="https://github.com/rspatial/terra/issues/1463" class="external-link">#1463</a> by Nic Spono and <a href="https://github.com/rspatial/terra/issues/1281" class="external-link">#1281</a> by Sebastian Dunnett</li>
 <li>
@@ -55,6 +57,10 @@
 </li>
 <li>added <code>map.pal("random")</code> <a href="https://github.com/rspatial/terra/issues/1631" class="external-link">#1631</a> by Agustin Lobo</li>
 <li>expressions can now be used in legend titles <a href="https://github.com/rspatial/terra/issues/1626" class="external-link">#1626</a> by Noah Goodkind</li>
+<li>
+<code>app</code> and <code>tapp</code> now emit a warning when factors are coerced to numeric <a href="https://github.com/rspatial/terra/issues/1566" class="external-link">#1566</a> by shuysman</li>
+<li>
+<code>plet&lt;SpatRaster&gt;</code> now has argument “stretch” for RGB rasters <a href="https://github.com/rspatial/terra/issues/1596" class="external-link">#1596</a> by Agustin</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-3">new<a class="anchor" aria-label="anchor" href="#new-1-8-3"></a></h3>
@@ -107,11 +113,13 @@
 <li>
 <code>geom</code> can now return “wkb” <a href="https://github.com/rspatial/terra/issues/1609" class="external-link">#1609</a>
 </li>
+<li>faster plotting when color names are used. In response to question by Olle on <a href="https://gis.stackexchange.com/questions/487112/plotting-discrete-categorical-rasters-with-custom-colors-slows-down-r-terra/488012#488012" class="external-link">gis.stackexchange.com</a>
+</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-7-83">new<a class="anchor" aria-label="anchor" href="#new-1-7-83"></a></h3>
 <ul><li>
-<code>map-region</code> returns the coordinates of the axes position of a map created with <code>plot&lt;Spat*&gt;</code> <a href="https://github.com/rspatial/terra/issues/1517" class="external-link">https://github.com/rspatial/terra/issues/1517</a> by Daniel Schuch</li>
+<code>map-region</code> returns the coordinates of the axes position of a map created with <code>plot&lt;Spat*&gt;</code> <a href="https://github.com/rspatial/terra/issues/1517" class="external-link">#1517</a> by Daniel Schuch</li>
 <li>
 <code>polys&lt;leaflet&gt;</code> method <a href="https://github.com/rspatial/terra/issues/1543" class="external-link">#1543</a> by Márcia Barbosa</li>
 <li>
@@ -170,7 +178,7 @@
 <h3 id="new-1-7-78">new<a class="anchor" aria-label="anchor" href="#new-1-7-78"></a></h3>
 <ul><li>
 <code>bestMatch&lt;SpatRaster&gt;</code> method</li>
-<li>argument “pairs=TRUE” to <code>cells</code> <a href="https://github.com/rspatial/terra/issues/1487" class="external-link">https://github.com/rspatial/terra/issues/1487</a> by Floris Vanderhaeghe</li>
+<li>argument “pairs=TRUE” to <code>cells</code> <a href="https://github.com/rspatial/terra/issues/1487" class="external-link">#1487</a> by Floris Vanderhaeghe</li>
 <li>
 <code>add_grid</code> to add a grid to a map</li>
 </ul></div>
