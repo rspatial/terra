@@ -114,6 +114,11 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	testnc <- min(ncol(x), 11)
 	v <- readValues(x, 1, 1, 1, testnc, TRUE)
 
+	if (any(is.factor(x))) {
+		warn("app", "factors are coerced to numeric")
+	}
+	
+
 	test <- apply(v, 1, FUN=fun, ...)
 	transpose = FALSE
 	nlout <- 1
