@@ -25,7 +25,9 @@ Methods to create a SpatRaster. These objects can be created from scratch, from 
 
 A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). 
 
-When a SpatRaster is created from a file, it does not load the cell (pixel) values into memory (RAM). It only reads the parameters that describe the geometry of the SpatRaster, such as the number of rows and columns and the coordinate reference system. The actual values will be read when needed.
+When a SpatRaster is created from one or more files, it does not load the cell (pixel) values into memory (RAM). It only reads the parameters that describe the geometry of the SpatRaster, such as the number of rows and columns and the coordinate reference system. The actual values will be read when needed.
+
+Note that there are operating system level limitations to the number of files that can be opened simulatenously. Using a SpatRaster of very many files (e.g. 10,000) may cause R to crash when you use it in a computation. In situations like that you may need to split up the task or combine data into fewer (multi-layer) files.
 }
 
 \usage{
