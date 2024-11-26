@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-2" id="version-18-2">version 1.8-2<a class="anchor" aria-label="anchor" href="#version-18-2"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-3" id="version-18-3">version 1.8-3<a class="anchor" aria-label="anchor" href="#version-18-3"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-2">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-2"></a></h3>
+<h3 id="bug-fixes-1-8-3">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-3"></a></h3>
 <ul><li>
 <code>spatSample(method='stratified', ext=e)</code> returned the wrong sampling coordinates <a href="https://github.com/rspatial/terra/issues/1628" class="external-link">#1628</a> by Barnabas Harris</li>
 <li>transparency (alpha) did not work with RGB plotting. <a href="https://github.com/rspatial/terra/issues/1642" class="external-link">#1642</a> by Timothée Giraud.</li>
@@ -45,9 +45,11 @@
 <code>tmpFiles</code> only looked in the default temp files folder <a href="https://github.com/rspatial/terra/issues/1630" class="external-link">#1630</a> by smckenzie1986</li>
 <li>
 <code>where.min</code> did not work well if there were negative values <a href="https://github.com/rspatial/terra/issues/1634" class="external-link">#1634</a> by Michael Sumner.</li>
+<li>
+<code>plet&lt;SpatRaster&gt;</code> now works for RGB rasters and rasters with a color table <a href="https://github.com/rspatial/terra/issues/1596" class="external-link">#1596</a> by Agustin Lobo.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-2">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-2"></a></h3>
+<h3 id="enhancements-1-8-3">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-3"></a></h3>
 <ul><li>improved documentation of <code>writeVector</code> overwrite when using layers. <a href="https://github.com/rspatial/terra/issues/1573" class="external-link">#1573</a> by Todd West</li>
 <li>improved treatment of (supposedly) flipped rasters by Timothée Giraud <a href="https://github.com/rspatial/terra/issues/1627" class="external-link">#1627</a> and fchianucci <a href="https://github.com/rspatial/terra/issues/1646" class="external-link">#1646</a>
 </li>
@@ -55,7 +57,7 @@
 <li>expressions can now be used in legend titles <a href="https://github.com/rspatial/terra/issues/1626" class="external-link">#1626</a> by Noah Goodkind</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-2">new<a class="anchor" aria-label="anchor" href="#new-1-8-2"></a></h3>
+<h3 id="new-1-8-3">new<a class="anchor" aria-label="anchor" href="#new-1-8-3"></a></h3>
 <ul><li>
 <code>patches</code> with option <code>valus=TRUE</code> can now distinguish regions based on their cell values (instead of only NA vs not-NA) <a href="https://github.com/rspatial/terra/issues/495" class="external-link">#495</a> by Jakub Nowosad and <a href="https://github.com/rspatial/terra/issues/1632" class="external-link">#1632</a> by Agustin Lobo</li>
 <li>
