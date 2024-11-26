@@ -152,7 +152,7 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, NAzero=FALSE, filename=
 	m[,1] <- m[,1] - 1
 	r <- rast(x, 1)
 	r[m$id] <- m$group
-	coltab(r) <- m[,-2]
+	coltab(r) <- unique(m[,-2])
 	if (filename != "") {
 		r <- writeRaster(r, filename, overwrite, ...)
 	}
@@ -167,7 +167,7 @@ terra_col2rgb <- function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
 	}
 	ct <- coltab(x)[[1]]
 	if (is.null(ct)) {
-		error("error", "x has no color table")
+		error("colorize", "x has no color table")
 	}
 	ct <- as.matrix(ct)
 	nms <- c("red", "green", "blue", "alpha")
@@ -207,6 +207,8 @@ setMethod("colorize", signature(x="SpatRaster"),
 			x@ptr <- x@ptr$hsx2rgb(to, opt)
 		} else if (to == "col") {
 			return(rgb2col(x, stretch=stretch, grays=grays, NAzero=NAzero, filename=filename, overwrite=overwrite, ...))
+		} else {
+			error("colorize", "'to' is not valid. Should be 'rgb', 'col', 'hsi', 'hsl', or 'hsv'")
 		}
 		messages(x)
 	}

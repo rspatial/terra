@@ -496,7 +496,11 @@ setMethod("plet", signature(x="SpatRaster"),
 #		}
 
 		alpha <- max(0, min(1, alpha))
-		
+		hasRGB <- has.RGB(x)
+		if (hasRGB && (y==1)) {
+			y <- RGB(x)
+			legend <- NULL
+		}
 		e <- ext(x)
 		if (is.lonlat(x) && ((e$ymin < -85) || (e$ymax > 85))) {
 			yr1 <- e$ymax - e$ymin
@@ -539,9 +543,11 @@ setMethod("plet", signature(x="SpatRaster"),
 			main <- rep_len(main, length(x))[y]
 		}
 
-
-
-		if (has.RGB(x) | nlyr(x) == 1) {
+		if (hasRGB) {
+			RGB(x) <- 1:length(y)
+			x <- colorize(x, "col")
+		}
+		if (nlyr(x) == 1) {
 			map <- leaflet::addRasterImage(map, x, colors=col, opacity=alpha, project=notmerc)
 			if (!is.null(legend)) {
 				if (!all(hasMinMax(x))) setMinMax(x)
