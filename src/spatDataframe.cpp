@@ -500,6 +500,20 @@ bool SpatDataFrame::add_column_bool(std::vector<int> x, std::string name) {
 	return true;
 }
 
+bool SpatDataFrame::add_column_bool(std::vector<bool> x, std::string name) {
+	unsigned nr = nrow();
+	if ((nr != 0) & (nr != x.size())) return false;
+	iplace.push_back(bv.size());
+	itype.push_back(3);
+	names.push_back(name);
+	std::vector<int8_t> b;
+	b.reserve(x.size());
+	for (size_t i=0; i<x.size(); i++){
+		b.push_back(x[i]);
+	}
+	bv.push_back(b);
+	return true;
+}
 
 bool SpatDataFrame::add_column_time(std::vector<SpatTime_t> x, std::string name, std::string step="seconds", std::string zone="") {
 	unsigned nr = nrow();

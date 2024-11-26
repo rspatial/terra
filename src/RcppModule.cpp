@@ -337,7 +337,8 @@ RCPP_MODULE(spat){
 		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_factor", (bool (SpatDataFrame::*)(SpatFactor, std::string name))( &SpatDataFrame::add_column))
-		.method("add_column_bool", &SpatDataFrame::add_column_bool)
+		.method("add_column_bool", (bool (SpatDataFrame::*)(std::vector<int>, std::string name))( &SpatDataFrame::add_column_bool))
+
 		.method("add_column_time", &SpatDataFrame::add_column_time)
 
 		.method("remove_column", (bool (SpatDataFrame::*)(std::string field))( &SpatDataFrame::remove_column))
@@ -896,7 +897,7 @@ RCPP_MODULE(spat){
 
 		.method("get_aggregates", &SpatRaster::get_aggregates)
 		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims2)
-	//	.method("global", &SpatRaster::global)
+		.method("globalTF", &SpatRaster::globalTF)
 		.method("mglobal", &SpatRaster::mglobal)
 		.method("layerCor", &SpatRaster::layerCor)
 		.method("global_weighted_mean", &SpatRaster::global_weighted_mean)

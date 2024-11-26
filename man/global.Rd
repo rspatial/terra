@@ -9,7 +9,7 @@
 \description{
 Compute global statistics, that is summarized values of an entire SpatRaster. 
 
-If \code{x} is very large \code{global} can fail, except when \code{fun} is one of these built-in functions "mean", "min", "max", "sum", "prod", "range" (min and max), "rms" (root mean square), "sd" (sample standard deviation), "std" (population standard deviation), "isNA" (number of cells that are NA), "notNA" (number of cells that are not NA).
+If \code{x} is very large \code{global} can fail, except when \code{fun} is one of these built-in functions "mean", "min", "max", "sum", "prod", "range" (min and max), "rms" (root mean square), "sd" (sample standard deviation), "std" (population standard deviation), "isNA" (number of cells that are NA), "notNA" (number of cells that are not NA), "anyNA", "anynotNA". Note that "anyNA" and "anynotNA" cannot be combined with other functions.
 
 The reason that this can fail with large raster and a custom function is that all values need to be loaded into memory. To circumvent this problem you can run \code{global} with a sample of the cells.
 

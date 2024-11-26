@@ -8,7 +8,7 @@
 \description{
 Apply a sieve filter. That is, remove "noise", by changing small clumps of cells with a value that is different from the surrounding cells, to the value of the largest neighboring clump.
 
-Note that the input raster data is rounded to integers.
+Note that the numerical input values are truncated to integers.
 }
 
 \usage{
@@ -16,7 +16,7 @@ Note that the input raster data is rounded to integers.
 }
 
 \arguments{
-  \item{x}{SpatRaster, single layer with elevation values. Values should have the same unit as the map units}
+  \item{x}{SpatRaster, single layer with integer or categorical values }
   
   \item{threshold}{positive integer. Only clumps smaller than this threshold will be removed}
   
