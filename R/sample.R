@@ -67,7 +67,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 		uv <- sort(unique(v[,2]))
 		ys <- vector(mode="list", length=length(uv))
 		for (i in seq_len(length(uv))) {
-			vv <- v[v[,2] == uv[i], ]
+			vv <- v[v[,2] == uv[i], ,drop=FALSE]
 			if (replace) {
 				s <- sample.int(nrow(vv), size, prob=vv[,3], replace=TRUE)
 			} else {
