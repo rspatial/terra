@@ -1,6 +1,24 @@
 
+setClass("Packed", contains="VIRTUAL")
 
-setClass("PackedSpatVector",
+setMethod("show", signature(object="Packed"),
+	function(object) {
+		print(paste("This is a", class(object), "object. Use 'terra::unwrap()' to unpack it"))
+	}
+)
+
+
+setClass("PackedSpatExtent", contains="Packed",
+	representation (
+		extent = "numeric"
+	),
+	prototype (
+		extent = numeric()
+	)
+)
+
+
+setClass("PackedSpatVector", contains="Packed",
 	representation (
 		type = "character",
 		crs = "character",
@@ -15,7 +33,7 @@ setClass("PackedSpatVector",
 )
 
 
-setClass("PackedSpatRaster",
+setClass("PackedSpatRaster", contains="Packed",
 	representation (
 		definition = "character",
 		values = "matrix",
@@ -26,7 +44,9 @@ setClass("PackedSpatRaster",
 	)
 )
 
-setClass("PackedSpatRasterDC",
+
+
+setClass("PackedSpatRasterDC", contains="Packed",
 	representation (
 		type = "character",
 		rasters = "list"
@@ -88,12 +108,6 @@ setMethod("vect", signature(x="PackedSpatVector"),
 	}
 )
 
-
-setMethod("show", signature(object="PackedSpatVector"),
-	function(object) {
-		print(paste("This is a", class(object), "object. Use 'terra::unwrap()' to unpack it"))
-	}
-)
 
 
 
@@ -212,6 +226,22 @@ setMethod("wrapCache", signature(x="SpatRaster"),
 		finalizeWrap(x, r)		
 	}
 )
+
+setMethod("wrap", signature(x="SpatExtent"),
+	function(x) {
+		r <- methods::new("PackedSpatExtent")
+		r@extent <- as.vector(x)
+		r
+	}
+)
+
+setMethod("unwrap", signature(x="PackedSpatExtent"),
+	function(x) {
+		ext(x@extent)
+	}
+)
+
+	
 
 setMethod("wrap", signature(x="SpatRaster"),
 	function(x, proxy=FALSE) {
@@ -342,22 +372,25 @@ setMethod("rast", signature(x="PackedSpatRaster"),
 	}
 )
 
-setMethod("show", signature(object="PackedSpatRaster"),
-	function(object) {
-		print(paste("This is a", class(object), "object. Use 'terra::unwrap()' to unpack it"))
-	}
-)
-
-setMethod("show", signature(object="PackedSpatRasterDC"),
-	function(object) {
-		print(paste("This is a", class(object), "object. Use 'terra::unwrap()' to unpack it"))
-	}
-)
 
 
 setMethod("unwrap", signature(x="ANY"),
 	function(x) {
 		x
+	}
+)
+
+
+setMethod("serialize", signature(object="SpatExtent"),
+	function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, refhook = NULL) {
+		serialize(wrap(object), connection=connection, ascii = ascii, xdr = xdr, version = version, refhook = refhook)
+	}
+)
+
+
+setMethod("saveRDS", signature(object="SpatExtent"),
+	function(object, file="", ascii = FALSE, version = NULL, compress=TRUE, refhook = NULL) {
+		saveRDS(wrap(object), file=file, ascii = ascii, version = version, compress=compress, refhook = refhook)
 	}
 )
 

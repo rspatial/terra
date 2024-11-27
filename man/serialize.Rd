@@ -5,12 +5,14 @@
 \alias{unserialize}
 \alias{readRDS}
 
+\alias{serialize,SpatExtent-method}
 \alias{serialize,SpatVector-method}
 \alias{serialize,SpatRaster-method}
 \alias{serialize,SpatRasterDataset-method}
 \alias{serialize,SpatRasterCollection-method}
 \alias{unserialize,ANY-method}
 
+\alias{saveRDS,SpatExtent-method}
 \alias{saveRDS,SpatVector-method}
 \alias{saveRDS,SpatRaster-method}
 \alias{saveRDS,SpatRasterCollection-method}
