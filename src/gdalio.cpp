@@ -11,6 +11,8 @@
 #include "cpl_conv.h" // CPLFree()
 
 
+
+
 void getGDALdriver(std::string &filename, std::string &driver) {
 
 	lrtrim(filename);
@@ -981,6 +983,47 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 		OSRDestroySpatialReference( hSRS );
 	}
 	return true;
+}
+
+
+
+std::vector<std::string> SpatRaster::getAllFiles() {
+
+	std::vector <std::string> files;
+	files.reserve(nsrc()*2);
+
+	for (size_t src=0; src < nsrc(); src++) {
+
+		if (source[src].memory) continue;
+
+		GDALDataset *poDS = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, source[src].open_drivers, source[src].open_ops);
+		if( poDS == NULL )  {
+			continue;
+		}
+		
+		char **filelist = poDS->GetFileList();
+		if (filelist != NULL) {
+			for (size_t i=0; filelist[i] != NULL; i++) {
+				files.push_back(filelist[i]);
+			}
+			
+			std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json", ".aux.xml"};
+			for (size_t j=0; j<exts.size(); j++) {
+				std::string f = source[src].filename + exts[j];
+				if (file_exists(f)) {
+					files.push_back(f);
+				}
+			}
+		}
+		CSLDestroy(filelist);
+		GDALClose( (GDALDatasetH) poDS );
+	}
+	
+	for (size_t i=0; i<files.size(); i++) {
+		std::replace(files[i].begin(), files[i].end(), '\\', '/');
+	}
+	
+	return files;
 }
 
 

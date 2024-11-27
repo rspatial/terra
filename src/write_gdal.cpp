@@ -539,8 +539,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		std::vector <std::string> files;
 		if (filelist != NULL) {
 			for (size_t i=0; filelist[i] != NULL; i++) {
-				files.push_back(filelist[i]);
-				std::replace( files[i].begin(), files[i].end(), '\\', '/');
+				std::string thefile = filelist[i];
+				std::replace( thefile.begin(), thefile.end(), '\\', '/');
+				files.push_back(thefile);
 			}
 		}
 		CSLDestroy( filelist );

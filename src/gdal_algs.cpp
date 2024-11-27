@@ -589,14 +589,22 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	SpatExtent eout = out.getExtent();
 
 
+/*
 	std::vector<bool> has_so = source[0].has_scale_offset;
 	std::vector<double> scale = source[0].scale;
 	std::vector<double> offset = source[0].offset;
+
 	for (size_t i=1; i<ns; i++) {
 		has_so.insert(has_so.end(), source[0].has_scale_offset.begin(), source[0].has_scale_offset.end());
 		scale.insert(scale.end(), source[0].scale.begin(), source[0].scale.end());
 		offset.insert(offset.end(), source[0].offset.begin(), source[0].offset.end());
 	}
+*/
+
+	std::vector<bool> has_so(nlyr(), false);
+	std::vector<double> scale(nlyr(), 1);
+	std::vector<double> offset(nlyr(), 0);
+
 
 	double halfy = out.yres() / 2;
 	for (size_t i = 0; i < out.bs.n; i++) {

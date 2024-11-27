@@ -169,7 +169,7 @@ terra_col2rgb <- function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
 	if (is.null(ct)) {
 		error("colorize", "x has no color table")
 	}
-	ct <- as.matrix(ct)
+	ct <- unique(as.matrix(ct))
 	nms <- c("red", "green", "blue", "alpha")
 	rgbidx <- 1:4
 	if (!alpha) {

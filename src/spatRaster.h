@@ -25,9 +25,6 @@
 
 #ifdef useRcpp
 #include <Rcpp.h>
-// Rcpp::depends(RcppProgress)
-//#include "progress.hpp"
-//#include "progress_bar.hpp"
 #endif
 
 typedef long long int_64;
@@ -209,7 +206,6 @@ class SpatRaster {
 	public:
 
 #ifdef useRcpp
-//		Progress* pbar;
 		SpatProgress pbar;
 		bool progressbar = false;
 #endif
@@ -401,6 +397,9 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 // helper methods
 ////////////////////////////////////////////////////
+
+
+		std::vector<std::string> getAllFiles();
 
 		void gdalogrproj_init(std::string path);
 

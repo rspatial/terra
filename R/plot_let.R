@@ -463,9 +463,10 @@ make.panel <- function(x, maxcell) {
 }
 
 
+
 setMethod("plet", signature(x="SpatRaster"),
 	function(x, y=1, col, alpha=0.8, main=names(x), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
-		wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL)  {
+		wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, type=NULL, breaks=NULL, breakby="eqint", sort=TRUE, decreasing=FALSE, map=NULL)  {
 
 		#checkLeafLetVersion()
 		
@@ -502,9 +503,10 @@ setMethod("plet", signature(x="SpatRaster"),
 		if (hasRGB) {
 			y <- RGB(x)
 			legend <- NULL		
-		} else if (!is.null(terra::coltab(x)[[1]])) {
-			legend <- NULL		
 		}
+		# else if (!is.null(terra::coltab(x)[[1]])) {
+		#	legend <- NULL		
+		#}
 		
 		e <- ext(x)
 		if (is.lonlat(x) && ((e$ymin < -85) || (e$ymax > 85))) {
@@ -558,7 +560,11 @@ setMethod("plet", signature(x="SpatRaster"),
 			}
 			RGB(x) <- 1:length(y)
 			x <- colorize(x, "col")
-		}
+		} 
+		#else {
+		#	leg <- .get_leg(na.omit(values(x)), type=type, dig.lab=3, cols=col, breaks=breaks, breakby=breakby, sort=sort, decreasing=decreasing, ...)
+		#}
+		
 		if (nlyr(x) == 1) {
 			map <- leaflet::addRasterImage(map, x, colors=col, opacity=alpha, project=notmerc)
 			if (!is.null(legend)) {
