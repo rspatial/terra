@@ -322,7 +322,7 @@ setMethod("global", signature(x="SpatRaster"),
 				rownames(res) <- nms
 				return(res)			
 			}
-			if (all(txtfun %in% c("prod", "max", "min", "mean", "sum", "range", "rms", "sd", "std", "sdpop", "notNA", "isNA", "anynotNA", "anyNA"))) {
+			if (all(txtfun %in% c("prod", "max", "min", "mean", "sum", "range", "rms", "sd", "std", "sdpop", "notNA", "isNA"))) {
 				txtfun[txtfun == "sdpop"] <- "std"
 				i <- grep("range", txtfun)
 				if (length(i) > 0) {

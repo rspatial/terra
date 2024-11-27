@@ -4293,24 +4293,24 @@ SpatDataFrame SpatRaster::globalTF(std::string fun, SpatOptions &opt) {
 		size_t off = bs.nrows[i] * ncol() ;
 		if (fun == "anyNA") {
 			for (size_t lyr=0; lyr<nl; lyr++) {
-				if (stats[0]) break;
+				if (stats[lyr]) break;
 				size_t offset = lyr * off;
 				for (size_t j=offset; j<(offset+off); j++) {
 					if (std::isnan(v[j])) {
-						stats[0] = true;
+						stats[lyr] = true;
 						break;
 					}
 				}
 			}
 		} else {
 			for (size_t lyr=0; lyr<nl; lyr++) {
-				if (stats[0]) break;
+				if (stats[lyr]) break;
 				size_t offset = lyr * off;
 				for (size_t j=offset; j<(offset+off); j++) {
 					if (!std::isnan(v[j])) {
-						stats[0] = true;
+						stats[lyr] = true;
 						break;
-					}
+					}	
 				}
 			}
 		}	

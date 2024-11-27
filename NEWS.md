@@ -25,6 +25,8 @@
 - `rowSums`, `rowMeans`, `colSums` and `colMeans` for SpatRaster
 - `metags` for SpatRasterDataset [#1624](https://github.com/rspatial/terra/issues/1624) by Andrea Manica
 - `metags` for layers (bands) of SpatRaster are now saved to and read from GTiff files [#1071](https://github.com/rspatial/terra/issues/1071) by Mike Koontz
+- `global` has new effcient functions "anyNA" and "anynotNA" [#1540](https://github.com/rspatial/terra/issues/1540) by Kevin J Wolz
+
 
 
 # version 1.7-83
