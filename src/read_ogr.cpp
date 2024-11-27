@@ -204,6 +204,7 @@ SpatGeom getMultiPointGeom(OGRGeometry *poGeometry) {
 	unsigned ng = poMultipoint->getNumGeometries();
 	std::vector<double> X(ng);
 	std::vector<double> Y(ng);
+	SpatGeom g(points);
 	for (size_t i=0; i<ng; i++) {
 	   	OGRGeometry *poMpGeometry = poMultipoint->getGeometryRef(i);
 		#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
@@ -211,12 +212,11 @@ SpatGeom getMultiPointGeom(OGRGeometry *poGeometry) {
 		#else
 			OGRPoint *poPoint = (OGRPoint *) poMpGeometry;
 		#endif
-		X[i] = poPoint->getX();
-		Y[i] = poPoint->getY();
+		double x = poPoint->getX();
+		double y = poPoint->getY();
+		SpatPart p(x, y);
+		g.addPart(p);
 	}
-	SpatPart p(X, Y);
-	SpatGeom g(points);
-	g.addPart(p);
 	return g;
 }
 
