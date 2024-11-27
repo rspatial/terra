@@ -140,20 +140,24 @@ setMethod("as.character", signature(x="SpatRaster"),
 
 writeSources <- function(x, fsource, ftarget, overwrite, ...) {
 	fex <- file.exists(ftarget)
-	k <- fsource == ""
-	if (isTRUE(overwrite)) {
-		file.copy(fsource[!k], ftarget[!k])
-	} else if (isFALSE(overwrite) && (any(fex))) {
+	if (isFALSE(overwrite) && (any(fex))) {
 		error("wrap", "file(s) exist(s) and 'overwrite=FALSE'")
-	} else if (!all(fex)) {
-		k[fex] <- FALSE
-		fex[k] <- TRUE
-		file.copy(fsource[!fex], ftarget[!fex])					
 	}
-	if (any(k)) {
-		for (i in which(k)) {
-			r <- subsetSource(x, i)
-			writeRaster(r, ftarget[i], ...)
+	mem <- fsource == ""
+	for (i in 1:length(mem)) {
+		r <- subsetSource(x, i)
+		if (mem[i]) {
+			writeRaster(r, ftarget[i], overwrite=TRUE, ...)
+		} else {
+			ff <- r@ptr$getAllFiles();
+			if (length(ff) > 1) {
+				target_noex <- tools::file_path_sans_ext(basename(ftarget[i]))
+				source_noex <- tools::file_path_sans_ext(basename(fsource[i]))
+				fftarget <- file.path(dirname(ftarget[i]), gsub(source_noex, target_noex, basename(ff)))
+				file.copy(ff, fftarget)
+			} else {
+				file.copy(fsource[i], ftarget[i])
+			}
 		}
 	}
 }
