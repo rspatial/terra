@@ -10,6 +10,7 @@
 - `where.min` did not work well if there were negative values [#1634](https://github.com/rspatial/terra/issues/1634) by Michael Sumner.
 - `plet<SpatRaster>` now works for RGB rasters and rasters with a color table [#1596](https://github.com/rspatial/terra/issues/1596) by Agustin Lobo.
 - `vect<MULTIPOINT WKT>` did not work properly [#1376](https://github.com/rspatial/terra/issues/1376) by silasprincipe
+- `compareGeom<SpatVector>` did not work [#1654](https://github.com/rspatial/terra/issues/1654) by Jason Flower
 
 ## enhancements
 
@@ -28,7 +29,7 @@
 - `metags` for layers (bands) of SpatRaster are now saved to and read from GTiff files [#1071](https://github.com/rspatial/terra/issues/1071) by Mike Koontz
 - `global` has new effcient functions "anyNA" and "anynotNA" [#1540](https://github.com/rspatial/terra/issues/1540) by Kevin J Wolz
 - `wrap`, `saveRDS` and `serialize` for SpatExtent. [#1430](https://github.com/rspatial/terra/issues/1430) by BastienFR
-
+- `vect<SpatGraticule>` method suggested in relation to [tidyterra #155](https://github.com/dieghernan/tidyterra/issues/155) by Diego Hernangómez
 
 # version 1.7-83
 
