@@ -1204,9 +1204,14 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 	out = coll.get(0);
 	out.srs = srs;
 	out.df = df;
+	if (std::isnan(out.extent.xmin)) {
+		SpatVector empty;
+		empty.srs = srs;
+		return empty;
+	}
+	
 	return out;
 }
-
 
 
 // basic version of buffer, for debugging

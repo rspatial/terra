@@ -111,7 +111,13 @@ x <- rast(nrows=108, ncols=21, xmin=0, xmax=10)
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 
-s <- rast(system.file("ex/logo.tif", package="terra"))   
+# A file with multiple layers. This one is special as the layers are RGB color channels 
+s <- rast(system.file("ex/logo.tif", package="terra"))
+
+# remove the color channels
+#plot(s)
+#RGB(s) <- NULL
+#plot(s)
 
 # Create a skeleton with no associated cell values
 rast(s)

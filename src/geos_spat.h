@@ -316,6 +316,7 @@ inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSC
 			geoms.reserve(np);
 			for (size_t j=0; j < np; j++) {
 				//SpatPart svp = svg.getPart(j);
+				if (svg.parts[j].x.size() < 3) continue;
 				GEOSGeometry* gp = geos_line(svg.parts[j].x, svg.parts[j].y, hGEOSCtxt); 
 				if (gp != NULL) {
 					geoms.push_back(gp);
@@ -336,6 +337,7 @@ inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSC
 			geoms.reserve(np);
 			for (size_t j=0; j < np; j++) {
 				SpatPart svp = svg.getPart(j);
+				if (svp.x.size() < 3) continue;
 				GEOSGeometry* gp = geos_polygon(svp, hGEOSCtxt);
 
 				if (gp != NULL) {
