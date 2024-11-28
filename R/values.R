@@ -466,9 +466,10 @@ setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
 	}
 )
 
-setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
+setMethod("compareGeom", signature(x="SpatVector", y="missing"),
 	function(x, y, tolerance=0) {
-		out <- x@ptr$equals_within(tolerance)
+		symmetrical=FALSE # this is inefficient
+		out <- x@ptr$equals_within(symmetrical, tolerance)
 		x <- messages(x, "compareGeom")
 		out[out == 2] <- NA
 		out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)

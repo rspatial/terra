@@ -10,7 +10,7 @@
 \alias{compareGeom,SpatVector,SpatVector-method}
 \alias{compareGeom,SpatVector,missing-method}
   
-\title{Compare geometries of SpatRasters}
+\title{Compare geometries}
 
 \description{
 Evaluate whether two SpatRasters have the same extent, number of rows and columns, projection, resolution, and origin (or a subset of these comparisons). 
