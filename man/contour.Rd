@@ -53,6 +53,16 @@ rr <- floor(rr/100) * 100
 v <- as.polygons(rr)
 plot(v, 1, col=terrain.colors(7))
 
+## to combine filled contours with contour lines (or other spatial data)
+
+br <- seq(100, 600, 100)
+plot(r, breaks=br)
+lines(as.contour(r, levels=br))
+
+## or 
+x <- classify(r,  br) |> as.polygons()
+plot(x, "elevation")
+
 }
 
 \keyword{methods}
