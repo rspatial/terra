@@ -1,13 +1,25 @@
 
 
-hexcols <- function(cols, alpha=FALSE) {
-	if (alpha) {
-		m <- grDevices::col2rgb(cols, alpha=TRUE)/255
-		rgb(m[1,], m[2,], m[3,], m[4,])
-	} else {
-		m <- grDevices::col2rgb(cols, alpha=FALSE)/255
-		rgb(m[1,], m[2,], m[3,])	
+hexcols <- function(out) {
+
+	get_col <- function(cols, alpha) {
+		if (isTRUE(alpha < 255)) {
+			grDevices::rgb(t(grDevices::col2rgb(cols, alpha=TRUE)), alpha=alpha, maxColorValue=255)
+		} else {
+			grDevices::rgb(t(grDevices::col2rgb(cols, alpha=FALSE)), maxColorValue=255)	
+		}
 	}
+
+	if (NCOL(out$cols) == 1) {
+		out$cols <- get_col(out$cols, out$alpha)
+	} else if (NCOL(out$cols) == 2) {
+		out$cols[,2] <- get_col(out$cols[,2], out$alpha)
+	} else if (NCOL(out$cols) == 3) {
+		out$cols[,3] <- get_col(out$cols[,3], out$alpha)
+	}
+	
+	out
+
 }
 
 
@@ -82,9 +94,9 @@ hexcols <- function(cols, alpha=FALSE) {
 		if (is.null(out$rgb$bgalpha)) out$rgb$bgalpha <- 255
 		bg <- grDevices::rgb(bg[1], bg[2], bg[3], alpha=out$rgb$bgalpha, maxColorValue=255)
 		z <- rep( bg, times=ncell(x))
-		z[-naind] <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=out$rgb$alpha, maxColorValue=scale)
+		z[-naind] <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=out$alpha, maxColorValue=scale)
 	} else {
-		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=out$rgb$alpha, maxColorValue=scale)
+		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=out$alpha, maxColorValue=scale)
 	}
 	
 	out$r <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
@@ -170,7 +182,6 @@ hexcols <- function(cols, alpha=FALSE) {
 #		out$frange <- out$range	
 #	}
 
-	out$cols <- hexcols(out$cols)
 	if (length(breaks) == 1) {
 		Z[] <- out$cols[ceiling(length(out$cols)/2)]
 	} else {
@@ -262,13 +273,11 @@ prettyNumbs <- function(x, digits) {
 
 
 	if (NCOL(out$cols) == 2) {
-		out$cols[,2] <- hexcols(as.character(out$cols[,2]))
 		i <- match(Z, as.numeric(levs))
 		Z[] <- out$cols[,2][i]
 		i <- match(as.numeric(levs), out$cols[,1])
 		out$leg$fill <- out$cols[i,2]
 	} else {
-		out$cols <- hexcols(as.character(out$cols))
 		ncols <- length(out$cols)
 		if (nlevs == 1) {
 			cols <- out$cols[length(out$cols)]
@@ -278,7 +287,6 @@ prettyNumbs <- function(x, digits) {
 		} else {
 			cols <- rep_len(out$cols, nlevs)
 		}
-		cols <- hexcols(cols)
 		out$leg$fill <- cols
 		Z[] <- cols[as.numeric(fz)]
 	}
@@ -360,9 +368,8 @@ prettyNumbs <- function(x, digits) {
 
 		out$cols <- grDevices::rgb(out$coltab[,2], out$coltab[,3], out$coltab[,4], out$coltab[,5], maxColorValue=255)
 		i <- match(z, out$coltab[,1])
-		z <- hexcols(out$cols[i])
+		z <- out$cols[i]
 	} else {
-		out$cols <- hexcols(out$cols)
 		if (is.null(out$leg$legend)) out$leg$legend <- unique(stats::na.omit(out$cats[ilevels, 2]))
 		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
 		leglevs <- stats::na.omit(unique(levlab[,2]))
@@ -439,7 +446,6 @@ prettyNumbs <- function(x, digits) {
 	levs <- levels(fz)
 	nlevs <- length(levs)
 
-	out$cols <- hexcols(out$cols)
 	cols <- out$cols
 	ncols <- length(cols)
 	if (nlevs < ncols) {
@@ -475,7 +481,6 @@ prettyNumbs <- function(x, digits) {
 	out$legend_type <- "classes"
 
 	if (NCOL(out$cols) == 3) {
-		out$cols[,3] <- hexcols(as.character(out$cols[,3]))
 		rcl <- cbind(as.matrix(out$cols[,1:2]), 1:nrow(out$cols))
 		x <- classify(x, rcl, include.lowest=TRUE, others=NA)
 		m <- apply(out$cols[,1:2], 1, function(i) paste(i, collapse=" - "))
@@ -690,23 +695,24 @@ prettyNumbs <- function(x, digits) {
 		out$asp <- asp
 		out$lonlat <- FALSE
 	}
+	out$cols <- cols
 	if (!is.null(alpha)) {
 		if (!inherits(alpha, "SpatRaster")) {
-			alpha <- alpha[1]
-			if (alpha < 0 || alpha > 1) {
+			out$alpha <- alpha[1]
+			if ((alpha < 0) || (alpha > 1)) {
 				warn("plot", "alpha should be between 0 and 1")
-				alpha <- 255
+				out$alpha <- 255
 			} else {
-				alpha <- alpha[1] * 255
+				out$alpha <- out$alpha[1] * 255
 			}
-			cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
+			out <- hexcols(out)
 		}
 	} else {
-		alpha <- 255
+		out$alpha <- 255
+		out <- hexcols(out)
 	}
 	out$rgb$stretch <- stretch
 	out$rgb$scale <- scale
-	out$rgb$alpha <- alpha
 	out$rgb$bgalpha <- bgalpha
 	out$rgb$zlim <- zlim
 	out$rgb$zcol <- isTRUE(zcol)
@@ -730,7 +736,6 @@ prettyNumbs <- function(x, digits) {
 	out$yaxs <- yaxs
 	out$xlab <- xlab
 	out$ylab <- ylab 
-	out$cols <- cols
 	out$coltab <- coltab
 	out$cats <- cats
 	out$breaks <- breaks
@@ -808,7 +813,7 @@ prettyNumbs <- function(x, digits) {
 
 		if (!is.null(colNA)) {
 			if (!is.na(colNA) && out$values) {
-				out$colNA <- grDevices::rgb(t(grDevices::col2rgb(colNA)), alpha=alpha, maxColorValue=255)
+				out$colNA <- grDevices::rgb(t(grDevices::col2rgb(colNA)), alpha=out$alpha, maxColorValue=255)
 				out$r[is.na(out$r)] <- out$colNA
 			}
 		}
