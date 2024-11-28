@@ -47,7 +47,7 @@ setMethod("vect", signature(x="SpatVectorCollection"),
 setMethod("vect", signature(x="SpatGraticule"),
 	function(x) {
 		v <- vect()
-		v@ptr <- grat@ptr
+		v@ptr <- x@ptr
 		v
 	}
 )
