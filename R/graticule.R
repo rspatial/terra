@@ -5,7 +5,6 @@
 
 graticule <- function(lon=30, lat=30, crs="") {
 
-
 	if (crs == "") {
 		crs <- "+proj=longlat"
 	}
@@ -56,8 +55,7 @@ graticule <- function(lon=30, lat=30, crs="") {
 
 #setMethod("project", signature(x="SpatGraticule"),
 #	function(x, y) {
-#		v <- vect()
-#		v@ptr <- x@ptr
+#		v <- vect(x)
 #		v <- project(v, y)
 #		x@ptr <- v@ptr
 #		v@ptr <- x@box
@@ -69,9 +67,8 @@ graticule <- function(lon=30, lat=30, crs="") {
 
 setMethod("crop", signature(x="SpatGraticule"),
 	function(x, y) {
-		v <- vect()
+		v <- vect(x)
 
-		v@ptr <- x@ptr
 		v <- crop(v, y)
 		x@ptr <- v@ptr
 
@@ -84,9 +81,8 @@ setMethod("crop", signature(x="SpatGraticule"),
 
 setMethod("erase", signature(x="SpatGraticule", y="SpatVector"),
 	function(x, y) {
-		v <- vect()
-	
-		v@ptr <- x@ptr
+
+		v <- vect(x)
 		y <- project(y, v)
 
 		v <- erase(v, y)
@@ -99,7 +95,9 @@ setMethod("erase", signature(x="SpatGraticule", y="SpatVector"),
 	}
 )
 
-grat_labels <- function(v, retro, atlon, atlat, labloc, cex, col, offlon, offlat, vfont=NULL, font=NULL, ...) {
+grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat, vfont=NULL, font=NULL, ...) {
+
+	v <- vect(x)
 
 	left <- right <- top <- bottom <- FALSE
 	labloc <- rep_len(labloc, 2)
@@ -208,24 +206,20 @@ setMethod("plot", signature(x="SpatGraticule", y="missing"),
 				plot(ext(b), border=NA, axes=FALSE, mar=mar)
 			}
 		}
-		v <- vect()
-		v@ptr <- x@ptr
-		lines(v, col=col, ...)
+		lines(x, col=col, ...)
 		if (box) {
 			lwd <- list(...)$lwd
 			if (is.null(lwd)) lwd=1;
 			lines(b, lty=1, col=box.col, lwd=lwd)
 		}
-		if (labels) grat_labels(v, isTRUE(retro[1]), lab.lon, lab.lat, lab.loc, lab.cex[1], lab.col[1], off.lon, off.lat, ...)
+		if (labels) grat_labels(x, isTRUE(retro[1]), lab.lon, lab.lat, lab.loc, lab.cex[1], lab.col[1], off.lon, off.lat, ...)
 	}
 )
 
 
 setMethod("lines", signature(x="SpatGraticule"),
 	function(x, ...) {
-		v <- vect()
-		v@ptr <- x@ptr
-		lines(v, ...)
+		lines(vect(x), ...)
 	}
 )
 
