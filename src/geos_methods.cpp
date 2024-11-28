@@ -991,9 +991,9 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 		}
 	}
 
+	SpatVector a = aggregate(false);
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
-	SpatVector a = aggregate(false);
 	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);
 	//std::string vt = type();
 	GEOSGeometry* h;
