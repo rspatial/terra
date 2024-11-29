@@ -6,7 +6,9 @@ hexcols <- function(out) {
 		if (isTRUE(alpha < 255)) {
 			grDevices::rgb(t(grDevices::col2rgb(cols, alpha=TRUE)), alpha=alpha, maxColorValue=255)
 		} else {
-			grDevices::rgb(t(grDevices::col2rgb(cols, alpha=FALSE)), maxColorValue=255)	
+			i <- !grepl("^#", cols)
+			cols[i] <- grDevices::rgb(t(grDevices::col2rgb(cols[i], alpha=FALSE)), maxColorValue=255)	
+			cols
 		}
 	}
 
