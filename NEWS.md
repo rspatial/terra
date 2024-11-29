@@ -11,6 +11,7 @@
 - `plet<SpatRaster>` now works for RGB rasters and rasters with a color table [#1596](https://github.com/rspatial/terra/issues/1596) by Agustin Lobo.
 - `vect<MULTIPOINT WKT>` did not work properly [#1376](https://github.com/rspatial/terra/issues/1376) by silasprincipe
 - `compareGeom<SpatVector>` did not work [#1654](https://github.com/rspatial/terra/issues/1654) by Jason Flower
+- `buffer<SpatVector>` is now more accurate buffers for lonlat polygons [#1616](https://github.com/rspatial/terra/issues/1616) by Roberto Amaral-Santos
 
 ## enhancements
 
@@ -48,6 +49,7 @@ Released 2024-10-14
 - `getTileExtents` could return overlapping tiles or tiles with gaps due to floating point imprecision. [#1564](https://github.com/rspatial/terra/issues/1564) by Michael Sumner
 - `rasterize` with points failed when using `update=TRUE` [#1611](https://github.com/rspatial/terra/issues/1611) by Jordan Adamson
 - `buffer` on a lonlat multipoint SpatVector returned a buffer around a single point. [#1607](https://github.com/rspatial/terra/issues/1607) by Márcia Barbosa
+- `buffer<SpatVector>` no longer crashes (for particular cases and unknown reasons) on windows [#1331](https://github.com/rspatial/terra/issues/1331) by Julian090601, [#1363](https://github.com/rspatial/terra/issues/1363) by Rupert Overall and [#1531](https://github.com/rspatial/terra/issues/1531) by Igor Graczykowski
 
  
 ## enhancements

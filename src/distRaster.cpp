@@ -2578,8 +2578,12 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 	SpatVector tmp;
 	tmp.reserve(x.size());
 	//Rcpp::Rcout << x.geoms.size() << std::endl;
+
+//	double interval = std::max(1000.0, std::max(x.extent.ymax - x.extent.ymin, x.extent.xmax - x.extent.xmin) * 100);  // m
 	for (size_t i=0; i<x.geoms.size(); i++) {
 		SpatVector p(x.geoms[i]);
+//		p = p.densify(interval, true, false);
+
 		p.srs = x.srs;
 		p = p.as_points(false, true);
 		std::vector<double> d(p.size(), dist);
