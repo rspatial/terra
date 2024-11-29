@@ -42,6 +42,11 @@ AC_MSG_NOTICE([CXX: ${CXX}])
 
 # AC_MSG_NOTICE([${PACKAGE_NAME}: ${PACKAGE_VERSION}])
 
+GENERIC_INSTALL_MESSAGE="
+*** Installing this package from source requires the prior 
+*** installation of external software, see for details 
+*** https://rspatial.github.io/terra/"
+
 #GDAL
 GDAL_CONFIG="gdal-config"
 
@@ -60,7 +65,7 @@ if test ["$GDAL_CONFIG_SET" = "no"] ; then
   AC_PATH_PROG([GDAL_CONFIG], ["$GDAL_CONFIG"],["no"])
   if test ["$GDAL_CONFIG" = "no"] ; then
     AC_MSG_RESULT(no)
-    AC_MSG_ERROR([gdal-config not found or not executable.])
+    AC_MSG_ERROR([gdal-config not found or not executable. ${GENERIC_INSTALL_MESSAGE}])
   fi
 else
   AC_MSG_CHECKING(gdal-config exists)
@@ -68,14 +73,14 @@ else
     AC_MSG_RESULT(yes)
   else
     AC_MSG_RESULT(no)
-    AC_MSG_ERROR([gdal-config not found - configure argument error.])
+    AC_MSG_ERROR([gdal-config not found - configure argument error. ${GENERIC_INSTALL_MESSAGE}])
   fi
   AC_MSG_CHECKING(gdal-config executable)
   if test -x "${GDAL_CONFIG}"; then
     AC_MSG_RESULT(yes)
   else
     AC_MSG_RESULT(no)
-    AC_MSG_ERROR([gdal-config not executable.])
+    AC_MSG_ERROR([gdal-config not executable. ${GENERIC_INSTALL_MESSAGE}])
   fi
 fi
 
@@ -89,19 +94,7 @@ then
 	GDAL_DATADIR=`${GDAL_CONFIG} --datadir`
 	AC_MSG_RESULT(yes)
 else
-	AC_MSG_RESULT(no)
-	echo "Error: gdal-config not found"
-	echo "The gdal-config script distributed with GDAL could not be found."
-	echo "If you have not installed the GDAL libraries, you can"
-	echo "download the source from  http://www.gdal.org/"
-	echo "If you have installed the GDAL libraries, then make sure that"
-	echo "gdal-config is in your path. Try typing gdal-config at a"
-	echo "shell prompt and see if it runs. If not, use:"
-	echo " --configure-args='--with-gdal-config=/usr/local/bin/gdal-config'"
-	echo "with appropriate values for your installation."
-	echo ""
-
-	exit 1
+	AC_MSG_ERROR([gdal-config not found. ${GENERIC_INSTALL_MESSAGE}])
 fi
 
 AC_MSG_NOTICE([GDAL: ${GDAL_VERSION}])
@@ -137,7 +130,7 @@ CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
 gdalok=yes
 AC_CHECK_HEADERS(gdal.h,,gdalok=no)
 if test "${gdalok}" = no; then
-   AC_MSG_ERROR([gdal.h not found in given locations.])
+   AC_MSG_ERROR([gdal.h not found in given locations.. ${GENERIC_INSTALL_MESSAGE}])
 fi
 
 NEED_DEPS=no
@@ -183,7 +176,7 @@ fi
 if test "${gdalok}" = no; then
    cat errors.txt
    AC_MSG_NOTICE([Install failure: compilation and/or linkage problems.])
-   AC_MSG_ERROR([GDALAllRegister not found in libgdal.])
+   AC_MSG_ERROR([GDALAllRegister not found in libgdal. ${GENERIC_INSTALL_MESSAGE}])
 fi
 
 rm -f gdal_test errors.txt gdal_test.cpp
@@ -208,7 +201,7 @@ if test -r "${GDAL_DATA_TEST_FILE}" ; then
 else
   AC_MSG_RESULT(no)
   if test "${GDAL_GE_250}" = "no" ; then
-    AC_MSG_ERROR([pcs.csv not found in GDAL data directory.])
+    AC_MSG_ERROR([pcs.csv not found in GDAL data directory. ${GENERIC_INSTALL_MESSAGE}])
   fi
 fi
 
@@ -285,7 +278,7 @@ fi
 if test "${gdal_has_proj}" = no; then
    cat errors.txt
    AC_MSG_NOTICE([Install failure: compilation and/or linkage problems.])
-   AC_MSG_ERROR([cannot link projection code])
+   AC_MSG_ERROR([cannot link projection code. ${GENERIC_INSTALL_MESSAGE}])
 fi
 
 AC_MSG_CHECKING(GDAL: checking whether PROJ is available for running:)
@@ -301,7 +294,7 @@ gdal_has_proj=yes
 AC_MSG_RESULT(yes)
 fi
 if test "${gdal_has_proj}" = no; then
-   AC_MSG_ERROR([OGRCoordinateTransformation() does not return a coord.trans: PROJ not available?])
+   AC_MSG_ERROR([OGRCoordinateTransformation() does not return a coord.trans: PROJ not available? ${GENERIC_INSTALL_MESSAGE}])
 fi
 fi
 rm -fr errors.txt gdal_proj.cpp gdal_proj
@@ -655,7 +648,7 @@ if test ["$GEOS_CONFIG_SET" = "no"] ; then
   AC_PATH_PROG([GEOS_CONFIG], ["$GEOS_CONFIG"],["no"])
   if test ["$GEOS_CONFIG" = "no"] ; then
     AC_MSG_RESULT(no)
-    AC_MSG_ERROR([geos-config not found or not executable.])
+    AC_MSG_ERROR([geos-config not found or not executable. ${GENERIC_INSTALL_MESSAGE}])
   fi
 else
   AC_MSG_CHECKING(geos-config exists)
@@ -663,14 +656,14 @@ else
     AC_MSG_RESULT(yes)
   else
     AC_MSG_RESULT(no)
-    AC_MSG_ERROR([geos-config not found - configure argument error.])
+    AC_MSG_ERROR([geos-config not found - configure argument error. ${GENERIC_INSTALL_MESSAGE}])
   fi
   AC_MSG_CHECKING(geos-config executable)
   if test -x "${GEOS_CONFIG}"; then
     AC_MSG_RESULT(yes)
   else
     AC_MSG_RESULT(no)
-    AC_MSG_ERROR([geos-config not executable.])
+    AC_MSG_ERROR([geos-config not executable. ${GENERIC_INSTALL_MESSAGE}])
   fi
 fi
 
