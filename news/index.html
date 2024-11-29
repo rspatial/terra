@@ -53,6 +53,8 @@
 <code>vect&lt;MULTIPOINT WKT&gt;</code> did not work properly <a href="https://github.com/rspatial/terra/issues/1376" class="external-link">#1376</a> by silasprincipe</li>
 <li>
 <code>compareGeom&lt;SpatVector&gt;</code> did not work <a href="https://github.com/rspatial/terra/issues/1654" class="external-link">#1654</a> by Jason Flower</li>
+<li>
+<code>buffer&lt;SpatVector&gt;</code> is now more accurate buffers for lonlat polygons <a href="https://github.com/rspatial/terra/issues/1616" class="external-link">#1616</a> by Roberto Amaral-Santos</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-3">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-3"></a></h3>
@@ -110,6 +112,8 @@
 <code>rasterize</code> with points failed when using <code>update=TRUE</code> <a href="https://github.com/rspatial/terra/issues/1611" class="external-link">#1611</a> by Jordan Adamson</li>
 <li>
 <code>buffer</code> on a lonlat multipoint SpatVector returned a buffer around a single point. <a href="https://github.com/rspatial/terra/issues/1607" class="external-link">#1607</a> by Márcia Barbosa</li>
+<li>
+<code>buffer&lt;SpatVector&gt;</code> no longer crashes (for particular cases and unknown reasons) on windows <a href="https://github.com/rspatial/terra/issues/1331" class="external-link">#1331</a> by Julian090601, <a href="https://github.com/rspatial/terra/issues/1363" class="external-link">#1363</a> by Rupert Overall and <a href="https://github.com/rspatial/terra/issues/1531" class="external-link">#1531</a> by Igor Graczykowski</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-7-83">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-83"></a></h3>

@@ -44,7 +44,7 @@ With colorize you can convert a three-layer RGB SpatRaster into other color spac
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
-<span><span class="fu">RGB</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu">RGB</span><span class="op">(</span><span class="va">x</span>, value<span class="op">=</span><span class="cn">NULL</span>, type<span class="op">=</span><span class="st">"rgb"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">RGB</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, type <span class="op">=</span> <span class="st">"rgb"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
@@ -65,7 +65,7 @@ With colorize you can convert a three-layer RGB SpatRaster into other color spac
 
 
   <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
-<dd><p>vector of three (or four) positive integers indicating the layers that are red, green and blue (and optionally a fourth transparency layer). Or <code>NULL</code> to remove the RGB settings</p></dd>
+<dd><p>three (or four) positive integers indicating the layers that are red, green and blue (and optionally a fourth transparency layer). Or <code>NULL</code> to remove the RGB settings</p></dd>
 
 
   <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
@@ -106,10 +106,16 @@ With colorize you can convert a three-layer RGB SpatRaster into other color spac
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="inplace.html">set.RGB</a></code></p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span>   </span></span>
+<span class="r-in"><span><span class="fu">RGB</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2 3</span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="RGB-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu">has.RGB</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
@@ -120,6 +126,9 @@ With colorize you can convert a three-layer RGB SpatRaster into other color spac
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="RGB-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu">RGB</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># same as </span></span></span>
+<span class="r-in"><span><span class="co"># r &lt;- RGB(r, c(3,1,2))</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="RGB-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
