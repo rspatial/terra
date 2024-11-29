@@ -20,7 +20,15 @@ setMethod("set.RGB", signature(x="SpatRaster"),
 		if (is.null(value[1]) || is.na(value[1]) || any(value < 1)) {
 			x@ptr$removeRGB()
 		} else {
-			stopifnot(all(value %in% 1:nlyr(x)))
+			if (inherits(value, "character")) {
+				i <- match(value, names(x))
+				j <- !is.na(i)
+				value[j] <- i[j]
+				value <- as.integer(value)
+			}
+			if (!all(value %in% 1:nlyr(x))) {
+				error("set.RGB", "value(s) are not value layer numbers")			
+			}
 			if (length(value) == 3) {
 				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, -99, type)
 			} else if (length(value) == 4) {
@@ -43,11 +51,16 @@ setMethod("RGB<-", signature(x="SpatRaster"),
 )
 
 setMethod("RGB", signature(x="SpatRaster"),
-	function(x) {
-		if (x@ptr$rgb) {
-			x@ptr$getRGB() + 1
+	function(x, value=NULL, type="rgb") {
+		if (!is.null(value)) {
+			RGB(x, type=type) <- value
+			return(x)
 		} else {
-			return(NULL)
+			if (x@ptr$rgb) {
+				x@ptr$getRGB() + 1
+			} else {
+				return(NULL)
+			}
 		}
 	}
 )
