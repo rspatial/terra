@@ -16,6 +16,7 @@
 \alias{vect,sfc-method}
 \alias{vect,XY-method}
 \alias{vect,PackedSpatVector-method}
+\alias{vect,SpatGraticule-method}
 
 
 \title{Create SpatVector objects}

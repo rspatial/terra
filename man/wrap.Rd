@@ -9,7 +9,7 @@
 \alias{wrap,SpatRasterDataset-method}
 \alias{wrap,SpatRasterCollection-method}
 \alias{unwrap,ANY-method}
-\alias{unwrap,PackedExtent-method}
+\alias{unwrap,PackedSpatExtent-method}
 \alias{unwrap,PackedSpatRaster-method}
 \alias{unwrap,PackedSpatRasterDC-method}
 \alias{unwrap,PackedSpatVector-method}
