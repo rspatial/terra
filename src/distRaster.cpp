@@ -2558,7 +2558,7 @@ SpatGeom hullify(SpatVector b, bool ispoly) {
 
 SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, bool ishole) {
 
-
+/*
 	if ((x.extent.ymin > -60) && (x.extent.ymax < 60) && 
 			((x.extent.ymax - x.extent.ymin) < 1) && dist < 110000) {
 				
@@ -2573,7 +2573,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 		x.srs = insrs;
 		return x;
 	}
-
+*/
 	x = x.disaggregate(false);
 	SpatVector tmp;
 	tmp.reserve(x.size());
