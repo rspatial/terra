@@ -64,7 +64,6 @@ fi
 if test ["$GDAL_CONFIG_SET" = "no"] ; then
   AC_PATH_PROG([GDAL_CONFIG], ["$GDAL_CONFIG"],["no"])
   if test ["$GDAL_CONFIG" = "no"] ; then
-    AC_MSG_RESULT(no)
     AC_MSG_ERROR([gdal-config not found or not executable. ${GENERIC_INSTALL_MESSAGE}])
   fi
 else
@@ -72,14 +71,12 @@ else
   if test -r "${GDAL_CONFIG}"; then
     AC_MSG_RESULT(yes)
   else
-    AC_MSG_RESULT(no)
     AC_MSG_ERROR([gdal-config not found - configure argument error. ${GENERIC_INSTALL_MESSAGE}])
   fi
   AC_MSG_CHECKING(gdal-config executable)
   if test -x "${GDAL_CONFIG}"; then
     AC_MSG_RESULT(yes)
   else
-    AC_MSG_RESULT(no)
     AC_MSG_ERROR([gdal-config not executable. ${GENERIC_INSTALL_MESSAGE}])
   fi
 fi
