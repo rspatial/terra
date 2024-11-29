@@ -21,7 +21,7 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 }
 
 \usage{
-\S4method{RGB}{SpatRaster}(x)
+\S4method{RGB}{SpatRaster}(x, value=NULL, type="rgb")
 
 \S4method{RGB}{SpatRaster}(x, ..., type="rgb")<-value
 
@@ -35,7 +35,7 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 \arguments{
   \item{x}{SpatRaster}
   
-  \item{value}{vector of three (or four) positive integers indicating the layers that are red, green and blue (and optionally a fourth transparency layer). Or \code{NULL} to remove the RGB settings}
+  \item{value}{three (or four) positive integers indicating the layers that are red, green and blue (and optionally a fourth transparency layer). Or \code{NULL} to remove the RGB settings}
   
   \item{type}{character. The color space. One of "rgb" "hsv", "hsi" and "hsl"}
 
@@ -57,14 +57,20 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 }  
 
 
+\seealso{\code{\link{set.RGB}}}
+
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   
+RGB(r)
 plot(r)
 has.RGB(r)
 RGB(r) <- NULL
 has.RGB(r)
 plot(r)
 RGB(r) <- c(3,1,2)
+# same as 
+# r <- RGB(r, c(3,1,2))
+
 plot(r)
 
 RGB(r) <- 1:3
