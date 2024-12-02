@@ -5177,16 +5177,16 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 			if (brackets) {
 				std::string bleft = ((!right) || lowest) ? "[" : "(";
 				std::string bright = right ? "]" : ")";
-				s.push_back(bleft+ double_to_string(rcl[0][0]) + "–" + double_to_string(rcl[0][1]) + bright);
+				s.push_back(bleft+ double_to_string(rcl[0][0]) + " - " + double_to_string(rcl[0][1]) + bright);
 				bleft = right ? "(" : "[";
 				for (size_t i=2; i<(rn-1); i++) {
-					s.push_back(bleft + double_to_string(rcl[0][i-1]) + "–" + double_to_string(rcl[0][i]) + bright);
+					s.push_back(bleft + double_to_string(rcl[0][i-1]) + " - " + double_to_string(rcl[0][i]) + bright);
 				}
 				bright = (right || lowest) ? "]" : ")";
-				s.push_back(bleft + double_to_string(rcl[0][rn-2]) + "–" + double_to_string(rcl[0][rn-1]) + bright);
+				s.push_back(bleft + double_to_string(rcl[0][rn-2]) + " - " + double_to_string(rcl[0][rn-1]) + bright);
 			} else {
 				for (size_t i=1; i<rn; i++) {
-					s.push_back(double_to_string(rcl[0][i-1]) + " – " + double_to_string(rcl[0][i]));
+					s.push_back(double_to_string(rcl[0][i-1]) + " - " + double_to_string(rcl[0][i]));
 				}
 			}
 			std::vector<long> u(s.size());
