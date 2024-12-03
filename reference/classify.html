@@ -123,10 +123,10 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 <span class="r-in"><span><span class="co"># equivalent to the above, but now a categorical SpatRaster is returned </span></span></span>
 <span class="r-in"><span><span class="va">rc2</span> <span class="op">&lt;-</span> <span class="fu">classify</span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span>, include.lowest<span class="op">=</span><span class="cn">TRUE</span>, brackets<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="freq.html">freq</a></span><span class="op">(</span><span class="va">rc2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   layer      value count</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1   [0–0.25]    25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1 (0.25–0.5]    25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     1    (0.5–1]    50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   layer        value count</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1   [0 - 0.25]    25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1 (0.25 - 0.5]    25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     1    (0.5 - 1]    50</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## is-becomes </span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">r</span><span class="op">*</span><span class="fl">3</span><span class="op">)</span></span></span>
