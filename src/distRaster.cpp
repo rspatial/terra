@@ -2751,6 +2751,10 @@ std::vector<double> SpatVector::area(std::string unit, bool transform, std::vect
 		std::vector<double>	out(nrow(), 0);
 		return out;
 	}
+	if (nrow() == 0) {
+		std::vector<double>	out(1, 0);	
+		return out;
+	}
 
 	size_t s = size();
 	size_t m = mask.size();

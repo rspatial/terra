@@ -1204,6 +1204,8 @@ SpatVector SpatVector::buffer(std::vector<double> d, unsigned quadsegs, std::str
 	out = coll.get(0);
 	out.srs = srs;
 	out.df = df;
+
+// revdep problem with ShapePattern
 	if (std::isnan(out.extent.xmin)) {
 		SpatVector empty;
 		empty.srs = srs;
