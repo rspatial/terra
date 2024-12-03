@@ -714,11 +714,6 @@ setMethod("split", signature(x="SpatVector", f="SpatVector"),
 		}
 		values(f) <- NULL
 		ex <- ext(x)
-		i <- intersect(ext(x), ext(f))
-		if (is.null(i)) {
-			warn("split", "x and f do not intersect")
-			return(x)
-		}
 		r <- relate(x, f, "intersects")
 		if (sum(r) == 0) {
 			warn("split", "x and f do not intersect")

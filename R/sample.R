@@ -405,7 +405,10 @@ sampleRaster <- function(x, size, method, replace, ext=NULL, warn) {
 #		hasWin <- TRUE
 #		hadWin <- window(x)
 #		oldWin <- ext(x)
-		w <- intersect(ext(x), ext(ext))		
+		w <- intersect(ext(x), ext(ext))
+		if (is.null(w)) {
+			error("sampleRaster", "x and ext do not intersect")
+		}
 		x <- deepcopy(x)
 		window(x) <- w
 	}

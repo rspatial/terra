@@ -119,7 +119,7 @@ plot(r, type="interval")
 
 e <- c(6.37, 6.41, 49.9, 50.1)
 plot(r, plg=list(ext=e, title="Legend\nTitle", title.cex=0.9), 
-		pax=list(side=1:4, retro=TRUE))
+		pax=list(side=1:4, retro=FALSE))
 north(cbind(5.8, 50.1))	
 
 d <- classify(r, c(100,200,300,400,500,600))
@@ -143,7 +143,7 @@ par(mfrow=c(1,2))
 plot(r, range=c(50,600), mar=c(1,1,1,4))
 plot(r/2, range=c(50,600), mar=c(1,1,1,4))
 
-# as we only need one legend:
+# as we only need one legend:	
 par(mfrow=c(1,2))
 plot(r, range=c(50,600), mar=c(2, 2, 2, 2), plg=list(size=0.9, cex=.8), 
 	pax=list(side=1:2, cex.axis=.6), box=FALSE)
