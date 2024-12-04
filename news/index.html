@@ -41,20 +41,22 @@
 <code>spatSample(method='stratified', ext=e)</code> returned the wrong sampling coordinates <a href="https://github.com/rspatial/terra/issues/1628" class="external-link">#1628</a> by Barnabas Harris</li>
 <li>
 <code>spatSample(method='stratified')</code> could fail with small sample sizes <a href="https://github.com/rspatial/terra/issues/1503" class="external-link">#1503</a> by karluf</li>
-<li>transparency (alpha) did not work with RGB plotting. <a href="https://github.com/rspatial/terra/issues/1642" class="external-link">#1642</a> by Timothée Giraud.</li>
+<li>transparency (alpha) did not work with RGB plotting. <a href="https://github.com/rspatial/terra/issues/1642" class="external-link">#1642</a> by Timothée Giraud</li>
 <li>rasterization failed on very large rasters <a href="https://github.com/rspatial/terra/issues/1636" class="external-link">#1636</a> by Mary Fisher, <a href="https://github.com/rspatial/terra/issues/1463" class="external-link">#1463</a> by Nic Spono and <a href="https://github.com/rspatial/terra/issues/1281" class="external-link">#1281</a> by Sebastian Dunnett</li>
 <li>
 <code>tmpFiles</code> only looked in the default temp files folder <a href="https://github.com/rspatial/terra/issues/1630" class="external-link">#1630</a> by smckenzie1986</li>
 <li>
-<code>where.min</code> did not work well if there were negative values <a href="https://github.com/rspatial/terra/issues/1634" class="external-link">#1634</a> by Michael Sumner.</li>
+<code>where.min</code> did not work well if there were negative values <a href="https://github.com/rspatial/terra/issues/1634" class="external-link">#1634</a> by Michael Sumner</li>
 <li>
-<code>plet&lt;SpatRaster&gt;</code> now works for RGB rasters and rasters with a color table <a href="https://github.com/rspatial/terra/issues/1596" class="external-link">#1596</a> by Agustin Lobo.</li>
+<code>plet&lt;SpatRaster&gt;</code> now works for RGB rasters and rasters with a color table <a href="https://github.com/rspatial/terra/issues/1596" class="external-link">#1596</a> by Agustin Lobo</li>
 <li>
 <code>vect&lt;MULTIPOINT WKT&gt;</code> did not work properly <a href="https://github.com/rspatial/terra/issues/1376" class="external-link">#1376</a> by silasprincipe</li>
 <li>
 <code>compareGeom&lt;SpatVector&gt;</code> did not work <a href="https://github.com/rspatial/terra/issues/1654" class="external-link">#1654</a> by Jason Flower</li>
 <li>
 <code>buffer&lt;SpatVector&gt;</code> is now more accurate buffers for lonlat polygons <a href="https://github.com/rspatial/terra/issues/1616" class="external-link">#1616</a> by Roberto Amaral-Santos</li>
+<li>
+<code>terra:interpNear</code> used square windows, not circles, beyond 100 points <a href="https://github.com/rspatial/terra/issues/1509" class="external-link">#1509</a> by Jean-Luc Dupouey</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-3">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-3"></a></h3>
