@@ -432,9 +432,7 @@ bool gdal_warper(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatas
 */
 
 
-/*
-
-SpatRaster SpatRaster::new_warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
 
 	size_t ns = nsrc();
 	bool fixext = false;
@@ -645,7 +643,6 @@ SpatRaster SpatRaster::new_warper(SpatRaster x, std::string crs, std::string met
 			}
 		}
 
-
 		bool ok = crop_out.from_gdalMEM(hDstDS, false, true);
 		if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
 		if (!ok) {
@@ -670,23 +667,11 @@ SpatRaster SpatRaster::new_warper(SpatRaster x, std::string crs, std::string met
 	return out;
 }
 
-*/
 
-
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
 
 /*
-	if (extset) {
-		std::vector<bool> m = inMemory();
-		if (!vall(m)) {
-			std::string fname = tempFile(opt.get_tempdir(), opt.pid, "_temp_rasterize.tif");
-			SpatOptions xopt(opt);
-			xopt.set_filenames({fname});
-			SpatRaster y = x.writeRaster(opt);
-			return warper(y, crs, method, mask, align, resample, opt);
-		}
-	}
-*/
+SpatRaster SpatRaster::oldwarper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
+
 	size_t ns = nsrc();
 	bool fixext = false;
 	for (size_t j=0; j<ns; j++) {
@@ -913,7 +898,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	return out;
 }
 
-
+*/
 
 
 SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
