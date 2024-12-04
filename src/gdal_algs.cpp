@@ -2120,7 +2120,6 @@ void *LinearOps(std::vector<double> op) {
 SpatRaster SpatRaster::rasterizeWindow(std::vector<double> x, std::vector<double> y, std::vector<double> z, std::string algo, std::vector<double> algops, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
-
 	GDALGridAlgorithm eAlg;
 		if (!getGridderAlgo(algo, eAlg)) {
 		out.setError("unknown algorithm");
@@ -2173,6 +2172,10 @@ SpatRaster SpatRaster::rasterizeWindow(std::vector<double> x, std::vector<double
 		return out;
 	}
 
+	const char *old_count_value = CPLGetConfigOption("GDAL_GRID_POINT_COUNT_THRESHOLD", NULL);
+	std::string n = std::to_string(x.size());
+	CPLSetConfigOption("GDAL_GRID_POINT_COUNT_THRESHOLD", n.c_str());
+
 	GUInt32 npts = x.size();
 	GDALGridContext *ctxt = GDALGridContextCreate(eAlg, poOptions, npts, &x[0], &y[0], &z[0], true);
 	CPLFree( poOptions );
@@ -2191,6 +2194,7 @@ SpatRaster SpatRaster::rasterizeWindow(std::vector<double> x, std::vector<double
 		if ( eErr != CE_None ) {
 			out.setError("something went wrong");
 			GDALGridContextFree(ctxt);
+			CPLSetConfigOption("GDAL_GRID_POINT_COUNT_THRESHOLD", old_count_value);
 			return out;
 		}
 
@@ -2202,10 +2206,13 @@ SpatRaster SpatRaster::rasterizeWindow(std::vector<double> x, std::vector<double
 		}
 		if (!out.writeBlock(f, i)) {
 			GDALGridContextFree(ctxt);
+			CPLSetConfigOption("GDAL_GRID_POINT_COUNT_THRESHOLD", old_count_value);
 			return out;
 		}
 	}
 	GDALGridContextFree(ctxt);
+	CPLSetConfigOption("GDAL_GRID_POINT_COUNT_THRESHOLD", old_count_value);
+
 	out.writeStop();
 	return out;
 }
