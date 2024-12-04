@@ -4,14 +4,15 @@
 
 - `spatSample(method='stratified', ext=e)` returned the wrong sampling coordinates [#1628](https://github.com/rspatial/terra/issues/1628) by Barnabas Harris
 - `spatSample(method='stratified')` could fail with small sample sizes [#1503](https://github.com/rspatial/terra/issues/1503) by karluf
-- transparency (alpha) did not work with RGB plotting. [#1642](https://github.com/rspatial/terra/issues/1642) by Timothée Giraud.
+- transparency (alpha) did not work with RGB plotting. [#1642](https://github.com/rspatial/terra/issues/1642) by Timothée Giraud
 - rasterization failed on very large rasters [#1636](https://github.com/rspatial/terra/issues/1636) by Mary Fisher, [#1463](https://github.com/rspatial/terra/issues/1463) by Nic Spono and [#1281](https://github.com/rspatial/terra/issues/1281) by Sebastian Dunnett
 - `tmpFiles` only looked in the default temp files folder [#1630](https://github.com/rspatial/terra/issues/1630) by smckenzie1986
-- `where.min` did not work well if there were negative values [#1634](https://github.com/rspatial/terra/issues/1634) by Michael Sumner.
-- `plet<SpatRaster>` now works for RGB rasters and rasters with a color table [#1596](https://github.com/rspatial/terra/issues/1596) by Agustin Lobo.
+- `where.min` did not work well if there were negative values [#1634](https://github.com/rspatial/terra/issues/1634) by Michael Sumner
+- `plet<SpatRaster>` now works for RGB rasters and rasters with a color table [#1596](https://github.com/rspatial/terra/issues/1596) by Agustin Lobo
 - `vect<MULTIPOINT WKT>` did not work properly [#1376](https://github.com/rspatial/terra/issues/1376) by silasprincipe
 - `compareGeom<SpatVector>` did not work [#1654](https://github.com/rspatial/terra/issues/1654) by Jason Flower
 - `buffer<SpatVector>` is now more accurate buffers for lonlat polygons [#1616](https://github.com/rspatial/terra/issues/1616) by Roberto Amaral-Santos
+- `terra:interpNear` used square windows, not circles, beyond 100 points [#1509](https://github.com/rspatial/terra/issues/1509) by Jean-Luc Dupouey
 
 ## enhancements
 
@@ -31,6 +32,7 @@
 - `global` has new effcient functions "anyNA" and "anynotNA" [#1540](https://github.com/rspatial/terra/issues/1540) by Kevin J Wolz
 - `wrap`, `saveRDS` and `serialize` for SpatExtent. [#1430](https://github.com/rspatial/terra/issues/1430) by BastienFR
 - `vect<SpatGraticule>` method suggested in relation to [tidyterra #155](https://github.com/dieghernan/tidyterra/issues/155) by Diego Hernangómez
+
 
 # version 1.7-83
 

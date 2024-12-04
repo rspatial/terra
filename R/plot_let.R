@@ -389,7 +389,7 @@ setMethod("lines", signature(x="leaflet"),
 )
 
 setMethod("points", signature(x="leaflet"),
-	function(x, y, col, cex=1, alpha=1, popup=FALSE, ...)  {
+	function(x, y, col, cex=1, alpha=1, label=1:nrow(y), popup=FALSE, ...)  {
 		stopifnot(inherits(y, "SpatVector"))
 		if (nrow(y) == 0) return(x)
 		y <- makelonlat(y)
@@ -406,7 +406,7 @@ setMethod("points", signature(x="leaflet"),
 		} else {
 			popup <- NULL
 		}
-		leaflet::addCircleMarkers(x, data=y, radius=cex, popup=popup, label=1:nrow(y), opacity=alpha, col=col, ...)
+		leaflet::addCircleMarkers(x, data=y, radius=cex, popup=popup, label=label, opacity=alpha, col=col, ...)
 	}
 )
 

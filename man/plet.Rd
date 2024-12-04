@@ -39,7 +39,7 @@ Plot the values of a SpatRaster or SpatVector to make an interactive leaflet map
 
 \S4method{lines}{leaflet}(x, y, col, lwd=2, alpha=1, ...)
 
-\S4method{points}{leaflet}(x, y, col, cex=1, alpha=1, popup=FALSE, ...)
+\S4method{points}{leaflet}(x, y, col, cex=1, alpha=1, label=1:nrow(y), popup=FALSE, ...)
 
 \S4method{polys}{leaflet}(x, y, col, fill=0.2, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, ...)
 }
