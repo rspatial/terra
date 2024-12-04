@@ -322,6 +322,7 @@ if (!isGeneric("rasterize")) {setGeneric("rasterize", function(x, y, ...) standa
 if (!isGeneric("rasterizeGeom")) {setGeneric("rasterizeGeom", function(x, y, ...) standardGeneric("rasterizeGeom"))}
 if (!isGeneric("readStart")) {setGeneric("readStart", function(x, ...) standardGeneric("readStart"))}
 if (!isGeneric("readStop")) {setGeneric("readStop", function(x)	standardGeneric("readStop"))}
+if (!isGeneric("readAll")) {setGeneric("readAll", function(x)	standardGeneric("readAll"))}
 if (!isGeneric("res")) { setGeneric("res", function(x) standardGeneric("res")) }
 if (!isGeneric("res<-")) { setGeneric("res<-", function(x, value) standardGeneric("res<-")) }
 if (!isGeneric("rectify")) {setGeneric("rectify", function(x, ...) standardGeneric("rectify"))}
