@@ -3,12 +3,6 @@
 # Version 1.0
 # License GPL v3
 
-readAll <- function(x) {
-	ok <- x@ptr$readAll()
-	x <- messages(x, "readAll")
-	invisible(ok)
-}
-
 setMethod("readStart", signature(x="SpatRaster"),
 	function(x) {
 		success <- x@ptr$readStart()
@@ -55,5 +49,23 @@ setMethod("readStop", signature(x="SpatRasterDataset"),
 		messages(x, "readStop")
 		invisible(success)
 	}
+)
+
+setMethod("readAll", signature(x="SpatRaster"),
+  function(x) {
+    success <- x@ptr$readAll()
+    messages(x, "readAll")
+    if (!success) error("readAll,SpatRasterDataset", "cannot open file for reading")
+    invisible(success)
+  }
+)
+
+setMethod("readAll", signature(x="SpatRasterDataset"),
+  function(x) {
+    success <- x@ptr$readAll()
+    messages(x, "readAll")
+    if (!success) error("readAll,SpatRasterDataset", "cannot open file for reading")
+    invisible(success)
+  }
 )
 
