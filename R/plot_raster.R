@@ -470,12 +470,17 @@ prettyNumbs <- function(x, digits) {
 			m <- prettyNumbs(m, out$leg$digits)
 		}
 		m <- apply(m, 1, function(i) paste(i, collapse=" - "))
+		m <- gsub("-Inf -", "<=", m)
+		i <- grep("- Inf", m)
+		if (length(i) == 1) {
+			m[i] <- gsub("- Inf", "", m[i])
+			m[i] <- paste(">", m[i])				
+		}	
 		out$leg$legend <- m
 	}
 	out$leg$digits <- NULL
 	out
 }
-
 
 
 .as.raster.interval <- function(out, x, ...) {
