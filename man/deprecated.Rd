@@ -1,7 +1,5 @@
 \name{deprecated}
 
-\alias{area}
-\alias{area,SpatRaster-method}
 \alias{gridDistance}
 \alias{gridDistance,SpatRaster-method}
 
@@ -13,10 +11,7 @@ These methods are deprecated and will be removed in future versions
 }
 
 \usage{
-\S4method{area}{SpatRaster}(x, ...)
-
 \S4method{gridDistance}{SpatRaster}(x, ...)
-
 }
 
 \arguments{

@@ -1,5 +1,9 @@
 \name{expanse}
 
+\alias{area}
+\alias{area,SpatRaster-method}
+\alias{area,SpatVector-method}
+
 \alias{expanse}
 \alias{expanse,SpatRaster-method}
 \alias{expanse,SpatVector-method}
