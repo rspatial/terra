@@ -2,14 +2,14 @@
 if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}
 setMethod ("area", "SpatRaster",
 	function (x, ...) {
-		error("area", "this method was removed. Use expanse or cellSize")
+		error("area", "this method was removed. Use 'expanse' or 'cellSize'")
 	}
 )
 
 if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}
 setMethod ("area", "SpatVector",
 	function (x, ...) {
-		error("area", "this method was removed. Use expanse")
+		error("area", "this method was removed. Use 'expanse'")
 	}
 )
 
