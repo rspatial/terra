@@ -22,7 +22,7 @@
 - expressions can now be used in legend titles [#1626](https://github.com/rspatial/terra/issues/1626) by Noah Goodkind
 - `app` and `tapp` now emit a warning when factors are coerced to numeric [#1566](https://github.com/rspatial/terra/issues/1566) by shuysman
 - `plet<SpatRaster>` now has argument "stretch" for RGB rasters [#1596](https://github.com/rspatial/terra/issues/1596) by Agustin 
-- `%%` and `%/%` now behave the same for SpatRaster as for (base R) numbers [#1661](https://github.com/rspatial/terra/issues/1661) by klaus-huebert
+- `%%` and `%/%` now behave the same for SpatRaster as for (base R) numbers [#1661](https://github.com/rspatial/terra/issues/1661) by Klaus Huebert
 
 ## new 
 
