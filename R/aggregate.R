@@ -67,7 +67,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 
 		vtest <- values(x, dataframe=TRUE, row=1, nrows=dims[1], col=1, ncols=dims[2])
 		vtest <- as.list(vtest)
-		test <- sapply(vtest, fun)
+		test <- sapply(vtest, fun, ...)
 		dm <- dim(test)
 		do_transpose = FALSE
 		if (!is.null(dm)) {
