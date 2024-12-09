@@ -28,8 +28,6 @@
 #include "string_utils.h"
 
 
-#include "Rcpp.h"
-
 std::string geomType(OGRLayer *poLayer) {
 	std::string s = "";
     poLayer->ResetReading();
@@ -62,8 +60,8 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 		poFieldDefn = poFDefn->GetFieldDefn(i);
 		std::string fname = poFieldDefn->GetNameRef();
 		ft = poFieldDefn->GetType();
+		// OFTInteger64 may be too large 
 		if ((ft == OFTReal) || (ft == OFTInteger64)) {
-			Rcpp::Rcout << fname << std::endl;
 			dtype = 0;
 		} else if ((ft == OFTInteger)) {
 			if (poFieldDefn->GetSubType() == OFSTBoolean) {
