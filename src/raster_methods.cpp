@@ -536,10 +536,40 @@ void compute_aggregates(const std::vector<double> &in, std::vector<double> &out,
 }
 
 
+void tabulate_aggregates(const std::vector<double> &in, std::vector<double> &out, size_t nr, size_t nc, std::vector<size_t> dim, SpatCategories &cats, bool narm) {
+
+
+}
+
+
+
 
 SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatRaster out;
+	if ((fun != "table") && (!haveFun(fun))) {
+		out.setError("unknown function argument");
+		return out;
+	}
+	
+	std::function<double(std::vector<double>&, bool)> agFun;
+	SpatCategories cats;
+	if (fun == "table") {
+		if (nlyr() > 1) {
+			out.setError("only one layer is allowed when fun='table'");
+			return out;	
+		}
+		std::vector<bool> hc = hasCategories();
+		if (!hc[0]) {
+			out.setError("input must be categorical fun='table'");
+			return out;	
+		}
+		cats = getLayerCategories(0);
+	} else {
+		agFun = getFun(fun);
+	}
+
+
 	std::string message = "";
 // fact 0, 1, 2, are the aggregation factors dy, dx, dz
 // and  3, 4, 5 are the new nrow, ncol, nlyr
@@ -562,20 +592,20 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 	double xmax = extent.xmin + fact[4] * fact[1] * xres();
 	double ymin = extent.ymax - fact[3] * fact[0] * yres();
 	SpatExtent e = SpatExtent(extent.xmin, xmax, ymin, extent.ymax);
-	out = SpatRaster(fact[3], fact[4], fact[5], e, "");
-	out.source[0].srs = source[0].srs;
-	// there is much more. categories, time. should use geometry and then
-	// set extent and row col
-	if (fact[5] == nlyr()) {
-		out.setNames(getNames());
+	if (fun == "table") {		
+		fact[5] = cats.d.nrow();
+		out = SpatRaster(fact[3], fact[4], fact[5], e, "");
+		out.setNames(getLabels(0));
+	} else {
+		out = SpatRaster(fact[3], fact[4], fact[5], e, "");
+		out.source[0].time = getTime();
+		if (fact[5] == nlyr()) {
+			out.setNames(getNames());
+		}
 	}
+	out.source[0].srs = source[0].srs;
 
 	if (!source[0].hasValues) {
-		return out;
-	}
-
-	if (!haveFun(fun)) {
-		out.setError("unknown function argument");
 		return out;
 	}
 
@@ -596,8 +626,6 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 #endif
 #endif
 */
-	std::function<double(std::vector<double>&, bool)> agFun = getFun(fun);
-
 	//BlockSize bs = getBlockSize(4, opt.get_memfrac());
 	opt.progress *= 300;
 	BlockSize bs = getBlockSize(opt);
@@ -640,12 +668,21 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 
 	size_t nc = ncol();
 	//size_t outnc = out.ncol();
-	for (size_t i = 0; i < bs.n; i++) {
-        std::vector<double> vin, v;
-		readValues(vin, bs.row[i], bs.nrows[i], 0, nc);
-		compute_aggregates(vin, v, bs.nrows[i], nc, nlyr(), fact, agFun, narm);
-		if (!out.writeValues(v, i, 1)) return out;
-		//if (!out.writeValuesRect(v, i, 1, 0, outnc)) return out;
+	
+	if (fun == "table") {
+		for (size_t i = 0; i < bs.n; i++) {
+			std::vector<double> vin, v;
+			readValues(vin, bs.row[i], bs.nrows[i], 0, nc);
+			tabulate_aggregates(vin, v, bs.nrows[i], nc, fact, cats, narm);
+			if (!out.writeValues(v, i, 1)) return out;
+		}
+	} else {
+		for (size_t i = 0; i < bs.n; i++) {
+			std::vector<double> vin, v;
+			readValues(vin, bs.row[i], bs.nrows[i], 0, nc);
+			compute_aggregates(vin, v, bs.nrows[i], nc, nlyr(), fact, agFun, narm);
+			if (!out.writeValues(v, i, 1)) return out;
+		}
 	}
 	out.writeStop();
 	readStop();
