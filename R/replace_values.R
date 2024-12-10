@@ -58,7 +58,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 				error("set.values", "some (but not all) layer numbers are < 1")
 			}
 			if (missing(cells) && missing(values)) {
-				x@ptr <- x@ptr$readAll()
+				x@ptr$readAll()
 				return(messages(x, "set.values"))
 			}
 			bylyr <- FALSE
