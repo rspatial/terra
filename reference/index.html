@@ -699,7 +699,7 @@
         <dd>Initialize a SpatRaster with values</dd>
       </dl><dl><dt>
 
-          <code><a href="inplace.html">set.names(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.names(<i>&lt;SpatRasterDataset&gt;</i>)</a></code> <code><a href="inplace.html">set.names(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="inplace.html">set.ext(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.ext(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="inplace.html">set.crs(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.crs(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="inplace.html">set.values(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.cats(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.RGB(<i>&lt;SpatRaster&gt;</i>)</a></code>
+          <code><a href="inplace.html">set.names(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.names(<i>&lt;SpatRasterDataset&gt;</i>)</a></code> <code><a href="inplace.html">set.names(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="inplace.html">set.ext(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.ext(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="inplace.html">set.crs(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.crs(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="inplace.html">set.values(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.values(<i>&lt;SpatRasterDataset&gt;</i>)</a></code> <code><a href="inplace.html">set.cats(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.RGB(<i>&lt;SpatRaster&gt;</i>)</a></code>
 
         </dt>
         <dd>Change values in-place</dd>
@@ -1077,12 +1077,6 @@
         <dd>Combine row, column, and layer numbers</dd>
       </dl><dl><dt>
 
-          <code><a href="readAll.html">readAll(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="readAll.html">readAll(<i>&lt;SpatRasterDataset&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Read all values into memory</dd>
-      </dl><dl><dt>
-
           <code><a href="readwrite.html">readStart(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="readwrite.html">readStop(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="readwrite.html">readValues(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="readwrite.html">writeStart(<i>&lt;SpatRaster&gt;</i>,<i>&lt;character&gt;</i>)</a></code> <code><a href="readwrite.html">writeStop(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="readwrite.html">writeValues(<i>&lt;SpatRaster&gt;</i>,<i>&lt;vector&gt;</i>)</a></code> <code><a href="readwrite.html">blocks(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="readwrite.html">fileBlocksize()</a></code>
 
         </dt>
@@ -1411,6 +1405,12 @@
 
         </dt>
         <dd>Temporary files</dd>
+      </dl><dl><dt>
+
+          <code><a href="toMemory.html">toMemory(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="toMemory.html">toMemory(<i>&lt;SpatRasterDataset&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Read all cell values into memory</dd>
       </dl><dl><dt>
 
           <code><a href="topology.html">mergeLines(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="topology.html">snap(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="topology.html">removeDupNodes(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="topology.html">makeNodes(<i>&lt;SpatVector&gt;</i>)</a></code>

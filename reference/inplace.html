@@ -74,6 +74,8 @@ set.crs is the in-place replacement version of crs&amp;lt;-'><meta property="og:
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">set.values</span><span class="op">(</span><span class="va">x</span>, <span class="va">cells</span>, <span class="va">values</span>, layer<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co"># S4 method for class 'SpatRasterDataset'</span></span>
+<span><span class="fu">set.values</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">set.cats</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
@@ -148,6 +150,7 @@ set.crs is the in-place replacement version of crs&amp;lt;-'><meta property="og:
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#values from file to memory</span></span></span>
 <span class="r-in"><span><span class="fu">set.values</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in (function (cl, name, valueClass) {    ClassDef &lt;- getClass(cl)    slotClass &lt;- ClassDef@slots[[name]]    if (is.null(slotClass))         stop(gettextf("%s is not a slot in class %s", sQuote(name),             dQuote(cl)), domain = NA)    if (.identC(slotClass, valueClass))         return(TRUE)    ok &lt;- possibleExtends(valueClass, slotClass, ClassDef2 = getClassDef(slotClass,         where = .classEnv(ClassDef)))    if (isFALSE(ok))         stop(gettextf("assignment of an object of class %s is not valid for @%s in an object of class %s; is(value, \"%s\") is not TRUE",             dQuote(valueClass), sQuote(name), dQuote(cl), slotClass),             domain = NA)    TRUE})(structure("SpatRaster", package = "terra"), "ptr", "logical"):</span> assignment of an object of class “logical” is not valid for @‘ptr’ in an object of class “SpatRaster”; is(value, "C++Object") is not TRUE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># change values</span></span></span>
 <span class="r-in"><span><span class="fu">set.values</span><span class="op">(</span><span class="va">r</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>, <span class="fl">900</span><span class="op">)</span></span></span>
