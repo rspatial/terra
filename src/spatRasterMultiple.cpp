@@ -317,6 +317,11 @@ bool SpatRasterStack::readStop() {
 	return true;
 }
 	
+bool SpatRasterStack::readAll() {
+  for (auto& x : ds) { if (!x.readAll()) return false; }
+  return true;
+}
+
 unsigned SpatRasterStack::nsds() {
 	return ds.size();
 }

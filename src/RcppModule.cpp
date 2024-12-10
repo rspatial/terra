@@ -1029,6 +1029,7 @@ RCPP_MODULE(spat){
 
 		.method("readStart", &SpatRasterStack::readStart)
 		.method("readStop", &SpatRasterStack::readStop)
+		.method("readAll", &SpatRasterStack::readAll)
 		.method("nsds", &SpatRasterStack::nsds)
 		.method("ncol", &SpatRasterStack::ncol)
 		.method("nrow", &SpatRasterStack::nrow)

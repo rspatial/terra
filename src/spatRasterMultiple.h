@@ -57,6 +57,7 @@ class SpatRasterStack {
 
 		bool readStart();
 		bool readStop();
+		bool readAll();
 		unsigned nsds();
 		unsigned nrow();
 		unsigned ncol();
