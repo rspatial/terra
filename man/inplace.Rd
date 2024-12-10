@@ -6,6 +6,7 @@
 
 \alias{set.values}
 \alias{set.values,SpatRaster-method}
+\alias{set.values,SpatRasterDataset-method}
 
 \alias{set.RGB}
 \alias{set.RGB,SpatRaster-method}
@@ -53,6 +54,7 @@ These "in-place" replacement methods assign new value to an object without makin
 \S4method{set.crs}{SpatVector}(x, value)
 
 \S4method{set.values}{SpatRaster}(x, cells, values, layer=0)
+\S4method{set.values}{SpatRasterDataset}(x)
 
 \S4method{set.cats}{SpatRaster}(x, layer=1, value, active=1)
 

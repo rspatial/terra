@@ -3,6 +3,14 @@
 # Version 1.0
 # License GPL v3
 
+setMethod("set.values", signature(x="SpatRasterDataset"),
+	function(x)  {	
+		x@ptr$readAll()
+		messages(x, "set.values")
+	}
+)
+
+
 setMethod("set.values", signature(x="SpatRaster"),
 	function(x, cells, values, layer=0)  {
 
@@ -50,7 +58,8 @@ setMethod("set.values", signature(x="SpatRaster"),
 				error("set.values", "some (but not all) layer numbers are < 1")
 			}
 			if (missing(cells) && missing(values)) {
-				return(readAll(x))
+				x@ptr <- x@ptr$readAll()
+				return(messages(x, "set.values"))
 			}
 			bylyr <- FALSE
 			if (!is.null(dim(values))) {

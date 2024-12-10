@@ -105,20 +105,32 @@ setMethod ("set.cats" , "SpatRaster",
 		} 
 
 		if (layer < 1) {
-			if (!is.list(value)) {
-				error("set.cats", "value should be a list")
+			if (layer != 0) {
+				error("set.cats", "layer must be >= 0")
 			}
-			if (length(value) != nlyr(x)) {
-				error("set.cats", "length(value) != nlyr(x)")
+			if (nlyr(x) == 1) {
+				layer <- 1
+			} else {
+				if (is.data.frame(value)) {
+					value <- replicate(nlyr(x), value, simplify=FALSE)
+				} else {
+					if (!is.list(value)) {
+						error("set.cats", "value should be a list")
+					}
+					if (length(value) != nlyr(x)) {
+						error("set.cats", "length(value) != nlyr(x)")
+					}
+				}
+				index <- rep_len(active, nlyr(x))
+				for (i in 1:length(value)) {
+					if (!is.null(value[[i]])) {
+						ok <- set.cats(x, i, value[[i]], index[i])
+						x <- messages(x, "set.cats")
+					}
+				}
+				return(invisible(ok))
 			}
-			index <- rep_len(active, nlyr(x))
-			for (i in 1:length(value)) {
-				ok <- set.cats(x, i, value[[i]], index[i])
-				x <- messages(x, "set.cats")
-			}
-			return(invisible(ok))
 		}
-
 		layer <- layer[1]
 		if (is.character(layer)) {
 			i <- match(layer, names(x))[1]
