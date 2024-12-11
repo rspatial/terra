@@ -536,9 +536,57 @@ void compute_aggregates(const std::vector<double> &in, std::vector<double> &out,
 }
 
 
+
+
 void tabulate_aggregates(const std::vector<double> &in, std::vector<double> &out, size_t nr, size_t nc, std::vector<size_t> dim, SpatCategories &cats, bool narm) {
 
+// dim 0, 1, are the aggregations factors dy, dx
+// and 3, 4, 5 are the new nrow, ncol, nlyr
 
+	size_t dy = dim[0], dx = dim[1];
+	size_t bpC = std::ceil((double)nr / (double)dim[0]);
+	size_t bpR = dim[4];
+
+	// new number of layers
+	size_t newNL = dim[5];
+
+	// new number of rows, adjusted for additional (expansion) rows
+	size_t adjnr = bpC * dy;
+
+	// number of aggregates
+	size_t nblocks = (bpR * bpC * newNL);
+	// cells per aggregate
+	size_t blockcells = dx * dy;
+
+	// output: each row is a block
+	out = std::vector<double>(nblocks, NAN);
+
+//    size_t ncells = nr * nc;
+
+	for (size_t b = 0; b < nblocks; b++) {
+		size_t rstart = (dy * (b / bpR)) % adjnr;
+		size_t cstart = dx * (b % bpR);
+
+		size_t rmax = std::min(nr, (rstart + dy));  // nrow -> nr
+		size_t cmax = std::min(nc, (cstart + dx));
+
+		size_t f = 0;
+		std::vector<double> a(blockcells, NAN);
+		for (size_t r = rstart; r < rmax; r++) {
+			size_t cell = r * nc;
+			for (size_t c = cstart; c < cmax; c++) {
+				a[f] = in[cell + c];
+				f++;
+			}
+		}
+		
+		std::vector<size_t> tab;
+		//tabfun(a, tab, narm);
+		for (size_t i=0; i<dim[5]; i++) {
+			size_t off = (b*dim[5]) + i;
+			out[off] = tab[i];
+		}
+	}
 }
 
 
@@ -547,28 +595,6 @@ void tabulate_aggregates(const std::vector<double> &in, std::vector<double> &out
 SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatRaster out;
-	if ((fun != "table") && (!haveFun(fun))) {
-		out.setError("unknown function argument");
-		return out;
-	}
-	
-	std::function<double(std::vector<double>&, bool)> agFun;
-	SpatCategories cats;
-	if (fun == "table") {
-		if (nlyr() > 1) {
-			out.setError("only one layer is allowed when fun='table'");
-			return out;	
-		}
-		std::vector<bool> hc = hasCategories();
-		if (!hc[0]) {
-			out.setError("input must be categorical fun='table'");
-			return out;	
-		}
-		cats = getLayerCategories(0);
-	} else {
-		agFun = getFun(fun);
-	}
-
 
 	std::string message = "";
 // fact 0, 1, 2, are the aggregation factors dy, dx, dz
@@ -592,7 +618,10 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 	double xmax = extent.xmin + fact[4] * fact[1] * xres();
 	double ymin = extent.ymax - fact[3] * fact[0] * yres();
 	SpatExtent e = SpatExtent(extent.xmin, xmax, ymin, extent.ymax);
+	SpatCategories cats;
+
 	if (fun == "table") {		
+		cats = getLayerCategories(0);
 		fact[5] = cats.d.nrow();
 		out = SpatRaster(fact[3], fact[4], fact[5], e, "");
 		out.setNames(getLabels(0));
@@ -608,6 +637,29 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 	if (!source[0].hasValues) {
 		return out;
 	}
+
+
+	if ((fun != "table") && (!haveFun(fun))) {
+		out.setError("unknown function argument");
+		return out;
+	}	
+	std::function<double(std::vector<double>&, bool)> agFun;
+	if (fun == "table") {
+		if (nlyr() > 1) {
+			out.setError("only one layer is allowed when fun='table'");
+			return out;	
+		}
+		std::vector<bool> hc = hasCategories();
+		if (!hc[0]) {
+			out.setError("input must be categorical fun='table'");
+			return out;	
+		}
+	} else if (fun != "") {
+		agFun = getFun(fun);
+	}
+
+
+
 
 /*
 	size_t ifun = std::distance(f.begin(), it);
@@ -3724,12 +3776,15 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	size_t acol = std::ceil(out.ncol() / ac);
 
 	SpatOptions sopt(opt);
+	SpatExtent ae = out.getExtent();
+
 	SpatRaster aout = out.aggregate({arow, acol}, "", true, sopt);
 	SpatVector ve = aout.as_polygons(false, false, false, false, false, 0, sopt);
-
 	SpatVector vcrp(out.getExtent(), "");
+
 	ve = ve.intersect(vcrp, false);
-	n = ve.nrow();
+
+	size_t nv = ve.nrow();
 	bool warn = false;
 
  	if (!out.writeStart(opt, filenames())) { return out; }
@@ -3738,7 +3793,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	std::vector<unsigned> use; 
 	SpatRasterStack s;
 	
-	for (size_t i=0; i<n; i++) {
+	for (size_t i=0; i<nv; i++) {
 		SpatVector vi = ve.subset_rows(i);
 		SpatExtent ce = vi.getExtent();
 		SpatRasterCollection x = crop(ce, "near", true, use, sopt);

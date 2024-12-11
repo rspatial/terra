@@ -186,6 +186,7 @@ Apart from the function listed below, you can also use indexing with \code{[} wi
     \code{\link{setValues}} \tab Set new values to the cells of a SpatRaster \cr
     \code{\link{as.matrix}} \tab Get cell values as a matrix \cr
     \code{\link{as.array}} \tab Get cell values as an array \cr
+	\code{\link{as.data.frame}} \tab get cell values as a data.frame (including class lables)\cr
     \code{\link{extract}} \tab Extract cell values from a SpatRaster (with cell numbers, coordinates, points, lines, or polygons)\cr
     \code{\link{extractAlong}} \tab Extract cell values along a line such that the values are in the right order\cr
     \code{\link{spatSample}} \tab Regular or random sample \cr
@@ -221,6 +222,7 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
     \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
     \code{\link{sources}} \tab Get the filename(s) to which a SpatRaster is linked \cr
     \code{\link{inMemory}} \tab Are the data sources in memory (or on disk)? \cr
+    \code{\link{toMemory}} \tab Force data sources to memory (not recommended)? \cr
     \code{\link{compareGeom}} \tab Compare the geometry of SpatRasters \cr
     \code{\link{NAflag}} \tab Set the \code{NA} value (for reading from a file with insufficient metadata) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -293,9 +295,10 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 \subsection{Advanced}{
   \tabular{ll}{
    \code{\link{readStart}} \tab Open file connections for efficient multi-chunk reading \cr
+   \code{\link{readValues}} \tab Read some values from an opened file \cr
    \code{\link{readStop}} \tab Close file connections \cr
    \code{\link{writeStart}} \tab Open a file for writing \cr
-   \code{\link{writeValues}} \tab Write some values  \cr
+   \code{\link{writeValues}} \tab Write some values to an opened file \cr
    \code{\link{writeStop}} \tab Close the file after writing \cr
    \code{\link{blocks}} \tab Get blocksize for reading files (when not writing) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -623,6 +626,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 \code{projectRaster}\tab\code{\link{project}}\cr
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
+\code{readAll}\tab\code{\link{toMemory}}\cr
 \code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
 \code{sampleRandom, sampleRegular}\tab\code{\link{spatSample}}\cr
 \code{shapefile}\tab\code{\link{vect}}\cr
