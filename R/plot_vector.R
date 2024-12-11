@@ -613,7 +613,8 @@ setMethod("dots", signature(x="SpatVector"),
 				cols <- "black"
 			}
 		} else {
-			cols <- rev(grDevices::rainbow(100, start=.1, end=0.9))
+			cols <- .default.pal()
+#			cols <- rev(grDevices::rainbow(100, start=.1, end=0.9))
 		}
 	}
 	if (!is.null(alpha)) {
