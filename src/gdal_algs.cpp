@@ -432,6 +432,7 @@ bool gdal_warper(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatas
 */
 
 
+
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
 
 	size_t ns = nsrc();

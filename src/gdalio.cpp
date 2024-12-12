@@ -1028,7 +1028,6 @@ std::vector<std::string> SpatRaster::getAllFiles() {
 
 
 
-
 /*
 
 bool SpatRaster::setValuesMEM(GDALDatasetH hDS, bool set_geometry) {
