@@ -410,7 +410,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			if (is_ratct(source[0].cats[0].d)) {
 				std::fill(hasCT.begin(), hasCT.end(), false);
 			} else if (ct[0].nrow() < 256) {
-				if (opt.datatype_set && (datatype != opt.get_datatype())) {
+				if (opt.datatype_set && (datatype != "INT1U")) {
 					addWarning("change datatype to INT1U to write the color-table");
 				} else {
 					datatype = "INT1U";
