@@ -247,8 +247,12 @@ bool wkt_from_string(std::string input, std::string& wkt, std::string& msg) {
 
 
 
-bool can_transform(std::string fromCRS, std::string toCRS) {
+void EmptyErrorHandler(CPLErr eErrClass, int errNo, const char *msg) {
+    // do nothing
+}
 
+
+bool can_transform(std::string fromCRS, std::string toCRS) {
 	OGRSpatialReference source, target;
 	const char *pszDefFrom = fromCRS.c_str();
 	OGRErr erro = source.SetFromUserInput(pszDefFrom);
@@ -262,14 +266,21 @@ bool can_transform(std::string fromCRS, std::string toCRS) {
 	}
 
 	OGRCoordinateTransformation *poCT;
-	poCT = OGRCreateCoordinateTransformation(&source, &target);
-	if( poCT == NULL )	{
+    CPLPushErrorHandler(EmptyErrorHandler);
+	try{
+		poCT = OGRCreateCoordinateTransformation(&source, &target);
+	} catch(...) {
+		return false;
+	}
+    CPLPopErrorHandler();
+	if (poCT == NULL) {
 		OCTDestroyCoordinateTransformation(poCT);
 		return false;
 	}
 	OCTDestroyCoordinateTransformation(poCT);
 	return true;
 }
+
 
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
