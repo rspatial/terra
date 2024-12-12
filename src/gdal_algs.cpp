@@ -979,8 +979,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 	SpatOptions sopt(opt);
 	if (use_crs || align) {
 		GDALDatasetH hSrcDS;
-		SpatRaster g = geometry(1);
-		if (!g.open_gdal(hSrcDS, 0, false, sopt)) {
+		if (!open_gdal(hSrcDS, 0, false, sopt)) {
 			out.setError("cannot create dataset from source");
 			return out;
 		}
