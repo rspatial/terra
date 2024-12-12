@@ -392,8 +392,8 @@ bool colsFromRat(SpatDataFrame &d, SpatDataFrame &out) {
 		if (k >= 0) {
 			if (!setIntCol(d, out, k, cols1[i])) return false;
 		} else {
-				int k = where_in_vector(cols2[i], ss, true);
-		if (k >= 0) {
+			int k = where_in_vector(cols2[i], ss, true);
+			if (k >= 0) {
 				if (!setIntCol(d, out, k, cols1[i])) return false;
 			} else {
 				return false;
