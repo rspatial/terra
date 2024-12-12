@@ -1,4 +1,22 @@
+# version 1.8-6
+
+## bug fixes
+
+- `expanse<SpatRaster>(transform=TRUE)` crashed R when the crs was "local". [#1671](https://github.com/rspatial/terra/issues/1671) by Michael Chirico.
+
+## enhancements
+
+- `plot<SpatVector>` now has the same default colors (viridis palette) as `plot<SpatRaster>` [#1670](https://github.com/rspatial/terra/issues/1670) by Márcia Barbosa
+
+## new 
+
+
+
+
 # version 1.8-5
+
+Released 2024-12-12
+
 
 ## bug fixes
 
