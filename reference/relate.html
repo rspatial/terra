@@ -63,7 +63,7 @@ is.related returns a logical vector indicating the presence or absence of a spec
 <dd><p>missing or as for <code>x</code></p></dd>
 
   <dt id="arg-relation">relation<a class="anchor" aria-label="anchor" href="#arg-relation"></a></dt>
-<dd><p>character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint". Or a "DE-9IM" string such as "FF*FF****". See <a href="https://en.wikipedia.org/wiki/DE-9IM" class="external-link">Wikipedia</a> or <a href="https://docs.geotools.org/stable/userguide/library/jts/dim9.html" class="external-link">GeoTools doc</a></p></dd>
+<dd><p>character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint", or "equals". It can also be a "DE-9IM" string such as "FF*FF****". See <a href="https://en.wikipedia.org/wiki/DE-9IM" class="external-link">Wikipedia</a> or <a href="https://docs.geotools.org/stable/userguide/library/jts/dim9.html" class="external-link">GeoTools doc</a></p></dd>
 
   <dt id="arg-pairs">pairs<a class="anchor" aria-label="anchor" href="#arg-pairs"></a></dt>
 <dd><p>logical. If <code>TRUE</code> a two-column matrix is returned with the indices of the cases where the requested relation is <code>TRUE</code>. This is especially helpful when dealing with many geometries as the returned value is generally much smaller</p></dd>
