@@ -191,9 +191,9 @@ function(x, i, j, drop=TRUE) {
 	i <- positive_indices(i, length(x), TRUE, "`[`(i)")
 
 	if (drop && (length(i) == 1)) {
-		ptr <- x@pntr$getsds(i-1)
+		tptr <- x@pntr$getsds(i-1)
 		x <- rast()
-		x@pntr <- ptr
+		x@pntr <- tptr
 	} else {
 		x@pntr <- x@pntr$subset(i-1)
 	}
@@ -301,15 +301,15 @@ setMethod("sprc", signature(x="SpatRaster"),
 setMethod("sprc", signature(x="list"),
 	function(x) {
 		n <- length(x)
-		ptr <- SpatRasterCollection$new()
+		tptr <- SpatRasterCollection$new()
 		if (n > 0) {
 			for (i in 1:n) {
 				if (inherits(x[[i]], "SpatRaster")) {
-					ptr$add(x[[i]]@pntr, "")
+					tptr$add(x[[i]]@pntr, "")
 				} else if (inherits(x[[i]], "SpatRasterCollection") | 
 							inherits(x[[i]], "SpatRasterDataset")) {
 					y <- as.list(x[[i]])
-					s <- sapply(y, function(j) ptr$add(j@pntr, ""))
+					s <- sapply(y, function(j) tptr$add(j@pntr, ""))
 				} else {
 					name <- names(x[[i]])
 					cls <- paste(class(x[[i]]), collapse=", ")
@@ -318,7 +318,7 @@ setMethod("sprc", signature(x="list"),
 			}
 		}
 		r <- new("SpatRasterCollection")
-		r@pntr <- ptr
+		r@pntr <- tptr
 		if (length(r) == length(x)) names(r) <- names(x)
 		r
 	}
@@ -365,16 +365,16 @@ setMethod("[", c("SpatRasterCollection", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	i <- positive_indices(i, length(x), TRUE, "`[`(i)")
 	if (drop && (length(i) == 1)) {
-		ptr <- x@pntr$x[[i]]
+		tptr <- x@pntr$x[[i]]
 		x <- rast()
-		x@pntr <- ptr
+		x@pntr <- tptr
 	} else {
 		s <- x@pntr$x[i]
-		ptr <- SpatRasterCollection$new()
+		tptr <- SpatRasterCollection$new()
 		for (i in 1:length(s)) {
-			ptr$add(s[[i]], "")
+			tptr$add(s[[i]], "")
 		}
-		x@pntr <- ptr
+		x@pntr <- tptr
 	}
 	messages(x, "`[`")
 })

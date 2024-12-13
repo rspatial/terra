@@ -305,9 +305,9 @@ setMethod("global", signature(x="SpatRaster"),
 			stopifnot(inherits(weights, "SpatRaster"))
 			stopifnot(txtfun %in% c("mean", "sum"))
 			na.rm <- isTRUE(list(...)$na.rm)
-			ptr <- x@pntr$global_weighted_mean(weights@pntr, txtfun, na.rm, opt)
-			messages(ptr, "global")
-			res <- .getSpatDF(ptr)
+			tptr <- x@pntr$global_weighted_mean(weights@pntr, txtfun, na.rm, opt)
+			messages(tptr, "global")
+			res <- .getSpatDF(tptr)
 			rownames(res) <- nms
 			return(res)
 		}
@@ -316,9 +316,9 @@ setMethod("global", signature(x="SpatRaster"),
 			if (any(is.na(txtfun))) error("global", "fun cannot be NA")
 			if (any(txtfun %in% c("anynotNA", "anyNA"))) {
 				if (length(txtfun) > 1) error("global", "'anynotNA' and 'anyNA' can not be combined with other functions'")
-				ptr <- x@pntr$globalTF(txtfun, opt)
-				messages(ptr, "global")
-				res <- .getSpatDF(ptr)
+				tptr <- x@pntr$globalTF(txtfun, opt)
+				messages(tptr, "global")
+				res <- .getSpatDF(tptr)
 				rownames(res) <- nms
 				return(res)			
 			}
@@ -334,10 +334,10 @@ setMethod("global", signature(x="SpatRaster"),
 				#if (isTRUE(list(...)$old)) {
 				#	ptr <- x@pntr$global(txtfun, na.rm, opt)			
 				#} else {
-				ptr <- x@pntr$mglobal(txtfun, na.rm, opt)
+				tptr <- x@pntr$mglobal(txtfun, na.rm, opt)
 				#}
-				messages(ptr, "global")
-				res <- .getSpatDF(ptr)
+				messages(tptr, "global")
+				res <- .getSpatDF(tptr)
 				rownames(res) <- nms
 				return(res)
 			}
