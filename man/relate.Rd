@@ -33,7 +33,7 @@ Spatial relationships between geometries
 \description{
 \code{relate} returns a logical matrix indicating the presence or absence of a specific spatial relationships between the geometries in \code{x} and \code{y}. 
 
-\code{is.related} returns a logical vector indicating the presence or absence of a specific spatial relationships between \code{x} and any of the geometries in \code{y}
+\code{is.related} returns a logical vector indicating the presence or absence of a specific spatial relationships between \code{x} and any of the geometries in \code{y}.
 }
 
 \usage{
@@ -47,7 +47,7 @@ Spatial relationships between geometries
 \arguments{
   \item{x}{SpatVector or SpatExtent}
   \item{y}{missing or as for \code{x}}
-  \item{relation}{character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint". Or a "DE-9IM" string such as "FF*FF****". See \href{https://en.wikipedia.org/wiki/DE-9IM}{wikipedia} or \href{https://docs.geotools.org/stable/userguide/library/jts/dim9.html}{geotools doc}}
+  \item{relation}{character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint". Or a "DE-9IM" string such as "FF*FF****". See \href{https://en.wikipedia.org/wiki/DE-9IM}{Wikipedia} or \href{https://docs.geotools.org/stable/userguide/library/jts/dim9.html}{GeoTools doc}}
   \item{pairs}{logical. If \code{TRUE} a two-column matrix is returned with the indices of the cases where the requested relation is \code{TRUE}. This is especially helpful when dealing with many geometries as the returned value is generally much smaller} 
   \item{na.rm}{logical. If \code{TRUE} and \code{pairs=TRUE}, geometries in \code{x} for which there is no related geometry in \code{y} are omitted}
 } 
@@ -57,6 +57,8 @@ matrix (relate) or vector (is.related)
 }
 
 \seealso{
+\code{\link{compareGeom}} to check if the geometries are identical (equivalent to the "equals" relation)
+
 \code{\link{adjacent}}, \code{\link{nearby}}, \code{\link{intersect}}, \code{\link{crop}}
 }
 
