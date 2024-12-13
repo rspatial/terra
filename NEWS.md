@@ -6,7 +6,7 @@
 
 ## enhancements
 
-- `plot<SpatVector>` now has the same default colors (viridis palette) as `plot<SpatRaster>` [#1670](https://github.com/rspatial/terra/issues/1670) by Márcia Barbosa
+- `plot<SpatVector>` now uses the same default viridis color palette as `plot<SpatRaster>` [#1670](https://github.com/rspatial/terra/issues/1670) by Márcia Barbosa
 
 ## new 
 
@@ -33,8 +33,6 @@ Released 2024-12-12
 - `terra:interpNear` used square windows, not circles, beyond 100 points [#1509](https://github.com/rspatial/terra/issues/1509) by Jean-Luc Dupouey
 - `vect` read INT64 fields as integers, sometimes leading to overflows. [#1666](https://github.com/rspatial/terra/issues/1666) by bengannon-fc
 - `plot` showed a legend title even if none was requestd if title parameters were specified . [#1664](https://github.com/rspatial/terra/issues/1664) by Márcia Barbosa
-
-
 
 ## enhancements
 

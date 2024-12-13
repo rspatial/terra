@@ -5,7 +5,7 @@
 
 setMethod("hasValues", signature(x="SpatRaster"),
 	function(x) {
-		x@ptr$hasValues
+		x@pntr$hasValues
 	}
 )
 
@@ -55,7 +55,7 @@ setMethod("readValues", signature(x="SpatRaster"),
 function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE, ...) {
 	stopifnot(row > 0 && nrows > 0)
 	stopifnot(col > 0 && ncols > 0)
-	v <- x@ptr$readValues(row-1, nrows, col-1, ncols)
+	v <- x@pntr$readValues(row-1, nrows, col-1, ncols)
 	messages(x, "readValues")
 	if (dataframe) {
 		v <- matrix(v, ncol = nlyr(x))
@@ -115,7 +115,7 @@ setMethod("focalValues", signature("SpatRaster"),
 		readStart(x)
 		on.exit(readStop(x))
 		opt <- spatOptions()
-		m <- matrix(x@ptr$focalValues(w, fill, max(0, row-1), nrows, opt), ncol=prod(w), byrow=TRUE)
+		m <- matrix(x@pntr$focalValues(w, fill, max(0, row-1), nrows, opt), ncol=prod(w), byrow=TRUE)
 		messages(x, "focalValues")
 		m
 	}
@@ -205,7 +205,7 @@ setMethod("setValues", signature("SpatRaster"),
 		opt <- spatOptions()
 
 		if (lv == 1) {
-			y@ptr$setValues(values, opt)
+			y@pntr$setValues(values, opt)
 		} else {
 			if (lv > (nc * nl)) {
 				warn("setValues", "values is larger than the size of cells")
@@ -214,7 +214,7 @@ setMethod("setValues", signature("SpatRaster"),
 				warn("setValues", "values were recycled")
 				values <- rep(values, length.out=nc*nl)
 			}
-			y@ptr$setValues(values, opt)
+			y@pntr$setValues(values, opt)
 		}
 		y <- messages(y, "setValues")
 		if (make_factor) {
@@ -227,9 +227,9 @@ setMethod("setValues", signature("SpatRaster"),
 		if (set_coltab) {
 			coltab(y) <- fv
 		} else if (is.logical(values)) {
-			if (!all(is.na(values))) y@ptr$setValueType(3)
+			if (!all(is.na(values))) y@pntr$setValueType(3)
 		} else if (is.integer(values)) {
-			y@ptr$setValueType(1)
+			y@pntr$setValueType(1)
 		}
 		y
 	}
@@ -239,7 +239,7 @@ setMethod("setValues", signature("SpatRaster"),
 
 setMethod("inMemory", signature(x="SpatRaster"),
 	function(x, bylayer=FALSE) {
-		r <- x@ptr$inMemory
+		r <- x@pntr$inMemory
 		if (bylayer) {
 			nl <- .nlyrBySource(x)
 			r <- rep(r, nl)
@@ -249,30 +249,30 @@ setMethod("inMemory", signature(x="SpatRaster"),
 )
 
 
-#..hasValues <- function(x) { x@ptr$hasValues}
-#..inMemory <- function(x) { x@ptr$inMemory }
-#..filenames <- function(x) {	x@ptr$filenames }
+#..hasValues <- function(x) { x@pntr$hasValues}
+#..inMemory <- function(x) { x@pntr$inMemory }
+#..filenames <- function(x) {	x@pntr$filenames }
 
 subsetSource <- function(x, i) {
-	x@ptr <- x@ptr$subsetSource(i-1)
+	x@pntr <- x@pntr$subsetSource(i-1)
 	messages(x)
 }
 
 setMethod("sources", signature(x="SpatRaster"),
 	function(x, nlyr=FALSE, bands=FALSE) {
-		src <- x@ptr$filenames()
+		src <- x@pntr$filenames()
 		Encoding(src) <- "UTF-8"
 		if (bands) {
-			nls <- x@ptr$nlyrBySource()
+			nls <- x@pntr$nlyrBySource()
 			d <- data.frame(sid=rep(1:length(src), nls),
 						 source=rep(src, nls),
-						 bands=x@ptr$getBands()+1, stringsAsFactors=FALSE)
+						 bands=x@pntr$getBands()+1, stringsAsFactors=FALSE)
 			if (nlyr) {
 				d$nlyr <- rep(nls, nls)
 			}
 			d
 		} else if (nlyr) {
-			data.frame(source=src, nlyr=x@ptr$nlyrBySource(), stringsAsFactors=FALSE)
+			data.frame(source=src, nlyr=x@pntr$nlyrBySource(), stringsAsFactors=FALSE)
 		} else {
 			src
 		}
@@ -298,7 +298,7 @@ setMethod("sources", signature(x="SpatRasterDataset"),
 			x <- lapply(1:length(x), function(i) cbind(cid=i, x[[i]]))
 			do.call(rbind, x)
 		} else {
-			x@ptr$filenames()
+			x@pntr$filenames()
 		}
 	}
 )
@@ -306,11 +306,11 @@ setMethod("sources", signature(x="SpatRasterDataset"),
 
 setMethod("sources", signature(x="SpatVector"),
 	function(x) {
-		if (x@ptr$source != "") {
-			if (x@ptr$layer != tools::file_path_sans_ext(basename(x@ptr$source))) {
-				paste0(x@ptr$source, "::", x@ptr$layer)
+		if (x@pntr$source != "") {
+			if (x@pntr$layer != tools::file_path_sans_ext(basename(x@pntr$source))) {
+				paste0(x@pntr$source, "::", x@pntr$layer)
 			} else {
-				x@ptr$source
+				x@pntr$source
 			}
 		} else {
 			""
@@ -320,32 +320,32 @@ setMethod("sources", signature(x="SpatVector"),
 
 setMethod("sources", signature(x="SpatVectorProxy"),
 	function(x) {
-		if (x@ptr$v$layer != tools::file_path_sans_ext(basename(x@ptr$v$source))) {
-			paste0(x@ptr$v$source, "::", x@ptr$v$layer)
+		if (x@pntr$v$layer != tools::file_path_sans_ext(basename(x@pntr$v$source))) {
+			paste0(x@pntr$v$source, "::", x@pntr$v$layer)
 		} else {
-			x@ptr$v$source
+			x@pntr$v$source
 		}
 	}
 )
 
 setMethod("hasMinMax", signature(x="SpatRaster"),
 	function(x) {
-		x@ptr$hasRange
+		x@pntr$hasRange
 	}
 )
 
 setMethod("minmax", signature(x="SpatRaster"),
 	function(x, compute=FALSE) {
-		have <- x@ptr$hasRange
+		have <- x@pntr$hasRange
 		if (!all(have)) {
 			if (compute) {
 				opt <- spatOptions()
-				x@ptr$setRange(opt, FALSE)
+				x@pntr$setRange(opt, FALSE)
 			} else {
 				warn("minmax", "min and max values not available for all layers. See 'setMinMax' or 'global'")
 			}
 		}
-		r <- rbind(x@ptr$range_min, x@ptr$range_max)
+		r <- rbind(x@pntr$range_min, x@pntr$range_max)
 		if (!compute) {
 			r[,!have] <- c(Inf, -Inf)
 		}
@@ -360,9 +360,9 @@ setMethod("setMinMax", signature(x="SpatRaster"),
 	function(x, force=FALSE) {
 		opt <- spatOptions()
 		if (force) {
-			x@ptr$setRange(opt, TRUE)
+			x@pntr$setRange(opt, TRUE)
 		} else if (!all(hasMinMax(x))) {
-			x@ptr$setRange(opt, FALSE)
+			x@pntr$setRange(opt, FALSE)
 		}
 		x <- messages(x, "setMinMax")
 	}
@@ -373,16 +373,16 @@ setMethod("setMinMax", signature(x="SpatRaster"),
 setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=FALSE) {
 		opt <- spatOptions("")
-		out <- x@ptr$compare_geom(y@ptr, lyrs, crs, opt$tolerance, warncrs, ext, rowcol, res)
+		out <- x@pntr$compare_geom(y@pntr, lyrs, crs, opt$tolerance, warncrs, ext, rowcol, res)
 		if (stopOnError) {
 			messages(x, "compareGeom")
 		} else {
 			m <- NULL
-			if (x@ptr$has_warning()) {
-				m <- x@ptr$getWarnings()
+			if (x@pntr$has_warning()) {
+				m <- x@pntr$getWarnings()
 			}
-			if (x@ptr$has_error()) {
-				m <- c(m, x@ptr$getError())
+			if (x@pntr$has_error()) {
+				m <- c(m, x@pntr$getError())
 			}
 			if (!is.null(m) && messages) {
 				message(paste(m, collapse="\n"))
@@ -459,7 +459,7 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRasterCollection"),
 
 setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, tolerance=0) {
-		out <- x@ptr$equals_between(y@ptr, tolerance)
+		out <- x@pntr$equals_between(y@pntr, tolerance)
 		x <- messages(x, "compareGeom")
 		out[out == 2] <- NA
 		matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
@@ -469,7 +469,7 @@ setMethod("compareGeom", signature(x="SpatVector", y="SpatVector"),
 setMethod("compareGeom", signature(x="SpatVector", y="missing"),
 	function(x, y, tolerance=0) {
 		symmetrical=FALSE # this is inefficient
-		out <- x@ptr$equals_within(symmetrical, tolerance)
+		out <- x@pntr$equals_within(symmetrical, tolerance)
 		x <- messages(x, "compareGeom")
 		out[out == 2] <- NA
 		out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
@@ -531,13 +531,13 @@ setMethod("values", signature("SpatVector"),
 
 setMethod("values<-", signature("SpatVector", "data.frame"),
 	function(x, value) {
-		x@ptr <- x@ptr$deepcopy()
+		x@pntr <- x@pntr$deepcopy()
 		if (ncol(value) == 0) {
-			x@ptr$remove_df()
+			x@pntr$remove_df()
 			return(x)
 		}
 		value <- .makeSpatDF(value)
-		x@ptr$set_df(value)
+		x@pntr$set_df(value)
 		messages(x)
 	}
 )
@@ -564,15 +564,15 @@ setMethod("values<-", signature("SpatVector", "ANY"),
 
 setMethod("values<-", signature("SpatVector", "NULL"),
 	function(x, value) {
-		x@ptr <- x@ptr$deepcopy()
-		x@ptr$remove_df()
+		x@pntr <- x@pntr$deepcopy()
+		x@pntr$remove_df()
 		x
 	}
 )
 
 setMethod("setValues", signature("SpatVector"),
 	function(x, values) {
-		x@ptr <- x@ptr$deepcopy()
+		x@pntr <- x@pntr$deepcopy()
 		`values<-`(x, values)
 	}
 )

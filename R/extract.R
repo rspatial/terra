@@ -54,7 +54,7 @@ getLyrNrs <- function(layer, nms, n) {
 
 
 extractCells <- function(x, y, raw=FALSE) {
-	e <- x@ptr$extractCell(y-1)
+	e <- x@pntr$extractCell(y-1)
 	e <- do.call(cbind, e)
 	colnames(e) <- names(x)
 	if (!raw) {
@@ -107,7 +107,7 @@ extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FA
 			)
 		}
 		
-		e <- x@ptr$extractVector(y@ptr, touches[1], small[1], "simple", FALSE, FALSE, 
+		e <- x@pntr$extractVector(y@pntr, touches[1], small[1], "simple", FALSE, FALSE, 
 			isTRUE(weights[1]), isTRUE(exact[1]), opt)
 		x <- messages(x, "extract")
 		e <- lapply(e, wtable, na.rm=na.rm)
@@ -131,7 +131,7 @@ extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FA
 		}
 		if (nlyr(x) == 1) return(out[[1]]) else return(out)
 	} else {
-		e <- x@ptr$extractVectorFlat(y@ptr, "", FALSE, touches[1], small[1], "", FALSE, FALSE, FALSE, FALSE, opt)
+		e <- x@pntr$extractVectorFlat(y@pntr, "", FALSE, touches[1], small[1], "", FALSE, FALSE, FALSE, FALSE, opt)
 		x <- messages(x, "extract")
 		e <- data.frame(matrix(e, ncol=nlyr(x)+1, byrow=TRUE))
 		colnames(e) <- c("ID", names(x))
@@ -169,7 +169,7 @@ extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=
 	}
 
 	opt <- spatOptions()
-	e <- x@ptr$extractVectorFlat(y@ptr, fun, na.rm, touches[1], small[1], "", FALSE, FALSE, weights, exact, opt)
+	e <- x@pntr$extractVectorFlat(y@pntr, fun, na.rm, touches[1], small[1], "", FALSE, FALSE, weights, exact, opt)
 	x <- messages(x, "extract")
 	e <- data.frame(matrix(e, ncol=nl*nf, byrow=TRUE))
 	if (nf == 1) {
@@ -253,7 +253,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	} 
 	
 	opt <- spatOptions()
-	e <- x@ptr$extractVectorFlat(y@ptr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+	e <- x@pntr$extractVectorFlat(y@pntr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 	x <- messages(x, "extract")
 
 	cn <- c("ID", names(x))

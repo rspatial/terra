@@ -8,7 +8,7 @@ setMethod("meta", signature(x="SpatRaster"),
 				matrix(unlist(regmatches(i, regexpr("=", i), invert=TRUE)), ncol=2, byrow=TRUE)
 			}
 		}
-		lapply(x@ptr$metadata(layers), f)
+		lapply(x@pntr$metadata(layers), f)
 	}
 )
 
@@ -16,7 +16,7 @@ setMethod("meta", signature(x="SpatRaster"),
 setMethod("metags", signature(x="SpatRaster"),
 	function(x, layer=NULL, name=NULL) {
 		if (!is.null(layer)) {
-			v <- x@ptr$getLyrTags(layer-1)
+			v <- x@pntr$getLyrTags(layer-1)
 			out <- matrix(v, ncol=3, byrow=TRUE, dimnames = list(NULL, c("layer", "name", "value")))
 			out <- data.frame(out)
 			out$layer <- as.numeric(out$layer) + 1
@@ -24,7 +24,7 @@ setMethod("metags", signature(x="SpatRaster"),
 				out <- out[out$name == name, , drop=FALSE]
 			} 
 		} else {
-			v <- x@ptr$getTags()
+			v <- x@pntr$getTags()
 			m <- matrix(v, ncol=2, byrow=TRUE, dimnames = list(NULL, c("name", "value")))
 			out <- m[,2]
 			names(out) <- m[,1]
@@ -41,9 +41,9 @@ setMethod("metags<-", signature(x="SpatRaster"),
 	function(x, ..., layer=NULL, value) {
 		if (is.null(value)) {
 			if (!is.null(layer)) {
-				value <- matrix(x@ptr$getLyrTags(layer-1), ncol=2, byrow=TRUE)
+				value <- matrix(x@pntr$getLyrTags(layer-1), ncol=2, byrow=TRUE)
 			} else {
-				value <- matrix(x@ptr$getTags(), ncol=2, byrow=TRUE)
+				value <- matrix(x@pntr$getTags(), ncol=2, byrow=TRUE)
 			}
 			value[,2] <- ""
 			value[is.na(value)] <- ""
@@ -68,10 +68,10 @@ setMethod("metags<-", signature(x="SpatRaster"),
 		x <- deepcopy(x)
 		if (NROW(value) > 0) {
 			if (!is.null(layer)) {
-				x@ptr$addLyrTags(layer-1, value[,1], value[,2])
+				x@pntr$addLyrTags(layer-1, value[,1], value[,2])
 			} else {
 				sapply(1:nrow(value), function(i) {
-						x@ptr$addTag(value[i,1], value[i,2])
+						x@pntr$addTag(value[i,1], value[i,2])
 					})
 			}
 		}
@@ -86,7 +86,7 @@ setMethod("metags", signature(x="SpatRasterDataset"),
 		if (!is.null(dataset)) {
 			return(metags(x[[dataset]], name=name))
 		} else {
-			v <- x@ptr$getTags()
+			v <- x@pntr$getTags()
 			m <- matrix(v, ncol=2, byrow=TRUE, dimnames = list(NULL, c("name", "value")))
 			out <- m[,2]
 			names(out) <- m[,1]
@@ -103,9 +103,9 @@ setMethod("metags<-", signature(x="SpatRasterDataset"),
 	function(x, ..., dataset=NULL, value) {
 		if (is.null(value)) {
 			if (!is.null(dataset)) {
-				value <- matrix(x[[dataset]]@ptr$getTags(), ncol=2, byrow=TRUE)
+				value <- matrix(x[[dataset]]@pntr$getTags(), ncol=2, byrow=TRUE)
 			} else {
-				value <- matrix(x@ptr$getTags(), ncol=2, byrow=TRUE)
+				value <- matrix(x@pntr$getTags(), ncol=2, byrow=TRUE)
 			}
 			value[,2] <- ""
 			value[is.na(value)] <- ""
@@ -127,13 +127,13 @@ setMethod("metags<-", signature(x="SpatRasterDataset"),
 		}
 		value[is.na(value[,2]), 2] <- ""
 		value <- na.omit(value)
-		x@ptr <- x@ptr$deepcopy()
+		x@pntr <- x@pntr$deepcopy()
 		if (NROW(value) > 0) {
 			if (!is.null(dataset)) {
-				x[[dataset]]@ptr$addTag(value[,1], value[,2])
+				x[[dataset]]@pntr$addTag(value[,1], value[,2])
 			} else {
 				sapply(1:nrow(value), function(i) {
-						x@ptr$addTag(value[i,1], value[i,2])
+						x@pntr$addTag(value[i,1], value[i,2])
 					})
 			}
 		}

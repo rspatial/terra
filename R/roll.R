@@ -60,7 +60,7 @@ setMethod("roll", signature(x="SpatRaster"),
 		if (inherits(txtfun, "character")) {
 			if (txtfun %in% .cpp_funs) {
 				opt <- spatOptions(filename, ...)
-				x@ptr <- x@ptr$roll(n, txtfun, type, circular, na.rm, opt)
+				x@pntr <- x@pntr$roll(n, txtfun, type, circular, na.rm, opt)
 				return (messages(x, "roll")	)
 			}
 		} else {

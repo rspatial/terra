@@ -3,13 +3,13 @@
 setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"),
 	function(x, y, fun="count", unit="m", filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		y@ptr <- y@ptr$rasterizeGeom(x@ptr, unit, fun, opt)
+		y@pntr <- y@pntr$rasterizeGeom(x@pntr, unit, fun, opt)
 		messages(y, "rasterizeGeom")
 	}
 )
 
 # now can use
-# r@ptr = r@ptr$rasterizePoints(v@ptr, "mean", 1:nrow(v), NA, opt)
+# r@pntr = r@pntr$rasterizePoints(v@pntr, "mean", 1:nrow(v), NA, opt)
 
 .set_names <- function(wopt, cnms, fun, nc) {
 	if (is.null(wopt$names)) {
@@ -77,7 +77,7 @@ rasterize_points <- function(x, y, values, fun="last", background=NA, update=FAL
 				}
 				narm <- isTRUE(list(...)$na.rm)
 				r <- rast()
-				r@ptr <- y@ptr$rasterizePointsXY(x[,1], x[,2], txtfun, values[[1]], narm, background, ops)
+				r@pntr <- y@pntr$rasterizePointsXY(x[,1], x[,2], txtfun, values[[1]], narm, background, ops)
 				messages(r)
 				if (update) {
 					r <- cover(r, y, filename=filename, overwrite=overwrite, wopt=wopt)
@@ -280,7 +280,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		}
 
 		if (cover[1] && pols) {
-			y@ptr <- y@ptr$rasterize(x@ptr, "", 1, background, touches[1], "", TRUE, FALSE, TRUE, opt)
+			y@pntr <- y@pntr$rasterize(x@pntr, "", 1, background, touches[1], "", TRUE, FALSE, TRUE, opt)
 		} else {
 			if (missing(fun)) {
 				if (!is.null(dots$sum)) {
@@ -321,20 +321,20 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			background <- as.numeric(background[1])
 			if (fun == "sum") {
 				xopt = spatOptions()
-				y@ptr <- y@ptr$rasterize(x@ptr, field, values, background, touches[1], fun, FALSE, update[1], TRUE, xopt)
+				y@pntr <- y@pntr$rasterize(x@pntr, field, values, background, touches[1], fun, FALSE, update[1], TRUE, xopt)
 				messages(y, "rasterize")
 				xopt = spatOptions()
 				yy <- rast(y)
-				yy@ptr <- y@ptr$rasterize(x@ptr, "", values, NA, touches[1], ""	, FALSE, update[1], TRUE, xopt)
+				yy@pntr <- y@pntr$rasterize(x@pntr, "", values, NA, touches[1], ""	, FALSE, update[1], TRUE, xopt)
 				messages(yy, "rasterize")
 				return(mask(y, yy, updatevalue=background, filename=filename, overwrite=overwrite, wopt=wopt))
 			} else if (fun == "mean") {
 				xopt = spatOptions()
-				y@ptr <- y@ptr$rasterize(x@ptr, field, values, background, touches[1], "sum", FALSE, update[1], TRUE, xopt)
+				y@pntr <- y@pntr$rasterize(x@pntr, field, values, background, touches[1], "sum", FALSE, update[1], TRUE, xopt)
 				messages(y, "rasterize")
 				xopt = spatOptions()
 				yy <- rast(y)
-				yy@ptr <- y@ptr$rasterize(x@ptr, "", values, NA, touches[1], "sum", FALSE, update[1], TRUE, xopt)
+				yy@pntr <- y@pntr$rasterize(x@pntr, "", values, NA, touches[1], "sum", FALSE, update[1], TRUE, xopt)
 				messages(yy, "rasterize")
 				y <- y / yy
 				if (filename != "") {
@@ -342,7 +342,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 				}
 				return(y)
 			} else {
-				y@ptr <- y@ptr$rasterize(x@ptr, field, values, background, touches[1], fun, FALSE, update[1], TRUE, opt)
+				y@pntr <- y@pntr$rasterize(x@pntr, field, values, background, touches[1], fun, FALSE, update[1], TRUE, opt)
 			}
 		}	
 		messages(y, "rasterize")

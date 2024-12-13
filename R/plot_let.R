@@ -135,7 +135,7 @@ setMethod("plet", signature(x="SpatVector"),
 		g <- geomtype(x)
 		leg <- NULL
 		if (y == "") { # no legend
-			group <- x@ptr$layer
+			group <- x@pntr$layer
 			if (group == "") group = g
 			cols <- .getCols(nrow(x), col)
 			pop  <- lab <- NULL

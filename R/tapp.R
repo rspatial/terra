@@ -17,7 +17,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 			if (is.na(i)) {
 				error("tapp", paste("invalid time step. Use one of:", paste(choices, collapse=", ")))
 			}
-			if (!x@ptr$hasTime) {
+			if (!x@pntr$hasTime) {
 				error("tapp", "x has no time data")
 			}
 			choice <- choices[i]
@@ -102,7 +102,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)
-			x@ptr <- x@ptr$apply(index, txtfun, narm, nms, out_time, out_tstep, out_tz, opt)
+			x@pntr <- x@pntr$apply(index, txtfun, narm, nms, out_time, out_tstep, out_tz, opt)
 			return(messages(x, "tapp"))
 		}
 	}

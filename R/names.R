@@ -6,7 +6,7 @@
 
 setMethod("names", signature(x="SpatRaster"),
 	function(x) {
-		nms <- x@ptr$names
+		nms <- x@pntr$names
 		Encoding(nms) <- "UTF-8"
 		nms
 	}
@@ -23,8 +23,8 @@ setMethod("names<-", signature(x="SpatRaster"),
 				error("names<-", "incorrect number of names")
 			}
 		}
-		x@ptr <- x@ptr$deepcopy()
-		if (! x@ptr$setNames(value, FALSE)) {
+		x@pntr <- x@pntr$deepcopy()
+		if (! x@pntr$setNames(value, FALSE)) {
 			error("names<-", "cannot set these names")
 		}
 		return(x)
@@ -52,7 +52,7 @@ setMethod("names<-", signature(x="SpatRaster"),
 setMethod("set.names", signature(x="SpatRaster"),
 	function(x, value, index=1:nlyr(x), validate=FALSE)  {
 		value <- .names_check(x, value, index, validate, nlyr)
-		if (!x@ptr$setNames(value, FALSE)) {
+		if (!x@pntr$setNames(value, FALSE)) {
 			error("set.names", "cannot set these names")
 		}
 		invisible(TRUE)
@@ -62,7 +62,7 @@ setMethod("set.names", signature(x="SpatRaster"),
 
 setMethod("names", signature(x="SpatRasterCollection"),
 	function(x) {
-		nms <- x@ptr$names
+		nms <- x@pntr$names
 		Encoding(nms) <- "UTF-8"
 		nms
 	}
@@ -71,11 +71,11 @@ setMethod("names", signature(x="SpatRasterCollection"),
 
 setMethod("names<-", signature(x="SpatRasterCollection"),
 	function(x, value) {
-		x@ptr <- x@ptr$deepcopy()
+		x@pntr <- x@pntr$deepcopy()
 		if (is.null(value)) {
 			value <- rep("", length(x))
 		}
-		x@ptr$names <- enc2utf8(as.character(value))
+		x@pntr$names <- enc2utf8(as.character(value))
 		x
 	}
 )
@@ -83,7 +83,7 @@ setMethod("names<-", signature(x="SpatRasterCollection"),
 setMethod("set.names", signature(x="SpatRasterCollection"),
 	function(x, value, index=1:length(x), validate=FALSE)  {
 		value <- .names_check(x, value, index, validate, length)
-		x@ptr$names <- value
+		x@pntr$names <- value
 		invisible(TRUE)
 	}
 )
@@ -92,7 +92,7 @@ setMethod("set.names", signature(x="SpatRasterCollection"),
 
 setMethod("names", signature(x="SpatRasterDataset"),
 	function(x) {
-		nms <- x@ptr$names
+		nms <- x@pntr$names
 		Encoding(nms) <- "UTF-8"
 		nms
 	}
@@ -101,7 +101,7 @@ setMethod("names", signature(x="SpatRasterDataset"),
 
 setMethod("names<-", signature(x="SpatRasterDataset"),
 	function(x, value) {
-		x@ptr <- x@ptr$deepcopy()
+		x@pntr <- x@pntr$deepcopy()
 		if (is.null(value)) {
 			value <- rep("", length(x))
 		}
@@ -111,15 +111,15 @@ setMethod("names<-", signature(x="SpatRasterDataset"),
 				if (length(unique(nl)) > 1) {
 					error("names<-", "the number of layers varies between datasets")
 				}
-				x@ptr$set_layernames(enc2utf8(as.character(value[[1]])), -1)
+				x@pntr$set_layernames(enc2utf8(as.character(value[[1]])), -1)
 			} else {
 				if (length(value) != length(x)) {
 					error("names<-", "the number of list elements does not match the number of datasets")				
 				}
-				for (i in seq_along(length(x))) x@ptr$set_layernames(enc2utf8(as.character(value[[i]])), i-1)
+				for (i in seq_along(length(x))) x@pntr$set_layernames(enc2utf8(as.character(value[[i]])), i-1)
 			}
 		} else {
-			x@ptr$names <- enc2utf8(as.character(value))
+			x@pntr$names <- enc2utf8(as.character(value))
 		}
 		messages(x, "names<-")
 	}
@@ -129,7 +129,7 @@ setMethod("names<-", signature(x="SpatRasterDataset"),
 setMethod("set.names", signature(x="SpatRasterDataset"),
 	function(x, value, index=1:length(x), validate=FALSE)  {
 		value <- .names_check(x, value, index, validate, length)
-		x@ptr$names <- value
+		x@pntr$names <- value
 		invisible(TRUE)
 	}
 )
@@ -137,7 +137,7 @@ setMethod("set.names", signature(x="SpatRasterDataset"),
 
 setMethod("varnames", signature(x="SpatRasterDataset"),
 	function(x) {
-		nms <- x@ptr$names
+		nms <- x@pntr$names
 		Encoding(nms) <- "UTF-8"
 		nms
 	}
@@ -147,8 +147,8 @@ setMethod("varnames", signature(x="SpatRasterDataset"),
 setMethod("varnames<-", signature(x="SpatRasterDataset"),
 	function(x, value) {
 		value <- enc2utf8(as.character(value))
-		x@ptr <- x@ptr$deepcopy()
-		x@ptr$names <- value
+		x@pntr <- x@pntr$deepcopy()
+		x@pntr$names <- value
 		x
 	}
 )
@@ -157,7 +157,7 @@ setMethod("varnames<-", signature(x="SpatRasterDataset"),
 
 setMethod("names", signature(x="SpatVector"),
 	function(x) {
-		nms <- x@ptr$names
+		nms <- x@pntr$names
 		Encoding(nms) <- "UTF-8"
 		nms
 	}
@@ -165,7 +165,7 @@ setMethod("names", signature(x="SpatVector"),
 
 setMethod("names", signature(x="SpatVectorProxy"),
 	function(x) {
-		nms <- x@ptr$v$names
+		nms <- x@pntr$v$names
 		Encoding(nms) <- "UTF-8"
 		nms
 	}
@@ -178,8 +178,8 @@ setMethod("names<-", signature(x="SpatVector"),
 		}
 
 		value <- enc2utf8(as.character(value))
-		x@ptr <- x@ptr$deepcopy()
-		x@ptr$names <- value
+		x@pntr <- x@pntr$deepcopy()
+		x@pntr$names <- value
 		if (any(names(x) != value)) {
 			warn("names<-", "some names were changed to make them valid and/or unique")
 		}
@@ -190,14 +190,14 @@ setMethod("names<-", signature(x="SpatVector"),
 setMethod("set.names", signature(x="SpatVector"),
 	function(x, value, index=1:ncol(x), validate=FALSE)  {
 		value <- .names_check(x, value, index, validate, ncol)
-		x@ptr$names <- value
+		x@pntr$names <- value
 		invisible(TRUE)
 	}
 )
 
 setMethod("varnames", signature(x="SpatRaster"),
 	function(x) {
-		nms <- x@ptr$get_sourcenames()
+		nms <- x@pntr$get_sourcenames()
 		Encoding(nms) <- "UTF-8"
 		nms
 	}
@@ -206,8 +206,8 @@ setMethod("varnames", signature(x="SpatRaster"),
 setMethod("varnames<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		value <- enc2utf8(as.character(value))
-		x@ptr <- x@ptr$deepcopy()
-		if (!x@ptr$set_sourcenames(value)) {
+		x@pntr <- x@pntr$deepcopy()
+		if (!x@pntr$set_sourcenames(value)) {
 			error("varnames<-,SpatRaster", "cannot set these names")
 		}
 		return(x)
@@ -217,7 +217,7 @@ setMethod("varnames<-", signature(x="SpatRaster"),
 
 setMethod("longnames", signature(x="SpatRasterDataset"),
 	function(x) {
-		nms <- x@ptr$long_names
+		nms <- x@pntr$long_names
 		Encoding(nms) <- "UTF-8"
 		nms
 	}
@@ -226,7 +226,7 @@ setMethod("longnames", signature(x="SpatRasterDataset"),
 
 setMethod("longnames", signature(x="SpatRaster"),
 	function(x) {
-		nms <- x@ptr$get_sourcenames_long()
+		nms <- x@pntr$get_sourcenames_long()
 		Encoding(nms) <- "UTF-8"
 		nms
 	}
@@ -234,8 +234,8 @@ setMethod("longnames", signature(x="SpatRaster"),
 
 setMethod("longnames<-", signature(x="SpatRasterDataset"),
 	function(x, value)  {
-		x@ptr <- x@ptr$deepcopy()
-		x@ptr$long_names <- enc2utf8(as.character(value))
+		x@pntr <- x@pntr$deepcopy()
+		x@pntr$long_names <- enc2utf8(as.character(value))
 		return(x)
 	}
 )
@@ -243,9 +243,9 @@ setMethod("longnames<-", signature(x="SpatRasterDataset"),
 
 setMethod("longnames<-", signature(x="SpatRaster"),
 	function(x, value)  {
-		x@ptr <- x@ptr$deepcopy()
+		x@pntr <- x@pntr$deepcopy()
 		value <- enc2utf8(as.character(value))
-		if (!x@ptr$set_sourcenames_long(value)) {
+		if (!x@pntr$set_sourcenames_long(value)) {
 			error("longnames<-,SpatRaster", "cannot set these names")
 		}
 		return(x)
@@ -255,7 +255,7 @@ setMethod("longnames<-", signature(x="SpatRaster"),
 
 setMethod("names", signature(x="SpatVectorCollection"),
 	function(x) {
-		nms <- x@ptr$names
+		nms <- x@pntr$names
 		Encoding(nms) <- "UTF-8"
 		nms
 	}
@@ -264,11 +264,11 @@ setMethod("names", signature(x="SpatVectorCollection"),
 
 setMethod("names<-", signature(x="SpatVectorCollection"),
 	function(x, value) {
-		x@ptr <- x@ptr$deepcopy()
+		x@pntr <- x@pntr$deepcopy()
 		if (is.null(value)) {
 			value <- rep("", length(x))
 		}
-		x@ptr$setNames(enc2utf8(as.character(value)), FALSE)
+		x@pntr$setNames(enc2utf8(as.character(value)), FALSE)
 		x
 	}
 )

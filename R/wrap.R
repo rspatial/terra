@@ -79,7 +79,7 @@ setMethod("wrap", signature(x="SpatVector"),
 setMethod("unwrap", signature(x="PackedSpatVector"),
 	function(x) {
 		p <- methods::new("SpatVector")
-		p@ptr <- SpatVector$new()
+		p@pntr <- SpatVector$new()
 		if (!is.na(x@crs)) {
 			crs(p, warn=FALSE) <- x@crs
 		}
@@ -91,9 +91,9 @@ setMethod("unwrap", signature(x="PackedSpatVector"),
 		reps <- diff(c(x@index[,n], nrow(x@coordinates)+1))
 		i <- rep(1:nrow(x@index), reps)
 		if (n == 2) {
-			p@ptr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], rep(0, nrow(x@coordinates)))
+			p@pntr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], rep(0, nrow(x@coordinates)))
 		} else {
-			p@ptr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], x@index[i,3])
+			p@pntr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], x@index[i,3])
 		}
 		if (nrow(x@attributes) > 0) {
 			values(p) <- x@attributes
@@ -149,7 +149,7 @@ writeSources <- function(x, fsource, ftarget, overwrite, ...) {
 		if (mem[i]) {
 			writeRaster(r, ftarget[i], overwrite=TRUE, ...)
 		} else {
-			ff <- r@ptr$getAllFiles();
+			ff <- r@pntr$getAllFiles();
 			if (length(ff) > 1) {
 				target_noex <- tools::file_path_sans_ext(basename(ftarget[i]))
 				source_noex <- tools::file_path_sans_ext(basename(fsource[i]))
@@ -253,7 +253,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 		r@definition <- as.character(x)
 
 		opt <- spatOptions(ncopies=2)
-		can <- (!proxy) && x@ptr$canProcessInMemory(opt)
+		can <- (!proxy) && x@pntr$canProcessInMemory(opt)
 
 		s <- sources(x)
 		if (can || (all(s == ""))) {
@@ -328,7 +328,7 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 				for (i in seq_along(x@attributes$colors)) {
 					if (!is.null(x@attributes$colors[[i]])) {
 						d <- terra:::.makeSpatDF(x@attributes$colors[[i]])
-						if (!r@ptr$setColors(i-1, d)) messages("cols<-", r)
+						if (!r@pntr$setColors(i-1, d)) messages("cols<-", r)
 					}
 				}
 			}			

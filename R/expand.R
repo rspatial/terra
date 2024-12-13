@@ -55,7 +55,7 @@ function(x, y, snap="near", fill=NA, filename="", overwrite=FALSE, ...) {
 	}
 
 	opt <- spatOptions(filename, overwrite, ...)
-	x@ptr <- x@ptr$expand(y@ptr, snap[1], fill[1], opt)
+	x@pntr <- x@pntr$expand(y@pntr, snap[1], fill[1], opt)
 	messages(x, "extend")
 }
 )

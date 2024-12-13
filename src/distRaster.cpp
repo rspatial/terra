@@ -2928,8 +2928,8 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 
 	SpatRaster out = geometry(1);
 	if (out.source[0].srs.wkt.empty()) {
-		out.setError("empty CRS");
-		return out;
+		addWarning("unknown CRS. Results can be wrong");
+		transform = false;
 	}
 
 	std::vector<std::string> f {"m", "km", "ha"};
@@ -3059,8 +3059,8 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool transform, bool by_value, SpatOptions &opt) {
 
 	if (source[0].srs.wkt.empty()) {
-		setError("empty CRS");
-		return {{NAN}};
+		addWarning("unknown CRS. Results can be wrong");
+		transform = false;
 	}
 
 	std::vector<std::string> f {"m", "km", "ha"};
@@ -3254,8 +3254,8 @@ std::vector<std::vector<double>> SpatRaster::sum_area(std::string unit, bool tra
 std::vector<std::vector<double>> SpatRaster::sum_area_group(SpatRaster group, std::string unit, bool transform, bool by_value, SpatOptions &opt) {
 
 	if (source[0].srs.wkt.empty()) {
-		setError("empty CRS");
-		return {{NAN}};
+		addWarning("unknown CRS. Results can be wrong");
+		transform = false;
 	}
 
 	if (!(hasValues() && group.hasValues())) {

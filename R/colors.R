@@ -1,7 +1,7 @@
 
 setMethod ("has.colors" , "SpatRaster",
 	function(x) {
-		x@ptr$hasColors()
+		x@pntr$hasColors()
 	}
 )
 
@@ -9,9 +9,9 @@ setMethod ("has.colors" , "SpatRaster",
 
 setMethod ("coltab" , "SpatRaster",
 	function(x) {
-		hascols <- x@ptr$hasColors()
+		hascols <- x@pntr$hasColors()
 		if (any(hascols)) {
-			d <- x@ptr$getColors()
+			d <- x@pntr$getColors()
 			d <- lapply(d, .getSpatDF)
 			d[!hascols] <- list(NULL)
 		} else {
@@ -25,12 +25,12 @@ setMethod ("coltab" , "SpatRaster",
 setMethod ("coltab<-" , "SpatRaster",
 	function(x, ..., layer=1, value) {
 
-		x@ptr <- x@ptr$deepcopy()
+		x@pntr <- x@pntr$deepcopy()
 		if (inherits(value, "list")) {
 			for (i in seq_along(value)) {
 				layer <- i-1
 				if (is.null(value[[i]])) {
-					x@ptr$removeColors(layer)
+					x@pntr$removeColors(layer)
 				}
 				if (inherits(value[[i]], "character")) {
 					value[[i]] <- data.frame(t(grDevices::col2rgb(value[[i]], alpha=TRUE)), stringsAsFactors=FALSE)
@@ -50,14 +50,14 @@ setMethod ("coltab<-" , "SpatRaster",
 				value[[i]][is.na(value[[i]])] <- 255
 
 				d <- .makeSpatDF(value[[i]])
-				if (!x@ptr$setColors(layer, d)) {
+				if (!x@pntr$setColors(layer, d)) {
 					messages(x, "cols<-")
 				}
 			}
 		} else {
 			layer <- layer[1]-1
 			if (is.null(value)) {
-				x@ptr$removeColors(layer)
+				x@pntr$removeColors(layer)
 				return(x)
 			}
 
@@ -87,7 +87,7 @@ setMethod ("coltab<-" , "SpatRaster",
 			}
 			value[is.na(value)] <- 255
 			d <- .makeSpatDF(value)
-			if (!x@ptr$setColors(layer, d)) {
+			if (!x@pntr$setColors(layer, d)) {
 				messages(x, "cols<-")
 			}
 		}

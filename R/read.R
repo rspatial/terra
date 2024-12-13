@@ -5,7 +5,7 @@
 
 setMethod("readStart", signature(x="SpatRaster"),
 	function(x) {
-		success <- x@ptr$readStart()
+		success <- x@pntr$readStart()
 		messages(x, "readStart")
 		if (!success) error("readStart,SpatRaster", "cannot open file for reading")
 		invisible(success)
@@ -14,7 +14,7 @@ setMethod("readStart", signature(x="SpatRaster"),
 
 setMethod("readStart", signature(x="SpatRasterDataset"),
 	function(x) {
-		success <- x@ptr$readStart()
+		success <- x@pntr$readStart()
 		messages(x, "readStart")
 		if (!success) error("readStart,SpatRasterDataset", "cannot open file for reading")
 		invisible(success)
@@ -37,7 +37,7 @@ setMethod("readStart", signature(x="SpatRasterDataset"),
 
 setMethod("readStop", signature(x="SpatRaster"),
 	function(x) {
-		success <- x@ptr$readStop()
+		success <- x@pntr$readStop()
 		messages(x, "readStop")
 		invisible(success)
 	}
@@ -45,7 +45,7 @@ setMethod("readStop", signature(x="SpatRaster"),
 
 setMethod("readStop", signature(x="SpatRasterDataset"),
 	function(x) {
-		success <- x@ptr$readStop()
+		success <- x@pntr$readStop()
 		messages(x, "readStop")
 		invisible(success)
 	}
@@ -53,16 +53,16 @@ setMethod("readStop", signature(x="SpatRasterDataset"),
 
 setMethod("toMemory", signature(x="SpatRaster"),
 	function(x) {
-		x@ptr <- x@ptr$deepcopy()
-		x@ptr$readAll()
+		x@pntr <- x@pntr$deepcopy()
+		x@pntr$readAll()
 		messages(x, "toMemory")
 	}
 )
 
 setMethod("toMemory", signature(x="SpatRasterDataset"),
 	function(x) {
-		x@ptr <- x@ptr$deepcopy()
-		x@ptr$readAll()
+		x@pntr <- x@pntr$deepcopy()
+		x@pntr$readAll()
 		messages(x, "toMemory")
 	}
 )

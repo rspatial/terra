@@ -8,7 +8,7 @@ setMethod("watershed", signature(x="SpatRaster"),
         opt <- spatOptions(filename, ...)		
 		cell <- cellFromXY(x, pourpoint)
 		if (is.na(cell)) error("watershed", "pourpoint not on raster")
-        x@ptr <- x@ptr$watershed2(as.integer(cell-1), opt)
+        x@pntr <- x@pntr$watershed2(as.integer(cell-1), opt)
         messages(x, "watershed") ## EC 20210318
     }
 )
@@ -16,7 +16,7 @@ setMethod("watershed", signature(x="SpatRaster"),
 setMethod("pitfinder", signature(x="SpatRaster"), 
     function(x, filename="", ...) { 
         opt <- spatOptions(filename, ...)
-        x@ptr <- x@ptr$pitfinder2(opt)
+        x@pntr <- x@pntr$pitfinder2(opt)
         messages(x, "pitfinder") ## EC 20210318
     }
 )
@@ -24,7 +24,7 @@ setMethod("pitfinder", signature(x="SpatRaster"),
 setMethod("NIDP", signature(x="SpatRaster"), 
     function(x, filename="", ...) { 
         opt <- spatOptions(filename, ...)
-        x@ptr <- x@ptr$NIDP2(opt)
+        x@pntr <- x@pntr$NIDP2(opt)
         messages(x, "NIDP") ## EC 20231031
     }
 )
@@ -33,9 +33,9 @@ setMethod("flowAccumulation", signature(x="SpatRaster"),
     function(x, weight=NULL, filename="", ...) { 
 		opt <- spatOptions(filename, ...)
 		if (is.null(weight)) {      
-			x@ptr <- x@ptr$flowAccu2(opt)
+			x@pntr <- x@pntr$flowAccu2(opt)
 	    } else {
-			x@ptr <- x@ptr$flowAccu2_weight(weight@ptr, opt)
+			x@pntr <- x@pntr$flowAccu2_weight(weight@pntr, opt)
 		} 
 		messages(x, "flowAccumulation") 
     }      
