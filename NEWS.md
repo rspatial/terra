@@ -10,7 +10,7 @@
 
 ## new 
 
-
+- `$<SpatRaster>` can now be used to set the active category for categorical rasters
 
 
 # version 1.8-5

@@ -59,10 +59,17 @@ setMethod("subset", signature(x="SpatRaster"),
 )
 
 
-
 ## exact matching
 setMethod("$", "SpatRaster",
 	function(x, name) {
+		if ((nlyr(x) == 1) && is.factor(x)) {
+			factnms <- names(cats(x)[[1]])
+			i <- match(name, factnms[-1])
+			if (!is.na(i)) {
+				activeCat(x) <- i		
+				return(x)
+			}
+		}
 		subset(x, name, NSE=FALSE)
 	}
 )
