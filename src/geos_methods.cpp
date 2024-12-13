@@ -1226,9 +1226,9 @@ SpatVector SpatVector::buffer2(std::vector<double> d, unsigned quadsegs) {
 	std::vector<GeomPtr> b(size());
 	for (size_t i = 0; i < g.size(); i++) {
 		
-		Rcpp::Rcout << "buffer " << i;		
+//		Rcpp::Rcout << "buffer " << i;		
 		GEOSGeometry* pt = GEOSBuffer_r(hGEOSCtxt, g[i].get(), d[i], (int) quadsegs);
-		Rcpp::Rcout << " done" << std::endl;
+//		Rcpp::Rcout << " done" << std::endl;
 
 		if (pt == NULL) {
 			out.setError("GEOS exception");
@@ -1369,9 +1369,14 @@ SpatVector SpatVector::intersect(SpatVector v, bool values) {
 
 
 
+
 std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> getRelateFun(const std::string rel) {
 	std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> rfun;
-	if (rel == "intersects") {
+	if (rel == "equals") {
+		rfun = GEOSEquals_r;
+//	} else if (rel == "equalidentical") {
+//		rfun = GEOSEqualsIdentical_r;
+	} else if (rel == "intersects") {
 		rfun = GEOSIntersects_r;
 	} else if (rel == "disjoint") {
 		rfun = GEOSDisjoint_r;
@@ -1427,7 +1432,7 @@ int getRel(std::string &relation) {
 	int pattern = 1;
 	std::string rel = relation;
 	std::transform(rel.begin(), rel.end(), rel.begin(), ::tolower);
-	std::vector<std::string> f {"rook", "queen", "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint"};
+	std::vector<std::string> f {"rook", "queen", "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint", "equals"}; // tbd: "equalsexact", "equals"
 	if (std::find(f.begin(), f.end(), rel) == f.end()) {
 		if (relation.size() != 9) {
 			pattern = 2;
@@ -1452,6 +1457,7 @@ int getRel(std::string &relation) {
 }
 
 std::vector<int> SpatVector::relate(SpatVector v, std::string relation, bool prepared, bool index) {
+
 	// this method is redundant with "which_relate")
 	std::vector<int> out;
 	int pattern = getRel(relation);
@@ -1460,7 +1466,10 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation, bool pre
 		return out;
 	}
 	if ((relation == "FF*FF****") || (relation == "disjoint")) index = false;
-
+	if (relation.substr(0, 5) == "equal") {
+		prepared = false;
+	}
+	
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
@@ -1578,7 +1587,24 @@ std::vector<std::vector<double>> SpatVector::which_relate(SpatVector v, std::str
 	out[0].reserve(nx * 1.5);
 	out[1].reserve(nx * 1.5);
 
-	if (!index) {
+
+	if (relation.substr(0, 5) == "equal") {
+		std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> relFun = getRelateFun(relation);
+		for (size_t i = 0; i < nx; i++) {
+			bool none = !narm;
+			for (size_t j = 0; j < ny; j++) {
+				if ( relFun(hGEOSCtxt, x[i].get(), y[j].get())) {
+					out[0].push_back(i);
+					out[1].push_back(j);
+					none = false;
+				}
+			}
+			if (none) {
+				out[0].push_back(i);
+				out[1].push_back(NAN);
+			}
+		}
+	} else if (!index) {
 		if (pattern == 1) {
 			for (size_t i = 0; i < nx; i++) {
 				bool none = !narm;
@@ -1691,8 +1717,23 @@ std::vector<std::vector<double>> SpatVector::which_relate(std::string relation, 
 	out[0].reserve(nx * 1.5);
 	out[1].reserve(nx * 1.5);
 
-
-	if (!index) {
+	if (relation.substr(0, 5) == "equal") {
+		std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> relFun = getRelateFun(relation);
+		for (size_t i = 0; i < nx; i++) {
+			bool none = !narm;
+			for (size_t j = 0; j < nx; j++) {
+				if ( relFun(hGEOSCtxt, x[i].get(), x[j].get())) {
+					out[0].push_back(i);
+					out[1].push_back(j);
+					none = false;
+				}
+			}
+			if (none) {
+				out[0].push_back(i);
+				out[1].push_back(NAN);
+			}
+		}
+	} else if (!index) {
 		if (pattern == 1) {
 			for (size_t i=0; i<nx; i++) {
 				bool none = !narm;
