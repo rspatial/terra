@@ -2,11 +2,14 @@
 
 ## bug fixes
 
-- `expanse<SpatRaster>(transform=TRUE)` crashed R when the crs was "local". [#1671](https://github.com/rspatial/terra/issues/1671) by Michael Chirico.
+- `expanse<SpatRaster>(transform=TRUE)` crashed R when the crs was "local". [#1671](https://github.com/rspatial/terra/issues/1671) by Michael Chirico
+- `patches(values=TRUE)` wrapped around the edges [#1675](https://github.com/rspatial/terra/issues/1675) by Michael Chirico
+
 
 ## enhancements
 
 - `plot<SpatVector>` now uses the same default viridis color palette as `plot<SpatRaster>` [#1670](https://github.com/rspatial/terra/issues/1670) by Márcia Barbosa
+- `relate` now accepts relation="equals" [#1672](https://github.com/rspatial/terra/issues/1672) by Krzysztof Dyba
 
 ## new 
 
