@@ -17,26 +17,86 @@
 
 #include "spatRaster.h"
 
-void patch_search(const std::vector<double> &m, std::vector<double> &patches, const int &i, const long &ncol, const int &patch, const size_t &dirs) {
+void patch_search_wrap(const std::vector<double> &m, std::vector<double> &patches, const int &i, const long &ncol, const int &patch, const size_t &dirs) {
 // DFS
 
-	std::vector<long> directions;
+	std::vector<long> directions, dirfirst, dirlast;
 	if (dirs==4) {
 		directions = {-ncol, ncol, -1, 1};		
+		dirfirst = {-ncol, ncol, ncol-1, 1};		
+		dirlast = {-ncol, ncol, -1, 1-ncol};		
 	} else {
 		directions = {-ncol, ncol, -1, 1, -ncol-1, -ncol+1, ncol-1, ncol+1};
+		dirfirst = {-ncol, ncol, ncol-1, 1, -1, -ncol+1, ncol+ncol-1, ncol+1};
+		dirlast = {-ncol, ncol, -1, 1-ncol, -ncol-1, -ncol-ncol+1, ncol-1, 1};
 	}
 	
 	size_t ncell = m.size();	
     patches[i] = patch; 
-    for (size_t d=0; d<dirs; d++) {
-        size_t j = i + directions[d];
-        if (j >= 0 && j < ncell && (!std::isnan(m[j])) && std::isnan(patches[j]) && m[j] == m[i]) {
-            patch_search(m, patches, j, ncol, patch, dirs); 
-        }
-    }
+	if ((i % ncol) == 0) { //firstcol 
+		for (size_t d=0; d<dirfirst.size(); d++) {
+			size_t j = i + dirfirst[d];	
+			if (j >= 0 && j < ncell && (!std::isnan(m[j])) && std::isnan(patches[j]) && m[j] == m[i]) {
+				patch_search_wrap(m, patches, j, ncol, patch, dirs); 
+			}
+		}
+	} else if (((i+1) % ncol) == 0) { // lastcol
+		for (size_t d=0; d<dirlast.size(); d++) {
+			size_t j = i + dirlast[d];	
+			if (j >= 0 && j < ncell && (!std::isnan(m[j])) && std::isnan(patches[j]) && m[j] == m[i]) {
+				patch_search_wrap(m, patches, j, ncol, patch, dirs); 
+			}
+		}
+	} else {
+		for (size_t d=0; d<dirs; d++) {
+			size_t j = i + directions[d];
+			if (j >= 0 && j < ncell && (!std::isnan(m[j])) && std::isnan(patches[j]) && m[j] == m[i]) {
+				patch_search_wrap(m, patches, j, ncol, patch, dirs); 
+			}
+		}
+	}
 }
 
+
+void patch_search(const std::vector<double> &m, std::vector<double> &patches, const int &i, const long &ncol, const int &patch, const size_t &dirs) {
+// DFS
+
+	std::vector<long> directions, dirfirst, dirlast;
+	if (dirs==4) {
+		directions = {-ncol, ncol, -1, 1};		
+		dirfirst = {-ncol, ncol, 1};		
+		dirlast = {-ncol, ncol, -1};		
+	} else {
+		directions = {-ncol, ncol, -1, 1, -ncol-1, -ncol+1, ncol-1, ncol+1};
+		dirfirst = {-ncol, ncol, 1, -ncol+1, ncol+1};
+		dirlast = {-ncol, ncol, -1, -ncol-1, ncol-1};
+	}
+	
+	size_t ncell = m.size();	
+    patches[i] = patch; 
+	if ((i % ncol) == 0) { //firstcol 
+		for (size_t d=0; d<dirfirst.size(); d++) {
+			size_t j = i + dirfirst[d];	
+			if (j >= 0 && j < ncell && (!std::isnan(m[j])) && std::isnan(patches[j]) && m[j] == m[i]) {
+				patch_search(m, patches, j, ncol, patch, dirs); 
+			}
+		}
+	} else if (((i+1) % ncol) == 0) { // lastcol
+		for (size_t d=0; d<dirlast.size(); d++) {
+			size_t j = i + dirlast[d];	
+			if (j >= 0 && j < ncell && (!std::isnan(m[j])) && std::isnan(patches[j]) && m[j] == m[i]) {
+				patch_search(m, patches, j, ncol, patch, dirs); 
+			}
+		}
+	} else {
+		for (size_t d=0; d<dirs; d++) {
+			size_t j = i + directions[d];	
+			if (j >= 0 && j < ncell && (!std::isnan(m[j])) && std::isnan(patches[j]) && m[j] == m[i]) {
+				patch_search(m, patches, j, ncol, patch, dirs); 
+			}
+		}
+	}
+}
 
 SpatRaster SpatRaster::patches(size_t dirs, SpatOptions &opt) {
 
@@ -101,13 +161,22 @@ SpatRaster SpatRaster::patches(size_t dirs, SpatOptions &opt) {
 		if (!out.writeBlock(patches, i)) return out;
 	}
 */
-
 	std::vector<double> patches(nrow() * nc, NAN);
 	readValues(v, 0, nrow(), 0, nc);
-	for (size_t j=0; j<v.size(); j++) {
-		if ((!std::isnan(v[j])) && std::isnan(patches[j])) {
-			patch_search(v, patches, j, nc, patch, dirs); 
-			patch++; 
+
+	if (is_global_lonlat()) {
+		for (size_t j=0; j<v.size(); j++) {
+			if ((!std::isnan(v[j])) && std::isnan(patches[j])) {
+				patch_search_wrap(v, patches, j, nc, patch, dirs); 
+				patch++; 
+			}
+		}
+	} else {
+		for (size_t j=0; j<v.size(); j++) {
+			if ((!std::isnan(v[j])) && std::isnan(patches[j])) {
+				patch_search(v, patches, j, nc, patch, dirs); 
+				patch++; 
+			}
 		}
 	}
 	if (!out.writeValues(patches, 0, nrow())) return out;
