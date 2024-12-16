@@ -7,7 +7,7 @@
 \title{Scale values linearly}
 
 \description{
-Linear scaling of raster cell values.
+Linear scaling of raster cell values between a specified minimum and maximum value.
 }
 
 \usage{
