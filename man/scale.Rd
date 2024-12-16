@@ -7,7 +7,7 @@
 \title{Scale values}
 
 \description{
-Center and/or scale raster data. For details see \code{\link{scale}} 
+Center and/or scale raster data. For details see \code{\link[base]{scale}} 
 }
 
 \usage{
@@ -26,7 +26,7 @@ SpatRaster
 }
 
 
-\seealso{ \code{\link[base]{scale}} }
+\seealso{ \code{\link{scale_linear}} }
 
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   

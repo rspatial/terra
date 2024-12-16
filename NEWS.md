@@ -13,7 +13,8 @@
 
 ## new 
 
-- `$<SpatRaster>` can now be used to set the active category for categorical rasters
+- `$<SpatRaster>` can now be used to get a categorical SpatRaster with a different active category
+- `scale_linear<SpatRaster>` method for linear scaling between e.g., 0 and 1
 
 
 # version 1.8-5

@@ -334,6 +334,7 @@ if (!isGeneric("rescale")) {setGeneric("rescale", function(x, ...) standardGener
 #if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}
 if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x, ...) standardGeneric("setMinMax"))}
 if (!isGeneric("scale")) {setGeneric("scale", function(x, center=TRUE, scale=TRUE) standardGeneric("scale"))}
+if (!isGeneric("scale_linear")) { setGeneric("scale_linear", function(x, ...) standardGeneric("scale_linear"))}
 if (!isGeneric("shift")) {setGeneric("shift", function(x, ...) standardGeneric("shift"))}
 if (!isGeneric("stdev")) { setGeneric("stdev", function(x, ...) standardGeneric("stdev")) }
 if (!isGeneric("subset")) {setGeneric("subset", function(x, ...) standardGeneric("subset")) }

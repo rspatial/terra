@@ -4732,6 +4732,57 @@ SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vec
 }
 
 
+SpatRaster SpatRaster::scale_linear(double smin, double smax, SpatOptions &opt) {
+	SpatRaster out = geometry();
+	if (!hasValues()) return out;
+	if (smin >= smax) {
+		out.setError("min scaling value must be smaller than the max scaling value");
+		return out;
+	}
+		
+	SpatOptions opts(opt);
+	setRange(opts, false);
+	std::vector<double> rmin = SpatRaster::range_min();
+	std::vector<double> rmax = SpatRaster::range_max();
+	std::vector<double> rdif;
+	rdif.reserve(rmin.size());
+	double dmnmx = smax - smin;
+	
+	for (size_t i=0; i<rmin.size(); i++) {
+		rdif.push_back((rmax[i] - rmin[i]) / dmnmx);
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+	size_t nl = nlyr();
+	
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> v;
+		readBlock(v, out.bs, i);
+		size_t lyroff = 0;
+		size_t cellperlyr = out.bs.nrows[i] * ncol();
+		for (size_t lyr = 0; lyr < nl; lyr++) {
+			for (size_t j=lyroff; j<(lyroff+cellperlyr); j++) {
+				v[j] = ((v[j] - rmin[lyr]) / rdif[i]) + smin;
+			}
+			lyroff = lyroff + cellperlyr;
+		}
+		if (!out.writeBlock(v, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return out;
+}
+
+
+
 /*
 bool can_use_replace(const std::vector<double> &from, const std::vector<double> &to) {
 	// test if any "to" later occurs in "from"

@@ -968,6 +968,13 @@ setMethod("rescale", signature(x="SpatVector"),
 	}
 )
 
+setMethod("scale_linear", signature(x="SpatRaster"),
+	function(x, min=0, max=1, filename="", ...) {
+		opt <- spatOptions(filename=filename, ...)
+		x@pntr <- x@pntr$scale_linear(min, max, opt)
+		messages(x, "scale_linear")
+	}
+)
 
 setMethod("scale", signature(x="SpatRaster"),
 	function(x, center=TRUE, scale=TRUE) {

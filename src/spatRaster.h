@@ -801,6 +801,8 @@ class SpatRaster {
 		SpatRaster sort(bool decreasing, bool order, SpatOptions &opt);
 
 		SpatRaster scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt);
+		SpatRaster scale_linear(double smin, double smax, SpatOptions &opt);
+
 		SpatRaster similarity(std::vector<double> x, SpatOptions &opt);
 
 		SpatRaster terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, unsigned seed, SpatOptions &opt);
