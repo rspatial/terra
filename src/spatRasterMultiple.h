@@ -22,13 +22,17 @@ class SpatRasterStack {
 	public:
 		virtual ~SpatRasterStack(){}
 		SpatRasterStack deepCopy();
+
 		SpatMessages msg;
-		void setError(std::string s);
-		void addWarning(std::string s);
-		bool has_error();
-		bool has_warning();
-		std::vector<std::string> getWarnings();
-		std::string getError();
+		void setError(std::string s) { msg.setError(s); }
+		void addWarning(std::string s) { msg.addWarning(s); }
+		void setMessage(std::string s) { msg.setMessage(s); }
+		bool hasError() { return msg.has_error; }
+		bool hasWarning() { return msg.has_warning; }
+		std::vector<std::string> getWarnings() { return msg.getWarnings();}
+		std::string getError() { return msg.getError();}
+		std::string getMessage() { return msg.getMessage();}
+
 
 		std::vector<SpatRaster> ds;
 		std::vector<std::string> names;
@@ -95,14 +99,17 @@ class SpatRasterStack {
 class SpatRasterCollection {
 	public:
 		virtual ~SpatRasterCollection(){}	
-		SpatMessages msg;
 		SpatRasterCollection deepCopy();
-		void setError(std::string s);
-		void addWarning(std::string s);
-		bool has_error();
-		bool has_warning();
-		std::vector<std::string> getWarnings();
-		std::string getError();
+
+		SpatMessages msg;
+		void setError(std::string s) { msg.setError(s); }
+		void addWarning(std::string s) { msg.addWarning(s); }
+		void setMessage(std::string s) { msg.setMessage(s); }
+		bool hasError() { return msg.has_error; }
+		bool hasWarning() { return msg.has_warning; }
+		std::vector<std::string> getWarnings() { return msg.getWarnings();}
+		std::string getError() { return msg.getError();}
+		std::string getMessage() { return msg.getMessage();}
 	
 		std::vector<SpatRaster> ds;
 //		SpatExtent extent;

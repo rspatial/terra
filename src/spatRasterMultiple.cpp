@@ -20,12 +20,6 @@
 
 
 SpatRasterCollection SpatRasterCollection::deepCopy() { return *this; }
-void SpatRasterCollection::setError(std::string s) { msg.setError(s); }
-void SpatRasterCollection::addWarning(std::string s) { msg.addWarning(s); }
-bool SpatRasterCollection::has_error() { return msg.has_error; }
-bool SpatRasterCollection::has_warning() { return msg.has_warning; }
-std::vector<std::string> SpatRasterCollection::getWarnings() { return msg.getWarnings(); }
-std::string SpatRasterCollection::getError() { return msg.getError(); }
 
 SpatRasterCollection::SpatRasterCollection(size_t n) { ds.resize(n); };
 
@@ -212,12 +206,7 @@ std::vector<std::string> SpatRasterCollection::filenames() {
 
 
 SpatRasterStack SpatRasterStack::deepCopy() { return *this; }
-void SpatRasterStack::setError(std::string s) { msg.setError(s); }
-void SpatRasterStack::addWarning(std::string s) { msg.addWarning(s); }
-bool SpatRasterStack::has_error() { return msg.has_error; }
-bool SpatRasterStack::has_warning() { return msg.has_warning; }
-std::vector<std::string> SpatRasterStack::getWarnings() { return msg.getWarnings();}
-std::string SpatRasterStack::getError() { return msg.getError();}
+
 
 SpatRasterStack::SpatRasterStack(SpatRaster r, std::string name, std::string longname, std::string unit, bool warn) { 
 	push_back(r, name, longname, unit, warn); 
@@ -437,7 +426,7 @@ SpatRasterStack SpatRasterStack::crop(SpatExtent e, std::string snap, bool expan
 	}
 	for (size_t i=0; i<ds.size(); i++) {
 		out.push_back(ds[i].crop(e, snap, expand, opt), names[i], long_names[i], units[i], true);
-		if (has_error()) {
+		if (hasError()) {
 			return(out);
 		}
 	}
