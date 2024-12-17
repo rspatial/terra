@@ -194,14 +194,15 @@ class SpatVector {
 
 		void reserve(size_t n);
 		std::vector<double> length();
-                std::vector<double> edges();
-		std::vector<double> distance(SpatVector x, bool pairwise, std::string unit);
-		std::vector<double> pointdistance(const std::vector<double>& px, const std::vector<double>& py, const std::vector<double>& sx, const std::vector<double>& sy, bool pairwise, double m, bool lonlat);
+		std::vector<double> edges();
+
+		std::vector<double> distance(bool sequential, std::string unit, const std::string method);
+		std::vector<double> distance(SpatVector x, bool pairwise, std::string unit, const std::string method);
+		std::vector<double> pointdistance(const std::vector<double>& px, const std::vector<double>& py, const std::vector<double>& sx, const std::vector<double>& sy, bool pairwise, double m, bool lonlat, std::string method);
 
 //		std::vector<double> pointdistance_seq(const std::vector<double>& px, const std::vector<double>& py, double m, bool lonlat);
 
 
-		std::vector<double> distance(bool sequential, std::string unit);
 		std::vector<double> linedistLonLat(SpatVector x);
 
 		std::vector<std::vector<size_t>> knearest(size_t k);
@@ -382,8 +383,8 @@ class SpatVector {
 		std::vector<double> geos_distance(SpatVector v, bool parallel, std::string fun);
 		std::vector<double> geos_distance(bool sequential, std::string fun);
 
-		SpatVector nearest_point(SpatVector v, bool parallel);
-		SpatVector nearest_point();
+		SpatVector nearest_point(SpatVector v, bool parallel, const std::string method);
+		SpatVector nearest_point(const std::string method);
 		std::vector<int> nearest_geometry(SpatVector v);
 		
 		SpatVector sample(unsigned n, std::string method, unsigned seed);

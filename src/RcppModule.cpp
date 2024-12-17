@@ -483,13 +483,13 @@ RCPP_MODULE(spat){
 		.method("set_crs", (bool (SpatVector::*)(std::string crs))( &SpatVector::setSRS))
 		//.method("prj", &SpatVector::getPRJ)
 
-		.method("distance_self", (std::vector<double> (SpatVector::*)(bool, std::string))( &SpatVector::distance))
-		.method("distance_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string))( &SpatVector::distance))
+		.method("distance_self", (std::vector<double> (SpatVector::*)(bool, std::string, const std::string))( &SpatVector::distance))
+		.method("distance_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string, const std::string))( &SpatVector::distance))
 
 		.method("point_distance", &SpatVector::pointdistance)
 
-		.method("geosdist_self", (std::vector<double> (SpatVector::*)(bool, std::string))( &SpatVector::geos_distance))
-		.method("geosdist_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string))( &SpatVector::geos_distance))
+//		.method("geosdist_self", (std::vector<double> (SpatVector::*)(bool, std::string))( &SpatVector::geos_distance))
+//		.method("geosdist_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string))( &SpatVector::geos_distance))
 
 		.method("extent", &SpatVector::getExtent)
 		.method("getDF", &getVectorAttributes)
@@ -576,8 +576,10 @@ RCPP_MODULE(spat){
 		.method("crop_ext", ( SpatVector (SpatVector::*)(SpatExtent, bool))( &SpatVector::crop ))
 		.method("crop_vct", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::crop ))
 
-		.method("near_between", (SpatVector (SpatVector::*)(SpatVector, bool))( &SpatVector::nearest_point))
-		.method("near_within", (SpatVector (SpatVector::*)())( &SpatVector::nearest_point))
+		.method("near_between", (SpatVector (SpatVector::*)(SpatVector, bool, const std::string))( &SpatVector::nearest_point))
+		.method("near_within", (SpatVector (SpatVector::*)(const std::string))( &SpatVector::nearest_point))
+
+// not used?
 		.method("near_geom", &SpatVector::nearest_geometry)
 
 		//.method("knearest", &SpatVector::knearest)
@@ -1002,8 +1004,8 @@ RCPP_MODULE(spat){
 		.method("dims", &SpatRasterCollection::dims)
 		.method("extent", &SpatRasterCollection::getExtent)
 
-		.method("has_error", &SpatRasterCollection::has_error)
-		.method("has_warning", &SpatRasterCollection::has_warning)
+		.method("has_error", &SpatRasterCollection::hasError)
+		.method("has_warning", &SpatRasterCollection::hasWarning)
 		.method("getError", &SpatRasterCollection::getError)
 		.method("getWarnings", &SpatRasterCollection::getWarnings)
 		//.field("messages", &SpatRasterCollection::msg, "messages")
@@ -1024,8 +1026,8 @@ RCPP_MODULE(spat){
 	    .constructor<SpatRaster, std::string, std::string, std::string>()
 		.method("deepcopy", &SpatRasterStack::deepCopy)
 
-		.method("has_error", &SpatRasterStack::has_error)
-		.method("has_warning", &SpatRasterStack::has_warning)
+		.method("has_error", &SpatRasterStack::hasError)
+		.method("has_warning", &SpatRasterStack::hasWarning)
 		.method("getError", &SpatRasterStack::getError)
 		.method("getWarnings", &SpatRasterStack::getWarnings)
 

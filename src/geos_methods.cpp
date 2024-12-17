@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+	// Copyright (c) 2018-2025  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -2863,8 +2863,9 @@ SpatVector SpatVector::gaps() {
 
 
 
-SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
+SpatVector SpatVector::nearest_point(SpatVector v, bool parallel, const std::string method) {
 	SpatVector out;
+
 
 	if ((size() == 0) || v.empty()) {
 		out.setError("empty SpatVecor(s)");
@@ -2874,14 +2875,22 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 		out.setError("CRSs do not match");
 		return out;
 	}
+	bool lonlat = is_lonlat();
+	if (lonlat) {
+		std::vector<std::string> methods = {"geo", "cosine", "haversine"};
+		if (!is_in_vector(method, methods)) {
+			out.setError("invalid distance method");
+		}
+	}
 	out.srs = srs;
 
-	if ((is_lonlat()) && (type() == "points") && (v.type() == "points")) {
+	
+	if (lonlat && (type() == "points") && (v.type() == "points")) {
 		std::vector<double> nlon, nlat, dist;
 		std::vector<long> id;
 		std::vector<std::vector<double>> p = coordinates();
 		std::vector<std::vector<double>> pv = v.coordinates();
-		nearest_lonlat(id, dist, nlon, nlat, p[0], p[1], pv[0], pv[1]);
+		nearest_lonlat(id, dist, nlon, nlat, p[0], p[1], pv[0], pv[1], method);
 		out.setPointsGeometry(nlon, nlat);
 		std::vector<long> fromid(id.size());
 		std::iota(fromid.begin(), fromid.end(), 0);
@@ -2928,7 +2937,7 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 	return out;
 }
 
-SpatVector SpatVector::nearest_point() {
+SpatVector SpatVector::nearest_point(const std::string method) {
 	SpatVector out;
 	if ((size() == 0)) {
 		out.addWarning("empty SpatVecor");
@@ -2941,12 +2950,22 @@ SpatVector SpatVector::nearest_point() {
 	size_t n = size();
 	out.srs = srs;
 
-	if (is_lonlat()) {
+
+	bool lonlat = is_lonlat();
+	if (lonlat) {
+		std::vector<std::string> methods = {"geo", "cosine", "haversine"};
+		if (!is_in_vector(method, methods)) {
+			out.setError("invalid distance method");
+		}
+	}
+
+
+	if (lonlat) {
 		if (type() == "points") {
 			std::vector<double> nlon, nlat, dist;
 			std::vector<long> id;
 			std::vector<std::vector<double>> p = coordinates();
-			nearest_lonlat_self(id, dist, nlon, nlat, p[0], p[1]);
+			nearest_lonlat_self(id, dist, nlon, nlat, p[0], p[1], method);
 			out.setPointsGeometry(nlon, nlat);
 			out.df.add_column(id, "id");
 			out.df.add_column(dist, "distance");
@@ -2956,7 +2975,6 @@ SpatVector SpatVector::nearest_point() {
 			return out;
 		}
 	}
-
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);

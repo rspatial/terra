@@ -14,9 +14,9 @@ Identify geometries that are near to each other. Either get the index of all geo
 }
 
 \usage{
-\S4method{nearby}{SpatVector}(x, y=NULL, distance=0, k=1, centroids=TRUE, symmetrical=TRUE)
+\S4method{nearby}{SpatVector}(x, y=NULL, distance=0, k=1, centroids=TRUE, symmetrical=TRUE, bool haversine)
 
-\S4method{nearest}{SpatVector}(x, y, pairs=FALSE, centroids=TRUE, lines=FALSE)
+\S4method{nearest}{SpatVector}(x, y, pairs=FALSE, centroids=TRUE, lines=FALSE, bool haversine)
 }
 
 \arguments{
@@ -26,11 +26,12 @@ Identify geometries that are near to each other. Either get the index of all geo
   \item{k}{positive integer. number of neighbors. Ignored if \code{distance > 0}}
   \item{centroids}{logical. Should the centroids of polygons be used?}
   \item{symmetrical}{logical. If \code{TRUE}, a near pair is only included once. That is, if geometry 1 is near to geometry 3, the implied nearness between 3 and 1 is not reported. Ignored if \code{k} neighbors are returned}
+  \item{haversine}{logical. Use the haversine formula for lon/lat data? If \code{FALSE}, the more precise but slower method of Karney (2003) is used}  
   \item{pairs}{logical. If \code{TRUE} pairwise nearest points are returned (only relevant when using at least one SpatVector of lines or polygons}
   \item{lines}{logical. If \code{TRUE} lines between the nearest points instead of (the nearest) points }
 }
 
-\seealso{\code{\link{relate}}, \code{\link{adjacent}}}
+\seealso{\code{\link{distance}}, \code{\link{relate}}, \code{\link{adjacent}}}
 
 \value{
 matrix

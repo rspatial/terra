@@ -25,6 +25,21 @@
 #include <cmath>
 #include "geodesic.h"
 #include "recycle.h"
+#include <functional>
+#include <string>
+
+// Convert degrees to radians
+double toRad(double &deg) {
+	return( deg * 0.0174532925199433 );
+}
+
+
+double toDeg(double &rad) {
+	return( rad * 57.2957795130823 );
+}
+
+
+
 
 double distance_lonlat(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
 	double a = 6378137.0;
@@ -35,6 +50,57 @@ double distance_lonlat(const double &lon1, const double &lat1, const double &lon
 	geod_inverse(&g, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
   	return s12;
 }
+
+
+// to circumvent overloading problem when assigning to std::function
+double distLonlat(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	double s12, azi1, azi2;
+	struct geod_geodesic g;
+	geod_init(&g, a, f);
+	geod_inverse(&g, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
+  	return s12;
+}
+
+
+double distCosine(double lon1, double lat1, double lon2, double lat2) {
+	const double r = 6378137;
+	lon1 = toRad(lon1);
+	lon2 = toRad(lon2);
+	lat1 = toRad(lat1);
+	lat2 = toRad(lat2);
+	return r * acos((sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1-lon2)));
+}
+
+double distCosineRad(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
+	const double r = 6378137;
+	return r * acos((sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1-lon2)));
+}
+
+
+double distHaversine(double lon1, double lat1, double lon2, double lat2) {
+	const double r = 6378137;
+	lon1 = toRad(lon1);
+	lon2 = toRad(lon2);
+	lat1 = toRad(lat1);
+	lat2 = toRad(lat2);
+
+	double dLat = lat2-lat1;
+	double dLon = lon2-lon1;
+	double a = sin(dLat/2.) * sin(dLat/2.) + cos(lat1) * cos(lat2) * sin(dLon/2.) * sin(dLon/2.);
+	return 2. * atan2(sqrt(a), sqrt(1.-a)) * r;
+}
+
+double distHaversineRad(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
+	const double r = 6378137;
+	double dLat = lat2-lat1;
+	double dLon = lon2-lon1;
+	double a = sin(dLat/2.) * sin(dLat/2.) + cos(lat1) * cos(lat2) * sin(dLon/2.) * sin(dLon/2.);
+	return 2. * atan2(sqrt(a), sqrt(1.-a)) * r;
+}
+
+
 
 
 std::vector<double> distance_lonlat(std::vector<double> &lon1, std::vector<double> &lat1, std::vector<double> &lon2, std::vector<double> &lat2) {
@@ -110,17 +176,6 @@ double distPlane(double x1, double y1, double x2, double y2) {
 	return( sqrt(pow((x2-x1),2) + pow((y2-y1), 2)) );
 }
 */
-
-// Convert degrees to radians
-double toRad(double &deg) {
-	return( deg * 0.0174532925199433 );
-}
-
-
-double toDeg(double &rad) {
-	return( rad * 57.2957795130823 );
-}
-
 
 
 
@@ -344,34 +399,58 @@ std::vector<std::vector<double> > destpoint_plane(std::vector<double>  x, std::v
 
 
 
-void distanceToNearest_lonlat(std::vector<double> &d, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2, const double& adj_unit) {
+void distanceToNearest_lonlat(std::vector<double> &d, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2, const double& adj_unit, std::string method) {
+
 	int n = lon1.size();
 	int m = lon2.size();
-	double a = 6378137.0;
-	double f = 1/298.257223563;
-	double azi1, azi2, s12;
-	struct geod_geodesic g;
-	geod_init(&g, a, f);
 
- 	for (int i=0; i < n; i++) {
-		if (std::isnan(lat1[i])) {
-			continue;
+	if (method == "geo") {
+		double a = 6378137.0;
+		double f = 1/298.257223563;
+		double azi1, azi2, s12;
+		struct geod_geodesic g;
+		geod_init(&g, a, f);
+
+		for (int i=0; i < n; i++) {
+			if (std::isnan(lat1[i])) {
+				continue;
+			}
+			geod_inverse(&g, lat1[i], lon1[i], lat2[0], lon2[0], &d[i], &azi1, &azi2);
+			for (int j=1; j<m; j++) {
+				geod_inverse(&g, lat1[i], lon1[i], lat2[j], lon2[j], &s12, &azi1, &azi2);
+				if (s12 < d[i]) {
+					d[i] = s12;
+				}
+			}
+			d[i] *= adj_unit;
 		}
-		geod_inverse(&g, lat1[i], lon1[i], lat2[0], lon2[0], &d[i], &azi1, &azi2);
-		for (int j=1; j<m; j++) {
-			geod_inverse(&g, lat1[i], lon1[i], lat2[j], lon2[j], &s12, &azi1, &azi2);
-			if (s12 < d[i]) {
-				d[i] = s12 * adj_unit;
+	} else {
+		std::function<double(double, double, double, double)> dfun;
+		if (method == "haversine") {
+			dfun = distHaversine;
+		} else {
+			dfun = distCosine;			
+		}
+		
+		for (int i=0; i < n; i++) {
+			if (!std::isnan(lat1[i])) {
+				d[i] = dfun(lon1[i], lat1[i], lon2[0], lat2[0]);
+				for (int j=1; j<m; j++) {
+					double s12 = dfun(lon1[i], lat1[i], lon2[j], lat2[j]);
+					if (s12 < d[i]) {
+						d[i] = s12;
+					}
+				}
+				d[i] *= adj_unit;
 			}
 		}
-		d[i] *= adj_unit;
 	}
+
 }
 
 
-double distCosine(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
-	return 6378137 * acos((sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1-lon2)));
-}
+
+
 
 // input lon lat in radians
 void distanceCosineToNearest_lonlat(std::vector<double> &d, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2) {
@@ -384,7 +463,7 @@ void distanceCosineToNearest_lonlat(std::vector<double> &d, const std::vector<do
 		}
 		d[i] = distCosine(lat1[i], lon1[i], lat2[0], lon2[0]);
 		for (int j=1; j<m; j++) {
-			s12 = distCosine(lat1[i], lon1[i], lat2[j], lon2[j]);
+			s12 = 6378137 * acos((sin(lat1[i]) * sin(lat2[j]) + cos(lat1[i]) * cos(lat2[j]) * cos(lon1[i]-lon2[j])));
 			if (s12 < d[i]) {
 				d[i] = s12;
 			}
@@ -413,45 +492,82 @@ void distanceToNearest_plane(std::vector<double> &d, const std::vector<double> &
 
 
 
-void nearest_lonlat(std::vector<long> &id, std::vector<double> &d, std::vector<double> &nlon, std::vector<double> &nlat, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2) {
+void nearest_lonlat(std::vector<long> &id, std::vector<double> &d, std::vector<double> &nlon, std::vector<double> &nlat, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2, const std::string method) {
+	
 	size_t n = lon1.size();
 	size_t m = lon2.size();
-	double a = 6378137.0;
-	double f = 1/298.257223563;
-	double azi1, azi2, s12;
-	struct geod_geodesic g;
-	geod_init(&g, a, f);
+
 	nlon.resize(n);
 	nlat.resize(n);
 	id.resize(n);
 	d.resize(n);
+	
+	if (method == "geo") {
+		
+		double a = 6378137.0;
+		double f = 1/298.257223563;
+		double azi1, azi2, s12;
+		struct geod_geodesic g;
+		geod_init(&g, a, f);
 
- 	for (size_t i=0; i < n; i++) {
-		if (std::isnan(lat1[i])) {
-			nlon[i] = NAN;
-			nlat[i] = NAN;
-			id[i] = -1;
-			d[i] = NAN;
-			continue;
-		}
-		geod_inverse(&g, lat1[i], lon1[i], lat2[0], lon2[0], &d[i], &azi1, &azi2);
-		nlon[i] = lon2[0];
-		nlat[i] = lat2[0];
-		id[i] = 0;
-		for (size_t j=1; j<m; j++) {
-			geod_inverse(&g, lat1[i], lon1[i], lat2[j], lon2[j], &s12, &azi1, &azi2);
-			if (s12 < d[i]) {
-				d[i] = s12;
-				id[i] = j;
-				nlon[i] = lon2[j];
-				nlat[i] = lat2[j];
+		for (size_t i=0; i < n; i++) {
+			if (std::isnan(lat1[i])) {
+				nlon[i] = NAN;
+				nlat[i] = NAN;
+				id[i] = -1;
+				d[i] = NAN;
+				continue;
+			}
+			geod_inverse(&g, lat1[i], lon1[i], lat2[0], lon2[0], &d[i], &azi1, &azi2);
+			nlon[i] = lon2[0];
+			nlat[i] = lat2[0];
+			id[i] = 0;
+			for (size_t j=1; j<m; j++) {
+				geod_inverse(&g, lat1[i], lon1[i], lat2[j], lon2[j], &s12, &azi1, &azi2);
+				if (s12 < d[i]) {
+					d[i] = s12;
+					id[i] = j;
+					nlon[i] = lon2[j];
+					nlat[i] = lat2[j];
+				}
 			}
 		}
-	}
+	} else {
+		
+		std::function<double(double, double, double, double)> dfun;
+		if (method == "haversine") {
+			dfun = distHaversine;
+		} else {
+			dfun = distCosine;			
+		}	
+		
+		for (size_t i=0; i < n; i++) {
+			if (std::isnan(lat1[i])) {
+				nlon[i] = NAN;
+				nlat[i] = NAN;
+				id[i] = -1;
+				d[i] = NAN;
+				continue;
+			}
+			d[i] = dfun(lat1[i], lon1[i], lat2[0], lon2[0]);
+			nlon[i] = lon2[0];
+			nlat[i] = lat2[0];
+			id[i] = 0;
+			for (size_t j=1; j<m; j++) {
+				double s12 = dfun(lat1[i], lon1[i], lat2[j], lon2[j]);
+				if (s12 < d[i]) {
+					d[i] = s12;
+					id[i] = j;
+					nlon[i] = lon2[j];
+					nlat[i] = lat2[j];
+				}
+			}
+		}	
+	} 
 }
 
+void nearest_lonlat_self(std::vector<long> &id, std::vector<double> &d, std::vector<double> &nlon, std::vector<double> &nlat, const std::vector<double> &lon, const std::vector<double> &lat, const std::string method) {
 
-void nearest_lonlat_self(std::vector<long> &id, std::vector<double> &d, std::vector<double> &nlon, std::vector<double> &nlat, const std::vector<double> &lon, const std::vector<double> &lat) {
 	size_t n = lon.size();
 	if (n <= 1) {
 		nlon = lon;
@@ -462,61 +578,94 @@ void nearest_lonlat_self(std::vector<long> &id, std::vector<double> &d, std::vec
 		}
 		return;
 	}
-	double a = 6378137.0;
-	double f = 1/298.257223563;
-	double azi1, azi2, s12;
-	struct geod_geodesic g;
-	geod_init(&g, a, f);
+
 	nlon.resize(n);
 	nlat.resize(n);
 	id.resize(n);
 	d.resize(n);
- 	for (size_t i=0; i < n; i++) {
-		if (std::isnan(lat[i])) {
-			id[i] = -1;
-			d[i] = NAN;
-			nlon[i] = NAN;
-			nlat[i] = NAN;
-			continue;
-		}
-		if (i>0) {
-			geod_inverse(&g, lat[i], lon[i], lat[0], lon[0], &d[i], &azi1, &azi2);
-			nlon[i] = lon[0];
-			nlat[i] = lat[0];
-			id[i] = 0;
-		} else {
-			geod_inverse(&g, lat[1], lon[1], lat[0], lon[0], &d[i], &azi1, &azi2);
-			nlon[i] = lon[1];
-			nlat[i] = lat[1];
-			id[i] = 1;
-		}
 
-		for (size_t j=1; j < n; j++) {
-			if (j == i) continue;
-			geod_inverse(&g, lat[i], lon[i], lat[j], lon[j], &s12, &azi1, &azi2);
-			if (s12 < d[i]) {
-				d[i] = s12;
-				id[i] = j;
-				nlon[i] = lon[j];
-				nlat[i] = lat[j];
+	if (method == "geo") {
+		
+		double a = 6378137.0;
+		double f = 1/298.257223563;
+		double azi1, azi2, s12;
+		struct geod_geodesic g;
+		geod_init(&g, a, f);
+		for (size_t i=0; i < n; i++) {
+			if (std::isnan(lat[i])) {
+				id[i] = -1;
+				d[i] = NAN;
+				nlon[i] = NAN;
+				nlat[i] = NAN;
+				continue;
+			}
+			if (i>0) {
+				geod_inverse(&g, lat[i], lon[i], lat[0], lon[0], &d[i], &azi1, &azi2);
+				nlon[i] = lon[0];
+				nlat[i] = lat[0];
+				id[i] = 0;
+			} else {
+				geod_inverse(&g, lat[1], lon[1], lat[0], lon[0], &d[i], &azi1, &azi2);
+				nlon[i] = lon[1];
+				nlat[i] = lat[1];
+				id[i] = 1;
+			}
+
+			for (size_t j=1; j < n; j++) {
+				if (j == i) continue;
+				geod_inverse(&g, lat[i], lon[i], lat[j], lon[j], &s12, &azi1, &azi2);
+				if (s12 < d[i]) {
+					d[i] = s12;
+					id[i] = j;
+					nlon[i] = lon[j];
+					nlat[i] = lat[j];
+				}
 			}
 		}
-	}
-}
 
+	} else {
 
+		std::function<double(double, double, double, double)> dfun;
+		if (method == "haversine") {
+			dfun = distHaversine;
+		} else if (method == "cosine") {
+			dfun = distCosine;			
+		} else {
+			dfun = distLonlat;
+		}
 
-double distHaversine(double lon1, double lat1, double lon2, double lat2) {
-	double r = 6378137;
-	double dLat, dLon, a;
-	lon1 = toRad(lon1);
-	lon2 = toRad(lon2);
-	lat1 = toRad(lat1);
-	lat2 = toRad(lat2);
+		for (size_t i=0; i < n; i++) {
+			if (std::isnan(lat[i])) {
+				id[i] = -1;
+				d[i] = NAN;
+				nlon[i] = NAN;
+				nlat[i] = NAN;
+				continue;
+			}
+			if (i>0) {
+				d[i] = dfun(lon[i], lat[i], lon[0], lat[0]);
+				nlon[i] = lon[0];
+				nlat[i] = lat[0];
+				id[i] = 0;
+			} else {
+				d[i] = dfun(lon[1], lat[1], lon[0], lat[0]);
+				nlon[i] = lon[1];
+				nlat[i] = lat[1];
+				id[i] = 1;
+			}
 
-	dLat = lat2-lat1;
-	dLon = lon2-lon1;
-	a = sin(dLat/2.) * sin(dLat/2.) + cos(lat1) * cos(lat2) * sin(dLon/2.) * sin(dLon/2.);
-	return 2. * atan2(sqrt(a), sqrt(1.-a)) * r;
+			for (size_t j=1; j < n; j++) {
+				if (j == i) continue;
+				double s12 = dfun(lon[i], lat[i], lon[j], lat[j]);
+
+				if (s12 < d[i]) {
+					d[i] = s12;
+					id[i] = j;
+					nlon[i] = lon[j];
+					nlat[i] = lat[j];
+				}
+			}
+		}
+	} 
 }
 

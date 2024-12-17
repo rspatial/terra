@@ -3738,7 +3738,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		SpatExtent ee = ds[i].getExtent();
 									//  lyrs, crs, warncrs, ext, rowcol, res
 		if (!ds[0].compare_geom(ds[i], false, false, opt.get_tolerance(), false, false, false, true)) {
-			out.setError(ds[0].msg.error);
+			out.setError(ds[0].getError());
 			return(out);
 		}
 		e.unite(ee);

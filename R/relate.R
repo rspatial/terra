@@ -273,7 +273,7 @@ setMethod("adjacent", signature(x="SpatVector"),
 
 
 setMethod("nearby", signature(x="SpatVector"),
-	function(x, y=NULL, distance=0, k=1, centroids=TRUE, symmetrical=TRUE) {
+	function(x, y=NULL, distance=0, k=1, centroids=TRUE, symmetrical=TRUE, haversine=FALSE) {
 		
 		k <- round(k)
 		if (distance <= 0 && k < 1) {
@@ -291,10 +291,10 @@ setMethod("nearby", signature(x="SpatVector"),
 		}
 		if (distance > 0) {
 			if (hasy) {
-				d <- distance(x, y)
+				d <- distance(x, y, haversine=haversine)
 				d <- cbind(from_id=rep(1:nrow(d), ncol(d)), to_id=rep(1:ncol(d), each=nrow(d)), distance=as.vector(d))
 			} else {
-				d <- distance(x, pairs=TRUE, symmetrical=symmetrical)
+				d <- distance(x, pairs=TRUE, symmetrical=symmetrical, haversine=haversine)
 			}
 			d[d[,3] <= distance, 1:2, drop=FALSE]
 		} else {
@@ -326,7 +326,7 @@ setMethod("nearby", signature(x="SpatVector"),
 
 
 setMethod("nearest", signature(x="SpatVector"),
-	function(x, y=NULL, pairs=FALSE, centroids=TRUE, lines=FALSE) {
+	function(x, y=NULL, pairs=FALSE, centroids=TRUE, lines=FALSE, haversine=FALSE) {
 		if ((geomtype(x) == "polygons") && centroids) {
 			x <- centroids(x)
 		}
@@ -341,7 +341,7 @@ setMethod("nearest", signature(x="SpatVector"),
 		if (within) {
 			z@pntr <- x@pntr$near_within()
 		} else {
-			z@pntr <- x@pntr$near_between(y@pntr, pairs)
+			z@pntr <- x@pntr$near_between(y@pntr, pairs, havesine)
 		}
 		z <- messages(z, "nearest")
 		if (geomtype(z) == "points") { #lonlat points
