@@ -273,11 +273,15 @@ setMethod("adjacent", signature(x="SpatVector"),
 
 
 setMethod("nearby", signature(x="SpatVector"),
-	function(x, y=NULL, distance=0, k=1, centroids=TRUE, symmetrical=TRUE, haversine=FALSE) {
+	function(x, y=NULL, distance=0, k=1, centroids=TRUE, symmetrical=TRUE, method="geo") {
 		
 		k <- round(k)
 		if (distance <= 0 && k < 1) {
 			error("nearby", "either distance or k must be a positive number")
+		}
+
+		if (!(method %in% c("geo", "haversine", "cosine"))) {
+			error("nearby", "not a valid method. Should be one of: 'geo', 'haversine', 'cosine'")
 		}
 
 		if ((geomtype(x) == "polygons") && centroids) {
@@ -291,10 +295,10 @@ setMethod("nearby", signature(x="SpatVector"),
 		}
 		if (distance > 0) {
 			if (hasy) {
-				d <- distance(x, y, haversine=haversine)
+				d <- distance(x, y, method=method)
 				d <- cbind(from_id=rep(1:nrow(d), ncol(d)), to_id=rep(1:ncol(d), each=nrow(d)), distance=as.vector(d))
 			} else {
-				d <- distance(x, pairs=TRUE, symmetrical=symmetrical, haversine=haversine)
+				d <- distance(x, pairs=TRUE, symmetrical=symmetrical, method=method)
 			}
 			d[d[,3] <= distance, 1:2, drop=FALSE]
 		} else {
@@ -307,7 +311,7 @@ setMethod("nearby", signature(x="SpatVector"),
 				if (hasy) {
 					d <- distance(x, y)
 				} else {
-					d <- as.matrix(distance(x, pairs=FALSE))
+					d <- as.matrix(distance(x, pairs=FALSE, method=method))
 					diag(d) <- NA
 				}
 				d <- t(apply(d, 1, function(i) order(i)[1:k]))
@@ -326,7 +330,7 @@ setMethod("nearby", signature(x="SpatVector"),
 
 
 setMethod("nearest", signature(x="SpatVector"),
-	function(x, y=NULL, pairs=FALSE, centroids=TRUE, lines=FALSE, haversine=FALSE) {
+	function(x, y=NULL, pairs=FALSE, centroids=TRUE, lines=FALSE, method="geo") {
 		if ((geomtype(x) == "polygons") && centroids) {
 			x <- centroids(x)
 		}
@@ -338,10 +342,14 @@ setMethod("nearest", signature(x="SpatVector"),
 			y <- centroids(y)
 		}
 		z <- x
+		if (!(method %in% c("geo", "haversine", "cosine"))) {
+			error("nearest", "not a valid method. Should be one of: 'geo', 'haversine', 'cosine'")
+		}
+		
 		if (within) {
-			z@pntr <- x@pntr$near_within()
+			z@pntr <- x@pntr$near_within(method)
 		} else {
-			z@pntr <- x@pntr$near_between(y@pntr, pairs, havesine)
+			z@pntr <- x@pntr$near_between(y@pntr, pairs, method)
 		}
 		z <- messages(z, "nearest")
 		if (geomtype(z) == "points") { #lonlat points
