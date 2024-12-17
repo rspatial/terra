@@ -597,6 +597,19 @@ void rotit(std::vector<double> &x, std::vector<double> &y, const double &x0, con
 	}
 }
 
+void rotit_geo(std::vector<double> &lon, std::vector<double> &lat, const double &lon0, const double &lat0, const double &angle, const double &angle2) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	double s12, azi1, azi2;
+	struct geod_geodesic g;
+	geod_init(&g, a, f);
+	double angle_rad = angle * 57.2957795130823 ;
+
+	for (size_t i=0; i<lon.size(); i++) {
+		geod_inverse(&g, lat0, lon0, lat[i], lon[i], &s12, &azi1, &azi2);
+		geod_direct(&g, lat0, lon0, azi1 - angle_rad, s12, &lat[i], &lon[i], &azi2);
+	}
+}
 
 
 SpatVector SpatVector::rotate(double angle, std::vector<double> x0, std::vector<double> y0) {
@@ -617,8 +630,18 @@ SpatVector SpatVector::rotate(double angle, std::vector<double> x0, std::vector<
 		recycle(x0, n);
 		recycle(y0, n);
 	}
-	double cos_angle = cos(angle);
-	double sin_angle = sin(angle);
+	
+	double cos_angle, sin_angle;
+	std::function<void(std::vector<double>&, std::vector<double>&, const double&, const double&, const double&, const double&)>  rotate_it;
+	if (is_lonlat()) {
+		cos_angle = angle;
+		sin_angle = angle;
+		rotate_it = rotit_geo;
+	} else {
+		cos_angle = cos(angle);
+		sin_angle = sin(angle);		
+		rotate_it = rotit;
+	}
 	SpatVector out = *this;
 	for (size_t i=0; i < n; i++) {
 		if (multi) {
@@ -626,10 +649,10 @@ SpatVector SpatVector::rotate(double angle, std::vector<double> x0, std::vector<
 			iy0 = y0[i];
 		} 
 		for (size_t j=0; j < geoms[i].size(); j++) {
-			rotit(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, ix0, iy0, cos_angle, sin_angle);
+			rotate_it(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, ix0, iy0, cos_angle, sin_angle);
 			if (geoms[i].parts[j].hasHoles()) {
 				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
-					rotit(out.geoms[i].parts[j].holes[k].x,
+					rotate_it(out.geoms[i].parts[j].holes[k].x,
 						  out.geoms[i].parts[j].holes[k].y, ix0, iy0, cos_angle, sin_angle);
 
 					out.geoms[i].parts[j].holes[k].extent.xmin =
