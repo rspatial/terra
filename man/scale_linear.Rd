@@ -11,7 +11,7 @@ Linear scaling of raster cell values between a specified minimum and maximum val
 }
 
 \usage{
-\S4method{scale_linear}{SpatRaster}(x, min=0, max=1)
+\S4method{scale_linear}{SpatRaster}(x, min=0, max=1, filename="", ...)
 }
 
 
@@ -19,6 +19,8 @@ Linear scaling of raster cell values between a specified minimum and maximum val
  \item{x}{SpatRaster}
  \item{min}{minimum value to scale to}
  \item{max}{maximum value to scale to}
+ \item{filename}{character. Output filename}
+ \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
  
 \value{

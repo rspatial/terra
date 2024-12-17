@@ -46,9 +46,9 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
 
 
 \usage{
-\S4method{distance}{SpatRaster,missing}(x, y, target=NA, exclude=NULL, unit="m", method="geo", filename="", ...)
+\S4method{distance}{SpatRaster,missing}(x, y, target=NA, exclude=NULL, unit="m", method="haversine", filename="", ...)
 
-\S4method{distance}{SpatRaster,SpatVector}(x, y, unit="m", rasterize=FALSE, method="geo", filename="", ...)
+\S4method{distance}{SpatRaster,SpatVector}(x, y, unit="m", rasterize=FALSE, method="haversine", filename="", ...)
 
 \S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="geo")
 
