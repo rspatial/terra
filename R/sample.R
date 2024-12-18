@@ -492,7 +492,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			if (exhaustive && (method=="random") && na.rm) {
 				cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
 			} else {
-				cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
+				cnrs <- .sampleCells(x, size, method, replace, na.rm, ext, exp=exp)
 			}
 			
 			if (method == "random") {
