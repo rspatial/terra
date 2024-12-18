@@ -99,7 +99,6 @@ void SpatRasterCollection::erase(size_t i) {
 
 SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, bool expand, std::vector<unsigned> use, SpatOptions &opt) {
 
-
 	SpatRasterCollection out;
 	if ( !e.valid() ) {
 		out.setError("invalid extent");
