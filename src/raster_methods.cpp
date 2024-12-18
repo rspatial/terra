@@ -3345,6 +3345,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 
 	SpatOptions ops;
 	if (expand) {
+
 		if ((fext.xmax <= ein.xmax)  && (fext.xmin >= ein.xmin) && (fext.ymax <= ein.ymax)  && (fext.ymin >= ein.ymin)) {
 			expand = false;
 		} else if ((fext.xmax >= ein.xmax)  && (fext.xmin <= ein.xmin) && (fext.ymax >= ein.ymax)  && (fext.ymin <= ein.ymin)) {
@@ -3385,7 +3386,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 		haswin = (haswin | hw[i]);
 	}
 
-	if ((row1==0) && (row2==nrow()-1) && (col1==0) && (col2==ncol()-1) && (!haswin)) {
+	if ((!expand) && (row1==0) && (row2==nrow()-1) && (col1==0) && (col2==ncol()-1) && (!haswin)) {
 		// same extent
 		if (opt.get_filename().empty()) {
 			out = deepCopy();
@@ -3733,7 +3734,9 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	size_t nl = ds[0].nlyr();
 //std::vector<bool> resample(n, false);
 
-		
+	std::vector<unsigned> use;
+	use.reserve(n);
+	if (hvals[0]) use.push_back(0);
 	for (size_t i=1; i<n; i++) {
 		SpatExtent ee = ds[i].getExtent();
 									//  lyrs, crs, warncrs, ext, rowcol, res
@@ -3743,6 +3746,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		}
 		e.unite(ee);
 		hvals[i] = ds[i].hasValues();
+		if (hvals[i]) use.push_back(i);
 		nl = std::max(nl, ds[i].nlyr());
 	}
 	out = ds[0].geometry(nl, false);
@@ -3790,7 +3794,6 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
  	if (!out.writeStart(opt, filenames())) { return out; }
 	sopt.progressbar = false;
 
-	std::vector<unsigned> use; 
 	SpatRasterStack s;
 	
 	for (size_t i=0; i<nv; i++) {
@@ -3801,10 +3804,12 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 			continue;
 		} 
 
+//		Rcpp::Rcout << "ext e:" << ce.xmin << " " << ce.xmax << " " << ce.ymin << " " << ce.ymax << std::endl; 
 //		for (size_t j=0; j<x.size(); j++) {
 //			Rcpp::Rcout << "ext " << j << ": " << x.ds[j].source[0].extent.xmin << " " << x.ds[j].source[0].extent.xmax 
 //				<<  " " << x.ds[j].source[0].extent.ymin <<  " " << x.ds[j].source[0].extent.ymax <<  " " << std::endl;
 //		}
+//		continue;
 		
 		s.ds = x.ds;
 		SpatRaster r;
