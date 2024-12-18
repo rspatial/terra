@@ -13,16 +13,18 @@ Plots labels, that is a textual (rather than color) representation of values, on
 }
 
 \usage{
-\S4method{text}{SpatRaster}(x, labels, digits=0, halo=FALSE, ...)
+\S4method{text}{SpatRaster}(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, ...)
 
-\S4method{text}{SpatVector}(x, labels, halo=FALSE, inside=FALSE, ...)
+\S4method{text}{SpatVector}(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{labels}{character. Optional. Vector of labels with \code{length(x)} or a variable name from \code{names(x)}}
   \item{digits}{integer. How many digits should be used?}
-  \item{halo}{logical. If \code{TRUE} a "halo" is printed around the text. If \code{TRUE}, additional arguments \code{hc="white"} and \code{hw=0.1} can be modified to set the color and width of the halo}
+  \item{halo}{logical. If \code{TRUE} a "halo" is printed around the text}
+  \item{hc}{character. The halo color}
+  \item{hw}{numeric. The halo width}
   \item{inside}{logical. Should the text always be placed inside one the sub-geometries?}
   \item{...}{additional arguments to pass to graphics function \code{\link[graphics]{text}} }
 }

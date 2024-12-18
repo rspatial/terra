@@ -605,7 +605,7 @@ prettyNumbs <- function(x, digits) {
 		}
 		if (isTRUE(x$halo.main)) {
 			.halo(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
-				font=x$font.main, col=x$col.main, xpd=TRUE)
+				font=x$font.main, col=x$col.main, xpd=TRUE, hc=x$halo.main.hc, hw=x$halo.main.hw)
 		} else {
 			text(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
 				font=x$font.main, col=x$col.main, xpd=TRUE)
@@ -626,7 +626,7 @@ prettyNumbs <- function(x, digits) {
   sort=TRUE, decreasing=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
   xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=1.2, 
   line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL, 
-  halo=FALSE, axes=TRUE, box=TRUE, cex=1, maxcell=500000, buffer=FALSE, clip=TRUE, 
+  halo=FALSE, hc="white", hw=0.1, axes=TRUE, box=TRUE, cex=1, maxcell=500000, buffer=FALSE, clip=TRUE, 
   # for rgb 
   stretch=NULL, scale=NULL, bgalpha=NULL, zlim=NULL, zcol=NULL,  ...) {
 #cex is catch and kill
@@ -733,6 +733,9 @@ prettyNumbs <- function(x, digits) {
 	out$reset <- reset
 	out$main  <- main
 	out$halo.main <- halo
+	out$halo.main.hc <- hc
+	out$halo.main.hw <- hw
+
 	out$loc.main  <- loc.main
 	out$cex.main  <- cex.main
 	out$font.main <- font.main
