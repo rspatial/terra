@@ -5,6 +5,8 @@
 - `expanse<SpatRaster>(transform=TRUE)` crashed R when the crs was "local". [#1671](https://github.com/rspatial/terra/issues/1671) by Michael Chirico
 - `patches(values=TRUE)` wrapped around the edges [#1675](https://github.com/rspatial/terra/issues/1675) by Michael Chirico
 - `spin` now correctly handles spherical coordinates [#1576](https://github.com/rspatial/terra/issues/1576) by jeanlobry
+- `mosaic` sometimes crashed R [#1524](https://github.com/rspatial/terra/issues/1524) by John Baums, Dave Klinges, and Hugh Graham.
+- `spatSample` ignored argument "exp" when taking a random sample with na.rm=TRUE on a large raster [#1437](https://github.com/rspatial/terra/issues/1437) by Babak Naimi
 
 ## enhancements
 
@@ -14,8 +16,9 @@
 ## new 
 
 - `$<SpatRaster>` can now be used to get a categorical SpatRaster with a different active category
-- `scale_linear<SpatRaster>` method for linear scaling between e.g., 0 and 1
+- `scale_linear<SpatRaster>` method for linear scaling of cell values between a minumum and maximum value such as 0 and 1
 - `distance` and related methods get argument "method" to choose the distance algorithm for lon/lat data [#1677](https://github.com/rspatial/terra/issues/1677) by Márcia Barbosa
+
 
 # version 1.8-5
 

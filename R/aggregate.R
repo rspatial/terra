@@ -37,20 +37,24 @@
 setMethod("aggregate", signature(x="SpatRaster"),
 function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
-	fun <- .makeTextFun(fun)
-	toc <- FALSE
-	if (inherits(fun, "character")) {
-		if (fun %in% c("sum", "mean", "min", "max", "median", "modal","prod", "which.min", "which.max",
-				"any", "all", "sd", "std", "sdpop")) {
-			fun[fun == "sdpop"] <- "std"
-			toc <- TRUE
+	if (hasValues(x)) { 
+		fun <- .makeTextFun(fun)
+		toc <- FALSE
+		if (inherits(fun, "character")) {
+			if (fun %in% c("sum", "mean", "min", "max", "median", "modal","prod", "which.min", "which.max",
+					"any", "all", "sd", "std", "sdpop")) {
+				fun[fun == "sdpop"] <- "std"
+				toc <- TRUE
+			} else {
+				fun <- match.fun(fun)
+			}
 		} else {
 			fun <- match.fun(fun)
 		}
 	} else {
-		fun <- match.fun(fun)
+		toc = TRUE 
+		fun = "mean"
 	}
-	if (!hasValues(x)) { toc = TRUE }
 	if (toc) {
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
 		narm <- isTRUE(list(...)$na.rm)
