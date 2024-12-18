@@ -6,6 +6,7 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/terra)](https://www.r-pkg.org/pkg/terra)
+[![StackOverflow](https://img.shields.io/stackexchange/stackoverflow/t/terra?logo=stackoverflow&label=Questions)](https://stackoverflow.com/questions/tagged/terra)
 
 `terra` is an *R* package for spatial data analysis. There are tutorials at [rspatial.org](https://rspatial.org/index.html). 
 
