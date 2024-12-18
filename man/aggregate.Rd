@@ -39,12 +39,10 @@ You can also aggregate ("dissolve") a SpatVector. This either combines all geome
 \details{
 Aggregation starts at the upper-left end of a SpatRaster. If a division of the number of columns or rows with \code{factor} does not return an integer, the extent of the resulting SpatRaster will be somewhat larger then that of the original SpatRaster. For example, if an input SpatRaster has 100 columns, and \code{fact=12}, the output SpatRaster will have 9 columns and the maximum x coordinate of the output SpatRaster is also adjusted.
   
-The function \code{fun} should take multiple numbers, and return a single number. For example \code{mean}, \code{modal}, \code{min} or \code{max}.
-
-It should also accept a \code{na.rm} argument (or ignore it as one of the 'dots' arguments). 
+The function \code{fun} should take multiple numbers, and return one or more numeric values. If multiple numbers are returned, the length of the returned vector should always be the same, also, for example, when the input is only NA values. For that reason, \code{range} works, but \code{unique} will fail in most cases. 
 }
 
-\seealso{\code{\link{disagg}} to disaggregate}
+\seealso{\code{\link{disagg}} to disaggregate, and \code{\link{resample}} for more complex changes in resolution and alignment}
 
 \value{
 SpatRaster
