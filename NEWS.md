@@ -7,6 +7,7 @@
 - `spin` now correctly handles spherical coordinates [#1576](https://github.com/rspatial/terra/issues/1576) by jeanlobry
 - `mosaic` sometimes crashed R [#1524](https://github.com/rspatial/terra/issues/1524) by John Baums, Dave Klinges, and Hugh Graham.
 - `spatSample` ignored argument "exp" when taking a random sample with na.rm=TRUE on a large raster [#1437](https://github.com/rspatial/terra/issues/1437) by Babak Naimi
+- `split<SpatVector,SpatVector>` did not work properly [#1619](https://github.com/rspatial/terra/issues/1619) by Michael Sumner
 
 ## enhancements
 

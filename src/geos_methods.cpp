@@ -787,9 +787,7 @@ SpatVector SpatVector::polygonize() {
 	geos_finish(hGEOSCtxt);
 
 	out.srs = srs;
-	if (df.nrow() != out.size()) {
-		out.addWarning("dropped attributes");
-	} else {
+	if (df.nrow() == out.size()) {
 		out.df = df;
 	}
 	return out;

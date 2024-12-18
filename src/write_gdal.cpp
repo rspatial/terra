@@ -1155,7 +1155,7 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 					GDALSetDescription(poBand, source[i].names[b].c_str());
 				}
 			}
-		} 
+		}
 		if (crs) {
 			std::string crs = source[i].srs.wkt;
 			OGRSpatialReference oSRS;

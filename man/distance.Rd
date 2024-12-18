@@ -56,7 +56,8 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
 
 \S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE, unit="m", method="geo")
 
-\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="geo")
+\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE, pairs=FALSE, symmetrical=TRUE,
+							unit="m", method="geo")
 }
 
 \arguments{

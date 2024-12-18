@@ -215,7 +215,7 @@ setMethod("text", signature(x="SpatRaster"),
 		} else if (is.numeric(labels)) {
 			labels <- as.character(round(labels, digits=digits) )
 		}
-		if (halo && (is.TRUE(hw > 0))) {
+		if (halo && (isTRUE(hw > 0))) {
 			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, ...)
 		} else {
 			text(xy[,1], xy[,2], labels, ...)
@@ -242,7 +242,7 @@ setMethod("text", signature(x="SpatVector"),
 			}
 		}
 		xy <- geom(centroids(x, inside=inside))[,c("x","y"),drop=FALSE]
-		if (halo && (is.TRUE(hw > 0))) {
+		if (halo && (isTRUE(hw > 0))) {
 			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, ...)
 		} else {
 			text(xy[,1], xy[,2], labels, ...)
