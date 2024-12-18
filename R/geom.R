@@ -706,8 +706,8 @@ setMethod("split", signature(x="SpatVector", f="ANY"),
 )
 
 
-setMethod("split", signature(x="SpatVector", f="SpatVector"),
-	function(x, f) {
+#setMethod("split", signature(x="SpatVector", f="SpatVector"),
+badsplit <- function(x, f) {
 		if (geomtype(x) != "polygons") error("split", "first argument must be polygons")
 		if (!(geomtype(f) %in% c("lines", "polygons"))) {
 			error("split", "argument 'f' must have a lines or polygons geometry")
@@ -719,12 +719,14 @@ setMethod("split", signature(x="SpatVector", f="SpatVector"),
 			warn("split", "x and f do not intersect")
 			return(x)
 		}
-		r <- r[rowSums(r) > 0, ,drop=FALSE]
-		y <- x	
+		#r <- r[rowSums(r) > 0, ,drop=FALSE]
+		ri <- which(rowSums(r) > 0)
+		y <- x[ri,]	
+		r <- r[ri, , drop=FALSE]
 		values(y) <- NULL
-		ss <- vector("list", nrow(r))
+		ss <- vector("list", nrow(y))
 		if (geomtype(f) == "lines") {
-			for (i in 1:nrow(r)) {
+			for (i in 1:nrow(y)) {
 				yi <- y[i]
 				yi <- disagg(yi)
 				add <- NULL
@@ -764,7 +766,31 @@ setMethod("split", signature(x="SpatVector", f="SpatVector"),
 		
 		}
 	}
+#)
+
+
+setMethod("split", signature(x="SpatVector", f="SpatVector"),
+	function(x, f) {
+		if (geomtype(x) != "polygons") error("split", "first argument must be polygons")
+		if (!(geomtype(f) %in% c("lines", "polygons"))) {
+			error("split", "argument 'f' must have a lines or polygons geometry")
+		}
+		values(f) <- NULL
+		f <- as.lines(f)
+		r <- relate(x, f, "intersects")
+		if (sum(r) == 0) {
+			warn("split", "x and f do not intersect")
+			return(x)
+		}
+		
+		e <- elongate(intersect(as.lines(f), x), 0.00001)
+		k <- aggregate(rbind(as.lines(x), e))
+		nds <- makeNodes(k)
+		p <- as.polygons(nds)
+		intersect(x, p)
+	}
 )
+
 
 
 
