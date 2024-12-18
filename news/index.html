@@ -41,6 +41,12 @@
 <code>expanse&lt;SpatRaster&gt;(transform=TRUE)</code> crashed R when the crs was “local”. <a href="https://github.com/rspatial/terra/issues/1671" class="external-link">#1671</a> by Michael Chirico</li>
 <li>
 <code>patches(values=TRUE)</code> wrapped around the edges <a href="https://github.com/rspatial/terra/issues/1675" class="external-link">#1675</a> by Michael Chirico</li>
+<li>
+<code>spin</code> now correctly handles spherical coordinates <a href="https://github.com/rspatial/terra/issues/1576" class="external-link">#1576</a> by jeanlobry</li>
+<li>
+<code>mosaic</code> sometimes crashed R <a href="https://github.com/rspatial/terra/issues/1524" class="external-link">#1524</a> by John Baums, Dave Klinges, and Hugh Graham.</li>
+<li>
+<code>spatSample</code> ignored argument “exp” when taking a random sample with na.rm=TRUE on a large raster <a href="https://github.com/rspatial/terra/issues/1437" class="external-link">#1437</a> by Babak Naimi</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-6">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-6"></a></h3>
@@ -54,7 +60,9 @@
 <ul><li>
 <code>$&lt;SpatRaster&gt;</code> can now be used to get a categorical SpatRaster with a different active category</li>
 <li>
-<code>scale_linear&lt;SpatRaster&gt;</code> method for linear scaling between e.g., 0 and 1</li>
+<code>scale_linear&lt;SpatRaster&gt;</code> method for linear scaling of cell values between a minumum and maximum value such as 0 and 1</li>
+<li>
+<code>distance</code> and related methods get argument “method” to choose the distance algorithm for lon/lat data <a href="https://github.com/rspatial/terra/issues/1677" class="external-link">#1677</a> by Márcia Barbosa</li>
 </ul></div>
 </div>
     <div class="section level2">
