@@ -6,9 +6,9 @@
 
 setMethod("init", signature(x="SpatRaster"),
 	function(x, fun, ..., filename="", wopt=list()) {
-		opt <- spatOptions(filename, wopt)
 		x <- rast(x)
 		if (is.character(fun)) {
+			opt <- spatOptions(filename, wopt=wopt)
 			x <- rast(x, 1)
 			fun <- fun[1]
 			if (fun %in% c("x", "y", "row", "col", "cell", "chess")) {
@@ -21,11 +21,12 @@ setMethod("init", signature(x="SpatRaster"),
 				error("init", "unknown function")
 			}
 		} else if (is.numeric(fun) || is.logical(fun)) {
+			opt <- spatOptions(filename, wopt=wopt)
 			x@pntr <- x@pntr$initv(fun, opt)
 			messages(x, "init")
 		} else {
 			nc <- ncol(x) * nlyr(x)
-			b <- writeStart(x, filename, sources=sources(x), opt)
+			b <- writeStart(x, filename, sources=sources(x), wopt=wopt)
 			for (i in 1:b$n) {
 				n <- b$nrows[i] * nc;
 				r <- fun(n, ...)
