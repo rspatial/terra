@@ -33,6 +33,35 @@
 #include <sstream>
 
 
+/*
+GDAL 3.10
+
+std::vector<double> SpatRaster::extract_interpolate(std::vector<double> x, std::vector<double> y, std::string algo) {
+
+	GDALRIOResampleAlg eInterpolation = GRIORA_Bilinear ;
+	size_t n = x.size();
+	std::vector<double> out(n, NAN);
+	double value;
+	GDALDatasetH hDs;
+	
+	SpatOptions opt;
+	if (!open_gdal(hDs, 0, false, opt)) {
+		setError("cannot open dataset");
+		return(out);
+	}
+	
+	GDALRasterBandH poBand = GDALGetRasterBand(hDs, 1);
+	for (size_t i=0; i<n; i++) {
+		if (GDALInterpolateAtPoint(pbBand, x[i], y[1],  eInterpolation, &value) == CE_None) {
+			out[i] = value;
+		}
+	}
+	GDALClose( hDs );
+	return out;
+}	
+*/
+
+
 SpatGeom getPolygonsGeom2(OGRGeometry *poGeometry) {
 	SpatGeom g(polygons);
 	OGRPoint ogrPt;

@@ -1139,7 +1139,6 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 		return false;
 	}
 	GDALDatasetH hDS;
-	GDALRasterBandH poBand;
 	size_t n=0;
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].memory) continue;
@@ -1150,7 +1149,7 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 		}
 		if (names) {
 			for (size_t b=0; b < source[i].nlyr; b++) {
-				poBand = GDALGetRasterBand(hDS, b+1);
+				GDALRasterBandH poBand = GDALGetRasterBand(hDS, b+1);
 				if (GDALGetRasterAccess(poBand) == GA_Update) {
 					GDALSetDescription(poBand, source[i].names[b].c_str());
 				}
