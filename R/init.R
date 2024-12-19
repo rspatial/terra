@@ -5,8 +5,8 @@
 
 
 setMethod("init", signature(x="SpatRaster"),
-	function(x, fun, filename="", ...) {
-		opt <- spatOptions(filename, ...)
+	function(x, fun, ..., filename="", wopt=list()) {
+		opt <- spatOptions(filename, wopt)
 		x <- rast(x)
 		if (is.character(fun)) {
 			x <- rast(x, 1)
@@ -25,10 +25,10 @@ setMethod("init", signature(x="SpatRaster"),
 			messages(x, "init")
 		} else {
 			nc <- ncol(x) * nlyr(x)
-			b <- writeStart(x, filename, sources=sources(x), ...)
+			b <- writeStart(x, filename, sources=sources(x), opt)
 			for (i in 1:b$n) {
 				n <- b$nrows[i] * nc;
-				r <- fun(n)
+				r <- fun(n, ...)
 				if (length(r) != n) {
 					error("init","the number of values returned by 'fun' is not correct")
 				}

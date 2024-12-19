@@ -8,11 +8,13 @@
 - `mosaic` sometimes crashed R [#1524](https://github.com/rspatial/terra/issues/1524) by John Baums, Dave Klinges, and Hugh Graham.
 - `spatSample` ignored argument "exp" when taking a random sample with na.rm=TRUE on a large raster [#1437](https://github.com/rspatial/terra/issues/1437) by Babak Naimi
 - `split<SpatVector,SpatVector>` did not work properly [#1619](https://github.com/rspatial/terra/issues/1619) by Michael Sumner
+- `autocor` improved handling of NA cells for global Moran computation [#1992](https://github.com/rspatial/terra/issues/1592) by Nicholas Berryman
 
 ## enhancements
 
 - `plot<SpatVector>` now uses the same default viridis color palette as `plot<SpatRaster>` [#1670](https://github.com/rspatial/terra/issues/1670) by Márcia Barbosa
 - `relate` now accepts relation="equals" [#1672](https://github.com/rspatial/terra/issues/1672) by Krzysztof Dyba
+- `init` accepts additional arguments for function "fun"
 
 ## new 
 

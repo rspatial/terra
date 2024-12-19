@@ -10,14 +10,15 @@ Create a SpatRaster with values reflecting a cell property: "x", "y", "col", "ro
 }
 
 \usage{
-\S4method{init}{SpatRaster}(x, fun, filename="", ...)
+\S4method{init}{SpatRaster}(x, fun, ..., filename="", wopt=list())
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{fun}{function to be applied. This must be a either single number, multiple numbers, a function, or one of a set of known character values. A function must take the number of cells as a single argument to return a vector of values with a length equal to the number of cells, such as \code{fun=runif}. Allowed character values are "x", "y", "row", "col", "cell", and "chess" to get the x or y coordinate, row, col or cell number or a chessboard pattern (alternating 0 and 1 values)}
+  \code{...}{additional arguments passed to \code{fun}}
   \item{filename}{character. Output filename}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 
