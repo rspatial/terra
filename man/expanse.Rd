@@ -16,7 +16,9 @@ Compute the area covered by polygons or for all raster cells that are not \code{
 
 This method computes areas for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in square meters. But it can also be important if the coordinate reference system is planar, but not equal-area. 
 
-For vector data, the best way to compute area is to use the longitude/latitude CRS. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system. This is done automatically, if \code{transform=TRUE}.
+For vector data, the best way to compute area is to use the longitude/latitude CRS. This is contrary to (erroneous, but popular) belief that you should use a planar coordinate reference system. Where applicable, the transformation to lon/lat is done automatically, if \code{transform=TRUE}.
+
+Note that it is important that polygon geometries are valid. If they are not valid, the computed area may be wrong. You can check for validity with \code{\link{is.valid}} and fix some problems with \code{\link{makeValid}}
 }
 
 \usage{
