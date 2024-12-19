@@ -151,9 +151,9 @@ setMethod("autocor", signature(x="SpatRaster"),
 				wZiZj <- wZiZj * z
 				wZiZj <- unlist(global(wZiZj, "sum", na.rm=TRUE))
 				z2 <- unlist(global(z*z, "sum", na.rm=TRUE))
-				n <- ncell(z) - unlist(global(is.na(z), "sum"))
+				n <- ncell(z) - unlist(global(z, "isNA"))
 				zz <- ifel(is.na(x), NA, 1)
-				W <- focal( zz, w=w, fun="sum")
+				W <- focal( zz, w=w, fun="sum", na.rm = TRUE, na.policy="omit")
 				NS0 <- n / unlist(global(W, "sum", na.rm=TRUE))
 				m <- NS0 * wZiZj / z2
 				names(m) <- names(x)
@@ -161,7 +161,7 @@ setMethod("autocor", signature(x="SpatRaster"),
 			} else { # geary
 				w <- .getFilter(w, warn=FALSE)
 				i <- trunc(length(w)/2)+1
-				n <- ncell(x) - unlist(global(is.na(x), "sum"))
+				n <- ncell(x) - unlist(global(x, "isNA"))
 				fun <- function(x,...) sum((x-x[i])^2, ...)
 				f <- focal(x, w=dim(w), fun=fun, na.rm=TRUE)
 				Eij <- unlist(global(f, "sum", na.rm=TRUE))
