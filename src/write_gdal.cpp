@@ -351,6 +351,13 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		setError("invalid driver");
 		return (false);
 	}
+	if (driver == "GTiff") {
+		if (nlyr() > 65535) {
+			setError("cannot write more than 65535 layers");
+			return(false);
+		}
+	}
+	
     char **papszMetadata;
     papszMetadata = poDriver->GetMetadata();
     if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_RASTER, FALSE)) {
