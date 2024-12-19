@@ -4127,6 +4127,7 @@ SpatRaster SpatRaster::hillshade(SpatRaster aspect, std::vector<double> angle, s
 		recycle(direction, angle);	
 		//nms = opt.names;
 		SpatOptions ops(opt);
+		ops.ncopies *= angle.size();
 		size_t nl = angle.size();
 		out.source.resize(nl);
 		if (ops.names.size() == nl) {
