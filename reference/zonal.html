@@ -142,12 +142,9 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># with weights </span></span></span>
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"col"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Not compatible with requested type: [type=list; target=logical].</span>
 <span class="r-in"><span><span class="fu">zonal</span><span class="op">(</span><span class="va">r</span>, <span class="va">z</span>, w<span class="op">=</span><span class="va">w</span>, <span class="st">"mean"</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   zone lyr.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1    12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2    32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3    72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4    92</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'w' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># multiple layers</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span><span class="op">)</span> </span></span>
@@ -209,18 +206,18 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">zonal</span><span class="op">(</span><span class="va">p</span>, <span class="va">v</span>, <span class="va">mean</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    zone       b2    ssep1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 45.60000 55.40000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 45.66667 55.33333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 49.00000 52.00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 66.66667 34.33333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 50.66667 50.33333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 59.33333 41.66667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 59.16667 41.83333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 48.88889 52.11111</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 55.40000 45.60000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 49.42857 51.57143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   11 40.85714 60.14286</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   12 48.16667 52.83333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 46.77778 54.22222</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 41.44444 59.55556</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 53.60000 47.40000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 57.60000 43.40000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 69.90000 31.10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 40.81818 60.18182</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 88.00000 13.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 28.20000 72.80000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 35.57143 65.42857</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 55.50000 45.50000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   11 68.00000 33.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   12 58.44444 42.55556</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

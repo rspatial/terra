@@ -90,14 +90,14 @@
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">autocor</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    lyr.1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1.117188 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     lyr.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.8362573 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rook's case neighbors</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, nrow<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">autocor</span><span class="op">(</span><span class="va">r</span>, <span class="va">f</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lyr.1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1.25 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     lyr.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.8888889 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># local </span></span></span>
 <span class="r-in"><span><span class="va">rc</span> <span class="op">&lt;-</span> <span class="fu">autocor</span><span class="op">(</span><span class="va">r</span>, w<span class="op">=</span><span class="va">f</span>, global<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
