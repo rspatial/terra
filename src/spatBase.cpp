@@ -456,7 +456,7 @@ std::vector<double> SpatRaster::origin() {
 
 bool SpatRaster::compare_geom(SpatRaster &x, bool lyrs, bool crs, double tol, bool warncrs, bool ext, bool rowcol, bool res) {
 
-	tol = tol < 0 ? 0 : tol;
+	tol = tol < 0 ? 0 : (tol > 0.5 ? 0.5 : tol);
 
 	if (ext) {
 		SpatExtent extent = getExtent();
@@ -481,7 +481,7 @@ bool SpatRaster::compare_geom(SpatRaster &x, bool lyrs, bool crs, double tol, bo
 
 	if (lyrs) {
 		if (!(nlyr() == x.nlyr())) {
-			setError("number of layers does not match");
+			setError("number of layers does not match" + std::to_string(nlyr()) + " != " + std::to_string(x.nlyr()));
 			return false;
 		}
 	}

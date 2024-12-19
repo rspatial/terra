@@ -35,6 +35,8 @@ The following options are available.
 \bold{progress} - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero
 
 \bold{verbose} - logical. If \code{TRUE} debugging info is printed for some functions
+
+\bold{tolerance} - numeric. difference in raster extent (expressed as the fraction of the raster resolution) that can be ignored when comparing alighnment of rasters.
 }
 
 \note{
