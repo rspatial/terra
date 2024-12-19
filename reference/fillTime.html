@@ -78,12 +78,11 @@ See <code><a href="approximate.html">approximate</a></code> to estimate values f
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2001-01-01" "2001-01-02" "2001-01-03" "2001-01-06" "2001-01-07"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] "2001-01-08"</span>
 <span class="r-in"><span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu">fillTime</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Not compatible with requested type: [type=list; target=logical].</span>
 <span class="r-in"><span><span class="fu"><a href="time.html">time</a></span><span class="op">(</span><span class="va">ss</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'time': object 'ss' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2001-01-01" "2001-01-02" "2001-01-03" "2001-01-04" "2001-01-05"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "2001-01-06" "2001-01-07" "2001-01-08"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="approximate.html">approximate</a></span><span class="op">(</span><span class="va">ss</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'approximate': object 'ss' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
