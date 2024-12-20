@@ -13,12 +13,12 @@ Shortcut method to avoid the two-step \code{!is.na(x)}
 }
 
 \usage{
-\S4method{not.na}{SpatRaster}(x, falseNA, filename="", ...)
+\S4method{not.na}{SpatRaster}(x, falseNA=FALSE, filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{falseNA}{logical. If set to \code{TRUE}, the output raster will contain values of \code{TRUE} and \code{NA}. By default, the output raster will contain values of \code{TRUE} and \code{FALSE}.}
+  \item{falseNA}{logical. If \code{TRUE}, the output values are \code{TRUE} for cells that are not \{NA}, and \code{NA} for other cells. Otherwise, the output values are \code{TRUE} and \code{FALSE}}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
@@ -33,9 +33,11 @@ SpatRaster
 }
 
 \examples{
-r <- rast(ncols=10, nrows=10, vals=1)
+r <- rast(ncols=5, nrows=5, vals=1, ext=c(0,1,0,1))
 r[10:20] <- NA
 x <- not.na(r)
+y <- not.na(r, falseNA=TRUE)
+unique(values(c(x, y)))
 }
 
 \keyword{methods}
