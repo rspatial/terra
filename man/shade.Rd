@@ -44,7 +44,7 @@ slope <- terrain(r, "slope", unit="radians")
 aspect <- terrain(r, "aspect", unit="radians")
 hill <- shade(slope, aspect, 40, 270)
 plot(hill, col=grey(0:100/100), legend=FALSE, mar=c(2,2,1,4))
-plot(alt, col=rainbow(25, alpha=0.35), add=TRUE)
+plot(r, col=rainbow(25, alpha=0.35), add=TRUE)
 
 # A better hill shade may be achieved by combining 
 # different angles and directions. For example
