@@ -16,16 +16,15 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatVector.h"
+#include <fstream>
 #include "string_utils.h"
 #include <stdexcept>
-#include "NA.h"
-
+#include "vecmath.h"
 
 #ifdef useGDAL
 
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
-
 
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
@@ -175,7 +174,12 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		if (tps[i] == "double") {
 			otype = OFTReal;
 		} else if (tps[i] == "long") {
-			otype = OFTInteger64;
+			std::vector<long> rge = vrange(df.getI(i), true);
+			if ((rge[0] > -32768) & (rge[1] < 32767)) {
+				otype = OFTInteger;
+			} else { 
+				otype = OFTInteger64;
+			}
 		} else if (tps[i] == "bool") {
 			otype = OFTInteger;
 			eSubType = OFSTBoolean;
@@ -394,7 +398,6 @@ GDALDataset* SpatVector::GDAL_ds() {
 }
 
 
-#include <fstream>
 
 bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions &opt) {
 // filename is here "raster.tif"

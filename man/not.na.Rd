@@ -18,7 +18,7 @@ Shortcut method to avoid the two-step \code{!is.na(x)}
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{falseNA}{logical. If \code{TRUE}, the output values are \code{TRUE} for cells that are not \{NA}, and \code{NA} for other cells. Otherwise, the output values are \code{TRUE} and \code{FALSE}}
+  \item{falseNA}{logical. If \code{TRUE}, the output cell values are either \code{TRUE}, for cells that are not \code{NA} in \code{x}, or \code{NA} for the cells that are \code{NA} in \code{x}. Otherwise, the output values are either \code{TRUE} or \code{FALSE}}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
