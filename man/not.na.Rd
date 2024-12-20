@@ -18,7 +18,7 @@ Shortcut method to avoid the two-step \code{!is.na(x)}
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{falseNA}{logical. Should the result be \code{TRUE, NA} instead of \code{TRUE, FALSE}?}
+  \item{falseNA}{logical. If set to \code{TRUE}, the output raster will contain values of \code{TRUE} and \code{NA}. By default, the output raster will contain values of \code{TRUE} and \code{FALSE}.}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
