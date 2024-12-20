@@ -9,7 +9,7 @@ A hill-shade layer is often used as a backdrop on top of which another, semi-tra
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,9 +96,8 @@ A hill-shade layer is often used as a backdrop on top of which another, semi-tra
 <span class="r-in"><span><span class="va">aspect</span> <span class="op">&lt;-</span> <span class="fu"><a href="terrain.html">terrain</a></span><span class="op">(</span><span class="va">r</span>, <span class="st">"aspect"</span>, unit<span class="op">=</span><span class="st">"radians"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">hill</span> <span class="op">&lt;-</span> <span class="fu">shade</span><span class="op">(</span><span class="va">slope</span>, <span class="va">aspect</span>, <span class="fl">40</span>, <span class="fl">270</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">hill</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/gray.html" class="external-link">grey</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span>, legend<span class="op">=</span><span class="cn">FALSE</span>, mar<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">25</span>, alpha<span class="op">=</span><span class="fl">0.35</span><span class="op">)</span>, add<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="shade-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">alt</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">25</span>, alpha<span class="op">=</span><span class="fl">0.35</span><span class="op">)</span>, add<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'alt' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A better hill shade may be achieved by combining </span></span></span>
 <span class="r-in"><span><span class="co"># different angles and directions. For example</span></span></span>
