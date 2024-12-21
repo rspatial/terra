@@ -47,7 +47,7 @@ Divides a SpatVector of polygons into n compact and approximately equal area par
 <span><span class="fu">divide</span><span class="op">(</span><span class="va">x</span>, n<span class="op">=</span><span class="fl">2</span>, start<span class="op">=</span><span class="st">"ns"</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
-<span><span class="fu">divide</span><span class="op">(</span><span class="va">x</span>, n<span class="op">=</span><span class="fl">5</span>, w<span class="op">=</span><span class="cn">NULL</span>, alpha<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">divide</span><span class="op">(</span><span class="va">x</span>, n<span class="op">=</span><span class="fl">5</span>, w<span class="op">=</span><span class="cn">NULL</span>, alpha<span class="op">=</span><span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -59,7 +59,7 @@ Divides a SpatVector of polygons into n compact and approximately equal area par
   <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>numeric. Can be a single positive integer to indicate the number of parts (SpatVector) or the number of splits (SpatRaster).</p>
 <p>If <code>x</code> is a SpatRaster, it can also be a vector with values -2, -1, 1, or 2. Where 1 means one split and 2 means two splits, and the negative sign indicates an East-West (vertical) split as opposed to a North-South split.</p>
-<p>If <code>x</code> is a SpatVector it can be a list with at least one of these elements: <code>horizontal</code> and <code>vertical</code> that specify the proportions of the area that splits should cover. This can either be a single fraction such as 1/3, or a sequence of increasing fractions such as <code>c(1/4, 1/2, 1)</code></p></dd>
+<p>If <code>x</code> is a SpatVector it can be a list with at least one of these elements: <code>horizontal</code> and <code>vertical</code> that specify the proportions of the area that splits should cover. This can either be a single fraction such as 1/3, or a sequence of fractions in ascending order such as <code>c(1/4, 1/2, 1)</code></p></dd>
 
 
   <dt id="arg-start">start<a class="anchor" aria-label="anchor" href="#arg-start"></a></dt>
@@ -82,13 +82,6 @@ Divides a SpatVector of polygons into n compact and approximately equal area par
 <dd><p>additional arguments such as <code>iter.max</code> passed on to <code><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">kmeans</a></code></p></dd>
 
 
-  <dt id="arg-f">f<a class="anchor" aria-label="anchor" href="#arg-f"></a></dt>
-<dd><p>numeric vector of fractions. These must be &gt; 0 and &lt; 1, and in ascending order</p></dd>
-
-  <dt id="arg-vertical">vertical<a class="anchor" aria-label="anchor" href="#arg-vertical"></a></dt>
-<dd><p>logical. If <code>TRUE</code> the strips are vertical</p></dd>
-
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -106,9 +99,8 @@ Divides a SpatVector of polygons into n compact and approximately equal area par
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">divide</span><span class="op">(</span><span class="va">v</span>, <span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [divide] the geometry type must be polgyons</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'voronoi': object 'xcrs' not found</span>
 <span class="r-in"><span><span class="va">dv</span> <span class="op">&lt;-</span> <span class="fu">divide</span><span class="op">(</span><span class="va">v</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>h<span class="op">=</span><span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [divide] the geometry type must be polgyons</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
