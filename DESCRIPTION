@@ -24,5 +24,6 @@ Authors@R: c(
     person("Emanuele", "Cordano", role="ctb",comment=c(ORCID="0000-0002-3508-5898")),
     person("Krzysztof", "Dyba", role="ctb", comment=c(ORCID="0000-0002-8614-3816")),
     person("Edzer", "Pebesma", role="ctb", comment=c(ORCID="0000-0001-8049-7069")),
+    person("Barry", "Rowlingson", role="ctb"),
     person("Michael D.", "Sumner", role="ctb"))
 

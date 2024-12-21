@@ -8,6 +8,8 @@ if (!isGeneric("NIDP")) {setGeneric("NIDP", function(x, ...) standardGeneric("NI
 if (!isGeneric("flowAccumulation")) {setGeneric("flowAccumulation", function(x, ...) standardGeneric("flowAccumulation"))}
 
 
+if (!isGeneric("divide")) {setGeneric("divide", function(x, ...) standardGeneric("divide"))}
+
 if (!isGeneric("bestMatch")) {setGeneric("bestMatch", function(x, y, ...) standardGeneric("bestMatch"))}
 if (!isGeneric("k_means")) {setGeneric("k_means", function(x, ...) standardGeneric("k_means"))}
 if (!isGeneric("princomp")) {setGeneric("princomp", function(x, ...) standardGeneric("princomp"))}

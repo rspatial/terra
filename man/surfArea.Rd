@@ -28,7 +28,7 @@ Jenness, Jeff S., 2004. Calculating Landscape Surface Area from Digital Elevatio
 }
 
 \author{
-Barry Rowlingson <b.rowlingson@lancaster.ac.uk>
+Barry Rowlingson 
 }
 
 \examples{
