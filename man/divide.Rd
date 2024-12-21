@@ -1,6 +1,8 @@
 \name{divide}
 
 \alias{divide}
+\alias{divide,SpatRaster-method}
+\alias{divide,SpatVector-method}
 
 \title{
 Subdivide a raster or polygons
@@ -15,7 +17,7 @@ Divides a \code{SpatVector} of polygons into \code{n} compact and approximately 
 \usage{
 \S4method{divide}{SpatRaster}(x, n=2, start="ns", as.raster=FALSE, na.rm=TRUE)
 
-\S4method{divide}{SpatVector}(x, n=5, w=NULL, alpha=1)
+\S4method{divide}{SpatVector}(x, n=5, w=NULL, alpha=1, ...)
 }
 
 \arguments{
@@ -24,7 +26,7 @@ Divides a \code{SpatVector} of polygons into \code{n} compact and approximately 
   
   If \code{x} is a SpatRaster, it can also be a vector with values -2, -1, 1, or 2. Where 1 means one split and 2 means two splits, and the negative sign indicates an East-West (vertical) split as opposed to a North-South split. 
   
-  If \code{x} is a SpatVector it can be a list with at least one of these elements: \code{horizontal} and \code{vertical} that specify the proportions of the area that splits should cover. This can either be a single fraction such as 1/3, or a sequence of increasing fractions such as \code{c(1/4, 1/2, 1)}}
+  If \code{x} is a SpatVector it can be a list with at least one of these elements: \code{horizontal} and \code{vertical} that specify the proportions of the area that splits should cover. This can either be a single fraction such as 1/3, or a sequence of fractions in ascending order such as \code{c(1/4, 1/2, 1)}}
   
   \item{start}{character. To indicate the initial direction of splitting the raster. "ns" for North-South (horizontal) or "ew" for East-West (vertical)}
   \item{as.raster}{logical. If \code{FALSE} a SpatVector is returned. If \code{FALSE}, a SpatRaster is returned. If \code{NA} a list with a SpatRaster and a SpatVector is returned}
@@ -33,9 +35,6 @@ Divides a \code{SpatVector} of polygons into \code{n} compact and approximately 
   \item{w}{SpatRaster with, for example, environmental data}
   \item{alpha}{numeric. One or two numbers that act as weights for the x and y coordinates}
   \item{...}{additional arguments such as \code{iter.max} passed on to \code{\link{kmeans}}}
-
-  \item{f}{numeric vector of fractions. These must be > 0 and < 1, and in ascending order}
-  \item{vertical}{logical. If \code{TRUE} the strips are vertical}
 
 }
 

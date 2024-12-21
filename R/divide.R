@@ -216,8 +216,8 @@ divide_polygon <- function(x, n, w, alpha, ...) {
 
 
 setMethod("divide", signature(x="SpatVector"),
-	function(x, n, w=NULL, alpha=1, ...) {
-		if (geomtype(x) == "polygons") {
+	function(x, n=5, w=NULL, alpha=1, ...) {
+		if (geomtype(x) != "polygons") {
 			error("divide", "the geometry type must be polgyons")
 		}
 		if (is.list(n)) {
