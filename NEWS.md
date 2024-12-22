@@ -24,7 +24,7 @@
 - `scale_linear<SpatRaster>` method for linear scaling of cell values between a minumum and maximum value such as 0 and 1
 - `distance` and related methods get argument "method" to choose the distance algorithm for lon/lat data [#1677](https://github.com/rspatial/terra/issues/1677) by Márcia Barbosa
 - `divide<SpatRaster>` and `divide<SpatVector>` methods
-
+- `nseg` counts the number of segments in a SpatVector [#1647](https://github.com/rspatial/terra/pull/1674) by Michael Chirico
 
 # version 1.8-5
 
