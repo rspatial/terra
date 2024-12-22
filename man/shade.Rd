@@ -51,7 +51,7 @@ plot(r, col=rainbow(25, alpha=0.35), add=TRUE)
 
 hh <- shade(slope, aspect, angle = c(45, 45, 45, 80), direction = c(225, 270, 315, 135))
 h1 <- Reduce(mean, hh)
-h2 <- mean(h)
+h2 <- mean(hh)
 }
 
 
