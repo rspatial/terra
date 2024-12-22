@@ -496,7 +496,7 @@ RCPP_MODULE(spat){
 		.method("getGeometryWKT", &SpatVector::getGeometryWKT)
 		.method("isLonLat", &SpatVector::is_lonlat)
 		.method("length", &SpatVector::length)
-		.method("edges", &SpatVector::edges)
+		.method("nsegements", &SpatVector::nseg)
 //		.field("srs", &SpatVector::srs, "srs")
 		.field("messages", &SpatVector::msg)
 		.property("names", &SpatVector::get_names, &SpatVector::set_names)

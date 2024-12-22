@@ -194,7 +194,7 @@ class SpatVector {
 
 		void reserve(size_t n);
 		std::vector<double> length();
-		std::vector<double> edges();
+		std::vector<double> nseg();
 
 		std::vector<double> distance(bool sequential, std::string unit, const std::string method);
 		std::vector<double> distance(SpatVector x, bool pairwise, std::string unit, const std::string method);

@@ -153,6 +153,8 @@ check_frac <- function(f) {
 
 strip_polygon <- function(x, vertical, horizontal) {
 
+## based on a function by Barry Rowlinson 
+
 	totalArea <- expanse(x, transform=FALSE, unit="km")
 	e <- ext(x)
 	ex <- data.frame(t(as.vector(e + 1)))

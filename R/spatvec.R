@@ -188,10 +188,10 @@ setMethod("perim", signature(x="SpatVector"),
 	}
 )
 
-setMethod("edges", signature(x="SpatVector"),
+setMethod("nseg", signature(x="SpatVector"),
 	function(x) {
-		p <- x@pntr$edges();
-		x <- messages(x, "edges");
+		p <- x@pntr$nsegments();
+		x <- messages(x, "nseg");
 		p
 	}
 )

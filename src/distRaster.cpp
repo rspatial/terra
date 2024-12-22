@@ -2915,7 +2915,7 @@ double edges_geom(const SpatGeom &geom) {
 	return edges-1;
 }
 
-std::vector<double> SpatVector::edges() {
+std::vector<double> SpatVector::nseg() {
 
 	size_t s = size();
 	std::vector<double> r;
