@@ -155,7 +155,8 @@ setMethod("time<-", signature(x="SpatRaster"),
 			error("time<-", "length(value) != nlyr(x)")
 		}
 		if (tstep != "") {
-			tstep = match.arg(as.character(tstep), c("seconds", "days", "months", "years", "yearmonths", "raw"))
+#			tstep = match.arg(as.character(tstep), c("seconds", "days", "months", "years", "yearmonths", "raw"))
+			tstep = match.arg(as.character(tstep), c("months", "years", "yearmonths", "raw"))
 		}
 		## may not be necessary
 		if (tstep == "seconds") tstep = ""

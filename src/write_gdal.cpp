@@ -630,7 +630,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	if (hasTime()) {
 		tstr = getTimeStr(false, "T");
 		wtime = true;	
-		have_date_time = (tstep == "seconds") || (tstep == "days") || (tstep == "years") || (tstep == "yearmonths");
+		have_date_time = true;
+//		have_date_time = (tstep == "seconds") || (tstep == "days") || (tstep == "years") || (tstep == "yearmonths");
  	}
 	bool wunit = false;
 	if (hasUnit()) {

@@ -1114,12 +1114,28 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		if (datm[0].find('T') != std::string::npos) {
 			s.timestep = "seconds";
 		} else {
+			// backwards compatibility
 			if (datm[0].length() == 4) {
 				s.timestep = "years";
 			} else if (datm[0].length() == 7) {
-				s.timestep = "yearmonths";
-			} else {
-				s.timestep = "days";
+				if (datm[0].substr(0, 5) == "0000-") {
+					s.timestep = "months";					
+				} else {
+					s.timestep = "yearmonths";
+				}
+			} else if (datm[0].length() == 10) {
+			// current formats, always xxxx-xx-xx where possible
+				if (datm[0].substr(7, 3) == "-00") {
+					if (datm[0].substr(4, 3) == "-00") {
+						s.timestep = "years";
+					} else if (datm[0].substr(0, 4) == "0000") {
+						s.timestep = "months";		
+					} else {
+						s.timestep = "yearmonths";
+					}
+				} else {
+					s.timestep = "days";
+				}
 			}
 		}
 		for (size_t i=0; i<datm.size(); i++) {

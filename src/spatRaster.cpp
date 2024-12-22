@@ -775,12 +775,17 @@ std::vector<std::string> SpatRaster::getTimeStr(bool addstep, std::string timese
 	} else if (source[0].timestep == "years") {
 		for (size_t i=0; i < time.size(); i++) {
 			std::vector<int> x = get_date(time[i]);
-			out.push_back( make_string(x[0], 4) ); // + "-00-00");
+			out.push_back( make_string(x[0], 4) + "-00-00");
 		}
 	} else if (source[0].timestep == "yearmonths") {
 		for (size_t i=0; i < time.size(); i++) {
 			std::vector<int> x = get_date(time[i]);
-			out.push_back( make_string(x[0], 4) + "-" + make_string(x[1], 2)); //  + "-00" );
+			out.push_back( make_string(x[0], 4) + "-" + make_string(x[1], 2) + "-00");
+		}
+	} else if (source[0].timestep == "months") {
+		for (size_t i=0; i < time.size(); i++) {
+			std::vector<int> x = get_date(time[i]);
+			out.push_back("0000-" + make_string(x[1], 2) + "-00");
 		}
 	} else {
 		for (size_t i=0; i < time.size(); i++) {
