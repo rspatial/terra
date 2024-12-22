@@ -175,7 +175,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			otype = OFTReal;
 		} else if (tps[i] == "long") {
 			std::vector<long> rge = vrange(df.getI(i), true);
-			if ((rge[0] >= -32768) && (rge[1] <= 32767)) {
+			if ((rge[0] >= -2147483648) && (rge[1] <= 2147483648)) {
 				otype = OFTInteger;
 			} else { 
 				otype = OFTInteger64;

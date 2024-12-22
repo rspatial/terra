@@ -197,6 +197,8 @@ strip_polygon <- function(x, vertical, horizontal) {
 
 
 divide_polygon <- function(x, n, w, alpha, ...) {
+	xcrs <- crs(x) 
+	crs(x) <- "+proj=utm +zone=1"
 	s <- terra::spatSample(x, max(n*4, 1000, log(n) * 100), "regular")
 	xy <- terra::crds(s)
 	if (!is.null(w)) {
@@ -231,11 +233,9 @@ setMethod("divide", signature(x="SpatVector"),
 			n <- round(n)
 			stopifnot(n > 0)
 			if (n == 1) return(deepcopy(x))
-			xcrs <- crs(x) 
-			crs(x) <- "+proj=utm +zone=1"
 			out <- lapply(1:nrow(x), function(i) divide_polygon(x[i], n, w, alpha, ...))
 		}
-		return(do.call(rbind, out))
+		return()
 	}
 )
 
