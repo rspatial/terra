@@ -3,11 +3,12 @@
 setMethod("blocks", signature(x="SpatRaster"),
 	function(x, n=4) {
 		opt <- spatOptions("", FALSE, ncopies=n)
-		b <- x@pntr$getBlockSizeR(n, opt$memfrac)
+		b <- x@pntr$getBlockSizeR(opt)
 		b$row <- b$row + 1
 		b
 	}
 )
+
 
 
 setMethod("writeStart", signature(x="SpatRaster", filename="character"),
