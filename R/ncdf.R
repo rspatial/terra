@@ -96,6 +96,7 @@
 	nl <- nlyr(x)
 	ncvars <- list()
 	cal <- NA
+
 	for (i in 1:n) {
 		if ((nl[i] > 1) || (x[i]@pntr$hasTime)) {
 			y <- x[i]
@@ -172,12 +173,23 @@
 	ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "geotransform", gt, prec="text")
 
 	opt <- spatOptions()
+
+	bsteps <- blocks(rast(x[[1]], nlyr=sum(nlyr(x))), 4)
+	if (bsteps$n > opt$progress) {
+		progress <- TRUE
+		pb <- txtProgressBar(0, bsteps$n) 
+		pcnt <- 0
+	} else {
+		progress <- FALSE
+	}
+	
 	for (i in 1:n) {
-		y = x[i]
-		readStart(y)
+		y <- x[i]
 		b <- blocks(y, 4)
+		readStart(y)
 		if (length(ncvars[[1]]$dim) == 3) {
 			for (j in 1:b$n) {
+				if (progress) { setTxtProgressBar(pb, pcnt); pcnt <- pcnt + 1 }
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
 				d[is.nan(d)] <- NA
 				d <- array(d, c(nc, b$nrows[j], nl[i]))
@@ -185,6 +197,7 @@
 			}
 		} else {
 			for (j in 1:b$n) {
+				if (progress) { setTxtProgressBar(pb, pcnt); pcnt <- pcnt + 1 }
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
 				d[is.nan(d)] <- NA
 				d <- matrix(d, ncol=b$nrows[j])
@@ -196,7 +209,8 @@
 			ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
 		}
 	}
-
+	if (progress) close(pb)
+	
 	ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
 	pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
 	ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
