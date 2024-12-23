@@ -580,6 +580,41 @@ inline std::string dtypename(const std::string &d) {
 }
 
 
+void get_tags(std::vector<std::string> meta, std::string prefix,  std::vector<std::string> &name, std::vector<std::string> &value) {
+	if (!meta.empty()) {
+		for (size_t i=0; i<meta.size(); i++) {
+			size_t tagpos = meta[i].find(prefix);
+			if (tagpos != std::string::npos) {		
+				size_t pos = meta[i].find("=");
+				if (pos != std::string::npos) {
+					std::string mn = meta[i].substr(prefix.size(), pos-tagpos-prefix.size());
+					if (!((mn == "_FillValue") || (mn == "grid_mapping") || (mn == "Conventions") || (mn == "created_by") || (mn == "created_date"))) {
+						name.push_back(mn);
+						value.push_back(meta[i].substr(pos+1, meta[i].length()));
+					}
+				}
+			}
+		}
+	}
+	
+}
+
+std::vector<std::string> get_metadata(std::string filename, std::vector<std::string> options) {
+	std::vector<std::string> metadata;
+    GDALDataset *poDataset = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, options);
+    if( poDataset == NULL )  {
+		return metadata;
+	}
+	char **m = poDataset->GetMetadata();
+	if (m) {
+		while (*m != nullptr) {
+			metadata.push_back(*m++);
+		}
+	}
+	GDALClose( (GDALDatasetH) poDataset );
+	return metadata;
+}
+
 
 SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options) {
 
@@ -637,7 +672,20 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 			}
 		}
 	}
+	meta.resize(0);
+	char **m = poDataset->GetMetadata();
+	if (m) {
+		while (*m != nullptr) {
+			meta.push_back(*m++);
+		}
+	}
 	GDALClose( (GDALDatasetH) poDataset );
+
+	std::vector<std::string> tagnames, tagvalues;
+//	get_tags(meta, "NC_GLOBAL#TAG_", tagnames, tagvalues);
+	get_tags(meta, "NC_GLOBAL#", tagnames, tagvalues);
+	for (size_t i=0; i<tagnames.size(); i++) addTag(tagnames[i], tagvalues[i]);
+
 }
 
 
@@ -695,7 +743,20 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 			}
 		}
 	}
+	meta.resize(0);
+	char **m = poDataset->GetMetadata();
+	if (m) {
+		while (*m != nullptr) {
+			meta.push_back(*m++);
+		}
+	}
 	GDALClose( (GDALDatasetH) poDataset );
+
+	std::vector<std::string> tagnames, tagvalues;
+//	get_tags(meta, "NC_GLOBAL#TAG_", tagnames, tagvalues);
+	get_tags(meta, "NC_GLOBAL#", tagnames, tagvalues);
+	for (size_t i=0; i<tagnames.size(); i++) addTag(tagnames[i], tagvalues[i]);
+
 }
 
 
@@ -762,6 +823,7 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 	}
 	return false;
 }
+
 
 
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options) {
@@ -1167,9 +1229,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	msg = "";
+	std::vector<std::string> metadata;
+
 	if ((gdrv=="netCDF") || (gdrv == "HDF5"))  {
 		
-		std::vector<std::string> metadata;
 		char **m = poDataset->GetMetadata();
 		if (m) {
 			while (*m != nullptr) {
@@ -1207,6 +1270,14 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	s.hasValues = true;
 	setSource(s);
 
+	if ((!metadata.empty()) && ((gdrv=="netCDF") || (gdrv == "HDF5"))) {
+		std::vector<std::string> tagnames, tagvalues;
+//		std::string stag = s.source_name + "#TAG_";
+		std::string stag = s.source_name + "#";
+		get_tags(metadata, stag, tagnames, tagvalues);
+		for (size_t i=0; i<tagnames.size(); i++) addTag(tagnames[i], tagvalues[i]);
+
+	}
 	if (getCols) {
 		setRGB(rgb_lyrs[0], rgb_lyrs[1], rgb_lyrs[2], -99, "rgb");
 	}
@@ -1899,6 +1970,19 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		}
 	}
 
+	std::vector<std::string> metadata = get_metadata(filename, options);
+	if (!metadata.empty()) {
+		std::vector<std::string> tagnames, tagvalues;
+//		get_tags(metadata, "NC_GLOBAL#TAG_", tagnames, tagvalues);
+		get_tags(metadata, "NC_GLOBAL#", tagnames, tagvalues);
+		for (size_t i=0; i<tagnames.size(); i++) {
+			std::string mn = tagnames[i];
+			if (!((mn == "_FillValue") || (mn == "grid_mapping") || (mn == "Conventions") || (mn == "created_by") || (mn == "created_date"))) {
+				addTag(tagnames[i], tagvalues[i]);
+			}
+		}
+	}
+
 	return true;
 }
 
@@ -2151,6 +2235,9 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 //NETCDF_DIM_tile=0
 //NETCDF_DIM_time=0
 //NETCDF_VARNAME=NVEL
+
+
+
 
 std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<std::string>> &m) {
 

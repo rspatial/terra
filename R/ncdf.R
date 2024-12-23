@@ -53,6 +53,14 @@
 }
 
 
+write_tags <- function(tags, nc, varid, prefix="TAG_") {
+	if (length(tags) > 0) {
+		nms <- paste0(prefix, names(tags))
+		for(i in 1:length(nms)) {
+			ncdf4::ncatt_put(nc, varid, nms[i], tags[i], prec="text")
+		}
+	}
+}
 
 .write_cdf <- function(x, filename, overwrite=FALSE, zname="time", atts="", gridmap="", prec="float", compression=NA, missval, force_v4=TRUE, verbose=FALSE, ...) {
 
@@ -140,6 +148,7 @@
 	ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
 	on.exit(ncdf4::nc_close(ncobj))
 
+
 	haveprj <- FALSE
 	prj <- crs(x[1])
 	prj <- gsub("\n", "", prj)
@@ -150,11 +159,12 @@
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
 		prj <- .proj4(x[1])
 		if (prj != "") {
-			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", prj, prec='text')
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", prj, prec="text")
 		}
-		prj <- crs(x[1], describe=TRUE)[1,3]
-		if (!is.na(prj)) {
-			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "epsg_code", prj, prec='text')
+		prj <- crs(x[1], describe=TRUE)[1,2:3]
+		if (!any(is.na(prj))) {
+			prj <- paste0(prj, collapse=":")
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "code", prj, prec="text")
 		}
 	}
 	gridmap <- grep("=", gridmap, value=TRUE)
@@ -187,7 +197,7 @@
 		y <- x[i]
 		b <- blocks(y, 4)
 		readStart(y)
-		if (length(ncvars[[1]]$dim) == 3) {
+		if (length(ncvars[[i]]$dim) == 3) {
 			for (j in 1:b$n) {
 				if (progress) { setTxtProgressBar(pb, pcnt); pcnt <- pcnt + 1 }
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
@@ -208,14 +218,17 @@
 		if (haveprj) {
 			ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
 		}
+		write_tags(metags(y), ncobj, ncvars[[i]], "")
 	}
 	if (progress) close(pb)
 	
 	ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
 	pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
 	ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
-	ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
+	ncdf4::ncatt_put(ncobj, 0, "created_date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
 
+	write_tags(metags(x), ncobj, 0, "")
+	
 	atts <- grep("=", atts, value=TRUE)
 	if (length(atts) > 0) {
 		atts <- strsplit(atts, "=")
