@@ -195,7 +195,7 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 	
 	for (i in 1:n) {
 		y <- x[i]
-		b <- blocks(y, 4)
+		b <- blocks(y, 8)
 		readStart(y)
 		if (length(ncvars[[i]]$dim) == 3) {
 			for (j in 1:b$n) {
