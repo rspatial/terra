@@ -17,6 +17,8 @@
 - `plot<SpatVector>` now uses the same default viridis color palette as `plot<SpatRaster>` [#1670](https://github.com/rspatial/terra/issues/1670) by Márcia Barbosa
 - `relate` now accepts relation="equals" [#1672](https://github.com/rspatial/terra/issues/1672) by Krzysztof Dyba
 - `init` accepts additional arguments for function "fun"
+- better handling of the 32 connection limiations set by the HDF4 library [#1481](https://github.com/rspatial/terra/issues/1481) by Dimitri Falk
+- When using RStudio a once per session warning is given when using draw, sel or click [#1063](https://github.com/rspatial/terra/issues/1063) by Sergei Kharchenko
 
 ## new 
 
