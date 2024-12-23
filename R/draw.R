@@ -65,6 +65,8 @@ RS_locator <- function(n, type, id=FALSE, pch=20, ...) {
 
 setMethod("draw", signature(x="character"),
     function(x="extent", col="red", lwd=2, id=FALSE, n=1000, xpd=TRUE, ...){
+		RStudio_warning()
+
 		x <- match.arg(tolower(x), c("extent", "polygon", "lines", "points"))
 		if (x == "extent") {
 			.drawExt(col=col, lwd=lwd, xpd=xpd, ...)
@@ -80,6 +82,7 @@ setMethod("draw", signature(x="character"),
 
 setMethod("draw", signature(x="missing"),
     function(x="extent", ...){
+		RStudio_warning()
 		draw("extent", ...)
 	}
 )

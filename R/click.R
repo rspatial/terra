@@ -14,6 +14,15 @@
 #	matrix(res, ncol=2, byrow=TRUE)
 #}
 
+RStudio_warning <- function() {
+	if (.terra_environment$RStudio_warned) return()
+	if (Sys.getenv("RSTUDIO_USER_IDENTITY") != "") {
+		warn("'click', 'draw', and 'sel' may not work properly\nwith the default RStudio plotting window. See ?click")
+	}
+	.terra_environment$RStudio_warned <- TRUE
+}
+
+
 .getCellFromClick <- function(x, n, type, id, ...) {
 	#loc <- graphics::locator(n, type, ...)
 	#xyCoords <- cbind(x=loc$x, y=loc$y)
@@ -44,6 +53,9 @@ do_click <- function(type="p", id=FALSE, i=1, pch=20, ...) {
 
 setMethod("click", signature(x="missing"),
 	function(x, n=10, id=FALSE, type="p", show=TRUE, ...) {
+	
+		RStudio_warning()
+	
 		#loc <- graphics::locator(n, type, ...)
 		#cbind(x=loc$x, y=loc$y)
 		n <- max(1, round(n))
@@ -69,6 +81,8 @@ setMethod("click", signature(x="missing"),
 
 setMethod("click", signature(x="SpatRaster"),
 	function(x, n=10, id=FALSE, xy=FALSE, cell=FALSE, type="p", show=TRUE, ...) {
+
+	RStudio_warning()
 
 	n <- max(round(n), 1)
 	values <- NULL
@@ -109,6 +123,9 @@ setMethod("click", signature(x="SpatRaster"),
 
 setMethod("click", signature(x="SpatVector"),
 	function(x, n=10, id=FALSE, xy=FALSE, type="p", show=TRUE, ...) {
+
+		RStudio_warning()
+
 		n <- max(round(n), 1)
 		values <- xys <- NULL
 		if (show) {

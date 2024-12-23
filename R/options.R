@@ -9,6 +9,7 @@
 	opt@pntr$tempdir <- normalizePath(tempdir(), winslash="/")
 	.terra_environment$options <- opt
 	.terra_environment$devs <- NULL
+	.terra_environment$RStudio_warned <- FALSE
 
 	x <- options("terra_default")[[1]]
 	if (!is.null(x)) {

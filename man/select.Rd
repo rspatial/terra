@@ -12,6 +12,8 @@ Spatial selection
 
 \description{
 Geometrically subset SpatRaster or SpatVector (to be done) by drawing on a plot (map).
+
+Note that for many installations this does to work well on the default RStudio plotting device. To work around that, you can first run \code{dev.new(noRStudioGD = TRUE)} which will create a separate window for plotting, then use \code{plot()} followed by \code{sel()} and click on the map. It may also help to set your RStudio "Tools/Global Options/Appearance/Zoom" to 100%
 }
 
 
