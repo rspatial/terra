@@ -44,7 +44,13 @@
 <span><span class="fu">metags</span><span class="op">(</span><span class="va">x</span>, layer <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
-<span><span class="fu">metags</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="cn">NULL</span>, name<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">metags</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="cn">NULL</span>, name<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'SpatRasterDataset'</span></span>
+<span><span class="fu">metags</span><span class="op">(</span><span class="va">x</span>, dataset <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'SpatRasterDataset'</span></span>
+<span><span class="fu">metags</span><span class="op">(</span><span class="va">x</span>, dataset<span class="op">=</span><span class="cn">NULL</span>, name<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -55,15 +61,16 @@
 <dd><p>SpatRaster</p></dd>
 
 <dt id="arg-layer">layer<a class="anchor" aria-label="anchor" href="#arg-layer"></a></dt>
-<dd><p>NULL or positive integer. If the value is NULL, the tags assigned or returned are for the SpatRaster. Otherwise for the layer number(s)</p></dd>
-
+<dd><p>NULL, positive integer or character. If the value is NULL, the tags assigned or returned are for the SpatRaster. Otherwise for the layer number(s) or name(s)</p></dd>
 
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
 <dd><p>character</p></dd>
 
-
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
 <dd><p>character of "name=value" or two-column matrix</p></dd>
+
+<dt id="arg-dataset">dataset<a class="anchor" aria-label="anchor" href="#arg-dataset"></a></dt>
+<dd><p>NULL, positive integer or character. If the value is NULL, the tags assigned or returned are for the SpatRasterDataset/SpatRasterCollection. Otherwise for the datset number(s) or name(s)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -102,7 +109,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  another_tag     one more        three </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         "44" "that value"      "hello" </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># remove all metags</span></span></span>
+<span class="r-in"><span><span class="co"># remove all tags</span></span></span>
 <span class="r-in"><span><span class="fu">metags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
 <span class="r-in"><span><span class="fu">metags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> named character(0)</span>
