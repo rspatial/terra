@@ -1290,11 +1290,17 @@ bool SpatRaster::readStartGDAL(size_t src) {
 
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, source[src].open_ops);
 
+
     if( poDataset == NULL )  {
-		if (!file_exists(source[src].filename )) {
+		size_t ncolon = std::count(source[src].filename.begin(), source[src].filename.end(), ':');
+		if ((ncolon < 2) && (!file_exists(source[src].filename ))) {
 			setError("file does not exist: " + source[src].filename);
 		} else {
-			setError("cannot read from " + source[src].filename  );
+			if (source[src].filename.substr(0, 4) == "HDF4") {
+				setError("cannot read from " + source[src].filename + "\n(Only 32 open datasets allowed with HDF4)");
+			} else {
+				setError("cannot read from " + source[src].filename);
+			}
 		}
 		return false;
 	}

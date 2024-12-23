@@ -36,6 +36,15 @@ bool SpatRaster::readStart() {
 			}
 		} else {
 			if (!readStartGDAL(i)) {
+				for (size_t j=0; j<i; j++) {
+					if (source[j].memory) {
+						source[j].open_read = false;
+					} else if (source[j].multidim) {
+						readStopMulti(j);
+					} else {
+						readStopGDAL(j);
+					}
+				}
 				return false;
 			}
 		}
