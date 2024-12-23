@@ -1026,6 +1026,8 @@ RCPP_MODULE(spat){
 		.method("mosaic", &SpatRasterCollection::mosaic)
 		.method("morph", &SpatRasterCollection::morph)
 		.method("crop", &SpatRasterCollection::crop)
+		.method("addTag", &SpatRasterCollection::addTag)
+		.method("getTags", &SpatRasterCollection::getTags)
 	;
 
     class_<SpatRasterStack>("SpatRasterStack")

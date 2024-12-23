@@ -204,6 +204,45 @@ std::vector<std::string> SpatRasterCollection::filenames() {
 		
 
 
+bool SpatRasterCollection::addTag(std::string name, std::string value) {
+	lrtrim(name);
+	lrtrim(value);
+	if (value == "") {
+		return removeTag(name);
+	} else if (name != "") {
+		tags[name] = value;
+		return true;
+	} 
+	return false;
+}
+
+bool SpatRasterCollection::removeTag(std::string name) {
+	std::map<std::string, std::string>::iterator it = tags.find(name);
+	if (it == tags.end()) return false;
+	tags.erase(it);
+	return true;
+}
+
+std::string SpatRasterCollection::getTag(std::string name) {
+	std::map<std::string, std::string>::iterator it = tags.find(name);
+	if (it != tags.end()) return it->second;
+	return "";
+}
+
+std::vector<std::string> SpatRasterCollection::getTags() {
+	std::vector<std::string> out;
+	out.reserve(2 * tags.size());
+	for(auto e : tags) {
+		out.push_back(e.first);
+		out.push_back(e.second);
+	}
+	return out;
+}
+
+
+
+/////////////////////////////////////////////////
+
 SpatRasterStack SpatRasterStack::deepCopy() { return *this; }
 
 
@@ -466,6 +505,7 @@ SpatRaster SpatRasterStack::collapse() {
 			}
 		}
 	} 
+	out.user_tags = tags;
 	return out;
 }
 

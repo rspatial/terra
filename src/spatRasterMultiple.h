@@ -138,8 +138,13 @@ class SpatRasterCollection {
 		void set_names(std::vector<std::string> nms);
 		std::vector<std::string> filenames();
 		
-
 		SpatRasterStack read_into(SpatRaster &tmp, size_t row, size_t nrows);
+
+		std::map<std::string, std::string> tags;
+		bool addTag(std::string name, std::string value);
+		bool removeTag(std::string name);
+		std::string getTag(std::string name);
+		std::vector<std::string> getTags();
 
 };
 

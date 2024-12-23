@@ -107,7 +107,7 @@ class SpatOptions {
 		bool todisk = false;
 		double memmax = -1;
 		double memmin = 134217728; // 1024^3 / 8
-		double memfrac = 0.6;
+		double memfrac = 0.5;
 		double tolerance = 0.1;
 		std::vector<double> offset = {0};
 		std::vector<double> scale = {1};
