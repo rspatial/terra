@@ -18,6 +18,7 @@
 #ifndef FILEUTILS_GUARD
 #define FILEUTILS_GUARD
 
+bool file_remove(const std::string& name);
 bool file_exists(const std::string& name);
 bool path_exists(std::string path);
 bool filepath_exists(const std::string& name);

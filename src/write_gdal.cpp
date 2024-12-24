@@ -315,17 +315,15 @@ void stat_options(int sstat, bool &compute_stats, bool &gdal_stats, bool &gdal_m
 	}
 }
 
-
 void removeVatJson(std::string filename) {
 	std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json"};
 	for (size_t i=0; i<exts.size(); i++) {
 		std::string f = filename + exts[i];
 		if (file_exists(f)) {
-			remove(f.c_str());
+			file_remove(f);
 		}
 	}
 }
-
 
 bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string> &srcnames) {
 
@@ -397,9 +395,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 // what if append=true?
 	std::string auxf = filename + ".aux.xml";
-	remove(auxf.c_str());
+	file_remove(auxf);
 	auxf = filename + ".aux.json";
-	remove(auxf.c_str());
+	file_remove(auxf);
 
 	std::vector<bool> hasCT = hasColors();
 	std::vector<bool> hasCats = hasCategories();

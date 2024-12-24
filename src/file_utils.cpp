@@ -23,6 +23,7 @@
 #include <sstream> 
 #include <vector>
 #include <string>
+#include <iostream>
 	
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -162,27 +163,29 @@ std::string dirname(std::string filename) {
 	}
 }
 
-bool file_exists(const std::string& name) {
-	std::ifstream f(name.c_str());
-	return f.good();
+bool file_remove(const std::string& name) {
+	if (name.substr(0, 4) == "/vsi") {
+		if (VSIUnlink(name.c_str()) == 0) {
+			return true;
+		}
+	}
+	return(remove(name.c_str()) == 0);
 }
 
+bool file_exists(const std::string& name) {
+	VSIStatBufL statBuf;
+	return VSIStatExL(name.c_str(), &statBuf, VSI_STAT_EXISTS_FLAG) == 0;
+}
 
 bool path_exists(std::string path) {
-
-/*
-	filesyst::path filepath = path;
-	return filesyst::exists(filepath);
-*/
-	struct stat info;
-	stat(path.c_str(), &info);
-	if (info.st_mode & S_IFDIR) {
-		return true;
+	VSIStatBufL statBuf;
+	if (VSIStatExL(path.c_str(), &statBuf, VSI_STAT_EXISTS_FLAG) == 0) {
+		if (statBuf.st_mode & S_IFDIR) {
+			return true; 
+		}
 	}
-	return false;
+	return false; 
 }
-
-
 
 bool canWrite(std::string filename) {
 	FILE *fp = fopen(filename.c_str(), "w");
@@ -190,8 +193,8 @@ bool canWrite(std::string filename) {
 		return false;
 	}
 	fclose(fp);
-	remove(filename.c_str());
-	return true;
+	file_remove(filename);
+	return true; 
 }
 
 
@@ -265,7 +268,7 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 	for (size_t i=0; i<filenames.size(); i++) {
 		if (!filenames[i].empty() && file_exists(filenames[i])) {
 			if (overwrite) {
-				if (remove(filenames[i].c_str()) != 0) {
+				if (!file_remove(filenames[i])) {
 					msg = ("cannot overwrite existing file");
 					return false;
 				}
@@ -273,7 +276,7 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 				for (size_t j=0; j<exts.size(); j++) {
 					std::string f = filenames[i] + exts[j];
 					if (file_exists(f)) {
-						remove(f.c_str());
+						file_remove(f);
 					}
 				}
 			} else {
