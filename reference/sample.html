@@ -120,7 +120,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
 
   <dt id="arg-exhaustive">exhaustive<a class="anchor" aria-label="anchor" href="#arg-exhaustive"></a></dt>
-<dd><p>logical. If <code>TRUE</code> and <code>na.rm=TRUE</code> first all cells that are not <code>NA</code> are determined and a sample is taken from these cells. This is useful when you are dealing with a very large raster that is sparse (most cells are NA). Otherwise, the default approach may not find enough samples. This should not be used in other cases, especially not with large rasters that mostly have values</p></dd>
+<dd><p>logical. If <code>TRUE</code>, and (<code>method=="random"</code> and <code>na.rm=TRUE</code>) or <code>method=="stratified"</code>, all cells that are not <code>NA</code> are determined and a sample is taken from these cells. This is useful when you are dealing with a very large raster that is sparse (most cells are NA). Otherwise, the default approach may not find enough samples. This should not be used in other cases, especially not with large rasters that mostly have values</p></dd>
 
 </dl></div>
     <div class="section level2">
