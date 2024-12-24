@@ -187,7 +187,7 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 	bsteps <- blocks(rast(x[[1]], nlyr=sum(nlyr(x))), 4)
 	if (bsteps$n > opt$progress) {
 		progress <- TRUE
-		pb <- txtProgressBar(0, bsteps$n) 
+		pb <- utils::txtProgressBar(0, bsteps$n) 
 		pcnt <- 0
 	} else {
 		progress <- FALSE
@@ -199,7 +199,7 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 		readStart(y)
 		if (length(ncvars[[i]]$dim) == 3) {
 			for (j in 1:b$n) {
-				if (progress) { setTxtProgressBar(pb, pcnt); pcnt <- pcnt + 1 }
+				if (progress) { utils::setTxtProgressBar(pb, pcnt); pcnt <- pcnt + 1 }
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
 				d[is.nan(d)] <- NA
 				d <- array(d, c(nc, b$nrows[j], nl[i]))
@@ -207,7 +207,7 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 			}
 		} else {
 			for (j in 1:b$n) {
-				if (progress) { setTxtProgressBar(pb, pcnt); pcnt <- pcnt + 1 }
+				if (progress) { utils::setTxtProgressBar(pb, pcnt); pcnt <- pcnt + 1 }
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
 				d[is.nan(d)] <- NA
 				d <- matrix(d, ncol=b$nrows[j])
@@ -220,7 +220,7 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 		}
 		write_tags(metags(y), ncobj, ncvars[[i]], "")
 	}
-	if (progress) close(pb)
+	if (progress) utils::close(pb)
 	
 	ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
 	pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
