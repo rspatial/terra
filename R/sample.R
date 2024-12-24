@@ -38,7 +38,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 			weights <- crop(weights, ext)
 		}
 	} else {
-		cells <- 1:ncell(x)	
+		cells <- cells(x)	
 	}
 	
 	if (!is.null(weights)) {
@@ -104,7 +104,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 
 
 
-sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=5, weights=NULL) {
+sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=5, weights=NULL, exhaustive=FALSE) {
 
 	if (nlyr(x) > 1) {
 		x <- x[[1]]
@@ -116,12 +116,9 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 
 	lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
 
-	if (blocks(x, n=4)$n == 1) {
-	
+	if ((blocks(x, n=4)$n == 1) || exhaustive) {
 		res <- sampleStratMemory(x, size, replace, lonlat, ext, weights, warn)
-
 	} else {
-
 		f <- unique(x)[,1]
 		exp <- max(1, exp)
 		ss <- exp * size * length(f)
@@ -463,7 +460,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (as.raster) return(sampleRaster(x, size, method, replace, ext, warn))
 
 		if (method == "stratified") {
-			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, values=values, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights) )
+			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, values=values, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights, exhaustive=exhaustive) )
 		} else if (!is.null(weights)) {
 			error("spatSample", "argument weights is only used when method='stratified'")
 		}

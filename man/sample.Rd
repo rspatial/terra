@@ -50,7 +50,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
   
   \item{exp}{numeric >= 1. "Expansion factor" that is multiplied with \code{size} to get an initial sample used for stratified samples and random samples with \code{na.rm=TRUE} to try to get at least \code{size} samples}
   
-  \item{exhaustive}{logical. If \code{TRUE} and \code{na.rm=TRUE} first all cells that are not \code{NA} are determined and a sample is taken from these cells. This is useful when you are dealing with a very large raster that is sparse (most cells are NA). Otherwise, the default approach may not find enough samples. This should not be used in other cases, especially not with large rasters that mostly have values}  
+  \item{exhaustive}{logical. If \code{TRUE}, and (\code{method=="random"} and \code{na.rm=TRUE}) or \code{method=="stratified"}, all cells that are not \code{NA} are determined and a sample is taken from these cells. This is useful when you are dealing with a very large raster that is sparse (most cells are NA). Otherwise, the default approach may not find enough samples. This should not be used in other cases, especially not with large rasters that mostly have values}  
 }
 
 
