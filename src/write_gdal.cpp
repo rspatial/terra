@@ -28,6 +28,7 @@
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
 #include "cpl_string.h"
+#include "cpl_vsi.h"
 #include "ogr_spatialref.h"
 #include "gdal_rat.h"
 
@@ -56,38 +57,36 @@ std::string quoted_csv(const std::vector<std::string> &s) {
 
 bool SpatRaster::write_aux_json(std::string filename) {
 	filename += ".aux.json";
-	std::ofstream f;
 	bool wunits = hasUnit();
 	bool wtime = hasTime();
 	if (wunits || wtime) {
-		f.open(filename);
-		if (f.is_open()) {
-			f << "{" << std::endl;
-			if (wtime) {
-				std::vector<std::string> tstr = getTimeStr(false, " ");
-				std::string ss = quoted_csv(tstr);
-				f << "\"time\":[" << ss << "]," << std::endl;
-				f << "\"timestep\":\"" << source[0].timestep << "\"";
-				if (wunits) f << ",";
-				f << std::endl;
-			}
-			if (wunits) {
-				std::vector<std::string> units = getUnit();
-				std::string ss = quoted_csv(units);
-				f << "\"unit\":[" << ss << "]" << std::endl;
-			}
-			f << "}" << std::endl;
-		} else {
-			f.close();
-			return false;
+		VSILFILE* f = VSIFOpenL(filename.c_str(), "w");
+		if (f == nullptr) {
+			return false; 
 		}
-		f.close();
+		VSIFPrintfL(f, "{\n");
+		if (wtime) {
+			std::vector<std::string> tstr = getTimeStr(false, " ");
+			std::string ss = quoted_csv(tstr);
+			VSIFPrintfL(f, "\"time\":[%s],\n", ss.c_str());
+			VSIFPrintfL(f, "\"timestep\":\"%s\"", source[0].timestep.c_str());
+			if (wunits) {
+				VSIFPrintfL(f, ",");
+			}
+			VSIFPrintfL(f, "\n");
+		}
+		if (wunits) {
+			std::vector<std::string> units = getUnit();
+			std::string ss = quoted_csv(units);
+			VSIFPrintfL(f, "\"unit\":[%s]\n", ss.c_str());
+		}
+		VSIFPrintfL(f, "}\n");
+		VSIFCloseL(f);
 		return true;
 	}
-	return true;
+	
+	return true; 
 }
-
-
 
 
 bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {

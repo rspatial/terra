@@ -20,9 +20,15 @@
 #include <random>
 #include <chrono>
 #include <thread>
-
+#include <sstream> 
+#include <vector>
+#include <string>
+	
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include "cpl_vsi.h"
+#include "cpl_conv.h"
 
 /*
 #if defined __has_include
@@ -48,37 +54,64 @@
 */
 
 bool write_text(std::string filename, std::vector<std::string> s) {
-	std::ofstream f;
-	f.open(filename);
-	if (f.is_open()) {
-		for (size_t i=0; i<s.size(); i++) {
-			f << s[i] << std::endl;
+	VSILFILE* f = VSIFOpenL(filename.c_str(), "w");
+	if (f == nullptr) 
+		return false;	
+	for (size_t i=0; i<s.size(); i++) {
+		if (VSIFPrintfL(f, "%s\n", s[i].c_str()) < 0) {
+			VSIFCloseL(f);
+			return false;
 		}
-		f.close();
-		return true;
-	} else {
-		return false;
 	}
+	VSIFCloseL(f);
+	return true;
 }
-
 
 std::vector<std::string> read_text(std::string filename) {
-	std::vector<std::string> s;
-	std::string line;
-	std::ifstream f(filename);
-	if (f.is_open())  {
-		while (getline(f, line)) {
-			if (line.empty()) {
-				s.push_back("");
-			} else {
-				s.push_back(line);
-			}
-		}
-		f.close();
+	std::vector<std::string> lines;
+	
+	VSILFILE* f = VSIFOpenL(filename.c_str(), "r");
+	if (f == nullptr) {
+		return lines; 
 	}
-	return s;
-}
+	
+	VSIFSeekL(f, 0, SEEK_END);
+	size_t fileSize = VSIFTellL(f);
+	VSIFSeekL(f, 0, SEEK_SET);
+	
+	if (fileSize == 0) {
+		VSIFCloseL(f);
+		return lines; 
+	}
+	
+	char* buffer = static_cast<char*>(CPLMalloc(fileSize + 1));
+	if (buffer == nullptr) {
+		VSIFCloseL(f);
+		return lines;
+	}
+	size_t bytesRead = VSIFReadL(buffer, 1, fileSize, f);
+	VSIFCloseL(f);
+	
+	if (bytesRead != fileSize) {
+		CPLFree(buffer);
+		return lines; 
+	}
+	buffer[fileSize] = '\0'; 
+	
+	std::istringstream iss(buffer);
+	std::string line;
+	while (std::getline(iss, line)) {
+		if (line.empty()) {
+			lines.push_back(""); 
+		} else {
+			lines.push_back(line);
+		}
+	}
 
+	CPLFree(buffer);
+	
+	return lines;
+}
 
 std::string getFileExt(const std::string& s) {
 	size_t i = s.rfind('.', s.length());
