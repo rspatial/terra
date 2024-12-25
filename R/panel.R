@@ -70,9 +70,15 @@ setMethod("panel", signature(x="SpatRaster"),
 			if (is.null(range)) {
 				if (all(hasMinMax(x))) {
 					range <- range(minmax(x, FALSE))
+					if (any(is.nan(range) | is.infinite(range))) {
+						r <- as.matrix(spatSample(x, maxcell, method="regular", as.raster=FALSE, warn=FALSE))
+						r[is.infinite(r)] <- NA
+						range <- range(r, na.rm=TRUE)
+					}
 				} else {
-					x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
-					range <- range(minmax(x, TRUE))
+					r <- as.matrix(spatSample(x, maxcell, method="regular", as.raster=FALSE, warn=FALSE))
+					r[is.infinite(r)] <- NA
+					range <- range(r, na.rm=TRUE)
 				}
 			}
 			if (diff(range) > 0) {
@@ -84,17 +90,19 @@ setMethod("panel", signature(x="SpatRaster"),
 		if (is.null(plg$size)) plg$size <- max(1, nrnc[1] * 0.66)
 		if (is.null(plg$cex))  plg$cex  <- 1.25 
 		plg$yshift <- (nrnc[1] %% 2 == 0) 
+
 		for (i in 1:nl) {
 			pax$side <- c(bottom[i], left[i])
 			if (categorical) {
 				y <- x[[i]]
 				levels(y) <- lv
 				plot(y, 1, main=main[i], mar=mar, legend=legend[i], pax=pax, box=box, 
-					loc.main=loc.main, plg=plg, type="classes", ...)
+					loc.main=loc.main, halo=TRUE, plg=plg, type="classes", ...)
 			} else {
 				plot(x, i, main=main[i], mar=mar, legend=legend[i], range=range, pax=pax, box=box, 
-					loc.main=loc.main, plg=plg, type=ptype, ...)
+					loc.main=loc.main, halo=TRUE, plg=plg, type=ptype, ...)
 			}
 		}
 	}
 )
+

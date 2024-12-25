@@ -1013,14 +1013,14 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 
 		if (lonlat) {
 			if (xtype == "points") {
-				return linedistLonLat(x);
+				return linedistLonLat(x, unit);
 			} else if (gtype == "points") {
-				return x.linedistLonLat(*this);					
+				return x.linedistLonLat(*this, unit);					
 			} else {
 				// not good enough
 				// need fixing
 				SpatVector tmp = x.as_points(false, true);
-				return x.linedistLonLat(tmp);				
+				return x.linedistLonLat(tmp, unit);				
 			}
 		}
 

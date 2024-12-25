@@ -106,12 +106,7 @@ hexcols <- function(out) {
 }
 
 
-.as.raster.continuous <- function(out, x, type, Z=NULL) {
-
-	if (is.null(Z)) {
-		Z <- as.matrix(x, wide=TRUE)
-		Z[is.nan(Z) | is.infinite(Z)] <- NA
-	}
+.as.raster.continuous <- function(out, x, type) {
 
 	Z <- as.matrix(x, wide=TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA

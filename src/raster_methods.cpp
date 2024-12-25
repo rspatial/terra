@@ -722,6 +722,18 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 	//size_t outnc = out.ncol();
 	
 	if (fun == "table") {
+		
+	/*
+		std::vector<std::vector<double>> ud = unique(false, 0, ops);
+		std::vector<long> uvals;
+		uvals.reserve(ud.size());
+		for (size_t i=0; i<ud.size(); i++) uvals.push_back(round(ud[i]));
+		std::map<long, unsigned long long> counts;
+		for (sizt_t =0; i<uvals.size(); i++) {
+			counts[uvals[i]] = 0;
+		}
+	*/
+		
 		for (size_t i = 0; i < bs.n; i++) {
 			std::vector<double> vin, v;
 			readValues(vin, bs.row[i], bs.nrows[i], 0, nc);

@@ -134,12 +134,12 @@ double dir_rad(double lon1, double lat1, double lon2, double lat2) {
 
 
 // [[Rcpp::export]]
-double dist2track(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign) {
+double dist2track(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign, double r=6378137) {
 	double a = 1;
 	double f = 0;
 	struct geod_geodesic geod;
 	geod_init(&geod, a, f);
-	const double r = 6378137.0;
+	
 
 	double d, b2, b3, azi;
 	geod_inverse(&geod, lat1, lon1, lat2, lon2, &d, &b2, &azi);
@@ -153,12 +153,11 @@ double dist2track(double lon1, double lat1, double lon2, double lat2, double plo
 
 
 // [[Rcpp::export]]
-double dist2track_cosine_rad(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign) {
+double dist2track_cosine_rad(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign, double r=6378137) {
 	// same results as above but probably much faster
-	const double r = 6378137.0;
 	double b2 = dir_rad(lon1, lat1, lon2, lat2);
 	double b3 = dir_rad(lon1, lat1, plon, plat);
-	double d = dist_cosine_rad(lon1, lat1, plon, plat) / r;
+	double d = dist_cosine_rad(lon1, lat1, plon, plat, 1);
 	double xtr = asin(sin(b3-b2) * sin(d)) * r;
 	return sign ? xtr : fabs(xtr);
 }
@@ -167,13 +166,11 @@ double dist2track_cosine_rad(double lon1, double lat1, double lon2, double lat2,
 
 
 // [[Rcpp::export]]
-double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, double plon, double plat) {
+double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r=6378137) {
 	double a = 1;
 	double f = 0;
 	struct geod_geodesic geod;
 	geod_init(&geod, a, f);
-	double r = 6378137.0;
-
 	double d, b2, b3, azi;
 	geod_inverse(&geod, lat1, lon1, lat2, lon2, &d, &b2, &azi);
 	geod_inverse(&geod, lat1, lon1, plat, plon, &d, &b3, &azi);
@@ -189,9 +186,7 @@ double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, do
 
 
 // [[Rcpp::export]]
-double alongTrackDistance_rad(double lon1, double lat1, double lon2, double lat2, double plon, double plat) {
-
-	const double r = 6378137; 
+double alongTrackDistance_rad(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r=6378137) {
 
 	double tc = dir_rad(lon1, lat1, lon2, lat2); // * toRad
 	double tcp = dir_rad(lon1, lat1, plon, plat); // * toRad
@@ -229,19 +224,19 @@ double dist2segment(double plon, double plat, double lon1, double lat1, double l
 
 
 // [[Rcpp::export]]
-double dist2segment_cosine_rad(double plon, double plat, double lon1, double lat1, double lon2, double lat2) {
+double dist2segment_cosine_rad(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r=6378137) {
 // the alongTrackDistance is the length of the path along the great circle to the point of intersection
 // there are two, depending on which node you start
 // we want to use the min, but the max needs to be < segment length
-	double seglength = dist_cosine_rad(lon1, lat1, lon2, lat2);
-	double trackdist1 = alongTrackDistance_rad(lon1, lat1, lon2, lat2, plon, plat);
-	double trackdist2 = alongTrackDistance_rad(lon2, lat2, lon1, lat1, plon, plat);
+	double seglength = dist_cosine_rad(lon1, lat1, lon2, lat2, r);
+	double trackdist1 = alongTrackDistance_rad(lon1, lat1, lon2, lat2, plon, plat, r);
+	double trackdist2 = alongTrackDistance_rad(lon2, lat2, lon1, lat1, plon, plat, r);
 	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
-		double d1 = dist_cosine_rad(lon1, lat1, plon, plat);
-		double d2 = dist_cosine_rad(lon2, lat2, plon, plat);
+		double d1 = dist_cosine_rad(lon1, lat1, plon, plat, r);
+		double d2 = dist_cosine_rad(lon2, lat2, plon, plat, r);
 		return d1 < d2 ? d1 : d2;
 	}
-	return dist2track_cosine_rad(lon1, lat1, lon2, lat2, plon, plat, false);
+	return dist2track_cosine_rad(lon1, lat1, lon2, lat2, plon, plat, false, r);
 }
 
 // [[Rcpp::export]]
@@ -276,7 +271,7 @@ double dist2segmentPoint(double plon, double plat, double lon1, double lat1, dou
 }
 
 
-std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
+std::vector<double> SpatVector::linedistLonLat(SpatVector x, std::string unit) {
 
 	std::vector<double> d;
 
@@ -284,6 +279,13 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 	if ((x.type() != "points") || (type() == "points")) {
 		setError("wrong place!");
 		return d;
+	}
+
+	double r = 6378137;
+	if (unit == "km") {
+		r = 6378.137;
+	} else if (unit == "ha") {
+		r = 63781.37;	
 	}
 
 	std::vector<std::vector<double>> pxy = x.coordinates();
@@ -301,10 +303,6 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 	if (type() == "polygons") {
 		std::vector<int> insect = relate(x, "intersects", true, true);
 		for (size_t g=0; g<ng; g++) {
-//			std::vector<std::vector<double>> xy = geoms[g].coordinates(true);
-//			deg2rad(xy[0]);
-//			deg2rad(xy[1]);
-//			size_t nseg = xy[0].size() - 1;
 			size_t nparts = geoms[g].size();
 			for (size_t h=0; h<nparts; h++) {
 				px = geoms[g].parts[h].x;
@@ -313,10 +311,13 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 				deg2rad(py);
 				size_t nseg = px.size() - 1;
 				for (size_t i=0; i<np; i++) {
-					if ((d[i] != 0) && (insect[i] == 0)) {
+					if (d[i] != 0) {
+						if (insect[i] == 1) {
+							d[i] = 0;
+						}
 						for (size_t j=0; j<nseg; j++) {
 							d[i] = std::min(d[i],
-								dist2segment_cosine_rad(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1]));
+								dist2segment_cosine_rad(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1], r));
 						}
 					}
 				}
@@ -331,7 +332,7 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 						if ((d[i] != 0) && (insect[i] == 0)) {
 							for (size_t j=0; j<nseg; j++) {
 								d[i] = std::min(d[i],
-									dist2segment_cosine_rad(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1]));
+									dist2segment_cosine_rad(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1], r));
 							}
 						}
 					}
@@ -350,21 +351,10 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
 				for (size_t i=0; i<np; i++) {
 					for (size_t j=0; j<nseg; j++) {
 						d[i] = std::min(d[i],
-							dist2segment_cosine_rad(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1]));
+							dist2segment_cosine_rad(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1], r));
 					}
 				}
 			}
-
-
-/*			size_t nseg = xy[0].size() - 1;
-			for (size_t i=0; i<np; i++) {
-				d[i] = dist2segment_cosine_rad(pxy[0][i], pxy[1][i], xy[0][0], xy[1][0], xy[0][1], xy[1][1]);
-				for (size_t j=1; j<nseg; j++) {
-					d[i] = std::min(d[i],
-					dist2segment_cosine_rad(pxy[0][i], pxy[1][i], xy[0][j], xy[1][j], xy[0][j+1], xy[1][j+1]));
-				}
-			}
-*/			
 		}
 	}
 	return d;
