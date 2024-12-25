@@ -81,9 +81,9 @@ std::vector<double> dist_bounds(const std::vector<double>& vx, const std::vector
 	if (lonlat) {
 		std::function<double(double, double, double, double)> dfun;
 		if (method == "haversine") {
-			dfun = distHaversine;
+			dfun = distHaversineRad;
 		} else if (method == "cosine") {
-			dfun = distCosine;			
+			dfun = distCosineRad;			
 		} else {
 			dfun = distLonlat;
 		}
@@ -366,18 +366,43 @@ SpatRaster SpatRaster::distance_spatvector(SpatVector p, std::string unit, const
 		out.setError("no locations to compute distance from");
 		return(out);
 	}
+	if ((p.type() == "polygons") || (p.type() == "lines")) {
+		
+		if (p.nrow() > 1) {
+			p = p.aggregate(true);
+		}
+		
+		std::vector<double> cells;
+		unsigned nc = ncol();
 
+		if (!readStart()) {
+			out.setError(getError());
+			return(out);
+		}
+		if (!out.writeStart(opt, filenames())) {
+			readStop();
+			return out;
+		}
+		for (size_t i = 0; i < out.bs.n; i++) {
+			cells.resize(out.bs.nrows[i] * nc) ;
+			std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
+			std::vector<std::vector<double>> rxy = xyFromCell(cells);
 
-	//p = p.aggregate(false);
-	std::vector<std::vector<double>> pxy = p.coordinates();
-	SpatOptions ops(opt);
-	bool setNA = false;
-	if (p.type() == "polygons") {
-		SpatRaster x = rasterize(p, "", {1}, NAN, false, "", false, false, false, ops);
-		x = x.edges(false, "inner", 8, 0, ops);
-		SpatRaster xp = x.replaceValues({1}, {NAN}, 1, false, NAN, false, ops);
-		out = x.distance_crds(pxy[0], pxy[1], method, true, setNA, unit, opt);
+			SpatVector pnts;
+			pnts.srs = source[0].srs;
+			pnts.setPointsGeometry(rxy[0], rxy[1]);
+			std::vector<double> d = pnts.distance(p, false, unit, method);
+				
+			if (!out.writeBlock(d, i)) return out;
+		}
+		readStop();
+		out.writeStop();
+		
 	} else {
+	//p = p.aggregate(false);
+		std::vector<std::vector<double>> pxy = p.coordinates();
+		SpatOptions ops(opt);
+		bool setNA = false;
 		out = distance_crds(pxy[0], pxy[1], method, false, setNA, unit, opt);
 	}
 	return out;
@@ -949,7 +974,7 @@ std::vector<double> SpatVector::pointdistance_seq(const std::vector<double>& px,
 */
 
 
-std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::string unit, const std::string method) {
+std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::string unit, const std::string method) {
 
 	std::vector<double> d;
 
@@ -985,24 +1010,19 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise, std::stri
 	std::string xtype = x.type();
 
 	if ((gtype != "points") || (xtype != "points")) {
-		
-/*
+
 		if (lonlat) {
 			if (xtype == "points") {
 				return linedistLonLat(x);
 			} else if (gtype == "points") {
-				for (size_t i=0; i<x.nrow(); i++) {
-					SpatVector tmp = x.subset_rows(i);
-					std::vector<double> dd = tmp.linedistLonLat(*this);
-					d.push_back(vmin(dd, false));
-				}
-				return d;
+				return x.linedistLonLat(*this);					
 			} else {
+				// not good enough
+				// need fixing
 				SpatVector tmp = x.as_points(false, true);
-				return linedistLonLat(x);				
+				return x.linedistLonLat(tmp);				
 			}
 		}
-*/			
 
 		std::string distfun="";
 		d = geos_distance(x, pairwise, distfun);
