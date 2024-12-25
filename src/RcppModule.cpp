@@ -563,7 +563,7 @@ RCPP_MODULE(spat){
 		.method("intersect", &SpatVector::intersect)
 		.method("delaunay", &SpatVector::delaunay)
 		.method("voronoi", &SpatVector::voronoi)
-		.method("voronoi_sphere", &SpatVector::voronoi_sphere)
+//		.method("voronoi_sphere", &SpatVector::voronoi_sphere)
 		.method("hull", &SpatVector::hull)
 
 		.method("width", &SpatVector::width)
