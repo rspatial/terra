@@ -89,13 +89,13 @@ If y is missing, the distance between each points in x with all other points in 
 <span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, target<span class="op">=</span><span class="cn">NA</span>, exclude<span class="op">=</span><span class="cn">NULL</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"haversine"</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster,SpatVector'</span></span>
-<span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, unit<span class="op">=</span><span class="st">"m"</span>, rasterize<span class="op">=</span><span class="cn">FALSE</span>, method<span class="op">=</span><span class="st">"haversine"</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, unit<span class="op">=</span><span class="st">"m"</span>, rasterize<span class="op">=</span><span class="cn">FALSE</span>, method<span class="op">=</span><span class="st">"cosine"</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector,ANY'</span></span>
-<span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, sequential<span class="op">=</span><span class="cn">FALSE</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, symmetrical<span class="op">=</span><span class="cn">TRUE</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"geo"</span><span class="op">)</span></span>
+<span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, sequential<span class="op">=</span><span class="cn">FALSE</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, symmetrical<span class="op">=</span><span class="cn">TRUE</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"cosine"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector,SpatVector'</span></span>
-<span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, pairwise<span class="op">=</span><span class="cn">FALSE</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"geo"</span><span class="op">)</span></span>
+<span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, pairwise<span class="op">=</span><span class="cn">FALSE</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"cosine"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'matrix,matrix'</span></span>
 <span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">lonlat</span>, pairwise<span class="op">=</span><span class="cn">FALSE</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"geo"</span><span class="op">)</span></span>
@@ -124,7 +124,7 @@ If y is missing, the distance between each points in x with all other points in 
 <dd><p>character. Can be either "m" or "km"</p></dd>
 
   <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>character. One of "geo", "haversine", "cosine". With "geo" the most precise but slower method of Karney (2003) is used. The other two methods are faster but less precise</p></dd>
+<dd><p>character. One of "geo", "cosine" or "haversine" (the latter cannot be used for distances to lines or polygons). With "geo" the most precise but slower method of Karney (2003) is used. The other two methods are faster but less precise</p></dd>
 
   <dt id="arg-rasterize">rasterize<a class="anchor" aria-label="anchor" href="#arg-rasterize"></a></dt>
 <dd><p>logical. If <code>TRUE</code> distance is computed from the cells covered by the geometries after rasterization. This can be much faster in some cases</p></dd>
@@ -193,24 +193,24 @@ If y is missing, the distance between each points in x with all other points in 
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">distance</span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          1        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 10014577         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 10014577 20003931</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 10018754         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 10018754 20037508</span>
 <span class="r-in"><span><span class="fu"><a href="coerce.html">as.matrix</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          1        2        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0 10014577 10014577</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 10014577        0 20003931</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 10014577 20003931        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0 10018754 10018754</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 10018754        0 20037508</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 10018754 20037508        0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="c.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">30</span>,<span class="op">-</span><span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">9</span>,<span class="op">-</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span>, crs<span class="op">=</span><span class="st">"+proj=longlat +datum=WGS84"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu">distance</span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dd</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]     [,2]     [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  4596223  5104507  1054933</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  9192445  5905838 11048088</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 10825924 14117180  8981037</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  4609698  5124121  1055634</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  9219396  5900335 11053086</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 10818112 14137173  8984422</span>
 <span class="r-in"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu">distance</span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, pairwise<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pd</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4596223 5905838 8981037</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4609698 5900335 8984422</span>
 <span class="r-in"><span><span class="va">pd</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">dd</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE TRUE TRUE</span>
 <span class="r-in"><span></span></span>

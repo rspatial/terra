@@ -42,7 +42,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">panel</span><span class="op">(</span><span class="va">x</span>, <span class="va">main</span>, loc.main<span class="op">=</span><span class="st">"topleft"</span>, <span class="va">nc</span>, <span class="va">nr</span>, maxnl<span class="op">=</span><span class="fl">16</span>, </span>
-<span>  maxcell<span class="op">=</span><span class="fl">500000</span>, box<span class="op">=</span><span class="cn">FALSE</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, range<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span>  maxcell<span class="op">=</span><span class="fl">500000</span>, box<span class="op">=</span><span class="cn">FALSE</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, range<span class="op">=</span><span class="cn">NULL</span>, halo<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,6 +80,9 @@
 
   <dt id="arg-range">range<a class="anchor" aria-label="anchor" href="#arg-range"></a></dt>
 <dd><p>numeric. minimum and maximum values to be used for the continuous legend</p></dd>
+
+  <dt id="arg-halo">halo<a class="anchor" aria-label="anchor" href="#arg-halo"></a></dt>
+<dd><p>logical. Use a halo around main (the title)?</p></dd>
 
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>arguments passed to <code>plot("SpatRaster", "numeric")</code> and additional graphical arguments</p></dd>

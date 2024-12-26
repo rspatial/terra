@@ -41,7 +41,7 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
-<span><span class="fu">direction</span><span class="op">(</span><span class="va">x</span>, from<span class="op">=</span><span class="cn">FALSE</span>, degrees<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">direction</span><span class="op">(</span><span class="va">x</span>, from<span class="op">=</span><span class="cn">FALSE</span>, degrees<span class="op">=</span><span class="cn">FALSE</span>, method<span class="op">=</span><span class="st">"cosine"</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -51,14 +51,17 @@
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>SpatRaster</p></dd>
 
-<dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
-<dd><p>Character. Output filename (optional)</p></dd>
+<dt id="arg-from">from<a class="anchor" aria-label="anchor" href="#arg-from"></a></dt>
+<dd><p>Logical. Default is <code>FALSE</code>. If <code>TRUE</code>, the direction from (instead of to)  the nearest cell that is not <code>NA</code> is returned</p></dd>
 
 <dt id="arg-degrees">degrees<a class="anchor" aria-label="anchor" href="#arg-degrees"></a></dt>
 <dd><p>Logical. If <code>FALSE</code> (the default) the unit of direction is radians.</p></dd>
 
-<dt id="arg-from">from<a class="anchor" aria-label="anchor" href="#arg-from"></a></dt>
-<dd><p>Logical. Default is <code>FALSE</code>. If <code>TRUE</code>, the direction from (instead of to)  the nearest cell that is not <code>NA</code> is returned</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p>character. Should be "geo", or "cosine". With "geo" the most precise but slower geodesic method of Karney (2003) is used. The "cosine" method is faster but less precise</p></dd>
+
+<dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
+<dd><p>Character. Output filename (optional)</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments as for <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
