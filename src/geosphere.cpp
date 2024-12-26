@@ -18,6 +18,7 @@
 #include "spatVector.h"
 #include "geodesic.h"
 #include "recycle.h"
+#include "geosphere.h"
 
 #ifndef M_PI
 #define M_PI  (3.1415926535897932384626433)
@@ -67,10 +68,7 @@ inline double get_sign(const double &x) {
 }
 
 
-// [[Rcpp::export]]
-double dist_lonlat(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
-	//double a = 6378137.0;
-	//double f = 1/298.257223563;
+double distance_geo(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
 	double s12, azi1, azi2;
 	struct geod_geodesic g;
 	geod_init(&g, WGS84_a, WGS84_f);
@@ -79,8 +77,7 @@ double dist_lonlat(const double &lon1, const double &lat1, const double &lon2, c
 }
 
 
-// [[Rcpp::export]]
-double dist_cosine(double lon1, double lat1, double lon2, double lat2, const double &r = 6378137) {
+double distance_cosdeg(double lon1, double lat1, double lon2, double lat2, const double &r = 6378137) {
 	deg2rad(lon1);
 	deg2rad(lon2);
 	deg2rad(lat1);
@@ -88,27 +85,16 @@ double dist_cosine(double lon1, double lat1, double lon2, double lat2, const dou
 	return r * acos((sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1-lon2)));
 }
 
-// [[Rcpp::export]]
-double dist_cosine_rad(const double &lon1, const double &lat1, const double &lon2, const double &lat2, const double &r = 6378137) {
-	return r * acos((sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1-lon2)));
-}
 
 
-// [[Rcpp::export]]
-void dest_lonlat(double slon, double slat, double sazi, double dist, double &dlon, double &dlat, double &dazi) {
-	//double a = 6378137.0;
-	//double f = 1/298.257223563;
+void dest_geo(double slon, double slat, double sazi, double dist, double &dlon, double &dlat, double &dazi) {
 	struct geod_geodesic g;
 	geod_init(&g, WGS84_a, WGS84_f);
 	geod_direct(&g, slat, slon, sazi, dist, &dlat, &dlon, &dazi);
 }
 
 
-// [[Rcpp::export]]
-double dir_lonlat(double lon1, double lat1, double lon2, double lat2) {
-	//double a = 6378137.0;
-	//double f = 1/298.257223563;
-
+double direction_geo(double lon1, double lat1, double lon2, double lat2) {
 	double s12, azi1, azi2;
 	struct geod_geodesic g;
 	geod_init(&g, WGS84_a, WGS84_f);
@@ -117,15 +103,12 @@ double dir_lonlat(double lon1, double lat1, double lon2, double lat2) {
 }
 
 
-// [[Rcpp::export]]
-double dir_rad(double lon1, double lat1, double lon2, double lat2) {
-
-	if ((lon1 == lon2) && (lat1 == lat2)) return 0; // NAN?
+double direction_cos(double lon1, double lat1, double lon2, double lat2) {
 	
+	if ((lon1 == lon2) && (lat1 == lat2)) return 0; // NAN?
 	double dLon = lon2 - lon1;
     double y = sin(dLon)  * cos(lat2); 
     double x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon); 
-
     double azm = atan2(y, x);
 	azm = fmod(azm+M_PI, M_PI);
 	return azm > M_PI ? -(M_PI - azm) : azm;
@@ -133,14 +116,11 @@ double dir_rad(double lon1, double lat1, double lon2, double lat2) {
 
 
 
-// [[Rcpp::export]]
-double dist2track(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign, double r=6378137) {
+double dist2track_geo(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign, double r=6378137) {
 	double a = 1;
 	double f = 0;
 	struct geod_geodesic geod;
 	geod_init(&geod, a, f);
-	
-
 	double d, b2, b3, azi;
 	geod_inverse(&geod, lat1, lon1, lat2, lon2, &d, &b2, &azi);
 	geod_inverse(&geod, lat1, lon1, plat, plon, &d, &b3, &azi);
@@ -152,21 +132,16 @@ double dist2track(double lon1, double lat1, double lon2, double lat2, double plo
 }
 
 
-// [[Rcpp::export]]
-double dist2track_cosine_rad(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign, double r=6378137) {
-	// same results as above but probably much faster
-	double b2 = dir_rad(lon1, lat1, lon2, lat2);
-	double b3 = dir_rad(lon1, lat1, plon, plat);
-	double d = dist_cosine_rad(lon1, lat1, plon, plat, 1);
+inline double dist2track_cos(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign, double r=6378137) {
+	double b2 = direction_cos(lon1, lat1, lon2, lat2);
+	double b3 = direction_cos(lon1, lat1, plon, plat);
+	double d = distance_cos(lon1, lat1, plon, plat, 1);
 	double xtr = asin(sin(b3-b2) * sin(d)) * r;
 	return sign ? xtr : fabs(xtr);
 }
 
 
-
-
-// [[Rcpp::export]]
-double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r=6378137) {
+double alongTrackDistance_geo(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r=6378137) {
 	double a = 1;
 	double f = 0;
 	struct geod_geodesic geod;
@@ -184,13 +159,11 @@ double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, do
 }
 
 
+double alongTrackDistance_cos(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r=6378137) {
 
-// [[Rcpp::export]]
-double alongTrackDistance_rad(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r=6378137) {
-
-	double tc = dir_rad(lon1, lat1, lon2, lat2); // * toRad
-	double tcp = dir_rad(lon1, lat1, plon, plat); // * toRad
-    double dp = dist_cosine_rad(lon1, lat1, plon, plat, 1);
+	double tc = direction_cos(lon1, lat1, lon2, lat2); // * toRad
+	double tcp = direction_cos(lon1, lat1, plon, plat); // * toRad
+    double dp = distance_cos(lon1, lat1, plon, plat, 1);
 	double xtr = asin(sin(tcp-tc) * sin(dp));
 
 // +1/-1 for ahead/behind [lat1,lon1]
@@ -205,49 +178,45 @@ double alongTrackDistance_rad(double lon1, double lat1, double lon2, double lat2
 
 
 
-// [[Rcpp::export]]
-double dist2segment(double plon, double plat, double lon1, double lat1, double lon2, double lat2) {
-
 // the alongTrackDistance is the length of the path along the great circle to the point of intersection
 // there are two, depending on which node you start
 // we want to use the min, but the max needs to be < segment length
-	double seglength = dist_lonlat(lon1, lat1, lon2, lat2);
-	double trackdist1 = alongTrackDistance(lon1, lat1, lon2, lat2, plon, plat);
-	double trackdist2 = alongTrackDistance(lon2, lat2, lon1, lat1, plon, plat);
+
+double dist2segment_geo(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double notused=0) {
+
+	double seglength = distance_geo(lon1, lat1, lon2, lat2);
+	double trackdist1 = alongTrackDistance_geo(lon1, lat1, lon2, lat2, plon, plat);
+	double trackdist2 = alongTrackDistance_geo(lon2, lat2, lon1, lat1, plon, plat);
 	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
-		double d1 = dist_lonlat(lon1, lat1, plon, plat);
-		double d2 = dist_lonlat(lon2, lat2, plon, plat);
+		double d1 = distance_geo(lon1, lat1, plon, plat);
+		double d2 = distance_geo(lon2, lat2, plon, plat);
 		return d1 < d2 ? d1 : d2;
 	}
-	return dist2track(lon1, lat1, lon2, lat2, plon, plat, false);
+	return dist2track_geo(lon1, lat1, lon2, lat2, plon, plat, false);
 }
 
 
-// [[Rcpp::export]]
-double dist2segment_cosine_rad(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r=6378137) {
-// the alongTrackDistance is the length of the path along the great circle to the point of intersection
-// there are two, depending on which node you start
-// we want to use the min, but the max needs to be < segment length
-	double seglength = dist_cosine_rad(lon1, lat1, lon2, lat2, r);
-	double trackdist1 = alongTrackDistance_rad(lon1, lat1, lon2, lat2, plon, plat, r);
-	double trackdist2 = alongTrackDistance_rad(lon2, lat2, lon1, lat1, plon, plat, r);
+double dist2segment_cos(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r=6378137) {
+	double seglength = distance_cos(lon1, lat1, lon2, lat2, r);
+	double trackdist1 = alongTrackDistance_cos(lon1, lat1, lon2, lat2, plon, plat, r);
+	double trackdist2 = alongTrackDistance_cos(lon2, lat2, lon1, lat1, plon, plat, r);
 	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
-		double d1 = dist_cosine_rad(lon1, lat1, plon, plat, r);
-		double d2 = dist_cosine_rad(lon2, lat2, plon, plat, r);
+		double d1 = distance_cos(lon1, lat1, plon, plat, r);
+		double d2 = distance_cos(lon2, lat2, plon, plat, r);
 		return d1 < d2 ? d1 : d2;
 	}
-	return dist2track_cosine_rad(lon1, lat1, lon2, lat2, plon, plat, false, r);
+	return dist2track_cos(lon1, lat1, lon2, lat2, plon, plat, false, r);
 }
 
 // [[Rcpp::export]]
-double dist2segmentPoint(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double &ilon, double &ilat) {
+double dist2segmentPoint_geo(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double &ilon, double &ilat) {
 
-	double seglength = dist_lonlat(lon1, lat1, lon2, lat2);
-	double trackdist1 = alongTrackDistance(lon1, lat1, lon2, lat2, plon, plat);
-	double trackdist2 = alongTrackDistance(lon2, lat2, lon1, lat1, plon, plat);
+	double seglength = distance_geo(lon1, lat1, lon2, lat2);
+	double trackdist1 = alongTrackDistance_geo(lon1, lat1, lon2, lat2, plon, plat);
+	double trackdist2 = alongTrackDistance_geo(lon2, lat2, lon1, lat1, plon, plat);
 	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
-		double d1 = dist_lonlat(lon1, lat1, plon, plat);
-		double d2 = dist_lonlat(lat2, lat2, plon, plat);
+		double d1 = distance_geo(lon1, lat1, plon, plat);
+		double d2 = distance_geo(lat2, lat2, plon, plat);
 		if (d1 < d2) {
 			ilon = lon1;
 			ilat = lat1;
@@ -259,19 +228,19 @@ double dist2segmentPoint(double plon, double plat, double lon1, double lat1, dou
 		}
 	}
 	double azi;
-	double crossd = dist2track(lon1, lat1, lon2, lat2, plon, plat, false);
+	double crossd = dist2track_geo(lon1, lat1, lon2, lat2, plon, plat, false);
 	if (trackdist1 < trackdist2) {
-		double bear = dir_lonlat(lon1, lat1, lon2, lat2);
-		dest_lonlat(lon1, lat1, bear, trackdist1, ilon, ilat, azi);
+		double bear = direction_geo(lon1, lat1, lon2, lat2);
+		dest_geo(lon1, lat1, bear, trackdist1, ilon, ilat, azi);
 	} else {
-		double bear = dir_lonlat(lon2, lat2, lon1, lat1);
-		dest_lonlat(lon2, lat2, bear, trackdist2, ilon, ilat, azi);
+		double bear = direction_geo(lon2, lat2, lon1, lat1);
+		dest_geo(lon2, lat2, bear, trackdist2, ilon, ilat, azi);
 	}
-	return(crossd);
+	return crossd;
 }
 
 
-std::vector<double> SpatVector::linedistLonLat(SpatVector x, std::string unit) {
+std::vector<double> SpatVector::point2lineDistLonLat(SpatVector x, std::string unit, std::string method) {
 
 	std::vector<double> d;
 
@@ -289,8 +258,16 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x, std::string unit) {
 	}
 
 	std::vector<std::vector<double>> pxy = x.coordinates();
-	deg2rad(pxy[0]);
-	deg2rad(pxy[1]);
+
+	std::function<double(double,double,double,double,double,double,double)> d2seg;
+
+	if (method == "cosine") {
+		deg2rad(pxy[0]);
+		deg2rad(pxy[1]);
+		d2seg = dist2segment_cos;
+	} else {
+		d2seg = dist2segment_geo;		
+	}
 	size_t np = pxy[0].size();
 	size_t ng = size();
 
@@ -317,7 +294,7 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x, std::string unit) {
 						}
 						for (size_t j=0; j<nseg; j++) {
 							d[i] = std::min(d[i],
-								dist2segment_cosine_rad(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1], r));
+								d2seg(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1], r));
 						}
 					}
 				}
@@ -332,7 +309,7 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x, std::string unit) {
 						if ((d[i] != 0) && (insect[i] == 0)) {
 							for (size_t j=0; j<nseg; j++) {
 								d[i] = std::min(d[i],
-									dist2segment_cosine_rad(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1], r));
+									d2seg(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1], r));
 							}
 						}
 					}
@@ -351,7 +328,7 @@ std::vector<double> SpatVector::linedistLonLat(SpatVector x, std::string unit) {
 				for (size_t i=0; i<np; i++) {
 					for (size_t j=0; j<nseg; j++) {
 						d[i] = std::min(d[i],
-							dist2segment_cosine_rad(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1], r));
+							d2seg(pxy[0][i], pxy[1][i], px[j], py[j], px[j+1], py[j+1], r));
 					}
 				}
 			}

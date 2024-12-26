@@ -336,200 +336,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// dist_lonlat
-double dist_lonlat(const double& lon1, const double& lat1, const double& lon2, const double& lat2);
-RcppExport SEXP _terra_dist_lonlat(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< const double& >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< const double& >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< const double& >::type lat2(lat2SEXP);
-    rcpp_result_gen = Rcpp::wrap(dist_lonlat(lon1, lat1, lon2, lat2));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dist_cosine
-double dist_cosine(double lon1, double lat1, double lon2, double lat2, const double& r);
-RcppExport SEXP _terra_dist_cosine(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
-    Rcpp::traits::input_parameter< const double& >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(dist_cosine(lon1, lat1, lon2, lat2, r));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dist_cosine_rad
-double dist_cosine_rad(const double& lon1, const double& lat1, const double& lon2, const double& lat2, const double& r);
-RcppExport SEXP _terra_dist_cosine_rad(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< const double& >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< const double& >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< const double& >::type lat2(lat2SEXP);
-    Rcpp::traits::input_parameter< const double& >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(dist_cosine_rad(lon1, lat1, lon2, lat2, r));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dest_lonlat
-void dest_lonlat(double slon, double slat, double sazi, double dist, double& dlon, double& dlat, double& dazi);
-RcppExport SEXP _terra_dest_lonlat(SEXP slonSEXP, SEXP slatSEXP, SEXP saziSEXP, SEXP distSEXP, SEXP dlonSEXP, SEXP dlatSEXP, SEXP daziSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type slon(slonSEXP);
-    Rcpp::traits::input_parameter< double >::type slat(slatSEXP);
-    Rcpp::traits::input_parameter< double >::type sazi(saziSEXP);
-    Rcpp::traits::input_parameter< double >::type dist(distSEXP);
-    Rcpp::traits::input_parameter< double& >::type dlon(dlonSEXP);
-    Rcpp::traits::input_parameter< double& >::type dlat(dlatSEXP);
-    Rcpp::traits::input_parameter< double& >::type dazi(daziSEXP);
-    dest_lonlat(slon, slat, sazi, dist, dlon, dlat, dazi);
-    return R_NilValue;
-END_RCPP
-}
-// dir_lonlat
-double dir_lonlat(double lon1, double lat1, double lon2, double lat2);
-RcppExport SEXP _terra_dir_lonlat(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
-    rcpp_result_gen = Rcpp::wrap(dir_lonlat(lon1, lat1, lon2, lat2));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dir_rad
-double dir_rad(double lon1, double lat1, double lon2, double lat2);
-RcppExport SEXP _terra_dir_rad(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
-    rcpp_result_gen = Rcpp::wrap(dir_rad(lon1, lat1, lon2, lat2));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dist2track
-double dist2track(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign, double r);
-RcppExport SEXP _terra_dist2track(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP plonSEXP, SEXP platSEXP, SEXP signSEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
-    Rcpp::traits::input_parameter< double >::type plon(plonSEXP);
-    Rcpp::traits::input_parameter< double >::type plat(platSEXP);
-    Rcpp::traits::input_parameter< bool >::type sign(signSEXP);
-    Rcpp::traits::input_parameter< double >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(dist2track(lon1, lat1, lon2, lat2, plon, plat, sign, r));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dist2track_cosine_rad
-double dist2track_cosine_rad(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign, double r);
-RcppExport SEXP _terra_dist2track_cosine_rad(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP plonSEXP, SEXP platSEXP, SEXP signSEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
-    Rcpp::traits::input_parameter< double >::type plon(plonSEXP);
-    Rcpp::traits::input_parameter< double >::type plat(platSEXP);
-    Rcpp::traits::input_parameter< bool >::type sign(signSEXP);
-    Rcpp::traits::input_parameter< double >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(dist2track_cosine_rad(lon1, lat1, lon2, lat2, plon, plat, sign, r));
-    return rcpp_result_gen;
-END_RCPP
-}
-// alongTrackDistance
-double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r);
-RcppExport SEXP _terra_alongTrackDistance(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP plonSEXP, SEXP platSEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
-    Rcpp::traits::input_parameter< double >::type plon(plonSEXP);
-    Rcpp::traits::input_parameter< double >::type plat(platSEXP);
-    Rcpp::traits::input_parameter< double >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(alongTrackDistance(lon1, lat1, lon2, lat2, plon, plat, r));
-    return rcpp_result_gen;
-END_RCPP
-}
-// alongTrackDistance_rad
-double alongTrackDistance_rad(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r);
-RcppExport SEXP _terra_alongTrackDistance_rad(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP plonSEXP, SEXP platSEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
-    Rcpp::traits::input_parameter< double >::type plon(plonSEXP);
-    Rcpp::traits::input_parameter< double >::type plat(platSEXP);
-    Rcpp::traits::input_parameter< double >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(alongTrackDistance_rad(lon1, lat1, lon2, lat2, plon, plat, r));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dist2segment
-double dist2segment(double plon, double plat, double lon1, double lat1, double lon2, double lat2);
-RcppExport SEXP _terra_dist2segment(SEXP plonSEXP, SEXP platSEXP, SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type plon(plonSEXP);
-    Rcpp::traits::input_parameter< double >::type plat(platSEXP);
-    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
-    rcpp_result_gen = Rcpp::wrap(dist2segment(plon, plat, lon1, lat1, lon2, lat2));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dist2segment_cosine_rad
-double dist2segment_cosine_rad(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r);
-RcppExport SEXP _terra_dist2segment_cosine_rad(SEXP plonSEXP, SEXP platSEXP, SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type plon(plonSEXP);
-    Rcpp::traits::input_parameter< double >::type plat(platSEXP);
-    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
-    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
-    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
-    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
-    Rcpp::traits::input_parameter< double >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(dist2segment_cosine_rad(plon, plat, lon1, lat1, lon2, lat2, r));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dist2segmentPoint
-double dist2segmentPoint(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double& ilon, double& ilat);
-RcppExport SEXP _terra_dist2segmentPoint(SEXP plonSEXP, SEXP platSEXP, SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP ilonSEXP, SEXP ilatSEXP) {
+// dist2segmentPoint_geo
+double dist2segmentPoint_geo(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double& ilon, double& ilat);
+RcppExport SEXP _terra_dist2segmentPoint_geo(SEXP plonSEXP, SEXP platSEXP, SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP ilonSEXP, SEXP ilatSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -541,7 +350,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
     Rcpp::traits::input_parameter< double& >::type ilon(ilonSEXP);
     Rcpp::traits::input_parameter< double& >::type ilat(ilatSEXP);
-    rcpp_result_gen = Rcpp::wrap(dist2segmentPoint(plon, plat, lon1, lat1, lon2, lat2, ilon, ilat));
+    rcpp_result_gen = Rcpp::wrap(dist2segmentPoint_geo(plon, plat, lon1, lat1, lon2, lat2, ilon, ilat));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -594,19 +403,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_pearson_cor", (DL_FUNC) &_terra_pearson_cor, 3},
     {"_terra_weighted_pearson_cor", (DL_FUNC) &_terra_weighted_pearson_cor, 4},
     {"_terra_uniqueSymmetricRows", (DL_FUNC) &_terra_uniqueSymmetricRows, 2},
-    {"_terra_dist_lonlat", (DL_FUNC) &_terra_dist_lonlat, 4},
-    {"_terra_dist_cosine", (DL_FUNC) &_terra_dist_cosine, 5},
-    {"_terra_dist_cosine_rad", (DL_FUNC) &_terra_dist_cosine_rad, 5},
-    {"_terra_dest_lonlat", (DL_FUNC) &_terra_dest_lonlat, 7},
-    {"_terra_dir_lonlat", (DL_FUNC) &_terra_dir_lonlat, 4},
-    {"_terra_dir_rad", (DL_FUNC) &_terra_dir_rad, 4},
-    {"_terra_dist2track", (DL_FUNC) &_terra_dist2track, 8},
-    {"_terra_dist2track_cosine_rad", (DL_FUNC) &_terra_dist2track_cosine_rad, 8},
-    {"_terra_alongTrackDistance", (DL_FUNC) &_terra_alongTrackDistance, 7},
-    {"_terra_alongTrackDistance_rad", (DL_FUNC) &_terra_alongTrackDistance_rad, 7},
-    {"_terra_dist2segment", (DL_FUNC) &_terra_dist2segment, 6},
-    {"_terra_dist2segment_cosine_rad", (DL_FUNC) &_terra_dist2segment_cosine_rad, 7},
-    {"_terra_dist2segmentPoint", (DL_FUNC) &_terra_dist2segmentPoint, 8},
+    {"_terra_dist2segmentPoint_geo", (DL_FUNC) &_terra_dist2segmentPoint_geo, 8},
     {"_terra_intermediate", (DL_FUNC) &_terra_intermediate, 6},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}

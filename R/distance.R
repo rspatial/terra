@@ -66,7 +66,7 @@ setMethod("gridDist", signature(x="SpatRaster"),
 
 
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, unit="m", rasterize=FALSE, method="haversine", filename="", ...) {
+	function(x, y, unit="m", rasterize=FALSE, method="cosine", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		unit <- as.character(unit[1])
 
@@ -85,7 +85,7 @@ setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
 
 
 setMethod("distance", signature(x="SpatRaster", y="sf"),
-	function(x, y, unit="m", rasterize=FALSE, method="haversine", filename="", ...) {
+	function(x, y, unit="m", rasterize=FALSE, method="cosine", filename="", ...) {
 		distance(x, vect(y), unit=unit, rasterize=rasterize, method=method, filename=filename, ...) 
 	}
 )
@@ -113,7 +113,7 @@ mat2wide <- function(m, sym=TRUE, keep=NULL) {
 }
 
 setMethod("distance", signature(x="SpatVector", y="ANY"),
-	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="geo") {
+	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="cosine") {
 		if (!missing(y)) {
 			error("distance", "If 'x' is a SpatVector, 'y' should be a SpatVector or missing")
 		}
@@ -144,7 +144,7 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 
 
 setMethod("distance", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, pairwise=FALSE, unit="m", method = "geo") {
+	function(x, y, pairwise=FALSE, unit="m", method = "cosine") {
 		unit <- as.character(unit[1])
 		d <- x@pntr$distance_other(y@pntr, pairwise, unit, method)
 		messages(x, "distance")
@@ -205,15 +205,15 @@ setMethod("distance", signature(x="matrix", y="missing"),
 
 setMethod("distance", signature(x="data.frame", y="missing"),
 	function(x, y, lonlat=NULL, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="geo") {
-		distance(as.matrix(x), lonlat=lonlat, sequential=sequential, pairs=pairs, symmetrical=symmetrical, unit=unit, method="geo")
+		distance(as.matrix(x), lonlat=lonlat, sequential=sequential, pairs=pairs, symmetrical=symmetrical, unit=unit, method=method)
 	}
 )
 
 
 setMethod("direction", signature(x="SpatRaster"),
-	function(x, from=FALSE, degrees=FALSE, filename="", ...) {
+	function(x, from=FALSE, degrees=FALSE, method="cosine", filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@pntr <- x@pntr$rastDirection(from[1], degrees[1], NA, NA, opt)
+		x@pntr <- x@pntr$rastDirection(from[1], degrees[1], NA, NA, method, opt)
 		messages(x, "direction")
 	}
 )

@@ -35,7 +35,7 @@ double distCosineRad(const double &lon1, const double &lat1, const double &lon2,
 // direction
 double direction_lonlat(double lon1, double lat1, double lon2, double lat2, bool degrees);
 std::vector<double> direction_lonlat(std::vector<double> lon1, std::vector<double> lat1, std::vector<double> lon2, std::vector<double> lat2, bool degrees, const std::string& method);
-void directionToNearest_lonlat(std::vector<double> &azi, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2, bool &degrees, bool &from);
+void directionToNearest_lonlat(std::vector<double> &azi, std::vector<double> &lon1, std::vector<double> &lat1, std::vector<double> &lon2, std::vector<double> &lat2, bool &degrees, bool &from, const std::string &method);
 
 void distanceCosineToNearest_lonlat(std::vector<double> &d, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2);
 

@@ -647,13 +647,13 @@ class SpatRaster {
 		SpatRaster fillNA(double missing, double maxdist, int niter, SpatOptions &opt);
 		
 		SpatRaster distance_rasterize(SpatVector p, double target, double exclude, std::string unit, const std::string& method, SpatOptions &opt);
-		SpatRaster direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude,  SpatOptions &opt);
+		SpatRaster direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude, const std::string& method, SpatOptions &opt);
 		
 		SpatRaster distance_spatvector(SpatVector p, std::string unit, const std::string& method, SpatOptions &opt);
 		SpatRaster distance_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt);
 
-		SpatRaster direction(bool from, bool degrees, double target, double exclude, SpatOptions &opt);
-		SpatRaster direction_vector(SpatVector p, bool from, bool degrees, SpatOptions &opt);
+		SpatRaster direction(bool from, bool degrees, double target, double exclude, const std::string& method, SpatOptions &opt);
+		SpatRaster direction_vector(SpatVector p, bool from, bool degrees, const std::string& method, SpatOptions &opt);
 		
 		SpatRaster clumps(int directions, bool zeroAsNA, SpatOptions &opt);
 		SpatRaster patches(size_t directions, SpatOptions &opt);

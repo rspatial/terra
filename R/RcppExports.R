@@ -117,56 +117,8 @@ rgb2hex <- function(x) {
     .Call(`_terra_uniqueSymmetricRows`, x, y)
 }
 
-dist_lonlat <- function(lon1, lat1, lon2, lat2) {
-    .Call(`_terra_dist_lonlat`, lon1, lat1, lon2, lat2)
-}
-
-dist_cosine <- function(lon1, lat1, lon2, lat2, r = 6378137) {
-    .Call(`_terra_dist_cosine`, lon1, lat1, lon2, lat2, r)
-}
-
-dist_cosine_rad <- function(lon1, lat1, lon2, lat2, r = 6378137) {
-    .Call(`_terra_dist_cosine_rad`, lon1, lat1, lon2, lat2, r)
-}
-
-dest_lonlat <- function(slon, slat, sazi, dist, dlon, dlat, dazi) {
-    invisible(.Call(`_terra_dest_lonlat`, slon, slat, sazi, dist, dlon, dlat, dazi))
-}
-
-dir_lonlat <- function(lon1, lat1, lon2, lat2) {
-    .Call(`_terra_dir_lonlat`, lon1, lat1, lon2, lat2)
-}
-
-dir_rad <- function(lon1, lat1, lon2, lat2) {
-    .Call(`_terra_dir_rad`, lon1, lat1, lon2, lat2)
-}
-
-dist2track <- function(lon1, lat1, lon2, lat2, plon, plat, sign, r = 6378137) {
-    .Call(`_terra_dist2track`, lon1, lat1, lon2, lat2, plon, plat, sign, r)
-}
-
-dist2track_cosine_rad <- function(lon1, lat1, lon2, lat2, plon, plat, sign, r = 6378137) {
-    .Call(`_terra_dist2track_cosine_rad`, lon1, lat1, lon2, lat2, plon, plat, sign, r)
-}
-
-alongTrackDistance <- function(lon1, lat1, lon2, lat2, plon, plat, r = 6378137) {
-    .Call(`_terra_alongTrackDistance`, lon1, lat1, lon2, lat2, plon, plat, r)
-}
-
-alongTrackDistance_rad <- function(lon1, lat1, lon2, lat2, plon, plat, r = 6378137) {
-    .Call(`_terra_alongTrackDistance_rad`, lon1, lat1, lon2, lat2, plon, plat, r)
-}
-
-dist2segment <- function(plon, plat, lon1, lat1, lon2, lat2) {
-    .Call(`_terra_dist2segment`, plon, plat, lon1, lat1, lon2, lat2)
-}
-
-dist2segment_cosine_rad <- function(plon, plat, lon1, lat1, lon2, lat2, r = 6378137) {
-    .Call(`_terra_dist2segment_cosine_rad`, plon, plat, lon1, lat1, lon2, lat2, r)
-}
-
-dist2segmentPoint <- function(plon, plat, lon1, lat1, lon2, lat2, ilon, ilat) {
-    .Call(`_terra_dist2segmentPoint`, plon, plat, lon1, lat1, lon2, lat2, ilon, ilat)
+dist2segmentPoint_geo <- function(plon, plat, lon1, lat1, lon2, lat2, ilon, ilat) {
+    .Call(`_terra_dist2segmentPoint_geo`, plon, plat, lon1, lat1, lon2, lat2, ilon, ilat)
 }
 
 intermediate <- function(lon1, lat1, lon2, lat2, n, distance) {

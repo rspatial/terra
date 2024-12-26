@@ -460,7 +460,7 @@ RCPP_MODULE(spat){
 		.method("linesList", &SpatVector::linesList)
 		.method("polygonsList", &SpatVector::polygonsList)
 		.method("linesNA", &SpatVector::linesNA)
-		.method("linedistlonlat", &SpatVector::linedistLonLat)
+		.method("linedistlonlat", &SpatVector::point2lineDistLonLat)
 
 		.method("add_column_empty", (void (SpatVector::*)(unsigned dtype, std::string name))( &SpatVector::add_column))
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))

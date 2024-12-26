@@ -37,9 +37,9 @@ inline void shortDistPoints(std::vector<double> &d, const std::vector<double> &x
 	}
 }
 
-inline void shortDirectPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, bool &from, bool &degrees) {
+inline void shortDirectPoints(std::vector<double> &d, std::vector<double> &x, std::vector<double> &y, std::vector<double> &px, std::vector<double> &py, const bool& lonlat, bool &from, bool &degrees, const std::string &method) {
 	if (lonlat) {
-		directionToNearest_lonlat(d, x, y, px, py, degrees, from);
+		directionToNearest_lonlat(d, x, y, px, py, degrees, from, method);
 	} else {
 		directionToNearest_plane(d, x, y, px, py, degrees, from);
 	}
@@ -77,6 +77,7 @@ std::vector<double> dist_bounds(const std::vector<double>& vx, const std::vector
 	size_t oldfirst = first;
 	first = vx.size();
 	last = 0;
+
 
 	if (lonlat) {
 		std::function<double(double, double, double, double)> dfun;
@@ -462,7 +463,7 @@ SpatRaster SpatRaster::distance_rasterize(SpatVector p, double target, double ex
 
 
 
-SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude, SpatOptions &opt) {
+SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude, const std::string &method, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (source[0].srs.wkt.empty()) {
@@ -498,9 +499,6 @@ SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees
 		out.setError("no locations to compute from");
 		return(out);
 	}
-
-
-
 	unsigned nc = ncol();
 	if (!readStart()) {
 		out.setError(getError());
@@ -520,69 +518,25 @@ SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees
 
 		std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
 
-/*
-		if (gtype == "points") {
-			readBlock(v, out.bs, i);
-			if (std::isnan(target)) {
-				if (std::isnan(exclude)) {
-					for (size_t j=0; j<v.size(); j++) {
-						if (!std::isnan(v[j])) {
-							cells[j] = NAN;
-						}
-					}
-				} else {
-					for (size_t j=0; j<v.size(); j++) {
-						if (!std::isnan(v[j])) {
-							cells[j] = NAN;
-							if (v[j] == exclude) {
-								vals[j] = NAN;
-							}
-						}
-					}
-				}
-			} else {
-				if (std::isnan(exclude)) {
-					for (size_t j=0; j<v.size(); j++) {
-						if (v[j] != target) {
-							cells[j] = NAN;
-							if (std::isnan(v[j])) {
-								vals[j] = NAN;
-							}
-						}
-					}
-				} else {
-					for (size_t j=0; j<v.size(); j++) {
-						if (v[j] != target) {
-							cells[j] = NAN;
-							if (std::isnan(v[j]) || (v[j] == exclude)) {
-								vals[j] = NAN;
-							}
-						}
-					}
+		x.readBlock(v, out.bs, i);
+		if (std::isnan(target)) {
+			for (size_t j=0; j<v.size(); j++) {
+				if (!std::isnan(v[j])) {
+					cells[j] = NAN;
 				}
 			}
 		} else {
-*/
-			x.readBlock(v, out.bs, i);
-			if (std::isnan(target)) {
-				for (size_t j=0; j<v.size(); j++) {
-					if (!std::isnan(v[j])) {
-						cells[j] = NAN;
-					}
-				}
-			} else {
-				for (size_t j=0; j<v.size(); j++) {
-					if (v[j] != target) {
-						cells[j] = NAN;
-						if (std::isnan(v[j])) {
-							vals[j] = NAN;
-						}
+			for (size_t j=0; j<v.size(); j++) {
+				if (v[j] != target) {
+					cells[j] = NAN;
+					if (std::isnan(v[j])) {
+						vals[j] = NAN;
 					}
 				}
 			}
-//		}
+		}
 		std::vector<std::vector<double>> xy = xyFromCell(cells);
-		shortDirectPoints(vals, xy[0], xy[1], pxy[0], pxy[1], lonlat, from, degrees);
+		shortDirectPoints(vals, xy[0], xy[1], pxy[0], pxy[1], lonlat, from, degrees, method);
 		if (!out.writeBlock(vals, i)) return out;
 	}
 
@@ -721,7 +675,7 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 
 
 
-SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double exclude, SpatOptions &opt) {
+SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double exclude, const std::string &method, SpatOptions &opt) {
 	SpatRaster out = geometry(1);
 	if (!hasValues()) {
 		out.setError("SpatRaster has no values");
@@ -740,7 +694,7 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double 
 			std::vector<size_t> lyr = {i};
 			SpatRaster r = subset(lyr, ops);
 			ops.names = {nms[i]};
-			r = r.direction(from, degrees, target, exclude, ops);
+			r = r.direction(from, degrees, target, exclude, method, ops);
 			out.source[i] = r.source[0];
 		}
 		if (!opt.get_filename().empty()) {
@@ -761,7 +715,7 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double 
 		out.setError("no cells to compute direction from or to");
 		return(out);
 	}
-	return direction_rasterize(p, from, degrees, target, exclude, opt);
+	return direction_rasterize(p, from, degrees, target, exclude, method, opt);
 }
 
 
@@ -995,7 +949,7 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 	}
 
 	if (pairwise && (s != sx ) && (s > 1) && (sx > 1))  {
-		setError("Can only do pairwise distance if geometries match, or if one is a single geometry");
+		setError("For pairwise distance, the number of geometries must match, or one should have a single geometry");
 		return(d);
 	}
 
@@ -1012,29 +966,23 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 	if ((gtype != "points") || (xtype != "points")) {
 
 		if (lonlat) {
-			if (xtype == "points") {
-				return linedistLonLat(x, unit);
-			} else if (gtype == "points") {
-				return x.linedistLonLat(*this, unit);					
+			if (gtype == "points") {
+				return x.point2lineDistLonLat(*this, unit, method);					
 			} else {
-				// not good enough
-				// need fixing
-				SpatVector tmp = x.as_points(false, true);
-				return x.linedistLonLat(tmp, unit);				
+				return point2lineDistLonLat(x, unit, method);		
 			}
+		} else {
+			std::string distfun="";
+			d = geos_distance(x, pairwise, distfun);
+			if (m != 1) {
+				for (double &i : d) i *= m;
+			}
+			return d;
 		}
-
-		std::string distfun="";
-		d = geos_distance(x, pairwise, distfun);
-		if (m != 1) {
-			for (double &i : d) i *= m;
-		}
-		return d;
 	}
 
 	std::vector<std::vector<double>> p = coordinates();
 	std::vector<std::vector<double>> px = x.coordinates();
-
 
 	return pointdistance(p[0], p[1], px[0], px[1], pairwise, m, lonlat, method);
 }

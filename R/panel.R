@@ -1,7 +1,7 @@
 
 setMethod("panel", signature(x="SpatRaster"),
 	function(x, main, loc.main="topleft", nc, nr, maxnl=16, maxcell=500000, 
-		box=FALSE, pax=list(), plg=list(), range=NULL, ...)  {
+		box=FALSE, pax=list(), plg=list(), range=NULL, halo=TRUE, ...)  {
 
 		dots <- list(...)
 		if (!is.null(dots$type)) {
@@ -97,10 +97,10 @@ setMethod("panel", signature(x="SpatRaster"),
 				y <- x[[i]]
 				levels(y) <- lv
 				plot(y, 1, main=main[i], mar=mar, legend=legend[i], pax=pax, box=box, 
-					loc.main=loc.main, halo=TRUE, plg=plg, type="classes", ...)
+					loc.main=loc.main, halo=halo, plg=plg, type="classes", ...)
 			} else {
 				plot(x, i, main=main[i], mar=mar, legend=legend[i], range=range, pax=pax, box=box, 
-					loc.main=loc.main, halo=TRUE, plg=plg, type=ptype, ...)
+					loc.main=loc.main, halo=halo, plg=plg, type=ptype, ...)
 			}
 		}
 	}

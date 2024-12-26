@@ -220,7 +220,7 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 		}
 		write_tags(metags(y), ncobj, ncvars[[i]], "")
 	}
-	if (progress) utils::close(pb)
+	if (progress) close(pb)
 	
 	ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
 	pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))

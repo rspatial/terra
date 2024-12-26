@@ -203,7 +203,7 @@ class SpatVector {
 //		std::vector<double> pointdistance_seq(const std::vector<double>& px, const std::vector<double>& py, double m, bool lonlat);
 
 
-		std::vector<double> linedistLonLat(SpatVector x, std::string unit);
+		std::vector<double> point2lineDistLonLat(SpatVector x, std::string unit, std::string method);
 
 		std::vector<std::vector<size_t>> knearest(size_t k);
 

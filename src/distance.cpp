@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
@@ -24,6 +23,7 @@
 //#include <math.h>
 #include <cmath>
 #include "geodesic.h"
+#include "geosphere.h"
 #include "recycle.h"
 #include <functional>
 #include <string>
@@ -32,7 +32,6 @@
 double toRad(double &deg) {
 	return( deg * 0.0174532925199433 );
 }
-
 
 double toDeg(double &rad) {
 	return( rad * 57.2957795130823 );
@@ -218,45 +217,91 @@ std::vector<double> direction_lonlat(std::vector<double> lon1, std::vector<doubl
 }
 
 
-void directionToNearest_lonlat(std::vector<double> &azi, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2, bool& degrees, bool& from) {
+inline void deg2rad(std::vector<double> &x) {
+	const double f = 0.0174532925199433;
+	for (double& d : x) d *= f;
+}
 
-	double a = 6378137.0;
-	double f = 1/298.257223563;
 
-	double azi1, azi2, s12, dist;
-	size_t n = lon1.size();
-	size_t m = lon2.size();
 
-	azi.resize(n, NAN);
+void directionToNearest_lonlat(std::vector<double> &azi, std::vector<double> &lon1, std::vector<double> &lat1, std::vector<double> &lon2, std::vector<double> &lat2, bool& degrees, bool& from, const std::string &method) {
 
-	struct geod_geodesic g;
-	geod_init(&g, a, f);
+	if (method == "geo") {
+		double a = 6378137.0;
+		double f = 1/298.257223563;
 
-	for (size_t i=0; i < n; i++) {
-		if (std::isnan(lat1[i])) {
-			azi[i] = NAN;
-			continue;
-		}
-		geod_inverse(&g, lat1[i], lon1[i], lat2[0], lon2[0], &dist, &azi1, &azi2);
-		size_t minj=0;
-		azi[i] = azi1;
-		for (size_t j=1; j<m; j++) {
-			geod_inverse(&g, lat1[i], lon1[i], lat2[j], lon2[j], &s12, &azi1, &azi2);
-			if (s12 < dist) {
-				minj = j;
-				dist = s12;
+		double azi1, azi2, s12, dist;
+		size_t n = lon1.size();
+		size_t m = lon2.size();
+
+		azi.resize(n, NAN);
+
+		struct geod_geodesic g;
+		geod_init(&g, a, f);
+
+		for (size_t i=0; i < n; i++) {
+			if (std::isnan(lat1[i])) {
+				azi[i] = NAN;
+				continue;
+			}
+			geod_inverse(&g, lat1[i], lon1[i], lat2[0], lon2[0], &dist, &azi1, &azi2);
+			size_t minj=0;
+			azi[i] = azi1;
+			for (size_t j=1; j<m; j++) {
+				geod_inverse(&g, lat1[i], lon1[i], lat2[j], lon2[j], &s12, &azi1, &azi2);
+				if (s12 < dist) {
+					minj = j;
+					dist = s12;
+					azi[i] = azi1;
+				}
+			}
+			if (from) {
+				geod_inverse(&g, lat2[minj], lon2[minj], lat1[i], lon1[i], &s12, &azi1, &azi2);
 				azi[i] = azi1;
 			}
+			if (!degrees) {
+				azi[i] = toRad(azi[i]);
+			}
 		}
-		if (from) {
-			geod_inverse(&g, lat2[minj], lon2[minj], lat1[i], lon1[i], &s12, &azi1, &azi2);
-			azi[i] = azi1;
+	} else {
+
+
+//		double azi1, azi2, s12, dist;
+		size_t n = lon1.size();
+		size_t m = lon2.size();
+		deg2rad(lat1);
+		deg2rad(lon1);
+		deg2rad(lat2);
+		deg2rad(lon2);
+		
+		azi.resize(n, NAN);
+
+		for (size_t i=0; i < n; i++) {
+			if (std::isnan(lat1[i])) {
+				azi[i] = NAN;
+				continue;
+			}
+			azi[i] = direction_cos(lon1[i], lat1[i], lon2[0], lat2[0]);
+			double dist = distance_cos(lon1[i], lat1[i], lon2[0], lat2[0]);
+			size_t minj=0;
+			for (size_t j=1; j<m; j++) {
+				double d = distance_cos(lon1[i], lat1[i], lon2[j], lat2[j]);
+				if (d < dist) {
+					minj = j;
+					dist = d;
+					azi[i] = direction_cos(lon1[i], lat1[i], lon2[j], lat2[j]);
+				}
+			}
+			if (from) {
+				azi[i] = direction_cos(lon2[minj], lat2[minj], lon1[i], lat1[i]);
+			}
+			if (degrees) {
+				azi[i] = toDeg(azi[i]);
+			}
 		}
-		if (!degrees) {
-			azi[i] = toRad(azi[i]);
-		}
-	}
-}
+	}	
+}		
+		
 
 
 
