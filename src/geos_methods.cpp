@@ -2349,7 +2349,7 @@ bool get_dist_fun(dist_fn &f, std::string s) {
 }
 
 
-std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel, std::string fun) {
+std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel, std::string fun, double m) {
 
 	std::vector<double> out;
 
@@ -2415,10 +2415,13 @@ std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel, std::
 		}
 	}
 	geos_finish(hGEOSCtxt);
+	if (m != 1) {
+		for (double &d : out) d *= m;
+	}
 	return out;
  }
 
-std::vector<double> SpatVector::geos_distance(bool sequential, std::string fun) {
+std::vector<double> SpatVector::geos_distance(bool sequential, std::string fun, double m) {
 
 	std::vector<double> out;
 	dist_fn distfun;
@@ -2457,6 +2460,9 @@ std::vector<double> SpatVector::geos_distance(bool sequential, std::string fun) 
 		out.push_back(0);
 	}
 	geos_finish(hGEOSCtxt);
+	if (m != 1) {
+		for (double &d : out) d *= m;
+	}
 	return out;
  }
 
@@ -2926,6 +2932,8 @@ SpatVector SpatVector::gaps() {
 }
 
 
+
+// also use GEOSPreparedNearestPoints_r()
 
 SpatVector SpatVector::nearest_point(SpatVector v, bool parallel, const std::string method) {
 	SpatVector out;

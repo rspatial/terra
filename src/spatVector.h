@@ -203,8 +203,7 @@ class SpatVector {
 //		std::vector<double> pointdistance_seq(const std::vector<double>& px, const std::vector<double>& py, double m, bool lonlat);
 
 
-		std::vector<double> nearestDistLonLat(std::vector<double> &x, std::vector<double> &y, std::string unit, std::string method);
-
+		std::vector<double> nearestDistLonLat(std::vector<double> x, std::vector<double> y, std::string unit, std::string method);
 		std::vector<std::vector<size_t>> knearest(size_t k);
 
 		size_t size();
@@ -384,8 +383,8 @@ class SpatVector {
 		std::vector<unsigned> equals_exact(SpatVector v, double tol);
 		std::vector<unsigned> equals_exact(bool symmetrical, double tol);
 
-		std::vector<double> geos_distance(SpatVector v, bool parallel, std::string fun);
-		std::vector<double> geos_distance(bool sequential, std::string fun);
+		std::vector<double> geos_distance(SpatVector v, bool parallel, std::string fun, double m);
+		std::vector<double> geos_distance(bool sequential, std::string fun, double m);
 
 		SpatVector nearest_point(SpatVector v, bool parallel, const std::string method);
 		SpatVector nearest_point(const std::string method);
