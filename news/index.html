@@ -53,6 +53,7 @@
 <code>autocor</code> improved handling of NA cells for global Moran computation <a href="https://github.com/rspatial/terra/issues/1592" class="external-link">#1992</a> by Nicholas Berryman</li>
 <li>
 <code>shade</code> is more memory-safe. <a href="https://github.com/rspatial/terra/issues/1452" class="external-link">#1452</a> by Francis van Oordt and Chris English</li>
+<li>fixed bug in <code>rasterize</code> revealed when using <code>crop(mask=TRUE)</code> <a href="https://github.com/rspatial/terra/issues/1686" class="external-link">#1686</a> by edixon1</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-7">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-7"></a></h3>
@@ -66,6 +67,8 @@
 <li>When using RStudio a once per session warning is given when using draw, sel or click <a href="https://github.com/rspatial/terra/issues/1063" class="external-link">#1063</a> by Sergei Kharchenko</li>
 <li>
 <code>distance&lt;SpatRaster&gt;</code> from lon and lat lines/polygons computes distance to the edges instead of the nodes <a href="https://github.com/rspatial/terra/issues/1462" class="external-link">#1462</a> by Derek Friend</li>
+<li>
+<code>distance&lt;SpatVector,SpatVector&gt;</code> now works for lon/lat data <a href="https://github.com/rspatial/terra/issues/1615" class="external-link">#1615</a> by Wencheng Lau-Medrano</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-7">new<a class="anchor" aria-label="anchor" href="#new-1-8-7"></a></h3>
