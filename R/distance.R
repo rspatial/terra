@@ -74,11 +74,13 @@ setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
 			error("distance", "not a valid method. Should be one of: 'geo', 'haversine', 'cosine'")
 		}
 
-		if (rasterize) {
-			x@pntr <- x@pntr$vectDistanceRasterize(y@pntr, NA, NA, unit, method, opt)
-		} else {
-			x@pntr <- x@pntr$vectDistanceDirect(y@pntr, unit, method, opt)
-		}
+		x@pntr <- x@pntr$vectDistance(y@pntr, rasterize, unit, method, opt)
+
+#		if (rasterize) {
+#			x@pntr <- x@pntr$vectDistanceRasterize(y@pntr, NA, NA, unit, method, opt)
+#		} else {
+#			x@pntr <- x@pntr$vectDistanceDirect(y@pntr, unit, method, opt)
+#		}
 		messages(x, "distance")
 	}
 )

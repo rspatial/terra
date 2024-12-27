@@ -405,18 +405,22 @@ RCPP_MODULE(spat){
 	;
 
 
+/*
     class_<SpatVector>("SpatVector")
 		.constructor()
 		.constructor<SpatExtent, std::string>()
 		.constructor<std::vector<std::string>>()
 	;
-
+*/
 
     class_<SpatVector>("SpatVector")
 		.constructor()
 		.constructor<SpatExtent, std::string>()
 		.constructor<std::vector<std::string>>()
 
+
+//		.method("pointInPolygon", &SpatVector::pointInPolygon)
+		
 		.method("deepcopy", &SpatVector::deepCopy)
 		.method("wkt", &SpatVector::wkt)
 		.method("wkb", &SpatVector::wkb)
@@ -460,7 +464,6 @@ RCPP_MODULE(spat){
 		.method("linesList", &SpatVector::linesList)
 		.method("polygonsList", &SpatVector::polygonsList)
 		.method("linesNA", &SpatVector::linesNA)
-		.method("linedistlonlat", &SpatVector::point2lineDistLonLat)
 
 		.method("add_column_empty", (void (SpatVector::*)(unsigned dtype, std::string name))( &SpatVector::add_column))
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
@@ -868,7 +871,15 @@ RCPP_MODULE(spat){
 		.method("gridDistance", &SpatRaster::gridDistance)
 		.method("costDistance", &SpatRaster::costDistance)
 		.method("rastDistance", &SpatRaster::distance)
+		.method("vectDistance", &SpatRaster::distance_vector)
 		.method("rastDirection", &SpatRaster::direction)
+		.method("vectDirectionRasterize", &SpatRaster::direction_rasterize)
+		
+//		.method("vectDistanceDirect", &SpatRaster::distance_spatvector)
+//		.method("vectDistanceRasterize", &SpatRaster::distance_rasterize)
+
+		
+		
 		.method("get_tiles_ext", &SpatRaster::get_tiles_extent)
 		.method("get_tiles_ext_vect", &SpatRaster::get_tiles_extent_vect)
 		.method("make_tiles", &SpatRaster::make_tiles)
@@ -877,9 +888,6 @@ RCPP_MODULE(spat){
 
 		.method("combineCats", &SpatRaster::combineCats)
 		.method("droplevels", &SpatRaster::dropLevels)
-		.method("vectDistanceDirect", &SpatRaster::distance_spatvector)
-		.method("vectDistanceRasterize", &SpatRaster::distance_rasterize)
-		.method("vectDirectionRasterize", &SpatRaster::direction_rasterize)
 		.method("clamp", &SpatRaster::clamp)
 		.method("clamp_raster", &SpatRaster::clamp_raster)
 		.method("clamp_ts", &SpatRaster::clamp_ts)

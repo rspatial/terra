@@ -135,6 +135,8 @@ if (!isGeneric("RGB<-")) {setGeneric("RGB<-", function(x, ..., value) standardGe
 if (!isGeneric("autocor")) {setGeneric("autocor", function(x, ...) standardGeneric("autocor"))}
 if (!isGeneric("delaunay")) {setGeneric("delaunay", function(x, ...) standardGeneric("delaunay"))}
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x, ...) standardGeneric("voronoi"))}
+if (!isGeneric("hull")) {setGeneric("hull", function(x, ...) standardGeneric("hull"))}
+
 if (!isGeneric("convHull")) {setGeneric("convHull", function(x, ...) standardGeneric("convHull"))}
 if (!isGeneric("minRect")) {setGeneric("minRect", function(x, ...) standardGeneric("minRect"))}
 if (!isGeneric("minCircle")) {setGeneric("minCircle", function(x, ...) standardGeneric("minCircle"))}

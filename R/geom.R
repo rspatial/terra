@@ -359,7 +359,7 @@ setMethod("convHull", signature(x="SpatVector"),
 
 setMethod("minRect", signature(x="SpatVector"),
 	function(x, by="") {
-		x@pntr <- x@pntr$hull("minrot", by[1])
+		x@pntr <- x@pntr$hull("rectangle", by[1])
 		messages(x, "minRect")
 	}
 )
@@ -370,6 +370,16 @@ setMethod("minCircle", signature(x="SpatVector"),
 		messages(x, "minCircle")
 	}
 )
+
+setMethod("hull", signature(x="SpatVector"),
+	function(x, type="convex", by="") {
+		type <- match.arg(tolower(type), c("convex", "concave", "rectangle", "circle"))
+		
+		x@pntr <- x@pntr$hull(type, by[1])
+		messages(x, "hull")
+	}
+)
+
 
 
 setMethod("disagg", signature(x="SpatVector"),

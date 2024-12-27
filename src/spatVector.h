@@ -203,7 +203,7 @@ class SpatVector {
 //		std::vector<double> pointdistance_seq(const std::vector<double>& px, const std::vector<double>& py, double m, bool lonlat);
 
 
-		std::vector<double> point2lineDistLonLat(SpatVector x, std::string unit, std::string method);
+		std::vector<double> nearestDistLonLat(std::vector<double> &x, std::vector<double> &y, std::string unit, std::string method);
 
 		std::vector<std::vector<size_t>> knearest(size_t k);
 
@@ -348,14 +348,16 @@ class SpatVector {
 
 		SpatVector centroid(bool check_lonlat);
 		SpatVector point_on_surface(bool check_lonlat);
+		std::vector<int> pointInPolygon(std::vector<double> &x, std::vector<double> &y);
 
 		SpatVector crop(SpatExtent e, bool wrap);
 		SpatVector crop(SpatVector e);
 		SpatVector voronoi(SpatVector bnd, double tolerance, int onlyEdges);		
 		SpatVector voronoi_sphere(SpatVector bnd, double tolerance, int onlyEdges);
 
-		SpatVector delaunay(double tolerance, int onlyEdges);		
-		SpatVector hull(std::string htype, std::string by="");
+		SpatVector delaunay(double tolerance, int onlyEdges, bool constrained=false);		
+		SpatVector hull(std::string htype, std::string by="", double param=1, bool allowHoles=true, bool tight=true);
+
 		SpatVector intersect(SpatVector v, bool values);
 		SpatVector unite(SpatVector v);
 		SpatVector unite();

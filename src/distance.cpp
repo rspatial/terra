@@ -91,6 +91,7 @@ double distHaversine(double lon1, double lat1, double lon2, double lat2) {
 	return 2. * atan2(sqrt(a), sqrt(1.-a)) * r;
 }
 
+/*
 double distHaversineRad(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
 	const double r = 6378137;
 	double dLat = lat2-lat1;
@@ -98,7 +99,7 @@ double distHaversineRad(const double &lon1, const double &lat1, const double &lo
 	double a = sin(dLat/2.) * sin(dLat/2.) + cos(lat1) * cos(lat2) * sin(dLon/2.) * sin(dLon/2.);
 	return 2. * atan2(sqrt(a), sqrt(1.-a)) * r;
 }
-
+*/
 
 
 
@@ -215,13 +216,6 @@ std::vector<double> direction_lonlat(std::vector<double> lon1, std::vector<doubl
 	}
   	return azi1;
 }
-
-
-inline void deg2rad(std::vector<double> &x) {
-	const double f = 0.0174532925199433;
-	for (double& d : x) d *= f;
-}
-
 
 
 void directionToNearest_lonlat(std::vector<double> &azi, std::vector<double> &lon1, std::vector<double> &lat1, std::vector<double> &lon2, std::vector<double> &lat2, bool& degrees, bool& from, const std::string &method) {

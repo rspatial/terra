@@ -308,6 +308,7 @@ class SpatSRS {
 #endif		
 */
 		double to_meter();
+		bool m_dist(double &m, bool lonlat, std::string unit);
 
 		std::string get(std::string x) {
 			return (x == "proj4" ? proj4 : wkt); 

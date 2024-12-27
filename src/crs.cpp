@@ -147,6 +147,24 @@ double SpatSRS::to_meter() {
 	return out;
 }
 
+
+bool SpatSRS::m_dist(double &m, bool lonlat, std::string unit) {
+	m = 1;
+	if (!lonlat) {
+		m = to_meter();
+		m = std::isnan(m) ? 1 : m;
+	}
+	std::vector<std::string> ss {"m", "km"};
+	if (std::find(ss.begin(), ss.end(), unit) == ss.end()) {
+		return false;
+	}
+	if (unit == "km")	{
+		m /= 1000;
+	}
+	return true;
+}
+
+
 bool SpatSRS::is_same(SpatSRS other, bool ignoreempty) {
 	if (ignoreempty) {
 		if (is_empty() || other.is_empty()) {

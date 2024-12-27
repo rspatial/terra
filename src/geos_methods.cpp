@@ -941,7 +941,7 @@ SpatVector SpatVector::crop(SpatVector v) {
 
 
 
-SpatVector SpatVector::hull(std::string htype, std::string by) {
+SpatVector SpatVector::hull(std::string htype, std::string by, double param, bool allowHoles, bool tight) {
 
 	SpatVector out;
 	if (nrow() == 0) {
@@ -974,6 +974,7 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 
 	out.reserve(size());
 
+
 	if (htype != "convex") {
 		#ifndef GEOS361
 		out.setError("GEOS 3.6.1 required for rotated rectangle");
@@ -996,21 +997,45 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 	//std::string vt = type();
 	GEOSGeometry* h;
 	if (htype == "convex") {
-		h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
+		h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());	
 	} else if (htype == "circle") {
 	#ifndef GEOS380
+		geos_finish(hGEOSCtxt);
 		out.setError("GEOS 3.8 required for bounding circle");
 		return out;
 	#else
 		h = GEOSMinimumBoundingCircle_r(hGEOSCtxt, g[0].get(), NULL, NULL);
 	#endif
-	} else {
+	} else if (htype == "rectangle") {
 	#ifndef GEOS361
+		geos_finish(hGEOSCtxt);
 		out.setError("GEOS 3.6.1 required for rotated rectangle");
 		return out;
 	#else
 		h = GEOSMinimumRotatedRectangle_r(hGEOSCtxt, g[0].get());
 	#endif
+	} else if (htype.substr(0, 7) == "concave") {
+	#ifndef GEOS3110
+		geos_finish(hGEOSCtxt);
+		out.setError("GEOS 3.11 required for concave hull");
+		return out;
+	#else
+		if (htype == "concave_ratio") {
+			h = GEOSConcaveHull_r(hGEOSCtxt, g[0].get(), param, allowHoles);
+		} else if (htype == "concave_length") {
+			h = GEOSConcaveHullByLength_r(hGEOSCtxt, g[0].get(), param, allowHoles);
+		} else if (htype == "concave_polygons") {
+			h = GEOSConcaveHullOfPolygons_r(hGEOSCtxt, g[0].get(), param, tight, allowHoles);
+		} else {
+			geos_finish(hGEOSCtxt);
+			out.setError("unknown hull type");
+			return out;			
+		}
+	#endif
+	} else {
+		geos_finish(hGEOSCtxt);
+		out.setError("unknown hull type");
+		return out;
 	}
 	
 	std::vector<GeomPtr> b(1);
@@ -1090,14 +1115,19 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 
 
 
-SpatVector SpatVector::delaunay(double tolerance, int onlyEdges) {
+SpatVector SpatVector::delaunay(double tolerance, int onlyEdges, bool constrained) {
 	SpatVector out;
 	if (nrow() == 0) {
 		out.addWarning("input SpatVector has no geometries");
 		return out;
 	}
 
-#ifndef GEOS350
+#ifndef GEOS3100
+	if (constrained) {
+		out.setError("GEOS 3.10 required for constrained delaunay");
+		return out;
+	}
+#elifndef GEOS350
 	out.setError("GEOS 3.5 required for delaunay");
 	return out;
 #else
@@ -1105,7 +1135,13 @@ SpatVector SpatVector::delaunay(double tolerance, int onlyEdges) {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	SpatVector a = aggregate(false);
 	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);
-	GEOSGeometry* v = GEOSDelaunayTriangulation_r(hGEOSCtxt, g[0].get(), tolerance, onlyEdges);
+
+	GEOSGeometry* v;
+	if (constrained) {
+		v = GEOSConstrainedDelaunayTriangulation_r(hGEOSCtxt, g[0].get());
+	} else {
+		v = GEOSDelaunayTriangulation_r(hGEOSCtxt, g[0].get(), tolerance, onlyEdges);
+	}	
 	if (v == NULL) {
 		out.setError("GEOS exception");
 		geos_finish(hGEOSCtxt);
@@ -1452,6 +1488,36 @@ int getRel(std::string &relation) {
 		relation = rel;
 	}
 	return pattern;
+}
+
+
+std::vector<int> SpatVector::pointInPolygon(std::vector<double> &x, std::vector<double> &y) {
+
+	std::vector<int> out;
+
+#ifdef GEOS3120
+	size_t ng = size();
+	size_t np = x.size();
+	out.reserve(np);
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+
+	for (size_t i = 0; i < ng; i++) {
+		PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, g[i].get()), hGEOSCtxt);
+		for (size_t j = 0; j < np; j++) {
+			out.push_back( GEOSPreparedIntersectsXY_r(hGEOSCtxt, pr.get(), x[j], y[j]));
+		}
+	}
+
+# else 
+	SpatVector pnts;
+	pnts.srs = srs;
+	pnts.setPointsGeometry(x, y);
+	out = relate(pnts, "intersects")
+
+# endif
+
+	return out;
 }
 
 std::vector<int> SpatVector::relate(SpatVector v, std::string relation, bool prepared, bool index) {
