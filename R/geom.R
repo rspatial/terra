@@ -352,30 +352,29 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 
 setMethod("convHull", signature(x="SpatVector"),
 	function(x, by="") {
-		x@pntr <- x@pntr$hull("convex", by[1])
+		x@pntr <- x@pntr$hull("convex", by[1], 0, TRUE, TRUE)
 		messages(x, "convHull")
 	}
 )
 
 setMethod("minRect", signature(x="SpatVector"),
 	function(x, by="") {
-		x@pntr <- x@pntr$hull("rectangle", by[1])
+		x@pntr <- x@pntr$hull("rectangle", by[1], 0, TRUE, TRUE)
 		messages(x, "minRect")
 	}
 )
 
 setMethod("minCircle", signature(x="SpatVector"),
 	function(x, by="") {
-		x@pntr <- x@pntr$hull("circle", by[1])
+		x@pntr <- x@pntr$hull("circle", by[1], 0, TRUE, TRUE)
 		messages(x, "minCircle")
 	}
 )
 
 setMethod("hull", signature(x="SpatVector"),
-	function(x, type="convex", by="") {
-		type <- match.arg(tolower(type), c("convex", "concave", "rectangle", "circle"))
-		
-		x@pntr <- x@pntr$hull(type, by[1])
+	function(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE) {
+		type <- match.arg(tolower(type), c("convex", "concave_ratio", "concave_length", "rectangle", "circle"))
+		x@pntr <- x@pntr$hull(type, by[1], param, allowHoles, tight)
 		messages(x, "hull")
 	}
 )
