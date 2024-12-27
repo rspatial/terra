@@ -362,18 +362,20 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 	}
 	bool lonlat = is_lonlat(); 
 
-/*
-	double m=1;
-	if (!source[0].srs.m_dist(m, lonlat, unit)) {
-		out.setError("invalid unit");
+	if ((unit != "m") && (unit != "km")) {
+		out.setError("invalid unit. Must be 'm' or 'km'");
 		return(out);
 	}
-*/
 
 	if (rasterize) {
 //SpatRaster SpatRaster::distance_rasterize(SpatVector p, double target, double exclude, std::string unit, const std::string& method, SpatOptions &opt) {
-
 //		double target = NAN;
+
+		if ((method != "geo") && (method != "cosine") && (method != "haversine")) {
+			out.setError("invalid method. Must be 'geo', 'cosine' or 'haversine'");
+			return(out);
+		}
+
 		double exclude = NAN;
 
 		SpatRaster x;
@@ -410,6 +412,11 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 	} else {
 
 		if ((p.type() == "polygons") || (p.type() == "lines")) {
+
+			if ((method != "geo") && (method != "cosine")) {
+				out.setError("invalid method. Must be 'geo' or 'cosine'");
+				return(out);
+			}
 			
 			if (p.nrow() > 1) {
 				p = p.aggregate(true);
@@ -443,6 +450,11 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 			
 		} else {
 		//p = p.aggregate(false);
+			if ((method != "geo") && (method != "cosine") && (method != "haversine")) {
+				out.setError("invalid method. Must be 'geo', 'cosine' or 'haversine'");
+				return(out);
+			}
+
 			std::vector<std::vector<double>> pxy = p.coordinates();
 			SpatOptions ops(opt);
 			bool setNA = false;

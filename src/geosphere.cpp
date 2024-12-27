@@ -152,11 +152,9 @@ double alongTrackDistance_geo(double lon1, double lat1, double lon2, double lat2
 	double d, b2, b3, azi;
 	geod_inverse(&geod, lat1, lon1, lat2, lon2, &d, &b2, &azi);
 	geod_inverse(&geod, lat1, lon1, plat, plon, &d, &b3, &azi);
-	double toRad = M_PI / 180.;
-	b2 *= toRad;
-	b3 *= toRad;
+	deg2rad(b2);
+	deg2rad(b3);
 	double xtr = asin(sin(b3-b2) * sin(d));
-
 	double bsign = get_sign(cos(b2-b3));
 	return fabs(bsign * acos(cos(d) / cos(xtr)) * r);
 }

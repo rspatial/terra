@@ -10,6 +10,7 @@
 - `split<SpatVector,SpatVector>` did not work properly [#1619](https://github.com/rspatial/terra/issues/1619) by Michael Sumner
 - `autocor` improved handling of NA cells for global Moran computation [#1992](https://github.com/rspatial/terra/issues/1592) by Nicholas Berryman
 - `shade` is more memory-safe. [#1452](https://github.com/rspatial/terra/issues/1452) by Francis van Oordt and Chris English
+- fixed bug in `rasterize` revealed when using `crop(mask=TRUE)` [#1686](https://github.com/rspatial/terra/issues/1686) by edixon1
 
 ## enhancements
 
@@ -19,6 +20,7 @@
 - better handling of the 32 connection limiations set by the HDF4 library [#1481](https://github.com/rspatial/terra/issues/1481) by Dimitri Falk
 - When using RStudio a once per session warning is given when using draw, sel or click [#1063](https://github.com/rspatial/terra/issues/1063) by Sergei Kharchenko
 - `distance<SpatRaster>` from lon and lat lines/polygons computes distance to the edges instead of the nodes [#1462](https://github.com/rspatial/terra/issues/1462) by Derek Friend
+- `distance<SpatVector,SpatVector>` now works for lon/lat data [#1615](https://github.com/rspatial/terra/issues/1615) by Wencheng Lau-Medrano
 
 ## new 
 

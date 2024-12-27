@@ -30,7 +30,7 @@ std::vector<double> SpatVector::nearestDistLonLat(std::vector<double> x, std::ve
 	double m = 1;
 	if (unit == "km") {
 		r = 6378.137;
-		m = 1/1000;
+		m = 0.001;
 	}
 
 	std::vector<int> inside;
@@ -167,6 +167,11 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 	double m=1;
 	if (!srs.m_dist(m, lonlat, unit)) {
 		setError("invalid unit");
+		return(d);
+	}
+
+	if ((method != "geo") && (method != "cosine")) {
+		setError("invalid method. Must be 'geo' or 'cosine'");
 		return(d);
 	}
 
