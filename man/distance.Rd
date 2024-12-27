@@ -21,7 +21,7 @@ If \code{y} is \code{missing} this method computes the distance, for all cells t
 
 If \code{y} is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed (only if \code{grid=FALSE}).
 
-If \code{y} is a SpatVector, the distance to that SpatVector is computed for all cells. For lines and polygons this is done after rasterization; and only the overlapping areas of the vector and raster are considered (for now).
+If \code{y} is a SpatVector, the distance to that SpatVector is computed for all cells, optionally after rasterization.
 
 The distance is always expressed in meter if the coordinate reference system is longitude/latitude, and in map units otherwise. Map units are typically meter, but inspect \code{crs(x)} if in doubt.
 
@@ -32,9 +32,6 @@ If \code{x} is a \bold{SpatVector}:
 If \code{y} is \code{missing}, a distance matrix between all objects in \code{x} is computed. A distance matrix object of class "dist" is returned. 
 
 If \code{y} is a SpatVector the geographic distance between all objects is computed (and a matrix is returned). If both sets have the same number of points, and \code{pairwise=TRUE}, the distance between each pair of objects is computed, and a vector is returned.
-
-The distance is always expressed in meter, except when the coordinate reference system is longitude/latitude AND one of the SpatVector(s) consists of lines or polygons. In that case the distance is in degrees, and thus not very useful (this will be fixed soon). Otherwise, results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance. 
-
 
 If \code{x} is a \bold{matrix}:
 
@@ -78,7 +75,7 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
 }
 
 \value{
-SpatRaster or numeric or matrix or distance matrix (object of class "dist")
+SpatRaster, numeric, matrix, or a distance matrix (object of class "dist")
 }
 
 \note{

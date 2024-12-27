@@ -237,74 +237,111 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 		return(d);
 	}
 	std::string gtype = type();
-	if (gtype != "points") {
-		return geos_distance(sequential, "", m);
-	} else {
-		if (sequential) {
-			std::vector<std::vector<double>> p = coordinates();
-			size_t n = p[0].size();
-			d.reserve(n);
-			d.push_back(0);
-			n -= 1;
-			if (lonlat) {
-				std::function<double(double, double, double, double)> dfun;
-				if (method == "haversine") {
-					dfun = distHaversine;
-				} else if (method == "cosine") {
-					dfun = distCosine;			
-				} else if (method == "geo") {
-					dfun = distLonlat;
-				} else {
-					setError("invalid lonlat distance method. Should be 'geo', 'cosine', or 'haversine'");
-					return(d);	
-				}
-				for (size_t i=0; i<n; i++) {
-					d.push_back(
-						dfun(p[0][i], p[1][i], p[0][i+1], p[1][i+1]) *  m
-					);
-				}
+	if (gtype == "points") {
+		if (lonlat) {
+			std::function<double(double, double, double, double)> dfun;
+			if (method == "haversine") {
+				dfun = distHaversine;
+			} else if (method == "cosine") {
+				dfun = distCosine;			
+			} else if (method == "geo") {
+				dfun = distLonlat;
 			} else {
-				for (size_t i=0; i<n; i++) {
-					d.push_back(
-						distance_plane(p[0][i], p[1][i], p[0][i+1], p[1][i+1]) * m
-					);
-				}
+				setError("invalid lonlat distance method. Should be 'geo', 'cosine', or 'haversine'");
+				return(d);	
 			}
 
-		} else {
-			size_t s = size();
-			size_t n = ((s-1) * s)/2;
-			d.reserve(n);
-			std::vector<std::vector<double>> p = coordinates();
-			if (lonlat) {
-				std::function<double(double, double, double, double)> dfun;
-				if (method == "haversine") {
-					dfun = distHaversine;
-				} else if (method == "cosine") {
-					dfun = distCosine;			
-				} else if (method == "geo") {
-					dfun = distLonlat;				
-				} else {
-					setError("invalid lonlat distance method. Should be 'geo', 'cosine', or 'haversine'");
-					return(d);	
-				}
-				
-				for (size_t i=0; i<(s-1); i++) {
-					for (size_t j=(i+1); j<s; j++) {
+			if (sequential) {
+				std::vector<std::vector<double>> p = coordinates();
+				size_t n = p[0].size();
+				d.reserve(n);
+				d.push_back(0);
+				n -= 1;
+				if (lonlat) {
+					for (size_t i=0; i<n; i++) {
 						d.push_back(
-							dfun(p[0][i], p[1][i], p[0][j], p[1][j]) * m
+							dfun(p[0][i], p[1][i], p[0][i+1], p[1][i+1]) *  m
+						);
+					}
+				} else {
+					for (size_t i=0; i<n; i++) {
+						d.push_back(
+							distance_plane(p[0][i], p[1][i], p[0][i+1], p[1][i+1]) * m
 						);
 					}
 				}
+
 			} else {
-				for (size_t i=0; i<(s-1); i++) {
-					for (size_t j=(i+1); j<s; j++) {
-						d.push_back(
-							distance_plane(p[0][i], p[1][i], p[0][j], p[1][j]) * m
-						);
+				size_t s = size();
+				size_t n = ((s-1) * s)/2;
+				d.reserve(n);
+				std::vector<std::vector<double>> p = coordinates();
+				if (lonlat) {			
+					for (size_t i=0; i<(s-1); i++) {
+						for (size_t j=(i+1); j<s; j++) {
+							d.push_back(
+								dfun(p[0][i], p[1][i], p[0][j], p[1][j]) * m
+							);
+						}
+					}
+				} else {
+					for (size_t i=0; i<(s-1); i++) {
+						for (size_t j=(i+1); j<s; j++) {
+							d.push_back(
+								distance_plane(p[0][i], p[1][i], p[0][j], p[1][j]) * m
+							);
+						}
 					}
 				}
 			}
+		} 
+	} else {
+		if (lonlat) {
+			std::function<double(double, double, double, double)> dfun;
+			if (method == "haversine") {
+				dfun = distHaversine;
+			} else if (method == "cosine") {
+				dfun = distCosine;			
+			} else if (method == "geo") {
+				dfun = distLonlat;
+			} else {
+				setError("invalid lonlat distance method. Should be 'geo', 'cosine', or 'haversine'");
+				return(d);	
+			}
+
+			size_t n = size();
+			d.reserve(n);
+			if (sequential) {
+				n -= 1;
+				SpatVector tmp1 = subset_rows({0});
+				std::vector<std::vector<double>> xy1 = tmp1.coordinates();
+				for (size_t i=0; i<n; i++) {
+					SpatVector tmp2 = subset_rows( {(int)i+1} );
+					std::vector<double> d1 = tmp2.nearestDistLonLat(xy1[0], xy1[1], unit, method);
+					std::vector<std::vector<double>> xy2 = tmp2.coordinates();
+					std::vector<double> d2 = tmp1.nearestDistLonLat(xy2[0], xy2[1], unit, method);
+					d.push_back(std::min(vmin(d1, false), vmin(d2, false)));
+					tmp1 = tmp2;
+					xy1 = xy2;
+				}
+			} else {
+				size_t s = size();
+				size_t n = ((s-1) * s)/2;
+				d.reserve(n);
+				for (size_t i=0; i<(s-1); i++) {
+					SpatVector tmp1 = subset_rows({(int)i});
+					std::vector<std::vector<double>> xy1 = tmp1.coordinates();
+					for (size_t j=(i+1); j<s; j++) {
+						SpatVector tmp2 = subset_rows( {(int)j} );
+						std::vector<double> d1 = tmp2.nearestDistLonLat(xy1[0], xy1[1], unit, method);
+						std::vector<std::vector<double>> xy2 = tmp2.coordinates();
+						std::vector<double> d2 = tmp1.nearestDistLonLat(xy2[0], xy2[1], unit, method);
+						d.push_back(std::min(vmin(d1, false), vmin(d2, false)));
+					}
+				}
+			}
+		} else {
+			return geos_distance(sequential, "", m);
 		}
 	}
 
