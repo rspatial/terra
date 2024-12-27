@@ -706,10 +706,11 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	char** papszOptions = NULL;
 
 	for (size_t i = 0; i < out.bs.n; i++) {
+
 		if (out.bs.n > 1) {
-			double halfres = tmp.yres() / 2;
-			e.ymax = tmp.yFromRow(out.bs.row[i]) + halfres;
-			e.ymin = tmp.yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1) - halfres;
+			double halfres = temp.yres() / 2;
+			e.ymax = temp.yFromRow(out.bs.row[i]) + halfres;
+			e.ymin = temp.yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1) - halfres;
 			if (update) {
 				tmp = crop(e, "near", false, topt);	
 			} else {
