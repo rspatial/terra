@@ -61,11 +61,13 @@ m3 <- merge(y, x, z)
 
 # if you have many SpatRasters, it may be convenient
 # to make a SpatRasterCollection
-rlist <- list(x, y, z)
-rsrc <- sprc(rlist)
+# s <- sprc(list(x, y, z))
+s <- sprc(x, y, z)
 
-m <- merge(rsrc)
-
+sm1 <- merge(s, algo=1, first=FALSE)
+sm2 <- merge(s, algo=2, first=FALSE)
+sm3 <- merge(s, algo=3, first=FALSE)
+# panel(c(sm1, sm2, sm3))
 
 ## SpatVector with data.frame
 f <- system.file("ex/lux.shp", package="terra")
