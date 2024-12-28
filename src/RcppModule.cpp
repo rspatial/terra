@@ -899,7 +899,9 @@ RCPP_MODULE(spat){
 		.method("sort", &SpatRaster::sort)
 		.method("intersect", &SpatRaster::intersect)
 
-		.method("cover", &SpatRaster::cover)
+		.method("cover", ( SpatRaster (SpatRaster::*)(SpatRaster, std::vector<double>, SpatOptions&) )( &SpatRaster::cover))
+		.method("cover_self", ( SpatRaster (SpatRaster::*)(std::vector<double>, SpatOptions&) )( &SpatRaster::cover))
+
 		.method("crop", &SpatRaster::crop)
 		.method("crop_mask", &SpatRaster::cropmask)
 		.method("cum", &SpatRaster::cum)

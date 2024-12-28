@@ -3279,6 +3279,103 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 }
 
 
+SpatRaster SpatRaster::cover(std::vector<double> values, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1, true, true, true);
+	if (!hasValues()) return out;
+	size_t nl = nlyr();
+	if (nl == 1) {
+		return deepCopy();
+	}
+	if (!readStart()) {
+		out.setError(getError());
+		return out;
+	}
+
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+	if (values.size() == 1) {
+		double value=values[0];
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<size_t> off(nl);
+			for (size_t k=1; k < nl; k++) {
+				off[k] = k * out.bs.nrows[i] * ncol();
+			}
+			std::vector<double> v;
+			readValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol());
+			if (std::isnan(value)) {
+				for (size_t j=0; j < off[1]; j++) {
+					for (size_t k=1; k < nl; k++) {
+						if (std::isnan(v[j])) {
+							v[j] = v[j + off[k]];
+						} else {
+							continue;
+						}
+					}
+				}
+			} else {
+				for (size_t j=0; j < off[1]; j++) {
+					for (size_t k=1; k < nl; k++) {
+						if (v[j] == value) {
+							v[j] = v[j + off[k]];
+						} else {
+							continue;
+						}
+					}
+				}
+			}
+			std::vector<double> w = {v.begin(), v.begin()+off[1]}; 
+			if (!out.writeBlock(w, i)) return out;
+		}
+
+	} else {
+
+		values = vunique(values);
+		bool hasNA = false;
+		for (int i = values.size()-1; i>=0; i--) {
+			if (std::isnan(values[i])) {
+				hasNA = true;
+				values.erase(values.begin()+i);
+			}
+		}
+
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<size_t> off(nl);
+			for (size_t k=1; k < nl; k++) {
+				off[k] = k * out.bs.nrows[i] * ncol();
+			}
+			std::vector<double> v;
+			readValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol());
+			for (size_t j=0; j < off[1]; j++) {
+				if (hasNA) {
+					for (size_t k=1; k < nl; k++) {
+						if (std::isnan(v[j])) {
+							v[j] = v[j+off[k]];
+							continue;
+						}
+					}
+				}
+				for (size_t j=0; j<values.size(); j++) {
+					for (size_t k=1; k < nl; k++) {
+						if (v[j] == values[j]) {
+							v[j] = v[j+off[k]];
+							continue;
+						}
+					}
+				}
+			}
+			std::vector<double> w = {v.begin(), v.begin()+off[1]}; 
+			if (!out.writeBlock(w, i)) return out;
+		}
+	}
+
+	out.writeStop();
+	readStop();
+	return(out);
+}
+
 
 
 SpatRaster SpatRaster::extend(SpatExtent e, std::string snap, double fill, SpatOptions &opt) {
@@ -3619,6 +3716,8 @@ bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, size_t& nl, b
 
 SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, SpatOptions &opt) {
 
+// narm is not used!
+
 	SpatRaster out;
 	size_t n = size();
 	if (n == 0) {
@@ -3797,15 +3896,66 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, SpatOpti
 		return(out);
 		
 	} else if (algo==3) {
+
+		std::vector<std::string> options;
+		bool ml = false;
+		size_t nl = ds[0].nlyr();
+		for (size_t i=1; i<n; i++) {
+			if (nl != ds[i].nlyr()) {
+				options.push_back("-separate");
+				ml = true;
+				continue;
+			}
+		}
+		if (ml) {
+			out.setError("you cannot use this algo with input that has different numbers of layers");
+			return out;
+		}
+
+		bool wvrt = false;
+		std::string fout = opt.get_filename();
+		if (!fout.empty()) {
+			if (fout.size() > 4) {
+				std::string ss = fout.substr(fout.size()-4, fout.size());
+				lowercase(ss);
+				wvrt = ss == ".vrt";
+			}
+		}
+
+		if (fout != "") {
+			std::string fname;
+			if (opt.names.empty()) {
+				opt.names = ds[0].getNames();
+			}
+			if (wvrt) {
+				fname = make_vrt(options, first, opt);
+			} else {
+				SpatOptions vopt(opt);
+				fname = make_vrt(options, first, vopt);				
+			}
+				
+			if (hasError()) {
+				out.setError(getError());
+				return out;
+			}
+			SpatRaster v(fname, {}, {}, {}, {});
+			if (wvrt) {
+				return v;
+			} else {
+				return v.writeRaster(opt);
+			}
+		}
 		
 		SpatOptions vopt(opt);
-		std::string fname = make_vrt({}, !first, vopt);
+		std::string fname = make_vrt(options, first, vopt);
 		SpatRaster v(fname, {}, {}, {}, {});
-		return v.writeRaster(opt);
+		v.setNames(ds[0].getNames(), false);
+	
+		return v;
 		
 	} else {
 		out.setError("invalid algo (should be 1, 2, or 3)");
-		return(out);		
+		return out;		
 	}
 }
 

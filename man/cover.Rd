@@ -4,13 +4,14 @@
 
 \alias{cover}
 \alias{cover,SpatRaster,SpatRaster-method}
+\alias{cover,SpatRaster,missing-method}
 \alias{cover,SpatVector,SpatVector-method}
 
 
 \title{Replace values with values from another object}
 
 \description{
-Replace \code{NA} or other values in SpatRaster \code{x} with the values of SpatRaster \code{y}
+Replace missing (\code{NA}) or other values in SpatRaster \code{x} with the values of SpatRaster \code{y}. Or replace missing values in the first layer with the first value encountered in other layers.
 
 For polygons: areas of \code{x} that overlap with \code{y} are replaced by \code{y} or, if \code{identity=TRUE} intersected with \code{y}.
 
@@ -19,12 +20,14 @@ For polygons: areas of \code{x} that overlap with \code{y} are replaced by \code
 \usage{
 \S4method{cover}{SpatRaster,SpatRaster}(x, y, values=NA, filename="", ...)
 
+\S4method{cover}{SpatRaster,missing}(x, y, values=NA, filename="", ...)
+
 \S4method{cover}{SpatVector,SpatVector}(x, y, identity=FALSE, expand=TRUE)
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{y}{Same as \code{x}}
+  \item{y}{Same as \code{x} or missing if \code{x} is a SpatRaster}
   \item{values}{numeric. The cell values in \code{x} to be replaced by the values in \code{y}}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

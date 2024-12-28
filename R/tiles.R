@@ -88,8 +88,28 @@ setMethod("vrt", signature(x="character"),
 				writeLines(v, f)
 			}
 		}
-		if (return_filename) return(f)
-		rast(f)
+		if (return_filename) {
+			f
+		} else {
+			rast(f)
+		}
+	}
+)
+
+
+setMethod("vrt", signature(x="SpatRasterCollection"),
+	function(x, filename="", options=NULL, overwrite=FALSE, return_filename=FALSE) {
+		opt <- spatOptions(filename, overwrite=overwrite)
+		if (is.null(options)) {	
+			options=""[0]
+		} 
+		f <- x@pntr$make_vrt(options, FALSE, opt)
+		messages(x, "vrt")
+		if (return_filename) {
+			f
+		} else {
+			rast(f)
+		}
 	}
 )
 

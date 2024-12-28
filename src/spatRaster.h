@@ -637,6 +637,7 @@ class SpatRaster {
 		SpatRaster dropLevels();
 
 		SpatRaster cover(SpatRaster x, std::vector<double> value, SpatOptions &opt);
+		SpatRaster cover(std::vector<double> value, SpatOptions &opt);
 
 		SpatRaster crop(SpatExtent e, std::string snap, bool expand, SpatOptions &opt);
 		SpatRaster cropmask(SpatVector &v, std::string snap, bool touches, bool expand, SpatOptions &opt);

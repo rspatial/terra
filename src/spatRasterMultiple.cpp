@@ -101,17 +101,33 @@ void SpatRasterCollection::erase(size_t i) {
 
 std::string SpatRasterCollection::make_vrt(std::vector<std::string> options, bool reverse, SpatOptions &opt) {
 
+	std::string outfile = opt.get_filename();
+	if (outfile.empty()) {
+		outfile = tempFile(opt.get_tempdir(), opt.tmpfile, ".vrt");
+	} else if (file_exists(outfile) && (!opt.get_overwrite())) {
+		setError("output file exists. You can use 'overwrite=TRUE' to overwrite it");
+		return("");
+	}
+	opt.set_filenames({outfile});
+
 	std::vector<std::string> ff = filenames();
+	ff.reserve(size());
+	
 	SpatOptions xopt(opt);
-	for (size_t i=0; i<ff.size(); i++) {
-		if (ff[i] == "") {
-			ff[i] = tempFile(xopt.get_tempdir(), xopt.tmpfile, "_temp_raster.tif");
-			xopt.set_filenames({ff[i]});
+	for (size_t i=0; i<size(); i++) {
+//		if (!ds[i].hasValues()) continue;
+		std::vector<std::string> f = ds[i].filenames();
+		if ((ds[i].nsrc() == 1) && f[0] != "") {
+			ff.push_back(f[0]);
+		} else {
+			std::string tmpf = tempFile(xopt.get_tempdir(), xopt.tmpfile, "_temp_raster.tif");
+			xopt.set_filenames({tmpf});
 			SpatRaster out = ds[i].writeRaster(xopt);
 			if (out.hasError()) {
 				setError(out.getError());
 				return "";
 			}
+			ff.push_back(tmpf);
 		}
 	}
 	SpatRaster tmp;

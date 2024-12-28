@@ -572,6 +572,14 @@ setMethod("cover", signature(x="SpatRaster", y="SpatRaster"),
 	}
 )
 
+setMethod("cover", signature(x="SpatRaster", y="missing"),
+	function(x, y, values=NA, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@pntr <- x@pntr$cover_self(values, opt)
+		messages(x, "cover")
+	}
+)
+
 
 setMethod("diff", signature(x="SpatRaster"),
 	function(x, lag=1, filename="", ...) {
