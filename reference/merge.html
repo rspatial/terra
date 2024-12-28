@@ -44,10 +44,10 @@ There is also a method for merging SpatVector with a data.frame; that is, to joi
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster,SpatRaster'</span></span>
-<span><span class="fu">merge</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span>, first<span class="op">=</span><span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">merge</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span>, first<span class="op">=</span><span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, algo<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRasterCollection,missing'</span></span>
-<span><span class="fu">merge</span><span class="op">(</span><span class="va">x</span>, first<span class="op">=</span><span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">merge</span><span class="op">(</span><span class="va">x</span>, first<span class="op">=</span><span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, algo<span class="op">=</span><span class="fl">1</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector,data.frame'</span></span>
 <span><span class="fu">merge</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -70,6 +70,9 @@ There is also a method for merging SpatVector with a data.frame; that is, to joi
 
   <dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
 <dd><p>logical. If <code>TRUE</code> values that are <code>NA</code> are ignored</p></dd>
+
+  <dt id="arg-algo">algo<a class="anchor" aria-label="anchor" href="#arg-algo"></a></dt>
+<dd><p>integer. You can use 1, 2, or 3 to pick a merge algorithm. 1 appears to be fastest but file compression may be poor.  2 and 3 are slower but have better compression. 3 appears to have the best compression</p></dd>
 
   <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>character. Output filename</p></dd>
