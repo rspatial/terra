@@ -47,7 +47,7 @@ getLyrNrs <- function(layer, nms, n) {
 		layer <- match(layer, nms)
 	}
 	if (any(is.na(layer))) {
-		error("extract", "names in argument 'layer' do not match names(x)")
+#		error("extract", "names in argument 'layer' do not match names(x)")
 	}
 	rep_len(layer, n)
 }
@@ -223,6 +223,12 @@ setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
 function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE, layer=NULL, bind=FALSE, raw=FALSE, ...) {
 
 	geo <- geomtype(y)
+	if (!is.null(layer)) {
+		if (length(layer) != nrow(y)) {
+			error("extract", "length(layer) != nrow(y)")
+		}
+	}
+
 	if (geo == "points") {		
 		if (weights || exact) {
 			method <- "bilinear"
@@ -236,12 +242,13 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 			if (any(txtfun == "table")) {
 				if (length(fun) > 1) {
 					warn("extract", "'table' cannot be combined with other functions")
-				}			
+				}
 				if (!is.null(layer)) {
 					warn("extract", "argument 'layer' is ignored when 'fun=table'")
 				}
 				e <- extract_table(x, y, ID=ID, weights=weights, exact=exact, touches=touches, small=small, ...)
 			} else {
+				 
 				e <- extract_fun(x, y, txtfun, ID=ID, weights=weights, exact=exact, touches=touches, small=small, bind=bind, layer=layer, ...)
 			}
 			return(e)

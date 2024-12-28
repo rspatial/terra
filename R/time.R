@@ -75,6 +75,7 @@ setMethod("time", signature(x="SpatRaster"),
 		d <- x@pntr$time
 		tstep <- x@pntr$timestep
 		if (format != "") {
+			format = match.arg(format, c("seconds", "days", "months", "years", "yearmonths"))
 			if ((format == "months") && (tstep == "years")) {
 				error("time", "cannot extract months from years-time")
 			} else if ((format == "years") && (tstep %in% c("months"))) {
@@ -108,6 +109,9 @@ setMethod("time", signature(x="SpatRaster"),
 		} else if (tstep == "years") {
 			d <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 			as.integer(format(d, "%Y"))
+#		} else if (tstep == "yearweeks") {
+#			d <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
+#			yearweek(as.Date(d))
 		} else { # raw
 			d
 		}

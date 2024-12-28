@@ -17,6 +17,7 @@
 
 #include "spatRasterMultiple.h"
 #include "string_utils.h"
+#include "file_utils.h"
 
 
 SpatRasterCollection SpatRasterCollection::deepCopy() { return *this; }
@@ -97,6 +98,55 @@ void SpatRasterCollection::erase(size_t i) {
 	}
 }
 
+
+std::string SpatRasterCollection::make_vrt(std::vector<std::string> options, bool reverse, SpatOptions &opt) {
+
+	std::vector<std::string> ff = filenames();
+	SpatOptions xopt(opt);
+	for (size_t i=0; i<ff.size(); i++) {
+		if (ff[i] == "") {
+			ff[i] = tempFile(xopt.get_tempdir(), xopt.tmpfile, "_temp_raster.tif");
+			xopt.set_filenames({ff[i]});
+			SpatRaster out = ds[i].writeRaster(xopt);
+			if (out.hasError()) {
+				setError(out.getError());
+				return "";
+			}
+		}
+	}
+	SpatRaster tmp;
+	if (reverse) std::reverse(ff.begin(), ff.end());
+	return tmp.make_vrt(ff, options, opt);
+}
+
+
+void SpatRasterCollection::readBlock(SpatRaster &r, std::vector<std::vector<double>> &v, BlockSize bs, size_t i, std::vector<unsigned> use, SpatOptions opt){
+
+	if ((bs.row[i] + bs.nrows[i]) > r.nrow()) {
+		setError("invalid rows/columns");
+		return;
+	}
+	if (bs.nrows[i]==0) {
+		return;
+	}
+	SpatExtent re = r.getExtent();
+	double yres = r.yres();
+	double ymx = re.ymax - bs.row[i] * yres;
+	double ymn = re.ymax - (bs.row[i] + bs.nrows[i]) * yres;
+	SpatExtent e = {re.xmin, re.xmax, ymn, ymx};
+	SpatRasterCollection x = crop(e, "near", true, use, opt);
+	if (x.hasError()) {
+		setError(x.getError());
+		return;
+	}
+	v.resize(x.size());
+	for (size_t i=0; i< x.size(); i++) {
+		x.ds[i].readValues(v[i], 0, x.ds[i].nrow(), 0, x.ds[i].ncol());
+	}
+}
+
+
+
 SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, bool expand, std::vector<unsigned> use, SpatOptions &opt) {
 
 	SpatRasterCollection out;
@@ -114,9 +164,11 @@ SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, 
 			SpatExtent xe = e.intersect(ds[i].getExtent());
 			if (xe.valid_notempty()) {
 				SpatRaster r = ds[i].crop(e, snap, expand, ops);
-				if (!r.hasError()) {
-					out.push_back(r, "");
-				}
+				if (r.hasError()) {
+					out.setError(r.getError());
+					return out;
+				} 
+				out.push_back(r, "");
 			}
 		}
 	} else {
@@ -124,9 +176,11 @@ SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, 
 			SpatExtent xe = e.intersect(ds[use[i]].getExtent());
 			if (xe.valid_notempty()) {
 				SpatRaster r = ds[use[i]].crop(e, snap, expand, ops);
-				if (!r.hasError()) {
-					out.push_back(r, "");
+				if (r.hasError()) {
+					out.setError(r.getError());
+					return out;
 				}
+				out.push_back(r, "");
 			}
 		}
 	}

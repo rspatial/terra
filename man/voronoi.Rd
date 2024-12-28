@@ -15,7 +15,7 @@ Get a Voronoi diagram or Delaunay triangles for points, or the nodes of lines or
 \usage{
 \S4method{voronoi}{SpatVector}(x, bnd=NULL, tolerance=0, as.lines=FALSE, deldir=FALSE) 
 
-\S4method{delaunay}{SpatVector}(x, tolerance=0, as.lines=FALSE) 
+\S4method{delaunay}{SpatVector}(x, tolerance=0, as.lines=FALSE, constrained=FALSE) 
 }
 
 
@@ -24,6 +24,7 @@ Get a Voronoi diagram or Delaunay triangles for points, or the nodes of lines or
 \item{bnd}{SpatVector to set the outer boundary of the voronoi diagram}
 \item{tolerance}{numeric >= 0, snapping tolerance (0 is no snapping)}
 \item{as.lines}{logical. If \code{TRUE}, lines are returned without the outer boundary}
+\item{constrained}{logical. If \code{TRUE}, a constrained delaunay triangulation is returned}
 \item{deldir}{logical. If \code{TRUE}, the \code{\link[deldir]{deldir}} is used instead of the GEOS C++ library method. It has been reported that \code{deldir} does not choke on very large data sets}
 }
 

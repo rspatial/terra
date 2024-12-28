@@ -3617,7 +3617,7 @@ bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, size_t& nl, b
 }
 
 
-SpatRaster SpatRasterCollection::merge(bool first, bool narm, SpatOptions &opt) {
+SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, SpatOptions &opt) {
 
 	SpatRaster out;
 	size_t n = size();
@@ -3630,70 +3630,185 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, SpatOptions &opt) 
 		return(out);
 	}
 
-	std::vector<bool> hvals(n);
-	hvals[0] = ds[0].hasValues();
-	SpatExtent e = ds[0].getExtent();
-	size_t nl = ds[0].nlyr();
-	for (size_t i=1; i<n; i++) {
-		//  lyrs, crs, warncrs, ext, rowcol, res
-		if (!ds[0].compare_geom(ds[i], false, false, opt.get_tolerance(), false, false, false, true)) {
-			out.setError(ds[0].msg.error);
-			return(out);
+	if (algo == 1) {
+		SpatExtent e = ds[0].getExtent();
+		size_t nl = ds[0].nlyr();
+		bool anyvals = false;
+		for (size_t i=1; i<n; i++) {
+			//  lyrs, crs, warncrs, ext, rowcol, res
+			if (!ds[0].compare_geom(ds[i], false, false, opt.get_tolerance(), false, false, false, true)) {
+				out.setError(ds[0].msg.error);
+				return(out);
+			}
+			e.unite(ds[i].getExtent());
+			if (ds[i].hasValues()) anyvals = true;
+			nl = std::max(nl, ds[i].nlyr());
 		}
-		e.unite(ds[i].getExtent());
-		hvals[i] = ds[i].hasValues();
-		nl = std::max(nl, ds[i].nlyr());
-	}
 
-	out = ds[0].geometry(nl, true);
-	//out = ds[0].geometry(1, false);
-	out.setExtent(e, true, true, "");
+		out = ds[0].geometry(nl, true);
+		out.setExtent(e, true, true, "");
+		if (!anyvals) return out;
 
-	bool anyvals = false;
-	for (size_t i=0; i<n; i++) {
-		if (hvals[i]) {
-			anyvals = true;
-			break;
+		double hxr = out.xres()/2;
+
+		std::vector<int> vt = getValueType(true);
+			if (vt.size() == 1) {
+			out.setValueType(vt[0]);
 		}
-	}
-	if (!anyvals) {
-		return out;
-	}
 
-	//out = out.geometry(nl, true);
-	double hxr = out.xres()/2;
+		opt.ncopies = std::max(opt.ncopies, size() + nl);
+		if (!out.writeStart(opt, filenames())) { return out; }
 
-	std::vector<int> vt = getValueType(true);
-		if (vt.size() == 1) {
-		out.setValueType(vt[0]);
-	}
+		std::vector<size_t> seq(n);
+		if (first) {
+			std::iota(seq.rbegin(), seq.rend(), 0);
+		} else {
+			std::iota(seq.begin(), seq.end(), 0);
+		}
 
- 	if (!out.writeStart(opt, filenames())) { return out; }
+		SpatOptions topt(opt);
+		bool warn = false;
+		bool notfirst = false;
+		for (size_t i=0; i<n; i++) {
+			if (!ds[seq[i]].hasValues()) continue;
+			if (narm) {
+				notfirst = i > 0;
+			}
+			if (!write_part(out, ds[seq[i]], hxr, nl, notfirst, warn, topt)) {
+				return out;
+			}
+		}
+		out.writeStop();
+		if (warn) out.addWarning("rasters did not align and were resampled");
 
-	std::vector<size_t> seq(n);
-	if (first) {
-		std::iota(seq.rbegin(), seq.rend(), 0);
+		return(out);
+		
+	} else if (algo == 2) {
+
+		std::vector<unsigned> use;
+		use.reserve(n);
+		if (ds[0].hasValues()) use.push_back(0);
+		SpatExtent e = ds[0].getExtent();
+		size_t nl = ds[0].nlyr();
+		for (size_t i=1; i<n; i++) {
+			//  lyrs, crs, warncrs, ext, rowcol, res
+			if (!ds[0].compare_geom(ds[i], false, false, opt.get_tolerance(), false, false, false, true)) {
+				out.setError(ds[0].msg.error);
+				return(out);
+			}
+			e.unite(ds[i].getExtent());
+			if (ds[i].hasValues()) use.push_back(i);
+			nl = std::max(nl, ds[i].nlyr());
+		}
+
+		out = ds[0].geometry(nl, true);
+		out.setExtent(e, true, true, "");
+
+		if (use.empty()) return out;
+
+		std::vector<int> vt = getValueType(true);
+			if (vt.size() == 1) {
+			out.setValueType(vt[0]);
+		}
+
+		opt.ncopies = std::max(opt.ncopies, size() + nl);
+		if (!out.writeStart(opt, filenames())) { return out; }
+
+		SpatOptions ropt(opt);
+		
+		for (size_t i=0; i<out.bs.n; i++) {
+			std::vector<std::vector<double>> v;
+			readBlock(out, v, out.bs, i, use, ropt);
+			if (hasError()) {
+				out.writeStop();
+				out.setError(getError());
+				return out;
+			}
+			std::vector<size_t> sizes(v.size());
+
+			size_t n = nl * out.bs.nrows[i] * out.ncol();
+			size_t m = v.size();
+
+			bool msz = false;
+			std::vector<size_t> sz(m);
+			for (size_t j=0; j<m; j++) {
+				sz[j] = v[j].size();
+				if (v[j].size() < n) msz = true;
+				if (v[j].size() > n) {
+				out.setError("something is not right. Exected: " + std::to_string(n) + " got: " + std::to_string(v[j].size()) + " values");
+					return out;
+				}
+			}
+
+			if (m == 1) {
+				if (!out.writeBlock(v[0], i)) return out;				
+			} else if (first) {
+				recycle(v[0], n);
+				if (msz) { // with recycling
+					for (size_t j=0; j<n; j++) {
+						for (size_t k=1; k<m; k++) {
+							if (std::isnan(v[0][j])) {
+								v[0][j] = v[k][j%sz[k]];
+							} else {
+								continue;
+							}
+						}
+					}
+				} else {
+					for (size_t j=0; j<n; j++) {
+						for (size_t k=1; k<m; k++) {
+							if (std::isnan(v[0][j])) {
+								v[0][j] = v[k][j];
+							} else {
+								continue;
+							}
+						}
+					}
+				}
+				if (!out.writeBlock(v[0], i)) return out;	
+			} else { // last
+				m -= 1;
+				recycle(v[m], n);
+				if (msz) {
+					for (size_t j=0; j<n; j++) {
+						for (long k=(m-1); k >= 0; k--) {
+							if (std::isnan(v[m][j])) {
+								v[m][j] = v[k][j%sz[k]];
+							} else {
+								continue;
+							}
+						}
+					}
+				} else {
+					for (size_t j=0; j<n; j++) {
+						for (long k=(m-1); k >= 0; k--) {
+							if (std::isnan(v[m][j])) {
+								v[m][j] = v[k][j];
+							} else {
+								continue;
+							}
+						}
+					}
+				}
+				if (!out.writeBlock(v[m], i)) return out;
+			}
+		}
+		out.writeStop();
+		return(out);
+		
+	} else if (algo==3) {
+		
+		SpatOptions vopt(opt);
+		std::string fname = make_vrt({}, !first, vopt);
+		SpatRaster v(fname, {}, {}, {}, {});
+		return v.writeRaster(opt);
+		
 	} else {
-		std::iota(seq.begin(), seq.end(), 0);
+		out.setError("invalid algo (should be 1, 2, or 3)");
+		return(out);		
 	}
-
-	SpatOptions topt(opt);
-	bool warn = false;
-	bool notfirst = false;
-	for (size_t i=0; i<n; i++) {
-		if (!ds[seq[i]].hasValues()) continue;
-		if (narm) {
-			notfirst = i > 0;
-		}
-		if (!write_part(out, ds[seq[i]], hxr, nl, notfirst, warn, topt)) {
-			return out;
-		}
-	}
-	out.writeStop();
-	if (warn) out.addWarning("rasters did not align and were resampled");
-
-	return(out);
 }
+
 
 
 
@@ -3720,12 +3835,10 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		return out;
 	}
 	
-	if (fun == "first") {
-		return merge(true, true, opt);
+	if ((fun == "first") || (fun == "last")) {
+		return merge(fun=="first", true, 1, opt);
 	}
-	if (fun == "last") {
-		return merge(false, true, opt);
-	}
+
 	size_t n = size();
 
 	if (n == 0) {

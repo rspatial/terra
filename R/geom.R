@@ -419,8 +419,8 @@ setMethod("spin", signature(x="SpatVector"),
 
 
 setMethod("delaunay", signature(x="SpatVector"),
-	function(x, tolerance=0, as.lines=FALSE) {
-		x@pntr <- x@pntr$delaunay(tolerance, as.lines)
+	function(x, tolerance=0, as.lines=FALSE, constrained=FALSE) {
+		x@pntr <- x@pntr$delaunay(tolerance, as.lines, constrained)
 		messages(x, "delaunay")
 	}
 )

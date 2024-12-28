@@ -25,11 +25,11 @@
 #endif
 
 #ifndef M_2PI
-#define M_2PI (3.1415926535897932384626433 * 2.0)
+#define M_2PI (M_PI * 2.0)
 #endif
 
-#ifndef M_PI_2
-#define M_PI_2 (3.1415926535897932384626433 / 2)
+#ifndef M_hPI
+#define M_hPI (M_PI / 2.0)
 #endif
 
 #ifndef WGS84_a
@@ -41,7 +41,7 @@
 #endif
 
 
-#include "Rcpp.h"
+//#include "Rcpp.h"
 
 inline void normLon(double &lon) {
 	lon = fmod(lon + 180, 360.) - 180;
@@ -79,7 +79,7 @@ inline double distance_hav_r(double lon1, double lat1, double lon2, double lat2,
 }
 
 
-
+/*
 double distance_cosdeg(double lon1, double lat1, double lon2, double lat2, double r = 6378137.) {
 	deg2rad(lon1);
 	deg2rad(lon2);
@@ -87,7 +87,7 @@ double distance_cosdeg(double lon1, double lat1, double lon2, double lat2, doubl
 	deg2rad(lat2);
 	return r * acos((sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1-lon2)));
 }
-
+*/
 
 
 void dest_geo(double slon, double slat, double sazi, double dist, double &dlon, double &dlat, double &dazi) {
@@ -283,150 +283,6 @@ std::vector<std::vector<double>> intermediate(double lon1, double lat1, double l
 	}
 	out[0][n] = lon2;
 	out[1][n] = lat2;
-	return out;
-}
-
-
-void make_dense_lonlat(std::vector<double> &lon, std::vector<double> &lat, const double &interval, const bool &adjust, geod_geodesic &g) {
-	size_t np = lon.size();
-	if (np < 2) {
-		return;
-	}
-	size_t sz = lon.size() * 5;
-	std::vector<double> xout, yout;
-	xout.reserve(sz);
-	yout.reserve(sz);
-	for (size_t i=0; i<(np-1); i++) {
-		if (xout.size() > sz) {
-			sz += (np-i) * 10;
-			xout.reserve(sz);
-			yout.reserve(sz);
-		}
-		double d, azi1, azi2;
-		//double hlat = lat[i] + (lat[i+1] - lat[i])/2;
-		//double hlon = lon[i] + (lon[i+1] - lon[i])/2;
-		//geod_inverse(&g, lat[i], lon[i], hlat, hlon, &d1, &azi1, &azi2);
-		//geod_inverse(&g, hlat, hlon, lat[i+1], lon[i+1], &d2, &azi1, &azi2);
-		//double d = d1 + d2;
-		geod_inverse(&g, lat[i], lon[i], lat[i+1], lon[i+1], &d, &azi1, &azi2);
-		size_t n = floor(d / interval);
-		xout.push_back(lon[i]);
-		yout.push_back(lat[i]);
-		if (n < 2) {
-			continue;
-		}
-		double step = adjust ? d / n : interval;
-		double newlat, newlon;
-		for (size_t j=1; j<n; j++) {
-			geod_direct(&g, lat[i], lon[i], azi1, step*j, &newlat, &newlon, &azi2);
-			// avoid -180 to 180 jumps
-			if ((lon[i] == -180) && (newlon == 180)) newlon = -180;
-			xout.push_back(newlon);
-			yout.push_back(newlat);
-		}
-	}
-	xout.push_back(lon[np-1]);
-	yout.push_back(lat[np-1]);
-	lon = std::move(xout);
-	lat = std::move(yout);
-}
-
-void make_dense_planar(std::vector<double> &x, std::vector<double> &y, double &interval, bool &adjust) {
-	size_t np = x.size();
-	if (np < 2) {
-		return;
-	}
-	size_t sz = x.size() * 5;
-	std::vector<double> xout, yout;
-	xout.reserve(sz);
-	yout.reserve(sz);
-
-	double pi2 = M_PI * 2;
-
-	for (size_t i=0; i<(np-1); i++) {
-		if (xout.size() > sz) {
-			sz += (np-i) * 10;
-			xout.reserve(sz);
-			yout.reserve(sz);
-		}
-		double d = sqrt(pow((x[i+1] - x[i]),2) + pow((y[i+1] - y[i]), 2));
-		size_t n = floor(d / interval);
-		xout.push_back(x[i]);
-		yout.push_back(y[i]);
-		if (n < 2) {
-			continue;
-		}
-
-		double a = fmod(atan2(x[i+1]-x[i], y[i+1]-y[i]), pi2);
-		double step = adjust ? d / n : interval;
-		double distx = step * sin(a);
-		double disty = step * cos(a);
-		for (size_t j=1; j<n; j++) {
-			xout.push_back(x[i] + distx * j);
-			yout.push_back(y[i] + disty * j);
-		}
-	}
-	xout.push_back(x[np-1]);
-	yout.push_back(y[np-1]);
-	x = std::move(xout);
-	y = std::move(yout);
-}
-
-
-SpatVector SpatVector::densify(double interval, bool adjust, bool ignorelonlat) {
-
-	SpatVector out;
-	if (type() == "points") {
-		out.setError("cannot densify points");
-		return out;
-	}
-	if (interval <= 0) {
-		out.setError("the interval must be > 0");
-		return out;
-	}
-
-	out.srs = srs;
-	if (srs.is_empty()) {
-		out.setError("crs not defined");
-		return(out);
-	}
-	size_t n = size();
-	out.reserve(n);
-	if (is_lonlat() && (!ignorelonlat)) {
-		double a = 6378137.0;
-		double f = 1/298.257223563;
-		struct geod_geodesic geod;
-		geod_init(&geod, a, f);
-
-		for (size_t i=0; i<n; i++) {
-			SpatGeom g = geoms[i];
-			for (size_t j=0; j < geoms[i].size(); j++) {
-				make_dense_lonlat(g.parts[j].x, g.parts[j].y, interval, adjust, geod);
-				if (g.parts[j].hasHoles()) {
-					for (size_t k=0; k < g.parts[j].nHoles(); k++) {
-						make_dense_lonlat(g.parts[j].holes[k].x, g.parts[j].holes[k].y, interval, adjust, geod);
-					}
-				}
-			}
-			g.computeExtent();
-			out.addGeom(g);
-		}
-	} else {
-
-		for (size_t i=0; i<n; i++) {
-			SpatGeom g = geoms[i];
-			for (size_t j=0; j < geoms[i].size(); j++) {
-				make_dense_planar(g.parts[j].x, g.parts[j].y, interval, adjust);
-				if (g.parts[j].hasHoles()) {
-					for (size_t k=0; k < g.parts[j].nHoles(); k++) {
-						make_dense_planar(g.parts[j].holes[k].x, g.parts[j].holes[k].y, interval, adjust);
-					}
-				}
-			}
-			out.addGeom(g);
-		}
-	}
-	out.df = df;
 	return out;
 }
 

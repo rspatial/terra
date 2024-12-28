@@ -328,7 +328,7 @@ class SpatVector {
 		SpatVector snap(double tolerance);
 		SpatVector snapto(SpatVector y, double tolerance);
 		SpatVector thin(double threshold);
-
+		SpatVector split_lines(SpatVector v);
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();
 		SpatVector aggregate(bool dissolve);

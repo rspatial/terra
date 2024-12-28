@@ -26,20 +26,20 @@ setMethod("merge", signature(x="SpatVector", y="SpatVector"),
 )
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
-	function(x, y, ..., first=TRUE, na.rm=TRUE, filename="", overwrite=FALSE, wopt=list()) {
+	function(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, filename="", overwrite=FALSE, wopt=list()) {
 		rc <- sprc(x, y, ...)
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
-		x@pntr <- rc@pntr$merge(first[1], na.rm, opt)
+		x@pntr <- rc@pntr$merge(first[1], na.rm, algo, opt)
 		messages(x, "merge")
 	}
 )
 
 
 setMethod("merge", signature(x="SpatRasterCollection", "missing"),
-	function(x, first=TRUE, na.rm=TRUE, filename="", ...) {
+	function(x, first=TRUE, na.rm=TRUE, algo=1, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
-		out@pntr <- x@pntr$merge(first[1], na.rm, opt)
+		out@pntr <- x@pntr$merge(first[1], na.rm, algo, opt)
 		messages(out, "merge")
 	}
 )
