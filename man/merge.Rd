@@ -19,9 +19,9 @@ There is also a method for merging SpatVector with a data.frame; that is, to joi
 }
 
 \usage{
-\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, filename="", overwrite=FALSE, wopt=list())
+\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, filename="", ...)
+\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, algo=1, filename="", ...)
 
 \S4method{merge}{SpatVector,data.frame}(x, y, ...)
 }
@@ -32,6 +32,7 @@ There is also a method for merging SpatVector with a data.frame; that is, to joi
   \item{...}{if \code{x} is a SpatRaster: additional objects of the same class as \code{x}. If \code{x} is a SpatRasterCollection: options for writing files as in \code{\link{writeRaster}}. If \code{x} is a SpatVector, the same arguments as in \code{\link[base]{merge}}}
   \item{first}{logical. If \code{TRUE}, in areas where rasters overlap, the first value is used. Otherwise the last value is used}
   \item{na.rm}{logical. If \code{TRUE} values that are \code{NA} are ignored}
+  \item{algo}{integer. You can use 1, 2, or 3 to pick a merge algorithm. 1 appears to be fastest but file compression may be poor.  2 and 3 are slower but have better compression. 3 appears to have the best compression}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
