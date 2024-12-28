@@ -44,7 +44,7 @@
 <span><span class="fu">voronoi</span><span class="op">(</span><span class="va">x</span>, bnd<span class="op">=</span><span class="cn">NULL</span>, tolerance<span class="op">=</span><span class="fl">0</span>, as.lines<span class="op">=</span><span class="cn">FALSE</span>, deldir<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
-<span><span class="fu">delaunay</span><span class="op">(</span><span class="va">x</span>, tolerance<span class="op">=</span><span class="fl">0</span>, as.lines<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">delaunay</span><span class="op">(</span><span class="va">x</span>, tolerance<span class="op">=</span><span class="fl">0</span>, as.lines<span class="op">=</span><span class="cn">FALSE</span>, constrained<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,6 +62,9 @@
 
 <dt id="arg-as-lines">as.lines<a class="anchor" aria-label="anchor" href="#arg-as-lines"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, lines are returned without the outer boundary</p></dd>
+
+<dt id="arg-constrained">constrained<a class="anchor" aria-label="anchor" href="#arg-constrained"></a></dt>
+<dd><p>logical. If <code>TRUE</code>, a constrained delaunay triangulation is returned</p></dd>
 
 <dt id="arg-deldir">deldir<a class="anchor" aria-label="anchor" href="#arg-deldir"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, the <code><a href="https://rdrr.io/pkg/deldir/man/deldir.html" class="external-link">deldir</a></code> is used instead of the GEOS C++ library method. It has been reported that <code>deldir</code> does not choke on very large data sets</p></dd>
@@ -87,9 +90,12 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. :  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">delaunay</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> could not find valid method</span>
 <span class="r-in"><span><span class="va">d</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'd' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 18, 0  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 0, 45, -10, 45  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. :  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, col<span class="op">=</span><span class="st">"gray"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
