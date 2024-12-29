@@ -1030,7 +1030,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			//	Rcpp::Rcout << bandmeta[i][j] << std::endl;
 			//}
 			
-			
 			char **meterra = poBand->GetMetadata("USER_TAGS");
 			if (meterra != NULL) {
 //				std::vector<std::string> meta;
@@ -1173,6 +1172,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	if (s.hasTime) {
+			
 		if (datm[0].find('T') != std::string::npos) {
 			s.timestep = "seconds";
 		} else {
@@ -1203,30 +1203,50 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		for (size_t i=0; i<datm.size(); i++) {
 			s.time[i] = parse_time(datm[i]);
 		}
-	} else {
+		
+
+// try units from json
 		std::vector<int_64> timestamps;
 		std::string timestep="raw";
-		std::vector<std::string> units;
+		//std::vector<std::string> units;
 		try {
-			read_aux_json(fname, timestamps, timestep, units, s.nlyr);
+			read_aux_json(fname, timestamps, timestep, unts, s.nlyr);
 		} catch(...) {
-			timestamps.resize(0);
-			units.resize(0);
+			unts.resize(0);
 			addWarning("could not parse aux.json");
 		}
-		if (!timestamps.empty()) {
-			s.time = timestamps;
-			s.timestep = timestep;
-			s.hasTime = true;
-		}
-		if (!units.empty()) {
-			s.unit = units;
+		if (!unts.empty()) {
 			s.hasUnit = true;
+		}
+		
+		
+	} else {
+
+		std::vector<int_64> timestamps;
+		std::string timestep="raw";
+//		std::vector<std::string> units;
+		if (unts.empty()) {
+			try {
+				read_aux_json(fname, timestamps, timestep, unts, s.nlyr);
+			} catch(...) {
+				timestamps.resize(0);
+				unts.resize(0);
+				addWarning("could not parse aux.json");
+			}
+			if (!timestamps.empty()) {
+				s.time = timestamps;
+				s.timestep = timestep;
+				s.hasTime = true;
+			}
+			if (!unts.empty()) {
+				s.hasUnit = true;
+			}
 		}
 	}
 	if (s.hasUnit) {
 		s.unit = unts;
 	}
+
 
 	msg = "";
 	std::vector<std::string> metadata;
@@ -2312,15 +2332,17 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 	source_name = nms[2][0];
 	source_name_long = nms[2][1];
 
-	if (nms[2][2].empty()) {
-		unit = {""};
-		hasUnit = false;
-	} else {
-		unit = {nms[2][2]};
-		hasUnit = true;
+	if (!hasUnit) {
+		if (nms[2][2].empty()) {
+			unit = {""};
+			hasUnit = false;
+		} else {
+			unit = {nms[2][2]};
+			hasUnit = true;
+		}
+		recycle(unit, nlyr);
 	}
-
-	recycle(unit, nlyr);
+	
 	if (!nms[0].empty()) {
 		std::string step;
 		std::vector<int_64> x;
