@@ -434,6 +434,10 @@ sampleRaster <- function(x, size, method, replace, ext=NULL, warn, overview=FALS
 setMethod("spatSample", signature(x="SpatRaster"),
 	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE) {
 
+
+		if (method == "display") return(sampleRaster(x, size, "regular", FALSE, ext=ext, warn=FALSE, overview=TRUE))
+
+
 		if (!as.points) {
 			if (!(values || cells || xy)) {
 				error("spatSample", "at least one of 'values', 'cells', or 'xy' must be TRUE; or 'as.points' must be TRUE")

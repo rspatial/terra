@@ -115,7 +115,7 @@ mat2wide <- function(m, sym=TRUE, keep=NULL) {
 }
 
 setMethod("distance", signature(x="SpatVector", y="ANY"),
-	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="cosine") {
+	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="geo") {
 		if (!missing(y)) {
 			error("distance", "If 'x' is a SpatVector, 'y' should be a SpatVector or missing")
 		}
