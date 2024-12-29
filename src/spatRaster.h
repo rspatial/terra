@@ -547,7 +547,7 @@ class SpatRaster {
 
 		// gdal source
 		std::vector<double> readValuesGDAL(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr = -1);
-		std::vector<double> readGDALsample(size_t src, size_t srows, size_t scols);
+		std::vector<double> readGDALsample(size_t src, size_t srows, size_t scols, bool overview);
 		std::vector<std::vector<double>> readRowColGDAL(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 		std::vector<double> readRowColGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 
@@ -797,7 +797,7 @@ class SpatRaster {
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
 		std::vector<size_t> sampleCells(double size, std::string method, bool replace, unsigned seed);
-		SpatRaster sampleRegularRaster(double size);
+		SpatRaster sampleRegularRaster(double size, bool overview);
 		SpatRaster sampleRowColRaster(size_t nr, size_t nc, bool warn);
 		SpatRaster sampleRandomRaster(double size, bool replace, unsigned seed);
 		std::vector<std::vector<double>> sampleRegularValues(double size, SpatOptions &opt);
@@ -812,13 +812,15 @@ class SpatRaster {
 		SpatRaster similarity(std::vector<double> x, SpatOptions &opt);
 
 		SpatRaster terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, unsigned seed, SpatOptions &opt);
-    // watershed2 extension 
-		SpatRaster watershed2(int pp_offset,SpatOptions &opt); // modified ecor 20210317 // EC 20210702 
-		SpatRaster pitfinder2(SpatOptions &opt); // modified // EC 20220809
-		SpatRaster NIDP2(SpatOptions &opt); // modified // EC 20231031
-		SpatRaster flowAccu2(SpatOptions &opt); // modified // EC 20231108
-		SpatRaster flowAccu2_weight(SpatRaster weight,SpatOptions &opt); // modified // EC 20231108
-		// END watershed2 extension
+
+    // watershed2 ecor 20210317; EC 20210702 
+		SpatRaster watershed2(int pp_offset,SpatOptions &opt); 
+		SpatRaster pitfinder2(SpatOptions &opt); 
+		SpatRaster NIDP2(SpatOptions &opt); 
+		SpatRaster flowAccu2(SpatOptions &opt); 
+		SpatRaster flowAccu2_weight(SpatRaster weight,SpatOptions &opt);
+	// END watershed2 
+		
 		SpatRaster hillshade(SpatRaster aspect, std::vector<double> angle, std::vector<double> direction, bool normalize, SpatOptions &opt);
 
 		SpatRaster selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt);

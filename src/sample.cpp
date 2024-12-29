@@ -83,7 +83,7 @@ std::vector<double> SpatRaster::readSample(size_t src, size_t srows, size_t scol
 }
 
 
-SpatRaster SpatRaster::sampleRegularRaster(double size) {
+SpatRaster SpatRaster::sampleRegularRaster(double size, bool overview) {
 
 	if (size >= ncell()) {
 		return( *this );
@@ -119,7 +119,7 @@ SpatRaster SpatRaster::sampleRegularRaster(double size) {
 		//	v = readSampleBinary(src, nr, nc);
 		} else {
 		    #ifdef useGDAL
-			v = readGDALsample(src, nr, nc);
+			v = readGDALsample(src, nr, nc, overview);
 			#endif
 		}
 		if (hasError()) return out;
@@ -171,7 +171,7 @@ SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc, bool warn) {
 		//	v = readSampleBinary(src, nr, nc);
 		} else {
 		    #ifdef useGDAL
-			v = readGDALsample(src, nr, nc);
+			v = readGDALsample(src, nr, nc, false);
 			#endif
 		}
 		if (hasError()) return out;
@@ -218,7 +218,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(double size, Sp
 		//	v = readSampleBinary(src, nr, nc);
 		} else {
 		    #ifdef useGDAL
-			v = readGDALsample(src, nr, nc);
+			v = readGDALsample(src, nr, nc, false);
 			#endif
 		}
 		if (hasError()) return out;
@@ -262,7 +262,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_
 			v = readSample(src, nr, nc);
 		} else {
 		    #ifdef useGDAL
-			v = readGDALsample(src, nr, nc);
+			v = readGDALsample(src, nr, nc, false);
 			#endif
 		}
 		if (hasError()) return out;

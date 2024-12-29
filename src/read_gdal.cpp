@@ -1532,7 +1532,7 @@ std::vector<double> SpatRaster::readValuesGDAL(size_t src, size_t row, size_t nr
 
 
 
-std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t scols) {
+std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t scols, bool overview) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -1553,7 +1553,9 @@ std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t 
 	#if GDAL_VERSION_MAJOR <= 3 && GDAL_VERSION_MINOR < 3
 	// do nothing
 	#else 
-	openops.push_back("OVERVIEW_LEVEL=NONE");
+	if (!overview) {
+		openops.push_back("OVERVIEW_LEVEL=NONE");
+	}
 	#endif
 	
     GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, openops);

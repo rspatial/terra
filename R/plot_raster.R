@@ -661,9 +661,12 @@ prettyNumbs <- function(x, digits) {
 			if (nlyr(alpha) > 1) {
 				alpha <- alpha[[1]]
 			}
-			alpha <- spatSample(alpha, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+#			alpha <- spatSample(alpha, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+			alpha <- sampleRaster(alpha, maxcell, method="regular", replace=FALSE, ext=NULL, warn=FALSE, overview=TRUE)
 		}
-		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+#		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+		x <- sampleRaster(x, maxcell, method="regular", replace=FALSE, ext=NULL, warn=FALSE, overview=TRUE)
+
 		out$lim <- out$ext <- as.vector(ext(x))
 	}
 	
