@@ -27,7 +27,7 @@
 void get_nx_ny(size_t size, size_t &nx, size_t &ny) {
 	double nxy = nx * ny;
 	if (size < nxy) {
-		double f = sqrt(size / ncell );
+		double f = sqrt(size / nxy );
 		double fnx = nx * f;
 		double fny = ny * f;
 		double s = fnx * fny;
