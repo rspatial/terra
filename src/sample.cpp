@@ -24,9 +24,9 @@
 #include "string_utils.h"
 
 
-void get_nx_ny(size_t size, size_t &nx, size_t &ny) {
+void get_nx_ny(double size, size_t &nx, size_t &ny) {
 	double nxy = nx * ny;
-	if (size < nxy) {
+	if (std::isfinite(size) && (!std::isnan(size)) && (size < nxy)) {
 		double f = sqrt(size / nxy );
 		double fnx = nx * f;
 		double fny = ny * f;
@@ -220,6 +220,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(double size, Sp
 		nc = std::max((size_t)1, (size_t) std::ceil(nc1 * f));
 	}
 */	
+
 	size_t nsize = nc * nr;
 	std::vector<double> v;
 	if ((size >= ncell()) || ((nc == ncol()) && (nr == nrow()))) {
