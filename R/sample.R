@@ -396,7 +396,7 @@ set_factors <- function(x, ff, cts, asdf) {
 	s
 }
 
-sampleRaster <- function(x, size, method, replace, ext=NULL, warn) {
+sampleRaster <- function(x, size, method, replace, ext=NULL, warn, overview=FALSE) {
 #	hadWin <- hasWin <- FALSE
 	if (!is.null(ext)) {
 #		hasWin <- TRUE
@@ -413,7 +413,7 @@ sampleRaster <- function(x, size, method, replace, ext=NULL, warn) {
 		if (length(size) > 1) {
 			x@pntr <- x@pntr$sampleRowColRaster(size[1], size[2], warn[1])
 		} else {
-			x@pntr <- x@pntr$sampleRegularRaster(size)
+			x@pntr <- x@pntr$sampleRegularRaster(size, overview)
 		}
 	} else if (method == "random") {
 		x@pntr <- x@pntr$sampleRandomRaster(size, replace, .seed())

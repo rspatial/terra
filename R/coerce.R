@@ -202,6 +202,7 @@ setMethod("as.raster", signature(x="SpatRaster"),
 			#col <- rev(grDevices::terrain.colors(255))
 			col <- .default.pal()
 		}
+		
 		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
 		x <- as.matrix(x, wide=TRUE)
 		r <- range(x, na.rm=TRUE)

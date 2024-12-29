@@ -11,6 +11,8 @@
 - `autocor` improved handling of NA cells for global Moran computation [#1992](https://github.com/rspatial/terra/issues/1592) by Nicholas Berryman
 - `shade` is more memory-safe. [#1452](https://github.com/rspatial/terra/issues/1452) by Francis van Oordt and Chris English
 - fixed bug in `rasterize` revealed when using `crop(mask=TRUE)` [#1686](https://github.com/rspatial/terra/issues/1686) by edixon1
+- fixed `to_id = NA` bug in `nearest` [#1471](https://github.com/rspatial/terra/issues/1471) by Mats Blomqvist
+
 
 ## enhancements
 
