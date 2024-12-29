@@ -28,10 +28,10 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 
 \usage{
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), 
-    maxcell=500000, smooth=FALSE, range=NULL, fill_range=FALSE, 
-	levels=NULL, all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, 
-	colNA=NULL, alpha=NULL, sort=FALSE,  decreasing=FALSE, grid=FALSE, ext=NULL, 
-	reset=FALSE, add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, ...)
+    maxcell=500000, smooth=FALSE, range=NULL, fill_range=FALSE, levels=NULL, 
+	all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, 
+	alpha=NULL, sort=FALSE,  decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, 
+	add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=TRUE, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, ...)
 
@@ -40,7 +40,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 \S4method{plot}{SpatVector,character}(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=TRUE, axes=!add, 
     main="", buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, sort=TRUE, 
 	decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, 
-	box=axes, clip=TRUE, ...)
+	box=axes, clip=TRUE, overview=TRUE, ...)
 
 \S4method{plot}{SpatVector,numeric}(x, y, ...)
 
@@ -61,6 +61,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{background}{background color. Default is no color (white)}
   \item{box}{logical. Should a box be drawn around the map?}
   \item{clip}{logical. Should the axes be clipped to the extent of \code{x}?}
+  \item{overview}{logical. Should "overviews" be used for fast rendering? This can result in much faster plotting of raster files that have overvies (e.g. "COG" format) and are accessed over a http connection. However, these overviews generally show aggregate values, thus reducing the range of the actual values. If \code{NULL}, the argument is set to \code{TRUE} for rasters that are accessed over http and \code{FALSE} in other cases}
   \item{plg}{list with parameters for drawing the legend. For the classes and interval type legend see the arguments for \code{\link[graphics]{legend}}. For example \code{x} and \code{y} can be used to place the legend. You can also use keywords such as "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. 
   
   Some of these do not apply to a continuous legend, or they behave a little differently. For example, only the placement keywords "left", "right", "top", and "bottom" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. Additional parameters for continuous legends include: 
