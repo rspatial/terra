@@ -369,19 +369,34 @@ setMethod("nearest", signature(x="SpatVector"),
 			}
 		} else {
 			if (lines) return(z)
-			dis <- perim(z)
-			z <- as.points(z)
-			from <- z[seq(1, nrow(z), 2), ]
-			to <- z[seq(2, nrow(z), 2), ]
-			values(to) <- data.frame(id=1:nrow(to))
 			values(y) <- data.frame(to_id=1:nrow(y))
+			dis <- perim(z)
+			zz <- as.points(z)
+			from <- zz[seq(1, nrow(zz), 2), ]
+			to <- zz[seq(2, nrow(zz), 2), ]
+			values(to) <- data.frame(id=1:nrow(to))
 			to_int <- as.data.frame(intersect(to, y))
+			to_int <- as.data.frame(merge(to, to_int, by="id", all.x=TRUE))
+			if (any(is.na(to_int$to_id))) {
+				zz <- as.points(elongate(z, 1))
+				from2 <- zz[seq(1, nrow(zz), 2), ]
+				to2 <- zz[seq(2, nrow(zz), 2), ]
+				values(to2) <- data.frame(id=1:nrow(to2))
+				to_int2 <- as.data.frame(intersect(to2, y))
+				colnames(to_int2)[2] <- "to_id2"
+				to_int <- merge(to_int, to_int2, all.x=TRUE)
+				i <- is.na(to_int$to_id)
+				to_int$to_id[i] <- to_int$to_id2[i]
+				to_int <- to_int[,1:2]
+			}
+			
 			to_int <- to_int[order(to_int[["id"]]), ]
+
 			if (nrow(to_int) > nrow(to)) {
 				to_int <- aggregate(to_int[, "to_id",drop=FALSE], to_int[,"id",drop=FALSE], function(x)x[1])
-			}
-			if (nrow(to_int) < nrow(to)) {
-				to_int <- rep(NA, nrow(to))
+#			}
+#			if (nrow(to_int) < nrow(to)) {
+#				to_int <- rep(NA, nrow(to))
 			} else {
 				to_int <- to_int[,2]
 			}
