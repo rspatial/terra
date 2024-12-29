@@ -1,4 +1,4 @@
-# version 1.8-7
+# version 1.8-8
 
 ## bug fixes
 
@@ -12,6 +12,8 @@
 - `shade` is more memory-safe. [#1452](https://github.com/rspatial/terra/issues/1452) by Francis van Oordt and Chris English
 - fixed bug in `rasterize` revealed when using `crop(mask=TRUE)` [#1686](https://github.com/rspatial/terra/issues/1686) by edixon1
 - fixed `to_id = NA` bug in `nearest` [#1471](https://github.com/rspatial/terra/issues/1471) by Mats Blomqvist
+- better handling of date/unit [#1684](https://github.com/rspatial/terra/issues/1684) and [#1688](https://github.com/rspatial/terra/issues/1688) by Andrew Gene Brown
+- `spatSample(method="regular")` on a raster with one column returned too many samples [#1362](https://github.com/rspatial/terra/issues/1362) by Daniel R Schlaepfer
 
 
 ## enhancements
@@ -23,6 +25,8 @@
 - When using RStudio a once per session warning is given when using draw, sel or click [#1063](https://github.com/rspatial/terra/issues/1063) by Sergei Kharchenko
 - `distance<SpatRaster>` from lon and lat lines/polygons computes distance to the edges instead of the nodes [#1462](https://github.com/rspatial/terra/issues/1462) by Derek Friend
 - `distance<SpatVector,SpatVector>` now works for lon/lat data [#1615](https://github.com/rspatial/terra/issues/1615) by Wencheng Lau-Medrano
+- faster plotting of COGs over http [#1353](https://github.com/rspatial/terra/issues/1353) by Michael Sumner and [#1412](https://github.com/rspatial/terra/issues/1412) 
+
 
 ## new 
 
