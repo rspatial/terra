@@ -195,8 +195,12 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(double size, Sp
 	size_t nc = ncol();
 	if (size < ncell()) {
 		double f = sqrt(size / ncell());
-		nr = std::ceil(nrow() * f);
-		nc = std::ceil(ncol() * f);
+		double nr1 = nrow() * f;
+		double nc1 = ncol() * f;
+		double s = nr1 + nc1;
+		f = size / s;
+		nr = std::max((size_t)1, (size_t) std::ceil(nr1 * f));
+		nc = std::max((size_t)1, (size_t) std::ceil(nc1 * f));
 	}
 	nsize = nc * nr;
 	std::vector<double> v;
@@ -548,8 +552,13 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 		double dy = distance_lonlat(0, ymin, 0, ymax);
 		double ratio = dy/dx;
 		double n = sqrt(size);
-		double ny = std::round(std::max(1.0, n * ratio));
-		double nx = std::round(std::max(1.0, n / ratio));
+		double ny = n * ratio;
+		double nx = n / ratio;
+		double s = nx + ny;
+		ratio = size / s;
+		ny = std::max((size_t)1, (size_t) std::ceil(ny * ratio));
+		nx = std::max((size_t)1, (size_t) std::ceil(nx * ratio));
+
 		double x_i = r1 / nx;
 		double y_i = r2 / ny;
 
@@ -598,10 +607,13 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 		}
 	} else {
 		double ratio = r1/r2;
-		double ny = std::max(1.0, sqrt(size / ratio));
-		double nx = std::max(1.0, size / ny);
-		ny = std::round(ny);
-		nx = std::round(nx);
+		double ny = sqrt(size / ratio);
+		double nx = size / ny;
+		double s = nx + ny;
+		ratio = size / s;
+		ny = std::max((size_t)1, (size_t) std::ceil(ny * ratio));
+		nx = std::max((size_t)1, (size_t) std::ceil(nx * ratio));
+
 		double x_i = r1 / nx;
 		double y_i = r2 / ny;
 
