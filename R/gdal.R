@@ -40,7 +40,7 @@ setGDALconfig <- function(option, value="") {
 gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
 	if (!is.na(warn)) {
 		warn <- as.integer(warn)
-		stopifnot(warn %in% c(1:4))
+		stopifnot(warn %in% (1:4))
 		.set_gdal_warnings(warn)
 	} else if (drivers) {
 		x <- .gdaldrivers()
