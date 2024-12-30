@@ -26,6 +26,17 @@
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
 
+
+driverSupports(std::string driver, std::string option) {
+	if (driver == "GPKG") {
+		if (option == "ENCODING") {
+			return false;
+		}
+	}
+    return true;
+}
+
+
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
     GDALDataset *poDS = NULL;
@@ -145,7 +156,9 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 						nGroupTransactions = 0;
 					}
 				} else {
-					papszOptions = CSLSetNameValue(papszOptions, gopt[0].c_str(), gopt[1].c_str() );
+					if (driverSupports(driver,  gopt[0])) {
+						papszOptions = CSLSetNameValue(papszOptions, gopt[0].c_str(), gopt[1].c_str() );
+					}
 				}
 			}
 		}
