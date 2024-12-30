@@ -27,7 +27,7 @@
 #include "ogrsf_frmts.h"
 
 
-driverSupports(std::string driver, std::string option) {
+bool driverSupports(std::string driver, std::string option) {
 	if (driver == "GPKG") {
 		if (option == "ENCODING") {
 			return false;
