@@ -26,7 +26,7 @@
 
 
 
-std::vector<double> circ_dist(double xres, double yres, double d, std::vector<size_t> &dim, bool lonlat, double ymean) {
+std::vector<double> circ_dist(double xres, double yres, double d, size_t nrows, size_t ncols, std::vector<size_t> &dim, bool lonlat, double ymean) {
 	
 	size_t nx, ny;
 	std::string crs;
@@ -46,6 +46,8 @@ std::vector<double> circ_dist(double xres, double yres, double d, std::vector<si
 		ny = 1 + 2 * floor(d/yres);
 		crs = "+proj=utm +zone=1";
 	}
+	nx = std::min(nx, ncols);
+	ny = std::min(ny, nrows);
 	if ((nx == 1) || (ny == 1)) {
 		dim = {1, 1};
 		std::vector<double> out{1};
@@ -97,7 +99,7 @@ std::vector<std::vector<double>> SpatRaster::extractBuffer(const std::vector<dou
 		ymean = vmean(y, true);
 	}
 	
-	std::vector<double> cb = circ_dist(xres(), yres(), b, dim, lonlat, ymean);
+	std::vector<double> cb = circ_dist(xres(), yres(), b, nrow(), ncol(), dim, lonlat, ymean);
 	bool docb = false;
 	std::vector<bool> adj(cb.size(), false);
 	if (cb.size() > 1) {

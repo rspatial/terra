@@ -35,7 +35,9 @@
 - `distance` and related methods get argument "method" to choose the distance algorithm for lon/lat data [#1677](https://github.com/rspatial/terra/issues/1677) by Márcia Barbosa
 - `divide<SpatRaster>` and `divide<SpatVector>` methods
 - `nseg` counts the number of segments in a SpatVector [#1647](https://github.com/rspatial/terra/pull/1674) by Michael Chirico
+- `extract` argument "search_radius" to extract values from the nearest raster cell that is not `NA` [#873](https://github.com/rspatial/terra/issues/873) by matthewseanmarcus
 
+ 
 # version 1.8-5
 
 Released 2024-12-12
