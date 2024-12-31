@@ -111,7 +111,7 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <dd><p>logical. If <code>TRUE</code>, a matrix is returned with the "raw" numeric cell values. If <code>FALSE</code>, a data.frame is returned and the cell values are transformed to factor, logical, or integer values, where appropriate</p></dd>
 
 <dt id="arg-search-radius">search_radius<a class="anchor" aria-label="anchor" href="#arg-search-radius"></a></dt>
-<dd><p>positive number. A search-radius that is used when <code>y</code> has point geometry. If this value is larger than zero, it is the maximum distance used to find the a cell with a value that is nearest to the cell that the point falls in if that cell that has a missing (<code>NA</code>) value. The value of this nearest cell, the distance to the original cell, and the new cell number are returned</p></dd>
+<dd><p>positive number. A search-radius that is used when <code>y</code> has point geometry. If this value is larger than zero, it is the maximum distance used to find the a cell with a value that is nearest to the cell that the point falls in if that cell that has a missing (<code>NA</code>) value. The value of this nearest cell, the distance to the original cell, and the new cell number are returned. The radius should be expressed in m if the data have lon/lat coordinates or in the distance unit of the crs in other cases (typically also m). For lon/lat data, the mean latitude of the points is used to compute the distances, so this may be inprecise for data with a large latitudinal range</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments to <code>fun</code> if <code>y</code> is a SpatVector. For example <code>na.rm=TRUE</code>. Or arguments passed to the <code>SpatRaster,SpatVector</code> method if <code>y</code> is a matrix (such as the <code>method</code> and <code>cells</code> arguments)</p></dd>
@@ -138,7 +138,9 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1    21</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    13</span>
 <span class="r-in"><span><span class="fu">extract</span><span class="op">(</span><span class="va">r</span>, <span class="va">p</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .local(x, y, ...):</span> object 'opt' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ID lyr.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1    21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2    13</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">r</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   lyr.1</span>
@@ -186,11 +188,17 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    3    1 180000 331000    0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">extract</span><span class="op">(</span><span class="va">r</span>, <span class="va">p</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .local(x, y, ...):</span> object 'opt' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ID meuse</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1   378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2   251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3   208</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">r</span> <span class="op">+</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">p</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .local(x, y, ...):</span> object 'opt' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ID meuse</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1   388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2   261</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3   218</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="xyCellFrom.html">cellFromXY</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">xy</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span></span>
@@ -226,21 +234,30 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">v</span>, resolution<span class="op">=</span><span class="fl">.1</span>, names<span class="op">=</span><span class="st">"test"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu">extract</span><span class="op">(</span><span class="va">z</span>, <span class="va">v</span>, ID<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .local(x, y, ...):</span> object 'opt' not found</span>
 <span class="r-in"><span><span class="va">e</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'e' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ID test</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  1    6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1    7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  1    8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  2   13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  2   17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  2   18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  2   19</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">e</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, <span class="va">e</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">mean</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'e' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1     2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5.20 16.75 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">z</span><span class="op">*</span><span class="fl">2</span>, <span class="va">z</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">v</span>, ID<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .local(x, y, ...):</span> object 'opt' not found</span>
 <span class="r-in"><span><span class="va">de</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'e' not found</span>
 <span class="r-in"><span><span class="fu"><a href="aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">de</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, <span class="va">de</span><span class="op">[</span>,<span class="fl">1</span>,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>, <span class="va">mean</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in (function (cond) .Internal(C_tryCatchHelper(addr, 1L, cond)))(structure(list(message = "object of type 'closure' is not subsettable",     call = de[, 2:4], object = function (..., Modes = list(),         Names = NULL)     {        sdata &lt;- list(...)        snames &lt;- as.character(substitute(list(...))[-1L])        if (is.null(sdata)) {            if (is.null(Names)) {                odata &lt;- vector("list", length = max(1, length(Modes)))            }            else {                if ((length(Names) != length(Modes)) &amp;&amp; length(Modes)) {                  warning("'modes' argument ignored")                  Modes &lt;- list()                }                odata &lt;- vector("list", length = length(Names))                names(odata) &lt;- Names            }            ncols &lt;- rep.int(1, length(odata))            coltypes &lt;- rep.int(1, length(odata))        }        else {            ncols &lt;- de.ncols(sdata)            coltypes &lt;- ncols[, 2L]            ncols &lt;- ncols[, 1]            odata &lt;- de.setup(sdata, snames, ncols)            if (length(Names))                 if (length(Names) != length(odata))                   warning("'names' argument ignored")                else names(odata) &lt;- Names            if (length(Modes))                 if (length(Modes) != length(odata)) {                  warning("'modes' argument ignored")                  Modes &lt;- list()                }        }        rdata &lt;- dataentry(odata, as.list(Modes))        if (any(coltypes != 1L)) {            if (length(rdata) == sum(ncols))                 rdata &lt;- de.restore(rdata, ncols, coltypes, snames,                   sdata)            else warning("could not restore variables properly")        }        return(rdata)    }), class = c("notSubsettableError", "error", "condition"))):</span> error in evaluating the argument 'x' in selecting a method for function 'aggregate': object of type 'closure' is not subsettable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ID     a    b        c</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1  5.20 10.4 1.733333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 16.75 33.5 5.583333</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
