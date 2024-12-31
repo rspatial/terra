@@ -91,12 +91,15 @@ Similarity is computed with the sum of squared differences between the cell and 
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="scale.html">scale</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">s1</span> <span class="op">&lt;-</span> <span class="fu">bestMatch</span><span class="op">(</span><span class="va">x</span>, <span class="va">pts</span>, labels<span class="op">=</span><span class="va">pts</span><span class="op">$</span><span class="va">code</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'as.matrix': object 'opt' not found</span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">s1</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="bestMatch-2.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 's1' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># same result</span></span></span>
 <span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="extract.html">extract</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">pts</span>, ID<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .local(x, y, ...):</span> object 'opt' not found</span>
 <span class="r-in"><span><span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu">bestMatch</span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span>, labels<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Ap"</span>, <span class="st">"Nt"</span>, <span class="st">"Ms"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'y' in selecting a method for function 'bestMatch': object 'e' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
