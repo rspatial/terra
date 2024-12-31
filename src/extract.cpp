@@ -25,6 +25,92 @@
 #include "math_utils.h"
 
 
+std::vector<double> SpatRaster::readRowColBlockGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+
+	std::vector<double> errout;
+	if (source[src].rotated) {
+		setError("cannot read from rotated files. First use 'rectify'");
+		return errout;
+	}
+	
+	SpatRaster rs(source[src]);
+	size_t nl = rs.nlyr();
+	size_t nc = rs.ncol();
+	size_t n = rows.size();
+
+	SpatOptions opt;
+	opt.ncopies *= 2;
+	BlockSize bs = getBlockSize(opt);
+
+	std::vector<int_64> urows = vunique(rows);
+	std::vector<bool> useblock(bs.n, false);
+	size_t jj = 0;
+	for (size_t i=0; i<bs.n; i++) {
+		int_64 st = bs.row[i];
+		int_64 ed = bs.row[i] + bs.nrows[i];
+		for (size_t j=jj; j<urows.size(); j++) {
+			if ((urows[j] >= st) && (urows[j] < ed)) {
+				useblock[i] = true;
+				bs.row[i] = urows[j];
+				for (size_t k=j; k<urows.size(); k++) {
+					if (urows[k] > ed) {
+						jj = k;
+						break;
+					} else {
+						bs.nrows[i] = k-jj+1;
+					}
+				}
+				break;
+			}
+		}
+	}
+	bs.nrows[bs.n-1] = urows[urows.size()-1] - bs.row[bs.n-1] + 1;
+
+	rs.readStart();
+	std::vector<double> out(n * nl, NAN);
+	for (size_t i=0; i<bs.n; i++) {
+		if (!useblock[i]) continue;
+		std::vector<double> v;
+		rs.readBlock(v, bs, i);
+		int_64 rstart = bs.row[i];
+		int_64 rend = bs.row[i] + bs.nrows[i];
+		for (size_t j=0; j<n; j++) {
+			if ((rows[j] >= rstart) && (rows[j] < rend)) {
+				size_t cell = (rows[j]-rstart) * nc + cols[j];
+				size_t jj = j * nl;
+				for (size_t k=0; k<nl; k++) {
+					out[jj + k] = v[cell + k]; 
+				}
+			}
+		}
+	}
+	rs.readStop();
+	return out;
+}
+
+
+std::vector<std::vector<double>> SpatRaster::readRowColBlockGDAL(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+
+	std::vector<std::vector<double>> errout;
+	if (source[src].rotated) {
+		setError("cannot read from rotated files. First use 'rectify'");
+		return errout;
+	}
+	std::vector<double> out = readRowColBlockGDALFlat(src, rows, cols);
+	size_t nr = rows.size();
+	size_t nl = source[src].layers.size();
+
+	std::vector<std::vector<double>> r(nl, std::vector<double> (nr));
+	for (size_t i=0; i<nr; i++) {
+		for (size_t j=0; j<nl; j++) {
+			size_t k = (i*nl) + j;
+			r[j][i] = out[k];
+		}
+	}
+	return r;
+}
+
+
 
 std::vector<double> circ_dist(double xres, double yres, double d, size_t nrows, size_t ncols, std::vector<size_t> &dim, bool lonlat, double ymean) {
 	
@@ -1165,10 +1251,18 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 			//	srcout = readCellsBinary(src, cell);
 			//} else {
 			#ifdef useGDAL
-			if (win) {
-				srcout = readRowColGDAL(src, wrc[0], wrc[1]);
+			if (rc[0].size() > 250) {
+				if (win) {
+					srcout = readRowColBlockGDAL(src, wrc[0], wrc[1]);
+				} else {
+					srcout = readRowColBlockGDAL(src, rc[0], rc[1]);
+				}
 			} else {
-				srcout = readRowColGDAL(src, rc[0], rc[1]);
+				if (win) {
+					srcout = readRowColGDAL(src, wrc[0], wrc[1]);
+				} else {
+					srcout = readRowColGDAL(src, rc[0], rc[1]);
+				}
 			}
 			#endif
 			if (hasError()) return out;
@@ -1244,10 +1338,18 @@ std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 			//} else {
 			#ifdef useGDAL
 			std::vector<double> g;
-			if (win) {
-				g = readRowColGDALFlat(src, wrc[0], wrc[1]);
-			} else {
-				g = readRowColGDALFlat(src, rc[0], rc[1]);
+			if (rc[0].size() > 250) {
+				if (win) {
+					g = readRowColBlockGDALFlat(src, wrc[0], wrc[1]);
+				} else {
+					g = readRowColBlockGDALFlat(src, rc[0], rc[1]);
+				}
+			} else {	
+				if (win) {
+					g = readRowColGDALFlat(src, wrc[0], wrc[1]);
+				} else {
+					g = readRowColGDALFlat(src, rc[0], rc[1]);
+				}
 			}
 			for (size_t i=0; i<slyrs; i++) {
 				size_t j = i * n;

@@ -551,6 +551,10 @@ class SpatRaster {
 		std::vector<std::vector<double>> readRowColGDAL(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 		std::vector<double> readRowColGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 
+		std::vector<double> readRowColBlockGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+		std::vector<std::vector<double>>  readRowColBlockGDAL(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+
+
 		bool readStartGDAL(size_t src);
 		bool readStopGDAL(size_t src);
 		void readChunkGDAL(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
