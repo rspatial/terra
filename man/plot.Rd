@@ -31,7 +31,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
     maxcell=500000, smooth=FALSE, range=NULL, fill_range=FALSE, levels=NULL, 
 	all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, 
 	alpha=NULL, sort=FALSE,  decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, 
-	add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=TRUE, ...)
+	add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=NULL, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, ...)
 
@@ -40,7 +40,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 \S4method{plot}{SpatVector,character}(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=TRUE, axes=!add, 
     main="", buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, sort=TRUE, 
 	decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, 
-	box=axes, clip=TRUE, overview=TRUE, ...)
+	box=axes, clip=TRUE, ...)
 
 \S4method{plot}{SpatVector,numeric}(x, y, ...)
 
