@@ -231,8 +231,8 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 
 	if (geo == "points") {
 		if (search_radius > 0) {
-			xy <- crds(y)
-			e <- x@pntr$extractBuffer(xy[,1], xy[,2], searchradius)
+			pts <- crds(y)
+			e <- x@pntr$extractBuffer(pts[,1], pts[,2], search_radius)
 			messages(x)
 			e <- do.call(cbind, e)
 			colnames(e) <- c(names(x)[1], "distance", "cell")		
@@ -280,6 +280,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 	} 
 	
 
+	opt <- spatOptions()
 	e <- x@pntr$extractVectorFlat(y@pntr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 	x <- messages(x, "extract")
 

@@ -26,10 +26,26 @@
 
 
 
-std::vector<double> circ_dist(double xres, double yres, double d, std::vector<size_t> &dim) {
-	size_t nx = 1 + 2 * floor(d/xres);
-	size_t ny = 1 + 2 * floor(d/yres);
-
+std::vector<double> circ_dist(double xres, double yres, double d, std::vector<size_t> &dim, bool lonlat, double ymean) {
+	
+	size_t nx, ny;
+	std::string crs;
+	if (lonlat) {
+		deg2rad(ymean);
+		double xr = xres;
+		double yr = yres;
+		deg2rad(xr);
+		deg2rad(yr);
+		double dx = distance_cos(0, ymean, xr, ymean);
+		double dy = distance_cos(0, ymean-0.5*yr, 0, ymean+0.5*yr);
+		nx = 1 + 2 * floor(d/dx);
+		ny = 1 + 2 * floor(d/dy);
+		crs = "+proj=longlat";
+	} else {
+		nx = 1 + 2 * floor(d/xres);
+		ny = 1 + 2 * floor(d/yres);
+		crs = "+proj=utm +zone=1";
+	}
 	if ((nx == 1) || (ny == 1)) {
 		dim = {1, 1};
 		std::vector<double> out{1};
@@ -37,16 +53,12 @@ std::vector<double> circ_dist(double xres, double yres, double d, std::vector<si
 	} 
 	dim = {ny, nx};
 
-	SpatRaster x({ny, nx, 1}, {0., nx * xres, 0., ny * yres}, "+proj=utm +zone=1 +datum=WGS84");
+	SpatRaster x({ny, nx, 1}, {0., nx * xres, 0., ny * yres}, crs);
 	std::vector<double> v(nx*ny, NAN);
 	v[v.size()/2] = 1;
 	SpatOptions opt;
 	x.setValues(v, opt);
-
 	x = x.distance(NAN, NAN, false, "m", false, "cosine", opt);	
-
-//	SpatRaster y = x.arith(d, "<=", false, true, opt);
-//	x = x.mask(y, false, NAN, NAN, opt);
 
 	std::vector<double> out;
 	x.getValuesSource(0, out);				
@@ -79,7 +91,13 @@ std::vector<std::vector<double>> SpatRaster::extractBuffer(const std::vector<dou
 
 	std::vector<size_t> dim;
 	std::vector<double> cd;
-	std::vector<double> cb = circ_dist(xres(), yres(), b, dim);
+	double ymean = 0;
+	bool lonlat = is_lonlat();
+	if (lonlat) {
+		ymean = vmean(y, true);
+	}
+	
+	std::vector<double> cb = circ_dist(xres(), yres(), b, dim, lonlat, ymean);
 	bool docb = false;
 	std::vector<bool> adj(cb.size(), false);
 	if (cb.size() > 1) {
