@@ -12,12 +12,35 @@ setMethod("buffer", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("nearest", signature(x="SpatRaster"),
+	function(x, target=NA, exclude=NULL, unit="m", method="haversine", filename="", ...) {
+
+		if (!(method %in% c("geo", "haversine", "cosine"))) {
+			error("nearest", "not a valid method. Should be one of: 'geo', 'haversine', 'cosine'")
+		}
+		opt <- spatOptions(filename, ...)
+		target <- as.numeric(target[1])
+		keepNA <- FALSE
+		if (!is.null(exclude)) {
+			exclude <- as.numeric(exclude[1])
+			if ((is.na(exclude) && is.na(target)) || isTRUE(exclude == target)) {
+				error("nearest", "'target' and 'exclude' must be different") 
+			}
+			if (is.na(exclude)) {
+				keepNA <- TRUE
+			}
+		} else {
+			exclude <- NA
+		}
+		x@pntr <- x@pntr$nearest(target, exclude, keepNA, tolower(unit), TRUE, method, opt)
+		messages(x, "direction")
+	}
+
+)
 
 setMethod("distance", signature(x="SpatRaster", y="missing"),
 	function(x, y, target=NA, exclude=NULL, unit="m", method="haversine", filename="", ...) {
-		if (!is.null(list(...)$grid)) {
-			error("distance", "use 'gridDistance(x)' instead of  'distance(x, grid=TRUE)'")
-		}
+
 		if (!(method %in% c("geo", "haversine", "cosine"))) {
 			error("distance", "not a valid method. Should be one of: 'geo', 'haversine', 'cosine'")
 		}

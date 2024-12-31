@@ -229,7 +229,10 @@ setMethod("adjacent", signature(x="SpatRaster"),
 		cells <- cells - 1
 		if (inherits(directions, "matrix")) {
 			directions[!is.finite(directions)] <- 0
-			v <- x@pntr$adjacentMat(cells, as.logical(directions), dim(directions), include)
+			if (isTRUE(all(directions == 0))) {
+				error("adjacent", "directions are all FALSE")
+			}
+			v <- x@pntr$adjacentMat(cells, as.logical(t(directions)), dim(directions), include)
 		} else {
 			#if (pairs) include <- FALSE
 			v <- x@pntr$adjacent(cells,  as.character(directions)[1], include)

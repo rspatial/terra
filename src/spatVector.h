@@ -178,10 +178,10 @@ class SpatVector {
 		SpatVector project(std::string crs, bool partial);
 		std::vector<double> project_xy(std::vector<double> x, std::vector<double> y, std::string fromCRS, std::string toCRS);
 
-		SpatVector subset_cols(int i);
-		SpatVector subset_cols(std::vector<int> range);
-		SpatVector subset_rows(int i);
-		SpatVector subset_rows(std::vector<int> range);
+		SpatVector subset_cols(long i);
+		SpatVector subset_cols(std::vector<long> range);
+		SpatVector subset_rows(long i);
+		SpatVector subset_rows(std::vector<long> range);
 		SpatVector subset_rows(std::vector<unsigned> range);
 		SpatVector remove_rows(std::vector<unsigned> range);
 

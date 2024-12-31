@@ -914,7 +914,7 @@ void SpatVector::setLinesStartEnd(std::vector<double> &x, std::string crs) {
 
 
 
-SpatVector SpatVector::subset_rows(std::vector<int> range) {
+SpatVector SpatVector::subset_rows(std::vector<long> range) {
 
 	SpatVector out;
 	int n = nrow();
@@ -959,10 +959,9 @@ SpatVector SpatVector::subset_rows(std::vector<unsigned> range) {
 
 
 
-SpatVector SpatVector::subset_rows(int i) {
-	std::vector<int> range(1, i);
-	SpatVector out = subset_rows(range);
-	return out;
+SpatVector SpatVector::subset_rows(long i) {
+	std::vector<long> range(1, i);
+	return subset_rows(range);
 }
 
 
@@ -986,8 +985,8 @@ SpatVector SpatVector::remove_rows(std::vector<unsigned> range) {
 
 
 
-SpatVector SpatVector::subset_cols(std::vector<int> range) {
-	int nc = ncol();
+SpatVector SpatVector::subset_cols(std::vector<long> range) {
+	long nc = ncol();
 	std::vector<unsigned> valid;
 	valid.reserve(range.size());
 	for (size_t i=0; i<range.size(); i++) {
@@ -1001,14 +1000,14 @@ SpatVector SpatVector::subset_cols(std::vector<int> range) {
 }
 
 
-SpatVector SpatVector::subset_cols(int i) {
+SpatVector SpatVector::subset_cols(long i) {
 	if (i < 0) {
 		SpatVector out;
 		out.geoms = geoms;
 		out.srs = srs;
 		return out;
 	}
-	std::vector<int> range = {i};
+	std::vector<long> range = {i};
 	return subset_cols(range);
 }
 

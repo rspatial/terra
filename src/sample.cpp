@@ -807,7 +807,7 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 	out = intersect(out, true);
 	if (random) {
 		if (out.size() > n) {
-			std::vector<int> rows(out.size());
+			std::vector<long> rows(out.size());
 			std::iota(rows.begin(), rows.end(), 0);
 			std::default_random_engine gen(seed);
 			std::shuffle(rows.begin(), rows.end(), gen);

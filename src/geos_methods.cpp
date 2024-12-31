@@ -750,11 +750,11 @@ SpatVector SpatVector::split_lines(SpatVector v) {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 
 	for (size_t i=0; i<v.size(); i++) {
-		SpatVector tmp = v.subset_rows({int(i)});
+		SpatVector tmp = v.subset_rows(i);
 		std::vector<int> x = out.relate(tmp, "intersects", true, true);
 		std::vector<std::vector<double>> xy1 = tmp.coordinates();
-		for (size_t i=0; i<x.size(); i++) {
-			if (x[i] == 1) {
+		for (size_t j=0; j<x.size(); j++) {
+			if (x[j] == 1) {
 				std::vector<std::vector<double>> xy2 = tmp.coordinates();
 				if (find_segments(hGEOSCtxt, xy1[0], xy1[1], xy2[0], xy2[1], si, sx, sy)) {
 					
@@ -1165,14 +1165,16 @@ SpatVector SpatVector::delaunay(double tolerance, int onlyEdges, bool constraine
 		return out;
 	}
 
+#ifndef GEOS350
+	out.setError("GEOS 3.5 required for delaunay");
+	return out;
+#endif 
+
 #ifndef GEOS3100
 	if (constrained) {
 		out.setError("GEOS 3.10 required for constrained delaunay");
 		return out;
 	}
-#elifndef GEOS350
-	out.setError("GEOS 3.5 required for delaunay");
-	return out;
 #else
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
@@ -2365,7 +2367,7 @@ SpatVector SpatVector::mask(SpatVector x, bool inverse) {
 			b[i] = !b[i];
 		}
 	}
-	std::vector<int> r;
+	std::vector<unsigned> r;
 	r.reserve(b.size());
 	for (size_t i=0; i<b.size(); i++) {
 		if (b[i]) r.push_back(i);
@@ -2726,7 +2728,7 @@ SpatVector SpatVector::erase_agg(SpatVector v) {
 		out.srs = srs;
 		out.df = df.subset_rows(rids);
 	} else {
-		std::vector<int> none(1, -1);
+		std::vector<long> none(1, -1);
 		out = subset_rows(none);
 	}
 	geos_finish(hGEOSCtxt);
@@ -2761,7 +2763,7 @@ SpatVector SpatVector::erase(SpatVector v) {
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
 	size_t nx = size();
 	size_t ny = v.size();
-	std::vector<int> rids;
+	std::vector<long> rids;
 	rids.reserve(nx);
 
 	for (size_t i = 0; i < nx; i++) {
@@ -2784,7 +2786,7 @@ SpatVector SpatVector::erase(SpatVector v) {
 	}
 
 	if (rids.empty()) {
-		std::vector<int> none(1, -1);
+		std::vector<long> none(1, -1);
 		out = subset_rows(none);
 	} else {
 		SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt);

@@ -34,6 +34,8 @@ inline double distance_cos(double lon1, double lat1, double lon2, double lat2) {
 	return r * acos((sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1-lon2)));
 }
 
+
+
 inline double distance_hav(double lon1, double lat1, double lon2, double lat2) {
 	const double r = 6378137.;
 	double dLat = lat2-lat1;

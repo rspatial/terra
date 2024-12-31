@@ -29,7 +29,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE,
     ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE,
-	layer=NULL, bind=FALSE, raw=FALSE, ...)
+	layer=NULL, bind=FALSE, raw=FALSE, search_radius=0, ...)
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, cells=FALSE, xy=FALSE)
 
@@ -55,6 +55,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 \item{layer}{character or numeric to select the layer to extract from for each geometry. If \code{layer} is a character it can be a name in \code{y} or a vector of layer names. If it is numeric, it must be integer values between \code{1} and \code{nlyr(x)}}
 \item{bind}{logical. If \code{TRUE}, a SpatVector is returned consisting of the input SpatVector \code{y} and the \code{cbind}-ed extracted values}
 \item{raw}{logical. If \code{TRUE}, a matrix is returned with the "raw" numeric cell values. If \code{FALSE}, a data.frame is returned and the cell values are transformed to factor, logical, or integer values, where appropriate}
+\item{search_radius}{positive number. A search-radius that is used when \code{y} has point geometry. If this value is larger than zero, it is the maximum distance used to find the a cell with a value that is nearest to the cell that the point falls in if that cell that has a missing (\code{NA}) value. The value of this nearest cell, the distance to the original cell, and the new cell number are returned}
 \item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector. For example \code{na.rm=TRUE}. Or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (such as the \code{method} and \code{cells} arguments)}
 }
 

@@ -63,7 +63,7 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 		// OFTInteger64 may be too large 
 		if ((ft == OFTReal) || (ft == OFTInteger64)) {
 			dtype = 0;
-		} else if ((ft == OFTInteger)) {
+		} else if (ft == OFTInteger) {
 			if (poFieldDefn->GetSubType() == OFSTBoolean) {
 				dtype = 3;
 			} else {

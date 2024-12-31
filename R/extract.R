@@ -220,7 +220,7 @@ do_fun <- function(e, fun, ...) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
-function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE, layer=NULL, bind=FALSE, raw=FALSE, ...) {
+function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE, layer=NULL, bind=FALSE, raw=FALSE, search_radius=0, ...) {
 
 	geo <- geomtype(y)
 	if (!is.null(layer)) {
@@ -229,8 +229,28 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		}
 	}
 
-	if (geo == "points") {		
-		if (weights || exact) {
+	if (geo == "points") {
+		if (search_radius > 0) {
+			xy <- crds(y)
+			e <- x@pntr$extractBuffer(xy[,1], xy[,2], searchradius)
+			messages(x)
+			e <- do.call(cbind, e)
+			colnames(e) <- c(names(x)[1], "distance", "cell")		
+			e[,3] <- e[,3] + 1
+			if (xy) {
+				e <- cbind(xyFromCell(x, e[,3]), e)
+			}
+			if (!raw) {
+				e <- cbind(.makeDataFrame(x, e[,1,drop=FALSE]), e[,2:3])
+			}
+			if (bind) {
+				e <- data.frame(e)
+				e <- cbind(y, e)
+			} else if (ID) {
+				e <- cbind(ID=1:nrow(e), e) 
+			}
+			return(e)
+		} else if (weights || exact) {
 			method <- "bilinear"
 			weights <- FALSE
 			exact <- FALSE
@@ -259,9 +279,10 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		raw <- TRUE
 	} 
 	
-	opt <- spatOptions()
+
 	e <- x@pntr$extractVectorFlat(y@pntr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 	x <- messages(x, "extract")
+
 
 	cn <- c("ID", names(x))
 	nc <- nl <- nlyr(x)

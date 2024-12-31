@@ -13,16 +13,12 @@ setMethod ("area", "SpatVector",
 	}
 )
 
-if (!isGeneric("gridDistance")) {setGeneric("gridDistance", function(x, ...) standardGeneric("gridDistance"))}
-setMethod("gridDistance", signature(x="SpatRaster"),
-	function(x, ...) {
-		error("gridDistance", "'gridDistance' was renamed to 'gridDist'")
-		#. 'gridDistance' will be removed in a future version")
-		#gridDist(x, target=target, scale=scale, maxiter=maxiter, filename=filename, ...) 
-	}
-)
-
-
+#if (!isGeneric("gridDistance")) {setGeneric("gridDistance", function(x, ...) standardGeneric("gridDistance"))}
+#setMethod("gridDistance", signature(x="SpatRaster"),
+#	function(x, ...) {
+#		error("gridDistance", "'gridDistance' was renamed to 'gridDist'")
+#	}
+#)
 
 #if (!isGeneric("setCats")) { setGeneric("setCats", function(x, ...) standardGeneric("setCats")) }
 

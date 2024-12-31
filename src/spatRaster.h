@@ -624,9 +624,10 @@ class SpatRaster {
 		SpatVector as_multipoints(bool narm, bool nall, SpatOptions &opt);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
-		std::vector<std::vector<double>> bilinearValues(const std::vector<double> &x, const std::vector<double> &y);
+
+		void bilinearValues(std::vector<std::vector<double>> &out, const std::vector<double> &x, const std::vector<double> &y);
 		std::vector<double> bilinearCells(const std::vector<double> &x, const std::vector<double> &y);
-		std::vector<double> fourCellsFromXY(const std::vector<double> &x, const std::vector<double> &y);
+		void fourCellsFromXY(std::vector<double> &out, const std::vector<double> &x, const std::vector<double> &y);
 
 		SpatRaster buffer(double d, double background, SpatOptions &opt);
 		SpatRaster clamp(std::vector<double> low, std::vector<double> high, bool usevalue, SpatOptions &opt);
@@ -647,6 +648,8 @@ class SpatRaster {
 		SpatRaster fillNA(double missing, double maxdist, int niter, SpatOptions &opt);
 		
 		SpatRaster distance(double target, double exclude, bool keepNA, std::string unit, bool remove_zero, std::string method, SpatOptions &opt);
+		SpatRaster nearest(double target, double exclude, bool keepNA, std::string unit, bool remove_zero, std::string method, SpatOptions &opt);
+
 //		SpatRaster distance_spatvector(SpatVector p, std::string unit, const std::string& method, SpatOptions &opt);
 //		SpatRaster distance_rasterize(SpatVector p, double target, double exclude, std::string unit, const std::string& method, SpatOptions &opt);
 		SpatRaster distance_vector(SpatVector p, bool rasterize, std::string unit, const std::string& method, SpatOptions &opt);
@@ -655,6 +658,7 @@ class SpatRaster {
 		
 		
 		SpatRaster distance_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt);
+		SpatRaster dn_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt);
 
 		SpatRaster direction(bool from, bool degrees, double target, double exclude, const std::string& method, SpatOptions &opt);
 		SpatRaster direction_vector(SpatVector p, bool from, bool degrees, const std::string& method, SpatOptions &opt);
@@ -667,6 +671,8 @@ class SpatRaster {
 		SpatRaster extend(SpatExtent e, std::string snap, double fill, SpatOptions &opt);
 		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, bool small, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
 		std::vector<double> extractVectorFlat(SpatVector v, std::vector<std::string> funs, bool narm, bool touches, bool small, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
+		std::vector<std::vector<double>> extractBuffer(const std::vector<double> &x, const std::vector<double> &y, double b);
+		
 		
 //		std::vector<double> extract_interpolate(std::vector<double> x, std::vector<double> y, std::string algo);
 

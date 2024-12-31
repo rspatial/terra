@@ -92,8 +92,8 @@ Karney, C.F.F., 2013. Algorithms for geodesics, J. Geodesy 87: 43-55. doi:10.100
 #lonlat
 r <- rast(ncols=36, nrows=18, crs="+proj=longlat +datum=WGS84")
 r[500] <- 1
-d <- distance(r) 
-plot(d / 100000)
+d <- distance(r, unit="km") 
+plot(d / 1000)
 
 #planar
 rr <- rast(ncols=36, nrows=18, crs="+proj=utm +zone=1 +datum=WGS84")

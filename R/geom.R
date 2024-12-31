@@ -1,46 +1,46 @@
 
-buffer2 <- function(x, width, quadsegs=10) {
-	if (is.character(width)) {
-		if (!(width %in% names(x))) {
-			error("buffer2", paste(width, "is not a field in x"))
-		}
-		width <- x[[width, drop=TRUE]]
-	}
-	if (!is.numeric(width)) {
-		error("buffer2", "width is not numeric")
-	}
-	x@pntr <- x@pntr$buffer2(width, quadsegs)
-	messages(x, "buffer2")
-}
+# buffer2 <- function(x, width, quadsegs=10) {
+	# if (is.character(width)) {
+		# if (!(width %in% names(x))) {
+			# error("buffer2", paste(width, "is not a field in x"))
+		# }
+		# width <- x[[width, drop=TRUE]]
+	# }
+	# if (!is.numeric(width)) {
+		# error("buffer2", "width is not numeric")
+	# }
+	# x@pntr <- x@pntr$buffer2(width, quadsegs)
+	# messages(x, "buffer2")
+# }
 
 
-buffer3 <- function(x, width, quadsegs=10) {
-	if (is.character(width)) {
-		if (!(width %in% names(x))) {
-			error("buffer3", paste(width, "is not a field in x"))
-		}
-		width <- x[[width, drop=TRUE]]
-	}
-	if (!is.numeric(width)) {
-		error("buffer3", "width is not numeric")
-	}
-	x@pntr <- x@pntr$buffer3(width, quadsegs)
-	messages(x, "buffer3")
-}
+# buffer3 <- function(x, width, quadsegs=10) {
+	# if (is.character(width)) {
+		# if (!(width %in% names(x))) {
+			# error("buffer3", paste(width, "is not a field in x"))
+		# }
+		# width <- x[[width, drop=TRUE]]
+	# }
+	# if (!is.numeric(width)) {
+		# error("buffer3", "width is not numeric")
+	# }
+	# x@pntr <- x@pntr$buffer3(width, quadsegs)
+	# messages(x, "buffer3")
+# }
 
-buffer4 <- function(x, width, quadsegs=10) {
-	if (is.character(width)) {
-		if (!(width %in% names(x))) {
-			error("buffer4", paste(width, "is not a field in x"))
-		}
-		width <- x[[width, drop=TRUE]]
-	}
-	if (!is.numeric(width)) {
-		error("buffer4", "width is not numeric")
-	}
-	x@pntr <- x@pntr$buffer4(width, quadsegs)
-	messages(x, "buffer4")
-}
+# buffer4 <- function(x, width, quadsegs=10) {
+	# if (is.character(width)) {
+		# if (!(width %in% names(x))) {
+			# error("buffer4", paste(width, "is not a field in x"))
+		# }
+		# width <- x[[width, drop=TRUE]]
+	# }
+	# if (!is.numeric(width)) {
+		# error("buffer4", "width is not numeric")
+	# }
+	# x@pntr <- x@pntr$buffer4(width, quadsegs)
+	# messages(x, "buffer4")
+# }
 
 roundtrip <- function(x, coll=FALSE) {
 	if (coll) {
