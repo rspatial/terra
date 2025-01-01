@@ -25,12 +25,12 @@
 #include "math_utils.h"
 
 
-std::vector<double> SpatRaster::readRowColBlockGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>>::iterator out, std::vector<int_64> &rows, std::vector<int_64> &cols) {
 
-	std::vector<double> errout;
+	std::vector<std::vector<double>> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
-		return errout;
+		return;
 	}
 	
 	SpatRaster rs(source[src]);
@@ -39,9 +39,18 @@ std::vector<double> SpatRaster::readRowColBlockGDALFlat(size_t src, std::vector<
 	size_t n = rows.size();
 
 	SpatOptions opt;
-	opt.ncopies *= 2;
 	BlockSize bs = getBlockSize(opt);
 
+/*
+	std::vector<std::pair<int_64, int_64>> rowcol;
+	rowcol.reserve(rows.size());
+	for (size_t i=0; i < rows.size(); i++) {
+		rowcol.push_back(std::make_pair(rows[i], cols[i]));
+	}
+	std::vector<std::size_t> pm = sort_order_a(rowcol);
+	permute(rows, pm);
+	permute(cols, pm);
+*/
 	std::vector<int_64> urows = vunique(rows);
 	std::vector<bool> useblock(bs.n, false);
 	size_t jj = 0;
@@ -66,8 +75,16 @@ std::vector<double> SpatRaster::readRowColBlockGDALFlat(size_t src, std::vector<
 	}
 	bs.nrows[bs.n-1] = urows[urows.size()-1] - bs.row[bs.n-1] + 1;
 
-	rs.readStart();
-	std::vector<double> out(n * nl, NAN);
+	if (!rs.readStart()) {
+		setError(getError());
+		return;
+	}
+
+//	std::vector<std::vector<double>> out(nl, std::vector<double>(n, NAN));
+	for (size_t k=0; k<nl; k++) {
+		out[k] = std::vector<double>(n, NAN);
+	}
+	
 	for (size_t i=0; i<bs.n; i++) {
 		if (!useblock[i]) continue;
 		std::vector<double> v;
@@ -75,41 +92,48 @@ std::vector<double> SpatRaster::readRowColBlockGDALFlat(size_t src, std::vector<
 		int_64 rstart = bs.row[i];
 		int_64 rend = bs.row[i] + bs.nrows[i];
 		for (size_t j=0; j<n; j++) {
+//			if (rows[j] >= rend) break; // if rows are sorted
 			if ((rows[j] >= rstart) && (rows[j] < rend)) {
 				size_t cell = (rows[j]-rstart) * nc + cols[j];
-				size_t jj = j * nl;
 				for (size_t k=0; k<nl; k++) {
-					out[jj + k] = v[cell + k]; 
+					out[k][j] = v[cell + k]; 
 				}
 			}
 		}
 	}
 	rs.readStop();
-	return out;
+/*
+	pm = sort_order_a(pm);
+	for (size_t i=0; i<out.size(); i++) {
+		permute(out[i], pm);
+	}
+*/	
+//	return out;
 }
 
+/*
+std::vector<double> SpatRaster::readRowColBlockFlat(size_t src, std::vector<int_64> &rows, std::vector<int_64> &cols) {
 
-std::vector<std::vector<double>> SpatRaster::readRowColBlockGDAL(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
-
-	std::vector<std::vector<double>> errout;
+	std::vector<double> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
 		return errout;
 	}
-	std::vector<double> out = readRowColBlockGDALFlat(src, rows, cols);
-	size_t nr = rows.size();
-	size_t nl = source[src].layers.size();
+	std::vector<std::vector<double>> v = readRowColBlock(src, rows, cols);
+	
+	size_t nr = v[0].size();
+	size_t nl = v.size();
+	std::vector<double> out;
+	out.reserve(nl * nr);
 
-	std::vector<std::vector<double>> r(nl, std::vector<double> (nr));
 	for (size_t i=0; i<nr; i++) {
 		for (size_t j=0; j<nl; j++) {
-			size_t k = (i*nl) + j;
-			r[j][i] = out[k];
+			out.push_back(v[j][i]);
 		}
 	}
-	return r;
+	return out;
 }
-
+*/
 
 
 std::vector<double> circ_dist(double xres, double yres, double d, size_t nrows, size_t ncols, std::vector<size_t> &dim, bool lonlat, double ymean) {
@@ -1202,12 +1226,16 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 	rc = rowColFromCell(cell);
 
 	size_t n  = cell.size();
-	std::vector<std::vector<double>> out(nlyr(), std::vector<double>(n, NAN));
-	if (!hasValues()) return out;
-
+	if (!hasValues()) {
+		std::vector<std::vector<double>> out(nlyr(), std::vector<double>(n, NAN));
+		return out;
+	}
+	
 	unsigned ns = nsrc();
 	unsigned lyr = 0;
 	size_t nc;
+
+	std::vector<std::vector<double>> out(nlyr());
 	for (size_t src=0; src<ns; src++) {
 		unsigned slyrs = source[src].layers.size();
 		bool win = source[src].hasWindow;
@@ -1229,6 +1257,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 		}
 		if (source[src].memory) {
 			for (size_t i=0; i<slyrs; i++) {
+				out[lyr] = std::vector<double>(n, NAN);
 				size_t j = i * nc;
 				if (win) {
 					for (size_t k=0; k<n; k++) {
@@ -1247,38 +1276,39 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 			}
 		} else {
 			std::vector<std::vector<double>> srcout;
-			//if (source[0].driver == "raster") {
-			//	srcout = readCellsBinary(src, cell);
-			//} else {
 			#ifdef useGDAL
-			if (rc[0].size() > 250) {
+			size_t pos = source[0].filename.find("https://");
+			if ((pos != std::string::npos) && (rc[0].size() > 200)) {
 				if (win) {
-					srcout = readRowColBlockGDAL(src, wrc[0], wrc[1]);
+					readRowColBlock(src, out.begin()+lyr, wrc[0], wrc[1]);
 				} else {
-					srcout = readRowColBlockGDAL(src, rc[0], rc[1]);
+					readRowColBlock(src, out.begin()+lyr, rc[0], rc[1]);
 				}
 			} else {
 				if (win) {
-					srcout = readRowColGDAL(src, wrc[0], wrc[1]);
+					readRowColGDAL(src, out.begin()+lyr, wrc[0], wrc[1]);
 				} else {
-					srcout = readRowColGDAL(src, rc[0], rc[1]);
+					readRowColGDAL(src, out.begin()+lyr, rc[0], rc[1]);
 				}
+				if (hasError()) return out;
+			}
+			lyr += slyrs;
+			#else 
+			for (size_t i=0; i<slyrs; i++) {
+				out[lyr] = std::vector<double>(n, NAN);
 			}
 			#endif
 			if (hasError()) return out;
-			//}
-			for (size_t i=0; i<slyrs; i++) {
-				out[lyr] = srcout[i];
-				lyr++;
-			}
 		}
 	}
 	return out;
 }
 
 
+//std::vector<std::vector<double>> SpatRaster::extractRowCol(std::vector<int_64> &row, std::vector<int_64> &col) {
 
 
+/*
 
 std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 
@@ -1338,11 +1368,12 @@ std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 			//} else {
 			#ifdef useGDAL
 			std::vector<double> g;
-			if (rc[0].size() > 250) {
+			size_t pos = source[0].filename.find("https://");
+			if ((pos != std::string::npos) && (rc[0].size() > 200)) {
 				if (win) {
-					g = readRowColBlockGDALFlat(src, wrc[0], wrc[1]);
+					g = readRowColBlockFlat(src, wrc[0], wrc[1]);
 				} else {
-					g = readRowColBlockGDALFlat(src, rc[0], rc[1]);
+					g = readRowColBlockFlat(src, rc[0], rc[1]);
 				}
 			} else {	
 				if (win) {
@@ -1367,7 +1398,7 @@ std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 	}
 	return out;
 }
-
+*/
 
 std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, bool small, std::string method, bool weights, bool exact, SpatOptions &opt) {
 

@@ -548,11 +548,14 @@ class SpatRaster {
 		// gdal source
 		std::vector<double> readValuesGDAL(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr = -1);
 		std::vector<double> readGDALsample(size_t src, size_t srows, size_t scols, bool overview);
-		std::vector<std::vector<double>> readRowColGDAL(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
-		std::vector<double> readRowColGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 
-		std::vector<double> readRowColBlockGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
-		std::vector<std::vector<double>>  readRowColBlockGDAL(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+		void readRowColGDAL(size_t src, std::vector<std::vector<double>>::iterator out, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+//		std::vector<double> readRowColGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+
+//		std::vector<double> readRowColBlockFlat(size_t src, std::vector<int_64> &rows, std::vector<int_64> &cols);
+//		std::vector<std::vector<double>> readRowColBlock(size_t src, std::vector<int_64> &rows, std::vector<int_64> &cols);
+
+		void readRowColBlock(size_t src, std::vector<std::vector<double>>::iterator out, std::vector<int_64> &rows, std::vector<int_64> &cols);
 
 
 		bool readStartGDAL(size_t src);
@@ -685,7 +688,7 @@ class SpatRaster {
 		std::vector<double> extCells(SpatExtent ext);
 
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
-		std::vector<double> extractCellFlat(std::vector<double> &cell);
+//		std::vector<double> extractCellFlat(std::vector<double> &cell);
 	
 		std::vector<std::vector<double>> extractXY(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells);
 		std::vector<double> extractXYFlat(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells);

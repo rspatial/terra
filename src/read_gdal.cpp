@@ -1655,7 +1655,108 @@ std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t 
 }
 
 
+void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>>::iterator out, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
 
+	if (source[src].rotated) {
+		setError("cannot read from rotated files. First use 'rectify'");
+		return;
+	}
+	size_t n = rows.size();
+	if (n < 1) {
+		addWarning("nothing to extract");
+		return;
+	}
+
+    GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[src].open_drivers, source[src].open_ops);
+
+    if( poDataset == NULL )  {
+		if (!file_exists(source[src].filename )) {
+			setError("file does not exist: " + source[src].filename);
+		} else {
+			setError("cannot read from " + source[src].filename  );
+		}
+		return;
+	}
+
+
+	std::vector<size_t> lyrs = source[src].layers;
+	size_t nl = lyrs.size();
+
+	size_t fnr = nrow() - 1;
+	if (source[src].flipped) {
+		for (size_t i=0; i<n; i++) {
+			rows[i] = fnr - rows[i];
+		}
+	}
+
+	std::vector<int> panBandMap;
+	if (!source[src].in_order()) {
+		panBandMap.reserve(nl);
+		for (size_t i=0; i < nl; i++) {
+			panBandMap.push_back(lyrs[i]+1);
+		}
+	}
+
+//	std::vector<std::vector<double>> out(nl, std::vector<double> (n, NAN));
+
+//	std::vector<double> out(n * nl, NAN);
+
+	CPLErr err = CE_None;
+	if (panBandMap.empty()) {
+		// check the first one 
+		if (err == CE_None) {
+			for (size_t j=0; j<nl; j++) {
+				out[j] = std::vector<double> (n, NAN);
+				for (size_t i=0; i < n; i++) {
+					if ((cols[i] < 0) || (rows[i] < 0)) continue;
+					err = poDataset->RasterIO(GF_Read, cols[i], rows[i], 1, 1, &out[j][i], 1, 1, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
+				}
+			}
+		}
+	} else {
+		if (err == CE_None) {
+			for (size_t j=0; j<nl; j++) {
+				out[j] = std::vector<double> (n, NAN);
+				for (size_t i=0; i < n; i++) {
+					if ((cols[j] < 0) || (rows[j] < 0)) continue;
+					err = poDataset->RasterIO(GF_Read, cols[i], rows[i], 1, 1, &out[j][i], 1, 1, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
+				}
+			}
+		}
+	}
+	if (err == CE_None ) {
+		//std::vector<double> naflags(nl, NAN);
+		int hasNA;
+		GDALRasterBand *poBand;
+		for (size_t i=0; i<nl; i++) {
+			poBand = poDataset->GetRasterBand(lyrs[i]+1);
+			double naflag = poBand->GetNoDataValue(&hasNA);
+			if (!hasNA) naflag = NAN;
+			NAso(out[i], n, {naflag}, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag);
+		}
+	}
+
+	GDALClose((GDALDatasetH) poDataset);
+	if (err != CE_None ) {
+		setError("cannot read values");
+		return;
+	}
+
+/*
+	size_t nr = rows.size();
+	std::vector<std::vector<double>> r(nl, std::vector<double> (nr));
+	for (size_t i=0; i<nr; i++) {
+		for (size_t j=0; j<nl; j++) {
+			size_t k = (i*nl) + j;
+			r[j][i] = out[k];
+		}
+	}
+	return r;
+*/	
+}
+
+
+/*
 std::vector<std::vector<double>> SpatRaster::readRowColGDAL(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
 
 	std::vector<std::vector<double>> errout;
@@ -1698,15 +1799,15 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(size_t src, std::vec
 
 	std::vector<double> out(n * nl, NAN);
 	CPLErr err = CE_None;
-	for (size_t j=0; j < n; j++) {
-		if ((cols[j] < 0) || (rows[j] < 0)) continue;
+	for (size_t i=0; i < n; i++) {
+		if ((cols[i] < 0) || (rows[i] < 0)) continue;
 		if (panBandMap.empty()) {
-			err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
+			err = poDataset->RasterIO(GF_Read, cols[i], rows[i], 1, 1, &out[i*nl], 1, 1, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
 		} else {
-			err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
+			err = poDataset->RasterIO(GF_Read, cols[i], rows[i], 1, 1, &out[i*nl], 1, 1, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 		}
 		if (err != CE_None ) {
-			break;
+			break;x`
 		}
 	}
 
@@ -1738,10 +1839,9 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(size_t src, std::vec
 	}
 	return r;
 }
+*/
 
-
-
-
+/*
 std::vector<double> SpatRaster::readRowColGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
 
 	std::vector<double> errout;
@@ -1815,7 +1915,7 @@ std::vector<double> SpatRaster::readRowColGDALFlat(size_t src, std::vector<int_6
 
 	return out;
 }
-
+*/
 
 
 // ncdf

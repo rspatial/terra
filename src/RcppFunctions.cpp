@@ -3,12 +3,15 @@
 #include "string_utils.h"
 #include "math_utils.h"
 
+#include "sort.h"
+
 #include "gdal_priv.h"
 #include "gdalio.h"
 #include "ogr_spatialref.h"
 
 //#define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
+
 
 
 #if GDAL_VERSION_MAJOR >= 3
@@ -35,6 +38,7 @@
 #endif
 #endif
 
+
 //from sf
 
 #ifdef projh
@@ -58,6 +62,7 @@ std::string proj_version() {
 #endif
 
 
+
 // [[Rcpp::export]]
 std::vector<unsigned char> hex2rgb(std::string s) {
 	unsigned char r, g, b;
@@ -66,6 +71,20 @@ std::vector<unsigned char> hex2rgb(std::string s) {
 	std::vector<unsigned char> x = {r, g, b};
 	return x;
 }
+
+/*
+// [[Rcpp::export]]
+std::vector<size_t> terra_order(std::vector<double> v) {
+	return sort_order_a(v);
+}
+
+// [[Rcpp::export]]
+std::vector<double> terra_permute(std::vector<double> v, std::vector<size_t> p) {
+	permute(v, p);
+	return v;
+}
+*/
+
 
 // [[Rcpp::export]]
 std::string rgb2hex(std::vector<unsigned char> x) {
