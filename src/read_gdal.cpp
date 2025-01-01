@@ -1820,7 +1820,6 @@ std::vector<double> SpatRaster::readRowColGDALFlat(size_t src, std::vector<int_6
 
 // ncdf
 
-
 bool ncdf_good_ends(std::string const &s) {
 	std::vector<std::string> end = {"_bnds", "_bounds", "lat", "lon", "longitude", "latitude"};
 	for (size_t i=0; i<end.size(); i++) {
