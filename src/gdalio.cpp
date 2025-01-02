@@ -6,6 +6,8 @@
 #include "string_utils.h"
 #include "file_utils.h"
 #include "crs.h"
+#include "vecmath.h"
+
 
 #include "cpl_port.h"
 #include "cpl_conv.h" // CPLFree()
@@ -339,40 +341,10 @@ std::string SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector
 		return("");
 	}
 
-/*
-	std::vector<GDALDataset *> tiles;
-	std::vector<std::string> ops;
-
-	for (std::string& f : filenames) {
-		GDALDataset *poDataset = openGDAL(f, GDAL_OF_RASTER | GDAL_OF_READONLY, ops, ops);
-		if( poDataset == NULL )  {
-			for (size_t j= 0; j<tiles.size(); j++) GDALClose(tiles[j]);
-			out.setError("cannot open " + f);
-			return out;
-		}
-		tiles.push_back(poDataset);
-	}
-*/
-
 	char **names = NULL;
 	for (std::string& f : filenames) {
 		names = CSLAddString(names, f.c_str());
 	}
-
-//	psOptions * vrtops;
-/*gdalbuildvrt [-tileindex field_name]
-            [-resolution {highest|lowest|average|user}]
-            [-te xmin ymin xmax ymax] [-tr xres yres] [-tap]
-            [-separate] [-b band]* [-sd subdataset]
-            [-allow_projection_difference] [-q]
-            [-optim {[AUTO]/VECTOR/RASTER}]
-            [-addalpha] [-hidenodata]
-            [-srcnodata "value [value...]"] [-vrtnodata "value [value...]"]
-            [-ignore_srcmaskband]
-            [-a_srs srs_def]
-            [-r {nearest,bilinear,cubic,cubicspline,lanczos,average,mode}]
-            [-oo NAME=VALUE]*
-*/
 
 	std::vector <char *> vops = string_to_charpnt(options);
 	GDALBuildVRTOptions* vrtops = GDALBuildVRTOptionsNew(vops.data(), NULL);
@@ -382,20 +354,32 @@ std::string SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector
 		return("");
 	}
 	int pbUsageError;
-//	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), tiles.size(), (GDALDatasetH *) tiles.data(), nullptr, vrtops, &pbUsageError);
 
 	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), filenames.size(), nullptr, names, vrtops, &pbUsageError);
-
 	GDALBuildVRTOptionsFree(vrtops);
 	CSLDestroy( names );
-
-	//for (size_t i= 0; i<tiles.size(); i++) GDALClose(tiles[i]);
+	
 	if(ds == NULL )  {
 		setError("cannot create vrt. Error #"+ std::to_string(pbUsageError));
 		return("");
 	}
+	
+    size_t nSources = 0;
+	char **fileList = ds->GetFileList();
+	if (fileList != NULL) {
+		for (size_t i=0; fileList[i] != NULL; i++) {
+			nSources++;
+		}
+	}
 	GDALClose(ds);
-	return(outfile);
+
+	std::vector<std::string> ufo = vunique(filenames);
+	if (ufo.size() > nSources) {
+		opt.msg.has_warning = true;
+		opt.msg.warnings = {"vrt did not use " + std::to_string(ufo.size() - nSources) + " of the " + std::to_string(ufo.size()) + " files"};
+	}
+	
+	return outfile;
 }
 
 

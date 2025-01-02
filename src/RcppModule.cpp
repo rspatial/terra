@@ -14,21 +14,21 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) {
 	SpatOptions opt;
 	opt.ncopies = n;
 	opt.set_memfrac(frac);
-    BlockSize bs = r->getBlockSize(opt);
+	BlockSize bs = r->getBlockSize(opt);
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
 	return(L);
 }
 */
 
 Rcpp::List getBlockSizeR(SpatRaster* r, SpatOptions* opt) {
-    BlockSize bs = r->getBlockSize(*opt);
+	BlockSize bs = r->getBlockSize(*opt);
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
 	return(L);
 }
 
 
 Rcpp::List getBlockSizeWrite(SpatRaster* r) {
-    BlockSize bs = r->bs;
+	BlockSize bs = r->bs;
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
 	return(L);
 }
@@ -197,10 +197,10 @@ RCPP_EXPOSED_CLASS(SpatGraph)
 
 RCPP_MODULE(spat){
 
-    using namespace Rcpp;
+	using namespace Rcpp;
 
 /*
-    class_<SpatVector2>("SpatVector2")
+	class_<SpatVector2>("SpatVector2")
 	
 		.constructor()
 		.field("x", &SpatVector2::X)
@@ -214,14 +214,14 @@ RCPP_MODULE(spat){
 	;
 */
 
-    class_<SpatTime_v>("SpatTime_v")
+	class_<SpatTime_v>("SpatTime_v")
 		.constructor()
 		.field("step", &SpatTime_v::step)
 		.field("zone", &SpatTime_v::zone)
 		.field("x", &SpatTime_v::x)
 	;
 
-    class_<SpatFactor>("SpatFactor")
+	class_<SpatFactor>("SpatFactor")
 		.constructor()
 		.constructor<std::vector<unsigned>, std::vector<std::string>, bool>()
 //		.constructor<std::vector<unsigned>, std::vector<std::string>>()
@@ -231,18 +231,18 @@ RCPP_MODULE(spat){
 	;
 
 
-    class_<SpatSRS>("SpatSRS")
+	class_<SpatSRS>("SpatSRS")
 		.constructor()
 		.method("set", &SpatSRS::set)
 		.method("is_lonlat", &SpatSRS::is_lonlat)
 		.method("to_meter", &SpatSRS::to_meter)
 	;
 
-    class_<SpatGraph>("SpatGraph")
+	class_<SpatGraph>("SpatGraph")
 		.constructor()
 	;
 
-    class_<SpatExtent>("SpatExtent")
+	class_<SpatExtent>("SpatExtent")
 		.constructor()
 		.constructor<double, double, double, double>()
 		.method("deepcopy", &SpatExtent::deepCopy, "deepCopy")
@@ -264,7 +264,7 @@ RCPP_MODULE(spat){
 	;
 
 /*
-    class_<SpatWindow>("SpatWindow")
+	class_<SpatWindow>("SpatWindow")
 		.field_readonly("full_extent", &SpatWindow::full_extent)
 		.field_readonly("full_nrow", &SpatWindow::full_nrow)
 		.field_readonly("full_ncol", &SpatWindow::full_ncol)
@@ -274,7 +274,7 @@ RCPP_MODULE(spat){
 	;
 */
 
-    class_<SpatMessages>("SpatMessages")
+	class_<SpatMessages>("SpatMessages")
 		.constructor()
 		//.field("success", &SpatMessages::success)
 		.field("has_error", &SpatMessages::has_error)
@@ -283,7 +283,7 @@ RCPP_MODULE(spat){
 		.method("getWarnings", &SpatMessages::getWarnings)
 	;
 
-    class_<SpatOptions>("SpatOptions")
+	class_<SpatOptions>("SpatOptions")
 		.constructor()
 		.method("deepcopy", &SpatOptions::deepCopy, "deepCopy")
 		.property("tempdir", &SpatOptions::get_tempdir, &SpatOptions::set_tempdir )
@@ -326,7 +326,7 @@ RCPP_MODULE(spat){
 
 	;
 
-    class_<SpatDataFrame>("SpatDataFrame")
+	class_<SpatDataFrame>("SpatDataFrame")
 		.constructor()
 
 		.field_readonly("itype", &SpatDataFrame::itype)
@@ -372,7 +372,7 @@ RCPP_MODULE(spat){
 	;
 
 
-    class_<SpatVectorCollection>("SpatVectorCollection")
+	class_<SpatVectorCollection>("SpatVectorCollection")
 		.constructor()
 		.constructor<std::string, std::string, std::string, std::vector<double>, SpatVector>()
 
@@ -397,7 +397,7 @@ RCPP_MODULE(spat){
 	;
 
 
-    class_<SpatCategories>("SpatCategories")
+	class_<SpatCategories>("SpatCategories")
 		.constructor()
 		.field_readonly("df", &SpatCategories::d)
 		.field("index", &SpatCategories::index)
@@ -406,14 +406,14 @@ RCPP_MODULE(spat){
 
 
 /*
-    class_<SpatVector>("SpatVector")
+	class_<SpatVector>("SpatVector")
 		.constructor()
 		.constructor<SpatExtent, std::string>()
 		.constructor<std::vector<std::string>>()
 	;
 */
 
-    class_<SpatVector>("SpatVector")
+	class_<SpatVector>("SpatVector")
 		.constructor()
 		.constructor<SpatExtent, std::string>()
 		.constructor<std::vector<std::string>>()
@@ -611,7 +611,7 @@ RCPP_MODULE(spat){
 	;
 
 
-//    class_<SpatRasterSource>("SpatRasterSource")
+//	class_<SpatRasterSource>("SpatRasterSource")
 //		.field_readonly("cats", &SpatRasterSource::cats)
 ///		.field_readonly("has_scale_offset", &SpatRasterSource::has_scale_offset)
 //		.field_readonly("scale", &SpatRasterSource::scale)
@@ -637,7 +637,7 @@ RCPP_MODULE(spat){
 //;
 
 
-    class_<SpatVectorProxy>("SpatVectorProxy")
+	class_<SpatVectorProxy>("SpatVectorProxy")
 		.constructor()
 		.field("v", &SpatVectorProxy::v )
 		.method("deepcopy", &SpatVectorProxy::deepCopy, "deepCopy")
@@ -645,10 +645,10 @@ RCPP_MODULE(spat){
 
 
 
-    class_<SpatRaster>("SpatRaster")
+	class_<SpatRaster>("SpatRaster")
 		.constructor()
 	 // .constructor<std::string, int>()
-	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<std::string>, std::vector<size_t>>()
+		.constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<std::string>, std::vector<size_t>>()
 		
 		.constructor<std::vector<size_t>, std::vector<double>, std::string>()
 		//.finalizer(&SpatRaster_finalizer)
@@ -695,6 +695,7 @@ RCPP_MODULE(spat){
 		//.method("getRasterAtt", &getRasterAttributes, "get attributes")
 
 		.method("filenames", &SpatRaster::filenames )
+//		.method("shared_basegeom", &SpatRaster::shared_basegeom)
 
 		.field_readonly("rgb", &SpatRaster::rgb)
 		.field_readonly("rgbtype", &SpatRaster::rgbtype)
@@ -1001,7 +1002,7 @@ RCPP_MODULE(spat){
 		.method("rectify", &SpatRaster::rectify)
 		.method("stretch", &SpatRaster::stretch)
 		.method("warp", &SpatRaster::warper)
-    .method("warp_by_util", &SpatRaster::warper_by_util)
+		.method("warp_by_util", &SpatRaster::warper_by_util)
 		.method("resample", &SpatRaster::resample)
 		.method("zonal", &SpatRaster::zonal)
 		.method("zonal_weighted", &SpatRaster::zonal_weighted)
@@ -1009,16 +1010,16 @@ RCPP_MODULE(spat){
 		.method("zonal_poly_table", &SpatRaster::zonal_poly_table)		
 		.method("zonal_poly_weighted", &SpatRaster::zonal_poly_weighted)		
 //		.method("zonal_old", &SpatRaster::zonal_old)
-    .method("watershed2", &SpatRaster::watershed2, "watershed2") //EC 20210311 // EC 20210702
-    .method("pitfinder2", &SpatRaster::pitfinder2, "pitfinder2") //EC 20220810 // EC 20220810	
-    .method("NIDP2", &SpatRaster::NIDP2, "NIDP2") //EC 20231031
-    .method("flowAccu2", &SpatRaster::flowAccu2) //, "flowAccu2") //EC 20231031
-    .method("flowAccu2_weight", &SpatRaster::flowAccu2_weight) //, "flowAccu2_weight") //EC 20231114
+		.method("watershed2", &SpatRaster::watershed2, "watershed2") //EC 20210311 // EC 20210702
+		.method("pitfinder2", &SpatRaster::pitfinder2, "pitfinder2") //EC 20220810 // EC 20220810	
+		.method("NIDP2", &SpatRaster::NIDP2, "NIDP2") //EC 20231031
+		.method("flowAccu2", &SpatRaster::flowAccu2) //, "flowAccu2") //EC 20231031
+		.method("flowAccu2_weight", &SpatRaster::flowAccu2_weight) //, "flowAccu2_weight") //EC 20231114
 	;
 
-    class_<SpatRasterCollection>("SpatRasterCollection")
+	class_<SpatRasterCollection>("SpatRasterCollection")
 		.constructor()
-	    .constructor<std::string, std::vector<int>, bool, std::vector<std::string>>()
+		.constructor<std::string, std::vector<int>, bool, std::vector<std::string>>()
 
 		.property("names", &SpatRasterCollection::get_names, &SpatRasterCollection::set_names)
 
@@ -1045,10 +1046,10 @@ RCPP_MODULE(spat){
 		.method("make_vrt", &SpatRasterCollection::make_vrt)
 	;
 
-    class_<SpatRasterStack>("SpatRasterStack")
+	class_<SpatRasterStack>("SpatRasterStack")
 		.constructor()
-	    .constructor<std::string, std::vector<int>, bool, std::vector<std::string>>()
-	    .constructor<SpatRaster, std::string, std::string, std::string>()
+		.constructor<std::string, std::vector<int>, bool, std::vector<std::string>>()
+		.constructor<SpatRaster, std::string, std::string, std::string>()
 		.method("deepcopy", &SpatRasterStack::deepCopy)
 
 		.method("has_error", &SpatRasterStack::hasError)

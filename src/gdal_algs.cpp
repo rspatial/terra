@@ -552,7 +552,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		out.setSRS(crs);
 		if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
 			GDALClose( hSrcDS );
-			out.setError("cannot get output boundaries");
+			out.setError("cannot get output boundaries for the target crs");
 			return out;
 		}
 		GDALClose( hSrcDS );
@@ -1016,7 +1016,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 		out.setSRS(crs);
 		if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
 			GDALClose( hSrcDS );
-			out.setError("cannot get output boundaries");
+			out.setError("cannot get output boundaries for the target crs");
 			return out;
 		}
 		GDALClose( hSrcDS );
