@@ -110,7 +110,7 @@ std::string SpatRasterCollection::make_vrt(std::vector<std::string> options, boo
 	}
 	opt.set_filenames({outfile});
 
-	std::vector<std::string> ff = filenames();
+	std::vector<std::string> ff;
 	ff.reserve(size());
 	
 	SpatOptions xopt(opt);

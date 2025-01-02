@@ -19,9 +19,9 @@ There is also a method for merging SpatVector with a data.frame; that is, to joi
 }
 
 \usage{
-\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, filename="", overwrite=FALSE, wopt=list())
+\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, method=NULL, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, algo=1, filename="", ...)
+\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, algo=1, method=NULL, filename="", ...)
 
 \S4method{merge}{SpatVector,data.frame}(x, y, ...)
 }
@@ -32,7 +32,8 @@ There is also a method for merging SpatVector with a data.frame; that is, to joi
   \item{...}{if \code{x} is a SpatRaster: additional objects of the same class as \code{x}. If \code{x} is a SpatRasterCollection: options for writing files as in \code{\link{writeRaster}}. If \code{x} is a SpatVector, the same arguments as in \code{\link[base]{merge}}}
   \item{first}{logical. If \code{TRUE}, in areas where rasters overlap, the first value is used. Otherwise the last value is used}
   \item{na.rm}{logical. If \code{TRUE} values that are \code{NA} are ignored}
-  \item{algo}{integer. You can use 1, 2, or 3 to pick a merge algorithm. 1 is generally faster than 2, but file compression may be poor. 2 is slower but has better compression. In algo 3 a \code{\link{vrt}} is used and returned if no filename is specified; otherwise its performance is like that of algo 2}
+  \item{algo}{integer. You can use 1 or 2 to pick a merge algorithm. 1 is generally faster than 2, but may have poorer file compression. algo 1 will resample input rasters if necessary (by default with nearest neighbor for categorical rasters and bilinear interpolation for other rasters), but algo 2 does not do that (you can increase the tolerance option to effectively get nearest neighbor resampling). With algo 3 a virutual rater (\code{\link{vrt}}) is created and returned if no filename is specified; otherwise its speed is like that of algo 2, and it uses nearest neighbor resampling by default}
+  \item{method}{character. One of "nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode". The interpolation method to be used if resampling is necessary. See \code{algo}}  
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
