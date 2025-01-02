@@ -192,7 +192,7 @@ RCPP_EXPOSED_CLASS(SpatRasterStack)
 RCPP_EXPOSED_CLASS(SpatVector)
 RCPP_EXPOSED_CLASS(SpatVectorProxy)
 RCPP_EXPOSED_CLASS(SpatVectorCollection)
-RCPP_EXPOSED_CLASS(SpatGraph)
+//RCPP_EXPOSED_CLASS(SpatGraph)
 //RCPP_EXPOSED_CLASS(SpatVector2)
 
 RCPP_MODULE(spat){
@@ -278,16 +278,16 @@ RCPP_MODULE(spat){
 */
 
 
-/*
+
 	class_<SpatMessages>("SpatMessages")
 		.constructor()
 		//.field("success", &SpatMessages::success)
-		//.field("has_error", &SpatMessages::has_error)
-		//.field("has_warning", &SpatMessages::has_warning)
-		.method("has_error", &SpatMessages::hasError)
-		.method("has_warning", &SpatMessages::hasWarning)
+		.field("has_error", &SpatMessages::has_error)
+		.field("has_warning", &SpatMessages::has_warning)
+		//.method("has_error", &SpatMessages::hasError)
+		//.method("has_warning", &SpatMessages::hasWarning)
 	;
-*/
+
 
 	class_<SpatOptions>("SpatOptions")
 		.constructor()
