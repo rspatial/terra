@@ -549,13 +549,14 @@ class SpatRaster {
 		std::vector<double> readValuesGDAL(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr = -1);
 		std::vector<double> readGDALsample(size_t src, size_t srows, size_t scols, bool overview);
 
-		void readRowColGDAL(size_t src, std::vector<std::vector<double>>::iterator out, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+		void readRowColGDAL(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+
 //		std::vector<double> readRowColGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 
 //		std::vector<double> readRowColBlockFlat(size_t src, std::vector<int_64> &rows, std::vector<int_64> &cols);
 //		std::vector<std::vector<double>> readRowColBlock(size_t src, std::vector<int_64> &rows, std::vector<int_64> &cols);
 
-		void readRowColBlock(size_t src, std::vector<std::vector<double>>::iterator out, std::vector<int_64> &rows, std::vector<int_64> &cols);
+		void readRowColBlock(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, std::vector<int_64> &cols);
 
 
 		bool readStartGDAL(size_t src);

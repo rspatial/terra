@@ -14,6 +14,7 @@
 - fixed `to_id = NA` bug in `nearest` [#1471](https://github.com/rspatial/terra/issues/1471) by Mats Blomqvist
 - better handling of date/unit [#1684](https://github.com/rspatial/terra/issues/1684) and [#1688](https://github.com/rspatial/terra/issues/1688) by Andrew Gene Brown
 - `spatSample(method="regular")` on a raster with one column returned too many samples [#1362](https://github.com/rspatial/terra/issues/1362) by Daniel R Schlaepfer
+- `merge` crash bug fixed [#1650](https://github.com/rspatial/terra/issues/1650) by Agustin Lobo
 
 
 ## enhancements
