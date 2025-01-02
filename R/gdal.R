@@ -149,3 +149,12 @@ setMethod("describe", signature(x="character"),
 	}
 )
 
+setMethod("describe", signature(x="SpatRaster"),
+	function(x, source=1, ...) {
+		if (!hasValues(x)) return(NULL)
+		if ((source < 1) || (source > nsrc(x))) {
+			error("describe", "source should be >= 1 and <= nsrc()")
+		}
+		describe(sources(x)[source])
+	}
+)

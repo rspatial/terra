@@ -11,6 +11,8 @@ Describe the properties of spatial data in a file as generated with the "GDALinf
 
 \usage{
 \S4method{describe}{character}(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="")
+
+\S4method{describe}{SpatRaster}(x, source, ...)
 }
 
 \arguments{
@@ -21,6 +23,8 @@ Describe the properties of spatial data in a file as generated with the "GDALinf
   \item{options}{character. A vector of valid options (if \code{meta=FALSE}) including "json", "mm", "stats", "hist", "nogcp", "nomd", "norat", "noct", "nofl", "checksum", "proj4", "listmdd", "mdd <value>" where <value> specifies a domain or 'all', "wkt_format <value>" where value is one of 'WKT1', 'WKT2', 'WKT2_2015', or 'WKT2_2018', "sd <subdataset>" where <subdataset> is the name or identifier of a sub-dataset. See \url{https://gdal.org/en/latest/programs/gdalinfo.html}. Ignored if \code{sds=TRUE}}  
   \item{print}{logical. If \code{TRUE}, print the results}
   \item{open_opt}{character. Driver specific open options}   
+  \item{source}{positive integer between 1 and \code{nsrc(x)}}   
+  \item{...}{additional arguments passed to the \code{describe<character>} method}
 }
 
 \value{

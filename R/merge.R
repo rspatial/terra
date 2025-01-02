@@ -36,10 +36,14 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("merge", signature(x="SpatRasterCollection", "missing"),
-	function(x, first=TRUE, na.rm=TRUE, algo=1, filename="", ...) {
+	function(x, first=TRUE, na.rm=TRUE, algo=1, method=NULL, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
-		out@pntr <- x@pntr$merge(first[1], na.rm, algo, opt)
+		if (is.null(method)) method = ""
+		out@pntr <- x@pntr$merge(first[1], na.rm, algo, method, opt)
+		if (algo == 3) {
+			messages(opt, "merge")
+		}
 		messages(out, "merge")
 	}
 )

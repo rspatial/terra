@@ -78,6 +78,7 @@ setMethod("vrt", signature(x="character"),
 		} 
 		f <- r@pntr$make_vrt(x, options, opt)
 		messages(r, "vrt")
+		messages(opt, "vrt")
 		if (set_names) {
 			v <- readLines(f)
 			nms <- names(rast(x[1]))

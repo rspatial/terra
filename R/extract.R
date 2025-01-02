@@ -376,7 +376,7 @@ function(x, y, ...) {
 setMethod("extract", signature(x="SpatRaster", y="numeric"),
 function(x, y, xy=FALSE, raw=FALSE) {
 	y <- round(y)
-	y[(y < 1) | (y > ncell(x))] <- NA
+#	y[(y < 1) | (y > ncell(x))] <- NA
 	v <- .extract_cell(x, y, drop=TRUE, raw=raw)
 	if (xy) {
 		v <- cbind(xyFromCell(x, y), v)

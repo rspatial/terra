@@ -676,9 +676,8 @@ setMethod("project", signature(x="SpatRaster"),
 
 		if (inherits(y, "SpatRaster")) {
 			if (use_gdal) {
-
 				if (by_util) {
-						x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, mask[1], align_only[1], FALSE, opt)
+					x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, mask[1], align_only[1], FALSE, opt)
 				} else {
 					x@pntr <- x@pntr$warp(y@pntr, "", method, mask[1], align_only[1], FALSE, opt)
 				}
