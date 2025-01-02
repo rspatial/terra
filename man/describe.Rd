@@ -2,6 +2,7 @@
 
 \alias{describe}
 \alias{describe,character-method}
+\alias{describe,SpatRaster-method}
 
 \title{describe}
 
