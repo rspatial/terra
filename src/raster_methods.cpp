@@ -3665,21 +3665,27 @@ bool SpatRaster::compare_origin(std::vector<double> x, double tol) {
 	return true;
 }
 
+/*
+void print_ext(SpatRaster &r){
+	SpatExtent e = r.getExtent();
+	Rcpp::Rcout << e.xmin << " " << e.xmax << " " << e.ymin << " " << e.ymax << " - " << r.xres() << " " << r.yres() <<  std::endl;
+}
+*/
 
 
-
-bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, size_t& nl, bool notfirstlyr, std::string method, size_t &warn, SpatOptions &opt) {
+bool write_part(SpatRaster& out, SpatRaster r, const double& hxr, size_t& nl, bool notfirstlyr, std::string method, size_t &warn, SpatOptions &opt) {
 
 	BlockSize bs = r.getBlockSize(opt);
 	SpatExtent re = r.getExtent();
 	SpatRaster tmp = out.geometry();
 	tmp = tmp.crop(r.getExtent(), "near", false, opt);
-	if (!tmp.compare_geom(r, false, false, opt.get_tolerance(), true, true, true, false)) {
+
+	if (!tmp.compare_geom(r, false, true, opt.get_tolerance(), false, true, true, false)) {
 		std::vector<bool> hascats = r.hasCategories();
 		if (method == "") method = hascats[0] ? "near" : "bilinear";
 		//std::string filename = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
 		SpatOptions wopt(opt);
-		r = r.warper(tmp, "", method, false, false, true, wopt);
+		r = r.warper(tmp, "", method, false, false, false, wopt);
 		if (r.hasError()) {
 			out.setError(r.getError());
 			return false;
@@ -3697,9 +3703,6 @@ bool write_part(SpatRaster& out, SpatRaster& r, const double& hxr, size_t& nl, b
 		size_t col2  = out.colFromX(re.xmax - hxr);
 		size_t ncols = col2-col1+1;
 		size_t nrows = row2-row1+1;
-
-//		Rcpp::Rcout << i << " " << v.size() << " " << row1 << " " << nrows << " " << col1 << " " << ncols << std::endl;
-
 
 		if (!r.readStart()) {
 			out.setError(r.getError());
@@ -3771,6 +3774,7 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 		}
 
 		SpatOptions topt(opt);
+
 		size_t warn = 0;
 		bool notfirst = false;
 		for (size_t i=0; i<n; i++) {
@@ -3784,7 +3788,7 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 		}
 		out.writeStop();
 		if (warn > 0) {
-			out.addWarning(std::to_string(warn) + " raster(s) that did not align with the first raster were resampled");
+			out.addWarning(std::to_string(warn) + " raster(s) that did not share the base geometry of the first raster were resampled");
 		}
 		return(out);
 		
@@ -3803,18 +3807,18 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 
 		out = ds[0].geometry(nl, true);
 		out.setExtent(e, true, true, "");
+		if (use.empty()) return out;
 
-		for (size_t i=1; i<n; i++) {
+		SpatOptions topt(opt);
+
+		for (size_t i=0; i<use.size(); i++) {
 			//  lyrs, crs, warncrs, ext, rowcol, res
-			SpatRaster tmp = out.crop(ds[i].getExtent(), "near", false, opt);
-			if (!tmp.compare_geom(ds[i], false, true, opt.get_tolerance(), true, true, true, false)) {
-				out.setError("rasters do not have matching geometries");
+			SpatRaster tmp = out.crop(ds[use[i]].getExtent(), "near", false, topt);
+			if (!tmp.compare_geom(ds[use[i]], false, true, topt.get_tolerance(), true, true, true, false)) {
+				out.setError("rasters geometries are not compatible");
 				return(out);
 			}
 		}
-
-
-		if (use.empty()) return out;
 
 		std::vector<int> vt = getValueType(true);
 			if (vt.size() == 1) {
@@ -3924,7 +3928,7 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 		for (size_t i=1; i<n; i++) {
 			//  lyrs, crs, warncrs, ext, rowcol, res
 			SpatRaster tmp = out.crop(ds[i].getExtent(), "near", false, opt);
-			tmp.compare_geom(ds[i], false, false, opt.get_tolerance(), true, false, false, false);
+			tmp.compare_geom(ds[i], false, true, opt.get_tolerance(), true, false, false, false);
 			if (tmp.hasWarning()) {
 				std::vector<std::string> w = tmp.getWarnings();
 				for (size_t i=0; i<w.size(); i++) {

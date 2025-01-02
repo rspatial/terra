@@ -21,13 +21,6 @@ messages <- function(x, f="") {
 		if (x@pntr$has_error()) {
 			error(f, x@pntr$getError())
 		}
-	} else if (inherits(x, "Rcpp_SpatOptions")) {
-		if (x$has_warning) {
-			warn(f, paste(unique(x$messages$getWarnings()), collapse="\n"))
-		}
-		if (x$has_error()) {
-			error(f, x$messages$getError())
-		}	
 	} else {
 		if (x$has_warning()) {
 			warn(f, paste(unique(x$getWarnings()), collapse="\n"))

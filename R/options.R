@@ -67,14 +67,15 @@
 			x[[nms[i]]] <- wopt[[i]]
 		}
 	}
-	if (x$messages$has_warning) {
-		warn("options", paste(x$messages$getWarnings(), collapse="\n"))
+	if (x$has_warning()) {
+		warn("options", paste(x$getWarnings(), collapse="\n"))
 	}
-	if (x$messages$has_error) {
-		error("options", x$messages$getError())
+	if (x$has_error()) {
+		error("options", x$getError())
 	}
 	x
 }
+
 
 defaultOptions <- function() {
 	## work around onLoad problem

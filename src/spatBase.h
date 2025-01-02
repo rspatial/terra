@@ -208,6 +208,11 @@ class SpatOptions {
 		std::vector<double> get_scale();
 
 		SpatMessages msg;
+		bool hasWarning() {return msg.has_warning;}
+		bool hasError() {return msg.has_error;}
+		std::vector<std::string> getWarnings() { return msg.getWarnings();}
+		std::string getError() { return msg.getError();}
+
 };
 
 

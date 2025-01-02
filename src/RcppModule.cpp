@@ -238,9 +238,12 @@ RCPP_MODULE(spat){
 		.method("to_meter", &SpatSRS::to_meter)
 	;
 
+
+/*
 	class_<SpatGraph>("SpatGraph")
 		.constructor()
 	;
+*/
 
 	class_<SpatExtent>("SpatExtent")
 		.constructor()
@@ -274,14 +277,17 @@ RCPP_MODULE(spat){
 	;
 */
 
+
+/*
 	class_<SpatMessages>("SpatMessages")
 		.constructor()
 		//.field("success", &SpatMessages::success)
-		.field("has_error", &SpatMessages::has_error)
-		.field("has_warning", &SpatMessages::has_warning)
-		.method("getError", &SpatMessages::getError)
-		.method("getWarnings", &SpatMessages::getWarnings)
+		//.field("has_error", &SpatMessages::has_error)
+		//.field("has_warning", &SpatMessages::has_warning)
+		.method("has_error", &SpatMessages::hasError)
+		.method("has_warning", &SpatMessages::hasWarning)
 	;
+*/
 
 	class_<SpatOptions>("SpatOptions")
 		.constructor()
@@ -323,6 +329,12 @@ RCPP_MODULE(spat){
 
 		.property("scale", &SpatOptions::get_scale, &SpatOptions::set_scale)
 		.property("offset", &SpatOptions::get_offset, &SpatOptions::set_offset)
+
+		.method("has_error", &SpatOptions::hasError)
+		.method("has_warning", &SpatOptions::hasWarning)
+
+		.method("getError", &SpatOptions::getError)
+		.method("getWarnings", &SpatOptions::getWarnings)
 
 	;
 

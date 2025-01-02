@@ -44,6 +44,7 @@ setMethod("merge", signature(x="SpatRasterCollection", "missing"),
 		if (algo == 3) {
 			messages(opt, "merge")
 		}
+		messages(x, "merge")
 		messages(out, "merge")
 	}
 )
