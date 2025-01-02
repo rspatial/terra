@@ -38,7 +38,7 @@ r <- rast(system.file("ex/logo.tif", package="terra"))
 xy <- data.frame(c(50,80), c(30, 60))
 extract(r, xy)
 extract(r, xy, layer=c("red", "green"))
-extractRange(r, xy, first=1:2, last=3:2, lyr_fun=sum)
+extractRange(r, xy, first=1:2, last=2:3, lyr_fun=sum)
 }
 
 \keyword{methods}
