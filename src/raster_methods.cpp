@@ -3941,7 +3941,7 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 		}
 		
 		if (method == "") method = ds[0].hasCategories()[0] ? "nearest" : "bilinear";
-		std::vector<std::string> options = {"-allow_projection_difference", "-r", method};
+		std::vector<std::string> options = {"-r", method, "-allow_projection_difference"};
 
 		bool wvrt = false;
 		std::string fout = opt.get_filename();

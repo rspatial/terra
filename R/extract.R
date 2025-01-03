@@ -556,8 +556,8 @@ extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE, bil
 setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 	function(x, y, first, last, lyr_fun=NULL, geom_fun=NULL, ID=FALSE, na.rm=TRUE, ...) {
 
-		first <- getLyrNrs(sort(first), names(x), nrow(y)) + 1 
-		last  <- getLyrNrs(sort(last),  names(x), nrow(y)) + 1	
+		first <- getLyrNrs(first, names(x), nrow(y)) + 1 
+		last  <- getLyrNrs(last,  names(x), nrow(y)) + 1	
 		e <- extract(x, y, geom_fun, ID=TRUE, na.rm=na.rm, ...)
 		if (nrow(e) != nrow(y)) {
 			error("range_extract", "geom_fun must return a single value for each geometry/layer")
