@@ -3685,7 +3685,7 @@ bool write_part(SpatRaster& out, SpatRaster r, const double& hxr, size_t& nl, bo
 		if (method == "") method = hascats[0] ? "near" : "bilinear";
 		//std::string filename = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
 		SpatOptions wopt(opt);
-		r = r.warper(tmp, "", method, false, false, false, wopt);
+		r = r.warper(tmp, "", method, false, false, true, wopt);
 		if (r.hasError()) {
 			out.setError(r.getError());
 			return false;
@@ -3940,8 +3940,9 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 			msg.warnings = vunique(msg.warnings);
 		}
 		
-		if (method == "") method = ds[0].hasCategories()[0] ? "nearest" : "bilinear";
-		std::vector<std::string> options = {"-r", method, "-allow_projection_difference"};
+		std::vector<std::string> options;
+//		if (method == "") method = ds[0].hasCategories()[0] ? "nearest" : "bilinear";
+//		std::vector<std::string> options = {"-r", method, "-allow_projection_difference"};
 
 		bool wvrt = false;
 		std::string fout = opt.get_filename();
