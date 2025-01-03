@@ -58,8 +58,6 @@
 <li>better handling of date/unit <a href="https://github.com/rspatial/terra/issues/1684" class="external-link">#1684</a> and <a href="https://github.com/rspatial/terra/issues/1688" class="external-link">#1688</a> by Andrew Gene Brown</li>
 <li>
 <code>spatSample(method="regular")</code> on a raster with one column returned too many samples <a href="https://github.com/rspatial/terra/issues/1362" class="external-link">#1362</a> by Daniel R Schlaepfer</li>
-<li>
-<code>merge</code> crash bug fixed <a href="https://github.com/rspatial/terra/issues/1650" class="external-link">#1650</a> by Agustin Lobo</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-8">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-8"></a></h3>
@@ -80,6 +78,8 @@
 <code>extract</code> with points is now faster for rasters accessed over http <a href="https://github.com/rspatial/terra/issues/1504" class="external-link">#1504</a> by Krzysztof Dyba</li>
 <li>
 <code>extract</code> with many points on very large rasters was slower in compared to doing the same with “raster” (which uses terra for that!) <a href="https://github.com/rspatial/terra/issues/1584" class="external-link">#1584</a> by Hassan Masoomi</li>
+<li>
+<code>merge</code> now has three alternative algorithms <a href="https://github.com/rspatial/terra/issues/1366" class="external-link">1366</a> by Hassan Masoomi and <a href="https://github.com/rspatial/terra/issues/1650" class="external-link">#1650</a> by Agustin Lobo</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-8">new<a class="anchor" aria-label="anchor" href="#new-1-8-8"></a></h3>
