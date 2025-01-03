@@ -3728,7 +3728,6 @@ bool write_part(SpatRaster& out, SpatRaster r, const double& hxr, size_t& nl, bo
 
 SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::string method, SpatOptions &opt) {
 
-// narm is not used!
 
 	SpatRaster out;
 	size_t n = size();
@@ -3794,6 +3793,8 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 		
 	} else if (algo == 2) {
 
+// narm is not used
+
 		std::vector<unsigned> use;
 		use.reserve(n);
 		if (ds[0].hasValues()) use.push_back(0);
@@ -3843,11 +3844,11 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 			size_t n = nl * out.bs.nrows[i] * out.ncol();
 			size_t m = v.size();
 
-			bool msz = false;
+			bool multi_sz = false;
 			std::vector<size_t> sz(m);
 			for (size_t j=0; j<m; j++) {
 				sz[j] = v[j].size();
-				if (v[j].size() < n) msz = true;
+				if (v[j].size() < n) multi_sz = true;
 				if (v[j].size() > n) {
 				out.setError("something is not right. Exected: " + std::to_string(n) + " got: " + std::to_string(v[j].size()) + " values");
 					return out;
@@ -3858,7 +3859,7 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 				if (!out.writeBlock(v[0], i)) return out;				
 			} else if (first) {
 				recycle(v[0], n);
-				if (msz) { // with recycling
+				if (multi_sz) { // with recycling
 					for (size_t j=0; j<n; j++) {
 						for (size_t k=1; k<m; k++) {
 							if (std::isnan(v[0][j])) {
@@ -3883,7 +3884,7 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 			} else { // last
 				m -= 1;
 				recycle(v[m], n);
-				if (msz) {
+				if (multi_sz) {
 					for (size_t j=0; j<n; j++) {
 						for (long k=(m-1); k >= 0; k--) {
 							if (std::isnan(v[m][j])) {
@@ -3912,6 +3913,8 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 		
 	} else if (algo==3) {
 
+// narm is not used
+
 		SpatExtent e = ds[0].getExtent();
 		size_t nl = ds[0].nlyr();
 		for (size_t i=1; i<n; i++) {
@@ -3925,24 +3928,18 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 		out = ds[0].geometry(nl, true);
 		out.setExtent(e, true, true, "");
 
+		SpatRaster tmp = out;
 		for (size_t i=1; i<n; i++) {
-			//  lyrs, crs, warncrs, ext, rowcol, res
-			SpatRaster tmp = out.crop(ds[i].getExtent(), "near", false, opt);
-			tmp.compare_geom(ds[i], false, true, opt.get_tolerance(), true, false, false, false);
-			if (tmp.hasWarning()) {
-				std::vector<std::string> w = tmp.getWarnings();
-				for (size_t i=0; i<w.size(); i++) {
-					addWarning(w[i]);
-				}
+//			SpatRaster tmp = out.crop(ds[i].getExtent(), "near", false, opt);
+// check crs only
+			tmp.compare_geom(ds[i], false, true, opt.get_tolerance(), false, false, false, false);
+			if (tmp.hasError()) {
+				return tmp;
 			}
 		}
-		if (hasWarning()) {
-			msg.warnings = vunique(msg.warnings);
-		}
 		
-		std::vector<std::string> options;
-//		if (method == "") method = ds[0].hasCategories()[0] ? "nearest" : "bilinear";
-//		std::vector<std::string> options = {"-r", method, "-allow_projection_difference"};
+		if (method == "") method = ds[0].hasCategories()[0] ? "nearest" : "bilinear";
+		std::vector<std::string> options = {"-r", method};
 
 		bool wvrt = false;
 		std::string fout = opt.get_filename();
