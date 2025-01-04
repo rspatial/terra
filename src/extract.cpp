@@ -98,8 +98,11 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 //			if (rows[j] >= rend) break; // if rows are sorted
 			if ((rows[j] >= rstart) && (rows[j] < rend)) {
 				size_t cell = (rows[j]-rstart) * nc + cols[j];
-				for (size_t k=outstart; k<outend; k++) {
-					out[k][j] = v[cell + k]; 
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					size_t off = lyr * bs.nrows[i] * nc;
+					for (size_t k=outstart; k<outend; k++) {
+						out[k][j] = v[cell+off]; 
+					}
 				}
 			}
 		}
@@ -1231,7 +1234,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 	std::vector<std::vector<int_64>> rc, wrc;
 	rc = rowColFromCell(cell);
 
-	size_t n  = cell.size();
+	size_t n = cell.size();
 	if (!hasValues()) {
 		std::vector<std::vector<double>> out(nlyr(), std::vector<double>(n, NAN));
 		return out;
@@ -1282,8 +1285,8 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 			}
 		} else {
 			#ifdef useGDAL
-			size_t pos = source[0].filename.find("https://");
-			if ((pos != std::string::npos) && (rc[0].size() > 200)) {
+			size_t pos = source[src].filename.find("https://");
+			if ((pos != std::string::npos)) { // && (rc[0].size() > 200)) {
 				if (win) {
 					readRowColBlock(src, out, lyr, wrc[0], wrc[1]);
 				} else {

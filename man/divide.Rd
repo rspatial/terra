@@ -40,7 +40,7 @@ Divides a \code{SpatVector} of polygons into \code{n} compact and approximately 
 
 
 \value{
-SpatVector or SpatRaster, or a list with bith
+SpatVector or SpatRaster, or a list with both
 }
 
 

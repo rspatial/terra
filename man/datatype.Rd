@@ -47,7 +47,7 @@ The following raster datatypes are available:
 
 For all integer types, except the single byte types, the lowest (signed) or highest (unsigned) value is used to store \code{NA}. 
 
-Note that very large integer numbers may be inpreceise as they are internally represented as decimal numbers.
+Note that very large integer numbers may be imprecise as they are internally represented as decimal numbers.
 
 \code{INT4U} is available but they are best avoided as R does not support 32-bit unsigned integers.
 }

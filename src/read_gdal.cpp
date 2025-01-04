@@ -1679,12 +1679,9 @@ void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &ou
 		return;
 	}
 
-
 	std::vector<size_t> lyrs = source[src].layers;
 	size_t nl = lyrs.size();
-
 	size_t outend = outstart + nl;
-//	lyrs.size();
 
 	size_t fnr = nrow() - 1;
 	if (source[src].flipped) {
@@ -1701,8 +1698,8 @@ void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &ou
 		}
 	}
 
-	for (size_t j=outstart; j<outend; j++) {
-		out[j] = std::vector<double> (n, NAN);
+	for (size_t i=outstart; i<outend; i++) {
+		out[i] = std::vector<double> (n, NAN);
 	}
 
 	int_64 nr1 = nrow()-1;
@@ -1715,8 +1712,8 @@ void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &ou
 			if ((cols[i] < 0) || (cols[i] > nc1) || (rows[i] < 0) || (rows[i] > nr1) ) continue;
 			err = poDataset->RasterIO(GF_Read, cols[i], rows[i], 1, 1, &value[0], 1, 1, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
 			if (err == CE_None) {
-				for (size_t j=outstart; j<outend; j++) {
-					out[j][i] = value[j];
+				for (size_t j=0; j<nl; j++) {
+					out[outstart+j][i] = value[j];
 				}
 			} else {
 				break;
@@ -1727,8 +1724,8 @@ void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &ou
 			if ((cols[i] < 0) || (rows[i] < 0)) continue;
 			err = poDataset->RasterIO(GF_Read, cols[i], rows[i], 1, 1, &value[0], 1, 1, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 			if (err == CE_None) {
-				for (size_t j=outstart; j<outend; j++) {
-					out[j][i] = value[j];
+				for (size_t j=0; j<nl; j++) {
+					out[outstart+j][i] = value[j];
 				}
 			} else {
 				break;
