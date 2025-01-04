@@ -65,7 +65,7 @@
 <p>raster datatypes are described by 5 characters. The first three indicate whether the values are integer or decimal values. The fourth character indicates the number of bytes used to save the values on disk, and the last character indicates whether the numbers are signed (that is, can be negative and positive values) or not (only zero and positive values allowed)</p>
 <p>The following raster datatypes are available:</p>
 <table class="table table"><tr><td><b>Datatype definition</b></td><td><b>minimum possible value</b></td><td><b>maximum possible value</b></td></tr><tr><td><code>INT1U</code></td><td>0</td><td>255</td></tr><tr><td><code>INT2U</code></td><td>0</td><td>65,534</td></tr><tr><td><code>INT4U</code></td><td>0</td><td>4,294,967,296</td></tr><tr><td><code>INT8U</code></td><td>0</td><td>18,446,744,073,709,551,616</td></tr><tr><td><code>INT2S</code></td><td>-32,767</td><td>32,767</td></tr><tr><td><code>INT4S</code></td><td>-2,147,483,647</td><td>2,147,483,647</td></tr><tr><td><code>INT8S</code></td><td>-9,223,372,036,854,775,808</td><td>9,223,372,036,854,775,808</td></tr><tr><td><code>FLT4S</code></td><td>-3.4e+38</td><td>3.4e+38</td></tr><tr><td><code>FLT8S</code></td><td>-1.7e+308</td><td>1.7e+308</td></tr></table><p>For all integer types, except the single byte types, the lowest (signed) or highest (unsigned) value is used to store <code>NA</code>.</p>
-<p>Note that very large integer numbers may be inpreceise as they are internally represented as decimal numbers.</p>
+<p>Note that very large integer numbers may be imprecise as they are internally represented as decimal numbers.</p>
 <p><code>INT4U</code> is available but they are best avoided as R does not support 32-bit unsigned integers.</p>
     </div>
     <div class="section level2">
