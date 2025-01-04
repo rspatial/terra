@@ -20,6 +20,25 @@ setMethod("gridDistance", signature(x="SpatRaster"),
 	}
 )
 
+
+setMethod("convHull", signature(x="SpatVector"),
+	function(x, by="") {
+		hull(x, type="convex", by=by)
+	}
+)
+setMethod("minCircle", signature(x="SpatVector"),
+	function(x, by="") {
+		hull(x, "circle", by)
+	}
+)
+
+setMethod("minRect", signature(x="SpatVector"),
+	function(x, by="") {
+		hull(x, "rectangle", by)
+	}
+)
+
+
 #if (!isGeneric("setCats")) { setGeneric("setCats", function(x, ...) standardGeneric("setCats")) }
 
 #setMethod ("setCats" , "SpatRaster",

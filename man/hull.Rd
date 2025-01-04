@@ -12,11 +12,11 @@
 \alias{minCircle,SpatVector-method}
 
 \title{ 
-Convex hull, minimal bounding rotated rectangle, and minimal bounding circle
+Convex, concave, rectangular and circular hulls
 }
 
 \description{
-Get the convex hull, the minimal bounding rotated rectangle, or minimal bounding circle of a SpatVector
+Compute hulls around SpatVector geometries. This can be the convex hull, the minimal bounding rotated rectangle, the minimal bounding circle, or a concave hull. The concaveness of the concave hull can be specified in different ways.
 }
 
 \usage{
@@ -25,11 +25,11 @@ Get the convex hull, the minimal bounding rotated rectangle, or minimal bounding
 
 \arguments{
   \item{x}{SpatVector}
-  \item{type}{character. One of "convex", "rectangle", "minCircle"}
+  \item{type}{character. One of "convex", "rectangle", "circle", "concave_ratio", "concave_length", "concave_polygons"}
   \item{by}{character (variable name), to get a new geometry for groups of input geometries}
-  \item{param}{logical}
-  \item{allowHoles}{logical}
-  \item{tight}{logical}
+  \item{param}{numeric between 0 and 1. For the "concave_*" types only. For \code{type="concave_ratio"} this is The edge length ratio value, between 0 and 1. For \code{type="concave_length"} this the maximum edge length (a value > 0). For \code{type="concave_polygons"} thism specifies the maximum Edge Length as a fraction of the difference between the longest and shortest edge lengths between the polygons. This normalizes the maximum edge length to be scale-free. A value of 1 produces the convex hull; a value of 0 produces the original polygons}
+  \item{allowHoles}{logical. May the polygonal output contain holes? For the "concave_* types only}
+  \item{tight}{logical. Should the hull follow the outer boundaries of the input polygons? For the "concave_* types only}
 }
 
 \value{
