@@ -48,10 +48,8 @@ values(r) <- 1:ncell(r)
 
 as.points(r)
 
-if  (gdal() >= "3.0.0") {
-	p <- as.polygons(r)
-	as.points(p)
-}
+p <- as.polygons(r)
+as.points(p)
 }
 
 \keyword{spatial}

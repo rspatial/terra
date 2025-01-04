@@ -49,10 +49,8 @@ SpatVector
 r <- rast(ncols=2, nrows=2)
 values(r) <- 1:ncell(r)
 
-if  (gdal() >= "3.0.0") {
-	p <- as.polygons(r)
-	p
-}
+p <- as.polygons(r)
+p
 }
 
 \keyword{spatial}

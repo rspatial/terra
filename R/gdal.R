@@ -35,9 +35,29 @@ setGDALconfig <- function(option, value="") {
 }
 
 
+libVersion <- function(lib="all", parse=FALSE) {
+	lib <- tolower(lib)
+	if (lib=="gdal") {
+		out <- .gdal_version()
+	} else if (lib=="proj") {
+		out <- proj_version()
+	} else if (lib=="geos") {
+		out <- .geos_version()
+	} else {
+		out <- c(gdal=.gdal_version(), proj=proj_version(), geos=.geos_version())
+	}
+	if (parse) {
+		nms <- names(out)
+		out <- data.frame(matrix(as.numeric(unlist(strsplit(out, "\\."))), ncol=3, byrow=TRUE), row.names=nms)
+		names(out) <- c("major", "minor", "sub")
+	}
+	out
+}
 
 
-gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
+
+
+gdal <- function(warn=NA, drivers=FALSE, ...) {
 	if (!is.na(warn)) {
 		warn <- as.integer(warn)
 		stopifnot(warn %in% (1:4))
@@ -55,15 +75,11 @@ gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
 		rownames(x) <- NULL
 		x
 	} else {
-		lib <- tolower(lib)
-		if (lib=="gdal") {
-			.gdal_version()
-		} else if (lib=="proj") {
-			proj_version()
-		} else if (lib=="geos") {
-			.geos_version()
+		dots <- list(...)
+		if (length(dots) > 0) {
+			libVersion(dots[1])
 		} else {
-			c(gdal=.gdal_version(), proj=proj_version(), geos=.geos_version())
+			libVersion("gdal")		
 		}
 	}
 }

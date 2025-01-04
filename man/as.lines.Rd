@@ -48,10 +48,8 @@ as.lines(r)
 
 as.lines(ext(r), crs=crs(r))
 
-if  (gdal() >= "3.0.0") {
-	p <- as.polygons(r)
-	as.lines(p)
-}
+p <- as.polygons(r)
+as.lines(p)
 
 
 ## with a matrix

@@ -9,6 +9,12 @@ e <- terra::extract(r, vct, ID = FALSE, fun=sum)
 expect_equal(e[,1], c(0.5121819, 0.81227813))
 
 
+# multiple sources and band subset/order
+s <- rast(system.file("ex/logo.tif", package="terra"))
+e <- extract(c(s[[2:3]], s/10, s[[3:1]]), cbind(41.5, 52.5))
+expect_equal(as.vector(unlist(e)), c(146, 185, 13.7, 14.6, 18.5, 185, 146, 137))
+ 
+
 f <- system.file("ex/lux.shp", package="terra")
 y <- vect(f)[1:2,]
 

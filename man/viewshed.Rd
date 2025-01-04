@@ -32,14 +32,11 @@ The algorithm used is by Wang et al.: https://www.asprs.org/wp-content/uploads/p
 
 \examples{
 
-if (gdal() >= 3.1) {
-	f <- system.file("ex/elev.tif", package="terra")
-	r <- rast(f)
-	x <- project(r, "EPSG:2169")
-	p <- cbind(70300, 96982)
-	v <- viewshed(x, p, 0, 0, 0.85714)
-}
-
+f <- system.file("ex/elev.tif", package="terra")
+r <- rast(f)
+x <- project(r, "EPSG:2169")
+p <- cbind(70300, 96982)
+v <- viewshed(x, p, 0, 0, 0.85714)
 }
 
 \keyword{spatial}
