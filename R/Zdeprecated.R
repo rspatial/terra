@@ -13,12 +13,12 @@ setMethod ("area", "SpatVector",
 	}
 )
 
-#if (!isGeneric("gridDistance")) {setGeneric("gridDistance", function(x, ...) standardGeneric("gridDistance"))}
-#setMethod("gridDistance", signature(x="SpatRaster"),
-#	function(x, ...) {
-#		error("gridDistance", "'gridDistance' was renamed to 'gridDist'")
-#	}
-#)
+if (!isGeneric("gridDistance")) {setGeneric("gridDistance", function(x, ...) standardGeneric("gridDistance"))}
+setMethod("gridDistance", signature(x="SpatRaster"),
+	function(x, ...) {
+		error("gridDistance", "'terra::gridDistance' was renamed to 'gridDist'")
+	}
+)
 
 #if (!isGeneric("setCats")) { setGeneric("setCats", function(x, ...) standardGeneric("setCats")) }
 
