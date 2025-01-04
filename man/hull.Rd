@@ -43,8 +43,9 @@ h <- hull(p)
 hh <- hull(p, "convex", by="NAME_1")
 
 geos_version <- libVersion("geos", TRUE)
+geos_version
 
-if ((geos_version$major >= 3) && (geos_version$minor >= 6)) {
+if ((geos_version$major * 10  + geos_version$minor) >= 36)) {
 	rr <- hull(p, "rectangle", "NAME_1")
 	plot(rr, lwd=5, border="gray")
 	plot(hh, "NAME_1", col=rainbow(10, alpha=.5), lwd=3, add=TRUE, plg=list(x="topright"))
