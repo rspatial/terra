@@ -21,7 +21,7 @@ S3method(str, SpatRaster)
 S3method(str, SpatExtent)
 S3method(str, SpatGraticule)
 
-export(add_box, add_legend, add_grid, add_mtext, focalMat, extractAlong, gdal, getGDALconfig, graticule, halo, setGDALconfig, map.pal, map_extent, north, sbar, terraOptions, tmpFiles, makeVRT, mem_info, free_RAM, same.crs, shade, gdalCache, fileBlocksize, vector_layers, vrt_tiles, names, round)
+export(add_box, add_legend, add_grid, add_mtext, focalMat, extractAlong, gdal, getGDALconfig, graticule, halo, libVersion, setGDALconfig, map.pal, map_extent, north, sbar, terraOptions, tmpFiles, makeVRT, mem_info, free_RAM, same.crs, shade, gdalCache, fileBlocksize, vector_layers, vrt_tiles, names, round)
 
 
 
