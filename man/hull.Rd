@@ -1,4 +1,4 @@
-\name{convHull}
+\name{hull}
 
 \docType{methods}
 
@@ -20,13 +20,16 @@ Get the convex hull, the minimal bounding rotated rectangle, or minimal bounding
 }
 
 \usage{
-\S4method{hull}{SpatVector}(x, type="convex", by="")
+\S4method{hull}{SpatVector}(x, type="convex", by="", param=1, allowHoles =TRUE, tight = TRUE)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{type}{character. One of "convex", "rectangle", "minCircle"}
   \item{by}{character (variable name), to get a new geometry for groups of input geometries}
+  \item{param}{logical}
+  \item{allowHoles}{logical}
+  \item{tight}{logical}
 }
 
 \value{

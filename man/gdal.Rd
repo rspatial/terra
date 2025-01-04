@@ -20,7 +20,7 @@ gdalCache(size=NA)
 setGDALconfig(option, value="")
 getGDALconfig(option)
 
-libVersion(lib="gdal", parse=FALSE)
+libVersion(lib="all", parse=FALSE)
 }
 
 \arguments{
