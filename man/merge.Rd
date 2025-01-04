@@ -19,7 +19,8 @@ There is also a method for merging SpatVector with a data.frame; that is, to joi
 }
 
 \usage{
-\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, method=NULL, filename="", overwrite=FALSE, wopt=list())
+\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, method=NULL, 
+			filename="", overwrite=FALSE, wopt=list())
 
 \S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, algo=1, method=NULL, filename="", ...)
 

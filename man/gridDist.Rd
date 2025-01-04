@@ -2,7 +2,6 @@
 
 \alias{gridDist}
 \alias{gridDist,SpatRaster-method}
-\alias{gridDistance,SpatRaster-method}
 
 
 \title{Distance on a grid}

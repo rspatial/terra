@@ -7,7 +7,7 @@
 \title{deprecated methods}
 
 \description{
-These methods are deprecated and will be removed in future versions
+This method is no longer available. Use \code{\link{gridDist}} instead
 }
 
 \usage{
