@@ -659,7 +659,7 @@ prettyNumbs <- function(x, digits) {
 	if (ncell(x) > 1.1 * maxcell) {
 			
 		if (is.null(overview)) {	
-			if (grepl("https://", tolower(sources(x)))) {
+			if (grepl("https://", tolower(sources(x))[1])) {
 				overview <- TRUE
 			} else {
 				overview <- FALSE
