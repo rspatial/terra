@@ -992,6 +992,12 @@ SpatVector SpatVector::hull(std::string htype, std::string by, double param, boo
 		return out;
 	}
 
+	std::vector<std::string> methods = {"convex", "rectangle", "circle", "concave_ratio", "concave_length"};
+	if (std::find(methods.begin(), methods.end(), htype) == methods.end()) {
+		out.setError("unknown hull type");
+		return out;
+	}
+
 	if (!by.empty()) {
 		SpatVector tmp = aggregate(by, false);
 		if (tmp.hasError()) {
@@ -1017,21 +1023,16 @@ SpatVector SpatVector::hull(std::string htype, std::string by, double param, boo
 
 	out.reserve(size());
 
-
-	if (htype != "convex") {
-		#ifndef GEOS361
-		out.setError("GEOS 3.6.1 required for rotated rectangle");
-		return out;
-		#endif
-		if (is_lonlat()) {
-			if ((extent.ymin > -85) && (extent.ymax < 85)) {
-				SpatVector tmp = project("+proj=merc", false);
-				tmp = tmp.hull(htype, "");
-				tmp = tmp.project(srs.wkt, false);
-				return tmp;
-			}
+/*
+	if (is_lonlat()) {
+		if ((extent.ymin > -85) && (extent.ymax < 85)) {
+			SpatVector tmp = project("+proj=merc", false);
+			tmp = tmp.hull(htype, "");
+			tmp = tmp.project(srs.wkt, false);
+			return tmp;
 		}
 	}
+*/
 
 	SpatVector a = aggregate(false);
 
@@ -1066,9 +1067,11 @@ SpatVector SpatVector::hull(std::string htype, std::string by, double param, boo
 		if (htype == "concave_ratio") {
 			h = GEOSConcaveHull_r(hGEOSCtxt, g[0].get(), param, allowHoles);
 		} else if (htype == "concave_length") {
-			h = GEOSConcaveHullByLength_r(hGEOSCtxt, g[0].get(), param, allowHoles);
-		} else if (htype == "concave_polygons") {
-			h = GEOSConcaveHullOfPolygons_r(hGEOSCtxt, g[0].get(), param, tight, allowHoles);
+			if (type() == "polygons") {
+				h = GEOSConcaveHullOfPolygons_r(hGEOSCtxt, g[0].get(), param, tight, allowHoles);
+			} else {
+				h = GEOSConcaveHullByLength_r(hGEOSCtxt, g[0].get(), param, allowHoles);
+			}
 		} else {
 			geos_finish(hGEOSCtxt);
 			out.setError("unknown hull type");
