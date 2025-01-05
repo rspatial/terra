@@ -17,10 +17,12 @@ Convex, concave, rectangular and circular hulls
 
 \description{
 Compute hulls around SpatVector geometries. This can be the convex hull, the minimal bounding rotated rectangle, the minimal bounding circle, or a concave hull. The concaveness of the concave hull can be specified in different ways.
+
+The old methods \code{convHull}, \code{minRect} and \code{minCircle} are depracated and will be removed in a future version.
 }
 
 \usage{
-\S4method{hull}{SpatVector}(x, type="convex", by="", param=1, allowHoles =TRUE, tight = TRUE)
+\S4method{hull}{SpatVector}(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE)
 }
 
 \arguments{

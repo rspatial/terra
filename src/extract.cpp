@@ -1286,7 +1286,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 		} else {
 			#ifdef useGDAL
 			size_t pos = source[src].filename.find("https://");
-			if ((pos != std::string::npos)) { // && (rc[0].size() > 200)) {
+			if ((pos != std::string::npos)) && (rc[0].size() > 200)) {
 				if (win) {
 					readRowColBlock(src, out, lyr, wrc[0], wrc[1]);
 				} else {
