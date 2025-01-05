@@ -107,6 +107,7 @@ There is also a method for merging SpatVector with a data.frame; that is, to joi
 <span class="r-in"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">z</span>, <span class="va">y</span>, <span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span>, <span class="va">z</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># panel(c(m1, m2, m3))</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># if you have many SpatRasters, it may be convenient</span></span></span>
 <span class="r-in"><span><span class="co"># to make a SpatRasterCollection</span></span></span>
@@ -115,11 +116,7 @@ There is also a method for merging SpatVector with a data.frame; that is, to joi
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sm1</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">s</span>, algo<span class="op">=</span><span class="fl">1</span>, first<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sm2</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">s</span>, algo<span class="op">=</span><span class="fl">2</span>, first<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sm3</span> <span class="op">&lt;-</span> <span class="fu">merge</span><span class="op">(</span><span class="va">s</span>, algo<span class="op">=</span><span class="fl">3</span>, first<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Zero positional arguments expected (GDAL error 1)</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>: No such file or directory (GDAL error 4)</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [merge] file does not exist: </span>
-<span class="r-in"><span><span class="co"># panel(c(sm1, sm2, sm3))</span></span></span>
+<span class="r-in"><span><span class="co">#sm3 &lt;- merge(s, algo=3, first=FALSE)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## SpatVector with data.frame</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
