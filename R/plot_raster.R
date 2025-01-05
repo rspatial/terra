@@ -86,9 +86,11 @@ hexcols <- function(out) {
 	RGB <- stats::na.omit(RGB)
 	naind <- as.vector( attr(RGB, "na.action") )
 
-	if (ncol(RGB) == 4){
-		alpha <- RGB[,4] * 255
+	if (ncol(RGB) == 4) {
+		alpha <- RGB[,4]
 		RGB <- RGB[,-4]
+	} else {
+		alpha <- out$alpha
 	}
 
 	if (!is.null(naind)) {
@@ -96,9 +98,9 @@ hexcols <- function(out) {
 		if (is.null(out$rgb$bgalpha)) out$rgb$bgalpha <- 255
 		bg <- grDevices::rgb(bg[1], bg[2], bg[3], alpha=out$rgb$bgalpha, maxColorValue=255)
 		z <- rep( bg, times=ncell(x))
-		z[-naind] <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=out$alpha, maxColorValue=scale)
+		z[-naind] <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=alpha, maxColorValue=scale)
 	} else {
-		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=out$alpha, maxColorValue=scale)
+		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=alpha, maxColorValue=scale)
 	}
 	
 	out$r <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
