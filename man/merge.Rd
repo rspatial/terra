@@ -60,6 +60,7 @@ z <- rast(xmin=-60, xmax=-30, ymax=50, ymin=20, res=1, vals=3)
 m1 <- merge(x, y, z)
 m2 <- merge(z, y, x)
 m3 <- merge(y, x, z)
+# panel(c(m1, m2, m3))
 
 # if you have many SpatRasters, it may be convenient
 # to make a SpatRasterCollection
@@ -68,8 +69,7 @@ s <- sprc(x, y, z)
 
 sm1 <- merge(s, algo=1, first=FALSE)
 sm2 <- merge(s, algo=2, first=FALSE)
-sm3 <- merge(s, algo=3, first=FALSE)
-# panel(c(sm1, sm2, sm3))
+#sm3 <- merge(s, algo=3, first=FALSE)
 
 ## SpatVector with data.frame
 f <- system.file("ex/lux.shp", package="terra")
