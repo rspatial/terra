@@ -28,6 +28,7 @@
 #  endif
 # endif
 # if GEOS_VERSION_MINOR >= 7
+#  define GEOS361
 #  define GEOS370
 # endif
 # if GEOS_VERSION_MINOR >= 8
