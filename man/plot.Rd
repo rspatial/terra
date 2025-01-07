@@ -13,6 +13,7 @@
 \alias{plot,SpatVector,character-method}
 \alias{plot,SpatVectorProxy,missing-method}
 \alias{plot,SpatVectorCollection,missing-method}
+\alias{plot,SpatVectorCollection,numeric-method}
 
 
 
@@ -47,6 +48,8 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 \S4method{plot}{SpatVector,missing}(x, y, values=NULL, ...)
 
 \S4method{plot}{SpatVectorCollection,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, ...)
+
+\S4method{plot}{SpatVectorCollection,numeric}(x, y, main, mar=NULL, ext=NULL, ...)
 }
 
 \arguments{

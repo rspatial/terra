@@ -787,3 +787,15 @@ setMethod("plot", signature(x="SpatVectorCollection", y="missing"),
 	}
 )
 
+setMethod("plot", signature(x="SpatVectorCollection", y="numeric"),
+	function(x, y, main, mar=NULL, ext=NULL, ...) {
+		y <- round(y)
+		if ((y > 0) && (y <= length(x))) {
+			if (is.null(ext)) ext <- ext(x)
+			plot(x[y], main=main, mar=mar, ext=ext, ...)
+		} else {
+			error("plot", "y should be between 1 and length(x)")
+		}
+	}
+)
+

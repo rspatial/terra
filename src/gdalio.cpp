@@ -341,21 +341,20 @@ std::string SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector
 		return("");
 	}
 
+
+	std::vector<char*> vops = string_to_charpnt(options);
+	GDALBuildVRTOptions* vrtops = GDALBuildVRTOptionsNew(vops.data(), NULL);
+	if (vrtops == NULL) {
+		setError("options error");
+		return("");
+	}
+
 	char **names = NULL;
 	for (std::string& f : filenames) {
 		names = CSLAddString(names, f.c_str());
 	}
-
-	std::vector <char *> vops = string_to_charpnt(options);
-	GDALBuildVRTOptions* vrtops = GDALBuildVRTOptionsNew(vops.data(), NULL);
-	if (vrtops == NULL) {
-		setError("options error");
-		CSLDestroy( names );
-		return("");
-	}
 	int pbUsageError;
-
-	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), filenames.size(), nullptr, names, vrtops, &pbUsageError);
+	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), filenames.size(), NULL, names, vrtops, &pbUsageError);
 	GDALBuildVRTOptionsFree(vrtops);
 	CSLDestroy( names );
 	

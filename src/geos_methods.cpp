@@ -1058,24 +1058,30 @@ SpatVector SpatVector::hull(std::string htype, std::string by, double param, boo
 	#else
 		h = GEOSMinimumRotatedRectangle_r(hGEOSCtxt, g[0].get());
 	#endif
-	} else if (htype.substr(0, 7) == "concave") {
+	} else if (htype == "concave_ratio") {
 	#ifndef GEOS3110
 		geos_finish(hGEOSCtxt);
 		out.setError("GEOS 3.11 required for concave hull");
 		return out;
 	#else
-		if (htype == "concave_ratio") {
-			h = GEOSConcaveHull_r(hGEOSCtxt, g[0].get(), param, allowHoles);
-		} else if (htype == "concave_length") {
-			if (type() == "polygons") {
-				h = GEOSConcaveHullOfPolygons_r(hGEOSCtxt, g[0].get(), param, tight, allowHoles);
-			} else {
-				h = GEOSConcaveHullByLength_r(hGEOSCtxt, g[0].get(), param, allowHoles);
-			}
+		h = GEOSConcaveHull_r(hGEOSCtxt, g[0].get(), param, allowHoles);
+	#endif
+	} else if (htype == "concave_length") {
+	#ifndef GEOS3110
+		geos_finish(hGEOSCtxt);
+		out.setError("GEOS 3.11 required for concave_length hull");
+		return out;
+	#else
+		if (type() == "polygons") {
+			h = GEOSConcaveHullOfPolygons_r(hGEOSCtxt, g[0].get(), param, tight, allowHoles);
 		} else {
-			geos_finish(hGEOSCtxt);
-			out.setError("unknown hull type");
-			return out;			
+		#ifndef GEOS3120
+				geos_finish(hGEOSCtxt);
+				out.setError("GEOS 3.12 required for concave_length hull for points and lines");
+				return out;
+		#else 
+				h = GEOSConcaveHullByLength_r(hGEOSCtxt, g[0].get(), param, allowHoles);
+		#endif	
 		}
 	#endif
 	} else {
@@ -1561,7 +1567,7 @@ std::vector<int> SpatVector::pointInPolygon(std::vector<double> &x, std::vector<
 	SpatVector pnts;
 	pnts.srs = srs;
 	pnts.setPointsGeometry(x, y);
-	out = relate(pnts, "intersects")
+	out = relate(pnts, "intersects", true, true);
 
 # endif
 
