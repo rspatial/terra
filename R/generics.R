@@ -726,6 +726,15 @@ setMethod("project", signature(x="SpatVector"),
 	}
 )
 
+setMethod("project", signature(x="SpatVectorCollection"),
+	function(x, y, partial=FALSE)  {
+		x <- lapply(x, function(v) project(v, y, partial=partial))
+		svc(x)
+	}
+)
+
+
+
 setMethod("project", signature(x="SpatExtent"),
 	function(x, from, to)  {
 		if (missing(from)) error("project", "'from' cannot be missing")

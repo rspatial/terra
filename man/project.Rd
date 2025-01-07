@@ -2,6 +2,7 @@
 
 \alias{project}
 \alias{project,SpatVector-method}
+\alias{project,SpatVectorCollection-method}
 \alias{project,SpatRaster-method}
 \alias{project,SpatExtent-method}
 \alias{project,matrix-method}

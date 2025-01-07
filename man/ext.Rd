@@ -7,6 +7,7 @@
 \alias{ext,SpatExtent-method}
 \alias{ext,SpatRaster-method}
 \alias{ext,SpatVector-method}
+\alias{ext,SpatVectorCollection-method}
 \alias{ext,SpatVectorProxy-method}
 \alias{ext,SpatRasterDataset-method}
 \alias{ext,SpatRasterCollection-method}

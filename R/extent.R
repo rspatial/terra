@@ -141,6 +141,14 @@ setMethod("ext", signature(x="SpatVector"),
 	}
 )
 
+setMethod("ext", signature(x="SpatVectorCollection"),
+	function(x) {
+		e <- sapply(x, function(e) as.vector(ext(e)))
+		ext(min(e[1,]), max(e[2,]), min(e[3,]), max(e[4,]))
+	}
+)
+
+
 setMethod("ext", signature(x="SpatVectorProxy"),
 	function(x) {
 		e <- methods::new("SpatExtent")
