@@ -3,7 +3,7 @@ setMethod("panel", signature(x="SpatRaster"),
 	function(x, main, loc.main="topleft", nc, nr, maxnl=16, maxcell=500000, 
 		box=FALSE, pax=list(), plg=list(), range=NULL, halo=TRUE, type=NULL, ...)  {
 
-		if (is.null(type)) {
+		if (!is.null(type)) {
 			type <- match.arg(tolower(type), c("classes", "continuous", "interval"))
 		}
 
