@@ -267,9 +267,9 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 		lwd <- rep_len(lwd, n) 
 
 		alpha <- rep_len(alpha, n) 
-		alpha <- pmax(0, min(1, alpha))
+		alpha <- pmax(0, pmin(1, alpha))
 		fill <- rep_len(fill, n) 
-		fill <- pmax(0, min(1, fill))
+		fill <- pmax(0, pmin(1, fill))
 		popup <- rep_len(popup, n) 
 		label <- rep_len(label, n) 
 		border <- rep_len(border, n) 
