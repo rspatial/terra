@@ -1,27 +1,37 @@
 
 setMethod("panel", signature(x="SpatRaster"),
 	function(x, main, loc.main="topleft", nc, nr, maxnl=16, maxcell=500000, 
-		box=FALSE, pax=list(), plg=list(), range=NULL, halo=TRUE, ...)  {
+		box=FALSE, pax=list(), plg=list(), range=NULL, halo=TRUE, type=NULL, ...)  {
 
-		dots <- list(...)
-		if (!is.null(dots$type)) {
-			error("panel", "you cannot set the plot type")
+		if (is.null(type)) {
+			type <- match.arg(tolower(type), c("classes", "continuous", "interval"))
 		}
-		if (!is.null(dots$breaks)) {
-			error("panel", "you cannot use argument 'breaks'")
-		}
+
+#		dots <- list(...)
+#		if (!is.null(dots$type)) {
+#			error("panel", "you cannot set the plot type")
+#		}
+#		if (!is.null(dots$breaks)) {
+#			error("panel", "you cannot use argument 'breaks'")
+#		}
 		categorical <- FALSE
-		if (any(is.factor(x))) {
+		if (is.null(type) && any(is.factor(x))) {
 		    lv <- levels(x)
 			lv <- lv[sapply(lv, is.data.frame)]
+			un <- unique(sapply(lv, names))
+			if (length(un) > 2) {
+				lv <- lapply(lv, function(i) { colnames(i) <- colnames(lv[[1]]); i})
+			}
 			lv <- try(do.call(rbind, lv), silent=TRUE)
-			if (inherits(lv, "try-error")) {
-				error("panel", "cannot use non-matching categorical rasters")
+			if (inherits(lv, "try-error")) { # should not happen anymore
+				error("panel", "cannot use combine categories")
 			}
 			lv <- unique(lv)
 			if (length(unique(lv[,1])) < nrow(lv)) {
 				error("panel", "cannot use rasters with conflicting categories")			
 			}
+			lv <- lv[order(lv[,1]), ]
+			x <- categories(x, 0, lv)
 			categorical <- TRUE
 		}
 
@@ -67,24 +77,34 @@ setMethod("panel", signature(x="SpatRaster"),
 		bottom <- c(0,1)[b]
 
 		if (!categorical) {
+			x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+			r <- as.matrix(x)
 			if (is.null(range)) {
 				if (all(hasMinMax(x))) {
 					range <- range(minmax(x, FALSE))
 					if (any(is.nan(range) | is.infinite(range))) {
-						r <- as.matrix(spatSample(x, maxcell, method="regular", as.raster=FALSE, warn=FALSE))
+						r <- as.matrix(x)
 						r[is.infinite(r)] <- NA
 						range <- range(r, na.rm=TRUE)
 					}
 				} else {
-					r <- as.matrix(spatSample(x, maxcell, method="regular", as.raster=FALSE, warn=FALSE))
 					r[is.infinite(r)] <- NA
 					range <- range(r, na.rm=TRUE)
 				}
 			}
-			if (diff(range) > 0) {
-				ptype <- "continuous"
-			} else {
-				ptype <- "classes"
+			r <- unique(as.vector(r))
+			if (is.null(type)) {
+				if (length(r) > 10) {
+					type <- "continuous"
+				} else {
+					type <- "classes"
+				}
+			}
+			if (type == "classes") {
+				levs <- data.frame(ID=1:length(r), sort(r))
+				colnames(levs)[2] <- names(x)[1]
+				x <- categories(x, 0, levs)
+				categorical <- TRUE
 			}
 		}
 		if (is.null(plg$size)) plg$size <- max(1, nrnc[1] * 0.66)
@@ -94,13 +114,11 @@ setMethod("panel", signature(x="SpatRaster"),
 		for (i in 1:nl) {
 			pax$side <- c(bottom[i], left[i])
 			if (categorical) {
-				y <- x[[i]]
-				levels(y) <- lv
-				plot(y, 1, main=main[i], mar=mar, legend=legend[i], pax=pax, box=box, 
-					loc.main=loc.main, halo=halo, plg=plg, type="classes", ...)
+				plot(x[[i]], 1, main=main[i], mar=mar, legend=legend[i], pax=pax, box=box, 
+					loc.main=loc.main, halo=halo, plg=plg, type="classes", all_levels=TRUE, maxcell=Inf, ...)
 			} else {
 				plot(x, i, main=main[i], mar=mar, legend=legend[i], range=range, pax=pax, box=box, 
-					loc.main=loc.main, halo=halo, plg=plg, type=ptype, ...)
+					loc.main=loc.main, halo=halo, plg=plg, type=type, maxcell=Inf, ...)
 			}
 		}
 	}
