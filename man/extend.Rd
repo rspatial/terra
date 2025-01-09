@@ -37,7 +37,7 @@ You can also enlarge a SpatExtent with this method, or with an algebraic notatio
 SpatRaster or SpatExtent
 }
 
-\seealso{\code{\link{crop}}, \code{\link{merge}}, \code{\link{ext}}, \code{\link{resample}}}
+\seealso{\code{\link{crop}}, \code{\link{merge}}, \code{\link{ext}}, \code{\link{resample}}, \code{\link{elongate}}}
 
 \examples{
 r <- rast(xmin=-150, xmax=-120, ymin=30, ymax=60, ncols=36, nrows=18)
