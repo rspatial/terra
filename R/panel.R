@@ -16,22 +16,7 @@ setMethod("panel", signature(x="SpatRaster"),
 #		}
 		categorical <- FALSE
 		if (is.null(type) && any(is.factor(x))) {
-		    lv <- levels(x)
-			lv <- lv[sapply(lv, is.data.frame)]
-			un <- unique(sapply(lv, names))
-			if (length(un) > 2) {
-				lv <- lapply(lv, function(i) { colnames(i) <- colnames(lv[[1]]); i})
-			}
-			lv <- try(do.call(rbind, lv), silent=TRUE)
-			if (inherits(lv, "try-error")) { # should not happen anymore
-				error("panel", "cannot use combine categories")
-			}
-			lv <- unique(lv)
-			if (length(unique(lv[,1])) < nrow(lv)) {
-				error("panel", "cannot use rasters with conflicting categories")			
-			}
-			lv <- lv[order(lv[,1]), ]
-			x <- categories(x, 0, lv)
+			x <- combineLevels(x)
 			categorical <- TRUE
 		}
 

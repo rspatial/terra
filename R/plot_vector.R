@@ -483,7 +483,7 @@ setMethod("dots", signature(x="SpatVector"),
 			stopifnot(length(ylim) == 2)
 			out$lim[3:4] <- sort(ylim)
 		}
-	} else if (!add) {
+	} else if ((!add) && is.null(xpd)) {
 		xpd <- TRUE
 	}
 	out$ngeom <- nrow(x)
