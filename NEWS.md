@@ -39,6 +39,7 @@
 - `divide<SpatRaster>` and `divide<SpatVector>` methods
 - `nseg` counts the number of segments in a SpatVector [#1647](https://github.com/rspatial/terra/pull/1674) by Michael Chirico
 - `extract` argument "search_radius" to extract values from the nearest raster cell that is not `NA` [#873](https://github.com/rspatial/terra/issues/873) by matthewseanmarcus
+- `combineLevels` to combine the levels of all layers [link](https://stackoverflow.com/questions/79340152/how-to-set-factor-levels-in-a-rast-stack-using-terra-when-different-levels-exi) on SO by Sam
 
  
 # version 1.8-5

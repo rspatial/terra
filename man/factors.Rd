@@ -51,7 +51,7 @@ To set categories for the first layer of a SpatRaster, you can provide \code{lev
 
 \S4method{addCats}{SpatRaster}(x, value, merge=FALSE, layer=1)
 
-combineLevels(x)
+combineLevels(x, assign=TRUE)
 }
 
 
@@ -63,11 +63,12 @@ combineLevels(x)
   \item{level}{the categories to remove for the layer specified with \code{layer}}
   \item{merge}{logical. If \code{TRUE}, the categories are combined with \code{\link[base]{merge}} using the first column of \code{value} as ID. If \code{FALSE} the categories are combined with \code{cbind}}
   \item{...}{additional arguments (none)}
+  \item{assign}{logical. Assign the combined levels to all layers of \code{x}? If \code{FALSE}, the levels are returned}
 }  
 
 
 \value{
-list of data.frames (levels, cats) or logical (is.factor)
+SpatRaster, data.frame, list of data.frames (levels, cats), or logical (is.factor)
 }
 
 \seealso{\code{\link{activeCat}}, \code{\link{catalyze}}, \code{\link{set.cats}}, \code{\link{as.factor}}, \code{\link{is.factor}}}

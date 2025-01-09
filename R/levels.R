@@ -72,7 +72,8 @@ setMethod("levels<-", signature(x="SpatRaster"),
 )
 
 
-combineLevels <- function(x) {
+combineLevels <- function(x, assign=TRUE) {
+	if (nlyr(x) == 1) return(x)
     lv <- levels(x)
 	lv <- lv[sapply(lv, is.data.frame)]
 	un <- unique(sapply(lv, names))
@@ -88,10 +89,11 @@ combineLevels <- function(x) {
 		error("panel", "cannot combine conflicting categories")			
 	}
 	lv <- lv[order(lv[,1]), ]
-	nms <- names(x)
-	x <- categories(x, 0, lv)
-	names(x) <- nms
-	x
+	if (assign) {
+		categories(x, 0, lv)
+	} else {
+		lv
+	}
 }
 
 
@@ -133,6 +135,8 @@ setMethod ("set.cats" , "SpatRaster",
 			if (nlyr(x) == 1) {
 				layer <- 1
 			} else {
+				# avoid chaning layer names in this case
+				nms <- names(x)
 				if (is.data.frame(value)) {
 					value <- replicate(nlyr(x), value, simplify=FALSE)
 				} else {
@@ -150,6 +154,7 @@ setMethod ("set.cats" , "SpatRaster",
 						x <- messages(x, "set.cats")
 					}
 				}
+				names(x) <- nms
 				return(invisible(ok))
 			}
 		}
