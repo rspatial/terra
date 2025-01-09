@@ -74,6 +74,7 @@ setMethod("levels<-", signature(x="SpatRaster"),
 
 combineLevels <- function(x, assign=TRUE) {
 	if (nlyr(x) == 1) return(x)
+	nms <- names(x)
     lv <- levels(x)
 	lv <- lv[sapply(lv, is.data.frame)]
 	un <- unique(sapply(lv, names))
@@ -90,7 +91,9 @@ combineLevels <- function(x, assign=TRUE) {
 	}
 	lv <- lv[order(lv[,1]), ]
 	if (assign) {
-		categories(x, 0, lv)
+		x <- categories(x, 0, lv)
+		names(x) <- nms 
+		x
 	} else {
 		lv
 	}
@@ -135,8 +138,6 @@ setMethod ("set.cats" , "SpatRaster",
 			if (nlyr(x) == 1) {
 				layer <- 1
 			} else {
-				# avoid chaning layer names in this case
-				nms <- names(x)
 				if (is.data.frame(value)) {
 					value <- replicate(nlyr(x), value, simplify=FALSE)
 				} else {
@@ -154,7 +155,6 @@ setMethod ("set.cats" , "SpatRaster",
 						x <- messages(x, "set.cats")
 					}
 				}
-				names(ok) <- nms
 				return(invisible(ok))
 			}
 		}
