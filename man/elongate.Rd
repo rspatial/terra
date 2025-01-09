@@ -27,7 +27,7 @@ SpatVector
 }
 
 \seealso{
-\code{\link{buffer}}, \code{\link{crop}} and \code{\link{erase}} 
+\code{\link{buffer}}, \code{\link{crop}}, \code{\link{erase}}, \code{\link{extend}}
 }
 
 \examples{
