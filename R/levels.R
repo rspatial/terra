@@ -154,7 +154,7 @@ setMethod ("set.cats" , "SpatRaster",
 						x <- messages(x, "set.cats")
 					}
 				}
-				names(x) <- nms
+				names(ok) <- nms
 				return(invisible(ok))
 			}
 		}
