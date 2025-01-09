@@ -85,7 +85,7 @@ combineLevels combines the levels of all layers of x and sets them to all layers
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">addCats</span><span class="op">(</span><span class="va">x</span>, <span class="va">value</span>, merge<span class="op">=</span><span class="cn">FALSE</span>, layer<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">combineLevels</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">combineLevels</span><span class="op">(</span><span class="va">x</span>, assign<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -112,10 +112,13 @@ combineLevels combines the levels of all layers of x and sets them to all layers
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments (none)</p></dd>
 
+  <dt id="arg-assign">assign<a class="anchor" aria-label="anchor" href="#arg-assign"></a></dt>
+<dd><p>logical. Assign the combined levels to all layers of <code>x</code>? If <code>FALSE</code>, the levels are returned</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>list of data.frames (levels, cats) or logical (is.factor)</p>
+    <p>SpatRaster, data.frame, list of data.frames (levels, cats), or logical (is.factor)</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
