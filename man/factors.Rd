@@ -14,7 +14,7 @@
 \alias{categories,SpatRaster-method}
 \alias{addCats}
 \alias{addCats,SpatRaster-method}
-\alias{shareLevels}
+\alias{combineLevels}
   
   
 \title{Categorical rasters}
