@@ -1028,7 +1028,7 @@ Rcpp::Rcout << "flipped\n";
 			}
 		}
 
-		if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
+		// if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
 			char **m = poBand->GetMetadata();
 			while (m != nullptr && *m != nullptr) {
 				bandmeta[i].push_back(*m++);
@@ -1050,7 +1050,7 @@ Rcpp::Rcout << "flipped\n";
 					}
 				}
 			}
-		}
+		// }
 
 		int success;
 	//	double naflag = poBand->GetNoDataValue(&success);
