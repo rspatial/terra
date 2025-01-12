@@ -67,6 +67,43 @@ time_as_seconds <- function(x) {
 }
 
 
+setMethod("time", signature(x="SpatVector"),
+	function(x, format="") {
+		cls <- sapply(values(x[1,]), function(i) { a = class(i); a[length(a)] })
+		i <- which(cls %in% c("Date", "POSIXt"))[1]
+		if (is.na(i)) {
+			return(rep(NA, nrow(x)))
+		} else {
+			d <- x[,i,drop=TRUE][,,drop=TRUE]
+			if (format != "") {
+				steps <- c("seconds", "days", "months", "years", "yearmonths")
+				format <- match.arg(tolower(format), steps)
+				if (!(format %in% steps)) {
+					error("time", "not a valid time format")
+				}
+				tstep <- ifelse(cls[i]=="Date", "days", "seconds")
+				if (format == "seconds") {
+					if (tstep != "seconds") {
+						error("time", "cannot extract seconds from Dates")
+					}
+					d
+				} else if (format == "days") {
+					as.Date(d)
+				} else if (format == "yearmonths") {
+					y <- as.integer(format(d, "%Y"))
+					y + (as.integer(format(d, "%m"))-1)/12
+				} else if (format == "months") {
+					as.integer(format(d, "%m"))
+				} else if (format == "years") {
+					as.integer(format(d, "%Y"))
+				}
+			} else {
+				d
+			}
+		}
+	}
+)
+
 setMethod("time", signature(x="SpatRaster"),
 	function(x, format="") {
 		if (!x@pntr$hasTime) {
@@ -74,8 +111,10 @@ setMethod("time", signature(x="SpatRaster"),
 		}
 		d <- x@pntr$time
 		tstep <- x@pntr$timestep
+		
 		if (format != "") {
-			format = match.arg(format, c("seconds", "days", "months", "years", "yearmonths"))
+			steps <- c("seconds", "days", "months", "years", "yearmonths")
+			format <- match.arg(tolower(format), steps)
 			if ((format == "months") && (tstep == "years")) {
 				error("time", "cannot extract months from years-time")
 			} else if ((format == "years") && (tstep %in% c("months"))) {
@@ -88,31 +127,30 @@ setMethod("time", signature(x="SpatRaster"),
 				error("time", "cannot extract days from this type of time data")
 			}
 			tstep <- format
-		} 
+		} else if (tstep == "raw") {
+			return(d)
+		}
+		
+		
+		d <- strptime("1970-01-01", "%Y-%m-%d", tz="UTC") + d
 		if (tstep == "seconds") {
-			d <- strptime("1970-01-01", "%Y-%m-%d", tz="UTC") + d
 			tz <- x@pntr$timezone
 			if (!(tz %in% c("", "UTC"))) {
 				attr(d, "tzone") = tz
 			}
 			d
 		} else if (tstep == "days") {
-			d <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 			as.Date(d)
 		} else if (tstep == "yearmonths") {
-			d <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 			y <- as.integer(format(d, "%Y"))
 			y + (as.integer(format(d, "%m"))-1)/12
 		} else if (tstep == "months") {
-			d <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 			as.integer(format(d, "%m"))
 		} else if (tstep == "years") {
-			d <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 			as.integer(format(d, "%Y"))
 #		} else if (tstep == "yearweeks") {
-#			d <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 #			yearweek(as.Date(d))
-		} else { # raw
+		} else { # ???
 			d
 		}
 	}
