@@ -1297,7 +1297,7 @@ Rcpp::Rcout << "flipped\n";
 	s.hasValues = true;
 	setSource(s);
 
-	if ((!metadata.empty()) && ((gdrv=="netCDF") || (gdrv == "HDF5"))) {
+	if ((!metadata.empty())) {
 		std::vector<std::string> tagnames, tagvalues;
 //		std::string stag = s.source_name + "#TAG_";
 		std::string stag = s.source_name + "#";
