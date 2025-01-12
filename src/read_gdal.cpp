@@ -915,6 +915,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		//ymin = roundn(ymin, 9);
 
 		if (adfGeoTransform[5] > 0) {
+Rcpp::Rcout << "flipped\n";
 			s.flipped = true;
 			std::swap(ymin, ymax);
 		}
@@ -933,8 +934,12 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	} else {
 
 		hasExtent = false;
+		if (adfGeoTransform[5] > 0) {
+			s.flipped = true;
+		}
 		SpatExtent e(0, s.ncol, 0, s.nrow);
 		s.extent = e;
+
 		if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
 			#ifndef standalone
 			setMessage("ncdf extent");
@@ -944,6 +949,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		} else {
 			addWarning("unknown extent");
 		}
+
 		// seems to cause more harm then benefit #1627
 		//try {
 		//	s.flipped = adfGeoTransform[5] > 0;
@@ -967,6 +973,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		s.crs = "";
 	}
 */
+
 
 	std::string crs = getDsWKT(poDataset);
 	if (crs.empty()) {

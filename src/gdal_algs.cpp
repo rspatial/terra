@@ -1396,7 +1396,9 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 	}
 */
 	
-	if (tmp.source[0].extset || tmp.source[0].flipped) {
+	if (tmp.source[0].extset) { // || tmp.source[0].flipped) {
+	Rcpp::Rcout << "hardcopy\n";
+		
 		tmp = tmp.hardCopy(topt);
 	}
 
