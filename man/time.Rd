@@ -13,8 +13,6 @@
 \alias{timeInfo,SpatRaster-method}
 \alias{timeInfo,SpatRasterDataset-method}
 
-\alias{time,SpatVector-method}
-
   
 \title{time of SpatRaster layers}
 
@@ -22,8 +20,6 @@
 Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\link{POSIXlt}} (date and time, with  a resolution of seconds, and a time zone), \code{\link{Date}}, "months", "years", or "yearmonths". 
 
 \code{timeInfo} and \code{has.time} are helper functions to understand what a time data a SpatRaster has.
-
-If \code{x} is a SpatVector \code{time} returns the first variable (attribute) of \code{x} that has a date/time value.
 }
 
 \usage{

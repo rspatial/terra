@@ -67,42 +67,42 @@ time_as_seconds <- function(x) {
 }
 
 
-setMethod("time", signature(x="SpatVector"),
-	function(x, format="") {
-		cls <- sapply(values(x[1,]), function(i) { a = class(i); a[length(a)] })
-		i <- which(cls %in% c("Date", "POSIXt"))[1]
-		if (is.na(i)) {
-			return(rep(NA, nrow(x)))
-		} else {
-			d <- x[,i,drop=TRUE][,,drop=TRUE]
-			if (format != "") {
-				steps <- c("seconds", "days", "months", "years", "yearmonths")
-				format <- match.arg(tolower(format), steps)
-				if (!(format %in% steps)) {
-					error("time", "not a valid time format")
-				}
-				tstep <- ifelse(cls[i]=="Date", "days", "seconds")
-				if (format == "seconds") {
-					if (tstep != "seconds") {
-						error("time", "cannot extract seconds from Dates")
-					}
-					d
-				} else if (format == "days") {
-					as.Date(d)
-				} else if (format == "yearmonths") {
-					y <- as.integer(format(d, "%Y"))
-					y + (as.integer(format(d, "%m"))-1)/12
-				} else if (format == "months") {
-					as.integer(format(d, "%m"))
-				} else if (format == "years") {
-					as.integer(format(d, "%Y"))
-				}
-			} else {
-				d
-			}
-		}
-	}
-)
+#setMethod("time", signature(x="SpatVector"),
+#	function(x, format="") {
+#		cls <- sapply(values(x[1,]), function(i) { a = class(i); a[length(a)] })
+#		i <- which(cls %in% c("Date", "POSIXt"))[1]
+#		if (is.na(i)) {
+#			return(rep(NA, nrow(x)))
+#		} else {
+#			d <- x[,i,drop=TRUE][,,drop=TRUE]
+#			if (format != "") {
+#				steps <- c("seconds", "days", "months", "years", "yearmonths")
+#				format <- match.arg(tolower(format), steps)
+#				if (!(format %in% steps)) {
+#					error("time", "not a valid time format")
+#				}
+#				tstep <- ifelse(cls[i]=="Date", "days", "seconds")
+#				if (format == "seconds") {
+#					if (tstep != "seconds") {
+#						error("time", "cannot extract seconds from Dates")
+#					}
+#					d
+#				} else if (format == "days") {
+#					as.Date(d)
+#				} else if (format == "yearmonths") {
+#					y <- as.integer(format(d, "%Y"))
+#					y + (as.integer(format(d, "%m"))-1)/12
+#				} else if (format == "months") {
+#					as.integer(format(d, "%m"))
+#				} else if (format == "years") {
+#					as.integer(format(d, "%Y"))
+#				}
+#			} else {
+#				d
+#			}
+#		}
+#	}
+#)
 
 setMethod("time", signature(x="SpatRaster"),
 	function(x, format="") {
