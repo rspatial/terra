@@ -11,9 +11,7 @@ Compute the area covered by individual raster cells.
 
 Computing the surface area of raster cells is especially relevant for longitude/latitude rasters. 
 
-But note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area coordinate reference system. 
-
-For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but on the *actual* area by transforming cells to longitude/latitude. If you do not want that correction, you can use \code{transform=FALSE} or \code{init(x, prod(res(x)))}
+But note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area coordinate reference system. For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but rather by transforming cells to longitude/latitude. If you do not want that correction, you can use \code{transform=FALSE} or \code{init(x, prod(res(x)))}
 }
 
 \usage{

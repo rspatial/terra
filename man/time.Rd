@@ -30,8 +30,6 @@ Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\
 \S4method{time}{SpatRaster}(x, tstep="")<-value
 
 \S4method{timeInfo}{SpatRaster}(x)
-
-\S4method{time}{SpatVector}(x, format="")
 }
 
 \seealso{\code{\link{depth}}}
