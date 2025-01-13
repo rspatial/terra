@@ -3,13 +3,11 @@
 
 Compute the area covered by individual raster cells.
 Computing the surface area of raster cells is especially relevant for longitude/latitude rasters.
-But note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area coordinate reference system.
-For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but on the *actual* area by transforming cells to longitude/latitude. If you do not want that correction, you can use transform=FALSE or init(x, prod(res(x)))"><meta property="og:description" content="
+But note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area coordinate reference system. For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but rather by transforming cells to longitude/latitude. If you do not want that correction, you can use transform=FALSE or init(x, prod(res(x)))"><meta property="og:description" content="
 
 Compute the area covered by individual raster cells.
 Computing the surface area of raster cells is especially relevant for longitude/latitude rasters.
-But note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area coordinate reference system.
-For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but on the *actual* area by transforming cells to longitude/latitude. If you do not want that correction, you can use transform=FALSE or init(x, prod(res(x)))"><meta property="og:image" content="https://rspatial.github.io/terra/logo.png"></head><body>
+But note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area coordinate reference system. For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but rather by transforming cells to longitude/latitude. If you do not want that correction, you can use transform=FALSE or init(x, prod(res(x)))"><meta property="og:image" content="https://rspatial.github.io/terra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +15,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-10</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,8 +47,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
 
 <p>Compute the area covered by individual raster cells.</p>
 <p>Computing the surface area of raster cells is especially relevant for longitude/latitude rasters.</p>
-<p>But note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area coordinate reference system.</p>
-<p>For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but on the *actual* area by transforming cells to longitude/latitude. If you do not want that correction, you can use <code>transform=FALSE</code> or <code>init(x, prod(res(x)))</code></p>
+<p>But note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area coordinate reference system. For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but rather by transforming cells to longitude/latitude. If you do not want that correction, you can use <code>transform=FALSE</code> or <code>init(x, prod(res(x)))</code></p>
     </div>
 
     <div class="section level2">
