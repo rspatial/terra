@@ -40,10 +40,8 @@ SpatVector
 }
 
 \seealso{
-\code{\link{union}}, \code{\link{erase}}, \code{\link{intersect}}
-
-
-\code{\link{sharedPaths}}, \code{\link{erase}}, \code{\link{intersect}}
+\code{\link{union}}, \code{\link{erase}}, \code{\link{intersect}}, 
+\code{\link{sharedPaths}}, \code{\link{aggregate}}, \code{\link{rbind}}
 }
 
 
