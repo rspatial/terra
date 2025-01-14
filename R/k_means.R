@@ -49,10 +49,10 @@ h_clust <- function(x, ngroups, dist_metric="euclidean", clust_method="complete"
 	stopifnot(ngroups > 0)
 	stopifnot(ngroups < maxcell)
 	d <- na.omit(spatSample(x, maxcell, "regular"))
-	dd <- dist(d, distmetric)
-	hc <- hclust(dd, clustmethod)
+	dd <- stats::dist(d, distmetric)
+	hc <- stats::hclust(dd, clustmethod)
 	th <- sort(hc$height, TRUE)[ngroups]
-	cls <- cutree(hc, h = th)
+	cls <- stats::cutree(hc, h = th)
 	hc <- cut(stats::as.dendrogram(hc), h=th)$upper
 	d <- aggregate(d, list(cls=cls), agfun)
 	cls <- d$cls 
