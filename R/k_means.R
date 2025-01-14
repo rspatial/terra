@@ -48,7 +48,7 @@ h_clust <- function(x, ngroups, dist_metric="euclidean", clust_method="complete"
 	stopifnot(maxcell > 0)
 	stopifnot(ngroups > 0)
 	stopifnot(ngroups < maxcell)
-	d <- na.omit(spatSample(x, maxcell, "regular")
+	d <- na.omit(spatSample(x, maxcell, "regular"))
 	dd <- dist(d, distmetric)
 	hc <- hclust(dd, clustmethod)
 	th <- sort(hc$height, TRUE)[ngroups]
