@@ -264,8 +264,19 @@ setMethod("bestMatch", signature(x="SpatRaster", y="SpatVector"),
 	}
 )
 
+match_abs <- function(x, y, ...) {
+	d <- colMeans(abs(y - x), ...)
+	which.min(d)[1]
+}
+
+match_sqr <- function(x, y, ...) {
+	d <- colMeans((y - x)^2, ...)
+	which.min(d)[1]
+}
+
+
 setMethod("bestMatch", signature(x="SpatRaster", y="data.frame"),
-	function(x, y, labels=NULL, filename="", ...) {
+	function(x, y, labels=NULL, fun="squared", filename="", ...) {
 		
 		if (!(all(names(y) %in% names(x)) && (all(names(x) %in% names(y))))) {
 			error("bestMatch", "names of x and y must match")
@@ -276,11 +287,19 @@ setMethod("bestMatch", signature(x="SpatRaster", y="data.frame"),
 			error("bestMatch", "all values in y must be numeric")
 		}
 		y <- as.matrix(y)
-		d <- list()
-		for (i in 1:nrow(y)) {
-		  d[[i]] <- sum((x - y[i,])^2)
-		}	
-		out <- which.min(rast(d))
+		
+		if (inherits(fun, "character")) {
+			fun <- match.arg(tolower(fun), c("abs", "squared"))
+			if (fun == "abs") {
+				f <- match_abs
+			} else {
+				f <- match_sqr
+			}	
+			out <- app(x, f, y=t(y), ...)
+		} else {
+			out <- app(x, fun, y=t(y), ...)
+		}
+
 		if (!is.null(labels)) {
 			levels(out) <- data.frame(ID=1:nrow(y), label=labels)
 		}

@@ -7,21 +7,24 @@
 \title{bestMatch}
 
 \description{
-Determine for each grid cell which reference it is most similar to. A reference consists of a SpatVector with reference locations, or a data.frame in which each column matches a layer name in the SpatRaster.
+Determine for each grid cell which reference it is most similar to. A reference consists of a SpatVector with reference locations, or a data.frame or matrix in which each column matches a layer name in the SpatRaster.
 
-Similarity is computed with the sum of squared differences between the cell and the reference. It may be important to first scale the input. 
+Similarity is computed with the mean absolute or the mean squared differences between the cell and the reference, or with an alternative function you provide. It may be important to first scale the input. 
 }
 
 \usage{
-\S4method{bestMatch}{SpatRaster,SpatVector}(x, y, labels="", filename="", ...)
+\S4method{bestMatch}{SpatRaster,SpatVector}(x, y, labels="", fun="squared", filename="", ...)
 
-\S4method{bestMatch}{SpatRaster,data.frame}(x, y, labels="", filename="", ...)
+\S4method{bestMatch}{SpatRaster,data.frame}(x, y, labels="", fun="squared", filename="", ...)
+
+\S4method{bestMatch}{SpatRaster,matrix}(x, y, labels="", fun="squared", filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{y}{SpatVector or data.frame}
+  \item{y}{SpatVector, data.frame or matrix}
   \item{labels}{character. labels that correspond to each class (row in \code{y}}
+  \item{fun}{character. One of "abs" for the mean absolute difference, or "squared" for the mean squared difference. Or a function like terra:::match_sqr}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
