@@ -246,23 +246,6 @@ setMethod("direction", signature(x="SpatRaster"),
 
 
 
-setMethod("bestMatch", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, labels=NULL, filename="", ...) {
-		e <- as.matrix(extract(x, y, fun="mean", na.rm=TRUE, ID=FALSE))
-		d <- list()
-		for (i in 1:nrow(e)) {
-		  d[[i]] <- sum((x - e[i,])^2)
-		}	
-		out <- which.min(rast(d))
-		if (!is.null(labels)) {
-			levels(out) <- data.frame(ID=1:nrow(y), label=labels)
-		}
-		if (filename!="") {
-			out <- writeRaster(out, filename, ...)
-		}
-		out
-	}
-)
 
 match_abs <- function(x, y, ...) {
 	d <- colMeans(abs(y - x), ...)
@@ -275,18 +258,13 @@ match_sqr <- function(x, y, ...) {
 }
 
 
-setMethod("bestMatch", signature(x="SpatRaster", y="data.frame"),
-	function(x, y, labels=NULL, fun="squared", filename="", ...) {
+
+setMethod("bestMatch", signature(x="SpatRaster", y="matrix"),
+	function(x, y, labels=NULL, fun="squared", ..., filename="", wopt=list(...)) {
 		
-		if (!(all(names(y) %in% names(x)) && (all(names(x) %in% names(y))))) {
+		if (!(all(colnames(y) %in% names(x)) && (all(names(x) %in% colnames(y))))) {
 			error("bestMatch", "names of x and y must match")
 		}
-		y <- y[, names(x)]
-		i <- unique(sapply(y, class))
-		if (any(i != "numeric")) {
-			error("bestMatch", "all values in y must be numeric")
-		}
-		y <- as.matrix(y)
 		
 		if (inherits(fun, "character")) {
 			fun <- match.arg(tolower(fun), c("abs", "squared"))
@@ -304,8 +282,34 @@ setMethod("bestMatch", signature(x="SpatRaster", y="data.frame"),
 			levels(out) <- data.frame(ID=1:nrow(y), label=labels)
 		}
 		if (filename!="") {
-			out <- writeRaster(out, filename, ...)
+			out <- writeRaster(out, filename, wopt=wopt)
 		}
 		out
+	}
+)
+
+
+setMethod("bestMatch", signature(x="SpatRaster", y="SpatVector"),
+	function(x, y, labels=NULL, fun="squared", filename="", ...) {
+		y <- as.matrix(extract(x, y, fun="mean", na.rm=TRUE, ID=FALSE))
+		bestMatch(x, y, labels=labels, fun=fun, filename=filename, ...)
+	}
+)
+
+setMethod("bestMatch", signature(x="SpatRaster", y="data.frame"),
+	function(x, y, labels=NULL, fun="squared", filename="", ...) {
+		
+		if (!(all(names(y) %in% names(x)) && (all(names(x) %in% names(y))))) {
+			error("bestMatch", "names of x and y must match")
+		}
+#		y <- y[, names(x), drop=FALSE]
+		i <- unique(sapply(y, class))
+		if (any(i != "numeric")) {
+			error("bestMatch", "all values in y must be numeric")
+		}
+
+		y <- as.matrix(y)
+
+		bestMatch(x, y, labels=labels, fun=fun, filename=filename, ...)
 	}
 )

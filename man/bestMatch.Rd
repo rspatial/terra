@@ -13,20 +13,21 @@ Similarity is computed with the mean absolute or the mean squared differences be
 }
 
 \usage{
-\S4method{bestMatch}{SpatRaster,SpatVector}(x, y, labels="", fun="squared", filename="", ...)
+\S4method{bestMatch}{SpatRaster,SpatVector}(x, y, labels="", fun="squared", ..., filename="", wopt=list())
 
-\S4method{bestMatch}{SpatRaster,data.frame}(x, y, labels="", fun="squared", filename="", ...)
+\S4method{bestMatch}{SpatRaster,data.frame}(x, y, labels="", fun="squared", ..., filename="", wopt=list())
 
-\S4method{bestMatch}{SpatRaster,matrix}(x, y, labels="", fun="squared", filename="", ...)
+\S4method{bestMatch}{SpatRaster,matrix}(x, y, labels="", fun="squared", ..., filename="", wopt=list())
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{y}{SpatVector, data.frame or matrix}
   \item{labels}{character. labels that correspond to each class (row in \code{y}}
-  \item{fun}{character. One of "abs" for the mean absolute difference, or "squared" for the mean squared difference. Or a function like terra:::match_sqr}
+  \item{fun}{character. One of "abs" for the mean absolute difference, or "squared" for the mean squared difference. Or a true function like terra:::match_sqr}
+  \item{...}{additional arguments passed to \code{fun}. For the built-in functions this can be \code{na.rm=TRUE}}
   \item{filename}{character. Output filename}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{

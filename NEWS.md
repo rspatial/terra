@@ -1,4 +1,17 @@
+# version 1.8-11
+
+## bug fixes
+
+## enhancements
+
+- `bestMatch` now has argument "fun" to allow the use of different distance measures, and a <matrix> method
+
+## new 
+
+
 # version 1.8-10
+
+Released 2025-01-13
 
 ## bug fixes
 
