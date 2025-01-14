@@ -260,7 +260,7 @@ match_sqr <- function(x, y, ...) {
 
 
 setMethod("bestMatch", signature(x="SpatRaster", y="matrix"),
-	function(x, y, labels=NULL, fun="squared", ..., filename="", wopt=list(...)) {
+	function(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=overwrite, wopt=list()) {
 		
 		if (!(all(colnames(y) %in% names(x)) && (all(names(x) %in% colnames(y))))) {
 			error("bestMatch", "names of x and y must match")
@@ -290,14 +290,14 @@ setMethod("bestMatch", signature(x="SpatRaster", y="matrix"),
 
 
 setMethod("bestMatch", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, labels=NULL, fun="squared", filename="", ...) {
-		y <- as.matrix(extract(x, y, fun="mean", na.rm=TRUE, ID=FALSE))
+	function(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=overwrite, wopt=list()) {
+		y <- as.matrix(extract(x, y, fun="mean", ..., na.rm=TRUE, ID=FALSE))
 		bestMatch(x, y, labels=labels, fun=fun, filename=filename, ...)
 	}
 )
 
 setMethod("bestMatch", signature(x="SpatRaster", y="data.frame"),
-	function(x, y, labels=NULL, fun="squared", filename="", ...) {
+	function(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=FALSE, wopt=list()) {
 		
 		if (!(all(names(y) %in% names(x)) && (all(names(x) %in% names(y))))) {
 			error("bestMatch", "names of x and y must match")
@@ -307,9 +307,7 @@ setMethod("bestMatch", signature(x="SpatRaster", y="data.frame"),
 		if (any(i != "numeric")) {
 			error("bestMatch", "all values in y must be numeric")
 		}
-
 		y <- as.matrix(y)
-
 		bestMatch(x, y, labels=labels, fun=fun, filename=filename, ...)
 	}
 )
