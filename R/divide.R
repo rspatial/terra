@@ -83,26 +83,26 @@ setMethod("divide", signature(x="SpatRaster"),
 			if (length(n) > 1) {
 				for (i in 1:length(n)) {
 					if (n[i] == 1) {
-						out <- unlist(lapply(out, \(i) splitNS(i)))
+						out <- unlist(lapply(out, function(i) splitNS(i)))
 					} else if (n[i] == -1) {
-						out <- unlist(lapply(out, \(i) splitWE(i)))
+						out <- unlist(lapply(out, function(i) splitWE(i)))
 					} else if (n[i] == 2) {
-						out <- unlist(lapply(out, \(i) splitNS3(i)))
+						out <- unlist(lapply(out, function(i) splitNS3(i)))
 					} else { # if (n[i] == -2) {
-						out <- unlist(lapply(out, \(i) splitWE3(i)))
+						out <- unlist(lapply(out, function(i) splitWE3(i)))
 					}
 				}
 			} else {
 				for (i in 1:n) {
 					if (north) {
-						out <- unlist(lapply(out, \(s) splitNS(s)))
+						out <- unlist(lapply(out, function(s) splitNS(s)))
 					} else {
-						out <- unlist(lapply(out, \(s) splitWE(s)))
+						out <- unlist(lapply(out, function(s) splitWE(s)))
 					}
 					north <- !north
 				}  
 			}
-			out <- lapply(out, \(i) as.polygons(ext(i))) |> vect()
+			out <- lapply(out, function(i) as.polygons(ext(i))) |> vect()
 			crs(out) <- crs(out)
 		}
 		out$zones <- 1:nrow(out)
