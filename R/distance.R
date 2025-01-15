@@ -260,7 +260,7 @@ match_sqr <- function(x, y, ...) {
 
 
 setMethod("bestMatch", signature(x="SpatRaster", y="matrix"),
-	function(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=overwrite, wopt=list()) {
+	function(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=FALSE, wopt=list()) {
 		
 		if (!(all(colnames(y) %in% names(x)) && (all(names(x) %in% colnames(y))))) {
 			error("bestMatch", "names of x and y must match")
@@ -290,7 +290,7 @@ setMethod("bestMatch", signature(x="SpatRaster", y="matrix"),
 
 
 setMethod("bestMatch", signature(x="SpatRaster", y="SpatVector"),
-	function(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=overwrite, wopt=list()) {
+	function(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=FALSE, wopt=list()) {
 		y <- as.matrix(extract(x, y, fun="mean", ..., na.rm=TRUE, ID=FALSE))
 		bestMatch(x, y, labels=labels, fun=fun, filename=filename, ...)
 	}

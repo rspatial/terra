@@ -27,6 +27,7 @@ Similarity is computed with the mean absolute or the mean squared differences be
   \item{fun}{character. One of "abs" for the mean absolute difference, or "squared" for the mean squared difference. Or a true function like terra:::match_sqr}
   \item{...}{additional arguments passed to \code{fun}. For the built-in functions this can be \code{na.rm=TRUE}}
   \item{filename}{character. Output filename}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
