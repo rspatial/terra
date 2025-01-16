@@ -55,6 +55,8 @@ A \code{\link{SpatExtent}} object.
 }
 
 \examples{
+ext()
+
 r <- rast()
 e <- ext(r)
 as.vector(e)
