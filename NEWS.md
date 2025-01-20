@@ -2,6 +2,8 @@
 
 ## bug fixes
 
+- `readRDS` failed for rasters with timestep="seconds"
+
 ## enhancements
 
 - `bestMatch` now has argument "fun" to allow the use of different distance measures, and a <matrix> method
