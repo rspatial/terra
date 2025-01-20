@@ -51,7 +51,7 @@ a <- cellSize(r)
 r <- rast(ncols=90, nrows=45, ymin=-80, ymax=80)
 m <- project(r, "+proj=merc")
 
-bad <- init(m, prod(res(m)) / 1000000, names="naive")
+bad <- init(m, prod(res(m)) / 1000000, wopt=list(names="naive"))
 good <- cellSize(m, unit="km", names="corrected")
 plot(c(good, bad), nc=1, mar=c(2,2,1,6))
 }
