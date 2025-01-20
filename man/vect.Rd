@@ -24,7 +24,7 @@
 \description{
 Methods to create a SpatVector from a filename or other R object. 
 
-A filename can be for a shapefile or any spatial file format. 
+A filename can be for a Shapefile, GeoPackage, GeoJSON, Keyhole Markup Language (KML) or any other spatial vector file format. 
 
 You can use a data.frame to make a SpatVector of points; or a "geom" matrix to make a SpatVector of any supported geometry (see examples and \code{\link{geom}}). 
 
@@ -66,7 +66,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \item{keepgeom}{logical. If \code{TRUE} the geom variable(s) is (are) also included in the attributes}
 }
 
-\seealso{\code{\link{geom}}}
+\seealso{\code{\link{geom}}, \code{\link{vector_layers}}}
 
 
 \value{SpatVector}
