@@ -197,8 +197,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 			error("time<-", "length(value) != nlyr(x)")
 		}
 		if (tstep != "") {
-#			tstep = match.arg(as.character(tstep), c("seconds", "days", "months", "years", "yearmonths", "raw"))
-			tstep = match.arg(as.character(tstep), c("months", "years", "yearmonths", "raw"))
+			tstep = match.arg(as.character(tstep), c("seconds", "days", "months", "years", "yearmonths", "raw"))
 		}
 		## may not be necessary
 		if (tstep == "seconds") tstep = ""
@@ -210,8 +209,8 @@ setMethod("time<-", signature(x="SpatRaster"),
 			if (tstep == "") stept <- "days"
 		} else if (inherits(value, "POSIXt")) {
 			if (tstep == "") stept <- "seconds"
-			tzone <- attr(value, "tzone")
-			if (is.null(tzone)) tzone = ""
+			tzone <- attr(value, "tzone")[1]
+			if (is.null(tzone)) tzone = "UTC"
 		} else if (inherits(value, "yearmon")) {
 			value <- as.numeric(value)
 			year <- floor(value)
