@@ -163,7 +163,7 @@ writeSources <- function(x, fsource, ftarget, overwrite, ...) {
 }
 
 
-finalizeWrap <- function(x, r) {
+finalizeWrap <- function(x, r, mem) {
 
 	if (any(is.factor(x))) {
 		r@attributes$levels <- cats(x)
@@ -183,8 +183,32 @@ finalizeWrap <- function(x, r) {
 		r@attributes$units <- v
 	}
 	v <- depth(x)
-	if (!all(v ==0)) {
+	if (!all(v == 0)) {
 		r@attributes$depth <- v
+	}
+	
+	v <- varnames(x)
+	if (!all(v == "")) {
+		if (mem) {
+			v <- unique(v)
+			if (length(v) == 1) {
+				r@attributes$varnames <- v		
+			}
+		} else {
+			r@attributes$varnames <- v		
+		}
+	}
+
+	v <- longnames(x)
+	if (!all(v == "")) {
+		if (mem) {
+			v <- unique(v)
+			if (length(v) == 1) {
+				r@attributes$longnames <- v		
+			}
+		} else {
+			r@attributes$longnames <- v		
+		}
 	}
 	r
 }
@@ -227,7 +251,7 @@ setMethod("wrapCache", signature(x="SpatRaster"),
 			error("wrapCache", "both path and files are NULL")
 		}
 		r@attributes$sources <- xs
-		finalizeWrap(x, r)		
+		finalizeWrap(x, r, FALSE)		
 	}
 )
 
@@ -256,7 +280,8 @@ setMethod("wrap", signature(x="SpatRaster"),
 		can <- (!proxy) && x@pntr$canProcessInMemory(opt)
 
 		s <- sources(x)
-		if (can || (all(s == ""))) {
+		mem <- (can || all(s == ""))
+		if (mem) {
 			r@values <- values(x)
 		} else if (all(s != "")) {
 			xs <- sources(x, TRUE, TRUE)
@@ -270,8 +295,8 @@ setMethod("wrap", signature(x="SpatRaster"),
 			x <- writeRaster(x, fname)
 			r@attributes$filename <- fname
 		}
-		
-		finalizeWrap(x, r)		
+	
+		finalizeWrap(x, r, mem)
 	}
 )
 
@@ -331,7 +356,13 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 						if (!r@pntr$setColors(i-1, d)) messages("cols<-", r)
 					}
 				}
-			}			
+			}
+			if (!is.null(x@attributes$varnames)) {
+				varnames(r) <- x@attributes$varnames
+			}
+			if (!is.null(x@attributes$longnames)) {
+				longnames(r) <- x@attributes$longnames
+			}
 		}
 		r
 	}
