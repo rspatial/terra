@@ -617,14 +617,14 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 
 	bool scoffwarning = false;
 
-	if (driver == "GTiff") {
+	// if (driver == "GTiff") {
 		std::vector<std::string> m = getTags();
 		if (m.size() > 0) {
 			for (size_t i=0; i<m.size(); i+=2) {
 				poDS->SetMetadataItem(m[i].c_str(), m[i+1].c_str(), "USER_TAGS");
 			}
 		}
-	}
+	// }
 
 	std::vector<std::string> tstr, ustr;
 	bool wtime = false;
@@ -679,7 +679,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 		*/
 		poBand->SetDescription(nms[i].c_str());
 
-		if (driver == "GTiff") {
+		// if (driver == "GTiff") {
 			std::vector<std::string> m = getLyrTags({i});
 			if (m.size() > 0) {
 				for (size_t j=0; j<m.size(); j+=3) {
@@ -697,7 +697,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 			if (wunit) {
 				poBand->SetMetadataItem("UNIT", ustr[i].c_str());				
 			}
-		}
+		// }
 
 
 		if ((i==0) || (driver != "GTiff")) {

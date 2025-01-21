@@ -1028,7 +1028,7 @@ Rcpp::Rcout << "flipped\n";
 			}
 		}
 
-		if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
+		// if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
 			char **m = poBand->GetMetadata();
 			while (m != nullptr && *m != nullptr) {
 				bandmeta[i].push_back(*m++);
@@ -1050,7 +1050,7 @@ Rcpp::Rcout << "flipped\n";
 					}
 				}
 			}
-		}
+		// }
 
 		int success;
 	//	double naflag = poBand->GetNoDataValue(&success);
@@ -1297,7 +1297,7 @@ Rcpp::Rcout << "flipped\n";
 	s.hasValues = true;
 	setSource(s);
 
-	if ((!metadata.empty()) && ((gdrv=="netCDF") || (gdrv == "HDF5"))) {
+	if ((!metadata.empty())) {
 		std::vector<std::string> tagnames, tagvalues;
 //		std::string stag = s.source_name + "#TAG_";
 		std::string stag = s.source_name + "#";
