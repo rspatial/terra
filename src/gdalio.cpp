@@ -47,6 +47,7 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 //		{".jpg","JPEG"}, or JPEG2000?
 		{".png","PNG"},
 		{".gif","GIF"},
+		{".vrt","VRT"}		
 	};
 
     auto i = drivers.find(ext);
