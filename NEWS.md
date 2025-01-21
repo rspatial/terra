@@ -2,13 +2,16 @@
 
 ## bug fixes
 
-- `readRDS` failed for rasters with timestep="seconds"
+- `readRDS` failed for rasters with timestep="seconds" [#1711](https://github.com/rspatial/terra/issues/1711) by Pascal Oettli
 
 ## enhancements
 
 - `bestMatch` now has argument "fun" to allow the use of different distance measures, and a <matrix> method
+- `wrap` (and `writeRDS`) now capture varnames/longnames [#1719](https://github.com/rspatial/terra/issues/1719) by Andrew Gene Brown
+
 
 ## new 
+
 
 
 # version 1.8-10

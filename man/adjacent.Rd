@@ -33,7 +33,7 @@ When using global lon/lat rasters, adjacent cells at the other side of the date-
 }
 
 
-\seealso{\code{\link{relate}}, \code{\link{nearby}}}, \code{\link{nearest}}}
+\seealso{\code{\link{relate}, \link{nearby}, \link{nearest}}}
 
 \value{
 matrix
