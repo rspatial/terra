@@ -287,6 +287,9 @@ bool checkFormatRequirements(const std::string &driver, std::string &filename, s
 			msg = "SAGA filenames must end on '.sdat'";
 			return false;
 		}
+	} else if (driver == "VRT") {
+		msg = "Cannot directly write to VRT (see '?vrt')";
+		return false;
 	}
 
 	return true;
