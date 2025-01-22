@@ -235,7 +235,7 @@ setMethod("divide", signature(x="SpatVector"),
 			if (n == 1) return(deepcopy(x))
 			out <- lapply(1:nrow(x), function(i) divide_polygon(x[i], n, w, alpha, ...))
 		}
-		return()
+		do.call(rbind, out)
 	}
 )
 
