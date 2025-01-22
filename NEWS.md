@@ -3,12 +3,14 @@
 ## bug fixes
 
 - `readRDS` failed for rasters with timestep="seconds" [#1711](https://github.com/rspatial/terra/issues/1711) by Pascal Oettli
+- `divide<SpatVector>` always returned NULL [#1724](https://github.com/rspatial/terra/issues/1724) by Márcia Barbosa
+
 
 ## enhancements
 
 - `bestMatch` now has argument "fun" to allow the use of different distance measures, and a <matrix> method
-- `wrap` (and `writeRDS`) now capture varnames/longnames [#1719](https://github.com/rspatial/terra/issues/1719) by Andrew Gene Brown
-
+- `wrap` (and `writeRDS`) now captures varnames/longnames [#1719](https://github.com/rspatial/terra/issues/1719) by Andrew Gene Brown
+- improved raster metadata writing [#1714](https://github.com/rspatial/terra/pull/1714) by Andrew Gene Brown
 
 ## new 
 
