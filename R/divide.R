@@ -102,7 +102,7 @@ setMethod("divide", signature(x="SpatRaster"),
 					north <- !north
 				}  
 			}
-			out <- lapply(out, function(i) as.polygons(ext(i))) |> vect()
+			out <- vect(lapply(out, function(i) as.polygons(ext(i))))
 			crs(out) <- crs(out)
 		}
 		out$zones <- 1:nrow(out)
