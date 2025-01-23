@@ -62,8 +62,8 @@ mem_info <- function(x, n=1, print=TRUE) {
 		cat(paste("\nnr chunks       :", ceiling(nrow(x)/v[4])))
 		cat("\n------------------------\n")
 	}
-	names(v) <- c("needed", "available", "memfrac", "chunk_rows")
-	invisible(v[1:4])
+	names(v) <- c("needed", "available", "memfrac", "chunk_rows", "fits_mem")
+	invisible(v)
 }
 
 
