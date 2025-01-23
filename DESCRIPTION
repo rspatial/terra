@@ -18,7 +18,8 @@ BugReports: https://github.com/rspatial/terra/issues/
 LazyLoad: yes
 Authors@R: c(
 	person("Robert J.", "Hijmans", role=c("cre", "aut"),  
-			email="r.hijmans@gmail.com", comment=c(ORCID="0000-0001-5872-2872")),
+			email="r.hijmans@gmail.com", comment=c(ORCID="0000-0001-5872-2872")),			
+    person("Márcia", "Barbosa", role="ctb"),
     person("Roger", "Bivand", role="ctb", comment=c(ORCID="0000-0003-2392-6140")),
     person("Andrew", "Brown", role="ctb"),
     person("Michael", "Chirico", role="ctb"),

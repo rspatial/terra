@@ -13,7 +13,7 @@
 }
 
 \usage{
-mem_info(x, n=1)
+mem_info(x, n=1, print=TRUE)
 
 free_RAM()
 }
@@ -21,6 +21,7 @@ free_RAM()
 \arguments{
   \item{x}{SpatRaster}
   \item{n}{positive integer. The number of copies of \code{x} that are needed}
+  \item{print}{logical. print memory info?}
 }
 
 
