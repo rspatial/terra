@@ -3543,7 +3543,14 @@ SpatRaster SpatRaster::cropmask(SpatVector &v, std::string snap, bool touches, b
 		return out;
 	}
 	std::vector<bool> w = hasWindow();
-	if (extend || vany(w, true)) {
+	bool haswin = false;
+	for (size_t i=0; i<w.size(); i++) {
+		if (w[i]) {
+			haswin = true;
+			break;
+		}
+	}
+	if (extend || haswin) {
 		SpatOptions copt(opt);
 		out = crop(v.extent, snap, extend, copt);
 		if (out.hasError()) return out;

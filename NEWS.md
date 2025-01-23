@@ -102,6 +102,7 @@ Released 2024-12-12
 - `vect<SpatGraticule>` method suggested in relation to [tidyterra #155](https://github.com/dieghernan/tidyterra/issues/155) by Diego Hernangómez
 - `toMemory<SpatRaster>` and `<SpatRasterDataset>` methods [#1660](https://github.com/rspatial/terra/pull/1660) by Derek Friend
 
+
 # version 1.7-83
 
 Released 2024-10-14
