@@ -43,6 +43,8 @@ std::string geomType(OGRLayer *poLayer) {
 }
 
 
+#include "Rcpp.h"
+
 SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 	SpatDataFrame df;
 
@@ -55,6 +57,7 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 	df.resize_cols(nfields);
 	unsigned dtype;
 	long longNA = NA<long>::value;
+	SpatTime_t timeNA = NA<SpatTime_t>::value;
 
 	for (size_t i = 0; i < nfields; i++ ) {
 		poFieldDefn = poFDefn->GetFieldDefn(i);
@@ -69,6 +72,8 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 			} else {
 				dtype = 1;
 			}
+		} else if ((ft == OFTDate) || (ft == OFTDateTime)) {
+			dtype = 4;
 		} else {
 			dtype = 2;
 		}
@@ -111,6 +116,34 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 						df.dv[j].push_back(poFeature->GetFieldAsInteger64(i));
 					} else {
 						df.dv[j].push_back(NAN);
+					}
+					break;
+				case OFTDate:  
+					if (i == 0) {
+						df.tv[j].step = "days";
+					}
+					if (not_null) {
+						int pnYear, pnMonth, pnDay, pnHour, pnMinute, pnTZFlag;
+						float pfSecond;
+						poFeature->GetFieldAsDateTime(i, &pnYear, &pnMonth, &pnDay, &pnHour, &pnMinute, &pfSecond, &pnTZFlag);
+						SpatTime_t d = get_time(pnYear, pnMonth, pnDay, 0, 0, 0);
+						df.tv[j].x.push_back(d);
+					} else {
+						df.tv[j].x.push_back(timeNA);
+					}
+					break;
+				case OFTDateTime:
+					if (i == 0) {
+						df.tv[j].step = "seconds";
+					}
+					if (not_null) {
+						int pnYear, pnMonth, pnDay, pnHour, pnMinute, pnTZFlag;
+						float pfSecond;
+						poFeature->GetFieldAsDateTime(i, &pnYear, &pnMonth, &pnDay, &pnHour, &pnMinute, &pfSecond, &pnTZFlag);
+						SpatTime_t d = get_time(pnYear, pnMonth, pnDay, pnHour, pnMinute, (int)pfSecond);
+						df.tv[j].x.push_back(d);
+					} else {
+						df.tv[j].x.push_back(timeNA);
 					}
 					break;
 	//          case OFTString:

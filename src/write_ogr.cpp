@@ -196,6 +196,13 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		} else if (tps[i] == "bool") {
 			otype = OFTInteger;
 			eSubType = OFSTBoolean;
+		} else if (tps[i] == "time") {
+			SpatTime_v tm = df.getT(i);
+			if (tm.step == "days") {
+				otype = OFTDate;				
+			} else {
+				otype = OFTDateTime;
+			}
 		} else {
 			otype = OFTString;
 		}
@@ -237,6 +244,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	}
 	size_t gcntr = 0;
 	long longNA = NA<long>::value;
+	SpatTime_t timeNA = NA<SpatTime_t>::value;
 
 	for (size_t i=0; i<ngeoms; i++) {
 
@@ -262,8 +270,11 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				}
 			} else if (tps[j] == "time") {
 				SpatTime_t tval = df.getTvalue(i, j);
-				if (tval != longNA) {
-					poFeature->SetField(j, (GIntBig)tval);
+				if (tval != timeNA) {
+					std::vector<int> dt = get_date(tval);
+					poFeature->SetField(j, dt[0], dt[1], dt[2], dt[3], dt[4], dt[5], 100);
+				} else {
+					poFeature->SetFieldNull(j);					
 				}
 			} else if (tps[j] == "factor") {
 				SpatFactor f = df.getFvalue(i, j);
