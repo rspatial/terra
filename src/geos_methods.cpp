@@ -2732,7 +2732,8 @@ SpatVector SpatVector::erase_agg(SpatVector v) {
 		}
 	}
 	if (!result.empty()) {
-		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+		std::vector<long> ids;
+		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids, true, false);
 		out = coll.get(0);
 		out.srs = srs;
 		out.df = df.subset_rows(rids);
