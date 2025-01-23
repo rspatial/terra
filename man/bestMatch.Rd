@@ -14,11 +14,14 @@ Similarity is computed with the mean absolute or the mean squared differences be
 }
 
 \usage{
-\S4method{bestMatch}{SpatRaster,SpatVector}(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{bestMatch}{SpatRaster,SpatVector}(x, y, labels=NULL, fun="squared", ..., 
+		filename="", overwrite=FALSE, wopt=list())
 
-\S4method{bestMatch}{SpatRaster,data.frame}(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{bestMatch}{SpatRaster,data.frame}(x, y, labels=NULL, fun="squared", ..., 
+		filename="", overwrite=FALSE, wopt=list())
 
-\S4method{bestMatch}{SpatRaster,matrix}(x, y, labels=NULL, fun="squared", ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{bestMatch}{SpatRaster,matrix}(x, y, labels=NULL, fun="squared", ..., 
+		filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{

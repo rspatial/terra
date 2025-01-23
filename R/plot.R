@@ -191,7 +191,7 @@ halo <- function(x, y=NULL, labels, col="black", hc="white", hw=0.1, ... ) {
 
 
 setMethod("text", signature(x="SpatRaster"),
-	function(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, cex=1, overlap=TRUE, ...) {
+	function(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, ...) {
 		if (missing(labels)) {
 			labels <- 1
 		}
@@ -222,9 +222,9 @@ setMethod("text", signature(x="SpatRaster"),
 #			xy <- getLabelXY(xy, labels, cex)
 #		}
 		if (halo && (isTRUE(hw > 0))) {
-			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, cex=cex, ...)
+			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, ...)
 		} else {
-			text(xy[,1], xy[,2], labels, cex=cex, ...)
+			text(xy[,1], xy[,2], labels, ...)
 		}
 	}
 )
