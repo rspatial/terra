@@ -3537,21 +3537,29 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, bool expand, SpatOpt
 
 
 SpatRaster SpatRaster::cropmask(SpatVector &v, std::string snap, bool touches, bool extend, SpatOptions &opt) {
+	SpatRaster out;
 	if (v.nrow() == 0) {
-		SpatRaster out;
 		out.setError("cannot crop a SpatRaster with an empty SpatVector");
 		return out;
 	}
+	std::vector<bool> w = hasWindow();
+	if (extend || vany(w, true)) {
+		SpatOptions copt(opt);
+		out = crop(v.extent, snap, extend, copt);
+		if (out.hasError()) return out;
 
-	SpatOptions copt(opt);
-	SpatRaster out = crop(v.extent, snap, extend, copt);
-	if (out.hasError()) return out;
+//		out = out.mask(v, false, NAN, touches, opt);	
 
-	SpatRaster msk = out.geometry(1, false, false, false, false);
-	msk = out.rasterize(v, "", {1}, 0, touches, "", false, false, false, copt);
-	if (msk.hasError()) return msk;
-	
-	return out.mask(msk, false, 0, NAN, opt);	
+		SpatRaster msk = out.geometry(1, false, false, false, false);
+		msk = out.rasterize(v, "", {1}, 0, touches, "", false, false, false, copt);
+		if (msk.hasError()) return msk;
+		out = out.mask(msk, false, 0, NAN, opt);	
+	} else {
+		setWindow(align(v.extent, snap));
+		out = mask(v, false, NAN, touches, opt);	
+		removeWindow();		
+	}
+	return out;
 }
 
 
