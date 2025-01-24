@@ -915,7 +915,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		//ymin = roundn(ymin, 9);
 
 		if (adfGeoTransform[5] > 0) {
-Rcpp::Rcout << "flipped\n";
+
 			s.flipped = true;
 			std::swap(ymin, ymax);
 		}
