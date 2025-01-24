@@ -1,4 +1,4 @@
-# version 1.8-13
+# version 1.8-14
 
 ## bug fixes
 
@@ -12,7 +12,7 @@
 - `wrap` (and `writeRDS`) now captures varnames/longnames [#1719](https://github.com/rspatial/terra/issues/1719) by Andrew Gene Brown
 - improved raster metadata writing [#1714](https://github.com/rspatial/terra/pull/1714) by Andrew Gene Brown
 - `vect` and `writeVector` now properly read and write date and datetime data. [#1718](https://github.com/rspatial/terra/issues/1718) by Andrew Gene Brown
-
+- improved estimate of available memory on linux systems [#1506](https://github.com/rspatial/terra/issues/1506) by Cedric Rossi
 
 # version 1.8-10
 
