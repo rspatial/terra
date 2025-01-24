@@ -170,7 +170,7 @@ strip_polygon <- function(x, vertical, horizontal) {
 		})
 		xbnds <- matrix(c(ex$xmin, rep(edges,rep(2,length(edges))), ex$xmax), ncol=2, byrow=TRUE)
 		xbnds <- cbind(xbnds, ex$ymin, ex$ymax)
-		xbnds <- do.call(rbind, apply(xbnds, 1, \(i) as.polygons(ext(i))))
+		xbnds <- do.call(rbind, apply(xbnds, 1, function(i) as.polygons(ext(i))))
 		xbnds$vid <- 1:nrow(xbnds)
 	}
 	if (!is.null(horizontal)) {
@@ -183,7 +183,7 @@ strip_polygon <- function(x, vertical, horizontal) {
 		})
 		ybnds <- matrix(c(ex$ymin, rep(edges,rep(2,length(edges))), ex$ymax), ncol=2, byrow=TRUE)
 		ybnds <- cbind(ex$xmin, ex$xmax, ybnds)
-		ybnds <- do.call(rbind, apply(ybnds, 1, \(i) as.polygons(ext(i))))
+		ybnds <- do.call(rbind, apply(ybnds, 1, function(i) as.polygons(ext(i))))
 		ybnds$hid <- 1:nrow(ybnds)
 
 		if (!is.null(vertical)) {
