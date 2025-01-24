@@ -21,6 +21,10 @@
 #include "sys/types.h"
 #include "sys/sysinfo.h"
 #include <unistd.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 #elif __APPLE__
 #include <mach/vm_statistics.h>
 #include <mach/mach_types.h>
@@ -40,9 +44,35 @@ double availableRAM() {
 		GlobalMemoryStatusEx(&statex);
 		ram = statex.ullAvailPhys;
 	#elif __linux__
-		struct sysinfo memInfo;
-		sysinfo (&memInfo);
-		ram = memInfo.freeram;
+		unsigned long memAvailable = 0;
+		std::ifstream meminfo("/proc/meminfo");
+		std::string line;
+		while (std::getline(meminfo, line)) {
+			std::istringstream iss(line);
+			std::string key;
+			if (std::getline(iss, key, ':')) {
+				if (key == "MemAvailable") {
+					std::string value_str;
+					if (std::getline(iss >> std::ws, value_str)) {
+						std::stringstream value_stream(value_str);
+						unsigned long mem_available_kb;
+						std::string units;
+						if (value_stream >> mem_available_kb >> units) {
+							memAvailable = mem_available_kb;
+						}
+					}
+					break;
+				}
+			}
+
+		}
+		if (memAvailable == 0) {
+			struct sysinfo memInfo;
+			sysinfo (&memInfo);
+			ram = memInfo.freeram;
+		} else {
+			ram = memAvailable * 1024;
+		}
 	#elif __APPLE__
 
 		vm_size_t page_size;
