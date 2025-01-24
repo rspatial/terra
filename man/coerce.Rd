@@ -9,6 +9,7 @@
 \alias{as.vector,SpatRaster-method}
 \alias{as.matrix,SpatRaster-method}
 \alias{as.array,SpatRaster-method}
+\alias{as.array,SpatRasterDataset-method}
 
 \alias{as.vector,SpatExtent-method}
 \alias{as.matrix,SpatExtent-method}
@@ -26,6 +27,8 @@ Coercion of a SpatRaster to a vector, matrix or array. Or coerce a SpatExtent to
 \S4method{as.matrix}{SpatRaster}(x, wide=FALSE, ...)
 
 \S4method{as.array}{SpatRaster}(x)
+
+\S4method{as.array}{SpatRasterDataset}(x)
 
 \S4method{as.vector}{SpatExtent}(x, mode='any')
 

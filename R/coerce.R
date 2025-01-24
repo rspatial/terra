@@ -502,6 +502,29 @@ setMethod("as.array", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("as.array", signature(x="SpatRasterDataset"),
+	function(x) {
+		n <- length(x)
+		if (n < 2) return(as.array(x[1]))
+		
+		dm <- sapply(x, dim)
+		udm <- apply(dm, 1, function(i)length(unique))
+		if (!all(udm) == 1) {
+			error("as.array", "cannot make an array from rasters with different dimensions")
+		}
+		
+		a <- array(NA, c(dm[,1], n))
+		dimnames(a) <- list(NULL, NULL, NULL, names(x))
+
+		for (i in 1:n) {
+			a[,,,i] <- as.array(x[i])
+		}
+		a
+	}
+)
+
+
+
 
 # to sf from SpatVector
 # available in sf

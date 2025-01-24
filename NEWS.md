@@ -1,4 +1,16 @@
+# version 1.8-16
+
+## bug fixes
+
+## enhancements
+
+## new
+
+- `as.array<SpatRasterDataset>` method
+
 # version 1.8-15
+
+Released 2025-01-24
 
 ## bug fixes
 
