@@ -40,7 +40,7 @@ setMethod("buffer", signature(x="SpatRaster"),
 #)
 
 setMethod("distance", signature(x="SpatRaster", y="missing"),
-	function(x, y, target=NA, exclude=NULL, unit="m", method="haversine", filename="", ...) {
+	function(x, y, target=NA, exclude=NULL, unit="m", method="haversine", values=FALSE, filename="", ...) {
 
 		if (!(method %in% c("geo", "haversine", "cosine"))) {
 			error("distance", "not a valid method. Should be one of: 'geo', 'haversine', 'cosine'")
@@ -59,7 +59,7 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 		} else {
 			exclude <- NA
 		}
-		x@pntr <- x@pntr$rastDistance(target, exclude, keepNA, tolower(unit), TRUE, method, opt)
+		x@pntr <- x@pntr$rastDistance(target, exclude, keepNA, tolower(unit), TRUE, method, isTRUE(values), opt)	
 		messages(x, "distance")
 	}
 )
