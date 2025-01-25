@@ -143,7 +143,7 @@ bool smooth_operator(std::string &oper, bool &logical, bool &reverse, bool &fals
 }
 
 
-
+//#include <execution>
 
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, bool falseNA, SpatOptions &opt) {
 
@@ -201,11 +201,14 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, bool falseNA, SpatO
 		return out;
 	}
 
+//	auto policy = std::execution::par;
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a, b;
 		readBlock(a, out.bs, i);
 		x.readBlock(b, out.bs, i);
 		recycle(a,b);
+		
 		if (oper == "+") {
 			std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::plus<double>());
 		} else if (oper == "-") {
@@ -309,8 +312,10 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, bool fals
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
 		if (std::isnan(x)) {
-			for(double& d : a)  d = NAN;
+			std::fill(a.begin(), a.end(), NAN);
+			//for (double& d : a)  d = NAN;
 		} else if (oper == "+") {
+//			std::for_each(std::execution::par, a.begin(), a.end(), [&](double& d) {	d += x;	});
 			for (double& d : a)  d += x;
 		} else if (oper == "-") {
 			if (reverse) {

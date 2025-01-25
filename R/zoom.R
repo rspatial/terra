@@ -48,7 +48,7 @@ setMethod("zoom", signature(x="SpatVector"),
 			grDevices::dev.new()
 		}
 		x <- crop(x, e)
-		plot(x, ...)
+		plot(x, ext=e, ...)
 		return(invisible(e))
 	}
 )
