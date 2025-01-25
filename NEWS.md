@@ -7,6 +7,7 @@
 ## new
 
 - `as.array<SpatRasterDataset>` method
+- `distance<SpatRaster,missing>` not has argument "values". If TRUE, the values of the nearest non-target cell is returned instead of the distance [#1243](https://github.com/rspatial/terra/issues/1243) by Simon Dedman
 
 # version 1.8-15
 
