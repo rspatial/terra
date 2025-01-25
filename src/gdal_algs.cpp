@@ -1816,6 +1816,10 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 	SpatRaster x;
 	bool mask = false;
 	std::vector<double> mvals;
+	if ((!buffer) && (maxdist > 0)) {
+		papszOptions = CSLSetNameValue(papszOptions, "MAXDIST", doubleToAlmostChar(maxdist).c_str());
+	}
+
 	if (buffer) {
 		if (remove_zero) {
 			x = isnotnan(true, ops);
@@ -1833,6 +1837,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 	} else {
 		//option for keepNA does not work, perhaps because of int conversion
 		//papszOptions = CSLSetNameValue(papszOptions, "USE_INPUT_NODATA", "YES");
+		
 		if (std::isnan(exclude)) {
 			if (keepNA) {
 				x = replaceValues({target, NAN}, {0, 0}, 1, true, 1, false, ops);

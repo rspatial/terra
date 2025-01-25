@@ -655,7 +655,7 @@ class SpatRaster {
 		SpatRaster proximity(double target, double exclude, bool keepNA, std::string unit, bool buffer, double maxdist, bool remove_zero, SpatOptions &opt);
 		SpatRaster fillNA(double missing, double maxdist, int niter, SpatOptions &opt);
 		
-		SpatRaster distance(double target, double exclude, bool keepNA, std::string unit, bool remove_zero, std::string method, bool values, SpatOptions &opt);
+		SpatRaster distance(double target, double exclude, bool keepNA, std::string unit, bool remove_zero, std::string method, bool values, double threshold, SpatOptions &opt);
 		SpatRaster nearest(double target, double exclude, bool keepNA, std::string unit, bool remove_zero, std::string method, SpatOptions &opt);
 
 //		SpatRaster distance_spatvector(SpatVector p, std::string unit, const std::string& method, SpatOptions &opt);
@@ -665,8 +665,8 @@ class SpatRaster {
 		SpatRaster direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude, const std::string& method, SpatOptions &opt);
 		
 		
-		SpatRaster distance_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt);
-		SpatRaster distance_crds_vals(std::vector<double>& x, std::vector<double>& y, const std::vector<double>& v, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt);
+		SpatRaster distance_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit,double threshold, SpatOptions &opt);
+		SpatRaster distance_crds_vals(std::vector<double>& x, std::vector<double>& y, const std::vector<double>& v, const std::string& method, bool skip, bool setNA, std::string unit, double threshold, SpatOptions &opt);
 
 		SpatRaster dn_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt);
 

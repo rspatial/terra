@@ -223,7 +223,7 @@ void dist_only_vals(std::vector<double> &d, std::vector<double> &dv, const std::
 }
 
 
-SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<double>& y, const std::vector<double>& v, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt) {
+SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<double>& y, const std::vector<double>& v, const std::string& method, bool skip, bool setNA, std::string unit, double maxdist, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (x.empty()) {
@@ -236,6 +236,12 @@ SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<do
 	permute(y, pm);
 
 	bool lonlat = is_lonlat(); 
+	double m=1;
+	if (!source[0].srs.m_dist(m, lonlat, unit)) {
+		out.setError("invalid unit");
+		return(out);
+	}
+
 
 	unsigned nc = ncol();
 	if (nrow() > 1000) {
@@ -286,6 +292,17 @@ SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<do
 			std::vector<double> d, dv;
 			dist_only_vals(d, dv, x, y, v, rxy[0], rxy[1], oldfirst, last, lonlat, dlast, dvlast, true, rv, method, setNA);
 			oldfirst = first;
+			if (maxdist > 0) {
+				if (m != 1) {
+					for (size_t j=0; j<dv.size(); j++) {
+						if ((d[j] / m) > maxdist) dv[j] = NAN;
+					}
+				} else {
+					for (size_t j=0; j<dv.size(); j++) {
+						if (d[j] > maxdist) dv[j] = NAN;
+					}
+				}
+			}	
 			if (!out.writeBlock(dv, i)) return out;
 		}
 		readStop();
@@ -304,6 +321,17 @@ SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<do
 			std::vector<double> d, dv;
 			dist_only_vals(d, dv, x, y, v, rxy[0], rxy[1], oldfirst, last, lonlat, dlast, dvlast, false, rv, method, setNA);
 			oldfirst = first;
+			if (maxdist > 0) {
+				if (m != 1) {
+					for (size_t j=0; j<dv.size(); j++) {
+						if ((d[j] / m) > maxdist) dv[j] = NAN;
+					}
+				} else {
+					for (size_t j=0; j<dv.size(); j++) {
+						if (d[j] > maxdist) dv[j] = NAN;
+					}
+				}
+			}	
 			if (!out.writeBlock(dv, i)) return out;
 		}
 	}
