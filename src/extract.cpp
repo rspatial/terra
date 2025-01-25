@@ -176,7 +176,7 @@ std::vector<double> circ_dist(double xres, double yres, double d, size_t nrows, 
 	v[v.size()/2] = 1;
 	SpatOptions opt;
 	x.setValues(v, opt);
-	x = x.distance(NAN, NAN, false, "m", false, "cosine", opt);	
+	x = x.distance(NAN, NAN, false, "m", false, "cosine", false, opt);	
 
 	std::vector<double> out;
 	x.getValuesSource(0, out);				

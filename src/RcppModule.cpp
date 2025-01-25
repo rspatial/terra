@@ -864,7 +864,7 @@ RCPP_MODULE(spat){
 		.method("surface_area", &SpatRaster::surfaceArea)
 
 		.method("as_points", &SpatRaster::as_points)
-		.method("as_points_value", &SpatRaster::as_points_value)
+//		.method("as_points_value", &SpatRaster::as_points_value)
 		.method("cells_notna", &SpatRaster::cells_notna)
 		.method("cells_notna_novalues", &SpatRaster::cells_notna_novalues)
 		.method("as_multipoints", &SpatRaster::as_multipoints)
@@ -891,8 +891,6 @@ RCPP_MODULE(spat){
 		
 //		.method("vectDistanceDirect", &SpatRaster::distance_spatvector)
 //		.method("vectDistanceRasterize", &SpatRaster::distance_rasterize)
-
-		
 		
 		.method("get_tiles_ext", &SpatRaster::get_tiles_extent)
 		.method("get_tiles_ext_vect", &SpatRaster::get_tiles_extent_vect)
