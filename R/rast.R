@@ -409,6 +409,9 @@ setMethod("rast", signature(x="ANY"),
 		xyz <- as.matrix(xyz)
 		xyz <- matrix(as.numeric(xyz), ncol=ncol(xyz), nrow=nrow(xyz))
 	}
+	xyz[,1] <- round(xyz[,1], digits)
+	xyz[,2] <- round(xyz[,2], digits)
+	
 	x <- sort(unique(xyz[,1]))
 	if (length(x) == 1) {
 		error("rast", "cannot create a raster geometry from a single x coordinate")

@@ -2,6 +2,9 @@
 
 ## bug fixes
 
+- `rast(xyz=TRUE)` method failed in some cases. On [stackoverflow](https://stackoverflow.com/questions/79387173/rasterizing-a-grid-of-points-causes-empty-raster-cells-and-misalignement-between) by Gilles San Martin
+
+
 ## enhancements
 
 ## new
