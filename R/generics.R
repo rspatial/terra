@@ -663,11 +663,10 @@ setMethod("project", signature(x="SpatRaster"),
 			if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
 				method <- "near"
 			} else {
-				method <- "average" #"bilinear"
+				method <- "bilinear"
 			}
 		} else {
-			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "min", "q1", "median", "q3", "max", "rms"))
-			
+			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "min", "q1", "median", "q3", "max", "rms"))			
 		}
 		opt <- spatOptions(filename, threads=threads, ...)
 
@@ -814,14 +813,16 @@ setMethod("rectify", signature(x="SpatRaster"),
 )
 
 setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
-	function(x, y, method, threads=FALSE, filename="", ...)  {
+	function(x, y, method, threads=FALSE, by_util=FALSE, filename="", ...)  {
 
 		if (missing(method)) {
-			method <- ifelse(is.factor(x)[1], "near", "bilinear")
-		}
-		if (method == "ngb") {
-			method <- "near"
-			warn("resample", "argument 'method=ngb' is deprecated, it should be 'method=near'")
+			if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
+				method <- "near"
+			} else {
+				method <- "bilinear"
+			}
+		} else {
+			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "min", "q1", "median", "q3", "max", "rms"))			
 		}
 		xcrs = crs(x)
 		ycrs = crs(y)
@@ -832,11 +833,12 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 			crs(y) <- xcrs
 		}
 		opt <- spatOptions(filename, threads=threads, ...)
-#		if (gdal) {
+
+		if (by_util) {
+			x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, FALSE, FALSE, TRUE, opt)
+		} else {
 			x@pntr <- x@pntr$warp(y@pntr, "", method, FALSE, FALSE, TRUE, opt)
-#		} else {
-#			x@pntr <- x@pntr$resample(y@pntr, method, FALSE, TRUE, opt)
-#		}
+		}
 		messages(x, "resample")
 	}
 )

@@ -20,14 +20,14 @@ If the origin and extent of the input and output are the same, you should consid
   \item{y}{SpatRaster with the geometry that \code{x} should be resampled to}
   \item{method}{character. Method used for estimating the new cell values. One of: 
     
-	\code{average}:  This is used by default if the first layer of \code{x} is not categorical
+	\code{bilinear}: bilinear interpolation (3x3 cell window). This is used by default if the first layer of \code{x} is not categorical
+
+	\code{average}:  This can be a good choice with continuous variables if the output cells overlap with multiple input cells. 
 
 	\code{near}: nearest neighbor. This is used by default if the first layer of \code{x} is categorical. This method is not a good choice for continuous values.
 
 	\code{mode}: The modal value. This can be a good choice for categrical rasters, if the output cells overlap with multiple input cells. 
   
-	\code{bilinear}: bilinear interpolation (3x3 cell window).
-
 	\code{cubic}: cubic interpolation (5x5 cell window).
 
 	\code{cubicspline}: cubic B-spline interpolation. (5x5 cell window).
@@ -44,19 +44,18 @@ If the origin and extent of the input and output are the same, you should consid
   
   \item{threads}{logical. If \code{TRUE} multiple threads are used (faster for large files)}
   
+  \item{by_util}{logical. If \code{TRUE} the GDAL warp utility is used}
+ 
   \item{filename}{character. Output filename}
 
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 
-\value{
-SpatRaster 
-}
+\value{SpatRaster }
 
 
-\seealso{ \code{\link{aggregate}}, \code{\link{disagg}}, \code{\link{crop}}, \code{\link{project}}
-}
+\seealso{ \code{\link{aggregate}}, \code{\link{disagg}}, \code{\link{crop}}, \code{\link{project}}}
 
 
 \examples{
