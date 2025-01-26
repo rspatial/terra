@@ -661,16 +661,13 @@ setMethod("project", signature(x="SpatRaster"),
 
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
-				method <- "near"
+				method <- "mode" #"near"
 			} else {
-				method <- "bilinear"
+				method <- "average" #"bilinear"
 			}
 		} else {
-			method <- method[1]
-		}
-		if (method == "ngb") {
-			method <- "near"
-			warn("project", "argument 'method=ngb' is deprecated, it should be 'method=near'")
+			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "min", "q1", "median", "q3", "max", "rms"))
+			
 		}
 		opt <- spatOptions(filename, threads=threads, ...)
 

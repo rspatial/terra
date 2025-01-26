@@ -19,12 +19,16 @@ If the origin and extent of the input and output are the same, you should consid
   \item{x}{SpatRaster to be resampled}
   \item{y}{SpatRaster with the geometry that \code{x} should be resampled to}
   \item{method}{character. Method used for estimating the new cell values. One of: 
+    
+	\code{average}:  This is used by default if the first layer of \code{x} is not categorical
+
+	\code{mode}:  This is used by default if the first layer of \code{x} is categorical
   
-	\code{near}: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. This is used by default if the first layer of \code{x} is categorical.
+	\code{near}: nearest neighbor. This method is fast, and it can be a good method if the raster is categorical. It is not a good choice for continuous values.
 
-	\code{bilinear}: bilinear interpolation. This is the default if the first layer of \code{x} is numeric (not categorical). (3x3 cell window).
+	\code{bilinear}: bilinear interpolation (3x3 cell window).
 
-	\code{cubic}: cubic interpolation. (5x5 cell window).
+	\code{cubic}: cubic interpolation (5x5 cell window).
 
 	\code{cubicspline}: cubic B-spline interpolation. (5x5 cell window).
 
@@ -32,8 +36,9 @@ If the origin and extent of the input and output are the same, you should consid
 
 	\code{sum}: the weighted sum of all non-NA contributing grid cells.
 
-	\code{min, q1, med, q3, max, average, mode, rms}: the minimum, first quartile, median, third quartile, maximum, mean, mode, or root-mean-square value of all non-NA contributing grid cells.
-
+	\code{min, q1, median, q3, max}: the minimum, first quartile, median, third quartile, or maximum value. 
+	
+	\code{rms}: the root-mean-square value of all non-NA contributing grid cells.
   }
   
   

@@ -355,14 +355,13 @@ bool getAlgo(GDALResampleAlg &alg, std::string m) {
 		alg = GRA_Max;
 	} else if (m=="min") {
 		alg = GRA_Min;
-	} else if (m=="med") {
+	} else if (m=="median") {
 		alg = GRA_Med;
 	} else if (m=="q1") {
 		alg = GRA_Q1;
 	} else if (m=="q3") {
 		alg = GRA_Q3;
 	} else {
-		alg = GRA_NearestNeighbour;
 		return false;
 	}
 	return true;
@@ -385,11 +384,7 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 
 	GDALResampleAlg a;
 	if (!getAlgo(a, method)) {
-		if ((method=="sum") || (method=="rms")) {
-			msg = method + " not available in your version of GDAL";
-		} else {
-			msg = "unknown resampling algorithm";
-		}
+		msg = method + " is not a valid method";
 		return false;
 	}
 
@@ -499,7 +494,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	out.setNames(getNames());
-	if (method == "near") {
+	if ((method == "near") || (method == "mode")) {
 		out.source[0].hasColors = hasColors();
 		out.source[0].cols = getColors();
 		out.source[0].hasCategories = hasCategories();
@@ -648,32 +643,33 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			bandstart += dstbands.size();
 
 			GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
-			bool ok = set_warp_options(psWarpOptions, hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose(), opt.threads);
-			if (!ok) {
-				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
+			if (!set_warp_options(psWarpOptions, hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose(), opt.threads)) {
+				if (hDstDS != NULL ) GDALClose((GDALDatasetH) hDstDS);
 				out.setError(errmsg);
 				return out;
 			}
 			//ok = gdal_warper(psWarpOptions, hSrcDS, hDstDS);
+			
+			bool ok=true;
 			GDALWarpOperation oOperation;
-			if (oOperation.Initialize( psWarpOptions ) != CE_None) {
+			if (oOperation.Initialize(psWarpOptions) != CE_None) {
 				ok = false;
 			} else if (oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(hDstDS), GDALGetRasterYSize(hDstDS)) != CE_None) {
 				ok = false;
 			}
-			GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
-			GDALDestroyWarpOptions( psWarpOptions );
+			GDALDestroyGenImgProjTransformer(psWarpOptions->pTransformerArg);
+			GDALDestroyWarpOptions(psWarpOptions);
 
-			if( hSrcDS != NULL ) GDALClose( (GDALDatasetH) hSrcDS );
+			if (hSrcDS != NULL) GDALClose((GDALDatasetH) hSrcDS);
 			if (!ok) {
-				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
+				if (hDstDS != NULL) GDALClose((GDALDatasetH) hDstDS);
 				out.setError("warp failure");
 				return out;
 			}
 		}
 
 		bool ok = crop_out.from_gdalMEM(hDstDS, false, true);
-		if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
+		if (hDstDS != NULL) GDALClose((GDALDatasetH) hDstDS);
 		if (!ok) {
 			out.setError("cannot do this transformation (warp)");
 			return out;
@@ -967,7 +963,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 	}
 	
 	out.setNames(getNames());
-	if (method == "near") {
+	if ((method == "near") || (method == "mode")) {
 		out.source[0].hasColors = hasColors();
 		out.source[0].cols = getColors();
 		out.source[0].hasCategories = hasCategories();
