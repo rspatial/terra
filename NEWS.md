@@ -1,4 +1,4 @@
-# version 1.8-16
+# version 1.S8-16
 
 ## bug fixes
 
@@ -7,7 +7,8 @@
 ## new
 
 - `as.array<SpatRasterDataset>` method
-- `distance<SpatRaster,missing>` not has argument "values". If TRUE, the values of the nearest non-target cell is returned instead of the distance [#1243](https://github.com/rspatial/terra/issues/1243) by Simon Dedman
+- `distance<SpatRaster,missing>` now has argument "values". If TRUE, the values of the nearest non-target cell is returned instead of the distance [#1243](https://github.com/rspatial/terra/issues/1243) by Simon Dedman
+- `threshold<SpatRaster>` [#1233](https://github.com/rspatial/terra/issues/1233) by Agustin Lobo
 
 # version 1.8-15
 
