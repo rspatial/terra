@@ -661,7 +661,7 @@ setMethod("project", signature(x="SpatRaster"),
 
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
-				method <- "mode" #"near"
+				method <- "near"
 			} else {
 				method <- "average" #"bilinear"
 			}

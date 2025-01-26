@@ -22,10 +22,10 @@ If the origin and extent of the input and output are the same, you should consid
     
 	\code{average}:  This is used by default if the first layer of \code{x} is not categorical
 
-	\code{mode}:  This is used by default if the first layer of \code{x} is categorical
-  
-	\code{near}: nearest neighbor. This method is fast, and it can be a good method if the raster is categorical. It is not a good choice for continuous values.
+	\code{near}: nearest neighbor. This is used by default if the first layer of \code{x} is categorical. This method is not a good choice for continuous values.
 
+	\code{mode}: The modal value. This can be a good choice for categrical rasters, if the output cells overlap with multiple input cells. 
+  
 	\code{bilinear}: bilinear interpolation (3x3 cell window).
 
 	\code{cubic}: cubic interpolation (5x5 cell window).

@@ -4,6 +4,9 @@
 
 ## enhancements
 
+- `resample` and `project<SpatRaster>` now use default algorithms "average" (instead of "bilenear") for non-categorical data 
+
+
 ## new
 
 - `as.array<SpatRasterDataset>` method
