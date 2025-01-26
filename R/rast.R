@@ -166,7 +166,16 @@ setMethod("rast", signature(x="SpatExtent"),
 
 
 setMethod("rast", signature(x="SpatVector"),
-	function(x, ...) {
+	function(x, type="", ...) {
+	
+		if (type == "xyz") {
+			if (geomtype(x) != "points") {
+				error("rast", "xyz can only be used with points")
+			}
+			x <- data.frame(crds(x), data.frame(x))
+			return(rast(x, type="xyz", ...))
+		}
+	
 		dots <- list(...)
 		e <- ext(x)
 		dots$xmin=e[1]

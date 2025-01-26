@@ -638,6 +638,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). In other cases it simply seemed better. Here are some examples:
 
 \tabular{ll}{
+\code{\link{resample}}\tab Results are not numerically identical when using \code{method="bilinear"}\cr
 \code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved polygons\cr
 \code{\link{quantile}}\tab computes by cell, across layers instead of the other way around\cr
 \code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \cr

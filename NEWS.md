@@ -1,4 +1,4 @@
-# version 1.S8-16
+# version 1.8-16
 
 ## bug fixes
 
@@ -6,6 +6,8 @@
 
 
 ## enhancements
+
+- argument xyz="" to the `rast<SpatVector>` method
 
 ## new
 

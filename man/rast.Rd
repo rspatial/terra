@@ -50,7 +50,7 @@ Note that there are operating system level limitations to the number of files th
 
 \S4method{rast}{SpatRasterDataset}(x)
 
-\S4method{rast}{SpatVector}(x, ...)
+\S4method{rast}{SpatVector}(x, type="", ...)
 									  
 \S4method{rast}{SpatExtent}(x, ...)
 }
@@ -83,7 +83,7 @@ Note that there are operating system level limitations to the number of files th
 \item{names}{character. An optional vector with layer names (must match the number of layers)}
 \item{time}{time or date stamps for each layer}
 \item{units}{character. units for each layer}
-\item{type}{character. If the value is \code{"xyz"}, the matrix or data.frame \code{x} must have at least two columns, the first with \code{x} (or longitude) and the second with \code{y} (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells. If the value is \code{"xylz"}, \code{x} must have four columns with the third representing the layer and the fourth the cell values. If the value is \code{""}, the resulting SpatRaster will have the same number of rows and columns as \code{x}. 
+\item{type}{character. If the value is \code{"xyz"}, \code{x} must be a SpatVector with point geometry, or a matrix or data.frame with at least two columns, the first with \code{x} (or longitude) and the second with \code{y} (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells. If the value is \code{"xylz"}, \code{x} must have four columns with the third representing the layer and the fourth the cell values. If the value is \code{""}, the resulting SpatRaster will have the same number of rows and columns as \code{x}. 
 }
 \item{digits}{integer to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when \code{type="xyz"}}
 \item{warn}{logical. If \code{TRUE}, a warnings about empty rasters may be emitted}
