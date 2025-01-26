@@ -77,7 +77,7 @@ Note that there are operating system level limitations to the number of files th
 <span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
-<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, type<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
 <span>                    </span>
 <span><span class="co"># S4 method for class 'SpatExtent'</span></span>
 <span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -169,7 +169,7 @@ Note that there are operating system level limitations to the number of files th
 <dd><p>character. units for each layer</p></dd>
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>character. If the value is <code>"xyz"</code>, the matrix or data.frame <code>x</code> must have at least two columns, the first with <code>x</code> (or longitude) and the second with <code>y</code> (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells. If the value is <code>"xylz"</code>, <code>x</code> must have four columns with the third representing the layer and the fourth the cell values. If the value is <code>""</code>, the resulting SpatRaster will have the same number of rows and columns as <code>x</code>.</p></dd>
+<dd><p>character. If the value is <code>"xyz"</code>, <code>x</code> must be a SpatVector with point geometry, or a matrix or data.frame with at least two columns, the first with <code>x</code> (or longitude) and the second with <code>y</code> (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells. If the value is <code>"xylz"</code>, <code>x</code> must have four columns with the third representing the layer and the fourth the cell values. If the value is <code>""</code>, the resulting SpatRaster will have the same number of rows and columns as <code>x</code>.</p></dd>
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
 <dd><p>integer to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when <code>type="xyz"</code></p></dd>
