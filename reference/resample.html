@@ -59,8 +59,8 @@ If the origin and extent of the input and output are the same, you should consid
   <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>character. Method used for estimating the new cell values. One of:</p>
 <p><code>average</code>:  This is used by default if the first layer of <code>x</code> is not categorical</p>
-<p><code>mode</code>:  This is used by default if the first layer of <code>x</code> is categorical</p>
-<p><code>near</code>: nearest neighbor. This method is fast, and it can be a good method if the raster is categorical. It is not a good choice for continuous values.</p>
+<p><code>near</code>: nearest neighbor. This is used by default if the first layer of <code>x</code> is categorical. This method is not a good choice for continuous values.</p>
+<p><code>mode</code>: The modal value. This can be a good choice for categrical rasters, if the output cells overlap with multiple input cells.</p>
 <p><code>bilinear</code>: bilinear interpolation (3x3 cell window).</p>
 <p><code>cubic</code>: cubic interpolation (5x5 cell window).</p>
 <p><code>cubicspline</code>: cubic B-spline interpolation. (5x5 cell window).</p>
