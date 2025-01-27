@@ -13,7 +13,8 @@ Compute a threshold to divide the values of a SpatRaster into two groups, and us
 }
 
 \usage{
-\S4method{twoClasses}{SpatRaster}(x, method="otsu", maxcell=1000000, combine=FALSE, as.raster=TRUE, filename="", ...)
+\S4method{twoClasses}{SpatRaster}(x, method="otsu", maxcell=1000000, combine=FALSE, 
+			as.raster=TRUE, filename="", ...)
 }
 
 

@@ -12,7 +12,7 @@ If the origin and extent of the input and output are the same, you should consid
 }
 
 \usage{
-\S4method{resample}{SpatRaster,SpatRaster}(x, y, method, threads=FALSE, filename="", ...)
+\S4method{resample}{SpatRaster,SpatRaster}(x, y, method, threads=FALSE, by_util=FALSE, filename="", ...)
 }
 
 \arguments{
