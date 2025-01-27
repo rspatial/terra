@@ -1905,6 +1905,14 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 
 SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {
 
+	if (nlyr() > 1) {
+		SpatOptions sopt(opt);
+		SpatRaster tmp = subset({0}, sopt);
+		tmp = tmp.sieveFilter(threshold, connections, opt);
+		tmp.addWarning("only the first layer was used");
+		return tmp;
+	}
+
 	SpatRaster out = geometry(1, true, true, true);
 
 	if (!hasValues()) {
@@ -1919,40 +1927,21 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 		out.setError("a threshold < 2 is not meaningful");
 		return out;
 	}
-
-
-	std::string filename = opt.get_filename();
-
-	std::string driver;
-//	if (filename.empty()) {
-		if (canProcessInMemory(opt)) {
-			filename = "";
-			driver = "MEM";
-		} else {
-			filename = tempFile(opt.get_tempdir(), opt.tmpfile, ".tif");
-			opt.set_filenames({filename});
-			driver = "GTiff";
-		}
-/*	} else {
-		driver = opt.get_filetype();
-		getGDALdriver(filename, driver);
-		if (driver.empty()) {
-			setError("cannot guess file type from filename");
-			return out;
-		}
-		std::string errmsg;
-		if (!can_write({filename}, filenames(), opt.get_overwrite(), errmsg)) {
-			out.setError(errmsg);
-			return out;
-		}
-	}
-*/
-
-	SpatOptions ops(opt);
-	GDALDatasetH hSrcDS, hMskDS, hDstDS;
 	
-	SpatOptions topt(opt);
-	SpatRaster mask = isnotnan(false, topt);
+
+	std::string tmp_filename = "";
+	std::string driver = "MEM";
+	SpatOptions ops(opt);
+	if (!canProcessInMemory(ops)) {
+		tmp_filename = tempFile(ops.get_tempdir(), ops.tmpfile, "_sieve.tif");
+		driver = "GTiff";
+		ops.set_filenames({tmp_filename});
+	}
+
+	SpatOptions mopt(opt);
+	SpatRaster mask = isnotnan(false, mopt);
+
+	GDALDatasetH hSrcDS, hMskDS, hDstDS;
 
 	if (!open_gdal(hSrcDS, 0, false, ops)) {
 		out.setError("cannot open input dataset");
@@ -1963,15 +1952,13 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 		return out;
 	}
 
-
 	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
 	if ( hDriver == NULL ) {
 		out.setError("empty driver");
 		return out;
 	}
-
 	//opt.datatype = "INT4S";
-	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
+	if (!out.create_gdalDS(hDstDS, tmp_filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, ops)) {
 		out.setError("cannot create new dataset");
 		GDALClose(hSrcDS);
 		return out;
@@ -1997,14 +1984,15 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 			out.setError("conversion failed (mem)");
 		}
 		GDALClose(hDstDS);
+
 	} else {
-//		double adfMinMax[2];
-//		GDALComputeRasterMinMax(hTargetBand, true, adfMinMax);
-//		GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
 		GDALClose(hDstDS);
-		out = SpatRaster(filename, {-1}, {""}, {}, {});
+		out = SpatRaster(tmp_filename, {-1}, {""}, {}, {});
 	}
-	return out.mask(*this, false, NAN, NAN, opt);
+	
+	opt.names = getNames();
+	out.source[0].source_name = {""};
+	return out.mask(mask, false, 0, NAN, opt);
 }
 
 
