@@ -666,7 +666,7 @@ setMethod("project", signature(x="SpatRaster"),
 				method <- "bilinear"
 			}
 		} else {
-			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "min", "q1", "median", "q3", "max", "rms"))			
+			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "sum", "mode", "min", "q1", "median", "q3", "max", "rms"))			
 		}
 		opt <- spatOptions(filename, threads=threads, ...)
 
@@ -822,7 +822,7 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 				method <- "bilinear"
 			}
 		} else {
-			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "min", "q1", "median", "q3", "max", "rms"))			
+			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "sum", "mode", "min", "q1", "median", "q3", "max", "rms"))			
 		}
 		xcrs = crs(x)
 		ycrs = crs(y)

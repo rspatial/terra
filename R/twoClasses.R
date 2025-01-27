@@ -18,7 +18,7 @@ otsu <- function(values, counts) {
 }
 
 
-setMethod("threshold", signature(x="SpatRaster"),
+setMethod("twoClasses", signature(x="SpatRaster"),
 	function(x, method="otsu", maxcell=1000000, combine=FALSE, as.raster=TRUE, filename="", ...) {
 
 		method <- match.arg(tolower(method), c("mean", "median", "otsu"))
@@ -71,6 +71,6 @@ setMethod("threshold", signature(x="SpatRaster"),
 		} 
 		opt <- spatOptions(filename, ...)
 		x@pntr <- x@pntr$arith_numb(th, ">", FALSE, FALSE, opt)
-		messages(x, "threshold")
+		messages(x, "twoClasses")
 	}
 )

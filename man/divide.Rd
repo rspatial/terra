@@ -35,13 +35,11 @@ Divides a \code{SpatVector} of polygons into \code{n} compact and approximately 
   \item{w}{SpatRaster with, for example, environmental data}
   \item{alpha}{numeric. One or two numbers that act as weights for the x and y coordinates}
   \item{...}{additional arguments such as \code{iter.max} passed on to \code{\link{kmeans}}}
-
 }
 
+\seealso{\code{\link{twoClasses}}}
 
-\value{
-SpatVector or SpatRaster, or a list with both
-}
+\value{SpatVector or SpatRaster, or a list with both}
 
 
 \examples{
