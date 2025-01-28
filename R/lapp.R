@@ -209,7 +209,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 
 
 setMethod("lapp", signature(x="SpatRasterDataset"),
-function(x, fun, ..., usenames=FALSE, recycle=FALSE, filename="", overwrite=FALSE, wopt=list())  {
+function(x, fun, ..., usenames=FALSE, recycle=FALSE, cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	fun <- match.fun(fun)
 	dots <- list(...)
@@ -248,9 +248,20 @@ function(x, fun, ..., usenames=FALSE, recycle=FALSE, filename="", overwrite=FALS
 	fact <- max(4, 4 * nltot / nlyr(out))
 	b <- writeStart(out, filename, overwrite, sources=unlist(sources(x)), wopt=wopt, n=fact)
 
+	doclust <- FALSE
+	if (inherits(cores, "cluster")) {
+		doclust <- TRUE
+	} else if (cores > 1) {
+		doclust <- TRUE
+		cores <- parallel::makeCluster(cores)
+		on.exit(parallel::stopCluster(cores), add=TRUE)
+	}
 	if (mapp) {
+		if (doclust) {
+			warn("lapp", "no parallel method for this case")
+		}
 		for (i in 1:b$n) {
-			v <- lapply(1:length(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
+			v <- readValues(x, b$row[i], b$nrows[i], 1, ncx, mat=TRUE)
 			if (recycle) {
 				v <- lapply(v, as.vector)
 			}
@@ -263,22 +274,52 @@ function(x, fun, ..., usenames=FALSE, recycle=FALSE, filename="", overwrite=FALS
 				v <- as.vector(t(v))
 			}
 			writeValues(out, v, b$row[i], b$nrows[i])
-		}
+		} 
 	} else {
-		for (i in 1:b$n) {
-			v <- lapply(1:length(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
-			if (recycle) {
-				v <- lapply(v, as.vector)
+		if (doclust) {
+			ncores <- length(cores)
+			export_args(cores, ..., caller="lapp")		
+			cfun <- function(i, ...)  do.call(fun, i, ...)
+			parallel::clusterExport(cores, "cfun", environment())
+
+			for (i in 1:b$n) {
+				v <- readValues(x, b$row[i], b$nrows[i], 1, ncx, mat=TRUE)
+				if (usenames) { names(v) <- nms } else  { names(v) <- NULL }
+				
+				if (recycle) {
+					repl <- max(sapply(v, function(j) prod(dim(j))))
+					v <- lapply(v, function(j) rep_len(as.vector(j), repl))
+					j <- split(1:length(v[[1]]), rep(1:ncores, each=ceiling(length(v[[1]]) / ncores))[1:length(v[[1]])])
+					v <- parallel::parLapply(cores, 1:ncores, function(x, ...) cfun(lapply(v, function(d) d[j[[x]]]), ...))
+				} else {
+					j <- split(1:nrow(v[[1]]), rep(1:ncores, each=ceiling(nrow(v[[1]]) / ncores))[1:nrow(v[[1]])])
+					v <- parallel::parLapply(cores, 1:ncores, function(x, ...) cfun(lapply(v, function(d) d[j[[x]], , drop=FALSE]), ...))
+				}
+
+				v <- unlist(v)
+				if (length(v) != (b$nrows[i] * test$nl * ncx)) {
+					out <- writeStop(out)
+					error("lapp", "output length of fun is not correct")
+				}
+				writeValues(out, v, b$row[i], b$nrows[i])
 			}
-			if (usenames) {
-				names(v) <- nms
+		} else {
+		
+			for (i in 1:b$n) {
+				v <- readValues(x, b$row[i], b$nrows[i], 1, ncx, mat=TRUE)
+
+				if (recycle) {
+					v <- lapply(v, as.vector)
+				}
+				if (usenames) {
+					names(v) <- nms
+				}
+				v <- do.call(fun, c(v, list(...)))
+				writeValues(out, v, b$row[i], b$nrows[i])
 			}
-			v <- do.call(fun, c(v, list(...)))
-			writeValues(out, v, b$row[i], b$nrows[i])
 		}
 	}
-	out <- writeStop(out)
-	return(out)
+	writeStop(out)
 }
 )
 

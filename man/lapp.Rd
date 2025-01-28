@@ -22,7 +22,7 @@ Use \code{\link{app}} for summarize functions such as \code{sum}, that take any 
 \S4method{lapp}{SpatRaster}(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wopt=list())
 
 \S4method{lapp}{SpatRasterDataset}(x, fun, ..., usenames=FALSE, recycle=FALSE, 
-    filename="", overwrite=FALSE, wopt=list())
+		cores=1, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{

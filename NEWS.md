@@ -8,6 +8,7 @@
 
 - argument xyz="" to the `rast<SpatVector>` method
 - arguments "type" and "breaks" to `plet<SpatRaster>` method [#1187](https://github.com/rspatial/terra/issues/1187) by Augustin Lobo
+- argument "cores" in `lapp<SpatRasterDataset>` [#1190](https://github.com/rspatial/terra/issues/1190) by kel44
 
 ## new
 
