@@ -30,7 +30,7 @@ Use \code{\link{app}} for summarize functions such as \code{sum}, that take any 
   \item{fun}{a function that takes a vector and can be applied to each cell of \code{x}}
   \item{...}{additional arguments to be passed to \code{fun}} 
   \item{usenames}{logical. Use the layer names (or dataset names if \code{x} is a SpatRasterDataset) to match the function arguments? If \code{FALSE}, argument matching is by position}
-  \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used. You can also supply a cluster object}
+  \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used. You can also supply a cluster object. The benefit of using this option is often small, if it is even positive. Using a fast function \code{fun} can be a much more effective way to speed things up}
   \item{recycle}{logical. Recycle layers to match the subdataset with the largest number of layers}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

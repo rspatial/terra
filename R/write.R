@@ -75,15 +75,15 @@ get_filetype <- function(filename) {
 	fn <- tolower(filename)
 	ext <- tools::file_ext(fn)
 	ext2 <- gsub("^[^.]*\\.(.*).*$", "\\1", fn)
-	if (ext == "shp" || ext == "shz" || (ext == "zip" && ext2 == "shp.zip")) {
+	if ((ext == "shp") || (ext == "shz") || (ext == "zip" && ext2 == "shp.zip")) {
 		"ESRI Shapefile"
-	} else if (ext == "gpkg" || (ext == "zip" && ext2 == "gpkg.zip")) {
+	} else if ((ext == "") || (ext == "gpkg") || (ext == "zip" && ext2 == "gpkg.zip")) {
 		"GPKG"
 	} else if (ext == "gdb") {
 		"OpenFileGDB"
 	} else if (ext == "gml") {
 		"GML"
-	} else if (ext == "json" || ext == "geojson") {
+	} else if ((ext == "json") || (ext == "geojson")) {
 		"GeoJSON"
 	} else if (ext == "cdf") {
 		"netCDF"
