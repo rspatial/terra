@@ -73,7 +73,7 @@ Use app for summarize functions such as sum, that take any number of arguments; 
 <dd><p>logical. Use the layer names (or dataset names if <code>x</code> is a SpatRasterDataset) to match the function arguments? If <code>FALSE</code>, argument matching is by position</p></dd>
 
   <dt id="arg-cores">cores<a class="anchor" aria-label="anchor" href="#arg-cores"></a></dt>
-<dd><p>positive integer. If <code>cores &gt; 1</code>, a 'parallel' package cluster with that many cores is created and used. You can also supply a cluster object</p></dd>
+<dd><p>positive integer. If <code>cores &gt; 1</code>, a 'parallel' package cluster with that many cores is created and used. You can also supply a cluster object. The benefit of using this option is often small, if it is even positive. Using a fast function <code>fun</code> can be a much more effective way to speed things up</p></dd>
 
   <dt id="arg-recycle">recycle<a class="anchor" aria-label="anchor" href="#arg-recycle"></a></dt>
 <dd><p>logical. Recycle layers to match the subdataset with the largest number of layers</p></dd>
