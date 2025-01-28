@@ -2,12 +2,12 @@
 
 ## bug fixes
 
-- `rast(xyz=TRUE)` method failed in some cases. On [stackoverflow](https://stackoverflow.com/questions/79387173/rasterizing-a-grid-of-points-causes-empty-raster-cells-and-misalignement-between) by Gilles San Martin
-
+- `sieve` failed with large rasters [#1729](https://github.com/rspatial/terra/issues/1729) by Reed Humphrey
 
 ## enhancements
 
 - argument xyz="" to the `rast<SpatVector>` method
+- arguments "type" and "breaks" to `plet<SpatRaster>` method [#1187](https://github.com/rspatial/terra/issues/1187) by Augustin Lobo
 
 ## new
 
