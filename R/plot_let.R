@@ -463,12 +463,65 @@ make.panel <- function(x, maxcell) {
 }
 
 
+.get_cls <- function(x, type="", dig.lab=3, cols, breaks=NULL, breakby="eqint", sort=TRUE, decreasing=FALSE,  ...) {
+
+
+	if (is.null(type) ||(type == "")) {
+		if (is.factor(x) || is.bool(x)) {
+			type <- "classes"		
+		} else if (is.null(breaks)) {
+			type <- "continuous"
+		} else {
+			type <- "interval"
+		}
+	} else {
+		type <- match.arg(type, c("continuous", "interval", "classes"))
+	}
+	if ((type == "interval") && (is.null(breaks))) {
+		
+	}
+	if (type == "continuous") {
+		if (inherits(cols, "function")) {
+			cols <- cols(100)
+		}
+		return(list(type=type, x=x, cols=cols))
+	}
+	if (type == "classes") {
+		if (!is.factor(x)) {
+			uv <- unique(values(x))
+			uv <- sort(uv)
+			uv <- uv[!is.na(uv)]
+			levels(x) <- data.frame(ID=uv, value=uv)
+		} else {
+			uv <- levels(x)[[1]][,2]
+		}
+		ncols <- length(uv)
+	} else {
+		if (is.null(breaks)) breaks <- 5
+		if (length(breaks) == 1) {
+			breaks <- .get_breaks(values(x), n=breaks, breakby, r=NULL)
+		}
+		x <- classify(x, breaks)
+		ncols <- length(breaks)-1
+	}
+
+	if (inherits(cols, "function")) {
+		cols <- cols(ncols)
+	} else {
+		cols <- colorRampPalette(cols)(ncols)		
+	}
+	return(list(type=type, x=x, cols=cols))
+
+#	out$legend_type <- type
+#	out$uv <- unique(v)
+}
+
+
 
 setMethod("plet", signature(x="SpatRaster"),
 	function(x, y=1, col, alpha=0.8, main=names(x), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
 		wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", shared=FALSE, panel=FALSE, collapse=TRUE, 
-		# type=NULL, breaks=NULL, breakby="eqint", sort=TRUE, decreasing=FALSE, 
-		map=NULL)  {
+		type=NULL, breaks=NULL, breakby="eqint", map=NULL, ...)  {
 
 		#checkLeafLetVersion()
 		
@@ -562,20 +615,27 @@ setMethod("plet", signature(x="SpatRaster"),
 			}
 			RGB(x) <- 1:length(y)
 			x <- colorize(x, "col")
-		} 
-		#else {
-		#	leg <- .get_leg(na.omit(values(x)), type=type, dig.lab=3, cols=col, breaks=breaks, breakby=breakby, sort=sort, decreasing=decreasing, ...)
-		#}
+		} else {
+			leg <- .get_cls(x, type=type, dig.lab=3, cols=col, breaks=breaks, breakby=breakby, sort=sort, decreasing=decreasing, ...)
+			x <- leg$x
+			col <- leg$cols
+		}
 		
 		if (nlyr(x) == 1) {
 			map <- leaflet::addRasterImage(map, x, colors=col, opacity=alpha, project=notmerc)
 			if (!is.null(legend)) {
-				if (!all(hasMinMax(x))) setMinMax(x)
-				r <- minmax(x)
-				v <- seq(r[1], r[2], length.out=5)
-				pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
-				map <- leaflet::addLegend(map, legend, pal=pal, values=v, opacity=1, title=main[1],
-					  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
+				if (leg$type == "continuous") {
+					if (!all(hasMinMax(x))) setMinMax(x)
+					r <- minmax(x)
+					v <- seq(r[1], r[2], length.out=5)
+					pal <- leaflet::colorNumeric(col, v, reverse = TRUE)
+					map <- leaflet::addLegend(map, legend, pal=pal, values=v, opacity=1, title=main[1],
+						  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
+				} else {
+					map <- leaflet::addLegend(map, position=legend, colors=leg$cols, 
+							labels=levels(x)[[1]][,2], opacity=alpha, title=main)
+
+				}
 			}
 			if (panel) {
 				#map <- leaflet::addCircleMarkers(map, data=p, label=p$label, radius=1, opacity=1, col="red")

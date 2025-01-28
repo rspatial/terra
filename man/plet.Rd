@@ -22,7 +22,8 @@ Plot the values of a SpatRaster or SpatVector to make an interactive leaflet map
 \S4method{plet}{SpatRaster}(x, y=1, col, alpha=0.8, main=names(x), 
 	tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
 	wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", 
-	shared=FALSE, panel=FALSE, collapse=TRUE, map=NULL) 
+	shared=FALSE, panel=FALSE, collapse=TRUE, type=NULL, breaks=NULL,
+	breakby="eqint", map=NULL, ...) 
 
 
 \S4method{plet}{SpatVector}(x, y="", col,fill=0.2, main=y, cex=1, lwd=2, 
