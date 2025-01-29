@@ -29,7 +29,7 @@ logical. One value for each raster data *source*
 
 
 \seealso{
- \code{\link{rectify}}
+ \code{\link{rectify}, \link{is.flipped}}
 }
 
 \examples{

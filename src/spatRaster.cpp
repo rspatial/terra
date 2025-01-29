@@ -458,6 +458,17 @@ std::vector<double> SpatRaster::range_max() {
 }
 
 
+std::vector<bool> SpatRaster::is_flipped() {
+	std::vector<bool> x;
+	size_t n = nsrc();
+	x.reserve(n);
+	for (size_t i=0; i<n; i++) {
+		x.push_back(source[i].flipped);
+	}
+	return(x);
+}
+
+
 bool SpatRaster::is_lonlat() {
 	if (source[0].srs.is_lonlat()) {
 		SpatExtent e = getExtent();

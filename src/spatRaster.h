@@ -280,6 +280,8 @@ class SpatRaster {
 		bool is_global_lonlat();
 		int ns_polar();
 
+		std::vector<bool> is_flipped();
+
 		std::vector<double> resolution();
 		SpatRaster setResolution(double xres, double yres);
 		double ncell() { return nrow() * ncol(); }

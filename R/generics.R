@@ -10,6 +10,13 @@ setMethod("is.rotated", signature(x="SpatRaster"),
 )
 
 
+setMethod("is.flipped", signature(x="SpatRaster"),
+	function(x)  {
+		x@pntr$is_flipped()
+	}
+)
+
+
 setMethod("rangeFill", signature(x="SpatRaster"),
 	function(x, limit, circular=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
