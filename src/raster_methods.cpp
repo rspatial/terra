@@ -538,7 +538,8 @@ void compute_aggregates(const std::vector<double> &in, std::vector<double> &out,
 
 
 
-void tabulate_aggregates(const std::vector<double> &in, std::vector<double> &out, size_t nr, size_t nc, std::vector<size_t> dim, SpatCategories &cats, bool narm) {
+void tabulate_aggregates(const std::vector<double> &in, std::vector<double> &out, size_t nr, size_t nc, std::vector<size_t> dim, 
+	const std::map<long, unsigned long long> &counts, bool narm) {
 
 // dim 0, 1, are the aggregations factors dy, dx
 // and 3, 4, 5 are the new nrow, ncol, nlyr
@@ -554,37 +555,69 @@ void tabulate_aggregates(const std::vector<double> &in, std::vector<double> &out
 	size_t adjnr = bpC * dy;
 
 	// number of aggregates
-	size_t nblocks = (bpR * bpC * newNL);
+	size_t nblocks = (bpR * bpC);
 	// cells per aggregate
-	size_t blockcells = dx * dy;
+	//size_t blockcells = dx * dy;
 
-	// output: each row is a block
-	out = std::vector<double>(nblocks, NAN);
-
+	// output: each element is a block
+	out = std::vector<double>(nblocks * newNL, NAN);
 //    size_t ncells = nr * nc;
 
 	for (size_t b = 0; b < nblocks; b++) {
 		size_t rstart = (dy * (b / bpR)) % adjnr;
 		size_t cstart = dx * (b % bpR);
-
-		size_t rmax = std::min(nr, (rstart + dy));  // nrow -> nr
-		size_t cmax = std::min(nc, (cstart + dx));
-
-		size_t f = 0;
-		std::vector<double> a(blockcells, NAN);
-		for (size_t r = rstart; r < rmax; r++) {
-			size_t cell = r * nc;
-			for (size_t c = cstart; c < cmax; c++) {
-				a[f] = in[cell + c];
-				f++;
+		size_t rmax = std::min(nr, rstart + dy);  // nrow -> nr
+		size_t cmax = std::min(nc, cstart + dx);
+		if (!narm) {
+			if ((nr < (rstart + dy)) || (nc < (cstart + dx))) {
+				continue;
 			}
 		}
-		
-		std::vector<size_t> tab;
-		//tabfun(a, tab, narm);
-		for (size_t i=0; i<dim[5]; i++) {
-			size_t off = (b*dim[5]) + i;
-			out[off] = tab[i];
+		std::map<long, unsigned long long> block_counts = counts;
+		if (narm) {
+			for (size_t r = rstart; r < rmax; r++) {
+				size_t cell = r * nc;
+				bool anyval = false;
+				for (size_t c = cstart; c < cmax; c++) {
+					size_t j = cell + c;
+					if (!std::isnan(in[j])) {
+						long j = in[cell + c];
+						block_counts[j]++; 
+						anyval = true;
+					}
+				}
+				long i = 0;
+				if (anyval) {
+					for (auto it = block_counts.begin(); it != block_counts.end(); ++it) {
+						size_t off = b + (i*nblocks);
+						out[off] = it->second;
+						i++;
+					}
+				}
+			}
+		} else {
+			bool nafound = false;
+			for (size_t r = rstart; r < rmax; r++) {
+				if (nafound) break;
+				size_t cell = r * nc;
+				for (size_t c = cstart; c < cmax; c++) {
+					size_t j = cell + c;
+					if (std::isnan(in[j])) {
+						nafound = true;
+						break;
+					}	
+					long k = in[j];
+					block_counts[k]++; 
+				}
+			}
+			if (!nafound) {
+				long i = 0;
+				for (auto it = block_counts.begin(); it != block_counts.end(); ++it) {
+					size_t off = b + (i*nblocks);
+					out[off] = it->second;
+					i++;
+				}			
+			}
 		}
 	}
 }
@@ -595,6 +628,14 @@ void tabulate_aggregates(const std::vector<double> &in, std::vector<double> &out
 SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatRaster out;
+
+	if ((fun == "table") && (nlyr() > 1)) {		
+		SpatOptions ops(opt);
+		SpatRaster out = subset({0}, ops);
+		out = out.aggregate(fact, fun, narm, opt);
+		out.addWarning("only the first layer is used with 'fun=table'");
+		return out;
+	}
 
 	std::string message = "";
 // fact 0, 1, 2, are the aggregation factors dy, dx, dz
@@ -620,11 +661,52 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 	SpatExtent e = SpatExtent(extent.xmin, xmax, ymin, extent.ymax);
 	SpatCategories cats;
 
-	if (fun == "table") {		
-		cats = getLayerCategories(0);
-		fact[5] = cats.d.nrow();
-		out = SpatRaster(fact[3], fact[4], fact[5], e, "");
-		out.setNames(getLabels(0));
+	std::map<long, unsigned long long> counts;
+	if (fun == "table") {
+		std::vector<bool> has_cats = hasCategories();
+		if (has_cats[0]) {
+			cats = getLayerCategories(0);
+			//fact[5] = cats.d.nrow();
+			std::vector<long> uvals = cats.d.getI(0);
+			int n = uvals.size();
+			for (int i=0; i<n; i++) {
+				counts.insert(std::pair<long, unsigned long long>(uvals[i], 0));
+			}
+			fact[5] = counts.size();
+			
+			out = SpatRaster(fact[3], fact[4], fact[5], e, "");
+			if (cats.d.nrow() == counts.size()) {
+				out.setNames(getLabels(0));
+			} else {
+				std::vector<std::string> nms; 
+				nms.reserve(fact[5]);
+				for (auto it = counts.begin(); it != counts.end(); ++it) {
+					nms.push_back(std::to_string(it->first));
+				}			
+				out.setNames(nms);				
+			}
+			
+			
+		} else {
+			SpatOptions tops(opt);
+			std::vector<std::vector<double>> ud = unique(false, 0, true, tops);
+
+			int n = ud[0].size();
+			for (int i=0; i<n; i++) {
+				long v = ud[0][i];
+				counts.insert(std::pair<long, unsigned long long>(v, 0));
+			}
+			fact[5] = counts.size();
+			out = SpatRaster(fact[3], fact[4], fact[5], e, "");
+			std::vector<std::string> nms; 
+			nms.reserve(fact[5]);
+			for (auto it = counts.begin(); it != counts.end(); ++it) {
+				nms.push_back(std::to_string(it->first));
+			}			
+			out.setNames(nms);
+		}
+
+	
 	} else {
 		out = SpatRaster(fact[3], fact[4], fact[5], e, "");
 		out.source[0].time = getTime();
@@ -639,45 +721,14 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 	}
 
 
+	std::function<double(std::vector<double>&, bool)> agFun;
 	if ((fun != "table") && (!haveFun(fun))) {
 		out.setError("unknown function argument");
 		return out;
-	}	
-	std::function<double(std::vector<double>&, bool)> agFun;
-	if (fun == "table") {
-		if (nlyr() > 1) {
-			out.setError("only one layer is allowed when fun='table'");
-			return out;	
-		}
-		std::vector<bool> hc = hasCategories();
-		if (!hc[0]) {
-			out.setError("input must be categorical fun='table'");
-			return out;	
-		}
-	} else if (fun != "") {
+	} else {
 		agFun = getFun(fun);
 	}
 
-
-
-
-/*
-	size_t ifun = std::distance(f.begin(), it);
-	std::string gstring = "";
-	if (ifun > 0) {
-		std::vector<std::string> gf {"average", "min", "max", "med", "mode"};
-		gstring = gf[ifun-1];
-	}
-
-#ifdef useGDAL
-#if GDAL_VERSION_MAJOR >= 3
-	if (gstring != "") {
-		out = warper(out, "", gstring, opt);
-		return out;
-	}
-#endif
-#endif
-*/
 	//BlockSize bs = getBlockSize(4, opt.get_memfrac());
 	opt.progress *= 300;
 	BlockSize bs = getBlockSize(opt);
@@ -722,23 +773,11 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 	//size_t outnc = out.ncol();
 	
 	if (fun == "table") {
-		
-	/*
-		std::vector<std::vector<double>> ud = unique(false, 0, ops);
-		std::vector<long> uvals;
-		uvals.reserve(ud.size());
-		for (size_t i=0; i<ud.size(); i++) uvals.push_back(round(ud[i]));
-		std::map<long, unsigned long long> counts;
-		for (sizt_t =0; i<uvals.size(); i++) {
-			counts[uvals[i]] = 0;
-		}
-	*/
-		
 		for (size_t i = 0; i < bs.n; i++) {
-			std::vector<double> vin, v;
+			std::vector<double> vin, vout;
 			readValues(vin, bs.row[i], bs.nrows[i], 0, nc);
-			tabulate_aggregates(vin, v, bs.nrows[i], nc, fact, cats, narm);
-			if (!out.writeValues(v, i, 1)) return out;
+			tabulate_aggregates(vin, vout, bs.nrows[i], nc, fact, counts, narm);
+			if (!out.writeValues(vout, i, 1)) return out;
 		}
 	} else {
 		for (size_t i = 0; i < bs.n; i++) {

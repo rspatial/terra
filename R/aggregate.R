@@ -42,7 +42,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		toc <- FALSE
 		if (inherits(fun, "character")) {
 			if (fun %in% c("sum", "mean", "min", "max", "median", "modal","prod", "which.min", "which.max",
-					"any", "all", "sd", "std", "sdpop")) {
+					"any", "all", "sd", "std", "sdpop", "table")) {
 				fun[fun == "sdpop"] <- "std"
 				toc <- TRUE
 			} else {

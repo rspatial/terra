@@ -1,4 +1,4 @@
-# version 1.8-16
+# version 1.8-17
 
 ## bug fixes
 
@@ -9,12 +9,15 @@
 - argument xyz="" to the `rast<SpatVector>` method
 - arguments "type" and "breaks" to `plet<SpatRaster>` method [#1187](https://github.com/rspatial/terra/issues/1187) by Augustin Lobo
 - argument "cores" in `lapp<SpatRasterDataset>` [#1190](https://github.com/rspatial/terra/issues/1190) by kel44
+- `aggregate<SpatRaster>` now handles `fun="table"` [#1662](https://github.com/rspatial/terra/issues/1662) by Fernando Aramburu.
 
 ## new
 
+- `is.flipped<SpatRaster` method  [#1627](https://github.com/rspatial/terra/issues/1627)>` by Timothée Giraud
 - `as.array<SpatRasterDataset>` method
 - `distance<SpatRaster,missing>` now has argument "values". If TRUE, the values of the nearest non-target cell is returned instead of the distance [#1243](https://github.com/rspatial/terra/issues/1243) by Simon Dedman
 - `twoClasses<SpatRaster>` [#1233](https://github.com/rspatial/terra/issues/1233) by Agustin Lobo
+
 
 # version 1.8-15
 
