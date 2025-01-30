@@ -5,10 +5,11 @@
 \alias{is.flipped}
 \alias{is.flipped,SpatRaster-method}
   
+  
 \title{Check for rotation}
 
 \description{
-Check if a SpatRaster is "flipped" vertically, and may need to be adjusted with \code{\link{flip}} before it can be used 
+Check if a SpatRaster is "flipped" vertically, and may need to be adjusted with \code{\link{flip}} before it can be used. 
 }
 
 \usage{
