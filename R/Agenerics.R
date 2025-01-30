@@ -10,7 +10,7 @@ if (!isGeneric("NIDP")) {setGeneric("NIDP", function(x, ...) standardGeneric("NI
 if (!isGeneric("flowAccumulation")) {setGeneric("flowAccumulation", function(x, ...) standardGeneric("flowAccumulation"))}
 
 
-if (!isGeneric("twoClasses")) {setGeneric("twoClasses", function(x, ...) standardGeneric("twoClasses"))}
+if (!isGeneric("thresh")) {setGeneric("thresh", function(x, ...) standardGeneric("thresh"))}
 if (!isGeneric("divide")) {setGeneric("divide", function(x, ...) standardGeneric("divide"))}
 
 if (!isGeneric("bestMatch")) {setGeneric("bestMatch", function(x, y, ...) standardGeneric("bestMatch"))}

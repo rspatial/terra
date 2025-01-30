@@ -1,9 +1,9 @@
-\name{twoClasses}
+\name{thresh}
 
 \docType{methods}
 
-\alias{twoClasses}
-\alias{twoClasses,SpatRaster-method}
+\alias{thresh}
+\alias{thresh,SpatRaster-method}
 
 
 \title{Thresholding}
@@ -13,7 +13,7 @@ Compute a threshold to divide the values of a SpatRaster into two groups, and us
 }
 
 \usage{
-\S4method{twoClasses}{SpatRaster}(x, method="otsu", maxcell=1000000, combine=FALSE, 
+\S4method{thresh}{SpatRaster}(x, method="otsu", maxcell=1000000, combine=FALSE, 
 			as.raster=TRUE, filename="", ...)
 }
 
@@ -37,11 +37,11 @@ numeric or SpatRaster
 \examples{
 
 s <- rast(system.file("ex/logo.tif", package="terra"))
-twoClasses(s, "mean", as.raster=FALSE)
-twoClasses(s, "mean", combine=TRUE, as.raster=FALSE)
+thresh(s, "mean", as.raster=FALSE)
+thresh(s, "mean", combine=TRUE, as.raster=FALSE)
 
 
-plot(twoClasses(s, "otsu"))
+plot(thresh(s, "otsu"))
 
 }
 
