@@ -42,6 +42,7 @@ Get the data sources of a SpatRaster or SpatVector or related object. Sources ar
 A vector of filenames, or \code{""} when there is no filename, if \code{nlyr} and \code{bands} are both \code{FALSE}. Otherwise a \code{data.frame}
 }
 
+\seealso{ \code{\link{toMemory}} }
 
 \examples{
 f <- system.file("ex/elev.tif", package="terra")
