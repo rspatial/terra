@@ -31,7 +31,7 @@ Same as \code{x}
 }
 
 
-\seealso{ \code{\link{values}, \link{as.data.frame}, \link{readValues}} }
+\seealso{ \code{\link{values}, \link{as.data.frame}, \link{readValues}, \link{inMemory}} }
 
 
 \examples{
