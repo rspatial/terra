@@ -508,7 +508,7 @@ make.panel <- function(x, maxcell) {
 	if (inherits(cols, "function")) {
 		cols <- cols(ncols)
 	} else {
-		cols <- colorRampPalette(cols)(ncols)		
+		cols <- grDevices::colorRampPalette(cols)(ncols)		
 	}
 	return(list(type=type, x=x, cols=cols))
 
@@ -616,7 +616,7 @@ setMethod("plet", signature(x="SpatRaster"),
 			RGB(x) <- 1:length(y)
 			x <- colorize(x, "col")
 		} else {
-			leg <- .get_cls(x, type=type, dig.lab=3, cols=col, breaks=breaks, breakby=breakby, sort=sort, decreasing=decreasing, ...)
+			leg <- .get_cls(x, type=type, dig.lab=3, cols=col, breaks=breaks, breakby=breakby, ...)
 			x <- leg$x
 			col <- leg$cols
 		}
@@ -634,7 +634,6 @@ setMethod("plet", signature(x="SpatRaster"),
 				} else {
 					map <- leaflet::addLegend(map, position=legend, colors=leg$cols, 
 							labels=levels(x)[[1]][,2], opacity=alpha, title=main)
-
 				}
 			}
 			if (panel) {
