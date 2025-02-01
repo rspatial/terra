@@ -29,7 +29,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
 \arguments{
   \item{x}{SpatRaster, SpatVector or SpatExtent}
-  \item{size}{numeric. The sample size. If \code{x} is a SpatVector, you can also provide a vector of the same length as \code{x} in which case sampling is done separately for each geometry. If \code{x} is a SpatRaster, and you are using \code{method="regular"} you can specify the size as two numbers (number of rows and columns)}
+  \item{size}{numeric. The sample size. If \code{x} is a SpatVector, you can also provide a vector of the same length as \code{x} in which case sampling is done separately for each geometry. If \code{x} is a SpatRaster, and you are using \code{method="regular"} you can specify the size as two numbers (number of rows and columns). Note that when using \code{method="stratified"}, the sample size is returned for each stratum}
   \item{method}{character. Should be "regular" or "random", If \code{x} is a \code{SpatRaster}, it can also be "stratified" (each value in \code{x} is a stratum) or "weights" (each value in \code{x} is a probability weight)}
   \item{replace}{logical. If \code{TRUE}, sampling is with replacement (if \code{method="random"})}
   \item{na.rm}{logical. If \code{TRUE}, \code{NAs} are removed. Only used with random sampling of cell values. That is with \code{method="random", as.raster=FALSE, cells=FALSE}}

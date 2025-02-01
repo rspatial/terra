@@ -25,7 +25,152 @@
 //#include "sort.h"
 #include "math_utils.h"
 
+std::vector<double> SpatVector::distLonLat(std::vector<double> x, std::vector<double> y, std::string unit, std::string method, bool min, bool transp) {
 
+	size_t np = x.size();
+	size_t ng = size();
+	double inf = std::numeric_limits<double>::infinity();
+	std::vector<std::vector<double>> d(np, std::vector<double>(ng, inf));
+	if (type() == "polygons") {
+		std::vector<int> inside = pointInPolygon(x, y);
+		for (size_t i=0; i<ng; i++) {
+			for (size_t j=0; j<np; j++) {
+				if (inside[i*np+j]) {
+					d[j][i] = 0;
+				}
+			}
+		}
+	}
+
+
+	double r = 6378137;
+	double m = 1;
+	if (unit == "km") {
+		r = 6378.137;
+		m = 0.001;
+	}
+	std::function<double(double,double,double,double,double,double,double)> d2seg;
+	if (method != "geo") {
+		deg2rad(x);
+		deg2rad(y);
+		d2seg = dist2segment_cos;
+	} else {
+		d2seg = dist2segment_geo;		
+	}
+	
+	std::vector<double> dout;
+	std::vector<double> vx, vy;
+
+	if (type() == "polygons") {
+		for (size_t g=0; g<ng; g++) {
+			size_t nparts = geoms[g].size();
+			for (size_t h=0; h<nparts; h++) {
+				vx = geoms[g].parts[h].x;
+				vy = geoms[g].parts[h].y;
+				if (method != "geo") {
+					deg2rad(vx);
+					deg2rad(vy);
+				}
+				size_t nseg = vx.size() - 1;
+				for (size_t i=0; i<np; i++) {
+					if (d[i][g] != 0) {
+						for (size_t j=0; j<nseg; j++) {
+							d[i][g] = std::min(d[i][g],
+								d2seg(x[i], y[i], vx[j], vy[j], vx[j+1], vy[j+1], r));
+						}
+					}
+				}
+				size_t nh = geoms[g].parts[h].nHoles();
+				for (size_t k=0; k < nh; k++) {
+					vx = geoms[g].parts[h].holes[k].x;
+					vy = geoms[g].parts[h].holes[k].y;
+					if (method != "geo") {
+						deg2rad(vx);
+						deg2rad(vy);
+					}
+					size_t nseg = vx.size() - 1;
+					for (size_t i=0; i<np; i++) {
+						if (d[i][g] != 0) {
+							for (size_t j=0; j<nseg; j++) {
+								d[i][g] = std::min(d[i][g],
+									d2seg(x[i], y[i], vx[j], vy[j], vx[j+1], vy[j+1], r));
+							}
+						}
+					}
+				}
+			}
+		}
+	} else if (type() == "lines") {
+		for (size_t g=0; g<ng; g++) {
+			size_t nparts = geoms[g].size();
+			for (size_t h=0; h<nparts; h++) {
+				vx = geoms[g].parts[h].x;
+				vy = geoms[g].parts[h].y;
+				if (method != "geo") {
+					deg2rad(vx);
+					deg2rad(vy);
+				}
+				size_t nseg = vx.size() - 1;
+				for (size_t i=0; i<np; i++) {
+					for (size_t j=0; j<nseg; j++) {
+						d[i][g] = std::min(d[i][g],
+							d2seg(x[i], y[i], vx[j], vy[j], vx[j+1], vy[j+1], r));
+					}
+				}
+			}
+		}
+
+
+	} else { // if (type() == "points") {
+		std::vector<std::vector<double>> pts = coordinates();
+		if (method != "geo") {
+			deg2rad(pts[0]);
+			deg2rad(pts[1]);
+		}
+		return pointdistance(x, y, pts[0], pts[1], false, m, true, method);
+	}
+
+
+	if (min) {
+		dout.reserve(d.size());
+		if (transp) {
+			std::vector<double> temp(d.size());
+			for (size_t i=0; i<d[0].size(); i++) {
+				for (size_t j=0; j<d.size(); j++) {
+					temp[i] = d[j][i];
+				}			
+				dout.push_back(vmin(temp, false));				
+			}				
+		} else {
+			for (size_t i=0; i<d.size(); i++) {
+				dout.push_back(vmin(d[i], false));				
+			}
+		}
+	} else {
+		dout.reserve(np*ng);
+		if (transp) {
+			for (size_t i=0; i<d[0].size(); i++) {
+				for (size_t j=0; j<d.size(); j++) {
+					dout.push_back(d[j][i]);				
+				}
+			}				
+		} else {
+			size_t j = 0;
+			for (size_t i=0; i<d.size(); i++) {
+				dout.insert(dout.begin()+j, d[i].begin(), d[i].end());				
+				j += d[i].size();
+			}	
+		}
+	}
+	if ((method == "geo") && (m != 1)) {
+		for (double& v : dout) v *= m;
+	}
+
+	return dout;
+}
+
+
+/*
 std::vector<double> SpatVector::nearestDistLonLat(std::vector<double> x, std::vector<double> y, std::string unit, std::string method) {
 
 // for use with rasterize 
@@ -139,8 +284,8 @@ std::vector<double> SpatVector::nearestDistLonLat(std::vector<double> x, std::ve
 
 	return d;
 }
-
-
+}
+*/
 
 std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::string unit, const std::string method) {
 
@@ -191,10 +336,10 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 			// not ok for multi-points
 			if (gtype == "points") {
 				std::vector<std::vector<double>> xy = coordinates();
-				return x.nearestDistLonLat(xy[0], xy[1], unit, method);					
+				return x.distLonLat(xy[0], xy[1], unit, method, false, false);					
 			} else {
 				std::vector<std::vector<double>> xy = x.coordinates();
-				return nearestDistLonLat(xy[0], xy[1], unit, method);					
+				return distLonLat(xy[0], xy[1], unit, method, false, true);					
 			}
 		} else {
 			return geos_distance(x, pairwise, "", m);
@@ -209,10 +354,10 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 				std::vector<std::vector<double>> xy1 = tmp1.coordinates();
 				for (size_t j=0; j<x.size(); j++) {
 					SpatVector tmp2 = x.subset_rows(long(j));
-					std::vector<double> d1 = tmp2.nearestDistLonLat(xy1[0], xy1[1], unit, method);
+					std::vector<double> d1 = tmp2.distLonLat(xy1[0], xy1[1], unit, method, true, false);
 
 					std::vector<std::vector<double>> xy2 = tmp2.coordinates();
-					std::vector<double> d2 = tmp1.nearestDistLonLat(xy2[0], xy2[1], unit, method);
+					std::vector<double> d2 = tmp1.distLonLat(xy2[0], xy2[1], unit, method, true, false);
 					
 					d.push_back(std::min(vmin(d1, false), vmin(d2, false)));
 				}
@@ -316,9 +461,9 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 				std::vector<std::vector<double>> xy1 = tmp1.coordinates();
 				for (size_t i=0; i<n; i++) {
 					SpatVector tmp2 = subset_rows( (long)i+1 );
-					std::vector<double> d1 = tmp2.nearestDistLonLat(xy1[0], xy1[1], unit, method);
+					std::vector<double> d1 = tmp2.distLonLat(xy1[0], xy1[1], unit, method, true, false);
 					std::vector<std::vector<double>> xy2 = tmp2.coordinates();
-					std::vector<double> d2 = tmp1.nearestDistLonLat(xy2[0], xy2[1], unit, method);
+					std::vector<double> d2 = tmp1.distLonLat(xy2[0], xy2[1], unit, method, true, false);
 					d.push_back(std::min(vmin(d1, false), vmin(d2, false)));
 					tmp1 = tmp2;
 					xy1 = xy2;
@@ -332,9 +477,9 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 					std::vector<std::vector<double>> xy1 = tmp1.coordinates();
 					for (size_t j=(i+1); j<s; j++) {
 						SpatVector tmp2 = subset_rows( long(j) );
-						std::vector<double> d1 = tmp2.nearestDistLonLat(xy1[0], xy1[1], unit, method);
+						std::vector<double> d1 = tmp2.distLonLat(xy1[0], xy1[1], unit, method, true, false);
 						std::vector<std::vector<double>> xy2 = tmp2.coordinates();
-						std::vector<double> d2 = tmp1.nearestDistLonLat(xy2[0], xy2[1], unit, method);
+						std::vector<double> d2 = tmp1.distLonLat(xy2[0], xy2[1], unit, method, true, false);
 						d.push_back(std::min(vmin(d1, false), vmin(d2, false)));
 					}
 				}
