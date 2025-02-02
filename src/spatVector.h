@@ -202,8 +202,8 @@ class SpatVector {
 
 //		std::vector<double> pointdistance_seq(const std::vector<double>& px, const std::vector<double>& py, double m, bool lonlat);
 
-
-		std::vector<double> distLonLat(std::vector<double> x, std::vector<double> y, std::string unit, std::string method, bool min, bool transp);
+		std::vector<double> distLonLat(SpatVector p, std::string unit, std::string method, bool transp);
+//		std::vector<double> distLonLat(std::vector<double> x, std::vector<double> y, std::string unit, std::string method, bool transp);
 		//std::vector<double> nearestDistLonLat(std::vector<double> x, std::vector<double> y, std::string unit, std::string method);
 		std::vector<std::vector<size_t>> knearest(size_t k);
 

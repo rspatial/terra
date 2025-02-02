@@ -1594,6 +1594,8 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation, bool pre
 	size_t nx = size();
 	size_t ny = v.size();
 
+	out.reserve(nx * ny);
+
 	if (!index) {
 		out.reserve(nx*ny);
 		if (pattern == 1) {
