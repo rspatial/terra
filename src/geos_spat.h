@@ -657,7 +657,7 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 
 		} else if (gt == "GeometryCollection") {
 
-			bool first=true;
+			bool firstlin=true, firstpol=true, firstpnt=true;
 			size_t kk = 0; // introduced for intersect
 			for(size_t j = 0; j<np; j++) {
 
@@ -693,18 +693,18 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 							out.setError(msg);
 							return out;
 						}
-						if (track_ids && first) {
+						if (track_ids && firstpol) {
 							pol_ids.push_back(ids[i]);
-							first=false;
+							firstpol=false;
 						}
 					} else if (ggt == "Point" || ggt == "MultiPoint") {
 						if (!pointsFromGeom(hGEOSCtxt, part, f, k, pt_x, pt_y, pt_gid, pt_gp, pt_hole, msg)) {
 							out.setError(msg);
 							return out;
 						}
-						if (track_ids && first) {
+						if (track_ids && firstpnt) {
 							pts_ids.push_back(ids[i]);
-							first=false;
+							firstpnt=false;
 						}
 
 					} else if (ggt == "LineString" || ggt == "MultiLineString") {
@@ -712,9 +712,9 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 							out.setError(msg);
 							return out;
 						}
-						if (track_ids && first) {
+						if (track_ids && firstlin) {
 							lin_ids.push_back(ids[i]);
-							first=false;
+							firstlin=false;
 						}
 
 					} else {

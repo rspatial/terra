@@ -971,8 +971,9 @@ SpatVector SpatVector::crop(SpatVector v) {
 
 	if (!result.empty()) {
 //		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
-		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids);
-		out = coll.get(0);
+//		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids);
+		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids, true, false);
+		out = coll.get(0);	
 //		std::vector<std::string> nms = out.get_names();
 //		out = out.aggregate(nms[0], true);
 		out.df = df.subset_rows(out.df.iv[0]);
