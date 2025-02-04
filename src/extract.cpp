@@ -203,7 +203,7 @@ std::vector<std::vector<double>> SpatRaster::extractBuffer(const std::vector<dou
 		return out;
 	}
 	if (nlyr() > 1) {
-		setError("can only do this for one layer at a time");
+		setError("can only use a search_radius for one layer at a time");
 		return out;
 	}
 

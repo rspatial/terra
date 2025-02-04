@@ -233,7 +233,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		if (search_radius > 0) {
 			pts <- crds(y)
 			e <- x@pntr$extractBuffer(pts[,1], pts[,2], search_radius)
-			messages(x)
+			messages(x, "extract")
 			e <- do.call(cbind, e)
 			colnames(e) <- c(names(x)[1], "distance", "cell")		
 			e[,3] <- e[,3] + 1
@@ -555,12 +555,20 @@ extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE, bil
 
 setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 	function(x, y, first, last, lyr_fun=NULL, geom_fun=NULL, ID=FALSE, na.rm=TRUE, ...) {
+		
+		if (is.vector(y)) {
+			y <- xyFromCell(x, y)
+		}
 
 		first <- getLyrNrs(first, names(x), nrow(y)) + 1 
-		last  <- getLyrNrs(last,  names(x), nrow(y)) + 1	
-		e <- extract(x, y, geom_fun, ID=TRUE, na.rm=na.rm, ...)
-		if (nrow(e) != nrow(y)) {
-			error("range_extract", "geom_fun must return a single value for each geometry/layer")
+		last  <- getLyrNrs(last,  names(x), nrow(y)) + 1
+		if (inherits(y, "SpatVector")) {
+			e <- extract(x, y, geom_fun, ID=TRUE, na.rm=na.rm, ...)
+			if (nrow(e) != nrow(y)) {
+				error("extractRange", "geom_fun must return a single value for each geometry/layer")
+			}
+		} else {
+			e <- cbind(ID=1:nrow(y), extract(x, y, ...))
 		}
 		a <- lapply(1:nrow(e), function(i) e[i, c(first[i]:last[i])])
 		if (!is.null(lyr_fun)) {
@@ -570,7 +578,7 @@ setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 			if (is.list(a)) {
 				names(a) <- 1:nrow(y)
 			} else {
-				a <- data.frame(ID=1:nrow(y), value=a)
+				a <- data.frame(ID=1:nrow(a), value=a)
 			}
 		}
 		a
