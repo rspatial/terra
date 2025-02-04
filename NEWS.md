@@ -1,8 +1,9 @@
-# version 1.8-17
+# version 1.8-18
 
 ## bug fixes
 
 - `sieve` failed with large rasters [#1729](https://github.com/rspatial/terra/issues/1729) by Reed Humphrey
+- `extractRange` only worked for SpatVector, not for matrix or vector [#1733](https://github.com/rspatial/terra/issues/1733) by Victor Van der Meersch
 
 ## enhancements
 
