@@ -556,19 +556,15 @@ extractAlong <- function(x, y, ID=TRUE, cells=FALSE, xy=FALSE, online=FALSE, bil
 setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 	function(x, y, first, last, lyr_fun=NULL, geom_fun=NULL, ID=FALSE, na.rm=TRUE, ...) {
 		
-		if (is.vector(y)) {
-			y <- xyFromCell(x, y)
-		}
-
-		first <- getLyrNrs(first, names(x), nrow(y)) + 1 
-		last  <- getLyrNrs(last,  names(x), nrow(y)) + 1
+		first <- getLyrNrs(first, names(x), NROW(y)) + 1 
+		last  <- getLyrNrs(last,  names(x), NROW(y)) + 1
 		if (inherits(y, "SpatVector")) {
 			e <- extract(x, y, geom_fun, ID=TRUE, na.rm=na.rm, ...)
 			if (nrow(e) != nrow(y)) {
 				error("extractRange", "geom_fun must return a single value for each geometry/layer")
 			}
 		} else {
-			e <- cbind(ID=1:nrow(y), extract(x, y, ...))
+			e <- cbind(ID=1:NROW(y), extract(x, y, ...))
 		}
 		a <- lapply(1:nrow(e), function(i) e[i, c(first[i]:last[i])])
 		if (!is.null(lyr_fun)) {
@@ -576,13 +572,12 @@ setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 		}
 		if (ID) {
 			if (is.list(a)) {
-				names(a) <- 1:nrow(y)
+				names(a) <- 1:NROW(y)
 			} else {
 				a <- data.frame(ID=1:nrow(a), value=a)
 			}
 		}
 		a
-		
 	}
 )
 
