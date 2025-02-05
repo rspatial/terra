@@ -407,6 +407,7 @@ function(x, y, cells=FALSE, xy=FALSE) {
 	if (cells) {
 		v <- cbind(cell=y, v)
 	}
+	v
 }
 )
 
@@ -564,7 +565,7 @@ setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 				error("extractRange", "geom_fun must return a single value for each geometry/layer")
 			}
 		} else {
-			e <- cbind(ID=1:NROW(y), extract(x, y, ...))
+			e <- data.frame(ID=1:NROW(y), extract(x, y, ...))
 		}
 		a <- lapply(1:nrow(e), function(i) e[i, c(first[i]:last[i])])
 		if (!is.null(lyr_fun)) {

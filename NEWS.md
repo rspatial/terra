@@ -4,6 +4,7 @@
 
 - `sieve` failed with large rasters [#1729](https://github.com/rspatial/terra/issues/1729) by Reed Humphrey
 - `extractRange` only worked for SpatVector, not for matrix or vector [#1733](https://github.com/rspatial/terra/issues/1733) by Victor Van der Meersch
+- `extract<SpatRaster>` over https with a multilayer SpatRaster returned the values for the first layer for all layer [#1736](https://github.com/rspatial/terra/issues/1736) by Shannon Albeke
 
 ## enhancements
 
