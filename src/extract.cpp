@@ -86,23 +86,20 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 	for (size_t k=outstart; k<outend; k++) {
 		out[k] = std::vector<double>(n, NAN);
 	}
-	
-	
+
 	for (size_t i=0; i<bs.n; i++) {
 		if (!useblock[i]) continue;
 		std::vector<double> v;
 		rs.readBlock(v, bs, i);
 		int_64 rstart = bs.row[i];
 		int_64 rend = bs.row[i] + bs.nrows[i];
+		size_t off1 = bs.nrows[i] * nc;
 		for (size_t j=0; j<n; j++) {
 //			if (rows[j] >= rend) break; // if rows are sorted
 			if ((rows[j] >= rstart) && (rows[j] < rend)) {
 				size_t cell = (rows[j]-rstart) * nc + cols[j];
 				for (size_t lyr=0; lyr<nl; lyr++) {
-					size_t off = lyr * bs.nrows[i] * nc;
-					for (size_t k=outstart; k<outend; k++) {
-						out[k][j] = v[cell+off]; 
-					}
+					out[outstart + lyr][j] = v[cell+lyr * off1]; 
 				}
 			}
 		}
