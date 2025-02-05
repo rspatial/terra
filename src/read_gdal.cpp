@@ -2017,13 +2017,21 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	} else {
 		// eliminate sources based on names like "*_bnds" and "lat"
 		std::vector<int> rows, cols;
-		for (size_t i=0; i<info[1].size(); i++) {
+		for (size_t i=0; i<info[1].size(); i++) {			
 			if (ncdf_good_ends(info[1][i])) {
 				sd.push_back(info[0][i]);
 				varname.push_back(info[1][i]);
 				srcname.push_back(info[2][i]);
-				rows.push_back(std::stol(info[3][i]));
-				cols.push_back(std::stol(info[4][i]));
+				try {
+					rows.push_back(std::stol(info[3][i]));
+				} catch(...) {
+					rows.push_back(0);					
+				}
+				try {
+					cols.push_back(std::stol(info[4][i]));
+				} catch(...) {
+					cols.push_back(0);					
+				}
 			}
 		}
 		if (sd.empty()) { // all were removed
