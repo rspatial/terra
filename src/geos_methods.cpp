@@ -951,9 +951,7 @@ SpatVector SpatVector::crop(SpatVector v) {
 	ids.reserve(nx);
 
 	for (size_t i = 0; i < nx; i++) {
-	//	Rcpp::Rcout << "intersection " << i;
 		GEOSGeometry* geom = GEOSIntersection_r(hGEOSCtxt, x[i].get(), y[0].get());
-	//	Rcpp::Rcout << " done" << std::endl;
 		if (geom == NULL) {
 			out.setError("GEOS exception");
 			geos_finish(hGEOSCtxt);

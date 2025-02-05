@@ -22,11 +22,7 @@ setMethod("zoom", signature(x="SpatRaster"),
 		if (new) {
 			grDevices::dev.new()
 		}
-		if (!is.null(RGB(x))) {
-			x <- crop(x, e)
-		} else {
-			x <- crop(x[[layer]], e)
-		}
+		window(x) <- e
 		plot(x, maxcell=maxcell, ...)
 		return(invisible(e))
 	}

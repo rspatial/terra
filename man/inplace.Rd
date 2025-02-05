@@ -25,6 +25,9 @@
 \alias{set.crs,SpatRaster-method}
 \alias{set.crs,SpatVector-method}
 
+\alias{set.window}
+\alias{set.window,SpatRaster-method}
+  
   
 \title{Change values in-place}
 
@@ -40,6 +43,8 @@ These "in-place" replacement methods assign new value to an object without makin
 \code{set.cats} is the in-place replacement version of \code{\link{categories}}
 
 \code{set.crs} is the in-place replacement version of \code{\link{crs<-}}
+
+\code{set.window} is the in-place replacement version of \code{\link{window<-}}
 }
 
 \usage{
