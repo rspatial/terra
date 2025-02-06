@@ -65,7 +65,7 @@ Note that there are operating system level limitations to the number of files th
 \item{snap}{character. One of "near", "in", or "out", to indicate how the extent of \code{\link{window}} should be "snapped" to \code{x}}
 \item{vsi}{logical. If \code{TRUE}, "\\vsicurl\\" is prepended to filenames that start with "http"}
 \item{raw}{logical. If \code{TRUE}, scale and offset values are ignored. See \code{\link{scoff}} to get these parameters}
-\item{noflip}{logical. If \code{TRUE}, a raster that has no spatial extent, and that is considered vertically flipped by GDAL because the assinged extent's (\code{ymax < ymin}), is not considered flipped (see \code{is.flipped}). This avoids the need to \code{\link{flip}} non-georefernced images (e.g. JPEG) vertically}
+\item{noflip}{logical. If \code{TRUE}, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (\code{ymax < ymin}), is not considered flipped. This avoids the need to \code{\link{flip}} the raster vertically}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}

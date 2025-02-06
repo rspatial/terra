@@ -935,6 +935,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		if (adfGeoTransform[5] > 0) {
 			if (noflip) {
 				warn = false;
+				s.extset = true;
 			} else {
 				s.flipped = true;
 			}
