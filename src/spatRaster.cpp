@@ -31,14 +31,13 @@
 
 SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options) {
 #ifdef useGDAL
-	constructFromFile(fname, subds, subdsname, drivers, options);
+	constructFromFile(fname, subds, subdsname, drivers, options, false);
 #endif
 }
 
 
-SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options,std::vector<size_t> xyz) {
-// argument "x" is ignored. It is only there to have four arguments such that the  module
-// can distinguish this constructor from another with three arguments.
+SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz, bool noflip) {
+
 	if (fname.empty()) {
 		setError("no filename");
 		return;
@@ -50,14 +49,14 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 		return;
 	}
 
-	if (!constructFromFile(fname[0], subds, subdsname, drivers, options)) {
+	if (!constructFromFile(fname[0], subds, subdsname, drivers, options, noflip)) {
 		//setError("cannot open file: " + fname[0]);
 		return;
 	}
 	SpatOptions opt;
 	for (size_t i=1; i<fname.size(); i++) {
 		SpatRaster r;
-		bool ok = r.constructFromFile(fname[i], subds, subdsname, drivers, options);
+		bool ok = r.constructFromFile(fname[i], subds, subdsname, drivers, options, noflip);
 		if (r.msg.has_warning) {
 			addWarning(r.msg.warnings[0]);
 		}

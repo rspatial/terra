@@ -20,6 +20,7 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) {
 }
 */
 
+
 Rcpp::List getBlockSizeR(SpatRaster* r, SpatOptions* opt) {
 	BlockSize bs = r->getBlockSize(*opt);
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
@@ -506,9 +507,10 @@ RCPP_MODULE(spat){
 		.method("set_crs", (bool (SpatVector::*)(std::string crs))( &SpatVector::setSRS))
 		//.method("prj", &SpatVector::getPRJ)
 
+		.method("get_index", &SpatVector::get_index)
+
 		.method("distance_self", (std::vector<double> (SpatVector::*)(bool, std::string, const std::string))( &SpatVector::distance))
 		.method("distance_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string, const std::string))( &SpatVector::distance))
-
 		.method("point_distance", &SpatVector::pointdistance)
 
 //		.method("geosdist_self", (std::vector<double> (SpatVector::*)(bool, std::string))( &SpatVector::geos_distance))
@@ -660,7 +662,7 @@ RCPP_MODULE(spat){
 	class_<SpatRaster>("SpatRaster")
 		.constructor()
 	 // .constructor<std::string, int>()
-		.constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<std::string>, std::vector<size_t>>()
+		.constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<std::string>, std::vector<size_t>, bool>()
 		
 		.constructor<std::vector<size_t>, std::vector<double>, std::string>()
 		//.finalizer(&SpatRaster_finalizer)

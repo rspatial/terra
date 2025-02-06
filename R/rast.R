@@ -228,7 +228,7 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE) {
 
 		f <- .fullFilename(x, vsi=vsi)
 		if (length(f) == 0) {
@@ -251,9 +251,9 @@ setMethod("rast", signature(x="character"),
 		if (length(subds) == 0) subds = 0
 		if (is.character(subds)) {
 			#r@pntr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
-			r@pntr <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[])
+			r@pntr <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[], noflip)
 		} else {
-			r@pntr <- SpatRaster$new(f, subds-1, "", FALSE, drivers, opts, 0[])
+			r@pntr <- SpatRaster$new(f, subds-1, "", FALSE, drivers, opts, 0[], noflip)
 		}
 		r <- messages(r, "rast")
 		if (r@pntr$getMessage() == "ncdf extent") {
@@ -287,6 +287,8 @@ setMethod("rast", signature(x="character"),
 
 multi <- function(x, subds=0, xyz=3:1, drivers=NULL, opts=NULL) {
 
+	noflip <- FALSE
+
 	x <- trimws(x)
 	x <- x[x!=""]
 	if (length(x) == 0) {
@@ -300,9 +302,9 @@ multi <- function(x, subds=0, xyz=3:1, drivers=NULL, opts=NULL) {
 	subds <- subds[1]
 
 	if (is.character(subds)) {
-		r@pntr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, xyz-1)
+		r@pntr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, xyz-1, isTRUE(noflip[1]))
 	} else {
-		r@pntr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, xyz-1)
+		r@pntr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, xyz-1, isTRUE(noflip[1]))
 	}
 	if (r@pntr$getMessage() == "ncdf extent") {
 		test <- try(r <- .ncdf_extent(r), silent=TRUE)

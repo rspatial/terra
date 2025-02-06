@@ -661,7 +661,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				SpatRaster sub;
-				if (sub.constructFromFile(s, {-1}, {""}, {}, options)) {
+				if (sub.constructFromFile(s, {-1}, {""}, {}, options, false)) {
 					std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
 					if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
 						addWarning("skipped (different geometry): " + s);
@@ -735,7 +735,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				SpatRaster sub;
-				if (sub.constructFromFile(s, {-1}, {""}, {}, options)) {
+				if (sub.constructFromFile(s, {-1}, {""}, {}, options, false)) {
 					push_back(sub, basename_sds(s));
 				} else {
 					addWarning("skipped (fail): " + s);
@@ -826,7 +826,7 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 
 
 
-bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options) {
+bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip) {
 
 	if (fname == "WCS:") {
 		// for https://github.com/rspatial/terra/issues/1505
@@ -915,8 +915,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		//ymin = roundn(ymin, 9);
 
 		if (adfGeoTransform[5] > 0) {
-
-			s.flipped = true;
 			std::swap(ymin, ymax);
 		}
 
@@ -932,10 +930,14 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			addWarning("the data in this file are rotated. Use 'rectify' to fix that");
 		}
 	} else {
-
+		bool warn=true;
 		hasExtent = false;
 		if (adfGeoTransform[5] > 0) {
-			s.flipped = true;
+			if (noflip) {
+				warn = false;
+			} else {
+				s.flipped = true;
+			}
 		}
 		SpatExtent e(0, s.ncol, 0, s.nrow);
 		s.extent = e;
@@ -946,7 +948,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			#else
 			addWarning("unknown extent. Cells not equally spaced?");
 			#endif
-		} else {
+		} else if (warn) {
 			addWarning("unknown extent");
 		}
 
@@ -2060,7 +2062,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	size_t cnt;
 
     for (cnt=0; cnt < sd.size(); cnt++) {
-		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options)) break;
+		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options, false)) break;
 	}
 //	source[0].source_name = srcname[cnt];
 
@@ -2071,7 +2073,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	SpatOptions opt;
     for (size_t i=(cnt+1); i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
-		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options);
+		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options, false);
 		if (success) {
 			if (out.compare_geom(*this, false, false, 0.1)) {
 //				out.source	[0].source_name = srcname[i];
