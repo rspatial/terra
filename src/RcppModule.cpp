@@ -507,7 +507,7 @@ RCPP_MODULE(spat){
 		.method("set_crs", (bool (SpatVector::*)(std::string crs))( &SpatVector::setSRS))
 		//.method("prj", &SpatVector::getPRJ)
 
-		.method("get_index", &SpatVector::get_index)
+//		.method("get_index", &SpatVector::get_index)
 
 		.method("distance_self", (std::vector<double> (SpatVector::*)(bool, std::string, const std::string))( &SpatVector::distance))
 		.method("distance_other", (std::vector<double> (SpatVector::*)(SpatVector, bool, std::string, const std::string))( &SpatVector::distance))
