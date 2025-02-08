@@ -38,7 +38,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 			weights <- crop(weights, ext)
 		}
 	} else {
-		cells <- cells(x)	
+		cells <- 1:ncell(x)	
 	}
 	
 	if (!is.null(weights)) {
@@ -48,7 +48,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 		if (!compareGeom(x, weights)) {
 			error("spatSample", "geometry of weights does not match the geometry of x")
 		}
-		v <- cbind(cell=cells, values(x), values(weights))
+		v <- na.omit(cbind(cell=cells, values(x), values(weights)))
 		v <- v[!is.na(v[,2]), ]
 		uv <- sort(unique(v[,2]))
 		ys <- vector(mode="list", length=length(uv))

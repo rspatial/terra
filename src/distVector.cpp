@@ -25,7 +25,7 @@
 //#include "sort.h"
 #include "math_utils.h"
 
-
+#include "Rcpp.h"
 
 double polDistLonLat(SpatVector &p1, SpatVector &p2, std::string unit, std::string method) {
 
@@ -128,6 +128,8 @@ double polDistLonLat(SpatVector &p1, SpatVector &p2, std::string unit, std::stri
 
 	return d;
 }
+
+
 
 
 

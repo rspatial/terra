@@ -1382,7 +1382,10 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 	if (round && (digits > 0)) {
 		tmp = tmp.math2("round", digits, topt);
 		round = false;
+	} else if (tmp.source[0].extset) { 
+		tmp = tmp.hardCopy(topt);
 	}
+
 /*
 	} else if (tmp.sources_from_file()) {
 		// for NAN and INT files. Should have a check for that
@@ -1392,9 +1395,6 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 	}
 */
 	
-	if (tmp.source[0].extset) { // || tmp.source[0].flipped) {
-		tmp = tmp.hardCopy(topt);
-	}
 
 	GDALDatasetH rstDS;
 	if (!tmp.open_gdal(rstDS, 0, false, topt)) {
@@ -1513,6 +1513,18 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		return out;
 	}
 
+	std::vector<size_t> lyrs = {r, g, b};
+	SpatOptions ops(opt);
+	SpatRaster tmp = subset(lyrs, ops);
+
+	if (source[0].extset) {
+		SpatOptions topt(opt);
+		tmp = tmp.hardCopy(topt);
+		return tmp.rgb2col(r, g, b, opt);
+	} else {
+		tmp = tmp.collapse_sources();
+	}
+
 	std::string filename = opt.get_filename();
 	opt.set_datatype("INT1U");
 	std::string driver;
@@ -1539,12 +1551,8 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		}
 	}
 
-	std::vector<size_t> lyrs = {r, g, b};
-	SpatOptions ops(opt);
-	*this = subset(lyrs, ops);
-	*this = collapse_sources();
 	GDALDatasetH hSrcDS, hDstDS;
-	if (!open_gdal(hSrcDS, 0, false, ops)) {
+	if (!tmp.open_gdal(hSrcDS, 0, false, ops)) {
 		out.setError("cannot create dataset from source");
 		return out;
 	}
@@ -1766,6 +1774,18 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 		out.setError("input raster has no values");
 		return out;
 	}
+	
+	if (source[0].extset) { 
+		SpatOptions topt(opt);
+		SpatRaster etmp;
+		if (nlyr() > 1) {
+			etmp = etmp.subset({0}, topt);
+			etmp = etmp.hardCopy(topt);
+		} else {
+			etmp = hardCopy(topt);
+		}
+		return etmp.proximity(target, exclude, keepNA, unit, buffer, maxdist, remove_zero, opt);
+	}
 
 	std::string filename = opt.get_filename();
 	std::string driver;
@@ -1926,6 +1946,13 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 		return out;
 	}
 	
+		
+	if (source[0].extset) { 
+		SpatOptions topt(opt);
+		SpatRaster etmp = hardCopy(topt);
+		return etmp.sieveFilter(threshold, connections, opt);
+	}
+
 
 	std::string tmp_filename = "";
 	std::string driver = "MEM";

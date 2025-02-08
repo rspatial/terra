@@ -58,6 +58,8 @@ setMethod("divide", signature(x="SpatRaster"),
 			start <- match.arg(tolower(start), c("ns", "ew"))
 			north <- start == "ns"
 		}
+
+		xall <- rast(x)
 		
 		if (!hasValues(x)) {
 			out <- x
@@ -77,7 +79,6 @@ setMethod("divide", signature(x="SpatRaster"),
 			}
 			out <- as.polygons(out)
 		} else {
-		
 			x <- classify(trim(x), cbind(NA, 0))
 			out <- list(x)
 			if (length(n) > 1) {
@@ -111,8 +112,9 @@ setMethod("divide", signature(x="SpatRaster"),
 			border <- as.polygons(not.na(x), TRUE)
 			out <- crop(out, border)
 		}
+		
 		if (isTRUE(as.raster) || is.na(as.raster)) {
-			r <- rasterize(out, x, "zones")
+			r <- rasterize(out, xall, "zones")
 			if (is.na(as.raster)) {
 				return(list(r=r, v=out))
 			} else {

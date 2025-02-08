@@ -3,9 +3,10 @@
 setMethod("set.window", signature(x="SpatRaster"),
 	function(x, value)  {
 		if (inherits(value, "SpatExtent")) {
-			value <- value * ext(x)
+			window(x) <- NULL
+			value <- intersect(ext(x), value)
 			if (!(x@pntr$setWindow(value@pntr))) {
-				error("window<-,SpatRaster", "could not set window")
+				error("window<-,SpatRaster", "cannot set this window")
 			}
 		} else if (is.null(value) || is.na(value)) {
 			x@pntr$removeWindow()
