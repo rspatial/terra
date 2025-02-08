@@ -59,10 +59,10 @@
 <dd><p>positive integer. Maximum number of cells to use to compute the threshold</p></dd>
 
 <dt id="arg-combine">combine<a class="anchor" aria-label="anchor" href="#arg-combine"></a></dt>
-<dd><p>logical. If <code>TRUE</code> the layers of <code>x</code> are combine to compute a single threshold</p></dd>
+<dd><p>logical. If <code>TRUE</code> the layers of <code>x</code> are combined to compute a single threshold</p></dd>
 
 <dt id="arg-as-raster">as.raster<a class="anchor" aria-label="anchor" href="#arg-as-raster"></a></dt>
-<dd><p>logical. If <code>TRUE</code> a classified SpatRaster is returned. Otherwise the threshold(s) are retured</p></dd>
+<dd><p>logical. If <code>TRUE</code> a classified SpatRaster is returned. Otherwise the threshold(s) are returned</p></dd>
 
 <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>character. Output filename</p></dd>
@@ -74,6 +74,12 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>numeric or SpatRaster</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Otsu, N. (1979). A Threshold Selection Method from Gray-Level Histograms.
+<em>IEEE Transactions on Systems, Man, and Cybernetics</em>, <b>9(1)</b>, 62-66.
+<a href="https://doi.org/10.1109/TSMC.1979.4310076" class="external-link">doi:10.1109/TSMC.1979.4310076</a></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
