@@ -5,7 +5,7 @@
 \title{add a custom legend}
 
 \description{ 
-Wrapper around \code{\link{legend}} that allows adding a custom legend to a map using a keyword such as "topleft" or "bottomright". This function will place the legend in the locations within the mapped area as delineated by the axes.
+Wrapper around \code{\link[graphics]{legend}} that allows adding a custom legend to a map using a keyword such as "topleft" or "bottomright". This function will place the legend in the locations within the mapped area as delineated by the axes.
 }
 
 \usage{
@@ -16,7 +16,7 @@ add_legend(x, y, ...)
 \arguments{
   \item{x}{The keyword to be used to position the legend (or the x coordinate)}
   \item{y}{The y coordinate to be used to position the legend (is x is also a coordinate)}
-  \item{...}{arguments passed to \code{\link{legend}}}
+  \item{...}{arguments passed to \code{\link[graphics]{legend}}}
 }
 
 

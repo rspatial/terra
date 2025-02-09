@@ -49,5 +49,6 @@ double distance_geo(double lon1, double lat1, double lon2, double lat2);
 
 double direction_cos(double& lon1, double& lat1, double& lon2, double& lat2);
 
+double dist2segment_hav(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r=6378137.);
 double dist2segment_cos(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r=6378137.);
 double dist2segment_geo(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double notused=0.);

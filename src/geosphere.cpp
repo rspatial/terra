@@ -107,7 +107,6 @@ double direction_geo(double lon1, double lat1, double lon2, double lat2) {
 
 
 double direction_cos(double& lon1, double& lat1, double& lon2, double& lat2) {
-	
 	if ((lon1 == lon2) && (lat1 == lat2)) return 0; // NAN?
 	double dLon = lon2 - lon1;
     double y = sin(dLon)  * cos(lat2); 
@@ -142,6 +141,16 @@ inline double dist2track_cos(double lon1, double lat1, double lon2, double lat2,
 	double xtr = asin(sin(b3-b2) * sin(d)) * r;
 	return sign ? xtr : fabs(xtr);
 }
+
+
+inline double dist2track_hav(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign, double r=6378137) {
+	double b2 = direction_cos(lon1, lat1, lon2, lat2);
+	double b3 = direction_cos(lon1, lat1, plon, plat);
+	double d = distance_hav_r(lon1, lat1, plon, plat, 1);
+	double xtr = asin(sin(b3-b2) * sin(d)) * r;
+	return sign ? xtr : fabs(xtr);
+}
+
 
 
 double alongTrackDistance_geo(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r=6378137) {
@@ -179,6 +188,24 @@ double alongTrackDistance_cos(double lon1, double lat1, double lon2, double lat2
 
 
 
+double alongTrackDistance_hav(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r=6378137) {
+
+	double tc = direction_cos(lon1, lat1, lon2, lat2); // * toRad
+	double tcp = direction_cos(lon1, lat1, plon, plat); // * toRad
+    double dp = distance_hav_r(lon1, lat1, plon, plat, 1);
+	double xtr = asin(sin(tcp-tc) * sin(dp));
+
+// +1/-1 for ahead/behind [lat1,lon1]
+	double bearing = get_sign(cos(tc - tcp));
+	double angle = cos(dp) / cos(xtr);
+
+// Fixing limits for the angle between [-1, 1] to avoid NaNs from acos
+	angle = angle > 1 ? 1 : angle < -1 ? -1 : angle;
+	double dist = bearing * acos(angle) * r;
+	return fabs(dist);
+}
+
+
 // the alongTrackDistance is the length of the path along the great circle to the point of intersection
 // there are two, depending on which node you start
 // we want to use the min, but the max needs to be < segment length
@@ -208,6 +235,19 @@ double dist2segment_cos(double plon, double plat, double lon1, double lat1, doub
 	}
 	return dist2track_cos(lon1, lat1, lon2, lat2, plon, plat, false, r);
 }
+
+double dist2segment_hav(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r) {
+	double seglength = distance_hav_r(lon1, lat1, lon2, lat2, r);
+	double trackdist1 = alongTrackDistance_hav(lon1, lat1, lon2, lat2, plon, plat, r);
+	double trackdist2 = alongTrackDistance_hav(lon2, lat2, lon1, lat1, plon, plat, r);
+	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+		double d1 = distance_hav_r(lon1, lat1, plon, plat, r);
+		double d2 = distance_hav_r(lon2, lat2, plon, plat, r);
+		return d1 < d2 ? d1 : d2;
+	}
+	return dist2track_hav(lon1, lat1, lon2, lat2, plon, plat, false, r);
+}
+
 
 // [[Rcpp::export]]
 double dist2segmentPoint_geo(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double &ilon, double &ilat) {

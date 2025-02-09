@@ -43,9 +43,7 @@ setMethod("buffer", signature(x="SpatRaster"),
 setMethod("distance", signature(x="SpatRaster", y="missing"), 
 	function(x, y, target=NA, exclude=NULL, unit="m", method="haversine", maxdist=NA, values=FALSE, filename="", ...) {
 
-		if (!(method %in% c("geo", "haversine", "cosine"))) {
-			error("distance", "not a valid method. Should be one of: 'geo', 'haversine', 'cosine'")
-		}
+		method <- match.arg(tolower(method), c("cosine", "haversine", "geo"))
 		opt <- spatOptions(filename, ...)
 		target <- as.numeric(target[1])
 		keepNA <- FALSE
@@ -95,9 +93,7 @@ setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
 		opt <- spatOptions(filename, ...)
 		unit <- as.character(unit[1])
 
-		if (!(method %in% c("geo", "haversine", "cosine"))) {
-			error("distance", "not a valid method. Should be one of: 'geo', 'haversine', 'cosine'")
-		}
+		method <- match.arg(tolower(method), c("cosine", "haversine", "geo"))
 
 		x@pntr <- x@pntr$vectDistance(y@pntr, rasterize, unit, method, opt)
 
@@ -145,9 +141,7 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 			error("distance", "If 'x' is a SpatVector, 'y' should be a SpatVector or missing")
 		}
 
-		if (!(method %in% c("geo", "haversine", "cosine"))) {
-			error("distance", "not a valid method. Should be one of: 'geo', 'haversine', 'cosine'")
-		}
+		method <- match.arg(tolower(method), c("cosine", "haversine", "geo"))
 
 		if (sequential) {
 			return( x@pntr$distance_self(sequential, unit, method))
