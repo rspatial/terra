@@ -744,6 +744,8 @@ bool find_segments(GEOSContextHandle_t hGEOSCtxt, std::vector<double> &x, std::v
 
 SpatVector SpatVector::split_lines(SpatVector v) {
 
+// check GEOS version 
+
 	SpatVector out = *this;
 	std::vector<size_t> si;
 	std::vector<double> sx, sy;
@@ -756,9 +758,9 @@ SpatVector SpatVector::split_lines(SpatVector v) {
 		for (size_t j=0; j<x.size(); j++) {
 			if (x[j] == 1) {
 				std::vector<std::vector<double>> xy2 = tmp.coordinates();
-				if (find_segments(hGEOSCtxt, xy1[0], xy1[1], xy2[0], xy2[1], si, sx, sy)) {
+//				if (find_segments(hGEOSCtxt, xy1[0], xy1[1], xy2[0], xy2[1], si, sx, sy)) {
 					
-				}
+//				}
 			}
 		}
 	}
