@@ -1,5 +1,5 @@
 
-f <- system.file("ex/test.rds", package="terra")
+f <- system.file("ex/rds_tst.rds", package="terra")
 x <- rast(f)
 
 y <- rast(nrows=2, ncols=2, vals=1:4, names="random")
