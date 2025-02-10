@@ -746,6 +746,10 @@ SpatVector SpatVector::split_lines(SpatVector v) {
 
 // check GEOS version 
 
+	SpatVector out;
+	return out;
+
+/*
 	SpatVector out = *this;
 	std::vector<size_t> si;
 	std::vector<double> sx, sy;
@@ -765,6 +769,7 @@ SpatVector SpatVector::split_lines(SpatVector v) {
 		}
 	}
 	return out;
+*/
 }	
 
 
