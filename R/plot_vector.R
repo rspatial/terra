@@ -144,18 +144,15 @@ setMethod("dots", signature(x="SpatVector"),
 
 	if (out$leg$geomtype == "points") {
 		points(x, col=out$main_cols, cex=out$cex, pch=pch, ...)
-		#if (!out$add) {
-		#	e <- out$lim
-		#}
-		out$leg$pch = pch
-		out$leg$pt.cex = out$cex
+		if (is.null(out$leg$pch)) out$leg$pch <- pch
+		if (is.null(out$leg$pt.cex)) out$leg$pt.cex = out$cex
 	} else if (out$leg$geomtype == "polygons") {
 		out <- .plotPolygons(x, out, density=out$leg$density, angle=out$leg$angle, lty=lty, lwd=lwd, ...)
 	} else {
 		# out <- .plotLines(x, out, ...)
 		lines(x, col=out$main_cols, lty=lty, lwd=lwd, ...)
-		out$leg$lwd = lwd
-		out$leg$lty = lty
+		if (is.null(out$leg$lwd)) out$leg$lwd = lwd
+		if (is.null(out$leg$lty)) out$leg$lty = lty
 	}
 	out
 }
