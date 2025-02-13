@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-19</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-22</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,24 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-19" id="version-18-19">version 1.8-19<a class="anchor" aria-label="anchor" href="#version-18-19"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-22" id="version-18-22">version 1.8-22<a class="anchor" aria-label="anchor" href="#version-18-22"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-19">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-19"></a></h3>
+<h3 id="bug-fixes-1-8-22">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-22"></a></h3>
+</div>
+<div class="section level3">
+<h3 id="enhancements-1-8-22">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-22"></a></h3>
+<ul><li>
+<code>spatSample&lt;SpatRaster&gt;</code> and <code>spatSample&lt;SpatExtent&gt;</code> argument gain argument “exact=FALSE” to request the exact (but perhaps less regular) sample size for a regular sample. Currently pnly for planar crs.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-1-8-22">new<a class="anchor" aria-label="anchor" href="#new-1-8-22"></a></h3>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.8-21" id="version-18-21">version 1.8-21<a class="anchor" aria-label="anchor" href="#version-18-21"></a></h2><p class="text-muted">CRAN release: 2025-02-10</p>
+<p>Released 2025-02-10</p>
+<div class="section level3">
+<h3 id="bug-fixes-1-8-21">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-21"></a></h3>
 <ul><li>
 <code>sieve</code> failed with large rasters <a href="https://github.com/rspatial/terra/issues/1729" class="external-link">#1729</a> by Reed Humphrey</li>
 <li>
@@ -45,7 +60,7 @@
 <code>extract&lt;SpatRaster&gt;</code> over https with a multilayer SpatRaster returned the values for the first layer for all layer <a href="https://github.com/rspatial/terra/issues/1736" class="external-link">#1736</a> by Shannon Albeke</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-19">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-19"></a></h3>
+<h3 id="enhancements-1-8-21">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-21"></a></h3>
 <ul><li>new argument xyz=“” to the <code>rast&lt;SpatVector&gt;</code> method</li>
 <li>new arguments “type” and “breaks” to <code>plet&lt;SpatRaster&gt;</code> method <a href="https://github.com/rspatial/terra/issues/1187" class="external-link">#1187</a> by Augustin Lobo</li>
 <li>new argument “cores” in <code>lapp&lt;SpatRasterDataset&gt;</code> <a href="https://github.com/rspatial/terra/issues/1190" class="external-link">#1190</a> by kel44</li>
@@ -53,7 +68,7 @@
 <code>aggregate&lt;SpatRaster&gt;</code> now handles <code>fun="table"</code> <a href="https://github.com/rspatial/terra/issues/1662" class="external-link">#1662</a> by Fernando Aramburu.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-19">new<a class="anchor" aria-label="anchor" href="#new-1-8-19"></a></h3>
+<h3 id="new-1-8-21">new<a class="anchor" aria-label="anchor" href="#new-1-8-21"></a></h3>
 <ul><li>
 <code>is.flipped&lt;SpatRaster&gt;</code> method <a href="https://github.com/rspatial/terra/issues/1627" class="external-link">#1627</a>&gt;` by Timothée Giraud</li>
 <li>
