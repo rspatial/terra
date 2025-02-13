@@ -3300,8 +3300,8 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 						continue;
 					}
 				}
-				for (size_t j=0; j<values.size(); j++) {
-					if (v[j] == values[j]) {
+				for (size_t k=0; k<values.size(); k++) {
+					if (v[j] == values[k]) {
 						v[j] = m[j];
 						continue;
 					}
