@@ -4,8 +4,9 @@
 
 ## enhancements
 
-## new
+- `spatSample<SpatRaster>` and `spatSample<SpatExtent>` argument gain argument "exact=FALSE" to request the exact (but perhaps less regular) sample size for a regular sample 
 
+## new
 
 
 # version 1.8-21

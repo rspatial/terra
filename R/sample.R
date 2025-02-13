@@ -1,4 +1,105 @@
 
+regular_exact <- function(r, size) {
+	size <- round(size)
+	stopifnot(size > 0)
+	x <- (ymax(r) - ymin(r)) / (xmax(r) - xmin(r))
+	if (x < 1) {
+		nc <- max(1, size * 1/(1 + 1/x))
+		nr <- (size / nc)
+	} else {
+		nr <- max(1, size * 1/(1 + x))
+		nc <- (size / nr)
+	}
+
+	addrow <- addcol <- 0
+	floor <- TRUE
+
+	if ((nc%%1) >= (nr%%1)) {
+		nc <- round(nc)
+		if ((nc * ceiling(nr)) <= size) {
+			nr <- ceiling(nr)
+			floor <- FALSE
+		} else {
+			nr <- floor(nr)
+			if ((nr * nc) > size) {
+				nc <- nc-1
+			}
+		}
+		d <- size - nr * nc
+		if (d > 0) {
+			if (floor) {
+				addcol <- d
+			} else {
+				addrow <- d 
+			}
+		}
+	} else {
+		nr <- round(nr)
+		if ((nr * ceiling(nc)) <= size) {
+			nc <- ceiling(nc)
+			floor <- FALSE
+		} else {
+			nc <- floor(nc)
+			if ((nr * nc) > size) {
+				nr <- nr-1
+			}
+		}
+		d <- size - nr * nc
+		if (d > 0) {
+			if (floor) {
+				addcol <- d
+			} else {
+				addrow <- d	
+			}
+		}
+	}
+
+	if (addcol > 0) {
+		ncs <- rep(nr, nc+1)
+		b <- nr+addcol
+		ncs[1] <- ceiling(b/2)
+		ncs[nc+1] <- floor(b/2)
+		nc=ncs
+	} else if (addrow > 0) {
+		nrs <- rep(nc, nr+1)
+		b <- nc+addrow
+		nrs[1] <- ceiling(b/2)
+		nrs[nr+1] <- floor(b/2)
+		nr=nrs
+	} 
+	nnr <- length(nr)
+	nnc <- length(nc)
+	
+	if ((nnr == 1) && (nnc == 1)) {
+		dx <- (xmax(r) - xmin(r)) / nc
+		x <- xmin(r) + dx/2 + (0:(nc-1)) * dx 
+		dy <- (ymax(r) - ymin(r)) / nr
+		y <- ymin(r) + dy/2 + (0:(nr-1)) * dy 
+		expand.grid(x=x, y=y)
+	} else if (nnc == 1) {	
+		dy <- (ymax(r) - ymin(r)) / nnr
+		y <- ymin(r) + dy/2 + (0:(nnr-1)) * dy 
+		out <- vector("list", nnr)
+		for (i in 1:nnr) {
+			dx <- (xmax(r) - xmin(r)) / nr[i]
+			x <- xmin(r) + dx/2 + (0:(nr[i]-1)) * dx 
+			out[[i]] <- expand.grid(x=x, y=y[i])
+		}
+		do.call(rbind, out)
+	} else {
+		dx <- (xmax(r) - xmin(r)) / nnc
+		x <- xmin(r) + dx/2 + (0:(nnc-1)) * dx 
+		out <- vector("list", nnc)
+		for (i in 1:nnc) {
+			dy <- (ymax(r) - ymin(r)) / nc[i]
+			y <- ymin(r) + dy/2 + (0:(nc[i]-1)) * dy 
+			out[[i]] <- expand.grid(x=x[i], y=y)
+		}
+		do.call(rbind, out)
+	}
+}
+
+
 sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL) {
 	if (!is.null(ext)) {
 		x <- crop(x, ext)
@@ -224,7 +325,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 }
 
 
-.sampleCells <- function(x, size, method, replace, na.rm=FALSE, ext=NULL, exp=5) {
+.sampleCells <- function(x, size, method, replace, na.rm=FALSE, ext=NULL, exp=5, exact=FALSE) {
 	r <- rast(x)
 	lonlat <- is.lonlat(r, perhaps=TRUE, warn=TRUE)
 	if (!is.null(ext)) {
@@ -256,9 +357,14 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			cells <- sample.int(ncell(r), esize, replace=replace)
 		}
 	} else { # regular
+	
 		if (TRUE) {
-			xy <- spatSample(ext(r), size, method, lonlat, FALSE)
-			cells <- cellFromXY(r, xy)
+			if (exact) {
+				xy <- regular_exact(r, size)	
+			} else {
+				xy <- spatSample(ext(r), size, method, lonlat, FALSE)
+			}
+			cells <- cellFromXY(r, xy)		
 		} else {
 			if (lonlat) {
 				#ratio <- ncol(r)/nrow(r)
@@ -432,7 +538,7 @@ sampleRaster <- function(x, size, method, replace, ext=NULL, warn, overview=FALS
 
 
 setMethod("spatSample", signature(x="SpatRaster"),
-	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE) {
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE, exact=FALSE) {
 
 
 		if (method == "display") return(sampleRaster(x, size, "regular", FALSE, ext=ext, warn=FALSE, overview=TRUE))
@@ -493,7 +599,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			if (exhaustive && (method=="random") && na.rm) {
 				cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
 			} else {
-				cnrs <- .sampleCells(x, size, method, replace, na.rm, ext, exp=exp)
+				cnrs <- .sampleCells(x, size, method, replace, na.rm, ext, exp=exp, exact=exact)
 			}
 			
 			if (method == "random") {
@@ -545,18 +651,24 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (!is.null(ext)) x <- crop(x, ext)
 
 		if (method == "regular") {
-			opt <- spatOptions()
-			if (length(size) > 1) {
-				v <- x@pntr$sampleRowColValues(size[1], size[2], opt)
+			if (exact || (length(size) == 1)) {
+				xy <- regular_exact(x, size)
+				v <- extract(x, xy)
 			} else {
-				v <- x@pntr$sampleRegularValues(size, opt)
+				opt <- spatOptions()
+				if (length(size) > 1) {
+					v <- x@pntr$sampleRowColValues(size[1], size[2], opt)
+				} else {
+					v <- x@pntr$sampleRegularValues(size, opt)
+				}
+				x <- messages(x, "spatSample")
+				
+				if (length(v) > 0) {
+					v <- do.call(cbind, v)
+					colnames(v) <- names(x)
+				}
+				v <- set_factors(v, ff, lv, as.df)
 			}
-			x <- messages(x, "spatSample")
-			if (length(v) > 0) {
-				v <- do.call(cbind, v)
-				colnames(v) <- names(x)
-			}
-			v <- set_factors(v, ff, lv, as.df)
 			return(v)
 		} else { # random
 			size <- size[1]
@@ -591,7 +703,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 					scells <- NULL
 					ssize <- size*2
 					for (i in 1:10) {
-						scells <- c(scells, .sampleCells(x, ssize, method, replace, na.rm))
+						scells <- c(scells, .sampleCells(x, ssize, method, replace, na.rm, exact=exact))
 						if ((i>1) && (!replace)) {
 							scells <- unique(scells)
 						}
@@ -605,7 +717,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 						}
 					}
 				} else {
-					scells <- .sampleCells(x, size, method, replace)
+					scells <- .sampleCells(x, size, method, replace, exact=exact)
 					out <- extractCells(x, scells, raw=!as.df)   
 				}
 				if (NROW(out) < size) {
@@ -624,7 +736,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 
 
 setMethod("spatSample", signature(x="SpatExtent"),
-	function(x, size, method="random", lonlat, as.points=FALSE) {
+	function(x, size, method="random", lonlat, as.points=FALSE, exact=FALSE) {
 		if (missing(lonlat)) {
 			error("spatSample", "provide a lonlat argument")
 		}
@@ -636,6 +748,13 @@ setMethod("spatSample", signature(x="SpatExtent"),
 		stopifnot(size > 0)
 		if (method=="random") {
 			s <- x@pntr$sampleRandom(size, lonlat, .seed())
+		} else if (exact) {
+			s <- regular_exact(x, size)
+			colnames(s) <- c("x", "y")
+			if (as.points) {
+				s <- vect(s)
+			}
+			return(s)
 		} else {
 			s <- x@pntr$sampleRegular(size, lonlat)
 		}
