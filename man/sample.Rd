@@ -20,7 +20,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 \usage{
 \S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, na.rm=FALSE, 
     as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, 
-    xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE, exact=FALSE)
+    xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE, exact=FALSE, each=TRUE)
 
 \S4method{spatSample}{SpatVector}(x, size, method="random", strata=NULL, chess="")
 
@@ -43,15 +43,19 @@ In order to assure regularity when requesting a regular sample, the number of ce
   \item{warn}{logical. Give a warning if the sample size returned is smaller than requested}
   \item{weights}{SpatRaster. Used to provide weights when \code{method="stratified"}}
 
-  \item{strata}{if not NULL, stratified random sampling is done, taking \code{size} samples from each stratum. If \code{x} has polygon geometry, \code{strata} must be a field name (or index) in \code{x}. If \code{x} has point geometry, \code{strata} can be a SpatVector of polygons or a SpatRaster}
-  \item{chess}{character. One of "", "white", or "black". For stratified sampling if \code{strata} is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard}
-  
   \item{lonlat}{logical. If \code{TRUE}, sampling of a SpatExtent is weighted by \code{cos(latitude)}. For SpatRaster and SpatVector this done based on the \code{\link{crs}}, but it is ignored if \code{as.raster=TRUE}}
   
   \item{exp}{numeric >= 1. "Expansion factor" that is multiplied with \code{size} to get an initial sample used for stratified samples and random samples with \code{na.rm=TRUE} to try to get at least \code{size} samples}
   
   \item{exhaustive}{logical. If \code{TRUE} and (\code{method=="random"} and \code{na.rm=TRUE}) or \code{method=="stratified"}, all cells that are not \code{NA} are determined and a sample is taken from these cells. This is useful when you are dealing with a very large raster that is sparse (most cells are \code{NA}). Otherwise, the default approach may not find enough samples. This should not be used in other cases, especially not with large rasters that mostly have values}
   \item{exact}{logical. If \code{TRUE} and \code{method=="regular"}, the sample returned is exactly \code{size}, perhaps at the expense of some regularity. Otherwise you get at least \code{size} many samples. Ignored for lon/lat rasters}
+  \item{each}{logical. If \code{TRUE} and \code{method=="stratified"}, the sample returned is \code{size} for each stratum. Otherwise \code{size} is the total sample size}
+
+
+  \item{strata}{if not NULL, stratified random sampling is done, taking \code{size} samples from each stratum. If \code{x} has polygon geometry, \code{strata} must be a field name (or index) in \code{x}. If \code{x} has point geometry, \code{strata} can be a SpatVector of polygons or a SpatRaster}
+  \item{chess}{character. One of "", "white", or "black". For stratified sampling if \code{strata} is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard}
+  
+
 }
 
 \value{
@@ -79,9 +83,9 @@ set.seed(1)
 values(rr) <- round(runif(ncell(rr), 1, 3))
 spatSample(rr, 2, "stratified", xy=TRUE)
 
-s <- spatSample(rr, 5, "stratified", as.points=TRUE)
+s <- spatSample(rr, 5, "stratified", as.points=TRUE, each=FALSE)
 plot(rr, plg=list(title="raster"))
-plot(s, 1, add=TRUE, plg=list(x=185, y=1, title="points"))
+plot(s, 1, add=TRUE, plg=list(x=185, y=1, title="points"), col=rainbow(5))
  
 ## SpatExtent 
 e <- ext(r)
