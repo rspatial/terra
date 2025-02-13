@@ -49,7 +49,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">spatSample</span><span class="op">(</span><span class="va">x</span>, <span class="va">size</span>, method<span class="op">=</span><span class="st">"random"</span>, replace<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, </span>
 <span>    as.raster<span class="op">=</span><span class="cn">FALSE</span>, as.df<span class="op">=</span><span class="cn">TRUE</span>, as.points<span class="op">=</span><span class="cn">FALSE</span>, values<span class="op">=</span><span class="cn">TRUE</span>, cells<span class="op">=</span><span class="cn">FALSE</span>, </span>
-<span>    xy<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, warn<span class="op">=</span><span class="cn">TRUE</span>, weights<span class="op">=</span><span class="cn">NULL</span>, exp<span class="op">=</span><span class="fl">5</span>, exhaustive<span class="op">=</span><span class="cn">FALSE</span>, exact<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>    xy<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, warn<span class="op">=</span><span class="cn">TRUE</span>, weights<span class="op">=</span><span class="cn">NULL</span>, exp<span class="op">=</span><span class="fl">5</span>, exhaustive<span class="op">=</span><span class="cn">FALSE</span>, exact<span class="op">=</span><span class="cn">FALSE</span>, each<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
 <span><span class="fu">spatSample</span><span class="op">(</span><span class="va">x</span>, <span class="va">size</span>, method<span class="op">=</span><span class="st">"random"</span>, strata<span class="op">=</span><span class="cn">NULL</span>, chess<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
@@ -104,13 +104,6 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <dd><p>SpatRaster. Used to provide weights when <code>method="stratified"</code></p></dd>
 
 
-  <dt id="arg-strata">strata<a class="anchor" aria-label="anchor" href="#arg-strata"></a></dt>
-<dd><p>if not NULL, stratified random sampling is done, taking <code>size</code> samples from each stratum. If <code>x</code> has polygon geometry, <code>strata</code> must be a field name (or index) in <code>x</code>. If <code>x</code> has point geometry, <code>strata</code> can be a SpatVector of polygons or a SpatRaster</p></dd>
-
-  <dt id="arg-chess">chess<a class="anchor" aria-label="anchor" href="#arg-chess"></a></dt>
-<dd><p>character. One of "", "white", or "black". For stratified sampling if <code>strata</code> is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard</p></dd>
-
-
   <dt id="arg-lonlat">lonlat<a class="anchor" aria-label="anchor" href="#arg-lonlat"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, sampling of a SpatExtent is weighted by <code>cos(latitude)</code>. For SpatRaster and SpatVector this done based on the <code><a href="crs.html">crs</a></code>, but it is ignored if <code>as.raster=TRUE</code></p></dd>
 
@@ -124,6 +117,19 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
   <dt id="arg-exact">exact<a class="anchor" aria-label="anchor" href="#arg-exact"></a></dt>
 <dd><p>logical. If <code>TRUE</code> and <code>method=="regular"</code>, the sample returned is exactly <code>size</code>, perhaps at the expense of some regularity. Otherwise you get at least <code>size</code> many samples. Ignored for lon/lat rasters</p></dd>
+
+  <dt id="arg-each">each<a class="anchor" aria-label="anchor" href="#arg-each"></a></dt>
+<dd><p>logical. If <code>TRUE</code> and <code>method=="stratified"</code>, the sample returned is <code>size</code> for each stratum. Otherwise <code>size</code> is the total sample size</p></dd>
+
+
+
+  <dt id="arg-strata">strata<a class="anchor" aria-label="anchor" href="#arg-strata"></a></dt>
+<dd><p>if not NULL, stratified random sampling is done, taking <code>size</code> samples from each stratum. If <code>x</code> has polygon geometry, <code>strata</code> must be a field name (or index) in <code>x</code>. If <code>x</code> has point geometry, <code>strata</code> can be a SpatVector of polygons or a SpatRaster</p></dd>
+
+  <dt id="arg-chess">chess<a class="anchor" aria-label="anchor" href="#arg-chess"></a></dt>
+<dd><p>character. One of "", "white", or "black". For stratified sampling if <code>strata</code> is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard</p></dd>
+
+
 
 </dl></div>
     <div class="section level2">
@@ -190,29 +196,33 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">spatSample</span><span class="op">(</span><span class="va">rr</span>, <span class="fl">2</span>, <span class="st">"stratified"</span>, xy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[spatSample] the number of samples returned with stratified sampling is now 'size', not 'size' for each stratum</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>longer object length is not a multiple of shorter object length</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in sampleStratMemory(x, size, replace, lonlat, ext, weights, warn):</span> dims [product 2] do not match the length of object [3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      x   y stratum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -126  63       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  126 -27       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  126  27       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -162  81       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   18 -45       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  -18  27       3</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">rr</span>, <span class="fl">5</span>, <span class="st">"stratified"</span>, as.points<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">rr</span>, <span class="fl">5</span>, <span class="st">"stratified"</span>, as.points<span class="op">=</span><span class="cn">TRUE</span>, each<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">rr</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"raster"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">s</span>, <span class="fl">1</span>, add<span class="op">=</span><span class="cn">TRUE</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">185</span>, y<span class="op">=</span><span class="fl">1</span>, title<span class="op">=</span><span class="st">"points"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">s</span>, <span class="fl">1</span>, add<span class="op">=</span><span class="cn">TRUE</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">185</span>, y<span class="op">=</span><span class="fl">1</span>, title<span class="op">=</span><span class="st">"points"</span><span class="op">)</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="sample-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span><span class="co">## SpatExtent </span></span></span>
 <span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">spatSample</span><span class="op">(</span><span class="va">e</span>, <span class="fl">10</span>, <span class="st">"random"</span>, lonlat<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              x        y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 6.113301 49.78602</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 6.079425 49.51679</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 6.304320 49.93669</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 6.510807 50.18430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 6.463453 49.89162</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 6.231736 49.90956</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 5.754045 49.82784</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 6.463223 49.70555</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 6.194586 50.10448</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 5.908228 49.71165</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 6.079256 49.98471</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 6.318611 50.16477</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 5.983956 49.88864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 6.319211 50.07627</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 6.103970 49.45971</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 6.226828 49.48651</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 6.455581 49.47558</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 6.330888 49.71458</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 5.977512 49.91053</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 5.869123 49.52883</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## SpatVector</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
