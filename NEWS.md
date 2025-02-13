@@ -1,6 +1,8 @@
-# version 1.8-22
+# version 1.8-23
 
 ## bug fixes
+
+- `cover<SpatRaster>` did not work well when multiple replacement values were supplied [#1741](https://github.com/rspatial/terra/issues/1741) by Tim Howard
 
 ## enhancements
 
