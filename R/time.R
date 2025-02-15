@@ -186,6 +186,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 			value <- tstep
 			tstep <- ""
 		}
+		x@pntr <- x@pntr$deepcopy()
 		if (is.null(value)) {
 			x@pntr$setTime(0[0], "remove", "")
 			return(x)
