@@ -108,6 +108,7 @@ setMethod("ext", signature(x="SpatRasterDataset"),
 
 setMethod("ext<-", signature("SpatRaster", "SpatExtent"),
 	function(x, value) {
+		x@pntr <- x@pntr$deepcopy()
 		x@pntr$extent <- value@pntr
 		messages(x, "ext<-")
 	}
