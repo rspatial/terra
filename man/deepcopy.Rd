@@ -10,7 +10,7 @@
 \title{Deep copy}
 
 \description{ 
-Make a deep copy of a SpatRaster or SpatVector. This is occasionally useful when wanting to use a replacement function that makes a shallow copy, such as \code{\link{set.ext}}. 
+Make a deep copy of a SpatRaster or SpatVector. This is occasionally useful when using an in=place replacement function that does not make copy, such as \code{\link{set.ext}}. 
 }
 
 \usage{
