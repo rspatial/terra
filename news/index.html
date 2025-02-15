@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-22</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-24</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,17 +34,21 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-22" id="version-18-22">version 1.8-22<a class="anchor" aria-label="anchor" href="#version-18-22"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-23" id="version-18-23">version 1.8-23<a class="anchor" aria-label="anchor" href="#version-18-23"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-22">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-22"></a></h3>
-</div>
-<div class="section level3">
-<h3 id="enhancements-1-8-22">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-22"></a></h3>
+<h3 id="bug-fixes-1-8-23">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-23"></a></h3>
 <ul><li>
-<code>spatSample&lt;SpatRaster&gt;</code> and <code>spatSample&lt;SpatExtent&gt;</code> argument gain argument “exact=FALSE” to request the exact (but perhaps less regular) sample size for a regular sample. Currently pnly for planar crs.</li>
+<code>cover&lt;SpatRaster&gt;</code> did not work well when multiple replacement values were supplied <a href="https://github.com/rspatial/terra/issues/1741" class="external-link">#1741</a> by Tim Howard</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-22">new<a class="anchor" aria-label="anchor" href="#new-1-8-22"></a></h3>
+<h3 id="enhancements-1-8-23">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-23"></a></h3>
+<ul><li>
+<code>spatSample&lt;SpatRaster&gt;</code> and <code>spatSample&lt;SpatExtent&gt;</code> gain argument “exact=FALSE” to request the exact (but perhaps less regular) sample size for a regular sample. Currently pnly for planar crs.</li>
+<li>
+<code>spatSample&lt;SpatRaster&gt;</code> gains argument “each=TRUE” to request, when using stratified sampling, a sample size for each stratum, or for all strata combined.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-1-8-23">new<a class="anchor" aria-label="anchor" href="#new-1-8-23"></a></h3>
 </div>
 </div>
     <div class="section level2">
