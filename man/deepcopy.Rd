@@ -10,7 +10,7 @@
 \title{Deep copy}
 
 \description{ 
-Make a deep copy of a SpatRaster or SpatVector. This is occasionally useful when using an in=place replacement function that does not make copy, such as \code{\link{set.ext}}. 
+Make a deep copy of a SpatRaster or SpatVector. This is occasionally useful when using an in-place replacement function that does not make copy, such as \code{\link{set.ext}}. 
 }
 
 \usage{
@@ -28,7 +28,7 @@ Same as \code{x}
 }
 
 
-?\examples{
+\examples{
 r <- rast(ncols=10, nrows=10, nl=3)
 x <- r
 y <- deepcopy(r)
