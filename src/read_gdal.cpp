@@ -1751,7 +1751,7 @@ void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &ou
 			poBand = poDataset->GetRasterBand(lyrs[i]+1);
 			double naflag = poBand->GetNoDataValue(&hasNA);
 			if (!hasNA) naflag = NAN;
-			NAso(out[i], n, {naflag}, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag);
+			NAso(out[outstart+i], n, {naflag}, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag);
 		}
 	}
 	GDALClose((GDALDatasetH) poDataset);

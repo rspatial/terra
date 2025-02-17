@@ -11,13 +11,13 @@
 \description{
 Rotate a SpatRaster that has longitude coordinates from 0 to 360, to standard coordinates between -180 and 180 degrees (or vice-versa). Longitude between 0 and 360 is frequently used in global climate models.
 
-Rotate a SpatVector as for a SpatRaster \code{split=TRUE}, or to correct for coordinates that are connected across the date line (and end up at the "other side" of the longitude scale) are reconnected.
+Rotate a SpatVector as for a SpatRaster with, or with \code{split=FALSE} to correct for coordinates that are connected across the date line (and end up at the "other side" of the longitude scale).
 }
 
 \usage{
 \S4method{rotate}{SpatRaster}(x, left=TRUE, filename="", ...)
 
-\S4method{rotate}{SpatVector}(x, longitude=0, split=FALSE, left=TRUE, normalize=FALSE)
+\S4method{rotate}{SpatVector}(x, longitude=0, split=TRUE, left=TRUE, normalize=FALSE)
 }
 
 \arguments{
