@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-24</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-25</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,9 @@
 <ul><li>
 <code>cover&lt;SpatRaster&gt;</code> did not work well when multiple replacement values were supplied <a href="https://github.com/rspatial/terra/issues/1741" class="external-link">#1741</a> by Tim Howard</li>
 <li>
-<code>ext&lt;-&lt;SpatRaster,SpatExtent&gt;</code> made a shallow copy. Reproted on <a href="https://stackoverflow.com/questions/79440691/extent-is-rewritten-for-separate-spatraster-when-modifying-extent-using-terra-in/79440823#79440823" class="external-link">SO</a> by katefull06</li>
+<code>ext&lt;-&lt;SpatRaster,SpatExtent&gt;</code> made a shallow copy. Reproted on <a href="https://stackoverflow.com/questions/79440691/extent-is-rewritten-for-separate-spatraster-when-modifying-extent-using-terra-in/79440823#79440823" class="external-link">SO 79440691</a> by katefull06</li>
+<li>
+<code>extract&lt;SpatRaster&gt;</code> with cells only used the NA flag for the first data source. [GSE 490433] (<a href="https://gis.stackexchange.com/questions/490433/problem-extracting-values-from-raster-in-r-with-terra-package" class="external-link uri">https://gis.stackexchange.com/questions/490433/problem-extracting-values-from-raster-in-r-with-terra-package</a>) by MartinL</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-23">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-23"></a></h3>
