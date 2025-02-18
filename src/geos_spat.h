@@ -23,9 +23,10 @@
 #  define GEOS350
 # endif
 # if GEOS_VERSION_MINOR >= 6
-#  if GEOS_VERSION_PATCH >= 1
-#   define GEOS361
-#  endif
+// for #1744
+//#  if GEOS_VERSION_PATCH >= 1
+#   define GEOS360
+//#  endif
 # endif
 # if GEOS_VERSION_MINOR >= 7
 #  define GEOS361
