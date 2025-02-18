@@ -2400,9 +2400,10 @@ bool get_dist_fun(dist_fn &f, std::string s) {
 		f = GEOSDistance_r;
 	else if (s == "Hausdorff")
 		f = GEOSHausdorffDistance_r;
-#ifdef GEOS370
+#ifdef GEOS380
 	else if (s == "Frechet")
 		f = GEOSFrechetDistance_r;
+		// GEOSFrechetDistanceDensify_r
 #endif
 	else {
 		return false;
