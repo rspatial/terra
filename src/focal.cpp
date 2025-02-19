@@ -413,7 +413,11 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 
 SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, bool naomit, std::string fun, bool expand, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	std::vector<std::string> f {"modal", "min", "max", "first"};
+	auto it = std::find(f.begin(), f.end(), fun);
+	bool props (it != f.end());
+
+	SpatRaster out = geometry(-1, props);
 	bool global = is_global_lonlat();
 	size_t nl = nlyr();
 

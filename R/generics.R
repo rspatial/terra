@@ -881,7 +881,7 @@ setMethod("rotate", signature(x="SpatRaster"),
 )
 
 setMethod("rotate", signature(x="SpatVector"),
-	function(x, longitude=0, split=FALSE, left=TRUE, normalize=FALSE) {
+	function(x, longitude=0, split=TRUE, left=TRUE, normalize=FALSE) {
 		if (split) {
 			e <- ext(x)
 			if ((longitude < e$xmin) || (longitude > e$xmax)) {
