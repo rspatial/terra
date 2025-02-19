@@ -415,7 +415,7 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 
 	std::vector<std::string> f {"modal", "min", "max", "first"};
 	auto it = std::find(f.begin(), f.end(), fun);
-	bool props (it != f.end());
+	bool props = (it != f.end());
 
 	SpatRaster out = geometry(-1, props);
 	bool global = is_global_lonlat();
