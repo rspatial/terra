@@ -220,6 +220,8 @@ std::string getDs_PRJ(GDALDataset *poDataset) {
 SpatGeom getPointGeom(OGRGeometry *poGeometry) {
 	SpatGeom g(points);
 	if (poGeometry->IsEmpty()) {
+		SpatPart p(NAN, NAN);
+		g.addPart(p);
 		return g;
 	}
 	#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
