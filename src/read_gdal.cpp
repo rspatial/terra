@@ -866,7 +866,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			meta.push_back(metasds[i]);
 		}
 		GDALClose( (GDALDatasetH) poDataset );
-		return constructFromSDS(fname, meta, subds, subdsname, options, gdrv);
+		return constructFromSDS(fname, meta, subds, subdsname, options, gdrv, noflip);
 
 	} else if (nl==0) {
 		setError("no raster data in " + fname);
@@ -1969,7 +1969,7 @@ void ncdf_pick_most(std::vector<std::string> &sd, std::vector<std::string> &varn
 
 
 
-bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, std::string driver) {
+bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, std::string driver, bool noflip) {
 
 	bool ncdf = driver =="netCDF";
 	bool gtiff = driver == "GTiff";
@@ -2063,7 +2063,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	size_t cnt;
 
     for (cnt=0; cnt < sd.size(); cnt++) {
-		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options, false)) break;
+		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options, noflip)) break;
 	}
 //	source[0].source_name = srcname[cnt];
 
@@ -2074,7 +2074,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	SpatOptions opt;
     for (size_t i=(cnt+1); i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
-		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options, false);
+		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options, noflip);
 		if (success) {
 			if (out.compare_geom(*this, false, false, 0.1)) {
 //				out.source	[0].source_name = srcname[i];
