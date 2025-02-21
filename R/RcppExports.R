@@ -5,6 +5,10 @@ proj_version <- function() {
     .Call(`_terra_proj_version`)
 }
 
+clearVSIcache <- function() {
+    invisible(.Call(`_terra_clearVSIcache`))
+}
+
 hex2rgb <- function(s) {
     .Call(`_terra_hex2rgb`, s)
 }

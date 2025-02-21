@@ -62,6 +62,10 @@ std::string proj_version() {
 #endif
 
 
+// [[Rcpp::export]]
+void clearVSIcache() {
+	VSICurlClearCache();
+}
 
 // [[Rcpp::export]]
 std::vector<unsigned char> hex2rgb(std::string s) {

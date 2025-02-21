@@ -20,6 +20,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// clearVSIcache
+void clearVSIcache();
+RcppExport SEXP _terra_clearVSIcache() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    clearVSIcache();
+    return R_NilValue;
+END_RCPP
+}
 // hex2rgb
 std::vector<unsigned char> hex2rgb(std::string s);
 RcppExport SEXP _terra_hex2rgb(SEXP sSEXP) {
@@ -375,6 +384,7 @@ RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_terra_proj_version", (DL_FUNC) &_terra_proj_version, 0},
+    {"_terra_clearVSIcache", (DL_FUNC) &_terra_clearVSIcache, 0},
     {"_terra_hex2rgb", (DL_FUNC) &_terra_hex2rgb, 1},
     {"_terra_rgb2hex", (DL_FUNC) &_terra_rgb2hex, 1},
     {"_terra_sameSRS", (DL_FUNC) &_terra_sameSRS, 2},
