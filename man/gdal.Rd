@@ -3,6 +3,7 @@
 \alias{gdal}
 \alias{libVersion}
 \alias{gdalCache}
+\alias{clearCache}
 \alias{getGDALconfig}
 \alias{setGDALconfig}
 
@@ -12,6 +13,8 @@
 Set the \code{GDAL} warning level or get a \code{data.frame} with the available GDAL drivers (file formats), or, if \code{warn=NA} and \code{drivers=FALSE}, you get the version numbers of one or all of the GDAL, PROJ and GEOS libraries. 
 
 \code{GDAL} is the software library that terra builds on to read and write spatial data and for some raster data processing. \code{PROJ} is used for transformation of coordinates ("projection") and \code{GEOS} is used for geometric operations with vector data.
+
+The current \code{GDAL} configuration options and obtained with \code{getGDALconfig} and changed with \code{setGDALconfig}. 
 }
 
 \usage{
@@ -19,7 +22,7 @@ gdal(warn=NA, drivers=FALSE, ...)
 gdalCache(size=NA)
 setGDALconfig(option, value="")
 getGDALconfig(option)
-
+clearVSICache()
 libVersion(lib="all", parse=FALSE)
 }
 
