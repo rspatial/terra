@@ -3,7 +3,7 @@
 \alias{gdal}
 \alias{libVersion}
 \alias{gdalCache}
-\alias{clearCache}
+\alias{clearVSIcache}
 \alias{getGDALconfig}
 \alias{setGDALconfig}
 
@@ -22,7 +22,7 @@ gdal(warn=NA, drivers=FALSE, ...)
 gdalCache(size=NA)
 setGDALconfig(option, value="")
 getGDALconfig(option)
-clearVSICache()
+clearVSIcache()
 libVersion(lib="all", parse=FALSE)
 }
 

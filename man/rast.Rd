@@ -63,7 +63,7 @@ Note that there are operating system level limitations to the number of files th
 \item{opts}{character. GDAL dataset open options}
 \item{win}{SpatExtent to set a \code{\link{window}} (area of interest)}
 \item{snap}{character. One of "near", "in", or "out", to indicate how the extent of \code{\link{window}} should be "snapped" to \code{x}}
-\item{vsi}{logical. If \code{TRUE}, "\\vsicurl\\" is prepended to filenames that start with "http"}
+\item{vsi}{logical. If \code{TRUE}, "\\vsicurl\\" is prepended to filenames that start with "http". There are many  \href{https://gdal.org/en/stable/user/virtual_file_systems.html}{VSI configuration options} that can be set with \code{\link{setGDALconfig}}}
 \item{raw}{logical. If \code{TRUE}, scale and offset values are ignored. See \code{\link{scoff}} to get these parameters}
 \item{noflip}{logical. If \code{TRUE}, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (\code{ymax < ymin}), is not considered flipped. This avoids the need to \code{\link{flip}} the raster vertically}
 \item{nrows}{positive integer. Number of rows}

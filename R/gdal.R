@@ -17,9 +17,6 @@ gdalCache <- function(size=NA) {
 	}
 }
 
-clearCache <- function() {
-	clearVSIcache(TRUE)
-}
 
 getGDALconfig <- function(option) {
 	sapply(option, .gdal_getconfig)
