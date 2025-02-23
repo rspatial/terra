@@ -473,7 +473,7 @@ std::vector<double> percRank(std::vector<double> x, std::vector<double> y, doubl
 }
 
 
-// [[Rcpp::export]]
+// [[Rcpp::export(name = ".clearVSIcache")]]
 void clearVSIcache(bool vsi) {
 	//if (vsi)
 	VSICurlClearCache();

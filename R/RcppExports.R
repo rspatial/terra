@@ -85,7 +85,7 @@ rgb2hex <- function(x) {
     .Call(`_terra_percRank`, x, y, minc, maxc, tail)
 }
 
-clearVSIcache <- function(vsi) {
+.clearVSIcache <- function(vsi) {
     invisible(.Call(`_terra_clearVSIcache`, vsi))
 }
 

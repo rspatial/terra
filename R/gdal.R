@@ -8,6 +8,10 @@ fileBlocksize <- function(x) {
 }
 
 
+clearVSIcache <- function() {
+	.clearVSIcache(TRUE)
+}
+
 gdalCache <- function(size=NA) {
 	vsi <- FALSE # vsi not working
 	if (is.null(size) || is.na(size)) {
