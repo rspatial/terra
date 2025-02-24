@@ -112,7 +112,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	if (nrow() > 0) {
 		SpatGeomType geomtype = geoms[0].gtype;
 		if (geomtype == points) {
-			wkb = wkbPoint;
+			wkb = is_multipoint() ? wkbMultiPoint : wkbPoint;
 		} else if (geomtype == lines) {
 			wkb = wkbMultiLineString;
 		} else if (geomtype == polygons) {
@@ -294,11 +294,29 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 // points -- also need to do multi-points
 		OGRPoint pt;
 		if (wkb == wkbPoint) {
-			if (!std::isnan(geoms[i].parts[0].x[0])) {
-				pt.setX( geoms[i].parts[0].x[0] );
-				pt.setY( geoms[i].parts[0].y[0] );
+			if (geoms[i].parts.size() > 0) {
+				if (!std::isnan(geoms[i].parts[0].x[0])) {
+					pt.setX( geoms[i].parts[0].x[0] );
+					pt.setY( geoms[i].parts[0].y[0] );
+				}
 			}
 			poFeature->SetGeometry( &pt );
+
+		} else if (wkb == wkbMultiPoint) {
+
+			OGRMultiPoint poGeom;
+			for (size_t j=0; j<geoms[i].size(); j++) {
+				if (!std::isnan(geoms[i].parts[j].x[0])) {
+					pt.setX( geoms[i].parts[j].x[0] );
+					pt.setY( geoms[i].parts[j].y[0] );
+					poGeom.addGeometry(&pt);
+				}
+			}
+
+			if (poFeature->SetGeometry( &poGeom ) != OGRERR_NONE) {
+				setError("cannot set geometry");
+				return poDS;
+			}
 
 // lines
 		} else if (wkb == wkbMultiLineString) {

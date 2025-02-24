@@ -143,6 +143,7 @@ class SpatVector {
 		bool could_be_lonlat();
 		std::string type();
 		SpatGeomType getGType(std::string &type);
+		bool is_multipoint();
 
 		//std::vector<std::string> getCRS();
 		//void setCRS(std::vector<std::string> _crs);

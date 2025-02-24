@@ -308,6 +308,16 @@ bool SpatVector::empty() {
 	return geoms.empty();
 }
 
+bool SpatVector::is_multipoint() {
+	if (geoms[0].gtype != points) return false;
+	for (size_t i=0; i<geoms.size(); i++) {
+		if (geoms[i].parts.size() > 1) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool SpatVector::is_lonlat() {
 	if (srs.is_lonlat()) {
 		SpatExtent e = getExtent();

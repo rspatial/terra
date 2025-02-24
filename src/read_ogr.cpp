@@ -216,12 +216,22 @@ std::string getDs_PRJ(GDALDataset *poDataset) {
 }
 */
 
+SpatGeom emptyGeom() {
+	SpatGeom g;
+	g.gtype = null;
+	g.extent.xmin=NAN;
+	g.extent.xmax=NAN;
+	g.extent.ymin=NAN;
+	g.extent.ymax=NAN;
+	return g;
+}
+
 
 SpatGeom getPointGeom(OGRGeometry *poGeometry) {
 	SpatGeom g(points);
 	if (poGeometry->IsEmpty()) {
-		SpatPart p(NAN, NAN);
-		g.addPart(p);
+		//SpatPart p(NAN, NAN);
+		//g.addPart(p);
 		return g;
 	}
 	#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
@@ -406,16 +416,6 @@ std::vector<std::string> SpatVector::layer_names(std::string filename) {
 
 	GDALClose(poDS);
 	return out;
-}
-
-SpatGeom emptyGeom() {
-	SpatGeom g;
-	g.gtype = null;
-	g.extent.xmin=NAN;
-	g.extent.xmax=NAN;
-	g.extent.ymin=NAN;
-	g.extent.ymax=NAN;
-	return g;
 }
 
 
