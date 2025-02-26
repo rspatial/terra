@@ -44,7 +44,7 @@ v <- vect(system.file("ex/lux.shp", package="terra"))
 x <- c(r, r/2, r*2, r)
 names(x) <- paste0("(", LETTERS[1:4], ")")
 panel(x)
-panel(x, fun=\()lines(v), loc.main="topright")
+panel(x, fun=function() lines(v), loc.main="topright")
 }
 
 

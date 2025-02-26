@@ -60,7 +60,7 @@ plot(r, breaks=br)
 lines(as.contour(r, levels=br))
 
 ## or 
-x <- classify(r,  br) |> as.polygons()
+x <- as.polygons(classify(r,  br))
 plot(x, "elevation")
 
 }

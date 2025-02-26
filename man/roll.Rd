@@ -47,16 +47,16 @@ roll(1:12, 3, mean, circular=TRUE)
 
 ## SpatRaster
 r <- rast(ncol=2, nrow=2, nlyr=10, vals=1)
-r[1,2] = 2
-r[2,2] = 4
+r[1,2] <- 2
+r[2,2] <- 4
 
-roll(r, n=3, "sum", "from", na.rm=FALSE) |> values()
-roll(r, n=3, "sum", "from", na.rm=TRUE) |> values()
-roll(r, n=3, "sum", "from", circular=TRUE) |> values()
+values(roll(r, n=3, "sum", "from", na.rm=FALSE))
+values(roll(r, n=3, "sum", "from", na.rm=TRUE))
+values(roll(r, n=3, "sum", "from", circular=TRUE))
 
-roll(r, n=3, "sum", "to", na.rm=TRUE) |> values()
+values(roll(r, n=3, "sum", "to", na.rm=TRUE))
 
-roll(r, n=3, "sum", "around", circular=TRUE) |> values()
+values(roll(r, n=3, "sum", "around", circular=TRUE))
 }
 
 \keyword{spatial}

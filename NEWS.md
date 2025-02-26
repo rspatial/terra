@@ -1,4 +1,4 @@
-# version 1.8-28
+# version 1.8-29
 
 ## bug fixes
 
@@ -16,7 +16,7 @@
 
 ## new
 
-- `clearVSIcache`. Suggested by Shannon E. Albeke
+- `clearVSIcache`. Suggested by Shannon Albeke
 
 
 # version 1.8-21
@@ -38,7 +38,7 @@ Released 2025-02-10
 
 ## new
 
-- `is.flipped<SpatRaster>` method  [#1627](https://github.com/rspatial/terra/issues/1627)>` by Timothée Giraud
+- `is.flipped<SpatRaster>` method  [#1627](https://github.com/rspatial/terra/issues/1627) by Timothée Giraud
 - `as.array<SpatRasterDataset>` method
 - `distance<SpatRaster,missing>` now has argument "values". If TRUE, the values of the nearest non-target cell is returned instead of the distance [#1243](https://github.com/rspatial/terra/issues/1243) by Simon Dedman
 - `thresh<SpatRaster>` [#1233](https://github.com/rspatial/terra/issues/1233) by Agustin Lobo

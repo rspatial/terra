@@ -43,7 +43,7 @@ s <- rast(system.file("ex/logo.tif", package="terra")) + 1
 #SpatRasterDataset
 sd <- sds(s*2, s/2)
 y <- sapp(sd, mean)
-z <- sapp(sd, \(i) 2 * mean(i))
+z <- sapp(sd, function(i) 2 * mean(i))
 
 }
  
