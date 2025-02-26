@@ -224,9 +224,15 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 
 	geo <- geomtype(y)
 	if (!is.null(layer)) {
-		if (length(layer) != nrow(y)) {
-			error("extract", "length(layer) != nrow(y)")
-		}
+#		if (length(layer) != nrow(y)) {
+#			error("extract", "length(layer) != nrow(y)")
+#		}
+
+		if (length(layer) > nrow(y)) {
+			error("extract", "length(layer) > nrow(y)")
+		} else { # recycle
+			layer <- rep(layer, length.out=10)
+		}		
 	}
 
 	if (geo == "points") {
