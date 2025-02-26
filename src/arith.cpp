@@ -54,12 +54,6 @@ void operator*(std::vector<double>& a, const std::vector<double>& b) {
 
 */
 
-template<class F>
-auto use_parallel(F f, bool par) {
-	if (par) return f(std::execution::par);
-	return f(std::execution::seq);
-}
-
 
 //template <typename T>
 void operator%(std::vector<double>& a, const std::vector<double>& b) {
