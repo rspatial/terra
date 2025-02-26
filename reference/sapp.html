@@ -9,7 +9,7 @@ Or apply the same method to each sub-dataset (SpatRaster) in a SpatRasterDataset
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-27</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-29</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,7 @@ Or apply the same method to each sub-dataset (SpatRaster) in a SpatRasterDataset
 <span class="r-in"><span><span class="co">#SpatRasterDataset</span></span></span>
 <span class="r-in"><span><span class="va">sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="sds.html">sds</a></span><span class="op">(</span><span class="va">s</span><span class="op">*</span><span class="fl">2</span>, <span class="va">s</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">sapp</span><span class="op">(</span><span class="va">sd</span>, <span class="va">mean</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">sapp</span><span class="op">(</span><span class="va">sd</span>, \<span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="summarize-generics.html">mean</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">sapp</span><span class="op">(</span><span class="va">sd</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="summarize-generics.html">mean</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
