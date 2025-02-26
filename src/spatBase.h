@@ -118,6 +118,8 @@ class SpatOptions {
 		SpatOptions deepCopy();
 		virtual ~SpatOptions(){}
 
+		bool parallel = false;
+
 		size_t ncopies = 4;
 		size_t minrows = 1;
 		bool threads=false;

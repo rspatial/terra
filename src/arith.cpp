@@ -22,6 +22,9 @@
 #include "vecmath.h"
 #include <cmath>
 
+#include <execution> 
+
+
 //#include "modal.h"
 
 /*
@@ -50,6 +53,13 @@ void operator*(std::vector<double>& a, const std::vector<double>& b) {
 }
 
 */
+
+template<class F>
+auto use_parallel(F f, bool par) {
+	if (par) return f(std::execution::par);
+	return f(std::execution::seq);
+}
+
 
 //template <typename T>
 void operator%(std::vector<double>& a, const std::vector<double>& b) {
@@ -805,7 +815,11 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
-		for(double& d : a) if (!std::isnan(d)) d = mathFun(d);
+		if (opt.parallel) {
+			std::for_each(std::execution::par, a.begin(), a.end(), [&](double &d) { if (!std::isnan(d)) d = mathFun(d); });
+		} else {
+			for (double& d : a) if (!std::isnan(d)) d = mathFun(d);
+		}
 		if (!out.writeBlock(a, i)) return out;
 	}
 	out.writeStop();
