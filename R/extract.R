@@ -231,7 +231,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		if (length(layer) > nrow(y)) {
 			error("extract", "length(layer) > nrow(y)")
 		} else { # recycle
-			layer <- rep(layer, length.out=10)
+			layer <- rep(layer, length.out=nrow(y))
 		}		
 	}
 
