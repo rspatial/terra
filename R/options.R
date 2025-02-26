@@ -1,7 +1,6 @@
 
 .terra_environment <- new.env(parent=emptyenv())
 
-
 .create_options <- function() {
 	opt <- methods::new("SpatOptions")
 	opt@pntr <- SpatOptions$new()
