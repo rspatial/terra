@@ -1,4 +1,13 @@
+# version 1.8-30
+
+## bug fixes
+## enhancements
+## new
+
+
 # version 1.8-29
+
+Released 2025-02-25
 
 ## bug fixes
 
@@ -6,13 +15,11 @@
 - `ext<-<SpatRaster,SpatExtent>` made a shallow copy. Reported on [SO 79440691](https://stackoverflow.com/questions/79440691/extent-is-rewritten-for-separate-spatraster-when-modifying-extent-using-terra-in/79440823#79440823) by katefull06 and as [#1743](https://github.com/rspatial/terra/issues/1743) by Agustin Lobo
 - `extract<SpatRaster>` with cells only used the NA flag for the first data source. [GSE 490433] (https://gis.stackexchange.com/questions/490433/problem-extracting-values-from-raster-in-r-with-terra-package) by MartinL
 
-
 ## enhancements
 
 - `spatSample<SpatRaster>` and `spatSample<SpatExtent>` gain argument "exact=FALSE" to request the exact (but perhaps less regular) sample size for a regular sample. Currently pnly for planar crs.
 - `spatSample<SpatRaster>` gains argument "each=TRUE" to request, when using stratified sampling, a sample size for each stratum, or for all strata combined.
 - `focal` now maintains categories with "fun=modal", "min", "max", or "first" [SO 79449904](https://stackoverflow.com/questions/79449904/preserving-original-categories-when-using-terrafocal) by Sophie Père
-
 
 ## new
 
