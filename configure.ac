@@ -761,6 +761,85 @@ rm -f geos_test errors.txt geos_test.cpp
 #
 AC_SUBST([PKG_LIBS], ["${PROJ_LIBS} ${PKG_LIBS}"])
 
+
+### TBB
+# Default to no Intel TBB
+TBBFLAGS=
+TBBLIBS=
+
+# If tbb/tbb.h and libtbb are found, define TBB and add -ltbb
+  AC_MSG_CHECKING([Intel TBB existence:])
+  TBB_EXISTS=no
+  pkg-config --exists tbb >/dev/null 2>&1
+  SH_TBB_EXISTS=`echo $?`
+  if test ${SH_TBB_EXISTS} = 0 ; then
+    TBB_EXISTS=yes
+    AC_MSG_RESULT(yes)
+  else 
+    if test ${SH_TBB_EXISTS} = 1 ; then
+      TBB_EXISTS=no
+      AC_MSG_RESULT(no)
+      AC_MSG_WARN([Intel TBB not installed; install TBB devel package for parallel processing or update PKG_CONFIG_PATH environment variable])
+    else
+      TBB_EXISTS=no
+      AC_MSG_RESULT(no)
+      AC_MSG_WARN([pkg-config not found; install pkg-config to auto-detect Intel TBB; assumed absent])
+    fi
+  fi
+
+  if test ${TBB_EXISTS} = yes ; then
+    AC_SUBST(TBBFLAGS, ["-DTBB $(pkg-config --cflags tbb)"])
+    AC_SUBST(TBBLIBS, ["$(pkg-config --libs tbb)"])
+
+    AC_MSG_CHECKING([tbb available for compiling and linking:])
+[cat > libtbb_test.cpp <<_EOCONF
+#include <tbb/tbb.h>
+
+int main() { 
+  int H = 1000;
+  tbb::concurrent_vector<bool> v(H, false);
+  tbb::parallel_for(tbb::blocked_range<int>(0, H), [&](tbb::blocked_range<int> r) {
+    for (int h = r.begin(); h < r.end(); ++h) {
+        v[h] = true;
+    }
+  });
+  if (std::find(v.begin(), v.end(), false) == v.end()) { // all true
+    return 0;
+  } else {
+    return 1;
+  }
+}
+_EOCONF]
+    ${CXX} ${CXXFLAGS} ${TBBFLAGS} -o libtbb_test libtbb_test.cpp ${TBBLIBS} 2> errors.txt
+
+    if test `echo $?` -ne 0 ; then
+      AC_MSG_RESULT(no)
+      AC_MSG_WARN([parallel computing is disabled because the Intel TBB devel package is absent])
+      AC_SUBST(TBBFLAGS, [""])
+      AC_SUBST(TBBLIBS, [""])
+    else
+      ./libtbb_test >/dev/null 2>&1
+      if test `echo $?` -ne 0 ; then
+        AC_MSG_RESULT(no)
+        AC_MSG_WARN([parallel computing is disabled because Intel TBB did not load])
+        AC_SUBST(TBBFLAGS, [""])
+        AC_SUBST(TBBLIBS, [""])
+      else
+        AC_MSG_RESULT(yes)
+	    TBB_CFLAGS="${TBB_CFLAGS} -DHAVE_TBB"
+      fi
+    fi
+    rm -f libtbb_test.cpp libtbb_test errors.txt
+  fi
+
+# Now substitute these variables in src/Makevars.in to create src/Makevars
+
+PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
+AC_SUBST([PKG_LIBS], ["${TBBLIBS} ${PKG_LIBS}"])
+
+
+####
+
 #
 # concluding substitution
 #

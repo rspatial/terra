@@ -811,11 +811,20 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
+#ifdef HAVE_TBB
+Rcpp::Rcout << "have_tbb  ";
 		if (opt.parallel) {
+Rcpp::Rcout << "par  ";
 			std::for_each(std::execution::par, a.begin(), a.end(), [&](double &d) { if (!std::isnan(d)) d = mathFun(d); });
 		} else {
+Rcpp::Rcout << "seq  ";
 			for (double& d : a) if (!std::isnan(d)) d = mathFun(d);
 		}
+#else
+	
+Rcpp::Rcout << "\n";
+		for (double& d : a) if (!std::isnan(d)) d = mathFun(d);	
+#endif
 		if (!out.writeBlock(a, i)) return out;
 	}
 	out.writeStop();
