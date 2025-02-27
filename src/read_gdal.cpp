@@ -905,7 +905,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	double adfGeoTransform[6];
 
 	bool hasExtent = true;
-	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
+	if (poDataset->GetGeoTransform( adfGeoTransform ) == CE_None) {
 
 		double xmin = adfGeoTransform[0]; /* left x */
 		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e resolution */
@@ -916,6 +916,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 		if (adfGeoTransform[5] > 0) {
 			std::swap(ymin, ymax);
+			s.extset = true;
+			s.flipped = true;
 		}
 
 		SpatExtent e(xmin, xmax, ymin, ymax);
