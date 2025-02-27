@@ -4334,14 +4334,14 @@ PKG_LIBS="${PROJ_LIBS} ${PKG_LIBS}"
 
 
 
-### TBB
-# Default to no Intel TBB
+#### Intel TBB, following the quanteda package
+# Default to no TBB
 TBBFLAGS=
 TBBLIBS=
 
 # If tbb/tbb.h and libtbb are found, define TBB and add -ltbb
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking Intel TBB existence:" >&5
-printf %s "checking Intel TBB existence:... " >&6; }
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking Intel TBB exists:" >&5
+printf %s "checking Intel TBB exists:... " >&6; }
   TBB_EXISTS=no
   pkg-config --exists tbb >/dev/null 2>&1
   SH_TBB_EXISTS=`echo $?`
@@ -4354,8 +4354,8 @@ printf "%s\n" "yes" >&6; }
       TBB_EXISTS=no
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Intel TBB not installed; install TBB devel package for parallel processing or update PKG_CONFIG_PATH environment variable" >&5
-printf "%s\n" "$as_me: WARNING: Intel TBB not installed; install TBB devel package for parallel processing or update PKG_CONFIG_PATH environment variable" >&2;}
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: to support parallel processing install TBB devel or update the PKG_CONFIG_PATH environment variable" >&5
+printf "%s\n" "$as_me: WARNING: to support parallel processing install TBB devel or update the PKG_CONFIG_PATH environment variable" >&2;}
     else
       TBB_EXISTS=no
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -4396,8 +4396,8 @@ _EOCONF
     if test `echo $?` -ne 0 ; then
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: parallel computing is disabled because the Intel TBB devel package is absent" >&5
-printf "%s\n" "$as_me: WARNING: parallel computing is disabled because the Intel TBB devel package is absent" >&2;}
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: parallel computing is disabled because the TBB devel package is absent" >&5
+printf "%s\n" "$as_me: WARNING: parallel computing is disabled because the TBB devel package is absent" >&2;}
       TBBFLAGS=""
 
       TBBLIBS=""
@@ -4407,8 +4407,8 @@ printf "%s\n" "$as_me: WARNING: parallel computing is disabled because the Intel
       if test `echo $?` -ne 0 ; then
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: parallel computing is disabled because Intel TBB did not load" >&5
-printf "%s\n" "$as_me: WARNING: parallel computing is disabled because Intel TBB did not load" >&2;}
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: parallel computing is disabled because TBB did not load" >&5
+printf "%s\n" "$as_me: WARNING: parallel computing is disabled because TBB did not load" >&2;}
         TBBFLAGS=""
 
         TBBLIBS=""
@@ -4426,7 +4426,6 @@ printf "%s\n" "yes" >&6; }
 
 PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
 PKG_LIBS="${TBBLIBS} ${PKG_LIBS}"
-
 
 
 ####
