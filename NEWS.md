@@ -3,7 +3,7 @@
 ## bug fixes
 
 - min/max statistics computed when writing raster files did not exclude the user provided NA flag. [#1752](https://github.com/rspatial/terra/issues/1752) by Agustin Lobo
-
+- installation failed for GEOS < 3.7 [#1754](https://github.com/rspatial/terra/issues/1754) by Robert Butler 
 
 ## enhancements
 
