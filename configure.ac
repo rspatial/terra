@@ -762,13 +762,13 @@ rm -f geos_test errors.txt geos_test.cpp
 AC_SUBST([PKG_LIBS], ["${PROJ_LIBS} ${PKG_LIBS}"])
 
 
-### TBB
-# Default to no Intel TBB
+#### Intel TBB, following the quanteda package
+# Default to no TBB
 TBBFLAGS=
 TBBLIBS=
 
 # If tbb/tbb.h and libtbb are found, define TBB and add -ltbb
-  AC_MSG_CHECKING([Intel TBB existence:])
+  AC_MSG_CHECKING([Intel TBB exists:])
   TBB_EXISTS=no
   pkg-config --exists tbb >/dev/null 2>&1
   SH_TBB_EXISTS=`echo $?`
@@ -779,7 +779,7 @@ TBBLIBS=
     if test ${SH_TBB_EXISTS} = 1 ; then
       TBB_EXISTS=no
       AC_MSG_RESULT(no)
-      AC_MSG_WARN([Intel TBB not installed; install TBB devel package for parallel processing or update PKG_CONFIG_PATH environment variable])
+      AC_MSG_WARN([to support parallel processing install TBB devel or update the PKG_CONFIG_PATH environment variable])
     else
       TBB_EXISTS=no
       AC_MSG_RESULT(no)
@@ -814,14 +814,14 @@ _EOCONF]
 
     if test `echo $?` -ne 0 ; then
       AC_MSG_RESULT(no)
-      AC_MSG_WARN([parallel computing is disabled because the Intel TBB devel package is absent])
+      AC_MSG_WARN([parallel computing is disabled because the TBB devel package is absent])
       AC_SUBST(TBBFLAGS, [""])
       AC_SUBST(TBBLIBS, [""])
     else
       ./libtbb_test >/dev/null 2>&1
       if test `echo $?` -ne 0 ; then
         AC_MSG_RESULT(no)
-        AC_MSG_WARN([parallel computing is disabled because Intel TBB did not load])
+        AC_MSG_WARN([parallel computing is disabled because TBB did not load])
         AC_SUBST(TBBFLAGS, [""])
         AC_SUBST(TBBLIBS, [""])
       else
@@ -836,7 +836,6 @@ _EOCONF]
 
 PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
 AC_SUBST([PKG_LIBS], ["${TBBLIBS} ${PKG_LIBS}"])
-
 
 ####
 

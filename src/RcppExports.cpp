@@ -10,6 +10,16 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// have_TBB
+bool have_TBB();
+RcppExport SEXP _terra_have_TBB() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(have_TBB());
+    return rcpp_result_gen;
+END_RCPP
+}
 // proj_version
 std::string proj_version();
 RcppExport SEXP _terra_proj_version() {
@@ -386,6 +396,7 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_terra_have_TBB", (DL_FUNC) &_terra_have_TBB, 0},
     {"_terra_proj_version", (DL_FUNC) &_terra_proj_version, 0},
     {"_terra_hex2rgb", (DL_FUNC) &_terra_hex2rgb, 1},
     {"_terra_rgb2hex", (DL_FUNC) &_terra_rgb2hex, 1},

@@ -39,10 +39,19 @@
 #endif
 
 
+
+// [[Rcpp::export(name = ".have_TBB")]]
+bool have_TBB() {
+	#ifdef HAVE_TBB
+		return true;
+	#else 
+		return false;
+	#endif 
+}
+
+
 //from sf
-
 #ifdef projh
-
 // [[Rcpp::export]]
 std::string proj_version() {
 	std::stringstream buffer;
