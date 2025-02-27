@@ -44,7 +44,6 @@ On Windows, you need to first install [Rtools](https://cran.r-project.org/bin/wi
 Then, in R, install the package.
 
 ```
-Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
 remotes::install_github("rspatial/terra")
 ```
 
@@ -89,7 +88,7 @@ Install the system requirements GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3
 ```
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
-sudo apt-get install libgdal-dev libgeos-dev libproj-dev 
+sudo apt-get install libgdal-dev libgeos-dev libproj-dev libtbb-dev
 ```
 
 And now, in R, install the package
