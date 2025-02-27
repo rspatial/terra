@@ -4333,7 +4333,6 @@ rm -f geos_test errors.txt geos_test.cpp
 PKG_LIBS="${PROJ_LIBS} ${PKG_LIBS}"
 
 
-#####
 
 ### TBB
 # Default to no Intel TBB
@@ -4417,15 +4416,14 @@ printf "%s\n" "$as_me: WARNING: parallel computing is disabled because Intel TBB
       else
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-        TBB_CFLAGS="${TBB_CFLAGS} -DHAVE_TBB"
+	    TBB_CFLAGS="${TBB_CFLAGS} -DHAVE_TBB"
       fi
     fi
     rm -f libtbb_test.cpp libtbb_test errors.txt
   fi
 
 # Now substitute these variables in src/Makevars.in to create src/Makevars
-#AC_SUBST(TBB_CFLAGS, ${TBBFLAGS})
-#AC_SUBST(TBB_LIBS, ${TBBLIBS})
+
 PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
 PKG_LIBS="${TBBLIBS} ${PKG_LIBS}"
 
@@ -4433,9 +4431,6 @@ PKG_LIBS="${TBBLIBS} ${PKG_LIBS}"
 
 ####
 
-
-
-#####
 #
 # concluding substitution
 #

@@ -1,5 +1,4 @@
 
-
 .terra_environment <- new.env(parent=emptyenv())
 
 .create_options <- function() {

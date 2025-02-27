@@ -811,7 +811,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
-#ifdef HAVE_TBB
+#if defined(HAVE_TBB) && defined(__cpp_lib_execution)
 		if (opt.parallel) {
 			std::for_each(std::execution::par, a.begin(), a.end(), [&](double &d) { if (!std::isnan(d)) d = mathFun(d); });
 		} else {
