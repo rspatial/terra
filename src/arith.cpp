@@ -754,6 +754,7 @@ double dabs(double x) {
 	return (x < 0 ? -1 * x : x);
 }
 
+
 SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
@@ -806,6 +807,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		readStop();
 		return out;
 	}
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
