@@ -523,12 +523,13 @@ void SpatRaster::setRange(SpatOptions &opt, bool force) {
 	}
 }
 
+
 void SpatRasterSource::setRange() {
 	range_min.resize(nlyr);
 	range_max.resize(nlyr);
 	hasRange.resize(nlyr);
 	if (nlyr==1) {
-		minmax(values.begin(), values.end(), range_min[0], range_max[0]);
+		minmax(values.begin(), values.end(), range_min[0], range_max[0], NAN);
 		hasRange[0] = true;
 		return;
 	}
@@ -536,7 +537,7 @@ void SpatRasterSource::setRange() {
 	if (values.size() == (nc * nlyr)) {
 		for (size_t i=0; i<nlyr; i++) {
 			size_t start = nc * i;
-			minmax(values.begin()+start, values.begin()+start+nc, range_min[i], range_max[i]);
+			minmax(values.begin()+start, values.begin()+start+nc, range_min[i], range_max[i], NAN);
 			hasRange[i] = true;
 		}
 	}

@@ -1,13 +1,20 @@
 # version 1.8-30
 
 ## bug fixes
+
+- min/max statistics computed when writing raster files did not exclude the user provided NA flag. [#1752](https://github.com/rspatial/terra/issues/1752) by Agustin Lobo
+
+
 ## enhancements
+
+- georeferenced rasters that are flipped are now identified as such that there no longer is a need for flip(r, "vertical") after opening the file. [#1753](https://github.com/rspatial/terra/issues/1753) by enatijohnson
+
 ## new
 
 
 # version 1.8-29
 
-Released 2025-02-25
+Released 2025-02-26
 
 ## bug fixes
 

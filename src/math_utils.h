@@ -35,26 +35,42 @@ double signif(double x, unsigned n);
 
 
 template <typename Iterator>
-void minmax(Iterator start, Iterator end, double &vmin, double &vmax) {
+void minmax(Iterator start, Iterator end, double &vmin, double &vmax, double exclude) {
     vmin = std::numeric_limits<double>::max();
     vmax = std::numeric_limits<double>::lowest();
     bool none = true;
-	for (Iterator v = start; v !=end; ++v) {
-		if (!std::isnan(*v)) {
-			if (*v > vmax) {
-				vmax = *v;
-                none = false;
-			}
-			if (*v < vmin) {
-				vmin = *v;
+	if (std::isnan(exclude)) {
+		for (Iterator v = start; v !=end; ++v) {
+			if (!std::isnan(*v)) {
+				if (*v > vmax) {
+					vmax = *v;
+					none = false;
+				}
+				if (*v < vmin) {
+					vmin = *v;
+				}
 			}
 		}
-    }
+	} else {
+		for (Iterator v = start; v !=end; ++v) {
+			if ((!std::isnan(*v)) && (exclude != *v)) {
+				if (*v > vmax) {
+					vmax = *v;
+					none = false;
+				}
+				if (*v < vmin) {
+					vmin = *v;
+				}
+			}
+		}
+	}
     if (none) {
         vmin = NAN;
         vmax = NAN;
     }
 }
+
+
 
 
 template <typename T> 

@@ -846,25 +846,44 @@ void tmp_min_max_na(std::vector<T> &out, const std::vector<double> &v, const dou
 
 
 template <typename Iterator>
-void minmaxlim(Iterator start, Iterator end, double &vmin, double &vmax, const double &lmin, const double &lmax, bool& outrange) {
+void minmaxlim(Iterator start, Iterator end, double &vmin, double &vmax, const double &lmin, const double &lmax, bool& outrange, double exclude=NAN) {
     vmin = std::numeric_limits<double>::max();
     vmax = std::numeric_limits<double>::lowest();
     bool none = true;
-	for (Iterator v = start; v !=end; ++v) {
-		if (!std::isnan(*v)) {
-			if (*v >= lmin && *v <= lmax) {
-				if (*v > vmax) {
-					vmax = *v;
-					none = false;
+	
+	if (!std::isnan(exclude)) {
+		for (Iterator v = start; v !=end; ++v) {
+			if (!std::isnan(*v) && (exclude != *v)) {
+				if (*v >= lmin && *v <= lmax) {
+					if (*v > vmax) {
+						vmax = *v;
+						none = false;
+					}
+					if (*v < vmin) {
+						vmin = *v;
+					}
+				} else {
+					outrange = true;
 				}
-				if (*v < vmin) {
-					vmin = *v;
-				}
-			} else {
-				outrange = true;
 			}
 		}
-    }
+	} else {
+		for (Iterator v = start; v !=end; ++v) {
+			if (!std::isnan(*v)) {
+				if (*v >= lmin && *v <= lmax) {
+					if (*v > vmax) {
+						vmax = *v;
+						none = false;
+					}
+					if (*v < vmin) {
+						vmin = *v;
+					}
+				} else {
+					outrange = true;
+				}
+			}
+		}
+	}
     if (none) {
         vmin = NAN;
         vmax = NAN;
@@ -893,28 +912,32 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		}
 	}
 
+	int hasNA = 0;
+	double na = source[0].gdalconnection->GetRasterBand(1)->GetNoDataValue(&hasNA);
+	if (!hasNA) na = NAN;
+
 	if ((compute_stats) && (!gdal_stats)) {
 		bool invalid = false;
 		for (size_t i=0; i < nl; i++) {
 			size_t start = nc * i;
 			if (datatype == "INT8S") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT64_MIN, (double)INT64_MAX, invalid);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT64_MIN, (double)INT64_MAX, invalid, na);
 			} else if (datatype == "INT4S") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT32_MAX, invalid);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT32_MAX, invalid, na);
 			} else if (datatype == "INT2S") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT16_MIN, (double)INT16_MAX, invalid);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT16_MIN, (double)INT16_MAX, invalid, na);
 			} else if (datatype == "INT8U") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT64_MAX, invalid);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT64_MAX, invalid, na);
 			} else if (datatype == "INT4U") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT32_MAX, invalid);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT32_MAX, invalid, na);
 			} else if (datatype == "INT2U") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT16_MAX, invalid);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT16_MAX, invalid, na);
 			} else if (datatype == "INT1U") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, 255.0, invalid);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, 255.0, invalid, na);
 			} else if (datatype == "INT1S") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, -128.0, 127.0, invalid);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, -128.0, 127.0, invalid, na);
 			} else {
-				minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
+				minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, na);
 			}
 			if (source[0].has_scale_offset[i]) {
 				vmin = vmin * source[0].scale[i] + source[0].offset[i];
@@ -935,8 +958,6 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		}
 	}
 
-	int hasNA = 0;
-	double na = source[0].gdalconnection->GetRasterBand(1)->GetNoDataValue(&hasNA);
 	if ((datatype == "FLT8S") || (datatype == "FLT4S")) {
 		if (hasNA) {
 			size_t n = vals.size();
