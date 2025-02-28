@@ -54,10 +54,10 @@
 
 
 write_tags <- function(tags, nc, varid, prefix="TAG_") {
-	if (length(tags) > 0) {
-		nms <- paste0(prefix, names(tags))
-		for(i in 1:length(nms)) {
-			ncdf4::ncatt_put(nc, varid, nms[i], tags[i], prec="text")
+	if (NROW(tags) > 0) {
+		nms <- paste0(prefix, tags[,2])
+		for(i in 1:nrow(tags)) {
+			ncdf4::ncatt_put(nc, varid, nms[i], tags[i,3], prec="text")
 		}
 	}
 }
@@ -136,10 +136,10 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 				zunit <- "unknown"
 			}
 			zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
-			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval[i], lvar[i], prec = prec[i], compression=compression,...)
+			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval[i], lvar[i], prec = prec[i], compression=compression)
 		} else {
 
-			ncvars[[i]] <- ncdf4::ncvar_def(name=vars[i], units=units[i], dim=list(xdim, ydim), missval=missval[i], longname=lvar[i], prec = prec[i], compression=compression, ...)
+			ncvars[[i]] <- ncdf4::ncvar_def(name=vars[i], units=units[i], dim=list(xdim, ydim), missval=missval[i], longname=lvar[i], prec = prec[i], compression=compression)
 		}
 	}
 
@@ -175,7 +175,6 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 		}
 		haveprj <- TRUE
 	}
-
 
 	e <- ext(x)
 	rs <- res(x)
