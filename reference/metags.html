@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-30</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-31</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,15 +101,15 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 another_tag another_value USER_TAGS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5    one more    this value USER_TAGS</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">metags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span>another_tag<span class="op">=</span><span class="st">"44"</span>, `one more`<span class="op">=</span><span class="st">"that value"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">metags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="st">"AREA_OR_POINT"</span>, <span class="st">"Point"</span>, <span class="st">""</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">metags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          name      value    domain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         one        ABC USER_TAGS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         two        123 USER_TAGS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       three      hello USER_TAGS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 another_tag         44 USER_TAGS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    one more that value USER_TAGS</span>
-<span class="r-in"><span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            name         value    domain</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           one           ABC USER_TAGS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           two           123 USER_TAGS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         three         hello USER_TAGS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   another_tag another_value USER_TAGS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      one more    this value USER_TAGS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 AREA_OR_POINT         Point          </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">metags</span><span class="op">(</span><span class="va">r</span>, name<span class="op">=</span><span class="st">"two"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name value    domain</span>
@@ -119,10 +119,11 @@
 <span class="r-in"><span><span class="fu">metags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="st">"one"</span>, <span class="st">""</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">metags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"two="</span></span></span>
 <span class="r-in"><span><span class="fu">metags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          name      value    domain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       three      hello USER_TAGS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 another_tag         44 USER_TAGS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    one more that value USER_TAGS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            name         value    domain</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         three         hello USER_TAGS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   another_tag another_value USER_TAGS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      one more    this value USER_TAGS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 AREA_OR_POINT         Point          </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># remove all tags</span></span></span>
 <span class="r-in"><span><span class="fu">metags</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
