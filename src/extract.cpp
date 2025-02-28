@@ -87,6 +87,8 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 		out[k] = std::vector<double>(n, NAN);
 	}
 
+Rcpp::Rcout << "blocks: " << bs.n << std::endl;
+
 	for (size_t i=0; i<bs.n; i++) {
 		if (!useblock[i]) continue;
 		std::vector<double> v;
