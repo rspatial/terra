@@ -27,7 +27,7 @@
 
 #include "Rcpp.h"
 
-#if defined(HAVE_TBB) // && defined(__cpp_lib_execution)
+#if defined(HAVE_TBB) && !defined(__APPLE__)
 #include <tbb/parallel_for.h>
 #include <tbb/blocked_range.h>
 #endif 
@@ -594,7 +594,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 
 				n -= 1;
 //				std::vector<std::vector<size_t>> idx;
-#if defined(HAVE_TBB) // && defined(__cpp_lib_execution)
+#if defined(HAVE_TBB) && !defined(__APPLE__)
 				d.resize(n);			
 				tbb::parallel_for(tbb::blocked_range<size_t>(0, n),
                 [&](const tbb::blocked_range<size_t>& range) {
@@ -625,7 +625,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 				for (size_t i=0; i<(s-1); i++) {
 					SpatVector tmp1 = subset_rows(long(i));
 					dst.resize(s-i-1);
-#if defined(HAVE_TBB) //&& defined(__cpp_lib_execution)
+#if defined(HAVE_TBB) && !defined(__APPLE__)
 					tbb::parallel_for(tbb::blocked_range<size_t>((i+1), s),
 					[&](const tbb::blocked_range<size_t>& range) {
 						for (size_t j = range.begin(); j != range.end(); j++) {
@@ -640,7 +640,6 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 						SpatVector tmp2 = subset_rows( long(j) );
 						double d1 = polDistLonLat(tmp2, tmp1, unit, method);
 						double d2 = polDistLonLat(tmp1, tmp2, unit, method);
-						dst[j] = std::min(d1, d2);
 					}
 #endif
 					d.insert(d.end(), dst.begin(), dst.end());

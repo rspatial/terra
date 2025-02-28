@@ -22,7 +22,7 @@
 #include "vecmath.h"
 #include <cmath>
 
-#if defined(HAVE_TBB) // && defined(__cpp_lib_execution)
+#if defined(HAVE_TBB) && !defined(__APPLE__)
 #include <tbb/parallel_for.h>
 #include <tbb/blocked_range.h>
 #endif 
@@ -814,7 +814,8 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
-#if defined(HAVE_TBB)
+#if defined(HAVE_TBB) && !defined(__APPLE__)
+
 		if (opt.parallel) {
 			tbb::parallel_for(tbb::blocked_range<size_t>(0, a.size()),
 				[&](const tbb::blocked_range<size_t>& range) {
