@@ -231,11 +231,11 @@ class SpatRaster {
 		std::string getError() { return msg.getError();}
 		std::string getMessage() { return msg.getMessage();}
 
-		std::map<std::string, std::string> user_tags;
-		bool addTag(std::string name, std::string value);
-		bool removeTag(std::string name);
-		std::string getTag(std::string name);
-		std::vector<std::string> getTags();
+		std::vector<std::vector<std::string>> user_tags;
+		bool addTag(std::string name, std::string value, std::string domain);
+		bool removeTag(std::string name, std::string domain);
+		std::string getTag(std::string name, std::string domain);
+		std::vector<std::vector<std::string>> getTags();
 
 		void addLyrTags(std::vector<size_t> lyrs, std::vector<std::string> names, std::vector<std::string> values);
 

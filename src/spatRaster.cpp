@@ -2631,39 +2631,54 @@ std::vector<int> SpatRaster::getFileBlocksize() {
 }
 
 
-bool SpatRaster::addTag(std::string name, std::string value) {
+bool SpatRaster::addTag(std::string name, std::string value, std::string domain) {
 	lrtrim(name);
 	lrtrim(value);
 	if (value == "") {
-		return removeTag(name);
+		return removeTag(name, domain);
 	} else if (name != "") {
-		user_tags[name] = value;
+		if (user_tags.size() == 0) {
+			user_tags.resize(3);
+		}
+		for (size_t i =0; i<user_tags[0].size(); i++) {
+			if ((user_tags[0][i] == domain) && (user_tags[1][i] == name)) {
+				user_tags[2][i] = value;
+				return true;
+			}
+		}
+		user_tags[0].push_back(domain);
+		user_tags[1].push_back(name);
+		user_tags[2].push_back(value);
 		return true;
 	} 
 	return false;
 }
 
-bool SpatRaster::removeTag(std::string name) {
-	std::map<std::string, std::string>::iterator it = user_tags.find(name);
-	if (it == user_tags.end()) return false;
-	user_tags.erase(it);
-	return true;
+
+bool SpatRaster::removeTag(std::string name, std::string domain) {
+	if (user_tags.size() == 0) return true;
+	for (size_t i =0; i<user_tags[0].size(); i++) {
+		if ((user_tags[0][i] == domain) && (user_tags[1][i] == name)) {
+			user_tags[0].erase(user_tags[0].begin()+i);
+			user_tags[1].erase(user_tags[1].begin()+i);
+			user_tags[2].erase(user_tags[2].begin()+i);
+			return true;
+		}
+	}
+	return false;
 }
 
-std::string SpatRaster::getTag(std::string name) {
-	std::map<std::string, std::string>::iterator it = user_tags.find(name);
-	if (it != user_tags.end()) return it->second;
+std::string SpatRaster::getTag(std::string name, std::string domain) {
+	for (size_t i =0; i<user_tags[0].size(); i++) {
+		if ((user_tags[0][i] == domain) && (user_tags[1][i] == name)) {
+			return user_tags[2][i];
+		}
+	}
 	return "";
 }
 
-std::vector<std::string> SpatRaster::getTags() {
-	std::vector<std::string> out;
-	out.reserve(2 * user_tags.size());
-	for (auto e : user_tags) {
-		out.push_back(e.first);
-		out.push_back(e.second);
-	}
-	return out;
+std::vector<std::vector<std::string>> SpatRaster::getTags() {
+	return user_tags;
 }
 
 

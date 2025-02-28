@@ -274,39 +274,51 @@ std::vector<std::string> SpatRasterCollection::filenames() {
 		
 
 
-bool SpatRasterCollection::addTag(std::string name, std::string value) {
+bool SpatRasterCollection::addTag(std::string name, std::string value, std::string domain) {
 	lrtrim(name);
 	lrtrim(value);
 	if (value == "") {
-		return removeTag(name);
+		return removeTag(name, domain);
 	} else if (name != "") {
-		tags[name] = value;
+		if (tags.size() == 0) {
+			tags.resize(3);
+		}
+		tags[0].push_back(domain);
+		tags[1].push_back(name);
+		tags[2].push_back(value);
+		std::sort(tags.begin(), tags.end());
+		tags.erase(std::unique(tags.begin(), tags.end()), tags.end());
 		return true;
 	} 
 	return false;
 }
 
-bool SpatRasterCollection::removeTag(std::string name) {
-	std::map<std::string, std::string>::iterator it = tags.find(name);
-	if (it == tags.end()) return false;
-	tags.erase(it);
-	return true;
+
+bool SpatRasterCollection::removeTag(std::string name, std::string domain) {
+	if (tags.size() == 0) return true;
+	for (size_t i =0; i<tags[0].size(); i++) {
+		if ((tags[0][i] == domain) && (tags[1][i] == name)) {
+			tags[0].erase(tags[0].begin()+i);
+			tags[1].erase(tags[1].begin()+i);
+			tags[2].erase(tags[2].begin()+i);
+			return true;
+		}
+	}
+	return false;
 }
 
-std::string SpatRasterCollection::getTag(std::string name) {
-	std::map<std::string, std::string>::iterator it = tags.find(name);
-	if (it != tags.end()) return it->second;
+
+std::string SpatRasterCollection::getTag(std::string name, std::string domain) {
+	for (size_t i =0; i<tags[0].size(); i++) {
+		if ((tags[0][i] == domain) && (tags[1][i] == name)) {
+			return tags[2][i];
+		}
+	}
 	return "";
 }
 
-std::vector<std::string> SpatRasterCollection::getTags() {
-	std::vector<std::string> out;
-	out.reserve(2 * tags.size());
-	for(auto e : tags) {
-		out.push_back(e.first);
-		out.push_back(e.second);
-	}
-	return out;
+std::vector<std::vector<std::string>> SpatRasterCollection::getTags() {
+	return tags;
 }
 
 
@@ -581,38 +593,50 @@ SpatRaster SpatRasterStack::collapse() {
 
 
 
-bool SpatRasterStack::addTag(std::string name, std::string value) {
+bool SpatRasterStack::addTag(std::string name, std::string value, std::string domain) {
 	lrtrim(name);
 	lrtrim(value);
 	if (value == "") {
-		return removeTag(name);
+		return removeTag(name, domain);
 	} else if (name != "") {
-		tags[name] = value;
+		if (tags.size() == 0) {
+			tags.resize(3);
+		}
+		tags[0].push_back(domain);
+		tags[1].push_back(name);
+		tags[2].push_back(value);
+		std::sort(tags.begin(), tags.end());
+		tags.erase(std::unique(tags.begin(), tags.end()), tags.end());
 		return true;
 	} 
 	return false;
 }
 
-bool SpatRasterStack::removeTag(std::string name) {
-	std::map<std::string, std::string>::iterator it = tags.find(name);
-	if (it == tags.end()) return false;
-	tags.erase(it);
-	return true;
+
+bool SpatRasterStack::removeTag(std::string name, std::string domain) {
+	if (tags.size() == 0) return true;
+	for (size_t i =0; i<tags[0].size(); i++) {
+		if ((tags[0][i] == domain) && (tags[1][i] == name)) {
+			tags[0].erase(tags[0].begin()+i);
+			tags[1].erase(tags[1].begin()+i);
+			tags[2].erase(tags[2].begin()+i);
+			return true;
+		}
+	}
+	return false;
 }
 
-std::string SpatRasterStack::getTag(std::string name) {
-	std::map<std::string, std::string>::iterator it = tags.find(name);
-	if (it != tags.end()) return it->second;
+
+std::string SpatRasterStack::getTag(std::string name, std::string domain) {
+	for (size_t i =0; i<tags[0].size(); i++) {
+		if ((tags[0][i] == domain) && (tags[1][i] == name)) {
+			return tags[2][i];
+		}
+	}
 	return "";
 }
 
-std::vector<std::string> SpatRasterStack::getTags() {
-	std::vector<std::string> out;
-	out.reserve(2 * tags.size());
-	for(auto e : tags) {
-		out.push_back(e.first);
-		out.push_back(e.second);
-	}
-	return out;
+std::vector<std::vector<std::string>> SpatRasterStack::getTags() {
+	return tags;
 }
 

@@ -85,11 +85,12 @@ class SpatRasterStack {
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 		
 		
-		std::map<std::string, std::string> tags;
-		bool addTag(std::string name, std::string value);
-		bool removeTag(std::string name);
-		std::string getTag(std::string name);
-		std::vector<std::string> getTags();
+		//std::map<std::string, std::string> tags;
+		std::vector<std::vector<std::string>> tags;
+		bool addTag(std::string name, std::string value, std::string domain);
+		bool removeTag(std::string name, std::string domain);
+		std::string getTag(std::string name, std::string domain);
+		std::vector<std::vector<std::string>> getTags();
 		
 };
 
@@ -144,11 +145,11 @@ class SpatRasterCollection {
 		
 		SpatRasterStack read_into(SpatRaster &tmp, size_t row, size_t nrows);
 
-		std::map<std::string, std::string> tags;
-		bool addTag(std::string name, std::string value);
-		bool removeTag(std::string name);
-		std::string getTag(std::string name);
-		std::vector<std::string> getTags();
+		std::vector<std::vector<std::string>> tags;
+		bool addTag(std::string name, std::string value, std::string domain);
+		bool removeTag(std::string name, std::string domain);
+		std::string getTag(std::string name, std::string domain);
+		std::vector<std::vector<std::string>> getTags();
 
 };
 

@@ -17,7 +17,7 @@ You can set arbitrary metadata to (layers of) a SpatRaster using "name=value" ta
 }
 
 \usage{
-\S4method{metags}{SpatRaster}(x, layer=NULL)<-value
+\S4method{metags}{SpatRaster}(x, layer=NULL, domain="USER_TAGS")<-value
 
 \S4method{metags}{SpatRaster}(x, layer=NULL, name=NULL)
 
@@ -30,13 +30,14 @@ You can set arbitrary metadata to (layers of) a SpatRaster using "name=value" ta
 \arguments{
 \item{x}{SpatRaster}
 \item{layer}{NULL, positive integer or character. If the value is NULL, the tags assigned or returned are for the SpatRaster. Otherwise for the layer number(s) or name(s)}
+\item{domain}{character. Use "" for the default domain}
 \item{name}{character}
-\item{value}{character of "name=value" or two-column matrix}
+\item{value}{character of "name=value" or two-column (name, value) or three-column (name, value, domain) matrix or data.frame}
 \item{dataset}{NULL, positive integer or character. If the value is NULL, the tags assigned or returned are for the SpatRasterDataset/SpatRasterCollection. Otherwise for the datset number(s) or name(s)}
 }
 
 \value{
-SpatRaster (\code{metags<-}), or named character (\code{metags})
+SpatRaster (\code{metags<-}), or data.frame
 }
 
 \examples{

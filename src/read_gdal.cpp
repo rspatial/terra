@@ -684,7 +684,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 	std::vector<std::string> tagnames, tagvalues;
 //	get_tags(meta, "NC_GLOBAL#TAG_", tagnames, tagvalues);
 	get_tags(meta, "NC_GLOBAL#", tagnames, tagvalues);
-	for (size_t i=0; i<tagnames.size(); i++) addTag(tagnames[i], tagvalues[i]);
+	for (size_t i=0; i<tagnames.size(); i++) addTag(tagnames[i], tagvalues[i], "GLOBAL");
 
 }
 
@@ -755,7 +755,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 	std::vector<std::string> tagnames, tagvalues;
 //	get_tags(meta, "NC_GLOBAL#TAG_", tagnames, tagvalues);
 	get_tags(meta, "NC_GLOBAL#", tagnames, tagvalues);
-	for (size_t i=0; i<tagnames.size(); i++) addTag(tagnames[i], tagvalues[i]);
+	for (size_t i=0; i<tagnames.size(); i++) addTag(tagnames[i], tagvalues[i], "GLOBAL");
 
 }
 
@@ -873,21 +873,23 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		return false;
 	}
 
-	char **meterra = poDataset->GetMetadata("USER_TAGS");
-
-	if (meterra != NULL) {
-		std::vector<std::string> meta;
-		for (size_t i=0; meterra[i] != NULL; i++) {
-			std::string s = meterra[i];
-			size_t pos = s.find("=");
-			if (pos != std::string::npos) {
-				std::string name = s.substr(0, pos);
-				std::string value = s.substr(pos+1); 
-				addTag(name, value);
+	std::vector<std::string> domains {"", "USER_TAGS"};	
+	for (size_t i=0; i<domains.size(); i++) {
+		char **meterra = poDataset->GetMetadata(domains[i].c_str());
+		if (meterra != NULL) {
+			std::vector<std::string> meta;
+			for (size_t j=0; meterra[j] != NULL; j++) {
+				std::string s = meterra[j];
+				size_t pos = s.find("=");
+				if (pos != std::string::npos) {
+					std::string name = s.substr(0, pos);
+					std::string value = s.substr(pos+1); 
+					addTag(name, value, domains[i]);
+				}
 			}
 		}
 	}
-
+	
 	SpatRasterSource s;
 
 	char **metasrc = poDataset->GetMetadata();
@@ -1307,7 +1309,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 //		std::string stag = s.source_name + "#TAG_";
 		std::string stag = s.source_name + "#";
 		get_tags(metadata, stag, tagnames, tagvalues);
-		for (size_t i=0; i<tagnames.size(); i++) addTag(tagnames[i], tagvalues[i]);
+		for (size_t i=0; i<tagnames.size(); i++) addTag(tagnames[i], tagvalues[i], gdrv);
 
 	}
 	if (getCols) {
@@ -2121,7 +2123,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		for (size_t i=0; i<tagnames.size(); i++) {
 			std::string mn = tagnames[i];
 			if (!((mn == "_FillValue") || (mn == "grid_mapping") || (mn == "Conventions") || (mn == "created_by") || (mn == "created_date"))) {
-				addTag(tagnames[i], tagvalues[i]);
+				addTag(tagnames[i], tagvalues[i], driver);
 			}
 		}
 	}
