@@ -22,7 +22,10 @@
 #include "vecmath.h"
 #include <cmath>
 
-#include <execution> 
+#if defined(HAVE_TBB) // && defined(__cpp_lib_execution)
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
+#endif 
 
 
 //#include "modal.h"
@@ -811,9 +814,14 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
-#if defined(HAVE_TBB) && defined(__cpp_lib_execution)
+#if defined(HAVE_TBB)
 		if (opt.parallel) {
-			std::for_each(std::execution::par, a.begin(), a.end(), [&](double &d) { if (!std::isnan(d)) d = mathFun(d); });
+			tbb::parallel_for(tbb::blocked_range<size_t>(0, a.size()),
+				[&](const tbb::blocked_range<size_t>& range) {
+				for (size_t i = range.begin(); i != range.end(); i++) {
+					if (!std::isnan(a[i])) a[i] = mathFun(a[i]);
+				}
+			});
 		} else {
 			for (double& d : a) if (!std::isnan(d)) d = mathFun(d);
 		}

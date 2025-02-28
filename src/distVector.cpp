@@ -27,6 +27,12 @@
 
 #include "Rcpp.h"
 
+#if defined(HAVE_TBB) // && defined(__cpp_lib_execution)
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
+#endif 
+
+
 double polDistLonLat(SpatVector &p1, SpatVector &p2, std::string unit, std::string method) {
 
 	std::vector<int> inside = p1.relate(p2, "intersects", true, true);
@@ -586,57 +592,58 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 
 			if (sequential) {
 
-				std::vector<std::vector<size_t>> idx;
-
 				n -= 1;
+//				std::vector<std::vector<size_t>> idx;
+#if defined(HAVE_TBB) // && defined(__cpp_lib_execution)
+				d.resize(n);			
+				tbb::parallel_for(tbb::blocked_range<size_t>(0, n),
+                [&](const tbb::blocked_range<size_t>& range) {
+                    for (size_t i = range.begin(); i != range.end(); i++) {
+						SpatVector tmp1 = subset_rows((long)i);
+						SpatVector tmp2 = subset_rows((long)i+1);
+						double d1 = polDistLonLat(tmp2, tmp1, unit, method);
+						double d2 = polDistLonLat(tmp1, tmp2, unit, method);
+						d[i] = std::min(d1, d2);
+                    }
+                });
+
+#else
 				SpatVector tmp1 = subset_rows(0);
-//				std::vector<std::vector<double>> xy1 = tmp1.coordinates();
 				for (size_t i=0; i<n; i++) {
 					SpatVector tmp2 = subset_rows( (long)i+1 );
-//					std::vector<std::vector<double>> xy2 = tmp2.coordinates();
-//					std::vector<double> d1 = tmp2.distLonLat(xy1[0], xy1[1], unit, method, false);
-//					std::vector<double> d2 = tmp1.distLonLat(xy2[0], xy2[1], unit, method, false);
-//					std::vector<double> d1 = tmp2.distLonLat(tmp1, unit, method, false);
-//					std::vector<double> d2 = tmp1.distLonLat(tmp2, unit, method, false);
-//					d.push_back(std::min(vmin(d1, false), vmin(d2, false)));
-
 					double d1 = polDistLonLat(tmp2, tmp1, unit, method);
 					double d2 = polDistLonLat(tmp1, tmp2, unit, method);
 					d.push_back(std::min(d1, d2));
-
 					tmp1 = tmp2;
-//					xy1 = xy2;
 				}
+#endif				
 			} else {
 				size_t s = size();
 				size_t n = ((s-1) * s)/2;
-				d.reserve(n);
-
-/*
-				std::vector<std::vector<double>> ee, empty;
-				ee.reserve(n);
-				for (size_t g=0; g<n; g++) {
-					ee.push_back(geoms[g].extent.asVector());
-				}
-				std::vector<std::vector<size_t>> idx = get_index(ee, empty);
-*/
-
+				d.resize(n);
+				std::vector<double> dst;
 				for (size_t i=0; i<(s-1); i++) {
 					SpatVector tmp1 = subset_rows(long(i));
-//					std::vector<std::vector<double>> xy1 = tmp1.coordinates();
+					dst.resize(s-i-1);
+#if defined(HAVE_TBB) //&& defined(__cpp_lib_execution)
+					tbb::parallel_for(tbb::blocked_range<size_t>((i+1), s),
+					[&](const tbb::blocked_range<size_t>& range) {
+						for (size_t j = range.begin(); j != range.end(); j++) {
+							SpatVector tmp2 = subset_rows( long(j) );
+							double d1 = polDistLonLat(tmp2, tmp1, unit, method);
+							double d2 = polDistLonLat(tmp1, tmp2, unit, method);
+							dst[j] = std::min(d1, d2);
+						}
+					});
+#else
 					for (size_t j=(i+1); j<s; j++) {
 						SpatVector tmp2 = subset_rows( long(j) );
-//						std::vector<std::vector<double>> xy2 = tmp2.coordinates();
-//						std::vector<double> d1 = tmp2.distLonLat(xy1[0], xy1[1], unit, method, false);
-//						std::vector<double> d2 = tmp1.distLonLat(xy2[0], xy2[1], unit, method, false);
-//						std::vector<double> d1 = tmp2.distLonLat(tmp1, unit, method, false);
-//						std::vector<double> d2 = tmp1.distLonLat(tmp2, unit, method, false);
-//						d.push_back(std::min(vmin(d1, false), vmin(d2, false)));
-
 						double d1 = polDistLonLat(tmp2, tmp1, unit, method);
 						double d2 = polDistLonLat(tmp1, tmp2, unit, method);
-						d.push_back(std::min(d1, d2));
+						dst[j] = std::min(d1, d2);
 					}
+#endif
+					d.insert(d.end(), dst.begin(), dst.end());
 				}
 			}
 		} else {
