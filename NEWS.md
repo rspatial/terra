@@ -1,4 +1,4 @@
-# version 1.8-30
+# version 1.8-31
 
 ## bug fixes
 
@@ -8,6 +8,7 @@
 ## enhancements
 
 - georeferenced rasters that are flipped are now identified as such that there no longer is a need for flip(r, "vertical") after opening the file. [#1753](https://github.com/rspatial/terra/issues/1753) by enatijohnson
+- `metags` now supports raster metadata domains
 
 ## new
 
