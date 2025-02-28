@@ -49,9 +49,8 @@ metags(r)
 metags(r) <- c("another_tag=another_value", "one more=this value")
 metags(r)
 
-metags(r) <- c(another_tag="44", `one more`="that value")
+metags(r) <- cbind("AREA_OR_POINT", "Point", "")
 metags(r)
-
 
 metags(r, name="two")
 
