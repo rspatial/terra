@@ -66,9 +66,10 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 				bs.row[i] = urows[j];
 				for (size_t k=j; k<urows.size(); k++) {
 					if (urows[k] > ed) {
-						bs.nrows[i] = urows[k-1]-urows[j]+1;
 						jj = k;
 						break;
+					} else {
+						bs.nrows[i] = urows[k]-urows[j]+1;
 					}
 				}
 				break;
