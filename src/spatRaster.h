@@ -558,7 +558,7 @@ class SpatRaster {
 //		std::vector<double> readRowColBlockFlat(size_t src, std::vector<int_64> &rows, std::vector<int_64> &cols);
 //		std::vector<std::vector<double>> readRowColBlock(size_t src, std::vector<int_64> &rows, std::vector<int_64> &cols);
 
-		void readRowColBlock(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, std::vector<int_64> &cols);
+		void readRowColBlock(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, std::vector<int_64> &cols, SpatOptions &opt);
 
 
 		bool readStartGDAL(size_t src);
@@ -635,7 +635,7 @@ class SpatRaster {
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
 
-		void bilinearValues(std::vector<std::vector<double>> &out, const std::vector<double> &x, const std::vector<double> &y);
+		void bilinearValues(std::vector<std::vector<double>> &out, const std::vector<double> &x, const std::vector<double> &y, SpatOptions &opt);
 		std::vector<double> bilinearCells(const std::vector<double> &x, const std::vector<double> &y);
 		void fourCellsFromXY(std::vector<double> &out, const std::vector<double> &x, const std::vector<double> &y);
 
@@ -683,7 +683,7 @@ class SpatRaster {
 		SpatRaster extend(SpatExtent e, std::string snap, double fill, SpatOptions &opt);
 		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, bool small, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
 		std::vector<double> extractVectorFlat(SpatVector v, std::vector<std::string> funs, bool narm, bool touches, bool small, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
-		std::vector<std::vector<double>> extractBuffer(const std::vector<double> &x, const std::vector<double> &y, double b);
+		std::vector<std::vector<double>> extractBuffer(const std::vector<double> &x, const std::vector<double> &y, double b, SpatOptions &opt);
 		
 		
 //		std::vector<double> extract_interpolate(std::vector<double> x, std::vector<double> y, std::string algo);
@@ -692,11 +692,11 @@ class SpatRaster {
 		std::vector<double> vectCells(SpatVector v, bool touches, bool small, std::string method, bool weights, bool exact, SpatOptions &opt);
 		std::vector<double> extCells(SpatExtent ext);
 
-		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
+		std::vector<std::vector<double>> extractCell(std::vector<double> &cell, SpatOptions opt);
 //		std::vector<double> extractCellFlat(std::vector<double> &cell);
 	
-		std::vector<std::vector<double>> extractXY(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells);
-		std::vector<double> extractXYFlat(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells);
+		std::vector<std::vector<double>> extractXY(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells, SpatOptions &opt);
+		std::vector<double> extractXYFlat(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells, SpatOptions &opt);
 		
 		SpatRaster flip(bool vertical, SpatOptions &opt);
 		SpatRaster filler(SpatRaster x, SpatOptions &opt);

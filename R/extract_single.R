@@ -143,7 +143,8 @@ make_extract_index <- function(v, vmx, name="i") {
 		y[-cellFromXY(y, xyFromCell(x, i))] <- NA
 		y
 	} else {
-		e <- x@pntr$extractCell(i-1)
+		opt <- spatOptions()
+		e <- x@pntr$extractCell(i-1, opt)
 		x <- messages(x, "extract")
 		e <- do.call(cbind, e)
 		colnames(e) <- names(x)
@@ -157,7 +158,8 @@ make_extract_index <- function(v, vmx, name="i") {
 
 .extract_cell_layer <- function(x, i, lyrs, drop) {
 	if (drop) {
-		e <- x@pntr$extractCell(i-1)
+		opt <- spatOptions()
+		e <- x@pntr$extractCell(i-1, opt)
 		messages(x, "extract")
 		e <- do.call(cbind, e)
 		colnames(e) <- names(x)

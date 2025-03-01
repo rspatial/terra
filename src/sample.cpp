@@ -466,7 +466,8 @@ std::vector<std::vector<double>> SpatRaster::sampleRandomValues(double size, boo
 	}
 
 	std::vector<double> dcells(cells.begin(), cells.end());
-	std::vector<std::vector<double>> d = extractCell(dcells);
+	SpatOptions opt;
+	std::vector<std::vector<double>> d = extractCell(dcells, opt);
 	return d;
 }
 

@@ -1246,7 +1246,7 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 			return out;
 			#endif
 		}
-		std::vector<std::vector<double>> e = extractXY(xy[0], xy[1], method, false);
+		std::vector<std::vector<double>> e = extractXY(xy[0], xy[1], method, false, opt);
 		std::vector<double> v = flatten(e);
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
