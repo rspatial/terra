@@ -51,22 +51,22 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 	permute(cols, pm);
 */
 
-for (size_t i=0; i<bs.n; i++) Rcpp::Rcout << bs.row[i] << " " << bs.nrows[i] << "; ";
-Rcpp::Rcout << std::endl;
+//for (size_t i=0; i<bs.n; i++) Rcpp::Rcout << bs.row[i] << " " << bs.nrows[i] << "; ";
+//Rcpp::Rcout << std::endl;
 
 	std::vector<int_64> urows = vunique(rows);
 	std::vector<bool> useblock(bs.n, false);
 	size_t jj = 0;
 	for (size_t i=0; i<bs.n; i++) {
 		int_64 st = bs.row[i];
-		int_64 ed = bs.row[i] + bs.nrows[i] -1 ;
+		int_64 ed = bs.row[i] + bs.nrows[i] - 1;
 		for (size_t j=jj; j<urows.size(); j++) {
 			if ((urows[j] >= st) && (urows[j] <= ed)) {
 				useblock[i] = true;
 				bs.row[i] = urows[j];
 				for (size_t k=j; k<urows.size(); k++) {
 					if (urows[k] > ed) {
-						bs.nrows[i] = urows[k-1]-urows[jj]+1;
+						bs.nrows[i] = urows[k-1]-urows[j]+1;
 						jj = k;
 						break;
 					}
