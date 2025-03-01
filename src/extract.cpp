@@ -78,8 +78,8 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 	}
 	bs.nrows[bs.n-1] = urows[urows.size()-1] - bs.row[bs.n-1] + 1;
 
-for (size_t i=0; i<bs.n; i++) Rcpp::Rcout << bs.row[i] << " " << bs.nrows[i] << "; ";
-Rcpp::Rcout << std::endl;
+//for (size_t i=0; i<bs.n; i++) Rcpp::Rcout << bs.row[i] << " " << bs.nrows[i] << "; ";
+//Rcpp::Rcout << std::endl;
 
 
 	if (!rs.readStart()) {
