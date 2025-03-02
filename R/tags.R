@@ -39,6 +39,30 @@ setMethod("metags", signature(x="SpatRaster"),
 )
 
 
+parse_tags <- function(value, domain) {
+	if (NCOL(value) == 1) {
+		if (!is.null(names(value)) && (!any(grepl("=", value)))) {
+			value <- cbind(names(value), value)	
+		} else {	
+			value <- strsplit(value, "=")
+			i <- sapply(value, length) == 1
+			if (length(i) > 0) {
+				j <- which(i)
+				for (i in j) value[[i]] <- c(value[[i]], "")
+			}
+			i <- sapply(value, length) == 2
+			value <- do.call(rbind, value[i])
+		}
+	} else if (NCOL(value) > 3) {
+		error("metags<-", "expecting a vector with 'name=value' or a two/three column matrix")
+	}
+	if (NCOL(value) == 2) value <- cbind(value, domain) 
+	value[is.na(value[,2]), 2] <- ""
+	na.omit(value)
+}
+
+
+
 setMethod("metags<-", signature(x="SpatRaster"),
 	function(x, ..., layer=NULL, domain="USER_TAGS", value) {
 		if (is.null(value)) {
@@ -50,25 +74,9 @@ setMethod("metags<-", signature(x="SpatRaster"),
 			}
 			value[,2] <- ""
 			#value[is.na(value)] <- ""
-		} else if (NCOL(value) == 1) {
-			if (!is.null(names(value)) && (!any(grepl("=", value)))) {
-				value <- cbind(names(value), value)	
-			} else {	
-				value <- strsplit(value, "=")
-				i <- sapply(value, length) == 1
-				if (length(i) > 0) {
-					j <- which(i)
-					for (i in j) value[[i]] <- c(value[[i]], "")
-				}
-				i <- sapply(value, length) == 2
-				value <- do.call(rbind, value[i])
-			}
-		} else if (NCOL(value) > 3) {
-			error("metags<-", "expecting a vector with 'name=value' or a two/three column matrix")
+		} else {
+			value <- parse_tags(value, domain)
 		}
-		if (NCOL(value) == 2) value <- cbind(value, domain) 
-		value[is.na(value[,2]), 2] <- ""
-		value <- na.omit(value)
 		x <- deepcopy(x)
 		if (NROW(value) > 0) {
 			if (!is.null(layer)) {

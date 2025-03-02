@@ -294,7 +294,7 @@ RCPP_MODULE(spat){
 		.constructor()
 		.method("deepcopy", &SpatOptions::deepCopy, "deepCopy")
 		.field("parallel", &SpatOptions::parallel)
-
+		.field("metadata", &SpatOptions::tags)
 		.property("tempdir", &SpatOptions::get_tempdir, &SpatOptions::set_tempdir )
 		.property("memfrac", &SpatOptions::get_memfrac, &SpatOptions::set_memfrac )
 		.property("memmax", &SpatOptions::get_memmax, &SpatOptions::set_memmax )

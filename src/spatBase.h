@@ -119,6 +119,7 @@ class SpatOptions {
 		virtual ~SpatOptions(){}
 
 		bool parallel = false;
+		std::vector<std::string> tags;
 
 		size_t ncopies = 4;
 		size_t minrows = 1;

@@ -125,7 +125,7 @@ std::vector<int> get_date(SpatTime_t x) {
 }
 
 
-
+/*
 std::vector<std::string> splitstr(std::string s, std::string delimiter){
 	std::vector<std::string> out;
 	size_t pos = 0;
@@ -136,6 +136,7 @@ std::vector<std::string> splitstr(std::string s, std::string delimiter){
 	out.push_back(s.substr(0, pos));
 	return out;
 }
+*/
 
 void replace_one_char(std::string& s, char from, char to) {
 	for (size_t i = 0; i < s.size(); i++) {
@@ -167,17 +168,17 @@ std::vector<int> getymd(std::string s) {
 	std::vector<std::string> x;
 	std::vector<std::string> y;
 	if (ncolon > 0) {
-		x = splitstr(s, " ");
+		x = strsplit(s, " ");
 		s = x[0];
 		if (x.size() > 1) {
 			x[1].erase(std::remove(x[1].begin(), x[1].end(), 'z'), x[1].end());
-			y = splitstr(x[1], ":");
+			y = strsplit(x[1], ":");
 		}
 	}
 
 	size_t ndash = std::count(s.begin(), s.end(), '-');
 	if (ndash == 2) {
-		x = splitstr(s, "-");
+		x = strsplit(s, "-");
 	}
 	x.insert(x.end(), y.begin(), y.end() );
 	std::vector<int> out(x.size());

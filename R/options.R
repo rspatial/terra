@@ -37,12 +37,26 @@
 		x$gdal_options <- gopt
 	}
 
+	i <- which(nms == "metadata")
+	if (length(i) > 0) {
+		m <- try(parse_tags(wopt[[i]], "USER_TAGS"))
+		if (!inherits(m, "try-error")) {
+			if (NROW(m) > 0) {
+				x$metadata <- apply(m, 1, function(x) paste(m, collapse="_#_"))
+			}
+		}
+		wopt <- wopt[-i]
+		nms <- nms[-i]
+	}
+
 	s <- nms %in% .option_names()
 
 	if (any(!s)) {
 		bad <- paste(nms[!s], collapse=",")
 		error("write", "unknown option(s): ", bad)
 	}
+
+
 
 	if (any(s)) {
 		nms <- nms[s]
