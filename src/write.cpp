@@ -131,7 +131,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 				}
 				fnames[i] = out.source[0].filename;
 			}
-			SpatRaster out(fnames, {-1}, {""}, false, {}, {}, {}, false);
+			SpatRaster out(fnames, {-1}, {""}, false, {}, {}, {}, false, {});
 			return out;
 		}
 	}

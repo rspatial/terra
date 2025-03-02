@@ -20,7 +20,7 @@ You can create a SpatRasterCollection from a file with subdatasets.
 }
 
 \usage{
-\S4method{sprc}{character}(x, ids=0, opts=NULL, raw=FALSE) 
+\S4method{sprc}{character}(x, ids=0, opts=NULL, raw=FALSE, domains=c("", "USER_TAGS")) 
 
 \S4method{sprc}{SpatRaster}(x, ...) 
 
@@ -35,6 +35,7 @@ You can create a SpatRasterCollection from a file with subdatasets.
 \item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a positive integer}
 \item{opts}{character. GDAL dataset open options}
 \item{raw}{logical. If \code{TRUE}, scale and offset values are ignored}
+\item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retreive their values if there are any. "" is the default domain}
 \item{...}{additional SpatRasters} 
 }
 

@@ -7,7 +7,7 @@ setMethod("length", signature(x="SpatRasterDataset"),
 
 
 setMethod("sds", signature(x="character"),
-	function(x, ids=0, opts=NULL, raw=FALSE) {
+	function(x, ids=0, opts=NULL, raw=FALSE, domains=c("", "USER_TAGS")) {
 
 		if (length(x) > 1) {
 			r <- lapply(x, rast, opts=opts, raw=raw)
@@ -29,8 +29,10 @@ setMethod("sds", signature(x="character"),
 			useids <- TRUE
 		}
 		if (is.null(opts)) opts <- ""[0]
-		if (raw) opts <- c(opts, "so=false")		
-		r@pntr <- SpatRasterStack$new(f, ids, useids, opts)
+		if (raw) opts <- c(opts, "so=false")
+		
+		domains <- clean_domains(domains)		
+		r@pntr <- SpatRasterStack$new(f, ids, useids, opts, domains)
 		messages(r, "sds")
 	}
 )
@@ -325,7 +327,7 @@ setMethod("sprc", signature(x="list"),
 )
 
 setMethod("sprc", signature(x="character"),
-	function(x, ids=0, opts=NULL, raw=FALSE) {
+	function(x, ids=0, opts=NULL, raw=FALSE, domains=c("", "USER_TAGS")) {
 
 		if (length(x) > 1) {
 			r <- lapply(x, rast)
@@ -349,7 +351,8 @@ setMethod("sprc", signature(x="character"),
 		if (is.null(opts)) opts <- ""[0]
 		if (raw) opts <- c(opts, "so=false")		
 		
-		r@pntr <- SpatRasterCollection$new(f, ids, useids, opts)
+		domains <- clean_domains(domains)
+		r@pntr <- SpatRasterCollection$new(f, ids, useids, opts, domains)
 		messages(r, "sprc")
 	}
 )

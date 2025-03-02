@@ -104,10 +104,8 @@ BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 			steps = nrow();
 		}
 		bs.n = std::max(steps, bs.n);
-		cs = nrow() / bs.n;
-	} else {
-		cs = std::ceil(nrow() / bs.n);
 	}
+	cs = nrow() / bs.n;
 	bs.row = std::vector<size_t>(bs.n);
 	bs.nrows = std::vector<size_t>(bs.n, cs);
 	size_t r = 0;
@@ -116,7 +114,6 @@ BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 		r += cs;
 	}
 	bs.nrows[bs.n-1] = cs - ((bs.n * cs) - nrow());
-
 	return bs;
 }
 

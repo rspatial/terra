@@ -32,7 +32,7 @@ Note that there are operating system level limitations to the number of files th
 
 \usage{
 \S4method{rast}{character}(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, 
-		  win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE)
+		  win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, domains=c("", "USER_TAGS"))
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
           ymin=-90, ymax=90, crs, extent, resolution, vals, names, time, units)
@@ -66,6 +66,7 @@ Note that there are operating system level limitations to the number of files th
 \item{vsi}{logical. If \code{TRUE}, "\\vsicurl\\" is prepended to filenames that start with "http". There are many  \href{https://gdal.org/en/stable/user/virtual_file_systems.html}{VSI configuration options} that can be set with \code{\link{setGDALconfig}}}
 \item{raw}{logical. If \code{TRUE}, scale and offset values are ignored. See \code{\link{scoff}} to get these parameters}
 \item{noflip}{logical. If \code{TRUE}, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (\code{ymax < ymin}), is not considered flipped. This avoids the need to \code{\link{flip}} the raster vertically}
+\item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retreive their values if there are any. "" is the default domain}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}

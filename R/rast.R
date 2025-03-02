@@ -227,8 +227,18 @@ setMethod("rast", signature(x="SpatVector"),
 	return(x)
 }
 
+clean_domains <- function(domains) {
+	if (is.null(domains)) {
+		domains <- ""[0]
+	} else {
+		domains <- unique(domains)
+		domains <- as.character(domains[!is.na(domains)])
+	}
+	domains
+}
+
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, domains=c("", "USER_TAGS")) {
 
 		f <- .fullFilename(x, vsi=vsi)
 		if (length(f) == 0) {
@@ -242,7 +252,8 @@ setMethod("rast", signature(x="character"),
 			}
 			return(r)
 		}
-		
+
+		domains <- clean_domains(domains)
 		r <- methods::new("SpatRaster")
 		#subds <- subds[1]
 		if (is.null(opts)) opts <- ""[0]
@@ -251,9 +262,9 @@ setMethod("rast", signature(x="character"),
 		if (length(subds) == 0) subds = 0
 		if (is.character(subds)) {
 			#r@pntr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
-			r@pntr <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[], noflip)
+			r@pntr <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[], noflip, domains)
 		} else {
-			r@pntr <- SpatRaster$new(f, subds-1, "", FALSE, drivers, opts, 0[], noflip)
+			r@pntr <- SpatRaster$new(f, subds-1, "", FALSE, drivers, opts, 0[], noflip, domains)
 		}
 		r <- messages(r, "rast")
 		if (r@pntr$getMessage() == "ncdf extent") {

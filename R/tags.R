@@ -106,7 +106,7 @@ setMethod("metags", signature(x="SpatRasterDataset"),
 
 
 setMethod("metags<-", signature(x="SpatRasterDataset"),
-	function(x, ..., dataset=NULL, domain="USER_TAGS", value) {
+	function(x, ..., dataset=NULL, value) {
 		if (is.null(value)) {
 			if (!is.null(dataset)) {
 				if (is.character(dataset)) layer = match(dataset, names(x))		
@@ -169,7 +169,7 @@ setMethod("metags", signature(x="SpatRasterCollection"),
 
 
 setMethod("metags<-", signature(x="SpatRasterCollection"),
-	function(x, ..., dataset=NULL, domain="USER_TAGS", value) {
+	function(x, ..., dataset=NULL, value) {
 		if (is.null(value)) {
 			if (!is.null(dataset)) {
 				value <- matrix(x[[dataset]]@pntr$getTags(), ncol=2, byrow=TRUE)

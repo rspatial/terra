@@ -24,7 +24,7 @@ See \code{\link{describe}} for getting information about the sub-datasets presen
 \usage{
 \S4method{sds}{missing}(x) 
 
-\S4method{sds}{character}(x, ids=0, opts=NULL, raw=FALSE)
+\S4method{sds}{character}(x, ids=0, opts=NULL, raw=FALSE, domains=c("", "USER_TAGS"))
 
 \S4method{sds}{SpatRaster}(x, ...) 
 
@@ -38,6 +38,7 @@ See \code{\link{describe}} for getting information about the sub-datasets presen
 \item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a positive integer}
 \item{opts}{character. GDAL dataset open options}
 \item{raw}{logical. If \code{TRUE}, scale and offset values are ignored}
+\item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retreive their values if there are any. "" is the default domain}
 \item{crs}{character. Description of the Coordinate Reference System (map projection) in \code{PROJ.4}, \code{WKT} or \code{authority:code} notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned}
 \item{extent}{\code{\link{SpatExtent}}}
 \item{...}{additional \code{SpatRaster} objects} 
