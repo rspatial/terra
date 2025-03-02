@@ -74,8 +74,8 @@
 <div class="section level4">
 <h4 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a>
 </h4>
-<p>On Windows, you need to first install <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a> to get a C++ compiler that R can use. You need a recent version of Rtools42 (rtools42-5355-5357).</p>
-<p>Then, in R, install the package.</p>
+<p>On Windows, you need to first install <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a> to get, among other things, a C++ compiler that <em>R</em> can use. You need the current versions of <em>R</em> and <em>RTools</em>.</p>
+<p>Then, in <em>R</em>, install terra with:</p>
 <pre><code><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rspatial/terra"</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level4">
@@ -84,9 +84,9 @@
 <p>On macOS, you can use <a href="https://www.macports.org/" class="external-link">MacPorts</a> or <a href="https://brew.sh/" class="external-link">Homebrew</a>.</p>
 <p>With MacPorts you can do</p>
 <pre><code>sudo port install R-terra</code></pre>
-<p>With Homebrew, you need to first install GDAL:</p>
+<p>With Homebrew, you need to first install GDAL and PROJ:</p>
 <pre><code>brew install pkg-config
-brew install gdal</code></pre>
+brew install gdal proj</code></pre>
 <p>Followed by (note the additional configuration argument needed for Homebrew)</p>
 <pre><code><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rspatial/terra"</span>, configure.args <span class="op">=</span> <span class="st">"--with-proj-lib=$(brew --prefix)/lib/"</span><span class="op">)</span></span></code></pre>
 <p>To install the CRAN version from source you would do</p>
