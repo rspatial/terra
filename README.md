@@ -39,9 +39,9 @@ And then continue based on the OS you are using.
 
 #### Windows
 
-On Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. You need a recent version of Rtools42 (rtools42-5355-5357).
+On Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get, among other things, a C++ compiler that *R* can use. You need the current versions of *R* and *RTools*.
 
-Then, in R, install the package.
+Then, in *R*, install terra with:
 
 ```
 remotes::install_github("rspatial/terra")
@@ -57,11 +57,11 @@ With MacPorts you can do
 sudo port install R-terra
 ```
 
-With Homebrew, you need to first install GDAL:
+With Homebrew, you need to first install GDAL and PROJ:
 
 ```
 brew install pkg-config
-brew install gdal
+brew install gdal proj
 ```
 
 Followed by (note the additional configuration argument needed for Homebrew)
