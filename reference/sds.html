@@ -47,7 +47,7 @@ See describe for getting information about the sub-datasets present in a file.'>
 <span><span class="fu">sds</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># S4 method for class 'character'</span></span>
-<span><span class="fu">sds</span><span class="op">(</span><span class="va">x</span>, ids<span class="op">=</span><span class="fl">0</span>, opts<span class="op">=</span><span class="cn">NULL</span>, raw<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">sds</span><span class="op">(</span><span class="va">x</span>, ids<span class="op">=</span><span class="fl">0</span>, opts<span class="op">=</span><span class="cn">NULL</span>, raw<span class="op">=</span><span class="cn">FALSE</span>, domains<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"USER_TAGS"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">sds</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span> </span>
@@ -74,6 +74,9 @@ See describe for getting information about the sub-datasets present in a file.'>
 
 <dt id="arg-raw">raw<a class="anchor" aria-label="anchor" href="#arg-raw"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, scale and offset values are ignored</p></dd>
+
+<dt id="arg-domains">domains<a class="anchor" aria-label="anchor" href="#arg-domains"></a></dt>
+<dd><p>character. Metadata domains to read (see <code><a href="metags.html">metags</a></code> to retreive their values if there are any. "" is the default domain</p></dd>
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
 <dd><p>character. Description of the Coordinate Reference System (map projection) in <code>PROJ.4</code>, <code>WKT</code> or <code>authority:code</code> notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned</p></dd>
