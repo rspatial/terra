@@ -193,6 +193,17 @@ bool SpatRaster::writeStart(SpatOptions &opt, const std::vector<std::string> src
 			//opt.gdal_options = {"COMPRESS=NONE"};
 		}
 	}
+
+	if (!opt.tags.empty()) {
+		user_tags = std::vector<std::vector<std::string>>(3);
+		for (size_t i=0; i<opt.tags.size(); i++) {
+			std::vector<std::string> s = strsplit(opt.tags[i], "_#_");
+			if (s.size() == 3) {
+				addTag(s[0], s[1], s[2]);
+			}
+		}
+	} 
+	
 	size_t nl = nlyr();
 	bs = getBlockSize(opt);
 	if (!filename.empty()) {

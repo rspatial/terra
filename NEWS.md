@@ -13,6 +13,8 @@
 
 ## new
 
+- `writeRaster` and other methods that can write raster data can set metadata.
+
 
 # version 1.8-29
 

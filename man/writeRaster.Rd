@@ -65,6 +65,8 @@ The first three letters indicate whether the datatype is an integer (whole numbe
 
 \code{todisk}\tab logical. If \code{TRUE} processing operates as if the dataset is very large and needs to be written to a temporary file (for debugging).\cr
 
+\code{metadata}\tab character, see \code{\link{metags<-}} to write metadata\cr
+
 }
 }
 
