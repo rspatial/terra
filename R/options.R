@@ -42,7 +42,7 @@
 		m <- try(parse_tags(wopt[[i]], "USER_TAGS"))
 		if (!inherits(m, "try-error")) {
 			if (NROW(m) > 0) {
-				x$metadata <- apply(m, 1, function(x) paste(m, collapse="_#_"))
+				x$metadata <- apply(m, 1, function(i) paste(i, collapse="_#_"))
 			}
 		}
 		wopt <- wopt[-i]
