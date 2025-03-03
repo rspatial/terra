@@ -760,27 +760,52 @@ badsplit <- function(x, f) {
 
 
 setMethod("split", signature(x="SpatVector", f="SpatVector"),
-	function(x, f) {
-		if (geomtype(x) != "polygons") error("split", "first argument must be polygons")
+	function(x, f, min_node_dist=10000) {
+		gt <- geomtype(x)
+		if (!(gt %in% c("lines", "polygons"))) {
+			error("split", "argument 'x' must have a lines or polygons geometry")
+		}
 		if (!(geomtype(f) %in% c("lines", "polygons"))) {
 			error("split", "argument 'f' must have a lines or polygons geometry")
 		}
+		
 		values(f) <- NULL
 		f <- as.lines(f)
+		if (is.lonlat(x, perhaps=TRUE)) {
+			stopifnot(min_node_dist > 100)
+			crs(x) <- crs(f) <- "lonlat"
+			x <- densify(x, min_node_dist)
+			f <- densify(f, min_node_dist)
+		}
 		r <- relate(x, f, "intersects")
 		if (sum(r) == 0) {
 			warn("split", "x and f do not intersect")
 			return(x)
 		}
-		
-		e <- elongate(intersect(as.lines(f), x), 0.00001)
-		k <- aggregate(rbind(as.lines(x), e))
-		nds <- makeNodes(k)
-		p <- as.polygons(nds)
-		intersect(x, p)
+		if (gt == "polygons") {
+			e <- elongate(intersect(as.lines(f), x), 0.00001)
+			k <- aggregate(rbind(as.lines(x), e))
+			nds <- makeNodes(k)
+			p <- as.polygons(nds)
+			intersect(x, p)
+		} else { # if (gt == "lines") {
+			d <- values(x)
+			values(x) <- data.frame(ID1=1:nrow(x))
+			x <- disagg(x)
+			x$ID2 <- 1:nrow(x)
+			e <- erase(x, f)
+			out <- disagg(e)
+			b <- table(out$ID2)
+			i <- as.numeric(names(b[b==1]))
+			if (length(i) > 0) {
+				a <- aggregate(out[out$ID2 == i, ], by="ID1")[, "ID1"]
+				out <- rbind(a, out[out$ID2 != i, "ID1"])
+			}
+			values(out) <- d[out$ID1, ]
+			out
+		}
 	}
 )
-
 
 
 
