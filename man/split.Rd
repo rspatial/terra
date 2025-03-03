@@ -19,7 +19,7 @@ Split a SpatRaster by layer, or a SpatVector by attributes. You can also split t
 
 \S4method{split}{SpatVector,ANY}(x, f)
 
-\S4method{split}{SpatVector,SpatVector, min_node_dist=10000}(x, f)
+\S4method{split}{SpatVector,SpatVector}(x, f, min_node_dist=10000)
 }
 
 \arguments{
