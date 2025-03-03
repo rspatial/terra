@@ -238,7 +238,7 @@ clean_domains <- function(domains) {
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, domains=c("", "USER_TAGS")) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, domains="") {
 
 		f <- .fullFilename(x, vsi=vsi)
 		if (length(f) == 0) {

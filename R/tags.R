@@ -44,14 +44,35 @@ parse_tags <- function(value, domain) {
 		if (!is.null(names(value)) && (!any(grepl("=", value)))) {
 			value <- cbind(names(value), value)	
 		} else {	
-			value <- strsplit(value, "=")
-			i <- sapply(value, length) == 1
-			if (length(i) > 0) {
+			
+value = c(":test=value", "tes2t=novalue", "abc:pope=frans", "abc:pop:e=frans:bb")
+			
+			
+			val <- strsplit(value, "=")
+			i <- sapply(val, length) == 1
+			if (sum(i) > 0) {
 				j <- which(i)
-				for (i in j) value[[i]] <- c(value[[i]], "")
+				for (i in j) val[[i]] <- c(val[[i]], "")
 			}
-			i <- sapply(value, length) == 2
-			value <- do.call(rbind, value[i])
+			i <- sapply(val, length) == 2
+			val <- do.call(rbind, val[i])
+
+			dom <- strsplit(val[,1], ":")
+			n <- sapply(dom, length) 
+			i <- n == 1
+			if (sum(i) > 0) {
+				for (i in which(i)) dom[[i]] <- c("", dom[[i]])
+			}
+			n <- sapply(dom, length) 
+			i <- n > 2
+			if (sum(i) > 0) {
+				for (i in which(i)) dom[[i]] <- c(dom[[i]][1], paste(dom[[i]][2:length(dom[[i]])], collapse=":"))
+			}
+			i <- sapply(dom, length) == 2
+			dom <- do.call(rbind, dom[i])
+			cbind(dom, val[,2])
+			
+			value <- cbind(dom, val[,2])
 		}
 	} else if (NCOL(value) > 3) {
 		error("metags<-", "expecting a vector with 'name=value' or a two/three column matrix")
@@ -64,7 +85,7 @@ parse_tags <- function(value, domain) {
 
 
 setMethod("metags<-", signature(x="SpatRaster"),
-	function(x, ..., layer=NULL, domain="USER_TAGS", value) {
+	function(x, ..., layer=NULL, domain="", value) {
 		if (is.null(value)) {
 			if (!is.null(layer)) {
 				if (is.character(layer)) layer = match(layer, names(x))

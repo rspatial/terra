@@ -13,8 +13,8 @@
 
 ## new
 
-- `writeRaster` and other methods that can write raster data can set metadata.
-
+- `writeRaster` and other methods that can write raster data can now set metadata.
+- `split<SpatVector>` method for lines [#1374](https://github.com/rspatial/terra/issues/1374) by MTueting
 
 # version 1.8-29
 

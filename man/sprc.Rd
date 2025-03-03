@@ -20,7 +20,7 @@ You can create a SpatRasterCollection from a file with subdatasets.
 }
 
 \usage{
-\S4method{sprc}{character}(x, ids=0, opts=NULL, raw=FALSE, domains=c("", "USER_TAGS")) 
+\S4method{sprc}{character}(x, ids=0, opts=NULL, raw=FALSE, domains="") 
 
 \S4method{sprc}{SpatRaster}(x, ...) 
 

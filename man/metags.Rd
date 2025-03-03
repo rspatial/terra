@@ -13,11 +13,11 @@
 \title{Set or get metadata}
 
 \description{
-You can set arbitrary metadata to (layers of) a SpatRaster using "name=value" tags. When wring a SpatRaster to a GTiff file, these tags are written to file.
+You can set arbitrary metadata to (layers of) a SpatRaster using "name=value", or "domain:name=value" tags or a two (name, value) or three column (name, value, domain) matrix or data.frame. 
 }
 
 \usage{
-\S4method{metags}{SpatRaster}(x, layer=NULL, domain="USER_TAGS")<-value
+\S4method{metags}{SpatRaster}(x, layer=NULL, domain="")<-value
 
 \S4method{metags}{SpatRaster}(x, layer=NULL, name=NULL)
 
@@ -30,7 +30,7 @@ You can set arbitrary metadata to (layers of) a SpatRaster using "name=value" ta
 \arguments{
 \item{x}{SpatRaster}
 \item{layer}{NULL, positive integer or character. If the value is NULL, the tags assigned or returned are for the SpatRaster. Otherwise for the layer number(s) or name(s)}
-\item{domain}{character. Use "" for the default domain}
+\item{domain}{character. Only used if not specified by \code{value}. Use "" for the default domain. Depending on the file format used this may the only domain supported when writing files}
 \item{name}{character}
 \item{value}{character of "name=value" or two-column (name, value) or three-column (name, value, domain) matrix or data.frame}
 \item{dataset}{NULL, positive integer or character. If the value is NULL, the tags assigned or returned are for the SpatRasterDataset/SpatRasterCollection. Otherwise for the datset number(s) or name(s)}
