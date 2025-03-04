@@ -385,7 +385,7 @@ setMethod("extract", signature(x="SpatRaster", y="numeric"),
 function(x, y, xy=FALSE, raw=FALSE) {
 	y <- round(y)
 #	y[(y < 1) | (y > ncell(x))] <- NA
-	if ((length(y)  == 2) && (any((y%%1)!=0))) {
+	if (isTRUE((length(y)  == 2) && (any((y%%1)!=0)))) {
 		warn("extract", "a vector of two decimal values is interpreted as referring to cell numbers, not to coordinates")
 	}
 
