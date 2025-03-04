@@ -184,8 +184,9 @@ get_time_vars <- function(y) {
 					error("writeCDF", "unexpected time/depth values, unbalanced combinations")				
 				}
 				
-				zunit <- "unknown"
 				zname <- depthName(y)
+				zunit <- depthUnit(y) 
+				if (zunit == "") zunit <- "unknown"
 				zdim <- ncdf4::ncdim_def(zname, zunit, udv, unlim=FALSE, create_dimvar=TRUE)
 
 				tvrs <- get_time_vars(y)
@@ -211,9 +212,10 @@ get_time_vars <- function(y) {
 					zname <- timename[i]
 				} else if (y@pntr$hasDepth) {
 					zv <- depth(y)
-					zunit <- "unknown"
 					zname <- depthName(y)
 					if (zname == "") zname <- "depth"
+					zunit <- depthUnit(y) 
+					if (zunit == "") zunit <- "unknown"
 				} else {
 					zv <- 1:nlyr(y)
 					zunit <- "unknown"

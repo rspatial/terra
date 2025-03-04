@@ -144,11 +144,39 @@ void SpatRaster::checkDepth(SpatRaster &x) {
 		setDepth(dpth);
 		return;
 	}
+	std::string uname, dname;
+	std::string un = source[0].depthunit;
+	std::string xun = x.source[0].depthunit;
+	if (un != xun) {
+		if ((un == "") && (xun != "")) {
+			uname = xun;
+		} else if ((un != "") && (xun == "")) {
+			uname = un;
+		} else if ((un != "") && (xun != "")) {
+			uname = "";
+		}
+	} else {
+		uname = un;
+	}
+	setDepthName(uname);
+	x.setDepthName(uname);
+		
 	std::string nm = source[0].depthname;
 	std::string xnm = x.source[0].depthname;
-	if (nm == xnm) return;
-	setDepth(dpth);
-	x.setDepth(dpth);
+	if (nm != xnm) {
+		if ((nm == "") && (xnm != "")) {
+			dname = xnm;
+		} else if ((nm != "") && (xnm == "")) {
+			dname = nm;
+		} else if ((nm != "") && (xnm != "")) {
+			dname = "";
+		}
+	} else {
+		dname = nm;
+	}
+	
+	setDepthName(dname);
+	x.setDepthName(dname);
 }
 
 

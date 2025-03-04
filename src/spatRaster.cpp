@@ -922,10 +922,21 @@ bool SpatRaster::setDepthName(std::string name) {
 	return true;
 }
 
+
 std::string SpatRaster::getDepthName() {
 	return source[0].depthname;
 }
 
+bool SpatRaster::setDepthUnit(std::string unit) {
+	for (size_t i=0; i<source.size(); i++) {
+		source[i].depthunit = unit;
+	}	
+	return true;
+}
+
+std::string SpatRaster::getDepthUnit() {
+	return source[0].depthunit;
+}
 
 
 

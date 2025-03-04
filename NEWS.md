@@ -10,11 +10,15 @@
 
 - georeferenced rasters that are flipped are now identified as such that there no longer is a need for flip(r, "vertical") after opening the file. [#1753](https://github.com/rspatial/terra/issues/1753) by enatijohnson
 - `metags` now supports raster metadata domains
+- `extract` with a vector of two non-integers triggers a warning (possible point vs cellnumber confusion) [#1757](https://github.com/rspatial/terra/issues/1757) by Michael Sumner
+- `writeCDF` now supports four dimensions (x, y, depth and time) [#1756](https://github.com/rspatial/terra/issues/1756) by ForChimneySwifts
 
 ## new
 
 - `writeRaster` and other methods that can write raster data can now set metadata.
 - `split<SpatVector>` method for lines [#1374](https://github.com/rspatial/terra/issues/1374) by MTueting
+- `depthName`, `depthName<-`, `depthUnit`, and `depthUnit<-` methods
+
 
 # version 1.8-29
 

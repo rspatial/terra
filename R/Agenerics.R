@@ -200,6 +200,8 @@ if (!isGeneric("depth")) {setGeneric("depth", function(x,...) standardGeneric("d
 if (!isGeneric("depth<-")) {setGeneric("depth<-", function(x, value) standardGeneric("depth<-"))}
 if (!isGeneric("depthName")) {setGeneric("depthName", function(x,...) standardGeneric("depthName"))}
 if (!isGeneric("depthName<-")) {setGeneric("depthName<-", function(x, value) standardGeneric("depthName<-"))}
+if (!isGeneric("depthUnit")) {setGeneric("depthUnit", function(x,...) standardGeneric("depthUnit"))}
+if (!isGeneric("depthUnit<-")) {setGeneric("depthUnit<-", function(x, value) standardGeneric("depthUnit<-"))}
 if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}
 if (!isGeneric("ext")) { setGeneric("ext", function(x, ...)	standardGeneric("ext"))}
 if (!isGeneric("ext<-")) { setGeneric("ext<-", function(x, value) standardGeneric("ext<-")) }

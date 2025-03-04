@@ -779,6 +779,8 @@ RCPP_MODULE(spat){
 		.method("set_depth", &SpatRaster::setDepth)
 		.method("get_depth_name", &SpatRaster::getDepthName)
 		.method("set_depth_name", &SpatRaster::setDepthName)
+		.method("get_depth_unit", &SpatRaster::getDepthUnit)
+		.method("set_depth_unit", &SpatRaster::setDepthUnit)
 
 		.property("units", &SpatRaster::getUnit)
 		.method("set_units", &SpatRaster::setUnit)

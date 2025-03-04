@@ -323,6 +323,20 @@ setMethod("depthName<-", signature(x="SpatRaster"),
 )
 
 
+setMethod("depthUnit", signature(x="SpatRaster"),
+	function(x) {
+		x@pntr$get_depth_unit()
+	}
+)
+
+setMethod("depthUnit<-", signature(x="SpatRaster"),
+	function(x, value) {
+		x <- deepcopy(x)
+		x@pntr$set_depth_unit(value)
+		x
+	}
+)
+
 setMethod("depth<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		if (is.null(value)) {

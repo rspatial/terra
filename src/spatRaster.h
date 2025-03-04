@@ -113,6 +113,7 @@ class SpatRasterSource {
 		bool hasTime = false;
 		std::vector<double> depth;
 		std::string depthname = "depth";
+		std::string depthunit = "";
 		bool hasDepth = false;
 
 		std::vector<std::string> unit;
@@ -351,7 +352,9 @@ class SpatRaster {
 		std::vector<double> getDepth();
 		bool setDepth(std::vector<double> depths);
 		std::string getDepthName();
-		bool setDepthName(std::string);
+		bool setDepthName(std::string name);
+		std::string getDepthUnit();
+		bool setDepthUnit(std::string unit);
 
 		bool hasUnit();
 		std::vector<std::string> getUnit();
