@@ -2383,8 +2383,6 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 //NETCDF_VARNAME=NVEL
 
 
-#include "Rcpp.h"
-
 
 void ncdf_names(const std::vector<std::vector<std::string>> &m, std::vector<std::vector<std::string>> &out, std::vector<double> &depth, bool &has_depth, std::string &depth_name) {
 
@@ -2461,11 +2459,22 @@ void ncdf_names(const std::vector<std::vector<std::string>> &m, std::vector<std:
 void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
 	if (bandmeta.empty()) return;
+
+/*
+	for (size_t i=0; i<bandmeta.size(); i++) {
+		for (size_t j=0; j < bandmeta[i].size(); j++) {
+			Rcpp::Rcout << bandmeta[i][j] << " ";
+		}
+		Rcpp::Rcout << std::endl;
+	}
+*/
+
 	std::vector<std::vector<std::string>> nms;
 	std::vector<double> mdepth;
 	bool hasdepth = true;
 	ncdf_names(bandmeta, nms, mdepth, hasdepth, depthname);
 	
+
 /*
 	for (size_t i=0; i<nms.size(); i++) {
 		for (size_t j=0; j<nms[i].size(); j++) {
