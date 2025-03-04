@@ -134,6 +134,8 @@ get_time_vars <- function(y) {
 	cal <- NA
 
 	depthtime <- rep(FALSE, n)
+	nudv <- rep(0, n)
+	
 	for (i in 1:n) {
 
 		if ((nl[i] > 1) || (x[i]@pntr$hasTime)) {
@@ -143,35 +145,35 @@ get_time_vars <- function(y) {
 				dv <- depth(y)
 				utm <- unique(tm)
 				udv <- unique(dv)
+				nudv[i] <- length(udv)
 				dsrt <- isTRUE(all(sort(dv, decreasing=FALSE) == dv)) || isTRUE(all(sort(dv, decreasing=TRUE) == dv))
 				if (!dsrt) {
 					error("writeCDF", "unsorted depth values")						
 				}
-				for (u in udv) {
-					dtm <- tm[dv == u]
-					tsrt <- isTRUE(all(sort(dtm, decreasing=FALSE) == dtm)) || isTRUE(all(sort(dtm, decreasing=TRUE) == dtm))
-					if (!tsrt) {
-						error("writeCDF", paste("time values not sorted within depth", u))
-					}
-				}	
+				mtm <- matrix(tm, ncol=nudv[i])
+				a <- apply(mtm, 1, function(i) length(unique(i)))
+				if (!isTRUE(all(a == 1))) {
+					error("writeCDF", paste("time values not sorted within depth", u))					
+				}
+				
 				tab <- unique(table(tm, dv))
 				if (length(tab) > 1) {
 					error("writeCDF", "unexpected time/depth values, combinations not balanced")
 				}
-				if ((utm * udv) != nlyr(y)) {
+				if ((length(utm) * nudv[i]) != nlyr(y)) {
 					error("writeCDF", "unexpected time/depth values, unbalanced combinations")				
 				}
 				
 				tvrs <- get_time_vars(y)
 				zv <- tvrs$zv
-				zunit <- tv$zunit
+				zunit <- tvrs$zunit
 				dunit <- "unknown"
 				dname <- depthName(y)
 
-				zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
-				ddim <- ncdf4::ncdim_def(dname, dunit, dv, unlim=FALSE, create_dimvar=TRUE)
+				zdim <- ncdf4::ncdim_def(dname, dunit, udv, unlim=FALSE, create_dimvar=TRUE)
+				timdim <- ncdf4::ncdim_def(zname[i], zunit, unique(zv), unlim=FALSE, create_dimvar=TRUE, calendar=cal)
 
-				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim, ddim), missval[i], lvar[i], prec = prec[i], compression=compression)
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim, timdim), missval[i], lvar[i], prec = prec[i], compression=compression)
 				depthtime[i] <- TRUE
 				
 			} else {
@@ -252,13 +254,12 @@ get_time_vars <- function(y) {
 		b <- blocks(y, 8)
 		readStart(y)
 		if (length(ncvars[[i]]$dim) == 4) {
-			nd <- lenght(depth(y))
 			for (j in 1:b$n) {
 				if (progress) { utils::setTxtProgressBar(pb, pcnt); pcnt <- pcnt + 1 }
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
 				d[is.nan(d)] <- NA
-				d <- array(d, c(nc, b$nrows[j], nd, nl[i]/nd))
-				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j], 1), count=c(nc, b$nrows[j], nl[i]))
+				d <- array(d, c(nc, b$nrows[j], nudv[i], nl[i]/nudv[i]))
+				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j], 1, 1), count=c(nc, b$nrows[j], nudv[i], nl[i]/nudv[i]))
 			}
 		} else if (length(ncvars[[i]]$dim) == 3) {
 			for (j in 1:b$n) {

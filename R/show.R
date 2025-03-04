@@ -424,18 +424,19 @@ setMethod ("show" , "SpatRaster",
 
 		}
 		if (object@pntr$hasDepth) {
-			label <- depthName(object)
-			if (nchar(label) > 12) {
-				label <- paste0(substr(label, 1, 11), "~")
+			dname <- depthName(object)
+			if (dname == "depth") {
+				dname <- ""
 			} else {
-				label <- substr(paste0(label, "           "), 1, 12)
+				dname <- paste0(dname, ": ")
 			}
+			label <- "depth       : "
 			dpth <- unique(depth(object))
 			if (length(dpth) > 1) {
 				rd <- range(dpth)
-				dpth <- paste0(label, ": ", paste(rd, collapse=" to "))
+				dpth <- paste0(label, paste(rd, collapse=" to "), " (", dname, length(dpth), " steps)")
 			} else {
-				dpth <- paste0(label, ": ", dpth)			
+				dpth <- paste0(label, dpth)			
 			}
 			cat(dpth, "\n")		
 		}
@@ -459,7 +460,7 @@ setMethod ("show" , "SpatRaster",
 			}
 			utim <- unique(rtim)
 			if (length(utim) > 1) {
-				ptim <- paste0(label, ": ", paste(rtim, collapse=" to "))
+				ptim <- paste0(label, ": ", paste(rtim, collapse=" to "), " (", length(utim), " steps)")
 			} else {
 				ptim <- paste0(label, ": ", as.character(utim))
 			}
