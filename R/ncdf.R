@@ -131,6 +131,9 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 				} else {
 					zunit <- "unknown"
 				}
+			} else if (!isTRUE(all(depth(y) == 0))) {
+				zv <- depth(y)
+				zunit <- "unknown"
 			} else {
 				zv <- 1:nlyr(y)
 				zunit <- "unknown"
