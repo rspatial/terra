@@ -25,7 +25,7 @@ Split a SpatRaster by layer, or a SpatVector by attributes. You can also split t
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{f}{If \code{x} is a SpatRaster: a vector of the length \code{nlyr(x)}. If \code{x} is a SpatVector: a field (variable) name or a vector of the same length as \code{x}; or, if \code{x} is a SpatVector of polygons, a SpatVector of lines or polygons to split the polygon geometries}
-  \item{min_node_dist}{postive number indicating the minimum node distance to use (in m) for longitude/latitude data. Additional nodes are added as needed to improve precision. See \code{\link{densify}}}
+  \item{min_node_dist}{postive number indicating the minimum node distance to use (in m) for longitude/latitude data. To ensure this minium distance between nodes, additional nodes are added as needed, to improve precision. See \code{\link{densify}}}
 }
 
 \value{
