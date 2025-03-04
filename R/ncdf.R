@@ -102,7 +102,7 @@ get_time_vars <- function(y) {
 	} else {
 		xname <- "easting"
 		yname <- "northing"
-		linunit <- linearUnit(x)
+		linunit <- linearUnits(x)
 		if (isTRUE(linunit == 1)) {
 			xunit <- yunit <- "meter"
 		} else if (isTRUE(linunit == 1000)) {
