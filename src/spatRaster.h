@@ -112,6 +112,9 @@ class SpatRasterSource {
 		std::string timezone = "";
 		bool hasTime = false;
 		std::vector<double> depth;
+		std::string depthname = "depth";
+		bool hasDepth = false;
+
 		std::vector<std::string> unit;
 		bool hasUnit = false;
 
@@ -344,8 +347,11 @@ class SpatRaster {
 		std::vector<std::string> getTimeStr(bool addstep, std::string timesep);
 		bool setTime(std::vector<int_64> time, std::string step, std::string zone);
 		
+		bool hasDepth();
 		std::vector<double> getDepth();
 		bool setDepth(std::vector<double> depths);
+		std::string getDepthName();
+		bool setDepthName(std::string);
 
 		bool hasUnit();
 		std::vector<std::string> getUnit();
@@ -389,6 +395,7 @@ class SpatRaster {
 //		bool constructFromNCDFsds(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname);
 
 		void addSource(SpatRaster &x, bool warn, SpatOptions &opt);	
+		void checkDepth(SpatRaster &x);	
 		void checkTime(SpatRaster &x);	
 		SpatRaster combineSources(SpatRaster &x, bool warn);
 		void combine(SpatRaster &x);

@@ -62,6 +62,34 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 	}
 }
 
+
+get_time_vars <- function(y) {
+	zv <- y@pntr$time
+	tstep <- y@pntr$timestep
+	cal <- "standard"
+	if (tstep == "seconds") {
+		zunit <- "seconds since 1970-1-1 00:00:00"
+	} else if (tstep == "days") {
+		zunit <- "days since 1970-1-1"
+		zv <- zv / (24 * 3600)
+	} else if (tstep == "months") {
+		zunit <- "months"
+		zv <- time(y)
+	} else if (tstep == "yearmonths") {
+		zunit <- "months since 1970"
+		tm <- time(y) - 1970
+		yr <- tm %/% 1
+		zv <- (yr*12) + round(12 * (tm %% 1))
+	} else if (tstep == "years") {
+		zunit <- "years since 1970"
+		zv <- time(y) - 1970
+	} else {
+		zunit <- "unknown"
+	}
+	list(zv=zv, zunit=zunit)
+}
+
+
 .write_cdf <- function(x, filename, overwrite=FALSE, zname="time", atts="", gridmap="", prec="float", compression=NA, missval, force_v4=TRUE, verbose=FALSE, ...) {
 
 	n <- length(x)
@@ -105,43 +133,67 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 	ncvars <- list()
 	cal <- NA
 
+	depthtime <- rep(FALSE, n)
 	for (i in 1:n) {
+
 		if ((nl[i] > 1) || (x[i]@pntr$hasTime)) {
 			y <- x[i]
-			if (y@pntr$hasTime) {
-				zv <- y@pntr$time
-				tstep <- y@pntr$timestep
-				cal <- "standard"
-				if (tstep == "seconds") {
-					zunit <- "seconds since 1970-1-1 00:00:00"
-				} else if (tstep == "days") {
-					zunit <- "days since 1970-1-1"
-					zv <- zv / (24 * 3600)
-				} else if (tstep == "months") {
-					zunit <- "months"
-					zv <- time(y)
-				} else if (tstep == "yearmonths") {
-					zunit <- "months since 1970"
-					tm <- time(y) - 1970
-					yr <- tm %/% 1
-					zv <- (yr*12) + round(12 * (tm %% 1))
-				} else if (tstep == "years") {
-					zunit <- "years since 1970"
-					zv <- time(y) - 1970
+			if (y@pntr$hasTime && y@pntr$hasDepth) {
+				tm <- time(y)
+				dv <- depth(y)
+				utm <- unique(tm)
+				udv <- unique(dv)
+				dsrt <- isTRUE(all(sort(dv, decreasing=FALSE) == dv)) || isTRUE(all(sort(dv, decreasing=TRUE) == dv))
+				if (!dsrt) {
+					error("writeCDF", "unsorted depth values")						
+				}
+				for (u in udv) {
+					dtm <- tm[dv == u]
+					tsrt <- isTRUE(all(sort(dtm, decreasing=FALSE) == dtm)) || isTRUE(all(sort(dtm, decreasing=TRUE) == dtm))
+					if (!tsrt) {
+						error("writeCDF", paste("time values not sorted within depth", u))
+					}
+				}	
+				tab <- unique(table(tm, dv))
+				if (length(tab) > 1) {
+					error("writeCDF", "unexpected time/depth values, combinations not balanced")
+				}
+				if ((utm * udv) != nlyr(y)) {
+					error("writeCDF", "unexpected time/depth values, unbalanced combinations")				
+				}
+				
+				tvrs <- get_time_vars(y)
+				zv <- tvrs$zv
+				zunit <- tv$zunit
+				dunit <- "unknown"
+				dname <- depthName(y)
+
+				zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
+				ddim <- ncdf4::ncdim_def(dname, dunit, dv, unlim=FALSE, create_dimvar=TRUE)
+
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim, ddim), missval[i], lvar[i], prec = prec[i], compression=compression)
+				depthtime[i] <- TRUE
+				
+			} else {
+				if (y@pntr$hasTime) {
+					tv <- get_time_vars(y)
+					zv <- tv$zv
+					zunit <- tv$zunit
+				} else if (y@pntr$hasDepth) {
+					zv <- depth(y)
+					zunit <- "unknown"
+					if (zname[i] == "time") {
+						dname <- depthName(y)
+						if (dname != "") zname[i] <- dname
+					}
 				} else {
+					zv <- 1:nlyr(y)
 					zunit <- "unknown"
 				}
-			} else if (!isTRUE(all(depth(y) == 0))) {
-				zv <- depth(y)
-				zunit <- "unknown"
-			} else {
-				zv <- 1:nlyr(y)
-				zunit <- "unknown"
+				zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval[i], lvar[i], prec = prec[i], compression=compression)
 			}
-			zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
-			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval[i], lvar[i], prec = prec[i], compression=compression)
 		} else {
-
 			ncvars[[i]] <- ncdf4::ncvar_def(name=vars[i], units=units[i], dim=list(xdim, ydim), missval=missval[i], longname=lvar[i], prec = prec[i], compression=compression)
 		}
 	}
@@ -199,7 +251,16 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 		y <- x[i]
 		b <- blocks(y, 8)
 		readStart(y)
-		if (length(ncvars[[i]]$dim) == 3) {
+		if (length(ncvars[[i]]$dim) == 4) {
+			nd <- lenght(depth(y))
+			for (j in 1:b$n) {
+				if (progress) { utils::setTxtProgressBar(pb, pcnt); pcnt <- pcnt + 1 }
+				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
+				d[is.nan(d)] <- NA
+				d <- array(d, c(nc, b$nrows[j], nd, nl[i]/nd))
+				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j], 1), count=c(nc, b$nrows[j], nl[i]))
+			}
+		} else if (length(ncvars[[i]]$dim) == 3) {
 			for (j in 1:b$n) {
 				if (progress) { utils::setTxtProgressBar(pb, pcnt); pcnt <- pcnt + 1 }
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)

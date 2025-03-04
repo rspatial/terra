@@ -2383,12 +2383,13 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 //NETCDF_VARNAME=NVEL
 
 
+#include "Rcpp.h"
 
 
-std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<std::string>> &m) {
+void ncdf_names(const std::vector<std::vector<std::string>> &m, std::vector<std::vector<std::string>> &out, std::vector<double> &depth, bool &has_depth, std::string &depth_name) {
 
-	std::vector<std::vector<std::string>> out(3);
-	if (m.empty()) return out;
+	out.resize(3);
+	if (m.empty()) return;
 
 	std::string vname, lname, units = "";
 	std::vector<std::string> b = m[0];
@@ -2432,17 +2433,53 @@ std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<s
 				}
 			}
 		}
+		size_t pos = dim.find("=");
+		double v;
+		if (pos != std::string::npos) {
+			if (i == 0) {
+				depth_name = dim.substr(1, pos-1);
+			}
+			std::string dim2 = dim;
+			dim2.erase(0, pos+1);
+			try {
+				v = std::stod(dim2);
+			} catch(...) {
+				v = NAN;
+				has_depth = false;
+			}	
+			depth.push_back(v);
+		} else {
+			has_depth = false;
+		}
 		out[1].push_back(vname + dim);
 	}
 
-	return out;
+	return;
 }
+
 
 void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
 	if (bandmeta.empty()) return;
-	std::vector<std::vector<std::string>> nms = ncdf_names(bandmeta);
-
+	std::vector<std::vector<std::string>> nms;
+	std::vector<double> mdepth;
+	bool hasdepth = true;
+	ncdf_names(bandmeta, nms, mdepth, hasdepth, depthname);
+	
+/*
+	for (size_t i=0; i<nms.size(); i++) {
+		for (size_t j=0; j<nms[i].size(); j++) {
+			Rcpp::Rcout << nms[i][j] << " ";
+		}
+		Rcpp::Rcout << std::endl;
+	}
+*/
+	
+	if (hasdepth) {
+		depth = mdepth;
+		hasDepth = true;
+	}
+	
 	if (!nms[1].empty()) {
 		names = nms[1];
 		make_unique_names(names);

@@ -423,6 +423,22 @@ setMethod ("show" , "SpatRaster",
 			}
 
 		}
+		if (object@pntr$hasDepth) {
+			label <- depthName(object)
+			if (nchar(label) > 12) {
+				label <- paste0(substr(label, 1, 11), "~")
+			} else {
+				label <- substr(paste0(label, "           "), 1, 12)
+			}
+			dpth <- unique(depth(object))
+			if (length(dpth) > 1) {
+				rd <- range(dpth)
+				dpth <- paste0(label, ": ", paste(rd, collapse=" to "))
+			} else {
+				dpth <- paste0(label, ": ", dpth)			
+			}
+			cat(dpth, "\n")		
+		}
 
 		if (object@pntr$hasTime) {
 			label <- "time        "

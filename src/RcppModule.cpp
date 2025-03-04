@@ -766,6 +766,7 @@ RCPP_MODULE(spat){
 		.method("getNAflag", &SpatRaster::getNAflag)
 
 		.property("hasUnit", &SpatRaster::hasUnit)
+		.property("hasDepth", &SpatRaster::hasDepth)
 		.property("hasTime", &SpatRaster::hasTime)
 		.property("time", &SpatRaster::getTime)
 		.property("timestep", &SpatRaster::getTimeStep)
@@ -776,6 +777,9 @@ RCPP_MODULE(spat){
 
 		.property("depth", &SpatRaster::getDepth)
 		.method("set_depth", &SpatRaster::setDepth)
+		.method("get_depth_name", &SpatRaster::getDepthName)
+		.method("set_depth_name", &SpatRaster::setDepthName)
+
 		.property("units", &SpatRaster::getUnit)
 		.method("set_units", &SpatRaster::setUnit)
 

@@ -259,6 +259,10 @@ setMethod("time<-", signature(x="SpatRaster"),
 				stept <- "raw"
 			}
 		}
+		if (any(is.na(value))) {
+			error("time<-", "NAs are not allowed")
+		}
+		
 		if (!x@pntr$setTime(as.numeric(value), stept, tzone)) {
 			error("time<-", "cannot set these values")
 		}
@@ -274,6 +278,7 @@ setMethod("time<-", signature(x="SpatRasterDataset"),
 			value <- tstep
 			tstep <- ""
 		}
+
 		tstep <- rep_len(tstep, length(x))
 
 		if (is.list(value)) {
@@ -303,6 +308,20 @@ setMethod("depth", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("depthName", signature(x="SpatRaster"),
+	function(x) {
+		x@pntr$get_depth_name()
+	}
+)
+
+setMethod("depthName<-", signature(x="SpatRaster"),
+	function(x, value) {
+		x <- deepcopy(x)
+		x@pntr$set_depth_name(value)
+		x
+	}
+)
+
 
 setMethod("depth<-", signature(x="SpatRaster"),
 	function(x, value)  {
@@ -311,6 +330,9 @@ setMethod("depth<-", signature(x="SpatRaster"),
 			return(x)
 		}
 		value <- as.numeric(value)
+		if (any(is.na(value))) {
+			error("depth<-", "NAs are not allowed")
+		}
 		if (! x@pntr$setDepth(value)) {
 			error("depth<-", "cannot set these  values")
 		}

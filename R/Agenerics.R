@@ -198,6 +198,8 @@ if (!isGeneric("crosstab")) { setGeneric("crosstab", function(x, y, ...) standar
 if (!isGeneric("describe")) { setGeneric("describe", function(x, ...) standardGeneric("describe"))}
 if (!isGeneric("depth")) {setGeneric("depth", function(x,...) standardGeneric("depth"))}
 if (!isGeneric("depth<-")) {setGeneric("depth<-", function(x, value) standardGeneric("depth<-"))}
+if (!isGeneric("depthName")) {setGeneric("depthName", function(x,...) standardGeneric("depthName"))}
+if (!isGeneric("depthName<-")) {setGeneric("depthName<-", function(x, value) standardGeneric("depthName<-"))}
 if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}
 if (!isGeneric("ext")) { setGeneric("ext", function(x, ...)	standardGeneric("ext"))}
 if (!isGeneric("ext<-")) { setGeneric("ext<-", function(x, value) standardGeneric("ext<-")) }
