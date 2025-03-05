@@ -981,15 +981,15 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		s.crs = "";
 	}
 */
-
-
 	std::string crs = getDsWKT(poDataset);
+
 	if (crs.empty()) {
 		if (hasExtent && s.extent.xmin >= -180 && s.extent.xmax <= 360 && s.extent.ymin >= -90 && s.extent.ymax <= 90) {
 			crs = "OGC:CRS84";
 			s.parameters_changed = true;
 		}
 	}
+
 	std::string msg;
 	if (!s.srs.set(crs, msg)) {
 		addWarning(msg);
@@ -1280,11 +1280,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 			bool lat = false;
 			bool lon = false;
-			for (size_t i=0; i<metadata.size(); i++) {
-				if (!lat) lat = metadata[i].find("long_name=latitude");
-				if (!lon) lon = metadata[i].find("long_name=longitude");
+			for (size_t i=0; i<metadata.size(); i++) {				
+				if (!lat) lat = metadata[i].find("long_name=latitude") != std::string::npos;
+				if (!lon) lon = metadata[i].find("long_name=longitude") != std::string::npos;
 			}
-			if (lon && lat) {
+			if (lon && lat && s.extent.ymax < 91 && s.extent.ymax < 91 && s.extent.xmin > -361  && s.extent.xmin < 361) {
 				if (s.srs.set("+proj=longlat", msg)) {
 					s.parameters_changed = true;
 				}
