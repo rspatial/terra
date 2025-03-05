@@ -117,7 +117,8 @@ See depth and time for specifying the axes of the thrid and/or fourth dimension(
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">".nc"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rr</span> <span class="op">&lt;-</span> <span class="fu">writeCDF</span><span class="op">(</span><span class="va">r</span>, <span class="va">fname</span>, overwrite<span class="op">=</span><span class="cn">TRUE</span>, varname<span class="op">=</span><span class="st">"alt"</span>, </span></span>
@@ -146,6 +147,7 @@ See depth and time for specifying the axes of the thrid and/or fourth dimension(
 <span class="r-in"><span><span class="fu"><a href="depth.html">depth</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">30</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="time.html">time</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2012-12-12"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="depth.html">depthName</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"height"</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="depth.html">depthUnit</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"cm"</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="sds.html">sds</a></span><span class="op">(</span><span class="va">r1</span>, <span class="va">r2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"TH"</span>, <span class="st">"DBZH"</span><span class="op">)</span></span></span>
@@ -157,7 +159,7 @@ See depth and time for specifying the axes of the thrid and/or fourth dimension(
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 72, 36  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file4fd44f60c295.nc:TH </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file42913a7c35fa.nc:TH </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> varname     : TH </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       : TH_angle=0_1, TH_angle=2_1, TH_angle=0_2, TH_angle=2_2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unit        :            -,            -,            -,            - </span>
@@ -174,7 +176,7 @@ See depth and time for specifying the axes of the thrid and/or fourth dimension(
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 72, 36  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file4fd44f60c295.nc:DBZH </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file42913a7c35fa.nc:DBZH </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> varname     : DBZH </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       : DBZH_~=10_1, DBZH_~=10_2, DBZH_~=20_1, DBZH_~=20_2, DBZH_~=30_1, DBZH_~=30_2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unit        :          Pa,          Pa,          Pa,          Pa,          Pa,          Pa </span>

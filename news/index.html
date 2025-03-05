@@ -47,6 +47,10 @@
 <ul><li>georeferenced rasters that are flipped are now identified as such that there no longer is a need for flip(r, “vertical”) after opening the file. <a href="https://github.com/rspatial/terra/issues/1753" class="external-link">#1753</a> by enatijohnson</li>
 <li>
 <code>metags</code> now supports raster metadata domains</li>
+<li>
+<code>extract</code> with a vector of two non-integers triggers a warning (possible point vs cellnumber confusion) <a href="https://github.com/rspatial/terra/issues/1757" class="external-link">#1757</a> by Michael Sumner</li>
+<li>
+<code>writeCDF</code> now supports four dimensions (x, y, depth and time) <a href="https://github.com/rspatial/terra/issues/1756" class="external-link">#1756</a> by ForChimneySwifts</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-31">new<a class="anchor" aria-label="anchor" href="#new-1-8-31"></a></h3>
@@ -54,6 +58,8 @@
 <code>writeRaster</code> and other methods that can write raster data can now set metadata.</li>
 <li>
 <code>split&lt;SpatVector&gt;</code> method for lines <a href="https://github.com/rspatial/terra/issues/1374" class="external-link">#1374</a> by MTueting</li>
+<li>
+<code>depthName</code>, <code>depthName&lt;-</code>, <code>depthUnit</code>, and <code>depthUnit&lt;-</code> methods</li>
 </ul></div>
 </div>
     <div class="section level2">
