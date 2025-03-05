@@ -2377,6 +2377,8 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 }
 
 
+
+
 //NETCDF_DIM_k=0
 //NETCDF_DIM_tile=0
 //NETCDF_DIM_time=0
@@ -2487,6 +2489,15 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 	if (hasdepth) {
 		depth = mdepth;
 		hasDepth = true;
+		std::string pattern = depthname+"#units=";
+		for (size_t i=0; i<metadata.size(); i++) {
+			std::size_t found = metadata[i].find(pattern);
+			if (found != std::string::npos) {
+				depthunit = metadata[i];
+				depthunit.erase(depthunit.begin(), depthunit.begin()+pattern.size());
+				break;
+			}
+		}
 	}
 	
 	if (!nms[1].empty()) {
