@@ -218,8 +218,6 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
     \code{\link{ymax}} \tab The maximum y coordinate (or latitude) \cr
 	\code{\link{ext}} \tab Get or set the extent (minimum and maximum x and y coordinates ("bounding box") \cr
 	\code{\link{origin}} \tab The origin of a SpatRaster\cr
-    \code{\link{crs}} \tab The coordinate reference system (map projection) \cr
-    \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
     \code{\link{sources}} \tab Get the filename(s) to which a SpatRaster is linked \cr
     \code{\link{inMemory}} \tab Are the data sources in memory (or on disk)? \cr
     \code{\link{toMemory}} \tab Force data sources to memory (not recommended)? \cr
@@ -246,13 +244,27 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{cellFromXY}} \tab Cell numbers from x and y coordinates \cr
     \code{\link{cellFromRowCol}} \tab Cell numbers from row and column numbers \cr
     \code{\link{cellFromRowColCombine}} \tab Cell numbers from all combinations of row and column numbers \cr    
-	\code{\link{cells}}\tab Cell numbers from an SpatVector or SpatExtent\cr
+	\code{\link{cells}}\tab Cell numbers for a SpatVector or SpatExtent\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
 
 
-\section{X. Time related methods}{
+\section{X. Depth related methods}{
+
+\code{depth} can be used to explicitly a third or fourth dimension of a SpatRaster. 
+
+\tabular{ll}{
+    \code{\link{depth}} \tab Get or set depth dimension values ()\cr
+    \code{\link{depthName}} \tab Set or get the depth name \cr
+    \code{\link{depthUnit}} \tab Set or get the depth unit \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+}
+}
+
+\section{XI. Time related methods}{
+
+\code{time} can be used to explicitly a third or fourth dimension of a SpatRaster. 
 
 \tabular{ll}{
     \code{\link{time}} \tab Get or set time\cr
@@ -263,7 +275,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }
 
 
-\section{XI. Methods for categorical rasters}{
+\section{XII. Methods for categorical rasters}{
 
 \tabular{ll}{
     \code{\link{is.factor}} \tab Are there categorical layers?\cr
@@ -282,7 +294,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }
 
 
-\section{XII. Writing SpatRaster files}{
+\section{XIII. Writing SpatRaster files}{
 
 \subsection{Basic}{
   \tabular{ll}{
@@ -307,7 +319,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }
 }
 
-\section{XIII. Miscellaneous SpatRaster methods}{
+\section{XIV. Miscellaneous SpatRaster methods}{
 
 \tabular{ll}{
     \code{\link{terraOptions}} \tab Show, set, or get session options, mostly to control memory use and to set write options\cr
@@ -320,7 +332,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }
 
 
-\section{XIV. SpatRasterDataset}{
+\section{XV. SpatRasterDataset}{
 
 A SpatRasterDataset contains SpatRasters that represent sub-datasets for the same area. They all have the same extent and resolution.
 
@@ -332,7 +344,7 @@ A SpatRasterDataset contains SpatRasters that represent sub-datasets for the sam
 }
 }
 
-\section{XV. SpatRasterCollections}{
+\section{XVI. SpatRasterCollections}{
 A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the SpatRasters do not need to match each other. 
 
 \tabular{ll}{
@@ -352,7 +364,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{XVI. Create SpatVector objects}{
+\section{XVII. Create SpatVector objects}{
 \tabular{ll}{
   \code{\link{vect}} \tab Create a SpatVector from a file (for example a "shapefile") or from another object\cr
   \code{\link{vector_layers}} \tab list or delete layers in a vector database such as GPGK\cr
@@ -370,22 +382,22 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 }}
 
 
-\section{XVII. Properties of SpatVector objects}{
+\section{XVIII. Properties of SpatVector objects}{
 \tabular{ll}{
   \code{\link{geom}} \tab returns the geometries as matrix or WKT\cr
   \code{\link{crds}} \tab returns the coordinates as a matrix\cr
-  \code{\link{linearUnits}} \tab returns the linear units of the crs (in meter)\cr
   \code{\link{ncol}}\tab The number of columns (of the attributes)\cr
   \code{\link{nrow}} \tab The number of rows (of the geometries and attributes)\cr
   \code{\link{names}} \tab Get or set the layer names \cr
   \code{\link{ext}} \tab Get the extent (minimum and maximum x and y coordinates ("bounding box") \cr
   \code{\link{crs}} \tab The coordinate reference system (map projection) \cr
+  \code{\link{linearUnits}} \tab returns the linear units of the crs (in meter)\cr
   \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
 
-\section{XVIII. Geometric queries}{
+\section{XIX. Geometric queries}{
 \tabular{ll}{
   \code{\link{adjacent}} \tab find adjacent polygons\cr
   \code{\link{expanse}} \tab computes the area covered by polygons\cr
@@ -397,7 +409,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 }}
 
 
-\section{XIX. Geometric operations}{
+\section{XX. Geometric operations}{
 
 \tabular{ll}{
   \code{\link{erase}} or "-" \tab erase (parts of) geometries\cr
@@ -413,7 +425,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 }}
 
 
-\section{XX. SpatVector attributes}{
+\section{XXI. SpatVector attributes}{
 We use the term "attributes" for the tabular data (data.frame) associated with vector geometries.
 
 \tabular{ll}{
@@ -430,7 +442,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 }}
 
 
-\section{XXI. Change geometries (for display, experimentation)}{
+\section{XXII. Change geometries (for display, experimentation)}{
 
 \tabular{ll}{
   \code{\link{shift}} \tab change the position geometries by shifting their coordinates in horizontal and/or vertical direction\cr
@@ -442,7 +454,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 }}
 
 
-\section{XXII. Geometry properties and topology}{
+\section{XXIII. Geometry properties and topology}{
 
 \tabular{ll}{
   \code{\link{width}} \tab the minimum diameter of the geometries \cr
@@ -468,7 +480,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 }}
 
 
-\section{XXIII. SpatVectorCollections}{
+\section{XXIV. SpatVectorCollections}{
 A SpatVectorCollection is a vector of SpatVector objects. 
 
 \tabular{ll}{
@@ -479,12 +491,21 @@ A SpatVectorCollection is a vector of SpatVector objects.
 }}
 
 
+\section{XXV. Coordinate reference system method}{
+\tabular{ll}{
+    \code{\link{crs}} \tab Get or set the coordinate reference system (map projection) of a Spat* object \cr
+    \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
+    \code{\link{linearUnits}} \tab returns the linear units of the crs (in meter)\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+}}
+
+
 \section{\bold{Other classes}}{
 
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-\section{XXIV. SpatExtent}{
+\section{XXVI. SpatExtent}{
   \tabular{ll}{
     \code{\link{ext}} \tab Create a SpatExtent object. For example to \code{\link{crop}} a Spatial dataset\cr
     \code{\link{intersect}} \tab Intersect two SpatExtent objects, same as \code{-}  \cr
@@ -496,7 +517,7 @@ A SpatVectorCollection is a vector of SpatVector objects.
   }
 }
 
-\section{XXV. SpatGraticule}{
+\section{XXVII. SpatGraticule}{
   \tabular{ll}{
     \code{\link{graticule}} \tab Create a graticule\cr
     \code{\link{crop}} \tab crop a graticule\cr
@@ -510,7 +531,7 @@ A SpatVectorCollection is a vector of SpatVector objects.
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{XXVI. Conversion between spatial data objects from different packages}{
+\section{XXVIII. Conversion between spatial data objects from different packages}{
 
 You can coerce SpatRasters to Raster* objects, after loading the \code{raster} package, with \code{as(object, "Raster")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
  
@@ -529,7 +550,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
   }
 }
 
-\section{XXVII. Plotting}{
+\section{XXIX. Plotting}{
 
 \subsection{Maps}{
   \tabular{ll}{
@@ -586,7 +607,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{XXVIII. New method names}{
+\section{XXX. New method names}{
 
 \code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but note the following important differences in methods names with the \code{raster} package
 
@@ -633,7 +654,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 }
 }
 
-\section{XXIX. Changed behavior}{
+\section{XXXI. Changed behavior}{
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). In other cases it simply seemed better. Here are some examples:
 
