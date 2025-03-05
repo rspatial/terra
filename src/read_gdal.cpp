@@ -1284,7 +1284,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				if (!lat) lat = metadata[i].find("long_name=latitude") != std::string::npos;
 				if (!lon) lon = metadata[i].find("long_name=longitude") != std::string::npos;
 			}
-			if (lon && lat && s.extent.ymax < 91 && s.extent.ymax < 91 && s.extent.xmin > -361  && s.extent.xmin < 361) {
+			if (lon && lat && s.extent.ymin > -91 && s.extent.ymax < 91 && s.extent.xmin > -361  && s.extent.xmax < 361) {
 				if (s.srs.set("+proj=longlat", msg)) {
 					s.parameters_changed = true;
 				}
