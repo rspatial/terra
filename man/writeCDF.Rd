@@ -51,6 +51,7 @@ see \code{\link{writeRaster}} for writing other file formats
 }
 
 \examples{
+
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 fname <- paste0(tempfile(), ".nc")
@@ -80,6 +81,7 @@ r2 <- rast(nrow=5, ncol=5, vals=1:150, nlyr=6)
 depth(r2) <- c(10, 10, 20, 20, 30, 30)
 time(r2) <- c(as.Date("2012-12-12") + c(1:2, 1:2, 1:2))
 depthName(r2) <- "height"
+depthUnit(r2) <- "cm"
 
 s <- sds(r1, r2)
 names(s) <- c("TH", "DBZH")

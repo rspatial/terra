@@ -425,11 +425,21 @@ setMethod ("show" , "SpatRaster",
 		}
 		if (object@pntr$hasDepth) {
 			dname <- depthName(object)
+			dunit <- depthUnit(object)
 			if (dname == "depth") {
-				dname <- ""
+				if (dunit == "") {
+					dname <- ""
+				} else {
+					dname <- paste0("[", dunit, "]: ") 
+				}
 			} else {
-				dname <- paste0(dname, ": ")
+				if (dunit == "") {
+					dname <- paste0(dname, ": ")
+				} else {
+					dname <- paste0(dname, " [", dunit, "]: ")
+				}
 			}
+			
 			label <- "depth       : "
 			dpth <- unique(depth(object))
 			if (length(dpth) > 1) {
