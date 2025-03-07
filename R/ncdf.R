@@ -234,10 +234,10 @@ get_time_vars <- function(y) {
 	ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
 	on.exit(ncdf4::nc_close(ncobj))
 
-	haveprj <- FALSE
+#	haveprj <- FALSE
 	prj <- crs(x[1])
 	prj <- gsub("\n", "", prj)
-	if (prj != "") {
+#	if (prj != "") {
 		haveprj <- TRUE
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "crs_wkt", prj, prec="text")
 		# need for older gdal?
@@ -251,14 +251,14 @@ get_time_vars <- function(y) {
 			prj <- paste0(prj, collapse=":")
 			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "code", prj, prec="text")
 		}
-	}
+#	}
 	gridmap <- grep("=", gridmap, value=TRUE)
 	if (length(gridmap)>0) {
 		gridmap <- strsplit(gridmap, "=")
 		for (i in 1:length(gridmap)) {		
 			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], gridmap[[i]][1], gridmap[[i]][2], prec="text")
 		}
-		haveprj <- TRUE
+#		haveprj <- TRUE
 	}
 
 	e <- ext(x)
