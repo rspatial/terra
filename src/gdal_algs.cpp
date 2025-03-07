@@ -462,20 +462,24 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	size_t ns = nsrc();
 	bool fixext = false;
 	for (size_t j=0; j<ns; j++) {
-		if (source[j].extset && (!source[j].memory)) {
+		if ((source[j].extset || source[j].flipped) && (!source[j].memory)) {
 			fixext = true;
 			break;
 		}
 	}
+
 	if (fixext) {
 		SpatRaster r = *this;
+		SpatOptions xopt(opt);
+		xopt.ncopies = std::max((size_t) 10, xopt.ncopies*2);
 		for (size_t j=0; j<ns; j++) {
-			if (r.source[j].extset && (!r.source[j].memory)) {
-				SpatRaster tmp(source[j]);
-				//if (tmp.canProcessInMemory(opt)) {
-				//	tmp.readAll();
-				//} else {
-				tmp = tmp.writeTempRaster(opt);
+			if ((source[j].extset || source[j].flipped) && (!r.source[j].memory)) {
+				SpatRaster tmp(source[j]);	
+				if (tmp.canProcessInMemory(xopt)) {
+					tmp.readAll();
+				} else {
+					tmp = tmp.writeTempRaster(opt);
+				}
 				r.source[j] = tmp.source[0]; 
 			}
 		}
