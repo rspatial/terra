@@ -1,10 +1,12 @@
-# version 1.8-32
+# version 1.8-33
 
 ## bug fixes
 
 - min/max statistics computed when writing raster files did not exclude the user provided NA flag. [#1752](https://github.com/rspatial/terra/issues/1752) by Agustin Lobo
 - installation failed for GEOS < 3.7 [#1754](https://github.com/rspatial/terra/issues/1754) by Robert Butler 
 - `extract` with points for rasters accessed over http could return NAs for some cells if the raster was large [#1504](https://github.com/rspatial/terra/issues/1504) by Krzysztof Dyba
+- `writeCDF` now supports writing an empty crs [#1759](https://github.com/rspatial/terra/issues/1759) by ForChimneySwifts
+
 
 ## enhancements
 

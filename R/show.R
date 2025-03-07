@@ -433,7 +433,7 @@ setMethod ("show" , "SpatRaster",
 					dname <- paste0("[", dunit, "]: ") 
 				}
 			} else {
-				if (dunit == "") {
+				if ((dunit == "") || (dunit == "unknown")) {
 					dname <- paste0(dname, ": ")
 				} else {
 					dname <- paste0(dname, " [", dunit, "]: ")
