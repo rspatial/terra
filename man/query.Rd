@@ -14,7 +14,7 @@ Query a SpatVectorProxy to extract a subset
 
 \usage{
 \S4method{query}{SpatVectorProxy}(x, start=1, n=nrow(x), vars=NULL, where=NULL, 
-    extent=NULL, filter=NULL, sql=NULL, what="", dialect="")
+    extent=NULL, filter=NULL, sql=NULL, dialect="", what="")
 }
 
 \arguments{

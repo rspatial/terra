@@ -54,7 +54,7 @@ setMethod("vect", signature(x="SpatGraticule"),
 
 
 setMethod("vect", signature(x="character"),
-	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="", dialect="", opts=NULL) {
+	function(x, layer="", query="", dialect="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="", opts=NULL) {
 
 		what <- trimws(tolower(what))
 		if (what != "") what <- match.arg(trimws(tolower(what)), c("geoms", "attributes"))
@@ -444,7 +444,7 @@ setMethod("vect", signature(x="list"),
 
 
 setMethod("query", signature(x="SpatVectorProxy"),
-	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL, sql=NULL, what="", dialect="") {
+	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL, sql=NULL, dialect="", what="") {
 		f <- x@pntr$v$source
 		slayer <- x@pntr$v$layer
 		#1058
