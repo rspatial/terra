@@ -6,7 +6,7 @@
 - installation failed for GEOS < 3.7 [#1754](https://github.com/rspatial/terra/issues/1754) by Robert Butler 
 - `extract` with points for rasters accessed over http could return NAs for some cells if the raster was large [#1504](https://github.com/rspatial/terra/issues/1504) by Krzysztof Dyba
 - `writeCDF` now supports writing an empty crs [#1759](https://github.com/rspatial/terra/issues/1759) by ForChimneySwifts
-
+- `resample` on flipped SpatRasters failed. [#1760](https://github.com/rspatial/terra/issues/1760) by Andrew Gene Brown
 
 ## enhancements
 
@@ -14,11 +14,12 @@
 - `metags` now supports raster metadata domains
 - `extract` with a vector of two non-integers triggers a warning (possible point vs cellnumber confusion) [#1757](https://github.com/rspatial/terra/issues/1757) by Michael Sumner
 - `writeCDF` now supports four dimensions (x, y, depth and time) [#1756](https://github.com/rspatial/terra/issues/1756) by ForChimneySwifts
+- `vect` and `svc` now have argument "dialect" to select an SQL dialect [#1750](https://github.com/rspatial/terra/issues/1750) by Michael Sumner
 
 ## new
 
 - `writeRaster` and other methods that can write raster data can now set metadata.
-- `split<SpatVector>` method for lines [#1374](https://github.com/rspatial/terra/issues/1374) by MTueting
+- `split<SpatVector,SpatVector>` method for lines [#1374](https://github.com/rspatial/terra/issues/1374) by MTueting
 - `depthName`, `depthName<-`, `depthUnit`, and `depthUnit<-` methods
 
 
