@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-32</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-33</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,16 +34,20 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-32" id="version-18-32">version 1.8-32<a class="anchor" aria-label="anchor" href="#version-18-32"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-33" id="version-18-33">version 1.8-33<a class="anchor" aria-label="anchor" href="#version-18-33"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-32">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-32"></a></h3>
+<h3 id="bug-fixes-1-8-33">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-33"></a></h3>
 <ul><li>min/max statistics computed when writing raster files did not exclude the user provided NA flag. <a href="https://github.com/rspatial/terra/issues/1752" class="external-link">#1752</a> by Agustin Lobo</li>
 <li>installation failed for GEOS &lt; 3.7 <a href="https://github.com/rspatial/terra/issues/1754" class="external-link">#1754</a> by Robert Butler</li>
 <li>
 <code>extract</code> with points for rasters accessed over http could return NAs for some cells if the raster was large <a href="https://github.com/rspatial/terra/issues/1504" class="external-link">#1504</a> by Krzysztof Dyba</li>
+<li>
+<code>writeCDF</code> now supports writing an empty crs <a href="https://github.com/rspatial/terra/issues/1759" class="external-link">#1759</a> by ForChimneySwifts</li>
+<li>
+<code>resample</code> on flipped SpatRasters failed. <a href="https://github.com/rspatial/terra/issues/1760" class="external-link">#1760</a> by Andrew Gene Brown</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-32">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-32"></a></h3>
+<h3 id="enhancements-1-8-33">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-33"></a></h3>
 <ul><li>georeferenced rasters that are flipped are now identified as such that there no longer is a need for flip(r, “vertical”) after opening the file. <a href="https://github.com/rspatial/terra/issues/1753" class="external-link">#1753</a> by enatijohnson</li>
 <li>
 <code>metags</code> now supports raster metadata domains</li>
@@ -51,13 +55,15 @@
 <code>extract</code> with a vector of two non-integers triggers a warning (possible point vs cellnumber confusion) <a href="https://github.com/rspatial/terra/issues/1757" class="external-link">#1757</a> by Michael Sumner</li>
 <li>
 <code>writeCDF</code> now supports four dimensions (x, y, depth and time) <a href="https://github.com/rspatial/terra/issues/1756" class="external-link">#1756</a> by ForChimneySwifts</li>
+<li>
+<code>vect</code> and <code>svc</code> now have argument “dialect” to select an SQL dialect <a href="https://github.com/rspatial/terra/issues/1750" class="external-link">#1750</a> by Michael Sumner</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-32">new<a class="anchor" aria-label="anchor" href="#new-1-8-32"></a></h3>
+<h3 id="new-1-8-33">new<a class="anchor" aria-label="anchor" href="#new-1-8-33"></a></h3>
 <ul><li>
 <code>writeRaster</code> and other methods that can write raster data can now set metadata.</li>
 <li>
-<code>split&lt;SpatVector&gt;</code> method for lines <a href="https://github.com/rspatial/terra/issues/1374" class="external-link">#1374</a> by MTueting</li>
+<code>split&lt;SpatVector,SpatVector&gt;</code> method for lines <a href="https://github.com/rspatial/terra/issues/1374" class="external-link">#1374</a> by MTueting</li>
 <li>
 <code>depthName</code>, <code>depthName&lt;-</code>, <code>depthUnit</code>, and <code>depthUnit&lt;-</code> methods</li>
 </ul></div>

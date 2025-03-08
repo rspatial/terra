@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-32</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-33</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatVectorProxy'</span></span>
 <span><span class="fu">query</span><span class="op">(</span><span class="va">x</span>, start<span class="op">=</span><span class="fl">1</span>, n<span class="op">=</span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, vars<span class="op">=</span><span class="cn">NULL</span>, where<span class="op">=</span><span class="cn">NULL</span>, </span>
-<span>    extent<span class="op">=</span><span class="cn">NULL</span>, filter<span class="op">=</span><span class="cn">NULL</span>, sql<span class="op">=</span><span class="cn">NULL</span>, what<span class="op">=</span><span class="st">""</span><span class="op">)</span></span></code></pre></div>
+<span>    extent<span class="op">=</span><span class="cn">NULL</span>, filter<span class="op">=</span><span class="cn">NULL</span>, sql<span class="op">=</span><span class="cn">NULL</span>, what<span class="op">=</span><span class="st">""</span>, dialect<span class="op">=</span><span class="st">""</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,6 +75,9 @@
 
 <dt id="arg-what">what<a class="anchor" aria-label="anchor" href="#arg-what"></a></dt>
 <dd><p>character indicating what to read. Either <code>""</code> for geometries and attributes, or <code>"geoms"</code> to only read the geometries, <code>"attributes"</code> to only read the attributes (that are returned as a data.frame)</p></dd>
+
+<dt id="arg-dialect">dialect<a class="anchor" aria-label="anchor" href="#arg-dialect"></a></dt>
+<dd><p>character. The SQL dialect to use (if any). For example: "SQLite"</p></dd>
 
 </dl></div>
     <div class="section level2">
