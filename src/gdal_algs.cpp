@@ -935,7 +935,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 	size_t ns = nsrc();
 	bool fixext = false;
 	for (size_t j=0; j<ns; j++) {
-		if (source[j].extset && (!source[j].memory)) {
+		if ((source[j].extset || source[j].flipped) && (!source[j].memory)) {
 			fixext = true;
 			break;
 		}
@@ -943,7 +943,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 	if (fixext) {
 		SpatRaster r = *this;
 		for (size_t j=0; j<ns; j++) {
-			if (r.source[j].extset && (!r.source[j].memory)) {
+			if ((r.source[j].extset || r.source[j].flipped) && (!r.source[j].memory)) {
 				SpatRaster tmp(source[j]);
 				//if (tmp.canProcessInMemory(opt)) {
 				//	tmp.readAll();
@@ -1386,7 +1386,7 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 	if (round && (digits > 0)) {
 		tmp = tmp.math2("round", digits, topt);
 		round = false;
-	} else if (tmp.source[0].extset) { 
+	} else if (tmp.source[0].extset || tmp.source[0].flipped) { 
 		tmp = tmp.hardCopy(topt);
 	}
 
@@ -1489,7 +1489,7 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 
 	std::vector<double> fext;
 	SpatVector fvct;
-	out.read_ogr(poDS, "", "", fext, fvct, false, "");
+	out.read_ogr(poDS, "", "", fext, fvct, false, "", "");
 	GDALClose(poDS);
 
 	if (aggregate && (out.nrow() > 0)) {
@@ -1521,7 +1521,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	SpatOptions ops(opt);
 	SpatRaster tmp = subset(lyrs, ops);
 
-	if (source[0].extset) {
+	if (source[0].extset || source[0].flipped) {
 		SpatOptions topt(opt);
 		tmp = tmp.hardCopy(topt);
 		return tmp.rgb2col(r, g, b, opt);
@@ -1779,7 +1779,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 		return out;
 	}
 	
-	if (source[0].extset) { 
+	if (source[0].extset || source[0].flipped) { 
 		SpatOptions topt(opt);
 		SpatRaster etmp;
 		if (nlyr() > 1) {
@@ -1951,7 +1951,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 	}
 	
 		
-	if (source[0].extset) { 
+	if (source[0].extset || source[0].flipped) { 
 		SpatOptions topt(opt);
 		SpatRaster etmp = hardCopy(topt);
 		return etmp.sieveFilter(threshold, connections, opt);

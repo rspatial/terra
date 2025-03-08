@@ -124,7 +124,7 @@ parfun <- function(cls, d, fun, model, ...) {
 		data.frame(value=1:length(levs), class=levs)
 	} else if (is.list(r) || is.data.frame(r)) {
 		r <- as.data.frame(r)
-		out <- sapply(r, levels)
+		out <- lapply(r, levels)
 		for (i in 1:length(out)) {
 			if (!is.null(out[[i]])) {
 				out[[i]] <- data.frame(value=1:length(out[[i]]), label=out[[i]])

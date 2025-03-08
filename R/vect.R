@@ -54,7 +54,7 @@ setMethod("vect", signature(x="SpatGraticule"),
 
 
 setMethod("vect", signature(x="character"),
-	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="", opts=NULL) {
+	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="", dialect="", opts=NULL) {
 
 		what <- trimws(tolower(what))
 		if (what != "") what <- match.arg(trimws(tolower(what)), c("geoms", "attributes"))
@@ -108,7 +108,7 @@ setMethod("vect", signature(x="character"),
 			extent <- as.vector(ext(extent))
 		}
 		if (is.null(opts)) opts <- ""[0]
-		p@pntr$read(x, layer, query, extent, filter, proxy, what, opts)
+		p@pntr$read(x, layer, query, extent, filter, proxy, what, dialect, opts)
 		if (isTRUE(crs != "")) {
 			crs(p, warn=FALSE) <- crs
 		}
@@ -444,7 +444,7 @@ setMethod("vect", signature(x="list"),
 
 
 setMethod("query", signature(x="SpatVectorProxy"),
-	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL, sql=NULL, what="") {
+	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL, sql=NULL, what="", dialect="") {
 		f <- x@pntr$v$source
 		slayer <- x@pntr$v$layer
 		#1058
@@ -508,7 +508,7 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			layer <- slayer
 		}
 
-		p <- vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE, what=what)
+		p <- vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE, what=what, dialect=dialect)
 		if (what == "attributes") {
 			p <- values(p)
 		}
