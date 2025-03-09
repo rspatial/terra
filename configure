@@ -4416,7 +4416,7 @@ printf "%s\n" "$as_me: WARNING: parallel computing is disabled because TBB did n
       else
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	    TBB_CFLAGS="${TBB_CFLAGS} -DHAVE_TBB"
+	    TBB_CFLAGS="${TBB_CFLAGS} -DHAVE_TBB -ltbb"
       fi
     fi
     rm -f libtbb_test.cpp libtbb_test errors.txt
