@@ -22,7 +22,7 @@
 #include "vecmath.h"
 #include <cmath>
 
-#if defined(HAVE_TBB) // && !defined(__APPLE__)
+#if defined(HAVE_TBB) && !defined(__APPLE__)
 #include <tbb/parallel_for.h>
 #include <tbb/blocked_range.h>
 #endif 

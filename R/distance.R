@@ -3,7 +3,6 @@
 # Version 1.0
 # License GPL v3
 
-
 setMethod("buffer", signature(x="SpatRaster"),
 	function(x, width, background=0, filename="", ...) {
 		opt <- spatOptions(filename, ...)
