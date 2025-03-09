@@ -67,7 +67,8 @@ parfun <- function(cls, d, fun, model, ...) {
 			r <- fun(model, d, ...)
 		}
 		if (is.list(r)) {
-			r <- as.data.frame(lapply(r, as.numeric))
+			r <- as.data.frame(r)
+			r <- data.frame(lapply(r, as.numeric))
 		} else if (is.factor(r)) {
 			r <- as.integer(r)
 		} else if (is.data.frame(r)) {
@@ -89,6 +90,8 @@ parfun <- function(cls, d, fun, model, ...) {
 	}
 	r
 }
+
+#		r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL)
 
 
 .getFactors <- function(model, fun, d, nl, const, na.rm, index, ...) {
