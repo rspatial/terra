@@ -142,12 +142,13 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 		}
 
 		method <- match.arg(tolower(method), c("cosine", "haversine", "geo"))
+		opt <- spatOptions()
 
 		if (sequential) {
-			return( x@pntr$distance_self(sequential, unit, method))
+			return( x@pntr$distance_self(sequential, unit, method, opt))
 		}
 		unit <- as.character(unit[1])
-		d <- x@pntr$distance_self(sequential, unit, method)
+		d <- x@pntr$distance_self(sequential, unit, method, opt)
 		messages(x, "distance")
 		class(d) <- "dist"
 		attr(d, "Size") <- nrow(x)
@@ -167,7 +168,8 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 setMethod("distance", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, pairwise=FALSE, unit="m", method = "cosine") {
 		unit <- as.character(unit[1])
-		d <- x@pntr$distance_other(y@pntr, pairwise, unit, method)
+		opt <- spatOptions()
+		d <- x@pntr$distance_other(y@pntr, pairwise, unit, method, opt)
 		messages(x, "distance")
 		if (!pairwise) {
 			d <- matrix(d, nrow=nrow(x), ncol=nrow(y), byrow=TRUE)

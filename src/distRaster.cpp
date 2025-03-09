@@ -29,7 +29,7 @@
 #include "sort.h"
 #include "geosphere.h"
 
-
+/*
 inline void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const std::string& method, const double &lindist) {
 	if (lonlat) {
 		distanceToNearest_lonlat(d, x, y, px, py, lindist, method);
@@ -37,6 +37,7 @@ inline void shortDistPoints(std::vector<double> &d, const std::vector<double> &x
 		distanceToNearest_plane(d, x, y, px, py, lindist);
 	}
 }
+*/
 
 inline void shortDirectPoints(std::vector<double> &d, std::vector<double> &x, std::vector<double> &y, std::vector<double> &px, std::vector<double> &py, const bool& lonlat, bool &from, bool &degrees, const std::string &method) {
 	if (lonlat) {
@@ -447,7 +448,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 				SpatVector pnts;
 				pnts.srs = source[0].srs;
 				pnts.setPointsGeometry(rxy[0], rxy[1]);
-				std::vector<double> d = pnts.distance(p, false, unit, method);
+				std::vector<double> d = pnts.distance(p, false, unit, method, opt);
 					
 				if (!out.writeBlock(d, i)) return out;
 			}
