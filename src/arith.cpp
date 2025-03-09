@@ -814,8 +814,8 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
-#if defined(HAVE_TBB) && !defined(__APPLE__)
 
+#if defined(HAVE_TBB) && !defined(__APPLE__)
 		if (opt.parallel) {
 			tbb::parallel_for(tbb::blocked_range<size_t>(0, a.size()),
 				[&](const tbb::blocked_range<size_t>& range) {
@@ -949,7 +949,23 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol());
+#if defined(HAVE_TBB) && !defined(__APPLE__)
+		if (opt.parallel) {
+			tbb::parallel_for(tbb::blocked_range<size_t>(0, a.size()),
+				[&](const tbb::blocked_range<size_t>& range) {
+				for (size_t i = range.begin(); i != range.end(); i++) {
+					if (!std::isnan(a[i])) {
+						a[i] = trigFun(a[i]);
+					}
+				}
+			});
+		} else {
+			for (double& d : a) if (!std::isnan(d)) d = trigFun(d);
+		}
+#else 
 		for (double& d : a) if (!std::isnan(d)) d = trigFun(d);
+#endif	
+
 		if (!out.writeBlock(a, i)) return out;
 	}
 	out.writeStop();

@@ -91,7 +91,7 @@ parfun <- function(cls, d, fun, model, ...) {
 	r
 }
 
-#		r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL)
+#r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL)
 
 
 .getFactors <- function(model, fun, d, nl, const, na.rm, index, ...) {
@@ -232,7 +232,7 @@ setMethod("predict", signature(object="SpatRaster"),
 			const <- data.frame(const)[1,,drop=FALSE]
 			rownames(const) <- NULL
 		}
-		out <- terra:::find_dims(object, model, nc, fun, const, na.rm, index, ...)
+		out <- find_dims(object, model, nc, fun, const, na.rm, index, ...)
 		nl <- nlyr(out)
 		
 		doclust <- FALSE
