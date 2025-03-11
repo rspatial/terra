@@ -60,7 +60,7 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <span><span class="co"># S4 method for class 'SpatRaster,numeric'</span></span>
 <span><span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, raw<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for class 'SpatVector,SpatVector'</span></span>
+<span><span class="co"># S4 method for class 'SpatVector,SpatVector, count=FALSE'</span></span>
 <span><span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -115,6 +115,9 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments to <code>fun</code> if <code>y</code> is a SpatVector. For example <code>na.rm=TRUE</code>. Or arguments passed to the <code>SpatRaster,SpatVector</code> method if <code>y</code> is a matrix (such as the <code>method</code> and <code>cells</code> arguments)</p></dd>
+
+<dt id="arg-count">count<a class="anchor" aria-label="anchor" href="#arg-count"></a></dt>
+<dd><p>logical. If <code>TRUE</code> and <code>x</code> has polygons geometry and <code>y</code> has points geometry, the number of points in polygons is returned</p></dd>
 
 </dl></div>
     <div class="section level2">
