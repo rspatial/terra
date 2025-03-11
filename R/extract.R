@@ -429,9 +429,20 @@ function(x, y, cells=FALSE, xy=FALSE) {
 
 
 setMethod("extract", c("SpatVector", "SpatVector"),
-function(x, y) {
+function(x, y, count=FALSE) {
 
 	e <- relate(y, x, "coveredby", pairs=TRUE, na.rm=FALSE)
+	if (count) {
+		if ((geomtype(x) == "polygons") && (geomtype(y) == "points")) {
+			tab <- as.data.frame(table(e[,2]))
+			i <- match(tab[,1], 1:nrow(x))
+			count <- rep(NA, nrow(x))
+			count[i] <- tab[,2]
+			return(count)
+		} else {
+			error("extract", "count=TRUE is for point (y) in polygons (x) only")
+		}
+	}
 	if (ncol(x) > 0) {
 		d <- as.data.frame(x)
 		e <- data.frame(id.y=e[,1], d[e[,2], ,drop=FALSE])

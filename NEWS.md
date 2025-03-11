@@ -15,6 +15,8 @@
 - `extract` with a vector of two non-integers triggers a warning (possible point vs cellnumber confusion) [#1757](https://github.com/rspatial/terra/issues/1757) by Michael Sumner
 - `writeCDF` now supports four dimensions (x, y, depth and time) [#1756](https://github.com/rspatial/terra/issues/1756) by ForChimneySwifts
 - `vect` and `svc` now have argument "dialect" to select an SQL dialect [#1750](https://github.com/rspatial/terra/issues/1750) by Michael Sumner
+- `extract<SpatVector,SpatVector>` now has argument "count" to get point-in-polygon counts 
+
 
 ## new
 
