@@ -706,21 +706,24 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 		std::vector<double> steps;
 		steps.reserve(n);		
 		SpatVector v = aggregate(true);
-		std::vector<double> p = v.length();
+		std::vector<double> pp = v.length();
+		double p = std::accumulate(pp.begin(), pp.end(), 0); 
 		if (random) {
 			std::default_random_engine gen(seed);
-			std::uniform_real_distribution<> U2(0, p[0]);
+			std::uniform_real_distribution<> U2(0, p);
 			for (size_t i=0; i<n; i++) {
 				steps.push_back(U2(gen));
 			}
 			std::sort(steps.begin(), steps.end());
 		} else {
-			double d = p[0]/n;
+			double d = p/n;
 			for (size_t i=0; i<n; i++) {
 				steps.push_back((i + .5) * d);
 			}
 		}
 		size_t k = 0;
+		double length = 0;
+		double oldlength = 0;
 		if (lonlat) {
 			x.resize(n);
 			y.resize(n);
@@ -728,55 +731,42 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 			double a = 6378137;
 			double f = 1 / 298.257223563;
 			geod_init(&g, a, f);
-			double length = 0;
-			double oldlength = 0;
 			double azi1, azi2, dist;
-			for (size_t i=0; i<geoms[0].parts.size(); i++) {
-				for (size_t j=1; j<geoms[0].parts[i].x.size(); j++) {
-
-					geod_inverse(&g, geoms[0].parts[i].y[j-1], geoms[0].parts[i].x[j-1], 
-										 geoms[0].parts[i].y[j], geoms[0].parts[i].x[j], &dist, &azi1, &azi2);
+			for (size_t i=0; i<v.geoms[0].parts.size(); i++) {
+				for (size_t j=1; j<v.geoms[0].parts[i].x.size(); j++) {
+					geod_inverse(&g, v.geoms[0].parts[i].y[j-1], v.geoms[0].parts[i].x[j-1], 
+										 v.geoms[0].parts[i].y[j], v.geoms[0].parts[i].x[j], &dist, &azi1, &azi2);
 					length += dist;
 					while (length > steps[k]) {
-						geod_direct(&g, geoms[0].parts[i].y[j-1], geoms[0].parts[i].x[j-1], azi1, 
+						geod_direct(&g, v.geoms[0].parts[i].y[j-1], v.geoms[0].parts[i].x[j-1], azi1, 
 									steps[k]-oldlength, &y[k], &x[k], &azi2);
 						k++;
-						if (k == n) {
-							break;
-						}
+						if (k == n) { break;}
 					}
-					if (k == n) {
-						break;
-					}
+					if (k == n) { break; }
 					oldlength = length;
 				}
+				if (k == n) { break; }
 			}
 		} else {
 			x.reserve(n);
 			y.reserve(n);
-			double oldlength = 0;
-			double length = 0;
-			for (size_t i=0; i < geoms[0].parts.size(); i++) {
-				for (size_t j=1; j<geoms[0].parts[i].x.size(); j++) {
-					length += sqrt(pow(geoms[0].parts[i].x[j-1] - geoms[0].parts[i].x[j], 2) +
-									pow(geoms[0].parts[i].y[j-1] - geoms[0].parts[i].y[j], 2));
-
+			for (size_t i=0; i < v.geoms[0].parts.size(); i++) {
+				for (size_t j=1; j<v.geoms[0].parts[i].x.size(); j++) {
+					length += sqrt(pow(v.geoms[0].parts[i].x[j-1] - v.geoms[0].parts[i].x[j], 2) +
+									pow(v.geoms[0].parts[i].y[j-1] - v.geoms[0].parts[i].y[j], 2));
 					while (length > steps[k]) {
-						double bearing = direction_plane(geoms[0].parts[i].x[j-1], geoms[0].parts[i].y[j-1], 
-							geoms[0].parts[i].x[j], geoms[0].parts[i].y[j], false);
+						double bearing = direction_plane(v.geoms[0].parts[i].x[j-1], v.geoms[0].parts[i].y[j-1], 
+							v.geoms[0].parts[i].x[j], v.geoms[0].parts[i].y[j], false);
 						double distance = steps[k]-oldlength;
-						x.push_back(geoms[0].parts[i].x[j-1] + distance * sin(bearing));
-						y.push_back(geoms[0].parts[i].y[j-1] + distance * cos(bearing));
+						x.push_back(v.geoms[0].parts[i].x[j-1] + distance * sin(bearing));
+						y.push_back(v.geoms[0].parts[i].y[j-1] + distance * cos(bearing));
 						k++;
-						if (k == n) {
-							break;
-						}
+						if (k == n) { break; }
 					}
 					oldlength = length;
 				}
-				if (k == n) {
-					break;
-				}
+				if (k == n) { break; }
 			}
 		}
 		out = SpatVector(x, y, points, "");
