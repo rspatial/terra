@@ -414,7 +414,7 @@ std::vector<std::vector<double> > destpoint_lonlat(const double &longitude, cons
 
 
 std::vector<double> destpoint_plane(double x, double y, double bearing, double distance) {
-	bearing = bearing * M_PI / 180;
+	bearing *= M_PI / 180;
 	x += distance * sin(bearing);
 	y += distance * cos(bearing);
 	std::vector<double> out = {x, y};

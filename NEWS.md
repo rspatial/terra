@@ -1,4 +1,4 @@
-# version 1.8-33
+# version 1.8-34
 
 ## bug fixes
 
@@ -16,6 +16,7 @@
 - `writeCDF` now supports four dimensions (x, y, depth and time) [#1756](https://github.com/rspatial/terra/issues/1756) by ForChimneySwifts
 - `vect` and `svc` now have argument "dialect" to select an SQL dialect [#1750](https://github.com/rspatial/terra/issues/1750) by Michael Sumner
 - `extract<SpatVector,SpatVector>` now has argument "count" to get point-in-polygon counts 
+- `spatSample` can now take a random or regular sample along lines 
 
 
 ## new

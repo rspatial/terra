@@ -16,6 +16,8 @@ Merge SpatRasters, or merge a SpatVector with a data.frame
 Merge multiple SpatRasters to create a new SpatRaster with a larger spatial extent. The SpatRasters should all have the same coordinate reference system. They should normally also have the same spatial origin and resolution, but automatic resampling can be done depending on the algorithm used (see argument \code{algo}). In areas where the SpatRasters overlap, the values of the SpatRaster that is first in the sequence of arguments (or in the SpatRasterCollection) will be retained (unless \code{first=FALSE}). 
 
 There is also a method for merging SpatVector with a data.frame; that is, to join the data.frame to the attribute table of the SpatVector.
+
+See \code{\link{classify}} to merge a SpatRaster with a \code{data.frame}.
 }
 
 \usage{

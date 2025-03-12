@@ -22,6 +22,7 @@
 #include <random>
 #include <unordered_set>
 #include "string_utils.h"
+#include "geodesic.h"
 
 
 void get_nx_ny(double size, size_t &nx, size_t &ny) {
@@ -688,11 +689,97 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 
 	std::string gt = type();
 	SpatVector out;
-	if (gt != "polygons") {
-		out.setError("only implemented for polygons");
+	if (gt == "points") {
+		out.setError("only implemented for lines and polygons");
 		return out;
 	}
 	if (n == 0) {
+		out.srs = srs;
+		return out;
+	}
+	bool lonlat = is_lonlat();
+	bool random = (method == "random");
+
+	if (gt == "lines") {
+		
+		std::vector<double> x, y;
+		std::vector<double> steps;
+		steps.reserve(n);		
+		SpatVector v = aggregate(true);
+		std::vector<double> p = v.length();
+		if (random) {
+			std::default_random_engine gen(seed);
+			std::uniform_real_distribution<> U2(0, p[0]);
+			for (size_t i=0; i<n; i++) {
+				steps.push_back(U2(gen));
+			}
+			std::sort(steps.begin(), steps.end());
+		} else {
+			double d = p[0]/n;
+			for (size_t i=0; i<n; i++) {
+				steps.push_back((i + .5) * d);
+			}
+		}
+		size_t k = 0;
+		if (lonlat) {
+			x.resize(n);
+			y.resize(n);
+			struct geod_geodesic g;
+			double a = 6378137;
+			double f = 1 / 298.257223563;
+			geod_init(&g, a, f);
+			double length = 0;
+			double oldlength = 0;
+			double azi1, azi2, dist;
+			for (size_t i=0; i<geoms[0].parts.size(); i++) {
+				for (size_t j=1; j<geoms[0].parts[i].x.size(); j++) {
+
+					geod_inverse(&g, geoms[0].parts[i].y[j-1], geoms[0].parts[i].x[j-1], 
+										 geoms[0].parts[i].y[j], geoms[0].parts[i].x[j], &dist, &azi1, &azi2);
+					length += dist;
+					while (length > steps[k]) {
+						geod_direct(&g, geoms[0].parts[i].y[j-1], geoms[0].parts[i].x[j-1], azi1, 
+									steps[k]-oldlength, &y[k], &x[k], &azi2);
+						k++;
+						if (k == n) {
+							break;
+						}
+					}
+					if (k == n) {
+						break;
+					}
+					oldlength = length;
+				}
+			}
+		} else {
+			x.reserve(n);
+			y.reserve(n);
+			double oldlength = 0;
+			double length = 0;
+			for (size_t i=0; i < geoms[0].parts.size(); i++) {
+				for (size_t j=1; j<geoms[0].parts[i].x.size(); j++) {
+					length += sqrt(pow(geoms[0].parts[i].x[j-1] - geoms[0].parts[i].x[j], 2) +
+									pow(geoms[0].parts[i].y[j-1] - geoms[0].parts[i].y[j], 2));
+
+					while (length > steps[k]) {
+						double bearing = direction_plane(geoms[0].parts[i].x[j-1], geoms[0].parts[i].y[j-1], 
+							geoms[0].parts[i].x[j], geoms[0].parts[i].y[j], false);
+						double distance = steps[k]-oldlength;
+						x.push_back(geoms[0].parts[i].x[j-1] + distance * sin(bearing));
+						y.push_back(geoms[0].parts[i].y[j-1] + distance * cos(bearing));
+						k++;
+						if (k == n) {
+							break;
+						}
+					}
+					oldlength = length;
+				}
+				if (k == n) {
+					break;
+				}
+			}
+		}
+		out = SpatVector(x, y, points, "");
 		out.srs = srs;
 		return out;
 	}
@@ -726,8 +813,6 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 		return out;
 	}
 */
-	bool lonlat = is_lonlat();
-	bool random = (method == "random");
 
 	std::vector<double> a = area("m", true, {});
 	if (hasError()) {

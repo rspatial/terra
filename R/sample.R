@@ -859,7 +859,7 @@ setMethod("spatSample", signature(x="SpatVector"),
 		size <- round(size)
 		stopifnot(size > 0)
 		gtype <- geomtype(x)
-		if (gtype == "polygons") {
+		if (gtype %in% c("lines", "polygons")) {
 			if (!is.null(strata)) {
 				if (length(strata) == 1) {
 					if (is.character(strata)) {
@@ -904,8 +904,6 @@ setMethod("spatSample", signature(x="SpatVector"),
 			} else {
 				error("spatSample", "use `sample` to sample (point) geometries")
 			}
-		} else {
-			error("spatSample", "not yet implemented for lines")
 		}
 	}
 )
