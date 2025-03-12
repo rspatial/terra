@@ -189,10 +189,9 @@ Apart from the function listed below, you can also use indexing with \code{[} wi
 	\code{\link{as.data.frame}} \tab get cell values as a data.frame (including class lables)\cr
     \code{\link{extract}} \tab Extract cell values from a SpatRaster (with cell numbers, coordinates, points, lines, or polygons)\cr
     \code{\link{extractAlong}} \tab Extract cell values along a line such that the values are in the right order\cr
-    \code{\link{spatSample}} \tab Regular or random sample \cr
+    \code{\link{spatSample}} \tab Take a sample (regular, random, stratified, weighted) sample from a SpatRaster\cr
     \code{\link{minmax}} \tab Get the minimum and maximum value of the cells of a SpatRaster (if known) \cr
     \code{\link{setMinMax}} \tab Compute the minimum and maximum value of a SpatRaster if these are not known \cr
-    \code{\link{extract}} \tab spatial queries of a SpatRaster with a SpatVector\cr
 
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
@@ -430,6 +429,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 
 \tabular{ll}{
   \code{\link{extract}} \tab spatial queries between SpatVector and SpatVector (e.g. point in polygons) \cr
+  \code{\link{spatSample}} \tab Take a regular or random point sample from polygons or lines\cr
   \code{\link{sel}} \tab select - interactively select geometries\cr
   \code{\link{click}} \tab identify attributes by clicking on a map\cr
   \code{\link{merge}} \tab Join a table with a SpatVector \cr
@@ -679,11 +679,11 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 }
 
 \section{Authors}{
-Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of code using the GEOS library was adapted from code by Edzer Pebesma for \code{sf}. Michael Sumner contributed various bits and pieces.
+Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of code using the GEOS library was adapted from code by Edzer Pebesma for \code{sf}. Emanuele  Cordano contributed functionality for catchment related computations. Andrew Gene Brown, Márcia Barbosa, Michael Chirico, Krzysztof Dyba, Barry Rowlingson, and Michael D. Sumner also provided major contributions
 }
 
 \section{Acknowledgments}{
-This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. Feedback and suggestions by Márcia Barbosa, Kendon Bell, Andrew Gene Brown, Jean-Luc Dupouey, Krzysztof Dyba, Sarah Endicott, Derek Friend, Alex Ilich, Gerald Nelson, Jakub Nowosad, and Monika Tomaszewska have been especially helpful.
+This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. Feedback and suggestions by Kendon Bell, Jean-Luc Dupouey, Sarah Endicott, Derek Friend, Alex Ilich, Gerald Nelson, Jakub Nowosad, and Monika Tomaszewska have been especially helpful.
 }
 
 

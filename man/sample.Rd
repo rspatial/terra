@@ -14,7 +14,7 @@ Take a spatial sample from a SpatRaster, SpatVector or SpatExtent. Sampling a Sp
 
 With a SpatRaster, you can get cell values, cell numbers (\code{cells=TRUE}), coordinates (\code{xy=TRUE}) or (when \code{method="regular"} and \code{as.raster=TRUE}) get a new SpatRaster with the same extent, but fewer cells. 
 
-In order to assure regularity when requesting a regular sample, the number of cells or points returned may not be exactly the same as the \code{size} requested.
+In order to assure regularity when requesting a regular sample, the number of cells or points returned may not be exactly the same as the \code{size} requested unless you use \code{exact=TRUE}.
 }
 
 \usage{
