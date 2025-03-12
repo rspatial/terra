@@ -765,6 +765,7 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 						if (k == n) { break; }
 					}
 					oldlength = length;
+					if (k == n) { break; }
 				}
 				if (k == n) { break; }
 			}
