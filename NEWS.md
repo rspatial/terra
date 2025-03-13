@@ -18,12 +18,12 @@
 - `extract<SpatVector,SpatVector>` now has argument "count" to get point-in-polygon counts 
 - `spatSample` can now take a random or regular sample along lines 
 
-
 ## new
 
 - `writeRaster` and other methods that can write raster data can now set metadata.
 - `split<SpatVector,SpatVector>` method for lines [#1374](https://github.com/rspatial/terra/issues/1374) by MTueting
 - `depthName`, `depthName<-`, `depthUnit`, and `depthUnit<-` methods
+- `is.num<SpatRaster>` [SO 795026641](https://stackoverflow.com/questions/79502664/what-is-the-correct-terra-usage-to-achieve-is-numeric-on-an-r-terra-package-rast) by Jacob Strunk
 
 
 # version 1.8-29

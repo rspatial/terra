@@ -368,7 +368,7 @@ setMethod("is.bool", signature(x="SpatRaster"),
 )
 setMethod("is.int", signature(x="SpatRaster"),
 	function(x) {
-		x@pntr$valueType(FALSE) == 1
+		(x@pntr$valueType(FALSE) == 1) & (!x@pntr$hasCategories())
 	}
 )
 
