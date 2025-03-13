@@ -372,6 +372,12 @@ setMethod("is.int", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("is.num", signature(x="SpatRaster"),
+	function(x) {
+		(x@pntr$valueType(FALSE) < 2) & (!x@pntr$hasCategories())
+	}
+)
+
 
 setMethod("as.bool", signature(x="SpatRaster"),
 	function(x, filename="", ...) {

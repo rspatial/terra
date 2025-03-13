@@ -2,6 +2,8 @@
 
 \docType{methods}
 
+\alias{is.num}
+\alias{is.num,SpatRaster-method}
 \alias{is.bool}
 \alias{is.bool,SpatRaster-method}
 \alias{as.bool}
@@ -33,6 +35,8 @@ See \code{\link{levels}} and \code{\link{cats}} to create categorical layers by 
 }
 
 \usage{
+\S4method{is.num}{SpatRaster}(x)
+
 \S4method{is.bool}{SpatRaster}(x)
 
 \S4method{as.bool}{SpatRaster}(x, filename, ...)
