@@ -103,7 +103,7 @@ Files are read with the GDAL library. GDAL guesses the file format from the name
 These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save SpatRaster objects to disk (and pass a filename or cell values of cluster nodes). Also see \code{\link{wrap}}. 
 }
 
-\seealso{\code{\link{sds}} to create a SpatRasterDataset (4 dimensions) and \code{\link{vect}} for vector (points, lines, polygons) data}
+\seealso{\code{\link{sds}} to create a SpatRasterDataset (4 dimensions), \code{\link{sprc}} to create a SpatRasterCollection (allowing layers with different geometries), and \code{\link{vect}} for vector (points, lines, polygons) data}
 
 \examples{
 # Create a SpatRaster from scratch
