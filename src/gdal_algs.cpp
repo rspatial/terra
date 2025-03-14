@@ -2020,7 +2020,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 	}
 	
 	opt.names = getNames();
-	out.source[0].source_name = {""};
+	out.source[0].source_name = "";
 	return out.mask(mask, false, 0, NAN, opt);
 }
 
