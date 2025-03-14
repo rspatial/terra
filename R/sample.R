@@ -103,7 +103,17 @@ regular_exact <- function(r, size) {
 }
 
 
+
 sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL) {
+
+	if (nlyr(x) > 1) {
+		x <- x[[1]]
+		warn("spatSample", "only the first layer of x is used")
+	}
+	if (!hasValues(x)) {
+		error("spatSample", "x has no values")
+	}
+
 	if (!is.null(ext)) {
 		x <- crop(x, ext)
 	}
@@ -449,6 +459,8 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 }
 
 
+
+
 set_factors <- function(x, ff, cts, asdf) {
 	if (!asdf) return(x)
 	
@@ -540,14 +552,179 @@ sampleRaster <- function(x, size, method, replace, ext=NULL, warn, overview=FALS
 #	}
 	messages(x, "spatSample")
 }
+
+
+add_cxyp <- function(x, cnrs, cells, xy, values, as.points) {
+	out <- NULL
+	if (cells) {
+		out <- matrix(cnrs, ncol=1)
+		colnames(out) <- "cell"
+	}
+	if (xy) {
+		out <- cbind(out, xyFromCell(x, cnrs))
+	}
+	if (values && hasValues(x)) {
+		e <- extract(x, cnrs)
+		if (is.null(out)) {
+			out <- e
+		} else {
+			out <- cbind(out, e)
+		}
+	}
+	if (as.points) {
+		if (xy) {
+			out <- data.frame(out)
+			out <- vect(out, geom=c("x", "y"), crs=crs(x))
+		} else {
+			xy <- xyFromCell(x, cnrs)
+			# xy is a matrix, no geom argument
+			v <- vect(xy, crs=crs(x))
+			values(v) <- out
+			return(v)
+		}
+	}
+	out
+}
+
+
+
+sampleRandom <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE) {
+
+	ff <- is.factor(x)
+	lv <- levels(x)
+	size <- size[1]
+
+	if (cells || xy || as.points) {
+		if (exhaustive && na.rm) {
+			cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
+		} else {
+			cnrs <- .sampleCells(x, size, "random", replace, na.rm, ext, exp=exp, exact=exact)
+		}
+		
+		if ((length(cnrs) < size) && warn) {
+			warn("spatSample", "fewer cells returned than requested")
+		} else if (length(cnrs) > size) {
+			cnrs <- cnrs[1:size]
+		}
+
+		out <- add_cxyp(x, cnrs, cells, xy, values, as.points)
+		return(out)
+	}
+	if (!hasValues(x)) {
+		error("spatSample", "SpatRaster has no values")
+	}
+
+	if (!is.null(ext)) x <- crop(x, ext)
+
+	if (exhaustive && na.rm) {
+		cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
+		out <- x[cnrs]	
+	} else {
+		#v <- x@pntr$sampleRandomValues(size, replace, seed)
+		if (size > 0.75 * ncell(x)) {
+			if (na.rm) {
+				out <- stats::na.omit(values(x))
+				attr(out, "na.action") <- NULL
+				if (nrow(out) < size) {
+					if (replace) {
+						out <- out[sample.int(nrow(out), size, replace=TRUE), ,drop=FALSE]
+					} else {
+						warn("spatSample", "more non-NA cells requested than available")
+					}
+				} else {
+					out <- out[sample.int(nrow(out), size), ,drop=FALSE]
+				}
+			} else {
+				out <- values(x)
+				out <- out[sample.int(nrow(out), size, replace=replace), ,drop=FALSE]
+			}
+			out <- set_factors(out, ff, lv, as.df)
+			return(out)
+		}
+		if (na.rm) {
+			scells <- NULL
+			ssize <- size*2
+			for (i in 1:10) {
+				scells <- c(scells, .sampleCells(x, ssize, "random", replace, na.rm, exact=exact))
+				if ((i>1) && (!replace)) {
+					scells <- unique(scells)
+				}
+				out <- extractCells(x, scells, raw=!as.df)   
+				out <- stats::na.omit(out)
+				if (nrow(out) >= size) {
+					out <- out[1:size, ,drop=FALSE]
+					attr(out, "na.action") <- NULL
+					rownames(out) <- NULL
+					break
+				}
+			}
+		} else {
+			scells <- .sampleCells(x, size, "random", replace, exact=exact)
+			out <- extractCells(x, scells, raw=!as.df)   
+		}
+		if (NROW(out) < size) {
+			if (warn) warn("spatSample", "fewer values returned than requested")
+		} else if (is.null(dim(out))) {
+			out = out[1:size]
+		} else {
+			out = out[1:size, ,drop=FALSE]
+		}
+		#out <- set_factors(out, ff, lv, as.df)
+		return(out)
+	}
+}
 	
+	
+
+
+sampleRegular <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, exact=FALSE) {
+
+	ff <- is.factor(x)
+	lv <- levels(x)
+	
+	if (cells || xy || as.points) {
+		if (length(size)==2) {
+			warn("spatSample", "only the first argument in 'size' is used when cells|xy|as.points = TRUE")
+		}
+		cnrs <- .sampleCells(x, size, "regular", replace, na.rm, ext, exp=exp, exact=exact)
+		out <- add_cxyp(x, cnrs, cells, xy, values, as.points)
+		return(out)
+	}
+	if (!hasValues(x)) {
+		error("spatSample", "SpatRaster has no values")
+	}
+
+	if (!is.null(ext)) x <- crop(x, ext)
+
+	if (exact && (length(size) == 1)) {
+		xy <- regular_exact(x, size)
+		v <- extract(x, xy, ID=FALSE)
+	} else {
+		opt <- spatOptions()
+		if (length(size) > 1) {
+			v <- x@pntr$sampleRowColValues(size[1], size[2], opt)
+		} else {
+			v <- x@pntr$sampleRegularValues(size, opt)
+		}
+		x <- messages(x, "spatSample")
+			
+		if (length(v) > 0) {
+			v <- do.call(cbind, v)
+			colnames(v) <- names(x)
+		}
+		v <- set_factors(v, ff, lv, as.df)
+	}
+	return(v)
+}
 
 
 setMethod("spatSample", signature(x="SpatRaster"),
 	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE, exact=FALSE, each=TRUE) {
 
+# , strata=NULL
 
 		if (method == "display") return(sampleRaster(x, size, "regular", FALSE, ext=ext, warn=FALSE, overview=TRUE))
+		method <- match.arg(tolower(method), c("random", "regular", "stratified", "weights"))
 
 		if (!as.points) {
 			if (!(values || cells || xy)) {
@@ -560,7 +737,6 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (isTRUE(any(size < 1)) || isTRUE(any(is.na(size)))) {
 			error("spatSample", "sample size must be a positive integer")
 		}
-		method <- match.arg(tolower(method), c("random", "regular", "stratified", "weights"))
 
 		if ((!replace) && (method != "regular")) {
 			if (length(size) > 1) {
@@ -577,167 +753,20 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
 		if (lonlat) exact <- FALSE
 
-		if (method == "stratified") {
+		if (method == "regular") {
+			sampleRegular(x, size, replace=replace, na.rm=na.rm, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, exact=exact)
+		} else if (method == "stratified") {
 			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, values=values, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights, exhaustive=exhaustive, lonlat=lonlat, each=each) )
-		} else if (!is.null(weights)) {
+		} else if (!is.null(weights)) {  # should also implement for random
 			error("spatSample", "argument weights is only used when method='stratified'")
-		}
-
-		if (method == "weights") {
-			if (nlyr(x) > 1) {
-				x <- x[[1]]
-				warn("spatSample", "only the first layer of x is used")
-			}
-			if (!hasValues(x)) {
-				error("spatSample", "x has no values")
-			}
+		} else if (method == "random") {
+			sampleRandom(x, size, replace=replace, na.rm=na.rm, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, warn=warn, exp=exp, exhaustive=exhaustive)
+		} else if (method == "weights") {
 			out <- try(sampleWeights(x, size, replace=replace, as.df=as.df, values=values, as.points=as.points, cells=cells, xy=xy, ext=ext) )
 			if (inherits(out, "try-error")) {
 				error("spatSample", "weighted sample failed. Perhaps the data set is too big")
 			}
 			return (out)
-		}
-
-		ff <- is.factor(x)
-		lv <- levels(x)
-
-		if (cells || xy || as.points) {
-
-			size <- size[1]
-			if (exhaustive && (method=="random") && na.rm) {
-				cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
-			} else {
-				cnrs <- .sampleCells(x, size, method, replace, na.rm, ext, exp=exp, exact=exact)
-			}
-			
-			if (method == "random") {
-				if ((length(cnrs) < size) && warn) {
-					warn("spatSample", "fewer cells returned than requested")
-				} else if (length(cnrs) > size) {
-					cnrs <- cnrs[1:size]
-				}
-			}
-			out <- NULL
-			
-			if (cells) {
-				out <- matrix(cnrs, ncol=1)
-				colnames(out) <- "cell"
-			}
-			
-			if (xy) {
-				out <- cbind(out, xyFromCell(x, cnrs))
-			}
-			if (values && hasValues(x)) {
-				e <- extract(x, cnrs)
-				if (is.null(out)) {
-					out <- e
-				} else {
-					out <- cbind(out, e)
-				}
-			}
-			if (as.points) {
-				if (xy) {
-					out <- data.frame(out)
-					out <- vect(out, geom=c("x", "y"), crs=crs(x))
-				} else {
-					xy <- xyFromCell(x, cnrs)
-					# xy is a matrix, no geom argument
-					v <- vect(xy, crs=crs(x))
-					values(v) <- out
-					return(v)
-				}
-			}
-			return(out)
-		}
-		if (!hasValues(x)) {
-			error("spatSample", "SpatRaster has no values")
-		}
-
-		#method <- tolower(method)
-		#stopifnot(method %in% c("random", "regular"))
-	
-		if (!is.null(ext)) x <- crop(x, ext)
-
-		if (method == "regular") {
-			if (exact && (length(size) == 1)) {
-				xy <- regular_exact(x, size)
-				v <- extract(x, xy, ID=FALSE)
-			} else {
-				opt <- spatOptions()
-				if (length(size) > 1) {
-					v <- x@pntr$sampleRowColValues(size[1], size[2], opt)
-				} else {
-					v <- x@pntr$sampleRegularValues(size, opt)
-				}
-				x <- messages(x, "spatSample")
-				
-				if (length(v) > 0) {
-					v <- do.call(cbind, v)
-					colnames(v) <- names(x)
-				}
-				v <- set_factors(v, ff, lv, as.df)
-			}
-			return(v)
-		} else { # random
-			size <- size[1]
-
-			if (exhaustive && na.rm) {
-				cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
-				out <- x[cnrs]	
-			} else {
-				#v <- x@pntr$sampleRandomValues(size, replace, seed)
-				if (size > 0.75 * ncell(x)) {
-					if (na.rm) {
-						out <- stats::na.omit(values(x))
-						attr(out, "na.action") <- NULL
-						if (nrow(out) < size) {
-							if (replace) {
-								out <- out[sample.int(nrow(out), size, replace=TRUE), ,drop=FALSE]
-							} else {
-								warn("spatSample", "more non-NA cells requested than available")
-							}
-						} else {
-							out <- out[sample.int(nrow(out), size), ,drop=FALSE]
-						}
-					} else {
-						out <- values(x)
-						out <- out[sample.int(nrow(out), size, replace=replace), ,drop=FALSE]
-					}
-					out <- set_factors(out, ff, lv, as.df)
-					return(out)
-				}
-
-				if (na.rm) {
-					scells <- NULL
-					ssize <- size*2
-					for (i in 1:10) {
-						scells <- c(scells, .sampleCells(x, ssize, method, replace, na.rm, exact=exact))
-						if ((i>1) && (!replace)) {
-							scells <- unique(scells)
-						}
-						out <- extractCells(x, scells, raw=!as.df)   
-						out <- stats::na.omit(out)
-						if (nrow(out) >= size) {
-							out <- out[1:size, ,drop=FALSE]
-							attr(out, "na.action") <- NULL
-							rownames(out) <- NULL
-							break
-						}
-					}
-				} else {
-					scells <- .sampleCells(x, size, method, replace, exact=exact)
-					out <- extractCells(x, scells, raw=!as.df)   
-				}
-				if (NROW(out) < size) {
-					if (warn) warn("spatSample", "fewer values returned than requested")
-				} else if (is.null(dim(out))) {
-					out = out[1:size]
-				} else {
-					out = out[1:size, ,drop=FALSE]
-				}
-				#out <- set_factors(out, ff, lv, as.df)
-				return(out)
-			}
 		}
 	}
 )
