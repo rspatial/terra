@@ -50,7 +50,7 @@ SpatRasterDataset
 }
 
 \seealso{
-\code{\link{describe}}
+\code{\link{sprc}}, \code{\link{describe}}
 }
 
 \examples{
