@@ -64,6 +64,7 @@ if (!isGeneric("scoff<-")) {setGeneric("scoff<-", function(x, ..., value) standa
 
 if (!isGeneric("blocks")) {setGeneric("blocks", function(x, ...) standardGeneric("blocks"))}
 if (!isGeneric("droplevels")) {setGeneric("droplevels", function(x, ...) standardGeneric("droplevels"))}
+if (!isGeneric("simplifyLevels")) {setGeneric("simplifyLevels", function(x, ...) standardGeneric("simplifyLevels"))}
 
 if (!isGeneric("str")) { setGeneric("str", function(object, ...) standardGeneric("str"))}
 

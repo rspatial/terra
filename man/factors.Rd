@@ -14,6 +14,8 @@
 \alias{categories,SpatRaster-method}
 \alias{addCats}
 \alias{addCats,SpatRaster-method}
+\alias{simplifyLevels}
+\alias{simplifyLevels,SpatRaster-method}
 \alias{combineLevels}
   
   
@@ -33,6 +35,8 @@ To set categories for the first layer of a SpatRaster, you can provide \code{lev
 
 \code{droplevels} removes categories that are not used (declared but not present as values in the raster) if \code{levels=NULL}.
 
+\code{simplifyLevels} combines duplicate levels into one.
+
 \code{addCats} adds additional categories to a layer that already is categorical. It adds new variables, not new levels of an existing categorical variable.
 
 \code{combineLevels} combines the levels of all layers of \code{x} and sets them to all layers. That fails if there are labeling conflicts between layers
@@ -48,6 +52,8 @@ To set categories for the first layer of a SpatRaster, you can provide \code{lev
 \S4method{categories}{SpatRaster}(x, layer=1, value, active=1, ...)
 
 \S4method{droplevels}{SpatRaster}(x, level=NULL, layer=1)
+
+\S4method{simplifyLevels}{SpatRaster}(x, filename="", overwrite=FALSE, ...)
 
 \S4method{addCats}{SpatRaster}(x, value, merge=FALSE, layer=1)
 
@@ -86,6 +92,11 @@ r
 
 plot(r, col=c("green", "blue", "light gray"))
 text(r, digits=3, cex=.75, halo=TRUE)
+
+levels(r) <- data.frame(id=1:3, cover=c("forest", "water", "forest"))
+levels(simplifyLevels(r))
+
+
 
 # raster starts at 3
 x <- r + 2
