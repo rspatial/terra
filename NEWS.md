@@ -24,6 +24,7 @@
 - `split<SpatVector,SpatVector>` method for lines [#1374](https://github.com/rspatial/terra/issues/1374) by MTueting
 - `depthName`, `depthName<-`, `depthUnit`, and `depthUnit<-` methods
 - `is.num<SpatRaster>` [SO 795026641](https://stackoverflow.com/questions/79502664/what-is-the-correct-terra-usage-to-achieve-is-numeric-on-an-r-terra-package-rast) by Jacob Strunk
+- `simplifyLevels` to combine duplicate categories. [#1769](https://github.com/rspatial/terra/issues/1769) by Erik Ertsgaard
 
 
 # version 1.8-29

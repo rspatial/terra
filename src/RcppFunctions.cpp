@@ -566,6 +566,7 @@ bool set_proj_search_paths(std::vector<std::string> paths) {
 #endif
 }
 
+
 // [[Rcpp::export(name = ".PROJ_network")]]
 std::string PROJ_network(bool enable, std::string url) {
 	std::string s = "";
