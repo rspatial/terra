@@ -7,6 +7,7 @@ If there are multiple columns with categories, you can set the "active" category
 cats returns the entire data.frame, whereas levels only return two columns: the index and the active category.
 To set categories for the first layer of a SpatRaster, you can provide levels&amp;lt;- with a data.frame or a list with a data.frame. To set categories for multiple layers you can provide levels&amp;lt;- with a list with one element (that either has a data.frame or is NULL) for each layer. Use categories to set the categories for a specific layer or specific layers.
 droplevels removes categories that are not used (declared but not present as values in the raster) if levels=NULL.
+simplifyLevels combines duplicate levels into one.
 addCats adds additional categories to a layer that already is categorical. It adds new variables, not new levels of an existing categorical variable.
 combineLevels combines the levels of all layers of x and sets them to all layers. That fails if there are labeling conflicts between layers'><meta property="og:description" content='
 
@@ -16,6 +17,7 @@ If there are multiple columns with categories, you can set the "active" category
 cats returns the entire data.frame, whereas levels only return two columns: the index and the active category.
 To set categories for the first layer of a SpatRaster, you can provide levels&amp;lt;- with a data.frame or a list with a data.frame. To set categories for multiple layers you can provide levels&amp;lt;- with a list with one element (that either has a data.frame or is NULL) for each layer. Use categories to set the categories for a specific layer or specific layers.
 droplevels removes categories that are not used (declared but not present as values in the raster) if levels=NULL.
+simplifyLevels combines duplicate levels into one.
 addCats adds additional categories to a layer that already is categorical. It adds new variables, not new levels of an existing categorical variable.
 combineLevels combines the levels of all layers of x and sets them to all layers. That fails if there are labeling conflicts between layers'><meta property="og:image" content="https://rspatial.github.io/terra/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -61,6 +63,7 @@ combineLevels combines the levels of all layers of x and sets them to all layers
 <p><code>cats</code> returns the entire data.frame, whereas <code>levels</code> only return two columns: the index and the active category.</p>
 <p>To set categories for the first layer of a SpatRaster, you can provide <code>levels&lt;-</code> with a data.frame or a list with a data.frame. To set categories for multiple layers you can provide <code>levels&lt;-</code> with a list with one element (that either has a <code>data.frame</code> or is <code>NULL</code>) for each layer. Use <code>categories</code> to set the categories for a specific layer or specific layers.</p>
 <p><code>droplevels</code> removes categories that are not used (declared but not present as values in the raster) if <code>levels=NULL</code>.</p>
+<p><code>simplifyLevels</code> combines duplicate levels into one.</p>
 <p><code>addCats</code> adds additional categories to a layer that already is categorical. It adds new variables, not new levels of an existing categorical variable.</p>
 <p><code>combineLevels</code> combines the levels of all layers of <code>x</code> and sets them to all layers. That fails if there are labeling conflicts between layers</p>
     </div>
@@ -81,6 +84,9 @@ combineLevels combines the levels of all layers of x and sets them to all layers
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">droplevels</span><span class="op">(</span><span class="va">x</span>, level<span class="op">=</span><span class="cn">NULL</span>, layer<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'SpatRaster'</span></span>
+<span><span class="fu">simplifyLevels</span><span class="op">(</span><span class="va">x</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">addCats</span><span class="op">(</span><span class="va">x</span>, <span class="va">value</span>, merge<span class="op">=</span><span class="cn">FALSE</span>, layer<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
@@ -152,6 +158,16 @@ combineLevels combines the levels of all layers of x and sets them to all layers
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"green"</span>, <span class="st">"blue"</span>, <span class="st">"light gray"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">r</span>, digits<span class="op">=</span><span class="fl">3</span>, cex<span class="op">=</span><span class="fl">.75</span>, halo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="factors-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">levels</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, cover<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"forest"</span>, <span class="st">"water"</span>, <span class="st">"forest"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">levels</span><span class="op">(</span><span class="fu">simplifyLevels</span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id  cover</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 forest</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2  water</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># raster starts at 3</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">r</span> <span class="op">+</span> <span class="fl">2</span></span></span>
