@@ -718,8 +718,8 @@ sampleRegular <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, 
 
 	if (cells || xy || as.points) {
 		if (exact) {
-			xy <- regular_exact(x, size)
-			cnrs <- cellFromXY(x, xy)
+			pxy <- regular_exact(x, size)
+			cnrs <- cellFromXY(x, pxy)
 		} else if (length(size) == 2) {
 			cnrs <- x@pntr$sampleRowCol(size[1], size[2])
 		} else {
