@@ -408,16 +408,22 @@ retro_labels <- function(x, lat=TRUE) {
 		} else {
 			legtitle <- x$leg$title[1]		
 		}
-		e <- x$leg$ext
-		if (length(legtitle) > 1) { # or perhaps !inherits(legtitle, "expression")
-			if (x$leg$x %in% c("top", "bottom")) {
-				legtitle <- paste(legtitle, collapse=" ")
-			} else {
-				legtitle <- paste(legtitle, collapse="\n")		
-			}
-		} 
+		pos <- 3
+		if ((!is.null(x$leg$title.x)) && (!is.null(x$leg$title.y))) {
+			e <- list(xmax=x$leg$title.x, ymax=x$leg$title.y)
+			if (!is.null(x$leg$title.pos)) pos <- x$leg$title.pos
+		} else {
+			e <- x$leg$ext
+			if (length(legtitle) > 1) { # or perhaps !inherits(legtitle, "expression")
+				if (x$leg$x %in% c("top", "bottom")) {
+					legtitle <- paste(legtitle, collapse=" ")
+				} else {
+					legtitle <- paste(legtitle, collapse="\n")		
+				}
+			} 
+		}
 		# offset=.5*graphics::strheight("a",cex=x$leg$title.cex)
-		text(x=e$xmax, y=e$ymax, labels=legtitle, pos=3, cex=x$leg$title.cex, xpd=NA)
+		text(x=e$xmax, y=e$ymax, labels=legtitle, pos=pos, cex=x$leg$title.cex, xpd=NA, adj=x$leg$title.adj, font=x$leg$title.font, col=x$leg$title.col)
 	}
 	x
 }
@@ -446,7 +452,8 @@ get_legxy <- function(r, e, pos, yshift) {
 
 .plot.class.legend <- function(x, y, legend, fill, xpd=NA, cex=1, geomtype="",
 	lty=1, lwd=1, pch=1, angle=45, density=NULL, pt.cex = 1, pt.bg="black", pt.lwd=1, 
-	bty="n", border="black", seg.len=1, plotlim, yshift=NULL, title=NULL, leg_i=1, ...,
+	bty="n", border="black", seg.len=1, plotlim, yshift=NULL, title=NULL, leg_i=1, 
+	title.x=NULL, title.y=NULL, title.adj=NULL, title.pos=NULL, title.cex=NULL, title.col=NULL, title.font=NULL, ...,
 # catch and kill
 	merge, trace, size) {
 
@@ -463,6 +470,12 @@ get_legxy <- function(r, e, pos, yshift) {
 	} else {
 		title <- title[1]		
 	}
+	
+	if ((!is.null(title.x)) && (!is.null(title.y))) {
+		text(x=title.x, y=title.y, labels=title, pos=title.pos, cex=title.cex, xpd=NA, adj=title.adj, font=title.font, col=title.col)
+		title <- ""
+	}
+	
 #points(leg$rect$left+leg$rect$w, leg$rect$top-leg$rect$h, xpd=T)	
 	if (grepl("points", geomtype)) {
 		if (inherits(x, "character")) {
@@ -489,6 +502,7 @@ get_legxy <- function(r, e, pos, yshift) {
 			leg <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, title=title, ...)
 		}
 	}
+		
 	leg
 }
 
