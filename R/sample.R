@@ -591,21 +591,21 @@ add_cxyp <- function(x, cnrs, cells, xy, as.points, values, na.rm) {
 		out <- cbind(out, xyFromCell(x, cnrs))
 	}
 	if (values) {
-		e <- extract(x, cnrs)
-		out <- cbind(out, e)
+		if (is.null(out)) {
+			out <- vals
+		} else {
+			out <- cbind(out, vals)		
+		}
 	}
 	if (as.points) {
 		if (xy) {
 			out <- data.frame(out)
 			v <- vect(out, geom=c("x", "y"), crs=crs(x))
 		} else {
-			xy <- xyFromCell(x, cnrs)
-			# xy is a matrix, no geom argument
-			v <- vect(xy, crs=crs(x))
+			crds <- xyFromCell(x, cnrs)
+			# crds is a matrix, no geom argument
+			v <- vect(crds, crs=crs(x))
 			values(v) <- out
-		}
-		if (values) {
-			v <- cbind(v, values)
 		}
 		return(v)
 	}
@@ -975,60 +975,3 @@ setMethod("spatSample", signature(x="SpatVector"),
 	}
 )
 
-#spatSample(disagg(as.points(v)), 1, "stratified", strata=r, chess="")
-
-
-
-# setMethod("spatSample", signature(x="SpatExtent"),
-	# function(x, size, method="regular", lonlat, ...) {
-		# if (missing(lonlat)) {
-			# stop("provide a lonlat argument")
-		# }
-		# method = match.arg(method, c("regular", "random"))
-		# size <- round(size)
-		# stopifnot(size > 0)
-		# e <- as.vector(x)
-		# if (method=="random") {
-			# if (lonlat) {
-				# d <- round((e[4] - e[3]) * 1000);
-				# dx <- (e[4] - e[3]) / (2 * d)
-				# r <- unique(seq(e[3], e[4], length.out=d))
-				# w <- abs(cos(pi*r/180))
-				# x <- sample.int(length(r), size, prob=w, replace=TRUE)
-				# lat <- r[x] + stats::runif(size, -dx, dx)
-				# lon <- stats::runif(size, min = e[1], max = e[2])
-				# vect(cbind(lon,lat), crs="+proj=lonlat +datum=WGS84")
-			# } else {
-				# x <- stats::runif(size, min = e[1], max = e[2])
-				# y <- stats::runif(size, min = e[3], max = e[4])
-				# vect(cbind(x, y))
-			# }
-		# } else {
-			# r <- range(x)
-			# ratio <- 0.5 * r[1]/r[2]
-			# n <- sqrt(size)
-			# nx <- max(1, (round(n*ratio)))
-			# ny <- max(1, (round(n/ratio)))
-			# xi <- r[1] / nx
-			# yi <- r[2] / ny
-			# if (lonlat) {
-				# lat <- seq(e[3]+0.5*yi, e[4], yi)
-				# w <- cos(pi*lat/180)
-				# w <- w * length(w)/sum(w)
-				# xi <- xi / w
-				# xi <- pmin(xi, 180)
-				# z <- list()
-				# #off <- stats::runif(1)
-				# for (i in 1:length(lat)) {
-					# z[[i]] <- cbind(seq(e[1]+0.5*xi[i], e[2], xi[i]), lat[i])
-				# }
-				# z <- do.call(rbind, z)
-				# vect(z, crs="+proj=lonlat +datum=WGS84")
-			# } else {
-				# x <- seq(e[1]+0.5*xi, e[2], xi)
-				# y <- seq(e[3]+0.5*yi, e[4], yi)
-				# vect(cbind(rep(x, length(y)), rep(y, each=length(x))))
-			# }
-		# }
-	# }
-# )
