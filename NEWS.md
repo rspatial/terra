@@ -7,6 +7,7 @@
 - `extract` with points for rasters accessed over http could return NAs for some cells if the raster was large [#1504](https://github.com/rspatial/terra/issues/1504) by Krzysztof Dyba
 - `writeCDF` now supports writing an empty crs [#1759](https://github.com/rspatial/terra/issues/1759) by ForChimneySwifts
 - `resample` on flipped SpatRasters failed. [#1760](https://github.com/rspatial/terra/issues/1760) by Andrew Gene Brown
+- `spatSample<SpatRaster>(method="regular", xy=TRUE)` ignored the second "size" number when using two numbers (row, col) [#1766](https://github.com/rspatial/terra/issues/1766) by Barnabas Harris
 
 ## enhancements
 
