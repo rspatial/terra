@@ -136,12 +136,7 @@ retro_labels <- function(x, lat=TRUE) {
 		x$leg$size[1] <- min(x$leg$size[1], (1 - .05*n))
 	}
 
-	horiz <- isTRUE(x$leg$x %in% c("top", "bottom"))
-	if (horiz) {
-#		xd <- (xmax - xmin) * x$leg$size[2]
-#		xmin <- xmin + xd 
-#		xmax <- xmax - xd
-
+	if (x$leg$horizontal) {
 		rhalf <- (xmax - xmin) / 2
 		xmid <- xmin + rhalf
 		xd <- rhalf * x$leg$size[1]
@@ -232,9 +227,9 @@ retro_labels <- function(x, lat=TRUE) {
 			}
 		} else if (loc == "bottom") {
 			s <- .line.usr(trunc(graphics::par("mar")[1]), 1)
-			p <- c(xmin, xmax, s+1.75*dxy[2], s+2.5*dxy[2])
+			p <- c(xmin, xmax, s+1.75*dxy[2], s+2.25*dxy[2])
 		} else if (loc == "top") {
-			p <- c(xmin, xmax, ymax+dxy[2], ymax+1.75*dxy[2])
+			p <- c(xmin, xmax, ymax+.6*dxy[2], ymax+1*dxy[2])
 		} else { #if (loc == "right" or "default" 
 			p <- c(xmax+dxy[1], xmax+2*dxy[1], ymin, ymax)
 			if (isTRUE(x$leg$yshift)) {
@@ -302,10 +297,13 @@ retro_labels <- function(x, lat=TRUE) {
 		ticboxcol <- "black"
 	}
 	
+	x$leg$horizontal <- FALSE
 	if (is.null(x$leg$x)) {
 		x$leg$x <- "right"
 	} else if (!(x$leg$x %in% c("left", "right", "top", "bottom"))) {
 		x$leg$x <- "right"	
+	} else if (x$leg$x %in% c("top", "bottom")) {
+		x$leg$horizontal <- TRUE
 	}
 
 	if (is.null(x$leg$ext)) {
@@ -369,10 +367,11 @@ retro_labels <- function(x, lat=TRUE) {
 			}
 			text(e$xmin, ypos, zztxt, pos=2, xpd=NA, cex=cex, ...)
 		}
-	} else {
+	} else { # top, bottom
 		X <- seq(e$xmin, e$xmax, length.out=nc+1)
 		graphics::rect(X[-(nc + 1)], e$ymin, X[-1], e$ymax, col=rev(cols), border=NA, xpd=NA)
 		xpos <- e$xmin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dx
+		
 		if (x$leg$x == "bottom") {
 			if (tics == "throughout") {
 				graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymax, xpd=NA)
@@ -383,7 +382,7 @@ retro_labels <- function(x, lat=TRUE) {
 			} else if (tics == "out") {
 				graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymin, xpd=NA)
 			}
-			text(xpos, e$ymin, zztxt, pos=1, xpd=NA, cex=cex)
+			text(xpos, e$ymin-e$dy, zztxt, pos=NULL, xpd=NA, cex=cex)
 		} else {
 			if (tics == "throughout") {
 				graphics::segments(xpos, e$ymin, xpos, e$ymax+e$dy*0.25, xpd=NA)
@@ -394,7 +393,7 @@ retro_labels <- function(x, lat=TRUE) {
 			} else if (tics == "out") {
 				graphics::segments(xpos, e$ymax, xpos, e$ymax+e$dy*0.25, xpd=NA)
 			}
-			text(xpos, e$ymax+e$dy*0.25, zztxt, pos=3, xpd=NA, cex=cex)
+			text(xpos, e$ymax+1.5*e$dy, zztxt, pos=NULL, xpd=NA, cex=cex)
 		}
 	}
 	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border=ticboxcol, xpd=NA)
@@ -409,24 +408,35 @@ retro_labels <- function(x, lat=TRUE) {
 			legtitle <- x$leg$title[1]		
 		}
 		pos <- 3
-		if ((!is.null(x$leg$title.x)) && (!is.null(x$leg$title.y))) {
-			e <- list(xmax=x$leg$title.x, ymax=x$leg$title.y)
-			if (!is.null(x$leg$title.pos)) pos <- x$leg$title.pos
-		} else {
+		if ((is.null(x$leg$title.x)) || (is.null(x$leg$title.y))) {
 			e <- x$leg$ext
+			x$leg$title.y <- e$ymax
+			if (x$leg$horizontal) {
+				x$leg$title.x <- e$xmin + (e$xmax - e$xmin) / 2
+				if (x$leg$x	== "top") {
+					x$leg$title.y <- e$ymax + 2 * (e$ymax - e$ymin)
+				}
+			} else {
+				x$leg$title.x <- e$xmax	
+			}
 			if (length(legtitle) > 1) { # or perhaps !inherits(legtitle, "expression")
-				if (x$leg$x %in% c("top", "bottom")) {
+				if (x$leg$horizontal) {
 					legtitle <- paste(legtitle, collapse=" ")
 				} else {
 					legtitle <- paste(legtitle, collapse="\n")		
 				}
 			} 
+		} else {
+			if (!is.null(x$leg$title.pos)) pos <- x$leg$title.pos
 		}
+
 		# offset=.5*graphics::strheight("a",cex=x$leg$title.cex)
-		text(x=e$xmax, y=e$ymax, labels=legtitle, pos=pos, cex=x$leg$title.cex, xpd=NA, adj=x$leg$title.adj, font=x$leg$title.font, col=x$leg$title.col)
+		text(x=x$leg$title.x, y=x$leg$title.y, labels=legtitle, pos=pos, cex=x$leg$title.cex, xpd=NA, adj=x$leg$title.adj, font=x$leg$title.font, col=x$leg$title.col)
 	}
 	x
 }
+
+
 
 get_legxy <- function(r, e, pos, yshift) {
 	xy <- c(r$left, r$top)

@@ -810,19 +810,19 @@ prettyNumbs <- function(x, digits) {
 				if (is.null(out$leg$ext)) {
 					if (is.null(out$leg$x)) {
 						out$leg$x <- "default"
-						out$mar <- c(2, 2, 2, 4)
+						out$mar <- c(2, 2, 2, 5)
 					} else if (out$legend_type == "continuous") {
 						if (out$leg$x == "top") {
 							out$mar <- c(2, 2, 4, 2)
 						} else if (out$leg$x == "bottom") {
-							out$mar <- c(4, 2, 2, 2)
+							out$mar <- c(5, 2, 2, 2)
 						} else if (out$leg$x == "left") {
 							out$mar <- c(2, 5, 2, 1)
 						} else {
-							out$mar <- c(2, 2, 2, 4)
+							out$mar <- c(2, 2, 2, 5)
 						}
 					} else if (out$leg$x == "default") {
-						out$mar <- c(2, 2, 2, 4)					
+						out$mar <- c(2, 2, 2, 5)
 					}
 				} 
 			}
