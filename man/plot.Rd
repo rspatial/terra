@@ -65,11 +65,14 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{box}{logical. Should a box be drawn around the map?}
   \item{clip}{logical. Should the axes be clipped to the extent of \code{x}?}
   \item{overview}{logical. Should "overviews" be used for fast rendering? This can result in much faster plotting of raster files that have overviews (e.g. "COG" format) and are accessed over a http connection. However, these overviews generally show aggregate values, thus reducing the range of the actual values. If \code{NULL}, the argument is set to \code{TRUE} for rasters that are accessed over http and \code{FALSE} in other cases}
-  \item{plg}{list with parameters for drawing the legend. For the classes and interval type legend see the arguments for \code{\link[graphics]{legend}}. For example \code{x} and \code{y} can be used to place the legend. You can also use keywords such as "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. 
+  \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link[graphics]{legend}}. In addition there are arguments for the legend title: \code{title.srt} to rotate the title and \code{title.x} and \code{title.y} to place the title at specific coordinates.
   
-  Some of these do not apply to a continuous legend, or they behave a little differently. For example, only the placement keywords "left", "right", "top", and "bottom" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. Additional parameters for continuous legends include: 
+  A legend can be placed with \code{x} and keywords such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. "interval" and "classes" legends can also be placed with arguments \code{x} and \code{y}. For a continuous legend, only the placement keywords "left", "right", "top", and "bottom" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. You can use argument \code{ext} to place a continuous legend elsewhere.
+    
+  Additional parameters for continuous legends include: 
   
   \itemize{
+    \item \code{ext} to draw the legend in a location specified by a SpatExtent
     \item \code{digits} to set the number of digits to print after the decimal point. \code{size} to change the height and/or width; the defaults are \code{c(1,1)}, negative values for size flip the order of the legend. 
 	\item \code{at} to set the location of the tic-marks
 	\item \code{tic} One of these partially matched values: "through", "in", "out", or "none", to choose a tic-mark placement/length that is different from the default "through and out". 

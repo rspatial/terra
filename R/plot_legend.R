@@ -431,7 +431,7 @@ retro_labels <- function(x, lat=TRUE) {
 		}
 
 		# offset=.5*graphics::strheight("a",cex=x$leg$title.cex)
-		text(x=x$leg$title.x, y=x$leg$title.y, labels=legtitle, pos=pos, cex=x$leg$title.cex, xpd=NA, adj=x$leg$title.adj, font=x$leg$title.font, col=x$leg$title.col)
+		text(x=x$leg$title.x, y=x$leg$title.y, labels=legtitle, pos=pos, cex=x$leg$title.cex, xpd=NA, adj=x$leg$title.adj, font=x$leg$title.font, col=x$leg$title.col, srt=x$leg$title.srt)
 	}
 	x
 }
