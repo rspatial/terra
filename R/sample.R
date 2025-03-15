@@ -573,14 +573,14 @@ add_cxyp <- function(x, cnrs, cells, xy, as.points, values, na.rm) {
 	if (na.rm) {
 		if (values) {
 			i <- rowSums(is.na(values)) == 0
-			values <- values[i, , drop=FALSE]
+			vals <- values[i, , drop=FALSE]
 		} else if (hasValues(x) && (is.null(values))) {
-			cvals <- x[cnrs]
+			tmpvals <- x[cnrs]
 			i <- rowSums(is.na(cvals)) == 0
 		} 
 		cnrs <- cnrs[i]
 	} else if (values) {
-		values <- x[cnrs]
+		vals <- x[cnrs]
 	}
 	out <- NULL
 	if (cells) {
@@ -590,7 +590,7 @@ add_cxyp <- function(x, cnrs, cells, xy, as.points, values, na.rm) {
 	if (xy) {
 		out <- cbind(out, xyFromCell(x, cnrs))
 	}
-	if (!is.null(values)) {
+	if (values) {
 		e <- extract(x, cnrs)
 		out <- cbind(out, e)
 	}
@@ -604,7 +604,7 @@ add_cxyp <- function(x, cnrs, cells, xy, as.points, values, na.rm) {
 			v <- vect(xy, crs=crs(x))
 			values(v) <- out
 		}
-		if (!is.null(values)) {
+		if (values) {
 			v <- cbind(v, values)
 		}
 		return(v)
