@@ -757,7 +757,7 @@ sampleRegular <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, 
 
 
 setMethod("spatSample", signature(x="SpatRaster"),
-	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE, exact=FALSE, each=TRUE) {
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=hasValues(x), cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE, exact=FALSE, each=TRUE) {
 
 # , strata=NULL
 

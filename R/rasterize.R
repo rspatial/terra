@@ -222,6 +222,15 @@ setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
 )
 
 
+setMethod("rasterize", signature(x="data.frame", y="SpatRaster"),
+	function(x, y, values=1, fun, ..., background=NA, update=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list()) {
+		stopifnot(ncol(x) >=2)
+		x <- as.matrix(x[,1:2])
+		rasterize(x, y, values=values, fun=fun, ..., background=background, update=update, by=by, filename=filename, overwrite=overwrite, wopt=wopt)
+	}
+)
+
+
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, cover=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list()) {
 

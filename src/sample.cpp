@@ -268,7 +268,7 @@ std::vector<double> SpatRaster::sampleRowCol(size_t nr, size_t nc) {
 	nc = std::min(nc, ncol());
 	
 	if ((nr == nrow()) && (nc == ncol())) {
-		out.resize(ncell()));
+		out.resize(ncell());
 		std::iota(out.begin(), out.end(), 0);
 		return out;
 	}
@@ -292,6 +292,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_
 
 	if ((nr >= nrow()) && (nc >= ncol())) {
 		std::vector<double> v = getValues(-1, opt);
+		size_t nsize = ncell();
 		if (hasError()) return out;
 		for (size_t i=0; i<nlyr(); i++) {
 			size_t offset = i * nsize;
@@ -303,9 +304,6 @@ std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_
 	
 	std::vector<double> cells = sampleRowCol(nr, nc);
 	if (cells.empty()) return out;
-	if ((cells.size() == 1) && (cells[0] == -1)) {
-		return getValues(-1, opt);
-	}
 	return extractCell(cells, opt);
 }
 

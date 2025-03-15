@@ -6,6 +6,7 @@
 \alias{rasterize,SpatVector,SpatRaster-method}
 \alias{rasterize,sf,SpatRaster-method}
 \alias{rasterize,matrix,SpatRaster-method}
+\alias{rasterize,data.frame,SpatRaster-method}
 
 \title{Rasterize vector data}
 
@@ -22,7 +23,7 @@ Transfer values associated with the geometries of vector data to a raster
 }
 
 \arguments{
-  \item{x}{SpatVector or a two-column matrix (point coordinates)}
+  \item{x}{SpatVector or a two-column matrix (point coordinates) or data.frame}
   
   \item{y}{SpatRaster}
   
