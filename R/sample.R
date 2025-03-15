@@ -600,7 +600,7 @@ add_cxyp <- function(x, cnrs, cells, xy, as.points, values, na.rm) {
 	if (as.points) {
 		if (xy) {
 			out <- data.frame(out)
-			v <- vect(out, geom=c("x", "y"), crs=crs(x))
+			v <- vect(out, geom=c("x", "y"), crs=crs(x), keepgeom=TRUE)
 		} else {
 			crds <- xyFromCell(x, cnrs)
 			# crds is a matrix, no geom argument
@@ -641,13 +641,20 @@ sampleRandom <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, a
 		error("spatSample", "SpatRaster has no values")
 	}
 
-	if (!is.null(ext)) x <- crop(x, ext)
+	if (!is.null(ext)) {
+		if (window(x)) {
+			x <- crop(x, ext)
+		} else {
+			window(x) <- ext
+		}
+	}
 
 	if (exhaustive && na.rm) {
-		cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
+		cnrs <- .sampleCellsExhaustive(x, size, replace, ext=NULL, weights=NULL, warn=FALSE)
 		out <- x[cnrs]	
 	} else {
 		#v <- x@pntr$sampleRandomValues(size, replace, seed)
+		
 		if (size > 0.75 * ncell(x)) {
 			if (na.rm) {
 				out <- stats::na.omit(values(x))
@@ -667,7 +674,7 @@ sampleRandom <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, a
 			}
 			out <- set_factors(out, ff, lv, as.df)
 			return(out)
-		}
+		} # else {
 		if (na.rm) {
 			scells <- NULL
 			ssize <- size*2
