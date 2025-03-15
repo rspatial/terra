@@ -18,6 +18,8 @@
 - `vect` and `svc` now have argument "dialect" to select an SQL dialect [#1750](https://github.com/rspatial/terra/issues/1750) by Michael Sumner
 - `extract<SpatVector,SpatVector>` now has argument "count" to get point-in-polygon counts 
 - `spatSample` can now take a random or regular sample along lines 
+- `plot` gained arguments to control the legend title (including leg.title.x, leg.title.y, leg.title.srt) and some tweaks to the defaults for horizontal continuous legends. [#1774](https://github.com/rspatial/terra/issues/1774) by Fengyu Fu
+
 
 ## new
 
