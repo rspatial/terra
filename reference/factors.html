@@ -80,7 +80,7 @@ combineLevels combines the levels of all layers of x and sets them to all layers
 <span><span class="fu">cats</span><span class="op">(</span><span class="va">x</span>, <span class="va">layer</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
-<span><span class="fu">categories</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">categories</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span>, <span class="va">value</span>, active<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">droplevels</span><span class="op">(</span><span class="va">x</span>, level<span class="op">=</span><span class="cn">NULL</span>, layer<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
@@ -115,11 +115,17 @@ combineLevels combines the levels of all layers of x and sets them to all layers
   <dt id="arg-merge">merge<a class="anchor" aria-label="anchor" href="#arg-merge"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, the categories are combined with <code><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></code> using the first column of <code>value</code> as ID. If <code>FALSE</code> the categories are combined with <code>cbind</code></p></dd>
 
-  <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>additional arguments (none)</p></dd>
-
   <dt id="arg-assign">assign<a class="anchor" aria-label="anchor" href="#arg-assign"></a></dt>
 <dd><p>logical. Assign the combined levels to all layers of <code>x</code>? If <code>FALSE</code>, the levels are returned</p></dd>
+
+  <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
+<dd><p>character. Output filename</p></dd>
+
+  <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
+<dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
+
+  <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
