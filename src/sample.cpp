@@ -256,49 +256,6 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(double size, Sp
 }
 
 
-std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_t nc, SpatOptions &opt) {
-
-	std::vector<std::vector<double>> out;
-	if (!source[0].hasValues) return (out);
-
-	if ((nr == 0) || (nc ==0)) {
-		return(out);
-	}
-
-	nr = std::min(nr, nrow());
-	nc = std::min(nc, ncol());
-
-	size_t nsize = nc * nr;
-	std::vector<double> v;
-	if ((nc == ncol()) && (nr == nrow())) {
-		v = getValues(-1, opt) ;
-		if (hasError()) return out;
-		for (size_t i=0; i<nlyr(); i++) {
-			size_t offset = i * nsize;
-			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nsize);
-			out.push_back(vv);
-		}
-		return out;
-	}
-
-	for (size_t src=0; src<nsrc(); src++) {
-		if (source[src].memory) {
-			v = readSample(src, nr, nc);
-		} else {
-		    #ifdef useGDAL
-			v = readGDALsample(src, nr, nc, false);
-			#endif
-		}
-		if (hasError()) return out;
-		for (size_t i=0; i<source[src].nlyr; i++) {
-			size_t offset = i * nsize;
-			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nsize);
-			out.push_back(vv);
-		}
-	}
-	return out;
-}
-
 
 std::vector<double> SpatRaster::sampleRowCol(size_t nr, size_t nc) {
 
@@ -309,6 +266,12 @@ std::vector<double> SpatRaster::sampleRowCol(size_t nr, size_t nc) {
 	}
 	nr = std::min(nr, nrow());
 	nc = std::min(nc, ncol());
+	
+	if ((nr == nrow()) && (nc == ncol())) {
+		out.resize(ncell()));
+		std::iota(out.begin(), out.end(), 0);
+		return out;
+	}
 
 	std::vector<int_64> rows, cols;
 
@@ -323,6 +286,28 @@ std::vector<double> SpatRaster::sampleRowCol(size_t nr, size_t nc) {
 	return cellFromRowColCombine(rows, cols);
 }
 
+
+std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_t nc, SpatOptions &opt) {
+	std::vector<std::vector<double>> out;
+
+	if ((nr >= nrow()) && (nc >= ncol())) {
+		std::vector<double> v = getValues(-1, opt);
+		if (hasError()) return out;
+		for (size_t i=0; i<nlyr(); i++) {
+			size_t offset = i * nsize;
+			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nsize);
+			out.push_back(vv);
+		}
+		return out;
+	}
+	
+	std::vector<double> cells = sampleRowCol(nr, nc);
+	if (cells.empty()) return out;
+	if ((cells.size() == 1) && (cells[0] == -1)) {
+		return getValues(-1, opt);
+	}
+	return extractCell(cells, opt);
+}
 
 
 std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){
