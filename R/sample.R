@@ -341,7 +341,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 }
 
 
-.sampleCells <- function(x, size, method, replace, na.rm=FALSE, ext=NULL, exp=5, exact=FALSE) {
+.sampleCellsRandom <- function(x, size, replace, na.rm=FALSE, ext=NULL, exp=5, exact=FALSE) {
 	r <- rast(x)
 	lonlat <- is.lonlat(r, perhaps=TRUE, warn=TRUE)
 	if (!is.null(ext)) {
@@ -350,7 +350,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 
 	if ((!replace) && (size >= ncell(r))) {
 		cells <- 1:ncell(r)
-	} else if (method == "random") {
+	} else {
 		if (na.rm) {
 			esize <- size * exp
 		} else {
@@ -372,13 +372,37 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			if (!replace) esize <- min(ncell(r), esize)
 			cells <- sample.int(ncell(r), esize, replace=replace)
 		}
-	} else { # regular
-	
-		if (TRUE) {
+	}
+	if (!is.null(ext)) {
+		cells <- cellFromXY(x, xyFromCell(r, cells))
+	}
+	if (na.rm) {
+		v <- rowSums(is.na(x[cells])) == 0
+		cells <- cells[v]
+	}
+	if (length(cells) > size) {
+		cells <- cells[1:size]
+	}
+	cells
+}
+
+
+
+.sampleCellsRegular <- function(x, size, ext=NULL, exact=FALSE) {
+	r <- rast(x)
+	lonlat <- is.lonlat(r, perhaps=TRUE, warn=TRUE)
+	if (!is.null(ext)) {
+		r <- crop(rast(r), ext)
+	}
+
+	if (prod(size) >= ncell(r)) {
+		cells <- 1:ncell(r)
+	} else {
+		if (TRUE) { # skipping lonlat adjustment for now
 			if (exact) {
 				xy <- regular_exact(r, size)	
 			} else {
-				xy <- spatSample(ext(r), size, method, lonlat, FALSE)
+				xy <- spatSample(ext(r), size, "regular", lonlat, FALSE)
 			}
 			cells <- cellFromXY(r, xy)		
 		} else {
@@ -446,18 +470,8 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	if (!is.null(ext)) {
 		cells <- cellFromXY(x, xyFromCell(r, cells))
 	}
-	if (na.rm) {
-		v <- rowSums(is.na(x[cells])) == 0
-		cells <- cells[v]
-	}
-	if (method == "random") {
-		if (length(cells) > size) {
-			cells <- cells[1:size]
-		}
-	}
 	cells
 }
-
 
 
 
@@ -554,7 +568,20 @@ sampleRaster <- function(x, size, method, replace, ext=NULL, warn, overview=FALS
 }
 
 
-add_cxyp <- function(x, cnrs, cells, xy, values, as.points) {
+add_cxyp <- function(x, cnrs, cells, xy, as.points, values, na.rm) {
+
+	if (na.rm) {
+		if (values) {
+			i <- rowSums(is.na(values)) == 0
+			values <- values[i, , drop=FALSE]
+		} else if (hasValues(x) && (is.null(values))) {
+			cvals <- x[cnrs]
+			i <- rowSums(is.na(cvals)) == 0
+		} 
+		cnrs <- cnrs[i]
+	} else if (values) {
+		values <- x[cnrs]
+	}
 	out <- NULL
 	if (cells) {
 		out <- matrix(cnrs, ncol=1)
@@ -563,25 +590,24 @@ add_cxyp <- function(x, cnrs, cells, xy, values, as.points) {
 	if (xy) {
 		out <- cbind(out, xyFromCell(x, cnrs))
 	}
-	if (values && hasValues(x)) {
+	if (!is.null(values)) {
 		e <- extract(x, cnrs)
-		if (is.null(out)) {
-			out <- e
-		} else {
-			out <- cbind(out, e)
-		}
+		out <- cbind(out, e)
 	}
 	if (as.points) {
 		if (xy) {
 			out <- data.frame(out)
-			out <- vect(out, geom=c("x", "y"), crs=crs(x))
+			v <- vect(out, geom=c("x", "y"), crs=crs(x))
 		} else {
 			xy <- xyFromCell(x, cnrs)
 			# xy is a matrix, no geom argument
 			v <- vect(xy, crs=crs(x))
 			values(v) <- out
-			return(v)
 		}
+		if (!is.null(values)) {
+			v <- cbind(v, values)
+		}
+		return(v)
 	}
 	out
 }
@@ -594,11 +620,12 @@ sampleRandom <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, a
 	lv <- levels(x)
 	size <- size[1]
 
+	cvals <- NULL
 	if (cells || xy || as.points) {
 		if (exhaustive && na.rm) {
 			cnrs <- .sampleCellsExhaustive(x, size, replace, ext, weights=NULL, warn=FALSE)
 		} else {
-			cnrs <- .sampleCells(x, size, "random", replace, na.rm, ext, exp=exp, exact=exact)
+			cnrs <- .sampleCellsRandom(x, size, replace, na.rm, ext, exp=exp)
 		}
 		
 		if ((length(cnrs) < size) && warn) {
@@ -607,7 +634,7 @@ sampleRandom <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, a
 			cnrs <- cnrs[1:size]
 		}
 
-		out <- add_cxyp(x, cnrs, cells, xy, values, as.points)
+		out <- add_cxyp(x, cnrs, cells, xy, as.points, values, na.rm)
 		return(out)
 	}
 	if (!hasValues(x)) {
@@ -645,7 +672,7 @@ sampleRandom <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, a
 			scells <- NULL
 			ssize <- size*2
 			for (i in 1:10) {
-				scells <- c(scells, .sampleCells(x, ssize, "random", replace, na.rm, exact=exact))
+				scells <- c(scells, .sampleCellsRandom(x, ssize, replace, na.rm))
 				if ((i>1) && (!replace)) {
 					scells <- unique(scells)
 				}
@@ -659,7 +686,7 @@ sampleRandom <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, a
 				}
 			}
 		} else {
-			scells <- .sampleCells(x, size, "random", replace, exact=exact)
+			scells <- .sampleCellsRandom(x, size, replace, exact=exact)
 			out <- extractCells(x, scells, raw=!as.df)   
 		}
 		if (NROW(out) < size) {
@@ -673,23 +700,34 @@ sampleRandom <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, a
 		return(out)
 	}
 }
-	
-	
+
 
 
 sampleRegular <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, exact=FALSE) {
 
 	ff <- is.factor(x)
 	lv <- levels(x)
-	
-	if (cells || xy || as.points) {
-		if (length(size)==2) {
-			warn("spatSample", "only the first argument in 'size' is used when cells|xy|as.points = TRUE")
-		}
-		cnrs <- .sampleCells(x, size, "regular", replace, na.rm, ext, exp=exp, exact=exact)
-		out <- add_cxyp(x, cnrs, cells, xy, values, as.points)
-		return(out)
+
+	if (length(size) > 2) {
+		error("spatSample", "size argument should have length 1 or 2")
 	}
+
+	if (length(size)==2) {
+		exact <- FALSE
+	}
+
+	if (cells || xy || as.points) {
+		if (exact) {
+			xy <- regular_exact(x, size)
+			cnrs <- cellFromXY(x, xy)
+		} else if (length(size) == 2) {
+			cnrs <- x@pntr$sampleRowCol(size[1], size[2])
+		} else {
+			cnrs <- .sampleCellsRegular(x, size, ext, exact=exact)
+		}
+		return(add_cxyp(x, cnrs, cells, xy, as.points, values, na.rm))
+	}
+	
 	if (!hasValues(x)) {
 		error("spatSample", "SpatRaster has no values")
 	}
