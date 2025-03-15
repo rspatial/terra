@@ -572,9 +572,10 @@ add_cxyp <- function(x, cnrs, cells, xy, as.points, values, na.rm) {
 
 	if (na.rm) {
 		if (values) {
-			i <- rowSums(is.na(values)) == 0
-			vals <- values[i, , drop=FALSE]
-		} else if (hasValues(x) && (is.null(values))) {
+			vals <- x[cnrs]
+			i <- rowSums(is.na(vals)) == 0
+			vals <- vals[i, , drop=FALSE]
+		} else if (hasValues(x)) {
 			tmpvals <- x[cnrs]
 			i <- rowSums(is.na(tmpvals)) == 0
 		} 
