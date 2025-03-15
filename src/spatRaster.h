@@ -829,6 +829,7 @@ class SpatRaster {
 		SpatRaster sampleRowColRaster(size_t nr, size_t nc, bool warn);
 		SpatRaster sampleRandomRaster(double size, bool replace, unsigned seed);
 		std::vector<std::vector<double>> sampleRegularValues(double size, SpatOptions &opt);
+		std::vector<double> sampleRowCol(size_t nr, size_t nc);
 		std::vector<std::vector<double>> sampleRowColValues(size_t nr, size_t nc, SpatOptions &opt);
 		
 		std::vector<std::vector<double>> sampleRandomValues(double size, bool replace, unsigned seed);

@@ -998,6 +998,7 @@ RCPP_MODULE(spat){
 		.method("sampleRowColRaster", &SpatRaster::sampleRowColRaster)
 		.method("sampleRegularValues", &SpatRaster::sampleRegularValues)
 		.method("sampleRowColValues", &SpatRaster::sampleRowColValues)
+		.method("sampleRowCol", &SpatRaster::sampleRowCol)
 		.method("sampleRandomRaster", &SpatRaster::sampleRandomRaster)
 		.method("sampleRandomValues", &SpatRaster::sampleRandomValues)
 		.method("scale", &SpatRaster::scale)

@@ -300,6 +300,31 @@ std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_
 }
 
 
+std::vector<double> SpatRaster::sampleRowCol(size_t nr, size_t nc) {
+
+	std::vector<double> out;
+	if (!source[0].hasValues) return (out);
+	if ((nr == 0) || (nc ==0)) {
+		return(out);
+	}
+	nr = std::min(nr, nrow());
+	nc = std::min(nc, ncol());
+
+	std::vector<int_64> rows, cols;
+
+	double d = nrow()/nr;
+	for (size_t i=0; i<nr; i++) {
+		rows.push_back((i + .5) * d);
+	}
+	d = ncol()/nc;
+	for (size_t i=0; i<nc; i++) {
+		cols.push_back((i + .5) * d);
+	}
+	return cellFromRowColCombine(rows, cols);
+}
+
+
+
 std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){
 	std::default_random_engine gen(seed);
 	std::uniform_int_distribution<> U(0, N-1);
