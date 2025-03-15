@@ -341,7 +341,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 }
 
 
-.sampleCellsRandom <- function(x, size, replace, na.rm=FALSE, ext=NULL, exp=5, exact=FALSE) {
+.sampleCellsRandom <- function(x, size, replace, na.rm=FALSE, ext=NULL, exp=5) {
 	r <- rast(x)
 	lonlat <- is.lonlat(r, perhaps=TRUE, warn=TRUE)
 	if (!is.null(ext)) {
@@ -576,7 +576,7 @@ add_cxyp <- function(x, cnrs, cells, xy, as.points, values, na.rm) {
 			vals <- values[i, , drop=FALSE]
 		} else if (hasValues(x) && (is.null(values))) {
 			tmpvals <- x[cnrs]
-			i <- rowSums(is.na(cvals)) == 0
+			i <- rowSums(is.na(tmpvals)) == 0
 		} 
 		cnrs <- cnrs[i]
 	} else if (values) {
@@ -686,7 +686,7 @@ sampleRandom <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, a
 				}
 			}
 		} else {
-			scells <- .sampleCellsRandom(x, size, replace, exact=exact)
+			scells <- .sampleCellsRandom(x, size, replace, na.rm=FALSE)
 			out <- extractCells(x, scells, raw=!as.df)   
 		}
 		if (NROW(out) < size) {
