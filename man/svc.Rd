@@ -12,7 +12,9 @@
 \alias{[,SpatVectorCollection,numeric,missing-method}
 \alias{[[,SpatVectorCollection,numeric,missing-method}
 
-
+\seealso{
+\code{\link{sprc}}
+}
 
 \title{Create a SpatVectorCollection}
 
