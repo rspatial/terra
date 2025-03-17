@@ -54,6 +54,10 @@ You can set the extent of a SpatRaster, but you cannot set the extent of a SpatV
 A \code{\link{SpatExtent}} object. 
 }
 
+\seealso{
+\code{\link{xmin}}, \code{\link{xmax}}, \code{\link{ymin}}, \code{\link{ymax}}
+}
+
 \examples{
 ext()
 
