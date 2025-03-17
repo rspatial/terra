@@ -20,13 +20,12 @@
 - `spatSample` can now take a random or regular sample along lines 
 - `plot` gained arguments to control the legend title (including leg.title.x, leg.title.y, leg.title.srt) and some tweaks to the defaults to improve the default title position of horizontal continuous legends. [#1774](https://github.com/rspatial/terra/issues/1774) by Fengyu Fu
 
-
 ## new
 
 - `writeRaster` and other methods that can write raster data can now set metadata.
 - `split<SpatVector,SpatVector>` method for lines [#1374](https://github.com/rspatial/terra/issues/1374) by MTueting
 - `depthName`, `depthName<-`, `depthUnit`, and `depthUnit<-` methods
-- `is.num<SpatRaster>` [SO 795026641](https://stackoverflow.com/questions/79502664/what-is-the-correct-terra-usage-to-achieve-is-numeric-on-an-r-terra-package-rast) by Jacob Strunk
+- `is.num<SpatRaster>` [SO 795026641]	(https://stackoverflow.com/questions/79502664/what-is-the-correct-terra-usage-to-achieve-is-numeric-on-an-r-terra-package-rast) by Jacob Strunk
 - `simplifyLevels` to combine duplicate categories. [#1769](https://github.com/rspatial/terra/issues/1769) by Erik Ertsgaard
 
 
@@ -38,7 +37,7 @@ Released 2025-02-26
 
 - `cover<SpatRaster>` did not work well if multiple replacement values were supplied [#1741](https://github.com/rspatial/terra/issues/1741) by Tim Howard
 - `ext<-<SpatRaster,SpatExtent>` made a shallow copy. Reported on [SO 79440691](https://stackoverflow.com/questions/79440691/extent-is-rewritten-for-separate-spatraster-when-modifying-extent-using-terra-in/79440823#79440823) by katefull06 and as [#1743](https://github.com/rspatial/terra/issues/1743) by Agustin Lobo
-- `extract<SpatRaster>` with cells only used the NA flag for the first data source. [GSE 490433] (https://gis.stackexchange.com/questions/490433/problem-extracting-values-from-raster-in-r-with-terra-package) by MartinL
+- `extract<SpatRaster>` with cells only used the NA flag for the first data source. [GSE 490433](https://gis.stackexchange.com/questions/490433/problem-extracting-values-from-raster-in-r-with-terra-package) by MartinL
 
 ## enhancements
 
