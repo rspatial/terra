@@ -81,8 +81,10 @@ Get or set single values of an extent. Values can be set for a SpatExtent or Spa
 \value{
 SpatExtent or numeric coordinate
 }
-  
 
+\seealso{
+\code{\link{ext}}
+}
 
 \examples{
 r <- rast()
