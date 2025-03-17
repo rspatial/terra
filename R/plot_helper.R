@@ -1,4 +1,39 @@
 
+
+hexcols <- function(out) {
+
+	get_col <- function(cols, alpha) {
+		if (isTRUE(alpha < 255)) {
+			grDevices::rgb(t(grDevices::col2rgb(cols, alpha=TRUE)), alpha=alpha, maxColorValue=255)
+		} else {
+			i <- !grepl("^#", cols)
+			cols[i] <- grDevices::rgb(t(grDevices::col2rgb(cols[i], alpha=FALSE)), maxColorValue=255)	
+			cols
+		}
+	}
+
+	if (NCOL(out$cols) == 1) {
+		out$cols <- get_col(out$cols, out$alpha)
+	} else if (NCOL(out$cols) == 2) {
+		out$cols[,2] <- get_col(out$cols[,2], out$alpha)
+	} else if (NCOL(out$cols) == 3) {
+		out$cols[,3] <- get_col(out$cols[,3], out$alpha)
+	}
+	
+	out
+
+}
+
+
+.default.pal <- function() {
+	opt.pal <- options("terra.pal")[[1]]
+	if (is.null(opt.pal))  {
+		map.pal("viridis", 100)
+	} else {
+		opt.pal
+	}
+}
+
 .get_nrnc <- function(nr, nc, nl) {
 	if (missing(nc)) {
 		nc <- ceiling(sqrt(nl))

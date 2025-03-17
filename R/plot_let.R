@@ -64,7 +64,7 @@ baselayers <- function(tiles, wrap=TRUE) {
 }
 
 
-.get_leg <- function(v, type="", dig.lab=3, cols, breaks=NULL, breakby="eqint", sort=TRUE, decreasing=FALSE,  ...) {
+.get_leg <- function(v, type="", dig.lab=3, cols, breaks=NULL, breakby="eqint", sort=TRUE, reverse=FALSE,  ...) {
 	out <- list(v=v, leg=list())
 	
 	if (is.null(type)) type <- ""
@@ -89,8 +89,8 @@ baselayers <- function(tiles, wrap=TRUE) {
 	out$cols <- cols
 		
 	if (out$legend_type == "classes") {
-		out$legend_sort <- sort[1]
-		out$legend_sort_decreasing <- decreasing[1]
+		out$leg$sort <- sort[1]
+		out$leg$reverse <- reverse[1]
 		out <- .vect.legend.classes(out)
 	} else if (out$legend_type == "interval") {
 		out$breaks <- breaks
@@ -104,7 +104,7 @@ baselayers <- function(tiles, wrap=TRUE) {
 
 
 setMethod("plet", signature(x="SpatVector"),
-	function(x, y="", col, fill=0.2, main=y, cex=1, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL, breakby="eqint", sort=TRUE, decreasing=FALSE, map=NULL, ...)  {
+	function(x, y="", col, fill=0.2, main=y, cex=1, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL, breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, ...)  {
 
 		#checkLeafLetVersion()
 		y <- unique(y)
@@ -117,7 +117,7 @@ setMethod("plet", signature(x="SpatVector"),
 #				names(xvc) <- y			
 #			}
 #			plet(xvc, col=col, fill=0.2, alpha=alpha, cex=cex, lwd=lwd, border=border, popup=popup, label=label, split=split, tiles=tiles, wrap=wrap, legend=legend, collapse=collapse,  map=map, ...)	
-#type=type, breaks=breaks, breakby=breakby, sort=sort, decreasing=decreasing,
+#type=type, breaks=breaks, breakby=breakby, sort=sort, reverse=reverse,
 		}
 		
 		if (missing(col)) col <- function(n) grDevices::rainbow(n, start=.2)
@@ -201,7 +201,7 @@ setMethod("plet", signature(x="SpatVector"),
 				}
 			} else { # do not split
 				#vcols <- cols[1:length(v)]
-				leg <- .get_leg(v, type=type, dig.lab=3, cols=col, breaks=breaks, breakby=breakby, sort=sort, decreasing=decreasing, ...)
+				leg <- .get_leg(v, type=type, dig.lab=3, cols=col, breaks=breaks, breakby=breakby, sort=sort, reverse=reverse, ...)
 				pop <- lab <- NULL
 				if (isTRUE(popup[1])) pop <- popUp(x)
 				if (isTRUE(label[1])) lab <- v
@@ -463,7 +463,7 @@ make.panel <- function(x, maxcell) {
 }
 
 
-.get_cls <- function(x, type="", dig.lab=3, cols, breaks=NULL, breakby="eqint", sort=TRUE, decreasing=FALSE,  ...) {
+.get_cls <- function(x, type="", dig.lab=3, cols, breaks=NULL, breakby="eqint", sort=TRUE, reverse=FALSE,  ...) {
 
 
 	if (is.null(type) ||(type == "")) {

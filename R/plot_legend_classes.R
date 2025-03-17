@@ -25,8 +25,9 @@ get_legxy <- function(r, e, pos, yshift) {
 
 .plot.class.legend <- function(x, y, legend, fill, xpd=NA, cex=1, geomtype="",
 	lty=1, lwd=1, pch=1, angle=45, density=NULL, pt.cex = 1, pt.bg="black", pt.lwd=1, 
-	bty="n", border="black", seg.len=1, plotlim, yshift=NULL, title=NULL, leg_i=1, 
-	title.x=NULL, title.y=NULL, title.adj=NULL, title.pos=NULL, title.cex=NULL, title.col=NULL, title.font=NULL, ...,
+	bty="n", border="black", seg.len=1, plotlim, yshift=NULL, order=FALSE, sort=FALSE, reverse=FALSE,
+	title=NULL, leg_i=1, title.x=NULL, title.y=NULL, title.adj=NULL, title.pos=NULL, 
+	title.cex=NULL, title.col=NULL, title.font=NULL, ...,
 # catch and kill
 	merge, trace, size) {
 
@@ -47,6 +48,23 @@ get_legxy <- function(r, e, pos, yshift) {
 	if ((!is.null(title.x)) && (!is.null(title.y))) {
 		text(x=title.x, y=title.y, labels=title, pos=title.pos, cex=title.cex, xpd=NA, adj=title.adj, font=title.font, col=title.col)
 		title <- ""
+	}
+	
+	if (reverse) {
+		fill <- rev(fill)
+		legend <- rev(legend)
+		lty <- rev(lty)
+		lwd <- rev(lwd)
+		bty <- rev(bty)
+		pch <- rev(pch)
+		pt.cex <- rev(pt.cex)
+		pt.bg <- rev(pt.bg)
+		pt.lwd <- rev(pt.lwd)
+		cex <- rev(cex)
+		density <- rev(density*2)
+		angle <- rev(angle)
+		border <- rev(border)		
+		seg.len <- rev(seg.len)
 	}
 	
 #points(leg$rect$left+leg$rect$w, leg$rect$top-leg$rect$h, xpd=T)	

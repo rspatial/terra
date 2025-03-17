@@ -31,7 +31,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), 
     maxcell=500000, smooth=FALSE, range=NULL, fill_range=FALSE, levels=NULL, 
 	all_levels=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NULL, 
-	alpha=NULL, sort=FALSE,  decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, 
+	alpha=NULL, sort=FALSE,  reverse=FALSE, grid=FALSE, ext=NULL, reset=FALSE, 
 	add=FALSE, buffer=FALSE, background=NULL, box=axes, clip=TRUE, overview=NULL, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, ...)
@@ -40,7 +40,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 
 \S4method{plot}{SpatVector,character}(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=TRUE, axes=!add, 
     main="", buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, sort=TRUE, 
-	decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, 
+	reverse=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, alpha=NULL, 
 	box=axes, clip=TRUE, ...)
 
 \S4method{plot}{SpatVector,numeric}(x, y, ...)
@@ -91,7 +91,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{colNA}{character. color for the NA values}
   \item{alpha}{Either a single numeric between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque) or a SpatRaster with values between 0 and 1 to set the transparency by cell. To set the transparency for a given color, set it to the colors directly}
   \item{sort}{logical. If \code{TRUE} legends with categorical values are sorted. If \code{x} is a \code{SpatVector} you can also supply a vector of the unique values, in the order in which you want them to appear in the legend}
-  \item{decreasing}{logical. If \code{TRUE}, legends are sorted in decreasing order}
+  \item{reverse}{logical. If \code{TRUE}, the legend order is reversed}
   \item{grid}{logical. If \code{TRUE} grid lines are drawn. Their properties such as type and color can be set with the \code{pax} argument}
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}

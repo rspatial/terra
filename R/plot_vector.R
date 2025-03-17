@@ -194,11 +194,12 @@ setMethod("dots", signature(x="SpatVector"),
 
 .vect.legend.classes <- function(out) {
 
-	if (isTRUE(out$legend_sort)) {
-		out$uv <- sort(out$uv, decreasing=out$legend_sort_decreasing)
+	if (isTRUE(out$leg$sort)) {
+		out$uv <- sort(out$uv) # done by legend: decreasing=out$leg$reverse)
 	} else {
 		out$uv <- out$uv[!is.na(out$uv)]
 	}
+
 	ucols <- .getCols(length(out$uv), out$cols, out$alpha)
 
 	i <- match(out$v, out$uv)
@@ -432,7 +433,7 @@ setMethod("dots", signature(x="SpatVector"),
 .prep.vect.data <- function(x, y, type=NULL, cols=NULL, mar=NULL, legend=TRUE,
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
-	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, values=NULL,
+	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, reverse=FALSE, values=NULL,
 	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
 	density=NULL, angle=45, border="black", dig.lab=3, cex=1, clip=TRUE, leg_i=1, asp=NULL, xpd=NULL, ...) {
 
@@ -583,14 +584,15 @@ setMethod("dots", signature(x="SpatVector"),
 
 	if (!is.logical(sort)) {
 		out$uv <- unique(sort)
-		out$legend_sort <- FALSE
+		out$leg$sort <- FALSE
+		out$leg$reverse <- FALSE
 	} else {
 		out$uv <- unique(out$v)
 		if (is.factor(out$v)) {
 			out$uv <- levels(out$v)[levels(out$v) %in% out$uv]
 		}
-		out$legend_sort <- isTRUE(sort)
-		out$legend_sort_decreasing <- isTRUE(decreasing)
+		out$leg$sort <- isTRUE(sort)
+		out$leg$reverse <- isTRUE(reverse)
 	}
 
 	if (is.null(type)) {
@@ -657,7 +659,7 @@ setMethod("dots", signature(x="SpatVector"),
 setMethod("plot", signature(x="SpatVector", y="character"),
 	function(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=TRUE, axes=!add,
 	main, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
-	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, 
+	sort=TRUE, reverse=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, 
 	alpha=NULL, box=axes, clip=TRUE, ...) {
 
 		old.mar <- graphics::par()$mar
@@ -712,7 +714,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 
 			if (missing(col)) col <- NULL
 
-			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, colNA=colNA, alpha=alpha, box=box, clip=clip, leg_i=i, ...)
+			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, reverse=reverse, colNA=colNA, alpha=alpha, box=box, clip=clip, leg_i=i, ...)
 		}
 		invisible(out)
 	}

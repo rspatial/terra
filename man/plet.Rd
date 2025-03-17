@@ -30,7 +30,7 @@ Plot the values of a SpatRaster or SpatVector to make an interactive leaflet map
 	border="black", alpha=1, popup=TRUE, label=FALSE, split=FALSE,
 	tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
 	wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL,
-	breakby="eqint", sort=TRUE, decreasing=FALSE, map=NULL, ...)
+	breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, ...)
 
 
 \S4method{plet}{SpatVectorCollection}(x, col, fill=0, cex=1, lwd=2, border="black", alpha=1, popup=TRUE, 
@@ -78,7 +78,7 @@ Plot the values of a SpatRaster or SpatVector to make an interactive leaflet map
   \item{breaks}{numeric. Either a single number to indicate the number of breaks desired, or the actual breaks. When providing this argument, the default legend becomes "interval"}
   \item{breakby}{character or function. Either "eqint" for equal interval breaks, "cases" for equal quantile breaks. If a function is supplied it should take a single argument (a vector of values) and create groups}
     \item{sort}{logical. If \code{TRUE} legends with character values are sorted. You can also supply a vector of the unique values, in the order in which you want them to appear in the legend}
-  \item{decreasing}{logical. If \code{TRUE}, legends are sorted in decreasing order}
+  \item{reverse}{logical. If \code{TRUE}, the legends order is reversed}
 }
 
 \seealso{

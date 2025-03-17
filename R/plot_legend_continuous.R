@@ -329,7 +329,6 @@
 				}
 			} 
 		}
-
 		pos <- 3
 		if (!is.null(x$leg[["title.pos"]])) pos <- x$leg$title.pos
 
