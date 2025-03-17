@@ -45,7 +45,7 @@ Note that it is important that polygon geometries are valid. If they are not val
 }
 
 \seealso{
-\code{\link{cellSize}} for a the size of individual cells of a raster, that can be summed with \code{\link{global}} or with \code{\link{zonal}} to get the area for different zones.
+\code{\link{cellSize}} for a the size of individual cells of a raster, that can be summed with \code{\link{global}} or with \code{\link{zonal}} to get the area for different zones; \code{\link{surfArea}} for a raster with elevation values, taking into account the sloping nature of the surface.
 }
 
 \examples{
