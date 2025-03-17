@@ -45,9 +45,6 @@ parse_tags <- function(value, domain) {
 			value <- cbind(names(value), value)	
 		} else {	
 			
-value = c(":test=value", "tes2t=novalue", "abc:pope=frans", "abc:pop:e=frans:bb")
-			
-			
 			val <- strsplit(value, "=")
 			i <- sapply(val, length) == 1
 			if (sum(i) > 0) {
@@ -102,10 +99,10 @@ setMethod("metags<-", signature(x="SpatRaster"),
 		if (NROW(value) > 0) {
 			if (!is.null(layer)) {
 				if (is.character(layer)) layer = match(layer, names(x))
-				x@pntr$addLyrTags(layer-1, value[,1], value[,2], value[,3])
+				x@pntr$addLyrTags(layer-1, value[,2], value[,3])
 			} else {
 				sapply(1:nrow(value), function(i) {
-						x@pntr$addTag(value[i,1], value[i,2], value[i,3])
+						x@pntr$addTag(value[i,2], value[i,3], value[i,1])
 					})
 			}
 		}
