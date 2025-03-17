@@ -23,6 +23,8 @@ It is often said that if Wales was flattened out it would have an area bigger th
 
 \value{SpatRaster}
 
+\seealso{\code{\link{expanse}}, \code{\link{cellSize}}}
+
 \references{
 Jenness, Jeff S., 2004. Calculating Landscape Surface Area from Digital Elevation Models. Wildlife Society Bulletin 32(3): 829-839
 }
