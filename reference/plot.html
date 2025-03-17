@@ -11,7 +11,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-35</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-36</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, type<span class="op">=</span><span class="cn">NULL</span>, mar<span class="op">=</span><span class="cn">NULL</span>, legend<span class="op">=</span><span class="cn">TRUE</span>, axes<span class="op">=</span><span class="op">!</span><span class="va">add</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, </span>
 <span>    maxcell<span class="op">=</span><span class="fl">500000</span>, smooth<span class="op">=</span><span class="cn">FALSE</span>, range<span class="op">=</span><span class="cn">NULL</span>, fill_range<span class="op">=</span><span class="cn">FALSE</span>, levels<span class="op">=</span><span class="cn">NULL</span>, </span>
 <span>  all_levels<span class="op">=</span><span class="cn">FALSE</span>, breaks<span class="op">=</span><span class="cn">NULL</span>, breakby<span class="op">=</span><span class="st">"eqint"</span>, fun<span class="op">=</span><span class="cn">NULL</span>, colNA<span class="op">=</span><span class="cn">NULL</span>, </span>
-<span>  alpha<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">FALSE</span>,  decreasing<span class="op">=</span><span class="cn">FALSE</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, reset<span class="op">=</span><span class="cn">FALSE</span>, </span>
+<span>  alpha<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">FALSE</span>,  reverse<span class="op">=</span><span class="cn">FALSE</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, reset<span class="op">=</span><span class="cn">FALSE</span>, </span>
 <span>  add<span class="op">=</span><span class="cn">FALSE</span>, buffer<span class="op">=</span><span class="cn">FALSE</span>, background<span class="op">=</span><span class="cn">NULL</span>, box<span class="op">=</span><span class="va">axes</span>, clip<span class="op">=</span><span class="cn">TRUE</span>, overview<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster,missing'</span></span>
@@ -62,7 +62,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <span><span class="co"># S4 method for class 'SpatVector,character'</span></span>
 <span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, col<span class="op">=</span><span class="cn">NULL</span>, type<span class="op">=</span><span class="cn">NULL</span>, mar<span class="op">=</span><span class="cn">NULL</span>, add<span class="op">=</span><span class="cn">FALSE</span>, legend<span class="op">=</span><span class="cn">TRUE</span>, axes<span class="op">=</span><span class="op">!</span><span class="va">add</span>, </span>
 <span>    main<span class="op">=</span><span class="st">""</span>, buffer<span class="op">=</span><span class="cn">TRUE</span>, background<span class="op">=</span><span class="cn">NULL</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">TRUE</span>, </span>
-<span>  decreasing<span class="op">=</span><span class="cn">FALSE</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">nr</span>, <span class="va">nc</span>, colNA<span class="op">=</span><span class="cn">NA</span>, alpha<span class="op">=</span><span class="cn">NULL</span>, </span>
+<span>  reverse<span class="op">=</span><span class="cn">FALSE</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">nr</span>, <span class="va">nc</span>, colNA<span class="op">=</span><span class="cn">NA</span>, alpha<span class="op">=</span><span class="cn">NULL</span>, </span>
 <span>  box<span class="op">=</span><span class="va">axes</span>, clip<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector,numeric'</span></span>
@@ -166,8 +166,8 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
   <dt id="arg-sort">sort<a class="anchor" aria-label="anchor" href="#arg-sort"></a></dt>
 <dd><p>logical. If <code>TRUE</code> legends with categorical values are sorted. If <code>x</code> is a <code>SpatVector</code> you can also supply a vector of the unique values, in the order in which you want them to appear in the legend</p></dd>
 
-  <dt id="arg-decreasing">decreasing<a class="anchor" aria-label="anchor" href="#arg-decreasing"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, legends are sorted in decreasing order</p></dd>
+  <dt id="arg-reverse">reverse<a class="anchor" aria-label="anchor" href="#arg-reverse"></a></dt>
+<dd><p>logical. If <code>TRUE</code>, the legend order is reversed</p></dd>
 
   <dt id="arg-grid">grid<a class="anchor" aria-label="anchor" href="#arg-grid"></a></dt>
 <dd><p>logical. If <code>TRUE</code> grid lines are drawn. Their properties such as type and color can be set with the <code>pax</code> argument</p></dd>
