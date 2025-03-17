@@ -187,7 +187,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 		
 	for (i in seq_len(length(uv))) {
 		if (sz[i] == 0) next
-		vv <- v[v[,2] == uv[i], ]
+		vv <- v[v[,2] == uv[i], ,drop=FALSE]
 		if (doprob) prob <- vv[,3]
 		if (replace) {
 			s <- sample.int(nrow(vv), sz[i], prob=prob, replace=TRUE)
