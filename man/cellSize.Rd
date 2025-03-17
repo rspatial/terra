@@ -34,7 +34,7 @@ But note that for both angular (longitude/latitude) and for planar (projected) c
 SpatRaster
 }
 
-\seealso{\code{\link{expanse}}}
+\seealso{\code{\link{expanse}}, \code{\link{surfArea}}}
 
 \examples{
 
