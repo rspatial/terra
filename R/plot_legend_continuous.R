@@ -15,7 +15,7 @@
 	xmax <- p[2]
 	ymin <- p[3]
 	ymax <- p[4]
-	flip <- FALSE
+	flip <- x$leg$reverse
 	
 	if (!is.null(x$leg$shrink)) {
 		s <- x$leg$shrink

@@ -588,11 +588,16 @@ prettyNumbs <- function(x, digits) {
   sort=TRUE, reverse=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
   xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=1.2, 
   line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL, 
-  halo=FALSE, hc="white", hw=0.1, axes=TRUE, box=TRUE, cex=1, maxcell=500000, buffer=FALSE, clip=TRUE, 
+  halo=FALSE, hc="white", hw=0.1, axes=TRUE, box=TRUE, maxcell=500000, buffer=FALSE, clip=TRUE, 
   # for rgb 
-  stretch=NULL, scale=NULL, bgalpha=NULL, zlim=NULL, zcol=NULL, overview=NULL, ...) {
-#cex is catch and kill
+  stretch=NULL, scale=NULL, bgalpha=NULL, zlim=NULL, zcol=NULL, overview=NULL, 
+#catch and kill
+  cex=1, decreasing=FALSE,
+  ...) {
 
+
+	# backwards compatibility
+	reverse <- reverse | decreasing
 	out <- list()
 	e <- out$lim <- out$ext <- as.vector(ext(x))
 	hadWin <- hasWin <- FALSE
@@ -828,7 +833,6 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		old.mar <- graphics::par()$mar
 		on.exit(graphics::par(mar=old.mar))
 
-		
 		y <- round(y)
 		hasRGB <- FALSE		
 
