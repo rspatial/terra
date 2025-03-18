@@ -54,15 +54,14 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 			sz.resize(nuv);
 			std::iota(sz.begin(), sz.end(), 0);
 			std::shuffle(sz.begin(), sz.end(), gen1);
-			sz.erase(sz.begin()+d, sz.end());
+			sz.erase(sz.begin()+(nuv-d), sz.end());
 			std::sort(sz.rbegin(), sz.rend());
 			size = szz + 1;
 		} else {
 			size = szz;
 		}
 	} 
-	
-	
+
 	if (!readStart()) {
 		return(out);
 	}
@@ -140,15 +139,16 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 			}
 			start = end;		
 		}
-		if ((!each) && (!sz.empty())) {
-			for (size_t i=0; i<sz.size(); i++) {
-				outcell.erase(outcell.begin() + sz[i]*szz);
-				outvals.erase(outvals.begin() + sz[i]*szz);
-			}
-		}
 		out.push_back(outcell);
 		out.push_back(outvals);
 	}
+	if ((!each) && (!sz.empty())) {
+		for (size_t i=0; i<sz.size(); i++) {
+			out[0].erase(out[0].begin() + sz[i]*size);
+			out[1].erase(out[1].begin() + sz[i]*size);
+		}
+	}
+
 	return(out);
 }
 

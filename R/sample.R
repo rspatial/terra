@@ -744,7 +744,7 @@ sampleStratified2 <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALS
 			warn("spatSample", paste("not all classes have", size, "cells"))
 		}
 	} else if (size > nrow(vc)) {
-		warn("spatSample", paste("not all classes had", size, "cells"))
+		warn("spatSample", paste("not all classes had sufficient cells"))
 	}
 
 	cvals <- NULL
