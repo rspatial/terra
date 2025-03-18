@@ -212,7 +212,7 @@ sampleStratMemory <- function(x, size, replace, lonlat, ext=NULL, weights=NULL, 
 
 
 
-sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=5, weights=NULL, exhaustive=FALSE, lonlat, each) {
+sampleStratified_old <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=5, weights=NULL, exhaustive=FALSE, lonlat, each) {
 
 	if (nlyr(x) > 1) {
 		x <- x[[1]]
@@ -385,6 +385,26 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	}
 	cells
 }
+
+.sampleCellsStratified <- function(x, size, each=TRUE, replace=FALSE, ext=NULL) {
+	if (!is.null(ext)) {
+		r <- rast(x)
+		if (window(x)) {
+			ext <- intersect(ext(x), ext)
+		}
+		window(x) <- ext
+	}
+	opt <- terra:::spatOptions()
+	s <- x@pntr$sampleStratifiedCells(size, each, replace, .seed(), opt)
+	s[[1]] <- s[[1]] + 1
+	if (!is.null(ext)) {
+		s[[1]] <- cellFromXY(x, xyFromCell(r, s[[1]]))
+	}
+	out <- do.call(cbind, s)
+	colnames(out) <- c("cell", names(x)[1])
+	out
+}
+
 
 
 
@@ -710,6 +730,39 @@ sampleRandom <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, a
 }
 
 
+sampleStratified2 <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, each=TRUE) {
+
+
+	ff <- is.factor(x)
+	size <- size[1]
+	vc <- .sampleCellsStratified(x, size, each, replace, ext)
+	
+
+	if (each) {
+		uc <- unique(vc[,2])
+		if ((length(uc) * size) > nrow(vc)) {
+			warn("spatSample", paste("not all classes have", size, "cells"))
+		}
+	} else if (size > nrow(vc)) {
+		warn("spatSample", paste("not all classes had", size, "cells"))
+	}
+
+	cvals <- NULL
+	if (cells || xy || as.points) {
+		out <- add_cxyp(x, vc[,1], cells, xy, as.points, values=FALSE, na.rm=FALSE)
+		if (values) out <- cbind(out, vc[,2,drop=FALSE])
+		return(out)
+	} else if (values) {
+		if (any(ff) && as.df) {
+			lv <- levels(x)
+			vc[,2] <- set_factors(vc[,2], ff, lv, as.df)
+		}
+	} else {
+		vc <- vc[,1,drop=FALSE]
+	}
+	return(vc)
+}
+
 
 sampleRegular <- function(x, size, replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, exact=FALSE) {
 
@@ -802,7 +855,11 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (method == "regular") {
 			sampleRegular(x, size, replace=replace, na.rm=na.rm, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, exact=exact)
 		} else if (method == "stratified") {
-			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, values=values, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights, exhaustive=exhaustive, lonlat=lonlat, each=each) )
+			if (!is.null(weights)) {  # use old method
+				return( sampleStratified_old(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, values=values, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights, exhaustive=exhaustive, lonlat=lonlat, each=each) )
+			} else {  # new method
+				return( sampleStratified2(x, size, replace=replace, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, warn=warn, each=each) )			
+			}
 		} else if (!is.null(weights)) {  # should also implement for random
 			error("spatSample", "argument weights is only used when method='stratified'")
 		} else if (method == "random") {

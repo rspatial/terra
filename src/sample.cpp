@@ -26,7 +26,7 @@
 #include "table_utils.h"
 #include "sort.h"
 
-std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, bool each, unsigned seed, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, bool each, bool replace, unsigned seed, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
 
@@ -38,14 +38,35 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 	if (nlyr() > 1) {
 		SpatRaster r = subset({0}, opt);
 		addWarning("only the first layer of the raster is used");		
-		return r.sampleStratifiedCells(size, each, seed, opt);
+		return r.sampleStratifiedCells(size, each, replace, seed, opt);
 	}
+
+	std::default_random_engine gen1(seed);
+	
+	std::vector<size_t> sz;
+	size_t szz=1;
+	if (!each) {
+		std::vector<std::vector<double>> u = unique(false, NAN, true, opt);
+		size_t nuv = u[0].size();
+		size_t szz = floor(size / nuv);
+		size_t d = size - szz * nuv;
+		if (d > 0) {
+			sz.resize(nuv);
+			std::iota(sz.begin(), sz.end(), 0);
+			std::shuffle(sz.begin(), sz.end(), gen1);
+			sz.erase(sz.begin()+d, sz.end());
+			std::sort(sz.rbegin(), sz.rend());
+			size = szz + 1;
+		} else {
+			size = szz;
+		}
+	} 
+	
 	
 	if (!readStart()) {
 		return(out);
 	}
 
-	std::default_random_engine gen1(seed);
 	BlockSize bs = getBlockSize(opt);
 	std::vector<double> vals, vcell, vwght, outvals, outcell;
 	
@@ -79,8 +100,8 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 	readStop();
 
 	if (bs.n == 1) {
-		out.push_back(vals);
 		out.push_back(vcell);
+		out.push_back(vals);
 	} else {
 		std::vector<std::size_t> pm = sort_order_a(vals);
 		permute(vals, pm);
@@ -89,6 +110,7 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 		std::map<double, unsigned long long int> tab = table(vals);
 		std::vector<std::vector<double>> tv = table2vector2(tab);
 		size_t start = 0;
+				
 		std::mt19937 gen2(seed);
 		for (size_t j=0; j<tv[0].size(); j++) {
 			size_t end = start + tv[1][j];
@@ -97,11 +119,17 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 			std::iota(z.begin(), z.end(), 0);
 			if (tv[1][j] > size) {
 				std::discrete_distribution<int> dist(vwght.begin()+start, vwght.begin()+end);
-				std::unordered_set<size_t> z;
-				while (z.size() < size) {
-					z.insert(dist(gen2));
+				std::vector<size_t> Z;
+				if (replace) {
+					Z.resize(size);
+					for(auto & i: Z) i = dist(gen2);
+				} else {
+					std::unordered_set<size_t> z;
+					while (z.size() < size) {
+						z.insert(dist(gen2));
+					}
+					Z = std::vector<size_t>(z.begin(), z.end());
 				}
-				std::vector<size_t> Z(z.begin(), z.end());
 				for (size_t k=0; k<z.size(); k++) {
 					outvals.push_back(tv[0][j]);
 					outcell.push_back(vcell[Z[k]+start]);
@@ -112,8 +140,14 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 			}
 			start = end;		
 		}
-		out.push_back(outvals);
+		if ((!each) && (!sz.empty())) {
+			for (size_t i=0; i<sz.size(); i++) {
+				outcell.erase(outcell.begin() + sz[i]*szz);
+				outvals.erase(outvals.begin() + sz[i]*szz);
+			}
+		}
 		out.push_back(outcell);
+		out.push_back(outvals);
 	}
 	return(out);
 }

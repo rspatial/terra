@@ -833,7 +833,7 @@ class SpatRaster {
 		std::vector<std::vector<double>> sampleRowColValues(size_t nr, size_t nc, SpatOptions &opt);
 		
 		std::vector<std::vector<double>> sampleRandomValues(double size, bool replace, unsigned seed);
-		std::vector<std::vector<double>> sampleStratifiedCells(double size, bool each, unsigned seed, SpatOptions &opt);
+		std::vector<std::vector<double>> sampleStratifiedCells(double size, bool each, bool replace, unsigned seed, SpatOptions &opt);
 
 		SpatRaster sort(bool decreasing, bool order, SpatOptions &opt);
 
