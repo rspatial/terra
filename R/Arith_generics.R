@@ -734,7 +734,7 @@ setMethod("logic", signature(x="SpatRaster"),
 			error("logic", "oper must be a character value")
 		}
 		oper = oper[1]
-		ops <- c("!", "is.na", "allNA", "noNA", "is.infinite", "is.finite", "iSTRUE", "isFALSE")
+		ops <- c("!", "is.na", "allNA", "noNA", "is.infinite", "is.finite", "isTRUE", "isFALSE")
 		if (!(oper %in% ops)) {
 			error("compare", "oper must be a one of", ops)		
 		}
