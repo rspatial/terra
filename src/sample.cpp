@@ -23,6 +23,102 @@
 #include <unordered_set>
 #include "string_utils.h"
 #include "geodesic.h"
+#include "table_utils.h"
+#include "sort.h"
+
+std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, bool each, unsigned seed, SpatOptions &opt) {
+
+	std::vector<std::vector<double>> out;
+
+	if (!hasValues()) {
+		setError("raster has no values");
+		return out;
+	}
+
+	if (nlyr() > 1) {
+		SpatRaster r = subset({0}, opt);
+		addWarning("only the first layer of the raster is used");		
+		return r.sampleStratifiedCells(size, each, seed, opt);
+	}
+	
+	if (!readStart()) {
+		return(out);
+	}
+
+	std::default_random_engine gen1(seed);
+	BlockSize bs = getBlockSize(opt);
+	std::vector<double> vals, vcell, vwght, outvals, outcell;
+	
+	for (size_t i=0; i<bs.n; i++) {
+		std::vector<double> v;
+		readBlock(v, bs, i);
+		std::vector<double> cells(v.size());
+		std::iota(cells.begin(), cells.end(), bs.row[i] * ncol());
+		std::vector<std::size_t> pm = sort_order_nan_a(v);
+		permute(v, pm);
+		permute(cells, pm);
+		std::map<double, unsigned long long int> tab = table(v);
+		std::vector<std::vector<double>> tv = table2vector2(tab);
+		size_t start = 0;
+		for (size_t j=0; j<tv[0].size(); j++) {
+			std::vector<size_t> z;
+			z.resize(tv[1][j]);
+			std::iota(z.begin(), z.end(), 0);
+			if (tv[1][j] > size) {
+				std::shuffle(z.begin(), z.end(), gen1);
+				z.erase(z.begin()+size, z.end());
+			}
+			for (size_t k=0; k<z.size(); k++) {
+				vals.push_back(tv[0][j]);
+				vwght.push_back(tv[1][j]);
+				vcell.push_back(cells[start+z[k]]);
+			}
+			start += tv[1][j];		
+		}
+	}
+	readStop();
+
+	if (bs.n == 1) {
+		out.push_back(vals);
+		out.push_back(vcell);
+	} else {
+		std::vector<std::size_t> pm = sort_order_a(vals);
+		permute(vals, pm);
+		permute(vwght, pm);
+		permute(vcell, pm);
+		std::map<double, unsigned long long int> tab = table(vals);
+		std::vector<std::vector<double>> tv = table2vector2(tab);
+		size_t start = 0;
+		std::mt19937 gen2(seed);
+		for (size_t j=0; j<tv[0].size(); j++) {
+			size_t end = start + tv[1][j];
+			std::vector<size_t> z;
+			z.resize(tv[1][j]);
+			std::iota(z.begin(), z.end(), 0);
+			if (tv[1][j] > size) {
+				std::discrete_distribution<int> dist(vwght.begin()+start, vwght.begin()+end);
+				std::unordered_set<size_t> z;
+				while (z.size() < size) {
+					z.insert(dist(gen2));
+				}
+				std::vector<size_t> Z(z.begin(), z.end());
+				for (size_t k=0; k<z.size(); k++) {
+					outvals.push_back(tv[0][j]);
+					outcell.push_back(vcell[Z[k]+start]);
+				}
+			} else {
+				outvals.insert(outvals.end(), vals.begin()+start, vals.begin()+end);
+				outcell.insert(outcell.end(), vcell.begin()+start, vcell.begin()+end);				
+			}
+			start = end;		
+		}
+		out.push_back(outvals);
+		out.push_back(outcell);
+	}
+	return(out);
+}
+
+	
 
 
 void get_nx_ny(double size, size_t &nx, size_t &ny) {
@@ -669,6 +765,7 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 }
 
 
+/*
 std::vector<size_t> SpatRaster::sampleCells(double size, std::string method, bool replace, unsigned seed) {
 
 	std::default_random_engine gen(seed);
@@ -691,7 +788,7 @@ std::vector<size_t> SpatRaster::sampleCells(double size, std::string method, boo
 	} // else "Cluster"
 	return out;
 }
-
+*/
 
 SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 

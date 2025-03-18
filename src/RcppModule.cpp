@@ -994,6 +994,7 @@ RCPP_MODULE(spat){
 		.method("rotate", &SpatRaster::rotate)
 		//.method("sampleCells", &SpatRaster::sampleCells, "sampleCells")
 
+		.method("sampleStratifiedCells", &SpatRaster::sampleStratifiedCells)
 		.method("sampleRegularRaster", &SpatRaster::sampleRegularRaster)
 		.method("sampleRowColRaster", &SpatRaster::sampleRowColRaster)
 		.method("sampleRegularValues", &SpatRaster::sampleRegularValues)
