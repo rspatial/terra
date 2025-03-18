@@ -394,8 +394,7 @@ sampleStratified_old <- function(x, size, replace=FALSE, as.df=TRUE, as.points=F
 		}
 		window(x) <- ext
 	}
-	opt <- terra:::spatOptions()
-	s <- x@pntr$sampleStratifiedCells(size, each, replace, .seed(), opt)
+	s <- x@pntr$sampleStratifiedCells(size, each, replace, .seed(), spatOptions())
 	s[[1]] <- s[[1]] + 1
 	if (!is.null(ext)) {
 		s[[1]] <- cellFromXY(x, xyFromCell(r, s[[1]]))
