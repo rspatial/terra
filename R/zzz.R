@@ -28,7 +28,9 @@
 	if (file.exists(file.path(sf, "proj/nad.lst"))) {
 		path <- system.file("proj", package="terra")
 		.gdalinit(path, file.path(sf, "gdal"))
-		.set_proj_search_paths(path)
+		if ( Sys.info()["sysname"] == "Windows" ) {
+			.set_proj_search_paths(path)
+		}
 	} else {
 		.gdalinit(path, file.path(sf, "gdal"))
 	}

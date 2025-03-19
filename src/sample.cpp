@@ -85,9 +85,10 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 				std::shuffle(z.begin(), z.end(), gen1);
 				z.erase(z.begin()+size_j, z.end());
 			}
+			double weight_j = tv[1][j] / z.size();
 			for (size_t k=0; k<z.size(); k++) {
 				vals.push_back(tv[0][j]);
-				vwght.push_back(tv[1][j]);
+				vwght.push_back(weight_j);
 				vcell.push_back(cells[start+z[k]]);
 			}
 			start += tv[1][j];		
