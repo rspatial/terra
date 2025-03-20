@@ -947,7 +947,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 
 		if (has.RGB(x)) {
 			if (missing(main)) main = ""
-			p <- plot(x, -1, main=main, mar=mar, maxcell=maxcell, add=add, ...)
+			p <- plot(x, -1, main=main, mar=mar, maxcell=maxcell, add=add, plg=plg, pax=pax, ...)
 			return(invisible(p))
 		}
 
@@ -960,7 +960,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 
 		if (nl==1) {
 			if (missing(main)) main = ""
-			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, add=add, ...)
+			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, add=add, plg=plg, pax=pax, ...)
 			return(invisible(out))
 		}
 
