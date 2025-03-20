@@ -663,7 +663,7 @@ setMethod("dots", signature(x="SpatVector"),
 setMethod("plot", signature(x="SpatVector", y="character"),
 	function(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=TRUE, axes=!add,
 	main, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
-	sort=TRUE, reverse=FALSE, plg=list(), pax=list(), nr, nc, colNA=NA, 
+	sort=TRUE, reverse=FALSE, fun=NULL, plg=list(), pax=list(), nr, nc, colNA=NA, 
 	alpha=NULL, box=axes, clip=TRUE, ...) {
 
 		old.mar <- graphics::par()$mar
@@ -719,6 +719,9 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			if (missing(col)) col <- NULL
 
 			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, reverse=reverse, colNA=colNA, alpha=alpha, box=box, clip=clip, leg_i=i, ...)
+
+			add_more(fun, i)
+
 		}
 		invisible(out)
 	}
