@@ -1,4 +1,14 @@
 
+add_more <- function(fun, i) {
+	if (!is.null(fun) && is.function(fun)) {
+		if (!is.null(formals(fun))) {
+			fun(i)
+		} else {
+			fun()
+		}
+	}
+}
+
 
 hexcols <- function(out) {
 

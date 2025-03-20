@@ -935,20 +935,15 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, fill_range=fill_range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, sort=sort, reverse=reverse, ext=ext, all_levels=all_levels, breaks=breaks, breakby=breakby, add=add, buffer=buffer, background=background, box=box, maxcell=maxcell, clip=clip, overview=overview, ...)
 
-		if (!is.null(fun)) {
-			if (!is.null(formals(fun))) {
-				fun(y)
-			} else {
-				fun()
-			}
-		}
+		add_more(fun, y)
+		
 		invisible(x)
 	}
 )
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"),
-	function(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, ...)  {
+	function(x, y, main, mar=NULL, nc, nr, maxnl=16, maxcell=500000, add=FALSE, plg=list(), pax=list(), ...)  {
 
 		if (has.RGB(x)) {
 			if (missing(main)) main = ""
@@ -988,8 +983,11 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		} else {
 			main <- rep_len(main, nl)
 		}
+		plg$title <- suppressWarnings(rep(plg$title, length.out=nl))
+
 		for (i in 1:nl) {
-			plot(x, i, main=main[i], mar=mar, maxcell=maxcell, add=add, ...)
+			plg$leg_i <- i
+			plot(x, i, main=main[i], mar=mar, maxcell=maxcell, add=add, plg=plg, pax=pax, ...)
 		}
 	}
 )
