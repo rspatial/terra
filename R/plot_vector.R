@@ -340,7 +340,7 @@ setMethod("dots", signature(x="SpatVector"),
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
 		plot(out$lim[1:2], out$lim[3:4], type="n", xlab="", ylab="", asp=out$asp, xaxs="i", yaxs="i", axes=FALSE, main="")
 		if (!is.null(out$background)) {
-			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background, border=TRUE)
+			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background, border=x$box)
 		}
 	}
 	if (isTRUE(out$blank)) return(out)
