@@ -21,6 +21,7 @@
 - `plot` gained arguments to control the legend title (including leg.title.x, leg.title.y, leg.title.srt) and some tweaks to the defaults to improve the default title position of horizontal continuous legends [#1774](https://github.com/rspatial/terra/issues/1774) by Fengyu Fu
 - `plot` gained argument "reverse" (more general then argument "decreasing" that it replaces) to reverse the order of a legend [SO 79515400](https://stackoverflow.com/q/79515400/635245) by Laura Roich
 - `spatSample<SpatRaster>(method="stratified")` now also finds cells for very small strata in big rasters (suggested by Andrea Duane). 
+- `plot<SpatVector>` now also has argument "fun" [#1786](https://github.com/rspatial/terra/issues/1786) by Márcia Barbosa
 
 ## new
 
@@ -29,6 +30,7 @@
 - `depthName`, `depthName<-`, `depthUnit`, and `depthUnit<-` methods
 - `is.num<SpatRaster>` [SO 795026641]	(https://stackoverflow.com/questions/79502664/what-is-the-correct-terra-usage-to-achieve-is-numeric-on-an-r-terra-package-rast) by Jacob Strunk
 - `simplifyLevels` to combine duplicate categories. [#1769](https://github.com/rspatial/terra/issues/1769) by Erik Ertsgaard
+
 
 
 # version 1.8-29
