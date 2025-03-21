@@ -68,12 +68,11 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{overview}{logical. Should "overviews" be used for fast rendering? This can result in much faster plotting of raster files that have overviews (e.g. "COG" format) and are accessed over a http connection. However, these overviews generally show aggregate values, thus reducing the range of the actual values. If \code{NULL}, the argument is set to \code{TRUE} for rasters that are accessed over http and \code{FALSE} in other cases}
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link[graphics]{legend}}. In addition there are these parameters for the legend title: \code{title.srt} to rotate the title and \code{title.x} and \code{title.y} to place the title at specific coordinates. Parameter \code{digits} can be used to change the number of digits to print after the decimal point. 
   
-  A legend can be placed with \code{x} and keywords such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. "interval" and "classes" legends can also be placed with arguments \code{x} and \code{y}. For a continuous legend, only the placement keywords "left", "right", "top", and "bottom" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. You can use argument \code{ext} to place a continuous legend elsewhere.
+  A legend can be placed with placed by specifying arguments \code{x} and \code{y}. For a continuous legend \code{y} can have two values. \code{x} can also be a SpatExtent. Furthermore, \code{x} can have be a keyword such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. For a continuous legend, only the placement keywords "left", "right", "top", "bottom", "topright", "bottomright" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. 
     
   Additional parameters for continuous legends include: 
   
   \itemize{
-    \item \code{ext} to draw the legend in a location specified by a SpatExtent
     \code{size} to change the height and/or width; the defaults are \code{c(1,1)} 
 	\item \code{at} to set the location of the tic-marks
 	\item \code{tic} One of these partially matched values: "through", "in", "middle", "out", or "none", to choose a tic-mark placement/length that is different from the default "throughout". You can set \code{tic.col}, \code{tic.box.col} and \code{tic.lwd}
@@ -125,13 +124,12 @@ plot(r)
 
 plot(r, type="interval")
 
-e <- c(6.37, 6.41, 49.9, 50.1)
-plot(r, plg=list(ext=e, title="Legend\nTitle", title.cex=0.9), 
+plot(r, plg=list(x=6.35, y = c(49.9, 50.1), title="Legend\nTitle", title.cex=0.9), 
 		pax=list(side=1:4, retro=FALSE))
 north(cbind(5.8, 50.1))	
 
 d <- classify(r, c(100,200,300,400,500,600))
-plot(d, type="classes")
+plot(d)
 
 plot(d, type="interval", breaks=1:5) 
 plot(d, type="interval", breaks=c(1,4,5), plg=list(legend=c("1-4", "4-5"))) 
@@ -151,7 +149,7 @@ par(mfrow=c(1,2))
 plot(r, range=c(50,600), mar=c(1,1,1,4))
 plot(r/2, range=c(50,600), mar=c(1,1,1,4))
 
-# as we only need one legend:	
+# as we only need one legend (also see the "panel" method):	
 par(mfrow=c(1,2))
 plot(r, range=c(50,600), mar=c(2, 2, 2, 2), plg=list(size=0.9, cex=.8), 
 	pax=list(side=1:2, cex.axis=.6), box=FALSE)

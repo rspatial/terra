@@ -33,7 +33,6 @@
 	} else if (length(x$leg$size) == 1) {
 		x$leg$size <- c(x$leg$size, 1)
 	}
-	if (x$leg$size[1] < 0) flip <- TRUE
 	x$leg$size <- abs(x$leg$size)
 
 	if (!is.null(x$leg$main)) {
@@ -65,11 +64,14 @@
 		}
 	} else {
 
-		rhalf <- (ymax - ymin) / 2
-		ymid <- ymin + rhalf
-		yd <- rhalf * x$leg$size[1]
-		ymin <- ymid - yd 
-		ymax <- ymid + yd
+#		rhalf <- (ymax - ymin) / 2
+#		ymid <- ymin + rhalf
+#		yd <- rhalf * x$leg$size[1]
+#		ymin <- ymid - yd 
+#		ymax <- ymid + yd
+
+		rng <- (ymax - ymin) * x$leg$size[1]
+		ymin <- ymax - rng  
 
 		xd <- xmax - xmin
 		#xmin <- xmin + xd * x$leg$size[2]/5
@@ -107,10 +109,22 @@
 	}
 }
 
+
 .get.leg.extent <- function(x) {
-	#usr <- graphics::par("usr")
-	dxy <- graphics::par("cxy") * graphics::par("cex")
-	loc <- x$leg$x
+
+	if (!is.null(x$leg$ext)) {
+		e <- as.vector(x$leg$ext)
+		x$leg$x <- e[1]
+		x$leg$y <- c(e[3:4])
+		x$leg$ext <- NULL
+	}
+	if (inherits(x$leg[["x"]], "SpatExtent")) {
+		e <- as.vector(x$leg$x)
+		x$leg$x <- e[1]
+		x$leg$y <- c(e[3:4])
+	}
+		
+	loc <- x$leg[["x"]]
 	if (x$clip) {
 		usr <- x$lim
 	} else {
@@ -120,6 +134,8 @@
 	xmax <- usr[2]
 	ymin <- usr[3]
 	ymax <- usr[4]
+
+	dxy <- graphics::par("cxy") * graphics::par("cex")
 	p <- NULL
 	if (is.character(loc)) {
 		if (loc == "left") {
@@ -147,6 +163,23 @@
 				hy <- (ymax - ymin) / 2
 				p[3:4] <- p[3:4] - hy
 			}
+		}
+	} else {
+		X <- x$leg[["x"]]	
+		Y <- x$leg[["y"]]
+		if (is.null(Y)) {
+			if (length(X) == 4) {
+				Y <- X[3:4]
+				p <- c(X+dxy[1], X+2*dxy[1], Y[1], Y[2])
+			} else { 
+				p <- c(X[1]+dxy[1], X[1]+2*dxy[1], ymin, ymax)
+			}
+		} else if (length(Y) == 2) {
+			Y <- sort(Y)
+			p <- c(X+dxy[1], X+2*dxy[1], Y[1], Y[2])
+		} else { # if (length(Y) == 1) {
+			ymin = ymin + (ymax-ymin)/50 
+			p <- c(X+dxy[1], X+2*dxy[1], ymin, Y[1])			
 		}
 	}
 	x$leg$ext <- p
@@ -183,21 +216,22 @@
 	}
 	boxlwd <- 1 # lwdd?
 
-	
 	x$leg$horizontal <- FALSE
 	if (is.null(x$leg[["x"]])) {
 		x$leg$x <- "right"
-	} else if (!(x$leg$x %in% c("left", "right", "top", "bottom", "topright", "bottomright"))) {
-		x$leg$x <- "right"	
-	} else if (x$leg$x %in% c("top", "bottom")) {
-		x$leg$horizontal <- TRUE
+	} else if (is.character(x$leg[["x"]])) {
+		if (!(x$leg$x %in% c("left", "right", "top", "bottom", "topright", "bottomright"))) {
+			x$leg$x <- "right"	
+		} else if (x$leg$x %in% c("top", "bottom")) {
+			x$leg$horizontal <- TRUE
+		}
 	}
 
-	if (is.null(x$leg[["ext"]])) {
+#	if (is.null(x$leg[["ext"]])) {
 		x <- .get.leg.extent(x)
-	} else {
-		x <- .get.leg.coords(x)
-	}
+#	} else {
+#		x <- .get.leg.coords(x)
+#	}
 
 	if (is.null(x$leg[["cex"]])) {
 		cex <- 1
@@ -234,12 +268,15 @@
 			if (isTRUE(x$range_filled[2])) zztxt[length(zztxt)] <- paste0("> ", zztxt[length(zztxt)])		
 		}
 	}
+
 	e <- x$leg[["ext"]]
-	if (x$leg$x %in% c("left", "right")) {
+	P <- x$leg[["x"]]
+	if (is.numeric(P)) P <- "right"
+	if (P %in% c("left", "right")) {
 		Y <- seq(e$ymin, e$ymax, length.out=nc+1)
 		graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=NA, lwd=boxlwd)
 		ypos <- e$ymin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dy
-		if (x$leg$x == "right") {
+		if (P == "right") {
 			if (tics == "throughout") {
 				graphics::segments(e$xmin, ypos, e$xmax+e$dx*0.25, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "through") {
@@ -271,7 +308,7 @@
 		graphics::rect(X[-(nc + 1)], e$ymin, X[-1], e$ymax, col=rev(cols), border=NA, xpd=NA, lwd=boxlwd)
 		xpos <- e$xmin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dx
 		
-		if (x$leg$x == "bottom") {
+		if (P == "bottom") {
 			if (tics == "throughout") {
 				graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymax, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "through") {
