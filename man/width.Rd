@@ -43,8 +43,13 @@ numeric or SpatVector
 \examples{
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
+
 width(v)
 clearance(v)
+
+width_lines <- width(v, as.lines=TRUE)
+plot(v)
+lines(width_lines, col="blue")
 }
 
 \keyword{methods}
