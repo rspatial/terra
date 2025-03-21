@@ -1,7 +1,7 @@
 
 
 
-get_legxy <- function(r, e, pos, yshift) {
+get_legxy <- function(r, e, pos, yshift, nudge=NULL) {
 	xy <- c(r$left, r$top)
 	if (grepl("top", pos)) {
 		xy[2] <- e[4]
@@ -19,14 +19,14 @@ get_legxy <- function(r, e, pos, yshift) {
 		hy <- (e[4] - e[3]) / 2
 		xy[2] <- xy[2] - hy
 	}
-	xy
+	.nudge_xy(xy, nudge)
 }
 
 
 .plot.class.legend <- function(x, y, legend, fill, xpd=NA, cex=1, geomtype="",
 	lty=1, lwd=1, pch=1, angle=45, density=NULL, pt.cex = 1, pt.bg="black", pt.lwd=1, 
 	bty="n", border="black", seg.len=1, plotlim, yshift=NULL, order=FALSE, sort=FALSE, reverse=FALSE,
-	text.col=graphics::par("col"),
+	text.col=graphics::par("col"), nudge=c(0,0), 
 	title=NULL, leg_i=1, title.x=NULL, title.y=NULL, title.adj=0.5, title.pos=NULL, 
 	title.cex=cex[1], title.col=text.col[1], title.font=NULL, ...,
 # catch and kill
@@ -70,13 +70,17 @@ get_legxy <- function(r, e, pos, yshift) {
 	}
 	
 	
-	
+	if (!inherits(x, "character")) {
+		xy <- .nudge_xy(cbind(x, y), nudge)
+		x <- xy[1,1]
+		y <- xy[1,2]
+	}
 
 #points(leg$rect$left+leg$rect$w, leg$rect$top-leg$rect$h, xpd=T)	
 	if (grepl("points", geomtype)) {
 		if (inherits(x, "character")) {
 			r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font,...)$rect
-			xy <- get_legxy(r, plotlim, x, yshift)
+			xy <- get_legxy(r, plotlim, x, yshift, nudge)
 			leg <- legend(xy[1], xy[2], legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font,...)
 		} else {
 			leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
@@ -84,7 +88,7 @@ get_legxy <- function(r, e, pos, yshift) {
 	} else if (geomtype == "lines") {
 		if (inherits(x, "character")) {
 			r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)$rect
-			xy <- get_legxy(r, plotlim, x, yshift)
+			xy <- get_legxy(r, plotlim, x, yshift, nudge)
 			leg <- legend(xy[1], xy[2], legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
 		} else {
 			leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
@@ -92,7 +96,7 @@ get_legxy <- function(r, e, pos, yshift) {
 	} else {
 		if (inherits(x, "character")) {
 			r <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)$rect
-			xy <- get_legxy(r, plotlim, x, yshift)
+			xy <- get_legxy(r, plotlim, x, yshift, nudge)
 			leg <- legend(xy[1], xy[2], legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
 		} else {
 			leg <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)

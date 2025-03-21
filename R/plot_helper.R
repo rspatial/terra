@@ -1,4 +1,5 @@
 
+
 # to be merged with the vector variant.
 .generic.interval <- function(out, Z) {
 	if (is.null(out$breaks)) {
@@ -53,6 +54,43 @@
 	out$leg$digits <- NULL
 	out
 }
+
+
+.get_nudge <- function(a) {
+	if (is.null(a)) {
+		a <- rep(0, 4)
+	} else if (length(a) == 0) {
+		a <- rep(0, 4)
+	} else if (length(a) == 1) {
+		a <- c(a, a, 0, 0)
+	} else if (length(a) == 2) {
+		a <- c(a[1], a[1], a[2], a[2])		
+	} else if (length(a) == 3) {
+		a <- c(a[1], a[2], a[3], a[3])		
+	} 
+	a
+}
+
+.nudge_ext <- function(x, e) {
+	a <- .get_nudge(x$leg[["nudge"]]) 
+	e <- x$leg[["ext"]]
+	e$xmin <- e$xmin + a[1]
+	e$xmax <- e$xmax + a[2]
+	e$ymin <- e$ymin + a[3]
+	e$ymax <- e$ymax + a[4]
+	e$dy <- e$dy + a[4]-a[3]
+	e$dx <- e$dx + a[2]-a[1]
+	x$leg$ext <- e
+	x
+}
+
+.nudge_xy <- function(xy, a) {
+	a <- .get_nudge(a) 
+	xy[1] <- xy[1] + a[1]
+	xy[2] <- xy[2] + a[3]
+	xy
+}
+
 
 
 prettyNumbs <- function(x, digits) {

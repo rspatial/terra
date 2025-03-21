@@ -88,7 +88,7 @@
 	dy <- ymax - ymin
 
 	x$leg$ext <- data.frame(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, dx=dx, dy=dy)
-	x
+	.nudge_ext(x)
 }
 
 
@@ -228,7 +228,7 @@
 	}
 
 #	if (is.null(x$leg[["ext"]])) {
-		x <- .get.leg.extent(x)
+	x <- .get.leg.extent(x)
 #	} else {
 #		x <- .get.leg.coords(x)
 #	}
@@ -288,7 +288,7 @@
 			} else if (tics == "out") {
 				graphics::segments(e$xmax, ypos, e$xmax+e$dx*0.25, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			}
-			text(e$xmax, ypos, zztxt, pos=4, xpd=NA, cex=cex, srt=srt, ...)
+			text(e$xmax+e$dx*0.2, ypos, zztxt, pos=4, xpd=NA, cex=cex, srt=srt, ...)
 		} else {
 			if (tics == "throughout") {
 				graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmax, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
@@ -301,7 +301,7 @@
 			} else if (tics == "out") {
 				graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmin, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			}
-			text(e$xmin, ypos, zztxt, pos=2, xpd=NA, cex=cex, srt=srt, ...)
+			text(e$xmin-e$dx*0.2, ypos, zztxt, pos=2, xpd=NA, cex=cex, srt=srt, ...)
 		}
 	} else { # top, bottom
 		X <- seq(e$xmin, e$xmax, length.out=nc+1)
@@ -348,7 +348,7 @@
 			legtitle <- x$leg$title[1]		
 		}
 		if ((is.null(x$leg[["title.x"]])) || (is.null(x$leg[["title.y"]]))) {
-			e <- x$leg$ext
+			#e <- x$leg$ext
 			x$leg$title.y <- e$ymax
 			if (x$leg$horizontal) {
 				x$leg$title.x <- e$xmin + (e$xmax - e$xmin) / 2
