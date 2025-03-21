@@ -467,7 +467,7 @@ make.panel <- function(x, maxcell) {
 
 
 	if (is.null(type) ||(type == "")) {
-		if (is.factor(x) || is.bool(x)) {
+		if (all(is.factor(x)) || all(is.bool(x))) {
 			type <- "classes"		
 		} else if (is.null(breaks)) {
 			type <- "continuous"
