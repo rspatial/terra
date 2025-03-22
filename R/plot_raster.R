@@ -621,6 +621,12 @@
 		out$lonlat <- FALSE
 	}
 	out$cols <- cols
+	out$rgb$stretch <- stretch
+	if (is.null(scale)) {	
+		out$rgb$scale <- 255
+	} else {
+		out$rgb$scale <- scale
+	}
 	if (!is.null(alpha)) {
 		if (!inherits(alpha, "SpatRaster")) {
 			out$alpha <- alpha[1]
@@ -628,16 +634,17 @@
 				warn("plot", "alpha should be between 0 and 1")
 				out$alpha <- 255
 			} else {
-				out$alpha <- out$alpha[1] * 255
+				out$alpha <- out$alpha[1]
 			}
 			out <- hexcols(out)
 		}
 	} else {
 		out$alpha <- 255
+		if (!is.null(scale)) {
+			out$alpha <- out$alpha * scale / 255
+		}
 		out <- hexcols(out)
 	}
-	out$rgb$stretch <- stretch
-	out$rgb$scale <- scale
 	out$rgb$bgalpha <- bgalpha
 	out$rgb$zlim <- zlim
 	out$rgb$zcol <- isTRUE(zcol)
