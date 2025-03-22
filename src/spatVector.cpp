@@ -311,7 +311,7 @@ bool SpatVector::empty() {
 bool SpatVector::is_multipoint() {
 	if (geoms[0].gtype != points) return false;
 	for (size_t i=0; i<geoms.size(); i++) {
-		if (geoms[i].parts.size() > 1) {
+		if (geoms[i].parts[0].x.size() > 1) {
 			return true;
 		}
 	}
@@ -1143,7 +1143,7 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 	return(v);
 }
 
-
+#include "Rcpp.h"
 SpatVector SpatVector::as_lines() {
 	SpatVector v;
 
@@ -1152,18 +1152,24 @@ SpatVector SpatVector::as_lines() {
 	}
 
 	if (geoms[0].gtype == points) {
-		std::vector<double> x, y;
-		x.reserve(size());
-		y.reserve(size());
-		for (size_t i=0; i<size(); i++) {
-			x.push_back(geoms[i].parts[0].x[0]);
-			y.push_back(geoms[i].parts[0].y[0]);
+		if (is_multipoint()) {
+			v = *this;
+			for (size_t i=0; i<size(); i++) {
+				v.geoms[i].gtype = lines;
+			}
+		} else {
+			std::vector<double> x, y;
+			x.reserve(size());
+			y.reserve(size());
+			for (size_t i=0; i<size(); i++) {
+				x.push_back(geoms[i].parts[0].x[0]);
+				y.push_back(geoms[i].parts[0].y[0]);
+			}
+			SpatPart p(x, y);
+			SpatGeom g(p, lines)	;
+			v.setGeom(g);
+			v.srs = srs;
 		}
-		SpatVector v;
-		SpatPart p(x, y);
-		SpatGeom g(p, lines)	;
-		v.setGeom(g);
-		v.srs = srs;
 		return v;
 	}
 /*
@@ -1182,7 +1188,7 @@ SpatVector SpatVector::as_lines() {
 		return v;
 	}
 */
-	// polygons, multipoints
+	// polygons
 	v = *this;
 	for (size_t i=0; i<size(); i++) {
 		for (size_t j=0; j < v.geoms[i].size(); j++) {
@@ -1197,7 +1203,7 @@ SpatVector SpatVector::as_lines() {
 				v.geoms[i].parts[j] = p;
 			}
 		}
-		v.geoms[i].gtype = lines;
+			v.geoms[i].gtype = lines;
 	}
 	v.df = df;
 	return(v);

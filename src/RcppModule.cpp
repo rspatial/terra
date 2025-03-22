@@ -541,6 +541,7 @@ RCPP_MODULE(spat){
 		.method("subset_rows", ( SpatVector (SpatVector::*)(std::vector<long>))( &SpatVector::subset_rows ))
 		.method("remove_rows", &SpatVector::remove_rows)
 		.method("type", &SpatVector::type)
+		.method("multipoint", &SpatVector::is_multipoint)
 		.method("naGeoms", &SpatVector::naGeoms)
 		.method("nullGeoms", &SpatVector::nullGeoms)
 

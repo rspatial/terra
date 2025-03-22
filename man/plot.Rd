@@ -66,18 +66,22 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{box}{logical. Should a box be drawn around the map?}
   \item{clip}{logical. Should the axes be clipped to the extent of \code{x}?}
   \item{overview}{logical. Should "overviews" be used for fast rendering? This can result in much faster plotting of raster files that have overviews (e.g. "COG" format) and are accessed over a http connection. However, these overviews generally show aggregate values, thus reducing the range of the actual values. If \code{NULL}, the argument is set to \code{TRUE} for rasters that are accessed over http and \code{FALSE} in other cases}
-  \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link[graphics]{legend}}. In addition there are these parameters for the legend title: \code{title.srt} to rotate the title and \code{title.x} and \code{title.y} to place the title at specific coordinates. Parameter \code{digits} can be used to change the number of digits to print after the decimal point. 
+ 
+ \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link[graphics]{legend}}. 
+ 
+ In addition there are these parameters for the legend title: \code{title.srt} to rotate the title and \code{title.x} and \code{title.y} to place the title at specific coordinates. Parameter \code{digits} can be used to change the number of digits to print after the decimal point. 
   
-  A legend can be placed with placed by specifying arguments \code{x} and \code{y}. For a continuous legend \code{y} can have two values. \code{x} can also be a SpatExtent. Furthermore, \code{x} can have be a keyword such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. For a continuous legend, only the placement keywords "left", "right", "top", "bottom", "topright", "bottomright" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. 
+  A legend can be placed with placed by specifying arguments \code{x} and \code{y}. For a continuous legend \code{y} can have two values. \code{x} can also be a SpatExtent. Furthermore, \code{x} can have be a keyword such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. For a continuous legend, only the placement keywords "left", "right", "top", "bottom", "topright", "bottomright" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. The placement of the legend can be altered with argument \code{nudge} that move the location in the directions specified with one value (x direction) or two values (x, y). For a continuous legend it can also have four values (xmin, xmax, ymin, ymax).
     
   Additional parameters for continuous legends include: 
   
   \itemize{
     \code{size} to change the height and/or width; the defaults are \code{c(1,1)} 
 	\item \code{at} to set the location of the tic-marks
-	\item \code{tic} One of these partially matched values: "through", "in", "middle", "out", or "none", to choose a tic-mark placement/length that is different from the default "throughout". You can set \code{tic.col}, \code{tic.box.col} and \code{tic.lwd}
+	\item \code{tic} One of these partially matched values: "through", "in", "middle", "out", or "none", to choose a tic-mark placement/length that is different from the default "throughout". You can also set \code{tic.col}, \code{tic.box.col} and \code{tic.lwd}
 	}
   }
+  
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{side}, \code{tick} and \code{lab} can be used to indicate for which of the four axes to draw a line (side), tick-mark, and/or the tick-mark labels. The default is \code{c(1:4)} for side and \code{1:2} for the other two. If \code{side} is changed the other two default to that value. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{smooth}{logical. If \code{TRUE} the cell values are smoothed (only if a continuous legend is used)}

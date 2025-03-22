@@ -263,7 +263,7 @@ setMethod ("set.cats" , "SpatRaster",
 
 
 setMethod ("categories" , "SpatRaster",
-	function(x, layer=1, value, active=1) {
+	function(x, layer=1, value, active=1, ...) {
 		#... to accept but ignore old argument "index"
 		x@pntr <- x@pntr$deepcopy()
 		set.cats(x, layer, value, active)

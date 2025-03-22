@@ -329,6 +329,9 @@ setMethod("as.polygons", signature(x="SpatVector"),
 		if (extent) {
 			as.polygons(ext(x), crs=crs(x))
 		} else {
+			if (geomtype(x) == "points") {
+				x <- as.lines(x)
+			}
 			x@pntr <- x@pntr$polygonize()
 			messages(x, "as.polygons")
 		}

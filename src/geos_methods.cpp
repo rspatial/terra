@@ -830,7 +830,11 @@ SpatVector SpatVector::polygonize() {
 	}
 
 	SpatVector out;
-	out.srs = srs;
+	if (type() == "points") {
+		out.setError("cannot make polygons from points (make lines first)");
+		return out;
+	}
+
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);

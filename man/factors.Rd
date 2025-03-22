@@ -49,7 +49,7 @@ To set categories for the first layer of a SpatRaster, you can provide \code{lev
 
 \S4method{cats}{SpatRaster}(x, layer)
 
-\S4method{categories}{SpatRaster}(x, layer=1, value, active=1)
+\S4method{categories}{SpatRaster}(x, layer=1, value, active=1, ...)
 
 \S4method{droplevels}{SpatRaster}(x, level=NULL, layer=1)
 
