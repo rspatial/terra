@@ -3,7 +3,6 @@
 # Version 0
 # License GPL v3
 
-
 setClass("SpatRaster",
 	representation (
 		pntr = "C++Object"
