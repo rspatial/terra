@@ -710,34 +710,9 @@
 			out <- .as.raster.continuous(out, x, type)
 		}
 
-		if (is.null(mar)) {
-			out$mar <- c(2, 2, 2, 2)
-			if (out$legend_draw) {
-				if (is.null(out$leg$ext)) {
-					if (is.null(out$leg$x)) {
-						out$leg$x <- "default"
-						out$mar <- c(2, 2, 2, 5)
-					} else if (out$legend_type == "continuous") {
-						if (inherits(out$leg[["x"]], "character")) {
-							if (out$leg$x == "top") {
-								out$mar <- c(2, 2, 4, 2)
-							} else if (out$leg$x == "bottom") {
-								out$mar <- c(5, 2, 2, 2)
-							} else if (out$leg$x == "left") {
-								out$mar <- c(2, 5, 2, 1)
-							} else {
-								out$mar <- c(2, 2, 2, 5)
-							}
-						#} else if (out$leg$x == "default") {
-						#	out$mar <- c(2, 2, 2, 5)
-						}
-					}	
-				} 
-			}
-		} else {
-			out$mar <- rep_len(mar, 4)
-		}
-
+		out$mar <- mar
+		out <- get_mar(out)
+		
 		if (!is.null(colNA)) {
 			if (!is.na(colNA) && out$values) {
 				out$colNA <- grDevices::rgb(t(grDevices::col2rgb(colNA)), alpha=out$alpha, maxColorValue=255)

@@ -29,7 +29,7 @@
 		path <- system.file("proj", package="terra")
 		.gdalinit(path, file.path(sf, "gdal"))
 		if ( Sys.info()["sysname"] == "Windows" ) {
-			.set_proj_search_paths(path)
+#test			.set_proj_search_paths(path)
 		}
 	} else {
 		.gdalinit(path, file.path(sf, "gdal"))

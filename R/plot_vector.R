@@ -656,15 +656,17 @@ setMethod("dots", signature(x="SpatVector"),
 	out$legend_only <- isTRUE(legend.only)
 	out$leg$leg_i <- leg_i
 
+	out$mar <- mar
+	out <- get_mar(out)
 
-	if (is.null(mar)) {
-		if (out$legend_draw) {
-			mar=c(3.1, 3.1, 2.1, 7.1)
-		} else {
-			mar=c(3.1, 3.1, 2.1, 2.1)
-		}
-	}
-	out$mar <- rep_len(mar, 4)
+#	if (is.null(mar)) {
+#		if (out$legend_draw) {
+#			mar=c(3.1, 3.1, 2.1, 7.1)
+#		} else {
+#			mar=c(3.1, 3.1, 2.1, 2.1)
+#		}
+#	}
+#	out$mar <- rep_len(mar, 4)
 
 	out$skipNA <- TRUE
 	if (!is.null(colNA)) {

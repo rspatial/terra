@@ -211,3 +211,35 @@ hexcols <- function(out) {
 
 
 
+get_mar <- function(out, is_raster=TRUE) {
+
+	if (is.null(out$mar)) {
+		out$mar <- c(2, 2, 2, 2)
+		if (out$legend_draw) {
+			w <- ifelse(is_raster, 5, 7)
+			if (is.null(out$leg$ext)) {
+				if (is.null(out$leg$x)) {
+					out$leg$x <- "default"
+					out$mar <- c(2, 2, 2, w)
+				} else if (out$legend_type == "continuous") {
+					if (inherits(out$leg[["x"]], "character")) {
+						if (out$leg$x == "top") {
+							out$mar <- c(2, 2, w, 2)
+						} else if (out$leg$x == "bottom") {
+							out$mar <- c(w, 2, 2, 2)
+						} else if (out$leg$x == "left") {
+							out$mar <- c(2, w, 2, 1)
+						} else {
+							out$mar <- c(2, 2, 2, w)
+						}
+					}
+				}	
+			} 
+		}
+	} else {
+		out$mar <- rep_len(out$mar, 4)
+	}
+	
+	out
+}
+
