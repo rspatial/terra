@@ -491,50 +491,7 @@
 	}
 	
 	if ((!x$add) && (!x$legend_only)) {
-		if (isTRUE(x$main != "")) {
-			pos <- 3
-			if (is.null(x$loc.main)) {
-				if (isTRUE(x$clip)) {
-					x$loc.main <- c(x$lim[1] + diff(x$lim[1:2]) / 2, x$lim[4])
-				} else {
-					usr <- graphics::par("usr")			
-					x$loc.main <- c(usr[1] + diff(usr[1:2]) / 2, usr[4])			
-				}
-			} else if (inherits(x$loc.main, "character")) {
-				xyp <- .txt.loc(x)
-				x$loc.main <- xyp[1:2]
-				pos <- xyp[3]
-			}	
-			if (isTRUE(x$halo.main)) {
-				.halo(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
-					font=x$font.main, col=x$col.main, xpd=TRUE, hc=x$halo.main.hc, hw=x$halo.main.hw)
-			} else {
-				text(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
-					font=x$font.main, col=x$col.main, xpd=TRUE)
-			}
-		}
-		if (isTRUE(x$sub != "")) { 
-			pos <- 1
-			if (is.null(x$loc.sub)) {
-				if (isTRUE(x$clip)) {
-					x$loc.sub <- c(x$lim[1] + diff(x$lim[1:2]) / 2, x$lim[3])
-				} else {
-					usr <- graphics::par("usr")			
-					x$loc.sub <- c(usr[1] + diff(usr[1:2]) / 2, usr[3])			
-				}
-			} else if (inherits(x$loc.sub, "character")) {
-				xyp <- .txt.loc(x, FALSE)
-				x$loc.sub <- xyp[1:2]
-				pos <- xyp[3]
-			}
-			if (isTRUE(x$halo.main)) {
-				.halo(x$loc.sub[1], x$loc.sub[2], x$sub, pos=pos, offset=x$line.sub, cex=x$cex.sub, 
-					font=x$font.sub, col=x$col.sub, xpd=TRUE, hc=x$halo.sub.hc, hw=x$halo.sub.hw)
-			} else {
-				text(x$loc.sub[1], x$loc.sub[2], x$sub, pos=pos, offset=x$line.sub, cex=x$cex.sub, 
-					font=x$font.sub, col=x$col.sub, xpd=TRUE)
-			}
-		}
+		plot_main(x)
 	}
 	if (!x$add) {
 		try(set.clip(x$lim, x$lonlat))

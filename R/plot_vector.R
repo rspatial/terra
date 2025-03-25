@@ -416,12 +416,14 @@ setMethod("dots", signature(x="SpatVector"),
 			lines(ext(graphics::par("usr")))		
 		}
 	}
+	
+	plot_main(out)
 
-	if (out$main != "") {
-		posx <- out$lim[1] + diff(out$lim[1:2])/2
-		text(posx, out$lim[4], out$main, pos=3, offset=out$line.main, cex=out$cex.main, 
-			font=out$font.main, col=out$col.main, xpd=TRUE)
-	}
+#	if (out$main != "") {
+#		posx <- out$lim[1] + diff(out$lim[1:2])/2
+#		text(posx, out$lim[4], out$main, pos=3, offset=out$line.main, cex=out$cex.main, 
+#			font=out$font.main, col=out$col.main, xpd=TRUE)
+#	}
 
 	if (!out$add) {
 		try(set.clip(out$lim, out$lonlat))
@@ -434,7 +436,10 @@ setMethod("dots", signature(x="SpatVector"),
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, reverse=FALSE, values=NULL,
-	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
+	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", 
+	cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
+    sub = "", font.sub=1, cex.sub=0.8*cex.main, line.sub =1.75,  col.sub=col.main, loc.sub=NULL,
+	halo=FALSE, hc="white", hw=0.1, 
 	density=NULL, angle=45, border="black", dig.lab=3, cex=1, clip=TRUE, leg_i=1, asp=NULL, xpd=NULL, 
 	decreasing = FALSE, ...) {
 
@@ -499,12 +504,28 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 	
 	out$main <- main
-	if ((!is.expression(main)) && (is.null(out$main) || any(is.na(out$main)))) out$main <- ""
+#	if ((!is.expression(main)) && (is.null(out$main) || any(is.na(out$main)))) out$main <- ""
+
+	out$halo.main <- halo
+	out$halo.main.hc <- hc
+	out$halo.main.hw <- hw
+
 	out$cex.main  <- cex.main
 	out$font.main <- font.main
 	out$col.main  <- col.main
 	out$line.main <- line.main
+
+	out$sub <- sub
+	out$loc.sub <- loc.sub
+	out$cex.sub <- cex.sub
+	out$font.sub <- font.sub
+	out$col.sub <- col.sub
+	out$line.sub <- line.sub
+
+
 	out$dig.lab <- dig.lab
+
+
 
 	out$box <- isTRUE(box)
 	out$add <- isTRUE(add)
