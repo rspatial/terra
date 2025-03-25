@@ -43,7 +43,7 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int 
 
 	if (bylayer) {
 		out.resize(nl);
-		std::vector<std::map<double, unsigned long long int>> tabs(nl);
+		std::vector<std::map<double, size_t>> tabs(nl);
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned nrc = bs.nrows[i] * nc;
 			std::vector<double> v;
@@ -54,7 +54,7 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int 
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*nrc;
 				std::vector<double> vv(v.begin()+off, v.begin() + off + nrc);
-				std::map<double, unsigned long long int> tab = table(vv);
+				std::map<double, size_t> tab = table(vv);
 				tabs[lyr] = combine_tables(tabs[lyr], tab);
 			}
 		}

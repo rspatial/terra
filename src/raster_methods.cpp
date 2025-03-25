@@ -539,7 +539,7 @@ void compute_aggregates(const std::vector<double> &in, std::vector<double> &out,
 
 
 void tabulate_aggregates(const std::vector<double> &in, std::vector<double> &out, size_t nr, size_t nc, std::vector<size_t> dim, 
-	const std::map<long, unsigned long long> &counts, bool narm) {
+	const std::map<long, size_t> &counts, bool narm) {
 
 // dim 0, 1, are the aggregations factors dy, dx
 // and 3, 4, 5 are the new nrow, ncol, nlyr
@@ -573,7 +573,7 @@ void tabulate_aggregates(const std::vector<double> &in, std::vector<double> &out
 				continue;
 			}
 		}
-		std::map<long, unsigned long long> block_counts = counts;
+		std::map<long, size_t> block_counts = counts;
 		if (narm) {
 			for (size_t r = rstart; r < rmax; r++) {
 				size_t cell = r * nc;
@@ -661,7 +661,7 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 	SpatExtent e = SpatExtent(extent.xmin, xmax, ymin, extent.ymax);
 	SpatCategories cats;
 
-	std::map<long, unsigned long long> counts;
+	std::map<long, size_t> counts;
 	if (fun == "table") {
 		std::vector<bool> has_cats = hasCategories();
 		if (has_cats[0]) {
@@ -670,7 +670,7 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 			std::vector<long> uvals = cats.d.getI(0);
 			int n = uvals.size();
 			for (int i=0; i<n; i++) {
-				counts.insert(std::pair<long, unsigned long long>(uvals[i], 0));
+				counts.insert(std::pair<long, size_t>(uvals[i], 0));
 			}
 			fact[5] = counts.size();
 			
@@ -694,7 +694,7 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 			int n = ud[0].size();
 			for (int i=0; i<n; i++) {
 				long v = ud[0][i];
-				counts.insert(std::pair<long, unsigned long long>(v, 0));
+				counts.insert(std::pair<long, size_t>(v, 0));
 			}
 			fact[5] = counts.size();
 			out = SpatRaster(fact[3], fact[4], fact[5], e, "");
@@ -6586,7 +6586,7 @@ SpatRaster SpatRaster::combineCats(SpatRaster x, SpatOptions &opt) {
 				from.push_back(sc.d.iv[1][i]);
 			}
 			opt.names = {sc.d.names[sc.index]};
-			std::vector<unsigned> cr = {0,1};
+			std::vector<size_t> cr = {0,1};
 			sc.d = sc.d.subset_cols(cr);
 			x.source[0].cats[0] = sc;
 			x.source[0].hasCategories[0] = true;

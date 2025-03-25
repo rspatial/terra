@@ -52,7 +52,7 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 	SpatTime_t timeNA = NA<SpatTime_t>::value;
 	
 	std::vector<std::string> nms = v->names;
-	std::vector<unsigned> itype = v->itype;
+	std::vector<size_t> itype = v->itype;
 	for (size_t i=0; i < n; i++) {
 		if (itype[i] == 0) {
 			out[i] = v->getD(i);
@@ -224,7 +224,7 @@ RCPP_MODULE(spat){
 
 	class_<SpatFactor>("SpatFactor")
 		.constructor()
-		.constructor<std::vector<unsigned>, std::vector<std::string>, bool>()
+		.constructor<std::vector<size_t>, std::vector<std::string>, bool>()
 //		.constructor<std::vector<unsigned>, std::vector<std::string>>()
 		.field("values", &SpatFactor::v)
 		.field("labels", &SpatFactor::labels)
@@ -370,8 +370,8 @@ RCPP_MODULE(spat){
 		.method("get_timezones", &SpatDataFrame::get_timezones)
 		.method("get_timesteps", &SpatDataFrame::get_timesteps)
 
-		.method("subset_rows", (SpatDataFrame (SpatDataFrame::*)(std::vector<unsigned>))( &SpatDataFrame::subset_rows))
-		.method("subset_cols", (SpatDataFrame (SpatDataFrame::*)(std::vector<unsigned>))( &SpatDataFrame::subset_cols))
+		.method("subset_rows", (SpatDataFrame (SpatDataFrame::*)(std::vector<size_t>))( &SpatDataFrame::subset_rows))
+		.method("subset_cols", (SpatDataFrame (SpatDataFrame::*)(std::vector<size_t>))( &SpatDataFrame::subset_cols))
 
 		.method("remove_rows", &SpatDataFrame::remove_rows)
 
@@ -480,7 +480,7 @@ RCPP_MODULE(spat){
 		.method("polygonsList", &SpatVector::polygonsList)
 		.method("linesNA", &SpatVector::linesNA)
 
-		.method("add_column_empty", (void (SpatVector::*)(unsigned dtype, std::string name))( &SpatVector::add_column))
+		.method("add_column_empty", (void (SpatVector::*)(size_t dtype, std::string name))( &SpatVector::add_column))
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
 		.method("add_column_long", (bool (SpatVector::*)(std::vector<long>, std::string name))( &SpatVector::add_column))
 		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
@@ -598,8 +598,8 @@ RCPP_MODULE(spat){
 //		.method("relate_first", &SpatVector::relateFirst)
 //		.method("relate_between", ( std::vector<int> (SpatVector::*)(SpatVector, std::string, bool, bool))( &SpatVector::relate ))
 		.method("relate_within", ( std::vector<int> (SpatVector::*)(std::string, bool))( &SpatVector::relate ))
-		.method("equals_between", ( std::vector<unsigned> (SpatVector::*)(SpatVector, double))( &SpatVector::equals_exact ))
-		.method("equals_within", ( std::vector<unsigned> (SpatVector::*)(bool, double))( &SpatVector::equals_exact ))
+		.method("equals_between", ( std::vector<size_t> (SpatVector::*)(SpatVector, double))( &SpatVector::equals_exact ))
+		.method("equals_within", ( std::vector<size_t> (SpatVector::*)(bool, double))( &SpatVector::equals_exact ))
 
 
 		.method("crop_ext", ( SpatVector (SpatVector::*)(SpatExtent, bool))( &SpatVector::crop ))

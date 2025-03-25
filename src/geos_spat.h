@@ -373,7 +373,7 @@ inline SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle
 	SpatVector v;
 
 	size_t ng = geoms.size();
-	std::vector<unsigned> gid, gp, hole;
+	std::vector<size_t> gid, gp, hole;
 	std::vector<double> x, y;
 	bool xok, yok;
 
@@ -482,8 +482,8 @@ inline SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle
 
 
 inline bool pointsFromGeom(GEOSContextHandle_t hGEOSCtxt, const GEOSGeometry* part, 
-const unsigned i, const unsigned j, std::vector<double> &x, std::vector<double> &y, 
-std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &hole, std::string &msg) {
+const size_t i, const size_t j, std::vector<double> &x, std::vector<double> &y, 
+std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, std::string &msg) {
 
 	const GEOSCoordSequence* crds = GEOSGeom_getCoordSeq_r(hGEOSCtxt, part); 		
 	int npts = -1;
@@ -520,8 +520,8 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 
 
 inline bool polysFromGeom(GEOSContextHandle_t hGEOSCtxt, const GEOSGeometry* part, 
-const unsigned i, const unsigned j, std::vector<double> &x, std::vector<double> &y, 
-std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &hole, std::string &msg) {
+const size_t i, const size_t j, std::vector<double> &x, std::vector<double> &y, 
+std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole, std::string &msg) {
 	const GEOSGeometry* ring = GEOSGetExteriorRing_r(hGEOSCtxt, part);
 	const GEOSCoordSequence* crds = GEOSGeom_getCoordSeq_r(hGEOSCtxt, ring); 		
 	int npts = -1;
@@ -581,8 +581,8 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 }
 
 
-inline void emptyGeom(const unsigned i, std::vector<double> &x, std::vector<double> &y, 
-std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &hole) {
+inline void emptyGeom(const size_t i, std::vector<double> &x, std::vector<double> &y, 
+std::vector<size_t> &gid, std::vector<size_t> &gp, std::vector<size_t> &hole) {
 	x.push_back(NAN);
 	y.push_back(NAN);
 	gid.push_back(i);			
@@ -595,9 +595,9 @@ inline SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSCont
 
 	SpatVectorCollection out;
 
-	std::vector<unsigned> pt_gid, pt_gp, pt_hole;
-	std::vector<unsigned> ln_gid, ln_gp, ln_hole;
-	std::vector<unsigned> pl_gid, pl_gp, pl_hole;
+	std::vector<size_t> pt_gid, pt_gp, pt_hole;
+	std::vector<size_t> ln_gid, ln_gp, ln_hole;
+	std::vector<size_t> pl_gid, pl_gp, pl_hole;
 	std::vector<double> pt_x, pt_y, ln_x, ln_y, pl_x, pl_y;
 	std::vector<long> pts_ids, lin_ids, pol_ids;
 	

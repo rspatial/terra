@@ -23,18 +23,18 @@ class SpatFactor {
 public:
 	virtual ~SpatFactor(){}
 	SpatFactor(){} ;
-	SpatFactor(size_t _size, unsigned _value) {
+	SpatFactor(size_t _size, size_t _value) {
 		v.resize(_size, _value);
 	};
 
-	SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _labels, bool _ordered);
-	SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _labels);
-	SpatFactor(std::vector<unsigned> _values);
+	SpatFactor(std::vector<size_t> _values, std::vector<std::string> _labels, bool _ordered);
+	SpatFactor(std::vector<size_t> _values, std::vector<std::string> _labels);
+	SpatFactor(std::vector<size_t> _values);
 	SpatFactor(std::vector<std::string> _values);
 
 	
-	std::vector<unsigned> v;
-	//std::vector<unsigned> levels;
+	std::vector<size_t> v;
+	//std::vector<size_t> levels;
 	std::vector<std::string> labels;
 	bool ordered = false;
   
@@ -42,21 +42,21 @@ public:
 	bool empty() { return v.empty(); }
 	
 	//void compute_levels();
-	void push_back(unsigned x) { v.push_back(x); }
+	void push_back(size_t x) { v.push_back(x); }
 
 	
 	bool set_labels(std::vector<std::string> _labels);
 	
 	void reserve(size_t n) { v.reserve(n); }
 	void resize(size_t n) { v.resize(n); }
-	void resize(size_t n, unsigned x) {v.resize(n, x);}	
+	void resize(size_t n, size_t x) {v.resize(n, x);}	
 	
 //	template <typename T>
 //	  SpatFactor(std::vector<T> _v) {
 //	   set_values(_v);
 //	}
 	
-	SpatFactor subset(std::vector<unsigned> i);
+	SpatFactor subset(std::vector<size_t> i);
 	std::string getLabel(size_t i); 
 	std::vector<std::string> getLabels();
 	

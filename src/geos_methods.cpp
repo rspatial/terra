@@ -286,8 +286,8 @@ SpatVector SpatVector::set_precision(double gridSize) {
 */
 
 
-std::vector<std::vector<unsigned>> SpatVector::index_2d(SpatVector v) {
-	std::vector<std::vector<unsigned>> out(2);
+std::vector<std::vector<size_t>> SpatVector::index_2d(SpatVector v) {
+	std::vector<std::vector<size_t>> out(2);
 	size_t n = std::max(size(), v.size()) * 2;
 	out[0].reserve(n);
 	out[1].reserve(n);
@@ -310,8 +310,8 @@ std::vector<std::vector<unsigned>> SpatVector::index_2d(SpatVector v) {
 }
 
 
-std::vector<std::vector<unsigned>> SpatVector::index_sparse(SpatVector v) {
-	std::vector<std::vector<unsigned>> out(v.size());
+std::vector<std::vector<size_t>> SpatVector::index_sparse(SpatVector v) {
+	std::vector<std::vector<size_t>> out(v.size());
 	for (size_t i=0; i<size(); i++) {
 		for (size_t j=0; j<size(); j++) {
 			if (geoms[i].extent.intersects(v.geoms[j].extent)) {
@@ -1169,7 +1169,7 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 		}
 		if ((type() == "points") && (!onlyEdges)) {
 			std::vector<int> atts = out.relateFirst(*this, "intersects");
-			std::vector<unsigned> a;
+			std::vector<size_t> a;
 			a.reserve(atts.size());
 			for (size_t i=0; i<atts.size(); i++) {
 				if (atts[i] >=0) a.push_back(atts[i]);
@@ -1366,15 +1366,15 @@ SpatVector SpatVector::intersect(SpatVector v, bool values) {
 	std::vector<GeomPtr> result;
 //	size_t nx = size();
 //	size_t ny = v.size();
-	std::vector<unsigned> idx, idy;
+	std::vector<size_t> idx, idy;
 
 	std::vector<std::vector<double>> r = which_relate(v, "intersects", true);
 	size_t n = r[0].size();
 	idx.reserve(n);
 	idy.reserve(n);
 	for (size_t i=0; i<n; i++) {
-		idx.push_back( (unsigned) r[0][i] );
-		idy.push_back( (unsigned) r[1][i] );
+		idx.push_back( r[0][i] );
+		idy.push_back( r[1][i] );
 	}
 	r.resize(0);
 	std::vector<long> ids;
@@ -1442,7 +1442,7 @@ SpatVector SpatVector::intersect(SpatVector v, bool values) {
 	n = out.nrow();
 	if (values) {
 		if (n < idx.size()) {
-			std::vector<unsigned> idx2, idy2;
+			std::vector<size_t> idx2, idy2;
 			idx2.reserve(n);
 			idy2.reserve(n);
 			for (size_t i=0; i<n; i++) {
@@ -1460,7 +1460,7 @@ SpatVector SpatVector::intersect(SpatVector v, bool values) {
 		}
 	} else {
 		if (n < idx.size()) {
-			std::vector<unsigned> idx2;
+			std::vector<size_t> idx2;
 			idx2.reserve(n);
 			for (size_t i=0; i<n; i++) {
 				idx2.push_back( idx[ out.df.iv[0][i] ]);
@@ -2344,8 +2344,8 @@ std::vector<bool> SpatVector::is_related(SpatVector v, std::string relation) {
 }
 
 
-std::vector<unsigned> SpatVector::equals_exact(SpatVector v, double tol) {
-	std::vector<unsigned> out;
+std::vector<size_t> SpatVector::equals_exact(SpatVector v, double tol) {
+	std::vector<size_t> out;
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
@@ -2362,8 +2362,8 @@ std::vector<unsigned> SpatVector::equals_exact(SpatVector v, double tol) {
 }
 
 
-std::vector<unsigned> SpatVector::equals_exact(bool symmetrical, double tol) {
-	std::vector<unsigned> out;
+std::vector<size_t> SpatVector::equals_exact(bool symmetrical, double tol) {
+	std::vector<size_t> out;
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 
@@ -2397,7 +2397,7 @@ SpatVector SpatVector::mask(SpatVector x, bool inverse) {
 			b[i] = !b[i];
 		}
 	}
-	std::vector<unsigned> r;
+	std::vector<size_t> r;
 	r.reserve(b.size());
 	for (size_t i=0; i<b.size(); i++) {
 		if (b[i]) r.push_back(i);
@@ -2715,7 +2715,7 @@ SpatVector SpatVector::erase_agg(SpatVector v) {
 
 	if ((type() == "points") || (v.type() == "points")) {
 		std::vector<bool> b = is_related(v, "intersects");
-		std::vector<unsigned> r;
+		std::vector<size_t> r;
 		r.reserve(b.size());
 		for (size_t i=0; i < b.size(); i++) {
 			if (!b[i]) r.push_back(i);
@@ -2735,7 +2735,7 @@ SpatVector SpatVector::erase_agg(SpatVector v) {
 // so we do
 	v = v.aggregate(true);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
-	std::vector<unsigned> rids;
+	std::vector<size_t> rids;
 	size_t nx = size();
 	std::vector<GeomPtr> result;
 
@@ -2780,7 +2780,7 @@ SpatVector SpatVector::erase(SpatVector v) {
 
 	if ((type() == "points") || (v.type() == "points")) {
 		std::vector<bool> b = is_related(v, "intersects");
-		std::vector<unsigned> r;
+		std::vector<size_t> r;
 		r.reserve(b.size());
 		for (size_t i=0; i<b.size(); i++) {
 			if (!b[i]) r.push_back(i);
@@ -2915,7 +2915,7 @@ SpatVector SpatVector::erase(bool sequential) {
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
-	std::vector<unsigned> rids;
+	std::vector<size_t> rids;
 
 	if (sequential) {
 		for (size_t i = 0; i < (n-1); i++) {
@@ -3128,7 +3128,7 @@ SpatVector SpatVector::nearest_point(const std::string method) {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> b(n);
-	for (unsigned i = 0; i < n; i++) {
+	for (size_t i = 0; i < n; i++) {
 		SpatVector xa = remove_rows({i});
 		xa = xa.aggregate(false);
 		std::vector<GeomPtr> y = geos_geoms(&xa, hGEOSCtxt);

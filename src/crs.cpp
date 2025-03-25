@@ -406,7 +406,7 @@ SpatVector SpatVector::project(std::string crs, bool partial) {
 	
 	s.setSRS(crs);
 	s.df = df;
-	std::vector<unsigned> keeprows;
+	std::vector<size_t> keeprows;
 	
 	if (partial) {
 		#if GDAL_VERSION_MAJOR >= 2 && GDAL_VERSION_MINOR > 1

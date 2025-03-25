@@ -41,79 +41,79 @@ SpatDataFrame SpatDataFrame::skeleton() {
 }
 
 
-std::vector<double> SpatDataFrame::getD(unsigned i) {
-	unsigned j = iplace[i];
+std::vector<double> SpatDataFrame::getD(size_t i) {
+	size_t j = iplace[i];
 	return dv[j];
 }
 
-double SpatDataFrame::getDvalue(unsigned i, unsigned j) {
+double SpatDataFrame::getDvalue(size_t i, size_t j) {
 	j = iplace[j];
 	return dv[j][i];
 }
 
-std::vector<long> SpatDataFrame::getI(unsigned i) {
-	unsigned j = iplace[i];
+std::vector<long> SpatDataFrame::getI(size_t i) {
+	size_t j = iplace[i];
 	return iv[j];
 }
 
 
-long SpatDataFrame::getIvalue(unsigned i, unsigned j) {
+long SpatDataFrame::getIvalue(size_t i, size_t j) {
 	j = iplace[j];
 	return iv[j][i];
 }
 
 
-std::vector<std::string> SpatDataFrame::getS(unsigned i) {
-	unsigned j = iplace[i];
+std::vector<std::string> SpatDataFrame::getS(size_t i) {
+	size_t j = iplace[i];
 	return sv[j];
 }
 
-std::string SpatDataFrame::getSvalue(unsigned i, unsigned j) {
+std::string SpatDataFrame::getSvalue(size_t i, size_t j) {
 	j = iplace[j];
 	return sv[j][i];
 }
 
-std::vector<int8_t> SpatDataFrame::getB(unsigned i) {
-	unsigned j = iplace[i];
+std::vector<int8_t> SpatDataFrame::getB(size_t i) {
+	size_t j = iplace[i];
 	return bv[j];
 }
 
-int8_t SpatDataFrame::getBvalue(unsigned i, unsigned j) {
+int8_t SpatDataFrame::getBvalue(size_t i, size_t j) {
 	j = iplace[j];
 	return bv[j][i];
 }
 
-SpatTime_v SpatDataFrame::getT(unsigned i) {
-	unsigned j = iplace[i];
+SpatTime_v SpatDataFrame::getT(size_t i) {
+	size_t j = iplace[i];
 	return tv[j];
 }
 
-SpatTime_t SpatDataFrame::getTvalue(unsigned i, unsigned j) {
+SpatTime_t SpatDataFrame::getTvalue(size_t i, size_t j) {
 	j = iplace[j];
 	return tv[j].x[i];
 }
 
-SpatFactor SpatDataFrame::getF(unsigned i) {
-	unsigned j = iplace[i];
+SpatFactor SpatDataFrame::getF(size_t i) {
+	size_t j = iplace[i];
 	return fv[j];
 }
 
-SpatFactor SpatDataFrame::getFvalue(unsigned i, unsigned j) {
+SpatFactor SpatDataFrame::getFvalue(size_t i, size_t j) {
 	j = iplace[j];
 	return fv[j].subset({i});
 }
 
-SpatDataFrame SpatDataFrame::subset_rows(unsigned i) {
-	std::vector<unsigned> r = { i };
+SpatDataFrame SpatDataFrame::subset_rows(size_t i) {
+	std::vector<size_t> r = { i };
 	return subset_rows(r);
 }
 
 
-SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
+SpatDataFrame SpatDataFrame::subset_rows(std::vector<size_t> range) {
 
 	SpatDataFrame out;
-	unsigned n = nrow();
-	std::vector<unsigned> r;
+	size_t n = nrow();
+	std::vector<size_t> r;
 	r.reserve(range.size());
 	for (size_t i=0; i<range.size(); i++) {
 		if ((range[i] >= 0) && (range[i] < n)) {
@@ -166,31 +166,31 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 
 
 SpatDataFrame SpatDataFrame::subset_rows(std::vector<long> range) {
-	std::vector<unsigned> r(range.begin(), range.end());
+	std::vector<size_t> r(range.begin(), range.end());
 	return subset_rows(r);
 }
 
 
-SpatDataFrame SpatDataFrame::subset_cols(unsigned i) {
-	std::vector<unsigned> c = { i };
+SpatDataFrame SpatDataFrame::subset_cols(size_t i) {
+	std::vector<size_t> c = { i };
 	return subset_cols(c);
 }
 
-SpatDataFrame SpatDataFrame::subset_cols(std::vector<unsigned> range) {
+SpatDataFrame SpatDataFrame::subset_cols(std::vector<size_t> range) {
 	SpatDataFrame out;
-	unsigned dcnt=0;
-	unsigned icnt=0;
-	unsigned scnt=0;
-	unsigned bcnt=0;
-	unsigned tcnt=0;
-	unsigned fcnt=0;
+	size_t dcnt=0;
+	size_t icnt=0;
+	size_t scnt=0;
+	size_t bcnt=0;
+	size_t tcnt=0;
+	size_t fcnt=0;
 	for (size_t i=0; i < range.size(); i++) {
 		if (range[i] < 0 || range[i] >= ncol()) {
 			out.setError("invalid column");
 			return out;
 		}
-		unsigned j = range[i];
-		unsigned p = iplace[j];
+		size_t j = range[i];
+		size_t p = iplace[j];
 		out.names.push_back(names[j]);
 		if (itype[j] == 0) {
 			out.dv.push_back(dv[p]);
@@ -228,13 +228,13 @@ SpatDataFrame SpatDataFrame::subset_cols(std::vector<unsigned> range) {
 }
 
 
-unsigned SpatDataFrame::ncol() {
+size_t SpatDataFrame::ncol() {
 	return itype.size();
 }
 
 
-unsigned SpatDataFrame::nrow() {
-	unsigned n;
+size_t SpatDataFrame::nrow() {
+	size_t n;
 	if (itype.empty()) {
 		n = 0;
 	} else {
@@ -305,7 +305,7 @@ void SpatDataFrame::add_rows(size_t n) {
 }
 
 
-void SpatDataFrame::reserve(unsigned n) {
+void SpatDataFrame::reserve(size_t n) {
 	for (size_t i=0; i<dv.size(); i++) {
 		dv[i].reserve(n);
 	}
@@ -326,7 +326,7 @@ void SpatDataFrame::reserve(unsigned n) {
 	}
 }
 
-void SpatDataFrame::resize_rows(unsigned n) {
+void SpatDataFrame::resize_rows(size_t n) {
 	for (size_t i=0; i<dv.size(); i++) {
 		dv[i].resize(n, NAN);
 	}
@@ -349,9 +349,9 @@ void SpatDataFrame::resize_rows(unsigned n) {
 	}
 }
 
-void SpatDataFrame::remove_rows(std::vector<unsigned> r) {
+void SpatDataFrame::remove_rows(std::vector<size_t> r) {
 	if (r.empty()) return;
-	//sort(r.begin(), r.end(), std::greater<unsigned>());
+	//sort(r.begin(), r.end(), std::greater<size_t>());
 	sort(r.begin(), r.end());
 	r.erase(std::unique(r.begin(), r.end()), r.end());
 	std::reverse(r.begin(), r.end());
@@ -380,7 +380,7 @@ void SpatDataFrame::remove_rows(std::vector<unsigned> r) {
 
 
 
-void SpatDataFrame::resize_cols(unsigned n) {
+void SpatDataFrame::resize_cols(size_t n) {
 	if (n < ncol()) {
 		itype.resize(n);
 		iplace.resize(n);
@@ -433,7 +433,7 @@ bool SpatDataFrame::remove_column(std::string field) {
 
 
 bool SpatDataFrame::add_column(std::vector<double> x, std::string name) {
-	unsigned nr = nrow();
+	size_t nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false;
 	iplace.push_back(dv.size());
 	itype.push_back(0);
@@ -445,7 +445,7 @@ bool SpatDataFrame::add_column(std::vector<double> x, std::string name) {
 
 
 bool SpatDataFrame::add_column(std::vector<long> x, std::string name) {
-	unsigned nr = nrow();
+	size_t nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false;
 	iplace.push_back(iv.size());
 	itype.push_back(1);
@@ -461,7 +461,7 @@ bool SpatDataFrame::add_column(std::vector<int> x, std::string name) {
 
 
 bool SpatDataFrame::add_column(std::vector<std::string> x, std::string name) {
-	unsigned nr = nrow();
+	size_t nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false;
 	iplace.push_back(sv.size());
 	itype.push_back(2);
@@ -471,7 +471,7 @@ bool SpatDataFrame::add_column(std::vector<std::string> x, std::string name) {
 }
 
 bool SpatDataFrame::add_column(std::vector<int8_t> x, std::string name) {
-	unsigned nr = nrow();
+	size_t nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false;
 	iplace.push_back(bv.size());
 	itype.push_back(3);
@@ -482,7 +482,7 @@ bool SpatDataFrame::add_column(std::vector<int8_t> x, std::string name) {
 
 
 bool SpatDataFrame::add_column_bool(std::vector<int> x, std::string name) {
-	unsigned nr = nrow();
+	size_t nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false;
 	iplace.push_back(bv.size());
 	itype.push_back(3);
@@ -501,7 +501,7 @@ bool SpatDataFrame::add_column_bool(std::vector<int> x, std::string name) {
 }
 
 bool SpatDataFrame::add_column_bool(std::vector<bool> x, std::string name) {
-	unsigned nr = nrow();
+	size_t nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false;
 	iplace.push_back(bv.size());
 	itype.push_back(3);
@@ -516,7 +516,7 @@ bool SpatDataFrame::add_column_bool(std::vector<bool> x, std::string name) {
 }
 
 bool SpatDataFrame::add_column_time(std::vector<SpatTime_t> x, std::string name, std::string step="seconds", std::string zone="") {
-	unsigned nr = nrow();
+	size_t nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false;
 	iplace.push_back(tv.size());
 	itype.push_back(4);
@@ -531,7 +531,7 @@ bool SpatDataFrame::add_column_time(std::vector<SpatTime_t> x, std::string name,
 
 
 bool SpatDataFrame::add_column(SpatTime_v x, std::string name) {
-	unsigned nr = nrow();
+	size_t nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false;
 	iplace.push_back(tv.size());
 	itype.push_back(4);
@@ -541,7 +541,7 @@ bool SpatDataFrame::add_column(SpatTime_v x, std::string name) {
 }
 
 bool SpatDataFrame::add_column(SpatFactor x, std::string name) {
-	unsigned nr = nrow();
+	size_t nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false;
 	iplace.push_back(fv.size());
 	itype.push_back(5);
@@ -552,7 +552,7 @@ bool SpatDataFrame::add_column(SpatFactor x, std::string name) {
 
 
 void SpatDataFrame::add_column(unsigned dtype, std::string name) {
-	unsigned nr = nrow();
+	size_t nr = nrow();
 	if (dtype == 0) {
 		std::vector<double> dins(nr, NAN);
 		iplace.push_back(dv.size());
@@ -586,7 +586,7 @@ void SpatDataFrame::add_column(unsigned dtype, std::string name) {
 }
 
 bool SpatDataFrame::cbind(SpatDataFrame &x) {
-	unsigned nc = x.ncol();
+	size_t nc = x.ncol();
 	std::vector<std::string> nms = x.names;
 	for (size_t i=0; i<nc; i++) {
 		if (x.itype[i] == 0) {
@@ -1182,7 +1182,7 @@ SpatDataFrame SpatDataFrame::unique() {
 	if (nu == ns) {
 		return *this;
 	}
-	std::vector<unsigned> keep;
+	std::vector<size_t> keep;
 	keep.reserve(nu);
 	for (size_t i=0; i<nu; i++) {
 		for (size_t j=0; j<ns; j++) {
@@ -1196,11 +1196,11 @@ SpatDataFrame SpatDataFrame::unique() {
 }
 
 
-size_t SpatDataFrame::strwidth(unsigned i) {
+size_t SpatDataFrame::strwidth(size_t i) {
 	size_t m = 0;
 	if (i < iplace.size()) {
 		if (itype[i] == 2) {
-			unsigned j = iplace[i];
+			size_t j = iplace[i];
 			if (j < sv.size()) {
 				std::vector<std::string> s = sv[j];
 				for (i = 0; i<s.size(); i++) {

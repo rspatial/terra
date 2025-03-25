@@ -261,7 +261,7 @@ SpatVectorCollection SpatVector::split(std::string field) {
 
 	for (size_t i=0; i<uv.nrow(); i++) {
 		SpatVector v;
-		std::vector<unsigned> r;
+		std::vector<size_t> r;
 		for (size_t j=0; j<idx.size(); j++) {
 			if (i == (size_t)idx[j]) {
 				v.addGeom( getGeom(j) );
@@ -314,7 +314,7 @@ SpatVector SpatVector::get_holes() {
 	if (geoms[0].gtype != polygons) {
 		return out;
 	}
-	std::vector<unsigned> atts;
+	std::vector<size_t> atts;
 
 	for (size_t i=0; i<n; i++) {
 		SpatGeom g;

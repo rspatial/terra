@@ -8,7 +8,8 @@ else
 endif
 
 PKG_LIBS += -ltbb12
-PKG_CXXFLAGS += -DHAVE_TBB
+PKG_CXXFLAGS += -DHAVE_TBB 
+#PKG_CXXFLAGS += -Wconversion -Wno-sign-conversion 
 
 CXX_STD = CXX
 

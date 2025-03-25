@@ -28,9 +28,9 @@
 #include <limits.h>
 #include <float.h>
 
-#if !defined(__cplusplus)
-#define nullptr 0
-#endif
+//#if !defined(__cplusplus)
+#define null_ptr 0
+//#endif
 
 #define GEOGRAPHICLIB_GEODESIC_ORDER 6
 #define nA1   GEOGRAPHICLIB_GEODESIC_ORDER
@@ -618,14 +618,14 @@ real geod_genposition(const struct geod_geodesicline* l,
 
 void geod_setdistance(struct geod_geodesicline* l, real s13) {
   l->s13 = s13;
-  l->a13 = geod_genposition(l, GEOD_NOFLAGS, l->s13, nullptr, nullptr, nullptr,
-                            nullptr, nullptr, nullptr, nullptr, nullptr);
+  l->a13 = geod_genposition(l, GEOD_NOFLAGS, l->s13, null_ptr, null_ptr, null_ptr,
+                            null_ptr, null_ptr, null_ptr, null_ptr, null_ptr);
 }
 
 static void geod_setarc(struct geod_geodesicline* l, real a13) {
   l->a13 = a13; l->s13 = NaN;
-  geod_genposition(l, GEOD_ARCMODE, l->a13, nullptr, nullptr, nullptr, &l->s13,
-                   nullptr, nullptr, nullptr, nullptr);
+  geod_genposition(l, GEOD_ARCMODE, l->a13, null_ptr, null_ptr, null_ptr, &l->s13,
+                   null_ptr, null_ptr, null_ptr, null_ptr);
 }
 
 void geod_gensetdistance(struct geod_geodesicline* l,
@@ -638,7 +638,7 @@ void geod_gensetdistance(struct geod_geodesicline* l,
 void geod_position(const struct geod_geodesicline* l, real s12,
                    real* plat2, real* plon2, real* pazi2) {
   geod_genposition(l, FALSE, s12, plat2, plon2, pazi2,
-                   nullptr, nullptr, nullptr, nullptr, nullptr);
+                   null_ptr, null_ptr, null_ptr, null_ptr, null_ptr);
 }
 
 real geod_gendirect(const struct geod_geodesic* g,
@@ -670,7 +670,7 @@ void geod_direct(const struct geod_geodesic* g,
                  real s12,
                  real* plat2, real* plon2, real* pazi2) {
   geod_gendirect(g, lat1, lon1, azi1, GEOD_NOFLAGS, s12, plat2, plon2, pazi2,
-                 nullptr, nullptr, nullptr, nullptr, nullptr);
+                 null_ptr, null_ptr, null_ptr, null_ptr, null_ptr);
 }
 
 static real geod_geninverse_int(const struct geod_geodesic* g,
@@ -786,9 +786,9 @@ static real geod_geninverse_int(const struct geod_geodesic* g,
     sig12 = atan2(maxx((real)(0), csig1 * ssig2 - ssig1 * csig2),
                                   csig1 * csig2 + ssig1 * ssig2);
     Lengths(g, g->n, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2,
-            cbet1, cbet2, &s12x, &m12x, nullptr,
-            (outmask & GEOD_GEODESICSCALE) ? &M12 : nullptr,
-            (outmask & GEOD_GEODESICSCALE) ? &M21 : nullptr,
+            cbet1, cbet2, &s12x, &m12x, null_ptr,
+            (outmask & GEOD_GEODESICSCALE) ? &M12 : null_ptr,
+            (outmask & GEOD_GEODESICSCALE) ? &M21 : null_ptr,
             Ca);
     /* Add the check for sig12 since zero length geodesics might yield m12 <
      * 0.  Test case was
@@ -912,9 +912,9 @@ static real geod_geninverse_int(const struct geod_geodesic* g,
                  fabs(salp1 - salp1b) + (calp1 - calp1b) < tolb);
       }
       Lengths(g, eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2,
-              cbet1, cbet2, &s12x, &m12x, nullptr,
-              (outmask & GEOD_GEODESICSCALE) ? &M12 : nullptr,
-              (outmask & GEOD_GEODESICSCALE) ? &M21 : nullptr, Ca);
+              cbet1, cbet2, &s12x, &m12x, null_ptr,
+              (outmask & GEOD_GEODESICSCALE) ? &M12 : null_ptr,
+              (outmask & GEOD_GEODESICSCALE) ? &M21 : null_ptr, Ca);
       m12x *= g->b;
       s12x *= g->b;
       a12 = sig12 / degree;
@@ -1044,9 +1044,9 @@ void geod_inverseline(struct geod_geodesicline* l,
                       real lat1, real lon1, real lat2, real lon2,
                       unsigned caps) {
   real salp1, calp1,
-    a12 = geod_geninverse_int(g, lat1, lon1, lat2, lon2, nullptr,
-                              &salp1, &calp1, nullptr, nullptr,
-                              nullptr, nullptr, nullptr, nullptr),
+    a12 = geod_geninverse_int(g, lat1, lon1, lat2, lon2, null_ptr,
+                              &salp1, &calp1, null_ptr, null_ptr,
+                              null_ptr, null_ptr, null_ptr, null_ptr),
     azi1 = atan2dx(salp1, calp1);
   caps = caps ? caps : GEOD_DISTANCE_IN | GEOD_LONGITUDE;
   /* Ensure that a12 can be converted to a distance */
@@ -1059,7 +1059,7 @@ void geod_inverse(const struct geod_geodesic* g,
                   real lat1, real lon1, real lat2, real lon2,
                   real* ps12, real* pazi1, real* pazi2) {
   geod_geninverse(g, lat1, lon1, lat2, lon2, ps12, pazi1, pazi2,
-                  nullptr, nullptr, nullptr, nullptr);
+                  null_ptr, null_ptr, null_ptr, null_ptr);
 }
 
 real SinCosSeries(boolx sinp, real sinx, real cosx, const real c[], int n) {
@@ -1286,7 +1286,7 @@ real InverseStart(const struct geod_geodesic* g,
        * Inverse. */
       Lengths(g, g->n, pi + bet12a,
               sbet1, -cbet1, dn1, sbet2, cbet2, dn2,
-              cbet1, cbet2, nullptr, &m12b, &m0, nullptr, nullptr, Ca);
+              cbet1, cbet2, null_ptr, &m12b, &m0, null_ptr, null_ptr, Ca);
       x = -1 + m12b / (cbet1 * cbet2 * m0 * pi);
       betscale = x < -(real)(0.01) ? sbet12a / x :
         -g->f * sq(cbet1) * pi;
@@ -1446,7 +1446,7 @@ real Lambda12(const struct geod_geodesic* g,
       dlam12 = - 2 * g->f1 * dn1 / sbet1;
     else {
       Lengths(g, eps, sig12, ssig1, csig1, dn1, ssig2, csig2, dn2,
-              cbet1, cbet2, nullptr, &dlam12, nullptr, nullptr, nullptr, Ca);
+              cbet1, cbet2, null_ptr, &dlam12, null_ptr, null_ptr, null_ptr, Ca);
       dlam12 *= g->f1 / (calp2 * cbet2);
     }
   }
@@ -1734,7 +1734,7 @@ int transit(real lon1, real lon2) {
   /* Compute lon12 the same way as Geodesic::Inverse. */
   lon1 = AngNormalize(lon1);
   lon2 = AngNormalize(lon2);
-  lon12 = AngDiff(lon1, lon2, nullptr);
+  lon12 = AngDiff(lon1, lon2, null_ptr);
   return lon1 <= 0 && lon2 > 0 && lon12 > 0 ? 1 :
     (lon2 <= 0 && lon1 > 0 && lon12 < 0 ? -1 : 0);
 }
@@ -1809,8 +1809,8 @@ void geod_polygon_addpoint(const struct geod_geodesic* g,
   } else {
     real s12, S12 = 0;       /* Initialize S12 to stop Visual Studio warning */
     geod_geninverse(g, p->lat, p->lon, lat, lon,
-                    &s12, nullptr, nullptr, nullptr, nullptr, nullptr,
-                    p->polyline ? nullptr : &S12);
+                    &s12, null_ptr, null_ptr, null_ptr, null_ptr, null_ptr,
+                    p->polyline ? null_ptr : &S12);
     accadd(p->P, s12);
     if (!p->polyline) {
       accadd(p->A, S12);
@@ -1829,9 +1829,9 @@ void geod_polygon_addedge(const struct geod_geodesic* g,
      * lon is to make CLang static analyzer happy. */
     real lat = 0, lon = 0, S12 = 0;
     geod_gendirect(g, p->lat, p->lon, azi, GEOD_LONG_UNROLL, s,
-                   &lat, &lon, nullptr,
-                   nullptr, nullptr, nullptr, nullptr,
-                   p->polyline ? nullptr : &S12);
+                   &lat, &lon, null_ptr,
+                   null_ptr, null_ptr, null_ptr, null_ptr,
+                   p->polyline ? null_ptr : &S12);
     accadd(p->P, s);
     if (!p->polyline) {
       accadd(p->A, S12);
@@ -1857,7 +1857,7 @@ unsigned geod_polygon_compute(const struct geod_geodesic* g,
     return p->num;
   }
   geod_geninverse(g, p->lat, p->lon, p->lat0, p->lon0,
-                  &s12, nullptr, nullptr, nullptr, nullptr, nullptr, &S12);
+                  &s12, null_ptr, null_ptr, null_ptr, null_ptr, null_ptr, &S12);
   if (pP) *pP = accsum(p->P, s12);
   acccopy(p->A, t);
   accadd(t, S12);
@@ -1888,8 +1888,8 @@ unsigned geod_polygon_testpoint(const struct geod_geodesic* g,
     geod_geninverse(g,
                     i == 0 ? p->lat  : lat, i == 0 ? p->lon  : lon,
                     i != 0 ? p->lat0 : lat, i != 0 ? p->lon0 : lon,
-                    &s12, nullptr, nullptr, nullptr, nullptr, nullptr,
-                    p->polyline ? nullptr : &S12);
+                    &s12, null_ptr, null_ptr, null_ptr, null_ptr, null_ptr,
+                    p->polyline ? null_ptr : &S12);
     perimeter += s12;
     if (!p->polyline) {
       tempsum += S12;
@@ -1932,12 +1932,12 @@ unsigned geod_polygon_testedge(const struct geod_geodesic* g,
      * happy. */
     real lat = 0, lon = 0, s12, S12 = 0;
     geod_gendirect(g, p->lat, p->lon, azi, GEOD_LONG_UNROLL, s,
-                   &lat, &lon, nullptr,
-                   nullptr, nullptr, nullptr, nullptr, &S12);
+                   &lat, &lon, null_ptr,
+                   null_ptr, null_ptr, null_ptr, null_ptr, &S12);
     tempsum += S12;
     crossings += transitdirect(p->lon, lon);
     geod_geninverse(g, lat,  lon, p->lat0,  p->lon0,
-                    &s12, nullptr, nullptr, nullptr, nullptr, nullptr, &S12);
+                    &s12, null_ptr, null_ptr, null_ptr, null_ptr, null_ptr, &S12);
     perimeter += s12;
     tempsum += S12;
     crossings += transit(lon, p->lon0);

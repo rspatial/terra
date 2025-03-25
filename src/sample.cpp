@@ -72,7 +72,7 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 		std::vector<std::size_t> pm = sort_order_nan_a(v);
 		permute(v, pm);
 		permute(cells, pm);
-		std::map<double, unsigned long long int> tab = table(v);
+		std::map<double, size_t> tab = table(v);
 		std::vector<std::vector<double>> tv = table2vector2(tab);
 		size_t start = 0;
 		for (size_t j=0; j<tv[0].size(); j++) {
@@ -104,7 +104,7 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 		permute(vals, pm);
 		permute(vwght, pm);
 		permute(vcell, pm);
-		std::map<double, unsigned long long int> tab = table(vals);
+		std::map<double, size_t> tab = table(vals);
 		std::vector<std::vector<double>> tv = table2vector2(tab);
 		size_t start = 0;
 				
@@ -817,7 +817,7 @@ std::vector<size_t> SpatRaster::sampleCells(double size, std::string method, boo
 }
 */
 
-SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
+SpatVector SpatVector::sample(size_t n, std::string method, unsigned seed) {
 
 	std::string gt = type();
 	SpatVector out;
@@ -1037,7 +1037,7 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 }
 
 
-SpatVector SpatVector::sample_geom(std::vector<unsigned> n, std::string method, unsigned seed) {
+SpatVector SpatVector::sample_geom(std::vector<size_t> n, std::string method, unsigned seed) {
 
 	SpatVector out;
 	if (n.size() != size()) {

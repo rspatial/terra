@@ -44,8 +44,8 @@ class SpatDataFrame {
 		std::string getError() { return msg.getError(); }
 	
 		std::vector<std::string> names;
-		std::vector<unsigned> itype; //0 double, 1 long, 2 string, 3 bool, 4 time, 5 factor
-		std::vector<unsigned> iplace;
+		std::vector<size_t> itype; //0 double, 1 long, 2 string, 3 bool, 4 time, 5 factor
+		std::vector<size_t> iplace;
 		std::vector<std::vector<double>> dv;
 		std::vector<std::vector<long>> iv;
 		std::vector<std::vector<std::string>> sv;
@@ -56,30 +56,30 @@ class SpatDataFrame {
 		long NAL = std::numeric_limits<long>::min();
 		SpatTime_t NAT = std::numeric_limits<SpatTime_t>::min();
 		
-		unsigned nrow();
-		unsigned ncol();
+		size_t nrow();
+		size_t ncol();
 		SpatDataFrame subset_rows(std::vector<long> range);
-		SpatDataFrame subset_rows(std::vector<unsigned> range);
-		SpatDataFrame subset_cols(std::vector<unsigned> range);
-		SpatDataFrame subset_rows(unsigned i);
-		SpatDataFrame subset_cols(unsigned i);
-		std::vector<double> getD(unsigned i);
-		std::vector<long> getI(unsigned i);
-		std::vector<std::string> getS(unsigned i);
-		std::vector<int8_t> getB(unsigned i);
-		SpatTime_v getT(unsigned i);
-		SpatFactor getF(unsigned i);
+		SpatDataFrame subset_rows(std::vector<size_t> range);
+		SpatDataFrame subset_cols(std::vector<size_t> range);
+		SpatDataFrame subset_rows(size_t i);
+		SpatDataFrame subset_cols(size_t i);
+		std::vector<double> getD(size_t i);
+		std::vector<long> getI(size_t i);
+		std::vector<std::string> getS(size_t i);
+		std::vector<int8_t> getB(size_t i);
+		SpatTime_v getT(size_t i);
+		SpatFactor getF(size_t i);
 
 		std::vector<std::string> as_string(size_t v);
 		std::vector<long> as_long(size_t v);
 		std::vector<double> as_double(size_t v);
 
-		double getDvalue(unsigned i, unsigned j);
-		long getIvalue(unsigned i, unsigned j);
-		std::string getSvalue(unsigned i, unsigned j);
-		int8_t getBvalue(unsigned i, unsigned j);
-		SpatTime_t getTvalue(unsigned i, unsigned j);
-		SpatFactor getFvalue(unsigned i, unsigned j);
+		double getDvalue(size_t i, size_t j);
+		long getIvalue(size_t i, size_t j);
+		std::string getSvalue(size_t i, size_t j);
+		int8_t getBvalue(size_t i, size_t j);
+		SpatTime_t getTvalue(size_t i, size_t j);
+		SpatFactor getFvalue(size_t i, size_t j);
 	
 		void add_row();
 		void add_rows(size_t n);
@@ -109,11 +109,11 @@ class SpatDataFrame {
 		bool remove_column(std::string field);
 		bool remove_column(int i);		
 
-		void resize_rows(unsigned n);
-		void remove_rows(std::vector<unsigned> r);
+		void resize_rows(size_t n);
+		void remove_rows(std::vector<size_t> r);
 
-		void resize_cols(unsigned n);
-		void reserve(unsigned n);
+		void resize_cols(size_t n);
+		void reserve(size_t n);
 		
 		bool rbind(SpatDataFrame &x);
 		bool cbind(SpatDataFrame &x);
@@ -138,7 +138,7 @@ class SpatDataFrame {
 		std::vector<std::vector<std::string>> to_strings();
 		std::vector<std::string> one_string();
 		SpatDataFrame unique();
-		size_t strwidth(unsigned i);
+		size_t strwidth(size_t i);
 
 		SpatDataFrame sortby(std::string field, bool descending);
 };

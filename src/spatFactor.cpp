@@ -41,7 +41,7 @@ std::vector<std::string> string_values(std::vector<T>& v) {
 //}
 
 
-SpatFactor::SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _labels) {
+SpatFactor::SpatFactor(std::vector<size_t> _values, std::vector<std::string> _labels) {
 	v = _values;
 	labels = _labels;
 	// is this needed?
@@ -49,7 +49,7 @@ SpatFactor::SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _
 	//std::iota(levels.begin(), levels.end(), 0);
 }
 
-SpatFactor::SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _labels, bool _ordered) {
+SpatFactor::SpatFactor(std::vector<size_t> _values, std::vector<std::string> _labels, bool _ordered) {
 	v = _values;
 	labels = _labels;
 	ordered = _ordered;
@@ -57,8 +57,8 @@ SpatFactor::SpatFactor(std::vector<unsigned> _values, std::vector<std::string> _
 
 
 
-SpatFactor::SpatFactor(std::vector<unsigned> _values) {
-	std::vector<unsigned> u = unique_values(_values);
+SpatFactor::SpatFactor(std::vector<size_t> _values) {
+	std::vector<size_t> u = unique_values(_values);
 	size_t n = _values.size();
 	size_t un = u.size();
 
@@ -94,7 +94,7 @@ SpatFactor::SpatFactor(std::vector<std::string> _values) {
 }
 
 /*
-bool SpatFactor::set_levels(std::vector<unsigned> _levels, std::vector<std::string> _labels) {
+bool SpatFactor::set_levels(std::vector<size_t> _levels, std::vector<std::string> _labels) {
 	if (_levels.size() == _labels.size()) {
 		levels = _levels;
 		labels = _labels;
@@ -116,7 +116,7 @@ bool SpatFactor::set_labels(std::vector<std::string> _labels) {
 
 
 
-SpatFactor SpatFactor::subset(std::vector<unsigned> i) {
+SpatFactor SpatFactor::subset(std::vector<size_t> i) {
 	SpatFactor out;
 	out.labels = labels;
 	size_t n = i.size();
@@ -129,7 +129,7 @@ SpatFactor SpatFactor::subset(std::vector<unsigned> i) {
 
 std::string SpatFactor::getLabel(size_t i) {
 	if (i < v.size()) {
-		unsigned j = v[i] - 1;
+		size_t j = v[i] - 1;
 		if (j < labels.size()) {
 			return labels[j];
 		}

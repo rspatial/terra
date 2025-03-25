@@ -263,7 +263,7 @@ bool GetVAT(std::string filename, SpatCategories &vat) {
 	std::vector<std::string> nms = v.df.get_names();
 	std::vector<std::string> ss = {"count", "histogram"};
 
-	std::vector<unsigned> rng;
+	std::vector<size_t> rng;
 	rng.reserve(nms.size());
 
 	for (size_t i=0; i<nms.size(); i++) {

@@ -899,7 +899,7 @@ bool SpatVectorCollection::read_ogr(GDALDataset *&poDS, std::string layer, std::
 	poLayer->ResetReading();
 
 	SpatVector points, lines, polygons;
-	std::vector<unsigned> pnt, lin, pol;
+	std::vector<size_t> pnt, lin, pol;
 	SpatGeom g;
 	size_t i = 0;
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
