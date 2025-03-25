@@ -63,14 +63,14 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int 
 		}
 	} else {
 		out.resize(1);
-		std::map<double, long long unsigned> tabs;
+		std::map<double, size_t> tabs;
 		for (size_t i = 0; i < bs.n; i++) {
 			std::vector<double> v;
 			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
 			if (round) {
 				for (double& d : v) d = roundn(d, digits);
 			}
-			std::map<double, long long unsigned> tab = table(v);
+			std::map<double, size_t> tab = table(v);
 			tabs = combine_tables(tabs, tab);
 		}
 		out[0] = table2vector(tabs);
@@ -1348,7 +1348,7 @@ SpatDataFrame SpatRaster::zonal_poly(SpatVector x, std::string fun, bool weights
 
 std::vector<double> tabfun(std::vector<double> x, std::vector<double> w) {
 //	if (w.size() == 0) {
-		std::map<double, long long unsigned> tab = table(x);
+		std::map<double, size_t> tab = table(x);
 		return table2vector(tab);
 //	} else {
 		

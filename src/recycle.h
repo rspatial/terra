@@ -18,7 +18,7 @@
 #include <stddef.h>
 
 template <typename T>
-void recycle(std::vector<T> &v, unsigned n) {
+void recycle(std::vector<T> &v, size_t n) {
 	size_t s = v.size();
 	v.resize(n);
 	for (size_t i=s; i<n; i++) {
@@ -29,7 +29,7 @@ void recycle(std::vector<T> &v, unsigned n) {
 
 /*
 template <typename T>
-void recycle(std::vector<T> &v, unsigned n) {
+void recycle(std::vector<T> &v, size_t n) {
 	size_t s = v.size();
 	if (s > n) {
 		v.resize(n);
@@ -64,7 +64,7 @@ void recycle(std::vector<T> &x, std::vector<T> &y) {
 
 
 template <typename T>
-void rep(std::vector<T> &v, unsigned n) {
+void rep(std::vector<T> &v, size_t n) {
 	size_t s = v.size();
 	v.reserve(n * s);
 	for (size_t i=1; i<n; i++) {
@@ -75,7 +75,7 @@ void rep(std::vector<T> &v, unsigned n) {
 }
 
 template <typename T>
-void rep_each(std::vector<T> &v, unsigned n) {
+void rep_each(std::vector<T> &v, size_t n) {
 	if (n == 1) return;
 	std::vector<T> vv = v;
 	size_t s = v.size();

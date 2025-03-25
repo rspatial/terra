@@ -3849,7 +3849,7 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 
 // narm is not used
 
-		std::vector<unsigned> use;
+		std::vector<size_t> use;
 		use.reserve(n);
 		if (ds[0].hasValues()) use.push_back(0);
 		SpatExtent e = ds[0].getExtent();
@@ -4106,7 +4106,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	size_t nl = ds[0].nlyr();
 //std::vector<bool> resample(n, false);
 
-	std::vector<unsigned> use;
+	std::vector<size_t> use;
 	use.reserve(n);
 	if (hvals[0]) use.push_back(0);
 	for (size_t i=1; i<n; i++) {

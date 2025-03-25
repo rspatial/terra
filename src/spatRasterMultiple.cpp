@@ -136,7 +136,7 @@ std::string SpatRasterCollection::make_vrt(std::vector<std::string> options, boo
 }
 
 
-void SpatRasterCollection::readBlock(SpatRaster &r, std::vector<std::vector<double>> &v, BlockSize bs, size_t i, std::vector<unsigned> use, SpatOptions opt){
+void SpatRasterCollection::readBlock(SpatRaster &r, std::vector<std::vector<double>> &v, BlockSize bs, size_t i, std::vector<size_t> use, SpatOptions opt){
 
 	if ((bs.row[i] + bs.nrows[i]) > r.nrow()) {
 		setError("invalid rows/columns");
@@ -163,7 +163,7 @@ void SpatRasterCollection::readBlock(SpatRaster &r, std::vector<std::vector<doub
 
 
 
-SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, bool expand, std::vector<unsigned> use, SpatOptions &opt) {
+SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, bool expand, std::vector<size_t> use, SpatOptions &opt) {
 
 	SpatRasterCollection out;
 	if ( !e.valid() ) {
@@ -204,7 +204,7 @@ SpatRasterCollection SpatRasterCollection::crop(SpatExtent e, std::string snap, 
 }
 
 
-SpatRasterCollection SpatRasterCollection::cropmask(SpatVector v, std::string snap, bool touches, bool expand, std::vector<unsigned> use, SpatOptions &opt) {
+SpatRasterCollection SpatRasterCollection::cropmask(SpatVector v, std::string snap, bool touches, bool expand, std::vector<size_t> use, SpatOptions &opt) {
 	SpatRasterCollection out;
 
 	SpatExtent e = v.extent;
@@ -237,10 +237,10 @@ SpatRasterCollection SpatRasterCollection::cropmask(SpatVector v, std::string sn
 	return out;
 }
 
-std::vector<unsigned> SpatRasterCollection::dims() {
+std::vector<size_t> SpatRasterCollection::dims() {
 	size_t n = ds.size();
 	size_t n2 = 2 * n;
-	std::vector<unsigned> out(n * 3);
+	std::vector<size_t> out(n * 3);
 	for (size_t i=0; i<n; i++) {
 		out[i]    = ds[i].nrow();
 		out[i+n]  = ds[i].ncol();
@@ -431,25 +431,25 @@ bool SpatRasterStack::readAll() {
   return true;
 }
 
-unsigned SpatRasterStack::nsds() {
+size_t SpatRasterStack::nsds() {
 	return ds.size();
 }
-unsigned SpatRasterStack::nrow() {
+size_t SpatRasterStack::nrow() {
 	if (ds.empty()) {
 		return 0;
 	} else {
 		return ds[0].nrow();
 	}
 }
-unsigned SpatRasterStack::ncol() {
+size_t SpatRasterStack::ncol() {
 	if (ds.empty()) {
 		return 0;
 	} else {
 		return ds[0].ncol();
 	}
 }
-std::vector<unsigned> SpatRasterStack::nlyr() {
-	std::vector<unsigned> out;
+std::vector<size_t> SpatRasterStack::nlyr() {
+	std::vector<size_t> out;
 	if (!ds.empty()) {
 		out.reserve(ds.size());
 		for (size_t i=0; i<ds.size(); i++) {
@@ -526,7 +526,7 @@ SpatRaster SpatRasterStack::getsds(size_t i) {
 	}
 }
 
-SpatRasterStack SpatRasterStack::subset(std::vector<unsigned> x) {
+SpatRasterStack SpatRasterStack::subset(std::vector<size_t> x) {
 	SpatRasterStack out;
 	for (size_t i=0; i<x.size(); i++) {
 		size_t j = x[i];
@@ -553,7 +553,7 @@ SpatRasterStack SpatRasterStack::crop(SpatExtent e, std::string snap, bool expan
 	return out;
 }
 
-void SpatRasterStack::replace(unsigned i, SpatRaster x, bool setname) {
+void SpatRasterStack::replace(size_t i, SpatRaster x, bool setname) {
 	if (i > (ds.size()-1)) {
 		setError("invalid index");
 		return;				

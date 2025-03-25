@@ -51,8 +51,8 @@ std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
 
 
 static inline double interpolate(double x, double y1, double y2, unsigned x1, unsigned x2) {
-	double denom = (x2-x1);
-	return y1 + (x-x1) * (y2-y1)/denom;
+	double denom = (double)(x2-x1);
+	return y1 + (x-(double)x1) * (y2-y1)/denom;
 }
 
 

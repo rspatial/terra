@@ -1527,7 +1527,7 @@ SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &op
 
 SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt) {
 
-	std::vector<unsigned> vnl = nlyr();
+	std::vector<size_t> vnl = nlyr();
 	size_t nl = vmax(vnl, false);
 	SpatRaster out = ds[0].geometry(nl);
 	size_t ns = nsds();
