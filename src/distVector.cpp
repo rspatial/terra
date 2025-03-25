@@ -1579,7 +1579,7 @@ std::vector<double> SpatVector::length() {
 
 
 double edges_geom(const SpatGeom &geom) {
-	double edges = 0;
+	size_t edges = 0;
 	if (geom.gtype == points) return edges;
 	for (size_t i=0; i<geom.parts.size(); i++) {
 		edges += geom.parts[i].y.size();
@@ -1590,10 +1590,10 @@ double edges_geom(const SpatGeom &geom) {
 	return edges-1;
 }
 
-std::vector<double> SpatVector::nseg() {
+std::vector<size_t> SpatVector::nseg() {
 
 	size_t s = size();
-	std::vector<double> r;
+	std::vector<size_t> r;
 	r.reserve(s);
 	for (size_t i=0; i<s; i++) {
 		r.push_back(edges_geom(geoms[i]));

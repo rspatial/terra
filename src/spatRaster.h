@@ -288,8 +288,8 @@ class SpatRaster {
 
 		std::vector<double> resolution();
 		SpatRaster setResolution(double xres, double yres);
-		double ncell() { return nrow() * ncol(); }
-		double size() { return ncol() * nrow() * nlyr() ; }
+		double ncell() { return (double)nrow() * (double)ncol(); }
+		double size() { return (double)ncol() * (double)nrow() * (double)nlyr() ; }
 
 		std::vector<bool> is_rotated();
 
@@ -385,7 +385,7 @@ class SpatRaster {
 
         SpatRaster deepCopy();
 		SpatRaster hardCopy(SpatOptions &opt);
-        SpatRaster geometry(long nlyrs=-1, bool properties=false, bool time=true, bool units=false, bool tags=false);
+        SpatRaster geometry(size_t nlyrs=0, bool properties=false, bool time=true, bool units=false, bool tags=false);
 		SpatRaster geometry_opt(long nlyrs, bool properties, bool time, bool units, bool tags, bool datatype, SpatOptions &opt);
 
 		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, std::vector<std::string> domains);

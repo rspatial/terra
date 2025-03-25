@@ -29,7 +29,7 @@ setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"),
 
 rasterize_points <- function(x, y, values, fun="last", background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 
-	if (missing(fun)) fun <- "last"
+	if (missing(fun) || (is.null(fun))) fun <- "last"
 	if (update && (!hasValues(y))) update <- FALSE
 	nrx <- nrow(x)
 
@@ -186,13 +186,15 @@ setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
 	function(x, y, values=1, fun, ..., background=NA, update=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list()) {
 
 		if (!is.null(by)) {
+		
+			if (missing(fun)) fun <- NULL
 			by <- rep_len(by, nrow(x))
 			values <- rep_len(values, nrow(x))
 
 			x <- lapply(split(data.frame(x), by), as.matrix)
 			values <- split(values, by)
 
-			out <- rast(lapply(1:length(x), function(i) rasterize(x[[i]], y, values[[i]], fun, background=background, update=update)))
+			out <- rast(lapply(1:length(x), function(i) rasterize(x[[i]], y, values[[i]], fun=fun, background=background, update=update)))
 			names(out) <- unique(by)
 			if (filename != "") {
 				out <- writeRaster(out, filename, overwrite=overwrite, wopt=wopt)
@@ -226,6 +228,7 @@ setMethod("rasterize", signature(x="data.frame", y="SpatRaster"),
 	function(x, y, values=1, fun, ..., background=NA, update=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list()) {
 		stopifnot(ncol(x) >=2)
 		x <- as.matrix(x[,1:2])
+		if (missing(fun)) fun <- NULL
 		rasterize(x, y, values=values, fun=fun, ..., background=background, update=update, by=by, filename=filename, overwrite=overwrite, wopt=wopt)
 	}
 )
@@ -235,10 +238,11 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, cover=FALSE, by=NULL, filename="", overwrite=FALSE, wopt=list()) {
 
 		if (!is.null(by)) {
+			if (missing(fun)) fun <- NULL
 			x <- split(x, by)
 			uby <- names(x)
 			##uby <- sapply(x, function(i) i[[by]][1])			
-			out <- rast(lapply(x, function(i) rasterize(i, y, field=field, fun, background=background, touches=touches, update=update, cover=cover, ...)))
+			out <- rast(lapply(x, function(i) rasterize(i, y, field=field, fun=fun, background=background, touches=touches, update=update, cover=cover, ...)))
 			names(out) <- uby
 			if (filename != "") {
 				out <- writeRaster(out, filename, overwrite=overwrite, wopt=wopt)
@@ -291,7 +295,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		if (cover[1] && pols) {
 			y@pntr <- y@pntr$rasterize(x@pntr, "", 1, background, touches[1], "", TRUE, FALSE, TRUE, opt)
 		} else {
-			if (missing(fun)) {
+			if (missing(fun) || is.null(fun)) {
 				if (!is.null(dots$sum)) {
 					# backward compatibility
 					if (isTRUE(dots$sum)) fun <- "sum"

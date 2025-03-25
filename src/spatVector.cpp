@@ -927,10 +927,10 @@ void SpatVector::setLinesStartEnd(std::vector<double> &x, std::string crs) {
 SpatVector SpatVector::subset_rows(std::vector<long> range) {
 
 	SpatVector out;
-	int n = nrow();
+	long n = nrow();
 	std::vector<size_t> r;
 	r.reserve(range.size());
-	for (size_t i=0; i<range.size(); i++) {
+	for (long i=0; i<range.size(); i++) {
 		if ((range[i] >= 0) && (range[i] < n)) {
 			r.push_back(range[i]);
 		}

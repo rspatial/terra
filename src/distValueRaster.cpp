@@ -267,7 +267,7 @@ SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<do
 		for (double &d : tox) d *= toRad;
 	}
 
-	double oldfirst = 0;
+	size_t oldfirst = 0;
 	size_t first = 0;
 	size_t last  = x.size();
 

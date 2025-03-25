@@ -1284,7 +1284,7 @@ bool GCP_geotrans(GDALDataset *poDataset, double* adfGeoTransform) {
 //#include <filesystem>
 
 SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned useaoi, bool snap, SpatOptions &opt) {
-	SpatRaster out = geometry(0);
+	SpatRaster out = geometry();
 
 	if (nsrc() > 1) {
 		out.setError("you can rectify only one data source at a time");
@@ -1347,7 +1347,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 			out.setExtent(en, false, true, "");
 		}
 	} else if (useaoi == 2){  // extent and resolution
-		out = aoi.geometry(0);
+		out = aoi.geometry();
 	} // else { // if (useaoi == 0) // no aoi
 
 	//e = out.getExtent();

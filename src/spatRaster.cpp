@@ -247,7 +247,7 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 
 
-SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool units, bool tags) {
+SpatRaster SpatRaster::geometry(size_t nlyrs, bool properties, bool time, bool units, bool tags) {
 	SpatRasterSource s;
 	//s.values.resize(0);
 	s.nrow = nrow();
@@ -258,7 +258,7 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 	s.memory = true;
 	s.hasValues = false;
 	long nl = nlyr();
-	bool keepnlyr = ((nlyrs == nl) || (nlyrs < 1));
+	bool keepnlyr = ((nlyrs == nl) || (nlyrs == 0));
 	nlyrs = (keepnlyr) ? nlyr(): nlyrs;
 
 // should be within "if (keepnlyr)" block?

@@ -265,7 +265,7 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 		return(out);
 	}
 
-	unsigned nc = ncol();
+	size_t nc = ncol();
 	if (nrow() > 1000) {
 		opt.steps = std::max(opt.steps, (size_t) 4);
 		opt.progress = opt.progress * 1.5;
@@ -430,7 +430,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 			}
 			
 			std::vector<double> cells;
-			unsigned nc = ncol();
+			size_t nc = ncol();
 
 			if (!readStart()) {
 				out.setError(getError());
@@ -509,7 +509,7 @@ SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees
 		out.setError("no locations to compute from");
 		return(out);
 	}
-	unsigned nc = ncol();
+	size_t nc = ncol();
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -585,7 +585,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, std::string unit, SpatOptio
 	p = p.aggregate(false);
 
 //	bool lonlat = is_lonlat(); // m == 0
-	unsigned nc = ncol();
+	size_t nc = ncol();
 
  	if (!out.writeStart(opt, filenames())) {
 		readStop();
@@ -3155,13 +3155,13 @@ SpatRaster SpatRaster::hillshade(SpatRaster aspect, std::vector<double> angle, s
 			nms = opt.names;
 		} else {
 			nms.reserve(nl);
-			for (unsigned i=0; i<nl; i++) {
+			for (size_t i=0; i<nl; i++) {
 				std::string nmi = "hs_" + double_to_string(angle[i]) + "_" + double_to_string(direction[i]);
 				nms.push_back(nmi);
 			}
 		}
 				
-		for (unsigned i=0; i<nl; i++) {
+		for (size_t i=0; i<nl; i++) {
 			ops.names = {nms[i]};
 			SpatRaster r = hillshade(aspect, {angle[i]}, {direction[i]}, normalize, ops);
 			out.source[i] = r.source[0];

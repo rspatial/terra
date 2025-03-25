@@ -50,9 +50,9 @@ std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
 }
 
 
-static inline double interpolate(double x, double y1, double y2, unsigned x1, unsigned x2) {
-	double denom = (double)(x2-x1);
-	return y1 + (x-(double)x1) * (y2-y1)/denom;
+static inline double interpolate(double x, double y1, double y2, double x1, double x2) {
+	double denom = (x2-x1);
+	return y1 + (x-x1) * (y2-y1)/denom;
 }
 
 
@@ -83,8 +83,8 @@ static inline std::vector<double> vquantile(std::vector<double> v, const std::ve
 
     for (size_t i = 0; i < pn; ++i) {
 		double x = probs[i] * (n-1);
-		unsigned x1 = std::floor(x);
-		unsigned x2 = std::ceil(x);
+		double x1 = std::floor(x);
+		double x2 = std::ceil(x);
 		if (x1 == x2) {
 			q[i] = v[x1];
 		} else {

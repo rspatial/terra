@@ -10,6 +10,7 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 	if (ncols < 1) error("rast", "ncols < 1")
 	nrows <- round(nrows)
 	if (nrows < 1) error("rast", "nrows < 1")
+	if (nlyrs < 1) error("rast", "nlyrs < 1")
 
 	if (missing(extent)) {
 		e <- c(xmin, xmax, ymin, ymax)
