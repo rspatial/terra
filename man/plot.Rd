@@ -99,8 +99,8 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{grid}{logical. If \code{TRUE} grid lines are drawn. Their properties such as type and color can be set with the \code{pax} argument}
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
-  \item{main}{character. Main plot titles (one for each layer to be plotted). You can use arguments \code{cex.main}, \code{font.main}, \code{col.main} to change the appearance; and \code{loc.main} to change the location of the main title (either two coordinates, or a character value such as "topleft")}
-  \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)}
+  \item{main}{character. Main plot titles (one for each layer to be plotted). You can use arguments \code{cex.main}, \code{font.main}, \code{col.main} to change the appearance; and \code{loc.main} to change the location of the main title (either two coordinates, or a character value such as "topleft"). You can also use \code{sub=""} for a subtitle. See \code{\link{title}}}
+  \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object).}
   \item{add}{logical. If \code{TRUE} add the object to the current plot}
   \item{ext}{SpatExtent. Can be use instead of xlim and ylim to set the extent of the plot}
   \item{reset}{logical. If \code{TRUE} add the margins (see argument \code{mar}) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  \code{\link{lines}})}

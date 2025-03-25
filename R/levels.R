@@ -27,7 +27,7 @@ setMethod("simplifyLevels", signature(x="SpatRaster"),
 			i <- sapply(s, nrow) > 1
 			if (any(i)) {
 				s <- s[i]
-				s <- lapply(s, \(i) cbind(i[-1,1], i[1,1])) 
+				s <- lapply(s, function(i) cbind(i[-1,1], i[1,1])) 
 				s <- do.call(rbind, s)
 			}	
 			y <- classify(x, s)
