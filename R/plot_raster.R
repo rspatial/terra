@@ -490,26 +490,50 @@
 		}
 	}
 	
-	if ((x$main != "") && (!x$add) && (!x$legend_only)) {
-		pos <- 3
-		if (is.null(x$loc.main)) {
-			if (isTRUE(x$clip)) {
-				x$loc.main <- c(x$lim[1] + diff(x$lim[1:2]) / 2, x$lim[4])
+	if ((!x$add) && (!x$legend_only)) {
+		if (isTRUE(x$main != "")) {
+			pos <- 3
+			if (is.null(x$loc.main)) {
+				if (isTRUE(x$clip)) {
+					x$loc.main <- c(x$lim[1] + diff(x$lim[1:2]) / 2, x$lim[4])
+				} else {
+					usr <- graphics::par("usr")			
+					x$loc.main <- c(usr[1] + diff(usr[1:2]) / 2, usr[4])			
+				}
+			} else if (inherits(x$loc.main, "character")) {
+				xyp <- .txt.loc(x)
+				x$loc.main <- xyp[1:2]
+				pos <- xyp[3]
+			}	
+			if (isTRUE(x$halo.main)) {
+				.halo(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
+					font=x$font.main, col=x$col.main, xpd=TRUE, hc=x$halo.main.hc, hw=x$halo.main.hw)
 			} else {
-				usr <- graphics::par("usr")			
-				x$loc.main <- c(usr[1] + diff(usr[1:2]) / 2, usr[4])			
+				text(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
+					font=x$font.main, col=x$col.main, xpd=TRUE)
 			}
-		} else if (inherits(x$loc.main, "character")) {
-			xyp <- .txt.loc(x)
-			x$loc.main <- xyp[1:2]
-			pos <- xyp[3]
 		}
-		if (isTRUE(x$halo.main)) {
-			.halo(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
-				font=x$font.main, col=x$col.main, xpd=TRUE, hc=x$halo.main.hc, hw=x$halo.main.hw)
-		} else {
-			text(x$loc.main[1], x$loc.main[2], x$main, pos=pos, offset=x$line.main, cex=x$cex.main, 
-				font=x$font.main, col=x$col.main, xpd=TRUE)
+		if (isTRUE(x$sub != "")) { 
+			pos <- 1
+			if (is.null(x$loc.sub)) {
+				if (isTRUE(x$clip)) {
+					x$loc.sub <- c(x$lim[1] + diff(x$lim[1:2]) / 2, x$lim[3])
+				} else {
+					usr <- graphics::par("usr")			
+					x$loc.sub <- c(usr[1] + diff(usr[1:2]) / 2, usr[3])			
+				}
+			} else if (inherits(x$loc.sub, "character")) {
+				xyp <- .txt.loc(x, FALSE)
+				x$loc.sub <- xyp[1:2]
+				pos <- xyp[3]
+			}
+			if (isTRUE(x$halo.main)) {
+				.halo(x$loc.sub[1], x$loc.sub[2], x$sub, pos=pos, offset=x$line.sub, cex=x$cex.sub, 
+					font=x$font.sub, col=x$col.sub, xpd=TRUE, hc=x$halo.sub.hc, hw=x$halo.sub.hw)
+			} else {
+				text(x$loc.sub[1], x$loc.sub[2], x$sub, pos=pos, offset=x$line.sub, cex=x$cex.sub, 
+					font=x$font.sub, col=x$col.sub, xpd=TRUE)
+			}
 		}
 	}
 	if (!x$add) {
@@ -525,8 +549,9 @@
   levels=NULL, add=FALSE, range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint",
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE,
   sort=TRUE, reverse=FALSE, grid=FALSE, las=0, all_levels=FALSE, decimals=NULL, background=NULL,
-  xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", main="", cex.main=1.2, 
-  line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL, 
+  xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", 
+  main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL, 
+  sub = "", font.sub=1, cex.sub=0.8*cex.main, line.sub =1.75,  col.sub=col.main, loc.sub=NULL,
   halo=FALSE, hc="white", hw=0.1, axes=TRUE, box=TRUE, maxcell=500000, buffer=FALSE, clip=TRUE, 
   # for rgb 
   stretch=NULL, scale=NULL, bgalpha=NULL, zlim=NULL, zcol=NULL, overview=NULL, 
@@ -666,6 +691,14 @@
 	out$font.main <- font.main
 	out$col.main  <- col.main
 	out$line.main <- line.main
+
+	out$sub <- sub
+	out$loc.sub <- loc.sub
+	out$cex.sub <- cex.sub
+	out$font.sub <- font.sub
+	out$col.sub <- col.sub
+	out$line.sub <- line.sub
+
 	out$axes <- axes
 	out$xaxs <- xaxs
 	out$yaxs <- yaxs
