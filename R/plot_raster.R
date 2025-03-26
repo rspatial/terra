@@ -605,10 +605,10 @@
 	out$leg$reverse <- isTRUE(reverse)
 	out$box <- isTRUE(box)
 	
-	if (!is.null(out$leg$loc)) {
-		out$leg$x <- out$leg$loc
-		out$leg$loc <- NULL
-	}
+#	if (!is.null(out$leg$loc)) {
+#		out$leg$x <- out$leg$loc
+#		out$leg$loc <- NULL
+#	}
 
 
 	if (!hasValues(x)) {

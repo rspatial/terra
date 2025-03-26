@@ -224,7 +224,7 @@ get_mar <- function(out, is_raster=TRUE) {
 				} else if (out$legend_type == "continuous") {
 					if (inherits(out$leg[["x"]], "character")) {
 						if (out$leg$x == "top") {
-							out$mar <- c(2, 2, w, 2)
+							out$mar <- c(2, 2, w-1, 2)
 						} else if (out$leg$x == "bottom") {
 							out$mar <- c(w, 2, 2, 2)
 						} else if (out$leg$x == "left") {

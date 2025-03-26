@@ -261,7 +261,7 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 	}
 
-	if (is.null(out$leg$loc)) out$leg$loc <- "right"
+#	if (is.null(out$leg$loc)) out$leg$loc <- "right"
 
 	brks <- seq(out$range[1], out$range[2], length.out = length(out$cols))
 	grps <- cut(out$v, breaks = brks, include.lowest = TRUE)
@@ -436,8 +436,8 @@ setMethod("dots", signature(x="SpatVector"),
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, reverse=FALSE, values=NULL,
-	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", main="", 
-	cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, 
+	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", 
+	main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL, 
     sub = "", font.sub=1, cex.sub=0.8*cex.main, line.sub =1.75,  col.sub=col.main, loc.sub=NULL,
 	halo=FALSE, hc="white", hw=0.1, 
 	density=NULL, angle=45, border="black", dig.lab=3, cex=1, clip=TRUE, leg_i=1, asp=NULL, xpd=NULL, 
@@ -511,6 +511,7 @@ setMethod("dots", signature(x="SpatVector"),
 	out$halo.main.hw <- hw
 
 	out$cex.main  <- cex.main
+	out$loc.main  <- loc.main
 	out$font.main <- font.main
 	out$col.main  <- col.main
 	out$line.main <- line.main
@@ -522,10 +523,7 @@ setMethod("dots", signature(x="SpatVector"),
 	out$col.sub <- col.sub
 	out$line.sub <- line.sub
 
-
 	out$dig.lab <- dig.lab
-
-
 
 	out$box <- isTRUE(box)
 	out$add <- isTRUE(add)
