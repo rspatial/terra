@@ -82,13 +82,13 @@ static inline std::vector<double> vquantile(std::vector<double> v, const std::ve
 	std::vector<double> q(pn);
 
     for (size_t i = 0; i < pn; ++i) {
-		double x = probs[i] * (n-1);
-		double x1 = std::floor(x);
-		double x2 = std::ceil(x);
+		double x = probs[i] * (double)(n-1);
+		size_t x1 = (size_t)std::floor(x);
+		size_t x2 = (size_t)std::ceil(x);
 		if (x1 == x2) {
 			q[i] = v[x1];
 		} else {
-			q[i] = interpolate(x, v[x1], v[x2], x1, x2);
+			q[i] = interpolate(x, v[x1], v[x2], (double)x1, (double)x2);
 		}
     }
     return q;

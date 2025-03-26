@@ -242,7 +242,7 @@ class SpatVector {
 		std::vector<size_t> getItype();
 		std::vector<size_t> getIplace();
 
-		void add_column(size_t dtype, std::string name) {
+		void add_column(unsigned dtype, std::string name) {
 			df.add_column(dtype, name);
 		};
 		template <typename T>

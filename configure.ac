@@ -3,6 +3,7 @@ dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
 AC_INIT
 AC_CONFIG_SRCDIR([src/read_ogr.cpp])
 
+
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"

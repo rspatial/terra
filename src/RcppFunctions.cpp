@@ -280,7 +280,7 @@ std::vector<std::vector<std::string>> gdal_drivers() {
     GDALDriver *poDriver;
     char **papszMetadata;
 	for (size_t i=0; i<n; i++) {
-	    poDriver = GetGDALDriverManager()->GetDriver(i);
+	    poDriver = GetGDALDriverManager()->GetDriver((int)i);
 		const char* ss = poDriver->GetDescription();
 		if (ss != NULL ) s[0][i] = ss;
 		ss = poDriver->GetMetadataItem( GDAL_DMD_LONGNAME );
@@ -600,8 +600,8 @@ double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
 		}
 	}
 	size_t n = x.size();
-	double xbar = accumulate(x.begin(), x.end(), 0.0) / n;
-	double ybar = accumulate(y.begin(), y.end(), 0.0) / n;
+	double xbar = accumulate(x.begin(), x.end(), 0.0) / (double)n;
+	double ybar = accumulate(y.begin(), y.end(), 0.0) / (double)n;
 	double numer = 0;
 	for (size_t i=0; i<n; i++) {
 		numer += (x[i]-xbar) * (y[i]-ybar);
