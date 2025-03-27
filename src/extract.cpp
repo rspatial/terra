@@ -508,6 +508,9 @@ void SpatRaster::bilinearValues(std::vector<std::vector<double>> &out, const std
 	for (size_t i=0; i<n; i++) {
 		size_t ii = i * 4;
 		for (size_t j=0; j<nlyr(); j++) {
+//			Rcpp::Rcout << xy[0][ii] << " " << xy[0][ii+1] << " " << xy[0][ii+2] << " " << xy[0][ii+3] << std::endl;
+//			Rcpp::Rcout << xy[1][ii] << " " << xy[1][ii+1] << " " << xy[1][ii+2] << " " << xy[1][ii+3] << std::endl;
+			
 			std::vector<double> value = bilinearInt(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], 
 												v[j][ii], v[j][ii+1], v[j][ii+2], v[j][ii+3], false);
 			out[j][i] = value[0];

@@ -76,11 +76,10 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   Additional parameters for continuous legends include: 
   
   \itemize{
-    \code{size} to change the height and/or width; the defaults are \code{c(1,1)} 
+    \item \code{size} to change the height and/or width; the defaults are \code{c(1,1)} 
 	\item \code{at} to set the location of the tic-marks
 	\item \code{tic} One of these partially matched values: "through", "in", "middle", "out", or "none", to choose a tic-mark placement/length that is different from the default "throughout". You can also set \code{tic.col}, \code{tic.box.col} and \code{tic.lwd}
-	}
-  }
+  }}
   
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Arguments \code{side}, \code{tick} and \code{lab} can be used to indicate for which of the four axes to draw a line (side), tick-mark, and/or the tick-mark labels. The default is \code{c(1:4)} for side and \code{1:2} for the other two. If \code{side} is changed the other two default to that value. Logical argument \code{retro} can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
