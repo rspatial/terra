@@ -1164,7 +1164,11 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 
 		opt <- spatOptions()
 
-		if (as.raster) incomparables = FALSE
+		if (as.raster) {
+			if (nlyr(x) == 1) return(x)
+			incomparables = FALSE
+		}
+		
 		u <- x@pntr$unique(incomparables, digits, na.rm[1], opt)
 
 		if (!as.raster) {
