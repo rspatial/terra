@@ -217,10 +217,10 @@ get_mar <- function(out, is_raster=TRUE) {
 		out$mar <- c(2, 2, 2, 2)
 		if (out$legend_draw) {
 			w <- ifelse(is_raster, 5, 7)
+			out$mar <- c(2, 2, 2, w)
 			if (is.null(out$leg$ext)) {
 				if (is.null(out$leg$x)) {
 					out$leg$x <- "default"
-					out$mar <- c(2, 2, 2, w)
 				} else if (out$legend_type == "continuous") {
 					if (inherits(out$leg[["x"]], "character")) {
 						if (out$leg$x == "top") {

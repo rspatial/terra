@@ -25,9 +25,6 @@
 - `plot<SpatVector>` now also has argument "fun" [#1786](https://github.com/rspatial/terra/issues/1786) by Márcia Barbosa
 - `plot<SpatRaster/Vector>` now also has argument "sub" to set a subtitle [#1790](https://github.com/rspatial/terra/issues/1790) by Agustin Lobo
 
-
-https://github.com/rspatial/terra/issues/1790
-
 ## new
 
 - `writeRaster` and other methods that can write raster data can now set metadata.
