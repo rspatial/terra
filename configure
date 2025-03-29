@@ -2246,6 +2246,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
@@ -4339,6 +4340,7 @@ PKG_LIBS="${PROJ_LIBS} ${PKG_LIBS}"
 TBBFLAGS=
 TBBLIBS=
 
+
 # If tbb/tbb.h and libtbb are found, define TBB and add -ltbb
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking Intel TBB exists:" >&5
 printf %s "checking Intel TBB exists:... " >&6; }
@@ -4416,7 +4418,7 @@ printf "%s\n" "$as_me: WARNING: parallel computing is disabled because TBB did n
       else
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	    TBB_CFLAGS="${TBB_CFLAGS} -DHAVE_TBB -ltbb"
+	    TBB_CFLAGS="${TBB_CFLAGS} -DHAVE_TBB"
       fi
     fi
     rm -f libtbb_test.cpp libtbb_test errors.txt
