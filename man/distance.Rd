@@ -51,7 +51,7 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
 \S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m",
 			method="haversine", use_nodes=FALSE)
 
-\S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, unit="m", method="haversine", use_nodes=FALSE)
+\S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, unit="m", method="geo", use_nodes=FALSE)
 
 \S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE, unit="m", method="geo")
 

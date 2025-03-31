@@ -438,7 +438,7 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 		return(d);
 	}
 
-	if (use_nodes) {
+	if (lonlat && use_nodes) {
 		SpatVector p = as_points(true, false);
 		SpatVector xp = x.as_points(true, false);
 		std::vector<double> out;
@@ -592,7 +592,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 		return(d);
 	}
 
-	if (use_nodes) {
+	if (lonlat && use_nodes) {
 		SpatVector p = as_points(true, false);
 		std::vector<double> out;
 		if (sequential) {

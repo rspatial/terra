@@ -1,4 +1,4 @@
-# version 1.8-40
+# version 1.8-41
 
 ## bug fixes
 
@@ -24,6 +24,7 @@
 - `spatSample<SpatRaster>(method="stratified")` now also finds cells for very small strata in big rasters (suggested by Andrea Duane). 
 - `plot<SpatVector>` now also has argument "fun" [#1786](https://github.com/rspatial/terra/issues/1786) by Márcia Barbosa
 - `plot<SpatRaster/Vector>` now also has argument "sub" to set a subtitle [#1790](https://github.com/rspatial/terra/issues/1790) by Agustin Lobo
+- `distance<SpatVector,SpatVector> now has argument "use_nodes" to speed things up for lon/lat data [#1722](https://github.com/rspatial/terra/issues/1722) by Márcia Barbosa
 
 ## new
 

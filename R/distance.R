@@ -127,19 +127,17 @@ mat2wide <- function(m, sym=TRUE, keep=NULL) {
 }
 
 setMethod("distance", signature(x="SpatVector", y="ANY"),
-	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="haversine", use_nodes=FALSE) {
+	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="geo", use_nodes=FALSE) {
 		if (!missing(y)) {
 			error("distance", "If 'x' is a SpatVector, 'y' should be a SpatVector or missing")
 		}
-
 		method <- match.arg(tolower(method), c("cosine", "haversine", "geo"))
-		opt <- spatOptions()
-
-		if (sequential) {
-			return( x@pntr$distance_self(sequential, unit, method, use_nodes[1], opt))
-		}
+		opt <- spatOptions()	 
 		d <- x@pntr$distance_self(sequential, unit, method, use_nodes[1], opt)		
 		messages(x, "distance")
+		if (sequential) {
+			return(d)
+		}
 		class(d) <- "dist"
 		attr(d, "Size") <- nrow(x)
 		attr(d, "Diag") <- FALSE
