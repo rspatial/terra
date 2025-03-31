@@ -257,7 +257,7 @@ SpatRaster SpatRaster::geometry(size_t nlyrs, bool properties, bool time, bool u
 	//s.prj = prj;
 	s.memory = true;
 	s.hasValues = false;
-	long nl = nlyr();
+	size_t nl = nlyr();
 	bool keepnlyr = ((nlyrs == nl) || (nlyrs == 0));
 	nlyrs = (keepnlyr) ? nlyr(): nlyrs;
 

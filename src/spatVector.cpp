@@ -930,7 +930,7 @@ SpatVector SpatVector::subset_rows(std::vector<long> range) {
 	long n = nrow();
 	std::vector<size_t> r;
 	r.reserve(range.size());
-	for (long i=0; i<range.size(); i++) {
+	for (size_t i=0; i<range.size(); i++) {
 		if ((range[i] >= 0) && (range[i] < n)) {
 			r.push_back(range[i]);
 		}

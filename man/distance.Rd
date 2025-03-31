@@ -46,11 +46,11 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
 \S4method{distance}{SpatRaster,missing}(x, y, target=NA, exclude=NULL, unit="m", method="haversine", 
 			maxdist=NA, values=FALSE, filename="", ...)
 
-\S4method{distance}{SpatRaster,SpatVector}(x, y, unit="m", rasterize=FALSE, method="cosine", filename="", ...)
+\S4method{distance}{SpatRaster,SpatVector}(x, y, unit="m", rasterize=FALSE, method="haversine", filename="", ...)
 
-\S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="geo")
+\S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="haversine", use_nodes=FALSE)
 
-\S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, unit="m", method="cosine")
+\S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, unit="m", method="haversine", use_nodes=FALSE)
 
 \S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE, unit="m", method="geo")
 
@@ -64,7 +64,7 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
   \item{target}{numeric. The value of the cells for which distances to cells that are not \code{NA} should be computed}
   \item{exclude}{numeric. The value of the cells that should not be considered for computing distances}
   \item{unit}{character. Can be either "m" or "km"}
-  \item{method}{character. One of "geo", "cosine" or "haversine" (the latter cannot be used for distances to lines or polygons). With "geo" the most precise but slower method of Karney (2003) is used. The other two methods are faster but less precise}
+  \item{method}{character. One of "geo", "cosine" or "haversine". With "geo" the most precise but slower method of Karney (2003) is used. The other two methods are faster but less precise}
   \item{maxdist}{numeric. Distance above this values are not set to \code{NA}}
   \item{values}{logical. If \code{TRUE}, the value of the nearest non-target cell is returned instead of the distance to that cell}
   \item{rasterize}{logical. If \code{TRUE} distance is computed from the cells covered by the geometries after rasterization. This can be much faster in some cases}
@@ -75,6 +75,7 @@ If \code{y} is missing, the distance between each points in \code{x} with all ot
   \item{lonlat}{logical. If \code{TRUE} the coordinates are interpreted as angular (longitude/latitude). If \code{FALSE} they are interpreted as planar}
   \item{pairs}{logical. If \code{TRUE} a "from", "to", "distance" matrix is returned} 
   \item{symmetrical}{logical. If \code{TRUE} and \code{pairs=TRUE}, the distance between a pair is only included once. The distance between geometry 1 and 3 is included, but the (same) distance between 3 and 1 is not}
+  \item{use_nodes}{logical. If \code{TRUE} and the crs is longitude/latitude, the nodes (vertices) of lines or polygons are used to compute distances, instead of the lines that conntect them. This is faster, but can be less precise of the nodes are far apart}
 }
 
 \value{
