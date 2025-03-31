@@ -86,12 +86,12 @@ If y is missing, the distance between each points in x with all other points in 
 <span><span class="co"># S4 method for class 'SpatRaster,SpatVector'</span></span>
 <span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, unit<span class="op">=</span><span class="st">"m"</span>, rasterize<span class="op">=</span><span class="cn">FALSE</span>, method<span class="op">=</span><span class="st">"haversine"</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S4 method for class 'SpatVector,SpatVector'</span></span>
+<span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, pairwise<span class="op">=</span><span class="cn">FALSE</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"haversine"</span>, use_nodes<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S4 method for class 'SpatVector,ANY'</span></span>
 <span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, sequential<span class="op">=</span><span class="cn">FALSE</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, symmetrical<span class="op">=</span><span class="cn">TRUE</span>, unit<span class="op">=</span><span class="st">"m"</span>,</span>
-<span>      method<span class="op">=</span><span class="st">"haversine"</span>, use_nodes<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'SpatVector,SpatVector'</span></span>
-<span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, pairwise<span class="op">=</span><span class="cn">FALSE</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"geo"</span>, use_nodes<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>      method<span class="op">=</span><span class="st">"geo"</span>, use_nodes<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'matrix,matrix'</span></span>
 <span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">lonlat</span>, pairwise<span class="op">=</span><span class="cn">FALSE</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"geo"</span><span class="op">)</span></span>
