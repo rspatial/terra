@@ -260,7 +260,10 @@ setMethod("time<-", signature(x="SpatRaster"),
 			}
 		}
 		if (any(is.na(value))) {
-			error("time<-", "NAs are not allowed")
+			if (!all(is.na(value))) {
+				error("time<-", "NAs are not allowed in time values (unless they are all NA)")
+			}
+			value <- value[0]
 		}
 		
 		if (!x@pntr$setTime(as.numeric(value), stept, tzone)) {
