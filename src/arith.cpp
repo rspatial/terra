@@ -65,7 +65,14 @@ void operator%(std::vector<double>& a, const std::vector<double>& b) {
 		if (std::isnan(a[i]) || std::isnan(b[i])) {
 			a[i] = NAN;
 		} else {
-			a[i] = std::abs(std::fmod(a[i], b[i]));
+			a[i] = std::fmod(a[i], b[i]);
+			if (b[i] < 0) {
+				if (a[i] > 0) {
+					a[i] = b[i] + a[i]; 
+				}
+			} else if (a[i] < 0) {
+				a[i] = b[i] + a[i]; 
+			}
 		}
 	}
 }
@@ -348,11 +355,26 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, bool fals
 		} else if (oper == "%") {
 			if (reverse) {
 				for (size_t i=0; i<a.size(); i++) {
-					a[i] = std::abs(std::fmod(x, a[i]));
+					 double b = std::fmod(x, a[i]);
+					if (a[i] < 0) {
+						if (b > 0) {
+							b = x + a[i]; 
+						}
+					} else if (b < 0) {
+						b = x + a[i]; 
+					}
+					a[i] = b;
 				}
 			} else {
 				for (size_t i=0; i<a.size(); i++) {
-					a[i] = std::abs(std::fmod(a[i], x));
+					a[i] = std::fmod(a[i], x);
+					if (x < 0) {
+						if (a[i] > 0) {
+							a[i] = x + a[i]; 
+						}
+					} else if (a[i] < 0) {
+						a[i] = x + a[i]; 
+					}
 				}
 			}
 		} else if (oper == "%/%") {
