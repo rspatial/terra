@@ -58,16 +58,17 @@ void operator*(std::vector<double>& a, const std::vector<double>& b) {
 */
 
 
-inline double R_modulo(double x, double y) { 
-	x = std::fmod(x, y);
+
+inline double R_modulo(const double &x, const double &y) { 
+	double m = std::fmod(x, y);
 	if (y < 0) {
-		if (x > 0) {
-			x = y + x; 
+		if (m > 0) {
+			m += y; 
 		}
-	} else if (x < 0) {
-        x = y + x; 
+	} else if (m < 0) {
+        m += y; 
     }
-	return x;
+	return m;
 }
 
 
@@ -79,16 +80,6 @@ void operator%(std::vector<double>& a, const std::vector<double>& b) {
 			a[i] = NAN;
 		} else {
 			a[i] = R_modulo(a[i], b[i]);
-/*
-			a[i] = std::fmod(a[i], b[i]);
-			if (b[i] < 0) {
-				if (a[i] > 0) {
-					a[i] = b[i] + a[i]; 
-				}
-			} else if (a[i] < 0) {
-				a[i] = b[i] + a[i]; 
-			}
-*/
 		}
 	}
 }
