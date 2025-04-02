@@ -264,6 +264,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 				error("time<-", "NAs are not allowed in time values (unless they are all NA)")
 			}
 			value <- value[0]
+			stept <- "remove"
 		}
 		
 		if (!x@pntr$setTime(as.numeric(value), stept, tzone)) {
