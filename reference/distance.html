@@ -33,7 +33,7 @@ If y is missing, the distance between each points in x with all other points in 
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-41</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-43</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,7 +91,7 @@ If y is missing, the distance between each points in x with all other points in 
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector,ANY'</span></span>
 <span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, sequential<span class="op">=</span><span class="cn">FALSE</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, symmetrical<span class="op">=</span><span class="cn">TRUE</span>, unit<span class="op">=</span><span class="st">"m"</span>,</span>
-<span>      method<span class="op">=</span><span class="st">"geo"</span>, use_nodes<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>      method<span class="op">=</span><span class="st">"haversine"</span>, use_nodes<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'matrix,matrix'</span></span>
 <span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">lonlat</span>, pairwise<span class="op">=</span><span class="cn">FALSE</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"geo"</span><span class="op">)</span></span>
@@ -196,13 +196,13 @@ If y is missing, the distance between each points in x with all other points in 
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">distance</span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          1        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 10014577         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 10014577 20003931</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 10018754         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 10018754 20037508</span>
 <span class="r-in"><span><span class="fu"><a href="coerce.html">as.matrix</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          1        2        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0 10014577 10014577</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 10014577        0 20003931</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 10014577 20003931        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0 10018754 10018754</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 10018754        0 20037508</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 10018754 20037508        0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="c.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">30</span>,<span class="op">-</span><span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">25</span>,<span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">9</span>,<span class="op">-</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span>, crs<span class="op">=</span><span class="st">"+proj=longlat +datum=WGS84"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu">distance</span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></span></span>
