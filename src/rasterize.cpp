@@ -513,6 +513,13 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	GDALDatasetH rstDS;
 	double naval;
 	
+	if (!opt.datatype_set) {
+		if ((value < -16777216) || (value > 16777216)) {
+			opt.datatype = "FLT8S";
+		}
+	}
+
+	
 	if (!getDSh(rstDS, out, filename, driver, naval, update, background, opt)) {
 		return out;
 	}
@@ -564,7 +571,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	return out;
 }
 
-
+#include "vecmath.h"
 SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values,
 	double background, bool touches, std::string fun, bool weights, bool update, bool minmax, SpatOptions &opt) {
 	
@@ -656,12 +663,22 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 				add = false;
 				addWarning("cannot add factors");
 			}
+			out.setValueType(1);
 		}
 	}
 
 	if (values.size() != nGeoms) {
 		recycle(values, nGeoms);
 	}
+
+	if (!opt.datatype_set) {
+		double vmn = vmin(values, true);
+		double vmx = vmax(values, true);
+		if ((vmn < -16777216) || (vmx > 16777216)) {
+			opt.set_datatype("FLT8S");
+		}
+	}
+
 
 	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", false, true, std::vector<std::string>());
 	if (x.hasError()) {
