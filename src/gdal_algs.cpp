@@ -1622,7 +1622,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	}
 	GDALClose(hDstDS);
 	if (driver != "MEM") {
-		out = SpatRaster(filename, {-1}, {""}, {}, {}, {});
+		out = SpatRaster(filename, {-1}, {""}, {}, {}, false, false, {});
 	}
 	return out;
 }
@@ -1730,7 +1730,7 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 		GDALClose(hDstDS);
 		GDALClose(hSrcDS);
 		CSLDestroy( papszOptions );
-		out = SpatRaster(filename, {-1}, {""}, {}, {}, {});
+		out = SpatRaster(filename, {-1}, {""}, {}, {}, false, false, {});
 	} else {
 		GDALClose(hSrcDS);
 		CSLDestroy( papszOptions );
@@ -1916,7 +1916,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 			GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
 		}
 		GDALClose(hDstDS);
-		out = SpatRaster(fname, {-1}, {""}, {}, {}, {});
+		out = SpatRaster(fname, {-1}, {""}, {}, {}, false, false, {});
 	}
 	
 	if (mask) {
@@ -2016,7 +2016,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 
 	} else {
 		GDALClose(hDstDS);
-		out = SpatRaster(tmp_filename, {-1}, {""}, {}, {}, {});
+		out = SpatRaster(tmp_filename, {-1}, {""}, {}, {}, false, false, {});
 	}
 	
 	opt.names = getNames();
@@ -2357,7 +2357,7 @@ SpatRaster SpatRaster::fillNA(double missing, double maxdist, int niter, SpatOpt
 	GDALComputeRasterMinMax(hTargetBand, true, adfMinMax);
 	GDALSetRasterStatistics(hTargetBand, adfMinMax[0], adfMinMax[1], -9999, -9999);
 	GDALClose(hDstDS);
-	return SpatRaster(filename, {-1}, {""}, {}, {}, {});
+	return SpatRaster(filename, {-1}, {""}, {}, {}, false, false, {});
 }
 
 

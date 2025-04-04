@@ -566,7 +566,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 
 	GDALClose(rstDS);
 	if (driver != "MEM") {
-		out = SpatRaster(filename, {-1}, {""}, {}, {}, {});
+		out = SpatRaster(filename, {-1}, {""}, {}, {}, false, false, {});
 	}
 	return out;
 }

@@ -29,14 +29,14 @@
 #endif
 
 
-SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<std::string> domains) {
+SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains) {
 #ifdef useGDAL
-	constructFromFile(fname, subds, subdsname, drivers, options, false, domains);
+	constructFromFile(fname, subds, subdsname, drivers, options, noflip, guessCRS, domains);
 #endif
 }
 
 
-SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz, bool noflip, std::vector<std::string> domains) {
+SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz, bool noflip, bool guessCRS, std::vector<std::string> domains) {
 
 	if (fname.empty()) {
 		setError("no filename");
@@ -49,14 +49,14 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 		return;
 	}
 
-	if (!constructFromFile(fname[0], subds, subdsname, drivers, options, noflip, domains)) {
+	if (!constructFromFile(fname[0], subds, subdsname, drivers, options, noflip, guessCRS, domains)) {
 		//setError("cannot open file: " + fname[0]);
 		return;
 	}
 	SpatOptions opt;
 	for (size_t i=1; i<fname.size(); i++) {
 		SpatRaster r;
-		bool ok = r.constructFromFile(fname[i], subds, subdsname, drivers, options, noflip, domains);
+		bool ok = r.constructFromFile(fname[i], subds, subdsname, drivers, options, noflip, guessCRS, domains);
 		if (r.msg.has_warning) {
 			addWarning(r.msg.warnings[0]);
 		}

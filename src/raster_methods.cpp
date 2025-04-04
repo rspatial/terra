@@ -4020,7 +4020,7 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 				out.setError(getError());
 				return out;
 			}
-			SpatRaster v(fname, {}, {}, {}, {}, {});
+			SpatRaster v(fname, {}, {}, {}, {}, false, false, {});
 			if (warnings.size() > 0) {
 				v.msg.warnings = warnings;
 				v.msg.has_warning = true;
@@ -4034,7 +4034,7 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 		
 		SpatOptions vopt(opt);
 		std::string fname = make_vrt(options, first, vopt);
-		SpatRaster v(fname, {}, {}, {}, {}, {});
+		SpatRaster v(fname, {}, {}, {}, {}, false, false, {});
 		v.setNames(ds[0].getNames(), false);
 
 		if (vopt.msg.warnings.size() > 0) {

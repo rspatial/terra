@@ -39,7 +39,7 @@ class SpatRasterStack {
 		std::vector<std::string> long_names;
 		std::vector<std::string> units;
 		SpatRasterStack() {};
-		SpatRasterStack(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options, std::vector<std::string> domains);
+		SpatRasterStack(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains);
 		SpatRasterStack(SpatRaster r, std::string name, std::string longname, std::string unit, bool warn=false);
 		std::vector<std::vector<std::vector<double>>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method, SpatOptions &opt);
 		std::vector<std::vector<std::vector<double>>> extractCell(std::vector<double> &cell, SpatOptions &opt);
@@ -116,7 +116,7 @@ class SpatRasterCollection {
 //		SpatExtent extent;
 		std::vector<std::string> names;
 		SpatRasterCollection() {};
-		SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options, std::vector<std::string> domains);
+		SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains);
 //		void setExtent();
 		SpatExtent getExtent();
 		
