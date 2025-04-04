@@ -21,7 +21,7 @@ setMethod("init", signature(x="SpatRaster"),
 				error("init", "unknown function")
 			}
 		} else if (is.numeric(fun) || is.logical(fun)) {
-			if (is.matrix(fun) && ncol(fun == ncol(x))) {
+			if (is.matrix(fun) && (ncol(fun) == ncol(x))) {
 				fun <- as.vector(t(fun))
 			}
 			opt <- spatOptions(filename, overwrite=overwrite, wopt=wopt)
