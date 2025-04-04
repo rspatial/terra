@@ -11,7 +11,7 @@ setMethod("init", signature(x="SpatRaster"),
 			opt <- spatOptions(filename, overwrite=overwrite, wopt=wopt)
 			x <- rast(x, 1)
 			fun <- fun[1]
-			if (fun %in% c("x", "y", "row", "col", "cell", "chess")) {
+			if (fun %in% c("x", "y", "xy", "row", "col", "cell", "chess")) {
 				x@pntr <- x@pntr$initf(fun, TRUE, opt)
 				messages(x, "init")
 			} else if (is.na(fun)) {
@@ -21,6 +21,9 @@ setMethod("init", signature(x="SpatRaster"),
 				error("init", "unknown function")
 			}
 		} else if (is.numeric(fun) || is.logical(fun)) {
+			if (is.matrix(fun)) {
+				fun <- as.vector(t(fun))
+			}
 			opt <- spatOptions(filename, overwrite=overwrite, wopt=wopt)
 			x@pntr <- x@pntr$initv(fun, opt)
 			messages(x, "init")
