@@ -49,7 +49,7 @@ metags(r)
 metags(r) <- c("another_tag=another_value", "one more=this value")
 metags(r)
 
-metags(r) <- cbind("AREA_OR_POINT", "Point", "")
+metags(r) <- cbind("test", "this", "mydomain")
 metags(r)
 
 metags(r, name="two")
