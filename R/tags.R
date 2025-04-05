@@ -67,14 +67,14 @@ parse_tags <- function(value, domain) {
 			}
 			i <- sapply(dom, length) == 2
 			dom <- do.call(rbind, dom[i])
-			cbind(dom, val[,2])
-			
 			value <- cbind(dom, val[,2])
 		}
+	} else if (NCOL(value) == 3) {
+		value <- value[, c(3,1,2), drop=FALSE]
 	} else if (NCOL(value) > 3) {
 		error("metags<-", "expecting a vector with 'name=value' or a two/three column matrix")
-	}
-	if (NCOL(value) == 2) value <- cbind(value, domain) 
+	} 
+	if (NCOL(value) == 2) value <- cbind(domain, value) 
 	value[is.na(value[,2]), 2] <- ""
 	na.omit(value)
 }
