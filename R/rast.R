@@ -469,7 +469,7 @@ setMethod("rast", signature(x="ANY"),
 	maxy <- max(y) + 0.5 * ry
 
 	d <- dim(xyz)
-	r <- rast(xmin=minx, xmax=maxx, ymin=miny, ymax=maxy, crs=crs, nlyrs=d[2]-2)
+	r <- rast(xmin=minx, xmax=maxx, ymin=miny, ymax=maxy, crs=crs, nlyrs=max(1, d[2]-2))
 	res(r) <- c(rx, ry)
 	ext(r) <- round(ext(r), digits+2)
 	cells <- cellFromXY(r, xyz[,1:2])
