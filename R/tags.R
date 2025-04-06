@@ -1,4 +1,5 @@
 
+
 setMethod("meta", signature(x="SpatRaster"),
 	function(x, layers=FALSE) {
 		f <- function(i) {
