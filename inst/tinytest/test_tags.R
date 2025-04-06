@@ -1,5 +1,5 @@
 
-r <- rast(system.file("ex/elev.tif", package = "terra"))
+x <- r <- rast(system.file("ex/elev.tif", package = "terra"))
 metags(r) <- "FOO=BAR"
 metags(r, layer = 1) <- "this=that"
 
