@@ -3,6 +3,7 @@
 ## bug fixes
 - `rast(xyz=TRUE)` failed if there was no z variable [#1802](https://github.com/rspatial/terra/issues/1802) by Martin Jung
 - `metags` failed if a matrix was used [#1803](https://github.com/rspatial/terra/issues/1803) by fchianucci
+- `distance<SpatVector>(sequential=TRUE)` did not return a vector with the first value of zero (and there was an additional value [#1804](https://github.com/rspatial/terra/issues/1804) by Edward Lavender
 
 ## enhancements
 - `init` with a matrix argument now keeps the same row/col values [#1801](https://github.com/rspatial/terra/issues/1801) Jakub Nowosad
