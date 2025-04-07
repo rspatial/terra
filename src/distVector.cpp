@@ -669,6 +669,9 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 				}
 #endif
 			} else {
+				d.reserve(n);
+				d.push_back(0);
+				n -= 1;
 				for (size_t i=0; i<n; i++) {
 					d.push_back( distance_plane(p[0][i], p[1][i], p[0][i+1], p[1][i+1]) * m );
 				}
@@ -682,7 +685,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 #if defined(HAVE_TBB) && !defined(__APPLE__)
 				if (opt.parallel) {
 					d.resize(n);
-					tbb::parallel_for(tbb::blocked_range<size_t>(0, s-1),
+					tbb::parallel_for(tbb::blocked_range<size_t>(0, s-2),
 					[&](const tbb::blocked_range<size_t>& range) {
 						for (size_t i = range.begin(); i != range.end(); i++) {
 							size_t k = 0;
