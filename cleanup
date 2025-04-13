@@ -1,3 +1,4 @@
 #!/bin/sh
 rm -fr src/Makevars config.log config.status
 rm -fr proj_conf_test*
+
