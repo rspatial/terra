@@ -238,7 +238,7 @@ clean_domains <- function(domains) {
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, domains="", guessCRS=TRUE) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="") {
 
 		f <- .fullFilename(x, vsi=vsi)
 		if (length(f) == 0) {
@@ -288,7 +288,7 @@ setMethod("rast", signature(x="character"),
 )
 
 
-multi <- function(x, subds=0, xyz=3:1, drivers=NULL, opts=NULL) {
+multi <- function(x, subds=0, xyz=3:1, guessCRS=TRUE, drivers=NULL, opts=NULL) {
 
 	noflip <- FALSE
 

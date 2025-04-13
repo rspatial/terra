@@ -420,6 +420,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
   \code{\link{buffer}} \tab buffer geometries \cr
   \code{\link{disagg}} \tab split multi-geometries into separate geometries \cr
   \code{\link{crop}} \tab clip geometries using a rectangle (SpatExtent) or SpatVector \cr
+  
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 

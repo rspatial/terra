@@ -33,7 +33,7 @@ Plot the SpatRaster or SpatVector(s) to make an interactive leaflet map that is 
 	breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, ...)
 
 
-\S4method{plet}{SpatVectorCollection}(x, y="", col, fill=0, main=y, cex=1, lwd=2, 
+\S4method{plet}{SpatVectorCollection}(x, y="", col, fill=0.2, main=y, cex=1, lwd=2, 
 	border="black", alpha=1, popup=TRUE, label=FALSE, 
 	tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
 	wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL, 
@@ -102,7 +102,7 @@ lines(m, v, lwd=1, col="white")
 
 plet(v, "NAME_1", split=TRUE, alpha=.2) |> 
   points(p, col="gray", cex=2, popup=TRUE,
-  	clusterOptions = markerClusterOptions())
+  	clusterOptions = leaflet::markerClusterOptions())
 
 s <- svc(v, p)
 names(s) <- c("the polys", "set of points")

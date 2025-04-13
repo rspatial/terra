@@ -171,7 +171,11 @@ setMethod("pairs", signature(x="SpatRaster"),
 
 
 .halo <- function(x, y=NULL, labels, col="black", hc="white", hw=0.1, ... ) {
-	xy <- grDevices::xy.coords(x, y)
+	if (!is.null(y)) { # recycle
+		xy <- grDevices::xy.coords(cbind(x, y))
+	} else {
+		xy <- grDevices::xy.coords(x, y)
+	}
 	hw <- hw[1]
 	xo <- hw * graphics::strwidth("A")
 	yo <- hw * graphics::strheight("A")
