@@ -1,19 +1,34 @@
-/*
 
-#include "spatRaster.h"
-#include "netcdf.h"
+#include <netcdf.h>
+#include <string>
+#include "Rcpp.h"
 
+// [[Rcpp::export(name = ".ncdf_open")]]
+int ncdf_open(std::string filename, bool write) {
+	
+	int nc_mode = NC_NOWRITE;
+	if (write) {
+		nc_mode = NC_WRITE;
+	}	
+	int ncid = -1;
+	int status = NC_NOERR;
+	status = nc_open(filename.c_str(), nc_mode, &ncid);
+	if (status != NC_NOERR) {
+		std::string s = nc_strerror(status);
+		Rcpp::Rcout << s << std::endl;
+		return false;
+	}
+	return ncid;
+}
 
-// [[Rcpp::export(name = ".readncdf")]]
-bool readncdf(std::string f) {
-	int ncid;
-	int err = nc_open(f.c_str(), 0, &ncid);
-	<< err << std::endl;
-	if (err != 0) return false;
-	err = nc_close(ncid);
-	 << err << std::endl;
-	if (err != 0) return false;
+// [[Rcpp::export(name = ".ncdf_close")]]
+bool ncdf_close(int ncid) {
+	int err = nc_close(ncid);
+	if (err != NC_NOERR) {
+		std::string s = nc_strerror(err);
+		Rcpp::Rcout << s << std::endl;
+		return false;
+	}
 	return true;
 }
 
-*/

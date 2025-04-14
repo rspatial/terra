@@ -392,6 +392,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ncdf_open
+int ncdf_open(std::string filename, bool write);
+RcppExport SEXP _terra_ncdf_open(SEXP filenameSEXP, SEXP writeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type filename(filenameSEXP);
+    Rcpp::traits::input_parameter< bool >::type write(writeSEXP);
+    rcpp_result_gen = Rcpp::wrap(ncdf_open(filename, write));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ncdf_close
+bool ncdf_close(int ncid);
+RcppExport SEXP _terra_ncdf_close(SEXP ncidSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type ncid(ncidSEXP);
+    rcpp_result_gen = Rcpp::wrap(ncdf_close(ncid));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
@@ -429,6 +452,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_uniqueSymmetricRows", (DL_FUNC) &_terra_uniqueSymmetricRows, 2},
     {"_terra_dist2segmentPoint_geo", (DL_FUNC) &_terra_dist2segmentPoint_geo, 8},
     {"_terra_intermediate", (DL_FUNC) &_terra_intermediate, 6},
+    {"_terra_ncdf_open", (DL_FUNC) &_terra_ncdf_open, 2},
+    {"_terra_ncdf_close", (DL_FUNC) &_terra_ncdf_close, 1},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };
