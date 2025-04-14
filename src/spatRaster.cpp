@@ -284,7 +284,6 @@ SpatRaster SpatRaster::geometry(size_t nlyrs, bool properties, bool time, bool u
 				s.depth = getDepth();
 				s.depthname = getDepthName();
 				s.depthunit = getDepthUnit();
-				s.time = getTime();
 			}			
 		}
 		if (units && hasUnit()) {
