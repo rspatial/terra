@@ -52,6 +52,8 @@
 <code>rasterize</code> now checks for very large numbers and switches to FLT8S if detected. <a href="https://github.com/rspatial/terra/issues/1797" class="external-link">#1797</a> by Evan Muise</li>
 <li>
 <code>rast</code>, <code>sds</code> and <code>sprc</code> get new argument “guessCRS” to suppress CRS guessing <a href="https://github.com/rspatial/terra/issues/1800" class="external-link">#1800</a> by Aseem Sharma</li>
+<li>
+<code>plot</code> with a continuous legend now responds to <code>plg=list(horiz=TRUE))</code> <a href="https://github.com/rspatial/terra/issues/1805" class="external-link">#1805</a> by Nathanael Walker-Hale</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -97,7 +99,8 @@
 <code>plot&lt;SpatVector&gt;</code> now also has argument “fun” <a href="https://github.com/rspatial/terra/issues/1786" class="external-link">#1786</a> by Márcia Barbosa</li>
 <li>
 <code>plot&lt;SpatRaster/Vector&gt;</code> now also has argument “sub” to set a subtitle <a href="https://github.com/rspatial/terra/issues/1790" class="external-link">#1790</a> by Agustin Lobo</li>
-<li>`distance&lt;SpatVector,SpatVector&gt; now has argument “use_nodes” to speed things up for lon/lat data <a href="https://github.com/rspatial/terra/issues/1722" class="external-link">#1722</a> by Márcia Barbosa</li>
+<li>
+<code>distance&lt;SpatVector,SpatVector&gt;</code> now has argument “use_nodes” to speed things up for lon/lat data <a href="https://github.com/rspatial/terra/issues/1722" class="external-link">#1722</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-42">new<a class="anchor" aria-label="anchor" href="#new-1-8-42"></a></h3>
@@ -108,7 +111,7 @@
 <li>
 <code>depthName</code>, <code>depthName&lt;-</code>, <code>depthUnit</code>, and <code>depthUnit&lt;-</code> methods</li>
 <li>
-<code>is.num&lt;SpatRaster&gt;</code> [SO 795026641] (<a href="https://stackoverflow.com/questions/79502664/what-is-the-correct-terra-usage-to-achieve-is-numeric-on-an-r-terra-package-rast" class="external-link uri">https://stackoverflow.com/questions/79502664/what-is-the-correct-terra-usage-to-achieve-is-numeric-on-an-r-terra-package-rast</a>) by Jacob Strunk</li>
+<code>is.num&lt;SpatRaster&gt;</code> <a href="https://stackoverflow.com/questions/79502664/what-is-the-correct-terra-usage-to-achieve-is-numeric-on-an-r-terra-package-rast" class="external-link">SO 795026641</a> by Jacob Strunk</li>
 <li>
 <code>simplifyLevels</code> to combine duplicate categories. <a href="https://github.com/rspatial/terra/issues/1769" class="external-link">#1769</a> by Erik Ertsgaard</li>
 </ul></div>
@@ -128,7 +131,7 @@
 <div class="section level3">
 <h3 id="enhancements-1-8-29">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-29"></a></h3>
 <ul><li>
-<code>spatSample&lt;SpatRaster&gt;</code> and <code>spatSample&lt;SpatExtent&gt;</code> gain argument “exact=FALSE” to request the exact (but perhaps less regular) sample size for a regular sample. Currently pnly for planar crs.</li>
+<code>spatSample&lt;SpatRaster&gt;</code> and <code>spatSample&lt;SpatExtent&gt;</code> gain argument “exact=FALSE” to request the exact (but perhaps less regular) sample size for a regular sample. Currently only for planar crs.</li>
 <li>
 <code>spatSample&lt;SpatRaster&gt;</code> gains argument “each=TRUE” to request, when using stratified sampling, a sample size for each stratum, or for all strata combined.</li>
 <li>
