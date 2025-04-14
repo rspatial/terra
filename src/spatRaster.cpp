@@ -272,11 +272,20 @@ SpatRaster SpatRaster::geometry(size_t nlyrs, bool properties, bool time, bool u
 	std::vector<std::string> nms;
 	if (keepnlyr) {
 		nms = getNames();
-		if (time && hasTime()) {
-			s.hasTime = true;
-			s.timestep = getTimeStep();
-			s.timezone = getTimeZone();
-			s.time = getTime();
+		if (time) {
+			if (hasTime()) {
+				s.hasTime = true;
+				s.timestep = getTimeStep();
+				s.timezone = getTimeZone();
+				s.time = getTime();
+			} 
+			if (hasDepth()) {
+				s.hasDepth = true;
+				s.depth = getDepth();
+				s.depthname = getDepthName();
+				s.depthunit = getDepthUnit();
+				s.time = getTime();
+			}			
 		}
 		if (units && hasUnit()) {
 			s.hasUnit = true;
