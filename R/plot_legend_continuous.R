@@ -40,7 +40,7 @@
 		x$leg$size[1] <- min(x$leg$size[1], (1 - .05*n))
 	}
 
-	if (x$leg$horizontal) {
+	if (x$leg$horiz) {
 		rhalf <- (xmax - xmin) / 2
 		xmid <- xmin + rhalf
 		xd <- rhalf * x$leg$size[1]
@@ -52,7 +52,7 @@
 #		ymax <- ymax - yd
 
 		yd <- ymax - ymin
-		if (x$leg$x == "top") {
+		if (isTRUE(x$leg$x[1] == "top")) {
 			ymax <- ymin + yd * x$leg$size[2] 		
 		} else {
 			ymin <- ymax - yd * x$leg$size[2] 
@@ -167,21 +167,42 @@
 	} else {
 		X <- x$leg[["x"]]	
 		Y <- x$leg[["y"]]
-		if (is.null(Y)) {
-			if (length(X) == 4) {
-				Y <- X[3:4]
-				p <- c(X+dxy[1], X+2*dxy[1], Y[1], Y[2])
-			} else { 
-				p <- c(X[1]+dxy[1], X[1]+2*dxy[1], ymin, ymax)
+		if (is.null(X) || (length(X)==0)) {
+			if (x$leg$horiz) {
+				X <- c(xmin+dxy[1], xmax-dxy[1])			
+			} else {
+				X <- c(xmax+dxy[1], xmax+2*dxy[1])
 			}
-		} else if (length(Y) == 2) {
-			Y <- sort(Y)
-			p <- c(X+dxy[1], X+2*dxy[1], Y[1], Y[2])
-		} else { # if (length(Y) == 1) {
-			ymin = ymin + (ymax-ymin)/50 
-			p <- c(X+dxy[1], X+2*dxy[1], ymin, Y[1])			
+		} else if (length(X) == 1) {
+			if (x$leg$horiz) {
+				X <- c(X, xmax-dxy[1])
+			} else {
+				X <- c(X, X+dxy[1])			
+			}
 		}
+		if (is.null(Y) || (length(Y) == 0)) {
+			if (length(X) >= 4) {
+				Y <- X[3:4]
+				X <- X[1:2]
+			} else {
+				if (x$leg$horiz) {
+					s <- .line.usr(trunc(graphics::par("mar")[1]), 1)
+					Y <- c(s+1.75*dxy[2], s+2.25*dxy[2])
+				} else {
+					Y <- c(ymin+dxy[2], ymax-dxy[2])
+				}
+			}
+		} else if (length(Y) == 1) {
+			if (x$leg$horiz) {
+				Y <- c(Y, Y+.5*dxy[2])
+			} else {
+				Y <- c(ymin + (ymax-ymin)/50, Y) 			
+			}
+		}
+		p <- c(X[1:2], Y[1:2])
+		if (any(is.na(p))) stop("plot", "legend coordinates cannot be NA")
 	}
+
 	x$leg$ext <- p
 	x$leg$user <- FALSE
 	.get.leg.coords(x)
@@ -216,14 +237,14 @@
 	}
 	boxlwd <- 1 # lwdd?
 
-	x$leg$horizontal <- FALSE
+	x$leg$horiz <- isTRUE(x$leg$horiz)
 	if (is.null(x$leg[["x"]])) {
 		x$leg$x <- "right"
 	} else if (is.character(x$leg[["x"]])) {
 		if (!(x$leg$x %in% c("left", "right", "top", "bottom", "topright", "bottomright"))) {
 			x$leg$x <- "right"	
 		} else if (x$leg$x %in% c("top", "bottom")) {
-			x$leg$horizontal <- TRUE
+			x$leg$horiz <- TRUE
 		}
 	}
 
@@ -271,7 +292,14 @@
 
 	e <- x$leg[["ext"]]
 	P <- x$leg[["x"]]
-	if (is.numeric(P)) P <- "right"
+	if (is.numeric(P)) {
+		if (isTRUE(x$leg$horiz)) {
+			P <- "bottom"		
+		} else {
+			P <- "right"
+		}
+	}
+		
 	if (P %in% c("left", "right")) {
 		Y <- seq(e$ymin, e$ymax, length.out=nc+1)
 		graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=NA, lwd=boxlwd)
@@ -350,7 +378,7 @@
 		if ((is.null(x$leg[["title.x"]])) || (is.null(x$leg[["title.y"]]))) {
 			#e <- x$leg$ext
 			x$leg$title.y <- e$ymax
-			if (x$leg$horizontal) {
+			if (x$leg$horiz) {
 				x$leg$title.x <- e$xmin + (e$xmax - e$xmin) / 2
 				if (x$leg$x	== "top") {
 					x$leg$title.y <- e$ymax + 2 * (e$ymax - e$ymin)
@@ -359,7 +387,7 @@
 				x$leg$title.x <- e$xmax	
 			}
 			if (length(legtitle) > 1) { # or perhaps !inherits(legtitle, "expression")
-				if (x$leg$horizontal) {
+				if (x$leg$horiz) {
 					legtitle <- paste(legtitle, collapse=" ")
 				} else {
 					legtitle <- paste(legtitle, collapse="\n")		
