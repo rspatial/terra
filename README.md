@@ -82,13 +82,13 @@ The *easy* way to install terra on Ubuntu is with [r2u](https://eddelbuettel.git
 
 The harder way: 
 
-Install the system requirements GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3.
+Install the system requirements GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), netcdf (>=4.1.3), sqlite3, tbb 
 
 
 ```
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
-sudo apt-get install libgdal-dev libgeos-dev libproj-dev libtbb-dev
+sudo apt-get install libgdal-dev libgeos-dev libproj-dev libtbb-dev libnetcdf-dev
 ```
 
 And now, in R, install the package
