@@ -112,16 +112,21 @@
 
 .get.leg.extent <- function(x) {
 
-	if (!is.null(x$leg$ext)) {
-		e <- as.vector(x$leg$ext)
-		x$leg$x <- e[1]
-		x$leg$y <- c(e[3:4])
+	if (!is.null(x$leg[["ext"]])) {
+		x$leg$x <- x$leg$ext
 		x$leg$ext <- NULL
 	}
 	if (inherits(x$leg[["x"]], "SpatExtent")) {
 		e <- as.vector(x$leg$x)
 		x$leg$x <- e[1]
 		x$leg$y <- c(e[3:4])
+		if (is.null(x$leg$horiz)) {
+			if (diff(p[1:2]) > diff(p[3:4])) {
+				x$leg$horiz <- TRUE
+			} else {
+				x$leg$horiz <- TRUE
+			}
+		}
 	}
 		
 	loc <- x$leg[["x"]]
@@ -248,11 +253,7 @@
 		}
 	}
 
-#	if (is.null(x$leg[["ext"]])) {
 	x <- .get.leg.extent(x)
-#	} else {
-#		x <- .get.leg.coords(x)
-#	}
 
 	if (is.null(x$leg[["cex"]])) {
 		cex <- 1
@@ -316,7 +317,7 @@
 			} else if (tics == "out") {
 				graphics::segments(e$xmax, ypos, e$xmax+e$dx*0.25, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			}
-			text(e$xmax+e$dx*0.2, ypos, zztxt, pos=4, xpd=NA, cex=cex, srt=srt, ...)
+			text(e$xmax+e$dx*0.2, ypos, zztxt, pos=4, xpd=NA, cex=cex, srt=srt, font=x$leg$font, col=x$leg$col, ...)
 		} else {
 			if (tics == "throughout") {
 				graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmax, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
@@ -329,7 +330,7 @@
 			} else if (tics == "out") {
 				graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmin, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			}
-			text(e$xmin-e$dx*0.2, ypos, zztxt, pos=2, xpd=NA, cex=cex, srt=srt, ...)
+			text(e$xmin-e$dx*0.2, ypos, zztxt, pos=2, xpd=NA, cex=cex, srt=srt, font=x$leg$font, col=x$leg$col, ...)
 		}
 	} else { # top, bottom
 		X <- seq(e$xmin, e$xmax, length.out=nc+1)
@@ -348,7 +349,7 @@
 			} else if (tics == "out") {
 				graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymin, xpd=NA, col=ticcol, lwd=ticlwd)
 			}
-			text(xpos, e$ymin-e$dy, zztxt, pos=NULL, xpd=NA, cex=cex, srt=srt, ...)
+			text(xpos, e$ymin-e$dy, zztxt, pos=NULL, xpd=NA, cex=cex, srt=srt, font=x$leg$font, col=x$leg$col, ...)
 		} else {
 			if (tics == "throughout") {
 				graphics::segments(xpos, e$ymin, xpos, e$ymax+e$dy*0.25, xpd=NA, col=ticcol, lwd=ticlwd)
@@ -361,7 +362,7 @@
 			} else if (tics == "out") {
 				graphics::segments(xpos, e$ymax, xpos, e$ymax+e$dy*0.25, xpd=NA, col=ticcol, lwd=ticlwd)
 			}
-			text(xpos, e$ymax+1.5*e$dy, zztxt, pos=NULL, xpd=NA, cex=cex, srt=srt, ...)
+			text(xpos, e$ymax+1.5*e$dy, zztxt, pos=NULL, xpd=NA, cex=cex, srt=srt, font=x$leg$font, col=x$leg$col, ...)
 		}
 	}
 	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border=ticboxcol, xpd=NA)

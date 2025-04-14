@@ -440,7 +440,7 @@
   # for rgb 
   stretch=NULL, scale=NULL, bgalpha=NULL, zlim=NULL, zcol=NULL, overview=NULL, 
 #catch and kill
-  cex=1, decreasing=FALSE,
+  cex=1, decreasing=FALSE, font=NULL,
   ...) {
 
 

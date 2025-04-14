@@ -441,10 +441,12 @@ setMethod("dots", signature(x="SpatVector"),
     sub = "", font.sub=1, cex.sub=0.8*cex.main, line.sub =1.75,  col.sub=col.main, loc.sub=NULL,
 	halo=FALSE, hc="white", hw=0.1, 
 	density=NULL, angle=45, border="black", dig.lab=3, cex=1, clip=TRUE, leg_i=1, asp=NULL, xpd=NULL, 
-	decreasing = FALSE, ...) {
+#catch and kill
+	decreasing=FALSE, font=NULL,
+	...) {
 
 	# backwards compatibility
-	reverse <- reverse | decreasing
+	reverse <- isTRUE(reverse) || isTRUE(decreasing)
 
 	out <- list()
 	out$blank <- FALSE
