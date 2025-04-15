@@ -16,7 +16,7 @@
 \title{Create a SpatRasterDataset}
 
 \description{
-Methods to create a SpatRasterDataset. This is an object to hold "sub-datasets", each a SpatRaster that in most cases will have multiple layers. 
+Methods to create a SpatRasterDataset. This is an object to hold "sub-datasets", each a SpatRaster that in most cases will have multiple layers (e.g., spectral bands) with the same extent and geometry. 
 
 See \code{\link{describe}} for getting information about the sub-datasets present in a file.
 }
@@ -39,8 +39,8 @@ See \code{\link{describe}} for getting information about the sub-datasets presen
 \item{opts}{character. GDAL dataset open options}
 \item{raw}{logical. If \code{TRUE}, scale and offset values are ignored}
 \item{noflip}{logical. If \code{TRUE}, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (\code{ymax < ymin}), is not considered flipped. This avoids the need to \code{\link{flip}} the raster vertically}
-\item{guessCRS}{logical. If \code{TRUE} and the the file does not specify a CRS but has an extent that is within longitude/latitude bounds, the longitude/latitude crs is assigned to the SpatRaster}
-\item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retreive their values if there are any. "" is the default domain}
+\item{guessCRS}{logical. If \code{TRUE} and the file does not specify a CRS but has an extent that is within longitude/latitude bounds, the longitude/latitude crs is assigned to the SpatRaster}
+\item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retrieve their values if there are any). "" is the default domain}
 \item{crs}{character. Description of the Coordinate Reference System (map projection) in \code{PROJ.4}, \code{WKT} or \code{authority:code} notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned}
 \item{extent}{\code{\link{SpatExtent}}}
 \item{...}{additional \code{SpatRaster} objects} 
