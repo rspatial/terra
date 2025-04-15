@@ -16,7 +16,7 @@
 \title{Create a SpatRasterDataset}
 
 \description{
-Methods to create a SpatRasterDataset. This is an object to hold "sub-datasets", each a SpatRaster that in most cases will have multiple layers (e.g., spectral bands) with the same extent and geometry. 
+Methods to create a SpatRasterDataset. This is an object to hold "sub-datasets", each represented by a SpatRaster that may have multiple layers. All sub-datasets must have the same raster geometry (extent and resolution). You can use a SpatRasterCollection (see \code{\link{sprc}}) to combine SpatRasters with different geometries.
 
 See \code{\link{describe}} for getting information about the sub-datasets present in a file.
 }

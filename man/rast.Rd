@@ -67,7 +67,7 @@ Note that there are operating system level limitations to the number of files th
 \item{raw}{logical. If \code{TRUE}, scale and offset values are ignored. See \code{\link{scoff}} to get these parameters}
 \item{noflip}{logical. If \code{TRUE}, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (\code{ymax < ymin}), is not considered flipped. This avoids the need to \code{\link{flip}} the raster vertically}
 \item{guessCRS}{logical. If \code{TRUE} and the the file does not specify a CRS but has an extent that is within longitude/latitude bounds, the longitude/latitude crs is assigned to the SpatRaster}
-\item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retreive their values if there are any. "" is the default domain}
+\item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retrieve their values if there are any. "" is the default domain}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}
