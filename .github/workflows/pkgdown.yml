@@ -22,7 +22,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2
 
       - name: Install spatial dependencies
-        run: brew install gdal proj
+        run: brew install gdal proj netcdf tbb
 
       - name: Query dependencies
         run: |
