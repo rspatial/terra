@@ -2,6 +2,7 @@
 
 \docType{methods}
 
+
 \alias{plot}
 \alias{plot,SpatRaster,missing-method}
 \alias{plot,SpatRaster,numeric-method}
