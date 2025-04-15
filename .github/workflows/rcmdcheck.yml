@@ -42,7 +42,7 @@ jobs:
 
       - name: Install macOS system dependencies
         if: runner.os == 'macOS'
-        run: brew install gdal proj tbb
+        run: brew install gdal proj netcdf tbb
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
