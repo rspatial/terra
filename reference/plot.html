@@ -122,7 +122,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
  <dt id="arg-plg">plg<a class="anchor" aria-label="anchor" href="#arg-plg"></a></dt>
 <dd><p>list with parameters for drawing the legend. See the arguments for <code><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></code>.</p>
 <p>In addition there are these parameters for the legend title: <code>title.srt</code> to rotate the title and <code>title.x</code> and <code>title.y</code> to place the title at specific coordinates. Parameter <code>digits</code> can be used to change the number of digits to print after the decimal point.</p>
-<p>A legend can be placed with placed by specifying arguments <code>x</code> and <code>y</code>. For a continuous legend <code>y</code> can have two values. <code>x</code> can also be a SpatExtent. Furthermore, <code>x</code> can have be a keyword such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. For a continuous legend, only the placement keywords "left", "right", "top", "bottom", "topright", "bottomright" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. The placement of the legend can be altered with argument <code>nudge</code> that move the location in the directions specified with one value (x direction) or two values (x, y). For a continuous legend it can also have four values (xmin, xmax, ymin, ymax). When supplying coordinates, use <code>horiz=TRUE</code> for a horizontal legend.</p>
+<p>A legend can be placed with placed by specifying arguments <code>x</code> and <code>y</code>. For a continuous legend <code>y</code> can have two values. <code>x</code> can also be a SpatExtent. Furthermore, <code>x</code> can have be a keyword such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. For a continuous legend, only the placement keywords "left", "right", "top", "bottom", "topright", "bottomright" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. The placement of the legend can be altered with argument <code>nudge</code> that move the location in the directions specified with one value (x direction) or two values (x, y). For a continuous legend it can also have four values (xmin, xmax, ymin, ymax). When supplying coordinates, use <code>horiz=TRUE</code> to get a horizontal legend.</p>
 <p>Additional parameters for continuous legends include:</p>
 <p></p><ul><li><p><code>size</code> to change the height and/or width; the defaults are <code>c(1,1)</code></p></li>
 <li><p><code>at</code> to set the location of the tic-marks</p></li>
@@ -131,7 +131,14 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 
 
   <dt id="arg-pax">pax<a class="anchor" aria-label="anchor" href="#arg-pax"></a></dt>
-<dd><p>list with parameters for drawing axes. See the arguments for <code><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></code>. Arguments <code>side</code>, <code>tick</code> and <code>lab</code> can be used to indicate for which of the four axes to draw a line (side), tick-mark, and/or the tick-mark labels. The default is <code>c(1:4)</code> for side and <code>1:2</code> for the other two. If <code>side</code> is changed the other two default to that value. Logical argument <code>retro</code> can be used to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation</p></dd>
+<dd><p>list with parameters for drawing axes. See the arguments for <code><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></code>. Additional parameters include:</p><ul><li><p><code>side</code> numeric to indicate for which of the axes to draw a line. Default is <code>1:4</code> (only noticble when <code>box=FALSE</code>.</p></li>
+<li><p><code>tick</code> numeric to indicate for which of the axes to draw tick-marks. Default is <code>1:2</code> unless <code>side</code> is changed, in which case the default is the same as <code>side</code></p></li>
+<li><p><code>lab</code> numeric to indicate for which of the axes to draw labels. Default is <code>1:2</code> unless <code>side</code> is changed, in which case the default is the same as <code>side</code></p></li>
+<li><p><code>xat</code>/<code>yat</code> numeric with the values at which tick-marks are to be drawn on the horizontal/vertical axis.</p></li>
+<li><p><code>xlab</code>/<code>ylab</code> this can either be a logical value specifying whether (numerical) annotations are to be made at the tickmarks, or a character or expression vector of labels to be placed at the tick points of the horizontal/vertical axis.</p></li>
+<li><p><code>retro</code> a logical value that can be set to <code>TRUE</code> to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation. For longitude/latitude data only. See <code><a href="graticule.html">graticule</a></code> for projected data.</p></li>
+</ul></dd>
+
 
   <dt id="arg-maxcell">maxcell<a class="anchor" aria-label="anchor" href="#arg-maxcell"></a></dt>
 <dd><p>positive integer. Maximum number of cells to use for the plot</p></dd>
@@ -194,7 +201,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <dd><p>SpatExtent. Can be use instead of xlim and ylim to set the extent of the plot</p></dd>
 
   <dt id="arg-reset">reset<a class="anchor" aria-label="anchor" href="#arg-reset"></a></dt>
-<dd><p>logical. If <code>TRUE</code> add the margins (see argument <code>mar</code>) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  <code><a href="lines.html">lines</a></code>)</p></dd>
+<dd><p>logical. If <code>TRUE</code> the margins (see argument <code>mar</code>) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  <code><a href="lines.html">lines</a></code>)</p></dd>
 
   <dt id="arg-values">values<a class="anchor" aria-label="anchor" href="#arg-values"></a></dt>
 <dd><p>Either a vector with values to be used for plotting or a two-column data.frame, where the first column matches a variable in <code>x</code> and the second column has the values to be plotted</p></dd>
