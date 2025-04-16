@@ -15,7 +15,7 @@ See depth and time for specifying the axes of the thrid and/or fourth dimension(
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-43</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-44</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -153,13 +153,16 @@ See depth and time for specifying the axes of the thrid and/or fourth dimension(
 <span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"TH"</span>, <span class="st">"DBZH"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="units.html">units</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"-"</span>, <span class="st">"Pa"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">writeCDF</span><span class="op">(</span><span class="va">s</span>, filename <span class="op">=</span> <span class="va">fname</span>, overwrite<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GDAL Message 1: dimension #1 (angle) is not a Time dimension.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GDAL Message 1: dimension #1 (time) is not a Time dimension.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GDAL Message 1: dimension #0 (height) is not a Time dimension.</span>
 <span class="r-in"><span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 5, 5, 4  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 72, 36  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file3c6278d84bd6.nc:TH </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file361360e10e30.nc:TH </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> varname     : TH </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       : TH_angle=0_1, TH_angle=2_1, TH_angle=0_2, TH_angle=2_2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unit        :            -,            -,            -,            - </span>
@@ -176,7 +179,7 @@ See depth and time for specifying the axes of the thrid and/or fourth dimension(
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 72, 36  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file3c6278d84bd6.nc:DBZH </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : file361360e10e30.nc:DBZH </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> varname     : DBZH </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       : DBZH_~=10_1, DBZH_~=10_2, DBZH_~=20_1, DBZH_~=20_2, DBZH_~=30_1, DBZH_~=30_2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unit        :          Pa,          Pa,          Pa,          Pa,          Pa,          Pa </span>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-43</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-44</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,18 +34,20 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-43" id="version-18-43">version 1.8-43<a class="anchor" aria-label="anchor" href="#version-18-43"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-44" id="version-18-44">version 1.8-44<a class="anchor" aria-label="anchor" href="#version-18-44"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-43">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-43"></a></h3>
+<h3 id="bug-fixes-1-8-44">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-44"></a></h3>
 <ul><li>
 <code>rast(xyz=TRUE)</code> failed if there was no z variable <a href="https://github.com/rspatial/terra/issues/1802" class="external-link">#1802</a> by Martin Jung</li>
 <li>
 <code>metags</code> failed if a matrix was used <a href="https://github.com/rspatial/terra/issues/1803" class="external-link">#1803</a> by fchianucci</li>
 <li>
 <code>distance&lt;SpatVector&gt;(sequential=TRUE)</code> did not return a vector with the first value of zero (and there was an additional value <a href="https://github.com/rspatial/terra/issues/1804" class="external-link">#1804</a> by Edward Lavender</li>
+<li>
+<code>depth</code> information was dropped even when there was no reason for that <a href="https://github.com/rspatial/terra/issues/1806" class="external-link">#1806</a> by Daniel R Schlaepfer</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-43">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-43"></a></h3>
+<h3 id="enhancements-1-8-44">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-44"></a></h3>
 <ul><li>
 <code>init</code> with a matrix argument now keeps the same row/col values <a href="https://github.com/rspatial/terra/issues/1801" class="external-link">#1801</a> Jakub Nowosad</li>
 <li>
@@ -53,7 +55,7 @@
 <li>
 <code>rast</code>, <code>sds</code> and <code>sprc</code> get new argument “guessCRS” to suppress CRS guessing <a href="https://github.com/rspatial/terra/issues/1800" class="external-link">#1800</a> by Aseem Sharma</li>
 <li>
-<code>plot</code> with a continuous legend now responds to <code>plg=list(horiz=TRUE))</code> <a href="https://github.com/rspatial/terra/issues/1805" class="external-link">#1805</a> by Nathanael Walker-Hale</li>
+<code>plot&lt;SpatRaster/SpatVector&gt;</code> with a continuous legend now responds to <code>plg=list(horiz=TRUE))</code> <a href="https://github.com/rspatial/terra/issues/1805" class="external-link">#1805</a> by Nathanael Walker-Hale</li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -11,7 +11,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-43</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-44</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -198,12 +198,12 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">spatSample</span><span class="op">(</span><span class="va">rr</span>, <span class="fl">2</span>, <span class="st">"stratified"</span>, xy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         x   y stratum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -126  63       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  126 -63       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -162  27       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  -90 -27       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]  126 -45       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,]   54 -45       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -162 -81       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  -54  45       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -126 -27       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]   90 -81       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] -162   9       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,]   54  27       3</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">rr</span>, <span class="fl">5</span>, <span class="st">"stratified"</span>, as.points<span class="op">=</span><span class="cn">TRUE</span>, each<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">rr</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"raster"</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -214,16 +214,16 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">spatSample</span><span class="op">(</span><span class="va">e</span>, <span class="fl">10</span>, <span class="st">"random"</span>, lonlat<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              x        y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 6.087292 49.52939</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 5.990435 49.46208</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 6.184308 49.83158</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 5.948019 49.65326</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 6.356401 49.92022</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 6.314883 49.68688</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 5.858360 49.97630</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 5.756062 50.02281</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 6.188135 50.16101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 6.373075 49.92551</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 6.357709 49.52934</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 6.021621 49.46180</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 6.047319 49.83182</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 6.124904 49.65330</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 6.344043 49.92022</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 5.938780 49.68683</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 6.290630 49.97649</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 6.321464 50.02292</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 5.862387 50.16090</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 6.175421 49.92543</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## SpatVector</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>

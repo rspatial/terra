@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-43</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-44</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
 </h4>
 <p>On Windows, you need to first install <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a> to get, among other things, a C++ compiler that <em>R</em> can use. You need the current versions of <em>R</em> and <em>RTools</em>.</p>
 <p>Then, in <em>R</em>, install terra with:</p>
-<pre><code><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rspatial/terra"</span><span class="op">)</span></span></code></pre>
+<pre><code><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"rspatial/terra"</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="macos">macOS<a class="anchor" aria-label="anchor" href="#macos"></a>
@@ -88,7 +88,7 @@
 <pre><code>brew install pkg-config
 brew install gdal proj</code></pre>
 <p>Followed by (note the additional configuration argument needed for Homebrew)</p>
-<pre><code><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rspatial/terra"</span>, configure.args <span class="op">=</span> <span class="st">"--with-proj-lib=$(brew --prefix)/lib/"</span><span class="op">)</span></span></code></pre>
+<pre><code><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"rspatial/terra"</span>, configure.args <span class="op">=</span> <span class="st">"--with-proj-lib=$(brew --prefix)/lib/"</span><span class="op">)</span></span></code></pre>
 <p>To install the CRAN version from source you would do</p>
 <pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"terra"</span>, type <span class="op">=</span> <span class="st">"source"</span>, configure.args <span class="op">=</span> <span class="st">"--with-proj-lib=$(brew --prefix)/lib/"</span><span class="op">)</span></span></code></pre>
 </div>
@@ -97,12 +97,12 @@ brew install gdal proj</code></pre>
 </h4>
 <p>The <em>easy</em> way to install terra on Ubuntu is with <a href="https://eddelbuettel.github.io/r2u/" class="external-link">r2u</a>.</p>
 <p>The harder way:</p>
-<p>Install the system requirements GDAL (&gt;= 2.2.3), GEOS (&gt;= 3.4.0), PROJ (&gt;= 4.9.3), sqlite3.</p>
+<p>Install the system requirements GDAL (&gt;= 2.2.3), GEOS (&gt;= 3.4.0), PROJ (&gt;= 4.9.3), netcdf (&gt;=4.1.3), sqlite3, tbb</p>
 <pre><code>sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
-sudo apt-get install libgdal-dev libgeos-dev libproj-dev libtbb-dev</code></pre>
+sudo apt-get install libgdal-dev libgeos-dev libproj-dev libtbb-dev libnetcdf-dev</code></pre>
 <p>And now, in R, install the package</p>
-<pre><code><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rspatial/terra"</span><span class="op">)</span></span></code></pre>
+<pre><code><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"rspatial/terra"</span><span class="op">)</span></span></code></pre>
 <p>See the <code>sf</code> <a href="https://github.com/r-spatial/sf" class="external-link">instructions</a> for installation on other linux systems — and for possible updates/improvements on the above instructions.</p>
 </div>
 </div>
