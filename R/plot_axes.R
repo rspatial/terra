@@ -15,11 +15,16 @@ retro_labels <- function(x, lat=TRUE) {
 
 	if (lat) {
 		h <- c("S", "", "N")[sign(d)+2]
+		d <- abs(d)
 	} else {
 		d <- (d + 180) %% 360 - 180
 		h <- c("W", "", "E")[sign(d)+2]
-	}
-	d <- abs(d)
+		d <- abs(d)
+		i <- d[-c(1, length(d))] == 180
+		if (any(i)) {
+			h[which(i)+1] <- ""
+		}
+	} 
 	i <- (s == 0) & (m == 0)
 	j <- (s == 0) & (m != 0)
 
