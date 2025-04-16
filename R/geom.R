@@ -354,7 +354,7 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 
 setMethod("hull", signature(x="SpatVector"),
 	function(x, type="convex", by="", param=1, allowHoles=TRUE, tight=TRUE) {
-		type <- match.arg(tolower(type), c("convex", "rectangle", "circle", "concave_ratio", "concave_length", "concave_polygons"))
+		type <- match.arg(tolower(type), c("convex", "rectangle", "circle", "concave_ratio", "concave_length"))
 		x@pntr <- x@pntr$hull(type, by[1], param, allowHoles, tight)
 		messages(x, "hull")
 	}
