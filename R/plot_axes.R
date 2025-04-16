@@ -16,6 +16,7 @@ retro_labels <- function(x, lat=TRUE) {
 	if (lat) {
 		h <- c("S", "", "N")[sign(d)+2]
 	} else {
+		d <- (d + 180) %% 360 - 180
 		h <- c("W", "", "E")[sign(d)+2]
 	}
 	d <- abs(d)
