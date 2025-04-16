@@ -66,14 +66,14 @@ retro_labels <- function(x, lat=TRUE) {
 	
 	xat <- yat <- NULL
 	if (!is.null(x$axs$at)) {
-		xat <- yat <- x$axs$at
+		xat <- yat <- na.omit(x$axs$at)
 	}
 	if (!is.null(x$axs$xat)) {
-		xat <- x$axs$xat
+		xat <- na.omit(x$axs$xat)
 		x$axs$xat <- NULL
 	}
 	if (!is.null(x$axs$yat)) {
-		yat <- x$axs$yat
+		yat <- na.omit(x$axs$yat)
 		x$axs$yat <- NULL
 	}
 
