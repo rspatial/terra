@@ -667,7 +667,6 @@ setMethod("dots", signature(x="SpatVector"),
 #		}
 #	}
 #	out$mar <- rep_len(mar, 4)
-
 	out$skipNA <- TRUE
 	if (!is.null(colNA)) {
 		if (!is.na(colNA)) {
@@ -684,10 +683,10 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 setMethod("plot", signature(x="SpatVector", y="character"),
-	function(x, y, col=NULL, type=NULL, mar=NULL, add=FALSE, legend=TRUE, axes=!add,
-	main, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL, 
-	sort=TRUE, reverse=FALSE, fun=NULL, plg=list(), pax=list(), nr, nc, colNA=NA, 
-	alpha=NULL, box=axes, clip=TRUE, ...) {
+	function(x, y, col=NULL, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), 
+    main="", grid=FALSE, ext=NULL, sort=TRUE, reverse=FALSE, fun=NULL,
+	colNA=NA, alpha=NULL, nr, nc, add=FALSE, buffer=TRUE, background=NULL, 
+	box=axes, clip=TRUE, ...) {
 
 		old.mar <- graphics::par()$mar
 		on.exit(graphics::par(mar=old.mar))

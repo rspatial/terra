@@ -23,6 +23,7 @@
 #include <cmath>
 
 #if defined(HAVE_TBB)//&& !defined(__APPLE__)
+#include <tbb/tbb.h>
 #include <tbb/parallel_for.h>
 #include <tbb/blocked_range.h>
 #endif 

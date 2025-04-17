@@ -218,25 +218,33 @@
 
 .plot.cont.legend <- function(x, ...) {
 
+	accepted <- c("in", "out", "none", "middle", "through", "throughout")
 	if (!is.null(x$leg[["tic"]])) {
-		accepted <- c("in", "out", "none", "middle", "through", "throughout")
 		tics <- accepted[pmatch(x$leg$tic[1], accepted[-6], 6)]
+	} else if (!is.null(x$leg[["tick"]])) {
+		tics <- accepted[pmatch(x$leg$tick[1], accepted[-6], 6)]
 	} else {
 		tics <- "throughout"
 	}
 
 	if (!is.null(x$leg[["tic.box.col"]])) {
 		ticboxcol <- x$leg$tic.box.col[1]
+	} else if (!is.null(x$leg[["tick.box.col"]])) {
+		ticboxcol <- x$leg$tick.box.col[1]
 	} else {
 		ticboxcol <- "black"
 	}
 	if (!is.null(x$leg[["tic.col"]])) {
 		ticcol <- x$leg$tic.col[1]
+	} else if (!is.null(x$leg[["tick.col"]])) {
+		ticcol <- x$leg$tick.col[1]
 	} else {
 		ticcol <- "black"
 	}
 	if (!is.null(x$leg[["tic.lwd"]])) {
 		ticlwd <- x$leg$tic.lwd[1]
+	} else if (!is.null(x$leg[["tick.lwd"]])) {
+		ticlwd <- x$leg$tick.lwd[1]
 	} else {
 		ticlwd <- 1
 	}

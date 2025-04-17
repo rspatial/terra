@@ -6,10 +6,6 @@
 \alias{hull,SpatVector-method}
 \alias{convHull}
 \alias{convHull,SpatVector-method}
-\alias{minRect}
-\alias{minRect,SpatVector-method}
-\alias{minCircle}
-\alias{minCircle,SpatVector-method}
 
 \title{ 
 Convex, concave, rectangular and circular hulls
@@ -18,7 +14,7 @@ Convex, concave, rectangular and circular hulls
 \description{
 Compute hulls around SpatVector geometries. This can be the convex hull, the minimal bounding rotated rectangle, the minimal bounding circle, or a concave hull. The concaveness of the concave hull can be specified in different ways.
 
-The old methods \code{convHull}, \code{minRect} and \code{minCircle} are deprecated and will be removed in a future version.
+The old method \code{convHull} is deprecated and will be removed in a future version. 
 }
 
 \usage{
