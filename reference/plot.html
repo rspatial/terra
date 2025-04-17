@@ -61,9 +61,9 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector,character'</span></span>
-<span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, col<span class="op">=</span><span class="cn">NULL</span>, type<span class="op">=</span><span class="cn">NULL</span>, mar<span class="op">=</span><span class="cn">NULL</span>, add<span class="op">=</span><span class="cn">FALSE</span>, legend<span class="op">=</span><span class="cn">TRUE</span>, axes<span class="op">=</span><span class="op">!</span><span class="va">add</span>, </span>
-<span>    main<span class="op">=</span><span class="st">""</span>, buffer<span class="op">=</span><span class="cn">TRUE</span>, background<span class="op">=</span><span class="cn">NULL</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">TRUE</span>, </span>
-<span>  reverse<span class="op">=</span><span class="cn">FALSE</span>, fun<span class="op">=</span><span class="cn">NULL</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">nr</span>, <span class="va">nc</span>, colNA<span class="op">=</span><span class="cn">NA</span>, alpha<span class="op">=</span><span class="cn">NULL</span>, </span>
+<span><span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, col<span class="op">=</span><span class="cn">NULL</span>, type<span class="op">=</span><span class="cn">NULL</span>, mar<span class="op">=</span><span class="cn">NULL</span>, legend<span class="op">=</span><span class="cn">TRUE</span>, axes<span class="op">=</span><span class="op">!</span><span class="va">add</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, </span>
+<span>    main<span class="op">=</span><span class="st">""</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">TRUE</span>, reverse<span class="op">=</span><span class="cn">FALSE</span>, fun<span class="op">=</span><span class="cn">NULL</span>,</span>
+<span>  colNA<span class="op">=</span><span class="cn">NA</span>, alpha<span class="op">=</span><span class="cn">NULL</span>, <span class="va">nr</span>, <span class="va">nc</span>, add<span class="op">=</span><span class="cn">FALSE</span>, buffer<span class="op">=</span><span class="cn">TRUE</span>, background<span class="op">=</span><span class="cn">NULL</span>, </span>
 <span>  box<span class="op">=</span><span class="va">axes</span>, clip<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector,numeric'</span></span>
@@ -121,21 +121,24 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 
  <dt id="arg-plg">plg<a class="anchor" aria-label="anchor" href="#arg-plg"></a></dt>
 <dd><p>list with parameters for drawing the legend. See the arguments for <code><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></code>.</p>
-<p>In addition there are these parameters for the legend title: <code>title.srt</code> to rotate the title and <code>title.x</code> and <code>title.y</code> to place the title at specific coordinates. Parameter <code>digits</code> can be used to change the number of digits to print after the decimal point.</p>
 <p>A legend can be placed with placed by specifying arguments <code>x</code> and <code>y</code>. For a continuous legend <code>y</code> can have two values. <code>x</code> can also be a SpatExtent. Furthermore, <code>x</code> can have be a keyword such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. For a continuous legend, only the placement keywords "left", "right", "top", "bottom", "topright", "bottomright" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. The placement of the legend can be altered with argument <code>nudge</code> that move the location in the directions specified with one value (x direction) or two values (x, y). For a continuous legend it can also have four values (xmin, xmax, ymin, ymax). When supplying coordinates, use <code>horiz=TRUE</code> to get a horizontal legend.</p>
 <p>Additional parameters for continuous legends include:</p>
-<p></p><ul><li><p><code>size</code> to change the height and/or width; the defaults are <code>c(1,1)</code></p></li>
-<li><p><code>at</code> to set the location of the tic-marks</p></li>
-<li><p><code>tic</code> One of these partially matched values: "through", "in", "middle", "out", or "none", to choose a tic-mark placement/length that is different from the default "throughout". You can also set <code>tic.col</code>, <code>tic.box.col</code> and <code>tic.lwd</code></p></li>
+<p></p><ul><li><p><code>digits</code> integer. The number of digits to print after the decimal point</p></li>
+<li><p><code>size</code> to change the height and/or width; the defaults are <code>c(1,1)</code></p></li>
+<li><p><code>at</code> to set the location of the tickmarks</p></li>
+<li><p><code>tick</code> One of these partially matched values: "through", "in", "middle", "out", or "none", to choose a tickmark placement/length that is different from the default "throughout".</p></li>
+<li><p><code>tick.col</code>, <code>tick.box.col</code> and <code>tick.lwd</code> to change the appearance of the tickmarks</p></li>
+<li><p><code>title.srt</code> to rotate the legend title</p></li>
+<li><p><code>title.x</code> and <code>title.y</code> to place the legend title at specific coordinates</p></li>
 </ul></dd>
 
 
   <dt id="arg-pax">pax<a class="anchor" aria-label="anchor" href="#arg-pax"></a></dt>
 <dd><p>list with parameters for drawing axes. See the arguments for <code><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></code>. Additional parameters include:</p><ul><li><p><code>side</code> numeric to indicate for which of the axes to draw a line. Default is <code>1:4</code> (only noticble when <code>box=FALSE</code>.</p></li>
-<li><p><code>tick</code> numeric to indicate for which of the axes to draw tick-marks. Default is <code>1:2</code> unless <code>side</code> is changed, in which case the default is the same as <code>side</code></p></li>
+<li><p><code>tick</code> numeric to indicate for which of the axes to draw tickmarks. Default is <code>1:2</code> unless <code>side</code> is changed, in which case the default is the same as <code>side</code></p></li>
 <li><p><code>lab</code> numeric to indicate for which of the axes to draw labels. Default is <code>1:2</code> unless <code>side</code> is changed, in which case the default is the same as <code>side</code></p></li>
-<li><p><code>xat</code>/<code>yat</code> numeric with the values at which tick-marks are to be drawn on the horizontal/vertical axis.</p></li>
-<li><p><code>xlab</code>/<code>ylab</code> this can either be a logical value specifying whether (numerical) annotations are to be made at the tickmarks, or a character or expression vector of labels to be placed at the tick points of the horizontal/vertical axis.</p></li>
+<li><p><code>xat</code>/<code>yat</code> numeric with the values at which tickmarks are to be drawn on the horizontal/vertical axis.</p></li>
+<li><p><code>xlab</code>/<code>ylab</code> this can either be a logical value specifying whether (numerical) annotations are to be made at the tickmarks, or a character or expression vector of labels to be placed at the tickmarks of the horizontal/vertical axis.</p></li>
 <li><p><code>retro</code> a logical value that can be set to <code>TRUE</code> to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation. For longitude/latitude data only. See <code><a href="graticule.html">graticule</a></code> for projected data.</p></li>
 </ul></dd>
 
