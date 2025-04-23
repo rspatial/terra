@@ -27,12 +27,12 @@
 	sf <- system.file("", package="terra")
 	if (file.exists(file.path(sf, "proj/nad.lst"))) {
 		path <- system.file("proj", package="terra")
-		.gdalinit(path, file.path(sf, "gdal"))
+#		.gdalinit(path, file.path(sf, "gdal"))
 		if ( Sys.info()["sysname"] == "Windows" ) {
 			.set_proj_search_paths(path)
 		}
 	} else {
-		.gdalinit(path, file.path(sf, "gdal"))
+#		.gdalinit(path, file.path(sf, "gdal"))
 	}
 	if (libVersion("gdal") == "3.6.0") {
 		message("Using GDAL version 3.6.0 which was retracted because it cannot write large GPKG files")
@@ -42,20 +42,20 @@
 loadModule("spat", TRUE)
 
 .onLoad <- function(libname, pkgname) {
-#	.gdinit()
+	.gdinit()
 }
 
 
 
 .onAttach <- function(libname, pkgname) {
 	packageStartupMessage("terra ", utils::packageVersion("terra"))
-#	.create_options()
+	.create_options()
 
-#	if (length(grep(.geos_version(FALSE, TRUE), .geos_version(TRUE))) != 1) {
-#		packageStartupMessage("WARNING: different compile-time and run-time versions of GEOS")
-#		packageStartupMessage("Compiled with:", .geos_version(FALSE, TRUE))
-#		packageStartupMessage(" Running with:", .geos_version(TRUE, TRUE))
-#		packageStartupMessage("\nYou should reinstall package 'terra'\n")
-#	}
+	if (length(grep(.geos_version(FALSE, TRUE), .geos_version(TRUE))) != 1) {
+		packageStartupMessage("WARNING: different compile-time and run-time versions of GEOS")
+		packageStartupMessage("Compiled with:", .geos_version(FALSE, TRUE))
+		packageStartupMessage(" Running with:", .geos_version(TRUE, TRUE))
+		packageStartupMessage("\nYou should reinstall package 'terra'\n")
+	}
 }
 
