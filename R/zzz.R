@@ -39,7 +39,7 @@
 	}
 }
 
-#loadModule("spat", TRUE)
+loadModule("spat", TRUE)
 
 .onLoad <- function(libname, pkgname) {
 #	.gdinit()
