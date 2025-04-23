@@ -46,6 +46,7 @@
 }
 
 
+
 .onAttach <- function(libname, pkgname) {
 	packageStartupMessage("terra ", utils::packageVersion("terra"))
 #	.create_options()
