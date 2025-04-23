@@ -6,8 +6,8 @@ ifeq (,$(shell pkg-config --version 2>/dev/null))
 # -ltbb_static
 else
   PKG_LIBS = $(shell pkg-config --libs gdal geos proj)
-#  PKG_LIBS += -ltbb12
-#  PKG_CXXFLAGS += -DHAVE_TBB 
+  PKG_LIBS += -ltbb12
+  PKG_CXXFLAGS += -DHAVE_TBB 
 endif
 
 #PKG_CXXFLAGS += -Wconversion -Wno-sign-conversion 
