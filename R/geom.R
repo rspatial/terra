@@ -1,4 +1,5 @@
 
+
 # buffer2 <- function(x, width, quadsegs=10) {
 	# if (is.character(width)) {
 		# if (!(width %in% names(x))) {
