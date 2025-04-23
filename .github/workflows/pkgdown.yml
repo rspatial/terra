@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - '**.Rd'
-    branches: [main, master, test]
+    branches: [main, master]
   pull_request:
   release:
     types: [published]
