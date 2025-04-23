@@ -77,32 +77,59 @@ get_legxy <- function(r, e, pos, yshift, nudge=NULL) {
 	}
 
 #points(leg$rect$left+leg$rect$w, leg$rect$top-leg$rect$h, xpd=T)	
-	if (grepl("points", geomtype)) {
-		if (inherits(x, "character")) {
-			r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font,...)$rect
-			xy <- get_legxy(r, plotlim, x, yshift, nudge)
-			leg <- legend(xy[1], xy[2], legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font,...)
+	if ("title.cex" %in% names(as.list(args(legend)))) {
+		if (grepl("points", geomtype)) {
+			if (inherits(x, "character")) {
+				r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font,...)$rect
+				xy <- get_legxy(r, plotlim, x, yshift, nudge)
+				leg <- legend(xy[1], xy[2], legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font,...)
+			} else {
+				leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
+			}
+		} else if (geomtype == "lines") {
+			if (inherits(x, "character")) {
+				r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)$rect
+				xy <- get_legxy(r, plotlim, x, yshift, nudge)
+				leg <- legend(xy[1], xy[2], legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
+			} else {
+				leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
+			}
 		} else {
-			leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
-		}
-	} else if (geomtype == "lines") {
-		if (inherits(x, "character")) {
-			r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)$rect
-			xy <- get_legxy(r, plotlim, x, yshift, nudge)
-			leg <- legend(xy[1], xy[2], legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
-		} else {
-			leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
+			if (inherits(x, "character")) {
+				r <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)$rect
+				xy <- get_legxy(r, plotlim, x, yshift, nudge)
+				leg <- legend(xy[1], xy[2], legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
+			} else {
+				leg <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
+			}
 		}
 	} else {
-		if (inherits(x, "character")) {
-			r <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)$rect
-			xy <- get_legxy(r, plotlim, x, yshift, nudge)
-			leg <- legend(xy[1], xy[2], legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
+		if (grepl("points", geomtype)) {
+			if (inherits(x, "character")) {
+				r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.col=title.col,...)$rect
+				xy <- get_legxy(r, plotlim, x, yshift, nudge)
+				leg <- legend(xy[1], xy[2], legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, text.col=text.col, title=title, title.adj=title.adj, title.col=title.col,...)
+			} else {
+				leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, text.col=text.col, title=title, title.adj=title.adj, title.col=title.col, ...)
+			}
+		} else if (geomtype == "lines") {
+			if (inherits(x, "character")) {
+				r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.col=title.col, ...)$rect
+				xy <- get_legxy(r, plotlim, x, yshift, nudge)
+				leg <- legend(xy[1], xy[2], legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, text.col=text.col, title=title, title.adj=title.adj, title.col=title.col, ...)
+			} else {
+				leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, text.col=text.col, title=title, title.adj=title.adj, title.col=title.col, ...)
+			}
 		} else {
-			leg <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font, ...)
+			if (inherits(x, "character")) {
+				r <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.col=title.col, ...)$rect
+				xy <- get_legxy(r, plotlim, x, yshift, nudge)
+				leg <- legend(xy[1], xy[2], legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, text.col=text.col, title=title, title.adj=title.adj, title.col=title.col, ...)
+			} else {
+				leg <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, text.col=text.col, title=title, title.adj=title.adj, title.col=title.col, ...)
+			}
 		}
 	}
-		
 	leg
 }
 
