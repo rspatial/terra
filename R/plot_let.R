@@ -3,7 +3,7 @@
 checkLeafLetVersion <- function() {
 	v <- utils::packageVersion("leaflet")
 	if (v < "2.1.2.9000") {
-		error("plet", "plet needs the development version of leaflet")
+		error("plet", "plet needs a more recent version of leaflet")
 	}
 }
 
