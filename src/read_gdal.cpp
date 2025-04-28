@@ -1719,8 +1719,14 @@ void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &ou
 		out[i] = std::vector<double> (n, NAN);
 	}
 
+
 	int_64 nr1 = nrow()-1;
 	int_64 nc1 = ncol()-1;
+	if (source[src].hasWindow) {
+		nr1 = source[src].window.full_nrow - 1;
+		nc1 = source[src].window.full_ncol - 1;
+	}
+
 	CPLErr err = CE_None;
 	std::vector<double> value(nl);
 
