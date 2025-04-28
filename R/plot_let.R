@@ -572,7 +572,7 @@ make.panel <- function(x, maxcell) {
 			uv <- unique(values(x))
 			uv <- sort(uv)
 			uv <- uv[!is.na(uv)]
-			levels(x) <- data.frame(ID=uv, value=uv)
+			levels(x) <- data.frame(ID=as.numeric(uv), value=uv)
 		} else {
 			uv <- levels(x)[[1]][,2]
 		}
