@@ -21,12 +21,17 @@ parfun <- function(cls, d, fun, model, ...) {
 	if (!is.data.frame(d)) {
 		d <- data.frame(d)
 	}
+	nrd <- nrow(d)
 	if (!is.null(const)) {
-		nms <- names(const)
-		for (i in 1:ncol(const)) {
-			# avoid rowname recycling warnings
-			d[[ nms[i] ]] <- const[[ nms[i] ]]
-		}
+		d <- lapply(1:nrow(const), function(i) {
+			cbind(d, const[rep(i, nrow(d)), , drop=FALSE])
+		})
+		d <- do.call(rbind, d)
+		#nms <- names(const)
+		#for (i in 1:ncol(const)) {
+			## avoid rowname recycling warnings
+		#	d[[ nms[i] ]] <- const[[ nms[i] ]]
+		#}
 	}
 	if (na.rm) {
 		n <- nrow(d)
@@ -88,6 +93,10 @@ parfun <- function(cls, d, fun, model, ...) {
 	if (!is.null(index)) {
 		r <- r[, index, drop=FALSE]
 	}
+	if (!is.null(const)) {
+		r <- do.call(cbind, split(r, rep(1:nrow(const), each=nrd)))
+	}
+
 	r
 }
 
@@ -98,11 +107,7 @@ parfun <- function(cls, d, fun, model, ...) {
 	if (!is.data.frame(d)) {
 		d <- data.frame(d)
 	}
-	if (! is.null(const)) {
-		for (i in 1:ncol(const)) {
-			d <- cbind(d, const[,i,drop=FALSE])
-		}
-	}
+	
 	if (na.rm) {
 		n <- nrow(d)
 		i <- rowSums(is.na(d)) == 0
@@ -147,8 +152,13 @@ find_dims <- function(object, model, nc, fun, const, na.rm, index, ...) {
 	rnr <- 1
 	if (nc==1) rnr <- min(nr, 20) - testrow + 1
 	d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
+	nrd <- nrow(d)
 	cn <- NULL
 	levs <- NULL
+
+	all_const <- const
+	const <- const[1,,drop=FALSE]
+
 	if (!is.null(index)) {
 		nl <- length(index)
 		r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=NULL, ...)
@@ -208,9 +218,20 @@ find_dims <- function(object, model, nc, fun, const, na.rm, index, ...) {
 		}
 		levs <- .getFactors(model, fun, d, nl, const, na.rm, index, ...)
 	}
+
 	out <- rast(object, nlyrs=nl)
 	if (!all(sapply(levs, is.null))) levels(out) <- levs
 	if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
+
+	if (NROW(all_const) > 1) {
+		oldnl <- nl
+		nl <- nl * nrow(all_const)
+		nms <- names(out)
+		newnms <- apply(all_const, 1, function(x) paste0(names(all_const), x, collapse="_"))
+		newnms <- apply(cbind(rep(names(out), nrow(all_const)), newnms), 1, function(x) paste0(x, collapse="."))
+		nlyr(out) <- nl
+		names(out) <- newnms
+	}
 	out
 }
 
@@ -228,10 +249,6 @@ setMethod("predict", signature(object="SpatRaster"),
 		#tomat <- FALSE
 		readStart(object)
 		on.exit(readStop(object))
-		if (!is.null(const)) {
-			const <- data.frame(const)[1,,drop=FALSE]
-			rownames(const) <- NULL
-		}
 		out <- find_dims(object, model, nc, fun, const, na.rm, index, ...)
 		nl <- nlyr(out)
 		
