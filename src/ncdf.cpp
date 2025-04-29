@@ -1,4 +1,7 @@
 
+
+#if !defined(__APPLE__)
+
 #include <netcdf.h>
 #include <string>
 #include "Rcpp.h"
@@ -32,3 +35,6 @@ bool ncdf_close(int ncid) {
 	return true;
 }
 
+
+
+#endif
