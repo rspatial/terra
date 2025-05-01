@@ -4,7 +4,6 @@
 # License GPL v3
 
 
-
 .big_number_warning <- function() {
 # this warning should be given by C
 	warn("big number", "cell numbers larger than ", 2^.Machine$double.digits, " are approximate")

@@ -3,7 +3,7 @@
 #include "Rcpp.h"
 
 
-#if !defined(__APPLE__)
+#if defined(__APPLE__)
 // [[Rcpp::export(name = ".ncdf_open")]]
 int ncdf_open(std::string filename, bool write) {
 	return(-1);
