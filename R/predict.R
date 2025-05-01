@@ -27,11 +27,6 @@ parfun <- function(cls, d, fun, model, ...) {
 			cbind(d, const[rep(i, nrow(d)), , drop=FALSE])
 		})
 		d <- do.call(rbind, d)
-		#nms <- names(const)
-		#for (i in 1:ncol(const)) {
-			## avoid rowname recycling warnings
-		#	d[[ nms[i] ]] <- const[[ nms[i] ]]
-		#}
 	}
 	if (na.rm) {
 		n <- nrow(d)
@@ -106,6 +101,13 @@ parfun <- function(cls, d, fun, model, ...) {
 .getFactors <- function(model, fun, d, nl, const, na.rm, index, ...) {
 	if (!is.data.frame(d)) {
 		d <- data.frame(d)
+	}
+	nrd <- nrow(d)
+	if (!is.null(const)) {
+		d <- lapply(1:nrow(const), function(i) {
+			cbind(d, const[rep(i, nrow(d)), , drop=FALSE])
+		})
+		d <- do.call(rbind, d)
 	}
 	
 	if (na.rm) {
@@ -228,7 +230,7 @@ find_dims <- function(object, model, nc, fun, const, na.rm, index, ...) {
 		nl <- nl * nrow(all_const)
 		nms <- names(out)
 		newnms <- apply(all_const, 1, function(x) paste0(names(all_const), x, collapse="_"))
-		newnms <- apply(cbind(rep(names(out), nrow(all_const)), newnms), 1, function(x) paste0(x, collapse="."))
+		newnms <- apply(cbind(rep(nms, nrow(all_const)), newnms), 1, function(x) paste0(x, collapse="."))
 		nlyr(out) <- nl
 		names(out) <- newnms
 	}
