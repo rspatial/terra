@@ -7,6 +7,7 @@
 - `depth` information was dropped even when there was no reason for that [#1806](https://github.com/rspatial/terra/issues/1806) by Daniel R Schlaepfer
 - `extract<SpatRaster>` with a "window" set, did not work properly [#1819](https://github.com/rspatial/terra/issues/1819) by Derek Friend
 - `plet` did not work for logical SpatRasters [#1820](https://github.com/rspatial/terra/issues/1820) by Andrew Gene Brown
+- `extractRange` now honor arguments `bind` and `ID` [#1816](https://github.com/rspatial/terra/issues/1816) by WillhKessler
 
 
 ## enhancements

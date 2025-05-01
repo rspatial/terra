@@ -592,15 +592,15 @@ setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 				error("extractRange", "geom_fun must return a single value for each geometry/layer")
 			}
 		} else {
-			e <- data.frame(ID=1:NROW(y), extract(x, y, ...))
+			e <- data.frame(extract(x, y, ID=TRUE, ...))
 		}
-		a <- lapply(1:nrow(e), function(i) e[i, c(first[i]:last[i])])
+		a <- lapply(1:nrow(e), function(i) e[i, c(first[i]:last[i]), drop=FALSE])
 		if (!is.null(lyr_fun)) {
 			a <- sapply(a, lyr_fun, na.rm=na.rm)
 		}
 		if (isTRUE(ID)) {
 			if (is.list(a)) {
-				names(a) <- 1:NROW(y)
+				a <- lapply(1:length(a), function(i) cbind(ID=i, a[[i]]))
 			} else {
 				a <- data.frame(ID=1:NROW(a), value=a)
 			}
