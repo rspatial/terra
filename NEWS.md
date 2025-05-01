@@ -5,9 +5,10 @@
 - `metags` failed if a matrix was used [#1803](https://github.com/rspatial/terra/issues/1803) by fchianucci
 - `distance<SpatVector>(sequential=TRUE)` did not return a vector with the first value of zero (and there was an additional value [#1804](https://github.com/rspatial/terra/issues/1804) by Edward Lavender
 - `depth` information was dropped even when there was no reason for that [#1806](https://github.com/rspatial/terra/issues/1806) by Daniel R Schlaepfer
-- `extract<SpatRaster>` with a "window" set, did not work properly [#1819](https://github.com/rspatial/terra/issues/1819) by Derek Friend
 - `plet` did not work for logical SpatRasters [#1820](https://github.com/rspatial/terra/issues/1820) by Andrew Gene Brown
-- `extractRange` now honor arguments `bind` and `ID` [#1816](https://github.com/rspatial/terra/issues/1816) by WillhKessler
+- `extract<SpatRaster>` with a "window" set, did not work properly [#1819](https://github.com/rspatial/terra/issues/1819) by Derek Friend
+- `extract<SpatRaster>` with argument "layers" and xy=TRUE added an unexpected additional column [#1818](https://github.com/rspatial/terra/issues/1818) by Breeze-Hu
+- `extractRange` now honors arguments `bind` and assigns `ID` within a list [#1816](https://github.com/rspatial/terra/issues/1816) by WillhKessler
 
 
 ## enhancements

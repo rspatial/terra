@@ -67,7 +67,7 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
 \examples{
 r <- rast(ncols=5, nrows=5, xmin=0, xmax=5, ymin=0, ymax=5)
 values(r) <- 1:25
-xy <- rbind(c(0.5,0.5), c(2.5,2.5))
+xy <- cbind(lon=c(0.5,2.5), lat=c(0.5,2.5))
 p <- vect(xy, crs="+proj=longlat +datum=WGS84")
 
 extract(r, xy)
