@@ -1,10 +1,22 @@
 
-
-#if !defined(__APPLE__)
-
-#include <netcdf.h>
 #include <string>
 #include "Rcpp.h"
+
+
+#if !defined(__APPLE__)
+// [[Rcpp::export(name = ".ncdf_open")]]
+int ncdf_open(std::string filename, bool write) {
+	return(-1);
+}
+
+// [[Rcpp::export(name = ".ncdf_close")]]
+bool ncdf_close(int ncid) {
+	return(-1);
+}
+
+#else
+
+#include <netcdf.h>
 
 // [[Rcpp::export(name = ".ncdf_open")]]
 int ncdf_open(std::string filename, bool write) {
@@ -34,7 +46,5 @@ bool ncdf_close(int ncid) {
 	}
 	return true;
 }
-
-
 
 #endif
