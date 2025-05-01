@@ -26,7 +26,7 @@ Extract values from a SpatRaster for a set of locations and a range of layers. T
 \item{geom_fun}{function to summarize the extracted data for each line or polygon geometry. Ignored if \code{y} has point geometry}
 \item{ID}{logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of \code{y}}
 \item{na.rm}{logical. Should missing values be ignored?}
-\item{bind}{logical. If \code{TRUE}, a SpatVector is returned consisting of the input SpatVector \code{y} and the \code{cbind}-ed extracted values}
+\item{bind}{logical. If \code{TRUE}, the extracted values are \code{cbind}-ed to \code{y}}
 \item{...}{additional arguments passed to \code{extract}}
 }
 
@@ -36,7 +36,7 @@ Extract values from a SpatRaster for a set of locations and a range of layers. T
 
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   
-xy <- data.frame(c(50,80), c(30, 60))
+xy <- data.frame(lon=c(50,80), lat=c(30, 60))
 extract(r, xy)
 extract(r, xy, layer=c("red", "green"))
 extractRange(r, xy, first=1:2, last=3:2, lyr_fun=sum)
