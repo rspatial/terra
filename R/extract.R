@@ -598,15 +598,22 @@ setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 		if (!is.null(lyr_fun)) {
 			a <- sapply(a, lyr_fun, na.rm=na.rm)
 		}
-		if (ID) {
+		if (isTRUE(ID)) {
 			if (is.list(a)) {
 				names(a) <- 1:NROW(y)
 			} else {
-				a <- data.frame(ID=1:nrow(a), value=a)
+				a <- data.frame(ID=1:NROW(a), value=a)
 			}
 		}
 		if (isTRUE(bind)) {
-			a <- cbind(y, a)
+			if (is.list(bind)) {
+				warn("extractRange", "cannot bind these values")
+			} else {
+				if (is.vector(a)) {
+					a <- data.frame(value=a)
+				}
+				a <- cbind(y, a)
+			}
 		}
 		a
 	}
