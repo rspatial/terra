@@ -606,7 +606,7 @@ setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 			}
 		}
 		if (isTRUE(bind)) {
-			if (is.list(bind)) {
+			if (is.list(a)) {
 				warn("extractRange", "cannot bind these values")
 			} else {
 				if (is.vector(a)) {
