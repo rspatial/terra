@@ -1,4 +1,36 @@
 
+km_regular <- function(x, n, search_radius=0) {
+	z <- init(x, "xy")
+	if (hasValues(x)) {
+		z <- mask(z, x[[1]])
+	}
+	z <- k_means(z, n)
+	p <- as.polygons(z)
+	a <- centroids(p, inside=FALSE)
+	cds <- crds(a)
+	cells <- cellFromXY(x, cds)
+	e <- x[cells]
+	i <- is.na(e)
+	if (any(i)) {
+		j <- which(i)
+		if (isTRUE(search_radius > 0)) {
+			opt <- terra:::spatOptions()
+			e <- x@pntr$extractBuffer(cds[j,1], cds[j,2], search_radius, opt)
+			messages(x, "extract")
+			e <- do.call(cbind, e)
+			k <- !is.na(e[,1])
+			cells[j[k]] <- e[k,3]
+			i[j[k]] <- TRUE
+		}
+		if (any(i)) {
+			b <- crds(centroids(p[i], inside=TRUE))
+			cells[i] <- cellFromXY(x, b)
+		}
+	}
+	cells
+}
+
+
 regular_exact <- function(r, size) {
 	size <- round(size)
 	stopifnot(size > 0)
