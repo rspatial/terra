@@ -1,4 +1,4 @@
-# version 1.8-45
+# version 1.8-46
 
 ## bug fixes
 - `rast(xyz=TRUE)` failed if there was no z variable [#1802](https://github.com/rspatial/terra/issues/1802) by Martin Jung
@@ -16,6 +16,10 @@
 - `rasterize` now checks for very large numbers and switches to FLT8S if detected. [#1797](https://github.com/rspatial/terra/issues/1797) by Evan Muise
 - `rast`, `sds` and `sprc` get new argument "guessCRS" to suppress CRS guessing [#1800](https://github.com/rspatial/terra/issues/1800) by Aseem Sharma
 - `plot<SpatRaster/SpatVector>` with a continuous legend now responds to `plg=list(horiz=TRUE))` [#1805](https://github.com/rspatial/terra/issues/1805) by Nathanael Walker-Hale
+
+## new
+
+- `spatSample(method="spread")` to get an approximate regular sample of the cells that are not `NA` 
 
 
 # version 1.8-42
