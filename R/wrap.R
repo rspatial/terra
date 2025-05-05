@@ -352,7 +352,7 @@ setMethod("unwrap", signature(x="PackedSpatRaster"),
 			if (any(nms=="colors")) {
 				for (i in seq_along(x@attributes$colors)) {
 					if (!is.null(x@attributes$colors[[i]])) {
-						d <- terra:::.makeSpatDF(x@attributes$colors[[i]])
+						d <- .makeSpatDF(x@attributes$colors[[i]])
 						if (!r@pntr$setColors(i-1, d)) messages("cols<-", r)
 					}
 				}

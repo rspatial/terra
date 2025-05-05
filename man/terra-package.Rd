@@ -18,7 +18,7 @@ Additional classes include \code{SpatExtent}, which is used to define a spatial 
 
 These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save \code{SpatRaster} objects to disk (and pass a filename or cell values to cluster nodes). Also see \code{\link{wrap}} and \code{\link{saveRDS}}. You should not write scripts that directly access this pointer, as its user-interface is not stable.
 
-The {terra} package is a replacement of the {raster} package. {terra} has a very similar, but simpler, interface; it is faster, and it can do much more. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
+The "terra" package is a replacement of the "raster" package. "terra" has a very similar, but simpler, interface; it is faster, and it can do much more. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
 
 Below is a list of some of the most important methods grouped by theme. 
 

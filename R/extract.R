@@ -181,7 +181,7 @@ extract_fun <- function(x, y, fun, ID=TRUE, weights=FALSE, exact=FALSE, touches=
 	}
 	if (!is.null(layer)) {
 		e <- cbind(ID=1:nrow(e), e)
-		e <- use_layer(e, y, layer, nlyr(x), keepID)
+		e <- use_layer(e, y, layer, nlyr(x), ID)
 		if (!ID || bind) {
 			e$ID <- NULL
 		}

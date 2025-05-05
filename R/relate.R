@@ -354,7 +354,7 @@ setMethod("nearest", signature(x="SpatVector"),
 		} else {
 			z@pntr <- x@pntr$near_between(y@pntr, pairs, method)
 		}
-		z <- terra:::messages(z, "nearest")
+		z <- messages(z, "nearest")
 		if (geomtype(z) == "points") { #lonlat points
 			if (lines) {
 				x <- z[,c(2,5), drop=TRUE]

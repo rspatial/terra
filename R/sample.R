@@ -13,7 +13,7 @@
 	i <- is.na(x[cells])
 	if (any(i)) {
 		j <- which(i)
-		opt <- terra:::spatOptions()
+		opt <- spatOptions()
 		for (k in j) {
 			y <- crop(x, kpols[k], mask=TRUE)
 			ye <- as.vector(ext(y))
