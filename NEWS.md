@@ -1,4 +1,4 @@
-# version 1.8-47
+# version 1.8-48
 
 ## bug fixes
 - `rast(xyz=TRUE)` failed if there was no z variable [#1802](https://github.com/rspatial/terra/issues/1802) by Martin Jung
