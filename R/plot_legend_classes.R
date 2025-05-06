@@ -77,7 +77,7 @@ get_legxy <- function(r, e, pos, yshift, nudge=NULL) {
 	}
 
 #points(leg$rect$left+leg$rect$w, leg$rect$top-leg$rect$h, xpd=T)	
-	if ("title.cex" %in% names(as.list(args(legend)))) {
+	if ("title.cex" %in% names(as.list(args(graphics::legend)))) {
 		if (grepl("points", geomtype)) {
 			if (inherits(x, "character")) {
 				r <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, plot=FALSE, text.col=text.col, title=title, title.adj=title.adj, title.cex=title.cex, title.col=title.col, title.font=title.font,...)$rect
