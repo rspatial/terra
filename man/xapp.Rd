@@ -5,7 +5,7 @@
 \alias{xapp}
 \alias{xapp,SpatRaster,SpatRaster-method}
 
-\title{Apply a function to the cells of a two SpatRasters}
+\title{Apply a function to the cells of two SpatRasters}
 
 \description{ 
 Apply a function to the values of each cell of two (multilayer) SpatRasters. 
