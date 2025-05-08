@@ -14,7 +14,7 @@
 	if (any(i)) {
 		j <- which(i)
 		opt <- spatOptions()
-		z <- deepCopy(x)
+		z <- deepcopy(x)
 		crs(z) <- crs(kpols) <- "local" 
 		for (k in j) {
 			y <- crop(z, kpols[k], mask=TRUE)
