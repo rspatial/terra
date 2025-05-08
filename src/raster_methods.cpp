@@ -3596,7 +3596,16 @@ SpatRaster SpatRaster::cropmask(SpatVector &v, std::string snap, bool touches, b
 		if (msk.hasError()) return msk;
 		out = out.mask(msk, false, 0, NAN, opt);	
 	} else {
-		setWindow(align(v.extent, snap));
+		SpatExtent e = align(v.extent, snap);
+		e = e.intersect(getExtent());
+		if (!e.valid_notempty() ) {
+			out.setError("extents do not overlap");
+			return out;
+		}
+		if (!setWindow(e)) {
+			out.setError(getError());
+			return out;
+		}
 		out = mask(v, false, NAN, touches, opt);	
 		removeWindow();		
 	}
