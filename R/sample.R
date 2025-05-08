@@ -14,12 +14,20 @@
 	if (any(i)) {
 		j <- which(i)
 		opt <- spatOptions()
+		z <- deepCopy(x)
+		crs(z) <- crs(kpols) <- "local" 
 		for (k in j) {
-			y <- crop(x, kpols[k], mask=TRUE)
+			y <- crop(z, kpols[k], mask=TRUE)
 			ye <- as.vector(ext(y))
 			sr <- max(diff(ye[1:2]), diff(ye[3:4]))
 			e <- y@pntr$extractBuffer(cds[k,1], cds[k,2], sr, opt)
-			cells[k] <- e[[3]]
+			if (!is.na(e[[1]])) {
+				cells[k] <- e[[3]] + 1
+			} else {
+				b <- centroids(kpols[k], inside=TRUE)
+				cds <- crds(b)
+				cells[k] <- cellFromXY(x, cds)
+			}
 		}
 	}
 	cells
