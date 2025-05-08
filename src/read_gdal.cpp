@@ -1070,6 +1070,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	//		s.NAflag = NAN;
 	//	}
 
+		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
+		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
+
 		s.has_scale_offset[i] = false;
 		if (app_so) {
 			double offset = poBand->GetOffset(&success);
@@ -1086,6 +1089,14 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 					s.has_scale_offset[i] = true;
 				}
 			}
+			adfMinMax[0] = adfMinMax[0] * scale + offset;
+			adfMinMax[1] = adfMinMax[1] * scale + offset;
+		}
+
+		if( (bGotMin && bGotMax) ) {
+			s.hasRange[i] = true;
+			s.range_min[i] = adfMinMax[0];
+			s.range_max[i] = adfMinMax[1];
 		}
 
 		poBand->GetBlockSize(&bs1, &bs2);
@@ -1093,13 +1104,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		s.blockrows[i] = bs2;
 		s.dtype = dtypename(GDALGetDataTypeName(poBand->GetRasterDataType()));
 
-		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
-		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
-		if( (bGotMin && bGotMax) ) {
-			s.hasRange[i] = true;
-			s.range_min[i] = adfMinMax[0];
-			s.range_max[i] = adfMinMax[1];
-		}
 
 		//if( poBand->GetOverviewCount() > 0 ) printf( "Band has %d overviews.\n", poBand->GetOverviewCount() );
 

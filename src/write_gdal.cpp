@@ -940,10 +940,10 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			} else {
 				minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, na);
 			}
-			if (source[0].has_scale_offset[i]) {
-				vmin = vmin * source[0].scale[i] + source[0].offset[i];
-				vmax = vmax * source[0].scale[i] + source[0].offset[i];
-			}
+//			if (source[0].has_scale_offset[i]) {
+//				vmin = vmin * source[0].scale[i] + source[0].offset[i];
+//				vmax = vmax * source[0].scale[i] + source[0].offset[i];
+//			}
 			if (!std::isnan(vmin)) {
 				if (std::isnan(source[0].range_min[i])) {
 					source[0].range_min[i] = vmin;
