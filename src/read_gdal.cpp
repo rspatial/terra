@@ -1089,8 +1089,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 					s.has_scale_offset[i] = true;
 				}
 			}
-			adfMinMax[0] = adfMinMax[0] * scale + offset;
-			adfMinMax[1] = adfMinMax[1] * scale + offset;
+			if (s.has_scale_offset[i]) {
+				adfMinMax[0] = adfMinMax[0] * s.scale[i] + s.offset[i];
+				adfMinMax[1] = adfMinMax[1] * s.scale[i] + s.offset[i];
+			}
 		}
 
 		if( (bGotMin && bGotMax) ) {
