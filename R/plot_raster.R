@@ -158,7 +158,8 @@
 
 
 	if (NCOL(out$cols) == 2) {
-		i <- match(Z, as.numeric(levs))
+		#i <- match(Z, as.numeric(levs))
+		i <- match(Z, as.numeric(out$cols[,1]))
 		Z[] <- out$cols[,2][i]
 		i <- match(as.numeric(levs), out$cols[,1])
 		out$leg$fill <- out$cols[i,2]
@@ -379,9 +380,7 @@
 		return(x)
 	}
 	if (!x$legend_only) {
-		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4],
-			angle = 0, interpolate = x$interpolate)
-
+		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], angle = 0, interpolate = x$interpolate)
 		if (x$axes) x <- .plot.axes(x)
 	}
 	
