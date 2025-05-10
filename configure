@@ -4428,8 +4428,9 @@ printf "%s\n" "yes" >&6; }
 PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
 PKG_LIBS="${TBBLIBS} ${PKG_LIBS}"
 
-PKG_LIBS="$(pkg-config --libs netcdf) ${PKG_LIBS}"
 
+#netcdf
+PKG_LIBS="$(pkg-config --libs netcdf) ${PKG_LIBS}"
 
 
 ####
