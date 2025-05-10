@@ -13,7 +13,6 @@
 ## M4sh Initialization. ##
 ## -------------------- ##
 
-
 # Be more Bourne compatible
 DUALCASE=1; export DUALCASE # for MKS sh
 as_nop=:
@@ -2247,7 +2246,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
@@ -4429,6 +4427,9 @@ printf "%s\n" "yes" >&6; }
 
 PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
 PKG_LIBS="${TBBLIBS} ${PKG_LIBS}"
+
+PKG_LIBS="$(pkg-config --libs netcdf) ${PKG_LIBS}"
+
 
 
 ####

@@ -838,6 +838,9 @@ _EOCONF]
 PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
 AC_SUBST([PKG_LIBS], ["${TBBLIBS} ${PKG_LIBS}"])
 
+#netcdf 
+AC_SUBST([PKG_LIBS], ["$(pkg-config --libs netcdf) ${PKG_LIBS}"])
+
 ####
 
 #
