@@ -1,7 +1,11 @@
 # version 1.8-51
 
 ## bug fixes
+
+raster map based on value/color data.frame did not work correctly in all cases. [#1827](https://github.com/rspatial/terra/issues/1827) by Alexandre Courtiol
+
 ## enhancements
+
 ## new
 
 
