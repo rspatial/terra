@@ -587,6 +587,25 @@ std::string PROJ_network(bool enable, std::string url) {
 	return s;
 }
 
+
+
+// [[Rcpp::export(name = ".removeDriver")]]
+void removeDriver(std::vector<std::string> d) {
+	if ((d.size() == 0) || ((d.size() == 1) && (d[0] == ""))) {
+		GDALAllRegister();	
+	} else {
+		for (size_t i=0; i<d.size(); i++) {
+			GDALDriverH hDrv = GDALGetDriverByName(d[i].c_str());
+			if (hDrv == NULL) {
+				Rcpp::Rcout << d[i] + " is not a known driver\n";
+			} else {
+				GDALDeregisterDriver(hDrv);
+			}
+		}
+	}
+}
+
+
 // [[Rcpp::export(name = ".pearson")]]
 double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm) {
  

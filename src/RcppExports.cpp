@@ -319,6 +319,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// removeDriver
+void removeDriver(std::vector<std::string> d);
+RcppExport SEXP _terra_removeDriver(SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type d(dSEXP);
+    removeDriver(d);
+    return R_NilValue;
+END_RCPP
+}
 // pearson_cor
 double pearson_cor(std::vector<double> x, std::vector<double> y, bool narm);
 RcppExport SEXP _terra_pearson_cor(SEXP xSEXP, SEXP ySEXP, SEXP narmSEXP) {
@@ -447,6 +457,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_get_proj_search_paths", (DL_FUNC) &_terra_get_proj_search_paths, 0},
     {"_terra_set_proj_search_paths", (DL_FUNC) &_terra_set_proj_search_paths, 1},
     {"_terra_PROJ_network", (DL_FUNC) &_terra_PROJ_network, 2},
+    {"_terra_removeDriver", (DL_FUNC) &_terra_removeDriver, 1},
     {"_terra_pearson_cor", (DL_FUNC) &_terra_pearson_cor, 3},
     {"_terra_weighted_pearson_cor", (DL_FUNC) &_terra_weighted_pearson_cor, 4},
     {"_terra_uniqueSymmetricRows", (DL_FUNC) &_terra_uniqueSymmetricRows, 2},
