@@ -2,11 +2,14 @@
 
 ## bug fixes
 
-raster map based on value/color data.frame did not work correctly in all cases. [#1827](https://github.com/rspatial/terra/issues/1827) by Alexandre Courtiol
+- `plot<SpatRaster>` using a value/color data.frame did not work correctly in all cases [#1827](https://github.com/rspatial/terra/issues/1827) by Alexandre Courtiol
+- added the `-lnetcdf` flag needed for linking on some linuxes [#1829](https://github.com/rspatial/terra/issues/1829) by Guillermo A. Durán Sanabria
 
 ## enhancements
 
 ## new
+
+- `unloadGDALdrivers` to disable selected GDAL drivers [#1828](https://github.com/rspatial/terra/issues/1828) by Andy Teucher
 
 
 # version 1.8-50

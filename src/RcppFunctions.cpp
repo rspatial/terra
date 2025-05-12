@@ -597,7 +597,7 @@ void removeDriver(std::vector<std::string> d) {
 		for (size_t i=0; i<d.size(); i++) {
 			GDALDriverH hDrv = GDALGetDriverByName(d[i].c_str());
 			if (hDrv == NULL) {
-				Rcpp::Rcout << d[i] + " is not a known driver\n";
+				Rcpp::warning(d[i] + " is not a known driver\n");
 			} else {
 				GDALDeregisterDriver(hDrv);
 			}

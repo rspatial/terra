@@ -6,6 +6,7 @@
 \alias{clearVSIcache}
 \alias{getGDALconfig}
 \alias{setGDALconfig}
+\alias{unloadGDALdrivers}
 
 \title{GDAL version, supported file formats, and cache size}
 
@@ -24,6 +25,7 @@ setGDALconfig(option, value="")
 getGDALconfig(option)
 clearVSIcache()
 libVersion(lib="all", parse=FALSE)
+unloadGDALdrivers(x)
 }
 
 \arguments{
@@ -35,6 +37,7 @@ libVersion(lib="all", parse=FALSE)
   \item{value}{character. value for GDAL configuration option. Use "" to reset it to its default value}
   \item{lib}{character. "gdal", "proj", or "geos", or any other value to get the versions numbers of all three}
   \item{parse}{logical. Should the version be parsed into three numerical values (major, minor and sub versions)?}
+  \item{x}{character. Drivers names such as "GTiff" to be unloaded. Or "" to reload all drivers}  
 }
 
 
