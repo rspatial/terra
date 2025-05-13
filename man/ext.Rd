@@ -21,6 +21,7 @@
 \alias{ext,Extent-method}
 \alias{ext,sf-method}
 \alias{ext,bbox-method}
+\alias{ext,PackedSpatExtent-method}
 
 \title{Create, get or set a SpatExtent}
 
