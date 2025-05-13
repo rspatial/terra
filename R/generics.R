@@ -876,9 +876,9 @@ setMethod("rev", signature(x="SpatRaster"),
 )
 
 setMethod("rotate", signature(x="SpatRaster"),
-	function(x, left=TRUE, filename="", ...) {
+	function(x, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@pntr <- x@pntr$rotate(left, opt)
+		x@pntr <- x@pntr$rotate(TRUE, opt)
 		messages(x, "rotate")
 	}
 )

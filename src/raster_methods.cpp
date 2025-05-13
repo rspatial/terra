@@ -644,7 +644,7 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 		if (message.substr(0,3) == "all") {
 			std::string filename = opt.get_filename();
 			if (filename.empty()) {
-				out = *this;
+				out = deepCopy();
 				out.addWarning(message);
 			} else {
 				out = writeRaster(opt);
@@ -3114,48 +3114,105 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 
 SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 
-	size_t nc = ncol();
-	size_t nl = nlyr();
-	size_t hnc = (nc / 2);
-	double addx = hnc * xres();
-	if (left) {
-		addx = -addx;
-	}
 	SpatRaster out = geometry(nlyr(), true, true, true);
-	SpatExtent outext = out.getExtent();
-	outext.xmin = outext.xmin + addx;
-	outext.xmax = outext.xmax + addx;
-	out.setExtent(outext, true, true, "");
+	SpatExtent e = getExtent();
 
-	if (!hasValues()) return out;
-
-	if (!readStart()) {
-		out.setError(getError());
-		return(out);
-	}
- 	if (!out.writeStart(opt, filenames())) {
-		readStop();
+	if ((e.xmin < -190) || (e.xmax > 370)) {
+		out.setError("unexpected longitudes");
 		return out;
 	}
+	
+	double hxr = xres()/2;
 
-	for (size_t i=0; i < out.bs.n; i++) {
-		std::vector<double> a;
-		readBlock(a, out.bs, i);
-		std::vector<double> b;
-		b.reserve(a.size());
-		for (size_t j=0; j < nl; j++) {
-			for (size_t r=0; r < out.bs.nrows[i]; r++) {
-				size_t s1 = j * out.bs.nrows[i] * nc + r * nc;
-				size_t e1 = s1 + hnc;
-				b.insert(b.end(), a.begin()+e1, a.begin()+s1+nc);
-				b.insert(b.end(), a.begin()+s1, a.begin()+e1);
-			}
+	if ((abs(e.xmin) < hxr) && (abs(e.xmax - 360) < hxr)) {
+
+		size_t nc = ncol();
+		size_t nl = nlyr();
+		size_t hnc = (nc / 2);
+		double addx = hnc * xres();
+		if (left) {
+			addx = -addx;
 		}
-		if (!out.writeBlock(b, i)) return out;
-	}
-	out.writeStop();
-	readStop();
-	return(out);
+		SpatRaster out = geometry(nlyr(), true, true, true);
+		e.xmin = e.xmin + addx;
+		e.xmax = e.xmax + addx;
+		out.setExtent(e, true, true, "");
+
+		if (!hasValues()) return out;
+
+		if (!readStart()) {
+			out.setError(getError());
+			return(out);
+		}
+		if (!out.writeStart(opt, filenames())) {
+			readStop();
+			return out;
+		}
+
+		for (size_t i=0; i < out.bs.n; i++) {
+			std::vector<double> a;
+			readBlock(a, out.bs, i);
+			std::vector<double> b;
+			b.reserve(a.size());
+			for (size_t j=0; j < nl; j++) {
+				for (size_t r=0; r < out.bs.nrows[i]; r++) {
+					size_t s1 = j * out.bs.nrows[i] * nc + r * nc;
+					size_t e1 = s1 + hnc;
+					b.insert(b.end(), a.begin()+e1, a.begin()+s1+nc);
+					b.insert(b.end(), a.begin()+s1, a.begin()+e1);
+				}
+			}
+			if (!out.writeBlock(b, i)) return out;
+		}
+		out.writeStop();
+		readStop();
+		return(out);
+	} else if (e.xmin >= 0) {
+		if (e.xmax <= 180) {
+			std::string filename = opt.get_filename();
+			if (filename.empty()) {
+				return deepCopy();
+			} else {
+				return writeRaster(opt);
+			}
+		} else if (e.xmin >= 180) {
+			return shift(-360., 0., opt);
+			
+		} else {
+			SpatOptions ops(opt);
+			SpatExtent eright = e;
+			eright.xmax = 180;
+			eright.xmin = 0;
+			SpatRaster right = crop(eright, "near", false, ops);
+			SpatExtent eleft = e;
+			eleft.xmin = 180;
+			SpatRaster left = crop(eleft, "near", false, ops);
+			left = left.shift(-360., 0., ops);
+			SpatRasterCollection sr;
+			sr.push_back(left, "left");
+			sr.push_back(right, "right");
+			return sr.merge(true, false, 1, "", opt);
+		}
+	} else if (e.xmax <= 0) {
+		return shift(360, 0, opt);
+	} else if ((e.xmin >= -180) && (e.xmax <= 180)) {
+		SpatOptions ops(opt);
+		SpatExtent eright = e;
+		eright.xmax = 180;
+		eright.xmin = 0;
+		SpatRaster right = crop(eright, "near", false, ops);
+		
+		SpatExtent eleft = e;
+		eleft.xmax = 0;
+		SpatRaster left = crop(eleft, "near", false, ops);
+		left = left.shift(360., 0., ops);
+		SpatRasterCollection sr;
+		sr.push_back(left, "left");
+		sr.push_back(right, "right");
+		return sr.merge(true, false, 1, "", opt);
+	} 
+	out.setError("case not expected, please report");
+	return out;
 }
 
 

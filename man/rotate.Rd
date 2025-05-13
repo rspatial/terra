@@ -15,14 +15,13 @@ Rotate a SpatVector as for a SpatRaster with, or with \code{split=FALSE} to corr
 }
 
 \usage{
-\S4method{rotate}{SpatRaster}(x, left=TRUE, filename="", ...)
+\S4method{rotate}{SpatRaster}(x, filename="", ...)
 
 \S4method{rotate}{SpatVector}(x, longitude=0, split=TRUE, left=TRUE, normalize=FALSE)
 }
 
 \arguments{
  \item{x}{SpatRaster or SpatVector}
- \item{left}{logical. If \code{TRUE}, rotate to the left, else to the right}
  \item{filename}{character. Output filename}
  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 
