@@ -269,6 +269,12 @@ setMethod("unwrap", signature(x="PackedSpatExtent"),
 	}
 )
 
+setMethod("ext", signature(x="PackedSpatExtent"),
+	function(x) {
+		ext(x@extent)
+	}
+)
+
 	
 
 setMethod("wrap", signature(x="SpatRaster"),
@@ -406,8 +412,6 @@ setMethod("rast", signature(x="PackedSpatRaster"),
 		unwrap(x)
 	}
 )
-
-
 
 setMethod("unwrap", signature(x="ANY"),
 	function(x) {
