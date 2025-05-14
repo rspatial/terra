@@ -338,13 +338,15 @@ class SpatSRS {
 		bool is_same(SpatSRS other, bool ignoreempty);
 
 
-		bool is_lonlat(); // as below, but using GDAL
-
 		bool is_lonlat_text() {
 			bool b1 = proj4.find("longlat") != std::string::npos;
 			bool b2 = proj4.find("epsg:4326") != std::string::npos;
 			return (b1 | b2);
 		}
+
+		bool is_lonlat(); // as above, but using GDAL
+		bool is_not_lonlat();
+
 
 		bool could_be_lonlat(SpatExtent e) {
 			bool b = is_lonlat();

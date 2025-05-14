@@ -3113,12 +3113,17 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 
 
 SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
-
+	
 	SpatRaster out = geometry(nlyr(), true, true, true);
 	SpatExtent e = getExtent();
 
+	if (source[0].srs.is_not_lonlat()) {
+		out.setError("raster does not have a lon/lat crs");
+		return out;		
+	}
+
 	if ((e.xmin < -190) || (e.xmax > 370)) {
-		out.setError("unexpected longitudes");
+		out.setError("longitude outside of expected range");
 		return out;
 	}
 	

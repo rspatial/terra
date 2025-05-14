@@ -218,6 +218,21 @@ bool SpatSRS::is_lonlat() {
 }
 
 
+
+bool SpatSRS::is_not_lonlat() {
+	if (wkt.size() < 2) {
+		return false;
+	}
+	OGRSpatialReference x;
+	OGRErr erro = x.SetFromUserInput(wkt.c_str());
+	if (erro != OGRERR_NONE) {
+		return false;
+	}
+	return !x.IsGeographic();
+}
+
+
+
 bool SpatSRS::set(std::string txt, std::string &msg) {
 	wkt="";
 	proj4="";
