@@ -966,7 +966,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 	s.memory = false;
 	s.filename = fname;
-	s.open_ops = options;
+	s.open_ops = clean_ops;
 	//s.open_drivers = {gdrv}; // failed for some hdf
 	s.open_drivers = drivers;
 	//s.driver = "gdal";
