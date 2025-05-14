@@ -9,8 +9,6 @@
 
 \description{
 Animate (sequentially plot) the layers of a SpatRaster to create a movie.
-
-This does not work with R-Studio.
 }
 
 \usage{
