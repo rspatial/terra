@@ -836,17 +836,16 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		return false;
 	}
 	
-	std::vector<std::string> clean_ops = options;
 	bool app_so = true;
 	size_t opsz = options.size();
 	if (opsz > 0) {
 		if (options[opsz-1] == "so=false") {
 			app_so = false;
-			clean_ops.resize(opsz-1); 
+			options.resize(opsz-1); 
 		}
 	}
 
-    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
+    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, options);
 
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
@@ -966,7 +965,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 	s.memory = false;
 	s.filename = fname;
-	s.open_ops = clean_ops;
+	s.open_ops = options;
 	//s.open_drivers = {gdrv}; // failed for some hdf
 	s.open_drivers = drivers;
 	//s.driver = "gdal";
