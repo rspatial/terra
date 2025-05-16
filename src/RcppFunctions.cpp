@@ -561,7 +561,7 @@ bool set_proj_search_paths(std::vector<std::string> paths) {
 	for (size_t i = 0; i < paths.size(); i++) {
 		cpaths[i] = (char *) (paths[i].c_str());
 	}
-	cpaths[cpaths.size()] = NULL;
+	cpaths[cpaths.size()-1] = NULL;
 	OSRSetPROJSearchPaths(cpaths.data());
 	return true;
 #else
