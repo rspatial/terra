@@ -6,7 +6,8 @@
 	if (hasValues(x)) {
 		z <- mask(z, x)
 	}
-	kpols <- as.polygons(k_means(z, n, ...))
+	km <- k_means(z, n, ...)
+	kpols <- as.polygons(km)
 	a <- centroids(kpols, inside=FALSE)
 	cds <- crds(a)
 	cells <- cellFromXY(x, cds)
@@ -14,19 +15,19 @@
 	if (any(i)) {
 		j <- which(i)
 		opt <- spatOptions()
-		z <- deepcopy(x)
-		crs(z) <- crs(kpols) <- "local" 
+		zz <- deepcopy(x)
+		crs(zz) <- crs(kpols) <- "local" 
 		for (k in j) {
-			y <- crop(z, kpols[k], mask=TRUE)
+			y <- crop(zz, kpols[k], mask=TRUE)
 			ye <- as.vector(ext(y))
 			sr <- max(diff(ye[1:2]), diff(ye[3:4]))
 			e <- y@pntr$extractBuffer(cds[k,1], cds[k,2], sr, opt)
 			if (!is.na(e[[1]])) {
-				cells[k] <- e[[3]] + 1
+				cells[k] <- cellFromXY(x, xyFromCell(y, e[[3]] + 1))
 			} else {
 				b <- centroids(kpols[k], inside=TRUE)
-				cds <- crds(b)
-				cells[k] <- cellFromXY(x, cds)
+				bcds <- crds(b)
+				cells[k] <- cellFromXY(x, bcds)
 			}
 		}
 	}
