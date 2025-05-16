@@ -542,7 +542,7 @@
 				warn("plot", "alpha should be between 0 and 1")
 				out$alpha <- 255
 			} else {
-				out$alpha <- out$alpha[1]
+				out$alpha <- out$alpha[1] * 255
 			}
 			out <- hexcols(out)
 		}
