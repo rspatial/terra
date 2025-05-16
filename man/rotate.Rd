@@ -27,6 +27,7 @@ Rotate a SpatVector as for a SpatRaster with, or with \code{split=FALSE} to corr
 
  \item{longitude}{numeric. The longitude around which to rotate}
  \item{split}{logical. Should geometries be split at \code{longitude}?}
+ \item{left}{logical. Rotate to the left or to the right?}
  \item{normalize}{logical. Should the output be normalized to longitudes between -180 and 180? See \code{\link{normalize.longitude}}}
 }
 
