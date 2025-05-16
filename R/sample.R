@@ -1,4 +1,5 @@
 
+
 .km_regular <- function(x, n, ...) {
 	x <- x[[1]]
 	crs(x) <- "local" # for the search_radius
