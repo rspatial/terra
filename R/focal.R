@@ -378,7 +378,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 		wopt$names <- colnames(test)
 	}
 	out <- rast(x, nlyr=outnl)
-	b <- writeStart(out, filename, overwrite, n=msz+2, sources=sources(x), wopt=wopt)
+	b <- writeStart(out, filename, overwrite, n=msz*2, sources=sources(x), wopt=wopt)
 
 	nc <- ncol(out)
 	for (i in 1:b$n) {
