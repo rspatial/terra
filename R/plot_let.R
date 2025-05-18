@@ -677,7 +677,12 @@ setMethod("plet", signature(x="SpatRaster"),
 			tiles <- NULL
 		}
 		if (missing(col)) {
-			col <- .default.pal()
+			if (has.colors(x)[1]) {
+				col <- coltab(x)[[1]][,-1]
+				col <- rgb(col[,1], col[,2], col[,3], col[,4], maxColorValue=255)
+			} else {
+				col <- .default.pal()
+			}
 			#col <- rev(grDevices::terrain.colors(255))
 		}
 
