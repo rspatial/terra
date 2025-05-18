@@ -289,7 +289,7 @@ setMethod("rast", signature(x="character"),
 )
 
 
-multi <- function(x, subds=0, xyz=3:1, guessCRS=TRUE, drivers=NULL, opts=NULL) {
+multi <- function(x, subds=0, xyz=3:1, guessCRS=TRUE, drivers=NULL, opts=NULL, domains="") {
 
 	noflip <- FALSE
 
@@ -305,10 +305,11 @@ multi <- function(x, subds=0, xyz=3:1, guessCRS=TRUE, drivers=NULL, opts=NULL) {
 	if (length(subds) == 0) subds = 1
 	subds <- subds[1]
 
+	domains <- clean_domains(domains)
 	if (is.character(subds)) {
-		r@pntr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, xyz-1, isTRUE(noflip), isTRUE(guessCRS))
+		r@pntr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, xyz-1, isTRUE(noflip), isTRUE(guessCRS), domains)
 	} else {
-		r@pntr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, xyz-1, isTRUE(noflip), isTRUE(guessCRS))
+		r@pntr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, xyz-1, isTRUE(noflip), isTRUE(guessCRS), domains)
 	}
 	if (r@pntr$getMessage() == "ncdf extent") {
 		test <- try(r <- .ncdf_extent(r), silent=TRUE)

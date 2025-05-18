@@ -45,6 +45,10 @@ rgb2hex <- function(x) {
     .Call(`_terra_ginfo`, filename, options, oo)
 }
 
+.gdalmdinfo <- function(filename, options) {
+    .Call(`_terra_gmdinfo`, filename, options)
+}
+
 .sdinfo <- function(filename) {
     .Call(`_terra_sd_info`, filename)
 }

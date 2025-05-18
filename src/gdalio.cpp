@@ -413,6 +413,25 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 #endif
 
 
+
+std::string gdalMDinfo(std::string filename, std::vector<std::string> options) {
+
+	GDALDatasetH ds = GDALOpenEx(filename.c_str(), GDAL_OF_MULTIDIM_RASTER, NULL, NULL, NULL);
+	//if (opops != NULL) CSLDestroy(opops);
+	if (ds == NULL) return("not a good dataset");
+
+	std::vector <char *> options_char = string_to_charpnt(options);
+	GDALMultiDimInfoOptions* opt = GDALMultiDimInfoOptionsNew(options_char.data(), NULL);
+
+	char *val = GDALMultiDimInfo(ds, opt);
+	std::string out = val;
+	CPLFree(val);
+	GDALMultiDimInfoOptionsFree(opt);
+	GDALClose(ds);
+	return out;
+}
+
+
 bool getNAvalue(GDALDataType gdt, double &naval) {
 	if (gdt == GDT_Float32) {
 		naval = NAN;

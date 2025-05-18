@@ -1,7 +1,7 @@
 
 #include "spatRaster.h"
 
-/*
+
 #if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1
 
 #include "proj.h"
@@ -69,7 +69,7 @@ Rcpp::Rcout << "in" << std::endl;
 			subdsname = gnames[sub[0]];
 		}
 	} else {
-		subdsname = gnames[0];
+		subdsname = gnames[3];
 		if (gnames.size() > 1)  {
 			std::string gn = "";
 			for (size_t i=1; i<gnames.size(); i++) {
@@ -216,7 +216,7 @@ Rcpp::Rcout << "in" << std::endl;
 
 
 
-bool SpatRaster::readStartMulti(unsigned src) {
+bool SpatRaster::readStartMulti(size_t src) {
 
     GDALDatasetH hDS = GDALOpenEx( source[src].filename.c_str(), GDAL_OF_MULTIDIM_RASTER, NULL, NULL, NULL);
     if (!hDS) {
@@ -242,7 +242,7 @@ bool SpatRaster::readStartMulti(unsigned src) {
 }
 
 
-bool SpatRaster::readStopMulti(unsigned src) {
+bool SpatRaster::readStopMulti(size_t src) {
 	GDALMDArrayRelease(source[src].gdalmdarray);
 	source[src].open_read = false;
 	return true;
@@ -314,7 +314,6 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 
 #else
 
-*/
 
 bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz) {
 	setError("multidim is not supported by GDAL < 3.1");
@@ -337,5 +336,5 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 }
 
 
-//#endif
+#endif
 

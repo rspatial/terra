@@ -223,9 +223,14 @@ std::string gdal_getconfig(std::string option) {
 
 // [[Rcpp::export(name = ".gdalinfo")]]
 std::string ginfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
-	std::string out = gdalinfo(filename, options, oo);
-	return out;
+	return gdalinfo(filename, options, oo);
 }
+
+// [[Rcpp::export(name = ".gdalmdinfo")]]
+std::string gmdinfo(std::string filename, std::vector<std::string> options) {
+	return gdalMDinfo(filename, options);
+}
+
 
 // [[Rcpp::export(name = ".sdinfo")]]
 std::vector<std::vector<std::string>> sd_info(std::string filename) {
