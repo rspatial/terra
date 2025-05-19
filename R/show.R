@@ -453,7 +453,8 @@ setMethod ("show" , "SpatRaster",
 
 		if (object@pntr$hasTime) {
 			label <- "time        "
-			rtim <- range(time(object))
+			tms <- time(object)
+			rtim <- range(tms)
 			tims <- object@pntr$timestep
 			if (tims == "yearmonths") {
 				rtim <- format_ym(rtim)
@@ -470,7 +471,7 @@ setMethod ("show" , "SpatRaster",
 			}
 			utim <- unique(rtim)
 			if (length(utim) > 1) {
-				ptim <- paste0(label, ": ", paste(rtim, collapse=" to "), " (", length(utim), " steps)")
+				ptim <- paste0(label, ": ", paste(rtim, collapse=" to "), " (", length(unique(tms)), " steps)")
 			} else {
 				ptim <- paste0(label, ": ", as.character(utim))
 			}
