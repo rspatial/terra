@@ -218,11 +218,11 @@ bool dimfo(std::shared_ptr<GDALGroup> poRootGroup, std::vector<std::string> &ar_
 
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz) {
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> xyz) {
 
 	SpatRasterSource s;
 
-	bool verbose = false;
+	bool verbose = true;
 
     auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER ));
     if( !poDataset ) {
@@ -327,10 +327,12 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	dimvals.reserve(dim_names[sub[0]].size());
 
 	size_t i=0;
+	std::string calendar = "";
     for ( const auto &poDim: poVar->GetDimensions() ) {
 		size_t n = poDim->GetSize();
         dimcount.push_back(static_cast<size_t>(n));
-        dimnames.push_back(static_cast<std::string>(poDim->GetName()));
+        std::string name = static_cast<std::string>(poDim->GetName());
+		dimnames.push_back(name);
 			
 		std::vector<GUInt64> start(1, 0);
 		std::vector<size_t> count = {n};
@@ -338,10 +340,23 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 
 		const auto indvar = poDim->GetIndexingVariable();
         dimunits.push_back(static_cast<std::string>(indvar->GetUnit()));
-
-		indvar->Read(start.data(), count.data(), nullptr, nullptr,  GDALExtendedDataType::Create(GDT_Float64), &dimvals[i][0]);
+		auto pcal = indvar->GetAttribute("calendar");
+		if (pcal) calendar = pcal->ReadAsString();
+		
+		indvar->Read(start.data(), count.data(), nullptr, nullptr, GDALExtendedDataType::Create(GDT_Float64), &dimvals[i][0]);
+		if (dimvals[i].size() > 2) {
+			double res = dimvals[i][1] - dimvals[i][0];
+			if (!indvar->IsRegularlySpaced(dimvals[i][0], res)) {
+				setError(name + " is not regularly spaced");
+				return false;
+			}
+		}
 		i++;
     }
+
+	Rcpp::Rcout << "-- here --" << std::endl;
+	Rcpp::Rcout << calendar << std::endl;
+
 
 	s.m_ndims = dimcount.size();
 	s.source_name = subdsname;
@@ -354,24 +369,32 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		s.m_missing_value = NAval;
 	}
 
-	if (xyz.size() < 2) {
-		xyz = {3,2,1,0};
-	}
-
-	xyz.resize(dimcount.size());
-	if (xyz.size() < 2) {
+	if (dimcount.size() < 2) {
 		setError("insufficient dimensions");
 		return false;
 	}
-	
 
-	int ix = dimcount.size()-1;
+	if (xyz.size() < 2) {
+		xyz = {2,1,0};
+	}
+	size_t ndim = dimcount.size();
+
+	int ix = ndim - 1;
 	int iy = ix - 1;
-	int it = ix - 2;
-//	int iz = ix - 3;
+	int it = 0;
+	int iz = -1;
+	if (ix == 3) {
+		iz = 1;
+		xyz = {it, iz, iy, ix};
+	} else if (ndim == 2) {
+		xyz = {iy, ix};
+	}
 
+	Rcpp::Rcout << ix << ", " << iy << ", " << iz << ", " << it << std::endl;
 	
 	SpatExtent e;
+
+	Rcpp::Rcout << "-- there --" << std::endl;
 	
  	s.ncol = dimcount[iy];
 	s.nrow = dimcount[ix];
@@ -384,6 +407,10 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	double res = (yend - ystart) / (s.ncol-1);
 	e.ymax = yend + 0.5 * res;
 	e.ymin = ystart - 0.5 * res;
+	if (e.ymin > e.ymax) {
+		std::swap(e.ymin, e.ymax);
+		s.flipped = true;
+	}
 	s.m_dimnames.push_back(dimnames[iy]);
 
 	double xstart = dimvals[ix][0];
@@ -400,7 +427,18 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		std::string msg;
 		parse_ncdf_time(s, dimunits[it], "standard", dimvals[it], msg);
 	}
-	s.m_dims = xyz;
+
+	if (iz >= 0) {
+		s.m_dimnames.push_back(dimnames[iz]);
+		s.depthname = dimnames[iz];
+		s.depth = dimvals[iz];
+		s.hasDepth = true;
+		s.nlyr *= dimcount[iz];
+	}
+	
+	for (size_t i=0; i<xyz.size(); i++) {
+		s.m_dims.push_back(xyz[i]);
+	}
 	s.extent = e;
 
 	s.nlyrfile = s.nlyr;
@@ -416,20 +454,32 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	s.multidim = true;
 
 // layer names
-
-	std::vector<std::string> nms(s.nlyr, subdsname + "_");
-	for (size_t i=0; i<=nms.size(); i++) {
-		nms[i] += std::to_string(i + 1);
-	}	
+	std::vector<std::string> nms;
+	if (iz >= 0) {
+		size_t niz = dimcount[iz];
+		size_t ntm = dimcount[it];	
+		nms.resize(ntm * niz, subdsname + "-");
+		size_t k = 0;
+		for (size_t i=0; i<niz; i++) {
+			for (size_t j=0; j<ntm; j++) {
+				nms[k] += std::to_string(j + 1) + "_" + s.depthname + "=" + std::to_string(dimvals[iz][i]);
+				k++;
+			}
+		}
+	} else {
+		nms.resize(s.nlyr, subdsname + "-");
+		for (size_t i=0; i<nms.size(); i++) {
+			nms[i] += std::to_string(i + 1);
+		}	
+	}
 	s.names = nms;
 
 // time
-
 	s.m_counts = dimcount;
 	setSource(s);
 	if (verbose) {
-		for (size_t i=0; i<s.m_ndims; i++){
-			Rcpp::Rcout << s.m_dims[i] << " " << s.m_dimnames[i] << " " << s.m_counts[i] << std::endl;
+		for (size_t i=0; i<s.m_dims.size(); i++){
+			Rcpp::Rcout << s.m_dims[i] << " " << dimnames[i] << " " << s.m_counts[i] << std::endl;
 		}
 	}
 	return true;
@@ -477,33 +527,36 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 
 	offset[source[src].m_dims[0]] = col;
 	offset[source[src].m_dims[1]] = row;
-	offset[source[src].m_dims[2]] = 0;
 
+	size_t ndim = source[src].m_dims.size();
+		
 //	std::vector<size_t> count = source[src].m_counts;
 	std::vector<size_t> count(source[src].m_ndims, 1);
 	count[source[src].m_dims[0]] = ncols;
 	count[source[src].m_dims[1]] = nrows;
-	count[source[src].m_dims[2]] = nlyr();
-
+	if (ndim == 3) {
+		count[source[src].m_dims[2]] = nlyr();
+	} else if (ndim == 4) {
+		count[source[src].m_dims[2]] = 1; //nlyr() / source[0].time.size();
+		count[source[src].m_dims[3]] = 1; //source[0].time.size();		
+	}
+	
 	size_t n=1;
 	for (size_t i=0; i<count.size(); i++) {
 		n *= count[i];
 	}
+	
+	for (size_t i=0; i<offset.size(); i++) Rcpp::Rcout << offset[i] << ", "; 
+	Rcpp::Rcout << std::endl;
+	for (size_t i=0; i<count.size(); i++) Rcpp::Rcout << count[i] << ", "; 
+	Rcpp::Rcout << std::endl;
 
 	//count = {3600, 1, 1, 7200, 1};
 
 	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
 
-	std::vector<double> temp;
-	temp.resize(n);
-	GDALMDArrayRead(source[src].gdalmdarray, &offset[0], &count[0],
-						NULL, // step: defaults to 1,1,1
-						NULL, // stride: default to row-major convention
-						hDT,
-						&temp[0],
-						NULL, // array start. Omitted
-						0 // array size in bytes. Omitted
-						);
+	out.resize(n);
+	GDALMDArrayRead(source[src].gdalmdarray, &offset[0], &count[0], NULL, NULL, hDT, &out[0], NULL, 0);
     GDALExtendedDataTypeRelease(hDT);
 
 //tbd: row order should be reversed
@@ -519,7 +572,7 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 //	}
 
 
-    out = std::move(temp);
+//    out = std::move(temp);
 	if (source[src].m_hasNA) {
 		std::replace (out.begin(), out.end(), source[src].m_missing_value, (double)NAN);
 	}

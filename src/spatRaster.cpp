@@ -36,7 +36,7 @@ SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<st
 }
 
 
-SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz, bool noflip, bool guessCRS, std::vector<std::string> domains) {
+SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> xyz, bool noflip, bool guessCRS, std::vector<std::string> domains) {
 
 	if (fname.empty()) {
 		setError("no filename");

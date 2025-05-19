@@ -666,7 +666,7 @@ RCPP_MODULE(spat){
 	class_<SpatRaster>("SpatRaster")
 		.constructor()
 	 // .constructor<std::string, int>()
-		.constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<std::string>, std::vector<size_t>, bool, bool, std::vector<std::string>>()
+		.constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<std::string>, std::vector<int>, bool, bool, std::vector<std::string>>()
 		
 		.constructor<std::vector<size_t>, std::vector<double>, std::string>()
 		//.finalizer(&SpatRaster_finalizer)
