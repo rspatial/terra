@@ -48,8 +48,7 @@ bool dimfo(std::shared_ptr<GDALGroup> poRootGroup, std::vector<std::string> &ar_
 
 bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz) {
 
-
-	return true;
+	SpatRasterSource s;
 
     auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER ));
     if( !poDataset ) {
@@ -92,15 +91,12 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 //       return false;
 //	}
 
-
 	std::string subdsname = "";
-
-
 	if (subname.size() > 0) {
 		subdsname = subname[0];
 		int w = where_in_vector(subdsname, ar_names, false);
 		if (w < 0) {
-			setError("array " + subdsname + " not found. Should be one of " + concatenate(ar_names, ", "));
+			setError("array " + subdsname + " not found. Should be one of:\n  " + concatenate(ar_names, ", "));
 			return false;
 		} else {
 			sub = {w};
@@ -126,9 +122,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		return false;
     }
 
-	SpatRasterSource s;
 
-/*
 	std::string wkt = "";
 	auto srs = poVar->GetSpatialRef();
 
@@ -139,7 +133,6 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		if (err == OGRERR_NONE) {
 			wkt = std::string(cp);
 		}
-		Rcpp::Rcout << "wkt: " << wkt <<std::endl;
 		CPLFree(cp);
 	} else {
 		Rcpp::Rcout << "wkt is null" <<std::endl;		
@@ -150,7 +143,6 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	if (!s.srs.set({wkt}, msg)) {
 		addWarning(msg);
 	}
-*/
 
 
 //	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
@@ -186,60 +178,58 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	Rcpp::Rcout << "--- end dimensions ---" << std::endl;
 
 
+	s.nlyr = 1;
+
 	s.m_ndims = dimcount.size();
 	s.source_name = subdsname;
-	s.source_name_long = poVar->GetAttribute("long_name")->ReadAsString();
-
+	auto lname = poVar->GetAttribute("long_name");
+	if (lname) s.source_name_long = lname->ReadAsString();
+	
 	s.m_hasNA = false;
 	double NAval = poVar->GetNoDataValueAsDouble(&s.m_hasNA);
 	if (s.m_hasNA) {
 		s.m_missing_value = NAval;
 	}
 
+	if (xyz.size() < 2) {
+		xyz = {3,2,1,0};
+	}
+
+	xyz.resize(dimcount.size());
+	if (xyz.size() < 2) {
+		setError("insufficient dimensions");
+		return false;
+	}
+	
+
+	int ix = dimcount.size()-1;
+	int iy = ix - 1;
+	int it = ix - 2;
+//	int iz = ix - 3;
+
+	
 	SpatExtent e;
-	if (xyz[0] < s.m_ndims) {
-		s.nrow = dimcount[xyz[0]];
-		s.m_dimnames.push_back(dimnames[xyz[0]]);
-		double res = (dim_start[xyz[0]] - dim_end[xyz[0]]) / (s.nrow-1);
-		e.ymax = dim_start[xyz[0]] + 0.5 * res;
-		e.ymin = dim_end[xyz[0]] - 0.5 * res;
-	} else {
-		setError("the second dimension is not valid");
-		return false;
-	}
-	if (xyz[1] < s.m_ndims) {
-		s.ncol = dimcount[xyz[1]];
-		s.m_dimnames.push_back(dimnames[xyz[1]]);
-		double res = (dim_end[xyz[1]] - dim_start[xyz[1]]) / (s.ncol-1);
-		e.xmin = dim_start[xyz[1]] - 0.5 * res;
-		e.xmax = dim_end[xyz[1]] + 0.5 * res;
-	} else {
-		setError("the first dimension is not valid");
-		return false;
-	}
+	
+ 	s.ncol = dimcount[iy];
+	s.m_dimnames.push_back(dimnames[iy]);
+	double res = (dim_start[iy] - dim_end[iy]) / (s.ncol-1);
+	e.ymax = dim_start[iy] + 0.5 * res;
+	e.ymin = dim_end[iy] - 0.5 * res;
+	s.m_dimnames.push_back(dimnames[iy]);
+
+	s.nrow = dimcount[ix];
+	s.m_dimnames.push_back(dimnames[ix]);
+	res = (dim_end[ix] - dim_start[ix]) / (s.nrow-1);
+	e.xmin = dim_start[ix] - 0.5 * res;
+	e.xmax = dim_end[ix] + 0.5 * res;
+	s.m_dimnames.push_back(dimnames[ix]);
+
 	if (s.m_ndims > 2) {
-		if (xyz[2] < s.m_ndims) {
-			s.nlyr = dimcount[xyz[2]];
-			s.m_dimnames.push_back(dimnames[xyz[2]]);
-		} else {
-			setError("the third dimension is not valid");
-			return false;
-		}
+		s.nlyr = dimcount[it];
+		s.m_dimnames.push_back(dimnames[it]);
 	}
 	s.m_dims = xyz;
 	s.extent = e;
-	if (s.m_ndims > 3) {
-		for (size_t i=0; i<s.m_ndims; i++) {
-			bool found = false;
-			for (size_t j=0; j<3; j++) {
-				if (i == xyz[j]) found = true;
-			}
-			if (!found) {
-				s.m_dims.push_back(i);
-				s.m_dimnames.push_back(dimnames[i]);
-			}
-		}
-	}
 
 	s.nlyrfile = s.nlyr;
 	s.resize(s.nlyr);

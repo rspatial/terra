@@ -1,4 +1,4 @@
-# version 1.8-51
+# version 1.8-52
 
 ## bug fixes
 
@@ -6,7 +6,7 @@
 - `plot<SpatRaster>` argument "alpha" did not work properly [#1833](https://github.com/rspatial/terra/issues/1833) by strevisani
 - added the `-lnetcdf` flag needed for linking on some linuxes [#1829](https://github.com/rspatial/terra/issues/1829) by Guillermo A. Durán Sanabria
 - in some cases the last block used in raster processing was too large and led to memory issues [#1825](https://github.com/rspatial/terra/issues/1825) by Alex Ilich
-
+- `==<SpatRaster>` with multiple layers and categorical comparison failed [#1836](https://github.com/rspatial/terra/issues/1836) by Andrew Gene Brown
 
 ## enhancements
 
