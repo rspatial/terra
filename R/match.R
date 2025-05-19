@@ -6,7 +6,7 @@ getCatIDs <- function(x, table, sender="%in%") {
 		error(sender, "Can only match character values if x is categorical")
 	}
 	if (nlyr(x) != 1) {
-		error(sender, "matching with character values is only supported for single layer SpatRaster")
+		error(sender, "cannot match with multiple layers --- this should not happen, please report")
 	}
 	d <- cats(x)[[1]]
 	m <- stats::na.omit(match(table, d[,2]))
@@ -33,6 +33,9 @@ setMethod("%in%", signature(x="SpatRaster"),
 
 		table <- unique(table)
 		if (is.character(table)) {
+			if (nlyr(x) > 1) {
+				return(rast(lapply(x, function(i) i %in% table)))
+			}
 			table <- getCatIDs(x, table)
 			if (length(table) == 0) {
 				return(as.logical(x*0))

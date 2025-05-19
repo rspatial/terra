@@ -254,10 +254,14 @@ getFactTable <- function(x, table, sender="%in%") {
 setMethod("Compare", signature(e1="SpatRaster", e2="character"),
     function(e1, e2){
 		oper <- as.vector(.Generic)[1]
-		e2 <- getCatIDs(e1, e2, "==")
 		if (oper != "==") {
 			error(oper, "only '==' is supported with categorical comparisons")
 		}
+		if (nlyr(e1) > 1) {
+			return(rast(lapply(e1, function(x) x == e2)))
+		}
+
+		e2 <- getCatIDs(e1, e2, "==")
 		if (length(e2) == 0) {
 			return(as.logical(e1*0))
 		}
