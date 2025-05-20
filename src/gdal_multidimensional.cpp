@@ -542,12 +542,12 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 
 	std::vector<GUInt64> offset(source[src].m_ndims, 0);
 	std::vector<size_t> dims = source[src].m_dims;
-	
+
+/*	
 	Rcpp::Rcout << "dims: ";
-	for (size_t i=0; i<dims.size(); i++) {
-		Rcpp::Rcout << dims[i] << " ";
-	}
+	for (size_t i=0; i<dims.size(); i++) {Rcpp::Rcout << dims[i] << " ";}
 	Rcpp::Rcout << "\n";
+*/
 	
 	offset[source[src].m_dims[0]] = col;
 	offset[source[src].m_dims[1]] = row;
@@ -561,8 +561,8 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 	if (ndim == 3) {
 		count[source[src].m_dims[2]] = nlyr();
 	} else if (ndim == 4) {
-		count[source[src].m_dims[2]] = 1; //nlyr() / source[0].time.size();
-		count[source[src].m_dims[3]] = 1; //source[0].time.size();		
+		count[source[src].m_dims[2]] = source[0].depth.size();
+		count[source[src].m_dims[3]] = source[0].time.size();		
 	}
 	
 	size_t n=1;
@@ -570,12 +570,10 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 		n *= count[i];
 	}
 	
-	for (size_t i=0; i<offset.size(); i++) Rcpp::Rcout << offset[i] << ", "; 
-	Rcpp::Rcout << std::endl;
-	for (size_t i=0; i<count.size(); i++) Rcpp::Rcout << count[i] << ", "; 
-	Rcpp::Rcout << std::endl;
-
-	//count = {3600, 1, 1, 7200, 1};
+//	for (size_t i=0; i<offset.size(); i++) Rcpp::Rcout << offset[i] << ", "; 
+//	Rcpp::Rcout << std::endl;
+//	for (size_t i=0; i<count.size(); i++) Rcpp::Rcout << count[i] << ", "; 
+//	Rcpp::Rcout << std::endl;
 
 	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
 
