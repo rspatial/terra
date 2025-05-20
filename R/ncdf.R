@@ -57,7 +57,7 @@ write_tags <- function(tags, nc, varid, prefix="TAG_") {
 	if (NROW(tags) > 0) {
 		nms <- paste0(prefix, tags[,2])
 		for(i in 1:nrow(tags)) {
-			ncdf4::ncatt_put(nc, varid, nms[i], tags[i,3], prec="text")
+			try(ncdf4::ncatt_put(nc, varid, nms[i], tags[i,3], prec="text"), silent=TRUE)
 		}
 	}
 }
@@ -90,7 +90,7 @@ get_time_vars <- function(y) {
 }
 
 
-.write_cdf <- function(x, filename, overwrite=FALSE, timename="time", atts="", gridmap="", prec="float", compression=NA, missval, force_v4=TRUE, verbose=FALSE, ...) {
+.write_cdf <- function(x, filename, overwrite=FALSE, timename="time", atts="", gridmap="", prec="float", compression=NA, missval, tags=FALSE, force_v4=TRUE, verbose=FALSE, ...) {
 
 	n <- length(x)
 	y <- x[1]
@@ -312,7 +312,7 @@ get_time_vars <- function(y) {
 		if (haveprj) {
 			ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
 		}
-		write_tags(metags(y), ncobj, ncvars[[i]], "")
+		if (tags) write_tags(metags(y), ncobj, ncvars[[i]], "")
 	}
 	if (progress) close(pb)
 	
@@ -321,7 +321,7 @@ get_time_vars <- function(y) {
 	ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
 	ncdf4::ncatt_put(ncobj, 0, "created_date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
 
-	write_tags(metags(x), ncobj, 0, "")
+	if (tags) write_tags(metags(x), ncobj, 0, "")
 	
 	atts <- grep("=", atts, value=TRUE)
 	if (length(atts) > 0) {
@@ -374,7 +374,7 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 
 
 setMethod("writeCDF", signature(x="SpatRasterDataset"),
-	function(x, filename, overwrite=FALSE, timename="time", atts="", gridmap="", prec="float", compression=NA, missval, ...) {
+	function(x, filename, overwrite=FALSE, timename="time", atts="", gridmap="", prec="float", compression=NA, missval, tags=FALSE, ...) {
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		xt  <- tools::file_ext(filename)
@@ -384,7 +384,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		if (file.exists(filename) & !overwrite) {
 			error("writeCDF", "file exists, use 'overwrite=TRUE' to overwrite it")
 		}
-		ok <- .write_cdf(x, filename, timename=timename, atts=atts, gridmap=gridmap, prec=prec, compression=compression, missval=missval, ...)
+		ok <- .write_cdf(x, filename, timename=timename, atts=atts, gridmap=gridmap, prec=prec, compression=compression, missval=missval, tags=tags,  ...)
 		if (ok) {
 			if (length(x) > 1) {
 				out <- sds(filename)

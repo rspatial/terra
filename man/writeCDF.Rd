@@ -22,7 +22,7 @@ See \code{\link{depth}} and \code{\link{time}} for specifying the axes of the th
 \S4method{writeCDF}{SpatRaster}(x, filename, varname, longname="", unit="", split=FALSE, ...)
 
 \S4method{writeCDF}{SpatRasterDataset}(x, filename, overwrite=FALSE, timename="time", atts="", 
-    gridmap="", prec="float", compression=NA, missval, ...)
+    gridmap="", prec="float", compression=NA, missval, tags=FALSE, ...)
 }
 
 \arguments{
@@ -39,6 +39,7 @@ See \code{\link{depth}} and \code{\link{time}} for specifying the axes of the th
   \item{prec}{character. One of "double", "float", "integer", "short", "byte" or "char"}
   \item{compression}{Can be set to an integer between 1 (least compression) and 9 (most compression)}
   \item{missval}{numeric, the number used to indicate missing values}
+  \item{tags}{logical. If \code{TRUE} the value returned by \code{\link{metags}} are written to the file as attributes}
   \item{...}{additional arguments passed on to the SpatRasterDataset method, and from there possibly to \code{\link[ncdf4]{ncvar_def}}}
 }
 
