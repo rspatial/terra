@@ -7,6 +7,8 @@
 - added the `-lnetcdf` flag needed for linking on some linuxes [#1829](https://github.com/rspatial/terra/issues/1829) by Guillermo A. Durán Sanabria
 - in some cases the last block used in raster processing was too large and led to memory issues [#1825](https://github.com/rspatial/terra/issues/1825) by Alex Ilich
 - `==<SpatRaster>` with multiple layers and categorical comparison failed [#1836](https://github.com/rspatial/terra/issues/1836) by Andrew Gene Brown
+- `wrteCDF` failed when writing tags with illegal characters such as "{" or "(", [#1811](https://github.com/rspatial/terra/issues/1811) by Catalin Sorin Covaci
+
 
 ## enhancements
 

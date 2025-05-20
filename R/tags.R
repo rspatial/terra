@@ -89,9 +89,9 @@ setMethod("metags<-", signature(x="SpatRaster"),
 				if (is.character(layer)) layer = match(layer, names(x))
 				value <- metags(x, layer)
 			} else {
-				value <- metags(x)
+				value <- metags(x)[, c(3,1:2)]
 			}
-			value[,2] <- ""
+			value[,3] <- ""
 			#value[is.na(value)] <- ""
 		} else {
 			value <- parse_tags(value, domain)
@@ -103,6 +103,7 @@ setMethod("metags<-", signature(x="SpatRaster"),
 				x@pntr$addLyrTags(layer-1, value[,2], value[,3])
 			} else {
 				sapply(1:nrow(value), function(i) {
+						# name, value, domain
 						x@pntr$addTag(value[i,2], value[i,3], value[i,1])
 					})
 			}
