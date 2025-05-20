@@ -222,7 +222,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 
 	SpatRasterSource s;
 
-	bool verbose = true;
+	bool verbose = false;
 
     auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER ));
     if( !poDataset ) {
@@ -333,7 +333,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
         dimcount.push_back(static_cast<size_t>(n));
         std::string name = static_cast<std::string>(poDim->GetName());
 		dimnames.push_back(name);
-			
+		//Rcpp::Rcout << name << std::endl;
 		std::vector<GUInt64> start(1, 0);
 		std::vector<size_t> count = {n};
 		dimvals.push_back(std::vector<double>(n));
@@ -353,10 +353,6 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		}
 		i++;
     }
-
-	Rcpp::Rcout << "-- here --" << std::endl;
-	Rcpp::Rcout << calendar << std::endl;
-
 
 	s.m_ndims = dimcount.size();
 	s.source_name = subdsname;
@@ -385,26 +381,23 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	int iz = -1;
 	if (ix == 3) {
 		iz = 1;
-		xyz = {it, iz, iy, ix};
+		xyz = {ix, iy, iz, it};
 	} else if (ndim == 2) {
-		xyz = {iy, ix};
+		xyz = {ix, iy};
 	}
 
-	Rcpp::Rcout << ix << ", " << iy << ", " << iz << ", " << it << std::endl;
+	//Rcpp::Rcout << ix << ", " << iy << ", " << iz << ", " << it << std::endl;
 	
 	SpatExtent e;
-
-	Rcpp::Rcout << "-- there --" << std::endl;
-	
- 	s.ncol = dimcount[iy];
-	s.nrow = dimcount[ix];
+ 	s.ncol = dimcount[ix];
+	s.nrow = dimcount[iy];
 	s.nlyr = 1;
 
 	// to do: check for equal spacing if x or y dim
 
 	double ystart = dimvals[iy][dimvals[iy].size()-1];
 	double yend = dimvals[iy][0];
-	double res = (yend - ystart) / (s.ncol-1);
+	double res = (yend - ystart) / (s.nrow-1);
 	e.ymax = yend + 0.5 * res;
 	e.ymin = ystart - 0.5 * res;
 	if (e.ymin > e.ymax) {
@@ -415,7 +408,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 
 	double xstart = dimvals[ix][0];
 	double xend = dimvals[ix][dimvals[ix].size()-1];
-	res = (xend - xstart) / (s.nrow-1);
+	res = (xend - xstart) / (s.ncol-1);
 	e.xmin = dimvals[ix][0] - 0.5 * res;
 	e.xmax = dimvals[ix][dimvals[ix].size()-1] + 0.5 * res;
 
@@ -445,7 +438,6 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	s.resize(s.nlyr);
 	s.layers.resize(s.nlyr);
     std::iota(s.layers.begin(), s.layers.end(), 0);
-	s.flipped = false;
 	s.rotated = false;
 	s.memory = false;
 	s.filename = fname;
@@ -520,11 +512,43 @@ bool SpatRaster::readStopMulti(size_t src) {
 }
 
 
+void tpose(std::vector<double> &v, size_t nr, size_t nc, size_t nl) {
+	std::vector<double> vv(v.size());
+	for (size_t lyr=0; lyr<nl; lyr++) {
+		size_t off = lyr*nc*nr;
+		for (size_t r = 0; r < nr; r++) {
+			size_t rnc = off + r * nc;
+			for (size_t c = 0; c < nc; c++) {
+				vv[c*nr+r+off] = v[rnc+c];
+			}
+		}
+	}
+	v = vv;
+}
+
+void vflip(std::vector<double> &v, size_t nr, size_t nc) {
+	std::vector<double> vv;
+	vv.reserve(v.size());
+	size_t n = (v.size() / nc) - 1;
+	for (int i=n; i>=0; i--) {
+		size_t b = i * nc;
+		vv.insert(vv.end(), v.begin()+b, v.begin()+b+nc);
+	}
+	v = vv;
+}
+
+
 bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 
 	std::vector<GUInt64> offset(source[src].m_ndims, 0);
 	std::vector<size_t> dims = source[src].m_dims;
-
+	
+	Rcpp::Rcout << "dims: ";
+	for (size_t i=0; i<dims.size(); i++) {
+		Rcpp::Rcout << dims[i] << " ";
+	}
+	Rcpp::Rcout << "\n";
+	
 	offset[source[src].m_dims[0]] = col;
 	offset[source[src].m_dims[1]] = row;
 
@@ -559,20 +583,12 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 	GDALMDArrayRead(source[src].gdalmdarray, &offset[0], &count[0], NULL, NULL, hDT, &out[0], NULL, 0);
     GDALExtendedDataTypeRelease(hDT);
 
-//tbd: row order should be reversed
+	if (source[0].flipped) {
+		vflip(out, nrows, ncols);	
+	}
 
-//	size_t nc = nrows * ncols;
-//	size_t nl = nlyr();
-//	out.resize(0);
-//	out.reserve(n);
-//	for (size_t i=0; i<nl; i++) {
-//		for (size_t j=0; j<nc; j++) {
-//			out.push_back( temp[nl*j + i] );
-//		}
-//	}
+//	tpose(out, nrows, ncols, nlyr());
 
-
-//    out = std::move(temp);
 	if (source[src].m_hasNA) {
 		std::replace (out.begin(), out.end(), source[src].m_missing_value, (double)NAN);
 	}
