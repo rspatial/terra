@@ -327,23 +327,15 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		addWarning(msg);
 	}
 
-
-//	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
-//  GDALExtendedDataTypeRelease(hDT);
-
 // dimensions 
 	std::vector<size_t> dimcount;
 	std::vector<std::string> dimnames, dimunits;
-//	std::vector<double> dim_start, dim_end;
-
 	std::vector<std::vector<double>> dimvals;
 	dimvals.reserve(dim_names[sub[0]].size());
 
-	std::string calendar = "";
-	
+	std::string calendar = "";	
 	std::vector<std::shared_ptr<GDALDimension>> dimData = poVar->GetDimensions();
 	size_t ndim = dimData.size();
-//    for ( const auto &poDim: dimData ) {
     for (size_t i=0; i<ndim; i++) {
 		size_t n = dimData[i]->GetSize();
         dimcount.push_back(static_cast<size_t>(n));
@@ -353,13 +345,14 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		std::vector<size_t> count = {n};
 		dimvals.push_back(std::vector<double>(n));
 
-		Rcpp::Rcout << name << std::endl;
+		if (verbose) Rcpp::Rcout << name << std::endl;
 
 		const auto indvar = dimData[i]->GetIndexingVariable();
         dimunits.push_back(static_cast<std::string>(indvar->GetUnit()));
 		auto pcal = indvar->GetAttribute("calendar");
 		if (pcal) calendar = pcal->ReadAsString();
 		
+	
 		indvar->Read(start.data(), count.data(), nullptr, nullptr, GDALExtendedDataType::Create(GDT_Float64), &dimvals[i][0]);
 		if ((i >= (ndim-2)) && (dimvals[i].size() > 2)) {
 			double res = dimvals[i][1] - dimvals[i][0];
@@ -374,13 +367,15 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	s.source_name = subdsname;
 	auto lname = poVar->GetAttribute("long_name");
 	if (lname) s.source_name_long = lname->ReadAsString();
-	
-	s.m_hasNA = false;
-	double NAval = poVar->GetNoDataValueAsDouble(&s.m_hasNA);
-	if (s.m_hasNA) {
-		s.m_missing_value = NAval;
-	}
 
+	auto mval = poVar->GetAttribute("missing_value");
+	if (mval) {
+		s.m_missing_value = mval->ReadAsDouble();
+		s.m_hasNA = true;
+	} else {
+		s.m_missing_value = poVar->GetNoDataValueAsDouble(&s.m_hasNA);
+	}
+	
 	if (dimcount.size() < 2) {
 		setError("insufficient dimensions");
 		return false;
@@ -410,17 +405,17 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 
 	// to do: check for equal spacing if x or y dim
 
-	double ystart = dimvals[iy][dimvals[iy].size()-1];
-	double yend = dimvals[iy][0];
+	double ystart = dimvals[iy][0];
+	double yend = dimvals[iy][dimvals[iy].size()-1];
 	double res = (yend - ystart) / (s.nrow-1);
 	e.ymax = yend + 0.5 * res;
 	e.ymin = ystart - 0.5 * res;
 	
 	// reverse signaling to match non-md
-	s.flipped = true;
+	s.flipped = false;
 	if (e.ymin > e.ymax) {
 		std::swap(e.ymin, e.ymax);
-		s.flipped = false;
+		s.flipped = true;
 	}
 	s.m_dimnames.push_back(dimnames[iy]);
 
@@ -530,32 +525,6 @@ bool SpatRaster::readStopMulti(size_t src) {
 }
 
 
-void tpose(std::vector<double> &v, size_t nr, size_t nc, size_t nl) {
-	std::vector<double> vv(v.size());
-	for (size_t lyr=0; lyr<nl; lyr++) {
-		size_t off = lyr*nc*nr;
-		for (size_t r = 0; r < nr; r++) {
-			size_t rnc = off + r * nc;
-			for (size_t c = 0; c < nc; c++) {
-				vv[c*nr+r+off] = v[rnc+c];
-			}
-		}
-	}
-	v = vv;
-}
-
-void vflip(std::vector<double> &v, size_t nc) {
-	std::vector<double> vv;
-	vv.reserve(v.size());
-	size_t nr = (v.size() / nc) - 1;
-	for (int i=nr; i>=0; i--) {
-		size_t b = i * nc;
-		vv.insert(vv.end(), v.begin()+b, v.begin()+b+nc);
-	}
-	v = vv;
-}
-
-
 bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 
 	std::vector<GUInt64> offset(source[src].m_ndims, 0);
@@ -577,6 +546,13 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 	count[source[src].m_dims[0]] = ncols;
 	count[source[src].m_dims[1]] = nrows;
 
+	std::vector<GPtrDiff_t> stride;
+	if (!source[0].flipped) { 
+		stride.resize(ndim, 1);
+		stride[ndim-2] = -1;
+		offset[ndim-2] = nrow() - row - 1;
+	}
+	
 	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
 	if (source[src].in_order(false)) {
 		if (ndim == 3) {
@@ -588,7 +564,7 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 		}
 		size_t n=vprod(count, false);
 		out.resize(n);
-		GDALMDArrayRead(source[src].gdalmdarray, &offset[0], &count[0], NULL, NULL, hDT, &out[0], NULL, 0);
+		GDALMDArrayRead(source[src].gdalmdarray, &offset[0], &count[0], &stride[0], NULL, hDT, &out[0], NULL, 0);
     } else {
 		count[source[src].m_dims[2]] = 1;
 		out.resize(0);
@@ -617,13 +593,12 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 //	Rcpp::Rcout << std::endl;
 
 
-	if (!source[0].flipped) {
-		vflip(out, ncols);	
-	}
+//	if (!source[0].flipped) { vflip(out, ncols); }
 
 //	tpose(out, nrows, ncols, nlyr());
 
 	if (source[src].m_hasNA) {
+		Rcpp::Rcout << source[src].m_missing_value << std::endl;
 		std::replace (out.begin(), out.end(), source[src].m_missing_value, (double)NAN);
 	}
 
@@ -656,4 +631,33 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 
 
 #endif
+
+
+/*
+void tpose(std::vector<double> &v, size_t nr, size_t nc, size_t nl) {
+	std::vector<double> vv(v.size());
+	for (size_t lyr=0; lyr<nl; lyr++) {
+		size_t off = lyr*nc*nr;
+		for (size_t r = 0; r < nr; r++) {
+			size_t rnc = off + r * nc;
+			for (size_t c = 0; c < nc; c++) {
+				vv[c*nr+r+off] = v[rnc+c];
+			}
+		}
+	}
+	v = vv;
+}
+
+void vflip(std::vector<double> &v, size_t nc) {
+	std::vector<double> vv;
+	vv.reserve(v.size());
+	size_t nr = (v.size() / nc) - 1;
+	for (int i=nr; i>=0; i--) {
+		size_t b = i * nc;
+		vv.insert(vv.end(), v.begin()+b, v.begin()+b+nc);
+	}
+	v = vv;
+}
+
+*/
 
