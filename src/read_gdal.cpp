@@ -1416,7 +1416,7 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, size_t src, size_t row
 		row = nrow() - row - nrows;
 	}
 
-	if (source[src].multidim) {
+	if (source[src].is_multidim) {
 		readValuesMulti(data, src, row, nrows, col, ncols);
 		return;
 	}
@@ -1445,7 +1445,7 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, size_t src, size_t row
 	CPLErr err = CE_None;
 
 	std::vector<int> panBandMap;
-	if (!source[src].in_order()) {
+	if (!source[src].in_order(true)) {
 		panBandMap.reserve(nl);
 		for (size_t i=0; i < nl; i++) {
 			panBandMap.push_back(source[src].layers[i]+1);
@@ -1530,7 +1530,7 @@ std::vector<double> SpatRaster::readValuesGDAL(size_t src, size_t row, size_t nr
 	std::vector<int> panBandMap;
 	if (lyr < 0) {
 		nl = source[src].nlyr;
-		if (!source[src].in_order()) {
+		if (!source[src].in_order(true)) {
 			panBandMap.reserve(nl);
 			for (size_t i=0; i < nl; i++) {
 				panBandMap.push_back(source[src].layers[i]+1);
@@ -1620,7 +1620,7 @@ std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t 
 	std::vector<double> naflags(nl, NAN);
 
 	std::vector<int> panBandMap;
-	if (!source[src].in_order()) {
+	if (!source[src].in_order(true)) {
 		panBandMap.reserve(nl);
 		for (size_t i=0; i < nl; i++) {
 			panBandMap.push_back(source[src].layers[i]+1);
@@ -1713,7 +1713,7 @@ void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &ou
 	}
 
 	std::vector<int> panBandMap;
-	if (!source[src].in_order()) {
+	if (!source[src].in_order(true)) {
 		panBandMap.reserve(nl);
 		for (size_t i=0; i < nl; i++) {
 			panBandMap.push_back(lyrs[i]+1);
@@ -1816,7 +1816,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(size_t src, std::vec
 	}
 
 	std::vector<int> panBandMap;
-	if (!source[src].in_order()) {
+	if (!source[src].in_order(true)) {
 		panBandMap.reserve(nl);
 		for (size_t i=0; i < nl; i++) {
 			panBandMap.push_back(lyrs[i]+1);
@@ -1901,7 +1901,7 @@ std::vector<double> SpatRaster::readRowColGDALFlat(size_t src, std::vector<int_6
 	}
 
 	std::vector<int> panBandMap;
-	if (!source[src].in_order()) {
+	if (!source[src].in_order(true)) {
 		panBandMap.reserve(nl);
 		for (size_t i=0; i < nl; i++) {
 			panBandMap.push_back(lyrs[i]+1);

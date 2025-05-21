@@ -539,7 +539,7 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 	SpatOptions ops(opt);
 	for (size_t i=0; i<nsrc; i++) {
 		bool write = false;
-		if (!source[i].in_order() || source[i].memory) {
+		if (!source[i].in_order(true) || source[i].memory) {
 			write = true;
 		} else if (unique) {
 			ufs.insert(source[i].filename);
@@ -980,6 +980,17 @@ bool SpatRaster::hasUnit() {
 	}
 	return test;
 }
+
+
+std::vector<bool> SpatRaster::isMD() {
+	std::vector<bool> out;
+	out.reserve(source.size());
+	for (size_t i=0; i<source.size(); i++) {
+		out.push_back(source[i].is_multidim);
+	}
+	return out;
+}
+
 
 
 std::vector<std::string> SpatRaster::getUnit() {

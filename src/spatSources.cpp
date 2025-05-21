@@ -326,10 +326,12 @@ void SpatRasterSource::appendValues(std::vector<double> &v, size_t lyr) {
 }
 
 
-bool SpatRasterSource::in_order() {
+bool SpatRasterSource::in_order(bool all) {
 	if (memory) return true;
-	if (nlyr != nlyrfile) return false;
-	for (size_t i=0; i<layers.size(); i++) {
+	if (nlyr != nlyrfile) {
+		if (all) return false;
+	}
+	for (size_t i=layers[0]; i<layers.size(); i++) {
 		if (layers[i] != i) {
 			return false;
 		}

@@ -30,7 +30,7 @@ bool SpatRaster::readStart() {
 		}
 		if (source[i].memory) {
 			source[i].open_read = true;
-		} else if (source[i].multidim) {
+		} else if (source[i].is_multidim) {
 			if (!readStartMulti(i)) {
 				return false;
 			}
@@ -39,7 +39,7 @@ bool SpatRaster::readStart() {
 				for (size_t j=0; j<i; j++) {
 					if (source[j].memory) {
 						source[j].open_read = false;
-					} else if (source[j].multidim) {
+					} else if (source[j].is_multidim) {
 						readStopMulti(j);
 					} else {
 						readStopGDAL(j);
@@ -57,7 +57,7 @@ bool SpatRaster::readStop() {
 		if (source[i].open_read) {
 			if (source[i].memory) {
 				source[i].open_read = false;
-			} else if (source[i].multidim) {
+			} else if (source[i].is_multidim) {
 				readStopMulti(i);
 			} else {
 				readStopGDAL(i);

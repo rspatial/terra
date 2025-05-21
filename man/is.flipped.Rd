@@ -6,7 +6,7 @@
 \alias{is.flipped,SpatRaster-method}
   
   
-\title{Check for rotation}
+\title{Is a SpatRaster is flipped}
 
 \description{
 Check if a SpatRaster is "flipped" vertically, and may need to be adjusted with \code{\link{flip}} before it can be used. 

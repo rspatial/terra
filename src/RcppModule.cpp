@@ -767,6 +767,8 @@ RCPP_MODULE(spat){
 		.method("setNAflag", &SpatRaster::setNAflag)
 		.method("getNAflag", &SpatRaster::getNAflag)
 
+		.property("isMD", &SpatRaster::isMD)
+
 		.property("hasUnit", &SpatRaster::hasUnit)
 		.property("hasDepth", &SpatRaster::hasDepth)
 		.property("hasTime", &SpatRaster::hasTime)

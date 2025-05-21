@@ -84,7 +84,7 @@ class SpatRasterSource {
 		bool hasWindow=false;
 		SpatWindow window;
 	
-		bool multidim = false;
+		bool is_multidim = false;
 		size_t m_ndims;
 		std::vector<size_t> m_dims;
 		std::vector<std::string> m_dimnames;
@@ -95,6 +95,8 @@ class SpatRasterSource {
 		std::vector<size_t> m_subset;
 		bool m_hasNA = false;
 		double m_missing_value;
+		
+		
 		std::vector<std::vector<std::string>> bmdata;
 		std::vector<std::string> smdata;
 		
@@ -169,7 +171,7 @@ class SpatRasterSource {
 		void setRange();
 		void resize(size_t n);
 		void reserve(size_t n);
-		bool in_order();
+		bool in_order(bool all);
 		bool combine_sources(const SpatRasterSource &x);
 		bool combine(SpatRasterSource &x);
 		
@@ -355,7 +357,7 @@ class SpatRaster {
 		bool setDepthName(std::string name);
 		std::string getDepthUnit();
 		bool setDepthUnit(std::string unit);
-
+		
 		bool hasUnit();
 		std::vector<std::string> getUnit();
 		bool setUnit(std::vector<std::string> units);
@@ -365,6 +367,7 @@ class SpatRaster {
 
 		std::vector<std::vector<std::string>> getMetadata(bool layers);
 
+		std::vector<bool> isMD();
 
 ////////////////////////////////////////////////////
 // constructors
