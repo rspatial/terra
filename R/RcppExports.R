@@ -141,11 +141,3 @@ intermediate <- function(lon1, lat1, lon2, lat2, n, distance) {
     .Call(`_terra_intermediate`, lon1, lat1, lon2, lat2, n, distance)
 }
 
-.ncdf_open <- function(filename, write) {
-    .Call(`_terra_ncdf_open`, filename, write)
-}
-
-.ncdf_close <- function(ncid) {
-    .Call(`_terra_ncdf_close`, ncid)
-}
-

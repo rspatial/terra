@@ -185,8 +185,6 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 
 
 
-
-
 bool dimfo(std::shared_ptr<GDALGroup> poRootGroup, std::vector<std::string> &ar_names, std::vector<std::vector<std::string>> &dimnames, std::vector<std::vector<size_t>> &dimsize, std::string &msg) {
 
 	msg = "";
@@ -216,6 +214,21 @@ bool dimfo(std::shared_ptr<GDALGroup> poRootGroup, std::vector<std::string> &ar_
 	return true;
 }
 
+
+inline bool ncdf_keep(std::string const &s) {
+	std::vector<std::string> end = {"_bnds", "_bounds", "lat", "lon", "longitude", "latitude"};
+	for (size_t i=0; i<end.size(); i++) {
+		if (s.length() >= end[i].length()) {
+			if (s.compare(s.length() - end[i].length(), s.length(), end[i]) == 0) {
+				return false;
+			}
+		}
+	}
+	if (s == "x" || s == "y" || s == "northing" || s == "easting") {
+		return false;
+	}
+	return true;
+}
 
 
 bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> xyz) {
@@ -248,7 +261,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	} else {
 		for (size_t i=0; i<names.size(); i++) {
 			size_t ni = dim_size[i].size();
-			if (ni > 1) {
+			if ((ni > 1) && (ncdf_keep(names[i]))) {
 				ar_names.push_back(names[i]);
 				if (verbose) {
 					Rcpp::Rcout << names[i] << ": ";	
