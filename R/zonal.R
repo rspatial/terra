@@ -372,6 +372,12 @@ setMethod("global", signature(x="SpatRaster"),
 
 setMethod("freq", signature(x="SpatRaster"),
 	function(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE, zones=NULL, wide=FALSE) {
+		
+		if (!hasValues(x)) {
+			warn("freq", "SpatRaster x has no cell values")
+			d <- data.frame(layer=0, value=0.0, count=0)
+			return(d[0,])
+		}
 
 		if (!is.null(zones)) {
 			vna <- (!is.null(value) && is.na(value[1]))
@@ -392,6 +398,9 @@ setMethod("freq", signature(x="SpatRaster"),
 					}
 				}
 			} else if (inherits(zones, "SpatRaster")) {
+				if (!hasValues(zones)) {
+					error("freq", "zones SpatRaster has no cell values")
+				}
 				compareGeom(x, zones, crs=FALSE)
 				if (nlyr(zones) > 1) zones <- zones[[1]]
 				u <- unlist(unique(zones))
@@ -506,7 +515,7 @@ setMethod("freq", signature(x="SpatRaster"),
 			v[is.na(v)] <- 0
 		}
 	
-		v
+		v[!is.na(v$count), ]
 	}
 )
 
