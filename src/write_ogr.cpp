@@ -37,9 +37,17 @@ bool driverSupports(std::string driver, std::string option) {
 }
 
 
+#include "Rcpp.h"
+
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
     GDALDataset *poDS = NULL;
+	if (nrow() == 0) {
+		setError("SpatVector has no records to write");
+		return(poDS);		
+	}
+
+
 	if (!filename.empty()) {
 		if (file_exists(filename)) { // || path_exists(filename)) {
 			if ((!overwrite) && (!append)) {
@@ -56,6 +64,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			//return(poDS);
 //		}
 	}
+
+
 
 	if (append) {
 
@@ -175,6 +185,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
 	std::vector<std::string> nms = get_names();
+	make_unique_names(nms);
+
 	std::vector<std::string> tps = df.get_datatypes();
 	OGRFieldType otype;
 	int nfields = nms.size();
@@ -182,6 +194,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
 	for (int i=0; i<nfields; i++) {
+		
+		Rcpp::Rcout << nms[i] << std::endl;
 
 		OGRFieldSubType eSubType = OFSTNone;
 		if (tps[i] == "double") {

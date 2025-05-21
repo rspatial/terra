@@ -1470,6 +1470,9 @@ SpatVector SpatVector::intersect(SpatVector v, bool values) {
 			df1 = df.subset_rows(idx);
 		}
 	}
+	std::vector<std::string> nms = df1.get_names();
+	make_unique_names(nms);
+	df1.set_names(nms);	
 	out.df = df1;
 	return out;
 }
