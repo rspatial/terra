@@ -94,7 +94,7 @@ Note that there are operating system level limitations to the number of files th
 <dd><p>positive integer or character to select a sub-dataset. If zero or "", all sub-datasets are returned (if possible)</p></dd>
 
 <dt id="arg-lyrs">lyrs<a class="anchor" aria-label="anchor" href="#arg-lyrs"></a></dt>
-<dd><p>positive integer or character to select a subset of layers (a.k.a. "bands")</p></dd>
+<dd><p>positive integer or character to select a subset of layers (a.k.a. "bands"). If <code>x</code> has multiple filenames, the same layer numbers are selected from each of the files, unless numbers larger than the number of layers of the first data source are included</p></dd>
 
 <dt id="arg-drivers">drivers<a class="anchor" aria-label="anchor" href="#arg-drivers"></a></dt>
 <dd><p>character. GDAL drivers to consider</p></dd>
