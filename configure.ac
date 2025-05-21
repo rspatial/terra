@@ -839,7 +839,7 @@ PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
 AC_SUBST([PKG_LIBS], ["${TBBLIBS} ${PKG_LIBS}"])
 
 ##netcdf 
-AC_SUBST([PKG_LIBS], ["$(nc-config --libs) ${PKG_LIBS}"])
+# AC_SUBST([PKG_LIBS], ["$(nc-config --libs) ${PKG_LIBS}"])
 
 ####
 #

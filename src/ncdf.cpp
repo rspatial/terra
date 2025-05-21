@@ -1,7 +1,7 @@
-
+/*
 #include <string>
 #include "Rcpp.h"
-
+*/
 /*
 #if defined(__APPLE__)
 int ncdf_open(std::string filename, bool write) {
@@ -14,6 +14,7 @@ bool ncdf_close(int ncid) {
 #else
 */
 
+/*
 #include <netcdf.h>
 
 // [[Rcpp::export(name = ".ncdf_open")]]
@@ -46,3 +47,4 @@ bool ncdf_close(int ncid) {
 }
 
 //#endif
+*/

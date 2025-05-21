@@ -4430,8 +4430,7 @@ PKG_LIBS="${TBBLIBS} ${PKG_LIBS}"
 
 
 ##netcdf
-PKG_LIBS="$(nc-config --libs) ${PKG_LIBS}"
-
+# AC_SUBST([PKG_LIBS], ["$(nc-config --libs) ${PKG_LIBS}"])
 
 ####
 #
