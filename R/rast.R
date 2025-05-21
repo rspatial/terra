@@ -276,9 +276,14 @@ setMethod("rast", signature(x="character"),
 		}
 		r <- messages(r, "rast")
 
+		
 		if (!is.null(lyrs)) {
-			s <- sources(r, FALSE, TRUE)
-			lyrs <- which(!is.na(match(s$bands, lyrs)))
+			if (length(f) > 1) {
+				s <- sources(r, FALSE, TRUE)
+				if (max(lyrs) <= max(s$bands[s$sid == 1])) {
+					lyrs <- which(!is.na(match(s$bands, lyrs)))
+				}
+			}
 			r <- r[[lyrs]]
 		} 
 		if (!is.null(win)) {

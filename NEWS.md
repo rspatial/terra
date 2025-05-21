@@ -13,7 +13,7 @@
 
 ## enhancements
 
-- `rast` with multiple files and lyrs argument now applies the argument to each data source (file). [#1838](https://github.com/rspatial/terra/issues/1838) by Pedro Tarroso
+- `rast` with multiple files and lyrs argument now applies the argument to each data source (file); unless numbers higher than the number of layers of the first source are included. [#1838](https://github.com/rspatial/terra/issues/1838) by Pedro Tarroso
 
 
 ## new
