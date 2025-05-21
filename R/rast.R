@@ -277,6 +277,8 @@ setMethod("rast", signature(x="character"),
 		r <- messages(r, "rast")
 
 		if (!is.null(lyrs)) {
+			s <- sources(r, FALSE, TRUE)
+			lyrs <- which(!is.na(match(s$bands, lyrs)))
 			r <- r[[lyrs]]
 		} 
 		if (!is.null(win)) {
