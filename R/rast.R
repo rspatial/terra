@@ -260,7 +260,7 @@ setMethod("rast", signature(x="character"),
 		if (is.null(opts)) opts <- ""[0]
 		if (raw) opts <- c(opts, "so=false")
 		if (is.null(drivers)) drivers <- ""[0]
-		if (length(subds) == 0) subds = 0
+		if (length(subds) == 0) subds <- 0
 		if (is.character(subds)) {
 			r@pntr <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[], isTRUE(noflip), isTRUE(guessCRS), domains)
 		} else {
@@ -289,7 +289,7 @@ setMethod("rast", signature(x="character"),
 )
 
 
-multi <- function(x, subds=0, xyz=3:1, guessCRS=TRUE, drivers=NULL, opts=NULL, domains="") {
+multi <- function(x, subds=0, xyz=3:1, guessCRS=TRUE, raw=FALSE, drivers=NULL, opts=NULL, domains="") {
 
 	noflip <- FALSE
 
@@ -301,6 +301,8 @@ multi <- function(x, subds=0, xyz=3:1, guessCRS=TRUE, drivers=NULL, opts=NULL, d
 	r <- methods::new("SpatRaster")
 	f <- .fullFilename(x)
 	if (is.null(opts)) opts <- ""[0]
+	if (isTRUE(raw)) opts <- c(opts, "so=false")
+	
 	if (is.null(drivers)) drivers <- ""[0]
 	if (length(subds) == 0) subds = 1
 	subds <- subds[1]

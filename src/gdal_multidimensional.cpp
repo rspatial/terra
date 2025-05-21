@@ -364,6 +364,11 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
     }
 
 	s.m_ndims = dimcount.size();
+	if (s.m_ndims < 2) {
+		setError("insufficient dimensions");
+		return false;
+	}
+
 	s.source_name = subdsname;
 	auto lname = poVar->GetAttribute("long_name");
 	if (lname) s.source_name_long = lname->ReadAsString();
@@ -376,10 +381,6 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		s.m_missing_value = poVar->GetNoDataValueAsDouble(&s.m_hasNA);
 	}
 	
-	if (dimcount.size() < 2) {
-		setError("insufficient dimensions");
-		return false;
-	}
 
 	if (xyz.size() < 2) {
 		xyz = {2,1,0};
@@ -441,16 +442,39 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		s.hasDepth = true;
 		s.nlyr *= dimcount[iz];
 	}
+	s.nlyrfile = s.nlyr;
+	s.resize(s.nlyr);
+	s.layers.resize(s.nlyr);
+    std::iota(s.layers.begin(), s.layers.end(), 0);
 	
 	for (size_t i=0; i<xyz.size(); i++) {
 		s.m_dims.push_back(xyz[i]);
 	}
 	s.extent = e;
 
-	s.nlyrfile = s.nlyr;
-	s.resize(s.nlyr);
-	s.layers.resize(s.nlyr);
-    std::iota(s.layers.begin(), s.layers.end(), 0);
+	bool app_so = true;
+	size_t opsz = options.size();
+	if (opsz > 0) {
+		if (options[opsz-1] == "so=false") {
+			app_so = false;
+			options.resize(opsz-1); 
+		}
+	}
+
+	if (app_so) {
+		bool hasScale=false;
+		double scale = poVar->GetScale(&hasScale, nullptr);
+		if (scale == 1) hasScale = false;
+		bool hasOffset=false;
+		double offset = poVar->GetOffset(&hasOffset, nullptr);
+		if (offset == 0) hasOffset = false;
+		if (hasScale || hasOffset) {
+			s.has_scale_offset = std::vector<bool>(s.nlyr, true);
+			s.offset = std::vector<double>(nlyr(), offset);
+			s.scale = std::vector<double>(nlyr(), scale);
+		}
+	}
+	
 	s.rotated = false;
 	s.memory = false;
 	s.filename = fname;
@@ -513,7 +537,11 @@ bool SpatRaster::readStartMulti(size_t src) {
 		return false;
     }
 
-	source[src].gdalmdarray = hVar;
+	if (source[src].has_scale_offset[0]) {
+		source[src].gdalmdarray = GDALMDArrayGetUnscaled(hVar);
+	} else {
+		source[src].gdalmdarray = hVar;
+	}
 	return true;
 }
 
@@ -534,9 +562,6 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 	Rcpp::Rcout << "dims: ";
 	for (size_t i=0; i<dims.size(); i++) {Rcpp::Rcout << dims[i] << " ";}
 	Rcpp::Rcout << "\n";
-
-   std::iota(s.layers.begin(), s.layers.end(), 0);
-
 */
 
 	offset[source[src].m_dims[0]] = col;
@@ -552,7 +577,7 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 		stride[ndim-2] = -1;
 		offset[ndim-2] = nrow() - row - 1;
 	}
-	
+
 	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
 	if (source[src].in_order(false)) {
 		if (ndim == 3) {
@@ -598,7 +623,7 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 //	tpose(out, nrows, ncols, nlyr());
 
 	if (source[src].m_hasNA) {
-		Rcpp::Rcout << source[src].m_missing_value << std::endl;
+//		Rcpp::Rcout << source[src].m_missing_value << std::endl;
 		std::replace (out.begin(), out.end(), source[src].m_missing_value, (double)NAN);
 	}
 

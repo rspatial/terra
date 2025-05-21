@@ -836,16 +836,17 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		return false;
 	}
 	
-	bool app_so = true;
+	bool apply_so = true;
+	std::vector<std::string> clean_ops = options;
 	size_t opsz = options.size();
 	if (opsz > 0) {
 		if (options[opsz-1] == "so=false") {
-			app_so = false;
-			options.resize(opsz-1); 
+			apply_so = false;
+			clean_ops.resize(opsz-1);
 		}
 	}
 
-    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, options);
+    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
 
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
@@ -1073,7 +1074,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
 
 		s.has_scale_offset[i] = false;
-		if (app_so) {
+
+		if (apply_so) {
 			double offset = poBand->GetOffset(&success);
 			if (success) {
 				if (offset != 0) {
