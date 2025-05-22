@@ -490,8 +490,9 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		nms.resize(ntm * niz, subdsname + "-");
 		size_t k = 0;
 		for (size_t i=0; i<niz; i++) {
+			std::string sz = double_to_string(dimvals[iz][i]);
 			for (size_t j=0; j<ntm; j++) {
-				nms[k] += std::to_string(j + 1) + "_" + s.depthname + "=" + std::to_string(dimvals[iz][i]);
+				nms[k] += std::to_string(j + 1) + "_" + s.depthname + "=" + sz;
 				k++;
 			}
 		}
