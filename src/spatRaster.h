@@ -545,9 +545,10 @@ class SpatRaster {
 
 		bool readStartMulti(size_t src);
 		bool readStopMulti(size_t src);
-		bool readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
-
-
+		bool readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
+		std::vector<double> readValuesMulti(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr);
+		std::vector<double> readSampleMulti(size_t src, size_t srows, size_t scols, bool overview);
+		bool readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 
 		//bool writeStartBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 		//bool writeValuesBinary(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);

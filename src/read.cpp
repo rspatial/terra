@@ -32,19 +32,12 @@ bool SpatRaster::readStart() {
 			source[i].open_read = true;
 		} else if (source[i].is_multidim) {
 			if (!readStartMulti(i)) {
+				readStop();
 				return false;
 			}
 		} else {
 			if (!readStartGDAL(i)) {
-				for (size_t j=0; j<i; j++) {
-					if (source[j].memory) {
-						source[j].open_read = false;
-					} else if (source[j].is_multidim) {
-						readStopMulti(j);
-					} else {
-						readStopGDAL(j);
-					}
-				}
+				readStop();
 				return false;
 			}
 		}

@@ -1414,20 +1414,10 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 
 void SpatRaster::readChunkGDAL(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 
-	if (source[src].flipped) {
-		row = nrow() - row - nrows;
-	}
-
 	if (source[src].is_multidim) {
-		readValuesMulti(data, src, row, nrows, col, ncols);
+		readChunkMulti(data, src, row, nrows, col, ncols);
 		return;
 	}
-
-	if (source[src].hasWindow) { // ignoring the expanded case.
-		row = row + source[src].window.off_row;
-		col = col + source[src].window.off_col;
-	}
-
 	std::vector<double> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
@@ -1437,6 +1427,17 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, size_t src, size_t row
 	if (!(source[src].open_read || source[src].open_write)) {
 		setError("the file is not open for reading");
 		return;
+	}
+
+
+	if (source[src].flipped) {
+		row = nrow() - row - nrows;
+	}
+
+
+	if (source[src].hasWindow) { // ignoring the expanded case.
+		row = row + source[src].window.off_row;
+		col = col + source[src].window.off_col;
 	}
 
 	size_t ncell = ncols * nrows;
@@ -1499,6 +1500,10 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, size_t src, size_t row
 
 
 std::vector<double> SpatRaster::readValuesGDAL(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr) {
+
+	if (source[src].is_multidim) {
+		return readValuesMulti(src, row, nrows, col, ncols, lyr);
+	}
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -1577,6 +1582,10 @@ std::vector<double> SpatRaster::readValuesGDAL(size_t src, size_t row, size_t nr
 
 
 std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t scols, bool overview) {
+
+	if (source[src].is_multidim) {
+		return readSampleMulti(src, srows, scols, overview);
+	}
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -1680,6 +1689,12 @@ std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t 
 
 
 void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+
+
+	if (source[src].is_multidim) {
+		readRowColMulti(src, out, outstart, rows, cols);
+		return;
+	}
 
 
 	if (source[src].rotated) {
