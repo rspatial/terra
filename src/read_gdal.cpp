@@ -2148,6 +2148,13 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		}
 	}
 
+	size_t opsz = options.size();
+	if (opsz > 0) {
+		if (options[opsz-1] == "so=false") {
+			options.resize(opsz-1);
+		}
+	}
+
 	std::vector<std::string> metadata = get_metadata(filename, options);
 	if (!metadata.empty()) {
 		std::vector<std::string> tagnames, tagvalues;
