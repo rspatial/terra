@@ -373,8 +373,9 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 				varnames(x) <- varname
 				longnames(x) <- longname
 			}
-			
-			units(x) <- unit
+			if (!missing(unit)) {
+				units(x) <- unit
+			}
 			x <- sds(x)
 			invisible( writeCDF(x, filename=filename, ...) )
 		}
