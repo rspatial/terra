@@ -360,11 +360,20 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 			}
 			invisible( writeCDF(y, filename=filename, ...) )
 		} else {
-			if (missing(varname)) {
-				varname <- tools::file_path_sans_ext(basename(filename))
+			if (!missing(varname)) {
+				varnames(x) <- varname
+				longnames(x) <- longname
+			} else { 
+				varname <- varnames(x)[1]
+				longname <- longnames(x)[1]
+				if (varname == "") {
+					varname <- tools::file_path_sans_ext(basename(filename))
+					longname <- ""
+				}
+				varnames(x) <- varname
+				longnames(x) <- longname
 			}
-			varnames(x) <- varname
-			longnames(x) <- longname
+			
 			units(x) <- unit
 			x <- sds(x)
 			invisible( writeCDF(x, filename=filename, ...) )

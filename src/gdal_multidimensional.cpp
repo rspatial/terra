@@ -2,7 +2,7 @@
 #include "spatRaster.h"
 
 
-#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
 
 #include "proj.h"
 
@@ -231,7 +231,7 @@ inline bool ncdf_keep(std::string const &s) {
 }
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> xyz) {
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims) {
 
 	SpatRasterSource s;
 
@@ -279,12 +279,12 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 //       return false;
 //	}
 
-	std::string subdsname = "";
+	s.m_arrayname = "";
 	if (subname.size() > 0) {
-		subdsname = subname[0];
-		int w = where_in_vector(subdsname, ar_names, false);
+		s.m_arrayname = subname[0];
+		int w = where_in_vector(s.m_arrayname, ar_names, false);
 		if (w < 0) {
-			setError("array " + subdsname + " not found. Should be one of:\n  " + concatenate(ar_names, ", "));
+			setError("array " + s.m_arrayname + " not found. Should be one of:\n  " + concatenate(ar_names, ", "));
 			return false;
 		} else {
 			sub = {w};
@@ -294,19 +294,19 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 			setError("array number is out or range");
 			return false;
 		} else {
-			subdsname = ar_names[sub[0]];
+			s.m_arrayname = ar_names[sub[0]];
 		}
 	} else {
 		sub = {0};
-		subdsname = ar_names[0];
+		s.m_arrayname = ar_names[0];
 		if (ar_names.size() > 1)  {
-			addWarning("using array: " + subdsname + ". Other groups are: \n" + concatenate(ar_names, ", "));
+			addWarning("using array: " + s.m_arrayname + ". Other groups are: \n" + concatenate(ar_names, ", "));
 		}
 	}
 
-    auto poVar = poRootGroup->OpenMDArray(subdsname.c_str());
+    auto poVar = poRootGroup->OpenMDArray(s.m_arrayname.c_str());
     if( !poVar )   {
-		setError("cannot find: " + subdsname);
+		setError("cannot find: " + s.m_arrayname);
 		return false;
     }
 
@@ -369,7 +369,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		return false;
 	}
 
-	s.source_name = subdsname;
+	s.source_name = s.m_arrayname;
 	auto lname = poVar->GetAttribute("long_name");
 	if (lname) s.source_name_long = lname->ReadAsString();
 
@@ -382,8 +382,8 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	}
 	
 
-	if (xyz.size() < 2) {
-		xyz = {2,1,0};
+	if (dims.size() < 2) {
+		dims = {2,1,0};
 	}
 
 	int ix = ndim - 1;
@@ -392,9 +392,9 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	int iz = -1;
 	if (ix == 3) {
 		iz = 1;
-		xyz = {ix, iy, iz, it};
+		dims = {ix, iy, iz, it};
 	} else if (ndim == 2) {
-		xyz = {ix, iy};
+		dims = {ix, iy};
 	}
 
 	//Rcpp::Rcout << ix << ", " << iy << ", " << iz << ", " << it << std::endl;
@@ -447,8 +447,8 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	s.layers.resize(s.nlyr);
     std::iota(s.layers.begin(), s.layers.end(), 0);
 	
-	for (size_t i=0; i<xyz.size(); i++) {
-		s.m_dims.push_back(xyz[i]);
+	for (size_t i=0; i<dims.size(); i++) {
+		s.m_dims.push_back(dims[i]);
 	}
 	s.extent = e;
 
@@ -487,7 +487,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	if (iz >= 0) {
 		size_t niz = dimcount[iz];
 		size_t ntm = dimcount[it];	
-		nms.resize(ntm * niz, subdsname + "-");
+		nms.resize(ntm * niz, s.m_arrayname + "-");
 		size_t k = 0;
 		for (size_t i=0; i<niz; i++) {
 			std::string sz = double_to_string(dimvals[iz][i]);
@@ -497,7 +497,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 			}
 		}
 	} else {
-		nms.resize(s.nlyr, subdsname + "-");
+		nms.resize(s.nlyr, s.m_arrayname + "-");
 		for (size_t i=0; i<nms.size(); i++) {
 			nms[i] += std::to_string(i + 1);
 		}	
@@ -533,10 +533,10 @@ bool SpatRaster::readStartMulti(size_t src) {
 		return false;
     }
 
-	GDALMDArrayH hVar = GDALGroupOpenMDArray(hGroup, source[src].source_name.c_str(), NULL);
+	GDALMDArrayH hVar = GDALGroupOpenMDArray(hGroup, source[src].m_arrayname.c_str(), NULL);
     GDALGroupRelease(hGroup);
     if (!hVar) {
-		setError("not a good array");
+		setError("array '" + source[src].m_arrayname + "' is not available");
 		return false;
     }
 
@@ -643,22 +643,22 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 #else
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz) {
-	setError("multidim is not supported by GDAL < 3.1");
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> dims) {
+	setError("multidim is not supported with GDAL < 3.4");
 	return false;
 }
 
 bool SpatRaster::readStartMulti(size_t src) {
-	setError("multidim is not supported by GDAL < 3.1");
+	setError("multidim is not supported by GDAL < 3.4");
 	return false;
 }
 bool SpatRaster::readStopMulti(size_t src) {
-	setError("multidim is not supported by GDAL < 3.1");
+	setError("multidim is not supported by GDAL < 3.4");
 	return false;
 }
 
 bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
-	setError("multidim is not supported by GDAL < 3.1");
+	setError("multidim is not supported by GDAL < 3.4");
 }
 
 #endif

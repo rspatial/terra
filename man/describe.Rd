@@ -11,7 +11,8 @@ Describe the properties of spatial data in a file as generated with the "GDALinf
 }
 
 \usage{
-\S4method{describe}{character}(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="", mdim=FALSE)
+\S4method{describe}{character}(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", 
+		print=FALSE, open_opt="", mdim=FALSE)
 
 \S4method{describe}{SpatRaster}(x, source, ...)
 }
