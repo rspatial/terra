@@ -470,14 +470,19 @@ setMethod ("show" , "SpatRaster",
 				label <- "time (raw)  "
 			}
 			utim <- unique(rtim)
+			add_steps <- FALSE
 			if (length(utim) > 1) {
-				ptim <- paste0(label, ": ", paste(rtim, collapse=" to "), " (", length(unique(tms)), " steps)")
+				ptim <- paste0(label, ": ", paste(rtim, collapse=" to "))
+				add_steps <- TRUE
 			} else {
 				ptim <- paste0(label, ": ", as.character(utim))
 			}
 			if (tims == "seconds") {
 				tz <- format(utim[1], format="%Z")
 				ptim <- paste(ptim, tz)
+			}
+			if (add_steps) {
+				ptime <- paste0(ptim, " (", length(unique(tms)), " steps)")
 			}
 			cat(ptim, "\n")
 		}
