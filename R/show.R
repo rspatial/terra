@@ -482,7 +482,7 @@ setMethod ("show" , "SpatRaster",
 				ptim <- paste(ptim, tz)
 			}
 			if (add_steps) {
-				ptime <- paste0(ptim, " (", length(unique(tms)), " steps)")
+				ptim <- paste0(ptim, " (", length(unique(tms)), " steps)")
 			}
 			cat(ptim, "\n")
 		}
