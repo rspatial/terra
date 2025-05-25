@@ -325,9 +325,19 @@ setMethod ("show" , "SpatRaster",
 				}
 			}
 			uts <- units(object)
-			hasunits <- !all(uts == "")
-			if (nl > mnr) {
-				uts <- c(uts[1:mnr], "...")
+			utsu <- unique(uts)
+			if (all(utsu == "")) {
+				uts <- utsu			
+				hasunits <- FALSE
+			} else {
+				hasunits <- TRUE
+				if (length(utsu) > 1) {
+					if (nl > mnr) {
+						uts <- c(uts[1:mnr], "...")
+					} 
+				} else {
+					uts <- utsu
+				}
 			}
 
 			hMM <- hasMinMax(object)
@@ -371,9 +381,16 @@ setMethod ("show" , "SpatRaster",
 				}
 				u8 <- Encoding(ln) == "UTF-8"
 				wln <- nchar(ln)
+
+				if (isTRUE((length(uts) == 1) && (nl > 1))) {
+					nu <- 1
+				} else {
+					nu <- nchar(uts)
+				}
+
 				if (any(u8)) {
 					# for Chinese: wln <- wln + u8 * wln
-					w <- pmax(wln, nchar(minv), nchar(maxv), nchar(uts), na.rm = TRUE)
+					w <- pmax(wln, nchar(minv), nchar(maxv), nu, na.rm = TRUE)
 					m <- rbind(paste0(rep(" ", max(wln)), collapse=""), minv, maxv)
 					if (hasunits) m <- rbind(m, uts)
 					# a loop because "width" is not recycled by format
@@ -383,7 +400,7 @@ setMethod ("show" , "SpatRaster",
 						m[1,i] <- paste0(paste0(rep(" ", addsp), collapse=""), ln[i])
 					}
 				} else {
-					w <- pmax(wln, nchar(minv), nchar(maxv), nchar(uts), na.rm = TRUE)
+					w <- pmax(wln, nchar(minv), nchar(maxv), nu, na.rm = TRUE)
 					m <- rbind(ln, minv, maxv)
 					if (hasunits) m <- rbind(m, uts)
 					# a loop because "width" is not recycled by format
@@ -406,10 +423,20 @@ setMethod ("show" , "SpatRaster",
 					cat("min values  :", paste(m[2,], collapse=", "), "\n")
 					cat("max values  :", paste(m[3,], collapse=", "), "\n")
 				}
-				if (hasunits) cat("unit        :", paste(m[4,], collapse=", "), "\n")
-
+				if (hasunits) {
+					if ((length(uts) == 1) && (ncol(m) > 1)) {
+						cat("unit        :", uts, "\n")					
+					} else {
+						cat("unit        :", paste(m[4,], collapse=", "), "\n")
+					}
+				}
 			} else {
-				w <- pmax(nchar(ln), nchar(uts))
+				if (isTRUE((length(uts) == 1) && (nl > 1))) {
+					nu <- 1
+				} else {
+					nu <- nchar(uts)
+				}
+				w <- pmax(nchar(ln), nu)
 				m <- rbind(ln, uts)
 				for (i in 1:ncol(m)) {
 					m[,i]   <- format(m[,i], width=w[i], justify="right")
@@ -419,7 +446,13 @@ setMethod ("show" , "SpatRaster",
 				} else {
 					cat("names       :", paste(m[1,], collapse=", "), "\n")
 				}
-				if (hasunits) cat("unit        :", paste(m[2,], collapse=", "), "\n")
+				if (hasunits) {
+					if ((length(uts) == 1) && (ncol(m) > 1)) {
+						cat("unit        :", uts, "\n")					
+					} else {
+						cat("unit        :", paste(m[2,], collapse=", "), "\n")
+					}
+				}
 			}
 
 		}

@@ -558,6 +558,7 @@ bool SpatRaster::readStopMulti(size_t src) {
 }
 
 
+
 bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 
 //	Rcpp::Rcout << "readChunkMulti\n";
@@ -638,27 +639,141 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 	return true;
 }
 
+//#include "gdalio.h"
 
+bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string> &srcnames) {
+
+	std::string filename = opt.get_filename();	
+	if (filename.empty()) {
+		setError("empty filename");
+		return(false);
+	} 
+	// assure filename won't be used again
+	opt.set_filenames({""});
+	std::string driver = "netCDF";
+/*
+	std::string driver = opt.get_filetype();
+	getGDALdriver(filename, driver);
+	if (driver.empty()) {
+		setError("cannot guess file type from filename");
+		return(false);
+	}
+	if (driver != "netCDF") {
+		if (driver.empty()) {
+			setError("multi-dim only implemented for netCDF");
+			return(false);
+		}
+	}
+*/
+	
+    GDALDriver *poDriver;
+    poDriver = GetGDALDriverManager()->GetDriverByName(driver.c_str());
+
+	GDALDataset *poDS;
+    poDS = poDriver->CreateMultiDimensional(filename.c_str(), NULL, NULL);
+	if (poDS == NULL) {
+		setError("failed writing "+ driver + " file");
+		GDALClose( (GDALDatasetH) poDS );
+		return false;
+	}
+
+    auto rg = poDS->GetRootGroup();
+	
+	std::vector<std::shared_ptr<GDALDimension>> dim_ptrs;
+	auto dt = GDALExtendedDataType::Create(GDT_Float64);
+
+
+	size_t nz = nlyr();
+	size_t ny = nrow();
+	size_t nx = ncol();
+	dim_ptrs.push_back(rg->CreateDimension("Z", "", "", nz));
+	dim_ptrs.push_back(rg->CreateDimension("Y", "", "", ny));
+	dim_ptrs.push_back(rg->CreateDimension("X", "", "", nx));
+
+
+    auto var = rg->CreateMDArray("Z", {dim_ptrs[0]}, dt);
+    var = rg->OpenMDArray("Z");
+
+	std::vector<double> dvals(nz);
+	std::iota(dvals.begin(), dvals.end(), 0);
+
+	std::vector<size_t> count = {nz};
+	std::vector<size_t> start = {0};
+
+	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
+
+    var = rg->CreateMDArray("Y", {dim_ptrs[1]}, dt);
+	dvals.resize(ny);
+	std::iota(dvals.begin(), dvals.end(), 0);
+	count = {ny};
+	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
+
+    var = rg->CreateMDArray("X", {dim_ptrs[2]}, dt);
+	dvals.resize(nx);
+	std::iota(dvals.begin(), dvals.end(), 0);
+	count = {nx};
+	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
+	
+	std::string vname = source[0].source_name;
+	if (vname.empty()) {
+		vname = "array";
+	}
+	
+Rcpp::Rcout << vname << "\n";
+	
+    var = rg->CreateMDArray(vname, dim_ptrs, GDALExtendedDataType::Create(GDT_Float64));
+	size_t nn = nx * ny * nz;
+	dvals.resize(nn);
+	std::iota(dvals.begin(), dvals.end(), 0);
+	start = {0, 0, 0};
+	count = {nz, ny, nx};
+	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
+	
+
+//	source[src].gdalmdarray = var;
+	GDALClose( (GDALDatasetH) poDS );
+
+	return true;
+}
+
+bool SpatRaster::writeValuesMulti(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols){
+	return true;
+}
+
+bool SpatRaster::writeStopMulti() {
+	return true;
+}
 
 #else
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> dims) {
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims) {
 	setError("multidim is not supported with GDAL < 3.4");
 	return false;
 }
 
 bool SpatRaster::readStartMulti(size_t src) {
-	setError("multidim is not supported by GDAL < 3.4");
 	return false;
 }
+
 bool SpatRaster::readStopMulti(size_t src) {
-	setError("multidim is not supported by GDAL < 3.4");
 	return false;
 }
 
 bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
-	setError("multidim is not supported by GDAL < 3.4");
+	return false
+}
+
+bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string> &srcnames) {
+	return false
+}
+
+bool SpatRaster::writeValuesMulti(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols){
+	return false;
+}
+
+bool SpatRaster::writeStopMulti() {
+	return false
 }
 
 #endif

@@ -541,8 +541,12 @@ class SpatRaster {
 		bool fillValuesGDAL(double fillvalue);
 		bool writeValuesGDAL(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
 		bool writeStopGDAL();
+		
+		bool writeStartMulti(SpatOptions &opt, const std::vector<std::string> &srcnames);
+		bool writeValuesMulti(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
+		bool writeStopMulti();
+		
 		bool getTempFile(std::string &filename, std::string &driver, SpatOptions& opt);
-
 
 		bool readStartMulti(size_t src);
 		bool readStopMulti(size_t src);
