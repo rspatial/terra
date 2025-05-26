@@ -231,7 +231,7 @@ inline bool ncdf_keep(std::string const &s) {
 }
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims) {
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
 
 	SpatRasterSource s;
 
@@ -322,6 +322,12 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		}
 		CPLFree(cp);
 	} 
+	if (guessCRS && wkt.empty()) {
+		if (s.extent.xmin >= -181 && s.extent.xmax <= 361 && s.extent.ymin >= -91 && s.extent.ymax <= 91) {
+			wkt = "OGC:CRS84";
+			s.parameters_changed = true;
+		}
+	}
 	msg = "";
 	if (!s.srs.set({wkt}, msg)) {
 		addWarning(msg);
@@ -783,7 +789,7 @@ bool SpatRaster::writeStopMulti() {
 #else
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims) {
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
 	setError("multidim is not supported with GDAL < 3.4");
 	return false;
 }
@@ -923,7 +929,7 @@ SpatRaster SpatRaster::writeRasterM(SpatOptions &opt) {
 	std::vector<std::string> empty;
 	std::vector<int> dims = {-1};
 	
-	out.constructFromFileMulti(fnames[0], {0}, empty, empty, empty, dims);
+	out.constructFromFileMulti(fnames[0], {0}, empty, empty, empty, dims, false, false, {""});
 	return out;
 }
 

@@ -45,7 +45,7 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 
 #ifdef useGDAL
 	if (multi) {
-		constructFromFileMulti(fname[0], subds, subdsname, drivers, options, dims);
+		constructFromFileMulti(fname[0], subds, subdsname, drivers, options, dims, noflip, guessCRS, domains);
 		return;
 	}
 

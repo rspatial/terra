@@ -272,6 +272,13 @@ setMethod("rast", signature(x="character"),
 			test <- try(r <- .ncdf_extent(r, f), silent=TRUE)
 			if (inherits(test, "try-error")) {
 				warn("rast", "GDAL did not find an extent. Cells not equally spaced?")
+			} else if (isTRUE(guessCRS)) {
+				if (crs(r) == "") {
+					e <- ext(r)
+					if ((e$xmin >= -180) && (e$xmax <= 360) && (e$ymin >= -90) && (e$ymax <= 90)) {
+						crs(r) <- "OGC:CRS84"
+					}
+				}
 			}
 		}
 		r <- messages(r, "rast")
