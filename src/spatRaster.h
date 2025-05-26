@@ -89,10 +89,10 @@ class SpatRasterSource {
 		std::string m_arrayname;
 		size_t m_ndims;
 		std::vector<size_t> m_dims;
-		std::vector<std::string> m_dimnames;
+		std::vector<std::string> m_names;
 //		std::vector<double> m_dimstart;
 //		std::vector<double> m_dimend;
-		std::vector<size_t> m_counts;
+		std::vector<size_t> m_size;
 		std::vector<size_t> m_order;
 		std::vector<size_t> m_subset;
 		bool m_hasNA = false;
@@ -276,6 +276,10 @@ class SpatRaster {
 		std::vector<int> getRGB();
 		void removeRGB();
 
+		std::vector<bool> is_multidim();
+		std::vector<std::vector<std::string>> dim_names();
+		std::vector<std::vector<size_t>> dim_order();
+		std::vector<std::vector<size_t>> dim_size();
 
 /*
 #ifdef useGDAL	

@@ -199,8 +199,15 @@ setMethod ("show" , "SpatRaster",
 		cat("class       :" , class(object), "\n")
 
 		d <- dim(object)
-		cat("dimensions  : ", d[1], ", ", d[2], ", ", d[3], "  (nrow, ncol, nlyr)\n", sep="" )
+		cat("size        : ", d[1], ", ", d[2], ", ", d[3], "  (nrow, ncol, nlyr)\n", sep="" )
 		#cat ("ncell       :" , ncell(object), "\n")
+
+		nsr <- nsrc(object)
+		if ((nsr == 1) && (object@pntr$is_multidim)) {
+			dnms <- paste(rev(object@pntr$dim_names()[[1]]), collapse=", ")
+			dsz <- paste(rev(object@pntr$dim_size()[[1]]), collapse=", ")
+			cat("dimensions  : ", dnms, " (", dsz, "}\n", sep="" )
+		}
 
 		xyres <- res(object)
 		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
@@ -240,7 +247,6 @@ setMethod ("show" , "SpatRaster",
 				ln[b] <- paste(substr(ln[b], 1, mid), "~", substr(ln[b], nchar(ln[b])-mid+1, nchar(ln[b])), sep="")
 			}
 
-			nsr <- nsrc(object)
 			m <- inMemory(object)
 
 			f <- sources(object)

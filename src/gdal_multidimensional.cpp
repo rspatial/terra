@@ -338,7 +338,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	size_t ndim = dimData.size();
     for (size_t i=0; i<ndim; i++) {
 		size_t n = dimData[i]->GetSize();
-        dimcount.push_back(static_cast<size_t>(n));
+        dimcount.push_back(n);
         std::string name = static_cast<std::string>(dimData[i]->GetName());
 		dimnames.push_back(name);
 		std::vector<GUInt64> start(1, 0);
@@ -406,37 +406,36 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 
 	// to do: check for equal spacing if x or y dim
 
-	double ystart = dimvals[iy][0];
-	double yend = dimvals[iy][dimvals[iy].size()-1];
-	double res = (yend - ystart) / (s.nrow-1);
-	e.ymax = yend + 0.5 * res;
-	e.ymin = ystart - 0.5 * res;
+	double start = dimvals[ix][0];
+	double end = dimvals[ix][dimvals[ix].size()-1];
+	double res = (end - start) / (s.ncol-1);
+	e.xmin = start - 0.5 * res;
+	e.xmax = end + 0.5 * res;
+
+	start = dimvals[iy][0];
+	end = dimvals[iy][dimvals[iy].size()-1];
+	res = (end - start) / (s.nrow-1);
+	e.ymax = end + 0.5 * res;
+	e.ymin = start - 0.5 * res;
 	
-	// reverse signaling to match non-md
 	s.flipped = false;
 	if (e.ymin > e.ymax) {
 		std::swap(e.ymin, e.ymax);
 		s.flipped = true;
 	}
-	s.m_dimnames.push_back(dimnames[iy]);
+//	s.m_names.push_back(dimnames[ix]);
+//	s.m_names.push_back(dimnames[iy]);
 
-	double xstart = dimvals[ix][0];
-	double xend = dimvals[ix][dimvals[ix].size()-1];
-	res = (xend - xstart) / (s.ncol-1);
-	e.xmin = dimvals[ix][0] - 0.5 * res;
-	e.xmax = dimvals[ix][dimvals[ix].size()-1] + 0.5 * res;
-
-	s.m_dimnames.push_back(dimnames[ix]);
 
 	if (s.m_ndims > 2) {
 		s.nlyr = dimcount[it];
-		s.m_dimnames.push_back(dimnames[it]);
+//		s.m_names.push_back(dimnames[it]);
 		std::string msg;
 		parse_ncdf_time(s, dimunits[it], "standard", dimvals[it], msg);
 	}
 
 	if (iz >= 0) {
-		s.m_dimnames.push_back(dimnames[iz]);
+//		s.m_names.push_back(dimnames[iz]);
 		s.depthname = dimnames[iz];
 		s.depth = dimvals[iz];
 		s.hasDepth = true;
@@ -505,11 +504,13 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 	s.names = nms;
 
 // time
-	s.m_counts = dimcount;
+	s.m_size = dimcount;
+	s.m_names = dimnames;
+	
 	setSource(s);
 	if (verbose) {
 		for (size_t i=0; i<s.m_dims.size(); i++){
-			Rcpp::Rcout << s.m_dims[i] << " " << dimnames[i] << " " << s.m_counts[i] << std::endl;
+			Rcpp::Rcout << s.m_dims[i] << " " << dimnames[i] << " " << s.m_size[i] << std::endl;
 		}
 	}
 	return true;
@@ -573,7 +574,6 @@ bool SpatRaster::readStartMulti(size_t src) {
 
 bool SpatRaster::readStopMulti(size_t src) {
 //	Rcpp::Rcout << "readStopMulti\n";
-//	source[src].m_array->Release();
 	source[src].open_read = false;
 	return true;
 }
@@ -911,9 +911,13 @@ SpatRaster SpatRaster::writeRasterM(SpatOptions &opt) {
 
 	if (!writeStartMulti(opt, {""})) {
 		out.setError(getError());
+		return out;
 	}
 	std::vector<double> vals = getValues(-1, opt);
-	writeValuesMulti(vals, 0, nrow(), 0, ncol());
+	if (!writeValuesMulti(vals, 0, nrow(), 0, ncol())) {
+		out.setError(getError());
+		return out;		
+	}
 	writeStopMulti();
 
 	std::vector<std::string> empty;
@@ -922,3 +926,45 @@ SpatRaster SpatRaster::writeRasterM(SpatOptions &opt) {
 	out.constructFromFileMulti(fnames[0], {0}, empty, empty, empty, dims);
 	return out;
 }
+
+
+std::vector<bool> SpatRaster::is_multidim() {
+	std::vector<bool> out;
+	out.reserve(source.size());
+	for (size_t i=0; i<source.size(); i++) {
+		out.push_back(source[i].is_multidim);
+	}
+	return(out);
+}
+
+std::vector<std::vector<std::string>> SpatRaster::dim_names() {
+	std::vector<std::vector<std::string>> out(source.size());
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].is_multidim) {
+			out[i] = source[i].m_names;
+		}
+	}
+	return(out);
+	
+}
+
+std::vector<std::vector<size_t>> SpatRaster::dim_order() {
+	std::vector<std::vector<size_t>> out(source.size());
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].is_multidim) {
+			out[i] = source[i].m_order;
+		}
+	}
+	return out;
+}
+
+std::vector<std::vector<size_t>> SpatRaster::dim_size() {
+	std::vector<std::vector<size_t>> out(source.size());
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].is_multidim) {
+			out[i] = source[i].m_size;
+		}
+	}
+	return out;
+}
+

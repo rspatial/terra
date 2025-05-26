@@ -793,6 +793,10 @@ RCPP_MODULE(spat){
 		.property("units", &SpatRaster::getUnit)
 		.method("set_units", &SpatRaster::setUnit)
 
+		.property("is_multidim", &SpatRaster::is_multidim)
+		.method("dim_names", &SpatRaster::dim_names)
+		.method("dim_size", &SpatRaster::dim_size)
+
 		.method("size", &SpatRaster::size, "size")
 		.method("nrow", &SpatRaster::nrow, "nrow")
 		.method("ncol", &SpatRaster::ncol, "ncol")
