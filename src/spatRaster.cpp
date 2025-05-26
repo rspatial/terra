@@ -1776,6 +1776,18 @@ std::vector<double> SpatRaster::yFromRow(const std::vector<int_64> &row) {
 	return result;
 }
 
+void SpatRaster::yFromRow(std::vector<double> &y) {
+	int_64 nr = nrow();
+	y.resize(nr);
+	SpatExtent extent = getExtent();
+	double ymax = extent.ymax;
+	double yr = yres();
+	for (int_64 i = 0; i<nr; i++) {
+		y[i] = ymax - ((i+0.5) * yr);
+	}
+}
+
+
 double SpatRaster::yFromRow (int_64 row) {
 	std::vector<int_64> rows = {row};
 	std::vector<double> y = yFromRow(rows);
@@ -1796,6 +1808,18 @@ std::vector<double> SpatRaster::xFromCol(const std::vector<int_64> &col) {
 	}
 	return result;
 }
+
+void SpatRaster::xFromCol(std::vector<double> &x) {
+	int_64 nc = ncol();
+	x.resize(nc);
+	SpatExtent extent = getExtent();
+	double xmin = extent.xmin;
+	double xr = xres();
+	for (int_64 i = 0; i<nc; i++) {
+		x[i] = xmin + ((i+0.5) * xr);
+	}
+}
+
 
 double SpatRaster::xFromCol(int_64 col) {
 	std::vector<int_64> cols = {col};

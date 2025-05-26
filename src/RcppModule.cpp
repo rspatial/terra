@@ -672,7 +672,7 @@ RCPP_MODULE(spat){
 		//.finalizer(&SpatRaster_finalizer)
 
 
-		.method("test", &SpatRaster::writeStartMulti)
+		.method("test", &SpatRaster::writeRasterM)
 
 
 		//.method("fromFiles", &SpatRaster::fromFiles)

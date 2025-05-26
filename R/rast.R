@@ -296,7 +296,7 @@ setMethod("rast", signature(x="character"),
 )
 
 
-multi <- function(x, subds=0, dims=NULL, guessCRS=TRUE, raw=FALSE, drivers=NULL, opts=NULL, domains="") {
+multi <- function(x, subds=1, dims=NULL, guessCRS=TRUE, raw=FALSE, drivers=NULL, opts=NULL, domains="") {
 
 	noflip <- FALSE
 

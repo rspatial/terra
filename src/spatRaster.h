@@ -60,8 +60,9 @@ class SpatRasterSource {
 	public:
 #ifdef useGDAL
 		GDALDataset* gdalconnection;
-#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1	
-		GDALMDArrayH gdalmdarray;
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
+		std::shared_ptr<GDALMDArray> m_array;
+		//GDALMDArrayH gdalmdarray;
 #endif
 #endif
 		bool open_read=false;
@@ -431,8 +432,10 @@ class SpatRaster {
 		double cellFromRowColCombine(int_64 row, int_64 col);
 		std::vector<double> yFromRow(const std::vector<int_64> &row);
 		double yFromRow(int_64 row);
+		void yFromRow(std::vector<double> &y);
 		std::vector<double> xFromCol(const std::vector<int_64> &col);
 		double xFromCol(int_64 col);
+		void xFromCol(std::vector<double> &x);
 
 		std::vector<int_64> colFromX(const std::vector<double> &x);
 		int_64 colFromX(double x);
@@ -591,6 +594,7 @@ class SpatRaster {
 		void openFS(std::string const &filename);
 
 		SpatRaster writeRaster(SpatOptions &opt);
+		SpatRaster writeRasterM(SpatOptions &opt);
 		SpatRaster writeTempRaster(SpatOptions &opt);
 		bool writeDelim(std::string filename, std::string delim, bool cell, bool xy, SpatOptions &opt);
 		bool update_meta(bool names, bool crs, bool ext, SpatOptions &opt);

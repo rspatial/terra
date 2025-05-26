@@ -3,7 +3,6 @@
 # Version 1.0
 # License GPL v3
 
-
 win_basename <- function(x) {
 	if (isTRUE(grepl("Windows", utils::osVersion))) {
 		large <- nchar(x) > 256

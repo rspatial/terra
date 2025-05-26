@@ -289,8 +289,8 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		} else {
 			sub = {w};
 		} 
-	} else if (sub[0] >= 0) {
-		if (sub[0] >= (int)ar_names.size()) {
+	} else if (sub.size() > 0) {
+		if ((sub[0] < 0) || (sub[0] >= (int)ar_names.size())) {
 			setError("array number is out or range");
 			return false;
 		} else {
@@ -300,7 +300,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 		sub = {0};
 		s.m_arrayname = ar_names[0];
 		if (ar_names.size() > 1)  {
-			addWarning("using array: " + s.m_arrayname + ". Other groups are: \n" + concatenate(ar_names, ", "));
+			addWarning("using: " + s.m_arrayname + ". Other arrays are: \n" + concatenate(ar_names, ", "));
 		}
 	}
 
@@ -520,7 +520,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub,
 bool SpatRaster::readStartMulti(size_t src) {
 
 //	Rcpp::Rcout << "readStartMulti\n";
-
+/*
     GDALDatasetH hDS = GDALOpenEx( source[src].filename.c_str(), GDAL_OF_MULTIDIM_RASTER, NULL, NULL, NULL);
     if (!hDS) {
 		setError("not a good dataset");
@@ -539,11 +539,32 @@ bool SpatRaster::readStartMulti(size_t src) {
 		setError("array '" + source[src].m_arrayname + "' is not available");
 		return false;
     }
+*/
+
+    auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(source[src].filename.c_str(), GDAL_OF_MULTIDIM_RASTER ));
+    if( !poDataset ) {
+		setError("not a good dataset");
+        return false;
+    }
+
+	std::shared_ptr<GDALGroup> poRootGroup = poDataset->GetRootGroup();
+    if( !poRootGroup ) {
+		setError("no roots");
+		return false;
+    }
+//    GDALReleaseDataset(hDS);
+
+    auto poVar = poRootGroup->OpenMDArray(source[src].m_arrayname.c_str());
+    if( !poVar )   {
+		setError("cannot find: " + source[src].m_arrayname);
+		return false;
+    }
+
 
 	if (source[src].has_scale_offset[0]) {
-		source[src].gdalmdarray = GDALMDArrayGetUnscaled(hVar);
+		source[src].m_array = poVar->GetUnscaled();
 	} else {
-		source[src].gdalmdarray = hVar;
+		source[src].m_array = poVar;
 	}
 	source[src].open_read = true;
 	return true;
@@ -552,7 +573,7 @@ bool SpatRaster::readStartMulti(size_t src) {
 
 bool SpatRaster::readStopMulti(size_t src) {
 //	Rcpp::Rcout << "readStopMulti\n";
-	GDALMDArrayRelease(source[src].gdalmdarray);
+//	source[src].m_array->Release();
 	source[src].open_read = false;
 	return true;
 }
@@ -585,9 +606,11 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 		offset[ndim-2] = nrow() - row - 1;
 	}
 
-	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
+//	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
 //	std::vector<double> out;
 	size_t insize = data.size();
+
+	auto dt = GDALExtendedDataType::Create(GDT_Float64);
 
 	if (source[src].in_order(false)) {
 		if (ndim == 3) {
@@ -599,7 +622,7 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 		}
 		size_t n=vprod(count, false);
 		data.resize(insize + n);
-		GDALMDArrayRead(source[src].gdalmdarray, &offset[0], &count[0], &stride[0], NULL, hDT, &data[insize], NULL, 0);
+		source[src].m_array->Read(&offset[0], &count[0], &stride[0], NULL, dt, &data[insize], NULL, 0);
     } else {
 		count[source[src].m_dims[2]] = 1;
 //		out.resize(0);
@@ -615,10 +638,10 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 				return false;
 				count[source[src].m_dims[3]] = 1;		
 			}
-			GDALMDArrayRead(source[src].gdalmdarray, &offset[0], &count[0], NULL, NULL, hDT, &data[insize], NULL, 0);
+			source[src].m_array->Read(&offset[0], &count[0], NULL, NULL, dt, &data[insize], NULL, 0);
 		}
 	}
-	GDALExtendedDataTypeRelease(hDT);
+//	GDALExtendedDataTypeRelease(hDT);
 
 //	for (size_t i=0; i<offset.size(); i++) Rcpp::Rcout << offset[i] << ", "; 
 //	Rcpp::Rcout << std::endl;
@@ -708,31 +731,18 @@ bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string
 	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
 
     var = rg->CreateMDArray("Y", {dim_ptrs[1]}, dt);
-	std::vector<int_64> id(ny);
-	std::iota(id.begin(), id.end(), 0);
-	dvals = yFromRow(id);
+	yFromRow(dvals);
 	count = {ny};
 	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
 
     var = rg->CreateMDArray("X", {dim_ptrs[2]}, dt);
-	id.resize(nx);
-	if (nx > ny) {
-		std::iota(id.begin(), id.end(), 0);
-	}
-	dvals = xFromCol(id);
+	xFromCol(dvals);
 	count = {nx};
 	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
 	
-	std::string vname = source[0].source_name;
-	if (vname.empty()) {
-		vname = "array";
-	}
+	std::string vname = source[0].source_name.empty() ? "array" : source[0].source_name;
 	
     var = rg->CreateMDArray(vname, dim_ptrs, GDALExtendedDataType::Create(GDT_Float64));
-	dvals = getValues(-1, opt);
-	start = {0, 0, 0};
-	count = {nz, ny, nx};
-	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
 	
 
 	std::string wkt = source[0].srs.wkt;
@@ -749,18 +759,24 @@ bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string
 		}
 	}
 
-
-//	source[src].gdalmdarray = var;
-	GDALClose( (GDALDatasetH) poDS );
+	source[0].m_array = var;
+	source[0].gdalconnection = poDS;
 
 	return true;
 }
 
 bool SpatRaster::writeValuesMulti(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols){
+	SpatOptions opt;
+	std::vector<GUInt64> start = {0, 0, 0};
+	std::vector<size_t> count = {nlyr(), nrow(), ncol()};
+	source[0].m_array->Write(start.data(), count.data(), nullptr, nullptr, GDALExtendedDataType::Create(GDT_Float64), &vals[0]); 
 	return true;
 }
 
 bool SpatRaster::writeStopMulti() {
+	//GDALMDArrayRelease(
+	source[0].m_array.reset();
+	GDALClose( source[0].gdalconnection );
 	return true;
 }
 
@@ -888,33 +904,21 @@ std::vector<double> SpatRaster::readSampleMulti(size_t src, size_t srows, size_t
 }
 
 
+SpatRaster SpatRaster::writeRasterM(SpatOptions &opt) {
+	SpatRaster out;
+	
+	std::vector<std::string> fnames = opt.get_filenames();
 
-
-/*
-void tpose(std::vector<double> &v, size_t nr, size_t nc, size_t nl) {
-	std::vector<double> vv(v.size());
-	for (size_t lyr=0; lyr<nl; lyr++) {
-		size_t off = lyr*nc*nr;
-		for (size_t r = 0; r < nr; r++) {
-			size_t rnc = off + r * nc;
-			for (size_t c = 0; c < nc; c++) {
-				vv[c*nr+r+off] = v[rnc+c];
-			}
-		}
+	if (!writeStartMulti(opt, {""})) {
+		out.setError(getError());
 	}
-	v = vv;
+	std::vector<double> vals = getValues(-1, opt);
+	writeValuesMulti(vals, 0, nrow(), 0, ncol());
+	writeStopMulti();
+
+	std::vector<std::string> empty;
+	std::vector<int> dims = {-1};
+	
+	out.constructFromFileMulti(fnames[0], {0}, empty, empty, empty, dims);
+	return out;
 }
-
-void vflip(std::vector<double> &v, size_t nc) {
-	std::vector<double> vv;
-	vv.reserve(v.size());
-	size_t nr = (v.size() / nc) - 1;
-	for (int i=nr; i>=0; i--) {
-		size_t b = i * nc;
-		vv.insert(vv.end(), v.begin()+b, v.begin()+b+nc);
-	}
-	v = vv;
-}
-
-*/
-
