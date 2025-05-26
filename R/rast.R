@@ -328,20 +328,9 @@ multi <- function(x, subds=1, dims=NULL, guessCRS=TRUE, raw=FALSE, drivers=NULL,
 	} else {
 		r@pntr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, dims-1, isTRUE(noflip), isTRUE(guessCRS), domains)
 	}
-	if (r@pntr$getMessage() == "ncdf extent") {
-		test <- try(r <- .ncdf_extent(r), silent=TRUE)
-		if (inherits(test, "try-error")) {
-			warn("rast", "GDAL did not find an extent. Cells not equally spaced?")
-		}
-	}
-	r <- messages(r, "rast")
 
-	if (crs(r) == "") {
-		if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
-			crs(r) <- "OGC:CRS84"
-		}
-	}
-	r
+	 messages(r, "rast")
+
 }
 
 
