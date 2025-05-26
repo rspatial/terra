@@ -42,7 +42,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'character'</span></span>
 <span><span class="fu">describe</span><span class="op">(</span><span class="va">x</span>, sds<span class="op">=</span><span class="cn">FALSE</span>, meta<span class="op">=</span><span class="cn">FALSE</span>, parse<span class="op">=</span><span class="cn">FALSE</span>, options<span class="op">=</span><span class="st">""</span>, </span>
-<span>    print<span class="op">=</span><span class="cn">FALSE</span>, open_opt<span class="op">=</span><span class="st">""</span>, mdim<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>    print<span class="op">=</span><span class="cn">FALSE</span>, open_opt<span class="op">=</span><span class="st">""</span>, mdim<span class="op">=</span><span class="cn">FALSE</span>, simplify<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">describe</span><span class="op">(</span><span class="va">x</span>, <span class="va">source</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -73,7 +73,10 @@
 <dd><p>character. Driver specific open options</p></dd>
 
   <dt id="arg-mdim">mdim<a class="anchor" aria-label="anchor" href="#arg-mdim"></a></dt>
-<dd><p>logical. If <code>TRUE</code> return the GDAL multi-dimensional API description</p></dd>
+<dd><p>logical. If <code>TRUE</code>, return the GDAL multi-dimensional API description</p></dd>
+
+  <dt id="arg-simplify">simplify<a class="anchor" aria-label="anchor" href="#arg-simplify"></a></dt>
+<dd><p>logical. If <code>TRUE</code>, simplify the output for better readability if <code>md=TRUE</code></p></dd>
 
   <dt id="arg-source">source<a class="anchor" aria-label="anchor" href="#arg-source"></a></dt>
 <dd><p>positive integer between 1 and <code>nsrc(x)</code></p></dd>
