@@ -26,7 +26,7 @@
 \title{Create, get or set a SpatExtent}
 
 \description{
-Get a SpatExtent of a SpatRaster, SpatVector, or other spatial objects. Or create a SpatExtent from a vector (length=4; order=xmin, xmax, ymin, ymax)
+Get a SpatExtent of a SpatRaster, SpatVector, or other spatial objects. Or create a SpatExtent from four numbers (xmin, xmax, ymin, ymax).
 
 You can set the extent of a SpatRaster, but you cannot set the extent of a SpatVector (see \code{\link{rescale}} for that). See \code{\link{set.ext}} to set the extent in place.
 }
@@ -44,7 +44,7 @@ You can set the extent of a SpatRaster, but you cannot set the extent of a SpatV
 }
 
 \arguments{
-  \item{x}{SpatRaster, SpatVector, numeric vector of length four (xmin, xmax, ymin, ymax), or missing (in which case the output is the global extent in lon-lat coordinates)}
+  \item{x}{SpatRaster, SpatVector, a single numeric (xmin), a numeric vector of length four (xmin, xmax, ymin, ymax), or missing (in which case the output is the global extent in lon-lat coordinates)}
   \item{cells}{positive integer (cell) numbers to subset the extent to area covered by these cells}
   \item{value}{SpatExtent, or numeric vector of length four (xmin, xmax, ymin, ymax)}  
   \item{...}{if \code{x} is a single numeric value, additional numeric values for xmax, ymin, and ymax}  
