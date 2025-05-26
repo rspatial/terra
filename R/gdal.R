@@ -131,13 +131,45 @@ gdal <- function(warn=NA, drivers=FALSE, ...) {
 	m
 }
 
+mdinfo_simplify <- function(p) {
+	p <- gsub('\"', "", strsplit(p, "\n")[[1]])
+	p <- p[-c(1, length(p))]
+	p <- gsub("^  ", "", p)
+	p <- gsub(",$", "", p)
+	  
+	s <- grep("\\[", p)[-1]
+	e <- grep("]", p)
+	i <- which(s > e[-length(e)])[1]
+	e <- e[-i]
+	if (max(e-s) < 8) {
+		for (i in 1:length(s)) {
+			p[s[i]] <- paste0(p[s[i]], paste(trimws(p[(s[i]+1):e[i]]), collapse=""))
+		}
+		s <- s + 1
+		r <- unlist(lapply(1:length(s), function(i) s[i]:e[i]))
+		p <- p[-r]
+	}
+	p
+}
 
 
 setMethod("describe", signature(x="character"),
-	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="", mdim=FALSE) {
+	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="", mdim=FALSE, simplify=TRUE) {
 
 		if (mdim) {
-			return(.gdalmdinfo(x, ""[0]))
+			p <- .gdalmdinfo(x, ""[0])
+			if (simplify) {
+				pp <- try(mdinfo_simplify(p), silent=TRUE)
+				if (!inherits(pp, "try-error")) {
+					p <- pp
+				}
+			}
+			if (print) {
+				print(p)
+				invisible(p)
+			} else {
+				return(p)
+			}
 		}
 
 		#x <- .fullFilename(x[1], FALSE)
