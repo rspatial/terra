@@ -643,6 +643,11 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 
 bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string> &srcnames) {
 
+	if (!hasValues()) {
+		setError("there are no cell values");
+		return false;
+	}
+
 	std::string filename = opt.get_filename();	
 	if (filename.empty()) {
 		setError("empty filename");
@@ -703,14 +708,18 @@ bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string
 	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
 
     var = rg->CreateMDArray("Y", {dim_ptrs[1]}, dt);
-	dvals.resize(ny);
-	std::iota(dvals.begin(), dvals.end(), 0);
+	std::vector<int_64> id(ny);
+	std::iota(id.begin(), id.end(), 0);
+	dvals = yFromRow(id);
 	count = {ny};
 	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
 
     var = rg->CreateMDArray("X", {dim_ptrs[2]}, dt);
-	dvals.resize(nx);
-	std::iota(dvals.begin(), dvals.end(), 0);
+	id.resize(nx);
+	if (nx > ny) {
+		std::iota(id.begin(), id.end(), 0);
+	}
+	dvals = xFromCol(id);
 	count = {nx};
 	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
 	
@@ -719,16 +728,27 @@ bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string
 		vname = "array";
 	}
 	
-Rcpp::Rcout << vname << "\n";
-	
     var = rg->CreateMDArray(vname, dim_ptrs, GDALExtendedDataType::Create(GDT_Float64));
-	size_t nn = nx * ny * nz;
-	dvals.resize(nn);
-	std::iota(dvals.begin(), dvals.end(), 0);
+	dvals = getValues(-1, opt);
 	start = {0, 0, 0};
 	count = {nz, ny, nx};
 	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
 	
+
+	std::string wkt = source[0].srs.wkt;
+	if (!wkt.empty()) {
+		OGRSpatialReference *srs = NULL;
+		srs = new OGRSpatialReference;
+		const char *cp = wkt.c_str();
+		srs->importFromWkt(cp);
+		if (srs != NULL) {
+			if (!var->SetSpatialRef(srs)) {
+				addWarning("failed to assign CRS to array");
+			}
+			CPLFree(srs);
+		}
+	}
+
 
 //	source[src].gdalmdarray = var;
 	GDALClose( (GDALDatasetH) poDS );
