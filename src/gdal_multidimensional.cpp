@@ -698,7 +698,7 @@ bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string
 	std::iota(dvals.begin(), dvals.end(), 0);
 
 	std::vector<size_t> count = {nz};
-	std::vector<size_t> start = {0};
+	std::vector<GUInt64> start = {0};
 
 	var->Write(start.data(), count.data(), nullptr, nullptr, dt, &dvals[0]); 
 
