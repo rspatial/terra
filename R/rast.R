@@ -303,33 +303,30 @@ setMethod("rast", signature(x="character"),
 )
 
 
-multi <- function(x, subds=1, dims=NULL, guessCRS=TRUE, raw=FALSE, drivers=NULL, opts=NULL, domains="") {
+multi <- function(x, subds="", dims=NULL, guessCRS=TRUE, vsi=FALSE, raw=FALSE, drivers=NULL, opts=NULL, domains="") {
 
 	noflip <- FALSE
 
-	x <- trimws(x)
-	x <- x[x!=""]
-	if (length(x) == 0) {
-		error("rast,character", "provide a valid filename")
+	f <- .fullFilename(x, vsi=isTRUE(vsi))
+	if (length(f) == 0) {
+		error("multi", "filename is empty. Provide a valid filename")
 	}
-	r <- methods::new("SpatRaster")
-	f <- .fullFilename(x)
+
 	if (is.null(opts)) opts <- ""[0]
 	if (isTRUE(raw)) opts <- c(opts, "so=false")
 	
 	if (is.null(drivers)) drivers <- ""[0]
-	if (length(subds) == 0) subds = 1
-	subds <- subds[1]
 
 	domains <- clean_domains(domains)
 	if (is.null(dims)) dims <- 0
-	if (is.character(subds)) {
-		r@pntr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, dims-1, isTRUE(noflip), isTRUE(guessCRS), domains)
-	} else {
-		r@pntr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, dims-1, isTRUE(noflip), isTRUE(guessCRS), domains)
-	}
 
-	 messages(r, "rast")
+	r <- methods::new("SpatRaster")
+#	if (is.character(subds)) {
+		r@pntr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, dims-1, isTRUE(noflip), isTRUE(guessCRS), domains)
+#	} else {
+#		r@pntr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, dims-1, isTRUE(noflip), isTRUE(guessCRS), domains)
+#	}
+	 messages(r, "multi")
 
 }
 

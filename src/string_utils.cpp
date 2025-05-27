@@ -84,12 +84,7 @@ std::vector<std::string> getlastpart (std::vector<std::string> s, std::string de
 
 
 bool in_string(const std::string &x, std::string part) {
-	size_t f = x.find(part);
-	if (f == std::string::npos) {
-		return false;
-	} else {
-		return true;
-	}
+	return (x.find(part) != std::string::npos);
 }
 
 
@@ -165,6 +160,17 @@ std::vector<std::string> strsplit_first(std::string s, std::string delimiter){
 	std::vector<std::string> out;
 	size_t pos = 0;
 	if ((pos = s.find(delimiter)) != std::string::npos) {
+		out.push_back(s.substr(0, pos));
+		s.erase(0, pos + delimiter.length());
+	}
+	out.push_back(s);
+	return out;
+}
+
+std::vector<std::string> strsplit_last(std::string s, std::string delimiter){
+	std::vector<std::string> out;
+	size_t pos = s.find_last_of(delimiter);
+	if (pos != std::string::npos) {
 		out.push_back(s.substr(0, pos));
 		s.erase(0, pos + delimiter.length());
 	}
