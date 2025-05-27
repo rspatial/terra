@@ -3,7 +3,6 @@
 # Version 1.0
 # License GPL v3
 
-
 new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1, crs, extent, resolution, vals, names, time, units) {
 
 	ncols <- round(ncols)
