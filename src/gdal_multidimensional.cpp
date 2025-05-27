@@ -19,7 +19,7 @@ std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x) {
 // FROM GDAL 3.11 (while not widely available).
 // * Author:   Even Rouault <even.rouault at spatialys.com>
 // * Copyright (c) 2019, Even Rouault <even.rouault at spatialys.com>
- 
+
     std::vector<std::string> ret;
     std::list<std::shared_ptr<GDALGroup>> stackGroups;
     stackGroups.push_back(nullptr);  // nullptr means this
@@ -27,9 +27,7 @@ std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x) {
         std::shared_ptr<GDALGroup> groupPtr = std::move(stackGroups.front());
         stackGroups.erase(stackGroups.begin());
         const GDALGroup *poCurGroup = groupPtr ? groupPtr.get() : x.get();
-        for (const std::string &arrayName :
-             poCurGroup->GetMDArrayNames(nullptr))
-        {
+        for (const std::string &arrayName :  poCurGroup->GetMDArrayNames(nullptr)) {
             std::string osFullName = poCurGroup->GetFullName();
             if (!osFullName.empty() && osFullName.back() != '/')
                 osFullName += '/';
@@ -37,15 +35,12 @@ std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x) {
             ret.push_back(std::move(osFullName));
         }
         auto insertionPoint = stackGroups.begin();
-        for (const auto &osSubGroup :
-             poCurGroup->GetGroupNames(nullptr))
-        {
+        for (const auto &osSubGroup : poCurGroup->GetGroupNames(nullptr)) {
             auto poSubGroup = poCurGroup->OpenGroup(osSubGroup);
             if (poSubGroup)
                 stackGroups.insert(insertionPoint, std::move(poSubGroup));
         }
     }
-
     return ret;
 }
 
@@ -634,10 +629,10 @@ bool SpatRaster::readStartMulti(size_t src) {
     }
 //    GDALReleaseDataset(hDS);
 
-//	std::string startgroup="";
-//	auto poVar = poRootGroup->ResolveMDArray(source[src].m_arrayname.c_str(), startgroup, nullptr);
+	std::string startgroup="";
+	auto poVar = poRootGroup->ResolveMDArray(source[src].m_arrayname.c_str(), startgroup, nullptr);
 
-    auto poVar = poRootGroup->OpenMDArray(source[src].m_arrayname.c_str());
+//    auto poVar = poRootGroup->OpenMDArray(source[src].m_arrayname.c_str());
     if( !poVar )   {
 		setError("cannot find: " + source[src].m_arrayname);
 		return false;
