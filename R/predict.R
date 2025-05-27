@@ -54,10 +54,10 @@ parfun <- function(cls, d, fun, model, ...) {
 			}
 		} else {
 			if (!is.null(index)) {
-				r <- matrix(NA, nrow=nl*n, ncol=length(index))
+				r <- matrix(NA, nrow=n, ncol=length(index))
 				index <- NULL
 			} else {
-				r <- matrix(NA, nrow=nl*n, ncol=1)
+				r <- matrix(NA, nrow=n, ncol=nl)
 			}
 		}
 	} else {
@@ -241,6 +241,9 @@ find_dims <- function(object, model, nc, fun, const, na.rm, index, ...) {
 setMethod("predict", signature(object="SpatRaster"),
 	function(object, model, fun=predict, ..., const=NULL, na.rm=FALSE, index=NULL, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list()) {
 
+		debugr <- isTRUE(wopt$debug)
+		wopt$debug <- NULL
+
 		nms <- names(object)
 		if (length(unique(nms)) != length(nms)) {
 			tab <- table(nms)
@@ -280,6 +283,13 @@ setMethod("predict", signature(object="SpatRaster"),
 			if (prod(NROW(r), NCOL(r)) != prod(b$nrows[i], nc, nl)) {
 				msg <- "the number of values returned by 'fun' (model predict function) does not match the input."
 				if (!na.rm) msg <- paste(msg, "Try na.rm=TRUE?")
+				if (debugr) {
+					str(b)
+					message(paste("step", i, "(Error, debug=TRUE)"))
+					message(msg)
+					message("returning input/output and blocks")
+					return(list(blocks=b, input=d, output=r))
+				}
 				error("predict", msg)
 			}
 			writeValues(out, r, b$row[i], b$nrows[i])
