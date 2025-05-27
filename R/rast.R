@@ -3,6 +3,7 @@
 # Version 1.0
 # License GPL v3
 
+
 new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1, crs, extent, resolution, vals, names, time, units) {
 
 	ncols <- round(ncols)
@@ -302,9 +303,7 @@ setMethod("rast", signature(x="character"),
 )
 
 
-multi <- function(x, subds="", dims=NULL, guessCRS=TRUE, vsi=FALSE, raw=FALSE, drivers=NULL, opts=NULL, domains="") {
-
-	noflip <- FALSE
+multi <- function(x, subds="", dims=NULL, guessCRS=TRUE, vsi=FALSE, raw=FALSE, noflip=FALSE, drivers=NULL, opts=NULL, domains="") {
 
 	f <- .fullFilename(x, vsi=isTRUE(vsi))
 	if (length(f) == 0) {
@@ -320,11 +319,11 @@ multi <- function(x, subds="", dims=NULL, guessCRS=TRUE, vsi=FALSE, raw=FALSE, d
 	if (is.null(dims)) dims <- 0
 
 	r <- methods::new("SpatRaster")
-#	if (is.character(subds)) {
+	if (is.character(subds)) {
 		r@pntr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, dims-1, isTRUE(noflip), isTRUE(guessCRS), domains)
-#	} else {
-#		r@pntr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, dims-1, isTRUE(noflip), isTRUE(guessCRS), domains)
-#	}
+	} else {
+		r@pntr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, dims-1, isTRUE(noflip), isTRUE(guessCRS), domains)
+	}
 	 messages(r, "multi")
 
 }

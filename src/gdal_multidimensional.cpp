@@ -1,48 +1,16 @@
 
 #include "spatRaster.h"
 
-
 #if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
 
 #include "proj.h"
-
 #include "ogr_spatialref.h"
-
 #include "gdal_priv.h"
 #include "gdal.h"
 #include "crs.h"
 #include "string_utils.h"
 #include "vecmath.h"
 
-
-std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x) {
-// FROM GDAL 3.11 (while not widely available).
-// * Author:   Even Rouault <even.rouault at spatialys.com>
-// * Copyright (c) 2019, Even Rouault <even.rouault at spatialys.com>
-
-    std::vector<std::string> ret;
-    std::list<std::shared_ptr<GDALGroup>> stackGroups;
-    stackGroups.push_back(nullptr);  // nullptr means this
-    while (!stackGroups.empty()) {
-        std::shared_ptr<GDALGroup> groupPtr = std::move(stackGroups.front());
-        stackGroups.erase(stackGroups.begin());
-        const GDALGroup *poCurGroup = groupPtr ? groupPtr.get() : x.get();
-        for (const std::string &arrayName :  poCurGroup->GetMDArrayNames(nullptr)) {
-            std::string osFullName = poCurGroup->GetFullName();
-            if (!osFullName.empty() && osFullName.back() != '/')
-                osFullName += '/';
-            osFullName += arrayName;
-            ret.push_back(std::move(osFullName));
-        }
-        auto insertionPoint = stackGroups.begin();
-        for (const auto &osSubGroup : poCurGroup->GetGroupNames(nullptr)) {
-            auto poSubGroup = poCurGroup->OpenGroup(osSubGroup);
-            if (poSubGroup)
-                stackGroups.insert(insertionPoint, std::move(poSubGroup));
-        }
-    }
-    return ret;
-}
 
 
 bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::string calendar, std::vector<double> raw, std::string &msg) {
@@ -213,13 +181,21 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 }
 
 
+void prints(std::vector<std::string> &x) {
+	for (size_t i=0; i<x.size(); i++) {Rcpp::Rcout << x[i] << " ";}
+	Rcpp::Rcout << "\n";	
+}
 
+/*
 bool dimfo(std::shared_ptr<GDALGroup> poRootGroup, std::vector<std::string> &ar_names, std::vector<std::vector<std::string>> &dimnames, std::vector<std::vector<size_t>> &dimsize, std::string &msg) {
 
 	msg = "";
 	char** papszOptions = NULL;
 	ar_names = poRootGroup->GetMDArrayNames(papszOptions);
 	CSLDestroy(papszOptions);
+		
+//	std::vector<std::string> x = poRootGroup->GetGroupNames();
+//	prints(x);
 
 	size_t n = ar_names.size();
 	if (n == 0) {
@@ -240,8 +216,19 @@ bool dimfo(std::shared_ptr<GDALGroup> poRootGroup, std::vector<std::string> &ar_
 			dimsize[i].push_back(static_cast<size_t>(poDim->GetSize()));
 		}
 	}
+
+	bool verbose = false;
+	if (verbose) {
+		Rcpp::Rcout << names[i] << ": ";	
+		for (size_t j=0; j<ni; j++) {
+			Rcpp::Rcout << dimnames[i][j] << " (" << dimsize[i][j] << ") ";	
+		}
+		Rcpp::Rcout << std::endl;
+	}
+
 	return true;
 }
+*/
 
 
 std::vector<std::string> ncdf_keep(std::vector<std::string> const &s) {
@@ -266,13 +253,38 @@ std::vector<std::string> ncdf_keep(std::vector<std::string> const &s) {
 }
 
 
-void prints(std::vector<std::string> &x) {
-	for (size_t i=0; i<x.size(); i++) {Rcpp::Rcout << x[i] << " ";}
-	Rcpp::Rcout << "\n";	
+std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x) {
+// FROM GDAL 3.11 (while not widely available).
+// * Author:   Even Rouault <even.rouault at spatialys.com>
+// * Copyright (c) 2019, Even Rouault <even.rouault at spatialys.com>
+    std::vector<std::string> ret;
+    std::list<std::shared_ptr<GDALGroup>> stackGroups;
+    stackGroups.push_back(nullptr);  // nullptr means this
+    while (!stackGroups.empty()) {
+        std::shared_ptr<GDALGroup> groupPtr = std::move(stackGroups.front());
+        stackGroups.erase(stackGroups.begin());
+        const GDALGroup *poCurGroup = groupPtr ? groupPtr.get() : x.get();
+        for (const std::string &arrayName :  poCurGroup->GetMDArrayNames(nullptr)) {
+            std::string osFullName = poCurGroup->GetFullName();
+            if (!osFullName.empty() && osFullName.back() != '/') 
+                osFullName += '/';
+            osFullName += arrayName;
+            ret.push_back(std::move(osFullName));
+        }
+        auto insertionPoint = stackGroups.begin();
+        for (const auto &osSubGroup : poCurGroup->GetGroupNames(nullptr)) {
+            auto poSubGroup = poCurGroup->OpenGroup(osSubGroup);
+            if (poSubGroup)
+                stackGroups.insert(insertionPoint, std::move(poSubGroup));
+        }
+    }
+    return ret;
 }
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
+
+
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
 
 	SpatRasterSource s;
 
@@ -284,81 +296,25 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<std::stri
         return false;
     }
 
-/*
-	if (subname.size() > 0) {
-		std::string s = subname[0];
-		if (s[0] == "/") s = s.substr(1,  s.length());
-		if (in_string(s, "/") {
-			std::vector<std::string> ss = strsplit_last(s, "/");
-			subname[0] = ss[1];
-			group = ss[0];
-		}
-	}
-*/
-
 	std::shared_ptr<GDALGroup> poRootGroup = poDataset->GetRootGroup();
     if( !poRootGroup ) {
 		setError("no root group");
 		return false;
     }
-	
-		
-//	std::vector<std::string> x = poRootGroup->GetGroupNames();
-//	prints(x);
-
-// GDAL 3.11		
-//	x = poRootGroup->GetMDArrayFullNamesRecursive();
-//	prints(x);
-
-/*
-	std::vector<std::string> names, ar_names;
-	std::vector<std::vector<std::string>> dim_names;
-	std::vector<std::vector<size_t>> dim_size;
-	std::string msg;
-	if (!dimfo(poRootGroup, names, dim_names, dim_size, msg)) {
-		setError(msg);
-		return false;
-	} else {
-		for (size_t i=0; i<names.size(); i++) {
-			size_t ni = dim_size[i].size();
-			if ((ni > 1) && (ncdf_keep(names[i]))) {
-				ar_names.push_back(names[i]);
-//				if (verbose) {
-					Rcpp::Rcout << names[i] << ": ";	
-					for (size_t j=0; j<ni; j++) {
-						Rcpp::Rcout << dim_names[i][j] << " (" << dim_size[i][j] << ") ";	
-					}
-					Rcpp::Rcout << std::endl;
-//				}
-			}
-		}
-	}
-*/
-
-//	if (xyz.size() != 3) {
-//		setError("you must supply three dimension indices");
-//       return false;
-//	}
-
 
 	s.m_arrayname = "";
 	if (!subname[0].empty()) {
 		s.m_arrayname = subname[0];
-		//int w = where_in_vector(s.m_arrayname, ar_names, false);
-		//if (w < 0) {
-			//setError("array " + s.m_arrayname + " not found. Should be one of:\n  " + concatenate(ar_names, ", "));
-			//return false;
-		//} 
-//	} else if (sub.size() > 0) {
-		//if ((sub[0] < 0) || (sub[0] >= (int)ar_names.size())) {
-		//	setError("array number is out or range");
-		//	return false;
-		//} else {
-		//	s.m_arrayname = ar_names[sub[0]];
-		//}
+	} else if (subds.size() > 0) {
+		std::vector<std::string> anms = ncdf_keep(GetArrayNames(poRootGroup));
+		if ((subds[0] < 0) || (subds[0] >= (int)anms.size())) {
+			setError("array number is out or range");
+			return false;
+		} else {
+			s.m_arrayname = anms[subds[0]];
+		}
 	} else {
 		std::vector<std::string> anms = ncdf_keep(GetArrayNames(poRootGroup));
-		//prints(anms);
 		s.m_arrayname = anms[anms.size()-1];
 		if (anms.size() > 1)  {
 			anms = {anms.begin(), anms.end() - 1}; 
@@ -451,7 +407,6 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<std::stri
 	} else {
 		s.m_missing_value = poVar->GetNoDataValueAsDouble(&s.m_hasNA);
 	}
-	
 
 	if (dims.size() < 2) {
 		dims = {2,1,0};
@@ -490,7 +445,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<std::stri
 	e.ymin = start - 0.5 * res;
 	
 	s.flipped = false;
-	if (e.ymin > e.ymax) {
+	if ((!noflip) && (e.ymin > e.ymax)) {
 		std::swap(e.ymin, e.ymax);
 		s.flipped = true;
 	}
@@ -593,28 +548,6 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<std::stri
 
 bool SpatRaster::readStartMulti(size_t src) {
 
-//	Rcpp::Rcout << "readStartMulti\n";
-/*
-    GDALDatasetH hDS = GDALOpenEx( source[src].filename.c_str(), GDAL_OF_MULTIDIM_RASTER, NULL, NULL, NULL);
-    if (!hDS) {
-		setError("not a good dataset");
-        return false;
-    }
-    GDALGroupH hGroup = GDALDatasetGetRootGroup(hDS);
-    GDALReleaseDataset(hDS);
-    if (!hGroup) {
-		setError("not a good root group");
-		return false;
-    }
-
-	GDALMDArrayH hVar = GDALGroupOpenMDArray(hGroup, source[src].m_arrayname.c_str(), NULL);
-    GDALGroupRelease(hGroup);
-    if (!hVar) {
-		setError("array '" + source[src].m_arrayname + "' is not available");
-		return false;
-    }
-*/
-
     auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(source[src].filename.c_str(), GDAL_OF_MULTIDIM_RASTER ));
     if( !poDataset ) {
 		setError("not a good dataset");
@@ -627,7 +560,6 @@ bool SpatRaster::readStartMulti(size_t src) {
 		setError("no roots");
 		return false;
     }
-//    GDALReleaseDataset(hDS);
 
 	std::string startgroup="";
 	auto poVar = poRootGroup->ResolveMDArray(source[src].m_arrayname.c_str(), startgroup, nullptr);
@@ -683,8 +615,6 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 		offset[ndim-2] = nrow() - row - 1;
 	}
 
-//	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
-//	std::vector<double> out;
 	size_t insize = data.size();
 
 	auto dt = GDALExtendedDataType::Create(GDT_Float64);
@@ -702,8 +632,6 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 		source[src].m_array->Read(&offset[0], &count[0], &stride[0], NULL, dt, &data[insize], NULL, 0);
     } else {
 		count[source[src].m_dims[2]] = 1;
-//		out.resize(0);
-//		out.reserve(ncols*nrows*source[src].layers.size());
 
 		data.resize(insize + ncols*nrows*source[src].layers.size());
 //		size_t n=vprod(count, false);
@@ -718,17 +646,6 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 			source[src].m_array->Read(&offset[0], &count[0], NULL, NULL, dt, &data[insize], NULL, 0);
 		}
 	}
-//	GDALExtendedDataTypeRelease(hDT);
-
-//	for (size_t i=0; i<offset.size(); i++) Rcpp::Rcout << offset[i] << ", "; 
-//	Rcpp::Rcout << std::endl;
-//	for (size_t i=0; i<count.size(); i++) Rcpp::Rcout << count[i] << ", "; 
-//	Rcpp::Rcout << std::endl;
-
-
-//	if (!source[0].flipped) { vflip(out, ncols); }
-
-//	tpose(out, nrows, ncols, nlyr());
 
 	if (source[src].m_hasNA) {
 //		Rcpp::Rcout << source[src].m_missing_value << std::endl;
@@ -739,7 +656,6 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 	return true;
 }
 
-//#include "gdalio.h"
 
 bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string> &srcnames) {
 
@@ -860,7 +776,7 @@ bool SpatRaster::writeStopMulti() {
 #else
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
 	setError("multidim is not supported with GDAL < 3.4");
 	return false;
 }
@@ -1000,7 +916,7 @@ SpatRaster SpatRaster::writeRasterM(SpatOptions &opt) {
 	std::vector<std::string> empty;
 	std::vector<int> dims = {-1};
 	
-	out.constructFromFileMulti(fnames[0], empty, empty, empty, dims, false, false, {""});
+	out.constructFromFileMulti(fnames[0], {0}, empty, empty, empty, dims, false, false, {""});
 	return out;
 }
 
