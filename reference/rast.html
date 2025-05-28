@@ -13,7 +13,7 @@ Note that there are operating system level limitations to the number of files th
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-52</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-53</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,8 +50,9 @@ Note that there are operating system level limitations to the number of files th
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'character'</span></span>
-<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, subds<span class="op">=</span><span class="fl">0</span>, lyrs<span class="op">=</span><span class="cn">NULL</span>, drivers<span class="op">=</span><span class="cn">NULL</span>, opts<span class="op">=</span><span class="cn">NULL</span>, win<span class="op">=</span><span class="cn">NULL</span>, snap<span class="op">=</span><span class="st">"near"</span>,</span>
-<span>    vsi<span class="op">=</span><span class="cn">FALSE</span>, raw<span class="op">=</span><span class="cn">FALSE</span>, noflip<span class="op">=</span><span class="cn">FALSE</span>, guessCRS<span class="op">=</span><span class="cn">TRUE</span>, domains<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, subds<span class="op">=</span><span class="fl">0</span>, lyrs<span class="op">=</span><span class="cn">NULL</span>, drivers<span class="op">=</span><span class="cn">NULL</span>, opts<span class="op">=</span><span class="cn">NULL</span>, win<span class="op">=</span><span class="cn">NULL</span>, </span>
+<span>    snap<span class="op">=</span><span class="st">"near"</span>, vsi<span class="op">=</span><span class="cn">FALSE</span>, raw<span class="op">=</span><span class="cn">FALSE</span>, noflip<span class="op">=</span><span class="cn">FALSE</span>, </span>
+<span>    guessCRS<span class="op">=</span><span class="cn">TRUE</span>, domains<span class="op">=</span><span class="st">""</span>, md<span class="op">=</span><span class="cn">FALSE</span>, dims<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'missing'</span></span>
 <span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, nrows<span class="op">=</span><span class="fl">180</span>, ncols<span class="op">=</span><span class="fl">360</span>, nlyrs<span class="op">=</span><span class="fl">1</span>, xmin<span class="op">=</span><span class="op">-</span><span class="fl">180</span>, xmax<span class="op">=</span><span class="fl">180</span>, ymin<span class="op">=</span><span class="op">-</span><span class="fl">90</span>,</span>
@@ -122,6 +123,12 @@ Note that there are operating system level limitations to the number of files th
 
 <dt id="arg-domains">domains<a class="anchor" aria-label="anchor" href="#arg-domains"></a></dt>
 <dd><p>character. Metadata domains to read (see <code><a href="metags.html">metags</a></code> to retrieve their values if there are any. "" is the default domain</p></dd>
+
+<dt id="arg-md">md<a class="anchor" aria-label="anchor" href="#arg-md"></a></dt>
+<dd><p>logical. If <code>TRUE</code>, the multi-dimensional interface is used</p></dd>
+
+<dt id="arg-dims">dims<a class="anchor" aria-label="anchor" href="#arg-dims"></a></dt>
+<dd><p>numeric. Not used yet</p></dd>
 
 <dt id="arg-nrows">nrows<a class="anchor" aria-label="anchor" href="#arg-nrows"></a></dt>
 <dd><p>positive integer. Number of rows</p></dd>
