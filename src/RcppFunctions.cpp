@@ -741,6 +741,11 @@ double stattest2(std::vector<double> x, std::string fun, bool narm) {
 */
 
 
+Rcpp::List get_output(std::vector<std::string> names, std::vector<long> sizes) {
+	Rcpp::List L = Rcpp::List::create(Rcpp::Named("name") = names, Rcpp::Named("size") = sizes);
+	return(L);
+}
+
 
 #if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
 
@@ -790,10 +795,6 @@ std::vector<std::string> arnames(std::string filename, bool filter) {
     return ret;
 }
 
-Rcpp::List get_output(std::vector<std::string> &names, std::vector<long> &sizes) {
-	Rcpp::List L = Rcpp::List::create(Rcpp::Named("name") = names, Rcpp::Named("size") = sizes);
-	return(L);
-}
 
 // [[Rcpp::export(name = ".dimfo")]]
 Rcpp::List dimfo(std::string filename, std::string array_name) {

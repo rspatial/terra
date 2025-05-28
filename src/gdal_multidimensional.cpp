@@ -6,6 +6,7 @@
 #include "gdalio.h"
 #include "crs.h"
 #include "string_utils.h"
+#include "file_utils.h"
 #include "vecmath.h"
 
 bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::string calendar, std::vector<double> raw, std::string &msg) {
@@ -224,15 +225,27 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 
 	bool verbose = false;
 
-    auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER ));
+	char ** drvs = NULL;
+	for (size_t i=0; i<drivers.size(); i++) {
+		drvs = CSLAddString(drvs, drivers[i].c_str());
+	}
+	s.open_drivers = drivers;
+
+    auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER, drvs));
     if( !poDataset ) {
-		setError("not a good dataset");
-        return false;
+		if (!file_exists(fname)) {
+			setError("file does not exist: " + fname);
+		} else if (drivers.size() > 0) {
+			setError("cannot read multidim from this file or with this driver");			
+		} else {
+			setError("cannot read multidim from this file");			
+        }
+		return false;
     }
 
 	std::shared_ptr<GDALGroup> poRootGroup = poDataset->GetRootGroup();
     if( !poRootGroup ) {
-		setError("no root group");
+		setError("dataset has no root group");
 		return false;
     }
 
@@ -483,7 +496,12 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 
 bool SpatRaster::readStartMulti(size_t src) {
 
-    auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(source[src].filename.c_str(), GDAL_OF_MULTIDIM_RASTER ));
+	char ** drvs = NULL;
+	for (size_t i=0; i<source[src].open_drivers.size(); i++) {
+		drvs = CSLAddString(drvs, source[src].open_drivers[i].c_str());
+	}
+
+    auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(source[src].filename.c_str(), GDAL_OF_MULTIDIM_RASTER, drvs));
     if( !poDataset ) {
 		setError("not a good dataset");
         return false;
@@ -519,6 +537,7 @@ bool SpatRaster::readStartMulti(size_t src) {
 bool SpatRaster::readStopMulti(size_t src) {
 //	Rcpp::Rcout << "readStopMulti\n";
 	source[src].open_read = false;
+	source[0].m_array.reset();
 	return true;
 }
 
@@ -578,7 +597,7 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 				return false;
 				count[source[src].m_dims[3]] = 1;		
 			}
-			source[src].m_array->Read(&offset[0], &count[0], NULL, NULL, dt, &data[insize], NULL, 0);
+			source[src].m_array->Read(&offset[0], &count[0], NULL, NULL, dt, &data[insize+i], NULL, 0);
 		}
 	}
 
@@ -590,6 +609,86 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 //	data.insert(data.end(), out.begin(), out.end());
 	return true;
 }
+
+bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+	
+//	Rcpp::Rcout << "readRowColMulti " << src << "\n";
+	if (!readStartMulti(src)) {
+		return false;
+	}
+	size_t n = rows.size();
+	size_t nl = source[src].layers.size();
+
+	out.resize(n);
+	size_t outend = outstart + nl;
+	for (size_t i=outstart; i<outend; i++) {
+		out[i].reserve(n);
+	}
+
+	std::vector<GUInt64> offset(source[src].m_ndims, 0);
+
+	size_t ndim = source[src].m_dims.size();
+	std::vector<size_t> count(source[src].m_ndims, 1);
+
+	std::vector<GPtrDiff_t> stride;
+	if (!source[src].flipped) { 
+		stride.resize(ndim, 1);
+		stride[ndim-2] = -1;
+		int_64 nr = nrow();
+		for (int_64 &r : rows) r = nr - r - 1;  
+	}
+
+	auto dt = GDALExtendedDataType::Create(GDT_Float64);
+
+	std::vector<double> v(n, NAN);
+	for (size_t i=0; i<n; i++) {
+	
+		if (std::isnan(cols[i]) || std::isnan(rows[i])) {
+			for (size_t i=0; i<n; i++) {
+				out[outstart+i].push_back(NAN);
+			}			
+			continue;
+		}
+		offset[source[src].m_dims[0]] = cols[i];
+		offset[source[src].m_dims[1]] = rows[i];
+
+		if (source[src].in_order(false)) {
+			if (ndim == 3) {
+				offset[source[src].m_dims[2]] = source[src].layers[0];
+				count[source[src].m_dims[2]] = source[src].layers.size();
+			} else if (ndim == 4) {
+				count[source[src].m_dims[2]] = source[src].depth.size();
+				count[source[src].m_dims[3]] = source[src].time.size();		
+			}
+			source[src].m_array->Read(&offset[0], &count[0], &stride[0], NULL, dt, &v[0], NULL, 0);
+		} else {
+			count[source[src].m_dims[2]] = 1;
+	//		size_t n=vprod(count, false);
+			for (size_t j=0; j<source[src].layers.size(); j++) {
+				if (ndim == 3) {
+					offset[source[src].m_dims[2]] = source[src].layers[j];
+				} else if (ndim == 4) {
+					setError("not handled yet");
+					return false;
+					count[source[src].m_dims[3]] = 1;		
+				}
+				source[src].m_array->Read(&offset[0], &count[0], NULL, NULL, dt, &v[j], NULL, 0);
+			}
+		}
+		if (source[src].m_hasNA) {
+			std::replace(v.begin(), v.end(), source[src].m_missing_value, (double)NAN);
+		}
+		for (size_t i=0; i<nl; i++) {
+			out[outstart+i].push_back(v[i]);
+		}
+	}
+
+	readStopMulti(src);
+	
+	return true;
+}
+
+
 
 
 bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string> &srcnames) {
@@ -725,11 +824,15 @@ bool SpatRaster::readStopMulti(size_t src) {
 }
 
 bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
-	return false
+	return false;
+}
+
+bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+	return false;
 }
 
 bool SpatRaster::writeStartMulti(SpatOptions &opt, const std::vector<std::string> &srcnames) {
-	return false
+	return false;
 }
 
 bool SpatRaster::writeValuesMulti(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols){
@@ -737,7 +840,7 @@ bool SpatRaster::writeValuesMulti(std::vector<double> &vals, size_t startrow, si
 }
 
 bool SpatRaster::writeStopMulti() {
-	return false
+	return false;
 }
 
 #endif
@@ -760,37 +863,6 @@ std::vector<double> SpatRaster::readValuesMulti(size_t src, size_t row, size_t n
 	}
 }
 
-
-bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
-
-//	Rcpp::Rcout << "readRowColMulti " << src << "\n";
-	if (!readStartMulti(src)) {
-		return false;
-	}
-	size_t n = rows.size();
-	size_t nl = source[src].layers.size();
-	size_t outend = outstart + nl;
-	for (size_t i=outstart; i<outend; i++) {
-		out[i].reserve(n); // = std::vector<double> (n, NAN);
-	}
-	
-	std::vector<double> value;
-	for (size_t i=0; i<n; i++) {
-//		Rcpp::Rcout << rows[i] << " " << cols[i] << " ";
-		if ((rows[i] < 0) || (cols[i] < 0)) {
-			value.resize(value.size() + nl, NAN);
-		} else {
-			if (!readChunkMulti(value, src, rows[i], 1, cols[i], 1)) {
-				return false;
-			}
-		}
-	}
-	readStopMulti(src);
-	for (size_t i=0; i<n; i++) {
-		out[outstart+(i%nl)].push_back(value[i]);
-	}
-	return true;
-}
 
 
 void getSampleRowCol2(std::vector<int_64> &oldrow, std::vector<int_64> &oldcol, size_t nrows, size_t ncols, size_t snrow, size_t sncol) {
