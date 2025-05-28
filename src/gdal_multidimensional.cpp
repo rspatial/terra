@@ -637,6 +637,21 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 		int_64 nr = nrow();
 		for (int_64 &r : rows) r = nr - r - 1;  
 	}
+	if (source[src].in_order(false)) {
+		if (ndim == 3) {
+			offset[source[src].m_dims[2]] = source[src].layers[0];
+			count[source[src].m_dims[2]] = source[src].layers.size();
+		} else if (ndim == 4) {
+			count[source[src].m_dims[2]] = source[src].depth.size();
+			count[source[src].m_dims[3]] = source[src].time.size();		
+		}
+	} else {
+		if (ndim == 4) {
+			setError("not handled yet");
+			return false;
+		}
+		count[source[src].m_dims[3]] = 1;			
+	}
 
 	auto dt = GDALExtendedDataType::Create(GDT_Float64);
 
@@ -653,25 +668,10 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 		offset[source[src].m_dims[1]] = rows[i];
 
 		if (source[src].in_order(false)) {
-			if (ndim == 3) {
-				offset[source[src].m_dims[2]] = source[src].layers[0];
-				count[source[src].m_dims[2]] = source[src].layers.size();
-			} else if (ndim == 4) {
-				count[source[src].m_dims[2]] = source[src].depth.size();
-				count[source[src].m_dims[3]] = source[src].time.size();		
-			}
 			source[src].m_array->Read(&offset[0], &count[0], &stride[0], NULL, dt, &v[0], NULL, 0);
 		} else {
-			count[source[src].m_dims[2]] = 1;
-	//		size_t n=vprod(count, false);
 			for (size_t j=0; j<source[src].layers.size(); j++) {
-				if (ndim == 3) {
-					offset[source[src].m_dims[2]] = source[src].layers[j];
-				} else if (ndim == 4) {
-					setError("not handled yet");
-					return false;
-					count[source[src].m_dims[3]] = 1;		
-				}
+				offset[source[src].m_dims[2]] = source[src].layers[j];
 				source[src].m_array->Read(&offset[0], &count[0], NULL, NULL, dt, &v[j], NULL, 0);
 			}
 		}
@@ -683,8 +683,7 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 		}
 	}
 
-	readStopMulti(src);
-	
+	readStopMulti(src);	
 	return true;
 }
 
