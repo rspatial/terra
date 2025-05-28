@@ -125,7 +125,7 @@ Note that there are operating system level limitations to the number of files th
 <dd><p>character. Metadata domains to read (see <code><a href="metags.html">metags</a></code> to retrieve their values if there are any. "" is the default domain</p></dd>
 
 <dt id="arg-md">md<a class="anchor" aria-label="anchor" href="#arg-md"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, the multi-dimensional GDAL interface is used under the hood for file reading. This interface can only be used for a few file formats (netCDF/HDF5) and can provide notably faster reading of data with many (time) steps in the third or higher dimension. Support for this is new and experimental (June 2025)</p></dd>
+<dd><p>logical. If <code>TRUE</code>, the multi-dimensional GDAL interface is used under the hood for file reading. This interface can only be used for a few file formats (netCDF/HDF5) and can sometimes (not always) provide notably faster reading of data with many (time) steps in the third or higher dimension. Support for this is new and experimental (June 2025)</p></dd>
 
 <dt id="arg-dims">dims<a class="anchor" aria-label="anchor" href="#arg-dims"></a></dt>
 <dd><p>numeric. Specify the order of the dimensions to read atypical files. See <code><a href="ar_info.html">ar_info</a></code>. Only relevant if <code>md=TRUE</code>. Not used yet</p></dd>
