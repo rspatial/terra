@@ -740,3 +740,107 @@ double stattest2(std::vector<double> x, std::string fun, bool narm) {
 
 */
 
+
+
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
+
+// [[Rcpp::export(name = ".arnames")]]
+std::vector<std::string> arnames(std::string filename, bool filter) {
+// FROM GDAL 3.11 (while not widely available).
+// * Author:   Even Rouault <even.rouault at spatialys.com>
+// * Copyright (c) 2019, Even Rouault <even.rouault at spatialys.com>
+
+    std::vector<std::string> ret;
+    auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(filename.c_str(), GDAL_OF_MULTIDIM_RASTER ));
+
+    if (!poDataset) {
+		ret.push_back("not a good dataset");
+        return ret;
+    }
+
+	std::shared_ptr<GDALGroup> poRootGroup = poDataset->GetRootGroup();
+    if (!poRootGroup) {
+		ret.push_back("no root group");
+        return ret;
+    }
+
+    std::list<std::shared_ptr<GDALGroup>> stackGroups;
+    stackGroups.push_back(nullptr);  // nullptr means this
+    while (!stackGroups.empty()) {
+        std::shared_ptr<GDALGroup> groupPtr = std::move(stackGroups.front());
+        stackGroups.erase(stackGroups.begin());
+        const GDALGroup *poCurGroup = groupPtr ? groupPtr.get() : poRootGroup.get();
+        for (const std::string &arrayName :  poCurGroup->GetMDArrayNames(nullptr)) {
+            std::string osFullName = poCurGroup->GetFullName();
+            if (!osFullName.empty() && osFullName.back() != '/') 
+                osFullName += '/';
+            osFullName += arrayName;
+            ret.push_back(std::move(osFullName));
+        }
+        auto insertionPoint = stackGroups.begin();
+        for (const auto &osSubGroup : poCurGroup->GetGroupNames(nullptr)) {
+            auto poSubGroup = poCurGroup->OpenGroup(osSubGroup);
+            if (poSubGroup)
+                stackGroups.insert(insertionPoint, std::move(poSubGroup));
+        }
+    }
+	if (filter) {
+		ret = ncdf_filternames(ret);
+	}
+    return ret;
+}
+
+Rcpp::List get_output(std::vector<std::string> &names, std::vector<long> &sizes) {
+	Rcpp::List L = Rcpp::List::create(Rcpp::Named("name") = names, Rcpp::Named("size") = sizes);
+	return(L);
+}
+
+// [[Rcpp::export(name = ".dimfo")]]
+Rcpp::List dimfo(std::string filename, std::string array_name) {
+
+	std::vector<std::string> names;
+	std::vector<long> sizes;
+
+    auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(filename.c_str(), GDAL_OF_MULTIDIM_RASTER ));
+    if (!poDataset) {
+		names.push_back("cannot open as md: " + filename);
+		sizes.push_back(-99);
+		return get_output(names, sizes);
+    }
+
+	std::shared_ptr<GDALGroup> poRootGroup = poDataset->GetRootGroup();
+    if (!poRootGroup) {
+		names.push_back("no root group: " + filename);
+		sizes.push_back(-99);
+		return get_output(names, sizes);
+    }
+
+	auto poVar = poRootGroup->OpenMDArray(array_name.c_str());
+	if (!poVar)   {
+		names.push_back("cannot open: " + array_name);
+		sizes.push_back(-99);
+		return get_output(names, sizes);
+	}
+
+	if (names.size() == 0) {
+		for ( const auto &poDim: poVar->GetDimensions() ) {
+			names.push_back(static_cast<std::string>(poDim->GetName()));
+			sizes.push_back(static_cast<long>(poDim->GetSize()));
+		}
+	}
+	return get_output(names, sizes);
+}
+
+#else
+
+Rcpp::List dimfo(std::string filename, std::string array_name) {
+	return get_output({"not supported with GDAL < 3.4"}, {-99});
+}
+
+std::vector<std::string> arnames(std::string filename, bool filter) {
+	std::vector<std::string> out(1, "not supported with GDAL < 3.4");
+	return out;
+}
+
+#endif
+

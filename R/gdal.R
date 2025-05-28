@@ -152,25 +152,31 @@ mdinfo_simplify <- function(p) {
 	p
 }
 
-
-setMethod("describe", signature(x="character"),
-	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="", mdim=FALSE, simplify=TRUE) {
-
-		if (mdim) {
-			p <- .gdalmdinfo(x, ""[0])
-			if (simplify) {
-				pp <- try(mdinfo_simplify(p), silent=TRUE)
-				if (!inherits(pp, "try-error")) {
-					p <- pp
-				}
-			}
-			if (print) {
-				print(p)
-				invisible(p)
-			} else {
-				return(p)
+ar_info <- function(x, what="describe", simplify=TRUE, filter=TRUE, array="") {
+	what <- match.arg(tolower(what), c("describe", "arrays", "dimensions"))
+	if (what == "describe") {
+		p <- .gdalmdinfo(x, ""[0])
+		if (simplify) {
+			pp <- try(mdinfo_simplify(p), silent=TRUE)
+			if (!inherits(pp, "try-error")) {
+				p <- pp
 			}
 		}
+		return(p)
+	} else if (what == "arrays") {
+		.arnames(x, filter);
+	} else if (what == "dimensions") {
+		d <- .dimfo(x, array)
+		if (d$size[1] == -99) {
+			error("descar", d$name[1])
+		}
+		data.frame(d);
+	}
+}
+
+
+setMethod("describe", signature(x="character"),
+	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="") {
 
 		#x <- .fullFilename(x[1], FALSE)
 		x <- x[1]

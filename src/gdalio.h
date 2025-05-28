@@ -26,3 +26,4 @@ void getGDALdriver(std::string &filename, std::string &driver);
 bool getNAvalue(GDALDataType gdt, double & naval);
 GDALDataset* openGDAL(std::string filename, unsigned OpenFlag, std::vector<std::string> allowed_drivers, std::vector<std::string> open_options);
 char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, std::vector<std::string> gdal_options);
+std::vector<std::string> ncdf_filternames(std::vector<std::string> const &s);

@@ -380,6 +380,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// arnames
+std::vector<std::string> arnames(std::string filename, bool filter);
+RcppExport SEXP _terra_arnames(SEXP filenameSEXP, SEXP filterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type filename(filenameSEXP);
+    Rcpp::traits::input_parameter< bool >::type filter(filterSEXP);
+    rcpp_result_gen = Rcpp::wrap(arnames(filename, filter));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dimfo
+Rcpp::List dimfo(std::string filename, std::string array_name);
+RcppExport SEXP _terra_dimfo(SEXP filenameSEXP, SEXP array_nameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type filename(filenameSEXP);
+    Rcpp::traits::input_parameter< std::string >::type array_name(array_nameSEXP);
+    rcpp_result_gen = Rcpp::wrap(dimfo(filename, array_name));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dist2segmentPoint_geo
 double dist2segmentPoint_geo(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double& ilon, double& ilat);
 RcppExport SEXP _terra_dist2segmentPoint_geo(SEXP plonSEXP, SEXP platSEXP, SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP ilonSEXP, SEXP ilatSEXP) {
@@ -451,6 +475,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_pearson_cor", (DL_FUNC) &_terra_pearson_cor, 3},
     {"_terra_weighted_pearson_cor", (DL_FUNC) &_terra_weighted_pearson_cor, 4},
     {"_terra_uniqueSymmetricRows", (DL_FUNC) &_terra_uniqueSymmetricRows, 2},
+    {"_terra_arnames", (DL_FUNC) &_terra_arnames, 2},
+    {"_terra_dimfo", (DL_FUNC) &_terra_dimfo, 2},
     {"_terra_dist2segmentPoint_geo", (DL_FUNC) &_terra_dist2segmentPoint_geo, 8},
     {"_terra_intermediate", (DL_FUNC) &_terra_intermediate, 6},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},

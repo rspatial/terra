@@ -1038,6 +1038,27 @@ std::vector<std::string> SpatRaster::getAllFiles() {
 	return files;
 }
 
+std::vector<std::string> ncdf_filternames(std::vector<std::string> const &s) {
+	std::vector<std::string> out;
+	out.reserve(s.size());
+	std::vector<std::string> end = {"_bnds", "_bounds", "lat", "lon", "longitude", "latitude", "northing", "easting"};
+	for (size_t j=0; j<s.size(); j++) {
+		bool add = true;
+		std::string name = lower_case(s[j]);
+		for (size_t i=0; i<end.size(); i++) {
+			if (name.length() >= end[i].length()) {
+				if (name.compare(name.length() - end[i].length(), name.length(), end[i]) == 0) {
+					add = false;
+					continue;
+				}
+			}
+		}
+		if (add && (!(name == "/x" || name == "/y" || name == "/time"))) {
+			out.push_back(s[j]);
+		}
+	}
+	return out;
+}
 
 
 /*

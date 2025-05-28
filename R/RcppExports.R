@@ -133,6 +133,14 @@ rgb2hex <- function(x) {
     .Call(`_terra_uniqueSymmetricRows`, x, y)
 }
 
+.arnames <- function(filename, filter) {
+    .Call(`_terra_arnames`, filename, filter)
+}
+
+.dimfo <- function(filename, array_name) {
+    .Call(`_terra_dimfo`, filename, array_name)
+}
+
 dist2segmentPoint_geo <- function(plon, plat, lon1, lat1, lon2, lat2, ilon, ilat) {
     .Call(`_terra_dist2segmentPoint_geo`, plon, plat, lon1, lat1, lon2, lat2, ilon, ilat)
 }

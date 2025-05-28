@@ -31,8 +31,9 @@ Note that there are operating system level limitations to the number of files th
 }
 
 \usage{
-\S4method{rast}{character}(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near",
-		vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="")
+\S4method{rast}{character}(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, 
+		snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, 
+		guessCRS=TRUE, domains="", md=FALSE, dims=NULL)
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90,
 		ymax=90, crs, extent, resolution, vals, names, time, units)
@@ -68,6 +69,8 @@ Note that there are operating system level limitations to the number of files th
 \item{noflip}{logical. If \code{TRUE}, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (\code{ymax < ymin}), is not considered flipped. This avoids the need to \code{\link{flip}} the raster vertically}
 \item{guessCRS}{logical. If \code{TRUE} and the the file does not specify a CRS but has an extent that is within longitude/latitude bounds, the longitude/latitude crs is assigned to the SpatRaster}
 \item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retrieve their values if there are any. "" is the default domain}
+\item{md}{logical. If \code{TRUE}, the multi-dimensional interface is used}
+\item{dims}{numeric. Not used yet}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}

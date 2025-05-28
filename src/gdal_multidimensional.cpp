@@ -1,17 +1,12 @@
-
 #include "spatRaster.h"
-
-#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
-
 #include "proj.h"
 #include "ogr_spatialref.h"
 #include "gdal_priv.h"
 #include "gdal.h"
+#include "gdalio.h"
 #include "crs.h"
 #include "string_utils.h"
 #include "vecmath.h"
-
-
 
 bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::string calendar, std::vector<double> raw, std::string &msg) {
 
@@ -181,79 +176,17 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 }
 
 
+
 void prints(std::vector<std::string> &x) {
 	for (size_t i=0; i<x.size(); i++) {Rcpp::Rcout << x[i] << " ";}
 	Rcpp::Rcout << "\n";	
 }
 
-/*
-bool dimfo(std::shared_ptr<GDALGroup> poRootGroup, std::vector<std::string> &ar_names, std::vector<std::vector<std::string>> &dimnames, std::vector<std::vector<size_t>> &dimsize, std::string &msg) {
 
-	msg = "";
-	char** papszOptions = NULL;
-	ar_names = poRootGroup->GetMDArrayNames(papszOptions);
-	CSLDestroy(papszOptions);
-		
-//	std::vector<std::string> x = poRootGroup->GetGroupNames();
-//	prints(x);
-
-	size_t n = ar_names.size();
-	if (n == 0) {
-		msg = "no arrays detected";
-		return false;
-	}
-	dimnames.resize(n);
-	dimsize.resize(n);
-	
-	for (size_t i=0; i<ar_names.size(); i++) {
-		auto poVar = poRootGroup->OpenMDArray(ar_names[i].c_str());
-		if( !poVar )   {
-			msg = ("cannot open: " + ar_names[i]);
-			return false;
-		}
-		for ( const auto &poDim: poVar->GetDimensions() ) {
-			dimnames[i].push_back(static_cast<std::string>(poDim->GetName()));
-			dimsize[i].push_back(static_cast<size_t>(poDim->GetSize()));
-		}
-	}
-
-	bool verbose = false;
-	if (verbose) {
-		Rcpp::Rcout << names[i] << ": ";	
-		for (size_t j=0; j<ni; j++) {
-			Rcpp::Rcout << dimnames[i][j] << " (" << dimsize[i][j] << ") ";	
-		}
-		Rcpp::Rcout << std::endl;
-	}
-
-	return true;
-}
-*/
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
 
 
-std::vector<std::string> ncdf_keep(std::vector<std::string> const &s) {
-	std::vector<std::string> out;
-	out.reserve(s.size());
-	std::vector<std::string> end = {"_bnds", "_bounds", "lat", "lon", "longitude", "latitude"};
-	for (size_t j=0; j<s.size(); j++) {
-		bool add = true;
-		for (size_t i=0; i<end.size(); i++) {
-			if (s[j].length() >= end[i].length()) {
-				if (s[j].compare(s[j].length() - end[i].length(), s[j].length(), end[i]) == 0) {
-					add = false;
-					continue;
-				}
-			}
-		}
-		if (add && (!(s[j] == "/x" || s[j] == "/y" || s[j] == "/northing" || s[j] == "/easting" || s[j] == "/time"))) {
-			out.push_back(s[j]);
-		}
-	}
-	return out;
-}
-
-
-std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x) {
+std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x, bool filter) {
 // FROM GDAL 3.11 (while not widely available).
 // * Author:   Even Rouault <even.rouault at spatialys.com>
 // * Copyright (c) 2019, Even Rouault <even.rouault at spatialys.com>
@@ -278,10 +211,11 @@ std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x) {
                 stackGroups.insert(insertionPoint, std::move(poSubGroup));
         }
     }
+	if (filter) {
+		return ncdf_filternames(ret);
+	}
     return ret;
 }
-
-
 
 
 bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
@@ -303,18 +237,19 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
     }
 
 	s.m_arrayname = "";
-	if (!subname[0].empty()) {
+
+	if ((subname.size() > 0) && (!subname[0].empty())) {
 		s.m_arrayname = subname[0];
 	} else if (subds.size() > 0) {
-		std::vector<std::string> anms = ncdf_keep(GetArrayNames(poRootGroup));
+		std::vector<std::string> anms = GetArrayNames(poRootGroup, true);
 		if ((subds[0] < 0) || (subds[0] >= (int)anms.size())) {
 			setError("array number is out or range");
 			return false;
 		} else {
-			s.m_arrayname = anms[subds[0]];
+			s.m_arrayname = anms[anms.size()-1-subds[0]];
 		}
 	} else {
-		std::vector<std::string> anms = ncdf_keep(GetArrayNames(poRootGroup));
+		std::vector<std::string> anms = GetArrayNames(poRootGroup, true);
 		s.m_arrayname = anms[anms.size()-1];
 		if (anms.size() > 1)  {
 			anms = {anms.begin(), anms.end() - 1}; 

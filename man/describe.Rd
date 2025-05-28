@@ -11,8 +11,7 @@ Describe the properties of spatial data in a file as generated with the "GDALinf
 }
 
 \usage{
-\S4method{describe}{character}(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", 
-		print=FALSE, open_opt="", mdim=FALSE, simplify=TRUE)
+\S4method{describe}{character}(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="")
 
 \S4method{describe}{SpatRaster}(x, source, ...)
 }
@@ -25,8 +24,6 @@ Describe the properties of spatial data in a file as generated with the "GDALinf
   \item{options}{character. A vector of valid options (if \code{meta=FALSE}) including "json", "mm", "stats", "hist", "nogcp", "nomd", "norat", "noct", "nofl", "checksum", "proj4", "listmdd", "mdd <value>" where <value> specifies a domain or 'all', "wkt_format <value>" where value is one of 'WKT1', 'WKT2', 'WKT2_2015', or 'WKT2_2018', "sd <subdataset>" where <subdataset> is the name or identifier of a sub-dataset. See \url{https://gdal.org/en/latest/programs/gdalinfo.html}. Ignored if \code{sds=TRUE}}  
   \item{print}{logical. If \code{TRUE}, print the results}
   \item{open_opt}{character. Driver specific open options}   
-  \item{mdim}{logical. If \code{TRUE}, return the GDAL multi-dimensional API description}   
-  \item{simplify}{logical. If \code{TRUE}, simplify the output for better readability if \code{md=TRUE}}   
   \item{source}{positive integer between 1 and \code{nsrc(x)}}   
   \item{...}{additional arguments passed to the \code{describe<character>} method}
 }
@@ -34,6 +31,8 @@ Describe the properties of spatial data in a file as generated with the "GDALinf
 \value{
 character (invisibly, if \code{print=FALSE})
 }
+
+\seealso{\code{\link{ar_info}}}
 
 \examples{
 f <- system.file("ex/elev.tif", package="terra")
