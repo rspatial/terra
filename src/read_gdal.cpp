@@ -147,6 +147,11 @@ bool read_aux_json(std::string filename, std::vector<int_64> &time, std::string 
 }
 
 
+void prints(std::vector<std::string> x) {
+	for (size_t i=0; i<x.size(); i++) {Rcpp::Rcout << x[i] << " ";}
+	Rcpp::Rcout << "\n";	
+}
+
 
 bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::string &driver) {
 
@@ -159,6 +164,9 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::str
 	std::vector<std::string> GFT_type;
 	std::vector<std::string> GFT_usage;
 */
+
+//	auto tabtype = pRAT->GetTableType(); perhaps check for "GRTT_ATHEMATIC" #1845
+	
 	size_t nc = (int) pRAT->GetColumnCount();
 	size_t nr = (int) pRAT->GetRowCount();
 
@@ -188,8 +196,9 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::str
 	size_t sid = id.size();
 //	Rcpp::Rcout << hasvalue << " " << sid << std::endl;
 	if ((hasvalue && sid == 1) || ((!hasvalue) && sid == 0)) {
-// #790 avoid having just "count" or "histogram" 
+// #790 avoid having just "count" or "histogram". return false for #1845
 		good_rat = false;
+		return false;
 	}
 	id.insert(id.end(), id2.begin(), id2.end());
 
@@ -1128,7 +1137,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		std::string bandname = poBand->GetDescription();
 
 		char **cat = poBand->GetCategoryNames();
-		if( cat != NULL )	{
+		if (cat != NULL)	{
 			SpatCategories scat = GetCategories(cat, bandname);
 
 			s.cats[i] = scat;
@@ -1141,12 +1150,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		if (!s.hasCategories[i]) {
 			GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 			if (rat != NULL) {
-				found_rat = GetRAT(rat, crat, gdrv);
-				if (crat.d.nrow() > 0) {
+				if (GetRAT(rat, crat, gdrv)) {
 					s.cats[i] = crat;
 					s.hasCategories[i] = true;
-				} else {
-					found_rat = false;
+//				} else {
+//					found_rat = false;
 				}
 			}
 		}
