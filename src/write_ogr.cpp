@@ -195,7 +195,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 	for (int i=0; i<nfields; i++) {
 		
-		Rcpp::Rcout << nms[i] << std::endl;
+//		Rcpp::Rcout << nms[i] << std::endl;
 
 		OGRFieldSubType eSubType = OFSTNone;
 		if (tps[i] == "double") {

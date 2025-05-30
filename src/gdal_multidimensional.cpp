@@ -178,11 +178,6 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 
 
 
-void prints(std::vector<std::string> &x) {
-	for (size_t i=0; i<x.size(); i++) {Rcpp::Rcout << x[i] << " ";}
-	Rcpp::Rcout << "\n";	
-}
-
 
 #if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
 

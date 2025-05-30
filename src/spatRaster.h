@@ -62,7 +62,6 @@ class SpatRasterSource {
 		GDALDataset* gdalconnection;
 #if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
 		std::shared_ptr<GDALMDArray> m_array;
-		//GDALMDArrayH gdalmdarray;
 #endif
 #endif
 		bool open_read=false;

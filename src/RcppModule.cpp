@@ -671,9 +671,7 @@ RCPP_MODULE(spat){
 		.constructor<std::vector<size_t>, std::vector<double>, std::string>()
 		//.finalizer(&SpatRaster_finalizer)
 
-
 		.method("test", &SpatRaster::writeRasterM)
-
 
 		//.method("fromFiles", &SpatRaster::fromFiles)
 		.method("has_error", &SpatRaster::hasError)
