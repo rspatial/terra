@@ -1,4 +1,6 @@
-# version 1.8-53
+# version 1.8-54
+
+Released 2025-06-01
 
 ## bug fixes
 
@@ -11,6 +13,7 @@
 - `freq` failed for an empty SpatRaster [#1839](https://github.com/rspatial/terra/issues/1839) by Alex Ilich
 - `writeVector` with an empty SpatVector crashed R [#1837](https://github.com/rspatial/terra/issues/1837) by Induriel
 - `predict<SpatRaster>` could fail with na.rm=TRUE and a block with NA values only [#1843](https://github.com/rspatial/terra/issues/1843) by Alex Ilich
+- In some cases, `rast` interpreted a histogram attribute as a factor [#1845](https://github.com/rspatial/terra/issues/1845) by Tiago A. Marques
 
 ## enhancements
 
@@ -22,6 +25,7 @@
 - `unloadGDALdrivers` to disable selected GDAL drivers [#1828](https://github.com/rspatial/terra/issues/1828) by Andy Teucher
 - experimental support for the GDAL multidimensional raster data interface via `rast(md=TRUE)` 
 - `ar_info` to describe multidimensional (ncdf) raster files 
+
 
 # version 1.8-50
 
