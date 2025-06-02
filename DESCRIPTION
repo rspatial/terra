@@ -19,13 +19,12 @@ LazyLoad: yes
 Authors@R: c(
 	person("Robert J.", "Hijmans", role=c("cre", "aut"),  
 			email="r.hijmans@gmail.com", comment=c(ORCID="0000-0001-5872-2872")),			
-    person("Márcia", "Barbosa", role="ctb"),
+    person("Márcia", "Barbosa", role="ctb", comment=c(ORCID="0000-0001-8972-7713")),
     person("Roger", "Bivand", role="ctb", comment=c(ORCID="0000-0003-2392-6140")),
-    person("Andrew", "Brown", role="ctb"),
-    person("Michael", "Chirico", role="ctb"),
+    person("Andrew", "Brown", role="ctb", comment=c(ORCID="0000-0002-4565-533X")),
+    person("Michael", "Chirico", role="ctb", comment=c(ORCID="0000-0003-0787-087X")),
     person("Emanuele", "Cordano", role="ctb",comment=c(ORCID="0000-0002-3508-5898")),
     person("Krzysztof", "Dyba", role="ctb", comment=c(ORCID="0000-0002-8614-3816")),
     person("Edzer", "Pebesma", role="ctb", comment=c(ORCID="0000-0001-8049-7069")),
-    person("Barry", "Rowlingson", role="ctb"),
-    person("Michael D.", "Sumner", role="ctb"))
-
+    person("Barry", "Rowlingson", role="ctb", comment=c(ORCID="0000-0002-8586-6625")),
+    person("Michael D.", "Sumner", role="ctb", comment=c(ORCID="0000-0002-2471-7511")))
