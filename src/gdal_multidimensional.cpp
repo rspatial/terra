@@ -9,6 +9,11 @@
 #include "file_utils.h"
 #include "vecmath.h"
 
+#if defined(_WIN64) || defined(__x86_64__) || defined(__ppc64__) || defined(__aarch64__) || defined(__MINGW64__) || defined(__amd64__)
+    #define IS_64_BIT
+#endif
+
+
 bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::string calendar, std::vector<double> raw, std::string &msg) {
 
 	std::vector<int_64> out;
@@ -179,7 +184,7 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 
 
 
-#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4 && defined(IS_64_BIT)
 
 
 std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x, bool filter) {
@@ -804,8 +809,9 @@ bool SpatRaster::writeStopMulti() {
 #else
 
 
+
 bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
-	setError("multidim is not supported with GDAL < 3.4");
+	setError("multidim is not supported with GDAL < 3.4 or on 32 bit systems");
 	return false;
 }
 
