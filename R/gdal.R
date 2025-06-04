@@ -1,4 +1,5 @@
 
+
 unloadGDALdrivers <- function(x) {
 	.removeDriver(x)
 }
