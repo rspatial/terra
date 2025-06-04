@@ -9,7 +9,12 @@
 #include "file_utils.h"
 #include "vecmath.h"
 
-#if defined(_WIN64) || defined(__x86_64__) || defined(__ppc64__) || defined(__aarch64__) || defined(__MINGW64__) || defined(__amd64__)
+//#if defined(_WIN64) || defined(__x86_64__) || defined(__ppc64__) || defined(__aarch64__) || defined(__MINGW64__) || defined(__amd64__)
+//    #define IS_64_BIT
+//#endif
+
+#include <cstdint>
+#if INTPTR_MAX != INT32_MAX
     #define IS_64_BIT
 #endif
 
@@ -811,7 +816,7 @@ bool SpatRaster::writeStopMulti() {
 
 
 bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
-	setError("multidim is not supported with GDAL < 3.4 or on 32 bit systems");
+	setError("multidim is not supported with GDAL < 3.4 or on 32-bit systems");
 	return false;
 }
 
