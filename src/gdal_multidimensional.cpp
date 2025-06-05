@@ -18,7 +18,7 @@
 
 bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::string calendar, std::vector<double> raw, std::string &msg) {
 
-	std::vector<int_64> out;
+	std::vector<int64_t> out;
 	std::string origin = unit;
 	bool years = false;
 	bool yearsbp = false;
@@ -613,7 +613,7 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 	return true;
 }
 
-bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int64_t> &rows, const std::vector<int64_t> &cols) {
 	
 //	Rcpp::Rcout << "readRowColMulti " << src << "\n";
 	if (!readStartMulti(src)) {
@@ -638,8 +638,8 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 	if (!source[src].flipped) { 
 		stride.resize(ndim, 1);
 		stride[ndim-2] = -1;
-		int_64 nr = nrow();
-		for (int_64 &r : rows) r = nr - r - 1;  
+		int64_t nr = nrow();
+		for (int64_t &r : rows) r = nr - r - 1;  
 	}
 	if (source[src].in_order(false)) {
 		if (ndim == 3) {
@@ -831,7 +831,7 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 	return false;
 }
 
-bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int64_t> &rows, const std::vector<int64_t> &cols) {
 	return false;
 }
 
@@ -869,7 +869,7 @@ std::vector<double> SpatRaster::readValuesMulti(size_t src, size_t row, size_t n
 
 
 
-void getSampleRowCol2(std::vector<int_64> &oldrow, std::vector<int_64> &oldcol, size_t nrows, size_t ncols, size_t snrow, size_t sncol) {
+void getSampleRowCol2(std::vector<int64_t> &oldrow, std::vector<int64_t> &oldcol, size_t nrows, size_t ncols, size_t snrow, size_t sncol) {
 
 	double rf = nrows / (double)(snrow);
 	double cf = ncols / (double)(sncol);
@@ -878,7 +878,7 @@ void getSampleRowCol2(std::vector<int_64> &oldrow, std::vector<int_64> &oldcol, 
 	double rstart = 0.5 * rf;
 	double cstart = 0.5 * cf;
 	
-	std::vector<int_64> xcol, xrow;
+	std::vector<int64_t> xcol, xrow;
 	xcol.reserve(sncol);
 	for (size_t i =0; i<sncol; i++) {
         xcol.push_back(i * cf + cstart);
@@ -900,7 +900,7 @@ void getSampleRowCol2(std::vector<int_64> &oldrow, std::vector<int_64> &oldcol, 
 
 std::vector<double> SpatRaster::readSampleMulti(size_t src, size_t srows, size_t scols, bool overview) {
 //	Rcpp::Rcout << "readSampleMulti\n";
-	std::vector<int_64> colnr, rownr;
+	std::vector<int64_t> colnr, rownr;
 	getSampleRowCol2(rownr, colnr, nrow(), ncol(), srows, scols);
 	std::vector<std::vector<double>> out(source[src].layers.size());
 	readRowColMulti(src, out, 0, rownr, colnr);

@@ -927,9 +927,9 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 #else 
 		} else if (datatype == "INT8S") {
 			//INT64_MIN == -9223372036854775808;
-			naflag = INT64_MIN;
+			naflag = (double) INT64_MIN;
 		} else if (datatype == "INT8U") {
-			naflag = UINT64_MAX-1101;
+			naflag = (double) (UINT64_MAX-1101);
 #endif
 		}
 	} else {

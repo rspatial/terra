@@ -96,7 +96,7 @@ std::vector<std::vector<double>> SpatRaster::win_rect(std::vector<double> x, std
 	std::vector<double> rx(4);
 	std::vector<double> ry(4);
 
-	std::vector<int_64> cols(nc);
+	std::vector<int64_t> cols(nc);
 	std::iota(cols.begin(), cols.end(), 0);
 	std::vector<double> xc = xFromCol(cols);
 
@@ -309,7 +309,7 @@ std::vector<std::vector<double>> SpatRaster::win_circle(std::vector<double> x, s
 	std::vector<double> rx(4);
 	std::vector<double> ry(4);
 
-	std::vector<int_64> cols(nc);
+	std::vector<int64_t> cols(nc);
 	std::iota(cols.begin(), cols.end(), 0);
 	std::vector<double> xc = xFromCol(cols);
 

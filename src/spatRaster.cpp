@@ -741,7 +741,7 @@ bool SpatRaster::hasTime() {
 
 /*
 std::vector<double> SpatRaster::getTimeDbl() {
-	std::vector<int_64> t64 = getTime();
+	std::vector<int64_t> t64 = getTime();
 	std::vector<double> out(t64.size());
 	for (size_t i=0; i < out.size(); i++) {
 		out[i] = t64[i];
@@ -757,7 +757,7 @@ std::string make_string(int i, size_t n = 2) {
 
 std::vector<std::string> SpatRaster::getTimeStr(bool addstep, std::string timesep) {
 	std::vector<std::string> out;
-	std::vector<int_64> time = getTime();
+	std::vector<int64_t> time = getTime();
 	out.reserve(time.size()+addstep);
 	if (addstep) out.push_back(source[0].timestep);
 	if (source[0].timestep == "seconds") {
@@ -815,8 +815,8 @@ std::vector<std::string> SpatRaster::getTimeStr(bool addstep, std::string timese
 }
 
 
-std::vector<int_64> SpatRaster::getTime() {
-	std::vector<int_64> x;
+std::vector<int64_t> SpatRaster::getTime() {
+	std::vector<int64_t> x;
 	for (size_t i=0; i<source.size(); i++) {
 		if (source[i].time.size() != source[i].nlyr) {
 			std::vector<double> nas(source[i].nlyr, 0);
@@ -836,11 +836,11 @@ std::string SpatRaster::getTimeZone() {
 	return source[0].timezone;
 }
 
-bool SpatRaster::setTime(std::vector<int_64> time, std::string step, std::string zone) {
+bool SpatRaster::setTime(std::vector<int64_t> time, std::string step, std::string zone) {
 
 	if (time.empty() || step == "remove") {
 		for (size_t i=0; i<source.size(); i++)	{
-			source[i].time = std::vector<int_64> (source[i].nlyr);
+			source[i].time = std::vector<int64_t> (source[i].nlyr);
 			source[i].timestep = "";
 			source[i].timezone = "";
 			source[i].hasTime = false;
@@ -859,7 +859,7 @@ bool SpatRaster::setTime(std::vector<int_64> time, std::string step, std::string
 	size_t begin=0;
 	for (size_t i=0; i<source.size(); i++)	{
 		size_t end = begin + source[i].nlyr;
-        source[i].time = std::vector<int_64> (time.begin() + begin, time.begin() + end);
+        source[i].time = std::vector<int64_t> (time.begin() + begin, time.begin() + end);
 		source[i].timestep = step;
 		source[i].timezone = zone;
 		source[i].hasTime = true;
@@ -1111,7 +1111,7 @@ bool SpatRaster::setWindow(SpatExtent x) {
 	std::vector<size_t> rc(2);
 	std::vector<size_t> exp(4, 0);
 
-	int_64 r = rowFromY(x.ymax - 0.5 * yr);
+	int64_t r = rowFromY(x.ymax - 0.5 * yr);
 	if (r < 0) {
 		rc[0] = 0;
 		expand = true;
@@ -1717,12 +1717,12 @@ double SpatRaster::cellFromXY (double x, double y, double missing) {
 }
 
 
-std::vector<double> SpatRaster::cellFromRowCol(std::vector<int_64> row, std::vector<int_64> col) {
+std::vector<double> SpatRaster::cellFromRowCol(std::vector<int64_t> row, std::vector<int64_t> col) {
 	recycle(row, col);
 	size_t n = row.size();
 	std::vector<double> result(n);
-	int_64 nr = nrow();
-	int_64 nc = ncol();
+	int64_t nr = nrow();
+	int64_t nc = ncol();
 	for (size_t i=0; i<n; i++) {
 		result[i] = (row[i]<0 || row[i] >= nr || col[i]<0 || col[i] >= nc) ? NAN : (double)row[i] * nc + col[i];
 	}
@@ -1730,14 +1730,14 @@ std::vector<double> SpatRaster::cellFromRowCol(std::vector<int_64> row, std::vec
 }
 
 
-double SpatRaster::cellFromRowCol (int_64 row, int_64 col) {
-	std::vector<int_64> rows = {row};
-	std::vector<int_64> cols = {col};
+double SpatRaster::cellFromRowCol (int64_t row, int64_t col) {
+	std::vector<int64_t> rows = {row};
+	std::vector<int64_t> cols = {col};
 	std::vector<double> cell = cellFromRowCol(rows, cols);
 	return  cell[0];
 }
 
-std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<int_64> row, std::vector<int_64> col) {
+std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<int64_t> row, std::vector<int64_t> col) {
 	size_t n = row.size();
 	size_t m = col.size();
 	double nc = ncol();
@@ -1757,18 +1757,18 @@ std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<int_64> row, s
 }
 
 
-double SpatRaster::cellFromRowColCombine(int_64 row, int_64 col) {
+double SpatRaster::cellFromRowColCombine(int64_t row, int64_t col) {
 	return cellFromRowCol(row, col);
 }
 
 
-std::vector<double> SpatRaster::yFromRow(const std::vector<int_64> &row) {
+std::vector<double> SpatRaster::yFromRow(const std::vector<int64_t> &row) {
 	size_t size = row.size();
 	std::vector<double> result( size );
 	SpatExtent extent = getExtent();
 	double ymax = extent.ymax;
 	double yr = yres();
-	int_64 nr = nrow();
+	int64_t nr = nrow();
 
 	for (size_t i = 0; i < size; i++) {
 		result[i] = (row[i] < 0 || row[i] >= nr ) ? NAN : ymax - ((row[i]+0.5) * yr);
@@ -1777,32 +1777,32 @@ std::vector<double> SpatRaster::yFromRow(const std::vector<int_64> &row) {
 }
 
 void SpatRaster::yFromRow(std::vector<double> &y) {
-	int_64 nr = nrow();
+	int64_t nr = nrow();
 	y.resize(nr);
 	SpatExtent extent = getExtent();
 	double ymax = extent.ymax;
 	double yr = yres();
-	for (int_64 i = 0; i<nr; i++) {
+	for (int64_t i = 0; i<nr; i++) {
 		y[i] = ymax - ((i+0.5) * yr);
 	}
 }
 
 
-double SpatRaster::yFromRow (int_64 row) {
-	std::vector<int_64> rows = {row};
+double SpatRaster::yFromRow (int64_t row) {
+	std::vector<int64_t> rows = {row};
 	std::vector<double> y = yFromRow(rows);
 	return y[0];
 }
 
 
 
-std::vector<double> SpatRaster::xFromCol(const std::vector<int_64> &col) {
+std::vector<double> SpatRaster::xFromCol(const std::vector<int64_t> &col) {
 	size_t size = col.size();
 	std::vector<double> result( size );
 	SpatExtent extent = getExtent();
 	double xmin = extent.xmin;
 	double xr = xres();
-	int_64 nc = ncol();
+	int64_t nc = ncol();
 	for (size_t i = 0; i < size; i++) {
 		result[i] = (col[i] < 0 || col[i] >= nc ) ? NAN : xmin + ((col[i]+0.5) * xr);
 	}
@@ -1810,24 +1810,24 @@ std::vector<double> SpatRaster::xFromCol(const std::vector<int_64> &col) {
 }
 
 void SpatRaster::xFromCol(std::vector<double> &x) {
-	int_64 nc = ncol();
+	int64_t nc = ncol();
 	x.resize(nc);
 	SpatExtent extent = getExtent();
 	double xmin = extent.xmin;
 	double xr = xres();
-	for (int_64 i = 0; i<nc; i++) {
+	for (int64_t i = 0; i<nc; i++) {
 		x[i] = xmin + ((i+0.5) * xr);
 	}
 }
 
 
-double SpatRaster::xFromCol(int_64 col) {
-	std::vector<int_64> cols = {col};
+double SpatRaster::xFromCol(int64_t col) {
+	std::vector<int64_t> cols = {col};
 	std::vector<double> x = xFromCol(cols);
 	return x[0];
 }
 
-std::vector<int_64> SpatRaster::colFromX(const std::vector<double> &x) {
+std::vector<int64_t> SpatRaster::colFromX(const std::vector<double> &x) {
 
 	SpatExtent extent = getExtent();
 
@@ -1835,7 +1835,7 @@ std::vector<int_64> SpatRaster::colFromX(const std::vector<double> &x) {
 	double xmax = extent.xmax;
 	double xr = xres();
 	size_t xs = x.size();
-	std::vector<int_64> result(xs, -1);
+	std::vector<int64_t> result(xs, -1);
 
 	for (size_t i = 0; i < xs; i++) {
 		if (x[i] >= xmin && x[i] < xmax ) {
@@ -1848,20 +1848,20 @@ std::vector<int_64> SpatRaster::colFromX(const std::vector<double> &x) {
 }
 
 
-int_64 SpatRaster::colFromX(double x) {
+int64_t SpatRaster::colFromX(double x) {
 	std::vector<double> xv = {x};
 	return colFromX(xv)[0];
 }
 
 
-std::vector<int_64> SpatRaster::rowFromY(const std::vector<double> &y) {
+std::vector<int64_t> SpatRaster::rowFromY(const std::vector<double> &y) {
 
 	SpatExtent extent = getExtent();
 	double ymin = extent.ymin;
 	double ymax = extent.ymax;
 	double yr = yres();
 	size_t ys = y.size();
-	std::vector<int_64> result(ys, -1);
+	std::vector<int64_t> result(ys, -1);
 
 	for (size_t i = 0; i < ys; i++) {
 		if (y[i] > ymin && y[i] <= ymax) {
@@ -1874,7 +1874,7 @@ std::vector<int_64> SpatRaster::rowFromY(const std::vector<double> &y) {
 }
 
 
-int_64 SpatRaster::rowFromY(double y) {
+int64_t SpatRaster::rowFromY(double y) {
 	std::vector<double> Y = {y};
 	return rowFromY(Y)[0];
 }
@@ -1929,9 +1929,9 @@ std::vector< std::vector<double>> SpatRaster::xyFromCell( double cell) {
 }
 
 
-std::vector<std::vector<int_64>> SpatRaster::rowColFromCell(std::vector<double> &cell) {
+std::vector<std::vector<int64_t>> SpatRaster::rowColFromCell(std::vector<double> &cell) {
 	size_t cs = cell.size();
-	std::vector<std::vector<int_64>> result(2, std::vector<int_64> (cs, -1) );
+	std::vector<std::vector<int64_t>> result(2, std::vector<int64_t> (cs, -1) );
 	double nc = ncell();
 	for (size_t i = 0; i < cs; i++) {
 		if ((cell[i] >= 0) && (cell[i] < nc )) {
@@ -1943,11 +1943,11 @@ std::vector<std::vector<int_64>> SpatRaster::rowColFromCell(std::vector<double> 
 }
 
 
-std::vector<std::vector<int_64>>  SpatRaster::rowColFromExtent(SpatExtent e) {
+std::vector<std::vector<int64_t>>  SpatRaster::rowColFromExtent(SpatExtent e) {
 	std::vector<std::vector<double>> xy = e.asPoints();
-	std::vector<int_64> col = colFromX(xy[0]);
-	std::vector<int_64> row = rowFromY(xy[1]);
-	std::vector<std::vector<int_64>> out = { row, col };
+	std::vector<int64_t> col = colFromX(xy[0]);
+	std::vector<int64_t> row = rowFromY(xy[1]);
+	std::vector<std::vector<int64_t>> out = { row, col };
 	return out;
 }
 
@@ -1988,13 +1988,13 @@ std::vector<double> SpatRaster::adjacentMat(std::vector<double> cells, std::vect
 
 	bool globlatlon = is_global_lonlat();
 
-	std::vector<std::vector<int_64>> rc = rowColFromCell(cells);
-	std::vector<int_64> r = rc[0];
-	std::vector<int_64> c = rc[1];
-    std::vector<int_64> cols(nngb);
-    std::vector<int_64> rows(nngb);
-    int_64 nc = ncol();
-    int_64 lc = nc-1;
+	std::vector<std::vector<int64_t>> rc = rowColFromCell(cells);
+	std::vector<int64_t> r = rc[0];
+	std::vector<int64_t> c = rc[1];
+    std::vector<int64_t> cols(nngb);
+    std::vector<int64_t> rows(nngb);
+    int64_t nc = ncol();
+    int64_t lc = nc-1;
 
 	for (size_t i=0; i<n; i++) {
 		for (int j = 0; j<nngb; j++) {
@@ -2032,13 +2032,13 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
 	nngb += include;
 	out.reserve(n * nngb);
 
-	std::vector<std::vector<int_64>> rc = rowColFromCell(cells);
-	std::vector<int_64> r = rc[0];
-	std::vector<int_64> c = rc[1];
+	std::vector<std::vector<int64_t>> rc = rowColFromCell(cells);
+	std::vector<int64_t> r = rc[0];
+	std::vector<int64_t> c = rc[1];
 	bool globlatlon = is_global_lonlat();
-    int_64 nc = ncol();
-    int_64 lc = nc-1;
-    std::vector<int_64> cols, rows;
+    int64_t nc = ncol();
+    int64_t lc = nc-1;
+    std::vector<int64_t> cols, rows;
 	if (directions == "rook" || directions == "4") {
 		for (size_t i=0; i<n; i++) {
 			rows = {r[i]-1, r[i]   , r[i]  , r[i]+1};
@@ -2591,8 +2591,8 @@ SpatVector SpatRaster::as_lines(SpatOptions &opt) {
 	SpatGeom g;
 	g.gtype = lines;
 
-	std::vector<int_64> cols(ncol());
-	std::vector<int_64> rows(nrow());
+	std::vector<int64_t> cols(ncol());
+	std::vector<int64_t> rows(nrow());
 	std::iota(std::begin(rows), std::end(rows), 0);
 	std::iota(std::begin(cols), std::end(cols), 0);
 	std::vector<double> x = xFromCol(cols);

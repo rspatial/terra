@@ -278,7 +278,7 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 	std::vector<double> cells;
 	std::vector<double> dlast;
 
-	std::vector<int_64> cols;
+	std::vector<int64_t> cols;
 	cols.resize(ncol());
 	std::iota(cols.begin(), cols.end(), 0);
 	std::vector<double> tox = xFromCol(cols);
@@ -3078,7 +3078,7 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 		}
 		readValues(d, rrow, rnrw, 0, nc);
 		if (lonlat && aspslope) {
-			std::vector<int_64> rows(rnrw);
+			std::vector<int64_t> rows(rnrw);
 			std::iota(rows.begin(), rows.end(), rrow);
 			y = yFromRow(rows);
 			yr = distance_lonlat(0, 0, 0, yres());

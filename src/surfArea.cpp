@@ -138,7 +138,7 @@ SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
 	if (lonlat) {
 		resy = distance_lonlat(0, 0, 0, resy);		
 	} 
-	std::vector<int_64> rows;
+	std::vector<int64_t> rows;
 
 	for (size_t i = 0; i < cbs.n; i++) {
 		std::vector<double> v;

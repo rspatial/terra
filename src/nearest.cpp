@@ -251,7 +251,7 @@ SpatRaster SpatRaster::dn_crds(std::vector<double>& x, std::vector<double>& y, c
 	std::vector<double> cells;
 	std::vector<double> dlast;
 
-	std::vector<int_64> cols;
+	std::vector<int64_t> cols;
 	cols.resize(ncol());
 	std::iota(cols.begin(), cols.end(), 0);
 	std::vector<double> tox = xFromCol(cols);

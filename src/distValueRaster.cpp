@@ -256,7 +256,7 @@ SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<do
 	std::vector<double> cells;
 	std::vector<double> dlast, dvlast;
 
-	std::vector<int_64> cols;
+	std::vector<int64_t> cols;
 	cols.resize(ncol());
 	std::iota(cols.begin(), cols.end(), 0);
 	std::vector<double> tox = xFromCol(cols);

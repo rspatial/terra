@@ -27,9 +27,6 @@
 #include <Rcpp.h>
 #endif
 
-typedef long long int_64;
-
-
 
 class SpatCategories {
 	public:
@@ -110,7 +107,7 @@ class SpatRasterSource {
 		std::string source_name;
 		std::string source_name_long;
 		
-		std::vector<int_64> time;
+		std::vector<int64_t> time;
 		std::string timestep = "seconds";
 		std::string timezone = "";
 		bool hasTime = false;
@@ -349,11 +346,11 @@ class SpatRaster {
 		bool setLongSourceNames(std::vector<std::string>);
 
 		bool hasTime();
-		std::vector<int_64> getTime();
+		std::vector<int64_t> getTime();
 		std::string getTimeStep();
 		std::string getTimeZone();
 		std::vector<std::string> getTimeStr(bool addstep, std::string timesep);
-		bool setTime(std::vector<int_64> time, std::string step, std::string zone);
+		bool setTime(std::vector<int64_t> time, std::string step, std::string zone);
 		
 		bool hasDepth();
 		std::vector<double> getDepth();
@@ -429,27 +426,27 @@ class SpatRaster {
 
 		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y, double missing=NAN);
 		double cellFromXY(double x, double y, double missing=NAN);
-		std::vector<double> cellFromRowCol(std::vector<int_64> row, std::vector<int_64> col);
-		double cellFromRowCol(int_64 row, int_64 col);
-		std::vector<double> cellFromRowColCombine(std::vector<int_64> row, std::vector<int_64> col);
-		double cellFromRowColCombine(int_64 row, int_64 col);
-		std::vector<double> yFromRow(const std::vector<int_64> &row);
-		double yFromRow(int_64 row);
+		std::vector<double> cellFromRowCol(std::vector<int64_t> row, std::vector<int64_t> col);
+		double cellFromRowCol(int64_t row, int64_t col);
+		std::vector<double> cellFromRowColCombine(std::vector<int64_t> row, std::vector<int64_t> col);
+		double cellFromRowColCombine(int64_t row, int64_t col);
+		std::vector<double> yFromRow(const std::vector<int64_t> &row);
+		double yFromRow(int64_t row);
 		void yFromRow(std::vector<double> &y);
-		std::vector<double> xFromCol(const std::vector<int_64> &col);
-		double xFromCol(int_64 col);
+		std::vector<double> xFromCol(const std::vector<int64_t> &col);
+		double xFromCol(int64_t col);
 		void xFromCol(std::vector<double> &x);
 
-		std::vector<int_64> colFromX(const std::vector<double> &x);
-		int_64 colFromX(double x);
-		std::vector<int_64> rowFromY(const std::vector<double> &y);
-		int_64 rowFromY(double y);
+		std::vector<int64_t> colFromX(const std::vector<double> &x);
+		int64_t colFromX(double x);
+		std::vector<int64_t> rowFromY(const std::vector<double> &y);
+		int64_t rowFromY(double y);
 		void xyFromCell( std::vector<std::vector<double>> &xy );
 		std::vector<std::vector<double>> xyFromCell( std::vector<double> &cell);
 		std::vector<std::vector<double>> xyFromCell( double cell);
-		std::vector<std::vector<int_64>> rowColFromCell(std::vector<double> &cell);
-		std::vector<int_64> rowColFromY(std::vector<double> &y);
-		std::vector<std::vector<int_64>> rowColFromExtent(SpatExtent e);
+		std::vector<std::vector<int64_t>> rowColFromCell(std::vector<double> &cell);
+		std::vector<int64_t> rowColFromY(std::vector<double> &y);
+		std::vector<std::vector<int64_t>> rowColFromExtent(SpatExtent e);
 		std::vector<std::vector<double>> coordinates(bool narm, bool nall, SpatOptions &opt);
 		
         std::vector<size_t> sourcesFromLyrs(std::vector<size_t> lyrs);
@@ -559,7 +556,7 @@ class SpatRaster {
 		bool readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
 		std::vector<double> readValuesMulti(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr);
 		std::vector<double> readSampleMulti(size_t src, size_t srows, size_t scols, bool overview);
-		bool readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+		bool readRowColMulti(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int64_t> &rows, const std::vector<int64_t> &cols);
 
 		//bool writeStartBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 		//bool writeValuesBinary(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
@@ -576,14 +573,14 @@ class SpatRaster {
 		std::vector<double> readValuesGDAL(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr = -1);
 		std::vector<double> readGDALsample(size_t src, size_t srows, size_t scols, bool overview);
 
-		void readRowColGDAL(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+		void readRowColGDAL(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int64_t> &rows, const std::vector<int64_t> &cols);
 
-//		std::vector<double> readRowColGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+//		std::vector<double> readRowColGDALFlat(size_t src, std::vector<int64_t> &rows, const std::vector<int64_t> &cols);
 
-//		std::vector<double> readRowColBlockFlat(size_t src, std::vector<int_64> &rows, std::vector<int_64> &cols);
-//		std::vector<std::vector<double>> readRowColBlock(size_t src, std::vector<int_64> &rows, std::vector<int_64> &cols);
+//		std::vector<double> readRowColBlockFlat(size_t src, std::vector<int64_t> &rows, std::vector<int64_t> &cols);
+//		std::vector<std::vector<double>> readRowColBlock(size_t src, std::vector<int64_t> &rows, std::vector<int64_t> &cols);
 
-		void readRowColBlock(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, std::vector<int_64> &cols, SpatOptions &opt);
+		void readRowColBlock(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int64_t> &rows, std::vector<int64_t> &cols, SpatOptions &opt);
 
 
 		bool readStartGDAL(size_t src);
@@ -641,7 +638,7 @@ class SpatRaster {
 		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, bool falseNA, SpatOptions &opt);
 		SpatRaster arith_m(std::vector<double> x, std::string oper, std::vector<size_t> dim, bool reverse, SpatOptions &opt);
 
-		SpatRaster apply(std::vector<size_t> ind, std::string fun, bool narm, std::vector<std::string> nms, std::vector<int_64> time, std::string timestep, std::string timezone, SpatOptions &opt);
+		SpatRaster apply(std::vector<size_t> ind, std::string fun, bool narm, std::vector<std::string> nms, std::vector<int64_t> time, std::string timestep, std::string timezone, SpatOptions &opt);
 	
 		SpatRaster rapply(SpatRaster x, double first, double last, std::string fun, bool clamp, bool narm, bool circular, SpatOptions &opt);
 		std::vector<std::vector<double>> rappvals(SpatRaster x, double first, double last, bool clamp, bool all, double fill, size_t startrow, size_t nrows, bool circular);
@@ -729,7 +726,7 @@ class SpatRaster {
 		
 		SpatRaster focal(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, bool naomit, std::string fun, bool expand, SpatOptions &opt);
 
-		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, int_64 row, int_64 nrows, SpatOptions &opt);
+		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, int64_t row, int64_t nrows, SpatOptions &opt);
 		std::vector<std::vector<double>> freq(bool bylayer, bool round, int digits, SpatOptions &opt);
 		std::vector<size_t> count(double value, bool bylayer, bool round, int digits, SpatOptions &opt);
 		
@@ -780,7 +777,7 @@ class SpatRaster {
 		SpatRaster logic(double x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(std::vector<double> x, std::string oper, SpatOptions &opt);
 
-		SpatExtent ext_from_rc(int_64 r1, int_64 r2, int_64 c1, int_64 c2);
+		SpatExtent ext_from_rc(int64_t r1, int64_t r2, int64_t c1, int64_t c2);
 		SpatExtent ext_from_cell(double cell);
 
 		std::vector<double> get_tiles_extent(SpatRaster x, bool expand, std::vector<int> buffer);

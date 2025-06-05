@@ -68,7 +68,7 @@ void SpatRaster::gdalogrproj_init(std::string path) {
 }
 
 /*
-bool GetTime(std::string filename, std::vector<int_64> &time, std::string &timestep, size_t nl) {
+bool GetTime(std::string filename, std::vector<int64_t> &time, std::string &timestep, size_t nl) {
 	filename += ".time";
 	if (!file_exists(filename)) {
 		return false;
@@ -94,7 +94,7 @@ bool GetUnits(std::string filename, std::vector<std::string> &units, size_t nl) 
 }
 */
 
-bool read_aux_json(std::string filename, std::vector<int_64> &time, std::string &timestep, std::vector<std::string> &units, size_t nlyr) {
+bool read_aux_json(std::string filename, std::vector<int64_t> &time, std::string &timestep, std::vector<std::string> &units, size_t nlyr) {
 	filename += ".aux.json";
 	if (!file_exists(filename)) return false;
 	std::vector<std::string> s = read_text(filename);
@@ -112,7 +112,7 @@ bool read_aux_json(std::string filename, std::vector<int_64> &time, std::string 
 		if (x.size() == 2) {
 			x = strsplit(x[1], "]");
 			x = strsplit(x[0], ",");
-			std::vector<int_64> tm;
+			std::vector<int64_t> tm;
 			for (size_t i=0; i<x.size(); i++) {
 				unquote(x[i]);
 				tm.push_back( parse_time(x[i]) );
@@ -1238,7 +1238,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		
 
 // try units from json
-		std::vector<int_64> timestamps;
+		std::vector<int64_t> timestamps;
 		std::string timestep="raw";
 		//std::vector<std::string> units;
 		try {
@@ -1254,7 +1254,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		
 	} else {
 
-		std::vector<int_64> timestamps;
+		std::vector<int64_t> timestamps;
 		std::string timestep="raw";
 //		std::vector<std::string> units;
 		if (unts.empty()) {
@@ -1696,7 +1696,7 @@ std::vector<double> SpatRaster::readGDALsample(size_t src, size_t srows, size_t 
 }
 
 
-void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int64_t> &rows, const std::vector<int64_t> &cols) {
 
 
 	if (source[src].is_multidim) {
@@ -1750,8 +1750,8 @@ void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &ou
 	}
 
 
-	int_64 nr1 = nrow()-1;
-	int_64 nc1 = ncol()-1;
+	int64_t nr1 = nrow()-1;
+	int64_t nc1 = ncol()-1;
 	if (source[src].hasWindow) {
 		nr1 = source[src].window.full_nrow - 1;
 		nc1 = source[src].window.full_ncol - 1;
@@ -1808,7 +1808,7 @@ void SpatRaster::readRowColGDAL(size_t src, std::vector<std::vector<double>> &ou
 
 
 /*
-std::vector<std::vector<double>> SpatRaster::readRowColGDAL(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+std::vector<std::vector<double>> SpatRaster::readRowColGDAL(size_t src, std::vector<int64_t> &rows, const std::vector<int64_t> &cols) {
 
 	std::vector<std::vector<double>> errout;
 	if (source[src].rotated) {
@@ -1893,7 +1893,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(size_t src, std::vec
 */
 
 /*
-std::vector<double> SpatRaster::readRowColGDALFlat(size_t src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
+std::vector<double> SpatRaster::readRowColGDALFlat(size_t src, std::vector<int64_t> &rows, const std::vector<int64_t> &cols) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -2181,8 +2181,8 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 
 
 
-std::vector<int_64> ncdf_str2int64v(std::string s, std::string delim) {
-	std::vector<int_64> out;
+std::vector<int64_t> ncdf_str2int64v(std::string s, std::string delim) {
+	std::vector<int64_t> out;
 	size_t pos = 0;
 	while ((pos = s.find(delim)) != std::string::npos) {
 		std::string v = s.substr(0, pos);
@@ -2214,9 +2214,9 @@ bool get_double(std::string input, double &output) {
 }
 
 
-std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vector<std::string> vals, std::string &step, std::string &msg) {
+std::vector<int64_t> ncdf_time(const std::vector<std::string> &metadata, std::vector<std::string> vals, std::string &step, std::string &msg) {
 
-	std::vector<int_64> out, bad;
+	std::vector<int64_t> out, bad;
 	if (vals.empty()) {
 		step = "";
 		return out;
@@ -2567,7 +2567,7 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 	
 	if (!nms[0].empty()) {
 		std::string step;
-		std::vector<int_64> x;
+		std::vector<int64_t> x;
 		try {
 			x = ncdf_time(metadata, nms[0], step, msg);
 			if (x.size() == nlyr) {
@@ -2674,10 +2674,10 @@ void SpatRasterSource::set_names_time_grib(std::vector<std::vector<std::string>>
 	}
 
 	bool hastime = false;
-	std::vector<int_64> tm;
+	std::vector<int64_t> tm;
 	if (nms[2].size() == nms[0].size()) {
 		hastime = true;
-		int_64 tim;
+		int64_t tim;
 		for (size_t i=0; i<nms[2].size(); i++) {
 			if (nms[2][i].empty()) {
 				hastime = false;
@@ -2762,10 +2762,10 @@ void SpatRasterSource::set_names_time_tif(std::vector<std::vector<std::string>> 
 	}
 
 	bool hastime = false;
-	std::vector<int_64> tm;
+	std::vector<int64_t> tm;
 	if (nms[1].size() == nlyr) {
 		hastime = true;
-		int_64 tim;
+		int64_t tim;
 		for (size_t i=0; i<nms[1].size(); i++) {
 			if (nms[1][i].empty()) {
 				hastime = false;

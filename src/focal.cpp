@@ -40,7 +40,7 @@ std::vector<double> rcValue(std::vector<double> &d, const int& nrow, const int& 
 
 
 
-std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fillvalue, int_64 row, int_64 nrows, SpatOptions &ops) {
+std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fillvalue, int64_t row, int64_t nrows, SpatOptions &ops) {
 
 	if (nlyr() > 1) {
 		std::vector<size_t> lyr = {0};
@@ -67,33 +67,33 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 
 	const bool global = is_global_lonlat();
 
-	int_64 nr = nrow();
+	int64_t nr = nrow();
 	nrows = std::min(nrows, nr - row + 1);
 
-	int_64 nc = ncol();
-	int_64 wr = w[0] / 2;
-	int_64 wc = w[1] / 2;
+	int64_t nc = ncol();
+	int64_t wr = w[0] / 2;
+	int64_t wc = w[1] / 2;
 	//may be unexpected
 	//wr = std::min(wr, nr-1);
 	//wc = std::min(wc, nc-1);
 
-	int_64 startrow = row-wr;
+	int64_t startrow = row-wr;
 	startrow = startrow < 0 ? 0 : startrow;
-	int_64 startoff = row-startrow;
+	int64_t startoff = row-startrow;
 
 	nrows = nrows < 1 ? 1 : nrows;
-	int_64 readnrows = nrows+startoff+wr;
-	int_64 endoff = wr;
+	int64_t readnrows = nrows+startoff+wr;
+	int64_t endoff = wr;
 	if ((startrow+readnrows) > nr ) {
 		readnrows = nr-startrow;
 		endoff = readnrows - (nrows+startoff);
 	}
 
 // ??
-	//wr = std::min(wr, std::max((int_64)1, nrows-1));
+	//wr = std::min(wr, std::max((int64_t)1, nrows-1));
 
 	size_t n = nrows * nc * w[0] * w[1];
-	int_64 nrmax = nrows + startoff + endoff - 1;
+	int64_t nrmax = nrows + startoff + endoff - 1;
 	//int nrmax = d.size() / ncol - 1;
 	size_t f = 0;
 
@@ -104,16 +104,16 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 // << "sr " << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl;
 
 
-	for (int_64 r=0; r < nrows; r++) {
-		for (int_64 c=0; c < nc; c++) {
-			for (int_64 i = -wr; i <= wr; i++) {
-				int_64 row = r+startoff+i;
+	for (int64_t r=0; r < nrows; r++) {
+		for (int64_t c=0; c < nc; c++) {
+			for (int64_t i = -wr; i <= wr; i++) {
+				int64_t row = r+startoff+i;
 				if ((row < 0) || (row > nrmax)) {
 					f += w[1];
 				} else {
 					size_t bcell = row * nc;
-					for (int_64 j = -wc; j <= wc; j++) {
-						int_64 col = c + j;
+					for (int64_t j = -wc; j <= wc; j++) {
+						int64_t col = c + j;
 						if ((col >= 0) && (col < nc)) {
 							size_t idx = bcell+col;
 							out[f] = d[idx];

@@ -82,19 +82,19 @@ SpatRaster SpatRaster::selectHighest(size_t n, bool low, SpatOptions &opt) {
 
 
 
-SpatExtent SpatRaster::ext_from_rc(int_64 r1, int_64 r2, int_64 c1, int_64 c2) {
+SpatExtent SpatRaster::ext_from_rc(int64_t r1, int64_t r2, int64_t c1, int64_t c2) {
 	SpatExtent e = getExtent();
 	double xrs = xres();
 	double yrs = yres();
-	int_64 nr = nrow();
-	int_64 nc = ncol();
-	c1 = std::min(std::max(c1, (int_64)0), nc);
-	c2 = std::min(std::max(c2,  (int_64)0), nc);
+	int64_t nr = nrow();
+	int64_t nc = ncol();
+	c1 = std::min(std::max(c1, (int64_t)0), nc);
+	c2 = std::min(std::max(c2,  (int64_t)0), nc);
 	if (c1 > c2) {
 		std::swap(c1, c2);
 	}
-	r1 = std::min(std::max(r1, (int_64)0), nr);
-	r2 = std::min(std::max(r2, (int_64)0), nr);
+	r1 = std::min(std::max(r1, (int64_t)0), nr);
+	r2 = std::min(std::max(r2, (int64_t)0), nr);
 	if (r1 > r2) {
 		std::swap(r1, r2);
 	}
@@ -110,7 +110,7 @@ SpatExtent SpatRaster::ext_from_rc(int_64 r1, int_64 r2, int_64 c1, int_64 c2) {
 
 SpatExtent SpatRaster::ext_from_cell(	double cell) {
 	std::vector<double> cells = {cell};
-	std::vector<std::vector<int_64>> rc = rowColFromCell(cells);
+	std::vector<std::vector<int64_t>> rc = rowColFromCell(cells);
 	return ext_from_rc(rc[0][0], rc[0][0], rc[1][0], rc[1][0]);
 }
 
@@ -1186,7 +1186,7 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 
 
 
-SpatRaster SpatRaster::apply(std::vector<size_t> ind, std::string fun, bool narm, std::vector<std::string> nms, std::vector<int_64> time, std::string timestep, std::string timezone, SpatOptions &opt) {
+SpatRaster SpatRaster::apply(std::vector<size_t> ind, std::string fun, bool narm, std::vector<std::string> nms, std::vector<int64_t> time, std::string timestep, std::string timezone, SpatOptions &opt) {
 
 	recycle(ind, nlyr());
 	std::vector<size_t> ui = vunique(ind);
@@ -3015,7 +3015,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			if (!out.writeBlock(v, i)) return out;
 		}
 	} else if (value == "x") {
-		std::vector<int_64> col(nc);
+		std::vector<int64_t> col(nc);
 		std::iota(col.begin(), col.end(), 0);
 		std::vector<double> xcoords = xFromCol(col);
 		size_t oldnr = 0;

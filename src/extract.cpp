@@ -25,7 +25,7 @@
 #include "math_utils.h"
 
 
-void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int_64> &rows, std::vector<int_64> &cols, SpatOptions &opt) {
+void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &out, size_t outstart, std::vector<int64_t> &rows, std::vector<int64_t> &cols, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> errout;
 	if (source[src].rotated) {
@@ -41,7 +41,7 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 	BlockSize bs = getBlockSize(opt);
 
 /*
-	std::vector<std::pair<int_64, int_64>> rowcol;
+	std::vector<std::pair<int64_t, int64_t>> rowcol;
 	rowcol.reserve(rows.size());
 	for (size_t i=0; i < rows.size(); i++) {
 		rowcol.push_back(std::make_pair(rows[i], cols[i]));
@@ -54,12 +54,12 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 //for (size_t i=0; i<bs.n; i++) Rcpp::Rcout << bs.row[i] << " " << bs.nrows[i] << "; ";
 //Rcpp::Rcout << std::endl;
 
-	std::vector<int_64> urows = vunique(rows);
+	std::vector<int64_t> urows = vunique(rows);
 	std::vector<bool> useblock(bs.n, false);
 	size_t jj = 0;
 	for (size_t i=0; i<bs.n; i++) {
-		int_64 st = bs.row[i];
-		int_64 ed = bs.row[i] + bs.nrows[i] - 1;
+		int64_t st = bs.row[i];
+		int64_t ed = bs.row[i] + bs.nrows[i] - 1;
 		for (size_t j=jj; j<urows.size(); j++) {
 			if ((urows[j] >= st) && (urows[j] <= ed)) {
 				useblock[i] = true;
@@ -98,8 +98,8 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 		if (!useblock[i]) continue;
 		std::vector<double> v;
 		rs.readBlock(v, bs, i);
-		int_64 rstart = bs.row[i];
-		int_64 rend = bs.row[i] + bs.nrows[i];
+		int64_t rstart = bs.row[i];
+		int64_t rend = bs.row[i] + bs.nrows[i];
 		size_t off1 = bs.nrows[i] * nc;
 		for (size_t j=0; j<n; j++) {
 //			if (rows[j] >= rend) break; // if rows are sorted
@@ -122,7 +122,7 @@ void SpatRaster::readRowColBlock(size_t src, std::vector<std::vector<double>> &o
 }
 
 /*
-std::vector<double> SpatRaster::readRowColBlockFlat(size_t src, std::vector<int_64> &rows, std::vector<int_64> &cols) {
+std::vector<double> SpatRaster::readRowColBlockFlat(size_t src, std::vector<int64_t> &rows, std::vector<int64_t> &cols) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -287,9 +287,9 @@ void SpatRaster::fourCellsFromXY(std::vector<double> &out, const std::vector<dou
 	double ymax = e.ymax;
 	double yr = yres();
 	double nc = ncol();
-	int_64 mxr = nrow()-1;
-	int_64 mxc = ncol()-1;
-	int_64 r1, r2, c1, c2;
+	int64_t mxr = nrow()-1;
+	int64_t mxc = ncol()-1;
+	int64_t r1, r2, c1, c2;
 	std::vector<double> bad = {NAN, NAN, NAN, NAN};
 	for (size_t i = 0; i < n; i++) {
 		if (y[i] < ymin || y[i] > ymax || x[i] < xmin || x[i] > xmax) {
@@ -1238,7 +1238,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 
 
 	std::vector<double> wcell;
-	std::vector<std::vector<int_64>> rc, wrc;
+	std::vector<std::vector<int64_t>> rc, wrc;
 	rc = rowColFromCell(cell);
 
 	size_t n = cell.size();
@@ -1324,7 +1324,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 
 
 
-//std::vector<std::vector<double>> SpatRaster::extractRowCol(std::vector<int_64> &row, std::vector<int_64> &col) {
+//std::vector<std::vector<double>> SpatRaster::extractRowCol(std::vector<int64_t> &row, std::vector<int64_t> &col) {
 
 
 /*
@@ -1332,7 +1332,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 
 	std::vector<double> wcell;
-	std::vector<std::vector<int_64>> rc, wrc;
+	std::vector<std::vector<int64_t>> rc, wrc;
 	rc = rowColFromCell(cell);
 
 	size_t n  = cell.size();
@@ -1492,12 +1492,12 @@ std::vector<double> SpatRaster::extCells(SpatExtent ext) {
 	e[3] -= resy;
 	std::vector<double> ex = {e[0], e[1]};
 	std::vector<double> ey = {e[3], e[2]};
-	std::vector<int_64> r = rowFromY(ey);
-	std::vector<int_64> c = colFromX(ex);
-	int_64 nc = ncol();
+	std::vector<int64_t> r = rowFromY(ey);
+	std::vector<int64_t> c = colFromX(ex);
+	int64_t nc = ncol();
 	out.reserve((r[1]-r[0]) * (c[1]-c[0]));
-	for (int_64 i=r[0]; i <= r[1]; i++) {
-		for (int_64 j=c[0]; j <= c[1]; j++) {
+	for (int64_t i=r[0]; i <= r[1]; i++) {
+		for (int64_t j=c[0]; j <= c[1]; j++) {
 			out.push_back(i*nc+j);
 		}
 	}
@@ -1644,7 +1644,7 @@ std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 			}
 		} else {
 			#ifdef useGDAL
-			std::vector<std::vector<int_64>> rc = rowColFromCell(cell);
+			std::vector<std::vector<int64_t>> rc = rowColFromCell(cell);
 			srcout = readRowColGDAL(src, rc[0], rc[1]);
 			#endif
 			if (hasError()) return out;

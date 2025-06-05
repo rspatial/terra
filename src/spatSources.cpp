@@ -109,12 +109,12 @@ void SpatRaster::combine(SpatRaster &x) {
 
 void SpatRaster::checkTime(SpatRaster &x) {
 	if (!hasTime()) {
-		std::vector<int_64> time;
+		std::vector<int64_t> time;
 		x.setTime(time, "remove", "");
 		return;
 	}
 	if (!x.hasTime()) {
-		std::vector<int_64> time;
+		std::vector<int64_t> time;
 		setTime(time, "remove", "");
 		return;
 	}
@@ -128,7 +128,7 @@ void SpatRaster::checkTime(SpatRaster &x) {
 			source[i].timestep = "days";
 		}
 	} else {
-		std::vector<int_64> time;
+		std::vector<int64_t> time;
 		setTime(time, "remove", "");
 		x.setTime(time, "remove", "");
 	}

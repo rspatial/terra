@@ -136,18 +136,18 @@ SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
 		}
 	}
 
-	std::vector<int_64> rows, cols;
+	std::vector<int64_t> rows, cols;
 	if (nrow() < 51) {
 		rows.resize(nrow());
 		std::iota(rows.begin(), rows.end(), 0);
 	} else {
-		rows = seq_steps((int_64) 0, (int_64) nrow()-1, 50);
+		rows = seq_steps((int64_t) 0, (int64_t) nrow()-1, 50);
 	}
 	if (ncol() < 51) {
 		cols.resize(ncol());
 		std::iota(cols.begin(), cols.end(), 0);
 	} else {
-		cols = seq_steps((int_64) 0, (int_64) ncol()-1, 50);
+		cols = seq_steps((int64_t) 0, (int64_t) ncol()-1, 50);
 	}
 	
 	std::vector<double> xcol = xFromCol(cols) ;
