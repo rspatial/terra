@@ -8,15 +8,12 @@
 #include "string_utils.h"
 #include "file_utils.h"
 #include "vecmath.h"
+#include <stddef.h>
 
-//#if defined(_WIN64) || defined(__x86_64__) || defined(__ppc64__) || defined(__aarch64__) || defined(__MINGW64__) || defined(__amd64__)
+//#include <cstdint>
+//#if INTPTR_MAX != INT32_MAX
 //    #define IS_64_BIT
 //#endif
-
-#include <cstdint>
-#if INTPTR_MAX != INT32_MAX
-    #define IS_64_BIT
-#endif
 
 
 bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::string calendar, std::vector<double> raw, std::string &msg) {
@@ -567,7 +564,8 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 	count[source[src].m_dims[0]] = ncols;
 	count[source[src].m_dims[1]] = nrows;
 
-	std::vector<GPtrDiff_t> stride;
+//	std::vector<GPtrDiff_t> stride;
+	std::vector<ptrdiff_t> stride;
 	if (!source[src].flipped) { 
 		stride.resize(ndim, 1);
 		stride[ndim-2] = -1;
@@ -635,7 +633,8 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 	size_t ndim = source[src].m_dims.size();
 	std::vector<size_t> count(source[src].m_ndims, 1);
 
-	std::vector<GPtrDiff_t> stride;
+//	std::vector<GPtrDiff_t> stride;
+	std::vector<ptrdiff_t> stride;
 	if (!source[src].flipped) { 
 		stride.resize(ndim, 1);
 		stride[ndim-2] = -1;
