@@ -565,7 +565,7 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 	count[source[src].m_dims[1]] = nrows;
 
 //	std::vector<GPtrDiff_t> stride;
-	std::vector<ptrdiff_t> stride;
+	std::vector<long long int> stride;
 	if (!source[src].flipped) { 
 		stride.resize(ndim, 1);
 		stride[ndim-2] = -1;
@@ -634,7 +634,7 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 	std::vector<size_t> count(source[src].m_ndims, 1);
 
 //	std::vector<GPtrDiff_t> stride;
-	std::vector<ptrdiff_t> stride;
+	std::vector<long long> stride;
 	if (!source[src].flipped) { 
 		stride.resize(ndim, 1);
 		stride[ndim-2] = -1;
