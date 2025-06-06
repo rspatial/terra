@@ -393,8 +393,11 @@ setMethod("freq", signature(x="SpatRaster"),
 							ra <- rasterize(zones[i,], r, NA, background=0, touches=FALSE)
 							r <- cover(ra, r)
 						}
-						out[[i]] <- freq(r, digits=digits, value=value, bylayer=bylayer, usenames=usenames, zones=NULL)
-						out[[i]]$zone <- i
+						f <- freq(r, digits=digits, value=value, bylayer=bylayer, usenames=usenames, zones=NULL)
+						if (nrow(f) > 0) {
+							f$zone <- i	
+							out[[i]] <- f
+						}
 					}
 				}
 			} else if (inherits(zones, "SpatRaster")) {
@@ -407,8 +410,11 @@ setMethod("freq", signature(x="SpatRaster"),
 				out <- vector("list", length(u))
 				for (i in 1:length(u)) {
 					r <- mask(x, zones, maskvalues=u[i], inverse=TRUE)
-					out[[i]] <- freq(r, digits=digits, value=value, bylayer=bylayer, usenames=usenames, zones=NULL, wide=FALSE)
-					out[[i]]$zone <- i
+					f <- freq(r, digits=digits, value=value, bylayer=bylayer, usenames=usenames, zones=NULL, wide=FALSE)
+					if (nrow(f) > 0) {
+						f$zone <- i	
+						out[[i]] <- f
+					}
 				}
 			} else {
 				error("freq", "zones must be a SpatVector or a SpatRaster")
