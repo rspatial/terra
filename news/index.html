@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-53</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-55</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,22 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-53" id="version-18-53">version 1.8-53<a class="anchor" aria-label="anchor" href="#version-18-53"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-55" id="version-18-55">version 1.8-55<a class="anchor" aria-label="anchor" href="#version-18-55"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-53">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-53"></a></h3>
+<h3 id="bug-fixes-1-8-55">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-55"></a></h3>
+</div>
+<div class="section level3">
+<h3 id="enhancements-1-8-55">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-55"></a></h3>
+</div>
+<div class="section level3">
+<h3 id="new-1-8-55">new<a class="anchor" aria-label="anchor" href="#new-1-8-55"></a></h3>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.8-54" id="version-18-54">version 1.8-54<a class="anchor" aria-label="anchor" href="#version-18-54"></a></h2><p class="text-muted">CRAN release: 2025-06-01</p>
+<p>Released 2025-06-01</p>
+<div class="section level3">
+<h3 id="bug-fixes-1-8-54">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-54"></a></h3>
 <ul><li>
 <code>plot&lt;SpatRaster&gt;</code> using a value/color data.frame did not work correctly in all cases <a href="https://github.com/rspatial/terra/issues/1827" class="external-link">#1827</a> by Alexandre Courtiol</li>
 <li>
@@ -53,14 +66,15 @@
 <code>writeVector</code> with an empty SpatVector crashed R <a href="https://github.com/rspatial/terra/issues/1837" class="external-link">#1837</a> by Induriel</li>
 <li>
 <code>predict&lt;SpatRaster&gt;</code> could fail with na.rm=TRUE and a block with NA values only <a href="https://github.com/rspatial/terra/issues/1843" class="external-link">#1843</a> by Alex Ilich</li>
+<li>In some cases, <code>rast</code> interpreted a histogram attribute as a factor <a href="https://github.com/rspatial/terra/issues/1845" class="external-link">#1845</a> by Tiago A. Marques</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-53">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-53"></a></h3>
+<h3 id="enhancements-1-8-54">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-54"></a></h3>
 <ul><li>
 <code>rast</code> with multiple files and lyrs argument now applies the argument to each data source (file); unless numbers higher than the number of layers of the first source are included. <a href="https://github.com/rspatial/terra/issues/1838" class="external-link">#1838</a> by Pedro Tarroso</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-53">new<a class="anchor" aria-label="anchor" href="#new-1-8-53"></a></h3>
+<h3 id="new-1-8-54">new<a class="anchor" aria-label="anchor" href="#new-1-8-54"></a></h3>
 <ul><li>
 <code>unloadGDALdrivers</code> to disable selected GDAL drivers <a href="https://github.com/rspatial/terra/issues/1828" class="external-link">#1828</a> by Andy Teucher</li>
 <li>experimental support for the GDAL multidimensional raster data interface via <code>rast(md=TRUE)</code>

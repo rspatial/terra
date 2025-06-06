@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-53</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-55</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,12 +95,6 @@
 <span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">v</span>, <span class="va">r</span>, <span class="st">"NAME_2"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ID_1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NAME_1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ID_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NAME_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AREA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> POP</span>
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">boxplot</span><span class="op">(</span><span class="va">r</span>, <span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="boxplot-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/bxp.html" class="external-link">bxp</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span></span>
