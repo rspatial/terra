@@ -14,7 +14,7 @@ You can provide a SpatVector or additional SpatRaster to define zones for which 
 }
 
 \usage{
-\S4method{freq}{SpatRaster}(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE, zones=NULL, wide=FALSE)
+\S4method{freq}{SpatRaster}(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE, zones=NULL, wide=FALSE, touches=FALSE)
 }
 
 \arguments{
@@ -25,6 +25,7 @@ You can provide a SpatVector or additional SpatRaster to define zones for which 
   \item{usenames}{logical. If \code{TRUE} layers are identified by their names instead of their numbers Only relevant if \code{bylayer} is \code{TRUE}}
   \item{zones}{SpatRaster or SpatVector to define zones for which the tabulation should be done}
   \item{wide}{logical. Should the results by "wide" instead of "long"?}  
+  \item{touches}{logical. If \code{TRUE}, all cells touched by lines or polygons will be included, not just those on the line render path, or whose center point is within the polygon. Only relevant if \code{zones} is a SpatVector}
 }
 
 \value{

@@ -371,7 +371,7 @@ setMethod("global", signature(x="SpatRaster"),
 
 
 setMethod("freq", signature(x="SpatRaster"),
-	function(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE, zones=NULL, wide=FALSE) {
+	function(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE, zones=NULL, wide=FALSE, touches=FALSE) {
 		
 		if (!hasValues(x)) {
 			warn("freq", "SpatRaster x has no cell values")
@@ -388,9 +388,9 @@ setMethod("freq", signature(x="SpatRaster"),
 					z <- zones[i,]
 					e <- align(ext(z), x, snap="near")
 					if (!is.null(intersect(e, ext(x)))) {
-						r <- crop(x, zones[i,], mask=TRUE, touches=FALSE)
+						r <- crop(x, zones[i,], mask=TRUE, touches=touches, snap="out")
 						if (vna) {
-							ra <- rasterize(zones[i,], r, NA, background=0, touches=FALSE)
+							ra <- rasterize(zones[i,], r, NA, background=0, touches=touches)
 							r <- cover(ra, r)
 						}
 						f <- freq(r, digits=digits, value=value, bylayer=bylayer, usenames=usenames, zones=NULL)
