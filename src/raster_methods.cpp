@@ -3788,8 +3788,12 @@ SpatRaster SpatRaster::shift(double x, double y, SpatOptions &opt) {
 	outext.ymin = outext.ymin + y;
 	outext.ymax = outext.ymax + y;
 	out.setExtent(outext, true, true, "");
+	for (size_t i=0; i<out.nsrc(); i++) {
+		out.source[i].parameters_changed = true;
+	}
 	return out;
 }
+
 
 bool SpatRaster::compare_origin(std::vector<double> x, double tol) {
 	std::vector<double> y = origin();
