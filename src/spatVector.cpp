@@ -309,7 +309,7 @@ bool SpatVector::empty() {
 }
 
 bool SpatVector::is_multipoint() {
-	if (geoms[0].gtype != points) return false;
+	if (geoms.empty() || (geoms[0].gtype != points)) return false;
 	for (size_t i=0; i<geoms.size(); i++) {
 		if (geoms[i].parts[0].x.size() > 1) {
 			return true;
@@ -1080,9 +1080,9 @@ SpatVector SpatVector::cbind(SpatDataFrame d) {
 
 
 SpatVector SpatVector::as_points(bool multi, bool skiplast) {
-	if (nrow() == 0) {
-		SpatVector v;
-		v.setError("input has no geometries");
+	if (geoms.empty()) {
+		SpatVector v = *this;
+		v.addWarning("input has no geometries");
 		return v;
 	}
 	
@@ -1143,15 +1143,15 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 	return(v);
 }
 
-#include "Rcpp.h"
 SpatVector SpatVector::as_lines() {
 	SpatVector v;
 
-	if (geoms[0].gtype == lines) {
+	std::string gtype = type();
+	if ((gtype == "none") || (gtype == "lines")) {
 		return *this;
 	}
 
-	if (geoms[0].gtype == points) {
+	if (gtype == "points") {
 		if (is_multipoint()) {
 			v = *this;
 			for (size_t i=0; i<size(); i++) {
@@ -1251,7 +1251,7 @@ void SpatGeom::remove_duplicate_nodes(int digits) {
 
 SpatVector SpatVector::remove_duplicate_nodes(int digits) {
 	SpatVector v = *this;
-	if (geoms[0].gtype == points) {
+	if (geoms.empty() || (geoms[0].gtype == points)) {
 		v.addWarning("returning a copy");
 		return v;
 	}

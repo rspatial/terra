@@ -162,6 +162,10 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 SpatVector SpatVector::aggregate(bool dissolve) {
 	SpatVector out;
 	SpatGeom g;
+	if (geoms.empty()) {
+		out = *this;
+		return out;
+	}
 	g.gtype = geoms[0].gtype;
 	for (size_t i=0; i<size(); i++) {
 		g.unite( getGeom(i) );
@@ -735,6 +739,10 @@ SpatVector SpatVector::thin(double threshold) {
 		out.setError("threshold must be a positive number");
 		return out;
 	}
+	if (geoms.empty()) {
+		out = *this;
+		return out;
+	}
 	size_t mnode = 4;
 	if (geoms[0].gtype == lines) {
 		mnode = 3;
@@ -778,7 +786,8 @@ SpatVector SpatVector::thin(double threshold) {
 SpatVector SpatVector::removeSlivers(double dthres, double athres, size_t n) {
 
 	SpatVector out;
-	if (geoms[0].gtype != polygons) {
+	
+	if (geoms.empty() || geoms[0].gtype != polygons) {
 		out.setError("can only remove slivers from polygons");
 		return out;
 	}

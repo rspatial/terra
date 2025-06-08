@@ -3,10 +3,11 @@
 ## bug fixes
 
 - `freq` failed when using zones polygons that did not overlap with any cell centers [SO 79654752](https://stackoverflow.com/q/79654752) by M. Beausoleil
+- `as.lines<SpatVector>` with an empty SpatVector crashed R [#1847](https://github.com/rspatial/terra/issues/1847) by Andrew Gene Brown
 
 ## enhancements
 
-- `freq` has new argument "touches" to determine which cell to include if a zones polygon is used
+- `freq` has new argument "touches" to determine which cell to include if a zones polygon is used [SO 79654752](https://stackoverflow.com/q/79654752) by M. Beausoleil
 
 ## new
 
