@@ -82,7 +82,7 @@ setMethod("vrt", signature(x="character"),
 		if (set_names) {
 			v <- readLines(f)
 			if ("-separate" %in% options) {
-			    nms <- names(rast(x))
+			    nms <- unlist(lapply(sprc(x), names))
 			} else {
 			    nms <- names(rast(x[1]))
 			}
