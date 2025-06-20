@@ -8,14 +8,14 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 		if (inherits(y, "SpatRaster")) {
 			ff <- x@pntr$make_tiles(y@pntr, extend[1], buffer, na.rm[1], filename, opt)
 		} else if (inherits(y, "SpatVector")) {
-			ff <- x@pntr$make_tiles_vect(y@pntr, extend[1], buffer, na.rm[1], filename, opt)		
+			ff <- x@pntr$make_tiles_vect(y@pntr, extend[1], buffer, na.rm[1], filename, opt)
 		} else if (is.numeric(y)) {
 			if (length(y) > 2) {
 				error("makeTiles", "expected one or two numbers")
 			}
 			y <- rep_len(y, 2)
 			y <- aggregate(rast(x), y)
-			ff <- x@pntr$make_tiles(y@pntr, extend[1], buffer, na.rm[1], filename, opt)			
+			ff <- x@pntr$make_tiles(y@pntr, extend[1], buffer, na.rm[1], filename, opt)
 		} else {
 			error("makeTiles", "y must be numeric or a SpatRaster or SpatVector")
 		}
@@ -32,7 +32,7 @@ setMethod("getTileExtents", signature(x="SpatRaster"),
 		if (inherits(y, "SpatRaster")) {
 			e <- x@pntr$get_tiles_ext(y@pntr, extend[1], buffer)
 		} else if (inherits(y, "SpatVector")) {
-			e <- x@pntr$get_tiles_ext_vect(y@pntr, extend[1], buffer)		
+			e <- x@pntr$get_tiles_ext_vect(y@pntr, extend[1], buffer)
 		} else if (is.numeric(y)) {
 			if (length(y) > 2) {
 				error("getTileExtents", "expected one or two numbers")
@@ -75,13 +75,17 @@ setMethod("vrt", signature(x="character"),
 		r <- rast()
 		if (is.null(options)) {
 			options=""[0]
-		} 
+		}
 		f <- r@pntr$make_vrt(x, options, opt)
 		messages(r, "vrt")
 		messages(opt, "vrt")
 		if (set_names) {
 			v <- readLines(f)
-			nms <- names(rast(x[1]))
+			if ("-separate" %in% options) {
+			    nms <- unlist(lapply(sprc(x), names))
+			} else {
+			    nms <- names(rast(x[1]))
+			}
 			i <- grep("band=", v)
 			if (length(i) == length(nms)) {
 				nms <- paste0("<Description>", nms, "</Description>")
@@ -101,9 +105,9 @@ setMethod("vrt", signature(x="character"),
 setMethod("vrt", signature(x="SpatRasterCollection"),
 	function(x, filename="", options=NULL, overwrite=FALSE, return_filename=FALSE) {
 		opt <- spatOptions(filename, overwrite=overwrite)
-		if (is.null(options)) {	
+		if (is.null(options)) {
 			options=""[0]
-		} 
+		}
 		f <- x@pntr$make_vrt(options, FALSE, opt)
 		messages(x, "vrt")
 		if (return_filename) {
@@ -124,7 +128,7 @@ vrt_tiles <- function(x) {
 	}
 	x <- grep(".vrt$", x, ignore.case =TRUE, value=TRUE)
 	if (length(x) == 0) {
-		error("vrt_sources", 'no filenames with extension ".vrt"')	
+		error("vrt_sources", 'no filenames with extension ".vrt"')
 	}
 	tiles <- lapply(x, function(f) {
 			v <- readLines(f)
