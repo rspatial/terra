@@ -11,7 +11,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-55</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-56</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,18 +146,18 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">10</span>, as.raster<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   elevation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       380</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       497</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       495</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       413</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       341</span>
 <span class="r-in"><span><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   elevation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       458</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       269</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       271</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       142</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       202</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       250</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       260</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       332</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       462</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       318</span>
 <span class="r-in"><span><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span>, <span class="st">"regular"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   elevation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1       479</span>
@@ -174,12 +174,12 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span><span class="va">size</span> <span class="op">&lt;-</span> <span class="fl">6</span></span></span>
 <span class="r-in"><span><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">6</span>, <span class="st">"random"</span>, cells<span class="op">=</span><span class="cn">TRUE</span>, xy<span class="op">=</span><span class="cn">TRUE</span>, values<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      cell        x        y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 5800 5.779167 49.67917</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 7874 6.437500 49.50417</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  843 6.429167 50.12083</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  426 6.120833 50.15417</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 2775 5.904167 49.94583</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 2267 6.420833 49.99583</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 5743 6.095833 49.68750</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 3037 6.504167 49.92917</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 5898 5.804167 49.67083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 7943 6.220833 49.49583</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 2926 6.370833 49.93750</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 2015 5.904167 50.01250</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># regular, with values </span></span></span>
 <span class="r-in"><span><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">6</span>, <span class="st">"regular"</span>, cells<span class="op">=</span><span class="cn">TRUE</span>, xy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-55</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-56</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,15 +34,21 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-55" id="version-18-55">version 1.8-55<a class="anchor" aria-label="anchor" href="#version-18-55"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-56" id="version-18-56">version 1.8-56<a class="anchor" aria-label="anchor" href="#version-18-56"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-55">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-55"></a></h3>
-</div>
+<h3 id="bug-fixes-1-8-56">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-56"></a></h3>
+<ul><li>
+<code>freq</code> failed when using zones polygons that did not overlap with any cell centers <a href="https://stackoverflow.com/q/79654752" class="external-link">SO 79654752</a> by M. Beausoleil</li>
+<li>
+<code>as.lines&lt;SpatVector&gt;</code> with an empty SpatVector crashed R <a href="https://github.com/rspatial/terra/issues/1847" class="external-link">#1847</a> by Andrew Gene Brown</li>
+</ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-55">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-55"></a></h3>
-</div>
+<h3 id="enhancements-1-8-56">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-56"></a></h3>
+<ul><li>
+<code>freq</code> has new argument “touches” to determine which cell to include if a zones polygon is used <a href="https://stackoverflow.com/q/79654752" class="external-link">SO 79654752</a> by M. Beausoleil</li>
+</ul></div>
 <div class="section level3">
-<h3 id="new-1-8-55">new<a class="anchor" aria-label="anchor" href="#new-1-8-55"></a></h3>
+<h3 id="new-1-8-56">new<a class="anchor" aria-label="anchor" href="#new-1-8-56"></a></h3>
 </div>
 </div>
     <div class="section level2">
@@ -180,7 +186,7 @@
 <li>
 <code>depthName</code>, <code>depthName&lt;-</code>, <code>depthUnit</code>, and <code>depthUnit&lt;-</code> methods</li>
 <li>
-<code>is.num&lt;SpatRaster&gt;</code> <a href="https://stackoverflow.com/questions/79502664/what-is-the-correct-terra-usage-to-achieve-is-numeric-on-an-r-terra-package-rast" class="external-link">SO 795026641</a> by Jacob Strunk</li>
+<code>is.num&lt;SpatRaster&gt;</code> <a href="https://stackoverflow.com/q/79502664/" class="external-link">SO 795026641</a> by Jacob Strunk</li>
 <li>
 <code>simplifyLevels</code> to combine duplicate categories. <a href="https://github.com/rspatial/terra/issues/1769" class="external-link">#1769</a> by Erik Ertsgaard</li>
 </ul></div>
@@ -193,9 +199,9 @@
 <ul><li>
 <code>cover&lt;SpatRaster&gt;</code> did not work well if multiple replacement values were supplied <a href="https://github.com/rspatial/terra/issues/1741" class="external-link">#1741</a> by Tim Howard</li>
 <li>
-<code>ext&lt;-&lt;SpatRaster,SpatExtent&gt;</code> made a shallow copy. Reported on <a href="https://stackoverflow.com/questions/79440691/extent-is-rewritten-for-separate-spatraster-when-modifying-extent-using-terra-in/79440823#79440823" class="external-link">SO 79440691</a> by katefull06 and as <a href="https://github.com/rspatial/terra/issues/1743" class="external-link">#1743</a> by Agustin Lobo</li>
+<code>ext&lt;-&lt;SpatRaster,SpatExtent&gt;</code> made a shallow copy. Reported on <a href="https://stackoverflow.com/q/79440691" class="external-link">SO 79440691</a> by katefull06 and as <a href="https://github.com/rspatial/terra/issues/1743" class="external-link">#1743</a> by Agustin Lobo</li>
 <li>
-<code>extract&lt;SpatRaster&gt;</code> with cells only used the NA flag for the first data source. <a href="https://gis.stackexchange.com/questions/490433/problem-extracting-values-from-raster-in-r-with-terra-package" class="external-link">GSE 490433</a> by MartinL</li>
+<code>extract&lt;SpatRaster&gt;</code> with cells only used the NA flag for the first data source. <a href="https://gis.stackexchange.com/q/490433" class="external-link">GSE 490433</a> by MartinL</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-29">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-29"></a></h3>
@@ -204,7 +210,7 @@
 <li>
 <code>spatSample&lt;SpatRaster&gt;</code> gains argument “each=TRUE” to request, when using stratified sampling, a sample size for each stratum, or for all strata combined.</li>
 <li>
-<code>focal</code> now maintains categories with “fun=modal”, “min”, “max”, or “first” <a href="https://stackoverflow.com/questions/79449904/preserving-original-categories-when-using-terrafocal" class="external-link">SO 79449904</a> by Sophie Père</li>
+<code>focal</code> now maintains categories with “fun=modal”, “min”, “max”, or “first” <a href="https://stackoverflow.com/q/79449904" class="external-link">SO 79449904</a> by Sophie Père</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-29">new<a class="anchor" aria-label="anchor" href="#new-1-8-29"></a></h3>
@@ -332,7 +338,7 @@
 <li>
 <code>extract</code> argument “search_radius” to extract values from the nearest raster cell that is not <code>NA</code> <a href="https://github.com/rspatial/terra/issues/873" class="external-link">#873</a> by matthewseanmarcus</li>
 <li>
-<code>combineLevels</code> to combine the levels of all layers <a href="https://stackoverflow.com/questions/79340152/how-to-set-factor-levels-in-a-rast-stack-using-terra-when-different-levels-exi" class="external-link">link</a> on SO by Sam</li>
+<code>combineLevels</code> to combine the levels of all layers <a href="https://stackoverflow.com/q/79340152" class="external-link">SO 79340152</a> by Sam</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -492,7 +498,7 @@
 <li>
 <code>as.list&lt;SpatRaster&gt;</code> has new argument “geom=NULL”</li>
 <li>
-<code>rast&lt;list&gt;</code> now recognizes (x, y, z) base R “image” structures <a href="https://stackoverflow.com/questions/77949551/rspatial-convert-a-grid-list-to-a-raster-using-terra" class="external-link">stackoverflow</a> by Ignacio Marzan.</li>
+<code>rast&lt;list&gt;</code> now recognizes (x, y, z) base R “image” structures <a href="https://stackoverflow.com/q/77949551" class="external-link">SO 77949551</a> by Ignacio Marzan.</li>
 <li>
 <code>inset</code> has new arguments “offset” and “add” <a href="https://github.com/rspatial/terra/issues/1422" class="external-link">#1422</a> by Armand-CT</li>
 <li>
@@ -561,15 +567,14 @@
 <div class="section level3">
 <h3 id="bug-fixes-1-7-65">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-65"></a></h3>
 <ul><li>
-<code>flip</code> with argument <code>direction="vertical"</code> filed in some cases with large rasters processed in chunks <a href="https://github.com/rspatial/terra/commit/0b714b038b101011ce27391133a7a1f9a91821cc" class="external-link">0b714b0</a> by Dulci on <a href="https://stackoverflow.com/questions/77304534/rspatial-terraflip-error-when-flipping-a-multi-layer-spatrast-object" class="external-link">stackoveflow</a>
-</li>
+<code>flip</code> with argument <code>direction="vertical"</code> filed in some cases with large rasters processed in chunks <a href="https://stackoverflow.com/q/77304534" class="external-link">SO 77304534</a> by Dulci</li>
 <li>SpatRaster now correctly handles <code>NA &amp; FALSE</code> and <code>NA | TRUE</code> <a href="https://github.com/rspatial/terra/issues/1316" class="external-link">#1316</a> by John Baums</li>
 <li>
 <code>set.names</code> wasn’t working properly for SpatRasterDataset or SpatRasterCollection <a href="https://github.com/rspatial/terra/pull/1333" class="external-link">#1333</a> by Derek Friend</li>
 <li>
 <code>extract</code> with argument “layer” not NULL shifted the layers <a href="https://github.com/rspatial/terra/issues/1332" class="external-link">#1332</a> by Ewan Wakefield</li>
 <li>
-<code>terraOptions</code> did not capture “memmin” on <a href="https://stackoverflow.com/questions/77552234/controlling-chunk-size-in-terra" class="external-link">stackoverflow</a> by dww</li>
+<code>terraOptions</code> did not capture “memmin” on <a href="https://stackoverflow.com/q/77552234" class="external-link">SO 77552234</a> by dww</li>
 <li>
 <code>rasterize</code> with points and a built-in function could crash if no field was used <a href="https://github.com/rspatial/terra/issues/1369" class="external-link">#1369</a> by anjelinejeline</li>
 </ul></div>
@@ -1577,7 +1582,7 @@
 <li>
 <code>plot</code> now passes the layer index to <code>fun</code> [#310] by Ben Tupper</li>
 <li>the <code>to_id</code> in <code>nearest</code> was sometimes wrong. See [#328] by Shawn Ligocki</li>
-<li>better support for ESRI value attribute tables (VAT). See this <a href="https://stackoverflow.com/q/69385928/635245" class="external-link">SO question</a>
+<li>better support for ESRI value attribute tables (VAT). See this <a href="https://stackoverflow.com/q/69385928" class="external-link">SO 69385928</a>
 </li>
 <li>
 <code>focal</code> did not reset initial values for NA cells when processing chunks. [#312] by Jeffrey Evans</li>
@@ -1595,11 +1600,11 @@
 <ul><li>if <code>time(x) &lt;- d</code> is set with a <code>Date</code> class object, <code>time(x)</code> now returns a <code>Date</code> object instead of a <code>POSIXct</code> object. Issue [#256] by Mauricio Zambrano-Bigiarini</li>
 <li>The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue [#258] by AGeographer. Also implemented for names in both SpatVector and SpatRaster</li>
 <li>
-<code>rast&lt;data.frame&gt;</code> method to avoid confusion with the <code>matrix</code> and <code>list</code> methods in response to a <a href="https://stackoverflow.com/q/68133958/635245" class="external-link">SO question</a> by Stackbeans</li>
-<li>the extreme values used to represent NA where not as intended (one or two lower) for INT2U and INT4U. Reported by Jean-Luc Dupouey on <a href="https://stackoverflow.com/q/68216362/635245" class="external-link">stackoverflow</a>
+<code>rast&lt;data.frame&gt;</code> method to avoid confusion with the <code>matrix</code> and <code>list</code> methods in response to a <a href="https://stackoverflow.com/q/68133958" class="external-link">SO 68133958</a> by Stackbeans</li>
+<li>the extreme values used to represent NA where not as intended (one or two lower) for INT2U and INT4U. Reported by Jean-Luc Dupouey on <a href="https://stackoverflow.com/q/68216362" class="external-link">SO 68216362</a>
 </li>
 <li>
-<code>writeCDF</code> now also writes the time dimensions if there is only one time-step. See this <a href="https://stackoverflow.com/a/68227180/635245" class="external-link">SO question</a>
+<code>writeCDF</code> now also writes the time dimensions if there is only one time-step. See this <a href="https://stackoverflow.com/a/68227180/635245" class="external-link">SO 68227180</a>
 </li>
 <li>
 <code>vect&lt;character&gt;</code> (filename) now has argument <code>layer</code> to select a layer from a multi-layer file / database, and arguments <code>query</code>, <code>extent</code> and <code>filter</code> for reading a subset</li>
@@ -1607,7 +1612,7 @@
 <code>subst</code> can now create multiple output layers See [issue 276] by Agustin Lobo</li>
 <li>
 <code>classify</code> can now create different multiple output layers See [issue 276] by Agustin Lobo</li>
-<li>Argument <code>alpha</code> of <code>plot&lt;SpatRaster&gt;</code> can now be a <code>SpatRaster</code>. See this <a href="https://stackoverflow.com/q/68736432/635245" class="external-link">SO question</a> by James McCarthy</li>
+<li>Argument <code>alpha</code> of <code>plot&lt;SpatRaster&gt;</code> can now be a <code>SpatRaster</code>. See this <a href="https://stackoverflow.com/q/68736432" class="external-link">SO 68736432</a> by James McCarthy</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-1-3-22">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-22"></a></h3>
