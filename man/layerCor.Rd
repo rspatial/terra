@@ -20,7 +20,7 @@ Compute correlation, (weighted) covariance, or similar summary statistics that c
 \arguments{
   \item{x}{SpatRaster}
 
-  \item{fun}{character. The statistic to compute: either "cov" (covariance), "weighted.cov" (weighted covariance), or "cor" (pearson correlation coefficient) or your own function that takes two vectors as argument to compute a single number}
+  \item{fun}{character. The statistic to compute: either "cov" (covariance), "weighted.cov" (weighted covariance), or "cor" (pearson correlation coefficient). You can also supply your own function that takes two vectors as argument to compute a single number}
 
   \item{w}{SpatRaster with the weights  to compute the weighted covariance. It should have a single layer and the same geometry as \code{x}}
 
@@ -35,14 +35,8 @@ Compute correlation, (weighted) covariance, or similar summary statistics that c
 
 
 \value{
-If \code{fun} is one of the three standard statistics, you get a list with three items: the 
-correlation or (weighted) covariance matrix, the (weighted) means, and the number of data cells in 
-each comparison. The means are also a matrix because they may depend on the combination of layers 
-if different cells have missing values and these are excluded from the computation. The rows of 
-the mean matrix represent the layer whose (weighted) mean is being calculated and the columns 
-represent the layer it is being paired with. Only cells with non-missing observations for both 
-layers are used in the calculation of the (weighted) mean. The diagonals of the mean and n 
-matrices are set to missing.
+If \code{fun} is one of the three standard statistics, you get a list with three items: the correlation or (weighted) covariance matrix, the (weighted) means, and the number of data cells in each comparison. The means are also a matrix because they may depend on the combination of layers 
+if different cells have missing values and these are excluded from the computation. The rows of the mean matrix represent the layer whose (weighted) mean is being calculated and the columns represent the layer it is being paired with. Only cells with non-missing observations for both layers are used in the calculation of the (weighted) mean. The diagonals of the mean and n matrices are set to missing.
 
 If \code{fun} is a function, you get a single matrix.
 }
@@ -61,13 +55,16 @@ For the weighted covariance:
 
 \examples{
 b <- rast(system.file("ex/logo.tif", package="terra"))   
-layerCor(b, "pearson")
+layerCor(b, "cor")
 
 layerCor(b, "cov")
 
 # weigh by column number
 w <- init(b, fun="col")
 layerCor(b, "weighted.cov", w=w)
+
+# specify another function
+layerCor(b, function(x, y) cor(x, y, method="spearman"))
 }
 
 	
