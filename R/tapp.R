@@ -142,7 +142,9 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 
 	out <- rast(x)
 	nlyr(out) <- nlout * length(uin)
-	names(out) <- nms
+	if (length(nms) == nlyr(out)) {
+		names(out) <- nms
+	}
 	if (out_tstep != "") {
 		if (length(out_time) == nlyr(out)) {
 			time(out, out_tstep) <- out_time 

@@ -36,11 +36,11 @@ setMethod("layerCor", signature(x="SpatRaster"),
 		
 		if (inherits(fun, "character")) {
 			fun <- tolower(fun)
-			if (!(fun %in% c("cov", "weighted.cov", "pearson", "cor"))) {
+			if (fun == "pearson") fun = "cor"
+			if (!(fun %in% c("cov", "weighted.cov", "cor"))) {
 				error("layerCor", "character function names must be one of: 'cor', 'cov', or 'weighted.cov'")
 			}
 			# backwards compatibility
-			if (fun == "pearson") fun = "cor"
 			if (fun == "weighted.cov") {
 				if (missing(w))	{
 					error("layerCor", "to compute weighted covariance a weights layer should be provided")
