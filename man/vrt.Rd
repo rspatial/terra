@@ -8,8 +8,8 @@
 
 \title{Virtual Raster Dataset}
 
-\description{ 
-Create a Virtual Raster Dataset (VRT) from a collection of file-based raster datasets (tiles). See 
+\description{
+Create a Virtual Raster Dataset (VRT) from a collection of file-based raster datasets (tiles). See
 \href{https://gdal.org/en/latest/programs/gdalbuildvrt.html}{gdalbuildvrt} for details.
 }
 
@@ -21,11 +21,11 @@ Create a Virtual Raster Dataset (VRT) from a collection of file-based raster dat
 
 \arguments{
   \item{x}{SpatRasterCollection or character vector with filenames of raster "tiles". That is, files that have data for, typically non-overlapping, sub-regions of an raster. See \code{\link{makeTiles}}}
-  \item{filename}{character. output VRT filename}  
+  \item{filename}{character. output VRT filename}
   \item{options}{character. All arguments as separate vector elements. Options as for \href{https://gdal.org/en/latest/programs/gdalbuildvrt.html}{gdalbuildvrt}}
   \item{overwrite}{logical. Should \code{filename} be overwritten if it exists?}
-  \item{set_names}{logical. Add the layer names of the first tile to the vrt?}
-  \item{return_filename}{logical. If \code{TRUE} the filename is returned, otherwise a SpatRaster is returned}  
+  \item{set_names}{logical. Add the layer names of the first tile to the vrt? If \code{options} includes \code{"-separate"} the name of each source file is added, and each input goes into a separate band in the VRT dataset}
+  \item{return_filename}{logical. If \code{TRUE} the filename is returned, otherwise a SpatRaster is returned}
 }
 
 \value{
@@ -37,7 +37,7 @@ A VRT can reference very many datasets. These are not all opened at the same tim
 }
 
 \seealso{
-\code{\link{makeTiles}} to create tiles; \code{\link{makeVRT}} to create a .vrt file for a binary raster file that does not have a header file. \code{\link{vrt_tiles}} to get the filenames of the tiles in a VRT. 
+\code{\link{makeTiles}} to create tiles; \code{\link{makeVRT}} to create a .vrt file for a binary raster file that does not have a header file. \code{\link{vrt_tiles}} to get the filenames of the tiles in a VRT.
 }
 
 \examples{
