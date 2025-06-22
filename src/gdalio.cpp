@@ -413,7 +413,7 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 #endif
 
 
-
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4
 std::string gdalMDinfo(std::string filename, std::vector<std::string> options) {
 
 	GDALDatasetH ds = GDALOpenEx(filename.c_str(), GDAL_OF_MULTIDIM_RASTER, NULL, NULL, NULL);
@@ -431,6 +431,13 @@ std::string gdalMDinfo(std::string filename, std::vector<std::string> options) {
 	return out;
 }
 
+#else 
+
+std::string gdalMDinfo(std::string filename, std::vector<std::string> options) {
+	return "not supported with GDAL < 3.4";
+}
+
+#endif 
 
 bool getNAvalue(GDALDataType gdt, double &naval) {
 	if (gdt == GDT_Float32) {
