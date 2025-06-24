@@ -369,7 +369,7 @@ bool getAlgo(GDALResampleAlg &alg, std::string m) {
 
 
 bool is_valid_warp_method(const std::string &method) {
-	std::vector<std::string> m { "near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "max", "min", "med", "q1", "q3", "sum", "rms"};
+	std::vector<std::string> m { "near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "max", "min", "median", "q1", "q3", "sum", "rms"};
 	return (std::find(m.begin(), m.end(), method) != m.end());
 }
 
