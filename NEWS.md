@@ -1,9 +1,13 @@
-# version 1.8-56
+# version 1.8-57
 
 ## bug fixes
 
 - `freq` failed when using zones polygons that did not overlap with any cell centers [SO 79654752](https://stackoverflow.com/q/79654752) by M. Beausoleil
 - `as.lines<SpatVector>` with an empty SpatVector crashed R [#1847](https://github.com/rspatial/terra/issues/1847) by Andrew Gene Brown
+- `resample` with method="median" did not work [#1855](https://github.com/rspatial/terra/issues/1855) by vmombo
+- terra did not install on 32-bit systems [#1846](https://github.com/rspatial/terra/issues/1846) by Sergey Fedorov
+- terra did not install with GDAL < 3.1 [#1853](https://github.com/rspatial/terra/issues/1853) by BastienFR
+
 
 ## enhancements
 
