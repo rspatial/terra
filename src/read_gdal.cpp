@@ -641,8 +641,12 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 	char **metadata = poDataset->GetMetadata("SUBDATASETS");
 
 	if (metadata == NULL) {
-		setError("file has no subdatasets");
 		GDALClose( (GDALDatasetH) poDataset );
+		SpatRaster sub;
+		if (sub.constructFromFile(fname, {-1}, {""}, {}, options, false, guessCRS, domains)) {
+			std::string sname = sub.source[0].source_name;
+			push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true);
+		}
 		return;
 	}
 
@@ -715,8 +719,12 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 	char **metadata = poDataset->GetMetadata("SUBDATASETS");
 
 	if (metadata == NULL) {
-		setError("file has no subdatasets");
 		GDALClose( (GDALDatasetH) poDataset );
+		SpatRaster sub;
+		if (sub.constructFromFile(fname, {-1}, {""}, {}, options, false, guessCRS, domains)) {
+			std::string sname = sub.source[0].source_name;
+			push_back(sub, sname);
+		}
 		return;
 	}
 
