@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-56</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-58</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,21 +34,29 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-56" id="version-18-56">version 1.8-56<a class="anchor" aria-label="anchor" href="#version-18-56"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-58" id="version-18-58">version 1.8-58<a class="anchor" aria-label="anchor" href="#version-18-58"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-56">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-56"></a></h3>
+<h3 id="bug-fixes-1-8-58">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-58"></a></h3>
 <ul><li>
 <code>freq</code> failed when using zones polygons that did not overlap with any cell centers <a href="https://stackoverflow.com/q/79654752" class="external-link">SO 79654752</a> by M. Beausoleil</li>
 <li>
 <code>as.lines&lt;SpatVector&gt;</code> with an empty SpatVector crashed R <a href="https://github.com/rspatial/terra/issues/1847" class="external-link">#1847</a> by Andrew Gene Brown</li>
+<li>
+<code>resample</code> with method=“median” did not work <a href="https://github.com/rspatial/terra/issues/1855" class="external-link">#1855</a> by vmombo</li>
+<li>terra did not install on 32-bit systems <a href="https://github.com/rspatial/terra/issues/1846" class="external-link">#1846</a> by Sergey Fedorov</li>
+<li>terra did not install with GDAL &lt; 3.1 <a href="https://github.com/rspatial/terra/issues/1853" class="external-link">#1853</a> by BastienFR</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-56">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-56"></a></h3>
+<h3 id="enhancements-1-8-58">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-58"></a></h3>
 <ul><li>
 <code>freq</code> has new argument “touches” to determine which cell to include if a zones polygon is used <a href="https://stackoverflow.com/q/79654752" class="external-link">SO 79654752</a> by M. Beausoleil</li>
+<li>
+<code>plot</code> with a continuous legend has new <code>plg</code> parameter “format” so that you can use scientific notation <a href="https://github.com/rspatial/terra/issues/1861" class="external-link">#1861</a> by Andrea Titolo</li>
+<li>
+<code>sprc&lt;character&gt;</code> now also works for a single datasource raster <a href="https://github.com/rspatial/terra/issues/1860" class="external-link">#1860</a> by Anrew Gene Brown</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-56">new<a class="anchor" aria-label="anchor" href="#new-1-8-56"></a></h3>
+<h3 id="new-1-8-58">new<a class="anchor" aria-label="anchor" href="#new-1-8-58"></a></h3>
 </div>
 </div>
     <div class="section level2">
