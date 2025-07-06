@@ -1,4 +1,4 @@
-# version 1.8-57
+# version 1.8-58
 
 ## bug fixes
 
@@ -12,6 +12,8 @@
 ## enhancements
 
 - `freq` has new argument "touches" to determine which cell to include if a zones polygon is used [SO 79654752](https://stackoverflow.com/q/79654752) by M. Beausoleil
+- `plot` with a continuous legend has new `plg` parameter "format" so that you can use scientific notation [#1861](https://github.com/rspatial/terra/issues/1861) by Andrea Titolo
+- `sprc<character>` now also works for a single datasource raster [#1860](https://github.com/rspatial/terra/issues/1860) by Anrew Gene Brown
 
 ## new
 
