@@ -292,7 +292,9 @@
 	}
 	zztxt <- x$leg[["labels"]]
 	if (is.null(zztxt)) {
-		zztxt <- formatC(zz, digits=x$leg[["digits"]], format = "f")
+		form <- x$leg[["format"]]
+		if (is.null(form)) form <- "f"
+		zztxt <- trimws(formatC(zz, digits=x$leg[["digits"]], format = form))
 		if (x$fill_range) {
 			if (isTRUE(x$range_filled[1])) zztxt[1] <- paste0("< ", zztxt[1])		
 			if (isTRUE(x$range_filled[2])) zztxt[length(zztxt)] <- paste0("> ", zztxt[length(zztxt)])		
