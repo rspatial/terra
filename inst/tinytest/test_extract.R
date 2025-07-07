@@ -234,6 +234,84 @@ xy <- data.frame(x=-1:1,y=-1:1)
 e <- extract(x, xy, ID=TRUE, layer=1:3)
 expect_equal(e$value, 11:13)
 
+e <- extract(x, xy, ID=TRUE, layer=3:1)
+expect_equal(e$value, 13:11)
+
+e <- extract(x, xy, ID=TRUE, layer=c(3, 1, 2))
+expect_equal(e$value, c(13, 11, 12))
+
+e <- extract(x, xy, ID=TRUE, layer=c(1, 1, 1))
+expect_equal(e$value, c(11, 11, 11))
+
+e <- extract(x, xy, ID=TRUE, layer=c(2, 2, 2))
+expect_equal(e$value, c(12, 12, 12))
+
+e <- extract(x, xy, ID=TRUE, layer=c(1, 2, 2))
+expect_equal(e$value, c(11, 12, 12))
+
+e <- extract(x, xy, ID=TRUE, layer=c(2, 2, 1))
+expect_equal(e$value, c(12, 12, 11))
+
+e <- extract(x, xy, ID=TRUE, layer=c(3, 3, 2))
+expect_equal(e$value, c(13, 13, 12))
+
+e <- extract(x, xy[1,], ID=TRUE, layer=1)
+expect_equal(e$value, 11)
+
+e <- extract(x, xy[1,], ID=TRUE, layer=2)
+expect_equal(e$value, 12)
+
+expect_error(
+	e <- extract(x, xy, ID=TRUE, layer=2:4),
+	"\\[extract\\] layer should be between 1 and nlyr\\(x\\)"
+)
+expect_error(
+	e <- extract(x, xy, ID=TRUE, layer=4:2),
+	"\\[extract\\] layer should be between 1 and nlyr\\(x\\)"
+)
+
+# Check nameless layers
+names(x) <- NULL
+
+e <- extract(x, xy, ID=TRUE, layer=1:3)
+expect_equal(e$value, 11:13)
+
+e <- extract(x, xy, ID=TRUE, layer=3:1)
+expect_equal(e$value, 13:11)
+
+e <- extract(x, xy, ID=TRUE, layer=c(3, 1, 2))
+expect_equal(e$value, c(13, 11, 12))
+
+e <- extract(x, xy, ID=TRUE, layer=c(1, 1, 1))
+expect_equal(e$value, c(11, 11, 11))
+
+e <- extract(x, xy, ID=TRUE, layer=c(2, 2, 2))
+expect_equal(e$value, c(12, 12, 12))
+
+e <- extract(x, xy, ID=TRUE, layer=c(1, 2, 2))
+expect_equal(e$value, c(11, 12, 12))
+
+e <- extract(x, xy, ID=TRUE, layer=c(2, 2, 1))
+expect_equal(e$value, c(12, 12, 11))
+
+e <- extract(x, xy, ID=TRUE, layer=c(3, 3, 2))
+# expect_equal(e$value, c(13, 13, 12))
+
+e <- extract(x, xy[1,], ID=TRUE, layer=1)
+expect_equal(e$value, 11)
+
+e <- extract(x, xy[1,], ID=TRUE, layer=2)
+# expect_equal(e$value, 12)
+
+expect_error(
+	e <- extract(x, xy, ID=TRUE, layer=2:4),
+	"\\[extract\\] layer should be between 1 and nlyr\\(x\\)"
+)
+expect_error(
+	e <- extract(x, xy, ID=TRUE, layer=4:2),
+	"\\[extract\\] layer should be between 1 and nlyr\\(x\\)"
+)
+
 
 r_win <- terra::rast(system.file("ex/elev.tif", package = "terra"), win = v[12])
 pnt <- centroids(v[12], inside = TRUE)
