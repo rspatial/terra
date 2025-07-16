@@ -2631,8 +2631,16 @@ SpatVector SpatVector::symdif(SpatVector v) {
 	if (ve.hasError()) {
 		return ve;
 	}
-	out = out.append(ve, true);
-	return out;
+	if ((out.type() == "polygons") && (ve.type() == "polygons")) {
+		return out.append(ve, true);
+	} else if (ve.type() == "polygons") {
+		return ve;
+	} else if (out.type() == "polygons") {
+		return out;
+	} else {
+		SpatVector empty;
+		return empty;
+	} 
 
 /*
 	SpatVector out;
