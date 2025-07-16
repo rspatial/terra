@@ -312,7 +312,7 @@ setReplaceMethod("[[", c("SpatVector", "character"),
 			}
 			value <- value[,1]
 		} else if (inherits(value, "list")) {
-			value <- unlist(value)
+			value <- sapply(value, function(x) if (is.null(x)) NA else x)
 		}
 
 		if (NCOL(value)	> 1) {
