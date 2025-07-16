@@ -2006,13 +2006,17 @@ std::vector<std::vector<double>> SpatRaster::where(std::string what, bool values
 					}
 				}
 			}
-			if (values) {
-				std::vector<double> wval(out[j].size(), val[j]);
-				out[j].insert(out[j].end(), wval.begin(), wval.end());
-			}
 		}
 	}
 	readStop();
+
+	if (values) {
+		for (size_t j=0; j<nl; j++) {
+			std::vector<double> wval(out[j].size(), val[j]);
+			out[j].insert(out[j].end(), wval.begin(), wval.end());
+		}
+	}
+
 	return(out);
 }
 
