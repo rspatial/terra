@@ -1,4 +1,4 @@
-# version 1.8-58
+# version 1.8-59
 
 ## bug fixes
 
@@ -7,7 +7,7 @@
 - `resample` with method="median" did not work [#1855](https://github.com/rspatial/terra/issues/1855) by vmombo
 - terra did not install on 32-bit systems [#1846](https://github.com/rspatial/terra/issues/1846) by Sergey Fedorov
 - terra did not install with GDAL < 3.1 [#1853](https://github.com/rspatial/terra/issues/1853) by BastienFR
-
+- better assignment of a list to a new subsetted SpatVector variable [#1867](https://github.com/rspatial/terra/issues/1867) by courtiol
 
 ## enhancements
 
