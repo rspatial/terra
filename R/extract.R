@@ -229,7 +229,16 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		if (length(layer) > nrow(y)) {
 			error("extract", "length(layer) > nrow(y)")
 		} else { # recycle
+			if (is.numeric(layer)) {
+				layer <- round(layer)
+				if (min(layer, na.rm=TRUE) < 1 || max(layer, na.rm=TRUE) > nlyr(x)) {
+					error("extract", "layer should be between 1 and nlyr(x)")
+				}
+			}
 			x <- x[[unique(layer)]]
+			if (is.numeric(layer)) { # Match new layer order
+			  layer <- match(layer, unique(layer))
+			}
 			layer <- rep(layer, length.out=nrow(y))
 		}
 		keepID <- ID
