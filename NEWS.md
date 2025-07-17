@@ -7,15 +7,18 @@
 - `resample` with method="median" did not work [#1855](https://github.com/rspatial/terra/issues/1855) by vmombo
 - terra did not install on 32-bit systems [#1846](https://github.com/rspatial/terra/issues/1846) by Sergey Fedorov
 - terra did not install with GDAL < 3.1 [#1853](https://github.com/rspatial/terra/issues/1853) by BastienFR
-- better assignment of a list to a new subsetted SpatVector variable [#1867](https://github.com/rspatial/terra/issues/1867) by courtiol
+- better assignment of a list to a new subsetted SpatVector variable [#1867](https://github.com/rspatial/terra/issues/1867) by Alexandre Courtiol
+- `nearest` did not work well for lonlat polygons [#1869](https://github.com/rspatial/terra/issues/1869) by Alexandre Courtiol
+- polygon union failure when symdif returns lines [#1866](https://github.com/rspatial/terra/issues/1866) by Reed Humphrey
+- where.max did not work properly when processing large files in chunks. [#1858](https://github.com/rspatial/terra/issues/1868) by Tyler Hoecker
+- numerical layer indexing in extract was broken [#1862](https://github.com/rspatial/terra/issues/1862) identified and fixed [#1863] (https://github.com/rspatial/terra/pull/1863) by Finn Lindgren
+
 
 ## enhancements
 
 - `freq` has new argument "touches" to determine which cell to include if a zones polygon is used [SO 79654752](https://stackoverflow.com/q/79654752) by M. Beausoleil
 - `plot` with a continuous legend has new `plg` parameter "format" so that you can use scientific notation [#1861](https://github.com/rspatial/terra/issues/1861) by Andrea Titolo
 - `sprc<character>` now also works for a single datasource raster [#1860](https://github.com/rspatial/terra/issues/1860) by Anrew Gene Brown
-
-## new
 
 
 # version 1.8-54
