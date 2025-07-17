@@ -3045,7 +3045,16 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel, const std::str
 	out.srs = srs;
 
 	
-	if (lonlat && (type() == "points") && (v.type() == "points")) {
+	if (lonlat) {
+		SpatVector x = *this;
+		if (x.type() != "points") {
+			x = x.densify(1000, false, false);
+			x = x.as_points(false);
+		}
+		if (v.type() != "points") {
+			v = v.densify(1000, false, false);
+			v = v.as_points(false);
+		}
 		std::vector<double> nlon, nlat, dist;
 		std::vector<long> id;
 		std::vector<std::vector<double>> p = coordinates();
