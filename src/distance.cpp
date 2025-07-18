@@ -588,12 +588,12 @@ void nearest_lonlat(std::vector<long> &id, std::vector<double> &d, std::vector<d
 				d[i] = NAN;
 				continue;
 			}
-			d[i] = dfun(lat1[i], lon1[i], lat2[0], lon2[0]);
+			d[i] = dfun(lon1[i], lat1[i], lon2[0], lat2[0]);
 			nlon[i] = lon2[0];
 			nlat[i] = lat2[0];
 			id[i] = 0;
 			for (size_t j=1; j<m; j++) {
-				double s12 = dfun(lat1[i], lon1[i], lat2[j], lon2[j]);
+				double s12 = dfun(lon1[i], lat1[i], lon2[j], lat2[j]);
 				if (s12 < d[i]) {
 					d[i] = s12;
 					id[i] = j;
