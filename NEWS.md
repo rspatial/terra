@@ -1,4 +1,4 @@
-# version 1.8-59
+# version 1.8-60
 
 ## bug fixes
 
@@ -8,7 +8,7 @@
 - terra did not install on 32-bit systems [#1846](https://github.com/rspatial/terra/issues/1846) by Sergey Fedorov
 - terra did not install with GDAL < 3.1 [#1853](https://github.com/rspatial/terra/issues/1853) by BastienFR
 - better assignment of a list to a new subsetted SpatVector variable [#1867](https://github.com/rspatial/terra/issues/1867) by Alexandre Courtiol
-- `nearest` did not work well for lonlat polygons [#1869](https://github.com/rspatial/terra/issues/1869) by Alexandre Courtiol
+- `nearest` did not work well for lonlat polygons [#1869](https://github.com/rspatial/terra/issues/1869) and with methods "cosine" and "haversine" by Alexandre Courtiol
 - polygon union failure when symdif returns lines [#1866](https://github.com/rspatial/terra/issues/1866) by Reed Humphrey
 - where.max did not work properly when processing large files in chunks. [#1858](https://github.com/rspatial/terra/issues/1868) by Tyler Hoecker
 - numerical layer indexing in extract was broken [#1862](https://github.com/rspatial/terra/issues/1862) identified and fixed [#1863] (https://github.com/rspatial/terra/pull/1863) by Finn Lindgren

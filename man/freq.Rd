@@ -14,7 +14,8 @@ You can provide a SpatVector or additional SpatRaster to define zones for which 
 }
 
 \usage{
-\S4method{freq}{SpatRaster}(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE, zones=NULL, wide=FALSE, touches=FALSE)
+\S4method{freq}{SpatRaster}(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE, 
+		zones=NULL, wide=FALSE, touches=FALSE)
 }
 
 \arguments{
