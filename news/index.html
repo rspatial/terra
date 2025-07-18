@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-58</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-60</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-58" id="version-18-58">version 1.8-58<a class="anchor" aria-label="anchor" href="#version-18-58"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-60" id="version-18-60">version 1.8-60<a class="anchor" aria-label="anchor" href="#version-18-60"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-58">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-58"></a></h3>
+<h3 id="bug-fixes-1-8-60">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-60"></a></h3>
 <ul><li>
 <code>freq</code> failed when using zones polygons that did not overlap with any cell centers <a href="https://stackoverflow.com/q/79654752" class="external-link">SO 79654752</a> by M. Beausoleil</li>
 <li>
@@ -45,9 +45,15 @@
 <code>resample</code> with method=“median” did not work <a href="https://github.com/rspatial/terra/issues/1855" class="external-link">#1855</a> by vmombo</li>
 <li>terra did not install on 32-bit systems <a href="https://github.com/rspatial/terra/issues/1846" class="external-link">#1846</a> by Sergey Fedorov</li>
 <li>terra did not install with GDAL &lt; 3.1 <a href="https://github.com/rspatial/terra/issues/1853" class="external-link">#1853</a> by BastienFR</li>
+<li>better assignment of a list to a new subsetted SpatVector variable <a href="https://github.com/rspatial/terra/issues/1867" class="external-link">#1867</a> by Alexandre Courtiol</li>
+<li>
+<code>nearest</code> did not work well for lonlat polygons <a href="https://github.com/rspatial/terra/issues/1869" class="external-link">#1869</a> and with methods “cosine” and “haversine” by Alexandre Courtiol</li>
+<li>polygon union failure when symdif returns lines <a href="https://github.com/rspatial/terra/issues/1866" class="external-link">#1866</a> by Reed Humphrey</li>
+<li>where.max did not work properly when processing large files in chunks. <a href="https://github.com/rspatial/terra/issues/1868" class="external-link">#1858</a> by Tyler Hoecker</li>
+<li>numerical layer indexing in extract was broken <a href="https://github.com/rspatial/terra/issues/1862" class="external-link">#1862</a> identified and fixed [#1863] (<a href="https://github.com/rspatial/terra/pull/1863" class="external-link uri">https://github.com/rspatial/terra/pull/1863</a>) by Finn Lindgren</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-58">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-58"></a></h3>
+<h3 id="enhancements-1-8-60">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-60"></a></h3>
 <ul><li>
 <code>freq</code> has new argument “touches” to determine which cell to include if a zones polygon is used <a href="https://stackoverflow.com/q/79654752" class="external-link">SO 79654752</a> by M. Beausoleil</li>
 <li>
@@ -55,9 +61,6 @@
 <li>
 <code>sprc&lt;character&gt;</code> now also works for a single datasource raster <a href="https://github.com/rspatial/terra/issues/1860" class="external-link">#1860</a> by Anrew Gene Brown</li>
 </ul></div>
-<div class="section level3">
-<h3 id="new-1-8-58">new<a class="anchor" aria-label="anchor" href="#new-1-8-58"></a></h3>
-</div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.8-54" id="version-18-54">version 1.8-54<a class="anchor" aria-label="anchor" href="#version-18-54"></a></h2><p class="text-muted">CRAN release: 2025-06-01</p>
