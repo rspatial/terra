@@ -88,7 +88,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
     \item \code{tick} numeric to indicate for which of the axes to draw tickmarks. Default is \code{1:2} unless \code{side} is changed, in which case the default is the same as \code{side}
     \item \code{lab} numeric to indicate for which of the axes to draw labels. Default is \code{1:2} unless \code{side} is changed, in which case the default is the same as \code{side}
     \item \code{xat}/\code{yat} numeric with the values at which tickmarks are to be drawn on the horizontal/vertical axis.
-    \item \code{xlab}/\code{ylab} this can either be a logical value specifying whether (numerical) annotations are to be made at the tickmarks, or a character or expression vector of labels to be placed at the tickmarks of the horizontal/vertical axis. 
+    \item \code{xlabs}/\code{ylabs} this can either be a logical value specifying whether (numerical) annotations are to be made at the tickmarks, or a character or expression vector of labels to be placed at the tickmarks of the horizontal/vertical axis. 
     \item \code{retro} a logical value that can be set to \code{TRUE} to use a sexagesimal notation for the labels (degrees/minutes/hemisphere) instead of the standard decimal notation. For longitude/latitude data only. See \code{\link{graticule}} for projected data.
   }}
   
