@@ -77,7 +77,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 	\item \code{at} to set the location of the tickmarks
 	\item \code{format} as in \code{\link{formatC}} to format the numbers. For example, you can use \code{format="g"} for scientific notation. The default is \code{"f"}
 	\item \code{tick} One of these partially matched values: "through", "in", "middle", "out", or "none", to choose a tickmark placement/length that is different from the default "throughout". 
-	\item \code{tick.length} to change the tick mark length (default = 1).
+	\item \code{tick.length} to change the tick mark length (default = 1). Only relevant when \code{tick} is "throughout" or "out".
 	\item \code{tick.col}, \code{tick.box.col} and \code{tick.lwd} to change the appearance of the tickmarks
 	\item \code{title.srt} to rotate the legend title
 	\item \code{title.x} and \code{title.y} to place the legend title at specific coordinates  
