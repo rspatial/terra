@@ -1,4 +1,13 @@
+# version 1.8-61
+
+## bug fixes
+## enhancements
+## new
+
+
 # version 1.8-60
+
+Released 2025-07-18
 
 ## bug fixes
 
@@ -297,7 +306,7 @@ Released 2024-10-14
 - argument `fill_range` to plot<SpatRaster> and `plot<SpatVector>` to use the color of the extreme values of the specified range [#1553](https://github.com/rspatial/terra/issues/1553) by Mike Koontz
 - `plet<SpatRaster>` can now handle rasters with a "local" (Cartesian) CRS. [#1570](https://github.com/rspatial/terra/issues/1570) by Augustin Lobo.
 - `geom` can now return "wkb" [#1609](https://github.com/rspatial/terra/issues/1609)
-- faster plotting when color names are used. In response to question by Olle on [gis.stackexchange.com](https://gis.stackexchange.com/questions/487112/plotting-discrete-categorical-rasters-with-custom-colors-slows-down-r-terra/488012#488012)
+- faster plotting when color names are used. In response to question by Olle on [gis.stackexchange.com](https://gis.stackexchange.com/questions/487112/plotting-discrete-categorical-rasters-with-custom-colors-slows-down-r-terra/488012)
 
 ## new 
 
