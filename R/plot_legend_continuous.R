@@ -310,14 +310,18 @@
 			P <- "right"
 		}
 	}
+
 		
+	ticklength <- x$leg[["tick.length"]]
+	if (is.null(ticklength)) ticklength <- 1
+
 	if (P %in% c("left", "right")) {
 		Y <- seq(e$ymin, e$ymax, length.out=nc+1)
 		graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=NA, lwd=boxlwd)
 		ypos <- e$ymin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dy
 		if (P == "right") {
 			if (tics == "throughout") {
-				graphics::segments(e$xmin, ypos, e$xmax+e$dx*0.25, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
+				graphics::segments(e$xmin, ypos, e$xmax+e$dx*0.25*ticklength, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "through") {
 				graphics::segments(e$xmin, ypos, e$xmax, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "middle") {
@@ -325,12 +329,12 @@
 			} else if (tics == "in") {
 				graphics::segments(e$xmax-e$dx*0.25, ypos, e$xmax, ypos, xpd=NA, col=ticcol, lwd=ticlwd)			
 			} else if (tics == "out") {
-				graphics::segments(e$xmax, ypos, e$xmax+e$dx*0.25, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
+				graphics::segments(e$xmax, ypos, e$xmax+e$dx*0.25*ticklength, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			}
 			text(e$xmax+e$dx*0.2, ypos, zztxt, pos=4, xpd=NA, cex=cex, srt=srt, font=x$leg$font, col=x$leg$col, ...)
 		} else {
 			if (tics == "throughout") {
-				graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmax, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
+				graphics::segments(e$xmin-e$dx*0.25*ticklength, ypos, e$xmax, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "through") {
 				graphics::segments(e$xmin, ypos, e$xmax, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "middle") {
@@ -338,7 +342,7 @@
 			} else if (tics == "in") {
 				graphics::segments(e$xmin, ypos, e$xmin+e$dx*0.25, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "out") {
-				graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmin, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
+				graphics::segments(e$xmin-e$dx*0.25*ticklength, ypos, e$xmin, ypos, xpd=NA, col=ticcol, lwd=ticlwd)
 			}
 			text(e$xmin-e$dx*0.2, ypos, zztxt, pos=2, xpd=NA, cex=cex, srt=srt, font=x$leg$font, col=x$leg$col, ...)
 		}
@@ -349,7 +353,7 @@
 		
 		if (P == "bottom") {
 			if (tics == "throughout") {
-				graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymax, xpd=NA, col=ticcol, lwd=ticlwd)
+				graphics::segments(xpos, e$ymin-e$dy*0.25*ticklength, xpos, e$ymax, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "through") {
 				graphics::segments(xpos, e$ymin, xpos, e$ymax, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "middle") {
@@ -357,12 +361,12 @@
 			} else if (tics == "in") {
 				graphics::segments(xpos, e$ymin+e$dy*0.25, xpos, e$ymin, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "out") {
-				graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymin, xpd=NA, col=ticcol, lwd=ticlwd)
+				graphics::segments(xpos, e$ymin-e$dy*0.25*ticklength, xpos, e$ymin, xpd=NA, col=ticcol, lwd=ticlwd)
 			}
 			text(xpos, e$ymin-e$dy, zztxt, pos=NULL, xpd=NA, cex=cex, srt=srt, font=x$leg$font, col=x$leg$col, ...)
 		} else {
 			if (tics == "throughout") {
-				graphics::segments(xpos, e$ymin, xpos, e$ymax+e$dy*0.25, xpd=NA, col=ticcol, lwd=ticlwd)
+				graphics::segments(xpos, e$ymin, xpos, e$ymax+e$dy*0.25*ticklength, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "through") {
 				graphics::segments(xpos, e$ymin, xpos, e$ymax, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "middle") {
@@ -370,7 +374,7 @@
 			} else if (tics == "in") {
 				graphics::segments(xpos, e$ymax, xpos, e$ymax-e$dy*0.25, xpd=NA, col=ticcol, lwd=ticlwd)
 			} else if (tics == "out") {
-				graphics::segments(xpos, e$ymax, xpos, e$ymax+e$dy*0.25, xpd=NA, col=ticcol, lwd=ticlwd)
+				graphics::segments(xpos, e$ymax, xpos, e$ymax+e$dy*0.25*ticklength, xpd=NA, col=ticcol, lwd=ticlwd)
 			}
 			text(xpos, e$ymax+1.5*e$dy, zztxt, pos=NULL, xpd=NA, cex=cex, srt=srt, font=x$leg$font, col=x$leg$col, ...)
 		}
