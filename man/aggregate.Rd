@@ -22,7 +22,7 @@ You can also aggregate ("dissolve") a SpatVector. This either combines all geome
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{fact}{positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (vertical (fact[[1]]) and horizontal (fact[[2]]) aggregation factor) or three integers (when also aggregating over layers)}  
+  \item{fact}{positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (vertical (fact[1]) and horizontal (fact[2]) aggregation factor) or three integers (when also aggregating over layers)}  
   \item{fun}{function used to aggregate values. Either an actual function, or for the following, their name: "mean", "max", "min", "median", "sum", "modal", "any", "all", "prod", "which.min", "which.max", "table", "sd" (sample standard deviation) and "std" (population standard deviation)}
   \item{...}{additional arguments passed to \code{fun}, such as \code{na.rm=TRUE}}  
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created. Ignored for C++ level implemented functions that are listed under \code{fun}}  
@@ -58,10 +58,11 @@ values(r) <- runif(ncell(r))
 ra <- aggregate(r, fact=10, fun=max)
 
 # aggregated raster, 'fact' parameter contains two values, max of the values
-rb <- aggregate(r, fact=c(10,10), fun=max) # Same result as above
+# same result as above
+rb <- aggregate(r, fact=c(10,10), fun=max) 
 
-rc <- aggregate(r, fact=c(10,2), fun=max) # 10 rows(`latitude`) and 2 columns(`longitude`) of data, i.e., a matrix of (10, 2), are combined into a cell
-
+# groups of 10 rows and 2 columns are combined into new cells
+rc <- aggregate(r, fact=c(10,2), fun=max) 
 
 # multiple layers
 s <- c(r, r*2)
