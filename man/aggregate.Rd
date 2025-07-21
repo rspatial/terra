@@ -22,14 +22,13 @@ You can also aggregate ("dissolve") a SpatVector. This either combines all geome
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{fact}{positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (horizontal and vertical aggregation factor) or three integers (when also aggregating over layers)}  
+  \item{fact}{positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (vertical (fact[[1]]) and horizontal (fact[[2]]) aggregation factor) or three integers (when also aggregating over layers)}  
   \item{fun}{function used to aggregate values. Either an actual function, or for the following, their name: "mean", "max", "min", "median", "sum", "modal", "any", "all", "prod", "which.min", "which.max", "table", "sd" (sample standard deviation) and "std" (population standard deviation)}
   \item{...}{additional arguments passed to \code{fun}, such as \code{na.rm=TRUE}}  
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created. Ignored for C++ level implemented functions that are listed under \code{fun}}  
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
-  
   \item{by}{character. The variable(s) used to group the geometries}
   \item{dissolve}{logical. Should borders between aggregated geometries be dissolved?} 
   \item{count}{logical. If \code{TRUE} and \code{by} is not \code{NULL}, a variable "agg_n" is included that shows the number of input geometries for each output geometry}
@@ -57,6 +56,12 @@ ra <- aggregate(r, fact=10)
 values(r) <- runif(ncell(r))
 # aggregated raster, max of the values
 ra <- aggregate(r, fact=10, fun=max)
+
+# aggregated raster, 'fact' parameter contains two values, max of the values
+rb <- aggregate(r, fact=c(10,10), fun=max) # Same result as above
+
+rc <- aggregate(r, fact=c(10,2), fun=max) # 10 rows(`latitude`) and 2 columns(`longitude`) of data, i.e., a matrix of (10, 2), are combined into a cell
+
 
 # multiple layers
 s <- c(r, r*2)
