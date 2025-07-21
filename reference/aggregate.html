@@ -9,7 +9,7 @@ You can also aggregate ("dissolve") a SpatVector. This either combines all geome
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-60</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-61</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@ You can also aggregate ("dissolve") a SpatVector. This either combines all geome
 <dd><p>SpatRaster</p></dd>
 
   <dt id="arg-fact">fact<a class="anchor" aria-label="anchor" href="#arg-fact"></a></dt>
-<dd><p>positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (horizontal and vertical aggregation factor) or three integers (when also aggregating over layers)</p></dd>
+<dd><p>positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (vertical (fact[[1]]) and horizontal (fact[[2]]) aggregation factor) or three integers (when also aggregating over layers)</p></dd>
 
   <dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
 <dd><p>function used to aggregate values. Either an actual function, or for the following, their name: "mean", "max", "min", "median", "sum", "modal", "any", "all", "prod", "which.min", "which.max", "table", "sd" (sample standard deviation) and "std" (population standard deviation)</p></dd>
@@ -76,7 +76,6 @@ You can also aggregate ("dissolve") a SpatVector. This either combines all geome
 
   <dt id="arg-wopt">wopt<a class="anchor" aria-label="anchor" href="#arg-wopt"></a></dt>
 <dd><p>list with named options for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
-
 
   <dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
 <dd><p>character. The variable(s) used to group the geometries</p></dd>
@@ -111,6 +110,12 @@ You can also aggregate ("dissolve") a SpatVector. This either combines all geome
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># aggregated raster, max of the values</span></span></span>
 <span class="r-in"><span><span class="va">ra</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">r</span>, fact<span class="op">=</span><span class="fl">10</span>, fun<span class="op">=</span><span class="va">max</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># aggregated raster, 'fact' parameter contains two values, max of the values</span></span></span>
+<span class="r-in"><span><span class="va">rb</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">r</span>, fact<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">10</span><span class="op">)</span>, fun<span class="op">=</span><span class="va">max</span><span class="op">)</span> <span class="co"># Same result as above</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">rc</span> <span class="op">&lt;-</span> <span class="fu">aggregate</span><span class="op">(</span><span class="va">r</span>, fact<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">2</span><span class="op">)</span>, fun<span class="op">=</span><span class="va">max</span><span class="op">)</span> <span class="co"># 10 rows(`latitude`) and 2 columns(`longitude`) of data, i.e., a matrix of (10, 2), are combined into a cell</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># multiple layers</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span></span></span>
