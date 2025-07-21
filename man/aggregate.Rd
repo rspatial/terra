@@ -60,7 +60,7 @@ ra <- aggregate(r, fact=10, fun=max)
 # aggregated raster, 'fact' parameter contains two values, max of the values
 rb <- aggregate(r, fact=c(10,10), fun=max) # Same result as above
 
-rc <- aggregate(r, fact=c(10,2), fun=max) # 10 rows(`latitude`) and 2 columns(`longitude`) of data, i.e., a matrix of (10, 2), are combined into a raster
+rc <- aggregate(r, fact=c(10,2), fun=max) # 10 rows(`latitude`) and 2 columns(`longitude`) of data, i.e., a matrix of (10, 2), are combined into a cell
 
 
 # multiple layers
