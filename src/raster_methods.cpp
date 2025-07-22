@@ -3130,7 +3130,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 	double hxr = xres()/2;
 
 	if ((abs(e.xmin) <= hxr) && (abs(e.xmax - 360) <= hxr)) {
-
+		// 0_360 -> -180_180
 		size_t nc = ncol();
 		size_t nl = nlyr();
 		size_t hnc = (nc / 2);
@@ -3172,7 +3172,25 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 		out.writeStop();
 		readStop();
 		return(out);
+	} else if ((e.xmin < -hxr) && (e.xmax > hxr)) {
+		// -180_180 -> 0_360
+
+		SpatOptions ops(opt);
+		SpatExtent eright = e;
+		eright.xmin = 0;
+		SpatRaster right = crop(eright, "near", false, ops);
+		
+		SpatExtent eleft = e;
+		eleft.xmax = 0;
+		SpatRaster left = crop(eleft, "near", false, ops);
+		left = left.shift(360., 0., ops);
+		SpatRasterCollection sr;
+		sr.push_back(left, "left");
+		sr.push_back(right, "right");
+		return sr.merge(true, false, 1, "", opt);
+		
 	} else if ((e.xmin < 0) && (e.xmax > 180)) {
+
 		SpatOptions ops(opt);
 		SpatRasterCollection sr;
 		SpatExtent ec = e;
@@ -3188,6 +3206,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 
 	} else if (e.xmin >= 0) {
 		if (e.xmax <= 180) {
+		// do nothing
 			std::string filename = opt.get_filename();
 			if (filename.empty()) {
 				return deepCopy();
@@ -3195,8 +3214,10 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 				return writeRaster(opt);
 			}
 		} else if (e.xmin >= 180) {
+			// 0_360 -> -180_180 
 			return shift(-360., 0., opt);			
 		} else {
+			// 0_360 -> -180_180 			
 			SpatOptions ops(opt);
 			SpatExtent eright = e;
 			eright.xmax = 180;
@@ -3212,8 +3233,10 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 			return sr.merge(true, false, 1, "", opt);
 		}
 	} else if (e.xmax <= 0) {
+		// -180_180 -> 0_360
 		return shift(360, 0, opt);
 	} else if ((e.xmin >= -180) && (e.xmax <= 180)) {
+		// -180_180 -> 0_360
 		SpatOptions ops(opt);
 		SpatExtent eright = e;
 		eright.xmax = 180;
