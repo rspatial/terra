@@ -131,6 +131,9 @@ SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
 			SpatRaster g = geometry();
 			e.ymin= std::max(e.ymin, -90.0+fy);
 			e.ymax= std::min(e.ymax, 90.0-fy);
+			double fx = xres() / 10; // avoid flipping to other side of dateline
+			e.xmin= std::max(e.xmin, -180.0+fx);
+			e.xmax= std::min(e.xmax, 180.0-fx);
 			g.source[0].extent = e;
 			return g.dense_extent(inside, false);
 		}
@@ -684,6 +687,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 	}
 	out.writeStop();
+	
 	if (mask) {
 		SpatVector v = dense_extent(true, true);
 		v = v.project(out.getSRS("wkt"), true);
