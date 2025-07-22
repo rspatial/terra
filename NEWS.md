@@ -1,7 +1,11 @@
 # version 1.8-61
 
 ## bug fixes
+
+- `project(mask=TRUE)` could fail with high-resolution global rasters because of data-line flipping [SO 79708536](https://stackoverflow.com/q/79708536/635245) by Patrick
+
 ## enhancements
+
 ## new
 
 
