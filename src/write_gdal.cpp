@@ -1084,6 +1084,8 @@ bool SpatRaster::writeStopGDAL() {
 		}
 	}
 
+	//source[0].gdalconnection->FlushCache();
+	
 	if (copy_driver.empty()) {
 		GDALClose( (GDALDatasetH) source[0].gdalconnection );
 	} else {
