@@ -37,7 +37,11 @@
 <h2 class="pkg-version" data-toc-text="1.8-61" id="version-18-61">version 1.8-61<a class="anchor" aria-label="anchor" href="#version-18-61"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-61">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-61"></a></h3>
-</div>
+<ul><li>
+<code>project(mask=TRUE)</code> could fail with high-resolution global rasters because of data-line flipping <a href="https://stackoverflow.com/q/79708536/635245" class="external-link">SO 79708536</a> by Patrick</li>
+<li>
+<code>plot(pax=list(mgp=c(1,1,2))</code> now sets mgp seperately for horizontal and vertical axes <a href="https://github.com/rspatial/terra/issues/1873" class="external-link">#1873</a> by Hu shiyu</li>
+</ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-61">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-61"></a></h3>
 </div>
