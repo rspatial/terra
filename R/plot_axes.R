@@ -122,6 +122,7 @@ retro_labels <- function(x, lat=TRUE) {
 	}
 	for (s in 1:4) {
 		y$side <- s
+		y$mgp <- x$axs$mgp
 		y$labels <- NULL
 		if (s %in% c(1,3)) {
 			ur <- usr[2] - usr[1]
@@ -171,6 +172,7 @@ retro_labels <- function(x, lat=TRUE) {
 					}
 				}
 			}
+			y$mgp[2] <- y$mgp[3]
 		}
 		z <- y
 		z$lwd <- 0
