@@ -66,7 +66,11 @@
 		if (smooth) {
 			dots <- list(...)
 			if (!is.null(dots$col)) { 
-				colramp <- grDevices::colorRampPalette(dots$col)
+				if (is.function(dots$col)) {
+					colramp <- grDevices::colorRampPalette(dots$col)
+				} else {
+					warn("plot<SpatRaster,SpatRaster>", "when smooth=TRUE, col must be a function")
+				}
 			}
 		}
 	}
