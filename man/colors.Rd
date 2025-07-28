@@ -39,6 +39,9 @@ data.frame
 
 \examples{
 r <- rast(ncols=3, nrows=2, vals=1:6)
+x <- c(r, r)
+names(x) <- c("A", "B")
+
 coltb <- data.frame(value=1:6, col=rainbow(6, end=.9))
 coltb
 
@@ -52,6 +55,8 @@ has.colors(r)
 tb <- coltab(r)
 class(tb)
 dim(tb[[1]])
+
+coltab(x, layer="B") <- coltb
 }
 
 \keyword{methods}

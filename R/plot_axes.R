@@ -42,14 +42,14 @@ retro_labels <- function(x, lat=TRUE) {
 	x$axs$cex.axis <- x$axs$cex.axis * 0.7
 	
 	if (is.null(x$axs$mgp)) {
-		x$axs$mgp = c(2, .25, 0)
+		x$axs$mgp = c(2, .25, .3)
 	}
 	if (is.null(x$axs$tcl)) {
 		x$axs$tcl <- -0.25
 	}
 	if ((!x$clip) & x$draw_grid) {
 		x$axs$tck <- 1
-		x$axs$mgp <- c(2, .15, 0)
+		x$axs$mgp <- c(2, .15, .2)
 	}
 
 	xlab <- ylab <- NULL
