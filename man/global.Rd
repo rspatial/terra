@@ -22,7 +22,7 @@ You can compute a weighted mean or sum by providing a SpatRaster with weights.
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{fun}{function to be applied to summarize the values by zone. Either as one or more of these built-in character values: "max", "min", "mean", "sum", "range", "rms" (root mean square), "sd", "std" (population sd, using \code{n} rather than \code{n-1}), "isNA", "notNA"; or a proper R function (but these may fail for very large SpatRasters unless you specify \code{maxcell})}
+  \item{fun}{function to be applied to summarize the values by zone. Either as one or more of these built-in character values: "max", "min", "mean", "sum", "range", "rms" (root mean square), "sd", "std" (population sd, using \code{n} rather than \code{n-1}), "isNA", "notNA", "anyNA", "anynotNA"; or a proper R function (but these may fail for very large SpatRasters unless you specify \code{maxcell})}
   \item{...}{additional arguments passed on to \code{fun}}  
   \item{weights}{NULL or SpatRaster}  
   \item{maxcell}{positive integer used to take a regular sample of \code{x}. Ignored by the built-in functions.}  
