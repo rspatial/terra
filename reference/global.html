@@ -60,7 +60,7 @@ You can compute a weighted mean or sum by providing a SpatRaster with weights.'>
 <dd><p>SpatRaster</p></dd>
 
   <dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
-<dd><p>function to be applied to summarize the values by zone. Either as one or more of these built-in character values: "max", "min", "mean", "sum", "range", "rms" (root mean square), "sd", "std" (population sd, using <code>n</code> rather than <code>n-1</code>), "isNA", "notNA"; or a proper R function (but these may fail for very large SpatRasters unless you specify <code>maxcell</code>)</p></dd>
+<dd><p>function to be applied to summarize the values by zone. Either as one or more of these built-in character values: "max", "min", "mean", "sum", "range", "rms" (root mean square), "sd", "std" (population sd, using <code>n</code> rather than <code>n-1</code>), "isNA", "notNA", "anyNA", "anynotNA"; or a proper R function (but these may fail for very large SpatRasters unless you specify <code>maxcell</code>)</p></dd>
 
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments passed on to <code>fun</code></p></dd>
