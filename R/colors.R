@@ -1,4 +1,4 @@
-
+col
 setMethod ("has.colors" , "SpatRaster",
 	function(x) {
 		x@pntr$hasColors()
@@ -24,7 +24,7 @@ setMethod ("coltab" , "SpatRaster",
 
 setMethod ("coltab<-" , "SpatRaster",
 	function(x, ..., layer=1, value) {
-
+		
 		x@pntr <- x@pntr$deepcopy()
 		if (inherits(value, "list")) {
 			for (i in seq_along(value)) {
@@ -55,6 +55,12 @@ setMethod ("coltab<-" , "SpatRaster",
 				}
 			}
 		} else {
+			if (inherits(layer, "character")) {
+				layer <- match(layer, names(x))
+				if (is.na(layer)) {
+					error("coltab", "not a valid layer name")
+				}
+			}
 			layer <- layer[1]-1
 			if (is.null(value)) {
 				x@pntr$removeColors(layer)
