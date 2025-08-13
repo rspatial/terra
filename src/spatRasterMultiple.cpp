@@ -469,7 +469,7 @@ std::string SpatRasterStack::getSRS(std::string s) {
 		
 bool SpatRasterStack::push_back(SpatRaster r, std::string name, std::string longname, std::string unit, bool warn) { 
 	if (!ds.empty()) {
-		if (!r.compare_geom(ds[0], false, false, true, true, true, false)) {
+		if (!r.compare_geom(ds[0], false, false, true, true, true, false, true)) {
 //		if (!ds[0].compare_geom(r, false, false, true, true, false, false)) {
 			if (warn) {
 				addWarning(r.msg.getError() +" (" + name + ")");
