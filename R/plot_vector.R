@@ -787,7 +787,7 @@ setMethod("plot", signature(x="SpatVectorProxy", y="missing"),
 
 
 setMethod("plot", signature(x="SpatVectorCollection", y="missing"),
-	function(x, y, main, mar=NULL, nc, nr, maxnl=16, ...) {
+	function(x, y, main, mar=NULL, nc, nr, maxnl=16, col=NULL, ...) {
 		nl <- max(1, min(length(x), maxnl))
 
 		if (nl==1) {
@@ -809,8 +809,15 @@ setMethod("plot", signature(x="SpatVectorCollection", y="missing"),
 		} else {
 			main <- rep_len(main, nl)
 		}
-		for (i in 1:nl) {
-			plot(x[i], main=main[i], mar=mar, ...)
+		if (is.list(col)) {
+			col <- rep_len(col, nl)
+			for (i in 1:nl) {
+				plot(x[i], main=main[i], mar=mar, col=col[[i]], ...)
+			}
+		} else {
+			for (i in 1:nl) {
+				plot(x[i], main=main[i], mar=mar, ...)
+			}
 		}
 	}
 )

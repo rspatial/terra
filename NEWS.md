@@ -4,13 +4,8 @@
 
 - `project(mask=TRUE)` could fail with high-resolution global rasters because of data-line flipping [SO 79708536](https://stackoverflow.com/q/79708536/635245) by Patrick
 - `plot(pax=list(mgp=c(1,1,2))` now sets mgp seperately for horizontal and vertical axes [#1873](https://github.com/rspatial/terra/issues/1873) by Hu shiyu
+- `coltab(x, ..., layer=1)<-` argument layer did not work for layer names [#1879](https://github.com/rspatial/terra/issues/1879) by Alex Ilich
 
-
-## enhancements
-
-
-
-## new
 
 
 # version 1.8-60

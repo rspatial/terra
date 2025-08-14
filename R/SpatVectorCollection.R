@@ -99,7 +99,9 @@ setReplaceMethod("[", c("SpatVectorCollection", "numeric", "missing"),
 
 setMethod("[", c("SpatVectorCollection", "numeric", "missing"),
 function(x, i, j, drop=TRUE) {
-	if (i < 0) {i <- (1:length(x))[i]}
+	if (isTRUE(any(i < 0))) {
+		i <- (1:length(x))[i]
+	}
 	if (drop && (length(i) == 1)) {
 		tptr <- x@pntr$get(i-1)
 		x <- methods::new("SpatVector")

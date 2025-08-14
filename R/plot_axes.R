@@ -105,7 +105,7 @@ retro_labels <- function(x, lat=TRUE) {
 	y <- x$axs
 	retro <- isTRUE(y$retro) 
 	if (retro && (!x$lonlat)) {
-		warn("plot", "'retro' labels can only be used with lonlat data") 
+		warn("plot", "'retro' labels can only be used with lon/lat data")
 		retro <- FALSE
 	}
 	y$retro <- y$lab <- y$tick <- NULL
