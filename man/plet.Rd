@@ -51,7 +51,7 @@ Plot the SpatRaster or SpatVector(s) to make an interactive leaflet map that is 
 \arguments{
   \item{x}{SpatRaster, SpatVector, or leaflet object}
   \item{y}{missing, or positive integer, or character (variable or layer name) indicating the layer(s) to be plotted. If \code{x} is a SpatRaster, you can select multiple layers}
-  \item{col}{character. Vector of colors or color generating function}
+  \item{col}{character. Vector of colors or a color generating function. If \code{x} is a SpatVectorCollection, you can provide a list with colors and/or functions, with one list element for each SpatVector}
   \item{alpha}{Number between 0 and 1 to set the transparency for lines (0 is transparent, 1 is opaque)}
   \item{fill}{Number between 0 and 1 to set the transparency for polygon areas (0 is transparent, 1 is opaque)}
   \item{tiles}{character or NULL. Names of background tile providers}
