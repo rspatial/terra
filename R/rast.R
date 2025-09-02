@@ -168,22 +168,28 @@ setMethod("rast", signature(x="SpatExtent"),
 
 setMethod("rast", signature(x="SpatVector"),
 	function(x, type="", ...) {
-	
+
+		dots <- list(...)
+		noCRS <- all(is.na(pmatch(names(dots), "crs")))
+
 		if (type == "xyz") {
 			if (geomtype(x) != "points") {
 				error("rast", "xyz can only be used with points")
 			}
-			x <- data.frame(crds(x), data.frame(x))
-			return(rast(x, type="xyz", ...))
+			v <- data.frame(crds(x), data.frame(x))
+			if (noCRS) {
+				return(rast(v, type="xyz", crs=crs(x), ...))
+			} else {
+				return(rast(v, type="xyz", ...))			
+			}
 		}
 	
-		dots <- list(...)
 		e <- ext(x)
 		dots$xmin=e[1]
 		dots$xmax=e[2]
 		dots$ymin=e[3]
 		dots$ymax=e[4]
-		if (all(is.na(pmatch(names(dots), "crs")))) {
+		if (noCRS) {
 			dots$crs <- crs(x)
 		}
 		do.call(new_rast, dots)
