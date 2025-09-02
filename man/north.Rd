@@ -15,7 +15,7 @@ north(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ...)
 
 \arguments{
 \item{xy}{numeric. x and y coordinate to place the arrow. It can also be one of following character values: "bottomleft", "bottom", "bottomright", topleft", "top", "topright", "left", "right", or NULL}
-\item{type}{integer between 1 and 12, or a character (unicode) representation of a right pointing arrow such as \code{"\u27A9"}}
+\item{type}{integer between 1 and 12, or a character (unicode) representation of a right pointing arrow such as \code{"\u27A9"}. You may need to install the fonts for this. See the discussion on \href{https://stackoverflow.com/a/79747858/635245}{stackoverflow}}
 \item{label}{character, to be printed near the arrow}
 \item{angle}{numeric. The angle of the arrow in degrees}
 \item{d}{numeric. Distance covered by the arrow in plot coordinates. Only applies to \code{type=1}}
