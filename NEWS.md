@@ -1,4 +1,4 @@
-# version 1.8-62
+# version 1.8-63
 
 ## bug fixes
 
@@ -6,6 +6,8 @@
 - `plot(pax=list(mgp=c(1,1,2))` now sets mgp seperately for horizontal and vertical axes [#1873](https://github.com/rspatial/terra/issues/1873) by Hu shiyu
 - `coltab(x, ..., layer=1)<-` argument layer did not work for layer names [#1879](https://github.com/rspatial/terra/issues/1879) by Alex Ilich
 - `sds` could create a SpatRasterDataset with SpatRasters with different spatial resolutions [#1884](https://github.com/rspatial/terra/issues/1884) by Stefan Fallert
+- `identical` did not consider NA values [#1890](https://github.com/rspatial/terra/issues/1890) by Facundo Muñoz
+- `add_grid` did not respect the clipping region if a second raster was added with `add=TRUE` [#1889](https://github.com/rspatial/terra/issues/1889) by Lucas Salinas Morales
 
 
 # version 1.8-60
