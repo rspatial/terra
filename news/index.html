@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-61</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-62</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,15 +34,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-61" id="version-18-61">version 1.8-61<a class="anchor" aria-label="anchor" href="#version-18-61"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-62" id="version-18-62">version 1.8-62<a class="anchor" aria-label="anchor" href="#version-18-62"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-61">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-61"></a></h3>
+<h3 id="bug-fixes-1-8-62">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-62"></a></h3>
 <ul><li>
 <code>project(mask=TRUE)</code> could fail with high-resolution global rasters because of data-line flipping <a href="https://stackoverflow.com/q/79708536/635245" class="external-link">SO 79708536</a> by Patrick</li>
 <li>
 <code>plot(pax=list(mgp=c(1,1,2))</code> now sets mgp seperately for horizontal and vertical axes <a href="https://github.com/rspatial/terra/issues/1873" class="external-link">#1873</a> by Hu shiyu</li>
 <li>
 <code>coltab(x, ..., layer=1)&lt;-</code> argument layer did not work for layer names <a href="https://github.com/rspatial/terra/issues/1879" class="external-link">#1879</a> by Alex Ilich</li>
+<li>
+<code>sds</code> could create a SpatRasterDataset with SpatRasters with different spatial resolutions <a href="https://github.com/rspatial/terra/issues/1884" class="external-link">#1884</a> by Stefan Fallert</li>
 </ul></div>
 </div>
     <div class="section level2">
