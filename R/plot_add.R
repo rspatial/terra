@@ -80,6 +80,7 @@ add_box <- function(...) {
 add_grid <- function(nx=NULL, ny=nx, col="lightgray", lty="dotted", lwd=1) {
 
 	p <- get.clip()
+	reset.clip()
 
 	## adapted from graphics::grid 
 	g.grid.at <- function (side, n, axp, usr2) {
