@@ -84,9 +84,10 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	nl <- nlyr(x)
 	if (length(index) > nl) {
 		error("tapp", "length(index) > nlyr(x)")
-	} else if (length(unique(index)) == 1) {
-		warn("tapp", "it is not sensible to a single value as index (use app instead)")	
-	}
+	} 
+	# else if (length(unique(index)) == 1) {
+	#	warn("tapp", "it is not sensible to a single value as index (use app instead)")	
+	#}
 	index <- rep_len(index, nl)
 	if (!is.factor(index)) {
 		index <- factor(index, levels=unique(index))
