@@ -523,6 +523,10 @@ setMethod("identical", signature(x="SpatRaster", y="SpatRaster"),
 		if (a && hasValues(x))  {
 			v <- unique(unlist(unique(x - y) ))
 			a <- identical(v, 0)
+			if (a) {
+				v <- unique(unlist(unique(is.na(x) - is.na(y)) ))
+				a <- all(v == 0)
+			}
 		}
 		a
 	}
