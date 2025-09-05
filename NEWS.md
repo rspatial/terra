@@ -1,4 +1,4 @@
-# version 1.8-63
+# version 1.8-64
 
 ## bug fixes
 
@@ -9,6 +9,7 @@
 - `identical` did not consider NA values [#1890](https://github.com/rspatial/terra/issues/1890) by Facundo Muñoz
 - `add_grid` did not respect the clipping region if a second raster was added with `add=TRUE` [#1889](https://github.com/rspatial/terra/issues/1889) by Lucas Salinas Morales
 - `rast(x, type = "xyz")` did not inherit CRS from a SpatVector [#1886](https://github.com/rspatial/terra/issues/1886) by Danielle Ferraro
+- `distance(values = TRUE)` returned unexpected results [#1891](https://github.com/rspatial/terra/issues/1891) by Jason Flower
 
 # version 1.8-60
 
