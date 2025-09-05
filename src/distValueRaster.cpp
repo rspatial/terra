@@ -223,7 +223,7 @@ void dist_only_vals(std::vector<double> &d, std::vector<double> &dv, const std::
 }
 
 
-SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<double>& y, const std::vector<double>& v, const std::string& method, bool skip, bool setNA, std::string unit, double maxdist, SpatOptions &opt) {
+SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<double>& y, std::vector<double>& v, const std::string& method, bool skip, bool setNA, std::string unit, double maxdist, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (x.empty()) {
@@ -234,6 +234,7 @@ SpatRaster SpatRaster::distance_crds_vals(std::vector<double>& x, std::vector<do
 	std::vector<std::size_t> pm = sort_order_d(y);
 	permute(x, pm);
 	permute(y, pm);
+	permute(v, pm);
 
 	bool lonlat = is_lonlat(); 
 	double m=1;
