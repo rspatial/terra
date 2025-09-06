@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-62</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-64</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-62" id="version-18-62">version 1.8-62<a class="anchor" aria-label="anchor" href="#version-18-62"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-64" id="version-18-64">version 1.8-64<a class="anchor" aria-label="anchor" href="#version-18-64"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-62">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-62"></a></h3>
+<h3 id="bug-fixes-1-8-64">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-64"></a></h3>
 <ul><li>
 <code>project(mask=TRUE)</code> could fail with high-resolution global rasters because of data-line flipping <a href="https://stackoverflow.com/q/79708536/635245" class="external-link">SO 79708536</a> by Patrick</li>
 <li>
@@ -45,10 +45,18 @@
 <code>coltab(x, ..., layer=1)&lt;-</code> argument layer did not work for layer names <a href="https://github.com/rspatial/terra/issues/1879" class="external-link">#1879</a> by Alex Ilich</li>
 <li>
 <code>sds</code> could create a SpatRasterDataset with SpatRasters with different spatial resolutions <a href="https://github.com/rspatial/terra/issues/1884" class="external-link">#1884</a> by Stefan Fallert</li>
+<li>
+<code>identical</code> did not consider NA values <a href="https://github.com/rspatial/terra/issues/1890" class="external-link">#1890</a> by Facundo Muñoz</li>
+<li>
+<code>add_grid</code> did not respect the clipping region if a second raster was added with <code>add=TRUE</code> <a href="https://github.com/rspatial/terra/issues/1889" class="external-link">#1889</a> by Lucas Salinas Morales</li>
+<li>
+<code>rast(x, type = "xyz")</code> did not inherit CRS from a SpatVector <a href="https://github.com/rspatial/terra/issues/1886" class="external-link">#1886</a> by Danielle Ferraro</li>
+<li>
+<code>distance(values = TRUE)</code> returned unexpected results <a href="https://github.com/rspatial/terra/issues/1891" class="external-link">#1891</a> by Jason Flower</li>
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-60" id="version-18-60">version 1.8-60<a class="anchor" aria-label="anchor" href="#version-18-60"></a></h2><p class="text-muted">CRAN release: 2025-07-21</p>
+<h2 class="pkg-version" data-toc-text="1.8-60" id="version-18-60">version 1.8-60<a class="anchor" aria-label="anchor" href="#version-18-60"></a></h2>
 <p>Released 2025-07-18</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-60">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-60"></a></h3>
@@ -78,7 +86,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-54" id="version-18-54">version 1.8-54<a class="anchor" aria-label="anchor" href="#version-18-54"></a></h2><p class="text-muted">CRAN release: 2025-06-01</p>
+<h2 class="pkg-version" data-toc-text="1.8-54" id="version-18-54">version 1.8-54<a class="anchor" aria-label="anchor" href="#version-18-54"></a></h2>
 <p>Released 2025-06-01</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-54">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-54"></a></h3>
@@ -116,7 +124,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-50" id="version-18-50">version 1.8-50<a class="anchor" aria-label="anchor" href="#version-18-50"></a></h2><p class="text-muted">CRAN release: 2025-05-09</p>
+<h2 class="pkg-version" data-toc-text="1.8-50" id="version-18-50">version 1.8-50<a class="anchor" aria-label="anchor" href="#version-18-50"></a></h2>
 <p>Released 2025-05-09</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-50">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-50"></a></h3>
@@ -158,7 +166,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-42" id="version-18-42">version 1.8-42<a class="anchor" aria-label="anchor" href="#version-18-42"></a></h2><p class="text-muted">CRAN release: 2025-04-02</p>
+<h2 class="pkg-version" data-toc-text="1.8-42" id="version-18-42">version 1.8-42<a class="anchor" aria-label="anchor" href="#version-18-42"></a></h2>
 <p>Released 2025-04-02</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-42">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-42"></a></h3>
@@ -218,7 +226,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-29" id="version-18-29">version 1.8-29<a class="anchor" aria-label="anchor" href="#version-18-29"></a></h2><p class="text-muted">CRAN release: 2025-02-26</p>
+<h2 class="pkg-version" data-toc-text="1.8-29" id="version-18-29">version 1.8-29<a class="anchor" aria-label="anchor" href="#version-18-29"></a></h2>
 <p>Released 2025-02-26</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-29">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-29"></a></h3>
@@ -245,7 +253,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-21" id="version-18-21">version 1.8-21<a class="anchor" aria-label="anchor" href="#version-18-21"></a></h2><p class="text-muted">CRAN release: 2025-02-10</p>
+<h2 class="pkg-version" data-toc-text="1.8-21" id="version-18-21">version 1.8-21<a class="anchor" aria-label="anchor" href="#version-18-21"></a></h2>
 <p>Released 2025-02-10</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-21">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-21"></a></h3>
@@ -277,7 +285,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-15" id="version-18-15">version 1.8-15<a class="anchor" aria-label="anchor" href="#version-18-15"></a></h2><p class="text-muted">CRAN release: 2025-01-24</p>
+<h2 class="pkg-version" data-toc-text="1.8-15" id="version-18-15">version 1.8-15<a class="anchor" aria-label="anchor" href="#version-18-15"></a></h2>
 <p>Released 2025-01-24</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-15">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-15"></a></h3>
@@ -301,7 +309,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-10" id="version-18-10">version 1.8-10<a class="anchor" aria-label="anchor" href="#version-18-10"></a></h2><p class="text-muted">CRAN release: 2025-01-14</p>
+<h2 class="pkg-version" data-toc-text="1.8-10" id="version-18-10">version 1.8-10<a class="anchor" aria-label="anchor" href="#version-18-10"></a></h2>
 <p>Released 2025-01-13</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-10">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-10"></a></h3>
@@ -368,7 +376,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-5" id="version-18-5">version 1.8-5<a class="anchor" aria-label="anchor" href="#version-18-5"></a></h2><p class="text-muted">CRAN release: 2024-12-12</p>
+<h2 class="pkg-version" data-toc-text="1.8-5" id="version-18-5">version 1.8-5<a class="anchor" aria-label="anchor" href="#version-18-5"></a></h2>
 <p>Released 2024-12-12</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-5">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-5"></a></h3>
@@ -432,7 +440,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-83" id="version-17-83">version 1.7-83<a class="anchor" aria-label="anchor" href="#version-17-83"></a></h2><p class="text-muted">CRAN release: 2024-10-14</p>
+<h2 class="pkg-version" data-toc-text="1.7-83" id="version-17-83">version 1.7-83<a class="anchor" aria-label="anchor" href="#version-17-83"></a></h2>
 <p>Released 2024-10-14</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-83">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-83"></a></h3>
@@ -488,7 +496,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-78" id="version-17-78">version 1.7-78<a class="anchor" aria-label="anchor" href="#version-17-78"></a></h2><p class="text-muted">CRAN release: 2024-05-22</p>
+<h2 class="pkg-version" data-toc-text="1.7-78" id="version-17-78">version 1.7-78<a class="anchor" aria-label="anchor" href="#version-17-78"></a></h2>
 <p>Released 2024-05-22</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-78">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-78"></a></h3>
@@ -543,7 +551,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-71" id="version-17-71">version 1.7-71<a class="anchor" aria-label="anchor" href="#version-17-71"></a></h2><p class="text-muted">CRAN release: 2024-01-31</p>
+<h2 class="pkg-version" data-toc-text="1.7-71" id="version-17-71">version 1.7-71<a class="anchor" aria-label="anchor" href="#version-17-71"></a></h2>
 <p>Released 2024-01-31</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-71">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-71"></a></h3>
@@ -588,7 +596,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-65" id="version-17-65">version 1.7-65<a class="anchor" aria-label="anchor" href="#version-17-65"></a></h2><p class="text-muted">CRAN release: 2023-12-15</p>
+<h2 class="pkg-version" data-toc-text="1.7-65" id="version-17-65">version 1.7-65<a class="anchor" aria-label="anchor" href="#version-17-65"></a></h2>
 <p>Released 2023-12-15</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-65">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-65"></a></h3>
@@ -628,7 +636,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-55" id="version-17-55">version 1.7-55<a class="anchor" aria-label="anchor" href="#version-17-55"></a></h2><p class="text-muted">CRAN release: 2023-10-13</p>
+<h2 class="pkg-version" data-toc-text="1.7-55" id="version-17-55">version 1.7-55<a class="anchor" aria-label="anchor" href="#version-17-55"></a></h2>
 <p>Released 2023-10-14</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-55">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-55"></a></h3>
@@ -667,7 +675,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-46" id="version-17-46">version 1.7-46<a class="anchor" aria-label="anchor" href="#version-17-46"></a></h2><p class="text-muted">CRAN release: 2023-09-06</p>
+<h2 class="pkg-version" data-toc-text="1.7-46" id="version-17-46">version 1.7-46<a class="anchor" aria-label="anchor" href="#version-17-46"></a></h2>
 <p>Released 2023-09-06</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-46">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-46"></a></h3>
@@ -719,7 +727,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-39" id="version-17-39">version 1.7-39<a class="anchor" aria-label="anchor" href="#version-17-39"></a></h2><p class="text-muted">CRAN release: 2023-06-23</p>
+<h2 class="pkg-version" data-toc-text="1.7-39" id="version-17-39">version 1.7-39<a class="anchor" aria-label="anchor" href="#version-17-39"></a></h2>
 <p>Released 2023-06-23</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-39">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-39"></a></h3>
@@ -731,7 +739,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-37" id="version-17-37">version 1.7-37<a class="anchor" aria-label="anchor" href="#version-17-37"></a></h2><p class="text-muted">CRAN release: 2023-06-18</p>
+<h2 class="pkg-version" data-toc-text="1.7-37" id="version-17-37">version 1.7-37<a class="anchor" aria-label="anchor" href="#version-17-37"></a></h2>
 <p>Released 2023-06-18</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-37">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-37"></a></h3>
@@ -767,7 +775,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-29" id="version-17-29">version 1.7-29<a class="anchor" aria-label="anchor" href="#version-17-29"></a></h2><p class="text-muted">CRAN release: 2023-04-21</p>
+<h2 class="pkg-version" data-toc-text="1.7-29" id="version-17-29">version 1.7-29<a class="anchor" aria-label="anchor" href="#version-17-29"></a></h2>
 <p>Released 2023-04-22</p>
 <div class="section level3">
 <h3 id="new-1-7-29">new<a class="anchor" aria-label="anchor" href="#new-1-7-29"></a></h3>
@@ -805,7 +813,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-23" id="version-17-23">version 1.7-23<a class="anchor" aria-label="anchor" href="#version-17-23"></a></h2><p class="text-muted">CRAN release: 2023-04-08</p>
+<h2 class="pkg-version" data-toc-text="1.7-23" id="version-17-23">version 1.7-23<a class="anchor" aria-label="anchor" href="#version-17-23"></a></h2>
 <p>Released 2023-04-08</p>
 <div class="section level3">
 <h3 id="new-1-7-23">new<a class="anchor" aria-label="anchor" href="#new-1-7-23"></a></h3>
@@ -866,7 +874,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-18" id="version-17-18">version 1.7-18<a class="anchor" aria-label="anchor" href="#version-17-18"></a></h2><p class="text-muted">CRAN release: 2023-03-06</p>
+<h2 class="pkg-version" data-toc-text="1.7-18" id="version-17-18">version 1.7-18<a class="anchor" aria-label="anchor" href="#version-17-18"></a></h2>
 <p>Released 2023-03-06</p>
 <div class="section level3">
 <h3 id="new-1-7-18">new<a class="anchor" aria-label="anchor" href="#new-1-7-18"></a></h3>
@@ -911,7 +919,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-3" id="version-17-3">version 1.7-3<a class="anchor" aria-label="anchor" href="#version-17-3"></a></h2><p class="text-muted">CRAN release: 2023-01-24</p>
+<h2 class="pkg-version" data-toc-text="1.7-3" id="version-17-3">version 1.7-3<a class="anchor" aria-label="anchor" href="#version-17-3"></a></h2>
 <p>Released 2023-01-24</p>
 <div class="section level3">
 <h3 id="new-1-7-3">new<a class="anchor" aria-label="anchor" href="#new-1-7-3"></a></h3>
@@ -930,7 +938,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.6-53" id="version-16-53">version 1.6-53<a class="anchor" aria-label="anchor" href="#version-16-53"></a></h2><p class="text-muted">CRAN release: 2023-01-17</p>
+<h2 class="pkg-version" data-toc-text="1.6-53" id="version-16-53">version 1.6-53<a class="anchor" aria-label="anchor" href="#version-16-53"></a></h2>
 <p>Released 2023-01-17</p>
 <div class="section level3">
 <h3 id="new-1-6-53">new<a class="anchor" aria-label="anchor" href="#new-1-6-53"></a></h3>
@@ -957,7 +965,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.6-47" id="version-16-47">version 1.6-47<a class="anchor" aria-label="anchor" href="#version-16-47"></a></h2><p class="text-muted">CRAN release: 2022-12-02</p>
+<h2 class="pkg-version" data-toc-text="1.6-47" id="version-16-47">version 1.6-47<a class="anchor" aria-label="anchor" href="#version-16-47"></a></h2>
 <p>Released 2022-12-02</p>
 <div class="section level3">
 <h3 id="new-1-6-47">new<a class="anchor" aria-label="anchor" href="#new-1-6-47"></a></h3>
@@ -1006,7 +1014,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.6-41" id="version-16-41">version 1.6-41<a class="anchor" aria-label="anchor" href="#version-16-41"></a></h2><p class="text-muted">CRAN release: 2022-11-18</p>
+<h2 class="pkg-version" data-toc-text="1.6-41" id="version-16-41">version 1.6-41<a class="anchor" aria-label="anchor" href="#version-16-41"></a></h2>
 <p>Released 2022-11-18</p>
 <div class="section level3">
 <h3 id="new-1-6-41">new<a class="anchor" aria-label="anchor" href="#new-1-6-41"></a></h3>
@@ -1087,7 +1095,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.6-17" id="version-16-17">version 1.6-17<a class="anchor" aria-label="anchor" href="#version-16-17"></a></h2><p class="text-muted">CRAN release: 2022-09-10</p>
+<h2 class="pkg-version" data-toc-text="1.6-17" id="version-16-17">version 1.6-17<a class="anchor" aria-label="anchor" href="#version-16-17"></a></h2>
 <p>Released 2022-09-10</p>
 <div class="section level3">
 <h3 id="new-1-6-17">new<a class="anchor" aria-label="anchor" href="#new-1-6-17"></a></h3>
@@ -1138,7 +1146,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.6-7" id="version-16-7">version 1.6-7<a class="anchor" aria-label="anchor" href="#version-16-7"></a></h2><p class="text-muted">CRAN release: 2022-08-07</p>
+<h2 class="pkg-version" data-toc-text="1.6-7" id="version-16-7">version 1.6-7<a class="anchor" aria-label="anchor" href="#version-16-7"></a></h2>
 <p>Released 2022-08-07</p>
 <div class="section level3">
 <h3 id="new-1-6-7">new<a class="anchor" aria-label="anchor" href="#new-1-6-7"></a></h3>
@@ -1161,7 +1169,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.6-3" id="version-16-3">version 1.6-3<a class="anchor" aria-label="anchor" href="#version-16-3"></a></h2><p class="text-muted">CRAN release: 2022-07-25</p>
+<h2 class="pkg-version" data-toc-text="1.6-3" id="version-16-3">version 1.6-3<a class="anchor" aria-label="anchor" href="#version-16-3"></a></h2>
 <p>Released 2022-07-25</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-3">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-3"></a></h3>
@@ -1215,7 +1223,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.5-34" id="version-15-34">version 1.5-34<a class="anchor" aria-label="anchor" href="#version-15-34"></a></h2><p class="text-muted">CRAN release: 2022-06-09</p>
+<h2 class="pkg-version" data-toc-text="1.5-34" id="version-15-34">version 1.5-34<a class="anchor" aria-label="anchor" href="#version-15-34"></a></h2>
 <p>Released 2022-06-09</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-5-34">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-34"></a></h3>
@@ -1274,7 +1282,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.5-21" id="version-15-21">version 1.5-21<a class="anchor" aria-label="anchor" href="#version-15-21"></a></h2><p class="text-muted">CRAN release: 2022-02-16</p>
+<h2 class="pkg-version" data-toc-text="1.5-21" id="version-15-21">version 1.5-21<a class="anchor" aria-label="anchor" href="#version-15-21"></a></h2>
 <p>Released 2022-02-17</p>
 <ul><li>
 <code>writeVector</code> and <code>vect</code> now work with GPGK if the path has non-ascii characters [#518]</li>
@@ -1294,7 +1302,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.5-17" id="version-15-17">version 1.5-17<a class="anchor" aria-label="anchor" href="#version-15-17"></a></h2><p class="text-muted">CRAN release: 2022-01-30</p>
+<h2 class="pkg-version" data-toc-text="1.5-17" id="version-15-17">version 1.5-17<a class="anchor" aria-label="anchor" href="#version-15-17"></a></h2>
 <p>Released 2022-01-30</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-5-17">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-17"></a></h3>
@@ -1352,7 +1360,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.5-12" id="version-15-12">version 1.5-12<a class="anchor" aria-label="anchor" href="#version-15-12"></a></h2><p class="text-muted">CRAN release: 2022-01-13</p>
+<h2 class="pkg-version" data-toc-text="1.5-12" id="version-15-12">version 1.5-12<a class="anchor" aria-label="anchor" href="#version-15-12"></a></h2>
 <p>Released 2022-01-13</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-5-12">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-12"></a></h3>
@@ -1446,7 +1454,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.4-22" id="version-14-22">version 1.4-22<a class="anchor" aria-label="anchor" href="#version-14-22"></a></h2><p class="text-muted">CRAN release: 2021-11-24</p>
+<h2 class="pkg-version" data-toc-text="1.4-22" id="version-14-22">version 1.4-22<a class="anchor" aria-label="anchor" href="#version-14-22"></a></h2>
 <p>Released 2021-11-24</p>
 <div class="section level3">
 <h3 id="changes-1-4-22">changes<a class="anchor" aria-label="anchor" href="#changes-1-4-22"></a></h3>
@@ -1481,7 +1489,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.4-20" id="version-14-20">version 1.4-20<a class="anchor" aria-label="anchor" href="#version-14-20"></a></h2><p class="text-muted">CRAN release: 2021-11-16</p>
+<h2 class="pkg-version" data-toc-text="1.4-20" id="version-14-20">version 1.4-20<a class="anchor" aria-label="anchor" href="#version-14-20"></a></h2>
 <p>Released 2021-11-16</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-4-20">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-20"></a></h3>
@@ -1492,7 +1500,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.4-19" id="version-14-19">version 1.4-19<a class="anchor" aria-label="anchor" href="#version-14-19"></a></h2><p class="text-muted">CRAN release: 2021-11-15</p>
+<h2 class="pkg-version" data-toc-text="1.4-19" id="version-14-19">version 1.4-19<a class="anchor" aria-label="anchor" href="#version-14-19"></a></h2>
 <p>Released 2021-11-15</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-4-19">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-19"></a></h3>
@@ -1533,7 +1541,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.4-11" id="version-14-11">version 1.4-11<a class="anchor" aria-label="anchor" href="#version-14-11"></a></h2><p class="text-muted">CRAN release: 2021-10-11</p>
+<h2 class="pkg-version" data-toc-text="1.4-11" id="version-14-11">version 1.4-11<a class="anchor" aria-label="anchor" href="#version-14-11"></a></h2>
 <p>Released 2021-10-11</p>
 <div class="section level3">
 <h3 id="enhancements-1-4-11">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-4-11"></a></h3>
@@ -1542,7 +1550,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.4-9" id="version-14-9">version 1.4-9<a class="anchor" aria-label="anchor" href="#version-14-9"></a></h2><p class="text-muted">CRAN release: 2021-10-07</p>
+<h2 class="pkg-version" data-toc-text="1.4-9" id="version-14-9">version 1.4-9<a class="anchor" aria-label="anchor" href="#version-14-9"></a></h2>
 <p>Released 2021-10-07</p>
 <div class="section level3">
 <h3 id="name-changes-1-4-9">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-4-9"></a></h3>
@@ -1560,7 +1568,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.4-7" id="version-14-7">version 1.4-7<a class="anchor" aria-label="anchor" href="#version-14-7"></a></h2><p class="text-muted">CRAN release: 2021-10-05</p>
+<h2 class="pkg-version" data-toc-text="1.4-7" id="version-14-7">version 1.4-7<a class="anchor" aria-label="anchor" href="#version-14-7"></a></h2>
 <p>Released 2021-10-05</p>
 <div class="section level3">
 <h3 id="note-1-4-7">note<a class="anchor" aria-label="anchor" href="#note-1-4-7"></a></h3>
@@ -1619,7 +1627,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.3-22" id="version-13-22">version 1.3-22<a class="anchor" aria-label="anchor" href="#version-13-22"></a></h2><p class="text-muted">CRAN release: 2021-08-20</p>
+<h2 class="pkg-version" data-toc-text="1.3-22" id="version-13-22">version 1.3-22<a class="anchor" aria-label="anchor" href="#version-13-22"></a></h2>
 <p>Released 2021-08-20</p>
 <div class="section level3">
 <h3 id="enhancements-1-3-22">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-3-22"></a></h3>
@@ -1668,7 +1676,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.3-4" id="version-13-4">version 1.3-4<a class="anchor" aria-label="anchor" href="#version-13-4"></a></h2><p class="text-muted">CRAN release: 2021-06-20</p>
+<h2 class="pkg-version" data-toc-text="1.3-4" id="version-13-4">version 1.3-4<a class="anchor" aria-label="anchor" href="#version-13-4"></a></h2>
 <p>Released 2021-06-20</p>
 <div class="section level3">
 <h3 id="new-1-3-4">new<a class="anchor" aria-label="anchor" href="#new-1-3-4"></a></h3>
@@ -1724,7 +1732,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.2-10" id="version-12-10">version 1.2-10<a class="anchor" aria-label="anchor" href="#version-12-10"></a></h2><p class="text-muted">CRAN release: 2021-05-13</p>
+<h2 class="pkg-version" data-toc-text="1.2-10" id="version-12-10">version 1.2-10<a class="anchor" aria-label="anchor" href="#version-12-10"></a></h2>
 <p>Released 2021-05-13</p>
 <div class="section level3">
 <h3 id="new-1-2-10">new<a class="anchor" aria-label="anchor" href="#new-1-2-10"></a></h3>
@@ -1789,7 +1797,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.2-5" id="version-12-5">version 1.2-5<a class="anchor" aria-label="anchor" href="#version-12-5"></a></h2><p class="text-muted">CRAN release: 2021-04-30</p>
+<h2 class="pkg-version" data-toc-text="1.2-5" id="version-12-5">version 1.2-5<a class="anchor" aria-label="anchor" href="#version-12-5"></a></h2>
 <p>Released 2021-04-30</p>
 <div class="section level3">
 <h3 id="new-1-2-5">new<a class="anchor" aria-label="anchor" href="#new-1-2-5"></a></h3>
@@ -1841,7 +1849,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1-17" id="version-11-17">version 1.1-17<a class="anchor" aria-label="anchor" href="#version-11-17"></a></h2><p class="text-muted">CRAN release: 2021-04-14</p>
+<h2 class="pkg-version" data-toc-text="1.1-17" id="version-11-17">version 1.1-17<a class="anchor" aria-label="anchor" href="#version-11-17"></a></h2>
 <p>Released 2021-04-14</p>
 <div class="section level3">
 <h3 id="major-changes-1-1-17">major changes<a class="anchor" aria-label="anchor" href="#major-changes-1-1-17"></a></h3>
@@ -1851,7 +1859,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1-4" id="version-11-4">version 1.1-4<a class="anchor" aria-label="anchor" href="#version-11-4"></a></h2><p class="text-muted">CRAN release: 2021-03-09</p>
+<h2 class="pkg-version" data-toc-text="1.1-4" id="version-11-4">version 1.1-4<a class="anchor" aria-label="anchor" href="#version-11-4"></a></h2>
 <ul><li>No news recorded for this and earlier versions</li>
 </ul></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
