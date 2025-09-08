@@ -426,13 +426,24 @@ setMethod("vect", signature(x="data.frame"),
 
 setMethod("vect", signature(x="list"),
 	function(x, type="points", crs="") {
-		x <- lapply(x, function(i) {
-			if (inherits(i, "SpatVector")) return(i)
-			vect(i, type=type)
-		})
-		x <- svc(x)
-		v <- methods::new("SpatVector")
-		v@pntr <- x@pntr$append()
+		if (typeof(x[[1]]) == "raw") {
+			# TODO is this poor type check redundant given the constructor signature?
+			if (!is.null(type)) {
+				warn(
+					"vect",	"ignoring `type` argument for WKB, set to null to silence"
+				)
+			}
+			v <- methods::new("SpatVector")
+			v@pntr <- SpatVector$new(x)
+		} else {
+			x <- lapply(x, function(i) {
+				if (inherits(i, "SpatVector")) return(i)
+				vect(i, type=type)
+			})
+			x <- svc(x)
+			v <- methods::new("SpatVector")
+			v@pntr <- x@pntr$append()
+		}
 		if (crs != "") {
 			crs(v) <- crs
 		}

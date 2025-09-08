@@ -432,6 +432,8 @@ RCPP_MODULE(spat){
 	class_<SpatVector>("SpatVector")
 		.constructor()
 		.constructor<SpatExtent, std::string>()
+		// TODO is std::vector<std::vector<unsigned char>> cheaper? check if that works
+		.constructor<Rcpp::ListOf<Rcpp::RawVector>>()
 		.constructor<std::vector<std::string>>()
 
 

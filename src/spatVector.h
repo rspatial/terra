@@ -19,6 +19,7 @@
 #define SPATVECTOR_GUARD
 
 #include "spatDataframe.h"
+#include "Rcpp.h"
 
 #ifdef useGDAL
 #include "gdal_priv.h"
@@ -124,6 +125,7 @@ class SpatVector {
 		SpatVector(SpatGeom g);
 		SpatVector(SpatExtent e, std::string crs);
 		SpatVector(std::vector<double> x, std::vector<double> y, SpatGeomType g, std::string crs);
+		SpatVector(Rcpp::ListOf<Rcpp::RawVector> wkb_raw);
 		SpatVector(std::vector<std::string> wkt);
 		virtual ~SpatVector(){}
 
