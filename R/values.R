@@ -483,8 +483,6 @@ setMethod("compareGeom", signature(x="SpatVector", y="missing"),
 		out
 	}
 )
-
-
 setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"),
 	function(target, current, maxcell=100000, ...) {
 		a <- base::all.equal(rast(target), rast(current))
@@ -514,6 +512,37 @@ setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"),
 	}
 )
 
+setMethod("all.equal", signature(target="SpatExtent", current="SpatExtent"),
+	function(target, current, ...) {
+		target == current
+	}
+)
+
+setMethod("all.equal", signature(target="SpatVector", current="SpatVector"),
+	function(target, current, ...) {
+		if (any(dim(target) != dim(current))) {
+			message("different dimensions")
+			return(FALSE)
+		}
+		if (crs(target) != crs(current)) {
+			message("different crs")
+			return(FALSE)
+		}
+		if (geomtype(target) != geomtype(current)) {
+			message("different geometry type")
+			return(FALSE)
+		}
+		if (!isTRUE(all.equal(values(target), values(current), ...))) {
+			message("different values")
+			return(FALSE)
+		}
+		if (!isTRUE(all.equal(geom(target), geom(current), ...))) {
+			message("different geometry")
+			return(FALSE)
+		}
+		TRUE
+	}
+)
 
 
 
@@ -532,6 +561,23 @@ setMethod("identical", signature(x="SpatRaster", y="SpatRaster"),
 	}
 )
 
+
+setMethod("identical", signature(x="SpatExtent", y="SpatExtent"),
+	function(x, y) {
+		if (any(dim(target) != dim(current))) return(FALSE)
+		if (crs(target) != crs(current)) return(FALSE)
+		if (geomtype(target) != geomtype(current)) return(FALSE)
+		if (!identical(values(target), values(current))) return(FALSE)
+		if (!identical(geom(target), geom(current))) return(FALSE)
+		TRUE
+	}
+)
+
+setMethod("identical", signature(x="SpatVector", y="SpatVector"),
+	function(x, y) {
+		all.equal(x, y)
+	}
+)
 
 setMethod("values", signature("SpatVector"),
 	function(x, ...) {

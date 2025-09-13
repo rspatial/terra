@@ -4,26 +4,33 @@
 
 \alias{all.equal}
 \alias{all.equal,SpatRaster,SpatRaster-method}
+\alias{all.equal,SpatVector,SpatVector-method}
+\alias{all.equal,SpatExtent,SpatExtent-method}
 
-\title{Compare two SpatRasters for equality}
+\title{Compare two SpatRaster, SpatVector, or SpatExtent objects for equality}
 
 \description{
-Compare two SpatRasters for (near) equality. 
 
-First the attributes of the objects are compared. If these are the same, a (perhaps small) sample of the raster cells is compared as well. 
+Compare two objects for (near) equality
+
+In the case of SpatRasters, first the attributes of the objects are compared. If these are the same, a (perhaps small) sample of the raster cells is compared as well. 
 
 The sample size used can be increased with the \code{maxcell} argument. You can set it to \code{Inf}, but for large rasters your computer may not have sufficient memory. See the examples for a safe way to compare all values. 
 }
 
 \usage{
 \S4method{all.equal}{SpatRaster,SpatRaster}(target, current, maxcell=100000, ...)
+
+\S4method{all.equal}{SpatVector,SpatVector}(target, current, ...)
+
+\S4method{all.equal}{SpatExtent,SpatExtent}(target, current, ...)
 }
 
 \arguments{
-  \item{target}{SpatRaster}
-  \item{current}{SpatRaster}
+  \item{target}{SpatRaster, SpatVector, or SpatExtent}
+  \item{current}{object of the same class as \code{target}}
   \item{maxcell}{positive integer. The size of the regular sample used to compare cell values}
-  \item{...}{additional arguments passed to \code{\link{all.equal.numeric}} to compare cell values}
+  \item{...}{additional arguments passed to \code{\link{all.equal.numeric}} to compare cell values for SpatRaster and geometry and attribute values for SpatVectors}
 }
 
 \seealso{\code{\link{identical}}, \code{\link{compareGeom}}}
