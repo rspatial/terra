@@ -778,6 +778,61 @@ SpatVector SpatVector::fromDS(GDALDataset *poDS) {
 	return out;
 }
 
+SpatVector::SpatVector(Rcpp::ListOf<Rcpp::RawVector> wkb_raw_list) {
+	SpatGeom g;
+	bool haveGeomt = false;
+	SpatGeomType geomt = null;
+	for (size_t i = 0; i < wkb_raw_list.size(); i++) {
+		if (wkb_raw_list[i].size() == 0) {
+			g = emptyGeom();
+			addGeom(g);
+			continue;
+		}
+
+		OGRGeometry *poGeometry;
+		OGRErr err = OGRGeometryFactory::createFromWkb(
+			RAW(wkb_raw_list[i]), NULL, &poGeometry, wkb_raw_list[i].size());
+
+		if (err == OGRERR_NONE) {
+			if (poGeometry != NULL) {
+				OGRwkbGeometryType gtype =
+					wkbFlatten(poGeometry->getGeometryType());
+				if (gtype == wkbPoint) {
+					g = getPointGeom(poGeometry);
+				} else if (gtype == wkbMultiPoint) {
+					g = getMultiPointGeom(poGeometry);
+				} else if (gtype == wkbLineString) {
+					g = getLinesGeom(poGeometry);
+				} else if (gtype == wkbMultiLineString) {
+					g = getMultiLinesGeom(poGeometry);
+				} else if (gtype == wkbPolygon) {
+					g = getPolygonsGeom(poGeometry);
+				} else if (gtype == wkbMultiPolygon) {
+					g = getMultiPolygonsGeom(poGeometry);
+				} else {
+					const char *geomtypechar = OGRGeometryTypeToName(gtype);
+					std::string strgeomtype = geomtypechar;
+					std::string s = "cannot read geometry type: " + strgeomtype;
+					setError(s);
+					return;
+				}
+				if (!haveGeomt) {
+					haveGeomt = true;
+					geomt = g.gtype;
+				} else if (geomt != g.gtype) {
+					setError(
+						"a SpatVector can only have a single geometry type");
+					return;
+				}
+				addGeom(g);
+				OGRGeometryFactory::destroyGeometry(poGeometry);
+			}
+		} else {
+			setError("not valid WKB");
+			return;
+		}
+	}
+}
 
 SpatVector::SpatVector(std::vector<std::string> wkt) {
 
