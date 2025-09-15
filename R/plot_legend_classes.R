@@ -28,10 +28,11 @@ get_legxy <- function(r, e, pos, yshift, nudge=NULL) {
 	bty="n", border="black", seg.len=1, plotlim, yshift=NULL, order=FALSE, sort=FALSE, reverse=FALSE,
 	text.col=graphics::par("col"), nudge=c(0,0), 
 	title=NULL, leg_i=1, title.x=NULL, title.y=NULL, title.adj=0.5, title.pos=NULL, 
-	title.cex=cex[1], title.col=text.col[1], title.font=NULL, ...,
+	title.cex=cex[1], title.col=text.col[1], title.font=NULL, 
 # catch and kill
-	merge, trace, size) {
-
+	merge, trace, digits, size, at, format, title.srt,
+	tick, tick.length, tick.col, tick.box.col, tick.lwd, 
+	tic, tic.length, tic.col, tic.box.col, tic.lwd, ...) {
 
 	cex <- cex * 0.8
 	if (x %in% c("top", "default")) {
