@@ -521,7 +521,7 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 		for (size_t i=0; i < wrnmsg.size(); i++) addWarning(wrnmsg[i]);
 	}
 
-	OGRSpatialReference *poSRS = poLayer->GetSpatialRef();
+	const OGRSpatialReference *poSRS = poLayer->GetSpatialRef();
 	if (poSRS) {
 		char *psz = NULL;
 	#if GDAL_VERSION_MAJOR >= 3
@@ -859,7 +859,7 @@ bool SpatVectorCollection::read_ogr(GDALDataset *&poDS, std::string layer, std::
 		for (size_t i=0; i < wrnmsg.size(); i++) addWarning(wrnmsg[i]);
 	}
 	std::string crs = "";
-	OGRSpatialReference *poSRS = poLayer->GetSpatialRef();
+	const OGRSpatialReference *poSRS = poLayer->GetSpatialRef();
 	if (poSRS) {
 		char *psz = NULL;
 	#if GDAL_VERSION_MAJOR >= 3
