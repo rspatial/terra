@@ -358,17 +358,18 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		s.m_missing_value = poVar->GetNoDataValueAsDouble(&s.m_hasNA);
 	}
 
-
+/*
 	int ix, iy, it, iz;
 	it = 0;
 	iz = -1;
 
 // ignore dims for now
 	dims.resize(0);
-	
+*/	
 	if (dims.size() < 2) {
 		dims = {2,1,0};
-		ix = ndim - 1;
+
+/*		ix = ndim - 1;
 		iy = ix - 1;
 		if (ix == 3) {
 			iz = 1;
@@ -384,8 +385,19 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 			it = dims[0];
 		} else if (dims.size() == 4) {
 			it = dims[0];
-		}
+		}	
+*/
 	}
+	int ix = ndim - 1;
+	int iy = ix - 1;
+	int it = 0;
+	int iz = -1;
+	if (ix == 3) {
+		iz = 1;
+		dims = {ix, iy, iz, it};
+	} else if (ndim == 2) {
+		dims = {ix, iy};
+	}		
 	
 	//Rcpp::Rcout << ix << ", " << iy << ", " << iz << ", " << it << std::endl;
 	
