@@ -1,4 +1,4 @@
-# version 1.8-64
+# version 1.8-65
 
 ## bug fixes
 
@@ -10,6 +10,11 @@
 - `add_grid` did not respect the clipping region if a second raster was added with `add=TRUE` [#1889](https://github.com/rspatial/terra/issues/1889) by Lucas Salinas Morales
 - `rast(x, type = "xyz")` did not inherit CRS from a SpatVector [#1886](https://github.com/rspatial/terra/issues/1886) by Danielle Ferraro
 - `distance(values = TRUE)` returned unexpected results [#1891](https://github.com/rspatial/terra/issues/1891) by Jason Flower
+- `plot` with arguments for a continuous legend failed if no such legend was drawn [#1897](https://github.com/rspatial/terra/issues/1897) by François Rousseu
+
+## enhancements
+
+- better support for creating a SpatVector with an EMPTY wkt geometry [#1903](https://github.com/rspatial/terra/issues/1903) by Anatolii Tsyplenkov
 
 # version 1.8-60
 
