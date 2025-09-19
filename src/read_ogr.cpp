@@ -247,11 +247,14 @@ SpatGeom getPointGeom(OGRGeometry *poGeometry) {
 }
 
 SpatGeom getMultiPointGeom(OGRGeometry *poGeometry) {
+	SpatGeom g(points);
+	if (poGeometry->IsEmpty()) {
+		return g;
+	}
 	OGRMultiPoint *poMultipoint = ( OGRMultiPoint * )poGeometry;
 	unsigned ng = poMultipoint->getNumGeometries();
 	std::vector<double> X(ng);
 	std::vector<double> Y(ng);
-	SpatGeom g(points);
 	for (size_t i=0; i<ng; i++) {
 	   	OGRGeometry *poMpGeometry = poMultipoint->getGeometryRef(i);
 		#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
@@ -269,8 +272,12 @@ SpatGeom getMultiPointGeom(OGRGeometry *poGeometry) {
 
 
 SpatGeom getLinesGeom(OGRGeometry *poGeometry) {
-
+	SpatGeom g(lines);
+	if (poGeometry->IsEmpty()) {
+		return g;
+	}
 	OGRLineString *poGeom = (OGRLineString *) poGeometry;
+
 	unsigned np = poGeom->getNumPoints();
 	std::vector<double> X(np);
 	std::vector<double> Y(np);
@@ -281,13 +288,15 @@ SpatGeom getLinesGeom(OGRGeometry *poGeometry) {
 		Y[i] = ogrPt.getY();
 	}
 	SpatPart p(X, Y);
-	SpatGeom g(lines);
 	g.addPart(p);
 	return g;
 }
 
 SpatGeom getMultiLinesGeom(OGRGeometry *poGeometry) {
 	SpatGeom g(lines);
+	if (poGeometry->IsEmpty()) {
+		return g;
+	}
 	OGRMultiLineString *poGeom = ( OGRMultiLineString * )poGeometry;
 	unsigned ng = poGeom->getNumGeometries();
 	OGRPoint ogrPt;
@@ -312,6 +321,9 @@ SpatGeom getMultiLinesGeom(OGRGeometry *poGeometry) {
 
 SpatGeom getPolygonsGeom(OGRGeometry *poGeometry) {
 	SpatGeom g(polygons);
+	if (poGeometry->IsEmpty()) {
+		return g;
+	}
 	OGRPoint ogrPt;
 //	OGRwkbGeometryType geomtype = poGeometry->getGeometryType();
 //	if ( geomtype == wkbPolygon ) {
@@ -346,10 +358,13 @@ SpatGeom getPolygonsGeom(OGRGeometry *poGeometry) {
 
 
 SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
+	SpatGeom g(polygons);
+	if (poGeometry->IsEmpty()) {
+		return g;
+	}
 	OGRMultiPolygon *poGeom = ( OGRMultiPolygon * )poGeometry;
 	OGRPoint ogrPt;
 	unsigned ng = poGeom->getNumGeometries();
-	SpatGeom g(polygons);
 	for (size_t i=0; i<ng; i++) {
 		OGRGeometry *poPolygonGeometry = poGeom->getGeometryRef(i);
 		OGRPolygon *poPolygon = ( OGRPolygon * )poPolygonGeometry;

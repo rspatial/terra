@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2025 :: Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -66,10 +66,12 @@ SpatPart::SpatPart(double X, double Y) {
 
 SpatPart::SpatPart(std::vector<double> X, std::vector<double> Y) {
 	x = X; y = Y;
-	extent.xmin = *std::min_element(X.begin(), X.end());
-	extent.xmax = *std::max_element(X.begin(), X.end());
-	extent.ymin = *std::min_element(Y.begin(), Y.end());
-	extent.ymax = *std::max_element(Y.begin(), Y.end());
+	if ((x.size() > 0) && (y.size() > 0)) {
+		extent.xmin = *std::min_element(X.begin(), X.end());
+		extent.xmax = *std::max_element(X.begin(), X.end());
+		extent.ymin = *std::min_element(Y.begin(), Y.end());
+		extent.ymax = *std::max_element(Y.begin(), Y.end());
+	}
 }
 
 
@@ -630,6 +632,7 @@ std::vector<std::vector<double>> SpatVector::getGeometry() {
 			out[2].push_back(NAN);
 			out[3].push_back(NAN);
 			out[4].push_back(0);
+			continue;
 		}
 
 		for (size_t j=0; j < g.size(); j++) {
