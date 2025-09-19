@@ -314,8 +314,13 @@ inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSC
 					geoms.push_back(pt);
 				}
 			}
-			GEOSGeometry* gcol = (np == 1) ? geoms[0] :
-				GEOSGeom_createCollection_r(hGEOSCtxt, GEOS_MULTIPOINT, &geoms[0], np);
+			GEOSGeometry* gcol;
+			if (np == 0) {
+				gcol = GEOSGeom_createEmptyPoint_r(hGEOSCtxt)	
+			} else {
+				gcol = (np = 1) ? geoms[0] :
+					GEOSGeom_createCollection_r(hGEOSCtxt, GEOS_MULTIPOINT, &geoms[0], np);
+			}
 			g.push_back( geos_ptr(gcol, hGEOSCtxt) );
 		}
 
