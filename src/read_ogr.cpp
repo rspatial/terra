@@ -419,13 +419,15 @@ void addOGRgeometry(SpatVector &x, OGRGeometry *poGeometry) {
 		x.setError("cannot read geometry type: " + strgeomtype);
 		return;
 	}
-	if ((x.size() > 1)  && (x.geoms[0].gtype != g.gtype)) {
-		x.setError("a SpatVector can only have a single geometry type");
-		return;
+	if ((x.size() > 1) && (x.geoms[0].gtype != g.gtype)) {
+		if (x.geoms[0].gtype != null) {
+			x.setError("a SpatVector can only have a single geometry type");
+			return;
+		}
 	}
 	x.addGeom(g);
 	OGRGeometryFactory::destroyGeometry(poGeometry);
-}	
+}
 
 
 bool SpatVector::addRawGeoms(std::vector<unsigned char*> wkbs, std::vector<size_t> sizes) {

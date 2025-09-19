@@ -46,7 +46,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 
 \S4method{plot}{SpatVector,missing}(x, y, values=NULL, ...)
 
-\S4method{plot}{SpatVectorCollection,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, ...)
+\S4method{plot}{SpatVectorCollection,missing}(x, y, main, mar=NULL, nc, nr, maxnl=16, col=NULL, ...)
 
 \S4method{plot}{SpatVectorCollection,numeric}(x, y, main, mar=NULL, ext=NULL, ...)
 }

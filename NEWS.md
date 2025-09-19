@@ -16,6 +16,11 @@
 
 - better support for creating a SpatVector with an EMPTY wkt geometry [#1903](https://github.com/rspatial/terra/issues/1903) by Anatolii Tsyplenkov
 
+## new
+
+- it is now possible to create a SpatVector from Well Known Binary (WKB) data [#1895](https://github.com/rspatial/terra/pull/1895) by Jan Hartman
+
+
 # version 1.8-60
 
 Released 2025-07-18

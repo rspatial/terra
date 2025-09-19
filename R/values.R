@@ -564,12 +564,7 @@ setMethod("identical", signature(x="SpatRaster", y="SpatRaster"),
 
 setMethod("identical", signature(x="SpatExtent", y="SpatExtent"),
 	function(x, y) {
-		if (any(dim(target) != dim(current))) return(FALSE)
-		if (crs(target) != crs(current)) return(FALSE)
-		if (geomtype(target) != geomtype(current)) return(FALSE)
-		if (!identical(values(target), values(current))) return(FALSE)
-		if (!identical(geom(target), geom(current))) return(FALSE)
-		TRUE
+		identical(as.vector(x), as.vector(y))
 	}
 )
 
