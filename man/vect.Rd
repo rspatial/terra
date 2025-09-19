@@ -51,13 +51,13 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 }
 
 \arguments{
-\item{x}{character. A filename; or a "Well Known Text" string; SpatExtent, data.frame (to make a SpatVector of points); a "geom" matrix to make a SpatVector of any supported geometry (see examples and \code{\link{geom}}); a spatial vector data object defined in the \code{sf} or \code{sp} packages; or a list with matrices with coordinates}
+\item{x}{character. A filename; or a "Well Known Text" string; SpatExtent, data.frame (to make a SpatVector of points); a "geom" matrix to make a SpatVector of any supported geometry (see examples and \code{\link{geom}}); a spatial vector data object defined in the \code{sf} or \code{sp} packages; or a list with either matrices with coordinates, or raw "Well Known Binary" (WKB) blobs}
 \item{layer}{character. layer name to select a layer from a file (database) with multiple layers}
 \item{query}{character. A query to subset the dataset}
 \item{dialect}{character. The SQL dialect to use (if any). For example: "SQLite". "" refers to the default \href{https://gdal.org/en/latest/user/ogr_sql_dialect.html}{OGR-SQL dialect}}
 \item{extent}{Spat* object. The extent of the object is used as a spatial filter to select the geometries to read. Ignored if \code{filter} is not \code{NULL}}
 \item{filter}{SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points). It is guaranteed that all features that overlap with the extent of filter will be returned. It can happen that additional geometries are returned}
-\item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
+\item{type}{character. Geometry type. Must be "points", "lines", or "polygons". Ignored if \code{x} is a WKB list}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
 \item{crs}{character. The coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see \code{\link{crs}})}
 \item{proxy}{logical. If \code{TRUE} a SpatVectorProxy is returned}
