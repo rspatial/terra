@@ -171,6 +171,8 @@ class SpatVector {
 		std::vector<std::string> getGeometryWKT();
 		void computeExtent();
 
+		bool addRawGeoms(std::vector<unsigned char*> wkbs, std::vector<size_t> sizes);
+
 		size_t nparts(bool holes);
 
 		size_t ncoords();

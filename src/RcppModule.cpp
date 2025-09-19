@@ -10,6 +10,23 @@
 //}
 
 
+bool addWKB(SpatVector* x, Rcpp::ListOf<Rcpp::RawVector> wkb) {
+	size_t n = wkb.size();
+	std::vector<unsigned char*> raw;
+	std::vector<size_t> sizes;
+	raw.reserve(n);
+	sizes.reserve(n);
+	for (size_t i=0; i<n; i++) {
+		unsigned char* w = RAW(wkb[i]); 
+		raw.push_back(w);
+		sizes.push_back(wkb[i].size());
+	}	
+	return x->addRawGeoms(raw, sizes);
+}
+
+
+
+
 /*
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) {
 	SpatOptions opt;
@@ -435,6 +452,7 @@ RCPP_MODULE(spat){
 		.constructor<std::vector<std::string>>()
 
 
+		.method("addWKB", &addWKB)
 //		.method("pointInPolygon", &SpatVector::pointInPolygon)
 		
 		.method("deepcopy", &SpatVector::deepCopy)

@@ -396,6 +396,63 @@ SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
 	return g;
 }
 
+
+void addOGRgeometry(SpatVector &x, OGRGeometry *poGeometry) {
+	SpatGeom g;
+		
+	OGRwkbGeometryType gtype = wkbFlatten(poGeometry->getGeometryType());
+	if (gtype == wkbPoint) {
+		g = getPointGeom(poGeometry);
+	} else if (gtype == wkbMultiPoint) {
+		g = getMultiPointGeom(poGeometry);
+	} else if (gtype == wkbLineString) {
+		g = getLinesGeom(poGeometry);
+	} else if (gtype == wkbMultiLineString) {
+		g = getMultiLinesGeom(poGeometry);
+	} else if (gtype == wkbPolygon) {
+		g = getPolygonsGeom(poGeometry);
+	} else if (gtype == wkbMultiPolygon) {
+		g = getMultiPolygonsGeom(poGeometry);
+	} else {
+		const char *geomtypechar = OGRGeometryTypeToName(gtype);
+		std::string strgeomtype = geomtypechar;
+		x.setError("cannot read geometry type: " + strgeomtype);
+		return;
+	}
+	if ((x.size() > 1)  && (x.geoms[0].gtype != g.gtype)) {
+		x.setError("a SpatVector can only have a single geometry type");
+		return;
+	}
+	x.addGeom(g);
+	OGRGeometryFactory::destroyGeometry(poGeometry);
+}	
+
+
+bool SpatVector::addRawGeoms(std::vector<unsigned char*> wkbs, std::vector<size_t> sizes) {
+	
+	if (wkbs.size() == 0) {
+		SpatGeom g = emptyGeom();
+		addGeom(g);
+		return true;
+	}
+	
+	for (size_t i=0; i<wkbs.size(); i++) {
+		OGRGeometry *poGeometry;
+		OGRErr err = OGRGeometryFactory::createFromWkb(wkbs[i], NULL, &poGeometry, sizes[i]);
+		if (err == OGRERR_NONE) {
+			if (poGeometry != NULL) {				
+				addOGRgeometry(*this, poGeometry);
+			}
+		} else {
+			setError("not valid WKB");
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+
 std::vector<std::string> SpatVector::layer_names(std::string filename) {
 
 	std::vector<std::string> out;
@@ -511,6 +568,9 @@ bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer
 
 	return true;
 }
+
+
+
 
 
 bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string query, std::vector<double> ext, SpatVector filter, bool as_proxy, std::string what, std::string dialect) {
