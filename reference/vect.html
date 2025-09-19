@@ -15,7 +15,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-64</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-65</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>character. A filename; or a "Well Known Text" string; SpatExtent, data.frame (to make a SpatVector of points); a "geom" matrix to make a SpatVector of any supported geometry (see examples and <code><a href="geometry.html">geom</a></code>); a spatial vector data object defined in the <code>sf</code> or <code>sp</code> packages; or a list with matrices with coordinates</p></dd>
+<dd><p>character. A filename; or a "Well Known Text" string; SpatExtent, data.frame (to make a SpatVector of points); a "geom" matrix to make a SpatVector of any supported geometry (see examples and <code><a href="geometry.html">geom</a></code>); a spatial vector data object defined in the <code>sf</code> or <code>sp</code> packages; or a list with either matrices with coordinates, or raw "Well Known Binary" (WKB) blobs</p></dd>
 
 <dt id="arg-layer">layer<a class="anchor" aria-label="anchor" href="#arg-layer"></a></dt>
 <dd><p>character. layer name to select a layer from a file (database) with multiple layers</p></dd>
@@ -98,7 +98,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 <dd><p>SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points). It is guaranteed that all features that overlap with the extent of filter will be returned. It can happen that additional geometries are returned</p></dd>
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>character. Geometry type. Must be "points", "lines", or "polygons"</p></dd>
+<dd><p>character. Geometry type. Must be "points", "lines", or "polygons". Ignored if <code>x</code> is a WKB list</p></dd>
 
 <dt id="arg-atts">atts<a class="anchor" aria-label="anchor" href="#arg-atts"></a></dt>
 <dd><p>data.frame with the attributes. The number of rows must match the number of geometrical elements</p></dd>

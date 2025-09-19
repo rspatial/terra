@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-64</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-65</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-64" id="version-18-64">version 1.8-64<a class="anchor" aria-label="anchor" href="#version-18-64"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-65" id="version-18-65">version 1.8-65<a class="anchor" aria-label="anchor" href="#version-18-65"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-64">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-64"></a></h3>
+<h3 id="bug-fixes-1-8-65">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-65"></a></h3>
 <ul><li>
 <code>project(mask=TRUE)</code> could fail with high-resolution global rasters because of data-line flipping <a href="https://stackoverflow.com/q/79708536/635245" class="external-link">SO 79708536</a> by Patrick</li>
 <li>
@@ -53,6 +53,12 @@
 <code>rast(x, type = "xyz")</code> did not inherit CRS from a SpatVector <a href="https://github.com/rspatial/terra/issues/1886" class="external-link">#1886</a> by Danielle Ferraro</li>
 <li>
 <code>distance(values = TRUE)</code> returned unexpected results <a href="https://github.com/rspatial/terra/issues/1891" class="external-link">#1891</a> by Jason Flower</li>
+<li>
+<code>plot</code> with arguments for a continuous legend failed if no such legend was drawn <a href="https://github.com/rspatial/terra/issues/1897" class="external-link">#1897</a> by François Rousseu</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-1-8-65">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-65"></a></h3>
+<ul><li>better support for creating a SpatVector with an EMPTY wkt geometry <a href="https://github.com/rspatial/terra/issues/1903" class="external-link">#1903</a> by Anatolii Tsyplenkov</li>
 </ul></div>
 </div>
     <div class="section level2">
