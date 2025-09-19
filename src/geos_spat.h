@@ -320,7 +320,9 @@ inline std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSC
 			} else {
 				gcol = (np = 1) ? geoms[0] :
 					GEOSGeom_createCollection_r(hGEOSCtxt, GEOS_MULTIPOINT, &geoms[0], np);
-			}
+			}			
+//			GEOSGeometry* gcol = (np == 1) ? geoms[0] :
+//				GEOSGeom_createCollection_r(hGEOSCtxt, GEOS_MULTIPOINT, &geoms[0], np);
 			g.push_back( geos_ptr(gcol, hGEOSCtxt) );
 		}
 
