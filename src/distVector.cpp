@@ -25,8 +25,6 @@
 //#include "sort.h"
 #include "math_utils.h"
 
-#include "Rcpp.h"
-
 #if defined(USE_TBB)
 #include <tbb/parallel_for.h>
 #include <tbb/blocked_range.h>

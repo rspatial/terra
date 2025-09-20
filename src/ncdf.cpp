@@ -1,6 +1,5 @@
 /*
 #include <string>
-#include "Rcpp.h"
 */
 /*
 #if defined(__APPLE__)

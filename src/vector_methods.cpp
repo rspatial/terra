@@ -249,8 +249,6 @@ SpatVector SpatVector::elongate(double length, bool flat) {
 	return out;
 }
 
-//#include "Rcpp.h"
-
 SpatVectorCollection SpatVector::split(std::string field) {
 
 	SpatVectorCollection out;

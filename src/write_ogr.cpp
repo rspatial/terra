@@ -37,8 +37,6 @@ bool driverSupports(std::string driver, std::string option) {
 }
 
 
-#include "Rcpp.h"
-
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
     GDALDataset *poDS = NULL;

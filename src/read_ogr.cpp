@@ -43,7 +43,6 @@ std::string geomType(OGRLayer *poLayer) {
 }
 
 
-#include "Rcpp.h"
 
 SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 	SpatDataFrame df;
@@ -317,7 +316,6 @@ SpatGeom getMultiLinesGeom(OGRGeometry *poGeometry) {
 	return g;
 }
 
-//#include "Rcpp.h"
 
 SpatGeom getPolygonsGeom(OGRGeometry *poGeometry) {
 	SpatGeom g(polygons);

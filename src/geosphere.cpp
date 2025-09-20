@@ -41,8 +41,6 @@
 #endif
 
 
-//#include "Rcpp.h"
-
 inline void normLon(double &lon) {
 	lon = fmod(lon + 180, 360.) - 180;
 }
