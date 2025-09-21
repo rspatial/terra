@@ -214,7 +214,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 			if (tstep == "") stept <- "days"
 		} else if (inherits(value, "POSIXt")) {
 			if (tstep == "") stept <- "seconds"
-			tzone <- attr(value[1], "tzone")
+			tzone <- attr(value[1], "tzone")[1]
 			if (is.null(tzone)) tzone = "UTC"
 		} else if (inherits(value, "yearmon")) {
 			value <- as.numeric(value)

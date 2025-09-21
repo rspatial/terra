@@ -52,7 +52,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 				index <- as.integer(format(time(x, "days"), "%j"))
 				index <- as.character((index-1) %/% 15 + 1)
 				prename <- "d15_"
-			} else {
+			} else { 
 				index <- time(x, choice)	
 				out_time <- time_as_seconds(x)[!duplicated(index)]
 				out_tstep <- choice
