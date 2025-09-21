@@ -9,7 +9,7 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-65</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-66</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">makeTiles</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, filename<span class="op">=</span><span class="st">"tile_.tif"</span>, extend<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span>    na.rm<span class="op">=</span><span class="cn">FALSE</span>, buffer<span class="op">=</span><span class="fl">0</span>, value<span class="op">=</span><span class="st">"files"</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>    na.rm<span class="op">=</span><span class="cn">FALSE</span>, buffer<span class="op">=</span><span class="fl">0</span>, ret<span class="op">=</span><span class="st">"files"</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
@@ -73,7 +73,7 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
   <dt id="arg-buffer">buffer<a class="anchor" aria-label="anchor" href="#arg-buffer"></a></dt>
 <dd><p>integer. The number of additional rows and columns added to each tile. Can be a single number, or two numbers to specify a separate number of rows and columns. This allows for creating overlapping tiles that can be used for computing spatial context dependent values with e.g. <code><a href="focal.html">focal</a></code>. The expansion is only inside <code>x</code>, no rows or columns outside of <code>x</code> are added</p></dd>
 
-  </dl><p><code>value</code>character. The type of rerturn value desired. Either "filenames", "raster" (for a SpatRaster), or "collection" (for a SpatRasterCollection)</p>
+  </dl><p><code>ret</code>character. The type of return value desired. Either "files" (for the filenames), "raster" (for a SpatRaster), or "collection" (for a SpatRasterCollection)</p>
 <dl><dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, existing tiles are overwritten; otherwise they are skipped (without error or warning)</p></dd>
 
@@ -113,10 +113,10 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
 <span class="r-in"><span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"_.tif"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu">makeTiles</span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span>, <span class="va">filename</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpafybUt/file24e26631e9cf_1.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/tmp/RtmpafybUt/file24e26631e9cf_2.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/tmp/RtmpafybUt/file24e26631e9cf_3.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/tmp/RtmpafybUt/file24e26631e9cf_4.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpYkgLvd/file253b3a4b6cb4_1.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/tmp/RtmpYkgLvd/file253b3a4b6cb4_2.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/tmp/RtmpYkgLvd/file253b3a4b6cb4_3.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/tmp/RtmpYkgLvd/file253b3a4b6cb4_4.tif"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="vrt.html">vrt</a></span><span class="op">(</span><span class="va">ff</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
@@ -124,8 +124,8 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 3.6, 1.8  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : spat_24e25cd74212_9442_DvggOkjkTOQeAAI.vrt </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : spat_24e25cd74212_9442_DvggOkjkTOQeAAI </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : spat_253b220d47cc_9531_DvggOkjkTOQeAAI.vrt </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : spat_253b220d47cc_9531_DvggOkjkTOQeAAI </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min value   :                                      1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max value   :                                  10000 </span>
 </code></pre></div>
