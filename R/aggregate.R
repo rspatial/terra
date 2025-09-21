@@ -37,6 +37,8 @@
 setMethod("aggregate", signature(x="SpatRaster"),
 function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
+	# check if fact is an integer? round fact?
+
 	if (hasValues(x)) { 
 		fun <- .makeTextFun(fun)
 		toc <- FALSE
@@ -55,6 +57,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		toc = TRUE 
 		fun = "mean"
 	}
+		
 	if (toc) {
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
 		narm <- isTRUE(list(...)$na.rm)
