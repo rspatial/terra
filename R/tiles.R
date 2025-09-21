@@ -1,6 +1,6 @@
 
 setMethod("makeTiles", signature(x="SpatRaster"),
-	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, buffer=0, value="filenames", overwrite=FALSE, ...) {
+	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, buffer=0, value="files", overwrite=FALSE, ...) {
 	
 		value <- match.arg(value, c("filenames", "raster", "collection"))
 		filename <- trimws(filename[1])
@@ -22,7 +22,7 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 			error("makeTiles", "y must be numeric or a SpatRaster or SpatVector")
 		}
 		messages(x, "makeTiles")
-		if (value == "filenames") {
+		if (value == "files") {
 			ff
 		} else if (value == "raster") {
 			filename <- gsub("_\\.", "s.", filename)
