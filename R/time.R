@@ -126,7 +126,6 @@ setMethod("time", signature(x="SpatRaster"),
 			} else if ((format == "days") && (!(tstep %in% c("seconds", "days")))) {
 				error("time", "cannot extract days from this type of time data")
 			}
-			tstep <- format
 		} else if (tstep == "raw") {
 			return(d)
 		}
@@ -138,17 +137,22 @@ setMethod("time", signature(x="SpatRaster"),
 			if (!(tz %in% c("", "UTC"))) {
 				attr(d, "tzone") = tz
 			}
+			if (format == "seconds") {
+				return(d)
+			} 
+		}
+		# substr to avoid time zone troubles #see 1896
+		d <- as.Date(substr(d, 1, 10))
+		if (format == "days") {
 			d
-		} else if (tstep == "days") {
-			as.Date(d)
-		} else if (tstep == "yearmonths") {
+		} else if (format == "yearmonths") {
 			y <- as.integer(format(d, "%Y"))
 			y + (as.integer(format(d, "%m"))-1)/12
-		} else if (tstep == "months") {
+		} else if (format == "months") {
 			as.integer(format(d, "%m"))
-		} else if (tstep == "years") {
+		} else if (format == "years") {
 			as.integer(format(d, "%Y"))
-#		} else if (tstep == "yearweeks") {
+#		} else if (format == "yearweeks") {
 #			yearweek(as.Date(d))
 		} else { # ???
 			d
@@ -210,7 +214,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 			if (tstep == "") stept <- "days"
 		} else if (inherits(value, "POSIXt")) {
 			if (tstep == "") stept <- "seconds"
-			tzone <- attr(value, "tzone")[1]
+			tzone <- attr(value[1], "tzone")
 			if (is.null(tzone)) tzone = "UTC"
 		} else if (inherits(value, "yearmon")) {
 			value <- as.numeric(value)
