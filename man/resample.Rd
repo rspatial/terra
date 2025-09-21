@@ -2,6 +2,7 @@
 
 \alias{resample}
 \alias{resample,SpatRaster,SpatRaster-method}
+\alias{resample,SpatRaster,numeric-method}
 
 \title{Transfer values of a SpatRaster to another one with a different geometry}
 
@@ -17,16 +18,16 @@ If the origin and extent of the input and output are the same, you should consid
 
 \arguments{
   \item{x}{SpatRaster to be resampled}
-  \item{y}{SpatRaster with the geometry that \code{x} should be resampled to}
+  \item{y}{SpatRaster with the geometry that \code{x} should be resampled to. You can also provide one or two positive numbers to set the resolution of the output raster}
   \item{method}{character. Method used for estimating the new cell values. One of: 
     
 	\code{bilinear}: bilinear interpolation (3x3 cell window). This is used by default if the first layer of \code{x} is not categorical
 
-	\code{average}:  This can be a good choice with continuous variables if the output cells overlap with multiple input cells. 
+	\code{mean}:  This can be a good choice with continuous variables if the output cells overlap with multiple input cells. 
 
 	\code{near}: nearest neighbor. This is used by default if the first layer of \code{x} is categorical. This method is not a good choice for continuous values.
 
-	\code{mode}: The modal value. This can be a good choice for categrical rasters, if the output cells overlap with multiple input cells. 
+	\code{modal}: The modal value. This can be a good choice for categrical rasters, if the output cells overlap with multiple input cells. 
   
 	\code{cubic}: cubic interpolation (5x5 cell window).
 

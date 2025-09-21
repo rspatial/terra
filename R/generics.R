@@ -822,18 +822,53 @@ setMethod("rectify", signature(x="SpatRaster"),
 	}
 )
 
+
+resample_method <- function(x, method) {
+	if (missing(method)) {
+		if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
+			method <- "near"
+		} else {
+			method <- "bilinear"
+		}
+	} else {
+		mts <- c("near", "bilinear", "cubic", "cubicspline", "lanczos", "mean", "sum", "modal", "min", "q1", "median", "q3", "max", "rms")
+		if (!inherits(method, "character")) {
+			method <- .makeTextFun(method)
+			if (!inherits(method, "character")) {
+				error("resample", paste("Not a valid method. Use one of:", paste(mts, collapse=", ")))
+			}
+		}
+		method <- match.arg(tolower(method[1]), c(mts, "average", "mode"))
+		method[method == "mean"] <- "average"
+		method[method == "modal"] <- "mode"
+	}
+	method
+}
+	
+
+setMethod("resample", signature(x="SpatRaster", y="numeric"),
+	function(x, y, method, threads=FALSE, by_util=FALSE, filename="", ...)  {
+
+		stopifnot(all(y > 0))
+		stopifnot(length(y) <= 2)
+		fact <- rep_len(y, 2)
+		r <- rast(x)
+		res(r) <- res(r) * fact
+		r <- crop(extend(r, c(0,1,0,1)), ext(x), snap="out") 
+
+		if (!hasValues(x)) { 
+			return(r)
+		}	
+		method <- resample_method(x, method)
+		resample(x, r, method, threads=threads, by_util=by_util, filename=filename, ...)
+	}
+)
+
+
 setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, method, threads=FALSE, by_util=FALSE, filename="", ...)  {
 
-		if (missing(method)) {
-			if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
-				method <- "near"
-			} else {
-				method <- "bilinear"
-			}
-		} else {
-			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "sum", "mode", "min", "q1", "median", "q3", "max", "rms"))			
-		}
+		method <- resample_method(x, method)
 		xcrs = crs(x)
 		ycrs = crs(y)
 		if ((xcrs == "") && (ycrs != "")) {

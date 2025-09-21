@@ -21,6 +21,7 @@
 ## new
 
 - it is now possible to create a SpatVector from Well Known Binary (WKB) data [#1895](https://github.com/rspatial/terra/pull/1895) by Jan Hartman
+- `resample` now also accepts, instead of a template SpatRaster, one or two numbers to set the resolution of the output SpatRaster [#1874](https://github.com/rspatial/terra/pull/1874) by Agustin Lobo
 
 
 # version 1.8-60
