@@ -38,7 +38,7 @@
 <div class="section level3">
 <h3 id="bug-fixes-1-8-65">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-65"></a></h3>
 <ul><li>
-<code>project(mask=TRUE)</code> could fail with high-resolution global rasters because of data-line flipping <a href="https://stackoverflow.com/q/79708536/635245" class="external-link">SO 79708536</a> by Patrick</li>
+<code>project(mask=TRUE)</code> could fail with high-resolution global rasters because of date-line flipping <a href="https://stackoverflow.com/q/79708536/635245" class="external-link">SO 79708536</a> by Patrick</li>
 <li>
 <code>plot(pax=list(mgp=c(1,1,2))</code> now sets mgp seperately for horizontal and vertical axes <a href="https://github.com/rspatial/terra/issues/1873" class="external-link">#1873</a> by Hu shiyu</li>
 <li>
@@ -58,7 +58,10 @@
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-65">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-65"></a></h3>
-<ul><li>better support for creating a SpatVector with an EMPTY wkt geometry <a href="https://github.com/rspatial/terra/issues/1903" class="external-link">#1903</a> by Anatolii Tsyplenkov</li>
+<ul><li>when computing aggregated time steps such as days from POSIXct (seconds) time, terra now uses the date in the specified time zone, unlike base <code>as.Date</code> that seems to return the date in the UTC time zone <a href="https://github.com/rspatial/terra/issues/1896" class="external-link">#1896</a> by Kodi Arfer</li>
+<li>better support for creating a SpatVector with an EMPTY wkt geometry <a href="https://github.com/rspatial/terra/issues/1903" class="external-link">#1903</a> by Anatolii Tsyplenkov</li>
+<li>
+<code>makeTiles</code> gains argument “value” to allow the return value to be a SpatRaster or SpatRasterCollection <a href="https://github.com/rspatial/terra/issues/1894" class="external-link">#1894</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-65">new<a class="anchor" aria-label="anchor" href="#new-1-8-65"></a></h3>

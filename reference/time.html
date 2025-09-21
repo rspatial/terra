@@ -96,13 +96,12 @@ timeInfo and has.time are helper functions to understand what a time data a Spat
 <span class="r-in"><span><span class="co"># POSIX (date/time with a resolution of seconds)</span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXlt</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2001-05-04 UTC" "2001-05-05 UTC" "2001-05-06 UTC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2001-05-04" "2001-05-05" "2001-05-06"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># with time zone</span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXlt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"America/New_York"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2025-09-20 13:18:37 EDT" "2025-09-20 13:18:38 EDT"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "2025-09-20 13:18:39 EDT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2025-09-21" "2025-09-21" "2025-09-21"</span>
 <span class="r-in"><span><span class="fu">timeInfo</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   time    step             zone</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 TRUE seconds America/New_York</span>
@@ -120,7 +119,7 @@ timeInfo and has.time are helper functions to understand what a time data a Spat
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       : red, green, blue </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min values  :   0,     0,    0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 255,   255,  255 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> time (years): 2000 to 2002 (3 steps) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> time (years): 2000-06-15 to 2002-06-15 (3 steps) </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span>, tstep<span class="op">=</span><span class="st">"months"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span></span></span>
 <span class="r-in"><span><span class="va">s</span> </span></span>
@@ -134,7 +133,7 @@ timeInfo and has.time are helper functions to understand what a time data a Spat
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       : red, green, blue </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min values  :   0,     0,    0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 255,   255,  255 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> time (mnts) : Jan to Mar (3 steps) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> time (mnts) : NA </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
