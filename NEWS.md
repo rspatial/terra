@@ -16,7 +16,7 @@
 
 - when computing aggregated time steps such as days from POSIXct (seconds) time, terra now uses the date in the specified time zone, unlike base `as.Date` that seems to return the date in the UTC time zone [#1896](https://github.com/rspatial/terra/issues/1896) by Kodi Arfer
 - better support for creating a SpatVector with an EMPTY wkt geometry [#1903](https://github.com/rspatial/terra/issues/1903) by Anatolii Tsyplenkov
-- `makeTiles` gains argument "ret" to set the returned value to be the filenames (default), a SpatRaster or a SpatRasterCollection [#1894](https://github.com/rspatial/terra/issues/1894) by Márcia Barbosa
+- `makeTiles` gains argument "value" to set the returned value to be the filenames (default), a SpatRaster or a SpatRasterCollection [#1894](https://github.com/rspatial/terra/issues/1894) by Márcia Barbosa
 
 ## new
 

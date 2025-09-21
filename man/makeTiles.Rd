@@ -20,7 +20,7 @@ Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with
 
 \usage{
 \S4method{makeTiles}{SpatRaster}(x, y, filename="tile_.tif", extend=FALSE,
-		na.rm=FALSE, buffer=0, ret="files", overwrite=FALSE, ...)
+		na.rm=FALSE, buffer=0, value="files", overwrite=FALSE, ...)
 
 
 \S4method{getTileExtents}{SpatRaster}(x, y, extend=FALSE, buffer=0)
@@ -33,7 +33,7 @@ Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with
   \item{extend}{logical. If \code{TRUE}, the extent of \code{y} is expanded to assure that it covers all of \code{x}}
   \item{na.rm}{logical. If \code{TRUE}, tiles with only missing values are ignored}
   \item{buffer}{integer. The number of additional rows and columns added to each tile. Can be a single number, or two numbers to specify a separate number of rows and columns. This allows for creating overlapping tiles that can be used for computing spatial context dependent values with e.g. \code{\link{focal}}. The expansion is only inside \code{x}, no rows or columns outside of \code{x} are added}
-  \code{ret}{character. The type of return value desired. Either "files" (for the filenames), "raster" (for a SpatRaster), or "collection" (for a SpatRasterCollection)}
+  \item{value}{character. The type of return value desired. Either "files" (for the filenames), "raster" (for a SpatRaster), or "collection" (for a SpatRasterCollection)}
   \item{overwrite}{logical. If \code{TRUE}, existing tiles are overwritten; otherwise they are skipped (without error or warning)}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
