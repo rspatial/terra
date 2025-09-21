@@ -2,7 +2,7 @@
 
 ## bug fixes
 
-- `project(mask=TRUE)` could fail with high-resolution global rasters because of data-line flipping [SO 79708536](https://stackoverflow.com/q/79708536/635245) by Patrick
+- `project(mask=TRUE)` could fail with high-resolution global rasters because of date-line flipping [SO 79708536](https://stackoverflow.com/q/79708536/635245) by Patrick
 - `plot(pax=list(mgp=c(1,1,2))` now sets mgp seperately for horizontal and vertical axes [#1873](https://github.com/rspatial/terra/issues/1873) by Hu shiyu
 - `coltab(x, ..., layer=1)<-` argument layer did not work for layer names [#1879](https://github.com/rspatial/terra/issues/1879) by Alex Ilich
 - `sds` could create a SpatRasterDataset with SpatRasters with different spatial resolutions [#1884](https://github.com/rspatial/terra/issues/1884) by Stefan Fallert
@@ -16,7 +16,7 @@
 
 - when computing aggregated time steps such as days from POSIXct (seconds) time, terra now uses the date in the specified time zone, unlike base `as.Date` that seems to return the date in the UTC time zone [#1896](https://github.com/rspatial/terra/issues/1896) by Kodi Arfer
 - better support for creating a SpatVector with an EMPTY wkt geometry [#1903](https://github.com/rspatial/terra/issues/1903) by Anatolii Tsyplenkov
-
+- `makeTiles` gains argument "value" to allow the return value to be a SpatRaster or SpatRasterCollection [#1894](https://github.com/rspatial/terra/issues/1894) by Márcia Barbosa
 
 ## new
 
