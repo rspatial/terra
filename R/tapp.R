@@ -18,7 +18,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 				error("tapp", paste("invalid time step. Use one of:", paste(choices, collapse=", ")))
 			}
 			if (!x@pntr$hasTime) {
-				error("tapp", "x has no time data")
+				error("tapp", "x has no time stamps")
 			}
 			choice <- choices[i]
 			if (choice == "doy") {

@@ -128,6 +128,8 @@ setMethod("time", signature(x="SpatRaster"),
 			}
 		} else if (tstep == "raw") {
 			return(d)
+		} else {
+			format = tstep
 		}
 		
 		
@@ -141,10 +143,10 @@ setMethod("time", signature(x="SpatRaster"),
 				return(d)
 			} 
 		}
-		# substr to avoid time zone troubles #see 1896
-		d <- as.Date(substr(d, 1, 10))
+		
 		if (format == "days") {
-			d
+		# first use format to avoid time zone trouble #1896
+			as.Date(format(d, "%Y-%m-%d"))
 		} else if (format == "yearmonths") {
 			y <- as.integer(format(d, "%Y"))
 			y + (as.integer(format(d, "%m"))-1)/12
