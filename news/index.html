@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-66</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-67</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-66" id="version-18-66">version 1.8-66<a class="anchor" aria-label="anchor" href="#version-18-66"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-67" id="version-18-67">version 1.8-67<a class="anchor" aria-label="anchor" href="#version-18-67"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-66">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-66"></a></h3>
+<h3 id="bug-fixes-1-8-67">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-67"></a></h3>
 <ul><li>
 <code>project(mask=TRUE)</code> could fail with high-resolution global rasters because of date-line flipping <a href="https://stackoverflow.com/q/79708536/635245" class="external-link">SO 79708536</a> by Patrick</li>
 <li>
@@ -57,14 +57,14 @@
 <code>plot</code> with arguments for a continuous legend failed if no such legend was drawn <a href="https://github.com/rspatial/terra/issues/1897" class="external-link">#1897</a> by François Rousseu</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-66">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-66"></a></h3>
+<h3 id="enhancements-1-8-67">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-67"></a></h3>
 <ul><li>when computing aggregated time steps such as days from POSIXct (seconds) time, terra now uses the date in the specified time zone, unlike base <code>as.Date</code> that seems to return the date in the UTC time zone <a href="https://github.com/rspatial/terra/issues/1896" class="external-link">#1896</a> by Kodi Arfer</li>
 <li>better support for creating a SpatVector with an EMPTY wkt geometry <a href="https://github.com/rspatial/terra/issues/1903" class="external-link">#1903</a> by Anatolii Tsyplenkov</li>
 <li>
 <code>makeTiles</code> gains argument “value” to set the returned value to be the filenames (default), a SpatRaster or a SpatRasterCollection <a href="https://github.com/rspatial/terra/issues/1894" class="external-link">#1894</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-66">new<a class="anchor" aria-label="anchor" href="#new-1-8-66"></a></h3>
+<h3 id="new-1-8-67">new<a class="anchor" aria-label="anchor" href="#new-1-8-67"></a></h3>
 <ul><li>it is now possible to create a SpatVector from Well Known Binary (WKB) data <a href="https://github.com/rspatial/terra/pull/1895" class="external-link">#1895</a> by Jan Hartman</li>
 <li>
 <code>resample</code> now also accepts, instead of a template SpatRaster, one or two numbers to set the resolution of the output SpatRaster <a href="https://github.com/rspatial/terra/pull/1874" class="external-link">#1874</a> by Agustin Lobo</li>
