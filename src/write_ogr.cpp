@@ -39,6 +39,13 @@ bool driverSupports(std::string driver, std::string option) {
 
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
+	#if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 11) || (GDAL_VERSION_MAJOR >= 4)
+	if (driver == "Memory") {
+		driver = "MEM";
+	}
+	#endif
+
+
     GDALDataset *poDS = NULL;
 	if (nrow() == 0) {
 		setError("SpatVector has no records to write");
@@ -448,7 +455,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 }
 
 GDALDataset* SpatVector::GDAL_ds() {
-	return write_ogr("", "layer", "MEM", false, true, std::vector<std::string>());
+	return write_ogr("", "layer", "Memory", false, true, std::vector<std::string>());
 }
 
 
