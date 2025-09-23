@@ -1435,9 +1435,9 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
     GDALDataset *poDS = NULL;
 
 #if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 11) || (GDAL_VERSION_MAJOR >= 4)	
-    GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );
-#else
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "MEM" );
+#else
+    GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );
 #endif
 
     if( poDriver == NULL )  {
