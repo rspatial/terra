@@ -101,7 +101,7 @@ SpatVector SpatVector::buffer3(std::vector<double> d, unsigned quadsegs) {
 
 	SpatVector out;
 	recycle(d, size());
-	GDALDataset* v = write_ogr("", "layer", "Memory", false, true, std::vector<std::string>());
+	GDALDataset* v = write_ogr("", "layer", "MEM", false, true, std::vector<std::string>());
 
 	OGRLayer *poLayer = v->GetLayer(0);
 	poLayer->ResetReading();
@@ -1433,7 +1433,7 @@ SpatVector SpatRaster::polygonize(bool round, bool values, bool narm, bool aggre
 	}
 
     GDALDataset *poDS = NULL;
-    GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );
+    GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "MEM" );
     if( poDriver == NULL )  {
         out.setError( "cannot create output driver");
         return out;

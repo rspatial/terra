@@ -448,7 +448,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 }
 
 GDALDataset* SpatVector::GDAL_ds() {
-	return write_ogr("", "layer", "Memory", false, true, std::vector<std::string>());
+	return write_ogr("", "layer", "MEM", false, true, std::vector<std::string>());
 }
 
 

@@ -545,7 +545,7 @@ bool layerQueryFilter(GDALDataset *&poDS, OGRLayer *&poLayer, std::string &layer
 		} else if (filter.nrow() > 1) {
 			filter = filter.aggregate(true);
 		}
-		GDALDataset *filterDS = filter.write_ogr("", "lyr", "Memory", false, true, std::vector<std::string>());
+		GDALDataset *filterDS = filter.write_ogr("", "lyr", "MEM", false, true, std::vector<std::string>());
 		if (filter.hasError()) {
 			//setError(filter.getError());
 			GDALClose(filterDS);
