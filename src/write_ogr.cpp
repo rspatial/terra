@@ -39,7 +39,7 @@ bool driverSupports(std::string driver, std::string option) {
 
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
-	#if (GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 11) || (GDAL_VERSION_MAJOR >= 4)
+	#if (GDAL_VERSION_MAJOR == 3 && GDAL_VERSION_MINOR >= 11) || (GDAL_VERSION_MAJOR >= 4)
 	if (driver == "Memory") {
 		driver = "MEM";
 	}
