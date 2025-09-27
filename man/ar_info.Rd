@@ -24,6 +24,6 @@ ar_info(x, what="describe", simplify=TRUE, filter=TRUE, array="")
 character or data.frame
 }
 
-\seealso{\code{\link{ar_info}}}
+\seealso{\code{\link{describe}}}
 
 \keyword{spatial}
