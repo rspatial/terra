@@ -10,8 +10,7 @@ function(x, pause=0.25, main, range, maxcell=50000, n=1, ...) {
 	x <- sampleRaster(x, maxcell, method="regular", replace=FALSE, ext=NULL, warn=FALSE, overview=TRUE)
 
 	if (missing(range)) {
-		mnmx <- minmax(x)
-		range <- c(min(mnmx[1,]), max(mnmx[2,]))
+      range <- sapply(x, function(x) global(x, range, na.rm = TRUE))
 	}
 
 	nl <- nlyr(x)
@@ -19,7 +18,7 @@ function(x, pause=0.25, main, range, maxcell=50000, n=1, ...) {
 	i <- 1
 	reps <- 0
     while (reps < n) {
-        plot(x[[i]], main = main[i], range=range, maxcell=Inf, ...)
+        plot(x[[i]], main = main[i], range=unlist(range[, i]), maxcell=Inf, ...)
         grDevices::dev.flush()
 	grDevices::dev.hold()
         Sys.sleep(pause)
