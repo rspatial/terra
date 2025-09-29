@@ -4,6 +4,9 @@
 
 ## enhancements
 
+- `plet<SpatRaster>` can use a color function returned by `leaflet::colorNumeric` [#1904](https://github.com/rspatial/terra/issues/1904) by Ignacio Marzan
+
+
 ## new
 
 
