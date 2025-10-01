@@ -355,7 +355,22 @@ setMethod("nearest", signature(x="SpatVector"),
 			z@pntr <- x@pntr$near_between(y@pntr, pairs, method)
 		}
 		z <- messages(z, "nearest")
-		if (geomtype(z) == "points") { #lonlat points
+		if (geomtype(z) == "points") { 
+		
+			if (within) {
+				names(z)[1] <- "to_id"
+				z$to_id <- z$to_id + 1
+				crd <- crds(x)
+				X <- cbind(crd[,1], crd[z$to_id, 1])
+				Y <- cbind(crd[,2], crd[z$to_id, 2])
+				if (lines) {
+					geom <- cbind(rep(1:nrow(x), each=2), 1, as.vector(t(X)), as.vector(t(Y)))
+					z <- vect(geom, "lines", crs=crs(z), atts=values(z))
+				}
+				values(z) <- data.frame(from_id=1:nrow(z), from_x=X[,1], from_y=Y[,2], to_id=z$to_id, to_x=X[,2], to_y=Y[,2], distance=z$distance)
+				return(z)
+			}
+		
 			if (lines) {
 				x <- z[,c(2,5), drop=TRUE]
 				y <- z[,c(3,6), drop=TRUE]
