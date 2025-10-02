@@ -23,7 +23,7 @@ Plot the SpatRaster or SpatVector(s) to make an interactive leaflet map that is 
 	tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
 	wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", 
 	shared=FALSE, panel=FALSE, collapse=TRUE, type=NULL, breaks=NULL,
-	breakby="eqint", map=NULL, ...) 
+	breakby="eqint", range=NULL, fill_range=NULL, map=NULL, ...) 
 
 
 \S4method{plet}{SpatVector}(x, y="", col, fill=0.2, main=y, cex=1, lwd=2, 
@@ -80,6 +80,10 @@ Plot the SpatRaster or SpatVector(s) to make an interactive leaflet map that is 
   \item{breaks}{numeric. Either a single number to indicate the number of breaks desired, or the actual breaks. When providing this argument, the default legend becomes "interval"}
   \item{breakby}{character or function. Either "eqint" for equal interval breaks, "cases" for equal quantile breaks. If a function is supplied it should take a single argument (a vector of values) and create groups}
     \item{sort}{logical. If \code{TRUE} legends with character values are sorted. You can also supply a vector of the unique values, in the order in which you want them to appear in the legend}
+	
+  \item{range}{numeric. minimum and maximum values to be used for the continuous legend. You can use \code{NA} for one of these to only set the minimum or maximum value}
+  \item{fill_range}{logical. If \code{TRUE}, values outside of \code{range} get the colors of the extreme values; otherwise they get colored as \code{NA}}
+	
   \item{reverse}{logical. If \code{TRUE}, the legends order is reversed}
 }
 
