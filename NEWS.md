@@ -5,11 +5,14 @@
 ## enhancements
 
 - `plet<SpatRaster>` can (again) use a color function returned by `leaflet::colorNumeric` [#1904](https://github.com/rspatial/terra/issues/1904) by Ignacio Marzan
+- argument `animate<SpatRaster>` can now be set to `NA` to not get a shared legend  [#1909](https://github.com/rspatial/terra/pull/1909) by Márcia Barbosa
+- `text<SpatRaster>` and `text<SpatVector>` gained argument "jitter=0" [#1910](https://github.com/rspatial/terra/pull/1910) by Márcia Barbosa
+- `points<SpatVector>` gained argument "jitter=0"
+- `plet<SpatRaster>` gained arguments "range" and "fill_range" 
 
 ## new
 
 - `plet<SpatRasterCollection>` method
-- `plet<SpatRaster>` gained arguments "range" and "fill_range" 
 
 
 # version 1.8-70
