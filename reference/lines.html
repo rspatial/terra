@@ -47,7 +47,7 @@ These methods also work for a small(!) SpatRaster. Only cells that are not NA in
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatVector'</span></span>
-<span><span class="fu">points</span><span class="op">(</span><span class="va">x</span>, <span class="va">col</span>, cex<span class="op">=</span><span class="fl">0.7</span>, pch<span class="op">=</span><span class="fl">16</span>, alpha<span class="op">=</span><span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">points</span><span class="op">(</span><span class="va">x</span>, <span class="va">col</span>, cex<span class="op">=</span><span class="fl">0.7</span>, pch<span class="op">=</span><span class="fl">16</span>, alpha<span class="op">=</span><span class="fl">1</span>, jitter<span class="op">=</span><span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
 <span><span class="fu">lines</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="cn">NULL</span>, <span class="va">col</span>, lwd<span class="op">=</span><span class="fl">1</span>, lty<span class="op">=</span><span class="fl">1</span>, arrows<span class="op">=</span><span class="cn">FALSE</span>, alpha<span class="op">=</span><span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -97,6 +97,9 @@ These methods also work for a small(!) SpatRaster. Only cells that are not NA in
 
   <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
 <dd><p>number between 0 and 1 to set transparency</p></dd>
+
+  <dt id="arg-jitter">jitter<a class="anchor" aria-label="anchor" href="#arg-jitter"></a></dt>
+<dd><p>numeric. The amount of random noise used to adjust label positions, possibly avoiding overlaps. See argument 'factor' in <code><a href="https://rdrr.io/r/base/jitter.html" class="external-link">jitter</a></code></p></dd>
 
   <dt id="arg-lwd">lwd<a class="anchor" aria-label="anchor" href="#arg-lwd"></a></dt>
 <dd><p>numeric, line-width. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></code></p></dd>
