@@ -195,7 +195,7 @@ halo <- function(x, y=NULL, labels, col="black", hc="white", hw=0.1, ... ) {
 
 
 setMethod("text", signature(x="SpatRaster"),
-	function(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, ...) {
+	function(x, labels, digits=0, halo=FALSE, hc="white", hw=0.1, jitter=0, ...) {
 		if (missing(labels)) {
 			labels <- 1
 		}
@@ -214,6 +214,7 @@ setMethod("text", signature(x="SpatRaster"),
 			p <- as.points(x, values=FALSE, na.rm=FALSE)
 		}
 		xy <- geom(p)[, c("x", "y"), drop=FALSE]
+        if (jitter > 0) xy <- jitter(xy, factor = jitter)
 		if (is.factor(labels)) {
 			labels <- substr(as.character(labels), 1, max(1, digits))
 		} else if (is.numeric(labels)) {
