@@ -744,44 +744,53 @@ setMethod("plet", signature(x="SpatRaster"),
 		} else {
 			nms <- make.unique(names(x))
 			many_legends <- one_legend <- FALSE
-			if (!is.null(legend)) {
-				if (!all(hasMinMax(x))) setMinMax(x)
-				r <- minmax(x)
-				hasColFun <- FALSE
-				if ((inherits(col, "function")) && (!is.null(attr(col, "colorType")))) {
-					hasColFun <- TRUE
-					shared <- TRUE
-				}
-				if (shared) {
-					#rr <- range(r)
-					if (hasColFun) {
-						pal <- col
-						range <- environment(col)$rng
-					} else {
-						r <- minmax(x)
-						if (is.null(range)) {
-							range <- range(r)
-						} else if (fill_range) {
-							x <- clamp(x, range[1], range[2], values=TRUE)
-						}
-						pal <- leaflet::colorNumeric(col, range, na.color=NA)
-					}
-					v <- seq(range[1], range[2], length.out=5)
-					one_legend <- TRUE
-				} else {
-					many_legends <- TRUE
-				}
-			} else {
-				one_legend <- FALSE
+			if (!all(hasMinMax(x))) setMinMax(x)
+			r <- minmax(x)
+			hasColFun <- FALSE
+			if ((inherits(col, "function")) && (!is.null(attr(col, "colorType")))) {
+				hasColFun <- TRUE
+				shared <- TRUE
 			}
-
+			if (shared) {
+				#rr <- range(r)
+				if (hasColFun) {
+					pal <- col
+					range <- environment(col)$rng
+				} else {
+					r <- minmax(x)
+					if (is.null(range)) {
+						range <- range(r)
+					} else if (fill_range) {
+						x <- clamp(x, range[1], range[2], values=TRUE)
+					}
+					pal <- leaflet::colorNumeric(col, range, na.color=NA)
+				}
+				v <- seq(range[1], range[2], length.out=5)
+				one_legend <- TRUE
+			} else {
+				many_legends <- TRUE
+			}
+			add_legend <- !is.null(legend)
+			
 			for (i in 1:nlyr(x)) {
 				if (one_legend) {
 					map <- leaflet::addRasterImage(map, x[[i]], colors=pal, opacity=alpha, group=nms[i], project=notmerc)
 				} else {
-					map <- leaflet::addRasterImage(map, x[[i]], colors=col, opacity=alpha, group=nms[i], project=notmerc)
-					if (many_legends) {
-						v <- seq(r[1,i], r[2,i], length.out=5)
+					if (hasColFun) {
+						pal <- col
+						range <- environment(col)$rng
+					} else {
+						if (is.null(range)) {
+							range <- range(r)
+						} else if (fill_range) {
+							x[[i]] <- clamp(x[[i]], range[1], range[2], values=TRUE)
+						}
+						pal <- leaflet::colorNumeric(col, range, na.color=NA)
+					}
+					map <- leaflet::addRasterImage(map, x[[i]], colors=pal, opacity=alpha, group=nms[i], project=notmerc)
+					if (add_legend) {
+						environment(pal)$reverse <- TRUE
+						v <- seq(range[1], range[2], length.out=5)
 						map <- leaflet::addLegend(map, position=legend, pal=pal, values=v, 
 							  title=main[i], opacity=1, group=nms[i],
 							  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
@@ -790,7 +799,7 @@ setMethod("plet", signature(x="SpatRaster"),
 			}
 			map <- leaflet::addLayersControl(map, baseGroups=nms,
 				options = leaflet::layersControlOptions(collapsed=collapse))
-			if (many_legends) {	# show one legend at a time
+			if (many_legends && add_legend) {	# show one legend at a time
 				map <- htmlwidgets::onRender(map, 
 					"function(el, x) {
 						var updateLegend = function () {
@@ -802,7 +811,7 @@ setMethod("plet", signature(x="SpatRaster"),
 					};
 					updateLegend();
 					this.on('baselayerchange', e => updateLegend());}")
-			} else if (one_legend) {
+			} else if (one_legend && add_legend) {
 				environment(pal)$reverse <- TRUE
 				map <- leaflet::addLegend(map, position=legend, pal=pal, values=v, opacity=1, group=nms[i],
 						  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
