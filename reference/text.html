@@ -41,10 +41,10 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
-<span><span class="fu">text</span><span class="op">(</span><span class="va">x</span>, <span class="va">labels</span>, digits<span class="op">=</span><span class="fl">0</span>, halo<span class="op">=</span><span class="cn">FALSE</span>, hc<span class="op">=</span><span class="st">"white"</span>, hw<span class="op">=</span><span class="fl">0.1</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">text</span><span class="op">(</span><span class="va">x</span>, <span class="va">labels</span>, digits<span class="op">=</span><span class="fl">0</span>, halo<span class="op">=</span><span class="cn">FALSE</span>, hc<span class="op">=</span><span class="st">"white"</span>, hw<span class="op">=</span><span class="fl">0.1</span>, jitter<span class="op">=</span><span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
-<span><span class="fu">text</span><span class="op">(</span><span class="va">x</span>, <span class="va">labels</span>, halo<span class="op">=</span><span class="cn">FALSE</span>, inside<span class="op">=</span><span class="cn">FALSE</span>, hc<span class="op">=</span><span class="st">"white"</span>, hw<span class="op">=</span><span class="fl">0.1</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">text</span><span class="op">(</span><span class="va">x</span>, <span class="va">labels</span>, halo<span class="op">=</span><span class="cn">FALSE</span>, inside<span class="op">=</span><span class="cn">FALSE</span>, hc<span class="op">=</span><span class="st">"white"</span>, hw<span class="op">=</span><span class="fl">0.1</span>, jitter<span class="op">=</span><span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -71,6 +71,9 @@
   <dt id="arg-inside">inside<a class="anchor" aria-label="anchor" href="#arg-inside"></a></dt>
 <dd><p>logical. Should the text always be placed inside one the sub-geometries?</p></dd>
 
+  <dt id="arg-jitter">jitter<a class="anchor" aria-label="anchor" href="#arg-jitter"></a></dt>
+<dd><p>numeric. Passed to <code><a href="https://rdrr.io/r/base/jitter.html" class="external-link">jitter</a></code> 'factor' argument. If &gt;0, labels are randomly shifted from their centroid positions, possibly avoiding overlaps</p></dd>
+
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments to pass to graphics function <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></code></p></dd>
 
@@ -84,8 +87,12 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">4</span>, ncols<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">text</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">text</span><span class="op">(</span><span class="va">r</span>, jitter <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, halo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="text-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
