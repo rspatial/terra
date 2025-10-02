@@ -34,7 +34,7 @@ These methods also work for a small(!) SpatRaster. Only cells that are not NA in
 }
 
 \usage{
-\S4method{points}{SpatVector}(x, col, cex=0.7, pch=16, alpha=1, ...)
+\S4method{points}{SpatVector}(x, col, cex=0.7, pch=16, alpha=1, jitter=0, ...)
 
 \S4method{lines}{SpatVector}(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, alpha=1, ...)
 
@@ -61,6 +61,7 @@ These methods also work for a small(!) SpatRaster. Only cells that are not NA in
   \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
   \item{pch}{positive integer, point type. See \code{\link{points}}. On some (linux) devices, the default symbol "16" is a not a very smooth circle. You can use "20" instead (it takes a bit longer to draw) or "1" for an open circle}
   \item{alpha}{number between 0 and 1 to set transparency}
+  \item{jitter}{numeric. The amount of random noise used to adjust label positions, possibly avoiding overlaps. See argument 'factor' in \code{\link{jitter}}}
   \item{lwd}{numeric, line-width. See \code{\link{par}}}
   \item{lty}{positive integer, line type. See \code{\link{par}}}
   \item{arrows}{logical. If \code{TRUE} and \code{y} is a SpatVector, arrows are drawn instead of lines. See \code{\link[graphics]{arrows}} for additional arguments}

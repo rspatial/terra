@@ -94,7 +94,7 @@ setMethod("lines", signature(x="SpatVector"),
 
 
 setMethod("points", signature(x="SpatVector"),
-	function(x, col, cex=0.7, pch=16, alpha=1, ...)  {
+	function(x, col, cex=0.7, pch=16, alpha=1, jitter=0, ...)  {
 		reset.clip()
 		n <- length(x)
 		if (n == 0) return(invisible(NULL))
@@ -103,12 +103,18 @@ setMethod("points", signature(x="SpatVector"),
 			col <- .getCols(1, col, alpha)
 			#graphics::points(g[,3:4], col=col,  pch=pch, cex=cex,...)
 			g <- crds(x)
+			if (isTRUE(jitter > 0)) {
+				g <- jitter(g, factor = jitter)
+			}			
 			graphics::plot.xy(list(x=g[,1], y=g[,2]), type="p", pch=pch, col=col, cex=cex, ...)
 		} else {
 			col <- .getCols(n, col, alpha)
 			cex <- rep_len(cex, n)
 			pch <- rep_len(pch, n)
 			g <- geom(x, df=TRUE)
+			if (isTRUE(jitter > 0)) {
+				g[,3:4] <- jitter(g[,3:4], factor = jitter)
+			}			
 			if (nrow(g) > g[nrow(g), 1]) {
 				g <- split(g[,3:4], g[,1])
 				for (i in 1:n) {

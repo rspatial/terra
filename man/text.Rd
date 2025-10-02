@@ -26,7 +26,7 @@ Plots labels, that is a textual (rather than color) representation of values, on
   \item{hc}{character. The halo color}
   \item{hw}{numeric. The halo width}
   \item{inside}{logical. Should the text always be placed inside one the sub-geometries?}
-  \item{jitter}{numeric. Passed to \code{\link{jitter}} 'factor' argument. If >0, labels are randomly shifted from their centroid positions, possibly avoiding overlaps}
+  \item{jitter}{numeric. The amount of random noise used to adjust label positions, possibly avoiding overlaps. See argument 'factor' in \code{\link{jitter}}}
   \item{...}{additional arguments to pass to graphics function \code{\link[graphics]{text}} }
 }
 

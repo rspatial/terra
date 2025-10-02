@@ -214,7 +214,9 @@ setMethod("text", signature(x="SpatRaster"),
 			p <- as.points(x, values=FALSE, na.rm=FALSE)
 		}
 		xy <- geom(p)[, c("x", "y"), drop=FALSE]
-        if (jitter > 0) xy <- jitter(xy, factor = jitter)
+        if (isTRUE(jitter > 0)) {
+			xy <- jitter(xy, factor = jitter)
+		}
 		if (is.factor(labels)) {
 			labels <- substr(as.character(labels), 1, max(1, digits))
 		} else if (is.numeric(labels)) {
@@ -253,7 +255,9 @@ setMethod("text", signature(x="SpatVector"),
 			}
 		}
 		xy <- geom(centroids(x, inside=inside))[,c("x","y"),drop=FALSE]
-		if (jitter > 0) xy <- jitter(xy, factor = jitter)
+        if (isTRUE(jitter > 0)) {
+			xy <- jitter(xy, factor = jitter)
+		}
 		if (halo && (isTRUE(hw > 0))) {
 			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, ...)
 		} else {
