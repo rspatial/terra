@@ -617,7 +617,6 @@ setMethod("plet", signature(x="SpatRaster"),
 			ext(x) <- c(0, rx/m, 0, ry/m)
 			crs(x) <- "EPSG:3857"
 			notmerc <- FALSE
-
 		} else {
 			notmerc <- isTRUE(crs(x, describe=TRUE)$code != "3857")
 		}
@@ -732,8 +731,10 @@ setMethod("plet", signature(x="SpatRaster"),
 				}
 			} else {
 				map <- leaflet::addRasterImage(map, x, colors=col, opacity=alpha, project=notmerc)
-				map <- leaflet::addLegend(map, position=legend, colors=col, 
+				if (!is.null(legend)) {
+					map <- leaflet::addLegend(map, position=legend, colors=col, 
 							labels=levels(x)[[1]][,2], opacity=alpha, title=main)
+				}
 			}
 			if (panel) {
 				#map <- leaflet::addCircleMarkers(map, data=p, label=p$label, radius=1, opacity=1, col="red")
@@ -812,3 +813,31 @@ setMethod("plet", signature(x="SpatRaster"),
 )
 
 
+
+setMethod("plet", signature(x="SpatRasterCollection"),
+	function(x, col, alpha=0.8, main=names(x), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
+		wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright",  
+		type=NULL, breaks=NULL, breakby="eqint", range=NULL, fill_range=FALSE, map=NULL, ...)  {
+
+		if (is.null(range)) {
+			mnmx <- sapply(x, \(r) minmax(r, compute=TRUE)[,1])
+			range <- c(min(mnmx[1,]), max(mnmx[2,]))
+		}
+
+		
+		r <- x[1][[1]]
+		map <- plet(r, 1, col=col, alpha=alpha, main=names(r), tiles=tiles, wrap=wrap, maxcell=maxcell, stretch=stretch, 
+			legend=legend, shared=FALSE, panel=FALSE, collapse=TRUE, type=type, breaks=breaks, breakby=breakby, 
+			range=range, fill_range=fill_range, map=NULL)
+		
+		if (length(x) == 1) return(map)
+		
+		for (i in 2:length(x)) {
+			r <- x[i][[1]]
+			map <- plet(r, 1, col=col, alpha=alpha, main=names(r), tiles=NULL, wrap=wrap, maxcell=maxcell, stretch=stretch, 
+				legend=NULL, shared=FALSE, panel=FALSE, collapse=TRUE, type=type, breaks=breaks, breakby=breakby, 
+				range=range, fill_range=fill_range, map=map)
+		}
+		map
+	}
+)

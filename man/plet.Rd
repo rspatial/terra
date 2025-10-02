@@ -5,6 +5,7 @@
 \alias{plet}
 \alias{plet,missing-method}
 \alias{plet,SpatRaster-method}
+\alias{plet,SpatRasterCollection-method}
 \alias{plet,SpatVector-method}
 \alias{plet,SpatVectorCollection-method}
 
@@ -15,7 +16,9 @@
 \title{Plot with leaflet}
 
 \description{
-Plot the SpatRaster or SpatVector(s) to make an interactive leaflet map that is displayed in a browser.
+Plot a SpatRaster(Collection) or SpatVector(s) to make an interactive leaflet map that is displayed in your browser.
+
+The arguments of \code{plet} are similar to those of \code{\link[terra]{plot}}, making it easier to use leaflet (if you also use plot).
 }
 
 \usage{
@@ -24,6 +27,12 @@ Plot the SpatRaster or SpatVector(s) to make an interactive leaflet map that is 
 	wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", 
 	shared=FALSE, panel=FALSE, collapse=TRUE, type=NULL, breaks=NULL,
 	breakby="eqint", range=NULL, fill_range=NULL, map=NULL, ...) 
+
+
+\S4method{plet}{SpatRasterCollection}(x, col, alpha=0.8, main=names(x), 
+	tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
+	wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", type=NULL, 
+	breaks=NULL, breakby="eqint", range=NULL, fill_range=FALSE, map=NULL, ...)
 
 
 \S4method{plet}{SpatVector}(x, y="", col, fill=0.2, main=y, cex=1, lwd=2, 

@@ -8,6 +8,7 @@
 
 ## new
 
+- `plet<SpatRasterCollection>` method
 - `plet<SpatRaster>` gained arguments "range" and "fill_range" 
 
 
