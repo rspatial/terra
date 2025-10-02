@@ -235,7 +235,7 @@ setMethod("text", signature(x="SpatRaster"),
 
 
 setMethod("text", signature(x="SpatVector"),
-	function(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, ...) {
+	function(x, labels, halo=FALSE, inside=FALSE, hc="white", hw=0.1, jitter=0, ...) {
 		if (missing(labels)) {
 			labels <- 1:nrow(x)
 		} else if (length(labels) == 1) {
@@ -252,6 +252,7 @@ setMethod("text", signature(x="SpatVector"),
 			}
 		}
 		xy <- geom(centroids(x, inside=inside))[,c("x","y"),drop=FALSE]
+		if (jitter > 0) xy <- jitter(xy, factor = jitter)
 		if (halo && (isTRUE(hw > 0))) {
 			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, ...)
 		} else {
