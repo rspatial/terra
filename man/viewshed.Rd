@@ -6,7 +6,7 @@
 \title{Compute a viewshed}
 
 \description{
-Use elevation data to compute the locations that can be seen, or how much higher they would have to be to be seen, from a certain position. The raster data coordinate reference system must planar (not lon/lat), with the elevation values in the same unit as the distance unit of the coordinate reference system. 
+Use elevation data to compute the locations that can be seen, or how much higher they would have to be to be seen, from a certain position. The raster data coordinate reference system must be planar (not lon/lat), with the elevation values in the same unit as the distance unit of the coordinate reference system. 
 }
 
 \usage{
