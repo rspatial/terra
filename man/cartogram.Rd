@@ -12,13 +12,13 @@ Make a cartogram, that is, a map where the area of polygons is made proportional
 }
 
 \usage{
-\S4method{cartogram}{SpatVector}(x, var, type)
+\S4method{cartogram}{SpatVector}(x, var, type="nc")
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{var}{character. A variable name in \code{x}}
-  \item{type}{character. Cartogram type, only "nc" (non-contiguous) is currently supported}  
+  \item{type}{character. Cartogram type, one of "nc" (non-contiguous) or "circles" (dorling)}  
 }
 
 \value{
@@ -32,9 +32,12 @@ SpatVector
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 v$value <- 1:12
-p <- cartogram(v, "value", "nc")
+pnc <- cartogram(v, "value", "nc")
+pcirc <- cartogram(v, "value", "circles")
 plot(v, col="light gray", border="gray")
-lines(p, col="red", lwd=2)
+lines(pnc, col="red", lwd=2)
+lines(pcirc, col="blue", lwd=2)
+
 }
 
 
