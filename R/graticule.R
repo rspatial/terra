@@ -96,11 +96,7 @@ setMethod("erase", signature(x="SpatGraticule", y="SpatVector"),
 )
 
 
-grat_tick <- function(x, extent, direction, tick.length) {
-
-#	tick.length <- rep(tick.length, length.out=2)
-#	xoff <- tick.length[1] * (extent[2] - extent[1]) / 100
-#	yoff <- tick.length[2] * (extent[4] - extent[3]) / 100
+grat_tick <- function(x, direction, tick.length) {
 
 	xoff <- yoff <- tick.length 
 
@@ -123,7 +119,6 @@ grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 
 	v <- vect(x)
 	if (tickmarks) {
-		e <- ext(v)
 		cw <- graphics::strwidth("A")
 		offlat <- 2 * offlat
 		offlon <- 2 * offlon
@@ -174,7 +169,7 @@ grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 			if (pos == 0) pos <- NULL
 			text(a, labels=labs, pos=pos, offset=abs(offlat), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 			if (tickmarks) {
-				grat_tick(a, e, "left", cw * abs(offlat))
+				grat_tick(a, "left", cw * abs(offlat))
 			}
 		}
 		if (right) {
@@ -188,7 +183,7 @@ grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 			if (pos == 0) pos <- NULL
 			text(a, labels=labs, pos=pos, offset=abs(offlat), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 			if (tickmarks) {
-				grat_tick(a, e, "right", cw * abs(offlat))
+				grat_tick(a, "right", cw * abs(offlat))
 			}
 		}
 	}
@@ -215,7 +210,7 @@ grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 			if (pos == 0) pos <- NULL
 			text(a, labels=labs, pos=pos, offset=abs(offlon), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 			if (tickmarks) {
-				grat_tick(a, e, "bottom", cw * abs(offlon))
+				grat_tick(a, "bottom", cw * abs(offlon))
 			}
 		}
 		if (top) {
@@ -229,7 +224,7 @@ grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 			if (pos == 0) pos <- NULL
 			text(a, labels=labs, pos=pos, offset=abs(offlon), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 			if (tickmarks) {
-				grat_tick(a, e, "top", cw * abs(offlon))
+				grat_tick(a, "top", cw * abs(offlon))
 			}
 		}
 	}	
