@@ -188,6 +188,7 @@ hexcols <- function(out) {
 		i <- seq(0, 1, length.out=n)
 		breaks <- quantile(x, i, na.rm=TRUE)
 		breaks <- unique(breaks)
+		n <- min(n, length(breaks))               # adapt when not enough unique values
 		if ((breaks[1] %% 1) != 0) {
 			breaks[1] <- breaks[1] - 0.000001
 		}
