@@ -382,9 +382,7 @@ setMethod("dots", signature(x="SpatVector"),
 		out <- .vplot(x, out, ...)
 	}
 
-	if (out$axes) {
-		out <- .plot.axes(out)
-	}
+	out <- .plot.axes(out)
 
 	if (out$legend_draw) {
 		if (out$legend_type == "continuous") {

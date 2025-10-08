@@ -386,7 +386,7 @@
 	}
 	if (!x$legend_only) {
 		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], angle = 0, interpolate = x$interpolate)
-		if (x$axes) x <- .plot.axes(x)
+		x <- .plot.axes(x)
 	}
 	
 	if (x$legend_draw) {

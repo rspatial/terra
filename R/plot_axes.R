@@ -36,6 +36,26 @@ retro_labels <- function(x, lat=TRUE) {
 
 .plot.axes <- function(x) {
 
+	if (x$clip) {
+		usr <- x$lim
+	} else {
+		usr <- graphics::par("usr")
+	}
+
+	if (x$xlab != "") {
+		posx <- usr[1] + diff(usr[1:2])/2
+		text(posx, usr[3], x$xlab, pos=1, offset=x$axs$line.lab, cex=x$axs$cex.lab, xpd=TRUE)
+	}
+	if (x$ylab != "") {
+		posy <- usr[3] + diff(usr[3:4])/2
+		text(usr[1], posy, x$ylab, pos=2, offset=x$axs$line.lab, srt=90, cex=x$axs$cex.lab, xpd=TRUE)
+	}
+	
+
+	if (!x$axes) {
+		return(x)
+	}
+
 	if (is.null(x$axs$cex.axis)) {
 		x$axs$cex.axis = 1
 	}
@@ -96,11 +116,6 @@ retro_labels <- function(x, lat=TRUE) {
 		x$axs$lab <- labs <- sides
 	}
 
-	if (x$clip) {
-		usr <- x$lim
-	} else {
-		usr <- graphics::par("usr")
-	}
 	
 	y <- x$axs
 	retro <- isTRUE(y$retro) 
@@ -203,15 +218,6 @@ retro_labels <- function(x, lat=TRUE) {
 			#z$lwd <- y$lwd
 			#do.call(graphics::axis, z)
 		} 
-	}
-	
-	if (x$xlab != "") {
-		posx <- usr[1] + diff(usr[1:2])/2
-		text(posx, usr[3], x$xlab, pos=1, offset=x$axs$line.lab, cex=x$axs$cex.lab, xpd=TRUE)
-	}
-	if (x$ylab != "") {
-		posy <- usr[3] + diff(usr[3:4])/2
-		text(usr[1], posy, x$ylab, pos=2, offset=x$axs$line.lab, srt=90, cex=x$axs$cex.lab, xpd=TRUE)
 	}
 	
 	x
