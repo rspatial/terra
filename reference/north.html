@@ -48,7 +48,7 @@
 
 
 <dl><dt id="arg-xy">xy<a class="anchor" aria-label="anchor" href="#arg-xy"></a></dt>
-<dd><p>numeric. x and y coordinate to place the arrow. It can also be one of following character values: "bottomleft", "bottom", "bottomright", topleft", "top", "topright", "left", "right", or NULL</p></dd>
+<dd><p>numeric. x and y coordinates to place the arrow. It can also be one of following character values: "bottomleft", "bottom", "bottomright", "topleft", "top", "topright", "left", "right", or NULL</p></dd>
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>integer between 1 and 12, or a character (unicode) representation of a right pointing arrow such as <code>"\u27A9"</code>. You may need to install the fonts for this. See the discussion on <a href="https://stackoverflow.com/a/79747858/635245" class="external-link">stackoverflow</a></p></dd>
@@ -66,7 +66,7 @@
 <dd><p>numeric. The size of the arrow "head", for <code>type=1</code></p></dd>
 
 <dt id="arg-xpd">xpd<a class="anchor" aria-label="anchor" href="#arg-xpd"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, the scale bar or arrow can be outside the plot area</p></dd>
+<dd><p>logical. If <code>TRUE</code>, the arrow can be outside the plot area</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>graphical arguments to be passed to other methods</p></dd>
@@ -94,12 +94,11 @@
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span>, type<span class="op">=</span><span class="st">"interval"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="sbar.html">sbar</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.3</span>, <span class="fl">50</span><span class="op">)</span>, type<span class="op">=</span><span class="st">"bar"</span>, below<span class="op">=</span><span class="st">"km"</span>, label<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">7.5</span>,<span class="fl">15</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">.8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">north</span><span class="op">(</span>type<span class="op">=</span><span class="fl">3</span>, cex<span class="op">=</span><span class="fl">.8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">north</span><span class="op">(</span>xy<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.7</span>, <span class="fl">49.9</span><span class="op">)</span>, type<span class="op">=</span><span class="fl">2</span>, angle<span class="op">=</span><span class="fl">45</span>, label<span class="op">=</span><span class="st">"NE"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">north</span><span class="op">(</span>xy<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.6</span>, <span class="fl">49.7</span><span class="op">)</span>, type<span class="op">=</span><span class="fl">5</span>, cex<span class="op">=</span><span class="fl">1.25</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">north</span><span class="op">(</span>xy<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">5.5</span>, <span class="fl">49.6</span><span class="op">)</span>, type<span class="op">=</span><span class="fl">9</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">north</span><span class="op">(</span>d<span class="op">=</span><span class="fl">.05</span>, xy<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">5.5</span>, <span class="fl">50</span><span class="op">)</span>, angle<span class="op">=</span><span class="fl">180</span>, label<span class="op">=</span><span class="st">"S"</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">north</span><span class="op">(</span>xy<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">5.65</span>, <span class="fl">49.6</span><span class="op">)</span>, type<span class="op">=</span><span class="fl">9</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">north</span><span class="op">(</span>d<span class="op">=</span><span class="fl">.05</span>, xy<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">5.65</span>, <span class="fl">50</span><span class="op">)</span>, angle<span class="op">=</span><span class="fl">180</span>, label<span class="op">=</span><span class="st">"S"</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## all arrows</span></span></span>
