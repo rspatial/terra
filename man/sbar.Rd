@@ -14,9 +14,9 @@ sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 }
 
 \arguments{
-\item{d}{numeric. Distance covered by the scale bar. For the scale bar, it should be in the units of the coordinates of the plot (map), and in km for angular (longitude/latitude) data; see argument \code{lonlat}. It can also be missing}
-\item{xy}{numeric. x and y coordinate to place the scale bar. It can also be one of following character values: "bottomleft", "bottom", "bottomright", topleft", "top", "topright", "left", "right", or NULL}
-\item{type}{for \code{sbar}: "line" or "bar"}
+\item{d}{numeric. Distance covered by the scale bar. It should be in the units of the coordinates of the plot (map), or in km for angular (longitude/latitude) coordinates; see argument \code{lonlat}. It can also be missing}
+\item{xy}{numeric. x and y coordinates to place the scale bar. It can also be one of following character values: "bottomleft", "bottom", "bottomright", "topleft", "top", "topright", "left", "right", or NULL}
+\item{type}{one of "line" or "bar"}
 \item{divs}{number of divisions for a bar: 2 or 4}
 \item{below}{character. Text to go below the scale bar (e.g., "kilometers")}
 \item{lonlat}{logical or NULL. If logical, \code{TRUE} indicates if the plot is using longitude/latitude coordinates. If \code{NULL} this is guessed from the plot's coordinates}
@@ -43,7 +43,6 @@ plot(r)
 sbar()
 sbar(1000, xy=c(178500, 333500), type="bar", divs=4, cex=.8)
 sbar(1000, xy="bottomright", divs=3, cex=.8, ticks=TRUE)
-north(d=250, c(178550, 332500))
 
 
 f <- system.file("ex/elev.tif", package="terra")
@@ -51,10 +50,9 @@ r <- rast(f)
 plot(r, type="interval")
 sbar(20, c(6.2, 50.1), type="bar", cex=.8, divs=4)
 sbar(15, c(6.3, 50), type="bar", below="km", label=c(0,7.5,15), cex=.8)
-sbar(15, c(6.65, 49.8), cex=.8, label=c(0,"km",15))
-north(type=2)
-sbar(15, c(6.65, 49.7), cex=.8, label="15 kilometer", lwd=5)
-sbar(15, c(6.65, 49.6), divs=4, cex=.8, below="km")
+sbar(15, c(6.6, 49.8), cex=.8, label=c(0,"km",15))
+sbar(15, c(6.6, 49.7), cex=.8, label="15 kilometer", lwd=5)
+sbar(15, c(6.6, 49.6), divs=4, cex=.8, below="km")
 }
 
 
