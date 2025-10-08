@@ -11,6 +11,7 @@
 \alias{ext,SpatVectorProxy-method}
 \alias{ext,SpatRasterDataset-method}
 \alias{ext,SpatRasterCollection-method}
+\alias{ext,SpatRasterGraticule-method}
 \alias{ext<-,SpatRaster,SpatExtent-method}
 \alias{ext<-,SpatRaster,numeric-method}
 \alias{ext,numeric-method}

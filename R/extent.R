@@ -177,6 +177,15 @@ setMethod("ext", signature(x="Spatial"),
 	}
 )
 
+setMethod("ext", signature(x="SpatGraticule"),
+	function(x) {
+		e <- methods::new("SpatExtent")
+		e@pntr <- x@pntr$extent()
+		e
+	}
+)
+
+
 
 
 setMethod("xmin", signature(x="SpatExtent"),
