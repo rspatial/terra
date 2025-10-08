@@ -60,7 +60,7 @@ The old method convHull is deprecated and will be removed in a future version.">
 <dd><p>character (variable name), to get a new geometry for groups of input geometries</p></dd>
 
   <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
-<dd><p>numeric between 0 and 1. For the "concave_*" types only. For <code>type="concave_ratio"</code> this is The edge length ratio value, between 0 and 1. For <code>type="concave_length"</code> this the maximum edge length (a value &gt; 0). For <code>type="concave_polygons"</code> thism specifies the maximum Edge Length as a fraction of the difference between the longest and shortest edge lengths between the polygons. This normalizes the maximum edge length to be scale-free. A value of 1 produces the convex hull; a value of 0 produces the original polygons</p></dd>
+<dd><p>numeric between 0 and 1. For the "concave_*" types only. For <code>type="concave_ratio"</code> this is the edge length ratio value, between 0 and 1. For <code>type="concave_length"</code> this the maximum edge length (a value &gt; 0). For <code>type="concave_polygons"</code> this specifies the maximum Edge Length as a fraction of the difference between the longest and shortest edge lengths between the polygons. This normalizes the maximum edge length to be scale-free. A value of 1 produces the convex hull; a value of 0 produces the original polygons</p></dd>
 
   <dt id="arg-allowholes">allowHoles<a class="anchor" aria-label="anchor" href="#arg-allowholes"></a></dt>
 <dd><p>logical. May the output polygons contain holes? For "concave_*" methods only</p></dd>
@@ -75,8 +75,8 @@ The old method convHull is deprecated and will be removed in a future version.">
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>A concave hull is a polygon which contains all the points of the input. It can be a better representation of the input data (typically points) than the convex hull. There are many possible convex hulls with different degrees of concaveness. These can be created with argument <code>param</code>.</p>
-<p>The hull is constructed by removing the longest outer edges of the Delaunay Triangulation of the space between the polygons, until the target criterion <code>param</code> is reached. If <code>type="concave_ratio"</code>, <code>param</code> expresses is the ratio between the lengths of the longest and shortest edges. 1 produces the convex hull; 0 produces a hull with maximum concaveness. If <code>type="concave_length"</code>, <code>param</code> specifies the maximm edge length. A large value produces the convex hull, 0 produces the hull of maximum concaveness.</p>
+    <p>A concave hull is a polygon which contains all the points of the input. It can be a better representation of the input data (typically points) than the convex hull. There are many possible concave hulls with different degrees of concaveness. These can be created with argument <code>param</code>.</p>
+<p>The hull is constructed by removing the longest outer edges of the Delaunay Triangulation of the space between the polygons, until the target criterion <code>param</code> is reached. If <code>type="concave_ratio"</code>, <code>param</code> expresses the ratio between the lengths of the longest and shortest edges. 1 produces the convex hull; 0 produces a hull with maximum concaveness. If <code>type="concave_length"</code>, <code>param</code> specifies the maximm edge length. A large value produces the convex hull, 0 produces the hull of maximum concaveness.</p>
     </div>
 
     <div class="section level2">
@@ -84,7 +84,20 @@ The old method convHull is deprecated and will be removed in a future version.">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu">hull</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">h</span>, col<span class="op">=</span><span class="st">"orange"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">hh</span> <span class="op">&lt;-</span> <span class="fu">hull</span><span class="op">(</span><span class="va">p</span>, <span class="st">"convex"</span>, by<span class="op">=</span><span class="st">"NAME_1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">hh</span>, col<span class="op">=</span><span class="st">"purple"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="convhull-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="centroids.html">centroids</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">pts</span>, ext<span class="op">=</span><span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">+</span><span class="fl">0.1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="fu">hull</span><span class="op">(</span><span class="va">pts</span>, type<span class="op">=</span><span class="st">"convex"</span><span class="op">)</span>, col<span class="op">=</span><span class="st">"darkgreen"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="fu">hull</span><span class="op">(</span><span class="va">pts</span>, type<span class="op">=</span><span class="st">"rect"</span><span class="op">)</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="fu">hull</span><span class="op">(</span><span class="va">pts</span>, type<span class="op">=</span><span class="st">"circle"</span><span class="op">)</span>, col<span class="op">=</span><span class="st">"red"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="convhull-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
