@@ -21,7 +21,7 @@ You can also aggregate ("dissolve") a SpatVector. This either combines all geome
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster or SpatVector}
   \item{fact}{positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (vertical (fact[1]) and horizontal (fact[2]) aggregation factor) or three integers (when also aggregating over layers)}  
   \item{fun}{function used to aggregate values. Either an actual function, or for the following, their name: "mean", "max", "min", "median", "sum", "modal", "any", "all", "prod", "which.min", "which.max", "table", "sd" (sample standard deviation) and "std" (population standard deviation)}
   \item{...}{additional arguments passed to \code{fun}, such as \code{na.rm=TRUE}}  
