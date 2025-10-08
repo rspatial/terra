@@ -34,12 +34,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-72" id="version-18-72">version 1.8-72<a class="anchor" aria-label="anchor" href="#version-18-72"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-73" id="version-18-73">version 1.8-73<a class="anchor" aria-label="anchor" href="#version-18-73"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-72">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-72"></a></h3>
-</div>
+<h3 id="bug-fixes-1-8-73">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-73"></a></h3>
+<ul><li>
+<code>plot&lt;SpatRaster&gt;</code> with arguments “break=n” and “breakby=‘cases’” could break if there the number of computed quantile breaks is lower than expected because of duplicates <a href="https://github.com/rspatial/terra/pull/1913" class="external-link">#1913</a> by Bradley W. Compton</li>
+</ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-72">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-72"></a></h3>
+<h3 id="enhancements-1-8-73">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-73"></a></h3>
 <ul><li>
 <code>plet&lt;SpatRaster&gt;</code> can (again) use a color function returned by <code><a href="https://rstudio.github.io/leaflet/reference/colorNumeric.html" class="external-link">leaflet::colorNumeric</a></code> <a href="https://github.com/rspatial/terra/issues/1904" class="external-link">#1904</a> by Ignacio Marzan</li>
 <li>argument <code>animate&lt;SpatRaster&gt;</code> can now be set to <code>NA</code> to not get a shared legend <a href="https://github.com/rspatial/terra/pull/1909" class="external-link">#1909</a> by Márcia Barbosa</li>
@@ -51,7 +53,7 @@
 <code>plet&lt;SpatRaster&gt;</code> gained arguments “range” and “fill_range”</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-72">new<a class="anchor" aria-label="anchor" href="#new-1-8-72"></a></h3>
+<h3 id="new-1-8-73">new<a class="anchor" aria-label="anchor" href="#new-1-8-73"></a></h3>
 <ul><li>
 <code>plet&lt;SpatRasterCollection&gt;</code> method</li>
 <li>
