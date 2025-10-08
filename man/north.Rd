@@ -14,13 +14,13 @@ north(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ...)
 }
 
 \arguments{
-\item{xy}{numeric. x and y coordinate to place the arrow. It can also be one of following character values: "bottomleft", "bottom", "bottomright", topleft", "top", "topright", "left", "right", or NULL}
+\item{xy}{numeric. x and y coordinates to place the arrow. It can also be one of following character values: "bottomleft", "bottom", "bottomright", "topleft", "top", "topright", "left", "right", or NULL}
 \item{type}{integer between 1 and 12, or a character (unicode) representation of a right pointing arrow such as \code{"\u27A9"}. You may need to install the fonts for this. See the discussion on \href{https://stackoverflow.com/a/79747858/635245}{stackoverflow}}
 \item{label}{character, to be printed near the arrow}
 \item{angle}{numeric. The angle of the arrow in degrees}
 \item{d}{numeric. Distance covered by the arrow in plot coordinates. Only applies to \code{type=1}}
 \item{head}{numeric. The size of the arrow "head", for \code{type=1}}
-\item{xpd}{logical. If \code{TRUE}, the scale bar or arrow can be outside the plot area}
+\item{xpd}{logical. If \code{TRUE}, the arrow can be outside the plot area}
 \item{...}{graphical arguments to be passed to other methods }
 }
 
@@ -41,12 +41,11 @@ north(c(178550, 332500), d=250)
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 plot(r, type="interval")
-sbar(15, c(6.3, 50), type="bar", below="km", label=c(0,7.5,15), cex=.8)
 north(type=3, cex=.8)
 north(xy=c(6.7, 49.9), type=2, angle=45, label="NE")
 north(xy=c(6.6, 49.7), type=5, cex=1.25)
-north(xy=c(5.5, 49.6), type=9)
-north(d=.05, xy=c(5.5, 50), angle=180, label="S", lwd=2, col="blue")
+north(xy=c(5.65, 49.6), type=9)
+north(d=.05, xy=c(5.65, 50), angle=180, label="S", lwd=2, col="blue")
 
 
 ## all arrows
