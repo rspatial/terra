@@ -15,7 +15,7 @@ Plot a SpatGraticule. You can create a SpatGraticule with \code{\link{graticule}
 \S4method{plot}{SpatGraticule,missing}(x, y, background=NULL, col="black", mar=NULL, labels=TRUE,
 	retro=FALSE, lab.loc=c(1,1), lab.lon=NULL, lab.lat=NULL, lab.cex=0.65, 
 	lab.col="black", off.lat=0.25, off.lon=0.25, box=FALSE, box.col="black",
-	add=FALSE, ...)
+	tickmarks=FALSE, add=FALSE, ...)
 }
 
 \arguments{
@@ -35,6 +35,7 @@ Plot a SpatGraticule. You can create a SpatGraticule with \code{\link{graticule}
   \item{off.lat}{numeric. latitude labels offset}
   \item{box}{logical. If \code{TRUE}, the outer lines of the graticule are drawn on top with a sold line \code{lty=1}}
   \item{box.col}{character. color of the outer lines of the graticule if \code{box=TRUE}}
+  \item{tickmarks}{logical. If \code{TRUE}, tickmarks are added}
   \item{add}{logical. Add the graticule to the current plot?}
   \item{...}{additional graphical arguments passed to \code{\link{lines}}}
 }
