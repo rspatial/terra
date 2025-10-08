@@ -1,6 +1,9 @@
-# version 1.8-72
+# version 1.8-73
 
 ## bug fixes
+
+- `plot<SpatRaster>` with arguments "break=n" and "breakby='cases'" could break if there the number of computed quantile breaks is lower than expected because of duplicates [#1913](https://github.com/rspatial/terra/pull/1913) by Bradley W. Compton
+
 
 ## enhancements
 

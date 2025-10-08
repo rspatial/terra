@@ -328,6 +328,11 @@
 	} else {
 		Z <- as.matrix(x, wide=TRUE)
 		Z[is.nan(Z) | is.infinite(Z)] <- NA
+		nZ <- length(unique(na.omit(as.vector(Z))))	
+		if (nZ <= 1) {
+			return(.as.raster.classes(out, x, Z=Z, ...))
+		}
+
 		out <- .generic.interval(out, Z)
 		Z[] <- out$leg$fill[out$vcut]
 	}
