@@ -98,17 +98,15 @@ setMethod("erase", signature(x="SpatGraticule", y="SpatVector"),
 
 grat_tick <- function(x, direction, tick.length) {
 
-	xoff <- yoff <- tick.length 
-
 	y <- crds(x)
 	if (direction == "left") {
-		y[,1] <- y[,1] - xoff
+		y[,1] <- y[,1] - tick.length 
 	} else if (direction == "right") {
-		y[,1] <- y[,1] + xoff	
+		y[,1] <- y[,1] + tick.length 
 	} else if (direction == "top") {
-		y[,2] <- y[,2] + yoff
+		y[,2] <- y[,2] + tick.length 
 	} else {
-		y[,2] <- y[,2] - yoff	
+		y[,2] <- y[,2] - tick.length 
 	}
 	lines(x, vect(y), xpd=TRUE)
 
@@ -158,16 +156,16 @@ grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 		if (!is.null(atlat)) {
 			atlat <- round(stats::na.omit(atlat))
 			atlat <- atlat[(atlat > 0) & (atlat <= length(labs))] 
-			labs <- labs[atlat]
 		}
 		if (left) {
 			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
+			a$labs <- labs
 			if (!is.null(atlat)) {
 				a <- a[atlat, ]
 			}
 			pos <- c(4,0,2)[s]
 			if (pos == 0) pos <- NULL
-			text(a, labels=labs, pos=pos, offset=abs(offlat), cex=cex, halo=TRUE, xpd=TRUE, col=col)
+			text(a, labels="labs", pos=pos, offset=abs(offlat), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 			if (tickmarks) {
 				grat_tick(a, "left", cw * abs(offlat))
 			}
@@ -175,13 +173,13 @@ grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 		if (right) {
 			g <- g[nrow(g):1, ]
 			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
+			a$labs <- rev(labs)
 			if (!is.null(atlat)) {
 				a <- a[atlat, ]
-				labs <- rev(labs)
 			}
 			pos <- c(2,0,4)[s]			
 			if (pos == 0) pos <- NULL
-			text(a, labels=labs, pos=pos, offset=abs(offlat), cex=cex, halo=TRUE, xpd=TRUE, col=col)
+			text(a, labels="labs", pos=pos, offset=abs(offlat), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 			if (tickmarks) {
 				grat_tick(a, "right", cw * abs(offlat))
 			}
@@ -199,16 +197,16 @@ grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 		if (!is.null(atlon)) {
 			atlon <- round(stats::na.omit(atlon))
 			atlon <- atlon[(atlon > 0) & (atlon <= length(labs))] 
-			labs <- labs[atlon]
 		}
 		if (bottom) {
 			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
+			a$labs <- labs
 			if (!is.null(atlon)) {
 				a <- a[atlon, ]
 			}
 			pos <- c(3,0,1)[s]
 			if (pos == 0) pos <- NULL
-			text(a, labels=labs, pos=pos, offset=abs(offlon), cex=cex, halo=TRUE, xpd=TRUE, col=col)
+			text(a, labels="labs", pos=pos, offset=abs(offlon), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 			if (tickmarks) {
 				grat_tick(a, "bottom", cw * abs(offlon))
 			}
@@ -216,13 +214,13 @@ grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 		if (top) {
 			g <- g[nrow(g):1, ]
 			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
+			a$labs <- labs
 			if (!is.null(atlon)) {
 				a <- a[atlon, ]
-				labs <- rev(labs)
 			}
 			pos <- c(1,0,3)[s]
 			if (pos == 0) pos <- NULL
-			text(a, labels=labs, pos=pos, offset=abs(offlon), cex=cex, halo=TRUE, xpd=TRUE, col=col)
+			text(a, labels="labs", pos=pos, offset=abs(offlon), cex=cex, halo=TRUE, xpd=TRUE, col=col)
 			if (tickmarks) {
 				grat_tick(a, "top", cw * abs(offlon))
 			}
