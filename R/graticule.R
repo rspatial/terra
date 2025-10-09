@@ -214,7 +214,7 @@ grat_labels <- function(x, retro, atlon, atlat, labloc, cex, col, offlon, offlat
 		if (top) {
 			g <- g[nrow(g):1, ]
 			a <- vect(g[match(unique(g[,1]), g[,1]), 3:4])
-			a$labs <- labs
+			a$labs <- rev(labs)
 			if (!is.null(atlon)) {
 				a <- a[atlon, ]
 			}
