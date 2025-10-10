@@ -3,7 +3,7 @@
 
 If x is a SpatRaster:
 If y is missing this method computes the distance, for all cells that are NA in SpatRaster x to the nearest cell that is not NA (or other values, see arguments "target" and "exclude").
-If y is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed (only if grid=FALSE).
+If y is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed.
 If y is a SpatVector, the distance to that SpatVector is computed for all cells, optionally after rasterization.
 The distance is always expressed in meter if the coordinate reference system is longitude/latitude, and in map units otherwise. Map units are typically meter, but inspect crs(x) if in doubt.
 Results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance.
@@ -16,7 +16,7 @@ If y is missing, the distance between each point in x with all other points in x
 
 If x is a SpatRaster:
 If y is missing this method computes the distance, for all cells that are NA in SpatRaster x to the nearest cell that is not NA (or other values, see arguments "target" and "exclude").
-If y is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed (only if grid=FALSE).
+If y is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed.
 If y is a SpatVector, the distance to that SpatVector is computed for all cells, optionally after rasterization.
 The distance is always expressed in meter if the coordinate reference system is longitude/latitude, and in map units otherwise. Map units are typically meter, but inspect crs(x) if in doubt.
 Results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance.
@@ -65,7 +65,7 @@ If y is missing, the distance between each point in x with all other points in x
 
 <p>If <code>x</code> is a <b>SpatRaster</b>:</p>
 <p>If <code>y</code> is <code>missing</code> this method computes the distance, for all cells that are <code>NA</code> in SpatRaster <code>x</code> to the nearest cell that is not <code>NA</code> (or other values, see arguments "target" and "exclude").</p>
-<p>If <code>y</code> is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed (only if <code>grid=FALSE</code>).</p>
+<p>If <code>y</code> is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed.</p>
 <p>If <code>y</code> is a SpatVector, the distance to that SpatVector is computed for all cells, optionally after rasterization.</p>
 <p>The distance is always expressed in meter if the coordinate reference system is longitude/latitude, and in map units otherwise. Map units are typically meter, but inspect <code>crs(x)</code> if in doubt.</p>
 <p>Results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance.</p>
