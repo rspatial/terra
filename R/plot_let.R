@@ -829,7 +829,7 @@ setMethod("plet", signature(x="SpatRasterCollection"),
 		type=NULL, breaks=NULL, breakby="eqint", range=NULL, fill_range=FALSE, map=NULL, ...)  {
 
 		if (is.null(range)) {
-			mnmx <- sapply(x, \(r) minmax(r, compute=TRUE)[,1])
+			mnmx <- sapply(x, function(r) minmax(r, compute=TRUE)[,1])
 			range <- c(min(mnmx[1,]), max(mnmx[2,]))
 		}
 
