@@ -87,7 +87,7 @@ SpatRaster, numeric, matrix, or a distance matrix (object of class "dist")
 A distance matrix can be coerced into a regular matrix with \code{as.matrix}
 }
 
-\seealso{\code{\link{nearest}}, \code{\link{nearby}}}, \code{\link{gridDist}}, \code{\link{costDist}}
+\seealso{\code{\link{nearest}}, \code{\link{nearby}}, \code{\link{gridDist}}, \code{\link{costDist}}}
 
 \references{
 Karney, C.F.F., 2013. Algorithms for geodesics, J. Geodesy 87: 43-55. doi:10.1007/s00190-012-0578-z.
