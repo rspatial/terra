@@ -19,7 +19,7 @@ If \code{x} is a \bold{SpatRaster}:
 
 If \code{y} is \code{missing} this method computes the distance, for all cells that are \code{NA} in SpatRaster \code{x} to the nearest cell that is not \code{NA} (or other values, see arguments "target" and "exclude"). 
 
-If \code{y} is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed (only if \code{grid=FALSE}).
+If \code{y} is a numeric value, the cells with that value are ignored. That is, distance to or from these cells is not computed.
 
 If \code{y} is a SpatVector, the distance to that SpatVector is computed for all cells, optionally after rasterization.
 
