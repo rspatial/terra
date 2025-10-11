@@ -6,7 +6,7 @@
 
 .scatterPlotRaster <- function(x, y, maxcell=100000, warn=TRUE, cex, xlab, ylab, nc, nr, 
 	maxnl=16, main, add=FALSE, smooth=FALSE, gridded=FALSE, ncol=25, nrow=25, asp=NA,
-	colramp=grDevices::colorRampPalette(c("white", grDevices::blues9)), ...) {
+	ramp=grDevices::colorRampPalette(c("white", grDevices::blues9)), ...) {
 
 	compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE)
 	nlx <- nlyr(x)
@@ -67,7 +67,7 @@
 			dots <- list(...)
 			if (!is.null(dots$col)) { 
 				if (is.function(dots$col)) {
-					colramp <- grDevices::colorRampPalette(dots$col)
+					ramp <- grDevices::colorRampPalette(dots$col)
 				} else {
 					warn("plot<SpatRaster,SpatRaster>", "when smooth=TRUE, col must be a function")
 				}
@@ -118,7 +118,7 @@
 
 		if (smooth) {
 			for (i in 1:nl) {
-				graphics::smoothScatter(x[,i], y[,i], main=main[i], xlab=ln1[i], ylab=ln2[i], add=add, asp=asp, colramp=colramp, ...)
+				graphics::smoothScatter(x[,i], y[,i], main=main[i], xlab=ln1[i], ylab=ln2[i], add=add, asp=asp, colramp=ramp, ...)
 			}				
 		} else if (gridded) {
 			for (i in 1:nl) {
@@ -137,7 +137,7 @@
 		} 
 	} else  {
 		if (smooth) {
-			graphics::smoothScatter(x, y, main=main[1], xlab=ln1[1], ylab=ln2[1], add=add, asp=asp, colramp=colramp, ...)
+			graphics::smoothScatter(x, y, main=main[1], xlab=ln1[1], ylab=ln2[1], add=add, asp=asp, colramp=ramp, ...)
 		} else if (gridded) {
 			.plotdens(x, y, nc=ncol, nr=nrow, main=main[1], xlab=ln1[1], ylab=ln2[1], add=add, asp=asp, ...)
 		} else {
