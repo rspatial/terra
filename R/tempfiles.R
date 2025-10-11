@@ -12,6 +12,7 @@
 	}
 	ftmp <- unique(unlist(ftmp))
 	ftmp <- ftmp[ftmp != ""]
+	if (length(ftmp) == 0) return(ftmp)
 	pattrn <- "^spat_.*tif$"
 	i <- grep(pattrn, basename(ftmp))
 	ftmp <- ftmp[i]
