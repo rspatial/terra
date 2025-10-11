@@ -38,7 +38,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   
 	\code{bilinear}: bilinear interpolation (3x3 cell window). This is used by default if the first layer of \code{x} is not categorical
 
-	\code{average}:  This can be a good choice with continuous variables if the output cells overlap with multiple input cells. 
+	\code{mean}:  This can be a good choice with continuous variables if the output cells overlap with multiple input cells. 
 
 	\code{near}: nearest neighbor. This is used by default if the first layer of \code{x} is categorical. This method is not a good choice for continuous values.
 

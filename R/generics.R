@@ -673,7 +673,12 @@ setMethod("project", signature(x="SpatRaster"),
 				method <- "bilinear"
 			}
 		} else {
-			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "sum", "mode", "min", "q1", "median", "q3", "max", "rms"))			
+			method <- .makeTextFun(method)
+			if (!inherits(method, "character")) {
+				error("project", "not a valid method argument")
+			}
+			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "mean", "average", "sum", "mode", "min", "q1", "median", "q3", "max", "rms"))
+			method[method == "mean"] <- "average"
 		}
 		opt <- spatOptions(filename, threads=threads, ...)
 
