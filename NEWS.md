@@ -12,6 +12,8 @@
 - `text<SpatRaster>` and `text<SpatVector>` gained argument "jitter=0" [#1910](https://github.com/rspatial/terra/pull/1910) by Márcia Barbosa
 - `points<SpatVector>` gained argument "jitter=0"
 - `plet<SpatRaster>` gained arguments "range" and "fill_range" 
+- `unique<SpatVector>` gained arguments "geom=TRUE" and "atts=TRUE" to allow uniqueness to be based on geometry or attributes only [#1928](https://github.com/rspatial/terra/issues/1928) by Andrea Titolo
+
 
 ## new
 
