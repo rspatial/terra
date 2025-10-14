@@ -1251,9 +1251,22 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 
 
 setMethod("unique", signature(x="SpatVector", incomparables="ANY"),
-	function(x, incomparables=FALSE, ...) {
-		u <- unique(as.data.frame(x, geom="WKT"), incomparables=incomparables, ...)
-		vect(u, geom="geometry", crs(x))
+	function(x, incomparables=FALSE, geom=TRUE, atts=TRUE, ...) {
+		if (geom && atts) {
+			u <- unique(as.data.frame(x, geom="WKT"), incomparables=incomparables, ...)
+			vect(u, geom="geometry", crs(x))
+		} else if (geom) {
+			g <- geom(x, hex=TRUE)
+			i <- !duplicated(g, ...)
+			x[i,]
+		} else if (atts) {
+			d <- data.frame(x)
+			i <- !duplicated(d, ...)
+			x[i,]
+		} else {
+			warn("unique", "geom and atts are both FALSE")
+			x
+		}
 	}
 )
 

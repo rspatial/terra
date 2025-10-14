@@ -17,7 +17,7 @@ This method returns the unique values in a SpatRaster, or removes duplicates rec
 \usage{
 \S4method{unique}{SpatRaster}(x, incomparables=FALSE, digits=NA, na.rm=TRUE, as.raster=FALSE) 
 
-\S4method{unique}{SpatVector}(x, incomparables=FALSE, ...) 
+\S4method{unique}{SpatVector}(x, incomparables=FALSE, geom=TRUE, atts=TRUE, ...) 
 }
 
 \arguments{
@@ -26,7 +26,9 @@ This method returns the unique values in a SpatRaster, or removes duplicates rec
   \item{digits}{integer. The number of digits for rounding the values before finding the unique values. Use \code{NA} means to not do any rounding}
   \item{na.rm}{logical. If \code{TRUE}, \code{NaN} is included if there are any missing values}  
   \item{as.raster}{logical. If \code{TRUE}, a single-layer categorical SpatRaster with the unique values is returned}  
-  \item{...}{additional arguments passed on to \code{\link[base]{unique}}}  
+  \item{...}{additional arguments passed on to \code{\link[base]{unique}} or \code{\link[base]{identical}}}  
+  \item{geom}{logical. If \code{TRUE} the geometries are considered to determine uniqueness}  
+  \item{atts}{logical. If \code{TRUE} the attribute values are considered to determine uniqueness}  
 }
 
 
