@@ -44,7 +44,7 @@
 <span><span class="fu">unique</span><span class="op">(</span><span class="va">x</span>, incomparables<span class="op">=</span><span class="cn">FALSE</span>, digits<span class="op">=</span><span class="cn">NA</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, as.raster<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
-<span><span class="fu">unique</span><span class="op">(</span><span class="va">x</span>, incomparables<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">unique</span><span class="op">(</span><span class="va">x</span>, incomparables<span class="op">=</span><span class="cn">FALSE</span>, geom<span class="op">=</span><span class="cn">TRUE</span>, atts<span class="op">=</span><span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,7 +66,13 @@
 <dd><p>logical. If <code>TRUE</code>, a single-layer categorical SpatRaster with the unique values is returned</p></dd>
 
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>additional arguments passed on to <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></code></p></dd>
+<dd><p>additional arguments passed on to <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></code> or <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></code></p></dd>
+
+  <dt id="arg-geom">geom<a class="anchor" aria-label="anchor" href="#arg-geom"></a></dt>
+<dd><p>logical. If <code>TRUE</code> the geometries are considered to determine uniqueness</p></dd>
+
+  <dt id="arg-atts">atts<a class="anchor" aria-label="anchor" href="#arg-atts"></a></dt>
+<dd><p>logical. If <code>TRUE</code> the attribute values are considered to determine uniqueness</p></dd>
 
 </dl></div>
     <div class="section level2">
