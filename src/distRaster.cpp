@@ -1878,7 +1878,7 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 
 
 
-SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
+SpatRaster SpatRaster::buffer(double d, double background, bool include, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (!hasValues()) {
@@ -1908,7 +1908,7 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 			std::vector<size_t> lyr = {i};
 			SpatRaster r = subset(lyr, ops);
 			ops.names = {nms[i]};
-			r = r.buffer(d, background, ops);
+			r = r.buffer(d, background, include, ops);
 			out.source[i] = r.source[0];
 		}
 		if (!opt.get_filename().empty()) {
@@ -1929,6 +1929,9 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 		} else {
 			out = proximity(NAN, NAN, false, "", true, d, true, opt);
 		}
+		if (!include) {
+			out = out.mask(*this, true, NAN, NAN, opt);						
+		}
 	} else {
 		SpatRaster e = edges(false, "inner", 8, NAN, ops);
 		SpatVector p = e.as_points(false, true, false, ops);
@@ -1938,7 +1941,11 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 		if (background == 0) {
 			out.setValueType(3);
 		}
-		out = out.mask(*this, true, NAN, 1, opt);
+		if (include) {
+			out = out.mask(*this, true, NAN, 1, opt);
+		} else {
+			out = out.mask(*this, true, NAN, NAN, opt);			
+		}
 		//out = out.disdir_vector_rasterize(p, false, true, false, false, NAN, NAN, "m", ops);
 		//out = out.arith(d, "<=", false, opt);
 	}

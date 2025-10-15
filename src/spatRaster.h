@@ -662,7 +662,7 @@ class SpatRaster {
 		std::vector<double> bilinearCells(const std::vector<double> &x, const std::vector<double> &y);
 		void fourCellsFromXY(std::vector<double> &out, const std::vector<double> &x, const std::vector<double> &y);
 
-		SpatRaster buffer(double d, double background, SpatOptions &opt);
+		SpatRaster buffer(double d, double background, bool include, SpatOptions &opt);
 		SpatRaster clamp(std::vector<double> low, std::vector<double> high, bool usevalue, SpatOptions &opt);
 		SpatRaster clamp_raster(SpatRaster &x, SpatRaster &y, std::vector<double> low, std::vector<double> high, bool usevalue, SpatOptions &opt);
 		SpatRaster clamp_ts(bool min, bool max, SpatOptions &opt);

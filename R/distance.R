@@ -4,9 +4,9 @@
 # License GPL v3
 
 setMethod("buffer", signature(x="SpatRaster"),
-	function(x, width, background=0, filename="", ...) {
+	function(x, width, background=0, include=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@pntr <- x@pntr$buffer(width, background, opt)
+		x@pntr <- x@pntr$buffer(width, background, include, opt)
 		messages(x, "buffer")
 	}
 )
