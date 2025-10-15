@@ -39,6 +39,8 @@
 <h3 id="bug-fixes-1-8-73">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-73"></a></h3>
 <ul><li>
 <code>plot&lt;SpatRaster&gt;</code> with arguments “break=n” and “breakby=‘cases’” could break if there the number of computed quantile breaks is lower than expected because of duplicates <a href="https://github.com/rspatial/terra/pull/1913" class="external-link">#1913</a> by Bradley W. Compton</li>
+<li>
+<code>buffer&lt;SpatRaster&gt;</code> for lon/lat rasters did not include the non <code>NA</code> cells outside of the buffer distance from the edges as part of the buffer <a href="https://github.com/rspatial/terra/issues/1929" class="external-link">#1929</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-73">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-73"></a></h3>
@@ -53,6 +55,8 @@
 <code>plet&lt;SpatRaster&gt;</code> gained arguments “range” and “fill_range”</li>
 <li>
 <code>unique&lt;SpatVector&gt;</code> gained arguments “geom=TRUE” and “atts=TRUE” to allow uniqueness to be based on geometry or attributes only <a href="https://github.com/rspatial/terra/issues/1928" class="external-link">#1928</a> by Andrea Titolo</li>
+<li>
+<code>buffer&lt;SpatRaster&gt;</code> gains argument “include=TRUE” to allow exclusion of the cells that are not <code>NA</code> from the buffer <a href="https://github.com/rspatial/terra/issues/1929" class="external-link">#1929</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-73">new<a class="anchor" aria-label="anchor" href="#new-1-8-73"></a></h3>
