@@ -11,7 +11,9 @@
 Calculate a buffer around all cells that are not \code{NA} in a SpatRaster, or around the geometries of a SpatVector.
 
 SpatRaster cells inside the buffer distance get a value of 1.
- 
+
+Results are more precise when using longitude/latitude rather than a planar coordinate reference system (see Examples).
+
 Note that the distance unit of the buffer \code{width} parameter is meters if the CRS is (\code{+proj=longlat}), and in map units (typically also meters) if not. 
 }
 
@@ -53,7 +55,7 @@ r[500] <- 1
 b <- buffer(r, width=5000000) 
 plot(b)
 
-v <- vect(rbind(c(10,10), c(0,60)), crs="+proj=merc")
+v <- vect(rbind(c(170,10), c(0,60)), crs="+proj=merc")
 b <- buffer(v, 20)
 plot(b)
 points(v)
