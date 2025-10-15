@@ -12,9 +12,9 @@ Calculate a buffer around all cells that are not \code{NA} in a SpatRaster, or a
 
 SpatRaster cells inside the buffer distance get a value of 1.
 
-Results are more precise when using longitude/latitude rather than a planar coordinate reference system (see Examples).
-
 Note that the distance unit of the buffer \code{width} parameter is meters if the CRS is (\code{+proj=longlat}), and in map units (typically also meters) if not. 
+
+If your data has a longitude/latitude CRS do \bold{not} project them to a planar CRS because that makes the results less precise (see Examples).
 }
 
 \usage{
