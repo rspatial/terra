@@ -619,6 +619,14 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 		return out;
 	}
 
+//	bool guess_lonlat = false;
+//	if (source[0].srs.is_empty() && could_be_lonlat()) {
+//		guess_lonlat = true;
+//		crswarning = "Guessing that the CRS is lon/lat");
+//	}
+//	bool as_lonlat = is_lonlat() || guess_lonlat;
+
+
 	SpatOptions ops(opt);
 	size_t nl = nlyr();
 	if (nl > 1) {
@@ -1926,10 +1934,11 @@ SpatRaster SpatRaster::buffer(double d, double background, SpatOptions &opt) {
 		SpatVector p = e.as_points(false, true, false, ops);
 		p = p.buffer({d}, 10, "", "", NAN, false);
 		p = p.aggregate(true);
-		out = out.rasterize(p, "", {1}, background, false, "", false, false, true, opt);
+		out = out.rasterize(p, "", {1}, background, false, "", false, false, true, ops);
 		if (background == 0) {
 			out.setValueType(3);
 		}
+		out = out.mask(*this, true, NAN, 1, opt);
 		//out = out.disdir_vector_rasterize(p, false, true, false, false, NAN, NAN, "m", ops);
 		//out = out.arith(d, "<=", false, opt);
 	}
