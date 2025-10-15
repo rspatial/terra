@@ -33,6 +33,7 @@ hasMinMax: logical indicating whether the min and max values are available.
 setMinMax: nothing. Used for the side-effect of computing the minimum and maximum values of a SpatRaster
 }
 
+\seealso{\code{\link{where.min}}, \code{\link{where.max}}}
 
 \examples{ 
 r <- rast(system.file("ex/elev.tif", package="terra"))
