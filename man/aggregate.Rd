@@ -10,6 +10,7 @@
 
 \description{
 Aggregate a SpatRaster to create a new SpatRaster with a lower resolution (larger cells). Aggregation groups rectangular areas to create larger cells. The value for the resulting cells is computed with a user-specified function. 
+See \code{\link{resample}} for aggregating cells with a factor that is not an integer.
 
 You can also aggregate ("dissolve") a SpatVector. This either combines all geometries into one geometry, or it combines the geometries that have the same value for the variable(s) specified with argument \code{by}.
 }
