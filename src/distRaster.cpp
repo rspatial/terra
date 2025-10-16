@@ -1919,15 +1919,21 @@ SpatRaster SpatRaster::buffer(double d, double background, bool include, SpatOpt
 
 
 	if (!is_lonlat()) {
+		SpatOptions opt2;
+		if (include) {
+			opt2 = opt;			
+		} else {
+			opt2 = ops;
+		}
 		if (!std::isnan(background)) {
 			out = proximity(NAN, NAN, false, "", true, d, true, ops);
 			if (background == 0) {
-				out = out.isnotnan(false, opt);
+				out = out.isnotnan(false, opt2);
 			} else {
-				out = out.replaceValues({NAN}, {background}, 1, false, NAN, false, opt);
+				out = out.replaceValues({NAN}, {background}, 1, false, NAN, false, opt2);
 			}
 		} else {
-			out = proximity(NAN, NAN, false, "", true, d, true, opt);
+			out = proximity(NAN, NAN, false, "", true, d, true, opt2);
 		}
 		if (!include) {
 			out = out.mask(*this, true, NAN, NAN, opt);						
