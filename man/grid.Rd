@@ -5,7 +5,12 @@
 \title{add a grid to a map made with terra}
 
 \description{ 
-Adaptation of \code{\link[graphics]{grid}} that allows adding a grid to a map. This function will place the legend in the locations within the mapped area as delineated by the axes.
+Adaptation of \code{\link[graphics]{grid}} that allows adding a grid to a map. This function will place the grid in the locations within the mapped area as delineated by the axes.
+
+If you set the tick marks yourself, you can use \code{abline} to create a grid. For example:
+
+\code{abline(h=y_ticks, lty="dotted")}
+\code{abline(v=x_ticks, lty="dotted")}
 
 Also see \code{\link{graticule}}
 }
