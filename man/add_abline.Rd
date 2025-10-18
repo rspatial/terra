@@ -28,11 +28,6 @@ atx <- seq(xmin(v), xmax(v), .1)
 aty <- seq(ymin(v), ymax(v), .1)
 plot(v, pax=list(xat=atx, yat=aty), ext=ext(v)+.2)
 add_abline(h=aty, v=atx, lty=2, col="gray")
-
-
- 
-plot(v, pax()
-add_grid()
 }
 
 \keyword{methods}
