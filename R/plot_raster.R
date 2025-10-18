@@ -426,7 +426,9 @@
 	}
 	if (!x$add) {
 		try(set.clip(x$lim, x$lonlat))
-	}
+	} else {
+		reset.clip()
+	}	
 	invisible(x)
 }
 
