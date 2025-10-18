@@ -146,7 +146,7 @@ retro_labels <- function(x, lat=TRUE) {
 				axt <- graphics::axTicks(s)
 				y$at <- axt[axt >= usr[1] & axt <= usr[2]]
 			} else {
-				y$at <- xat
+				y$at <- xat[xat >= usr[1] & xat <= usr[2]]
 			}
 			if (is.null(xlab)) {
 				y$labels <- if (retro) retro_labels(y$at, lat=FALSE) else y$at
@@ -159,7 +159,7 @@ retro_labels <- function(x, lat=TRUE) {
 				clp <- get.clip()
 				if (!is.null(clp)) {
 					for (i in seq_along(y$at)) {
-						lines(rbind(c(y$at[i], clp[3]), c(y$at[i], clp[4])), col=y$col)
+						lines(rbind(c(y$at[i], clp[3]), c(y$at[i], clp[4])), col=y$col, lty=y$lty, lwd=y$lwd)
 					}
 				}
 			}
@@ -170,7 +170,7 @@ retro_labels <- function(x, lat=TRUE) {
 				axt <- graphics::axTicks(s)
 				y$at <- axt[axt >= usr[3] & axt <= usr[4]]
 			} else {
-				y$at <- yat
+				y$at <- yat[yat >= usr[3] & yat <= usr[4]]
 			}
 			if (is.null(ylab)) {
 				y$labels <- if (retro) retro_labels(y$at, lat=TRUE) else y$at
@@ -183,7 +183,7 @@ retro_labels <- function(x, lat=TRUE) {
 				clp <- get.clip()
 				if (!is.null(clp)) {
 					for (i in seq_along(y$at)) {
-						lines(rbind(c(clp[1], y$at[i]), c(clp[2], y$at[i])), col=y$col)
+						lines(rbind(c(clp[1], y$at[i]), c(clp[2], y$at[i])), lty=y$lty, col=y$col, lwd=y$lwd)
 					}
 				}
 			}
@@ -210,7 +210,7 @@ retro_labels <- function(x, lat=TRUE) {
 			} else {
 				lty <- y$lty
 			}
-			lines(lin, y$lwd, lty=lty, col=y$col)
+			lines(lin, lwd=y$lwd, lty=lty, col=y$col)
 		
 			#d <- diff(edg) * 10
 			#z$at <- edg + c(-d, d)
