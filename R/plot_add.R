@@ -1,4 +1,5 @@
 
+
 .txt.loc <- function(x, main=TRUE) {
 	if (main) {
 		cex <- "cex.main"
@@ -101,7 +102,18 @@ add_grid <- function(nx=NULL, ny=nx, col="lightgray", lty="dotted", lwd=1) {
     invisible(list(atx = atx, aty = aty))
 }
 
+add_abline <- function(h=NULL, v=NULL, ...) {
+	p <- unlist(get.clip())
+	reset.clip()
+	if (!is.null(h)) {
+		lines(as.lines(cbind(p[1], p[2], h, h)), ...)
+	}
+	if (!is.null(v)) {
+		lines(as.lines(cbind(v, v, p[3], p[4])), ...)	
+	}
+}
 
+	
 add_mtext <- function(text, side=3, line=0, ...) {
 
 	stopifnot(side %in% 1:4)
