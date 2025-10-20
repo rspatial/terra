@@ -1204,7 +1204,7 @@ SpatVector SpatVector::delaunay(double tolerance, int onlyEdges, bool constraine
 		out.setError("GEOS 3.10 required for constrained delaunay");
 		return out;
 	}
-#else
+#endif
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	SpatVector a = aggregate(false);
@@ -1232,7 +1232,6 @@ SpatVector SpatVector::delaunay(double tolerance, int onlyEdges, bool constraine
 		// associate with attributes
 	}
 	return out;
-#endif
 }
 
 
