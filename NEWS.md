@@ -15,13 +15,14 @@
 - `plet<SpatRaster>` gained arguments "range" and "fill_range" 
 - `unique<SpatVector>` gained arguments "geom=TRUE" and "atts=TRUE" to allow uniqueness to be based on geometry or attributes only [#1928](https://github.com/rspatial/terra/issues/1928) by Andrea Titolo
 - `buffer<SpatRaster>` gains argument "include=TRUE" to allow exclusion of the cells that are not `NA` from the buffer  [#1929](https://github.com/rspatial/terra/issues/1929) by Márcia Barbosa
+- argument "names" to `distance<SpatVector,missing>` [#1942](https://github.com/rspatial/terra/issues/1942) by Márcia Barbosa
 
 
 ## new
 
 - `plet<SpatRasterCollection>` method
 - `cartogram<SpatRaster>` can now return a "circles" (dorling) cartogram [#1911](https://github.com/rspatial/terra/issues/1911) by Márcia Barbosa 
-
+- `subset<SpatVector>` can now use a Spat object to spatially subset [#1937](https://github.com/rspatial/terra/issues/1937) by Márcia Barbosa
 
 # version 1.8-70
 
