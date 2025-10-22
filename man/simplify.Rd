@@ -30,7 +30,7 @@ SpatVector
 }
 
 
-\seealso{\code{\link{sharedPaths}}, \code{\link{gaps}}, \code{\link{is.valid}}}
+\seealso{\code{\link{densify}}, \code{\link{sharedPaths}}, \code{\link{gaps}}, \code{\link{is.valid}}}
 
 
 \examples{
