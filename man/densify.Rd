@@ -28,6 +28,7 @@ Add additional nodes to lines or polygons. This can be useful to do prior to usi
 SpatVector
 }
 
+\seealso{\code{\link{simplifyGeom}}}
 
 \examples{
 v <- vect(rbind(c(-120,-20), c(-80,5), c(-40,-60), c(-120,-20)), 
