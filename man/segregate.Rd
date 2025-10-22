@@ -32,6 +32,8 @@ This is called "one-hot encoding" or "dummy encoding" (for a dummy encoding sche
 SpatRaster
 }
 
+\seealso{\code{\link{split}}}
+
 \examples{
 r <- rast(nrows=5, ncols=5)
 values(r) <- rep(c(1:4, NA), each=5)
