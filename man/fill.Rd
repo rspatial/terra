@@ -23,6 +23,8 @@ Remove the holes in SpatVector polygons. If \code{inverse=TRUE} the holes are re
 
 \value{SpatVector}
 
+\seealso{\code{\link{snap}}, \code{\link{gaps}}}
+
 \examples{
 x <- rbind(c(-10,0), c(140,60), c(160,0), c(140,-55))
 hole <- rbind(c(80,0), c(105,13), c(120,2), c(105,-13))
