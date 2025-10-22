@@ -127,7 +127,7 @@ mat2wide <- function(m, sym=TRUE, keep=NULL) {
 }
 
 setMethod("distance", signature(x="SpatVector", y="ANY"),
-	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="haversine", use_nodes=FALSE) {
+	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="haversine", use_nodes=FALSE, names=NULL) {
 		if (!missing(y)) {
 			error("distance", "If 'x' is a SpatVector, 'y' should be a SpatVector or missing")
 		}
@@ -143,6 +143,14 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 		attr(d, "Diag") <- FALSE
 		attr(d, "Upper") <- FALSE
 		attr(d, "method") <- "spatial"
+		if (!is.null(names)) {
+			if (inherits(names, "character") && (length(names) == 1) && (nrow(x) > 1)) {
+				names <- x[[names, drop=TRUE]]
+			}
+			if (length(names) == nrow(x)) {
+				attr(d, "Labels") <- names
+			}
+		}
 		if (pairs) {
 			d <- as.matrix(d)
 			diag(d) <- NA
