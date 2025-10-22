@@ -102,6 +102,11 @@ function(x, i, j) {
 
 setMethod("subset", signature(x="SpatVector"),
 	function(x, subset, select, drop=FALSE, NSE=FALSE) {
+		
+		spatcls <- isTRUE(substr(class(subset)[1], 1, 4) == "Spat")
+		if (spatcls) {
+			return(x[subset])
+		}
  		if (NSE) {
 			d <- as.list(x)
 			# from the subset<data.frame> method

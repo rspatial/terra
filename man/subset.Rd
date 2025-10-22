@@ -21,7 +21,7 @@ Select a subset of layers from a SpatRaster or select a subset of records (row) 
   \item{subset}{
   if \code{x} is a \code{SpatRaster}: integer or character to select layers
 
-  if \code{x} is a \code{SpatVector}: logical expression indicating the rows to keep (missing values are taken as FALSE)
+  if \code{x} is a \code{SpatVector}: logical expression indicating the rows to keep (missing values are taken as FALSE), or another \code{Spat*} object in which case the extent is used to spatially subset the intersecting geometries
   }
   \item{select}{expression, indicating columns to select} 
   \item{negate}{logical. If \code{TRUE} all layers that are \bold{not} in the subset are selected}
