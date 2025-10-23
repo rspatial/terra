@@ -23,6 +23,7 @@
 \alias{ext,sf-method}
 \alias{ext,bbox-method}
 \alias{ext,PackedSpatExtent-method}
+\alias{ext,SpatGraticule-method}
 
 \title{Create, get or set a SpatExtent}
 

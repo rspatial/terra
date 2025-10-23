@@ -103,10 +103,6 @@ function(x, i, j) {
 setMethod("subset", signature(x="SpatVector"),
 	function(x, subset, select, drop=FALSE, NSE=FALSE) {
 		
-		spatcls <- isTRUE(substr(class(subset)[1], 1, 4) == "Spat")
-		if (spatcls) {
-			return(x[subset])
-		}
  		if (NSE) {
 			d <- as.list(x)
 			# from the subset<data.frame> method
@@ -130,7 +126,13 @@ setMethod("subset", signature(x="SpatVector"),
 				}
 			x <- x[r, v, drop=drop]
 		} else {
-			if (missing(select)) {
+			spatcls <- isTRUE(substr(class(subset)[1], 1, 4) == "Spat")
+			if (spatcls) {
+				x <- x[subset]
+				if (!missing(select)) {
+					x <- x[, select, drop=drop]
+				}
+			} else if (missing(select)) {
 				x <- x[which(as.vector(subset)), drop=drop]
 			} else {
 				x <- x[which(as.vector(subset)), select, drop=drop]

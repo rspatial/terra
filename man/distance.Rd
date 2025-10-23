@@ -51,7 +51,7 @@ If \code{y} is missing, the distance between each point in \code{x} with all oth
 \S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, unit="m", method="haversine", use_nodes=FALSE)
 
 \S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m",
-			method="haversine", use_nodes=FALSE)
+			method="haversine", use_nodes=FALSE, names=NULL)
 
 \S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE, unit="m", method="geo")
 
@@ -77,6 +77,7 @@ If \code{y} is missing, the distance between each point in \code{x} with all oth
   \item{pairs}{logical. If \code{TRUE} a "from", "to", "distance" matrix is returned} 
   \item{symmetrical}{logical. If \code{TRUE} and \code{pairs=TRUE}, the distance between a pair is only included once. The distance between geometry 1 and 3 is included, but the (same) distance between 3 and 1 is not}
   \item{use_nodes}{logical. If \code{TRUE} and the crs is longitude/latitude, the nodes (vertices) of lines or polygons are used to compute distances, instead of the lines that connect them. This is faster, but can be less precise if the nodes are far apart}
+  \item{names}{character. Either a single variable name in \code{x} or a vector of length \code{nrow(x)} to label the distance matrix} 
 }
 
 \value{

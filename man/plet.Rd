@@ -26,7 +26,7 @@ The arguments of \code{plet} are similar to those of \code{\link[terra]{plot}}, 
 	tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
 	wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", 
 	shared=FALSE, panel=FALSE, collapse=TRUE, type=NULL, breaks=NULL,
-	breakby="eqint", range=NULL, fill_range=NULL, map=NULL, ...) 
+	breakby="eqint", range=NULL, fill_range=FALSE, map=NULL, ...) 
 
 
 \S4method{plet}{SpatRasterCollection}(x, col, alpha=0.8, main=names(x), 
