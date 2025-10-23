@@ -91,7 +91,7 @@ If y is missing, the distance between each point in x with all other points in x
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector,ANY'</span></span>
 <span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, sequential<span class="op">=</span><span class="cn">FALSE</span>, pairs<span class="op">=</span><span class="cn">FALSE</span>, symmetrical<span class="op">=</span><span class="cn">TRUE</span>, unit<span class="op">=</span><span class="st">"m"</span>,</span>
-<span>      method<span class="op">=</span><span class="st">"haversine"</span>, use_nodes<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>      method<span class="op">=</span><span class="st">"haversine"</span>, use_nodes<span class="op">=</span><span class="cn">FALSE</span>, names<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'matrix,matrix'</span></span>
 <span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">lonlat</span>, pairwise<span class="op">=</span><span class="cn">FALSE</span>, unit<span class="op">=</span><span class="st">"m"</span>, method<span class="op">=</span><span class="st">"geo"</span><span class="op">)</span></span>
@@ -154,6 +154,9 @@ If y is missing, the distance between each point in x with all other points in x
 
   <dt id="arg-use-nodes">use_nodes<a class="anchor" aria-label="anchor" href="#arg-use-nodes"></a></dt>
 <dd><p>logical. If <code>TRUE</code> and the crs is longitude/latitude, the nodes (vertices) of lines or polygons are used to compute distances, instead of the lines that connect them. This is faster, but can be less precise if the nodes are far apart</p></dd>
+
+  <dt id="arg-names">names<a class="anchor" aria-label="anchor" href="#arg-names"></a></dt>
+<dd><p>character. Either a single variable name in <code>x</code> or a vector of length <code>nrow(x)</code> to label the distance matrix</p></dd>
 
 </dl></div>
     <div class="section level2">
