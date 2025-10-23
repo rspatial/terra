@@ -38,6 +38,7 @@ if \code{x} is a \code{SpatRaster}: SpatRaster
 if \code{x} is a \code{SpatVector}: SpatVector or, if \code{drop=TRUE}, a \code{data.frame}.
 }
 
+\seealso{\code{\link{$}}, \code{\link{[[}}, \code{\link{[}}}
 
 \examples{
 ### SpatRaster
@@ -71,6 +72,11 @@ subset(v, NAME_1 == "Diekirch", c(NAME_1, NAME_2), NSE=TRUE)
 v[2:3,]
 v[1:2, 2:3]
 v[1:2, c("NAME_1", "NAME_2")]
+
+# or by location, i.e. by spatial overlap with another object
+poly <- as.polygons(ext(6, 6.4, 49.75, 50))
+subset(v, poly)
+v[poly]
 }
 
 \keyword{ spatial }
