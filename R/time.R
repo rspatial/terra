@@ -146,7 +146,9 @@ setMethod("time", signature(x="SpatRaster"),
 		
 		if (format == "days") {
 		# first use format to avoid time zone trouble #1896
-			as.Date(format(d, "%Y-%m-%d"))
+		#	as.Date(format(d, "%Y-%m-%d"))
+		# above does not work with negative years. #1951	
+			as.Date(d, tz="")
 		} else if (format == "yearmonths") {
 			y <- as.integer(format(d, "%Y"))
 			y + (as.integer(format(d, "%m"))-1)/12
