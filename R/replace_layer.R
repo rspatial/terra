@@ -35,7 +35,7 @@
 			c(x, value)			
 		}
 	} else if (nlyr(x) == 1) {
-		value$deepcopy()
+		deepcopy(value)
 	} else if (i == 1) {
 		c(value, x[[2:nlyr(x)]])
 	} else if (i == nlyr(x)) {
