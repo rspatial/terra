@@ -48,8 +48,7 @@ plot(r, col=rainbow(25, alpha=0.35), add=TRUE)
 
 # A better hill shade may be achieved by combining 
 # different angles and directions. For example
-
-hh <- shade(slope, aspect, angle = c(45, 45, 45, 80), direction = c(225, 270, 315, 135))
+hh <- shade(slope, aspect, angle=30, direction=c(225, 270, 315, 360))
 h1 <- Reduce(mean, hh)
 h2 <- mean(hh)
 }
