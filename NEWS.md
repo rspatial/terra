@@ -4,7 +4,8 @@
 
 - `plot<SpatRaster>` with arguments "break=n" and "breakby='cases'" could break if there the number of computed quantile breaks is lower than expected because of duplicates [#1913](https://github.com/rspatial/terra/pull/1913) by Bradley W. Compton
 - `buffer<SpatRaster>` for lon/lat rasters did not include the non `NA` cells outside of the buffer distance from the edges as part of the buffer [#1929](https://github.com/rspatial/terra/issues/1929) by Márcia Barbosa
-
+- computing dates for years < 1 failed (regression introduced when fixing #1896) [#1951](https://github.com/rspatial/terra/issues/1951) by Taras Zakharko
+- `values(x[["name"]])<-` failed if `x` had a single layer [#1944](https://github.com/rspatial/terra/issues/1944) by Wenbo Lv
 
 ## enhancements
 

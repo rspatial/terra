@@ -1,4 +1,4 @@
-col
+
 setMethod ("has.colors" , "SpatRaster",
 	function(x) {
 		x@pntr$hasColors()
