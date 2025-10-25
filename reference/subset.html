@@ -84,6 +84,10 @@
     <p>if <code>x</code> is a <code>SpatRaster</code>: SpatRaster</p>
 <p>if <code>x</code> is a <code>SpatVector</code>: SpatVector or, if <code>drop=TRUE</code>, a <code>data.frame</code>.</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="subset_dollar.html">$</a></code>, <code><a href="subset_double.html">[[</a></code>, <code><a href="subset_single.html">[</a></code></p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -228,6 +232,31 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  type        :    &lt;chr&gt;    &lt;chr&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  values      : Diekirch Clervaux</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Diekirch Diekirch</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># or by location, i.e. by spatial overlap with another object</span></span></span>
+<span class="r-in"><span><span class="va">poly</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.polygons.html">as.polygons</a></span><span class="op">(</span><span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">6.4</span>, <span class="fl">49.75</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">v</span>, <span class="va">poly</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 8, 6  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 5.74414, 6.528252, 49.58699, 50.18162  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA       POP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;    &lt;chr&gt; &lt;num&gt;    &lt;chr&gt; &lt;num&gt;     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     1 Diekirch     1 Clervaux   312 1.808e+04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     2 Diekirch   218 3.254e+04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     3  Redange   259 1.866e+04</span>
+<span class="r-in"><span><span class="va">v</span><span class="op">[</span><span class="va">poly</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 8, 6  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 5.74414, 6.528252, 49.58699, 50.18162  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA       POP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;    &lt;chr&gt; &lt;num&gt;    &lt;chr&gt; &lt;num&gt;     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     1 Diekirch     1 Clervaux   312 1.808e+04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     2 Diekirch   218 3.254e+04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     3  Redange   259 1.866e+04</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
