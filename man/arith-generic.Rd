@@ -65,7 +65,7 @@ x + y
 # intersection
 x * y
 
-e <- x %% 2
+e <- x \%\% 2
 e
 e * 2
 e / 2
