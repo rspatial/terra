@@ -1153,7 +1153,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 
 		SpatCategories crat;
-		bool found_rat = false;
+		//bool found_rat = false;
 		
 		if (!s.hasCategories[i]) {
 			GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
@@ -1174,11 +1174,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			if (GetVAT(fname, crat)) {
 				s.cats[i] = crat;
 				s.hasCategories[i] = true;
-				found_rat = true;
+				//found_rat = true;
 			}
 		}
 
-		if ((!s.hasColors[i]) && (found_rat)) {
+		if ((!s.hasColors[i]) && s.hasCategories[i]) {
 			SpatDataFrame ratcols;
 			if (colsFromRat(crat.d, ratcols)) {
 				s.hasColors[i] = true;
