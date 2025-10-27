@@ -1105,7 +1105,7 @@ bool fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double
 	double minx = vmin(x, false);
 	double maxx = vmax(x, false);
 	// need a better check but this should work for all normal cases
-	if ((minx < -170) && (maxx > 170)) {
+	if (maxx - minx) > 180) {
 		for (size_t i=0; i<x.size(); i++) {
 			if (x[i] < 0) {
 				x[i] += 360;
@@ -1151,6 +1151,15 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 //	std::vector<std::vector<double>> xy = coordinates();
 	
 	if (is_lonlat()) {
+		
+		std::vector<double> gptx = std::vector<double> {-180,  0, 180, 180, 180,   0, -180, -180, -180};
+		std::vector<double> gpty = std::vector<double> {  90, 90,  90,   0, -90, -90,  -90,    0,   90};
+		SpatGeom ggeom(polygons);
+		ggeom.addPart(SpatPart(gptx, gpty));
+		SpatVector glob;
+		glob.addGeom(ggeom);	
+
+		
 		std::vector<double> brng(n);
 		for (size_t i=0; i<n; i++) {
 			brng[i] = i * step;
@@ -1168,96 +1177,110 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 			for (size_t i=0; i<xy[0].size(); i++) {
 				if (std::isnan(xy[0][i] || std::isnan(xy[1][i]) || (xy[1][i]) > 90) || (xy[1][i] < -90)) { 
 					tmp.addGeom(SpatGeom(polygons));
+				} else if (d[p] > 20003931) {
+					tmp = glob;
+					break;					
 				} else {
 					std::vector<double> ptx;
 					std::vector<double> pty;
+					ptx.reserve(n+1);
+					pty.reserve(n+1);
+					if (wrap) {
+						for (size_t j=0; j < n; j++) {
+							geod_direct(&gd, xy[1][i], xy[0][i], brng[j], d[p], &lat, &lon, &azi);
+							ptx.push_back(lon);
+							pty.push_back(lat);
+						}
+					} else {
+						for (size_t j=0; j < n; j++) {
+							geod_direct(&gd, xy[1][i], 0, brng[j], d[p], &lat, &lon, &azi);
+							ptx.push_back(lon+xy[0][i]);
+							pty.push_back(lat);
+						}
+					}
+
 					geod_inverse(&gd, xy[1][i], xy[0][i],  90, xy[0][i], &s12, &azi, &azi2);
 					bool npole = s12 < d[p];
 					geod_inverse(&gd, xy[1][i], xy[0][i], -90, xy[0][i], &s12, &azi, &azi2);
 					bool spole = s12 < d[p];
 
 					if (npole && spole) {
-						ptx = std::vector<double> {-180,  0, 180, 180, 180,   0, -180, -180, -180};
-						pty = std::vector<double> {  90, 90,  90,   0, -90, -90,  -90,    0,   90};
+						ptx.push_back(ptx[0]);
+						pty.push_back(pty[0]);
+						bool split = false;
+						if (vmax(ptx, true) >= 0) {
+							for (size_t i=0; i<ptx.size(); i++) {
+								if (ptx[i] < 0) {
+									ptx[i] += 360;
+									split = true;
+								}
+							}
+						}
 						g.reSetPart(SpatPart(ptx, pty));
 						tmp.addGeom(g);
-						//npole = false;
-						//spole = false;
-					} else {
-						ptx.reserve(n);
-						pty.reserve(n);
-						if (wrap) {
-							for (size_t j=0; j < n; j++) {
-								geod_direct(&gd, xy[1][i], xy[0][i], brng[j], d[p], &lat, &lon, &azi);
-								ptx.push_back(lon);
-								pty.push_back(lat);
-							}
-						} else {
-							for (size_t j=0; j < n; j++) {
-								geod_direct(&gd, xy[1][i], 0, brng[j], d[p], &lat, &lon, &azi);
-								ptx.push_back(lon+xy[0][i]);
-								pty.push_back(lat);
-							}
+						if (split) {
+							split_dateline(tmp);
+						} 	
+						tmp = glob.erase(tmp);
+					} else if (npole) {
+						sort_unique_2d(ptx, pty);
+						if (ptx[ptx.size()-1] < 180) {
+								ptx.push_back(180);
+								pty.push_back(pty[pty.size()-1]);
 						}
-						if (npole) {
-							sort_unique_2d(ptx, pty);
-							if (ptx[ptx.size()-1] < 180) {
-								ptx.push_back(180);
-								pty.push_back(pty[pty.size()-1]);
-							}
-							ptx.push_back(180);
-							pty.push_back(90);
+						ptx.push_back(180);
+						pty.push_back(90);
+						ptx.push_back(-180);
+						pty.push_back(90);
+						if (ptx[0] > -180) {
 							ptx.push_back(-180);
-							pty.push_back(90);
-							if (ptx[0] > -180) {
-								ptx.push_back(-180);
-								pty.push_back(pty[0]);
-							}
-							ptx.push_back(ptx[0]);
 							pty.push_back(pty[0]);
-							g.reSetPart(SpatPart(ptx, pty));
-							tmp.addGeom(g);
-						} else if (spole) {
-							sort_unique_2d(ptx, pty);
-							if (ptx[ptx.size()-1] < 180) {
-								ptx.push_back(180);
-								pty.push_back(pty[pty.size()-1]);
-							}
+						}
+						ptx.push_back(ptx[0]);
+						pty.push_back(pty[0]);
+						g.reSetPart(SpatPart(ptx, pty));
+						tmp.addGeom(g);
+					} else if (spole) {
+						sort_unique_2d(ptx, pty);
+						if (ptx[ptx.size()-1] < 180) {
 							ptx.push_back(180);
-							pty.push_back(-90);
+							pty.push_back(pty[pty.size()-1]);
+						}
+						ptx.push_back(180);
+						pty.push_back(-90);
+						ptx.push_back(-180);
+						pty.push_back(-90);
+						if (ptx[0] > -180) {
 							ptx.push_back(-180);
-							pty.push_back(-90);
-							if (ptx[0] > -180) {
-								ptx.push_back(-180);
-								pty.push_back(pty[0]);
-							}
-							ptx.push_back(ptx[0]);
 							pty.push_back(pty[0]);
-							g.reSetPart(SpatPart(ptx, pty));
-							tmp.addGeom(g);
-						} else {
-							ptx.push_back(ptx[0]);
-							pty.push_back(pty[0]);
-							if (wrap) {
-								bool split = false;
-								try {
-									split = fix_date_line(g, ptx, pty);
-								} catch(...) {}
-								
-								if (split & no_multipolygons) {
-									for (size_t j=0; j<g.parts.size(); j++) {
-										SpatGeom gg(g.parts[j], polygons);
-										tmp.addGeom(gg);
-									}
-								} else {
-									tmp.addGeom(g);
+						}
+						ptx.push_back(ptx[0]);
+						pty.push_back(pty[0]);
+						g.reSetPart(SpatPart(ptx, pty));
+						tmp.addGeom(g);
+					} else {
+						ptx.push_back(ptx[0]);
+						pty.push_back(pty[0]);
+						if (wrap) {
+							bool split = false;
+							try {
+								split = fix_date_line(g, ptx, pty);
+							} catch(...) {}
+							
+							if (split & no_multipolygons) {
+								for (size_t j=0; j<g.parts.size(); j++) {
+									SpatGeom gg(g.parts[j], polygons);
+									tmp.addGeom(gg);
 								}
 							} else {
-								g.reSetPart(SpatPart(ptx, pty));
-								tmp.addGeom(g);		
+								tmp.addGeom(g);
 							}
+						} else {
+							g.reSetPart(SpatPart(ptx, pty));
+							tmp.addGeom(g);		
 						}
 					}
+					
 				}
 			}
 			if (tmp.size() > 1) {
