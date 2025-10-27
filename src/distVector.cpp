@@ -1105,7 +1105,7 @@ bool fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double
 	double minx = vmin(x, false);
 	double maxx = vmax(x, false);
 	// need a better check but this should work for all normal cases
-	if (maxx - minx) > 180) {
+	if ((maxx - minx) > 180) {
 		for (size_t i=0; i<x.size(); i++) {
 			if (x[i] < 0) {
 				x[i] += 360;
@@ -1141,6 +1141,8 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 	}
 
 	size_t npts = size();
+
+//Rcpp::Rcout << quadsegs << std::endl;
 
 	size_t n = quadsegs * 4;
 	double step = 360.0 / n;
