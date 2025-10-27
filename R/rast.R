@@ -322,7 +322,7 @@ setMethod("rast", signature(x="character"),
 			} else if (isTRUE(guessCRS)) {
 				if (crs(r) == "") {
 					e <- ext(r)
-					if ((e$xmin >= -180) && (e$xmax <= 360) && (e$ymin >= -90) && (e$ymax <= 90)) {
+					if ((e$xmin >= -180.1) && (e$xmax <= 360.1) && (e$ymin >= -90.1) && (e$ymax <= 90.1)) {
 						crs(r) <- "OGC:CRS84"
 					}
 				}
