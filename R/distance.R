@@ -144,7 +144,7 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 		attr(d, "Upper") <- FALSE
 		attr(d, "method") <- "spatial"
 		if (!is.null(names)) {
-			if (inherits(names, "character") && (length(names) == 1) && (nrow(x) > 1)) {
+			if (inherits(names, "character") && (length(names) == 1)) {
 				names <- x[[names, drop=TRUE]]
 			}
 			if (length(names) == nrow(x)) {
@@ -162,7 +162,7 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 
 
 setMethod("distance", signature(x="SpatVector", y="SpatVector"),
-	function(x, y, pairwise=FALSE, unit="m", method = "haversine", use_nodes=FALSE) {
+	function(x, y, pairwise=FALSE, unit="m", method = "haversine", use_nodes=FALSE, names=NULL) {
 		unit <- as.character(unit[1])
 		method <- match.arg(tolower(method), c("cosine", "haversine", "geo"))
 		opt <- spatOptions()
@@ -170,6 +170,15 @@ setMethod("distance", signature(x="SpatVector", y="SpatVector"),
 		messages(x, "distance")
 		if (!pairwise) {
 			d <- matrix(d, nrow=nrow(x), ncol=nrow(y), byrow=TRUE)
+			if ((!is.null(names)) && (length(names)<=2)) {
+				names <- rep(names, length.out=2)
+				if (inherits(names[1], "character")) {
+					rownames(d) <- x[[names[1], drop=TRUE]]
+				}
+				if (inherits(names[2], "character")) {
+					colnames(d) <- y[[names[2], drop=TRUE]]
+				}
+			}
 		}
 		d
 	}

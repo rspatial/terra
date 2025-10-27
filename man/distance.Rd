@@ -48,7 +48,8 @@ If \code{y} is missing, the distance between each point in \code{x} with all oth
 
 \S4method{distance}{SpatRaster,SpatVector}(x, y, unit="m", rasterize=FALSE, method="haversine", filename="", ...)
 
-\S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, unit="m", method="haversine", use_nodes=FALSE)
+\S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, unit="m", method="haversine",
+			use_nodes=FALSE, names=NULL)
 
 \S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m",
 			method="haversine", use_nodes=FALSE, names=NULL)
@@ -77,7 +78,7 @@ If \code{y} is missing, the distance between each point in \code{x} with all oth
   \item{pairs}{logical. If \code{TRUE} a "from", "to", "distance" matrix is returned} 
   \item{symmetrical}{logical. If \code{TRUE} and \code{pairs=TRUE}, the distance between a pair is only included once. The distance between geometry 1 and 3 is included, but the (same) distance between 3 and 1 is not}
   \item{use_nodes}{logical. If \code{TRUE} and the crs is longitude/latitude, the nodes (vertices) of lines or polygons are used to compute distances, instead of the lines that connect them. This is faster, but can be less precise if the nodes are far apart}
-  \item{names}{character. Either a single variable name in \code{x} or a vector of length \code{nrow(x)} to label the distance matrix} 
+  \item{names}{character. One (or two) variable names in \code{x} (and \code{y}) to label the distance matrix} 
 }
 
 \value{
@@ -109,7 +110,8 @@ d <- distance(rr)
 rr[3:10, 3:10] <- 99
 e <- distance(rr, exclude=99) 
 
-p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="+proj=longlat +datum=WGS84")
+p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="lonlat")
+values(p1) <- data.frame(ID=LETTERS[1:3])
 dp <- distance(r, p1) 
 
 d <- distance(p1)
@@ -117,7 +119,8 @@ d
 as.matrix(d)
 
 p2 <- vect(rbind(c(30,-30), c(25,40), c(-9,-3)), crs="+proj=longlat +datum=WGS84")
-dd <- distance(p1, p2)
+values(p2) <- data.frame(ID=letters[1:3])
+dd <- distance(p1, p2, names=c("ID", "ID"))
 dd
 pd <- distance(p1, p2, pairwise=TRUE)
 pd
