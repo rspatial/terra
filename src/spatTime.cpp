@@ -241,16 +241,15 @@ SpatTime_t time_from_day(int syear, int smonth, int sday, double ndays) {
 }
 
 
+#include "Rcpp.h"
 
 SpatTime_t get_time_noleap(int syear, int smonth, int sday, int shour, int smin, int ssec, double n, std::string step) {
 
 	static const int md[13] =  {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
 
 	// set start to beginning of year 
-	double s = ssec + smin * 60 + shour * 3600 + (sday-1) * 24 * 3600;
-	for (int i=0; i < smonth; i++) {
-		s += (md[i] * 24 * 3600);
-	}
+	double s = ssec + smin * 60 + shour * 3600 + (sday-1) * 86400;
+	s += md[smonth-1] * 86400;
 
 	double ndays;
 	if (step == "hours") {
@@ -274,6 +273,8 @@ SpatTime_t get_time_noleap(int syear, int smonth, int sday, int shour, int smin,
 			break;
 		}
 	}
+	Rcpp::Rcout << ndays << " " << year << " " << month << " " << rem << std::endl;
+
 	rem -= md[month-1];
 	int day = rem;
 	rem -= day;
@@ -284,6 +285,11 @@ SpatTime_t get_time_noleap(int syear, int smonth, int sday, int shour, int smin,
 	int mn = rem * 60;
 	rem -= mn;
 	int sc = rem * 60;
+
+	SpatTime_t tmp = get_time(year+syear, month, day, hr, mn, sc);
+
+	Rcpp::Rcout << syear << " " << smonth << " " << sday << " " << shour << " " << smin << " " << ssec << " " << n <<  " " << step << std::endl;
+	Rcpp::Rcout << year << " " << month << " " << day << " " << tmp << std::endl << std::endl;
 	
 	return get_time(year+syear, month, day, hr, mn, sc);
 }
@@ -293,7 +299,8 @@ SpatTime_t get_time_noleap(int syear, int smonth, int sday, int shour, int smin,
 SpatTime_t get_time_360(int syear, int smonth, int sday, int shour, int smin, int ssec, double n, std::string step) {
 
 	// set start to beginning of year 
-	double s = ssec + smin * 60 + shour * 3600 + (sday-1) * 24 * 3600 + (smonth-1) * 30;
+	int sdays = (smonth-1) * 30 + (sday-1);
+	double s = ssec + smin * 60 + shour * 3600 + sdays * 86400;
 
 	double ndays;
 	if (step == "hours") {

@@ -113,8 +113,10 @@ setMethod("time", signature(x="SpatRaster"),
 		tstep <- x@pntr$timestep
 		
 		if (format != "") {
-			steps <- c("seconds", "days", "months", "years", "yearmonths")
+			steps <- c("seconds", "days", "months", "years", "yearmonths", "raw")
 			format <- match.arg(tolower(format), steps)
+			if (format == "raw") return(d)
+			
 			if ((format == "months") && (tstep == "years")) {
 				error("time", "cannot extract months from years-time")
 			} else if ((format == "years") && (tstep %in% c("months"))) {
@@ -133,22 +135,19 @@ setMethod("time", signature(x="SpatRaster"),
 		}
 		
 		
+		tz <- x@pntr$timezone
+		tz[tz == ""] <- "UTC"
 		d <- strptime("1970-01-01", "%Y-%m-%d", tz="UTC") + d
-		if (tstep == "seconds") {
-			tz <- x@pntr$timezone
-			if (!(tz %in% c("", "UTC"))) {
-				attr(d, "tzone") = tz
-			}
-			if (format == "seconds") {
-				return(d)
-			} 
+		attr(d, "tzone") = tz
+		if (format == "seconds") {
+			return(d)
 		}
 		
 		if (format == "days") {
 		# first use format to avoid time zone trouble #1896
 		#	as.Date(format(d, "%Y-%m-%d"))
 		# above does not work with negative years. #1951	
-			as.Date(d, tz="")
+			as.Date(d, tz=tz)
 		} else if (format == "yearmonths") {
 			y <- as.integer(format(d, "%Y"))
 			y + (as.integer(format(d, "%m"))-1)/12
