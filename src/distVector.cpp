@@ -1375,8 +1375,15 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 		std::vector<double> d(p.size(), dist);
 		SpatVector b = p.point_buffer(d, quadsegs, true, false);
 		if (b.size() <= p.size()) {
-			SpatGeom g = hullify(b, ispol);
-			tmp.addGeom(g);
+			SpatExtent e = b.extent;
+			if ((e.xmin > -180) || (e.xmax < 180)) {
+				SpatGeom g = hullify(b, ispol);
+				tmp.addGeom(g);
+			} else {
+				b = b.aggregate(true);
+				b = b.remove_holes();
+				tmp.addGeom(b.geoms[0]);				
+			}
 		} else {
 			SpatVector west, east, eastwest;
 			for (size_t j =0; j<b.size(); j++) {
