@@ -315,6 +315,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
+}
 
 \section{XIV. Miscellaneous SpatRaster methods}{
 
@@ -341,7 +342,6 @@ A SpatRasterDataset contains SpatRasters that represent sub-datasets for the sam
 }
 }
 
-
 \section{XVI. SpatRasterCollections}{
 A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the SpatRasters do not need to match each other. 
 
@@ -354,8 +354,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 \code{\link{mosaic}} \tab mosaic (merge with a function for overlapping areas) the members of a SpatRasterCollection\cr
 \code{\link{[}} \tab extract a SpatRaster\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
-}
-}
+}}
 
 
 
