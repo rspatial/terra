@@ -392,13 +392,14 @@
 			graphics::rect(x$lim[1], x$lim[3], x$lim[2], x$lim[4], col=x$background, border=x$box)			
 		}
 	}
+	try(set.clip(x$lim, x$lonlat))
 	if (!x$values) {
-		if (!x$add) try(set.clip(x$lim, x$lonlat))
+		#if (!x$add) try(set.clip(x$lim, x$lonlat))
 		return(x)
 	}
 	if (!x$legend_only) {
-		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], angle = 0, interpolate = x$interpolate)
 		x <- .plot.axes(x)
+		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], angle = 0, interpolate = x$interpolate)
 	}
 	
 	if (x$legend_draw) {
