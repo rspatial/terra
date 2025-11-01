@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-75</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-76</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,14 +34,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-75" id="version-18-75">version 1.8-75<a class="anchor" aria-label="anchor" href="#version-18-75"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-76" id="version-18-76">version 1.8-76<a class="anchor" aria-label="anchor" href="#version-18-76"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-75">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-75"></a></h3>
+<h3 id="bug-fixes-1-8-76">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-76"></a></h3>
 <ul><li>
 <code>plot&lt;SpatRaster&gt;</code> with arguments “break=n” and “breakby=‘cases’” could break if there the number of computed quantile breaks is lower than expected because of duplicates <a href="https://github.com/rspatial/terra/pull/1913" class="external-link">#1913</a> by Bradley W. Compton</li>
 <li>
 <code>buffer&lt;SpatRaster&gt;</code> for lon/lat rasters did not include the non <code>NA</code> cells outside of the buffer distance from the edges as part of the buffer <a href="https://github.com/rspatial/terra/issues/1929" class="external-link">#1929</a> by Márcia Barbosa</li>
 <li>computing dates for years &lt; 1 failed (regression introduced when fixing <a href="https://github.com/rspatial/terra/issues/1896" class="external-link">#1896</a>) <a href="https://github.com/rspatial/terra/issues/1951" class="external-link">#1951</a> by Taras Zakharko</li>
+<li>computing dates for 365 day calendars was not accurate in some cases <a href="https://github.com/rspatial/terra/issues/1951" class="external-link">#1951</a> by Taras Zakharko</li>
 <li>
 <code>values(x[["name"]])&lt;-</code> failed if <code>x</code> had a single layer <a href="https://github.com/rspatial/terra/issues/1944" class="external-link">#1944</a> by Wenbo Lv</li>
 <li>colors specified in a vat.dbf file were no longer extracted due to a change in GDAL <a href="https://github.com/rspatial/terra/issues/1943" class="external-link">#1943</a> by Josh O’Brien</li>
@@ -49,7 +50,7 @@
 <code>buffer&lt;SpatVector&gt;</code> with lon/lat coordinates did not behave well for very large buffers; especially around areas near the dateline <a href="https://github.com/rspatial/terra/issues/1926" class="external-link">#1926</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-75">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-75"></a></h3>
+<h3 id="enhancements-1-8-76">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-76"></a></h3>
 <ul><li>
 <code>plet&lt;SpatRaster&gt;</code> can (again) use a color function returned by <code><a href="https://rstudio.github.io/leaflet/reference/colorNumeric.html" class="external-link">leaflet::colorNumeric</a></code> <a href="https://github.com/rspatial/terra/issues/1904" class="external-link">#1904</a> by Ignacio Marzan</li>
 <li>argument <code>animate&lt;SpatRaster&gt;</code> can now be set to <code>NA</code> to not get a shared legend <a href="https://github.com/rspatial/terra/pull/1909" class="external-link">#1909</a> by Márcia Barbosa</li>
@@ -68,13 +69,15 @@
 <code>subset&lt;SpatVector&gt;</code> now works without a value for argument “subset”, to allow subsetting variables only <a href="https://github.com/rspatial/terra/issues/1953" class="external-link">#1953</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-75">new<a class="anchor" aria-label="anchor" href="#new-1-8-75"></a></h3>
+<h3 id="new-1-8-76">new<a class="anchor" aria-label="anchor" href="#new-1-8-76"></a></h3>
 <ul><li>
 <code>plet&lt;SpatRasterCollection&gt;</code> method</li>
 <li>
 <code>cartogram&lt;SpatRaster&gt;</code> can now return a “circles” (dorling) cartogram <a href="https://github.com/rspatial/terra/issues/1911" class="external-link">#1911</a> by Márcia Barbosa</li>
 <li>
 <code>subset&lt;SpatVector&gt;</code> can now use a Spat object to spatially subset <a href="https://github.com/rspatial/terra/issues/1937" class="external-link">#1937</a> by Márcia Barbosa</li>
+<li>
+<code>plot&lt;SpatRaster&gt;</code> and <code>plot&lt;SpatVector&gt;</code> have new argument “zebra=FALSE”, to create a zebra-box. <a href="https://github.com/rspatial/terra/issues/1956" class="external-link">https://github.com/rspatial/terra/issues/1956</a> by Lucas Salinas Morales</li>
 </ul></div>
 </div>
     <div class="section level2">

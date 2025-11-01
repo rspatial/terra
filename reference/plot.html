@@ -11,7 +11,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-75</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-76</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -185,10 +185,10 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <dd><p>logical. If <code>TRUE</code>, the legend order is reversed</p></dd>
 
   <dt id="arg-grid">grid<a class="anchor" aria-label="anchor" href="#arg-grid"></a></dt>
-<dd><p>logical. If <code>TRUE</code> grid lines are drawn. Their properties such as type and color can be set with the <code>pax</code> argument</p></dd>
+<dd><p>logical. If <code>TRUE</code> grid lines are drawn. Their properties such as type and color can be set with the <code>pax</code> argument. The grid is drawn first such that it is covered by <code>x</code>. See <code><a href="grid.html">add_grid</a></code> to add grid lines on top of the map</p></dd>
 
   <dt id="arg-zebra">zebra<a class="anchor" aria-label="anchor" href="#arg-zebra"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, a "zebra-box" is added to the axes. The width of the zebra-box can be set with additional argument <code>zebra.cex</code></p></dd>
+<dd><p>logical. If <code>TRUE</code>, a "zebra-box" is added to the axes. The width of the zebra-box can be set with additional argument <code>zebra.cex</code>. The colors can be changed with additional argument <code>zebra.col</code></p></dd>
 
   <dt id="arg-nc">nc<a class="anchor" aria-label="anchor" href="#arg-nc"></a></dt>
 <dd><p>positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)</p></dd>
@@ -317,7 +317,7 @@ There is a separate help file for plotting a SpatGraticule or SpatExtent."><meta
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">v</span>, <span class="st">"NAME_2"</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span>, border<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"gray"</span>, <span class="st">"blue"</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">v</span>, <span class="st">"NAME_2"</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span>, border<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"gray"</span>, <span class="st">"blue"</span><span class="op">)</span>, lwd<span class="op">=</span><span class="fl">3</span>, zebra<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">v</span>, <span class="fl">2</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>side<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">6.16</span>, y<span class="op">=</span><span class="fl">50.17</span>, cex<span class="op">=</span><span class="fl">.8</span><span class="op">)</span>, xlim<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">5.7</span>, <span class="fl">6.7</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
