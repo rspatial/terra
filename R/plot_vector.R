@@ -351,6 +351,8 @@ setMethod("dots", signature(x="SpatVector"),
 		if (!is.null(out$background)) {
 			graphics::rect(out$lim[1], out$lim[3], out$lim[2], out$lim[4], col=out$background, border=x$box)
 		}
+	} else {
+		x$zebra <- FALSE
 	}
 	if (isTRUE(out$blank)) return(out)
 	
@@ -392,11 +394,6 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 
 	out <- .plot.axes(out)
-	if (out$zebra) {
-		zebra(width=width, x=out$axs$xat, y=out$axs$yat)
-		out$lim[1:2] <- out$lim[1:2] + c(width[1], -width[1])
-		out$lim[3:4] <- out$lim[3:4] + c(width[2], -width[2])
-	}
 
 	if (out$legend_draw) {
 		if (out$legend_type == "continuous") {
@@ -421,6 +418,13 @@ setMethod("dots", signature(x="SpatVector"),
 			out$legpars <- do.call(.plot.class.legend, out$leg)
 		}
 	}
+
+	if (out$zebra) {
+		zebra(width=width, x=out$axs$xat, y=out$axs$yat)
+		out$lim[1:2] <- out$lim[1:2] + c(width[1], -width[1])
+		out$lim[3:4] <- out$lim[3:4] + c(width[2], -width[2])
+	}
+
 	if (isTRUE(out$box)) { 
 		if (out$clip) {
 			lines(ext(out$lim))	

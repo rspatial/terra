@@ -370,6 +370,7 @@
 
 	if (x$add) {
 		reset.clip()
+		x$zebra <- FALSE
 	} else if (!x$legend_only) {
 		old.mar <- graphics::par()$mar
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
@@ -398,12 +399,6 @@
 	if (!x$legend_only) {
 		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], angle = 0, interpolate = x$interpolate)
 		x <- .plot.axes(x)
-		if (x$zebra) {
-			try(set.clip(x$lim, x$lonlat))
-			zebra(width=width, x=x$axs$xat, y=x$axs$yat)
-			x$lim[1:2] <- x$lim[1:2] + c(width[1], -width[1])
-			x$lim[3:4] <- x$lim[3:4] + c(width[2], -width[2])
-		}		
 	}
 	
 	if (x$legend_draw) {
@@ -430,6 +425,14 @@
 			x$leg$used <- do.call(.plot.class.legend, x$leg)
 		}
 	}
+
+	if (x$zebra) {
+		try(set.clip(x$lim, x$lonlat))
+		zebra(width=width, x=x$axs$xat, y=x$axs$yat)
+		x$lim[1:2] <- x$lim[1:2] + c(width[1], -width[1])
+		x$lim[3:4] <- x$lim[3:4] + c(width[2], -width[2])
+	}		
+
 	if (isTRUE(x$box)) { 
 		if (x$clip) {
 			lines(ext(x$lim))	
