@@ -420,7 +420,7 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 
 	if (out$zebra) {
-		zebra(width=width, x=out$axs$xat, y=out$axs$yat)
+		zebra(width=width, x=out$axs$xat, y=out$axs$yat, col=out$zebra.col)
 		out$lim[1:2] <- out$lim[1:2] + c(width[1], -width[1])
 		out$lim[3:4] <- out$lim[3:4] + c(width[2], -width[2])
 	}
@@ -451,7 +451,8 @@ setMethod("dots", signature(x="SpatVector"),
 .prep.vect.data <- function(x, y, type=NULL, cols=NULL, mar=NULL, legend=TRUE,
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, buffer=TRUE, background=NULL,
-	pax=list(), plg=list(), ext=NULL, grid=FALSE, zebra=FALSE, zebra.cex=1, las=0, sort=TRUE, reverse=FALSE, values=NULL,
+	pax=list(), plg=list(), ext=NULL, grid=FALSE, zebra=FALSE, zebra.cex=1, zebra.col=c("black", "white"), 
+	las=0, sort=TRUE, reverse=FALSE, values=NULL,
 	box=TRUE, xlab="", ylab="", cex.lab=0.8, line.lab=1.5, yaxs="i", xaxs="i", 
 	main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL, 
     sub = "", font.sub=1, cex.sub=0.8*cex.main, line.sub =1.75,  col.sub=col.main, loc.sub=NULL,
@@ -546,6 +547,7 @@ setMethod("dots", signature(x="SpatVector"),
 	out$box <- isTRUE(box)
 	out$zebra <- isTRUE(zebra)
 	out$zebra.cex <- zebra.cex
+	out$zebra.col <- zebra.col
 	
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)

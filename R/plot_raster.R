@@ -429,7 +429,7 @@
 
 	if (x$zebra) {
 		try(set.clip(x$lim, x$lonlat))
-		zebra(width=width, x=x$axs$xat, y=x$axs$yat)
+		zebra(width=width, x=x$axs$xat, y=x$axs$yat, col=x$zebra.col)
 		x$lim[1:2] <- x$lim[1:2] + c(width[1], -width[1])
 		x$lim[3:4] <- x$lim[3:4] + c(width[2], -width[2])
 	}		
@@ -463,7 +463,8 @@
   xlab="", ylab="", cex.lab=0.8, line.lab=1.5, asp=NULL, yaxs="i", xaxs="i", 
   main="", cex.main=1.2, line.main=0.5, font.main=graphics::par()$font.main, col.main = graphics::par()$col.main, loc.main=NULL, 
   sub = "", font.sub=1, cex.sub=0.8*cex.main, line.sub =1.75,  col.sub=col.main, loc.sub=NULL,
-  halo=FALSE, hc="white", hw=0.1, axes=TRUE, box=TRUE, zebra=FALSE, zebra.cex=1, maxcell=500000, buffer=FALSE, clip=TRUE, 
+  halo=FALSE, hc="white", hw=0.1, axes=TRUE, box=TRUE, zebra=FALSE, zebra.cex=1, zebra.col=c("black", "white"), 
+  maxcell=500000, buffer=FALSE, clip=TRUE, 
   # for rgb 
   stretch=NULL, scale=NULL, bgalpha=NULL, zlim=NULL, zcol=NULL, overview=NULL, 
 #catch and kill
@@ -633,6 +634,7 @@
 	out$box <- isTRUE(box)
 	out$zebra <- isTRUE(zebra)
 	out$zebra.cex <- zebra.cex
+	out$zebra.col <- zebra.col
 	
 #	if (!is.null(out$leg$loc)) {
 #		out$leg$x <- out$leg$loc
