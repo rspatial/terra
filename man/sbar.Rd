@@ -10,7 +10,8 @@ Add a scale bar to a map
 
 \usage{
 sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
-	adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, halo=TRUE, ...)
+	adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, halo=TRUE,
+	col="black", fill=c("black", "white"), border="black", ...)
 }
 
 \arguments{
@@ -27,6 +28,9 @@ sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 \item{ticks}{logical or numeric. If not \code{FALSE}, tick marks are added to a "line" scale bar. The length of the tick marks can be specified}
 \item{scaleby}{numeric. If \code{labels} is not provided. The labels are divided by this number. For example, use 1000 to go from m to km}
 \item{halo}{logical. If \code{TRUE} the "line" type scale bar gets a white background}
+\item{col}{the font color for the labels}
+\item{fill}{the fill color for the bar}
+\item{border}{the color of the border around the bar}
 \item{...}{graphical arguments to be passed to other methods }
 }
 
