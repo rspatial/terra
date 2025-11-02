@@ -107,7 +107,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   \item{sort}{logical. If \code{TRUE} legends with categorical values are sorted. If \code{x} is a \code{SpatVector} you can also supply a vector of the unique values, in the order in which you want them to appear in the legend}
   \item{reverse}{logical. If \code{TRUE}, the legend order is reversed}
   \item{grid}{logical. If \code{TRUE} grid lines are drawn. Their properties such as type and color can be set with the \code{pax} argument. The grid is drawn first such that it is covered by \code{x}. See \code{\link{add_grid}} to add grid lines on top of the map}
-  \item{zebra}{logical. If \code{TRUE}, a "zebra-box" is added to the axes. The width of the zebra-box can be set with additional argument \code{zebra.cex}. The colors can be changed with additional argument \code{zebra.col}}  
+  \item{zebra}{logical. If \code{TRUE} a "zebra-box" is added to the axes (ignored when \code{add=TRUE}). The width of the zebra-box can be set with additional argument \code{zebra.cex}. The colors can be changed with additional argument \code{zebra.col}}  
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
   \item{main}{character. Main plot titles (one for each layer to be plotted). You can use arguments \code{cex.main}, \code{font.main}, \code{col.main} to change the appearance; and \code{loc.main} to change the location of the main title (either two coordinates, or a character value such as "topleft"). You can also use \code{sub=""} for a subtitle. See \code{\link{title}}}
