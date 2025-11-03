@@ -1491,6 +1491,9 @@ SpatRaster SpatRaster::mask(SpatVector &x, bool inverse, double updatevalue, boo
 	}
 		
 	if (inverse) {
+		if (opt.names.empty()) {
+			opt.names = getNames();
+		}
 		out = rasterize(x, "", {updatevalue}, NAN, touches, "", false, true, true, opt);
 	} else {
 		SpatOptions topt(opt);
