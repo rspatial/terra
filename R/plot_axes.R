@@ -1,7 +1,7 @@
 
 zebra <- function(cex=1, x=NULL, y=NULL, width=NULL, col=c("black", "white")) {
 
-	clip <- terra:::get.clip()
+	clip <- get.clip()
 	axs <- unlist(clip)[1:4]
 	if (is.null(width)) {
 		width <- rep(min(axs[2]-axs[1], axs[4]-axs[3]) / 100, 2) * cex
@@ -14,10 +14,12 @@ zebra <- function(cex=1, x=NULL, y=NULL, width=NULL, col=c("black", "white")) {
 	}
 	
 	if (is.null(x)) {
-		x = graphics:::.grid.at(1L, NULL, log=FALSE, equilogs=TRUE, axp=par("xaxp"), usr2=par("usr")[1:2])
+		x <- g.grid.at(1L, NULL, axp=graphics::par("xaxp"), usr2=graphics::par("usr")[1:2])
+		#x = graphics::.grid.at(1L, NULL, log=FALSE, equilogs=TRUE, axp=par("xaxp"), usr2=par("usr")[1:2])
 	} 
 	if (is.null(y)) {
-		y = graphics:::.grid.at(2L, NULL, log=FALSE, equilogs=TRUE, axp=par("yaxp"), usr2=par("usr")[1:2])
+		y <- g.grid.at(2L, NULL, axp=graphics::par("yaxp"), usr2=graphics::par("usr")[1:2])
+		#y = graphics:::.grid.at(2L, NULL, log=FALSE, equilogs=TRUE, axp=par("yaxp"), usr2=par("usr")[1:2])
 	}
 	
 	x <- sort(unique(c(axs[1:2], x)))
@@ -43,7 +45,7 @@ zebra <- function(cex=1, x=NULL, y=NULL, width=NULL, col=c("black", "white")) {
 	e <- c(axs[1] + width[1], axs[2] - width[1], axs[3] + width[2], axs[4] - width[2])
 	lines(ext(e), xpd=TRUE)
 	lines(ext(axs), xpd=TRUE)
-	try(terra:::set.clip(e, clip$geo))
+	try(set.clip(e, clip$geo))
 }
 
 

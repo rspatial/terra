@@ -29,7 +29,7 @@ sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 \item{scaleby}{numeric. If \code{labels} is not provided. The labels are divided by this number. For example, use 1000 to go from m to km}
 \item{halo}{logical. If \code{TRUE} the "line" type scale bar gets a white background}
 \item{col}{the font color for the labels}
-\item{fill}{the fill color for the bar}
+\item{fill}{the fill color(s) for the bar}
 \item{border}{the color of the border around the bar}
 \item{...}{graphical arguments to be passed to other methods }
 }

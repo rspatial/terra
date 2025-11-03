@@ -169,8 +169,8 @@ north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ..
 }
 
 draw_box <- function(xy, d, below, labels, box.col, cex=1, ...){
-	h <- strheight("A", cex=cex)
-	w <- c(strwidth(labels[1], cex=cex), strwidth(labels[length(labels)], cex=cex))
+	h <- graphics::strheight("A", cex=cex)
+	w <- c(graphics::strwidth(labels[1], cex=cex), graphics::strwidth(labels[length(labels)], cex=cex))
 	box.col <- rep(box.col, length.out=2)
 	b <- ifelse(isTRUE(nchar(below) > 1), 3.5, 1.5)
 	e <- c(xy[1]-1.5*w[1], xy[1]+d+w[2], xy[2]-b*h, xy[2]+3*h)
@@ -191,6 +191,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 
 box=FALSE
 box.col=c("white", "black")
+box.adj=c(0,0,0,0)
 
 	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
@@ -248,14 +249,12 @@ box.col=c("white", "black")
 				lines(rbind(c(xtick[i], xy[2]), c(xtick[i], xy[2]+tadd)), lwd=ceiling(lwd/2), xpd=TRUE, ...)
 			}
 		}
-		tadd <- max(strheight("0", cex=1)/5, tadd)
+		tadd <- max(graphics::strheight("0", cex=1)/5, tadd)
 		if (length(labels) == 1) labels =c("", labels, "")
 		add_text(xy[1]+c(0,dd/2,dd),xy[2]+tadd, labels=labels, xpd=xpd, adj=adj, halo=halo, col=col, ...)
 
 	} else if (type == "bar") {
 		stopifnot(divs > 0)
-
-
 		if (missing(adj)) {
 			adj <- c(0.5, -1)
 		}
@@ -268,6 +267,11 @@ box.col=c("white", "black")
 			if (box) draw_box(xy, dd, below, labels, box.col, ...)	
 
 			half <- xy[1] + dd / 2
+			if (halo) {
+				graphics::polygon(c(xy[1], xy[1], xy[1]+dd, xy[1]+dd), 
+								  c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd, border="white", lwd=3)
+			}
+			
 			graphics::polygon(c(xy[1], xy[1], half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col=fill[1], xpd=xpd, border=border)
 			graphics::polygon(c(half, half, xy[1]+dd, xy[1]+dd ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col=fill[2], xpd=xpd, border=border)
 
@@ -297,9 +301,9 @@ box.col=c("white", "black")
 	if (below != "") {
 		adj[2] <- -adj[2]
 		if (type == "line") {
-			xy[2] <- xy[2] - strheight("1")/1.5
+			xy[2] <- xy[2] - graphics::strheight("1")/1.5
 		} else {
-			xy[2] <- xy[2] - strheight("1")/4		
+			xy[2] <- xy[2] - graphics::strheight("1")/4		
 		}
 		add_text(xy[1]+(dd/2), xy[2], xpd=xpd, labels=below, adj=adj, halo=halo, col=col, ...)
 	}
