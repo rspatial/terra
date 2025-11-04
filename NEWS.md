@@ -1,4 +1,4 @@
-# version 1.8-76
+# version 1.8-80
 
 ## bug fixes
 
@@ -9,6 +9,7 @@
 - `values(x[["name"]])<-` failed if `x` had a single layer [#1944](https://github.com/rspatial/terra/issues/1944) by Wenbo Lv
 - colors specified in a vat.dbf file were no longer extracted due to a change in GDAL [#1943](https://github.com/rspatial/terra/issues/1943) by Josh O'Brien
 - `buffer<SpatVector>` with lon/lat coordinates did not behave well for very large buffers; especially around areas near the dateline [#1926](https://github.com/rspatial/terra/issues/1926) by Márcia Barbosa
+- `mask<SpatRaster,SpatVector>` "inverse=TRUE" lost the layernames. [#1959](https://github.com/rspatial/terra/issues/1959) by Alex Ilich
 
 ## enhancements
 
