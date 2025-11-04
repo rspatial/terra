@@ -15,11 +15,11 @@
 #}
 
 RStudio_warning <- function() {
-	if (.terra_environment$RStudio_warned) return()
+	if (isTRUE(.terra_environment$RStudio_warned)) return()
 	if (Sys.getenv("RSTUDIO_USER_IDENTITY") != "") {
-		warn("'click', 'draw', and 'sel' may not work properly\nwith the default RStudio plotting window. See ?click")
+		warn("'click', 'draw', 'zoom', and 'sel' may not work properly\nwith the default RStudio plotting window. See ?click")
 	}
-	.terra_environment$RStudio_warned <- TRUE
+	try(.terra_environment$RStudio_warned <- TRUE, silent=TRUE)
 }
 
 
