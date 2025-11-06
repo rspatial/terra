@@ -47,10 +47,10 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
     GDALDataset *poDS = NULL;
-	if (nrow() == 0) {
-		setError("SpatVector has no records to write");
-		return(poDS);		
-	}
+//	if (nrow() == 0) {
+//		setError("SpatVector has no records to write");
+//		return(poDS);		
+//	}
 
 
 	if (!filename.empty()) {
