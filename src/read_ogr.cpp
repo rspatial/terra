@@ -643,7 +643,10 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 
 	if (as_proxy) {
 		SpatGeom g;
-		if ((wkbgeom == wkbPoint) | (wkbgeom == wkbMultiPoint)) {
+		if (poFeature == NULL) {
+			g = emptyGeom();
+			addGeom(g);
+		} else if ((wkbgeom == wkbPoint) | (wkbgeom == wkbMultiPoint)) {
 			//SpatPart p(0,0);
 			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
 			if (poGeometry != NULL) {
