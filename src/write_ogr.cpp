@@ -19,6 +19,7 @@
 #include <fstream>
 #include "string_utils.h"
 #include <stdexcept>
+#include <stdint.h>
 #include "vecmath.h"
 
 #ifdef useGDAL
@@ -210,7 +211,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				otype = OFTInteger;
 			} else {
 				std::vector<long> rge = vrange(df.getI(i), true);
-				if ((rge[0] >= -2147483648) && (rge[1] <= 2147483648)) {
+				if ((rge[0] >= INT32_MIN) && (rge[1] <= INT32_MAX)) {
 					otype = OFTInteger;
 				} else { 
 					otype = OFTInteger64;
