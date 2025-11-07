@@ -19,6 +19,7 @@
 #include <fstream>
 #include "string_utils.h"
 #include <stdexcept>
+#include <stdint.h>
 #include "vecmath.h"
 
 #ifdef useGDAL
@@ -47,10 +48,10 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
     GDALDataset *poDS = NULL;
-	if (nrow() == 0) {
-		setError("SpatVector has no records to write");
-		return(poDS);		
-	}
+//	if (nrow() == 0) {
+//		setError("SpatVector has no records to write");
+//		return(poDS);		
+//	}
 
 
 	if (!filename.empty()) {
@@ -206,21 +207,29 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		if (tps[i] == "double") {
 			otype = OFTReal;
 		} else if (tps[i] == "long") {
-			std::vector<long> rge = vrange(df.getI(i), true);
-			if ((rge[0] >= -2147483648) && (rge[1] <= 2147483648)) {
+			if (ngeoms == 0) {
 				otype = OFTInteger;
-			} else { 
-				otype = OFTInteger64;
+			} else {
+				std::vector<long> rge = vrange(df.getI(i), true);
+				if ((rge[0] >= INT32_MIN) && (rge[1] <= INT32_MAX)) {
+					otype = OFTInteger;
+				} else { 
+					otype = OFTInteger64;
+				}
 			}
 		} else if (tps[i] == "bool") {
 			otype = OFTInteger;
 			eSubType = OFSTBoolean;
 		} else if (tps[i] == "time") {
-			SpatTime_v tm = df.getT(i);
-			if (tm.step == "days") {
-				otype = OFTDate;				
-			} else {
+			if (ngeoms == 0) {
 				otype = OFTDateTime;
+			} else {
+				SpatTime_v tm = df.getT(i);
+				if (tm.step == "days") {
+					otype = OFTDate;				
+				} else {
+					otype = OFTDateTime;
+				}
 			}
 		} else {
 			otype = OFTString;
@@ -230,7 +239,9 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		oField.SetSubType(eSubType);
 		if (otype == OFTString) {
 			size_t w = 10;
-			w = std::max(w, df.strwidth(i));
+			if (ngeoms > 0) {
+				w = std::max(w, df.strwidth(i));
+			}
 			oField.SetWidth(w); 
 		}
 		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {

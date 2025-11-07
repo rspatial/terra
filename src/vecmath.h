@@ -150,6 +150,7 @@ T vmedian(std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vsum(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
 	T x = v[0];
 	if (narm) {		
 		for (size_t i=1; i<v.size(); i++) {
@@ -177,6 +178,7 @@ T vsum(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vsum2(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
 	T x = v[0] * v[0];
 	if (narm) {		
 		for (size_t i=1; i<v.size(); i++) {
@@ -205,6 +207,7 @@ T vsum2(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vprod(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
 	T x = v[0];
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
@@ -233,6 +236,7 @@ T vprod(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 double vmean(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NAN;
 	double x = 0;
 	unsigned d = 0;
 	if (narm) {
@@ -303,6 +307,7 @@ double vsdpop(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vmin(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
 	T x = v[0];
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
@@ -330,6 +335,7 @@ T vmin(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vfirst(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
 	if (narm) {
 		for (size_t i=0; i<v.size(); i++) {
 			if (!is_NA(v[i])) {
@@ -343,6 +349,7 @@ T vfirst(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vmax(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
 	T x = v[0];
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
@@ -385,6 +392,7 @@ double vwhich(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vwhichmin(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
 	T x = v[0];
 	T out;
 	if (is_NA(x)) {
@@ -427,6 +435,7 @@ T vwhichmin(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vwhichmax(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
 	T x = v[0];
 	T out;
 	if (is_NA(x)) {
@@ -471,6 +480,7 @@ T vwhichmax(const std::vector<T>& v, bool narm) {
 // won't work with bool values (nodata == 0)
 template <typename T>
 T vall(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
 	T x;
 	if (narm) {
 		x = NA<T>::value;
@@ -501,6 +511,7 @@ T vall(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vany(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
 	T x = NA<T>::value;
 	x = 0;
 	if (narm) {
@@ -529,7 +540,9 @@ T vany(const std::vector<T>& v, bool narm) {
 
 template <typename T>
 std::vector<T> vrange(const std::vector<T>& v, bool narm) {
-	
+	if (v.empty()) {
+		return std::vector<T>{ NA<T>::value, NA<T>::value };
+	}
 	std::vector<T> x = { v[0], v[0] };
 
 	if (narm) {
