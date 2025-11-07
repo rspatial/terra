@@ -2,6 +2,8 @@
 
 ## bug fixes
 
+- `writeVector` gave an error with an empty (0-row) SpatVector [#1960](https://github.com/rspatial/terra/pull/1960) by Andrew Gene Brown
+
 ## enhancements
 
 ## new
