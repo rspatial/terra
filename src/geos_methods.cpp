@@ -1211,11 +1211,17 @@ SpatVector SpatVector::delaunay(double tolerance, int onlyEdges, bool constraine
 	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);
 
 	GEOSGeometry* v;
+
+#ifndef GEOS3100
+	v = GEOSDelaunayTriangulation_r(hGEOSCtxt, g[0].get(), tolerance, onlyEdges);
+#else 
 	if (constrained) {
 		v = GEOSConstrainedDelaunayTriangulation_r(hGEOSCtxt, g[0].get());
 	} else {
 		v = GEOSDelaunayTriangulation_r(hGEOSCtxt, g[0].get(), tolerance, onlyEdges);
 	}	
+#endif
+
 	if (v == NULL) {
 		out.setError("GEOS exception");
 		geos_finish(hGEOSCtxt);
