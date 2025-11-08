@@ -1197,31 +1197,27 @@ SpatVector SpatVector::delaunay(double tolerance, int onlyEdges, bool constraine
 #ifndef GEOS350
 	out.setError("GEOS 3.5 required for delaunay");
 	return out;
-#endif 
-
-#ifndef GEOS3100
-	if (constrained) {
-		out.setError("GEOS 3.10 required for constrained delaunay");
-		return out;
-	}
-#endif
-
+#else 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	SpatVector a = aggregate(false);
 	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);
 
 	GEOSGeometry* v;
 
-#ifndef GEOS3100
+ #ifndef GEOS3100
+	if (constrained) {
+		geos_finish(hGEOSCtxt);
+		out.setError("GEOS 3.10 required for constrained delaunay");
+		return out;
+	}
 	v = GEOSDelaunayTriangulation_r(hGEOSCtxt, g[0].get(), tolerance, onlyEdges);
-#else 
+ #else 
 	if (constrained) {
 		v = GEOSConstrainedDelaunayTriangulation_r(hGEOSCtxt, g[0].get());
 	} else {
 		v = GEOSDelaunayTriangulation_r(hGEOSCtxt, g[0].get(), tolerance, onlyEdges);
 	}	
-#endif
-
+ #endif
 	if (v == NULL) {
 		out.setError("GEOS exception");
 		geos_finish(hGEOSCtxt);
@@ -1238,6 +1234,7 @@ SpatVector SpatVector::delaunay(double tolerance, int onlyEdges, bool constraine
 		// associate with attributes
 	}
 	return out;
+#endif
 }
 
 
