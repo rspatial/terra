@@ -6713,9 +6713,8 @@ SpatRaster SpatRaster::combineCats(SpatRaster x, SpatOptions &opt) {
 	//return(out);
 }
 
-
 SpatRaster SpatRaster::intersect(SpatRaster &x, SpatOptions &opt) {
-	
+
 	size_t nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl);
 	out.setValueType(3);
@@ -6737,9 +6736,9 @@ SpatRaster SpatRaster::intersect(SpatRaster &x, SpatOptions &opt) {
 				return(out);
 			}
 			SpatOptions xopt(opt);
-			x = x.crop(e, "near", false, xopt);
+			SpatRaster xc = x.crop(e, "near", false, xopt);
 			SpatRaster y = crop(e, "near", false, xopt);
-			return y.intersect(x, opt);
+			return y.intersect(xc, opt);
 		}
 	}
 
