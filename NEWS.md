@@ -4,6 +4,7 @@
 
 - `writeVector` gave an error with an empty (0-row) SpatVector [#1960](https://github.com/rspatial/terra/pull/1960) by Andrew Gene Brown
 - terra did not compile with GEOS < 3.10 [#1961](https://github.com/rspatial/terra/issues/1961) by Wolfgang Viechtbauer
+- `intersect<SpatRaster,SpatRaster>` changed the extent of the second input SpatRaster if it did not match that of the first [#1964](https://github.com/rspatial/terra/issues/1964) by Greg Schmidt
 
 ## enhancements
 
