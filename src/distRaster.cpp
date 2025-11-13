@@ -1701,14 +1701,14 @@ std::vector<double> do_edge(const std::vector<double> &d, const size_t nrow, con
 	int c[8] = { 0,-1,1,0 , -1,1,-1,1};
 
 	if (!classes) {
-		if (inner) { // inner
+		if (inner) {
 			for (size_t i = 1; i < (nrow-1); i++) {
 				for (size_t j = 1; j < (ncol-1); j++) {
 					size_t cell = i*ncol+j;
 					val[cell] = NAN;
 					if ( !std::isnan(d[cell])) {
 						val[cell] = falseval;
-						for (size_t k=0; k< dirs; k++) {
+						for (size_t k=0; k<dirs; k++) {
 							if ( std::isnan(d[cell + r[k] * ncol + c[k]])) {
 								val[cell] = 1;
 								break;
@@ -1736,26 +1736,46 @@ std::vector<double> do_edge(const std::vector<double> &d, const size_t nrow, con
 			}
 		}
 	} else { // by class
-		for (size_t i = 1; i < (nrow-1); i++) {
-			for (size_t j = 1; j < (ncol-1); j++) {
-				size_t cell = i*ncol+j;
-				double test = d[cell+r[0]*ncol+c[0]];
-				val[cell] = std::isnan(test) ? NAN : falseval;
-				for (size_t k=1; k<dirs; k++) {
-					double v = d[cell+r[k]*ncol +c[k]];
+		if (inner) {
+			for (size_t i = 1; i < (nrow-1); i++) {
+				for (size_t j = 1; j < (ncol-1); j++) {
+					size_t cell = i*ncol+j;
+					double test = d[cell];
 					if (std::isnan(test)) {
-						if (!std::isnan(v)) {
+						val[cell] = NAN;
+					} else {
+						val[cell] = falseval;
+						for (size_t k=0; k<dirs; k++) {
+							double v = d[cell+r[k]*ncol +c[k]];
+							if (std::isnan(v) || (test != v)) {
+								val[cell] = 1;
+								break;																
+							}
+						}
+					}
+				}
+			}
+		} else {
+			for (size_t i = 1; i < (nrow-1); i++) {
+				for (size_t j = 1; j < (ncol-1); j++) {
+					size_t cell = i*ncol+j;
+					double test = d[cell+r[0]*ncol+c[0]];
+					val[cell] = std::isnan(test) ? NAN : falseval;
+					for (size_t k=1; k<dirs; k++) {
+						double v = d[cell+r[k]*ncol +c[k]];
+						if (std::isnan(test)) {
+							if (!std::isnan(v)) {
+								val[cell] = 1;
+								break;
+							}
+						} else if (test != v) {
 							val[cell] = 1;
 							break;
 						}
-					} else if (test != v) {
-						val[cell] = 1;
-						break;
 					}
 				}
 			}
 		}
-
 	}
 	return(val);
 }
