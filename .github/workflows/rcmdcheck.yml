@@ -41,7 +41,16 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install macOS system dependencies
+        if: runner.os == 'macOS'
+        run: brew install gdal proj netcdf tbb
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          packages: rspatial/terra, 
-          extra-packages: any::rcmdcheck, any::sessioninfo
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          error-on: '"error"'
