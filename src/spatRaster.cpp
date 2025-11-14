@@ -1682,29 +1682,33 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 	double yr_inv = nrow() / (extent.ymax - extent.ymin);
 	double xr_inv = ncol() / (extent.xmax - extent.xmin);
 
-	for (size_t i = 0; i < size; i++) {
-		// cannot use trunc here because trunc(-0.1) == 0
-		long row = std::floor((extent.ymax - y[i]) * yr_inv);
-		// points in between rows go to the row below
-		// except for the last row, when they must go up
-		if (y[i] == extent.ymin) {
-			row = nrow()-1 ;
-		}
+	long nr = nrow();
+	long nc = ncol();
 
-		long col = std::floor((x[i] - extent.xmin) * xr_inv);
-		// as for rows above. Go right, except for last column
-		if (x[i] == extent.xmax) {
-			col = ncol() - 1 ;
-		}
-		long nr = nrow();
-		long nc = ncol();
-		if (row < 0 || row >= nr || col < 0 || col >= nc) {
+	for (size_t i = 0; i < size; i++) {
+		if (std::isnan(x[i]) || std::isnan(y[i])) {
 			cells[i] = missing;
 		} else {
-			cells[i] = row * ncol() + col;
+			// cannot use trunc here because trunc(-0.1) == 0
+			long row = std::floor((extent.ymax - y[i]) * yr_inv);
+			// points in between rows go to the row below
+			// except for the last row, when they must go up
+			if (y[i] == extent.ymin) {
+				row = nr-1 ;
+			}
+
+			long col = std::floor((x[i] - extent.xmin) * xr_inv);
+			// as for rows above. Go right, except for last column
+			if (x[i] == extent.xmax) {
+				col = nc - 1 ;
+			}
+			if (row < 0 || row >= nr || col < 0 || col >= nc) {
+				cells[i] = missing;
+			} else {
+				cells[i] = row * ncol() + col;
+			}
 		}
 	}
-
 	return cells;
 }
 
