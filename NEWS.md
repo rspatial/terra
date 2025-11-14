@@ -6,7 +6,7 @@
 - terra did not compile with GEOS < 3.10 [#1961](https://github.com/rspatial/terra/issues/1961) by Wolfgang Viechtbauer
 - `intersect<SpatRaster,SpatRaster>` changed the extent of the second input SpatRaster if it did not match that of the first [#1964](https://github.com/rspatial/terra/issues/1964) by Greg Schmidt
 - `boundaries` with argument "classes=TRUE" ignored argument "inner=TRUE" (it was always FALSE). [#1963](https://github.com/rspatial/terra/issues/1963) by Oleg Zheleznyy
-
+- `cellFromXY` with NA coordinates returned 1 instead of NA on macOS [#1967](https://github.com/rspatial/terra/issues/1967) by John Baums
 
 ## enhancements
 
