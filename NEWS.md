@@ -1,4 +1,4 @@
-# version 1.8-81
+# version 1.8-82
 
 ## bug fixes
 
@@ -11,6 +11,8 @@
 ## enhancements
 
 ## new
+
+`fillHoles` method for SpatRaster
 
 
 # version 1.8-80
