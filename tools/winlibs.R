@@ -2,6 +2,7 @@ if(getRversion() < "3.3.0") {
   stop("Your version of R is too old. This package requires R-3.3.0 or newer on Windows.")
 }
 
+
 # For details see: https://github.com/rwinlib/gdal3
 VERSION <- commandArgs(TRUE)
 # wrong path: if(!file.exists(sprintf("../windows/gdal3-%s/include/gdal/gdal.h", VERSION))){
