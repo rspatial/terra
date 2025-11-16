@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-76</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-82</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,32 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-76" id="version-18-76">version 1.8-76<a class="anchor" aria-label="anchor" href="#version-18-76"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-82" id="version-18-82">version 1.8-82<a class="anchor" aria-label="anchor" href="#version-18-82"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-76">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-76"></a></h3>
+<h3 id="bug-fixes-1-8-82">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-82"></a></h3>
+<ul><li>
+<code>writeVector</code> gave an error with an empty (0-row) SpatVector <a href="https://github.com/rspatial/terra/pull/1960" class="external-link">#1960</a> by Andrew Gene Brown</li>
+<li>terra did not compile with GEOS &lt; 3.10 <a href="https://github.com/rspatial/terra/issues/1961" class="external-link">#1961</a> by Wolfgang Viechtbauer</li>
+<li>
+<code>intersect&lt;SpatRaster,SpatRaster&gt;</code> changed the extent of the second input SpatRaster if it did not match that of the first <a href="https://github.com/rspatial/terra/issues/1964" class="external-link">#1964</a> by Greg Schmidt</li>
+<li>
+<code>boundaries</code> with argument “classes=TRUE” ignored argument “inner=TRUE” (it was always FALSE). <a href="https://github.com/rspatial/terra/issues/1963" class="external-link">#1963</a> by Oleg Zheleznyy</li>
+<li>
+<code>cellFromXY</code> with NA coordinates returned 1 instead of NA on macOS <a href="https://github.com/rspatial/terra/issues/1967" class="external-link">#1967</a> by John Baums</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-1-8-82">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-82"></a></h3>
+</div>
+<div class="section level3">
+<h3 id="new-1-8-82">new<a class="anchor" aria-label="anchor" href="#new-1-8-82"></a></h3>
+<p><code>fillHoles</code> method for SpatRaster</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.8-80" id="version-18-80">version 1.8-80<a class="anchor" aria-label="anchor" href="#version-18-80"></a></h2><p class="text-muted">CRAN release: 2025-11-05</p>
+<p>Released 2025-11-05</p>
+<div class="section level3">
+<h3 id="bug-fixes-1-8-80">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-80"></a></h3>
 <ul><li>
 <code>plot&lt;SpatRaster&gt;</code> with arguments “break=n” and “breakby=‘cases’” could break if there the number of computed quantile breaks is lower than expected because of duplicates <a href="https://github.com/rspatial/terra/pull/1913" class="external-link">#1913</a> by Bradley W. Compton</li>
 <li>
@@ -48,9 +71,11 @@
 <li>colors specified in a vat.dbf file were no longer extracted due to a change in GDAL <a href="https://github.com/rspatial/terra/issues/1943" class="external-link">#1943</a> by Josh O’Brien</li>
 <li>
 <code>buffer&lt;SpatVector&gt;</code> with lon/lat coordinates did not behave well for very large buffers; especially around areas near the dateline <a href="https://github.com/rspatial/terra/issues/1926" class="external-link">#1926</a> by Márcia Barbosa</li>
+<li>
+<code>mask&lt;SpatRaster,SpatVector&gt;</code> “inverse=TRUE” lost the layernames. <a href="https://github.com/rspatial/terra/issues/1959" class="external-link">#1959</a> by Alex Ilich</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-76">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-76"></a></h3>
+<h3 id="enhancements-1-8-80">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-80"></a></h3>
 <ul><li>
 <code>plet&lt;SpatRaster&gt;</code> can (again) use a color function returned by <code><a href="https://rstudio.github.io/leaflet/reference/colorNumeric.html" class="external-link">leaflet::colorNumeric</a></code> <a href="https://github.com/rspatial/terra/issues/1904" class="external-link">#1904</a> by Ignacio Marzan</li>
 <li>argument <code>animate&lt;SpatRaster&gt;</code> can now be set to <code>NA</code> to not get a shared legend <a href="https://github.com/rspatial/terra/pull/1909" class="external-link">#1909</a> by Márcia Barbosa</li>
@@ -69,7 +94,7 @@
 <code>subset&lt;SpatVector&gt;</code> now works without a value for argument “subset”, to allow subsetting variables only <a href="https://github.com/rspatial/terra/issues/1953" class="external-link">#1953</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-76">new<a class="anchor" aria-label="anchor" href="#new-1-8-76"></a></h3>
+<h3 id="new-1-8-80">new<a class="anchor" aria-label="anchor" href="#new-1-8-80"></a></h3>
 <ul><li>
 <code>plet&lt;SpatRasterCollection&gt;</code> method</li>
 <li>
@@ -1934,7 +1959,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
