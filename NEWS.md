@@ -12,7 +12,7 @@
 
 ## new
 
-`fillHoles` method for SpatRaster
+- `fillHoles` method for SpatRaster [#1963](https://github.com/rspatial/terra/issues/1963) by Oleg Zheleznyy
 
 
 # version 1.8-80
