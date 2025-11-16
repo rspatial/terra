@@ -214,6 +214,34 @@ setMethod("fillHoles", signature(x="SpatVector"),
 	}
 )
 
+setMethod("fillHoles", signature(x="SpatRaster"),
+	function(x, nearest=FALSE) {
+		fh <- function(r) {
+			p <- as.polygons(r)
+			h <- fillHoles(p, TRUE)
+			if (nrow(h) > 0) {
+				r <- rasterize(h, r, names(h)[1], update=TRUE)
+			}
+			if (nearest) {
+				a <- aggregate(fillHoles(p))
+				ah <- fillHoles(a, TRUE)
+				if (nrow(ah) > 0) {
+					for (i in 1:nrow(ah)) {
+						cls <- cells(x, ah[i])[,2]
+						xy <- vect(xyFromCell(x, cls), crs=crs(x))
+						r[cls] <- unlist(p[[1]])[nearest(xy, p, centroids=FALSE)$to_id]
+					}
+				}	
+			}	
+			messages(r, "fillHoles")
+		}
+		if (nlyr(x) > 1) {
+			rast(lapply(1:nlyr(x), function(i) fh(x[[i]])))
+		} else {
+			fh(x)
+		}
+	}
+)
 
 
 #setMethod("eliminate", signature(x="SpatVector"),
