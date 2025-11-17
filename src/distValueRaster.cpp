@@ -379,7 +379,7 @@ SpatRaster SpatRaster::distanceValues(double target, double exclude, bool keepNA
 		SpatRaster x;
 		if (std::isnan(target)) {
 			x = replaceValues({exclude}, {target}, 1, false, NAN, false, ops);
-			x = x.edges(false, "inner", 8, 1, ops);
+			x = x.edges(false, false, "inner", 8, 1, ops);
 			p = x.as_points_value(1, ops);
 			if (p.empty()) {
 				return out.init({0}, opt);
@@ -389,18 +389,18 @@ SpatRaster SpatRaster::distanceValues(double target, double exclude, bool keepNA
 
 		} else {
 			x = replaceValues({exclude, target}, {NAN, NAN}, 1, false, NAN, false, ops);
-			x = x.edges(false, "inner", 8, 1, ops);
+			x = x.edges(false, false, "inner", 8, 1, ops);
 			p = x.as_points_value(1, ops);
 			out = replaceValues({NAN, exclude, target}, {target, NAN, NAN}, 1, false, NAN, false, ops);
 		}
 	} else if (!std::isnan(target)) {
 		SpatRaster x = replaceValues({target}, {NAN}, 1, false, NAN, false, ops);
-		x = x.edges(false, "inner", 8, 0, ops);
+		x = x.edges(false, false, "inner", 8, 0, ops);
 		p = x.as_points_value(1, ops);
 		out = replaceValues({NAN, target}, {std::numeric_limits<double>::max(), NAN}, 1, false, NAN, false, ops);
 		setNA = true;
 	} else {
-		out = edges(false, "inner", 8, 0, ops);
+		out = edges(false, false, "inner", 8, 0, ops);
 		p = out.as_points_value(1, ops);
 		std::vector<std::vector<double>> vv = extractXY(p[0], p[1], "", false);
 		return distance_crds_vals(p[0], p[1], vv[0], method, true, setNA, unit, opt);
