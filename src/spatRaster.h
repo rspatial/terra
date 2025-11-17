@@ -702,7 +702,7 @@ class SpatRaster {
 		SpatRaster patches(size_t directions, SpatOptions &opt);
 
 
-		SpatRaster edges(bool classes, std::string type, unsigned directions, double falseval, SpatOptions &opt);
+		SpatRaster edges(bool classes, bool internal, std::string type, unsigned directions, double falseval, SpatOptions &opt);
 		SpatRaster extend(SpatExtent e, std::string snap, double fill, SpatOptions &opt);
 		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, bool small, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
 		std::vector<double> extractVectorFlat(SpatVector v, std::vector<std::string> funs, bool narm, bool touches, bool small, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);

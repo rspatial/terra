@@ -396,7 +396,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 		}
 
 		if (poly) {
-			x  = x.edges(false, "inner", 8, 0, ops);
+			x  = x.edges(false, false, "inner", 8, 0, ops);
 			SpatRaster xp = x.replaceValues({0}, {exclude}, 1, false, NAN, false, ops);
 			p  = xp.as_points(false, true, false, opt);
 		} else {
@@ -489,7 +489,7 @@ SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees
 
 
 	if (poly) {
-		x  = x.edges(false, "inner", 8, 0, ops);
+		x  = x.edges(false, false, "inner", 8, 0, ops);
 		SpatRaster xp = x.replaceValues({0}, {exclude}, 1, false, NAN, false, ops);
 		p  = xp.as_points(false, true, false, opt);
 	} else {
@@ -657,7 +657,7 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 		SpatRaster x;
 		if (std::isnan(target)) {
 			x = replaceValues({exclude}, {target}, 1, false, NAN, false, ops);
-			x = x.edges(false, "inner", 8, 1, ops);
+			x = x.edges(false, false, "inner", 8, 1, ops);
 			p = x.as_points_value(1, ops);
 			if (p.empty()) {
 				return out.init({0}, opt);
@@ -670,18 +670,18 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 			}
 		} else {
 			x = replaceValues({exclude, target}, {NAN, NAN}, 1, false, NAN, false, ops);
-			x = x.edges(false, "inner", 8, 1, ops);
+			x = x.edges(false, false, "inner", 8, 1, ops);
 			p = x.as_points_value(1, ops);
 			out = replaceValues({NAN, exclude, target}, {target, NAN, NAN}, 1, false, NAN, false, ops);
 		}
 	} else if (!std::isnan(target)) {
 		SpatRaster x = replaceValues({target}, {NAN}, 1, false, NAN, false, ops);
-		x = x.edges(false, "inner", 8, 0, ops);
+		x = x.edges(false, false, "inner", 8, 0, ops);
 		p = x.as_points_value(1, ops);
 		out = replaceValues({NAN, target}, {std::numeric_limits<double>::max(), NAN}, 1, false, NAN, false, ops);
 		setNA = true;
 	} else {
-		out = edges(false, "inner", 8, 0, ops);
+		out = edges(false, false, "inner", 8, 0, ops);
 		p = out.as_points_value(1, ops);
 	}
 	if (p.empty()) {
@@ -729,9 +729,9 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double 
 	if (!std::isnan(exclude)) {
 		SpatOptions xopt(opt);
 		SpatRaster x = replaceValues({exclude}, {NAN}, 1, false, NAN, false, xopt);
-		out = x.edges(false, "inner", 8, target, ops);
+		out = x.edges(false, false, "inner", 8, target, ops);
 	} else {
-		out = edges(false, "inner", 8, target, ops);
+		out = edges(false, false, "inner", 8, target, ops);
 	}
 	SpatVector p = out.as_points(false, true, false, opt);
 	if (p.empty()) {
@@ -1692,7 +1692,7 @@ SpatRaster SpatRaster::gridDistance(double m, SpatOptions &opt) {
 }
 
 
-std::vector<double> do_edge(const std::vector<double> &d, const size_t nrow, const size_t ncol, const bool classes, const bool inner, const unsigned dirs, double falseval) {
+std::vector<double> do_edge(const std::vector<double> &d, const size_t nrow, const size_t ncol, const bool classes, const bool internal, const bool inner, const unsigned dirs, double falseval) {
 
 	size_t n = nrow * ncol;
 	std::vector<double> val(n, falseval);
@@ -1717,7 +1717,6 @@ std::vector<double> do_edge(const std::vector<double> &d, const size_t nrow, con
 					}
 				}
 			}
-
 		} else { //outer
 			for (size_t i = 1; i < (nrow-1); i++) {
 				for (size_t j = 1; j < (ncol-1); j++) {
@@ -1736,7 +1735,7 @@ std::vector<double> do_edge(const std::vector<double> &d, const size_t nrow, con
 			}
 		}
 	} else { // by class
-		if (inner) {
+		if (internal) { // no difference between inner and outer
 			for (size_t i = 1; i < (nrow-1); i++) {
 				for (size_t j = 1; j < (ncol-1); j++) {
 					size_t cell = i*ncol+j;
@@ -1747,7 +1746,7 @@ std::vector<double> do_edge(const std::vector<double> &d, const size_t nrow, con
 						val[cell] = falseval;
 						for (size_t k=0; k<dirs; k++) {
 							double v = d[cell+r[k]*ncol +c[k]];
-							if (std::isnan(v) || (test != v)) {
+							if (!std::isnan(v) && (test != v)) {
 								val[cell] = 1;
 								break;																
 							}
@@ -1755,22 +1754,43 @@ std::vector<double> do_edge(const std::vector<double> &d, const size_t nrow, con
 					}
 				}
 			}
-		} else {
-			for (size_t i = 1; i < (nrow-1); i++) {
-				for (size_t j = 1; j < (ncol-1); j++) {
-					size_t cell = i*ncol+j;
-					double test = d[cell+r[0]*ncol+c[0]];
-					val[cell] = std::isnan(test) ? NAN : falseval;
-					for (size_t k=1; k<dirs; k++) {
-						double v = d[cell+r[k]*ncol +c[k]];
+		} else { // not internal
+			if (inner) {
+				for (size_t i = 1; i < (nrow-1); i++) {
+					for (size_t j = 1; j < (ncol-1); j++) {
+						size_t cell = i*ncol+j;
+						double test = d[cell];
 						if (std::isnan(test)) {
-							if (!std::isnan(v)) {
+							val[cell] = NAN;
+						} else {
+							val[cell] = falseval;
+							for (size_t k=0; k<dirs; k++) {
+								double v = d[cell+r[k]*ncol +c[k]];
+								if (std::isnan(v) || (test != v)) {
+									val[cell] = 1;
+									break;																
+								}
+							}
+						}
+					}
+				}
+			} else {
+				for (size_t i = 1; i < (nrow-1); i++) {
+					for (size_t j = 1; j < (ncol-1); j++) {
+						size_t cell = i*ncol+j;
+						double test = d[cell+r[0]*ncol+c[0]];
+						val[cell] = std::isnan(test) ? NAN : falseval;
+						for (size_t k=1; k<dirs; k++) {
+							double v = d[cell+r[k]*ncol +c[k]];
+							if (std::isnan(test)) {
+								if (!std::isnan(v)) {
+									val[cell] = 1;
+									break;
+								}
+							} else if (test != v) {
 								val[cell] = 1;
 								break;
 							}
-						} else if (test != v) {
-							val[cell] = 1;
-							break;
 						}
 					}
 				}
@@ -1819,14 +1839,14 @@ void striprowcol(std::vector<double> &v, size_t nr, size_t nc, bool rows, bool c
 }
 
 
-SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions, double falseval, SpatOptions &opt) {
+SpatRaster SpatRaster::edges(bool classes, bool internal, std::string type, unsigned directions, double falseval, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (nlyr() > 1) {
 		std::vector<size_t> lyr = {0};
 		SpatOptions ops(opt);
 		out = subset(lyr, ops);
-		out = out.edges(classes, type, directions, falseval, opt);
+		out = out.edges(classes, internal, type, directions, falseval, opt);
 		out.addWarning("boundary detection is only done for the first layer");
 		return out;
 	}
@@ -1886,7 +1906,7 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 			}
 		}
 		//before, after,
-		std::vector<double> vv = do_edge(v, out.bs.nrows[i]+2, nc+2, classes, inner, directions, falseval);
+		std::vector<double> vv = do_edge(v, out.bs.nrows[i]+2, nc+2, classes, internal, inner, directions, falseval);
 		striprowcol(vv, out.bs.nrows[i]+2, nc+2, true, true);
 		if (!out.writeBlock(vv, i)) return out;
 	}
@@ -1959,7 +1979,7 @@ SpatRaster SpatRaster::buffer(double d, double background, bool include, SpatOpt
 			out = out.mask(*this, true, NAN, NAN, opt);						
 		}
 	} else {
-		SpatRaster e = edges(false, "inner", 8, NAN, ops);
+		SpatRaster e = edges(false, false, "inner", 8, NAN, ops);
 		SpatVector p = e.as_points(false, true, false, ops);
 		p = p.buffer({d}, 10, "", "", NAN, false);
 		p = p.aggregate(true);
