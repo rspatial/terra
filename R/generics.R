@@ -26,7 +26,6 @@ setMethod("rangeFill", signature(x="SpatRaster"),
 )
 
 
-
 setMethod("weighted.mean", signature(x="SpatRaster", w="numeric"),
 	function(x, w, na.rm=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)

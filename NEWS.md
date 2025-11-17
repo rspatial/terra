@@ -10,9 +10,11 @@
 
 ## enhancements
 
+- `boundaries` has new argument "ignoreNA=FALSE" to only detect boundaries between different classes, not between classes and missing values [#1963](https://github.com/rspatial/terra/issues/1963) by Oleg Zheleznyy
+
 ## new
 
-- `fillHoles` method for SpatRaster [#1963](https://github.com/rspatial/terra/issues/1963) by Oleg Zheleznyy
+- `fillHoles` method for SpatRaster
 
 
 # version 1.8-80
