@@ -8,8 +8,8 @@ with values and cells with `NA`.
 
 ``` r
 # S4 method for class 'SpatRaster'
-boundaries(x, classes=FALSE, inner=TRUE, 
-         directions=8, falseval=0, ignoreNA=FALSE, filename="", ...)
+boundaries(x, classes=FALSE, inner=TRUE, directions=8,
+    falseval=0, ignoreNA=FALSE, filename="", ...)
 ```
 
 ## Arguments
