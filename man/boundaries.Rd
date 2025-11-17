@@ -10,8 +10,8 @@ Detect boundaries (edges). Boundaries are cells that have more than one class in
 }
 
 \usage{
-\S4method{boundaries}{SpatRaster}(x, classes=FALSE, inner=TRUE, 
-         directions=8, falseval=0, ignoreNA=FALSE, filename="", ...)
+\S4method{boundaries}{SpatRaster}(x, classes=FALSE, inner=TRUE, directions=8,
+		falseval=0, ignoreNA=FALSE, filename="", ...)
 }
 
 \arguments{
