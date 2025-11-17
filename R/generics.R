@@ -3,7 +3,6 @@
 # Version 1.0
 # License GPL v3
 
-
 setMethod("is.rotated", signature(x="SpatRaster"),
 	function(x) {
 		x@pntr$is_rotated()
