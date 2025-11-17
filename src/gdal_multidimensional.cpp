@@ -186,7 +186,7 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 
 
 
-#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 4 // && defined(IS_64_BIT)
+#if (GDAL_VERSION_MAJOR > 3) || (GDAL_VERSION_MAJOR == 3 && GDAL_VERSION_MINOR >= 4) // && defined(IS_64_BIT)
 
 
 std::vector<std::string> GetArrayNames(std::shared_ptr<GDALGroup> x, bool filter) {

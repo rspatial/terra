@@ -172,6 +172,7 @@ setMethod("atan_2", signature(y="SpatRaster", x="SpatRaster"),
 )
 
 
+
 setMethod("boundaries", signature(x="SpatRaster"),
 	function(x, classes=FALSE, inner=TRUE, directions=8, falseval=0, ignoreNA=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
