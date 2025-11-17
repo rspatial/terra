@@ -9,7 +9,7 @@ with values and cells with `NA`.
 ``` r
 # S4 method for class 'SpatRaster'
 boundaries(x, classes=FALSE, inner=TRUE, 
-         directions=8, falseval=0, filename="", ...)
+         directions=8, falseval=0, ignoreNA=FALSE, filename="", ...)
 ```
 
 ## Arguments
@@ -39,6 +39,12 @@ boundaries(x, classes=FALSE, inner=TRUE,
   numeric. The value to use for cells that are not a boundary and not
   `NA`
 
+- ignoreNA:
+
+  logical. If `TRUE` and `classes=TRUE` external boundaries (with `NA`
+  cells) are ignored, only boundaries between classes are returned (and
+  the value of argument `inner` is irrelevant)
+
 - filename:
 
   character. Output filename
@@ -50,8 +56,8 @@ boundaries(x, classes=FALSE, inner=TRUE,
 
 ## Value
 
-SpatRaster. Cell values are either 1 (a border) or 0 (not a border), or
-`NA`
+SpatRaster. Cell values are either 1 (a boundary) or 0 (not a boundary),
+or `NA`
 
 ## See also
 

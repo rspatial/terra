@@ -42,7 +42,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">boundaries</span><span class="op">(</span><span class="va">x</span>, classes<span class="op">=</span><span class="cn">FALSE</span>, inner<span class="op">=</span><span class="cn">TRUE</span>, </span>
-<span>         directions<span class="op">=</span><span class="fl">8</span>, falseval<span class="op">=</span><span class="fl">0</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span>         directions<span class="op">=</span><span class="fl">8</span>, falseval<span class="op">=</span><span class="fl">0</span>, ignoreNA<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -61,19 +61,22 @@
 <dt id="arg-directions">directions<a class="anchor" aria-label="anchor" href="#arg-directions"></a></dt>
 <dd><p>integer. Which cells are considered adjacent? Should be 8 (Queen's case) or 4 (Rook's case)</p></dd>
 
-  <dt id="arg-falseval">falseval<a class="anchor" aria-label="anchor" href="#arg-falseval"></a></dt>
+<dt id="arg-falseval">falseval<a class="anchor" aria-label="anchor" href="#arg-falseval"></a></dt>
 <dd><p>numeric. The value to use for cells that are not a boundary and not <code>NA</code></p></dd>
 
-  <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
+<dt id="arg-ignorena">ignoreNA<a class="anchor" aria-label="anchor" href="#arg-ignorena"></a></dt>
+<dd><p>logical. If <code>TRUE</code> and <code>classes=TRUE</code> external boundaries (with <code>NA</code> cells) are ignored, only boundaries between classes are returned (and the value of argument <code>inner</code> is irrelevant)</p></dd>
+
+<dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>character. Output filename</p></dd>
 
-  <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>options for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>SpatRaster. Cell values are either 1 (a border) or 0 (not a border), or <code>NA</code></p>
+    <p>SpatRaster. Cell values are either 1 (a boundary) or 0 (not a boundary), or <code>NA</code></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
