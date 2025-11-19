@@ -27,6 +27,9 @@
   boundaries between different classes, not between classes and missing
   values [\#1963](https://github.com/rspatial/terra/issues/1963) by Oleg
   Zheleznyy
+- `stretch` gains argument “bylayer=TRUE”
+  [\#1970](https://github.com/rspatial/terra/issues/1970) by Michael
+  Sumner
 
 ### new
 

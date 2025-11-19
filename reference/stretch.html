@@ -85,7 +85,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
 
 
 <dt id="arg-maxcell">maxcell<a class="anchor" aria-label="anchor" href="#arg-maxcell"></a></dt>
-<dd><p>positive integer. The size of the regular sample used to compute the histogram</p></dd>
+<dd><p>positive integer. The size of the regular sample used to compute the histogram or quantiles</p></dd>
 
 
 <dt id="arg-bylayer">bylayer<a class="anchor" aria-label="anchor" href="#arg-bylayer"></a></dt>
@@ -109,8 +109,10 @@ For histogram equalization, these arguments are ignored, but you can provide the
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nc<span class="op">=</span><span class="fl">10</span>, nr<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="fu">stretch</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in x@pntr:</span> no applicable method for `@` applied to an object of class "data.frame"</span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sr</span> <span class="op">&lt;-</span> <span class="fu">stretch</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in x@pntr:</span> no applicable method for `@` applied to an object of class "data.frame"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
