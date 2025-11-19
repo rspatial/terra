@@ -17,7 +17,7 @@ function).
 ``` r
 # S4 method for class 'SpatRaster'
 stretch(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA,
-    histeq=FALSE, scale=1, maxcell=500000, filename="", ...)
+    histeq=FALSE, scale=1, maxcell=500000, bylayer=TRUE, filename="", ...)
 ```
 
 ## Arguments
@@ -67,6 +67,10 @@ stretch(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA,
 
   positive integer. The size of the regular sample used to compute the
   histogram
+
+- bylayer:
+
+  logical. If `TRUE` stretching is done for each layer individually
 
 - filename:
 
