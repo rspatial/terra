@@ -1098,7 +1098,7 @@ std::vector<std::vector<double>> SpatRaster::is_in_cells(std::vector<double> m, 
 
 
 
-SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, bool bylayer, SpatOptions &opt) {
+SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, bool bylayer, double maxcell, SpatOptions &opt) {
 
     SpatRaster out = geometry(nlyr(), true, true, true, true);
 
@@ -1157,9 +1157,15 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 				SpatOptions xopt(opt);
 				std::vector<double> v;
 				if (bylayer) {
-					v = getValues(i, xopt);
+					SpatRaster xx = subset({i}, xopt);
+					std::vector<std::vector<double>> vv = xx.sampleRegularValues(maxcell, xopt);
+					v = vv[0];
 				} else {
-					v = getValues(-1, xopt);					
+					std::vector<std::vector<double>> vv = sampleRegularValues(maxcell, xopt);
+					v.reserve(vv.size() * vv[0].size());
+					for (const auto& r : vv) {
+						v.insert(v.end(), r.begin(), r.end());
+					}
 				}
 				q[i] = vquantile(v, probs, true);
 			}

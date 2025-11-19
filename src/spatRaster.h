@@ -802,7 +802,7 @@ class SpatRaster {
 
         std::vector<double> polygon_cells(SpatGeom& g);
 		SpatRaster quantile(std::vector<double> probs, bool narm, SpatOptions &opt);
-		SpatRaster stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, bool bylayer, SpatOptions &opt);
+		SpatRaster stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, bool bylayer, double maxcell, SpatOptions &opt);
 		SpatRaster reverse(SpatOptions &opt);
 
 		SpatRaster range(std::vector<double> add, bool narm, SpatOptions &opt);
