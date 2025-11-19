@@ -15,7 +15,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
 
 \usage{
 \S4method{stretch}{SpatRaster}(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA,
-		histeq=FALSE, scale=1, maxcell=500000, filename="", ...)
+		histeq=FALSE, scale=1, maxcell=500000, bylayer=TRUE, filename="", ...)
 }
 
 \arguments{
@@ -31,6 +31,8 @@ For histogram equalization, these arguments are ignored, but you can provide the
 \item{scale}{numeric. The scale (maximum value) of the output if \code{histeq=TRUE}}
 
 \item{maxcell}{positive integer. The size of the regular sample used to compute the histogram}
+
+\item{bylayer}{logical. If \code{TRUE} stretching is done for each layer individually}
 
 \item{filename}{character. Output filename}
 \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

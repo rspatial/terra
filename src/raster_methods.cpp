@@ -1098,13 +1098,14 @@ std::vector<std::vector<double>> SpatRaster::is_in_cells(std::vector<double> m, 
 
 
 
-SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, SpatOptions &opt) {
+SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, bool bylayer, SpatOptions &opt) {
 
     SpatRaster out = geometry(nlyr(), true, true, true, true);
 
 	if (!hasValues()) return(out);
 
 	size_t nl = nlyr();
+	if (!bylayer) { nl = 1;}
 	recycle(minv, nl);
 	recycle(maxv, nl);
 	recycle(minq, nl);
@@ -1146,11 +1147,20 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 			if ((minq[i]==0) && (maxq[i]==1) && hR[i]) {
 				std::vector<double> rmn = range_min();
 				std::vector<double> rmx = range_max();
-				q[i] = {rmn[i], rmx[i]};
+				if (bylayer) {
+					q[i] = {rmn[i], rmx[i]};
+				} else {
+					q[i] = {vmin(rmn, true), vmax(rmx, true)};					
+				}
 			} else {
 				std::vector<double> probs = {minq[i], maxq[i]};
 				SpatOptions xopt(opt);
-				std::vector<double> v = getValues(i, xopt);
+				std::vector<double> v;
+				if (bylayer) {
+					v = getValues(i, xopt);
+				} else {
+					v = getValues(-1, xopt);					
+				}
 				q[i] = vquantile(v, probs, true);
 			}
 		}
@@ -1166,17 +1176,31 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 		readStop();
 		return out;
 	}
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v;
-		readBlock(v, out.bs, i);
-		size_t nc = out.bs.nrows[i] * ncol();
-		for (size_t j=0; j<v.size(); j++) {
-			size_t lyr = j / nc;
-			v[j] = mult[lyr] * (v[j] - q[lyr][0]);
-			if (v[j] < minv[lyr]) v[j] = minv[lyr];
-			if (v[j] > maxv[lyr]) v[j] = maxv[lyr];
+	if (bylayer) {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v;
+			readBlock(v, out.bs, i);
+			size_t nc = out.bs.nrows[i] * ncol();
+			for (size_t j=0; j<v.size(); j++) {
+				size_t lyr = j / nc;
+				v[j] = mult[lyr] * (v[j] - q[lyr][0]);
+				if (v[j] < minv[lyr]) v[j] = minv[lyr];
+				if (v[j] > maxv[lyr]) v[j] = maxv[lyr];
+			}
+			if (!out.writeBlock(v, i)) return out;
 		}
-		if (!out.writeBlock(v, i)) return out;
+	} else {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v;
+			readBlock(v, out.bs, i);
+			size_t lyr = 0;
+			for (size_t j=0; j<v.size(); j++) {
+				v[j] = mult[lyr] * (v[j] - q[lyr][0]);
+				if (v[j] < minv[lyr]) v[j] = minv[lyr];
+				if (v[j] > maxv[lyr]) v[j] = maxv[lyr];
+			}
+			if (!out.writeBlock(v, i)) return out;
+		}
 	}
 	readStop();
 	out.writeStop();

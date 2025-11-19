@@ -1069,35 +1069,51 @@ setMethod("scale", signature(x="SpatRaster"),
 
 
 setMethod("stretch", signature(x="SpatRaster"),
-	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, histeq=FALSE, scale=1, maxcell=500000, filename="", ...) {
+	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, histeq=FALSE, scale=1, maxcell=500000, bylayer=TRUE, filename="", ...) {
 		if (histeq) {
 			nms <- names(x)
-			if (nlyr(x) > 1) {
-				x <- lapply(1:nlyr(x), function(i) stretch(x[[i]], histeq=TRUE, scale=scale, maxcell=maxcell))
-				x <- rast(x)
-				names(x) <- nms 
-				if (filename != "") {
-					x <- writeRaster(x, filename=filename, ...)
-				}
-				return(x)
-			}
-			scale <- scale[1]
-			if (scale == 1) {
-				ecdfun <- stats::ecdf(na.omit(spatSample(x, maxcell, "regular")[,1]))
-			} else {
-				ecdfun <- function(y) {
-					f <- stats::ecdf(na.omit(spatSample(x, maxcell, "regular")[,1]))
-					f(y) * scale
-				}
-			}
 			wopt <- list(...)
 			if (is.null(wopt$names)) {
 				wopt$names <- nms
 			}
-			app(x, ecdfun, filename=filename, wopt=wopt)
+
+			if (bylayer) {	
+				if (nlyr(x) > 1) {
+					x <- lapply(1:nlyr(x), function(i) stretch(x[[i]], histeq=TRUE, scale=scale, maxcell=maxcell, bylayer=TRUE))
+					x <- rast(x)
+					names(x) <- nms 
+					if (filename != "") {
+						x <- writeRaster(x, filename=filename, ...)
+					}
+					return(x)
+				}
+				scale <- scale[1]
+				if (scale == 1) {
+					ecdfun <- stats::ecdf(na.omit(spatSample(x, maxcell, "regular")[,1]))
+				} else {
+					ecdfun <- function(y) {
+						f <- stats::ecdf(na.omit(spatSample(x, maxcell, "regular")[,1]))
+						f(y) * scale
+					}
+				}
+				app(x, ecdfun, filename=filename, wopt=wopt)
+			} else {
+				scale <- scale[1]
+				ecdfun <- stats::ecdf(na.omit(unlist(spatSample(x, maxcell, "regular"))))
+				if (scale == 1) {
+					app(x, ecdfun, filename=filename, wopt=wopt)
+				} else {
+					out <- app(x, ecdfun) * scale
+					names(out) <- nms
+					if (filename != "") {
+						x <- writeRaster(x, filename=filename, ...)
+					}
+					x
+				}
+			}
 		} else {
 			opt <- spatOptions(filename, ...)
-			x@pntr <- x@pntr$stretch(minv, maxv, minq, maxq, smin, smax, opt)
+			x@pntr <- x@pntr$stretch(minv, maxv, minq, maxq, smin, smax, bylayer, opt)
 			messages(x, "stretch")
 		}
 	}
