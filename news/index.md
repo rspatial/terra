@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.8-82
+## version 1.8-83
 
 ### bug fixes
 
@@ -20,6 +20,9 @@
   Zheleznyy
 - `cellFromXY` with NA coordinates returned 1 instead of NA on macOS
   [\#1967](https://github.com/rspatial/terra/issues/1967) by John Baums
+  `stretch` crahed R with very large rasters
+  [\#1962](https://github.com/rspatial/terra/issues/1962) by Agustin
+  Lobo
 
 ### enhancements
 

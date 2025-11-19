@@ -91,8 +91,6 @@ SpatRaster
 r <- rast(nc=10, nr=10)
 values(r) <- rep(1:25, 4)
 rs <- stretch(r)
-#> Error in x@pntr: no applicable method for `@` applied to an object of class "data.frame"
 s <- c(r, r*2)
 sr <- stretch(s)
-#> Error in x@pntr: no applicable method for `@` applied to an object of class "data.frame"
 ```

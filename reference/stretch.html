@@ -11,7 +11,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-82</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-83</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,10 +109,8 @@ For histogram equalization, these arguments are ignored, but you can provide the
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nc<span class="op">=</span><span class="fl">10</span>, nr<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rs</span> <span class="op">&lt;-</span> <span class="fu">stretch</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in x@pntr:</span> no applicable method for `@` applied to an object of class "data.frame"</span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sr</span> <span class="op">&lt;-</span> <span class="fu">stretch</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in x@pntr:</span> no applicable method for `@` applied to an object of class "data.frame"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
