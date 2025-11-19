@@ -30,7 +30,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
 \item{histeq}{logical. If \code{TRUE} histogram equalization is used instead of linear stretch}
 \item{scale}{numeric. The scale (maximum value) of the output if \code{histeq=TRUE}}
 
-\item{maxcell}{positive integer. The size of the regular sample used to compute the histogram}
+\item{maxcell}{positive integer. The size of the regular sample used to compute the histogram or quantiles}
 
 \item{bylayer}{logical. If \code{TRUE} stretching is done for each layer individually}
 

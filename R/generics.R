@@ -1113,6 +1113,7 @@ setMethod("stretch", signature(x="SpatRaster"),
 			}
 		} else {
 			opt <- spatOptions(filename, ...)
+			x <- spatSample(x, maxcell, "regular")
 			x@pntr <- x@pntr$stretch(minv, maxv, minq, maxq, smin, smax, bylayer, opt)
 			messages(x, "stretch")
 		}
