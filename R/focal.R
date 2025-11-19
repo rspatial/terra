@@ -579,7 +579,11 @@ function(x, w=3, fun="ols", ..., fillvalue=NA, filename="", overwrite=FALSE, wop
 	} else {
 		# need to test
 		X <- matrix(sample(msz * (nl-1), replace=TRUE), ncol=nl-1)
-		out <- fun(1:msz, X)
+		if (weighted) {
+			out <- fun(1:msz, X, weights=weights, ...)
+		} else {
+			out <- fun(1:msz, X, ...)		
+		}
 		outnl <- length(out)
 		if (is.null(wopt$names) && (length(names(out)) == outnl)) {
 			wopt$names <- names(out)
@@ -628,9 +632,9 @@ function(x, w=3, fun="ols", ..., fillvalue=NA, filename="", overwrite=FALSE, wop
 				}
 				pX <- do.call(cbind, xlst)
 				if (weighted) {
-					v[[p]] <- fun(pX, Y[p,], weights)
+					v[[p]] <- fun(pX, Y[p,], weights=weights, ...)
 				} else {
-					v[[p]] <- fun(pX, Y[p,])
+					v[[p]] <- fun(pX, Y[p,], ...)
 				}
 			}
 			v <- t(do.call(cbind, v))
