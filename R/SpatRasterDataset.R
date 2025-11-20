@@ -77,8 +77,11 @@ setMethod("sds", signature(x="list"),
 				r@pntr$add(x[[i]]@pntr, nms[i], "", "", FALSE)
 			} else if (inherits(x[[i]], "SpatRasterDataset")) {
 				y <- as.list(x[[i]])
-				ynms <- names(x[[i]])
-				s <- sapply(y, function(j) r@pntr$add(j@pntr, ynms[j], "", "", FALSE))
+				ynms <- names(x)[i]
+				if (is.null(ynms)) {
+					ynms <- names(x[[i]])
+				}
+				s <- sapply(1:length(y), function(j) r@pntr$add(y[[j]]@pntr, ynms[j], "", "", FALSE))
 			} else {
 				name <- names(x[[i]])
 				cls <- paste(class(x[[i]]), collapse=", ")
@@ -88,6 +91,7 @@ setMethod("sds", signature(x="list"),
 		messages(r, "sds")
 	}
 )
+
 
 
 setMethod("sds", signature(x="array"),
