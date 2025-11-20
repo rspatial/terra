@@ -18,7 +18,7 @@ If the origin and extent of the input and output are the same, you should consid
 
 \arguments{
   \item{x}{SpatRaster to be resampled}
-  \item{y}{SpatRaster with the geometry that \code{x} should be resampled to. You can also provide one or two positive numbers to set the resolution of the output raster}
+  \item{y}{SpatRaster with the geometry that \code{x} should be resampled to. You can also provide one or two positive numbers to set the resolution of the output raster relative to the input raster}
   \item{method}{character. Method used for estimating the new cell values. One of: 
     
 	\code{bilinear}: bilinear interpolation (3x3 cell window). This is used by default if the first layer of \code{x} is not categorical
