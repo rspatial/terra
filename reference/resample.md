@@ -29,7 +29,7 @@ resample(x, y, method, threads=FALSE, by_util=FALSE, filename="", ...)
 
   SpatRaster with the geometry that `x` should be resampled to. You can
   also provide one or two positive numbers to set the resolution of the
-  output raster
+  output raster relative to the input raster
 
 - method:
 
