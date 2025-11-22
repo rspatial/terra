@@ -64,11 +64,14 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
   character vector to specify the colors to use. The default is
   `map.pal("viridis", 100)`. The default can be changed with the
   `terra.pal` option. For example:
-  `options(terra.pal=terrain.colors(10))`. If `x` is a `SpatRaster`, it
-  can also be a `data.frame` with two columns (value, color) to get a
-  "classes" type legend or with three columns (from, to, color) to get
-  an "interval" type legend. If `x` us a SpatVectorCollection, a list
-  can be provided with colors for each SpatVector
+  `options(terra.pal=terrain.colors(10))`. If `x` is a `SpatRaster` it
+  can also be a `data.frame` with two columns (value, color) or a named
+  vector (value=color) for a "classes" type legend or with three columns
+  (from, to, color) for an "interval" type legend. If `x` is a
+  `SpatVector` it can also be a `data.frame` with two columns (value,
+  color) or a named vector (value=color) for a "classes" type legend. If
+  `x` us a SpatVectorCollection, a list can be provided with colors for
+  each SpatVector
 
 - type:
 
