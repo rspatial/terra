@@ -158,6 +158,15 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 
+.apply_alpha <- function(cols, alpha) {
+	if (!is.null(alpha)) {
+		if (alpha[1] < 1 && alpha[1] >= 0) {
+			cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha[1]*255, maxColorValue=255)
+		}
+	}
+	cols
+}
+
 .getCols <- function(n, cols, alpha=NULL) {
 	if (is.null(cols)) { 
 		return(cols)
@@ -174,12 +183,7 @@ setMethod("dots", signature(x="SpatVector"),
 			cols <- rep_len(cols, n)
 		}
 	}
-	if (!is.null(alpha)) {
-		if (alpha[1] < 1 && alpha[1] >= 0) {
-			cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha[1]*255, maxColorValue=255)
-		}
-	}
-	cols
+	.apply_alpha(cols, alpha)
 }
 
 .vect.legend.none <- function(out) {
@@ -202,10 +206,10 @@ setMethod("dots", signature(x="SpatVector"),
 
 	if (NCOL(out$cols) == 2) {
 		i <- match(out$uv, out$cols[,1])
-		out$cols <- out$cols[i,2]
+		out$cols <- .apply_alpha(out$cols[i,2], out$alpha)
 	} else if (!is.null(names(out$cols))) {
 		i <- match(out$uv, names(out$cols))
-		out$cols <- out$cols[i]
+		out$cols <- .apply_alpha(out$cols[i], out$alpha)
 	} else {
 		out$cols <- .getCols(length(out$uv), out$cols, out$alpha)
 	}
