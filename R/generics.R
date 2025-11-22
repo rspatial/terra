@@ -860,7 +860,6 @@ setMethod("resample", signature(x="SpatRaster", y="numeric"),
 		r <- rast(x)
 		res(r) <- res(r) * fact
 		r <- crop(extend(r, c(0,1,0,1)), ext(x), snap="out") 
-
 		if (!hasValues(x)) { 
 			return(r)
 		}	

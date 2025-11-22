@@ -63,7 +63,11 @@ mem_info <- function(x, n=1, print=TRUE) {
 		cat("\n------------------------\n")
 	}
 	names(v) <- c("needed", "available", "memfrac", "chunk_rows", "fits_mem")
-	invisible(v)
+	if (print) {
+		invisible(v)
+	} else {
+		v
+	}
 }
 
 

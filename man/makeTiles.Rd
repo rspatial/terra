@@ -28,7 +28,7 @@ Divide a SpatRaster into "tiles". The cells of another SpatRaster (normally with
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{y}{SpatRaster or SpatVector defining the zones; or numeric specifying the number of rows and columns for each zone (1 or 2 numbers if the number of rows and columns is not the same)}
+  \item{y}{SpatRaster or SpatVector defining the zones; or a positive integer specifying the number of rows and columns for each zone (or 2 numbers to differentiate the number of rows and columns)}
   \item{filename}{character. Output filename template. Filenames will be altered by adding the tile number for each tile}
   \item{extend}{logical. If \code{TRUE}, the extent of \code{y} is expanded to assure that it covers all of \code{x}}
   \item{na.rm}{logical. If \code{TRUE}, tiles with only missing values are ignored}
