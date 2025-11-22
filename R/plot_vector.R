@@ -193,18 +193,25 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 .vect.legend.classes <- function(out) {
-
+	
 	if (isTRUE(out$leg$sort)) {
 		out$uv <- sort(out$uv) # done by legend: decreasing=out$leg$reverse)
 	} else {
 		out$uv <- out$uv[!is.na(out$uv)]
 	}
 
-	ucols <- .getCols(length(out$uv), out$cols, out$alpha)
-
+	if (NCOL(out$cols) == 2) {
+		i <- match(out$uv, out$cols[,1])
+		out$cols <- out$cols[i,2]
+	} else if (!is.null(names(out$cols))) {
+		i <- match(out$uv, names(out$cols))
+		out$cols <- out$cols[i]
+	} else {
+		out$cols <- .getCols(length(out$uv), out$cols, out$alpha)
+	}
+	
 	i <- match(out$v, out$uv)
-	out$cols <- ucols
-	out$main_cols <- ucols[i]
+	out$main_cols <- out$cols[i]
 
 	if (!is.null(out$colNA)) {
 		out$main_cols[is.na(out$main_cols)] <- out$colNA
