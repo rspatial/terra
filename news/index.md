@@ -20,11 +20,12 @@
   Zheleznyy
 - `cellFromXY` with NA coordinates returned 1 instead of NA on macOS
   [\#1967](https://github.com/rspatial/terra/issues/1967) by John Baums
-  `stretch` crahed R with very large rasters
+- `stretch` crashed R with very large rasters
   [\#1962](https://github.com/rspatial/terra/issues/1962) by Agustin
-  Lobo `focalReg` did not handle of custom functions with a weights
-  argument [\#1965](https://github.com/rspatial/terra/issues/1965) by
-  Pedro Tarroso
+  Lobo
+- `focalReg` did not handle of custom functions with a weights argument
+  [\#1965](https://github.com/rspatial/terra/issues/1965) by Pedro
+  Tarroso
 
 ### enhancements
 
