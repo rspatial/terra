@@ -28,9 +28,9 @@ getTileExtents(x, y, extend=FALSE, buffer=0)
 
 - y:
 
-  SpatRaster or SpatVector defining the zones; or numeric specifying the
-  number of rows and columns for each zone (1 or 2 numbers if the number
-  of rows and columns is not the same)
+  SpatRaster or SpatVector defining the zones; or a positive integer
+  specifying the number of rows and columns for each zone (or 2 numbers
+  to differentiate the number of rows and columns)
 
 - filename:
 
@@ -111,10 +111,10 @@ getTileExtents(r, x, buffer=3)
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
-#> [1] "/tmp/RtmptlEBLJ/file20834cda8db6_1.tif"
-#> [2] "/tmp/RtmptlEBLJ/file20834cda8db6_2.tif"
-#> [3] "/tmp/RtmptlEBLJ/file20834cda8db6_3.tif"
-#> [4] "/tmp/RtmptlEBLJ/file20834cda8db6_4.tif"
+#> [1] "/tmp/Rtmp8pstSn/file2064d5a7d40_1.tif"
+#> [2] "/tmp/Rtmp8pstSn/file2064d5a7d40_2.tif"
+#> [3] "/tmp/Rtmp8pstSn/file2064d5a7d40_3.tif"
+#> [4] "/tmp/Rtmp8pstSn/file2064d5a7d40_4.tif"
 
 vrt(ff)
 #> class       : SpatRaster 
@@ -122,8 +122,8 @@ vrt(ff)
 #> resolution  : 3.6, 1.8  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#> source      : spat_20833881ab20_8323_DvggOkjkTOQeAAI.vrt 
-#> name        : spat_20833881ab20_8323_DvggOkjkTOQeAAI 
+#> source      : spat_20642b4c7868_8292_DvggOkjkTOQeAAI.vrt 
+#> name        : spat_20642b4c7868_8292_DvggOkjkTOQeAAI 
 #> min value   :                                      1 
 #> max value   :                                  10000 
 ```

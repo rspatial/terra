@@ -203,6 +203,9 @@
 - [`centroids(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/centroids.md)
   : Centroids
 
+- [`chunk(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/chunk.md)
+  : Make a SpatRaster method memory-safe
+
 - [`clamp(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/clamp.md)
   [`clamp(`*`<numeric>`*`)`](https://rspatial.github.io/terra/reference/clamp.md)
   : Clamp values

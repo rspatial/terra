@@ -22,7 +22,9 @@
   [\#1967](https://github.com/rspatial/terra/issues/1967) by John Baums
   `stretch` crahed R with very large rasters
   [\#1962](https://github.com/rspatial/terra/issues/1962) by Agustin
-  Lobo
+  Lobo `focalReg` did not handle of custom functions with a weights
+  argument [\#1965](https://github.com/rspatial/terra/issues/1965) by
+  Pedro Tarroso
 
 ### enhancements
 
@@ -37,6 +39,7 @@
 ### new
 
 - `fillHoles` method for SpatRaster
+- `chunk` method to run a non-memory-safe SpatRaster function in chunks
 
 ## version 1.8-80
 
