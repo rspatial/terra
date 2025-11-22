@@ -211,9 +211,18 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::str
 	}
 
 	if (!hasvalue) {
-		std::vector<long> vid(nr);
-		std::iota(vid.begin(), vid.end(), 0);
-		cats.d.add_column(vid, "value");
+// more checking would be needed if there are indeed cases
+// where there simply is no index variable which is what is assumed now
+// based on the naming of the variables
+//		std::string name = pRAT->GetNameOfCol(0);
+//		GDALRATFieldType nc_type = pRAT->GetTypeOfCol(0);
+//		if ((nc_type == GFT_Integer) || (nc_type == GFT_Real)) {
+//			good_rat = true;
+//		} else {
+			std::vector<long> vid(nr);
+			std::iota(vid.begin(), vid.end(), 0);
+			cats.d.add_column(vid, "value");
+//		}
 	}
 
 	int first_string = -1;
