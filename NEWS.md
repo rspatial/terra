@@ -7,8 +7,8 @@
 - `intersect<SpatRaster,SpatRaster>` changed the extent of the second input SpatRaster if it did not match that of the first [#1964](https://github.com/rspatial/terra/issues/1964) by Greg Schmidt
 - `boundaries` with argument "classes=TRUE" ignored argument "inner=TRUE" (it was always FALSE). [#1963](https://github.com/rspatial/terra/issues/1963) by Oleg Zheleznyy
 - `cellFromXY` with NA coordinates returned 1 instead of NA on macOS [#1967](https://github.com/rspatial/terra/issues/1967) by John Baums
-`stretch` crahed R with very large rasters [#1962](https://github.com/rspatial/terra/issues/1962) by Agustin Lobo
-`focalReg` did not handle of custom functions with a weights argument [#1965](https://github.com/rspatial/terra/issues/1965) by Pedro Tarroso
+- `stretch` crashed R with very large rasters [#1962](https://github.com/rspatial/terra/issues/1962) by Agustin Lobo
+- `focalReg` did not handle of custom functions with a weights argument [#1965](https://github.com/rspatial/terra/issues/1965) by Pedro Tarroso
 
 
 ## enhancements
