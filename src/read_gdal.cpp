@@ -180,7 +180,7 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::str
 		std::string name = pRAT->GetNameOfCol(i);
 		ratnms.push_back(name);
 		lowercase(name);
-		if (!hasvalue && ((name == "value") || (name == "id") || (name == "ids"))) {
+		if (!hasvalue && ((name == "value") || (name == "pixel value") || (name == "id") || (name == "ids"))) {
 			id.insert(id.begin(), i);
 			hasvalue = true;
 		} else {
