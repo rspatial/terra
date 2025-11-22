@@ -97,7 +97,14 @@ setMethod("is.valid", signature(x="SpatVector"),
 )
 
 setMethod("makeValid", signature(x="SpatVector"),
-	function(x) {
+	function(x, buffer=FALSE) {
+		if (buffer && (geomtype(x) == "polygons")) {
+			xc <- crs(x)
+			crs(x) <- "local"
+			x <- buffer(x, 0)
+			crs(x) <- xc
+			return(x)
+		}
 		x@pntr <- x@pntr$make_valid2()
 		messages(x)
 	}
