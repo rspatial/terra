@@ -258,6 +258,7 @@ setMethod("text", signature(x="SpatVector"),
         if (isTRUE(jitter > 0)) {
 			xy <- jitter(xy, factor = jitter)
 		}
+		labels <- as.character(labels)
 		if (halo && (isTRUE(hw > 0))) {
 			.halo(xy[,1], xy[,2], labels, hc=hc, hw=hw, ...)
 		} else {
