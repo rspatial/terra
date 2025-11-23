@@ -201,6 +201,7 @@
   : Get cell numbers
 
 - [`centroids(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/centroids.md)
+  [`centroids(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/centroids.md)
   : Centroids
 
 - [`chunk(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/chunk.md)

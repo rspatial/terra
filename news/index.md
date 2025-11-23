@@ -48,6 +48,7 @@
 
 - `fillHoles` method for SpatRaster
 - `chunk` method to run a non-memory-safe SpatRaster function in chunks
+- `centroids<SpatRaster>` method
 
 ## version 1.8-80
 
