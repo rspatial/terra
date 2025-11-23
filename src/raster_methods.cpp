@@ -793,6 +793,52 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 }
 
 
+std::vector<double> SpatRaster::centroid(bool weights, SpatOptions &opt) {
+	if (!hasValues()) {
+		SpatExtent e = getExtent();
+		std::vector<double> out = {e.xmin + (e.xmax - e.xmin)/2, e.ymin + (e.ymax - e.ymin)/2};
+		return out;
+	}
+	
+	std::vector<double> out;
+	double x=0, y=0, s=0, n=0;
+
+	BlockSize bs = getBlockSize(opt);
+	if (!readStart()) {
+		return(out);
+	}
+	size_t nc = ncol();
+
+	for (size_t i = 0; i < bs.n; i++) {
+		std::vector<double> v;
+		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
+		size_t base = (bs.row[i] * nc);
+		size_t szv = v.size();
+		for (size_t j=0; j<szv; j++) {
+			if (!std::isnan(v[j])) {
+				std::vector<std::vector<double>> xy = xyFromCell(base+j);
+				if (weights) {
+					double cv = v[j] / 1000.;
+					x += cv * xy[0][0];
+					y += cv * xy[1][0];
+					s += cv;
+				} else {
+					x += xy[0][0]/1000;
+					y += xy[1][0]/1000;
+					n++;
+				}
+			}
+		}
+	}
+	readStop();
+	if (weights) {
+		out = {x/s, y/s};		
+	} else {
+		out = {1000*x/n, 1000*y/n};			
+	}
+	return out;
+}
+
 
 
 SpatRaster SpatRaster::weighted_mean(SpatRaster w, bool narm, SpatOptions &opt) {

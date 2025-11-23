@@ -691,6 +691,8 @@ RCPP_MODULE(spat){
 
 		.method("test", &SpatRaster::writeRasterM)
 
+		.method("centroid", &SpatRaster::centroid)
+
 		//.method("fromFiles", &SpatRaster::fromFiles)
 		.method("has_error", &SpatRaster::hasError)
 		.method("has_warning", &SpatRaster::hasWarning)

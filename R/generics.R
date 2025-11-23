@@ -3,6 +3,22 @@
 # Version 1.0
 # License GPL v3
 
+
+setMethod("centroids", signature(x="SpatRaster"),
+	function(x, weighted=FALSE) {
+		opt <- spatOptions()
+		if (nlyr(x) > 1) {
+			out <- lapply(1:nlyr(x), function(i) centroids(x[[i]], weighted=weighted))
+			do.call(rbind, out)
+		} else {
+			out <- x@pntr$centroid(weighted[1], opt)
+			messages(x, "centroids")
+			data.frame(x=out[1], y=out[2])
+		}
+	}
+)
+
+
 setMethod("is.rotated", signature(x="SpatRaster"),
 	function(x) {
 		x@pntr$is_rotated()

@@ -621,6 +621,8 @@ class SpatRaster {
 		void collapse();
 		
 		SpatRaster rectify(std::string method, SpatRaster aoi, unsigned useaoi, bool snap, SpatOptions &opt);
+
+		std::vector<double> centroid(bool weights, SpatOptions &opt);
 		
         std::vector<double> adjacent(std::vector<double> cells, std::string directions, bool include);
         std::vector<double> adjacentMat(std::vector<double> cells, std::vector<bool> mat, std::vector<size_t> dim, bool include);
