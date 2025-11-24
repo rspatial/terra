@@ -8,7 +8,7 @@ within the mapped area as delineated by the axes.
 ## Usage
 
 ``` r
-add_legend(x, y, ...)
+add_legend(x, y, xpd=xpd, ...)
 ```
 
 ## Arguments
@@ -21,6 +21,10 @@ add_legend(x, y, ...)
 
   The y coordinate to be used to position the legend (is x is also a
   coordinate)
+
+- xpd:
+
+  logical. If `TRUE`, the legend can be added outside the map area
 
 - ...:
 
