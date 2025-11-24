@@ -9,7 +9,7 @@ Wrapper around \code{\link[graphics]{legend}} that allows adding a custom legend
 }
 
 \usage{
-add_legend(x, y, xpd=xpd, ...)
+add_legend(x, y, xpd=TRUE, ...)
 }
 
 

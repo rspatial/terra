@@ -67,6 +67,16 @@ setMethod("ext", signature(x="matrix"),
 	}
 )
 
+setMethod("ext", signature(x="data.frame"),
+	function(x){
+		if ((ncol(x) == 2) && (nrow(x) > 2)) {
+			ext(apply(x, 2, range, na.rm=TRUE))
+		} else {
+			ext(unlist(x))
+		}
+	}
+)
+
 setMethod("ext", signature(x="bbox"),
 	function(x){
 		ext(x[c(1,3,2,4)])

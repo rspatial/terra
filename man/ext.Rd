@@ -16,6 +16,7 @@
 \alias{ext<-,SpatRaster,numeric-method}
 \alias{ext,numeric-method}
 \alias{ext,matrix-method}
+\alias{ext,data.frame-method}
 \alias{ext,missing-method}
 \alias{ext,Spatial-method}
 \alias{ext,Raster-method}
