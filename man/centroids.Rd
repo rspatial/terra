@@ -23,7 +23,7 @@ Or get the (weighted) centroid of the the cells with values (not \code{NA}) of a
 \item{x}{SpatVector}
 \item{inside}{logical. If \code{TRUE} the points returned are guaranteed to be inside the polygons or on the lines, but they are not the true centroids. True centroids may be outside a polygon, for example when a polygon is "bean shaped", and they are unlikely to be on their line}
 \item{weighted}{logical. If \code{TRUE} the centroids are computed as the weighted means of the coordinates of cells with values}
-
+}
 
 \value{SpatVector of points}
 
