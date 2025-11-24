@@ -45,18 +45,18 @@
 
 
 
-add_legend <- function(x, y, ...) {
+add_legend <- function(x, y, xpd=TRUE, ...) {
 	if (inherits(x, "character")) {
 		e <- unlist(get.clip())
 		if (!is.null(e)) {
-			rct <- graphics::legend(x=x, y=y, plot=FALSE, ...)$rect
+			rct <- graphics::legend(x=x, y=y, plot=FALSE, xpd=xpd, ...)$rect
 			xy <- get_legxy(rct, e[1:4], x, NULL)
-			graphics::legend(x=xy[1], y=xy[2], ...)
+			graphics::legend(x=xy[1], y=xy[2], xpd=xpd, ...)
 		} else {
-			graphics::legend(x=x, y=y, ...)
+			graphics::legend(x=x, y=y, xpd=xpd, ...)
 		}
 	} else {
-		graphics::legend(x=x, y=y, ...)
+		graphics::legend(x=x, y=y, xpd=xpd, ...)
 	}
 }
 

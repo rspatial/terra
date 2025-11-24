@@ -9,13 +9,14 @@ Wrapper around \code{\link[graphics]{legend}} that allows adding a custom legend
 }
 
 \usage{
-add_legend(x, y, ...)
+add_legend(x, y, xpd=xpd, ...)
 }
 
 
 \arguments{
   \item{x}{The keyword to be used to position the legend (or the x coordinate)}
   \item{y}{The y coordinate to be used to position the legend (is x is also a coordinate)}
+  \item{xpd}{logical. If \code{TRUE}, the legend can be added outside the map area}
   \item{...}{arguments passed to \code{\link[graphics]{legend}}}
 }
 

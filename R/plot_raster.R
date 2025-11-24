@@ -156,9 +156,9 @@
 	stopifnot(length(out$leg$legend) == length(out$levels))
 	nlevs <- length(levs)
 
-	if (is.vector(out$cols) && !is.null(names(out$cols))) {
-		out$cols <- data.frame(value=as.numeric(names(out$cols)), col=out$cols)
-	} 
+#	if (is.vector(out$cols) && !is.null(names(out$cols))) {
+#		out$cols <- data.frame(value=as.numeric(names(out$cols)), col=out$cols)
+#	} 
 
 	if (NCOL(out$cols) == 2) {
 		#i <- match(Z, as.numeric(levs))

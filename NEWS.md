@@ -1,4 +1,4 @@
-# version 1.8-83
+# version 1.8-85
 
 ## bug fixes
 
@@ -16,7 +16,7 @@
 - `boundaries` has new argument "ignoreNA=FALSE" to only detect boundaries between different classes, not between classes and missing values [#1963](https://github.com/rspatial/terra/issues/1963) by Oleg Zheleznyy
 - `stretch` gains argument "bylayer=TRUE" [#1970](https://github.com/rspatial/terra/issues/1970) by Michael Sumner
 - `makeValid` gains argument `buffer=FALSE` [#1955](https://github.com/rspatial/terra/issues/1955) by Márcia Barbosa
-- argument "col" in `plot<SpatVector>` can now be a named vector or two-column matrix/data.frame to match character/factor values to colors [#1976](https://github.com/rspatial/terra/issues/1976) by Richard Cooper 
+- `plot<SpatVector>` argument "col" can now be a named vector or two-column matrix/data.frame to match character/factor values to colors [#1976](https://github.com/rspatial/terra/issues/1976) by Richard Cooper 
 
 ## new
 
