@@ -34,10 +34,22 @@ centroids(x, weighted=FALSE)
   logical. If `TRUE` the centroids are computed as the weighted means of
   the coordinates of cells with values
 
+## Value
+
 SpatVector of points
 
-f \<- system.file("ex/lux.shp", package="terra") v \<- vect(f) x \<-
-centroids(v) y \<- centroids(v, TRUE)f \<- system.file("ex/elev.tif",
-package="terra") r \<- rast(f) centroids(r)
+## Examples
 
-spatial
+``` r
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+x <- centroids(v)
+y <- centroids(v, TRUE)
+
+
+f <- system.file("ex/elev.tif", package="terra")
+r <- rast(f)
+centroids(r)
+#>          x        y
+#> 1 6.091757 49.77608
+```
