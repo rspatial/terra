@@ -8,7 +8,7 @@ within the mapped area as delineated by the axes.
 ## Usage
 
 ``` r
-add_legend(x, y, xpd=xpd, ...)
+add_legend(x, y, xpd=TRUE, ...)
 ```
 
 ## Arguments

@@ -52,8 +52,9 @@ extract(x, y, count=FALSE)
   function to summarize the extracted data by line or polygon geometry.
   You can use `fun=table` to tabulate raster values for each line or
   polygon geometry. If `weights=TRUE` or `exact=TRUE` only `mean`,
-  `sum`, `min`, `max` and `table` are accepted). Ignored if `y` has
-  point geometry
+  `sum`, `min`, `max` and `table` are accepted — and these functions
+  will consider the fraction of a cell that is covered when computing
+  the mean or the sum). Ignored if `y` has point geometry
 
 - method:
 
@@ -82,14 +83,14 @@ extract(x, y, count=FALSE)
 - weights:
 
   logical. If `TRUE` and `y` has polygons, the approximate fraction of
-  each cell that is covered is returned as well, for example to compute
-  a weighted mean
+  each cell that is covered is returned as well. This changes the effect
+  of argument `fun`
 
 - exact:
 
   logical. If `TRUE` and `y` has polygons, the exact fraction of each
-  cell that is covered is returned as well, for example to compute a
-  weighted mean
+  cell that is covered is returned as well. This changes the effect of
+  argument `fun`
 
 - touches:
 

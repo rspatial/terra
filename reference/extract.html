@@ -75,7 +75,7 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <dd><p>SpatVector (points, lines, or polygons). Alternatively, for points, a 2-column matrix or data.frame (x, y) or (lon, lat). Or a vector with cell numbers</p></dd>
 
 <dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
-<dd><p>function to summarize the extracted data by line or polygon geometry. You can use <code>fun=table</code> to tabulate raster values for each line or polygon geometry. If <code>weights=TRUE</code> or <code>exact=TRUE</code> only <code>mean</code>, <code>sum</code>, <code>min</code>, <code>max</code> and <code>table</code> are accepted). Ignored if <code>y</code> has point geometry</p></dd>
+<dd><p>function to summarize the extracted data by line or polygon geometry. You can use <code>fun=table</code> to tabulate raster values for each line or polygon geometry. If <code>weights=TRUE</code> or <code>exact=TRUE</code> only <code>mean</code>, <code>sum</code>, <code>min</code>, <code>max</code> and <code>table</code> are accepted — and these functions will consider the fraction of a cell that is covered when computing the mean or the sum). Ignored if <code>y</code> has point geometry</p></dd>
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells</p></dd>
@@ -90,10 +90,10 @@ Alternatively, you can use zonal after using rasterize with a SpatVector (this m
 <dd><p>logical. Should an ID column be added? If so, the first column returned has the IDs (record numbers) of <code>y</code></p></dd>
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
-<dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean</p></dd>
+<dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the approximate fraction of each cell that is covered is returned as well. This changes the effect of argument <code>fun</code></p></dd>
 
 <dt id="arg-exact">exact<a class="anchor" aria-label="anchor" href="#arg-exact"></a></dt>
-<dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean</p></dd>
+<dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the exact fraction of each cell that is covered is returned as well. This changes the effect of argument <code>fun</code></p></dd>
 
 <dt id="arg-touches">touches<a class="anchor" aria-label="anchor" href="#arg-touches"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered <code>TRUE</code> when <code>weights=TRUE</code> or <code>exact=TRUE</code></p></dd>
