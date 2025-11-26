@@ -39,7 +39,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
-\S4method{vect}{data.frame}(x, geom=c("lon", "lat"), crs="", keepgeom=FALSE)
+\S4method{vect}{data.frame}(x, geom=NULL, crs="", keepgeom=FALSE)
 
 \S4method{vect}{list}(x, type="points", crs="")
 
@@ -63,7 +63,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \item{proxy}{logical. If \code{TRUE} a SpatVectorProxy is returned}
 \item{what}{character indicating what to read. Either \code{""} for geometries and attributes, or \code{"geoms"} to only read the geometries, \code{"attributes"} to only read the attributes (that are returned as a data.frame)}
 \item{opts}{character. GDAL dataset open options. For example "ENCODING=LATIN1"}
-\item{geom}{character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries}
+\item{geom}{character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries. If \code{NULL} the function will use c("lon", "lat"), c("longitude", "latitude") or c("x", "y") if one of these pairs is in the data}
 \item{keepgeom}{logical. If \code{TRUE} the geom variable(s), e.g. spatial coordinates, is (are) also included in the attributes table}
 }
 

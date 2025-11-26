@@ -391,11 +391,43 @@ setMethod("$<-", "SpatVector",
 
 
 setMethod("vect", signature(x="data.frame"),
-	function(x, geom=c("lon", "lat"), crs="", keepgeom=FALSE) {
-		if (!all(geom %in% names(x))) {
-			error("vect", "the variable name(s) in argument `geom` are not in `x`")
+	function(x, geom=NULL, crs="", keepgeom=FALSE) {
+		if (!is.null(geom)) {
+			if (!all(geom %in% names(x))) {
+				error("vect", "the variable name(s) in argument `geom` are not in `x`")
+			}
+		} else {
+			if (all(c("lon", "lat") %in% names(x))) { 
+				# backwards compatability
+				geom <- c("lon", "lat")
+			} else {
+				nms <- tolower(names(x))
+				m <- rbind(	match(c("longitude", "latitude"), nms),
+							match(c("long", "lat"), nms),								
+							match(c("lon", "lat"), nms),
+							match(c("x", "y"), nms))
+				test <- !apply(is.na(m), 1, any) 
+				if (sum(test) == 1) {
+					m <- m[test, ]
+					geom <- names(x)[m]
+				} else if (sum(test) == 0) {
+					snms <- paste0("^", nms)
+					lon <- which(sapply(snms, function(n) grepl(n, "longitude")))
+					lat <- which(sapply(snms, function(n) grepl(n, "latitude")))
+					if ((length(lon) == 1) && (length(lat) == 1)) {
+						geom <- names(x)[c(lon, lat)]
+					}
+				}
+			}
+			if (is.null(geom)) {
+				error("vect", "geom=NULL and no unique lon/lat or x/y variable pairs detected")
+			}
 		}
-		crs <- character_crs(crs, "vect")
+		if ((crs == "") && grepl("lon", geom[1]) && grepl("lat", geom[2])) {
+			crs <- "+proj=longlat"
+		} else {
+			crs <- character_crs(crs, "vect")
+		}
 		if (length(geom) == 2) {
 			geom <- match(geom[1:2], names(x))
 			if (inherits(x[,geom[1]], "integer")) {
