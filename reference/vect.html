@@ -60,7 +60,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 <span><span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, type<span class="op">=</span><span class="st">"points"</span>, atts<span class="op">=</span><span class="cn">NULL</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'data.frame'</span></span>
-<span><span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, geom<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs<span class="op">=</span><span class="st">""</span>, keepgeom<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, geom<span class="op">=</span><span class="cn">NULL</span>, crs<span class="op">=</span><span class="st">""</span>, keepgeom<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'list'</span></span>
 <span><span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, type<span class="op">=</span><span class="st">"points"</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
@@ -116,7 +116,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 <dd><p>character. GDAL dataset open options. For example "ENCODING=LATIN1"</p></dd>
 
 <dt id="arg-geom">geom<a class="anchor" aria-label="anchor" href="#arg-geom"></a></dt>
-<dd><p>character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries</p></dd>
+<dd><p>character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries. If <code>NULL</code> the function will use c("lon", "lat"), c("longitude", "latitude") or c("x", "y") if one of these pairs is in the data</p></dd>
 
 <dt id="arg-keepgeom">keepgeom<a class="anchor" aria-label="anchor" href="#arg-keepgeom"></a></dt>
 <dd><p>logical. If <code>TRUE</code> the geom variable(s), e.g. spatial coordinates, is (are) also included in the attributes table</p></dd>

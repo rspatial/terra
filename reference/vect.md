@@ -26,7 +26,7 @@ vect(x, layer="", query="", dialect="", extent=NULL, filter=NULL,
 vect(x, type="points", atts=NULL, crs="")
 
 # S4 method for class 'data.frame'
-vect(x, geom=c("lon", "lat"), crs="", keepgeom=FALSE)
+vect(x, geom=NULL, crs="", keepgeom=FALSE)
 
 # S4 method for class 'list'
 vect(x, type="points", crs="")
@@ -114,7 +114,9 @@ vect(x)
 
   character. The field name(s) with the geometry data. Either two names
   for x and y coordinates of points, or a single name for a single
-  column with WKT geometries
+  column with WKT geometries. If `NULL` the function will use c("lon",
+  "lat"), c("longitude", "latitude") or c("x", "y") if one of these
+  pairs is in the data
 
 - keepgeom:
 
