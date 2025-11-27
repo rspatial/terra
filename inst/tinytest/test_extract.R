@@ -318,7 +318,7 @@ pnt <- centroids(v[12], inside = TRUE)
 expect_equal(extract(r, pnt, ID=FALSE)[[1]], 307)
 expect_equal(extract(r_win, pnt, ID=FALSE)[[1]], 307)
 
-xy <- data.frame(lon=c(50,80), lat=c(30, 60))
+xy <- data.frame(x=c(50,80), y=c(30, 60))
 e <- extractRange(s, xy, first=1:2, last=3:2, lyr_fun=sum)
 expect_equal(e, c(522, 67))
 e <- extractRange(s, xy, first=1:2, last=3:2, lyr_fun=sum, ID=T)

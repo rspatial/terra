@@ -417,14 +417,18 @@ setMethod("vect", signature(x="data.frame"),
 					if ((length(lon) == 1) && (length(lat) == 1)) {
 						geom <- names(x)[c(lon, lat)]
 					}
+				} else if (ncol(x) == 2) {
+					geom <- names(x)
 				}
 			}
 			if (is.null(geom)) {
 				error("vect", "geom=NULL and no unique lon/lat or x/y variable pairs detected")
 			}
 		}
-		if ((crs == "") && grepl("lon", geom[1]) && grepl("lat", geom[2])) {
-			crs <- "+proj=longlat"
+		if (crs == "") {
+			if (grepl("lon", geom[1]) && grepl("lat", geom[2])) {
+				crs <- "+proj=longlat"
+			}
 		} else {
 			crs <- character_crs(crs, "vect")
 		}
