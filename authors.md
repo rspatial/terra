@@ -38,12 +38,12 @@ Source:
 [`DESCRIPTION`](https://github.com/rspatial/terra/blob/master/DESCRIPTION)
 
 Hijmans R (2025). *terra: Spatial Data Analysis*. R package version
-1.8-85, <https://rspatial.org/>.
+1.8-86, <https://rspatial.org/>.
 
     @Manual{,
       title = {terra: Spatial Data Analysis},
       author = {Robert J. Hijmans},
       year = {2025},
-      note = {R package version 1.8-85},
+      note = {R package version 1.8-86},
       url = {https://rspatial.org/},
     }
