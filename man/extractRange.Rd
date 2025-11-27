@@ -36,7 +36,7 @@ Extract values from a SpatRaster for a set of locations and a range of layers. T
 
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   
-xy <- data.frame(lon=c(50,80), lat=c(30, 60))
+xy <- data.frame(x=c(50,80), y=c(30, 60))
 extract(r, xy)
 extract(r, xy, layer=c("red", "green"))
 
