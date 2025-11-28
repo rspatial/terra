@@ -1,4 +1,15 @@
-# version 1.8-86
+# version 1.8-88
+
+## bug fixes
+
+## enhancements
+
+## new
+
+
+# version 1.8-87
+
+Released 2025-11-28
 
 ## bug fixes
 

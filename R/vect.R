@@ -417,8 +417,8 @@ setMethod("vect", signature(x="data.frame"),
 					if ((length(lon) == 1) && (length(lat) == 1)) {
 						geom <- names(x)[c(lon, lat)]
 					}
-				} else if (ncol(x) == 2) {
-					geom <- names(x)
+				} else if (ncol(x) <= 2) { 
+					geom <- names(x)				
 				}
 			}
 			if (is.null(geom)) {
