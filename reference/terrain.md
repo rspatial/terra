@@ -88,10 +88,10 @@ Most terrain indices are according to Wilson et al. (2007), as in
 [gdaldem](https://gdal.org/en/latest/programs/gdaldem.html). TRI
 (Terrain Ruggedness Index) is the mean of the absolute differences
 between the value of a cell and its 8 surrounding cells. TPI
-(Topographic Position Index) is the difference between the value of a
-cell and the mean value of its 8 surrounding cells. Roughness is the
-difference between the maximum and the minimum value of a cell and its 8
-surrounding cells.
+(Topographic Position Index, or Bathymetric Position Index if on
+seafloor) is the difference between the value of a cell and the mean
+value of its 8 surrounding cells. Roughness is the difference between
+the maximum and the minimum value of a cell and its 8 surrounding cells.
 
 TRIriley (TRI according to Riley et al., 2007) returns the square root
 of summed squared differences between the value of a cell and its 8

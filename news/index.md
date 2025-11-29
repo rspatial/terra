@@ -1,6 +1,22 @@
 # Changelog
 
-## version 1.8-86
+## version 1.8-88
+
+### bug fixes
+
+`plot<SpatRaster>(add=TRUE)` did not put the legend in the right place
+if the first raster had a larger extent and the number of cells was
+larger than maxcell.
+[\#1979](https://github.com/rspatial/terra/issues/1979) by Mehmet Göktuğ
+Öztürk
+
+### enhancements
+
+### new
+
+## version 1.8-87
+
+Released 2025-11-28
 
 ### bug fixes
 
@@ -635,7 +651,7 @@ Released 2025-01-13
   [\#1584](https://github.com/rspatial/terra/issues/1584) by Hassan
   Masoomi
 - `merge` now has three alternative algorithms
-  [1366](https://github.com/rspatial/terra/issues/1366) by Hassan
+  [\#1366](https://github.com/rspatial/terra/issues/1366) by Hassan
   Masoomi and [\#1650](https://github.com/rspatial/terra/issues/1650) by
   Agustin Lobo
 

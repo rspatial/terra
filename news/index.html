@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-86</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-87</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,23 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-86" id="version-18-86">version 1.8-86<a class="anchor" aria-label="anchor" href="#version-18-86"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-88" id="version-18-88">version 1.8-88<a class="anchor" aria-label="anchor" href="#version-18-88"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-86">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-86"></a></h3>
+<h3 id="bug-fixes-1-8-88">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-88"></a></h3>
+<p><code>plot&lt;SpatRaster&gt;(add=TRUE)</code> did not put the legend in the right place if the first raster had a larger extent and the number of cells was larger than maxcell. <a href="https://github.com/rspatial/terra/issues/1979" class="external-link">#1979</a> by Mehmet Göktuğ Öztürk</p>
+</div>
+<div class="section level3">
+<h3 id="enhancements-1-8-88">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-88"></a></h3>
+</div>
+<div class="section level3">
+<h3 id="new-1-8-88">new<a class="anchor" aria-label="anchor" href="#new-1-8-88"></a></h3>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.8-87" id="version-18-87">version 1.8-87<a class="anchor" aria-label="anchor" href="#version-18-87"></a></h2>
+<p>Released 2025-11-28</p>
+<div class="section level3">
+<h3 id="bug-fixes-1-8-87">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-87"></a></h3>
 <ul><li>
 <code>writeVector</code> gave an error with an empty (0-row) SpatVector <a href="https://github.com/rspatial/terra/pull/1960" class="external-link">#1960</a> by Andrew Gene Brown</li>
 <li>terra did not compile with GEOS &lt; 3.10 <a href="https://github.com/rspatial/terra/issues/1961" class="external-link">#1961</a> by Wolfgang Viechtbauer</li>
@@ -52,7 +66,7 @@
 <code>focalReg</code> did not handle of custom functions with a weights argument <a href="https://github.com/rspatial/terra/issues/1965" class="external-link">#1965</a> by Pedro Tarroso</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-86">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-86"></a></h3>
+<h3 id="enhancements-1-8-87">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-87"></a></h3>
 <ul><li>
 <code>boundaries</code> has new argument “ignoreNA=FALSE” to only detect boundaries between different classes, not between classes and missing values <a href="https://github.com/rspatial/terra/issues/1963" class="external-link">#1963</a> by Oleg Zheleznyy</li>
 <li>
@@ -63,7 +77,7 @@
 <code>plot&lt;SpatVector&gt;</code> argument “col” can now be a named vector or two-column matrix/data.frame to match character/factor values to colors <a href="https://github.com/rspatial/terra/issues/1976" class="external-link">#1976</a> by Richard Cooper</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-86">new<a class="anchor" aria-label="anchor" href="#new-1-8-86"></a></h3>
+<h3 id="new-1-8-87">new<a class="anchor" aria-label="anchor" href="#new-1-8-87"></a></h3>
 <ul><li>
 <code>fillHoles</code> method for SpatRaster</li>
 <li>
@@ -460,7 +474,7 @@
 <li>
 <code>extract</code> with many points on very large rasters was slower in compared to doing the same with “raster” (which uses terra for that!) <a href="https://github.com/rspatial/terra/issues/1584" class="external-link">#1584</a> by Hassan Masoomi</li>
 <li>
-<code>merge</code> now has three alternative algorithms <a href="https://github.com/rspatial/terra/issues/1366" class="external-link">1366</a> by Hassan Masoomi and <a href="https://github.com/rspatial/terra/issues/1650" class="external-link">#1650</a> by Agustin Lobo</li>
+<code>merge</code> now has three alternative algorithms <a href="https://github.com/rspatial/terra/issues/1366" class="external-link">#1366</a> by Hassan Masoomi and <a href="https://github.com/rspatial/terra/issues/1650" class="external-link">#1650</a> by Agustin Lobo</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-10">new<a class="anchor" aria-label="anchor" href="#new-1-8-10"></a></h3>
