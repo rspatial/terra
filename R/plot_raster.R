@@ -367,6 +367,7 @@
 
 .plotit <- function(x) {
 
+
 	if (is.null(x$r)) {
 		x$values = FALSE
 	}
@@ -483,7 +484,27 @@
 	if (add && is.null(ext)) {
 		ext <- unlist(get.clip())[1:4]
 	}
+
+	if (ncell(x) > 1.1 * maxcell) {			
+		if (is.null(overview)) {	
+			if (grepl("https://", tolower(sources(x))[1])) {
+				overview <- TRUE
+			} else {
+				overview <- FALSE
+			}
+		}
 	
+		if (inherits(alpha, "SpatRaster")) {
+			if (nlyr(alpha) > 1) {
+				alpha <- alpha[[1]]
+			}
+#			alpha <- spatSample(alpha, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+			alpha <- sampleRaster(alpha, maxcell, method="regular", replace=FALSE, ext=NULL, warn=FALSE, overview=overview)
+		}
+#		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
+		x <- sampleRaster(x, maxcell, method="regular", replace=FALSE, ext=NULL, warn=FALSE, overview=overview)
+	}
+
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
 			ext <- ext(ext)
@@ -507,28 +528,6 @@
 		w <- intersect(ext(x), ext(e))		
 		window(x) <- out$ext <- w
 	} 
-	if (ncell(x) > 1.1 * maxcell) {
-			
-		if (is.null(overview)) {	
-			if (grepl("https://", tolower(sources(x))[1])) {
-				overview <- TRUE
-			} else {
-				overview <- FALSE
-			}
-		}
-	
-		if (inherits(alpha, "SpatRaster")) {
-			if (nlyr(alpha) > 1) {
-				alpha <- alpha[[1]]
-			}
-#			alpha <- spatSample(alpha, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
-			alpha <- sampleRaster(alpha, maxcell, method="regular", replace=FALSE, ext=NULL, warn=FALSE, overview=overview)
-		}
-#		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE, warn=FALSE)
-		x <- sampleRaster(x, maxcell, method="regular", replace=FALSE, ext=NULL, warn=FALSE, overview=overview)
-
-		out$lim <- out$ext <- as.vector(ext(x))
-	}
 	
 	if (buffer) {
 		dx <- diff(out$lim[1:2]) / 50
