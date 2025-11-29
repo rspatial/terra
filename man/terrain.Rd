@@ -41,7 +41,7 @@ Cells without lower neighboring cells are encoded as zero.
 
 If two cells have the same drop in elevation, a random cell is picked. That is not ideal as it may prevent the creation of connected flow networks. ArcGIS implements the approach of Greenlee (1987) and I might adopt that in the future. 
 
-Most terrain indices are according to Wilson et al. (2007), as in \href{https://gdal.org/en/latest/programs/gdaldem.html}{gdaldem}. TRI (Terrain Ruggedness Index) is the mean of the absolute differences between the value of a cell and its 8 surrounding cells. TPI (Topographic Position Index) is the difference between the value of a cell and the mean value of its 8 surrounding cells. Roughness is the difference between the maximum and the minimum value of a cell and its 8 surrounding cells. 
+Most terrain indices are according to Wilson et al. (2007), as in \href{https://gdal.org/en/latest/programs/gdaldem.html}{gdaldem}. TRI (Terrain Ruggedness Index) is the mean of the absolute differences between the value of a cell and its 8 surrounding cells. TPI (Topographic Position Index, or Bathymetric Position Index if on seafloor) is the difference between the value of a cell and the mean value of its 8 surrounding cells. Roughness is the difference between the maximum and the minimum value of a cell and its 8 surrounding cells. 
 
 TRIriley (TRI according to Riley et al., 2007) returns the square root of summed squared differences between the value of a cell and its 8 surrounding cells. TRIrmsd computes the square root of the mean of the squared differences between these cells. 
 
