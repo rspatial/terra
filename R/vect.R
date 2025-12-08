@@ -319,6 +319,14 @@ setReplaceMethod("[[", c("SpatVector", "character"),
 			value <- value[,1]
 		}
 		name <- i[1]
+
+		nr <- nrow(x)
+		if (length(value) > nr) {
+			error("$<-", paste("replacement has", length(value), "rows, data has", nr))
+		}
+		if ((nr %% length(value)) != 0) {
+			warn("[[<-", "replacement is not a multiple of the number of rows")
+		}
 		value <- rep(value, length.out=nrow(x))
 
 		if (name %in% names(x)) {
