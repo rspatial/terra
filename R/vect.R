@@ -325,7 +325,7 @@ setReplaceMethod("[[", c("SpatVector", "character"),
 			error("$<-", paste("replacement has", length(value), "rows, data has", nr))
 		}
 		if ((nr %% length(value)) != 0) {
-			warn("[[<-", "replacement is not a multiple of the number of rows")
+			warn("$<-", "replacement is not a multiple of the number of rows")
 		}
 		value <- rep(value, length.out=nrow(x))
 
