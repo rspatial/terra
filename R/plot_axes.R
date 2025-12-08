@@ -37,7 +37,7 @@ zebra <- function(cex=1, x=NULL, y=NULL, width=NULL, col=c("black", "white")) {
 			as.polygons(ext(x[i], x[i+1], axs[3], axs[3]+width[2]))
 		}))
 		
-	h1$col <- rep(col, length.out=nrow(v1))
+	h1$col <- rep(col, length.out=nrow(h1))
 	h2 <- shift(h1, 0, axs[4]-axs[3]-width[2])
 	
 	z <- rbind(v1, v2, h1, h2)
