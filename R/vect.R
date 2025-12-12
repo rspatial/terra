@@ -183,6 +183,7 @@ setMethod("vect", signature(x="matrix"),
 		type <- tolower(type)
 		type <- match.arg(tolower(type), c("points", "lines", "polygons"))
 		stopifnot(NCOL(x) > 1)
+		stopifnot(NCOL(x) < 6)
 
 		crs <- character_crs(crs, "vect")
 		p <- methods::new("SpatVector")
