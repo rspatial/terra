@@ -693,10 +693,22 @@ setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"),
 
 setMethod("split", signature(x="SpatVector", f="ANY"),
 	function(x, f) {
-		if (length(f) > 1) {
+		if (inherits(f, "list") || (length(f) > 1)) {
+			if (inherits(f, "list")) {
+				f <- as.data.frame(f)
+				f <- apply(f, 1, function(x) paste(x, collapse="."))
+			} else if ((length(f) < nrow(x)) && inherits(f, "character") && (all(f %in% names(x)))) {
+				f <- apply(x[[f]], 1, function(x) paste(x, collapse="."))
+			}
 			x <- deepcopy(x)
-			x$f <- f
-			f <- "f"
+			if ("f" %in% names(x)) {
+				name <- make.unique(c(names(x), "f"))
+				name <- name[length(name)]
+			} else {
+				name <- "f"
+			}
+			x[[name]] <- f
+			f <- name
 		}
 		x <- messages(x@pntr$split(f), "split")
 		as.list.svc(x)
