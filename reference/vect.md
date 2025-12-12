@@ -5,8 +5,15 @@ Methods to create a SpatVector from a filename or other R object.
 A filename can be for a Shapefile, GeoPackage, GeoJSON, Keyhole Markup
 Language (KML) or any other spatial vector file format.
 
-You can use a data.frame to make a SpatVector of points; or a "geom"
-matrix to make a SpatVector of any supported geometry (see examples and
+You can use a data.frame to make a SpatVector of points. If the
+variables to be used are not specified with argument `geom`, the method
+looks for candidate variables. If variables are found and these appear
+to be longitude/latitude, the "+proj=longlat" crs is assigned unless
+another crs is specified.
+
+You can also use a two-colum matrix to make a SpatVector of points, or a
+"geom" matrix to make a SpatVector of any supported geometry (see
+examples and
 [`geom`](https://rspatial.github.io/terra/reference/geometry.md)).
 
 You can supply a list of SpatVectors to append them into a single
@@ -26,7 +33,7 @@ vect(x, layer="", query="", dialect="", extent=NULL, filter=NULL,
 vect(x, type="points", atts=NULL, crs="")
 
 # S4 method for class 'data.frame'
-vect(x, geom=NULL, crs="", keepgeom=FALSE)
+vect(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=TRUE)
 
 # S4 method for class 'list'
 vect(x, type="points", crs="")
@@ -94,7 +101,9 @@ vect(x)
 
   character. The coordinate reference system in one of the following
   formats: WKT/WKT2, \<authority\>:\<code\>, or PROJ-string notation
-  (see [`crs`](https://rspatial.github.io/terra/reference/crs.md))
+  (see [`crs`](https://rspatial.github.io/terra/reference/crs.md)). If
+  `x` is a data.frame, `crs==NULL`, and `geom` is c("lon", "lat") or a
+  variation thereof, "+proj=longlat" is assigned
 
 - proxy:
 
@@ -114,14 +123,19 @@ vect(x)
 
   character. The field name(s) with the geometry data. Either two names
   for x and y coordinates of points, or a single name for a single
-  column with WKT geometries. If `NULL` the function will use c("lon",
-  "lat"), c("longitude", "latitude") or c("x", "y") if one of these
-  pairs is in the data
+  column with WKT geometries. If `NULL` the function will use or c("x",
+  "y"), c("lon", "lat"), c("longitude", "latitude") and a few variations
+  thereof, if one of these pairs is in the data
 
 - keepgeom:
 
   logical. If `TRUE` the geom variable(s), e.g. spatial coordinates, is
   (are) also included in the attributes table
+
+- quiet:
+
+  logical. If `TRUE` a warning is given when `x` is a data.frame and the
+  values for geom and/or the crs are guessed from the data
 
 ## See also
 
