@@ -400,6 +400,8 @@ setMethod("$<-", "SpatVector",
 
 setMethod("vect", signature(x="data.frame"),
 	function(x, geom=NULL, crs="", keepgeom=FALSE) {
+		
+		guessed <- FALSE; lonlat <- FALSE
 		if (!is.null(geom)) {
 			if (!all(geom %in% names(x))) {
 				error("vect", "the variable name(s) in argument `geom` are not in `x`")
@@ -409,32 +411,41 @@ setMethod("vect", signature(x="data.frame"),
 				# backwards compatability
 				geom <- c("lon", "lat")
 			} else {
-				nms <- tolower(names(x))
-				m <- rbind(	match(c("longitude", "latitude"), nms),
-							match(c("long", "lat"), nms),								
-							match(c("lon", "lat"), nms),
-							match(c("x", "y"), nms))
-				test <- !apply(is.na(m), 1, any) 
-				if (sum(test) == 1) {
-					m <- m[test, ]
-					geom <- names(x)[m]
-				} else if (sum(test) == 0) {
-					snms <- paste0("^", nms)
-					lon <- which(sapply(snms, function(n) grepl(n, "longitude")))
-					lat <- which(sapply(snms, function(n) grepl(n, "latitude")))
-					if ((length(lon) == 1) && (length(lat) == 1)) {
-						geom <- names(x)[c(lon, lat)]
-					}
-				} else if (ncol(x) <= 2) { 
+				if (ncol(x) <= 2) { 
 					geom <- names(x)				
+				} else {
+					nms <- tolower(names(x))
+					m <- rbind(	match(c("longitude", "latitude"), nms),
+								match(c("long", "lat"), nms),								
+								match(c("lon", "lat"), nms),
+								match(c("x", "y"), nms))
+					test <- !apply(is.na(m), 1, any) 
+					if (sum(test) == 1) {
+						m <- m[test, ]
+						geom <- names(x)[m]
+						lonlat <- which(test) < 4
+					} else if (sum(test) == 0) {
+						snms <- paste0("^", nms)
+						lon <- which(sapply(snms, function(n) grepl(n, "longitude")))
+						lat <- which(sapply(snms, function(n) grepl(n, "latitude")))
+						if ((length(lon) == 1) && (length(lat) == 1)) {
+							geom <- names(x)[c(lon, lat)]
+							lonlat <- TRUE
+						} 
+					} 
+					if (is.null(geom) && (ncol(x) == 2) && all(sapply(x, is.numeric))) { 
+						geom <- names(x)
+					}
+					guessed <- TRUE
 				}
 			}
 			if (is.null(geom)) {
 				error("vect", "geom=NULL and no unique lon/lat or x/y variable pairs detected")
 			}
 		}
+		
 		if (crs == "") {
-			if (grepl("lon", geom[1]) && grepl("lat", geom[2])) {
+			if ((guessed && lonlat) || ((!guessed) && grepl("lon", geom[1]) && grepl("lat", geom[2]))) {
 				crs <- "+proj=longlat"
 			}
 		} else {
