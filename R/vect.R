@@ -400,9 +400,9 @@ setMethod("$<-", "SpatVector",
 
 
 setMethod("vect", signature(x="data.frame"),
-	function(x, geom=NULL, crs="", keepgeom=FALSE) {
+	function(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=TRUE) {
 		
-		guessed <- FALSE; lonlat <- FALSE
+		guessed_geom <- FALSE; lonlat <- FALSE
 		if (!is.null(geom)) {
 			if (!all(geom %in% names(x))) {
 				error("vect", "the variable name(s) in argument `geom` are not in `x`")
@@ -426,9 +426,12 @@ setMethod("vect", signature(x="data.frame"),
 						geom <- names(x)[m]
 						lonlat <- which(test) < 4
 					} else if (sum(test) == 0) {
-						snms <- paste0("^", nms)
-						lon <- which(sapply(snms, function(n) grepl(n, "longitude")))
-						lat <- which(sapply(snms, function(n) grepl(n, "latitude")))
+						lon <- which(sapply(nms, function(n) grepl(n, "longitude")))
+						lat <- which(sapply(nms, function(n) grepl(n, "latitude")))
+						if ((length(lon) == 0) && (length(lat) == 0)) {
+							lon <- which(sapply(nms, function(n) grepl(n, "lon")))
+							lat <- which(sapply(nms, function(n) grepl(n, "lat")))
+						}
 						if ((length(lon) == 1) && (length(lat) == 1)) {
 							geom <- names(x)[c(lon, lat)]
 							lonlat <- TRUE
@@ -437,17 +440,21 @@ setMethod("vect", signature(x="data.frame"),
 					if (is.null(geom) && (ncol(x) == 2) && all(sapply(x, is.numeric))) { 
 						geom <- names(x)
 					}
-					guessed <- TRUE
+					guessed_geom <- TRUE
 				}
 			}
 			if (is.null(geom)) {
-				error("vect", "geom=NULL and no unique lon/lat or x/y variable pairs detected")
+				error("vect", "geom=NULL and no unique lon/lat or x/y variable name pairs detected")
 			}
 		}
 		
-		if (crs == "") {
-			if ((guessed && lonlat) || ((!guessed) && grepl("lon", geom[1]) && grepl("lat", geom[2]))) {
+		guessed_crs <- FALSE
+		if (is.null(crs)) {
+			if ((guessed_geom && lonlat) || ((!guessed_geom) && grepl("lon", geom[1], TRUE) && grepl("lat", geom[2], TRUE))) {
+				guessed_crs <- TRUE
 				crs <- "+proj=longlat"
+			} else {
+				crs <- ""
 			}
 		} else {
 			crs <- character_crs(crs, "vect")
@@ -465,7 +472,18 @@ setMethod("vect", signature(x="data.frame"),
 			x <- .makeSpatDF(x)
 
 			p@pntr$setPointsDF(x, geom-1, crs, keepgeom)
-			return(messages(p, "vect"))
+
+			p <- messages(p, "vect")
+			if (!quiet) {
+				if (guessed_geom & guessed_crs) {
+					warn("vect", "guessed geom and crs")
+				} else if (guessed_geom) {
+					warn("vect", "guessed geom")
+				} else if (guessed_crs) {
+					warn("vect", "guessed crs")
+				}			
+			}
+			return(p)
 		} else if (length(geom) == 1) {
 			v <- vect(unlist(x[,geom]), crs=crs)
 			if (!keepgeom) {

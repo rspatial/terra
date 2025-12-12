@@ -26,7 +26,9 @@ Methods to create a SpatVector from a filename or other R object.
 
 A filename can be for a Shapefile, GeoPackage, GeoJSON, Keyhole Markup Language (KML) or any other spatial vector file format. 
 
-You can use a data.frame to make a SpatVector of points; or a "geom" matrix to make a SpatVector of any supported geometry (see examples and \code{\link{geom}}). 
+You can use a data.frame to make a SpatVector of points. If the variables to be used are not specified with argument \code{geom}, the method looks for candidate variables. If variables are found and these appear to be longitude/latitude, the "+proj=longlat" crs is assigned unless another crs is specified.  
+
+You can also use a two-colum matrix to make a SpatVector of points, or a "geom" matrix to make a SpatVector of any supported geometry (see examples and \code{\link{geom}}). 
 
 You can supply a list of SpatVectors to append them into a single SpatVector. 
 
@@ -39,7 +41,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
-\S4method{vect}{data.frame}(x, geom=NULL, crs="", keepgeom=FALSE)
+\S4method{vect}{data.frame}(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=TRUE)
 
 \S4method{vect}{list}(x, type="points", crs="")
 
@@ -59,12 +61,13 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \item{filter}{SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points). It is guaranteed that all features that overlap with the extent of filter will be returned. It can happen that additional geometries are returned}
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons". Ignored if \code{x} is a WKB list}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
-\item{crs}{character. The coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see \code{\link{crs}})}
+\item{crs}{character. The coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see \code{\link{crs}}). If \code{x} is a data.frame, \code{crs==NULL}, and \code{geom} is c("lon", "lat") or a variation thereof, "+proj=longlat" is assigned}
 \item{proxy}{logical. If \code{TRUE} a SpatVectorProxy is returned}
 \item{what}{character indicating what to read. Either \code{""} for geometries and attributes, or \code{"geoms"} to only read the geometries, \code{"attributes"} to only read the attributes (that are returned as a data.frame)}
 \item{opts}{character. GDAL dataset open options. For example "ENCODING=LATIN1"}
-\item{geom}{character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries. If \code{NULL} the function will use c("lon", "lat"), c("longitude", "latitude") or c("x", "y") if one of these pairs is in the data}
+\item{geom}{character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries. If \code{NULL} the function will use or c("x", "y"), c("lon", "lat"), c("longitude", "latitude") and a few variations thereof, if one of these pairs is in the data}
 \item{keepgeom}{logical. If \code{TRUE} the geom variable(s), e.g. spatial coordinates, is (are) also included in the attributes table}
+\item{quiet}{logical. If \code{TRUE} a warning is given when \code{x} is a data.frame and the values for geom and/or the crs are guessed from the data}
 }
 
 \seealso{\code{\link{geom}}, \code{\link{vector_layers}}}
