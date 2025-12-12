@@ -142,6 +142,8 @@ setMethod("dots", signature(x="SpatVector"),
 
 .vplot <- function(x, out, xlab="", ylab="", pch=16, lty=1, lwd=1, ...) {
 
+	reset.clip()
+
 	if (out$leg$geomtype == "points") {
 		points(x, col=out$main_cols, cex=out$cex, pch=pch, ...)
 		if (is.null(out$leg$pch)) out$leg$pch <- pch
