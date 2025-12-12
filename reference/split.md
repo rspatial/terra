@@ -26,9 +26,10 @@ split(x, f, min_node_dist=10000)
 - f:
 
   If `x` is a SpatRaster: a vector of the length `nlyr(x)`. If `x` is a
-  SpatVector: a field (variable) name or a vector of the same length as
-  `x`; or, if `x` is a SpatVector of polygons, a SpatVector of lines or
-  polygons to split the polygon geometries
+  SpatVector: one or more variable names, or a vector of the same length
+  as `x`, or a list of such vectors. If `x` is a SpatVector of polygons,
+  you can also use a SpatVector of lines or polygons to split the
+  polygon geometries
 
 - min_node_dist:
 

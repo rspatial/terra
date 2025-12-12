@@ -12,6 +12,11 @@ larger than maxcell.
 
 ### enhancements
 
+`$<-<SpatVector>` now gives an error if the replacement is longer than
+the data, and a warning if recylcing of a shorter replacement is
+imperfect. [\#1980](https://github.com/rspatial/terra/issues/1980) by
+Margaret Bolton
+
 ### new
 
 ## version 1.8-87
