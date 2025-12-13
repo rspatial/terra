@@ -10,12 +10,12 @@ rotation.
 clearance is the smallest amount by which a vertex could be moved to
 produce an invalid polygon, a non-simple linestring, or a multipoint
 with repeated points. If a geometry has a minimum clearance of 'mc', it
-can be said that:
+can be said that "no two distinct vertices in the geometry are separated
+by less than "mc". No vertex is closer than "mc" to a line segment of
+which it is not an endpoint".
 
-No two distinct vertices in the geometry are separated by less than
-"mc". No vertex is closer than "mc" to a line segment of which it is not
-an endpoint. If the minimum clearance cannot be defined for a geometry
-(such as with a single point), `NA` is returned.
+If the minimum clearance cannot be defined for a geometry (such as with
+a single point), `NA` is returned.
 
 ## Usage
 
