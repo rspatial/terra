@@ -19,8 +19,8 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
 \usage{
 \S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, na.rm=FALSE, 
-    as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=hasValues(x), cells=FALSE, 
-    xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE, 
+    as.raster=FALSE, as.df=TRUE, as.points=FALSE, as.mask=FALSE, values=hasValues(x), 
+	cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE, 
 	exact=FALSE, each=TRUE, ...)
 
 \S4method{spatSample}{SpatVector}(x, size, method="random", strata=NULL, chess="")
@@ -37,6 +37,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
   \item{as.df}{logical. If \code{TRUE}, a data.frame is returned instead of a matrix}
   \item{as.points}{logical. If \code{TRUE}, a SpatVector of points is returned}
+  \item{as.mask}{logical. If \code{TRUE} \code{x} is returned, with its values "masked" by the sample. That is, only cells that are included in the sample retain their values}
   \item{values}{logical. If \code{TRUE} raster cell values are returned}
   \item{cells}{logical. If \code{TRUE}, cell numbers are returned. If \code{method="stratified"} this is always set to \code{TRUE} if \code{xy=FALSE}}
   \item{xy}{logical. If \code{TRUE}, cell coordinates are returned}

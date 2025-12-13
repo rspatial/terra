@@ -876,10 +876,19 @@ sampleRegularKM <- function(x, size, as.df=TRUE, as.points=FALSE, values=TRUE, c
 
 
 setMethod("spatSample", signature(x="SpatRaster"),
-	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=hasValues(x), cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE, exact=FALSE, each=TRUE, ...) {
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, as.mask=FALSE, values=hasValues(x), cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL, exp=5, exhaustive=FALSE, exact=FALSE, each=TRUE,...) {
 
 		if (method == "display") return(sampleRaster(x, size, "regular", FALSE, ext=ext, warn=FALSE, overview=TRUE))
 		method <- match.arg(tolower(method), c("random", "regular", "spread", "stratified", "weights"))
+
+		if (as.mask) {
+			as.raster <- FALSE
+			as.points <- TRUE
+			as.df <- FALSE
+			values <- TRUE
+			xy <- FALSE
+			cells <- FALSE
+		}
 
 		if (!as.points) {
 			if (!(values || cells || xy)) {
@@ -909,26 +918,29 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (lonlat) exact <- FALSE
 
 		if (method == "regular") {
-			sampleRegular(x, size, replace=replace, na.rm=na.rm, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, exact=exact)
+			out <- sampleRegular(x, size, replace=replace, na.rm=na.rm, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, exact=exact)
 		} else if (method == "spread") {
 			sampleRegularKM(x, size, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, ...)
 		} else if (method == "stratified") {
 			if (!is.null(weights)) {  # use old method
-				return( sampleStratified_old(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, values=values, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights, exhaustive=exhaustive, lonlat=lonlat, each=each) )
+				out <- sampleStratified_old(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, values=values, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights, exhaustive=exhaustive, lonlat=lonlat, each=each)
 			} else {  # new method
-				return( sampleStratified2(x, size, replace=replace, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, warn=warn, each=each) )			
+				out <- sampleStratified2(x, size, replace=replace, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, warn=warn, each=each)
 			}
 		} else if (!is.null(weights)) {  # should also implement for random
 			error("spatSample", "argument weights is only used when method='stratified'")
 		} else if (method == "random") {
-			sampleRandom(x, size, replace=replace, na.rm=na.rm, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, warn=warn, exp=exp, exhaustive=exhaustive)
+			out <- sampleRandom(x, size, replace=replace, na.rm=na.rm, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, warn=warn, exp=exp, exhaustive=exhaustive)
 		} else if (method == "weights") {
 			out <- try(sampleWeights(x, size, replace=replace, as.df=as.df, values=values, as.points=as.points, cells=cells, xy=xy, ext=ext) )
 			if (inherits(out, "try-error")) {
 				error("spatSample", "weighted sample failed. Perhaps the data set is too big")
 			}
-			return (out)
 		}
+		if (as.mask) {
+			out <- rasterize(out, rast(x), names(x))
+		}
+		out
 	}
 )
 
