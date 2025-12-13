@@ -12,13 +12,15 @@ Make a cartogram, that is, a map where the area of polygons is made proportional
 }
 
 \usage{
-\S4method{cartogram}{SpatVector}(x, var, type="nc")
+\S4method{cartogram}{SpatVector}(x, var, type="nc", inside=FALSE, exp=1)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{var}{character. A variable name in \code{x}}
   \item{type}{character. Cartogram type, one of "nc" (non-contiguous) or "circles" (dorling)}  
+  \item{inside}{logical to compute the centroids. See \code{centroids}}
+  \item{exp}{positive numeric that can be used to scale the output polygons}
 }
 
 \value{
