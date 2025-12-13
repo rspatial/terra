@@ -74,9 +74,10 @@ setMethod("dots", signature(x="SpatVector"),
 
 .plotPolygons <- function(x, out, lty=1, lwd=1, density=NULL, angle=45, ...) {
 
+
 	n <- nrow(x)
 	if (n == 0) return(out)
-	if ((length(out$main_cols) == 0) && (length(out$leg$border) <= 1) && (length(lty) <= 1) && (length(lwd) <= 1) && (is.null(density))) {
+	if ((length(out$main_cols) == 0) && (length(out$main_border) <= 1) && (length(lty) <= 1) && (length(lwd) <= 1) && (is.null(density))) {
 		if (is.null(out$leg$border)) out$leg$border <- "black"
 		lines(x, col=out$leg$border, lty=lty, lwd=lwd, ...)
 		return(out)
@@ -99,6 +100,9 @@ setMethod("dots", signature(x="SpatVector"),
 
 	if (!is.null(out$main_cols)) {
 		out$main_cols <- rep_len(out$main_cols, n)
+	}
+	if (!is.null(out$main_border)) {
+		out$main_border <- rep_len(out$main_border, n)
 	}
 
 #	g <- geom(x, df=TRUE)
@@ -124,7 +128,7 @@ setMethod("dots", signature(x="SpatVector"),
 		for (i in seq_along(g)) {
 			for (j in seq_along(g[[i]])) {
 				if (any(is.na(g[[i]][[j]]))) next
-				graphics::polypath(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polypath(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=out$main_cols[i], rule = "evenodd", border=out$main_border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
 	} else {
@@ -132,7 +136,7 @@ setMethod("dots", signature(x="SpatVector"),
 			for (j in seq_along(g[[i]])) {
 				if (any(is.na(g[[i]][[j]]))) next
 				graphics::polygon(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
-				graphics::polypath(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=NA, rule="evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polypath(g[[i]][[j]][[1]], g[[i]][[j]][[2]], col=NA, rule="evenodd", border=out$main_border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
 	}
@@ -195,6 +199,7 @@ setMethod("dots", signature(x="SpatVector"),
 	#	out$cols <- .getCols(out$ngeom, out$cols)
 	#}
 	out$main_cols <- out$cols
+	out$main_border <- out$leg$border
 	out
 }
 
@@ -218,6 +223,8 @@ setMethod("dots", signature(x="SpatVector"),
 	
 	i <- match(out$v, out$uv)
 	out$main_cols <- out$cols[i]
+	out$leg$border <- rep_len(out$leg$border, length(out$cols))
+	out$main_border <- out$leg$border[i]
 
 	if (!is.null(out$colNA)) {
 		out$main_cols[is.na(out$main_cols)] <- out$colNA
@@ -279,6 +286,8 @@ setMethod("dots", signature(x="SpatVector"),
 	brks <- seq(out$range[1], out$range[2], length.out = length(out$cols))
 	grps <- cut(out$v, breaks = brks, include.lowest = TRUE)
 	out$main_cols <- out$cols[grps]
+	out$leg$border <- rep_len(out$leg$border, length(out$cols))
+	out$main_border <- out$leg$border[grps]
 
 	out
 }
@@ -340,6 +349,8 @@ setMethod("dots", signature(x="SpatVector"),
 		out$leg$x <- "default"
 	}
 	out$main_cols <- out$cols[out$vcut]
+	out$leg$border <- rep_len(out$leg$border, length(out$cols))
+	out$main_border <- out$leg$border[out$vcut]
 	if (!is.null(out$colNA)) {
 		out$main_cols[is.na(out$main_cols)] <- out$colNA
 	}
@@ -427,7 +438,7 @@ setMethod("dots", signature(x="SpatVector"),
 				} else {
 					out$leg$plotlim <- graphics::par("usr")
 				}
-			}			
+			}
 			out$legpars <- do.call(.plot.class.legend, out$leg)
 		}
 	}

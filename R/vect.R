@@ -411,7 +411,7 @@ setMethod("vect", signature(x="data.frame"),
 			if (all(c("lon", "lat") %in% names(x))) { 
 				# backwards compatability
 				geom <- c("lon", "lat")
-				guessed_geom <- TRUE
+				# guessed_geom <- TRUE	
 			} else {
 				if (ncol(x) <= 2) { 
 					geom <- names(x)				
