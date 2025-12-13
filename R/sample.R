@@ -920,7 +920,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (method == "regular") {
 			out <- sampleRegular(x, size, replace=replace, na.rm=na.rm, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, exact=exact)
 		} else if (method == "spread") {
-			sampleRegularKM(x, size, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, ...)
+			out <- sampleRegularKM(x, size, as.df=as.df, as.points=as.points, values=values, cells=cells, xy=xy, ext=ext, ...)
 		} else if (method == "stratified") {
 			if (!is.null(weights)) {  # use old method
 				out <- sampleStratified_old(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, values=values, xy=xy, ext=ext, warn=warn, exp=exp, weights=weights, exhaustive=exhaustive, lonlat=lonlat, each=each)
