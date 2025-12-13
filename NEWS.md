@@ -1,14 +1,22 @@
-# version 1.8-88
+# version 1.8-89
 
 ## bug fixes
 
-`plot<SpatRaster>(add=TRUE)` did not put the legend in the right place if the first raster had a larger extent and the number of cells was larger than maxcell. [#1979](https://github.com/rspatial/terra/issues/1979) by Mehmet Göktuğ Öztürk
+- `plot<SpatRaster>(add=TRUE)` did not put the legend in the right place if the first raster had a larger extent and the number of cells was larger than maxcell. [#1979](https://github.com/rspatial/terra/issues/1979) by Mehmet Göktuğ Öztürk
+- `plot<SpatVector>(ext=...)` plotted polygons outside plotting region if argument 'col' was used  [#1986](https://github.com/rspatial/terra/issues/1986) by Márcia Barbosa
 
 ## enhancements
 
-`$<-<SpatVector>` now gives an error if the replacement is longer than the data, and a warning if recylcing of a shorter replacement is imperfect. [#1980](https://github.com/rspatial/terra/issues/1980) by Margaret Bolton
+- `vect<data.frame>` has improved guessing of variable names (if argument geom is not supplied) and crs (if that argument is not supplied, and gets argument "quiet=TRUE" that can be set to false to get warnings if either of these is guessed. [#1984](https://github.com/rspatial/terra/issues/1984) and [#1985](https://github.com/rspatial/terra/issues/1985) by Márcia Barbosa
+- `extract<SpatVector>` is now less memory hungry when using argument layers [#1983](https://github.com/rspatial/terra/issues/1983) by Kodi Arfer
+- `split<SpatVector>` now behaves like the data.frame method when using multiple split variables [#1987](https://github.com/rspatial/terra/issues/1987) by WillhKessler
+- `$<-<SpatVector>` now gives an error if the replacement is longer than the data, and a warning if recylcing of a shorter replacement is imperfect. [#1980](https://github.com/rspatial/terra/issues/1980) by Margaret Bolton
+- `cartogram` gets new arguments "inside" and "exp" and better scaling [#1982](https://github.com/rspatial/terra/issues/1982 by Márcia Barbosa
+`spatSample<SpatRaster>` gains argument "as.mask" [#1981](https://github.com/rspatial/terra/issues/1981) by Agustin Lobo
+
 
 ## new
+
 
 
 # version 1.8-87
