@@ -235,17 +235,17 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 					error("extract", "layer should be between 1 and nlyr(x)")
 				}
 			}
-			x <- x[[unique(layer)]]
-			if (is.numeric(layer)) { # Match new layer order
-			  layer <- match(layer, unique(layer))
-			}
+			#x <- x[[unique(layer)]]
+			#if (is.numeric(layer)) { # Match new layer order
+			#  layer <- match(layer, unique(layer))
+			#}
 			layer <- rep(layer, length.out=nrow(y))
 		}
-		keepID <- ID
-		ID <- TRUE
+		#keepID <- ID
+		#ID <- TRUE
 	}
 
-	opt <- spatOptions()
+	opt <- terra:::spatOptions()
 
 	if (geo == "points") {
 		if (search_radius > 0) {
@@ -297,13 +297,27 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		raw <- TRUE
 	} 
 	
+	if (is.null(layer)) {
+		e <- x@pntr$extractVectorFlat(y@pntr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+		x <- messages(x, "extract")
+		nc <- nl <- nlyr(x)
+		cn <- c("ID", names(x))
+	} else {
 
-	e <- x@pntr$extractVectorFlat(y@pntr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
-	x <- messages(x, "extract")
+		lyrs <- unique(layer) 
+		e <- rep(NA, length(layer))
+		yy <- y[,0]
+		for (lyr in lyrs) {
+			xlyr <- x[[lyr]]
+			i <- which(layer == lyr)
+			ylyr <- yy[i]
+			e[i] <- xlyr@pntr$extractVectorFlat(ylyr@pntr, "", FALSE, touches[1], small[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
+		}
+		nc <- nl <- 1
+		cn <- c("ID", "value")
+		x <- rast(xlyr) # for .makeDataFrame
+	}
 
-
-	cn <- c("ID", names(x))
-	nc <- nl <- nlyr(x)
 	if (cells) {
 		cn <- c(cn, "cell")
 		nc <- nc + 1
@@ -354,7 +368,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 		}
 	}
 	
-	e <- use_layer(e, y, layer, nl, keepID)
+#	e <- use_layer(e, y, layer, nl, keepID)
 
 	if (bind) {
 		if (nrow(e) == nrow(y)) {
