@@ -78,9 +78,9 @@ extract(r, xy)
 #> 1  1 149   158  215
 #> 2  2  68    67   63
 extract(r, xy, layer=c("red", "green"))
-#>   ID layer value
-#> 1  1   red   149
-#> 2  2 green    67
+#>   ID value
+#> 1  1   149
+#> 2  2    67
 
 extractRange(r, xy, first=1:2, last=3:2)
 #> [[1]]

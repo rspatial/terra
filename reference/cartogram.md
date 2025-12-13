@@ -8,7 +8,7 @@ count data (e.g. votes).
 
 ``` r
 # S4 method for class 'SpatVector'
-cartogram(x, var, type="nc")
+cartogram(x, var, type="nc", inside=FALSE, exp=1)
 ```
 
 ## Arguments
@@ -25,6 +25,14 @@ cartogram(x, var, type="nc")
 
   character. Cartogram type, one of "nc" (non-contiguous) or "circles"
   (dorling)
+
+- inside:
+
+  logical to compute the centroids. See `centroids`
+
+- exp:
+
+  positive numeric that can be used to scale the output polygons
 
 ## Value
 
