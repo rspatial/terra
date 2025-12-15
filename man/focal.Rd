@@ -20,7 +20,7 @@ Calculate focal ("moving window") values for each cell.
   
 \item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See Details.}
 
-\item{fun}{function that takes multiple numbers, and returns a numeric vector (one or multiple numbers). For example mean, modal, min or max}
+\item{fun}{function that takes multiple numbers, and returns a numeric vector (one or multiple numbers). For example, mean, modal, min or max}
 
 \item{...}{additional arguments passed to \code{fun} such as \code{na.rm}}
 
@@ -28,7 +28,7 @@ Calculate focal ("moving window") values for each cell.
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
 
-\item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border. Only available for "build-in" \code{fun}s such as mean, sum, min and max}
+\item{expand}{logical. If \code{TRUE} the value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border. Only available for "build-in" \code{fun}s such as mean, sum, min and max}
 
 \item{silent}{logical. If \code{TRUE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a \code{fun} that does not work}
 
@@ -96,7 +96,7 @@ r[45:50, 45:50] <- NA
 # also try "mean" or "min"
 f <- "sum" 
 # na.rm=FALSE
-plot(focal(r, 5, f) , fun=lines(v))
+plot(focal(r, 5, f), fun=lines(v))
 
 # na.rm=TRUE
 plot(focal(r, 5, f, na.rm=TRUE), fun=lines(v))
