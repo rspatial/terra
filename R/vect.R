@@ -452,8 +452,12 @@ setMethod("vect", signature(x="data.frame"),
 		guessed_crs <- FALSE
 		if (is.null(crs)) {
 			if ((guessed_geom && lonlat) || ((!guessed_geom) && grepl("lon", geom[1], TRUE) && grepl("lat", geom[2], TRUE))) {
-				guessed_crs <- TRUE
-				crs <- "+proj=longlat"
+				xr <- range(x[,geom[1]], na.rm=TRUE)
+				yr <- range(x[,geom[2]], na.rm=TRUE)
+				if ((xr[1] > -181) && (xr[2] < 361)  && (yr[1] > -90.01) && (yr[2] < 90.01)) {
+					guessed_crs <- TRUE
+					crs <- "+proj=longlat"
+				}
 			} else {
 				crs <- ""
 			}
@@ -461,7 +465,7 @@ setMethod("vect", signature(x="data.frame"),
 			crs <- character_crs(crs, "vect")
 		}
 		if (length(geom) == 2) {
-			geom <- match(geom[1:2], names(x))
+			#geom <- match(geom[1:2], names(x))
 			if (inherits(x[,geom[1]], "integer")) {
 				x[,geom[1]] = as.numeric(x[,geom[1]])
 			}
