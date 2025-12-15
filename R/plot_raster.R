@@ -403,6 +403,7 @@
 	}
 	if (!x$legend_only) {
 		x <- .plot.axes(x)
+		reset.clip()
 		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], angle = 0, interpolate = x$interpolate)
 	}
 	
@@ -507,20 +508,17 @@
 
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
-			ext <- ext(ext)
-			#e <- as.vector(align(ext, x))
-			e <- as.vector(ext)
-			out$lim <- out$ext <- e
+			out$lim <- as.vector(ext)
+			out$ext <- as.vector(align(ext(ext), x, "out"))
 		} 
 		if (!is.null(xlim)) {
 			stopifnot(length(xlim) == 2)
-			e[1:2] <- sort(xlim)
+			out$lim[1:2] <- sort(xlim)
 		}
 		if (!is.null(ylim)) {
 			stopifnot(length(ylim) == 2)
-			e[3:4] <- sort(ylim)
+			out$lim[3:4] <- sort(ylim)
 		}
-		out$lim <- e
 		
 		hasWin <- TRUE
 		hadWin <- window(x)
