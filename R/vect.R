@@ -465,12 +465,12 @@ setMethod("vect", signature(x="data.frame"),
 			crs <- character_crs(crs, "vect")
 		}
 		if (length(geom) == 2) {
-			#geom <- match(geom[1:2], names(x))
+			geom <- match(geom[1:2], names(x))
 			if (inherits(x[,geom[1]], "integer")) {
-				x[,geom[1]] = as.numeric(x[,geom[1]])
+				x[,geom[1]] <- as.numeric(x[,geom[1]])
 			}
 			if (inherits(x[,geom[2]], "integer")) {
-				x[,geom[2]] = as.numeric(x[,geom[2]])
+				x[,geom[2]] <- as.numeric(x[,geom[2]])
 			}
 			p <- methods::new("SpatVector")
 			p@pntr <- SpatVector$new()
