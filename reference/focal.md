@@ -46,7 +46,7 @@ focal(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA,
 
 - expand:
 
-  logical. If `TRUE` the value of the cells in the virtual rows and
+  logical. If `TRUE`, the value of the cells in the virtual rows and
   columns outside of the raster are set to be the same as the value on
   the border. Only available for "build-in" `fun`s such as mean, sum,
   min and max

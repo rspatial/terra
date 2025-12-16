@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.8-89
+## version 1.8-90
 
 ### bug fixes
 
@@ -17,6 +17,9 @@
   as only entire cells were mapped.
   [\#1989](https://github.com/rspatial/terra/issues/1989) by Márcia
   Barbosa
+- `distance<matrix,missing>` was not working
+  [\#1992](https://github.com/rspatial/terra/issues/1992) by Wencheng
+  Lau-Medrano
 
 ### enhancements
 
