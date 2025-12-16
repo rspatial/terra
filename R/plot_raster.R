@@ -480,7 +480,7 @@
 	# backwards compatibility
 	reverse <- reverse | decreasing
 	out <- list()
-	e <- out$lim <- out$ext <- as.vector(ext(x))
+	out$lim <- out$ext <- as.vector(ext(x))
 	hadWin <- hasWin <- FALSE
 	if (add && is.null(ext)) {
 		ext <- unlist(get.clip())[1:4]
@@ -523,7 +523,7 @@
 		hasWin <- TRUE
 		hadWin <- window(x)
 		oldWin <- ext(x)
-		w <- intersect(ext(x), ext(e))		
+		w <- intersect(ext(x), ext(out$ext))		
 		window(x) <- out$ext <- w
 	} 
 	
