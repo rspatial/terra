@@ -40,7 +40,9 @@
 <ul><li>
 <code>plot&lt;SpatRaster&gt;(add=TRUE)</code> did not put the legend in the right place if the first raster had a larger extent and the number of cells was larger than maxcell. <a href="https://github.com/rspatial/terra/issues/1979" class="external-link">#1979</a> by Mehmet Göktuğ Öztürk</li>
 <li>
-<code>plot&lt;SpatVector&gt;(ext=...)</code> plotted polygons outside plotting region if argument ‘col’ was used <a href="https://github.com/rspatial/terra/issues/1986" class="external-link">#1986</a> by Márcia Barbosa</li>
+<code>plot&lt;SpatVector&gt;(ext=...)</code> plotted polygons outside plotting region if argument ‘col’ was used. <a href="https://github.com/rspatial/terra/issues/1986" class="external-link">#1986</a> by Márcia Barbosa</li>
+<li>
+<code>plot&lt;SpatRaster&gt;</code> with an “ext” argument could lead to misalignment as only entire cells were mapped. <a href="https://github.com/rspatial/terra/issues/1989" class="external-link">#1989</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-89">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-89"></a></h3>

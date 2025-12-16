@@ -27,21 +27,22 @@ rasterize(x, y, values=1, fun, ..., background=NA, update=FALSE,
 
 - field:
 
-  character or numeric. If `field` is a character, it should a variable
-  name in `x`. If `field` is numeric it typically is a single number or
-  a vector of length `nrow(x)`. The values are recycled to `nrow(x)`
+  character or numeric. If `field` is a character, it should be a
+  variable name in `x`. If `field` is numeric it typically is a single
+  number or a vector of length `nrow(x)`. The values are recycled to
+  `nrow(x)`
 
 - values:
 
   typically a numeric vector of length `1` or `nrow(x)`. If the length
-  is below `nrow(x)` the values will be recycled to `nrow(x)`. Only used
-  when `x` is a matrix. Can also be a matrix or data.frame
+  is below `nrow(x)`, the values will be recycled to `nrow(x)`. Only
+  used when `x` is a matrix. Can also be a matrix or data.frame
 
 - fun:
 
   summarizing function for when there are multiple geometries in one
-  cell. For lines and polygons you can only use `"min"`, `"max"`,
-  `"mean"`, `"count"` and `"sum"` For points you can use any function
+  cell. For lines and polygons, you can only use `"min"`, `"max"`,
+  `"mean"`, `"count"` and `"sum"`. For points you can use any function
   that returns a single number; for example `mean`, `length` (to get a
   count), `min` or `max`
 

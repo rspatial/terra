@@ -242,7 +242,6 @@ plot(s, 1, add=TRUE, plg=list(x=185, y=1, title="points"), col=rainbow(5))
  
 # spread 
 s <- spatSample(r, 10, "spread", as.points=TRUE)
-#> Error in .local(x, ...): object 'out' not found
 plot(r); points(s)
 
   

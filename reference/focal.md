@@ -24,7 +24,7 @@ focal(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA,
 - fun:
 
   function that takes multiple numbers, and returns a numeric vector
-  (one or multiple numbers). For example mean, modal, min or max
+  (one or multiple numbers). For example, mean, modal, min or max
 
 - ...:
 
@@ -46,7 +46,7 @@ focal(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA,
 
 - expand:
 
-  logical. If `TRUE` The value of the cells in the virtual rows and
+  logical. If `TRUE` the value of the cells in the virtual rows and
   columns outside of the raster are set to be the same as the value on
   the border. Only available for "build-in" `fun`s such as mean, sum,
   min and max
@@ -149,7 +149,7 @@ r[45:50, 45:50] <- NA
 # also try "mean" or "min"
 f <- "sum" 
 # na.rm=FALSE
-plot(focal(r, 5, f) , fun=lines(v))
+plot(focal(r, 5, f), fun=lines(v))
 
 
 # na.rm=TRUE
