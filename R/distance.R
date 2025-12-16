@@ -222,7 +222,7 @@ setMethod("distance", signature(x="matrix", y="missing"),
 	function(x, y, lonlat=NULL, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, unit="m", method="geo") {
 
 		if (missing(lonlat)) {
-			lonlat <- test.for.lonlat(x) & test.for.lonlat(y)
+			lonlat <- test.for.lonlat(x) 
 			warn("distance", paste0("lonlat not set. Assuming lonlat=", lonlat))
 		}
 

@@ -1,10 +1,11 @@
-# version 1.8-89
+# version 1.8-90
 
 ## bug fixes
 
 - `plot<SpatRaster>(add=TRUE)` did not put the legend in the right place if the first raster had a larger extent and the number of cells was larger than maxcell. [#1979](https://github.com/rspatial/terra/issues/1979) by Mehmet Göktuğ Öztürk
 - `plot<SpatVector>(ext=...)` plotted polygons outside plotting region if argument 'col' was used. [#1986](https://github.com/rspatial/terra/issues/1986) by Márcia Barbosa
 - `plot<SpatRaster>` with an "ext" argument could lead to misalignment as only entire cells were mapped. [#1989](https://github.com/rspatial/terra/issues/1989) by Márcia Barbosa
+- `distance<matrix,missing>` was not working [#1992](https://github.com/rspatial/terra/issues/1992) by Wencheng Lau-Medrano
 
 ## enhancements
 

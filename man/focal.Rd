@@ -28,7 +28,7 @@ Calculate focal ("moving window") values for each cell.
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
 
-\item{expand}{logical. If \code{TRUE} the value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border. Only available for "build-in" \code{fun}s such as mean, sum, min and max}
+\item{expand}{logical. If \code{TRUE}, the value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border. Only available for "build-in" \code{fun}s such as mean, sum, min and max}
 
 \item{silent}{logical. If \code{TRUE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a \code{fun} that does not work}
 
