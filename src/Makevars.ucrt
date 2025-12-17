@@ -11,8 +11,7 @@ else
 endif
 
 #PKG_CXXFLAGS += -Wconversion -Wno-sign-conversion 
-
-CXX_STD = CXX
+#CXX_STD = CXX
 
 all: clean winlibs
 
