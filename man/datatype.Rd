@@ -38,6 +38,7 @@ The following raster datatypes are available:
 \code{INT2U} \tab 0 \tab  65,534 \cr
 \code{INT4U} \tab 0 \tab 4,294,967,296 \cr
 \code{INT8U} \tab 0 \tab  18,446,744,073,709,551,616\cr
+\code{INT1S} \tab -128 \tab  128 \cr
 \code{INT2S} \tab -32,767\tab  32,767 \cr
 \code{INT4S} \tab -2,147,483,647 \tab 2,147,483,647 \cr
 \code{INT8S} \tab -9,223,372,036,854,775,808 \tab 9,223,372,036,854,775,808 \cr
@@ -45,11 +46,13 @@ The following raster datatypes are available:
 \code{FLT8S} \tab -1.7e+308 \tab   1.7e+308 \cr
 }
 
-For all integer types, except the single byte types, the lowest (signed) or highest (unsigned) value is used to store \code{NA}. 
+For all integer and byte types the lowest (signed) or highest (unsigned) value is used to store \code{NA}. 
 
 Note that very large integer numbers may be imprecise as they are internally represented as decimal numbers.
 
 \code{INT4U} is available but they are best avoided as R does not support 32-bit unsigned integers.
+
+\code{INT1S} requires GDAL version 3.7 or higher.
 }
 
 
