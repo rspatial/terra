@@ -13,6 +13,8 @@ geometric operations with vector data.
 The current `GDAL` configuration options and obtained with
 `getGDALconfig` and changed with `setGDALconfig`.
 
+`proj_ok` checks if the PROJ database with CRS definitions can be found.
+
 ## Usage
 
 ``` r
@@ -23,6 +25,7 @@ getGDALconfig(option)
 clearVSIcache()
 libVersion(lib="all", parse=FALSE)
 unloadGDALdrivers(x)
+proj_ok()
 ```
 
 ## Arguments
