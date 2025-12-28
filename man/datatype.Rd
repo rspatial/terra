@@ -35,9 +35,10 @@ The following raster datatypes are available:
 \tabular{lll}{
 \bold{Datatype definition} \tab \bold{minimum possible value} \tab \bold{maximum possible value} \cr
 \code{INT1U} \tab 0 \tab  255 \cr
-\code{INT2U} \tab 0 \tab  65,534 \cr
+\code{INT2U} \tab 0 \tab  65,535 \cr
 \code{INT4U} \tab 0 \tab 4,294,967,296 \cr
 \code{INT8U} \tab 0 \tab  18,446,744,073,709,551,616\cr
+\code{INT1S} \tab -128 \tab  128 \cr
 \code{INT2S} \tab -32,767\tab  32,767 \cr
 \code{INT4S} \tab -2,147,483,647 \tab 2,147,483,647 \cr
 \code{INT8S} \tab -9,223,372,036,854,775,808 \tab 9,223,372,036,854,775,808 \cr
@@ -45,11 +46,16 @@ The following raster datatypes are available:
 \code{FLT8S} \tab -1.7e+308 \tab   1.7e+308 \cr
 }
 
-For all integer types, except the single byte types, the lowest (signed) or highest (unsigned) value is used to store \code{NA}. 
+For all integer and byte types the lowest (signed) or highest (unsigned) value is used to store \code{NA}. For float types \code{NaN} is used (following the IEEE 754 standard). 
 
-Note that very large integer numbers may be imprecise as they are internally represented as decimal numbers.
+Note that very large integer numbers may be imprecise as they are internally represented as decimal numbers. 
 
-\code{INT4U} is available but they are best avoided as R does not support 32-bit unsigned integers.
+Also note that \code{NaN} may not be equally supported by all implementations. For example OGR SQL and SQLite queries generally convert \code{NaN} values to \code{NULL}.
+
+\code{INT4U} and \code{INT8U} are available but they are best avoided as R does not support 32-bit or 64-bit unsigned integers. \code{INT8U} is a special case where the NA store value is \code{18446744073709549568} (\code{UINT64_MAX - 1101}) because of precision in decimal representation.
+
+\code{INT8U} and \code{INT8S} require GDAL version 3.5 or higher. \code{INT1S} requires GDAL version 3.7 or higher.
+
 }
 
 
