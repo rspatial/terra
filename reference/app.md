@@ -43,9 +43,9 @@ app(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
   output to a vector or matrix. The following functions have been
   re-implemented in C++ for speed: "sum", "mean", "median", "modal",
   "which", "which.min", "which.max", "min", "max", "prod", "any", "all",
-  "sd", "std", "first". To use the base-R function for say, "min", you
-  could use something like `fun=function(i) min(i)` or the equivalent
-  `fun = \(i) min(i)`
+  "none", "sd", "std", "first". To use the base-R function for say,
+  "min", you could use something like `fun=function(i) min(i)` or the
+  equivalent `fun = \(i) min(i)`
 
 - ...:
 

@@ -4,7 +4,7 @@ Compute summary statistics for cells, either across layers or between
 layers (parallel summary).
 
 The following summary methods are available for SpatRaster:
-`any, anyNA, all, allNA, max, min, mean, median, prod, range, stdev, sum, which.min, which.max`.
+`any, anyNA, all, allNA, none, noNA, max, min, mean, median, prod, range, stdev, sum, which.min, which.max`.
 See [`modal`](https://rspatial.github.io/terra/reference/modal.md) to
 compute the mode and
 [`app`](https://rspatial.github.io/terra/reference/app.md) to compute
@@ -47,6 +47,9 @@ any(x, ..., na.rm=FALSE)
 
 # S4 method for class 'SpatRaster'
 all(x, ..., na.rm=FALSE)
+
+# S4 method for class 'SpatRaster'
+none(x, ..., na.rm=FALSE)
 
 # S4 method for class 'SpatRaster'
 range(x, ..., na.rm=FALSE)

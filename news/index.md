@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.8-90
+## version 1.8-91
 
 ### bug fixes
 
@@ -48,6 +48,8 @@
   Lobo
 
 ### new
+
+- `none<SpatRaster>` method (`!all` in one step)
 
 ## version 1.8-87
 

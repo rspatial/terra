@@ -1006,6 +1006,7 @@
   [`sum(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/summarize-generics.md)
   [`any(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/summarize-generics.md)
   [`all(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/summarize-generics.md)
+  [`none(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/summarize-generics.md)
   [`which.min(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/summarize-generics.md)
   [`which.max(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/summarize-generics.md)
   [`stdev(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/summarize-generics.md)

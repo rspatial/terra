@@ -38,8 +38,9 @@ aggregate(x, by=NULL, dissolve=TRUE, fun="mean", count=TRUE, ...)
 
   function used to aggregate values. Either an actual function, or for
   the following, their name: "mean", "max", "min", "median", "sum",
-  "modal", "any", "all", "prod", "which.min", "which.max", "table", "sd"
-  (sample standard deviation) and "std" (population standard deviation)
+  "modal", "any", "all", "none", "prod", "which.min", "which.max",
+  "table", "sd" (sample standard deviation) and "std" (population
+  standard deviation)
 
 - ...:
 

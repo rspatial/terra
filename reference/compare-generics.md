@@ -56,7 +56,7 @@ logic(x, oper, falseNA=FALSE, filename="", overwrite=FALSE, ...)
 
   character. Operator name. For `compare` this can be one of
   `"==", "!=", ">", "<", ">=", "<="` and for `logic` it can be one of
-  `"!", "is.na", "allNA", "noNA", "is.infinite", "is.finite", "iSTRUE", "isFALSE"`
+  `"!", "is.na", "not.na", "allNA", "anyNA", "noneNA", "is.infinite", "is.finite", "iSTRUE", "isFALSE"`
 
 - falseNA:
 

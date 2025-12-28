@@ -56,8 +56,8 @@ tapp(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
   function to be applied. The following functions have been
   re-implemented in C++ for speed: "sum", "mean", "median", "modal",
   "which", "which.min", "which.max", "min", "max", "prod", "any", "all",
-  "sd", "std", "first". To use the base-R function for say, "min", you
-  could use something like `fun = \(i) min(i)`
+  "none", "sd", "std", "first". To use the base-R function for say,
+  "min", you could use something like `fun = \(i) min(i)`
 
 - ...:
 
