@@ -63,7 +63,7 @@ The following method has been implemented for \bold{(SpatExtent, SpatExtent)}: \
 \arguments{
 \item{x}{SpatRaster}
 \item{y}{SpatRaster or numeric}
-\item{oper}{character. Operator name. For \code{compare} this can be one of \code{"==", "!=", ">", "<", ">=", "<="} and for \code{logic} it can be one of \code{"!", "is.na", "allNA", "noNA", "is.infinite", "is.finite", "iSTRUE", "isFALSE"}}
+\item{oper}{character. Operator name. For \code{compare} this can be one of \code{"==", "!=", ">", "<", ">=", "<="} and for \code{logic} it can be one of \code{"!", "is.na", "not.na", "allNA", "anyNA", "noneNA", "is.infinite", "is.finite", "iSTRUE", "isFALSE"}}
 \item{falseNA}{logical. Should the result be \code{TRUE, NA} instead of \code{TRUE, FALSE}?}
 \item{filename}{character. Output filename}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

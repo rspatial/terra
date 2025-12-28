@@ -1647,6 +1647,7 @@ SpatRaster SpatRaster::isnan(bool falseNA, SpatOptions &opt) {
 }
 
 
+
 SpatRaster SpatRaster::anynan(bool falseNA, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
@@ -1800,6 +1801,36 @@ SpatRaster SpatRaster::isnotnan(bool falseNA, SpatOptions &opt) {
 	out.writeStop();
 	return(out);
 }
+
+
+SpatRaster SpatRaster::is_wrapper(std::string method, bool falseNA, SpatOptions &opt) {
+
+	if (method == "isnot") {
+		return isnot(falseNA, opt);
+	} else if (method == "isnan") {
+		return isnan(falseNA, opt);
+	} else if (method == "isnotnan") {
+		return isnotnan(falseNA, opt);
+	} else if (method == "allnan") {
+		return allnan(falseNA, opt);
+	} else if (method == "anynan") {
+		return anynan(falseNA, opt);
+	} else if (method == "nonan") {
+		return nonan(falseNA, opt);
+	} else if (method == "isfinite") {
+		return isfinite(falseNA, opt);
+	} else if (method == "isinfinite") {
+		return isinfinite(falseNA, opt);
+	} else if (method == "is_true") {
+		return is_true(falseNA, opt);
+	} else if (method == "is_false") {
+		return is_false(falseNA, opt);
+	} 
+	SpatRaster out = geometry();
+	out.setError("method not defined");
+	return out;
+}
+
 
 
 SpatRaster SpatRaster::countnan(long n, SpatOptions &opt) {

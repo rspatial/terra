@@ -12,6 +12,7 @@
 \alias{which.max}
 \alias{any}
 \alias{all}
+\alias{none}
 \alias{prod}
 \alias{range}
 \alias{sum}
@@ -33,6 +34,8 @@
 
 \alias{any,SpatRaster-method}
 \alias{all,SpatRaster-method}
+\alias{none,SpatRaster-method}
+\alias{none,ANY-method}
 \alias{prod,SpatRaster-method}
 \alias{range,SpatRaster-method}
 \alias{sum,SpatRaster-method}
@@ -51,7 +54,7 @@
 
 Compute summary statistics for cells, either across layers or between layers (parallel summary). 
 
-The following summary methods are available for SpatRaster: \code{any, anyNA, all, allNA, max, min, mean, median, prod, range, stdev, sum, which.min, which.max}. See \code{\link{modal}} to compute the mode and \code{\link{app}} to compute summary statistics that are not included here.
+The following summary methods are available for SpatRaster: \code{any, anyNA, all, allNA, none, noNA, max, min, mean, median, prod, range, stdev, sum, which.min, which.max}. See \code{\link{modal}} to compute the mode and \code{\link{app}} to compute summary statistics that are not included here.
  
 Because generic functions are used, the method applied is chosen based on the first argument: "\code{x}". This means that if \code{r} is a SpatRaster, \code{mean(r, 5)} will work, but \code{mean(5, r)} will not work.
 
@@ -79,6 +82,8 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 \S4method{any}{SpatRaster}(x, ..., na.rm=FALSE)
 
 \S4method{all}{SpatRaster}(x, ..., na.rm=FALSE)
+
+\S4method{none}{SpatRaster}(x, ..., na.rm=FALSE)
 
 \S4method{range}{SpatRaster}(x, ..., na.rm=FALSE)
 

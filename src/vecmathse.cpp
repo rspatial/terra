@@ -432,6 +432,33 @@ double all_se(const std::vector<double>& v, size_t s, size_t e) {
 }
 
 
+double none_se_rm(const std::vector<double>& v, size_t s, size_t e) {
+	double x = 1;
+	for (size_t i=s; i<e; i++) {
+		if (!std::isnan(v[i])) {
+			if (v[i] != 0) {
+				return 0;
+			} 
+		}
+    }
+	return x;
+}
+
+
+double none_se(const std::vector<double>& v, size_t s, size_t e) {
+	double x = 1;
+    for (size_t i=s; i<e; i++) {
+        if (std::isnan(v[i])) {
+			return NAN;
+		}
+		if (v[i] != 0) {
+			return 0;
+		}
+	}
+	return x;
+}
+
+
 double any_se_rm(const std::vector<double>& v, size_t s, size_t e) {
 	double x = NAN;
 	for (size_t i=s; i<e; i++) {
@@ -684,6 +711,8 @@ bool getseFun(std::function<double(std::vector<double>&, size_t, size_t)> &fun,
 		fun = narm ? any_se_rm : any_se;
 	} else if (fname == "all") {
 		fun = narm ? all_se_rm : all_se;
+	} else if (fname == "none") {
+		fun = narm ? none_se_rm : none_se;
 	} else if (fname == "sd") {
 		fun = narm ? sd_se_rm : sd_se;
 	} else if (fname == "std") {

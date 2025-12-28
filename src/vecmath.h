@@ -35,6 +35,7 @@ bool haveFun(std::string fun);
 std::function<double(std::vector<double>&, bool)> getFun(std::string fun);
 bool bany(const std::vector<bool>& v);
 bool ball(const std::vector<bool>& v);
+bool bnone(const std::vector<bool>& v);
 
 
 template <typename T>
@@ -506,6 +507,40 @@ T vall(const std::vector<T>& v, bool narm) {
 	}
 	return x;
 }
+
+template <typename T>
+T vnone(const std::vector<T>& v, bool narm) {
+	if (v.empty()) return NA<T>::value;
+	T x;
+	if (narm) {
+		x = NA<T>::value;
+        for (size_t i=0; i<v.size(); i++) {
+			if (!is_NA(v[i])) {
+				if (v[i] == 1) {
+					x = 0;
+					break;
+				} else {
+					x = 1;					
+				}
+			}
+        }
+		//x = x < 0 ? NA<T>::value : x;
+    } else {
+		x = 1;
+        for (size_t i=0; i<v.size(); i++) {
+            if (is_NA(v[i])) {
+				x = NAN;
+				break;
+			} else if (v[i] != 0) {
+				x = 0;
+				break;
+			}
+		}
+	}
+	return x;
+}
+
+
 
 
 

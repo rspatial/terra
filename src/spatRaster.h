@@ -756,20 +756,20 @@ class SpatRaster {
 		std::vector<std::string> getDataType(bool unique, bool memtype);
 		std::vector<std::string> dataType();
 
+		SpatRaster is_wrapper(std::string method, bool falseNA, SpatOptions &opt);
+
 		SpatRaster isnot(bool falseNA, SpatOptions &opt);
 		SpatRaster isnan(bool falseNA, SpatOptions &opt);
 		SpatRaster isnotnan(bool falseNA, SpatOptions &opt);
-		SpatRaster countnan(long n, SpatOptions &opt);
-
 		SpatRaster isfinite(bool falseNA, SpatOptions &opt);
 		SpatRaster isinfinite(bool falseNA, SpatOptions &opt);
 		SpatRaster is_true(bool falseNA, SpatOptions &opt);
 		SpatRaster is_false(bool falseNA, SpatOptions &opt);
-		SpatRaster not_na(bool falseNA, SpatOptions &opt);
-
 		SpatRaster allnan(bool falseNA, SpatOptions &opt);
 		SpatRaster anynan(bool falseNA, SpatOptions &opt);
 		SpatRaster nonan(bool falseNA, SpatOptions &opt);
+
+		SpatRaster countnan(long n, SpatOptions &opt);
 		SpatRaster which(SpatOptions &opt);
 
 		std::vector<std::vector<double>> layerCor(std::string fun, std::string use, bool asSample, SpatOptions &opt);

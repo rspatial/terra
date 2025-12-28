@@ -23,7 +23,7 @@
 
 
 bool haveFun(std::string fun) {
-	std::vector<std::string> f {"sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first", "expH"};
+	std::vector<std::string> f {"sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "none", "sd", "std", "first", "expH"};
 	auto it = std::find(f.begin(), f.end(), fun);
 	if (it == f.end()) {
 		return false;
@@ -57,6 +57,8 @@ std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
 		theFun = vwhichmax<double>;
 	} else if (fun == "any") {
 		theFun = vany<double>;
+	} else if (fun == "none") {
+		theFun = vnone<double>;
 	} else if (fun == "all") {
 		theFun = vall<double>;
 	} else if (fun == "sd") {
@@ -86,3 +88,9 @@ bool bany(const std::vector<bool>& v) {
 	return false;
 }
 
+bool bnone(const std::vector<bool>& v) {
+    for (size_t i=0; i<v.size(); i++) {
+		if (v[i]) return false;
+	}
+	return true;
+}

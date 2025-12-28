@@ -1,4 +1,4 @@
-# version 1.8-90
+# version 1.8-91
 
 ## bug fixes
 
@@ -16,9 +16,9 @@
 - `cartogram` gets new arguments "inside" and "exp" and better scaling [#1982](https://github.com/rspatial/terra/issues/1982 by Márcia Barbosa
 `spatSample<SpatRaster>` gains argument "as.mask" [#1981](https://github.com/rspatial/terra/issues/1981) by Agustin Lobo
 
-
 ## new
 
+- `none<SpatRaster>` method (`!all` in one step)
 
 
 # version 1.8-87

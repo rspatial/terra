@@ -335,7 +335,7 @@ setMethod("!", signature(x="SpatRaster"),
 setMethod("not.na", signature(x="SpatRaster"),
 	function(x, falseNA=FALSE, filename="", ...) {
 		opt <- spatOptions(filename=filename, ...)
-		x@pntr <- x@pntr$not_na(falseNA, opt)
+		x@pntr <- x@pntr$is_wrapper("isnotnan", falseNA, opt)
 		messages(x, "not.na")
 	}
 )
@@ -344,7 +344,7 @@ setMethod("not.na", signature(x="SpatRaster"),
 setMethod("isTRUE", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@pntr <- x@pntr$is_true(FALSE, opt)
+		x@pntr <- x@pntr$is_wrapper("is_true", FALSE, opt)
 		messages(x, "isTRUE")
 	}
 )
@@ -353,7 +353,7 @@ setMethod("isTRUE", signature(x="SpatRaster"),
 setMethod("isFALSE", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@pntr <- x@pntr$is_false(FALSE, opt)
+		x@pntr <- x@pntr$is_wrapper("is_false", FALSE, opt)
 		messages(x, "isFALSE")
 	}
 )
@@ -386,7 +386,7 @@ setMethod("is.num", signature(x="SpatRaster"),
 setMethod("as.bool", signature(x="SpatRaster"),
 	function(x, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@pntr <- x@pntr$is_true(FALSE, opt)
+		x@pntr <- x@pntr$is_wrapper("is_true", FALSE, opt)
 		messages(x, "as.boolean")
 	}
 )
@@ -409,7 +409,7 @@ setMethod("as.integer", signature(x="SpatRaster"),
 setMethod("is.na", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@pntr <- x@pntr$isnan(FALSE, opt)
+		x@pntr <- x@pntr$is_wrapper("isnan", FALSE, opt)
 		messages(x, "is.na")
 	}
 )
@@ -419,7 +419,7 @@ setMethod("countNA", signature(x="SpatRaster"),
 		opt <- spatOptions()
 		n <- round(n)
 		if (n == 1) {
-			x@pntr <- x@pntr$anynan(FALSE, opt)
+			x@pntr <- x@pntr$is_wrapper("anynan", FALSE, opt)
 		} else {
 			x@pntr <- x@pntr$countnan(n, opt)
 		}
@@ -428,10 +428,18 @@ setMethod("countNA", signature(x="SpatRaster"),
 )
 
 
+setMethod("none", signature(x="ANY"),
+	function(x, ...) {
+		!any(x, ...)
+	}
+)
+
+
+
 setMethod("anyNA", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@pntr <- x@pntr$anynan(FALSE, opt)
+		x@pntr <- x@pntr$is_wrapper("anynan", FALSE, opt)
 		messages(x, "anyNA")
 	}
 )
@@ -439,7 +447,7 @@ setMethod("anyNA", signature(x="SpatRaster"),
 setMethod("noNA", signature(x="SpatRaster"),
 	function(x, falseNA=FALSE) {
 		opt <- spatOptions()
-		x@pntr <- x@pntr$nonan(falseNA, opt)
+		x@pntr <- x@pntr$is_wrapper("nonan", falseNA, opt)
 		messages(x, "noNA")
 	}
 )
@@ -448,7 +456,7 @@ setMethod("noNA", signature(x="SpatRaster"),
 setMethod("allNA", signature(x="SpatRaster"),
 	function(x, falseNA=FALSE) {
 		opt <- spatOptions()
-		x@pntr <- x@pntr$allnan(falseNA, opt)
+		x@pntr <- x@pntr$is_wrapper("allnan", falseNA, opt)
 		messages(x, "allNA")
 	}
 )
@@ -456,7 +464,7 @@ setMethod("allNA", signature(x="SpatRaster"),
 setMethod("is.nan", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@pntr <- x@pntr$isnan(FALSE, opt)
+		x@pntr <- x@pntr$is_wrapper("isnan", FALSE, opt)
 		messages(x, "is.nan")
 	}
 )
@@ -465,7 +473,7 @@ setMethod("is.nan", signature(x="SpatRaster"),
 setMethod("is.finite", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@pntr <- x@pntr$isfinite(FALSE, opt)
+		x@pntr <- x@pntr$is_wrapper("isfinite", FALSE, opt)
 		messages(x, "is.finite")
 	}
 )
@@ -473,7 +481,7 @@ setMethod("is.finite", signature(x="SpatRaster"),
 setMethod("is.infinite", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
-		x@pntr <- x@pntr$isinfinite(FALSE, opt)
+		x@pntr <- x@pntr$is_wrapper("isinfinite", FALSE, opt)
 		messages(x, "is.infinite")
 	}
 )
@@ -605,6 +613,11 @@ setMethod("Summary", signature(x="SpatVector"),
 )
 
 
+setMethod("none", signature(x="SpatRaster"),
+	function(x, ..., na.rm=FALSE) {
+		.summarize(x, ..., fun="none", na.rm=na.rm)
+	}
+)
 
 
 setMethod("Summary", signature(x="SpatExtent"),
@@ -738,35 +751,32 @@ setMethod("logic", signature(x="SpatRaster"),
 			error("logic", "oper must be a character value")
 		}
 		oper = oper[1]
-		ops <- c("!", "is.na", "allNA", "noNA", "is.infinite", "is.finite", "isTRUE", "isFALSE")
-		if (!(oper %in% ops)) {
-			error("compare", "oper must be a one of", ops)		
-		}
 		opt <- spatOptions(filename, overwrite, ...)
 		falseNA <- as.logical(falseNA[1])
 		
 		if (oper == "is.infinite") {
-			x@pntr <- x@pntr$isinfinite(falseNA, opt)
+			x@pntr <- x@pntr$is_wrapper("isinfinite", falseNA, opt)
 		} else if (oper == "is.finite") {
-			x@pntr <- x@pntr$isfinite(falseNA, opt)
-		} else if (oper == "is.na") {
-			x@pntr <- x@pntr$isnan(falseNA, opt)
+			x@pntr <- x@pntr$is_wrapper("isfinite", falseNA, opt)
+		} else if ((oper == "is.na") | (oper == "isNA")) {
+			x@pntr <- x@pntr$is_wrapper("isnan", falseNA, opt)
+		} else if (oper == "not.na") {
+			x@pntr <- x@pntr$is_wrapper("isnotnan", falseNA, opt)
 		} else if (oper == "isTRUE") {
-			x@pntr <- x@pntr$is_true(falseNA, opt)
+			x@pntr <- x@pntr$is_wrapper("is_true", falseNA, opt)
 		} else if (oper == "isFALSE") {
-			x@pntr <- x@pntr$is_false(falseNA, opt)
+			x@pntr <- x@pntr$is_wrapper("is_false", falseNA, opt)
 		} else if (oper == "allNA") {
-			x@pntr <- x@pntr$allnan(falseNA, opt)
-		} else if (oper == "noNA") {
-			x@pntr <- x@pntr$nonan(falseNA, opt)
+			x@pntr <- x@pntr$is_wrapper("allnan", falseNA, opt)
 		} else if (oper == "anyNA") {
-			x@pntr <- x@pntr$anynan(falseNA, opt)
-		} else if (oper == "anyNA") {
-			x@pntr <- x@pntr$anynan(falseNA, opt)
+			x@pntr <- x@pntr$is_wrapper("anynan", falseNA, opt)
+		} else if ((oper == "noNA") | (oper == "noneNA")) {
+			x@pntr <- x@pntr$is_wrapper("nonan", falseNA, opt)
 		} else if (oper == "!") {
 			x@pntr <- x@pntr$arith_numb(0, "==", FALSE, falseNA[1], opt)
 		} else {
-			error("logic", "??")
+			ops <- c("!", "is.na", "not.na", "allNA", "anyNA", "noneNA", "is.infinite", "is.finite", "isTRUE", "isFALSE")
+			error("compare", "oper must be a one of", ops)		
 		}
 		messages(x, "logic")
 	}

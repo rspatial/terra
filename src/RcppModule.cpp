@@ -985,17 +985,22 @@ RCPP_MODULE(spat){
 		.method("initv", ( SpatRaster (SpatRaster::*)(std::vector<double>, SpatOptions&) )( &SpatRaster::init ), "init value")
 		.method("is_in", &SpatRaster::is_in)
 		.method("is_in_cells", &SpatRaster::is_in_cells)
+
+		.method("countnan", &SpatRaster::countnan)
+
+		.method("is_wrapper", &SpatRaster::is_wrapper)
+
+/*
 		.method("anynan", &SpatRaster::anynan)
 		.method("nonan", &SpatRaster::nonan)
 		.method("allnan", &SpatRaster::allnan)
 		.method("isnan", &SpatRaster::isnan)
-		.method("countnan", &SpatRaster::countnan)
 		.method("not_na", &SpatRaster::isnotnan)
 		.method("isfinite", &SpatRaster::isfinite)
 		.method("isinfinite", &SpatRaster::isinfinite)
 		.method("is_true", &SpatRaster::is_true)
 		.method("is_false", &SpatRaster::is_false)
-
+*/
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(std::vector<double>, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("mask_self", ( SpatRaster (SpatRaster::*)(SpatOptions&) )( &SpatRaster::mask))
