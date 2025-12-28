@@ -46,23 +46,34 @@ The following raster datatypes are available:
 |-------------------------|----------------------------|----------------------------|
 | **Datatype definition** | **minimum possible value** | **maximum possible value** |
 | `INT1U`                 | 0                          | 255                        |
-| `INT2U`                 | 0                          | 65,534                     |
+| `INT2U`                 | 0                          | 65,535                     |
 | `INT4U`                 | 0                          | 4,294,967,296              |
 | `INT8U`                 | 0                          | 18,446,744,073,709,551,616 |
+| `INT1S`                 | -128                       | 128                        |
 | `INT2S`                 | -32,767                    | 32,767                     |
 | `INT4S`                 | -2,147,483,647             | 2,147,483,647              |
 | `INT8S`                 | -9,223,372,036,854,775,808 | 9,223,372,036,854,775,808  |
 | `FLT4S`                 | -3.4e+38                   | 3.4e+38                    |
 | `FLT8S`                 | -1.7e+308                  | 1.7e+308                   |
 
-For all integer types, except the single byte types, the lowest (signed)
-or highest (unsigned) value is used to store `NA`.
+For all integer and byte types the lowest (signed) or highest (unsigned)
+value is used to store `NA`. For float types `NaN` is used (following
+the IEEE 754 standard).
 
 Note that very large integer numbers may be imprecise as they are
 internally represented as decimal numbers.
 
-`INT4U` is available but they are best avoided as R does not support
-32-bit unsigned integers.
+Also note that `NaN` may not be equally supported by all
+implementations. For example OGR SQL and SQLite queries generally
+convert `NaN` values to `NULL`.
+
+`INT4U` and `INT8U` are available but they are best avoided as R does
+not support 32-bit or 64-bit unsigned integers. `INT8U` is a special
+case where the NA store value is `18446744073709549568`
+(`UINT64_MAX - 1101`) because of precision in decimal representation.
+
+`INT8U` and `INT8S` require GDAL version 3.5 or higher. `INT1S` requires
+GDAL version 3.7 or higher.
 
 ## Value
 
