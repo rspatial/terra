@@ -20,6 +20,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// proj_conf_test
+bool proj_conf_test();
+RcppExport SEXP _terra_proj_conf_test() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(proj_conf_test());
+    return rcpp_result_gen;
+END_RCPP
+}
 // proj_version
 std::string proj_version();
 RcppExport SEXP _terra_proj_version() {
@@ -443,6 +453,7 @@ RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_terra_have_TBB", (DL_FUNC) &_terra_have_TBB, 0},
+    {"_terra_proj_conf_test", (DL_FUNC) &_terra_proj_conf_test, 0},
     {"_terra_proj_version", (DL_FUNC) &_terra_proj_version, 0},
     {"_terra_hex2rgb", (DL_FUNC) &_terra_hex2rgb, 1},
     {"_terra_rgb2hex", (DL_FUNC) &_terra_rgb2hex, 1},

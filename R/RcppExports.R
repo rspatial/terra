@@ -5,6 +5,10 @@
     .Call(`_terra_have_TBB`)
 }
 
+.proj_conf_test <- function() {
+    .Call(`_terra_proj_conf_test`)
+}
+
 proj_version <- function() {
     .Call(`_terra_proj_version`)
 }

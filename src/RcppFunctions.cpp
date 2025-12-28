@@ -42,7 +42,6 @@
 #endif
 
 
-
 // [[Rcpp::export(name = ".have_TBB")]]
 bool have_TBB() {
 	#ifdef HAVE_TBB
@@ -50,6 +49,17 @@ bool have_TBB() {
 	#else 
 		return false;
 	#endif 
+}
+
+
+// [[Rcpp::export(name = ".proj_conf_test")]]
+bool proj_conf_test() {
+    PJ *crs = proj_create(nullptr, "EPSG:4326");
+    if (!crs) {
+        return false;
+    }
+    proj_destroy(crs);
+    return true;
 }
 
 

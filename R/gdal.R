@@ -4,6 +4,10 @@ unloadGDALdrivers <- function(x) {
 	.removeDriver(x)
 }
 
+proj_ok <- function() {
+	.proj_conf_test()
+}
+
 
 fileBlocksize <- function(x) {
 	v <- x@pntr$getFileBlocksize()
