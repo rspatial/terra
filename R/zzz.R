@@ -37,6 +37,9 @@
 	if (libVersion("gdal") == "3.6.0") {
 		message("Using GDAL version 3.6.0 which was retracted because it cannot write large GPKG files")
 	}
+	if (!proj_ok()) {
+		message("There appears to be a problem with the PROJ installation")
+	}
 }
 
 loadModule("spat", TRUE)
