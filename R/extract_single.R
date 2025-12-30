@@ -259,7 +259,7 @@ setMethod("[", c("SpatRaster", "ANY", "ANY", "ANY"),
 				return(.extract_spatraster(x, i, drop))
 			} 
 			if (inherits(i, "SpatVector")) {
-				return(.extract_spatextent(x, i, drop))
+				return(.extract_spatvector(x, i, drop))
 			}
 			if (inherits(i, "SpatVector")) {
 				return(.extract_spatextent(x, i, drop))

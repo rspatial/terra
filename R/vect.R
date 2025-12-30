@@ -306,7 +306,6 @@ setReplaceMethod("[[", c("SpatVector", "character"),
 			return(x);
 		} else if (length(value) == 0) {
 			if (nrow(x) == 0) {
-			print("here")
 				d <- values(x)
 				for (name in i) {
 					d[[name]] <- value
@@ -314,7 +313,9 @@ setReplaceMethod("[[", c("SpatVector", "character"),
 				values(x) <- d
 				return(x)
 			} else {
-				error("[[<-,SpatVector", "cannot use an empty value")
+				values(x) <- NA
+				#error("[[<-,SpatVector", "cannot use an empty value")
+				return(x)
 			}
 		}
 		if (inherits(value, "data.frame")) {

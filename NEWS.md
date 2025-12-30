@@ -23,7 +23,7 @@
 ## new
 
 - `proj_ok` helper function to check if the GDAL/PROJ install is functional [#1996](https://github.com/rspatial/terra/issues/1996) by Andrew Gene Brown
-- `none<SpatRaster>` method (`!all` in one step)
+- `nany<SpatRaster>` method (`!all` in one step) "nany" is short for "not any". This is used because "none" creates a conflict 
 
 
 # version 1.8-87

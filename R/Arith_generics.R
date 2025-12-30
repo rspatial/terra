@@ -428,7 +428,7 @@ setMethod("countNA", signature(x="SpatRaster"),
 )
 
 
-setMethod("none", signature(x="ANY"),
+setMethod("nany", signature(x="ANY"),
 	function(x, ...) {
 		!any(x, ...)
 	}
@@ -613,7 +613,7 @@ setMethod("Summary", signature(x="SpatVector"),
 )
 
 
-setMethod("none", signature(x="SpatRaster"),
+setMethod("nany", signature(x="SpatRaster"),
 	function(x, ..., na.rm=FALSE) {
 		.summarize(x, ..., fun="none", na.rm=na.rm)
 	}
