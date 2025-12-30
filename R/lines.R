@@ -142,7 +142,7 @@ setMethod("polys", signature(x="SpatVector"),
 			col <- .getCols(length(x), col, alpha)
 		}
 		out <- list(main_cols=col)
-		out$leg$border <- border
+		out$main_border <- border
 		p <- .plotPolygons(x, out, lwd=lwd, lty=lty, ...)
 	}
 )

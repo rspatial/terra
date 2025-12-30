@@ -77,7 +77,8 @@ setMethod("dots", signature(x="SpatVector"),
 
 	n <- nrow(x)
 	if (n == 0) return(out)
-	if ((length(out$main_cols) == 0) && (length(out$main_border) <= 1) && (length(lty) <= 1) && (length(lwd) <= 1) && (is.null(density))) {
+	if ((length(out$main_cols) == 0) && (length(out$main_border) <= 1) 
+			&& (length(lty) <= 1) && (length(lwd) <= 1) && (is.null(density))) {
 		if (is.null(out$leg$border)) out$leg$border <- "black"
 		lines(x, col=out$leg$border, lty=lty, lwd=lwd, ...)
 		return(out)
