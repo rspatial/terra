@@ -26,29 +26,31 @@ plet(x, col, alpha=0.8, main=names(x),
 
 
 # S4 method for class 'SpatVector'
-plet(x, y="", col, fill=0.2, main=y, cex=1, lwd=2, 
-  border="black", alpha=1, popup=TRUE, label=FALSE, split=FALSE,
+plet(x, y="", col, main=y, cex=1, 
+  lwd=2, lty=NULL, border="black", alpha=c(0.3, 1), popup=TRUE, label=FALSE, split=FALSE,
   tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
   wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL,
-  breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, ...)
+  breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, fill=NULL, ...)
 
 
 # S4 method for class 'SpatVectorCollection'
-plet(x, y="", col, fill=0.2, main=y, cex=1, lwd=2, 
-  border="black", alpha=1, popup=TRUE, label=FALSE, 
+plet(x, y="", col, main=y, cex=1, 
+  lwd=2, lty=NULL, border="black", alpha=c(0.3, 1), popup=TRUE, label=FALSE, 
   tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
   wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL, 
-  breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, ...)
+  breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, fill=NULL, ...)
 
 
 # S4 method for class 'leaflet'
-lines(x, y, col, lwd=2, alpha=1, ...)
+lines(x, y, col, lwd=2, lty=NULL, alpha=1, ...)
 
 # S4 method for class 'leaflet'
-points(x, y, col, cex=1, alpha=1, label=1:nrow(y), popup=FALSE, ...)
+points(x, y, col, border=col, cex=1, lwd=2, lty=NULL, 
+  alpha=c(.3, 1), label=1:nrow(y), popup=FALSE, ...)
 
 # S4 method for class 'leaflet'
-polys(x, y, col, fill=0.2, lwd=2, border="black", alpha=1, popup=TRUE, label=FALSE, ...)
+polys(x, y, col, lwd=2, lty=NULL, 
+  border="black", alpha=c(0.3, 1), popup=TRUE, label=FALSE, fill=NULL, ...)
 ```
 
 ## Arguments
@@ -71,13 +73,9 @@ polys(x, y, col, fill=0.2, lwd=2, border="black", alpha=1, popup=TRUE, label=FAL
 
 - alpha:
 
-  Number between 0 and 1 to set the transparency for lines (0 is
-  transparent, 1 is opaque)
-
-- fill:
-
-  Number between 0 and 1 to set the transparency for polygon areas (0 is
-  transparent, 1 is opaque)
+  one or two numbers between 0 and 1 to set the transparency for lines
+  (0 is transparent, 1 is opaque). The first number is to fill the
+  points/lines/polygons, the second for the outline
 
 - tiles:
 
@@ -140,7 +138,12 @@ polys(x, y, col, fill=0.2, lwd=2, border="black", alpha=1, popup=TRUE, label=FAL
 
 - lwd:
 
-  numeric, line-width. See [`par`](https://rdrr.io/r/graphics/par.html)
+  numeric. line-width. See [`par`](https://rdrr.io/r/graphics/par.html)
+
+- lty:
+
+  character to specify a "dash-array". For example "3 5" indicates three
+  pixels lines with five pixel gaps
 
 - popup:
 
@@ -193,6 +196,10 @@ polys(x, y, col, fill=0.2, lwd=2, border="black", alpha=1, popup=TRUE, label=FAL
 
   logical. If `TRUE`, the legends order is reversed
 
+- fill:
+
+  do not use. Will be removed
+
 ## See also
 
 [`plot`](https://rspatial.github.io/terra/reference/plot.md)
@@ -212,8 +219,8 @@ m <- points(m, p, col="red", cex=2, popup=T)
 lines(m, v, lwd=1, col="white")
 
 plet(v, "NAME_1", split=TRUE, alpha=.2) |> 
-  points(p, col="gray", cex=2, popup=TRUE,
-    clusterOptions = leaflet::markerClusterOptions())
+  points(p, col="white", border="red", cex=12, popup=TRUE, lwd=3, lty="1 4",
+     clusterOptions = leaflet::markerClusterOptions())
 
 s <- svc(v, p)
 names(s) <- c("the polys", "set of points")
@@ -229,7 +236,7 @@ x <- c(r, 50*classify(r, 5))
 names(x) <- c("first", "second")
 
 # each their own legend
-plet(x, 1:2, collapse=FALSE) |> lines(v, lwd=2, col="blue")
+plet(x, 1:2, collapse=FALSE) |> lines(v, lwd=2, col="blue", lty="5,5")
 
 # shared legend
 plet(x, 1:2, shared=TRUE, collapse=FALSE) |> lines(v, lwd=2, col="blue")

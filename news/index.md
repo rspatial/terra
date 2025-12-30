@@ -20,6 +20,9 @@
 - `distance<matrix,missing>` was not working
   [\#1992](https://github.com/rspatial/terra/issues/1992) by Wencheng
   Lau-Medrano
+- `polys` ignored argument “border”
+  [\#1997](https://github.com/rspatial/terra/issues/1989) by Márcia
+  Barbosa
 
 ### enhancements
 
@@ -42,13 +45,22 @@
   imperfect. [\#1980](https://github.com/rspatial/terra/issues/1980) by
   Margaret Bolton
 - `cartogram` gets new arguments “inside” and “exp” and better scaling
-  \[#1982\](<https://github.com/rspatial/terra/issues/1982> by Márcia
+  [\#1982](https://github.com/rspatial/terra/issues/1982) by Márcia
   Barbosa `spatSample<SpatRaster>` gains argument “as.mask”
   [\#1981](https://github.com/rspatial/terra/issues/1981) by Agustin
   Lobo
+- `vect<character>` now handles MultiSurface geometries (as polygons)
+  [\#1994](https://github.com/rspatial/terra/issues/1994) by Márcia
+  Barbosa
+- `plet<SpatVector>` and `polys<SpatVector>` gain argument “lty”
+  [\#1997](https://github.com/rspatial/terra/issues/1989) by Márcia
+  Barbosa
 
 ### new
 
+- `proj_ok` helper function to check if the GDAL/PROJ install is
+  functional [\#1996](https://github.com/rspatial/terra/issues/1996) by
+  Andrew Gene Brown
 - `none<SpatRaster>` method (`!all` in one step)
 
 ## version 1.8-87

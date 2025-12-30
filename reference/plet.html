@@ -59,29 +59,31 @@ The arguments of plet are similar to those of plot, making it easier to use leaf
 <span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
-<span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="st">""</span>, <span class="va">col</span>, fill<span class="op">=</span><span class="fl">0.2</span>, main<span class="op">=</span><span class="va">y</span>, cex<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>  border<span class="op">=</span><span class="st">"black"</span>, alpha<span class="op">=</span><span class="fl">1</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, label<span class="op">=</span><span class="cn">FALSE</span>, split<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="st">""</span>, <span class="va">col</span>, main<span class="op">=</span><span class="va">y</span>, cex<span class="op">=</span><span class="fl">1</span>, </span>
+<span>  lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="cn">NULL</span>, border<span class="op">=</span><span class="st">"black"</span>, alpha<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">1</span><span class="op">)</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, label<span class="op">=</span><span class="cn">FALSE</span>, split<span class="op">=</span><span class="cn">FALSE</span>,</span>
 <span>  tiles<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Streets"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span><span class="op">)</span>, </span>
 <span>  wrap<span class="op">=</span><span class="cn">TRUE</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, collapse<span class="op">=</span><span class="cn">FALSE</span>, type<span class="op">=</span><span class="cn">NULL</span>, breaks<span class="op">=</span><span class="cn">NULL</span>,</span>
-<span>  breakby<span class="op">=</span><span class="st">"eqint"</span>, sort<span class="op">=</span><span class="cn">TRUE</span>, reverse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  breakby<span class="op">=</span><span class="st">"eqint"</span>, sort<span class="op">=</span><span class="cn">TRUE</span>, reverse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span>, fill<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVectorCollection'</span></span>
-<span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="st">""</span>, <span class="va">col</span>, fill<span class="op">=</span><span class="fl">0.2</span>, main<span class="op">=</span><span class="va">y</span>, cex<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">2</span>, </span>
-<span>  border<span class="op">=</span><span class="st">"black"</span>, alpha<span class="op">=</span><span class="fl">1</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, label<span class="op">=</span><span class="cn">FALSE</span>, </span>
+<span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="st">""</span>, <span class="va">col</span>, main<span class="op">=</span><span class="va">y</span>, cex<span class="op">=</span><span class="fl">1</span>, </span>
+<span>  lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="cn">NULL</span>, border<span class="op">=</span><span class="st">"black"</span>, alpha<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">1</span><span class="op">)</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, label<span class="op">=</span><span class="cn">FALSE</span>, </span>
 <span>  tiles<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"Streets"</span>, <span class="st">"Esri.WorldImagery"</span>, <span class="st">"OpenTopoMap"</span><span class="op">)</span>, </span>
 <span>  wrap<span class="op">=</span><span class="cn">TRUE</span>, legend<span class="op">=</span><span class="st">"bottomright"</span>, collapse<span class="op">=</span><span class="cn">FALSE</span>, type<span class="op">=</span><span class="cn">NULL</span>, breaks<span class="op">=</span><span class="cn">NULL</span>, </span>
-<span>  breakby<span class="op">=</span><span class="st">"eqint"</span>, sort<span class="op">=</span><span class="cn">TRUE</span>, reverse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  breakby<span class="op">=</span><span class="st">"eqint"</span>, sort<span class="op">=</span><span class="cn">TRUE</span>, reverse<span class="op">=</span><span class="cn">FALSE</span>, map<span class="op">=</span><span class="cn">NULL</span>, fill<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'leaflet'</span></span>
-<span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, lwd<span class="op">=</span><span class="fl">2</span>, alpha<span class="op">=</span><span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="cn">NULL</span>, alpha<span class="op">=</span><span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'leaflet'</span></span>
-<span><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, cex<span class="op">=</span><span class="fl">1</span>, alpha<span class="op">=</span><span class="fl">1</span>, label<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, popup<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, border<span class="op">=</span><span class="va">col</span>, cex<span class="op">=</span><span class="fl">1</span>, lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="cn">NULL</span>, </span>
+<span>  alpha<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">.3</span>, <span class="fl">1</span><span class="op">)</span>, label<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, popup<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'leaflet'</span></span>
-<span><span class="fu"><a href="lines.html">polys</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, fill<span class="op">=</span><span class="fl">0.2</span>, lwd<span class="op">=</span><span class="fl">2</span>, border<span class="op">=</span><span class="st">"black"</span>, alpha<span class="op">=</span><span class="fl">1</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, label<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="lines.html">polys</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, lwd<span class="op">=</span><span class="fl">2</span>, lty<span class="op">=</span><span class="cn">NULL</span>, </span>
+<span>  border<span class="op">=</span><span class="st">"black"</span>, alpha<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">1</span><span class="op">)</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, label<span class="op">=</span><span class="cn">FALSE</span>, fill<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -97,10 +99,7 @@ The arguments of plet are similar to those of plot, making it easier to use leaf
 <dd><p>character. Vector of colors or a color generating function. If <code>x</code> is a SpatVectorCollection, you can provide a list with colors and/or functions, with one list element for each SpatVector</p></dd>
 
   <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>Number between 0 and 1 to set the transparency for lines (0 is transparent, 1 is opaque)</p></dd>
-
-  <dt id="arg-fill">fill<a class="anchor" aria-label="anchor" href="#arg-fill"></a></dt>
-<dd><p>Number between 0 and 1 to set the transparency for polygon areas (0 is transparent, 1 is opaque)</p></dd>
+<dd><p>one or two numbers between 0 and 1 to set the transparency for lines (0 is transparent, 1 is opaque). The first number is to fill the points/lines/polygons, the second for the outline</p></dd>
 
   <dt id="arg-tiles">tiles<a class="anchor" aria-label="anchor" href="#arg-tiles"></a></dt>
 <dd><p>character or NULL. Names of background tile providers</p></dd>
@@ -146,7 +145,10 @@ The arguments of plet are similar to those of plot, making it easier to use leaf
 <dd><p>numeric. point size magnifier. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></code></p></dd>
 
   <dt id="arg-lwd">lwd<a class="anchor" aria-label="anchor" href="#arg-lwd"></a></dt>
-<dd><p>numeric, line-width. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></code></p></dd>
+<dd><p>numeric. line-width. See <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></code></p></dd>
+
+  <dt id="arg-lty">lty<a class="anchor" aria-label="anchor" href="#arg-lty"></a></dt>
+<dd><p>character to specify a "dash-array". For example "3 5" indicates three pixels lines with five pixel gaps</p></dd>
 
   <dt id="arg-popup">popup<a class="anchor" aria-label="anchor" href="#arg-popup"></a></dt>
 <dd><p>logical. Should pop-ups be created?</p></dd>
@@ -181,6 +183,10 @@ The arguments of plet are similar to those of plot, making it easier to use leaf
   <dt id="arg-reverse">reverse<a class="anchor" aria-label="anchor" href="#arg-reverse"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, the legends order is reversed</p></dd>
 
+  <dt id="arg-fill">fill<a class="anchor" aria-label="anchor" href="#arg-fill"></a></dt>
+<dd><p>do not use. Will be removed</p></dd>
+
+
 </dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -201,8 +207,8 @@ The arguments of plet are similar to those of plot, making it easier to use leaf
 <span class="r-in"><span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">v</span>, lwd<span class="op">=</span><span class="fl">1</span>, col<span class="op">=</span><span class="st">"white"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">plet</span><span class="op">(</span><span class="va">v</span>, <span class="st">"NAME_1"</span>, split<span class="op">=</span><span class="cn">TRUE</span>, alpha<span class="op">=</span><span class="fl">.2</span><span class="op">)</span> <span class="op">|&gt;</span> </span></span>
-<span class="r-in"><span>  <span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="st">"gray"</span>, cex<span class="op">=</span><span class="fl">2</span>, popup<span class="op">=</span><span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>    clusterOptions <span class="op">=</span> <span class="fu">leaflet</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/leaflet/reference/map-options.html" class="external-link">markerClusterOptions</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">p</span>, col<span class="op">=</span><span class="st">"white"</span>, border<span class="op">=</span><span class="st">"red"</span>, cex<span class="op">=</span><span class="fl">12</span>, popup<span class="op">=</span><span class="cn">TRUE</span>, lwd<span class="op">=</span><span class="fl">3</span>, lty<span class="op">=</span><span class="st">"1 4"</span>,</span></span>
+<span class="r-in"><span>     clusterOptions <span class="op">=</span> <span class="fu">leaflet</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/leaflet/reference/map-options.html" class="external-link">markerClusterOptions</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="svc.html">svc</a></span><span class="op">(</span><span class="va">v</span>, <span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"the polys"</span>, <span class="st">"set of points"</span><span class="op">)</span></span></span>
@@ -218,7 +224,7 @@ The arguments of plet are similar to those of plot, making it easier to use leaf
 <span class="r-in"><span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"first"</span>, <span class="st">"second"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># each their own legend</span></span></span>
-<span class="r-in"><span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, collapse<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, collapse<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="st">"blue"</span>, lty<span class="op">=</span><span class="st">"5,5"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># shared legend</span></span></span>
 <span class="r-in"><span><span class="fu">plet</span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, shared<span class="op">=</span><span class="cn">TRUE</span>, collapse<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="st">"blue"</span><span class="op">)</span></span></span>
