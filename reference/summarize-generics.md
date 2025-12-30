@@ -4,11 +4,13 @@ Compute summary statistics for cells, either across layers or between
 layers (parallel summary).
 
 The following summary methods are available for SpatRaster:
-`any, anyNA, all, allNA, none, noNA, max, min, mean, median, prod, range, stdev, sum, which.min, which.max`.
+`any, anyNA, all, allNA, nany, noNA, max, min, mean, median, prod, range, stdev, sum, which.min, which.max`.
 See [`modal`](https://rspatial.github.io/terra/reference/modal.md) to
 compute the mode and
 [`app`](https://rspatial.github.io/terra/reference/app.md) to compute
-summary statistics that are not included here.
+summary statistics that are not included here. `nany` stands for "not
+any" or "none" and allows to do `!all(x)` in one computation instead of
+two.
 
 Because generic functions are used, the method applied is chosen based
 on the first argument: "`x`". This means that if `r` is a SpatRaster,
@@ -49,7 +51,7 @@ any(x, ..., na.rm=FALSE)
 all(x, ..., na.rm=FALSE)
 
 # S4 method for class 'SpatRaster'
-none(x, ..., na.rm=FALSE)
+nany(x, ..., na.rm=FALSE)
 
 # S4 method for class 'SpatRaster'
 range(x, ..., na.rm=FALSE)

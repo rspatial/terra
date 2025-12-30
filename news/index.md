@@ -52,7 +52,7 @@
 - `vect<character>` now handles MultiSurface geometries (as polygons)
   [\#1994](https://github.com/rspatial/terra/issues/1994) by Márcia
   Barbosa
-- `plet<SpatVector>` and `polys<SpatVector>` gain argument “lty”
+- `plet<SpatVector>` and `polys<leaflet>` gain argument “lty”
   [\#1997](https://github.com/rspatial/terra/issues/1989) by Márcia
   Barbosa
 
@@ -61,7 +61,8 @@
 - `proj_ok` helper function to check if the GDAL/PROJ install is
   functional [\#1996](https://github.com/rspatial/terra/issues/1996) by
   Andrew Gene Brown
-- `none<SpatRaster>` method (`!all` in one step)
+- `nany<SpatRaster>` method (`!all` in one step) “nany” is short for
+  “not any”. This is used because “none” creates a conflict
 
 ## version 1.8-87
 
