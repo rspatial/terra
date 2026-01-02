@@ -434,14 +434,14 @@ void gdal_init(std::string projpath, std::string datapath) {
 	//GDAL_NETCDF_IGNORE_XY_AXIS_NAME_CHECKS
 
 	//GDALregistred = true;
-#if GDAL_VERSION_MAJOR >= 3
- #ifdef PROJ_6
 	if (!projpath.empty()) {
-		const char *cp = projpath.c_str();
-		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
-	}
- #endif
+#if GDAL_VERSION_NUM >= 3000000
+		std::vector<char *> cpaths(2);
+		cpaths[0] = (char *)projpath.c_str();
+		cpaths[1] = NULL;
+		OSRSetPROJSearchPaths(cpaths.data());
 #endif
+	}
 #ifdef PROJ_71
 	#ifndef __EMSCRIPTEN__
 		proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
@@ -567,36 +567,54 @@ std::vector<std::string> get_proj_search_paths() {
 
 
 // [[Rcpp::export(name = ".set_proj_search_paths")]]
-bool set_proj_search_paths(std::vector<std::string> paths) {
+bool set_proj_search_paths(std::vector<std::string> paths, bool with_proj = false) {
 	if (paths.empty()) {
 		return false;
 	}
+	if (with_proj) {
+		// Set for PROJ library
+		if (paths.size() == 1) {
+			const char *cp = paths[0].c_str();
+			proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
+		}
+		return true;
+	} else {
+		// Set for GDAL
 #if GDAL_VERSION_NUM >= 3000000
-	std::vector <char *> cpaths(paths.size()+1);
-	for (size_t i = 0; i < paths.size(); i++) {
-		cpaths[i] = (char *) (paths[i].c_str());
-	}
-	cpaths[cpaths.size()-1] = NULL;
-	OSRSetPROJSearchPaths(cpaths.data());
-	return true;
+		std::vector <char *> cpaths(paths.size()+1);
+		for (size_t i = 0; i < paths.size(); i++) {
+			cpaths[i] = (char *) (paths[i].c_str());
+		}
+		cpaths[cpaths.size()-1] = NULL;
+		OSRSetPROJSearchPaths(cpaths.data());
+		return true;
 #else
-	return false;
+		return false;
 #endif
+	}
 }
 
 
 // [[Rcpp::export(name = ".PROJ_network")]]
-std::string PROJ_network(bool enable, std::string url) {
+std::string PROJ_network(int enable, std::string url) {
 	std::string s = "";
 #ifdef PROJ_71
-	if (enable) {
+	if (enable == -1) { // get current status
+		return std::to_string(proj_context_is_network_enabled(PJ_DEFAULT_CTX));
+	} else if (enable == 1) {
 		proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+#if GDAL_VERSION_NUM >= 3040000
+		OSRSetPROJEnableNetwork(1);
+#endif
 		if (url.size() > 5) {
 			proj_context_set_url_endpoint(PJ_DEFAULT_CTX, url.c_str());
 		}
 		s = proj_context_get_url_endpoint(PJ_DEFAULT_CTX);
-	} else { // disable:
+	} else if (enable == 0) { // disable:
 		proj_context_set_enable_network(PJ_DEFAULT_CTX, 0);
+#if GDAL_VERSION_NUM >= 3040000
+		OSRSetPROJEnableNetwork(0);
+#endif
 	}
 #endif
 	return s;
