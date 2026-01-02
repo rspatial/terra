@@ -9,6 +9,26 @@ proj_ok <- function() {
 }
 
 
+projNetwork <- function(enable, url="") {
+	if (missing(enable)) {
+		as.logical(.PROJ_network(-1, ""))
+	} else {
+		if (enable) {
+			out <- .PROJ_network(1, url)
+			if (out != "") {
+				message("PROJ network enabled. Using CDN URL: ", out)
+			} else {
+				message("PROJ network enabled")
+			}
+		} else {
+			.PROJ_network(0, "")
+			message("PROJ network disabled")
+		}
+		invisible(NULL)
+	}
+}
+
+
 fileBlocksize <- function(x) {
 	v <- x@pntr$getFileBlocksize()
 	m <- matrix(v, ncol=2)
