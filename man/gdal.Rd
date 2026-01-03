@@ -9,6 +9,7 @@
 \alias{unloadGDALdrivers}
 \alias{proj_ok}
 \alias{projNetwork}
+\alias{projPaths}
 
 
 \title{GDAL version, supported file formats, cache size, and PROJ coordinate transformation control}
@@ -23,6 +24,8 @@ The current \code{GDAL} configuration options and obtained with \code{getGDALcon
 \code{proj_ok} checks if the PROJ database with CRS definitions can be found.
 
 \code{projNetwork} controls whether PROJ can access network resources for coordinate transformations. By default, network access is enabled to provide high-accuracy grid-based datum transformations where available. When disabled, PROJ falls back to \href{https://proj.org/en/stable/glossary.html#term-Ballpark-transformation}{"ballpark transformations"} (of unknown accuracy) which could lead to errors of hundreds of meters in some cases. When enabled, PROJ downloads transformation grids from \code{https://cdn.proj.org}, requiring network connectivity and valid SSL certificates. After a successful run, the files are cached locally.
+
+\code{projPaths} gets or sets the search paths that PROJ uses to find coordinate system definitions and transformation grids. This allows users to specify custom locations for PROJ data files, such as when using offline installations or custom grid files. By default, it operates on PROJ search paths, but can also set GDAL search paths when \code{with_proj=FALSE}.
 }
 
 \usage{
@@ -35,6 +38,7 @@ libVersion(lib="all", parse=FALSE)
 unloadGDALdrivers(x)
 proj_ok()
 projNetwork(enable, url="")
+projPaths(paths, with_proj = TRUE)
 }
 
 \arguments{
@@ -49,13 +53,15 @@ projNetwork(enable, url="")
   \item{x}{character. Drivers names such as "GTiff" to be unloaded. Or "" to reload all drivers}
   \item{enable}{logical. If \code{TRUE}, enable PROJ network access for high-accuracy grid-based transformations. If \code{FALSE}, disable network access and use ballpark transformations. If missing, return the current network status}
   \item{url}{character. Optional URL for PROJ network endpoint. If empty string (default), uses PROJ's default network settings (\code{https://cdn.proj.org})}
+  \item{paths}{character. Vector of file paths to directories containing PROJ data files. If missing, returns the current search paths}
+  \item{with_proj}{logical. If \code{TRUE} (default), set PROJ search paths. If \code{FALSE}, set GDAL search paths}
 }
 
 
 \seealso{\code{\link{describe}} for file-level metadata "GDALinfo"}
 
 \value{
-character (for most functions), logical (for \code{proj_ok} and \code{projNetwork})
+character vector of search paths. When setting paths, the result is returned invisibly.
 }
 
 \examples{
@@ -64,6 +70,8 @@ gdal(2)
 head(gdal(drivers=TRUE))
 libVersion("all", TRUE)
 projNetwork()
+projPaths()
+projPaths(c("/custom/proj/path"))
 }
 
 \note{

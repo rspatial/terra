@@ -29,6 +29,17 @@ projNetwork <- function(enable, url="") {
 }
 
 
+projPaths <- function(paths, with_proj = TRUE) {
+	if (missing(paths)) {
+		.get_proj_search_paths()
+	} else {
+		paths <- as.character(paths)
+		.set_proj_search_paths(paths, with_proj)
+		invisible(.get_proj_search_paths())
+	}
+}
+
+
 fileBlocksize <- function(x) {
 	v <- x@pntr$getFileBlocksize()
 	m <- matrix(v, ncol=2)
