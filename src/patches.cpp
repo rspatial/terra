@@ -18,45 +18,57 @@
 #include "spatRaster.h"
 #include "math_utils.h"
 
-void patches_replace(std::vector<double> &v, size_t n, std::vector<double>& d, size_t cstart, std::vector<std::vector<size_t>>& rcl, size_t &ncps) {
+struct PatchUnionFind {
+	std::vector<double> parents;
+	size_t start_id;
 
-	d.erase(std::remove_if(d.begin(), d.end(),
-		[](const double& v) { return std::isnan(v); }), d.end());
-	std::sort(d.begin(), d.end());
-	d.erase(std::unique(d.begin(), d.end()), d.end());
+	PatchUnionFind(size_t start) : start_id(start) {}
 
-	size_t nd = d.size();
-
-	if (nd == 0) {
-		v[n] = ncps;
-		ncps++;
-		return;
-	} else if (nd == 1) {
-		v[n] = d[0];
-		return;
+	void make_set(double id) {
+		parents.push_back(id); 
 	}
-	v[n] = d[0];
-	for (size_t i=0; i<n; i++) {
-		for (size_t j=1; j<nd; j++) {
-			if (v[i] == d[j]) {
-				v[i] = d[0];
-			}
+
+	double find(double id) {
+		if (std::isnan(id)) return id;
+		if (id < start_id) return id; 
+		
+		size_t idx = (size_t)(id - start_id);
+		if (parents[idx] == id) return id;
+		
+		parents[idx] = find(parents[idx]); 
+		return parents[idx];
+	}
+
+	void unite(double id1, double id2, std::vector<std::vector<size_t>>& rcl) {
+		double root1 = find(id1);
+		double root2 = find(id2);
+		if (root1 == root2) return;
+
+		bool g1 = root1 < start_id;
+		bool g2 = root2 < start_id;
+
+		if (g1 && g2) {
+			rcl[0].push_back((size_t)root1);
+			rcl[1].push_back((size_t)root2);
+			return;
+		}
+
+		if (g1) {
+			parents[(size_t)(root2 - start_id)] = root1;
+		} else if (g2) {
+			parents[(size_t)(root1 - start_id)] = root2;
+		} else {
+			if (root1 < root2)
+				parents[(size_t)(root2 - start_id)] = root1;
+			else
+				parents[(size_t)(root1 - start_id)] = root2;
 		}
 	}
-	if (d[0] < cstart) {
-		for (size_t j=1; j<d.size(); j++) {
-			rcl[0].push_back(d[0]);
-			rcl[1].push_back(d[j]);
-		}
-	} else if (d[nd-1] == (ncps-1)) {  
-		ncps--;
-	}
-}
-
+};
 
 void broom_patches(const std::vector<double> &vals, std::vector<double> &patches, std::vector<double>& above_p, std::vector<double>& above_v, const size_t &dirs, size_t &ncps, const size_t &nr, const size_t &nc, std::vector<std::vector<size_t>> &rcl, bool is_global) {
 
-	size_t nstart = ncps;
+	PatchUnionFind uf(ncps);
 	bool d4 = dirs == 4;
 	size_t stopnc = nc-1;
 	std::vector<double> d;
@@ -65,6 +77,20 @@ void broom_patches(const std::vector<double> &vals, std::vector<double> &patches
 		if (!std::isnan(neighbor_val) && !std::isnan(neighbor_patch)) {
 			if (is_equal(val, neighbor_val)) {
 				candidates.push_back(neighbor_patch);
+			}
+		}
+	};
+
+	auto assign_patch = [&](size_t idx, std::vector<double>& candidates) {
+		if (candidates.empty()) {
+			patches[idx] = ncps;
+			uf.make_set(ncps);
+			ncps++;
+		} else {
+			double chosen = candidates[0];
+			patches[idx] = chosen;
+			for (size_t k = 1; k < candidates.size(); ++k) {
+				uf.unite(chosen, candidates[k], rcl);
 			}
 		}
 	};
@@ -82,7 +108,7 @@ void broom_patches(const std::vector<double> &vals, std::vector<double> &patches
 			check_neighbor(vals[0], above_v[0], above_p[0], d);
 			check_neighbor(vals[0], above_v[1], above_p[1], d);
 		}
-		patches_replace(patches, 0, d, nstart, rcl, ncps);
+		assign_patch(0, d);
 	}
 
 	for (size_t i=1; i<stopnc; i++) {
@@ -94,7 +120,7 @@ void broom_patches(const std::vector<double> &vals, std::vector<double> &patches
 				check_neighbor(vals[i], above_v[i-1], above_p[i-1], d);
 				check_neighbor(vals[i], above_v[i+1], above_p[i+1], d);
 			}
-			patches_replace(patches, i, d, nstart, rcl, ncps);
+			assign_patch(i, d);
 		}
 	}
 	
@@ -112,7 +138,7 @@ void broom_patches(const std::vector<double> &vals, std::vector<double> &patches
 		} else if (!d4) {
 			check_neighbor(vals[i], above_v[i-1], above_p[i-1], d);
 		}
-		patches_replace(patches, i, d, nstart, rcl, ncps);
+		assign_patch(i, d);
 	}
 
 	for (size_t r=1; r<nr; r++) {
@@ -129,7 +155,7 @@ void broom_patches(const std::vector<double> &vals, std::vector<double> &patches
 			} else if (!d4) {
 				check_neighbor(vals[i], vals[i-nc+1], patches[i-nc+1], d);
 			}
-			patches_replace(patches, i, d, nstart, rcl, ncps);
+			assign_patch(i, d);
 		}
 
 		size_t stop = start + stopnc;
@@ -142,7 +168,7 @@ void broom_patches(const std::vector<double> &vals, std::vector<double> &patches
 					check_neighbor(vals[i], vals[i-nc-1], patches[i-nc-1], d);
 					check_neighbor(vals[i], vals[i-nc+1], patches[i-nc+1], d);
 				}
-				patches_replace(patches, i, d, nstart, rcl, ncps);
+				assign_patch(i, d);
 			}
 		}
 
@@ -160,9 +186,16 @@ void broom_patches(const std::vector<double> &vals, std::vector<double> &patches
 			} else if (!d4) {
 				check_neighbor(vals[i], vals[i-nc-1], patches[i-nc-1], d);
 			}
-			patches_replace(patches, i, d, nstart, rcl, ncps);
+			assign_patch(i, d);
 		}
 	}
+
+	for (size_t k = 0; k < patches.size(); ++k) {
+		if (!std::isnan(patches[k])) {
+			patches[k] = uf.find(patches[k]);
+		}
+	}
+
 	size_t off = (nr-1) * nc;
 	std::vector<double> last_row_p(patches.begin()+off, patches.end());
 	std::vector<double> last_row_v(vals.begin()+off, vals.end());
