@@ -5554,18 +5554,15 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 			for (size_t lyr = 0; lyr < nlyr; lyr++) {
 				std::vector<double> tolyr(to.begin()+lyr*tosz, to.begin()+(lyr+1)*tosz);
 				recycle(tolyr, from);
+				SpatHashMap<double, double> lookup;
+				for (size_t j=0; j<from.size(); j++) {
+					lookup[from[j]] = tolyr[j];
+				}
 				size_t offset = lyr*vs;
-				for (size_t j=0; j< from.size(); j++) {
-					if (std::isnan(from[j])) {
-						for (size_t k=offset; k<(offset+vs); k++) {
-							vv[k] = std::isnan(v[k]) ? tolyr[j] : v[k];
-						}
-					} else {
-						for (size_t k=offset; k<(offset+vs); k++) {
-							if (v[k] == from[j]) {
-								vv[k] = tolyr[j];
-							}
-						}
+				for (size_t k=offset; k<(offset+vs); k++) {
+					auto it = lookup.find(v[k]);
+					if (it != lookup.end()) {
+						vv[k] = it->second;
 					}
 				}
 			}
@@ -5575,12 +5572,14 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 		size_t n = from.size()/nl;
 		size_t nlr = nl;
 		recycle(to, n);
-		std::vector<std::vector<double>> fro(n);
+		SpatHashMap<std::vector<double>, double> lookup;
 		for (size_t i=0; i<n; i++) {
-			fro[i].reserve(nlr);
+			std::vector<double> row;
+			row.reserve(nlr);
 			for (size_t j=0; j<nlr; j++) {
-				fro[i].push_back(from[i*nlr+j]);
+				row.push_back(from[i*nlr+j]);
 			}
+			lookup[row] = to[i];
 		}
 
 		for (size_t i = 0; i < out.bs.n; i++) {
@@ -5588,52 +5587,38 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 			readBlock(v, out.bs, i);
 			size_t nc = v.size() / nlr;
 			std::vector<double> vv(nc, others);
+			std::vector<double> pixel_values(nlr);
 			for (size_t j=0; j<nc; j++) {
-				for (size_t m=0; m<n; m++) {
-					bool match = true;
-					for (size_t k=0; k<nlr; k++) {
-						if (std::isnan(fro[m][k])) {
-							if (!std::isnan(v[nc*k+j])) {
-								match = false;
-								break;
-							}
-						} else if (v[nc*k+j] != fro[m][k]) {
-							match = false;
-							break;
-						}
-					}
-					if (match) {
-						vv[j] = to[m];
-						break;
-					}
+				for (size_t k=0; k<nlr; k++) {
+					pixel_values[k] = v[nc*k+j];
+				}
+				auto it = lookup.find(pixel_values);
+				if (it != lookup.end()) {
+					vv[j] = it->second;
 				}
 			}
 			if (!out.writeBlock(vv, i)) return out;
 		}
 	} else {
 		recycle(to, from);
+		SpatHashMap<double, double> lookup;
+		for (size_t j=0; j<from.size(); j++) {
+			lookup[from[j]] = to[j];
+		}
+
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v;
 			readBlock(v, out.bs, i);
 			std::vector<double> vv;
 			if (setothers) {
-				vv.resize(v.size(), others);
+				vv.assign(v.size(), others);
 			} else {
 				vv = v;
 			}
-			for (size_t j=0; j< from.size(); j++) {
-				if (std::isnan(from[j])) {
-					for (size_t k=0; k<v.size(); k++) {
-						if (std::isnan(v[k])) {
-							vv[k] = to[j];
-						}
-					}
-				} else {
-					for (size_t k=0; k<v.size(); k++) {
-						if (v[k] == from[j]) {
-							vv[k] = to[j];
-						}
-					}
+			for (size_t k=0; k<v.size(); k++) {
+				auto it = lookup.find(v[k]);
+				if (it != lookup.end()) {
+					vv[k] = it->second;
 				}
 			}
 			if (!out.writeBlock(vv, i)) return out;
