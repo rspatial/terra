@@ -46,37 +46,50 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int 
 
 	if (bylayer) {
 		out.resize(nl);
-		std::vector<std::map<double, size_t>> tabs(nl);
+		std::vector<SpatFrequencyTable<double>> tabs(nl);
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned nrc = bs.nrows[i] * nc;
 			std::vector<double> v;
 			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
-			if (round) {
-				for(double& d : v) d = roundn(d, digits);
-			}
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*nrc;
-				std::vector<double> vv(v.begin()+off, v.begin() + off + nrc);
-				std::map<double, size_t> tab = table(vv);
-				tabs[lyr] = combine_tables(tabs[lyr], tab);
+				for (size_t j=0; j<nrc; j++) {
+					double val = v[off+j];
+					if (round && !std::isnan(val)) val = roundn(val, digits);
+					if (!std::isnan(val)) tabs[lyr][val]++;
+				}
 			}
 		}
 		for (size_t lyr=0; lyr<nl; lyr++) {
-			out[lyr] = table2vector(tabs[lyr]);
+			std::vector<double> keys;
+			for (auto const& p : tabs[lyr]) keys.push_back(p.first);
+			std::sort(keys.begin(), keys.end());
+			out[lyr].reserve(keys.size() * 2);
+			for (double k : keys) out[lyr].push_back(k);
+			for (double k : keys) out[lyr].push_back((double)tabs[lyr][k]);
 		}
 	} else {
 		out.resize(1);
-		std::map<double, size_t> tabs;
+		SpatFrequencyTable<double> tabs;
 		for (size_t i = 0; i < bs.n; i++) {
+			unsigned nrc = bs.nrows[i] * nc;
 			std::vector<double> v;
 			readValues(v, bs.row[i], bs.nrows[i], 0, nc);
-			if (round) {
-				for (double& d : v) d = roundn(d, digits);
+			for (size_t lyr=0; lyr<nl; lyr++) {
+				unsigned off = lyr*nrc;
+				for (size_t j=0; j<nrc; j++) {
+					double val = v[off+j];
+					if (round && !std::isnan(val)) val = roundn(val, digits);
+					if (!std::isnan(val)) tabs[val]++;
+				}
 			}
-			std::map<double, size_t> tab = table(v);
-			tabs = combine_tables(tabs, tab);
 		}
-		out[0] = table2vector(tabs);
+		std::vector<double> keys;
+		for (auto const& p : tabs) keys.push_back(p.first);
+		std::sort(keys.begin(), keys.end());
+		out[0].reserve(keys.size() * 2);
+		for (double k : keys) out[0].push_back(k);
+		for (double k : keys) out[0].push_back((double)tabs[k]);
 	}
 	readStop();
 	return(out);
