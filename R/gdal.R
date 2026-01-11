@@ -214,8 +214,8 @@ ar_info <- function(x, what="describe", simplify=TRUE, filter=TRUE, array="") {
 setMethod("describe", signature(x="character"),
 	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="") {
 
-		#x <- .fullFilename(x[1], FALSE)
-		x <- x[1]
+		x <- .fullFilename(x[1], FALSE)
+		#x <- x[1]
 		if (meta) {
 			if (sds) {
 				return(.meta_sds(x, parse))
