@@ -1053,7 +1053,11 @@ RCPP_MODULE(spat){
 		.method("trim1", &SpatRaster::trim1)
 		.method("trim", &SpatRaster::trim2)
 
-		.method("unique", &SpatRaster::unique)
+		           .method("unique", &SpatRaster::unique)
+
+		           .method("crosstab", &SpatRaster::crosstab)
+
+
 		.method("where", &SpatRaster::where)
 		.method("sieve", &SpatRaster::sieveFilter)
 		.method("view", &SpatRaster::viewshed)

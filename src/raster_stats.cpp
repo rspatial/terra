@@ -1544,3 +1544,61 @@ SpatDataFrame SpatRaster::zonal_poly_weighted(SpatVector x, SpatRaster w, bool w
 
 	return out;
 }
+
+
+std::vector<double> SpatRaster::crosstab(int digits, bool narm, SpatOptions &opt) {
+    std::vector<double> out;
+    if (!hasValues()) return out;
+    BlockSize bs = getBlockSize(opt);
+    unsigned nc = ncol();
+    unsigned nl = nlyr();
+    if (!readStart()) {
+        return(out);
+    }
+
+    SpatFrequencyTable<std::vector<double>> tab;
+    for (size_t i = 0; i < bs.n; i++) {
+        unsigned nrc = bs.nrows[i] * nc;
+        std::vector<double> v;
+        readValues(v, bs.row[i], bs.nrows[i], 0, nc);
+        for (size_t j=0; j<nrc; j++) {
+            std::vector<double> row(nl);
+            bool has_nan = false;
+            for (size_t lyr=0; lyr<nl; lyr++) {
+                double val = v[lyr*nrc+j];
+                if (digits >= 0 && !std::isnan(val)) val = roundn(val, digits);
+                if (std::isnan(val)) has_nan = true;
+                row[lyr] = val;
+            }
+            if (narm && has_nan) continue;
+            tab[row]++;
+        }
+    }
+    readStop();
+
+    std::vector<std::vector<double>> keys;
+    for (auto const& p : tab) keys.push_back(p.first);
+
+    std::sort(keys.begin(), keys.end(), [](const std::vector<double>& a, const std::vector<double>& b) {
+        for (size_t i = 0; i < a.size(); ++i) {
+            if (std::isnan(a[i])) {
+                if (!std::isnan(b[i])) return false;
+            } else if (std::isnan(b[i])) {
+                return true;
+            } else if (a[i] < b[i]) {
+                return true;
+            } else if (a[i] > b[i]) {
+                return false;
+            }
+        }
+        return false;
+    });
+
+    size_t n = keys.size();
+    out.reserve(n * (nl + 1));
+    for (size_t i=0; i<n; i++) {
+        for (size_t lyr=0; lyr<nl; lyr++) out.push_back(keys[i][lyr]);
+        out.push_back((double)tab[keys[i]]);
+    }
+    return(out);
+}
