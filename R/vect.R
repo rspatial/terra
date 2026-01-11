@@ -442,7 +442,7 @@ setMethod("vect", signature(x="data.frame"),
 					if (sum(test) == 1) {
 						m <- m[test, ]
 						geom <- names(x)[m]
-						lonlat <- which(test) < 4
+						lonlat <- which(test) < 6
 					} else if (sum(test) == 0) {
 						lon <- which(sapply(nms, function(n) grepl(n, "longitude")))
 						lat <- which(sapply(nms, function(n) grepl(n, "latitude")))

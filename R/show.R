@@ -379,8 +379,16 @@ setMethod ("show" , "SpatRaster",
 						j <- match(rr[,i], levs[,1])
 						levs <- levs[j, 2]
 						if (length(levs) > 1) {
-							minv[i] <- levs[1]
-							maxv[i] <- levs[2]
+							if (nchar(levs[1]) > 40) {
+								minv[i] <- paste0(substr(levs[1], 1, 39), "~")
+							} else {
+								minv[i] <- levs[1]							
+							}
+							if (nchar(levs[2]) > 40) {
+								maxv[i] <- paste0(substr(levs[2], 1, 39), "~")						
+							} else {
+								maxv[i] <- levs[2]
+							}
 						}
 					}
 				}
