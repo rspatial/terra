@@ -113,8 +113,8 @@ rgb2hex <- function(x) {
     .Call(`_terra_get_proj_search_paths`)
 }
 
-.set_proj_search_paths <- function(paths) {
-    .Call(`_terra_set_proj_search_paths`, paths)
+.set_proj_search_paths <- function(paths, with_proj = FALSE) {
+    .Call(`_terra_set_proj_search_paths`, paths, with_proj)
 }
 
 .PROJ_network <- function(enable, url) {
