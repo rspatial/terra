@@ -1,4 +1,4 @@
-# version 1.8-91
+# version 1.8-92
 
 ## bug fixes
 
@@ -7,6 +7,8 @@
 - `plot<SpatRaster>` with an "ext" argument could lead to misalignment as only entire cells were mapped. [#1989](https://github.com/rspatial/terra/issues/1989) by Márcia Barbosa
 - `distance<matrix,missing>` was not working [#1992](https://github.com/rspatial/terra/issues/1992) by Wencheng Lau-Medrano
 - `polys` ignored argument "border" [#1997](https://github.com/rspatial/terra/issues/1989) by Márcia Barbosa
+- `describe` works with linux paths starting with a tilde [2003](https://github.com/rspatial/terra/issues/2003) by David Moles
+- `zonal<SpatRaster,SpatRaster>` failed with arguments fun='sd', wide=F. [#2004](https://github.com/rspatial/terra/issues/2004) by Thomas Estabrook
 
 ## enhancements
 
