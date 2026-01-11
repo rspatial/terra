@@ -17,7 +17,7 @@ Substitute(replace) cell values of a SpatRaster with a new value. See \code{\lin
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{from}{numeric value(s). Normally a vector of the same length as `to`. If \code{x} has multiple layers, it can also be a matrix of numeric value(s) where \code{nrow(x) == length(to)}. In that case the output has a single layer, with values based on the combination of the values of the input layers}
+  \item{from}{numeric value(s). Normally a vector of the same length as `to`. If \code{x} has multiple layers, it can also be a matrix of numeric value(s) where \code{nrow(x) == length(to)}. In that case the output has a single layer, with values based on the combination of the values of the input layers. For single-layer replacement with numeric vectors, an optimized hash-based lookup is used. Floating point values are supported and are matched exactly.}
   \item{to}{numeric value(s). Normally a vector of the same length as `from`. If \code{x} has a single layer, it can also be a matrix of numeric value(s) where \code{nrow(x) == length(from)}. In that case the output has multiple layers, one for each column in \code{to}} 
   \item{others}{numeric. If not \code{NULL} all values that are not matched are set to this value. Otherwise they retain their original value.} 
   \item{raw}{logical. If \code{TRUE}, the values in from and to are the raw cell values, not the categorical labels. Only relevant if \code{is.factor(x)}}
