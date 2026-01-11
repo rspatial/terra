@@ -17,7 +17,7 @@ Detect patches (clumps). Patches are groups of cells that are surrounded by cell
 \item{x}{SpatRaster}
 \item{directions}{integer indicating which cells are considered adjacent. Should be 8 (Queen's case) or 4 (Rook's case)}
   \item{values}{logical. If \code{TRUE} use cell values to distinguish patches. If \code{FALSE}, all cells that are not \code{NA} are considered identical}
-  \item{zeroAsNA}{logical. If \code{TRUE} treat cells that are zero as if they were \code{NA}. Ignored if \code{byvalue=TRUE}}
+  \item{zeroAsNA}{logical. If \code{TRUE} treat cells that are zero as if they were \code{NA}. Ignored if \code{values=TRUE}}
   \item{allowGaps}{logical. If \code{TRUE} there may be gaps in the patch IDs (e.g. you may have patch IDs 1, 2, 3 and 5, but not 4). If it is FALSE, these numbers will be recoded from 1 to the number of patches (4 in this example)}
   \item{filename}{character. Output filename}
   \item{...}{options for writing files as in \code{\link{writeRaster}}}
