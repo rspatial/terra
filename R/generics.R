@@ -389,6 +389,22 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, others=NULL, brackets=TRUE, f
 		rcl <- as.matrix(rcl)
 	}
 
+	if (NCOL(rcl) == 2) {
+		if (is.null(others)) {
+			othersValue <- NA_real_
+			useOthers <- FALSE
+		} else {
+			othersValue <- as.numeric(others[1])
+			useOthers <- TRUE
+		}
+		opt <- spatOptions(filename, ...)
+		from_vec <- as.numeric(rcl[,1])
+		to_vec <- as.numeric(rcl[,2])
+		x@pntr <- x@pntr$lookup_classify(from_vec, to_vec, useOthers, othersValue, opt)
+		messages(x, "classify")
+		return(x)
+	}
+
 	right <- ifelse(is.na(right), 2, ifelse(isTRUE(right), 1, 0))
 	include.lowest <- as.logical(include.lowest[1])
 
@@ -427,10 +443,26 @@ function(x, from, to, others=NULL, raw=FALSE, filename="", ...) {
 	}
 	fromc <- inherits(from[1], "character")
 	toc <- inherits(to[1], "character")
-	if (raw && fromc) {
-		error("subst", "if 'raw=TRUE', 'from' cannot have character values")
-	}
-	keepcats <- FALSE
+		if (raw && fromc) {
+			error("subst", "if 'raw=TRUE', 'from' cannot have character values")
+		}
+
+		if (!any(is.factor(x)) && !tom && !frm && !fromc && !toc && !raw) {
+			if (is.null(others)) {
+				othersValue <- NA_real_
+				useOthers <- FALSE
+			} else {
+				othersValue <- as.numeric(others[1])
+				useOthers <- TRUE
+			}
+			from_vec <- as.numeric(from)
+			to_vec <- as.numeric(to)
+			x@pntr <- x@pntr$lookup_subst(from_vec, to_vec, useOthers, othersValue, opt)
+			messages(x, "subst")
+			return(x)
+		}
+
+		keepcats <- FALSE
 	if (any(is.factor(x))) {
 		if (nlyr(x) > 1) {
 			error("subst", "you can only use 'subst' with categorical layers if x has a single layer")

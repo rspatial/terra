@@ -38,9 +38,9 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 		}
 	}
 
-	SpatLookup lookup_map;
+	SpatHashMap<double, double> lookup_map;
 	for (size_t j = 0; j < from_vals.size(); j++) {
-		lookup_map.insert(from_vals[j], to_vals[j]);
+		lookup_map[from_vals[j]] = to_vals[j];
 	}
 	if (!readStart()) {
 		out.setError(getError());
@@ -57,9 +57,9 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 		readBlock(v, out.bs, i);
 
 		for (size_t j = 0; j < v.size(); j++) {
-			double lookup_result;
-			if (lookup_map.lookup(v[j], lookup_result)) {
-				v[j] = lookup_result;
+			auto it = lookup_map.find(v[j]);
+			if (it != lookup_map.end()) {
+				v[j] = it->second;
 			} else if (others) {
 				v[j] = othersValue;
 			}
@@ -78,8 +78,14 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 }
 
 
-/*
-std::vector<double> flat(std::vector<std::vector<double>> v) {
+SpatRaster SpatRaster::lookup_classify(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt) {
+	return lookup_apply(from_vals, to_vals, others, othersValue, 1, opt);
+}
+
+
+SpatRaster SpatRaster::lookup_subst(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt) {
+	return lookup_apply(from_vals, to_vals, others, othersValue, nlyr(), opt);
+}
     unsigned s1 = v.size();
     unsigned s2 = v[0].size();
 
