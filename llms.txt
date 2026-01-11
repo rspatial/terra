@@ -566,8 +566,11 @@ updates/improvements on the above instructions.
   [`clearVSIcache()`](https://rspatial.github.io/terra/reference/gdal.md)
   [`libVersion()`](https://rspatial.github.io/terra/reference/gdal.md)
   [`unloadGDALdrivers()`](https://rspatial.github.io/terra/reference/gdal.md)
-  [`proj_ok()`](https://rspatial.github.io/terra/reference/gdal.md) :
-  GDAL version, supported file formats, and cache size
+  [`proj_ok()`](https://rspatial.github.io/terra/reference/gdal.md)
+  [`projNetwork()`](https://rspatial.github.io/terra/reference/gdal.md)
+  [`projPaths()`](https://rspatial.github.io/terra/reference/gdal.md) :
+  GDAL version, supported file formats, cache size, and PROJ coordinate
+  transformation control
 
 - [`geom(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/geometry.md)
   : Get the geometry (coordinates) of a SpatVector

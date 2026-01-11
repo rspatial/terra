@@ -1,4 +1,4 @@
-# GDAL version, supported file formats, and cache size
+# GDAL version, supported file formats, cache size, and PROJ coordinate transformation control
 
 Set the `GDAL` warning level or get a `data.frame` with the available
 GDAL drivers (file formats), or, if `warn=NA` and `drivers=FALSE`, you
@@ -15,6 +15,23 @@ The current `GDAL` configuration options and obtained with
 
 `proj_ok` checks if the PROJ database with CRS definitions can be found.
 
+`projNetwork` controls whether PROJ can access network resources for
+coordinate transformations. By default, network access is enabled to
+provide high-accuracy grid-based datum transformations where available.
+When disabled, PROJ falls back to ["ballpark
+transformations"](https://proj.org/en/stable/glossary.html#term-Ballpark-transformation)
+(of unknown accuracy) which could lead to errors of hundreds of meters
+in some cases. When enabled, PROJ downloads transformation grids from
+`https://cdn.proj.org`, requiring network connectivity and valid SSL
+certificates. After a successful run, the files are cached locally.
+
+`projPaths` gets or sets the search paths that PROJ uses to find
+coordinate system definitions and transformation grids. This allows
+users to specify custom locations for PROJ data files, such as when
+using offline installations or custom grid files. By default, it
+operates on PROJ search paths, but can also set GDAL search paths when
+`with_proj=FALSE`.
+
 ## Usage
 
 ``` r
@@ -26,6 +43,8 @@ clearVSIcache()
 libVersion(lib="all", parse=FALSE)
 unloadGDALdrivers(x)
 proj_ok()
+projNetwork(enable, url="")
+projPaths(paths, with_proj = TRUE)
 ```
 
 ## Arguments
@@ -77,6 +96,29 @@ proj_ok()
   character. Drivers names such as "GTiff" to be unloaded. Or "" to
   reload all drivers
 
+- enable:
+
+  logical. If `TRUE`, enable PROJ network access for high-accuracy
+  grid-based transformations. If `FALSE`, disable network access and use
+  ballpark transformations. If missing, return the current network
+  status
+
+- url:
+
+  character. Optional URL for PROJ network endpoint. If empty string
+  (default), uses PROJ's default network settings
+  (`https://cdn.proj.org`)
+
+- paths:
+
+  character. Vector of file paths to directories containing PROJ data
+  files. If missing, returns the current search paths
+
+- with_proj:
+
+  logical. If `TRUE` (default), set PROJ search paths. If `FALSE`, set
+  GDAL search paths
+
 ## See also
 
 [`describe`](https://rspatial.github.io/terra/reference/describe.md) for
@@ -84,7 +126,20 @@ file-level metadata "GDALinfo"
 
 ## Value
 
-character
+character vector of search paths. When setting paths, the result is
+returned invisibly.
+
+## Note
+
+While some spatial analyses may not be greatly affected by PROJ network
+settings (ballpark vs. grid-based transformations), the differences can
+be significant, especially when a transformation involves a shift in
+datum between different coordinate reference systems. For applications
+requiring high positional accuracy, ensure network access is enabled or
+grids are locally available. Grids can be pre-downloaded using the
+`projsync` utility or installed via system packages, such as `proj-data`
+on Ubuntu/Debian systems. Downloaded grids are cached locally and then
+reused for subsequent transformations.
 
 ## Examples
 
@@ -105,4 +160,9 @@ libVersion("all", TRUE)
 #> gdal     3     8   4
 #> proj     9     4   0
 #> geos     3    12   1
+projNetwork()
+#> [1] NA
+projPaths()
+#> [1] "/home/runner/.local/share/proj" "/usr/share/proj"               
+projPaths(c("/custom/proj/path"))
 ```
