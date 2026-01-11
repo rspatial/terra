@@ -148,7 +148,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 					out[is.na(out)] <- 0
 				}
 			}
-		} else if (nz == 1){
+		} else if { #(nz == 1){
 			nls <- as.character(1:nlyr(x))
 			colnames(out)[-1] <- nls
 			if (colnames(out)[1] == "layer") colnames(out)[1] <- "zone"
