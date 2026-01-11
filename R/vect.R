@@ -421,7 +421,7 @@ setMethod("vect", signature(x="data.frame"),
 			}
 		} else {
 			if (all(c("lon", "lat") %in% names(x))) { 
-				# backwards compatability
+				# backwards compatibility
 				geom <- c("lon", "lat")
 				# guessed_geom <- TRUE	
 			} else {
@@ -430,9 +430,14 @@ setMethod("vect", signature(x="data.frame"),
 				} else {
 					nms <- tolower(names(x))
 					m <- rbind(	match(c("longitude", "latitude"), nms),
+                                match(c("decimallongitude", "decimallatitude"), nms),
+								match(c("long", "lati"), nms),
 								match(c("long", "lat"), nms),								
-								match(c("lon", "lat"), nms),
-								match(c("x", "y"), nms))
+                                match(c("lon", "lat"), nms),
+								match(c("xcoord", "ycoord"), nms),
+                                match(c("x.coord", "y.coord"), nms),
+                                match(c("x_coord", "y_coord"), nms),
+                                match(c("x", "y"), nms))
 					test <- !apply(is.na(m), 1, any) 
 					if (sum(test) == 1) {
 						m <- m[test, ]
