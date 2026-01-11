@@ -27,8 +27,8 @@ plet(x, col, alpha=0.8, main=names(x),
 
 # S4 method for class 'SpatVector'
 plet(x, y="", col, main=y, cex=1, 
-  lwd=2, lty=NULL, border="black", alpha=c(0.3, 1), popup=TRUE, label=FALSE, split=FALSE,
-  tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
+  lwd=2, lty=NULL, border="black", alpha=c(0.3, 1), popup=TRUE, label=FALSE,
+  split=FALSE, tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
   wrap=TRUE, legend="bottomright", collapse=FALSE, type=NULL, breaks=NULL,
   breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, fill=NULL, ...)
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-91</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-93</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,9 @@
 <li>
 <code>$&lt;-&lt;SpatVector&gt;</code> now gives an error if the replacement is longer than the data, and a warning if recylcing of a shorter replacement is imperfect. <a href="https://github.com/rspatial/terra/issues/1980" class="external-link">#1980</a> by Margaret Bolton</li>
 <li>
-<code>cartogram</code> gets new arguments “inside” and “exp” and better scaling <a href="https://github.com/rspatial/terra/issues/1982" class="external-link">#1982</a> by Márcia Barbosa <code>spatSample&lt;SpatRaster&gt;</code> gains argument “as.mask” <a href="https://github.com/rspatial/terra/issues/1981" class="external-link">#1981</a> by Agustin Lobo</li>
+<code>cartogram</code> gets new arguments “inside” and “exp” and better scaling <a href="https://github.com/rspatial/terra/issues/1982" class="external-link">#1982</a> by Márcia Barbosa</li>
+<li>
+<code>spatSample&lt;SpatRaster&gt;</code> gains argument “as.mask” <a href="https://github.com/rspatial/terra/issues/1981" class="external-link">#1981</a> by Agustin Lobo</li>
 <li>
 <code>vect&lt;character&gt;</code> now handles MultiSurface geometries (as polygons) <a href="https://github.com/rspatial/terra/issues/1994" class="external-link">#1994</a> by Márcia Barbosa</li>
 <li>
@@ -136,7 +138,8 @@
 <h3 id="enhancements-1-8-80">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-80"></a></h3>
 <ul><li>
 <code>plet&lt;SpatRaster&gt;</code> can (again) use a color function returned by <code><a href="https://rstudio.github.io/leaflet/reference/colorNumeric.html" class="external-link">leaflet::colorNumeric</a></code> <a href="https://github.com/rspatial/terra/issues/1904" class="external-link">#1904</a> by Ignacio Marzan</li>
-<li>argument <code>animate&lt;SpatRaster&gt;</code> can now be set to <code>NA</code> to not get a shared legend <a href="https://github.com/rspatial/terra/pull/1909" class="external-link">#1909</a> by Márcia Barbosa</li>
+<li>
+<code>range</code> argument to <code>animate&lt;SpatRaster&gt;</code> can now be set to <code>NA</code> to not get a shared legend <a href="https://github.com/rspatial/terra/pull/1909" class="external-link">#1909</a> by Márcia Barbosa</li>
 <li>
 <code>text&lt;SpatRaster&gt;</code> and <code>text&lt;SpatVector&gt;</code> gained argument “jitter=0” <a href="https://github.com/rspatial/terra/pull/1910" class="external-link">#1910</a> by Márcia Barbosa</li>
 <li>
@@ -156,7 +159,7 @@
 <ul><li>
 <code>plet&lt;SpatRasterCollection&gt;</code> method</li>
 <li>
-<code>cartogram&lt;SpatRaster&gt;</code> can now return a “circles” (dorling) cartogram <a href="https://github.com/rspatial/terra/issues/1911" class="external-link">#1911</a> by Márcia Barbosa</li>
+<code>cartogram&lt;SpatRaster&gt;</code> can now return a “circles” (Dorling) cartogram <a href="https://github.com/rspatial/terra/issues/1911" class="external-link">#1911</a> by Márcia Barbosa</li>
 <li>
 <code>subset&lt;SpatVector&gt;</code> can now use a Spat object to spatially subset <a href="https://github.com/rspatial/terra/issues/1937" class="external-link">#1937</a> by Márcia Barbosa</li>
 <li>
