@@ -57,3 +57,11 @@ expect_equal(r2[c(15,3)], data.frame(cover = factor(c("forest", "urban"), levels
 
 # make sure no errors when show()ing factors
 expect_silent(show(r2))
+
+# catalyze multi-column lookup
+r <- rast(nrows=10, ncols=10, vals=sample(1:5, 100, replace=TRUE))
+levels(r) <- data.frame(ID=1:5, val1=101:105, val2=seq(0.1, 0.5, length.out=5))
+r_cat <- catalyze(r)
+expect_equal(nlyr(r_cat), 2)
+expect_equal(as.vector(values(r_cat[[1]])), as.vector(values(r)) + 100)
+expect_equal(as.vector(values(r_cat[[2]])), as.vector(values(r)) * 0.1)
