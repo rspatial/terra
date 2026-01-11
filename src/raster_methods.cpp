@@ -86,19 +86,69 @@ SpatRaster SpatRaster::lookup_classify(std::vector<double> from_vals, std::vecto
 SpatRaster SpatRaster::lookup_subst(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt) {
 	return lookup_apply(from_vals, to_vals, others, othersValue, nlyr(), opt);
 }
-    unsigned s1 = v.size();
-    unsigned s2 = v[0].size();
 
-	std::size_t s = s1 * s2;
-    std::vector<double> result(s);
-    for (size_t i=0; i<s1; i++) {
-		for (size_t j=0; j<s2; j++) {
-			result[i*s2+j] = v[i][j];
+
+SpatRaster SpatRaster::lookup_catalyze(std::vector<double> from_vals, std::vector<std::vector<double>> to_vals_list, SpatOptions &opt) {
+	size_t num_columns = to_vals_list.size();
+	SpatRaster out = geometry(num_columns, true);
+
+	if (!opt.datatype_set) {
+		for (const auto& to_vals : to_vals_list) {
+			if (needs_float(to_vals)) {
+				opt.datatype = "FLT4S";
+				opt.datatype_set = true;
+				break;
+			}
 		}
 	}
-	return result;
+
+	std::vector<SpatHashMap<double, double>> maps(num_columns);
+	for (size_t col = 0; col < num_columns; col++) {
+		for (size_t j = 0; j < from_vals.size(); j++) {
+			maps[col][from_vals[j]] = to_vals_list[col][j];
+		}
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return out;
+	}
+	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+	std::vector<double> v_in;
+	std::vector<double> v_out;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		v_in.clear();
+		readBlock(v_in, out.bs, i);
+
+		v_out.assign(v_in.size() * num_columns, NAN);
+		for (size_t col = 0; col < num_columns; col++) {
+			size_t offset = col * v_in.size();
+			for (size_t j = 0; j < v_in.size(); j++) {
+				auto it = maps[col].find(v_in[j]);
+				if (it != maps[col].end()) {
+					v_out[offset + j] = it->second;
+				} else if (!std::isnan(v_in[j])) {
+					v_out[offset + j] = v_in[j];
+				}
+			}
+		}
+
+		if (!out.writeBlock(v_out, i)) {
+			readStop();
+			out.writeStop();
+			return out;
+		}
+	}
+
+	readStop();
+	out.writeStop();
+	return out;
 }
-*/
+
 
 /*
 SpatRaster SpatRaster::selectHighest(size_t n, bool low, SpatOptions &opt) {

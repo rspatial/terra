@@ -947,6 +947,7 @@ RCPP_MODULE(spat){
 		.method("replaceValues", &SpatRaster::replaceValues)
 		.method("lookup_classify", &SpatRaster::lookup_classify)
 		.method("lookup_subst", &SpatRaster::lookup_subst)
+		.method("lookup_catalyze", &SpatRaster::lookup_catalyze)
 		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, size_t, unsigned, bool, bool, double, bool, bool, bool, SpatOptions&) )( &SpatRaster::reclassify))
 		//.method("source_collapse", &SpatRaster::collapse, "collapse")
 		.method("selRange", &SpatRaster::selRange)
