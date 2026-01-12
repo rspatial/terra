@@ -84,7 +84,8 @@
   equality
 
 - [`animate(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/animate.md)
-  : Animate a SpatRaster
+  [`animate(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/animate.md)
+  : Animate a map
 
 - [`app(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/app.md)
   [`app(`*`<SpatRasterDataset>`*`)`](https://rspatial.github.io/terra/reference/app.md)

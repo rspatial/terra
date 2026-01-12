@@ -10,6 +10,8 @@
 
 ## version 1.8-93
 
+CRAN release: 2026-01-12
+
 Released 2025-01-12
 
 ### bug fixes
