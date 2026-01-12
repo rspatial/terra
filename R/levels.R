@@ -466,10 +466,12 @@ setMethod("catalyze", "SpatRaster",
 		g <- cats(x)
 		from_vals <- NULL
 		to_vals_list <- list()
+		nms <- NULL
 
 		for (i in 1:nlyr(x)) {
 			gg <- g[[i]]
 			if (nrow(gg) > 0) {
+				nms <- colnames(gg)[-1]
 				from_vals <- as.numeric(gg[, 1])
 				for (j in 2:ncol(gg)) {
 					to_vals <- gg[, j]
@@ -490,6 +492,7 @@ setMethod("catalyze", "SpatRaster",
 		if (length(to_vals_list) > 0 && !is.null(from_vals)) {
 			opt <- spatOptions(filename, ...)
 			x@pntr <- x@pntr$lookup_catalyze(from_vals, to_vals_list, opt)
+			if (!is.null(nms)) names(x) <- nms
 			messages(x)
 		} else {
 			messages(x)

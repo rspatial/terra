@@ -29,7 +29,7 @@
 #include "spatLookup.h"
 
 SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, size_t out_layers, SpatOptions &opt) {
-	SpatRaster out = geometry(out_layers, true);
+	SpatRaster out = geometry(out_layers, false);
 
 	if (!opt.datatype_set) {
 		if ((others && needs_float(othersValue)) || needs_float(to_vals)) {
@@ -90,7 +90,7 @@ SpatRaster SpatRaster::lookup_subst(std::vector<double> from_vals, std::vector<d
 
 SpatRaster SpatRaster::lookup_catalyze(std::vector<double> from_vals, std::vector<std::vector<double>> to_vals_list, SpatOptions &opt) {
 	size_t num_columns = to_vals_list.size();
-	SpatRaster out = geometry(num_columns, true);
+	SpatRaster out = geometry(num_columns, false);
 
 	if (!opt.datatype_set) {
 		for (const auto& to_vals : to_vals_list) {
@@ -5910,7 +5910,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 
 SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, bool keepcats, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(nlyr(), false);
 	if (keepcats) {
 		out.source[0].hasCategories = hasCategories();
 		out.source[0].cats = getCategories();
