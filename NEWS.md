@@ -1,4 +1,6 @@
-# version 1.8-92
+# version 1.8-93
+
+Released 2025-01-12
 
 ## bug fixes
 
