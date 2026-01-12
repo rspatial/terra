@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-93</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-94</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,22 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-91" id="version-18-91">version 1.8-91<a class="anchor" aria-label="anchor" href="#version-18-91"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-94" id="version-18-94">version 1.8-94<a class="anchor" aria-label="anchor" href="#version-18-94"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-91">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-91"></a></h3>
+<h3 id="bug-fixes-1-8-94">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-94"></a></h3>
+</div>
+<div class="section level3">
+<h3 id="enhancements-1-8-94">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-94"></a></h3>
+</div>
+<div class="section level3">
+<h3 id="new-1-8-94">new<a class="anchor" aria-label="anchor" href="#new-1-8-94"></a></h3>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.8-93" id="version-18-93">version 1.8-93<a class="anchor" aria-label="anchor" href="#version-18-93"></a></h2>
+<p>Released 2025-01-12</p>
+<div class="section level3">
+<h3 id="bug-fixes-1-8-93">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-93"></a></h3>
 <ul><li>
 <code>plot&lt;SpatRaster&gt;(add=TRUE)</code> did not put the legend in the right place if the first raster had a larger extent and the number of cells was larger than maxcell. <a href="https://github.com/rspatial/terra/issues/1979" class="external-link">#1979</a> by Mehmet Göktuğ Öztürk</li>
 <li>
@@ -47,9 +60,13 @@
 <code>distance&lt;matrix,missing&gt;</code> was not working <a href="https://github.com/rspatial/terra/issues/1992" class="external-link">#1992</a> by Wencheng Lau-Medrano</li>
 <li>
 <code>polys</code> ignored argument “border” <a href="https://github.com/rspatial/terra/issues/1989" class="external-link">#1997</a> by Márcia Barbosa</li>
+<li>
+<code>describe</code> works with linux paths starting with a tilde <a href="https://github.com/rspatial/terra/issues/2003" class="external-link">2003</a> by David Moles</li>
+<li>
+<code>zonal&lt;SpatRaster,SpatRaster&gt;</code> failed with arguments fun=‘sd’, wide=F. <a href="https://github.com/rspatial/terra/issues/2004" class="external-link">#2004</a> by Thomas Estabrook</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-91">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-91"></a></h3>
+<h3 id="enhancements-1-8-93">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-93"></a></h3>
 <ul><li>
 <code>vect&lt;data.frame&gt;</code> has improved guessing of variable names (if argument geom is not supplied) and crs (if that argument is not supplied, and gets argument “quiet=TRUE” that can be set to false to get warnings if either of these is guessed. <a href="https://github.com/rspatial/terra/issues/1984" class="external-link">#1984</a> and <a href="https://github.com/rspatial/terra/issues/1985" class="external-link">#1985</a> by Márcia Barbosa</li>
 <li>
@@ -68,7 +85,7 @@
 <code>plet&lt;SpatVector&gt;</code> and <code>polys&lt;leaflet&gt;</code> gain argument “lty” <a href="https://github.com/rspatial/terra/issues/1989" class="external-link">#1997</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-91">new<a class="anchor" aria-label="anchor" href="#new-1-8-91"></a></h3>
+<h3 id="new-1-8-93">new<a class="anchor" aria-label="anchor" href="#new-1-8-93"></a></h3>
 <ul><li>
 <code>proj_ok</code> helper function to check if the GDAL/PROJ install is functional <a href="https://github.com/rspatial/terra/issues/1996" class="external-link">#1996</a> by Andrew Gene Brown</li>
 <li>

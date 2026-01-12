@@ -1,6 +1,16 @@
 # Changelog
 
-## version 1.8-91
+## version 1.8-94
+
+### bug fixes
+
+### enhancements
+
+### new
+
+## version 1.8-93
+
+Released 2025-01-12
 
 ### bug fixes
 
@@ -23,6 +33,11 @@
 - `polys` ignored argument “border”
   [\#1997](https://github.com/rspatial/terra/issues/1989) by Márcia
   Barbosa
+- `describe` works with linux paths starting with a tilde
+  [2003](https://github.com/rspatial/terra/issues/2003) by David Moles
+- `zonal<SpatRaster,SpatRaster>` failed with arguments fun=‘sd’, wide=F.
+  [\#2004](https://github.com/rspatial/terra/issues/2004) by Thomas
+  Estabrook
 
 ### enhancements
 

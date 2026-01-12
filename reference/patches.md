@@ -30,7 +30,7 @@ patches(x, directions=4, values=FALSE, zeroAsNA=FALSE, allowGaps=TRUE, filename=
 - zeroAsNA:
 
   logical. If `TRUE` treat cells that are zero as if they were `NA`.
-  Ignored if `byvalue=TRUE`
+  Ignored if `values=TRUE`
 
 - allowGaps:
 
