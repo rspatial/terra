@@ -41,6 +41,7 @@ animate(s, n=1)
 
 v <- vect(system.file("ex/lux.shp", package="terra"))
 animate(v, n=2)
+animate(v[order(v$AREA), ])
 }
 
 \keyword{methods}
