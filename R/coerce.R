@@ -595,6 +595,10 @@ setAs("sf", "SpatVector",
 		if (inherits(geom, "list")) {
 			error("as,sf", "the geometry column is not valid (perhaps first load the sf package)")
 		}
+		if (inherits(geom, "sfc_POLYGON") && all(geom[[1]][[1]] == matrix(c(0,0,-90,-90), ncol=2))) {
+			# sf "POLYGON FULL"
+			return( vect(matrix(c(-180,-180,180,180,90,-90,-90,90), ncol=2), crs="lonlat", "polygons") )
+		}
 		v <- try(.from_sf(from, geom, sfi), silent=FALSE)
 		if (inherits(v, "try-error")) {
 			error("as,sf", "coercion failed. You can try coercing via a Spatial* (sp) class")
