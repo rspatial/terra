@@ -597,7 +597,7 @@ setAs("sf", "SpatVector",
 		}
 		if (inherits(geom, "sfc_POLYGON") && all(geom[[1]][[1]] == matrix(c(0,0,-90,-90), ncol=2))) {
 			# sf "POLYGON FULL"
-			return( vect(matrix(c(-180,-180,180,180,90,-90,-90,90), ncol=2), crs="lonlat", "polygons") )
+			return(as.polygons(ext(from), crs="lonlat"))
 		}
 		v <- try(.from_sf(from, geom, sfi), silent=FALSE)
 		if (inherits(v, "try-error")) {

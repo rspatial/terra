@@ -177,12 +177,11 @@ terraOptions <- function(..., print=TRUE) {
 	if (is.null(.terra_environment$options)) .create_options()
 	opt <- .terra_environment$options@pntr
 
-	nms <- names(dots)
-
 	if (length(dots) == 0) {
 		return(.showOptions(opt, print=print))
 	}
-
+	
+	nms <- names(dots)
 	ok <- nms %in% .option_names()
 	if (any(!ok)) {
 		bad <- paste(nms[!ok], collapse=", ")
