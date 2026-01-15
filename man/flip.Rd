@@ -12,7 +12,7 @@
 \title{Flip or reverse a raster}
 
 \description{
-Flip the values of a SpatRaster by inverting the order of the rows (\code{vertical=TRUE}) or the columns (\code{vertical=FALSE}).
+Flip the values of a SpatRaster by inverting the order of the rows (\code{direction= "vertical"}) or the columns (\code{direction="horizontal"}).
 
 \code{rev} is the same as a horizontal *and* a vertical flip.
 }
