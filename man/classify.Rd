@@ -26,7 +26,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
   \item{x}{SpatRaster}
   \item{rcl}{matrix for classification. This matrix must have 1, 2 or 3 columns. If there are three columns, the first two columns are "from" "to" of the input values, and the third column "becomes" has the new value for that range. 
   
-  The two column matrix ("is", "becomes") can be useful for classifying integer values. In that case, the arguments \code{right} and \code{include.lowest} are ignored.
+  The two column matrix ("is", "becomes") can be useful for classifying integer values. In that case, the arguments \code{right} and \code{include.lowest} are ignored. For this case, an optimized hash-based lookup is used for improved performance. Floating point values are supported and are matched exactly.
   
   A single column matrix (or a vector) is interpreted as a set of cuts if there is more than one value. In that case the values are classified based on their location in-between the cut-values.  
   

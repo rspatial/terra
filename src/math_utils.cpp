@@ -249,4 +249,14 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
 }
 
 
+bool needs_float(double x) {
+	return std::isnan(x) || (std::floor(x) != x);
+}
+
+bool needs_float(const std::vector<double> &v) {
+	for (double x : v) {
+		if (needs_float(x)) return true;
+	}
+	return false;
+}
 

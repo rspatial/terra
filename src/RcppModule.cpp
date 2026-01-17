@@ -945,6 +945,9 @@ RCPP_MODULE(spat){
 		.method("clamp_raster", &SpatRaster::clamp_raster)
 		.method("clamp_ts", &SpatRaster::clamp_ts)
 		.method("replaceValues", &SpatRaster::replaceValues)
+		.method("lookup_classify", &SpatRaster::lookup_classify)
+		.method("lookup_subst", &SpatRaster::lookup_subst)
+		.method("lookup_catalyze", &SpatRaster::lookup_catalyze)
 		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, size_t, unsigned, bool, bool, double, bool, bool, bool, SpatOptions&) )( &SpatRaster::reclassify))
 		//.method("source_collapse", &SpatRaster::collapse, "collapse")
 		.method("selRange", &SpatRaster::selRange)
@@ -1050,7 +1053,11 @@ RCPP_MODULE(spat){
 		.method("trim1", &SpatRaster::trim1)
 		.method("trim", &SpatRaster::trim2)
 
-		.method("unique", &SpatRaster::unique)
+		           .method("unique", &SpatRaster::unique)
+
+		           .method("crosstab", &SpatRaster::crosstab)
+
+
 		.method("where", &SpatRaster::where)
 		.method("sieve", &SpatRaster::sieveFilter)
 		.method("view", &SpatRaster::viewshed)

@@ -464,24 +464,40 @@ catLayer <- function(x, index, ...) {
 setMethod("catalyze", "SpatRaster",
 	function(x, filename="", ...) {
 		g <- cats(x)
-		out <- list()
+		from_vals <- NULL
+		to_vals_list <- list()
+		nms <- NULL
+
 		for (i in 1:nlyr(x)) {
-			y <- x[[i]]
 			gg <- g[[i]]
 			if (nrow(gg) > 0) {
+				nms <- colnames(gg)[-1]
+				from_vals <- as.numeric(gg[, 1])
 				for (j in 2:ncol(gg)) {
-					z <- as.numeric(y, index=j-1)
-					out <- c(out, z)
+					to_vals <- gg[, j]
+					if (!is.numeric(to_vals)) {
+						suppressWarnings(toto <- as.numeric(to_vals))
+						if (sum(is.na(toto)) > sum(is.na(to_vals))) {
+							to_vals <- as.integer(as.factor(to_vals))
+						} else {
+							to_vals <- toto
+						}
+					}
+					to_vals_list[[length(to_vals_list) + 1]] <- as.numeric(to_vals)
 				}
-			} else {
-				out <- c(out, y)
+				break
 			}
 		}
-		out <- rast(out)
-		if (filename!="") {
-			out <- writeRaster(out, filename, ...)
+
+		if (length(to_vals_list) > 0 && !is.null(from_vals)) {
+			opt <- spatOptions(filename, ...)
+			x@pntr <- x@pntr$lookup_catalyze(from_vals, to_vals_list, opt)
+			if (!is.null(nms)) names(x) <- nms
+			messages(x)
+		} else {
+			messages(x)
 		}
-		out
+		x
 	}
 )
 

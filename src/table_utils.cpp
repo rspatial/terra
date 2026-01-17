@@ -2,15 +2,15 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include "spatLookup.h"
 
 
 std::map<double, size_t> table(std::vector<double> &v) {
-	std::map<double, size_t> count;
-	for_each( v.begin(), v.end(), [&count]( double val ){
-			if(!std::isnan(val)) count[val]++;
-		}
-	);
-	return count;
+	SpatFrequencyTable<double> count;
+	for (double val : v) {
+		if(!std::isnan(val)) count[val]++;
+	}
+	return std::map<double, size_t>(count.begin(), count.end());
 }
 
 

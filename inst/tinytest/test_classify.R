@@ -21,4 +21,14 @@ expect_equal(as.vector(values(rc)), c(0, 1, 1, 2, 3, 3, 3, 3, 3))
 rc <- classify(r, rclmat, right=TRUE, include.lowest=TRUE)
 expect_equal(as.vector(values(rc)), c(1, 1, 1, 2, 3, 3, 3, 3, 3))
 
- 
+# classify 2-column lookup
+r <- rast(nrows=10, ncols=10, vals=sample(1:5, 100, replace=TRUE))
+rcl <- data.frame(from=1:3, to=11:13)
+r_opt <- classify(r, rcl)
+v_opt <- as.vector(values(r_opt))
+v_in <- as.vector(values(r))
+expect_equal(v_opt[v_in == 1], rep(11, sum(v_in == 1)))
+expect_equal(v_opt[v_in == 2], rep(12, sum(v_in == 2)))
+expect_equal(v_opt[v_in == 3], rep(13, sum(v_in == 3)))
+expect_equal(v_opt[v_in > 3], v_in[v_in > 3])
+

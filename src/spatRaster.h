@@ -829,6 +829,10 @@ class SpatRaster {
 
 
 		SpatRaster replaceValues(std::vector<double> from, std::vector<double> to, long nl, bool setothers, double others, bool keepcats, SpatOptions &opt);
+		SpatRaster lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, size_t out_layers, SpatOptions &opt);
+		SpatRaster lookup_classify(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt);
+		SpatRaster lookup_subst(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt);
+		SpatRaster lookup_catalyze(std::vector<double> from_vals, std::vector<std::vector<double>> to_vals_list, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, bool keepcats, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, size_t nc, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, bool keepcats, SpatOptions &opt);
 		//SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);
@@ -881,7 +885,9 @@ class SpatRaster {
 		SpatRaster trig(std::string fun, SpatOptions &opt);
 		SpatRaster trim1(double value, size_t padding, SpatOptions &opt);
 		SpatRaster trim2(double value, size_t padding, SpatOptions &opt);
-		std::vector<std::vector<double>> unique(bool bylayer, double digits, bool narm, SpatOptions &opt);
+		            std::vector<std::vector<double>> unique(bool bylayer, double digits, bool narm, SpatOptions &opt);
+		            std::vector<double> crosstab(int digits, bool narm, SpatOptions &opt);
+
 		SpatRaster project1(std::string newcrs, std::string method, SpatOptions &opt);
 		SpatRaster project2(SpatRaster &x, std::string method, SpatOptions &opt);
 		void project3(SpatRaster &out, std::string method, SpatOptions &opt);
