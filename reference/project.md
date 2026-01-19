@@ -64,7 +64,7 @@ project(x, from, to)
   of `x` is categorical. This method is not a good choice for continuous
   values.
 
-  `mode`: The modal value. This can be a good choice for categrical
+  `mode`: The modal value. This can be a good choice for categorical
   rasters, if the output cells overlap with multiple input cells.
 
   `cubic`: cubic interpolation (5x5 cell window).

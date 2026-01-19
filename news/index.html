@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-94</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-95</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,9 @@
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-94">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-94"></a></h3>
-<ul><li>terra now handles the sf defined “POLYGON FULL” pseudo WKT <a href="https://github.com/rspatial/terra/issues/2013" class="external-link">#2013</a> by Alexandre Courtiol</li>
+<ul><li><p>significant speed improvements for classify, subst (one-to-one value replacement), catalyze (one-to-many value replacement), unique (better deduplication), and freq, crosstab, table_utils (unified approach to counting) by Andrew Gene Brown <a href="https://github.com/rspatial/terra/pull/2012" class="external-link">#2012</a></p></li>
+<li><p>terra now handles the sf defined “POLYGON FULL” pseudo WKT <a href="https://github.com/rspatial/terra/issues/2013" class="external-link">#2013</a> by Alexandre Courtiol</p></li>
+<li><p>fixed documentation for “direction” parameter in <code>flip&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/pull/2016" class="external-link">#2016</a> by Jesse Anderson</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-94">new<a class="anchor" aria-label="anchor" href="#new-1-8-94"></a></h3>
@@ -2039,7 +2041,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Robert J. Hijmans, Márcia Barbosa, Andrew Brown.</p>
+  <p>Developed by Robert J. Hijmans, Andrew Brown, Márcia Barbosa.</p>
 </div>
 
 <div class="pkgdown-footer-right">
