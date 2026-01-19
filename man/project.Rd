@@ -42,7 +42,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 
 	\code{near}: nearest neighbor. This is used by default if the first layer of \code{x} is categorical. This method is not a good choice for continuous values.
 
-	\code{mode}: The modal value. This can be a good choice for categrical rasters, if the output cells overlap with multiple input cells. 
+	\code{mode}: The modal value. This can be a good choice for categorical rasters, if the output cells overlap with multiple input cells. 
   
 	\code{cubic}: cubic interpolation (5x5 cell window).
 
