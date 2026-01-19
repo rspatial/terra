@@ -1,7 +1,7 @@
 # Flip or reverse a raster
 
 Flip the values of a SpatRaster by inverting the order of the rows
-(`vertical=TRUE`) or the columns (`vertical=FALSE`).
+(`direction= "vertical"`) or the columns (`direction="horizontal"`).
 
 `rev` is the same as a horizontal \*and\* a vertical flip.
 
