@@ -23,7 +23,9 @@ subst(x, from, to, others=NULL, raw=FALSE, filename="", ...)
   `x` has multiple layers, it can also be a matrix of numeric value(s)
   where `nrow(x) == length(to)`. In that case the output has a single
   layer, with values based on the combination of the values of the input
-  layers
+  layers. For single-layer replacement with numeric vectors, an
+  optimized hash-based lookup is used. Floating point values are
+  supported and are matched exactly.
 
 - to:
 

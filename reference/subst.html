@@ -51,7 +51,7 @@
 <dd><p>SpatRaster</p></dd>
 
   <dt id="arg-from">from<a class="anchor" aria-label="anchor" href="#arg-from"></a></dt>
-<dd><p>numeric value(s). Normally a vector of the same length as `to`. If <code>x</code> has multiple layers, it can also be a matrix of numeric value(s) where <code>nrow(x) == length(to)</code>. In that case the output has a single layer, with values based on the combination of the values of the input layers</p></dd>
+<dd><p>numeric value(s). Normally a vector of the same length as `to`. If <code>x</code> has multiple layers, it can also be a matrix of numeric value(s) where <code>nrow(x) == length(to)</code>. In that case the output has a single layer, with values based on the combination of the values of the input layers. For single-layer replacement with numeric vectors, an optimized hash-based lookup is used. Floating point values are supported and are matched exactly.</p></dd>
 
   <dt id="arg-to">to<a class="anchor" aria-label="anchor" href="#arg-to"></a></dt>
 <dd><p>numeric value(s). Normally a vector of the same length as `from`. If <code>x</code> has a single layer, it can also be a matrix of numeric value(s) where <code>nrow(x) == length(from)</code>. In that case the output has multiple layers, one for each column in <code>to</code></p></dd>

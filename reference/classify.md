@@ -39,7 +39,9 @@ classify(x, rcl, include.lowest=FALSE, right=TRUE,
 
   The two column matrix ("is", "becomes") can be useful for classifying
   integer values. In that case, the arguments `right` and
-  `include.lowest` are ignored.
+  `include.lowest` are ignored. For this case, an optimized hash-based
+  lookup is used for improved performance. Floating point values are
+  supported and are matched exactly.
 
   A single column matrix (or a vector) is interpreted as a set of cuts
   if there is more than one value. In that case the values are

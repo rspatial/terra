@@ -4,9 +4,20 @@
 
 ### bug fixes
 
+- new implementation of `patches` by Andrew Gene Brown
+  [\#2006](https://github.com/rspatial/terra/pull/2006) that fixes
+  [\#1758](https://github.com/rspatial/terra/issues/1758)
+
 ### enhancements
 
+- terra now handles the sf defined “POLYGON FULL” pseudo WKT
+  [\#2013](https://github.com/rspatial/terra/issues/2013) by Alexandre
+  Courtiol
+
 ### new
+
+- `animate<SpatVector>` method by Márcia Barbosa
+  [\#2007](https://github.com/rspatial/terra/issues/2007)
 
 ## version 1.8-93
 
