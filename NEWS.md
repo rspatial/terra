@@ -1,15 +1,17 @@
-# version 1.8-94
+# version 1.8-95
 
 ## bug fixes
 
 - new implementation of `patches` by Andrew Gene Brown [#2006](https://github.com/rspatial/terra/pull/2006) that fixes [#1758](https://github.com/rspatial/terra/issues/1758)
+
+- `project` did not apply the scale/offset values [#2014](https://github.com/rspatial/terra/issues/2014) by Edgar Castro
 
 
 ## enhancements
 
 - significant speed improvements for classify, subst (one-to-one value replacement), catalyze (one-to-many value replacement), unique (better deduplication), and freq, crosstab, table_utils (unified approach to counting) by Andrew Gene Brown [#2012](https://github.com/rspatial/terra/pull/2012)
 
-- terra now handles the sf defined "POLYGON FULL" pseudo WKT [#2013](https://github.com/rspatial/terra/issues/2013) by Alexandre Courtiol 
+- terra now handles the sf defined "POLYGON FULL" not-so-WKT [#2013](https://github.com/rspatial/terra/issues/2013) by Alexandre Courtiol 
 
 - fixed documentation for "direction" parameter in `flip<SpatRaster>` [#2016](https://github.com/rspatial/terra/pull/2016) by Jesse Anderson
 
