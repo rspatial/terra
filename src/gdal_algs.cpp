@@ -490,6 +490,12 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 
+	if (hasScaleOffset()) {
+		SpatOptions opt2(opt);
+		SpatRaster app = apply_so(opt2);	
+		return app.warper(x, crs, method, mask, align, resample, opt);
+	}
+
 	SpatRaster out = x.geometry(nlyr(), false, false);
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
@@ -606,19 +612,6 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 	std::string errmsg;
 	SpatExtent eout = out.getExtent();
-
-
-
-//	std::vector<bool> has_so = source[0].has_scale_offset;
-//	std::vector<double> scale = source[0].scale;
-//	std::vector<double> offset = source[0].offset;
-
-//	for (size_t i=1; i<ns; i++) {
-//		has_so.insert(has_so.end(), source[0].has_scale_offset.begin(), source[0].has_scale_offset.end());
-//		scale.insert(scale.end(), source[0].scale.begin(), source[0].scale.end());
-//		offset.insert(offset.end(), source[0].offset.begin(), source[0].offset.end());
-//	}
-
 
 	std::vector<bool> has_so(nlyr(), false);
 	std::vector<double> scale(nlyr(), 1);

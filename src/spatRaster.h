@@ -640,6 +640,8 @@ class SpatRaster {
 		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, bool falseNA, SpatOptions &opt);
 		SpatRaster arith_m(std::vector<double> x, std::string oper, std::vector<size_t> dim, bool reverse, SpatOptions &opt);
 
+		SpatRaster apply_so(SpatOptions &opt);
+
 		SpatRaster apply(std::vector<size_t> ind, std::string fun, bool narm, std::vector<std::string> nms, std::vector<int64_t> time, std::string timestep, std::string timezone, SpatOptions &opt);
 	
 		SpatRaster rapply(SpatRaster x, double first, double last, std::string fun, bool clamp, bool narm, bool circular, SpatOptions &opt);

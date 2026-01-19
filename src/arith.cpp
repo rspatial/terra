@@ -290,6 +290,35 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, bool falseNA, SpatO
 	return(out);
 }
 
+SpatRaster SpatRaster::apply_so(SpatOptions &opt) {
+	SpatRaster out = geometry();
+	if (!hasValues()) {
+		out.setError("raster has no values"); // or warn and treat as NA?
+		return out;
+	}
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a;
+		readBlock(a, out.bs, i);
+		if (!out.writeBlock(a, i)) return out;
+	}
+	out.writeStop();
+	readStop();
+	return(out);
+
+
+}
+
+
 
 SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, bool falseNA, SpatOptions &opt) {
 
