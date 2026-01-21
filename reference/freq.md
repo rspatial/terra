@@ -60,6 +60,10 @@ A `data.frame` with 3 columns (layer, value, count) unless
 `bylayer=FALSE` in which case a`data.frame` with two columns is returned
 (value, count).
 
+## Author
+
+Andrew Gene Brown, Robert J. Hijmans
+
 ## Examples
 
 ``` r

@@ -1,12 +1,16 @@
 # Changelog
 
-## version 1.8-94
+## version 1.8-95
 
 ### bug fixes
 
 - new implementation of `patches` by Andrew Gene Brown
   [\#2006](https://github.com/rspatial/terra/pull/2006) that fixes
   [\#1758](https://github.com/rspatial/terra/issues/1758)
+
+- `project` did not apply the scale/offset values
+  [\#2014](https://github.com/rspatial/terra/issues/2014) by Edgar
+  Castro
 
 ### enhancements
 
@@ -16,7 +20,7 @@
   counting) by Andrew Gene Brown
   [\#2012](https://github.com/rspatial/terra/pull/2012)
 
-- terra now handles the sf defined “POLYGON FULL” pseudo WKT
+- terra now handles the sf defined “POLYGON FULL” not-so-WKT
   [\#2013](https://github.com/rspatial/terra/issues/2013) by Alexandre
   Courtiol
 

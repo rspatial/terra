@@ -57,6 +57,10 @@ subst(x, from, to, others=NULL, raw=FALSE, filename="", ...)
 
 SpatRaster
 
+## Author
+
+Andrew Gene Brown, Robert J. Hijmans
+
 ## See also
 
 [`classify`](https://rspatial.github.io/terra/reference/classify.md),

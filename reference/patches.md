@@ -52,6 +52,10 @@ patches(x, directions=4, values=FALSE, zeroAsNA=FALSE, allowGaps=TRUE, filename=
 
 SpatRaster. Cell values are patch numbers
 
+## Author
+
+Andrew Gene Brown, Robert J. Hijmans
+
 ## See also
 
 [`focal`](https://rspatial.github.io/terra/reference/focal.md),

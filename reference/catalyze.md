@@ -39,6 +39,10 @@ catalyze(x, filename="", ...)
 
 SpatRaster
 
+## Author
+
+Andrew Gene Brown, Robert J. Hijmans
+
 ## See also
 
 [`activeCat`](https://rspatial.github.io/terra/reference/activeCat.md),

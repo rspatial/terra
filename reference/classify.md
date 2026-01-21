@@ -94,6 +94,10 @@ classify(x, rcl, include.lowest=FALSE, right=TRUE,
 
 SpatRaster
 
+## Author
+
+Andrew Gene Brown, Robert J. Hijmans
+
 ## See also
 
 [`subst`](https://rspatial.github.io/terra/reference/subst.md) for

@@ -38,6 +38,10 @@ A table or data.frame
 [`freq`](https://rspatial.github.io/terra/reference/freq.md),
 [`zonal`](https://rspatial.github.io/terra/reference/zonal.md)
 
+## Author
+
+Andrew Gene Brown, Robert J. Hijmans
+
 ## Examples
 
 ``` r
