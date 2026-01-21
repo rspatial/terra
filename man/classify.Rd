@@ -50,6 +50,9 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 SpatRaster
 }
 
+\author{Andrew Gene Brown, Robert J. Hijmans}
+
+
 \seealso{\code{\link{subst}} for simpler from-to replacement, and \code{\link{clamp}}}
 
 \note{

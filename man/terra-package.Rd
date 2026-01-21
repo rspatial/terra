@@ -679,7 +679,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 }
 
 \section{Contributors}{
-Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of code using the GEOS library was adapted from code by Edzer Pebesma for \code{sf}. Emanuele  Cordano contributed functionality for catchment related computations. Andrew Gene Brown, Márcia Barbosa, Michael Chirico, Krzysztof Dyba, Barry Rowlingson, and Michael D. Sumner also  made important contributions
+Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. Andrew Gene Brown and Márcia Barbosa contributed many improvements to the code and documentation. The configuration scripts were written by Roger Bivand. Some of code using the GEOS library was adapted from code by Edzer Pebesma for \code{sf}. Emanuele Cordano contributed functionality for catchment related computations. Michael Chirico, Krzysztof Dyba, Barry Rowlingson, and Michael D. Sumner also made important contributions
 
 
 This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. Feedback and suggestions by Kendon Bell, Jean-Luc Dupouey, Sarah Endicott, Derek Friend, Alex Ilich, Agustin Lobo, Gerald Nelson, Jakub Nowosad, and Monika Tomaszewska have been especially helpful.

@@ -29,6 +29,8 @@ Substitute(replace) cell values of a SpatRaster with a new value. See \code{\lin
 SpatRaster
 }
 
+\author{Andrew Gene Brown, Robert J. Hijmans}
+
 \seealso{\code{\link{classify}}, \code{\link{clamp}}}
 
 \examples{
