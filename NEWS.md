@@ -40,7 +40,7 @@ Released 2025-01-12
 - `vect<data.frame>` has improved guessing of variable names (if argument geom is not supplied) and crs (if that argument is not supplied, and gets argument "quiet=TRUE" that can be set to false to get warnings if either of these is guessed. [#1984](https://github.com/rspatial/terra/issues/1984) and [#1985](https://github.com/rspatial/terra/issues/1985) by Márcia Barbosa
 - `extract<SpatVector>` is now less memory hungry when using argument layers [#1983](https://github.com/rspatial/terra/issues/1983) by Kodi Arfer
 - `split<SpatVector>` now behaves like the data.frame method when using multiple split variables [#1987](https://github.com/rspatial/terra/issues/1987) by WillhKessler
-- `$<-<SpatVector>` now gives an error if the replacement is longer than the data, and a warning if recylcing of a shorter replacement is imperfect. [#1980](https://github.com/rspatial/terra/issues/1980) by Margaret Bolton
+- `$<-<SpatVector>` now gives an error if the replacement is longer than the data, and a warning if recycling of a shorter replacement is imperfect. [#1980](https://github.com/rspatial/terra/issues/1980) by Margaret Bolton
 - `cartogram` gets new arguments "inside" and "exp" and better scaling [#1982](https://github.com/rspatial/terra/issues/1982) by Márcia Barbosa
 - `spatSample<SpatRaster>` gains argument "as.mask" [#1981](https://github.com/rspatial/terra/issues/1981) by Agustin Lobo
 - `vect<character>` now handles MultiSurface geometries (as polygons) [#1994](https://github.com/rspatial/terra/issues/1994) by Márcia Barbosa
@@ -127,7 +127,7 @@ Released 2025-09-27
 ## bug fixes
 
 - `project(mask=TRUE)` could fail with high-resolution global rasters because of date-line flipping [SO 79708536](https://stackoverflow.com/q/79708536/635245) by Patrick
-- `plot(pax=list(mgp=c(1,1,2))` now sets mgp seperately for horizontal and vertical axes [#1873](https://github.com/rspatial/terra/issues/1873) by Hu shiyu
+- `plot(pax=list(mgp=c(1,1,2))` now sets mgp separately for horizontal and vertical axes [#1873](https://github.com/rspatial/terra/issues/1873) by Hu shiyu
 - `coltab(x, ..., layer=1)<-` argument layer did not work for layer names [#1879](https://github.com/rspatial/terra/issues/1879) by Alex Ilich
 - `sds` could create a SpatRasterDataset with SpatRasters with different spatial resolutions [#1884](https://github.com/rspatial/terra/issues/1884) by Stefan Fallert
 - `identical` did not consider NA values [#1890](https://github.com/rspatial/terra/issues/1890) by Facundo Muñoz
@@ -170,7 +170,7 @@ Released 2025-07-18
 
 - `freq` has new argument "touches" to determine which cell to include if a zones polygon is used [SO 79654752](https://stackoverflow.com/q/79654752) by M. Beausoleil
 - `plot` with a continuous legend has new `plg` parameter "format" so that you can use scientific notation [#1861](https://github.com/rspatial/terra/issues/1861) by Andrea Titolo
-- `sprc<character>` now also works for a single datasource raster [#1860](https://github.com/rspatial/terra/issues/1860) by Anrew Gene Brown
+- `sprc<character>` now also works for a single datasource raster [#1860](https://github.com/rspatial/terra/issues/1860) by Andrew Gene Brown
 
 
 # version 1.8-54
@@ -184,7 +184,7 @@ Released 2025-06-01
 - added the `-lnetcdf` flag needed for linking on some linuxes [#1829](https://github.com/rspatial/terra/issues/1829) by Guillermo A. Durán Sanabria
 - in some cases the last block used in raster processing was too large and led to memory issues [#1825](https://github.com/rspatial/terra/issues/1825) by Alex Ilich
 - `==<SpatRaster>` with multiple layers and categorical comparison failed [#1836](https://github.com/rspatial/terra/issues/1836) by Andrew Gene Brown
-- `wrteCDF` failed when writing tags with illegal characters such as "{" or "(", [#1811](https://github.com/rspatial/terra/issues/1811) by Catalin Sorin Covaci
+- `writeCDF` failed when writing tags with illegal characters such as "{" or "(", [#1811](https://github.com/rspatial/terra/issues/1811) by Catalin Sorin Covaci
 - `freq` failed for an empty SpatRaster [#1839](https://github.com/rspatial/terra/issues/1839) by Alex Ilich
 - `writeVector` with an empty SpatVector crashed R [#1837](https://github.com/rspatial/terra/issues/1837) by Induriel
 - `predict<SpatRaster>` could fail with na.rm=TRUE and a block with NA values only [#1843](https://github.com/rspatial/terra/issues/1843) by Alex Ilich
@@ -219,7 +219,7 @@ Released 2025-05-09
 
 
 ## enhancements
-- `init` with a matrix argument now keeps the same row/col values [#1801](https://github.com/rspatial/terra/issues/1801) Jakub Nowosad
+- `init` with a matrix argument now keeps the same row/col values [#1801](https://github.com/rspatial/terra/issues/1801) by Jakub Nowosad
 - `rasterize` now checks for very large numbers and switches to FLT8S if detected. [#1797](https://github.com/rspatial/terra/issues/1797) by Evan Muise
 - `rast`, `sds` and `sprc` get new argument "guessCRS" to suppress CRS guessing [#1800](https://github.com/rspatial/terra/issues/1800) by Aseem Sharma
 - `plot<SpatRaster/SpatVector>` with a continuous legend now responds to `plg=list(horiz=TRUE))` [#1805](https://github.com/rspatial/terra/issues/1805) by Nathanael Walker-Hale
