@@ -28,7 +28,9 @@
 #include "sort.h"
 #include "spatLookup.h"
 
-SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, size_t out_layers, SpatOptions &opt) {
+SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, 
+	double othersValue, size_t out_layers, SpatOptions &opt) {
+		
 	SpatRaster out = geometry(out_layers, false);
 
 	if (!opt.datatype_set) {
@@ -53,65 +55,66 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 			if (d < min_v) min_v = (int)d;
 			if (d > max_v) max_v = (int)d;
 		}
-				if (all_int) {
-					size_t range = (size_t)max_v - (size_t)min_v + 1;
-					double mem_req_bytes = (double)range * 8.0 + (double)range / 8.0;
-					double mem_budget_bytes = opt.get_memmin() * 8.0;
+		if (all_int) {
+			size_t range = (size_t)max_v - (size_t)min_v + 1;
+			double mem_req_bytes = (double)range * 8.0 + (double)range / 8.0;
+			double mem_budget_bytes = opt.get_memmin() * 8.0;
 					
-					if (mem_req_bytes < mem_budget_bytes) {
-						use_direct_lut = true;
+			if (mem_req_bytes < mem_budget_bytes) {
+				use_direct_lut = true;
+			}
+		}
+	}
+		
+	std::vector<double> lut;
+	std::vector<bool> lut_set;
+	SpatHashMap<double, double> lookup_map;
+		
+	if (use_direct_lut) {
+		size_t range = (size_t)max_v - (size_t)min_v + 1;
+		lut.resize(range);
+		lut_set.assign(range, false);
+		for (size_t j = 0; j < from_vals.size(); j++) {
+			int idx = (int)from_vals[j] - min_v;
+			lut[idx] = to_vals[j];
+			lut_set[idx] = true;
+		}
+	} else {
+		for (size_t j = 0; j < from_vals.size(); j++) {
+			lookup_map[from_vals[j]] = to_vals[j];
+		}
+	}
+		
+	if (!readStart()) {
+		out.setError(getError());
+		return out;
+	}
+	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+		
+	std::vector<double> v;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		v.clear();
+		readBlock(v, out.bs, i);
+		
+		if (use_direct_lut) {
+			for (size_t j = 0; j < v.size(); j++) {
+				double val = v[j];
+				if (!std::isnan(val) && val >= min_v && val <= max_v && val == std::floor(val)) {
+					int idx = (int)val - min_v;
+					if (lut_set[idx]) {
+						v[j] = lut[idx];
+					} else if (others) {
+						v[j] = othersValue;
 					}
+				} else if (others) {
+					v[j] = othersValue;
 				}
 			}
-		
-			std::vector<double> lut;
-			std::vector<bool> lut_set;
-			SpatHashMap<double, double> lookup_map;
-		
-			if (use_direct_lut) {
-				size_t range = (size_t)max_v - (size_t)min_v + 1;
-				lut.resize(range);
-				lut_set.assign(range, false);
-				for (size_t j = 0; j < from_vals.size(); j++) {
-					int idx = (int)from_vals[j] - min_v;
-					lut[idx] = to_vals[j];
-					lut_set[idx] = true;
-				}
-			} else {
-				for (size_t j = 0; j < from_vals.size(); j++) {
-					lookup_map[from_vals[j]] = to_vals[j];
-				}
-			}
-		
-			if (!readStart()) {
-				out.setError(getError());
-				return out;
-			}
-			if (!out.writeStart(opt, filenames())) {
-				readStop();
-				return out;
-			}
-		
-			std::vector<double> v;
-			for (size_t i = 0; i < out.bs.n; i++) {
-				v.clear();
-				readBlock(v, out.bs, i);
-		
-				if (use_direct_lut) {
-					for (size_t j = 0; j < v.size(); j++) {
-						double val = v[j];
-						if (!std::isnan(val) && val >= min_v && val <= max_v && val == std::floor(val)) {
-							int idx = (int)val - min_v;
-							if (lut_set[idx]) {
-								v[j] = lut[idx];
-							} else if (others) {
-								v[j] = othersValue;
-							}
-						} else if (others) {
-							v[j] = othersValue;
-						}
-					}
-				} else {			for (size_t j = 0; j < v.size(); j++) {
+		} else {
+			for (size_t j = 0; j < v.size(); j++) {
 				auto it = lookup_map.find(v[j]);
 				if (it != lookup_map.end()) {
 					v[j] = it->second;
