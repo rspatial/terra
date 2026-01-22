@@ -138,7 +138,7 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 
 
 SpatRaster SpatRaster::lookup_classify(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt) {
-	return lookup_apply(from_vals, to_vals, others, othersValue, 1, opt);
+	return lookup_apply(from_vals, to_vals, others, othersValue, nlyr(), opt);
 }
 
 
