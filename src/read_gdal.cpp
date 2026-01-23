@@ -170,7 +170,7 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::str
 	size_t nc = (int) pRAT->GetColumnCount();
 	size_t nr = (int) pRAT->GetRowCount();
 
-	std::vector<std::string> ss = {"histogram", "count", "red", "green", "blue", "alpha", "opacity", "r", "g", "b", "a"};
+	std::vector<std::string> ss = {"histogram", "count", "pixel count", "red", "green", "blue", "alpha", "opacity", "r", "g", "b", "a"};
 
 	std::vector<std::string> ratnms;
 	std::vector<int> id, id2;

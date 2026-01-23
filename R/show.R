@@ -193,6 +193,7 @@ setMethod ("show" , "SpatVectorProxy",
 	}
 )
 
+
 setMethod ("show" , "SpatRaster",
 	function(object) {
 
@@ -376,6 +377,7 @@ setMethod ("show" , "SpatRaster",
 					for (i in which(isf)) {
 						if (i > mnr) break
 						levs <- cats[[i]]
+						if (any(is.na(rr[,i]))) next
 						j <- match(rr[,i], levs[,1])
 						levs <- levs[j, 2]
 						if (length(levs) > 1) {
