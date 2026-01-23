@@ -186,7 +186,7 @@ Apart from the function listed below, you can also use indexing with \code{[} wi
     \code{\link{setValues}} \tab Set new values to the cells of a SpatRaster \cr
     \code{\link{as.matrix}} \tab Get cell values as a matrix \cr
     \code{\link{as.array}} \tab Get cell values as an array \cr
-	\code{\link{as.data.frame}} \tab get cell values as a data.frame (including class lables)\cr
+	\code{\link{as.data.frame}} \tab get cell values as a data.frame (including class labels)\cr
     \code{\link{extract}} \tab Extract cell values from a SpatRaster (with cell numbers, coordinates, points, lines, or polygons)\cr
     \code{\link{extractAlong}} \tab Extract cell values along a line such that the values are in the right order\cr
     \code{\link{spatSample}} \tab Take a sample (regular, random, stratified, weighted) sample from a SpatRaster\cr

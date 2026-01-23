@@ -33,7 +33,7 @@ You can set arbitrary metadata to (layers of) a SpatRaster using "name=value", o
 \item{domain}{character. Only used if not specified by \code{value}. Use "" for the default domain. Depending on the file format used this may the only domain supported when writing files}
 \item{name}{character}
 \item{value}{character of "name=value" or two-column (name, value) or three-column (name, value, domain) matrix or data.frame}
-\item{dataset}{NULL, positive integer or character. If the value is NULL, the tags assigned or returned are for the SpatRasterDataset/SpatRasterCollection. Otherwise for the datset number(s) or name(s)}
+\item{dataset}{NULL, positive integer or character. If the value is NULL, the tags assigned or returned are for the SpatRasterDataset/SpatRasterCollection. Otherwise for the dataset number(s) or name(s)}
 }
 
 \value{

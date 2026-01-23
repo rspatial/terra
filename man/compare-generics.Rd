@@ -44,7 +44,7 @@ Standard comparison and logical operators for computations with SpatRasters. Com
 
 See \code{\link{not.na}} for the inverse of \code{is.na}, and \code{\link{noNA}} to detect cells with missing value across layers.
 
-The \code{compare} and \code{logic} methods implement these operators in a method that can return \code{NA} istead of \code{FALSE} and allows for setting an output filename.
+The \code{compare} and \code{logic} methods implement these operators in a method that can return \code{NA} instead of \code{FALSE} and allows for setting an output filename.
 
 The terra package does not distinguish between \code{NA} (not available) and \code{NaN} (not a number). In most cases this state is represented by \code{NaN}.  
 
