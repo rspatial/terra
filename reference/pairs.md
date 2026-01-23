@@ -52,7 +52,7 @@ names(s) <- c("elevation", "inverse", "sqrt")
 pairs(s)
 
 
-# to make indvidual histograms:
+# to make individual histograms:
 hist(r)
 
 # or scatter plots:

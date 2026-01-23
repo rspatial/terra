@@ -51,7 +51,7 @@ metags(x, dataset=NULL, name=NULL)
 
   NULL, positive integer or character. If the value is NULL, the tags
   assigned or returned are for the
-  SpatRasterDataset/SpatRasterCollection. Otherwise for the datset
+  SpatRasterDataset/SpatRasterCollection. Otherwise for the dataset
   number(s) or name(s)
 
 ## Value

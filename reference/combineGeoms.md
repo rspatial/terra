@@ -6,8 +6,8 @@ distance (in that order of operation).
 
 The typical use-case of this method is when you are editing geometries
 and you have a number of small polygons in one SpatVector that should be
-part of the geometries of the another SpatVector; perhaps because they
-were small holes inbetween the borders of two SpatVectors.
+part of the geometries of the other SpatVector; perhaps because they
+were small holes in between the borders of two SpatVectors.
 
 To append SpatVectors use \`rbind\` and see methods like `intersect` and
 `union` for "normal" polygons combinations.

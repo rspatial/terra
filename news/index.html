@@ -82,7 +82,7 @@
 <li>
 <code>split&lt;SpatVector&gt;</code> now behaves like the data.frame method when using multiple split variables <a href="https://github.com/rspatial/terra/issues/1987" class="external-link">#1987</a> by WillhKessler</li>
 <li>
-<code>$&lt;-&lt;SpatVector&gt;</code> now gives an error if the replacement is longer than the data, and a warning if recylcing of a shorter replacement is imperfect. <a href="https://github.com/rspatial/terra/issues/1980" class="external-link">#1980</a> by Margaret Bolton</li>
+<code>$&lt;-&lt;SpatVector&gt;</code> now gives an error if the replacement is longer than the data, and a warning if recycling of a shorter replacement is imperfect. <a href="https://github.com/rspatial/terra/issues/1980" class="external-link">#1980</a> by Margaret Bolton</li>
 <li>
 <code>cartogram</code> gets new arguments “inside” and “exp” and better scaling <a href="https://github.com/rspatial/terra/issues/1982" class="external-link">#1982</a> by Márcia Barbosa</li>
 <li>
@@ -199,7 +199,7 @@
 <ul><li>
 <code>project(mask=TRUE)</code> could fail with high-resolution global rasters because of date-line flipping <a href="https://stackoverflow.com/q/79708536/635245" class="external-link">SO 79708536</a> by Patrick</li>
 <li>
-<code>plot(pax=list(mgp=c(1,1,2))</code> now sets mgp seperately for horizontal and vertical axes <a href="https://github.com/rspatial/terra/issues/1873" class="external-link">#1873</a> by Hu shiyu</li>
+<code>plot(pax=list(mgp=c(1,1,2))</code> now sets mgp separately for horizontal and vertical axes <a href="https://github.com/rspatial/terra/issues/1873" class="external-link">#1873</a> by Hu shiyu</li>
 <li>
 <code>coltab(x, ..., layer=1)&lt;-</code> argument layer did not work for layer names <a href="https://github.com/rspatial/terra/issues/1879" class="external-link">#1879</a> by Alex Ilich</li>
 <li>
@@ -256,7 +256,7 @@
 <li>
 <code>plot</code> with a continuous legend has new <code>plg</code> parameter “format” so that you can use scientific notation <a href="https://github.com/rspatial/terra/issues/1861" class="external-link">#1861</a> by Andrea Titolo</li>
 <li>
-<code>sprc&lt;character&gt;</code> now also works for a single datasource raster <a href="https://github.com/rspatial/terra/issues/1860" class="external-link">#1860</a> by Anrew Gene Brown</li>
+<code>sprc&lt;character&gt;</code> now also works for a single datasource raster <a href="https://github.com/rspatial/terra/issues/1860" class="external-link">#1860</a> by Andrew Gene Brown</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -273,7 +273,7 @@
 <li>
 <code>==&lt;SpatRaster&gt;</code> with multiple layers and categorical comparison failed <a href="https://github.com/rspatial/terra/issues/1836" class="external-link">#1836</a> by Andrew Gene Brown</li>
 <li>
-<code>wrteCDF</code> failed when writing tags with illegal characters such as “{” or “(”, <a href="https://github.com/rspatial/terra/issues/1811" class="external-link">#1811</a> by Catalin Sorin Covaci</li>
+<code>writeCDF</code> failed when writing tags with illegal characters such as “{” or “(”, <a href="https://github.com/rspatial/terra/issues/1811" class="external-link">#1811</a> by Catalin Sorin Covaci</li>
 <li>
 <code>freq</code> failed for an empty SpatRaster <a href="https://github.com/rspatial/terra/issues/1839" class="external-link">#1839</a> by Alex Ilich</li>
 <li>
@@ -324,7 +324,7 @@
 <div class="section level3">
 <h3 id="enhancements-1-8-50">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-50"></a></h3>
 <ul><li>
-<code>init</code> with a matrix argument now keeps the same row/col values <a href="https://github.com/rspatial/terra/issues/1801" class="external-link">#1801</a> Jakub Nowosad</li>
+<code>init</code> with a matrix argument now keeps the same row/col values <a href="https://github.com/rspatial/terra/issues/1801" class="external-link">#1801</a> by Jakub Nowosad</li>
 <li>
 <code>rasterize</code> now checks for very large numbers and switches to FLT8S if detected. <a href="https://github.com/rspatial/terra/issues/1797" class="external-link">#1797</a> by Evan Muise</li>
 <li>

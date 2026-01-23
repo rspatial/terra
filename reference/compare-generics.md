@@ -16,7 +16,7 @@ the inverse of `is.na`, and
 to detect cells with missing value across layers.
 
 The `compare` and `logic` methods implement these operators in a method
-that can return `NA` istead of `FALSE` and allows for setting an output
+that can return `NA` instead of `FALSE` and allows for setting an output
 filename.
 
 The terra package does not distinguish between `NA` (not available) and

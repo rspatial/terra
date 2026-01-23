@@ -48,7 +48,7 @@ focal(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA,
 
   logical. If `TRUE`, the value of the cells in the virtual rows and
   columns outside of the raster are set to be the same as the value on
-  the border. Only available for "build-in" `fun`s such as mean, sum,
+  the border. Only available for "built-in" `fun`s such as mean, sum,
   min and max
 
 - silent:

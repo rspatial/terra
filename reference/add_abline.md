@@ -1,10 +1,10 @@
 # add vertical and/or horizontal lines to a map made with terra
 
 Adaptation of [`abline`](https://rdrr.io/r/graphics/abline.html) that
-allows adding a horizonal or vertical lines to a map. This function will
-place the lines in the locations within the mapped area as delineated by
-the axes. It is meant to be used when you specifiy your own tick marks,
-such that
+allows adding a horizontal or vertical lines to a map. This function
+will place the lines in the locations within the mapped area as
+delineated by the axes. It is meant to be used when you specify your own
+tick marks, such that
 [`add_grid`](https://rspatial.github.io/terra/reference/grid.md) does
 not work.
 

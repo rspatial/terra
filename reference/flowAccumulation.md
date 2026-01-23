@@ -19,7 +19,7 @@ flowAccumulation(x, weight=NULL, filename="", ...)
 
 - weight:
 
-  SpatRaster with weight/score daa. For example, cell area or
+  SpatRaster with weight/score data. For example, cell area or
   precipitation
 
 - filename:
@@ -175,7 +175,7 @@ plot(flow_acc2w)
 
 
 
-## Application wth example elevation data
+## Application with example elevation data
 
 elev <- rast(system.file('ex/elev.tif',package="terra"))
 flowdir <- terrain(elev,"flowdir")

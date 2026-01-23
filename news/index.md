@@ -83,7 +83,7 @@ Released 2025-01-12
   [\#1987](https://github.com/rspatial/terra/issues/1987) by
   WillhKessler
 - `$<-<SpatVector>` now gives an error if the replacement is longer than
-  the data, and a warning if recylcing of a shorter replacement is
+  the data, and a warning if recycling of a shorter replacement is
   imperfect. [\#1980](https://github.com/rspatial/terra/issues/1980) by
   Margaret Bolton
 - `cartogram` gets new arguments “inside” and “exp” and better scaling
@@ -251,7 +251,7 @@ Released 2025-09-27
 - `project(mask=TRUE)` could fail with high-resolution global rasters
   because of date-line flipping [SO
   79708536](https://stackoverflow.com/q/79708536/635245) by Patrick
-- `plot(pax=list(mgp=c(1,1,2))` now sets mgp seperately for horizontal
+- `plot(pax=list(mgp=c(1,1,2))` now sets mgp separately for horizontal
   and vertical axes
   [\#1873](https://github.com/rspatial/terra/issues/1873) by Hu shiyu
 - `coltab(x, ..., layer=1)<-` argument layer did not work for layer
@@ -350,7 +350,7 @@ Released 2025-07-18
   [\#1861](https://github.com/rspatial/terra/issues/1861) by Andrea
   Titolo
 - `sprc<character>` now also works for a single datasource raster
-  [\#1860](https://github.com/rspatial/terra/issues/1860) by Anrew Gene
+  [\#1860](https://github.com/rspatial/terra/issues/1860) by Andrew Gene
   Brown
 
 ## version 1.8-54
@@ -376,8 +376,8 @@ Released 2025-06-01
 - `==<SpatRaster>` with multiple layers and categorical comparison
   failed [\#1836](https://github.com/rspatial/terra/issues/1836) by
   Andrew Gene Brown
-- `wrteCDF` failed when writing tags with illegal characters such as “{”
-  or “(”, [\#1811](https://github.com/rspatial/terra/issues/1811) by
+- `writeCDF` failed when writing tags with illegal characters such as
+  “{” or “(”, [\#1811](https://github.com/rspatial/terra/issues/1811) by
   Catalin Sorin Covaci
 - `freq` failed for an empty SpatRaster
   [\#1839](https://github.com/rspatial/terra/issues/1839) by Alex Ilich
@@ -446,7 +446,8 @@ Released 2025-05-09
 ### enhancements
 
 - `init` with a matrix argument now keeps the same row/col values
-  [\#1801](https://github.com/rspatial/terra/issues/1801) Jakub Nowosad
+  [\#1801](https://github.com/rspatial/terra/issues/1801) by Jakub
+  Nowosad
 - `rasterize` now checks for very large numbers and switches to FLT8S if
   detected. [\#1797](https://github.com/rspatial/terra/issues/1797) by
   Evan Muise

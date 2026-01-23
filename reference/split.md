@@ -33,9 +33,9 @@ split(x, f, min_node_dist=10000)
 
 - min_node_dist:
 
-  postive number indicating the minimum node distance to use (in m) for
-  longitude/latitude data. To ensure this minium distance between nodes,
-  additional nodes are added as needed, to improve precision. See
+  positive number indicating the minimum node distance to use (in m) for
+  longitude/latitude data. To ensure this minimum distance between
+  nodes, additional nodes are added as needed, to improve precision. See
   [`densify`](https://rspatial.github.io/terra/reference/densify.md)
 
 ## Value

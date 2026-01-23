@@ -1,6 +1,6 @@
 # Number of segments
 
-Count the number of segements in a SpatVector of lines or polygons
+Count the number of segments in a SpatVector of lines or polygons
 
 ## Usage
 

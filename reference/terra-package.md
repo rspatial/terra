@@ -197,7 +197,7 @@ with cell numbers, and row and/or column numbers
 | [`setValues`](https://rspatial.github.io/terra/reference/setValues.md)         | Set new values to the cells of a SpatRaster                                                        |
 | [`as.matrix`](https://rspatial.github.io/terra/reference/coerce.md)            | Get cell values as a matrix                                                                        |
 | [`as.array`](https://rspatial.github.io/terra/reference/coerce.md)             | Get cell values as an array                                                                        |
-| [`as.data.frame`](https://rspatial.github.io/terra/reference/as.data.frame.md) | get cell values as a data.frame (including class lables)                                           |
+| [`as.data.frame`](https://rspatial.github.io/terra/reference/as.data.frame.md) | get cell values as a data.frame (including class labels)                                           |
 | [`extract`](https://rspatial.github.io/terra/reference/extract.md)             | Extract cell values from a SpatRaster (with cell numbers, coordinates, points, lines, or polygons) |
 | [`extractAlong`](https://rspatial.github.io/terra/reference/extractAlong.md)   | Extract cell values along a line such that the values are in the right order                       |
 | [`spatSample`](https://rspatial.github.io/terra/reference/sample.md)           | Take a sample (regular, random, stratified, weighted) sample from a SpatRaster                     |
