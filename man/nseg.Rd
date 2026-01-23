@@ -7,7 +7,7 @@
 \title{Number of segments}
 
 \description{
-Count the number of segements in a SpatVector of lines or polygons
+Count the number of segments in a SpatVector of lines or polygons
 }
 
 \usage{
