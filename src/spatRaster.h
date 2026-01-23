@@ -831,7 +831,7 @@ class SpatRaster {
 
 
 		SpatRaster replaceValues(std::vector<double> from, std::vector<double> to, long nl, bool setothers, double others, bool keepcats, SpatOptions &opt);
-		SpatRaster lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, size_t out_layers, SpatOptions &opt);
+		SpatRaster lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt);
 		SpatRaster lookup_classify(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt);
 		SpatRaster lookup_subst(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt);
 		SpatRaster lookup_catalyze(std::vector<double> from_vals, std::vector<std::vector<double>> to_vals_list, SpatOptions &opt);

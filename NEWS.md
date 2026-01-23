@@ -3,16 +3,14 @@
 ## bug fixes
 
 - new implementation of `patches` by Andrew Gene Brown [#2006](https://github.com/rspatial/terra/pull/2006) that fixes [#1758](https://github.com/rspatial/terra/issues/1758)
-
 - `project` did not apply the scale/offset values [#2014](https://github.com/rspatial/terra/issues/2014) by Edgar Castro
 
 
 ## enhancements
 
 - significant speed improvements for classify, subst (one-to-one value replacement), catalyze (one-to-many value replacement), unique (better deduplication), and freq, crosstab, table_utils (unified approach to counting) by Andrew Gene Brown [#2012](https://github.com/rspatial/terra/pull/2012)
-
 - terra now handles the sf defined "POLYGON FULL" not-so-WKT [#2013](https://github.com/rspatial/terra/issues/2013) by Alexandre Courtiol 
-
+- Language errors in the documentation fixed by Yuxuan Xie [#2021](https://github.com/rspatial/terra/pull/2021) and by Krzysztof Dyba [#2020](https://github.com/rspatial/terra/pull/2020) 
 - fixed documentation for "direction" parameter in `flip<SpatRaster>` [#2016](https://github.com/rspatial/terra/pull/2016) by Jesse Anderson
 
 

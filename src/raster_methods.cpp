@@ -29,9 +29,9 @@
 #include "spatLookup.h"
 
 SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, 
-	double othersValue, size_t out_layers, SpatOptions &opt) {
+	double othersValue, SpatOptions &opt) {
 		
-	SpatRaster out = geometry(out_layers, false);
+	SpatRaster out = geometry();
 
 	if (!opt.datatype_set) {
 		if ((others && needs_float(othersValue)) || needs_float(to_vals)) {
@@ -138,12 +138,12 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 
 
 SpatRaster SpatRaster::lookup_classify(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt) {
-	return lookup_apply(from_vals, to_vals, others, othersValue, nlyr(), opt);
+	return lookup_apply(from_vals, to_vals, others, othersValue, opt);
 }
 
 
 SpatRaster SpatRaster::lookup_subst(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt) {
-	return lookup_apply(from_vals, to_vals, others, othersValue, nlyr(), opt);
+	return lookup_apply(from_vals, to_vals, others, othersValue, opt);
 }
 
 
