@@ -306,11 +306,10 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 
 // dimensions 
 	std::vector<size_t> dimcount;
-	std::vector<std::string> dimnames, dimunits;
+	std::vector<std::string> dimnames, dimunits, dimcalendar;
 	std::vector<std::vector<double>> dimvals;
 	dimvals.reserve(4);
-
-	std::string calendar = "";	
+	dimcalendar.reserve(4);
 	std::vector<std::shared_ptr<GDALDimension>> dimData = poVar->GetDimensions();
 	size_t ndim = dimData.size();
     for (size_t i=0; i<ndim; i++) {
@@ -326,8 +325,10 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 
 		const auto indvar = dimData[i]->GetIndexingVariable();
         dimunits.push_back(static_cast<std::string>(indvar->GetUnit()));
+		std::string cal = "";
 		auto pcal = indvar->GetAttribute("calendar");
-		if (pcal) calendar = pcal->ReadAsString();
+		if (pcal) cal = pcal->ReadAsString();
+		dimcalendar.push_back(cal);
 		
 	
 		indvar->Read(start.data(), count.data(), nullptr, nullptr, GDALExtendedDataType::Create(GDT_Float64), &dimvals[i][0]);
@@ -433,7 +434,11 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		s.nlyr = dimcount[it];
 //		s.m_names.push_back(dimnames[it]);
 		std::string msg;
-		parse_ncdf_time(s, dimunits[it], "standard", dimvals[it], msg);
+		std::string cal = "standard";
+		if ((it >= 0) && (static_cast<size_t>(it) < dimcalendar.size()) && (!dimcalendar[it].empty())) {
+			cal = dimcalendar[it];
+		}
+		parse_ncdf_time(s, dimunits[it], cal, dimvals[it], msg);
 	}
 
 	if (iz >= 0) {
@@ -997,4 +1002,3 @@ std::vector<std::vector<size_t>> SpatRaster::dim_size() {
 	}
 	return out;
 }
-
