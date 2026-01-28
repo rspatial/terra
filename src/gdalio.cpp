@@ -130,7 +130,7 @@ std::vector<std::string> get_metadata(std::string filename) {
 		return out;
 	}
 
-	char **m = poDataset->GetMetadata();
+  CSLConstList m = poDataset->GetMetadata();
 	if (m != NULL) {
 		while (*m != nullptr) {
 			out.push_back(*m++);
@@ -147,7 +147,7 @@ std::vector<std::string> get_metadata_sds(std::string filename) {
     if( poDataset == NULL )  {
 		return meta;
 	}
-	char **metadata = poDataset->GetMetadata("SUBDATASETS");
+  CSLConstList metadata = poDataset->GetMetadata("SUBDATASETS");
 	if (metadata != NULL) {
 		for (size_t i=0; metadata[i] != NULL; i++) {
 			meta.push_back(metadata[i]);
@@ -249,7 +249,7 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 		}
 		return out;
 	}
-	char **metadata = poDataset->GetMetadata("SUBDATASETS");
+  CSLConstList metadata = poDataset->GetMetadata("SUBDATASETS");
 	if (metadata == NULL) {
 		out[0] = std::vector<std::string> {"no subdatasets"};
 		GDALClose( (GDALDatasetH) poDataset );

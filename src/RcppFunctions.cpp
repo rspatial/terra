@@ -296,7 +296,7 @@ std::vector<std::vector<std::string>> gdal_drivers() {
 	size_t n = GetGDALDriverManager()->GetDriverCount();
 	std::vector<std::vector<std::string>> s(6, std::vector<std::string>(n));
     GDALDriver *poDriver;
-    char **papszMetadata;
+    CSLConstList papszMetadata;
 	for (size_t i=0; i<n; i++) {
 	    poDriver = GetGDALDriverManager()->GetDriver((int)i);
 		const char* ss = poDriver->GetDescription();

@@ -106,7 +106,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			setError( driver + " driver not available");
 			return poDS;
 		}
-		char **papszMetadata;
+		CSLConstList papszMetadata;
 		papszMetadata = poDriver->GetMetadata();
 		if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_VECTOR, FALSE)) {
 			setError(driver + " is not a vector format");
