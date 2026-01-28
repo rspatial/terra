@@ -623,7 +623,7 @@ std::vector<std::string> get_metadata(std::string filename, std::vector<std::str
     if( poDataset == NULL )  {
 		return metadata;
 	}
-	char **m = poDataset->GetMetadata();
+	CSLConstList m = poDataset->GetMetadata();
 	if (m) {
 		while (*m != nullptr) {
 			metadata.push_back(*m++);
@@ -647,7 +647,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 	}
 
 	std::string delim = "NAME=";
-	char **metadata = poDataset->GetMetadata("SUBDATASETS");
+	CSLConstList metadata = poDataset->GetMetadata("SUBDATASETS");
 
 	if (metadata == NULL) {
 		GDALClose( (GDALDatasetH) poDataset );
@@ -695,7 +695,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 		}
 	}
 	meta.resize(0);
-	char **m = poDataset->GetMetadata();
+	CSLConstList m = poDataset->GetMetadata();
 	if (m) {
 		while (*m != nullptr) {
 			meta.push_back(*m++);
@@ -725,7 +725,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 	}
 
 	std::string delim = "NAME=";
-	char **metadata = poDataset->GetMetadata("SUBDATASETS");
+	CSLConstList metadata = poDataset->GetMetadata("SUBDATASETS");
 
 	if (metadata == NULL) {
 		GDALClose( (GDALDatasetH) poDataset );
@@ -770,7 +770,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 		}
 	}
 	meta.resize(0);
-	char **m = poDataset->GetMetadata();
+	CSLConstList m = poDataset->GetMetadata();
 	if (m) {
 		while (*m != nullptr) {
 			meta.push_back(*m++);
@@ -886,7 +886,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	int nl = poDataset->GetRasterCount();
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
 
-	char **metasds = poDataset->GetMetadata("SUBDATASETS");
+	CSLConstList metasds = poDataset->GetMetadata("SUBDATASETS");
 	
 	if (metasds != NULL) {
 		std::vector<std::string> meta;
@@ -902,7 +902,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	for (size_t i=0; i<domains.size(); i++) {
-		char **meterra = poDataset->GetMetadata(domains[i].c_str());
+	  CSLConstList meterra = poDataset->GetMetadata(domains[i].c_str());
 		if (meterra != NULL) {
 			std::vector<std::string> meta;
 			for (size_t j=0; meterra[j] != NULL; j++) {
@@ -919,7 +919,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	
 	SpatRasterSource s;
 
-	char **metasrc = poDataset->GetMetadata();
+	CSLConstList metasrc = poDataset->GetMetadata();
 	while (metasrc != nullptr && *metasrc != nullptr) {
 		s.smdata.push_back(*metasrc++);
 	}
@@ -1065,7 +1065,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 
 		// if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
-			char **m = poBand->GetMetadata();
+		  CSLConstList m = poBand->GetMetadata();
 			while (m != nullptr && *m != nullptr) {
 				bandmeta[i].push_back(*m++);
 			}
@@ -1073,7 +1073,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			//	Rcpp::Rcout << bandmeta[i][j] << std::endl;
 			//}
 			
-			char **meterra = poBand->GetMetadata("USER_TAGS");
+			CSLConstList meterra = poBand->GetMetadata("USER_TAGS");
 			if (meterra != NULL) {
 //				std::vector<std::string> meta;
 				for (size_t j=0; meterra[j] != NULL; j++) {
@@ -1302,7 +1302,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 	if ((gdrv=="netCDF") || (gdrv == "HDF5"))  {
 		
-		char **m = poDataset->GetMetadata();
+		CSLConstList m = poDataset->GetMetadata();
 		if (m) {
 			while (*m != nullptr) {
 				metadata.push_back(*m++);
