@@ -8,6 +8,7 @@
 #include "string_utils.h"
 #include "file_utils.h"
 #include "vecmath.h"
+#include "recycle.h"
 #include <stddef.h>
 
 //#include <cstdint>
@@ -331,6 +332,8 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		if (indvar == NULL) {
 			dimvals[i].resize(n);
 			std::iota(dimvals[i].begin(), dimvals[i].end(), 1);			
+			dimunits.push_back("");
+			dimcalendar.push_back("");
 		} else {
 			dimunits.push_back(static_cast<std::string>(indvar->GetUnit()));
 			std::string cal = "";
@@ -350,7 +353,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 
 	s.m_ndims = dimcount.size();
 	if (s.m_ndims < 2) {
-		setError("insufficient dimensions");
+		setError("insufficient number of dimensions");
 		return false;
 	}
 
@@ -401,8 +404,14 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 	int it = 0;
 	int iz = -1;
 	if (ix == 3) {
-		iz = 1;
-		dims = {ix, iy, iz, it};
+		if (dimnames[1] == "time") {
+			iz = 0; 
+			it = 1;
+			dims = {ix, iy, it, iz};
+		} else {
+			iz = 1;
+			dims = {ix, iy, iz, it};
+		}
 	} else if (ndim == 2) {
 		dims = {ix, iy};
 	}		
@@ -446,6 +455,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 			cal = dimcalendar[it];
 		}
 		parse_ncdf_time(s, dimunits[it], cal, dimvals[it], msg);
+		//Rcpp::Rcout << cal << " " << dimunits[it] << " " << dimvals[it][0] << " " << msg << std::endl;
 	}
 
 	if (iz >= 0) {
@@ -454,6 +464,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		s.depth = dimvals[iz];
 		s.hasDepth = true;
 		s.nlyr *= dimcount[iz];
+		recycle(s.depth, s.nlyr);
 	}
 	s.nlyrfile = s.nlyr;
 	s.resize(s.nlyr);
