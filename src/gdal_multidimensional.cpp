@@ -304,6 +304,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		addWarning(msg);
 	}
 
+
 // dimensions 
 	std::vector<size_t> dimcount;
 	std::vector<std::string> dimnames, dimunits, dimcalendar;
@@ -312,6 +313,8 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 	dimcalendar.reserve(4);
 	std::vector<std::shared_ptr<GDALDimension>> dimData = poVar->GetDimensions();
 	size_t ndim = dimData.size();
+	
+	
     for (size_t i=0; i<ndim; i++) {
 		size_t n = dimData[i]->GetSize();
         dimcount.push_back(n);
@@ -324,22 +327,26 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		if (verbose) Rcpp::Rcout << name << std::endl;
 
 		const auto indvar = dimData[i]->GetIndexingVariable();
-        dimunits.push_back(static_cast<std::string>(indvar->GetUnit()));
-		std::string cal = "";
-		auto pcal = indvar->GetAttribute("calendar");
-		if (pcal) cal = pcal->ReadAsString();
-		dimcalendar.push_back(cal);
 		
-	
-		indvar->Read(start.data(), count.data(), nullptr, nullptr, GDALExtendedDataType::Create(GDT_Float64), &dimvals[i][0]);
-		if ((i >= (ndim-2)) && (dimvals[i].size() > 2)) {
-			double res = dimvals[i][1] - dimvals[i][0];
-			if (!indvar->IsRegularlySpaced(dimvals[i][0], res)) {
-				setError(name + " is not regularly spaced");
-				return false;
+		if (indvar == NULL) {
+			dimvals[i].resize(n);
+			std::iota(dimvals[i].begin(), dimvals[i].end(), 1);			
+		} else {
+			dimunits.push_back(static_cast<std::string>(indvar->GetUnit()));
+			std::string cal = "";
+			auto pcal = indvar->GetAttribute("calendar");
+			if (pcal) cal = pcal->ReadAsString();
+			dimcalendar.push_back(cal);
+			indvar->Read(start.data(), count.data(), nullptr, nullptr, GDALExtendedDataType::Create(GDT_Float64), &dimvals[i][0]);
+			if ((i >= (ndim-2)) && (dimvals[i].size() > 2)) {
+				double res = dimvals[i][1] - dimvals[i][0];
+				if (!indvar->IsRegularlySpaced(dimvals[i][0], res)) {
+					setError(name + " is not regularly spaced");
+					return false;
+				}
 			}
 		}
-    }
+	}
 
 	s.m_ndims = dimcount.size();
 	if (s.m_ndims < 2) {
