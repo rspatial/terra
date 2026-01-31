@@ -226,7 +226,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 
 	SpatRasterSource s;
 
-	bool verbose = false;
+	bool verbose = true;
 
 	char ** drvs = NULL;
 	for (size_t i=0; i<drivers.size(); i++) {
@@ -325,8 +325,6 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		std::vector<size_t> count = {n};
 		dimvals.push_back(std::vector<double>(n));
 
-		if (verbose) Rcpp::Rcout << name << std::endl;
-
 		const auto indvar = dimData[i]->GetIndexingVariable();
 		
 		if (indvar == NULL) {
@@ -408,13 +406,18 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 			iz = 0; 
 			it = 1;
 			dims = {ix, iy, it, iz};
+			s.m_order = {3, 2, 0, 1};
 		} else {
 			iz = 1;
 			dims = {ix, iy, iz, it};
+			s.m_order = {3, 2, 1, 0};
 		}
 	} else if (ndim == 2) {
 		dims = {ix, iy};
-	}		
+		s.m_order = {1, 0};
+	} else {
+		s.m_order = {1, 0};
+	}
 	
 	//Rcpp::Rcout << ix << ", " << iy << ", " << iz << ", " << it << std::endl;
 	
@@ -596,14 +599,18 @@ bool SpatRaster::readStopMulti(size_t src) {
 
 bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 
-//	Rcpp::Rcout << "readChunkMulti\n";
+	Rcpp::Rcout << "readChunkMulti\n";
 	std::vector<GUInt64> offset(source[src].m_ndims, 0);
-
-/*	
 	std::vector<size_t> dims = source[src].m_dims;
+
+/*
+	std::vector<size_t> sizes = source[src].m_size;
 	Rcpp::Rcout << "dims: ";
 	for (size_t i=0; i<dims.size(); i++) {Rcpp::Rcout << dims[i] << " ";}
-	Rcpp::Rcout << "\n";
+	Rcpp::Rcout << "\nsize: ";
+	for (size_t i=0; i<sizes.size(); i++) {Rcpp::Rcout << sizes[i] << " ";}
+	Rcpp::Rcout << "\nrc: ";
+	Rcpp::Rcout << col << " " << ncols << " " << row << " " << nrows << "\n";
 */
 
 	offset[source[src].m_dims[0]] = col;
@@ -625,29 +632,34 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 
 	auto dt = GDALExtendedDataType::Create(GDT_Float64);
 
-	if (source[src].in_order(false)) {
+	if (source[src].in_order(true)) {
 		if (ndim == 3) {
 			offset[source[src].m_dims[2]] = source[src].layers[0];
 			count[source[src].m_dims[2]] = source[src].layers.size();
 		} else if (ndim == 4) {
-			count[source[src].m_dims[2]] = source[src].depth.size();
-			count[source[src].m_dims[3]] = source[src].time.size();		
+			count[source[src].m_dims[2]] = source[src].m_size[source[src].m_dims[2]];
+			count[source[src].m_dims[3]] = source[src].m_size[source[src].m_dims[3]];
 		}
 		size_t n=vprod(count, false);
+//		Rcpp::Rcout << "n: " << n << std::endl;
+//		for (size_t i=0; i<count.size(); i++){
+//			Rcpp::Rcout << count[i] << " " << offset[i] << std::endl;
+//		}
 		data.resize(insize + n);
 		source[src].m_array->Read(&offset[0], &count[0], &stride[0], NULL, dt, &data[insize], NULL, 0);
     } else {
 		count[source[src].m_dims[2]] = 1;
-
 		data.resize(insize + ncols*nrows*source[src].layers.size());
 //		size_t n=vprod(count, false);
 		for (size_t i=0; i<source[src].layers.size(); i++) {
 			if (ndim == 3) {
 				offset[source[src].m_dims[2]] = source[src].layers[i];
 			} else if (ndim == 4) {
-				setError("not handled yet");
-				return false;
-				count[source[src].m_dims[3]] = 1;		
+				count[source[src].m_dims[3]] = 1;
+				size_t d = source[src].m_size[source[src].m_dims[2]];
+				size_t div = source[src].layers[i] / d;
+				offset[source[src].m_dims[2]] = div;
+				offset[source[src].m_dims[3]] = source[src].layers[i] - (div * d);
 			}
 			source[src].m_array->Read(&offset[0], &count[0], NULL, NULL, dt, &data[insize+i], NULL, 0);
 		}
@@ -691,8 +703,8 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 		for (int64_t &r : rows) r = nr - r - 1;  
 	}
 	if (source[src].in_order(false)) {
+		offset[source[src].m_dims[2]] = source[src].layers[0];
 		if (ndim == 3) {
-			offset[source[src].m_dims[2]] = source[src].layers[0];
 			count[source[src].m_dims[2]] = source[src].layers.size();
 		} else if (ndim == 4) {
 			count[source[src].m_dims[2]] = source[src].depth.size();
