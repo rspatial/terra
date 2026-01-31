@@ -1,16 +1,22 @@
 # Changelog
 
-## version 1.8-95
+## version 1.8-96
 
 ### bug fixes
 
 - new implementation of `patches` by Andrew Gene Brown
   [\#2006](https://github.com/rspatial/terra/pull/2006) that fixes
   [\#1758](https://github.com/rspatial/terra/issues/1758)
-
 - `project` did not apply the scale/offset values
   [\#2014](https://github.com/rspatial/terra/issues/2014) by Edgar
   Castro
+- `show<SpatRaster>` did not work properly for categorical variables if
+  the min/max values were not specified in the file
+  [\#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
+- `rast(md=TRUE)` now recognizes non standard calendars
+  [\#2019](https://github.com/rspatial/terra/issues/2019) by Heyang;
+  fixed by Yuxuan Xie with
+  [\#2024](https://github.com/rspatial/terra/pull/2024)
 
 ### enhancements
 
@@ -19,14 +25,20 @@
   deduplication), and freq, crosstab, table_utils (unified approach to
   counting) by Andrew Gene Brown
   [\#2012](https://github.com/rspatial/terra/pull/2012)
-
 - terra now handles the sf defined “POLYGON FULL” not-so-WKT
   [\#2013](https://github.com/rspatial/terra/issues/2013) by Alexandre
   Courtiol
-
+- Language errors in the documentation fixed by Yuxuan Xie
+  [\#2021](https://github.com/rspatial/terra/pull/2021) and by Krzysztof
+  Dyba [\#2020](https://github.com/rspatial/terra/pull/2020)
 - fixed documentation for “direction” parameter in `flip<SpatRaster>`
   [\#2016](https://github.com/rspatial/terra/pull/2016) by Jesse
   Anderson
+- “pixel count” in a raster/value attribute table is now recoginzed as
+  equivalent to “count” (and not considered a categorical variable)
+  [\#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
+- `lines<leaflet>` gains argument “popup”
+  [\#2018](https://github.com/rspatial/terra/issues/2018) by Mary Fisher
 
 ### new
 

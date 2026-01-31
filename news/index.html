@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-95</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-97</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,20 +34,33 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8-95" id="version-18-95">version 1.8-95<a class="anchor" aria-label="anchor" href="#version-18-95"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-96" id="version-18-96">version 1.8-96<a class="anchor" aria-label="anchor" href="#version-18-96"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-95">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-95"></a></h3>
-<ul><li><p>new implementation of <code>patches</code> by Andrew Gene Brown <a href="https://github.com/rspatial/terra/pull/2006" class="external-link">#2006</a> that fixes <a href="https://github.com/rspatial/terra/issues/1758" class="external-link">#1758</a></p></li>
-<li><p><code>project</code> did not apply the scale/offset values <a href="https://github.com/rspatial/terra/issues/2014" class="external-link">#2014</a> by Edgar Castro</p></li>
+<h3 id="bug-fixes-1-8-96">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-96"></a></h3>
+<ul><li>new implementation of <code>patches</code> by Andrew Gene Brown <a href="https://github.com/rspatial/terra/pull/2006" class="external-link">#2006</a> that fixes <a href="https://github.com/rspatial/terra/issues/1758" class="external-link">#1758</a>
+</li>
+<li>
+<code>project</code> did not apply the scale/offset values <a href="https://github.com/rspatial/terra/issues/2014" class="external-link">#2014</a> by Edgar Castro</li>
+<li>
+<code>show&lt;SpatRaster&gt;</code> did not work properly for categorical variables if the min/max values were not specified in the file <a href="https://github.com/rspatial/terra/issues/2023" class="external-link">#2023</a> by Kodi Arfer</li>
+<li>
+<code>rast(md=TRUE)</code> now recognizes non standard calendars <a href="https://github.com/rspatial/terra/issues/2019" class="external-link">#2019</a> by Heyang; fixed by Yuxuan Xie with <a href="https://github.com/rspatial/terra/pull/2024" class="external-link">#2024</a>
+</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-8-95">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-95"></a></h3>
-<ul><li><p>significant speed improvements for classify, subst (one-to-one value replacement), catalyze (one-to-many value replacement), unique (better deduplication), and freq, crosstab, table_utils (unified approach to counting) by Andrew Gene Brown <a href="https://github.com/rspatial/terra/pull/2012" class="external-link">#2012</a></p></li>
-<li><p>terra now handles the sf defined “POLYGON FULL” not-so-WKT <a href="https://github.com/rspatial/terra/issues/2013" class="external-link">#2013</a> by Alexandre Courtiol</p></li>
-<li><p>fixed documentation for “direction” parameter in <code>flip&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/pull/2016" class="external-link">#2016</a> by Jesse Anderson</p></li>
+<h3 id="enhancements-1-8-96">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-96"></a></h3>
+<ul><li>significant speed improvements for classify, subst (one-to-one value replacement), catalyze (one-to-many value replacement), unique (better deduplication), and freq, crosstab, table_utils (unified approach to counting) by Andrew Gene Brown <a href="https://github.com/rspatial/terra/pull/2012" class="external-link">#2012</a>
+</li>
+<li>terra now handles the sf defined “POLYGON FULL” not-so-WKT <a href="https://github.com/rspatial/terra/issues/2013" class="external-link">#2013</a> by Alexandre Courtiol</li>
+<li>Language errors in the documentation fixed by Yuxuan Xie <a href="https://github.com/rspatial/terra/pull/2021" class="external-link">#2021</a> and by Krzysztof Dyba <a href="https://github.com/rspatial/terra/pull/2020" class="external-link">#2020</a>
+</li>
+<li>fixed documentation for “direction” parameter in <code>flip&lt;SpatRaster&gt;</code> <a href="https://github.com/rspatial/terra/pull/2016" class="external-link">#2016</a> by Jesse Anderson</li>
+<li>“pixel count” in a raster/value attribute table is now recoginzed as equivalent to “count” (and not considered a categorical variable) <a href="https://github.com/rspatial/terra/issues/2023" class="external-link">#2023</a> by Kodi Arfer</li>
+<li>
+<code>lines&lt;leaflet&gt;</code> gains argument “popup” <a href="https://github.com/rspatial/terra/issues/2018" class="external-link">#2018</a> by Mary Fisher</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-8-95">new<a class="anchor" aria-label="anchor" href="#new-1-8-95"></a></h3>
+<h3 id="new-1-8-96">new<a class="anchor" aria-label="anchor" href="#new-1-8-96"></a></h3>
 <ul><li>
 <code>animate&lt;SpatVector&gt;</code> method by Márcia Barbosa <a href="https://github.com/rspatial/terra/issues/2007" class="external-link">#2007</a>
 </li>
