@@ -49,13 +49,14 @@ The arguments of \code{plet} are similar to those of \code{\link[terra]{plot}}, 
 	breakby="eqint", sort=TRUE, reverse=FALSE, map=NULL, fill=NULL, ...)
 
 
-\S4method{lines}{leaflet}(x, y, col, lwd=2, lty=NULL, alpha=1, ...)
+\S4method{lines}{leaflet}(x, y, col, lwd=2, lty=NULL, alpha=1, 
+	label=NULL, popup=FALSE,...)
 
 \S4method{points}{leaflet}(x, y, col, border=col, cex=1, lwd=2, lty=NULL, 
 	alpha=c(.3, 1), label=1:nrow(y), popup=FALSE, ...)
 
 \S4method{polys}{leaflet}(x, y, col, lwd=2, lty=NULL, 
-	border="black", alpha=c(0.3, 1), popup=TRUE, label=FALSE, fill=NULL, ...)
+	border="black", alpha=c(0.3, 1), popup=TRUE, label=NULL, fill=NULL, ...)
 }
 
 
@@ -111,7 +112,7 @@ if (require(leaflet) && (packageVersion("leaflet") > "2.1.1")) {
 
 v <- vect(system.file("ex/lux.shp", package="terra"))
 p <- spatSample(as.polygons(v, ext=T), 30)
-values(p) = data.frame(id=11:40, name=letters[1:30])
+values(p) = data.frame(id=11:40, name=sample(letters, 30, replace=TRUE))
 
 m <- plet(v, "NAME_1", tiles="", border="blue")
 m <- points(m, p, col="red", cex=2, popup=T)

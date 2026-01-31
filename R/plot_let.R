@@ -396,7 +396,7 @@ setMethod("plet", signature(x="SpatVectorCollection"),
 
 
 setMethod("polys", signature(x="leaflet"),
-	function(x, y, col, lwd=2, lty=NULL, border="black", alpha=c(.3, 1), popup=TRUE, label=FALSE, fill=NULL, ...)  {
+	function(x, y, col, lwd=2, lty=NULL, border="black", alpha=c(.3, 1), popup=TRUE, label=NULL, fill=NULL, ...)  {
 
 
 		if (!is.null(fill)) { 
@@ -432,7 +432,7 @@ setMethod("polys", signature(x="leaflet"),
 			lty <- rep_len(lty, n) 
 			border <- rep_len(border, n) 
 			popup <- rep_len(popup, n) 
-			label <- rep_len(label, n) 
+			if (!is.null(label)) label <- rep_len(label, n)
 
 			for (i in 1:length(nms)) {
 				x <- leaflet::addPolygons(x, data=y[i], weight=lwd[i], dashArray=lty[i], fillColor=cols[i], 
@@ -449,9 +449,14 @@ setMethod("polys", signature(x="leaflet"),
 
 
 setMethod("lines", signature(x="leaflet"),
-	function(x, y, col, lwd=2, lty=NULL, alpha=1, ...)  {
+	function(x, y, col, lwd=2, lty=NULL, alpha=1, label=NULL, popup=FALSE, ...)  {
 
 		alpha <- max(0, min(1, alpha))
+		if (popup) {
+			popup=popUp(y)
+		} else {
+			popup <- NULL
+		}
 		
 		if (inherits(y, "SpatVector")) {
 			if (nrow(y) == 0) return(x)
@@ -460,7 +465,7 @@ setMethod("lines", signature(x="leaflet"),
 			if (!(geomtype(y) %in% c("lines", "polygons"))) {
 				error("lines", "SpatVector y must have either lines or polygons geometry")
 			}
-			leaflet::addPolylines(x, data=y, weight=lwd, dashArray=lty,
+			leaflet::addPolylines(x, data=y, weight=lwd, dashArray=lty, popup=popup, label=label,
 					opacity=alpha, col=col, ...)
 		} else if (inherits(y, "SpatVectorCollection")) {
 			nms <- names(y)
