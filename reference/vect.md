@@ -52,13 +52,13 @@ vect(x)
 
 - x:
 
-  character. A filename; or a "Well Known Text" string; SpatExtent,
-  data.frame (to make a SpatVector of points); a "geom" matrix to make a
-  SpatVector of any supported geometry (see examples and
-  [`geom`](https://rspatial.github.io/terra/reference/geometry.md)); a
-  spatial vector data object defined in the `sf` or `sp` packages; or a
-  list with either matrices with coordinates, or raw "Well Known Binary"
-  (WKB) blobs
+  character. A filename; or a "Well Known Text" or GeoJSON string;
+  SpatExtent, data.frame (to make a SpatVector of points); a "geom"
+  matrix to make a SpatVector of any supported geometry (see examples
+  and [`geom`](https://rspatial.github.io/terra/reference/geometry.md));
+  a spatial vector data object defined in the `sf` or `sp` packages; or
+  a list with either matrices with coordinates, or raw "Well Known
+  Binary" (WKB) blobs
 
 - layer:
 
