@@ -308,7 +308,7 @@ setMethod("as.lines", signature(x="SpatVector"),
 
 
 setMethod("as.lines", signature(x="matrix"),
-	function(x, crs="") {
+	function(x, crs="", segments=FALSE) {
 		p <- vect()
 		if (ncol(x) == 2) {
 			nr <- nrow(x)
@@ -319,7 +319,12 @@ setMethod("as.lines", signature(x="matrix"),
 		} else {
 			error("expecting a two or four column matrix", "as.lines")
 		}
-		messages(p, "vect")
+		if (segments) {
+			p <- messages(p, "vect")
+			disagg(p, segments=TRUE)
+		} else {
+			messages(p, "vect")
+		}
 	}
 )
 
