@@ -1,4 +1,4 @@
-# version 1.8-96
+# version 1.8-97
 
 ## bug fixes
 
@@ -15,6 +15,8 @@
 - fixed documentation for "direction" parameter in `flip<SpatRaster>` [#2016](https://github.com/rspatial/terra/pull/2016) by Jesse Anderson
 - "pixel count" in a raster/value attribute table is now recoginzed as equivalent to "count" (and not considered a categorical variable) [#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `lines<leaflet>` gains argument "popup" [#2018](https://github.com/rspatial/terra/issues/2018) by Mary Fisher
+- `as.lines<matrix>` gains argument "segments" [#2008](https://github.com/rspatial/terra/issues/2008) by Márcia Barbosa
+
 
 ## new
 
