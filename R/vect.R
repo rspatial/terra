@@ -57,32 +57,36 @@ setMethod("vect", signature(x="character"),
 
 		what <- trimws(tolower(what))
 		if (what != "") what <- match.arg(trimws(tolower(what)), c("geoms", "attributes"))
-		
+
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG", "EMPTY")) {
 			p <- methods::new("SpatVector")
-#		if (all(grepl("\\(", x) & grepl("\\)", x))) {
+	#		if (all(grepl("\\(", x) & grepl("\\)", x))) {
 			p@pntr <- SpatVector$new(gsub("\n", "", x))
 			messages(p, "vect")
 			crs(p, warn=FALSE) <- crs
 			return(p)
 		} 
-		
-		x <- x[1]
-		nx <- try(normalizePath(x, mustWork=TRUE), silent=TRUE)
-		if (!inherits(nx, "try-error")) { # skip html
-			x <- nx
-			if (grepl("\\.rds$", tolower(x))) {
-				v <- unwrap(readRDS(x))
-				if (!inherits(v, "SpatVector")) {
-					error("vect", "the rds file does not store a SpatVector")
-				}
-				return(v)
-			}
-		} else if ((substr(x, 1, 4) == "http") & (grepl("\\.shp$", x) | grepl("\\.gpkg$", x))) {
-			x <- paste0("/vsicurl/", x[1])
-		}
 
+		if (substr(x[1], 1, 1) == "{") { # json
+			if (length(x) > 1) x <- paste(x, collapse="")
+		} else {			
+			x <- x[1]
+			nx <- try(normalizePath(x, mustWork=TRUE), silent=TRUE)
+			if (!inherits(nx, "try-error")) { # skip html
+				x <- nx
+				if (grepl("\\.rds$", tolower(x))) {
+					v <- unwrap(readRDS(x))
+					if (!inherits(v, "SpatVector")) {
+						error("vect", "the rds file does not store a SpatVector")
+					}
+					return(v)
+				}
+			} else if ((substr(x, 1, 4) == "http") & (grepl("\\.shp$", x) | grepl("\\.gpkg$", x))) {
+				x <- paste0("/vsicurl/", x[1])
+			}
+		}
+		
 		p <- methods::new("SpatVector")
 		p@pntr <- SpatVector$new()
 		proxy <- isTRUE(proxy)
