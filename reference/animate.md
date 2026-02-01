@@ -1,7 +1,7 @@
 # Animate a map
 
-Animate (sequentially plot) the layers of a SpatRaster, or the
-geometries of a SpatVector, to create a movie.
+Animate (sequentially plot) the layers of a SpatRaster, or the variables
+or geometries of a SpatVector, to create a movie.
 
 ## Usage
 
@@ -9,7 +9,7 @@ geometries of a SpatVector, to create a movie.
 # S4 method for class 'SpatRaster'
 animate(x, pause=0.25, main, range=NULL, maxcell=50000, n=1, ...)
 # S4 method for class 'SpatVector'
-animate(x, pause=0.25, main="", n=1, add=NULL, ...)
+animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
 ```
 
 ## Arguments
@@ -43,11 +43,21 @@ animate(x, pause=0.25, main="", n=1, add=NULL, ...)
 
   integer \> 0. Number of plotting loops
 
+- vars:
+
+  numeric or character to indicate the variables to animate. If this is
+  NULL, the geometries are animated instead
+
+- range. Two numbers to fix the range of values in the legend between
+  plots:
+
 - add:
 
-  logical. If TRUE, add all geometries to the current plot. If left
-  NULL, `add` is FALSE for the first geometry and TRUE for the remaining
-  ones.
+  logical. Add the geometries to the current map? When looping over
+  variables: `NULL` is equivalent to `TRUE`. When looping over
+  geometries: if `TRUE` , add all geometries to the current plot. If
+  `NULL`, `add` is set to `FALSE` for the first geometry and `TRUE` for
+  the remaining ones.
 
 - ...:
 
@@ -57,6 +67,10 @@ animate(x, pause=0.25, main="", n=1, add=NULL, ...)
 ## Value
 
 None
+
+## Author
+
+Márcia Barbosa, Robert J. Hijmans
 
 ## See also
 
@@ -74,6 +88,6 @@ animate(s, n=1)
 v <- vect(system.file("ex/lux.shp", package="terra"))
 animate(v, n=2)
 
+animate(v, n=1, vars=names(v))
 
-animate(v[order(v$AREA), ])
 ```
