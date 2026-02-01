@@ -4,13 +4,18 @@
 # License GPL v3
 
 win_basename <- function(x) {
-	if (isTRUE(grepl("Windows", utils::osVersion))) {
-		large <- nchar(x) > 256
+#	if (isTRUE(grepl("Windows", utils::osVersion))) {
+		n <- 150
+#		large <- nchar(x) > 256
+		large <- nchar(x) > n
 		if (any(large)) {
 			for (i in 1:length(large)) {
 				if (large[i]) {
 					r <- strsplit(x[i], "[\\/]+")[[1]]
-					x[i] <- r[[length(r)]]
+					if (nchar(r) > n) {
+						r <- paste0(substr(r[[length(r)]], 1, n), "~")
+					}
+					x[i] <- r
 				} else {
 					x[i] <- basename(x)	
 				}
@@ -19,9 +24,9 @@ win_basename <- function(x) {
 			x <- basename(x)
 		}
 		x
-	} else {
-		basename(x)	
-	}
+#	} else {
+#		basename(x)	
+#	}
 }
 
 
