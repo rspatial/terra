@@ -16,7 +16,7 @@ as.lines(x)
 as.lines(x, crs="")
 
 # S4 method for class 'matrix'
-as.lines(x, crs="")
+as.lines(x, crs="", segments=FALSE)
 ```
 
 ## Arguments
@@ -31,6 +31,12 @@ as.lines(x, crs="")
 
   character. The coordinate reference system (see
   [`crs`](https://rspatial.github.io/terra/reference/crs.md))
+
+- segments:
+
+  logical. Should (poly-)lines or polygons be disaggregated into their
+  line-segments? See
+  [`disagg`](https://rspatial.github.io/terra/reference/disaggregate.md)
 
 ## Value
 

@@ -48,8 +48,9 @@ animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
   numeric or character to indicate the variables to animate. If this is
   NULL, the geometries are animated instead
 
-- range. Two numbers to fix the range of values in the legend between
-  plots:
+- range:
+
+  Two numbers to fix the range of values in the legend between plots
 
 - add:
 

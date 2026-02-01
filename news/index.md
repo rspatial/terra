@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.8-96
+## version 1.8-97
 
 ### bug fixes
 
@@ -39,6 +39,9 @@
   [\#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `lines<leaflet>` gains argument “popup”
   [\#2018](https://github.com/rspatial/terra/issues/2018) by Mary Fisher
+- `as.lines<matrix>` gains argument “segments”
+  [\#2008](https://github.com/rspatial/terra/issues/2008) by Márcia
+  Barbosa
 
 ### new
 
