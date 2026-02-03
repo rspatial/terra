@@ -196,8 +196,8 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 	if (w[3] > nlyr(x)) {
 		error("focal3D", "the third weights dimension is larger than nlyr(x)")
 	}
-	if (any((w %% 2) == 0)) {
-		error("focal3D", "w must be odd sized in all dimensions")
+	if (any((w[1:2] %% 2) == 0)) {
+		error("focal3D", "w must be odd sized in the first two dimensions")
 	}
 
 	msz <- prod(w)
@@ -669,7 +669,7 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 	if (nl < 2) error("focalPairs", "x must have at least 2 layers")
 
 	if (!is.numeric(w)) {
-		error("focalPairs", "w should be numeric vector or matrix")
+		error("focalPairs", "w should be a numeric vector or matrix")
 	}
 	weighted <- FALSE
 	if (is.matrix(w)) {
@@ -702,7 +702,7 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 	}
 
 	if (msz < 2) {
-		error("the effective weight matrix must have positive dimensions, and at least one must be > 1")
+		error("focalPairs", "the effective weight matrix must have positive dimensions, and at least one must be > 1")
 	}
 
 	if (is.character(fun)) {
@@ -733,11 +733,12 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 	} else {
 		test <- try(do.call(fun, list(1:prod(w), prod(w):1, ...)))
 		if (inherits(test, "try-error")) {
-			error("focalPairs", "'fun' does not work. Does it have two arguments (one for each layer)")
+			error("focalPairs", "'fun' does not work. Does it have two arguments (one for each layer)?")
 		}
 	}
 	if (is.null(wopt$names )) {
 		wopt$names <- colnames(test)
+		wopt$overwrite <- overwrite
 	}
 
 	outnl <- (nlyr(x) - 1) * length(test)
@@ -859,3 +860,4 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 		# v$weights <- NULL
 		# stats::coefficients(stats::glm(y ~ -1 + ., data=v, weights=weights))
 	# }	
+

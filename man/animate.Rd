@@ -14,6 +14,7 @@ Animate (sequentially plot) the layers of a SpatRaster, or the variables or geom
 
 \usage{
 \S4method{animate}{SpatRaster}(x, pause=0.25, main, range=NULL, maxcell=50000, n=1, ...)
+
 \S4method{animate}{SpatVector}(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
 }
 
@@ -21,13 +22,12 @@ Animate (sequentially plot) the layers of a SpatRaster, or the variables or geom
   \item{x}{SpatRaster or SpatVector}
   \item{pause}{numeric. How long should the pause be between layers?}  
   \item{main}{title for each layer. For SpatRaster, if not supplied, the z-value is used if available. Otherwise the names are used.}  
-  \item{range}{numeric vector of length 2. Range of values to plot, If \code{NULL} the range of all layers is used. If \code{NA} the range of each individual layer is used}
+  \item{range}{numeric vector of length 2. Range of values to plot, If \code{NULL} the range of all layers is used for rasters, or all variables for vectors if they are all numeric. If \code{NA} the range of each individual layer is used}
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot. If \code{maxcell < ncell(x)}, \code{spatSample(type="regular")} is used before plotting}
   \item{n}{integer > 0. Number of plotting loops}
   \item{vars}{numeric or character to indicate the variables to animate. If this is NULL, the geometries are animated instead}
-  \item{range}{Two numbers to fix the range of values in the legend between plots}  
   \item{add}{logical. Add the geometries to the current map? When looping over variables: \code{NULL} is equivalent to \code{TRUE}. When looping over geometries: if \code{TRUE} , add all geometries to the current plot. If \code{NULL}, \code{add} is set to \code{FALSE} for the first geometry and \code{TRUE} for the remaining ones.}
-  \item{...}{Additional arguments passed to \code{\link{plot}}}
+  \item{...}{additional arguments passed to \code{\link{plot}}}
 }
 
 
@@ -47,6 +47,8 @@ v <- vect(system.file("ex/lux.shp", package="terra"))
 animate(v, n=2)
 animate(v, n=1, vars=names(v))
 
+# you can save an animation to file like this
+# animation::saveGIF(terra::animate(v, n=1), "animation.gif")
 }
 
 \keyword{methods}
