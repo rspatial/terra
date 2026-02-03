@@ -8,6 +8,7 @@ or geometries of a SpatVector, to create a movie.
 ``` r
 # S4 method for class 'SpatRaster'
 animate(x, pause=0.25, main, range=NULL, maxcell=50000, n=1, ...)
+
 # S4 method for class 'SpatVector'
 animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
 ```
@@ -30,8 +31,9 @@ animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
 - range:
 
   numeric vector of length 2. Range of values to plot, If `NULL` the
-  range of all layers is used. If `NA` the range of each individual
-  layer is used
+  range of all layers is used for rasters, or all variables for vectors
+  if they are all numeric. If `NA` the range of each individual layer is
+  used
 
 - maxcell:
 
@@ -48,10 +50,6 @@ animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
   numeric or character to indicate the variables to animate. If this is
   NULL, the geometries are animated instead
 
-- range:
-
-  Two numbers to fix the range of values in the legend between plots
-
 - add:
 
   logical. Add the geometries to the current map? When looping over
@@ -62,7 +60,7 @@ animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
 
 - ...:
 
-  Additional arguments passed to
+  additional arguments passed to
   [`plot`](https://rspatial.github.io/terra/reference/plot.md)
 
 ## Value
@@ -91,4 +89,7 @@ animate(v, n=2)
 
 animate(v, n=1, vars=names(v))
 
+
+# you can save an animation to file like this
+# animation::saveGIF(terra::animate(v, n=1), "animation.gif")
 ```
