@@ -82,81 +82,34 @@ use_layer <- function(e, y, layer, nl, keepID) {
 }
 
 
-extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FALSE, small=TRUE, na.rm=FALSE) {
-
+extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FALSE, small=TRUE, na.rm=FALSE, ...) {
 	if (weights && exact) {
 		exact = FALSE
 	}
-	opt <- spatOptions()
-
-	if (weights | exact) {
-		wtable <- function(p, na.rm=FALSE) {
-			n <- length(p)
-			w <- p[[n]]
-			p[[n]] <- NULL
-			do.call( rbind, 
-				lapply(1:length(p), function(i) {
-					x <- p[[i]]
-					j <- is.na(x)
-					if (na.rm) {
-						x <- x[!j]
-						w <- w[!j]
-					} else if (any(j)) {
-						w[] <- NA
-					}
-					data.frame(layer=i, aggregate(w, list(x), sum, na.rm=FALSE))
-				})
-			)
+	one_tab <- function(i) {
+		e <- extract(x, y[i,], ID=FALSE, weights=weights, exact=exact, touches=touches, small=small, na.rm=na.rm)
+		if (!(weights | exact)) {
+			e$w_e_i_g_h_t123 <- 1
 		}
-		
-		e <- x@pntr$extractVector(y@pntr, touches[1], small[1], "simple", FALSE, FALSE, 
-			isTRUE(weights[1]), isTRUE(exact[1]), opt)
-		x <- messages(x, "extract")
-		e <- lapply(e, wtable, na.rm=na.rm)
-		e <- lapply(1:length(e), function(i) cbind(ID=i, e[[i]]))
-		e <- do.call(rbind, e)
-		colnames(e)[3:4] <- c("group", "value")
-		out <- vector("list", nlyr(x))
-		for (i in 1:nlyr(x)) {
-			ee <- e[e[,2] == i, ]
-			ee <- replace_with_label(x[[i]], ee, 3)
-			ee <- stats::reshape(ee, idvar=c("ID", "layer"), timevar="group", direction="wide")
-			colnames(ee) <- gsub("value.", "", colnames(ee))
-			ee$layer <- NULL
-			if (!ID) {
-				ee$ID <- NULL
-			}
-			if (na.rm) {
-				ee[is.na(ee)] <- 0
-			}
-			out[[i]] <- ee
+		nms <- names(e)
+		a <- aggregate(e[nms[length(nms)]], e[, c(nms[-length(nms)]), drop=FALSE], sum, na.rm=na.rm)
+		colnames(a)[ncol(a)] <- "count"
+		if (nrow(a) == 0) {
+			return(NULL)
+			#a <- a[1,]
+			#a$count <- NULL 
+			#a$count <- NA
 		}
-		if (nlyr(x) == 1) return(out[[1]]) else return(out)
+		cbind(ID=i, a)
+	}
+	# use a loop to keep mem consumption low
+	out <- lapply(1:nrow(y), function(i) one_tab(i))
+	out <- do.call(rbind, out)
+	rownames(out) <- NULL
+	if (!ID) {
+		split(out[,-1, drop=FALSE], out[,1])		
 	} else {
-		e <- x@pntr$extractVectorFlat(y@pntr, "", FALSE, touches[1], small[1], "", FALSE, FALSE, FALSE, FALSE, opt)
-		x <- messages(x, "extract")
-		e <- data.frame(matrix(e, ncol=nlyr(x)+1, byrow=TRUE))
-		colnames(e) <- c("ID", names(x))
-		id <- e[,1,drop=FALSE]
-		e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE]))
-		cn <- colnames(e)
-		out <- vector("list", ncol(e)-1)
-		for (i in 2:ncol(e)) {
-			fixname <- TRUE
-			if (!is.factor(e[,i])) {
-				fixname <- FALSE
-				e[,i]  <- as.factor(e[,i])
-			}
-			tb <- table(e[,1], e[,i])
-			tb <- cbind(ID = rownames(tb), as.data.frame.matrix(tb))
-			if (fixname) colnames(tb) <- gsub(cn[i], "", colnames(tb))
-			if (!ID) {
-				tb$ID <- NULL
-			}
-			tb$layer <- NULL
-			out[[i-1]] <- tb
-		}
-		if (ncol(e) == 2) return(out[[1]]) else return(out)
+		out
 	}
 }
 
