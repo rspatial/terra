@@ -88,6 +88,7 @@ extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FA
 	}
 	one_tab <- function(i) {
 		e <- extract(x, y[i,], ID=FALSE, weights=weights, exact=exact, touches=touches, small=small, na.rm=na.rm)
+		if (nrow(e) == 0) return(NULL)
 		if (!(weights | exact)) {
 			e$w_e_i_g_h_t123 <- 1
 		}
@@ -106,7 +107,7 @@ extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FA
 	out <- lapply(1:nrow(y), function(i) one_tab(i))
 	out <- do.call(rbind, out)
 	rownames(out) <- NULL
-	if (!ID) {
+	if ((!ID) & (!is.null(out))) {
 		split(out[,-1, drop=FALSE], out[,1])		
 	} else {
 		out
