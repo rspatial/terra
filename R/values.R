@@ -39,7 +39,7 @@ setMethod("hasValues", signature(x="SpatRaster"),
 	ii <- (is.int(x) & (!ff) & (substr(datatype(x, TRUE), 1, 4) != "INT8"))
 	if (any(ii)) {
 		for (i in which(ii)) {
-			if (max(v[[i]]) < .Machine$integer.max) {
+			if (isTRUE(max(v[[i]], na.rm=TRUE) < .Machine$integer.max)) {
 				v[[i]] = as.integer(v[[i]])
 			}
 		}
@@ -65,7 +65,7 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 		return(.makeDataFrame(x, v, ...) )
 	} else if (mat) {
 		if (all(is.int(x))) {
-			if (max(v) < .Machine$integer.max) {
+			if (isTRUE(max(v, na.rm=TRUE) < .Machine$integer.max)) {
 				v <- matrix(as.integer(v), ncol = nlyr(x))
 			} else {
 				v <- matrix(v, ncol = nlyr(x))				
@@ -77,7 +77,7 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 		}
 		colnames(v) <- names(x)
 	} else if (all(is.int(x))) {
-		if (max(v) < .Machine$integer.max) {
+		if (isTRUE(max(v, na.rm=TRUE) < .Machine$integer.max)) {
 			v <- as.integer(v)
 		}
 	} else if (all(is.bool(x))) {
