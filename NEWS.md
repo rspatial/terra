@@ -6,6 +6,8 @@
 - `project` did not apply the scale/offset values [#2014](https://github.com/rspatial/terra/issues/2014) by Edgar Castro
 - `show<SpatRaster>` did not work properly for categorical variables if the min/max values were not specified in the file [#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `rast(md=TRUE)` now recognizes non standard calendars [#2019](https://github.com/rspatial/terra/issues/2019) by Heyang; fixed by Yuxuan Xie with [#2024](https://github.com/rspatial/terra/pull/2024)
+- `values<SpatVector>` lost integers values > .Machine$integer.max. Variables with such values are no longer coerced to integer. [#2030](https://github.com/rspatial/terra/issues/2030) by Steffen Ehrmann
+
 
 ## enhancements
 
