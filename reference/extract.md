@@ -29,10 +29,10 @@ extract(x, y, ...)
 extract(x, y, ...)
 
 # S4 method for class 'SpatRaster,matrix'
-extract(x, y, ID=FALSE, ...)
+extract(x, y, ...)
 
 # S4 method for class 'SpatRaster,numeric'
-extract(x, y, ID=FALSE, ...)
+extract(x, y, ...)
 
 
 # S4 method for class 'SpatVector,SpatVector'
@@ -167,9 +167,7 @@ xy <- cbind(lon=c(0.5,2.5), lat=c(0.5,2.5))
 p <- vect(xy, crs="+proj=longlat +datum=WGS84")
 
 extract(r, xy)
-#>   lyr.1
-#> 1    21
-#> 2    13
+#> Error in extract(r, xy): object 'ID' not found
 extract(r, p)
 #>   ID lyr.1
 #> 1  1    21
@@ -207,10 +205,7 @@ r <- rast(f)
 xy <- cbind(179000, 330000)
 xy <- rbind(xy-100, xy, xy+1000)
 extract(r, xy)
-#>   meuse
-#> 1   378
-#> 2   251
-#> 3   208
+#> Error in extract(r, xy): object 'ID' not found
 
 p <- vect(xy)
 g <- geom(p)

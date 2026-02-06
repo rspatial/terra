@@ -118,29 +118,36 @@ xy <- rbind(cbind(1, p), cbind(0, a))
 
 # extract predictor values for points
 e <- extract(logo, xy[,2:3])
+#> Error in extract(logo, xy[, 2:3]): object 'ID' not found
 
 # combine with response (excluding the ID column)
 v <- data.frame(cbind(pa=xy[,1], e))
+#> Error: object 'e' not found
 
 #build a model, here with glm 
 model <- glm(formula=pa~., data=v)
+#> Error in eval(mf, parent.frame()): object 'v' not found
 
 #predict to a raster
 r1 <- predict(logo, model)
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'predict': object 'model' not found
 
 plot(r1)
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'r1' not found
 points(p, bg='blue', pch=21)
+#> Error in plot.xy(xy.coords(x, y), type = type, ...): plot.new has not been called yet
 points(a, bg='red', pch=21)
-
+#> Error in plot.xy(xy.coords(x, y), type = type, ...): plot.new has not been called yet
 
 # logistic regression
 model <- glm(formula=pa~., data=v, family="binomial")
-#> Warning: glm.fit: algorithm did not converge
-#> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+#> Error in eval(mf, parent.frame()): object 'v' not found
 r1log <- predict(logo, model, type="response")
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'predict': object 'model' not found
 
 # to get the probability and standard error
 r1se <- predict(logo, model, se.fit=TRUE)
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'predict': object 'model' not found
 
 # or provide a custom predict function
 
@@ -150,6 +157,7 @@ predfun <- function(model, data) {
 }
 
 r2 <- predict(logo, model, fun=predfun)
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'predict': object 'model' not found
 
 ### principal components of a SpatRaster
 pca <- prcomp(logo)
@@ -161,7 +169,6 @@ pca <- prcomp(sr)
 
 x <- predict(logo, pca)
 plot(x)
-
 
 ## parallelization
 if (FALSE) { # \dontrun{
