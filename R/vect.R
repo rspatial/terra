@@ -472,15 +472,14 @@ setMethod("vect", signature(x="data.frame"),
 		
 		guessed_crs <- FALSE
 		if (is.null(crs)) {
-			if ((guessed_geom && lonlat) || ((!guessed_geom) && grepl("lon", geom[1], TRUE) && grepl("lat", geom[2], TRUE))) {
+			crs <- ""
+			if ((guessed_geom && lonlat) || ((!guessed_geom) && grepl("lon", geom[1]) && grepl("lat", geom[2]))) {
 				xr <- range(x[,geom[1]], na.rm=TRUE)
 				yr <- range(x[,geom[2]], na.rm=TRUE)
 				if ((xr[1] > -181) && (xr[2] < 361)  && (yr[1] > -90.01) && (yr[2] < 90.01)) {
 					guessed_crs <- TRUE
 					crs <- "+proj=longlat"
 				}
-			} else {
-				crs <- ""
 			}
 		} else {
 			crs <- character_crs(crs, "vect")
@@ -494,8 +493,8 @@ setMethod("vect", signature(x="data.frame"),
 				x[,geom[2]] <- as.numeric(x[,geom[2]])
 			}
 			p <- methods::new("SpatVector")
-			p@pntr <- SpatVector$new()
-			x <- .makeSpatDF(x)
+			p@pntr <- terra:::SpatVector$new()
+			x <- terra:::.makeSpatDF(x)
 
 			p@pntr$setPointsDF(x, geom-1, crs, keepgeom)
 

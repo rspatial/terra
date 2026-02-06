@@ -287,7 +287,11 @@ setMethod("is.lonlat", signature("SpatRaster"),
 		if (perhaps) {
 			ok <- x@pntr$isLonLat()
 			if (ok) {
-				messages(x, "is.lonlat")
+				if (warn) {
+					messages(x, "is.lonlat")
+				} else {
+					 w <- x@pntr$getWarnings()
+				}
 				if (global) {
 					return(x@pntr$isGlobalLonLat())
 				} else {
@@ -296,7 +300,11 @@ setMethod("is.lonlat", signature("SpatRaster"),
 			} 
 			ok <- x@pntr$couldBeLonLat()
 			if (ok) {
-				messages(x, "is.lonlat")
+				if (warn) {
+					messages(x, "is.lonlat")
+				} else {
+					x@pntr$getWarnings()
+				}
 				if (global) {
 					ok <- x@pntr$isGlobalLonLat()
 				}
@@ -307,7 +315,11 @@ setMethod("is.lonlat", signature("SpatRaster"),
 		} else {
 			ok <- x@pntr$isLonLat()
 			if (ok) {
-				messages(x, "is.lonlat")
+				if (warn) {	
+					messages(x, "is.lonlat")
+				} else {
+					x@pntr$getWarnings()
+				}
 				if (global) {
 					ok <- x@pntr$isGlobalLonLat()
 				}
