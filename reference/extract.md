@@ -22,14 +22,18 @@ extract(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE,
     ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE,
   layer=NULL, bind=FALSE, raw=FALSE, search_radius=0, ...)
 
+# S4 method for class 'SpatRaster,data.frame'
+extract(x, y, ...)
+
 # S4 method for class 'SpatRaster,SpatExtent'
 extract(x, y, ...)
 
 # S4 method for class 'SpatRaster,matrix'
-extract(x, y, ...)
+extract(x, y, ID=FALSE, ...)
 
 # S4 method for class 'SpatRaster,numeric'
-extract(x, y, ...)
+extract(x, y, ID=FALSE, ...)
+
 
 # S4 method for class 'SpatVector,SpatVector'
 extract(x, y, count=FALSE)
@@ -163,9 +167,9 @@ xy <- cbind(lon=c(0.5,2.5), lat=c(0.5,2.5))
 p <- vect(xy, crs="+proj=longlat +datum=WGS84")
 
 extract(r, xy)
-#>   ID lyr.1
-#> 1  1    21
-#> 2  2    13
+#>   lyr.1
+#> 1    21
+#> 2    13
 extract(r, p)
 #>   ID lyr.1
 #> 1  1    21
@@ -203,11 +207,10 @@ r <- rast(f)
 xy <- cbind(179000, 330000)
 xy <- rbind(xy-100, xy, xy+1000)
 extract(r, xy)
-#> Warning: [is.lonlat] unknown crs
-#>   ID meuse
-#> 1  1   378
-#> 2  2   251
-#> 3  3   208
+#>   meuse
+#> 1   378
+#> 2   251
+#> 3   208
 
 p <- vect(xy)
 g <- geom(p)

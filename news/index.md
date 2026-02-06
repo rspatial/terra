@@ -21,6 +21,10 @@
   Variables with such values are no longer coerced to integer.
   [\#2030](https://github.com/rspatial/terra/issues/2030) by Steffen
   Ehrmann
+- `extract<SpatRaster,SpatVector>` with arguments fun=“table” and
+  weights=FALSE did not work
+  [\#2029](https://github.com/rspatial/terra/issues/2029) by
+  volcanicpine
 
 ### enhancements
 

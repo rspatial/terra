@@ -118,7 +118,6 @@ xy <- rbind(cbind(1, p), cbind(0, a))
 
 # extract predictor values for points
 e <- extract(logo, xy[,2:3])
-#> Warning: [is.lonlat] unknown crs
 
 # combine with response (excluding the ID column)
 v <- data.frame(cbind(pa=xy[,1], e))
@@ -128,25 +127,20 @@ model <- glm(formula=pa~., data=v)
 
 #predict to a raster
 r1 <- predict(logo, model)
-#> Error in eval(predvars, data, env): object 'ID' not found
 
 plot(r1)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'r1' not found
 points(p, bg='blue', pch=21)
-#> Error in plot.xy(xy.coords(x, y), type = type, ...): plot.new has not been called yet
 points(a, bg='red', pch=21)
-#> Error in plot.xy(xy.coords(x, y), type = type, ...): plot.new has not been called yet
+
 
 # logistic regression
 model <- glm(formula=pa~., data=v, family="binomial")
 #> Warning: glm.fit: algorithm did not converge
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 r1log <- predict(logo, model, type="response")
-#> Error in eval(predvars, data, env): object 'ID' not found
 
 # to get the probability and standard error
 r1se <- predict(logo, model, se.fit=TRUE)
-#> Error in eval(predvars, data, env): object 'ID' not found
 
 # or provide a custom predict function
 
@@ -156,7 +150,6 @@ predfun <- function(model, data) {
 }
 
 r2 <- predict(logo, model, fun=predfun)
-#> Error in eval(predvars, data, env): object 'ID' not found
 
 ### principal components of a SpatRaster
 pca <- prcomp(logo)
@@ -168,6 +161,7 @@ pca <- prcomp(sr)
 
 x <- predict(logo, pca)
 plot(x)
+
 
 ## parallelization
 if (FALSE) { # \dontrun{
