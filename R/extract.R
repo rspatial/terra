@@ -347,15 +347,15 @@ setMethod("extract", signature(x="SpatRaster", y="sf"),
 
 
 setMethod("extract", signature(x="SpatRaster", y="data.frame"),
-function(x, y, ...) {
+function(x, y, ID=FALSE, ...) {
 	if (ncol(y) != 2) {
 		error("extract", "extract expects a 2 column data.frame of x/y or lon/lat coordinates")
 	}
 	v <- vect(y, colnames(y), quiet=TRUE)
-	if (is.lonlat(v, warn=FALSE) && is.lonlat(x, warn=FALSE)) {
+	if ((crs(v) != "") && is.lonlat(v, warn=FALSE) && is.lonlat(x, warn=FALSE)) {
 		crs(v) <- NULL
 	}
-	extract(x, v, ...)
+	extract(x, v, ID=ID, ...)
 })
 
 
@@ -373,13 +373,13 @@ function(x, y, ...) {
 })
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"),
-function(x, y, ...) {
-	extract(x, as.data.frame(y), ...)
+function(x, y, ID=FALSE, ...) {
+	extract(x, as.data.frame(y), ID=ID, ...)
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),
 function(x, y, ...) {
-	extract(x, xyFromCells(x, cells(x, y)), ...)
+	extract(x, xyFromCells(x, cells(x, y)), ID=FALSE, ...)
 }
 )
 
