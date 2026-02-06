@@ -352,6 +352,9 @@ function(x, y, ...) {
 		error("extract", "extract expects a 2 column data.frame of x/y or lon/lat coordinates")
 	}
 	v <- vect(y, colnames(y), quiet=TRUE)
+	if (is.lonlat(v, warn=FALSE) && is.lonlat(x, warn=FALSE)) {
+		crs(v) <- NULL
+	}
 	extract(x, v, ...)
 })
 
