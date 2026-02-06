@@ -46,6 +46,8 @@
 <li>
 <code>rast(md=TRUE)</code> now recognizes non standard calendars <a href="https://github.com/rspatial/terra/issues/2019" class="external-link">#2019</a> by Heyang; fixed by Yuxuan Xie with <a href="https://github.com/rspatial/terra/pull/2024" class="external-link">#2024</a>
 </li>
+<li>
+<code>values&lt;SpatVector&gt;</code> lost integers values &gt; .Machine$integer.max. Variables with such values are no longer coerced to integer. <a href="https://github.com/rspatial/terra/issues/2030" class="external-link">#2030</a> by Steffen Ehrmann</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-8-97">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-97"></a></h3>
@@ -60,6 +62,8 @@
 <code>lines&lt;leaflet&gt;</code> gains argument “popup” <a href="https://github.com/rspatial/terra/issues/2018" class="external-link">#2018</a> by Mary Fisher</li>
 <li>
 <code>as.lines&lt;matrix&gt;</code> gains argument “segments” <a href="https://github.com/rspatial/terra/issues/2008" class="external-link">#2008</a> by Márcia Barbosa</li>
+<li>
+<code>freq&lt;SpatRaster&gt;</code> with argument zones is a SpatRaster now returns the zone values instead of the index <a href="#id_2033">https://github.com/rspatial/terra/issues/2033</a> by Thomas Estabrook</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-8-97">new<a class="anchor" aria-label="anchor" href="#new-1-8-97"></a></h3>
@@ -70,7 +74,7 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.8-93" id="version-18-93">version 1.8-93<a class="anchor" aria-label="anchor" href="#version-18-93"></a></h2><p class="text-muted">CRAN release: 2026-01-12</p>
-<p>Released 2025-01-12</p>
+<p>Released 2026-01-12</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-93">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-93"></a></h3>
 <ul><li>

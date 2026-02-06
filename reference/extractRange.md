@@ -74,15 +74,18 @@ numeric or data.frame
 r <- rast(system.file("ex/logo.tif", package="terra"))   
 xy <- data.frame(x=c(50,80), y=c(30, 60))
 extract(r, xy)
+#> Warning: [is.lonlat] unknown crs
 #>   ID red green blue
 #> 1  1 149   158  215
 #> 2  2  68    67   63
 extract(r, xy, layer=c("red", "green"))
+#> Warning: [is.lonlat] unknown crs
 #>   ID value
 #> 1  1   149
 #> 2  2    67
 
 extractRange(r, xy, first=1:2, last=3:2)
+#> Warning: [is.lonlat] unknown crs
 #> [[1]]
 #>   red green blue
 #> 1 149   158  215
@@ -92,5 +95,6 @@ extractRange(r, xy, first=1:2, last=3:2)
 #> 2    67
 #> 
 extractRange(r, xy, first=1:2, last=3:2, lyr_fun=sum)
+#> Warning: [is.lonlat] unknown crs
 #> [1] 522  67
 ```

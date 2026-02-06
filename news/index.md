@@ -17,6 +17,10 @@
   [\#2019](https://github.com/rspatial/terra/issues/2019) by Heyang;
   fixed by Yuxuan Xie with
   [\#2024](https://github.com/rspatial/terra/pull/2024)
+- `values<SpatVector>` lost integers values \> .Machine\$integer.max.
+  Variables with such values are no longer coerced to integer.
+  [\#2030](https://github.com/rspatial/terra/issues/2030) by Steffen
+  Ehrmann
 
 ### enhancements
 
@@ -42,6 +46,10 @@
 - `as.lines<matrix>` gains argument “segments”
   [\#2008](https://github.com/rspatial/terra/issues/2008) by Márcia
   Barbosa
+- `freq<SpatRaster>` with argument zones is a SpatRaster now returns the
+  zone values instead of the index
+  [https://github.com/rspatial/terra/issues/2033](#id_2033) by Thomas
+  Estabrook
 
 ### new
 
@@ -52,7 +60,7 @@
 
 CRAN release: 2026-01-12
 
-Released 2025-01-12
+Released 2026-01-12
 
 ### bug fixes
 
