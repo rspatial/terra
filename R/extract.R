@@ -373,13 +373,17 @@ function(x, y, ...) {
 })
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"),
-function(x, y, ID=FALSE, ...) {
+function(x, y, ...) {
 	extract(x, as.data.frame(y), ID=ID, ...)
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),
 function(x, y, ...) {
-	extract(x, xyFromCells(x, cells(x, y)), ID=FALSE, ...)
+	dots <- list(x=x, y=cells(x, y), ...)
+	if (is.null(dots$ID)) {
+		dots$ID <- FALSE
+	}
+	do.call(extract, dots)
 }
 )
 
