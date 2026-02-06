@@ -374,7 +374,7 @@ function(x, y, ...) {
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"),
 function(x, y, ...) {
-	extract(x, as.data.frame(y), ID=ID, ...)
+	extract(x, as.data.frame(y), ...)
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),
