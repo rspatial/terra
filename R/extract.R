@@ -346,63 +346,39 @@ setMethod("extract", signature(x="SpatRaster", y="sf"),
 )
 
 
-
 setMethod("extract", signature(x="SpatRaster", y="data.frame"),
 function(x, y, ...) {
 	if (ncol(y) != 2) {
-		error("extract", "extract expects a 2 column data.frame of x and y coordinates")
+		error("extract", "extract expects a 2 column data.frame of x/y or lon/lat coordinates")
 	}
-	v <- vect(y, colnames(y))
+	v <- vect(y, colnames(y), quiet=TRUE)
 	extract(x, v, ...)
 })
 
 
 setMethod("extract", signature(x="SpatRaster", y="numeric"),
-function(x, y, xy=FALSE, raw=FALSE) {
+function(x, y, ...) {
 
 	if (isTRUE((length(y)  == 2) && (any((y%%1)!=0)))) {
 		warn("extract", "a vector of two decimal values is interpreted as referring to cell numbers, not to coordinates")
 	}
-
 	if (isTRUE(any((y < 1) | (y > ncell(x))))) {
 		warn("extract", "out of range cell numbers detected")	
 	}
-
-	y <- round(y)
-	v <- .extract_cell(x, y, drop=TRUE, raw=raw)
-	if (xy) {
-		v <- cbind(xyFromCell(x, y), v)
-	}
-	v
+	y <- xyFromCell(x, y)
+	extract(x, y, ...)
 })
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"),
-function(x, y, cells=FALSE, method="simple") {
-	.checkXYnames(colnames(y))
-	method <- match.arg(tolower(method), c("simple", "bilinear"))
-	if (method != "simple") {
-		y <- vect(y)
-		return(extract(x, y, method=method, ID=FALSE))
-	}
-	y <- cellFromXY(x, y)
-	if (cells) {
-		cbind(cell=y, extract(x, y))
-	} else {
-		extract(x, y)
-	}
+function(x, y, ...) {
+	extract(x, as.data.frame(y), ...)
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),
-function(x, y, cells=FALSE, xy=FALSE) {
-	y <- cells(x, y)
-	v <- extract(x, y, xy=xy)
-	if (cells) {
-		v <- cbind(cell=y, v)
-	}
-	v
+function(x, y, ...) {
+	extract(x, xyFromCells(x, cells(x, y)), ...)
 }
 )
-
 
 setMethod("extract", c("SpatVector", "SpatVector"),
 function(x, y, count=FALSE) {
