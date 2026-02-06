@@ -347,7 +347,7 @@ setMethod("extract", signature(x="SpatRaster", y="sf"),
 
 
 setMethod("extract", signature(x="SpatRaster", y="data.frame"),
-function(x, y, ID=FALSE, ...) {
+function(x, y, ...) {
 	if (ncol(y) != 2) {
 		error("extract", "extract expects a 2 column data.frame of x/y or lon/lat coordinates")
 	}
@@ -355,7 +355,7 @@ function(x, y, ID=FALSE, ...) {
 	if ((crs(v) != "") && is.lonlat(v, warn=FALSE) && is.lonlat(x, warn=FALSE)) {
 		crs(v) <- NULL
 	}
-	extract(x, v, ID=ID, ...)
+	extract(x, v, ...)
 })
 
 

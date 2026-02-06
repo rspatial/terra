@@ -7,6 +7,7 @@
 - `show<SpatRaster>` did not work properly for categorical variables if the min/max values were not specified in the file [#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `rast(md=TRUE)` now recognizes non standard calendars [#2019](https://github.com/rspatial/terra/issues/2019) by Heyang; fixed by Yuxuan Xie with [#2024](https://github.com/rspatial/terra/pull/2024)
 - `values<SpatVector>` lost integers values > .Machine$integer.max. Variables with such values are no longer coerced to integer. [#2030](https://github.com/rspatial/terra/issues/2030) by Steffen Ehrmann
+- `extract<SpatRaster,SpatVector>` with arguments fun="table" and weights=FALSE did not work [#2029](https://github.com/rspatial/terra/issues/2029) by volcanicpine
 
 
 ## enhancements

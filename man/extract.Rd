@@ -31,11 +31,14 @@ Alternatively, you can use \code{\link{zonal}} after using \code{\link{rasterize
     ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE,
 	layer=NULL, bind=FALSE, raw=FALSE, search_radius=0, ...)
 
+\S4method{extract}{SpatRaster,data.frame}(x, y, ...)
+
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, ...)
 
-\S4method{extract}{SpatRaster,matrix}(x, y, ...)
+\S4method{extract}{SpatRaster,matrix}(x, y, ID=FALSE, ...)
 
-\S4method{extract}{SpatRaster,numeric}(x, y, ...)
+\S4method{extract}{SpatRaster,numeric}(x, y, ID=FALSE, ...)
+
 
 \S4method{extract}{SpatVector,SpatVector}(x, y, count=FALSE)
 }
