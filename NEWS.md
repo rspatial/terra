@@ -18,6 +18,7 @@
 - "pixel count" in a raster/value attribute table is now recoginzed as equivalent to "count" (and not considered a categorical variable) [#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `lines<leaflet>` gains argument "popup" [#2018](https://github.com/rspatial/terra/issues/2018) by Mary Fisher
 - `as.lines<matrix>` gains argument "segments" [#2008](https://github.com/rspatial/terra/issues/2008) by Márcia Barbosa
+- `freq<SpatRaster>` with argument zones is a SpatRaster now returns the zone values instead of the index [https://github.com/rspatial/terra/issues/2033](#2033) by Thomas Estabrook
 
 
 ## new

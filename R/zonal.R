@@ -412,7 +412,7 @@ setMethod("freq", signature(x="SpatRaster"),
 					r <- mask(x, zones, maskvalues=u[i], inverse=TRUE)
 					f <- freq(r, digits=digits, value=value, bylayer=bylayer, usenames=usenames, zones=NULL, wide=FALSE)
 					if (nrow(f) > 0) {
-						f$zone <- i	
+						f$zone <- u[i]	
 						out[[i]] <- f
 					}
 				}
