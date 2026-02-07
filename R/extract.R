@@ -369,12 +369,22 @@ function(x, y, ...) {
 		warn("extract", "out of range cell numbers detected")	
 	}
 	y <- xyFromCell(x, y)
-	extract(x, y, ...)
+	e <- extract(x, y, ...)
+	if (isTRUE(list(...)$xy)) { # backwards comp for RStoolbox
+		e$x <- e$y <- NULL
+		e <- cbind(as.data.frame(y), e)
+	}
+	e 
 })
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"),
 function(x, y, ID=FALSE, ...) {
-	extract(x, as.data.frame(y), ID=ID, ...)
+	e <- extract(x, as.data.frame(y), ID=ID, ...)
+	if (isTRUE(list(...)$cells)) { # for backwards compat
+		i <- which(names(e) == "cell")
+		e <- data.frame(e["cell"], e[,-1])
+	}
+	e 
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),
