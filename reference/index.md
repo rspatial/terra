@@ -390,10 +390,9 @@
   : Extend
 
 - [`extract(`*`<SpatRaster>`*`,`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/extract.md)
-  [`extract(`*`<SpatRaster>`*`,`*`<data.frame>`*`)`](https://rspatial.github.io/terra/reference/extract.md)
+  [`extract(`*`<SpatRaster>`*`,`*`<SpatExtent>`*`)`](https://rspatial.github.io/terra/reference/extract.md)
   [`extract(`*`<SpatRaster>`*`,`*`<matrix>`*`)`](https://rspatial.github.io/terra/reference/extract.md)
   [`extract(`*`<SpatRaster>`*`,`*`<numeric>`*`)`](https://rspatial.github.io/terra/reference/extract.md)
-  [`extract(`*`<SpatRaster>`*`,`*`<SpatExtent>`*`)`](https://rspatial.github.io/terra/reference/extract.md)
   [`extract(`*`<SpatVector>`*`,`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/extract.md)
   : Extract values from a SpatRaster
 

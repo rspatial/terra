@@ -176,7 +176,7 @@ s <- spatSample(r, 10, as.raster=TRUE)
 spatSample(r, 5)
 #>   elevation
 #> 1       380
-#> 2        NA
+#> 2       NaN
 #> 3       495
 #> 4       413
 #> 5       341
@@ -214,13 +214,13 @@ spatSample(r, 6, "random", cells=TRUE, xy=TRUE, values=FALSE)
 spatSample(r, 6, "regular", cells=TRUE, xy=TRUE)
 #>   cell        x        y elevation
 #> 1 7458 6.137500 49.53750       264
-#> 2 7505 6.529167 49.53750        NA
-#> 3 7411 5.745833 49.53750        NA
+#> 2 7505 6.529167 49.53750       NaN
+#> 3 7411 5.745833 49.53750       NaN
 #> 4 5368 6.137500 49.72083       289
-#> 5 5415 6.529167 49.72083        NA
-#> 6 5321 5.745833 49.72083        NA
+#> 5 5415 6.529167 49.72083       NaN
+#> 6 5321 5.745833 49.72083       NaN
 #> 7 3183 6.137500 49.91250       322
-#> 8 1093 6.137500 50.09583        NA
+#> 8 1093 6.137500 50.09583       NaN
 
 # stratified
 rr <- rast(ncol=10, nrow=10, names="stratum")

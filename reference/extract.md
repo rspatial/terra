@@ -22,17 +22,14 @@ extract(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE,
     ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE,
   layer=NULL, bind=FALSE, raw=FALSE, search_radius=0, ...)
 
-# S4 method for class 'SpatRaster,data.frame'
-extract(x, y, ...)
+# S4 method for class 'SpatRaster,SpatExtent'
+extract(x, y, cells=FALSE, xy=FALSE)
 
 # S4 method for class 'SpatRaster,matrix'
-extract(x, y, ID=FALSE, ...)
+extract(x, y, cells=FALSE, method="simple")
 
 # S4 method for class 'SpatRaster,numeric'
-extract(x, y, ...)
-
-# S4 method for class 'SpatRaster,SpatExtent'
-extract(x, y, ...)
+extract(x, y, xy=FALSE, raw=FALSE)
 
 # S4 method for class 'SpatVector,SpatVector'
 extract(x, y, count=FALSE)
@@ -143,6 +140,7 @@ extract(x, y, count=FALSE)
 
   additional arguments to `fun` if `y` is a SpatVector. For example
   `na.rm=TRUE`. Or arguments passed to the `SpatRaster,SpatVector`
+  method if `y` is a matrix (such as the `method` and `cells` arguments)
 
 - count:
 
@@ -196,9 +194,9 @@ r[c(0:2, 99:101)]
 #>   lyr.1
 #> 1     1
 #> 2     2
-#> 3    NA
-#> 4    NA
-#> 5    NA
+#> 3   NaN
+#> 4   NaN
+#> 5   NaN
 
 f <- system.file("ex/meuse.tif", package="terra")
 r <- rast(f)
