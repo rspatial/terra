@@ -360,42 +360,51 @@ function(x, y, ...) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="numeric"),
-function(x, y, ...) {
+function(x, y, xy=FALSE, raw=FALSE) {
 
 	if (isTRUE((length(y)  == 2) && (any((y%%1)!=0)))) {
 		warn("extract", "a vector of two decimal values is interpreted as referring to cell numbers, not to coordinates")
 	}
+
 	if (isTRUE(any((y < 1) | (y > ncell(x))))) {
 		warn("extract", "out of range cell numbers detected")	
 	}
-	y <- xyFromCell(x, y)
-	e <- extract(x, y, ...)
-	if (isTRUE(list(...)$xy)) { # backwards comp for RStoolbox
-		e$x <- e$y <- NULL
-		e <- cbind(as.data.frame(y), e)
+
+	y <- round(y)
+	v <- .extract_cell(x, y, drop=TRUE, raw=raw)
+	if (xy) {
+		v <- cbind(xyFromCell(x, y), v)
 	}
-	e 
+	v
 })
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"),
-function(x, y, ID=FALSE, ...) {
-	e <- extract(x, as.data.frame(y), ID=ID, ...)
-	if (isTRUE(list(...)$cells)) { # for backwards compat
-		i <- which(names(e) == "cell")
-		e <- data.frame(e["cell"], e[,-1])
+function(x, y, cells=FALSE, method="simple") {
+	.checkXYnames(colnames(y))
+	method <- match.arg(tolower(method), c("simple", "bilinear"))
+	if (method != "simple") {
+		y <- vect(y)
+		return(extract(x, y, method=method, ID=FALSE))
 	}
-	e 
+	y <- cellFromXY(x, y)
+	if (cells) {
+		cbind(cell=y, extract(x, y))
+	} else {
+		extract(x, y)
+	}
 })
 
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"),
-function(x, y, ...) {
-	dots <- list(x=x, y=cells(x, y), ...)
-	if (is.null(dots$ID)) {
-		dots$ID <- FALSE
+function(x, y, cells=FALSE, xy=FALSE) {
+	y <- cells(x, y)
+	v <- extract(x, y, xy=xy)
+	if (cells) {
+		v <- cbind(cell=y, v)
 	}
-	do.call(extract, dots)
+	v
 }
 )
+
 
 setMethod("extract", c("SpatVector", "SpatVector"),
 function(x, y, count=FALSE) {
@@ -587,4 +596,3 @@ setMethod("extractRange", signature(x="SpatRaster", y="ANY"),
 		a
 	}
 )
-
