@@ -28,7 +28,7 @@ A filename can be for a Shapefile, GeoPackage, GeoJSON, Keyhole Markup Language 
 
 You can use a data.frame to make a SpatVector of points. If the variables to be used are not specified with argument \code{geom}, the method looks for candidate variables. If variables are found and these appear to be longitude/latitude, the "+proj=longlat" crs is assigned unless another crs is specified.  
 
-You can also use a two-colum matrix to make a SpatVector of points, or a "geom" matrix to make a SpatVector of any supported geometry (see examples and \code{\link{geom}}). 
+You can also use a two-column matrix to make a SpatVector of points, or a "geom" matrix to make a SpatVector of any supported geometry (see examples and \code{\link{geom}}). 
 
 You can supply a list of SpatVectors to append them into a single SpatVector. 
 

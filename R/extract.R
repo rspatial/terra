@@ -328,7 +328,7 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 			e <- data.frame(e)
 			e <- cbind(y, e[,-1,drop=FALSE])
 		} else {
-			warn("extract", "cannot return a SpatVector because the number of records extracted does not match the number of rows in y (perhaps you need to use a summarizing function")
+			warn("extract", "cannot return a SpatVector because the number of records extracted does not match the number of rows in y (perhaps you need to use a summarizing function)")
 		}
 	} else if (!ID) {
 		e <- e[,-1,drop=FALSE]

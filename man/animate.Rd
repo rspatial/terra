@@ -26,7 +26,7 @@ Animate (sequentially plot) the layers of a SpatRaster, or the variables or geom
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot. If \code{maxcell < ncell(x)}, \code{spatSample(type="regular")} is used before plotting}
   \item{n}{integer > 0. Number of plotting loops}
   \item{vars}{numeric or character to indicate the variables to animate. If this is NULL, the geometries are animated instead}
-  \item{add}{logical. Add the geometries to the current map? When looping over variables: \code{NULL} is equivalent to \code{TRUE}. When looping over geometries: if \code{TRUE} , add all geometries to the current plot. If \code{NULL}, \code{add} is set to \code{FALSE} for the first geometry and \code{TRUE} for the remaining ones.}
+  \item{add}{logical. Add the geometries to the current map? When looping over variables: \code{NULL} is equivalent to \code{TRUE}. When looping over geometries: if \code{TRUE}, add all geometries to the current plot. If \code{NULL}, \code{add} is set to \code{FALSE} for the first geometry and \code{TRUE} for the remaining ones.}
   \item{...}{additional arguments passed to \code{\link{plot}}}
 }
 
