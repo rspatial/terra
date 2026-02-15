@@ -211,10 +211,10 @@ void SpatGeom::computeExtent() {
 
 
 SpatVector::SpatVector() {
-	extent.xmin = 0;
-	extent.xmax = 0;
-	extent.ymin = 0;
-	extent.ymax = 0;
+	extent.xmin = NAN;
+	extent.xmax = NAN;
+	extent.ymin = NAN;
+	extent.ymax = NAN;
 
 	srs.proj4 = "";
 	srs.wkt = "";
@@ -382,10 +382,11 @@ SpatGeom SpatVector::getGeom(size_t i) {
 
 bool SpatVector::addGeom(SpatGeom p) {
 	geoms.push_back(p);
-	if (geoms.size() > 1) {
-		if (!p.empty()) extent.unite(p.extent);
-	} else {
+	if (p.empty()) return true;
+	if (std::isnan(extent.xmin)) {
 		extent = p.extent;
+	} else {
+		extent.unite(p.extent);
 	}
 	return true;
 }
