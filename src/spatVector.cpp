@@ -383,7 +383,7 @@ SpatGeom SpatVector::getGeom(size_t i) {
 bool SpatVector::addGeom(SpatGeom p) {
 	geoms.push_back(p);
 	if (geoms.size() > 1) {
-		extent.unite(p.extent);
+		if (!p.empty()) extent.unite(p.extent);
 	} else {
 		extent = p.extent;
 	}

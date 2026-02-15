@@ -1129,7 +1129,6 @@ bool fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double
 }
 
 
-
 SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bool no_multipolygons, bool wrap) {
 
 	SpatVector out;
@@ -1141,8 +1140,6 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 	}
 
 	size_t npts = size();
-
-//Rcpp::Rcout << quadsegs << std::endl;
 
 	size_t n = quadsegs * 4;
 	double step = 360.0 / n;
@@ -1172,16 +1169,15 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 		geod_init(&gd, a, f);
 		double lat, lon, azi, s12, azi2;
 
-	// not checking for empty points
 		for (size_t p=0; p<npts; p++) { 
 			std::vector<std::vector<double>> xy = geoms[p].coordinates();
 			SpatVector tmp;
 			for (size_t i=0; i<xy[0].size(); i++) {
-				if (std::isnan(xy[0][i] || std::isnan(xy[1][i]) || (xy[1][i]) > 90) || (xy[1][i] < -90)) { 
+				if (std::isnan(xy[0][i]) || std::isnan(xy[1][i]) || (xy[1][i] > 90) || (xy[1][i] < -90)) {
 					tmp.addGeom(SpatGeom(polygons));
 				} else if (d[p] > 20003931) {
 					tmp = glob;
-					break;					
+					break;
 				} else {
 					std::vector<double> ptx;
 					std::vector<double> pty;
@@ -1281,8 +1277,7 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 							g.reSetPart(SpatPart(ptx, pty));
 							tmp.addGeom(g);		
 						}
-					}
-					
+					}	
 				}
 			}
 			if (tmp.size() > 1) {
