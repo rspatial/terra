@@ -5,6 +5,8 @@ on:
         type: choice
         description: Which dependents to check
         options:
+        - Depends
+        - Imports
         - strong
         - most
 
