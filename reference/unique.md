@@ -116,7 +116,7 @@ unique(v)
 #>  class       : SpatVector 
 #>  geometry    : points 
 #>  dimensions  : 7, 1  (geometries, attributes)
-#>  extent      : 1, 5, 1, 5  (xmin, xmax, ymin, ymax)
+#>  extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #>  coord. ref. : +proj=utm +zone=1 +datum=WGS84 +units=m +no_defs 
 #>  names       : value
 #>  type        : <int>

@@ -59,6 +59,7 @@
 
 - `animate<SpatVector>` method by Márcia Barbosa
   [\#2007](https://github.com/rspatial/terra/issues/2007)
+- `agitate<SpatVector>` method to jitter a SpatVector of points
 
 ## version 1.8-93
 
