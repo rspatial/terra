@@ -6,8 +6,8 @@ not memory-safe, typically because it reads all the raster cell values
 into memory.
 
 This method is not designed to be especially efficient, and there might
-be more efficient ways to accomplish what the the goal of the function
-that is not memory-safe.
+be more efficient ways to accomplish what the goal of the function that
+is not memory-safe.
 
 Also, some functions must have access to all cells at once to be valid.
 In those cases, chunk would return incorrect results.

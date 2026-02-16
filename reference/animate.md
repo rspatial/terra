@@ -54,7 +54,7 @@ animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
 
   logical. Add the geometries to the current map? When looping over
   variables: `NULL` is equivalent to `TRUE`. When looping over
-  geometries: if `TRUE` , add all geometries to the current plot. If
+  geometries: if `TRUE`, add all geometries to the current plot. If
   `NULL`, `add` is set to `FALSE` for the first geometry and `TRUE` for
   the remaining ones.
 

@@ -11,8 +11,8 @@ looks for candidate variables. If variables are found and these appear
 to be longitude/latitude, the "+proj=longlat" crs is assigned unless
 another crs is specified.
 
-You can also use a two-colum matrix to make a SpatVector of points, or a
-"geom" matrix to make a SpatVector of any supported geometry (see
+You can also use a two-column matrix to make a SpatVector of points, or
+a "geom" matrix to make a SpatVector of any supported geometry (see
 examples and
 [`geom`](https://rspatial.github.io/terra/reference/geometry.md)).
 

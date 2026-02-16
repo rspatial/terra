@@ -26,7 +26,7 @@ writeRaster(x, filename, overwrite=FALSE, ...)
 
 - ...:
 
-  additional arguments for for writing files. See Details
+  additional arguments for writing files. See Details
 
 ## Value
 

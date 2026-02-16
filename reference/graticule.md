@@ -1,7 +1,7 @@
 # Create a graticule
 
-Create a graticule. That is, a grid of lon/lat lines that can be used to
-on a projected map.
+Create a graticule. That is, a grid of lon/lat lines that can be used on
+a projected map.
 
 The object returned, a SpatGraticule, can be plotted with `plot` and
 `lines`. There is also a `crop` method.

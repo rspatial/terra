@@ -69,7 +69,7 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
   "classes" type legend or with three columns (from, to, color) for an
   "interval" type legend. If `x` is a `SpatVector` it can also be a
   `data.frame` with two columns (value, color) or a named vector
-  (value=color) for a "classes" type legend. If `x` us a
+  (value=color) for a "classes" type legend. If `x` is a
   SpatVectorCollection, a list can be provided with colors for each
   SpatVector
 
