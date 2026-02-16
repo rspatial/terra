@@ -7,6 +7,9 @@ if (!isGeneric("pitfinder")) {setGeneric("pitfinder", function(x, ...) standardG
 if (!isGeneric("NIDP")) {setGeneric("NIDP", function(x, ...) standardGeneric("NIDP"))}
 if (!isGeneric("flowAccumulation")) {setGeneric("flowAccumulation", function(x, ...) standardGeneric("flowAccumulation"))}
 
+
+if (!isGeneric("agitate")) {setGeneric("agitate", function(x, ...) standardGeneric("agitate"))}
+
 if (!isGeneric("nany")) {setGeneric("nany", function(x, ...) standardGeneric("nany"))}
 if (!isGeneric("chunk")) {setGeneric("chunk", function(x, ...) standardGeneric("chunk"))}
 if (!isGeneric("thresh")) {setGeneric("thresh", function(x, ...) standardGeneric("thresh"))}

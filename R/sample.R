@@ -1110,3 +1110,35 @@ setMethod("spatSample", signature(x="SpatVector"),
 	}
 )
 
+setMethod("agitate", signature(x="SpatVector"),
+	function(x, maxdist) {
+		stopifnot(geomtype(x) == "points")
+		stopifnot(maxdist >= 0)
+		if (maxdist == 0) return(x)
+		xy <- crds(x)
+		y <- vect(xy, crs=crs(x))
+		b <- terra::buffer(y, width=maxdist)	
+		if (any(is.na(xy))) {
+			b$id <- 1:nrow(b)
+			s <- terra::spatSample(b, rep(1, nrow(b)))
+			d <- as.data.frame(s, geom="xy")
+			i <- match(b$id, d$id)
+			out <- d[i, c("x", "y")]
+		} else {
+			s <- terra::crds(terra::spatSample(b, rep(1, nrow(b))))
+			out <- data.frame(s)
+		}
+		out <- vect(out, crs=crs(x))
+		values(out) <- values(x)
+		out
+	}
+)
+
+
+setMethod("agitate", signature(x="ANY"),
+	function(x, ...) {
+		jitter(x, ...)
+	}
+)
+
+

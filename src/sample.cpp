@@ -833,6 +833,10 @@ SpatVector SpatVector::sample(size_t n, std::string method, unsigned seed) {
 	bool lonlat = is_lonlat();
 	bool random = (method == "random");
 
+	if (std::isnan(extent.xmin)) {
+		return(out);
+	}
+
 	if (gt == "lines") {
 		
 		std::vector<double> x, y;
@@ -910,95 +914,14 @@ SpatVector SpatVector::sample(size_t n, std::string method, unsigned seed) {
 		return out;
 	}
 
-/*
-	if (strata != "") {
-		// should use
-		// SpatVector a = aggregate(strata, false);
-		// but get nasty self-intersection precision probs.
-
-		int i = where_in_vector(strata, get_names());
-		if (i < 0) {
-			out.setError("cannot find field");
-			return out;
-		}
-		SpatDataFrame uv;
-		std::vector<int> idx = df.getIndex(i, uv);
-		for (size_t i=0; i<uv.nrow(); i++) {
-			std::vector<int> g;
-			g.resize(0);
-			for (size_t j=0; j<idx.size(); j++) {
-				if (i == (size_t)idx[j]) {
-					g.push_back(j);
-				}
-			}
-			SpatVector s = subset_rows(g);
-			s = s.sample(n, "random", false, "", seed);
-			for (long &v : s.df.iv[0]) v = v+i;
-			out = out.append(s, true);
-		}
-		return out;
-	}
-*/
 
 	std::vector<double> a = area("m", true, {});
 	if (hasError()) {
 		out.setError(getError());
 		return out;
 	}
+	
 	double suma = accumulate(a.begin(), a.end(), 0.0);
-
-/*
-	if (by_geom) {
-		std::vector<double> pa;
-		pa.reserve(a.size());
-		for (size_t i=0; i<a.size(); i++) {
-			pa.push_back(a[i] / suma);
-		}
-		std::vector<std::vector<double>> pxy(2);
-
-		std::vector<size_t> nsamp(size());
-		for (size_t i=0; i<size(); i++) {
-			if (pa[i] > 0) {
-				SpatGeom g = getGeom(i);
-				SpatVector ve(g.extent, "");
-				ve.srs = srs;
-				double vea = ve.area()[0];
-				if (random) {
-					double m = vea / a[i];
-					m = std::max(2.0, std::min(m*m, 100.0));
-					size_t ssize = pa[i] * n * m;
-					pxy = g.extent.sampleRandom(ssize, lonlat, seed);
-				} else {
-					size_t ssize = std::round(pa[i] * n * vea / a[i]);
-					pxy = g.extent.sampleRegular(ssize, lonlat);
-				}
-				SpatVector vpnt(pxy[0], pxy[1], points, "");
-				SpatVector vpol(g);
-				vpnt = vpnt.intersect(vpol);
-				if (random) {
-					size_t psize = pa[i] * n;
-					if (vpnt.size() > psize) {
-						std::vector<int> rows(psize);
-						std::iota(rows.begin(), rows.end(), 0);
-						vpnt = vpnt.subset_rows(rows);
-					}
-				}
-				nsamp[i] = vpnt.size();
-				if (out.size() == 0) {
-					out = vpnt;
-				} else {
-					out = out.append(vpnt, true);
-				}
-			}
-		}
-		std::vector<long> id(size());
-		std::iota(id.begin(), id.end(), 1);
-		rep_each_vect(id, nsamp);
-		SpatDataFrame df;
-		df.add_column(id, "pol.id");
-		out.df = df;
-	} else {
-*/
 	std::vector<std::vector<double>> pxy(2);
 
 	SpatVector ve(extent, "");
@@ -1033,7 +956,6 @@ SpatVector SpatVector::sample(size_t n, std::string method, unsigned seed) {
 	//out.df = df;
 //	}
 	out.srs = srs;
-
 	return out;
 }
 
