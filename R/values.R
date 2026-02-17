@@ -11,7 +11,7 @@ setMethod("hasValues", signature(x="SpatRaster"),
 
 ok_int <- function(x) {
 	r <- suppressWarnings(range(x, na.rm=TRUE))
-	isTRUE((r[1] > .Machine$integer.min) && (r[2] < .Machine$integer.max))
+	isTRUE((r[1] >= -.Machine$integer.max) && (r[2] <= .Machine$integer.max))
 }
 
 .makeDataFrame <- function(x, v, ...) {
