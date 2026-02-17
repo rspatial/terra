@@ -9,7 +9,11 @@ on:
         - Imports
         - strong
         - most
-
+      pattern:
+        type: string
+        description: 'grep pattern to subset packages'
+        default: ''
+        
 name: Reverse dependency check
 
 jobs:
