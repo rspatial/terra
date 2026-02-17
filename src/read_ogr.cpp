@@ -863,6 +863,7 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 
 	OGRGeometryFactory ogr;
 
+	extent.xmin = extent.xmax = extent.ymin = extent.ymax = NAN;
 	SpatGeom g;
 	bool haveGeomt = false;
 	SpatGeomType geomt = null;
