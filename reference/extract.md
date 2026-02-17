@@ -194,9 +194,9 @@ r[c(0:2, 99:101)]
 #>   lyr.1
 #> 1     1
 #> 2     2
-#> 3   NaN
-#> 4   NaN
-#> 5   NaN
+#> 3    NA
+#> 4    NA
+#> 5    NA
 
 f <- system.file("ex/meuse.tif", package="terra")
 r <- rast(f)

@@ -48,9 +48,9 @@ spatSample(x, size, method="random", lonlat, as.points=FALSE, exact=FALSE)
 
 - method:
 
-  character. Should be "regular" or "random", If `x` is a `SpatRaster`,
-  it can also be "stratified" (each value in `x` is a stratum),
-  "weights" (each value in `x` is a probability weight), or "spread" (an
+  character. Should be one of "regular", "random", or, if `x` is a
+  `SpatRaster`, "stratified" (each value in `x` is a stratum), "weights"
+  (each value in `x` is a probability weight), or "spread" (an
   approximately regular sample, using compact zones generated with
   [`k_means`](https://rspatial.github.io/terra/reference/k_means.md)
   clustering of the raster cell locations)
@@ -176,7 +176,7 @@ s <- spatSample(r, 10, as.raster=TRUE)
 spatSample(r, 5)
 #>   elevation
 #> 1       380
-#> 2       NaN
+#> 2        NA
 #> 3       495
 #> 4       413
 #> 5       341
@@ -214,13 +214,13 @@ spatSample(r, 6, "random", cells=TRUE, xy=TRUE, values=FALSE)
 spatSample(r, 6, "regular", cells=TRUE, xy=TRUE)
 #>   cell        x        y elevation
 #> 1 7458 6.137500 49.53750       264
-#> 2 7505 6.529167 49.53750       NaN
-#> 3 7411 5.745833 49.53750       NaN
+#> 2 7505 6.529167 49.53750        NA
+#> 3 7411 5.745833 49.53750        NA
 #> 4 5368 6.137500 49.72083       289
-#> 5 5415 6.529167 49.72083       NaN
-#> 6 5321 5.745833 49.72083       NaN
+#> 5 5415 6.529167 49.72083        NA
+#> 6 5321 5.745833 49.72083        NA
 #> 7 3183 6.137500 49.91250       322
-#> 8 1093 6.137500 50.09583       NaN
+#> 8 1093 6.137500 50.09583        NA
 
 # stratified
 rr <- rast(ncol=10, nrow=10, names="stratum")
