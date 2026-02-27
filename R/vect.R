@@ -593,10 +593,10 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			start <- start-1
 			if (start > 0) {
 				if (n >= (nr-start)) {
-					qy <- paste(qy, "OFFSET", start)
+					qy <- paste(qy, "OFFSET", format(start, scientific=FALSE))
 				} else {
 					n <- min(n, nr-start)
-					qy <- paste(qy, layer, "LIMIT", n, "OFFSET", start)
+					qy <- paste(qy, layer, "LIMIT", n, "OFFSET", format(start, scientific=FALSE))
 				}
 			} else if (n < nr) {
 				n <- min(n, nr)
