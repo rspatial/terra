@@ -3,27 +3,20 @@
 # Version 1.0
 # License GPL v3
 
-win_basename <- function(x) {
-#	if (isTRUE(grepl("Windows", utils::osVersion))) {
-		n <- 150
-#		large <- nchar(x) > 256
-		large <- nchar(x) > n
-		if (any(large)) {
-			for (i in 1:length(large)) {
-				if (large[i]) {
-					try(x[i] <- basename(x[i]), silent=TRUE)
-					if (nchar(x[i]) > n) {
-						x[i] <- paste0(substr(x[i], 1, n), "~")
-					}
+get_basename <- function(x, n=150) {
+	n <- 150
+	large <- nchar(x) > n
+	x <- basename(x)
+	if (any(large)) {
+		for (i in 1:length(large)) {
+			if (large[i]) {
+				try(x[i] <- basename(x[i]), silent=TRUE)
+				if (nchar(x[i]) > n) {
+					x[i] <- paste0(substr(x[i], 1, n), "~")
 				}
 			}
-		} else {
-			x <- basename(x)
 		}
-		x
-#	} else {
-#		basename(x)	
-#	}
+	}
 }
 
 
@@ -160,10 +153,10 @@ setMethod ("show" , "SpatVector",
 		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" )
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		if (object@pntr$source != "") {
-			if (object@pntr$layer != tools::file_path_sans_ext(win_basename(object@pntr$source))) {
-				cat(" source      : ", win_basename(object@pntr$source), " (", object@pntr$layer, ")\n", sep="")
+			if (object@pntr$layer != tools::file_path_sans_ext(get_basename(object@pntr$source))) {
+				cat(" source      : ", get_basename(object@pntr$source), " (", object@pntr$layer, ")\n", sep="")
 			} else {
-				cat(" source      : ", win_basename(object@pntr$source), "\n", sep="")
+				cat(" source      : ", get_basename(object@pntr$source), "\n", sep="")
 			}
 		}
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
@@ -184,10 +177,10 @@ setMethod ("show" , "SpatVectorProxy",
 		cat(" geometry    :", geomtype(object), "\n")
 		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" )
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		if (object@pntr$v$layer != tools::file_path_sans_ext(win_basename(object@pntr$v$source))) {
-			cat(" source      : ", win_basename(object@pntr$v$source), " (", object@pntr$v$layer, ")\n", sep="")
+		if (object@pntr$v$layer != tools::file_path_sans_ext(get_basename(object@pntr$v$source))) {
+			cat(" source      : ", get_basename(object@pntr$v$source), " (", object@pntr$v$layer, ")\n", sep="")
 		} else {
-			cat(" source      : ", win_basename(object@pntr$v$source), "\n", sep="")
+			cat(" source      : ", get_basename(object@pntr$v$source), "\n", sep="")
 		}
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
 		dd <- get.data.frame(object)
@@ -265,10 +258,10 @@ setMethod ("show" , "SpatRaster",
 				}
 			}
 			hdf5 <- substr(f, 1, 5) == "HDF5:"
-			f[!hdf5] <- win_basename(f[!hdf5])
+			f[!hdf5] <- get_basename(f[!hdf5])
 			if (any(hdf5)) {
 				ff <- strsplit(f[hdf5], "://")
-				ff <- sapply(ff, function(i) paste(win_basename(i), collapse="://"))
+				ff <- sapply(ff, function(i) paste(get_basename(i), collapse="://"))
 				ff <- gsub('\"', "", ff)
 				f[hdf5] <- ff
 			}
@@ -549,11 +542,11 @@ setMethod ("show" , "SpatRaster",
 .sources <- function(x) {
 	#m <- inMemory(x)
 	f <- sources(x)
-	f <- gsub("\"", "", win_basename(f))
+	f <- gsub("\"", "", get_basename(f))
 	i <- grep(":", f)
 	if (length(i) > 0) {
 		for (j in i) {
-			ff <- try(win_basename( strsplit(f[j], ':')[[1]][1]), silent=TRUE)
+			ff <- try(get_basename( strsplit(f[j], ':')[[1]][1]), silent=TRUE)
 			if (!inherits(ff, "try-error")) {
 				f[j] <- ff
 			}

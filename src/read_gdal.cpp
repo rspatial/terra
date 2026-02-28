@@ -67,6 +67,8 @@ void SpatRaster::gdalogrproj_init(std::string path) {
 
 }
 
+
+
 /*
 bool GetTime(std::string filename, std::vector<int64_t> &time, std::string &timestep, size_t nl) {
 	filename += ".time";
@@ -93,6 +95,21 @@ bool GetUnits(std::string filename, std::vector<std::string> &units, size_t nl) 
 	return true;
 }
 */
+
+bool ncdf_good_ends(std::string const &s) {
+	std::vector<std::string> end = {"_bnds", "_bounds", "lat", "lon", "longitude", "latitude"};
+	for (size_t i=0; i<end.size(); i++) {
+		if (s.length() >= end[i].length()) {
+			if (s.compare(s.length() - end[i].length(), s.length(), end[i]) == 0) {
+				return false;
+			}
+		}
+	}
+	if (s == "x" || s == "y" || s == "northing" || s == "easting") {
+		return false;
+	}
+	return true;
+}
 
 bool read_aux_json(std::string filename, std::vector<int64_t> &time, std::string &timestep, std::vector<std::string> &units, size_t nlyr) {
 	filename += ".aux.json";
@@ -679,17 +696,19 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 				continue;
 			}
 			std::string s = meta[ids[i]*2];
-			size_t pos = s.find(delim);
-			if (pos != std::string::npos) {
-				s.erase(0, pos + delim.length());
-				SpatRaster sub;
-				if (sub.constructFromFile(s, {-1}, {""}, {}, options, false, guessCRS, domains)) {
-					std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
-					if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
-						addWarning("skipped (different geometry): " + s);
+			if (ncdf_good_ends(s)) {
+				size_t pos = s.find(delim);
+				if (pos != std::string::npos) {
+					s.erase(0, pos + delim.length());
+					SpatRaster sub;
+					if (sub.constructFromFile(s, {-1}, {""}, {}, options, false, guessCRS, domains)) {
+						std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
+						if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
+							addWarning("skipped (different geometry): " + s);
+						}
+					} else {
+						addWarning("skipped (fail): " + s);
 					}
-				} else {
-					addWarning("skipped (fail): " + s);
 				}
 			}
 		}
@@ -1988,20 +2007,6 @@ std::vector<double> SpatRaster::readRowColGDALFlat(size_t src, std::vector<int64
 
 // ncdf
 
-bool ncdf_good_ends(std::string const &s) {
-	std::vector<std::string> end = {"_bnds", "_bounds", "lat", "lon", "longitude", "latitude"};
-	for (size_t i=0; i<end.size(); i++) {
-		if (s.length() >= end[i].length()) {
-			if (s.compare(s.length() - end[i].length(), s.length(), end[i]) == 0) {
-				return false;
-			}
-		}
-	}
-	if (s == "x" || s == "y" || s == "northing" || s == "easting") {
-		return false;
-	}
-	return true;
-}
 
 void ncdf_pick_most(std::vector<std::string> &sd, std::vector<std::string> &varname, std::vector<std::string> &longname, std::vector<int> &dim1, std::vector<int> &dim2) {
 	if (sd.size() < 2) return;
@@ -2082,7 +2087,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	} else {
 		// eliminate sources based on names like "*_bnds" and "lat"
 		std::vector<int> rows, cols;
-		for (size_t i=0; i<info[1].size(); i++) {			
+		for (size_t i=0; i<info[1].size(); i++) {
 			if (ncdf_good_ends(info[1][i])) {
 				sd.push_back(info[0][i]);
 				varname.push_back(info[1][i]);
