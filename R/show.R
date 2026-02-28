@@ -11,13 +11,10 @@ win_basename <- function(x) {
 		if (any(large)) {
 			for (i in 1:length(large)) {
 				if (large[i]) {
-					r <- strsplit(x[i], "[\\/]+")[[1]]
-					if (nchar(r) > n) {
-						r <- paste0(substr(r[[length(r)]], 1, n), "~")
+					try(x[i] <- basename(x[i]), silent=TRUE)
+					if (nchar(x[i]) > n) {
+						x[i] <- paste0(substr(x[i], 1, n), "~")
 					}
-					x[i] <- r
-				} else {
-					x[i] <- basename(x)	
 				}
 			}
 		} else {
