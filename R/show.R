@@ -4,19 +4,9 @@
 # License GPL v3
 
 get_basename <- function(x, n=150) {
-	n <- 150
-	large <- nchar(x) > n
 	x <- basename(x)
-	if (any(large)) {
-		for (i in 1:length(large)) {
-			if (large[i]) {
-				try(x[i] <- basename(x[i]), silent=TRUE)
-				if (nchar(x[i]) > n) {
-					x[i] <- paste0(substr(x[i], 1, n), "~")
-				}
-			}
-		}
-	}
+	large <- nchar(x) > n
+	x[large] <- paste0(substr(x[large], 1, n), "~")
 	x
 }
 
