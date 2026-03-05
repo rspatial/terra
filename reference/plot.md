@@ -317,8 +317,9 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
 
 - ext:
 
-  SpatExtent. Can be use instead of xlim and ylim to set the extent of
-  the plot
+  SpatExtent or other object for which
+  [`ext`](https://rspatial.github.io/terra/reference/ext.md) returns
+  one. Can be use instead of xlim and ylim to set the extent of the plot
 
 - reset:
 

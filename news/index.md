@@ -25,6 +25,8 @@
   weights=FALSE did not work
   [\#2029](https://github.com/rspatial/terra/issues/2029) by
   volcanicpine
+- `query<SpatVectorProxy>` failed with a start \> 100000
+  [\#2038](https://github.com/rspatial/terra/issues/2038) by Paul Smith
 
 ### enhancements
 
