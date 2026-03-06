@@ -1,4 +1,4 @@
-# version 1.8-97
+# version 1.8-98
 
 ## bug fixes
 
@@ -21,6 +21,7 @@
 - `lines<leaflet>` gains argument "popup" [#2018](https://github.com/rspatial/terra/issues/2018) by Mary Fisher
 - `as.lines<matrix>` gains argument "segments" [#2008](https://github.com/rspatial/terra/issues/2008) by Márcia Barbosa
 - `freq<SpatRaster>` with argument zones is a SpatRaster now returns the zone values instead of the index [https://github.com/rspatial/terra/issues/2033](#2033) by Thomas Estabrook
+- `as.lines<SpatRaster>` gained argument "na.rm=FALSE" [#2041](https://github.com/rspatial/terra/issues/2041) by Márcia Barbosa 
 
 
 ## new
