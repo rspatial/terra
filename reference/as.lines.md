@@ -7,7 +7,7 @@ lines.
 
 ``` r
 # S4 method for class 'SpatRaster'
-as.lines(x)
+as.lines(x, na.rm=FALSE)
 
 # S4 method for class 'SpatVector'
 as.lines(x)
@@ -26,6 +26,10 @@ as.lines(x, crs="", segments=FALSE)
   SpatRaster, SpatVector, SpatExtent or matrix. If `x` is a matrix it
   should have two columns for a single line, or four columns, where each
   row has the start and end coordinates (x, y) for lines
+
+- na.rm:
+
+  logical. Only show lines for cells that are not `NA`?
 
 - crs:
 

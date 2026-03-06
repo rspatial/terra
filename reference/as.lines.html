@@ -41,7 +41,7 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
-<span><span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
 <span><span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
@@ -59,6 +59,9 @@
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>SpatRaster, SpatVector, SpatExtent or matrix. If <code>x</code> is a matrix it should have two columns for a single line, or four columns, where each row has the start and end coordinates (x, y) for lines</p></dd>
+
+<dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
+<dd><p>logical. Only show lines for cells that are not <code>NA</code>?</p></dd>
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
 <dd><p>character. The coordinate reference system (see <code><a href="crs.html">crs</a></code>)</p></dd>
