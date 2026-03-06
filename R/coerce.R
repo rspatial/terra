@@ -265,7 +265,11 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 )
 
 setMethod("as.lines", signature(x="SpatRaster"),
-	function(x) {
+	function(x, na.rm=FALSE) {
+		if (na.rm) {
+			p <- as.polygons(x[[1]], round=FALSE, aggregate=FALSE, values=FALSE, na.rm=TRUE) 
+			return(as.lines(p))
+		}
 		p <- methods::new("SpatVector")
 		opt <- spatOptions()
 		p@pntr <- x@pntr$as_lines(opt)

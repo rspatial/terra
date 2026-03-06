@@ -16,7 +16,7 @@ Conversion of a SpatRaster, SpatVector or SpatExtent to a SpatVector of lines.
 }
 
 \usage{
-\S4method{as.lines}{SpatRaster}(x)
+\S4method{as.lines}{SpatRaster}(x, na.rm=FALSE)
 
 \S4method{as.lines}{SpatVector}(x)
 
@@ -28,6 +28,7 @@ Conversion of a SpatRaster, SpatVector or SpatExtent to a SpatVector of lines.
 
 \arguments{
 \item{x}{SpatRaster, SpatVector, SpatExtent or matrix. If \code{x} is a matrix it should have two columns for a single line, or four columns, where each row has the start and end coordinates (x, y) for lines}
+\item{na.rm}{logical. Only show lines for cells that are not \code{NA}?}
 \item{crs}{character. The coordinate reference system (see \code{\link{crs}})}
 \item{segments}{logical. Should (poly-)lines or polygons be disaggregated into their line-segments? See \code{\link{disagg}}}
 }
