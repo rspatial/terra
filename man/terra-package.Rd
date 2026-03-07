@@ -72,7 +72,7 @@ Also see the methods in section VIII
   \tabular{ll}{
     \code{\link{app}} \tab Apply a function to all cells, across layers, typically to summarize (as in \code{base::apply}) \cr
     \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply} and \code{stats::aggregate})\cr
-    \code{\link{lapp}} \tab Apply a function to a SpatRaster, using layers as arguments.\cr
+    \code{\link{lapp}} \tab Apply a function to a SpatRaster, using its layers as arguments.\cr
     \code{\link{sapp}} \tab Apply a function to each layer\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -347,7 +347,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 
 \tabular{ll}{
 \code{\link{sprc}} \tab create a SpatRasterCollection from (a list of) SpatRasters\cr
-\code{\link{length}} \tab  does the SpatRasterCollection have?\cr
+\code{\link{length}} \tab how many SpatRasters does the SpatRasterCollection have?\cr
 \code{\link{crop}} \tab crop a SpatRasterCollection\cr
 \code{\link{impose}} \tab force the members of SpatRasterCollection to the same geometry\cr
 \code{\link{merge}} \tab merge the members of a SpatRasterCollection\cr
