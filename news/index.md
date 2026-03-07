@@ -1,10 +1,10 @@
 # Changelog
 
-## version 1.9-0
+## version 1.9-1
 
 ### bug fixes
 
-- `patches` newly implementated by Andrew Gene Brown
+- `patches` newly implemented by Andrew Gene Brown
   [\#2006](https://github.com/rspatial/terra/pull/2006) fixing
   [\#1758](https://github.com/rspatial/terra/issues/1758)
 - `project` did not apply the scale/offset values
@@ -52,7 +52,7 @@
 - `as.lines<matrix>` gains argument “segments”
   [\#2008](https://github.com/rspatial/terra/issues/2008) by Márcia
   Barbosa
-- `freq<SpatRaster>` with argument zones is a SpatRaster now returns the
+- `freq<SpatRaster>` with argument zones as a SpatRaster now returns the
   zone values instead of the index
   [\#2033](https://github.com/rspatial/terra/issues/2033) by Thomas
   Estabrook
@@ -91,7 +91,7 @@ Released 2026-01-12
   [\#1992](https://github.com/rspatial/terra/issues/1992) by Wencheng
   Lau-Medrano
 - `polys` ignored argument “border”
-  [\#1997](https://github.com/rspatial/terra/issues/1989) by Márcia
+  [\#1997](https://github.com/rspatial/terra/issues/1997) by Márcia
   Barbosa
 - `describe` works with linux paths starting with a tilde
   [\#2003](https://github.com/rspatial/terra/issues/2003) by David Moles
@@ -103,7 +103,7 @@ Released 2026-01-12
 
 - `vect<data.frame>` has improved guessing of variable names (if
   argument geom is not supplied) and crs (if that argument is not
-  supplied, and gets argument “quiet=TRUE” that can be set to false to
+  supplied), and gets argument “quiet=TRUE” that can be set to false to
   get warnings if either of these is guessed.
   [\#1984](https://github.com/rspatial/terra/issues/1984) and
   [\#1985](https://github.com/rspatial/terra/issues/1985) by Márcia

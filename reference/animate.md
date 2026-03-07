@@ -52,11 +52,10 @@ animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
 
 - add:
 
-  logical. Add the geometries to the current map? When looping over
-  variables: `NULL` is equivalent to `TRUE`. When looping over
+  logical. Add the geometries to the current plot? When looping over
   geometries: if `TRUE`, add all geometries to the current plot. If
   `NULL`, `add` is set to `FALSE` for the first geometry and `TRUE` for
-  the remaining ones.
+  the remaining ones. This argument is ignored when `vars` is not `NULL`
 
 - ...:
 
@@ -85,11 +84,10 @@ animate(s, n=1)
 
 
 v <- vect(system.file("ex/lux.shp", package="terra"))
-animate(v, n=2)
+animate(v[1:3, ], n=1)
 
-animate(v, n=1, vars=names(v))
-
+# animate(v, vars=names(v))
 
 # you can save an animation to file like this
-# animation::saveGIF(terra::animate(v, n=1), "animation.gif")
+# animation::saveGIF(terra::animate(v), "animation.gif")
 ```

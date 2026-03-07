@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,7 @@
 <dd><p>numeric or character to indicate the variables to animate. If this is NULL, the geometries are animated instead</p></dd>
 
   <dt id="arg-add">add<a class="anchor" aria-label="anchor" href="#arg-add"></a></dt>
-<dd><p>logical. Add the geometries to the current map? When looping over variables: <code>NULL</code> is equivalent to <code>TRUE</code>. When looping over geometries: if <code>TRUE</code>, add all geometries to the current plot. If <code>NULL</code>, <code>add</code> is set to <code>FALSE</code> for the first geometry and <code>TRUE</code> for the remaining ones.</p></dd>
+<dd><p>logical. Add the geometries to the current plot? When looping over geometries: if <code>TRUE</code>, add all geometries to the current plot. If <code>NULL</code>, <code>add</code> is set to <code>FALSE</code> for the first geometry and <code>TRUE</code> for the remaining ones. This argument is ignored when <code>vars</code> is not <code>NULL</code></p></dd>
 
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>additional arguments passed to <code><a href="plot.html">plot</a></code></p></dd>
@@ -100,13 +100,12 @@
 <span class="r-plt img"><img src="animate-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">animate</span><span class="op">(</span><span class="va">v</span>, n<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">animate</span><span class="op">(</span><span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">]</span>, n<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="animate-4.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu">animate</span><span class="op">(</span><span class="va">v</span>, n<span class="op">=</span><span class="fl">1</span>, vars<span class="op">=</span><span class="fu"><a href="names.html">names</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="animate-5.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># animate(v, vars=names(v))</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># you can save an animation to file like this</span></span></span>
-<span class="r-in"><span><span class="co"># animation::saveGIF(terra::animate(v, n=1), "animation.gif")</span></span></span>
+<span class="r-in"><span><span class="co"># animation::saveGIF(terra::animate(v), "animation.gif")</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
