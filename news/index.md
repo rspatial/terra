@@ -1,11 +1,11 @@
 # Changelog
 
-## version 1.8-98
+## version 1.9-0
 
 ### bug fixes
 
-- new implementation of `patches` by Andrew Gene Brown
-  [\#2006](https://github.com/rspatial/terra/pull/2006) that fixes
+- `patches` newly implementated by Andrew Gene Brown
+  [\#2006](https://github.com/rspatial/terra/pull/2006) fixing
   [\#1758](https://github.com/rspatial/terra/issues/1758)
 - `project` did not apply the scale/offset values
   [\#2014](https://github.com/rspatial/terra/issues/2014) by Edgar

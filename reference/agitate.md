@@ -7,7 +7,7 @@ within a specified distance.
 
 ``` r
 # S4 method for class 'SpatVector'
-agitate(x, maxdist, ...)
+agitate(x, maxdist)
 ```
 
 ## Arguments
