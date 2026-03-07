@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.8-97
+## version 1.8-98
 
 ### bug fixes
 
@@ -17,7 +17,7 @@
   [\#2019](https://github.com/rspatial/terra/issues/2019) by Heyang;
   fixed by Yuxuan Xie with
   [\#2024](https://github.com/rspatial/terra/pull/2024)
-- `values<SpatVector>` lost integers values \> .Machine\$integer.max.
+- `values<SpatVector>` lost integer values \> .Machine\$integer.max.
   Variables with such values are no longer coerced to integer.
   [\#2030](https://github.com/rspatial/terra/issues/2030) by Steffen
   Ehrmann
@@ -44,7 +44,7 @@
 - fixed documentation for “direction” parameter in `flip<SpatRaster>`
   [\#2016](https://github.com/rspatial/terra/pull/2016) by Jesse
   Anderson
-- “pixel count” in a raster/value attribute table is now recoginzed as
+- “pixel count” in a raster/value attribute table is now recognized as
   equivalent to “count” (and not considered a categorical variable)
   [\#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `lines<leaflet>` gains argument “popup”
@@ -54,8 +54,11 @@
   Barbosa
 - `freq<SpatRaster>` with argument zones is a SpatRaster now returns the
   zone values instead of the index
-  [https://github.com/rspatial/terra/issues/2033](#id_2033) by Thomas
+  [\#2033](https://github.com/rspatial/terra/issues/2033) by Thomas
   Estabrook
+- `as.lines<SpatRaster>` gained argument “na.rm=FALSE”
+  [\#2041](https://github.com/rspatial/terra/issues/2041) by Márcia
+  Barbosa
 
 ### new
 
@@ -91,7 +94,7 @@ Released 2026-01-12
   [\#1997](https://github.com/rspatial/terra/issues/1989) by Márcia
   Barbosa
 - `describe` works with linux paths starting with a tilde
-  [2003](https://github.com/rspatial/terra/issues/2003) by David Moles
+  [\#2003](https://github.com/rspatial/terra/issues/2003) by David Moles
 - `zonal<SpatRaster,SpatRaster>` failed with arguments fun=‘sd’, wide=F.
   [\#2004](https://github.com/rspatial/terra/issues/2004) by Thomas
   Estabrook
@@ -126,7 +129,7 @@ Released 2026-01-12
   [\#1994](https://github.com/rspatial/terra/issues/1994) by Márcia
   Barbosa
 - `plet<SpatVector>` and `polys<leaflet>` gain argument “lty”
-  [\#1997](https://github.com/rspatial/terra/issues/1989) by Márcia
+  [\#1997](https://github.com/rspatial/terra/issues/1997) by Márcia
   Barbosa
 
 ### new
@@ -162,7 +165,7 @@ Released 2025-11-28
 - `stretch` crashed R with very large rasters
   [\#1962](https://github.com/rspatial/terra/issues/1962) by Agustin
   Lobo
-- `focalReg` did not handle of custom functions with a weights argument
+- `focalReg` did not handle custom functions with a weights argument
   [\#1965](https://github.com/rspatial/terra/issues/1965) by Pedro
   Tarroso
 
@@ -366,8 +369,8 @@ Released 2025-07-18
   [\#1858](https://github.com/rspatial/terra/issues/1868) by Tyler
   Hoecker
 - numerical layer indexing in extract was broken
-  [\#1862](https://github.com/rspatial/terra/issues/1862) identified and
-  fixed \[#1863\] (<https://github.com/rspatial/terra/pull/1863>) by
+  [\#1862](https://github.com/rspatial/terra/issues/1862); identified
+  and fixed [\#1863](https://github.com/rspatial/terra/pull/1863) by
   Finn Lindgren
 
 ### enhancements
@@ -875,7 +878,7 @@ Released 2024-12-12
 
 ### new
 
-- `patches` with option `valus=TRUE` can now distinguish regions based
+- `patches` with option `values=TRUE` can now distinguish regions based
   on their cell values (instead of only NA vs not-NA)
   [\#495](https://github.com/rspatial/terra/issues/495) by Jakub Nowosad
   and [\#1632](https://github.com/rspatial/terra/issues/1632) by Agustin
@@ -887,7 +890,7 @@ Released 2024-12-12
 - `metags` for layers (bands) of SpatRaster are now saved to and read
   from GTiff files
   [\#1071](https://github.com/rspatial/terra/issues/1071) by Mike Koontz
-- `global` has new effcient functions “anyNA” and “anynotNA”
+- `global` has new efficient functions “anyNA” and “anynotNA”
   [\#1540](https://github.com/rspatial/terra/issues/1540) by Kevin J
   Wolz
 - `wrap`, `saveRDS` and `serialize` for SpatExtent.

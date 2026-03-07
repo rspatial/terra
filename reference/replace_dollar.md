@@ -51,16 +51,16 @@ v$ID_1 <- LETTERS[1:12]
 v$new <- sample(12)
 values(v)
 #>    ID_1       NAME_1 ID_2           NAME_2 AREA    POP new
-#> 1     A     Diekirch    1         Clervaux  312  18081  10
-#> 2     B     Diekirch    2         Diekirch  218  32543  11
-#> 3     C     Diekirch    3          Redange  259  18664   7
-#> 4     D     Diekirch    4          Vianden   76   5163   5
-#> 5     E     Diekirch    5            Wiltz  263  16735  12
+#> 1     A     Diekirch    1         Clervaux  312  18081  12
+#> 2     B     Diekirch    2         Diekirch  218  32543   5
+#> 3     C     Diekirch    3          Redange  259  18664  10
+#> 4     D     Diekirch    4          Vianden   76   5163   4
+#> 5     E     Diekirch    5            Wiltz  263  16735   9
 #> 6     F Grevenmacher    6       Echternach  188  18899   1
-#> 7     G Grevenmacher    7           Remich  129  22366   4
-#> 8     H Grevenmacher   12     Grevenmacher  210  29828   8
-#> 9     I   Luxembourg    8         Capellen  185  48187   6
-#> 10    J   Luxembourg    9 Esch-sur-Alzette  251 176820   2
-#> 11    K   Luxembourg   10       Luxembourg  237 182607   3
-#> 12    L   Luxembourg   11           Mersch  233  32112   9
+#> 7     G Grevenmacher    7           Remich  129  22366   2
+#> 8     H Grevenmacher   12     Grevenmacher  210  29828   3
+#> 9     I   Luxembourg    8         Capellen  185  48187  11
+#> 10    J   Luxembourg    9 Esch-sur-Alzette  251 176820   6
+#> 11    K   Luxembourg   10       Luxembourg  237 182607   7
+#> 12    L   Luxembourg   11           Mersch  233  32112   8
 ```

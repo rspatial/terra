@@ -58,5 +58,5 @@ atan2(r1, r2)
 #> source(s)   : memory
 #> name        :     lyr.1 
 #> min value   : -3.125421 
-#> max value   :  3.077551 
+#> max value   :  2.948635 
 ```

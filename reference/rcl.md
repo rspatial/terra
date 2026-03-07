@@ -37,8 +37,8 @@ not a list it has to have either length 1 (used for all cases) or have
 the same length as the (longest) list, in which case the value is
 coerced into a list with `as.list`
 
-If multiple arguments are a list but they have different lengths,
-theyare recycled to the longest list.
+If multiple arguments are a list but they have different lengths, they
+are recycled to the longest list.
 
 ## Value
 
