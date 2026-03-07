@@ -35,7 +35,6 @@ function(x, pause=0.25, main, n=1, vars=NULL, range=NULL, add=NULL, ...) {
 		
 	if (!is.null(vars)) {
 
-		if (is.null(add)) add <- TRUE
 		if (is.numeric(vars)) {
 			vars <- names(x)[vars]
 		} else {
@@ -60,7 +59,7 @@ function(x, pause=0.25, main, n=1, vars=NULL, range=NULL, add=NULL, ...) {
 
 		for (reps in 1:n) {
 			for (i in 1:length(vars)) {
-				plot(x, vars[i], main=main[i], add=add)
+				plot(x, vars[i], main=main[i])
 				grDevices::dev.flush()
 				grDevices::dev.hold()
 				Sys.sleep(pause)
@@ -73,7 +72,11 @@ function(x, pause=0.25, main, n=1, vars=NULL, range=NULL, add=NULL, ...) {
 			main <- ""
 		}
 
+		if (isTRUE(add)) n <- 1	
 		for (reps in 1:n) {
+			if ((reps == 1) && (isTRUE(add)) && (is.null(grDevices::dev.list()))) {
+				plot(ext(x), border=NA)
+			}
 			for (i in 1:nrow(x)) {
 				addd <- if (is.null(add)) i != 1 else add 
 				plot(x[i, ], ext=ext(x), add=addd, ...)
