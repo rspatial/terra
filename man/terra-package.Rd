@@ -14,7 +14,7 @@
 
 The package implements two main classes (data types): \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. \code{SpatVector} supports all types of geometric operations such as intersections.
 
-Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are equivalent to lists of \code{SpatRaster} or \code{SpatVector} objects. There is also a \code{SpatGraticule} class to assist in adding a longitude/latitude lines and labels to a map with another coordinate reference system.
+Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are equivalent to lists of \code{SpatRaster} or \code{SpatVector} objects. There is also a \code{SpatGraticule} class to assist in adding longitude/latitude lines and labels to a map with another coordinate reference system.
 
 These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save \code{SpatRaster} objects to disk (and pass a filename or cell values to cluster nodes). Also see \code{\link{wrap}} and \code{\link{saveRDS}}. You should not write scripts that directly access this pointer, as its user-interface is not stable.
 
@@ -72,7 +72,7 @@ Also see the methods in section VIII
   \tabular{ll}{
     \code{\link{app}} \tab Apply a function to all cells, across layers, typically to summarize (as in \code{base::apply}) \cr
     \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply} and \code{stats::aggregate})\cr
-    \code{\link{lapp}} \tab Apply a function to using the layers of a SpatRaster as variables\cr
+    \code{\link{lapp}} \tab Apply a function to a SpatRaster, using its layers as arguments.\cr
     \code{\link{sapp}} \tab Apply a function to each layer\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -83,7 +83,7 @@ Also see the methods in section VIII
 
   \tabular{ll}{
     \code{\link{Arith-methods}} \tab Standard arithmetic methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
-    \code{\link{Compare-methods}} \tab Comparison methods for SpatRaster (\code{==, !=, >, <, <=, >=m is.na, is.finite}) \cr 	
+    \code{\link{Compare-methods}} \tab Comparison methods for SpatRaster (\code{==, !=, >, <, <=, >=, is.na, is.finite}) \cr 	
     \code{\link{not.na}} \tab a one-step equivalent to \code{!is.na} \cr
     \code{\link{Summary-methods}} \tab \code{mean, max, min, median, sum, range, prod,} \cr
     \tab \code{any, all, stdev, which.min, which.max, anyNA, noNA, allNA}\cr
@@ -154,7 +154,7 @@ Also see the methods in section VIII
     \code{\link{patches}} \tab Find patches (clumps) \cr
     \code{\link{sieve}} \tab Sieve filter to remove small patches\cr
     \code{\link{terrain}} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr
-    \code{\link{viewshed}} \tab Compute viewshed (showing areas that are visible from a particular location \cr
+    \code{\link{viewshed}} \tab Compute viewshed (showing areas that are visible from a particular location) \cr
     \code{\link{shade}} \tab Compute hill shade from slope and aspect layers \cr
     \code{\link{autocor}} \tab Compute global or local spatial autocorrelation  \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -215,7 +215,7 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
     \code{\link{xmax}} \tab The maximum x coordinate (or longitude) \cr
     \code{\link{ymin}} \tab The minimum y coordinate (or latitude) \cr
     \code{\link{ymax}} \tab The maximum y coordinate (or latitude) \cr
-	\code{\link{ext}} \tab Get or set the extent (minimum and maximum x and y coordinates ("bounding box") \cr
+	\code{\link{ext}} \tab Get or set the extent (minimum and maximum x and y coordinates; "bounding box") \cr
 	\code{\link{origin}} \tab The origin of a SpatRaster\cr
     \code{\link{sources}} \tab Get the filename(s) to which a SpatRaster is linked \cr
     \code{\link{inMemory}} \tab Are the data sources in memory (or on disk)? \cr
@@ -234,7 +234,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
   \tabular{ll}{
     \code{\link{xFromCol}} \tab x-coordinates from column numbers \cr
     \code{\link{yFromRow}} \tab y-coordinates from row numbers \cr
-    \code{\link{xFromCell}} \tab x-coordinates from row numbers \cr
+    \code{\link{xFromCell}} \tab x-coordinates from cell numbers \cr
     \code{\link{yFromCell}} \tab y-coordinates from cell numbers \cr
     \code{\link{xyFromCell}} \tab x and y coordinates from cell numbers \cr
     \code{\link{colFromX}} \tab Column numbers from x-coordinates (or longitude) \cr
@@ -251,10 +251,10 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
 \section{X. Depth related methods}{
 
-\code{depth} can be used to explicitly a third or fourth dimension of a SpatRaster. 
+\code{depth} can be used to explicitly get or set a third or fourth dimension of a SpatRaster. 
 
 \tabular{ll}{
-    \code{\link{depth}} \tab Get or set depth dimension values ()\cr
+    \code{\link{depth}} \tab Get or set depth dimension values\cr
     \code{\link{depthName}} \tab Set or get the depth name \cr
     \code{\link{depthUnit}} \tab Set or get the depth unit \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -263,7 +263,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
 \section{XI. Time related methods}{
 
-\code{time} can be used to explicitly a third or fourth dimension of a SpatRaster. 
+\code{time} can be used to explicitly get or set a third or fourth dimension of a SpatRaster. 
 
 \tabular{ll}{
     \code{\link{time}} \tab Get or set time\cr
@@ -485,7 +485,7 @@ A SpatVectorCollection is a vector of SpatVector objects.
 
 \tabular{ll}{
 \code{\link{svc}} \tab create a SpatVectorCollection from (a list of) SpatVector objects\cr
-\code{\link{length}} \tab how many SpatRasters does the SpatRasterCollection have?\cr
+\code{\link{length}} \tab how many SpatVectors does the SpatVectorCollection have?\cr
 \code{\link{[}} \tab extract a SpatVector\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }}

@@ -6,7 +6,7 @@
 - `project` did not apply the scale/offset values [#2014](https://github.com/rspatial/terra/issues/2014) by Edgar Castro
 - `show<SpatRaster>` did not work properly for categorical variables if the min/max values were not specified in the file [#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `rast(md=TRUE)` now recognizes non standard calendars [#2019](https://github.com/rspatial/terra/issues/2019) by Heyang; fixed by Yuxuan Xie with [#2024](https://github.com/rspatial/terra/pull/2024)
-- `values<SpatVector>` lost integers values > .Machine$integer.max. Variables with such values are no longer coerced to integer. [#2030](https://github.com/rspatial/terra/issues/2030) by Steffen Ehrmann
+- `values<SpatVector>` lost integer values > .Machine$integer.max. Variables with such values are no longer coerced to integer. [#2030](https://github.com/rspatial/terra/issues/2030) by Steffen Ehrmann
 - `extract<SpatRaster,SpatVector>` with arguments fun="table" and weights=FALSE did not work [#2029](https://github.com/rspatial/terra/issues/2029) by volcanicpine
 - `query<SpatVectorProxy>` failed with a start > 100000 [#2038](https://github.com/rspatial/terra/issues/2038) by Paul Smith
 
@@ -17,10 +17,10 @@
 - terra now handles the sf defined "POLYGON FULL" not-so-WKT [#2013](https://github.com/rspatial/terra/issues/2013) by Alexandre Courtiol
 - Language errors in the documentation fixed by Yuxuan Xie [#2021](https://github.com/rspatial/terra/pull/2021) and by Krzysztof Dyba [#2020](https://github.com/rspatial/terra/pull/2020) 
 - fixed documentation for "direction" parameter in `flip<SpatRaster>` [#2016](https://github.com/rspatial/terra/pull/2016) by Jesse Anderson
-- "pixel count" in a raster/value attribute table is now recoginzed as equivalent to "count" (and not considered a categorical variable) [#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
+- "pixel count" in a raster/value attribute table is now recognized as equivalent to "count" (and not considered a categorical variable) [#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `lines<leaflet>` gains argument "popup" [#2018](https://github.com/rspatial/terra/issues/2018) by Mary Fisher
 - `as.lines<matrix>` gains argument "segments" [#2008](https://github.com/rspatial/terra/issues/2008) by Márcia Barbosa
-- `freq<SpatRaster>` with argument zones is a SpatRaster now returns the zone values instead of the index [https://github.com/rspatial/terra/issues/2033](#2033) by Thomas Estabrook
+- `freq<SpatRaster>` with argument zones is a SpatRaster now returns the zone values instead of the index [#2033](https://github.com/rspatial/terra/issues/2033) by Thomas Estabrook
 - `as.lines<SpatRaster>` gained argument "na.rm=FALSE" [#2041](https://github.com/rspatial/terra/issues/2041) by Márcia Barbosa 
 
 
@@ -41,7 +41,7 @@ Released 2026-01-12
 - `plot<SpatRaster>` with an "ext" argument could lead to misalignment as only entire cells were mapped. [#1989](https://github.com/rspatial/terra/issues/1989) by Márcia Barbosa
 - `distance<matrix,missing>` was not working [#1992](https://github.com/rspatial/terra/issues/1992) by Wencheng Lau-Medrano
 - `polys` ignored argument "border" [#1997](https://github.com/rspatial/terra/issues/1989) by Márcia Barbosa
-- `describe` works with linux paths starting with a tilde [2003](https://github.com/rspatial/terra/issues/2003) by David Moles
+- `describe` works with linux paths starting with a tilde [#2003](https://github.com/rspatial/terra/issues/2003) by David Moles
 - `zonal<SpatRaster,SpatRaster>` failed with arguments fun='sd', wide=F. [#2004](https://github.com/rspatial/terra/issues/2004) by Thomas Estabrook
 
 ## enhancements
@@ -53,7 +53,7 @@ Released 2026-01-12
 - `cartogram` gets new arguments "inside" and "exp" and better scaling [#1982](https://github.com/rspatial/terra/issues/1982) by Márcia Barbosa
 - `spatSample<SpatRaster>` gains argument "as.mask" [#1981](https://github.com/rspatial/terra/issues/1981) by Agustin Lobo
 - `vect<character>` now handles MultiSurface geometries (as polygons) [#1994](https://github.com/rspatial/terra/issues/1994) by Márcia Barbosa
-- `plet<SpatVector>` and `polys<leaflet>` gain argument "lty" [#1997](https://github.com/rspatial/terra/issues/1989) by Márcia Barbosa
+- `plet<SpatVector>` and `polys<leaflet>` gain argument "lty" [#1997](https://github.com/rspatial/terra/issues/1997) by Márcia Barbosa
 
 
 ## new
@@ -74,7 +74,7 @@ Released 2025-11-28
 - `boundaries` with argument "classes=TRUE" ignored argument "inner=TRUE" (it was always FALSE). [#1963](https://github.com/rspatial/terra/issues/1963) by Oleg Zheleznyy
 - `cellFromXY` with NA coordinates returned 1 instead of NA on macOS [#1967](https://github.com/rspatial/terra/issues/1967) by John Baums
 - `stretch` crashed R with very large rasters [#1962](https://github.com/rspatial/terra/issues/1962) by Agustin Lobo
-- `focalReg` did not handle of custom functions with a weights argument [#1965](https://github.com/rspatial/terra/issues/1965) by Pedro Tarroso
+- `focalReg` did not handle custom functions with a weights argument [#1965](https://github.com/rspatial/terra/issues/1965) by Pedro Tarroso
 
 
 ## enhancements
@@ -172,7 +172,7 @@ Released 2025-07-18
 - `nearest` did not work well for lonlat polygons [#1869](https://github.com/rspatial/terra/issues/1869) and with methods "cosine" and "haversine" by Alexandre Courtiol
 - polygon union failure when symdif returns lines [#1866](https://github.com/rspatial/terra/issues/1866) by Reed Humphrey
 - where.max did not work properly when processing large files in chunks. [#1858](https://github.com/rspatial/terra/issues/1868) by Tyler Hoecker
-- numerical layer indexing in extract was broken [#1862](https://github.com/rspatial/terra/issues/1862) identified and fixed [#1863] (https://github.com/rspatial/terra/pull/1863) by Finn Lindgren
+- numerical layer indexing in extract was broken [#1862](https://github.com/rspatial/terra/issues/1862); identified and fixed [#1863](https://github.com/rspatial/terra/pull/1863) by Finn Lindgren
 
 
 ## enhancements
@@ -421,11 +421,11 @@ Released 2024-12-12
 
 ## new 
 
-- `patches` with option `valus=TRUE` can now distinguish regions based on their cell values (instead of only NA vs not-NA) [#495](https://github.com/rspatial/terra/issues/495) by Jakub Nowosad and [#1632](https://github.com/rspatial/terra/issues/1632) by Agustin Lobo
+- `patches` with option `values=TRUE` can now distinguish regions based on their cell values (instead of only NA vs not-NA) [#495](https://github.com/rspatial/terra/issues/495) by Jakub Nowosad and [#1632](https://github.com/rspatial/terra/issues/1632) by Agustin Lobo
 - `rowSums`, `rowMeans`, `colSums` and `colMeans` for SpatRaster
 - `metags` for SpatRasterDataset [#1624](https://github.com/rspatial/terra/issues/1624) by Andrea Manica
 - `metags` for layers (bands) of SpatRaster are now saved to and read from GTiff files [#1071](https://github.com/rspatial/terra/issues/1071) by Mike Koontz
-- `global` has new effcient functions "anyNA" and "anynotNA" [#1540](https://github.com/rspatial/terra/issues/1540) by Kevin J Wolz
+- `global` has new efficient functions "anyNA" and "anynotNA" [#1540](https://github.com/rspatial/terra/issues/1540) by Kevin J Wolz
 - `wrap`, `saveRDS` and `serialize` for SpatExtent. [#1430](https://github.com/rspatial/terra/issues/1430) by BastienFR
 - `vect<SpatGraticule>` method suggested in relation to [tidyterra #155](https://github.com/dieghernan/tidyterra/issues/155) by Diego Hernangómez
 - `toMemory<SpatRaster>` and `<SpatRasterDataset>` methods [#1660](https://github.com/rspatial/terra/pull/1660) by Derek Friend
