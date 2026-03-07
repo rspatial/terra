@@ -1,8 +1,8 @@
-# version 1.8-98
+# version 1.9-0
 
 ## bug fixes
 
-- new implementation of `patches` by Andrew Gene Brown [#2006](https://github.com/rspatial/terra/pull/2006) that fixes [#1758](https://github.com/rspatial/terra/issues/1758)
+- `patches` newly implementated by Andrew Gene Brown [#2006](https://github.com/rspatial/terra/pull/2006) fixing [#1758](https://github.com/rspatial/terra/issues/1758)
 - `project` did not apply the scale/offset values [#2014](https://github.com/rspatial/terra/issues/2014) by Edgar Castro
 - `show<SpatRaster>` did not work properly for categorical variables if the min/max values were not specified in the file [#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `rast(md=TRUE)` now recognizes non standard calendars [#2019](https://github.com/rspatial/terra/issues/2019) by Heyang; fixed by Yuxuan Xie with [#2024](https://github.com/rspatial/terra/pull/2024)
