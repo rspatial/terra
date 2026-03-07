@@ -2,7 +2,7 @@
 
 ## bug fixes
 
-- `patches` newly implementated by Andrew Gene Brown [#2006](https://github.com/rspatial/terra/pull/2006) fixing [#1758](https://github.com/rspatial/terra/issues/1758)
+- `patches` newly implemented by Andrew Gene Brown [#2006](https://github.com/rspatial/terra/pull/2006) fixing [#1758](https://github.com/rspatial/terra/issues/1758)
 - `project` did not apply the scale/offset values [#2014](https://github.com/rspatial/terra/issues/2014) by Edgar Castro
 - `show<SpatRaster>` did not work properly for categorical variables if the min/max values were not specified in the file [#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `rast(md=TRUE)` now recognizes non standard calendars [#2019](https://github.com/rspatial/terra/issues/2019) by Heyang; fixed by Yuxuan Xie with [#2024](https://github.com/rspatial/terra/pull/2024)
@@ -20,7 +20,7 @@
 - "pixel count" in a raster/value attribute table is now recognized as equivalent to "count" (and not considered a categorical variable) [#2023](https://github.com/rspatial/terra/issues/2023) by Kodi Arfer
 - `lines<leaflet>` gains argument "popup" [#2018](https://github.com/rspatial/terra/issues/2018) by Mary Fisher
 - `as.lines<matrix>` gains argument "segments" [#2008](https://github.com/rspatial/terra/issues/2008) by Márcia Barbosa
-- `freq<SpatRaster>` with argument zones is a SpatRaster now returns the zone values instead of the index [#2033](https://github.com/rspatial/terra/issues/2033) by Thomas Estabrook
+- `freq<SpatRaster>` with argument zones as a SpatRaster now returns the zone values instead of the index [#2033](https://github.com/rspatial/terra/issues/2033) by Thomas Estabrook
 - `as.lines<SpatRaster>` gained argument "na.rm=FALSE" [#2041](https://github.com/rspatial/terra/issues/2041) by Márcia Barbosa 
 
 
@@ -40,13 +40,13 @@ Released 2026-01-12
 - `plot<SpatVector>(ext=...)` plotted polygons outside plotting region if argument 'col' was used. [#1986](https://github.com/rspatial/terra/issues/1986) by Márcia Barbosa
 - `plot<SpatRaster>` with an "ext" argument could lead to misalignment as only entire cells were mapped. [#1989](https://github.com/rspatial/terra/issues/1989) by Márcia Barbosa
 - `distance<matrix,missing>` was not working [#1992](https://github.com/rspatial/terra/issues/1992) by Wencheng Lau-Medrano
-- `polys` ignored argument "border" [#1997](https://github.com/rspatial/terra/issues/1989) by Márcia Barbosa
+- `polys` ignored argument "border" [#1997](https://github.com/rspatial/terra/issues/1997) by Márcia Barbosa
 - `describe` works with linux paths starting with a tilde [#2003](https://github.com/rspatial/terra/issues/2003) by David Moles
 - `zonal<SpatRaster,SpatRaster>` failed with arguments fun='sd', wide=F. [#2004](https://github.com/rspatial/terra/issues/2004) by Thomas Estabrook
 
 ## enhancements
 
-- `vect<data.frame>` has improved guessing of variable names (if argument geom is not supplied) and crs (if that argument is not supplied, and gets argument "quiet=TRUE" that can be set to false to get warnings if either of these is guessed. [#1984](https://github.com/rspatial/terra/issues/1984) and [#1985](https://github.com/rspatial/terra/issues/1985) by Márcia Barbosa
+- `vect<data.frame>` has improved guessing of variable names (if argument geom is not supplied) and crs (if that argument is not supplied), and gets argument "quiet=TRUE" that can be set to false to get warnings if either of these is guessed. [#1984](https://github.com/rspatial/terra/issues/1984) and [#1985](https://github.com/rspatial/terra/issues/1985) by Márcia Barbosa
 - `extract<SpatVector>` is now less memory hungry when using argument layers [#1983](https://github.com/rspatial/terra/issues/1983) by Kodi Arfer
 - `split<SpatVector>` now behaves like the data.frame method when using multiple split variables [#1987](https://github.com/rspatial/terra/issues/1987) by WillhKessler
 - `$<-<SpatVector>` now gives an error if the replacement is longer than the data, and a warning if recycling of a shorter replacement is imperfect. [#1980](https://github.com/rspatial/terra/issues/1980) by Margaret Bolton
