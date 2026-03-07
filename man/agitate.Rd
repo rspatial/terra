@@ -13,7 +13,7 @@ Add noise to (jitter) a SpatVector of points. Points are moved randomly within a
 }
 
 \usage{
-\S4method{agitate}{SpatVector}(x, maxdist, ...)
+\S4method{agitate}{SpatVector}(x, maxdist)
 }
 
 \arguments{
