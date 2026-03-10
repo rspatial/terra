@@ -25,3 +25,8 @@ r <- rast(nrows=2, ncols=2, vals=c(1, 2, 3, 4))
 r_sub <- subst(r, 1:2, 11:12, others=1.5)
 v_sub <- as.vector(values(r_sub))
 expect_equal(v_sub, c(11, 12, 1.5, 1.5))
+
+# subst with recycled 'to'
+r <- rast(nrows=1, ncols=10, vals=1:10)
+r_sub <- subst(r, 2:10, NA)
+expect_equal(values(r_sub), c(1, rep(NA_real_, 9)))

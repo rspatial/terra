@@ -74,14 +74,20 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 		size_t range = (size_t)max_v - (size_t)min_v + 1;
 		lut.resize(range);
 		lut_set.assign(range, false);
-		for (size_t j = 0; j < from_vals.size(); j++) {
-			int idx = (int)from_vals[j] - min_v;
-			lut[idx] = to_vals[j];
-			lut_set[idx] = true;
+		if (to_vals.size() > 0) {
+			recycle(to_vals, from_vals);
+			for (size_t j = 0; j < from_vals.size(); j++) {
+				int idx = (int)from_vals[j] - min_v;
+				lut[idx] = to_vals[j];
+				lut_set[idx] = true;
+			}
 		}
 	} else {
-		for (size_t j = 0; j < from_vals.size(); j++) {
-			lookup_map[from_vals[j]] = to_vals[j];
+		if (to_vals.size() > 0) {
+			recycle(to_vals, from_vals);
+			for (size_t j = 0; j < from_vals.size(); j++) {
+				lookup_map[from_vals[j]] = to_vals[j];
+			}
 		}
 	}
 		
