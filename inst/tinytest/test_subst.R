@@ -29,4 +29,4 @@ expect_equal(v_sub, c(11, 12, 1.5, 1.5))
 # subst with recycled 'to'
 r <- rast(nrows=1, ncols=10, vals=1:10)
 r_sub <- subst(r, 2:10, NA)
-expect_equal(values(r_sub), c(1, rep(NA_real_, 9)))
+expect_equal(values(r_sub)[, 1], c(1, rep(NA_real_, 9)))
