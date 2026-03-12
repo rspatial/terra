@@ -747,7 +747,7 @@
   [`plot(`*`<SpatRaster>`*`,`*`<missing>`*`)`](https://rspatial.github.io/terra/reference/plot.md)
   [`plot(`*`<SpatRaster>`*`,`*`<character>`*`)`](https://rspatial.github.io/terra/reference/plot.md)
   [`plot(`*`<SpatVector>`*`,`*`<character>`*`)`](https://rspatial.github.io/terra/reference/plot.md)
-  [`plot(`*`<SpatVector>`*`,`*`<nu\tmeric>`*`)`](https://rspatial.github.io/terra/reference/plot.md)
+  [`plot(`*`<SpatVector>`*`,`*`<numeric>`*`)`](https://rspatial.github.io/terra/reference/plot.md)
   [`plot(`*`<SpatVector>`*`,`*`<missing>`*`)`](https://rspatial.github.io/terra/reference/plot.md)
   [`plot(`*`<SpatVectorCollection>`*`,`*`<missing>`*`)`](https://rspatial.github.io/terra/reference/plot.md)
   [`plot(`*`<SpatVectorCollection>`*`,`*`<numeric>`*`)`](https://rspatial.github.io/terra/reference/plot.md)

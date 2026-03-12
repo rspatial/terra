@@ -35,7 +35,7 @@ plot(x, y, col=NULL, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pa
   grid=FALSE, zebra=FALSE, ext=NULL, sort=TRUE, reverse=FALSE, nr, nc, 
   add=FALSE, buffer=TRUE, background=NULL, box=axes, clip=TRUE, ...)
 
-# S4 method for class 'SpatVector,nu  meric'
+# S4 method for class 'SpatVector,numeric'
 plot(x, y, ...)
 
 # S4 method for class 'SpatVector,missing'
