@@ -265,10 +265,10 @@ setMethod("dots", signature(x="SpatVector"),
 		n <- length(z)
 	}
 	#out$range <- range(z)
-
+	
 	interval <- (out$range[2]-out$range[1])/(length(out$cols)-1)
 	breaks <- out$range[1] + interval * (0:(length(out$cols)-1))
-
+	
 	out$legend_type <- "continuous"
 	if (is.null(out$levels)) {
 		out$levels <- 5
@@ -632,10 +632,25 @@ setMethod("dots", signature(x="SpatVector"),
 	if (is.numeric(v)) {
 		v[!is.finite(v)] <- NA
 	}
+	out$fill_range <- isTRUE(fill_range)
+	out$range_filled <- c(FALSE, FALSE)
 	if (!is.null(range)) {
 		range <- sort(range)
-		v[v < range[1]] <- NA
-		v[v > range[2]] <- NA
+		if (out$fill_range) {
+			i <- v < range[1]
+			if (any(i)) {
+				v[i] <- range[1]
+				out$range_filled[1] <- TRUE
+			}
+			i <- v > range[2]
+			if (any(i)) {
+				v[i] <- range[2]
+				out$range_filled[2] <- TRUE
+			}
+		} else {
+			v[v < range[1]] <- NA
+			v[v > range[2]] <- NA
+		}
 		if (all(is.na(v))) {
 			v <- NULL
 			y <- ""
@@ -649,8 +664,8 @@ setMethod("dots", signature(x="SpatVector"),
 			out$range <- range(v, na.rm=TRUE)
 		}
 		out$range_set <- FALSE
+		out$fill_range <- FALSE
 	}
-	out$fill_range <- fill_range
 	out$v <- v
 
 	if (!is.logical(sort)) {
@@ -729,10 +744,12 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 setMethod("plot", signature(x="SpatVector", y="character"),
-	function(x, y, col=NULL, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), 
-    main="", grid=FALSE, zebra=FALSE, ext=NULL, sort=TRUE, reverse=FALSE, fun=NULL,
-	colNA=NA, alpha=NULL, nr, nc, add=FALSE, buffer=TRUE, background=NULL, 
+
+function(x, y, col=NULL, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), 
+	main="", range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NA, alpha=NULL,
+	grid=FALSE, zebra=FALSE, ext=NULL, sort=TRUE, reverse=FALSE, nr, nc, add=FALSE, buffer=TRUE, background=NULL,
 	box=axes, clip=TRUE, ...) {
+
 
 		old.mar <- graphics::par()$mar
 		on.exit(graphics::par(mar=old.mar))
@@ -786,7 +803,8 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 
 			if (missing(col)) col <- NULL
 
-			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, zebra=zebra, ext=ext, sort=sort, reverse=reverse, colNA=colNA, alpha=alpha, box=box, clip=clip, leg_i=i, ...)
+			out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], range=range, fill_range=fill_range, breaks=breaks, breakby=breakby, buffer=buffer, background=background,
+			grid=grid, zebra=zebra, ext=ext, sort=sort, reverse=reverse, colNA=colNA, alpha=alpha, box=box, clip=clip, leg_i=i,  ...)
 
 			add_more(fun, i)
 
