@@ -31,8 +31,8 @@ plot(x, y, ...)
 
 # S4 method for class 'SpatVector,character'
 plot(x, y, col=NULL, type=NULL, mar=NULL, legend=TRUE, axes=!add, plg=list(), pax=list(), 
-    main="", range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NA, alpha=NULL,
-  grid=FALSE, zebra=FALSE, ext=NULL, sort=TRUE, reverse=FALSE, nr, nc, 
+    main="", range=NULL, fill_range=FALSE, breaks=NULL, breakby="eqint", fun=NULL, colNA=NA,
+  alpha=NULL, sort=TRUE, reverse=FALSE, grid=FALSE, zebra=FALSE, ext=NULL, nr, nc, 
   add=FALSE, buffer=TRUE, background=NULL, box=axes, clip=TRUE, ...)
 
 # S4 method for class 'SpatVector,numeric'
