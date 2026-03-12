@@ -1682,8 +1682,8 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 	double yr_inv = nrow() / (extent.ymax - extent.ymin);
 	double xr_inv = ncol() / (extent.xmax - extent.xmin);
 
-	long nr = nrow();
-	long nc = ncol();
+	long long nr = nrow();
+	long long nc = ncol();
 
 	for (size_t i = 0; i < size; i++) {
 		if (std::isnan(x[i]) || std::isnan(y[i])) {
@@ -1705,12 +1705,55 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 			if (row < 0 || row >= nr || col < 0 || col >= nc) {
 				cells[i] = missing;
 			} else {
-				cells[i] = row * ncol() + col;
+				cells[i] = row * nc + col;
 			}
 		}
 	}
 	return cells;
 }
+
+
+void SpatRaster::cellFromXY (std::vector<double> x, std::vector<double> y, std::vector<size_t> &cells) {
+// size of x and y should be the same
+
+	size_t missing = std::numeric_limits<size_t>::max();
+
+	size_t size = x.size();
+	cells.resize(size);
+
+	SpatExtent extent = getExtent();
+	double yr_inv = nrow() / (extent.ymax - extent.ymin);
+	double xr_inv = ncol() / (extent.xmax - extent.xmin);
+
+	long long nr = nrow();
+	long long nc = ncol();
+
+	for (size_t i = 0; i < size; i++) {
+		if (std::isnan(x[i]) || std::isnan(y[i])) {
+			cells[i] = missing;
+		} else {
+			// cannot use trunc here because trunc(-0.1) == 0
+			long row = std::floor((extent.ymax - y[i]) * yr_inv);
+			// points in between rows go to the row below
+			// except for the last row, when they must go up
+			if (y[i] == extent.ymin) {
+				row = nr-1 ;
+			}
+
+			long col = std::floor((x[i] - extent.xmin) * xr_inv);
+			// as for rows above. Go right, except for last column
+			if (x[i] == extent.xmax) {
+				col = nc - 1 ;
+			}
+			if (row < 0 || row >= nr || col < 0 || col >= nc) {
+				cells[i] = missing;
+			} else {
+				cells[i] = row * nc + col;
+			}
+		}
+	}
+}
+
 
 
 double SpatRaster::cellFromXY (double x, double y, double missing) {
