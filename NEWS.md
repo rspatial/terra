@@ -2,12 +2,11 @@
 
 ## bug fixes
 
-- `subst` did not recycle properly [#2052](https://github.com/rspatial/terra/issues/2052)
+- `subst` did not recycle properly [](https://github.com/rspatial/terra/issues/2046) by Nuno Teixeira and [#2052](https://github.com/rspatial/terra/issues/2052) by Jérôme Guélat
 
 ## enhancements
 
 - `plot<SpatVector>` has new argument "fill_range"
-
 
 
 # version 1.9-1
