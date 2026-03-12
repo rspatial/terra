@@ -42,7 +42,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 	grid=FALSE, zebra=FALSE, ext=NULL, sort=TRUE, reverse=FALSE, nr, nc, 
 	add=FALSE, buffer=TRUE, background=NULL, box=axes, clip=TRUE, ...)
 
-\S4method{plot}{SpatVector,nu	meric}(x, y, ...)
+\S4method{plot}{SpatVector,numeric}(x, y, ...)
 
 \S4method{plot}{SpatVector,missing}(x, y, values=NULL, ...)
 
