@@ -3,11 +3,12 @@
 ## bug fixes
 
 - `subst` did not recycle properly [](https://github.com/rspatial/terra/issues/2046) by Nuno Teixeira and [#2052](https://github.com/rspatial/terra/issues/2052) by Jérôme Guélat
+- better reading of gpkg files with unclear geometry and NULL geoms [#2051](https://github.com/rspatial/terra/issues/2051) by Duy Nguyen
 
 ## enhancements
 
 - `plot<SpatVector>` has new argument "fill_range"
-
+- `extract` gains argument "wide=FALSE" that can be used when fun="table" [2053](https://github.com/rspatial/terra/issues/2053) by Jérôme Guélat
 
 # version 1.9-1
 
