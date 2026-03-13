@@ -1,9 +1,10 @@
-# version 1.9-4
+# version 1.9-5
 
 ## bug fixes
 
 - `subst` did not recycle properly [](https://github.com/rspatial/terra/issues/2046) by Nuno Teixeira and [#2052](https://github.com/rspatial/terra/issues/2052) by Jérôme Guélat
 - better reading of gpkg files with unclear geometry and NULL geoms [#2051](https://github.com/rspatial/terra/issues/2051) by Duy Nguyen
+- `ifel` ignored NA values in some circumstances [SO 79905693](https://stackoverflow.com/questions/79905693) by Sean McKenzie
 
 ## enhancements
 
