@@ -669,6 +669,9 @@ std::string nice_string(const double &x) {
 	return s;
 }
 
+/*
+use SpatVector::wkt instead 
+
 std::vector<std::string> SpatVector::getGeometryWKT() {
 
 	std::vector<std::string> out(size());
@@ -740,6 +743,7 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 	}
 	return out;
 }
+*/
 
 
 SpatGeomType SpatVector::getGType(std::string &type) {

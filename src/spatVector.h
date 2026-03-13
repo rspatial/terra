@@ -168,7 +168,7 @@ class SpatVector {
 		bool replaceGeom(SpatGeom p, size_t i);
 		std::vector<std::vector<double>> getGeometry();
 		SpatDataFrame getGeometryDF();
-		std::vector<std::string> getGeometryWKT();
+//		std::vector<std::string> getGeometryWKT();
 		void computeExtent();
 
 		bool addRawGeoms(std::vector<unsigned char*> wkbs, std::vector<size_t> sizes);
