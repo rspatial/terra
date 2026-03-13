@@ -20,7 +20,7 @@ with a `SpatVector` (this may be more efficient in some cases).
 # S4 method for class 'SpatRaster,SpatVector'
 extract(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE,
     ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE,
-  layer=NULL, bind=FALSE, raw=FALSE, search_radius=0, ...)
+  layer=NULL, bind=FALSE, raw=FALSE, search_radius=0, wide=FALSE, ...)
 
 # S4 method for class 'SpatRaster,SpatExtent'
 extract(x, y, cells=FALSE, xy=FALSE)
@@ -135,6 +135,11 @@ extract(x, y, count=FALSE)
   unit of the crs in other cases (typically also m). For lon/lat data,
   the mean latitude of the points is used to compute the distances, so
   this may be imprecise for data with a large latitudinal range
+
+- wide:
+
+  logical. Only relevant when `fun="table"`. If `TRUE`, and `x` has a
+  single layer, the table is returned in the wide format
 
 - ...:
 
