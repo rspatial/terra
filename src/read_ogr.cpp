@@ -985,8 +985,9 @@ bool SpatVectorCollection::read_ogr(GDALDataset *&poDS, std::string layer, std::
 	size_t i = 0;
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+		OGRwkbGeometryType wkb = wkbPolygon;
 		if (poGeometry != NULL) {
-			OGRwkbGeometryType wkb = wkbFlatten(poGeometry->getGeometryType());
+			wkb = wkbFlatten(poGeometry->getGeometryType());
 			if (wkb  == wkbPoint ) {
 				g = getPointGeom(poGeometry);
 				points.addGeom(g);
@@ -1015,8 +1016,20 @@ bool SpatVectorCollection::read_ogr(GDALDataset *&poDS, std::string layer, std::
 				// g = emptyGeom();
 			}
 			OGRFeature::DestroyFeature( poFeature );
-			i++;
+		} else {
+			g = emptyGeom();
+			if ((wkb == wkbPolygon) || (wkb == wkbMultiPolygon) || (wkb == wkbMultiPolygonZM) || (wkb == wkbMultiPolygonM)) {
+				polygons.addGeom(g);
+				pol.push_back(i);
+			} else if ((wkb == wkbLineString) || (wkb == wkbMultiLineString) || (wkb == wkbMultiLineStringZM) || (wkb == wkbMultiLineStringM)) {
+				lines.addGeom(g);
+				lin.push_back(i);
+			} else {
+				points.addGeom(g);
+				pnt.push_back(i);
+			}
 		}
+		i++;
 	}
 	if (!query.empty()) {
 		poDS->ReleaseResultSet(poLayer);
