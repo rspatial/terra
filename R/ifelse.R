@@ -34,15 +34,14 @@ setMethod("ifel", signature(test="SpatRaster"),
 		if (no_num) {
 			no <- classify(test, rbind(c(0, no), c(1, NA)))
 		} else {
-			no <- mask(no, test, maskvalues=TRUE)
+			no <- mask(no, test, maskvalues=c(NA, TRUE))
 		}
 
 		if (yes_num) {
 			yes <- classify(test, rbind(c(1, yes), c(0, NA)))
 		} else {
-			yes <- mask(yes, test, maskvalues=FALSE)
+			yes <- mask(yes, test, maskvalues=c(NA, FALSE))
 		}
-
 		cover(no, yes, values=NA, filename=filename, ...)
 	}
 )
