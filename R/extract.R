@@ -82,7 +82,7 @@ use_layer <- function(e, y, layer, nl, keepID) {
 }
 
 
-extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FALSE, small=TRUE, na.rm=FALSE, ...) {
+extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FALSE, small=TRUE, na.rm=FALSE, wide=FALSE, ...) {
 	if (weights && exact) {
 		exact = FALSE
 	}
@@ -107,7 +107,21 @@ extract_table <- function(x, y, ID=FALSE, weights=FALSE, exact=FALSE, touches=FA
 	out <- lapply(1:nrow(y), function(i) one_tab(i))
 	out <- do.call(rbind, out)
 	rownames(out) <- NULL
-	if ((!ID) & (!is.null(out))) {
+	if (wide && nlyr(x) == 1) {
+		nms <- names(out)
+		out <- stats::reshape(out, direction="wide", idvar=nms[1], timevar=nms[2:(ncol(out)-1)])
+		out[is.na(out)] <- 0
+		if (nrow(out) < nrow(y)) {
+			mr <- (1:nrow(y))[!(1:nrow(y)) %in% out[,1]]
+			r <- out[rep(1, length(mr)), ]
+			r[, 1] <- mr
+			r[, -1] <- 0
+			out <- rbind(out, r)
+			out <- out[order(out[,1]), ]
+		}
+		rownames(out) <- 1:nrow(out)
+		out
+	} else if ((!ID) & (!is.null(out))) {
 		split(out[,-1, drop=FALSE], out[,1])		
 	} else {
 		out
@@ -176,7 +190,7 @@ do_fun <- function(e, fun, ...) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"),
-function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE, layer=NULL, bind=FALSE, raw=FALSE, search_radius=0, ...) {
+function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weights=FALSE, exact=FALSE, touches=is.lines(y), small=TRUE, layer=NULL, bind=FALSE, raw=FALSE, search_radius=0, wide=FALSE, ...) {
 
 	geo <- geomtype(y)
 	if (!is.null(layer)) {
@@ -238,7 +252,17 @@ function(x, y, fun=NULL, method="simple", cells=FALSE, xy=FALSE, ID=TRUE, weight
 				if (!is.null(layer)) {
 					warn("extract", "argument 'layer' is ignored when 'fun=table'")
 				}
-				e <- extract_table(x, y, ID=ID, weights=weights, exact=exact, touches=touches, small=small, ...)
+				if (bind) wide <- TRUE
+				if (nlyr(x) > 1) wide <- FALSE
+				e <- extract_table(x, y, ID=ID, weights=weights, exact=exact, touches=touches, small=small, wide=wide, ...)
+				if (wide) {
+					if (!ID) {
+						e <- e[,-1]
+					}
+					if (bind) {
+						e <- cbind(y, e[,-1])
+					}
+				}
 			} else {
 				e <- extract_fun(x, y, txtfun, ID=ID, weights=weights, exact=exact, touches=touches, small=small, bind=bind, layer=layer, ...)
 			}

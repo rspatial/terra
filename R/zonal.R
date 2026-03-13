@@ -189,10 +189,22 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatVector"),
 				}
 				if (as.polygons | wide) {
 					nms <- names(v)
+					uz <- unique(v$zone)
+					v <- v[!is.na(v$value), ]
+					if (nrow(v) == 0) return(v)					
 					v <- stats::reshape(v, direction="wide", idvar=nms[1], timevar=nms[2])
 					names(v) <- gsub("count.", "", names(v))
 					v[is.na(v)] <- 0
 					rownames(v) <- NULL
+					uz <- uz[!(uz %in% v$zone)]
+					if (length(uz) > 0) {
+						r <- v[rep(1, length(uz)), ]
+						r[, 1] <- uz
+						r[, -1] <- 0
+						v <- rbind(v, r)
+						v <- v[order(v$zone), ]
+					}
+					v
 				}
 				if (as.polygons) {
 					values(z) <- v
