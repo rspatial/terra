@@ -43,7 +43,7 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 	bool use_direct_lut = false;
 	int min_v = 0;
 	int max_v = 0;
-	if (from_vals.size() > 0) {
+	if ((from_vals.size() > 0) && (!std::isnan(from_vals[0]))) {
 		min_v = (int)from_vals[0];
 		max_v = (int)from_vals[0];
 		bool all_int = true;
