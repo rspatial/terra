@@ -41,22 +41,22 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 	}
 
 	bool use_direct_lut = false;
-	int min_v = 0;
-	int max_v = 0;
+	size_t min_v = 0;
+	size_t max_v = 0;
 	if ((from_vals.size() > 0) && (!std::isnan(from_vals[0]))) {
-		min_v = (int)from_vals[0];
-		max_v = (int)from_vals[0];
+		min_v = (size_t)from_vals[0];
+		max_v = (size_t)from_vals[0];
 		bool all_int = true;
 		for(double d : from_vals) {
 			if (std::isnan(d) || std::floor(d) != d) {
 				all_int = false; break;
 			}
 			if (d < 0) { all_int = false; break; }
-			if (d < min_v) min_v = (int)d;
-			if (d > max_v) max_v = (int)d;
+			if (d < min_v) min_v = (size_t)d;
+			if (d > max_v) max_v = (size_t)d;
 		}
 		if (all_int) {
-			size_t range = (size_t)max_v - (size_t)min_v + 1;
+			size_t range = max_v - min_v + 1;
 			double mem_req_bytes = (double)range * 8.0 + (double)range / 8.0;
 			double mem_budget_bytes = opt.get_memmin() * 8.0;
 					
@@ -71,13 +71,13 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 	SpatHashMap<double, double> lookup_map;
 		
 	if (use_direct_lut) {
-		size_t range = (size_t)max_v - (size_t)min_v + 1;
+		size_t range = max_v - min_v + 1;
 		lut.resize(range);
 		lut_set.assign(range, false);
 		if (to_vals.size() > 0) {
 			recycle(to_vals, from_vals);
 			for (size_t j = 0; j < from_vals.size(); j++) {
-				int idx = (int)from_vals[j] - min_v;
+				size_t idx = (size_t)from_vals[j] - min_v;
 				lut[idx] = to_vals[j];
 				lut_set[idx] = true;
 			}
@@ -109,7 +109,7 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 			for (size_t j = 0; j < v.size(); j++) {
 				double val = v[j];
 				if (!std::isnan(val) && val >= min_v && val <= max_v && val == std::floor(val)) {
-					int idx = (int)val - min_v;
+					size_t idx = (size_t)val - min_v;
 					if (lut_set[idx]) {
 						v[j] = lut[idx];
 					} else if (others) {
