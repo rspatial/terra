@@ -52,7 +52,7 @@ setMethod("geom", signature(x="SpatVector"),
 		if (hex) {
 			x@pntr$hex()
 		} else if (wkt) {
-			x@pntr$wkt()
+			x@pntr$getGeometryWKT()
 		} else if (list) {
 			x@pntr$get_geometryList(xnm, ynm)
 		} else if (wkb) {

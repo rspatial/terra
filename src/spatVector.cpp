@@ -669,8 +669,8 @@ std::string nice_string(const double &x) {
 	return s;
 }
 
-/*
-use SpatVector::wkt instead 
+// also see SpatVector::wkt
+// need to fix handling of NULLs
 
 std::vector<std::string> SpatVector::getGeometryWKT() {
 
@@ -743,7 +743,7 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 	}
 	return out;
 }
-*/
+
 
 
 SpatGeomType SpatVector::getGType(std::string &type) {
