@@ -67,7 +67,12 @@ std::vector<std::string> SpatVector::wkt() {
 	GEOSWKTWriter* writer = GEOSWKTWriter_create_r(hGEOSCtxt);
 	for (size_t i = 0; i < g.size(); i++) {
 		char *wkt = GEOSGeomToWKT_r(hGEOSCtxt, g[i].get());
-		out.push_back(wkt);
+		if (wkt) {
+			out.push_back(std::string(wkt));
+			GEOSFree_r(hGEOSCtxt, wkt);
+		} else {
+			out.push_back(std::string());
+		}
 	}
 	GEOSWKTWriter_destroy_r(hGEOSCtxt, writer);
 	geos_finish(hGEOSCtxt);
