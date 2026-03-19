@@ -370,6 +370,7 @@ std::string SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector
 		for (size_t i=0; fileList[i] != NULL; i++) {
 			nSources++;
 		}
+		CSLDestroy(fileList);
 	}
 	GDALClose(ds);
 
@@ -987,6 +988,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 		if (erro == 4) {
 			setError("CRS failure");
 			OSRDestroySpatialReference( hSRS );
+			GDALClose(hDS);
 			return false;
 		}
 		char *pszSRS_WKT = NULL;

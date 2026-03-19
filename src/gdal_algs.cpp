@@ -246,6 +246,8 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 		GDALCreateGenImgProjTransformer( hSrcDS, pszSrcWKT, NULL, pszDstWKT, FALSE, 0, 1 );
 	if (hTransformArg == NULL ) {
 		r.setError("cannot create TranformArg");
+		CPLFree(pszDstWKT);
+		delete oSRS;
 		return false;
 	}
 	CPLFree(pszDstWKT);
@@ -644,7 +646,9 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 			GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
 			if (!set_warp_options(psWarpOptions, hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose(), opt.threads)) {
-				if (hDstDS != NULL ) GDALClose((GDALDatasetH) hDstDS);
+				if (hSrcDS != NULL) GDALClose((GDALDatasetH) hSrcDS);
+				if (hDstDS != NULL) GDALClose((GDALDatasetH) hDstDS);
+				GDALDestroyWarpOptions(psWarpOptions);
 				out.setError(errmsg);
 				return out;
 			}
