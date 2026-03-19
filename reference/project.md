@@ -181,57 +181,23 @@ using lon/lat data that spans a large North-South extent.
 
 ``` r
 ## SpatRaster
+if (FALSE) { # \dontrun{
 a <- rast(ncols=40, nrows=40, xmin=-110, xmax=-90, ymin=40, ymax=60, 
           crs="+proj=longlat +datum=WGS84")
 values(a) <- 1:ncell(a)
 newcrs="+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +datum=WGS84"
 b <- rast(ncols=94, nrows=124, xmin=-944881, xmax=935118, ymin=4664377, ymax=7144377, crs=newcrs)
-w <- project(a, b)
+#w <- project(a, b)
 
 
 ## SpatVector
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 crs(v, proj=TRUE)
-#> [1] "+proj=longlat +datum=WGS84 +no_defs"
 cat(crs(v), "\n")
-#> GEOGCRS["WGS 84",
-#>     DATUM["World Geodetic System 1984",
-#>         ELLIPSOID["WGS 84",6378137,298.257223563,
-#>             LENGTHUNIT["metre",1]]],
-#>     PRIMEM["Greenwich",0,
-#>         ANGLEUNIT["degree",0.0174532925199433]],
-#>     CS[ellipsoidal,2],
-#>         AXIS["geodetic latitude (Lat)",north,
-#>             ORDER[1],
-#>             ANGLEUNIT["degree",0.0174532925199433]],
-#>         AXIS["geodetic longitude (Lon)",east,
-#>             ORDER[2],
-#>             ANGLEUNIT["degree",0.0174532925199433]],
-#>     ID["EPSG",4326]] 
 
 project(v, "+proj=moll")
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 12, 6  (geometries, attributes)
-#>  extent      : 437476.4, 497805.3, 5815524, 5892478  (xmin, xmax, ymin, ymax)
-#>  coord. ref. : +proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
-#>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA       POP
-#>  type        : <num>    <chr> <num>    <chr> <num>     <num>
-#>  values      :     1 Diekirch     1 Clervaux   312 1.808e+04
-#>                    1 Diekirch     2 Diekirch   218 3.254e+04
-#>                    1 Diekirch     3  Redange   259 1.866e+04
-
 
 project(v, "EPSG:2169")
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 12, 6  (geometries, attributes)
-#>  extent      : 49540.31, 105922, 57009.53, 138631.1  (xmin, xmax, ymin, ymax)
-#>  coord. ref. : LUREF / Luxembourg TM (EPSG:2169) 
-#>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA       POP
-#>  type        : <num>    <chr> <num>    <chr> <num>     <num>
-#>  values      :     1 Diekirch     1 Clervaux   312 1.808e+04
-#>                    1 Diekirch     2 Diekirch   218 3.254e+04
-#>                    1 Diekirch     3  Redange   259 1.866e+04
+} # }
 ```
