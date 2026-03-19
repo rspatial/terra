@@ -1,3 +1,6 @@
+
+terra.Rcheck/*
+
 install_time_patches/
 src/Makevars.ucrt.orig
 src/Makevars.ucrt.rej
