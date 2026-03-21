@@ -1,12 +1,12 @@
 # Set the NA flag
 
 The main purpose of this method is to allow correct reading of a
-SpatRaster that is based on a file that has an incorrect NA flag. The
-file is not changed, but flagged value is set to NA when values are read
-from the file ("lazy evaluation"). In contrast, if the values are in
+SpatRaster that is based on a file that has an incorrect or missing NA
+flag. The file is not changed, but the flagged value is set to NA when
+values are read from the file. In contrast, if the cell values are in
 memory the change is made immediately.
 
-To change values, it is generally better to use
+To change cell values, you can use
 [`classify`](https://rspatial.github.io/terra/reference/classify.md)
 
 ## Usage

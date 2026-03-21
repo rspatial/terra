@@ -46,7 +46,6 @@ g
 #> lat         : -90 -60 -30 0 30 60 90 
 #> coord. ref. : +proj=robin +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
 #> extent      : -17005833, 17005833, -8625155, 8625155  (xmin, xmax, ymin, ymax)
-
 graticule(90, c(-90, -60, -23.5, 0, 23.5, 60, 90), crs="+proj=robin")
 #> class       : SpatGraticule 
 #> lon         : -180 -90 0 90 180 
