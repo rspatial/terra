@@ -35,9 +35,7 @@ SpatGraticule
 \examples{
 g <- graticule(60, 30, crs="+proj=robin")
 g
-
 graticule(90, c(-90, -60, -23.5, 0, 23.5, 60, 90), crs="+proj=robin")
-
 }
 
 \keyword{methods}
