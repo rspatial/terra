@@ -303,6 +303,7 @@ bool can_transform(std::string fromCRS, std::string toCRS) {
 	try{
 		poCT = OGRCreateCoordinateTransformation(&source, &target);
 	} catch(...) {
+		OCTDestroyCoordinateTransformation(poCT);
 		return false;
 	}
     CPLPopErrorHandler();
