@@ -183,7 +183,6 @@ std::vector<double> SpatRaster::readValuesR(size_t row, size_t nrows, size_t col
 
 	unsigned n = nsrc();
 
-	out.reserve(nrows * ncols * nlyr());
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {
 			readChunkMEM(out, src, row, nrows, col, ncols);
@@ -246,7 +245,6 @@ void SpatRaster::readValues(std::vector<double> &out, size_t row, size_t nrows, 
 	}
 
 	unsigned n = nsrc();
-	out.reserve(nrows * ncols * nlyr());
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {
 			readChunkMEM(out, src, row, nrows, col, ncols);
@@ -274,7 +272,6 @@ void SpatRaster::readValuesWhileWriting(std::vector<double> &out, size_t row, si
 
 	unsigned n = nsrc();
 	out.resize(0);
-	out.reserve(nrows * ncols * nlyr());
 
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {

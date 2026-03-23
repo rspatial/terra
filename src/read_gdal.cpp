@@ -1408,12 +1408,12 @@ bool SpatRaster::readStopGDAL(size_t src) {
 
 
 
-void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, const std::vector<double> &scale, const std::vector<double>  &offset, const std::vector<bool> &haveso, const bool haveUserNAflag, const double userNAflag){
+void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, const std::vector<double> &scale, const std::vector<double>  &offset, const std::vector<bool> &haveso, const bool haveUserNAflag, const double userNAflag, size_t data_offset = 0){
 	size_t nl = flags.size();
 	double na = NAN;
 
 	for (size_t i=0; i<nl; i++) {
-		size_t start = i*n;
+		size_t start = data_offset + i*n;
 		if (!std::isnan(flags[i])) {
 			double flag = flags[i];
 			// a hack to avoid problems with double derived from float - double comparison
@@ -1436,14 +1436,14 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 		}
 	}
 	if (haveUserNAflag) {
-		std::replace(d.begin(), d.end(), userNAflag, na);
+		std::replace(d.begin()+data_offset, d.begin()+data_offset+n*nl, userNAflag, na);
 	}
 }
 
 
-void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, const size_t &ncols, const size_t &nl) {
+void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, const size_t &ncols, const size_t &nl, size_t data_offset = 0) {
 	for (size_t i=0; i<nl; i++) {
-		size_t off = i*ncell;
+		size_t off = data_offset + i*ncell;
 		size_t nr = nrows/2;
 		for (size_t j=0; j<nr; j++) {
 			size_t d1 = off + j * ncols;
@@ -1486,10 +1486,8 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, size_t src, size_t row
 
 	size_t ncell = ncols * nrows;
 	size_t nl = source[src].nlyr;
-	std::vector<double> out(ncell * nl);
-	int hasNA;
-	std::vector<double> naflags(nl, NAN);
-	CPLErr err = CE_None;
+	size_t old_size = data.size();
+	data.resize(old_size + ncell * nl);
 
 	std::vector<int> panBandMap;
 	if (!source[src].in_order(true)) {
@@ -1499,45 +1497,32 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, size_t src, size_t row
 		}
 	}
 
+	CPLErr err;
 	if (panBandMap.empty()) {
-		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
+		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, data.data() + old_size, ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
 	} else {
-		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
+		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, data.data() + old_size, ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 	}
 
-	GDALRasterBand  *poBand;
-	if (err == CE_None ) {
-		for (size_t i=0; i<nl; i++) {
-			poBand = source[src].gdalconnection->GetRasterBand(source[src].layers[i]+1);
-			double naflag = poBand->GetNoDataValue(&hasNA);
-			if (hasNA)  naflags[i] = naflag;
-		}
-		NAso(out, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag);
-	}
-
-/*
-	for (size_t i=0; i < nl; i++) {
-		cell = ncell * i;
-		poBand = source[src].gdalconnection->GetRasterBand(source[src].layers[i] + 1);
-		double naflag = poBand->GetNoDataValue(&hasNA);
-		if (!hasNA) { naflag = NAN; }
-		GDALDataType gdtype = poBand->GetRasterDataType();
-		if (gdtype == GDT_Float64) {
-			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &out[cell], ncols, nrows, gdtype, 0, 0);
-			if (err != CE_None ) { break; }
-			set_NA(out, naflag);
-		}
-	}
-*/
 	if (err != CE_None ) {
+		data.resize(old_size);
 		setError("cannot read values");
 		return;
 	}
 
-	if (source[src].flipped) {
-		vflip(out, ncell, nrows, ncols, nl);
+	int hasNA;
+	std::vector<double> naflags(nl, NAN);
+	GDALRasterBand *poBand;
+	for (size_t i=0; i<nl; i++) {
+		poBand = source[src].gdalconnection->GetRasterBand(source[src].layers[i]+1);
+		double naflag = poBand->GetNoDataValue(&hasNA);
+		if (hasNA) naflags[i] = naflag;
 	}
-	data.insert(data.end(), out.begin(), out.end());
+	NAso(data, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag, old_size);
+
+	if (source[src].flipped) {
+		vflip(data, ncell, nrows, ncols, nl, old_size);
+	}
 }
 
 
