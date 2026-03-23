@@ -208,6 +208,7 @@ bool setBandCategories(GDALRasterBand *poBand, std::vector<long> value, std::vec
 		slabs = CSLAddString(slabs, s[i].c_str());
 	}
 	CPLErr err = poBand->SetCategoryNames(slabs);
+	CSLDestroy(slabs);
 	return (err == CE_None);
 }
 
