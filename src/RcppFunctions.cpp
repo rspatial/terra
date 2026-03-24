@@ -874,7 +874,3 @@ std::vector<std::string> arnames(std::string filename, bool filter) {
 #endif
 
 
-extern "C" void R_unload_terra(DllInfo *dll) {
-	GDALDestroyDriverManager();
-}
-
