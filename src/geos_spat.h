@@ -212,7 +212,6 @@ inline void geos_finish(GEOSContextHandle_t ctxt) {
 
 
 
-
 static void __warningIgnore(const char *fmt, ...) {
 	return;
 }
@@ -228,6 +227,23 @@ inline GEOSContextHandle_t geos_init2(void) {
 	return initGEOS_r((GEOSMessageHandler) __warningIgnore, (GEOSMessageHandler) __errorHandler);
 #endif
 }
+
+
+
+// RAII wrapper: declares the context handle before geometry vectors so that,
+// on scope exit, geometry vectors (which call GEOSGeom_destroy_r) are destroyed
+// first, and geos_finish is called last. Implicit conversion to
+// GEOSContextHandle_t means existing code works without changes.
+struct GEOSContextScope {
+	GEOSContextHandle_t hctx;
+	GEOSContextScope() : hctx(geos_init()) {}
+	explicit GEOSContextScope(bool quiet) : hctx(quiet ? geos_init2() : geos_init()) {}
+	~GEOSContextScope() { geos_finish(hctx); }
+	operator GEOSContextHandle_t() const { return hctx; }
+	GEOSContextScope(const GEOSContextScope&) = delete;
+	GEOSContextScope& operator=(const GEOSContextScope&) = delete;
+};
+
 
 
 

@@ -1049,6 +1049,14 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::string fun,
 */
 
 
+// GCC 14 false-positive: -Wfree-nonheap-object misfires for vector<function<>>
+// when resize() and the destructor are analysed together through deep inlining.
+// The inlining trace incorrectly conflates the string allocator with the
+// function allocator. Clang does not produce this warning.
+#if defined(__GNUC__) && !defined(__clang__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wfree-nonheap-object"
+#endif
 std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::vector<std::string> funs, bool narm, bool touches, bool small, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
 
 	if (!source[0].srs.is_same(v.srs, true)) {
@@ -1230,7 +1238,9 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, std::vector<std:
 	}
 	return flat;
 }
-
+#if defined(__GNUC__) && !defined(__clang__)
+# pragma GCC diagnostic pop
+#endif
 
 
 

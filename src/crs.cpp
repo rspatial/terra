@@ -298,9 +298,9 @@ bool can_transform(std::string fromCRS, std::string toCRS) {
 		return false;
 	}
 
-	OGRCoordinateTransformation *poCT;
+	OGRCoordinateTransformation *poCT = nullptr;
     CPLPushErrorHandler(EmptyErrorHandler);
-	try{
+	try {
 		poCT = OGRCreateCoordinateTransformation(&source, &target);
 	} catch(...) {
 		OCTDestroyCoordinateTransformation(poCT);
