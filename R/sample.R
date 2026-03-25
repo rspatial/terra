@@ -1025,7 +1025,7 @@ setMethod("spatSample", signature(x="SpatExtent"),
 
     cell <- cell[order(cell[,3]), ]
     sel <- list()
-    for (i in 1:length(uc)) {
+    for (i in seq_along(uc)) {
         ss <- subset(cell, cell[,2] == uc[i])
         sel[[i]] <- ss[1:min(n, nrow(ss)), 1]
     }
@@ -1099,6 +1099,10 @@ setMethod("spatSample", signature(x="SpatVector"),
 				if (inherits(strata, "SpatRaster")) {
 					xy <- crds(x)
 					i <- .grid_sample(xy, size[1], rast(strata), chess)
+					if (is.null(i)) {
+						warn("spatSample", "empty sample")
+						i <- 0
+					}
 					return(x[i,])
 				} else {
 					error("spatSample", "not yet implemented for these strata")
