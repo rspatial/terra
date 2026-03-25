@@ -12,6 +12,7 @@
 - `plot<SpatVector>` has new argument "fill_range"
 - `extract` gains argument "wide=FALSE" that can be used when fun="table" [2053](https://github.com/rspatial/terra/issues/2053) by Jérôme Guélat
 
+
 # version 1.9-1
 
 Released 2026-03-07
