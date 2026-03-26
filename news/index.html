@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,21 +34,25 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-6" id="version-19-6">version 1.9-6<a class="anchor" aria-label="anchor" href="#version-19-6"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-11" id="version-19-11">version 1.9-11<a class="anchor" aria-label="anchor" href="#version-19-11"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-6">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-6"></a></h3>
+<h3 id="bug-fixes-1-9-11">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-11"></a></h3>
 <ul><li>
-<code>subst</code> did not recycle properly <a href="https://github.com/rspatial/terra/issues/2046" class="external-link"></a> by Nuno Teixeira and <a href="https://github.com/rspatial/terra/issues/2052" class="external-link">#2052</a> by Jérôme Guélat</li>
+<code>subst</code> and some cases of <code>classify</code>, did not recycle properly <a href="https://github.com/rspatial/terra/issues/2046" class="external-link"></a> by Nuno Teixeira and <a href="https://github.com/rspatial/terra/issues/2052" class="external-link">#2052</a> by Jérôme Guélat</li>
 <li>better reading of gpkg files with unclear geometry and NULL geoms <a href="https://github.com/rspatial/terra/issues/2051" class="external-link">#2051</a> by Duy Nguyen</li>
 <li>
 <code>ifel</code> ignored NA values in some circumstances <a href="https://stackoverflow.com/questions/79905693" class="external-link">SO 79905693</a> by Sean McKenzie</li>
+<li>
+<code>spatSample</code> failed if checkerboard sampling if a stratum was empty <a href="https://github.com/rspatial/terra/issues/2060" class="external-link">#2060</a> by Tyler Smith</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-6">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-6"></a></h3>
+<h3 id="enhancements-1-9-11">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-11"></a></h3>
 <ul><li>
 <code>plot&lt;SpatVector&gt;</code> has new argument “fill_range”</li>
 <li>
 <code>extract</code> gains argument “wide=FALSE” that can be used when fun=“table” <a href="https://github.com/rspatial/terra/issues/2053" class="external-link">2053</a> by Jérôme Guélat</li>
+<li>
+<code>compareGeom</code> gets argument “tolerance” to overwrite the default that can be set with <code>terraOptions</code>. <a href="https://github.com/rspatial/terra/issues/2056" class="external-link">#2056</a> by R. Kyle Bocinsky</li>
 </ul></div>
 </div>
     <div class="section level2">

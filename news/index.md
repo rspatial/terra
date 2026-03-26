@@ -1,10 +1,10 @@
 # Changelog
 
-## version 1.9-6
+## version 1.9-11
 
 ### bug fixes
 
-- `subst` did not recycle properly
+- `subst` and some cases of `classify`, did not recycle properly
   [](https://github.com/rspatial/terra/issues/2046) by Nuno Teixeira and
   [\#2052](https://github.com/rspatial/terra/issues/2052) by Jérôme
   Guélat
@@ -13,6 +13,8 @@
 - `ifel` ignored NA values in some circumstances [SO
   79905693](https://stackoverflow.com/questions/79905693) by Sean
   McKenzie
+- `spatSample` failed if checkerboard sampling if a stratum was empty
+  [\#2060](https://github.com/rspatial/terra/issues/2060) by Tyler Smith
 
 ### enhancements
 
@@ -20,6 +22,10 @@
 - `extract` gains argument “wide=FALSE” that can be used when
   fun=“table” [2053](https://github.com/rspatial/terra/issues/2053) by
   Jérôme Guélat
+- `compareGeom` gets argument “tolerance” to overwrite the default that
+  can be set with `terraOptions`.
+  [\#2056](https://github.com/rspatial/terra/issues/2056) by R. Kyle
+  Bocinsky
 
 ## version 1.9-1
 

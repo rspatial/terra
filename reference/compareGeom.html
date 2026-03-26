@@ -9,7 +9,7 @@ Or evaluate whether two SpatVectors have the same geometries, or whether a SpatV
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,10 +45,10 @@ Or evaluate whether two SpatVectors have the same geometries, or whether a SpatV
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster,SpatRaster'</span></span>
 <span><span class="fu">compareGeom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span>, lyrs<span class="op">=</span><span class="cn">FALSE</span>, crs<span class="op">=</span><span class="cn">TRUE</span>, warncrs<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>  rowcol<span class="op">=</span><span class="cn">TRUE</span>, res<span class="op">=</span><span class="cn">FALSE</span>, stopOnError<span class="op">=</span><span class="cn">TRUE</span>, messages<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  rowcol<span class="op">=</span><span class="cn">TRUE</span>, res<span class="op">=</span><span class="cn">FALSE</span>, stopOnError<span class="op">=</span><span class="cn">TRUE</span>, messages<span class="op">=</span><span class="cn">FALSE</span>, tolerance<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector,SpatVector'</span></span>
-<span><span class="fu">compareGeom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, tolerance<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu">compareGeom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, tolerance<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector,missing'</span></span>
 <span><span class="fu">compareGeom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, tolerance<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
@@ -91,7 +91,7 @@ Or evaluate whether two SpatVectors have the same geometries, or whether a SpatV
 <dd><p>logical. If <code>TRUE</code>, warning/error messages are printed even if <code>stopOnError=FALSE</code></p></dd>
 
   <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
-<dd><p>numeric</p></dd>
+<dd><p>numeric. For <code>SpatRaster</code> objects this is the difference in raster extent (expressed as the fraction of the raster resolution) that can be ignored when comparing alignment of rasters. If <code>NULL</code> the value shown by <code>link{terraOptions}</code> is used</p></dd>
 
 </dl></div>
     <div class="section level2">
