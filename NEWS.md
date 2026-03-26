@@ -1,4 +1,16 @@
+# version 1.9-12
+
+## bug fixes
+
+
+## enhancements
+- `compareGeom` gets argument "tolerance" to overwrite the default that can be set with `terraOptions`. [#2056](https://github.com/rspatial/terra/issues/2056) by R. Kyle Bocinsky
+
+
+
 # version 1.9-11
+
+Released 2026-03-26
 
 ## bug fixes
 
@@ -11,7 +23,6 @@
 
 - `plot<SpatVector>` has new argument "fill_range"
 - `extract` gains argument "wide=FALSE" that can be used when fun="table" [2053](https://github.com/rspatial/terra/issues/2053) by Jérôme Guélat
-- `compareGeom` gets argument "tolerance" to overwrite the default that can be set with `terraOptions`. [#2056](https://github.com/rspatial/terra/issues/2056) by R. Kyle Bocinsky
 
 # version 1.9-1
 
