@@ -15,7 +15,7 @@ compareGeom(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE,
   rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=FALSE, tolerance=NULL)
 
 # S4 method for class 'SpatVector,SpatVector'
-compareGeom(x, y, tolerance=0.1)
+compareGeom(x, y, tolerance=0)
 
 # S4 method for class 'SpatVector,missing'
 compareGeom(x, y, tolerance=0)
