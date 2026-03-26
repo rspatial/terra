@@ -6,6 +6,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>       // std::vector<T> <-> Python list auto-conversion
+#include <cstdint>
 
 #include "spatRasterMultiple.h"
 #include "spatGraph.h"
@@ -293,7 +294,8 @@ PYBIND11_MODULE(_pyterra, m) {
             (bool (SpatDataFrame::*)(std::vector<std::string>, std::string))(&SpatDataFrame::add_column))
         .def("add_column_factor",
             (bool (SpatDataFrame::*)(SpatFactor, std::string))(&SpatDataFrame::add_column))
-        .def("add_column_bool",   &SpatDataFrame::add_column_bool)
+        .def("add_column_bool",
+            (bool (SpatDataFrame::*)(std::vector<int>, std::string))(&SpatDataFrame::add_column_bool))
         .def("add_column_time",   &SpatDataFrame::add_column_time)
         .def("remove_column",
             (bool (SpatDataFrame::*)(std::string))(&SpatDataFrame::remove_column))
@@ -587,7 +589,8 @@ PYBIND11_MODULE(_pyterra, m) {
         .def("set_crs",
             (bool (SpatRaster::*)(std::string))(&SpatRaster::setSRS))
         .def_property("extent",
-            &SpatRaster::getExtent, &SpatRaster::setExtent)
+            &SpatRaster::getExtent,
+            (void (SpatRaster::*)(SpatExtent))&SpatRaster::setExtent)
         .def("is_rotated",  &SpatRaster::is_rotated)
         .def("is_flipped",  &SpatRaster::is_flipped)
         .def("setWindow",   &SpatRaster::setWindow)
@@ -661,10 +664,8 @@ PYBIND11_MODULE(_pyterra, m) {
         .def("readStart", &SpatRaster::readStart)
         .def("readStop",  &SpatRaster::readStop)
         .def("readAll",   &SpatRaster::readAll)
-        .def("readValues",&SpatRaster::readValues)
-        .def("readBlock", &SpatRaster::readBlock)
-        .def("readBlockTC",&SpatRaster::readBlockTC)
-        .def("hasSourceValues",&SpatRaster::hasSourceValues)
+        .def("readValues", &SpatRaster::readValuesR)
+        .def("getValues", &SpatRaster::getValues)
 
         .def("setValues",
             (bool (SpatRaster::*)(std::vector<double>&, SpatOptions&))(&SpatRaster::setValues))
@@ -674,22 +675,26 @@ PYBIND11_MODULE(_pyterra, m) {
         .def("writeValues",&SpatRaster::writeValues)
         .def("writeValuesRect",&SpatRaster::writeValuesRect)
 
-        .def("getRange",  &SpatRaster::getRange)
         .def("setRange",  &SpatRaster::setRange)
-        .def("hasMinMax", &SpatRaster::hasMinMax)
-        .def("setMinMax", &SpatRaster::setMinMax)
-        .def("getMinMax", &SpatRaster::getMinMax)
+        .def_property_readonly("range_min", &SpatRaster::range_min)
+        .def_property_readonly("range_max", &SpatRaster::range_max)
 
-        .def("rowFromY", &SpatRaster::rowFromY)
-        .def("colFromX", &SpatRaster::colFromX)
-        .def("rowColFromCell",&SpatRaster::rowColFromCell)
-        .def("rowColFromXY",  &SpatRaster::rowColFromXY)
-        .def("cellFromXY",    &SpatRaster::cellFromXY)
-        .def("cellFromRowCol",&SpatRaster::cellFromRowCol)
-        .def("yFromRow",      &SpatRaster::yFromRow)
-        .def("xFromCol",      &SpatRaster::xFromCol)
-        .def("xyFromCell",    &SpatRaster::xyFromCell)
-        .def("cellFromXYvect",&SpatRaster::cellFromXYvect)
+        .def("rowFromY",
+            (std::vector<int64_t> (SpatRaster::*)(const std::vector<double>&))&SpatRaster::rowFromY)
+        .def("colFromX",
+            (std::vector<int64_t> (SpatRaster::*)(const std::vector<double>&))&SpatRaster::colFromX)
+        .def("rowColFromCell",
+            (std::vector<std::vector<int64_t>> (SpatRaster::*)(std::vector<double>))&SpatRaster::rowColFromCell)
+        .def("cellFromXY",
+            (std::vector<double> (SpatRaster::*)(std::vector<double>, std::vector<double>, double))&SpatRaster::cellFromXY)
+        .def("cellFromRowCol",
+            (std::vector<double> (SpatRaster::*)(std::vector<int64_t>, std::vector<int64_t>))&SpatRaster::cellFromRowCol)
+        .def("yFromRow",
+            (std::vector<double> (SpatRaster::*)(const std::vector<int64_t>&))&SpatRaster::yFromRow)
+        .def("xFromCol",
+            (std::vector<double> (SpatRaster::*)(const std::vector<int64_t>&))&SpatRaster::xFromCol)
+        .def("xyFromCell",
+            (std::vector<std::vector<double>> (SpatRaster::*)(std::vector<double>&))&SpatRaster::xyFromCell)
         .def("adjacent",      &SpatRaster::adjacent)
 
         .def("layerCor",      &SpatRaster::layerCor)
@@ -698,14 +703,12 @@ PYBIND11_MODULE(_pyterra, m) {
         .def("subset",    &SpatRaster::subset)
         .def("selectRange",&SpatRaster::selRange)
 
-        .def("addLayer",  &SpatRaster::addLayer)
-        .def("addLayers", &SpatRaster::addLayers)
-        .def("dropLayer", &SpatRaster::dropLayer)
-
         .def("setNames",  &SpatRaster::setNames)
 
-        .def("arith_rast",  &SpatRaster::arith)
-        .def("arith_numb",  &SpatRaster::arith_numb)
+        .def("arith_rast",
+            (SpatRaster (SpatRaster::*)(SpatRaster, std::string, bool, SpatOptions&))&SpatRaster::arith)
+        .def("arith_numb",
+            (SpatRaster (SpatRaster::*)(std::vector<double>, std::string, bool, bool, SpatOptions&))&SpatRaster::arith)
         .def("arith_m",     &SpatRaster::arith_m)
 
         .def("rst_area",        &SpatRaster::rst_area)

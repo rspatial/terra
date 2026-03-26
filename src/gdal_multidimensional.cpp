@@ -10,6 +10,7 @@
 #include "vecmath.h"
 #include "recycle.h"
 #include <stddef.h>
+#include <list>
 
 //#include <cstdint>
 //#if INTPTR_MAX != INT32_MAX
@@ -539,9 +540,11 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 	
 	setSource(s);
 	if (verbose) {
+#ifdef useRcpp
 		for (size_t i=0; i<s.m_dims.size(); i++){
 			Rcpp::Rcout << s.m_dims[i] << " " << dimnames[i] << " " << s.m_size[i] << std::endl;
 		}
+#endif
 	}
 	return true;
 }
@@ -599,7 +602,9 @@ bool SpatRaster::readStopMulti(size_t src) {
 
 bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 
+#ifdef useRcpp
 	Rcpp::Rcout << "readChunkMulti\n";
+#endif
 	std::vector<GUInt64> offset(source[src].m_ndims, 0);
 	std::vector<size_t> dims = source[src].m_dims;
 
@@ -913,7 +918,9 @@ bool SpatRaster::writeStopMulti() {
 
 std::vector<double> SpatRaster::readValuesMulti(size_t src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr) {
 
+#ifdef useRcpp
 	Rcpp::Rcout << "readValuesMulti\n";
+#endif
 	std::vector<double> out;
 	if (lyr < 0) {
 		if (!readStartMulti(src)) {
@@ -923,7 +930,9 @@ std::vector<double> SpatRaster::readValuesMulti(size_t src, size_t row, size_t n
 		readStopMulti(src);
 		return out;
 	} else {
+#ifdef useRcpp
 		Rcpp::Rcout << "empty\n";
+#endif
 		return out;
 	}
 }

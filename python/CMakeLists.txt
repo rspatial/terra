@@ -40,37 +40,7 @@ file(GLOB TERRA_SOURCES "${TERRA_SRC_DIR}/*.cpp")
 list(FILTER TERRA_SOURCES EXCLUDE REGEX ".*(RcppModule|RcppFunctions|RcppExports)\\.cpp$")
 
 
-# ── GEOS version feature flags ───────────────────────────────────────────────
-# terra uses #ifdef GEOS350 / GEOS380 / GEOS390 guards internally.
-if (GEOS_FOUND)
-    # Normalise version string to a comparable integer form
-    if (DEFINED GEOS_VERSION)
-        set(_geos_ver "${GEOS_VERSION}")
-    elseif (DEFINED GEOS_VERSION_STRING)
-        set(_geos_ver "${GEOS_VERSION_STRING}")
-    else()
-        set(_geos_ver "0.0.0")
-    endif()
-
-    if (_geos_ver VERSION_GREATER_EQUAL "3.5.0")
-        set(GEOS_CXXFLAGS "-DGEOS350")
-    endif()
-    if (_geos_ver VERSION_GREATER_EQUAL "3.8.0")
-        string(APPEND GEOS_CXXFLAGS " -DGEOS380")
-    endif()
-    if (_geos_ver VERSION_GREATER_EQUAL "3.9.0")
-        string(APPEND GEOS_CXXFLAGS " -DGEOS390")
-    endif()
-    if (_geos_ver VERSION_GREATER_EQUAL "3.11.0")
-        string(APPEND GEOS_CXXFLAGS " -DGEOS3110")
-    endif()
-    if (_geos_ver VERSION_GREATER_EQUAL "3.12.0")
-        string(APPEND GEOS_CXXFLAGS " -DGEOS3120")
-    endif()
-
-    separate_arguments(GEOS_CXXFLAGS_LIST UNIX_COMMAND "${GEOS_CXXFLAGS}")
-endif()
-
+# GEOS feature macros (GEOS350, GEOS380, …) come from geos_spat.h via GEOS_VERSION_*.
 
 # ── PROJ version flag ────────────────────────────────────────────────────────
 if (PROJ_FOUND)
@@ -132,7 +102,6 @@ target_link_libraries(_pyterra PRIVATE
 
 target_compile_definitions(_pyterra PRIVATE
     standalone          # suppresses useRcpp; keeps useGDAL active
-    ${GEOS_CXXFLAGS_LIST}
     ${PROJ_CXXFLAGS_LIST}
     ${TBB_COMPILE_DEFS}
 )

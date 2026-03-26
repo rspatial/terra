@@ -20,6 +20,7 @@
 #include "geodesic.h"
 #include "sort.h"
 #include "geosphere.h"
+#include <functional>
 
 
 void dist_bounds_values(const std::vector<double>& vx, const std::vector<double>& vy, const std::vector<double>& v, const std::vector<double>& rx, const double& ry, size_t& first, size_t& last, const bool& lonlat, const std::string &method, std::vector<double> &d, std::vector<double> &dv) {

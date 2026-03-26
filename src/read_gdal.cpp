@@ -165,8 +165,10 @@ bool read_aux_json(std::string filename, std::vector<int64_t> &time, std::string
 
 
 void prints(std::vector<std::string> x) {
+#ifdef useRcpp
 	for (size_t i=0; i<x.size(); i++) {Rcpp::Rcout << x[i] << " ";}
-	Rcpp::Rcout << "\n";	
+	Rcpp::Rcout << "\n";
+#endif
 }
 
 

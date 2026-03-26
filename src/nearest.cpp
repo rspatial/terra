@@ -12,6 +12,7 @@
 //#include "string_utils.h"
 //#include "crs.h"
 #include "sort.h"
+#include <functional>
 
 
 std::vector<double> dn_bounds(const std::vector<double>& vx, const std::vector<double>& vy, const std::vector<double>& rx, const double& ry, size_t& first, size_t& last, const bool& lonlat, const std::string &method) {
