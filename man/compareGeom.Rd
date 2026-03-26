@@ -22,7 +22,7 @@ Or evaluate whether two SpatVectors have the same geometries, or whether a SpatV
 \S4method{compareGeom}{SpatRaster,SpatRaster}(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE,
 	rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=FALSE, tolerance=NULL)
 
-\S4method{compareGeom}{SpatVector,SpatVector}(x, y, tolerance=0.1)
+\S4method{compareGeom}{SpatVector,SpatVector}(x, y, tolerance=0)
 
 \S4method{compareGeom}{SpatVector,missing}(x, y, tolerance=0)
 }
