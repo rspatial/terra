@@ -20,9 +20,9 @@ Or evaluate whether two SpatVectors have the same geometries, or whether a SpatV
 
 \usage{
 \S4method{compareGeom}{SpatRaster,SpatRaster}(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE,
-	rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=FALSE)
+	rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=FALSE, tolerance=NULL)
 
-\S4method{compareGeom}{SpatVector,SpatVector}(x, y, tolerance=0)
+\S4method{compareGeom}{SpatVector,SpatVector}(x, y, tolerance=0.1)
 
 \S4method{compareGeom}{SpatVector,missing}(x, y, tolerance=0)
 }
@@ -39,7 +39,7 @@ Or evaluate whether two SpatVectors have the same geometries, or whether a SpatV
   \item{res}{logical. If \code{TRUE}, resolutions are compared (redundant when checking extent and rowcol)}
   \item{stopOnError}{logical. If \code{TRUE}, code execution stops if raster do not match}
   \item{messages}{logical. If \code{TRUE}, warning/error messages are printed even if \code{stopOnError=FALSE}}
-  \item{tolerance}{numeric}
+  \item{tolerance}{numeric. For \code{SpatRaster} objects this is the difference in raster extent (expressed as the fraction of the raster resolution) that can be ignored when comparing alignment of rasters. If \code{NULL} the value shown by \code{link{terraOptions}} is used}
 }
 
 \value{
