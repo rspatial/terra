@@ -23,7 +23,7 @@ proj_conf_test*
 af_acc*
 .RData
 revdep/
-python/
+#python/
 cmdapp/terra
 windows/
 inst/gdal/

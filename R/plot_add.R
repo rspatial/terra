@@ -44,6 +44,9 @@
 }
 
 
+add_cont_legend <- function(x, y, xpd=TRUE, ...) {
+	#.plot.cont.legend(x, ...)
+}
 
 add_legend <- function(x, y, xpd=TRUE, ...) {
 	if (inherits(x, "character")) {

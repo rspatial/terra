@@ -4,6 +4,7 @@
 
 
 ## enhancements
+
 - `compareGeom` gets argument "tolerance" to overwrite the default that can be set with `terraOptions`. [#2056](https://github.com/rspatial/terra/issues/2056) by R. Kyle Bocinsky
 
 
