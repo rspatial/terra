@@ -263,6 +263,8 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 
 #include "common.h"
 
+std::mt19937 my_rgen;
+
 std::string tempFile(std::string tmpdir, std::string fname, std::string ext) {
 
 

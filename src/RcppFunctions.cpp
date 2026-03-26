@@ -407,8 +407,6 @@ void set_gdal_warnings(int level) {
 
 #include "common.h"
 
-std::mt19937 my_rgen;
-
 // [[Rcpp::export(name = ".seedinit")]]
 void seed_init(uint32_t seed_val) {
   my_rgen.seed(seed_val);
