@@ -586,8 +586,8 @@ def _plot_one_layer(
     ax: Any,
     palette: List[str],
     type: str,
-    range: Optional[Tuple[Optional[float], Optional[float]]],
-    fill_range: bool,
+    zlim: Optional[Tuple[Optional[float], Optional[float]]],
+    clamp: bool,
     breaks: Optional[Union[Sequence[float], np.ndarray]],
     levels: Optional[List[Any]],
     legend: bool,
@@ -633,7 +633,7 @@ def _plot_one_layer(
 
     elif type == "continuous":
         rgba, (vmin, vmax), digits = _continuous_image(
-            arr, palette, range_vals=range, fill_range=fill_range
+            arr, palette, range_vals=zlim, fill_range=clamp
         )
         _setup_axes(ax, ext_v, axes, lonlat)
         n = len(palette)
@@ -739,8 +739,8 @@ def plot(
     type: Optional[str] = None,
     legend: bool = True,
     axes: bool = True,
-    range: Optional[Tuple[Optional[float], Optional[float]]] = None,
-    fill_range: bool = False,
+    zlim: Optional[Tuple[Optional[float], Optional[float]]] = None,
+    clamp: bool = False,
     levels: Optional[List[Any]] = None,
     breaks: Optional[Sequence[float]] = None,
     na_color: Optional[str] = "white",
@@ -779,9 +779,9 @@ def plot(
             If None, the type is inferred from the data.
         legend: If True (default), draw a legend or colourbar.
         axes: If True (default), draw coordinate axis ticks and labels.
-        range: ``(vmin, vmax)`` display range for continuous data.  ``None``
+        zlim: ``(vmin, vmax)`` display range for continuous data.  ``None``
             elements are derived from the data.
-        fill_range: If True, values outside *range* are clamped to the range
+        clamp: If True, values outside *zlim* are clamped to the range
             endpoints rather than shown as NA.
         levels: Explicit numeric values to use as class levels.
         breaks: Cut-point values for interval classification.  When supplied,
@@ -808,6 +808,7 @@ def plot(
     """
     import matplotlib.pyplot as plt
     import matplotlib.cm as cm
+    import builtins
 
     if not r.hasValues:
         warnings.warn("plot: SpatRaster has no cell values", stacklevel=2)
@@ -818,7 +819,7 @@ def plot(
     # ── resolve layer selection ───────────────────────────────────────────────
     if y is None:
         n_plot = min(nl_total, maxnl)
-        lyrs_1based = list(range(1, n_plot + 1))
+        lyrs_1based = list(builtins.range(1, n_plot + 1))
     elif isinstance(y, str):
         idx = lyr_names.index(y)
         lyrs_1based = [idx + 1]
@@ -837,7 +838,7 @@ def plot(
     elif isinstance(col, str):
         cmap_obj = cm.get_cmap(col, 255)
         import matplotlib.colors as mc
-        palette = [mc.to_hex(cmap_obj(i)) for i in range(255)]
+        palette = [mc.to_hex(cmap_obj(i)) for i in builtins.range(255)]
     else:
         palette = list(col)
 
@@ -865,7 +866,7 @@ def plot(
 
         _plot_one_layer(
             r, lyr0, ax_, palette, ltype,
-            range=range, fill_range=fill_range, breaks=breaks,
+            zlim=zlim, clamp=clamp, breaks=breaks,
             levels=levels, legend=legend, na_color=na_color,
             axes=axes, title=title_str,
             max_cell=maxcell, alpha=alpha, smooth=smooth,
@@ -896,14 +897,14 @@ def plot(
         ltype = _layer_type(lyr0)
         _plot_one_layer(
             r, lyr0, ax_i, palette, ltype,
-            range=range, fill_range=fill_range, breaks=breaks,
+            zlim=zlim, clamp=clamp, breaks=breaks,
             levels=levels, legend=legend, na_color=na_color,
             axes=axes, title=titles[i],
             max_cell=maxcell // n_plot, alpha=alpha, smooth=smooth,
         )
 
     # Hide unused subplots
-    for j in range(i + 1, len(axes_flat)):
+    for j in builtins.range(i + 1, len(axes_flat)):
         axes_flat[j].set_visible(False)
 
     fig.tight_layout()

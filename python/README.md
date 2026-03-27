@@ -11,6 +11,7 @@ cd python
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
+python -m pip install pybind11 scikit-build-core numpy matplotlib
 python -m pip install -e .
 ```
 
