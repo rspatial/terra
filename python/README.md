@@ -1,10 +1,10 @@
 # terra (Python)
 
-Python bindings for the **terra** geospatial C++ library, with the same core types and API as the R package "terra".
+Python version of the **terra** pacakage for spatial data handling.
 
 ## Build (Linux / WSL)
 
-Use a virtual environment (recommended on Ubuntu, which uses PEP 668 for the system Python):
+Use a virtual environment (recommended on Ubuntu):
 
 ```bash
 cd python
@@ -20,30 +20,16 @@ You need CMake, a C++17 compiler, and development packages for GDAL, GEOS, and P
 
 
 ```python
-import terra as pt
+import terra as geo
 
-r = pt.rast()                          # default global grid, like R
-r = pt.rast("dem.tif")
-e = pt.ext(-180, 180, -90, 90)
-v = pt.vect(e, crs="EPSG:4326")
-pt.crs(r)                              # WKT
-pt.crs(r, "+proj=longlat")             # set CRS, returns r
-pt.messages(r, "myfn")                 # raise on error / warn
+r = geo.rast()              
+e = geo.ext(-100, 100, -60, 60)
+geo.crop(r, e)
+
+v = geo.vect(e, crs="EPSG:4326")
+geo.crs(v, proj4=True)
 ```
 
-
-The raw C++ interface
-
-```python
-import terra as pt
-
-r = pt.SpatRaster(["elevation.tif"], [], [], False, [], [], [], False, False, [])
-v = pt.SpatVector()
-v.read("countries.gpkg")
-ext = pt.SpatExtent(-10, 40, 35, 70)
-opt = pt.SpatOptions()
-opt.filenames = ["output.tif"]
-```
 
 ## License
 

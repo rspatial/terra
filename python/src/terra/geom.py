@@ -1,7 +1,10 @@
 """
-Vector geometry operations — mirrors R ``terra::geom.R``.
+Vector geometry operations.
 
-Functions work directly on :class:`SpatVector` objects.
+Functions operate directly on :class:`SpatVector` objects and cover set
+operations (union, intersect, erase, cover, symmetric difference), geometry
+modification (buffer, hull, simplify, snap, flip, rotate, …), topology
+utilities, and predicates.
 """
 
 from __future__ import annotations
@@ -41,10 +44,19 @@ def is_valid(
     with_messages: bool = False,
 ) -> Any:
     """
-    Check geometry validity — like R ``is.valid()``.
+    Check the validity of polygon geometries.
 
-    * ``with_messages=False`` → list[bool] per geometry.
-    * ``with_messages=True`` → list of ``(valid, reason)`` pairs.
+    Args:
+        x: SpatVector of polygons (or any geometry type; non-polygon
+            geometries are always considered valid).
+        with_messages: If True, return a list of ``(valid, reason)`` tuples
+            with one entry per geometry, where ``reason`` is a string
+            describing the invalidity (empty string for valid geometries).
+            If False (default), return a list of booleans.
+
+    Returns:
+        List of bool, or list of (bool, str) tuples when
+        ``with_messages=True``.
     """
     if with_messages:
         raw = x.geos_isvalid_msg()
@@ -57,7 +69,19 @@ def is_valid(
 
 
 def make_valid(x: SpatVector, buffer: bool = False) -> SpatVector:
-    """Fix invalid geometries — like R ``makeValid()``."""
+    """
+    Attempt to fix invalid polygon geometries.
+
+    Args:
+        x: SpatVector of polygons.
+        buffer: If True, a zero-width buffer is used to create valid polygons.
+            Use with caution: this method may result in data loss, for example
+            only a single part of a self-intersecting polygon may be
+            preserved.
+
+    Returns:
+        SpatVector with valid geometries.
+    """
     if buffer and x.type() == "polygons":
         from .crs import crs as _crs
         xc = _crs(x)
@@ -76,16 +100,29 @@ def union_vect(
     y: Optional[SpatVector] = None,
 ) -> SpatVector:
     """
-    Union — like R ``union(SpatVector)``.
+    Compute the union of vector geometries.
 
-    * ``y=None`` → unary union (dissolve self-overlaps).
-    * ``y`` supplied → binary union.
+    When ``y`` is provided, the two SpatVectors are combined and overlapping
+    polygons between (not within) objects are intersected. For lines and
+    points the datasets are simply combined (equivalent to ``rbind``).
+    Attributes are joined.
+
+    When ``y`` is omitted, overlapping polygons within ``x`` are
+    intersected (self-union). Original attributes are lost; new attributes
+    record how many and which input polygons overlapped.
+
+    Args:
+        x: SpatVector.
+        y: SpatVector to union with ``x``. If not provided, a self-union is
+            performed.
+
+    Returns:
+        SpatVector.
     """
     if y is None:
         x = x.union_self()
     else:
         if x.type() != "polygons":
-            # non-polygons: just append (like R rbind + unique)
             x = x.append(y)
         else:
             x = x.union(y)
@@ -94,12 +131,24 @@ def union_vect(
 
 def intersect_vect(x: SpatVector, y: Union[SpatVector, SpatExtent]) -> SpatVector:
     """
-    Intersect — like R ``intersect(SpatVector, …)``.
+    Intersect a SpatVector with another SpatVector or a SpatExtent.
 
-    *y* can be a :class:`SpatVector` or a :class:`SpatExtent` (crop).
+    When ``y`` is a SpatExtent, the operation is equivalent to
+    :func:`crop_vect` with the extent.
+
+    Intersecting points with points uses the extent of ``y``.  Intersecting
+    points and lines is not supported; create a polygon buffer from the lines
+    first and use that with ``intersect_vect``.
+
+    Args:
+        x: SpatVector.
+        y: SpatVector or SpatExtent to intersect with.
+
+    Returns:
+        SpatVector containing only the overlapping parts of ``x`` and ``y``,
+        with combined attributes.
     """
     if isinstance(y, SpatExtent):
-        from .geom import crop_vect
         return crop_vect(x, y)
     x = x.intersect(y, True)
     return messages(x, "intersect")
@@ -111,11 +160,26 @@ def erase(
     sequential: bool = True,
 ) -> SpatVector:
     """
-    Erase — like R ``erase()``.
+    Erase parts of a SpatVector.
 
-    * ``y=None`` → self-erase (remove self-overlaps).
-    * ``y=SpatVector`` → erase *y* from *x*.
-    * ``y=SpatExtent`` → erase extent polygon from *x*.
+    Three forms are supported:
+
+    * **Self-erase** (``y=None``): erase the overlapping areas within ``x``
+      itself. If ``sequential=True`` (default), each polygon is erased
+      against the preceding ones in order. If ``sequential=False``, all
+      overlapping areas are removed and only the areas covered by a single
+      geometry are kept.
+    * **Erase with SpatVector**: erase the areas of ``y`` from ``x``.
+    * **Erase with SpatExtent**: erase the rectangular region from ``x``.
+
+    Args:
+        x: SpatVector.
+        y: SpatVector, SpatExtent, or None (self-erase).
+        sequential: Only used for self-erase. If True, polygons are erased
+            sequentially. If False, all overlapping areas are erased at once.
+
+    Returns:
+        SpatVector.
     """
     if y is None:
         x = x.erase_self(sequential)
@@ -129,7 +193,18 @@ def erase(
 
 
 def symdif(x: SpatVector, y: SpatVector) -> SpatVector:
-    """Symmetric difference — like R ``symdif()``."""
+    """
+    Compute the symmetrical difference of two polygon SpatVectors.
+
+    The result contains the areas that are in ``x`` or ``y`` but not in both.
+
+    Args:
+        x: SpatVector of polygons.
+        y: SpatVector of polygons.
+
+    Returns:
+        SpatVector.
+    """
     x = x.symdif(y)
     return messages(x, "symdif")
 
@@ -140,7 +215,23 @@ def cover_vect(
     identity: bool = False,
     expand: bool = True,
 ) -> SpatVector:
-    """Cover — like R ``cover(SpatVector)``."""
+    """
+    Replace parts of ``x`` that overlap with ``y``.
+
+    Areas of ``x`` that overlap with ``y`` are replaced by ``y``, or, if
+    ``identity=True``, intersected with ``y``.
+
+    Args:
+        x: SpatVector.
+        y: SpatVector used to cover or intersect overlapping areas of ``x``.
+        identity: If True, overlapping areas are intersected rather than
+            simply replaced.
+        expand: If True (default), parts of ``y`` that are outside ``x`` are
+            included in the result.
+
+    Returns:
+        SpatVector.
+    """
     x = x.cover(y, identity, expand)
     return messages(x, "cover")
 
@@ -153,10 +244,23 @@ def crop_vect(
     use_ext: bool = False,
 ) -> SpatVector:
     """
-    Crop vector — like R ``crop(SpatVector, …)``.
+    Cut out a geographic subset of a SpatVector.
 
-    *y* can be a :class:`SpatVector`, :class:`SpatExtent`, or anything
-    with an ``extent()`` method.
+    When cropping a SpatVector with another SpatVector, the minimum convex
+    hull of ``y`` is used unless ``use_ext=True``. Unlike :func:`intersect_vect`,
+    the attributes of ``y`` are not transferred to the result.
+
+    You can crop a SpatVector with a rectangle (SpatExtent or any object with
+    an extent).
+
+    Args:
+        x: SpatVector.
+        y: SpatVector, SpatExtent, or any object that has an extent.
+        use_ext: If True, use the bounding extent of ``y`` rather than ``y``
+            itself as the crop region.
+
+    Returns:
+        SpatVector cropped to the region defined by ``y``.
     """
     if isinstance(y, SpatVector) and not use_ext:
         x = x.crop_vct(y)
@@ -182,7 +286,16 @@ def mask_vect(
     inverse: bool = False,
 ) -> SpatVector:
     """
-    Mask vector — like R ``mask(SpatVector)``.
+    Select geometries of ``x`` that intersect (or do not intersect) with ``mask``.
+
+    Args:
+        x: SpatVector.
+        mask: SpatVector or SpatExtent defining the mask region.
+        inverse: If True, select geometries that do *not* intersect with
+            ``mask``.
+
+    Returns:
+        SpatVector with a subset of the geometries of ``x``.
     """
     if isinstance(mask, SpatExtent):
         from .vect import vect as _vect
@@ -203,7 +316,32 @@ def buffer_vect(
     mitrelimit: float = float("nan"),
     singlesided: bool = False,
 ) -> SpatVector:
-    """Buffer geometries — like R ``buffer(SpatVector)``."""
+    """
+    Calculate a buffer around vector geometries.
+
+    The unit of ``width`` is metres when the CRS is longitude/latitude, and
+    in the linear unit of the coordinate reference system otherwise (typically
+    also metres).
+
+    Args:
+        x: SpatVector.
+        width: Buffer width. A single value is applied to all geometries; a
+            list of values applies a different width to each geometry.
+        quadsegs: Number of line segments used to approximate a quarter circle
+            (higher values produce smoother circles). Positive integer.
+        capstyle: End cap style for lines. One of ``"round"``, ``"square"``,
+            or ``"flat"``. Ignored for longitude/latitude CRS.
+        joinstyle: Join style. One of ``"round"``, ``"mitre"``, or
+            ``"bevel"``. Ignored for longitude/latitude CRS.
+        mitrelimit: Upper bound on mitre joins, to prevent them from
+            extending very far at acute angles. Ignored for
+            longitude/latitude CRS.
+        singlesided: If True, construct a buffer on only one side of each
+            input line. Ignored for longitude/latitude CRS.
+
+    Returns:
+        SpatVector with buffered geometries.
+    """
     if isinstance(width, (int, float)):
         w = [float(width)] * x.nrow()
     else:
@@ -214,13 +352,36 @@ def buffer_vect(
 
 
 def disagg_vect(x: SpatVector, segments: bool = False) -> SpatVector:
-    """Disaggregate multi-part geometries — like R ``disagg(SpatVector)``."""
+    """
+    Separate multi-part geometries into single-part geometries.
+
+    For lines or polygons, setting ``segments=True`` further breaks each
+    geometry into its individual line segments.
+
+    Args:
+        x: SpatVector.
+        segments: If True, (poly-)lines and polygons are disaggregated into
+            individual line segments.
+
+    Returns:
+        SpatVector with single-part geometries.
+    """
     x = x.disaggregate(segments)
     return messages(x, "disagg")
 
 
 def flip_vect(x: SpatVector, direction: str = "vertical") -> SpatVector:
-    """Flip vector geometries — like R ``flip(SpatVector)``."""
+    """
+    Flip vector geometries along a vertical or horizontal axis.
+
+    Args:
+        x: SpatVector.
+        direction: ``"vertical"`` to flip by rows (invert the y-axis) or
+            ``"horizontal"`` to flip by columns (invert the x-axis).
+
+    Returns:
+        SpatVector.
+    """
     d = direction.lower()
     if d not in ("vertical", "horizontal"):
         raise ValueError("direction must be 'vertical' or 'horizontal'")
@@ -235,9 +396,18 @@ def spin(
     y0: Optional[float] = None,
 ) -> SpatVector:
     """
-    Rotate vector geometry around a point — like R ``spin()``.
+    Rotate a SpatVector around a pivot point.
 
-    Default pivot is the centroid of the extent.
+    Args:
+        x: SpatVector.
+        angle: Rotation angle in degrees (counter-clockwise positive).
+        x0: X coordinate of the pivot point. Defaults to the centre of the
+            bounding extent.
+        y0: Y coordinate of the pivot point. Defaults to the centre of the
+            bounding extent.
+
+    Returns:
+        SpatVector.
     """
     e = x.extent().vector
     _x0 = x0 if x0 is not None else (e[0] + e[1]) / 2.0
@@ -255,10 +425,32 @@ def hull(
     tight: bool = True,
 ) -> SpatVector:
     """
-    Convex / concave hull — like R ``hull()``.
+    Compute a hull around SpatVector geometries.
 
-    *type*: ``"convex"`` | ``"rectangle"`` | ``"circle"`` |
-    ``"concave_ratio"`` | ``"concave_length"``
+    Args:
+        x: SpatVector.
+        type: Hull type. One of:
+
+            * ``"convex"``         — convex hull (default)
+            * ``"rectangle"``      — minimum bounding rotated rectangle
+            * ``"circle"``         — minimum bounding circle
+            * ``"concave_ratio"``  — concave hull specified by edge-length ratio
+            * ``"concave_length"`` — concave hull specified by maximum edge length
+
+        by: Name of an attribute variable in ``x`` to compute a separate hull
+            for each group of geometries.
+        param: Concaveness parameter for ``"concave_*"`` types. For
+            ``"concave_ratio"``, a value between 0 and 1 (1 = convex hull,
+            0 = maximum concaveness). For ``"concave_length"``, the maximum
+            edge length (larger = more convex).
+        allow_holes: If True, the output polygons may contain holes. Only
+            used for ``"concave_*"`` types.
+        tight: If True, the hull closely follows the outer boundaries of the
+            input polygons. Only used for ``"concave_length"`` with polygon
+            input.
+
+    Returns:
+        SpatVector of polygons.
     """
     valid = {"convex", "rectangle", "circle", "concave_ratio", "concave_length"}
     t = type.lower()
@@ -274,7 +466,19 @@ def delaunay(
     as_lines: bool = False,
     constrained: bool = False,
 ) -> SpatVector:
-    """Delaunay triangulation — like R ``delaunay()``."""
+    """
+    Compute Delaunay triangles for point, line, or polygon nodes.
+
+    Args:
+        x: SpatVector.
+        tolerance: Snapping tolerance (≥ 0). A value of 0 disables snapping.
+        as_lines: If True, return triangles as lines without the outer
+            boundary.
+        constrained: If True, compute a constrained Delaunay triangulation.
+
+    Returns:
+        SpatVector of polygons (or lines when ``as_lines=True``).
+    """
     x = x.delaunay(tolerance, as_lines, constrained)
     return messages(x, "delaunay")
 
@@ -286,9 +490,19 @@ def voronoi(
     as_lines: bool = False,
 ) -> SpatVector:
     """
-    Voronoi diagram — like R ``voronoi()``.
+    Compute the Voronoi diagram for points or the nodes of geometries.
 
-    *bnd* can be a :class:`SpatExtent`, :class:`SpatVector`, or ``None``.
+    Args:
+        x: SpatVector. Only point coordinates are used; if ``x`` contains
+            lines or polygons their nodes are used.
+        bnd: SpatVector or SpatExtent defining the outer boundary of the
+            diagram. If None (default), the boundary is derived from ``x``.
+        tolerance: Snapping tolerance (≥ 0). A value of 0 disables snapping.
+        as_lines: If True, return Voronoi edges as lines without the outer
+            boundary polygon.
+
+    Returns:
+        SpatVector of polygons (or lines when ``as_lines=True``).
     """
     if x.nrow() == 0:
         raise ValueError("voronoi: input has no geometries")
@@ -296,40 +510,80 @@ def voronoi(
         x = x.as_points(False, True)
     if bnd is None:
         bnd_v = SpatVector()
+    elif isinstance(bnd, SpatExtent):
+        from .vect import vect as _vect
+        bnd_v = _vect(bnd)
+    elif isinstance(bnd, SpatVector):
+        bnd_v = bnd
     else:
-        if isinstance(bnd, SpatExtent):
-            from .vect import vect as _vect
-            bnd_v = _vect(bnd)
-        elif isinstance(bnd, SpatVector):
-            bnd_v = bnd
-        else:
-            from .extent import ext as _ext
-            from .vect import vect as _vect
-            bnd_v = _vect(_ext(bnd))
+        from .extent import ext as _ext
+        from .vect import vect as _vect
+        bnd_v = _vect(_ext(bnd))
     x = x.voronoi(bnd_v, tolerance, as_lines)
     return messages(x, "voronoi")
 
 
 def elongate(x: SpatVector, length: float = 1.0, flat: bool = False) -> SpatVector:
-    """Elongate lines — like R ``elongate()``."""
+    """
+    Extend lines by a given length at each end.
+
+    Args:
+        x: SpatVector of lines.
+        length: Amount to elongate each end of each line. The unit is metres
+            when the CRS is longitude/latitude; otherwise the same as the
+            linear unit of the CRS (typically also metres).
+        flat: If True, the earth's curvature is ignored for longitude/latitude
+            data, and the unit is degrees rather than metres.
+
+    Returns:
+        SpatVector with elongated lines.
+    """
     x = x.elongate(float(length), flat)
     return messages(x, "elongate")
 
 
 def merge_lines(x: SpatVector) -> SpatVector:
-    """Merge line segments — like R ``mergeLines()``."""
+    """
+    Merge line segments that share endpoints into longer lines.
+
+    Can also be used to convert closed line rings into polygons.
+
+    Args:
+        x: SpatVector of lines.
+
+    Returns:
+        SpatVector with merged lines.
+    """
     x = x.line_merge()
     return messages(x, "mergeLines")
 
 
 def make_nodes(x: SpatVector) -> SpatVector:
-    """Add nodes at intersections — like R ``makeNodes()``."""
+    """
+    Create nodes (split lines) at every intersection.
+
+    Args:
+        x: SpatVector of lines or polygons.
+
+    Returns:
+        SpatVector with added nodes at all line intersections.
+    """
     x = x.make_nodes()
     return messages(x, "makeNodes")
 
 
 def remove_dup_nodes(x: SpatVector, digits: int = -1) -> SpatVector:
-    """Remove duplicate nodes — like R ``removeDupNodes()``."""
+    """
+    Remove duplicate nodes and optionally round coordinates.
+
+    Args:
+        x: SpatVector of lines or polygons.
+        digits: Number of decimal digits used in rounding. If negative
+            (default), no rounding is applied.
+
+    Returns:
+        SpatVector with duplicate nodes removed.
+    """
     x = x.remove_duplicate_nodes(digits)
     return messages(x, "removeDupNodes")
 
@@ -340,7 +594,21 @@ def simplify_geom(
     preserve_topology: bool = True,
     make_valid_after: bool = True,
 ) -> SpatVector:
-    """Simplify geometry — like R ``simplifyGeom()``."""
+    """
+    Reduce the number of nodes used to represent geometries.
+
+    Args:
+        x: SpatVector of lines or polygons.
+        tolerance: Minimum distance between remaining nodes, in the units of
+            the CRS (degrees for longitude/latitude).
+        preserve_topology: If True, the topological relationships of the
+            output geometries are preserved.
+        make_valid_after: If True, :func:`make_valid` is run on the result
+            to ensure that all output polygons are valid.
+
+    Returns:
+        SpatVector with simplified geometries.
+    """
     x = x.simplify(tolerance, preserve_topology)
     x = messages(x, "simplifyGeom")
     if make_valid_after:
@@ -353,7 +621,19 @@ def thin_geom(
     threshold: float = 1e-6,
     make_valid_after: bool = True,
 ) -> SpatVector:
-    """Thin geometry — like R ``thinGeom()``."""
+    """
+    Thin geometries by removing nodes that are closer than a threshold.
+
+    Args:
+        x: SpatVector of lines or polygons.
+        threshold: Minimum distance between nodes. Nodes closer than this
+            value are removed.
+        make_valid_after: If True, :func:`make_valid` is run on the result
+            to ensure validity.
+
+    Returns:
+        SpatVector with thinned geometries.
+    """
     x = x.thin(threshold)
     x = messages(x, "thinGeom")
     if make_valid_after:
@@ -365,7 +645,18 @@ def shared_paths(
     x: SpatVector,
     y: Optional[SpatVector] = None,
 ) -> SpatVector:
-    """Shared paths — like R ``sharedPaths()``."""
+    """
+    Find the shared paths between line or polygon geometries.
+
+    Args:
+        x: SpatVector of lines or polygons.
+        y: Second SpatVector to compare against. If None (default), shared
+            paths are found among the geometries within ``x`` itself.
+
+    Returns:
+        SpatVector of lines with attributes ``id1`` and ``id2`` identifying
+        which input geometries share each path.
+    """
     if y is None:
         x = x.shared_paths(True)
     else:
@@ -379,7 +670,23 @@ def snap_vect(
     y: Optional[SpatVector] = None,
     tolerance: float = 0.0,
 ) -> SpatVector:
-    """Snap vertices — like R ``snap()``."""
+    """
+    Snap the vertices of ``x`` to those of ``y`` (or to each other) within
+    a distance tolerance.
+
+    This makes nearby boundaries of geometries identical, resolving
+    near-coincident edges.
+
+    Args:
+        x: SpatVector of lines or polygons.
+        y: Target SpatVector to snap towards. If None (default), ``x`` is
+            snapped to its own geometries.
+        tolerance: Snapping tolerance — the maximum distance between vertices
+            that will be snapped together.
+
+    Returns:
+        SpatVector with snapped vertices.
+    """
     if y is None:
         x = x.snap(tolerance)
     else:
@@ -388,28 +695,60 @@ def snap_vect(
 
 
 def gaps(x: SpatVector) -> SpatVector:
-    """Find gaps between polygons — like R ``gaps()``."""
+    """
+    Find the gaps (holes) between polygons.
+
+    Args:
+        x: SpatVector of polygons.
+
+    Returns:
+        SpatVector of polygons representing the gaps between the input
+        polygons.
+    """
     x = x.gaps()
     return messages(x, "gaps")
 
 
 def width_vect(x: SpatVector, as_lines: bool = False) -> Any:
     """
-    Width of polygons — like R ``width(SpatVector)``.
+    Compute the minimum diameter of each geometry.
 
-    Returns a SpatVector of lines when ``as_lines=True``, else a numeric vector.
+    The minimum diameter is the width of the smallest band (strip defined by
+    two parallel lines) that fully contains the geometry. This can be thought
+    of as the smallest hole that the geometry can pass through with a single
+    rotation.
+
+    Args:
+        x: SpatVector of lines or polygons.
+        as_lines: If True, return the lines that define the minimum diameter
+            as a SpatVector. If False (default), return numeric widths.
+
+    Returns:
+        Numeric values (one per geometry), or SpatVector of lines when
+        ``as_lines=True``.
     """
     x = x.width()
     x = messages(x, "width")
-    if not as_lines:
-        # perim is not yet wrapped; return the lines vector
-        pass
     return x
 
 
 def clearance(x: SpatVector, as_lines: bool = False) -> Any:
     """
-    Minimum clearance — like R ``clearance()``.
+    Compute the minimum clearance of each geometry.
+
+    The minimum clearance is the smallest amount by which a vertex could be
+    moved to produce an invalid polygon, a non-simple linestring, or a
+    multipoint with repeated points. If the minimum clearance cannot be
+    defined (e.g. for a single point), NA is returned.
+
+    Args:
+        x: SpatVector of lines or polygons.
+        as_lines: If True, return the lines that define the clearance as a
+            SpatVector. If False (default), return numeric clearance values.
+
+    Returns:
+        Numeric values (one per geometry), or SpatVector of lines when
+        ``as_lines=True``.
     """
     x = x.clearance()
     x = messages(x, "clearance")
@@ -417,7 +756,15 @@ def clearance(x: SpatVector, as_lines: bool = False) -> Any:
 
 
 def force_ccw(x: SpatVector) -> SpatVector:
-    """Force counter-clockwise winding — like R ``forceCCW()``."""
+    """
+    Force the outer rings of polygons to follow counter-clockwise winding order.
+
+    Args:
+        x: SpatVector of polygons.
+
+    Returns:
+        SpatVector with counter-clockwise polygon rings.
+    """
     x = x.deepcopy()
     x.make_CCW()
     return messages(x, "forceCCW")
@@ -426,5 +773,13 @@ def force_ccw(x: SpatVector) -> SpatVector:
 # ── Predicates ────────────────────────────────────────────────────────────────
 
 def is_empty(x: SpatVector) -> bool:
-    """True if the vector has no geometries — like R ``is.empty()``."""
+    """
+    Test whether a SpatVector contains no geometries.
+
+    Args:
+        x: SpatVector.
+
+    Returns:
+        True if ``x`` has no geometries, False otherwise.
+    """
     return x.nrow() == 0

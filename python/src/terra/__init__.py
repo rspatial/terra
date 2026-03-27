@@ -25,6 +25,8 @@ Quick reference (R → Python):
   boundaries()        pt.boundaries()
   patches()           pt.patches()
   cellSize()          pt.cellSize()
+  plot()              pt.plot()
+  plot_rgb()          pt.plot_rgb()
   ... and more in generics.py / arith.py / geom.py
 
 Arithmetic operators (Arith_generics.R):
@@ -62,6 +64,8 @@ register_reprs()  # attach __repr__ / __str__ to C++ types
 from .extent import ext                                               # noqa: F401
 from .rast import rast                                                # noqa: F401
 from .vect import vect                                                # noqa: F401
+from .plot import plot, plot_rgb                                       # noqa: F401
+
 from .arith import (                                                  # noqa: F401
     # NA / logical tests
     is_na, not_na, is_true, is_false,
@@ -130,6 +134,7 @@ __version__ = "0.1.0"
 __all__ = [
     # High-level API (R-like)
     "rast", "vect", "ext", "crs",
+    "plot", "plot_rgb",
     "messages", "character_crs",
     "show", "repr_raster", "repr_vector", "repr_extent",
     # dimensions

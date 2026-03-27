@@ -1,40 +1,24 @@
 """
-Arithmetic, comparison, logic, and NA operators for terra objects.
+Arithmetic, comparison, logical, and NA/summary operators for terra objects.
 
-Mirrors R ``Arith_generics.R``.
+Operator overloads are registered at import time via :func:`register_operators`.
 
-**SpatExtent operators** (registered via :func:`register_operators`):
-  ``e + n``  expand   ``e - n``  shrink   ``e * n``  scale from centre
-  ``e / n``  shrink   ``e % n``  align    ``e + e2`` union
-  ``e * e2`` intersect  ``e / e2``  returns (dx_ratio, dy_ratio)
-  ``e == e2`` etc.  comparison
+**SpatRaster** supports: ``+  -  *  /  //  %  **`` (cell-wise, with another
+SpatRaster, a scalar, a list of scalars, or a 2-D NumPy array);
+comparison ``== != < <= > >=``; logical ``& |``; and unary ``-`` and ``~``.
 
-**SpatRaster operators**:
-  ``r + r2 / n``  ``r - …``  ``r * …``  ``r / …``  ``r ** …``
-  ``r == …``  ``r != …``  ``r > …``  ``r < …``  ``r >= …``  ``r <= …``
-  ``r & …``  ``r | …``  ``~r``  ``-r``
+**SpatExtent** supports: ``+ - * / %`` with a numeric scalar (expand, shrink,
+scale from centre, and align), ``+`` and ``*`` with another SpatExtent (union
+and intersection), and ``/ SpatExtent`` (returns the width/height ratio);
+comparison ``== != < <= > >=``.
 
-**SpatVector operators**:
-  ``v + v2``  union   ``v * v2``  intersect   ``v - v2``  erase
-
-Standalone functions (also exported from ``terra``):
-  :func:`is_na`, :func:`not_na`, :func:`is_true`, :func:`is_false`,
-  :func:`is_nan`, :func:`is_finite`, :func:`is_infinite`,
-  :func:`any_na`, :func:`all_na`, :func:`no_na`, :func:`count_na`,
-  :func:`which_max`, :func:`which_min`, :func:`which_lyr`,
-  :func:`where_max`, :func:`where_min`,
-  :func:`rast_sum`, :func:`rast_mean`, :func:`rast_min`, :func:`rast_max`,
-  :func:`rast_median`, :func:`rast_modal`,
-  :func:`compare_rast`, :func:`logic_rast`,
-  :func:`as_int_rast`, :func:`as_bool_rast`,
-  :func:`is_bool_rast`, :func:`is_int_rast`, :func:`is_num_rast`,
-  :func:`stdev_rast`,
+**SpatVector** supports: ``+ * -`` between two SpatVectors (union, intersect,
+erase).
 """
 
 from __future__ import annotations
 
-import math
-from typing import Any, List, Optional, Union
+from typing import Any, List, Union
 
 from ._helpers import messages
 from ._terra import SpatExtent, SpatOptions, SpatRaster, SpatVector
@@ -60,14 +44,13 @@ __all__ = [
 ]
 
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+# ── Internal helpers ─────────────────────────────────────────────────────────
 
 def _opt() -> SpatOptions:
     return SpatOptions()
 
 
-def _to_floats(x: Any) -> Union[float, List[float]]:
-    """Accept scalar or sequence, return float or list[float]."""
+def _to_floats(x: Any) -> List[float]:
     if isinstance(x, (int, float)):
         return [float(x)]
     return [float(v) for v in x]
@@ -76,28 +59,23 @@ def _to_floats(x: Any) -> Union[float, List[float]]:
 # ── SpatExtent arithmetic ────────────────────────────────────────────────────
 
 def _ext_add(e: SpatExtent, n: Any) -> SpatExtent:
-    """e + n  →  expand (grow each side by n)."""
     from .extent import ext as _ext
     if isinstance(n, SpatExtent):
-        # union
         ec = e.deepcopy()
         ec.union(n)
         return ec
     v = e.vector
-    ns = [float(x) for x in _to_floats(n)]
+    ns = _to_floats(n)
     while len(ns) < 4:
         ns.extend(ns)
     ns = ns[:4]
-    # R: e2[c(1,3)] <- -e2[c(1,3)]; then e + e2
-    # meaning xmin -= n[0], xmax += n[1], ymin -= n[2], ymax += n[3]
     return _ext(v[0] - ns[0], v[1] + ns[1], v[2] - ns[2], v[3] + ns[3])
 
 
 def _ext_sub(e: SpatExtent, n: Any) -> SpatExtent:
-    """e - n  →  shrink."""
     from .extent import ext as _ext
     v = e.vector
-    ns = [float(x) for x in _to_floats(n)]
+    ns = _to_floats(n)
     while len(ns) < 4:
         ns.extend(ns)
     ns = ns[:4]
@@ -108,7 +86,6 @@ def _ext_sub(e: SpatExtent, n: Any) -> SpatExtent:
 
 
 def _ext_mul(e: SpatExtent, n: Any) -> Any:
-    """e * n  →  scale from centre; e * e2 → intersect."""
     from .extent import ext as _ext
     if isinstance(n, SpatExtent):
         result = e.intersect(n)
@@ -132,7 +109,6 @@ def _ext_mul(e: SpatExtent, n: Any) -> Any:
 
 
 def _ext_div(e: SpatExtent, n: Any) -> Any:
-    """e / n  →  shrink from centre; e / e2 → (dx_ratio, dy_ratio)."""
     from .extent import ext as _ext
     if isinstance(n, SpatExtent):
         v1, v2 = e.vector, n.vector
@@ -155,7 +131,6 @@ def _ext_div(e: SpatExtent, n: Any) -> Any:
 
 
 def _ext_mod(e: SpatExtent, n: Any) -> SpatExtent:
-    """e % n  →  align to resolution n."""
     return e.align(float(n), "")
 
 
@@ -196,7 +171,6 @@ def _rast_binop(a: SpatRaster, b: Any, op: str) -> SpatRaster:
 
 
 def _rast_rbinop(b: Any, a: SpatRaster, op: str) -> SpatRaster:
-    """numeric OP raster  (reversed)."""
     if isinstance(b, bool):
         b = int(b)
     return _rast_arith_numb(a, b, op, True)
@@ -234,65 +208,176 @@ def _vect_binop(a: SpatVector, b: SpatVector, op: str) -> SpatVector:
     return messages(r, op)
 
 
-# ── NA / logical tests ────────────────────────────────────────────────────────
+# ── NA / logical cell-wise tests ─────────────────────────────────────────────
 
 def _wrap(r: SpatRaster, name: str, false_na: bool = False) -> SpatRaster:
     r = r.is_wrapper(name, false_na, _opt())
     return messages(r, name)
 
 
-def is_na(x: SpatRaster, filename: str = "", **kw: Any) -> SpatRaster:
-    """Cell-wise ``is.na()`` — like R ``is.na(SpatRaster)``."""
+def is_na(x: SpatRaster) -> SpatRaster:
+    """
+    Create a boolean raster indicating which cells are NA.
+
+    Computations are cell-wise. The terra package does not distinguish between
+    NA (not available) and NaN (not a number); in most cases this state is
+    represented by NaN.
+
+    Args:
+        x: SpatRaster to test.
+
+    Returns:
+        SpatRaster with TRUE (1) where ``x`` is NA and FALSE (0) elsewhere.
+    """
     return _wrap(x, "isnan")
 
 
 def not_na(x: SpatRaster, false_na: bool = False) -> SpatRaster:
-    """Cell-wise ``not.na()``."""
+    """
+    Create a boolean raster indicating which cells are not NA.
+
+    Shortcut to avoid the two-step ``~is_na(x)``.
+
+    Args:
+        x: SpatRaster to test.
+        false_na: If True, cells that would otherwise be FALSE are set to NA
+            instead.
+
+    Returns:
+        SpatRaster with TRUE where ``x`` is not NA.
+    """
     return _wrap(x, "isnotnan", false_na)
 
 
 def is_true(x: SpatRaster) -> SpatRaster:
-    """Cell-wise ``isTRUE()``."""
+    """
+    Create a boolean raster that is TRUE for cells with a non-zero, non-NA value.
+
+    Equivalent to ``as_bool_rast(x)``.
+
+    Args:
+        x: SpatRaster to test.
+
+    Returns:
+        SpatRaster with boolean values.
+    """
     return _wrap(x, "is_true")
 
 
 def is_false(x: SpatRaster) -> SpatRaster:
-    """Cell-wise ``isFALSE()``."""
+    """
+    Create a boolean raster that is TRUE for cells with the value zero.
+
+    Equivalent to ``~as_bool_rast(x)``.
+
+    Args:
+        x: SpatRaster to test.
+
+    Returns:
+        SpatRaster with boolean values.
+    """
     return _wrap(x, "is_false")
 
 
 def is_nan(x: SpatRaster) -> SpatRaster:
-    """Cell-wise ``is.nan()``."""
+    """
+    Create a boolean raster indicating which cells are NaN/NA.
+
+    The terra package does not distinguish between NA and NaN; this method
+    behaves identically to :func:`is_na`.
+
+    Args:
+        x: SpatRaster to test.
+
+    Returns:
+        SpatRaster with TRUE (1) where ``x`` is NaN/NA.
+    """
     return _wrap(x, "isnan")
 
 
 def is_finite(x: SpatRaster) -> SpatRaster:
-    """Cell-wise ``is.finite()``."""
+    """
+    Create a boolean raster indicating which cells are finite.
+
+    Args:
+        x: SpatRaster to test.
+
+    Returns:
+        SpatRaster with TRUE (1) where ``x`` is finite.
+    """
     return _wrap(x, "isfinite")
 
 
 def is_infinite(x: SpatRaster) -> SpatRaster:
-    """Cell-wise ``is.infinite()``."""
+    """
+    Create a boolean raster indicating which cells are infinite.
+
+    Args:
+        x: SpatRaster to test.
+
+    Returns:
+        SpatRaster with TRUE (1) where ``x`` is infinite.
+    """
     return _wrap(x, "isinfinite")
 
 
 def any_na(x: SpatRaster, false_na: bool = False) -> SpatRaster:
-    """``anyNA()`` — any NA across layers."""
+    """
+    Create a boolean raster that is TRUE where any layer has an NA value.
+
+    Computations are across layers; each output cell is TRUE if at least one
+    layer value is NA.
+
+    Args:
+        x: SpatRaster.
+        false_na: If True, cells that would otherwise be FALSE are set to NA.
+
+    Returns:
+        SpatRaster (single layer).
+    """
     return _wrap(x, "anynan", false_na)
 
 
 def all_na(x: SpatRaster, false_na: bool = False) -> SpatRaster:
-    """``allNA()`` — all values NA across layers."""
+    """
+    Create a boolean raster that is TRUE where all layers have NA values.
+
+    Args:
+        x: SpatRaster.
+        false_na: If True, cells that would otherwise be FALSE are set to NA.
+
+    Returns:
+        SpatRaster (single layer).
+    """
     return _wrap(x, "allnan", false_na)
 
 
 def no_na(x: SpatRaster, false_na: bool = False) -> SpatRaster:
-    """``noNA()`` — no NA values across layers."""
+    """
+    Create a boolean raster that is TRUE where no layer has an NA value.
+
+    Args:
+        x: SpatRaster.
+        false_na: If True, cells that would otherwise be FALSE are set to NA.
+
+    Returns:
+        SpatRaster (single layer).
+    """
     return _wrap(x, "nonan", false_na)
 
 
 def count_na(x: SpatRaster, n: int = 0) -> SpatRaster:
-    """``countNA()`` — count NA values per cell across layers."""
+    """
+    Count the number of NA values across layers for each cell.
+
+    Args:
+        x: SpatRaster.
+        n: If ``n > 0``, cell values are TRUE if at least ``n`` of the layers
+            are NA, rather than returning a count.
+
+    Returns:
+        SpatRaster with the NA count (or a boolean indicator when ``n > 0``).
+    """
     n = int(round(n))
     opt = _opt()
     if n == 1:
@@ -316,29 +401,75 @@ def _summarize(x: SpatRaster, fun: str, na_rm: bool = False,
 
 
 def which_max(x: SpatRaster) -> SpatRaster:
-    """Layer index of maximum value — like R ``which.max()``."""
+    """
+    Return the layer index of the maximum value for each cell.
+
+    Args:
+        x: SpatRaster with one or more layers.
+
+    Returns:
+        Single-layer SpatRaster with the 1-based layer index of the maximum.
+    """
     return _summarize(x, "which.max", True)
 
 
 def which_min(x: SpatRaster) -> SpatRaster:
-    """Layer index of minimum value — like R ``which.min()``."""
+    """
+    Return the layer index of the minimum value for each cell.
+
+    Args:
+        x: SpatRaster with one or more layers.
+
+    Returns:
+        Single-layer SpatRaster with the 1-based layer index of the minimum.
+    """
     return _summarize(x, "which.min", True)
 
 
 def which_lyr(x: SpatRaster) -> SpatRaster:
-    """Which layer has a non-zero value — like R ``which.lyr()``."""
+    """
+    Return the layer index of the first non-zero value for each cell.
+
+    Args:
+        x: SpatRaster with one or more layers.
+
+    Returns:
+        Single-layer SpatRaster.
+    """
     return _summarize(x, "which", True)
 
 
 def where_max(x: SpatRaster, values: bool = True) -> Any:
-    """Cell and value of maximum — like R ``where.max()``."""
+    """
+    Return the cell numbers for cells with the maximum value per layer.
+
+    Args:
+        x: SpatRaster.
+        values: If True, the maximum cell values are also included in the
+            output alongside the cell numbers.
+
+    Returns:
+        A list (one element per layer) of arrays containing cell numbers and,
+        if ``values=True``, the maximum values.
+    """
     out = x.where("max", values, _opt())
     messages(x, "where.max")
     return out
 
 
 def where_min(x: SpatRaster, values: bool = True) -> Any:
-    """Cell and value of minimum — like R ``where.min()``."""
+    """
+    Return the cell numbers for cells with the minimum value per layer.
+
+    Args:
+        x: SpatRaster.
+        values: If True, the minimum cell values are also included in the
+            output alongside the cell numbers.
+
+    Returns:
+        A list (one element per layer) of arrays containing cell numbers and,
+        if ``values=True``, the minimum values.
+    """
     out = x.where("min", values, _opt())
     messages(x, "where.min")
     return out
@@ -346,44 +477,143 @@ def where_min(x: SpatRaster, values: bool = True) -> Any:
 
 def rast_sum(x: SpatRaster, *args: Any, na_rm: bool = False,
              filename: str = "", **kw: Any) -> SpatRaster:
-    """Sum across layers — like R ``sum(SpatRaster)``."""
+    """
+    Compute the sum across layers for each cell.
+
+    Additional SpatRasters or numeric values passed as positional arguments
+    are included in the computation. Each numeric value is treated as a
+    constant-valued layer.
+
+    Args:
+        x: SpatRaster.
+        *args: Additional SpatRasters or numeric values.
+        na_rm: If True, NA values are ignored. If False, NA is returned
+            whenever any layer value is NA.
+        filename: Output filename (empty string for in-memory result).
+        **kw: Additional arguments passed to the file writer.
+
+    Returns:
+        Single-layer SpatRaster.
+    """
     return _summarize(x, "sum", na_rm, *args, filename=filename, **kw)
 
 
 def rast_mean(x: SpatRaster, *args: Any, na_rm: bool = False,
               filename: str = "", **kw: Any) -> SpatRaster:
-    """Mean across layers — like R ``mean(SpatRaster)``."""
+    """
+    Compute the mean across layers for each cell.
+
+    Args:
+        x: SpatRaster.
+        *args: Additional SpatRasters or numeric values included in the mean.
+        na_rm: If True, NA values are ignored.
+        filename: Output filename.
+        **kw: Additional arguments for the file writer.
+
+    Returns:
+        Single-layer SpatRaster.
+    """
     return _summarize(x, "mean", na_rm, *args, filename=filename, **kw)
 
 
 def rast_min(x: SpatRaster, *args: Any, na_rm: bool = False,
              filename: str = "", **kw: Any) -> SpatRaster:
-    """Min across layers — like R ``min(SpatRaster)``."""
+    """
+    Compute the minimum across layers for each cell.
+
+    Args:
+        x: SpatRaster.
+        *args: Additional SpatRasters or numeric values.
+        na_rm: If True, NA values are ignored.
+        filename: Output filename.
+        **kw: Additional arguments for the file writer.
+
+    Returns:
+        Single-layer SpatRaster.
+    """
     return _summarize(x, "min", na_rm, *args, filename=filename, **kw)
 
 
 def rast_max(x: SpatRaster, *args: Any, na_rm: bool = False,
              filename: str = "", **kw: Any) -> SpatRaster:
-    """Max across layers — like R ``max(SpatRaster)``."""
+    """
+    Compute the maximum across layers for each cell.
+
+    Args:
+        x: SpatRaster.
+        *args: Additional SpatRasters or numeric values.
+        na_rm: If True, NA values are ignored.
+        filename: Output filename.
+        **kw: Additional arguments for the file writer.
+
+    Returns:
+        Single-layer SpatRaster.
+    """
     return _summarize(x, "max", na_rm, *args, filename=filename, **kw)
 
 
 def rast_median(x: SpatRaster, *args: Any, na_rm: bool = False,
                 filename: str = "", **kw: Any) -> SpatRaster:
-    """Median across layers — like R ``median(SpatRaster)``."""
+    """
+    Compute the median across layers for each cell.
+
+    Args:
+        x: SpatRaster.
+        *args: Additional numeric values treated as constant layers.
+        na_rm: If True, NA values are ignored. Must be a boolean value.
+        filename: Output filename.
+        **kw: Additional arguments for the file writer.
+
+    Returns:
+        Single-layer SpatRaster.
+    """
     return _summarize(x, "median", na_rm, *args, filename=filename, **kw)
 
 
 def stdev_rast(x: SpatRaster, *args: Any, pop: bool = True,
                na_rm: bool = False, filename: str = "", **kw: Any) -> SpatRaster:
-    """Standard deviation across layers — like R ``stdev(SpatRaster)``."""
+    """
+    Compute the standard deviation across layers for each cell.
+
+    If ``pop=True`` the population standard deviation is computed:
+    ``sqrt(sum((x - mean(x))^2) / n)``. This differs from the sample standard
+    deviation (which uses ``n - 1`` as denominator).
+
+    Args:
+        x: SpatRaster.
+        *args: Additional SpatRasters or numeric values included in the
+            computation.
+        pop: If True (default), compute the population standard deviation.
+            If False, compute the sample standard deviation.
+        na_rm: If True, NA values are ignored.
+        filename: Output filename.
+        **kw: Additional arguments for the file writer.
+
+    Returns:
+        Single-layer SpatRaster.
+    """
     fun = "std" if pop else "sd"
     return _summarize(x, fun, na_rm, *args, filename=filename, **kw)
 
 
 def rast_modal(x: SpatRaster, *args: Any, ties: str = "first",
                na_rm: bool = False, filename: str = "", **kw: Any) -> SpatRaster:
-    """Modal value across layers — like R ``modal(SpatRaster)``."""
+    """
+    Compute the mode (most frequent value) across layers for each cell.
+
+    Args:
+        x: SpatRaster.
+        *args: Additional SpatRasters or numeric values to include.
+        ties: How to handle ties among equally frequent values. One of
+            ``"first"``, ``"last"``, ``"random"``, ``"lowest"``,
+            ``"highest"``, or ``"NA"``.
+        na_rm: If True, NA values are ignored.
+        filename: Output filename.
+        **kw: Additional arguments for the file writer.
+
+    Returns:
+        Single-layer SpatRaster.
+    """
     from .generics import _opt as _g_opt
     opt = _g_opt(filename, **kw)
     extra = [float(a) for a in args]
@@ -391,7 +621,7 @@ def rast_modal(x: SpatRaster, *args: Any, ties: str = "first",
     return messages(r, "modal")
 
 
-# ── Compare / logic functions ─────────────────────────────────────────────────
+# ── Compare / logic ───────────────────────────────────────────────────────────
 
 def compare_rast(
     x: SpatRaster,
@@ -402,9 +632,25 @@ def compare_rast(
     **kw: Any,
 ) -> SpatRaster:
     """
-    Compare raster values — like R ``compare()``.
+    Compare cell values using a relational operator.
 
-    *oper* is one of ``"=="  "!="  ">"  "<"  ">="  "<="``
+    Computations are cell-wise. If multiple SpatRasters are used they must
+    have the same geometry (extent and resolution).
+
+    Unlike the ``==`` operator, this function can return NA instead of FALSE
+    via ``false_na``, and supports writing to a file.
+
+    Args:
+        x: SpatRaster.
+        y: SpatRaster or numeric value to compare against.
+        oper: Comparison operator string: one of ``"=="``, ``"!="``, ``">"``,
+            ``"<"``, ``">="``, ``"<="``.
+        false_na: If True, cells that compare as FALSE become NA instead.
+        filename: Output filename.
+        **kw: Additional arguments for the file writer.
+
+    Returns:
+        SpatRaster with boolean (0/1/NA) values.
     """
     from .generics import _opt as _g_opt
     opt = _g_opt(filename, **kw)
@@ -426,11 +672,32 @@ def logic_rast_fn(
     **kw: Any,
 ) -> SpatRaster:
     """
-    Apply a logical mask operation — like R ``logic()``.
+    Apply a logical mask or NA-detection operation to a raster.
 
-    *oper* is one of:
-    ``"is.na"``  ``"not.na"``  ``"allNA"``  ``"anyNA"``  ``"noNA"``
-    ``"is.infinite"``  ``"is.finite"``  ``"isTRUE"``  ``"isFALSE"``  ``"!"``
+    Unlike the operator forms, this function can return NA instead of FALSE
+    via ``false_na``, and supports writing to a file.
+
+    Args:
+        x: SpatRaster.
+        oper: Operation name. One of:
+
+            * ``"!"``         — logical NOT (equivalent to ``x == 0``)
+            * ``"is.na"``     — TRUE where cell is NA
+            * ``"not.na"``    — TRUE where cell is not NA
+            * ``"allNA"``     — TRUE where all layers are NA
+            * ``"anyNA"``     — TRUE where any layer is NA
+            * ``"noNA"`` / ``"noneNA"`` — TRUE where no layer is NA
+            * ``"is.infinite"``
+            * ``"is.finite"``
+            * ``"isTRUE"``    — TRUE where cell is non-zero and non-NA
+            * ``"isFALSE"``   — TRUE where cell is zero
+
+        false_na: If True, cells that would be FALSE become NA instead.
+        filename: Output filename.
+        **kw: Additional arguments for the file writer.
+
+    Returns:
+        SpatRaster with boolean (0/1/NA) values.
     """
     from .generics import _opt as _g_opt
     opt = _g_opt(filename, **kw)
@@ -452,10 +719,24 @@ def logic_rast_fn(
     return messages(r, "logic")
 
 
-# ── Type coercion / type tests ────────────────────────────────────────────────
+# ── Type coercion / type queries ──────────────────────────────────────────────
 
 def as_int_rast(x: SpatRaster, filename: str = "", **kw: Any) -> SpatRaster:
-    """Truncate to integer values — like R ``as.int(SpatRaster)``."""
+    """
+    Force raster values to integer by truncation.
+
+    In-memory values remain stored as numeric but the layer is flagged as
+    integer and written as an integer data type when saved to file (if the
+    format supports it).
+
+    Args:
+        x: SpatRaster.
+        filename: Output filename.
+        **kw: Additional arguments for the file writer.
+
+    Returns:
+        SpatRaster with integer-typed values.
+    """
     from .generics import _opt as _g_opt
     opt = _g_opt(filename, **kw)
     r = x.math("trunc", opt)
@@ -463,7 +744,20 @@ def as_int_rast(x: SpatRaster, filename: str = "", **kw: Any) -> SpatRaster:
 
 
 def as_bool_rast(x: SpatRaster, filename: str = "", **kw: Any) -> SpatRaster:
-    """Convert to boolean (0/1) — like R ``as.bool(SpatRaster)``."""
+    """
+    Force raster values to boolean (TRUE/FALSE).
+
+    Cells with a non-zero, non-NA value become TRUE (1); zero cells become
+    FALSE (0); NA cells remain NA.
+
+    Args:
+        x: SpatRaster.
+        filename: Output filename.
+        **kw: Additional arguments for the file writer.
+
+    Returns:
+        SpatRaster with boolean-typed values.
+    """
     from .generics import _opt as _g_opt
     opt = _g_opt(filename, **kw)
     r = x.is_wrapper("is_true", False, opt)
@@ -471,19 +765,45 @@ def as_bool_rast(x: SpatRaster, filename: str = "", **kw: Any) -> SpatRaster:
 
 
 def is_bool_rast(x: SpatRaster) -> List[bool]:
-    """True per layer where value type is boolean — like R ``is.bool()``."""
+    """
+    Test whether each layer holds boolean values.
+
+    Args:
+        x: SpatRaster.
+
+    Returns:
+        List of bool, one per layer — True if the layer is boolean-typed.
+    """
     return [v == 3 for v in x.valueType(False)]
 
 
 def is_int_rast(x: SpatRaster) -> List[bool]:
-    """True per layer where values are integers (non-categorical)."""
+    """
+    Test whether each layer holds integer values (non-categorical).
+
+    Args:
+        x: SpatRaster.
+
+    Returns:
+        List of bool, one per layer — True if the layer is integer-typed and
+        not categorical.
+    """
     vt = x.valueType(False)
     cats = x.hasCategories()
     return [(vt[i] == 1) and not cats[i] for i in range(len(vt))]
 
 
 def is_num_rast(x: SpatRaster) -> List[bool]:
-    """True per layer where values are numeric (non-categorical)."""
+    """
+    Test whether each layer holds numeric (floating-point) values.
+
+    Args:
+        x: SpatRaster.
+
+    Returns:
+        List of bool, one per layer — True if the layer is numeric and not
+        categorical.
+    """
     vt = x.valueType(False)
     cats = x.hasCategories()
     return [(vt[i] < 2) and not cats[i] for i in range(len(vt))]
@@ -493,79 +813,70 @@ def is_num_rast(x: SpatRaster) -> List[bool]:
 
 def register_operators() -> None:
     """
-    Monkey-patch Python operators onto the pybind11 C++ types.
+    Attach Python arithmetic, comparison, and logical operators to the C++ types.
 
-    Called once at import time by :mod:`terra.__init__`.
+    Called once at import time by ``terra/__init__.py``. After this call,
+    standard Python operators (``+``, ``-``, ``*``, ``/``, ``==``, ``&``,
+    etc.) work directly on SpatRaster, SpatVector, and SpatExtent instances.
     """
 
     # ── SpatExtent ──
-    SpatExtent.__add__  = _ext_add                             # type: ignore
-    SpatExtent.__radd__ = lambda e, n: _ext_add(e, n)          # type: ignore
-    SpatExtent.__sub__  = _ext_sub                             # type: ignore
-    SpatExtent.__mul__  = _ext_mul                             # type: ignore
-    SpatExtent.__rmul__ = lambda e, n: _ext_mul(e, n)          # type: ignore
-    SpatExtent.__truediv__ = _ext_div                          # type: ignore
-    SpatExtent.__mod__  = _ext_mod                             # type: ignore
-    SpatExtent.__eq__   = lambda e, o: _ext_compare(e, o, "==")  # type: ignore
-    SpatExtent.__ne__   = lambda e, o: _ext_compare(e, o, "!=")  # type: ignore
-    SpatExtent.__lt__   = lambda e, o: _ext_compare(e, o, "<")   # type: ignore
-    SpatExtent.__le__   = lambda e, o: _ext_compare(e, o, "<=")  # type: ignore
-    SpatExtent.__gt__   = lambda e, o: _ext_compare(e, o, ">")   # type: ignore
-    SpatExtent.__ge__   = lambda e, o: _ext_compare(e, o, ">=")  # type: ignore
+    SpatExtent.__add__     = _ext_add                               # type: ignore
+    SpatExtent.__radd__    = lambda e, n: _ext_add(e, n)            # type: ignore
+    SpatExtent.__sub__     = _ext_sub                               # type: ignore
+    SpatExtent.__mul__     = _ext_mul                               # type: ignore
+    SpatExtent.__rmul__    = lambda e, n: _ext_mul(e, n)            # type: ignore
+    SpatExtent.__truediv__ = _ext_div                               # type: ignore
+    SpatExtent.__mod__     = _ext_mod                               # type: ignore
+    SpatExtent.__eq__      = lambda e, o: _ext_compare(e, o, "==") # type: ignore
+    SpatExtent.__ne__      = lambda e, o: _ext_compare(e, o, "!=") # type: ignore
+    SpatExtent.__lt__      = lambda e, o: _ext_compare(e, o, "<")  # type: ignore
+    SpatExtent.__le__      = lambda e, o: _ext_compare(e, o, "<=") # type: ignore
+    SpatExtent.__gt__      = lambda e, o: _ext_compare(e, o, ">")  # type: ignore
+    SpatExtent.__ge__      = lambda e, o: _ext_compare(e, o, ">=") # type: ignore
 
     # ── SpatRaster ──
-    for op in ("+", "-", "*", "/", "**", "//", "%"):
-        _r_op = op
-
+    _sym_map = {
+        "+":  ("__add__",       "__radd__"),
+        "-":  ("__sub__",       "__rsub__"),
+        "*":  ("__mul__",       "__rmul__"),
+        "/":  ("__truediv__",   "__rtruediv__"),
+        "**": ("__pow__",       "__rpow__"),
+        "//": ("__floordiv__",  "__rfloordiv__"),
+        "%":  ("__mod__",       "__rmod__"),
+    }
+    for op, (fa, ra) in _sym_map.items():
         def _make_op(o: str):
-            def _op(a: SpatRaster, b: Any) -> SpatRaster:
+            def _fwd(a: SpatRaster, b: Any) -> SpatRaster:
                 return _rast_binop(a, b, o)
-            def _rop(a: SpatRaster, b: Any) -> SpatRaster:
+            def _rev(a: SpatRaster, b: Any) -> SpatRaster:
                 return _rast_rbinop(b, a, o)
-            return _op, _rop
-
-        fwd, rev = _make_op(_r_op)
-        _sym_map = {
-            "+": ("__add__", "__radd__"),
-            "-": ("__sub__", "__rsub__"),
-            "*": ("__mul__", "__rmul__"),
-            "/": ("__truediv__", "__rtruediv__"),
-            "**": ("__pow__", "__rpow__"),
-            "//": ("__floordiv__", "__rfloordiv__"),
-            "%": ("__mod__", "__rmod__"),
-        }
-        fa, ra = _sym_map[_r_op]
+            return _fwd, _rev
+        fwd, rev = _make_op(op)
         setattr(SpatRaster, fa, fwd)
         setattr(SpatRaster, ra, rev)
 
-    # Unary -r  →  0 - r
-    SpatRaster.__neg__ = lambda r: _rast_rbinop(0.0, r, "-")  # type: ignore
-    # ~r  →  r == 0
-    SpatRaster.__invert__ = lambda r: _rast_binop(r, 0.0, "==")  # type: ignore
+    SpatRaster.__neg__    = lambda r: _rast_rbinop(0.0, r, "-")    # type: ignore
+    SpatRaster.__invert__ = lambda r: _rast_binop(r, 0.0, "==")    # type: ignore
 
-    # Comparison
-    for op in ("==", "!=", "<", "<=", ">", ">="):
-        _c_op = op
-
+    _cmp_map = {
+        "==": "__eq__", "!=": "__ne__",
+        "<":  "__lt__", "<=": "__le__",
+        ">":  "__gt__", ">=": "__ge__",
+    }
+    for op, dunder in _cmp_map.items():
         def _make_cmp(o: str):
             def _cmp(a: SpatRaster, b: Any) -> SpatRaster:
                 return _rast_binop(a, b, o)
             return _cmp
+        setattr(SpatRaster, dunder, _make_cmp(op))
 
-        _sym_cmp = {
-            "==": "__eq__", "!=": "__ne__",
-            "<":  "__lt__", "<=": "__le__",
-            ">":  "__gt__", ">=": "__ge__",
-        }
-        setattr(SpatRaster, _sym_cmp[_c_op], _make_cmp(_c_op))
-
-    # Logic
-    SpatRaster.__and__ = lambda a, b: _rast_logic_op(a, b, "&")   # type: ignore
-    SpatRaster.__or__  = lambda a, b: _rast_logic_op(a, b, "|")   # type: ignore
+    SpatRaster.__and__  = lambda a, b: _rast_logic_op(a, b, "&")   # type: ignore
+    SpatRaster.__or__   = lambda a, b: _rast_logic_op(a, b, "|")   # type: ignore
     SpatRaster.__rand__ = lambda a, b: _rast_logic_op(a, bool(b), "&")  # type: ignore
     SpatRaster.__ror__  = lambda a, b: _rast_logic_op(a, bool(b), "|")  # type: ignore
 
     # ── SpatVector ──
-    SpatVector.__add__ = lambda a, b: _vect_binop(a, b, "+")  # type: ignore
-    SpatVector.__mul__ = lambda a, b: _vect_binop(a, b, "*")  # type: ignore
-    SpatVector.__sub__ = lambda a, b: _vect_binop(a, b, "-")  # type: ignore
+    SpatVector.__add__ = lambda a, b: _vect_binop(a, b, "+")       # type: ignore
+    SpatVector.__mul__ = lambda a, b: _vect_binop(a, b, "*")       # type: ignore
+    SpatVector.__sub__ = lambda a, b: _vect_binop(a, b, "-")       # type: ignore
