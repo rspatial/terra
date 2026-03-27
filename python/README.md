@@ -1,6 +1,6 @@
-# pyterra
+# terra (Python)
 
-Python bindings for the **spat** spatial C++ library, exposed with the same core types as the R package "terra".
+Python bindings for the **terra** geospatial C++ library, with the same core types and API as the R package "terra".
 
 ## Build (Linux / WSL)
 
@@ -20,7 +20,7 @@ You need CMake, a C++17 compiler, and development packages for GDAL, GEOS, and P
 
 
 ```python
-import pyterra as pt
+import terra as pt
 
 r = pt.rast()                          # default global grid, like R
 r = pt.rast("dem.tif")
@@ -35,7 +35,7 @@ pt.messages(r, "myfn")                 # raise on error / warn
 The raw C++ interface
 
 ```python
-import pyterra as pt
+import terra as pt
 
 r = pt.SpatRaster(["elevation.tif"], [], [], False, [], [], [], False, False, [])
 v = pt.SpatVector()

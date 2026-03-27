@@ -4,9 +4,9 @@ build-backend = "scikit_build_core.build"
 
 
 [project]
-name = "pyterra"
-version = "0.1.0"
-description = "Python bindings for the terra spatial C++ library"
+name = "terra"
+version = "1.9.11"
+description = "Python version of terra"
 readme = "README.md"
 license = { text = "GPL-3.0-or-later" }
 requires-python = ">=3.9"
@@ -25,8 +25,8 @@ Homepage = "https://github.com/rspatial/terra"
 # Let scikit-build-core find our CMakeLists.txt in the same directory.
 cmake.build-type = "Release"
 
-# The installed package is everything under src/pyterra/
-wheel.packages = ["src/pyterra"]
+# The installed package is everything under src/terra/
+wheel.packages = ["src/terra"]
 
 # Make `pip install -e .` work: build the extension in-place.
 build-dir = "build/{wheel_tag}"

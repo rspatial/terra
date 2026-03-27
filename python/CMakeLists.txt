@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(pyterra CXX)
+project(terra CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -67,12 +67,12 @@ endif()
 
 
 # ── Build the extension ──────────────────────────────────────────────────────
-pybind11_add_module(_pyterra
-    src/pyterra_module.cpp
+pybind11_add_module(_terra
+    src/terra_module.cpp
     ${TERRA_SOURCES}
 )
 
-target_include_directories(_pyterra PRIVATE
+target_include_directories(_terra PRIVATE
     ${TERRA_SRC_DIR}
     ${GDAL_INCLUDE_DIRS}
 )
@@ -80,27 +80,27 @@ target_include_directories(_pyterra PRIVATE
 # Absorb GEOS / PROJ include directories whether they came from cmake config
 # packages (targets) or from pkg-config (variables).
 if (TARGET GEOS::geos_c)
-    target_link_libraries(_pyterra PRIVATE GEOS::geos_c)
+    target_link_libraries(_terra PRIVATE GEOS::geos_c)
 elseif (DEFINED GEOS_INCLUDE_DIRS)
-    target_include_directories(_pyterra PRIVATE ${GEOS_INCLUDE_DIRS})
-    target_link_directories(_pyterra PRIVATE ${GEOS_LIBRARY_DIRS})
-    target_link_libraries(_pyterra PRIVATE ${GEOS_LIBRARIES})
+    target_include_directories(_terra PRIVATE ${GEOS_INCLUDE_DIRS})
+    target_link_directories(_terra PRIVATE ${GEOS_LIBRARY_DIRS})
+    target_link_libraries(_terra PRIVATE ${GEOS_LIBRARIES})
 endif()
 
 if (TARGET PROJ::proj)
-    target_link_libraries(_pyterra PRIVATE PROJ::proj)
+    target_link_libraries(_terra PRIVATE PROJ::proj)
 elseif (DEFINED PROJ_INCLUDE_DIRS)
-    target_include_directories(_pyterra PRIVATE ${PROJ_INCLUDE_DIRS})
-    target_link_directories(_pyterra PRIVATE ${PROJ_LIBRARY_DIRS})
-    target_link_libraries(_pyterra PRIVATE ${PROJ_LIBRARIES})
+    target_include_directories(_terra PRIVATE ${PROJ_INCLUDE_DIRS})
+    target_link_directories(_terra PRIVATE ${PROJ_LIBRARY_DIRS})
+    target_link_libraries(_terra PRIVATE ${PROJ_LIBRARIES})
 endif()
 
-target_link_libraries(_pyterra PRIVATE
+target_link_libraries(_terra PRIVATE
     GDAL::GDAL
     ${TBB_LINK_LIBS}
 )
 
-target_compile_definitions(_pyterra PRIVATE
+target_compile_definitions(_terra PRIVATE
     standalone          # suppresses useRcpp; keeps useGDAL active
     ${PROJ_CXXFLAGS_LIST}
     ${TBB_COMPILE_DEFS}
@@ -108,6 +108,6 @@ target_compile_definitions(_pyterra PRIVATE
 
 # Place the built .so / .pyd directly inside the Python package directory so
 # an editable install (pip install -e .) works without further configuration.
-set_target_properties(_pyterra PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/pyterra"
+set_target_properties(_terra PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/terra"
 )
