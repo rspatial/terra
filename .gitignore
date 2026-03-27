@@ -25,6 +25,7 @@ af_acc*
 revdep/
 #python/
 python/.venv
+python/build
 __pycache__/
 cmdapp/terra
 windows/
