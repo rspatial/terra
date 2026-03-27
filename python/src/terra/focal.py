@@ -8,6 +8,8 @@ import numpy as np
 from ._terra import SpatRaster, SpatOptions
 from ._helpers import messages
 
+_cpp_focal = SpatRaster.focal  # captured before monkey-patching
+
 
 def _opt() -> SpatOptions:
     return SpatOptions()
@@ -164,7 +166,7 @@ def focal(
     txt = fun if isinstance(fun, str) else getattr(fun, "__name__", "")
     if txt in _FOCAL_FUNS:
         opt = SpatOptions(filename, overwrite)
-        xc = x.focal(wmat, wvals, fillvalue, na_rm, txt, expand, na_policy, opt)
+        xc = _cpp_focal(x, wmat, wvals, fillvalue, na_rm, txt, expand, na_policy, opt)
         return messages(xc, "focal")
 
     if not callable(fun):

@@ -8,6 +8,8 @@ from typing import List, Optional, Union
 from ._terra import SpatRaster, SpatVector, SpatOptions
 from ._helpers import messages
 
+_cpp_vect_write = SpatVector.write  # captured before monkey-patching
+
 
 def _opt() -> SpatOptions:
     return SpatOptions()
@@ -248,6 +250,6 @@ def write_vector(
             xc.names = truncated
             x = xc
 
-    ok = x.write(filename, layer, filetype, insert, overwrite, options)
+    ok = _cpp_vect_write(x, filename, layer, filetype, insert, overwrite, options)
     messages(x, "writeVector")
     return bool(ok)

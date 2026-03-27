@@ -7,6 +7,8 @@ from typing import Callable, Optional, Union
 from ._terra import SpatRaster, SpatOptions
 from ._helpers import messages
 
+_cpp_zonal = SpatRaster.zonal  # captured before any monkey-patching
+
 
 def _opt() -> SpatOptions:
     return SpatOptions()
@@ -59,7 +61,7 @@ def zonal(
         raise ValueError(f"Function {txt!r} is not supported; use one of {sorted(_ZONAL_FUNS)}")
 
     opt = SpatOptions(filename, overwrite)
-    xc = x.zonal(z, txt, na_rm, opt)
+    xc = _cpp_zonal(x, z, txt, na_rm, opt)
     result = messages(xc, "zonal")
 
     if as_raster:

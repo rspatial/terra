@@ -14,6 +14,11 @@ from typing import Any, List, Optional, Union
 from ._helpers import messages
 from ._terra import SpatExtent, SpatOptions, SpatVector
 
+# Captured before monkey-patching in methods.py
+_cpp_vect_union      = SpatVector.union
+_cpp_vect_intersect  = SpatVector.intersect
+_cpp_vect_erase      = SpatVector.erase
+
 __all__ = [
     # validity
     "is_valid", "make_valid",
@@ -125,7 +130,7 @@ def union_vect(
         if x.type() != "polygons":
             x = x.append(y)
         else:
-            x = x.union(y)
+            x = _cpp_vect_union(x, y)
     return messages(x, "union")
 
 
@@ -150,7 +155,7 @@ def intersect_vect(x: SpatVector, y: Union[SpatVector, SpatExtent]) -> SpatVecto
     """
     if isinstance(y, SpatExtent):
         return crop_vect(x, y)
-    x = x.intersect(y, True)
+    x = _cpp_vect_intersect(x, y, True)
     return messages(x, "intersect")
 
 
@@ -186,7 +191,7 @@ def erase(
     elif isinstance(y, SpatExtent):
         from .vect import vect as _vect
         yv = _vect(y)
-        x = x.erase(yv)
+        x = _cpp_vect_erase(x, yv)
     else:
         x = x.erase_agg(y)
     return messages(x, "erase")

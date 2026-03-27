@@ -13,6 +13,24 @@ from typing import Any, List, Optional, Sequence, Union
 from ._helpers import messages
 from ._terra import SpatExtent, SpatOptions, SpatRaster, SpatVector
 
+# Capture raw C++ method references at import time, before register_methods()
+# patches them.  Every Python-level wrapper that delegates to a C++ method
+# with the same name must use these saved references to avoid infinite
+# recursion when the method-style API (r.crop(e), etc.) is in use.
+_cpp = {
+    "rast.crop":       SpatRaster.crop,
+    "rast.classify":   SpatRaster.classify,
+    "rast.boundaries": SpatRaster.boundaries,
+    "rast.patches":    SpatRaster.patches,
+    "rast.terrain":    SpatRaster.terrain,
+    "rast.sieve":      SpatRaster.sieve,
+    "rast.stretch":    SpatRaster.stretch,
+    "rast.trim":       SpatRaster.trim,
+    "rast.flip":       SpatRaster.flip,
+    "rast.rotate":     SpatRaster.rotate,
+    "rast.shift":      SpatRaster.shift,
+}
+
 __all__ = [
     # dimensions / metadata
     "nrow", "ncol", "nlyr", "ncell", "res", "origin",
@@ -137,14 +155,14 @@ def flip(x: SpatRaster, direction: str = "vertical", filename: str = "", **kw: A
     if d not in ("vertical", "horizontal"):
         raise ValueError("direction must be 'vertical' or 'horizontal'")
     opt = _opt(filename, **kw)
-    x = x.flip(d == "vertical", opt)
+    x = _cpp["rast.flip"](x, d == "vertical", opt)
     return messages(x, "flip")
 
 
 def rotate(x: SpatRaster, filename: str = "", **kw: Any) -> SpatRaster:
     """Rotate a raster 180° (i.e. shift longitude 0/360) — like R ``rotate()``."""
     opt = _opt(filename, **kw)
-    x = x.rotate(True, opt)
+    x = _cpp["rast.rotate"](x, True, opt)
     return messages(x, "rotate")
 
 
@@ -162,7 +180,7 @@ def shift(
     """
     if isinstance(x, SpatRaster):
         opt = _opt(filename, **kw)
-        x = x.shift(dx, dy, opt)
+        x = _cpp["rast.shift"](x, dx, dy, opt)
         return messages(x, "shift")
     if isinstance(x, SpatExtent):
         v = x.vector
@@ -232,7 +250,7 @@ def trim(
 
     opt = _opt(filename, **kw)
     na = float("nan") if math.isnan(value) else float(value)
-    x = x.trim(na, int(padding), opt)
+    x = _cpp["rast.trim"](x, na, int(padding), opt)
     return messages(x, "trim")
 
 
@@ -348,7 +366,7 @@ def classify(
     use_others = others is not None
     ov = float(others) if use_others else 0.0
     flat = [float(v) for row in rcl for v in row]
-    x = x.classify(flat, ncols, right_i, il, use_others, ov, False, brackets, False, opt)
+    x = _cpp["rast.classify"](x, flat, ncols, right_i, il, use_others, ov, False, brackets, False, opt)
     return messages(x, "classify")
 
 
@@ -490,7 +508,7 @@ def boundaries(
     """Edge detection — like R ``boundaries()``."""
     opt = _opt(filename, **kw)
     btype = "inner" if inner else "outer"
-    x = x.boundaries(classes, ignore_na, btype, directions, falseval, opt)
+    x = _cpp["rast.boundaries"](x, classes, ignore_na, btype, directions, falseval, opt)
     return messages(x, "boundaries")
 
 
@@ -503,7 +521,7 @@ def patches(
 ) -> SpatRaster:
     """Label connected regions — like R ``patches()``."""
     opt = _opt(filename, **kw)
-    x = x.patches(directions, zero_as_na, opt)
+    x = _cpp["rast.patches"](x, directions, zero_as_na, opt)
     return messages(x, "patches")
 
 
@@ -543,7 +561,7 @@ def terrain(
         raise ValueError("unit must be 'degrees' or 'radians'")
     opt = _opt(filename, **kw)
     vlist = [v] if isinstance(v, str) else list(v)
-    x = x.terrain(vlist, neighbors, unit == "degrees", 0, opt)
+    x = _cpp["rast.terrain"](x, vlist, neighbors, unit == "degrees", 0, opt)
     return messages(x, "terrain")
 
 
@@ -556,7 +574,7 @@ def sieve(
 ) -> SpatRaster:
     """Remove small patches — like R ``sieve()``."""
     opt = _opt(filename, **kw)
-    x = x.sieve(int(threshold), directions, opt)
+    x = _cpp["rast.sieve"](x, int(threshold), directions, opt)
     return messages(x, "sieve")
 
 
@@ -588,7 +606,7 @@ def stretch(
 ) -> SpatRaster:
     """Stretch values — like R ``stretch()``."""
     opt = _opt(filename, **kw)
-    x = x.stretch(minv, maxv, minq, maxq, smin, smax, bylayer, maxcell, opt)
+    x = _cpp["rast.stretch"](x, minv, maxv, minq, maxq, smin, smax, bylayer, maxcell, opt)
     return messages(x, "stretch")
 
 
@@ -679,7 +697,7 @@ def crop(
         e = y
     else:
         raise TypeError("crop: y must be SpatExtent, SpatRaster, or SpatVector")
-    x = x.crop(e, snap, extend, opt)
+    x = _cpp["rast.crop"](x, e, snap, extend, opt)
     return messages(x, "crop")
 
 

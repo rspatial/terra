@@ -8,6 +8,9 @@ import numpy as np
 from ._terra import SpatRaster, SpatVector, SpatOptions
 from ._helpers import messages
 
+_cpp_rast_aggregate = SpatRaster.aggregate  # captured before monkey-patching
+_cpp_vect_aggregate = SpatVector.aggregate  # captured before monkey-patching
+
 
 def _opt() -> SpatOptions:
     return SpatOptions()
@@ -65,7 +68,7 @@ def aggregate(
     txt = fun if isinstance(fun, str) else getattr(fun, "__name__", "")
     if txt in _AGG_FUNS:
         opt = SpatOptions(filename, overwrite)
-        xc = x.aggregate([fact_r, fact_c, fact_l], txt, na_rm, opt)
+        xc = _cpp_rast_aggregate(x, [fact_r, fact_c, fact_l], txt, na_rm, opt)
         return messages(xc, "aggregate")
 
     if not callable(fun):
@@ -168,5 +171,5 @@ def aggregate_vect(
     elif isinstance(by, str):
         by = [by]
     opt = _opt()
-    xc = x.aggregate(by, dissolve, opt)
+    xc = _cpp_vect_aggregate(x, by, dissolve, opt)
     return messages(xc, "aggregate_vect")
