@@ -780,6 +780,7 @@ PYBIND11_MODULE(_terra, m) {
         .def("crop",         &SpatRaster::crop)
         .def("crop_mask",    &SpatRaster::cropmask)
         .def("cum",          &SpatRaster::cum)
+        .def("aggregate",    &SpatRaster::aggregate)
         .def("disaggregate", &SpatRaster::disaggregate)
         .def("expand",       &SpatRaster::extend)
         .def("extractCell",  &SpatRaster::extractCell)
