@@ -1443,7 +1443,7 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 }
 
 
-void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, const size_t &ncols, const size_t &nl, size_t data_offset = 0) {
+void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, const size_t &ncols, const size_t &nl, size_t data_offset) {
 	for (size_t i=0; i<nl; i++) {
 		size_t off = data_offset + i*ncell;
 		size_t nr = nrows/2;
