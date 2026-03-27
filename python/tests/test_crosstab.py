@@ -1,22 +1,15 @@
 """
 Tests ported from inst/tinytest/test_crosstab.R
-
-Skipped if crosstab is not yet implemented.
 """
 import numpy as np
 import pytest
 import terra as pt
 from terra.rast import rast
 from terra.values import set_values
-
-try:
-    from terra.generics import crosstab
-    _HAS_CROSSTAB = True
-except ImportError:
-    _HAS_CROSSTAB = False
+from terra.generics import crosstab
+from terra.names import set_names_inplace
 
 
-@pytest.mark.skipif(not _HAS_CROSSTAB, reason="crosstab not yet implemented")
 class TestCrosstab:
     def setup_method(self):
         np.random.seed(2)
@@ -40,6 +33,7 @@ class TestCrosstab:
     def test_crosstab_long_ncol(self):
         ct_long = crosstab(self.rs, long=True)
         import pandas as pd
+
         assert isinstance(ct_long, pd.DataFrame)
         assert ct_long.shape[1] == 3
 

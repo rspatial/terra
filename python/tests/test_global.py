@@ -3,23 +3,16 @@ Tests ported from inst/tinytest/test_global.R
 
 Uses the bundled elev.tif example raster.
 """
-import os
 import numpy as np
 import pytest
 import terra as pt
 from terra.rast import rast
 
+from path_utils import skip_if_missing_inst_ex
+
 
 def find_elev():
-    candidates = [
-        os.path.join(os.path.dirname(__file__), "..", "..", "inst", "ex", "elev.tif"),
-        r"C:\github\rspatial\terra\inst\ex\elev.tif",
-    ]
-    for p in candidates:
-        p = os.path.normpath(p)
-        if os.path.exists(p):
-            return p
-    pytest.skip("elev.tif not found")
+    return skip_if_missing_inst_ex("elev.tif")
 
 
 def _global(r, fun, na_rm=True):

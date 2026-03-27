@@ -18,7 +18,7 @@ def coords():
 
 
 import pytest
-@pytest.mark.skip(reason="fails")
+
 def test_distance_planar_sequential():
     """Sequential planar distances: 0, sqrt(2), sqrt(2), sqrt(2)."""
     d = distance_xy(coords(), lonlat=False, sequential=True, method="geo")
@@ -26,7 +26,6 @@ def test_distance_planar_sequential():
     np.testing.assert_array_almost_equal(d, expected)
 
 
-@pytest.mark.skip(reason="fails")
 def test_distance_planar_pairwise():
     """Pairwise planar distances (upper triangle, row-major)."""
     d = distance_xy(coords(), lonlat=False, sequential=False, method="geo")
@@ -46,7 +45,6 @@ def test_distance_lonlat_sequential():
     np.testing.assert_array_almost_equal(d, expected, decimal=0)
 
 
-@pytest.mark.skip(reason="fails")
 def test_distance_lonlat_pairwise():
     """Pairwise geodesic distances (upper triangle)."""
     d = distance_xy(coords(), lonlat=True, sequential=False, method="geo")

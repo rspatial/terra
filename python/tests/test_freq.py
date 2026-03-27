@@ -1,23 +1,14 @@
 """
 Tests ported from inst/tinytest/test_freq.R
-
-Skipped when freq() is not yet in the Python API.
 """
 from collections import Counter
+
 import numpy as np
-import pytest
-import terra as pt
 from terra.rast import rast
 from terra.values import set_values
-
-try:
-    from terra.generics import freq
-    _HAS_FREQ = True
-except ImportError:
-    _HAS_FREQ = False
+from terra.generics import freq
 
 
-@pytest.mark.skipif(not _HAS_FREQ, reason="freq() not yet implemented in Python terra")
 class TestFreq:
     def setup_method(self):
         np.random.seed(2)
@@ -28,6 +19,7 @@ class TestFreq:
 
     def test_freq_returns_dataframe(self):
         import pandas as pd
+
         f = freq(self.r)
         assert isinstance(f, pd.DataFrame)
 

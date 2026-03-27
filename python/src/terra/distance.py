@@ -290,7 +290,9 @@ def distance_vect_self(
         return d_arr
     n = x.nrow()
     need = n * (n - 1) // 2
-    mat = np.full((n, n), float("nan"))
+    # Zeros so mat + mat.T is symmetric; NaNs in the lower triangle would make
+    # upper + lower.T nan everywhere (nan + x -> nan).
+    mat = np.zeros((n, n), dtype=float)
     idx = np.triu_indices(n, k=1)
     if d_arr.size != need:
         raise ValueError(

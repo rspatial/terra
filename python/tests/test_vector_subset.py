@@ -3,24 +3,17 @@ Tests ported from inst/tinytest/test_vector-subset.R
 
 Requires the bundled lux.shp example file.
 """
-import os
-import pytest
 import numpy as np
+import pytest
 import terra as pt
 from terra.vect import vect
+
+from path_utils import skip_if_missing_inst_ex
 
 
 def find_lux():
     """Return path to lux.shp or skip if not found."""
-    candidates = [
-        os.path.join(os.path.dirname(__file__), "..", "..", "inst", "ex", "lux.shp"),
-        r"C:\github\rspatial\terra\inst\ex\lux.shp",
-    ]
-    for p in candidates:
-        p = os.path.normpath(p)
-        if os.path.exists(p):
-            return p
-    pytest.skip("lux.shp not found")
+    return skip_if_missing_inst_ex("lux.shp")
 
 
 def test_lux_dimensions():

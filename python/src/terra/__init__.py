@@ -164,6 +164,10 @@ from .app import app, lapp, tapp, xapp, rapp, sapp                   # noqa: F40
 from .focal import focal, focal3D, focal_mat                          # noqa: F401
 from .aggregate import aggregate, disagg as aggregate_disagg, aggregate_vect  # noqa: F401
 from .zonal import zonal                                              # noqa: F401
+from .crosstab import crosstab                                        # noqa: F401
+from .freq import freq                                                # noqa: F401
+from .flow_accumulation import flow_accumulation                     # noqa: F401
+from .pitfinder import pitfinder                                     # noqa: F401
 from .extract import extract, extract_xy                              # noqa: F401
 from .math import (                                                   # noqa: F401
     math, log, sqrt, abs_ as rast_abs, ceiling, floor,
@@ -244,6 +248,14 @@ __all__ = [
     "aggregate", "aggregate_disagg", "aggregate_vect",
     # zonal
     "zonal",
+    # crosstab
+    "crosstab",
+    # freq
+    "freq",
+    # flow accumulation
+    "flow_accumulation",
+    # pitfinder
+    "pitfinder",
     # extract
     "extract", "extract_xy",
     # math

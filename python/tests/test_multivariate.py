@@ -3,11 +3,12 @@ Tests ported from inst/tinytest/test_multivariate.R
 
 Covers k_means (skipped if not available) and layerCor.
 """
-import os
 import numpy as np
 import pytest
 import terra as pt
 from terra.rast import rast
+
+from path_utils import skip_if_missing_inst_ex
 
 try:
     from terra.stats import layer_cor
@@ -17,15 +18,7 @@ except ImportError:
 
 
 def find_logo():
-    candidates = [
-        os.path.join(os.path.dirname(__file__), "..", "..", "inst", "ex", "logo.tif"),
-        r"C:\github\rspatial\terra\inst\ex\logo.tif",
-    ]
-    for p in candidates:
-        p = os.path.normpath(p)
-        if os.path.exists(p):
-            return p
-    pytest.skip("logo.tif not found")
+    return skip_if_missing_inst_ex("logo.tif")
 
 
 @pytest.mark.skipif(not _HAS_LAYERCOR, reason="layer_cor not implemented")

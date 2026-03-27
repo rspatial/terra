@@ -13,6 +13,11 @@ from typing import Any, List, Optional, Sequence, Union
 from ._helpers import messages
 from ._terra import SpatExtent, SpatOptions, SpatRaster, SpatVector
 
+from .crosstab import crosstab
+from .freq import freq
+from .flow_accumulation import flow_accumulation
+from .pitfinder import pitfinder
+
 # Capture raw C++ method references at import time, before register_methods()
 # patches them.  Every Python-level wrapper that delegates to a C++ method
 # with the same name must use these saved references to avoid infinite
@@ -49,7 +54,8 @@ __all__ = [
     # raster analysis
     "boundaries", "patches", "cellSize", "surfArea", "terrain",
     "sieve", "rectify", "stretch", "scale_linear", "scale_raster",
-    "quantile_raster", "atan_2",
+    "quantile_raster", "atan_2", "crosstab", "freq", "flow_accumulation",
+    "pitfinder",
     # raster processing
     "crop", "mask", "project_raster", "resample", "intersect_rast",
     # vector

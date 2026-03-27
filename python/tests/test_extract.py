@@ -1,7 +1,6 @@
 """
 Tests ported from inst/tinytest/test_extract.R (selected cases)
 """
-import os
 import math
 import numpy as np
 import pytest
@@ -12,17 +11,11 @@ from terra.values import set_values
 from terra.extract import extract
 from terra.cells import cell_from_xy, cells
 
+from path_utils import skip_if_missing_inst_ex
+
 
 def find_file(name):
-    candidates = [
-        os.path.join(os.path.dirname(__file__), "..", "..", "inst", "ex", name),
-        os.path.join(r"C:\github\rspatial\terra\inst\ex", name),
-    ]
-    for p in candidates:
-        p = os.path.normpath(p)
-        if os.path.exists(p):
-            return p
-    pytest.skip(f"{name} not found")
+    return skip_if_missing_inst_ex(name)
 
 
 # ---------------------------------------------------------------------------

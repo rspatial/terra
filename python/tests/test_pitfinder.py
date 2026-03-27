@@ -2,19 +2,13 @@
 Tests ported from inst/tinytest/test_pitfinder.R
 """
 import numpy as np
-import pytest
-import terra as pt
+
 from terra.rast import rast
-from terra.generics import terrain
-
-try:
-    from terra.generics import pitfinder
-    _HAS_PITFINDER = True
-except ImportError:
-    _HAS_PITFINDER = False
+from terra.extent import ext
+from terra.values import set_values
+from terra.generics import pitfinder, terrain
 
 
-@pytest.mark.skipif(not _HAS_PITFINDER, reason="pitfinder not yet implemented")
 def test_pitfinder():
     """Pit finder detects expected pit cells."""
     dx = dy = 1
@@ -25,11 +19,14 @@ def test_pitfinder():
             y = (c - 4) * dy
             elev[r, c] = 10 + 5 * (x**2 + y**2)
 
-    # double the grid (cbind and rbind)
     elev = np.hstack([elev, elev])
     elev = np.vstack([elev, elev])
 
-    r_elev = rast(elev)
+    # R: rast(matrix) → extent c(0, ncol, 0, nrow)
+    nrow, ncol = elev.shape
+    r_elev = rast(nrows=nrow, ncols=ncol, extent=ext(0, ncol, 0, nrow))
+    r_elev = set_values(r_elev, elev.astype(float).ravel(order="C"))
+
     flowdir = terrain(r_elev, "flowdir")
     pits = pitfinder(flowdir)
 

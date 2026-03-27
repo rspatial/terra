@@ -57,6 +57,8 @@ def register_methods() -> None:
     from .aggregate import aggregate
     from .focal import focal, focal3D, focal_mat
     from .zonal import zonal
+    from .flow_accumulation import flow_accumulation
+    from .pitfinder import pitfinder
     from .extract import extract
     from .app import app, lapp, tapp, sapp
     from .math import (
@@ -130,6 +132,10 @@ def register_methods() -> None:
         "boundaries":     lambda self, **kw: boundaries(self, **kw),
         "patches":        lambda self, **kw: patches(self, **kw),
         "terrain":        lambda self, v="slope", **kw: terrain(self, v, **kw),
+        "flow_accumulation": lambda self, weight=None, **kw: flow_accumulation(
+            self, weight=weight, **kw
+        ),
+        "pitfinder":    lambda self, **kw: pitfinder(self, **kw),
         "focal":          lambda self, w, fun="sum", **kw: focal(self, w, fun, **kw),
         "focal3D":        lambda self, w, fun="sum", **kw: focal3D(self, w, fun, **kw),
         "zonal":          lambda self, z, fun="mean", **kw: zonal(self, z, fun, **kw),
