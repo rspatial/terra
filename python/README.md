@@ -159,6 +159,8 @@ import matplotlib.pyplot as plt
 # Create / read a raster
 f = "https://github.com/rspatial/terra/raw/refs/heads/master/inst/ex/elev.tif"
 r = terra.rast(f)
+e = terra.ext(6, 6.4, 49.5, 50)
+x = r.crop(e)
 
 # Inspect
 print(r)
