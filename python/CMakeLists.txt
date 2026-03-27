@@ -52,9 +52,8 @@ if (PROJ_FOUND)
         set(_proj_ver "0.0.0")
     endif()
     if (_proj_ver VERSION_GREATER_EQUAL "6.0")
-        set(PROJ_CXXFLAGS "-DHAVE_PROJ_H")
+        set(PROJ_CXXFLAGS "HAVE_PROJ_H")   # no -D prefix; CMake adds it
     endif()
-    separate_arguments(PROJ_CXXFLAGS_LIST UNIX_COMMAND "${PROJ_CXXFLAGS}")
 endif()
 
 
@@ -102,7 +101,7 @@ target_link_libraries(_terra PRIVATE
 
 target_compile_definitions(_terra PRIVATE
     standalone          # suppresses useRcpp; keeps useGDAL active
-    ${PROJ_CXXFLAGS_LIST}
+    ${PROJ_CXXFLAGS}
     ${TBB_COMPILE_DEFS}
 )
 

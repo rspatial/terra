@@ -129,6 +129,78 @@ from .generics import (                                               # noqa: F4
     scoff, scoff_set,
 )
 
+# ---- New translation modules -----------------------------------------------
+from .values import (                                                 # noqa: F401
+    has_values, in_memory, sources,
+    has_min_max, min_max, set_min_max,
+    values, set_values, focal_values,
+    vect_values, set_vect_values,
+    compare_geom,
+)
+from .levels import (                                                 # noqa: F401
+    is_factor, as_factor,
+    levels, set_levels,
+    cats, set_cats, categories,
+    active_cat, set_active_cat,
+    add_cats, drop_levels, concats, catalyze,
+    has_colors, coltab, set_coltab,
+)
+from .names import (                                                  # noqa: F401
+    names_rast, set_names_rast, set_names_inplace,
+    names_vect, set_names_vect,
+    varnames, set_varnames,
+    longnames, set_longnames,
+)
+from .app import app, lapp, tapp, xapp, rapp, sapp                   # noqa: F401
+from .focal import focal, focal3D, focal_mat                          # noqa: F401
+from .aggregate import aggregate, disagg as aggregate_disagg, aggregate_vect  # noqa: F401
+from .zonal import zonal                                              # noqa: F401
+from .extract import extract, extract_xy                              # noqa: F401
+from .math import (                                                   # noqa: F401
+    math, log, sqrt, abs_ as rast_abs, ceiling, floor,
+    round_, cumsum, cumprod, cummax, cummin,
+    floor_ext, ceiling_ext, round_ext,
+    ifel,
+)
+from .cells import (                                                  # noqa: F401
+    cells,
+    row_from_y, col_from_x,
+    cell_from_xy, cell_from_row_col,
+    xy_from_cell, row_col_from_cell,
+)
+from .init import init                                                # noqa: F401
+from .distance import (                                               # noqa: F401
+    buffer_rast, distance_rast,
+    cost_dist, grid_dist,
+    distance_vect_self, distance_vect, distance_points,
+)
+from .rasterize import rasterize, rasterize_geom                     # noqa: F401
+from .time import has_time, time_info, get_time, set_time            # noqa: F401
+from .write import (                                                  # noqa: F401
+    write_raster, write_start, write_values, write_stop, blocks,
+    write_vector,
+)
+from .sample import spat_sample, grid_sample                         # noqa: F401
+from .stats import (                                                  # noqa: F401
+    row_sums, col_sums, row_means, col_means,
+    match_rast, is_in,
+    autocor, layer_cor,
+)
+from .merge import merge as merge_rast, mosaic, merge_vect           # noqa: F401
+from .relate import is_related, relate, relate_self                  # noqa: F401
+from .subset import subset_rast, subset_vect                         # noqa: F401
+from .window import has_window, set_window, remove_window, extend    # noqa: F401
+from .coerce import (                                                 # noqa: F401
+    as_polygons, as_lines, as_points,
+    as_array, as_matrix, as_data_frame,
+)
+from .spatvec import (                                                # noqa: F401
+    geomtype, is_lines, is_polygons, is_points,
+    geom, crds,
+    expanse, perim, nseg,
+    fill_holes, vect_as_df, geom_as_wkt,
+)
+
 __version__ = "0.1.0"
 
 __all__ = [
@@ -137,6 +209,78 @@ __all__ = [
     "plot", "plot_rgb",
     "messages", "character_crs",
     "show", "repr_raster", "repr_vector", "repr_extent",
+    # values
+    "has_values", "in_memory", "sources",
+    "has_min_max", "min_max", "set_min_max",
+    "values", "set_values", "focal_values",
+    "vect_values", "set_vect_values", "compare_geom",
+    # levels / colors
+    "is_factor", "as_factor",
+    "levels", "set_levels",
+    "cats", "set_cats", "categories",
+    "active_cat", "set_active_cat",
+    "add_cats", "drop_levels", "concats", "catalyze",
+    "has_colors", "coltab", "set_coltab",
+    # names
+    "names_rast", "set_names_rast", "set_names_inplace",
+    "names_vect", "set_names_vect",
+    "varnames", "set_varnames",
+    "longnames", "set_longnames",
+    # app
+    "app", "lapp", "tapp", "xapp", "rapp", "sapp",
+    # focal
+    "focal", "focal3D", "focal_mat",
+    # aggregate
+    "aggregate", "aggregate_disagg", "aggregate_vect",
+    # zonal
+    "zonal",
+    # extract
+    "extract", "extract_xy",
+    # math
+    "math", "log", "sqrt", "rast_abs", "ceiling", "floor",
+    "round_", "cumsum", "cumprod", "cummax", "cummin",
+    "floor_ext", "ceiling_ext", "round_ext",
+    "ifel",
+    # cells
+    "cells",
+    "row_from_y", "col_from_x",
+    "cell_from_xy", "cell_from_row_col",
+    "xy_from_cell", "row_col_from_cell",
+    # init
+    "init",
+    # distance
+    "buffer_rast", "distance_rast",
+    "cost_dist", "grid_dist",
+    "distance_vect_self", "distance_vect", "distance_points",
+    # rasterize
+    "rasterize", "rasterize_geom",
+    # time
+    "has_time", "time_info", "get_time", "set_time",
+    # write
+    "write_raster", "write_start", "write_values", "write_stop", "blocks",
+    "write_vector",
+    # sample
+    "spat_sample", "grid_sample",
+    # stats
+    "row_sums", "col_sums", "row_means", "col_means",
+    "match_rast", "is_in",
+    "autocor", "layer_cor",
+    # merge
+    "merge_rast", "mosaic", "merge_vect",
+    # relate
+    "is_related", "relate", "relate_self",
+    # subset
+    "subset_rast", "subset_vect",
+    # window
+    "has_window", "set_window", "remove_window", "extend",
+    # coerce
+    "as_polygons", "as_lines", "as_points",
+    "as_array", "as_matrix", "as_data_frame",
+    # spatvec
+    "geomtype", "is_lines", "is_polygons", "is_points",
+    "geom", "crds",
+    "expanse", "perim", "nseg",
+    "fill_holes", "vect_as_df", "geom_as_wkt",
     # dimensions
     "nrow", "ncol", "nlyr", "ncell", "res", "origin",
     # helpers

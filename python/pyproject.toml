@@ -47,3 +47,8 @@ before-all = "yum install -y gdal-devel geos-devel proj-devel || apt-get install
 
 [tool.cibuildwheel.macos]
 before-all = "brew install gdal geos proj"
+
+[tool.cibuildwheel.windows]
+# vcpkg is pre-installed on GitHub Actions runners.
+before-all = "vcpkg install gdal geos proj --triplet x64-windows"
+environment = { CMAKE_TOOLCHAIN_FILE = "C:/vcpkg/scripts/buildsystems/vcpkg.cmake", VCPKG_TARGET_TRIPLET = "x64-windows" }
