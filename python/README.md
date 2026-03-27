@@ -18,10 +18,26 @@ You need CMake, a C++17 compiler, and development packages for GDAL, GEOS, and P
 
 ## Usage
 
+
 ```python
 import pyterra as pt
 
-r = pt.SpatRaster(["dem.tif"], [], [], False, [], [], [], False, False, [])
+r = pt.rast()                          # default global grid, like R
+r = pt.rast("dem.tif")
+e = pt.ext(-180, 180, -90, 90)
+v = pt.vect(e, crs="EPSG:4326")
+pt.crs(r)                              # WKT
+pt.crs(r, "+proj=longlat")             # set CRS, returns r
+pt.messages(r, "myfn")                 # raise on error / warn
+```
+
+
+The raw C++ interface
+
+```python
+import pyterra as pt
+
+r = pt.SpatRaster(["elevation.tif"], [], [], False, [], [], [], False, False, [])
 v = pt.SpatVector()
 v.read("countries.gpkg")
 ext = pt.SpatExtent(-10, 40, 35, 70)

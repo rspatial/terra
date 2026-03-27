@@ -657,6 +657,7 @@ PYBIND11_MODULE(_pyterra, m) {
         .def("size",   &SpatRaster::size)
         .def("ncell",  &SpatRaster::ncell)
         .def("res",    &SpatRaster::resolution)
+        .def("set_resolution", &SpatRaster::setResolution)
 
         .def("getBlockSize",  &getBlockSizeR)
         .def("getBlockSizeWrite", &getBlockSizeWrite)
@@ -729,6 +730,13 @@ PYBIND11_MODULE(_pyterra, m) {
 
         .def("patches",         &SpatRaster::clumps)
         .def("patches2",        &SpatRaster::patches)
+        .def("collapse_sources",&SpatRaster::collapse_sources)
+        .def("fill_range",      &SpatRaster::fill_range)
+        .def("wmean_rast",
+            (SpatRaster (SpatRaster::*)(SpatRaster, bool, SpatOptions&))(&SpatRaster::weighted_mean))
+        .def("wmean_vect",
+            (SpatRaster (SpatRaster::*)(std::vector<double>, bool, SpatOptions&))(&SpatRaster::weighted_mean))
+        .def_property_readonly("origin",    &SpatRaster::origin)
         .def("boundaries",      &SpatRaster::edges)
         .def("buffer",          &SpatRaster::buffer)
         .def("gridDistance",    &SpatRaster::gridDistance)
