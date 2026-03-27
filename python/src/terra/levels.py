@@ -6,6 +6,7 @@ from typing import Optional, Union, List, Dict, Any
 
 from ._terra import SpatRaster, SpatOptions
 from ._helpers import _getSpatDF, _makeSpatDF, messages
+from .names import set_names_inplace
 
 
 def _opt() -> SpatOptions:
@@ -341,7 +342,7 @@ def catalyze(x: SpatRaster) -> SpatRaster:
     xc = x.lookup_catalyze(from_vals, to_vals_list, opt)
     result = messages(xc, "catalyze")
     if nms:
-        result.names = nms
+        set_names_inplace(result, [str(n) for n in nms])
     return result
 
 

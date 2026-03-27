@@ -365,7 +365,10 @@ def classify(
     il = bool(include_lowest)
     use_others = others is not None
     ov = float(others) if use_others else 0.0
-    flat = [float(v) for row in rcl for v in row]
+    # SpatRaster::reclassify(flat, nc, …) unpacks *flat* in column-major order
+    # (R / Fortran), not row-major C order.
+    nrows = len(rcl)
+    flat = [float(rcl[r][c]) for c in range(ncols) for r in range(nrows)]
     x = _cpp["rast.classify"](x, flat, ncols, right_i, il, use_others, ov, False, brackets, False, opt)
     return messages(x, "classify")
 

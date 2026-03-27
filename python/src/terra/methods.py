@@ -97,6 +97,11 @@ def register_methods() -> None:
     from .plot import plot, plot_rgb
 
     _rast_methods = {
+        # extent (R-style; backed by SpatExtent.vector = xmin, xmax, ymin, ymax)
+        "xmin":           lambda self: float(self.extent.vector[0]),
+        "xmax":           lambda self: float(self.extent.vector[1]),
+        "ymin":           lambda self: float(self.extent.vector[2]),
+        "ymax":           lambda self: float(self.extent.vector[3]),
         # geometry / metadata
         "crop":           lambda self, y, **kw: crop(self, y, **kw),
         "mask":           lambda self, m, **kw: mask_rast(self, m, **kw),

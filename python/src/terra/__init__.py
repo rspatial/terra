@@ -181,7 +181,7 @@ from .init import init                                                # noqa: F4
 from .distance import (                                               # noqa: F401
     buffer_rast, distance_rast,
     cost_dist, grid_dist,
-    distance_vect_self, distance_vect, distance_points,
+    distance_xy, distance_vect_self, distance_vect, distance_points,
 )
 from .rasterize import rasterize, rasterize_geom                     # noqa: F401
 from .time import has_time, time_info, get_time, set_time            # noqa: F401
@@ -261,7 +261,7 @@ __all__ = [
     # distance
     "buffer_rast", "distance_rast",
     "cost_dist", "grid_dist",
-    "distance_vect_self", "distance_vect", "distance_points",
+    "distance_xy", "distance_vect_self", "distance_vect", "distance_points",
     # rasterize
     "rasterize", "rasterize_geom",
     # time

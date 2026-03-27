@@ -155,7 +155,7 @@ def grid_sample(
         if crds.ndim == 1:
             crds = crds.reshape(1, -1)
 
-    cell = r.cellFromXY(crds[:, 0].tolist(), crds[:, 1].tolist())
+    cell = r.cellFromXY(crds[:, 0].tolist(), crds[:, 1].tolist(), float("nan"))
     cell = np.array(cell, dtype=float) + 1
     valid = ~np.isnan(cell)
     cell = cell.astype(int)

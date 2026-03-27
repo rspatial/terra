@@ -17,6 +17,24 @@ def _looks_like_wkt(s: str) -> bool:
     return t in ("POINT", "MULTI", "LINES", "POLYG", "EMPTY") or s.strip().startswith("{")
 
 
+def _vect_xy_matrix(x: Any, crs: str) -> SpatVector:
+    """
+    Build points from an (n, 2) matrix — same as R ``vect(matrix)`` (``R/vect.R``):
+    ``SpatVector()`` → set CRS → ``setPointsXY(x[,1], x[,2])``.
+    Not WKT strings (that path can differ internally from R).
+    """
+    import numpy as np
+
+    arr = np.asarray(x, dtype=float)
+    if arr.ndim != 2 or arr.shape[1] != 2:
+        raise ValueError("vect: coordinate matrix must have shape (n, 2) with columns [x, y]")
+    v = SpatVector()
+    if crs:
+        v.set_crs(character_crs(crs, "vect"))
+    v.setPointsXY(arr[:, 0].tolist(), arr[:, 1].tolist())
+    return messages(v, "vect")
+
+
 def _normalize_path(path: str) -> str:
     p = path.strip()
     if p.startswith("http") and (p.endswith(".shp") or p.endswith(".gpkg")):
@@ -46,6 +64,7 @@ def vect(
     * ``vect(str)`` — WKT literal or path to a vector file (via GDAL).
     * ``vect(SpatExtent)`` — rectangle as polygon (use **crs**).
     * ``list[str]`` — multiple WKT geometries.
+    * A coordinate matrix *(n, 2)* — same as R ``vect(matrix)`` via ``setPointsXY``.
 
     Extra GDAL arguments (``layer``, ``query``, …) match the C++ ``read`` call
     where applicable; see R ``terra::vect`` for full options (not all are wired yet).
@@ -87,6 +106,26 @@ def vect(
             v.set_crs(character_crs(crs, "vect"))
         return messages(v, "vect")
 
+    try:
+        import numpy as np
+    except ImportError:
+        np = None  # type: ignore
+    if np is not None and isinstance(x, np.ndarray):
+        if x.ndim == 2 and x.shape[1] == 2:
+            return _vect_xy_matrix(x, crs)
+        raise TypeError(
+            "vect: ndarray must have shape (n, 2) with columns [x, y]"
+        )
+
+    if (
+        isinstance(x, (list, tuple))
+        and x
+        and isinstance(x[0], (list, tuple))
+        and len(x[0]) == 2
+    ):
+        return _vect_xy_matrix(x, crs)
+
     raise TypeError(
-        "vect: use None, str (path or WKT), list[str] (WKT), or SpatExtent"
+        "vect: use None, str (path or WKT), list[str] (WKT), SpatExtent, "
+        "or a coordinate matrix (n, 2)"
     )

@@ -143,13 +143,15 @@ def cell_from_xy(
 
     Returns
     -------
-    numpy.ndarray of cell numbers (1-based).
+    numpy.ndarray, dtype float64
+        1-based cell numbers.  Invalid coordinates (outside extent or NaN
+        inputs) are ``nan``, matching R's ``NA`` for cell index.
     """
     xy = np.asarray(xy, dtype=float)
     if xy.ndim == 1:
         xy = xy.reshape(1, -1)
-    raw = x.cellFromXY(xy[:, 0].tolist(), xy[:, 1].tolist())
-    return np.array(raw, dtype=int) + 1
+    raw = x.cellFromXY(xy[:, 0].tolist(), xy[:, 1].tolist(), float("nan"))
+    return np.array(raw, dtype=float) + 1.0
 
 
 def cell_from_row_col(

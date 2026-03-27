@@ -185,6 +185,60 @@ def grid_dist(
 # vector distance
 # ---------------------------------------------------------------------------
 
+def _test_for_lonlat(xy: np.ndarray) -> bool:
+    """R ``test.for.lonlat`` — ``R/distance.R`` (used when *lonlat* is omitted)."""
+    xr = (float(np.nanmin(xy[:, 0])), float(np.nanmax(xy[:, 0])))
+    yr = (float(np.nanmin(xy[:, 1])), float(np.nanmax(xy[:, 1])))
+    return bool(
+        xr[0] >= -180.0
+        and xr[1] <= 180.0
+        and yr[0] > -90.0
+        and yr[1] < 90.0
+    )
+
+
+def distance_xy(
+    x: np.ndarray,
+    *,
+    lonlat: Optional[bool] = None,
+    sequential: bool = False,
+    pairs: bool = False,
+    symmetrical: bool = True,
+    unit: str = "m",
+    method: str = "geo",
+    use_nodes: bool = False,
+) -> np.ndarray:
+    """
+    Mirror R ``distance(matrix, y=missing, ...)`` — ``R/distance.R`` lines 221–231.
+
+    Builds CRS with ``+proj=utm +zone=1 +datum=WGS84`` when ``lonlat`` is
+    false, else ``+proj=longlat +datum=WGS84``, then ``vect(matrix, crs=…)``
+    and ``distance()`` on the vector (same defaults as R: ``method="geo"``).
+    """
+    from .vect import vect
+
+    m = np.asarray(x, dtype=float)
+    if m.ndim != 2 or m.shape[1] != 2:
+        raise ValueError("distance_xy: x must be an array of shape (n, 2)")
+    if lonlat is None:
+        lonlat = _test_for_lonlat(m)
+    crs = (
+        "+proj=longlat +datum=WGS84"
+        if lonlat
+        else "+proj=utm +zone=1 +datum=WGS84"
+    )
+    v = vect(m, crs=crs)
+    return distance_vect_self(
+        v,
+        sequential=sequential,
+        pairs=pairs,
+        symmetrical=symmetrical,
+        unit=unit,
+        method=method,
+        use_nodes=use_nodes,
+    )
+
+
 def distance_vect_self(
     x: SpatVector,
     sequential: bool = False,
@@ -196,6 +250,14 @@ def distance_vect_self(
 ) -> np.ndarray:
     """
     Compute pairwise distances between all features of *x*.
+
+    The underlying C++ implementation requires a defined CRS on *x*; otherwise
+    it returns an empty result.
+
+    **Method names** match R ``distance(SpatVector, …)``: only ``"geo"``,
+    ``"haversine"``, and ``"cosine"`` are valid (R ``match.arg``).  There is
+    no ``"euclidean"`` label: for a **projected** CRS, planar distances use the
+    same C++ path regardless of which of the three names you pass.
 
     Parameters
     ----------
@@ -216,14 +278,24 @@ def distance_vect_self(
     numpy.ndarray  (condensed distance vector, or matrix, or pair matrix).
     """
     method = method.lower()
+    if method not in ("cosine", "haversine", "geo"):
+        raise ValueError(
+            "distance_vect_self: method must be 'geo', 'haversine', or 'cosine' "
+            f"(same as R distance(SpatVector)); got {method!r}"
+        )
     opt = _opt()
     d = x.distance_self(sequential, unit, method, use_nodes, opt)
     d_arr = np.array(d, dtype=float)
     if sequential:
         return d_arr
     n = x.nrow()
+    need = n * (n - 1) // 2
     mat = np.full((n, n), float("nan"))
     idx = np.triu_indices(n, k=1)
+    if d_arr.size != need:
+        raise ValueError(
+            f"distance_self: expected {need} pairwise distances, got {d_arr.size}"
+        )
     mat[idx] = d_arr
     mat = mat + mat.T
     np.fill_diagonal(mat, 0.0)

@@ -4,12 +4,45 @@ extract.py — extract raster values at points, lines, or polygons.
 from __future__ import annotations
 from typing import Callable, List, Optional, Union
 
-from ._terra import SpatRaster, SpatVector, SpatOptions
+from ._terra import SpatRaster, SpatVector
 from ._helpers import messages, spatoptions
 
 
-def _opt() -> SpatOptions:
-    return SpatOptions()
+def _flat_extract_to_dataframe(
+    flat: List[float],
+    *,
+    geo: str,
+    nl: int,
+    nc: int,
+    cn: List[str],
+    cells: bool,
+) -> "pd.DataFrame":
+    """Reshape ``extractVectorFlat`` output like R ``extract.R`` (matrix + colnames)."""
+    import numpy as np
+    import pandas as pd
+
+    e = np.asarray(flat, dtype=float)
+    if e.size == 0:
+        return pd.DataFrame(columns=cn)
+
+    if geo == "points":
+        if nc == nl:
+            nrow = e.size // nc
+            mat = e.reshape((nc, nrow), order="F").T
+        else:
+            nrow = e.size // nc
+            mat = e.reshape((nrow, nc), order="C")
+        ids = np.arange(1, nrow + 1, dtype=float)
+        arr = np.column_stack([ids, mat])
+    else:
+        ncol = nc + 1
+        nrow = e.size // ncol
+        arr = e.reshape((nrow, ncol), order="C")
+
+    df = pd.DataFrame(arr, columns=list(cn))
+    if cells and "cell" in df.columns:
+        df["cell"] = df["cell"] + 1.0
+    return df
 
 
 def extract(
@@ -85,7 +118,6 @@ def extract(
         import pandas as pd
     except ImportError:
         raise ImportError("pandas is required for extract()")
-    import numpy as np
     from ._helpers import _getSpatDF
 
     # Coerce y to SpatVector if needed
@@ -95,9 +127,13 @@ def extract(
 
     opt = spatoptions(filename, overwrite)
 
+    if layer is not None:
+        raise NotImplementedError("extract(..., layer=...) is not implemented in the Python API yet")
+
     if fun is not None:
         fun_str = fun if isinstance(fun, str) else getattr(fun, "__name__", "mean")
         res_sv = x.extractByValues(y, fun_str, na_rm, opt)
+        messages(x, "extract")
         df = _getSpatDF(res_sv)
         if df is None:
             return pd.DataFrame()
@@ -108,10 +144,28 @@ def extract(
     if touches is None:
         touches = True
 
-    res = x.extractVector(y, method, "", "IDfeat", xy, cells, weights, exact, touches, small, opt)
-    df = _getSpatDF(res)
-    if df is None:
-        return pd.DataFrame()
+    geo = y.type()
+    flat = x.extractVectorFlat(y, [""], False, touches, small, method, cells, xy, weights, exact, opt)
+    messages(x, "extract")
+
+    nl = x.nlyr()
+    nc = nl
+    names = list(x.names)
+    cn: List[str] = ["ID"] + names
+    if cells:
+        cn.append("cell")
+        nc += 1
+    if xy:
+        cn.extend(["x", "y"])
+        nc += 2
+    if weights:
+        cn.append("weight")
+        nc += 1
+    elif exact:
+        cn.append("fraction")
+        nc += 1
+
+    df = _flat_extract_to_dataframe(flat, geo=geo, nl=nl, nc=nc, cn=cn, cells=cells)
 
     if not ID and "ID" in df.columns:
         df = df.drop(columns=["ID"])
