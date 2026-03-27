@@ -131,7 +131,7 @@ def lapp(
 
     if usenames:
         layer_kwargs = {nms[i]: v[:, i] for i in range(nl)}
-        result = fun(**layer_kwargs, *args)
+        result = fun(*args, **layer_kwargs)
     else:
         layer_args = [v[:, i] for i in range(nl)]
         result = fun(*layer_args, *args)
