@@ -7,8 +7,8 @@ types and API as the R package "terra".
 
 ## Requirements
 
-| Tool | Minimum version |
-|------|----------------|
+| Dependency | Minimum version |
+|---|---|
 | Python | 3.9 |
 | CMake | 3.18 |
 | C++ compiler | C++17 (MSVC 2019+, GCC 9+, Clang 10+) |
@@ -17,9 +17,9 @@ types and API as the R package "terra".
 | PROJ | 6.0 |
 | pybind11 | 2.12 |
 | scikit-build-core | 0.9 |
-
-Optional: **numpy**, **pandas** (for array / data-frame interop),
-**matplotlib** (for `terra.plot()`).
+| numpy | 1.20 |
+| pandas | 1.3 |
+| matplotlib | 3.4 |
 
 ---
 
@@ -45,10 +45,10 @@ route on Windows.
    conda install -c conda-forge gdal geos proj pybind11 cmake ninja
    ```
 
-3. **Install scikit-build-core** (the Python build backend):
+3. **Install Python build and runtime dependencies**:
 
    ```powershell
-   pip install scikit-build-core
+   pip install scikit-build-core numpy pandas matplotlib
    ```
 
 4. **Build and install** the package from the `python/` directory of the
@@ -93,10 +93,10 @@ manager and is pre-installed on GitHub Actions Windows runners.
    C:\vcpkg\vcpkg install gdal geos proj --triplet x64-windows
    ```
 
-3. Install Python build dependencies:
+3. Install Python build and runtime dependencies:
 
    ```powershell
-   pip install scikit-build-core pybind11
+   pip install scikit-build-core pybind11 numpy pandas matplotlib
    ```
 
 4. Build the package, pointing CMake to the vcpkg toolchain:
@@ -131,7 +131,7 @@ sudo dnf install -y gdal-devel geos-devel proj-devel cmake
 cd python
 python3 -m venv .venv
 source .venv/bin/activate
-pip install scikit-build-core pybind11
+pip install scikit-build-core pybind11 numpy pandas matplotlib
 pip install -e .
 ```
 
@@ -145,7 +145,7 @@ brew install gdal geos proj cmake
 cd python
 python3 -m venv .venv
 source .venv/bin/activate
-pip install scikit-build-core pybind11
+pip install scikit-build-core pybind11 numpy pandas matplotlib
 pip install -e .
 ```
 
@@ -154,21 +154,22 @@ pip install -e .
 ## Usage
 
 ```python
-import terra as pt
+import terra as terra 
 import matplotlib.pyplot as plt
 
 # Create / read a raster
-r = pt.rast("elevation.tif")
+f = "https://github.com/rspatial/terra/raw/refs/heads/master/inst/ex/elev.tif"
+r = terra.rast(f)
 
 # Inspect
 print(r)                         # shows class, size, resolution, CRS, …
 
-# Plot (requires matplotlib)
-pt.plot(r)
+# Plot
+terra.plot(r)
 plt.show()
 
 # Work with extents
-e = pt.ext(-180, 180, -90, 90)
+e = terra.ext(-180, 180, -90, 90)
 print(e)
 
 # Arithmetic operators (after import operators are registered automatically)
@@ -177,19 +178,9 @@ r3 = r + r2
 mask = r > 500
 
 # Vector
-v = pt.vect("countries.gpkg")
-v_crop = pt.crop_vect(v, e)
-```
-
----
-
-## Optional dependencies
-
-Install extras for array/data-frame interoperability and plotting:
-
-```bash
-pip install "terra[geo]"          # numpy + pandas
-pip install matplotlib            # for pt.plot() and pt.plot_rgb()
+ff = "https://github.com/rspatial/terra/raw/refs/heads/master/inst/ex/lux.shp"
+v = terra.vect(ff)
+v
 ```
 
 ---
