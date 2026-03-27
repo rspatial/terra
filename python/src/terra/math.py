@@ -6,7 +6,7 @@ import math as _math
 from typing import Optional, Union
 
 from ._terra import SpatRaster, SpatExtent, SpatVector, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 
 def _opt() -> SpatOptions:
@@ -64,7 +64,7 @@ def math(
     -------
     SpatRaster
     """
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     if fun in _CUM_OPS:
         xc = x.cum(fun[3:], False, opt)
     elif fun in _TRIG_OPS:
@@ -99,7 +99,7 @@ def log(
     -------
     SpatRaster
     """
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     if base == _math.e:
         xc = x.math("log", opt)
     elif base == 2:

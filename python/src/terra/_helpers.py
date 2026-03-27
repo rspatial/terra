@@ -5,7 +5,18 @@ from __future__ import annotations
 import warnings
 from typing import Any, Union
 
-__all__ = ["messages", "character_crs", "_getSpatDF", "_makeSpatDF"]
+__all__ = ["messages", "character_crs", "_getSpatDF", "_makeSpatDF", "spatoptions"]
+
+
+def spatoptions(filename: str = "", overwrite: bool = False) -> "Any":
+    """Create a SpatOptions and apply filename / overwrite settings."""
+    from ._terra import SpatOptions
+    opt = SpatOptions()
+    if filename:
+        opt.filenames = [filename]
+    if overwrite:
+        opt.overwrite = True
+    return opt
 
 
 def messages(obj: Any, caller: str = "") -> Any:

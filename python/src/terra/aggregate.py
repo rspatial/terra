@@ -5,15 +5,11 @@ from __future__ import annotations
 from typing import Callable, List, Optional, Union
 import numpy as np
 
-from ._terra import SpatRaster, SpatVector, SpatOptions
-from ._helpers import messages
+from ._terra import SpatRaster, SpatVector
+from ._helpers import messages, spatoptions
 
 _cpp_rast_aggregate = SpatRaster.aggregate  # captured before monkey-patching
 _cpp_vect_aggregate = SpatVector.aggregate  # captured before monkey-patching
-
-
-def _opt() -> SpatOptions:
-    return SpatOptions()
 
 
 # ---------------------------------------------------------------------------
@@ -67,7 +63,7 @@ def aggregate(
 
     txt = fun if isinstance(fun, str) else getattr(fun, "__name__", "")
     if txt in _AGG_FUNS:
-        opt = SpatOptions(filename, overwrite)
+        opt = spatoptions(filename, overwrite)
         xc = _cpp_rast_aggregate(x, [fact_r, fact_c, fact_l], txt, na_rm, opt)
         return messages(xc, "aggregate")
 
@@ -102,7 +98,7 @@ def aggregate(
     out = rast(x)
     out.setRows(new_nr)
     out.setCols(new_nc)
-    opt = _opt()
+    opt = spatoptions()
     out.setValues(result.ravel(order='C').tolist(), opt)
     return out
 
@@ -137,7 +133,7 @@ def disagg(
         fact = [int(fact[0]), int(fact[0])]
     else:
         fact = [int(fact[0]), int(fact[1])]
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     xc = x.disaggregate(fact, method, opt)
     return messages(xc, "disagg")
 
@@ -170,6 +166,6 @@ def aggregate_vect(
         by = []
     elif isinstance(by, str):
         by = [by]
-    opt = _opt()
+    opt = spatoptions()
     xc = _cpp_vect_aggregate(x, by, dissolve, opt)
     return messages(xc, "aggregate_vect")

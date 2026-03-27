@@ -6,7 +6,7 @@ from typing import List, Optional, Union
 import numpy as np
 
 from ._terra import SpatRaster, SpatExtent, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 
 def _opt() -> SpatOptions:
@@ -135,6 +135,6 @@ def extend(
         e_vec[3] += y_cells[3] * res_y
         y = make_ext(e_vec)
 
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     xc = x.expand(y, snap, fill, opt)
     return messages(xc, "extend")

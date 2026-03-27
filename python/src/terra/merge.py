@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Callable, List, Optional, Union
 
 from ._terra import SpatRaster, SpatVector, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 
 def _opt() -> SpatOptions:
@@ -53,7 +53,7 @@ def merge(
     SpatRaster
     """
     all_rasters = [x] + list(others)
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
 
     rc = x.sprc(all_rasters)
     if method is None:
@@ -94,7 +94,7 @@ def mosaic(
         raise ValueError(f"fun must be one of mean/sum/min/max/first/last; got {fun_str!r}")
 
     all_rasters = [x] + list(others)
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     rc = x.sprc(all_rasters)
     xc = rc.mosaic(fun_str, opt)
     return messages(xc, "mosaic")

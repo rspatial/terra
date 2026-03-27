@@ -6,7 +6,7 @@ from typing import Callable, List, Optional, Union
 import numpy as np
 
 from ._terra import SpatRaster, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 
 def _opt() -> SpatOptions:
@@ -50,7 +50,7 @@ def init(
     """
     from .rast import rast
 
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
 
     if isinstance(fun, str):
         fun = fun[0] if len(fun) == 0 else fun

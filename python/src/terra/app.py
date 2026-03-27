@@ -8,7 +8,7 @@ from typing import Callable, List, Optional, Union
 import numpy as np
 
 from ._terra import SpatRaster, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 
 _CPP_FUNS = {
@@ -68,7 +68,7 @@ def app(
     """
     txt = _make_text_fun(fun)
     if txt is not None and txt in _CPP_FUNS:
-        opt = SpatOptions(filename, overwrite)
+        opt = spatoptions(filename, overwrite)
         xc = x.summary(txt, na_rm, opt)
         return messages(xc, "app")
 
@@ -212,7 +212,7 @@ def tapp(
         # Use C++ backend
         int_index = _factor_encode(index)
         nms = _make_unique_names(index)
-        opt = SpatOptions(filename, overwrite)
+        opt = spatoptions(filename, overwrite)
         xc = x.apply(int_index, txt, na_rm, nms, [], "", "UTC", opt)
         return messages(xc, "tapp")
 
@@ -339,7 +339,7 @@ def rapp(
 
     txt = _make_text_fun(fun)
     if txt and txt in _CPP_FUNS:
-        opt = SpatOptions(filename, overwrite)
+        opt = spatoptions(filename, overwrite)
         xc = x.rapply(index, firstval, lastval, txt, clamp, na_rm, circular, opt)
         return messages(xc, "rapp")
 

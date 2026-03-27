@@ -6,7 +6,7 @@ from typing import List, Optional, Union
 import numpy as np
 
 from ._terra import SpatRaster, SpatVector, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 
 def _opt() -> SpatOptions:
@@ -44,7 +44,7 @@ def buffer_rast(
     -------
     SpatRaster
     """
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     xc = x.buffer(width, background, include, opt)
     return messages(xc, "buffer")
 
@@ -99,7 +99,7 @@ def distance_rast(
     method = method.lower()
     if method not in ("cosine", "haversine", "geo"):
         raise ValueError(f"method must be 'cosine', 'haversine', or 'geo'; got {method!r}")
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     if y is not None:
         xc = x.vectDistance(y, rasterize, unit, method, opt)
     else:
@@ -143,7 +143,7 @@ def cost_dist(
     -------
     SpatRaster
     """
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     xc = x.costDistance(target, scale, max(maxiter, 2), False, opt)
     return messages(xc, "costDist")
 
@@ -173,7 +173,7 @@ def grid_dist(
     -------
     SpatRaster
     """
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     if target is None or np.isnan(float(target)):
         xc = x.gridDistance(float(scale), opt)
     else:

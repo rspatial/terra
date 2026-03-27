@@ -8,7 +8,7 @@ from typing import List, Optional, Union
 import numpy as np
 
 from ._terra import SpatRaster, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 
 def _opt() -> SpatOptions:
@@ -205,7 +205,7 @@ def autocor(
     """
     if w is None:
         w = "queen"
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     xc = x.autocor(w if isinstance(w, str) else "custom", not global_, method, opt)
     result = messages(xc, "autocor")
     if global_:

@@ -6,7 +6,7 @@ from typing import Callable, List, Optional, Union
 import numpy as np
 
 from ._terra import SpatRaster, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 _cpp_focal = SpatRaster.focal  # captured before monkey-patching
 
@@ -165,7 +165,7 @@ def focal(
 
     txt = fun if isinstance(fun, str) else getattr(fun, "__name__", "")
     if txt in _FOCAL_FUNS:
-        opt = SpatOptions(filename, overwrite)
+        opt = spatoptions(filename, overwrite)
         xc = _cpp_focal(x, wmat, wvals, fillvalue, na_rm, txt, expand, na_policy, opt)
         return messages(xc, "focal")
 
@@ -218,7 +218,7 @@ def focal3D(
         raise ValueError("w must have three elements [nlyr, nrow, ncol]")
     txt = fun if isinstance(fun, str) else getattr(fun, "__name__", "")
     if txt in _FOCAL_FUNS:
-        opt = SpatOptions(filename, overwrite)
+        opt = spatoptions(filename, overwrite)
         xc = x.focal3d(w, txt, na_rm, opt)
         return messages(xc, "focal3D")
     raise NotImplementedError("Custom functions are not supported for focal3D")

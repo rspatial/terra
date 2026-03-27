@@ -260,7 +260,7 @@ def compare_geom(
     bool
     """
     if tolerance is None:
-        opt = SpatOptions("")
+        opt = spatoptions()
         tolerance = opt.tolerance
     result = x.compare_geom(y, lyrs, crs, tolerance, warncrs, ext, rowcol, res)
     if not result and stop_on_error:

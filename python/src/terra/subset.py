@@ -6,7 +6,7 @@ from typing import List, Optional, Union
 import numpy as np
 
 from ._terra import SpatRaster, SpatVector, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 
 def _opt() -> SpatOptions:
@@ -92,7 +92,7 @@ def subset_rast(
     if not pos:
         raise ValueError("subset results in no layers")
 
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     xc = x.subset([i - 1 for i in pos], opt)
     return messages(xc, "subset")
 

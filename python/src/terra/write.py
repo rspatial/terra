@@ -6,7 +6,7 @@ import os
 from typing import List, Optional, Union
 
 from ._terra import SpatRaster, SpatVector, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 _cpp_vect_write = SpatVector.write  # captured before monkey-patching
 
@@ -57,7 +57,7 @@ def write_raster(
     filename = os.path.expanduser(filename.strip())
     if not filename:
         raise ValueError("provide a filename")
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     opt.datatype = datatype
     if filetype:
         opt.filetype = filetype
@@ -93,7 +93,7 @@ def write_start(
     dict with keys ``"n"``, ``"row"``, ``"nrows"``.
     """
     filename = os.path.expanduser(filename.strip())
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     opt.ncopies = n
     if sources is None:
         sources = []
@@ -166,7 +166,7 @@ def blocks(x: SpatRaster, n: int = 4) -> dict:
     -------
     dict with keys ``"n"``, ``"row"`` (1-based), ``"nrows"``.
     """
-    opt = SpatOptions("", False)
+    opt = spatoptions()
     opt.ncopies = n
     b = x.getBlockSizeR(opt)
     b["row"] = [r + 1 for r in b["row"]]

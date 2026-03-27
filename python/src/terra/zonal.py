@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Callable, Optional, Union
 
 from ._terra import SpatRaster, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 _cpp_zonal = SpatRaster.zonal  # captured before any monkey-patching
 
@@ -60,7 +60,7 @@ def zonal(
     if txt not in _ZONAL_FUNS:
         raise ValueError(f"Function {txt!r} is not supported; use one of {sorted(_ZONAL_FUNS)}")
 
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     xc = _cpp_zonal(x, z, txt, na_rm, opt)
     result = messages(xc, "zonal")
 

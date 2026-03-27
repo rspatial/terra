@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Callable, List, Optional, Union
 
 from ._terra import SpatRaster, SpatVector, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 
 def _opt() -> SpatOptions:
@@ -93,7 +93,7 @@ def extract(
         from .vect import vect
         y = vect(y)
 
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
 
     if fun is not None:
         fun_str = fun if isinstance(fun, str) else getattr(fun, "__name__", "mean")

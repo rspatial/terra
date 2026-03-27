@@ -6,7 +6,7 @@ from typing import Callable, List, Optional, Union
 import numpy as np
 
 from ._terra import SpatRaster, SpatVector, SpatOptions
-from ._helpers import messages
+from ._helpers import messages, spatoptions
 
 
 def _opt() -> SpatOptions:
@@ -118,7 +118,7 @@ def rasterize(
     if fun is not None:
         fun_str = fun if isinstance(fun, str) else getattr(fun, "__name__", "last")
 
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     xc = y.rasterize(x, field, float(background), touches, fun_str, cover, na_rm, False, cover, opt)
     return messages(xc, "rasterize")
 
@@ -139,7 +139,7 @@ def _rasterize_points_xy(
         fun_str = fun if isinstance(fun, str) else getattr(fun, "__name__", "last")
     if fun_str not in _RASTERIZE_FUNS:
         fun_str = "last"
-    opt = SpatOptions(filename if not update else "", True if not update else overwrite)
+    opt = spatoptions(filename if not update else "", True if not update else overwrite)
     xc = template.rasterizePointsXY(
         xy[:, 0].tolist(), xy[:, 1].tolist(),
         fun_str, values.tolist(), na_rm, background, opt
@@ -182,6 +182,6 @@ def rasterize_geom(
     -------
     SpatRaster
     """
-    opt = SpatOptions(filename, overwrite)
+    opt = spatoptions(filename, overwrite)
     xc = y.rasterizeGeom(x, unit, fun, opt)
     return messages(xc, "rasterizeGeom")
