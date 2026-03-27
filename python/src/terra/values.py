@@ -130,8 +130,11 @@ def set_values(x: SpatRaster, v: Union[np.ndarray, List, float]) -> SpatRaster:
     from .rast import rast
     y = rast(x)
     opt = _opt()
-    if np.isscalar(v):
-        y.setValues(float(v), opt)
+    # pybind11 setValues() only accepts a sequence; broadcast scalars / 0-d arrays.
+    if np.ndim(v) == 0:
+        val = float(np.asarray(v))
+        n = x.nrow() * x.ncol() * x.nlyr()
+        y.setValues([val] * n, opt)
     else:
         flat = np.asarray(v, dtype=float).ravel()
         nc = x.nrow() * x.ncol()
