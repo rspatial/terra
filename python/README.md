@@ -1,7 +1,6 @@
 # terra (Python)
 
-Python bindings for the **terra** geospatial C++ library, with the same core
-types and API as the R package "terra".
+Python version of the **terra** package.
 
 ---
 
@@ -162,7 +161,7 @@ f = "https://github.com/rspatial/terra/raw/refs/heads/master/inst/ex/elev.tif"
 r = terra.rast(f)
 
 # Inspect
-print(r)                         # shows class, size, resolution, CRS, …
+print(r)
 
 # Plot
 terra.plot(r)
@@ -172,7 +171,7 @@ plt.show()
 e = terra.ext(-180, 180, -90, 90)
 print(e)
 
-# Arithmetic operators (after import operators are registered automatically)
+# Arithmetic operators
 r2 = r * 2
 r3 = r + r2
 mask = r > 500
