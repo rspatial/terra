@@ -15,6 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+#include <vector>
+#include <cstddef>
+
+void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, const size_t &ncols, const size_t &nl, size_t data_offset = 0);
+
 bool getGDALDataType(std::string datatype, GDALDataType &gdt);
 std::string gdalinfo(std::string filename, std::vector<std::string> options, std::vector<std::string> openopts);
 std::string gdalMDinfo(std::string filename, std::vector<std::string> options);
