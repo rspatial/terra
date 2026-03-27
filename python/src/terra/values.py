@@ -99,7 +99,11 @@ def values(
     """
     nr, nc = x.nrow(), x.ncol()
     nl = x.nlyr()
-    v = x.readValues(0, nr, 0, nc)
+    x.readStart()
+    try:
+        v = x.readValues(0, nr, 0, nc)
+    finally:
+        x.readStop()
     arr = np.array(v, dtype=float)
     if mat:
         arr = arr.reshape(nr * nc, nl, order='F')  # column-major to match R

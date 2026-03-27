@@ -683,7 +683,8 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 #if defined(USE_TBB)
 				if (opt.parallel) {
 					d.resize(n);
-					tbb::parallel_for(tbb::blocked_range<size_t>(0, s-2),
+					// i must run 0 .. s-2 inclusive (same as the serial loop below).
+					tbb::parallel_for(tbb::blocked_range<size_t>(0, s-1),
 					[&](const tbb::blocked_range<size_t>& range) {
 						for (size_t i = range.begin(); i != range.end(); i++) {
 							size_t k = 0;

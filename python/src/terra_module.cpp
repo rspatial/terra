@@ -7,6 +7,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>       // std::vector<T> <-> Python list auto-conversion
 #include <cstdint>
+#include <stdexcept>
 
 #include "spatRasterMultiple.h"
 #include "spatGraph.h"
@@ -588,6 +589,8 @@ PYBIND11_MODULE(_terra, m) {
         .def("get_crs",         &SpatRaster::getSRS)
         .def("set_crs",
             (bool (SpatRaster::*)(std::string))(&SpatRaster::setSRS))
+        .def("setCRS",
+            (bool (SpatRaster::*)(std::string))(&SpatRaster::setSRS))
         .def_property("extent",
             &SpatRaster::getExtent,
             (void (SpatRaster::*)(SpatExtent))&SpatRaster::setExtent)
@@ -630,7 +633,14 @@ PYBIND11_MODULE(_terra, m) {
         .def_property_readonly("inMemory",  &SpatRaster::inMemory)
         .def("isLonLat",        &SpatRaster::is_lonlat)
         .def("isGlobalLonLat",  &SpatRaster::is_global_lonlat)
-        .def_property_readonly("names",     &SpatRaster::getNames)
+        .def_property(
+            "names",
+            &SpatRaster::getNames,
+            [](SpatRaster &self, const std::vector<std::string> &names) {
+                if (!self.setNames(names, false)) {
+                    throw std::runtime_error("cannot set layer names");
+                }
+            })
         .def("get_sourcenames_long", &SpatRaster::getLongSourceNames)
         .def("set_sourcenames_long", &SpatRaster::setLongSourceNames)
         .def("get_sourcenames",      &SpatRaster::getSourceNames)
@@ -660,6 +670,8 @@ PYBIND11_MODULE(_terra, m) {
         .def("size",   &SpatRaster::size)
         .def("ncell",  &SpatRaster::ncell)
         .def("res",    &SpatRaster::resolution)
+        .def("xres",   &SpatRaster::xres)
+        .def("yres",   &SpatRaster::yres)
         .def("set_resolution", &SpatRaster::setResolution)
 
         .def("getBlockSize",  &getBlockSizeR)

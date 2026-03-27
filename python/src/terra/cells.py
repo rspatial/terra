@@ -9,6 +9,15 @@ from ._terra import SpatRaster, SpatVector, SpatExtent, SpatOptions
 from ._helpers import messages
 
 
+def _as_1based_cell_list(cell: Union[int, float, np.integer, List, np.ndarray]) -> List[int]:
+    """Coerce *cell* to a list of 1-based indices (handles numpy scalars and float)."""
+    if isinstance(cell, (list, tuple)):
+        return [int(c) for c in cell]
+    if isinstance(cell, np.ndarray):
+        return [int(c) for c in np.asarray(cell, dtype=np.int64).ravel()]
+    return [int(cell)]
+
+
 def _opt() -> SpatOptions:
     return SpatOptions()
 
@@ -35,7 +44,8 @@ def cells(
     ----------
     x : SpatRaster
     y : float, list, SpatVector, or SpatExtent, optional
-        - If absent: return non-NA cell indices (1-based).
+        - If absent: all cell indices ``1 .. ncell(x)`` when there are no
+          values; otherwise non-NA cell indices (1-based), matching R.
         - If a scalar or list: find cells whose values match *y*.
         - If a SpatVector: find cells overlapping *y*.
         - If a SpatExtent: find cells within *y*.
@@ -61,8 +71,12 @@ def cells(
     opt = _opt()
 
     if y is None:
-        raw = x.cells_notna_novalues(opt)
-        return np.array(raw, dtype=int) + 1
+        # R cells.R: if (!hasValues(x)) 1:ncell(x) else cells_notna_novalues+1
+        if x.hasValues:
+            raw = x.cells_notna_novalues(opt)
+            return np.array(raw, dtype=int) + 1
+        n = x.ncell()
+        return np.arange(1, n + 1, dtype=int)
 
     if isinstance(y, SpatExtent):
         raw = x.extCells(y.pntr) if hasattr(y, 'pntr') else x.extCells(y)
@@ -170,7 +184,7 @@ def cell_from_row_col(
     return np.array(raw, dtype=int) + 1
 
 
-def xy_from_cell(x: SpatRaster, cell: Union[int, List[int]]) -> np.ndarray:
+def xy_from_cell(x: SpatRaster, cell: Union[int, float, np.integer, List[int], np.ndarray]) -> np.ndarray:
     """
     Return x/y coordinates for cell numbers.
 
@@ -183,8 +197,7 @@ def xy_from_cell(x: SpatRaster, cell: Union[int, List[int]]) -> np.ndarray:
     -------
     numpy.ndarray, shape (n, 2), columns [x, y].
     """
-    if isinstance(cell, int):
-        cell = [cell]
+    cell = _as_1based_cell_list(cell)
     cell0 = [c - 1 for c in cell]
     coords = x.xyFromCell(cell0)
     return np.array(coords, dtype=float).reshape(-1, 2)
@@ -192,7 +205,7 @@ def xy_from_cell(x: SpatRaster, cell: Union[int, List[int]]) -> np.ndarray:
 
 def row_col_from_cell(
     x: SpatRaster,
-    cell: Union[int, List[int]],
+    cell: Union[int, float, np.integer, List[int], np.ndarray],
 ) -> np.ndarray:
     """
     Return row and column indices for cell numbers.
@@ -206,8 +219,7 @@ def row_col_from_cell(
     -------
     numpy.ndarray, shape (n, 2), columns [row, col] (1-based).
     """
-    if isinstance(cell, int):
-        cell = [cell]
+    cell = _as_1based_cell_list(cell)
     cell0 = [c - 1 for c in cell]
     rc = x.rowColFromCell(cell0)
     arr = np.array(rc, dtype=int).reshape(-1, 2) + 1

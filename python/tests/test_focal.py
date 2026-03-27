@@ -41,12 +41,16 @@ def test_focal_transposed_weight_matrix():
 
 
 def test_focal_sum_3x3_ones_na_rm():
-    """3×3 ones kernel, na_rm=True."""
+    """3×3 ones kernel, na_rm=True.
+
+    Matches ``focal(r, 3, sum, na.rm=TRUE)`` on default-extent ``r`` in
+    ``inst/tinytest/test_focal.R`` (global lon/lat), not ``rr`` with ``xmin=0``.
+    """
     m = np.ones((3, 3))
     r = rast(nrows=3, ncols=3)
     r = set_values(r, list(range(1, 10)))
     f = focal(r, m, na_rm=True)
-    expected = [12, 21, 16, 27, 45, 33, 24, 39, 28]
+    expected = [21, 21, 21, 45, 45, 45, 39, 39, 39]
     np.testing.assert_array_almost_equal(_vals(f), expected)
 
 
@@ -54,7 +58,7 @@ def test_focal_sum_integer_window():
     """Integer window size 3 is equivalent to 3×3 ones kernel."""
     r = rast(nrows=3, ncols=3)
     r = set_values(r, list(range(1, 10)))
-    expected = [12, 21, 16, 27, 45, 33, 24, 39, 28]
+    expected = [21, 21, 21, 45, 45, 45, 39, 39, 39]
     f = focal(r, 3, na_rm=True)
     np.testing.assert_array_almost_equal(_vals(f), expected)
 
@@ -65,14 +69,20 @@ def test_focal_no_na_fillvalue():
     r = rast(nrows=3, ncols=3)
     r = set_values(r, list(range(1, 10)))
     f = focal(r, m, na_rm=False, fillvalue=0)
-    expected = [12, 21, 16, 27, 45, 33, 24, 39, 28]
+    expected = [21, 21, 21, 45, 45, 45, 39, 39, 39]
     np.testing.assert_array_almost_equal(_vals(f), expected)
 
 
 def test_focal_no_na_edges_become_nan():
-    """na_rm=False with default fillvalue=NaN: only the central cell has a full neighbourhood."""
+    """na_rm=False with default fillvalue=NaN: only the central cell has a full neighbourhood.
+
+    Uses Mercator CRS like ``inst/tinytest/test_focal.R`` (same *r* as lines 3 and 29–31).
+    A default global lon/lat raster is ``is_global_lonlat()`` and focal wraps horizontally,
+    so edge cells are not NA.
+    """
     m = np.ones((3, 3))
     r = rast(nrows=3, ncols=3)
+    r.setCRS("+proj=merc")
     r = set_values(r, list(range(1, 10)))
     f = focal(r, m, na_rm=False)
     v = _vals(f)
@@ -85,6 +95,7 @@ def test_focal_no_na_edges_become_nan():
 def test_focal_integer_window_no_na_edges():
     m = np.ones((3, 3))
     r = rast(nrows=3, ncols=3)
+    r.setCRS("+proj=merc")
     r = set_values(r, list(range(1, 10)))
     # focal(r, 3, na_rm=FALSE) should match focal(r, m, na_rm=FALSE)
     f1 = focal(r, m, na_rm=False)

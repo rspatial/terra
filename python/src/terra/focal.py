@@ -108,6 +108,23 @@ _FOCAL_FUNS = {
 }
 
 
+def _na_policy_to_cpp(na_policy: str, na_rm: bool) -> tuple[bool, bool, bool]:
+    """
+    Map Python ``na_policy`` / ``na_rm`` to C++ ``focal`` (narm, naonly, naomit).
+    Mirrors ``R/focal.R`` (``na.policy`` / ``na.rm``).
+    """
+    p = na_policy.lower()
+    if p not in ("all", "only", "omit"):
+        raise ValueError("na_policy must be one of 'all', 'only', 'omit'")
+    naonly = p == "only"
+    naomit = p == "omit"
+    if naonly:
+        narm = True
+    else:
+        narm = bool(na_rm)
+    return narm, naonly, naomit
+
+
 def focal(
     x: SpatRaster,
     w: Union[int, List, np.ndarray],
@@ -160,13 +177,16 @@ def focal(
         arr = np.asarray(w, dtype=float)
         if arr.ndim != 2:
             raise ValueError("w must be a scalar, 2-element list, or 2-D array")
-        wmat = list(arr.shape)
-        wvals = arr.ravel(order='C').tolist()
+        wmat = [int(arr.shape[0]), int(arr.shape[1])]
+        wvals = arr.ravel(order="C").tolist()
 
     txt = fun if isinstance(fun, str) else getattr(fun, "__name__", "")
     if txt in _FOCAL_FUNS:
         opt = spatoptions(filename, overwrite)
-        xc = _cpp_focal(x, wmat, wvals, fillvalue, na_rm, txt, expand, na_policy, opt)
+        narm, naonly, naomit = _na_policy_to_cpp(na_policy, na_rm)
+        xc = _cpp_focal(
+            x, wmat, wvals, fillvalue, narm, naonly, naomit, txt, expand, opt
+        )
         return messages(xc, "focal")
 
     if not callable(fun):

@@ -4,7 +4,6 @@ Tests ported from inst/tinytest/test_global.R
 Uses the bundled elev.tif example raster.
 """
 import os
-import math
 import numpy as np
 import pytest
 import terra as pt
@@ -27,7 +26,11 @@ def _global(r, fun, na_rm=True):
     """Call the C++ summary method (mirrors R global())."""
     opt = pt.SpatOptions()
     result = r.summary(fun, na_rm, opt)
-    v = result.readValues(0, result.nrow(), 0, result.ncol())
+    result.readStart()
+    try:
+        v = result.readValues(0, result.nrow(), 0, result.ncol())
+    finally:
+        result.readStop()
     return v[0]
 
 
@@ -41,12 +44,15 @@ def _global(r, fun, na_rm=True):
 def test_global_statistic(fun, expected):
     f = find_elev()
     r = rast(f)
-    # Set top 50 rows to NA
-    opt = pt.SpatOptions()
-    na_r = r.setNArows(0, 50, opt) if hasattr(r, "setNArows") else r
-    # Use readValues and compute manually to check (mirrors R's global())
-    vals = np.array(r.readValues(0, r.nrow(), 0, r.ncol()), dtype=float)
-    vals[:50 * r.ncol()] = float("nan")  # set top 50 rows NA
+    # GDAL: open for read (R readStart) before readValues, like values.R
+    r.readStart()
+    try:
+        vals = np.array(r.readValues(0, r.nrow(), 0, r.ncol()), dtype=float)
+    finally:
+        r.readStop()
+    # R: r[1:50,] <- NA — only rows that exist (min(50, nrow))
+    n_na_rows = min(50, int(r.nrow()))
+    vals[: n_na_rows * int(r.ncol())] = float("nan")
 
     valid = vals[~np.isnan(vals)]
     if fun == "sum":
