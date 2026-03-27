@@ -153,7 +153,7 @@ pip install -e .
 ## Usage
 
 ```python
-import terra as terra 
+import terra
 import matplotlib.pyplot as plt
 
 # Create / read a raster

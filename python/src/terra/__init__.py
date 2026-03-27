@@ -5,29 +5,35 @@ The compiled extension ``_terra`` exposes the same core C++ classes as the R
 package.  The functions in this package mirror the **R** ``terra`` API so that
 workflows can be translated with minimal renaming.
 
+Two equivalent calling styles are supported:
+
+  Functional style (R-like):       Method style (Pythonic):
+  ─────────────────────────────    ─────────────────────────────────
+  pt.crop(r, e)                    r.crop(e)
+  pt.mask(r, mask_r)               r.mask(mask_r)
+  pt.aggregate(r, 2)               r.aggregate(2)
+  pt.focal(r, 3)                   r.focal(3)
+  pt.values(r)                     r.values()
+  pt.buffer_vect(v, 1000)          v.buffer(1000)
+  pt.project_vector(v, crs)        v.project(crs)
+
 Quick reference (R → Python):
   rast()              pt.rast()
   vect()              pt.vect()
   ext()               pt.ext()
   crs()               pt.crs()
-  nrow/ncol/nlyr      pt.nrow / pt.ncol / pt.nlyr
-  res()               pt.res()
-  origin()            pt.origin()
-  crop()              pt.crop()
-  mask()              pt.mask()
-  project(rast)       pt.project_raster()
-  project(vect)       pt.project_vector()
-  resample()          pt.resample()
-  terrain()           pt.terrain()
-  classify()          pt.classify()
-  flip()              pt.flip()
-  trim()              pt.trim()
-  boundaries()        pt.boundaries()
-  patches()           pt.patches()
-  cellSize()          pt.cellSize()
-  plot()              pt.plot()
-  plot_rgb()          pt.plot_rgb()
-  ... and more in generics.py / arith.py / geom.py
+  crop()              pt.crop(r, e)  or  r.crop(e)
+  mask()              pt.mask(r, m)  or  r.mask(m)
+  project(rast)       pt.project_raster()  or  r.project(crs)
+  project(vect)       pt.project_vector()  or  v.project(crs)
+  resample()          pt.resample()  or  r.resample(template)
+  classify()          pt.classify()  or  r.classify(rcl)
+  terrain()           pt.terrain()  or  r.terrain()
+  focal()             pt.focal()  or  r.focal(w)
+  aggregate()         pt.aggregate()  or  r.aggregate(fact)
+  values()            pt.values(r)  or  r.values()
+  plot()              pt.plot(r)  or  r.plot()
+  ... and more in generics.py / arith.py / geom.py / methods.py
 
 Arithmetic operators (Arith_generics.R):
   r + r2, r - n, r * r2, etc.   operator overloads on SpatRaster
@@ -84,6 +90,9 @@ from .arith import (                                                  # noqa: F4
     register_operators,
 )
 register_operators()  # attach +, -, *, /, ==, … to C++ types
+
+from .methods import register_methods                                 # noqa: F401
+register_methods()    # attach r.crop(), r.mask(), v.buffer(), … to C++ types
 
 from .geom import (                                                   # noqa: F401
     # validity
@@ -206,6 +215,7 @@ __version__ = "0.1.0"
 __all__ = [
     # High-level API (R-like)
     "rast", "vect", "ext", "crs",
+    "register_methods",
     "plot", "plot_rgb",
     "messages", "character_crs",
     "show", "repr_raster", "repr_vector", "repr_extent",
