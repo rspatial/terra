@@ -327,11 +327,14 @@ void SpatRasterSource::appendValues(std::vector<double> &v, size_t lyr) {
 
 
 bool SpatRasterSource::in_order(bool all) {
-	if (memory) return true;
+	(void) all;
+	// Subset layers: cannot use a single GDAL Read sized to nlyr file layers
+	// (see readRowColMulti fast path vs buffer of length nlyr).
 	if (nlyr != nlyrfile) {
-		if (all) return false;
+		return false;
 	}
-	for (size_t i=layers[0]; i<layers.size(); i++) {
+	if (memory) return true;
+	for (size_t i = 0; i < layers.size(); i++) {
 		if (layers[i] != i) {
 			return false;
 		}

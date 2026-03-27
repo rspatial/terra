@@ -129,19 +129,19 @@ static void md_layer_to_indices(size_t layer, const std::vector<size_t> &sizes,
 	}
 }
 
-// GDAL MDArray Read returns C-order: the spatial dimension with the *higher* array
-// index varies fastest. Terra stores rows as lat (y) with lon (x) along each row
-// (lon fastest), which matches GDAL only when lon's index > lat's (ix > iy).
-// If lat comes after lon in the file (iy > ix), transpose the 2D block (when both
-// spans exceed 1).
-static void md_transpose_raster_block(std::vector<double> &v, size_t offset, size_t nrows, size_t ncols) {
+// GDAL row-major: last dimension in the array (highest index) varies fastest in the
+// read buffer. Terra uses one row = fixed latitude, columns = longitude (lon fastest
+// within the row). If lon's index > lat's (ix > iy), the read buffer is already
+// row-major in that sense. If lat's index > lon's (iy > ix), GDAL uses lat-fast
+// layout buf[c*nrows+r] for (lat r, lon c); convert to buf[r*ncols+c].
+static void md_reorder_spatial_gdal_to_terra(std::vector<double> &v, size_t offset, size_t nrows, size_t ncols) {
 	if (nrows <= 1 || ncols <= 1) {
 		return;
 	}
 	std::vector<double> tmp(nrows * ncols);
 	for (size_t r = 0; r < nrows; r++) {
 		for (size_t c = 0; c < ncols; c++) {
-			tmp[c * nrows + r] = v[offset + r * ncols + c];
+			tmp[r * ncols + c] = v[offset + c * nrows + r];
 		}
 	}
 	std::copy(tmp.begin(), tmp.end(), v.begin() + offset);
@@ -874,29 +874,29 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 	count[source[src].m_dims[1]] = nrows;
 
 	const size_t rowdim = source[src].m_dims[1];
-	// Match readChunkGDAL: south-at-top-of-file uses row offset + vflip, not MDArray
-	// negative stride (unreliable with rank > 2 in some GDAL builds).
-	const bool vflip_after = !source[src].flipped;
-	if (vflip_after) {
-		offset[rowdim] = nrow() - row - nrows;
-	}
+	std::vector<long long int> stride;
 	const long long int *stride_arg = nullptr;
+	if (!source[src].flipped) {
+		stride.resize(source[src].m_ndims, 1);
+		stride[rowdim] = -1;
+		offset[rowdim] = nrow() - row - 1;
+		stride_arg = stride.data();
+	}
 
 	size_t insize = data.size();
 
 	auto dt = GDALExtendedDataType::Create(GDT_Float64);
 
-	// See md_transpose_raster_block: GDAL C-order vs terra row=lat, col=lon.
-	const bool md_spatial_transpose = source[src].m_dims.size() >= 2
-		&& source[src].m_dims[1] > source[src].m_dims[0];
+	const bool md_lat_fast =
+		source[src].m_dims.size() >= 2 && source[src].m_dims[1] > source[src].m_dims[0];
 
 	// Two-dimensional variable (lon x lat only): one Read matches terra layout.
 	if (ndim == 2) {
 		size_t n = vprod(count, false);
 		data.resize(insize + n);
 		source[src].m_array->Read(&offset[0], &count[0], stride_arg, NULL, dt, &data[insize], NULL, 0);
-		if (md_spatial_transpose) {
-			md_transpose_raster_block(data, insize, nrows, ncols);
+		if (md_lat_fast) {
+			md_reorder_spatial_gdal_to_terra(data, insize, nrows, ncols);
 		}
 	} else {
 		// ndim >= 3: always read one terra-layer at a time. A single Read over all
@@ -919,11 +919,8 @@ bool SpatRaster::readChunkMulti(std::vector<double> &data, size_t src, size_t ro
 			}
 			double *dest = &data[insize + i * block];
 			source[src].m_array->Read(&offset[0], &count[0], stride_arg, NULL, dt, dest, NULL, 0);
-			if (md_spatial_transpose) {
-				md_transpose_raster_block(data, insize + i * block, nrows, ncols);
-			}
-			if (vflip_after) {
-				vflip(data, nrows * ncols, nrows, ncols, 1, insize + i * block);
+			if (md_lat_fast) {
+				md_reorder_spatial_gdal_to_terra(data, insize + i * block, nrows, ncols);
 			}
 		}
 	}
@@ -958,7 +955,7 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 	std::vector<size_t> count(source[src].m_ndims, 1);
 
 	const size_t rowdim = source[src].m_dims[1];
-	if (source[src].in_order(false)) {
+	if (source[src].in_order(true)) {
 		for (size_t j = 2; j < ndim; j++) {
 			size_t gd = source[src].m_dims[j];
 			count[gd] = source[src].m_size[gd];
@@ -993,7 +990,7 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 			offset[rowdim] = rows[i];
 		}
 
-		if (source[src].in_order(false)) {
+		if (source[src].in_order(true)) {
 			source[src].m_array->Read(&offset[0], &count[0], nullptr, NULL, dt, &v[0], NULL, 0);
 		} else {
 			for (size_t j = 0; j < source[src].layers.size(); j++) {
