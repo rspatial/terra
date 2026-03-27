@@ -19,7 +19,9 @@ def _opt() -> SpatOptions:
 
 def geomtype(x: SpatVector) -> str:
     """Return the geometry type of *x*: ``'points'``, ``'lines'``, or ``'polygons'``."""
-    return x.geomtype()
+    # Must use C++ ``type()``, not ``geomtype()`` — the latter is patched onto
+    # SpatVector by register_methods() and delegates back here (recursion).
+    return x.type()
 
 
 def is_lines(x: SpatVector) -> bool:

@@ -15,6 +15,22 @@ def _opt() -> SpatOptions:
     return SpatOptions()
 
 
+def _read_values_layer_matrix(x: SpatRaster) -> np.ndarray:
+    """
+    Read all cell values as (nrow * ncol, nlyr), Fortran order (aligned with R).
+
+    GDAL-backed rasters require readStart before readValues.
+    """
+    nr, nc = x.nrow(), x.ncol()
+    nl = x.nlyr()
+    x.readStart()
+    try:
+        raw = x.readValues(0, nr, 0, nc)
+    finally:
+        x.readStop()
+    return np.array(raw, dtype=float).reshape(nr * nc, nl, order="F")
+
+
 # ---------------------------------------------------------------------------
 # Row / column statistics
 # ---------------------------------------------------------------------------
@@ -34,7 +50,7 @@ def row_sums(x: SpatRaster, na_rm: bool = False) -> np.ndarray:
     """
     nr, nc = x.nrow(), x.ncol()
     nl = x.nlyr()
-    vals = np.array(x.readValues(0, nr, 0, nc), dtype=float).reshape(nr * nc, nl, order='F')
+    vals = _read_values_layer_matrix(x)
     vals_3d = vals.reshape(nr, nc, nl)
     if na_rm:
         return np.nansum(vals_3d, axis=1)
@@ -78,7 +94,7 @@ def row_means(x: SpatRaster, na_rm: bool = False) -> np.ndarray:
     """
     nr, nc = x.nrow(), x.ncol()
     nl = x.nlyr()
-    vals = np.array(x.readValues(0, nr, 0, nc), dtype=float).reshape(nr * nc, nl, order='F')
+    vals = _read_values_layer_matrix(x)
     vals_3d = vals.reshape(nr, nc, nl)
     if na_rm:
         return np.nanmean(vals_3d, axis=1)
@@ -210,7 +226,11 @@ def autocor(
     result = messages(xc, "autocor")
     if global_:
         # Returns a single-cell raster; extract the value
-        v = result.readValues(0, 1, 0, 1)
+        result.readStart()
+        try:
+            v = result.readValues(0, 1, 0, 1)
+        finally:
+            result.readStop()
         return float(v[0]) if v else float("nan")
     return result
 
@@ -244,9 +264,8 @@ def layer_cor(
     -------
     numpy.ndarray, shape (nlyr, nlyr).
     """
-    nr, nc = x.nrow(), x.ncol()
     nl = x.nlyr()
-    vals = np.array(x.readValues(0, nr, 0, nc), dtype=float).reshape(nr * nc, nl, order='F')
+    vals = _read_values_layer_matrix(x)
     if na_rm:
         mask = ~np.isnan(vals).any(axis=1)
         vals = vals[mask]

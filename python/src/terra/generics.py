@@ -22,6 +22,7 @@ _cpp = {
     "rast.classify":   SpatRaster.classify,
     "rast.boundaries": SpatRaster.boundaries,
     "rast.patches":    SpatRaster.patches,
+    "rast.patches2":   SpatRaster.patches2,
     "rast.terrain":    SpatRaster.terrain,
     "rast.sieve":      SpatRaster.sieve,
     "rast.stretch":    SpatRaster.stretch,
@@ -519,12 +520,16 @@ def patches(
     x: SpatRaster,
     directions: int = 4,
     zero_as_na: bool = False,
+    values: bool = False,
     filename: str = "",
     **kw: Any,
 ) -> SpatRaster:
-    """Label connected regions — like R ``patches()``."""
+    """Label connected regions — like R ``patches()`` (``values=True`` → ``patches2``)."""
     opt = _opt(filename, **kw)
-    x = _cpp["rast.patches"](x, directions, zero_as_na, opt)
+    if values:
+        x = _cpp["rast.patches2"](x, directions, opt)
+    else:
+        x = _cpp["rast.patches"](x, directions, zero_as_na, opt)
     return messages(x, "patches")
 
 

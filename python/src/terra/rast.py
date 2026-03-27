@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, List, Optional, Sequence, Union
 
 from ._helpers import character_crs, messages
-from ._terra import SpatExtent, SpatOptions, SpatRaster
+from ._terra import SpatExtent, SpatOptions, SpatRaster, SpatVector
 
 __all__ = ["rast"]
 
@@ -82,6 +82,9 @@ def rast(
 
     **From** :class:`SpatExtent`: use extent as bounding box for a new empty raster.
 
+    **From** :class:`SpatVector`: use ``x.extent()`` (and ``crs(x)`` if ``crs`` is
+    omitted), like R ``rast(SpatVector, ...)``.
+
     Other keyword arguments are reserved for future parity with R ``rast(...)``.
     """
     del kwargs  # reserved
@@ -124,10 +127,33 @@ def rast(
             names=names,
         )
 
+    # --- SpatVector (R rast.R: extent + crs from vector) ---
+    if isinstance(x, SpatVector):
+        ext = x.extent()
+        v = ext.vector
+        vc = x.get_crs("wkt")
+        crs_use = crs if crs is not None else (vc if vc else None)
+        return rast(
+            None,
+            nrows=nrows,
+            ncols=ncols,
+            nlyrs=nlyrs,
+            xmin=float(v[0]),
+            xmax=float(v[1]),
+            ymin=float(v[2]),
+            ymax=float(v[3]),
+            crs=crs_use,
+            extent=None,
+            resolution=resolution,
+            vals=vals,
+            names=names,
+        )
+
     # --- new empty raster (x is None) ---
     if x is not None:
         raise TypeError(
-            "rast: unsupported type for x; use None, str, list[str], SpatRaster, or SpatExtent"
+            "rast: unsupported type for x; use None, str, list[str], SpatRaster, "
+            "SpatExtent, or SpatVector"
         )
 
     nrows = int(round(nrows))

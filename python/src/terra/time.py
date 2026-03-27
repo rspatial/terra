@@ -165,9 +165,16 @@ def set_time(
 
     if not detected_step:
         detected_step = "seconds"
-    if detected_step == "seconds":
-        detected_step = ""
 
-    if not xc.setTime(seconds, detected_step, tz):
+    # C++ setTime(std::vector<int64_t>, step, zone) — step must be one of
+    # seconds|raw|days|yearmonths|years|months (not "").
+    seconds_i: List[int] = []
+    for s in seconds:
+        if isinstance(s, float) and s != s:
+            seconds_i.append(0)
+        else:
+            seconds_i.append(int(round(float(s))))
+
+    if not xc.setTime(seconds_i, detected_step, tz):
         raise RuntimeError("could not set time metadata")
     return xc

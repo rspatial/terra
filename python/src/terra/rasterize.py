@@ -82,13 +82,34 @@ def rasterize(
         raise TypeError("x must be a SpatVector, ndarray, or DataFrame")
 
     if by is not None:
-        from .generics import split as vect_split
-        parts = vect_split(x, by)
-        layers = [rasterize(p, y, field=field, fun=fun, background=background,
-                            touches=touches, update=update, cover=cover,
-                            na_rm=na_rm) for p in parts]
-        from .rast import rast as make_rast
-        out = make_rast(layers)
+        svc = messages(x.split(by), "split")
+        parts = [svc.get(i) for i in range(svc.size())]
+        layers = [
+            rasterize(
+                p,
+                y,
+                field=field,
+                fun=fun,
+                background=background,
+                touches=touches,
+                update=update,
+                cover=cover,
+                na_rm=na_rm,
+            )
+            for p in parts
+        ]
+        if not layers:
+            raise ValueError("rasterize(by=...): split produced no groups")
+        opt = SpatOptions()
+        out = layers[0].deepcopy()
+        for lr in layers[1:]:
+            out.addSource(lr.deepcopy(), True, opt)
+        out = messages(out, "rast")
+        split_names = list(svc.names)
+        if split_names and len(split_names) == out.nlyr():
+            from .names import set_names_rast
+
+            out = set_names_rast(out, [str(n) for n in split_names])
         return out
 
     geom_type = x.geomtype()
@@ -105,21 +126,49 @@ def rasterize(
             values_arr = np.ones(len(xy), dtype=float)
         return _rasterize_points_xy(xy, values_arr, y, fun, background, update, na_rm, filename, overwrite)
 
-    # Lines / polygons via C++ rasterize
-    if isinstance(field, str) and field != "":
-        if field not in list(x.names):
-            raise ValueError(f"{field!r} is not a field in x")
-    elif field is None or (isinstance(field, str) and field == ""):
-        field = ""
-    else:
-        field = ""
-
+    # Lines / polygons via C++ SpatRaster::rasterize(x, field, values, background,
+    # touches, fun, weights, update, minmax, opt) — see R/rasterize.R
+    values_vec: List[float] = [1.0]
+    field_str = ""
     fun_str = ""
-    if fun is not None:
-        fun_str = fun if isinstance(fun, str) else getattr(fun, "__name__", "last")
+
+    if cover and "polygons" in geom_type.lower():
+        # R: rasterize(..., "", 1, background, touches, "", TRUE, FALSE, TRUE, opt)
+        pass
+    else:
+        if isinstance(field, (int, float)) and not isinstance(field, bool):
+            values_vec = [float(field)]
+        elif isinstance(field, str) and field != "":
+            if field not in list(x.names):
+                raise ValueError(f"{field!r} is not a field in x")
+            field_str = field
+            if na_rm:
+                col_idx = list(x.names).index(field_str)
+                mask = [
+                    not (isinstance(x.getValues1(i, col_idx), (int, float)) and np.isnan(float(x.getValues1(i, col_idx))))
+                    for i in range(x.nrow())
+                ]
+                if not all(mask):
+                    from .subset import subset_vect
+
+                    x = subset_vect(x, mask)
+
+        if fun is not None:
+            fun_str = fun if isinstance(fun, str) else getattr(fun, "__name__", "last")
 
     opt = spatoptions(filename, overwrite)
-    xc = y.rasterize(x, field, float(background), touches, fun_str, cover, na_rm, False, cover, opt)
+    xc = y.rasterize(
+        x,
+        field_str,
+        values_vec,
+        float(background),
+        touches,
+        fun_str,
+        cover,
+        update,
+        True,
+        opt,
+    )
     return messages(xc, "rasterize")
 
 

@@ -2,6 +2,8 @@
 
 Python version of the **terra** package.
 
+Note that this is an alpha (very early) version! Please report any bugs or suggestions.
+
 ---
 
 ## Requirements

@@ -14,9 +14,33 @@ def _opt() -> SpatOptions:
     return SpatOptions()
 
 
+def _empty_group_raster(x: SpatRaster) -> SpatRaster:
+    """
+    Third argument to C++ ``zonal(z, g, ...)`` when there is no grouping layer.
+
+    Matches R ``grast <- rast()`` passed as ``x@pntr$zonal(z@pntr, grast@pntr, ...)``.
+    """
+    from .rast import rast
+
+    e = x.extent
+    v = e.vector
+    cr = x.get_crs("wkt")
+    return rast(
+        None,
+        nrows=x.nrow(),
+        ncols=x.ncol(),
+        nlyrs=1,
+        xmin=float(v[0]),
+        xmax=float(v[1]),
+        ymin=float(v[2]),
+        ymax=float(v[3]),
+        crs=cr if cr else None,
+    )
+
+
 _ZONAL_FUNS = {
     "sum", "mean", "median", "modal", "min", "max", "prod", "any", "all",
-    "count", "sd", "std", "first",
+    "count", "sd", "std", "first", "isNA", "notNA",
 }
 
 
@@ -41,8 +65,9 @@ def zonal(
     z : SpatRaster
         Zones raster (should be integer or categorical).
     fun : str or callable
-        Summary function.  Built-ins: ``"sum"``, ``"mean"``, ``"median"``,
-        ``"min"``, ``"max"``, ``"sd"``, …
+        Summary function.  Built-ins include ``"sum"``, ``"mean"``, ``"median"``,
+        ``"min"``, ``"max"``, ``"sd"``, ``"isNA"`` (count NAs per zone),
+        ``"notNA"`` (count non-NA values per zone), …
     na_rm : bool
         Ignore NA values.
     as_raster : bool
@@ -61,7 +86,8 @@ def zonal(
         raise ValueError(f"Function {txt!r} is not supported; use one of {sorted(_ZONAL_FUNS)}")
 
     opt = spatoptions(filename, overwrite)
-    xc = _cpp_zonal(x, z, txt, na_rm, opt)
+    g = _empty_group_raster(x)
+    xc = _cpp_zonal(x, z, g, txt, na_rm, opt)
     result = messages(xc, "zonal")
 
     if as_raster:
@@ -73,7 +99,7 @@ def zonal(
         raise ImportError("pandas is required for zonal()")
 
     from ._helpers import _getSpatDF
-    df = _getSpatDF(result.df) if hasattr(result, 'df') else None
+    df = _getSpatDF(result)
     if df is None:
         # result is a SpatRaster; extract via C++ route
         nr, nc_ = result.nrow(), result.ncol()

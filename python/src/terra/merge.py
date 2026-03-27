@@ -4,12 +4,20 @@ merge.py — merge and mosaic rasters and join vector attribute tables.
 from __future__ import annotations
 from typing import Callable, List, Optional, Union
 
-from ._terra import SpatRaster, SpatVector, SpatOptions
+from ._terra import SpatRaster, SpatRasterCollection, SpatVector, SpatOptions
 from ._helpers import messages, spatoptions
 
 
 def _opt() -> SpatOptions:
     return SpatOptions()
+
+
+def _sprc_from_rasters(rasters: List[SpatRaster]) -> SpatRasterCollection:
+    """Build a :class:`SpatRasterCollection` from rasters (R ``sprc(...)``)."""
+    rc = SpatRasterCollection()
+    for r in rasters:
+        rc.add(r.deepcopy(), "")
+    return rc
 
 
 # ---------------------------------------------------------------------------
@@ -55,7 +63,7 @@ def merge(
     all_rasters = [x] + list(others)
     opt = spatoptions(filename, overwrite)
 
-    rc = x.sprc(all_rasters)
+    rc = _sprc_from_rasters(all_rasters)
     if method is None:
         method = ""
     xc = rc.merge(first, na_rm, algo, method, opt)
@@ -95,7 +103,7 @@ def mosaic(
 
     all_rasters = [x] + list(others)
     opt = spatoptions(filename, overwrite)
-    rc = x.sprc(all_rasters)
+    rc = _sprc_from_rasters(all_rasters)
     xc = rc.mosaic(fun_str, opt)
     return messages(xc, "mosaic")
 
