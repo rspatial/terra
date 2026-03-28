@@ -10,20 +10,26 @@
 
 #include "gdal_init.h"
 
-/* Roughly matches set_gdal_warnings(2) in RcppFunctions.cpp: surface failures (no R callbacks). */
 static void terra_gdal_error_handler(CPLErr eErrClass, int err_no, const char *msg) {
 	(void)err_no;
 	if (eErrClass >= CE_Failure && msg != nullptr)
 		std::fprintf(stderr, "%s\n", msg);
 }
 
-void terra_gdal_app_init(const char *gdal_data, const char *proj_search_path) {
+void terra_gdal_app_init(const char *gdal_data, const char *proj_search_path,
+                         const char *gdal_plugindir) {
 	CPLSetErrorHandler(terra_gdal_error_handler);
+
+	if (gdal_data && gdal_data[0])
+		CPLSetConfigOption("GDAL_DATA", gdal_data);
+	if (gdal_plugindir && gdal_plugindir[0])
+		CPLSetConfigOption("GDAL_DRIVER_PATH", gdal_plugindir);
+
 	GDALAllRegister();
 	OGRRegisterAll();
+
 	CPLSetConfigOption("GDAL_MAX_BAND_COUNT", "9999999");
 	CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
-	CPLSetConfigOption("GDAL_DATA", gdal_data ? gdal_data : "");
 	CPLSetConfigOption("CPL_VSIL_USE_TEMP_FILE_FOR_RANDOM_WRITE", "YES");
 
 #if GDAL_VERSION_NUM >= 3000000

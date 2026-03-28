@@ -14,6 +14,12 @@ int main(int argc, char *argv[]) {
  	if (arguments.size() < 2) {
 		std::string msg = "usage: " +  arguments[0] + " method input output parameters";
 		std::cout << msg << std::endl;
+		SpatRaster out;
+		SpatExtent e(0,10,0,10);
+		SpatOptions opt;
+		out = out.crop(e, "near", false, opt);
+		show(out);
+		
         return 1;
 	}
 
@@ -29,7 +35,12 @@ int main(int argc, char *argv[]) {
 	if (!proj_path || !proj_path[0])
 		proj_path = TERRA_PROJ_DATA;
 #endif
-	terra_gdal_app_init(gdal_data, proj_path);
+	const char *gdal_plugindir = std::getenv("GDAL_DRIVER_PATH");
+#ifdef TERRA_GDAL_PLUGINDIR
+	if (!gdal_plugindir || !gdal_plugindir[0])
+		gdal_plugindir = TERRA_GDAL_PLUGINDIR;
+#endif
+	terra_gdal_app_init(gdal_data, proj_path, gdal_plugindir);
 
 	SpatRaster out;
 	std::string method = arguments[1];
@@ -37,7 +48,7 @@ int main(int argc, char *argv[]) {
     //show(input);
 	
 	
-    if (method == "show") out = SpatRaster(arguments[2], {-1}, {""}, {""}, {""}, false, true, {""});
+    if (method == "show") out = SpatRaster(arguments[2], {-1}, {""}, {}, {}, false, true, {});
     if (method == "aggregate") out = aggregate(arguments);
     if (method == "") out = SpatRaster();
  
