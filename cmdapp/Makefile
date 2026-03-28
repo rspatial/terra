@@ -1,5 +1,5 @@
 # Standalone terra C++ library + small demo executable.
-#   make          — build build/libterra_standalone.a and ./terra
+#   make          — build build/libterra.a and ./terra
 #   make lib      — library only
 #   make clean
 #
@@ -27,7 +27,7 @@ TERRA_OBJS := $(TERRA_SRCS:%.cpp=$(BUILD)/%.o)
 APP_SRCS := gdal_init.cpp main.cpp show.cpp
 APP_OBJS := $(APP_SRCS:%.cpp=$(BUILD)/%.o)
 
-LIBA := $(BUILD)/libterra_standalone.a
+LIBA := $(BUILD)/libterra.a
 BIN  := terra
 
 .PHONY: all lib app clean
