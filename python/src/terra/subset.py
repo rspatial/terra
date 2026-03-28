@@ -184,9 +184,13 @@ def subset_vect(
 def _patch_spatraster_subset() -> None:
     """
     ``SpatRaster.subset(layers, opt)`` from pybind11 requires a sequence and
-    ``SpatOptions``. Accept a single int (**0-based** layer index, same rules as
-    :func:`subset_rast`) so ``r.subset(0)`` returns the first layer. Sequences
-    are passed through as **0-based** layer indices for internal callers.
+    ``SpatOptions``. Accept:
+
+    - a single int (**0-based** layer index, same rules as :func:`subset_rast`)
+      so ``r.subset(0)`` returns the first layer;
+    - a layer name ``str`` matching :attr:`SpatRaster.names`, like
+      ``r.subset("elevation")``;
+    - otherwise sequences of **0-based** layer indices for internal callers.
     """
     _cpp_subset = SpatRaster.subset
 
@@ -198,6 +202,11 @@ def _patch_spatraster_subset() -> None:
             if not pos:
                 raise ValueError("subset results in no layers")
             return _cpp_subset(self, pos, opt)
+        if isinstance(layers, str):
+            nms = list(self.names)
+            if layers not in nms:
+                raise ValueError(f"invalid layer name {layers!r}")
+            return _cpp_subset(self, [nms.index(layers)], opt)
         return _cpp_subset(self, layers, opt)
 
     SpatRaster.subset = subset  # type: ignore[assignment]

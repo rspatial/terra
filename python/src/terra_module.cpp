@@ -651,7 +651,14 @@ PYBIND11_MODULE(_terra, m) {
         .def_property_readonly("hasUnit",  &SpatRaster::hasUnit)
         .def_property_readonly("hasDepth", &SpatRaster::hasDepth)
         .def_property_readonly("hasTime",  &SpatRaster::hasTime)
-        .def_property_readonly("time",     &SpatRaster::getTime)
+        .def_property_readonly("time_raw", &SpatRaster::getTime)
+        .def(
+            "time",
+            [](SpatRaster &r, const std::string &format) {
+                py::object get_time = py::module_::import("terra.time").attr("get_time");
+                return get_time(py::cast(r), py::str(format));
+            },
+            py::arg("format") = std::string(""))
         .def_property_readonly("timestep", &SpatRaster::getTimeStep)
         .def_property_readonly("timezone", &SpatRaster::getTimeZone)
 

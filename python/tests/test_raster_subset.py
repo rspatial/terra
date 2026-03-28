@@ -31,6 +31,18 @@ def test_subset_numpy_scalar_int():
     assert s.nlyr() == 1
 
 
+def test_subset_string_layer_name():
+    """``subset('name')`` selects the layer whose name matches."""
+    r = rast(nrows=2, ncols=2, nlyrs=3)
+    r = set_values(r, list(range(2 * 2 * 3)))
+    r.names = ["a", "b", "c"]
+    sb = r.subset("b")
+    assert sb.nlyr() == 1
+    assert sb.names == ["b"]
+    sa = r.subset("a")
+    assert sa.names == ["a"]
+
+
 def test_subset_negative_index_last_layer():
     """-1 selects last layer (Python-style)."""
     r = rast(nrows=2, ncols=2, nlyrs=3)
