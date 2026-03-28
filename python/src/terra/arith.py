@@ -408,9 +408,11 @@ def which_max(x: SpatRaster) -> SpatRaster:
         x: SpatRaster with one or more layers.
 
     Returns:
-        Single-layer SpatRaster with the 1-based layer index of the maximum.
+        Single-layer SpatRaster with **0-based** layer indices (the C++ core
+        uses 1-based internally; this is converted for Python).
     """
-    return _summarize(x, "which.max", True)
+    r = _summarize(x, "which.max", True)
+    return _rast_arith_numb(r, 1.0, "-", False)
 
 
 def which_min(x: SpatRaster) -> SpatRaster:
@@ -421,9 +423,10 @@ def which_min(x: SpatRaster) -> SpatRaster:
         x: SpatRaster with one or more layers.
 
     Returns:
-        Single-layer SpatRaster with the 1-based layer index of the minimum.
+        Single-layer SpatRaster with **0-based** layer indices.
     """
-    return _summarize(x, "which.min", True)
+    r = _summarize(x, "which.min", True)
+    return _rast_arith_numb(r, 1.0, "-", False)
 
 
 def which_lyr(x: SpatRaster) -> SpatRaster:
@@ -434,9 +437,10 @@ def which_lyr(x: SpatRaster) -> SpatRaster:
         x: SpatRaster with one or more layers.
 
     Returns:
-        Single-layer SpatRaster.
+        Single-layer SpatRaster with **0-based** layer indices.
     """
-    return _summarize(x, "which", True)
+    r = _summarize(x, "which", True)
+    return _rast_arith_numb(r, 1.0, "-", False)
 
 
 def where_max(x: SpatRaster, values: bool = True) -> Any:

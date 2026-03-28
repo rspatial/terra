@@ -47,6 +47,10 @@ def get_time(
     """
     Return the time values associated with each layer.
 
+    This mirrors R's ``time(x)``. ``SpatRaster.time()`` calls this with the
+    same arguments; use ``time_raw`` for internal seconds since 1970-01-01
+    (``SpatTime_t``) values.
+
     Parameters
     ----------
     x : SpatRaster
@@ -68,7 +72,7 @@ def get_time(
     if not x.hasTime:
         return [None] * x.nlyr()
 
-    raw = list(x.time)
+    raw = list(x.time_raw)
     tstep = str(x.timestep) if hasattr(x, "timestep") else "seconds"
     tz_str = str(x.timezone) if hasattr(x, "timezone") else "UTC"
     if not tz_str:

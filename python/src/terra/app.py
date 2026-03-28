@@ -189,7 +189,7 @@ def tapp(
         step = choices.get(index.lower(), None)
         if step is None:
             raise ValueError(f"Invalid time step: {index!r}")
-        raw = list(x.time)
+        raw = list(x.time_raw)
         from datetime import datetime, timezone
         epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
         if step == "years":
@@ -306,16 +306,16 @@ def rapp(
     ----------
     x : SpatRaster
     first : int or SpatRaster
-        First layer index (1-based), or a SpatRaster whose values give
+        First layer index (0-based), or a SpatRaster whose values give
         the start index for each cell.
     last : int or SpatRaster
-        Last layer index (1-based), or a SpatRaster.
+        Last layer index (0-based), or a SpatRaster.
     fun : str or callable
     na_rm : bool
     fill : float
         Padding value for cells where first > last.
     clamp : bool
-        Clamp indices to [1, nlyr].
+        Clamp indices to ``[0, nlyr - 1]``.
     circular : bool
         Treat layer sequence as circular.
     filename : str

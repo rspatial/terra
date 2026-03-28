@@ -53,8 +53,7 @@ def test_cells_all():
     """cells(r) returns all valid cell indices."""
     r = rast(nrows=2, ncols=2)
     c = cells(r)
-    # Should be 1..4 (1-based)
-    assert sorted(c) == [1, 2, 3, 4]
+    assert sorted(c) == [0, 1, 2, 3]
 
 
 # ---------------------------------------------------------------------------
@@ -67,8 +66,8 @@ def test_extract_named_cells():
     r.names = ["test"]
     opt = pt.SpatOptions()
     vals = [float("nan")] * 25
-    vals[1] = 15.0  # cell 2 (1-based)
-    vals[6] = 20.0  # cell 7 (1-based)
+    vals[1] = 15.0  # flat index 1 → 0-based cell 1
+    vals[6] = 20.0  # flat index 6 → 0-based cell 6
     r.setValues(vals, opt)
     xy = np.array([[0.3, 0.9], [0.3, 0.7]])
     v = vect(xy)

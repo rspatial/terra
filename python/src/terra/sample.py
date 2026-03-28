@@ -146,7 +146,7 @@ def grid_sample(
 
     Returns
     -------
-    numpy.ndarray of indices (1-based) into *xy*.
+    numpy.ndarray of indices (0-based) into *xy*.
     """
     if isinstance(xy, SpatVector):
         crds = np.array(xy.coordinates(), dtype=float).reshape(-1, 2)
@@ -156,15 +156,15 @@ def grid_sample(
             crds = crds.reshape(1, -1)
 
     cell = r.cellFromXY(crds[:, 0].tolist(), crds[:, 1].tolist(), float("nan"))
-    cell = np.array(cell, dtype=float) + 1
+    cell = np.array(cell, dtype=float)
     valid = ~np.isnan(cell)
     cell = cell.astype(int)
 
     # Optional checkerboard filter
     if chess.lower() in ("white", "black"):
         nc = r.ncol()
-        row_idx = (cell - 1) // nc
-        col_idx = (cell - 1) % nc
+        row_idx = cell // nc
+        col_idx = cell % nc
         parity = (row_idx + col_idx) % 2
         keep_parity = 0 if chess.lower() == "white" else 1
         valid &= (parity == keep_parity)
@@ -184,4 +184,4 @@ def grid_sample(
             chosen = rng.choice(idxs, n, replace=False)
             selected.extend(chosen.tolist())
 
-    return np.array(sorted(selected), dtype=int) + 1
+    return np.array(sorted(selected), dtype=int)

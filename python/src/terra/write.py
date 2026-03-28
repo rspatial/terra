@@ -100,7 +100,6 @@ def write_start(
     ok = x.writeStart(opt, list(set(sources)))
     messages(x, "writeStart")
     b = x.getBlockSizeWrite()
-    b["row"] = [r + 1 for r in b["row"]]
     return b
 
 
@@ -118,7 +117,7 @@ def write_values(
     x : SpatRaster
     v : list of float
     start : int
-        Starting row (1-based).
+        Starting row (0-based; matches C++ / ``write_start`` / ``blocks``).
     nrows : int
         Number of rows in this block.
 
@@ -126,7 +125,7 @@ def write_values(
     -------
     bool
     """
-    ok = x.writeValues(list(v), start - 1, nrows)
+    ok = x.writeValues(list(v), start, nrows)
     messages(x, "writeValues")
     return bool(ok)
 
@@ -164,12 +163,11 @@ def blocks(x: SpatRaster, n: int = 4) -> dict:
 
     Returns
     -------
-    dict with keys ``"n"``, ``"row"`` (1-based), ``"nrows"``.
+    dict with keys ``"n"``, ``"row"`` (0-based), ``"nrows"``.
     """
     opt = spatoptions()
     opt.ncopies = n
     b = x.getBlockSizeR(opt)
-    b["row"] = [r + 1 for r in b["row"]]
     return b
 
 

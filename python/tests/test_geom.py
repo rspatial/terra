@@ -51,17 +51,17 @@ def test_extent():
 
 
 def test_xy_from_cell_10():
-    """Cell 10 (1-based) → x=-0.5, y=5.45."""
+    """0-based cell 9 (same location as R / terra cell 10) → x=-0.5, y=5.45."""
     r = make_r3()
-    xy = xy_from_cell(r, 10)
+    xy = xy_from_cell(r, 9)
     assert xy[0][0] == pytest.approx(-0.5)
     assert xy[0][1] == pytest.approx(5.45)
 
 
 def test_xy_from_cell_1():
-    """Cell 1 (top-left corner centre) → x=-9.5, y=5.45."""
+    """First cell (0-based index 0, top-left centre) → x=-9.5, y=5.45."""
     r = make_r3()
-    xy = xy_from_cell(r, 1)
+    xy = xy_from_cell(r, 0)
     assert xy[0][0] == pytest.approx(-9.5)
     assert xy[0][1] == pytest.approx(5.45)
 
@@ -70,19 +70,18 @@ def test_xy_from_cell_last():
     """Last cell → x=9.5, y=-4.45."""
     r = make_r3()
     ncell = r.ncell()
-    xy = xy_from_cell(r, ncell)
+    xy = xy_from_cell(r, ncell - 1)
     assert xy[0][0] == pytest.approx(9.5)
     assert xy[0][1] == pytest.approx(-4.45, rel=1e-4)
 
 
 def test_xy_from_cell_out_of_bounds():
-    """Cell 0 or ncell+1 → NaN coords (or out-of-range indicator)."""
+    """Cell -1 or ncell → NaN coords (or out-of-range indicator)."""
     r = make_r3()
     ncell = r.ncell()
-    for bad_cell in (0, ncell + 1):
+    for bad_cell in (-1, ncell):
         xy = xy_from_cell(r, bad_cell)
-        # The xy_from_cell function converts 0-based, so bad cell indices
-        # result in out-of-range lookups; check coords are NaN or extreme.
+        # Out-of-range 0-based indices; check coords are NaN or extreme.
         x_coord = float(xy[0][0])
         y_coord = float(xy[0][1])
         is_invalid = (

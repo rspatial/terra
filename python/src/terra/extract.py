@@ -32,7 +32,7 @@ def _flat_extract_to_dataframe(
         else:
             nrow = e.size // nc
             mat = e.reshape((nrow, nc), order="C")
-        ids = np.arange(1, nrow + 1, dtype=float)
+        ids = np.arange(0, nrow, dtype=float)
         arr = np.column_stack([ids, mat])
     else:
         ncol = nc + 1
@@ -40,8 +40,6 @@ def _flat_extract_to_dataframe(
         arr = e.reshape((nrow, ncol), order="C")
 
     df = pd.DataFrame(arr, columns=list(cn))
-    if cells and "cell" in df.columns:
-        df["cell"] = df["cell"] + 1.0
     return df
 
 
@@ -80,7 +78,7 @@ def extract(
         ``"simple"`` (cell-centre, default) or ``"bilinear"``
         (4-cell bilinear interpolation; points only).
     layer : int, str, or SpatRaster, optional
-        Variable-layer extraction: start layer index per feature (1-based),
+        Variable-layer extraction: start layer index per feature (0-based),
         or a SpatRaster whose values give per-cell start indices.
     fun : str or callable, optional
         Aggregation function for polygons/lines.  If None, all intersecting
@@ -138,7 +136,7 @@ def extract(
         if df is None:
             return pd.DataFrame()
         if ID:
-            df.insert(0, "ID", range(1, len(df) + 1))
+            df.insert(0, "ID", range(0, len(df)))
         return df
 
     if touches is None:

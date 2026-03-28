@@ -18,6 +18,8 @@ def test_time_roundtrip():
     assert has_time(r_timed)
     t_back = get_time(r_timed)
     assert len(t_back) == 1
+    assert r_timed.time() == t_back
+    assert get_time(r_timed, format="raw") == list(r_timed.time_raw)
 
 
 def test_time_info_zone():

@@ -35,7 +35,7 @@ def set_names_rast(
     value : list of str
         New names.  Length must equal nlyr(x) (or len(index) if provided).
     index : list of int, optional
-        1-based layer indices to rename.  If None, rename all layers.
+        0-based layer indices to rename.  If None, rename all layers.
     validate : bool
         If True, sanitize names to be valid identifiers.
 
@@ -45,12 +45,12 @@ def set_names_rast(
     """
     xc = x.deepcopy() if hasattr(x, 'deepcopy') else x
     if index is None:
-        index = list(range(1, xc.nlyr() + 1))
+        index = list(range(xc.nlyr()))
     if len(value) != len(index):
         raise ValueError("length of value does not match length of index")
     current = list(xc.names)
     for i, v in zip(index, value):
-        current[i - 1] = str(v)
+        current[i] = str(v)
     if validate:
         import re
         seen: dict = {}
@@ -85,14 +85,14 @@ def set_names_inplace(
     x : SpatRaster
     value : list of str
     index : list of int, optional
-        1-based layer indices.
+        0-based layer indices.
     validate : bool
     """
     if index is None:
-        index = list(range(1, x.nlyr() + 1))
+        index = list(range(x.nlyr()))
     current = list(x.names)
     for i, v in zip(index, value):
-        current[i - 1] = str(v)
+        current[i] = str(v)
     if not x.setNames(current, False):
         raise RuntimeError("cannot set these names")
 

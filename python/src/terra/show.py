@@ -13,7 +13,10 @@ from __future__ import annotations
 
 import math
 import os
+from datetime import date, datetime, timezone
 from typing import Any, List, Optional
+
+from .time import get_time
 
 __all__ = [
     "repr_extent",
@@ -30,6 +33,20 @@ _MAX_NAMES_W = 60      # total character budget for name columns
 _MAX_SRC = 3           # maximum sources shown
 _MAX_COLS_DF = 10      # max attribute columns shown in vector preview
 _MAX_ROWS_DF = 3       # max attribute rows shown in vector preview
+
+# R base::month.abb (English), used like show.R for timestep "months"
+_MONTH_ABB = (
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+)
+
+
+def _format_ym_r(x: float) -> str:
+    """R time.R ``format_ym`` — fractional year+month to ``YYYY-Mon``."""
+    y = math.floor(x)
+    m = int(round((x - y) * 12 + 1))
+    m = max(1, min(12, m))
+    return f"{y}-{_MONTH_ABB[m - 1]}"
 
 
 def _basename(path: str, n: int = 150) -> str:
@@ -75,6 +92,79 @@ def _truncname(name: str, maxw: int) -> str:
         return name
     mid = maxw // 2
     return name[:mid] + "~" + name[len(name) - mid + 1:]
+
+
+def _fmt_raw_num(v: Any) -> str:
+    x = float(v)
+    if math.isnan(x) or math.isinf(x):
+        return " ? "
+    return str(int(x)) if x.is_integer() else str(x)
+
+
+def _fmt_converted_endpoint(val: Any, step: str) -> str:
+    """Format one element of ``range(time(object))`` like R ``show.R``."""
+    if val is None:
+        return " ? "
+    if step == "raw":
+        return _fmt_raw_num(val)
+
+    if step == "years":
+        return str(int(val))
+
+    if step == "months":
+        i = int(val)
+        if 1 <= i <= 12:
+            return _MONTH_ABB[i - 1]
+        return str(val)
+
+    if step == "yearmonths":
+        return _format_ym_r(float(val))
+
+    if step == "days":
+        if isinstance(val, date) and not isinstance(val, datetime):
+            return val.isoformat()
+        return str(val)
+
+    if step == "seconds":
+        if not isinstance(val, datetime):
+            return str(val)
+        dt = val
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        if dt.hour == 0 and dt.minute == 0 and dt.second == 0:
+            return dt.strftime("%Y-%m-%d")
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
+
+    return str(val)
+
+
+def _fmt_time_line_like_show_r(tms: List[Any], step: str, tz: str) -> str:
+    """
+    Match R ``show.R``: ``tms <- time(object); rtim <- range(tms);`` then
+    paste min/max, optional TZ for ``seconds``, then ``(n steps)``.
+    ``tms`` must be Python's ``get_time()`` output (same role as R's ``time()``).
+    """
+    clean = [t for t in tms if t is not None]
+    if not clean:
+        return ""
+    tmin, tmax = min(clean), max(clean)
+    n_steps = len(set(clean))
+
+    s_min = _fmt_converted_endpoint(tmin, step)
+    s_max = _fmt_converted_endpoint(tmax, step)
+
+    if tmin == tmax:
+        t_str = s_min
+    else:
+        t_str = f"{s_min} to {s_max}"
+
+    if step == "seconds" and tz:
+        t_str = f"{t_str} {tz}"
+
+    if tmin != tmax:
+        t_str = f"{t_str} ({n_steps} steps)"
+
+    return t_str
 
 
 # ── SpatExtent ──────────────────────────────────────────────────────────────
@@ -204,12 +294,11 @@ def repr_raster(r: Any) -> str:  # noqa: C901  (complex but mirrors R closely)
         except Exception:
             pass
 
-    # ── Time ──
+    # ── Time (same inputs as R: tms <- time(object); rtim <- range(tms)) ──
     if r.hasTime:
         try:
-            tms = r.time
-            step = r.timestep
-            tz = r.timezone
+            step = str(r.timestep) if hasattr(r, "timestep") else ""
+            tz = str(r.timezone) if r.timezone else ""
 
             step_labels = {
                 "yearmonths": "time (ymnts)",
@@ -220,15 +309,12 @@ def repr_raster(r: Any) -> str:  # noqa: C901  (complex but mirrors R closely)
             }
             label = step_labels.get(step, "time        ")
 
+            if step == "raw":
+                tms = get_time(r, format="raw")
+            else:
+                tms = get_time(r)
             if tms:
-                tmin, tmax = min(tms), max(tms)
-                n_steps = len(set(tms))
-                if tmin == tmax:
-                    t_str = str(tmin)
-                else:
-                    t_str = f"{tmin} to {tmax} ({n_steps} steps)"
-                if step == "seconds" and tz:
-                    t_str += f" {tz}"
+                t_str = _fmt_time_line_like_show_r(list(tms), step, tz)
                 lines.append(f"{label}: {t_str}")
         except Exception:
             pass

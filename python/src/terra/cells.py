@@ -1,5 +1,8 @@
 """
 cells.py — cell index operations for SpatRaster.
+
+All cell, row, and column indices exposed here are **0-based**, matching the
+C++ core and NumPy-style Python conventions.
 """
 from __future__ import annotations
 from typing import List, Optional, Union
@@ -9,8 +12,8 @@ from ._terra import SpatRaster, SpatVector, SpatExtent, SpatOptions
 from ._helpers import messages
 
 
-def _as_1based_cell_list(cell: Union[int, float, np.integer, List, np.ndarray]) -> List[int]:
-    """Coerce *cell* to a list of 1-based indices (handles numpy scalars and float)."""
+def _as_cell_list(cell: Union[int, float, np.integer, List, np.ndarray]) -> List[int]:
+    """Coerce *cell* to a list of 0-based cell indices."""
     if isinstance(cell, (list, tuple)):
         return [int(c) for c in cell]
     if isinstance(cell, np.ndarray):
@@ -44,8 +47,8 @@ def cells(
     ----------
     x : SpatRaster
     y : float, list, SpatVector, or SpatExtent, optional
-        - If absent: all cell indices ``1 .. ncell(x)`` when there are no
-          values; otherwise non-NA cell indices (1-based), matching R.
+        - If absent: all cell indices ``0 .. ncell(x)-1`` when there are no
+          values; otherwise non-NA cell indices (0-based).
         - If a scalar or list: find cells whose values match *y*.
         - If a SpatVector: find cells overlapping *y*.
         - If a SpatExtent: find cells within *y*.
@@ -64,46 +67,43 @@ def cells(
 
     Returns
     -------
-    numpy.ndarray (1-D cell indices, 1-based), or
+    numpy.ndarray (1-D cell indices, 0-based), or
     list of arrays (one per layer when *y* is numeric), or
     numpy.ndarray with columns [ID, cell, …] when *y* is a SpatVector.
     """
     opt = _opt()
 
     if y is None:
-        # R cells.R: if (!hasValues(x)) 1:ncell(x) else cells_notna_novalues+1
         if x.hasValues:
             raw = x.cells_notna_novalues(opt)
-            return np.array(raw, dtype=int) + 1
+            return np.array(raw, dtype=int)
         n = x.ncell()
-        return np.arange(1, n + 1, dtype=int)
+        return np.arange(0, n, dtype=int)
 
     if isinstance(y, SpatExtent):
-        raw = x.extCells(y.pntr) if hasattr(y, 'pntr') else x.extCells(y)
-        return np.array(raw, dtype=int) + 1
+        raw = x.extCells(y.pntr) if hasattr(y, "pntr") else x.extCells(y)
+        return np.array(raw, dtype=int)
 
     if isinstance(y, SpatVector):
         if touches is None:
             from .vect import is_lines
+
             touches = is_lines(y)
         raw = x.vectCells(y, touches, small, method, weights, exact, opt)
         if y.geomtype() == "points":
             if method == "bilinear":
                 m = np.array(raw, dtype=float).reshape(y.nrow(), -1)
-                m[:, 0:4] = m[:, 0:4] + 1
-                ids = np.arange(1, y.nrow() + 1).reshape(-1, 1)
+                ids = np.arange(0, y.nrow(), dtype=int).reshape(-1, 1)
                 m = np.hstack([ids, m])
                 return m
             else:
                 m = np.array(raw, dtype=float).reshape(y.nrow(), -1)
-                m[:, 0] = m[:, 0] + 1
-                ids = np.arange(1, y.nrow() + 1).reshape(-1, 1)
+                ids = np.arange(0, y.nrow(), dtype=int).reshape(-1, 1)
                 m = np.hstack([ids, m])
                 return m
         else:
             ncols = 3 if (weights or exact) else 2
             m = np.array(raw, dtype=float).reshape(-1, ncols)
-            m[:, :2] = m[:, :2] + 1
             return m
 
     # Numeric value matching
@@ -117,11 +117,10 @@ def cells(
         out = []
         for arr in raw_list:
             m = np.array(arr, dtype=float).reshape(-1, 2)
-            m[:, 0] = m[:, 0] + 1
             out.append(m)
         return out
     else:
-        return [np.array(arr, dtype=int) + 1 for arr in raw_list]
+        return [np.array(arr, dtype=int) for arr in raw_list]
 
 
 # ---------------------------------------------------------------------------
@@ -129,17 +128,17 @@ def cells(
 # ---------------------------------------------------------------------------
 
 def row_from_y(x: SpatRaster, y: Union[float, List[float]]) -> np.ndarray:
-    """Return row indices (1-based) for y-coordinates."""
+    """Return row indices (0-based) for y-coordinates."""
     if isinstance(y, (int, float)):
         y = [float(y)]
-    return np.array(x.rowFromY(y), dtype=int) + 1
+    return np.array(x.rowFromY(y), dtype=int)
 
 
 def col_from_x(x: SpatRaster, xcoord: Union[float, List[float]]) -> np.ndarray:
-    """Return column indices (1-based) for x-coordinates."""
+    """Return column indices (0-based) for x-coordinates."""
     if isinstance(xcoord, (int, float)):
         xcoord = [float(xcoord)]
-    return np.array(x.colFromX(xcoord), dtype=int) + 1
+    return np.array(x.colFromX(xcoord), dtype=int)
 
 
 def cell_from_xy(
@@ -158,14 +157,14 @@ def cell_from_xy(
     Returns
     -------
     numpy.ndarray, dtype float64
-        1-based cell numbers.  Invalid coordinates (outside extent or NaN
-        inputs) are ``nan``, matching R's ``NA`` for cell index.
+        0-based cell numbers.  Invalid coordinates (outside extent or NaN
+        inputs) are ``nan``.
     """
     xy = np.asarray(xy, dtype=float)
     if xy.ndim == 1:
         xy = xy.reshape(1, -1)
     raw = x.cellFromXY(xy[:, 0].tolist(), xy[:, 1].tolist(), float("nan"))
-    return np.array(raw, dtype=float) + 1.0
+    return np.array(raw, dtype=float)
 
 
 def cell_from_row_col(
@@ -173,15 +172,13 @@ def cell_from_row_col(
     row: Union[int, List[int]],
     col: Union[int, List[int]],
 ) -> np.ndarray:
-    """Return cell numbers for row/column index pairs (1-based)."""
+    """Return cell numbers for row/column index pairs (0-based)."""
     if isinstance(row, int):
         row = [row]
     if isinstance(col, int):
         col = [col]
-    row0 = [r - 1 for r in row]
-    col0 = [c - 1 for c in col]
-    raw = x.cellFromRowCol(row0, col0)
-    return np.array(raw, dtype=int) + 1
+    raw = x.cellFromRowCol(list(row), list(col))
+    return np.array(raw, dtype=int)
 
 
 def xy_from_cell(x: SpatRaster, cell: Union[int, float, np.integer, List[int], np.ndarray]) -> np.ndarray:
@@ -191,15 +188,14 @@ def xy_from_cell(x: SpatRaster, cell: Union[int, float, np.integer, List[int], n
     Parameters
     ----------
     x : SpatRaster
-    cell : int or list of int (1-based)
+    cell : int or list of int (0-based)
 
     Returns
     -------
     numpy.ndarray, shape (n, 2), columns [x, y].
     """
-    cell = _as_1based_cell_list(cell)
-    cell0 = [c - 1 for c in cell]
-    coords = x.xyFromCell(cell0)
+    cell = _as_cell_list(cell)
+    coords = x.xyFromCell([float(c) for c in cell])
     return np.array(coords, dtype=float).reshape(-1, 2)
 
 
@@ -213,14 +209,14 @@ def row_col_from_cell(
     Parameters
     ----------
     x : SpatRaster
-    cell : int or list (1-based)
+    cell : int or list (0-based)
 
     Returns
     -------
-    numpy.ndarray, shape (n, 2), columns [row, col] (1-based).
+    numpy.ndarray, shape (n, 2), columns [row, col] (0-based).
     """
-    cell = _as_1based_cell_list(cell)
-    cell0 = [c - 1 for c in cell]
-    rc = x.rowColFromCell(cell0)
-    arr = np.array(rc, dtype=int).reshape(-1, 2) + 1
+    cell = _as_cell_list(cell)
+    cell_f = [float(c) for c in cell]
+    rc = x.rowColFromCell(cell_f)
+    arr = np.array(rc, dtype=int).reshape(-1, 2)
     return arr

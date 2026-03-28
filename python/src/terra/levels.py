@@ -13,6 +13,13 @@ def _opt() -> SpatOptions:
     return SpatOptions()
 
 
+def _layer_idx(x: SpatRaster, layer: Union[int, str]) -> int:
+    """0-based layer index (matches C++ ``source`` layer indexing)."""
+    if isinstance(layer, str):
+        return list(x.names).index(layer)
+    return int(layer)
+
+
 # ---------------------------------------------------------------------------
 # is_factor / as_factor
 # ---------------------------------------------------------------------------
@@ -88,7 +95,7 @@ def set_levels(x: SpatRaster, value: Union[List, Any], active: int = 1) -> SpatR
         if v is None:
             xc.removeCategories(i)
         else:
-            set_cats(xc, i + 1, v, active)
+            set_cats(xc, i, v, active)
     return xc
 
 
@@ -127,7 +134,7 @@ def cats(x: SpatRaster, layer: Optional[Union[int, str]] = None) -> List[Any]:
 
 def set_cats(
     x: SpatRaster,
-    layer: Union[int, str] = 1,
+    layer: Union[int, str] = 0,
     value: Any = None,
     active: int = 1,
 ) -> bool:
@@ -138,7 +145,7 @@ def set_cats(
     ----------
     x : SpatRaster
     layer : int or str
-        Layer index (1-based) or name.
+        Layer index (0-based) or name.
     value : pandas.DataFrame
         Lookup table with at least two columns: integer IDs and labels.
     active : int
@@ -148,10 +155,7 @@ def set_cats(
     -------
     bool
     """
-    if isinstance(layer, str):
-        nms = list(x.names)
-        layer = nms.index(layer) + 1
-    layer_idx = int(layer) - 1
+    layer_idx = _layer_idx(x, layer)
 
     if value is None:
         x.removeCategories(layer_idx)
@@ -173,7 +177,7 @@ def set_cats(
 
 def categories(
     x: SpatRaster,
-    layer: Union[int, str] = 1,
+    layer: Union[int, str] = 0,
     value: Any = None,
     active: int = 1,
 ) -> SpatRaster:
@@ -200,7 +204,7 @@ def categories(
 # active_cat
 # ---------------------------------------------------------------------------
 
-def active_cat(x: SpatRaster, layer: Union[int, str] = 1) -> int:
+def active_cat(x: SpatRaster, layer: Union[int, str] = 0) -> int:
     """
     Return the index of the active label column for a categorical layer.
 
@@ -208,21 +212,20 @@ def active_cat(x: SpatRaster, layer: Union[int, str] = 1) -> int:
     ----------
     x : SpatRaster
     layer : int or str
+        Layer (0-based index or name).
 
     Returns
     -------
-    int  (column index, 1-based)
+    int
+        Column index within the category table (C++ convention).
     """
-    if isinstance(layer, str):
-        nms = list(x.names)
-        layer = nms.index(layer) + 1
-    return int(x.getCatIndex(int(layer) - 1))
+    return int(x.getCatIndex(_layer_idx(x, layer)))
 
 
 def set_active_cat(
     x: SpatRaster,
     value: Union[int, str],
-    layer: Union[int, str] = 1,
+    layer: Union[int, str] = 0,
 ) -> SpatRaster:
     """
     Return a copy of *x* with a different active category column.
@@ -231,20 +234,18 @@ def set_active_cat(
     ----------
     x : SpatRaster
     value : int or str
-        Column index (1-based) or column name to activate.
+        Column index or column name to activate.
     layer : int or str
+        Layer (0-based index or name).
 
     Returns
     -------
     SpatRaster
     """
-    if isinstance(layer, str):
-        nms = list(x.names)
-        layer = nms.index(layer) + 1
-    layer_idx = int(layer) - 1
+    layer_idx = _layer_idx(x, layer)
 
     if isinstance(value, str):
-        ct = cats(x, layer)
+        ct = cats(x, layer_idx)
         if ct is None:
             raise ValueError("layer is not categorical")
         col_idx = list(ct.columns).index(value)
@@ -265,7 +266,7 @@ def add_cats(
     x: SpatRaster,
     value: Any,
     merge: bool = False,
-    layer: Union[int, str] = 1,
+    layer: Union[int, str] = 0,
 ) -> SpatRaster:
     """
     Add columns to the category table of a layer.
@@ -284,10 +285,9 @@ def add_cats(
     SpatRaster
     """
     import pandas as pd
-    if isinstance(layer, str):
-        nms = list(x.names)
-        layer = nms.index(layer) + 1
-    cts = cats(x, layer)
+
+    li = _layer_idx(x, layer)
+    cts = cats(x, li)
     if cts is None:
         raise ValueError("layer has no categories to add to")
     nact = len(cts.columns)
@@ -300,7 +300,7 @@ def add_cats(
         if len(cts) != len(value):
             raise ValueError("number of categories does not match")
         cts = pd.concat([cts, value.reset_index(drop=True)], axis=1)
-    return categories(x, layer=layer, value=cts, active=nact)
+    return categories(x, layer=li, value=cts, active=nact)
 
 
 def drop_levels(x: SpatRaster) -> SpatRaster:
@@ -379,7 +379,7 @@ def coltab(x: SpatRaster) -> List[Any]:
 def set_coltab(
     x: SpatRaster,
     value: Any,
-    layer: Union[int, str] = 1,
+    layer: Union[int, str] = 0,
 ) -> SpatRaster:
     """
     Set a color table for a layer of *x*.
@@ -397,10 +397,7 @@ def set_coltab(
     import pandas as pd
     import numpy as np
 
-    if isinstance(layer, str):
-        nms = list(x.names)
-        layer = nms.index(layer) + 1
-    layer_idx = int(layer) - 1
+    layer_idx = _layer_idx(x, layer)
 
     xc = x.deepcopy() if hasattr(x, 'deepcopy') else x
 

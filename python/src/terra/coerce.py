@@ -131,8 +131,8 @@ def as_lines(
         if arr.shape[1] == 2:
             nr = len(arr)
             v.setGeometry("lines",
-                          list(range(1, nr + 1)),
-                          list(range(1, nr + 1)),
+                          list(range(0, nr)),
+                          list(range(0, nr)),
                           arr[:, 0].tolist(),
                           arr[:, 1].tolist(),
                           [False] * nr)
@@ -262,7 +262,7 @@ def as_data_frame(
     xy : bool
         Include x/y coordinate columns.
     cells : bool
-        Include cell number column.
+        Include cell number column (0-based cell index).
     time : bool
         Include time column (if available).
     na_rm : bool
@@ -287,7 +287,7 @@ def as_data_frame(
 
     col_data: dict = {}
     if cells:
-        col_data["cell"] = np.arange(1, nr * nc + 1)
+        col_data["cell"] = np.arange(0, nr * nc)
     if xy:
         xs = np.tile(np.linspace(x.xmin() + x.xres() / 2,
                                   x.xmax() - x.xres() / 2, nc), nr)

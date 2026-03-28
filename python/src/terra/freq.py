@@ -20,10 +20,10 @@ def _freq_apply_factor_labels(x: SpatRaster, df: "pd.DataFrame") -> "pd.DataFram
         return df
     out = df.copy()
     cgs = cats(x)
-    for f in range(1, x.nlyr() + 1):
-        if not ff[f - 1]:
+    for f in range(x.nlyr()):
+        if not ff[f]:
             continue
-        cg = cgs[f - 1]
+        cg = cgs[f]
         if cg is None or len(cg.columns) < 2:
             continue
         mask = out["layer"] == f
@@ -69,7 +69,7 @@ def _freq_cpp_to_dataframe(
             vals = arr[:n]
             cnts = arr[n:]
             for v, c in zip(vals, cnts):
-                rows.append((lyr + 1, float(v), float(c)))
+                rows.append((lyr, float(v), float(c)))
     else:
         vec = raw[0] if raw else []
         arr = np.asarray(vec, dtype=float) if len(vec) else np.array([])
@@ -115,6 +115,7 @@ def freq(
         If set, return only the total count of this value across cells
         (per layer if ``bylayer``).  Use ``float('nan')`` to count NAs.
     bylayer : bool
+        If True, include a ``layer`` column with **0-based** layer indices.
     usenames : bool
         Replace layer indices with layer names.
     zones : optional
@@ -153,7 +154,7 @@ def freq(
             fidx = next(i for i, b in enumerate(ff) if b)
             sub = messages(x.subset([fidx], opt), "subset")
             df0 = freq(sub, digits=digits, value=None, bylayer=True, usenames=False)
-            df0 = df0[df0["layer"] == 1].copy()
+            df0 = df0[df0["layer"] == 0].copy()
             out = df0[df0["value"].astype(str) == value]
             if usenames:
                 out = out.copy()
@@ -175,7 +176,7 @@ def freq(
         if bylayer:
             df = pd.DataFrame(
                 {
-                    "layer": np.arange(1, x.nlyr() + 1),
+                    "layer": np.arange(0, x.nlyr()),
                     "value": v_out,
                     "count": cnts,
                 }
@@ -184,7 +185,7 @@ def freq(
             df = pd.DataFrame({"value": [v_out], "count": [int(sum(cnts))]})
         if usenames and bylayer:
             df = df.copy()
-            df["layer"] = [nms[i - 1] for i in df["layer"]]
+            df["layer"] = [nms[int(i)] for i in df["layer"]]
         return df
 
     # --- full table -----------------------------------------------------------
@@ -202,7 +203,7 @@ def freq(
 
     if usenames and bylayer and len(df) > 0:
         df = df.copy()
-        df["layer"] = df["layer"].astype(int).map(lambda i: nms[i - 1])
+        df["layer"] = df["layer"].astype(int).map(lambda i: nms[i])
 
     if wide and len(df) > 0:
         df = df.copy()

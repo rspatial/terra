@@ -33,9 +33,9 @@ def init(
         - ``"x"`` — cell x-coordinate.
         - ``"y"`` — cell y-coordinate.
         - ``"xy"`` — both (returns 2-layer raster).
-        - ``"row"`` — row number (1-based).
-        - ``"col"`` — column number (1-based).
-        - ``"cell"`` — cell number (1-based).
+        - ``"row"`` — row number (0-based; matches C++ / NumPy).
+        - ``"col"`` — column number (0-based).
+        - ``"cell"`` — cell number (0-based).
         - ``"chess"`` — checkerboard pattern (0/1).
         - scalar — fill all cells with that value.
         - array-like — fill cells with given values (recycled as needed).

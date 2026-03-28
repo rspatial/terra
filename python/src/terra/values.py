@@ -159,7 +159,7 @@ def set_values(x: SpatRaster, v: Union[np.ndarray, List, float]) -> SpatRaster:
 def focal_values(
     x: SpatRaster,
     w: Union[int, List[int]] = 3,
-    row: int = 1,
+    row: int = 0,
     nrows: int = 1,
     fill: float = float("nan"),
 ) -> np.ndarray:
@@ -172,7 +172,7 @@ def focal_values(
     w : int or list of int
         Window size (cells).  Scalar → square window.
     row : int
-        First row (1-based).
+        First row (0-based).
     nrows : int
         Number of rows to process.
     fill : float
@@ -185,7 +185,7 @@ def focal_values(
     if isinstance(w, (int, float)):
         w = [int(w), int(w)]
     opt = _opt()
-    m = x.focalValues(w, fill, max(0, row - 1), nrows, opt)
+    m = x.focalValues(w, fill, max(0, row), nrows, opt)
     arr = np.array(m, dtype=float).reshape(-1, int(w[0]) * int(w[1]))
     return arr
 

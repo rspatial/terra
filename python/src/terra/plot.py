@@ -767,8 +767,8 @@ def plot(
         y: Layer selector.  Can be:
 
             * ``None`` — plot all layers (up to ``maxnl``).
-            * ``int`` — 1-based layer index (R convention).
-            * ``list[int]`` — multiple 1-based layer indices.
+            * ``int`` — 0-based layer index (Python convention; ``-1`` is last).
+            * ``list[int]`` — multiple 0-based layer indices.
             * ``str`` or ``list[str]`` — layer name(s).
 
         col: Colour palette as a list of hex strings, or a matplotlib
@@ -816,21 +816,28 @@ def plot(
     nl_total = r.nlyr()
     lyr_names = list(r.names)
 
-    # ── resolve layer selection ───────────────────────────────────────────────
+    # ── resolve layer selection (0-based) ────────────────────────────────────
     if y is None:
         n_plot = min(nl_total, maxnl)
-        lyrs_1based = list(builtins.range(1, n_plot + 1))
+        lyrs_0based = list(builtins.range(n_plot))
     elif isinstance(y, str):
-        idx = lyr_names.index(y)
-        lyrs_1based = [idx + 1]
+        lyrs_0based = [lyr_names.index(y)]
     elif isinstance(y, (list, tuple)) and y and isinstance(y[0], str):
-        lyrs_1based = [lyr_names.index(n) + 1 for n in y]
+        lyrs_0based = [lyr_names.index(n) for n in y]
     elif isinstance(y, (list, tuple)):
-        lyrs_1based = [int(v) for v in y]
+        lyrs_0based = [int(v) for v in y]
     else:
-        lyrs_1based = [int(y)]
+        lyrs_0based = [int(y)]
 
-    lyrs_0based = [i - 1 for i in lyrs_1based]
+    def _norm_lyr(i: int) -> int:
+        j = int(i)
+        if j < 0:
+            j = nl_total + j
+        if j < 0 or j >= nl_total:
+            raise IndexError(f"layer index {i!r} out of range for nlyr={nl_total}")
+        return j
+
+    lyrs_0based = [_norm_lyr(i) for i in lyrs_0based]
 
     # ── colour palette ────────────────────────────────────────────────────────
     if col is None:
@@ -913,9 +920,9 @@ def plot(
 
 def plot_rgb(
     r: SpatRaster,
-    red: int = 1,
-    green: int = 2,
-    blue: int = 3,
+    red: int = 0,
+    green: int = 1,
+    blue: int = 2,
     alpha_band: Optional[int] = None,
     scale: float = 255.0,
     stretch: Optional[str] = None,
@@ -931,10 +938,10 @@ def plot_rgb(
 
     Args:
         r: SpatRaster with at least three layers.
-        red: 1-based layer index for the red channel.
-        green: 1-based layer index for the green channel.
-        blue: 1-based layer index for the blue channel.
-        alpha_band: Optional 1-based layer index for the alpha (transparency)
+        red: 0-based layer index for the red channel.
+        green: 0-based layer index for the green channel.
+        blue: 0-based layer index for the blue channel.
+        alpha_band: Optional 0-based layer index for the alpha (transparency)
             channel.
         scale: Maximum value for normalisation.  Use 255 for 8-bit data,
             65535 for 16-bit data, or 1 if bands are already in [0, 1].
@@ -955,9 +962,9 @@ def plot_rgb(
     """
     import matplotlib.pyplot as plt
 
-    rgb_bands = [red - 1, green - 1, blue - 1]
+    rgb_bands = [red, green, blue]
     if alpha_band is not None:
-        rgb_bands.append(alpha_band - 1)
+        rgb_bands.append(alpha_band)
 
     rgba = _rgb_image(r, rgb_bands, scale=scale, stretch=stretch, na_color=na_color)
 

@@ -77,7 +77,7 @@ def relate(
     relation : str
         DE-9IM relation name or pattern.
     pairs : bool
-        If True, return a 2-column array of feature index pairs (1-based)
+        If True, return a 2-column array of feature index pairs (0-based)
         instead of a boolean matrix.
     na_rm : bool
         Remove NA results when *pairs=True*.
@@ -85,15 +85,15 @@ def relate(
     Returns
     -------
     numpy.ndarray, shape (nrow(x), nrow(y)) of bool, or
-    numpy.ndarray, shape (n, 2) of [id.x, id.y] (1-based) if pairs=True.
+    numpy.ndarray, shape (n, 2) of [id.x, id.y] (0-based) if pairs=True.
     """
     out = x.related_between(y, relation, na_rm)
     messages(x, "relate")
     if pairs:
         if len(out[0]) == 0:
             return np.empty((0, 2), dtype=int)
-        m = np.column_stack([np.array(out[0], dtype=int) + 1,
-                             np.array(out[1], dtype=int) + 1])
+        m = np.column_stack([np.array(out[0], dtype=int),
+                             np.array(out[1], dtype=int)])
         return m
     else:
         m = np.zeros((x.nrow(), y.nrow()), dtype=bool)
@@ -124,15 +124,15 @@ def relate_self(
 
     Returns
     -------
-    numpy.ndarray, shape (n, 2) of [id1, id2] (1-based) pairs.
+    numpy.ndarray, shape (n, 2) of [id1, id2] (0-based) pairs.
     """
     n = x.nrow()
     out = x.related_between(x, relation, na_rm)
     messages(x, "relate_self")
     if len(out[0]) == 0:
         return np.empty((0, 2), dtype=int)
-    rows = np.array(out[0], dtype=int) + 1
-    cols = np.array(out[1], dtype=int) + 1
+    rows = np.array(out[0], dtype=int)
+    cols = np.array(out[1], dtype=int)
     pairs = np.column_stack([rows, cols])
     # Remove self-relation
     pairs = pairs[pairs[:, 0] != pairs[:, 1]]

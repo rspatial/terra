@@ -309,7 +309,7 @@ def distance_vect_self(
             r, c = r.ravel(), c.ravel()
             mask = r != c
             r, c = r[mask], c[mask]
-        out = np.column_stack([r + 1, c + 1, mat[r, c]])
+        out = np.column_stack([r, c, mat[r, c]])
         return out
     return mat
 

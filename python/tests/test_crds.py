@@ -11,10 +11,10 @@ from terra.cells import cell_from_xy
 
 
 def test_cell_from_xy_valid_origin():
-    """(0, 0) → cell 32581 on the default global raster (1-based)."""
+    """(0, 0) → cell 32580 on the default global raster (0-based; R reports 32581)."""
     r = rast()
     cells = cell_from_xy(r, np.array([[0.0, 0.0]]))
-    assert cells[0] == 32581
+    assert cells[0] == 32580
 
 
 def test_cell_from_xy_all_nan_returns_invalid():
@@ -22,11 +22,11 @@ def test_cell_from_xy_all_nan_returns_invalid():
     r = rast()
     xy = np.array([[float("nan"), float("nan")], [float("nan"), 0.0]])
     cells = cell_from_xy(r, xy)
-    # R returns NA; Python may return NaN, -1, 0, or a very large/small int.
-    # We just check that the returned values are not in the valid range [1, ncell].
+    # R returns NA; Python may return NaN, -1, or a sentinel.
+    # Valid 0-based cells are in [0, ncell - 1].
     ncell = r.ncell()
     for c in cells:
-        assert c < 1 or c > ncell or math.isnan(float(c)), (
+        assert c < 0 or c >= ncell or math.isnan(float(c)), (
             f"Expected invalid cell but got {c}"
         )
 
