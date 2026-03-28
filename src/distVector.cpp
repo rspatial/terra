@@ -404,12 +404,10 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 
 	std::vector<double> d;
 
-	if (srs.is_empty() || x.srs.is_empty()) {
-		setError("crs not defined");
-		return(d);
-	}
-	if (! srs.is_same(x.srs, false) ) {
-		setError("crs do not match");
+	if (srs.is_empty() && x.srs.is_empty()) {
+		addWarning("unknown CRSs. Results can be wrong");
+	} else if (!srs.is_same(x.srs, false) ) {
+		setError("CRSs do not match");
 		return(d);
 	}
 	
@@ -579,8 +577,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 
 	std::vector<double> d;
 	if (srs.is_empty()) {
-		setError("crs not defined");
-		return(d);
+		addWarning("unknown CRS. Results can be wrong");
 	}
 
 	bool lonlat = is_lonlat(); 

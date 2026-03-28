@@ -257,6 +257,9 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 	permute(x, pm);
 	permute(y, pm);
 
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
+	}
 	bool lonlat = is_lonlat(); 
 
 	double m=1;
@@ -355,12 +358,11 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string unit, const std::string& method, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (source[0].srs.wkt.empty()) {
-		out.setError("CRS not defined");
-		return(out);
-	}
-	if (!source[0].srs.is_same(p.srs, false)) {
-		out.setError("CRS do not match");
+	
+	if (source[0].srs.is_empty() && p.srs.is_empty()) {
+		out.addWarning("unknown CRSs. Results can be wrong");
+	} else if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRSs do not match");
 		return(out);
 	}
 	if (p.empty()) {
@@ -470,12 +472,11 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude, const std::string &method, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (source[0].srs.wkt.empty()) {
-		out.setError("CRS not defined");
-		return(out);
-	}
-	if (!source[0].srs.is_same(p.srs, false)) {
-		out.setError("CRS do not match");
+
+	if (source[0].srs.is_empty() && p.srs.is_empty()) {
+		out.addWarning("unknown CRSs. Results can be wrong");
+	} else if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRSs do not match");
 		return(out);
 	}
 	bool lonlat = is_lonlat(); 
@@ -645,10 +646,17 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 		if (!opt.get_filename().empty()) {
 			out = out.writeRaster(opt);
 		}
+		if (source[0].srs.is_empty()) {
+			out.addWarning("unknown CRS. Results can be wrong");
+		} 
 		return out;
 	}
 	if (!(values || is_lonlat())) { // && std::isnan(target) && std::isnan(exclude)) {
-		return proximity(target, exclude, keepNA, unit, false, threshold, remove_zero, opt); 
+		out = proximity(target, exclude, keepNA, unit, false, threshold, remove_zero, opt); 
+		if (source[0].srs.is_empty()) {
+			out.addWarning("unknown CRS. Results can be wrong");
+		} 
+		return out;
 	}
 
 	bool setNA = false;
@@ -684,14 +692,17 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 		out = edges(false, false, "inner", 8, 0, ops);
 		p = out.as_points_value(1, ops);
 	}
+	
 	if (p.empty()) {
-		return out.init({0}, opt);
-	}
-	if (values) {
+		out = out.init({0}, opt);
+	} else if (values) {
 		std::vector<std::vector<double>> vv = extractXY(p[0], p[1], "", false, opt);
 		out = out.distance_crds_vals(p[0], p[1], vv[0], method, true, setNA, unit, threshold, opt);				
 	} else {
 		out = out.distance_crds(p[0], p[1], method, true, setNA, unit, threshold, opt);
+	}
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
 	}
 	return out;
 }
@@ -1211,6 +1222,10 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, boo
 		return out;
 	}
 
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
+	}
+
 	bool lonlat = is_lonlat();
 	bool global = is_global_lonlat();
 	int polar = ns_polar();
@@ -1568,6 +1583,11 @@ SpatRaster SpatRaster::gridDistance(double m, SpatOptions &opt) {
 
 	std::vector<double> res = resolution();
 	size_t nc = ncol();
+	
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
+	}
+	
 	bool lonlat = is_lonlat();
     std::vector<double> d, v;
 	std::vector<double> above(nc, std::numeric_limits<double>::infinity());
@@ -1957,6 +1977,9 @@ SpatRaster SpatRaster::buffer(double d, double background, bool include, SpatOpt
 		return out;
 	}
 
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
+	}
 
 	if (!is_lonlat()) {
 		SpatOptions opt2;
@@ -2007,7 +2030,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 
 	SpatRaster out = geometry(1);
 	if (out.source[0].srs.wkt.empty()) {
-		addWarning("unknown CRS. Results can be wrong");
+		out.addWarning("unknown CRS. Results can be wrong");
 		transform = false;
 	}
 
