@@ -5,10 +5,10 @@ Creates rasters from numpy arrays using rast() + set_values().
 """
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra._terra import SpatRaster
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat._terra import SpatRaster
 
 
 def make_from_matrix(m, extent=None):
@@ -97,3 +97,5 @@ def test_rast_explicit_dims():
     assert r.xmax() == pytest.approx(1)
     assert r.ymin() == pytest.approx(0)
     assert r.ymax() == pytest.approx(1)
+
+

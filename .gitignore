@@ -26,6 +26,7 @@ revdep/
 #python/
 python/.venv
 python/build
+python/_geospat_cpp_src
 __pycache__/
 cmdapp/terra
 cmdapp/build/

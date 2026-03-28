@@ -2,11 +2,11 @@
 Tests ported from inst/tinytest/test_crop.R
 """
 import numpy as np
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra.generics import crop
-from terra.extent import ext
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.generics import crop
+from geospat.extent import ext
 
 
 def _ext_vec(r):
@@ -76,3 +76,5 @@ def test_crop_with_values_exact():
     e = ext(0, 5, 0, 5)
     np.testing.assert_array_almost_equal(_ext_vec(crop(r, e)), [0, 5, 0, 5])
     np.testing.assert_array_almost_equal(_ext_vec(crop(r, e, extend=True)), [0, 5, 0, 5])
+
+

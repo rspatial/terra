@@ -1,8 +1,8 @@
 """SpatRaster.subset — 0-based indexing (Python convention)."""
 import numpy as np
-from terra.rast import rast
-from terra.values import set_values
-from terra._terra import SpatOptions
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat._terra import SpatOptions
 
 
 def test_subset_int_zero_based():
@@ -77,3 +77,5 @@ def test_getitem_row_col_cell():
     # row 1, col 0 → second row, first column → cell index 2 → value 3
     v = r[1, 0]
     assert float(v[0]) == 3.0
+
+

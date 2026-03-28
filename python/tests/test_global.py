@@ -5,8 +5,8 @@ Uses the bundled elev.tif example raster.
 """
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
+import geospat as pt
+from geospat.rast import rast
 
 from path_utils import skip_if_missing_inst_ex
 
@@ -63,3 +63,5 @@ def test_global_statistic(fun, expected):
     elif fun == "sd":
         result = float(np.std(valid, ddof=1))
         assert result == pytest.approx(expected, rel=1e-3)
+
+

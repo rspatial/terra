@@ -3,11 +3,11 @@ Tests ported from inst/tinytest/test_crosstab.R
 """
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra.generics import crosstab
-from terra.names import set_names_inplace
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.generics import crosstab
+from geospat.names import set_names_inplace
 
 
 class TestCrosstab:
@@ -40,3 +40,5 @@ class TestCrosstab:
     def test_crosstab_long_sum(self):
         ct_long = crosstab(self.rs, long=True)
         assert ct_long.iloc[:, 2].sum() == 100
+
+

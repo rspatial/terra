@@ -3,10 +3,10 @@ Tests ported from inst/tinytest/test_time.R
 """
 from datetime import datetime, timezone
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra.time import set_time, get_time, has_time, time_info
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.time import set_time, get_time, has_time, time_info
 
 
 def test_time_roundtrip():
@@ -32,3 +32,5 @@ def test_time_info_zone():
     assert info["has_time"] is True
     # The timezone may be stored as UTC or empty depending on C++ implementation
     assert "zone" in info
+
+

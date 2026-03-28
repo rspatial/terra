@@ -6,10 +6,10 @@ Covers: resolution, dimensions, extent, and cell-to-xy conversion.
 import math
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra.cells import xy_from_cell
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.cells import xy_from_cell
 
 
 def make_r3():
@@ -91,3 +91,5 @@ def test_xy_from_cell_out_of_bounds():
         assert is_invalid, (
             f"Expected invalid coords for cell {bad_cell}, got ({x_coord}, {y_coord})"
         )
+
+

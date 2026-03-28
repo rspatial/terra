@@ -2,9 +2,9 @@
 Tests ported from inst/tinytest/test_arith.R
 """
 import numpy as np
-import terra as pt
-from terra.values import set_values
-from terra.rast import rast
+import geospat as pt
+from geospat.values import set_values
+from geospat.rast import rast
 
 
 def _vals(r):
@@ -44,3 +44,5 @@ def test_raster_divide_scalar():
     r = make_r()
     result = _vals(r / 2)
     np.testing.assert_array_almost_equal(result, [0.25, 0.25, 0.25, 0.25])
+
+

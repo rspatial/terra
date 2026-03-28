@@ -6,10 +6,10 @@ Covers: levels / categories on SpatRaster.
 import numpy as np
 import pandas as pd
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra.levels import (
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.levels import (
     levels, set_levels,
     cats, drop_levels, catalyze,
 )
@@ -95,3 +95,5 @@ def test_catalyze_val1_values():
     # Re-read the original values (may have been modified by set_levels)
     v_r = _vals(r)
     np.testing.assert_array_equal(v_cat1, v_r + 100)
+
+

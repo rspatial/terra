@@ -61,12 +61,12 @@ route on Windows.
    ```
 
    scikit-build-core runs CMake automatically and places the compiled
-   `_terra.pyd` extension inside `src/terra/`.
+   `_terra.pyd` extension inside `src/geospat/`.
 
 5. **Verify**:
 
    ```python
-   import terra as pt
+   import geospat as pt
    r = pt.rast()
    print(r)
    ```
@@ -110,7 +110,7 @@ manager and is pre-installed on GitHub Actions Windows runners.
    ```
 
 > **DLL search path:** when using vcpkg you must add the vcpkg DLL directory
-> to `PATH` before importing terra so that `gdal.dll`, `geos_c.dll`, and
+> to `PATH` before importing geospat so that `gdal.dll`, `geos_c.dll`, and
 > `proj.dll` are found:
 > ```powershell
 > $env:PATH = "C:\vcpkg\installed\x64-windows\bin;" + $env:PATH
@@ -155,24 +155,24 @@ pip install -e .
 ## Usage
 
 ```python
-import terra
+import geospat
 import matplotlib.pyplot as plt
 
 # Create / read a raster
 f = "https://github.com/rspatial/terra/raw/refs/heads/master/inst/ex/elev.tif"
-r = terra.rast(f)
-e = terra.ext(6, 6.4, 49.5, 50)
+r = geospat.rast(f)
+e = geospat.ext(6, 6.4, 49.5, 50)
 x = r.crop(e)
 
 # Inspect
 print(r)
 
 # Plot
-terra.plot(r)
+geospat.plot(r)
 plt.show()
 
 # Work with extents
-e = terra.ext(-180, 180, -90, 90)
+e = geospat.ext(-180, 180, -90, 90)
 print(e)
 
 # Arithmetic operators
@@ -182,7 +182,7 @@ mask = r > 500
 
 # Vector
 ff = "https://github.com/rspatial/terra/raw/refs/heads/master/inst/ex/lux.shp"
-v = terra.vect(ff)
+v = geospat.vect(ff)
 v
 ```
 

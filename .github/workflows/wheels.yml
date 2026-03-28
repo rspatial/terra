@@ -1,0 +1,65 @@
+# Build geospat (python/) wheels with cibuildwheel and optionally upload to PyPI.
+#
+# PyPI (trusted publishing): create a PyPI "pending" publisher for this repo, then
+# add a GitHub Environment named "pypi" (optional) and restrict the deploy job.
+# See https://docs.pypi.org/trusted-publishers/
+
+name: Python wheels
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+  push:
+    tags:
+      - "geospat-v*"
+
+jobs:
+  build_wheels:
+    name: Wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-14]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Isolated PEP 517 builds only see python/; CMake expects ../src from a full clone.
+      - name: Vendor C++ sources into python/ for wheel builds
+        shell: bash
+        run: |
+          rm -rf python/_geospat_cpp_src
+          cp -a src python/_geospat_cpp_src
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.23.3
+        with:
+          package-dir: python
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          path: ./wheelhouse/*.whl
+
+  upload_pypi:
+    name: Upload wheels to PyPI
+    needs: [build_wheels]
+    runs-on: ubuntu-latest
+    # Optional: add `environment: pypi` for deploy approvals / protection rules.
+    permissions:
+      id-token: write
+    # Only publish from GitHub Releases (not raw tag pushes).
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: cibw-wheels-*
+          merge-multiple: true
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          skip-existing: true

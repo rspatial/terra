@@ -4,10 +4,10 @@ Tests ported from inst/tinytest/test_subst.R
 import math
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra.generics import subst
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.generics import subst
 
 
 def _vals(r):
@@ -57,3 +57,5 @@ def test_subst_to_na():
     v_sub = _vals(r_sub)
     assert v_sub[0] == pytest.approx(1)
     assert all(math.isnan(v) for v in v_sub[1:])
+
+

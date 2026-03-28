@@ -5,8 +5,8 @@ Requires the bundled lux.shp example file.
 """
 import numpy as np
 import pytest
-import terra as pt
-from terra.vect import vect
+import geospat as pt
+from geospat.vect import vect
 
 from path_utils import skip_if_missing_inst_ex
 
@@ -50,3 +50,5 @@ def test_lux_filter_luxembourg():
     assert x.nrow() == 4
     names = set(pd.DataFrame(x.getDF())["NAME_1"])
     assert names == {"Luxembourg"}
+
+

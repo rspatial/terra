@@ -4,10 +4,10 @@ Tests ported from inst/tinytest/test_rasterize.R
 import math
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.vect import vect
-from terra.rasterize import rasterize
+import geospat as pt
+from geospat.rast import rast
+from geospat.vect import vect
+from geospat.rasterize import rasterize
 
 from path_utils import skip_if_missing_inst_ex
 
@@ -52,3 +52,5 @@ def test_rasterize_cover_by_id():
             assert math.isnan(a)
         else:
             assert a == pytest.approx(e, rel=2e-5)
+
+

@@ -7,10 +7,10 @@ Note: the Python zonal() currently only supports built-in function names
 import math
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra.zonal import zonal
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.zonal import zonal
 
 try:
     import pandas as pd
@@ -69,3 +69,5 @@ def test_zonal_mean_na_rm_string():
     a = zonal(v, z, "mean", na_rm=True)
     flat = _flat(a)
     assert flat == pytest.approx([1, 2, 1.5, 3])
+
+

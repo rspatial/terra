@@ -6,9 +6,9 @@ rasters built from data in different layout should not.
 """
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
 
 
 def make_r1():
@@ -59,3 +59,5 @@ def test_multilayer_self_equal():
     v3 = _read_vals(r3)
     v4 = _read_vals(r4)
     np.testing.assert_array_almost_equal(v3, v4)
+
+

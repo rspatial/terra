@@ -1,7 +1,7 @@
 """
 Tests ported from inst/tinytest/test_extent.R
 """
-import terra as pt
+import geospat as pt
 
 
 def test_intersect_disjoint_extents_is_none():
@@ -11,3 +11,5 @@ def test_intersect_disjoint_extents_is_none():
     result = a.intersect(b)
     # R returns NULL; the C++ method returns an invalid SpatExtent
     assert not result.valid
+
+

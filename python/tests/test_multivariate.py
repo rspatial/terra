@@ -5,13 +5,13 @@ Covers k_means (skipped if not available) and layerCor.
 """
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
+import geospat as pt
+from geospat.rast import rast
 
 from path_utils import skip_if_missing_inst_ex
 
 try:
-    from terra.stats import layer_cor
+    from geospat.stats import layer_cor
     _HAS_LAYERCOR = True
 except ImportError:
     _HAS_LAYERCOR = False
@@ -44,3 +44,5 @@ def test_layercor_string_vs_callable():
     np.testing.assert_array_almost_equal(
         np.array(a_mat), np.array(b_mat), decimal=5
     )
+
+

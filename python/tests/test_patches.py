@@ -4,9 +4,9 @@ Tests ported from inst/tinytest/test_patches.R
 import math
 import numpy as np
 import pytest
-from terra.rast import rast
-from terra.values import set_values
-from terra.generics import patches
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.generics import patches
 
 
 def _vals(r):
@@ -119,3 +119,5 @@ def test_patches_3x4_values_d8():
         pytest.skip("patches() does not support values= parameter yet")
     v = _vals(p)
     np.testing.assert_array_equal(v, [1, 1, 2, 2, 1, 2, 2, 3, 4, 4, 3, 3])
+
+

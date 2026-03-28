@@ -3,11 +3,11 @@ Tests ported from inst/tinytest/test_merge.R
 """
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra.merge import merge
-from terra.names import set_names_inplace
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.merge import merge
+from geospat.names import set_names_inplace
 
 
 def _make_two_layer(xmin, xmax, val):
@@ -28,3 +28,5 @@ def test_merge_layer_names_preserved():
 
     m = merge(r1, r2)
     assert list(m.names) == ["x", "y"]
+
+

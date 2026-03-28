@@ -3,10 +3,10 @@ Tests ported from inst/tinytest/test_pitfinder.R
 """
 import numpy as np
 
-from terra.rast import rast
-from terra.extent import ext
-from terra.values import set_values
-from terra.generics import pitfinder, terrain
+from geospat.rast import rast
+from geospat.extent import ext
+from geospat.values import set_values
+from geospat.generics import pitfinder, terrain
 
 
 def test_pitfinder():
@@ -35,3 +35,5 @@ def test_pitfinder():
     # R 1-based cells 77,86,239,248 → 0-based 76,85,238,247
     expected_cells = {76, 85, 238, 247}
     assert set(nonzero.tolist()) == expected_cells
+
+

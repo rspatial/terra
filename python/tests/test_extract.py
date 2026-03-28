@@ -4,12 +4,12 @@ Tests ported from inst/tinytest/test_extract.R (selected cases)
 import math
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.vect import vect
-from terra.values import set_values
-from terra.extract import extract
-from terra.cells import cell_from_xy, cells
+import geospat as pt
+from geospat.rast import rast
+from geospat.vect import vect
+from geospat.values import set_values
+from geospat.extract import extract
+from geospat.cells import cell_from_xy, cells
 
 from path_utils import skip_if_missing_inst_ex
 
@@ -128,3 +128,5 @@ def test_extract_meuse():
     else:
         vals = list(e)
     assert [round(v) for v in vals] == [378, 251, 208]
+
+

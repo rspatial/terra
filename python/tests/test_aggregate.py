@@ -4,9 +4,9 @@ Tests ported from inst/tinytest/test_aggregate.R
 import math
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
 
 
 def _vals(r):
@@ -86,3 +86,5 @@ def test_aggregate_multilayer_min_na_rm():
     f = rr.aggregate(2, "min", na_rm=True)
     result = _vals(f)
     np.testing.assert_array_almost_equal(result, [2, 3, 9, 11, 4, 6, 18, 22])
+
+

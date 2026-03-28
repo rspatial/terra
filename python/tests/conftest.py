@@ -1,5 +1,5 @@
 """
-Shared pytest fixtures and configuration for the terra Python test suite.
+Shared pytest fixtures and configuration for the geospat Python test suite.
 """
 import os
 import sys
@@ -12,7 +12,7 @@ _TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 if _TESTS_DIR not in sys.path:
     sys.path.insert(0, _TESTS_DIR)
 
-# Ensure the terra package is importable when running tests directly
+# Ensure the geospat package is importable when running tests directly
 _SRC = os.path.normpath(os.path.join(_TESTS_DIR, "..", "src"))
 if _SRC not in sys.path:
     sys.path.insert(0, _SRC)

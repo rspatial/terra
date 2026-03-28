@@ -5,10 +5,10 @@ Note: R's set.seed()/runif() differs from numpy's random; tests with
 random data use deterministic values chosen to exercise the same logic.
 """
 import numpy as np
-import terra as pt
-from terra.values import set_values
-from terra.generics import classify
-from terra.rast import rast
+import geospat as pt
+from geospat.values import set_values
+from geospat.generics import classify
+from geospat.rast import rast
 
 
 def _vals(r):
@@ -79,3 +79,5 @@ def test_classify_2col_lookup():
     np.testing.assert_array_equal(v_out[v_in == 2], np.full(20, 12))
     np.testing.assert_array_equal(v_out[v_in == 3], np.full(20, 13))
     np.testing.assert_array_equal(v_out[v_in > 3], v_in[v_in > 3])
+
+

@@ -659,7 +659,7 @@ PYBIND11_MODULE(_terra, m) {
         .def(
             "time",
             [](SpatRaster &r, const std::string &format) {
-                py::object get_time = py::module_::import("terra.time").attr("get_time");
+                py::object get_time = py::module_::import("geospat.time").attr("get_time");
                 return get_time(py::cast(r), py::str(format));
             },
             py::arg("format") = std::string(""))

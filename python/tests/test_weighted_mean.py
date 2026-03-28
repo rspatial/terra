@@ -4,10 +4,10 @@ Tests ported from inst/tinytest/test_weighted-mean.R
 import math
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra.generics import weighted_mean
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.generics import weighted_mean
 
 
 def _vals(r):
@@ -49,3 +49,5 @@ def test_weighted_mean_matches_numpy():
     stats_wm = (1 * 1 + 2 * 2) / (1 + 2)
 
     assert terra_wm == pytest.approx(stats_wm, rel=1e-5)
+
+

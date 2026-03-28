@@ -3,10 +3,10 @@ Tests ported from inst/tinytest/test_focal.R
 """
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.values import set_values
-from terra.focal import focal
+import geospat as pt
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.focal import focal
 
 
 def _vals(r):
@@ -108,3 +108,5 @@ def test_focal_integer_window_no_na_edges():
     )
     mask = ~np.isnan(v1)
     np.testing.assert_array_almost_equal(v1[mask], v2[mask])
+
+

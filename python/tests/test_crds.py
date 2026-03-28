@@ -4,10 +4,10 @@ Tests ported from inst/tinytest/test_crds.R
 import math
 import numpy as np
 import pytest
-import terra as pt
-from terra.rast import rast
-from terra.vect import vect
-from terra.cells import cell_from_xy
+import geospat as pt
+from geospat.rast import rast
+from geospat.vect import vect
+from geospat.cells import cell_from_xy
 
 
 def test_cell_from_xy_valid_origin():
@@ -36,3 +36,5 @@ def test_vect_point_from_matrix():
     m = np.array([[0, 0], [1, 0]])
     v = vect(m)
     assert v.nrow() == 2
+
+

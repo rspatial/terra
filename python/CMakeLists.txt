@@ -32,7 +32,13 @@ endif()
 
 
 # ── terra C++ sources (exclude all R/Rcpp-specific files) ───────────────────
-set(TERRA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../src")
+# Default: monorepo layout (python/ next to top-level src/). For isolated wheel
+# builds (cibuildwheel), CI vendors a copy at python/_geospat_cpp_src/.
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/_geospat_cpp_src")
+    set(TERRA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/_geospat_cpp_src")
+else()
+    set(TERRA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../src")
+endif()
 
 file(GLOB TERRA_SOURCES "${TERRA_SRC_DIR}/*.cpp")
 
@@ -108,5 +114,5 @@ target_compile_definitions(_terra PRIVATE
 # Place the built .so / .pyd directly inside the Python package directory so
 # an editable install (pip install -e .) works without further configuration.
 set_target_properties(_terra PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/terra"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/geospat"
 )

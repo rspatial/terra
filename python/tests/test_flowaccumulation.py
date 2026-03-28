@@ -3,10 +3,10 @@ Tests ported from inst/tinytest/test_flowAccumulation.R
 """
 import numpy as np
 
-from terra.rast import rast
-from terra.extent import ext
-from terra.values import set_values
-from terra.generics import flow_accumulation, terrain
+from geospat.rast import rast
+from geospat.extent import ext
+from geospat.values import set_values
+from geospat.generics import flow_accumulation, terrain
 
 
 def test_flow_accumulation():
@@ -48,3 +48,5 @@ def test_flow_accumulation():
 
     np.testing.assert_array_equal(fd_vals, flowdir_expected)
     np.testing.assert_array_equal(fa_vals, flowacc_expected)
+
+

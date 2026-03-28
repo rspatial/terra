@@ -4,9 +4,9 @@ Tests ported from inst/tinytest/test_freq.R
 from collections import Counter
 
 import numpy as np
-from terra.rast import rast
-from terra.values import set_values
-from terra.generics import freq
+from geospat.rast import rast
+from geospat.values import set_values
+from geospat.generics import freq
 
 
 class TestFreq:
@@ -40,3 +40,5 @@ class TestFreq:
         tbl = Counter(self.vals.tolist())
         f = freq(self.r, value=5)
         assert f["count"].iloc[0] == tbl[5]
+
+

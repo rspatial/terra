@@ -6,7 +6,7 @@ Uses :func:`terra.distance.distance_xy`, which follows ``R/distance.R``:
 """
 import math
 import numpy as np
-from terra.distance import distance_xy
+from geospat.distance import distance_xy
 
 
 SQ2 = math.sqrt(2)
@@ -55,3 +55,5 @@ def test_distance_lonlat_pairwise():
     else:
         upper = mat
     np.testing.assert_array_almost_equal(upper, expected, decimal=0)
+
+
