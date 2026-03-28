@@ -416,7 +416,7 @@ setMethod("$<-", "SpatVector",
 
 
 setMethod("vect", signature(x="data.frame"),
-	function(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=TRUE) {
+	function(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=FALSE) {
 		
 		guessed_geom <- FALSE; lonlat <- FALSE
 		if (!is.null(geom)) {
@@ -438,6 +438,7 @@ setMethod("vect", signature(x="data.frame"),
 								match(c("long", "lati"), nms),
 								match(c("long", "lat"), nms),								
                                 match(c("lon", "lat"), nms),
+								match(c("easting", "northing"), nms),
 								match(c("xcoord", "ycoord"), nms),
                                 match(c("x.coord", "y.coord"), nms),
                                 match(c("x_coord", "y_coord"), nms),
@@ -501,9 +502,9 @@ setMethod("vect", signature(x="data.frame"),
 			p <- messages(p, "vect")
 			if (!quiet) {
 				if (guessed_geom & guessed_crs) {
-					warn("vect", "guessed geom and crs")
+					warn("vect", "guessed geom variables and crs")
 				} else if (guessed_geom) {
-					warn("vect", "guessed geom")
+					warn("vect", "guessed geom variables")
 				} else if (guessed_crs) {
 					warn("vect", "guessed crs")
 				}			

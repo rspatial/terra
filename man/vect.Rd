@@ -41,7 +41,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
-\S4method{vect}{data.frame}(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=TRUE)
+\S4method{vect}{data.frame}(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=FALSE)
 
 \S4method{vect}{list}(x, type="points", crs="")
 
