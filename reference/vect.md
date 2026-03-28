@@ -33,7 +33,7 @@ vect(x, layer="", query="", dialect="", extent=NULL, filter=NULL,
 vect(x, type="points", atts=NULL, crs="")
 
 # S4 method for class 'data.frame'
-vect(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=TRUE)
+vect(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=FALSE)
 
 # S4 method for class 'list'
 vect(x, type="points", crs="")
@@ -231,6 +231,7 @@ d$wkt <- NULL
 d$lon <- c(0,10)
 d$lat <- c(0,10)
 x <- vect(d, geom=c("lon", "lat"))
+#> Warning: [vect] guessed crs
 
 # SpatVector to sf
 #sf::st_as_sf(x)
