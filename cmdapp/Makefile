@@ -22,7 +22,7 @@ TERRA_SRCS := $(filter-out $(TERRA_EXCL),$(sort $(ALL_SRC_CPPS)))
 
 TERRA_OBJS := $(TERRA_SRCS:%.cpp=$(BUILD)/%.o)
 
-APP_SRCS := gdal_app_init.cpp main.cpp show.cpp
+APP_SRCS := gdal_init.cpp main.cpp show.cpp
 APP_OBJS := $(APP_SRCS:%.cpp=$(BUILD)/%.o)
 
 LIBA := $(BUILD)/libterra_standalone.a
