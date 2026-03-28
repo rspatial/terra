@@ -31,7 +31,7 @@ setMethod("subset", signature(x="SpatRaster"),
 				v <- eval(substitute(subset), nl, parent.frame())
 				if (!inherits(substitute(subset), "character")) {
 					if (sum(nms %in% nms[v]) > length(v)) {
-						error("subset", "you cannot select a layer with a name that is not unique")
+						warn("subset", "using a name that is not unique")
 					}
 				}
 				v
@@ -43,9 +43,9 @@ setMethod("subset", signature(x="SpatRaster"),
 				error("subset", "invalid name(s)")
 			}
 			if (sum(nms %in% subset) > length(subset)) {
-				error("subset", "you cannot select a layer with a name that is not unique")
+				warn("subset", "using a name that is not unique")
 			}
-			subset <- match(subset, nms)
+			subset <- which(!is.na(match(nms, subset)))
 		}
 		if (any(is.na(subset))) {
 			error("subset", "undefined layer(s) selected")
