@@ -8,7 +8,7 @@
 #include "cpl_error.h"
 #include "proj.h"
 
-#include "gdal_app_init.h"
+#include "gdal_init.h"
 
 /* Roughly matches set_gdal_warnings(2) in RcppFunctions.cpp: surface failures (no R callbacks). */
 static void terra_gdal_error_handler(CPLErr eErrClass, int err_no, const char *msg) {
