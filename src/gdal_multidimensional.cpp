@@ -10,6 +10,7 @@
 #include "vecmath.h"
 #include "recycle.h"
 #include <stddef.h>
+#include <cmath>
 #include <algorithm>
 #include <list>
 
@@ -312,6 +313,16 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 		} else {
 			step = "raw";
 			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]);
+		}
+
+		if (step == "days" && raw.size() == out.size()) {
+			for (size_t i = 0; i < raw.size(); i++) {
+				double fr = raw[i] - std::floor(raw[i]);
+				if (fr > 1e-6 && fr < 1.0 - 1e-6) {
+					step = "seconds";
+					break;
+				}
+			}
 		}
 	}
 

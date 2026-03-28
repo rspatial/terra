@@ -19,6 +19,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <stdint.h>
+#include <cmath>
 #include <vector>
 //#include <regex>
 
@@ -2426,6 +2427,19 @@ std::vector<int64_t> ncdf_time(const std::vector<std::string> &metadata, std::ve
 		} else {
 			step = "raw";
 			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]);
+		}
+
+		// "days since ..." with fractional offsets (e.g. sub-daily) is still
+		// stored as epoch seconds; report timestep "seconds" so full date-time
+		// is used (not Date-only day semantics).
+		if (step == "days" && raw.size() == out.size()) {
+			for (size_t i = 0; i < raw.size(); i++) {
+				double fr = raw[i] - std::floor(raw[i]);
+				if (fr > 1e-6 && fr < 1.0 - 1e-6) {
+					step = "seconds";
+					break;
+				}
+			}
 		}
 	}
 
