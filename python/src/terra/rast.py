@@ -1,4 +1,4 @@
-"""Create rasters — parallel to R ``terra::rast()``."""
+"""Create SpatRasters — parallel to R ``terra::rast()``."""
 
 from __future__ import annotations
 

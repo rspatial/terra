@@ -1,4 +1,4 @@
-"""Create vectors — parallel to R ``terra::vect()``."""
+"""Create SpatVectors — parallel to R ``terra::vect()``."""
 
 from __future__ import annotations
 

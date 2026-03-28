@@ -21,11 +21,11 @@ SpatRaster aggregate(std::vector<std::string> args) {
 	return(out);
     }
 
-    SpatRaster input(args[2], {-1}, {""}, {""}, {""});
+    SpatRaster input(args[2], {-1}, {""}, {""}, {""}, false, true, {""});
     opts.set_filenames({args[3]});
     // need to split the fact arguments
     // for now assume a single argument
-    std::vector<unsigned> fact(1);
+    std::vector<size_t> fact(1);
     fact[0] = stoi(args[4]);
     std::string fun;
     if (args.size() < 6) {
@@ -39,7 +39,6 @@ SpatRaster aggregate(std::vector<std::string> args) {
     } else {
        narm = stoi(args[6]);
     }
-
     out = input.aggregate(fact, fun, narm, opts);
     //std::cout << "out = input.aggregate(" << fact[0] << ", " << fun << "," << narm << ", " << opts.filename << std::endl;
     return(out);

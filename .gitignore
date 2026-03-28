@@ -28,6 +28,7 @@ python/.venv
 python/build
 __pycache__/
 cmdapp/terra
+cmdapp/build/
 windows/
 inst/gdal/
 inst/proj/
