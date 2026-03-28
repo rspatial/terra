@@ -3,6 +3,22 @@
 # Version 1.0
 # License GPL v3
 
+
+setMethod("show", "SpatExtent", function(object) cat(object@pntr$show()) )
+
+setMethod("show", "SpatRaster", function(object) cat(object@pntr$show()) )
+
+setMethod("show", "SpatRasterCollection", function(object) cat(object@pntr$show()) )
+
+setMethod("show", "SpatRasterDataset", function(object) cat(object@pntr$show()) )
+
+setMethod("show", "SpatVector", function(object) cat(object@pntr$show()) )
+
+setMethod("show", "SpatVectorCollection", function(object) cat(object@pntr$show()) )
+
+setMethod("show", "SpatVectorProxy", function(object) cat(object@pntr$show()) )
+
+
 get_basename <- function(x, n=150) {
 	x <- basename(x)
 	large <- nchar(x) > n
@@ -94,74 +110,71 @@ setMethod ("show" , "Rcpp_SpatCategories",
 	}
 )
 
+.show_ext <- function(object) {
+	e <- as.vector(object)
+	e <- paste(e, collapse=", ")
+	cat("SpatExtent :", e, "(xmin, xmax, ymin, ymax)\n")
+}
 
-setMethod ("show" , "SpatExtent",
-	function(object) {
-		e <- as.vector(object)
-		e <- paste(e, collapse=", ")
-		cat("SpatExtent :", e, "(xmin, xmax, ymin, ymax)\n")
+
+.show_vectcol <- function(object) {
+	cat(" class       :", class(object), "\n")
+	cat(" length      :", length(object), "\n")
+	n <- nn <- length(object)
+	if (n > 15) {
+		nn <- 15
 	}
-)
-
-setMethod ("show" , "SpatVectorCollection",
-	function(object) {
-		cat(" class       :", class(object), "\n")
-		cat(" length      :", length(object), "\n")
-		n <- nn <- length(object)
-		if (n > 15) {
-			nn <- 15
-		}
-		if (n > 0) {
-			for (i in 1:nn) {
-				v <- object[i]
-				if (i==1) {
-					cat(" geometry    : ", geomtype(v), " (", nrow(v) , ")\n", sep="")
-				} else {
-					cat("               ", geomtype(v), " (", nrow(v) , ")\n", sep="")
-				}
-			}
-			if (n > nn) {
-				cat("               ", "   and ", n-nn, "more\n", sep="")
-			}
-			crs <- .name_or_proj4(object[1])
-			if (crs != "") cat(" crs (first) :", crs,	 "\n")
-			nms <- names(object)
-			if (length(nms) > 10) {
-				nms <- c(nms[1:9], "...")
-			}
-			nms <- paste(nms, collapse=", ")
-			cat(" names       :", nms, "\n")
-		}
-	}
-)
-
-setMethod ("show" , "SpatVector",
-	function(object) {
-		e <- as.vector(ext(object))
-		d <- dim(object)
-		cat(" class       :", class(object), "\n")
-		cat(" geometry    :", geomtype(object), "\n")
-		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" )
-		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		if (object@pntr$source != "") {
-			if (object@pntr$layer != tools::file_path_sans_ext(get_basename(object@pntr$source))) {
-				cat(" source      : ", get_basename(object@pntr$source), " (", object@pntr$layer, ")\n", sep="")
+	if (n > 0) {
+		for (i in 1:nn) {
+			v <- object[i]
+			if (i==1) {
+				cat(" geometry    : ", geomtype(v), " (", nrow(v) , ")\n", sep="")
 			} else {
-				cat(" source      : ", get_basename(object@pntr$source), "\n", sep="")
+				cat("               ", geomtype(v), " (", nrow(v) , ")\n", sep="")
 			}
 		}
-		cat(" coord. ref. :", .name_or_proj4(object), "\n")
-		if (d[2] > 0) {
-			nr <- min(d[1], 3)
-			dd <- as.data.frame(object)[1:nr, , drop=FALSE]
-			printDF(dd, 3, TRUE)
+		if (n > nn) {
+			cat("               ", "   and ", n-nn, "more\n", sep="")
+		}
+		crs <- .name_or_proj4(object[1])
+		if (crs != "") cat(" crs (first) :", crs,	 "\n")
+		nms <- names(object)
+		if (length(nms) > 10) {
+			nms <- c(nms[1:9], "...")
+		}
+		nms <- paste(nms, collapse=", ")
+		cat(" names       :", nms, "\n")
+	}
+}
+
+
+
+.show_vect <- function(object) {
+	e <- as.vector(ext(object))
+	d <- dim(object)
+	cat(" class       :", class(object), "\n")
+	cat(" geometry    :", geomtype(object), "\n")
+	cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" )
+	cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+	if (object@pntr$source != "") {
+		if (object@pntr$layer != tools::file_path_sans_ext(get_basename(object@pntr$source))) {
+			cat(" source      : ", get_basename(object@pntr$source), " (", object@pntr$layer, ")\n", sep="")
+		} else {
+			cat(" source      : ", get_basename(object@pntr$source), "\n", sep="")
 		}
 	}
-)
+	cat(" coord. ref. :", .name_or_proj4(object), "\n")
+	if (d[2] > 0) {
+		nr <- min(d[1], 3)
+		dd <- as.data.frame(object)[1:nr, , drop=FALSE]
+		printDF(dd, 3, TRUE)
+	}
+}
 
 
-setMethod ("show" , "SpatVectorProxy",
-	function(object) {
+
+
+.show_vectproxy <- function(object) {
 		e <- as.vector(ext(object))
 		d <- dim(object)
 		cat(" class       : SpatVectorProxy\n")
@@ -180,353 +193,353 @@ setMethod ("show" , "SpatVectorProxy",
 )
 
 
-setMethod ("show" , "SpatRaster",
-	function(object) {
 
-		cat("class       :" , class(object), "\n")
+.show_rast <- function(object) {
+	cat("class       :" , class(object), "\n")
 
-		d <- dim(object)
-		cat("size        : ", d[1], ", ", d[2], ", ", d[3], "  (nrow, ncol, nlyr)\n", sep="" )
-		#cat ("ncell       :" , ncell(object), "\n")
+	d <- dim(object)
+	cat("size        : ", d[1], ", ", d[2], ", ", d[3], "  (nrow, ncol, nlyr)\n", sep="" )
+	#cat ("ncell       :" , ncell(object), "\n")
 
-		nsr <- nsrc(object)
-		if ((nsr == 1) && (object@pntr$is_multidim)) {
-			dnms <- paste(rev(object@pntr$dim_names()[[1]]), collapse=", ")
-			dsz <- paste(rev(object@pntr$dim_size()[[1]]), collapse=", ")
-			cat("dimensions  : ", dnms, " (", dsz, "}\n", sep="" )
-		}
-
-		xyres <- res(object)
-		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
-		hw <- window(object)
-		if (any(hw)) {
-			w <- as.vector(ext(object))
-			if (all(hw)) {
-				txt <- "window      : "
-			} else {
-				txt <- "extent (win): "
-			}
-			cat(txt, w[1], ", ", w[2], ", ", w[3], ", ", w[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-			#e <- as.vector(object@pntr$source[[1]]$window$full_extent$vector)
-			#cat("full extent : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		} else {
-			e <- as.vector(ext(object))
-			cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		}
-
-
-		cat("coord. ref. :" , .name_or_proj4(object), "\n")
-
-
-		if (hasValues(object)) {
-
-			mnr <- 6
-			ln <- names(object)
-			nl <- d[3]
-
-			if (nl > mnr) {
-				ln <- c(ln[1:mnr], "...")
-			}
-			lnmx <- 60 / min(mnr, length(ln))
-			b <- nchar(ln) > (lnmx+2)
-			if (isTRUE(any(b))) {
-				mid <- floor(lnmx/2)
-				ln[b] <- paste(substr(ln[b], 1, mid), "~", substr(ln[b], nchar(ln[b])-mid+1, nchar(ln[b])), sep="")
-			}
-
-			m <- inMemory(object)
-
-			f <- sources(object)
-			nf <- nchar(f)
-			if (any(nf > 256)) {
-				for (i in 1:length(nf)) {
-					if (nf[i] > 256) {
-						f[i] <- unlist(strsplit(f[i], "\\?"))[1]
-						if (nchar(f[i]) > 256) {
-							f[i] <- substr(f[i], nf[i]-255, nf[i])
-						}
-					}
-				}
-			}
-			hdf5 <- substr(f, 1, 5) == "HDF5:"
-			f[!hdf5] <- get_basename(f[!hdf5])
-			if (any(hdf5)) {
-				ff <- strsplit(f[hdf5], "://")
-				ff <- sapply(ff, function(i) paste(get_basename(i), collapse="://"))
-				ff <- gsub('\"', "", ff)
-				f[hdf5] <- ff
-			}
-			#f <- gsub("\\", "/", f, fixed=TRUE)
-			f <- gsub("\"", "", f)
-			sources <- rep("memory", length(m))
-			sources[!m] <- f[!m]
-
-			if (all(m)) {
-				cat("source(s)   : memory\n")
-			} else {
-				if (nsr > 1) {
-					mxsrc <- 3
-					lbs <- .nlyrBySource(object)
-					lbsprint <- paste0(" (", lbs, " layers)")
-					lbsprint[lbs == 1] <- ""
-					cat("sources     :", sources[1], lbsprint[1], "\n")
-					for (i in 2:(min(mxsrc, nsr))) {
-						cat("             ", sources[i], lbsprint[i], "\n")
-					}
-					if (nsr > mxsrc) {
-						if (nsr == (mxsrc+1)) {
-							cat("             ", sources[mxsrc+1], lbsprint[mxsrc+1], "\n")
-						} else {
-							cat("             ", "... and", nsr-mxsrc, "more sources\n")
-						}
-					}
-				} else {
-					cat("source      :", sources[1], "\n")
-				}
-			}
-			rgbtype <- object@pntr$rgbtype
-			if (rgbtype != "") {
-				rdgb <- RGB(object)
-				if (is.null(rdgb)) rdgb <- 1:3
-				cat(paste("colors", toupper(object@pntr$rgbtype), " :"), paste(rdgb, collapse=", "), "\n")
-			}
-			hasct <- object@pntr$hasColors()
-			if (any(hasct)) {
-				cat("color table :", paste(which(hasct), collapse=", "), "\n")
-			}
-
-
-			varnms <- varnames(object)
-			fnms <- tools::file_path_sans_ext(f)
-			if (any(fnms != varnms) && all(varnms != "")) {
-				longnms <- longnames(object)
-				i <- longnms != ""
-				if (any(i)) {
-					varnms[i] <- paste0(varnms[i], " (", longnms[i], ")")
-				}
-				if (nsr == 1) {
-					cat("varname     :", varnms[1], "\n")
-				} else {
-					cat("varnames    :", varnms[1], "\n")
-					for (i in 2:(min(nsr, 3))) {
-						cat("             ", varnms[i], "\n")
-					}
-				}
-				if (nsr > 3) {
-					cat("              ...\n")
-				}
-			}
-			uts <- units(object)
-			utsu <- unique(uts)
-			if (all(utsu == "")) {
-				uts <- utsu			
-				hasunits <- FALSE
-			} else {
-				hasunits <- TRUE
-				if (length(utsu) > 1) {
-					if (nl > mnr) {
-						uts <- c(uts[1:mnr], "...")
-					} 
-				} else {
-					uts <- utsu
-				}
-			}
-
-			hMM <- hasMinMax(object)
-			isB <- is.bool(object)
-			if (any(hMM) || any(is.factor(object))) {
-				#r <- minmax(object)
-				rr <- r <- rbind(object@pntr$range_min, object@pntr$range_max)
-				r[,!hMM] <- c(Inf, -Inf)
-				#sc <- scoff(object)
-				#r <- r * sc[,1] + sc[,2]
-				r <- sapply(data.frame(r), format)
-				minv <- r[1,]
-				maxv <- r[2,]
-				if (any(isB)) {
-					minv[isB] <- ifelse(minv[isB]=="0", "FALSE", "TRUE")
-					maxv[isB] <- ifelse(maxv[isB]=="0", "FALSE", "TRUE")
-				}
-				minv <- gsub("Inf", " ? ", minv)
-				maxv <- gsub("-Inf", "  ? ", maxv)
-				minv[!hMM] <- gsub("NaN", " ? ", minv[!hMM])
-				maxv[!hMM] <- gsub("NaN", " ? ", maxv[!hMM])
-				minv[hw] <- paste0(">", minv[hw])
-				maxv[hw] <- paste0(maxv[hw],"<")
-				if (nl > mnr) {
-					minv <- c(minv[1:mnr], "...")
-					maxv <- c(maxv[1:mnr], "...")
-				}
-				isf <- is.factor(object)
-				if (any(isf)) {
-					cats <- levels(object)
-					for (i in which(isf)) {
-						if (i > mnr) break
-						levs <- cats[[i]]
-						if (any(is.na(rr[,i]))) next
-						j <- match(rr[,i], levs[,1])
-						levs <- levs[j, 2]
-						if (length(levs) > 1) {
-							if (nchar(levs[1]) > 40) {
-								minv[i] <- paste0(substr(levs[1], 1, 39), "~")
-							} else {
-								minv[i] <- levs[1]							
-							}
-							if (nchar(levs[2]) > 40) {
-								maxv[i] <- paste0(substr(levs[2], 1, 39), "~")						
-							} else {
-								maxv[i] <- levs[2]
-							}
-						}
-					}
-				}
-				u8 <- Encoding(ln) == "UTF-8"
-				wln <- nchar(ln)
-
-				if (isTRUE((length(uts) == 1) && (nl > 1))) {
-					nu <- 1
-				} else {
-					nu <- nchar(uts)
-				}
-
-				if (any(u8)) {
-					# for Chinese: wln <- wln + u8 * wln
-					w <- pmax(wln, nchar(minv), nchar(maxv), nu, na.rm = TRUE)
-					m <- rbind(paste0(rep(" ", max(wln)), collapse=""), minv, maxv)
-					if (hasunits) m <- rbind(m, uts)
-					# a loop because "width" is not recycled by format
-					for (i in 1:ncol(m)) {
-						m[,i] <- format(m[,i], width=w[i], justify="right")
-						addsp <- w[i] - nchar(ln[i])
-						m[1,i] <- paste0(paste0(rep(" ", addsp), collapse=""), ln[i])
-					}
-				} else {
-					w <- pmax(wln, nchar(minv), nchar(maxv), nu, na.rm = TRUE)
-					m <- rbind(ln, minv, maxv)
-					if (hasunits) m <- rbind(m, uts)
-					# a loop because "width" is not recycled by format
-					for (i in 1:ncol(m)) {
-						m[,i] <- format(m[,i], width=w[i], justify="right")
-					}
-				}
-				if (ncol(m) == 1) {
-					if (is.factor(object)) {
-						if (activeCat(object) > -1) {
-							g <- cats(object)[[1]]
-							cat("categories  :", paste(colnames(g)[-1], collapse=", "), "\n")
-						}
-					}
-					cat("name        :", paste(m[1,], collapse=", "), "\n")
-					cat("min value   :", paste(m[2,], collapse=", "), "\n")
-					cat("max value   :", paste(m[3,], collapse=", "), "\n")
-				} else {
-					cat("names       :", paste(m[1,], collapse=", "), "\n")
-					cat("min values  :", paste(m[2,], collapse=", "), "\n")
-					cat("max values  :", paste(m[3,], collapse=", "), "\n")
-				}
-				if (hasunits) {
-					if ((length(uts) == 1) && (ncol(m) > 1)) {
-						cat("unit        :", uts, "\n")					
-					} else {
-						cat("unit        :", paste(m[4,], collapse=", "), "\n")
-					}
-				}
-			} else {
-				if (isTRUE((length(uts) == 1) && (nl > 1))) {
-					nu <- 1
-				} else {
-					nu <- nchar(uts)
-				}
-				w <- pmax(nchar(ln), nu)
-				m <- rbind(ln, uts)
-				for (i in 1:ncol(m)) {
-					m[,i]   <- format(m[,i], width=w[i], justify="right")
-				}
-				if (ncol(m) == 1) {
-					cat("name        :", paste(m[1,], collapse=", "), "\n")
-				} else {
-					cat("names       :", paste(m[1,], collapse=", "), "\n")
-				}
-				if (hasunits) {
-					if ((length(uts) == 1) && (ncol(m) > 1)) {
-						cat("unit        :", uts, "\n")					
-					} else {
-						cat("unit        :", paste(m[2,], collapse=", "), "\n")
-					}
-				}
-			}
-
-		}
-		if (object@pntr$hasDepth) {
-			dname <- depthName(object)
-			dunit <- depthUnit(object)
-			if (dname == "depth") {
-				if (dunit == "") {
-					dname <- ""
-				} else {
-					dname <- paste0("[", dunit, "]: ") 
-				}
-			} else {
-				if ((dunit == "") || (dunit == "unknown")) {
-					dname <- paste0(dname, ": ")
-				} else {
-					dname <- paste0(dname, " [", dunit, "]: ")
-				}
-			}
-			
-			label <- "depth       : "
-			dpth <- unique(depth(object))
-			if (length(dpth) > 1) {
-				rd <- range(dpth)
-				dpth <- paste0(label, paste(rd, collapse=" to "), " (", dname, length(dpth), " steps)")
-			} else {
-				dpth <- paste0(label, dpth)			
-			}
-			cat(dpth, "\n")		
-		}
-
-		if (object@pntr$hasTime) {
-			label <- "time        "
-			tms <- time(object)
-			rtim <- range(tms)
-			tims <- object@pntr$timestep
-			if (tims == "yearmonths") {
-				rtim <- format_ym(rtim)
-				label <- "time (ymnts)"
-			} else if (tims == "months") {
-				rtim <- month.abb[rtim]
-				label <- "time (mnts) "
-			} else if (tims == "years") {
-				label <- "time (years)"
-			} else if (tims == "days") {
-				label <- "time (days) "
-			} else if (tims == "raw") {
-				label <- "time (raw)  "
-			}
-			utim <- unique(rtim)
-			add_steps <- FALSE
-			if (length(utim) > 1) {
-				ptim <- paste0(label, ": ", paste(rtim, collapse=" to "))
-				add_steps <- TRUE
-			} else {
-				ptim <- paste0(label, ": ", as.character(utim))
-			}
-			if (tims == "seconds") {
-				tz <- format(utim[1], format="%Z")
-				ptim <- paste(ptim, tz)
-			}
-			if (add_steps) {
-				ptim <- paste0(ptim, " (", length(unique(tms)), " steps)")
-			}
-			cat(ptim, "\n")
-		}
-
-		# else {
-		#	cat("data sources:", "no data\n")
-		#	cat("names       :", paste(ln, collapse=", "), "\n")
-		# }
+	nsr <- nsrc(object)
+	if ((nsr == 1) && (object@pntr$is_multidim)) {
+		dnms <- paste(rev(object@pntr$dim_names()[[1]]), collapse=", ")
+		dsz <- paste(rev(object@pntr$dim_size()[[1]]), collapse=", ")
+		cat("dimensions  : ", dnms, " (", dsz, "}\n", sep="" )
 	}
-)
+
+	xyres <- res(object)
+	cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
+	hw <- window(object)
+	if (any(hw)) {
+		w <- as.vector(ext(object))
+		if (all(hw)) {
+			txt <- "window      : "
+		} else {
+			txt <- "extent (win): "
+		}
+		cat(txt, w[1], ", ", w[2], ", ", w[3], ", ", w[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+		#e <- as.vector(object@pntr$source[[1]]$window$full_extent$vector)
+		#cat("full extent : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+	} else {
+		e <- as.vector(ext(object))
+		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+	}
+
+
+	cat("coord. ref. :" , .name_or_proj4(object), "\n")
+
+
+	if (hasValues(object)) {
+
+		mnr <- 6
+		ln <- names(object)
+		nl <- d[3]
+
+		if (nl > mnr) {
+			ln <- c(ln[1:mnr], "...")
+		}
+		lnmx <- 60 / min(mnr, length(ln))
+		b <- nchar(ln) > (lnmx+2)
+		if (isTRUE(any(b))) {
+			mid <- floor(lnmx/2)
+			ln[b] <- paste(substr(ln[b], 1, mid), "~", substr(ln[b], nchar(ln[b])-mid+1, nchar(ln[b])), sep="")
+		}
+
+		m <- inMemory(object)
+
+		f <- sources(object)
+		nf <- nchar(f)
+		if (any(nf > 256)) {
+			for (i in 1:length(nf)) {
+				if (nf[i] > 256) {
+					f[i] <- unlist(strsplit(f[i], "\\?"))[1]
+					if (nchar(f[i]) > 256) {
+						f[i] <- substr(f[i], nf[i]-255, nf[i])
+					}
+				}
+			}
+		}
+		hdf5 <- substr(f, 1, 5) == "HDF5:"
+		f[!hdf5] <- get_basename(f[!hdf5])
+		if (any(hdf5)) {
+			ff <- strsplit(f[hdf5], "://")
+			ff <- sapply(ff, function(i) paste(get_basename(i), collapse="://"))
+			ff <- gsub('\"', "", ff)
+			f[hdf5] <- ff
+		}
+		#f <- gsub("\\", "/", f, fixed=TRUE)
+		f <- gsub("\"", "", f)
+		sources <- rep("memory", length(m))
+		sources[!m] <- f[!m]
+
+		if (all(m)) {
+			cat("source(s)   : memory\n")
+		} else {
+			if (nsr > 1) {
+				mxsrc <- 3
+				lbs <- .nlyrBySource(object)
+				lbsprint <- paste0(" (", lbs, " layers)")
+				lbsprint[lbs == 1] <- ""
+				cat("sources     :", sources[1], lbsprint[1], "\n")
+				for (i in 2:(min(mxsrc, nsr))) {
+					cat("             ", sources[i], lbsprint[i], "\n")
+				}
+				if (nsr > mxsrc) {
+					if (nsr == (mxsrc+1)) {
+						cat("             ", sources[mxsrc+1], lbsprint[mxsrc+1], "\n")
+					} else {
+						cat("             ", "... and", nsr-mxsrc, "more sources\n")
+					}
+				}
+			} else {
+				cat("source      :", sources[1], "\n")
+			}
+		}
+		rgbtype <- object@pntr$rgbtype
+		if (rgbtype != "") {
+			rdgb <- RGB(object)
+			if (is.null(rdgb)) rdgb <- 1:3
+			cat(paste("colors", toupper(object@pntr$rgbtype), " :"), paste(rdgb, collapse=", "), "\n")
+		}
+		hasct <- object@pntr$hasColors()
+		if (any(hasct)) {
+			cat("color table :", paste(which(hasct), collapse=", "), "\n")
+		}
+
+
+		varnms <- varnames(object)
+		fnms <- tools::file_path_sans_ext(f)
+		if (any(fnms != varnms) && all(varnms != "")) {
+			longnms <- longnames(object)
+			i <- longnms != ""
+			if (any(i)) {
+				varnms[i] <- paste0(varnms[i], " (", longnms[i], ")")
+			}
+			if (nsr == 1) {
+				cat("varname     :", varnms[1], "\n")
+			} else {
+				cat("varnames    :", varnms[1], "\n")
+				for (i in 2:(min(nsr, 3))) {
+					cat("             ", varnms[i], "\n")
+				}
+			}
+			if (nsr > 3) {
+				cat("              ...\n")
+			}
+		}
+		uts <- units(object)
+		utsu <- unique(uts)
+		if (all(utsu == "")) {
+			uts <- utsu			
+			hasunits <- FALSE
+		} else {
+			hasunits <- TRUE
+			if (length(utsu) > 1) {
+				if (nl > mnr) {
+					uts <- c(uts[1:mnr], "...")
+				} 
+			} else {
+				uts <- utsu
+			}
+		}
+
+		hMM <- hasMinMax(object)
+		isB <- is.bool(object)
+		if (any(hMM) || any(is.factor(object))) {
+			#r <- minmax(object)
+			rr <- r <- rbind(object@pntr$range_min, object@pntr$range_max)
+			r[,!hMM] <- c(Inf, -Inf)
+			#sc <- scoff(object)
+			#r <- r * sc[,1] + sc[,2]
+			r <- sapply(data.frame(r), format)
+			minv <- r[1,]
+			maxv <- r[2,]
+			if (any(isB)) {
+				minv[isB] <- ifelse(minv[isB]=="0", "FALSE", "TRUE")
+				maxv[isB] <- ifelse(maxv[isB]=="0", "FALSE", "TRUE")
+			}
+			minv <- gsub("Inf", " ? ", minv)
+			maxv <- gsub("-Inf", "  ? ", maxv)
+			minv[!hMM] <- gsub("NaN", " ? ", minv[!hMM])
+			maxv[!hMM] <- gsub("NaN", " ? ", maxv[!hMM])
+			minv[hw] <- paste0(">", minv[hw])
+			maxv[hw] <- paste0(maxv[hw],"<")
+			if (nl > mnr) {
+				minv <- c(minv[1:mnr], "...")
+				maxv <- c(maxv[1:mnr], "...")
+			}
+			isf <- is.factor(object)
+			if (any(isf)) {
+				cats <- levels(object)
+				for (i in which(isf)) {
+					if (i > mnr) break
+					levs <- cats[[i]]
+					if (any(is.na(rr[,i]))) next
+					j <- match(rr[,i], levs[,1])
+					levs <- levs[j, 2]
+					if (length(levs) > 1) {
+						if (nchar(levs[1]) > 40) {
+							minv[i] <- paste0(substr(levs[1], 1, 39), "~")
+						} else {
+							minv[i] <- levs[1]							
+						}
+						if (nchar(levs[2]) > 40) {
+							maxv[i] <- paste0(substr(levs[2], 1, 39), "~")						
+						} else {
+							maxv[i] <- levs[2]
+						}
+					}
+				}
+			}
+			u8 <- Encoding(ln) == "UTF-8"
+			wln <- nchar(ln)
+
+			if (isTRUE((length(uts) == 1) && (nl > 1))) {
+				nu <- 1
+			} else {
+				nu <- nchar(uts)
+			}
+
+			if (any(u8)) {
+				# for Chinese: wln <- wln + u8 * wln
+				w <- pmax(wln, nchar(minv), nchar(maxv), nu, na.rm = TRUE)
+				m <- rbind(paste0(rep(" ", max(wln)), collapse=""), minv, maxv)
+				if (hasunits) m <- rbind(m, uts)
+				# a loop because "width" is not recycled by format
+				for (i in 1:ncol(m)) {
+					m[,i] <- format(m[,i], width=w[i], justify="right")
+					addsp <- w[i] - nchar(ln[i])
+					m[1,i] <- paste0(paste0(rep(" ", addsp), collapse=""), ln[i])
+				}
+			} else {
+				w <- pmax(wln, nchar(minv), nchar(maxv), nu, na.rm = TRUE)
+				m <- rbind(ln, minv, maxv)
+				if (hasunits) m <- rbind(m, uts)
+				# a loop because "width" is not recycled by format
+				for (i in 1:ncol(m)) {
+					m[,i] <- format(m[,i], width=w[i], justify="right")
+				}
+			}
+			if (ncol(m) == 1) {
+				if (is.factor(object)) {
+					if (activeCat(object) > -1) {
+						g <- cats(object)[[1]]
+						cat("categories  :", paste(colnames(g)[-1], collapse=", "), "\n")
+					}
+				}
+				cat("name        :", paste(m[1,], collapse=", "), "\n")
+				cat("min value   :", paste(m[2,], collapse=", "), "\n")
+				cat("max value   :", paste(m[3,], collapse=", "), "\n")
+			} else {
+				cat("names       :", paste(m[1,], collapse=", "), "\n")
+				cat("min values  :", paste(m[2,], collapse=", "), "\n")
+				cat("max values  :", paste(m[3,], collapse=", "), "\n")
+			}
+			if (hasunits) {
+				if ((length(uts) == 1) && (ncol(m) > 1)) {
+					cat("unit        :", uts, "\n")					
+				} else {
+					cat("unit        :", paste(m[4,], collapse=", "), "\n")
+				}
+			}
+		} else {
+			if (isTRUE((length(uts) == 1) && (nl > 1))) {
+				nu <- 1
+			} else {
+				nu <- nchar(uts)
+			}
+			w <- pmax(nchar(ln), nu)
+			m <- rbind(ln, uts)
+			for (i in 1:ncol(m)) {
+				m[,i]   <- format(m[,i], width=w[i], justify="right")
+			}
+			if (ncol(m) == 1) {
+				cat("name        :", paste(m[1,], collapse=", "), "\n")
+			} else {
+				cat("names       :", paste(m[1,], collapse=", "), "\n")
+			}
+			if (hasunits) {
+				if ((length(uts) == 1) && (ncol(m) > 1)) {
+					cat("unit        :", uts, "\n")					
+				} else {
+					cat("unit        :", paste(m[2,], collapse=", "), "\n")
+				}
+			}
+		}
+
+	}
+	if (object@pntr$hasDepth) {
+		dname <- depthName(object)
+		dunit <- depthUnit(object)
+		if (dname == "depth") {
+			if (dunit == "") {
+				dname <- ""
+			} else {
+				dname <- paste0("[", dunit, "]: ") 
+			}
+		} else {
+			if ((dunit == "") || (dunit == "unknown")) {
+				dname <- paste0(dname, ": ")
+			} else {
+				dname <- paste0(dname, " [", dunit, "]: ")
+			}
+		}
+		
+		label <- "depth       : "
+		dpth <- unique(depth(object))
+		if (length(dpth) > 1) {
+			rd <- range(dpth)
+			dpth <- paste0(label, paste(rd, collapse=" to "), " (", dname, length(dpth), " steps)")
+		} else {
+			dpth <- paste0(label, dpth)			
+		}
+		cat(dpth, "\n")		
+	}
+
+	if (object@pntr$hasTime) {
+		label <- "time        "
+		tms <- time(object)
+		rtim <- range(tms)
+		tims <- object@pntr$timestep
+		if (tims == "yearmonths") {
+			rtim <- format_ym(rtim)
+			label <- "time (ymnts)"
+		} else if (tims == "months") {
+			rtim <- month.abb[rtim]
+			label <- "time (mnts) "
+		} else if (tims == "years") {
+			label <- "time (years)"
+		} else if (tims == "days") {
+			label <- "time (days) "
+		} else if (tims == "raw") {
+			label <- "time (raw)  "
+		}
+		utim <- unique(rtim)
+		add_steps <- FALSE
+		if (length(utim) > 1) {
+			ptim <- paste0(label, ": ", paste(rtim, collapse=" to "))
+			add_steps <- TRUE
+		} else {
+			ptim <- paste0(label, ": ", as.character(utim))
+		}
+		if (tims == "seconds") {
+			tz <- format(utim[1], format="%Z")
+			ptim <- paste(ptim, tz)
+		}
+		if (add_steps) {
+			ptim <- paste0(ptim, " (", length(unique(tms)), " steps)")
+		}
+		cat(ptim, "\n")
+	}
+
+	# else {
+	#	cat("data sources:", "no data\n")
+	#	cat("names       :", paste(ln, collapse=", "), "\n")
+	# }
+}
+
+
 
 
 
@@ -548,79 +561,78 @@ setMethod ("show" , "SpatRaster",
 }
 
 
-setMethod("show" , "SpatRasterDataset",
-	function(object) {
+.show_sds <- function(object) {
 
-		cat("class       :" , class(object), "\n")
-		ns <- length(object)
-		cat("subdatasets :", ns, "\n")
-		if (ns == 0) return()
+	cat("class       :" , class(object), "\n")
+	ns <- length(object)
+	cat("subdatasets :", ns, "\n")
+	if (ns == 0) return()
 
-		d <- dim(object)
-		cat("dimensions  :", paste(d, collapse=", "), "(nrow, ncol)\n")
-		nss <- nlyr(object)
-		if (length(nss) > 10) {
-			nss = c(as.character(nss[1:9], "..."))
-		}
-		cat("nlyr        :", paste(nss, collapse=", "), "\n")
-
-		xyres <- res(object)
-		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
-		e <- as.vector(ext(object))
-		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-
-		cat("coord. ref. :" , .name_or_proj4(object), "\n")
-
-		s <- .sources(object)
-		if (length(s) > 6) {
-			s <- c(s[1:6], "...")
-		}
-		cat("source(s)   :", paste(s, collapse=", "), "\n")
-
-		ln <- names(object)
-		if (any(ln != "")) {
-			if (length(ln) > 6) {
-				ln <- c(ln[1:6], "...")		
-			}
-			cat("names       :", paste(ln, collapse=", "), "\n")
-		}
+	d <- dim(object)
+	cat("dimensions  :", paste(d, collapse=", "), "(nrow, ncol)\n")
+	nss <- nlyr(object)
+	if (length(nss) > 10) {
+		nss = c(as.character(nss[1:9], "..."))
 	}
-)
+	cat("nlyr        :", paste(nss, collapse=", "), "\n")
 
+	xyres <- res(object)
+	cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
+	e <- as.vector(ext(object))
+	cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 
-setMethod("show" , "SpatRasterCollection",
-	function(object) {
-		cat("class       :" , class(object), "\n")
-		nr <- length(object)
-		cat("length      :", nr, "\n")
-		d <- (t(dim(object)))
-		d[] <- as.character(d)
-		if (ncol(d) > 14) {
-			d <- d[,1:15]
-			d[,15] <- "..."
-		}
-		for (i in 1:ncol(d)) {
-			d[,i] <- format(d[,i], width=max(nchar(d[,i])), justify="right")
-		}
-		cat("nrow        :", paste(d[1,], collapse=", "), "\n")
-		cat("ncol        :", paste(d[2,], collapse=", "), "\n")
-		cat("nlyr        :", paste(d[3,], collapse=", "), "\n")
-		
-		e <- as.vector(ext(object))
-		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		
-		
-		crs <- .name_or_proj4(object@pntr$x[[1]])
-		if (crs != "") cat("crs (first) :", crs,	 "\n")
-		ln <- names(object)
-		if (any(ln != "")) {
-			if (length(ln) > 6) {
-				ln = c(ln[1:6], "...")		
-			}
-			cat("names       :", paste(ln, collapse=", "), "\n")
-		}
+	cat("coord. ref. :" , .name_or_proj4(object), "\n")
+
+	s <- .sources(object)
+	if (length(s) > 6) {
+		s <- c(s[1:6], "...")
 	}
-)
+	cat("source(s)   :", paste(s, collapse=", "), "\n")
+
+	ln <- names(object)
+	if (any(ln != "")) {
+		if (length(ln) > 6) {
+			ln <- c(ln[1:6], "...")		
+		}
+		cat("names       :", paste(ln, collapse=", "), "\n")
+	}
+}
+
+
+
+
+.show_sprc <- function(object) {
+	cat("class       :" , class(object), "\n")
+	nr <- length(object)
+	cat("length      :", nr, "\n")
+	d <- (t(dim(object)))
+	d[] <- as.character(d)
+	if (ncol(d) > 14) {
+		d <- d[,1:15]
+		d[,15] <- "..."
+	}
+	for (i in 1:ncol(d)) {
+		d[,i] <- format(d[,i], width=max(nchar(d[,i])), justify="right")
+	}
+	cat("nrow        :", paste(d[1,], collapse=", "), "\n")
+	cat("ncol        :", paste(d[2,], collapse=", "), "\n")
+	cat("nlyr        :", paste(d[3,], collapse=", "), "\n")
+	
+	e <- as.vector(ext(object))
+	cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+	
+	
+	crs <- .name_or_proj4(object@pntr$x[[1]])
+	if (crs != "") cat("crs (first) :", crs,	 "\n")
+	ln <- names(object)
+	if (any(ln != "")) {
+		if (length(ln) > 6) {
+			ln = c(ln[1:6], "...")		
+		}
+		cat("names       :", paste(ln, collapse=", "), "\n")
+	}
+}
+
 
 
 setMethod("show" , "SpatGraticule",

@@ -228,6 +228,7 @@ class SpatExtent {
 		virtual ~SpatExtent(){}
 
 		SpatExtent deepCopy() {return *this;}
+		std::string show();
 		SpatExtent align(double d, std::string snap);
 
 		bool intersects(SpatExtent e) { 

@@ -68,6 +68,7 @@ class SpatRasterStack {
 		std::vector<size_t> nlyr();
 
 		std::string getSRS(std::string s);
+		std::string show();
 		bool push_back(SpatRaster r, std::string name, std::string longname, std::string unit, bool warn); 
 		size_t size();
 		bool empty();
@@ -139,6 +140,7 @@ class SpatRasterCollection {
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
 		SpatRaster summary(std::string fun, SpatOptions &opt);
 		std::vector<size_t> dims();
+		std::string show();
 		std::vector<std::string> get_names();
 		void set_names(std::vector<std::string> nms);
 		std::vector<std::string> filenames();

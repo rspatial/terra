@@ -418,6 +418,8 @@ class SpatRaster {
 
 		std::vector<std::string> getAllFiles();
 
+		std::string show();
+
 		void gdalogrproj_init(std::string path);
 
 		bool compare_geom(SpatRaster &x, bool lyrs, bool crs, double tol, bool warncrs=false, bool ext=true, bool rowcol=true, bool res=false);

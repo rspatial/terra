@@ -46,7 +46,7 @@ std::vector<double> SpatDataFrame::getD(size_t i) {
 	return dv[j];
 }
 
-double SpatDataFrame::getDvalue(size_t i, size_t j) {
+double SpatDataFrame::getDvalue(size_t i, size_t j) const {
 	j = iplace[j];
 	return dv[j][i];
 }
@@ -57,7 +57,7 @@ std::vector<long> SpatDataFrame::getI(size_t i) {
 }
 
 
-long SpatDataFrame::getIvalue(size_t i, size_t j) {
+long SpatDataFrame::getIvalue(size_t i, size_t j) const {
 	j = iplace[j];
 	return iv[j][i];
 }
@@ -68,7 +68,7 @@ std::vector<std::string> SpatDataFrame::getS(size_t i) {
 	return sv[j];
 }
 
-std::string SpatDataFrame::getSvalue(size_t i, size_t j) {
+std::string SpatDataFrame::getSvalue(size_t i, size_t j) const {
 	j = iplace[j];
 	return sv[j][i];
 }
@@ -78,7 +78,7 @@ std::vector<int8_t> SpatDataFrame::getB(size_t i) {
 	return bv[j];
 }
 
-int8_t SpatDataFrame::getBvalue(size_t i, size_t j) {
+int8_t SpatDataFrame::getBvalue(size_t i, size_t j) const {
 	j = iplace[j];
 	return bv[j][i];
 }
@@ -88,12 +88,12 @@ SpatTime_v SpatDataFrame::getT(size_t i) {
 	return tv[j];
 }
 
-SpatTime_t SpatDataFrame::getTvalue(size_t i, size_t j) {
+SpatTime_t SpatDataFrame::getTvalue(size_t i, size_t j) const {
 	j = iplace[j];
 	return tv[j].x[i];
 }
 
-SpatFactor SpatDataFrame::getF(size_t i) {
+SpatFactor SpatDataFrame::getF(size_t i) const {
 	size_t j = iplace[i];
 	return fv[j];
 }
@@ -228,12 +228,12 @@ SpatDataFrame SpatDataFrame::subset_cols(std::vector<size_t> range) {
 }
 
 
-size_t SpatDataFrame::ncol() {
+size_t SpatDataFrame::ncol() const {
 	return itype.size();
 }
 
 
-size_t SpatDataFrame::nrow() {
+size_t SpatDataFrame::nrow() const {
 	size_t n;
 	if (itype.empty()) {
 		n = 0;

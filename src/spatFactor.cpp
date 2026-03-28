@@ -127,7 +127,7 @@ SpatFactor SpatFactor::subset(std::vector<size_t> i) {
 	return out;
 }
 
-std::string SpatFactor::getLabel(size_t i) {
+std::string SpatFactor::getLabel(size_t i) const {
 	if (i < v.size()) {
 		size_t j = v[i] - 1;
 		if (j < labels.size()) {
@@ -137,7 +137,7 @@ std::string SpatFactor::getLabel(size_t i) {
 	return "";
 }
 
-std::vector<std::string> SpatFactor::getLabels() {
+std::vector<std::string> SpatFactor::getLabels() const {
 	std::vector<std::string> out;
 	size_t n = v.size();
 	size_t m = labels.size() + 1;

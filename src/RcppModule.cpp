@@ -283,6 +283,7 @@ RCPP_MODULE(spat){
 		.method("sampleRandom", &SpatExtent::sampleRandom)
 		.method("sampleRegular", &SpatExtent::sampleRegular)
 		.method("sample", &SpatExtent::test_sample)
+		.method("show", &SpatExtent::show)
 	;
 
 /*
@@ -426,6 +427,7 @@ RCPP_MODULE(spat){
 		.method("from_hex_col", &SpatVectorCollection::from_hex_col)
 		.method("setNames", &SpatVectorCollection::setNames, "setNames" )
 		.property("names", &SpatVectorCollection::getNames)
+		.method("show", &SpatVectorCollection::show)
 
 	;
 
@@ -456,6 +458,7 @@ RCPP_MODULE(spat){
 //		.method("pointInPolygon", &SpatVector::pointInPolygon)
 		
 		.method("deepcopy", &SpatVector::deepCopy)
+		.method("show", &SpatVector::show)
 		.method("wkt", &SpatVector::wkt)
 		.method("wkb", &SpatVector::wkb)
 		.method("wkb_raw", &SpatVector::wkb_raw)
@@ -677,6 +680,7 @@ RCPP_MODULE(spat){
 		.constructor()
 		.field("v", &SpatVectorProxy::v )
 		.method("deepcopy", &SpatVectorProxy::deepCopy, "deepCopy")
+		.method("show", &SpatVectorProxy::show)
 	;
 
 
@@ -720,6 +724,7 @@ RCPP_MODULE(spat){
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat")
 		.method("deepcopy", &SpatRaster::deepCopy, "deepCopy")
+		.method("show", &SpatRaster::show)
 		.method("hardcopy", &SpatRaster::hardCopy)
 		.method("get_crs", &SpatRaster::getSRS)
 		.method("set_crs", (bool (SpatRaster::*)(std::string crs))( &SpatRaster::setSRS))
@@ -1091,6 +1096,7 @@ RCPP_MODULE(spat){
 		.method("deepcopy", &SpatRasterCollection::deepCopy)
 		.method("dims", &SpatRasterCollection::dims)
 		.method("extent", &SpatRasterCollection::getExtent)
+		.method("show", &SpatRasterCollection::show)
 
 		.method("has_error", &SpatRasterCollection::hasError)
 		.method("has_warning", &SpatRasterCollection::hasWarning)
@@ -1132,6 +1138,7 @@ RCPP_MODULE(spat){
 		.method("res", &SpatRasterStack::resolution)
 		.method("ext", &SpatRasterStack::getExtent)
 		.method("filenames", &SpatRasterStack::filenames)
+		.method("show", &SpatRasterStack::show)
 		
 		.method("get_crs", &SpatRasterStack::getSRS)
 		.property("names", &SpatRasterStack::get_names, &SpatRasterStack::set_names)

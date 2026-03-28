@@ -136,6 +136,8 @@ class SpatVector {
 		size_t ncol();
 		size_t nxy();
 
+		std::string show();
+
 		SpatVector deepCopy() {return *this;}
 
 		SpatExtent getExtent();
@@ -489,6 +491,8 @@ class SpatVectorCollection {
 		
 		SpatVector append();
 		SpatVectorCollection from_hex_col(std::vector<std::string> x, std::string srs);
+
+		std::string show();
 		
 };
 
@@ -501,6 +505,7 @@ class SpatVectorProxy {
 		virtual ~SpatVectorProxy(){}
 		SpatVectorProxy deepCopy() {return *this;}
 		SpatVector query_filter(std::string query, std::vector<double> extent, SpatVector filter);
+		std::string show();
 };
 
 

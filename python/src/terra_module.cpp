@@ -202,6 +202,7 @@ PYBIND11_MODULE(_terra, m) {
         .def(py::init<>())
         .def(py::init<double, double, double, double>())
         .def("deepcopy",       &SpatExtent::deepCopy)
+        .def("show",           &SpatExtent::show)
         .def_property_readonly("vector",       &SpatExtent::asVector)
         .def_property_readonly("valid",        &SpatExtent::valid)
         .def_property_readonly("valid_notempty",&SpatExtent::valid_notempty)
@@ -335,6 +336,7 @@ PYBIND11_MODULE(_terra, m) {
         .def(py::init<std::string, std::string, std::string, std::string,
                       std::vector<double>, SpatVector>())
         .def("deepcopy",    &SpatVectorCollection::deepCopy)
+        .def("show",        &SpatVectorCollection::show)
         .def("size",        &SpatVectorCollection::size)
         .def("get",         &SpatVectorCollection::get)
         .def("push_back",   &SpatVectorCollection::push_back)
@@ -359,6 +361,7 @@ PYBIND11_MODULE(_terra, m) {
 
         .def("addWKB",       &addWKB)
         .def("deepcopy",     &SpatVector::deepCopy)
+        .def("show",         &SpatVector::show)
         .def("wkt",          &SpatVector::wkt)
         .def("wkb",          &SpatVector::wkb)
         .def("wkb_raw",      &SpatVector::wkb_raw)
@@ -585,6 +588,7 @@ PYBIND11_MODULE(_terra, m) {
         .def("compare_geom",    &SpatRaster::compare_geom)
         .def("couldBeLonLat",   &SpatRaster::could_be_lonlat)
         .def("deepcopy",        &SpatRaster::deepCopy)
+        .def("show",            &SpatRaster::show)
         .def("hardcopy",        &SpatRaster::hardCopy)
         .def("get_crs",         &SpatRaster::getSRS)
         .def("set_crs",
@@ -944,6 +948,7 @@ PYBIND11_MODULE(_terra, m) {
                       std::vector<std::string>>())
         .def(py::init<SpatRaster, std::string, std::string, std::string>())
         .def("deepcopy",    &SpatRasterStack::deepCopy)
+        .def("show",        &SpatRasterStack::show)
         .def("has_error",   &SpatRasterStack::hasError)
         .def("has_warning", &SpatRasterStack::hasWarning)
         .def("getError",    &SpatRasterStack::getError)

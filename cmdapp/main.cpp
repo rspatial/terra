@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 		SpatExtent e(0,10,0,10);
 		SpatOptions opt;
 		out = out.crop(e, "near", false, opt);
-		show(out);
+		std::cout << out.show();
 		
         return 1;
 	}
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
        	std::cout <<  out.msg.error << std::endl;
        	return 1;
     } else {
-		show(out);
+		std::cout << out.show();
     }
 	return 0;
 }

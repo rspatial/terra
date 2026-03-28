@@ -33,6 +33,13 @@ std::string double_to_string(double x) {
 	return s;
 }
 
+/*
+static std::string double_to_string(double v) {
+	std::ostringstream oss;
+	oss << v;
+	return oss.str();
+}
+*/
 
 void unquote(std::string &s) {
 	s.erase(std::remove(s.begin(), s.end(), '\"'), s.end());
