@@ -2,7 +2,10 @@
 # the default branch. That folder holds upstream C++ only; Python code stays under
 # src/, pybind glue under native/terra_module.cpp.
 #
-# Requires repo secret TAPPA_SYNC_PAT (fine-grained: Contents write on tappa).
+# Requires repository secret TAPPA_SYNC_PAT on rspatial/terra (Settings → Secrets
+# and variables → Actions). Use a fine-grained PAT with Contents: Read+Write on
+# rspatial/tappa only. Without it, checkout fails: "Input required: token".
+#
 # If the Python repo is named tarra, change TAPPA_REPO below.
 
 name: Sync src to tappa
@@ -28,12 +31,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout terra (this repo)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: terra
 
+      - name: Ensure TAPPA_SYNC_PAT is set
+        env:
+          PAT: ${{ secrets.TAPPA_SYNC_PAT }}
+        run: |
+          if [ -z "$PAT" ]; then
+            echo "::error::Missing Actions secret TAPPA_SYNC_PAT on this repository."
+            echo "1. GitHub → Settings → Developer settings → Fine-grained tokens"
+            echo "2. Create a token with Contents Read+Write on repository rspatial/tappa"
+            echo "3. rspatial/terra → Settings → Secrets and variables → Actions → New repository secret"
+            echo "   Name: TAPPA_SYNC_PAT   Value: (paste token)"
+            exit 1
+          fi
+
       - name: Checkout tappa
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ env.TAPPA_REPO }}
           ref: ${{ env.TAPPA_BRANCH }}
