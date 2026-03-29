@@ -6,8 +6,8 @@ build-backend = "scikit_build_core.build"
 [project]
 # PyPI / pip name and import package: geospat (see wheel.packages → src/geospat/)
 name = "geospat"
-version = "1.9.11"
-description = "geospat — Python bindings for the terra geospatial C++ library (R-terra API)"
+version = "0.0.1"
+description = "geospat — Python bindings for the terra geospatial API)"
 readme = "README.md"
 license = { text = "GPL-3.0-or-later" }
 requires-python = ">=3.9"
@@ -39,20 +39,11 @@ build-dir = "build/{wheel_tag}"
 
 
 [tool.cibuildwheel]
-# CI wheel builds (see .github/workflows/wheels.yml). Vendor C++ sources: workflow
-# copies repo `src/` → `python/_geospat_cpp_src/` so isolated builds find them.
-build = ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
-skip = ["*-musllinux_*", "pp*"]
+# CI publishes Windows wheels only (see .github/workflows/wheels.yml); Linux/macOS
+# users typically use conda or system GDAL/GEOS/PROJ and build from source.
+# Workflow copies repo `src/` → `python/_geospat_cpp_src/` for isolated builds.
+build = ["cp39-win_amd64", "cp310-win_amd64", "cp311-win_amd64", "cp312-win_amd64"]
 test-command = "python -c \"import geospat; print('geospat', geospat.__file__)\""
-
-[tool.cibuildwheel.linux]
-# manylinux_2_28 (Alma): dnf + EPEL; fall back to yum (2014) or apt (debian-based).
-before-all = "bash -c 'if command -v dnf >/dev/null 2>&1; then dnf install -y epel-release && dnf install -y gdal-devel geos-devel proj-devel; elif command -v yum >/dev/null 2>&1; then yum install -y epel-release gdal-devel geos-devel proj-devel; else apt-get update -qq && apt-get install -y -qq libgdal-dev libgeos-dev libproj-dev; fi'"
-
-[tool.cibuildwheel.macos]
-before-all = "brew install gdal geos proj"
-before-build = "pip install delocate"
-repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} {wheel}"
 
 [tool.cibuildwheel.windows]
 # vcpkg is pre-installed on GitHub Actions windows-latest runners.

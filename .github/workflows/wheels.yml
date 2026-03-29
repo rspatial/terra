@@ -1,27 +1,22 @@
-# Build geospat (python/) wheels with cibuildwheel and optionally upload to PyPI.
+# Windows-only prebuilt wheels (GDAL/GEOS/PROJ via vcpkg). Linux/macOS users are
+# expected to use conda/system libs and build from source. Uploads to PyPI on tag push.
 #
-# PyPI (trusted publishing): create a PyPI "pending" publisher for this repo, then
-# add a GitHub Environment named "pypi" (optional) and restrict the deploy job.
+# PyPI (trusted publishing): register this workflow in PyPI’s trusted publisher settings.
+# Optional: add `environment: pypi` on the upload job for deploy approvals.
 # See https://docs.pypi.org/trusted-publishers/
 
 name: Python wheels
 
 on:
   workflow_dispatch:
-  release:
-    types: [published]
   push:
     tags:
-      - "geospat-v*"
+      - "**"
 
 jobs:
   build_wheels:
-    name: Wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-14]
+    name: Windows wheels
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +35,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          name: cibw-wheels-windows
           path: ./wheelhouse/*.whl
 
   upload_pypi:
@@ -50,8 +45,8 @@ jobs:
     # Optional: add `environment: pypi` for deploy approvals / protection rules.
     permissions:
       id-token: write
-    # Only publish from GitHub Releases (not raw tag pushes).
-    if: github.event_name == 'release' && github.event.action == 'published'
+    # Publish whenever a tag is pushed (no separate GitHub Release required).
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     steps:
       - uses: actions/download-artifact@v4
         with:
