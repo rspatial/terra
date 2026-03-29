@@ -1,0 +1,67 @@
+# Mirror terra's src/ into rspatial/tappa whenever this folder changes on the
+# default branch. Requires a fine-grained PAT with Contents: Read+Write on tappa
+# stored as repo secret TAPPA_SYNC_PAT (classic PAT: repo scope).
+#
+# If the Python repo is named tarra, change TAPPA_REPO below.
+
+name: Sync src to tappa
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "src/**"
+  workflow_dispatch:
+
+concurrency:
+  group: sync-src-to-tappa
+  cancel-in-progress: true
+
+env:
+  TAPPA_REPO: rspatial/tappa
+  TAPPA_BRANCH: main
+
+jobs:
+  sync:
+    if: github.repository == 'rspatial/terra'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout terra (this repo)
+        uses: actions/checkout@v4
+        with:
+          path: terra
+
+      - name: Checkout tappa
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.TAPPA_REPO }}
+          ref: ${{ env.TAPPA_BRANCH }}
+          path: tappa
+          token: ${{ secrets.TAPPA_SYNC_PAT }}
+
+      - name: Mirror src/ into tappa
+        run: |
+          set -euo pipefail
+          mkdir -p tappa/src
+          # Python binding lives only in tappa; keep it across --delete syncs
+          if [ -f tappa/src/terra_module.cpp ]; then
+            cp tappa/src/terra_module.cpp /tmp/terra_module.cpp.preserve
+          else
+            echo "tappa/src/terra_module.cpp missing — add it in tappa or adjust workflow"
+            exit 1
+          fi
+          rsync -a --delete terra/src/ tappa/src/
+          cp /tmp/terra_module.cpp.preserve tappa/src/terra_module.cpp
+
+      - name: Commit and push if changed
+        working-directory: tappa
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A src
+          if git diff --staged --quiet; then
+            echo "No changes to src/ after sync."
+            exit 0
+          fi
+          git commit -m "Sync src/ from rspatial/terra@${{ github.sha }}"
+          git push origin HEAD:${{ env.TAPPA_BRANCH }}
