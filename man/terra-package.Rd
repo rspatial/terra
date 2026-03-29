@@ -304,7 +304,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 \tabular{ll}{
     \code{\link{time}} \tab Get or set time\cr
     \code{\link{fillTime}} \tab can add empty layers in between existing layers to assure that the time step between layers is constant \cr
-    \code{\link{mergeTime}} \tab combine multiple rasters, perhaps partly overlapping in time, into a single time series\cr\
+    \code{\link{mergeTime}} \tab combine multiple rasters, perhaps partly overlapping in time, into a single time series\cr
 	\code{\link{clamp_ts}} \tab Clamp time-series values \cr
 
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
