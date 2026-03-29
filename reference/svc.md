@@ -74,27 +74,27 @@ x <- svc(v, v[1:3,], as.lines(v[3:5,]), as.points(v))
 length(x)
 #> [1] 4
 x
-#>  class       : SpatVectorCollection 
-#>  length      : 4 
+#>  class       : SpatVectorCollection
+#>  length      : 4
 #>  geometry    : polygons (12)
 #>                polygons (3)
 #>                lines (3)
 #>                points (3983)
-#>  crs (first) : lon/lat WGS 84 (EPSG:4326) 
-#>  names       : , , ,  
+#>  crs (first) : lon/lat WGS 84 (EPSG:4326)
+#>  names       : , , , 
 
 # extract
 x[3]
-#>  class       : SpatVector 
-#>  geometry    : lines 
-#>  dimensions  : 3, 6  (geometries, attributes)
-#>  extent      : 5.74414, 6.239243, 49.69933, 50.03632  (xmin, xmax, ymin, ymax)
-#>  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#>  names       :  ID_1   NAME_1  ID_2  NAME_2  AREA       POP
-#>  type        : <num>    <chr> <num>   <chr> <num>     <num>
-#>  values      :     1 Diekirch     3 Redange   259 1.866e+04
-#>                    1 Diekirch     4 Vianden    76      5163
-#>                    1 Diekirch     5   Wiltz   263 1.674e+04
+#> class       : SpatVector
+#> geometry    : lines
+#> dimensions  : 3, 6  (geometries, attributes)
+#> extent      : 5.74414, 6.239243, 49.69933, 50.03632  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :  ID_1   NAME_1  ID_2  NAME_2  AREA   POP
+#> type        : <num>    <chr> <num>   <chr> <num> <num>
+#> values      :     1 Diekirch     3 Redange   259 18664
+#>                   1 Diekirch     4 Vianden    76  5163
+#>                   1 Diekirch     5   Wiltz   263 16735
 
 # replace
 x[2] <- as.lines(v[1,])

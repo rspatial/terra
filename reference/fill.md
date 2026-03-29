@@ -51,14 +51,14 @@ z <- rbind(cbind(object=1, part=1, x, hole=0),
 colnames(z)[3:4] <- c('x', 'y')
 p <- vect(z, "polygons", atts=data.frame(id=1), crs="local")
 p
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 1, 1  (geometries, attributes)
-#>  extent      : 50, 160, -55, 60  (xmin, xmax, ymin, ymax)
-#>  coord. ref. : Cartesian (Meter) 
-#>  names       :    id
-#>  type        : <num>
-#>  values      :     1
+#> class       : SpatVector
+#> geometry    : polygons
+#> dimensions  : 1, 1  (geometries, attributes)
+#> extent      : 50, 160, -55, 60  (xmin, xmax, ymin, ymax)
+#> coord. ref. : Cartesian (Meter)
+#> names       :    id
+#> type        : <num>
+#> values      :     1
 
 f <- fillHoles(p)
 g <- fillHoles(p, inverse=TRUE)

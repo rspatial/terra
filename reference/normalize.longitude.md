@@ -30,9 +30,9 @@ SpatRaster
 ``` r
 p <- vect("POLYGON ((120 10, 230 75, 230 -75, 120 10))")
 normalize.longitude(p)
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 1, 0  (geometries, attributes)
-#>  extent      : -180, 180, -75, 75  (xmin, xmax, ymin, ymax)
-#>  coord. ref. :  
+#> class       : SpatVector
+#> geometry    : polygons
+#> dimensions  : 1, 0  (geometries, attributes)
+#> extent      : -180, 180, -75, 75  (xmin, xmax, ymin, ymax)
+#> coord. ref. : 
 ```

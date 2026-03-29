@@ -9,7 +9,7 @@ Or remove "holes" in SpatRasters.'><meta property="og:image" content="https://rs
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,14 +83,14 @@ Or remove "holes" in SpatRasters.'><meta property="og:image" content="https://rs
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">'x'</span>, <span class="st">'y'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">z</span>, <span class="st">"polygons"</span>, atts<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id<span class="op">=</span><span class="fl">1</span><span class="op">)</span>, crs<span class="op">=</span><span class="st">"local"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 1, 1  (geometries, attributes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 50, 160, -55, 60  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : Cartesian (Meter) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  names       :    id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatVector</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> geometry    : polygons</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 1, 1  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 50, 160, -55, 60  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : Cartesian (Meter)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       :    id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> type        : &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> values      :     1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu">fillHoles</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">fillHoles</span><span class="op">(</span><span class="va">p</span>, inverse<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>

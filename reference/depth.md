@@ -54,10 +54,10 @@ depth(s)
 depthName(s) <- "angle"
 depthUnit(s) <- "radians"
 s
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 180, 360, 3  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
-#> depth       : 0 to 3.14159265358979 (angle [radians]: 3 steps) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
+#> depth       : 0 to 3.14159 (angle [radians]: 3 steps)
 ```

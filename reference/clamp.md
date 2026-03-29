@@ -61,13 +61,13 @@ r <- rast(ncols=10, nrows=10)
 values(r) <- 1:ncell(r)
 rc <- clamp(r, 25, 75) 
 rc
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        : lyr.1 
-#> min value   :    25 
-#> max value   :    75 
+#> name        : lyr.1
+#> min value   :    25
+#> max value   :    75
 ```

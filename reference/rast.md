@@ -310,11 +310,11 @@ s <- rast(system.file("ex/logo.tif", package="terra"))
 
 # Create a skeleton with no associated cell values
 rast(s)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 3  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
+#> coord. ref. : Cartesian (Meter)
 
 # from a matrix 
 m <- matrix(1:25, nrow=5, ncol=5)
@@ -331,13 +331,13 @@ head(d)
 #> 5 4.5 4.5    21
 #> 6 0.5 3.5     2
 rast(d, type="xyz")
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 5, 5, 1  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 5, 0, 5  (xmin, xmax, ymin, ymax)
-#> coord. ref. :  
+#> coord. ref. : 
 #> source(s)   : memory
-#> name        : lyr.1 
-#> min value   :     1 
-#> max value   :    25 
+#> name        : lyr.1
+#> min value   :     1
+#> max value   :    25
 ```

@@ -9,7 +9,7 @@ timeInfo and has.time are helper functions to understand what a time data a Spat
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,8 +101,8 @@ timeInfo and has.time are helper functions to understand what a time data a Spat
 <span class="r-in"><span><span class="co"># with time zone</span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXlt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"America/New_York"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2026-03-28 12:18:03 EDT" "2026-03-28 12:18:04 EDT"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "2026-03-28 12:18:05 EDT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2026-03-29 12:36:37 EDT" "2026-03-29 12:36:38 EDT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "2026-03-29 12:36:39 EDT"</span>
 <span class="r-in"><span><span class="fu">timeInfo</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   time    step             zone</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 TRUE seconds America/New_York</span>
@@ -110,31 +110,31 @@ timeInfo and has.time are helper functions to understand what a time data a Spat
 <span class="r-in"><span><span class="co"># years</span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span>, tstep<span class="op">=</span><span class="st">"years"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">2000</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="va">s</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 77, 101, 3  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 1, 1  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : Cartesian (Meter) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : logo.tif </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> colors RGB  : 1, 2, 3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> names       : red, green, blue </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :   0,     0,    0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 255,   255,  255 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> time (years): 2000 to 2002 (3 steps) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : Cartesian (Meter)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : logo.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> colors rgb  : 0, 1, 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       : red, green, blue</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :   0,     0,    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 255,   255,  255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> time (years): 2000-00-00 to 2002-00-00 (3 steps)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">time</span><span class="op">(</span><span class="va">s</span>, tstep<span class="op">=</span><span class="st">"months"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span></span></span>
 <span class="r-in"><span><span class="va">s</span> </span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 77, 101, 3  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 1, 1  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : Cartesian (Meter) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : logo.tif </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> colors RGB  : 1, 2, 3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> names       : red, green, blue </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :   0,     0,    0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 255,   255,  255 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> time (mnts) : Jan to Mar (3 steps) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : Cartesian (Meter)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : logo.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> colors rgb  : 0, 1, 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       : red, green, blue</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :   0,     0,    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 255,   255,  255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> time (mnts) : 0000-01-00 to 0000-03-00 (3 steps)</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -9,7 +9,7 @@ Or sort the records of SpatVector (or data.frame) by specifying the column numbe
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,40 +83,40 @@ Or sort the records of SpatVector (or data.frame) by specifying the column numbe
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">/</span><span class="fl">2</span>, <span class="va">r</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">sort</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 90, 95, 3  (nrow, ncol, nlyr)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.008333333, 0.008333333  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.00833333, 0.00833333  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> varname     : elev </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> names       : elevation, elevation, elevation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :      70.5,       141,       282 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max values  :     273.5,       547,      1094 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> varname     : elev</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       : elevation, elevation, elevation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :      70.5,       141,       282</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max values  :     273.5,       547,      1094</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ord</span> <span class="op">&lt;-</span> <span class="fu">sort</span><span class="op">(</span><span class="va">r</span>, order<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># these two are the same </span></span></span>
 <span class="r-in"><span><span class="va">ord</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 90, 95, 1  (nrow, ncol, nlyr)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.008333333, 0.008333333  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.00833333, 0.00833333  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> varname     : elev </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : elevation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :         0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :         1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> varname     : elev</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : elevation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :         1</span>
 <span class="r-in"><span><span class="fu"><a href="summarize-generics.html">which.min</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 90, 95, 1  (nrow, ncol, nlyr)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.008333333, 0.008333333  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.00833333, 0.00833333  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : which.min </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :         2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :         2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : which.min</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :         2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :         2</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

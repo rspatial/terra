@@ -55,38 +55,38 @@ f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 r <- c(r, r/2, r*2)
 sort(r)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 90, 95, 3  (nrow, ncol, nlyr)
-#> resolution  : 0.008333333, 0.008333333  (x, y)
+#> resolution  : 0.00833333, 0.00833333  (x, y)
 #> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> source(s)   : memory
-#> varname     : elev 
-#> names       : elevation, elevation, elevation 
-#> min values  :      70.5,       141,       282 
-#> max values  :     273.5,       547,      1094 
+#> varname     : elev
+#> names       : elevation, elevation, elevation
+#> min values  :      70.5,       141,       282
+#> max values  :     273.5,       547,      1094
 
 ord <- sort(r, order=TRUE)
 # these two are the same 
 ord[[1]]
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 90, 95, 1  (nrow, ncol, nlyr)
-#> resolution  : 0.008333333, 0.008333333  (x, y)
+#> resolution  : 0.00833333, 0.00833333  (x, y)
 #> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> source(s)   : memory
-#> varname     : elev 
-#> name        : elevation 
-#> min value   :         0 
-#> max value   :         1 
+#> varname     : elev
+#> name        : elevation
+#> min value   :         0
+#> max value   :         1
 which.min(r)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 90, 95, 1  (nrow, ncol, nlyr)
-#> resolution  : 0.008333333, 0.008333333  (x, y)
+#> resolution  : 0.00833333, 0.00833333  (x, y)
 #> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> source(s)   : memory
-#> name        : which.min 
-#> min value   :         2 
-#> max value   :         2 
+#> name        : which.min
+#> min value   :         2
+#> max value   :         2
 ```

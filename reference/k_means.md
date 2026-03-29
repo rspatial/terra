@@ -62,13 +62,13 @@ f <- system.file("ex/logo.tif", package = "terra")
 r <- rast(f)
 km <- k_means(r, centers=5)
 km
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 1  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
+#> coord. ref. : Cartesian (Meter)
 #> source(s)   : memory
-#> name        : lyr1 
-#> min value   :    1 
-#> max value   :    5 
+#> name        : lyr1
+#> min value   :    1
+#> max value   :    5
 ```

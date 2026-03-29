@@ -13,7 +13,7 @@ The window is intersect with the extent of the SpatRaster. It is envisioned that
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,15 +89,15 @@ The window is intersect with the extent of the SpatRaster. It is envisioned that
 <span class="r-out co"><span class="r-pr">#&gt;</span>               mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> elevation 396.4167</span>
 <span class="r-in"><span><span class="va">r</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 6, 12, 1  (nrow, ncol, nlyr)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.008333333, 0.008333333  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.00833333, 0.00833333  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> window      : 5.9, 6, 49.95, 50  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : elev.tif </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : elevation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :      &gt;141 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :      547&lt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : elev.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : elevation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :       141</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :       547</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">xe</span> <span class="op">&lt;-</span> <span class="fu"><a href="crop.html">crop</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">e</span><span class="op">)</span></span></span>
@@ -109,30 +109,30 @@ The window is intersect with the extent of the SpatRaster. It is envisioned that
 <span class="r-in"><span><span class="fu">window</span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE  TRUE</span>
 <span class="r-in"><span><span class="va">b</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 6, 12, 2  (nrow, ncol, nlyr)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.008333333, 0.008333333  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.00833333, 0.00833333  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent (win): 5.9, 6, 49.95, 50  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sources     : memory  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               elev.tif  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> varnames    : elev </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               elev </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> names       : elevation, elevation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :       323,      &gt;141 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max values  :       492,      547&lt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sources     : memory</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               elev.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> varnames    : elev</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               elev</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       : elevation, elevation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :       323,       141</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max values  :       492,       547</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">window</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
 <span class="r-in"><span><span class="va">r</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 90, 95, 1  (nrow, ncol, nlyr)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.008333333, 0.008333333  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 0.00833333, 0.00833333  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : elev.tif </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : elevation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :       141 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :       547 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : elev.tif</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : elevation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :       141</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :       547</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

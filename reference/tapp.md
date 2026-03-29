@@ -108,24 +108,24 @@ s <- c(r, r, r, r, r, r)
 s <- s * 1:6
 b1 <- tapp(s, index=c(1,1,1,2,2,2), fun=sum)
 b1
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 2  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> names       :  X1,   X2 
-#> min values  :   6,   15 
-#> max values  : 600, 1500 
+#> names       :  X1,   X2
+#> min values  :   6,   15
+#> max values  : 600, 1500
 b2 <- tapp(s, c(1,2,3,1,2,3), fun=sum)
 b2
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 3  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> names       :  X1,  X2,  X3 
-#> min values  :   5,   7,   9 
-#> max values  : 500, 700, 900 
+#> names       :  X1,  X2,  X3
+#> min values  :   5,   7,   9
+#> max values  : 500, 700, 900
 ```

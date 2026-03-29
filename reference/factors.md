@@ -137,16 +137,15 @@ levels(r) <- cls
 is.factor(r)
 #> [1] TRUE
 r
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> categories  : cover 
-#> name        :  cover 
-#> min value   : forest 
-#> max value   :  urban 
+#> name        : cover
+#> min value   :     1
+#> max value   :     3
 
 plot(r, col=c("green", "blue", "light gray"))
 text(r, digits=3, cex=.75, halo=TRUE)
@@ -171,16 +170,15 @@ is.factor(x)
 d <- data.frame(id=3:5, cover=cls[,2], letters=letters[1:3], value=10:12)
 levels(x) <- d
 x
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> categories  : cover, letters, value 
-#> name        :  cover 
-#> min value   : forest 
-#> max value   :  urban 
+#> name        : cover
+#> min value   :     3
+#> max value   :     5
 
 # get current index
 activeCat(x)
@@ -196,15 +194,15 @@ text(x, digits=3, cex=.75, halo=TRUE)
 
 r <- as.numeric(x)
 r
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        : cover 
-#> min value   :     1 
-#> max value   :     3 
+#> name        : cover
+#> min value   :     1
+#> max value   :     3
 
 p <- as.polygons(x)
 plot(p, "letters", col=c("green", "blue", "light gray"))

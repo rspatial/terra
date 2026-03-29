@@ -157,40 +157,40 @@ x <- sum(c(r, r[[2]]), 5)
 y <- sum(r, r[[2]], 5)
 
 max(r)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        :       max 
-#> min value   : 0.1808664 
-#> max value   : 0.9926841 
+#> name        :      max
+#> min value   : 0.180866
+#> max value   : 0.992684
 
 ## when adding a number, do you want 1 layer or all layers?
 # 1 layer
 max(r, 0.5)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        :       max 
-#> min value   : 0.5000000 
-#> max value   : 0.9926841 
+#> name        :      max
+#> min value   :      0.5
+#> max value   : 0.992684
 
 # all layers
 max(r, 0.5, par=TRUE)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 3  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> names       :     lyr.1,     lyr.2,     lyr.3 
-#> min values  : 0.5000000, 0.5000000, 0.5000000 
-#> max values  : 0.9919061, 0.9926841, 0.9815635 
+#> names       :    lyr.1,    lyr.2,    lyr.3
+#> min values  :      0.5,      0.5,      0.5
+#> max values  : 0.991906, 0.992684, 0.981563
 
 y <- stdev(r)
 # not the same as 
@@ -206,53 +206,53 @@ set.seed(3)
 v[sample(length(v), 50)] <- NA
 values(r) <- v
 is.na(r)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 3  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> names       : lyr.1, lyr.2, lyr.3 
-#> min values  : FALSE, FALSE, FALSE 
-#> max values  :  TRUE,  TRUE,  TRUE 
+#> names       : lyr.1, lyr.2, lyr.3
+#> min values  :     0,     0,     0
+#> max values  :     1,     1,     1
 anyNA(r)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        :  lyr1 
-#> min value   : FALSE 
-#> max value   :  TRUE 
+#> name        : lyr1
+#> min value   :    0
+#> max value   :    1
 allNA(r)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        :  lyr1 
-#> min value   : FALSE 
-#> max value   :  TRUE 
+#> name        : lyr1
+#> min value   :    0
+#> max value   :    1
 countNA(r)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        : lyr1 
-#> min value   :    0 
-#> max value   :    3 
+#> name        : lyr1
+#> min value   :    0
+#> max value   :    3
 countNA(r, 2)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        :  lyr1 
-#> min value   : FALSE 
-#> max value   :  TRUE 
+#> name        : lyr1
+#> min value   :    0
+#> max value   :    1
 ```

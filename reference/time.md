@@ -74,8 +74,8 @@ time(s)
 # with time zone
 time(s) <- as.POSIXlt(Sys.time(), "America/New_York") + 0:2
 time(s)
-#> [1] "2026-03-28 12:18:03 EDT" "2026-03-28 12:18:04 EDT"
-#> [3] "2026-03-28 12:18:05 EDT"
+#> [1] "2026-03-29 12:36:37 EDT" "2026-03-29 12:36:38 EDT"
+#> [3] "2026-03-29 12:36:39 EDT"
 timeInfo(s)
 #>   time    step             zone
 #> 1 TRUE seconds America/New_York
@@ -83,29 +83,29 @@ timeInfo(s)
 # years
 time(s, tstep="years") <- 2000 + 0:2
 s
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 3  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
-#> source      : logo.tif 
-#> colors RGB  : 1, 2, 3 
-#> names       : red, green, blue 
-#> min values  :   0,     0,    0 
-#> max values  : 255,   255,  255 
-#> time (years): 2000 to 2002 (3 steps) 
+#> coord. ref. : Cartesian (Meter)
+#> source      : logo.tif
+#> colors rgb  : 0, 1, 2
+#> names       : red, green, blue
+#> min values  :   0,     0,    0
+#> max values  : 255,   255,  255
+#> time (years): 2000-00-00 to 2002-00-00 (3 steps)
 
 time(s, tstep="months") <- 1:3
 s 
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 3  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
-#> source      : logo.tif 
-#> colors RGB  : 1, 2, 3 
-#> names       : red, green, blue 
-#> min values  :   0,     0,    0 
-#> max values  : 255,   255,  255 
-#> time (mnts) : Jan to Mar (3 steps) 
+#> coord. ref. : Cartesian (Meter)
+#> source      : logo.tif
+#> colors rgb  : 0, 1, 2
+#> names       : red, green, blue
+#> min values  :   0,     0,    0
+#> max values  : 255,   255,  255
+#> time (mnts) : 0000-01-00 to 0000-03-00 (3 steps)
 ```

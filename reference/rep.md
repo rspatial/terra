@@ -33,13 +33,13 @@ nlyr(x)
 names(x)
 #> [1] "red"   "green" "blue"  "red"   "green" "blue" 
 x
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 6  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
-#> source      : logo.tif 
-#> names       : red, green, blue, red, green, blue 
-#> min values  :   0,     0,    0,   0,     0,    0 
-#> max values  : 255,   255,  255, 255,   255,  255 
+#> coord. ref. : Cartesian (Meter)
+#> source      : logo.tif
+#> names       : red, green, blue, red, green, blue
+#> min values  :   0,     0,    0,   0,     0,    0
+#> max values  : 255,   255,  255, 255,   255,  255
 ```

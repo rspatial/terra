@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,38 +95,38 @@
 <span class="r-in"><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span>, proxy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">v</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVectorProxy</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 12, 6  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 1, 6  (geometries, attributes)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 5.74414, 6.528252, 49.44781, 50.18162  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  source      : lux.shp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_1 NAME_1  ID_2 NAME_2  AREA   POP</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;  &lt;chr&gt; &lt;num&gt;  &lt;chr&gt; &lt;num&gt; &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       :  ID_1 NAME_1  ID_2 NAME_2  AREA   POP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> type        : &lt;num&gt;  &lt;chr&gt; &lt;num&gt;  &lt;chr&gt; &lt;num&gt; &lt;num&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">query</span><span class="op">(</span><span class="va">v</span>, vars<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"ID_2"</span>, <span class="st">"NAME_2"</span><span class="op">)</span>, start<span class="op">=</span><span class="fl">5</span>, n<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 2, 2  (geometries, attributes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 5.74414, 6.528252, 49.72324, 50.03632  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  source      : lux.shp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_2     NAME_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;      &lt;chr&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     5      Wiltz</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    6 Echternach</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatVector</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> geometry    : polygons</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 2, 2  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 5.74414, 6.528252, 49.72324, 50.03632  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : lux.shp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       :  ID_2     NAME_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> type        : &lt;num&gt;      &lt;chr&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> values      :     5      Wiltz</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   6 Echternach</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">query</span><span class="op">(</span><span class="va">v</span>, vars<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"ID_2"</span>, <span class="st">"NAME_1"</span>, <span class="st">"NAME_2"</span><span class="op">)</span>, where<span class="op">=</span><span class="st">"NAME_1='Grevenmacher' AND ID_2 &gt; 6"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 2, 3  (geometries, attributes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 6.169137, 6.516485, 49.46498, 49.75016  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  source      : lux.shp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_2       NAME_1       NAME_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;        &lt;chr&gt;        &lt;chr&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     7 Grevenmacher       Remich</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   12 Grevenmacher Grevenmacher</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatVector</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> geometry    : polygons</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 2, 3  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 6.169137, 6.516485, 49.46498, 49.75016  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : lux.shp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       :  ID_2       NAME_1       NAME_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> type        : &lt;num&gt;        &lt;chr&gt;        &lt;chr&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> values      :     7 Grevenmacher       Remich</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  12 Grevenmacher Grevenmacher</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## with an extent</span></span></span>
 <span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">5.9</span>, <span class="fl">6.3</span>, <span class="fl">49.9</span>, <span class="fl">50</span><span class="op">)</span> </span></span>
@@ -136,17 +136,18 @@
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.polygons.html">as.polygons</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">query</span><span class="op">(</span><span class="va">v</span>, filter<span class="op">=</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 4, 6  (geometries, attributes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 5.74414, 6.315773, 49.78479, 50.18162  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  source      : lux.shp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA       POP</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;    &lt;chr&gt; &lt;num&gt;    &lt;chr&gt; &lt;num&gt;     &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     1 Diekirch     1 Clervaux   312 1.808e+04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     2 Diekirch   218 3.254e+04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     4  Vianden    76      5163</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatVector</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> geometry    : polygons</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 4, 6  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 5.74414, 6.315773, 49.78479, 50.18162  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : lux.shp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       :  ID_1   NAME_1  ID_2   NAME_2  AREA   POP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> type        : &lt;num&gt;    &lt;chr&gt; &lt;num&gt;    &lt;chr&gt; &lt;num&gt; &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> values      :     1 Diekirch     1 Clervaux   312 18081</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   1 Diekirch     2 Diekirch   218 32543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   1 Diekirch     4  Vianden    76  5163</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               ...</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

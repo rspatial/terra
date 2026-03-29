@@ -36,9 +36,9 @@ origin(r)
 #> [1] 0.5 0.0
 origin(r) <- c(0,0)
 r
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 180, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 10, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 ```

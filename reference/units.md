@@ -46,17 +46,17 @@ units(s) <- c("m/s", "kg", "ha")
 units(s)
 #> [1] "m/s" "kg"  "ha" 
 s
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 3  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
-#> source      : logo.tif 
-#> colors RGB  : 1, 2, 3 
-#> names       : red, green, blue 
-#> min values  :   0,     0,    0 
-#> max values  : 255,   255,  255 
-#> unit        : m/s,    kg,   ha 
+#> coord. ref. : Cartesian (Meter)
+#> source      : logo.tif
+#> colors rgb  : 0, 1, 2
+#> names       : red, green, blue
+#> min values  :   0,     0,    0
+#> max values  : 255,   255,  255
+#> unit        : m/s,    kg,   ha
 
 units(s) <- "kg"
 units(s)

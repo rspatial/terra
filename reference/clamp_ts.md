@@ -1,9 +1,9 @@
 # clamp time series data
 
-clamp time-series datat that are S shaped. The value in layers before
-the minimum value in a cell can be set to that minimum value, and the
-value in layers after the maximum value for a cell can be set to that
-maximum value.
+clamp time-series data that are S shaped. The value in layers before the
+minimum value in a cell can be set to that minimum value, and the value
+in layers after the maximum value for a cell can be set to that maximum
+value.
 
 ## Usage
 

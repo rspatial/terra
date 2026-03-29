@@ -101,39 +101,39 @@ s <- rast(system.file("ex/logo.tif", package="terra"))
 x <- sds(s, s/2)
 names(x) <- c("first", "second")
 x
-#> class       : SpatRasterDataset 
-#> subdatasets : 2 
+#> class       : SpatRasterDataset
+#> subdatasets : 2
 #> dimensions  : 77, 101 (nrow, ncol)
-#> nlyr        : 3, 3 
+#> nlyr        : 3, 3
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
-#> source(s)   : logo.tif, memory 
-#> names       : first, second 
+#> coord. ref. : Cartesian (Meter)
+#> source(s)   : logo.tif, memory
+#> names       : first, second
 length(x)
 #> [1] 2
 
 # extract the second SpatRaster
 x[2]
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 3  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
+#> coord. ref. : Cartesian (Meter)
 #> source(s)   : memory
-#> varname     : logo 
-#> names       :   red, green,  blue 
-#> min values  :   0.0,   0.0,   0.0 
-#> max values  : 127.5, 127.5, 127.5 
+#> varname     : logo
+#> names       :   red, green,  blue
+#> min values  :     0,     0,     0
+#> max values  : 127.5, 127.5, 127.5
 
 a <- array(1:9, c(3,3,3,3))
 sds(a)
-#> class       : SpatRasterDataset 
-#> subdatasets : 3 
+#> class       : SpatRasterDataset
+#> subdatasets : 3
 #> dimensions  : 3, 3 (nrow, ncol)
-#> nlyr        : 3, 3, 3 
+#> nlyr        : 3, 3, 3
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 3, 0, 3  (xmin, xmax, ymin, ymax)
-#> coord. ref. :  
-#> source(s)   : memory 
+#> coord. ref. : 
+#> source(s)   : memory
 ```

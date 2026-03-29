@@ -50,13 +50,13 @@ r2 <- rast(nrows=10, ncols=10)
 values(r1) <- (runif(ncell(r1))-0.5) * 10
 values(r2) <- (runif(ncell(r1))-0.5) * 10
 atan2(r1, r2)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        :     lyr.1 
-#> min value   : -3.125421 
-#> max value   :  2.948635 
+#> name        :     lyr.1
+#> min value   : -3.125421
+#> max value   :  2.948635
 ```

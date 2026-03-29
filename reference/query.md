@@ -74,38 +74,38 @@ f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f, proxy=TRUE)
 v
 #>  class       : SpatVectorProxy
-#>  geometry    : polygons 
-#>  dimensions  : 12, 6  (geometries, attributes)
+#>  geometry    : polygons
+#>  dimensions  : 1, 6  (geometries, attributes)
 #>  extent      : 5.74414, 6.528252, 49.44781, 50.18162  (xmin, xmax, ymin, ymax)
 #>  source      : lux.shp
-#>  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#>  names       :  ID_1 NAME_1  ID_2 NAME_2  AREA   POP
-#>  type        : <num>  <chr> <num>  <chr> <num> <num>
+#>  coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :  ID_1 NAME_1  ID_2 NAME_2  AREA   POP
+#> type        : <num>  <chr> <num>  <chr> <num> <num>
 
 x <- query(v, vars=c("ID_2", "NAME_2"), start=5, n=2)
 x
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 2, 2  (geometries, attributes)
-#>  extent      : 5.74414, 6.528252, 49.72324, 50.03632  (xmin, xmax, ymin, ymax)
-#>  source      : lux.shp
-#>  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#>  names       :  ID_2     NAME_2
-#>  type        : <num>      <chr>
-#>  values      :     5      Wiltz
-#>                    6 Echternach
+#> class       : SpatVector
+#> geometry    : polygons
+#> dimensions  : 2, 2  (geometries, attributes)
+#> extent      : 5.74414, 6.528252, 49.72324, 50.03632  (xmin, xmax, ymin, ymax)
+#> source      : lux.shp
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :  ID_2     NAME_2
+#> type        : <num>      <chr>
+#> values      :     5      Wiltz
+#>                   6 Echternach
 
 query(v, vars=c("ID_2", "NAME_1", "NAME_2"), where="NAME_1='Grevenmacher' AND ID_2 > 6")
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 2, 3  (geometries, attributes)
-#>  extent      : 6.169137, 6.516485, 49.46498, 49.75016  (xmin, xmax, ymin, ymax)
-#>  source      : lux.shp
-#>  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#>  names       :  ID_2       NAME_1       NAME_2
-#>  type        : <num>        <chr>        <chr>
-#>  values      :     7 Grevenmacher       Remich
-#>                   12 Grevenmacher Grevenmacher
+#> class       : SpatVector
+#> geometry    : polygons
+#> dimensions  : 2, 3  (geometries, attributes)
+#> extent      : 6.169137, 6.516485, 49.46498, 49.75016  (xmin, xmax, ymin, ymax)
+#> source      : lux.shp
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :  ID_2       NAME_1       NAME_2
+#> type        : <num>        <chr>        <chr>
+#> values      :     7 Grevenmacher       Remich
+#>                  12 Grevenmacher Grevenmacher
 
 ## with an extent
 e <- ext(5.9, 6.3, 49.9, 50) 
@@ -115,15 +115,16 @@ x <- query(v, extent=e)
 p <- as.polygons(e)
 x <- query(v, filter=p)
 x
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 4, 6  (geometries, attributes)
-#>  extent      : 5.74414, 6.315773, 49.78479, 50.18162  (xmin, xmax, ymin, ymax)
-#>  source      : lux.shp
-#>  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA       POP
-#>  type        : <num>    <chr> <num>    <chr> <num>     <num>
-#>  values      :     1 Diekirch     1 Clervaux   312 1.808e+04
-#>                    1 Diekirch     2 Diekirch   218 3.254e+04
-#>                    1 Diekirch     4  Vianden    76      5163
+#> class       : SpatVector
+#> geometry    : polygons
+#> dimensions  : 4, 6  (geometries, attributes)
+#> extent      : 5.74414, 6.315773, 49.78479, 50.18162  (xmin, xmax, ymin, ymax)
+#> source      : lux.shp
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :  ID_1   NAME_1  ID_2   NAME_2  AREA   POP
+#> type        : <num>    <chr> <num>    <chr> <num> <num>
+#> values      :     1 Diekirch     1 Clervaux   312 18081
+#>                   1 Diekirch     2 Diekirch   218 32543
+#>                   1 Diekirch     4  Vianden    76  5163
+#>               ...
 ```

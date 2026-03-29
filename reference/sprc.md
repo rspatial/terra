@@ -88,11 +88,11 @@ values(y) <- 1:ncell(y)
 
 z <- sprc(x, y)
 z
-#> class       : SpatRasterCollection 
-#> length      : 2 
-#> nrow        : 30, 30 
-#> ncol        : 60, 60 
-#> nlyr        :  1,  1 
+#> class       : SpatRasterCollection
+#> length      : 2
+#> nrow        : 30, 30
+#> ncol        : 60, 60
+#> nlyr        :  1,  1
 #> extent      : -110, -20, 30, 70  (xmin, xmax, ymin, ymax)
-#> crs (first) : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> crs (first) : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 ```

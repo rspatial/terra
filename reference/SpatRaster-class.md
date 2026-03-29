@@ -24,9 +24,9 @@ restriction in the extent or other geometric parameters.
 
 ``` r
 rast()
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 180, 360, 1  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 ```

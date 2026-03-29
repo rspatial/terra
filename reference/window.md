@@ -53,15 +53,15 @@ global(r, "mean", na.rm=TRUE)
 #>               mean
 #> elevation 396.4167
 r
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 6, 12, 1  (nrow, ncol, nlyr)
-#> resolution  : 0.008333333, 0.008333333  (x, y)
+#> resolution  : 0.00833333, 0.00833333  (x, y)
 #> window      : 5.9, 6, 49.95, 50  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#> source      : elev.tif 
-#> name        : elevation 
-#> min value   :      >141 
-#> max value   :      547< 
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> source      : elev.tif
+#> name        : elevation
+#> min value   :       141
+#> max value   :       547
 
 x <- rast(f)
 xe <- crop(x, e)
@@ -73,28 +73,28 @@ b <- c(xe, r)
 window(b)
 #> [1] FALSE  TRUE
 b
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 6, 12, 2  (nrow, ncol, nlyr)
-#> resolution  : 0.008333333, 0.008333333  (x, y)
+#> resolution  : 0.00833333, 0.00833333  (x, y)
 #> extent (win): 5.9, 6, 49.95, 50  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#> sources     : memory  
-#>               elev.tif  
-#> varnames    : elev 
-#>               elev 
-#> names       : elevation, elevation 
-#> min values  :       323,      >141 
-#> max values  :       492,      547< 
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> sources     : memory
+#>               elev.tif
+#> varnames    : elev
+#>               elev
+#> names       : elevation, elevation
+#> min values  :       323,       141
+#> max values  :       492,       547
 
 window(r) <- NULL
 r
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 90, 95, 1  (nrow, ncol, nlyr)
-#> resolution  : 0.008333333, 0.008333333  (x, y)
+#> resolution  : 0.00833333, 0.00833333  (x, y)
 #> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#> source      : elev.tif 
-#> name        : elevation 
-#> min value   :       141 
-#> max value   :       547 
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> source      : elev.tif
+#> name        : elevation
+#> min value   :       141
+#> max value   :       547
 ```

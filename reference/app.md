@@ -102,52 +102,52 @@ values(r) <- 1:ncell(r)
 x <- c(r, sqrt(r), r+50)
 s <- app(x, fun=sum)
 s
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        : sum 
-#> min value   :  53 
-#> max value   : 260 
+#> name        : sum
+#> min value   :  53
+#> max value   : 260
 # for a few generic functions like 
 # "sum", "mean", and "max" you can also do
 sum(x)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        : sum 
-#> min value   :  53 
-#> max value   : 260 
+#> name        : sum
+#> min value   :  53
+#> max value   : 260
 
 ## SpatRasterDataset
 sd <- sds(x, x*2, x/3)
 a <- app(sd, max)
 a
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 3  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> names       : lyr.1, lyr.1, lyr.1 
-#> min values  :     2,     2,   102 
-#> max values  :   200,    20,   300 
+#> names       : lyr.1, lyr.1, lyr.1
+#> min values  :     2,     2,   102
+#> max values  :   200,    20,   300
 # same as 
 max(x, x*2, x/3)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 3  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> names       : lyr.1, lyr.1, lyr.1 
-#> min values  :     2,     2,   102 
-#> max values  :   200,    20,   300 
+#> names       : lyr.1, lyr.1, lyr.1
+#> min values  :     2,     2,   102
+#> max values  :   200,    20,   300
 # and as (but slower)
 b <- app(sd, function(i) max(i))
 

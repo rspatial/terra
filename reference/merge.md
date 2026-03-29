@@ -141,16 +141,17 @@ dfr <- data.frame(District=p$NAME_1, Canton=p$NAME_2, Value=round(runif(length(p
 dfr <- dfr[1:5, ]
 pm <- merge(p, dfr, all.x=TRUE, by.x=c('NAME_1', 'NAME_2'), by.y=c('District', 'Canton'))
 pm
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 12, 7  (geometries, attributes)
-#>  extent      : 5.74414, 6.528252, 49.44781, 50.18162  (xmin, xmax, ymin, ymax)
-#>  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#>  names       :   NAME_1   NAME_2  ID_1  ID_2  AREA       POP Value
-#>  type        :    <chr>    <chr> <num> <num> <num>     <num> <num>
-#>  values      : Diekirch Clervaux     1     1   312 1.808e+04   433
-#>                Diekirch Diekirch     1     2   218 3.254e+04   961
-#>                Diekirch  Redange     1     3   259 1.866e+04   922
+#> class       : SpatVector
+#> geometry    : polygons
+#> dimensions  : 12, 7  (geometries, attributes)
+#> extent      : 5.74414, 6.528252, 49.44781, 50.18162  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :   NAME_1   NAME_2  ID_1  ID_2  AREA   POP Value
+#> type        :    <chr>    <chr> <num> <num> <num> <num> <num>
+#> values      : Diekirch Clervaux     1     1   312 18081   433
+#>               Diekirch Diekirch     1     2   218 32543   961
+#>               Diekirch  Redange     1     3   259 18664   922
+#>               ...
 values(pm)
 #>          NAME_1           NAME_2 ID_1 ID_2 AREA    POP Value
 #> 1      Diekirch         Clervaux    1    1  312  18081   433

@@ -88,25 +88,25 @@ as.matrix(x, wide=TRUE)
 
 v <- vect(system.file("ex/lux.shp", package="terra"))
 v[2:3,]
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 2, 6  (geometries, attributes)
-#>  extent      : 5.746118, 6.315773, 49.69933, 49.98745  (xmin, xmax, ymin, ymax)
-#>  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA       POP
-#>  type        : <num>    <chr> <num>    <chr> <num>     <num>
-#>  values      :     1 Diekirch     2 Diekirch   218 3.254e+04
-#>                    1 Diekirch     3  Redange   259 1.866e+04
+#> class       : SpatVector
+#> geometry    : polygons
+#> dimensions  : 2, 6  (geometries, attributes)
+#> extent      : 5.746118, 6.315773, 49.69933, 49.98745  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :  ID_1   NAME_1  ID_2   NAME_2  AREA   POP
+#> type        : <num>    <chr> <num>    <chr> <num> <num>
+#> values      :     1 Diekirch     2 Diekirch   218 32543
+#>                   1 Diekirch     3  Redange   259 18664
 v[1:2, 2:3]
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 2, 2  (geometries, attributes)
-#>  extent      : 5.826232, 6.315773, 49.78479, 50.18162  (xmin, xmax, ymin, ymax)
-#>  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#>  names       :   NAME_1  ID_2
-#>  type        :    <chr> <num>
-#>  values      : Diekirch     1
-#>                Diekirch     2
+#> class       : SpatVector
+#> geometry    : polygons
+#> dimensions  : 2, 2  (geometries, attributes)
+#> extent      : 5.826232, 6.315773, 49.78479, 50.18162  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :   NAME_1  ID_2
+#> type        :    <chr> <num>
+#> values      : Diekirch     1
+#>               Diekirch     2
 v[1:2, 2:3, drop=TRUE]
 #>     NAME_1 ID_2
 #> 1 Diekirch    1

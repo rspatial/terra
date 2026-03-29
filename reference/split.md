@@ -53,14 +53,14 @@ list or SpatVector
 s <- rast(system.file("ex/logo.tif", package="terra"))   
 y <- split(s, c(1,2,1))
 sds(y)
-#> class       : SpatRasterDataset 
-#> subdatasets : 2 
+#> class       : SpatRasterDataset
+#> subdatasets : 2
 #> dimensions  : 77, 101 (nrow, ncol)
-#> nlyr        : 2, 1 
+#> nlyr        : 2, 1
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
-#> source(s)   : logo.tif 
+#> coord. ref. : Cartesian (Meter)
+#> source(s)   : logo.tif
 
 ## split attributes
 v <- vect(system.file("ex/lux.shp", package="terra"))

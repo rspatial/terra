@@ -61,28 +61,36 @@ Below is a list of some of the most important methods grouped by theme.
 | `add<-`                                                                          | Add a SpatRaster to another one                               |
 | [`subset`](https://rspatial.github.io/terra/reference/subset.md) or `[[`, or `$` | Select layers of a SpatRaster                                 |
 | [`selectRange`](https://rspatial.github.io/terra/reference/selectRange.md)       | Select cell values from different layers using an index layer |
+| [`rep`](https://rspatial.github.io/terra/reference/rep.md)                       | Repeat layers or a SpatRaster                                 |
+| [`split`](https://rspatial.github.io/terra/reference/split.md)                   | Make a list of single layer SpatRasters                       |
+| [`[[`](https://rspatial.github.io/terra/reference/subset_double.md)              | Extract layers with `[[`                                      |
+| [`$`](https://rspatial.github.io/terra/reference/subset_dollar.md)               | Extract a layer with `$`                                      |
+| `[[<-`                                                                           | Replace or add a layer with `[[<-`                            |
+| `$<-`                                                                            | Replace or add a layer with `$<-`                             |
+| [`as.character`](https://rdrr.io/r/base/character.html)                          | Geta a character representation of a SpatRaster geometry      |
 | —————————                                                                        | ——————————————————————————————                                |
 
 ## II. Changing the spatial extent or resolution
 
 Also see the methods in section VIII
 
-|                                                                        |                                                                                    |
-|------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| [`merge`](https://rspatial.github.io/terra/reference/merge.md)         | Combine SpatRasters with different extents (but same origin and resolution)        |
-| [`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md)       | Combine SpatRasters with different extents using a function for overlapping cells  |
-| [`crop`](https://rspatial.github.io/terra/reference/crop.md)           | Select a geographic subset of a SpatRaster                                         |
-| [`extend`](https://rspatial.github.io/terra/reference/extend.md)       | Add rows and/or columns to a SpatRaster                                            |
-| [`trim`](https://rspatial.github.io/terra/reference/trim.md)           | Trim a SpatRaster by removing exterior rows and/or columns that only have NAs      |
-| [`aggregate`](https://rspatial.github.io/terra/reference/aggregate.md) | Combine cells of a SpatRaster to create larger cells                               |
-| [`disagg`](https://rspatial.github.io/terra/reference/disaggregate.md) | Subdivide cells                                                                    |
-| [`resample`](https://rspatial.github.io/terra/reference/resample.md)   | Resample (warp) values to a SpatRaster with a different origin and/or resolution   |
-| [`project`](https://rspatial.github.io/terra/reference/project.md)     | Project (warp) values to a SpatRaster with a different coordinate reference system |
-| [`shift`](https://rspatial.github.io/terra/reference/shift.md)         | Adjust the location of SpatRaster                                                  |
-| [`flip`](https://rspatial.github.io/terra/reference/flip.md)           | Flip values horizontally or vertically                                             |
-| [`rotate`](https://rspatial.github.io/terra/reference/rotate.md)       | Rotate values around the date-line (for lon/lat data)                              |
-| [`t`](https://rspatial.github.io/terra/reference/transpose.md)         | Transpose a SpatRaster                                                             |
-| —————————                                                              | ——————————————————————————————                                                     |
+|                                                                               |                                                                                    |
+|-------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| [`merge`](https://rspatial.github.io/terra/reference/merge.md)                | Combine SpatRasters with different extents (but same origin and resolution)        |
+| [`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md)              | Combine SpatRasters with different extents using a function for overlapping cells  |
+| [`crop`](https://rspatial.github.io/terra/reference/crop.md)                  | Select a geographic subset of a SpatRaster                                         |
+| [`window`](https://rspatial.github.io/terra/reference/window.md) / `window<-` | Get or set a processing window for virtual cropping                                |
+| [`extend`](https://rspatial.github.io/terra/reference/extend.md)              | Add rows and/or columns to a SpatRaster                                            |
+| [`trim`](https://rspatial.github.io/terra/reference/trim.md)                  | Trim a SpatRaster by removing exterior rows and/or columns that only have NAs      |
+| [`aggregate`](https://rspatial.github.io/terra/reference/aggregate.md)        | Combine cells of a SpatRaster to create larger cells                               |
+| [`disagg`](https://rspatial.github.io/terra/reference/disaggregate.md)        | Subdivide cells                                                                    |
+| [`resample`](https://rspatial.github.io/terra/reference/resample.md)          | Resample (warp) values to a SpatRaster with a different origin and/or resolution   |
+| [`project`](https://rspatial.github.io/terra/reference/project.md)            | Project (warp) values to a SpatRaster with a different coordinate reference system |
+| [`shift`](https://rspatial.github.io/terra/reference/shift.md)                | Adjust the location of SpatRaster                                                  |
+| [`flip`](https://rspatial.github.io/terra/reference/flip.md)                  | Flip values horizontally or vertically                                             |
+| [`rotate`](https://rspatial.github.io/terra/reference/rotate.md)              | Rotate values around the date-line (for lon/lat data)                              |
+| [`t`](https://rspatial.github.io/terra/reference/transpose.md)                | Transpose a SpatRaster                                                             |
+| —————————                                                                     | ——————————————————————————————                                                     |
 
 ## III. Local (cell based) methods
 
@@ -95,43 +103,58 @@ Also see the methods in section VIII
 | [`lapp`](https://rspatial.github.io/terra/reference/lapp.md) | Apply a function to a SpatRaster, using its layers as arguments.                                                                                                   |
 | [`sapp`](https://rspatial.github.io/terra/reference/sapp.md) | Apply a function to each layer                                                                                                                                     |
 | [`rapp`](https://rspatial.github.io/terra/reference/rapp.md) | Apply a function to a spatially variable range of layers                                                                                                           |
+| [`xapp`](https://rspatial.github.io/terra/reference/xapp.md) | Apply a function across two SpatRasters layer-wise                                                                                                                 |
 | —————————                                                    | ——————————————————————————————                                                                                                                                     |
 
 ### Arithmetic, logical, and standard math methods
 
-|                                                                                       |                                                                              |
-|---------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| [`Arith-methods`](https://rspatial.github.io/terra/reference/arith-generic.md)        | Standard arithmetic methods (`+, -, *, ^, %%, %/%, /`)                       |
-| [`Compare-methods`](https://rspatial.github.io/terra/reference/compare-generics.md)   | Comparison methods for SpatRaster (`==, !=, >, <, <=, >=, is.na, is.finite`) |
-| [`not.na`](https://rspatial.github.io/terra/reference/not.na.md)                      | a one-step equivalent to `!is.na`                                            |
-| [`Summary-methods`](https://rspatial.github.io/terra/reference/summarize-generics.md) | `mean, max, min, median, sum, range, prod,`                                  |
-|                                                                                       | `any, all, stdev, which.min, which.max, anyNA, noNA, allNA`                  |
-| [`Logic-methods`](https://rspatial.github.io/terra/reference/compare-generics.md)     | Boolean methods (`!, &, |`)                                                  |
-| [`Math-methods`](https://rspatial.github.io/terra/reference/math-generics.md)         | `abs, sign, sqrt, ceiling, floor, trunc, cummax, cummin, cumprod,`           |
-|                                                                                       | `cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh,`    |
-|                                                                                       | `exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif`                 |
-| [`as.bool`](https://rspatial.github.io/terra/reference/is.bool.md)                    | create a Boolean (logical) SpatRaster                                        |
-| [`as.int`](https://rspatial.github.io/terra/reference/is.bool.md)                     | create an integer (whole numbers) SpatRaster                                 |
-| —————————                                                                             | ——————————————————————————————                                               |
+|                                                                                                                                          |                                                                              |
+|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [`Arith-methods`](https://rspatial.github.io/terra/reference/arith-generic.md)                                                           | Standard arithmetic methods (`+, -, *, ^, %%, %/%, /`)                       |
+| [`Compare-methods`](https://rspatial.github.io/terra/reference/compare-generics.md)                                                      | Comparison methods for SpatRaster (`==, !=, >, <, <=, >=, is.na, is.finite`) |
+| [`not.na`](https://rspatial.github.io/terra/reference/not.na.md)                                                                         | a one-step equivalent to `!is.na`                                            |
+| [`Summary-methods`](https://rspatial.github.io/terra/reference/summarize-generics.md)                                                    | `mean, max, min, median, sum, range, prod,`                                  |
+|                                                                                                                                          | `any, all, stdev, which.min, which.max, anyNA, noNA, allNA`                  |
+| [`modal`](https://rspatial.github.io/terra/reference/modal.md)                                                                           | Modal value across layers                                                    |
+| [`Logic-methods`](https://rspatial.github.io/terra/reference/compare-generics.md)                                                        | Boolean methods (`!, &, |`)                                                  |
+| [`Math-methods`](https://rspatial.github.io/terra/reference/math-generics.md)                                                            | `abs, sign, sqrt, ceiling, floor, trunc, cummax, cummin, cumprod,`           |
+|                                                                                                                                          | `cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh,`    |
+|                                                                                                                                          | `exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif`                 |
+| [`scale_linear`](https://rspatial.github.io/terra/reference/scale_linear.md)                                                             | Linear rescaling to a numeric range                                          |
+| [`weighted.mean`](https://rspatial.github.io/terra/reference/weighted.mean.md)                                                           | Weighted mean of raster layers                                               |
+| [`where.min`](https://rspatial.github.io/terra/reference/where.md) / [`where.max`](https://rspatial.github.io/terra/reference/where.md)  | Layer index of min/max per cell                                              |
+| [`match`](https://rspatial.github.io/terra/reference/match.md) / [`%in%`](https://rspatial.github.io/terra/reference/match.md)           | Value matching for SpatRaster                                                |
+| [`rowSums`](https://rspatial.github.io/terra/reference/rowSums.md) / [`rowMeans`](https://rspatial.github.io/terra/reference/rowSums.md) | row summaries                                                                |
+| [`colSums`](https://rspatial.github.io/terra/reference/rowSums.md) / [`colMeans`](https://rspatial.github.io/terra/reference/rowSums.md) | column summaries                                                             |
+| [`as.bool`](https://rspatial.github.io/terra/reference/is.bool.md)                                                                       | create a Boolean (logical) SpatRaster                                        |
+| [`as.int`](https://rspatial.github.io/terra/reference/is.bool.md)                                                                        | create an integer (whole numbers) SpatRaster                                 |
+| —————————                                                                                                                                | ——————————————————————————————                                               |
 
 ### Other methods
 
-|                                                                            |                                                                      |
-|----------------------------------------------------------------------------|----------------------------------------------------------------------|
-| [`approximate`](https://rspatial.github.io/terra/reference/approximate.md) | Compute missing values for cells by interpolation across layers      |
-| [`roll`](https://rspatial.github.io/terra/reference/roll.md)               | Rolling functions such as the rolling mean                           |
-| [`clamp`](https://rspatial.github.io/terra/reference/clamp.md)             | Restrict cell values to a minimum and/or maximum value               |
-| [`cellSize`](https://rspatial.github.io/terra/reference/cellSize.md)       | Compute the area of cells                                            |
-| [`classify`](https://rspatial.github.io/terra/reference/classify.md)       | (Re-)classify values                                                 |
-| [`subst`](https://rspatial.github.io/terra/reference/subst.md)             | Substitute (replace) cell values                                     |
-| [`cover`](https://rspatial.github.io/terra/reference/cover.md)             | First layer covers second layer except where the first layer is `NA` |
-| [`init`](https://rspatial.github.io/terra/reference/init.md)               | Initialize cells with new values                                     |
-| [`mask`](https://rspatial.github.io/terra/reference/mask.md)               | Replace values in a SpatRaster based on values in another SpatRaster |
-| [`which.lyr`](https://rspatial.github.io/terra/reference/which.md)         | which is the first layer that is `TRUE`?                             |
-| [`segregate`](https://rspatial.github.io/terra/reference/segregate.md)     | Make a 0/1 layer for each unique value                               |
-| [`rangeFill`](https://rspatial.github.io/terra/reference/rangeFill.md)     | Make a 0/1 SpatRaster for a time series                              |
-| [`regress`](https://rspatial.github.io/terra/reference/regress.md)         | Cell-based regression models                                         |
-| —————————                                                                  | ——————————————————————————————                                       |
+|                                                                              |                                                                      |
+|------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| [`approximate`](https://rspatial.github.io/terra/reference/approximate.md)   | Compute missing values for cells by interpolation across layers      |
+| [`roll`](https://rspatial.github.io/terra/reference/roll.md)                 | Rolling functions such as the rolling mean                           |
+| [`clamp`](https://rspatial.github.io/terra/reference/clamp.md)               | Restrict cell values to a minimum and/or maximum value               |
+| [`cellSize`](https://rspatial.github.io/terra/reference/cellSize.md)         | Compute the area of cells                                            |
+| [`surfArea`](https://rspatial.github.io/terra/reference/surfArea.md)         | Surface area per raster cell considering slope                       |
+| [`classify`](https://rspatial.github.io/terra/reference/classify.md)         | (Re-)classify values                                                 |
+| [`subst`](https://rspatial.github.io/terra/reference/subst.md)               | Substitute (replace) cell values                                     |
+| [`cover`](https://rspatial.github.io/terra/reference/cover.md)               | First layer covers second layer except where the first layer is `NA` |
+| [`init`](https://rspatial.github.io/terra/reference/init.md)                 | Initialize cells with new values                                     |
+| [`mask`](https://rspatial.github.io/terra/reference/mask.md)                 | Replace values in a SpatRaster based on values in another SpatRaster |
+| [`which.lyr`](https://rspatial.github.io/terra/reference/which.md)           | which is the first layer that is `TRUE`?                             |
+| [`segregate`](https://rspatial.github.io/terra/reference/segregate.md)       | Make a 0/1 layer for each unique value                               |
+| [`rangeFill`](https://rspatial.github.io/terra/reference/rangeFill.md)       | Make a 0/1 SpatRaster for a time series                              |
+| [`extractRange`](https://rspatial.github.io/terra/reference/extractRange.md) | Extract min–max range across layers                                  |
+| [`regress`](https://rspatial.github.io/terra/reference/regress.md)           | Cell-based regression models                                         |
+| [`selectHighest`](https://rspatial.github.io/terra/reference/selectHigh.md)  | Keep highest values across layers                                    |
+| [`thresh`](https://rspatial.github.io/terra/reference/thresh.md)             | Threshold raster layers                                              |
+| [`identical`](https://rspatial.github.io/terra/reference/identical.md)       | Test near-identity of SpatRaster objects                             |
+| [`all.equal`](https://rspatial.github.io/terra/reference/all.equal.md)       | Compare SpatRaster objects with a degree of tolerance                |
+| [`divide`](https://rspatial.github.io/terra/reference/divide.md)             | Divide rasters in areas of equal cell value sums                     |
+| —————————                                                                    | ——————————————————————————————                                       |
 
 ## IV. Zonal and global methods
 
@@ -152,26 +175,32 @@ Also see the methods in section VIII
 
 ## V. Situation (spatial context) based methods
 
-|                                                                          |                                                                                       |
-|--------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| [`adjacent`](https://rspatial.github.io/terra/reference/adjacent.md)     | Identify cells that are adjacent to a set of cells of a SpatRaster                    |
-| [`boundaries`](https://rspatial.github.io/terra/reference/boundaries.md) | Detection of boundaries (edges)                                                       |
-| [`distance`](https://rspatial.github.io/terra/reference/distance.md)     | Shortest distance to a cell that is not `NA` or to or from a vector object            |
-| [`gridDist`](https://rspatial.github.io/terra/reference/gridDist.md)     | Shortest distance through adjacent grid cells                                         |
-| [`costDist`](https://rspatial.github.io/terra/reference/costDist.md)     | Shortest distance considering cell-varying friction                                   |
-| [`direction`](https://rspatial.github.io/terra/reference/direction.md)   | Direction (azimuth) to or from cells that are not `NA`                                |
-| [`focal`](https://rspatial.github.io/terra/reference/focal.md)           | Focal (neighborhood; moving window) functions                                         |
-| [`focal3D`](https://rspatial.github.io/terra/reference/focal3D.md)       | Three dimensional (row, col, lyr) focal functions                                     |
-| [`focalCpp`](https://rspatial.github.io/terra/reference/focalCpp.md)     | Faster focal by using custom C++ functions                                            |
-| [`focalReg`](https://rspatial.github.io/terra/reference/focalReg.md)     | Regression between layers for focal areas                                             |
-| [`focalPairs`](https://rspatial.github.io/terra/reference/focalPairs.md) | Apply a function (e.g. a correlation coefficient) to focal values for pairs of layers |
-| [`patches`](https://rspatial.github.io/terra/reference/patches.md)       | Find patches (clumps)                                                                 |
-| [`sieve`](https://rspatial.github.io/terra/reference/sieve.md)           | Sieve filter to remove small patches                                                  |
-| [`terrain`](https://rspatial.github.io/terra/reference/terrain.md)       | Compute slope, aspect and other terrain characteristics from elevation data           |
-| [`viewshed`](https://rspatial.github.io/terra/reference/viewshed.md)     | Compute viewshed (showing areas that are visible from a particular location)          |
-| [`shade`](https://rspatial.github.io/terra/reference/shade.md)           | Compute hill shade from slope and aspect layers                                       |
-| [`autocor`](https://rspatial.github.io/terra/reference/autocor.md)       | Compute global or local spatial autocorrelation                                       |
-| —————————                                                                | ——————————————————————————————                                                        |
+|                                                                                      |                                                                                       |
+|--------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [`adjacent`](https://rspatial.github.io/terra/reference/adjacent.md)                 | Identify cells that are adjacent to a set of cells of a SpatRaster                    |
+| [`boundaries`](https://rspatial.github.io/terra/reference/boundaries.md)             | Detection of boundaries (edges)                                                       |
+| [`distance`](https://rspatial.github.io/terra/reference/distance.md)                 | Shortest distance to a cell that is not `NA` or to or from a vector object            |
+| [`gridDist`](https://rspatial.github.io/terra/reference/gridDist.md)                 | Shortest distance through adjacent grid cells                                         |
+| [`costDist`](https://rspatial.github.io/terra/reference/costDist.md)                 | Shortest distance considering cell-varying friction                                   |
+| [`direction`](https://rspatial.github.io/terra/reference/direction.md)               | Direction (azimuth) to or from cells that are not `NA`                                |
+| [`focal`](https://rspatial.github.io/terra/reference/focal.md)                       | Focal (neighborhood; moving window; convolution) functions                            |
+| [`focal3D`](https://rspatial.github.io/terra/reference/focal3D.md)                   | Three dimensional (row, col, lyr) focal functions                                     |
+| [`focalCpp`](https://rspatial.github.io/terra/reference/focalCpp.md)                 | Faster focal by using custom C++ functions                                            |
+| [`focalReg`](https://rspatial.github.io/terra/reference/focalReg.md)                 | Regression between layers for focal areas                                             |
+| [`focalPairs`](https://rspatial.github.io/terra/reference/focalPairs.md)             | Apply a function (e.g. a correlation coefficient) to focal values for pairs of layers |
+| [`focalMat`](https://rspatial.github.io/terra/reference/focalMat.md)                 | Make a focal weights matrix                                                           |
+| [`focalValues`](https://rspatial.github.io/terra/reference/focalValues.md)           | Extract focal window values                                                           |
+| [`patches`](https://rspatial.github.io/terra/reference/patches.md)                   | Find patches (clumps)                                                                 |
+| [`sieve`](https://rspatial.github.io/terra/reference/sieve.md)                       | Sieve filter to remove small patches                                                  |
+| [`autocor`](https://rspatial.github.io/terra/reference/autocor.md)                   | Compute global or local spatial autocorrelation                                       |
+| [`terrain`](https://rspatial.github.io/terra/reference/terrain.md)                   | Compute slope, aspect and other terrain characteristics from elevation data           |
+| [`viewshed`](https://rspatial.github.io/terra/reference/viewshed.md)                 | Compute viewshed (showing areas that are visible from a particular location)          |
+| [`shade`](https://rspatial.github.io/terra/reference/shade.md)                       | Compute hill shade from slope and aspect layers                                       |
+| [`watershed`](https://rspatial.github.io/terra/reference/watershed.md)               | Watersheds from flow directions                                                       |
+| [`flowAccumulation`](https://rspatial.github.io/terra/reference/flowAccumulation.md) | Flow accumulation from flow directions                                                |
+| [`pitfinder`](https://rspatial.github.io/terra/reference/pitfinder.md)               | Find pits in elevation                                                                |
+| [`NIDP`](https://rspatial.github.io/terra/reference/NIPD.md)                         | Immediate upstream flow counts                                                        |
+| —————————                                                                            | ——————————————————————————————                                                        |
 
 ## VI. Model predictions
 
@@ -205,7 +234,7 @@ with cell numbers, and row and/or column numbers
 | [`setMinMax`](https://rspatial.github.io/terra/reference/minmax.md)            | Compute the minimum and maximum value of a SpatRaster if these are not known                       |
 | —————————                                                                      | ——————————————————————————————                                                                     |
 
-## VIII. Getting and setting dimensions
+## VIII. Getting and setting dimensions and some other properties
 
 Get or set basic parameters of SpatRasters. If there are values
 associated with a SpatRaster (either in memory or via a link to a file)
@@ -217,28 +246,35 @@ transform the data (see
 [project](https://rspatial.github.io/terra/reference/project.md) for
 that).
 
-|                                                                            |                                                                                 |
-|----------------------------------------------------------------------------|---------------------------------------------------------------------------------|
-| [`ncol`](https://rspatial.github.io/terra/reference/dimensions.md)         | The number of columns                                                           |
-| [`nrow`](https://rspatial.github.io/terra/reference/dimensions.md)         | The number of rows                                                              |
-| [`ncell`](https://rspatial.github.io/terra/reference/dimensions.md)        | The number of cells (can not be set directly, only via ncol or nrow)            |
-| [`res`](https://rspatial.github.io/terra/reference/dimensions.md)          | The resolution (x and y)                                                        |
-| [`nlyr`](https://rspatial.github.io/terra/reference/dimensions.md)         | Get or set the number of layers                                                 |
-| [`names`](https://rspatial.github.io/terra/reference/names.md)             | Get or set the layer names                                                      |
-| [`xres`](https://rspatial.github.io/terra/reference/dimensions.md)         | The x resolution (can be set with res)                                          |
-| [`yres`](https://rspatial.github.io/terra/reference/dimensions.md)         | The y resolution (can be set with res)                                          |
-| [`xmin`](https://rspatial.github.io/terra/reference/xmin.md)               | The minimum x coordinate (or longitude)                                         |
-| [`xmax`](https://rspatial.github.io/terra/reference/xmin.md)               | The maximum x coordinate (or longitude)                                         |
-| [`ymin`](https://rspatial.github.io/terra/reference/xmin.md)               | The minimum y coordinate (or latitude)                                          |
-| [`ymax`](https://rspatial.github.io/terra/reference/xmin.md)               | The maximum y coordinate (or latitude)                                          |
-| [`ext`](https://rspatial.github.io/terra/reference/ext.md)                 | Get or set the extent (minimum and maximum x and y coordinates; "bounding box") |
-| [`origin`](https://rspatial.github.io/terra/reference/origin.md)           | The origin of a SpatRaster                                                      |
-| [`sources`](https://rspatial.github.io/terra/reference/sources.md)         | Get the filename(s) to which a SpatRaster is linked                             |
-| [`inMemory`](https://rspatial.github.io/terra/reference/sources.md)        | Are the data sources in memory (or on disk)?                                    |
-| [`toMemory`](https://rspatial.github.io/terra/reference/toMemory.md)       | Force data sources to memory (not recommended)?                                 |
-| [`compareGeom`](https://rspatial.github.io/terra/reference/compareGeom.md) | Compare the geometry of SpatRasters                                             |
-| [`NAflag`](https://rspatial.github.io/terra/reference/NAflag.md)           | Set the `NA` value (for reading from a file with insufficient metadata)         |
-| —————————                                                                  | ——————————————————————————————                                                  |
+|                                                                                       |                                                                                 |
+|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| [`ncol`](https://rspatial.github.io/terra/reference/dimensions.md)                    | The number of columns                                                           |
+| [`nrow`](https://rspatial.github.io/terra/reference/dimensions.md)                    | The number of rows                                                              |
+| [`ncell`](https://rspatial.github.io/terra/reference/dimensions.md)                   | The number of cells (can not be set directly, only via ncol or nrow)            |
+| [`res`](https://rspatial.github.io/terra/reference/dimensions.md)                     | The resolution (x and y)                                                        |
+| [`nlyr`](https://rspatial.github.io/terra/reference/dimensions.md)                    | Get or set the number of layers                                                 |
+| [`names`](https://rspatial.github.io/terra/reference/names.md)                        | Get or set the layer names                                                      |
+| [`varnames`](https://rspatial.github.io/terra/reference/varnames.md) / `varnames<-`   | Get or set dataset names                                                        |
+| [`longnames`](https://rspatial.github.io/terra/reference/varnames.md) / `longnames<-` | Get or set dataset names                                                        |
+| [`xres`](https://rspatial.github.io/terra/reference/dimensions.md)                    | The x resolution (can be set with res)                                          |
+| [`yres`](https://rspatial.github.io/terra/reference/dimensions.md)                    | The y resolution (can be set with res)                                          |
+| [`xmin`](https://rspatial.github.io/terra/reference/xmin.md)                          | The minimum x coordinate (or longitude)                                         |
+| [`xmax`](https://rspatial.github.io/terra/reference/xmin.md)                          | The maximum x coordinate (or longitude)                                         |
+| [`ymin`](https://rspatial.github.io/terra/reference/xmin.md)                          | The minimum y coordinate (or latitude)                                          |
+| [`ymax`](https://rspatial.github.io/terra/reference/xmin.md)                          | The maximum y coordinate (or latitude)                                          |
+| [`ext`](https://rspatial.github.io/terra/reference/ext.md)                            | Get or set the extent (minimum and maximum x and y coordinates; "bounding box") |
+| [`origin`](https://rspatial.github.io/terra/reference/origin.md)                      | The origin of a SpatRaster                                                      |
+| [`sources`](https://rspatial.github.io/terra/reference/sources.md)                    | Get the filename(s) to which a SpatRaster is linked                             |
+| [`inMemory`](https://rspatial.github.io/terra/reference/sources.md)                   | Are the data sources in memory (or on disk)?                                    |
+| [`toMemory`](https://rspatial.github.io/terra/reference/toMemory.md)                  | Force data sources to memory (not recommended)?                                 |
+| [`compareGeom`](https://rspatial.github.io/terra/reference/compareGeom.md)            | Compare the geometry of SpatRasters                                             |
+| [`NAflag`](https://rspatial.github.io/terra/reference/NAflag.md)                      | Set the `NA` value (for reading from a file with insufficient metadata)         |
+| [`units`](https://rspatial.github.io/terra/reference/units.md) / `units<-`            | Layer measurement units                                                         |
+| [`is.rotated`](https://rspatial.github.io/terra/reference/is.rotated.md)              | Whether a SpatRaster is rotated                                                 |
+| [`is.flipped`](https://rspatial.github.io/terra/reference/is.flipped.md)              | Whether a SpatRaster is flipped                                                 |
+| [`datatype`](https://rspatial.github.io/terra/reference/datatype.md)                  | Storage datatype of layers                                                      |
+| [`scoff`](https://rspatial.github.io/terra/reference/scoff.md) / `scoff<-`            | Scale-offset values                                                             |
+| —————————                                                                             | ——————————————————————————————                                                  |
 
 ## IX. Computing row, column, cell numbers and coordinates
 
@@ -280,12 +316,13 @@ of a SpatRaster.
 `time` can be used to explicitly get or set a third or fourth dimension
 of a SpatRaster.
 
-|                                                                        |                                                                                                         |
-|------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
-| [`time`](https://rspatial.github.io/terra/reference/time.md)           | Get or set time                                                                                         |
-| [`fillTime`](https://rspatial.github.io/terra/reference/fillTime.md)   | can add empty layers in between existing layers to assure that the time step between layers is constant |
-| [`mergeTime`](https://rspatial.github.io/terra/reference/mergeTime.md) | combine multiple rasters, perhaps partly overlapping in time, into a single time series                 |
-| —————————                                                              | ——————————————————————————————                                                                          |
+|                                                                         |                                                                                                         |
+|-------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| [`time`](https://rspatial.github.io/terra/reference/time.md)            | Get or set time                                                                                         |
+| [`fillTime`](https://rspatial.github.io/terra/reference/fillTime.md)    | can add empty layers in between existing layers to assure that the time step between layers is constant |
+| [`mergeTime`](https://rspatial.github.io/terra/reference/mergeTime.md)  | combine multiple rasters, perhaps partly overlapping in time, into a single time series                 |
+| \\ [`clamp_ts`](https://rspatial.github.io/terra/reference/clamp_ts.md) | Clamp time-series values                                                                                |
+| —————————                                                               | ——————————————————————————————                                                                          |
 
 ## XII. Methods for categorical rasters
 
@@ -325,7 +362,17 @@ of a SpatRaster.
 | [`blocks`](https://rspatial.github.io/terra/reference/readwrite.md)      | Get blocksize for reading files (when not writing)      |
 | —————————                                                                | ——————————————————————————————                          |
 
-## XIV. Miscellaneous SpatRaster methods
+## XIV. Tiles
+
+|                                                                        |                                               |
+|------------------------------------------------------------------------|-----------------------------------------------|
+| [`chunk`](https://rspatial.github.io/terra/reference/chunk.md)         | Iterate over raster chunks                    |
+| [`makeVRT`](https://rspatial.github.io/terra/reference/makeVRT.md)     | Build a GDAL virtual raster (VRT) from files  |
+| [`vrt`](https://rspatial.github.io/terra/reference/vrt.md)             | Virtual raster from filenames or a collection |
+| [`vrt_tiles`](https://rspatial.github.io/terra/reference/vrt_tiles.md) | List VRT tile sources                         |
+| —————————                                                              | ——————————————————————————————                |
+
+## XV. Miscellaneous SpatRaster methods
 
 |                                                                              |                                                                                          |
 |------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
@@ -334,9 +381,19 @@ of a SpatRaster.
 | [`tmpFiles`](https://rspatial.github.io/terra/reference/tmpFile.md)          | Show or remove temporary files                                                           |
 | [`mem_info`](https://rspatial.github.io/terra/reference/mem.md)              | memory needs and availability                                                            |
 | [`inMemory`](https://rspatial.github.io/terra/reference/sources.md)          | Are the cell values in memory?                                                           |
-| —————————                                                                    | ——————————————————————————————                                                           |
+| [`deepcopy`](https://rspatial.github.io/terra/reference/deepcopy.md)         | Deep copy of SpatRaster                                                                  |
+| [`describe`](https://rspatial.github.io/terra/reference/describe.md)         | Summarize raster file sources                                                            |
+| [`same.crs`](https://rspatial.github.io/terra/reference/same.crs.md)         | Compare two CRS strings                                                                  |
+| [`ar_info`](https://rspatial.github.io/terra/reference/ar_info.md)           | Inspect NetCDF-like multi-array files                                                    |
+| [`gdal`](https://rspatial.github.io/terra/reference/gdal.md)                 | set GDAL warning level                                                                   |
+| [`getGDALconfig`](https://rspatial.github.io/terra/reference/gdal.md)        | [`setGDALconfig`](https://rspatial.github.io/terra/reference/gdal.md)                    |
+| GDAL session utilities                                                       | [`meta`](https://rspatial.github.io/terra/reference/meta.md)                             |
+| Metadata from a SpatRaster                                                   | [`metags`](https://rspatial.github.io/terra/reference/metags.md) / `metags<-`            |
+| Arbitrary metadata tags                                                      | [`tighten`](https://rspatial.github.io/terra/reference/collapse.md)                      |
+| combine data sources into one                                                | —————————                                                                                |
+| ——————————————————————————————                                               |                                                                                          |
 
-## XV. SpatRasterDataset
+## XVI. SpatRasterDataset
 
 A SpatRasterDataset contains SpatRasters that represent sub-datasets for
 the same area. They all have the same extent and resolution.
@@ -348,7 +405,7 @@ the same area. They all have the same extent and resolution.
 | [`names`](https://rspatial.github.io/terra/reference/names.md) | Get the names of the sub-datasets                                                         |
 | —————————                                                      | ——————————————————————————————                                                            |
 
-## XVI. SpatRasterCollections
+## XVII. SpatRasterCollections
 
 A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a
 SpatRasterDataset, there the extent and resolution of the SpatRasters do
@@ -369,7 +426,7 @@ not need to match each other.
 
 ———————————————————————————————————————
 
-## XVII. Create SpatVector objects
+## XVIII. Create SpatVector objects
 
 |                                                                                |                                                                                         |
 |--------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
@@ -385,24 +442,29 @@ not need to match each other.
 | [`delaunay`](https://rspatial.github.io/terra/reference/voronoi.md)            | Delaunay triangles                                                                      |
 | [`hull`](https://rspatial.github.io/terra/reference/convhull.md)               | Compute a convex, circular, or rectangular hull around the (geometries of) a SpatVector |
 | [`fillHoles`](https://rspatial.github.io/terra/reference/fill.md)              | Remove or extract holes from polygons                                                   |
+| [`densify`](https://rspatial.github.io/terra/reference/densify.md)             | Add vertices along lines or polygons                                                    |
+| [`split`](https://rspatial.github.io/terra/reference/split.md)                 | Split a SpatVector based on values of an attribute                                      |
 | —————————                                                                      | ——————————————————————————————                                                          |
 
-## XVIII. Properties of SpatVector objects
+## XIX. Properties of SpatVector objects
 
-|                                                                            |                                                                                      |
-|----------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
-| [`geom`](https://rspatial.github.io/terra/reference/geometry.md)           | returns the geometries as matrix or WKT                                              |
-| [`crds`](https://rspatial.github.io/terra/reference/crds.md)               | returns the coordinates as a matrix                                                  |
-| [`ncol`](https://rspatial.github.io/terra/reference/dimensions.md)         | The number of columns (of the attributes)                                            |
-| [`nrow`](https://rspatial.github.io/terra/reference/dimensions.md)         | The number of rows (of the geometries and attributes)                                |
-| [`names`](https://rspatial.github.io/terra/reference/names.md)             | Get or set the layer names                                                           |
-| [`ext`](https://rspatial.github.io/terra/reference/ext.md)                 | Get the extent (minimum and maximum x and y coordinates ("bounding box")             |
-| [`crs`](https://rspatial.github.io/terra/reference/crs.md)                 | The coordinate reference system (map projection)                                     |
-| [`linearUnits`](https://rspatial.github.io/terra/reference/linearUnits.md) | returns the linear units of the crs (in meter)                                       |
-| [`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md)     | Test if an object has (or may have) a longitude/latitude coordinate reference system |
-| —————————                                                                  | ——————————————————————————————                                                       |
+|                                                                                                                                              |                                                                                      |
+|----------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| [`geom`](https://rspatial.github.io/terra/reference/geometry.md)                                                                             | returns the geometries as matrix or WKT                                              |
+| [`crds`](https://rspatial.github.io/terra/reference/crds.md)                                                                                 | returns the coordinates as a matrix                                                  |
+| [`ncol`](https://rspatial.github.io/terra/reference/dimensions.md)                                                                           | The number of columns (of the attributes)                                            |
+| [`nrow`](https://rspatial.github.io/terra/reference/dimensions.md)                                                                           | The number of rows (of the geometries and attributes)                                |
+| [`names`](https://rspatial.github.io/terra/reference/names.md)                                                                               | Get or set the layer names                                                           |
+| [`ext`](https://rspatial.github.io/terra/reference/ext.md)                                                                                   | Get the extent (minimum and maximum x and y coordinates ("bounding box")             |
+| [`crs`](https://rspatial.github.io/terra/reference/crs.md)                                                                                   | The coordinate reference system (map projection)                                     |
+| [`linearUnits`](https://rspatial.github.io/terra/reference/linearUnits.md)                                                                   | returns the linear units of the crs (in meter)                                       |
+| [`is.lonlat`](https://rspatial.github.io/terra/reference/is.lonlat.md)                                                                       | Test if an object has (or may have) a longitude/latitude coordinate reference system |
+| [`geomtype`](https://rspatial.github.io/terra/reference/geomtype.md)                                                                         | Geometry type string                                                                 |
+| [`is.lines`](https://rspatial.github.io/terra/reference/geomtype.md) / [`is.points`](https://rspatial.github.io/terra/reference/geomtype.md) | [`is.polygons`](https://rspatial.github.io/terra/reference/geomtype.md)              |
+| Geometry type tests                                                                                                                          | —————————                                                                            |
+| ——————————————————————————————                                                                                                               |                                                                                      |
 
-## XIX. Geometric queries
+## XX. Geometric queries
 
 |                                                                      |                                                                           |
 |----------------------------------------------------------------------|---------------------------------------------------------------------------|
@@ -414,7 +476,7 @@ not need to match each other.
 | [`perim`](https://rspatial.github.io/terra/reference/perim.md)       | computes the length of the perimeter of polygons, and the length of lines |
 | —————————                                                            | ——————————————————————————————                                            |
 
-## XX. Geometric operations
+## XXI. Geometric operations
 
 |                                                                                |                                                              |
 |--------------------------------------------------------------------------------|--------------------------------------------------------------|
@@ -427,9 +489,10 @@ not need to match each other.
 | [`buffer`](https://rspatial.github.io/terra/reference/buffer.md)               | buffer geometries                                            |
 | [`disagg`](https://rspatial.github.io/terra/reference/disaggregate.md)         | split multi-geometries into separate geometries              |
 | [`crop`](https://rspatial.github.io/terra/reference/crop.md)                   | clip geometries using a rectangle (SpatExtent) or SpatVector |
+| [`divide`](https://rspatial.github.io/terra/reference/divide.md)               | divide polygons into equal areas                             |
 | —————————                                                                      | ——————————————————————————————                               |
 
-## XXI. SpatVector attributes
+## XXII. SpatVector attributes
 
 We use the term "attributes" for the tabular data (data.frame)
 associated with vector geometries.
@@ -446,9 +509,10 @@ associated with vector geometries.
 | [`values`](https://rspatial.github.io/terra/reference/values.md)               | Get the attributes of a SpatVector                                         |
 | `values<-`                                                                     | Set new attributes to the geometries of a SpatRaster                       |
 | [`sort`](https://rspatial.github.io/terra/reference/sort.md)                   | sort SpatVector by the values in a field                                   |
+| [`query`](https://rspatial.github.io/terra/reference/query.md)                 | Read features from a SpatVectorProxy                                       |
 | —————————                                                                      | ——————————————————————————————                                             |
 
-## XXII. Change geometries (for display, experimentation)
+## XXIII. Change geometries (for display, experimentation)
 
 |                                                                    |                                                                                                      |
 |--------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
@@ -457,9 +521,10 @@ associated with vector geometries.
 | [`rescale`](https://rspatial.github.io/terra/reference/rescale.md) | shrink (or expand) geometries, for example to make an inset map                                      |
 | [`flip`](https://rspatial.github.io/terra/reference/flip.md)       | flip geometries vertically or horizontally                                                           |
 | [`t`](https://rspatial.github.io/terra/reference/transpose.md)     | transpose geometries (switch x and y)                                                                |
+| [`agitate`](https://rspatial.github.io/terra/reference/agitate.md) | Randomly perturb coordinates for plotting                                                            |
 | —————————                                                          | ——————————————————————————————                                                                       |
 
-## XXIII. Geometry properties and topology
+## XXIV. Geometry properties and topology
 
 |                                                                                            |                                                                                                 |
 |--------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
@@ -484,7 +549,7 @@ associated with vector geometries.
 | [`forceCCW`](https://rspatial.github.io/terra/reference/forceCCW.md)                       | force counter-clockwise polygon winding                                                         |
 | —————————                                                                                  | ——————————————————————————————                                                                  |
 
-## XXIV. SpatVectorCollections
+## XXV. SpatVectorCollections
 
 A SpatVectorCollection is a vector of SpatVector objects.
 
@@ -495,7 +560,7 @@ A SpatVectorCollection is a vector of SpatVector objects.
 | [`[`](https://rspatial.github.io/terra/reference/subset_single.md)   | extract a SpatVector                                              |
 | —————————                                                            | ——————————————————————————————                                    |
 
-## XXV. Coordinate reference system method
+## XXVI. Coordinate reference system method
 
 |                                                                            |                                                                                      |
 |----------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
@@ -508,7 +573,7 @@ A SpatVectorCollection is a vector of SpatVector objects.
 
 ———————————————————————————————————————
 
-## XXVI. SpatExtent
+## XXVII. SpatExtent
 
 |                                                                               |                                                                                                                           |
 |-------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|
@@ -520,7 +585,7 @@ A SpatVectorCollection is a vector of SpatVector objects.
 | [`draw`](https://rspatial.github.io/terra/reference/draw.md)                  | Create a SpatExtent by drawing it on top of a map (plot)                                                                  |
 | —————————                                                                     | ——————————————————————————————                                                                                            |
 
-## XXVII. SpatGraticule
+## XXVIII. SpatGraticule
 
 |                                                                                       |                                |
 |---------------------------------------------------------------------------------------|--------------------------------|
@@ -533,7 +598,7 @@ A SpatVectorCollection is a vector of SpatVector objects.
 
 ———————————————————————————————————————
 
-## XXVIII. Conversion between spatial data objects from different packages
+## XXIX. Conversion between spatial data objects from different packages
 
 You can coerce SpatRasters to Raster\* objects, after loading the
 `raster` package, with `as(object, "Raster")`, or `raster(object)` or
@@ -553,7 +618,7 @@ You can coerce SpatRasters to Raster\* objects, after loading the
 | [`as.contour`](https://rspatial.github.io/terra/reference/contour.md)          | Contour lines from a SpatRaster                                         |
 | —————————                                                                      | ——————————————————————————————                                          |
 
-## XXIX. Plotting
+## XXX. Plotting
 
 ### Maps
 
@@ -581,6 +646,16 @@ You can coerce SpatRasters to Raster\* objects, after loading the
 | [`persp`](https://rspatial.github.io/terra/reference/persp.md)                        | Perspective plot of a SpatRaster                                                        |
 | [`contour`](https://rspatial.github.io/terra/reference/contour.md)                    | Contour plot or filled-contour plot of a SpatRaster                                     |
 | [`colorize`](https://rspatial.github.io/terra/reference/RGB.md)                       | Combine three layers (red, green, blue channels) into a single layer with a color-table |
+| [`add_abline`](https://rspatial.github.io/terra/reference/add_abline.md)              | Add `abline` to a map                                                                   |
+| [`add_mtext`](https://rspatial.github.io/terra/reference/add_mtext.md)                | Add margin text (`mtext`)                                                               |
+| [`add_grid`](https://rspatial.github.io/terra/reference/grid.md)                      | Add a reference grid                                                                    |
+| [`animate`](https://rspatial.github.io/terra/reference/animate.md)                    | Animate raster or vector layers                                                         |
+| [`plet`](https://rspatial.github.io/terra/reference/plet.md)                          | Make an interactive (`leaflet`) map                                                     |
+| `scatterplot`                                                                         | Scatter plot of two SpatRasters                                                         |
+| `plot_extent`                                                                         | Plot a SpatExtent                                                                       |
+| `plot_graticule`                                                                      | Plot graticule geometry                                                                 |
+| [`has.colors`](https://rspatial.github.io/terra/reference/colors.md)                  | Do layers in a SpatRaster have a color table?                                           |
+| [`coltab`](https://rspatial.github.io/terra/reference/colors.md) / `coltab<-`         | Get or set color tables                                                                 |
 | —————————                                                                             | ——————————————————————————————                                                          |
 
 ### Interacting with a map
@@ -609,7 +684,7 @@ You can coerce SpatRasters to Raster\* objects, after loading the
 
 ———————————————————————————————————————
 
-## XXX. New method names
+## XXXI. New method names
 
 `terra` has a single class `SpatRaster` for which `raster` has three
 (`RasterLayer, RasterStack, RasterBrick`). Likewise there is a single
@@ -659,7 +734,7 @@ differences in methods names with the `raster` package
 | `stackApply`                     | [`tapp`](https://rspatial.github.io/terra/reference/tapp.md)                                                                               |
 | `stackSelect`                    | [`selectRange`](https://rspatial.github.io/terra/reference/selectRange.md)                                                                 |
 
-## XXXI. Changed behavior
+## XXXII. Changed behavior
 
 Also note that even if function names are the same in `terra` and
 `raster`, their output can be different. In most cases this was done to
@@ -690,12 +765,13 @@ better. Here are some examples:
 
 Except where indicated otherwise, the methods and functions in this
 package were written by Robert Hijmans. Andrew Gene Brown and Márcia
-Barbosa contributed many improvements to the code and documentation. The
-configuration scripts were written by Roger Bivand. Some of code using
-the GEOS library was adapted from code by Edzer Pebesma for `sf`.
-Emanuele Cordano contributed functionality for catchment related
-computations. Michael Chirico, Krzysztof Dyba, Barry Rowlingson, and
-Michael D. Sumner also made important contributions
+Barbosa contributed many improvements to the code and documentation.
+Krzysztof Dyba contributed to documentation and github management and
+issues. The configuration scripts were written by Roger Bivand. Some of
+code using the GEOS library was adapted from code by Edzer Pebesma for
+`sf`. Emanuele Cordano contributed functionality for catchment related
+computations. Michael Chirico, Barry Rowlingson, and Michael D. Sumner
+also made important contributions
 
 This package is an attempt to climb on the shoulders of giants (GDAL,
 PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed

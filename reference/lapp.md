@@ -150,15 +150,15 @@ do.call(fun, data)
 #> [3,] 0.4285714 1.5000000 9.000000
 
 lapp(x, fun, recycle=TRUE)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 3  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
+#> coord. ref. : Cartesian (Meter)
 #> source(s)   : memory
-#> names       :      lyr.1,      lyr.2,      lyr.3 
-#> min values  : 0.01960784, 0.01851852, 0.01694915 
-#> max values  : 0.83660131, 0.88571429, 1.12359551 
+#> names       :    lyr.1,    lyr.2,    lyr.3
+#> min values  : 0.019608, 0.018519, 0.016949
+#> max values  : 0.836601, 0.885714, 1.123596
 
 # the same, more concisely
 z <- s / (s[[1]]+50)

@@ -99,15 +99,15 @@ matrix or data.frame
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 r
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 90, 95, 1  (nrow, ncol, nlyr)
-#> resolution  : 0.008333333, 0.008333333  (x, y)
+#> resolution  : 0.00833333, 0.00833333  (x, y)
 #> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#> source      : elev.tif 
-#> name        : elevation 
-#> min value   :       141 
-#> max value   :       547 
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> source      : elev.tif
+#> name        : elevation
+#> min value   :       141
+#> max value   :       547
 x <- values(r)
 x[3650:3655, ]
 #> [1] 349 287 334 319 271 228

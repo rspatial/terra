@@ -13,7 +13,7 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,52 +101,52 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="math-generics.html">sqrt</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, <span class="va">r</span><span class="op">+</span><span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">app</span><span class="op">(</span><span class="va">x</span>, fun<span class="op">=</span><span class="va">sum</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 10, 10, 1  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 36, 18  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : sum </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :  53 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   : 260 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : sum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :  53</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   : 260</span>
 <span class="r-in"><span><span class="co"># for a few generic functions like </span></span></span>
 <span class="r-in"><span><span class="co"># "sum", "mean", and "max" you can also do</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="summarize-generics.html">sum</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 10, 10, 1  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 36, 18  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : sum </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :  53 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   : 260 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : sum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :  53</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   : 260</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## SpatRasterDataset</span></span></span>
 <span class="r-in"><span><span class="va">sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="sds.html">sds</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">x</span><span class="op">*</span><span class="fl">2</span>, <span class="va">x</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu">app</span><span class="op">(</span><span class="va">sd</span>, <span class="va">max</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">a</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 10, 10, 3  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 36, 18  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> names       : lyr.1, lyr.1, lyr.1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :     2,     2,   102 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max values  :   200,    20,   300 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       : lyr.1, lyr.1, lyr.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :     2,     2,   102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max values  :   200,    20,   300</span>
 <span class="r-in"><span><span class="co"># same as </span></span></span>
 <span class="r-in"><span><span class="fu"><a href="summarize-generics.html">max</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">x</span><span class="op">*</span><span class="fl">2</span>, <span class="va">x</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> size        : 10, 10, 3  (nrow, ncol, nlyr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 36, 18  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> names       : lyr.1, lyr.1, lyr.1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :     2,     2,   102 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max values  :   200,    20,   300 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> names       : lyr.1, lyr.1, lyr.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min values  :     2,     2,   102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max values  :   200,    20,   300</span>
 <span class="r-in"><span><span class="co"># and as (but slower)</span></span></span>
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">app</span><span class="op">(</span><span class="va">sd</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="summarize-generics.html">max</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

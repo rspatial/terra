@@ -70,13 +70,13 @@ names(s) <- c("a", "b", "c")
 x <- sds(s, s)
 varnames(x) <- c("one", "two")
 x
-#> class       : SpatRasterDataset 
-#> subdatasets : 2 
+#> class       : SpatRasterDataset
+#> subdatasets : 2
 #> dimensions  : 5, 5 (nrow, ncol)
-#> nlyr        : 3, 3 
+#> nlyr        : 3, 3
 #> resolution  : 72, 36  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
-#> source(s)   : memory 
-#> names       : one, two 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
+#> source(s)   : memory
+#> names       : one, two
 ```

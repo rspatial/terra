@@ -91,16 +91,15 @@ unique(s,TRUE)
 #> 
 
 unique(s, as.raster=TRUE)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 5, 5, 1  (nrow, ncol, nlyr)
 #> resolution  : 72, 36  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> categories  : label, lyr.1, lyr.1.1 
-#> name        : label 
-#> min value   :   1_0 
-#> max value   :   5_2 
+#> name        : label
+#> min value   :     0
+#> max value   :     4
 
 
 v <- vect(cbind(x=c(1:5,1:5), y=c(5:1,5:1)), 
@@ -113,14 +112,15 @@ nrow(u)
 
 values(v) <- c(1:5, 1:3, 5:4)
 unique(v)
-#>  class       : SpatVector 
-#>  geometry    : points 
-#>  dimensions  : 7, 1  (geometries, attributes)
-#>  extent      : 1, 5, 1, 5  (xmin, xmax, ymin, ymax)
-#>  coord. ref. : +proj=utm +zone=1 +datum=WGS84 +units=m +no_defs 
-#>  names       : value
-#>  type        : <int>
-#>  values      :     1
-#>                    2
-#>                    3
+#> class       : SpatVector
+#> geometry    : points
+#> dimensions  : 7, 1  (geometries, attributes)
+#> extent      : 1, 5, 1, 5  (xmin, xmax, ymin, ymax)
+#> coord. ref. : +proj=utm +zone=1 +datum=WGS84 +units=m +no_defs
+#> names       : value
+#> type        : <int>
+#> values      :     1
+#>                   2
+#>                   3
+#>               ...
 ```

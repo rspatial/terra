@@ -87,11 +87,11 @@ as.character(e)
 
 ext(r) <- c(0, 2.5, 0, 1.5)
 r
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 180, 360, 1  (nrow, ncol, nlyr)
-#> resolution  : 0.006944444, 0.008333333  (x, y)
+#> resolution  : 0.00694444, 0.00833333  (x, y)
 #> extent      : 0, 2.5, 0, 1.5  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 er <- ext(r)
 
 round(er)

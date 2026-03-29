@@ -55,14 +55,15 @@ d <- dots(v, "population", 1000, col="red", cex=.75)
 lines(v)
 
 d
-#>  class       : SpatVector 
-#>  geometry    : points 
-#>  dimensions  : 650, 7  (geometries, attributes)
-#>  extent      : 5.781312, 6.525015, 49.45332, 50.14841  (xmin, xmax, ymin, ymax)
-#>  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA       POP population
-#>  type        : <num>    <chr> <num>    <chr> <num>     <num>      <num>
-#>  values      :     1 Diekirch     1 Clervaux   312 1.808e+04       1000
-#>                    1 Diekirch     2 Diekirch   218 3.254e+04       4000
-#>                    1 Diekirch     2 Diekirch   218 3.254e+04       4000
+#> class       : SpatVector
+#> geometry    : points
+#> dimensions  : 650, 7  (geometries, attributes)
+#> extent      : 5.781312, 6.525015, 49.45332, 50.14841  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :  ID_1   NAME_1  ID_2   NAME_2  AREA   POP population
+#> type        : <num>    <chr> <num>    <chr> <num> <num>      <num>
+#> values      :     1 Diekirch     1 Clervaux   312 18081       1000
+#>                   1 Diekirch     2 Diekirch   218 32543       4000
+#>                   1 Diekirch     2 Diekirch   218 32543       4000
+#>               ...
 ```

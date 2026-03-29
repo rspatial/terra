@@ -58,48 +58,48 @@ if `x` is a `SpatVector`: a `data.frame`.
 ### SpatRaster
 s <- rast(system.file("ex/logo.tif", package="terra"))   
 s[[ 1:2 ]]
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 2  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
-#> source      : logo.tif 
-#> names       : red, green 
-#> min values  :   0,     0 
-#> max values  : 255,   255 
+#> coord. ref. : Cartesian (Meter)
+#> source      : logo.tif
+#> names       : red, green
+#> min values  :   0,     0
+#> max values  : 255,   255
 
 s[[c("red", "green")]]
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 2  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
-#> source      : logo.tif 
-#> names       : red, green 
-#> min values  :   0,     0 
-#> max values  : 255,   255 
+#> coord. ref. : Cartesian (Meter)
+#> source      : logo.tif
+#> names       : red, green
+#> min values  :   0,     0
+#> max values  : 255,   255
 
 # expression based (partial) matching of names with single brackets
 s["re"]
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 2  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
-#> source      : logo.tif 
-#> names       : red, green 
-#> min values  :   0,     0 
-#> max values  : 255,   255 
+#> coord. ref. : Cartesian (Meter)
+#> source      : logo.tif
+#> names       : red, green
+#> min values  :   0,     0
+#> max values  : 255,   255
 s["^re"]
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 1  (nrow, ncol, nlyr)
 #> resolution  : 1, 1  (x, y)
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
-#> coord. ref. : Cartesian (Meter) 
-#> source      : logo.tif 
-#> name        : red 
-#> min value   :   0 
-#> max value   : 255 
+#> coord. ref. : Cartesian (Meter)
+#> source      : logo.tif
+#> name        : red
+#> min value   :   0
+#> max value   : 255
 
 # does not with double brackets
 # s[["re"]]
@@ -125,15 +125,16 @@ v[[2:3]]
 
 # to keep the geometry use
 v[,2:3]
-#>  class       : SpatVector 
-#>  geometry    : polygons 
-#>  dimensions  : 12, 2  (geometries, attributes)
-#>  extent      : 5.74414, 6.528252, 49.44781, 50.18162  (xmin, xmax, ymin, ymax)
-#>  source      : lux.shp
-#>  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#>  names       :   NAME_1  ID_2
-#>  type        :    <chr> <num>
-#>  values      : Diekirch     1
-#>                Diekirch     2
-#>                Diekirch     3
+#> class       : SpatVector
+#> geometry    : polygons
+#> dimensions  : 12, 2  (geometries, attributes)
+#> extent      : 5.74414, 6.528252, 49.44781, 50.18162  (xmin, xmax, ymin, ymax)
+#> source      : lux.shp
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> names       :   NAME_1  ID_2
+#> type        :    <chr> <num>
+#> values      : Diekirch     1
+#>               Diekirch     2
+#>               Diekirch     3
+#>               ...
 ```

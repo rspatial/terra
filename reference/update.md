@@ -40,14 +40,14 @@ crs(x) <- "+proj=utm +zone=1"
 update(x, crs=TRUE, extent=TRUE)
 
 rast(fname)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 77, 101, 3  (nrow, ncol, nlyr)
-#> resolution  : 1.019802, 1.025974  (x, y)
+#> resolution  : 1.0198, 1.02597  (x, y)
 #> extent      : -1, 102, -1, 78  (xmin, xmax, ymin, ymax)
-#> coord. ref. : WGS 84 / UTM zone 1N (EPSG:32601) 
-#> source      : file238a1b4a4463.tif 
-#> colors RGB  : 1, 2, 3 
-#> names       : red, green, blue 
-#> min values  :   0,     0,    0 
-#> max values  : 254,   254,  254 
+#> coord. ref. : WGS 84 / UTM zone 1N (EPSG:32601)
+#> source      : file23895670a83e.tif
+#> colors rgb  : 0, 1, 2
+#> names       : red, green, blue
+#> min values  :   0,     0,    0
+#> max values  : 254,   254,  254
 ```

@@ -57,25 +57,25 @@ values(r) <- sample(3, ncell(r), replace=TRUE) + 10
 d <- data.frame(id=11:13, cover=c("forest", "water", "urban"), letters=letters[1:3], value=10:12)
 levels(r) <- d
 catalyze(r)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 3  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> names       : cover, letters, value 
-#> min values  :     1,       1,    10 
-#> max values  :     3,       3,    12 
+#> names       : cover, letters, value
+#> min values  :     1,       1,    10
+#> max values  :     3,       3,    12
 
 activeCat(r) <- 3
 as.numeric(r)
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 10, 10, 1  (nrow, ncol, nlyr)
 #> resolution  : 36, 18  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        : letters 
-#> min value   :       1 
-#> max value   :       3 
+#> name        : letters
+#> min value   :       1
+#> max value   :       3
 ```
