@@ -175,22 +175,22 @@ setMethod ("show" , "Rcpp_SpatCategories",
 
 
 .show_vectproxy <- function(object) {
-		e <- as.vector(ext(object))
-		d <- dim(object)
-		cat(" class       : SpatVectorProxy\n")
-		cat(" geometry    :", geomtype(object), "\n")
-		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" )
-		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		if (object@pntr$v$layer != tools::file_path_sans_ext(get_basename(object@pntr$v$source))) {
-			cat(" source      : ", get_basename(object@pntr$v$source), " (", object@pntr$v$layer, ")\n", sep="")
-		} else {
-			cat(" source      : ", get_basename(object@pntr$v$source), "\n", sep="")
-		}
-		cat(" coord. ref. :", .name_or_proj4(object), "\n")
-		dd <- get.data.frame(object)
-		printDF(dd, 0, TRUE)
+	e <- as.vector(ext(object))
+	d <- dim(object)
+	cat(" class       : SpatVectorProxy\n")
+	cat(" geometry    :", geomtype(object), "\n")
+	cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" )
+	cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+	if (object@pntr$v$layer != tools::file_path_sans_ext(get_basename(object@pntr$v$source))) {
+		cat(" source      : ", get_basename(object@pntr$v$source), " (", object@pntr$v$layer, ")\n", sep="")
+	} else {
+		cat(" source      : ", get_basename(object@pntr$v$source), "\n", sep="")
 	}
-)
+	cat(" coord. ref. :", .name_or_proj4(object), "\n")
+	dd <- get.data.frame(object)
+	printDF(dd, 0, TRUE)
+}
+
 
 
 
