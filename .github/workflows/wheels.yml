@@ -1,5 +1,7 @@
 # Windows-only prebuilt wheels (GDAL/GEOS/PROJ via vcpkg). Linux/macOS users are
-# expected to use conda/system libs and build from source. Uploads to PyPI on tag push.
+# expected to use conda/system libs and build from source.
+# Runs on tag pushes whose names start with "py" (R/CRAN tags must not use that prefix).
+# Uploads to PyPI when such a tag is pushed.
 #
 # PyPI (trusted publishing): register this workflow in PyPI’s trusted publisher settings.
 # Optional: add `environment: pypi` on the upload job for deploy approvals.
@@ -11,7 +13,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "**"
+      - "py*"
 
 jobs:
   build_wheels:
@@ -45,8 +47,8 @@ jobs:
     # Optional: add `environment: pypi` for deploy approvals / protection rules.
     permissions:
       id-token: write
-    # Publish whenever a tag is pushed (no separate GitHub Release required).
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    # Publish only for Python release tags (prefix "py"); R/CRAN tags are ignored.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/py')
     steps:
       - uses: actions/download-artifact@v4
         with:
