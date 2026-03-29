@@ -61,7 +61,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p tappa/terra_core
-          rsync -a --delete \
+          # --exclude alone does not remove matching files already on the destination;
+          # --delete-excluded drops Rcpp/Makevars/*.o from terra_core when they are gone
+          # or excluded on the terra side.
+          rsync -a --delete --delete-excluded \
             --exclude='Rcpp*.cpp' \
             --exclude='Makevars*' \
             --exclude='*.o' \
