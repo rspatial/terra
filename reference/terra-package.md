@@ -316,13 +316,13 @@ of a SpatRaster.
 `time` can be used to explicitly get or set a third or fourth dimension
 of a SpatRaster.
 
-|                                                                         |                                                                                                         |
-|-------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
-| [`time`](https://rspatial.github.io/terra/reference/time.md)            | Get or set time                                                                                         |
-| [`fillTime`](https://rspatial.github.io/terra/reference/fillTime.md)    | can add empty layers in between existing layers to assure that the time step between layers is constant |
-| [`mergeTime`](https://rspatial.github.io/terra/reference/mergeTime.md)  | combine multiple rasters, perhaps partly overlapping in time, into a single time series                 |
-| \\ [`clamp_ts`](https://rspatial.github.io/terra/reference/clamp_ts.md) | Clamp time-series values                                                                                |
-| —————————                                                               | ——————————————————————————————                                                                          |
+|                                                                        |                                                                                                         |
+|------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| [`time`](https://rspatial.github.io/terra/reference/time.md)           | Get or set time                                                                                         |
+| [`fillTime`](https://rspatial.github.io/terra/reference/fillTime.md)   | can add empty layers in between existing layers to assure that the time step between layers is constant |
+| [`mergeTime`](https://rspatial.github.io/terra/reference/mergeTime.md) | combine multiple rasters, perhaps partly overlapping in time, into a single time series                 |
+| [`clamp_ts`](https://rspatial.github.io/terra/reference/clamp_ts.md)   | Clamp time-series values                                                                                |
+| —————————                                                              | ——————————————————————————————                                                                          |
 
 ## XII. Methods for categorical rasters
 

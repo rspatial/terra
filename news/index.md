@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-12
+## version 1.9-13
 
 ### bug fixes
 
@@ -27,9 +27,9 @@ Released 2026-03-26
 ### bug fixes
 
 - `subst` and some cases of `classify`, did not recycle properly
-  [](https://github.com/rspatial/terra/issues/2046) by Nuno Teixeira and
-  [\#2052](https://github.com/rspatial/terra/issues/2052) by Jérôme
-  Guélat
+  [\#2046](https://github.com/rspatial/terra/issues/2046) by Nuno
+  Teixeira and [\#2052](https://github.com/rspatial/terra/issues/2052)
+  by Jérôme Guélat
 - better reading of gpkg files with unclear geometry and NULL geoms
   [\#2051](https://github.com/rspatial/terra/issues/2051) by Duy Nguyen
 - `ifel` ignored NA values in some circumstances [SO
