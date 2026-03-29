@@ -1,6 +1,7 @@
 # Mirror terra's src/ into rspatial/tappa/terra_core/ whenever src/ changes on
 # the default branch. That folder holds upstream C++ only; Python code stays under
 # src/, pybind glue under native/terra_module.cpp.
+# Skips R-only / R package build artefacts: Rcpp*.cpp, Makevars*, *.o (if present).
 #
 # Requires repository secret TAPPA_SYNC_PAT on rspatial/terra (Settings → Secrets
 # and variables → Actions). Use a fine-grained PAT with Contents: Read+Write on
@@ -60,7 +61,11 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p tappa/terra_core
-          rsync -a --delete terra/src/ tappa/terra_core/
+          rsync -a --delete \
+            --exclude='Rcpp*.cpp' \
+            --exclude='Makevars*' \
+            --exclude='*.o' \
+            terra/src/ tappa/terra_core/
 
       - name: Commit and push if changed
         working-directory: tappa
