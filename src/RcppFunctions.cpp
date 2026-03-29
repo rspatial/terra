@@ -325,7 +325,7 @@ inline void warningNoCall(const char* fmt, Args&&... args ) {
 }
 
 template <typename... Args>
-inline void NORET stopNoCall(const char* fmt, Args&&... args) {
+NORET inline void stopNoCall(const char* fmt, Args&&... args) {
     throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
 }
 
