@@ -54,21 +54,21 @@ Below is a list of some of the most important methods grouped by theme.
 
 ## I. Creating, combining and sub-setting
 
-|                                                                                  |                                                               |
-|----------------------------------------------------------------------------------|---------------------------------------------------------------|
-| [`rast`](https://rspatial.github.io/terra/reference/rast.md)                     | Create a SpatRaster from scratch, file, or another object     |
-| [`c`](https://rspatial.github.io/terra/reference/c.md)                           | Combine SpatRasters (multiple layers)                         |
-| `add<-`                                                                          | Add a SpatRaster to another one                               |
-| [`subset`](https://rspatial.github.io/terra/reference/subset.md) or `[[`, or `$` | Select layers of a SpatRaster                                 |
-| [`selectRange`](https://rspatial.github.io/terra/reference/selectRange.md)       | Select cell values from different layers using an index layer |
-| [`rep`](https://rspatial.github.io/terra/reference/rep.md)                       | Repeat layers or a SpatRaster                                 |
-| [`split`](https://rspatial.github.io/terra/reference/split.md)                   | Make a list of single layer SpatRasters                       |
-| [`[[`](https://rspatial.github.io/terra/reference/subset_double.md)              | Extract layers with `[[`                                      |
-| [`$`](https://rspatial.github.io/terra/reference/subset_dollar.md)               | Extract a layer with `$`                                      |
-| `[[<-`                                                                           | Replace or add a layer with `[[<-`                            |
-| `$<-`                                                                            | Replace or add a layer with `$<-`                             |
-| [`as.character`](https://rdrr.io/r/base/character.html)                          | Geta a character representation of a SpatRaster geometry      |
-| —————————                                                                        | ——————————————————————————————                                |
+|                                                                            |                                                               |
+|----------------------------------------------------------------------------|---------------------------------------------------------------|
+| [`rast`](https://rspatial.github.io/terra/reference/rast.md)               | Create a SpatRaster from scratch, file, or another object     |
+| [`c`](https://rspatial.github.io/terra/reference/c.md)                     | Combine SpatRasters (multiple layers)                         |
+| `add<-`                                                                    | Add a SpatRaster to another one                               |
+| [`subset`](https://rspatial.github.io/terra/reference/subset.md)           | Select layers of a SpatRaster                                 |
+| [`[[`](https://rspatial.github.io/terra/reference/subset_double.md)        | Select layers of a SpatRaster                                 |
+| [`$`](https://rspatial.github.io/terra/reference/subset_dollar.md)         | Select a layer of a SpatRaster                                |
+| `[[<-`                                                                     | Replace or add a SpatRaster layer                             |
+| `$<-`                                                                      | Replace or add a SpatRaster layer                             |
+| [`selectRange`](https://rspatial.github.io/terra/reference/selectRange.md) | Select cell values from different layers using an index layer |
+| [`rep`](https://rspatial.github.io/terra/reference/rep.md)                 | Repeat layers or a SpatRaster                                 |
+| [`split`](https://rspatial.github.io/terra/reference/split.md)             | Make a list of single layer SpatRasters                       |
+| [`as.character`](https://rdrr.io/r/base/character.html)                    | Geta a character representation of a SpatRaster geometry      |
+| —————————                                                                  | ——————————————————————————————                                |
 
 ## II. Changing the spatial extent or resolution
 
