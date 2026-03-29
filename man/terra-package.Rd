@@ -36,14 +36,14 @@ Below is a list of some of the most important methods grouped by theme.
     \code{\link{rast}}\tab Create a SpatRaster from scratch, file, or another object\cr
     \code{\link{c}} \tab Combine SpatRasters (multiple layers)\cr
     \code{\link{add<-}} \tab Add a SpatRaster to another one\cr
-    \code{\link{subset}} or \code{[[}, or \code{$} \tab Select layers of a SpatRaster\cr
+    \code{\link{subset}} \tab Select layers of a SpatRaster\cr
+    \code{\link{[[}} \tab Select layers of a SpatRaster \cr
+    \code{\link{$}} \tab Select a layer of a SpatRaster \cr
+    \code{\link{[[<-}} \tab Replace or add a SpatRaster layer \cr
+    \code{\link{$<-}} \tab Replace or add a SpatRaster layer \cr
     \code{\link{selectRange}} \tab Select cell values from different layers using an index layer\cr
     \code{\link{rep}} \tab Repeat layers or a SpatRaster \cr
     \code{\link{split}} \tab Make a list of single layer SpatRasters\cr
-    \code{\link{[[}} \tab Extract layers with \code{[[} \cr
-    \code{\link{$}} \tab Extract a layer with \code{$} \cr
-    \code{\link{[[<-}} \tab Replace or add a layer with \code{[[<-} \cr
-    \code{\link{$<-}} \tab Replace or add a layer with \code{$<-} \cr
     \code{\link{as.character}} \tab Geta a character representation of a SpatRaster geometry\cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
