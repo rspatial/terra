@@ -1,4 +1,4 @@
-# Mirror terra's src/ into rspatial/tappa/terra_core/ whenever src/ changes on
+# Mirror terra's src/ into rspatial/tappa/terra_lib/ whenever src/ changes on
 # the default branch. That folder holds upstream C++ only; Python code stays under
 # src/, pybind glue under native/terra_module.cpp.
 # Skips R-only / R package build artefacts: Rcpp*.cpp, Makevars*, *.o (if present).
@@ -57,28 +57,28 @@ jobs:
           path: tappa
           token: ${{ secrets.TAPPA_SYNC_PAT }}
 
-      - name: Mirror src/ into tappa/terra_core
+      - name: Mirror src/ into tappa/terra_lib
         run: |
           set -euo pipefail
-          mkdir -p tappa/terra_core
+          mkdir -p tappa/terra_lib
           # --exclude alone does not remove matching files already on the destination;
-          # --delete-excluded drops Rcpp/Makevars/*.o from terra_core when they are gone
+          # --delete-excluded drops Rcpp/Makevars/*.o from terra_lib when they are gone
           # or excluded on the terra side.
           rsync -a --delete --delete-excluded \
             --exclude='Rcpp*.cpp' \
             --exclude='Makevars*' \
             --exclude='*.o' \
-            terra/src/ tappa/terra_core/
+            terra/src/ tappa/terra_lib/
 
       - name: Commit and push if changed
         working-directory: tappa
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A terra_core
+          git add -A terra_lib
           if git diff --staged --quiet; then
-            echo "No changes to terra_core/ after sync."
+            echo "No changes to terra_lib/ after sync."
             exit 0
           fi
-          git commit -m "Sync terra_core/ from rspatial/terra@${{ github.sha }}"
+          git commit -m "Sync terra_lib/ from rspatial/terra@${{ github.sha }}"
           git push origin HEAD:${{ env.TAPPA_BRANCH }}
