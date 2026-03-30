@@ -4,7 +4,6 @@
 # License GPL v3
 
 
-
 setMethod("centroids", signature(x="SpatRaster"),
 	function(x, weighted=FALSE) {
 		opt <- spatOptions()

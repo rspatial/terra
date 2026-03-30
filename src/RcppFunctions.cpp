@@ -12,7 +12,8 @@
 //#define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
-#if defined(HAVE_TBB) && !defined(__APPLE__)
+//#if defined(HAVE_TBB) && !defined(__APPLE__)
+#if defined(HAVE_TBB)
 #define USE_TBB
 #endif
 
