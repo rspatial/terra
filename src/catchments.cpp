@@ -1,5 +1,4 @@
 #include "spatRaster.h"
-#include "watershed_internal.h"
 
 // C/C++ code
 // Author: Ezio Crestaz,Emanuele Cordano
@@ -18,7 +17,6 @@
 // x,y: indexes of cell upstream of which the watershed must be computed
 int offset(int nx, int ny, int x, int y) {
   return y * nx + x; //according to original Ezio's code BY ROWS 
-  //return x * ny + y; // according offset defintion in Rccp for IntergerMatrix // BY COLS
 }
 
 //
@@ -31,15 +29,12 @@ int offset(int nx, int ny, int x, int y) {
 
 int getRow(int nx, int ny, int offset) {
   return offset/nx;// according to Ezio's original code // BY ROWS
-  //return offset % ny; // according offset definition in Rccp for IntergerMatrix // BY COLS
 }
 
 int getCol(int nx, int ny, int offset) {
 // according to Ezio's original code
   return offset % nx;// according to Ezio's original code // BY ROWS
-  //return offset/ny; // according offset definition in Rccp for IntergerMatrix // BY COLS
 }
-
 
 
 //  Function: inRaster
@@ -431,53 +426,6 @@ SpatRaster  SpatRaster::watershed2(int pp_offset,SpatOptions &opt) {
 /// 20220809
 /// PITFINDER 
 
-
-
-
-// TO INSERT::: std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
-//Rcpp::IntegerVector SpatRaster::watershed2(int pp_offset,SpatOptions opt) {
-SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
-  // DA TESTARE
-  SpatRaster out=geometry();
-  //std::vector<std::string> oname="watershed";
-  //out.setNames(oname);
-  int nx=ncol();
-  int ny=nrow();
-  //printf("nx=%d ny=%d\n",nx,ny);
-  //Rcpp::IntegerVector pOut(nx*ny);
-  // https://www.codeguru.com/cpp/cpp/cpp_mfc/stl/article.php/c4027/C-Tutorial-A-Beginners-Guide-to-stdvector-Part-1.htm 
-  std::vector<double> p=getValues(0,opt); //EC 20211203 //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/
-  
-  
-  //SEE HERE https://stackoverflow.com/questions/26488480/how-can-i-trust-casting-from-double-to-integer
-  
-  //int *q=p.begin();
-  //int *qOut=pOut.begin();
-  // https://www.google.com/search?q=how+to+express+NumericVector+as+a+pointer&oq=how+to+express+NumericVector+as+a+pointer&aqs=chrome..69i57j33i160.13306j0j15&sourceid=chrome&ie=UTF-8
-  // https://dirk.eddelbuettel.com/code/rcpp/Rcpp-quickref.pdf
-  // http://adv-r.had.co.nz/Rcpp.html
-  
-  std::vector<double> pOutv(nx*ny,0);
-  // EC 20210319 pOutv.reserve(nx*ny);
-  // EC 20210319 std::fill(pOutv.begin(), pOutv.end(), trunc(0));
-  
-  
-  
-  ///see
-  pitfinder(&p[0],nx,ny,&pOutv[0]);
-  if (!out.writeStart(opt,filenames())) {
-    readStop();
-    return out;
-  }
-  // out.writeValues(pOutv,0,ny,0,nx); UNTIL 20220725
-  out.writeValues(pOutv,0,ny); //,0,nx); // LOOK AT writeValuesGDAL
-  out.writeStop();
-  return out;
-  
-  //return(pOut);
-  
-}
-
 // void watershed_v2(int* p, int nx, int ny, int x, int y, int* pOut)
 void pitfinder(double* p, int nx, int ny, double* pOut) {
   //int* q;           // A pointer to a queue of raster cells (offset in memory) to be processed
@@ -690,6 +638,53 @@ void pitfinder(double* p, int nx, int ny, double* pOut) {
 
 
 
+
+// TO INSERT::: std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
+//Rcpp::IntegerVector SpatRaster::watershed2(int pp_offset,SpatOptions opt) {
+SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
+  // DA TESTARE
+  SpatRaster out=geometry();
+  //std::vector<std::string> oname="watershed";
+  //out.setNames(oname);
+  int nx=ncol();
+  int ny=nrow();
+  //printf("nx=%d ny=%d\n",nx,ny);
+  //Rcpp::IntegerVector pOut(nx*ny);
+  // https://www.codeguru.com/cpp/cpp/cpp_mfc/stl/article.php/c4027/C-Tutorial-A-Beginners-Guide-to-stdvector-Part-1.htm 
+  std::vector<double> p=getValues(0,opt); //EC 20211203 //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/
+  
+  
+  //SEE HERE https://stackoverflow.com/questions/26488480/how-can-i-trust-casting-from-double-to-integer
+  
+  //int *q=p.begin();
+  //int *qOut=pOut.begin();
+  // https://www.google.com/search?q=how+to+express+NumericVector+as+a+pointer&oq=how+to+express+NumericVector+as+a+pointer&aqs=chrome..69i57j33i160.13306j0j15&sourceid=chrome&ie=UTF-8
+  // https://dirk.eddelbuettel.com/code/rcpp/Rcpp-quickref.pdf
+  // http://adv-r.had.co.nz/Rcpp.html
+  
+  std::vector<double> pOutv(nx*ny,0);
+  // EC 20210319 pOutv.reserve(nx*ny);
+  // EC 20210319 std::fill(pOutv.begin(), pOutv.end(), trunc(0));
+  
+  
+  
+  ///see
+  pitfinder(&p[0],nx,ny,&pOutv[0]);
+  if (!out.writeStart(opt,filenames())) {
+    readStop();
+    return out;
+  }
+  // out.writeValues(pOutv,0,ny,0,nx); UNTIL 20220725
+  out.writeValues(pOutv,0,ny); //,0,nx); // LOOK AT writeValuesGDAL
+  out.writeStop();
+  return out;
+  
+  //return(pOut);
+  
+}
+
+
+
 ///////////////////////////////////////
 //// flow accumulation functions //////
 ///////////////////////////////////////
@@ -763,9 +758,7 @@ void NIDP(int* pnext, int nx, int ny,double* nidp_value) {
         cnt0++;
         *(nidp_value+pp)=cnt0;
         cnt0=0;
-      }
-      
-    
+      }    
     }
   }
   
