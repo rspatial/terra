@@ -89,3 +89,26 @@ function(x, pause=0.25, main, n=1, vars=NULL, range=NULL, add=NULL, ...) {
 	g <- grDevices::dev.flush()
 }
 )
+
+setMethod("animate", signature(x="SpatVectorCollection"),
+          function(x, pause=0.25, n=1, vars=NULL, range=NULL, ext=NULL, add=NULL, ...) {
+
+            n <- max(1, round(n))
+            if (is.null(ext)) ext <- ext(x)
+
+            if (isTRUE(add)) n <- 1
+            for (reps in 1:n) {
+              if ((reps == 1) && (isTRUE(add)) && (is.null(grDevices::dev.list()))) {
+                plot(ext, border=NA, ...)
+              }
+              for (i in 1:length(x)) {
+                addd <- if (is.null(add)) i != 1 else add
+                plot(x[[i]], ext=ext, add=addd, ...)
+                grDevices::dev.flush()
+                grDevices::dev.hold()
+                Sys.sleep(pause)
+              }
+            }
+            g <- grDevices::dev.flush()
+          }
+)
