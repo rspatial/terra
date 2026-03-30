@@ -88,6 +88,7 @@
 
 - [`animate(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/animate.md)
   [`animate(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/animate.md)
+  [`animate(`*`<SpatVectorCollection>`*`)`](https://rspatial.github.io/terra/reference/animate.md)
   : Animate a map
 
 - [`app(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/app.md)

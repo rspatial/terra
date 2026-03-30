@@ -1,7 +1,8 @@
 # Animate a map
 
-Animate (sequentially plot) the layers of a SpatRaster, or the variables
-or geometries of a SpatVector, to create a movie.
+Animate (sequentially plot) the layers of a SpatRaster, or a
+SpatVectorCollection, or the variables or geometries of a SpatVector, to
+create a movie.
 
 ## Usage
 
@@ -11,6 +12,9 @@ animate(x, pause=0.25, main, range=NULL, maxcell=50000, n=1, ...)
 
 # S4 method for class 'SpatVector'
 animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
+
+# S4 method for class 'SpatVectorCollection'
+animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, ext=NULL, add=NULL, ...)
 ```
 
 ## Arguments
@@ -50,6 +54,12 @@ animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
   numeric or character to indicate the variables to animate. If this is
   NULL, the geometries are animated instead
 
+- ext:
+
+  `SpatExtent` object (or an object for which
+  [`ext`](https://rspatial.github.io/terra/reference/ext.md) returns
+  one) setting the spatial extent of the plot.
+
 - add:
 
   logical. Add the geometries to the current plot? When looping over
@@ -68,7 +78,7 @@ None
 
 ## Author
 
-Márcia Barbosa, Robert J. Hijmans
+A. Márcia Barbosa, Robert J. Hijmans
 
 ## See also
 
@@ -77,16 +87,21 @@ Márcia Barbosa, Robert J. Hijmans
 ## Examples
 
 ``` r
-s <- rast(system.file("ex/logo.tif", package="terra"))   
-animate(s, n=1)
+r <- rast(system.file("ex/logo.tif", package="terra"))   
+animate(r, n=1)
 
 
 
 
 v <- vect(system.file("ex/lux.shp", package="terra"))
-animate(v[1:3, ], n=1)
+animate(v[1:3, ], n=2)
 
-# animate(v, vars=names(v))
+
+# animate(v, vars=names(v), pause=0.7)
+
+s <- svc(as.lines(v[3:5,]), v, v[1:3,], as.points(v))
+animate(s, col="blue", alpha=0.3, pause=0.7)
+
 
 # you can save an animation to file like this
 # animation::saveGIF(terra::animate(v), "animation.gif")
