@@ -113,7 +113,6 @@ alongside the executable.
 ## How it works
 
 ### Library
-
 The Makefile automatically collects every `../src/*.cpp` and excludes the three
 R/Rcpp interface files (`RcppExports.cpp`, `RcppFunctions.cpp`,
 `RcppModule.cpp`). Everything is compiled with `-Dstandalone` so that
@@ -122,8 +121,7 @@ skipped. The resulting object files are packed into `build/libterra.a`.
 
 ### GDAL / PROJ initialisation
 
-R's terra initialises GDAL in `.onLoad` via `gdal_init()`. The standalone app
-mirrors this in `gdal_init.cpp` (`terra_gdal_app_init`), which:
+GDAL is intialized with `terra_gdal_app_init` (in `gdal_init.cpp`), which:
 
 * sets `GDAL_DATA`, `GDAL_DRIVER_PATH`, and PROJ search paths (detected at
   build time by the Makefile, overridable at runtime via environment variables)
@@ -166,5 +164,5 @@ g++ -std=c++17 -Dstandalone $(gdal-config --cflags) -Isrc/ \
 ```
 
 Include `gdal_init.h` from this directory and call `terra_gdal_app_init()`
-before constructing any `SpatRaster` from a file. See `main.cpp` for a minimal
+before reading spatial data from a file. See `main.cpp` for a minimal
 working example.
