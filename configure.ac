@@ -45,7 +45,7 @@ AC_MSG_NOTICE([CXX: ${CXX}])
 GENERIC_INSTALL_MESSAGE="
 *** Installing this package from source requires the prior 
 *** installation of external software, see for details 
-*** https://rspatial.github.io/terra/"
+*** https://r-spatial.github.io/sf/#installing"
 
 #GDAL
 GDAL_CONFIG="gdal-config"
@@ -64,6 +64,7 @@ fi
 if test ["$GDAL_CONFIG_SET" = "no"] ; then
   AC_PATH_PROG([GDAL_CONFIG], ["$GDAL_CONFIG"],["no"])
   if test ["$GDAL_CONFIG" = "no"] ; then
+    AC_MSG_RESULT(no)
     AC_MSG_ERROR([gdal-config not found or not executable. ${GENERIC_INSTALL_MESSAGE}])
   fi
 else
@@ -71,12 +72,14 @@ else
   if test -r "${GDAL_CONFIG}"; then
     AC_MSG_RESULT(yes)
   else
+    AC_MSG_RESULT(no)
     AC_MSG_ERROR([gdal-config not found - configure argument error. ${GENERIC_INSTALL_MESSAGE}])
   fi
   AC_MSG_CHECKING(gdal-config executable)
   if test -x "${GDAL_CONFIG}"; then
     AC_MSG_RESULT(yes)
   else
+    AC_MSG_RESULT(no)
     AC_MSG_ERROR([gdal-config not executable. ${GENERIC_INSTALL_MESSAGE}])
   fi
 fi
@@ -128,7 +131,7 @@ CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS}"
 gdalok=yes
 AC_CHECK_HEADERS(gdal.h,,gdalok=no)
 if test "${gdalok}" = no; then
-   AC_MSG_ERROR([gdal.h not found in given locations.. ${GENERIC_INSTALL_MESSAGE}])
+   AC_MSG_ERROR([gdal.h not found in given locations. ${GENERIC_INSTALL_MESSAGE}])
 fi
 
 NEED_DEPS=no
@@ -199,7 +202,7 @@ if test -r "${GDAL_DATA_TEST_FILE}" ; then
 else
   AC_MSG_RESULT(no)
   if test "${GDAL_GE_250}" = "no" ; then
-    AC_MSG_ERROR([pcs.csv not found in GDAL data directory. ${GENERIC_INSTALL_MESSAGE}])
+    AC_MSG_ERROR([pcs.csv not found in GDAL data directory.])
   fi
 fi
 
@@ -276,7 +279,7 @@ fi
 if test "${gdal_has_proj}" = no; then
    cat errors.txt
    AC_MSG_NOTICE([Install failure: compilation and/or linkage problems.])
-   AC_MSG_ERROR([cannot link projection code. ${GENERIC_INSTALL_MESSAGE}])
+   AC_MSG_ERROR([cannot link projection code])
 fi
 
 AC_MSG_CHECKING(GDAL: checking whether PROJ is available for running:)
@@ -292,7 +295,7 @@ gdal_has_proj=yes
 AC_MSG_RESULT(yes)
 fi
 if test "${gdal_has_proj}" = no; then
-   AC_MSG_ERROR([OGRCoordinateTransformation() does not return a coord.trans: PROJ not available? ${GENERIC_INSTALL_MESSAGE}])
+   AC_MSG_ERROR([OGRCoordinateTransformation() does not return a coord.trans: PROJ not available?])
 fi
 fi
 rm -fr errors.txt gdal_proj.cpp gdal_proj
@@ -405,7 +408,7 @@ if test "${PROJH}" = no; then
   proj4ok=yes
   AC_CHECK_LIB(proj,pj_init_plus,,proj4ok=no)
   if test "${proj4ok}" = no; then
-     AC_MSG_ERROR([libproj not found in standard or given locations.])
+     AC_MSG_ERROR([libproj not found in standard or given locations. ${GENERIC_INSTALL_MESSAGE}])
   fi
 [cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
@@ -439,7 +442,7 @@ _EOCONF]
     AC_MSG_RESULT(yes)
   fi
   if test "${proj6ok}" = no; then
-     AC_MSG_ERROR([libproj or sqlite3 not found in standard or given locations.])
+     AC_MSG_ERROR([libproj or sqlite3 not found in standard or given locations. ${GENERIC_INSTALL_MESSAGE}])
   fi
 
 [cat > proj_conf_test.c <<_EOCONF
@@ -456,7 +459,7 @@ fi
 
 #AC_MSG_NOTICE([PKG_LIBS: ${PKG_LIBS}])
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
 
 proj_version=`./proj_conf_test`
 
@@ -495,7 +498,7 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -543,7 +546,7 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -596,7 +599,7 @@ int main(void) {
 }
 _EOCONF]
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
 if test [ -n "$proj_share_path" ] ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -625,6 +628,9 @@ fi
 fi # PROJH = no
 
 fi # proj >= 6
+
+
+
 
 #
 # GEOS:
@@ -705,7 +711,7 @@ LIBS="${LIBS} ${PKG_LIBS}"
 geosok=yes
 AC_CHECK_HEADERS(geos_c.h,,geosok=no)
 if test "${geosok}" = no; then
-   AC_MSG_ERROR([geos_c.h not found in given locations.])
+   AC_MSG_ERROR([geos_c.h not found in given locations. ${GENERIC_INSTALL_MESSAGE}])
 fi
 
 [cat > geos_test.cpp <<_EOCONF
@@ -747,7 +753,7 @@ if test "${geosok}" = no; then
     AC_MSG_RESULT(no)
     cat errors.txt
     AC_MSG_NOTICE([Install failure: compilation and/or linkage problems.])
-    AC_MSG_ERROR([initGEOS_r not found in libgeos_c.])
+    AC_MSG_ERROR([initGEOS_r not found in libgeos_c. ${GENERIC_INSTALL_MESSAGE}])
   else
     AC_SUBST([PKG_LIBS], ["${PKG_LIBS} ${GEOS_DEP_CLIBS}"])
     AC_MSG_RESULT(yes)
@@ -760,7 +766,6 @@ rm -f geos_test errors.txt geos_test.cpp
 # add PROJ_LIBS
 #
 AC_SUBST([PKG_LIBS], ["${PROJ_LIBS} ${PKG_LIBS}"])
-
 
 #### Intel TBB, following the quanteda package
 # Default to no TBB
@@ -838,10 +843,8 @@ _EOCONF]
 PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
 AC_SUBST([PKG_LIBS], ["${TBBLIBS} ${PKG_LIBS}"])
 
-##netcdf 
-# AC_SUBST([PKG_LIBS], ["$(nc-config --libs) ${PKG_LIBS}"])
 
-####
+
 #
 # concluding substitution
 #

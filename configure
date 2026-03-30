@@ -2290,7 +2290,7 @@ printf "%s\n" "$as_me: CXX: ${CXX}" >&6;}
 GENERIC_INSTALL_MESSAGE="
 *** Installing this package from source requires the prior
 *** installation of external software, see for details
-*** https://rspatial.github.io/terra/"
+*** https://r-spatial.github.io/sf/#installing"
 
 #GDAL
 GDAL_CONFIG="gdal-config"
@@ -2360,6 +2360,8 @@ fi
 
 
   if test "$GDAL_CONFIG" = "no" ; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
     as_fn_error $? "gdal-config not found or not executable. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
   fi
 else
@@ -2369,6 +2371,8 @@ printf %s "checking gdal-config exists... " >&6; }
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
   else
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
     as_fn_error $? "gdal-config not found - configure argument error. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
   fi
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking gdal-config executable" >&5
@@ -2377,6 +2381,8 @@ printf %s "checking gdal-config executable... " >&6; }
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
   else
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
     as_fn_error $? "gdal-config not executable. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
   fi
 fi
@@ -3472,7 +3478,7 @@ fi
 
 done
 if test "${gdalok}" = no; then
-   as_fn_error $? "gdal.h not found in given locations.. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
+   as_fn_error $? "gdal.h not found in given locations. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
 fi
 
 NEED_DEPS=no
@@ -3553,7 +3559,7 @@ else
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
   if test "${GDAL_GE_250}" = "no" ; then
-    as_fn_error $? "pcs.csv not found in GDAL data directory. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
+    as_fn_error $? "pcs.csv not found in GDAL data directory." "$LINENO" 5
   fi
 fi
 
@@ -3646,7 +3652,7 @@ if test "${gdal_has_proj}" = no; then
    cat errors.txt
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Install failure: compilation and/or linkage problems." >&5
 printf "%s\n" "$as_me: Install failure: compilation and/or linkage problems." >&6;}
-   as_fn_error $? "cannot link projection code. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
+   as_fn_error $? "cannot link projection code" "$LINENO" 5
 fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking GDAL: checking whether PROJ is available for running:" >&5
@@ -3666,7 +3672,7 @@ gdal_has_proj=yes
 printf "%s\n" "yes" >&6; }
 fi
 if test "${gdal_has_proj}" = no; then
-   as_fn_error $? "OGRCoordinateTransformation() does not return a coord.trans: PROJ not available? ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
+   as_fn_error $? "OGRCoordinateTransformation() does not return a coord.trans: PROJ not available?" "$LINENO" 5
 fi
 fi
 rm -fr errors.txt gdal_proj.cpp gdal_proj
@@ -3871,7 +3877,7 @@ else $as_nop
 fi
 
   if test "${proj4ok}" = no; then
-     as_fn_error $? "libproj not found in standard or given locations." "$LINENO" 5
+     as_fn_error $? "libproj not found in standard or given locations. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
   fi
 cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
@@ -3908,7 +3914,7 @@ printf "%s\n" "no" >&6; }
 printf "%s\n" "yes" >&6; }
   fi
   if test "${proj6ok}" = no; then
-     as_fn_error $? "libproj or sqlite3 not found in standard or given locations." "$LINENO" 5
+     as_fn_error $? "libproj or sqlite3 not found in standard or given locations. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
   fi
 
 cat > proj_conf_test.c <<_EOCONF
@@ -3925,7 +3931,7 @@ fi
 
 #AC_MSG_NOTICE([PKG_LIBS: ${PKG_LIBS}])
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
 
 proj_version=`./proj_conf_test`
 
@@ -3969,7 +3975,7 @@ int main(void) {
 }
 _EOCONF
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
 if test  -n "$proj_share_path"  ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -4020,7 +4026,7 @@ int main(void) {
 }
 _EOCONF
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
 if test  -n "$proj_share_path"  ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -4076,7 +4082,7 @@ int main(void) {
 }
 _EOCONF
 
-${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+${CC} ${CFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
 if test  -n "$proj_share_path"  ; then
   PROJ_LIB="${proj_share_path}" ./proj_conf_test
   proj_share=`echo $?`
@@ -4108,6 +4114,9 @@ fi
 fi # PROJH = no
 
 fi # proj >= 6
+
+
+
 
 #
 # GEOS:
@@ -4267,7 +4276,7 @@ fi
 
 done
 if test "${geosok}" = no; then
-   as_fn_error $? "geos_c.h not found in given locations." "$LINENO" 5
+   as_fn_error $? "geos_c.h not found in given locations. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
 fi
 
 cat > geos_test.cpp <<_EOCONF
@@ -4316,7 +4325,7 @@ printf "%s\n" "no" >&6; }
     cat errors.txt
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Install failure: compilation and/or linkage problems." >&5
 printf "%s\n" "$as_me: Install failure: compilation and/or linkage problems." >&6;}
-    as_fn_error $? "initGEOS_r not found in libgeos_c." "$LINENO" 5
+    as_fn_error $? "initGEOS_r not found in libgeos_c. ${GENERIC_INSTALL_MESSAGE}" "$LINENO" 5
   else
     PKG_LIBS="${PKG_LIBS} ${GEOS_DEP_CLIBS}"
 
@@ -4331,7 +4340,6 @@ rm -f geos_test errors.txt geos_test.cpp
 # add PROJ_LIBS
 #
 PKG_LIBS="${PROJ_LIBS} ${PKG_LIBS}"
-
 
 
 #### Intel TBB, following the quanteda package
@@ -4429,10 +4437,8 @@ PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
 PKG_LIBS="${TBBLIBS} ${PKG_LIBS}"
 
 
-##netcdf
-# AC_SUBST([PKG_LIBS], ["$(nc-config --libs) ${PKG_LIBS}"])
 
-####
+
 #
 # concluding substitution
 #
@@ -5592,5 +5598,4 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: unrecognized options: $ac_unrecognized_opts" >&5
 printf "%s\n" "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
-
 
