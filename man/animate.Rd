@@ -18,7 +18,7 @@ Animate (sequentially plot) the layers of a SpatRaster, or a SpatVectorCollectio
 
 \S4method{animate}{SpatVector}(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
 
-\S4method{animate}{SpatVectorCollection}(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, ext=NULL, add=NULL, ...)
+\S4method{animate}{SpatVectorCollection}(x, pause=0.25, n=1, vars=NULL, range=NULL, ext=NULL, add=NULL, ...)
 }
 
 \arguments{
