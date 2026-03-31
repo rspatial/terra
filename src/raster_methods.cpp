@@ -886,7 +886,11 @@ SpatRaster SpatRaster::aggregate(std::vector<size_t> fact, std::string fun, bool
 		}
 	}
 	out.source[0].srs = source[0].srs;
-
+	
+	if (hasTime()) {
+		out.setTime(getTime(), getTimeStep(), getTimeZone());
+	}
+	
 	if (!source[0].hasValues) {
 		return out;
 	}
