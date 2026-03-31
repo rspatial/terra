@@ -94,14 +94,12 @@ animate(r, n=1)
 
 
 v <- vect(system.file("ex/lux.shp", package="terra"))
-animate(v[1:3, ], n=2)
-
+animate(v[1:3, ], n=1)
 
 # animate(v, vars=names(v), pause=0.7)
 
 s <- svc(as.lines(v[3:5,]), v, v[1:3,], as.points(v))
-animate(s, col="blue", alpha=0.3, pause=0.7)
-
+#animate(s, col="blue", alpha=0.3, pause=0.7)
 
 # you can save an animation to file like this
 # animation::saveGIF(terra::animate(v), "animation.gif")
