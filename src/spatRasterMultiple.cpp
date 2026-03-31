@@ -416,8 +416,18 @@ std::vector<std::string> SpatRasterStack::filenames() {
 	return names;
 };
 
+//bool SpatRasterStack::readStart() {
+//	for (auto& x : ds) { if (!x.readStart()) return false; }
+//	return true;
+//}
+			
 bool SpatRasterStack::readStart() {
-	for (auto& x : ds) { if (!x.readStart()) return false; }
+	for (size_t i=0; i<ds.size(); i++) {
+		if (!ds[i].readStart()) {
+			for (size_t j=0; j<i; j++) ds[j].readStop();
+			return false;
+		}
+	}
 	return true;
 }
 			

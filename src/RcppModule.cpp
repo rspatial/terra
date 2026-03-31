@@ -1115,6 +1115,7 @@ RCPP_MODULE(spat){
 		.method("addTag", &SpatRasterCollection::addTag)
 		.method("getTags", &SpatRasterCollection::getTags)
 		.method("make_vrt", &SpatRasterCollection::make_vrt)
+		.method("blend", &SpatRasterCollection::blend)
 	;
 
 	class_<SpatRasterStack>("SpatRasterStack")

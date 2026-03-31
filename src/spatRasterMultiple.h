@@ -136,8 +136,10 @@ class SpatRasterCollection {
 		std::vector<int> getValueType(bool unique);
 
 		SpatRaster merge(bool first, bool narm, int algo, std::string method, SpatOptions &opt);
-		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
+		SpatRaster blend(SpatOptions &opt);
+
+		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster summary(std::string fun, SpatOptions &opt);
 		std::vector<size_t> dims();
 		std::string show();

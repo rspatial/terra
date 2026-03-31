@@ -49,6 +49,26 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 
 
 
+setMethod("blend", signature(x="SpatRaster", y="SpatRaster"),
+	splice <- function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) {
+		opt <- spatOptions(filename, overwrite, wopt=wopt)
+		rc <- sprc(x, y, ...)
+		x@pntr <- rc@pntr$blend(opt)
+		messages(x, "blend")
+	}
+)
+
+setMethod("blend", signature(x="SpatRasterCollection", "missing"),
+	function(x, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		out <- rast()
+		out@pntr <- x@pntr$blend(opt)
+		messages(out, "blend")
+	}
+)
+
+
+
 setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) {
 		fun <- .makeTextFun(fun)

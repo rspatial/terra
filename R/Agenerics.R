@@ -322,6 +322,8 @@ if (!isGeneric("mask")) { setGeneric("mask", function(x, mask, ...) standardGene
 if (!isGeneric("match")) { setGeneric("match", function(x, table, nomatch=NA_integer_, incomparables=NULL)		standardGeneric("match"))}
 if (!isGeneric("modal")) {setGeneric("modal", function(x, ...) standardGeneric("modal"))}
 if (!isGeneric("mosaic")) {setGeneric("mosaic", function(x, y, ...) standardGeneric("mosaic"))}
+if (!isGeneric("blend")) {setGeneric("blend", function(x, y, ...) standardGeneric("blend"))}
+
 if (!isGeneric("ncell")) { setGeneric("ncell", function(x) standardGeneric("ncell")) }
 if (!isGeneric("nrow")) { setGeneric("nrow", function(x) standardGeneric("nrow")) }
 if (!isGeneric("ncol")) { setGeneric("nrow", function(x) standardGeneric("nrow")) }

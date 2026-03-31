@@ -13,6 +13,7 @@
 
 # new 
 
+- `blend<SpatRasterCollection>` method to combine rasters with smooth gradients in overlappoing zones [#2011](https://github.com/rspatial/terra/issues/2011) by Greg Schmidt
 - `animate<SpatVectorCollection>` method. [#2065](https://github.com/rspatial/terra/pull/2065) by Márcia Barbosa 
 
 
