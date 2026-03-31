@@ -8,6 +8,12 @@
 - `compareGeom` gets argument "tolerance" to overwrite the default that can be set with `terraOptions`. [#2056](https://github.com/rspatial/terra/issues/2056) by R. Kyle Bocinsky
 - `vect<data.frame>` now warns when it guesses the geom variables and/or the lon/lat CRS [#1985](https://github.com/rspatial/terra/issues/1985) by Márcia Barbosa
 - consistent warnings about missing CRS in distance functions. [#1924](https://github.com/rspatial/terra/issues/1924) by Márcia Barbosa
+- `aggregate<SpatRaster>` no longer loose time attributes [#2066](https://github.com/rspatial/terra/issues/2066) by Wencheng Lau-Medrano
+
+
+# new 
+
+- `animate<SpatVectorCollection>` method. [#2065](https://github.com/rspatial/terra/pull/2065) by Márcia Barbosa 
 
 
 # version 1.9-11
