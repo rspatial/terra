@@ -25,8 +25,8 @@ This method is similar to the simpler, but much faster, \code{\link{merge}} meth
 }
 
 \arguments{
-  \item{x}{SpatRaster}
-  \item{y}{object of same class as \code{x}}
+  \item{x}{SpatRaster or SpatRasterCollection}
+  \item{y}{SpatRaster if \code{x} is a SpatRaster, otherwise missing}
   \item{...}{additional SpatRasters}
   \item{fun}{character. One of "mean", "median", "min", "max", "modal", "sum", "first", "last"}
   \item{filename}{character. Output filename}
@@ -40,7 +40,7 @@ SpatRaster
 }
 
 \seealso{
-\code{\link{merge}}
+\code{\link{merge}, \link{blend}}
 }
 
 
