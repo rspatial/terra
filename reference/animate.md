@@ -14,7 +14,7 @@ animate(x, pause=0.25, main, range=NULL, maxcell=50000, n=1, ...)
 animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, add=NULL, ...)
 
 # S4 method for class 'SpatVectorCollection'
-animate(x, pause=0.25, main="", n=1, vars=NULL, range=NULL, ext=NULL, add=NULL, ...)
+animate(x, pause=0.25, n=1, vars=NULL, range=NULL, ext=NULL, add=NULL, ...)
 ```
 
 ## Arguments
