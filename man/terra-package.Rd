@@ -381,7 +381,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{same.crs}} \tab Compare two CRS strings \cr
     \code{\link{ar_info}} \tab Inspect NetCDF-like multi-array files \cr
     \code{\link{gdal}} \tab set GDAL warning level \cr
-	\code{\link{getGDALconfig}} \cr \code{\link{setGDALconfig}} \tab GDAL session utilities \cr
+	\code{\code{set}/\link{getGDALconfig}} \tab GDAL session utilities \cr
     \code{\link{meta}} \tab Metadata from a SpatRaster \cr
     \code{\link{metags}} / \code{\link{metags<-}} \tab Arbitrary metadata tags \cr
     \code{\link{tighten}} \tab combine data sources into one \cr
@@ -456,7 +456,8 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
   \code{\link{linearUnits}} \tab returns the linear units of the crs (in meter)\cr
   \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
   \code{\link{geomtype}} \tab Geometry type string \cr
-  \code{\link{is.lines}} / \code{\link{is.points}} \cr \code{\link{is.polygons}} \tab Geometry type tests \cr
+  \code{\link{is.lines}} / \code{\link{is.points}} \tab Geometry type tests \cr
+  \code{\link{is.polygons}} \tab  \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
