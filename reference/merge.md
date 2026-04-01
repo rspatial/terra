@@ -19,11 +19,11 @@ to merge a SpatRaster with a `data.frame`.
 
 ``` r
 # S4 method for class 'SpatRaster,SpatRaster'
-merge(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, method=NULL, 
+merge(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=TRUE, method=NULL, 
       filename="", overwrite=FALSE, wopt=list())
 
 # S4 method for class 'SpatRasterCollection,missing'
-merge(x, first=TRUE, na.rm=TRUE, algo=1, method=NULL, filename="", ...)
+merge(x, first=TRUE, na.rm=TRUE, algo=1, resample=TRUE, method=NULL, filename="", ...)
 
 # S4 method for class 'SpatVector,data.frame'
 merge(x, y, ...)
@@ -62,24 +62,23 @@ merge(x, y, ...)
 
   integer. You can use 1, 2 or 3 to pick a merge algorithm. algo 1 is
   generally faster than algo 2, but it may have poorer file compression.
-  Algo 1 will resample input rasters as needed (and that may slow it
-  down), but algo 2 does not do that. However, with algo 2 you can
-  increase the tolerance option to effectively get nearest neighbor
-  resampling with, for example, `wopt=list(tolerance=.2)` allows
-  misalignment of .2 times the resolution of the first input raster and
-  effectively use nearest neighbor resampling. Algo 3 creates a virtual
-  raster (see
+  Algo 3 creates a virtual raster (see
   [`vrt`](https://rspatial.github.io/terra/reference/vrt.md)). This is
   very quick and can be a good approach if the merge raster is used as
   input to a next step in the analysis. It allows any amount of
-  misalignment (and does not respond to the tolerance option). Otherwise
-  its speed is similar to that of algo 2
+  misalignment and resamples without giving a warning. Otherwise its
+  speed is similar to that of algo 2
+
+- resample:
+
+  logical. If `TRUE` input rasters are resampled if they do not align
+  (same origin and resolution) with the first raster
 
 - method:
 
-  character. The interpolation method to be used if resampling is
-  necessary (see argument `algo`). One of "nearest", "bilinear",
-  "cubic", "cubicspline", "lanczos", "average", "mode" as in
+  character. The resampling method used (only if `resample` is `TRUE`
+  and `algo` is 1 or 2). One of "nearest", "bilinear", "cubic",
+  "cubicspline", "lanczos", "average", "mode" as in
   [`resample`](https://rspatial.github.io/terra/reference/resample.md).
   If `NULL`, "nearest" is used for categorical rasters and "bilinear"
   for other rasters
@@ -105,10 +104,10 @@ SpatRaster or SpatVector
 
 Combining tiles with
 [`vrt`](https://rspatial.github.io/terra/reference/vrt.md) may be more
-efficient than using `merge`. See
-[`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md) for
-averaging overlapping regions, and `blend` to create smooth transitions
-in overlapping zones.
+efficient than using `merge`.
+
+See [`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md) for
+averaging or blending the values of overlapping regions.
 
 See [`classify`](https://rspatial.github.io/terra/reference/classify.md)
 to merge a `SpatRaster` and a `data.frame` and

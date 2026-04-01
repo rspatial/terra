@@ -80,7 +80,7 @@ terraOptions()
 #> tolerance : 0.1
 #> verbose   : FALSE
 #> todisk    : FALSE
-#> tempdir   : /tmp/RtmpDhw6e1
+#> tempdir   : /tmp/RtmpOcFf1P
 #> datatype  : FLT4S
 #> memmin    : 1
 #> progress  : 3
@@ -92,7 +92,7 @@ terraOptions()
 #> tolerance : 0.1
 #> verbose   : FALSE
 #> todisk    : FALSE
-#> tempdir   : /tmp/RtmpDhw6e1
+#> tempdir   : /tmp/RtmpOcFf1P
 #> datatype  : FLT4S
 #> memmin    : 1
 #> progress  : 10
