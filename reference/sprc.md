@@ -55,7 +55,7 @@ sprc(x)
 
 - guessCRS:
 
-  logical. If `TRUE` and the the file does not specify a CRS but has an
+  logical. If `TRUE` and the file does not specify a CRS but has an
   extent that is within longitude/latitude bounds, the
   longitude/latitude crs is assigned to the SpatRaster
 

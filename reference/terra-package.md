@@ -67,7 +67,7 @@ Below is a list of some of the most important methods grouped by theme.
 | [`selectRange`](https://rspatial.github.io/terra/reference/selectRange.md) | Select cell values from different layers using an index layer |
 | [`rep`](https://rspatial.github.io/terra/reference/rep.md)                 | Repeat layers or a SpatRaster                                 |
 | [`split`](https://rspatial.github.io/terra/reference/split.md)             | Make a list of single layer SpatRasters                       |
-| [`as.character`](https://rdrr.io/r/base/character.html)                    | Geta a character representation of a SpatRaster geometry      |
+| [`as.character`](https://rdrr.io/r/base/character.html)                    | Get a character representation of a SpatRaster geometry       |
 | —————————                                                                  | ——————————————————————————————                                |
 
 ## II. Changing the spatial extent or resolution
@@ -100,7 +100,7 @@ Also see the methods in section VIII
 |--------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [`app`](https://rspatial.github.io/terra/reference/app.md)   | Apply a function to all cells, across layers, typically to summarize (as in [`base::apply`](https://rdrr.io/r/base/apply.html))                                    |
 | [`tapp`](https://rspatial.github.io/terra/reference/tapp.md) | Apply a function to groups of layers (as in [`base::tapply`](https://rdrr.io/r/base/tapply.html) and [`stats::aggregate`](https://rdrr.io/r/stats/aggregate.html)) |
-| [`lapp`](https://rspatial.github.io/terra/reference/lapp.md) | Apply a function to a SpatRaster, using its layers as arguments.                                                                                                   |
+| [`lapp`](https://rspatial.github.io/terra/reference/lapp.md) | Apply a function to a SpatRaster, using its layers as arguments                                                                                                    |
 | [`sapp`](https://rspatial.github.io/terra/reference/sapp.md) | Apply a function to each layer                                                                                                                                     |
 | [`rapp`](https://rspatial.github.io/terra/reference/rapp.md) | Apply a function to a spatially variable range of layers                                                                                                           |
 | [`xapp`](https://rspatial.github.io/terra/reference/xapp.md) | Apply a function across two SpatRasters layer-wise                                                                                                                 |
@@ -622,39 +622,39 @@ You can coerce SpatRasters to Raster\* objects, after loading the
 
 ### Maps
 
-|                                                                                                         |                                                                                         |
-|---------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| [`plot`](https://rspatial.github.io/terra/reference/plot.md)                                            | Plot a SpatRaster or SpatVector. The main method to create a map                        |
-| [`panel`](https://rspatial.github.io/terra/reference/panel.md)                                          | Combine multiple plots                                                                  |
-| [`points`](https://rspatial.github.io/terra/reference/lines.md)                                         | Add points to a map                                                                     |
-| [`lines`](https://rspatial.github.io/terra/reference/lines.md)                                          | Add lines to a map                                                                      |
-| [`polys`](https://rspatial.github.io/terra/reference/lines.md)                                          | Add polygons to a map                                                                   |
-| [`text`](https://rspatial.github.io/terra/reference/text.md)                                            | Add text (such as the values of a SpatRaster or SpatVector) to a map                    |
-| [`halo`](https://rspatial.github.io/terra/reference/halo.md)                                            | Add text with a halo to a map                                                           |
-| [`map.pal`](https://rspatial.github.io/terra/reference/mappal.md)                                       | Color palettes for mapping                                                              |
-| [`image`](https://rspatial.github.io/terra/reference/image.md)                                          | Alternative to plot to make a map with a SpatRaster                                     |
-| [`plotRGB`](https://rspatial.github.io/terra/reference/plotRGB.md)                                      | Combine three layers (red, green, blue channels) into a single "real color" plot        |
-| [`plot<SpatGraticule>`](https://rspatial.github.io/terra/reference/plot_graticule.md)                   | plot a graticule                                                                        |
-| [`sbar`](https://rspatial.github.io/terra/reference/sbar.md)                                            | Add a scale bar to a map                                                                |
-| [`north`](https://rspatial.github.io/terra/reference/north.md)                                          | Add a north arrow to a map                                                              |
-| [`inset`](https://rspatial.github.io/terra/reference/inset.md)                                          | Add a small inset (overview) map                                                        |
-| [`add_legend`](https://rspatial.github.io/terra/reference/legend.md)                                    | Add a legend to a map                                                                   |
-| [`add_box`](https://rspatial.github.io/terra/reference/box.md)                                          | Add a bounding box to a map                                                             |
-| [`map_extent`](https://rspatial.github.io/terra/reference/map_extent.md)                                | Get the coordinates of a map's axes positions                                           |
-| [`dots`](https://rspatial.github.io/terra/reference/dots.md)                                            | Make a dot-density map                                                                  |
-| [`cartogram`](https://rspatial.github.io/terra/reference/cartogram.md)                                  | Make a cartogram                                                                        |
-| [`persp`](https://rspatial.github.io/terra/reference/persp.md)                                          | Perspective plot of a SpatRaster                                                        |
-| [`contour`](https://rspatial.github.io/terra/reference/contour.md)                                      | Contour plot or filled-contour plot of a SpatRaster                                     |
-| [`colorize`](https://rspatial.github.io/terra/reference/RGB.md)                                         | Combine three layers (red, green, blue channels) into a single layer with a color-table |
-| [`add_abline`](https://rspatial.github.io/terra/reference/add_abline.md)                                | Add `abline` to a map                                                                   |
-| [`add_mtext`](https://rspatial.github.io/terra/reference/add_mtext.md)                                  | Add margin text (`mtext`)                                                               |
-| [`add_grid`](https://rspatial.github.io/terra/reference/grid.md)                                        | Add a reference grid                                                                    |
-| [`animate`](https://rspatial.github.io/terra/reference/animate.md)                                      | Animate raster or vector layers                                                         |
-| [`plet`](https://rspatial.github.io/terra/reference/plet.md)                                            | Make an interactive (`leaflet`) map                                                     |
-| [`scatter plot`](https://rspatial.github.io/terra/reference/scatter.md) Scatter plot of two SpatRasters | [`has.colors`](https://rspatial.github.io/terra/reference/colors.md)                    |
-| Do layers in a SpatRaster have a color table?                                                           | [`coltab`](https://rspatial.github.io/terra/reference/colors.md) / `coltab<-`           |
-| Get or set color tables                                                                                 | —————————                                                                               |
-| ——————————————————————————————                                                                          |                                                                                         |
+|                                                                                       |                                                                                         |
+|---------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| [`plot`](https://rspatial.github.io/terra/reference/plot.md)                          | Plot a SpatRaster or SpatVector. The main method to create a map                        |
+| [`panel`](https://rspatial.github.io/terra/reference/panel.md)                        | Combine multiple plots                                                                  |
+| [`points`](https://rspatial.github.io/terra/reference/lines.md)                       | Add points to a map                                                                     |
+| [`lines`](https://rspatial.github.io/terra/reference/lines.md)                        | Add lines to a map                                                                      |
+| [`polys`](https://rspatial.github.io/terra/reference/lines.md)                        | Add polygons to a map                                                                   |
+| [`text`](https://rspatial.github.io/terra/reference/text.md)                          | Add text (such as the values of a SpatRaster or SpatVector) to a map                    |
+| [`halo`](https://rspatial.github.io/terra/reference/halo.md)                          | Add text with a halo to a map                                                           |
+| [`map.pal`](https://rspatial.github.io/terra/reference/mappal.md)                     | Color palettes for mapping                                                              |
+| [`image`](https://rspatial.github.io/terra/reference/image.md)                        | Alternative to plot to make a map with a SpatRaster                                     |
+| [`plotRGB`](https://rspatial.github.io/terra/reference/plotRGB.md)                    | Combine three layers (red, green, blue channels) into a single "real color" plot        |
+| [`plot<SpatGraticule>`](https://rspatial.github.io/terra/reference/plot_graticule.md) | plot a graticule                                                                        |
+| [`sbar`](https://rspatial.github.io/terra/reference/sbar.md)                          | Add a scale bar to a map                                                                |
+| [`north`](https://rspatial.github.io/terra/reference/north.md)                        | Add a north arrow to a map                                                              |
+| [`inset`](https://rspatial.github.io/terra/reference/inset.md)                        | Add a small inset (overview) map                                                        |
+| [`add_legend`](https://rspatial.github.io/terra/reference/legend.md)                  | Add a legend to a map                                                                   |
+| [`add_box`](https://rspatial.github.io/terra/reference/box.md)                        | Add a bounding box to a map                                                             |
+| [`map_extent`](https://rspatial.github.io/terra/reference/map_extent.md)              | Get the coordinates of a map's axes positions                                           |
+| [`dots`](https://rspatial.github.io/terra/reference/dots.md)                          | Make a dot-density map                                                                  |
+| [`cartogram`](https://rspatial.github.io/terra/reference/cartogram.md)                | Make a cartogram                                                                        |
+| [`persp`](https://rspatial.github.io/terra/reference/persp.md)                        | Perspective plot of a SpatRaster                                                        |
+| [`contour`](https://rspatial.github.io/terra/reference/contour.md)                    | Contour plot or filled-contour plot of a SpatRaster                                     |
+| [`colorize`](https://rspatial.github.io/terra/reference/RGB.md)                       | Combine three layers (red, green, blue channels) into a single layer with a color-table |
+| [`add_abline`](https://rspatial.github.io/terra/reference/add_abline.md)              | Add `abline` to a map                                                                   |
+| [`add_mtext`](https://rspatial.github.io/terra/reference/add_mtext.md)                | Add margin text (`mtext`)                                                               |
+| [`add_grid`](https://rspatial.github.io/terra/reference/grid.md)                      | Add a reference grid                                                                    |
+| [`animate`](https://rspatial.github.io/terra/reference/animate.md)                    | Animate raster or vector layers                                                         |
+| [`plet`](https://rspatial.github.io/terra/reference/plet.md)                          | Make an interactive (`leaflet`) map                                                     |
+| [`scatter plot`](https://rspatial.github.io/terra/reference/scatter.md)               | Scatter plot of two SpatRasters                                                         |
+| [`has.colors`](https://rspatial.github.io/terra/reference/colors.md)                  | Do layers in a SpatRaster have a color table?                                           |
+| [`coltab`](https://rspatial.github.io/terra/reference/colors.md) / `coltab<-`         | Get or set color tables                                                                 |
+| —————————                                                                             | ——————————————————————————————                                                          |
 
 ### Interacting with a map
 

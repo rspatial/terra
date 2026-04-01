@@ -17,9 +17,13 @@
 - consistent warnings about missing CRS in distance functions.
   [\#1924](https://github.com/rspatial/terra/issues/1924) by Márcia
   Barbosa
-- `aggregate<SpatRaster>` no longer loose time attributes
+- `aggregate<SpatRaster>` no longer loses time attributes
   [\#2066](https://github.com/rspatial/terra/issues/2066) by Wencheng
   Lau-Medrano
+- the number of files that the OS allows to be simultaneously open sets
+  a limit for processing SpatRasters that is now detected
+  [\#1993](https://github.com/rspatial/terra/issues/1993) by Enrico
+  Mattea
 
 ## version 1.9-11
 
@@ -38,7 +42,7 @@ Released 2026-03-26
 - `ifel` ignored NA values in some circumstances [SO
   79905693](https://stackoverflow.com/questions/79905693) by Sean
   McKenzie
-- `spatSample` failed if checkerboard sampling if a stratum was empty
+- `spatSample` failed with checkerboard sampling if a stratum was empty
   [\#2060](https://github.com/rspatial/terra/issues/2060) by Tyler Smith
 
 ### enhancements

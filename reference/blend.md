@@ -1,6 +1,6 @@
 # Distance-weighted raster blending
 
-Combine rasters with smooth gradients in overlappoing zones by weighting
+Combine rasters with smooth gradients in overlapping zones by weighting
 each raster's contribution by the distance from the cell to the raster's
 nearest edge. The result is independent of the order of the rasters.
 
@@ -51,7 +51,8 @@ SpatRaster
 
 ## See also
 
-[`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md)`, `[`merge`](https://rspatial.github.io/terra/reference/merge.md)
+[`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md),
+[`merge`](https://rspatial.github.io/terra/reference/merge.md)
 
 ## Examples
 

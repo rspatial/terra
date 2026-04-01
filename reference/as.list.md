@@ -33,9 +33,9 @@ as.list(x, ...)
 
   character or NULL. If not NULL, and `x` is a SpatVector, it should be
   either "WKT" or "HEX", to get the geometry included in Well-Known-Text
-  or hexadecimal notation. If `x` has point geometry, it can also bey
+  or hexadecimal notation. If `x` has point geometry, it can also be
   "XY" to add the coordinates of each point. If `x` is a SpatRaster, any
-  value that is not NULL will return a list with the the parameters
+  value that is not NULL will return a list with the parameters
   describing the geometry of the SpatRaster are returned
 
 - ...:

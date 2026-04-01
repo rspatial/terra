@@ -2,7 +2,7 @@
 
 Compute quantiles for each cell across the layers of a SpatRaster.
 
-You can use use
+You can use
 [`global`](https://rspatial.github.io/terra/reference/global.md)`(x, fun=quantile)`
 to instead compute quantiles across cells for each layer.
 

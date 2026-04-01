@@ -107,8 +107,9 @@ Combining tiles with
 [`vrt`](https://rspatial.github.io/terra/reference/vrt.md) may be more
 efficient than using `merge`. See
 [`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md) for
-averaging overlapping regions, and `blend` to create smooth transitions
-in overlapping zones.
+averaging overlapping regions, and
+[`blend`](https://rspatial.github.io/terra/reference/blend.md) to create
+smooth transitions in overlapping zones.
 
 See [`classify`](https://rspatial.github.io/terra/reference/classify.md)
 to merge a `SpatRaster` and a `data.frame` and

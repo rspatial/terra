@@ -1,7 +1,7 @@
 # Make a SpatRaster method memory-safe
 
 This method allows for running a function that takes a SpatRaster as
-first argument in chunks (tiles). This can be useful if the functions is
+first argument in chunks (tiles). This can be useful if the function is
 not memory-safe, typically because it reads all the raster cell values
 into memory.
 

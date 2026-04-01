@@ -46,7 +46,8 @@
 <code>vect&lt;data.frame&gt;</code> now warns when it guesses the geom variables and/or the lon/lat CRS <a href="https://github.com/rspatial/terra/issues/1985" class="external-link">#1985</a> by Márcia Barbosa</li>
 <li>consistent warnings about missing CRS in distance functions. <a href="https://github.com/rspatial/terra/issues/1924" class="external-link">#1924</a> by Márcia Barbosa</li>
 <li>
-<code>aggregate&lt;SpatRaster&gt;</code> no longer loose time attributes <a href="https://github.com/rspatial/terra/issues/2066" class="external-link">#2066</a> by Wencheng Lau-Medrano</li>
+<code>aggregate&lt;SpatRaster&gt;</code> no longer loses time attributes <a href="https://github.com/rspatial/terra/issues/2066" class="external-link">#2066</a> by Wencheng Lau-Medrano</li>
+<li>the number of files that the OS allows to be simultaneously open sets a limit for processing SpatRasters that is now detected <a href="https://github.com/rspatial/terra/issues/1993" class="external-link">#1993</a> by Enrico Mattea</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -60,7 +61,7 @@
 <li>
 <code>ifel</code> ignored NA values in some circumstances <a href="https://stackoverflow.com/questions/79905693" class="external-link">SO 79905693</a> by Sean McKenzie</li>
 <li>
-<code>spatSample</code> failed if checkerboard sampling if a stratum was empty <a href="https://github.com/rspatial/terra/issues/2060" class="external-link">#2060</a> by Tyler Smith</li>
+<code>spatSample</code> failed with checkerboard sampling if a stratum was empty <a href="https://github.com/rspatial/terra/issues/2060" class="external-link">#2060</a> by Tyler Smith</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-9-11">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-11"></a></h3>

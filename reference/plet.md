@@ -117,7 +117,7 @@ polys(x, y, col, lwd=2, lty=NULL,
 - ...:
 
   additional arguments for drawing points, lines, or polygons passed on
-  the the relevant leaflet function
+  the relevant leaflet function
 
 - border:
 
