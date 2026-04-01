@@ -130,7 +130,7 @@ std::vector<std::vector<double>> SpatRaster::sampleStratifiedCells(double size, 
 					}
 					Z = std::vector<size_t>(z.begin(), z.end());
 				}
-				for (size_t k=0; k<z.size(); k++) {
+				for (size_t k=0; k<Z.size(); k++) {
 					outvals.push_back(tv[0][j]);
 					outcell.push_back(vcell[Z[k]+start]);
 				}
