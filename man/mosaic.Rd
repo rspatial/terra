@@ -11,11 +11,13 @@ mosaic SpatRasters
 }
 
 \description{
-Combine adjacent and (partly) overlapping SpatRasters to form a single new SpatRaster. Values in overlapping cells are averaged (by default) or can be computed with another function.
+Combine adjacent and (partly) overlapping SpatRasters to form a single new SpatRaster. Values in overlapping cells are averaged (by default) or can be computed with another function. 
+
+With the "blend" function, smooth gradients in overlappoing zones are created by weighting each raster's contribution by the distance from the cell to the raster's nearest edge. 
 
 The SpatRasters must have the same origin and spatial resolution. 
 
-This method is similar to the simpler, but much faster, \code{\link{merge}} method. 
+If rasters do not overlap, or if their values do not need to be computed, you can use \code{\link{merge}} instead. 
 }
 
 \usage{
@@ -28,7 +30,7 @@ This method is similar to the simpler, but much faster, \code{\link{merge}} meth
   \item{x}{SpatRaster or SpatRasterCollection}
   \item{y}{SpatRaster if \code{x} is a SpatRaster, otherwise missing}
   \item{...}{additional SpatRasters}
-  \item{fun}{character. One of "mean", "median", "min", "max", "modal", "sum", "first", "last"}
+  \item{fun}{character. One of "blend", "mean", "median", "min", "max", "modal", "sum", "first", "last"}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
@@ -40,7 +42,7 @@ SpatRaster
 }
 
 \seealso{
-\code{\link{merge}, \link{blend}}
+\code{\link{merge}}
 }
 
 
@@ -54,11 +56,13 @@ m1 <- mosaic(x, y, z)
 
 m2 <- mosaic(z, y, x)
 
-# with many SpatRasters, make a SpatRasterCollection from a list
-rlist <- list(x, y, z)
-rsrc <- sprc(rlist)
+# with a SpatRasterCollection
 
-m <- mosaic(rsrc)
+spc <- sprc(list(x, y, z))
+
+m <- mosaic(spc)
+
+b <- mosaic(spc, fun="blend")
 }
 
 \keyword{methods}

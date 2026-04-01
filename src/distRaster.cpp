@@ -1243,6 +1243,16 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, boo
 
 	std::vector<double> res = resolution();
 
+	// if the raster fits in memory, use the exact single-pass Dijkstra
+	SpatOptions memops(opt);
+	memops.ncopies = 4;
+	memops.set_filenames({""});
+	memops.progressbar = false;
+	BlockSize membs = out.getBlockSize(memops);
+	if (membs.nrows[0] >= nrow()) {
+		return costDistance2(target, m, grid, opt);
+	}
+
 	size_t i = 0;
 	bool converged=false;
 	while (i < maxiter) {

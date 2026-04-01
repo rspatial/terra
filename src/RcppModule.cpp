@@ -1110,12 +1110,12 @@ RCPP_MODULE(spat){
 		.method("add", &SpatRasterCollection::push_back)
 		.method("merge", &SpatRasterCollection::merge)
 		.method("mosaic", &SpatRasterCollection::mosaic)
+		//.method("blend", &SpatRasterCollection::blend)
 		.method("morph", &SpatRasterCollection::morph)
 		.method("crop", &SpatRasterCollection::crop)
 		.method("addTag", &SpatRasterCollection::addTag)
 		.method("getTags", &SpatRasterCollection::getTags)
 		.method("make_vrt", &SpatRasterCollection::make_vrt)
-		.method("blend", &SpatRasterCollection::blend)
 	;
 
 	class_<SpatRasterStack>("SpatRasterStack")
