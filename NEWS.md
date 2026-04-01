@@ -10,7 +10,7 @@
 - `vect<data.frame>` now warns when it guesses the geom variables and/or the lon/lat CRS [#1985](https://github.com/rspatial/terra/issues/1985) by Márcia Barbosa
 - consistent warnings about missing CRS in distance functions. [#1924](https://github.com/rspatial/terra/issues/1924) by Márcia Barbosa
 - `aggregate<SpatRaster>` no longer loses time attributes [#2066](https://github.com/rspatial/terra/issues/2066) by Wencheng Lau-Medrano
-- the number of files that the OS allows to be simultanously sets a limit for processing SpatRasters that is now detected [#1993](
+- the number of files that the OS allows to be simultaneously open sets a limit for processing SpatRasters that is now detected [#1993](
 https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 
 # new 
@@ -28,7 +28,7 @@ Released 2026-03-26
 - `subst` and some cases of `classify`, did not recycle properly [#2046](https://github.com/rspatial/terra/issues/2046) by Nuno Teixeira and [#2052](https://github.com/rspatial/terra/issues/2052) by Jérôme Guélat
 - better reading of gpkg files with unclear geometry and NULL geoms [#2051](https://github.com/rspatial/terra/issues/2051) by Duy Nguyen
 - `ifel` ignored NA values in some circumstances [SO 79905693](https://stackoverflow.com/questions/79905693) by Sean McKenzie
-- `spatSample` failed if checkerboard sampling if a stratum was empty [#2060](https://github.com/rspatial/terra/issues/2060) by Tyler Smith
+- `spatSample` failed with checkerboard sampling if a stratum was empty [#2060](https://github.com/rspatial/terra/issues/2060) by Tyler Smith
 
 ## enhancements
 

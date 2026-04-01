@@ -75,7 +75,7 @@ The arguments of \code{plet} are similar to those of \code{\link[terra]{plot}}, 
   
   \item{shared}{logical. Should the legend be the same for all rasters (if multiple layers of SpatRaster \code{x} are mapped)}  
   \item{map}{leaflet object}
-  \item{...}{additional arguments for drawing points, lines, or polygons passed on the the relevant leaflet function}
+  \item{...}{additional arguments for drawing points, lines, or polygons passed on the relevant leaflet function}
 
 
   \item{border}{character. Color for the polygon borders}
