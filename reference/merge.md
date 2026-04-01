@@ -62,12 +62,13 @@ merge(x, y, ...)
 
   integer. You can use 1, 2 or 3 to pick a merge algorithm. algo 1 is
   generally faster than algo 2, but it may have poorer file compression.
-  Algo 1 will resample input rasters (and that may slow it down), but
-  algo 2 does not do that. You can increase the tolerance option to
-  effectively get nearest neighbor resampling with, for example,
-  `wopt=list(tolerance=.2)` allows misalignment of .2 times the
-  resolution of the first input raster and effectively use nearest
-  neighbor resampling. Algo 3 creates a virtual raster (see
+  Algo 1 will resample input rasters as needed (and that may slow it
+  down), but algo 2 does not do that. However, with algo 2 you can
+  increase the tolerance option to effectively get nearest neighbor
+  resampling with, for example, `wopt=list(tolerance=.2)` allows
+  misalignment of .2 times the resolution of the first input raster and
+  effectively use nearest neighbor resampling. Algo 3 creates a virtual
+  raster (see
   [`vrt`](https://rspatial.github.io/terra/reference/vrt.md)). This is
   very quick and can be a good approach if the merge raster is used as
   input to a next step in the analysis. It allows any amount of
@@ -106,7 +107,8 @@ Combining tiles with
 [`vrt`](https://rspatial.github.io/terra/reference/vrt.md) may be more
 efficient than using `merge`. See
 [`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md) for
-averaging overlapping regions.
+averaging overlapping regions, and `blend` to create smooth transitions
+in overlapping zones.
 
 See [`classify`](https://rspatial.github.io/terra/reference/classify.md)
 to merge a `SpatRaster` and a `data.frame` and

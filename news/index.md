@@ -17,6 +17,9 @@
 - consistent warnings about missing CRS in distance functions.
   [\#1924](https://github.com/rspatial/terra/issues/1924) by Márcia
   Barbosa
+- `aggregate<SpatRaster>` no longer loose time attributes
+  [\#2066](https://github.com/rspatial/terra/issues/2066) by Wencheng
+  Lau-Medrano
 
 ## version 1.9-11
 

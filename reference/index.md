@@ -169,6 +169,10 @@
   [`bestMatch(`*`<SpatRaster>`*`,`*`<matrix>`*`)`](https://rspatial.github.io/terra/reference/bestMatch.md)
   : bestMatch
 
+- [`blend(`*`<SpatRaster>`*`,`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/blend.md)
+  [`blend(`*`<SpatRasterCollection>`*`,`*`<missing>`*`)`](https://rspatial.github.io/terra/reference/blend.md)
+  : Distance-weighted raster blending
+
 - [`boundaries(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/boundaries.md)
   : Detect boundaries (edges)
 

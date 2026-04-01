@@ -76,7 +76,7 @@ See classify to merge a SpatRaster with a data.frame."><meta property="og:image"
 <dd><p>logical. If <code>TRUE</code> missing values are are ignored. This is only used for algo 1; the other two always ignore missing values</p></dd>
 
   <dt id="arg-algo">algo<a class="anchor" aria-label="anchor" href="#arg-algo"></a></dt>
-<dd><p>integer. You can use 1, 2 or 3 to pick a merge algorithm. algo 1 is generally faster than algo 2, but it may have poorer file compression. Algo 1 will resample input rasters (and that may slow it down), but algo 2 does not do that. You can increase the tolerance option to effectively get nearest neighbor resampling with, for example, <code>wopt=list(tolerance=.2)</code> allows misalignment of .2 times the resolution of the first input raster and effectively use nearest neighbor resampling. Algo 3 creates a virtual raster (see <code><a href="vrt.html">vrt</a></code>). This is very quick and can be a good approach if the merge raster is used as input to a next step in the analysis. It allows any amount of misalignment (and does not respond to the tolerance option). Otherwise its speed is similar to that of algo 2</p></dd>
+<dd><p>integer. You can use 1, 2 or 3 to pick a merge algorithm. algo 1 is generally faster than algo 2, but it may have poorer file compression. Algo 1 will resample input rasters as needed (and that may slow it down), but algo 2 does not do that. However, with algo 2 you can increase the tolerance option to effectively get nearest neighbor resampling with, for example, <code>wopt=list(tolerance=.2)</code> allows misalignment of .2 times the resolution of the first input raster and effectively use nearest neighbor resampling. Algo 3 creates a virtual raster (see <code><a href="vrt.html">vrt</a></code>). This is very quick and can be a good approach if the merge raster is used as input to a next step in the analysis. It allows any amount of misalignment (and does not respond to the tolerance option). Otherwise its speed is similar to that of algo 2</p></dd>
 
   <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>character. The interpolation method to be used if resampling is necessary (see argument <code>algo</code>). One of "nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode" as in <code><a href="resample.html">resample</a></code>. If <code>NULL</code>, "nearest" is used for categorical rasters and "bilinear" for other rasters</p></dd>
@@ -97,7 +97,7 @@ See classify to merge a SpatRaster with a data.frame."><meta property="og:image"
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>Combining tiles with <code><a href="vrt.html">vrt</a></code> may be more efficient than using <code>merge</code>. See <code><a href="mosaic.html">mosaic</a></code> for averaging overlapping regions.</p>
+    <div class="dont-index"><p>Combining tiles with <code><a href="vrt.html">vrt</a></code> may be more efficient than using <code>merge</code>. See <code><a href="mosaic.html">mosaic</a></code> for averaging overlapping regions, and <code>blend</code> to create smooth transitions in overlapping zones.</p>
 <p>See <code><a href="classify.html">classify</a></code> to merge a <code>SpatRaster</code> and a <code>data.frame</code> and <code><a href="union.html">union</a></code> to combine SpatExtent objects.</p></div>
     </div>
 
