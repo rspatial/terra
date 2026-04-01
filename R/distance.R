@@ -72,17 +72,6 @@ setMethod("costDist", signature(x="SpatRaster"),
 	}
 )
 
-cd2 = function(x, target=0, scale=1, filename="", ...) {
-		opt <- terra:::spatOptions(filename, ...)
-		x@pntr <- x@pntr$costDistance2(target[1], scale[1], FALSE, opt)
-		messages(x, "costDist2")
-	}
-
-cd3 = function(x, target=0, scale=1, maxiter=50, filename="", ...) {
-		opt <- terra:::spatOptions(filename, ...)
-		x@pntr <- x@pntr$costDistance3(target[1], scale[1], maxiter, FALSE, opt)
-		messages(x, "costDist3")
-	}
 
 setMethod("gridDist", signature(x="SpatRaster"),
 	function(x, target=0, scale=1, maxiter=50, filename="", ...) {
