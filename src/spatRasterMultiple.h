@@ -137,6 +137,7 @@ class SpatRasterCollection {
 
 		SpatRaster merge(bool first, bool narm, int algo, std::string method, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
+		SpatRaster mosaic2(std::string fun, SpatOptions &opt);
 		SpatRaster blend(SpatOptions &opt);
 
 		SpatRaster morph(SpatRaster &x, SpatOptions &opt);

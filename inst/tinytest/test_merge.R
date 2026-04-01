@@ -26,6 +26,12 @@ expect_equal(a[-w], c(301, 304, 305, 306, 307, 308, 310, 311, 312, 313, 314, 315
 x <- rast(xmin=-110, xmax=-60, ymin=40, ymax=70, res=1, vals=1)
 y <- rast(xmin=-95, xmax=-45, ymax=60, ymin=30, res=1, vals=2)
 z <- rast(xmin=-80, xmax=-30, ymax=50, ymin=20, res=1, vals=3)
+
+m0 <- mosaic(x, y, z, fun="mean")
+d <- diag(as.matrix(m0, wide=T))
+expect_equal(d, c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3))
+
+
 m1 <- blend(x, y, z)
 d <- diag(as.matrix(m1, wide=T))
 

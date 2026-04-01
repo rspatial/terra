@@ -4431,8 +4431,8 @@ bool overlaps(const std::vector<unsigned>& r1, const std::vector<unsigned>& r2,
 	return false;
 }
 
-
-SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
+// old 
+SpatRaster SpatRasterCollection::mosaic2(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out;
 	std::vector<std::string> f {"first", "last", "sum", "mean", "median", "min", "max", "modal"};
@@ -4569,7 +4569,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 
 /*
-SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
+SpatRaster SpatRasterCollection::mosaic_older(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out;
 	std::vector<std::string> f {"first", "last", "sum", "mean", "median", "min", "max"};
