@@ -18,10 +18,10 @@ computed, you can use
 
 ``` r
 # S4 method for class 'SpatRaster,SpatRaster'
-mosaic(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list())
+mosaic(x, y, ..., fun="mean", resample=FALSE, method="", filename="", overwrite=FALSE, wopt=list())
 
 # S4 method for class 'SpatRasterCollection,missing'
-mosaic(x, fun="mean", filename="", ...)
+mosaic(x, fun="mean", resample=FALSE, method="",, filename="", ...)
 ```
 
 ## Arguments
@@ -42,6 +42,19 @@ mosaic(x, fun="mean", filename="", ...)
 
   character. One of "blend", "mean", "median", "min", "max", "modal",
   "sum", "first", "last"
+
+- resample:
+
+  logical. If `TRUE` input rasters are resampled if they do not align
+  (same origin and resolution) with the first raster
+
+- method:
+
+  character. The resampling method used. One of "nearest", "bilinear",
+  "cubic", "cubicspline", "lanczos", "average", "mode" as in
+  [`resample`](https://rspatial.github.io/terra/reference/resample.md).
+  If `NULL`, "nearest" is used for categorical rasters and "bilinear"
+  for other rasters
 
 - filename:
 
@@ -76,7 +89,6 @@ m1 <- mosaic(x, y, z)
 m2 <- mosaic(z, y, x)
 
 # with a SpatRasterCollection
-
 spc <- sprc(list(x, y, z))
 
 m <- mosaic(spc)

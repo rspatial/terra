@@ -19,11 +19,11 @@ to merge a SpatRaster with a `data.frame`.
 
 ``` r
 # S4 method for class 'SpatRaster,SpatRaster'
-merge(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=TRUE, method=NULL, 
+merge(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method=NULL, 
       filename="", overwrite=FALSE, wopt=list())
 
 # S4 method for class 'SpatRasterCollection,missing'
-merge(x, first=TRUE, na.rm=TRUE, algo=1, resample=TRUE, method=NULL, filename="", ...)
+merge(x, first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method=NULL, filename="", ...)
 
 # S4 method for class 'SpatVector,data.frame'
 merge(x, y, ...)

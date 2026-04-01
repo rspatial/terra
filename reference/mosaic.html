@@ -50,10 +50,10 @@ If rasters do not overlap, or if their values do not need to be computed, you ca
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster,SpatRaster'</span></span>
-<span><span class="fu">mosaic</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span>, fun<span class="op">=</span><span class="st">"mean"</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">mosaic</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span>, fun<span class="op">=</span><span class="st">"mean"</span>, resample<span class="op">=</span><span class="cn">FALSE</span>, method<span class="op">=</span><span class="st">""</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRasterCollection,missing'</span></span>
-<span><span class="fu">mosaic</span><span class="op">(</span><span class="va">x</span>, fun<span class="op">=</span><span class="st">"mean"</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">mosaic</span><span class="op">(</span><span class="va">x</span>, fun<span class="op">=</span><span class="st">"mean"</span>, resample<span class="op">=</span><span class="cn">FALSE</span>, method<span class="op">=</span><span class="st">""</span>,, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -70,6 +70,12 @@ If rasters do not overlap, or if their values do not need to be computed, you ca
 
   <dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
 <dd><p>character. One of "blend", "mean", "median", "min", "max", "modal", "sum", "first", "last"</p></dd>
+
+  <dt id="arg-resample">resample<a class="anchor" aria-label="anchor" href="#arg-resample"></a></dt>
+<dd><p>logical. If <code>TRUE</code> input rasters are resampled if they do not align (same origin and resolution) with the first raster</p></dd>
+
+  <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p>character. The resampling method used. One of "nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode" as in <code><a href="resample.html">resample</a></code>. If <code>NULL</code>, "nearest" is used for categorical rasters and "bilinear" for other rasters</p></dd>
 
   <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>character. Output filename</p></dd>
@@ -102,7 +108,6 @@ If rasters do not overlap, or if their values do not need to be computed, you ca
 <span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="op">(</span><span class="va">z</span>, <span class="va">y</span>, <span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># with a SpatRasterCollection</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">spc</span> <span class="op">&lt;-</span> <span class="fu"><a href="sprc.html">sprc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mosaic</span><span class="op">(</span><span class="va">spc</span><span class="op">)</span></span></span>
