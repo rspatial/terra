@@ -21,10 +21,10 @@ See \code{\link{classify}} to merge a SpatRaster with a \code{data.frame}.
 }
 
 \usage{
-\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=TRUE, method=NULL, 
+\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method=NULL, 
 			filename="", overwrite=FALSE, wopt=list())
 
-\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, algo=1, resample=TRUE, method=NULL, filename="", ...)
+\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method=NULL, filename="", ...)
 
 \S4method{merge}{SpatVector,data.frame}(x, y, ...)
 }

@@ -1432,7 +1432,7 @@ setMethod("merge", signature(x="SpatVector", y="SpatVector"),
 
 
 setMethod("merge", signature(x="SpatRasterCollection", "missing"),
-	function(x, first=TRUE, na.rm=TRUE, algo=1, resample=TRUE, method="", filename="", ...) {
+	function(x, first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method="", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
 		if (is.null(method)) method = ""
@@ -1446,7 +1446,7 @@ setMethod("merge", signature(x="SpatRasterCollection", "missing"),
 )
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
-	function(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=TRUE, method="", filename="", overwrite=FALSE, wopt=list()) {
+	function(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method="", filename="", overwrite=FALSE, wopt=list()) {
 		rc <- sprc(x, y, ...)
 		merge(rc, first=first, na.rm=na.rm, algo=algo, resample=resample, method=method, filename=filename, overwrite=overwrite, wopt=wopt)
 	}
@@ -1455,7 +1455,7 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("mosaic", signature(x="SpatRasterCollection", "missing"),
-	function(x, fun="mean", resample=TRUE, method="", filename="", ...) {
+	function(x, fun="mean", resample=FALSE, method="", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
 		fun <- .makeTextFun(fun)

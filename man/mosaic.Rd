@@ -21,9 +21,9 @@ If rasters do not overlap, or if their values do not need to be computed, you ca
 }
 
 \usage{
-\S4method{mosaic}{SpatRaster,SpatRaster}(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list())
+\S4method{mosaic}{SpatRaster,SpatRaster}(x, y, ..., fun="mean", resample=FALSE, method="", filename="", overwrite=FALSE, wopt=list())
 
-\S4method{mosaic}{SpatRasterCollection,missing}(x, fun="mean", filename="", ...)
+\S4method{mosaic}{SpatRasterCollection,missing}(x, fun="mean", resample=FALSE, method="",, filename="", ...)
 }
 
 \arguments{
@@ -31,6 +31,8 @@ If rasters do not overlap, or if their values do not need to be computed, you ca
   \item{y}{SpatRaster if \code{x} is a SpatRaster, otherwise missing}
   \item{...}{additional SpatRasters}
   \item{fun}{character. One of "blend", "mean", "median", "min", "max", "modal", "sum", "first", "last"}
+  \item{resample}{logical. If \code{TRUE} input rasters are resampled if they do not align (same origin and resolution) with the first raster}
+  \item{method}{character. The resampling method used. One of "nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode" as in \code{\link{resample}}. If \code{NULL}, "nearest" is used for categorical rasters and "bilinear" for other rasters}   
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
@@ -57,7 +59,6 @@ m1 <- mosaic(x, y, z)
 m2 <- mosaic(z, y, x)
 
 # with a SpatRasterCollection
-
 spc <- sprc(list(x, y, z))
 
 m <- mosaic(spc)
