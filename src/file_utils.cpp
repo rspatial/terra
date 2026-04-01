@@ -313,18 +313,22 @@ std::string tempFile(std::string tmpdir, unsigned pid, std::string ext) {
 
 // --- open-file limit --------------------------------------------------------
 // Returns three numbers describing the file-descriptor situation:
-//   nopen  – how many file descriptors the process currently has open
+//   nopen  – how many handles/descriptors the process currently has open
 //   soft   – the current (soft) per-process limit
 //   hard   – the maximum the soft limit can be raised to (without privileges)
 //
 // POSIX : limits from getrlimit(RLIMIT_NOFILE), count from /proc/self/fd
 //         (Linux) or /dev/fd (macOS).
-// Windows: soft = _getmaxstdio() (default 512), hard = 8192 (CRT ceiling),
-//          count by probing CRT file descriptors.
+// Windows: GDAL uses Win32 CreateFile (kernel handles), not CRT fopen, so we
+//          count kernel handles with GetProcessHandleCount.  The per-process
+//          handle limit on Windows is very large (16M+), so in practice the
+//          readStart guard will only trigger on POSIX systems.
 
 #ifdef _WIN32
-#include <cstdio>         // _getmaxstdio
-#include <io.h>           // _get_osfhandle
+// windows.h already included at the top of ram.cpp; here we may need it too
+#ifndef _WINDOWS_
+#include <windows.h>
+#endif
 #else
 #include <sys/resource.h> // getrlimit, RLIMIT_NOFILE
 #include <dirent.h>       // opendir, readdir, closedir
@@ -333,13 +337,11 @@ std::string tempFile(std::string tmpdir, unsigned pid, std::string ext) {
 void open_file_limit(size_t &nopen, size_t &soft, size_t &hard) {
 
 #ifdef _WIN32
-	soft = (size_t) _getmaxstdio();
-	hard = 8192;
-	nopen = 0;
-	for (int fd = 0; fd < (int) soft; fd++) {
-		intptr_t h = _get_osfhandle(fd);
-		if (h != -1 && h != -2) nopen++;
-	}
+	DWORD hcount = 0;
+	GetProcessHandleCount(GetCurrentProcess(), &hcount);
+	nopen = (size_t) hcount;
+	soft  = 16777216;
+	hard  = 16777216;
 #else
 	struct rlimit rl;
 	if (getrlimit(RLIMIT_NOFILE, &rl) == 0) {

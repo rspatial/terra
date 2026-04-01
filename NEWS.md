@@ -9,7 +9,8 @@
 - `vect<data.frame>` now warns when it guesses the geom variables and/or the lon/lat CRS [#1985](https://github.com/rspatial/terra/issues/1985) by Márcia Barbosa
 - consistent warnings about missing CRS in distance functions. [#1924](https://github.com/rspatial/terra/issues/1924) by Márcia Barbosa
 - `aggregate<SpatRaster>` no longer loose time attributes [#2066](https://github.com/rspatial/terra/issues/2066) by Wencheng Lau-Medrano
-
+- the number of files that the OS allows to be simultanously sets a limit for processing SpatRasters that is now detected [#1993](
+https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 
 # new 
 
