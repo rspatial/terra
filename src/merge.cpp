@@ -135,6 +135,28 @@ static bool lookup(std::vector<BlockRead> &br, std::vector<RastInfo> &ri,
 }
 
 
+// Like lookup(), but returns true whenever the cell falls inside the
+// raster's extent — even if the value is NaN.  Needed for narm=false.
+static bool lookup_raw(std::vector<BlockRead> &br, std::vector<RastInfo> &ri,
+                       size_t i, double x, double y, double &val) {
+	if (!br[i].active) return false;
+	SpatExtent& ei = ri[i].ext;
+	if (x <= ei.xmin || x >= ei.xmax ||
+	    y <= ei.ymin || y >= ei.ymax) return false;
+
+	size_t ic = (size_t)((x - br[i].xmin) / br[i].xres);
+	size_t ir = (size_t)((br[i].ymax - y)  / br[i].yres);
+	if (ic >= br[i].ncol) ic = br[i].ncol - 1;
+	if (ir >= br[i].nrow) ir = br[i].nrow - 1;
+
+	val = br[i].vals[ir * br[i].ncol + ic];
+	return true;
+}
+
+// === main methods ===
+
+
+
 SpatRaster SpatRasterCollection::blend(SpatOptions &opt) {
 
 	size_t n = ds.size();
@@ -351,6 +373,99 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 
 
+SpatRaster SpatRasterCollection::merge2(bool first, bool narm, SpatOptions &opt) {
+
+	size_t n = ds.size();
+	SpatRaster out;
+
+	if (n == 0) {
+		out.setError("collection is empty");
+		return out;
+	}
+	if (n == 1) {
+		if (opt.get_filename() != "") {
+			out = ds[0].writeRaster(opt);
+		} else {
+			out = ds[0].deepCopy();
+		}
+		return out;
+	}
+
+	if (!setup_output(*this, out, opt)) return out;
+
+	double oxres = out.xres();
+	double oyres = out.yres();
+	SpatExtent oe = out.getExtent();
+	size_t onc = out.ncol();
+
+	std::vector<RastInfo> ri = collect_info(*this);
+
+	if (!start_readers(*this, out)) return out;
+
+	opt.ncopies = std::max(opt.ncopies, n + 1);
+	if (!out.writeStart(opt, filenames())) {
+		stop_readers(*this);
+		return out;
+	}
+
+	// iteration order: first-wins scans 0..n-1, last-wins scans n-1..0
+	std::vector<size_t> seq(n);
+	if (first) {
+		std::iota(seq.begin(), seq.end(), 0);
+	} else {
+		std::iota(seq.rbegin(), seq.rend(), 0);
+	}
+
+	for (size_t b = 0; b < out.bs.n; b++) {
+
+		size_t brow   = out.bs.row[b];
+		size_t bnrow  = out.bs.nrows[b];
+		size_t bncell = bnrow * onc;
+
+		double bymax = oe.ymax - brow * oyres;
+		double bymin = oe.ymax - (brow + bnrow) * oyres;
+
+		std::vector<BlockRead> br(n);
+		read_block(*this, ri, br, bymax, bymin, n);
+
+		std::vector<double> result(bncell, std::numeric_limits<double>::quiet_NaN());
+
+		for (size_t r = 0; r < bnrow; r++) {
+			double y = oe.ymax - (brow + r + 0.5) * oyres;
+
+			for (size_t c = 0; c < onc; c++) {
+				double x = oe.xmin + (c + 0.5) * oxres;
+
+				for (size_t s = 0; s < n; s++) {
+					size_t i = seq[s];
+					double v;
+					if (narm) {
+						if (lookup(br, ri, i, x, y, v)) {
+							result[r * onc + c] = v;
+							break;
+						}
+					} else {
+						if (lookup_raw(br, ri, i, x, y, v)) {
+							result[r * onc + c] = v;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		if (!out.writeValues(result, brow, bnrow)) {
+			stop_readers(*this);
+			return out;
+		}
+	}
+
+	out.writeStop();
+	stop_readers(*this);
+	return out;
+}
+
+
 #include "recycle.h"
 #include "string_utils.h"
 
@@ -412,6 +527,9 @@ bool write_part(SpatRaster& out, SpatRaster r, const double& hxr, size_t& nl, bo
 
 SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::string method, SpatOptions &opt) {
 
+	if ((algo == 1) && (method=="")) {
+		return(merge2(first, narm, opt));
+	}
 
 	SpatRaster out;
 	size_t n = size();
@@ -423,6 +541,7 @@ SpatRaster SpatRasterCollection::merge(bool first, bool narm, int algo, std::str
 		out = ds[0].deepCopy();
 		return(out);
 	}
+
 
 	if (algo == 1) {
 		SpatExtent e = ds[0].getExtent();

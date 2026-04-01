@@ -136,6 +136,7 @@ class SpatRasterCollection {
 		std::vector<int> getValueType(bool unique);
 
 		SpatRaster merge(bool first, bool narm, int algo, std::string method, SpatOptions &opt);
+		SpatRaster merge2(bool first, bool narm, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
 		SpatRaster mosaic2(std::string fun, SpatOptions &opt);
 		SpatRaster blend(SpatOptions &opt);

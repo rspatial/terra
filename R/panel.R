@@ -77,7 +77,7 @@ setMethod("panel", signature(x="SpatRaster"),
 					range <- range(r, na.rm=TRUE)
 				}
 			}
-			r <- unique(as.vector(r))
+			r <- na.omit(unique(as.vector(r)))
 			if (is.null(type)) {
 				if (length(r) > 10) {
 					type <- "continuous"

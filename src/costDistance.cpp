@@ -753,8 +753,6 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, boo
 	// if the raster fits in memory, use the exact single-pass Dijkstra
 	SpatOptions memops(opt);
 	memops.ncopies = 4;
-	memops.set_filenames({""});
-	memops.progressbar = false;
 	BlockSize membs = out.getBlockSize(memops);
 	if (membs.nrows[0] >= nrow()) {
 		return costDistanceDijkstra(target, m, grid, opt);
