@@ -1,8 +1,12 @@
 # Changelog
 
-## version 1.9-13
+## version 1.9-14
 
 ### bug fixes
+
+- `spatSample<SpatRaster>(method="stratified")` could cause an out of
+  bounds error [\#1858](https://github.com/rspatial/terra/issues/1858)
+  by Felipe
 
 ### enhancements
 

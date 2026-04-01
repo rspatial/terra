@@ -4,10 +4,15 @@ Combine adjacent and (partly) overlapping SpatRasters to form a single
 new SpatRaster. Values in overlapping cells are averaged (by default) or
 can be computed with another function.
 
+With the "blend" function, smooth gradients in overlappoing zones are
+created by weighting each raster's contribution by the distance from the
+cell to the raster's nearest edge.
+
 The SpatRasters must have the same origin and spatial resolution.
 
-This method is similar to the simpler, but much faster,
-[`merge`](https://rspatial.github.io/terra/reference/merge.md) method.
+If rasters do not overlap, or if their values do not need to be
+computed, you can use
+[`merge`](https://rspatial.github.io/terra/reference/merge.md) instead.
 
 ## Usage
 
@@ -35,8 +40,8 @@ mosaic(x, fun="mean", filename="", ...)
 
 - fun:
 
-  character. One of "mean", "median", "min", "max", "modal", "sum",
-  "first", "last"
+  character. One of "blend", "mean", "median", "min", "max", "modal",
+  "sum", "first", "last"
 
 - filename:
 
@@ -57,7 +62,7 @@ SpatRaster
 
 ## See also
 
-[`merge`](https://rspatial.github.io/terra/reference/merge.md)`, `[`blend`](https://rspatial.github.io/terra/reference/blend.md)
+[`merge`](https://rspatial.github.io/terra/reference/merge.md)
 
 ## Examples
 
@@ -70,9 +75,11 @@ m1 <- mosaic(x, y, z)
 
 m2 <- mosaic(z, y, x)
 
-# with many SpatRasters, make a SpatRasterCollection from a list
-rlist <- list(x, y, z)
-rsrc <- sprc(rlist)
+# with a SpatRasterCollection
 
-m <- mosaic(rsrc)
+spc <- sprc(list(x, y, z))
+
+m <- mosaic(spc)
+
+b <- mosaic(spc, fun="blend")
 ```

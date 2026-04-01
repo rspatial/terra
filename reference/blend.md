@@ -62,10 +62,12 @@ y <- rast(xmin=-95, xmax=-45, ymax=60, ymin=30, res=1, vals=2)
 z <- rast(xmin=-80, xmax=-30, ymax=50, ymin=20, res=1, vals=3)
 
 m1 <- blend(x, y, z)
+#> Error in blend(x, y, z): could not find function "blend"
 
 # with many SpatRasters, make a SpatRasterCollection from a list
 rlist <- list(x, y, z)
 rsrc <- sprc(rlist)
 
 m2 <- blend(rsrc)
+#> Error in blend(rsrc): could not find function "blend"
 ```
