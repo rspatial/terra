@@ -115,6 +115,9 @@ class SpatRasterCollection {
 	
 		std::vector<SpatRaster> ds;
 //		SpatExtent extent;
+		bool readStart();
+		bool readStop();
+
 		std::vector<std::string> names;
 		SpatRasterCollection() {};
 		SpatRasterCollection(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains);
@@ -135,11 +138,11 @@ class SpatRasterCollection {
 		SpatRasterCollection cropmask(SpatVector v, std::string snap, bool touches, bool expand, std::vector<size_t> use, SpatOptions &opt);
 		std::vector<int> getValueType(bool unique);
 
-		SpatRaster merge(bool first, bool narm, int algo, std::string method, SpatOptions &opt);
-		SpatRaster merge2(bool first, bool narm, SpatOptions &opt);
-		SpatRaster mosaic(std::string fun, SpatOptions &opt);
-		SpatRaster mosaic2(std::string fun, SpatOptions &opt);
-		SpatRaster blend(SpatOptions &opt);
+//		SpatRaster merge(bool first, bool narm, bool resample, std::string method, SpatOptions &opt);
+		SpatRaster merge(bool first, bool narm, size_t algo, bool resample, std::string method, SpatOptions &opt);
+		SpatRaster mosaic(std::string fun, bool resample, std::string method, SpatOptions &opt);
+		//SpatRaster mosaic2(std::string fun, SpatOptions &opt);
+		SpatRaster blend(bool resample, std::string method, SpatOptions &opt);
 
 		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster summary(std::string fun, SpatOptions &opt);

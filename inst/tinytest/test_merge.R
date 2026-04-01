@@ -3,7 +3,6 @@ r1 <- terra::rast(xmin = 0, xmax = 1); r1$x = 1; r1$y = 2
 r2 <- terra::rast(xmin = 1, xmax = 2); r2$x = 3; r2$y = 4
 expect_equal(names(terra::merge(r1, r2)), c("x", "y"))
 
-
 x <- rast(xmin=-110, xmax=-50, ymin=40, ymax=70, ncols=30, nrows=15)
 y <- rast(xmin=-80, xmax=-20, ymax=60, ymin=30)
 res(y) <- res(x)

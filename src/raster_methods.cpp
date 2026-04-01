@@ -3441,7 +3441,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 		SpatRasterCollection sr;
 		sr.push_back(left, "left");
 		sr.push_back(right, "right");
-		return sr.merge(true, false, 1, "", opt);
+		return sr.merge(true, false, 1, false, "", opt);
 
 	} else if ((e.xmin < 0) && (e.xmax > 180)) {
 
@@ -3456,7 +3456,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 		SpatRaster r = crop(ec, "near", false, ops);
 		r = r.shift(-360., 0., opt);
 		sr.push_back(r, "second");
-		return sr.merge(true, false, 1, "", opt);
+		return sr.merge(true, false, 1, false, "", opt);
 
 	} else if (e.xmin >= 0) {
 		if (e.xmax <= 180) {
@@ -3484,7 +3484,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 			SpatRasterCollection sr;
 			sr.push_back(left, "left");
 			sr.push_back(right, "right");
-			return sr.merge(true, false, 1, "", opt);
+			return sr.merge(true, false, 1, false, "", opt);
 		}
 	} else if (e.xmax <= 0) {
 		// -180_180 -> 0_360
@@ -3504,7 +3504,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 		SpatRasterCollection sr;
 		sr.push_back(left, "left");
 		sr.push_back(right, "right");
-		return sr.merge(true, false, 1, "", opt);
+		return sr.merge(true, false, 1, false, "", opt);
 	}
 	out.setError("case not expected, please report");
 	return out;

@@ -1432,11 +1432,11 @@ setMethod("merge", signature(x="SpatVector", y="SpatVector"),
 
 
 setMethod("merge", signature(x="SpatRasterCollection", "missing"),
-	function(x, first=TRUE, na.rm=TRUE, algo=1, method=NULL, filename="", ...) {
+	function(x, first=TRUE, na.rm=TRUE, algo=1, resample=TRUE, method="", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
 		if (is.null(method)) method = ""
-		out@pntr <- x@pntr$merge(first[1], na.rm, algo, method, opt)
+		out@pntr <- x@pntr$merge(first[1], na.rm, algo, resample, method, opt)
 		if (algo == 3) {
 			messages(opt, "merge")
 		}
@@ -1446,30 +1446,31 @@ setMethod("merge", signature(x="SpatRasterCollection", "missing"),
 )
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
-	function(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, method=NULL, filename="", overwrite=FALSE, wopt=list()) {
+	function(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=TRUE, method="", filename="", overwrite=FALSE, wopt=list()) {
 		rc <- sprc(x, y, ...)
-		merge(rc, first=first, na.rm=na.rm, algo=algo, method=method, filename=filename, overwrite=overwrite, wopt=wopt)
+		merge(rc, first=first, na.rm=na.rm, algo=algo, resample=resample, method=method, filename=filename, overwrite=overwrite, wopt=wopt)
 	}
 )
 
 
 
 setMethod("mosaic", signature(x="SpatRasterCollection", "missing"),
-	function(x, fun="mean", filename="", ...) {
+	function(x, fun="mean", resample=TRUE, method="", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		out <- rast()
 		fun <- .makeTextFun(fun)
 		if (!inherits(fun, "character")) {
 			error("mosaic", "function 'fun' is not valid")
 		}
-		out@pntr <- x@pntr$mosaic(fun, opt)
+		if (is.null(method)) method = ""
+			out@pntr <- x@pntr$mosaic(fun, resample, method, opt)
 		messages(out, "mosaic")
 	}
 )
 
 setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
-	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) {
+	function(x, y, ..., fun="mean", resample=FALSE, method="", filename="", overwrite=FALSE, wopt=list()) {
 		rc <- sprc(x, y, ...)
-		mosaic(rc, fun=fun, filename=filename, overwrite=overwrite, wopt=wopt)
+		mosaic(rc, fun=fun, resample=resample, method=method, filename=filename, overwrite=overwrite, wopt=wopt)
 	}
 )
