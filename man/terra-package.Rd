@@ -652,7 +652,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
     \code{\link{add_grid}} \tab Add a reference grid \cr
     \code{\link{animate}} \tab Animate raster or vector layers \cr
     \code{\link{plet}} \tab Make an interactive (\code{leaflet}) map \cr
-	\code{\link[=plot,SpatRaster,SpatRaster-method]{scatter plot}} Scatter plot of two SpatRasters \cr
+	\code{\link[=plot,SpatRaster,SpatRaster-method]{scatter plot}} \tab Scatter plot of two SpatRasters \cr
     \code{\link{has.colors}} \tab Do layers in a SpatRaster have a color table? \cr
     \code{\link{coltab}} / \code{\link{coltab<-}} \tab Get or set color tables \cr
 	
