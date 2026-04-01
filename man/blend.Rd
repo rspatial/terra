@@ -11,7 +11,7 @@ Distance-weighted raster blending
 }
 
 \description{
-Combine rasters with smooth gradients in overlappoing zones by weighting each raster's contribution by the distance from the cell to the raster's nearest edge. The result is independent of the order of the rasters.
+Combine rasters with smooth gradients in overlapping zones by weighting each raster's contribution by the distance from the cell to the raster's nearest edge. The result is independent of the order of the rasters.
 
 The SpatRasters must have the same origin and spatial resolution. 
 }
@@ -37,7 +37,7 @@ SpatRaster
 }
 
 \seealso{
-\code{\link{mosaic}, \link{merge}}
+\code{\link{mosaic}}, \code{\link{merge}}
 }
 
 

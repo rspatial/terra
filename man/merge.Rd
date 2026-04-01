@@ -48,7 +48,7 @@ SpatRaster or SpatVector
 }
 
 \seealso{
-Combining tiles with \code{\link{vrt}} may be more efficient than using \code{merge}. See \code{\link{mosaic}} for averaging overlapping regions, and \code{blend} to create smooth transitions in overlapping zones.
+Combining tiles with \code{\link{vrt}} may be more efficient than using \code{merge}. See \code{\link{mosaic}} for averaging overlapping regions, and \code{\link{blend}} to create smooth transitions in overlapping zones.
 
 See \code{\link{classify}} to merge a \code{SpatRaster} and a \code{data.frame} and \code{\link{union}} to combine SpatExtent objects. 
 }

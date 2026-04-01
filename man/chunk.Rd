@@ -6,7 +6,7 @@
 \title{Make a SpatRaster method memory-safe}
 
 \description{
-This method allows for running a function that takes a SpatRaster as first argument in chunks (tiles). This can be useful if the functions is not memory-safe, typically because it reads all the raster cell values into memory. 
+This method allows for running a function that takes a SpatRaster as first argument in chunks (tiles). This can be useful if the function is not memory-safe, typically because it reads all the raster cell values into memory. 
 
 This method is not designed to be especially efficient, and there might be more efficient ways to accomplish what the goal of the function that is not memory-safe.
 
