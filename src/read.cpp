@@ -16,12 +16,28 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRasterMultiple.h"
+#include "file_utils.h"
 
 bool SpatRaster::readStart() {
 
-	//if (!valid_sources(true, true)) {
-	//	return false;
-	//}
+	size_t nfile = 0;
+	for (size_t i=0; i<nsrc(); i++) {
+		if (!source[i].memory && !source[i].open_read) nfile++;
+	}
+	if (nfile > 0) {
+		size_t nopen, soft, hard;
+		open_file_limit(nopen, soft, hard);
+		if (nopen + nfile > soft) {
+			std::string msg = "cannot open " + std::to_string(nfile)
+				+ " files.\nThe number of files already open is "
+				+ std::to_string(nopen) + " and the OS limit is " + std::to_string(soft);
+			if (hard > soft) {
+				msg += "(raisable to " + std::to_string(hard) + ")";
+			}
+			setError(msg);
+			return false;
+		}
+	}
 
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].open_read) {

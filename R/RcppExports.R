@@ -5,6 +5,10 @@
     .Call(`_terra_have_TBB`)
 }
 
+.open_file_limit <- function() {
+    .Call(`_terra_open_file_lim`)
+}
+
 .proj_conf_test <- function() {
     .Call(`_terra_proj_conf_test`)
 }

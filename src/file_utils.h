@@ -32,5 +32,7 @@ std::string dirname(std::string filename);
 bool write_text(std::string filename, std::vector<std::string> s);
 std::vector<std::string> read_text(std::string filename);
 
+void open_file_limit(size_t &nopen, size_t &soft, size_t &hard);
+
 #endif
 

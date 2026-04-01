@@ -2,6 +2,7 @@
 #include "spatRasterMultiple.h"
 #include "string_utils.h"
 #include "math_utils.h"
+#include "file_utils.h"
 
 #include "sort.h"
 
@@ -50,6 +51,14 @@ bool have_TBB() {
 	#else 
 		return false;
 	#endif 
+}
+
+
+// [[Rcpp::export(name = ".open_file_limit")]]
+std::vector<size_t> open_file_lim() {
+	size_t nopen, soft, hard;
+	open_file_limit(nopen, soft, hard);
+	return {nopen, soft, hard};
 }
 
 

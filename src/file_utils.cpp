@@ -310,3 +310,58 @@ std::string tempFile(std::string tmpdir, unsigned pid, std::string ext) {
 }
 */
 
+
+// --- open-file limit --------------------------------------------------------
+// Returns three numbers describing the file-descriptor situation:
+//   nopen  – how many file descriptors the process currently has open
+//   soft   – the current (soft) per-process limit
+//   hard   – the maximum the soft limit can be raised to (without privileges)
+//
+// POSIX : limits from getrlimit(RLIMIT_NOFILE), count from /proc/self/fd
+//         (Linux) or /dev/fd (macOS).
+// Windows: soft = _getmaxstdio() (default 512), hard = 8192 (CRT ceiling),
+//          count by probing CRT file descriptors.
+
+#ifdef _WIN32
+#include <cstdio>         // _getmaxstdio
+#include <io.h>           // _get_osfhandle
+#else
+#include <sys/resource.h> // getrlimit, RLIMIT_NOFILE
+#include <dirent.h>       // opendir, readdir, closedir
+#endif
+
+void open_file_limit(size_t &nopen, size_t &soft, size_t &hard) {
+
+#ifdef _WIN32
+	soft = (size_t) _getmaxstdio();
+	hard = 8192;
+	nopen = 0;
+	for (int fd = 0; fd < (int) soft; fd++) {
+		intptr_t h = _get_osfhandle(fd);
+		if (h != -1 && h != -2) nopen++;
+	}
+#else
+	struct rlimit rl;
+	if (getrlimit(RLIMIT_NOFILE, &rl) == 0) {
+		soft = (size_t) rl.rlim_cur;
+		hard = (rl.rlim_max == RLIM_INFINITY) ? (size_t) -1 : (size_t) rl.rlim_max;
+	} else {
+		soft = 256;
+		hard = 256;
+	}
+
+	nopen = 0;
+#ifdef __linux__
+	const char *fddir = "/proc/self/fd";
+#else
+	const char *fddir = "/dev/fd";
+#endif
+	DIR *d = opendir(fddir);
+	if (d) {
+		while (readdir(d)) nopen++;
+		closedir(d);
+		if (nopen >= 3) nopen -= 3;  // subtract ".", "..", and the opendir() fd
+	}
+#endif
+}
+
