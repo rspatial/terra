@@ -44,7 +44,7 @@ Below is a list of some of the most important methods grouped by theme.
     \code{\link{selectRange}} \tab Select cell values from different layers using an index layer\cr
     \code{\link{rep}} \tab Repeat layers or a SpatRaster \cr
     \code{\link{split}} \tab Make a list of single layer SpatRasters\cr
-    \code{\link{as.character}} \tab Geta a character representation of a SpatRaster geometry\cr	
+    \code{\link{as.character}} \tab Get a character representation of a SpatRaster geometry\cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
@@ -79,7 +79,7 @@ Also see the methods in section VIII
   \tabular{ll}{
     \code{\link{app}} \tab Apply a function to all cells, across layers, typically to summarize (as in \code{base::apply}) \cr
     \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply} and \code{stats::aggregate})\cr
-    \code{\link{lapp}} \tab Apply a function to a SpatRaster, using its layers as arguments.\cr
+    \code{\link{lapp}} \tab Apply a function to a SpatRaster, using its layers as arguments\cr
     \code{\link{sapp}} \tab Apply a function to each layer\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
     \code{\link{xapp}} \tab Apply a function across two SpatRasters layer-wise \cr
