@@ -442,6 +442,7 @@ not need to match each other.
 | [`hull`](https://rspatial.github.io/terra/reference/convhull.md)               | Compute a convex, circular, or rectangular hull around the (geometries of) a SpatVector |
 | [`fillHoles`](https://rspatial.github.io/terra/reference/fill.md)              | Remove or extract holes from polygons                                                   |
 | [`densify`](https://rspatial.github.io/terra/reference/densify.md)             | Add vertices along lines or polygons                                                    |
+| [`thinNodes`](https://rspatial.github.io/terra/reference/thin.md)              | Remove vertices along lines or polygons                                                 |
 | [`split`](https://rspatial.github.io/terra/reference/split.md)                 | Split a SpatVector based on values of an attribute                                      |
 | —————————                                                                      | ——————————————————————————————                                                          |
 
@@ -489,6 +490,7 @@ not need to match each other.
 | [`disagg`](https://rspatial.github.io/terra/reference/disaggregate.md)         | split multi-geometries into separate geometries              |
 | [`crop`](https://rspatial.github.io/terra/reference/crop.md)                   | clip geometries using a rectangle (SpatExtent) or SpatVector |
 | [`divide`](https://rspatial.github.io/terra/reference/divide.md)               | divide polygons into equal areas                             |
+| [`thin`](https://rspatial.github.io/terra/reference/thin.md)                   | remove geometries that are too close to another              |
 | —————————                                                                      | ——————————————————————————————                               |
 
 ## XXII. SpatVector attributes
