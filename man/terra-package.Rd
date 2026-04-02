@@ -381,7 +381,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{same.crs}} \tab Compare two CRS strings \cr
     \code{\link{ar_info}} \tab Inspect NetCDF-like multi-array files \cr
     \code{\link{gdal}} \tab set GDAL warning level \cr
-	\code{\code{set}/\link{getGDALconfig}} \tab GDAL session utilities \cr
+	\code{set/\link{getGDALconfig}} \tab GDAL session utilities \cr
     \code{\link{meta}} \tab Metadata from a SpatRaster \cr
     \code{\link{metags}} / \code{\link{metags<-}} \tab Arbitrary metadata tags \cr
     \code{\link{tighten}} \tab combine data sources into one \cr

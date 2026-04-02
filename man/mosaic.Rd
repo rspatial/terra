@@ -23,7 +23,7 @@ If rasters do not overlap, or if their values do not need to be computed, you ca
 \usage{
 \S4method{mosaic}{SpatRaster,SpatRaster}(x, y, ..., fun="mean", resample=FALSE, method="", filename="", overwrite=FALSE, wopt=list())
 
-\S4method{mosaic}{SpatRasterCollection,missing}(x, fun="mean", resample=FALSE, method="",, filename="", ...)
+\S4method{mosaic}{SpatRasterCollection,missing}(x, fun="mean", resample=FALSE, method="", filename="", ...)
 }
 
 \arguments{

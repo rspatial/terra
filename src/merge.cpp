@@ -23,6 +23,9 @@
 #include <limits>
 #include <numeric>
 
+#include "recycle.h"
+#include "string_utils.h"
+
 
 // helpers shared by blend, mosaic, and merge
 
@@ -42,9 +45,11 @@ struct BlockRead {
 
 static bool aligns(SpatRasterCollection &src, SpatRaster &out, bool &resample, std::string method, size_t &warn, SpatOptions &opt) {
 	size_t n = src.ds.size();
+	lrtrim(method);
+	double tol = opt.get_tolerance();
 	for (size_t i = 1; i < n; i++) {
-		if (!src.ds[0].compare_geom(src.ds[i], false, false, opt.get_tolerance(), false, false, false, true)) {
-			if (resample) {
+		if (!src.ds[0].compare_geom(src.ds[i], false, false, tol, false, false, false, true)) {
+			if (resample) {	
 				if (warn == 0) {
 					src = src.deepCopy();
 				}
@@ -417,8 +422,6 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, bool resample, std::str
 
 
 
-#include "recycle.h"
-#include "string_utils.h"
 bool write_part(SpatRaster& out, SpatRaster r, const double& hxr, size_t& nl, bool notfirstlyr, std::string method, size_t &warn, SpatOptions &opt) {
 
 	BlockSize bs = r.getBlockSize(opt);

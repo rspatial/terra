@@ -21,10 +21,10 @@ See \code{\link{classify}} to merge a SpatRaster with a \code{data.frame}.
 }
 
 \usage{
-\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method=NULL, 
+\S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method="", 
 			filename="", overwrite=FALSE, wopt=list())
 
-\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method=NULL, filename="", ...)
+\S4method{merge}{SpatRasterCollection,missing}(x, first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method="", filename="", ...)
 
 \S4method{merge}{SpatVector,data.frame}(x, y, ...)
 }
@@ -37,7 +37,7 @@ See \code{\link{classify}} to merge a SpatRaster with a \code{data.frame}.
   \item{na.rm}{logical. If \code{TRUE} missing values are are ignored. This is only used for algo 1; the other two always ignore missing values}
   \item{algo}{integer. You can use 1, 2 or 3 to pick a merge algorithm. algo 1 is generally faster than algo 2, but it may have poorer file compression. Algo 3 creates a virtual raster (see \code{\link{vrt}}). This is very quick and can be a good approach if the merge raster is used as input to a next step in the analysis. It allows any amount of misalignment and resamples without giving a warning. Otherwise its speed is similar to that of algo 2}
   \item{resample}{logical. If \code{TRUE} input rasters are resampled if they do not align (same origin and resolution) with the first raster}
-  \item{method}{character. The resampling method used (only if \code{resample} is \code{TRUE} and \code{algo} is 1 or 2). One of "nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode" as in \code{\link{resample}}. If \code{NULL}, "nearest" is used for categorical rasters and "bilinear" for other rasters} 
+  \item{method}{character. The resampling method used (only if \code{resample} is \code{TRUE} and \code{algo} is 1 or 2). One of "nearest", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode" as in \code{\link{resample}}. If the value is \code{""}, "nearest" is used for categorical rasters and "bilinear" for other rasters} 
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
