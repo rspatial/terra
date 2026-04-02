@@ -438,6 +438,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
   \code{\link{hull}} \tab Compute a convex, circular, or rectangular hull around the (geometries of) a SpatVector \cr  
   \code{\link{fillHoles}}\tab Remove or extract holes from polygons\cr
   \code{\link{densify}} \tab Add vertices along lines or polygons \cr
+  \code{\link{thinNodes}} \tab Remove vertices along lines or polygons \cr
   \code{\link{split}} \tab Split a SpatVector based on values of an attribute\cr
 
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
@@ -487,6 +488,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
   \code{\link{disagg}} \tab split multi-geometries into separate geometries \cr
   \code{\link{crop}} \tab clip geometries using a rectangle (SpatExtent) or SpatVector \cr
   \code{\link{divide}} \tab divide polygons into equal areas \cr
+  \code{\link{thin}} \tab remove geometries that are too close to another \cr
   
   
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
