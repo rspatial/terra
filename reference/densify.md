@@ -38,7 +38,8 @@ SpatVector
 
 ## See also
 
-[`simplifyGeom`](https://rspatial.github.io/terra/reference/simplify.md)
+[`simplifyGeom`](https://rspatial.github.io/terra/reference/simplify.md),
+[`thinNodes`](https://rspatial.github.io/terra/reference/thin.md)
 
 ## Examples
 

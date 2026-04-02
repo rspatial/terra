@@ -5,8 +5,14 @@
 ### bug fixes
 
 - `spatSample<SpatRaster>(method="stratified")` could cause an out of
-  bounds error [\#1858](https://github.com/rspatial/terra/issues/1858)
-  by Felipe
+  bounds error
+  [\#1858](https://gi%5B#1848%5Dthub.com/rspatial/terra/issues/1858) by
+  Felipe)
+- `vrt` on OSX had trouble with options
+  [\#1410](https://github.com/rspatial/terra/issues/1410) by Andrea
+  Manica. And occaisionaly on Windows
+  [\#1848](https://github.com/rspatial/terra/issues/1848) by Monika Anna
+  Tomaszewska; due to passing them as a dangling pointer.
 
 ### enhancements
 
