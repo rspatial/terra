@@ -1,4 +1,3 @@
-
 #https://github.com/rspatial/terra/issues/1410
 
 r <- terra::rast(ncols=100, nrows=100)

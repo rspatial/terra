@@ -46,7 +46,7 @@ void unquote(std::string &s) {
 }
 
 
-std::vector<char *> string_to_charpnt(std::vector<std::string> s) {
+std::vector<char *> string_to_charpnt(const std::vector<std::string> &s) {
 	size_t n = s.size();
 	std::vector<char *> out(n + 1);
 	for (size_t i = 0; i < n; i++) {
