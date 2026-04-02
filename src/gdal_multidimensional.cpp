@@ -483,7 +483,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 					others.push_back(anms[i]);
 				}
 			}
-			addWarning(std::string("using array \"") + s.m_arrayname + "\". Other array(s): " + concatenate(others, ", "));
+			//addWarning(std::string("using array \"") + s.m_arrayname + "\". Other array(s): " + concatenate(others, ", "));
 		}
 	} else {
 		s.m_arrayname = anms[0];
@@ -509,29 +509,6 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		}
 	}
 	s.m_arrayname = poVar->GetFullName();
-
-	std::string wkt = "";
-	auto srs = poVar->GetSpatialRef();
-
-	if (srs != NULL) {
-		char *cp;
-		const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
-		OGRErr err = srs->exportToWkt(&cp, options);
-		if (err == OGRERR_NONE) {
-			wkt = std::string(cp);
-		}
-		CPLFree(cp);
-	} 
-	if (guessCRS && wkt.empty()) {
-		if (s.extent.xmin >= -181 && s.extent.xmax <= 361 && s.extent.ymin >= -91 && s.extent.ymax <= 91) {
-			wkt = "OGC:CRS84";
-			s.parameters_changed = true;
-		}
-	}
-	std::string msg = "";
-	if (!s.srs.set({wkt}, msg)) {
-		addWarning(msg);
-	}
 
 
 // dimensions 
@@ -752,6 +729,31 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		s.m_dims.push_back((size_t) dimmap[i]);
 	}
 	s.extent = e;
+
+
+	std::string wkt = "";
+	auto srs = poVar->GetSpatialRef();
+
+	if (srs != NULL) {
+		char *cp;
+		const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+		OGRErr err = srs->exportToWkt(&cp, options);
+		if (err == OGRERR_NONE) {
+			wkt = std::string(cp);
+		}
+		CPLFree(cp);
+	} 
+	if (guessCRS && wkt.empty()) {
+		if (s.extent.xmin >= -181 && s.extent.xmax <= 361 && s.extent.ymin >= -91 && s.extent.ymax <= 91) {
+			wkt = "OGC:CRS84";
+			s.parameters_changed = true;
+			addWarning("guessed crs");
+		}
+	}
+	std::string msg = "";
+	if (!s.srs.set({wkt}, msg)) {
+		addWarning(msg);
+	}	
 
 	bool app_so = true;
 	size_t opsz = options.size();
