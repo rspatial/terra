@@ -1792,3 +1792,95 @@ void SpatVector::fix_lonlat_overflow() {
 	}
 	return;
 }
+
+
+SpatVector SpatVector::thin_geoms(double d, std::string unit, SpatOptions &opt) {
+
+	SpatVector out;
+	size_t n = size();
+	if (n == 0) {
+		out.setError("empty SpatVector");
+		return out;
+	}
+	if (d <= 0) {
+		out.setError("d must be > 0");
+		return out;
+	}
+
+	bool lonlat = is_lonlat();
+	double m = 1;
+	if (!srs.m_dist(m, lonlat, unit)) {
+		setError("invalid unit");
+		return out;
+	}
+	// d_internal is in the native distance unit (meters for lonlat, CRS units for planar)
+	double d_internal = d / m;
+
+	out.srs = srs;
+	out.reserve(n);
+
+	std::string gtype = type();
+
+	if (gtype == "points") {
+		std::vector<std::vector<double>> pts = coordinates();
+		std::vector<double> &px = pts[0];
+		std::vector<double> &py = pts[1];
+
+		std::vector<size_t> keep;
+		keep.push_back(0);
+
+		if (lonlat) {
+			for (size_t i = 1; i < n; i++) {
+				bool far_enough = true;
+				for (size_t j = 0; j < keep.size(); j++) {
+					size_t k = keep[j];
+					if (distLonlat(px[i], py[i], px[k], py[k]) < d_internal) {
+						far_enough = false;
+						break;
+					}
+				}
+				if (far_enough) {
+					keep.push_back(i);
+				}
+			}
+		} else {
+			for (size_t i = 1; i < n; i++) {
+				bool far_enough = true;
+				for (size_t j = 0; j < keep.size(); j++) {
+					size_t k = keep[j];
+					if (distance_plane(px[i], py[i], px[k], py[k]) < d_internal) {
+						far_enough = false;
+						break;
+					}
+				}
+				if (far_enough) {
+					keep.push_back(i);
+				}
+			}
+		}
+		out = subset_rows(keep);
+	} else {
+		// lines and polygons: distance() returns in the user's unit
+		std::vector<size_t> keep;
+		keep.push_back(0);
+		for (size_t i = 1; i < n; i++) {
+			SpatVector vi = subset_rows((long)i);
+			bool far_enough = true;
+			for (size_t j = 0; j < keep.size(); j++) {
+				SpatVector vk = subset_rows((long)keep[j]);
+				std::vector<double> dd = vi.distance(vk, true, unit, "geo", false, opt);
+				if (dd.size() > 0 && dd[0] < d) {
+					far_enough = false;
+					break;
+				}
+			}
+			if (far_enough) {
+				keep.push_back(i);
+			}
+		}
+		out = subset_rows(keep);
+	}
+	return out;
+}
+
+

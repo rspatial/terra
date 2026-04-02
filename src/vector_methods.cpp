@@ -730,7 +730,7 @@ bool thinnodes(std::vector<double> &x, std::vector<double> &y, const double &thr
 
 
 
-SpatVector SpatVector::thin(double threshold) {
+SpatVector SpatVector::thin_nodes(double threshold) {
 
 	SpatVector out;
 	if (threshold < 0) {

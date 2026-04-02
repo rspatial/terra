@@ -539,10 +539,12 @@ setMethod("simplifyGeom", signature(x="SpatVector"),
 	}
 )
 
-setMethod("thinGeom", signature(x="SpatVector"),
-	function(x, threshold=1e-6, makeValid=TRUE) {
-		x@pntr <- x@pntr$thin(threshold)
-		x <- messages(x, "thinGeom")
+setMethod("thinNodes", signature(x="SpatVector"),
+	function(x, d=1e-6, unit="m", makeValid=TRUE) {
+		stopifnot(unit[1] %in% c("m", "km"))
+		if (unit[1] == "km") d <- d * 1000
+		x@pntr <- x@pntr$thin_nodes(d)
+		x <- messages(x, "thinNodes")
 		if (makeValid) {
 			x <- makeValid(x)
 		}

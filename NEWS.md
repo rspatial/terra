@@ -2,7 +2,8 @@
 
 ## bug fixes
 
-- `spatSample<SpatRaster>(method="stratified")` could cause an out of bounds error [#1858](https://github.com/rspatial/terra/issues/1858) by Felipe
+- `spatSample<SpatRaster>(method="stratified")` could cause an out of bounds error [#1858](https://gi[#1848]thub.com/rspatial/terra/issues/1858) by Felipe)
+- `vrt` on OSX had trouble with options [#1410](https://github.com/rspatial/terra/issues/1410) by Andrea Manica. And occaisionaly on Windows [#1848](https://github.com/rspatial/terra/issues/1848) by Monika Anna Tomaszewska; due to passing them as a dangling pointer.
 
 ## enhancements
 
@@ -17,6 +18,7 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 
 - `mosaic( , fun="blend")` method to combine rasters with smooth gradients in overlapping zones [#2011](https://github.com/rspatial/terra/issues/2011) by Greg Schmidt
 - `animate<SpatVectorCollection>` method. [#2065](https://github.com/rspatial/terra/pull/2065) by Márcia Barbosa 
+- `thin<SpatVector>` method. [#1738](https://github.com/rspatial/terra/issues/1738) by Andrés
 
 
 # version 1.9-11

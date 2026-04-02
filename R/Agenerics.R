@@ -111,7 +111,7 @@ if (!isGeneric("focalPairs")) { setGeneric("focalPairs", function(x, ...) standa
 if (!isGeneric("clearance")) {setGeneric("clearance", function(x, ...) standardGeneric("clearance"))}
 if (!isGeneric("width")) {setGeneric("width", function(x, ...) standardGeneric("width"))}
 if (!isGeneric("simplifyGeom")) {setGeneric("simplifyGeom", function(x, ...) standardGeneric("simplifyGeom"))}
-if (!isGeneric("thinGeom")) {setGeneric("thinGeom", function(x, ...) standardGeneric("thinGeom"))}
+if (!isGeneric("thinNodes")) {setGeneric("thinNodes", function(x, ...) standardGeneric("thinNodes"))}
 if (!isGeneric("mergeLines")) {setGeneric("mergeLines", function(x, ...) standardGeneric("mergeLines"))}
 if (!isGeneric("mergeTime")) {setGeneric("mergeTime", function(x, ...) standardGeneric("mergeTime"))}
 if (!isGeneric("fillTime")) {setGeneric("fillTime", function(x, ...) standardGeneric("fillTime"))}
@@ -256,6 +256,7 @@ if (!isGeneric("inMemory")) {setGeneric("inMemory", function(x, ...) standardGen
 if (!isGeneric("sources")) {setGeneric("sources", function(x, ...) standardGeneric("sources"))}
 if (!isGeneric("spatSample")) { setGeneric("spatSample", function(x, ...) standardGeneric("spatSample"))}
 if (!isGeneric("terrain")) {setGeneric("terrain", function(x, ...) standardGeneric("terrain"))}
+if (!isGeneric("thin")) {setGeneric("thin", function(x, ...) standardGeneric("thin"))}
 if (!isGeneric("has.time")) {setGeneric("has.time", function(x,...) standardGeneric("has.time"))}
 if (!isGeneric("time")) {setGeneric("time", function(x,...) standardGeneric("time"))}
 if (!isGeneric("time<-")) {setGeneric("time<-", function(x, ..., value) standardGeneric("time<-"))}

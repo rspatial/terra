@@ -239,6 +239,15 @@ setMethod("distance", signature(x="data.frame", y="missing"),
 )
 
 
+setMethod("thin", signature(x="SpatVector"),
+	function(x, d, unit="m") {
+		opt <- spatOptions()
+		x@pntr <- x@pntr$thin_geoms(d, unit, opt)
+		messages(x, "thin")
+	}
+)
+
+
 setMethod("direction", signature(x="SpatRaster"),
 	function(x, from=FALSE, degrees=FALSE, method="cosine", filename="", ...) {
 		opt <- spatOptions(filename, ...)
