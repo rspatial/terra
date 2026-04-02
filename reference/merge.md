@@ -19,11 +19,11 @@ to merge a SpatRaster with a `data.frame`.
 
 ``` r
 # S4 method for class 'SpatRaster,SpatRaster'
-merge(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method=NULL, 
+merge(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method="", 
       filename="", overwrite=FALSE, wopt=list())
 
 # S4 method for class 'SpatRasterCollection,missing'
-merge(x, first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method=NULL, filename="", ...)
+merge(x, first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method="", filename="", ...)
 
 # S4 method for class 'SpatVector,data.frame'
 merge(x, y, ...)
@@ -80,8 +80,8 @@ merge(x, y, ...)
   and `algo` is 1 or 2). One of "nearest", "bilinear", "cubic",
   "cubicspline", "lanczos", "average", "mode" as in
   [`resample`](https://rspatial.github.io/terra/reference/resample.md).
-  If `NULL`, "nearest" is used for categorical rasters and "bilinear"
-  for other rasters
+  If the value is `""`, "nearest" is used for categorical rasters and
+  "bilinear" for other rasters
 
 - filename:
 

@@ -21,7 +21,7 @@ computed, you can use
 mosaic(x, y, ..., fun="mean", resample=FALSE, method="", filename="", overwrite=FALSE, wopt=list())
 
 # S4 method for class 'SpatRasterCollection,missing'
-mosaic(x, fun="mean", resample=FALSE, method="",, filename="", ...)
+mosaic(x, fun="mean", resample=FALSE, method="", filename="", ...)
 ```
 
 ## Arguments

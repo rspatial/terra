@@ -386,7 +386,7 @@ of a SpatRaster.
 | [`same.crs`](https://rspatial.github.io/terra/reference/same.crs.md)          | Compare two CRS strings                                                                  |
 | [`ar_info`](https://rspatial.github.io/terra/reference/ar_info.md)            | Inspect NetCDF-like multi-array files                                                    |
 | [`gdal`](https://rspatial.github.io/terra/reference/gdal.md)                  | set GDAL warning level                                                                   |
-| `set``/`[`getGDALconfig`](https://rspatial.github.io/terra/reference/gdal.md) | GDAL session utilities                                                                   |
+| `set/`[`getGDALconfig`](https://rspatial.github.io/terra/reference/gdal.md)   | GDAL session utilities                                                                   |
 | [`meta`](https://rspatial.github.io/terra/reference/meta.md)                  | Metadata from a SpatRaster                                                               |
 | [`metags`](https://rspatial.github.io/terra/reference/metags.md) / `metags<-` | Arbitrary metadata tags                                                                  |
 | [`tighten`](https://rspatial.github.io/terra/reference/collapse.md)           | combine data sources into one                                                            |
