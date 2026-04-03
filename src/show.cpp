@@ -135,12 +135,21 @@ static std::string df_cell_as_string(const SpatDataFrame &df, size_t row, size_t
 		}
 		case 3: {
 			int8_t b = df.getBvalue(row, col);
+			if (b == 2) return "NA";
 			return b ? "TRUE" : "FALSE";
 		}
 		case 4: {
 			SpatTime_t t = df.getTvalue(row, col);
 			if (t == df.NAT) return "NA";
-			return std::to_string(t);
+			std::string step = df.tv[df.iplace[col]].step;
+			std::vector<int> d = get_date(t);
+			char buf[32];
+			if (step == "days") {
+				std::snprintf(buf, sizeof(buf), "%04d-%02d-%02d", d[0], d[1], d[2]);
+			} else {
+				std::snprintf(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d", d[0], d[1], d[2], d[3], d[4], d[5]);
+			}
+			return std::string(buf);
 		}
 		case 5: {
 			SpatFactor f = df.getF(col);
@@ -166,12 +175,16 @@ static void append_spatvector_df_preview(std::ostringstream &s, const SpatDataFr
 	std::vector<std::string> ctypes(nc_show);
 	std::vector<std::vector<std::string>> vals(nr_show, std::vector<std::string>(nc_show));
 
-	static const char *type_str[] = {"<num>", "<int>", "<chr>", "<lgl>", "<time>", "<fact>"};
+	static const char *type_str[] = {"<num>", "<int>", "<chr>", "<lgl>", "", "<fact>"};
 
 	for (size_t j = 0; j < nc_show; j++) {
 		cnames[j] = trunc_cell(df.names[j], mx);
 		size_t it = df.itype[j];
-		ctypes[j] = (it < 6) ? type_str[it] : "<?>";
+		if (it == 4) {
+			ctypes[j] = (df.tv[df.iplace[j]].step == "days") ? "<Date>" : "<POSIXt>";
+		} else {
+			ctypes[j] = (it < 6) ? type_str[it] : "<?>";
+		}
 	}
 
 	for (size_t r = 0; r < nr_show; r++) {
