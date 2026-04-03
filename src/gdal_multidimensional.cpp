@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#include "spatRaster.h"
+#include "spatRasterMultiple.h"
 #include "proj.h"
 #include "ogr_spatialref.h"
 #include "gdal_priv.h"
@@ -743,7 +743,16 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		}
 		CPLFree(cp);
 	} 
+	if (wkt.empty()) {
+		std::vector<std::string> ops;
+		try {
+			SpatRasterStack s(fname, {0}, true, ops, true, true, ops);
+			wkt = s.getSRS("wkt");
+		} catch(...) {}
+	} 
+	
 	if (guessCRS && wkt.empty()) {
+		
 		if (s.extent.xmin >= -181 && s.extent.xmax <= 361 && s.extent.ymin >= -91 && s.extent.ymax <= 91) {
 			wkt = "OGC:CRS84";
 			s.parameters_changed = true;
