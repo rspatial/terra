@@ -629,7 +629,7 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 				break;
 			}
 		}
-		// the simplest case; no issue with duplicate names
+		// the simplest case; no issue with duplicate names 
 		if (same) {
 			for (size_t i=0; i<nc2; i++) {
 				size_t j = iplace[i];
@@ -761,10 +761,11 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 						}
 					} else if (x.itype[i] == 2) {
 						// could try to_double instead
+						// or make the whole thing string (2)
 						dv[a].resize(nr1 + nr2);
 					} else if (x.itype[i] == 3) {
 						for (size_t k=0; k<nr2; k++) {
-							if (x.iv[b][k] < 2) {
+							if (x.bv[b][k] < 2) {
 								dv[a].push_back(x.bv[b][k]);
 							} else {
 								dv[a].push_back(NAN);
