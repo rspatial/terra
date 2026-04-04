@@ -418,7 +418,7 @@ class SpatRaster {
 
 		std::vector<std::string> getAllFiles();
 
-		std::string show();
+		std::string show(bool one_based=true);
 
 		void gdalogrproj_init(std::string path);
 

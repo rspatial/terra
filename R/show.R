@@ -6,7 +6,7 @@
 
 setMethod("show", "SpatExtent", function(object) cat(object@pntr$show()) )
 
-setMethod("show", "SpatRaster", function(object) cat(object@pntr$show()) )
+setMethod("show", "SpatRaster", function(object) cat(object@pntr$show(TRUE)) )
 
 setMethod("show", "SpatRasterCollection", function(object) cat(object@pntr$show()) )
 

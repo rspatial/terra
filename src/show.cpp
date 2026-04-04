@@ -280,7 +280,7 @@ std::string SpatVector::show() {
 }
 
 
-std::string SpatRaster::show() {
+std::string SpatRaster::show(bool one_based) {
 	std::ostringstream s;
 	size_t nr = nrow();
 	size_t nc = ncol();
@@ -392,7 +392,11 @@ std::string SpatRaster::show() {
 			s << "colors " << rgbtype << "  :";
 			for (size_t i = 0; i < rgb.size(); i++) {
 				if (i) s << ",";
-				s << " " << rgb[i];
+				int v = rgb[i];
+				if (one_based) {
+					v++;
+				}
+				s << " " << v;
 			}
 			s << "\n";
 		}
