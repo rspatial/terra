@@ -744,6 +744,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		CPLFree(cp);
 	} 
 	if (wkt.empty()) {
+		// temporary work-around for https://github.com/rspatial/terra/issues/2068
 		std::vector<std::string> ops;
 		try {
 			SpatRasterStack s(fname, {0}, true, ops, true, true, ops);
@@ -800,8 +801,12 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 	std::string arname = arn[arn.size()-1];
 	nms.resize(s.nlyr);
 	if (dimmap_extras.empty()) {
-		for (size_t i = 0; i < s.nlyr; i++) {
-			nms[i] = arname + "-" + std::to_string(i + 1);
+		if (s.nlyr > 1) {
+			for (size_t i = 0; i < s.nlyr; i++) {
+				nms[i] = arname + "-" + std::to_string(i + 1);
+			}
+		} else {
+			nms[0] = arname;			
 		}
 	} else {
 		for (size_t L = 0; L < s.nlyr; L++) {
@@ -816,8 +821,8 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 				nm += "_" + dimnames[dimmap_extras[j]] + "="
 					+ double_to_string(dimvals[dimmap_extras[j]][idx[j]]);
 			}
-			if (!name_has_dim) {
-				nm += "-" + std::to_string(L + 1);
+			if (!name_has_dim && (s.nlyr > 1)) {
+				nm += "_" + std::to_string(L + 1);
 			}
 			nms[L] = nm;
 		}

@@ -679,11 +679,13 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 	#else
 		OGRErr err = poSRS->exportToWkt(&psz);
 	#endif
-		if (err == OGRERR_NONE) {
+		if (err == OGRERR_NONE && psz != NULL) {
 			crs = psz;
 		}
-		setSRS(crs);
 		CPLFree(psz);
+		if (!crs.empty()) {
+			setSRS(crs);
+		}
 	}
 
 	if (what != "geoms") {
@@ -854,8 +856,6 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 			addWarning("returning lines. Ignoring " + std::to_string(npnt) + " point geometries. Use 'svc' to get all geometries");
 		}
 	}
-
-	setSRS(crs);
 
 	if (!query.empty()) {
 		poDS->ReleaseResultSet(poLayer);

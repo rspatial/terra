@@ -45,7 +45,7 @@ setMethod("subset", signature(x="SpatRaster"),
 			if (sum(nms %in% subset) > length(subset)) {
 				warn("subset", "using a name that is not unique")
 			}
-			subset <- which(!is.na(match(nms, subset)))
+			subset <- unlist(lapply(subset, function(s) which(nms == s)), use.names = FALSE)
 		}
 		if (any(is.na(subset))) {
 			error("subset", "undefined layer(s) selected")
