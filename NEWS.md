@@ -4,6 +4,9 @@
 
 - `spatSample<SpatRaster>(method="stratified")` could cause an out of bounds error [#1858](https://gi[#1848]thub.com/rspatial/terra/issues/1858) by Felipe)
 - `vrt` on OSX had trouble with options [#1410](https://github.com/rspatial/terra/issues/1410) by Andrea Manica. And occaisionaly on Windows [#1848](https://github.com/rspatial/terra/issues/1848) by Monika Anna Tomaszewska; due to passing them as a dangling pointer.
+- `rbind<SpatVector,SpatVector>` could make R crash when combining a variable that is numeric in one and boolean in the other source [#2069](https://github.com/rspatial/terra/issues/2069) by Hans van Calster
+- `vect` can now better handle non standard geometries such as multisurface [#2037](https://github.com/rspatial/terra/issues/2037) by Floris Vanderhaeghe
+
 
 ## enhancements
 
