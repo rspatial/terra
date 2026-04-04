@@ -91,7 +91,7 @@ p
 #> geometry    : polygons
 #> dimensions  : 4, 1  (geometries, attributes)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
+#> coord. ref. : 
 #> names       : lyr.1
 #> type        : <int>
 #> values      :     1

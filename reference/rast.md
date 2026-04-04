@@ -25,8 +25,8 @@ a single file.
 ``` r
 # S4 method for class 'character'
 rast(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, 
-    snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, 
-    guessCRS=TRUE, domains="", md=FALSE, dims=NULL)
+    snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE,
+    domains="", md=grepl("nc$|ncdf$|h5$", x), dims=NULL)
 
 # S4 method for class 'missing'
 rast(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90,

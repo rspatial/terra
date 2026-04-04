@@ -41,6 +41,10 @@
 <code>spatSample&lt;SpatRaster&gt;(method="stratified")</code> could cause an out of bounds error <a href="https://gi%5B#1848%5Dthub.com/rspatial/terra/issues/1858" class="external-link">#1858</a> by Felipe)</li>
 <li>
 <code>vrt</code> on OSX had trouble with options <a href="https://github.com/rspatial/terra/issues/1410" class="external-link">#1410</a> by Andrea Manica. And occaisionaly on Windows <a href="https://github.com/rspatial/terra/issues/1848" class="external-link">#1848</a> by Monika Anna Tomaszewska; due to passing them as a dangling pointer.</li>
+<li>
+<code>rbind&lt;SpatVector,SpatVector&gt;</code> could make R crash when combining a variable that is numeric in one and boolean in the other source <a href="https://github.com/rspatial/terra/issues/2069" class="external-link">#2069</a> by Hans van Calster</li>
+<li>
+<code>vect</code> can now better handle non standard geometries such as multisurface <a href="https://github.com/rspatial/terra/issues/2037" class="external-link">#2037</a> by Floris Vanderhaeghe</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-9-14">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-14"></a></h3>
