@@ -245,7 +245,7 @@ clean_domains <- function(domains) {
 }
 
 
-multi <- function(x, subds=1, dims=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="") {
+multi <- function(x, subds=0, dims=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="") {
 
 	f <- .fullFilename(x, vsi=isTRUE(vsi))
 	if (length(f) == 0) {
@@ -264,7 +264,7 @@ multi <- function(x, subds=1, dims=NULL, drivers=NULL, opts=NULL, win=NULL, snap
 	if (is.character(subds)) {
 		r@pntr <- SpatRaster$new(f, -1, subds, TRUE, drivers, opts, dims-1, isTRUE(noflip), isTRUE(guessCRS), domains)
 	} else {
-		if (subds < 1) subds = 1
+		#if (subds < 1) subds = 1
 		r@pntr <- SpatRaster$new(f, subds-1, ""[0], TRUE, drivers, opts, dims-1, isTRUE(noflip), isTRUE(guessCRS), domains)
 	}
 	messages(r, "rast (multi)")
@@ -272,7 +272,7 @@ multi <- function(x, subds=1, dims=NULL, drivers=NULL, opts=NULL, win=NULL, snap
 
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=grepl("nc$|ncdf$|h5$", x), dims=NULL) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=grepl("nc$|ncdf$|h5$", x, TRUE), dims=NULL) {
 
 		if (isTRUE(md)) {
 			if (!is.null(win)) {

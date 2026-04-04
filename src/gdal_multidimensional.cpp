@@ -463,7 +463,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 
 	std::vector<std::string> anms = md_arrays_usable_for_raster(poRootGroup, anms_all);
 	if (anms.empty()) {
-		setError("no MD array with at least 2 dimensions found in file (required for rast(, md=TRUE))");
+		setError("file has no array with at least 2 dimensions");
 		return false;
 	}
 
@@ -471,25 +471,16 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		s.m_arrayname = subname[0];
 	} else if (subds.size() > 0 && subds[0] >= 0) {
 		if ((size_t) subds[0] >= anms.size()) {
-			setError("array index is out of range");
+			setError("array index is out of range (there are " + std::to_string(anms.size()) + " arrays)");
 			return false;
-		}
-		s.m_arrayname = anms[subds[0]];
-		if (anms.size() > 1) {
-			std::vector<std::string> others;
-			others.reserve(anms.size() - 1);
-			for (size_t i = 0; i < anms.size(); i++) {
-				if ((int) i != subds[0]) {
-					others.push_back(anms[i]);
-				}
-			}
-			//addWarning(std::string("using array \"") + s.m_arrayname + "\". Other array(s): " + concatenate(others, ", "));
+		} else {
+			s.m_arrayname = anms[subds[0]];
 		}
 	} else {
 		s.m_arrayname = anms[0];
 		if (anms.size() > 1) {
 			std::vector<std::string> others(anms.begin() + 1, anms.end());
-			addWarning(std::string("no array specified; using \"") + s.m_arrayname + "\". Other array(s): " + concatenate(others, ", "));
+			addWarning(std::string("no array specified; using \"") + s.m_arrayname + "\".\nOther array(s): " + concatenate(others, ", "));
 		}
 	}
 
@@ -497,7 +488,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 	auto poVar = poRootGroup->ResolveMDArray(s.m_arrayname.c_str(), startgroup, nullptr);
 //    auto poVar = poRootGroup->OpenMDArray(s.m_arrayname.c_str());
     if( !poVar )   {
-		setError("cannot find: " + s.m_arrayname);
+		setError(std::string("cannot find array: \"") + s.m_arrayname + "\".\nAvailable arrays: " + concatenate(anms, ", "));
 		return false;
     }
 	{
@@ -553,6 +544,10 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		return false;
 	}
 	s.source_name = s.m_arrayname;
+	if (!s.source_name.empty() && (s.source_name.front() == '/')) {
+		s.source_name.erase(0, 1); 
+    }
+	
 	auto lname = poVar->GetAttribute("long_name");
 	if (lname) s.source_name_long = lname->ReadAsString();
 
