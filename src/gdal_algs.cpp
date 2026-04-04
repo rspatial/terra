@@ -463,7 +463,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	size_t ns = nsrc();
 	bool fixext = false;
 	for (size_t j=0; j<ns; j++) {
-		if ((source[j].extset || source[j].flipped) && (!source[j].memory)) {
+		if ((source[j].extset || source[j].flipped) && (!source[j].memory) && (!source[j].rotated)) {
 			fixext = true;
 			break;
 		}
@@ -474,7 +474,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		SpatOptions xopt(opt);
 		xopt.ncopies = std::max((size_t) 10, xopt.ncopies*2);
 		for (size_t j=0; j<ns; j++) {
-			if ((source[j].extset || source[j].flipped) && (!r.source[j].memory)) {
+			if ((source[j].extset || source[j].flipped) && (!r.source[j].memory) && (!source[j].rotated)) {
 				SpatRaster tmp(source[j]);	
 				if (tmp.canProcessInMemory(xopt)) {
 					tmp.readAll();
@@ -932,7 +932,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 	size_t ns = nsrc();
 	bool fixext = false;
 	for (size_t j=0; j<ns; j++) {
-		if ((source[j].extset || source[j].flipped) && (!source[j].memory)) {
+		if ((source[j].extset || source[j].flipped) && (!source[j].memory) && (!source[j].rotated)) {
 			fixext = true;
 			break;
 		}
@@ -940,7 +940,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 	if (fixext) {
 		SpatRaster r = *this;
 		for (size_t j=0; j<ns; j++) {
-			if ((r.source[j].extset || r.source[j].flipped) && (!r.source[j].memory)) {
+			if ((r.source[j].extset || r.source[j].flipped) && (!r.source[j].memory) && (!r.source[j].rotated)) {
 				SpatRaster tmp(source[j]);
 				//if (tmp.canProcessInMemory(opt)) {
 				//	tmp.readAll();
@@ -1346,7 +1346,19 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 
 	//e = out.getExtent();
 
-	out = warper(out, "", method, false, false, true, opt);
+	SpatOptions wopt(opt);
+	out = warper(out, "", method, false, false, true, wopt);
+
+	if (rgb) {
+		out.rgb=true;
+		out.rgbtype = rgbtype;
+		out.rgblyrs = rgblyrs;
+	}
+	
+	std::string filename = opt.get_filename();
+	if (filename != "") {
+		out.writeRaster(opt);
+	}
 
 	return(out);
 }

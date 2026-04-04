@@ -315,6 +315,10 @@ bool SpatRaster::readAll() {
 	for (size_t src=0; src<n; src++) {
 		if (!source[src].memory) {
 			readChunkGDAL(source[src].values, src, row, nrows, col, ncols);
+			if (hasError()) {
+				readStop();
+				return false;
+			}
 			source[src].memory = true;
 			source[src].extset = false;
 			source[src].flipped = false;

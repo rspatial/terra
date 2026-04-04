@@ -909,15 +909,24 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
 
 	CSLConstList metasds = poDataset->GetMetadata("SUBDATASETS");
-	
-	if (metasds != NULL) {
-		std::vector<std::string> meta;
-		for (size_t i=0; metasds[i] != NULL; i++) {
-			meta.push_back(metasds[i]);
-		}
-		GDALClose( (GDALDatasetH) poDataset );
-		return constructFromSDS(fname, meta, subds, subdsname, options, gdrv, noflip, guessCRS, domains);
 
+	// for now, JPEG only, if the root has (RGB) bands and a optional SUBDATASET
+	// use by default the root so GeoTransform / worldfile / CRS apply. see #918 
+	// unless nl==0, for other drivers (ncdf) this should be an option (collapse=true -> constructFromSDS)
+	if (metasds != NULL) {
+		bool explicit_sds = (!subds.empty() && (subds[0] >= 0)) ||
+			(!subdsname.empty() && !subdsname[0].empty());
+		bool jpeg_use_root = (lower_case(gdrv) == "jpeg") && (nl > 0) && !explicit_sds;
+		bool force_sds = (nl == 0) || !jpeg_use_root;
+		if (force_sds) {
+			std::vector<std::string> meta;
+			for (size_t i=0; metasds[i] != NULL; i++) {
+				meta.push_back(metasds[i]);
+			}
+			GDALClose( (GDALDatasetH) poDataset );
+			return constructFromSDS(fname, meta, subds, subdsname, options, gdrv, noflip, guessCRS, domains);
+		}
+		// else: JPEG with bands and no subdataset request — keep poDataset as main raster
 	} else if (nl==0) {
 		setError("no raster data in " + fname);
 		return false;
@@ -969,6 +978,13 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			std::swap(ymin, ymax);
 			s.extset = true;
 			s.flipped = true;
+		}
+		// normalize for rotated rasters
+		if (xmin > xmax) { // gt[1]<0
+			std::swap(xmin, xmax);
+		}
+		if (ymin > ymax) {
+			std::swap(ymin, ymax);
 		}
 
 		SpatExtent e(xmin, xmax, ymin, ymax);
