@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-14
+## version 1.9-15
 
 ### bug fixes
 
@@ -20,6 +20,9 @@
 - `vect` can now better handle non standard geometries such as
   multisurface [\#2037](https://github.com/rspatial/terra/issues/2037)
   by Floris Vanderhaeghe
+- `writeVector` can now write GPX format
+  [\#1231](https://github.com/rspatial/terra/issues/1231) by Krzysztof
+  Dyba
 
 ### enhancements
 

@@ -52,7 +52,7 @@ SpatVector
 ## Examples
 
 ``` r
-p <- vect(rbind(c(0,0), c(0.5,0.5), c(0.6, 0.6), c(5,5), c(5.5, 5.5), c(50, 50)), crs="+proj=longlat +datum=WGS84")
+p <- vect( matrix(c(0, .5, .6, 5, 5.5, 50), ncol=2, nrow=6), crs="lonlat")
 values(p) <- data.frame(id=1:6)
 nrow(p)
 #> [1] 6

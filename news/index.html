@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-15</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-14" id="version-19-14">version 1.9-14<a class="anchor" aria-label="anchor" href="#version-19-14"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-15" id="version-19-15">version 1.9-15<a class="anchor" aria-label="anchor" href="#version-19-15"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-14">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-14"></a></h3>
+<h3 id="bug-fixes-1-9-15">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-15"></a></h3>
 <ul><li>
 <code>spatSample&lt;SpatRaster&gt;(method="stratified")</code> could cause an out of bounds error <a href="https://gi%5B#1848%5Dthub.com/rspatial/terra/issues/1858" class="external-link">#1858</a> by Felipe)</li>
 <li>
@@ -45,9 +45,11 @@
 <code>rbind&lt;SpatVector,SpatVector&gt;</code> could make R crash when combining a variable that is numeric in one and boolean in the other source <a href="https://github.com/rspatial/terra/issues/2069" class="external-link">#2069</a> by Hans van Calster</li>
 <li>
 <code>vect</code> can now better handle non standard geometries such as multisurface <a href="https://github.com/rspatial/terra/issues/2037" class="external-link">#2037</a> by Floris Vanderhaeghe</li>
+<li>
+<code>writeVector</code> can now write GPX format <a href="https://github.com/rspatial/terra/issues/1231" class="external-link">#1231</a> by Krzysztof Dyba</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-14">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-14"></a></h3>
+<h3 id="enhancements-1-9-15">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-15"></a></h3>
 <ul><li>
 <code>compareGeom</code> gets argument “tolerance” to overwrite the default that can be set with <code>terraOptions</code>. <a href="https://github.com/rspatial/terra/issues/2056" class="external-link">#2056</a> by R. Kyle Bocinsky</li>
 <li>
