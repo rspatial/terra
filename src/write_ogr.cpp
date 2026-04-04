@@ -27,7 +27,7 @@
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
 
-
+/*
 bool driverSupports(std::string driver, std::string option) {
 	if (driver == "GPKG") {
 		if (option == "ENCODING") {
@@ -35,6 +35,14 @@ bool driverSupports(std::string driver, std::string option) {
 		}
 	}
     return true;
+}
+*/
+
+bool driverSupports(GDALDriver* poDriver, std::string option) {
+    if (poDriver == nullptr) return false;
+    const char* pszOptions = poDriver->GetMetadataItem(GDAL_DS_LAYER_CREATIONOPTIONLIST);
+    if (pszOptions == nullptr) return false;
+    return (std::string(pszOptions).find(option) != std::string::npos);
 }
 
 
@@ -72,6 +80,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	}
 
 
+	GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
 
 	if (append) {
 
@@ -101,7 +110,6 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			}
 		}
 	} else {
-		GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
 		if ( poDriver == NULL )  {
 			setError( driver + " driver not available");
 			return poDS;
@@ -172,7 +180,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 						nGroupTransactions = 0;
 					}
 				} else {
-					if (driverSupports(driver,  gopt[0])) {
+					if (driverSupports(poDriver,  gopt[0])) {
 						papszOptions = CSLSetNameValue(papszOptions, gopt[0].c_str(), gopt[1].c_str() );
 					}
 				}
@@ -180,6 +188,20 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		}
 		// papszOptions = CSLSetNameValue( papszOptions, "ENCODING", "UTF-8" );
     }
+	// GPX has fixed layer names and pre-defined fields; a default layer of the file basename
+	// would not match the schema, and numeric field indices would mis-map attributes (see #1231).
+	if (lower_case(driver) == "gpx") {
+		std::vector<std::string> gpx_lyr = {"waypoints", "routes", "tracks", "route_points", "track_points"};
+		if (!is_in_vector(lyrname, gpx_lyr)) {
+			if (wkb == wkbPoint || wkb == wkbMultiPoint) {
+				lyrname = "waypoints";
+			} else if (wkb == wkbMultiLineString) {
+				lyrname = "tracks";
+			} else {
+				lyrname = "waypoints";
+			}
+		}
+	}
 	poLayer = poDS->CreateLayer(lyrname.c_str(), SRS, wkb, papszOptions);
 	CSLDestroy(papszOptions);
     if( poLayer == NULL ) {
@@ -200,8 +222,10 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
 	for (int i=0; i<nfields; i++) {
-		
-//		Rcpp::Rcout << nms[i] << std::endl;
+		OGRFeatureDefn *poDefn = poLayer->GetLayerDefn();
+		if (poDefn->GetFieldIndex(nms[i].c_str()) >= 0) {
+			continue;
+		}
 
 		OGRFieldSubType eSubType = OFSTNone;
 		if (tps[i] == "double") {
@@ -280,42 +304,47 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 		OGRFeature *poFeature;
         poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
+		OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
 		for (int j=0; j<nfields; j++) {
+			int fidx = poFDefn->GetFieldIndex(nms[j].c_str());
+			if (fidx < 0) {
+				continue;
+			}
 			if (tps[j] == "double") {
 				double dval = df.getDvalue(i, j);
 				if (!std::isnan(dval)) {
-					poFeature->SetField(j, df.getDvalue(i, j));
+					poFeature->SetField(fidx, df.getDvalue(i, j));
 				}
 			} else if (tps[j] == "long") {
 				long ival = df.getIvalue(i, j);
 				if (ival != longNA) {
-					poFeature->SetField(j, (GIntBig)ival);
+					poFeature->SetField(fidx, (GIntBig)ival);
 				}
 			} else if (tps[j] == "bool") {
 				int8_t b = df.getBvalue(i, j);
 				if (b < 2) {
-					poFeature->SetField(j, b);
+					poFeature->SetField(fidx, b);
 				} else {
-					poFeature->SetFieldNull(j);
+					poFeature->SetFieldNull(fidx);
 				}
 			} else if (tps[j] == "time") {
 				SpatTime_t tval = df.getTvalue(i, j);
 				if (tval != timeNA) {
 					std::vector<int> dt = get_date(tval);
-					poFeature->SetField(j, dt[0], dt[1], dt[2], dt[3], dt[4], dt[5], 100);
+					poFeature->SetField(fidx, dt[0], dt[1], dt[2], dt[3], dt[4], dt[5], 100);
 				} else {
-					poFeature->SetFieldNull(j);					
+					poFeature->SetFieldNull(fidx);
 				}
 			} else if (tps[j] == "factor") {
 				SpatFactor f = df.getFvalue(i, j);
 				if (f.v[0] != 0) {
 					std::string s = f.getLabel(0);
-					poFeature->SetField(j, f.getLabel(0).c_str());
+					poFeature->SetField(fidx, f.getLabel(0).c_str());
 				}
 			} else {
 				std::string s = df.getSvalue(i, j);
 				if (s != df.NAS) {
-					poFeature->SetField(j, df.getSvalue(i, j).c_str());
+					poFeature->SetField(fidx, df.getSvalue(i, j).c_str());
 				}
 			}
 		}
