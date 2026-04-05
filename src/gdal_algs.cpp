@@ -206,7 +206,6 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 #else
 
 
-
 bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std::string dstcrs, SpatRaster &r) {
 
 	if ( hSrcDS == NULL ) {
@@ -237,17 +236,15 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 #else
 	oSRS->exportToWkt( &pszDstWKT );
 #endif
+ 	delete oSRS;
 
-	void *hTransformArg;
-	hTransformArg = GDALCreateGenImgProjTransformer( hSrcDS, pszSrcWKT, NULL, pszDstWKT, FALSE, 0, 1 );
+	void *hTransformArg = GDALCreateGenImgProjTransformer( hSrcDS, pszSrcWKT, NULL, pszDstWKT, FALSE, 0, 1 );
 	if (hTransformArg == NULL ) {
 		r.setError("cannot create TranformArg");
 		CPLFree(pszDstWKT);
-		delete oSRS;
 		return false;
 	}
 	CPLFree(pszDstWKT);
- 	delete oSRS;
 
 	double adfDstGeoTransform[6];
 	int nPixels=0, nLines=0;
@@ -488,7 +485,16 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 
-	if (hasScaleOffset()) {
+	// apply_so uses readStart(), which refuses rotated sources; GDAL warp reads
+	// the file directly and applies per-band scale/offset as appropriate.
+	bool any_rotated = false;
+	for (size_t j = 0; j < ns; j++) {
+		if (source[j].rotated) {
+			any_rotated = true;
+			break;
+		}
+	}
+	if (hasScaleOffset() && !any_rotated) {
 		SpatOptions opt2(opt);
 		SpatRaster app = apply_so(opt2);	
 		return app.warper(x, crs, method, mask, align, resample, opt);
@@ -1267,6 +1273,33 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 
 
 
+// When GDAL exposes a GEOLOCATION domain (MODIS/VIIRS swath), the geotransform
+// is only approximate: for full output (unless aoi is provided) pad extent then trim NA edges.
+// Other rotated rasters (e.g. JPEG) usually have no GEOLOCATION — no pad or trim.
+
+static bool has_geolocation(GDALDatasetH hDS) {
+	if (hDS == NULL) return false;
+	char **md = GDALGetMetadata(hDS, "GEOLOCATION");
+	if (md != NULL && CSLCount(md) > 0) return true;
+	GDALRasterBandH b = GDALGetRasterBand(hDS, 1);
+	if (b != NULL) {
+		md = GDALGetMetadata(b, "GEOLOCATION");
+		if (md != NULL && CSLCount(md) > 0) return true;
+	}
+	return false;
+}
+
+static SpatExtent expand_extent(SpatExtent e) {
+	static const double k = 1;
+	//if (k <= 0) return e;
+	double wx = e.xmax - e.xmin;
+	double wy = e.ymax - e.ymin;
+	double mx = wx * k * 0.5;
+	double my = wy * k * 0.5;
+	return SpatExtent(e.xmin - mx, e.xmax + mx, e.ymin - my, e.ymax + my);
+}
+
+
 bool GCP_geotrans(GDALDataset *poDataset, double* adfGeoTransform) {
 	int n = poDataset->GetGCPCount();
 	if (n == 0) return false;
@@ -1304,36 +1337,47 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 			return out;
 		}
 	}
-	GDALClose( (GDALDatasetH) poDataset );
 
-//	gt[1] = std::abs(gt[1]);
-	
-	//SpatExtent e = getExtent();
-	//std::vector<double> x = {e.xmin, e.xmin, e.xmax, e.xmax };
-	//std::vector<double> y = {e.ymin, e.ymax, e.ymin, e.ymax };
+	const bool pad_extent = has_geolocation((GDALDatasetH) poDataset);
+	const bool swath_pad_trim = pad_extent && (useaoi == 0);
+
+	// use bounds suggested by GDALWarp.
+#if GDAL_VERSION_MAJOR > 2 || (GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 2)
+	std::string srccrs = getSRS("wkt");
+	if (!get_output_bounds((GDALDatasetH) poDataset, srccrs, srccrs, out)) {
+		GDALClose( (GDALDatasetH) poDataset );
+		if (!out.hasError()) {
+			out.setError("cannot get rectified output extent");
+		}
+		return out;
+	}
+	GDALClose( (GDALDatasetH) poDataset );
+	if (swath_pad_trim) {
+		SpatExtent ee = expand_extent(out.getExtent());
+		out.setExtent(ee, true, true, "out");
+	}
+#else
+	GDALClose( (GDALDatasetH) poDataset );
 	double nc = ncol();
 	double nr = nrow();
-	std::vector<double> x = {0, 0, nc, nc};
-	std::vector<double> y = {0, nr, 0, nr};
+	std::vector<double> px = {0, 0, nc, nc};
+	std::vector<double> py = {0, nr, 0, nr};
 	std::vector<double> xx(4);
 	std::vector<double> yy(4);
 	for (size_t i=0; i<4; i++) {
-		xx[i] = gt[0] + x[i]*gt[1] + y[i]*gt[2];
-		yy[i] = gt[3] + x[i]*gt[4] + y[i]*gt[5];
+		xx[i] = gt[0] + px[i]*gt[1] + py[i]*gt[2];
+		yy[i] = gt[3] + px[i]*gt[4] + py[i]*gt[5];
 	}
-	double xmin = vmin(xx, TRUE);
-	double xmax = vmax(xx, TRUE);
-	double ymin = vmin(yy, TRUE);
-	double ymax = vmax(yy, TRUE);
-
-	SpatExtent en(xmin, xmax, ymin, ymax);
+	SpatExtent estext(vmin(xx, TRUE), vmax(xx, TRUE), vmin(yy, TRUE), vmax(yy, TRUE));
+	if (swath_pad_trim) {
+		estext = expand_extent(estext);
+	}
 	out = out.setResolution(fabs(gt[1]), fabs(gt[5]));
-
-	out.setExtent(en, true, true, "out");
-	//SpatExtent e = out.getExtent();
+	out.setExtent(estext, true, true, "out");
+#endif
 
 	if (useaoi == 1) { // use extent
-		en = aoi.getExtent();
+		SpatExtent en = aoi.getExtent();
 		if (snap) {
 			en = out.align(en, "near");
 			out.setExtent(en, false, true, "near");
@@ -1354,10 +1398,17 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 		out.rgbtype = rgbtype;
 		out.rgblyrs = rgblyrs;
 	}
-	
+
+	if (swath_pad_trim) {
+		SpatRaster trm = out.trim2(NAN, 0, opt);
+		if (!trm.hasError()) {
+			return trm;
+		}
+	}
+
 	std::string filename = opt.get_filename();
 	if (filename != "") {
-		out.writeRaster(opt);
+		out = out.writeRaster(opt);
 	}
 
 	return(out);
