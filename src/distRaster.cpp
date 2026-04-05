@@ -2797,4 +2797,825 @@ SpatRaster SpatRaster::hillshade(SpatRaster aspect, std::vector<double> angle, s
 }
 
 
+//=== surfaceArea ======================================
+
+/* Compute surface area, using method from:
+Jeff S. Jenness, 2004. Calculating Landscape Surface Area from Digital Elevation Models. Wildlife Society Bulletin 32(3):829-839. http://www.jstor.org/stable/3784807
+With edge adjustments. 
+From C code in R package "sp" by Barry Rowlingson <b.rowlingson@lancaster.ac.uk> (copyright 2010)
+Adapted for terra by Robert Hijmans (C++, support for lonlat) 
+*/
+
+inline double height(const std::vector<double> &heights, const long &ncols, const size_t &row, const long &col) {
+	size_t ncr = ncols*row;
+	if (col < 0) {
+		return heights[ncr]; // + 0
+	} else if (col == ncols) {
+		return heights[ncr + (ncols-1)];
+	} else {
+		return heights[ncr + col];
+	}
+}
+
+inline double triarea(const double &a, const double &b, const double &c) {
+	// triangle area given side lengths
+	double s = (a + b + c) / 2.0;
+	return sqrt(s * (s-a) * (s-b) * (s-c));
+}
+
+
+void sarea(std::vector<double> &heights, const size_t &nrow, const long &ncol, const std::vector<double> &w, const double &h, bool lonlat, std::vector<double> &sa) {
+
+// given an nx by ny matrix of heights with single-cell edge border, compute the surface area.
+
+// offsets to neighbours
+	std::vector<int> dyv = {-1, -1, -1, 0, 1, 1, 1, 0, -1};
+	std::vector<int> dxv = {-1, 0, 1, 1, 1, 0, -1, -1, -1};
+
+// triangle diagonal length
+	double s2 = sqrt((w[0]*w[0]) + (h*h));
+// radial side lengths
+	std::vector<double> side = {s2, h, s2, w[0], s2, h, s2, w[0], s2};
+// outer edges lengths
+	std::vector<double> l3v = {w[0], w[0], h, h, w[0], w[0], h, h};
+
+	sa = std::vector<double>(heights.size() - 2*ncol, NAN);
+
+	size_t cell = 0;
+	for (size_t i=1; i<(nrow-1); i++){
+		if (lonlat) {
+			size_t k = i - 1;
+			s2 = sqrt((w[k]*w[k]) + (h*h));
+			side = {s2, h, s2, w[k], s2, h, s2, w[k], s2};
+			l3v = {w[k], w[k], h, h, w[k], w[k], h, h};
+		}
+
+		for (long j=0; j<ncol; j++) {
+			double z1 = height(heights, ncol, i, j);
+			if (!std::isnan(z1)) {
+				sa[cell] = 0;
+				for (size_t tri=0; tri<8; tri++){
+					double z2 = height(heights, ncol, i+dxv[tri], j+dyv[tri]);
+					// replace missing adjacent values with the current cell value
+					if (std::isnan(z2)) z2 = z1;
+					double z3 = height(heights, ncol, i+dxv[tri+1], j+dyv[tri+1]);
+					if (std::isnan(z3)) z3 = z1;
+					double l1 = 0.5 * sqrt(side[tri] * side[tri] + (z1-z2) * (z1-z2));
+					double l2 = 0.5 * sqrt(side[tri+1] * side[tri+1] + (z1-z3) * (z1-z3));
+					double l3 = 0.5 * sqrt(l3v[tri] * l3v[tri] + (z2-z3) * (z2-z3));
+					sa[cell] += triarea(l1, l2, l3);
+				}
+			}
+			cell++;
+		}	
+	}
+}
+
+
+SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
+
+	SpatRaster out = geometry(1, false);
+	bool lonlat = is_lonlat();
+	if (lonlat) {
+		out.setError("not implemented for lonlat rasters");
+		return out;		
+	}
+	if (!hasValues()) {
+		out.setError("cannot compute surfaceArea for a raster with no values");
+		return out;
+	}
+	if (nlyr() != 1) {
+		out.setError("can only compute surfaceArea for a single raster layer");
+		return out;		
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+	BlockSize cbs = out.bs;
+	for (size_t i = 0; i < (cbs.n-1); i++) {
+		cbs.nrows[i] += 1;
+	}	
+	for (size_t i = 1; i < cbs.n; i++) {
+		cbs.row[i] -= 1;
+		cbs.nrows[i] += 1;
+	}
+	
+	size_t nc = ncol();	
+	double xr = xres();	
+	std::vector<double> resx = { xr };	
+	double resy = yres();
+	if (lonlat) {
+		resy = distance_lonlat(0, 0, 0, resy);		
+	} 
+	std::vector<int64_t> rows;
+
+	for (size_t i = 0; i < cbs.n; i++) {
+		std::vector<double> v;
+		readBlock(v, cbs, i);
+		if (i==0) {
+			v.insert(v.begin(), v.begin(), v.begin()+nc);
+		}
+		if (i == (cbs.n - 1)) {
+			v.insert(v.end(), v.end()-nc, v.end());
+		}
+		if (lonlat) {
+			rows.resize(out.bs.nrows[i]);
+			std::iota(rows.begin(), rows.end(), out.bs.row[i]);
+			std::vector<double> y = yFromRow(rows);
+			resx = distance_lon(xr, y);
+		}
+		std::vector<double> sa;
+		sarea(v, out.bs.nrows[i]+2, nc, resx, resy, lonlat, sa);
+		if (!out.writeBlock(sa, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
+//=== patches ======================================
+
+
+struct PatchUnionFind {
+	std::vector<double> parents;
+	size_t start_id;
+
+	PatchUnionFind(size_t start) : start_id(start) {}
+
+	void make_set(double id) {
+		parents.push_back(id); 
+	}
+
+	double find(double id) {
+		if (std::isnan(id)) return id;
+		if (id < start_id) return id; 
+		
+		size_t idx = (size_t)(id - start_id);
+		if (parents[idx] == id) return id;
+		
+		parents[idx] = find(parents[idx]); 
+		return parents[idx];
+	}
+
+	void unite(double id1, double id2, std::vector<std::vector<size_t>>& rcl) {
+		double root1 = find(id1);
+		double root2 = find(id2);
+		if (root1 == root2) return;
+
+		bool g1 = root1 < start_id;
+		bool g2 = root2 < start_id;
+
+		if (g1 && g2) {
+			rcl[0].push_back((size_t)root1);
+			rcl[1].push_back((size_t)root2);
+			return;
+		}
+
+		if (g1) {
+			parents[(size_t)(root2 - start_id)] = root1;
+		} else if (g2) {
+			parents[(size_t)(root1 - start_id)] = root2;
+		} else {
+			if (root1 < root2)
+				parents[(size_t)(root2 - start_id)] = root1;
+			else
+				parents[(size_t)(root1 - start_id)] = root2;
+		}
+	}
+};
+
+void broom_patches(const std::vector<double> &vals, std::vector<double> &patches, std::vector<double>& above_p, std::vector<double>& above_v, const size_t &dirs, size_t &ncps, const size_t &nr, const size_t &nc, std::vector<std::vector<size_t>> &rcl, bool is_global) {
+
+	PatchUnionFind uf(ncps);
+	bool d4 = dirs == 4;
+	size_t stopnc = nc-1;
+	std::vector<double> d;
+	
+	auto check_neighbor = [&](double val, double neighbor_val, double neighbor_patch, std::vector<double>& candidates) {
+		if (!std::isnan(neighbor_val) && !std::isnan(neighbor_patch)) {
+			if (is_equal(val, neighbor_val)) {
+				candidates.push_back(neighbor_patch);
+			}
+		}
+	};
+
+	auto assign_patch = [&](size_t idx, std::vector<double>& candidates) {
+		if (candidates.empty()) {
+			patches[idx] = ncps;
+			uf.make_set(ncps);
+			ncps++;
+		} else {
+			double chosen = candidates[0];
+			patches[idx] = chosen;
+			for (size_t k = 1; k < candidates.size(); ++k) {
+				uf.unite(chosen, candidates[k], rcl);
+			}
+		}
+	};
+
+	//first row
+	if ( !std::isnan(vals[0]) ) {
+		d.clear();
+		if (d4) {
+			check_neighbor(vals[0], above_v[0], above_p[0], d);
+		} else if (is_global) { 
+			check_neighbor(vals[0], above_v[0], above_p[0], d);
+			check_neighbor(vals[0], above_v[1], above_p[1], d);
+			check_neighbor(vals[0], above_v[stopnc], above_p[stopnc], d);
+		} else { 
+			check_neighbor(vals[0], above_v[0], above_p[0], d);
+			check_neighbor(vals[0], above_v[1], above_p[1], d);
+		}
+		assign_patch(0, d);
+	}
+
+	for (size_t i=1; i<stopnc; i++) {
+		if (!std::isnan(vals[i])) {
+			d.clear();
+			check_neighbor(vals[i], above_v[i], above_p[i], d);
+			check_neighbor(vals[i], vals[i-1], patches[i-1], d);
+			if (!d4) {
+				check_neighbor(vals[i], above_v[i-1], above_p[i-1], d);
+				check_neighbor(vals[i], above_v[i+1], above_p[i+1], d);
+			}
+			assign_patch(i, d);
+		}
+	}
+	
+	size_t i = stopnc;
+	if (!std::isnan(vals[i])) {
+		d.clear();
+		check_neighbor(vals[i], above_v[i], above_p[i], d);
+		check_neighbor(vals[i], vals[i-1], patches[i-1], d);
+		if (is_global) {
+			check_neighbor(vals[i], vals[0], patches[0], d);
+			if (!d4) {
+				check_neighbor(vals[i], above_v[i-1], above_p[i-1], d);
+				check_neighbor(vals[i], above_v[0], above_p[0], d);
+			}
+		} else if (!d4) {
+			check_neighbor(vals[i], above_v[i-1], above_p[i-1], d);
+		}
+		assign_patch(i, d);
+	}
+
+	for (size_t r=1; r<nr; r++) {
+		size_t start = r*nc;
+		size_t i=start;
+		if (!std::isnan(vals[i])) {
+			d.clear();
+			check_neighbor(vals[i], vals[i-nc], patches[i-nc], d);
+			if (is_global) {
+				if (!d4) {
+					check_neighbor(vals[i], vals[i-nc+1], patches[i-nc+1], d);
+					check_neighbor(vals[i], vals[i-1], patches[i-1], d);
+				}
+			} else if (!d4) {
+				check_neighbor(vals[i], vals[i-nc+1], patches[i-nc+1], d);
+			}
+			assign_patch(i, d);
+		}
+
+		size_t stop = start + stopnc;
+		for (size_t i=(start+1); i<stop; i++) {
+			if (!std::isnan(vals[i])) {
+				d.clear();
+				check_neighbor(vals[i], vals[i-1], patches[i-1], d);
+				check_neighbor(vals[i], vals[i-nc], patches[i-nc], d);
+				if (!d4) {
+					check_neighbor(vals[i], vals[i-nc-1], patches[i-nc-1], d);
+					check_neighbor(vals[i], vals[i-nc+1], patches[i-nc+1], d);
+				}
+				assign_patch(i, d);
+			}
+		}
+
+		i = stop;
+		if (!std::isnan(vals[i])) {
+			d.clear();
+			check_neighbor(vals[i], vals[i-1], patches[i-1], d);
+			check_neighbor(vals[i], vals[i-nc], patches[i-nc], d);
+			if (is_global) {
+				check_neighbor(vals[i], vals[start], patches[start], d);
+				if (!d4) {
+					check_neighbor(vals[i], vals[i-nc-1], patches[i-nc-1], d);
+					check_neighbor(vals[i], vals[start-nc], patches[start-nc], d);
+				}
+			} else if (!d4) {
+				check_neighbor(vals[i], vals[i-nc-1], patches[i-nc-1], d);
+			}
+			assign_patch(i, d);
+		}
+	}
+
+	for (size_t k = 0; k < patches.size(); ++k) {
+		if (!std::isnan(patches[k])) {
+			patches[k] = uf.find(patches[k]);
+		}
+	}
+
+	size_t off = (nr-1) * nc;
+	std::vector<double> last_row_p(patches.begin()+off, patches.end());
+	std::vector<double> last_row_v(vals.begin()+off, vals.end());
+	above_p = last_row_p;
+	above_v = last_row_v;
+}
+
+std::vector<std::vector<double>> patches_getRCL(std::vector<std::vector<size_t>> rcl, size_t n) {
+	std::vector<std::vector<size_t>> rcl2(rcl[0].size());
+	for (size_t i=0; i<rcl[0].size(); i++) {
+		rcl2[i].push_back(rcl[0][i]);
+		rcl2[i].push_back(rcl[1][i]);
+	}
+    std::sort(rcl2.begin(), rcl2.end());
+    rcl2.erase(std::unique(rcl2.begin(), rcl2.end()), rcl2.end());
+	std::vector<std::vector<double>> out(2);
+	for (size_t i=0; i<rcl2.size(); i++) {
+		out[0].push_back(rcl2[i][1]);
+		out[1].push_back(rcl2[i][0]);
+	}
+
+	for (size_t i=1; i<out[0].size(); i++) {
+		for (size_t j=0; j<i; j++) {
+			if (out[0][i] == out[1][j]) {
+				out[1][j] = out[0][i];
+			}
+		}
+	}
+
+	std::vector<double> lost = out[0];
+	lost.push_back(n);
+	size_t sub = 0;
+	for (size_t i=0; i<lost.size(); i++) {
+		sub++;
+		for (size_t j=lost[i]+1; j<lost[i+1]; j++) {
+			out[0].push_back(j);
+			out[1].push_back(j-sub);
+		}
+	}
+	return out;
+}
+
+SpatRaster SpatRaster::patches(size_t directions, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1, false);
+
+	if (nlyr() > 1) {
+		SpatOptions ops(opt);
+		std::vector<std::string> nms = getNames();
+		if (ops.names.size() == nms.size()) {
+			nms = opt.names;
+		}
+		for (size_t i=0; i<nlyr(); i++) {
+			std::vector<size_t> lyr = {i};
+			ops.names = {nms[i]};
+			SpatRaster x = subset(lyr, ops);
+			x = x.patches(directions, ops); 
+			out.addSource(x, false, ops);
+		}
+		if (!opt.get_filename().empty()) {
+			out = out.writeRaster(opt);
+		}
+		return out;
+	}
+
+	if (!hasValues()) {
+		out.setError("cannot compute patches for a raster with no values");
+		return out;
+	}
+	if (!((directions == 4) || (directions == 8))) {
+		out.setError("directions should be 4 or 8");
+		return out;		
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	
+	opt.set_filenames({""}); 
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+    size_t nc = ncol();
+	size_t ncps = 1;
+	std::vector<double> above_p(nc, NAN);
+	std::vector<double> above_v(nc, NAN);
+	std::vector<std::vector<size_t>> rcl(2);
+	std::vector<double> v;
+	
+	bool is_global = is_global_lonlat();
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		readBlock(v, out.bs, i);
+		std::vector<double> p(v.size(), NAN); 
+		broom_patches(v, p, above_p, above_v, directions, ncps, out.bs.nrows[i], nc, rcl, is_global);
+		if (!out.writeBlock(p, i)) return out;
+	}
+	
+	readStop();
+	out.writeStop();
+	
+	std::string filename = opt.get_filename();
+	opt.set_filenames({filename});
+	
+	if (!rcl[0].empty()) {
+		std::vector<std::vector<double>> rc = patches_getRCL(rcl, ncps);
+		out = out.reclassify(rc, 3, true, false, 0.0, false, false, false, opt);
+	} else if (!filename.empty()) {
+		out = out.writeRaster(opt);
+	}
+
+	return(out);
+}
+
+//=== patches (end) ==================================
+
+
+//=== nearest ========================================
+
+std::vector<double> dn_bounds(const std::vector<double>& vx, const std::vector<double>& vy, const std::vector<double>& rx, const double& ry, size_t& first, size_t& last, const bool& lonlat, const std::string &method) {
+
+	std::vector<double> d(rx.size(), std::numeric_limits<double>::max());
+	size_t oldfirst = first;
+	first = vx.size();
+	last = 0;
+
+
+	if (lonlat) {
+		std::function<double(double, double, double, double)> dfun;
+		if (method == "haversine") {
+			dfun = distance_hav;
+		} else if (method == "cosine") {
+			dfun = distance_cos;			
+		} else {
+			dfun = distance_geo;
+		}
+
+		
+		for (size_t i=0; i<rx.size(); i++) {
+			size_t thisone = 0;
+			for (size_t j=oldfirst; j<vx.size(); j++) {
+				double dd = dfun(rx[i], ry, vx[j], vy[j]);
+				if (dd < d[i]) {
+					d[i] = dd;
+					thisone = j;
+				}
+			}
+			first = std::min(thisone, first);
+			last  = std::max(thisone, last);
+		}
+	} else {
+		for (size_t i=0; i<rx.size(); i++) {
+			size_t thisone = 0;
+			for (size_t j=oldfirst; j<vx.size(); j++) {
+				double dd = distance_plane(rx[i], ry, vx[j], vy[j]);
+				if (dd < d[i]) {
+					d[i] = dd;
+					thisone = j;
+				}
+			}
+			first = std::min(thisone, first);
+			last  = std::max(thisone, last);
+		}
+	}
+	last += 1;
+	return d;
+}
+
+
+void dn_only(std::vector<double> &d, const std::vector<double>& vx, const std::vector<double>& vy, const std::vector<double>& rx, const std::vector<double>& ry, const size_t& first, const size_t& last, const bool& lonlat, const std::vector<double>& dlast, bool skip, const std::string& method, bool setNA) {
+
+
+std::vector<double> clast;
+
+std::vector<double> cell;
+const std::vector<double> v;
+
+	size_t rxs = rx.size();
+	d.reserve(rxs + dlast.size());
+	cell.reserve(rxs + dlast.size());
+
+	double inf = std::numeric_limits<double>::infinity();
+
+	if (lonlat) {
+
+		if (method == "geo") {
+
+			double dd, azi1, azi2;
+			struct geod_geodesic g;
+			// get a and f from crs?
+			double a = 6378137.0;
+			double f = 1/298.257223563;
+			geod_init(&g, a, f);
+
+			if (skip) {
+				for (size_t i=0; i<rxs; i++) {
+					if (std::isnan(v[i])) {
+						d.push_back(inf);
+						cell.push_back(NAN);
+						for (size_t j=first; j<last; j++) {
+							geod_inverse(&g, ry[i], rx[i], vy[j], vx[j], &dd, &azi1, &azi2);
+							if (dd < d[i]) {
+								d[i] = dd;
+								cell[i] = j;
+							}
+						}
+					} else {
+						d.push_back(0);
+						cell.push_back(NAN);
+					}
+				}
+			} else { // no skip
+
+				for (size_t i=0; i<rxs; i++) {
+					d.push_back(inf);
+					cell.push_back(NAN);
+					for (size_t j=first; j<last; j++) {
+						geod_inverse(&g, ry[i], rx[i], vy[j], vx[j], &dd, &azi1, &azi2);
+						if (dd < d[i]) {
+							d[i] = dd;
+							cell[i] = j;
+						}
+					}
+				} 
+			}
+
+		} else { // not geo
+	
+			std::function<double(double, double, double, double)> dfun;
+			if (method == "haversine") {
+				dfun = distance_hav;
+			} else if (method == "cosine") {
+				dfun = distance_cos;
+			} 
+			if (skip) {
+				
+				for (size_t i=0; i<rxs; i++) {
+					if (std::isnan(v[i])) {
+						d.push_back(inf);
+						cell.push_back(NAN);
+						for (size_t j=first; j<last; j++) {
+							double dd = dfun(rx[i], ry[i], vx[j], vy[j]);
+							if (dd < d[i]) {
+								d[i] = dd;
+								cell[i] = j;
+							}
+						}
+					} else {
+						d.push_back(0);
+						cell.push_back(NAN);
+					}
+				}		
+			} else {	
+				for (size_t i=0; i<rxs; i++) {
+					d.push_back(inf);
+					cell.push_back(NAN);
+					for (size_t j=first; j<last; j++) {
+						//double dd = distHaversine(rx[i], ry[i], vx[j], vy[j]);
+						double dd = dfun(rx[i], ry[i], vx[j], vy[j]);
+
+						if (dd < d[i]) {
+							d[i] = dd;
+							cell[i] = j;
+						}
+					}
+				}
+			} 
+		}
+		
+	} else { // not lonlat
+		if (skip) {
+			for (size_t i=0; i<rxs; i++) {
+				if (std::isnan(v[i])) {
+					d.push_back(inf);
+					cell.push_back(NAN);
+					for (size_t j=first; j<last; j++) {
+						double dd = distance_plane(rx[i], ry[i], vx[j], vy[j]);
+						if (dd < d[i]) {
+							d[i] = dd;
+							cell[i] = j;
+						}
+					}
+				} else {
+					d.push_back(0);
+					cell.push_back(NAN);
+				}
+			}
+		} else {
+			for (size_t i=0; i<rxs; i++) {
+				d.push_back(inf);
+				cell.push_back(NAN);
+				for (size_t j=first; j<last; j++) {
+					double dd = distance_plane(rx[i], ry[i], vx[j], vy[j]);
+					if (dd < d[i]) {
+						d[i] = dd;
+						cell[i] = j;
+					}
+				}
+			}
+		}
+	}
+
+	d.insert(d.end(), dlast.begin(), dlast.end());
+	cell.insert(cell.end(), clast.begin(), clast.end());
+	if (skip) {
+		for (size_t i=rxs; i< v.size(); i++) {
+			if (!std::isnan(v[i])) {
+				d[i] = 0;
+				cell[i] = NAN;
+			}
+		}
+		if (setNA) {
+			double mxval = std::numeric_limits<double>::max();
+			for (size_t i=0; i< v.size(); i++) {
+				if (v[i] == mxval) {
+					d[i] = NAN;
+					cell[i] = NAN;
+				}
+			}
+		}
+	}
+}
+
+
+SpatRaster SpatRaster::dn_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (x.empty()) {
+		out.setError("no locations to compute distance from");
+		return(out);
+	}
+	const double toRad = 0.0174532925199433;
+	std::vector<std::size_t> pm = sort_order_d(y);
+	permute(x, pm);
+	permute(y, pm);
+
+	bool lonlat = is_lonlat(); 
+
+	double m=1;
+	if (!source[0].srs.m_dist(m, lonlat, unit)) {
+		out.setError("invalid unit");
+		return(out);
+	}
+
+
+	unsigned nc = ncol();
+	opt.steps = std::max(opt.steps, (size_t) 4);
+	opt.progress = opt.progress * 1.5;
+
+ 	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+	std::vector<double> cells;
+	std::vector<double> dlast;
+
+	std::vector<int64_t> cols;
+	cols.resize(ncol());
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> tox = xFromCol(cols);
+
+	if (lonlat && (method != "geo")) {
+		for (double &d : x) d *= toRad;
+		for (double &d : y) d *= toRad;
+		for (double &d : tox) d *= toRad;
+	}
+
+	double oldfirst = 0;
+	size_t first = 0;
+	size_t last  = x.size();
+
+	std::vector<double> v;
+	if (skip) {
+		if (!readStart()) {
+			out.setError(getError());
+			return(out);
+		}
+		for (size_t i = 0; i < out.bs.n; i++) {
+			cells.resize((out.bs.nrows[i] -1) * nc) ;
+			std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
+			std::vector<std::vector<double>> rxy = xyFromCell(cells);
+			double toy = yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1);
+			if (lonlat && (method != "geo")) {
+				toy *= toRad;
+				for (double &d : rxy[0]) d *= toRad;
+				for (double &d : rxy[1]) d *= toRad;
+			}
+			readBlock(v, out.bs, i);
+			dlast = dn_bounds(x, y, tox, toy, first, last, lonlat, method);
+			std::vector<double> d;
+
+			dn_only(d, x, y, rxy[0], rxy[1], oldfirst, last, lonlat, dlast, true, method, setNA);
+			oldfirst = first;
+			if (m != 1) {
+				for (double &v : d) v *= m;
+			}
+			if (!out.writeBlock(d, i)) return out;
+		}
+		readStop();
+	} else {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			double toy = yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1);
+			cells.resize((out.bs.nrows[i] -1) * nc) ;
+			std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
+			std::vector<std::vector<double>> rxy = xyFromCell(cells);
+			if (lonlat && (method != "geo")) {
+				toy *= toRad;
+				for (double &d : rxy[0]) d *= toRad;
+				for (double &d : rxy[1]) d *= toRad;
+			}
+			dlast = dn_bounds(x, y, tox, toy, first, last, lonlat, method);
+			std::vector<double> d;
+			dn_only(d, x, y, rxy[0], rxy[1], oldfirst, last, lonlat, dlast, false, method, setNA);
+			oldfirst = first;
+			if (m != 1) {
+				for (double &v : d) v *= m;
+			}
+			if (!out.writeBlock(d, i)) return out;
+		}
+	}
+	out.writeStop();
+	return(out);
+}
+
+
+
+
+SpatRaster SpatRaster::nearest(double target, double exclude, bool keepNA, std::string unit, bool remove_zero, std::string method, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return out;
+	}
+
+	SpatOptions ops(opt);
+	size_t nl = nlyr();
+	if (nl > 1) {
+		std::vector<std::string> nms = getNames();
+		if (ops.names.size() == nms.size()) {
+			nms = opt.names;
+		}
+		out.source.resize(nl);
+		for (size_t i=0; i<nl; i++) {
+			std::vector<size_t> lyr = {i};
+			SpatRaster r = subset(lyr, ops);
+			ops.names = {nms[i]};
+			r = r.nearest(target, exclude, keepNA, unit, remove_zero, method, ops);
+			out.source[i] = r.source[0];
+		}
+		if (!opt.get_filename().empty()) {
+			out = out.writeRaster(opt);
+		}
+		return out;
+	}
+
+	bool setNA = false;
+	std::vector<std::vector<double>> p;
+	if (!std::isnan(exclude)) {
+		SpatRaster x;
+		if (std::isnan(target)) {
+			x = replaceValues({exclude}, {target}, 1, false, NAN, false, ops);
+			x = x.edges(false, false, "inner", 8, 1, ops);
+			p = x.as_points_value(1, ops);
+			if (p.empty()) {
+				return out.init({0}, opt);
+			}
+			return dn_crds(p[0], p[1], method, true, setNA, unit, opt);
+
+		} else {
+			x = replaceValues({exclude, target}, {NAN, NAN}, 1, false, NAN, false, ops);
+			x = x.edges(false, false, "inner", 8, 1, ops);
+			p = x.as_points_value(1, ops);
+			out = replaceValues({NAN, exclude, target}, {target, NAN, NAN}, 1, false, NAN, false, ops);
+		}
+	} else if (!std::isnan(target)) {
+		SpatRaster x = replaceValues({target}, {NAN}, 1, false, NAN, false, ops);
+		x = x.edges(false, false, "inner", 8, 0, ops);
+		p = x.as_points_value(1, ops);
+		out = replaceValues({NAN, target}, {std::numeric_limits<double>::max(), NAN}, 1, false, NAN, false, ops);
+		setNA = true;
+	} else {
+		out = edges(false, false, "inner", 8, 0, ops);
+		p = out.as_points_value(1, ops);
+	}
+	if (p.empty()) {
+		return out.init({0}, opt);
+	}
+	return out.dn_crds(p[0], p[1], method, true, setNA, unit, opt);
+}
+
+//=== nearest (end) ==================================
 

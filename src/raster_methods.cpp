@@ -6497,5 +6497,6 @@ SpatRaster SpatRaster::similarity(std::vector<double> x, SpatOptions &opt) {
 	readStop();
 	out.writeStop();
 	return(out);
-
 }
+
+

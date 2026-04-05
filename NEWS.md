@@ -7,6 +7,7 @@
 - `rbind<SpatVector,SpatVector>` could make R crash when combining a variable that is numeric in one and boolean in the other source [#2069](https://github.com/rspatial/terra/issues/2069) by Hans van Calster
 - `vect` can now better handle non standard geometries such as multisurface [#2037](https://github.com/rspatial/terra/issues/2037) by Floris Vanderhaeghe
 - `writeVector` can now write GPX format [#1231](https://github.com/rspatial/terra/issues/1231) by Krzysztof Dyba
+- better handling of rotated rasters [#1434](https://github.com/rspatial/terra/issues/1434) by Insang Song and [#918](https://github.com/rspatial/terra/issues/918) by Agustin Lobo
 
 ## enhancements
 

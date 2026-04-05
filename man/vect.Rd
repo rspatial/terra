@@ -37,7 +37,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 
 \usage{
 \S4method{vect}{character}(x, layer="", query="", dialect="", extent=NULL, filter=NULL, 
-		crs="", proxy=FALSE, what="", opts=NULL)
+		crs="", proxy=FALSE, what="", opts=NULL, kml.extended=NULL, ...)
 
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
@@ -65,6 +65,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \item{proxy}{logical. If \code{TRUE} a SpatVectorProxy is returned}
 \item{what}{character indicating what to read. Either \code{""} for geometries and attributes, or \code{"geoms"} to only read the geometries, \code{"attributes"} to only read the attributes (that are returned as a data.frame)}
 \item{opts}{character. GDAL dataset open options. For example "ENCODING=LATIN1"}
+\item{kml.extended}{logical or \code{NULL}. For \code{.kml} and \code{.kmz} files: GDAL's \code{KML} driver (common on Windows) often reads only \code{Name} and \code{Description}, while the \code{LIBKML} driver (common on Linux) may add many KML structure fields as columns (often empty). With \code{NULL} (default) or \code{TRUE}, if the suggested \code{XML} package is available, \code{terra} parses \verb{ExtendedData} and replaces the attribute table when the placemark count matches the vector's feature count (same order as \verb{<Placemark>} elements with geometry). For \code{.kmz}, the archive is unpacked to a temporary directory, preferring \code{doc.kml} if present. With \code{FALSE}, GDAL fields are kept. Ignored when \code{proxy=TRUE} or \code{what != ""}.}
 \item{geom}{character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries. If \code{NULL} the function will use or c("x", "y"), c("lon", "lat"), c("longitude", "latitude") and a few variations thereof, if one of these pairs is in the data}
 \item{keepgeom}{logical. If \code{TRUE} the geom variable(s), e.g. spatial coordinates, is (are) also included in the attributes table}
 \item{quiet}{logical. If \code{TRUE} a warning is given when \code{x} is a data.frame and the values for geom and/or the crs are guessed from the data}
