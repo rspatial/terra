@@ -165,7 +165,7 @@
 		}
 		tf <- tempfile(fileext = ext)
 		on.exit(unlink(tf), add = TRUE)
-		st <- try(download.file(fn, tf, mode = "wb", quiet = TRUE), silent = TRUE)
+		st <- try(utils::download.file(fn, tf, mode = "wb", quiet = TRUE), silent = TRUE)
 		if (inherits(st, "try-error") || !isTRUE(st == 0L) || !file.exists(tf)) {
 			warn("vect", "kml.extended: failed to download KML/KMZ for XML parsing")
 			return(v)

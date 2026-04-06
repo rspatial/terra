@@ -53,7 +53,7 @@ setMethod("vect", signature(x="SpatGraticule"),
 
 
 setMethod("vect", signature(x="character"),
-	function(x, layer="", query="", dialect="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="", opts=NULL, kml.extended=NULL, ...) {
+	function(x, layer="", query="", dialect="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="", opts=NULL, kml.extended=NULL) {
 
 		what <- trimws(tolower(what))
 		if (what != "") what <- match.arg(trimws(tolower(what)), c("geoms", "attributes"))
