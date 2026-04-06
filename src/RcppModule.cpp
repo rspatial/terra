@@ -1123,6 +1123,7 @@ RCPP_MODULE(spat){
 	class_<SpatRasterStack>("SpatRasterStack")
 		.constructor()
 		.constructor<std::string, std::vector<int>, bool, std::vector<std::string>, bool, bool, std::vector<std::string>>()
+		.constructor<std::string, std::vector<int>, bool, std::vector<std::string>, bool, bool, std::vector<std::string>, bool>()
 		.constructor<SpatRaster, std::string, std::string, std::string>()
 		.method("deepcopy", &SpatRasterStack::deepCopy)
 
