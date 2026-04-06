@@ -75,9 +75,11 @@ sds(x, crs="", extent=NULL)
   logical. If `TRUE`, the multi-dimensional GDAL API is used for reading
   the file. This API can only be used for a few file formats
   (netCDF/HDF5) and can sometimes provide notably faster reading of data
-  with many (time) steps in the third or higher dimension. If the value
-  is not `TRUE` or `FALSE`, the multi-dimensional API is automatically
-  used for netCDF and HDF files
+  with many (time) steps in the third or higher dimension. If no
+  subdataset is selected with `subds`, all usable arrays are combined
+  into one `SpatRaster` (like `md=FALSE`); a warning reports how many
+  variables and layers were combined when there is more than one
+  variable.
 
 - crs:
 

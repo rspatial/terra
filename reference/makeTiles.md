@@ -111,10 +111,10 @@ getTileExtents(r, x, buffer=3)
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
-#> [1] "/tmp/RtmpZ6C9O4/file23505a742203_1.tif"
-#> [2] "/tmp/RtmpZ6C9O4/file23505a742203_2.tif"
-#> [3] "/tmp/RtmpZ6C9O4/file23505a742203_3.tif"
-#> [4] "/tmp/RtmpZ6C9O4/file23505a742203_4.tif"
+#> [1] "/tmp/Rtmp7f0EO2/file23867cc5c4a6_1.tif"
+#> [2] "/tmp/Rtmp7f0EO2/file23867cc5c4a6_2.tif"
+#> [3] "/tmp/Rtmp7f0EO2/file23867cc5c4a6_3.tif"
+#> [4] "/tmp/Rtmp7f0EO2/file23867cc5c4a6_4.tif"
 
 vrt(ff)
 #> Error: [rast] cannot read multidim from this file

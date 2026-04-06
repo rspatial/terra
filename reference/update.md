@@ -45,7 +45,7 @@ rast(fname)
 #> resolution  : 1.0198, 1.02597  (x, y)
 #> extent      : -1, 102, -1, 78  (xmin, xmax, ymin, ymax)
 #> coord. ref. : WGS 84 / UTM zone 1N (EPSG:32601)
-#> source      : file2350642bbd61.tif
+#> source      : file23866ca963fa.tif
 #> colors rgb  : 1, 2, 3
 #> names       : red, green, blue
 #> min values  :   0,     0,    0
