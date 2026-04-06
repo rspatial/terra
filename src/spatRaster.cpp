@@ -31,7 +31,7 @@
 
 SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains) {
 #ifdef useGDAL
-	constructFromFile(fname, subds, subdsname, drivers, options, {}, noflip, guessCRS, domains, 1);
+	constructFromFile(fname, subds, subdsname, drivers, options, {}, noflip, guessCRS, domains, 0);
 #endif
 }
 

@@ -700,7 +700,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 			}
 		}
 		if (!ok) {
-			ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 1);
+			ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0);
 		}
 		if (ok) {
 			std::string sname = sub.source[0].source_name;
@@ -746,7 +746,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 						}
 					}
 					if (!ok) {
-						ok = sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 1);
+						ok = sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0);
 					}
 					if (ok) {
 						std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
@@ -796,7 +796,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 	if (metadata == NULL) {
 		GDALClose( (GDALDatasetH) poDataset );
 		SpatRaster sub;
-		if (sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 1)) {
+		if (sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0)) {
 			std::string sname = sub.source[0].source_name;
 			push_back(sub, sname);
 		}
@@ -827,7 +827,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				SpatRaster sub;
-				if (sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 1)) {
+				if (sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0)) {
 					push_back(sub, basename_sds(s));
 				} else {
 					addWarning("skipped (fail): " + s);
@@ -962,7 +962,20 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
 			GDALClose( (GDALDatasetH) poDataset );		
 			bool ok = constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains);
-			return ok;
+			if (ok) {
+				return true;
+			}
+			// Plain GeoTIFF and similar: driver may advertise MD while file has only classic bands (e.g. viewshed temp).
+			poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
+			if (poDataset == NULL) {
+				if (!file_exists(fname)) {
+					setError("file does not exist: " + fname);
+				} else {
+					setError("cannot open this file as a SpatRaster: " + fname);
+				}
+				return false;
+			}
+			poDriver = poDataset->GetDriver();
 		}
 	}
 
@@ -2195,7 +2208,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	size_t cnt;
 
     for (cnt=0; cnt < sd.size(); cnt++) {
-		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options, {}, noflip, guessCRS, domains, 1)) break;
+		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options, {}, noflip, guessCRS, domains, 0)) break;
 	}
 //	source[0].source_name = srcname[cnt];
 
@@ -2206,7 +2219,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	SpatOptions opt;
     for (size_t i=(cnt+1); i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
-		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options, {}, noflip, guessCRS, domains, 1);
+		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options, {}, noflip, guessCRS, domains, 0);
 		if (success) {
 			if (out.compare_geom(*this, false, false, 0.1)) {
 //				out.source	[0].source_name = srcname[i];
