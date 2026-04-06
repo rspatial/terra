@@ -57,7 +57,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'character'</span></span>
 <span><span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="st">""</span>, query<span class="op">=</span><span class="st">""</span>, dialect<span class="op">=</span><span class="st">""</span>, extent<span class="op">=</span><span class="cn">NULL</span>, filter<span class="op">=</span><span class="cn">NULL</span>, </span>
-<span>    crs<span class="op">=</span><span class="st">""</span>, proxy<span class="op">=</span><span class="cn">FALSE</span>, what<span class="op">=</span><span class="st">""</span>, opts<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
+<span>    crs<span class="op">=</span><span class="st">""</span>, proxy<span class="op">=</span><span class="cn">FALSE</span>, what<span class="op">=</span><span class="st">""</span>, opts<span class="op">=</span><span class="cn">NULL</span>, kml.extended<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'matrix'</span></span>
 <span><span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, type<span class="op">=</span><span class="st">"points"</span>, atts<span class="op">=</span><span class="cn">NULL</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
@@ -117,6 +117,9 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 
 <dt id="arg-opts">opts<a class="anchor" aria-label="anchor" href="#arg-opts"></a></dt>
 <dd><p>character. GDAL dataset open options. For example "ENCODING=LATIN1"</p></dd>
+
+<dt id="arg-kml-extended">kml.extended<a class="anchor" aria-label="anchor" href="#arg-kml-extended"></a></dt>
+<dd><p>logical or <code>NULL</code>. For <code>.kml</code> and <code>.kmz</code> files: GDAL's <code>KML</code> driver (common on Windows) often reads only <code>Name</code> and <code>Description</code>, while the <code>LIBKML</code> driver (common on Linux) may add many KML structure fields as columns (often empty). With <code>NULL</code> (default) or <code>TRUE</code>, if the suggested <code>XML</code> package is available, <code>terra</code> parses <code>ExtendedData</code> and replaces the attribute table when the placemark count matches the vector's feature count (same order as <code>&lt;Placemark&gt;</code> elements with geometry). For <code>.kmz</code>, the archive is unpacked to a temporary directory, preferring <code>doc.kml</code> if present. With <code>FALSE</code>, GDAL fields are kept. Ignored when <code>proxy=TRUE</code> or <code>what != ""</code>.</p></dd>
 
 <dt id="arg-geom">geom<a class="anchor" aria-label="anchor" href="#arg-geom"></a></dt>
 <dd><p>character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries. If <code>NULL</code> the function will use or c("x", "y"), c("lon", "lat"), c("longitude", "latitude") and a few variations thereof, if one of these pairs is in the data</p></dd>

@@ -52,7 +52,7 @@ s
 #> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
 #> coord. ref. : Cartesian (Meter)
 #> source      : logo.tif
-#> colors rgb  : 0, 1, 2
+#> colors rgb  : 1, 2, 3
 #> names       : red, green, blue
 #> min values  :   0,     0,    0
 #> max values  : 255,   255,  255

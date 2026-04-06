@@ -23,6 +23,10 @@
 - `writeVector` can now write GPX format
   [\#1231](https://github.com/rspatial/terra/issues/1231) by Krzysztof
   Dyba
+- better handling of rotated rasters
+  [\#1434](https://github.com/rspatial/terra/issues/1434) by Insang Song
+  and [\#918](https://github.com/rspatial/terra/issues/918) by Agustin
+  Lobo
 
 ### enhancements
 
