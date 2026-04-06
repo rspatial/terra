@@ -25,9 +25,8 @@ a single file.
 ``` r
 # S4 method for class 'character'
 rast(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, 
-    snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, 
-    domains="", md=grepl("\\.nc$|\\.ncdf$|\\.h4$|\\.h5$|\\.hdf$", x, TRUE),
-    dims=NULL)
+    snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, 
+    guessCRS=TRUE, domains="", md=FALSE, dims=NULL)
 
 # S4 method for class 'missing'
 rast(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90,
@@ -136,18 +135,21 @@ rast(x, ...)
 
 - md:
 
-  logical. If `TRUE`, the multi-dimensional GDAL interface is used under
-  the hood for file reading. This interface can only be used for a few
-  file formats (netCDF/HDF5) and can sometimes (not always) provide
-  notably faster reading of data with many (time) steps in the third or
-  higher dimension. Support for this is new and experimental (June 2025)
+  logical. If `TRUE`, the multi-dimensional GDAL API is used for reading
+  the file. This API can only be used for a few file formats
+  (netCDF/HDF5) and can sometimes provide notably faster reading of data
+  with many (time) steps in the third or higher dimension. If no
+  subdataset is selected with `subds`, all usable arrays are combined
+  into one `SpatRaster` (like `md=FALSE`); a warning reports how many
+  variables and layers were combined when there is more than one
+  variable.
 
 - dims:
 
-  numeric. Specify the order of the dimensions to read atypical files.
-  See
+  numeric. Specify the order of the dimensions to read atypical
+  multidimensional files. See
   [`ar_info`](https://rspatial.github.io/terra/reference/ar_info.md).
-  Only relevant if `md=TRUE`. Not used yet
+  Not implemented yet
 
 - nrows:
 

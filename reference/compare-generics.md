@@ -137,6 +137,6 @@ compare(r1, r2, "==", TRUE)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
 #> name        : lyr.1
-#> min value   :    ? 
-#> max value   :    ? 
+#> min value   :   NaN
+#> max value   :   NaN
 ```
