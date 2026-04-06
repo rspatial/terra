@@ -33,7 +33,7 @@ Note that there are operating system level limitations to the number of files th
 \usage{
 \S4method{rast}{character}(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, 
 		snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, 
-		guessCRS=TRUE, domains="", md=FALSE, dims=NULL)
+		guessCRS=TRUE, domains="", md=NULL, dims=NULL)
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90,
 		ymax=90, crs, extent, resolution, vals, names, time, units)

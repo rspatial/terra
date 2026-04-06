@@ -7,7 +7,7 @@ setMethod("length", signature(x="SpatRasterDataset"),
 
 
 setMethod("sds", signature(x="character"),
-	function(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=FALSE) {
+	function(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=NULL) {
 
 		if (length(x) > 1) {
 			r <- lapply(x, rast, opts=opts, raw=raw, md=md)
@@ -31,8 +31,15 @@ setMethod("sds", signature(x="character"),
 		if (is.null(opts)) opts <- ""[0]
 		if (raw) opts <- c(opts, "so=false")
 		
-		domains <- clean_domains(domains)		
-		r@pntr <- SpatRasterStack$new(f, ids, useids, opts, isTRUE(noflip), isTRUE(guessCRS), domains, isTRUE(md))
+		domains <- clean_domains(domains)
+
+		if (!isTRUE(is.finite(md))) {
+			md <- 2L
+		} else {
+			md <- as.integer(md)
+		}
+		
+		r@pntr <- SpatRasterStack$new(f, ids, useids, opts, isTRUE(noflip), isTRUE(guessCRS), domains, md)
 		messages(r, "sds")
 	}
 )
