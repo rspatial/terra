@@ -272,7 +272,7 @@ multi <- function(x, subds=0, dims=NULL, drivers=NULL, opts=NULL, win=NULL, snap
 
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=grepl("^netCDF|^HDF._EOS|\\.nc$|\\.ncdf$|\\.h4$|\\.h5$|\\.hdf$", x, TRUE), dims=NULL) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=grepl("\\.nc$|\\.ncdf$|\\.h4$|\\.h5$|\\.hdf$", x, TRUE), dims=NULL) {
 	
 		if (isTRUE(md)) {
 			if (!is.null(win)) {
