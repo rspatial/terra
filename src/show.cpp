@@ -470,12 +470,10 @@ std::string SpatRaster::show(bool one_based) {
 				if (i < hMM.size() && !hMM[i]) {
 					minv[i] = " ? ";
 					maxv[i] = " ? ";
-				} else if (std::isnan(rmin[i])) {
-					minv[i] = " ? ";
-					maxv[i] = " ? ";
 				} else {
-					minv[i] = double_to_string(rmin[i]);
-					maxv[i] = double_to_string(rmax[i]);
+					// Known range: show NaN like R when all cell values are missing (not "?")
+					minv[i] = std::isnan(rmin[i]) ? "NaN" : double_to_string(rmin[i]);
+					maxv[i] = std::isnan(rmax[i]) ? "NaN" : double_to_string(rmax[i]);
 				}
 			}
 

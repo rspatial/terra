@@ -808,8 +808,10 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 			md_layer_to_indices(L, extra_sizes, idx);
 			std::string nm = arname;
 			bool name_has_dim = false;
+			bool skipped_time_for_name = false;
 			for (size_t j = 0; j < dimmap_extras.size(); j++) {
 				if (it >= 0 && (int) dimmap_extras[j] == it) {
+					skipped_time_for_name = true;
 					continue;
 				}
 				name_has_dim = true;
@@ -817,7 +819,13 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 					+ double_to_string(dimvals[dimmap_extras[j]][idx[j]]);
 			}
 			if (!name_has_dim && (s.nlyr > 1)) {
+				// Only non-spatial dim is time (omitted from label): number layers
 				nm += "_" + std::to_string(L + 1);
+			} else if (skipped_time_for_name && (s.nlyr > 1)) {
+				// Time is in metadata, not in the label; add 1-based time step so
+				// names match rast(, md=FALSE), e.g. t2m_expver=1_1 .. _24
+				size_t tidx = (pos_it != (size_t) -1) ? (idx[pos_it] + 1) : (L + 1);
+				nm += "_" + std::to_string(tidx);
 			}
 			nms[L] = nm;
 		}
