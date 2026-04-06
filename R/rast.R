@@ -276,7 +276,7 @@ setMethod("rast", signature(x="character"),
 	
 		if (!isTRUE(is.finite(md))) {
 			if (any(grepl("\\.vrt$", x, TRUE))) {
-				md <- 1L			
+				md <- 0L		
 			} else {
 				md <- 2L
 			}

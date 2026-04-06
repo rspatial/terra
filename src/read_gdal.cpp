@@ -938,7 +938,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 	}
 
-	if (multi == 0) {
+	if (multi == 1) {
 		bool ok = constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains);
 		return ok;
 	} 
@@ -954,14 +954,13 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		return false;
 	}
 
-
-
 	GDALDriver *poDriver = poDataset->GetDriver();
 
 	if ((multi > 1) && (poDriver != nullptr)) {
 	// If driver supports multidim, use it 
 		const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
 		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
+			GDALClose( (GDALDatasetH) poDataset );		
 			bool ok = constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains);
 			return ok;
 		}
