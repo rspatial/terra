@@ -133,7 +133,7 @@ setMethod("vect", signature(x="character"),
 
 
 setMethod("vect", signature(x="Spatial"),
-	function(x, ...) {
+	function(x) {
 		methods::as(x, "SpatVector")
 	}
 )

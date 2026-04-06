@@ -37,7 +37,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 
 \usage{
 \S4method{vect}{character}(x, layer="", query="", dialect="", extent=NULL, filter=NULL, 
-		crs="", proxy=FALSE, what="", opts=NULL, kml.extended=NULL, ...)
+		crs="", proxy=FALSE, what="", opts=NULL, kml.extended=NULL)
 
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
