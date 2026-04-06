@@ -700,7 +700,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 			}
 		}
 		if (!ok) {
-			ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, false, guessCRS, domains);
+			ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 1);
 		}
 		if (ok) {
 			std::string sname = sub.source[0].source_name;
@@ -746,7 +746,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 						}
 					}
 					if (!ok) {
-						ok = sub.constructFromFile(s, {-1}, {""}, {}, options, false, guessCRS, domains);
+						ok = sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 1);
 					}
 					if (ok) {
 						std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
@@ -796,7 +796,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 	if (metadata == NULL) {
 		GDALClose( (GDALDatasetH) poDataset );
 		SpatRaster sub;
-		if (sub.constructFromFile(fname, {-1}, {""}, {}, options, false, guessCRS, domains)) {
+		if (sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 1)) {
 			std::string sname = sub.source[0].source_name;
 			push_back(sub, sname);
 		}
@@ -827,7 +827,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				SpatRaster sub;
-				if (sub.constructFromFile(s, {-1}, {""}, {}, options, false, guessCRS, domains)) {
+				if (sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 1)) {
 					push_back(sub, basename_sds(s));
 				} else {
 					addWarning("skipped (fail): " + s);
@@ -918,7 +918,7 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 
 
 
-bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains) {
+bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t multi) {
 
 
 
@@ -938,6 +938,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 	}
 
+	if (multi == 0) {
+		bool ok = constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains);
+		return ok;
+	} 
+
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
 
     if( poDataset == NULL )  {
@@ -949,8 +954,21 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		return false;
 	}
 
+
+
+	GDALDriver *poDriver = poDataset->GetDriver();
+
+	if ((multi > 1) && (poDriver != nullptr)) {
+	// If driver supports multidim, use it 
+		const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
+		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
+			bool ok = constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains);
+			return ok;
+		}
+	}
+
 	int nl = poDataset->GetRasterCount();
-	std::string gdrv = poDataset->GetDriver()->GetDescription();
+	std::string gdrv = poDriver->GetDescription();
 
 	CSLConstList metasds = poDataset->GetMetadata("SUBDATASETS");
 
@@ -2178,7 +2196,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	size_t cnt;
 
     for (cnt=0; cnt < sd.size(); cnt++) {
-		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options, noflip, guessCRS, domains)) break;
+		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options, {}, noflip, guessCRS, domains, 1)) break;
 	}
 //	source[0].source_name = srcname[cnt];
 
@@ -2189,7 +2207,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	SpatOptions opt;
     for (size_t i=(cnt+1); i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
-		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options, noflip, guessCRS, domains);
+		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options, {}, noflip, guessCRS, domains, 1);
 		if (success) {
 			if (out.compare_geom(*this, false, false, 0.1)) {
 //				out.source	[0].source_name = srcname[i];

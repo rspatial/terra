@@ -69,8 +69,8 @@ Note that there are operating system level limitations to the number of files th
 \item{noflip}{logical. If \code{TRUE}, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (\code{ymax < ymin}), is not considered flipped. This avoids the need to \code{\link{flip}} the raster vertically}
 \item{guessCRS}{logical. If \code{TRUE} and the file does not specify a CRS but has an extent that is within longitude/latitude bounds, the longitude/latitude crs is assigned to the SpatRaster}
 \item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retrieve their values if there are any. "" is the default domain}
-\item{md}{logical. If \code{TRUE}, the multi-dimensional GDAL API is used for reading the file. This API can only be used for a few file formats (netCDF/HDF5) and can sometimes provide notably faster reading of data with many (time) steps in the third or higher dimension.}
-\item{dims}{numeric. Specify the order of the dimensions to read atypical files. See \code{\link{ar_info}}. Only relevant if \code{md=TRUE}. Not used yet}
+\item{md}{logical. If \code{TRUE}, the multi-dimensional GDAL API is used for reading the file. This API can only be used for a few file formats (netCDF/HDF5) and can sometimes provide notably faster reading of data with many (time) steps in the third or higher dimension. If no subdataset is selected with \code{subds}, all usable arrays are combined into one \code{SpatRaster} (like \code{md=FALSE}); a warning reports how many variables and layers were combined when there is more than one variable.}
+\item{dims}{numeric. Specify the order of the dimensions to read atypical multidimensional files. See \code{\link{ar_info}}. Not implemented yet}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}

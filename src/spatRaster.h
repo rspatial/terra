@@ -378,7 +378,8 @@ class SpatRaster {
 		SpatRaster();
 		SpatRaster(size_t nr, size_t nc, size_t nl, SpatExtent ext, std::string crs);
 		SpatRaster(std::vector<size_t> rcl, std::vector<double> ext, std::string crs);
-		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains);
+		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, size_t multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains, int md);
+		
 		SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains);
 		SpatRaster(SpatRasterSource &s);
 		virtual ~SpatRaster(){}
@@ -393,7 +394,7 @@ class SpatRaster {
         SpatRaster geometry(size_t nlyrs=0, bool properties=false, bool time=true, bool units=false, bool tags=false);
 		SpatRaster geometry_opt(long nlyrs, bool properties, bool time, bool units, bool tags, bool datatype, SpatOptions &opt);
 
-		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains);
+		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t multi);
 		bool constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains);
 		bool constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, std::string driver, bool noflip, bool guessCRS, std::vector<std::string> domains);
 

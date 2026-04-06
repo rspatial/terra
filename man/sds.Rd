@@ -24,7 +24,7 @@ See \code{\link{describe}} for getting information about the sub-datasets presen
 \usage{
 \S4method{sds}{missing}(x) 
 
-\S4method{sds}{character}(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=FALSE)
+\S4method{sds}{character}(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=NULL)
 
 \S4method{sds}{SpatRaster}(x, ...) 
 
@@ -41,7 +41,7 @@ See \code{\link{describe}} for getting information about the sub-datasets presen
 \item{noflip}{logical. If \code{TRUE}, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (\code{ymax < ymin}), is not considered flipped. This avoids the need to \code{\link{flip}} the raster vertically}
 \item{guessCRS}{logical. If \code{TRUE} and the file does not specify a CRS but has an extent that is within longitude/latitude bounds, the longitude/latitude crs is assigned to the SpatRaster}
 \item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retrieve their values if there are any). "" is the default domain}
-\item{md}{logical. If \code{TRUE}, the multi-dimensional GDAL API is used for reading the file. This API can only be used for a few file formats (netCDF/HDF5) and can sometimes provide notably faster reading of data with many (time) steps in the third or higher dimension.}
+\item{md}{logical. If \code{TRUE}, the multi-dimensional GDAL API is used for reading the file. This API can only be used for a few file formats (netCDF/HDF5) and can sometimes provide notably faster reading of data with many (time) steps in the third or higher dimension. If the value is not \code{TRUE} or \code{FALSE}, the multi-dimensional API is automatically used for netCDF and HDF files }
 \item{crs}{character. Description of the Coordinate Reference System (map projection) in \code{PROJ.4}, \code{WKT} or \code{authority:code} notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned}
 \item{extent}{\code{\link{SpatExtent}}}
 \item{...}{additional \code{SpatRaster} objects} 

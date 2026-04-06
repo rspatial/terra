@@ -422,87 +422,29 @@ static std::vector<std::string> md_arrays_usable_for_raster(
 }
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
-	(void) dims;
+static bool md_fill_source_from_marray(
+	SpatRaster &parent,
+	const std::string &fname,
+	const std::string &array_request_name,
+	std::shared_ptr<GDALMDArray> poVar,
+	std::vector<std::string> options,
+	bool noflip,
+	bool guessCRS,
+	bool errors_are_fatal,
+	SpatRasterSource &s) {
 
-	SpatRasterSource s;
-
-	bool verbose = false;
-
-	char ** drvs = NULL;
-	for (size_t i=0; i<drivers.size(); i++) {
-		drvs = CSLAddString(drvs, drivers[i].c_str());
-	}
-	s.open_drivers = drivers;
-
-    auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER, drvs));
-    if( !poDataset ) {
-		if (!file_exists(fname)) {
-			setError("file does not exist: " + fname);
-		} else if (drivers.size() > 0) {
-			setError("cannot read multidim from this file or with this driver");			
+	auto fail = [&](const std::string &msg) -> bool {
+		if (errors_are_fatal) {
+			parent.setError(msg);
 		} else {
-			setError("cannot read multidim from this file");			
-        }
-		return false;
-    }
-
-	std::shared_ptr<GDALGroup> poRootGroup = poDataset->GetRootGroup();
-    if( !poRootGroup ) {
-		setError("dataset has no root group");
-		return false;
-    }
-
-	s.m_arrayname = "";
-
-	std::vector<std::string> anms_all = GetArrayNames(poRootGroup, true);
-	if (anms_all.empty()) {
-		setError("no MD arrays found in file");
-		return false;
-	}
-
-	std::vector<std::string> anms = md_arrays_usable_for_raster(poRootGroup, anms_all);
-	if (anms.empty()) {
-		setError("file has no array with at least 2 dimensions");
-		return false;
-	}
-
-	if ((subname.size() > 0) && (!subname[0].empty())) {
-		s.m_arrayname = subname[0];
-	} else if (subds.size() > 0 && subds[0] >= 0) {
-		if ((size_t) subds[0] >= anms.size()) {
-			setError("array index is out of range (there are " + std::to_string(anms.size()) + " arrays)");
-			return false;
-		} else {
-			s.m_arrayname = anms[subds[0]];
+			parent.addWarning(std::string("skipped multidimensional array: ") + array_request_name + " (" + msg + ")");
 		}
-	} else {
-		s.m_arrayname = anms[0];
-		if (anms.size() > 1) {
-			std::vector<std::string> others(anms.begin() + 1, anms.end());
-			addWarning(std::string("no array specified; using \"") + s.m_arrayname + "\".\nOther array(s): " + concatenate(others, ", "));
-		}
-	}
-
-	std::string startgroup="";
-	auto poVar = poRootGroup->ResolveMDArray(s.m_arrayname.c_str(), startgroup, nullptr);
-//    auto poVar = poRootGroup->OpenMDArray(s.m_arrayname.c_str());
-    if( !poVar )   {
-		setError(std::string("cannot find array: \"") + s.m_arrayname + "\".\nAvailable arrays: " + concatenate(anms, ", "));
 		return false;
-    }
-	{
-		size_t nd = poVar->GetDimensions().size();
-		if (nd < 2) {
-			setError("array \"" + s.m_arrayname + "\" has " + std::to_string(nd) +
-				" dimension(s); rast(, md=TRUE) requires at least 2 dimensions");
-			return false;
-		}
-	}
+	};
+
 	s.m_arrayname = poVar->GetFullName();
 
-
-// dimensions 
+// dimensions
 	std::vector<size_t> dimcount;
 	std::vector<std::string> dimnames, dimunits, dimcalendar;
 	std::vector<std::vector<double>> dimvals;
@@ -540,8 +482,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 
 	s.m_ndims = dimcount.size();
 	if (s.m_ndims < 2) {
-		setError("insufficient number of dimensions");
-		return false;
+		return fail("insufficient number of dimensions");
 	}
 	s.source_name = s.m_arrayname;
 	if (!s.source_name.empty() && (s.source_name.front() == '/')) {
@@ -637,8 +578,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		}
 		double res = dimvals[ii][1] - dimvals[ii][0];
 		if (!indvar2->IsRegularlySpaced(dimvals[ii][0], res)) {
-			setError(dimnames[ii] + " is not regularly spaced");
-			return false;
+			return fail(dimnames[ii] + " is not regularly spaced");
 		}
 	}
 
@@ -742,8 +682,9 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		// temporary work-around for https://github.com/rspatial/terra/issues/2068
 		std::vector<std::string> ops;
 		try {
-			SpatRasterStack s(fname, {0}, true, ops, true, true, ops);
-			wkt = s.getSRS("wkt");
+			std::vector<std::string> empty_dom;
+			SpatRasterStack rstack(fname, {0}, true, ops, true, true, empty_dom);
+			wkt = rstack.getSRS("wkt");
 		} catch(...) {}
 	} 
 	
@@ -752,12 +693,12 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		if (s.extent.xmin >= -181 && s.extent.xmax <= 361 && s.extent.ymin >= -91 && s.extent.ymax <= 91) {
 			wkt = "OGC:CRS84";
 			s.parameters_changed = true;
-			addWarning("guessed crs");
+			parent.addWarning("guessed crs");
 		}
 	}
 	std::string msg = "";
 	if (!s.srs.set({wkt}, msg)) {
-		addWarning(msg);
+		parent.addWarning(msg);
 	}	
 
 	bool app_so = true;
@@ -778,8 +719,8 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		if (offset == 0) hasOffset = false;
 		if (hasScale || hasOffset) {
 			s.has_scale_offset = std::vector<bool>(s.nlyr, true);
-			s.offset = std::vector<double>(nlyr(), offset);
-			s.scale = std::vector<double>(nlyr(), scale);
+			s.offset = std::vector<double>(s.nlyr, offset);
+			s.scale = std::vector<double>(s.nlyr, scale);
 		}
 	}
 	
@@ -835,18 +776,162 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 // time
 	s.m_size = dimcount;
 	s.m_names = dimnames;
-	
-	setSource(s);
+
+	return true;
+}
+
+
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
+	(void) dims;
+	(void) domains;
+
+	bool verbose = false;
+
+	char ** drvs = NULL;
+	for (size_t i=0; i<drivers.size(); i++) {
+		drvs = CSLAddString(drvs, drivers[i].c_str());
+	}
+
+    auto poDataset = std::unique_ptr<GDALDataset>(GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER, drvs));
+	CSLDestroy(drvs);
+	drvs = NULL;
+    if( !poDataset ) {
+		if (!file_exists(fname)) {
+			setError("file does not exist: " + fname);
+		} else if (drivers.size() > 0) {
+			setError("cannot read multidim from this file or with this driver");
+		} else {
+			setError("cannot read multidim from this file");
+        }
+		return false;
+    }
+
+	std::shared_ptr<GDALGroup> poRootGroup = poDataset->GetRootGroup();
+    if( !poRootGroup ) {
+		setError("dataset has no root group");
+		return false;
+    }
+
+	std::vector<std::string> anms_all = GetArrayNames(poRootGroup, true);
+	if (anms_all.empty()) {
+		setError("no MD arrays found in file");
+		return false;
+	}
+
+	std::vector<std::string> anms = md_arrays_usable_for_raster(poRootGroup, anms_all);
+	if (anms.empty()) {
+		setError("file has no array with at least 2 dimensions");
+		return false;
+	}
+
+	// Variables to load (like rast(, md=FALSE) combining all SDS)
+	std::vector<std::string> arrays_to_use;
+	if ((subname.size() > 0) && (!subname[0].empty())) {
+		arrays_to_use.push_back(subname[0]);
+	} else if (subds.size() > 0 && subds[0] >= 0) {
+		if ((size_t) subds[0] >= anms.size()) {
+			setError("array index is out of range (there are " + std::to_string(anms.size()) + " arrays)");
+			return false;
+		} else {
+			arrays_to_use.push_back(anms[subds[0]]);
+		}
+	} else {
+		arrays_to_use = anms;
+	}
+
+	const bool single_var = (arrays_to_use.size() == 1);
+	SpatOptions opt;
+	size_t nvar_ok = 0;
+	size_t max_nlyr_var = 0;
+	size_t min_nlyr_var = (size_t) -1;
+
+	for (size_t ai = 0; ai < arrays_to_use.size(); ai++) {
+		std::string startgroup = "";
+		auto poVar = poRootGroup->ResolveMDArray(arrays_to_use[ai].c_str(), startgroup, nullptr);
+		if (!poVar) {
+			if (single_var) {
+				setError(std::string("cannot find array: \"") + arrays_to_use[ai] + "\".\nAvailable arrays: " + concatenate(anms, ", "));
+				return false;
+			}
+			addWarning(std::string("skipped multidimensional array (not found): ") + arrays_to_use[ai]);
+			continue;
+		}
+		{
+			size_t nd = poVar->GetDimensions().size();
+			if (nd < 2) {
+				if (single_var) {
+					setError("array \"" + arrays_to_use[ai] + "\" has " + std::to_string(nd) +
+						" dimension(s); rast(, md=TRUE) requires at least 2 dimensions");
+					return false;
+				}
+				addWarning(std::string("skipped multidimensional array (<2 dims): ") + arrays_to_use[ai]);
+				continue;
+			}
+		}
+
+		SpatRasterSource s;
+		s.open_drivers = drivers;
+		std::vector<std::string> opts_copy = options;
+		if (!md_fill_source_from_marray(*this, fname, arrays_to_use[ai], poVar, std::move(opts_copy), noflip, guessCRS, single_var, s)) {
+			if (single_var) {
+				return false;
+			}
+			continue;
+		}
+
+		if (nvar_ok == 0) {
+			setSource(s);
+		} else {
+			SpatRaster chunk;
+			chunk.setSource(s);
+			if (!chunk.compare_geom(*this, false, false, 0.1)) {
+				addWarning(std::string("skipped multidimensional array (different geometry): ") + arrays_to_use[ai]);
+				continue;
+			}
+			addSource(chunk, false, opt);
+		}
+		max_nlyr_var = std::max(max_nlyr_var, (size_t) s.nlyr);
+		if (min_nlyr_var == (size_t) -1) {
+			min_nlyr_var = s.nlyr;
+		} else {
+			min_nlyr_var = std::min(min_nlyr_var, (size_t) s.nlyr);
+		}
+		nvar_ok++;
+	}
+
+	if (nvar_ok == 0) {
+		setError(std::string("could not load multidimensional data. Arrays: ") + concatenate(anms, ", "));
+		return false;
+	}
+
+	if (arrays_to_use.size() > 1 && max_nlyr_var > 1) {
+		std::string w = "combined " + std::to_string(nvar_ok) + " variables";
+		w += " (";
+		size_t nshow = std::min(source.size(), (size_t) 6);
+		for (size_t i = 0; i < nshow; i++) {
+			if (i > 0) {
+				w += ", ";
+			}
+			w += source[i].source_name.empty() ? source[i].m_arrayname : source[i].source_name;
+		}
+		if (source.size() > 5) {
+			w += ", ...)";
+		} else {
+			w += ")";
+		}
+		addWarning(w);
+	}
 	if (verbose) {
 #ifdef useRcpp
-		for (size_t i = 0; i < dimnames.size(); i++) {
-			Rcpp::Rcout << i << " " << dimnames[i] << " " << dimcount[i] << std::endl;
+		if (!source.empty()) {
+			for (size_t i = 0; i < source[0].m_names.size(); i++) {
+				Rcpp::Rcout << i << " " << source[0].m_names[i] << " " << source[0].m_size[i] << std::endl;
+			}
 		}
 #endif
 	}
 	return true;
 }
-
 
 
 bool SpatRaster::readStartMulti(size_t src) {

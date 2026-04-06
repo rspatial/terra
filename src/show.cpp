@@ -366,21 +366,41 @@ std::string SpatRaster::show(bool one_based) {
 		} else if (nsr > 1) {
 			size_t mxsrc = 3;
 			std::vector<size_t> lbs = nlyrBySource();
-			s << "sources     : " << srcs[0];
-			if (lbs[0] != 1) s << " (" << lbs[0] << " layers)";
+			// One line per distinct filename (basename); sum layers from sub-sources
+			std::vector<std::string> u_src;
+			std::vector<size_t> u_lyr;
+			u_src.reserve(nsr);
+			u_lyr.reserve(nsr);
+			for (size_t i = 0; i < nsr; i++) {
+				size_t j = 0;
+				for (; j < u_src.size(); j++) {
+					if (u_src[j] == srcs[i]) {
+						break;
+					}
+				}
+				if (j == u_src.size()) {
+					u_src.push_back(srcs[i]);
+					u_lyr.push_back(lbs[i]);
+				} else {
+					u_lyr[j] += lbs[i];
+				}
+			}
+			const size_t nu = u_src.size();
+			s << "sources     : " << u_src[0];
+			if (nu > 1 && u_lyr[0] != 1) s << " (" << u_lyr[0] << " layers)";
 			s << "\n";
-			for (size_t i = 1; i < std::min(mxsrc, nsr); i++) {
-				s << "              " << srcs[i];
-				if (lbs[i] != 1) s << " (" << lbs[i] << " layers)";
+			for (size_t i = 1; i < std::min(mxsrc, nu); i++) {
+				s << "              " << u_src[i];
+				if (u_lyr[i] != 1) s << " (" << u_lyr[i] << " layers)";
 				s << "\n";
 			}
-			if (nsr > mxsrc) {
-				if (nsr == mxsrc + 1) {
-					s << "              " << srcs[mxsrc];
-					if (lbs[mxsrc] != 1) s << " (" << lbs[mxsrc] << " layers)";
+			if (nu > mxsrc) {
+				if (nu == mxsrc + 1) {
+					s << "              " << u_src[mxsrc];
+					if (u_lyr[mxsrc] != 1) s << " (" << u_lyr[mxsrc] << " layers)";
 					s << "\n";
 				} else {
-					s << "              ... and " << (nsr - mxsrc) << " more sources\n";
+					s << "              ... and " << (nu - mxsrc) << " more sources\n";
 				}
 			}
 		} else {
@@ -439,10 +459,10 @@ std::string SpatRaster::show(bool one_based) {
 				s << "varname     : " << varnms[0] << "\n";
 			} else {
 				s << "varnames    : " << varnms[0] << "\n";
-				for (size_t i = 1; i < std::min(nsr, (size_t)3); i++) {
+				for (size_t i = 1; i < std::min(nsr, (size_t)5); i++) {
 					s << "              " << varnms[i] << "\n";
 				}
-				if (nsr > 3) s << "              ...\n";
+				if (nsr > 5) s << "              ...\n";
 			}
 		}
 
@@ -536,34 +556,73 @@ std::string SpatRaster::show(bool one_based) {
 			}
 
 		} else {
-			// no min/max: just names (and possibly units)
+			// no min/max: just names (and possibly units); align units to name columns like .show_rast
+			auto join_cells = [](const std::vector<std::string> &v) {
+				std::string out;
+				for (size_t i = 0; i < v.size(); i++) {
+					if (i) out += ", ";
+					out += v[i];
+				}
+				return out;
+			};
 			if (nl == 1) {
 				s << "name        : " << ln[0] << "\n";
 			} else {
-				std::string nj;
-				for (size_t i = 0; i < ln.size(); i++) {
-					if (i) nj += ", ";
-					nj += ln[i];
+				const size_t ncols = ln.size();
+				std::vector<std::string> ln_pad = ln;
+				if (hasunits) {
+					std::vector<std::string> utsu;
+					for (auto &u : uts) {
+						if (std::find(utsu.begin(), utsu.end(), u) == utsu.end()) {
+							utsu.push_back(u);
+						}
+					}
+					if (utsu.size() == 1) {
+						// Same as .show_rast: one unit string (size line already gives nlyr)
+						std::vector<size_t> w(ncols);
+						for (size_t i = 0; i < ncols; i++) {
+							w[i] = ln[i].size();
+						}
+						for (size_t i = 0; i < ncols; i++) {
+							ln_pad[i] = pad_right(ln[i], w[i]);
+						}
+						s << "names       : " << join_cells(ln_pad) << "\n";
+						s << "unit        : " << utsu[0] << "\n";
+					} else {
+						std::vector<std::string> uts_row = uts;
+						if (nl > mnr) {
+							uts_row.resize(mnr);
+							uts_row.push_back("...");
+						}
+						std::vector<size_t> w(ncols);
+						for (size_t i = 0; i < ncols; i++) {
+							w[i] = ln[i].size();
+							if (i < uts_row.size()) {
+								w[i] = std::max(w[i], uts_row[i].size());
+							}
+						}
+						for (size_t i = 0; i < ncols; i++) {
+							ln_pad[i] = pad_right(ln[i], w[i]);
+						}
+						s << "names       : " << join_cells(ln_pad) << "\n";
+						std::vector<std::string> uts_pad(ncols);
+						for (size_t i = 0; i < ncols; i++) {
+							uts_pad[i] = pad_right(i < uts_row.size() ? uts_row[i] : "", w[i]);
+						}
+						s << "unit        : " << join_cells(uts_pad) << "\n";
+					}
+				} else {
+					s << "names       : " << join_cells(ln_pad) << "\n";
 				}
-				s << "names       : " << nj << "\n";
 			}
-			if (hasunits) {
+			if (hasunits && nl == 1) {
 				std::vector<std::string> utsu;
 				for (auto &u : uts) {
-					if (std::find(utsu.begin(), utsu.end(), u) == utsu.end())
+					if (std::find(utsu.begin(), utsu.end(), u) == utsu.end()) {
 						utsu.push_back(u);
-				}
-				if (utsu.size() == 1) {
-					s << "unit        : " << utsu[0] << "\n";
-				} else {
-					if (nl > mnr) { uts.resize(mnr); uts.push_back("..."); }
-					std::string uj;
-					for (size_t i = 0; i < uts.size(); i++) {
-						if (i) uj += ", ";
-						uj += uts[i];
 					}
-					s << "unit        : " << uj << "\n";
 				}
+				s << "unit        : " << (utsu.empty() ? uts[0] : utsu[0]) << "\n";
 			}
 		}
 	}
