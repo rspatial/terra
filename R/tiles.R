@@ -1,4 +1,5 @@
 
+
 setMethod("makeTiles", signature(x="SpatRaster"),
 	function(x, y, filename="tile_.tif", extend=FALSE, na.rm=FALSE, buffer=0, value="files", overwrite=FALSE, ...) {
 	
