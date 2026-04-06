@@ -49,39 +49,40 @@ Note that there are operating system level limitations to the number of files th
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre><code># S4 method for class 'character'
-rast(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL,
-		snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="",
-		md=grepl("\.nc$|\.ncdf$|\.h4$|\.h5$|\.hdf$", x, TRUE), dims=NULL)
-
-# S4 method for class 'missing'
-rast(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90,
-		ymax=90, crs, extent, resolution, vals, names, time, units)
-
-# S4 method for class 'SpatRaster'
-rast(x, nlyrs=nlyr(x), names, vals, keeptime=TRUE,
-		keepunits=FALSE, props=FALSE, tags=FALSE)
-
-# S4 method for class 'matrix'
-rast(x, type="", crs="", digits=6, extent=NULL)
-
-# S4 method for class 'data.frame'
-rast(x, type="xyz", crs="", digits=6, extent=NULL)
-
-# S4 method for class 'array'
-rast(x, crs="", extent=NULL)
-
-# S4 method for class 'list'
-rast(x, warn=TRUE)
-
-# S4 method for class 'SpatRasterDataset'
-rast(x)
-
-# S4 method for class 'SpatVector'
-rast(x, type="", ...)
-									
-# S4 method for class 'SpatExtent'
-rast(x, ...)</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'character'</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, subds<span class="op">=</span><span class="fl">0</span>, lyrs<span class="op">=</span><span class="cn">NULL</span>, drivers<span class="op">=</span><span class="cn">NULL</span>, opts<span class="op">=</span><span class="cn">NULL</span>, win<span class="op">=</span><span class="cn">NULL</span>, </span>
+<span>    snap<span class="op">=</span><span class="st">"near"</span>, vsi<span class="op">=</span><span class="cn">FALSE</span>, raw<span class="op">=</span><span class="cn">FALSE</span>, noflip<span class="op">=</span><span class="cn">FALSE</span>, guessCRS<span class="op">=</span><span class="cn">TRUE</span>, </span>
+<span>    domains<span class="op">=</span><span class="st">""</span>, md<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"\\.nc$|\\.ncdf$|\\.h4$|\\.h5$|\\.hdf$"</span>, <span class="va">x</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    dims<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'missing'</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, nrows<span class="op">=</span><span class="fl">180</span>, ncols<span class="op">=</span><span class="fl">360</span>, nlyrs<span class="op">=</span><span class="fl">1</span>, xmin<span class="op">=</span><span class="op">-</span><span class="fl">180</span>, xmax<span class="op">=</span><span class="fl">180</span>, ymin<span class="op">=</span><span class="op">-</span><span class="fl">90</span>,</span>
+<span>    ymax<span class="op">=</span><span class="fl">90</span>, <span class="va">crs</span>, <span class="va">extent</span>, <span class="va">resolution</span>, <span class="va">vals</span>, <span class="va">names</span>, <span class="va">time</span>, <span class="va">units</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'SpatRaster'</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, nlyrs<span class="op">=</span><span class="fu"><a href="dimensions.html">nlyr</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="va">names</span>, <span class="va">vals</span>, keeptime<span class="op">=</span><span class="cn">TRUE</span>, </span>
+<span>    keepunits<span class="op">=</span><span class="cn">FALSE</span>, props<span class="op">=</span><span class="cn">FALSE</span>, tags<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># S4 method for class 'matrix'</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, type<span class="op">=</span><span class="st">""</span>, crs<span class="op">=</span><span class="st">""</span>, digits<span class="op">=</span><span class="fl">6</span>, extent<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'data.frame'</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, type<span class="op">=</span><span class="st">"xyz"</span>, crs<span class="op">=</span><span class="st">""</span>, digits<span class="op">=</span><span class="fl">6</span>, extent<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'array'</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, crs<span class="op">=</span><span class="st">""</span>, extent<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'list'</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, warn<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'SpatRasterDataset'</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'SpatVector'</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, type<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>                    </span>
+<span><span class="co"># S4 method for class 'SpatExtent'</span></span>
+<span><span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">

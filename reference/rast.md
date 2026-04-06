@@ -22,39 +22,42 @@ a single file.
 
 ## Usage
 
-    # S4 method for class 'character'
-    rast(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL,
-            snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="",
-            md=grepl("\.nc$|\.ncdf$|\.h4$|\.h5$|\.hdf$", x, TRUE), dims=NULL)
+``` r
+# S4 method for class 'character'
+rast(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, 
+    snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, 
+    domains="", md=grepl("\\.nc$|\\.ncdf$|\\.h4$|\\.h5$|\\.hdf$", x, TRUE),
+    dims=NULL)
 
-    # S4 method for class 'missing'
-    rast(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90,
-            ymax=90, crs, extent, resolution, vals, names, time, units)
+# S4 method for class 'missing'
+rast(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90,
+    ymax=90, crs, extent, resolution, vals, names, time, units)
 
-    # S4 method for class 'SpatRaster'
-    rast(x, nlyrs=nlyr(x), names, vals, keeptime=TRUE,
-            keepunits=FALSE, props=FALSE, tags=FALSE)
+# S4 method for class 'SpatRaster'
+rast(x, nlyrs=nlyr(x), names, vals, keeptime=TRUE, 
+    keepunits=FALSE, props=FALSE, tags=FALSE) 
 
-    # S4 method for class 'matrix'
-    rast(x, type="", crs="", digits=6, extent=NULL)
+# S4 method for class 'matrix'
+rast(x, type="", crs="", digits=6, extent=NULL)
 
-    # S4 method for class 'data.frame'
-    rast(x, type="xyz", crs="", digits=6, extent=NULL)
+# S4 method for class 'data.frame'
+rast(x, type="xyz", crs="", digits=6, extent=NULL)
 
-    # S4 method for class 'array'
-    rast(x, crs="", extent=NULL)
+# S4 method for class 'array'
+rast(x, crs="", extent=NULL)
 
-    # S4 method for class 'list'
-    rast(x, warn=TRUE)
+# S4 method for class 'list'
+rast(x, warn=TRUE)
 
-    # S4 method for class 'SpatRasterDataset'
-    rast(x)
+# S4 method for class 'SpatRasterDataset'
+rast(x)
 
-    # S4 method for class 'SpatVector'
-    rast(x, type="", ...)
-                                        
-    # S4 method for class 'SpatExtent'
-    rast(x, ...)
+# S4 method for class 'SpatVector'
+rast(x, type="", ...)
+                    
+# S4 method for class 'SpatExtent'
+rast(x, ...)
+```
 
 ## Arguments
 

@@ -27,7 +27,7 @@ vector data objects defined in the `sf` or `sp` packages.
 ``` r
 # S4 method for class 'character'
 vect(x, layer="", query="", dialect="", extent=NULL, filter=NULL, 
-    crs="", proxy=FALSE, what="", opts=NULL, kml.extended=NULL, ...)
+    crs="", proxy=FALSE, what="", opts=NULL, kml.extended=NULL)
 
 # S4 method for class 'matrix'
 vect(x, type="points", atts=NULL, crs="")
