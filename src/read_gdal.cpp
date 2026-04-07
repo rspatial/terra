@@ -955,8 +955,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	GDALDriver *poDriver = poDataset->GetDriver();
+	std::string gdrv = poDriver->GetDescription();
 
-	if ((multi > 1) && (poDriver != nullptr)) {
+	if ((multi > 1) && (gdrv != "VRT")) {
 	// If driver supports multidim, use it 
 		const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
 		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
@@ -980,7 +981,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	int nl = poDataset->GetRasterCount();
-	std::string gdrv = poDriver->GetDescription();
 
 	CSLConstList metasds = poDataset->GetMetadata("SUBDATASETS");
 

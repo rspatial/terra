@@ -275,11 +275,7 @@ setMethod("rast", signature(x="character"),
 	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL, win=NULL, snap="near", vsi=FALSE, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=NULL, dims=NULL) {
 	
 		if (!isTRUE(is.finite(md))) {
-			if (any(grepl("\\.vrt$", x, TRUE))) {
-				md <- 0L		
-			} else {
-				md <- 2L
-			}
+			md <- 2L
 		} else {
 			md <- as.integer(md)
 		}
