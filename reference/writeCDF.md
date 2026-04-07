@@ -122,8 +122,6 @@ values(a) <- 1:prod(dim(a))
 time(a) <- as.Date("2020-12-31") + 1:nlyr(a)
 aa <- writeCDF(a, fname, overwrite=TRUE, varname="power", 
       longname="my nice data", unit="U/Pa")
-#> Error in R_nc4_create: Permission denied (creation mode was 4096)
-#> Error in ncdf4::nc_create(filename, ncvars, force_v4 = force_v4, verbose = verbose): Error in nc_create!
 
 b <- sqrt(a)
 s <- sds(a, b)
@@ -131,8 +129,6 @@ names(s) <- c("temp", "prec")
 longnames(s) <- c("temperature (C)", "precipitation (mm)")
 units(s) <- c("°C", "mm")
 ss <- writeCDF(s, fname, overwrite=TRUE)
-#> Error in R_nc4_create: Permission denied (creation mode was 4096)
-#> Error in ncdf4::nc_create(filename, ncvars, force_v4 = force_v4, verbose = verbose): Error in nc_create!
 
 # four dimensional 
 r1 <- rast(nrow=5, ncol=5, vals=1:100, nlyr=4)
@@ -150,21 +146,42 @@ s <- sds(r1, r2)
 names(s) <- c("TH", "DBZH")
 units(s) <- c("-", "Pa")
 x <- writeCDF(s, filename = fname, overwrite=TRUE)
-#> Error in R_nc4_create: Permission denied (creation mode was 4096)
-#> Error in ncdf4::nc_create(filename, ncvars, force_v4 = force_v4, verbose = verbose): Error in nc_create!
 x[1]
-#> Error: object 'x' not found
+#> class       : SpatRaster
+#> size        : 5, 5, 4  (nrow, ncol, nlyr)
+#> dimensions  : longitude, latitude, angle, time (5, 5, 2, 2}
+#> resolution  : 72, 36  (x, y)
+#> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
+#> source      : file23877eba73b8.nc
+#> varname     : TH
+#> names       : TH_angle=0_1, TH_angle=0_2, TH_angle=2_1, TH_angle=2_2
+#> unit        : -
+#> depth       : 0 to 2 (angle: 2 steps)
+#> time (days) : 2012-12-13 to 2012-12-14 (2 steps)
 time(x[1])
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'time': object 'x' not found
+#> [1] "2012-12-13" "2012-12-14" "2012-12-13" "2012-12-14"
 depth(x[1])
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'depth': object 'x' not found
+#> [1] 0 0 2 2
 
 x[2]
-#> Error: object 'x' not found
+#> class       : SpatRaster
+#> size        : 5, 5, 6  (nrow, ncol, nlyr)
+#> dimensions  : longitude, latitude, time, height (5, 5, 2, 3}
+#> resolution  : 72, 36  (x, y)
+#> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
+#> source      : file23877eba73b8.nc
+#> varname     : DBZH
+#> names       : DBZH_~=10_1, DBZH_~=10_2, DBZH_~=20_1, DBZH_~=20_2, DBZH_~=30_1, DBZH_~=30_2
+#> unit        : Pa
+#> depth       : 10 to 30 (height: 3 steps)
+#> time (days) : 2012-12-13 to 2012-12-14 (2 steps)
 time(x[2])
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'time': object 'x' not found
+#> [1] "2012-12-13" "2012-12-14" "2012-12-13" "2012-12-14" "2012-12-13"
+#> [6] "2012-12-14"
 depth(x[2])
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'depth': object 'x' not found
+#> [1] 10 10 20 20 30 30
 
 # for CRAN
 file.remove(fname)

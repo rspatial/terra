@@ -36,12 +36,12 @@ Source:
 [`DESCRIPTION`](https://github.com/rspatial/terra/blob/master/DESCRIPTION)
 
 Hijmans R, Brown A, Barbosa M (2026). *terra: Spatial Data Analysis*. R
-package version 1.9-16, <https://rspatial.org/>.
+package version 1.9-17, <https://rspatial.org/>.
 
     @Manual{,
       title = {terra: Spatial Data Analysis},
       author = {Robert J. Hijmans and Andrew Brown and Márcia Barbosa},
       year = {2026},
-      note = {R package version 1.9-16},
+      note = {R package version 1.9-17},
       url = {https://rspatial.org/},
     }

@@ -111,11 +111,19 @@ getTileExtents(r, x, buffer=3)
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
-#> [1] "/tmp/Rtmp7f0EO2/file23867cc5c4a6_1.tif"
-#> [2] "/tmp/Rtmp7f0EO2/file23867cc5c4a6_2.tif"
-#> [3] "/tmp/Rtmp7f0EO2/file23867cc5c4a6_3.tif"
-#> [4] "/tmp/Rtmp7f0EO2/file23867cc5c4a6_4.tif"
+#> [1] "/tmp/RtmpeXQDCM/file2387588221b8_1.tif"
+#> [2] "/tmp/RtmpeXQDCM/file2387588221b8_2.tif"
+#> [3] "/tmp/RtmpeXQDCM/file2387588221b8_3.tif"
+#> [4] "/tmp/RtmpeXQDCM/file2387588221b8_4.tif"
 
 vrt(ff)
-#> Error: [rast] cannot read multidim from this file
+#> class       : SpatRaster
+#> size        : 100, 100, 1  (nrow, ncol, nlyr)
+#> resolution  : 3.6, 1.8  (x, y)
+#> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326)
+#> source      : spat_238741de3726_9095_DvggOkjkTOQeAAI.vrt
+#> name        : spat_238741de3726_9095_DvggOkjkTOQeAAI
+#> min value   :                                      1
+#> max value   :                                  10000
 ```

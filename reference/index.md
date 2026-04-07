@@ -63,7 +63,7 @@
   : add vertical and/or horizontal lines to a map made with terra
 
 - [`add_mtext()`](https://rspatial.github.io/terra/reference/add_mtext.md)
-  : draw a box
+  : add a margin text
 
 - [`adjacent(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/adjacent.md)
   [`adjacent(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/adjacent.md)

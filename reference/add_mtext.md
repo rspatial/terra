@@ -1,7 +1,7 @@
-# draw a box
+# add a margin text
 
 Similar to [`mtext`](https://rdrr.io/r/graphics/mtext.html) allowing
-adding a text to the margins of a map. This function useds the margins
+adding a text to the margins of a map. This function uses the margins
 around the mapped area; not the margins that R would use.
 
 ## Usage
