@@ -2,10 +2,10 @@
 
 \alias{add_mtext}
 
-\title{draw a box}
+\title{add a margin text}
 
 \description{ 
-Similar to \code{\link[graphics]{mtext}} allowing adding a text to the margins of a map. This function useds the margins around the mapped area; not the margins that R would use.
+Similar to \code{\link[graphics]{mtext}} allowing adding a text to the margins of a map. This function uses the margins around the mapped area; not the margins that R would use.
 }
 
 \usage{
