@@ -35,26 +35,6 @@
 
 namespace {
 
-/*
-// NETCDF:"/path/file.nc":var -> path + var 
-static bool md_split_netcdf_subdataset(const std::string &uri, std::string &driver, std::string &file, std::string &arrayname) {
-	static const char pfx[] = "NETCDF:\"";
-	const size_t plen = sizeof(pfx) - 1;
-	if (uri.size() < plen + 3) {
-		return false;
-	}
-	if (uri.compare(0, plen, pfx) != 0) {
-		return false;
-	}
-	size_t q = uri.find('"', plen);
-	if (q == std::string::npos || q + 2 >= uri.size() || uri[q + 1] != ':') {
-		return false;
-	}
-	file = uri.substr(plen, q - plen);
-	arrayname = uri.substr(q + 2);
-	return !filepath.empty() && !arrayname.empty();
-}
-*/
 
 static bool md_is_col_dim_name(const std::string &nm) {
 	std::string n = lower_case(lrtrim_copy(nm));

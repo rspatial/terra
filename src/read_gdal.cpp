@@ -635,6 +635,28 @@ void get_tags(std::vector<std::string> meta, std::string prefix,  std::vector<st
 	
 }
 
+
+
+// NETCDF:"/path/file.nc":var -> path + var 
+static bool split_file_array(const std::string &uri, std::string &filename, std::string &arrayname) {
+	static const char pfx[] = "NETCDF:\"";
+	const size_t plen = sizeof(pfx) - 1;
+	if (uri.size() < plen + 3) {
+		return false;
+	}
+	if (uri.compare(0, plen, pfx) != 0) {
+		return false;
+	}
+	size_t q = uri.find('"', plen);
+	if (q == std::string::npos || q + 2 >= uri.size() || uri[q + 1] != ':') {
+		return false;
+	}
+	filename = uri.substr(plen, q - plen);
+	arrayname = uri.substr(q + 2);
+	return !filename.empty() && !arrayname.empty();
+}
+
+
 std::vector<std::string> get_metadata(std::string filename, std::vector<std::string> options) {
 	std::vector<std::string> metadata;
     GDALDataset *poDataset = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, options);
@@ -670,7 +692,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 	if (metadata == NULL) {
 		GDALClose( (GDALDatasetH) poDataset );
 		SpatRaster sub;
-		bool ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0);
+		bool ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, md);
 		if (ok) {
 			std::string sname = sub.source[0].source_name;
 			push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true);
@@ -703,7 +725,20 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 				if (pos != std::string::npos) {
 					s.erase(0, pos + delim.length());
 					SpatRaster sub;
-					bool ok = sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0);
+					bool ok = false;
+					if (md > 0) {
+						std::string mf, an;
+						if (split_file_array(s, mf, an)) {
+							SpatRaster trym;
+							if (trym.constructFromFileMulti(mf, {-1}, {an}, {}, options, {}, false, guessCRS, domains)) {
+								sub = trym;
+								ok = true;
+							}
+						}
+					}
+					if (!ok) {
+						ok = sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, md);
+					}
 					if (ok) {
 						std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
 						if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {

@@ -24,7 +24,7 @@ See \code{\link{describe}} for getting information about the sub-datasets presen
 \usage{
 \S4method{sds}{missing}(x) 
 
-\S4method{sds}{character}(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=NULL)
+\S4method{sds}{character}(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=FALSE)
 
 \S4method{sds}{SpatRaster}(x, ...) 
 
