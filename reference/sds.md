@@ -17,7 +17,7 @@ for getting information about the sub-datasets present in a file.
 sds(x) 
 
 # S4 method for class 'character'
-sds(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=NULL)
+sds(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=FALSE)
 
 # S4 method for class 'SpatRaster'
 sds(x, ...) 

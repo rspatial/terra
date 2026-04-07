@@ -57,7 +57,7 @@ r <- c(r, r/2, r*2)
 sort(r)
 #> class       : SpatRaster
 #> size        : 90, 95, 3  (nrow, ncol, nlyr)
-#> resolution  : 0.00833333, 0.00833333  (x, y)
+#> resolution  : 0.008333333, 0.008333333  (x, y)
 #> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> source(s)   : memory
@@ -71,7 +71,7 @@ ord <- sort(r, order=TRUE)
 ord[[1]]
 #> class       : SpatRaster
 #> size        : 90, 95, 1  (nrow, ncol, nlyr)
-#> resolution  : 0.00833333, 0.00833333  (x, y)
+#> resolution  : 0.008333333, 0.008333333  (x, y)
 #> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> source(s)   : memory
@@ -82,7 +82,7 @@ ord[[1]]
 which.min(r)
 #> class       : SpatRaster
 #> size        : 90, 95, 1  (nrow, ncol, nlyr)
-#> resolution  : 0.00833333, 0.00833333  (x, y)
+#> resolution  : 0.008333333, 0.008333333  (x, y)
 #> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> source(s)   : memory

@@ -55,7 +55,7 @@ global(r, "mean", na.rm=TRUE)
 r
 #> class       : SpatRaster
 #> size        : 6, 12, 1  (nrow, ncol, nlyr)
-#> resolution  : 0.00833333, 0.00833333  (x, y)
+#> resolution  : 0.008333333, 0.008333333  (x, y)
 #> window      : 5.9, 6, 49.95, 50  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> source      : elev.tif
@@ -75,7 +75,7 @@ window(b)
 b
 #> class       : SpatRaster
 #> size        : 6, 12, 2  (nrow, ncol, nlyr)
-#> resolution  : 0.00833333, 0.00833333  (x, y)
+#> resolution  : 0.008333333, 0.008333333  (x, y)
 #> extent (win): 5.9, 6, 49.95, 50  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> sources     : memory
@@ -90,7 +90,7 @@ window(r) <- NULL
 r
 #> class       : SpatRaster
 #> size        : 90, 95, 1  (nrow, ncol, nlyr)
-#> resolution  : 0.00833333, 0.00833333  (x, y)
+#> resolution  : 0.008333333, 0.008333333  (x, y)
 #> extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> source      : elev.tif
