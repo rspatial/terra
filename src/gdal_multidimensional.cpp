@@ -803,10 +803,9 @@ static bool md_fill_source_from_marray(
 
 
 bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
-	(void) dims;
-	(void) domains;
+//	(void) dims;
+//	(void) domains;
 
-	bool verbose = false;
 
 	char ** drvs = NULL;
 	for (size_t i=0; i<drivers.size(); i++) {
