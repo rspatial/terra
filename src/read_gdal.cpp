@@ -545,27 +545,6 @@ std::string basename_sds(std::string f) {
 	return f;
 }
 
-
-// NETCDF:"/path/file.nc":var -> path + var for GDAL multidimensional API (rast/sds md=TRUE)
-static bool md_split_netcdf_subdataset(const std::string &uri, std::string &filepath, std::string &arrayname) {
-	static const char pfx[] = "NETCDF:\"";
-	const size_t plen = sizeof(pfx) - 1;
-	if (uri.size() < plen + 3) {
-		return false;
-	}
-	if (uri.compare(0, plen, pfx) != 0) {
-		return false;
-	}
-	size_t q = uri.find('"', plen);
-	if (q == std::string::npos || q + 2 >= uri.size() || uri[q + 1] != ':') {
-		return false;
-	}
-	filepath = uri.substr(plen, q - plen);
-	arrayname = uri.substr(q + 2);
-	return !filepath.empty() && !arrayname.empty();
-}
-
-
 std::string getDsWKT(GDALDataset *poDataset) {
 	std::string wkt = "";
 #if GDAL_VERSION_MAJOR >= 3
@@ -673,7 +652,7 @@ std::vector<std::string> get_metadata(std::string filename, std::vector<std::str
 }
 
 
-SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t multidim) {
+SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t md) {
 
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, {});
     if( poDataset == NULL )  {
@@ -691,17 +670,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 	if (metadata == NULL) {
 		GDALClose( (GDALDatasetH) poDataset );
 		SpatRaster sub;
-		bool ok = false;
-		if (multidim) {
-			SpatRaster trym;
-			if (trym.constructFromFileMulti(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains)) {
-				sub = trym;
-				ok = true;
-			}
-		}
-		if (!ok) {
-			ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0);
-		}
+		bool ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0);
 		if (ok) {
 			std::string sname = sub.source[0].source_name;
 			push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true);
@@ -734,20 +703,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 				if (pos != std::string::npos) {
 					s.erase(0, pos + delim.length());
 					SpatRaster sub;
-					bool ok = false;
-					if (multidim) {
-						std::string mf, an;
-						if (md_split_netcdf_subdataset(s, mf, an)) {
-							SpatRaster trym;
-							if (trym.constructFromFileMulti(mf, {-1}, {an}, {}, options, {}, false, guessCRS, domains)) {
-								sub = trym;
-								ok = true;
-							}
-						}
-					}
-					if (!ok) {
-						ok = sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0);
-					}
+					bool ok = sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0);
 					if (ok) {
 						std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
 						if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
@@ -938,11 +894,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 	}
 
-	if (multi == 1) {
-		bool ok = constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains);
-		return ok;
-	} 
-
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
 
     if( poDataset == NULL )  {
@@ -957,7 +908,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	GDALDriver *poDriver = poDataset->GetDriver();
 	std::string gdrv = poDriver->GetDescription();
 
-	if ((multi > 1) && (gdrv != "VRT")) {
+	multi = 0;
+	if ((multi >= 1) && (gdrv != "VRT")) {
 	// If driver supports multidim, use it 
 		const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
 		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
@@ -966,17 +918,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			if (ok) {
 				return true;
 			}
-			// Plain GeoTIFF and similar: driver may advertise MD while file has only classic bands (e.g. viewshed temp).
-			poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, drivers, clean_ops);
-			if (poDataset == NULL) {
-				if (!file_exists(fname)) {
-					setError("file does not exist: " + fname);
-				} else {
-					setError("cannot open this file as a SpatRaster: " + fname);
-				}
-				return false;
-			}
-			poDriver = poDataset->GetDriver();
+		}
+		if (multi == 1) {
+			setError("cannot open this file with the multidim API: " + fname);
+			return false;
 		}
 	}
 

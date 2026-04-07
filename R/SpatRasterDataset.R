@@ -7,7 +7,7 @@ setMethod("length", signature(x="SpatRasterDataset"),
 
 
 setMethod("sds", signature(x="character"),
-	function(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=NULL) {
+	function(x, ids=0, opts=NULL, raw=FALSE, noflip=FALSE, guessCRS=TRUE, domains="", md=FALSE) {
 
 		if (length(x) > 1) {
 			r <- lapply(x, rast, opts=opts, raw=raw, md=md)
