@@ -45,7 +45,7 @@ static std::string pad_right(const std::string &s, size_t width) {
 }
 
 // Extent coordinates: SpatExtent uses full double precision; SpatVector / SpatRaster use fewer digits.
-static std::string format_extent_double(double v, int significant_digits = 17) {
+static std::string format_double(double v, int significant_digits = 17) {
 	std::ostringstream o;
 	o << std::setprecision(significant_digits) << std::defaultfloat << v;
 	return o.str();
@@ -234,8 +234,8 @@ static void append_spatvector_df_preview(std::ostringstream &s, const SpatDataFr
 
 std::string SpatExtent::show() {
 	std::ostringstream s;
-	s << "SpatExtent : " << format_extent_double(xmin) << ", " << format_extent_double(xmax) << ", "
-	  << format_extent_double(ymin) << ", " << format_extent_double(ymax) << " (xmin, xmax, ymin, ymax)\n";
+	s << "SpatExtent : " << format_double(xmin) << ", " << format_double(xmax) << ", "
+	  << format_double(ymin) << ", " << format_double(ymax) << " (xmin, xmax, ymin, ymax)\n";
 	return s.str();
 }
 
@@ -249,8 +249,8 @@ std::string SpatVector::show() {
 	s << "class       : SpatVector\n";
 	s << "geometry    : " << type() << "\n";
 	s << "dimensions  : " << nr << ", " << nc << "  (geometries, attributes)\n";
-	s << "extent      : " << format_extent_double(e.xmin, 7) << ", " << format_extent_double(e.xmax, 7) << ", "
-	  << format_extent_double(e.ymin, 7) << ", " << format_extent_double(e.ymax, 7) << "  (xmin, xmax, ymin, ymax)\n";
+	s << "extent      : " << format_double(e.xmin, 7) << ", " << format_double(e.xmax, 7) << ", "
+	  << format_double(e.ymin, 7) << ", " << format_double(e.ymax, 7) << "  (xmin, xmax, ymin, ymax)\n";
 
 	if (!source.empty()) {
 		std::string bn = basename_trunc(source);
@@ -305,7 +305,7 @@ std::string SpatRaster::show(bool one_based) {
 		}
 	}
 
-	s << "resolution  : " << xres() << ", " << yres() << "  (x, y)\n";
+	s << "resolution  : " << format_double(xres(), 7) << ", " << format_double(yres(), 7) << "  (x, y)\n";
 
 	std::vector<bool> hw = hasWindow();
 	bool any_win = false, all_win = true;
@@ -317,8 +317,8 @@ std::string SpatRaster::show(bool one_based) {
 	} else {
 		s << "extent      : ";
 	}
-	s << format_extent_double(e.xmin, 7) << ", " << format_extent_double(e.xmax, 7) << ", "
-	  << format_extent_double(e.ymin, 7) << ", " << format_extent_double(e.ymax, 7)
+	s << format_double(e.xmin, 7) << ", " << format_double(e.xmax, 7) << ", "
+	  << format_double(e.ymin, 7) << ", " << format_double(e.ymax, 7)
 	  << "  (xmin, xmax, ymin, ymax)\n";
 
 	std::string wkt = getSRS("wkt");
@@ -746,8 +746,8 @@ std::string SpatRasterStack::show() {
 	s << "resolution  : " << xy[0] << ", " << xy[1] << "  (x, y)\n";
 
 	SpatExtent e = getExtent();
-	s << "extent      : " << format_extent_double(e.xmin, 7) << ", " << format_extent_double(e.xmax, 7) << ", "
-	  << format_extent_double(e.ymin, 7) << ", " << format_extent_double(e.ymax, 7) << "  (xmin, xmax, ymin, ymax)\n";
+	s << "extent      : " << format_double(e.xmin, 7) << ", " << format_double(e.xmax, 7) << ", "
+	  << format_double(e.ymin, 7) << ", " << format_double(e.ymax, 7) << "  (xmin, xmax, ymin, ymax)\n";
 
 	std::string wkt = getSRS("wkt");
 	std::string proj4 = getSRS("proj4");
@@ -829,8 +829,8 @@ std::string SpatRasterCollection::show() {
 	}
 
 	SpatExtent e = getExtent();
-	s << "extent      : " << format_extent_double(e.xmin, 7) << ", " << format_extent_double(e.xmax, 7) << ", "
-	  << format_extent_double(e.ymin, 7) << ", " << format_extent_double(e.ymax, 7) << "  (xmin, xmax, ymin, ymax)\n";
+	s << "extent      : " << format_double(e.xmin, 7) << ", " << format_double(e.xmax, 7) << ", "
+	  << format_double(e.ymin, 7) << ", " << format_double(e.ymax, 7) << "  (xmin, xmax, ymin, ymax)\n";
 
 	if (!ds.empty()) {
 		std::string wkt = ds[0].getSRS("wkt");
@@ -917,8 +917,8 @@ std::string SpatVectorProxy::show() {
 	s << " class       : SpatVectorProxy\n";
 	s << " geometry    : " << v.type() << "\n";
 	s << " dimensions  : " << nr << ", " << nc << "  (geometries, attributes)\n";
-	s << " extent      : " << format_extent_double(e.xmin, 7) << ", " << format_extent_double(e.xmax, 7) << ", "
-	  << format_extent_double(e.ymin, 7) << ", " << format_extent_double(e.ymax, 7) << "  (xmin, xmax, ymin, ymax)\n";
+	s << " extent      : " << format_double(e.xmin, 7) << ", " << format_double(e.xmax, 7) << ", "
+	  << format_double(e.ymin, 7) << ", " << format_double(e.ymax, 7) << "  (xmin, xmax, ymin, ymax)\n";
 
 	std::string bn = basename_trunc(v.source);
 	std::string lyr = v.source_layer;

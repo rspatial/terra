@@ -908,20 +908,23 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	GDALDriver *poDriver = poDataset->GetDriver();
 	std::string gdrv = poDriver->GetDescription();
 
-	multi = 0;
 	if ((multi >= 1) && (gdrv != "VRT")) {
-	// If driver supports multidim, use it 
-		const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
-		if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
-			GDALClose( (GDALDatasetH) poDataset );		
-			bool ok = constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains);
-			if (ok) {
+		if (gdrv == "netCDF") {
+			if (constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
+				GDALClose( (GDALDatasetH) poDataset );		
 				return true;
 			}
 		}
-		if (multi == 1) {
-			setError("cannot open this file with the multidim API: " + fname);
-			return false;
+		if (multi == 1) { // should be for > 1, but that seems to fail 
+			const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
+			if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
+				if (constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
+					GDALClose( (GDALDatasetH) poDataset );		
+					return true;
+				} else {
+					addWarning("cannot open this file with the multidim API: " + fname);
+				}
+			}
 		}
 	}
 

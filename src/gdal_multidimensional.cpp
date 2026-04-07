@@ -925,6 +925,8 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		return false;
 	}
 
+
+//	if (verbose) {
 	if (arrays_to_use.size() > 1 && max_nlyr_var > 1) {
 		std::string w = "combined " + std::to_string(nvar_ok) + " variables";
 		w += " (";
@@ -942,15 +944,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		}
 		addWarning(w);
 	}
-	if (verbose) {
-#ifdef useRcpp
-		if (!source.empty()) {
-			for (size_t i = 0; i < source[0].m_names.size(); i++) {
-				Rcpp::Rcout << i << " " << source[0].m_names[i] << " " << source[0].m_size[i] << std::endl;
-			}
-		}
-#endif
-	}
+//	}
 	return true;
 }
 
