@@ -148,6 +148,20 @@ static void md_layer_to_indices(size_t layer, const std::vector<size_t> &sizes,
 	}
 }
 
+// Linear index into a GDAL MDArray Read buffer: dim 0 slowest, dim N-1 fastest,
+// with strides[k] = product of count[m] for m > k (see GDALMDArray::Read).
+static size_t md_layer_to_read_linear(size_t layer_id, const std::vector<size_t> &extra_sizes,
+		const std::vector<size_t> &m_dims_terra, const std::vector<size_t> &stride_all) {
+	std::vector<size_t> idx;
+	md_layer_to_indices(layer_id, extra_sizes, idx);
+	size_t linear = 0;
+	for (size_t e = 0; e < idx.size(); e++) {
+		size_t gd = m_dims_terra[2 + e];
+		linear += idx[e] * stride_all[gd];
+	}
+	return linear;
+}
+
 // GDAL row-major: last dimension in the array (highest index) varies fastest in the
 // read buffer. Terra uses one row = fixed latitude, columns = longitude (lon fastest
 // within the row). If lon's index > lat's (ix > iy), the read buffer is already
@@ -1089,12 +1103,28 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 
 	auto dt = GDALExtendedDataType::Create(GDT_Float64);
 
-	// For ndim > 2, read one terra-layer at a time (same as readChunkMulti).
-	// The former in_order "fast path" read the full extra-dimensional block into v[0..nl),
-	// which assumes GDAL's flattened dimension order matches md_layer_to_indices;
 	if (ndim > 2) {
 		for (size_t j = 2; j < ndim; j++) {
-			count[source[src].m_dims[j]] = 1;
+			size_t gab = source[src].m_dims[j];
+			count[gab] = source[src].m_size[gab];
+		}
+		std::vector<size_t> stride_all(source[src].m_ndims);
+		for (size_t k = 0; k < source[src].m_ndims; k++) {
+			size_t st = 1;
+			for (size_t m = k + 1; m < source[src].m_ndims; m++) {
+				st *= count[m];
+			}
+			stride_all[k] = st;
+		}
+		size_t prod = 1;
+		for (size_t j = 2; j < ndim; j++) {
+			prod *= count[source[src].m_dims[j]];
+		}
+		std::vector<double> buf(prod);
+		std::vector<size_t> layer_linear(nl);
+		for (size_t j = 0; j < nl; j++) {
+			layer_linear[j] = md_layer_to_read_linear(source[src].layers[j], extra_sizes,
+				source[src].m_dims, stride_all);
 		}
 		for (size_t p = 0; p < n; p++) {
 			if (std::isnan(cols[p]) || std::isnan(rows[p])) {
@@ -1109,19 +1139,12 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 			} else {
 				offset[rowdim] = rows[p];
 			}
+			source[src].m_array->Read(&offset[0], &count[0], nullptr, NULL, dt, &buf[0], NULL, 0);
+			if (source[src].m_hasNA) {
+				std::replace(buf.begin(), buf.end(), source[src].m_missing_value, (double)NAN);
+			}
 			for (size_t j = 0; j < nl; j++) {
-				md_layer_to_indices(source[src].layers[j], extra_sizes, idx);
-				for (size_t e = 0; e < extra_sizes.size(); e++) {
-					offset[source[src].m_dims[2 + e]] = idx[e];
-				}
-				double val = NAN;
-				source[src].m_array->Read(&offset[0], &count[0], nullptr, NULL, dt, &val, NULL, 0);
-				if (source[src].m_hasNA) {
-					if (val == source[src].m_missing_value) {
-						val = NAN;
-					}
-				}
-				out[outstart + j].push_back(val);
+				out[outstart + j].push_back(buf[layer_linear[j]]);
 			}
 		}
 	} else {

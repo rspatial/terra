@@ -2105,7 +2105,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	std::vector<std::vector<std::string>> info = parse_metadata_sds(meta);
 	int n = info[0].size();
 
-	if (gtiff && (subds[0] < 0) && subdsname[0].empty()) {
+	if (gtiff && (subds[0] < 0) && (subdsname.empty() || subdsname[0].empty())) {
 		subds.resize(n);
 		std::iota(subds.begin(), subds.end(), 0);
 	}
