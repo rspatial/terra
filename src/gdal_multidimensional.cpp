@@ -1081,17 +1081,6 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 	std::vector<size_t> count(source[src].m_ndims, 1);
 
 	const size_t rowdim = source[src].m_dims[1];
-	if (source[src].in_order(true)) {
-		for (size_t j = 2; j < ndim; j++) {
-			size_t gd = source[src].m_dims[j];
-			count[gd] = source[src].m_size[gd];
-		}
-	} else {
-		for (size_t j = 2; j < ndim; j++) {
-			count[source[src].m_dims[j]] = 1;
-		}
-	}
-
 	std::vector<size_t> extra_sizes;
 	for (size_t j = 2; j < ndim; j++) {
 		extra_sizes.push_back(source[src].m_size[source[src].m_dims[j]]);
@@ -1100,38 +1089,84 @@ bool SpatRaster::readRowColMulti(size_t src, std::vector<std::vector<double>> &o
 
 	auto dt = GDALExtendedDataType::Create(GDT_Float64);
 
-	std::vector<double> v(nl, NAN);
-	for (size_t i=0; i<n; i++) {
-	
-		if (std::isnan(cols[i]) || std::isnan(rows[i])) {
-			for (size_t j = 0; j < nl; j++) {
-				out[outstart + j].push_back(NAN);
+	// For ndim > 2, read one terra-layer at a time (same as readChunkMulti).
+	// The former in_order "fast path" read the full extra-dimensional block into v[0..nl),
+	// which assumes GDAL's flattened dimension order matches md_layer_to_indices;
+	if (ndim > 2) {
+		for (size_t j = 2; j < ndim; j++) {
+			count[source[src].m_dims[j]] = 1;
+		}
+		for (size_t p = 0; p < n; p++) {
+			if (std::isnan(cols[p]) || std::isnan(rows[p])) {
+				for (size_t j = 0; j < nl; j++) {
+					out[outstart + j].push_back(NAN);
+				}
+				continue;
 			}
-			continue;
-		}
-		offset[source[src].m_dims[0]] = cols[i];
-		if (!source[src].flipped) {
-			offset[rowdim] = nrow() - rows[i] - 1;
-		} else {
-			offset[rowdim] = rows[i];
-		}
-
-		if (source[src].in_order(true)) {
-			source[src].m_array->Read(&offset[0], &count[0], nullptr, NULL, dt, &v[0], NULL, 0);
-		} else {
-			for (size_t j = 0; j < source[src].layers.size(); j++) {
+			offset[source[src].m_dims[0]] = cols[p];
+			if (!source[src].flipped) {
+				offset[rowdim] = nrow() - rows[p] - 1;
+			} else {
+				offset[rowdim] = rows[p];
+			}
+			for (size_t j = 0; j < nl; j++) {
 				md_layer_to_indices(source[src].layers[j], extra_sizes, idx);
 				for (size_t e = 0; e < extra_sizes.size(); e++) {
 					offset[source[src].m_dims[2 + e]] = idx[e];
 				}
-				source[src].m_array->Read(&offset[0], &count[0], NULL, NULL, dt, &v[j], NULL, 0);
+				double val = NAN;
+				source[src].m_array->Read(&offset[0], &count[0], nullptr, NULL, dt, &val, NULL, 0);
+				if (source[src].m_hasNA) {
+					if (val == source[src].m_missing_value) {
+						val = NAN;
+					}
+				}
+				out[outstart + j].push_back(val);
 			}
 		}
-		if (source[src].m_hasNA) {
-			std::replace(v.begin(), v.end(), source[src].m_missing_value, (double)NAN);
+	} else {
+		if (source[src].in_order(true)) {
+			for (size_t j = 2; j < ndim; j++) {
+				size_t gd = source[src].m_dims[j];
+				count[gd] = source[src].m_size[gd];
+			}
+		} else {
+			for (size_t j = 2; j < ndim; j++) {
+				count[source[src].m_dims[j]] = 1;
+			}
 		}
-		for (size_t i=0; i<nl; i++) {
-			out[outstart+i].push_back(v[i]);
+		std::vector<double> v(nl, NAN);
+		for (size_t p = 0; p < n; p++) {
+			if (std::isnan(cols[p]) || std::isnan(rows[p])) {
+				for (size_t j = 0; j < nl; j++) {
+					out[outstart + j].push_back(NAN);
+				}
+				continue;
+			}
+			offset[source[src].m_dims[0]] = cols[p];
+			if (!source[src].flipped) {
+				offset[rowdim] = nrow() - rows[p] - 1;
+			} else {
+				offset[rowdim] = rows[p];
+			}
+
+			if (source[src].in_order(true)) {
+				source[src].m_array->Read(&offset[0], &count[0], nullptr, NULL, dt, &v[0], NULL, 0);
+			} else {
+				for (size_t j = 0; j < nl; j++) {
+					md_layer_to_indices(source[src].layers[j], extra_sizes, idx);
+					for (size_t e = 0; e < extra_sizes.size(); e++) {
+						offset[source[src].m_dims[2 + e]] = idx[e];
+					}
+					source[src].m_array->Read(&offset[0], &count[0], NULL, NULL, dt, &v[j], NULL, 0);
+				}
+			}
+			if (source[src].m_hasNA) {
+				std::replace(v.begin(), v.end(), source[src].m_missing_value, (double)NAN);
+			}
+			for (size_t j = 0; j < nl; j++) {
+				out[outstart + j].push_back(v[j]);
+			}
 		}
 	}
 
