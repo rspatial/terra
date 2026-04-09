@@ -71,6 +71,17 @@ function(x, filename="", overwrite=FALSE, ...) {
 )
 
 
+setMethod("update", signature(object="SpatRaster"),
+	function(object, crs=FALSE, extent=FALSE, names=FALSE) {
+		opt <- spatOptions()
+		ok <- object@pntr$update_meta(names, crs, extent, opt)
+		messages(object, "update")
+		invisible(object)
+	}
+)
+
+
+
 get_filetype <- function(filename) {  
 	fn <- tolower(filename)
 	ext <- tools::file_ext(fn)

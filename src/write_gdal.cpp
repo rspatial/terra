@@ -1179,16 +1179,21 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].memory) continue;
 		n++;
-		if (!open_gdal(hDS, i, true, opt)) {
+		hDS = GDALOpen(source[i].filename.c_str(), GA_Update);
+		if (hDS == NULL) {
 			setError("cannot open source " + std::to_string(i+1));
 			return false;
 		}
 		if (names) {
 			for (size_t b=0; b < source[i].nlyr; b++) {
 				GDALRasterBandH poBand = GDALGetRasterBand(hDS, b+1);
-				if (GDALGetRasterAccess(poBand) == GA_Update) {
-					GDALSetDescription(poBand, source[i].names[b].c_str());
+				if (poBand == NULL) continue;
+				if (GDALGetRasterAccess(poBand) != GA_Update) {
+					setError("cannot update names (read-only band)");
+					GDALClose(hDS);
+					return false;
 				}
+				GDALSetDescription(poBand, source[i].names[b].c_str());
 			}
 		}
 		if (crs) {
@@ -1215,6 +1220,10 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 			SpatExtent extent = getExtent();
 			double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 			GDALSetGeoTransform(hDS, adfGeoTransform);
+		}
+		if (names) {
+			std::string auxf = source[i].filename + ".aux.xml";
+			VSIUnlink(auxf.c_str());
 		}
 		GDALClose(hDS);
 	}
