@@ -4,6 +4,9 @@
 
 ### bug fixes
 
+- terra now distinguishes between the “standard”/“Gregorian” and the
+  “proleptic_gregorian” calendars
+  [\#1599](https://github.com/rspatial/terra/issues/1599) by Hu shiyu
 - `spatSample<SpatRaster>(method="stratified")` could cause an out of
   bounds error
   [\#1858](https://gi%5B#1848%5Dthub.com/rspatial/terra/issues/1858) by
@@ -48,6 +51,12 @@
   a limit for processing SpatRasters that is now detected
   [\#1993](https://github.com/rspatial/terra/issues/1993) by Enrico
   Mattea
+- additional effor to read KML/Z attribute values
+  [\#1954](https://github.com/rspatial/terra/issues/1954) by Yong-hun
+  Suh
+- `autocor` gets a “standardize” argument for row-standardization
+  [\#1593](https://github.com/rspatial/terra/issues/1593) by Nicholas
+  Berryman
 
 ## version 1.9-11
 
@@ -547,7 +556,7 @@ Released 2025-05-09
   Friend
 - `extract<SpatRaster>` with argument “layers” and xy=TRUE added an
   unexpected additional column
-  [\#1818](https://github.com/rspatial/terra/issues/1818) by Breeze-Hu
+  [\#1818](https://github.com/rspatial/terra/issues/1818) by Hu shiyu
 - `extractRange` now honors arguments `bind` and assigns `ID` within a
   list [\#1816](https://github.com/rspatial/terra/issues/1816) by
   WillhKessler

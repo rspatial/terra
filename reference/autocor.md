@@ -11,7 +11,7 @@ indicators of spatial autocorrelation (Anselin, 1995).
 autocor(x, w, method="moran")
 
 # S4 method for class 'SpatRaster'
-autocor(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE)
+autocor(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE, standardize=FALSE)
 ```
 
 ## Arguments
@@ -29,6 +29,13 @@ autocor(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE)
 
   logical. If `TRUE` global autocorrelation is computed instead of local
   autocorrelation
+
+- standardize:
+
+  logical. If `TRUE`, apply row standardization to the weights matrix.
+  This divides each weight by the row sum so that the weights for each
+  cell sum to one. For Moran's I, row standardization ensures that the
+  result is bounded between -1 and 1. Only used when `global=TRUE`
 
 - method:
 
@@ -75,6 +82,11 @@ values(r) <- 1:ncell(r)
 autocor(r)
 #>     lyr.1 
 #> 0.8362573 
+
+# row-standardized (result bounded between -1 and 1)
+autocor(r, standardize=TRUE)
+#>     lyr.1 
+#> 0.9330909 
 
 # rook's case neighbors
 f <- matrix(c(0,1,0,1,0,1,0,1,0), nrow=3)

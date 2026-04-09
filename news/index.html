@@ -37,7 +37,8 @@
 <h2 class="pkg-version" data-toc-text="1.9-17" id="version-19-17">version 1.9-17<a class="anchor" aria-label="anchor" href="#version-19-17"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-1-9-17">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-17"></a></h3>
-<ul><li>
+<ul><li>terra now distinguishes between the “standard”/“Gregorian” and the “proleptic_gregorian” calendars <a href="https://github.com/rspatial/terra/issues/1599" class="external-link">#1599</a> by Hu shiyu</li>
+<li>
 <code>spatSample&lt;SpatRaster&gt;(method="stratified")</code> could cause an out of bounds error <a href="https://gi%5B#1848%5Dthub.com/rspatial/terra/issues/1858" class="external-link">#1858</a> by Felipe)</li>
 <li>
 <code>vrt</code> on OSX had trouble with options <a href="https://github.com/rspatial/terra/issues/1410" class="external-link">#1410</a> by Andrea Manica. And occaisionaly on Windows <a href="https://github.com/rspatial/terra/issues/1848" class="external-link">#1848</a> by Monika Anna Tomaszewska; due to passing them as a dangling pointer.</li>
@@ -59,6 +60,9 @@
 <li>
 <code>aggregate&lt;SpatRaster&gt;</code> no longer loses time attributes <a href="https://github.com/rspatial/terra/issues/2066" class="external-link">#2066</a> by Wencheng Lau-Medrano</li>
 <li>the number of files that the OS allows to be simultaneously open sets a limit for processing SpatRasters that is now detected <a href="https://github.com/rspatial/terra/issues/1993" class="external-link">#1993</a> by Enrico Mattea</li>
+<li>additional effor to read KML/Z attribute values <a href="https://github.com/rspatial/terra/issues/1954" class="external-link">#1954</a> by Yong-hun Suh</li>
+<li>
+<code>autocor</code> gets a “standardize” argument for row-standardization <a href="https://github.com/rspatial/terra/issues/1593" class="external-link">#1593</a> by Nicholas Berryman</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -393,7 +397,7 @@
 <li>
 <code>extract&lt;SpatRaster&gt;</code> with a “window” set, did not work properly <a href="https://github.com/rspatial/terra/issues/1819" class="external-link">#1819</a> by Derek Friend</li>
 <li>
-<code>extract&lt;SpatRaster&gt;</code> with argument “layers” and xy=TRUE added an unexpected additional column <a href="https://github.com/rspatial/terra/issues/1818" class="external-link">#1818</a> by Breeze-Hu</li>
+<code>extract&lt;SpatRaster&gt;</code> with argument “layers” and xy=TRUE added an unexpected additional column <a href="https://github.com/rspatial/terra/issues/1818" class="external-link">#1818</a> by Hu shiyu</li>
 <li>
 <code>extractRange</code> now honors arguments <code>bind</code> and assigns <code>ID</code> within a list <a href="https://github.com/rspatial/terra/issues/1816" class="external-link">#1816</a> by WillhKessler</li>
 <li>
