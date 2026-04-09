@@ -1169,6 +1169,99 @@ bool SpatRaster::fillValuesGDAL(double fillvalue) {
 }
 
 
+bool SpatRaster::update_values(std::vector<double> &cells, std::vector<double> &vals, std::vector<size_t> layers, SpatOptions &opt) {
+
+	size_t cs = cells.size();
+	if (cs == 0) {
+		addWarning("no cells to update");
+		return true;
+	}
+	if (nsrc() != 1) {
+		setError("can only update values for single-source rasters");
+		return false;
+	}
+	if (source[0].memory) {
+		addWarning("update is not relevant for in-memory raster sources");
+		return true;
+	}
+
+	double nce = ncell() - 1;
+	for (size_t i = 0; i < cs; i++) {
+		if (cells[i] < 0 || cells[i] > nce) {
+			setError("cell number out of range");
+			return false;
+		}
+	}
+
+	size_t nl = nlyr();
+	if (layers.empty()) {
+		layers.resize(nl);
+		for (size_t i = 0; i < nl; i++) layers[i] = i;
+	} else {
+		for (size_t i = 0; i < layers.size(); i++) {
+			if (layers[i] >= nl) {
+				setError("invalid layer number");
+				return false;
+			}
+		}
+	}
+	size_t nlyrs = layers.size();
+
+	size_t vs = vals.size();
+	if (vs == 1) {
+		vals.resize(cs * nlyrs, vals[0]);
+	} else if (vs == cs && nlyrs > 1) {
+		vals.resize(cs * nlyrs);
+		for (size_t j = 1; j < nlyrs; j++) {
+			std::copy(vals.begin(), vals.begin() + cs, vals.begin() + j * cs);
+		}
+	} else if (vs != cs * nlyrs) {
+		setError("length of cells and values do not match");
+		return false;
+	}
+
+	GDALDatasetH hDS = GDALOpen(source[0].filename.c_str(), GA_Update);
+	if (hDS == NULL) {
+		setError("cannot open file for update: " + source[0].filename);
+		return false;
+	}
+
+	size_t nc = ncol();
+
+	for (size_t j = 0; j < nlyrs; j++) {
+		GDALRasterBandH hBand = GDALGetRasterBand(hDS, layers[j] + 1);
+		if (hBand == NULL) {
+			GDALClose(hDS);
+			setError("cannot access band " + std::to_string(layers[j] + 1));
+			return false;
+		}
+		int hasNAval;
+		double na = GDALGetRasterNoDataValue(hBand, &hasNAval);
+
+		size_t voff = j * cs;
+		for (size_t k = 0; k < cs; k++) {
+			size_t cell = (size_t) cells[k];
+			int row = (int)(cell / nc);
+			int col = (int)(cell % nc);
+			double val = vals[voff + k];
+			if (std::isnan(val) && hasNAval) {
+				val = na;
+			}
+			CPLErr err = GDALRasterIO(hBand, GF_Write, col, row, 1, 1,
+						&val, 1, 1, GDT_Float64, 0, 0);
+			if (err != CE_None) {
+				GDALClose(hDS);
+				setError("write error at cell " + std::to_string(cell + 1));
+				return false;
+			}
+		}
+	}
+
+	GDALClose(hDS);
+	return true;
+}
+
+
 bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) { 
 	if ((!names) & (!crs) & (!ext)) {
 		addWarning("nothing to do");
@@ -1228,7 +1321,7 @@ bool SpatRaster::update_meta(bool names, bool crs, bool ext, SpatOptions &opt) {
 		GDALClose(hDS);
 	}
 	if (n == 0) {
-		addWarning("no sources on disk");
+		addWarning("update is not relevant for in-memory raster sources");
 		return false;
 	}
 	return true;

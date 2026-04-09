@@ -72,10 +72,32 @@ function(x, filename="", overwrite=FALSE, ...) {
 
 
 setMethod("update", signature(object="SpatRaster"),
-	function(object, crs=FALSE, extent=FALSE, names=FALSE) {
-		opt <- spatOptions()
-		ok <- object@pntr$update_meta(names, crs, extent, opt)
-		messages(object, "update")
+	function(object, crs=FALSE, extent=FALSE, names=FALSE, cells=NULL, values=NULL, layer=0) {
+		if (!is.null(cells) || !is.null(values)) {
+			if (is.null(cells) || is.null(values)) {
+				error("update", "provide both 'cells' and 'values'")
+			}
+			if (is.character(layer)) {
+				layer <- match(layer, names(object))
+				if (any(is.na(layer))) {
+					error("update", "invalid layer name")
+				}
+			}
+			layer <- round(layer)
+			if (all(layer > 0)) {
+				layers <- as.integer(layer - 1)
+			} else {
+				layers <- integer(0)
+			}
+			opt <- spatOptions()
+			ok <- object@pntr$update_values(as.double(cells - 1), as.double(values), layers, opt)
+			messages(object, "update")
+		}
+		if (crs || extent || names) {
+			opt <- spatOptions()
+			ok <- object@pntr$update_meta(names, crs, extent, opt)
+			messages(object, "update")
+		}
 		invisible(object)
 	}
 )
