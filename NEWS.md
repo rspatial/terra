@@ -2,6 +2,7 @@
 
 ## bug fixes
 
+- terra now distinguishes between the "standard"/"Gregorian" and the "proleptic_gregorian" calendars [#1599](https://github.com/rspatial/terra/issues/1599) by Hu shiyu
 - `spatSample<SpatRaster>(method="stratified")` could cause an out of bounds error [#1858](https://gi[#1848]thub.com/rspatial/terra/issues/1858) by Felipe)
 - `vrt` on OSX had trouble with options [#1410](https://github.com/rspatial/terra/issues/1410) by Andrea Manica. And occaisionaly on Windows [#1848](https://github.com/rspatial/terra/issues/1848) by Monika Anna Tomaszewska; due to passing them as a dangling pointer.
 - `rbind<SpatVector,SpatVector>` could make R crash when combining a variable that is numeric in one and boolean in the other source [#2069](https://github.com/rspatial/terra/issues/2069) by Hans van Calster
@@ -17,6 +18,7 @@
 - `aggregate<SpatRaster>` no longer loses time attributes [#2066](https://github.com/rspatial/terra/issues/2066) by Wencheng Lau-Medrano
 - the number of files that the OS allows to be simultaneously open sets a limit for processing SpatRasters that is now detected [#1993](
 https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
+- additional effor to read KML/Z attribute values [#1954](https://github.com/rspatial/terra/issues/1954) by Yong-hun Suh
 
 # new 
 
@@ -267,7 +269,7 @@ Released 2025-05-09
 - `depth` information was dropped even when there was no reason for that [#1806](https://github.com/rspatial/terra/issues/1806) by Daniel R Schlaepfer
 - `plet` did not work for logical SpatRasters [#1820](https://github.com/rspatial/terra/issues/1820) by Andrew Gene Brown
 - `extract<SpatRaster>` with a "window" set, did not work properly [#1819](https://github.com/rspatial/terra/issues/1819) by Derek Friend
-- `extract<SpatRaster>` with argument "layers" and xy=TRUE added an unexpected additional column [#1818](https://github.com/rspatial/terra/issues/1818) by Breeze-Hu
+- `extract<SpatRaster>` with argument "layers" and xy=TRUE added an unexpected additional column [#1818](https://github.com/rspatial/terra/issues/1818) by Hu shiyu
 - `extractRange` now honors arguments `bind` and assigns `ID` within a list [#1816](https://github.com/rspatial/terra/issues/1816) by WillhKessler
 - `crop<SpatRaster,SpatVector>(mask=TRUE)` did not crop if the SpatVector was (partly) outside the SpatVector [#1824](https://github.com/rspatial/terra/issues/1824) by Márcia Barbosa
 
