@@ -30,6 +30,29 @@ bool isleap(const long &year) {
 }
 
 
+// Day correction for the "standard" (mixed Julian/Gregorian) CF calendar.
+// When the origin is before the Gregorian reform (1582-10-15), the raw time
+// offsets are counted on a Julian calendar, but terra's get_time() uses
+// proleptic Gregorian arithmetic.  Return the number of days to subtract
+// from the raw offset so that the proleptic Gregorian path gives the
+// correct result.  Returns 0 when no correction is needed.
+long standard_cal_correction(int year, int month, int day) {
+	if (year > 1582) return 0;
+	if (year == 1582 && (month > 10 || (month == 10 && day >= 15))) return 0;
+
+	// Julian Day Number – Gregorian
+	long a  = (14 - month) / 12;
+	long y  = year + 4800L - a;
+	long m  = month + 12 * a - 3;
+	long jdn_greg = day + (153 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045;
+
+	// Julian Day Number – Julian
+	long jdn_jul  = day + (153 * m + 2) / 5 + 365 * y + y / 4 - 32083;
+
+	return jdn_greg - jdn_jul;
+}
+
+
 SpatTime_t yeartime(const long &year) {
 	// seconds per year
 	// 365 * 24 * 3600 = 31536000

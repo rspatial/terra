@@ -25,6 +25,7 @@
 #include "string_utils.h"
 #include "file_utils.h"
 #include "vecmath.h"
+#include "spatTime.h"
 #include "recycle.h"
 #include <stddef.h>
 #include <cmath>
@@ -249,6 +250,21 @@ bool parse_ncdf_time(SpatRasterSource &s, const std::string unit, const std::str
 		} else if (!(months || years || yearmonths || yearsbp)) {
 			//cal = "366";
 			msg = "unknown calendar (assuming standard): " + calendar;			
+		}
+
+		if (cal == "366" && calendar != "proleptic_gregorian") {
+			std::vector<int> ymd0 = getymd(origin);
+			long corr = standard_cal_correction(ymd0[0], ymd0[1], ymd0[2]);
+			if (corr != 0) {
+				double corr_unit = 0;
+				if (days)          corr_unit = corr;
+				else if (hours)    corr_unit = corr * 24.0;
+				else if (minutes)  corr_unit = corr * 1440.0;
+				else if (seconds)  corr_unit = corr * 86400.0;
+				for (size_t i = 0; i < raw.size(); i++) {
+					raw[i] -= corr_unit;
+				}
+			}
 		}
 
 		// this shortcut means that 360/noleap calendars loose only have dates, no time

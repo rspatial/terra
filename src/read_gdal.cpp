@@ -2406,6 +2406,24 @@ std::vector<int64_t> ncdf_time(const std::vector<std::string> &metadata, std::ve
 			msg = "unknown calendar (assuming standard): " + calendar;			
 		}
 
+		// CF "standard" calendar is mixed Julian/Gregorian.  When the
+		// origin is before 1582-10-15 the raw offsets are Julian-counted
+		// but get_time() uses proleptic Gregorian.  Correct here.
+		if (cal == "366" && calendar != "proleptic_gregorian") {
+			std::vector<int> ymd0 = getymd(origin);
+			long corr = standard_cal_correction(ymd0[0], ymd0[1], ymd0[2]);
+			if (corr != 0) {
+				double corr_unit = 0;
+				if (days)          corr_unit = corr;
+				else if (hours)    corr_unit = corr * 24.0;
+				else if (minutes)  corr_unit = corr * 1440.0;
+				else if (seconds)  corr_unit = corr * 86400.0;
+				for (size_t i = 0; i < raw.size(); i++) {
+					raw[i] -= corr_unit;
+				}
+			}
+		}
+
 		// this shortcut means that 360/noleap calendars loose only have dates, no time
 		// to be refined
 		if ((hours || minutes || seconds) && (cal == "360")) {
