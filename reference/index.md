@@ -1110,7 +1110,7 @@
   : units of SpatRaster or SpatRasterDataSet
 
 - [`update(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/update.md)
-  : Change values in a file
+  : Update a raster file
 
 - [`values(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/values.md)
   [`values(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/values.md)
