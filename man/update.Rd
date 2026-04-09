@@ -31,7 +31,7 @@ x <- writeRaster(s*1, fname)
 
 ext(x) <- ext(x) + 1
 crs(x) <- "+proj=utm +zone=1"
-names(x) <- LETTERS[1:3]"
+names(x) <- LETTERS[1:3]
 
 update(x, crs=TRUE, extent=TRUE)
 
