@@ -14,13 +14,14 @@ Compute spatial autocorrelation for a numeric vector or a SpatRaster. You can co
 \usage{
 \S4method{autocor}{numeric}(x, w, method="moran")
 
-\S4method{autocor}{SpatRaster}(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE)
+\S4method{autocor}{SpatRaster}(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE, standardize=FALSE)
 }
 
 \arguments{
   \item{x}{numeric or SpatRaster}
   \item{w}{Spatial weights defined by or a rectangular matrix. For a SpatRaster this matrix must the sides must have an odd length (3, 5, ...)}
   \item{global}{logical. If \code{TRUE} global autocorrelation is computed instead of local autocorrelation}
+  \item{standardize}{logical. If \code{TRUE}, apply row standardization to the weights matrix. This divides each weight by the row sum so that the weights for each cell sum to one. For Moran's I, row standardization ensures that the result is bounded between -1 and 1. Only used when \code{global=TRUE}}
   \item{method}{character. If \code{x} is numeric or SpatRaster: "moran" for Moran's I and "geary" for Geary's C. If \code{x} is numeric also: "Gi", "Gi*" (the Getis-Ord statistics), locmor (local Moran's I) and "mean" (local mean)}
 }
 
@@ -54,6 +55,9 @@ r <- rast(nrows=10, ncols=10, xmin=0)
 values(r) <- 1:ncell(r)
 
 autocor(r)
+
+# row-standardized (result bounded between -1 and 1)
+autocor(r, standardize=TRUE)
 
 # rook's case neighbors
 f <- matrix(c(0,1,0,1,0,1,0,1,0), nrow=3)

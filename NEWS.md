@@ -19,6 +19,8 @@
 - the number of files that the OS allows to be simultaneously open sets a limit for processing SpatRasters that is now detected [#1993](
 https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - additional effor to read KML/Z attribute values [#1954](https://github.com/rspatial/terra/issues/1954) by Yong-hun Suh
+- `autocor` gets a "standardize" argument for row-standardization [#1593](https://github.com/rspatial/terra/issues/1593) by Nicholas Berryman
+
 
 # new 
 
