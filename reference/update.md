@@ -7,7 +7,7 @@ BE CAREFUL as you are overwriting values in an existing file.
 
 ``` r
 # S4 method for class 'SpatRaster'
-update(object, crs=FALSE, extent=FALSE)
+update(object, crs=FALSE, extent=FALSE, names=FALSE)
 ```
 
 ## Arguments
@@ -24,6 +24,10 @@ update(object, crs=FALSE, extent=FALSE)
 
   logical. Should the extent be updated?
 
+- names:
+
+  logical. Should the names be updated?
+
 ## Value
 
 SpatRaster (invisibly)
@@ -33,11 +37,13 @@ SpatRaster (invisibly)
 ``` r
 s <- rast(system.file("ex/logo.tif", package="terra"))   
 fname <- paste0(tempfile(), ".tif")
-x <- writeRaster(s, fname)
+x <- writeRaster(s*1, fname)
+
 ext(x) <- ext(x) + 1
 crs(x) <- "+proj=utm +zone=1"
+names(x) <- LETTERS[1:3]
 
-update(x, crs=TRUE, extent=TRUE)
+update(x, crs=TRUE, extent=TRUE, names=TRUE)
 
 rast(fname)
 #> class       : SpatRaster
@@ -45,9 +51,8 @@ rast(fname)
 #> resolution  : 1.019802, 1.025974  (x, y)
 #> extent      : -1, 102, -1, 78  (xmin, xmax, ymin, ymax)
 #> coord. ref. : WGS 84 / UTM zone 1N (EPSG:32601)
-#> source      : file21742732e1d1.tif
-#> colors rgb  : 1, 2, 3
-#> names       : red, green, blue
-#> min values  :   0,     0,    0
-#> max values  : 254,   254,  254
+#> source      : file21625aecc03b.tif
+#> names       :   A,   B,   C
+#> min values  :   0,   0,   0
+#> max values  : 255, 255, 255
 ```

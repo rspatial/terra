@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-17
+## version 1.9-18
 
 ### bug fixes
 
@@ -33,6 +33,8 @@
 
 ### enhancements
 
+- `update` can (again) edit layernames in existing files
+  [\#2071](https://github.com/rspatial/terra/issues/2071) by Jim Shady
 - `compareGeom` gets argument “tolerance” to overwrite the default that
   can be set with `terraOptions`.
   [\#2056](https://github.com/rspatial/terra/issues/2056) by R. Kyle

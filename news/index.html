@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-17</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-18</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-17" id="version-19-17">version 1.9-17<a class="anchor" aria-label="anchor" href="#version-19-17"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-18" id="version-19-18">version 1.9-18<a class="anchor" aria-label="anchor" href="#version-19-18"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-17">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-17"></a></h3>
+<h3 id="bug-fixes-1-9-18">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-18"></a></h3>
 <ul><li>terra now distinguishes between the “standard”/“Gregorian” and the “proleptic_gregorian” calendars <a href="https://github.com/rspatial/terra/issues/1599" class="external-link">#1599</a> by Hu shiyu</li>
 <li>
 <code>spatSample&lt;SpatRaster&gt;(method="stratified")</code> could cause an out of bounds error <a href="https://gi%5B#1848%5Dthub.com/rspatial/terra/issues/1858" class="external-link">#1858</a> by Felipe)</li>
@@ -51,8 +51,10 @@
 <li>better handling of rotated rasters <a href="https://github.com/rspatial/terra/issues/1434" class="external-link">#1434</a> by Insang Song and <a href="https://github.com/rspatial/terra/issues/918" class="external-link">#918</a> by Agustin Lobo</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-17">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-17"></a></h3>
+<h3 id="enhancements-1-9-18">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-18"></a></h3>
 <ul><li>
+<code>update</code> can (again) edit layernames in existing files <a href="https://github.com/rspatial/terra/issues/2071" class="external-link">#2071</a> by Jim Shady</li>
+<li>
 <code>compareGeom</code> gets argument “tolerance” to overwrite the default that can be set with <code>terraOptions</code>. <a href="https://github.com/rspatial/terra/issues/2056" class="external-link">#2056</a> by R. Kyle Bocinsky</li>
 <li>
 <code>vect&lt;data.frame&gt;</code> now warns when it guesses the geom variables and/or the lon/lat CRS <a href="https://github.com/rspatial/terra/issues/1985" class="external-link">#1985</a> by Márcia Barbosa</li>
