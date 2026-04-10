@@ -934,8 +934,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		return false;
 	}
 
-
-	if (verbose) {
+/*
 		if (arrays_to_use.size() > 1 && max_nlyr_var > 1) {
 			std::string w = "combined " + std::to_string(nvar_ok) + " variables";
 			w += " (";
@@ -951,9 +950,9 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 			} else {
 				w += ")";
 			}
-			addWarning(w);
-		}
+			addWarning(w);		
 	}
+*/	
 	return true;
 }
 

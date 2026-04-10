@@ -51,17 +51,17 @@ rast(fname)
 r <- rast(nrows=10, ncols=10, vals=1:100)
 f <- paste0(tempfile(), ".tif")
 x <- writeRaster(r, f)
-x[c(1, 50, 100)]
+x[c(1, 2, 50, 51, 100)]
 update(x, cells=c(1, 50, 100), values=c(999, 888, 777))
-rast(f)[c(1, 50, 100)]
+rast(f)[c(1, 2, 50, 51, 100)]
 
 ## update specific layer only
 r <- rast(nrows=5, ncols=5, nlyr=3, vals=1:75)
 f <- paste0(tempfile(), ".tif")
 x <- writeRaster(r, f, datatype="FLT4S")
-x[c(1, 25)]
+x[c(1, 2, 25, 26)]
 update(x, cells=c(1, 25), values=c(0, 0), layer=2)
-rast(f)[c(1, 25)]
+rast(f)[c(1, 2, 25, 26)]
 }
 
 \keyword{spatial}
