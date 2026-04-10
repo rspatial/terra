@@ -7,7 +7,7 @@ Add a scale bar to a map
 ``` r
 sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
   adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, halo=TRUE,
-  col="black", fill=c("black", "white"), border="black", ...)
+  col="black", fill=c("black", "white"), border="black", bg=NULL, ...)
 ```
 
 ## Arguments
@@ -85,6 +85,12 @@ sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 - border:
 
   the color of the border around the bar
+
+- bg:
+
+  background color behind the scale bar (e.g. `"white"` or
+  `rgb(1,1,1,0.7)`) for visibility on complex maps. Default is `NULL`
+  (no background)
 
 - ...:
 

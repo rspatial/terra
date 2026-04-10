@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-18
+## version 1.9-19
 
 ### bug fixes
 
@@ -65,6 +65,9 @@
 - `plet` gains argument “hover”
   [\#1571](https://github.com/rspatial/terra/issues/1571) by Agustin
   Lobo
+- `sbar` gets argument “bg” to set a background color
+  [\#1957](https://github.com/rspatial/terra/issues/1957) by Lucas
+  Salinas Morales
 
 ## version 1.9-11
 
