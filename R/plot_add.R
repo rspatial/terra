@@ -44,9 +44,86 @@
 }
 
 
-add_cont_legend <- function(x, y, xpd=TRUE, ...) {
-	#.plot.cont.legend(x, ...)
+legend_cont <- function(x="right", y=NULL, legend, col,
+	size=NULL, title=NULL, at=NULL, digits=NULL, ...) {
+
+	if (inherits(legend, "SpatRaster")) {
+		mm <- minmax(legend)
+		rng <- c(mm[1,1], mm[2,1])
+	} else {
+		rng <- range(legend, na.rm=TRUE)
+	}
+	stopifnot(length(rng) == 2)
+
+	if (missing(col)) col <- .default.pal()
+	col <- grDevices::rgb(t(grDevices::col2rgb(col)), maxColorValue=255)
+
+	out <- list()
+	out$cols <- col
+	out$range <- rng
+	out$levels <- 5
+	out$fill_range <- TRUE
+	out$range_filled <- c(FALSE, FALSE)
+	e <- unlist(get.clip())
+	usr <- graphics::par("usr")
+	if (!is.null(e) &&
+		e[1] >= usr[1] && e[2] <= usr[2] &&
+		e[3] >= usr[3] && e[4] <= usr[4]) {
+		out$clip <- TRUE
+		out$lim <- e[1:4]
+	} else {
+		out$clip <- FALSE
+		out$lim <- usr
+	}
+	out$axs <- list(lab=NULL)
+
+	out$leg <- list(...)
+	horiz <- isTRUE(out$leg$horiz) || (is.character(x) && x %in% c("top", "bottom"))
+	if (is.numeric(x)) {
+		if (length(x) == 2) {
+			out$leg$x <- sort(x)
+		} else if (horiz && length(x) == 1) {
+			w <- diff(out$lim[1:2]) * 0.6
+			out$leg$x <- c(x, x + w)
+		} else {
+			out$leg$x <- x
+		}
+	} else {
+		out$leg$x <- x
+	}
+	if (is.numeric(x) && !is.null(y)) {
+		if (length(y) == 2) {
+			out$leg$y <- sort(y)
+		} else if (!horiz && length(y) == 1) {
+			h <- diff(out$lim[3:4]) * 0.6
+			out$leg$y <- c(y - h, y)
+		} else {
+			out$leg$y <- y
+		}
+	} else {
+		out$leg$y <- y
+	}
+	if (!is.null(size)) out$leg$size <- size
+	if (!is.null(title)) out$leg$title <- title
+	if (!is.null(at)) out$leg$at <- at
+	if (is.null(out$leg$reverse)) out$leg$reverse <- FALSE
+	if (is.null(out$leg$digits)) {
+		if (!is.null(digits)) {
+			out$leg$digits <- digits
+		} else {
+			dif <- diff(rng)
+			if ((dif == 0) || (length(dif) == 0)) {
+				out$leg$digits <- 0
+			} else {
+				out$leg$digits <- max(0, -floor(log10(dif / 10)))
+			}
+		}
+	}
+
+	.plot.cont.legend(out)
+	invisible(out)
 }
+
 
 add_legend <- function(x, y, xpd=TRUE, ...) {
 	if (inherits(x, "character")) {

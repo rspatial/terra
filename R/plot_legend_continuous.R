@@ -395,7 +395,7 @@
 			x$leg$title.y <- e$ymax
 			if (x$leg$horiz) {
 				x$leg$title.x <- e$xmin + (e$xmax - e$xmin) / 2
-				if (x$leg$x	== "top") {
+				if (identical(P, "top")) {
 					x$leg$title.y <- e$ymax + 2 * (e$ymax - e$ymin)
 				}
 			} else {
