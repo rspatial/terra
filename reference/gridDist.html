@@ -50,7 +50,7 @@ The shortest distance to the cells with the target value is computed for all cel
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
-<span><span class="fu">gridDist</span><span class="op">(</span><span class="va">x</span>, target<span class="op">=</span><span class="fl">0</span>, scale<span class="op">=</span><span class="fl">1</span>, maxiter<span class="op">=</span><span class="fl">50</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">gridDist</span><span class="op">(</span><span class="va">x</span>, target<span class="op">=</span><span class="fl">0</span>, scale<span class="op">=</span><span class="fl">1</span>, maxiter<span class="op">=</span><span class="fl">50</span>, nearest<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -69,6 +69,9 @@ The shortest distance to the cells with the target value is computed for all cel
 <dt id="arg-maxiter">maxiter<a class="anchor" aria-label="anchor" href="#arg-maxiter"></a></dt>
 <dd><p>numeric. The maximum number of iterations. Increase this number if you get the warning that <code>costDistance</code> did not converge. Only relevant when target is not <code>NA</code></p></dd>
 
+<dt id="arg-nearest">nearest<a class="anchor" aria-label="anchor" href="#arg-nearest"></a></dt>
+<dd><p>logical. If <code>TRUE</code>, a second layer is returned with the cell number of the nearest target cell. Only relevant when target is not <code>NA</code></p></dd>
+
 <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>character. output filename (optional)</p></dd>
 
@@ -82,7 +85,7 @@ The shortest distance to the cells with the target value is computed for all cel
     </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>SpatRaster</p>
+    <p>SpatRaster. If <code>nearest=TRUE</code>, a two-layer SpatRaster with the distance in the first layer and the cell number of the nearest target in the second layer</p>
     </div>
 
     <div class="section level2">

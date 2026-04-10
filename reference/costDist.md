@@ -16,7 +16,7 @@ distance (speed) of travel.
 
 ``` r
 # S4 method for class 'SpatRaster'
-costDist(x, target=0, scale=1, maxiter=50, filename="", ...)
+costDist(x, target=0, scale=1, maxiter=50, nearest=FALSE, filename="", ...)
 ```
 
 ## Arguments
@@ -38,6 +38,11 @@ costDist(x, target=0, scale=1, maxiter=50, filename="", ...)
   numeric. The maximum number of iterations. Increase this number if you
   get the warning that `costDistance did not converge`
 
+- nearest:
+
+  logical. If `TRUE`, a second layer is returned with the cell number of
+  the nearest target cell
+
 - filename:
 
   character. output filename (optional)
@@ -53,7 +58,9 @@ costDist(x, target=0, scale=1, maxiter=50, filename="", ...)
 
 ## Value
 
-SpatRaster
+SpatRaster. If `nearest=TRUE`, a two-layer SpatRaster with the
+cost-distance in the first layer and the cell number of the nearest
+target in the second layer
 
 ## Examples
 
@@ -68,13 +75,13 @@ text(d, digits=1)
 
 r <- rast(ncols=10, nrows=10,  xmin=0, xmax=10, ymin=0, ymax=10, 
        vals=10, crs="+proj=utm +zone=1 +datum=WGS84")
-r[5, 1] <- -10
+r[4:5, c(1,10)] <- -10
 r[2:3, 1] <- r[1, 2:4] <- r[2, 5] <- 0
 r[3, 6] <- r[2, 7] <- r[1, 8:9] <- 0
+r[, 4] <- 30
 r[6, 6:10] <- NA
 r[6:9, 6] <- NA
 
-d <- costDist(r, -10)
+d <- costDist(r, -10, nearest=TRUE)
 plot(d)
-text(d, digits=1, cex=.8)
 ```

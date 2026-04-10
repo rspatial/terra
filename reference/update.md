@@ -82,7 +82,7 @@ rast(fname)
 #> resolution  : 1.019802, 1.025974  (x, y)
 #> extent      : -1, 102, -1, 78  (xmin, xmax, ymin, ymax)
 #> coord. ref. : WGS 84 / UTM zone 1N (EPSG:32601)
-#> source      : file21c151125e79.tif
+#> source      : file24a5763f5dc1.tif
 #> names       :   A,   B,   C
 #> min values  :   0,   0,   0
 #> max values  : 255, 255, 255
@@ -91,29 +91,37 @@ rast(fname)
 r <- rast(nrows=10, ncols=10, vals=1:100)
 f <- paste0(tempfile(), ".tif")
 x <- writeRaster(r, f)
-x[c(1, 50, 100)]
+x[c(1, 2, 50, 51, 100)]
 #>   lyr.1
 #> 1     1
-#> 2    50
-#> 3   100
+#> 2     2
+#> 3    50
+#> 4    51
+#> 5   100
 update(x, cells=c(1, 50, 100), values=c(999, 888, 777))
-rast(f)[c(1, 50, 100)]
+rast(f)[c(1, 2, 50, 51, 100)]
 #>   lyr.1
 #> 1   999
-#> 2   888
-#> 3   777
+#> 2     2
+#> 3   888
+#> 4    51
+#> 5   777
 
 ## update specific layer only
 r <- rast(nrows=5, ncols=5, nlyr=3, vals=1:75)
 f <- paste0(tempfile(), ".tif")
 x <- writeRaster(r, f, datatype="FLT4S")
-x[c(1, 25)]
+x[c(1, 2, 25, 26)]
 #>   lyr.1 lyr.2 lyr.3
 #> 1     1    26    51
-#> 2    25    50    75
+#> 2     2    27    52
+#> 3    25    50    75
+#> 4    NA    NA    NA
 update(x, cells=c(1, 25), values=c(0, 0), layer=2)
-rast(f)[c(1, 25)]
+rast(f)[c(1, 2, 25, 26)]
 #>   lyr.1 lyr.2 lyr.3
 #> 1     1     0    51
-#> 2    25     0    75
+#> 2     2    27    52
+#> 3    25     0    75
+#> 4    NA    NA    NA
 ```

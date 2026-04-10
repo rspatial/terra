@@ -22,7 +22,7 @@ that are `NA`.
 
 ``` r
 # S4 method for class 'SpatRaster'
-gridDist(x, target=0, scale=1, maxiter=50, filename="", ...)
+gridDist(x, target=0, scale=1, maxiter=50, nearest=FALSE, filename="", ...)
 ```
 
 ## Arguments
@@ -47,6 +47,11 @@ gridDist(x, target=0, scale=1, maxiter=50, filename="", ...)
   get the warning that `costDistance` did not converge. Only relevant
   when target is not `NA`
 
+- nearest:
+
+  logical. If `TRUE`, a second layer is returned with the cell number of
+  the nearest target cell. Only relevant when target is not `NA`
+
 - filename:
 
   character. output filename (optional)
@@ -65,7 +70,9 @@ distance across a landscape with variable friction
 
 ## Value
 
-SpatRaster
+SpatRaster. If `nearest=TRUE`, a two-layer SpatRaster with the distance
+in the first layer and the cell number of the nearest target in the
+second layer
 
 ## Examples
 
