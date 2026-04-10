@@ -315,6 +315,23 @@
 	ticklength <- x$leg[["tick.length"]]
 	if (is.null(ticklength)) ticklength <- 1
 
+	if (!is.null(x$leg$bg)) {
+		dxy <- graphics::par("cxy") * cex
+		if (P == "right") {
+			graphics::rect(e$xmin, e$ymin, e$xmax + dxy[1] * 4, e$ymax,
+				col=x$leg$bg, border=NA, xpd=NA)
+		} else if (P == "left") {
+			graphics::rect(e$xmin - dxy[1] * 4, e$ymin, e$xmax, e$ymax,
+				col=x$leg$bg, border=NA, xpd=NA)
+		} else if (P == "bottom") {
+			graphics::rect(e$xmin, e$ymin - dxy[2] * 2, e$xmax, e$ymax,
+				col=x$leg$bg, border=NA, xpd=NA)
+		} else {
+			graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax + dxy[2] * 2,
+				col=x$leg$bg, border=NA, xpd=NA)
+		}
+	}
+
 	if (P %in% c("left", "right")) {
 		Y <- seq(e$ymin, e$ymax, length.out=nc+1)
 		graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=NA, lwd=boxlwd)

@@ -66,9 +66,10 @@ legend_cont <- function(x="right", y=NULL, legend, col,
 	out$range_filled <- c(FALSE, FALSE)
 	e <- unlist(get.clip())
 	usr <- graphics::par("usr")
+	tol <- max(abs(usr)) * .Machine$double.eps * 100
 	if (!is.null(e) &&
-		e[1] >= usr[1] && e[2] <= usr[2] &&
-		e[3] >= usr[3] && e[4] <= usr[4]) {
+		e[1] >= usr[1] - tol && e[2] <= usr[2] + tol &&
+		e[3] >= usr[3] - tol && e[4] <= usr[4] + tol) {
 		out$clip <- TRUE
 		out$lim <- e[1:4]
 	} else {
