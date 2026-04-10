@@ -95,7 +95,7 @@ The arguments of \code{plet} are similar to those of \code{\link[terra]{plot}}, 
 	
   \item{range}{numeric. minimum and maximum values to be used for the continuous legend. You can use \code{NA} for one of these to only set the minimum or maximum value}
   \item{fill_range}{logical. If \code{TRUE}, values outside of \code{range} get the colors of the extreme values; otherwise they get colored as \code{NA}}
-  \item{hover}{logical. If \code{TRUE}, raster cell values are shown in a tooltip when hovering the mouse over the map. Not available for RGB rasters or panel mode}
+  \item{hover}{logical. If \code{TRUE}, the approximate raster cell values are shown when hovering the mouse over the map. Not available for RGB rasters or panel mode}
 	
   \item{reverse}{logical. If \code{TRUE}, the legends order is reversed}
   \item{fill}{do not use. Will be removed}

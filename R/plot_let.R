@@ -713,26 +713,18 @@ setMethod("plet", signature(x="SpatRaster"),
 		}
 		hover_data <- NULL
 		if (isTRUE(hover) && !panel && !hasRGB) {
-			hover_e <- unname(as.vector(ext(x)))
-			if (!is.lonlat(x)) {
-				pts <- vect(cbind(
-					x=c(hover_e[1], hover_e[2], hover_e[1], hover_e[2]),
-					y=c(hover_e[3], hover_e[3], hover_e[4], hover_e[4])),
-					type="points", crs=crs(x))
-				pts_ll <- project(pts, "+proj=longlat")
-				cc <- crds(pts_ll)
-				hover_e <- c(min(cc[,1]), max(cc[,1]), min(cc[,2]), max(cc[,2]))
-			}
-			hover_layers <- lapply(1:nlyr(x), function(i) {
-				v <- values(x[[i]], mat=FALSE)
-				if (is.factor(x[[i]])) {
-					levs <- levels(x[[i]])[[1]]
+			hover_r <- if (is.lonlat(x)) x else project(x, "EPSG:4326", method="near")
+			hover_e <- unname(as.vector(ext(hover_r)))
+			hover_layers <- lapply(1:nlyr(hover_r), function(i) {
+				v <- values(hover_r[[i]], mat=FALSE)
+				if (is.factor(hover_r[[i]])) {
+					levs <- levels(hover_r[[i]])[[1]]
 					idx <- match(v, levs[,1])
 					v <- levs[idx, 2]
 				}
 				v[is.nan(v)] <- NA
-				list(name=names(x)[i], values=as.list(v),
-				     nrow=nrow(x), ncol=ncol(x))
+				list(name=names(hover_r)[i], values=as.list(v),
+				     nrow=nrow(hover_r), ncol=ncol(hover_r))
 			})
 			hover_data <- list(layers=hover_layers, extent=hover_e)
 		}

@@ -21,6 +21,7 @@
 https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - additional effor to read KML/Z attribute values [#1954](https://github.com/rspatial/terra/issues/1954) by Yong-hun Suh
 - `autocor` gets a "standardize" argument for row-standardization [#1593](https://github.com/rspatial/terra/issues/1593) by Nicholas Berryman
+- `plet` gains argument "hover" [#1571](https://github.com/rspatial/terra/issues/1571) by Agustin Lobo
 
 
 # new 
