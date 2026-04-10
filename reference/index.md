@@ -605,6 +605,9 @@
 - [`add_legend()`](https://rspatial.github.io/terra/reference/legend.md)
   : add a custom legend
 
+- [`legend_cont()`](https://rspatial.github.io/terra/reference/legend_cont.md)
+  : Add a continuous legend
+
 - [`linearUnits(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/linearUnits.md)
   [`linearUnits(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/linearUnits.md)
   : Linear units of the coordinate reference system

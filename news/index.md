@@ -30,6 +30,9 @@
   [\#1434](https://github.com/rspatial/terra/issues/1434) by Insang Song
   and [\#918](https://github.com/rspatial/terra/issues/918) by Agustin
   Lobo
+- `zonal` truncated weights
+  [\#2072](https://github.com/rspatial/terra/issues/2072) by Dominic
+  Royé
 
 ### enhancements
 

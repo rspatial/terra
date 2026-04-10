@@ -165,10 +165,15 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
   - `tick.col`, `tick.box.col` and `tick.lwd` to change the appearance
     of the tickmarks
 
+  - `title` add a legend title
+
   - `title.srt` to rotate the legend title
 
   - `title.x` and `title.y` to place the legend title at specific
     coordinates
+
+  - `bg` background color behind the legend (e.g. `"white"`) for
+    visibility when drawn on top of a map
 
 - pax:
 

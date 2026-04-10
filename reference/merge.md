@@ -149,17 +149,17 @@ pm
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> names       :   NAME_1   NAME_2  ID_1  ID_2  AREA   POP Value
 #> type        :    <chr>    <chr> <num> <num> <num> <num> <num>
-#> values      : Diekirch Clervaux     1     1   312 18081   433
-#>               Diekirch Diekirch     1     2   218 32543   961
-#>               Diekirch  Redange     1     3   259 18664   922
+#> values      : Diekirch Clervaux     1     1   312 18081   613
+#>               Diekirch Diekirch     1     2   218 32543   531
+#>               Diekirch  Redange     1     3   259 18664   377
 #>               ...
 values(pm)
 #>          NAME_1           NAME_2 ID_1 ID_2 AREA    POP Value
-#> 1      Diekirch         Clervaux    1    1  312  18081   433
-#> 2      Diekirch         Diekirch    1    2  218  32543   961
-#> 3      Diekirch          Redange    1    3  259  18664   922
-#> 4      Diekirch          Vianden    1    4   76   5163   841
-#> 5      Diekirch            Wiltz    1    5  263  16735   388
+#> 1      Diekirch         Clervaux    1    1  312  18081   613
+#> 2      Diekirch         Diekirch    1    2  218  32543   531
+#> 3      Diekirch          Redange    1    3  259  18664   377
+#> 4      Diekirch          Vianden    1    4   76   5163   897
+#> 5      Diekirch            Wiltz    1    5  263  16735   588
 #> 6  Grevenmacher       Echternach    2    6  188  18899    NA
 #> 7  Grevenmacher           Remich    2    7  129  22366    NA
 #> 8  Grevenmacher     Grevenmacher    2   12  210  29828    NA

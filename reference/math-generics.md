@@ -105,8 +105,8 @@ math(r, "sqrt")
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
 #> names       :    lyr.1, lyr.1
-#> min values  :  0.10745,   0.1
-#> max values  : 0.997541,     1
+#> min values  : 0.056695,   0.1
+#> max values  : 0.999503,     1
 
 round(s, 1)
 #> class       : SpatRaster
@@ -127,6 +127,6 @@ cumsum(r)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
 #> names       :    lyr.1,    lyr.1
-#> min values  : 0.011546, 0.071053
-#> max values  : 0.995088, 1.903872
+#> min values  : 0.003214, 0.043214
+#> max values  : 0.999007, 1.942667
 ```
