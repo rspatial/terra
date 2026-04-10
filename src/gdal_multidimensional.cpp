@@ -935,25 +935,25 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 	}
 
 
-//	if (verbose) {
-	if (arrays_to_use.size() > 1 && max_nlyr_var > 1) {
-		std::string w = "combined " + std::to_string(nvar_ok) + " variables";
-		w += " (";
-		size_t nshow = std::min(source.size(), (size_t) 6);
-		for (size_t i = 0; i < nshow; i++) {
-			if (i > 0) {
-				w += ", ";
+	if (verbose) {
+		if (arrays_to_use.size() > 1 && max_nlyr_var > 1) {
+			std::string w = "combined " + std::to_string(nvar_ok) + " variables";
+			w += " (";
+			size_t nshow = std::min(source.size(), (size_t) 6);
+			for (size_t i = 0; i < nshow; i++) {
+				if (i > 0) {
+					w += ", ";
+				}
+				w += source[i].source_name.empty() ? source[i].m_arrayname : source[i].source_name;
 			}
-			w += source[i].source_name.empty() ? source[i].m_arrayname : source[i].source_name;
+			if (source.size() > 5) {
+				w += ", ...)";
+			} else {
+				w += ")";
+			}
+			addWarning(w);
 		}
-		if (source.size() > 5) {
-			w += ", ...)";
-		} else {
-			w += ")";
-		}
-		addWarning(w);
 	}
-//	}
 	return true;
 }
 

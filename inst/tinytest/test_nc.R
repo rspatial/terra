@@ -1,6 +1,5 @@
 
 f <- system.file("ex/nouragues.nc", package = "terra")
-if (f == "") exit_file("nouragues.nc not available")
 
 xy <- cbind(-52.67, 4.08)
 
@@ -36,7 +35,7 @@ expect_equal(e1, e2)
 
 
 ## --- md=FALSE, all vars (no subds) ------------------------------------------
-suppressWarnings(rall <- rast(f))
+rall <- rast(f)
 expect_equal(nlyr(rall), 336)
 expect_equal(dim(rall), c(3L, 3L, 336L))
 expect_true(all(c("d2m", "sp", "ssrd", "t2m", "tp", "u10", "v10") %in%
@@ -50,7 +49,7 @@ expect_equal(ncol(ea), 336)
 
 
 ## --- md=TRUE, all vars -------------------------------------------------------
-suppressWarnings(rall2 <- rast(f, md = TRUE))
+rall2 <- rast(f, md = TRUE)
 expect_equal(nlyr(rall2), 336)
 expect_equal(dim(rall2), dim(rall))
 
@@ -59,6 +58,28 @@ expect_equal(va, va2)
 
 ea2 <- extract(rall2, xy)
 expect_equal(ea, ea2)
+
+
+## --- md=FALSE vs md=TRUE: same values after aligning by layer name ----------
+r_f <- rast(f, subds = "t2m", md = FALSE)
+r_t <- rast(f, subds = "t2m", md = TRUE)
+vf <- values(r_f)
+vt <- values(r_t)
+expect_equivalent(vf[, names(r_t)], vt, tolerance = 1e-6)
+
+ef <- extract(r_f, xy)
+et <- extract(r_t, xy)
+expect_equivalent(ef[, names(et)], et, tolerance = 1e-6)
+
+ra_f <- rast(f, md = FALSE)
+ra_t <- rast(f, md = TRUE)
+vaf <- values(ra_f)
+vat <- values(ra_t)
+expect_equivalent(vaf[, names(ra_t)], vat, tolerance = 1e-6)
+
+eaf <- extract(ra_f, xy)
+eat <- extract(ra_t, xy)
+expect_equivalent(eaf[, names(eat)], eat, tolerance = 1e-6)
 
 
 ## --- SpatRasterDataset -------------------------------------------------------
