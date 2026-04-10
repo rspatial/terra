@@ -638,7 +638,7 @@ make.panel <- function(x, maxcell) {
 setMethod("plet", signature(x="SpatRaster"),
 	function(x, y=1, col, alpha=0.8, main=names(x), tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
 		wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", shared=FALSE, panel=FALSE, 
-		collapse=TRUE, type=NULL, breaks=NULL, breakby="eqint", range=NULL, fill_range=FALSE, map=NULL, ...)  {
+		collapse=TRUE, type=NULL, breaks=NULL, breakby="eqint", range=NULL, fill_range=FALSE, hover=FALSE, map=NULL, ...)  {
 
 		#checkLeafLetVersion()
 		
@@ -711,6 +711,32 @@ setMethod("plet", signature(x="SpatRaster"),
 		} else {
 			tiles <- NULL
 		}
+		hover_data <- NULL
+		if (isTRUE(hover) && !panel && !hasRGB) {
+			hover_e <- unname(as.vector(ext(x)))
+			if (!is.lonlat(x)) {
+				pts <- vect(cbind(
+					x=c(hover_e[1], hover_e[2], hover_e[1], hover_e[2]),
+					y=c(hover_e[3], hover_e[3], hover_e[4], hover_e[4])),
+					type="points", crs=crs(x))
+				pts_ll <- project(pts, "+proj=longlat")
+				cc <- crds(pts_ll)
+				hover_e <- c(min(cc[,1]), max(cc[,1]), min(cc[,2]), max(cc[,2]))
+			}
+			hover_layers <- lapply(1:nlyr(x), function(i) {
+				v <- values(x[[i]], mat=FALSE)
+				if (is.factor(x[[i]])) {
+					levs <- levels(x[[i]])[[1]]
+					idx <- match(v, levs[,1])
+					v <- levs[idx, 2]
+				}
+				v[is.nan(v)] <- NA
+				list(name=names(x)[i], values=as.list(v),
+				     nrow=nrow(x), ncol=ncol(x))
+			})
+			hover_data <- list(layers=hover_layers, extent=hover_e)
+		}
+
 		if (missing(col)) {
 			if (has.colors(x)[1]) {
 				col <- coltab(x)[[1]][,-1]
@@ -850,6 +876,44 @@ setMethod("plet", signature(x="SpatRaster"),
 				map <- leaflet::addLegend(map, position=legend, pal=pal, values=v, opacity=1, group=nms[i],
 						  labFormat = leaflet::labelFormat(transform = function(x) sort(x, decreasing = TRUE)))
 			}
+		}
+		if (!is.null(hover_data)) {
+			map <- htmlwidgets::onRender(map,
+"function(el, x, data) {
+	var map = this;
+	var tip = L.DomUtil.create('div', 'raster-hover-tip');
+	tip.style.cssText = 'position:absolute;background:rgba(255,255,255,0.92);padding:4px 8px;border-radius:3px;font:12px/1.4 sans-serif;pointer-events:none;z-index:9999;display:none;box-shadow:0 1px 3px rgba(0,0,0,0.3);white-space:nowrap;';
+	el.style.position = 'relative';
+	el.appendChild(tip);
+	var layers = data.layers;
+	var ext = data.extent;
+	var active = 0;
+	map.on('mousemove', function(e) {
+		var lng = e.latlng.lng, lat = e.latlng.lat;
+		if (lng < ext[0] || lng > ext[1] || lat < ext[2] || lat > ext[3]) {
+			tip.style.display = 'none'; return;
+		}
+		var lay = layers[active];
+		var col = Math.floor((lng - ext[0]) / (ext[1] - ext[0]) * lay.ncol);
+		var row = Math.floor((ext[3] - lat) / (ext[3] - ext[2]) * lay.nrow);
+		if (row < 0 || row >= lay.nrow || col < 0 || col >= lay.ncol) {
+			tip.style.display = 'none'; return;
+		}
+		var val = lay.values[row * lay.ncol + col];
+		if (val === null) { tip.style.display = 'none'; return; }
+		var txt = (typeof val === 'number') ? (+val.toPrecision(6)).toString() : val;
+		tip.innerHTML = '<b>' + lay.name + '</b>: ' + txt;
+		tip.style.display = 'block';
+		tip.style.left = (e.containerPoint.x + 15) + 'px';
+		tip.style.top = (e.containerPoint.y - 25) + 'px';
+	});
+	map.on('mouseout', function() { tip.style.display = 'none'; });
+	map.on('baselayerchange', function(e) {
+		for (var i = 0; i < layers.length; i++) {
+			if (layers[i].name === e.name) { active = i; break; }
+		}
+	});
+}", data=hover_data)
 		}
 		map
 	}
