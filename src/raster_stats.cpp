@@ -1212,7 +1212,7 @@ SpatDataFrame SpatRaster::zonal_weighted(SpatRaster z, SpatRaster w, bool narm, 
 	size_t nl = nlyr();
 	size_t nc = ncol();
 	std::vector<std::map<double, double>> m(nl);
-	std::vector<std::map<double, size_t>> wsum(nl);
+	std::vector<std::map<double, double>> wsum(nl);
 
 	for (size_t i=0; i<bs.n; i++) {
 		unsigned nrc = bs.nrows[i] * nc;
