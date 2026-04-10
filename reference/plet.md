@@ -15,7 +15,7 @@ plet(x, y=1, col, alpha=0.8, main=names(x),
   tiles=c("Streets", "Esri.WorldImagery", "OpenTopoMap"), 
   wrap=TRUE, maxcell=500000, stretch=NULL, legend="bottomright", 
   shared=FALSE, panel=FALSE, collapse=TRUE, type=NULL, breaks=NULL,
-  breakby="eqint", range=NULL, fill_range=FALSE, map=NULL, ...) 
+  breakby="eqint", range=NULL, fill_range=FALSE, hover=FALSE, map=NULL, ...) 
 
 
 # S4 method for class 'SpatRasterCollection'
@@ -193,6 +193,12 @@ polys(x, y, col, lwd=2, lty=NULL,
   logical. If `TRUE`, values outside of `range` get the colors of the
   extreme values; otherwise they get colored as `NA`
 
+- hover:
+
+  logical. If `TRUE`, raster cell values are shown in a tooltip when
+  hovering the mouse over the map. Not available for RGB rasters or
+  panel mode
+
 - reverse:
 
   logical. If `TRUE`, the legends order is reversed
@@ -230,6 +236,9 @@ plet(s, col=c("red", "blue"), lwd=1)
 
 r <- rast(system.file("ex/elev.tif", package="terra"))
 plet(r, main="Hi\nthere", tiles=NULL) |> lines(v, lwd=1)
+
+# hover to see raster values
+plet(r, hover=TRUE)
 
 plet(r, tiles="OpenTopoMap") |> lines(v, lwd=2, col="blue")
 
