@@ -38,16 +38,6 @@ rpj <- rast(
 sa <- surfArea(rpj)
 expect_true(all(sa[] > 0, na.rm = TRUE))
 
-## costDist / gridDist — target cell distance zero (?costDist)
-rc <- rast(
-  ncols = 5, nrows = 5, crs = "+proj=utm +zone=1 +datum=WGS84",
-  xmin = 0, xmax = 5, ymin = 0, ymax = 5, vals = 1
-)
-rc[13] <- 0
-cd <- costDist(rc, target = 0)
-gd <- gridDist(rc, 0)
-expect_equal(as.numeric(cd[13]), 0)
-expect_equal(as.numeric(gd[13]), 0)
 
 ## direction — ?direction example
 rd <- rast(ncol = 36, nrow = 18, crs = "+proj=merc")

@@ -31,9 +31,9 @@
 
 
 SpatRaster SpatRaster::costDistanceDijkstra(double target, double m, bool grid,
-                                     SpatOptions &opt) {
+                                     bool nearest, SpatOptions &opt) {
 
-	SpatRaster out = geometry(1);
+	SpatRaster out = geometry(nearest ? 2 : 1);
 
 	if (!hasValues()) {
 		out.setError("cannot compute distance for a raster with no values");
@@ -52,7 +52,7 @@ SpatRaster SpatRaster::costDistanceDijkstra(double target, double m, bool grid,
 	if (nlyr() > 1) {
 		std::vector<size_t> lyr = {0};
 		out = subset(lyr, ops);
-		out = out.costDistanceDijkstra(target, m, grid, opt);
+		out = out.costDistanceDijkstra(target, m, grid, nearest, opt);
 		out.addWarning("distance computations are only done for the first input layer");
 		return out;
 	}
@@ -130,6 +130,8 @@ SpatRaster SpatRaster::costDistanceDijkstra(double target, double m, bool grid,
 	size_t nnodes = ncells + (npole ? 1 : 0) + (spole ? 1 : 0);
 
 	std::vector<double> dist(nnodes, INF);
+	std::vector<double> id;
+	if (nearest) id.assign(nnodes, NAN);
 
 	using Entry = std::pair<double, size_t>;
 	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> pq;
@@ -141,6 +143,7 @@ SpatRaster SpatRaster::costDistanceDijkstra(double target, double m, bool grid,
 		if (v[i] == target) {
 			dist[i] = 0;
 			v[i] = 0;
+			if (nearest) id[i] = (double)(i + 1);  // 1-based cell ID
 			pq.push({0.0, i});
 			found_target = true;
 		} else if (!grid && v[i] < 0) {
@@ -168,10 +171,11 @@ SpatRaster SpatRaster::costDistanceDijkstra(double target, double m, bool grid,
 			for (size_t c = 0; c < nc; c++) {
 				if (std::isnan(v[c])) continue;
 				double ec = grid ? pole_dy_n
-				                 : v[c] * pole_dy_n;   // friction×half-step
+				                 : v[c] * pole_dy_n;
 				double nc2 = dist[idx] + ec;
 				if (nc2 < dist[c]) {
 					dist[c] = nc2;
+					if (nearest) id[c] = id[idx];
 					pq.push({nc2, c});
 				}
 			}
@@ -187,6 +191,7 @@ SpatRaster SpatRaster::costDistanceDijkstra(double target, double m, bool grid,
 				double nc2 = dist[idx] + ec;
 				if (nc2 < dist[ci]) {
 					dist[ci] = nc2;
+					if (nearest) id[ci] = id[idx];
 					pq.push({nc2, ci});
 				}
 			}
@@ -221,6 +226,7 @@ SpatRaster SpatRaster::costDistanceDijkstra(double target, double m, bool grid,
 			double new_cost = dist[idx] + edge_cost;
 			if (new_cost < dist[nidx]) {
 				dist[nidx] = new_cost;
+				if (nearest) id[nidx] = id[idx];
 				pq.push({new_cost, nidx});
 			}
 		}
@@ -231,6 +237,7 @@ SpatRaster SpatRaster::costDistanceDijkstra(double target, double m, bool grid,
 			double nc2 = dist[idx] + ec;
 			if (nc2 < dist[VPOLE_N]) {
 				dist[VPOLE_N] = nc2;
+				if (nearest) id[VPOLE_N] = id[idx];
 				pq.push({nc2, VPOLE_N});
 			}
 		}
@@ -239,15 +246,21 @@ SpatRaster SpatRaster::costDistanceDijkstra(double target, double m, bool grid,
 			double nc2 = dist[idx] + ec;
 			if (nc2 < dist[VPOLE_S]) {
 				dist[VPOLE_S] = nc2;
+				if (nearest) id[VPOLE_S] = id[idx];
 				pq.push({nc2, VPOLE_S});
 			}
 		}
 	}
 
 	// ── write result ─────────────────────────────────────────────────────
-	dist.resize(ncells);   // drop virtual pole entries
+	dist.resize(ncells);
 	for (size_t i = 0; i < ncells; i++) {
 		if (std::isinf(dist[i])) dist[i] = NAN;
+	}
+
+	if (nearest) {
+		id.resize(ncells);
+		dist.insert(dist.end(), id.begin(), id.end());
 	}
 
 	if (!filename.empty()) {
@@ -255,6 +268,10 @@ SpatRaster SpatRaster::costDistanceDijkstra(double target, double m, bool grid,
 		out = out.writeRaster(opt);
 	} else {
 		out.setValues(dist, ops);
+	}
+	if (nearest) {
+		std::vector<std::string> nms = {"distance", "nearest"};
+		out.setNames(nms, false);
 	}
 	return out;
 }
@@ -271,6 +288,19 @@ inline double minCostDist(std::vector<double> &d) {
 	return d.empty() ? NAN : d[0];
 }
 
+inline double minCostDistId(std::vector<double> &d, std::vector<double> &d_id, double &out_id) {
+	double best = NAN;
+	out_id = NAN;
+	for (size_t k = 0; k < d.size(); k++) {
+		if (std::isnan(d[k])) continue;
+		if (std::isnan(best) || d[k] < best) {
+			best = d[k];
+			out_id = d_id[k];
+		}
+	}
+	return best;
+}
+
 
 inline void DxDxyCost(const double &lat, const size_t &row, double xres, double yres, const double &dir, double &dx,  double &dy, double &dxy, double distscale, const double mult=2) {
 	double rlat = lat + (double)row * yres * dir;
@@ -283,9 +313,10 @@ inline void DxDxyCost(const double &lat, const size_t &row, double xres, double 
 }
 
 
-void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir, bool global, bool npole, bool spole) {
+void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir, bool global, bool npole, bool spole, std::vector<double> &id, std::vector<double> &idabove) {
 
-	std::vector<double> cd;
+	bool track = !id.empty();
+	std::vector<double> cd, cd_id;
 
 	double dx, dy, dxy;
 	if (geo) {
@@ -296,35 +327,43 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 		dxy = sqrt(dx*dx + dy*dy);
 	}
 
-	//top to bottom
-    //left to right
-	//first cell, no cell left of it
+	//top to bottom, left to right
 	if (!std::isnan(v[0])) {
 		if (global) {
 			cd = {dist[0], dabove[0] + (v[0]+vabove[0]) * dy,
 				dist[nc-1] + (v[0] + v[nc-1]) * dx,
 				dabove[nc-1] + dxy * (vabove[nc-1]+v[0])};
+			if (track) { cd_id = {id[0], idabove[0], id[nc-1], idabove[nc-1]}; }
 		} else {
 			cd = {dist[0], dabove[0] + (v[0]+vabove[0]) * dy};
+			if (track) { cd_id = {id[0], idabove[0]}; }
 		}
-		dist[0] = minCostDist(cd);
+		if (track) { dist[0] = minCostDistId(cd, cd_id, id[0]); }
+		else { dist[0] = minCostDist(cd); }
 	}
-	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
+	for (size_t i=1; i<nc; i++) {
 		if (!std::isnan(v[i])) {
 			cd = {dist[i], dabove[i]+(vabove[i]+v[i])*dy, dabove[i-1]+(vabove[i-1]+v[i])*dxy, dist[i-1]+(v[i-1]+v[i])*dx};
-			dist[i] = minCostDist(cd);
+			if (track) {
+				cd_id = {id[i], idabove[i], idabove[i-1], id[i-1]};
+				dist[i] = minCostDistId(cd, cd_id, id[i]);
+			} else { dist[i] = minCostDist(cd); }
 		}
 	}
 	if (npole) {
-		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
-		minp += dy;
-		for (size_t i=0; i<nc; i++) {
-			dist[i] = std::min(dist[i], minp);
+		auto it = std::min_element(dist.begin(), dist.begin()+nc);
+		double minp = *it + dy;
+		if (track) {
+			size_t mi = std::distance(dist.begin(), it);
+			for (size_t i=0; i<nc; i++) {
+				if (minp < dist[i]) { dist[i] = minp; id[i] = id[mi]; }
+			}
+		} else {
+			for (size_t i=0; i<nc; i++) { dist[i] = std::min(dist[i], minp); }
 		}
 	}
 
-
-	for (size_t r=1; r<nr; r++) { //other rows
+	for (size_t r=1; r<nr; r++) {
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
 		size_t start=r*nc;
 		if (!std::isnan(v[start])) {
@@ -332,54 +371,76 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 				cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start],
 					dist[start+nc-1] + (v[start] + v[start+nc-1]) * dx,
 					dist[start-1] + (v[start] + v[start-1]) * dxy};
+				if (track) { cd_id = {id[start-nc], id[start], id[start+nc-1], id[start-1]}; }
 			} else {
 				cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start]};
+				if (track) { cd_id = {id[start-nc], id[start]}; }
 			}
-			dist[start] = minCostDist(cd);
+			if (track) { dist[start] = minCostDistId(cd, cd_id, id[start]); }
+			else { dist[start] = minCostDist(cd); }
 		}
 		size_t end = start+nc;
 		for (size_t i=(start+1); i<end; i++) {
 			if (!std::isnan(v[i])) {
 				cd = {dist[i], dist[i-1]+(v[i]+v[i-1])*dx, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i-nc-1]+(v[i]+v[i-nc-1])*dxy};
-				dist[i] = minCostDist(cd);
+				if (track) {
+					cd_id = {id[i], id[i-1], id[i-nc], id[i-nc-1]};
+					dist[i] = minCostDistId(cd, cd_id, id[i]);
+				} else { dist[i] = minCostDist(cd); }
 			}
 		}
 	}
 	if (spole) {
-		double minp = *std::min_element(dist.end()-nc, dist.end());
-		minp += dy;
-		size_t ds = dist.size();
-		for (size_t i=ds-nc; i<ds; i++) {
-			dist[i] = std::min(dist[i], minp);
+		auto it = std::min_element(dist.end()-nc, dist.end());
+		double minp = *it + dy;
+		if (track) {
+			size_t mi = std::distance(dist.begin(), it);
+			size_t ds = dist.size();
+			for (size_t i=ds-nc; i<ds; i++) {
+				if (minp < dist[i]) { dist[i] = minp; id[i] = id[mi]; }
+			}
+		} else {
+			size_t ds = dist.size();
+			for (size_t i=ds-nc; i<ds; i++) { dist[i] = std::min(dist[i], minp); }
 		}
 	}
 
 	//right to left
-	// first row, no need for first (last) cell (unless is global)
 	if (geo) DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist);
 	if (global) {
 		size_t i=(nc-1);
 		cd = {dist[i],
 			dist[0] + (v[0] + v[i]) * dx,
 			dabove[0] + dxy * (vabove[0]+v[i])};
-		dist[i] = minCostDist(cd);
+		if (track) {
+			cd_id = {id[i], id[0], idabove[0]};
+			dist[i] = minCostDistId(cd, cd_id, id[i]);
+		} else { dist[i] = minCostDist(cd); }
 	}
 	if (npole) {
-		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
-		minp += dy;
-		for (size_t i=0; i<nc; i++) {
-			dist[i] = std::min(dist[i], minp);
+		auto it = std::min_element(dist.begin(), dist.begin()+nc);
+		double minp = *it + dy;
+		if (track) {
+			size_t mi = std::distance(dist.begin(), it);
+			for (size_t i=0; i<nc; i++) {
+				if (minp < dist[i]) { dist[i] = minp; id[i] = id[mi]; }
+			}
+		} else {
+			for (size_t i=0; i<nc; i++) { dist[i] = std::min(dist[i], minp); }
 		}
 	}
 
-	for (int i=(nc-2); i > -1; i--) { // other cells on first row
+	for (int i=(nc-2); i > -1; i--) {
 		if (!std::isnan(v[i])) {
 			cd = {dabove[i]+(vabove[i]+v[i])*dy, dabove[i+1]+(vabove[i+1]+v[i])*dxy, dist[i+1]+(v[i+1]+v[i])*dx, dist[i]};
-			dist[i] = minCostDist(cd);
+			if (track) {
+				cd_id = {idabove[i], idabove[i+1], id[i+1], id[i]};
+				dist[i] = minCostDistId(cd, cd_id, id[i]);
+			} else { dist[i] = minCostDist(cd); }
 		}
 	}
 
-	for (size_t r=1; r<nr; r++) { // other rows
+	for (size_t r=1; r<nr; r++) {
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
 		size_t start=(r+1)*nc-1;
 
@@ -389,11 +450,13 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 					dist[start-nc+1] + (v[start-nc+1] + v[start]) * dx,
 					dist[start-(2*nc)+1] + (v[start-(2*nc)+1] + v[start]) * dxy
 				};
-
+				if (track) { cd_id = {id[start], id[start-nc], id[start-nc+1], id[start-(2*nc)+1]}; }
 			} else {
 				cd = { dist[start], dist[start-nc] + (v[start-nc]+v[start])* dy };
+				if (track) { cd_id = {id[start], id[start-nc]}; }
 			}
-			dist[start] = minCostDist(cd);
+			if (track) { dist[start] = minCostDistId(cd, cd_id, id[start]); }
+			else { dist[start] = minCostDist(cd); }
 		}
 
 		size_t end=r*nc;
@@ -401,29 +464,40 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 		for (size_t i=start; i>=end; i--) {
 			if (!std::isnan(v[i])) {
 				cd = { dist[i+1]+(v[i+1]+v[i])*dx, dist[i-nc+1]+(v[i]+v[i-nc+1])*dxy, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i]};
-				dist[i] = minCostDist(cd);
+				if (track) {
+					cd_id = {id[i+1], id[i-nc+1], id[i-nc], id[i]};
+					dist[i] = minCostDistId(cd, cd_id, id[i]);
+				} else { dist[i] = minCostDist(cd); }
 			}
 		}
 	}
 	if (spole) {
-		double minp = *std::min_element(dist.end()-nc, dist.end());
-		minp += dy;
-		size_t ds = dist.size();
-		for (size_t i=ds-nc; i<ds; i++) {
-			dist[i] = std::min(dist[i], minp);
+		auto it = std::min_element(dist.end()-nc, dist.end());
+		double minp = *it + dy;
+		if (track) {
+			size_t mi = std::distance(dist.begin(), it);
+			size_t ds = dist.size();
+			for (size_t i=ds-nc; i<ds; i++) {
+				if (minp < dist[i]) { dist[i] = minp; id[i] = id[mi]; }
+			}
+		} else {
+			size_t ds = dist.size();
+			for (size_t i=ds-nc; i<ds; i++) { dist[i] = std::min(dist[i], minp); }
 		}
 	}
 
 	size_t off = (nr-1) * nc;
 	dabove = std::vector<double>(dist.begin()+off, dist.end());
 	vabove = std::vector<double>(v.begin()+off, v.end());
+	if (track) idabove = std::vector<double>(id.begin()+off, id.end());
 
 }
 
 
-void grid_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir, bool global, bool npole, bool spole) {
+void grid_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir, bool global, bool npole, bool spole, std::vector<double> &id, std::vector<double> &idabove) {
 
-	std::vector<double> cd;
+	bool track = !id.empty();
+	std::vector<double> cd, cd_id;
 
 	double dx, dy, dxy;
 	if (geo) {
@@ -434,104 +508,129 @@ void grid_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 		dxy = sqrt(dx*dx + dy*dy);
 	}
 
-	//top to bottom
-    //left to right
-	//first cell, no cell left of it
+	//top to bottom, left to right
 	if (!std::isnan(v[0])) {
 		if (global) {
-			cd = {dist[0], dabove[0] + dy,
-				dist[nc-1] + dx,
-				dabove[nc-1] + dxy};
+			cd = {dist[0], dabove[0] + dy, dist[nc-1] + dx, dabove[nc-1] + dxy};
+			if (track) { cd_id = {id[0], idabove[0], id[nc-1], idabove[nc-1]}; }
 		} else {
 			cd = {dist[0], dabove[0] + dy};
+			if (track) { cd_id = {id[0], idabove[0]}; }
 		}
-		dist[0] = minCostDist(cd);
+		if (track) { dist[0] = minCostDistId(cd, cd_id, id[0]); }
+		else { dist[0] = minCostDist(cd); }
 	}
-	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
+	for (size_t i=1; i<nc; i++) {
 		if (!std::isnan(v[i])) {
 			cd = {dist[i], dabove[i]+dy, dabove[i-1]+dxy, dist[i-1]+dx};
-			dist[i] = minCostDist(cd);
+			if (track) {
+				cd_id = {id[i], idabove[i], idabove[i-1], id[i-1]};
+				dist[i] = minCostDistId(cd, cd_id, id[i]);
+			} else { dist[i] = minCostDist(cd); }
 		}
 	}
 	if (npole) {
-		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
-		minp += dy;
-		for (size_t i=0; i<nc; i++) {
-			dist[i] = std::min(dist[i], minp);
+		auto it = std::min_element(dist.begin(), dist.begin()+nc);
+		double minp = *it + dy;
+		if (track) {
+			size_t mi = std::distance(dist.begin(), it);
+			for (size_t i=0; i<nc; i++) {
+				if (minp < dist[i]) { dist[i] = minp; id[i] = id[mi]; }
+			}
+		} else {
+			for (size_t i=0; i<nc; i++) { dist[i] = std::min(dist[i], minp); }
 		}
 	}
 
-
-	for (size_t r=1; r<nr; r++) { //other rows
+	for (size_t r=1; r<nr; r++) {
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist, 1);
 		size_t start=r*nc;
 		if (!std::isnan(v[start])) {
 			if (global) {
 				cd = {dist[start-nc] + dy, dist[start],
-					dist[start+nc-1] + dx,
-					dist[start-1] + dxy};
+					dist[start+nc-1] + dx, dist[start-1] + dxy};
+				if (track) { cd_id = {id[start-nc], id[start], id[start+nc-1], id[start-1]}; }
 			} else {
 				cd = {dist[start-nc] + dy, dist[start]};
+				if (track) { cd_id = {id[start-nc], id[start]}; }
 			}
-			dist[start] = minCostDist(cd);
+			if (track) { dist[start] = minCostDistId(cd, cd_id, id[start]); }
+			else { dist[start] = minCostDist(cd); }
 		}
 		size_t end = start+nc;
 		for (size_t i=(start+1); i<end; i++) {
 			if (!std::isnan(v[i])) {
 				cd = {dist[i], dist[i-1]+dx, dist[i-nc]+dy, dist[i-nc-1]+dxy};
-				dist[i] = minCostDist(cd);
+				if (track) {
+					cd_id = {id[i], id[i-1], id[i-nc], id[i-nc-1]};
+					dist[i] = minCostDistId(cd, cd_id, id[i]);
+				} else { dist[i] = minCostDist(cd); }
 			}
 		}
 	}
 	if (spole) {
-		double minp = *std::min_element(dist.end()-nc, dist.end());
-		minp += dy;
-		size_t ds = dist.size();
-		for (size_t i=ds-nc; i<ds; i++) {
-			dist[i] = std::min(dist[i], minp);
+		auto it = std::min_element(dist.end()-nc, dist.end());
+		double minp = *it + dy;
+		if (track) {
+			size_t mi = std::distance(dist.begin(), it);
+			size_t ds = dist.size();
+			for (size_t i=ds-nc; i<ds; i++) {
+				if (minp < dist[i]) { dist[i] = minp; id[i] = id[mi]; }
+			}
+		} else {
+			size_t ds = dist.size();
+			for (size_t i=ds-nc; i<ds; i++) { dist[i] = std::min(dist[i], minp); }
 		}
 	}
 
 	//right to left
-	// first row, no need for first (last) cell (unless is global)
 	if (geo) DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist, 1);
 	if (global) {
 		size_t i=(nc-1);
-		cd = {dist[i],
-			dist[0] + dx,
-			dabove[0] + dxy};
-		dist[i] = minCostDist(cd);
+		cd = {dist[i], dist[0] + dx, dabove[0] + dxy};
+		if (track) {
+			cd_id = {id[i], id[0], idabove[0]};
+			dist[i] = minCostDistId(cd, cd_id, id[i]);
+		} else { dist[i] = minCostDist(cd); }
 	}
 	if (npole) {
-		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
-		minp += dy;
-		for (size_t i=0; i<nc; i++) {
-			dist[i] = std::min(dist[i], minp);
+		auto it = std::min_element(dist.begin(), dist.begin()+nc);
+		double minp = *it + dy;
+		if (track) {
+			size_t mi = std::distance(dist.begin(), it);
+			for (size_t i=0; i<nc; i++) {
+				if (minp < dist[i]) { dist[i] = minp; id[i] = id[mi]; }
+			}
+		} else {
+			for (size_t i=0; i<nc; i++) { dist[i] = std::min(dist[i], minp); }
 		}
 	}
 
-	for (int i=(nc-2); i > -1; i--) { // other cells on first row
+	for (int i=(nc-2); i > -1; i--) {
 		if (!std::isnan(v[i])) {
 			cd = {dabove[i]+dy, dabove[i+1]+dxy, dist[i+1]+dx, dist[i]};
-			dist[i] = minCostDist(cd);
+			if (track) {
+				cd_id = {idabove[i], idabove[i+1], id[i+1], id[i]};
+				dist[i] = minCostDistId(cd, cd_id, id[i]);
+			} else { dist[i] = minCostDist(cd); }
 		}
 	}
 
-	for (size_t r=1; r<nr; r++) { // other rows
+	for (size_t r=1; r<nr; r++) {
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist, 1);
 		size_t start=(r+1)*nc-1;
 
 		if (!std::isnan(v[start])) {
 			if (global) {
 				cd = { dist[start], dist[start-nc] + dy,
-					dist[start-nc+1] + dx,
-					dist[start-(2*nc)+1] + dxy
-				};
-
+					dist[start-nc+1] + dx, dist[start-(2*nc)+1] + dxy};
+				if (track) { cd_id = {id[start], id[start-nc], id[start-nc+1], id[start-(2*nc)+1]}; }
 			} else {
 				cd = { dist[start], dist[start-nc] + dy };
+				if (track) { cd_id = {id[start], id[start-nc]}; }
 			}
-			dist[start] = minCostDist(cd);
+			if (track) { dist[start] = minCostDistId(cd, cd_id, id[start]); }
+			else { dist[start] = minCostDist(cd); }
 		}
 
 		size_t end=r*nc;
@@ -539,22 +638,32 @@ void grid_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 		for (size_t i=start; i>=end; i--) {
 			if (!std::isnan(v[i])) {
 				cd = { dist[i+1]+dx, dist[i-nc+1]+dxy, dist[i-nc]+dy, dist[i]};
-				dist[i] = minCostDist(cd);
+				if (track) {
+					cd_id = {id[i+1], id[i-nc+1], id[i-nc], id[i]};
+					dist[i] = minCostDistId(cd, cd_id, id[i]);
+				} else { dist[i] = minCostDist(cd); }
 			}
 		}
 	}
 	if (spole) {
-		double minp = *std::min_element(dist.end()-nc, dist.end());
-		minp += dy;
-		size_t ds = dist.size();
-		for (size_t i=ds-nc; i<ds; i++) {
-			dist[i] = std::min(dist[i], minp);
+		auto it = std::min_element(dist.end()-nc, dist.end());
+		double minp = *it + dy;
+		if (track) {
+			size_t mi = std::distance(dist.begin(), it);
+			size_t ds = dist.size();
+			for (size_t i=ds-nc; i<ds; i++) {
+				if (minp < dist[i]) { dist[i] = minp; id[i] = id[mi]; }
+			}
+		} else {
+			size_t ds = dist.size();
+			for (size_t i=ds-nc; i<ds; i++) { dist[i] = std::min(dist[i], minp); }
 		}
 	}
 
 	size_t off = (nr-1) * nc;
 	dabove = std::vector<double>(dist.begin()+off, dist.end());
 	vabove = std::vector<double>(v.begin()+off, v.end());
+	if (track) idabove = std::vector<double>(id.begin()+off, id.end());
 }
 
 void block_is_same(bool& same, std::vector<double>& x,  std::vector<double>& y) {
@@ -572,13 +681,14 @@ void block_is_same(bool& same, std::vector<double>& x,  std::vector<double>& y) 
 
 
 
-SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double target, double m, bool lonlat, bool global, bool npole, bool spole, bool grid, SpatOptions &opt) {
+SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double target, double m, bool lonlat, bool global, bool npole, bool spole, bool grid, bool nearest, SpatOptions &opt) {
 
 	std::vector<double> res = resolution();
 
-	SpatRaster first = geometry();
-	SpatRaster second = first;
+	SpatRaster first = geometry(nearest ? 2 : 1);
+	SpatRaster second = geometry(nearest ? 2 : 1);
     std::vector<double> d, v, vv;
+	std::vector<double> id_vec, idabove;
 	if (!readStart()) {
 		first.setError(getError());
 		return(first);
@@ -587,8 +697,10 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
  	if (!first.writeStart(opt, filenames())) { return first; }
 
 	size_t nc = ncol();
+	size_t block_offset = 0;
 	std::vector<double> dabove(nc, NAN);
 	std::vector<double> vabove(nc, 0);
+	if (nearest) idabove.assign(nc, NAN);
 	double lat = 0;
 	if (old.hasValues()) {
 		if (!old.readStart()) {
@@ -601,6 +713,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 			return first;
 		}
 
+		block_offset = 0;
 		for (size_t i = 0; i < first.bs.n; i++) {
 			readBlock(v, first.bs, i);
 			if (lonlat) {
@@ -616,15 +729,32 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 				}
 			}
 			old.readBlock(d, first.bs, i);
-			if (grid) {
-				grid_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp);
-			} else {
-				cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp);
+			if (nearest) {
+				size_t bsz = first.bs.nrows[i] * nc;
+				id_vec.assign(bsz, NAN);
+				for (size_t j = 0; j < bsz; j++) {
+					if (d[j] == 0 && !std::isnan(v[j])) {
+						id_vec[j] = (double)(block_offset + j + 1);
+					}
+				}
 			}
-			if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
+			if (grid) {
+				grid_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp, id_vec, idabove);
+			} else {
+				cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp, id_vec, idabove);
+			}
+			if (nearest) {
+				std::vector<double> combined(d);
+				combined.insert(combined.end(), id_vec.begin(), id_vec.end());
+				if (!first.writeValues(combined, first.bs.row[i], first.bs.nrows[i])) return first;
+			} else {
+				if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
+			}
+			block_offset += first.bs.nrows[i] * nc;
 		}
 	} else {
 		converged = false;
+		block_offset = 0;
 		for (size_t i = 0; i < first.bs.n; i++) {
 			if (lonlat) {
 				lat = yFromRow(first.bs.row[i]);
@@ -632,12 +762,15 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 			bool np = (i==0) && npole;
 			bool sp = (i==first.bs.n-1) && spole;
 			readBlock(v, first.bs, i);
+			size_t bsz = v.size();
 			d.clear();
-			d.resize(v.size(), NAN);
-			for (size_t j = 0; j < v.size(); j++) {
+			d.resize(bsz, NAN);
+			if (nearest) id_vec.assign(bsz, NAN);
+			for (size_t j = 0; j < bsz; j++) {
 				if (v[j] == target) {
 					v[j] = 0;
 					d[j] = 0;
+					if (nearest) id_vec[j] = (double)(block_offset + j + 1);
 				} else if ((!grid) && (v[j] < 0)) {
 					readStop();
 					first.writeStop();
@@ -646,11 +779,18 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 				}
 			}
 			if (grid) {
-				grid_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp);
+				grid_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp, id_vec, idabove);
 			} else {
-				cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp);
+				cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp, id_vec, idabove);
 			}
-			if (!first.writeValuesRect(d, first.bs.row[i], first.bs.nrows[i], 0, nc)) return first;
+			if (nearest) {
+				std::vector<double> combined(d);
+				combined.insert(combined.end(), id_vec.begin(), id_vec.end());
+				if (!first.writeValuesRect(combined, first.bs.row[i], first.bs.nrows[i], 0, nc)) return first;
+			} else {
+				if (!first.writeValuesRect(d, first.bs.row[i], first.bs.nrows[i], 0, nc)) return first;
+			}
+			block_offset += bsz;
 		}
 	}
 	first.writeStop();
@@ -661,6 +801,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 
 	dabove = std::vector<double>(nc, NAN);
 	vabove = std::vector<double>(nc, 0);
+	if (nearest) idabove.assign(nc, NAN);
   	if (!second.writeStart(opt, filenames())) {
 		readStop();
 		first.readStop();
@@ -681,19 +822,32 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 			}
 		}
 		first.readBlock(d, second.bs, i-1);
+		if (nearest) {
+			size_t bsz = second.bs.nrows[i-1] * nc;
+			id_vec.assign(d.begin() + bsz, d.end());
+			d.resize(bsz);
+		}
 		std::reverse(v.begin(), v.end());
 		std::reverse(d.begin(), d.end());
+		if (nearest) std::reverse(id_vec.begin(), id_vec.end());
 		if (grid) {
-			grid_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1, global, np, sp);
+			grid_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1, global, np, sp, id_vec, idabove);
 		} else {
-			cost_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1, global, np, sp);
+			cost_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1, global, np, sp, id_vec, idabove);
 		}
 		std::reverse(d.begin(), d.end());
+		if (nearest) std::reverse(id_vec.begin(), id_vec.end());
 		if (converged) {
 			old.readBlock(v, second.bs, i-1);
 			block_is_same(converged, d, v);
 		}
-		if (!second.writeValuesRect(d, second.bs.row[i-1], second.bs.nrows[i-1], 0, nc)) return second;
+		if (nearest) {
+			std::vector<double> combined(d);
+			combined.insert(combined.end(), id_vec.begin(), id_vec.end());
+			if (!second.writeValuesRect(combined, second.bs.row[i-1], second.bs.nrows[i-1], 0, nc)) return second;
+		} else {
+			if (!second.writeValuesRect(d, second.bs.row[i-1], second.bs.nrows[i-1], 0, nc)) return second;
+		}
 	}
 	second.writeStop();
 	first.readStop();
@@ -701,12 +855,16 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 		old.readStop();
 	}
 	readStop();
+	if (nearest) {
+		std::vector<std::string> nms = {"distance", "nearest"};
+		second.setNames(nms, false);
+	}
 	return(second);
 }
 
-SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, bool grid, SpatOptions &opt) {
+SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, bool grid, bool nearest, SpatOptions &opt) {
 
-	SpatRaster out = geometry(1);
+	SpatRaster out = geometry(nearest ? 2 : 1);
 	if (!hasValues()) {
 		out.setError("cannot compute distance for a raster with no values");
 		return out;
@@ -724,7 +882,7 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, boo
 	if (nlyr() > 1) {
 		std::vector<size_t> lyr = {0};
 		out = subset(lyr, ops);
-		out = out.costDistance(target, m, maxiter, grid, opt);
+		out = out.costDistance(target, m, maxiter, grid, nearest, opt);
 		out.addWarning("distance computations are only done for the first input layer");
 		return out;
 	}
@@ -752,16 +910,16 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, boo
 
 	// if the raster fits in memory, use the exact single-pass Dijkstra
 	SpatOptions memops(opt);
-	memops.ncopies = 4;
+	memops.ncopies = nearest ? 6 : 4;
 	BlockSize membs = out.getBlockSize(memops);
 	if (membs.nrows[0] >= nrow()) {
-		return costDistanceDijkstra(target, m, grid, opt);
+		return costDistanceDijkstra(target, m, grid, nearest, opt);
 	}
 
 	size_t i = 0;
 	bool converged=false;
 	while (i < maxiter) {
-		out = costDistanceRun(out, converged, target, scale, lonlat, global, npole, spole, grid, ops);
+		out = costDistanceRun(out, converged, target, scale, lonlat, global, npole, spole, grid, nearest, ops);
 		if (out.hasError()) return out;
 		if (converged) break;
 		converged = true;

@@ -15,7 +15,7 @@ Distances are multiplied with the friction, thus to get the cost-distance, the f
 }
 
 \usage{
-\S4method{costDist}{SpatRaster}(x, target=0, scale=1, maxiter=50, filename="", ...) 
+\S4method{costDist}{SpatRaster}(x, target=0, scale=1, maxiter=50, nearest=FALSE, filename="", ...) 
 }
 
 \arguments{
@@ -23,6 +23,7 @@ Distances are multiplied with the friction, thus to get the cost-distance, the f
 \item{target}{numeric. value of the target cells (where to compute cost-distance to)}
 \item{scale}{numeric. Scale factor. The cost distance is divided by this number}
 \item{maxiter}{numeric. The maximum number of iterations. Increase this number if you get the warning that \code{costDistance did not converge}}
+\item{nearest}{logical. If \code{TRUE}, a second layer is returned with the cell number of the nearest target cell}
 \item{filename}{character. output filename (optional)}
 \item{...}{additional arguments as for \code{\link{writeRaster}}}  
 }
@@ -31,7 +32,7 @@ Distances are multiplied with the friction, thus to get the cost-distance, the f
 \seealso{\code{\link{gridDist}, \link[terra]{distance}} } 
 
 
-\value{SpatRaster}
+\value{SpatRaster. If \code{nearest=TRUE}, a two-layer SpatRaster with the cost-distance in the first layer and the cell number of the nearest target in the second layer}
 
 
 \examples{
@@ -44,15 +45,15 @@ text(d, digits=1)
 
 r <- rast(ncols=10, nrows=10,  xmin=0, xmax=10, ymin=0, ymax=10, 
 		   vals=10, crs="+proj=utm +zone=1 +datum=WGS84")
-r[5, 1] <- -10
+r[4:5, c(1,10)] <- -10
 r[2:3, 1] <- r[1, 2:4] <- r[2, 5] <- 0
 r[3, 6] <- r[2, 7] <- r[1, 8:9] <- 0
+r[, 4] <- 30
 r[6, 6:10] <- NA
 r[6:9, 6] <- NA
 
-d <- costDist(r, -10)
+d <- costDist(r, -10, nearest=TRUE)
 plot(d)
-text(d, digits=1, cex=.8)
 }
 
 \keyword{spatial}

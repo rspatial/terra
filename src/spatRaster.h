@@ -751,9 +751,9 @@ class SpatRaster {
 		SpatDataFrame global_weighted_mean(SpatRaster &weights, std::string fun, bool narm, SpatOptions &opt);
 
 		SpatRaster gridDistance(double m, SpatOptions &opt);
-		SpatRaster costDistanceRun(SpatRaster &old, bool &converged, double target, double m, bool lonlat, bool global, bool npole, bool spole, bool grid, SpatOptions &opt);
-		SpatRaster costDistance(double target, double m, size_t maxiter, bool grid, SpatOptions &opt);
-		SpatRaster costDistanceDijkstra(double target, double m, bool grid, SpatOptions &opt);
+		SpatRaster costDistanceRun(SpatRaster &old, bool &converged, double target, double m, bool lonlat, bool global, bool npole, bool spole, bool grid, bool nearest, SpatOptions &opt);
+		SpatRaster costDistance(double target, double m, size_t maxiter, bool grid, bool nearest, SpatOptions &opt);
+		SpatRaster costDistanceDijkstra(double target, double m, bool grid, bool nearest, SpatOptions &opt);
 
 		SpatRaster init(std::string value, bool plusone, SpatOptions &opt);
 		SpatRaster init(std::vector<double> values, SpatOptions &opt);

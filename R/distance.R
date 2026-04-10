@@ -64,23 +64,23 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 
 
 setMethod("costDist", signature(x="SpatRaster"),
-	function(x, target=0, scale=1, maxiter=50, filename="", ...) {
+	function(x, target=0, scale=1, maxiter=50, nearest=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		maxiter <- max(maxiter[1], 2)
-		x@pntr <- x@pntr$costDistance(target[1], scale[1], maxiter, FALSE, opt)
+		x@pntr <- x@pntr$costDistance(target[1], scale[1], maxiter, FALSE, isTRUE(nearest), opt)
 		messages(x, "costDist")
 	}
 )
 
 
 setMethod("gridDist", signature(x="SpatRaster"),
-	function(x, target=0, scale=1, maxiter=50, filename="", ...) {
+	function(x, target=0, scale=1, maxiter=50, nearest=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (is.na(target)) {
 			x@pntr <- x@pntr$gridDistance(scale[1]	, opt)
 		} else {
 			maxiter <- max(maxiter[1], 2)
-			x@pntr <- x@pntr$costDistance(target[1], scale[1], maxiter, TRUE, opt)
+			x@pntr <- x@pntr$costDistance(target[1], scale[1], maxiter, TRUE, isTRUE(nearest), opt)
 		}
 		messages(x, "gridDist")
 	}
