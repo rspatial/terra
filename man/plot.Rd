@@ -82,6 +82,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 	\item \code{title} add a legend title
 	\item \code{title.srt} to rotate the legend title
 	\item \code{title.x} and \code{title.y} to place the legend title at specific coordinates  
+	\item \code{bg} background color behind the legend (e.g. \code{"white"}) for visibility when drawn on top of a map
   }}
   
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Additional parameters include: 
