@@ -12,7 +12,6 @@
 
 ## enhancements
 
-- `update` can write cell values to existing files [#1079](https://github.com/rspatial/terra/issues/1079) by Mike Koontz
 - `update` can (again) edit layernames in existing files [#2071](https://github.com/rspatial/terra/issues/2071) by Jim Shady
 - `compareGeom` gets argument "tolerance" to overwrite the default that can be set with `terraOptions`. [#2056](https://github.com/rspatial/terra/issues/2056) by R. Kyle Bocinsky
 - `vect<data.frame>` now warns when it guesses the geom variables and/or the lon/lat CRS [#1985](https://github.com/rspatial/terra/issues/1985) by Márcia Barbosa
@@ -26,6 +25,8 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 
 # new 
 
+- `costDistance` and `gridDistance` can now return the nearest target cell number [#2034](https://github.com/rspatial/terra/issues/2034) by chrislittleboy
+- `update` can write cell values to existing files [#1079](https://github.com/rspatial/terra/issues/1079) by Mike Koontz
 - `mosaic(fun="blend")` method to combine rasters with smooth gradients in overlapping zones [#2011](https://github.com/rspatial/terra/issues/2011) by Greg Schmidt
 - `animate<SpatVectorCollection>` method. [#2065](https://github.com/rspatial/terra/pull/2065) by Márcia Barbosa 
 - `thin<SpatVector>` method. [#1738](https://github.com/rspatial/terra/issues/1738) by Andrés
