@@ -11,7 +11,7 @@ Add a scale bar to a map
 \usage{
 sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 	adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, halo=TRUE,
-	col="black", fill=c("black", "white"), border="black", ...)
+	col="black", fill=c("black", "white"), border="black", bg=NULL, ...)
 }
 
 \arguments{
@@ -31,6 +31,7 @@ sbar(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels,
 \item{col}{the font color for the labels}
 \item{fill}{the fill color(s) for the bar}
 \item{border}{the color of the border around the bar}
+\item{bg}{background color behind the scale bar (e.g. \code{"white"} or \code{rgb(1,1,1,0.7)}) for visibility on complex maps. Default is \code{NULL} (no background)}
 \item{...}{graphical arguments to be passed to other methods }
 }
 
