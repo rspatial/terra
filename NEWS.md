@@ -9,6 +9,8 @@
 - `vect` can now better handle non standard geometries such as multisurface [#2037](https://github.com/rspatial/terra/issues/2037) by Floris Vanderhaeghe
 - `writeVector` can now write GPX format [#1231](https://github.com/rspatial/terra/issues/1231) by Krzysztof Dyba
 - better handling of rotated rasters [#1434](https://github.com/rspatial/terra/issues/1434) by Insang Song and [#918](https://github.com/rspatial/terra/issues/918) by Agustin Lobo
+- `zonal` truncated weights [#2072](https://github.com/rspatial/terra/issues/2072) by Dominic Royé
+
 
 ## enhancements
 
@@ -31,7 +33,7 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - `mosaic(fun="blend")` method to combine rasters with smooth gradients in overlapping zones [#2011](https://github.com/rspatial/terra/issues/2011) by Greg Schmidt
 - `animate<SpatVectorCollection>` method. [#2065](https://github.com/rspatial/terra/pull/2065) by Márcia Barbosa 
 - `thin<SpatVector>` method. [#1738](https://github.com/rspatial/terra/issues/1738) by Andrés
-
+- `legend_cont` method to draw a continuous legend independent of `plot` [#2057](https://github.com/rspatial/terra/issues/2057) by Lucas Salinas Morales
 
 # version 1.9-11
 

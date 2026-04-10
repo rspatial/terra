@@ -79,6 +79,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
 	\item \code{tick} One of these partially matched values: "through", "in", "middle", "out", or "none", to choose a tickmark placement/length that is different from the default "throughout". 
 	\item \code{tick.length} to change the tickmark length (default = 1). Only relevant when \code{tick} is "throughout" or "out".
 	\item \code{tick.col}, \code{tick.box.col} and \code{tick.lwd} to change the appearance of the tickmarks
+	\item \code{title} add a legend title
 	\item \code{title.srt} to rotate the legend title
 	\item \code{title.x} and \code{title.y} to place the legend title at specific coordinates  
   }}
