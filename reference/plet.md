@@ -195,7 +195,7 @@ polys(x, y, col, lwd=2, lty=NULL,
 
 - hover:
 
-  logical. If `TRUE`, raster cell values are shown in a tooltip when
+  logical. If `TRUE`, the approximate raster cell values are shown when
   hovering the mouse over the map. Not available for RGB rasters or
   panel mode
 

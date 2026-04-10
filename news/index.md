@@ -59,6 +59,9 @@
 - `autocor` gets a “standardize” argument for row-standardization
   [\#1593](https://github.com/rspatial/terra/issues/1593) by Nicholas
   Berryman
+- `plet` gains argument “hover”
+  [\#1571](https://github.com/rspatial/terra/issues/1571) by Agustin
+  Lobo
 
 ## version 1.9-11
 
