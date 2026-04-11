@@ -27,7 +27,7 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - `sbar` gets argument "bg" to set a background color [#1957](https://github.com/rspatial/terra/issues/1957) by Lucas Salinas Morales
 - better support for writing vsizip files [#1629](https://github.com/rspatial/terra/issues/1629) by Eric R. Scott
 
-# new 
+## new 
 
 - `costDistance` and `gridDistance` can now return the nearest target cell number [#2034](https://github.com/rspatial/terra/issues/2034) by chrislittleboy
 - `update` can write cell values to existing files [#1079](https://github.com/rspatial/terra/issues/1079) by Mike Koontz
