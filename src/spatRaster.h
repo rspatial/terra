@@ -219,6 +219,7 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 		
 		std::vector<SpatRasterSource> source;
+		SpatRasterSource masklyr;
 
 		BlockSize bs;
 		//BlockSize getBlockSize(unsigned n, double frac, unsigned steps=0);

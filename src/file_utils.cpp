@@ -17,12 +17,19 @@
 
 #include "spatBase.h"
 #include <fstream>
+#include <sstream>
 #include <random>
 #include <chrono>
 #include <thread>
 
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include "cpl_vsi.h"
+
+static inline bool is_vsi(const std::string& path) {
+	return path.size() > 4 && path.substr(0, 4) == "/vsi";
+}
 
 /*
 #if defined __has_include
@@ -64,6 +71,25 @@ bool write_text(std::string filename, std::vector<std::string> s) {
 
 std::vector<std::string> read_text(std::string filename) {
 	std::vector<std::string> s;
+	if (is_vsi(filename)) {
+		VSILFILE *fp = VSIFOpenL(filename.c_str(), "r");
+		if (fp != nullptr) {
+			char buf[4096];
+			std::string residual;
+			while (true) {
+				size_t nread = VSIFReadL(buf, 1, sizeof(buf), fp);
+				if (nread == 0) break;
+				residual.append(buf, nread);
+			}
+			VSIFCloseL(fp);
+			std::istringstream iss(residual);
+			std::string line;
+			while (std::getline(iss, line)) {
+				s.push_back(line);
+			}
+		}
+		return s;
+	}
 	std::string line;
 	std::ifstream f(filename);
 	if (f.is_open())  {
@@ -129,7 +155,45 @@ std::string dirname(std::string filename) {
 	}
 }
 
+// For /vsizip/, /vsigzip, extract the path in the .zip or .gz file.
+std::string get_vsi_container(const std::string& path) {
+	std::string prefix;
+	if (path.size() > 8 && path.substr(0, 8) == "/vsizip/") {
+		prefix = "/vsizip/";
+	} else if (path.size() > 10 && path.substr(0, 10) == "/vsigzip/") {
+		prefix = "/vsigzip/";
+	} else {
+		return "";
+	}
+	std::string rest = path.substr(prefix.size());
+	// Curly brace format: /vsizip/{container_path}/inner
+	if (!rest.empty() && rest[0] == '{') {
+		size_t end = rest.find('}');
+		if (end != std::string::npos) {
+			return rest.substr(1, end - 1);
+		}
+	}
+	// Standard format: look for .zip or .gz extension
+	for (const auto& ext : {".zip", ".ZIP", ".gz", ".GZ"}) {
+		size_t pos = rest.find(ext);
+		if (pos != std::string::npos) {
+			return rest.substr(0, pos + strlen(ext));
+		}
+	}
+	return "";
+}
+
+
 bool file_exists(const std::string& name) {
+	if (is_vsi(name)) {
+		std::string container = get_vsi_container(name);
+		if (!container.empty()) {
+			std::ifstream cf(container.c_str());
+			if (!cf.good()) return false;
+		}
+		VSIStatBufL statBuf;
+		return VSIStatL(name.c_str(), &statBuf) == 0;
+	}
 	std::ifstream f(name.c_str());
 	return f.good();
 }
@@ -232,15 +296,30 @@ bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcn
 	for (size_t i=0; i<filenames.size(); i++) {
 		if (!filenames[i].empty() && file_exists(filenames[i])) {
 			if (overwrite) {
-				if (remove(filenames[i].c_str()) != 0) {
-					msg = ("cannot overwrite existing file");
+				bool removed = false;
+				if (is_vsi(filenames[i])) {
+					// for archive VSI paths, delete the container file
+					std::string container = get_vsi_container(filenames[i]);
+					if (!container.empty()) {
+						removed = (remove(container.c_str()) == 0);
+					}
+					if (!removed) {
+						removed = (VSIUnlink(filenames[i].c_str()) == 0);
+					}
+				} else {
+					removed = (remove(filenames[i].c_str()) == 0);
+				}
+				if (!removed) {
+					msg = "cannot overwrite existing file";
 					return false;
 				}
-				std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json", ".aux.xml"};
-				for (size_t j=0; j<exts.size(); j++) {
-					std::string f = filenames[i] + exts[j];
-					if (file_exists(f)) {
-						remove(f.c_str());
+				if (!is_vsi(filenames[i])) {
+					std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json", ".aux.xml"};
+					for (size_t j=0; j<exts.size(); j++) {
+						std::string f = filenames[i] + exts[j];
+						if (file_exists(f)) {
+							remove(f.c_str());
+						}
 					}
 				}
 			} else {

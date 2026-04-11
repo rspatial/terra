@@ -55,6 +55,7 @@ std::string quoted_csv(const std::vector<std::string> &s) {
 	return ss;
 }
 
+
 bool SpatRaster::write_aux_json(std::string filename) {
 	filename += ".aux.json";
 	std::ofstream f;
@@ -322,7 +323,12 @@ void stat_options(int sstat, bool &compute_stats, bool &gdal_stats, bool &gdal_m
 }
 
 
+static inline bool is_vsi_path(const std::string& path) {
+	return path.size() > 4 && path.substr(0, 4) == "/vsi";
+}
+
 void removeVatJson(std::string filename) {
+	if (is_vsi_path(filename)) return;
 	std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json"};
 	for (size_t i=0; i<exts.size(); i++) {
 		std::string f = filename + exts[i];
@@ -401,11 +407,12 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	}
 	removeVatJson(filename);
 
-// what if append=true?
-	std::string auxf = filename + ".aux.xml";
-	remove(auxf.c_str());
-	auxf = filename + ".aux.json";
-	remove(auxf.c_str());
+	if (!is_vsi_path(filename)) {
+		std::string auxf = filename + ".aux.xml";
+		remove(auxf.c_str());
+		auxf = filename + ".aux.json";
+		remove(auxf.c_str());
+	}
 
 	std::vector<bool> hasCT = hasColors();
 	std::vector<bool> hasCats = hasCategories();
@@ -474,6 +481,10 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	}
 
 	stat_options(opt.get_statistics(), compute_stats, gdal_stats, gdal_minmax, gdal_approx);
+	std::string streamstr = "STREAMABLE_OUTPUT=YES";
+	if (std::find(opt.gdal_options.begin(), opt.gdal_options.end(), streamstr) != opt.gdal_options.end()) {
+		compute_stats = false;
+	}
 	char **papszOptions = set_GDAL_options(driver, diskNeeded, writeRGB, opt.gdal_options);
 
 /*	if (driver == "GTiff") {

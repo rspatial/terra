@@ -22,6 +22,7 @@ bool file_exists(const std::string& name);
 bool path_exists(std::string path);
 bool filepath_exists(const std::string& name);
 bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg);
+std::string get_vsi_container(const std::string& path);
 std::string getFileExt(const std::string& s);
 std::string setFileExt(const std::string& s, const std::string& ext);
 std::string basename(std::string filename);
