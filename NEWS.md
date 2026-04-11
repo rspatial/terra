@@ -25,6 +25,7 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - `autocor` gets a "standardize" argument for row-standardization [#1593](https://github.com/rspatial/terra/issues/1593) by Nicholas Berryman
 - `plet` gains argument "hover" [#1571](https://github.com/rspatial/terra/issues/1571) by Agustin Lobo
 - `sbar` gets argument "bg" to set a background color [#1957](https://github.com/rspatial/terra/issues/1957) by Lucas Salinas Morales
+- better support for writing vsizip files [#1629](https://github.com/rspatial/terra/issues/1629) by Eric R. Scott
 
 # new 
 

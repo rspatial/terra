@@ -14,7 +14,8 @@ Compute spatial autocorrelation for a numeric vector or a SpatRaster. You can co
 \usage{
 \S4method{autocor}{numeric}(x, w, method="moran")
 
-\S4method{autocor}{SpatRaster}(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE, standardize=FALSE)
+\S4method{autocor}{SpatRaster}(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", 
+		global=TRUE, standardize=FALSE)
 }
 
 \arguments{
