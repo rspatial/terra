@@ -111,10 +111,10 @@ getTileExtents(r, x, buffer=3)
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
-#> [1] "/tmp/RtmpPLQCjH/file21b92428f458_1.tif"
-#> [2] "/tmp/RtmpPLQCjH/file21b92428f458_2.tif"
-#> [3] "/tmp/RtmpPLQCjH/file21b92428f458_3.tif"
-#> [4] "/tmp/RtmpPLQCjH/file21b92428f458_4.tif"
+#> [1] "/tmp/Rtmp5WGH7E/file21a22089e27f_1.tif"
+#> [2] "/tmp/Rtmp5WGH7E/file21a22089e27f_2.tif"
+#> [3] "/tmp/Rtmp5WGH7E/file21a22089e27f_3.tif"
+#> [4] "/tmp/Rtmp5WGH7E/file21a22089e27f_4.tif"
 
 vrt(ff)
 #> class       : SpatRaster
@@ -122,8 +122,8 @@ vrt(ff)
 #> resolution  : 3.6, 1.8  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
-#> source      : spat_21b97c74914d_8633_DvggOkjkTOQeAAI.vrt
-#> name        : spat_21b97c74914d_8633_DvggOkjkTOQeAAI
+#> source      : spat_21a2747134fc_8610_DvggOkjkTOQeAAI.vrt
+#> name        : spat_21a2747134fc_8610_DvggOkjkTOQeAAI
 #> min value   :                                      1
 #> max value   :                                  10000
 ```
