@@ -17,7 +17,7 @@ proj_pipelines(from, to, authority="", AOI=NULL, use="NONE", grid_availability="
 \item{from}{character, SpatRaster, SpatVector, or any object from which \code{crs()} can extract a CRS}
 \item{to}{same types as for \code{from}}
 \item{authority}{character. Constrain output pipelines to those from this authority (e.g. \code{"EPSG"}). Default \code{""} means no constraint}
-\item{AOI}{SpatExtent. Area of interest for the transformation in degrees. For an area of interest crossing the anti-meridian, west should be greater than east, e.g. \code{ext(150, 210, 0, 30)}
+\item{AOI}{SpatExtent. Area of interest for the transformation in degrees. For an area of interest crossing the anti-meridian, west should be greater than east, e.g. \code{ext(150, 210, 0, 30)}}
 \item{use}{character. One of \code{"NONE"}, \code{"BOTH"}, \code{"INTERSECTION"}, \code{"SMALLEST"}, indicating how areas of interest of source and target CRS are used. Ignored when \code{AOI} is specified}
 \item{grid_availability}{character. One of \code{"USED"} (grid availability is used for sorting; operations with missing grids are sorted last), \code{"DISCARD"} (discard operations if a required grid is missing), \code{"IGNORED"} (ignore grid availability; results presented as if all grids were available), or \code{"AVAILABLE"} (results presented as if grids known to PROJ were available; typical when networking is enabled)}
 \item{desired_accuracy}{numeric. Only return pipelines with at least this accuracy (in metres). Use \code{-1} (the default) to impose no accuracy constraint}
