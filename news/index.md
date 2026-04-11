@@ -68,6 +68,9 @@
 - `sbar` gets argument “bg” to set a background color
   [\#1957](https://github.com/rspatial/terra/issues/1957) by Lucas
   Salinas Morales
+- better support for writing vsizip files
+  [\#1629](https://github.com/rspatial/terra/issues/1629) by Eric R.
+  Scott
 
 ## version 1.9-11
 

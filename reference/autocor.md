@@ -11,7 +11,8 @@ indicators of spatial autocorrelation (Anselin, 1995).
 autocor(x, w, method="moran")
 
 # S4 method for class 'SpatRaster'
-autocor(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE, standardize=FALSE)
+autocor(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", 
+    global=TRUE, standardize=FALSE)
 ```
 
 ## Arguments
