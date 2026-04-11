@@ -775,6 +775,9 @@
 - [`princomp(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/princomp.md)
   : SpatRaster PCA with princomp
 
+- [`proj_pipelines()`](https://rspatial.github.io/terra/reference/proj_pipelines.md)
+  : Find PROJ transformation pipelines
+
 - [`project(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/project.md)
   [`project(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/project.md)
   [`project(`*`<SpatExtent>`*`)`](https://rspatial.github.io/terra/reference/project.md)

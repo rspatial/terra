@@ -72,6 +72,26 @@
   [\#1629](https://github.com/rspatial/terra/issues/1629) by Eric R.
   Scott
 
+### new
+
+- `costDistance` and `gridDistance` can now return the nearest target
+  cell number [\#2034](https://github.com/rspatial/terra/issues/2034) by
+  chrislittleboy
+- `update` can write cell values to existing files
+  [\#1079](https://github.com/rspatial/terra/issues/1079) by Mike Koontz
+- `mosaic(fun="blend")` method to combine rasters with smooth gradients
+  in overlapping zones
+  [\#2011](https://github.com/rspatial/terra/issues/2011) by Greg
+  Schmidt
+- `animate<SpatVectorCollection>` method.
+  [\#2065](https://github.com/rspatial/terra/pull/2065) by Márcia
+  Barbosa
+- `thin<SpatVector>` method.
+  [\#1738](https://github.com/rspatial/terra/issues/1738) by Andrés
+- `legend_cont` method to draw a continuous legend independent of `plot`
+  [\#2057](https://github.com/rspatial/terra/issues/2057) by Lucas
+  Salinas Morales
+
 ## version 1.9-11
 
 CRAN release: 2026-03-26

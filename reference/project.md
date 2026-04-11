@@ -7,7 +7,8 @@ SpatRaster or a matrix with coordinates.
 
 ``` r
 # S4 method for class 'SpatVector'
-project(x, y, partial = FALSE)
+project(x, y, partial=FALSE, pipeline="", AOI=numeric(0),
+    desired_accuracy=-1.0, allow_approx=TRUE)
 
 # S4 method for class 'SpatRaster'
 project(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
@@ -48,6 +49,32 @@ project(x, from, to)
 
   logical. If `TRUE`, geometries that can only partially be represented
   in the output crs are included in the output
+
+- pipeline:
+
+  character. A PROJ pipeline string to use for the coordinate
+  transformation instead of letting GDAL select one automatically. You
+  can use
+  [`proj_pipelines`](https://rspatial.github.io/terra/reference/proj_pipelines.md)
+  to find available pipelines. When a pipeline is set, `y` is still used
+  to set the output CRS
+
+- AOI:
+
+  SpatExtent or object that has a SpatExtent to set the area of interest
+  for the transformation. This is used to select the most approprite
+  transformation pipeline
+
+- desired_accuracy:
+
+  numeric. Only use transformations with at least this accuracy (in
+  metres). Use `-1` (the default) for no constraint. Requires GDAL \>=
+  3.3
+
+- allow_approx:
+
+  logical. If `FALSE`, only use transformations with known accuracy (no
+  "ballpark" transformations). Requires GDAL \>= 3.3
 
 - method:
 
@@ -146,7 +173,8 @@ SpatVector or SpatRaster
 ## See also
 
 [`crs`](https://rspatial.github.io/terra/reference/crs.md),
-[`resample`](https://rspatial.github.io/terra/reference/resample.md)
+[`resample`](https://rspatial.github.io/terra/reference/resample.md),
+[`proj_pipelines`](https://rspatial.github.io/terra/reference/proj_pipelines.md)
 
 ## Note
 
