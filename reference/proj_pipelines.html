@@ -58,33 +58,94 @@
 <dd><p>character. Constrain output pipelines to those from this authority (e.g. <code>"EPSG"</code>). Default <code>""</code> means no constraint</p></dd>
 
 <dt id="arg-aoi">AOI<a class="anchor" aria-label="anchor" href="#arg-aoi"></a></dt>
-<dd><p>SpatExtent. Area of interest for the transformation in degrees. For an area of interest crossing the anti-meridian, west should be greater than east, e.g. <code>ext(150, 210, 0, 30)</code>
-usecharacter. One of <code>"NONE"</code>, <code>"BOTH"</code>, <code>"INTERSECTION"</code>, <code>"SMALLEST"</code>, indicating how areas of interest of source and target CRS are used. Ignored when <code>AOI</code> is specified
-grid_availabilitycharacter. One of <code>"USED"</code> (grid availability is used for sorting; operations with missing grids are sorted last), <code>"DISCARD"</code> (discard operations if a required grid is missing), <code>"IGNORED"</code> (ignore grid availability; results presented as if all grids were available), or <code>"AVAILABLE"</code> (results presented as if grids known to PROJ were available; typical when networking is enabled)
-desired_accuracynumeric. Only return pipelines with at least this accuracy (in metres). Use <code>-1</code> (the default) to impose no accuracy constraint
-strict_containmentlogical. If <code>FALSE</code> (the default), permit partial matching of the area of interest. If <code>TRUE</code>, the area of interest must be strictly contained
-axis_order_authority_compliantlogical. If <code>FALSE</code> (the default), always use longitude/easting for the first axis. If <code>TRUE</code>, follow the axis order given by the CRS definitions</p></dd>
+<dd><p>SpatExtent. Area of interest for the transformation in degrees. For an area of interest crossing the anti-meridian, west should be greater than east, e.g. <code>ext(150, 210, 0, 30)</code></p></dd>
+
+<dt id="arg-use">use<a class="anchor" aria-label="anchor" href="#arg-use"></a></dt>
+<dd><p>character. One of <code>"NONE"</code>, <code>"BOTH"</code>, <code>"INTERSECTION"</code>, <code>"SMALLEST"</code>, indicating how areas of interest of source and target CRS are used. Ignored when <code>AOI</code> is specified</p></dd>
+
+<dt id="arg-grid-availability">grid_availability<a class="anchor" aria-label="anchor" href="#arg-grid-availability"></a></dt>
+<dd><p>character. One of <code>"USED"</code> (grid availability is used for sorting; operations with missing grids are sorted last), <code>"DISCARD"</code> (discard operations if a required grid is missing), <code>"IGNORED"</code> (ignore grid availability; results presented as if all grids were available), or <code>"AVAILABLE"</code> (results presented as if grids known to PROJ were available; typical when networking is enabled)</p></dd>
+
+<dt id="arg-desired-accuracy">desired_accuracy<a class="anchor" aria-label="anchor" href="#arg-desired-accuracy"></a></dt>
+<dd><p>numeric. Only return pipelines with at least this accuracy (in metres). Use <code>-1</code> (the default) to impose no accuracy constraint</p></dd>
+
+<dt id="arg-strict-containment">strict_containment<a class="anchor" aria-label="anchor" href="#arg-strict-containment"></a></dt>
+<dd><p>logical. If <code>FALSE</code> (the default), permit partial matching of the area of interest. If <code>TRUE</code>, the area of interest must be strictly contained</p></dd>
+
+<dt id="arg-axis-order-authority-compliant">axis_order_authority_compliant<a class="anchor" aria-label="anchor" href="#arg-axis-order-authority-compliant"></a></dt>
+<dd><p>logical. If <code>FALSE</code> (the default), always use longitude/easting for the first axis. If <code>TRUE</code>, follow the axis order given by the CRS definitions</p></dd>
+
+</dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A <code>data.frame</code> with "pipelines" and the following columns:</p><dl><dt>description</dt>
+<dd><p>human-readable description</p></dd>
+
+  <dt>definition</dt>
+<dd><p>PROJ pipeline definition string</p></dd>
+
+  <dt>has_inverse</dt>
+<dd><p>logical; whether the pipeline has an inverse</p></dd>
+
+  <dt>accuracy</dt>
+<dd><p>accuracy in metres; <code>-1</code> indicates unknown (ballpark) accuracy</p></dd>
+
+  <dt>grid_count</dt>
+<dd><p>number of grids required by this pipeline</p></dd>
+
+  <dt>instantiable</dt>
+<dd><p>logical; whether the pipeline can be used (all required grids are available)</p></dd>
 
 
-</dl><p>A <code>data.frame</code> with "pipelines" and the following columns:
-</p><dl><dt>description</dt>
-<dd><p>human-readable description</p></dd>  <dt>definition</dt>
-<dd><p>PROJ pipeline definition string</p></dd>  <dt>has_inverse</dt>
-<dd><p>logical; whether the pipeline has an inverse</p></dd>  <dt>accuracy</dt>
-<dd><p>accuracy in metres; <code>-1</code> indicates unknown (ballpark) accuracy</p></dd>  <dt>grid_count</dt>
-<dd><p>number of grids required by this pipeline</p></dd>  <dt>instantiable</dt>
-<dd><p>logical; whether the pipeline can be used (all required grids are available)</p></dd></dl><p>Requires PROJ &gt;= 7.1 (inc" 3). See <code><a href="gdal.html">projNetwork</a></code> to enable online grid downloading.</p>
-<p><code><a href="crs.html">crs</a></code>, <code><a href="project.html">project</a></code>, <code><a href="same.crs.html">same.crs</a></code>, <code><a href="gdal.html">projNetwork</a></code></p>
-<p># Simple case: WGS84 to UTM zone 32Nproj_pipelines("EPSG:4326", "EPSG:32632")# Many pipelines between NAD83/Conus Albers and WGS84
-pp &lt;- proj_pipelines("EPSG:5070", "EPSG:4326")
-nrow(pp)# Only pipelines that work without downloading grids
-pp_local &lt;- proj_pipelines("EPSG:5070", "EPSG:4326", grid_availability="DISCARD")
-pp_local# Using a SpatRaster as input
-r &lt;- rast(ncols=10, nrows=10, crs="EPSG:4326")
-proj_pipelines(r, "EPSG:3857")</p>
-<p>spatial</p>
+</dl></div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>Requires PROJ &gt;= 7.1 (inc" 3). See <code><a href="gdal.html">projNetwork</a></code> to enable online grid downloading.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="crs.html">crs</a></code>, <code><a href="project.html">project</a></code>, <code><a href="same.crs.html">same.crs</a></code>, <code><a href="gdal.html">projNetwork</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Simple case: WGS84 to UTM zone 32Nproj_pipelines("EPSG:4326", "EPSG:32632")</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Many pipelines between NAD83/Conus Albers and WGS84</span></span></span>
+<span class="r-in"><span><span class="va">pp</span> <span class="op">&lt;-</span> <span class="fu">proj_pipelines</span><span class="op">(</span><span class="st">"EPSG:5070"</span>, <span class="st">"EPSG:4326"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="dimensions.html">nrow</a></span><span class="op">(</span><span class="va">pp</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 53</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Only pipelines that work without downloading grids</span></span></span>
+<span class="r-in"><span><span class="va">pp_local</span> <span class="op">&lt;-</span> <span class="fu">proj_pipelines</span><span class="op">(</span><span class="st">"EPSG:5070"</span>, <span class="st">"EPSG:4326"</span>, grid_availability<span class="op">=</span><span class="st">"DISCARD"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pp_local</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                          description</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                             Inverse of Conus Albers + NAD83 to WGS 84 (1) + axis order change (2D)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                             Inverse of Conus Albers + NAD83 to WGS 84 (3) + axis order change (2D)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                             Inverse of Conus Albers + NAD83 to WGS 84 (2) + axis order change (2D)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 Inverse of Conus Albers + Ballpark geographic offset from NAD83 to WGS 84 + axis order change (2D)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                                                                                                                                                                                   definition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                                                                                                 +proj=pipeline +step +inv +proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=GRS80 +step +proj=unitconvert +xy_in=rad +xy_out=deg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 +proj=pipeline +step +inv +proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=1 +y=1 +z=-1 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 +proj=pipeline +step +inv +proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=-2 +y=0 +z=4 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                                                                                                                                 +proj=pipeline +step +inv +proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=GRS80 +step +proj=unitconvert +xy_in=rad +xy_out=deg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   has_inverse accuracy grid_count instantiable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        TRUE        4          0         TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        TRUE        4          0         TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        TRUE        8          0         TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        TRUE       -1          0         TRUE</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Using a SpatRaster as input</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncols<span class="op">=</span><span class="fl">10</span>, nrows<span class="op">=</span><span class="fl">10</span>, crs<span class="op">=</span><span class="st">"EPSG:4326"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">proj_pipelines</span><span class="op">(</span><span class="va">r</span>, <span class="st">"EPSG:3857"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                      description</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 axis order change (2D) + Popular Visualisation Pseudo-Mercator</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                       definition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 +proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   has_inverse accuracy grid_count instantiable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        TRUE        0          0         TRUE</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
