@@ -14,7 +14,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 }
 
 \usage{
-\S4method{project}{SpatVector}(x, y, partial = FALSE)
+\S4method{project}{SpatVector}(x, y, partial=FALSE, pipeline="", AOI=numeric(0),
+    desired_accuracy=-1.0, allow_approx=TRUE)
 
 \S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
 	origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)
@@ -33,6 +34,14 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   If \code{x} is a SpatVector, you can provide a crs definition as discussed above, or any other object from which such a crs can be extracted with \code{\link{crs}}}
 
   \item{partial}{logical. If \code{TRUE}, geometries that can only partially be represented in the output crs are included in the output}
+
+  \item{pipeline}{character. A PROJ pipeline string to use for the coordinate transformation instead of letting GDAL select one automatically. You can use \code{\link{proj_pipelines}} to find available pipelines. When a pipeline is set, \code{y} is still used to set the output CRS}
+
+  \item{AOI}{SpatExtent or object that has a SpatExtent to set the area of interest for the transformation. This is used to select the most approprite transformation pipeline}
+
+  \item{desired_accuracy}{numeric. Only use transformations with at least this accuracy (in metres). Use \code{-1} (the default) for no constraint. Requires GDAL >= 3.3}
+
+  \item{allow_approx}{logical. If \code{FALSE}, only use transformations with known accuracy (no "ballpark" transformations). Requires GDAL >= 3.3}
   
   \item{method}{character. Method used for estimating the new cell values of a SpatRaster. One of: 
   
@@ -85,7 +94,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 SpatVector or SpatRaster
 }
 
-\seealso{\code{\link{crs}}, \code{\link{resample}}}
+\seealso{\code{\link{crs}}, \code{\link{resample}}, \code{\link{proj_pipelines}}}
 
 \note{
 The PROJ.4 notation of coordinate reference systems has been partly deprecated in the GDAL/PROJ library that is used by this function. You can still use this notation, but *only* with the WGS84 datum. Other datums are silently ignored. 

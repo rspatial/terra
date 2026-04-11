@@ -181,8 +181,14 @@ class SpatVector {
 		size_t ncoords();
 		std::vector<std::vector<double>> coordinates();
 
-		SpatVector project(std::string crs, bool partial);
+		SpatVector project(std::string crs, bool partial, std::string pipeline="",
+			std::vector<double> AOI=std::vector<double>(), double desired_accuracy=-1.0,
+			bool allow_ballpark=true);
 		std::vector<double> project_xy(std::vector<double> x, std::vector<double> y, std::string fromCRS, std::string toCRS);
+		SpatDataFrame get_proj_pipelines(std::string source_crs, std::string target_crs,
+			std::string authority, std::vector<double> AOI, std::string use,
+			std::string grid_availability, double desired_accuracy,
+			bool strict_containment, bool axis_order_authority_compliant);
 
 		SpatVector subset_cols(long i);
 		SpatVector subset_cols(std::vector<long> range);

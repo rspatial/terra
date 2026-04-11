@@ -630,6 +630,40 @@ std::string PROJ_network(int enable, std::string url) {
 
 
 
+// [[Rcpp::export(name = ".proj_pipelines")]]
+Rcpp::List proj_pipelines(std::string source_crs, std::string target_crs,
+		std::string authority, std::vector<double> AOI, std::string use,
+		std::string grid_availability, double desired_accuracy,
+		bool strict_containment, bool axis_order_authority_compliant) {
+	SpatVector v;
+	SpatDataFrame df = v.get_proj_pipelines(source_crs, target_crs,
+		authority, AOI, use, grid_availability, desired_accuracy,
+		strict_containment, axis_order_authority_compliant);
+	if (df.hasError()) {
+		Rcpp::stop(df.getError());
+	}
+	Rcpp::List out(df.ncol());
+	for (size_t i = 0; i < df.ncol(); i++) {
+		if (df.itype[i] == 0) {
+			out[i] = df.getD(i);
+		} else if (df.itype[i] == 1) {
+			out[i] = Rcpp::wrap(df.getI(i));
+		} else if (df.itype[i] == 2) {
+			out[i] = Rcpp::wrap(df.getS(i));
+		} else if (df.itype[i] == 3) {
+			std::vector<int8_t> b = df.getB(i);
+			Rcpp::LogicalVector lv(b.size());
+			for (size_t j = 0; j < b.size(); j++) {
+				lv[j] = (b[j] > 1) ? NA_LOGICAL : (int) b[j];
+			}
+			out[i] = lv;
+		}
+	}
+	out.names() = df.names;
+	return out;
+}
+
+
 // [[Rcpp::export(name = ".removeDriver")]]
 void removeDriver(std::vector<std::string> d) {
 	if ((d.size() == 0) || ((d.size() == 1) && (d[0] == ""))) {

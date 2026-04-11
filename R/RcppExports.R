@@ -125,6 +125,10 @@ rgb2hex <- function(x) {
     .Call(`_terra_PROJ_network`, enable, url)
 }
 
+.proj_pipelines <- function(source_crs, target_crs, authority, AOI, use, grid_availability, desired_accuracy, strict_containment, axis_order_authority_compliant) {
+    .Call(`_terra_proj_pipelines`, source_crs, target_crs, authority, AOI, use, grid_availability, desired_accuracy, strict_containment, axis_order_authority_compliant)
+}
+
 .removeDriver <- function(d) {
     invisible(.Call(`_terra_removeDriver`, d))
 }

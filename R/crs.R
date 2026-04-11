@@ -401,4 +401,44 @@ same.crs <- function(x, y) {
 }
 
 
+proj_pipelines <- function(source_crs, target_crs, authority="", AOI=NULL, use="NONE", grid_availability="USED",
+		desired_accuracy=-1.0, strict_containment=FALSE, axis_order_authority_compliant=FALSE) {
+
+	if (!is.character(source_crs)) {
+		source_crs <- crs(source_crs)
+	}
+	if (!is.character(target_crs)) {
+		target_crs <- crs(target_crs)
+	}
+	if (is.na(source_crs) || source_crs == "") {
+		error("proj_pipelines", "source_crs is empty or NA")
+	}
+	if (is.na(target_crs) || target_crs == "") {
+		error("proj_pipelines", "target_crs is empty or NA")
+	}
+	if (is.null(AOI)) {
+		AOI <- numeric(0)
+	} else {
+		AOI <- try(ext(AOI), silent=TRUE)
+		if (inherits(AOI, "try-error")) {
+			error("project", "AOI must be or have a SpatExtent")
+		}
+		AOI <- as.vector(AOI)[c(1,3,2,4)]
+	}
+	
+	
+	x <- .proj_pipelines(source_crs, target_crs, authority, as.numeric(AOI), as.character(use),
+		as.character(grid_availability), as.numeric(desired_accuracy),
+		as.logical(strict_containment), as.logical(axis_order_authority_compliant))
+	d <- data.frame(x, stringsAsFactors=FALSE)
+	if (nrow(d) > 0) {
+		d$definition <- sapply(strsplit(d$definition, " "), function(w) {
+			w <- w[nzchar(w)]
+			i <- !startsWith(w, "+")
+			w[i] <- paste0("+", w[i])
+			paste(w, collapse=" ")
+		})
+	}
+	d
+}
 

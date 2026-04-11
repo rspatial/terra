@@ -777,18 +777,32 @@ setMethod("project", signature(x="SpatRaster"),
 
 
 setMethod("project", signature(x="SpatVector"),
-	function(x, y, partial=FALSE)  {
+	function(x, y, partial=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1, allow_approx=TRUE)  {
 		if (!is.character(y)) {
-			y <- as.character(crs(y))
+			y <- crs(y)
 		}
-		x@pntr <- x@pntr$project(y, partial)
+		if (is.null(AOI)) {
+			AOI <- numeric(0)
+		} else {
+			AOI <- try(ext(AOI), silent=TRUE)
+			if (inherits(AOI, "try-error")) {
+				error("project", "AOI must be or have a SpatExtent")
+			}
+			AOI <- as.vector(AOI)[c(1,3,2,4)]
+		}
+				
+		x@pntr <- x@pntr$project(y, partial, pipeline, AOI, as.numeric(desired_accuracy), isTRUE(allow_approx))
 		messages(x, "project")
 	}
 )
 
 setMethod("project", signature(x="SpatVectorCollection"),
-	function(x, y, partial=FALSE)  {
-		x <- lapply(x, function(v) project(v, y, partial=partial))
+	function(x, y, partial=FALSE, pipeline="", AOI=numeric(0),
+			desired_accuracy=-1.0, allow_ballpark=TRUE)  {
+		x <- lapply(x, function(v) project(v, y, partial=partial,
+			pipeline=pipeline, AOI=AOI,
+			desired_accuracy=desired_accuracy,
+			allow_ballpark=allow_ballpark))
 		svc(x)
 	}
 )

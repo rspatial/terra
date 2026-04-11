@@ -553,7 +553,7 @@ RCPP_MODULE(spat){
 		.property("names", &SpatVector::get_names, &SpatVector::set_names)
 		.method("nrow", &SpatVector::nrow)
 		.method("ncol", &SpatVector::ncol)
-		.method("project", &SpatVector::project)
+		.method("project", (SpatVector (SpatVector::*)(std::string, bool, std::string, std::vector<double>, double, bool))(&SpatVector::project))
 		.method("project_xy", &SpatVector::project_xy)
 		.method("read", &SpatVector::read)
 		.method("setGeometry", &SpatVector::setGeometry)

@@ -34,6 +34,10 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 #include "ogr_spatialref.h"
 #include <gdal_priv.h> // GDALDriver
 
+#if GDAL_VERSION_MAJOR >= 3
+#include "proj.h"
+#endif
+
 bool is_ogr_error(OGRErr err, std::string &msg) {
 	if (err != OGRERR_NONE) {
 		switch (err) {
@@ -384,7 +388,8 @@ void transform_coordinates_partial(std::vector<double> &x, std::vector<double> &
 }
 
 
-SpatVector SpatVector::project(std::string crs, bool partial) {
+SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeline,
+		std::vector<double> AOI, double desired_accuracy, bool allow_ballpark) {
 
 	bool remove_empty = false;
 
@@ -404,16 +409,58 @@ SpatVector SpatVector::project(std::string crs, bool partial) {
 		s.setError("input crs is not valid");
 		return s;
 	}
-	const char *pszDefTo = crs.c_str();
-	erro = target.SetFromUserInput(pszDefTo);
-	if (erro != OGRERR_NONE) {
-		s.setError("output crs is not valid");
-		return s;
+
+	bool use_pipeline = !pipeline.empty();
+	if (!use_pipeline) {
+		const char *pszDefTo = crs.c_str();
+		erro = target.SetFromUserInput(pszDefTo);
+		if (erro != OGRERR_NONE) {
+			s.setError("output crs is not valid");
+			return s;
+		}
 	}
 
-	//CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
 	OGRCoordinateTransformation *poCT;
+#if GDAL_VERSION_NUM >= 3000000
+	OGRCoordinateTransformationOptions opts;
+	bool use_opts = false;
+	if (use_pipeline) {
+		if (!opts.SetCoordinateOperation(pipeline.c_str(), false)) {
+			s.setError("pipeline not accepted");
+			return s;
+		}
+		use_opts = true;
+	}
+	if (AOI.size() == 4) {
+		if (!opts.SetAreaOfInterest(AOI[0], AOI[1], AOI[2], AOI[3])) {
+			s.setError("area of interest not accepted");
+			return s;
+		}
+		use_opts = true;
+	}
+#if GDAL_VERSION_NUM >= 3030000
+	if (desired_accuracy >= 0) {
+		opts.SetDesiredAccuracy(desired_accuracy);
+		use_opts = true;
+	}
+	if (!allow_ballpark) {
+		opts.SetBallparkAllowed(false);
+		use_opts = true;
+	}
+#endif
+	OGRSpatialReference *pTarget = use_pipeline ? nullptr : &target;
+	if (use_opts) {
+		poCT = OGRCreateCoordinateTransformation(&source, pTarget, opts);
+	} else {
+		poCT = OGRCreateCoordinateTransformation(&source, &target);
+	}
+#else
+	if (use_pipeline || AOI.size() == 4) {
+		s.setError("pipeline and AOI require GDAL >= 3");
+		return s;
+	}
 	poCT = OGRCreateCoordinateTransformation(&source, &target);
+#endif
 
 	if( poCT == NULL )	{
 		s.setError( "Cannot do this transformation" );
@@ -502,6 +549,11 @@ SpatVector SpatVector::project(std::string crs, bool partial) {
 	
 	OCTDestroyCoordinateTransformation(poCT);
 
+	if (size() > 0 && std::isnan(s.extent.xmin)) {
+		s.setError("transformation failed (may need a grid file that could not be downloaded)");
+		return s;
+	}
+
 	if (remove_empty) {
 		s.df = df.subset_rows(keeprows);
 	} else {
@@ -509,6 +561,136 @@ SpatVector SpatVector::project(std::string crs, bool partial) {
 	}
 	#endif
 	return s;
+}
+
+
+SpatDataFrame SpatVector::get_proj_pipelines(std::string source_crs, std::string target_crs,
+		std::string authority, std::vector<double> AOI, std::string use, std::string grid_availability, 
+		double desired_accuracy, bool strict_containment, bool axis_order_authority_compliant) {
+
+	SpatDataFrame out;
+
+#if GDAL_VERSION_MAJOR < 3
+	out.setError("GDAL >= 3 and PROJ >= 7.1 required");
+	return out;
+#else
+	#if PROJ_VERSION_MAJOR < 7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR < 1)
+	out.setError("PROJ >= 7.1 required");
+	return out;
+#endif
+
+	PJ *src = proj_create(PJ_DEFAULT_CTX, source_crs.c_str());
+	if (src == nullptr) {
+		out.setError("invalid source crs");
+		return out;
+	}
+	PJ *tgt = proj_create(PJ_DEFAULT_CTX, target_crs.c_str());
+	if (tgt == nullptr) {
+		proj_destroy(src);
+		out.setError("invalid target crs");
+		return out;
+	}
+
+	const char *auth = authority.empty() ? nullptr : authority.c_str();
+	PJ_OPERATION_FACTORY_CONTEXT *ctx =
+		proj_create_operation_factory_context(PJ_DEFAULT_CTX, auth);
+
+	if (desired_accuracy >= 0.0) {
+		proj_operation_factory_context_set_desired_accuracy(PJ_DEFAULT_CTX, ctx, desired_accuracy);
+	}
+
+	if (AOI.size() == 4) {
+		proj_operation_factory_context_set_area_of_interest(PJ_DEFAULT_CTX, ctx,
+			AOI[0], AOI[1], AOI[2], AOI[3]);
+	} else {
+		if (use == "BOTH") {
+			proj_operation_factory_context_set_crs_extent_use(PJ_DEFAULT_CTX, ctx, PJ_CRS_EXTENT_BOTH);
+		} else if (use == "INTERSECTION") {
+			proj_operation_factory_context_set_crs_extent_use(PJ_DEFAULT_CTX, ctx, PJ_CRS_EXTENT_INTERSECTION);
+		} else if (use == "SMALLEST") {
+			proj_operation_factory_context_set_crs_extent_use(PJ_DEFAULT_CTX, ctx, PJ_CRS_EXTENT_SMALLEST);
+		} else {
+			proj_operation_factory_context_set_crs_extent_use(PJ_DEFAULT_CTX, ctx, PJ_CRS_EXTENT_NONE);
+		}
+	}
+
+	if (strict_containment) {
+		proj_operation_factory_context_set_spatial_criterion(PJ_DEFAULT_CTX, ctx,
+			PROJ_SPATIAL_CRITERION_STRICT_CONTAINMENT);
+	} else {
+		proj_operation_factory_context_set_spatial_criterion(PJ_DEFAULT_CTX, ctx,
+			PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION);
+	}
+
+	if (grid_availability == "DISCARD") {
+		proj_operation_factory_context_set_grid_availability_use(PJ_DEFAULT_CTX, ctx,
+			PROJ_GRID_AVAILABILITY_DISCARD_OPERATION_IF_MISSING_GRID);
+	} else if (grid_availability == "IGNORED") {
+		proj_operation_factory_context_set_grid_availability_use(PJ_DEFAULT_CTX, ctx,
+			PROJ_GRID_AVAILABILITY_IGNORED);
+	} else if (grid_availability == "AVAILABLE") {
+		proj_operation_factory_context_set_grid_availability_use(PJ_DEFAULT_CTX, ctx,
+			PROJ_GRID_AVAILABILITY_KNOWN_AVAILABLE);
+	} else {
+		proj_operation_factory_context_set_grid_availability_use(PJ_DEFAULT_CTX, ctx,
+			PROJ_GRID_AVAILABILITY_USED_FOR_SORTING);
+	}
+
+	PJ_OBJ_LIST *ops = proj_create_operations(PJ_DEFAULT_CTX, src, tgt, ctx);
+	int n = proj_list_get_count(ops);
+
+	std::vector<std::string> v_id(n);
+	std::vector<std::string> v_description(n);
+	std::vector<std::string> v_definition(n);
+	std::vector<int8_t>      v_has_inverse(n);
+	std::vector<double>      v_accuracy(n);
+	std::vector<long>        v_grid_count(n);
+	std::vector<int8_t>      v_instantiable(n);
+
+	for (int i = 0; i < n; i++) {
+		PJ *op = proj_list_get(PJ_DEFAULT_CTX, ops, i);
+		if (!axis_order_authority_compliant) {
+			PJ *norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, op);
+			proj_destroy(op);
+			op = norm;
+		}
+
+		PJ_PROJ_INFO info = proj_pj_info(op);
+		v_id[i] = (info.id != nullptr) ? info.id : "";
+		v_description[i] = (info.description != nullptr) ? info.description : "";
+		v_has_inverse[i] = (info.has_inverse != 0) ? 1 : 0;
+		v_accuracy[i] = info.accuracy;
+
+		std::string def;
+		if (info.definition != nullptr && info.definition[0] != '\0') {
+			def = info.definition;
+		} else {
+			const char *ps = proj_as_proj_string(PJ_DEFAULT_CTX, op,
+				PJ_PROJ_5, nullptr);
+			if (ps != nullptr) def = ps;
+		}
+		v_definition[i] = def;
+		v_grid_count[i] = proj_coordoperation_get_grid_used_count(PJ_DEFAULT_CTX, op);
+		v_instantiable[i] = proj_coordoperation_is_instantiable(PJ_DEFAULT_CTX, op) ? 1 : 0;
+
+		proj_destroy(op);
+	}
+
+	proj_list_destroy(ops);
+	proj_operation_factory_context_destroy(ctx);
+	proj_destroy(tgt);
+	proj_destroy(src);
+
+	//out.add_column(v_id, "id");
+	out.add_column(v_description, "description");
+	out.add_column(v_definition, "definition");
+	out.add_column(v_has_inverse, "has_inverse");
+	out.add_column(v_accuracy, "accuracy");
+	out.add_column(v_grid_count, "grid_count");
+	out.add_column(v_instantiable, "instantiable");
+
+	return out;
+#endif
 }
 
 
