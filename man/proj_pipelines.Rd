@@ -2,23 +2,22 @@
 
 \alias{proj_pipelines}
 
-\title{Find PROJ transformation pipelines}
+\title{Find CRS transformation pipelines}
 
 \description{
-Find candidate coordinate transformation pipelines between two coordinate reference systems using the PROJ library. This can be used to examine which transformations are available, whether they require grid files, and what accuracy they provide.
+Find candidate coordinate transformation pipelines between two coordinate reference systems. This can be used to examine which transformations are available, whether they require grid files, and what accuracy they provide.
 }
 
 \usage{
-proj_pipelines(from, to, authority="", AOI=numeric(0), use="NONE", 
-	grid_availability="USED", desired_accuracy=-1.0, strict_containment=FALSE,
-    axis_order_authority_compliant=FALSE)
+proj_pipelines(from, to, authority="", AOI=NULL, use="NONE", grid_availability="USED", 
+	desired_accuracy=-1.0, strict_containment=FALSE, axis_order_authority_compliant=FALSE)
 }
 
 \arguments{
 \item{from}{character, SpatRaster, SpatVector, or any object from which \code{crs()} can extract a CRS}
 \item{to}{same types as for \code{from}}
 \item{authority}{character. Constrain output pipelines to those from this authority (e.g. \code{"EPSG"}). Default \code{""} means no constraint}
-\item{AOI}{numeric of length four. Area of interest for the transformation: (west, south, east, north) in degrees. For an area of interest crossing the anti-meridian, west will be greater than east}
+\item{AOI}{SpatExtent. Area of interest for the transformation in degrees. For an area of interest crossing the anti-meridian, west should be greater than east, e.g. \code{ext(150, 210, 0, 30)}
 \item{use}{character. One of \code{"NONE"}, \code{"BOTH"}, \code{"INTERSECTION"}, \code{"SMALLEST"}, indicating how areas of interest of source and target CRS are used. Ignored when \code{AOI} is specified}
 \item{grid_availability}{character. One of \code{"USED"} (grid availability is used for sorting; operations with missing grids are sorted last), \code{"DISCARD"} (discard operations if a required grid is missing), \code{"IGNORED"} (ignore grid availability; results presented as if all grids were available), or \code{"AVAILABLE"} (results presented as if grids known to PROJ were available; typical when networking is enabled)}
 \item{desired_accuracy}{numeric. Only return pipelines with at least this accuracy (in metres). Use \code{-1} (the default) to impose no accuracy constraint}
@@ -27,9 +26,8 @@ proj_pipelines(from, to, authority="", AOI=numeric(0), use="NONE",
 }
 
 \value{
-A \code{data.frame} with class \code{"proj_pipelines"} and the following columns:
+A \code{data.frame} with "pipelines" and the following columns:
 \describe{
-  \item{id}{pipeline identifier (may be empty)}
   \item{description}{human-readable description}
   \item{definition}{PROJ pipeline definition string}
   \item{has_inverse}{logical; whether the pipeline has an inverse}
@@ -37,12 +35,10 @@ A \code{data.frame} with class \code{"proj_pipelines"} and the following columns
   \item{grid_count}{number of grids required by this pipeline}
   \item{instantiable}{logical; whether the pipeline can be used (all required grids are available)}
 }
-
-Attributes \code{"from"} and \code{"to"} store the CRS strings used.
 }
 
 \note{
-Requires PROJ >= 7.1 (included with GDAL >= 3). See \code{\link{projNetwork}} to enable online grid downloading.
+Requires PROJ >= 7.1 (inc" 3). See \code{\link{projNetwork}} to enable online grid downloading.
 }
 
 \seealso{
@@ -50,8 +46,7 @@ Requires PROJ >= 7.1 (included with GDAL >= 3). See \code{\link{projNetwork}} to
 }
 
 \examples{
-# Simple case: WGS84 to UTM zone 32N
-proj_pipelines("EPSG:4326", "EPSG:32632")
+# Simple case: WGS84 to UTM zone 32Nproj_pipelines("EPSG:4326", "EPSG:32632")
 
 # Many pipelines between NAD83/Conus Albers and WGS84
 pp <- proj_pipelines("EPSG:5070", "EPSG:4326")
