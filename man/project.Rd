@@ -18,7 +18,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
     desired_accuracy=-1.0, allow_approx=TRUE)
 
 \S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
-	origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)
+	origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util=FALSE,
+	pipeline="", AOI=numeric(0), desired_accuracy=-1.0, allow_approx=TRUE)
 
 \S4method{project}{SpatExtent}(x, from, to)
 

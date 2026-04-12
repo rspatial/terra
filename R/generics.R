@@ -713,7 +713,7 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 )
 
 setMethod("project", signature(x="SpatRaster"),
-	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)  {
+	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util=FALSE, pipeline="", AOI=numeric(0), desired_accuracy=-1.0, allow_approx=TRUE)  {
 
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
@@ -730,13 +730,18 @@ setMethod("project", signature(x="SpatRaster"),
 			method[method == "mean"] <- "average"
 		}
 		opt <- spatOptions(filename, threads=threads, ...)
+		pipe <- as.character(pipeline)
+		aoi <- as.numeric(AOI)
+		da <- as.numeric(desired_accuracy)
+		ab <- isTRUE(allow_approx)
+		if (nzchar(pipe)) by_util <- TRUE
 
 		if (inherits(y, "SpatRaster")) {
 			if (use_gdal) {
 				if (by_util) {
-					x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, mask[1], align_only[1], FALSE, opt)
+					x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, mask[1], align_only[1], FALSE, pipe, aoi, da, ab, opt)
 				} else {
-					x@pntr <- x@pntr$warp(y@pntr, "", method, mask[1], align_only[1], FALSE, opt)
+					x@pntr <- x@pntr$warp(y@pntr, "", method, mask[1], align_only[1], FALSE, pipe, aoi, da, ab, opt)
 				}
 			} else {
 				if (align_only) {
@@ -756,15 +761,14 @@ setMethod("project", signature(x="SpatRaster"),
 				tmp <- project(rast(x), y)
 				if (!is.null(res)) res(tmp) <- res
 				if (!is.null(origin)) origin(tmp) <- origin
-				return(project(x, tmp, method=method, mask=mask, align_only=align_only, filename=filename, use_gdal=use_gdal, by_util=by_util, ...))
+				return(project(x, tmp, method=method, mask=mask, align_only=align_only, filename=filename, use_gdal=use_gdal, by_util=by_util, pipeline=pipeline, AOI=AOI, desired_accuracy=desired_accuracy, allow_approx=allow_approx, ...))
 			}
 			if (use_gdal) {
 
 				if (by_util) {
-					x@pntr <- x@pntr$warp_by_util(SpatRaster$new(), y, method, mask, FALSE, FALSE, opt)
-					
+					x@pntr <- x@pntr$warp_by_util(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipe, aoi, da, ab, opt)
 				} else {
-					x@pntr <- x@pntr$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, opt)
+					x@pntr <- x@pntr$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipe, aoi, da, ab, opt)
 				}
 			} else {
 				y <- project(rast(x), y)
@@ -955,9 +959,9 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 		opt <- spatOptions(filename, threads=threads, ...)
 
 		if (by_util) {
-			x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, FALSE, FALSE, TRUE, opt)
+			x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, FALSE, FALSE, TRUE, "", numeric(0), -1.0, TRUE, opt)
 		} else {
-			x@pntr <- x@pntr$warp(y@pntr, "", method, FALSE, FALSE, TRUE, opt)
+			x@pntr <- x@pntr$warp(y@pntr, "", method, FALSE, FALSE, TRUE, "", numeric(0), -1.0, TRUE, opt)
 		}
 		messages(x, "resample")
 	}
