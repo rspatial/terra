@@ -777,32 +777,40 @@ setMethod("project", signature(x="SpatRaster"),
 
 
 setMethod("project", signature(x="SpatVector"),
-	function(x, y, partial=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1, allow_approx=TRUE)  {
-		if (!is.character(y)) {
-			y <- crs(y)
-		}
-		if (is.null(AOI)) {
-			AOI <- numeric(0)
-		} else {
-			AOI <- try(ext(AOI), silent=TRUE)
-			if (inherits(AOI, "try-error")) {
-				error("project", "AOI must be or have a SpatExtent")
+	function(x, y, partial=FALSE, pipeline=NULL, AOI=NULL, desired_accuracy=-1, allow_approx=TRUE)  {
+		if (inherits(pipeline, "list")) {
+			y <- pipeline$to_crs
+			if (is.null(y)) {
+				y <- ""
 			}
-			AOI <- as.vector(AOI)[c(1,3,2,4)]
+			pipeline <- pipeline$definition 
+		} else if (inherits(pipeline, "character")) {
+			if (!missing(y)) y <- crs(y)
+		} else {
+			pipeline <- ""
+			if (!is.character(y)) {
+				y <- crs(y)
+			}
+			if (is.null(AOI)) {
+				AOI <- numeric(0)
+			} else {
+				AOI <- try(ext(AOI), silent=TRUE)
+				if (inherits(AOI, "try-error")) {
+					error("project", "AOI must be or have a SpatExtent")
+				}
+				AOI <- as.vector(AOI)[c(1,3,2,4)]
+			}
 		}
-				
 		x@pntr <- x@pntr$project(y, partial, pipeline, AOI, as.numeric(desired_accuracy), isTRUE(allow_approx))
 		messages(x, "project")
 	}
 )
 
+
 setMethod("project", signature(x="SpatVectorCollection"),
-	function(x, y, partial=FALSE, pipeline="", AOI=numeric(0),
-			desired_accuracy=-1.0, allow_ballpark=TRUE)  {
-		x <- lapply(x, function(v) project(v, y, partial=partial,
-			pipeline=pipeline, AOI=AOI,
-			desired_accuracy=desired_accuracy,
-			allow_ballpark=allow_ballpark))
+	function(x, y, partial=FALSE, pipeline=NULL, AOI=NULL, desired_accuracy=-1.0, allow_ballpark=TRUE)  {
+		x <- lapply(x, function(v) project(v, y, partial=partial, pipeline=pipeline, AOI=AOI,
+						desired_accuracy=desired_accuracy, allow_ballpark=allow_ballpark))
 		svc(x)
 	}
 )

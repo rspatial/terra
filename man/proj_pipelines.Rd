@@ -9,8 +9,9 @@ Find candidate coordinate transformation pipelines between two coordinate refere
 }
 
 \usage{
-proj_pipelines(from, to, authority="", AOI=NULL, use="NONE", grid_availability="USED", 
-	desired_accuracy=-1.0, strict_containment=FALSE, axis_order_authority_compliant=FALSE)
+proj_pipelines(from, to, authority="", AOI=NULL, use="NONE", 
+	grid_availability="USED", desired_accuracy=-1.0, strict_containment=FALSE, 
+	axis_order_authority_compliant=FALSE)
 }
 
 \arguments{
@@ -34,6 +35,8 @@ A \code{data.frame} with "pipelines" and the following columns:
   \item{accuracy}{accuracy in metres; \code{-1} indicates unknown (ballpark) accuracy}
   \item{grid_count}{number of grids required by this pipeline}
   \item{instantiable}{logical; whether the pipeline can be used (all required grids are available)}
+  \item{from_crs}{character; the CRS of the input data}
+  \item{to_crs}{character; the CRS of the output data}
 }
 }
 
