@@ -40,8 +40,9 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">proj_pipelines</span><span class="op">(</span><span class="va">from</span>, <span class="va">to</span>, authority<span class="op">=</span><span class="st">""</span>, AOI<span class="op">=</span><span class="cn">NULL</span>, use<span class="op">=</span><span class="st">"NONE"</span>, grid_availability<span class="op">=</span><span class="st">"USED"</span>, </span>
-<span>  desired_accuracy<span class="op">=</span><span class="op">-</span><span class="fl">1.0</span>, strict_containment<span class="op">=</span><span class="cn">FALSE</span>, axis_order_authority_compliant<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">proj_pipelines</span><span class="op">(</span><span class="va">from</span>, <span class="va">to</span>, authority<span class="op">=</span><span class="st">""</span>, AOI<span class="op">=</span><span class="cn">NULL</span>, use<span class="op">=</span><span class="st">"NONE"</span>, </span>
+<span>  grid_availability<span class="op">=</span><span class="st">"USED"</span>, desired_accuracy<span class="op">=</span><span class="op">-</span><span class="fl">1.0</span>, strict_containment<span class="op">=</span><span class="cn">FALSE</span>, </span>
+<span>  axis_order_authority_compliant<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -95,6 +96,12 @@
 
   <dt>instantiable</dt>
 <dd><p>logical; whether the pipeline can be used (all required grids are available)</p></dd>
+
+  <dt>from_crs</dt>
+<dd><p>character; the CRS of the input data</p></dd>
+
+  <dt>to_crs</dt>
+<dd><p>character; the CRS of the output data</p></dd>
 
 
 </dl></div>

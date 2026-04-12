@@ -8,8 +8,9 @@ accuracy they provide.
 ## Usage
 
 ``` r
-proj_pipelines(from, to, authority="", AOI=NULL, use="NONE", grid_availability="USED", 
-  desired_accuracy=-1.0, strict_containment=FALSE, axis_order_authority_compliant=FALSE)
+proj_pipelines(from, to, authority="", AOI=NULL, use="NONE", 
+  grid_availability="USED", desired_accuracy=-1.0, strict_containment=FALSE, 
+  axis_order_authority_compliant=FALSE)
 ```
 
 ## Arguments
@@ -95,6 +96,14 @@ A `data.frame` with "pipelines" and the following columns:
 
   logical; whether the pipeline can be used (all required grids are
   available)
+
+- from_crs:
+
+  character; the CRS of the input data
+
+- to_crs:
+
+  character; the CRS of the output data
 
 ## Note
 
