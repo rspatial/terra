@@ -18,6 +18,15 @@
 //#ifdef useGDAL
 #include "ogr_spatialref.h"
 
+
+
+SpatDataFrame get_proj_pipelines(std::string source_crs, std::string target_crs,
+		std::string authority, std::vector<double> AOI, std::string use,
+		std::string grid_availability, double desired_accuracy,
+		bool strict_containment, bool axis_order_authority_compliant);
+		
+
+
 bool can_transform(std::string fromCRS, std::string toCRS);
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS);
 bool wkt_from_spatial_reference(const OGRSpatialReference *srs, std::string &wkt, std::string &msg);

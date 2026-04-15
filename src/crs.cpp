@@ -14,9 +14,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
+
 #include <vector>
 #include <string>
-//#include "spatMessages.h"
+#include <sstream>
 #include "spatRaster.h"
 #include "string_utils.h"
 
@@ -564,7 +565,7 @@ SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeli
 }
 
 
-SpatDataFrame SpatVector::get_proj_pipelines(std::string source_crs, std::string target_crs,
+SpatDataFrame get_proj_pipelines(std::string source_crs, std::string target_crs,
 		std::string authority, std::vector<double> AOI, std::string use, std::string grid_availability, 
 		double desired_accuracy, bool strict_containment, bool axis_order_authority_compliant) {
 
@@ -649,11 +650,6 @@ SpatDataFrame SpatVector::get_proj_pipelines(std::string source_crs, std::string
 
 	for (int i = 0; i < n; i++) {
 		PJ *op = proj_list_get(PJ_DEFAULT_CTX, ops, i);
-		if (!axis_order_authority_compliant) {
-			PJ *norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, op);
-			proj_destroy(op);
-			op = norm;
-		}
 
 		PJ_PROJ_INFO info = proj_pj_info(op);
 		v_id[i] = (info.id != nullptr) ? info.id : "";
@@ -661,6 +657,9 @@ SpatDataFrame SpatVector::get_proj_pipelines(std::string source_crs, std::string
 		v_has_inverse[i] = (info.has_inverse != 0) ? 1 : 0;
 		v_accuracy[i] = info.accuracy;
 
+		// Always extract the authority-compliant definition (before
+		// any normalization) so that GDAL's OGR_CT_FORCE_TRADITIONAL_GIS_ORDER
+		// can handle axis order without double-swapping.
 		std::string def;
 		if (info.definition != nullptr && info.definition[0] != '\0') {
 			def = info.definition;
@@ -668,6 +667,18 @@ SpatDataFrame SpatVector::get_proj_pipelines(std::string source_crs, std::string
 			const char *ps = proj_as_proj_string(PJ_DEFAULT_CTX, op,
 				PJ_PROJ_5, nullptr);
 			if (ps != nullptr) def = ps;
+		}
+		// normalize: ensure every token starts with "+"
+		{
+			std::string norm;
+			std::istringstream iss(def);
+			std::string token;
+			while (iss >> token) {
+				if (!norm.empty()) norm += ' ';
+				if (token[0] != '+') norm += '+';
+				norm += token;
+			}
+			def = norm;
 		}
 		v_definition[i] = def;
 		v_grid_count[i] = proj_coordoperation_get_grid_used_count(PJ_DEFAULT_CTX, op);

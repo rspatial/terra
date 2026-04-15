@@ -713,7 +713,7 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 )
 
 setMethod("project", signature(x="SpatRaster"),
-	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util=FALSE, pipeline="", AOI=numeric(0), desired_accuracy=-1.0, allow_approx=TRUE)  {
+	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, filename="", ...)  {
 
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
@@ -729,19 +729,56 @@ setMethod("project", signature(x="SpatRaster"),
 			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "mean", "average", "sum", "mode", "min", "q1", "median", "q3", "max", "rms"))
 			method[method == "mean"] <- "average"
 		}
+
 		opt <- spatOptions(filename, threads=threads, ...)
-		pipe <- as.character(pipeline)
-		aoi <- as.numeric(AOI)
-		da <- as.numeric(desired_accuracy)
-		ab <- isTRUE(allow_approx)
-		if (nzchar(pipe)) by_util <- TRUE
+
+		if (is.list(pipeline)) {
+			px <- attr(pipeline, "from")			
+			py <- attr(pipeline, "to")
+			if ((!is.null(px)) && crs(px) != crs(x)) {
+				warn("project", "pipeline input crs does not match (crs(x))")			
+			}
+
+			if (crs(px) != crs(x)) {
+				warn("project", "pipeline input crs does not match (crs(x))")			
+			}
+			pipeline <- pipeline$definition 
+			if (missing(y)) {
+				y <- py
+			} else {
+				if (crs(py) != crs(y)) {
+					warn("project", "pipeline output crs does not match (crs(y))")
+				}
+			}
+		} else if (!inherits(pipeline, "character")) {
+			error("project", "pipeline should be data.frame, list, or character value")
+		}
+		if (missing(y)) {
+			error("project", "y (SpatRaster or output crs) cannot be missing")
+		}
+		if (inherits(y, "numeric")) {
+			error("project", "argument y cannot be a number. For EPSG codes use format 'epsg:1234'")			
+		}
+
+
+		if (is.null(AOI)) {
+			aoi <- numeric(0)
+		} else {
+			aoi <- try(ext(AOI), silent=TRUE)
+			if (inherits(AOI, "try-error")) {
+				error("project", "AOI must be or have a SpatExtent")
+			}
+			aoi <- as.vector(aoi)[c(1,3,2,4)]
+		}
+
+		bp <- isTRUE(allow_approx)
 
 		if (inherits(y, "SpatRaster")) {
 			if (use_gdal) {
 				if (by_util) {
-					x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, mask[1], align_only[1], FALSE, pipe, aoi, da, ab, opt)
+					x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, mask[1], align_only[1], FALSE, pipeline, aoi, desired_accuracy, bp, opt)
 				} else {
-					x@pntr <- x@pntr$warp(y@pntr, "", method, mask[1], align_only[1], FALSE, pipe, aoi, da, ab, opt)
+					x@pntr <- x@pntr$warp(y@pntr, "", method, mask[1], align_only[1], FALSE, pipeline, aoi, desired_accuracy, bp, opt)
 				}
 			} else {
 				if (align_only) {
@@ -751,10 +788,6 @@ setMethod("project", signature(x="SpatRaster"),
 			}
 		} else {
 			if (!is.character(y)) {
-				#warn("project,SpatRaster", "argument y (the crs) should be a character value")
-				if (inherits(y, "numeric")) {
-					error("project,SpatRaster", "argument y (the crs) cannot be a number.\nFor EPSG codes use this format 'epsg:1234'")				
-				}
 				y <- as.character(crs(y))
 			}
 			if (!is.null(res) || !is.null(origin)) {
@@ -764,11 +797,10 @@ setMethod("project", signature(x="SpatRaster"),
 				return(project(x, tmp, method=method, mask=mask, align_only=align_only, filename=filename, use_gdal=use_gdal, by_util=by_util, pipeline=pipeline, AOI=AOI, desired_accuracy=desired_accuracy, allow_approx=allow_approx, ...))
 			}
 			if (use_gdal) {
-
 				if (by_util) {
-					x@pntr <- x@pntr$warp_by_util(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipe, aoi, da, ab, opt)
+					x@pntr <- x@pntr$warp_by_util(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipeline, aoi, desired_accuracy, bp, opt)
 				} else {
-					x@pntr <- x@pntr$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipe, aoi, da, ab, opt)
+					x@pntr <- x@pntr$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipeline, aoi, desired_accuracy, bp, opt)
 				}
 			} else {
 				y <- project(rast(x), y)
@@ -781,31 +813,46 @@ setMethod("project", signature(x="SpatRaster"),
 
 
 setMethod("project", signature(x="SpatVector"),
-	function(x, y, partial=FALSE, pipeline=NULL, AOI=NULL, desired_accuracy=-1, allow_approx=TRUE)  {
-		if (inherits(pipeline, "list")) {
-			y <- pipeline$to_crs
-			if (is.null(y)) {
-				y <- ""
-			}
+	function(x, y, partial=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1, allow_approx=TRUE)  {
+
+		if (is.list(pipeline)) {
+			px <- attr(pipeline, "from")			
+			py <- attr(pipeline, "to")
 			pipeline <- pipeline$definition 
-		} else if (inherits(pipeline, "character")) {
-			if (!missing(y)) y <- crs(y)
-		} else {
-			pipeline <- ""
-			if (!is.character(y)) {
-				y <- crs(y)
-			}
-			if (is.null(AOI)) {
-				AOI <- numeric(0)
-			} else {
-				AOI <- try(ext(AOI), silent=TRUE)
-				if (inherits(AOI, "try-error")) {
-					error("project", "AOI must be or have a SpatExtent")
+			if (missing(y)) {
+				y <- py
+				if (is.null(y)) {
+					y <- ""
 				}
-				AOI <- as.vector(AOI)[c(1,3,2,4)]
+			} else {
+				if (crs(py) != crs(y)) {
+					warn("project", "pipeline output crs does not match (crs(y))")
+				}
 			}
+			if (crs(px) != crs(x)) {
+				warn("project", "pipeline input crs does not match (crs(x))")			
+			}
+		} else if (inherits(pipeline, "character")) {
+			y <- crs(y)		
+		} else {
+			error("project", "pipeline should be data.frame, list, or character value")
 		}
-		x@pntr <- x@pntr$project(y, partial, pipeline, AOI, as.numeric(desired_accuracy), isTRUE(allow_approx))
+		if (inherits(y, "numeric")) {
+			error("project", "argument y cannot be a number.\nFor EPSG codes use this format 'epsg:1234'")			
+		} else if (!is.character(y)) {
+			y <- crs(y)
+		}
+
+		if (is.null(AOI)) {
+			aoi <- numeric(0)
+		} else {
+			aoi <- try(ext(AOI), silent=TRUE)
+			if (inherits(AOI, "try-error")) {
+				error("project", "AOI must be or have a SpatExtent")
+			}
+			aoi <- as.vector(aoi)[c(1,3,2,4)]
+		}
+		x@pntr <- x@pntr$project(y, partial, pipeline, aoi, desired_accuracy, isTRUE(allow_approx))
 		messages(x, "project")
 	}
 )

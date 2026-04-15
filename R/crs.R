@@ -402,7 +402,7 @@ same.crs <- function(x, y) {
 
 
 proj_pipelines <- function(from, to, authority="", AOI=NULL, use="NONE", grid_availability="USED",
-		desired_accuracy=-1.0, strict_containment=FALSE, axis_order_authority_compliant=FALSE) {
+		desired_accuracy=-1.0, strict_containment=FALSE) {
 
 	if (!is.character(from)) {
 		from <- crs(from)
@@ -426,17 +426,14 @@ proj_pipelines <- function(from, to, authority="", AOI=NULL, use="NONE", grid_av
 		AOI <- as.vector(AOI)[c(1,3,2,4)]
 	}
 	
-	x <- .proj_pipelines(from, to, authority, as.numeric(AOI), as.character(use),
-		grid_availability, desired_accuracy, isTRUE(strict_containment), isTRUE(axis_order_authority_compliant))
-	d <- data.frame(x, stringsAsFactors=FALSE)
-	if (nrow(d) > 0) {
-		d$definition <- sapply(strsplit(d$definition, " "), function(w) {
-			w <- w[nzchar(w)]
-			i <- !startsWith(w, "+")
-			w[i] <- paste0("+", w[i])
-			paste(w, collapse=" ")
-		})
-	}
-	d
+	out <- terra:::.proj_pipelines(from, to, authority, as.numeric(AOI), as.character(use),
+		grid_availability, desired_accuracy, isTRUE(strict_containment), FALSE)
+
+	out <- data.frame(out)
+	attr(out, "from") <- from
+	attr(out, "to") <- to
+	out
+
 }
+
 

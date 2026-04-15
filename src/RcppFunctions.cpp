@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "spatRasterMultiple.h"
+#include "crs.h"
 #include "string_utils.h"
 #include "math_utils.h"
 #include "file_utils.h"
@@ -635,10 +636,9 @@ Rcpp::List proj_pipelines(std::string source_crs, std::string target_crs,
 		std::string authority, std::vector<double> AOI, std::string use,
 		std::string grid_availability, double desired_accuracy,
 		bool strict_containment, bool axis_order_authority_compliant) {
-	SpatVector v;
-	SpatDataFrame df = v.get_proj_pipelines(source_crs, target_crs,
-		authority, AOI, use, grid_availability, desired_accuracy,
-		strict_containment, axis_order_authority_compliant);
+
+	SpatDataFrame df = get_proj_pipelines(source_crs, target_crs, authority, AOI, use, 
+		grid_availability, desired_accuracy, strict_containment, axis_order_authority_compliant);
 	if (df.hasError()) {
 		Rcpp::stop(df.getError());
 	}

@@ -10,8 +10,7 @@ Find candidate coordinate transformation pipelines between two coordinate refere
 
 \usage{
 proj_pipelines(from, to, authority="", AOI=NULL, use="NONE", 
-	grid_availability="USED", desired_accuracy=-1.0, strict_containment=FALSE, 
-	axis_order_authority_compliant=FALSE)
+	grid_availability="USED", desired_accuracy=-1.0, strict_containment=FALSE)
 }
 
 \arguments{
@@ -23,7 +22,6 @@ proj_pipelines(from, to, authority="", AOI=NULL, use="NONE",
 \item{grid_availability}{character. One of \code{"USED"} (grid availability is used for sorting; operations with missing grids are sorted last), \code{"DISCARD"} (discard operations if a required grid is missing), \code{"IGNORED"} (ignore grid availability; results presented as if all grids were available), or \code{"AVAILABLE"} (results presented as if grids known to PROJ were available; typical when networking is enabled)}
 \item{desired_accuracy}{numeric. Only return pipelines with at least this accuracy (in metres). Use \code{-1} (the default) to impose no accuracy constraint}
 \item{strict_containment}{logical. If \code{FALSE} (the default), permit partial matching of the area of interest. If \code{TRUE}, the area of interest must be strictly contained}
-\item{axis_order_authority_compliant}{logical. If \code{FALSE} (the default), always use longitude/easting for the first axis. If \code{TRUE}, follow the axis order given by the CRS definitions}
 }
 
 \value{
