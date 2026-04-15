@@ -426,14 +426,14 @@ proj_pipelines <- function(from, to, authority="", AOI=NULL, use="NONE", grid_av
 		AOI <- as.vector(AOI)[c(1,3,2,4)]
 	}
 	
-	out <- terra:::.proj_pipelines(from, to, authority, as.numeric(AOI), as.character(use),
+	out <- .proj_pipelines(from, to, authority, as.numeric(AOI), as.character(use),
 		grid_availability, desired_accuracy, isTRUE(strict_containment), FALSE)
 
 	out <- data.frame(out)
 	attr(out, "from") <- from
 	attr(out, "to") <- to
+	
 	out
-
 }
 
 
