@@ -7,13 +7,13 @@ SpatRaster or a matrix with coordinates.
 
 ``` r
 # S4 method for class 'SpatVector'
-project(x, y, partial=FALSE, pipeline=NULL, AOI=NULL,
+project(x, y, partial=FALSE, pipeline="", AOI=NULL,
     desired_accuracy=-1.0, allow_approx=TRUE)
 
 # S4 method for class 'SpatRaster'
 project(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
-  origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util=FALSE,
-  pipeline="", AOI=numeric(0), desired_accuracy=-1.0, allow_approx=TRUE)
+  origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", 
+  AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, filename="", ...)
 
 # S4 method for class 'SpatExtent'
 project(x, from, to)
