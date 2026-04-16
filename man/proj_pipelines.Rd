@@ -5,7 +5,7 @@
 \title{Find CRS transformation pipelines}
 
 \description{
-Find candidate coordinate transformation pipelines between two coordinate reference systems. This can be used to examine which transformations are available, whether they require grid files, and what accuracy they provide.
+Find candidate coordinate transformation pipelines between two coordinate reference systems. This can be used to examine which transformations are available, whether they require grid files, and what accuracy they provide. You can use a selected pipeline with the \code{\link{project}} methods
 }
 
 \usage{
@@ -33,8 +33,6 @@ A \code{data.frame} with "pipelines" and the following columns:
   \item{accuracy}{accuracy in metres; \code{-1} indicates unknown (ballpark) accuracy}
   \item{grid_count}{number of grids required by this pipeline}
   \item{instantiable}{logical; whether the pipeline can be used (all required grids are available)}
-  \item{from_crs}{character; the CRS of the input data}
-  \item{to_crs}{character; the CRS of the output data}
 }
 }
 

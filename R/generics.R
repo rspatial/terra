@@ -753,6 +753,10 @@ setMethod("project", signature(x="SpatRaster"),
 		} else if (!inherits(pipeline, "character")) {
 			error("project", "pipeline should be data.frame, list, or character value")
 		}
+		if (length(pipeline) != 1) {
+			error("project", "privode a single pipeline")
+		}
+
 		if (missing(y)) {
 			error("project", "y (SpatRaster or output crs) cannot be missing")
 		}
@@ -836,6 +840,9 @@ setMethod("project", signature(x="SpatVector"),
 			y <- crs(y)		
 		} else {
 			error("project", "pipeline should be data.frame, list, or character value")
+		}
+		if (length(pipeline) != 1) {
+			error("project", "privode a single pipeline")
 		}
 		if (inherits(y, "numeric")) {
 			error("project", "argument y cannot be a number.\nFor EPSG codes use this format 'epsg:1234'")			
