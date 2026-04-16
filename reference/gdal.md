@@ -141,6 +141,15 @@ grids are locally available. Grids can be pre-downloaded using the
 on Ubuntu/Debian systems. Downloaded grids are cached locally and then
 reused for subsequent transformations.
 
+On Windows, PROJ network access may fail with SSL certificate errors
+(e.g. "schannel: CertGetCertificateChain trust error"). If you see these
+warnings during
+[`project`](https://rspatial.github.io/terra/reference/project.md)
+operations, you can use `projNetwork(FALSE)` to disable network access
+and silence them. To fix the underlying SSL issue, ensure your system's
+certificate store is up to date, or install the required PROJ datum
+grids locally.
+
 ## Examples
 
 ``` r

@@ -121,6 +121,7 @@ projPaths gets or sets the search paths that PROJ uses to find coordinate system
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p>While some spatial analyses may not be greatly affected by PROJ network settings (ballpark vs. grid-based transformations), the differences can be significant, especially when a transformation involves a shift in datum between different coordinate reference systems. For applications requiring high positional accuracy, ensure network access is enabled or grids are locally available. Grids can be pre-downloaded using the <code>projsync</code> utility or installed via system packages, such as <code>proj-data</code> on Ubuntu/Debian systems. Downloaded grids are cached locally and then reused for subsequent transformations.</p>
+<p>On Windows, PROJ network access may fail with SSL certificate errors (e.g. "schannel: CertGetCertificateChain trust error"). If you see these warnings during <code><a href="project.html">project</a></code> operations, you can use <code>projNetwork(FALSE)</code> to disable network access and silence them. To fix the underlying SSL issue, ensure your system's certificate store is up to date, or install the required PROJ datum grids locally.</p>
     </div>
 
     <div class="section level2">

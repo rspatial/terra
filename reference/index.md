@@ -778,8 +778,8 @@
 - [`proj_pipelines()`](https://rspatial.github.io/terra/reference/proj_pipelines.md)
   : Find CRS transformation pipelines
 
-- [`project(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/project.md)
-  [`project(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/project.md)
+- [`project(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/project.md)
+  [`project(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/project.md)
   [`project(`*`<SpatExtent>`*`)`](https://rspatial.github.io/terra/reference/project.md)
   [`project(`*`<matrix>`*`)`](https://rspatial.github.io/terra/reference/project.md)
   : Change the coordinate reference system

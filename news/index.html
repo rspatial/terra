@@ -72,6 +72,8 @@
 <li>
 <code>sbar</code> gets argument “bg” to set a background color <a href="https://github.com/rspatial/terra/issues/1957" class="external-link">#1957</a> by Lucas Salinas Morales</li>
 <li>better support for writing vsizip files <a href="https://github.com/rspatial/terra/issues/1629" class="external-link">#1629</a> by Eric R. Scott</li>
+<li>better error message if <code>project</code> fails because a tranformation grid cannot be downloaded <a href="https://github.com/rspatial/terra/issues/1425" class="external-link">#1425</a> by Kevin J Wolz</li>
+<li>PROJ CDN warnings (e.g. SSL errors when downloading datum grids) are now collapsed into a single summary warning with guidance to use <code>projNetwork(FALSE)</code> <a href="https://github.com/rspatial/terra/issues/1351" class="external-link">#1351</a> by Hassan Masoomi</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-9-19">new<a class="anchor" aria-label="anchor" href="#new-1-9-19"></a></h3>
@@ -87,6 +89,8 @@
 <code>thin&lt;SpatVector&gt;</code> method. <a href="https://github.com/rspatial/terra/issues/1738" class="external-link">#1738</a> by Andrés</li>
 <li>
 <code>legend_cont</code> method to draw a continuous legend independent of <code>plot</code> <a href="https://github.com/rspatial/terra/issues/2057" class="external-link">#2057</a> by Lucas Salinas Morales</li>
+<li>
+<code>proj_pipelines</code> function to retrieve crs tranformation pipelines that can be used in <code>project</code> <a href="https://github.com/rspatial/terra/issues/1350" class="external-link">#1350</a> by Richard A. Johansen</li>
 </ul></div>
 </div>
     <div class="section level2">

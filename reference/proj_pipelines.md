@@ -3,7 +3,9 @@
 Find candidate coordinate transformation pipelines between two
 coordinate reference systems. This can be used to examine which
 transformations are available, whether they require grid files, and what
-accuracy they provide.
+accuracy they provide. You can use a selected pipeline with the
+[`project`](https://rspatial.github.io/terra/reference/project.md)
+methods
 
 ## Usage
 
@@ -89,14 +91,6 @@ A `data.frame` with "pipelines" and the following columns:
 
   logical; whether the pipeline can be used (all required grids are
   available)
-
-- from_crs:
-
-  character; the CRS of the input data
-
-- to_crs:
-
-  character; the CRS of the output data
 
 ## Note
 
