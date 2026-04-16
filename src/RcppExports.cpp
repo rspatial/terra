@@ -250,6 +250,16 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// get_proj_cdn_suppressed
+Rcpp::List get_proj_cdn_suppressed();
+RcppExport SEXP _terra_get_proj_cdn_suppressed() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(get_proj_cdn_suppressed());
+    return rcpp_result_gen;
+END_RCPP
+}
 // seed_init
 void seed_init(uint32_t seed_val);
 RcppExport SEXP _terra_seed_init(SEXP seed_valSEXP) {
@@ -504,6 +514,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_sdsmetatdataparsed", (DL_FUNC) &_terra_sdsmetatdataparsed, 1},
     {"_terra_gdal_drivers", (DL_FUNC) &_terra_gdal_drivers, 0},
     {"_terra_set_gdal_warnings", (DL_FUNC) &_terra_set_gdal_warnings, 1},
+    {"_terra_get_proj_cdn_suppressed", (DL_FUNC) &_terra_get_proj_cdn_suppressed, 0},
     {"_terra_seed_init", (DL_FUNC) &_terra_seed_init, 1},
     {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 2},
     {"_terra_percRank", (DL_FUNC) &_terra_percRank, 5},

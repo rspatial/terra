@@ -11,6 +11,9 @@
 #include "gdalio.h"
 #include "ogr_spatialref.h"
 
+#include <unordered_map>
+#include <string>
+
 //#define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
@@ -340,22 +343,53 @@ NORET inline void stopNoCall(const char* fmt, Args&&... args) {
     throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
 }
 
+static int proj_cdn_suppressed = 0;
+static std::string proj_cdn_reason;
+
+static bool is_proj_cdn_warning(const char *msg) {
+	std::string s(msg);
+	return (s.find("cdn.proj.org") != std::string::npos ||
+	        (s.find("PROJ:") != std::string::npos &&
+	         s.find("Cannot open https://") != std::string::npos));
+}
+
+static bool handle_proj_cdn(const char *msg, int err_no) {
+	if (!is_proj_cdn_warning(msg)) return false;
+	proj_cdn_suppressed++;
+	if (proj_cdn_suppressed == 1) {
+		std::string s(msg);
+		auto pos = s.rfind(": ");
+		if (pos != std::string::npos && pos > 30) {
+			proj_cdn_reason = s.substr(pos + 2);
+		} else {
+			proj_cdn_reason = s;
+		}
+	}
+	return true;
+}
+
 static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
 	switch ( eErrClass ) {
         case 0:
             break;
         case 1:
         case 2:
-            warningNoCall("%s (GDAL %d)", msg, err_no);
+            if (!handle_proj_cdn(msg, err_no)) {
+                warningNoCall("%s (GDAL %d)", msg, err_no);
+            }
             break;
         case 3:
-            warningNoCall("%s (GDAL error %d)", msg, err_no);
+            if (!handle_proj_cdn(msg, err_no)) {
+                warningNoCall("%s (GDAL error %d)", msg, err_no);
+            }
             break;
         case 4:
             stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no);
+            if (!handle_proj_cdn(msg, err_no)) {
+                warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no);
+            }
             break;
     }
     return;
@@ -368,7 +402,9 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
         case 2:
             break;
         case 3:
-            warningNoCall("%s (GDAL error %d)", msg, err_no);
+            if (!handle_proj_cdn(msg, err_no)) {
+                warningNoCall("%s (GDAL error %d)", msg, err_no);
+            }
             break;
         case 4:
             stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
@@ -414,6 +450,17 @@ void set_gdal_warnings(int level) {
 	} else {
 		CPLSetErrorHandler((CPLErrorHandler)__err_fatal);
 	}
+}
+
+// [[Rcpp::export(name = ".proj_cdn_suppressed")]]
+Rcpp::List get_proj_cdn_suppressed() {
+	Rcpp::List out = Rcpp::List::create(
+		Rcpp::Named("count") = proj_cdn_suppressed,
+		Rcpp::Named("reason") = proj_cdn_reason
+	);
+	proj_cdn_suppressed = 0;
+	proj_cdn_reason = "";
+	return out;
 }
 
 #include "common.h"

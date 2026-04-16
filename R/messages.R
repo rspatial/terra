@@ -32,6 +32,15 @@ messages <- function(x, f="") {
 	x
 }
 
+proj_cdn_message <- function() {
+	s <- .proj_cdn_suppressed()
+	if (s$count > 0) {
+		msg <- paste0("PROJ could not download ", s$count, " datum grid(s) from cdn.proj.org (", s$reason,
+				"). Transformations accuracy may be reduced.\n suppress message with: projNetwork(FALSE)")
+		warn("project", msg)
+	}
+}
+
 
 mem_info <- function(x, n=1, print=TRUE) {
 	#print=TRUE

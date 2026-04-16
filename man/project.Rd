@@ -95,7 +95,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 SpatVector or SpatRaster
 }
 
-\seealso{\code{\link{crs}}, \code{\link{resample}}, \code{\link{proj_pipelines}}}
+\seealso{\code{\link{crs}}, \code{\link{resample}}, \code{\link{proj_pipelines}} and \code{\link{projNetwork}} to enable or disable PROJ network access for datum grid downloads.}
+
 
 \note{
 The PROJ.4 notation of coordinate reference systems has been partly deprecated in the GDAL/PROJ library that is used by this function. You can still use this notation, but *only* with the WGS84 datum. Other datums are silently ignored. 
@@ -129,6 +130,7 @@ project(v, "+proj=moll")
 project(v, "EPSG:2169")
 }
 }
+
 
 \keyword{spatial}
 

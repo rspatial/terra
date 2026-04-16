@@ -26,6 +26,9 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - `plet` gains argument "hover" [#1571](https://github.com/rspatial/terra/issues/1571) by Agustin Lobo
 - `sbar` gets argument "bg" to set a background color [#1957](https://github.com/rspatial/terra/issues/1957) by Lucas Salinas Morales
 - better support for writing vsizip files [#1629](https://github.com/rspatial/terra/issues/1629) by Eric R. Scott
+- better error message if `project` fails because a tranformation grid cannot be downloaded [#1425](https://github.com/rspatial/terra/issues/1425) by Kevin J Wolz
+- PROJ CDN warnings (e.g. SSL errors when downloading datum grids) are now collapsed into a single summary warning with guidance to use `projNetwork(FALSE)` [#1351](https://github.com/rspatial/terra/issues/1351) by Hassan Masoomi
+
 
 ## new 
 
@@ -35,6 +38,7 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - `animate<SpatVectorCollection>` method. [#2065](https://github.com/rspatial/terra/pull/2065) by Márcia Barbosa 
 - `thin<SpatVector>` method. [#1738](https://github.com/rspatial/terra/issues/1738) by Andrés
 - `legend_cont` method to draw a continuous legend independent of `plot` [#2057](https://github.com/rspatial/terra/issues/2057) by Lucas Salinas Morales
+- `proj_pipelines` function to retrieve crs tranformation pipelines that can be used in `project` [#1350](https://github.com/rspatial/terra/issues/1350) by Richard A. Johansen
 
 # version 1.9-11
 

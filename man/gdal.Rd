@@ -76,6 +76,8 @@ projPaths(c("/custom/proj/path"))
 
 \note{
 While some spatial analyses may not be greatly affected by PROJ network settings (ballpark vs. grid-based transformations), the differences can be significant, especially when a transformation involves a shift in datum between different coordinate reference systems. For applications requiring high positional accuracy, ensure network access is enabled or grids are locally available. Grids can be pre-downloaded using the \code{projsync} utility or installed via system packages, such as \code{proj-data} on Ubuntu/Debian systems. Downloaded grids are cached locally and then reused for subsequent transformations. 
+
+On Windows, PROJ network access may fail with SSL certificate errors (e.g. "schannel: CertGetCertificateChain trust error"). If you see these warnings during \code{\link{project}} operations, you can use \code{projNetwork(FALSE)} to disable network access and silence them. To fix the underlying SSL issue, ensure your system's certificate store is up to date, or install the required PROJ datum grids locally.
 }
 
 \keyword{spatial}

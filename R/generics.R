@@ -811,6 +811,7 @@ setMethod("project", signature(x="SpatRaster"),
 				x@pntr <- x@pntr$resample(y@pntr, method, mask[1], TRUE, opt)
 			}
 		}
+		proj_cdn_message()
 		messages(x, "project")
 	}
 )
@@ -860,6 +861,7 @@ setMethod("project", signature(x="SpatVector"),
 			aoi <- as.vector(aoi)[c(1,3,2,4)]
 		}
 		x@pntr <- x@pntr$project(y, partial, pipeline, aoi, desired_accuracy, isTRUE(allow_approx))
+		proj_cdn_message()
 		messages(x, "project")
 	}
 )

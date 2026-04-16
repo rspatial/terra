@@ -89,6 +89,10 @@ rgb2hex <- function(x) {
     invisible(.Call(`_terra_set_gdal_warnings`, level))
 }
 
+.proj_cdn_suppressed <- function() {
+    .Call(`_terra_get_proj_cdn_suppressed`)
+}
+
 .seedinit <- function(seed_val) {
     invisible(.Call(`_terra_seed_init`, seed_val))
 }
