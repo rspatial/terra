@@ -1,4 +1,4 @@
-# version 1.9-19
+# version 1.9-20
 
 ## bug fixes
 
@@ -14,6 +14,7 @@
 
 ## enhancements
 
+- `memmax` now defaults to 16 GB to prevent allocation failures on very large memory systems [#2073](https://github.com/rspatial/terra/issues/2073) by Will Kessler
 - `update` can (again) edit layernames in existing files [#2071](https://github.com/rspatial/terra/issues/2071) by Jim Shady
 - `compareGeom` gets argument "tolerance" to overwrite the default that can be set with `terraOptions`. [#2056](https://github.com/rspatial/terra/issues/2056) by R. Kyle Bocinsky
 - `vect<data.frame>` now warns when it guesses the geom variables and/or the lon/lat CRS [#1985](https://github.com/rspatial/terra/issues/1985) by Márcia Barbosa

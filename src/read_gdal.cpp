@@ -126,27 +126,29 @@ bool read_aux_json(std::string filename, std::vector<int64_t> &time, std::string
 		if (x[0] == "unit") iunit = i;
 	}
 	if (itime >= 0) {
-		std::vector<std::string> x = strsplit_first(s[itime], "[");
-		if (x.size() == 2) {
-			x = strsplit(x[1], "]");
-			x = strsplit(x[0], ",");
-			std::vector<int64_t> tm;
-			for (size_t i=0; i<x.size(); i++) {
-				unquote(x[i]);
-				tm.push_back( parse_time(x[i]) );
-			}
-			if (tm.size() == nlyr) {
-				time = tm;
-			}
-		}
-		if ((istep >= 0) && !time.empty()) {
-			std::vector<std::string> x = strsplit_first(s[istep], ":");
+		try {
+			std::vector<std::string> x = strsplit_first(s[itime], "[");
 			if (x.size() == 2) {
-				x = strsplit(x[1], ",");
-				unquote(x[0]);
-				timestep = x[0];
+				x = strsplit(x[1], "]");
+				x = strsplit(x[0], ",");
+				std::vector<int64_t> tm;
+				for (size_t i=0; i<x.size(); i++) {
+					unquote(x[i]);
+					tm.push_back( parse_time(x[i]) );
+				}
+				if (tm.size() == nlyr) {
+					time = tm;
+				}
 			}
-		}
+			if ((istep >= 0) && !time.empty()) {
+				std::vector<std::string> x = strsplit_first(s[istep], ":");
+				if (x.size() == 2) {
+					x = strsplit(x[1], ",");
+					unquote(x[0]);
+					timestep = x[0];
+				}
+			}
+		} catch(...) {}
 	}
 	if (iunit >= 0) {
 		std::vector<std::string> x = strsplit_first(s[iunit], "[");
@@ -1350,17 +1352,17 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		
 
 // try units from json
-		std::vector<int64_t> timestamps;
-		std::string timestep="raw";
-		//std::vector<std::string> units;
-		try {
-			read_aux_json(fname, timestamps, timestep, unts, s.nlyr);
-		} catch(...) {
-			unts.resize(0);
-			addWarning("could not parse aux.json");
-		}
-		if (!unts.empty()) {
-			s.hasUnit = true;
+		if (unts.empty()) {
+			std::vector<int64_t> timestamps;
+			std::string timestep="raw";
+			try {
+				read_aux_json(fname, timestamps, timestep, unts, s.nlyr);
+			} catch(...) {
+				unts.resize(0);
+			}
+			if (!unts.empty()) {
+				s.hasUnit = true;
+			}
 		}
 		
 		

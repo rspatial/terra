@@ -391,6 +391,15 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
     psWarpOptions->hDstDS = hDstDS;
 	psWarpOptions->eResampleAlg = a;
     psWarpOptions->nBandCount = nbands;
+
+	// Set warp memory limit high enough to avoid GDAL sub-chunking.
+	// GDAL should process each block in one pass. The limit is a ceiling,
+	// not a pre-allocation; GDAL only allocates what it actually needs.
+	double dst_cells = (double)GDALGetRasterXSize(hDstDS)
+		                  * (double)GDALGetRasterYSize(hDstDS);
+	double mem_needed = dst_cells * (double)nbands * 8.0 * 3.0;
+	psWarpOptions->dfWarpMemoryLimit = std::max(mem_needed, 64.0 * 1024.0 * 1024.0);
+	
     psWarpOptions->panSrcBands = (int *) CPLMalloc(sizeof(int) * nbands );
     psWarpOptions->panDstBands = (int *) CPLMalloc(sizeof(int) * nbands );
 	psWarpOptions->padfSrcNoDataReal = (double *) CPLMalloc(sizeof(double) * nbands );
@@ -438,8 +447,7 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 	}
 	if (AOI.size() == 4) {
 		std::string aoi_str = std::to_string(AOI[0]) + "," +
-			std::to_string(AOI[1]) + "," +
-			std::to_string(AOI[2]) + "," + std::to_string(AOI[3]);
+			std::to_string(AOI[1]) + "," +	std::to_string(AOI[2]) + "," + std::to_string(AOI[3]);
 		papszTO = CSLSetNameValue(papszTO, "AREA_OF_INTEREST", aoi_str.c_str());
 	}
 #if GDAL_VERSION_NUM >= 3030000
@@ -1182,7 +1190,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 		opt = SpatOptions(opt);
 	}
 	
-	opt.ncopies += 4;
+	opt.ncopies += 7;
 	if (!out.writeStart(opt, filenames())) {
 		return out;
 	}
@@ -1245,10 +1253,21 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 				out.setError(errmsg);
 				return out;
 			}
-			GDALWarpAppOptions *psWarpAppOptions = GDALWarpAppOptionsNew(nullptr, nullptr);
+			// Compute warp memory limit to avoid GDAL sub-chunking artifacts
+			double dst_pix = (double)GDALGetRasterXSize(hDstDS)
+			               * (double)GDALGetRasterYSize(hDstDS);
+			double wm_bytes = dst_pix * (double)srcbands.size() * 8.0 * 3.0;
+			wm_bytes = std::max(wm_bytes, 64.0 * 1024.0 * 1024.0);
+			int wm_mb = (int)std::ceil(wm_bytes / (1024.0 * 1024.0));
+			std::string wm_str = std::to_string(wm_mb);
+
+			std::vector<std::string> warp_args = {"-r", method, "-wm", wm_str};
+			std::vector<const char*> cargs;
+			for (auto &s : warp_args) cargs.push_back(s.c_str());
+			cargs.push_back(nullptr);
+			GDALWarpAppOptions *psWarpAppOptions = GDALWarpAppOptionsNew(
+				const_cast<char**>(cargs.data()), nullptr);
 			GDALWarpAppOptionsSetProgress(psWarpAppOptions, NULL, NULL );
-			// assume we've validate method because of getAlgo() above
-			GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "-r", method.c_str()); 
 			GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "INIT_DEST", "NO_DATA"); 
 			GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "WRITE_FLUSH", "YES"); 
 			if (opt.threads) {
