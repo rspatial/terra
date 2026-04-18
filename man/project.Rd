@@ -16,7 +16,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 \usage{
 \S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
 	origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", 
-	AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, filename="", ...)
+	AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, xscale=0, yscale=0,
+	filename="", ...)
 
 \S4method{project}{SpatVector}(x, y, partial=FALSE, pipeline="", AOI=NULL,
     desired_accuracy=-1.0, allow_approx=TRUE)
@@ -80,6 +81,10 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   \item{desired_accuracy}{numeric. Only use transformations with at least this accuracy (in metres). Use \code{-1} (the default) for no constraint. Requires GDAL >= 3.3}
 
   \item{allow_approx}{logical. If \code{FALSE}, only use transformations with known accuracy (no "ballpark" transformations). Requires GDAL >= 3.3}
+
+  \item{xscale}{numeric. Resampling ratio (number of destination pixels per source pixel) along the horizontal axis. When \code{0} (the default), this is computed automatically per processing chunk by GDAL. Setting a fixed value eliminates the block-boundary artifacts that arise when the per-chunk ratio varies across the raster. Use \code{\link{warp_scale}} to compute a suitable value from the source and destination geometry. Equals one for no resampling, below one for downsampling, and above one for upsampling}
+
+  \item{yscale}{numeric. Same as \code{xscale} but along the vertical axis}
   
   \item{filename}{character. Output filename}
   
@@ -95,7 +100,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 SpatVector or SpatRaster
 }
 
-\seealso{\code{\link{crs}}, \code{\link{resample}}, \code{\link{proj_pipelines}} and \code{\link{projNetwork}} to enable or disable PROJ network access for datum grid downloads.}
+\seealso{\code{\link{crs}}, \code{\link{resample}}, \code{\link{warp_scale}}, \code{\link{proj_pipelines}} and \code{\link{projNetwork}} to enable or disable PROJ network access for datum grid downloads.}
 
 
 \note{
