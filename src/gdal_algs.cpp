@@ -196,7 +196,7 @@ SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 2
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, double xscale, double yscale, SpatOptions &opt) {
 	SpatRaster out;
 	out.setError("Not supported for this old version of GDAL");
 	return(out);
@@ -372,7 +372,7 @@ bool is_valid_warp_method(const std::string &method) {
 }
 
 
-bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<size_t> srcbands, std::vector<size_t> dstbands, std::string method, std::string srccrs, std::string msg, bool verbose, bool threads, std::string pipeline="", std::vector<double> AOI=std::vector<double>(), double desired_accuracy=-1.0, bool allow_ballpark=true) {
+bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<size_t> srcbands, std::vector<size_t> dstbands, std::string method, std::string srccrs, std::string msg, bool verbose, bool threads, std::string pipeline="", std::vector<double> AOI=std::vector<double>(), double desired_accuracy=-1.0, bool allow_ballpark=true, double xscale=0, double yscale=0) {
 
 	if (srcbands.size() != dstbands.size()) {
 		msg = "number of source bands must match number of dest bands";
@@ -440,6 +440,17 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 			CSLSetNameValue( psWarpOptions->papszWarpOptions, "NUM_THREADS", "ALL_CPUS");
 	}
 
+	if (xscale > 0) {
+		psWarpOptions->papszWarpOptions =
+			CSLSetNameValue(psWarpOptions->papszWarpOptions, "XSCALE",
+				std::to_string(xscale).c_str());
+	}
+	if (yscale > 0) {
+		psWarpOptions->papszWarpOptions =
+			CSLSetNameValue(psWarpOptions->papszWarpOptions, "YSCALE",
+				std::to_string(yscale).c_str());
+	}
+
 	char **papszTO = nullptr;
 #if GDAL_VERSION_NUM >= 3000000
 	if (!pipeline.empty()) {
@@ -497,7 +508,7 @@ bool gdal_warper(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatas
 
 
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, double xscale, double yscale, SpatOptions &opt) {
 
 	size_t ns = nsrc();
 	bool fixext = false;
@@ -523,7 +534,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 				r.source[j] = tmp.source[0]; 
 			}
 		}
-		return r.warper(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, opt);
+		return r.warper(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale, opt);
 	}
 
 
@@ -539,7 +550,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	if (hasScaleOffset() && !any_rotated) {
 		SpatOptions opt2(opt);
 		SpatRaster app = apply_so(opt2);	
-		return app.warper(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, opt);
+		return app.warper(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale, opt);
 	}
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
@@ -731,7 +742,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			bandstart += dstbands.size();
 
 			GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
-			if (!set_warp_options(psWarpOptions, hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose(), opt.threads, pipeline, AOI, desired_accuracy, allow_ballpark)) {
+			if (!set_warp_options(psWarpOptions, hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose(), opt.threads, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale)) {
 				if (hSrcDS != NULL) GDALClose((GDALDatasetH) hSrcDS);
 				if (hDstDS != NULL) GDALClose((GDALDatasetH) hDstDS);
 				GDALDestroyWarpOptions(psWarpOptions);
@@ -1017,7 +1028,7 @@ SpatRaster SpatRaster::oldwarper(SpatRaster x, std::string crs, std::string meth
 */
 
 
-SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, SpatOptions &opt) {
+SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, double xscale, double yscale, SpatOptions &opt) {
 
 	size_t ns = nsrc();
 	bool fixext = false;
@@ -1039,7 +1050,7 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 				r.source[j] = tmp.source[0]; 
 			}
 		}
-		return r.warper_by_util(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, opt);
+		return r.warper_by_util(x, crs, method, mask, align, resample, pipeline, AOI, desired_accuracy, allow_ballpark, xscale, yscale, opt);
 	}
 	
 	
@@ -1273,6 +1284,14 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 			if (opt.threads) {
 				GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "NUM_THREADS", "ALL_CPUS"); 
 			}
+			if (xscale > 0) {
+				GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "XSCALE",
+					std::to_string(xscale).c_str());
+			}
+			if (yscale > 0) {
+				GDALWarpAppOptionsSetWarpOption(psWarpAppOptions, "YSCALE",
+					std::to_string(yscale).c_str());
+			}
 			//--------------------------------------------------------------------------
 			
 			hWarpedDS = GDALWarp("", hDstDS, 1 , &hSrcDS, psWarpAppOptions, 0);
@@ -1301,6 +1320,103 @@ SpatRaster SpatRaster::warper_by_util(SpatRaster x, std::string crs, std::string
 		}
 	}
 	return out;
+}
+
+
+std::vector<double> SpatRaster::warp_scale(SpatRaster x, size_t n) {
+	// Samples an n x n grid of points in the source raster, projects them
+	// to the destination CRS, and returns quantiles of the local
+	// resampling ratio (destination pixels per source pixel) along each
+	// axis. Used to choose XSCALE/YSCALE warp options that are stable
+	// across processing chunks.
+	//
+	// Return is a 10-element vector:
+	//   [0..4] xscale: min, q1, median, q3, max
+	//   [5..9] yscale: min, q1, median, q3, max
+
+	std::vector<double> result(10, NAN);
+
+	std::string src_crs = getSRS("wkt");
+	std::string dst_crs = x.getSRS("wkt");
+	if (src_crs.empty()) {
+		setError("source raster CRS not set");
+		return result;
+	}
+	if (dst_crs.empty()) {
+		setError("destination raster CRS not set");
+		return result;
+	}
+
+	std::vector<double> src_res = resolution();
+	std::vector<double> dst_res = x.resolution();
+	SpatExtent e = getExtent();
+
+	if (n < 3) n = 3;
+	if (n > ncol()) n = ncol();
+	if (n > nrow()) n = nrow();
+	if (n < 3) {
+		setError("source raster is too small to sample");
+		return result;
+	}
+
+	std::vector<double> xs(n), ys(n);
+	double xlo = e.xmin + src_res[0];
+	double xhi = e.xmax - src_res[0];
+	double ylo = e.ymin + src_res[1];
+	double yhi = e.ymax - src_res[1];
+	for (size_t i = 0; i < n; i++) {
+		xs[i] = xlo + (xhi - xlo) * (double)i / (double)(n - 1);
+		ys[i] = ylo + (yhi - ylo) * (double)i / (double)(n - 1);
+	}
+
+	size_t N = n * n;
+	std::vector<double> px0(N), py0(N);
+	std::vector<double> pxdx(N), pydx(N);
+	std::vector<double> pxdy(N), pydy(N);
+	size_t k = 0;
+	for (size_t j = 0; j < n; j++) {
+		for (size_t i = 0; i < n; i++) {
+			px0[k]  = xs[i];              py0[k]  = ys[j];
+			pxdx[k] = xs[i] + src_res[0]; pydx[k] = ys[j];
+			pxdy[k] = xs[i];              pydy[k] = ys[j] + src_res[1];
+			k++;
+		}
+	}
+
+	SpatMessages m;
+	m = transform_coordinates(px0,  py0,  src_crs, dst_crs);
+	if (m.has_error) { setError("coordinate transformation failed"); return result; }
+	m = transform_coordinates(pxdx, pydx, src_crs, dst_crs);
+	if (m.has_error) { setError("coordinate transformation failed"); return result; }
+	m = transform_coordinates(pxdy, pydy, src_crs, dst_crs);
+	if (m.has_error) { setError("coordinate transformation failed"); return result; }
+
+	std::vector<double> xsc, ysc;
+	xsc.reserve(N);
+	ysc.reserve(N);
+	for (size_t i = 0; i < N; i++) {
+		double dx = std::fabs(pxdx[i] - px0[i]);
+		double dy = std::fabs(pydy[i] - py0[i]);
+		if (std::isfinite(dx) && dx > 0 && dst_res[0] > 0) {
+			xsc.push_back(dx / dst_res[0]);
+		}
+		if (std::isfinite(dy) && dy > 0 && dst_res[1] > 0) {
+			ysc.push_back(dy / dst_res[1]);
+		}
+	}
+
+	if (xsc.empty() || ysc.empty()) {
+		setError("no valid projected points to compute scale");
+		return result;
+	}
+
+	std::vector<double> probs = {0.0, 0.25, 0.50, 0.75, 1.0};
+	std::vector<double> xq = vquantile(xsc, probs, true);
+	std::vector<double> yq = vquantile(ysc, probs, true);
+
+	for (size_t i = 0; i < 5; i++) result[i]     = xq[i];
+	for (size_t i = 0; i < 5; i++) result[i + 5] = yq[i];
+	return result;
 }
 
 
