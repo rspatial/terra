@@ -79,8 +79,9 @@ terraOptions()
 #> memfrac   : 0.5
 #> tolerance : 0.1
 #> verbose   : FALSE
+#> memmax    : 16
 #> todisk    : FALSE
-#> tempdir   : /tmp/RtmpPCrru5
+#> tempdir   : /tmp/RtmpSRmW4A
 #> datatype  : FLT4S
 #> memmin    : 1
 #> progress  : 3
@@ -91,8 +92,9 @@ terraOptions()
 #> memfrac   : 0.5
 #> tolerance : 0.1
 #> verbose   : FALSE
+#> memmax    : 16
 #> todisk    : FALSE
-#> tempdir   : /tmp/RtmpPCrru5
+#> tempdir   : /tmp/RtmpSRmW4A
 #> datatype  : FLT4S
 #> memmin    : 1
 #> progress  : 10

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-19</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-20</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-19" id="version-19-19">version 1.9-19<a class="anchor" aria-label="anchor" href="#version-19-19"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-20" id="version-19-20">version 1.9-20<a class="anchor" aria-label="anchor" href="#version-19-20"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-19">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-19"></a></h3>
+<h3 id="bug-fixes-1-9-20">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-20"></a></h3>
 <ul><li>terra now distinguishes between the “standard”/“Gregorian” and the “proleptic_gregorian” calendars <a href="https://github.com/rspatial/terra/issues/1599" class="external-link">#1599</a> by Hu shiyu</li>
 <li>
 <code>spatSample&lt;SpatRaster&gt;(method="stratified")</code> could cause an out of bounds error <a href="https://gi%5B#1848%5Dthub.com/rspatial/terra/issues/1858" class="external-link">#1858</a> by Felipe)</li>
@@ -53,8 +53,10 @@
 <code>zonal</code> truncated weights <a href="https://github.com/rspatial/terra/issues/2072" class="external-link">#2072</a> by Dominic Royé</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-19">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-19"></a></h3>
+<h3 id="enhancements-1-9-20">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-20"></a></h3>
 <ul><li>
+<code>memmax</code> now defaults to 16 GB to prevent allocation failures on very large memory systems <a href="https://github.com/rspatial/terra/issues/2073" class="external-link">#2073</a> by Will Kessler</li>
+<li>
 <code>update</code> can (again) edit layernames in existing files <a href="https://github.com/rspatial/terra/issues/2071" class="external-link">#2071</a> by Jim Shady</li>
 <li>
 <code>compareGeom</code> gets argument “tolerance” to overwrite the default that can be set with <code>terraOptions</code>. <a href="https://github.com/rspatial/terra/issues/2056" class="external-link">#2056</a> by R. Kyle Bocinsky</li>
@@ -76,7 +78,7 @@
 <li>PROJ CDN warnings (e.g. SSL errors when downloading datum grids) are now collapsed into a single summary warning with guidance to use <code>projNetwork(FALSE)</code> <a href="https://github.com/rspatial/terra/issues/1351" class="external-link">#1351</a> by Hassan Masoomi</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-9-19">new<a class="anchor" aria-label="anchor" href="#new-1-9-19"></a></h3>
+<h3 id="new-1-9-20">new<a class="anchor" aria-label="anchor" href="#new-1-9-20"></a></h3>
 <ul><li>
 <code>costDistance</code> and <code>gridDistance</code> can now return the nearest target cell number <a href="https://github.com/rspatial/terra/issues/2034" class="external-link">#2034</a> by chrislittleboy</li>
 <li>

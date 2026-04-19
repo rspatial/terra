@@ -1158,6 +1158,9 @@
 - [`vrt_tiles()`](https://rspatial.github.io/terra/reference/vrt_tiles.md)
   : filenames of VRT tiles
 
+- [`warp_scale()`](https://rspatial.github.io/terra/reference/warp_scale.md)
+  : Compute warp resampling scale
+
 - [`watershed(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/watershed.md)
   : Catchment delineation
 
