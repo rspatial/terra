@@ -12,7 +12,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public LicenseT
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatVector.h"
@@ -201,10 +201,10 @@ void SpatGeom::computeExtent() {
 	extent.ymin = *std::min_element(parts[0].y.begin(), parts[0].y.end());
 	extent.ymax = *std::max_element(parts[0].y.begin(), parts[0].y.end());
 	for (size_t i=1; i<parts.size(); i++) {
-		extent.xmin = std::min(extent.xmin, *std::min_element(parts[0].x.begin(), parts[0].x.end()));
-		extent.xmax = std::max(extent.xmin, *std::max_element(parts[0].x.begin(), parts[0].x.end()));
-		extent.ymin = std::min(extent.xmin, *std::min_element(parts[0].y.begin(), parts[0].y.end()));
-		extent.ymax = std::max(extent.xmin, *std::max_element(parts[0].y.begin(), parts[0].y.end()));
+		extent.xmin = std::min(extent.xmin, *std::min_element(parts[i].x.begin(), parts[i].x.end()));
+		extent.xmax = std::max(extent.xmax, *std::max_element(parts[i].x.begin(), parts[i].x.end()));
+		extent.ymin = std::min(extent.ymin, *std::min_element(parts[i].y.begin(), parts[i].y.end()));
+		extent.ymax = std::max(extent.ymax, *std::max_element(parts[i].y.begin(), parts[i].y.end()));
 	}
 }
 
