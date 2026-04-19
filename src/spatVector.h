@@ -363,6 +363,10 @@ class SpatVector {
 
 		SpatVector crop(SpatExtent e, bool wrap);
 		SpatVector crop(SpatVector e);
+		SpatVector hexagons(SpatExtent e, double size, std::string crs, bool flat_top, double anchor_x, double anchor_y);
+		SpatVector hexagons_lonlat(SpatExtent e, double size, bool flat_top);
+		SpatVector polyhedron(SpatExtent e, int n, bool full_globe);
+
 		SpatVector voronoi(SpatVector bnd, double tolerance, int onlyEdges);		
 		SpatVector voronoi_sphere(SpatVector bnd, double tolerance, int onlyEdges);
 

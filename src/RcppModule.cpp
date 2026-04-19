@@ -628,6 +628,9 @@ RCPP_MODULE(spat){
 
 		.method("crop_ext", ( SpatVector (SpatVector::*)(SpatExtent, bool))( &SpatVector::crop ))
 		.method("crop_vct", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::crop ))
+		.method("hexagons", &SpatVector::hexagons)
+		.method("hexagons_lonlat", &SpatVector::hexagons_lonlat)
+		.method("polyhedron", &SpatVector::polyhedron)
 
 		.method("near_between", (SpatVector (SpatVector::*)(SpatVector, bool, const std::string))( &SpatVector::nearest_point))
 		.method("near_within", (SpatVector (SpatVector::*)(const std::string))( &SpatVector::nearest_point))
