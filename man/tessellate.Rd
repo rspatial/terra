@@ -15,7 +15,7 @@ Create a tessellation of polygons with no gaps or overlaps that cover constant a
 }
 
 \usage{
-\S4method{tessalate}{ANY}(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL)
+\S4method{tessellate}{ANY}(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL)
 }
 
 \arguments{
