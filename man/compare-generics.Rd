@@ -28,6 +28,7 @@
 \alias{!,SpatRaster-method}
 \alias{is.finite,SpatRaster-method}
 \alias{is.infinite,SpatRaster-method}
+\alias{is.finite,SpatExtent-method}
 
 \alias{logic,SpatRaster-method}
 \alias{compare,SpatRaster-method}

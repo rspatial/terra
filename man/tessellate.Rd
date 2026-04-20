@@ -3,6 +3,8 @@
 \docType{methods}
 
 \alias{tessellate}
+\alias{tessallate,ANY-method}
+
 
 \title{
 Create a tessalation
