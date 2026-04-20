@@ -11,7 +11,7 @@ coordinates.
 
 ``` r
 # S4 method for class 'ANY'
-tessalate(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL)
+tessellate(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL)
 ```
 
 ## Arguments
