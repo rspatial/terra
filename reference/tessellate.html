@@ -48,7 +48,7 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <p></p>
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>SpatRaster, SpatVector or other objects from which a SpatExtent can be extracted. If missing, a global lon/lat tessellation is returned</p></dd>
+<dd><p>SpatRaster, SpatVector or other object from which a SpatExtent can be extracted. If missing, a global lon/lat extent is used</p></dd>
 
   <dt id="arg-size">size<a class="anchor" aria-label="anchor" href="#arg-size"></a></dt>
 <dd><p>positive number. The "across-flats" distance of a hexagon, or the center-to-center distance to the nearest neighbour in the dominant direction. The unit is the unit of the input crs, or meters for longitude/latitude data. Size is approximate for polyhedrons</p></dd>
@@ -57,7 +57,7 @@
 <dd><p>positive integer. Polyhedron subdivision frequency. The output has 10*n^2 + 2 cells in total (12 pentagons + 10*(n^2 - 1) hexagons). If this is supplied, argument <code>size</code> is ignored</p></dd>
 
   <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>character. One of "hexagons", "rectangles", or "polyhedrons"</p></dd>
+<dd><p>character. One of "hexagons", "rectangles", or "polyhedron"</p></dd>
 
   <dt id="arg-flat-top">flat_top<a class="anchor" aria-label="anchor" href="#arg-flat-top"></a></dt>
 <dd><p>logical. If <code>TRUE</code>, hexagons have two horizontal (flat) edges; if <code>FALSE</code> (the default) they have two vertical edges and a vertex pointing up and down (pointy-top)</p></dd>

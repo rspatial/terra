@@ -18,8 +18,8 @@ tessellate(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL)
 
 - x:
 
-  SpatRaster, SpatVector or other objects from which a SpatExtent can be
-  extracted. If missing, a global lon/lat tessellation is returned
+  SpatRaster, SpatVector or other object from which a SpatExtent can be
+  extracted. If missing, a global lon/lat extent is used
 
 - size:
 
@@ -36,7 +36,7 @@ tessellate(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL)
 
 - type:
 
-  character. One of "hexagons", "rectangles", or "polyhedrons"
+  character. One of "hexagons", "rectangles", or "polyhedron"
 
 - flat_top:
 
