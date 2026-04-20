@@ -37,7 +37,5 @@ packrat/lib*/
 packrat/src/
 
 C/terra
-
 docs
-
-data/
+/_*

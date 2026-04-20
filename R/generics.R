@@ -1590,7 +1590,7 @@ setMethod("tessellate", signature(x="ANY"),
 				if (isTRUE(geo)) {
 					crs <- "lonlat"
 				} else if (is.null(geo)) {
-					if (is.lonlat(x, perhaps=TRUE, warn=TRUE)) {
+					if (is.lonlat(rast(x), perhaps=TRUE, warn=TRUE)) {
 						crs <- "lonlat"
 					} else {
 						crs <- "local"					

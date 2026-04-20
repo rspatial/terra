@@ -13,7 +13,7 @@ Create a tessellation of polygons with no gaps or overlaps that cover constant a
 }
 
 \usage{
-tessellate(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=FALSE)
+\S4method{tessalate}{ANY}(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL)
 }
 
 \arguments{
@@ -23,7 +23,7 @@ tessellate(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=FALSE)
   \item{type}{character. One of "hexagons", "rectangles", or "polyhedrons"}
   \item{flat_top}{logical. If \code{TRUE}, hexagons have two horizontal (flat) edges; if \code{FALSE} (the default) they have two vertical edges and a vertex pointing up and down (pointy-top)}
   \item{align}{character. rectangle alignment, one of "fit" (all retangles fit within the extent, creating variability in size), "align" all rectangles (except perhaps the polar rectangles) have equal-area, but may stick out of the extent), or "cube" (rectangles are "cubes" in terms of naive longitude/latitude math, and may stick out of the extent)}
-  \item{geo}{logical. If \code{TRUE}, and \code{x} is a SpatExtent, the coordinates of \code{x} are interpreted longitude/latitude}
+  \item{geo}{logical. If \code{TRUE}, and \code{x} is a SpatExtent, the coordinates of \code{x} are interpreted longitude/latitude. If it is \code{NULL} the coordinates are used to guess the CRS from the coordinates. If \code{FALSE} the CRS is set to "local" if \code{x} does not have a CRS}
 }
 
 \value{
@@ -57,7 +57,7 @@ g
 
 # global polyhedron, frequency 10 -> 12 pentagons + 990 hexagons
 g1 <- tessellate(n=10, type="polyhedron")
-g1$size <- expanse(g)
+g1$size <- expanse(g1)
 plot(g1, "type", col=c("tomato", "skyblue"))
 plot(g1, "size")
 
