@@ -50,14 +50,7 @@
 #include <cstring>
 #include <vector>
 
-#if defined(HAVE_TBB)
-#define USE_TBB
-#endif
-
-#if defined(USE_TBB)
-#include <tbb/parallel_for.h>
-#include <tbb/blocked_range.h>
-#endif
+#include "tbb_helper.h"
 
 // ── declarations of the generic kernels in focal.cpp -------------------
 
@@ -280,13 +273,13 @@ static void box_run(const std::vector<double> &d, std::vector<double> &out,
                     int nc, int srow, int nr,
                     int wnr, int wnc, double w_const,
                     double fill, bool narm, bool naonly, bool naomit,
-                    bool expand, bool global, bool parallel, Emit emit) {
+                    bool expand, bool global, const SpatOptions &opt, Emit emit) {
 #if defined(USE_TBB)
-	if (parallel && nr > 1 && (long long) nr * nc > 50000) {
+	if (opt.parallel && nr > 1 && (long long) nr * nc > 50000) {
 		// each chunk should be at least ~max(wnr, 16) rows to amortize
 		// the O(nc * wnr) accumulator-setup overhead.
 		size_t grain = (size_t) std::max(wnr, 16);
-		tbb::parallel_for(tbb::blocked_range<int>(0, nr, grain),
+		terra_parallel_for(opt, tbb::blocked_range<int>(0, nr, grain),
 			[&](const tbb::blocked_range<int> &range) {
 				box_run_range(d, out, nc, srow, range.begin(), range.end(),
 				              wnr, wnc, w_const, fill,
@@ -295,7 +288,7 @@ static void box_run(const std::vector<double> &d, std::vector<double> &out,
 		return;
 	}
 #else
-	(void) parallel;
+	(void) opt;
 #endif
 	box_run_range(d, out, nc, srow, 0, nr, wnr, wnc, w_const, fill,
 	              narm, naonly, naomit, expand, global, emit);
@@ -350,7 +343,7 @@ static void separable_run(const std::vector<double> &d, std::vector<double> &out
                           const std::vector<double> &row_k,
                           const std::vector<double> &col_k,
                           double fill, bool narm, bool naonly, bool naomit,
-                          bool expand, bool global, bool is_mean, bool parallel) {
+                          bool expand, bool global, bool is_mean, const SpatOptions &opt) {
 
 	const int hwr = wnr / 2;
 	const int hwc = wnc / 2;
@@ -439,15 +432,15 @@ static void separable_run(const std::vector<double> &d, std::vector<double> &out
 	};
 
 #if defined(USE_TBB)
-	if (parallel && (long long) rows_in * nc > 20000) {
-		tbb::parallel_for(tbb::blocked_range<int>(0, rows_in, 8),
+	if (opt.parallel && (long long) rows_in * nc > 20000) {
+		terra_parallel_for(opt, tbb::blocked_range<int>(0, rows_in, 8),
 			[&](const tbb::blocked_range<int> &r) { pass1_range(r.begin(), r.end()); });
-		tbb::parallel_for(tbb::blocked_range<int>(0, nr, 8),
+		terra_parallel_for(opt, tbb::blocked_range<int>(0, nr, 8),
 			[&](const tbb::blocked_range<int> &r) { pass2_range(r.begin(), r.end()); });
 		return;
 	}
 #else
-	(void) parallel;
+	(void) opt;
 #endif
 	pass1_range(0, rows_in);
 	pass2_range(0, nr);
@@ -523,26 +516,25 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 		rank1 = window_is_rank1(m, (int) w[0], (int) w[1], row_k, col_k);
 	}
 
-	// per-block driver
-	const bool par = opt.parallel;
-
+	// per-block driver. opt is captured by reference so opt.parallel and
+	// opt.threads (the global TBB thread cap) are honored consistently.
 	auto run_block = [&](std::vector<double> &vin, std::vector<double> &vout, size_t roff, size_t bnr) {
 		if (plain && (is_sum || is_mean)) {
 			vout.assign(nc * bnr, NAN);
 			if (is_sum) {
 				box_run(vin, vout, (int) nc, (int) roff, (int) bnr,
 				        (int) w[0], (int) w[1], w_const,
-				        fillvalue, narm, naonly, naomit, expand, global, par, emit_sum);
+				        fillvalue, narm, naonly, naomit, expand, global, opt, emit_sum);
 			} else {
 				box_run(vin, vout, (int) nc, (int) roff, (int) bnr,
 				        (int) w[0], (int) w[1], w_const,
-				        fillvalue, narm, naonly, naomit, expand, global, par, emit_mean);
+				        fillvalue, narm, naonly, naomit, expand, global, opt, emit_mean);
 			}
 		} else if (rank1) {
 			vout.assign(nc * bnr, NAN);
 			separable_run(vin, vout, (int) nc, (int) roff, (int) bnr,
 			              (int) w[0], (int) w[1], row_k, col_k,
-			              fillvalue, narm, naonly, naomit, expand, global, is_mean, par);
+			              fillvalue, narm, naonly, naomit, expand, global, is_mean, opt);
 		} else if (dofun) {
 			focal_win_fun(vin, vout, (int) nc, (int) roff, (int) bnr, m,
 			              (int) w[0], (int) w[1], fillvalue,

@@ -25,10 +25,7 @@
 //#include "sort.h"
 #include "math_utils.h"
 
-#if defined(USE_TBB)
-#include <tbb/parallel_for.h>
-#include <tbb/blocked_range.h>
-#endif 
+#include "tbb_helper.h"
 
 
 double polDistLonLat(SpatVector &p1, SpatVector &p2, std::string unit, std::string method) {
@@ -641,7 +638,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 #if defined(USE_TBB)
 				if (opt.parallel) {
 					d.resize(n);
-					tbb::parallel_for(tbb::blocked_range<size_t>(0, n-1),
+					terra_parallel_for(opt, tbb::blocked_range<size_t>(0, n-1),
 					[&](const tbb::blocked_range<size_t>& range) {
 						for (size_t i = range.begin(); i != range.end(); i++) {
 							d[i+1] = dfun(p[0][i], p[1][i], p[0][i+1], p[1][i+1]) * m;
@@ -681,7 +678,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 				if (opt.parallel) {
 					d.resize(n);
 					// i must run 0 .. s-2 inclusive (same as the serial loop below).
-					tbb::parallel_for(tbb::blocked_range<size_t>(0, s-1),
+					terra_parallel_for(opt, tbb::blocked_range<size_t>(0, s-1),
 					[&](const tbb::blocked_range<size_t>& range) {
 						for (size_t i = range.begin(); i != range.end(); i++) {
 							size_t k = 0;
@@ -739,8 +736,8 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 //				std::vector<std::vector<size_t>> idx;
 #if defined(USE_TBB)
 				if (opt.parallel) {
-					d.resize(n);			
-					tbb::parallel_for(tbb::blocked_range<size_t>(0, n),
+					d.resize(n);
+					terra_parallel_for(opt, tbb::blocked_range<size_t>(0, n),
 					[&](const tbb::blocked_range<size_t>& range) {
 						for (size_t i = range.begin(); i != range.end(); i++) {
 							SpatVector tmp1 = subset_rows((long)i);
@@ -782,7 +779,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 
 #if defined(USE_TBB)
 					if (opt.parallel) {
-						tbb::parallel_for(tbb::blocked_range<size_t>((i+1), s),
+						terra_parallel_for(opt, tbb::blocked_range<size_t>((i+1), s),
 						[&](const tbb::blocked_range<size_t>& range) {
 							for (size_t j = range.begin(); j != range.end(); j++) {
 								SpatVector tmp2 = subset_rows( long(j) );

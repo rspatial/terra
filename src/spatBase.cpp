@@ -29,6 +29,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	memmax = opt.memmax;
 	memmin = opt.memmin;
 	parallel = opt.parallel;
+	threads = opt.threads;
 	todisk = opt.todisk;
 	tolerance = opt.tolerance;
 

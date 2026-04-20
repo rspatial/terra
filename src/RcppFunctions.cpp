@@ -17,10 +17,7 @@
 //#define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
-//#if defined(HAVE_TBB) && !defined(__APPLE__)
-#if defined(HAVE_TBB)
-#define USE_TBB
-#endif
+#include "tbb_helper.h"
 
 
 #if GDAL_VERSION_MAJOR >= 3

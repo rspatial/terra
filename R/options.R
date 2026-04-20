@@ -142,7 +142,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	opt <- spatOptions()
 	nms <- names(opt)
 	nms <- nms[!grepl("^\\.", nms)]
-	nms <- nms[!(nms %in% c("initialize", "messages", "getClass", "finalize", "datatype_set", "tmpfile", "statistics", "gdal_options", "scale", "offset", "threads", "filenames", "NAflag"))]
+	nms <- nms[!(nms %in% c("initialize", "messages", "getClass", "finalize", "datatype_set", "tmpfile", "statistics", "gdal_options", "scale", "offset", "filenames", "NAflag"))]
 	defnms <- grepl("^def_", nms)
 	nms <- nms[!defnms]
 	out <- sapply(nms, function(n) eval(parse(text=paste0("opt$", n))))
@@ -156,7 +156,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 .showOptions <- function(opt, print=TRUE) {
 	out <- .getOptions()
 	if (!print) return(out)
-	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance", "memmin", "memmax")
+	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance", "memmin", "memmax", "parallel", "threads")
 	p <- out[names(out) %in% nms]
 	if (p$memmax <= 0) p$memmax <- NULL
 	nms <- names(p)
