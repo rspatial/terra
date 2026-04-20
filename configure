@@ -4433,7 +4433,7 @@ printf "%s\n" "yes" >&6; }
 
 # Now substitute these variables in src/Makevars.in to create src/Makevars
 
-PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
+PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBBFLAGS} ${TBB_CFLAGS}"
 PKG_LIBS="${TBBLIBS} ${PKG_LIBS}"
 
 

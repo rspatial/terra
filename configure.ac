@@ -840,7 +840,7 @@ _EOCONF]
 
 # Now substitute these variables in src/Makevars.in to create src/Makevars
 
-PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBB_CFLAGS}"
+PKG_CPPFLAGS="${PKG_CPPFLAGS} ${TBBFLAGS} ${TBB_CFLAGS}"
 AC_SUBST([PKG_LIBS], ["${TBBLIBS} ${PKG_LIBS}"])
 
 
