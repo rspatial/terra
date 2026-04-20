@@ -65,6 +65,8 @@
 <p><b>progress</b> - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero.</p>
 <p><b>verbose</b> - logical. If <code>TRUE</code> debugging info is printed for some functions.</p>
 <p><b>tolerance</b> - numeric. Difference in raster extent (expressed as the fraction of the raster resolution) that can be ignored when comparing alignment of rasters.</p>
+<p><b>parallel</b> - logical. The master switch for terra's internal parallelism. When <code>TRUE</code> (the default in version &gt;= 1.9-21), the C++ kernels that have been parallelized with Intel TBB (parts of <code>arith</code>, distance calculations on <code>SpatVector</code>, the fast <code>focal</code> path, etc.) will use multiple threads. When <code>FALSE</code>, all such kernels run on a single thread. Use <code>terra:::.have_TBB()</code> to check whether TBB support was compiled in; without TBB, this option has no effect. The same option can be set per call as a write option, e.g. <code>focal(r, w=21, fun="mean", wopt=list(parallel=TRUE))</code>.</p>
+<p><b>threads</b> - non-negative integer. Cap on the number of threads used by parallel kernels (when <code>parallel=TRUE</code>) and by GDAL warp (in <code>project</code>, <code>resample</code>, <code>warp</code>). <code>0</code> (the default) means "no cap": TBB picks a sensible default (usually all logical CPUs) and GDAL uses <code>NUM_THREADS=ALL_CPUS</code>. A positive value caps both at that count, which is useful to leave room for other processes or to keep forked workers from each spawning hundreds of children. The value is honoured by every TBB-parallel kernel in terra through a single <code>tbb::task_arena</code>, and is forwarded to GDAL warp's <code>NUM_THREADS</code> option.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
@@ -82,23 +84,28 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">terraOptions</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memfrac   : 0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tolerance : 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parallel  : TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> verbose   : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmax    : 16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/RtmpnKpFpe</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> threads   : 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/RtmpNTICr9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datatype  : FLT4S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmin    : 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> progress  : 3</span>
 <span class="r-in"><span><span class="fu">terraOptions</span><span class="op">(</span>memfrac<span class="op">=</span><span class="fl">0.5</span>, tempdir <span class="op">=</span> <span class="st">"c:/temp"</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[options] you cannot set the tempdir to a path that does not exist</span>
 <span class="r-in"><span><span class="fu">terraOptions</span><span class="op">(</span>progress<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">terraOptions</span><span class="op">(</span>parallel<span class="op">=</span><span class="cn">TRUE</span>, threads<span class="op">=</span><span class="fl">4</span><span class="op">)</span>   <span class="co"># use TBB, capped at 4 threads</span></span></span>
 <span class="r-in"><span><span class="fu">terraOptions</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memfrac   : 0.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tolerance : 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> parallel  : TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> verbose   : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmax    : 16</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/RtmpnKpFpe</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> threads   : 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /tmp/RtmpNTICr9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datatype  : FLT4S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memmin    : 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> progress  : 10</span>
