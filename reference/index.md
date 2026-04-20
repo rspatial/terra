@@ -1063,7 +1063,7 @@
   : terrain characteristics
 
 - [`tessellate(`*`<ANY>`*`)`](https://rspatial.github.io/terra/reference/tessellate.md)
-  : Create a tessalation
+  : Create a tesselation
 
 - [`text(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/text.md)
   [`text(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/text.md)

@@ -81,7 +81,7 @@ terraOptions()
 #> verbose   : FALSE
 #> memmax    : 16
 #> todisk    : FALSE
-#> tempdir   : /tmp/RtmpK6PNcv
+#> tempdir   : /tmp/RtmpnKpFpe
 #> datatype  : FLT4S
 #> memmin    : 1
 #> progress  : 3
@@ -94,7 +94,7 @@ terraOptions()
 #> verbose   : FALSE
 #> memmax    : 16
 #> todisk    : FALSE
-#> tempdir   : /tmp/RtmpK6PNcv
+#> tempdir   : /tmp/RtmpnKpFpe
 #> datatype  : FLT4S
 #> memmin    : 1
 #> progress  : 10
