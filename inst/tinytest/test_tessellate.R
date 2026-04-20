@@ -57,7 +57,7 @@ expect_error(tessellate(n = 0, type="polyhedron"))
 expect_error(tessellate(size = 0, type="polyh"))
 
 # truncated dodecahedron-like base case (Goldberg G(2, 0))
-g <- tessellate(n = 2, type="polyhedrons")
+g <- tessellate(n = 2, type="polyhedron")
 expect_equal(nrow(g), 42)                          # 10 n^2 + 2
 expect_equal(sum(g$type == "pentagon"), 12L)
 

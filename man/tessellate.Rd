@@ -3,7 +3,7 @@
 \docType{methods}
 
 \alias{tessellate}
-\alias{tessallate,ANY-method}
+\alias{tessellate,ANY-method}
 
 
 \title{
