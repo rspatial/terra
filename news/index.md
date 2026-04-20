@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-20
+## version 1.9-21
 
 ### bug fixes
 
@@ -108,6 +108,7 @@
   can be used in `project`
   [\#1350](https://github.com/rspatial/terra/issues/1350) by Richard A.
   Johansen
+- `tessallate` method to create hexagonal and rectangular tessallations
 
 ## version 1.9-11
 
