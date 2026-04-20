@@ -10,7 +10,8 @@ coordinates.
 ## Usage
 
 ``` r
-tessellate(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=FALSE)
+# S4 method for class 'ANY'
+tessalate(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL)
 ```
 
 ## Arguments
@@ -54,7 +55,9 @@ tessellate(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=FALSE)
 - geo:
 
   logical. If `TRUE`, and `x` is a SpatExtent, the coordinates of `x`
-  are interpreted longitude/latitude
+  are interpreted longitude/latitude. If it is `NULL` the coordinates
+  are used to guess the CRS from the coordinates. If `FALSE` the CRS is
+  set to "local" if `x` does not have a CRS
 
 ## Value
 
@@ -70,9 +73,8 @@ SpatVector of polygons
 # planar hexagons (exact tiling, equal Cartesian area)
 e <- ext(0, 100, 0, 100)
 h <- tessellate(e, size=10)
-#> Error: unable to find an inherited method for function ‘is.lonlat’ for signature ‘x = "SpatExtent"’
 plot(h)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'h' not found
+
 
 # flat-top hexagons over a raster's extent
 r <- rast(nrows=10, ncols=10, xmin=0, xmax=100, ymin=0, ymax=80, crs="local")
@@ -97,8 +99,7 @@ g
 
 # global polyhedron, frequency 10 -> 12 pentagons + 990 hexagons
 g1 <- tessellate(n=10, type="polyhedron")
-g1$size <- expanse(g)
-#> Warning: [$<-] replacement is not a multiple of the number of rows
+g1$size <- expanse(g1)
 plot(g1, "type", col=c("tomato", "skyblue"))
 
 plot(g1, "size")

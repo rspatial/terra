@@ -40,7 +40,8 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tessellate</span><span class="op">(</span><span class="va">x</span>, <span class="va">size</span>, <span class="va">n</span>, type<span class="op">=</span><span class="st">"hexagon"</span>, flat_top<span class="op">=</span><span class="cn">FALSE</span>, align<span class="op">=</span><span class="st">"fit"</span>, geo<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'ANY'</span></span>
+<span><span class="fu">tessalate</span><span class="op">(</span><span class="va">x</span>, <span class="va">size</span>, <span class="va">n</span>, type<span class="op">=</span><span class="st">"hexagon"</span>, flat_top<span class="op">=</span><span class="cn">FALSE</span>, align<span class="op">=</span><span class="st">"fit"</span>, geo<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,7 +66,7 @@
 <dd><p>character. rectangle alignment, one of "fit" (all retangles fit within the extent, creating variability in size), "align" all rectangles (except perhaps the polar rectangles) have equal-area, but may stick out of the extent), or "cube" (rectangles are "cubes" in terms of naive longitude/latitude math, and may stick out of the extent)</p></dd>
 
   <dt id="arg-geo">geo<a class="anchor" aria-label="anchor" href="#arg-geo"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, and <code>x</code> is a SpatExtent, the coordinates of <code>x</code> are interpreted longitude/latitude</p></dd>
+<dd><p>logical. If <code>TRUE</code>, and <code>x</code> is a SpatExtent, the coordinates of <code>x</code> are interpreted longitude/latitude. If it is <code>NULL</code> the coordinates are used to guess the CRS from the coordinates. If <code>FALSE</code> the CRS is set to "local" if <code>x</code> does not have a CRS</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -82,15 +83,14 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># planar hexagons (exact tiling, equal Cartesian area)</span></span></span>
 <span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span>, <span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu">tessellate</span><span class="op">(</span><span class="va">e</span>, size<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> unable to find an inherited method for function ‘is.lonlat’ for signature ‘x = "SpatExtent"’</span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">h</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'h' not found</span>
+<span class="r-plt img"><img src="tessellate-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># flat-top hexagons over a raster's extent</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">10</span>, ncols<span class="op">=</span><span class="fl">10</span>, xmin<span class="op">=</span><span class="fl">0</span>, xmax<span class="op">=</span><span class="fl">100</span>, ymin<span class="op">=</span><span class="fl">0</span>, ymax<span class="op">=</span><span class="fl">80</span>, crs<span class="op">=</span><span class="st">"local"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">h2</span> <span class="op">&lt;-</span> <span class="fu">tessellate</span><span class="op">(</span><span class="va">r</span>, size<span class="op">=</span><span class="fl">15</span>, flat_top<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">h2</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="tessellate-1.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="tessellate-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rectangles</span></span></span>
 <span class="r-in"><span><span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu">tessellate</span><span class="op">(</span><span class="va">r</span>, size<span class="op">=</span><span class="fl">15</span>, type<span class="op">=</span><span class="st">"rect"</span>, geo<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
@@ -109,12 +109,11 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># global polyhedron, frequency 10 -&gt; 12 pentagons + 990 hexagons</span></span></span>
 <span class="r-in"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu">tessellate</span><span class="op">(</span>n<span class="op">=</span><span class="fl">10</span>, type<span class="op">=</span><span class="st">"polyhedron"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">g1</span><span class="op">$</span><span class="va">size</span> <span class="op">&lt;-</span> <span class="fu"><a href="expanse.html">expanse</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[$&lt;-] replacement is not a multiple of the number of rows</span>
+<span class="r-in"><span><span class="va">g1</span><span class="op">$</span><span class="va">size</span> <span class="op">&lt;-</span> <span class="fu"><a href="expanse.html">expanse</a></span><span class="op">(</span><span class="va">g1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">g1</span>, <span class="st">"type"</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"tomato"</span>, <span class="st">"skyblue"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="tessellate-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">g1</span>, <span class="st">"size"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="tessellate-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">g1</span>, <span class="st">"size"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="tessellate-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the truncated icosahedron ("football"): n=1, 12 pentagons + 0 hexagons</span></span></span>
