@@ -1578,7 +1578,7 @@ setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("tessellate", signature(x="ANY"),
-	function(x, size, n, type="hexagon", flat_top=FALSE, geo=FALSE) {
+	function(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL) {
 
 		type <- match.arg(tolower(type), c("hexagons", "rectangles", "polyhedrons"))
 		globe <- missing(x)		
@@ -1587,8 +1587,14 @@ setMethod("tessellate", signature(x="ANY"),
 			crs <- "lonlat"		
 		} else {
 			if (inherits(x, "SpatExtent")) {
-				if (geo) {
+				if (isTRUE(geo)) {
 					crs <- "lonlat"
+				} else if (is.null(geo)) {
+					if (is.lonlat(x, perhaps=TRUE, warn=TRUE)) {
+						crs <- "lonlat"
+					} else {
+						crs <- "local"					
+					}
 				} else {
 					crs <- "local"
 				}
@@ -1611,11 +1617,12 @@ setMethod("tessellate", signature(x="ANY"),
 			error("tessellate", "size must be a single positive number")
 		}
 		crs <- character_crs(crs, "tessellate")
+		if ((crs=="") && isTRUE(geo)) crs <- "lonlat"
 
 		v <- methods::new("SpatVector")
 		v@pntr <- SpatVector$new()
 		
-		if (isTRUE((crs != "") && is.lonlat(crs))) {
+		if (isTRUE((crs != "") && is.lonlat(crs, perhaps=TRUE))) {
 			if (type=="polyhedrons") {
 				if (missing(n)) {
 					# total cells = 10 n^2 + 2; mean cell area = 4 pi R^2 / total;
@@ -1627,7 +1634,9 @@ setMethod("tessellate", signature(x="ANY"),
 				max(1, n)
 				v@pntr <- v@pntr$polyhedron(e@pntr, as.integer(n), isTRUE(globe))
 			} else if (type == "rectangles") {
-				v@pntr <- v@pntr$rectangles_lonlat(e@pntr, size, isTRUE(flat_top))		
+				align_mode <- match.arg(tolower(align), c("fit", "equal", "cube"))
+				align_int <- match(align_mode, c("fit", "equal", "cube")) - 1L
+				v@pntr <- v@pntr$rectangles_lonlat(e@pntr, size, align_int)		
 			} else {
 				v@pntr <- v@pntr$hexagons_lonlat(e@pntr, size, isTRUE(flat_top))
 			}

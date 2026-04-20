@@ -731,7 +731,190 @@ SpatVector SpatVector::polyhedron(SpatExtent e, int n, bool full_globe) {
 
 
 
-SpatVector SpatVector::rectangles_lonlat(SpatExtent e, double size, bool wide) {
+// rectangular tessellation on a sphere.
+//
+// "size" is the target cell edge length in meters. Three layouts are
+// supported through the align argument:
+//
+//   align = 0  ("fit"): latitude bands and per-band cells are stretched/shrunk
+//     to fill the extent exactly. Cell size deviates a little from "size"
+//
+//   align = 1  ("equal"): every cell has the same constant size dlat_ideal
+//     in latitude and dlon_ideal_j = dlat_ideal/cos(lat_c) in longitude per
+//     band, so cell area is approximately size^2 everywhere. 
+//
+//   align = 2  ("cube"): like align=1 but adjusts both dlat and dlon together
+//     so the cells are square in plate carree
+//
+// For a global longitude extent the layout is snapped to a -180..180 grid so
+// no cell straddles the antimeridian.
+
+SpatVector SpatVector::rectangles_lonlat(SpatExtent e, double size, int align) {
+
 	SpatVector out;
+	if (size <= 0) {
+		out.setError("size must be a positive number");
+		return out;
+	}
+	if (!e.valid_notempty()) {
+		out.setError("invalid extent");
+		return out;
+	}
+
+	const std::string lonlat_crs = "+proj=longlat +datum=WGS84 +no_defs";
+	const double R = 6378137.0;
+	const double DEG = 180.0 / M_PI;
+	const double dlat_ideal = (size / R) * DEG;        // degrees at equator
+
+	// extent clamped to the valid lon/lat range
+	double ymin = std::max(-90.0, e.ymin);
+	double ymax = std::min( 90.0, e.ymax);
+	double xmin = std::max(-180.0, e.xmin);
+	double xmax = std::min( 180.0, e.xmax);
+	if (ymax <= ymin || xmax <= xmin) {
+		out.setSRS({lonlat_crs});
+		return out;
+	}
+
+	double yrange = ymax - ymin;
+	double xrange = xmax - xmin;
+	bool full_lat = yrange >= 180.0 - 1e-9;
+	bool full_lon = xrange >= 360.0 - 1e-9;
+
+	// Build the list of latitude bands first (lat1, lat2). The longitude
+	// layout within each band is then computed in the cell-emission loop,
+	// because it depends on the band center latitude.
+	struct Band { double lat1, lat2; };
+	std::vector<Band> bands;
+
+	if (align == 2) {
+		// "cube" mode: bands anchored at the equator, growing in height
+		// toward the poles to keep dlat = dlon at each band.
+		auto cube_side = [&](double lat_deg) {
+			double cl = std::cos(lat_deg / DEG);
+			if (cl < 1e-9) cl = 1e-9;
+			return dlat_ideal / std::sqrt(cl);
+		};
+
+		auto add_band = [&](double a, double b) {
+			if (b <= ymin || a >= ymax) return;        // outside extent
+			bands.push_back({a, b});
+		};
+
+		// northward from equator
+		double top = 0.0;
+		for (int it = 0; it < 100000 && top < 90.0; it++) {
+			double bottom = top;
+			double s0 = cube_side(bottom);
+			double lc = std::min(89.999999, bottom + 0.5 * s0);
+			double s1 = cube_side(lc);
+			double new_top = bottom + s1;
+			if (new_top > 90.0 || new_top - bottom < 1e-9) new_top = 90.0;
+			add_band(bottom, new_top);
+			if (new_top >= 90.0) break;
+			top = new_top;
+		}
+		// southward from equator
+		double bot = 0.0;
+		for (int it = 0; it < 100000 && bot > -90.0; it++) {
+			double tp = bot;
+			double s0 = cube_side(tp);
+			double lc = std::max(-89.999999, tp - 0.5 * s0);
+			double s1 = cube_side(lc);
+			double new_bot = tp - s1;
+			if (new_bot < -90.0 || tp - new_bot < 1e-9) new_bot = -90.0;
+			add_band(new_bot, tp);
+			if (new_bot <= -90.0) break;
+			bot = new_bot;
+		}
+
+	} else if (align == 1 && !full_lat) {
+		// "equal" mode: constant-height bands, centered on the extent,
+		// use ceil so the stack fully covers [ymin, ymax]
+		int nbands = (int) std::ceil(yrange / dlat_ideal);
+		if (nbands < 1) nbands = 1;
+		double y_start = ymin + 0.5 * (yrange - nbands * dlat_ideal);
+		bands.reserve((size_t) nbands);
+		for (int j = 0; j < nbands; j++) {
+			double a = y_start + j * dlat_ideal;
+			double b = a + dlat_ideal;
+			if (a < -90.0) a = -90.0;
+			if (b >  90.0) b =  90.0;
+			if (a < b) bands.push_back({a, b});
+		}
+
+	} else {
+		// "fit" mode (and equal/cube fall-throughs for full latitude range):
+		// latitude bands stretched to fit the extent exactly
+		int nbands = (int) std::round(yrange / dlat_ideal);
+		if (nbands < 1) nbands = 1;
+		double dlat = yrange / nbands;
+		bands.reserve((size_t) nbands);
+		for (int j = 0; j < nbands; j++) {
+			double a = ymin + j * dlat;
+			double b = (j == nbands - 1) ? ymax : (a + dlat);
+			bands.push_back({a, b});
+		}
+	}
+
+	out.reserve(bands.size() * 16);
+
+	for (size_t j = 0; j < bands.size(); j++) {
+		double lat1 = bands[j].lat1;
+		double lat2 = bands[j].lat2;
+		double dlat_band = lat2 - lat1;
+		double lat_c = 0.5 * (lat1 + lat2);
+
+		double cosc = std::cos(lat_c / DEG);
+		if (cosc < 0) cosc = 0;
+
+		// ideal cell width in degrees of longitude
+		double dlon_ideal;
+		if (align == 2) {
+			// cube: dlon = dlat at this band
+			dlon_ideal = dlat_band;
+		} else {
+			dlon_ideal = (cosc > 1e-12)
+				? (size / (R * cosc)) * DEG
+				: 360.0;
+		}
+		if (dlon_ideal > 360.0) dlon_ideal = 360.0;
+
+		int N;
+		double dlon;
+		double x_start;
+		if (align == 0 || full_lon) {
+			// fit-style longitude (also used for any global-longitude extent)
+			N = (int) std::round(xrange / dlon_ideal);
+			if (N < 1) N = 1;
+			dlon = xrange / N;
+			x_start = xmin;
+		} else {
+			// equal- or cube-style longitude: constant cell width, centered,
+			// ceil so the row fully covers the extent
+			N = (int) std::ceil(xrange / dlon_ideal);
+			if (N < 1) N = 1;
+			dlon = dlon_ideal;
+			x_start = xmin + 0.5 * (xrange - N * dlon);
+		}
+
+		for (int i = 0; i < N; i++) {
+			double lon1 = x_start + i * dlon;
+			double lon2 = lon1 + dlon;
+			// snap to the extent edge for fit / full-lon modes only
+			if (i == N - 1 && (align == 0 || full_lon)) {
+				lon2 = xmax;
+			}
+
+			std::vector<double> rx = {lon1, lon2, lon2, lon1, lon1};
+			std::vector<double> ry = {lat1, lat1, lat2, lat2, lat1};
+
+			SpatGeom geom(SpatPart(rx, ry), polygons);
+			geom.computeExtent();
+			out.addGeom(geom);
+		}
+	}
+
+	out.setSRS({lonlat_crs});
 	return out;
 }
