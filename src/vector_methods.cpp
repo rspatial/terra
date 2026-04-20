@@ -20,8 +20,6 @@
 #include "vecmath.h"
 #include "recycle.h"
 
-#include "gdal_alg.h"
-#include "ogrsf_frmts.h"
 
 /*
 std::vector<bool> SpatVector::is_valid() {

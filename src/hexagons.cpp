@@ -3,8 +3,8 @@
 #include "vecmath.h"
 #include <unordered_map>
 
-#include "gdal_alg.h"
-#include "ogrsf_frmts.h"
+//#include "gdal_alg.h"
+//#include "ogrsf_frmts.h"
 
 //#ifdef useGDAL
 	#include "crs.h"
@@ -23,6 +23,7 @@
 // is anchored globally so that a hex is centered at (anchor_x, anchor_y) and
 // the same hex layout is produced regardless of the extent (different extents
 // produce mutually consistent, aligned cells).
+
 SpatVector SpatVector::hexagons(SpatExtent e, double size, std::string crs, bool flat_top, double anchor_x, double anchor_y) {
 
 	SpatVector out;
@@ -226,7 +227,6 @@ SpatVector SpatVector::hexagons_lonlat(SpatExtent e, double size, bool flat_top)
 	// valid CEA range [-R, R]. Cells whose center lies more than half the
 	// hex height from the pole would have a top/bottom vertex past CEA y=±R
 	// (i.e., past the pole), and would fail to project back to lon/lat.
-	// We pass a tightened ymax/ymin so the hexagons() bbox-cull skips them.
 	const double half_h_y = flat_top ? (size / 2.0) : (size / sqrt3);
 	const double clamp_ymax = R - 2.0 * half_h_y;
 	const double clamp_ymin = -R + 2.0 * half_h_y;
@@ -270,8 +270,7 @@ SpatVector SpatVector::hexagons_lonlat(SpatExtent e, double size, bool flat_top)
 	// vertices near x = +/- R*pi inconsistently to lon = +/- 180, producing
 	// self-intersecting polygons. Instead we Sutherland-Hodgman-clip the
 	// hex at x = +/- R*pi in CEA and shift the wrapping half by +/- circ
-	// so both halves have x in (-R*pi, R*pi). The resulting multipart
-	// polygon then densifies and projects cleanly with no special-casing.
+	// so both halves have x in (-R*pi, R*pi). 
 	const double R_pi = M_PI * R;
 	for (size_t i = 0; i < hex.geoms.size(); i++) {
 		SpatGeom &g = hex.geoms[i];
@@ -731,3 +730,8 @@ SpatVector SpatVector::polyhedron(SpatExtent e, int n, bool full_globe) {
 }
 
 
+
+SpatVector SpatVector::rectangles_lonlat(SpatExtent e, double size, bool wide) {
+	SpatVector out;
+	return out;
+}

@@ -365,6 +365,7 @@ class SpatVector {
 		SpatVector crop(SpatVector e);
 		SpatVector hexagons(SpatExtent e, double size, std::string crs, bool flat_top, double anchor_x, double anchor_y);
 		SpatVector hexagons_lonlat(SpatExtent e, double size, bool flat_top);
+		SpatVector rectangles_lonlat(SpatExtent e, double size, bool wide);
 		SpatVector polyhedron(SpatExtent e, int n, bool full_globe);
 
 		SpatVector voronoi(SpatVector bnd, double tolerance, int onlyEdges);		

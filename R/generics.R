@@ -1574,3 +1574,81 @@ setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
 		mosaic(rc, fun=fun, resample=resample, method=method, filename=filename, overwrite=overwrite, wopt=wopt)
 	}
 )
+
+
+
+setMethod("tessellate", signature(x="ANY"),
+	function(x, size, n, type="hexagon", flat_top=FALSE, geo=FALSE) {
+
+		type <- match.arg(tolower(type), c("hexagons", "rectangles", "polyhedrons"))
+		globe <- missing(x)		
+		if (globe) {
+			e <- ext(-180, 180, -90, 90)
+			crs <- "lonlat"		
+		} else {
+			if (inherits(x, "SpatExtent")) {
+				if (geo) {
+					crs <- "lonlat"
+				} else {
+					crs <- "local"
+				}
+				e <- x
+			} else {
+				crs <- try(crs(x), silent=TRUE)
+				if (inherits(crs, "try-error")) crs <- ""
+				e <- try(ext(x), silent=TRUE)
+				if (inherits(e, "try-error")) {
+					error("tessellate", "cannot extract a SpatExtent from x")
+				}
+			}
+		}
+
+		if ((type=="polyhedrons") && (!missing(n))) {
+			if (!isTRUE(n >= 1)) {
+				error("tessellate", "n must be >= 1")			
+			}
+		} else if (missing(size) || length(size) != 1 || !is.finite(size) || size <= 0) {
+			error("tessellate", "size must be a single positive number")
+		}
+		crs <- character_crs(crs, "tessellate")
+
+		v <- methods::new("SpatVector")
+		v@pntr <- SpatVector$new()
+		
+		if (isTRUE((crs != "") && is.lonlat(crs))) {
+			if (type=="polyhedrons") {
+				if (missing(n)) {
+					# total cells = 10 n^2 + 2; mean cell area = 4 pi R^2 / total;
+					# regular hex has area sqrt(3)/2 * size^2.
+					R <- 6378137
+					C_target <- 8 * pi * R^2 / (sqrt(3) * size^2)
+					n <- round(sqrt(max(1, (C_target - 2) / 10)))
+				} 
+				max(1, n)
+				v@pntr <- v@pntr$polyhedron(e@pntr, as.integer(n), isTRUE(globe))
+			} else if (type == "rectangles") {
+				v@pntr <- v@pntr$rectangles_lonlat(e@pntr, size, isTRUE(flat_top))		
+			} else {
+				v@pntr <- v@pntr$hexagons_lonlat(e@pntr, size, isTRUE(flat_top))
+			}
+		} else {
+			if (type == "polyhedron") {
+				error("tessellate", "polyhedron is only available for lon/lat data")
+			} else if (type == "rectangles") {
+				if (inherits(x, "SpatRasterDataset")) {
+					if (length(sds) > 0) {
+						x <- sds[1]
+					}
+				}
+				if (!inherits(x, "SpatRaster")) {
+					r <- rast(e, res=sqrt(size))
+				}
+				return(as.polygons(x))
+			} else {
+				v@pntr <- v@pntr$hexagons(e@pntr, size, crs, isTRUE(flat_top), NaN, NaN)
+			}
+		}
+		messages(v, "tessellate")
+	}
+)
+
