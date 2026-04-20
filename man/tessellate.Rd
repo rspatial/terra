@@ -19,10 +19,10 @@ Create a tessellation of polygons with no gaps or overlaps that cover constant a
 }
 
 \arguments{
-  \item{x}{SpatRaster, SpatVector or other objects from which a SpatExtent can be extracted. If missing, a global lon/lat tessellation is returned}
+  \item{x}{SpatRaster, SpatVector or other object from which a SpatExtent can be extracted. If missing, a global lon/lat extent is used}
   \item{size}{positive number. The "across-flats" distance of a hexagon, or the center-to-center distance to the nearest neighbour in the dominant direction. The unit is the unit of the input crs, or meters for longitude/latitude data. Size is approximate for polyhedrons}
   \item{n}{positive integer. Polyhedron subdivision frequency. The output has 10*n^2 + 2 cells in total (12 pentagons + 10*(n^2 - 1) hexagons). If this is supplied, argument \code{size} is ignored}
-  \item{type}{character. One of "hexagons", "rectangles", or "polyhedrons"}
+  \item{type}{character. One of "hexagons", "rectangles", or "polyhedron"}
   \item{flat_top}{logical. If \code{TRUE}, hexagons have two horizontal (flat) edges; if \code{FALSE} (the default) they have two vertical edges and a vertex pointing up and down (pointy-top)}
   \item{align}{character. rectangle alignment, one of "fit" (all retangles fit within the extent, creating variability in size), "align" all rectangles (except perhaps the polar rectangles) have equal-area, but may stick out of the extent), or "cube" (rectangles are "cubes" in terms of naive longitude/latitude math, and may stick out of the extent)}
   \item{geo}{logical. If \code{TRUE}, and \code{x} is a SpatExtent, the coordinates of \code{x} are interpreted longitude/latitude. If it is \code{NULL} the coordinates are used to guess the CRS from the coordinates. If \code{FALSE} the CRS is set to "local" if \code{x} does not have a CRS}

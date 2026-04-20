@@ -1580,7 +1580,7 @@ setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
 setMethod("tessellate", signature(x="ANY"),
 	function(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL) {
 
-		type <- match.arg(tolower(type), c("hexagons", "rectangles", "polyhedrons"))
+		type <- match.arg(tolower(type), c("hexagons", "rectangles", "polyhedron"))
 		globe <- missing(x)		
 		if (globe) {
 			e <- ext(-180, 180, -90, 90)
@@ -1609,7 +1609,7 @@ setMethod("tessellate", signature(x="ANY"),
 			}
 		}
 
-		if ((type=="polyhedrons") && (!missing(n))) {
+		if ((type=="polyhedron") && (!missing(n))) {
 			if (!isTRUE(n >= 1)) {
 				error("tessellate", "n must be >= 1")			
 			}
@@ -1623,7 +1623,7 @@ setMethod("tessellate", signature(x="ANY"),
 		v@pntr <- SpatVector$new()
 		
 		if (isTRUE((crs != "") && is.lonlat(crs, perhaps=TRUE))) {
-			if (type=="polyhedrons") {
+			if (type=="polyhedron") {
 				if (missing(n)) {
 					# total cells = 10 n^2 + 2; mean cell area = 4 pi R^2 / total;
 					# regular hex has area sqrt(3)/2 * size^2.
