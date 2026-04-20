@@ -45,7 +45,9 @@ Requires PROJ >= 7.1 (inc" 3). See \code{\link{projNetwork}} to enable online gr
 }
 
 \examples{
-# Simple case: WGS84 to UTM zone 32Nproj_pipelines("EPSG:4326", "EPSG:32632")
+\dontrun{
+# Simple case: WGS84 to UTM zone 32N
+proj_pipelines("EPSG:4326", "EPSG:32632")
 
 # Many pipelines between NAD83/Conus Albers and WGS84
 pp <- proj_pipelines("EPSG:5070", "EPSG:4326")
@@ -58,6 +60,7 @@ pp_local
 # Using a SpatRaster as input
 r <- rast(ncols=10, nrows=10, crs="EPSG:4326")
 proj_pipelines(r, "EPSG:3857")
+}
 }
 
 \keyword{spatial}
