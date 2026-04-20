@@ -118,7 +118,7 @@ class SpatOptions {
 		SpatOptions deepCopy();
 		virtual ~SpatOptions(){}
 
-		bool parallel = false;
+		bool parallel = true;
 		std::vector<std::string> tags;
 
 		size_t ncopies = 4;

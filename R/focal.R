@@ -5,7 +5,7 @@
 
 
 setMethod("focal", signature(x="SpatRaster"),
-function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list())  {
+function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list(), new=TRUE)  {
 
 	na.only <- list(...)$na.only
 	if (!is.null(na.only)) {
@@ -48,7 +48,11 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 		} else {
 			narm <- isTRUE(list(...)$na.rm)
 		}
-		x@pntr <- x@pntr$focal(w, m, fillvalue, narm, na.only, na.omit, txtfun, expand, opt)
+		if (isTRUE(new)) {
+			x@pntr <- x@pntr$focal2(w, m, fillvalue, narm, na.only, na.omit, txtfun, expand, opt)
+		} else {
+			x@pntr <- x@pntr$focal(w, m, fillvalue, narm, na.only, na.omit, txtfun, expand, opt)
+		}
 		messages(x, "focal")
 		return(x)
 
