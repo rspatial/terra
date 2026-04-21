@@ -27,17 +27,19 @@ different weather variables; and `SpatRasterCollection` and
 adding longitude/latitude lines and labels to a map with another
 coordinate reference system.
 
-These classes hold a C++ pointer to the data "reference class" and that
-creates some limitations. They cannot be recovered from a saved R
-session either or directly passed to nodes on a computer cluster.
-Generally, you should use
+These classes hold a C++ pointer to the data "reference class". You
+should not write scripts that directly access this pointer, as its
+user-interface is not stable. These pointers make the code run fast, but
+they they cannot be "serialized". That is they cannot be recovered from
+a saved R session, or passed to nodes on a computer cluster. Generally,
+you should use
 [`writeRaster`](https://rspatial.github.io/terra/reference/writeRaster.md)
 to save `SpatRaster` objects to disk (and pass a filename or cell values
 to cluster nodes). Also see
 [`wrap`](https://rspatial.github.io/terra/reference/wrap.md) and
 [`saveRDS`](https://rspatial.github.io/terra/reference/serialize.md).
-You should not write scripts that directly access this pointer, as its
-user-interface is not stable.
+See these [guidelines](https://rspatial.org/pkg/10-parallel.html) for
+parallelization with terra objects.
 
 The "terra" package is a replacement of the "raster" package. "terra"
 has a very similar, but simpler, interface; it is faster, and it can do
