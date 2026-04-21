@@ -604,8 +604,9 @@ setAs("sf", "SpatVector",
 		if (inherits(geom, "list")) {
 			error("as,sf", "the geometry column is not valid (perhaps first load the sf package)")
 		}
-		if (inherits(geom, "sfc_POLYGON") && isTRUE(dim(geom[[1]][[1]] == c(2,2)))) {
-			if (geom[[1]][[1]] == matrix(c(0,0,-90,-90), ncol=2)) {
+		#https://github.com/rspatial/terra/issues/2013
+		if (inherits(geom, "sfc_POLYGON") && isTRUE(all(geom[[1]][[1]] == matrix(c(0,0,-90,-90), ncol=2)))) {
+			if (all(geom[[1]][[1]] == matrix(c(0,0,-90,-90), ncol=2))) {
 				# sf "POLYGON FULL"
 				return(as.polygons(ext(from), crs="lonlat"))
 			}
