@@ -109,11 +109,13 @@ expect_equal(v[ok], v_in[ok])
 #  yields the same answer as running focal on the whole raster. We write the
 #  intermediates as FLT8S so the comparison is bit-exact; with the default
 #  FLT4S a ~1e-5 roundtrip difference is normal.)
+# cores=2 (not 4) so we stay within R CMD check --as-cran's
+# _R_CHECK_LIMIT_CORES_ ceiling of 2 worker processes.
 
 ref_focal <- focal(r, w=5, fun="mean", na.rm=TRUE)
 out_buf <- tile_apply(r,
 	function(x) focal(x, w=5, fun="mean", na.rm=TRUE),
-	buffer=2, cores=4, wopt=list(datatype="FLT8S"))
+	buffer=2, cores=2, wopt=list(datatype="FLT8S"))
 expect_equal(dim(out_buf), dim(r))
 v_ref <- values(ref_focal); v_out <- values(out_buf)
 ok <- !is.na(v_ref) & !is.na(v_out)
@@ -122,7 +124,7 @@ expect_equal(v_out[ok], v_ref[ok])
 # without buffer, multi-tile auto path produces seam artefacts at tile edges
 out_nobuf <- tile_apply(r,
 	function(x) focal(x, w=5, fun="mean", na.rm=TRUE),
-	buffer=0, cores=4, wopt=list(datatype="FLT8S"))
+	buffer=0, cores=2, wopt=list(datatype="FLT8S"))
 v_nb <- values(out_nobuf)
 ok <- !is.na(v_ref) & !is.na(v_nb)
 expect_true(max(abs(v_ref[ok] - v_nb[ok])) > 0)
