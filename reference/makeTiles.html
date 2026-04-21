@@ -49,7 +49,7 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
 <span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatRaster'</span></span>
-<span><span class="fu">getTileExtents</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, extend<span class="op">=</span><span class="cn">FALSE</span>, buffer<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">getTileExtents</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, extend<span class="op">=</span><span class="cn">FALSE</span>, buffer<span class="op">=</span><span class="fl">0</span>, cores<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -59,7 +59,7 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
 <dd><p>SpatRaster</p></dd>
 
   <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>SpatRaster or SpatVector defining the zones; or a positive integer specifying the number of rows and columns for each zone (or 2 numbers to differentiate the number of rows and columns)</p></dd>
+<dd><p>SpatRaster or SpatVector defining the zones; or a positive integer specifying the number of rows and columns for each zone (or 2 numbers to differentiate the number of rows and columns). For <code>getTileExtents</code>, <code>y</code> may also be missing or <code>NULL</code>, in which case a tile size is computed automatically (see <em>Details</em>)</p></dd>
 
   <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>character. Output filename template. Filenames will be altered by adding the tile number for each tile</p></dd>
@@ -73,6 +73,9 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
   <dt id="arg-buffer">buffer<a class="anchor" aria-label="anchor" href="#arg-buffer"></a></dt>
 <dd><p>integer. The number of additional rows and columns added to each tile. Can be a single number, or two numbers to specify a separate number of rows and columns. This allows for creating overlapping tiles that can be used for computing spatial context dependent values with e.g. <code><a href="focal.html">focal</a></code>. The expansion is only inside <code>x</code>, no rows or columns outside of <code>x</code> are added</p></dd>
 
+  <dt id="arg-cores">cores<a class="anchor" aria-label="anchor" href="#arg-cores"></a></dt>
+<dd><p>integer (only used by <code>getTileExtents</code> when <code>y</code> is missing). The number of worker processes that will consume the tiles. Larger values lead to smaller per-worker tiles so that the concurrent peak memory stays within budget. See <em>Details</em></p></dd>
+
   <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
 <dd><p>character. The type of return value desired. Either "files" (for the filenames), "raster" (for a SpatRaster), or "collection" (for a SpatRasterCollection)</p></dd>
 
@@ -83,6 +86,15 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>When <code>y</code> is missing in <code>getTileExtents</code>, the tile size is chosen so that</p>
+<ul><li><p>tiles align to whole GDAL blocks of the source file(s) (as reported by <code><a href="readwrite.html">fileBlocksize</a></code>). When no source block size is reported, a default of 256 rows by 256 columns is used.</p></li>
+<li><p>the per-worker peak memory (<code>cells per tile</code> \(\times\) <code>nlyr</code> \(\times\) 8 bytes \(\times\) a small <code>ncopies</code> factor) stays within <code>cores</code> workers' share of <code>terraOptions("memfrac")</code> of free RAM (see <code><a href="mem.html">free_RAM</a></code>, <code><a href="terraOptions.html">terraOptions</a></code>).</p></li>
+<li><p>there are at least a few tiles per worker, so the work load-balances.</p></li>
+<li><p>the result never exceeds the raster's own dimensions.</p></li>
+</ul><p>In practice this means that for a tiled GeoTIFF / COG, tiles are an integer multiple of the file block size; for an in-memory or non-tiled raster the result is roughly square.</p>
+    </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>makeTiles</code> returns a character (filenames), SpatRaster or SpatRasterCollection value. <code>getTileExtents</code> returns a matrix with extents</p>
@@ -111,14 +123,22 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -190.8  10.8 -95.4  5.4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  -10.8 190.8 -95.4  5.4</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># auto: tile size from GDAL block size and a per-worker memory budget</span></span></span>
+<span class="r-in"><span><span class="fu">getTileExtents</span><span class="op">(</span><span class="va">r</span><span class="op">)</span>            <span class="co"># cores = 1</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      xmin xmax ymin ymax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -180  180  -90   90</span>
+<span class="r-in"><span><span class="fu">getTileExtents</span><span class="op">(</span><span class="va">r</span>, cores<span class="op">=</span><span class="fl">4</span><span class="op">)</span>   <span class="co"># smaller tiles, sized for 4 concurrent workers</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      xmin xmax ymin ymax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -180  180  -90   90</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">filename</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"_.tif"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu">makeTiles</span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span>, <span class="va">filename</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpNTICr9/file21397ae215f9_1.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/tmp/RtmpNTICr9/file21397ae215f9_2.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/tmp/RtmpNTICr9/file21397ae215f9_3.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/tmp/RtmpNTICr9/file21397ae215f9_4.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpKGcInc/file20497544488d_1.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/tmp/RtmpKGcInc/file20497544488d_2.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "/tmp/RtmpKGcInc/file20497544488d_3.tif"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "/tmp/RtmpKGcInc/file20497544488d_4.tif"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="vrt.html">vrt</a></span><span class="op">(</span><span class="va">ff</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
@@ -126,8 +146,8 @@ getTileExtents returns the extents of the (virtual) tiles, while makeTiles creat
 <span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 3.6, 1.8  (x, y)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 (EPSG:4326)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source      : spat_2139238b2879_8505_DvggOkjkTOQeAAI.vrt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : spat_2139238b2879_8505_DvggOkjkTOQeAAI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : spat_204914fca895_8265_DvggOkjkTOQeAAI.vrt</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : spat_204914fca895_8265_DvggOkjkTOQeAAI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min value   :                                      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max value   :                                  10000</span>
 </code></pre></div>

@@ -17,7 +17,7 @@ makeTiles(x, y, filename="tile_.tif", extend=FALSE,
 
 
 # S4 method for class 'SpatRaster'
-getTileExtents(x, y, extend=FALSE, buffer=0)
+getTileExtents(x, y, extend=FALSE, buffer=0, cores=1)
 ```
 
 ## Arguments
@@ -30,7 +30,9 @@ getTileExtents(x, y, extend=FALSE, buffer=0)
 
   SpatRaster or SpatVector defining the zones; or a positive integer
   specifying the number of rows and columns for each zone (or 2 numbers
-  to differentiate the number of rows and columns)
+  to differentiate the number of rows and columns). For
+  `getTileExtents`, `y` may also be missing or `NULL`, in which case a
+  tile size is computed automatically (see *Details*)
 
 - filename:
 
@@ -56,6 +58,13 @@ getTileExtents(x, y, extend=FALSE, buffer=0)
   expansion is only inside `x`, no rows or columns outside of `x` are
   added
 
+- cores:
+
+  integer (only used by `getTileExtents` when `y` is missing). The
+  number of worker processes that will consume the tiles. Larger values
+  lead to smaller per-worker tiles so that the concurrent peak memory
+  stays within budget. See *Details*
+
 - value:
 
   character. The type of return value desired. Either "files" (for the
@@ -71,6 +80,29 @@ getTileExtents(x, y, extend=FALSE, buffer=0)
 
   additional arguments for writing files as in
   [`writeRaster`](https://rspatial.github.io/terra/reference/writeRaster.md)
+
+## Details
+
+When `y` is missing in `getTileExtents`, the tile size is chosen so that
+
+- tiles align to whole GDAL blocks of the source file(s) (as reported by
+  [`fileBlocksize`](https://rspatial.github.io/terra/reference/readwrite.md)).
+  When no source block size is reported, a default of 256 rows by 256
+  columns is used.
+
+- the per-worker peak memory (`cells per tile` \\\times\\ `nlyr`
+  \\\times\\ 8 bytes \\\times\\ a small `ncopies` factor) stays within
+  `cores` workers' share of `terraOptions("memfrac")` of free RAM (see
+  [`free_RAM`](https://rspatial.github.io/terra/reference/mem.md),
+  [`terraOptions`](https://rspatial.github.io/terra/reference/terraOptions.md)).
+
+- there are at least a few tiles per worker, so the work load-balances.
+
+- the result never exceeds the raster's own dimensions.
+
+In practice this means that for a tiled GeoTIFF / COG, tiles are an
+integer multiple of the file block size; for an in-memory or non-tiled
+raster the result is roughly square.
 
 ## Value
 
@@ -107,14 +139,22 @@ getTileExtents(r, x, buffer=3)
 #> [3,] -190.8  10.8 -95.4  5.4
 #> [4,]  -10.8 190.8 -95.4  5.4
 
+# auto: tile size from GDAL block size and a per-worker memory budget
+getTileExtents(r)            # cores = 1
+#>      xmin xmax ymin ymax
+#> [1,] -180  180  -90   90
+getTileExtents(r, cores=4)   # smaller tiles, sized for 4 concurrent workers
+#>      xmin xmax ymin ymax
+#> [1,] -180  180  -90   90
+
 
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
-#> [1] "/tmp/RtmpNTICr9/file21397ae215f9_1.tif"
-#> [2] "/tmp/RtmpNTICr9/file21397ae215f9_2.tif"
-#> [3] "/tmp/RtmpNTICr9/file21397ae215f9_3.tif"
-#> [4] "/tmp/RtmpNTICr9/file21397ae215f9_4.tif"
+#> [1] "/tmp/RtmpKGcInc/file20497544488d_1.tif"
+#> [2] "/tmp/RtmpKGcInc/file20497544488d_2.tif"
+#> [3] "/tmp/RtmpKGcInc/file20497544488d_3.tif"
+#> [4] "/tmp/RtmpKGcInc/file20497544488d_4.tif"
 
 vrt(ff)
 #> class       : SpatRaster
@@ -122,8 +162,8 @@ vrt(ff)
 #> resolution  : 3.6, 1.8  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
-#> source      : spat_2139238b2879_8505_DvggOkjkTOQeAAI.vrt
-#> name        : spat_2139238b2879_8505_DvggOkjkTOQeAAI
+#> source      : spat_204914fca895_8265_DvggOkjkTOQeAAI.vrt
+#> name        : spat_204914fca895_8265_DvggOkjkTOQeAAI
 #> min value   :                                      1
 #> max value   :                                  10000
 ```
