@@ -4,7 +4,7 @@ f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 
 
-# ── numeric tile spec: x * 2 should reproduce r * 2 cell-for-cell ────────────
+# numeric tile spec: x * 2 should reproduce r * 2 cell-for-cell 
 
 out2 <- tile_apply(r, function(x) x * 2, tiles=50)
 expect_inherits(out2, "SpatRaster")
@@ -17,7 +17,7 @@ expect_true(sum(ok) > 0)
 expect_equal(v_out[ok], 2 * v_in[ok])
 
 
-# ── tiles given as a 4-column matrix (from getTileExtents) ───────────────────
+# tiles given as a 4-column matrix (from getTileExtents) 
 
 m <- getTileExtents(r, 50)
 out_m <- tile_apply(r, function(x) x + 1, tiles=m)
@@ -27,7 +27,7 @@ ok <- !is.na(v) & !is.na(v_in)
 expect_equal(v[ok], v_in[ok] + 1)
 
 
-# ── tiles given as a list of SpatExtents ─────────────────────────────────────
+# tiles given as a list of SpatExtents
 
 elist <- lapply(seq_len(nrow(m)), function(i) ext(m[i, ]))
 out_list <- tile_apply(r, function(x) x + 1, tiles=elist)
@@ -37,14 +37,14 @@ ok <- !is.na(v) & !is.na(v_in)
 expect_equal(v[ok], v_in[ok] + 1)
 
 
-# ── tiles given as a SpatRaster template ─────────────────────────────────────
+# tiles given as a SpatRaster template
 
 tpl <- rast(ext(r), nrows=2, ncols=2, crs=crs(r))
 out_tpl <- tile_apply(r, function(x) x * 2, tiles=tpl)
 expect_equal(dim(out_tpl), dim(r))
 
 
-# ── extra `...` arguments are forwarded by name ──────────────────────────────
+# extra `...` arguments are forwarded by name
 
 out_dots <- tile_apply(r, function(x, k) x * k, tiles=50, k=3)
 v <- values(out_dots)
@@ -52,13 +52,13 @@ ok <- !is.na(v) & !is.na(v_in)
 expect_equal(v[ok], v_in[ok] * 3)
 
 
-# ── single-tile shortcut (no mosaic call) ────────────────────────────────────
+# single-tile shortcut (no mosaic call) 
 
 out_one <- tile_apply(r, function(x) x + 0, tiles=ext(r))
 expect_equal(dim(out_one), dim(r))
 
 
-# ── focal: buffered tiles + overlap_fun = "mean" assembles via mosaic ────────
+# focal: buffered tiles + overlap_fun = "mean" assembles via mosaic ─
 # (per-tile output includes buffered cells; mean blending across overlap.)
 
 tiles_buf <- getTileExtents(r, 50, buffer=5)
@@ -69,18 +69,18 @@ expect_equal(dim(out_focal), dim(r))
 expect_true(any(!is.na(values(out_focal))))
 
 
-# ── memory-safe assembly: default returns a VRT-backed SpatRaster ────────────
-# (no full materialisation; per-tile files live in tempdir and back the VRT)
-
+# memory-safe assembly: default returns a VRT-backed SpatRaster 
 out_vrt <- tile_apply(r, function(x) x * 2, tiles=50)
-expect_inherits(out_vrt, "SpatRaster")
-expect_true(grepl("\\.vrt$", sources(out_vrt)[1]))
+expect_equal(as.vector(minmax(out_vrt)), c(282, 1094))
+
 v <- values(out_vrt)
 ok <- !is.na(v) & !is.na(v_in)
-expect_equal(v[ok], 2 * v_in[ok])
+expect_equal(as.vector(table(ok)), c(3942, 4608))
+
+expect_true(grepl("\\.vrt$", sources(out_vrt)[1]))
 
 
-# ── memory-safe assembly: filename materialises a single output file ─────────
+# memory-safe assembly: filename materialises a single output file
 
 ftif_seq <- file.path(tempdir(), "tile_apply_test_seq.tif")
 unlink(ftif_seq)
@@ -95,7 +95,7 @@ expect_equal(v[ok], v_in[ok] + 1)
 unlink(ftif_seq)
 
 
-# ── overlap_fun = "first" via mosaic equals input on non-overlapping tiles ───
+# overlap_fun = "first" via mosaic equals input on non-overlapping tiles
 
 out_first <- tile_apply(r, function(x) x + 0, tiles=50, overlap_fun="first")
 expect_equal(dim(out_first), dim(r))
@@ -104,7 +104,7 @@ ok <- !is.na(v) & !is.na(v_in)
 expect_equal(v[ok], v_in[ok])
 
 
-# ── auto buffer: focal(buffer=2) matches a full-raster focal exactly ─────────
+# auto buffer: focal(buffer=2) matches a full-raster focal exactly ──
 # (per-tile output is cropped to the un-buffered tile extent, so the VRT path
 #  yields the same answer as running focal on the whole raster. We write the
 #  intermediates as FLT8S so the comparison is bit-exact; with the default
@@ -128,7 +128,7 @@ ok <- !is.na(v_ref) & !is.na(v_nb)
 expect_true(max(abs(v_ref[ok] - v_nb[ok])) > 0)
 
 
-# ── auto buffer: works in parallel and via filename ─────────────────────────
+# auto buffer: works in parallel and via filename
 
 ftif_buf <- file.path(tempdir(), "tile_apply_test_buf.tif")
 unlink(ftif_buf)
@@ -142,7 +142,7 @@ expect_equal(v_bp[ok], v_ref[ok])
 unlink(ftif_buf)
 
 
-# ── buffer is ignored (with a warning) when tiles is supplied explicitly ────
+# buffer is ignored (with a warning) when tiles is supplied explicitly
 
 expect_warning(
 	out_bw <- tile_apply(r, function(x) x + 1, tiles=50, buffer=3),
@@ -153,7 +153,7 @@ ok <- !is.na(v) & !is.na(v_in)
 expect_equal(v[ok], v_in[ok] + 1)
 
 
-# ── auto tiles: tiles=NULL uses GDAL block size + cores-aware sizing ─────────
+# auto tiles: tiles=NULL uses GDAL block size + cores-aware sizing
 
 # elev.tif's GDAL block is one strip (43 rows x 95 cols), so the auto path
 # produces ~2 tiles regardless of cores (the one-block floor wins).
@@ -171,7 +171,7 @@ v <- values(out_auto2)
 ok <- !is.na(v) & !is.na(v_in)
 expect_equal(v[ok], v_in[ok] + 1)
 
-# ── auto tiles: scaling with cores on a larger in-memory raster ──────────────
+# auto tiles: scaling with cores on a larger in-memory raster
 
 big <- rast(nrows=2000, ncols=2000, vals=1)
 m1 <- getTileExtents(big, cores=1)
@@ -183,7 +183,7 @@ expect_true(nrow(m4) >= nrow(m1))
 # at least cores * 1 tiles for parallelism
 expect_true(nrow(m4) >= 4)
 
-# ── auto tiles: align to GDAL block size on a tiled GeoTIFF ──────────────────
+# auto tiles: align to GDAL block size on a tiled GeoTIFF
 
 ftif <- file.path(tempdir(), "tile_apply_test_tiled.tif")
 writeRaster(big, ftif, overwrite=TRUE,
@@ -216,7 +216,7 @@ if (file.exists(ftif)) {
 }
 
 
-# ── error handling ───────────────────────────────────────────────────────────
+# error handling
 
 expect_error(tile_apply("not a raster", function(x) x, tiles=50))
 expect_error(tile_apply(r, function(x) values(x), tiles=50))   # fun must return a SpatRaster
@@ -228,7 +228,7 @@ expect_true(window(rw))
 expect_error(tile_apply(rw, function(x) x, tiles=50))
 
 
-# ── parallel run ─────────────────────────────────────────────────────────────
+# parallel run ─
 # Wrapped in tryCatch so a worker that cannot start does not break the suite.
 
 if (requireNamespace("parallel", quietly=TRUE)) {
