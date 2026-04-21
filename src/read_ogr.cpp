@@ -418,18 +418,27 @@ static OGRGeometry* linearize_geom(OGRGeometry *poGeometry) {
 	}
 
 	if (gt == wkbGeometryCollection) {
+		// GDAL 3.13 use std::unique_ptr<OGRGeometry>. See #2075
+		#if GDAL_VERSION_NUM >= 3130000
+		#define TERRA_FORCETO(g, t) OGRGeometryFactory::forceTo(std::unique_ptr<OGRGeometry>(g), t).release()
+		#else
+		#define TERRA_FORCETO(g, t) OGRGeometryFactory::forceTo(g, t)
+		#endif
+
 		OGRGeometry *forced;
-		forced = OGRGeometryFactory::forceTo(poGeometry->clone(), wkbMultiPolygon);
+		forced = TERRA_FORCETO(poGeometry->clone(), wkbMultiPolygon);
 		if (forced && !forced->IsEmpty()) return forced;
 		if (forced) OGRGeometryFactory::destroyGeometry(forced);
 
-		forced = OGRGeometryFactory::forceTo(poGeometry->clone(), wkbMultiLineString);
+		forced = TERRA_FORCETO(poGeometry->clone(), wkbMultiLineString);
 		if (forced && !forced->IsEmpty()) return forced;
 		if (forced) OGRGeometryFactory::destroyGeometry(forced);
 
-		forced = OGRGeometryFactory::forceTo(poGeometry->clone(), wkbMultiPoint);
+		forced = TERRA_FORCETO(poGeometry->clone(), wkbMultiPoint);
 		if (forced && !forced->IsEmpty()) return forced;
 		if (forced) OGRGeometryFactory::destroyGeometry(forced);
+
+		#undef TERRA_FORCETO
 	}
 
 	return nullptr;

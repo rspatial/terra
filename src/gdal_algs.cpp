@@ -1532,7 +1532,7 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 
 static bool has_geolocation(GDALDatasetH hDS) {
 	if (hDS == NULL) return false;
-	char **md = GDALGetMetadata(hDS, "GEOLOCATION");
+	CSLConstList md = GDALGetMetadata(hDS, "GEOLOCATION");
 	if (md != NULL && CSLCount(md) > 0) return true;
 	GDALRasterBandH b = GDALGetRasterBand(hDS, 1);
 	if (b != NULL) {
