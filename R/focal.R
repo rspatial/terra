@@ -5,13 +5,19 @@
 
 
 setMethod("focal", signature(x="SpatRaster"),
-function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list(), new=TRUE)  {
+function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list())  {
 
-	na.only <- list(...)$na.only
-	if (!is.null(na.only)) {
-		warn("focal", "use 'na.policy' instead of 'na.only'")
-		na.policy <- "only"
+	dots <- list(...)
+	if (is.null(dots$new)) {
+		new <- TRUE
+	} else {
+		new <- isTRUE(dots$new)
 	}
+
+	#if (!is.null(dots$na.only)) {
+	#	warn("focal", "use 'na.policy' instead of 'na.only'")
+	#	na.policy <- "only"
+	#}
 	na.policy <- match.arg(tolower(na.policy), c("all", "only", "omit"))
 	na.only <- na.policy == "only"
 	na.omit <- na.policy == "omit"
@@ -46,9 +52,9 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 		if (na.only) {
 			narm <- TRUE
 		} else {
-			narm <- isTRUE(list(...)$na.rm)
+			narm <- isTRUE(dots$na.rm)
 		}
-		if (isTRUE(new)) {
+		if (new) {
 			x@pntr <- x@pntr$focal2(w, m, fillvalue, narm, na.only, na.omit, txtfun, expand, opt)
 		} else {
 			x@pntr <- x@pntr$focal(w, m, fillvalue, narm, na.only, na.omit, txtfun, expand, opt)
