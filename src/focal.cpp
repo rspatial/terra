@@ -102,44 +102,86 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 
 	size_t n = nrows * nc * w[0] * w[1];
 	int64_t nrmax = nrows + startoff + endoff - 1;
-	//int nrmax = d.size() / ncol - 1;
-	size_t f = 0;
 
 	std::vector<double> d;
 	readValues(d, startrow, readnrows, 0, nc);
 	std::vector<double> out(n, fillvalue);
 
-// << "sr " << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl;
+	const size_t per_row_out = (size_t)nc * w[0] * w[1];
+	const size_t per_cell_out = (size_t)w[0] * w[1];
+	const int64_t wcols = (int64_t)w[1];
 
-
-	for (int64_t r=0; r < nrows; r++) {
-		for (int64_t c=0; c < nc; c++) {
-			for (int64_t i = -wr; i <= wr; i++) {
-				int64_t row = r+startoff+i;
-				if ((row < 0) || (row > nrmax)) {
-					f += w[1];
-				} else {
-					size_t bcell = row * nc;
-					for (int64_t j = -wc; j <= wc; j++) {
-						int64_t col = c + j;
-						if ((col >= 0) && (col < nc)) {
-							size_t idx = bcell+col;
-							out[f] = d[idx];
-						} else if (global) {
-							if (col < 0) {
-								col = nc + col;
-							} else if (col >= nc) {
-								col = col - nc;
-							}
-							size_t idx = bcell+col;
-							out[f] = d[idx];
+	// Per-row kernel. f is computed from (r, c) so disjoint rows write to
+	// disjoint output slices and the loop is safe to parallelise.
+	//
+	// Two fast paths inside the column loop:
+	//   * interior columns (c-wc >= 0 && c+wc < nc): the entire window row
+	//     fits in the source row, so we can std::copy wnc doubles in one go
+	//     and skip per-column branches.
+	//   * non-global edge columns: the output is already preinitialised to
+	//     fillvalue, so we only need to write the in-bounds slice.
+	auto kernel = [&](int64_t r_begin, int64_t r_end) {
+		for (int64_t r = r_begin; r < r_end; r++) {
+			for (int64_t c = 0; c < nc; c++) {
+				size_t f = (size_t)r * per_row_out + (size_t)c * per_cell_out;
+				const bool col_interior = (c - wc >= 0) && (c + wc < nc);
+				for (int64_t i = -wr; i <= wr; i++) {
+					int64_t row = r + startoff + i;
+					if ((row < 0) || (row > nrmax)) {
+						// out-of-range row: fillvalue is already in `out`
+						f += wcols;
+						continue;
+					}
+					size_t bcell = (size_t)row * (size_t)nc;
+					if (col_interior) {
+						std::copy(d.begin() + bcell + c - wc,
+						          d.begin() + bcell + c + wc + 1,
+						          out.begin() + f);
+						f += wcols;
+					} else if (global) {
+						for (int64_t j = -wc; j <= wc; j++) {
+							int64_t col = c + j;
+							if (col < 0)        col += nc;
+							else if (col >= nc) col -= nc;
+							out[f++] = d[bcell + col];
 						}
-						f++;
+					} else {
+						// non-global edge: write only the in-bounds slice.
+						// Out-of-bounds cells keep the preinitialised fill.
+						int64_t j_lo = std::max<int64_t>(-wc, -c);
+						int64_t j_hi = std::min<int64_t>(wc, nc - 1 - c);
+						if (j_lo <= j_hi) {
+							size_t off_in   = bcell + c + j_lo;
+							size_t off_out  = f + (size_t)(j_lo + wc);
+							std::copy(d.begin() + off_in,
+							          d.begin() + off_in + (size_t)(j_hi - j_lo + 1),
+							          out.begin() + off_out);
+						}
+						f += wcols;
 					}
 				}
 			}
 		}
+	};
+
+#if defined(USE_TBB)
+	// Parallelise the row loop. Threshold avoids task overhead on tiny
+	// blocks (e.g. when the R-side `focal()` calls focalValues on a single
+	// row to probe the user's function). The grain size is in source rows;
+	// we pick something that keeps each task ~O(64KB-1MB) of output.
+	if (ops.parallel && nrows > 4 && per_row_out >= 4096) {
+		int64_t grain = std::max<int64_t>(1, 65536 / (int64_t)per_row_out);
+		terra_parallel_for(ops, tbb::blocked_range<int64_t>(0, nrows, grain),
+			[&](const tbb::blocked_range<int64_t> &r) {
+				kernel(r.begin(), r.end());
+			});
+	} else {
+		kernel(0, nrows);
 	}
+#else
+	kernel(0, nrows);
+#endif
+
 	return out;
 }
 

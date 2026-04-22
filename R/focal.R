@@ -4,8 +4,46 @@
 # License GPL v3
 
 
+# Split a per-block focal-values matrix `v` (cells along rows, msz along cols)
+# into `k` contiguous row-chunks. Each chunk is dispatched to a single worker;
+# this keeps the user's `fun` and the (potentially large) chunk together and
+# avoids per-cell parLapply overhead.
+.focal_split_chunks <- function(v, k) {
+	n <- nrow(v)
+	if (is.null(n) || n < 2L || k <= 1L) return(list(v))
+	k <- min(k, n)
+	starts <- floor(seq.int(1, n + 1, length.out = k + 1L))
+	lapply(seq_len(k), function(i) v[starts[i]:(starts[i+1L] - 1L), , drop = FALSE])
+}
+
+# Per-chunk worker: apply user fun over rows of `chunk`. Bundling extra args via
+# `.dots` (instead of `...`) so the function serialises cleanly.
+.focal_chunk_apply <- function(chunk, .ufun, .dots) {
+	if (length(.dots)) {
+		do.call(apply, c(list(chunk, 1L, .ufun), .dots))
+	} else {
+		apply(chunk, 1L, .ufun)
+	}
+}
+
+# Combine a list of per-chunk apply() results into the same shape that
+# `apply(v, 1, fun, ...)` would return on the full block. `transp` matches
+# the meaning used in the focal() R-fun path.
+.focal_combine <- function(parts, transp) {
+	if (length(parts) == 1L) return(parts[[1L]])
+	first <- parts[[1L]]
+	if (is.matrix(first)) {
+		# fun returns vector / matrix per cell -> apply gives matrix with cells along columns
+		do.call(cbind, parts)
+	} else {
+		# fun returns scalar per cell -> each chunk is a vector
+		unlist(parts, use.names = FALSE)
+	}
+}
+
+
 setMethod("focal", signature(x="SpatRaster"),
-function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list())  {
+function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, silent=TRUE, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list())  {
 
 	dots <- list(...)
 	if (is.null(dots$new)) {
@@ -89,8 +127,49 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 			error("focal", "test failed")
 		}
 
+		# Resolve the `cores` argument. For the R-fun path we parallelise the
+		# per-block apply() across local processes (PSOCK or future). The
+		# C++/built-in path is already TBB-parallel and ignores `cores`.
+		# `.is_future_plan` / `.tile_apply_dispatch` come from tile_apply.R.
+		if (.is_future_plan(cores)) {
+			if (!requireNamespace("future", quietly=TRUE) ||
+				!requireNamespace("future.apply", quietly=TRUE)) {
+				error("focal", "a future plan was passed but 'future' and 'future.apply' are not installed")
+			}
+			oplan <- future::plan(cores)
+			on.exit(future::plan(oplan), add=TRUE)
+			cores <- "future"
+		}
+		disp <- .tile_apply_dispatch(cores)
+		ncores <- disp$ncores
+		par_kind <- disp$kind
+		cl <- disp$cl
+		owns_cl <- disp$owns_cl
+
+		if (par_kind == "cluster" && is.null(cl)) {
+			if (!requireNamespace("parallel", quietly=TRUE)) {
+				error("focal", "'parallel' package is required for cores>1")
+			}
+			cl <- parallel::makeCluster(ncores)
+			owns_cl <- TRUE
+			# load any extra packages on workers (the user fun may need them).
+			# `terra` itself is not needed -- workers only see numeric matrices.
+			if (length(cpkgs)) {
+				ok <- parallel::clusterCall(cl, function(pkgs) {
+					for (p in pkgs) suppressPackageStartupMessages(
+						library(p, character.only = TRUE))
+					TRUE
+				}, as.character(cpkgs))
+			}
+		}
+		if (owns_cl) {
+			on.exit({
+				try(parallel::stopCluster(cl), silent=TRUE)
+			}, add=TRUE)
+		}
+
 		readStart(x)
-		on.exit(readStop(x))
+		on.exit(readStop(x), add=TRUE)
 		nl <- nlyr(x)
 		outnl <- nl * length(test)
 		out <- rast(x, nlyr=outnl)
@@ -120,6 +199,10 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 		b <- writeStart(out, filename, overwrite, n=msz+2, sources=sources(x), wopt=wopt)
 		opt <- spatOptions()
 
+		# Threshold below which falling back to single-process apply() is faster
+		# than splitting & shipping chunks to workers.
+		min_rows_for_par <- max(256L, 64L * ncores)
+
 		for (i in 1:b$n) {
 			vv <- NULL
 			for (j in 1:nl) {
@@ -136,7 +219,21 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 					}
 				}
 				v <- matrix(v, ncol=msz, byrow=TRUE)
-				v <- apply(v, 1, fun, ...)
+
+				if (par_kind != "seq" && nrow(v) >= min_rows_for_par) {
+					chunks <- .focal_split_chunks(v, ncores)
+					if (par_kind == "cluster") {
+						parts <- parallel::parLapplyLB(cl, chunks,
+							.focal_chunk_apply, .ufun=fun, .dots=dots)
+					} else {  # future
+						parts <- future.apply::future_lapply(chunks,
+							.focal_chunk_apply, .ufun=fun, .dots=dots,
+							future.seed=TRUE)
+					}
+					v <- .focal_combine(parts, transp)
+				} else {
+					v <- apply(v, 1, fun, ...)
+				}
 				if (transp) {
 					v <- t(v)
 				}
@@ -163,9 +260,6 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 					}
 				}
 			}
-			#if (bip) {
-			#	v <- matrix(as.vector(v), ncol=ncol(v), byrow=TRUE)
-			#}
 			if (nl > 1) {
 				writeValues(out, vv, b$row[i], b$nrows[i])
 			} else {
