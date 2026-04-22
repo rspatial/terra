@@ -2049,7 +2049,7 @@ SpatRaster SpatRaster::viewshed(const std::vector<double> obs, const std::vector
 	}
 
 	GIntBig diskNeeded = ncell() * 4;
-	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, topt.gdal_options);
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, topt.parallel, topt.gdal_options);
 
 	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
 
@@ -2162,7 +2162,7 @@ SpatRaster SpatRaster::proximity(double target, double exclude, bool keepNA, std
 	}
 
 	GIntBig diskNeeded = ncell() * 4;
-	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.parallel, opt.gdal_options);
 	papszOptions = CSLSetNameValue(papszOptions, "DISTUNITS", "GEO");
 
 	SpatOptions ops(opt);

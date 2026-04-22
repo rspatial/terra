@@ -860,7 +860,7 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 
 
 
-char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, std::vector<std::string> gdal_options) {
+char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, bool parallel, std::vector<std::string> gdal_options) {
 
 	char ** gdalops = NULL;
 	if (driver == "GTiff") {
@@ -888,6 +888,18 @@ char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, s
 			}
 			if (big) {
 				gdalops = CSLSetNameValue( gdalops, "BIGTIFF", "YES");
+			}
+		}
+		if (compressed && parallel) {
+			bool numt = true;
+			for (size_t i=0; i<gdal_options.size(); i++) {
+				if (gdal_options[i].substr(0, 10) == "NUM_THREADS") {
+					numt = false;
+					break;
+				}
+			}
+			if (numt) {
+				gdalops = CSLSetNameValue( gdalops, "NUM_THREADS", "ALL_CPUS");				
 			}
 		}
 		if (writeRGB) {
@@ -933,7 +945,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 			return(false);
 		}
 
-		papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
+		papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.parallel, opt.gdal_options);
 
 		if (datatype == "INT4S") {
 			naflag = INT32_MIN; //-2147483648;

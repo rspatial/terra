@@ -485,7 +485,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt, const std::vector<std::string>
 	if (std::find(opt.gdal_options.begin(), opt.gdal_options.end(), streamstr) != opt.gdal_options.end()) {
 		compute_stats = false;
 	}
-	char **papszOptions = set_GDAL_options(driver, diskNeeded, writeRGB, opt.gdal_options);
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, writeRGB, opt.parallel, opt.gdal_options);
 
 /*	if (driver == "GTiff") {
 		GDAL_tiff_options(diskNeeded > 4194304000, writeRGB, opt);
@@ -1103,7 +1103,7 @@ bool SpatRaster::writeStopGDAL() {
 	} else {
 		GDALDataset *newDS;
 		GDALDriver *poDriver;
-		char **papszOptions = set_GDAL_options(copy_driver, 0.0, false, gdal_options);
+		char **papszOptions = set_GDAL_options(copy_driver, 0.0, false, false, gdal_options);
 		poDriver = GetGDALDriverManager()->GetDriverByName(copy_driver.c_str());
 		if (copy_filename.empty()) {
 			newDS = poDriver->CreateCopy(source[0].filename.c_str(),
