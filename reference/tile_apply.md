@@ -34,10 +34,17 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 
 - cores:
 
-  integer, or a `cluster` object created with
-  [`parallel::makeCluster`](https://rdrr.io/r/parallel/makeCluster.html).
-  If a number greater than 1, a PSOCK cluster of that size is created
-  and torn down inside the call
+  one of: an integer (`> 1` creates a PSOCK cluster of that size, torn
+  down at the end of the call); a `cluster` object created with
+  [`parallel::makeCluster`](https://rdrr.io/r/parallel/makeCluster.html);
+  the string `"future"` (use
+  [`future_lapply`](https://future.apply.futureverse.org/reference/future_lapply.html)
+  with the currently-active
+  `future::`[`plan`](https://future.futureverse.org/reference/plan.html));
+  or a future strategy object (e.g.
+  [`future::multisession()`](https://future.futureverse.org/reference/multisession.html)),
+  which is set as the plan for the duration of the call. The `"future"`
+  and plan-object paths require the future and future.apply packages
 
 - cpkgs:
 
@@ -156,14 +163,26 @@ and the per-tile intermediate files are removed. If `filename` is empty
 and a VRT is being built, the per-tile files are kept for the rest of
 the R session because they back the returned raster.
 
-When `cores > 1`, `x` is shipped to the workers with
+When `cores > 1` (or a cluster / future plan is used), `x` is shipped to
+the workers with
 [`wrap`](https://rspatial.github.io/terra/reference/wrap.md). For
 file-backed rasters this is cheap (only the metadata and filename travel
 across the worker boundary, and each worker re-opens the file
-independently). For in-memory rasters the values are copied to each
-worker.
+independently). For in-memory rasters that are too large to embed,
+`wrap` writes them to a temporary file first and ships the path – so
+very large in-memory rasters are silently materialised to disk before
+parallel execution.
 
 Extra arguments passed via `...` must be named when `cores > 1`.
+
+**Choosing a backend.** Use a plain integer (or a PSOCK `cluster`) for
+one-shot, single-machine parallelism without extra dependencies. Use
+`cores = "future"` (or pass a future plan) when you want to compose with
+the rest of a future-based pipeline, run on a remote / HPC backend
+([`future::cluster`](https://future.futureverse.org/reference/cluster.html),
+`future.batchtools`, ...), or hook in a progress reporter (`progressr`).
+The wrap/unwrap dance and per-tile disk-streaming are identical across
+backends.
 
 ## Value
 
@@ -177,7 +196,8 @@ A `SpatRaster`.
 [`vrt`](https://rspatial.github.io/terra/reference/vrt.md),
 [`window`](https://rspatial.github.io/terra/reference/window.md),
 [`wrap`](https://rspatial.github.io/terra/reference/wrap.md),
-[`app`](https://rspatial.github.io/terra/reference/app.md)
+[`app`](https://rspatial.github.io/terra/reference/app.md),
+[`future_app`](https://rspatial.github.io/terra/reference/future_app.md)
 
 ## Examples
 
@@ -213,6 +233,14 @@ out4 <- tile_apply(r, function(x) x * 2, cores=2)
 
 # pass extra arguments by name; nested terra objects are auto-wrapped
 out5 <- tile_apply(r, function(x, k) x * k, cores=2, tiles=50, k=10)
+
+# use a future plan instead of a cluster
+if (requireNamespace("future", quietly=TRUE) &&
+    requireNamespace("future.apply", quietly=TRUE)) {
+    future::plan(future::multisession, workers=2)
+    out6 <- tile_apply(r, function(x) x * 2, cores="future")
+    future::plan(future::sequential)
+}
 } # }
 # }
 ```

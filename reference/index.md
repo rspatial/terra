@@ -458,6 +458,10 @@
 - [`freq(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/freq.md)
   : Frequency table
 
+- [`future_app()`](https://rspatial.github.io/terra/reference/future_app.md)
+  [`future_focal()`](https://rspatial.github.io/terra/reference/future_app.md)
+  : Run app() or focal() over tiles using a future plan
+
 - [`gaps(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/gaps.md)
   : Find gaps between polygons
 

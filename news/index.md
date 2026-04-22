@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-21
+## version 1.9-22
 
 ### bug fixes
 
@@ -109,6 +109,7 @@
   [\#1350](https://github.com/rspatial/terra/issues/1350) by Richard A.
   Johansen
 - `tessallate` method to create hexagonal and rectangular tessallations
+- `tile_apply` for parallelization
 
 ## version 1.9-11
 

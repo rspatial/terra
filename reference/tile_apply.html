@@ -9,7 +9,7 @@ This is the &amp;#8220;Strategy 3&amp;#8221; pattern from the terra parallelizat
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-22</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@ This is the &amp;#8220;Strategy 3&amp;#8221; pattern from the terra parallelizat
 <dd><p>function. Takes a <code>SpatRaster</code> as its first argument and must return a <code>SpatRaster</code>. It is called once per tile, with the windowed <code>x</code> as the first argument and any extra <code>...</code> arguments appended</p></dd>
 
   <dt id="arg-cores">cores<a class="anchor" aria-label="anchor" href="#arg-cores"></a></dt>
-<dd><p>integer, or a <code>cluster</code> object created with <code><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">parallel::makeCluster</a></code>. If a number greater than 1, a PSOCK cluster of that size is created and torn down inside the call</p></dd>
+<dd><p>one of: an integer (<code>&gt; 1</code> creates a PSOCK cluster of that size, torn down at the end of the call); a <code>cluster</code> object created with <code><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">parallel::makeCluster</a></code>; the string <code>"future"</code> (use <code><a href="https://future.apply.futureverse.org/reference/future_lapply.html" class="external-link">future_lapply</a></code> with the currently-active <code>future::<a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></code>); or a future strategy object (e.g. <code><a href="https://future.futureverse.org/reference/multisession.html" class="external-link">future::multisession()</a></code>), which is set as the plan for the duration of the call. The <code>"future"</code> and plan-object paths require the <span class="pkg">future</span> and <span class="pkg">future.apply</span> packages</p></dd>
 
   <dt id="arg-cpkgs">cpkgs<a class="anchor" aria-label="anchor" href="#arg-cpkgs"></a></dt>
 <dd><p>character. Names of packages that must be loaded on each worker before <code>fun</code> is called (e.g. <code>"randomForest"</code>)</p></dd>
@@ -93,8 +93,9 @@ This is the &amp;#8220;Strategy 3&amp;#8221; pattern from the terra parallelizat
 <p>The per-tile files are then assembled into the final <code>SpatRaster</code>:</p><ul><li><p>When <code>overlap_fun = NULL</code> (the default), the assembly is a virtual raster (<code><a href="vrt.html">vrt</a></code>). This is essentially free and never reads the pixel data again. It is correct as long as the tiles do not overlap; if they do (e.g. when built with <code>getTileExtents(..., buffer=)</code>), GDAL keeps the value of the last tile drawn in the overlap region.</p></li>
 <li><p>When <code>overlap_fun</code> is set (e.g. <code>"mean"</code>), the assembly uses <code><a href="mosaic.html">mosaic</a></code> which streams the data through terra's standard chunked I/O and applies <code>overlap_fun</code> on overlapping cells. This is the right path for buffered tiles, focal operations, and similar.</p></li>
 </ul><p>If <code>filename</code> is supplied, the assembled result is materialised there and the per-tile intermediate files are removed. If <code>filename</code> is empty and a VRT is being built, the per-tile files are kept for the rest of the R session because they back the returned raster.</p>
-<p>When <code>cores &gt; 1</code>, <code>x</code> is shipped to the workers with <code><a href="wrap.html">wrap</a></code>. For file-backed rasters this is cheap (only the metadata and filename travel across the worker boundary, and each worker re-opens the file independently). For in-memory rasters the values are copied to each worker.</p>
+<p>When <code>cores &gt; 1</code> (or a cluster / future plan is used), <code>x</code> is shipped to the workers with <code><a href="wrap.html">wrap</a></code>. For file-backed rasters this is cheap (only the metadata and filename travel across the worker boundary, and each worker re-opens the file independently). For in-memory rasters that are too large to embed, <code>wrap</code> writes them to a temporary file first and ships the path – so very large in-memory rasters are silently materialised to disk before parallel execution.</p>
 <p>Extra arguments passed via <code>...</code> must be named when <code>cores &gt; 1</code>.</p>
+<p><strong>Choosing a backend.</strong> Use a plain integer (or a PSOCK <code>cluster</code>) for one-shot, single-machine parallelism without extra dependencies. Use <code>cores = "future"</code> (or pass a future plan) when you want to compose with the rest of a <span class="pkg">future</span>-based pipeline, run on a remote / HPC backend (<code><a href="https://future.futureverse.org/reference/cluster.html" class="external-link">future::cluster</a></code>, <code>future.batchtools</code>, ...), or hook in a progress reporter (<code>progressr</code>). The wrap/unwrap dance and per-tile disk-streaming are identical across backends.</p>
     </div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -102,7 +103,7 @@ This is the &amp;#8220;Strategy 3&amp;#8221; pattern from the terra parallelizat
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="makeTiles.html">getTileExtents</a></code>, <code><a href="makeTiles.html">makeTiles</a></code>, <code><a href="mosaic.html">mosaic</a></code>, <code><a href="vrt.html">vrt</a></code>, <code><a href="window.html">window</a></code>, <code><a href="wrap.html">wrap</a></code>, <code><a href="app.html">app</a></code></p></div>
+    <div class="dont-index"><p><code><a href="makeTiles.html">getTileExtents</a></code>, <code><a href="makeTiles.html">makeTiles</a></code>, <code><a href="mosaic.html">mosaic</a></code>, <code><a href="vrt.html">vrt</a></code>, <code><a href="window.html">window</a></code>, <code><a href="wrap.html">wrap</a></code>, <code><a href="app.html">app</a></code>, <code><a href="future_app.html">future_app</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -138,6 +139,14 @@ This is the &amp;#8220;Strategy 3&amp;#8221; pattern from the terra parallelizat
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># pass extra arguments by name; nested terra objects are auto-wrapped</span></span></span>
 <span class="r-in"><span><span class="va">out5</span> <span class="op">&lt;-</span> <span class="fu">tile_apply</span><span class="op">(</span><span class="va">r</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">k</span><span class="op">)</span> <span class="va">x</span> <span class="op">*</span> <span class="va">k</span>, cores<span class="op">=</span><span class="fl">2</span>, tiles<span class="op">=</span><span class="fl">50</span>, k<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use a future plan instead of a cluster</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"future"</span>, quietly<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"future.apply"</span>, quietly<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/multisession.html" class="external-link">multisession</a></span>, workers<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">out6</span> <span class="op">&lt;-</span> <span class="fu">tile_apply</span><span class="op">(</span><span class="va">r</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span> <span class="op">*</span> <span class="fl">2</span>, cores<span class="op">=</span><span class="st">"future"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="fu">future</span><span class="fu">::</span><span class="va"><a href="https://future.futureverse.org/reference/sequential.html" class="external-link">sequential</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
