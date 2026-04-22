@@ -1,4 +1,4 @@
-# version 1.9-21
+# version 1.9-22
 
 ## bug fixes
 
@@ -41,6 +41,7 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - `legend_cont` method to draw a continuous legend independent of `plot` [#2057](https://github.com/rspatial/terra/issues/2057) by Lucas Salinas Morales
 - `proj_pipelines` function to retrieve crs tranformation pipelines that can be used in `project` [#1350](https://github.com/rspatial/terra/issues/1350) by Richard A. Johansen
 - `tessallate` method to create hexagonal and rectangular tessallations
+- `tile_apply` for parallelization
 
 
 # version 1.9-11

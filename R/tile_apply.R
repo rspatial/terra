@@ -100,6 +100,70 @@
 }
 
 
+# Per-tile worker. Defined at file scope (not as a closure) so it serializes
+# cleanly across PSOCK/forked/future workers without dragging tile_apply()'s
+# local environment along. Argument names must NOT collide with parLapply()
+# args (cl, X, fun, chunk.size).
+.tile_apply_worker <- function(.job, .px, .ufun, .args, .wopt) {
+	.unw <- function(a) {
+		if (inherits(a, "Packed")) terra::unwrap(a)
+		else if (is.list(a) && !is.object(a)) lapply(a, .unw)
+		else a
+	}
+	x <- terra::unwrap(.px)
+	terra::window(x) <- terra::ext(.job$outer)
+	.args <- lapply(.args, .unw)
+	r <- do.call(.ufun, c(list(x), .args))
+	if (!inherits(r, "SpatRaster")) {
+		stop("'fun' must return a SpatRaster for every tile")
+	}
+	# crop to the inner (un-buffered) extent so per-tile outputs do not
+	# overlap and assemble cleanly with vrt()
+	if (!identical(.job$outer, .job$inner)) {
+		r <- terra::crop(r, terra::ext(.job$inner), snap="near")
+	}
+	terra::writeRaster(r, filename=.job$file, overwrite=TRUE, wopt=.wopt)
+	.job$file
+}
+
+
+# Detect future-related `cores` values without calling the strategy: a bare
+# strategy function (e.g. future::multisession) is class "future"+"function";
+# a tweaked strategy (e.g. future::multisession(workers=2)) is "tweaked"+
+# "future". Both should route through future.apply.
+.is_future_plan <- function(cores) {
+	inherits(cores, c("FutureStrategy", "tweaked")) ||
+	(inherits(cores, "future") && is.function(cores))
+}
+
+
+# Inspect `cores` and decide which dispatch path to use. Returns a named
+# list with: $kind in {"seq","cluster","future"}, $ncores (int), $cl (cluster
+# or NULL), $owns_cl (TRUE iff we created the cluster and must stop it).
+# The future-plan setup (installing/restoring the plan) is handled in
+# tile_apply() so that on.exit is attached to the right frame; here we only
+# resolve the worker count.
+.tile_apply_dispatch <- function(cores) {
+	if (inherits(cores, "cluster")) {
+		return(list(kind="cluster", ncores=length(cores), cl=cores, owns_cl=FALSE))
+	}
+	if (is.character(cores) && length(cores) == 1 &&
+		tolower(cores) %in% c("future", "future.apply")) {
+		if (!requireNamespace("future", quietly=TRUE) ||
+			!requireNamespace("future.apply", quietly=TRUE)) {
+			error("tile_apply", "cores='future' requires the 'future' and 'future.apply' packages")
+		}
+		return(list(kind="future", ncores=max(1L, future::nbrOfWorkers()),
+					cl=NULL, owns_cl=FALSE))
+	}
+	n <- max(as.integer(cores)[1], 1L)
+	if (n > 1L) {
+		return(list(kind="cluster", ncores=n, cl=NULL, owns_cl=TRUE))
+	}
+	list(kind="seq", ncores=1L, cl=NULL, owns_cl=FALSE)
+}
+
+
 tile_apply <- function(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 					   filename="", overwrite=FALSE, wopt=list(),
 					   overlap_fun=NULL) {
@@ -119,9 +183,23 @@ tile_apply <- function(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 		buffer <- 0
 	}
 
-	# resolve cores up-front so the auto tile sizer knows about it
-	ncores <- if (inherits(cores, "cluster")) length(cores)
-			  else max(as.integer(cores)[1], 1L)
+	# If the caller passed a future plan/strategy via cores=, install it
+	# now and restore on exit -- so subsequent dispatch and tile sizing see
+	# the new nbrOfWorkers(). After installation, the dispatch path becomes
+	# the regular "future" string path.
+	if (.is_future_plan(cores)) {
+		if (!requireNamespace("future", quietly=TRUE) ||
+			!requireNamespace("future.apply", quietly=TRUE)) {
+			error("tile_apply", "a future plan was passed but 'future' and 'future.apply' are not installed")
+		}
+		oplan <- future::plan(cores)
+		on.exit(future::plan(oplan), add=TRUE)
+		cores <- "future"
+	}
+
+	# resolve dispatch + cores up-front so the auto tile sizer knows about it
+	disp <- .tile_apply_dispatch(cores)
+	ncores <- disp$ncores
 
 	exts <- .tile_apply_extents(x, tiles, cores=ncores, buffer=buffer)
 	ntiles <- length(exts)
@@ -138,19 +216,15 @@ tile_apply <- function(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 		if (!keep_tiles) unlink(tdir, recursive=TRUE)
 	}, add=TRUE)
 
-	doclust <- FALSE
-	if (inherits(cores, "cluster")) {
-		cl <- cores
-		doclust <- TRUE
-	} else if (is.numeric(cores) && cores[1] > 1) {
-		cl <- parallel::makeCluster(cores[1])
-		doclust <- TRUE
-		on.exit(parallel::stopCluster(cl), add=TRUE)
-	} else {
-		cl <- NULL
-	}
+	if (disp$kind == "cluster") {
+		cl <- disp$cl
+		if (is.null(cl)) {
+			cl <- parallel::makeCluster(disp$ncores)
+		}
+		if (disp$owns_cl) {
+			on.exit(parallel::stopCluster(cl), add=TRUE)
+		}
 
-	if (doclust) {
 		# every worker needs terra
 		parallel::clusterCall(cl, function() {
 			suppressPackageStartupMessages(library(terra))
@@ -170,38 +244,25 @@ tile_apply <- function(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 		args <- lapply(list(...), .tile_apply_wrap)
 
 		# Build per-tile jobs: each job carries its own (outer, inner) extent
-		# and output file. Workers write the cropped result to that file and retunr the path
+		# and output file. Workers write the cropped result and return the path.
 		jobs <- mapply(function(p, f) list(outer=p$outer, inner=p$inner, file=f),
 					   exts, tile_files, SIMPLIFY=FALSE)
 
-		# inline closure so the function travels cleanly across workers
-		# arg names must NOT collide with parallel::parLapply args (cl, X, fun, chunk.size)
-		worker <- function(.job, .px, .ufun, .args, .wopt) {
-			.unw <- function(a) {
-				if (inherits(a, "Packed")) terra::unwrap(a)
-				else if (is.list(a) && !is.object(a)) lapply(a, .unw)
-				else a
-			}
-			x <- terra::unwrap(.px)
-			terra::window(x) <- terra::ext(.job$outer)
-			.args <- lapply(.args, .unw)
-			r <- do.call(.ufun, c(list(x), .args))
-			if (!inherits(r, "SpatRaster")) {
-				stop("'fun' must return a SpatRaster for every tile")
-			}
-			# crop to the inner (un-buffered) extent so per-tile outputs
-			# do not overlap and assemble cleanly with vrt()
-			if (!identical(.job$outer, .job$inner)) {
-				r <- terra::crop(r, terra::ext(.job$inner), snap="near")
-			}
-			terra::writeRaster(r, filename=.job$file,
-							   overwrite=TRUE, wopt=.wopt)
-			.job$file
-		}
-		environment(worker) <- globalenv()
-
-		out_files <- unlist(parallel::parLapply(cl, jobs, worker,
+		out_files <- unlist(parallel::parLapply(cl, jobs, .tile_apply_worker,
 			.px=px, .ufun=fun, .args=args, .wopt=wopt))
+	} else if (disp$kind == "future") {
+		# Plan was already installed up-front (if the caller passed one).
+		# We just dispatch to future.apply::future_lapply with the same
+		# wrap/unwrap contract as the cluster path.
+		px <- wrap(x)
+		args <- lapply(list(...), .tile_apply_wrap)
+		jobs <- mapply(function(p, f) list(outer=p$outer, inner=p$inner, file=f),
+					   exts, tile_files, SIMPLIFY=FALSE)
+		fpkgs <- unique(c("terra", as.character(cpkgs)))
+
+		out_files <- unlist(future.apply::future_lapply(jobs, .tile_apply_worker,
+			.px=px, .ufun=fun, .args=args, .wopt=wopt,
+			future.packages=fpkgs, future.seed=TRUE))
 	} else {
 		# sequential path - same disk-streaming contract as the workers
 		args <- list(...)

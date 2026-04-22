@@ -19,7 +19,7 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 \arguments{
   \item{x}{\code{SpatRaster}. Should normally be backed by a file (so that workers can re-open it cheaply); in-memory rasters are shipped to the workers via \code{\link{wrap}}}
   \item{fun}{function. Takes a \code{SpatRaster} as its first argument and must return a \code{SpatRaster}. It is called once per tile, with the windowed \code{x} as the first argument and any extra \code{...} arguments appended}
-  \item{cores}{integer, or a \code{cluster} object created with \code{parallel::makeCluster}. If a number greater than 1, a PSOCK cluster of that size is created and torn down inside the call}
+  \item{cores}{one of: an integer (\code{> 1} creates a PSOCK cluster of that size, torn down at the end of the call); a \code{cluster} object created with \code{parallel::makeCluster}; the string \code{"future"} (use \code{\link[future.apply]{future_lapply}} with the currently-active \code{future::\link[future]{plan}}); or a future strategy object (e.g. \code{future::multisession()}), which is set as the plan for the duration of the call. The \code{"future"} and plan-object paths require the \pkg{future} and \pkg{future.apply} packages}
   \item{cpkgs}{character. Names of packages that must be loaded on each worker before \code{fun} is called (e.g. \code{"randomForest"})}
   \item{tiles}{specification of the tiles. If \code{NULL} (the default), the tile size is chosen automatically from the GDAL block size of \code{x} and a per-worker memory budget that depends on \code{cores} (see \code{\link{getTileExtents}} \emph{Details}). Otherwise one of: a \code{SpatExtent}; a list of \code{SpatExtent}s; a 4-column matrix of extents \code{(xmin, xmax, ymin, ymax)} as returned by \code{\link{getTileExtents}}; a \code{SpatRaster} or \code{SpatVector} that defines the tile geometry; or one or two integers specifying the number of rows and columns \emph{per tile} (passed on to \code{\link{getTileExtents}})}
   \item{buffer}{integer. Number of additional rows and columns (one number, or two for separate row/column buffers) of \code{x} to read on each side of every tile, so that \code{fun} can compute neighbourhood-dependent values (e.g. \code{\link{focal}}) without edge artefacts. The result of \code{fun} is then cropped back to the un-buffered tile extent before it is written, so the per-tile outputs are non-overlapping and assemble cleanly. Only used when \code{tiles = NULL}; ignored with a warning otherwise (when supplying \code{tiles} explicitly, build the overlap into the tiles yourself with \code{getTileExtents(..., buffer=)} and pick an \code{overlap_fun})}
@@ -45,9 +45,11 @@ The per-tile files are then assembled into the final \code{SpatRaster}:
 
 If \code{filename} is supplied, the assembled result is materialised there and the per-tile intermediate files are removed. If \code{filename} is empty and a VRT is being built, the per-tile files are kept for the rest of the R session because they back the returned raster.
 
-When \code{cores > 1}, \code{x} is shipped to the workers with \code{\link{wrap}}. For file-backed rasters this is cheap (only the metadata and filename travel across the worker boundary, and each worker re-opens the file independently). For in-memory rasters the values are copied to each worker.
+When \code{cores > 1} (or a cluster / future plan is used), \code{x} is shipped to the workers with \code{\link{wrap}}. For file-backed rasters this is cheap (only the metadata and filename travel across the worker boundary, and each worker re-opens the file independently). For in-memory rasters that are too large to embed, \code{wrap} writes them to a temporary file first and ships the path -- so very large in-memory rasters are silently materialised to disk before parallel execution.
 
 Extra arguments passed via \code{...} must be named when \code{cores > 1}.
+
+\strong{Choosing a backend.} Use a plain integer (or a PSOCK \code{cluster}) for one-shot, single-machine parallelism without extra dependencies. Use \code{cores = "future"} (or pass a future plan) when you want to compose with the rest of a \pkg{future}-based pipeline, run on a remote / HPC backend (\code{future::cluster}, \code{future.batchtools}, ...), or hook in a progress reporter (\code{progressr}). The wrap/unwrap dance and per-tile disk-streaming are identical across backends.
 }
 
 \value{
@@ -55,7 +57,7 @@ A \code{SpatRaster}.
 }
 
 \seealso{
-\code{\link{getTileExtents}}, \code{\link{makeTiles}}, \code{\link{mosaic}}, \code{\link{vrt}}, \code{\link{window}}, \code{\link{wrap}}, \code{\link{app}}
+\code{\link{getTileExtents}}, \code{\link{makeTiles}}, \code{\link{mosaic}}, \code{\link{vrt}}, \code{\link{window}}, \code{\link{wrap}}, \code{\link{app}}, \code{\link{future_app}}
 }
 
 \examples{
@@ -90,6 +92,14 @@ out4 <- tile_apply(r, function(x) x * 2, cores=2)
 
 # pass extra arguments by name; nested terra objects are auto-wrapped
 out5 <- tile_apply(r, function(x, k) x * k, cores=2, tiles=50, k=10)
+
+# use a future plan instead of a cluster
+if (requireNamespace("future", quietly=TRUE) &&
+    requireNamespace("future.apply", quietly=TRUE)) {
+    future::plan(future::multisession, workers=2)
+    out6 <- tile_apply(r, function(x) x * 2, cores="future")
+    future::plan(future::sequential)
+}
 }
 }
 }
