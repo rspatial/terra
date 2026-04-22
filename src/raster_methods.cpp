@@ -28,6 +28,8 @@
 #include "sort.h"
 #include "spatLookup.h"
 
+#include "tbb_helper.h"
+
 SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, 
 	double othersValue, SpatOptions &opt) {
 		
@@ -101,34 +103,62 @@ SpatRaster SpatRaster::lookup_apply(std::vector<double> from_vals, std::vector<d
 	}
 		
 	std::vector<double> v;
+	// Per-cell kernels. The bodies are pure functions of v[j] (and read-only
+	// state captured from the surrounding scope), so they parallelise cleanly:
+	// std::unordered_map::find is thread-safe for concurrent reads, and lut /
+	// lut_set are not mutated after the setup above.
+	auto kernel_lut = [&](size_t b, size_t e) {
+		for (size_t j = b; j < e; j++) {
+			double val = v[j];
+			if (!std::isnan(val) && val >= min_v && val <= max_v && val == std::floor(val)) {
+				size_t idx = (size_t)val - min_v;
+				if (lut_set[idx]) {
+					v[j] = lut[idx];
+				} else if (others) {
+					v[j] = othersValue;
+				}
+			} else if (others) {
+				v[j] = othersValue;
+			}
+		}
+	};
+	auto kernel_map = [&](size_t b, size_t e) {
+		for (size_t j = b; j < e; j++) {
+			auto it = lookup_map.find(v[j]);
+			if (it != lookup_map.end()) {
+				v[j] = it->second;
+			} else if (others) {
+				v[j] = othersValue;
+			}
+		}
+	};
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		v.clear();
 		readBlock(v, out.bs, i);
-		
-		if (use_direct_lut) {
-			for (size_t j = 0; j < v.size(); j++) {
-				double val = v[j];
-				if (!std::isnan(val) && val >= min_v && val <= max_v && val == std::floor(val)) {
-					size_t idx = (size_t)val - min_v;
-					if (lut_set[idx]) {
-						v[j] = lut[idx];
-					} else if (others) {
-						v[j] = othersValue;
-					}
-				} else if (others) {
-					v[j] = othersValue;
-				}
+		size_t n = v.size();
+
+#if defined(USE_TBB)
+		if (opt.parallel && n >= 16384) {
+			if (use_direct_lut) {
+				terra_parallel_for(opt, tbb::blocked_range<size_t>(0, n),
+					[&](const tbb::blocked_range<size_t>& r){ kernel_lut(r.begin(), r.end()); });
+			} else {
+				terra_parallel_for(opt, tbb::blocked_range<size_t>(0, n),
+					[&](const tbb::blocked_range<size_t>& r){ kernel_map(r.begin(), r.end()); });
 			}
+		} else if (use_direct_lut) {
+			kernel_lut(0, n);
 		} else {
-			for (size_t j = 0; j < v.size(); j++) {
-				auto it = lookup_map.find(v[j]);
-				if (it != lookup_map.end()) {
-					v[j] = it->second;
-				} else if (others) {
-					v[j] = othersValue;
-				}
-			}
+			kernel_map(0, n);
 		}
+#else
+		if (use_direct_lut) {
+			kernel_lut(0, n);
+		} else {
+			kernel_map(0, n);
+		}
+#endif
 
 		if (!out.writeBlock(v, i)) {
 			readStop();
@@ -4937,6 +4967,9 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 		return out;
 	}
 
+	// All three paths below run a per-cell hash lookup over the read block.
+	// The lookup tables are immutable after construction and we only write to
+	// disjoint cells of `vv`, so the per-cell loop is safe to TBB-parallelise.
 	if (mout) {
 		size_t tosz = to.size() / nl;
 		size_t nlyr = out.nlyr();
@@ -4962,12 +4995,25 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 					lookup[from[j]] = tolyr[j];
 				}
 				size_t offset = lyr*vs;
-				for (size_t k=offset; k<(offset+vs); k++) {
-					auto it = lookup.find(v[k]);
-					if (it != lookup.end()) {
-						vv[k] = it->second;
+				size_t off_end = offset + vs;
+				auto kernel = [&](size_t b, size_t e) {
+					for (size_t k = b; k < e; k++) {
+						auto it = lookup.find(v[k]);
+						if (it != lookup.end()) {
+							vv[k] = it->second;
+						}
 					}
+				};
+#if defined(USE_TBB)
+				if (opt.parallel && vs >= 16384) {
+					terra_parallel_for(opt, tbb::blocked_range<size_t>(offset, off_end),
+						[&](const tbb::blocked_range<size_t>& r){ kernel(r.begin(), r.end()); });
+				} else {
+					kernel(offset, off_end);
 				}
+#else
+				kernel(offset, off_end);
+#endif
 			}
 			if (!out.writeBlock(vv, i)) return out;
 		}
@@ -4990,16 +5036,31 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 			readBlock(v, out.bs, i);
 			size_t nc = v.size() / nlr;
 			std::vector<double> vv(nc, others);
-			std::vector<double> pixel_values(nlr);
-			for (size_t j=0; j<nc; j++) {
-				for (size_t k=0; k<nlr; k++) {
-					pixel_values[k] = v[nc*k+j];
+			// Per-pixel vector lookup: for each output cell j we gather the
+			// nlr-long pixel vector from the layered block. Each task owns its
+			// own scratch buffer to avoid sharing.
+			auto kernel = [&](size_t b, size_t e) {
+				std::vector<double> pixel_values(nlr);
+				for (size_t j = b; j < e; j++) {
+					for (size_t k=0; k<nlr; k++) {
+						pixel_values[k] = v[nc*k+j];
+					}
+					auto it = lookup.find(pixel_values);
+					if (it != lookup.end()) {
+						vv[j] = it->second;
+					}
 				}
-				auto it = lookup.find(pixel_values);
-				if (it != lookup.end()) {
-					vv[j] = it->second;
-				}
+			};
+#if defined(USE_TBB)
+			if (opt.parallel && nc >= 16384) {
+				terra_parallel_for(opt, tbb::blocked_range<size_t>(0, nc),
+					[&](const tbb::blocked_range<size_t>& r){ kernel(r.begin(), r.end()); });
+			} else {
+				kernel(0, nc);
 			}
+#else
+			kernel(0, nc);
+#endif
 			if (!out.writeBlock(vv, i)) return out;
 		}
 	} else {
@@ -5018,12 +5079,25 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 			} else {
 				vv = v;
 			}
-			for (size_t k=0; k<v.size(); k++) {
-				auto it = lookup.find(v[k]);
-				if (it != lookup.end()) {
-					vv[k] = it->second;
+			size_t n = v.size();
+			auto kernel = [&](size_t b, size_t e) {
+				for (size_t k = b; k < e; k++) {
+					auto it = lookup.find(v[k]);
+					if (it != lookup.end()) {
+						vv[k] = it->second;
+					}
 				}
+			};
+#if defined(USE_TBB)
+			if (opt.parallel && n >= 16384) {
+				terra_parallel_for(opt, tbb::blocked_range<size_t>(0, n),
+					[&](const tbb::blocked_range<size_t>& r){ kernel(r.begin(), r.end()); });
+			} else {
+				kernel(0, n);
 			}
+#else
+			kernel(0, n);
+#endif
 			if (!out.writeBlock(vv, i)) return out;
 		}
 	}
@@ -5033,14 +5107,21 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 }
 
 
-void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl, bool right_closed, bool left_right_closed, bool lowest, bool others, double othersValue) {
+// In-place reclass of v[beg..end). The classification rules `rcl` are not
+// modified (the only sort is on a local copy), so this function is safe to
+// call concurrently from multiple TBB tasks on disjoint [beg, end) ranges of
+// the same `v`.
+void reclass_vector_range(std::vector<double> &v, size_t beg, size_t end,
+		const std::vector<std::vector<double>> &rcl,
+		bool right_closed, bool left_right_closed, bool lowest,
+		bool others, double othersValue) {
 
 
 	size_t nc = rcl.size(); // should be 2 or 3
 
 	double NAval = NAN;
 
-	size_t n = v.size();
+	size_t n = end;
 	size_t nr = rcl[0].size();
 
 	if (nc == 1) {
@@ -5048,7 +5129,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 		std::sort(rc.begin(), rc.end());
 		if (right_closed) {
 			if (lowest)	{
-				for (size_t i=0; i<n; i++) {
+				for (size_t i=beg; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
 					} else if ((v[i] < rc[0]) || (v[i] > rc[nr-1])) {
@@ -5063,7 +5144,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					}
 				}
 			} else { // !lowest
-				for (size_t i=0; i<n; i++) {
+				for (size_t i=beg; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
 					} else if ((v[i] <= rc[0]) || (v[i] > rc[nr-1])) {
@@ -5080,7 +5161,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 			}
 		} else { // left_closed
 			if (lowest)	{ // which means highest in this context
-				for (size_t i=0; i<n; i++) {
+				for (size_t i=beg; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
 					} else if ((v[i] < rc[0]) || (v[i] > rc[nr-1])) {
@@ -5097,7 +5178,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					}
 				}
 			} else { // not highest
-				for (size_t i=0; i<n; i++) {
+				for (size_t i=beg; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
 					} else if ((v[i] < rc[0]) || (v[i] >= rc[nr-1])) {
@@ -5125,7 +5206,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				replaceNAN = rcl[1][j];
 			}
 		}
-		for (size_t i=0; i<n; i++) {
+		for (size_t i=beg; i<n; i++) {
 
 			if (std::isnan(v[i])) {
 				if (hasNAN) {
@@ -5163,7 +5244,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 
 		if (left_right_closed) {   // interval closed at left and right
 
-			for (size_t i=0; i<n; i++) {
+			for (size_t i=beg; i<n; i++) {
 				if (std::isnan(v[i])) {
 					if (hasNAN) {
 						v[i] = replaceNAN;
@@ -5196,7 +5277,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					}
 				}
 
-				for (size_t i=0; i<n; i++) {
+				for (size_t i=beg; i<n; i++) {
 					if (std::isnan(v[i])) {
 						if (hasNAN) {
 							v[i] = replaceNAN;
@@ -5221,7 +5302,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				}
 
 			} else { // !lowest
-					for (size_t i=0; i<n; i++) {
+					for (size_t i=beg; i<n; i++) {
 					if (std::isnan(v[i])) {
 						if (hasNAN) {
 							v[i] = replaceNAN;
@@ -5257,7 +5338,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					}
 				}
 
-				for (size_t i=0; i<n; i++) {
+				for (size_t i=beg; i<n; i++) {
 					if (std::isnan(v[i])) {
 						if (hasNAN) {
 							v[i] = replaceNAN;
@@ -5283,7 +5364,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 
 			} else { //!dolowest
 
-				for (size_t i=0; i<n; i++) {
+				for (size_t i=beg; i<n; i++) {
 					if (std::isnan(v[i])) {
 						if (hasNAN) {
 							v[i] = replaceNAN;
@@ -5309,6 +5390,15 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 	}
 }
 
+
+// Backward-compatible wrapper: reclass the whole vector. Keeps the old
+// signature for existing callers (and external code) that pass `rcl` by value.
+void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl,
+		bool right_closed, bool left_right_closed, bool lowest,
+		bool others, double othersValue) {
+	reclass_vector_range(v, 0, v.size(), rcl,
+		right_closed, left_right_closed, lowest, others, othersValue);
+}
 
 
 SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, bool keepcats, SpatOptions &opt) {
@@ -5422,6 +5512,26 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 		return out;
 	}
 
+	// Reclass a contiguous slice of `vec`, dispatching to TBB when the work
+	// is large enough to amortise task overhead. The per-cell work in
+	// reclass_vector_range only mutates vec[i] based on vec[i] (and read-only
+	// state captured from `rcl`), so disjoint [b,e) ranges are safe in parallel.
+	auto reclass_slice = [&](std::vector<double> &vec, size_t beg, size_t end,
+			const std::vector<std::vector<double>> &rules) {
+#if defined(USE_TBB)
+		if (opt.parallel && (end - beg) >= 16384) {
+			terra_parallel_for(opt, tbb::blocked_range<size_t>(beg, end),
+				[&](const tbb::blocked_range<size_t>& r){
+					reclass_vector_range(vec, r.begin(), r.end(), rules,
+						right, leftright, lowest, others, othersValue);
+				});
+			return;
+		}
+#endif
+		reclass_vector_range(vec, beg, end, rules,
+			right, leftright, lowest, others, othersValue);
+	};
+
 	if (bylayer) {
 		std::vector<std::vector<double>> lyrrcl(rcldim+1);
 		for (size_t i=0; i<rcldim; i++) {
@@ -5434,9 +5544,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 			for (size_t lyr = 0; lyr < nl; lyr++) {
 				size_t offset = lyr * off;
 				lyrrcl[rcldim] = rcl[rcldim+lyr];
-				std::vector<double> vx(v.begin()+offset, v.begin()+offset+off);
-				reclass_vector(vx, lyrrcl, right, leftright, lowest, others, othersValue);
-				std::copy(vx.begin(), vx.end(), v.begin()+offset);
+				reclass_slice(v, offset, offset + off, lyrrcl);
 			}
 			if (!out.writeBlock(v, i)) return out;
 		}
@@ -5444,7 +5552,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v;
 			readBlock(v, out.bs, i);
-			reclass_vector(v, rcl, right, leftright, lowest, others, othersValue);
+			reclass_slice(v, 0, v.size(), rcl);
 			if (!out.writeBlock(v, i)) return out;
 		}
 	}
