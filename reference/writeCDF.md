@@ -146,7 +146,6 @@ s <- sds(r1, r2)
 names(s) <- c("TH", "DBZH")
 units(s) <- c("-", "Pa")
 x <- writeCDF(s, filename = fname, overwrite=TRUE)
-#> Warning: GDAL Message 1: dimension #1 (angle) is not a Time dimension.
 #> Warning: GDAL Message 1: dimension #1 (time) is not a Time dimension.
 #> Warning: GDAL Message 1: dimension #0 (height) is not a Time dimension.
 x[1]
@@ -155,7 +154,7 @@ x[1]
 #> resolution  : 72, 36  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
-#> source      : file21541671aa45.nc:TH
+#> source      : file21534d0eac35.nc:TH
 #> varname     : TH
 #> names       : TH_angle=0_1, TH_angle=2_1, TH_angle=0_2, TH_angle=2_2
 #> unit        : -
@@ -172,7 +171,7 @@ x[2]
 #> resolution  : 72, 36  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
-#> source      : file21541671aa45.nc:DBZH
+#> source      : file21534d0eac35.nc:DBZH
 #> varname     : DBZH
 #> names       : DBZH_~=10_1, DBZH_~=10_2, DBZH_~=20_1, DBZH_~=20_2, DBZH_~=30_1, DBZH_~=30_2
 #> unit        : Pa

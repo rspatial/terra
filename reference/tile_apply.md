@@ -196,8 +196,7 @@ A `SpatRaster`.
 [`vrt`](https://rspatial.github.io/terra/reference/vrt.md),
 [`window`](https://rspatial.github.io/terra/reference/window.md),
 [`wrap`](https://rspatial.github.io/terra/reference/wrap.md),
-[`app`](https://rspatial.github.io/terra/reference/app.md),
-[`future_app`](https://rspatial.github.io/terra/reference/future_app.md)
+[`app`](https://rspatial.github.io/terra/reference/app.md), `future_app`
 
 ## Examples
 

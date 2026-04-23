@@ -18,8 +18,8 @@ computed, you can use
 
 ``` r
 # S4 method for class 'SpatRaster,SpatRaster'
-mosaic(x, y, ..., fun="mean", resample=FALSE, method="", 
-        filename="", overwrite=FALSE, wopt=list())
+mosaic(x, y, ..., fun="mean", resample=FALSE, method="",
+    filename="", overwrite=FALSE, wopt=list())
 
 # S4 method for class 'SpatRasterCollection,missing'
 mosaic(x, fun="mean", resample=FALSE, method="", filename="", ...)
