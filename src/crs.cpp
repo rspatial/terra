@@ -549,18 +549,9 @@ SpatVector SpatVector::project(std::string crs, bool partial, std::string pipeli
 	}
 	
 	OCTDestroyCoordinateTransformation(poCT);
-
-	// All coordinates ended up unprojectable (e.g. projecting points that
-	// lie outside the visible hemisphere of a tilted-perspective target,
-	// or where a required PROJ grid is missing). The result is still a
-	// valid SpatVector -- the geometries just have NaN coordinates -- so
-	// emit a warning instead of a hard error. Callers (e.g. mapmisc::openmap
-	// via suppressWarnings(terra::project(...))) can then decide what to do.
-	// See revdep regressions on mapmisc / SiMRiv / raptr.
 	if (size() > 0 && std::isnan(s.extent.xmin)) {
 		s.addWarning("transformation produced no valid coordinates (may need a grid file that could not be downloaded)");
 	}
-
 	if (remove_empty) {
 		s.df = df.subset_rows(keeprows);
 	} else {

@@ -68,25 +68,36 @@ get_time_vars <- function(y) {
 	tstep <- y@pntr$timestep
 	cal <- "standard"
 	if (tstep == "seconds") {
-		zunit <- "seconds since 1970-1-1 00:00:00"
+		zunit <- "seconds since 1970-01-01 00:00:00"
 	} else if (tstep == "days") {
-		zunit <- "days since 1970-1-1"
+		zunit <- "days since 1970-01-01"
 		zv <- zv / (24 * 3600)
 	} else if (tstep == "months") {
+		# left as bare "months" for read-side compatibility; the read code
+		# (read_gdal.cpp) treats this as month-of-year, not a CF offset.
 		zunit <- "months"
 		zv <- time(y)
 	} else if (tstep == "yearmonths") {
-		zunit <- "months since 1970"
+		zunit <- "months since 1970-01-01"
 		tm <- time(y) - 1970
 		yr <- tm %/% 1
 		zv <- (yr*12) + round(12 * (tm %% 1))
 	} else if (tstep == "years") {
-		zunit <- "years since 1970"
+		zunit <- "years since 1970-01-01"
 		zv <- time(y) - 1970
 	} else {
 		zunit <- "unknown"
 	}
 	list(zv=zv, zunit=zunit)
+}
+
+
+# Tag a dim variable with the CF attributes
+.cf_tag_dim <- function(nc, dimname, attrs) {
+	for (an in names(attrs)) {
+		try(ncdf4::ncatt_put(nc, dimname, an, attrs[[an]], prec = "text"),
+			silent = TRUE)
+	}
 }
 
 
@@ -233,6 +244,36 @@ get_time_vars <- function(y) {
 	
 	ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
 	on.exit(ncdf4::nc_close(ncobj))
+
+	# Add CF marker attributes (standard_name / axis / long_name) to the
+	# coordinate dim variables so that CF tools) recognises them as time / vertical / X / Y. 
+	if (xname == "longitude") {
+		.cf_tag_dim(ncobj, xname, list(standard_name = "longitude",
+			long_name = "longitude", axis = "X"))
+		.cf_tag_dim(ncobj, yname, list(standard_name = "latitude",
+			long_name = "latitude", axis = "Y"))
+	} else {
+		.cf_tag_dim(ncobj, xname, list(
+			standard_name = "projection_x_coordinate",
+			long_name = "x coordinate of projection", axis = "X"))
+		.cf_tag_dim(ncobj, yname, list(
+			standard_name = "projection_y_coordinate",
+			long_name = "y coordinate of projection", axis = "Y"))
+	}
+	for (tn in unique(timename[seq_len(n)])) {
+		if (!is.null(ncobj$dim[[tn]])) {
+			.cf_tag_dim(ncobj, tn, list(standard_name = "time",
+				long_name = "time", axis = "T"))
+		}
+	}
+	for (dn in names(ncobj$dim)) {
+		if (dn %in% c(xname, yname)) next
+		if (dn %in% timename) next
+		du <- tolower(ncobj$dim[[dn]]$units)
+		if (grepl("^(seconds|minutes|hours|days|months|years)( since|$)", du)) next
+		# Treat any remaining non-spatial, non-time dim as a vertical (Z) axis.
+		.cf_tag_dim(ncobj, dn, list(axis = "Z"))
+	}
 
 #	haveprj <- FALSE
 	prj <- crs(x[1])
