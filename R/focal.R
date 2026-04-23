@@ -227,8 +227,7 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 							.focal_chunk_apply, .ufun=fun, .dots=dots)
 					} else {  # future
 						parts <- future.apply::future_lapply(chunks,
-							.focal_chunk_apply, .ufun=fun, .dots=dots,
-							future.seed=TRUE)
+							.focal_chunk_apply, .ufun=fun, .dots=dots, future.seed=TRUE)
 					}
 					v <- .focal_combine(parts, transp)
 				} else {

@@ -29,3 +29,4 @@ README.md
 ^pkgdown$
 
 data/
+^_
