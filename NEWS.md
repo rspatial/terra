@@ -1,4 +1,4 @@
-# version 1.9-22
+# version 1.9-23
 
 ## bug fixes
 
@@ -10,6 +10,7 @@
 - `writeVector` can now write GPX format [#1231](https://github.com/rspatial/terra/issues/1231) by Krzysztof Dyba
 - better handling of rotated rasters [#1434](https://github.com/rspatial/terra/issues/1434) by Insang Song and [#918](https://github.com/rspatial/terra/issues/918) by Agustin Lobo
 - `zonal` truncated weights [#2072](https://github.com/rspatial/terra/issues/2072) by Dominic Royé
+- `distance<SpatRaster>` with haversine method could overflow from N to S pole [#2077](https://github.com/rspatial/terra/issues/2077) by brshipley 
 
 
 ## enhancements
