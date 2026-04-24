@@ -267,5 +267,36 @@ if (requireNamespace("parallel", quietly=TRUE)) {
 		ok <- !is.na(v) & !is.na(v_in)
 		expect_equal(v[ok], 3 * v_in[ok])
 		unlink(ftif_par)
+
+
+		# in-memory dispatch: when sources(x) are all empty, tile_apply
+		# ships per-tile raster slices to workers instead of wrapping the
+		# whole raster. Result must still match a sequential run cell-for-
+		# cell, both with and without buffered tiles.
+		mem_r <- rast(nrows=80, ncols=120, vals=runif(80*120))
+		expect_true(all(sources(mem_r) == ""))
+
+		out_mem_seq <- tile_apply(mem_r, function(x) x + 1, tiles=30,
+			wopt=list(datatype="FLT8S"))
+		out_mem_par <- tile_apply(mem_r, function(x) x + 1, tiles=30, cores=2,
+			wopt=list(datatype="FLT8S"))
+		expect_equal(as.vector(values(out_mem_par)),
+					 as.vector(values(out_mem_seq)))
+
+		# named extra args still forwarded on the slice path
+		out_mem_par_k <- tile_apply(mem_r, function(x, k) x * k,
+			tiles=30, cores=2, k=4, wopt=list(datatype="FLT8S"))
+		expect_equal(as.vector(values(out_mem_par_k)),
+					 as.vector(values(mem_r)) * 4)
+
+		# buffered focal in parallel on an in-memory raster matches the
+		# whole-raster focal exactly (FLT8S to avoid roundtrip noise).
+		ref_focal_mem <- focal(mem_r, w=3, fun="mean", na.rm=TRUE)
+		out_mem_buf <- tile_apply(mem_r,
+			function(x) focal(x, w=3, fun="mean", na.rm=TRUE),
+			buffer=1, cores=2, wopt=list(datatype="FLT8S"))
+		v_ref <- values(ref_focal_mem); v_out <- values(out_mem_buf)
+		ok <- !is.na(v_ref) & !is.na(v_out)
+		expect_equal(v_out[ok], v_ref[ok])
 	}
 }

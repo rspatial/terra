@@ -100,10 +100,12 @@
 }
 
 
-# Per-tile worker. Defined at file scope (not as a closure) so it serializes
-# cleanly across PSOCK/forked/future workers without dragging tile_apply()'s
-# local environment along. Argument names must NOT collide with parLapply()
-# args (cl, X, fun, chunk.size).
+# Per-tile worker for the file-backed dispatch path. Defined at file scope
+# (not as a closure) so it serializes cleanly across PSOCK/forked/future
+# workers without dragging tile_apply()'s local environment along. Argument
+# names must NOT collide with parLapply() args (cl, X, fun, chunk.size).
+# `.px` is the whole packed raster, shared across jobs; the worker windows
+# it down to `.job$outer` before invoking `fun`.
 .tile_apply_worker <- function(.job, .px, .ufun, .args, .wopt) {
 	.unw <- function(a) {
 		if (inherits(a, "Packed")) terra::unwrap(a)
@@ -119,6 +121,29 @@
 	}
 	# crop to the inner (un-buffered) extent so per-tile outputs do not
 	# overlap and assemble cleanly with vrt()
+	if (!identical(.job$outer, .job$inner)) {
+		r <- terra::crop(r, terra::ext(.job$inner), snap="near")
+	}
+	terra::writeRaster(r, filename=.job$file, overwrite=TRUE, wopt=.wopt)
+	.job$file
+}
+
+
+# Per-tile worker for the in-memory dispatch path. The job carries its own
+# pre-cropped, packed raster slice (`.job$px`), so the worker only receives
+# the pixels it needs and does not have to set a window.
+.tile_apply_worker_slice <- function(.job, .ufun, .args, .wopt) {
+	.unw <- function(a) {
+		if (inherits(a, "Packed")) terra::unwrap(a)
+		else if (is.list(a) && !is.object(a)) lapply(a, .unw)
+		else a
+	}
+	x <- terra::unwrap(.job$px)
+	.args <- lapply(.args, .unw)
+	r <- do.call(.ufun, c(list(x), .args))
+	if (!inherits(r, "SpatRaster")) {
+		stop("'fun' must return a SpatRaster for every tile")
+	}
 	if (!identical(.job$outer, .job$inner)) {
 		r <- terra::crop(r, terra::ext(.job$inner), snap="near")
 	}
@@ -216,6 +241,27 @@ tile_apply <- function(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 		if (!keep_tiles) unlink(tdir, recursive=TRUE)
 	}, add=TRUE)
 
+	# When all of x's sources are in memory, ship a per-tile slice instead
+	# of the whole raster. This avoids serialising values(x) once per worker
+	# (or once per chunk) and removes the need for window<- inside the
+	# worker. For file-backed sources we keep the path-based contract:
+	# workers parallel-read their own tile via window<-, which is strictly
+	# cheaper than crop()ing on the parent and pushing pixels to workers.
+	in_memory <- length(sources(x)) > 0 && all(sources(x) == "")
+
+	build_jobs <- function() {
+		if (in_memory) {
+			mapply(function(p, f) {
+				tile <- crop(x, ext(p$outer), snap="near")
+				list(px = wrap(tile), outer = p$outer,
+					 inner = p$inner, file = f)
+			}, exts, tile_files, SIMPLIFY=FALSE)
+		} else {
+			mapply(function(p, f) list(outer=p$outer, inner=p$inner, file=f),
+				   exts, tile_files, SIMPLIFY=FALSE)
+		}
+	}
+
 	if (disp$kind == "cluster") {
 		cl <- disp$cl
 		if (is.null(cl)) {
@@ -238,31 +284,41 @@ tile_apply <- function(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 			}, cpkgs)
 		}
 
-		# wrap x once; the workers re-open it from filenames or unpack values
-		px <- wrap(x)
 		# wrap any terra objects in `...` so they survive serialization
 		args <- lapply(list(...), .tile_apply_wrap)
+		jobs <- build_jobs()
 
-		# Build per-tile jobs: each job carries its own (outer, inner) extent
-		# and output file. Workers write the cropped result and return the path.
-		jobs <- mapply(function(p, f) list(outer=p$outer, inner=p$inner, file=f),
-					   exts, tile_files, SIMPLIFY=FALSE)
-
-		out_files <- unlist(parallel::parLapply(cl, jobs, .tile_apply_worker,
-			.px=px, .ufun=fun, .args=args, .wopt=wopt))
+		if (in_memory) {
+			out_files <- unlist(parallel::parLapply(cl, jobs,
+				.tile_apply_worker_slice,
+				.ufun=fun, .args=args, .wopt=wopt))
+		} else {
+			# wrap x once; the workers re-open it from filenames
+			px <- wrap(x)
+			out_files <- unlist(parallel::parLapply(cl, jobs,
+				.tile_apply_worker,
+				.px=px, .ufun=fun, .args=args, .wopt=wopt))
+		}
 	} else if (disp$kind == "future") {
 		# Plan was already installed up-front (if the caller passed one).
 		# We just dispatch to future.apply::future_lapply with the same
 		# wrap/unwrap contract as the cluster path.
-		px <- wrap(x)
 		args <- lapply(list(...), .tile_apply_wrap)
-		jobs <- mapply(function(p, f) list(outer=p$outer, inner=p$inner, file=f),
-					   exts, tile_files, SIMPLIFY=FALSE)
+		jobs <- build_jobs()
 		fpkgs <- unique(c("terra", as.character(cpkgs)))
 
-		out_files <- unlist(future.apply::future_lapply(jobs, .tile_apply_worker,
-			.px=px, .ufun=fun, .args=args, .wopt=wopt,
-			future.packages=fpkgs, future.seed=TRUE))
+		if (in_memory) {
+			out_files <- unlist(future.apply::future_lapply(jobs,
+				.tile_apply_worker_slice,
+				.ufun=fun, .args=args, .wopt=wopt,
+				future.packages=fpkgs, future.seed=TRUE))
+		} else {
+			px <- wrap(x)
+			out_files <- unlist(future.apply::future_lapply(jobs,
+				.tile_apply_worker,
+				.px=px, .ufun=fun, .args=args, .wopt=wopt,
+				future.packages=fpkgs, future.seed=TRUE))
+		}
 	} else {
 		# sequential path - same disk-streaming contract as the workers
 		args <- list(...)
