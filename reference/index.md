@@ -1077,7 +1077,7 @@
   : Thresholding
 
 - [`tile_apply()`](https://rspatial.github.io/terra/reference/tile_apply.md)
-  : Apply a function to tiles of a SpatRaster in parallel
+  : Parallelize a SpatRaster function
 
 - [`has.time(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/time.md)
   [`time(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/time.md)

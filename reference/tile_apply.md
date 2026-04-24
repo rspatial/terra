@@ -1,21 +1,15 @@
-# Apply a function to tiles of a SpatRaster in parallel
+# Parallelize a SpatRaster function
 
-A high-level convenience wrapper that splits a `SpatRaster` into tiles,
-applies a user function to each tile (with
-[`window`](https://rspatial.github.io/terra/reference/window.md) set
-under the hood so no values are copied), and assembles the per-tile
-results back into a single `SpatRaster`. The work can be distributed
-over a cluster of worker processes.
-
-This is the “Strategy 3” pattern from the terra parallelization guide,
-packaged as one call.
+The function splits a `SpatRaster` into virtual tiles and applies a user
+supplied function to each tile, and assembles the per-tile results back
+into a single `SpatRaster`. The work can be distributed over a cluster
+of worker processes.
 
 ## Usage
 
 ``` r
 tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
-           filename="", overwrite=FALSE, wopt=list(),
-           overlap_fun=NULL)
+  filename="", overwrite=FALSE, wopt=list(), overlap_fun=NULL)
 ```
 
 ## Arguments
@@ -97,9 +91,7 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 - wopt:
 
   list. Writing options as in
-  [`writeRaster`](https://rspatial.github.io/terra/reference/writeRaster.md),
-  applied both to the per-tile intermediate files and to the final
-  output
+  [`writeRaster`](https://rspatial.github.io/terra/reference/writeRaster.md)
 
 - overlap_fun:
 
@@ -115,19 +107,6 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 
 ## Details
 
-For each tile, `tile_apply` sets a read window on `x`
-(`window(x) <- e`), so no pixel values are copied: subsequent operations
-on the windowed raster behave as if it had only that extent. The user
-function `fun` therefore sees a normal `SpatRaster` restricted to the
-tile.
-
-**Memory safety.** Each tile's result is written to its own file in a
-per-call sub-directory of
-[`tempdir()`](https://rdrr.io/r/base/tempfile.html) (as a GeoTIFF,
-honouring `wopt`). Workers therefore return only a filename, not pixel
-data, so the parent process never holds more than one tile's worth of
-values in RAM. The sequential path follows the same contract.
-
 **Buffered tiles for focal-style operations.** When `tiles = NULL` and
 `buffer > 0`, each tile is read on a slightly expanded extent (`buffer`
 cells on each side, clamped to `x`'s extent), `fun` is applied, and the
@@ -135,22 +114,17 @@ result is cropped back to the un-buffered tile extent before it is
 written. This avoids the edge effects that operations like
 [`focal`](https://rspatial.github.io/terra/reference/focal.md) would
 otherwise produce at tile boundaries, while still letting the assembled
-output use the cheap, lossless
-[`vrt`](https://rspatial.github.io/terra/reference/vrt.md) path. The
-buffer also enlarges the per-worker peak RAM (a tile reads
-`(rows + 2 buffer)(cols + 2 buffer)` cells), which is usually negligible
-since `buffer` is small compared with the auto tile dimensions, but if
-you choose a large buffer you may want to raise `cores` so the auto
-sizer picks smaller tiles.
+output use the cheap
+[`vrt`](https://rspatial.github.io/terra/reference/vrt.md) path.
 
 The per-tile files are then assembled into the final `SpatRaster`:
 
 - When `overlap_fun = NULL` (the default), the assembly is a virtual
   raster ([`vrt`](https://rspatial.github.io/terra/reference/vrt.md)).
-  This is essentially free and never reads the pixel data again. It is
+  This is essentially free and never reads the cell values again. It is
   correct as long as the tiles do not overlap; if they do (e.g. when
-  built with `getTileExtents(..., buffer=)`), GDAL keeps the value of
-  the last tile drawn in the overlap region.
+  built with `getTileExtents(..., buffer=)`), the value of the last tile
+  in the overlapping regions.
 
 - When `overlap_fun` is set (e.g. `"mean"`), the assembly uses
   [`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md) which
@@ -163,26 +137,7 @@ and the per-tile intermediate files are removed. If `filename` is empty
 and a VRT is being built, the per-tile files are kept for the rest of
 the R session because they back the returned raster.
 
-When `cores > 1` (or a cluster / future plan is used), `x` is shipped to
-the workers with
-[`wrap`](https://rspatial.github.io/terra/reference/wrap.md). For
-file-backed rasters this is cheap (only the metadata and filename travel
-across the worker boundary, and each worker re-opens the file
-independently). For in-memory rasters that are too large to embed,
-`wrap` writes them to a temporary file first and ships the path – so
-very large in-memory rasters are silently materialised to disk before
-parallel execution.
-
 Extra arguments passed via `...` must be named when `cores > 1`.
-
-**Choosing a backend.** Use a plain integer (or a PSOCK `cluster`) for
-one-shot, single-machine parallelism without extra dependencies. Use
-`cores = "future"` (or pass a future plan) when you want to compose with
-the rest of a future-based pipeline, run on a remote / HPC backend
-([`future::cluster`](https://future.futureverse.org/reference/cluster.html),
-`future.batchtools`, ...), or hook in a progress reporter (`progressr`).
-The wrap/unwrap dance and per-tile disk-streaming are identical across
-backends.
 
 ## Value
 
@@ -195,8 +150,7 @@ A `SpatRaster`.
 [`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md),
 [`vrt`](https://rspatial.github.io/terra/reference/vrt.md),
 [`window`](https://rspatial.github.io/terra/reference/window.md),
-[`wrap`](https://rspatial.github.io/terra/reference/wrap.md),
-[`app`](https://rspatial.github.io/terra/reference/app.md), `future_app`
+[`wrap`](https://rspatial.github.io/terra/reference/wrap.md)
 
 ## Examples
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## version 1.9-22
+## version 1.9-23
 
 ### bug fixes
 
@@ -33,6 +33,9 @@
 - `zonal` truncated weights
   [\#2072](https://github.com/rspatial/terra/issues/2072) by Dominic
   Royé
+- `distance<SpatRaster>` with haversine method could overflow from N to
+  S pole [\#2077](https://github.com/rspatial/terra/issues/2077) by
+  brshipley
 
 ### enhancements
 
