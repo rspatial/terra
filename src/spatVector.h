@@ -361,6 +361,8 @@ class SpatVector {
 		SpatVector centroid(bool check_lonlat);
 		SpatVector point_on_surface(bool check_lonlat);
 		std::vector<int> pointInPolygon(std::vector<double> &x, std::vector<double> &y);
+		std::vector<int> pointInPolygonPlanar(std::vector<double> &x, std::vector<double> &y);
+		std::vector<int> pointInPolygonGeo(std::vector<double> &x, std::vector<double> &y);
 
 		SpatVector crop(SpatExtent e, bool wrap);
 		SpatVector crop(SpatVector e);

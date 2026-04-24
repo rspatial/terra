@@ -158,7 +158,7 @@ std::vector<double> SpatVector::distLonLat(SpatVector p, std::string unit, std::
 	}
 */
 	if (type() == "polygons") {
-		std::vector<int> inside = pointInPolygon(x, y);
+		std::vector<int> inside = pointInPolygonGeo(x, y);
 		for (size_t i=0; i<ng; i++) {
 			for (size_t j=0; j<np; j++) {
 				if (inside[i*np+j]) {
@@ -1878,4 +1878,64 @@ SpatVector SpatVector::thin_geoms(double d, std::string unit, SpatOptions &opt) 
 	return out;
 }
 
+
+
+std::vector<int> SpatVector::pointInPolygonGeo(std::vector<double> &x, std::vector<double> &y) {
+
+	std::vector<int> out;
+	size_t ng = size();
+	size_t np = x.size();
+	out.assign(ng * np, 0);
+	if (type() != "polygons") return out;
+
+	static const double D2R = M_PI / 180.0;
+
+	for (size_t g = 0; g < ng; g++) {
+		// Prepare every ring (outer + holes of every part) once for this
+		// geometry. The per-edge cross-products and lat bounds are
+		// expensive to compute but independent of the test points
+		size_t nparts = geoms[g].size();
+		std::vector<PipGeoRing> rings;
+		rings.reserve(nparts * 2);
+		for (size_t h = 0; h < nparts; h++) {
+			PipGeoRing r;
+			prepare_pip_geo_ring(geoms[g].parts[h].x, geoms[g].parts[h].y, r);
+			if (!r.Nx.empty()) rings.push_back(std::move(r));
+			size_t nh = geoms[g].parts[h].nHoles();
+			for (size_t k = 0; k < nh; k++) {
+				PipGeoRing rh;
+				prepare_pip_geo_ring(geoms[g].parts[h].holes[k].x, geoms[g].parts[h].holes[k].y, rh);
+				if (!rh.Nx.empty()) rings.push_back(std::move(rh));
+			}
+		}
+		if (rings.empty()) continue;
+
+		for (size_t j = 0; j < np; j++) {
+			double px = x[j];
+			double py = y[j];
+			double rpl = px * D2R;
+			double cp = cos(rpl);
+			double sp = sin(rpl);
+			double rpt = py * D2R;
+			bool inside = false;
+			for (const PipGeoRing &r : rings) {
+				if (pip_geo_in_ring_prepared(px, py, cp, sp, rpt, r)) {
+					inside = !inside;
+				}
+			}
+			out[g * np + j] = inside ? 1 : 0;
+		}
+	}
+	return out;
+}
+
+
+
+std::vector<int> SpatVector::pointInPolygon(std::vector<double> &x, std::vector<double> &y) {
+	if (is_lonlat()) {
+		return pointInPolygonGeo(x, y);		
+	} else {
+		return pointInPolygonPlanar(x, y);		
+	}
+}
 

@@ -1539,7 +1539,7 @@ int getRel(std::string &relation) {
 }
 
 
-std::vector<int> SpatVector::pointInPolygon(std::vector<double> &x, std::vector<double> &y) {
+std::vector<int> SpatVector::pointInPolygonPlanar(std::vector<double> &x, std::vector<double> &y) {
 
 	std::vector<int> out;
 
