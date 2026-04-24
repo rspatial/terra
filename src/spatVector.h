@@ -177,6 +177,7 @@ class SpatVector {
 		bool addRawGeoms(std::vector<unsigned char*> wkbs, std::vector<size_t> sizes);
 
 		size_t nparts(bool holes);
+		size_t nnodes(bool holes);
 
 		size_t ncoords();
 		std::vector<std::vector<double>> coordinates();
@@ -418,6 +419,7 @@ class SpatVector {
 		SpatVector cbind(SpatDataFrame d);
 		void fix_lonlat_overflow();
 		SpatVector cross_dateline(bool &fixed);
+		//double adviseDensify(double xmin=NAN, double xmax=NAN);
 		SpatVector densify(double interval, bool adjust, bool ignorelonlat);
 		SpatVector round(int digits);
 		std::vector<size_t> nullGeoms();

@@ -539,6 +539,23 @@ size_t SpatVector::nparts(bool holes) {
 	return totnp;
 }
 
+size_t SpatVector::nnodes(bool holes) {
+	size_t totn = 0;
+	size_t ng = geoms.size();
+	for (size_t i=0; i<ng; i++) {
+		size_t np = geoms[i].parts.size();
+		for (size_t j=0; j<np; j++) {
+			totn += geoms[i].parts[j].x.size();
+			if (holes) {
+				for (size_t k=0; k<geoms[i].parts[j].nHoles(); k++) {
+					totn += geoms[i].parts[j].holes[k].x.size();
+				}
+			}
+		}
+	}
+	return totn;
+}
+
 
 std::vector<std::vector<double>> SpatVector::coordinates() {
 	std::vector<std::vector<double>> out(2);
