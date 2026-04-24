@@ -52,3 +52,41 @@ double direction_cos(double& lon1, double& lat1, double& lon2, double& lat2);
 double dist2segment_hav(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r=6378137.);
 double dist2segment_cos(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r=6378137.);
 double dist2segment_geo(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double notused=0.);
+
+bool pip_geo_in_ring(double plon, double plat, const std::vector<double> &rx, const std::vector<double> &ry);
+
+// Prepared ring for spherical point-in-polygon. All per-edge work that
+// does not depend on the test point is cached here so that querying many
+// test points against the same ring is much cheaper.
+//
+//   lon, lat   : closed ring vertices (degrees), last == first
+//   Nx, Ny, Nz : per-edge cross product V1 x V2 on the unit sphere
+//   max_arc_lat: upper bound (degrees) on the latitude reached by any
+//                edge's great-circle arc, including the bulge toward the
+//                nearer pole on long arcs. Used for the cheap "ray going
+//                north passes above all edges" prune.
+//   wraps_pole : true iff the ring topologically encircles a pole (the
+//                signed sum of its edge dlons is approximately +/- 360).
+//   flip_north : true iff the north pole is inside the ring; the
+//                ray-cast crossing parity is XOR'd with this to handle
+//                the pole-inside case correctly.
+struct PipGeoRing {
+	std::vector<double> lon;
+	std::vector<double> lat;
+	std::vector<double> Nx, Ny, Nz;
+	double max_arc_lat;
+	bool wraps_pole;
+	bool flip_north;
+};
+
+void prepare_pip_geo_ring(const std::vector<double> &rx,
+                          const std::vector<double> &ry,
+                          PipGeoRing &out);
+
+// Test point given in degrees (plon_deg, plat_deg). The caller supplies
+// cos/sin(plon in radians) and plat_rad to amortize the per-point trig
+// across all edges (and across all rings of a multi-ring polygon).
+bool pip_geo_in_ring_prepared(double plon_deg, double plat_deg,
+                              double cos_plon_rad, double sin_plon_rad,
+                              double plat_rad,
+                              const PipGeoRing &ring);
