@@ -19,6 +19,7 @@
 #include "distance.h"
 #include <limits>
 #include <cmath>
+#include <algorithm>
 #include "geodesic.h"
 #include "recycle.h"
 #include "math_utils.h"
@@ -28,6 +29,14 @@
 #include "crs.h"
 #include "sort.h"
 #include "geosphere.h"
+#include "tbb_helper.h"
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#ifndef M_2PI
+#define M_2PI (2.0 * M_PI)
+#endif
 
 /*
 inline void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const std::string& method, const double &lindist) {
@@ -355,6 +364,378 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 }
 
 
+// ----------------------------------------------------------------------------
+// Fast path for distance(SpatRaster, SpatVector) for lon/lat polygons or lines
+// using the haversine/cosine method.
+//
+// Speedups over the brute-force path come from:
+//   1. Pre-extracting all segments once into a flat array (avoids per-block
+//      SpatVector reconstruction and repeated dispatch).
+//   2. Computing per-segment lat/lon bounding boxes that include the
+//      great-circle bulge (sampled along the geodesic). This makes a cheap
+//      lower-bound test correct even for very long edges (e.g. a polygon
+//      edge spanning >100 deg of longitude).
+//   3. Two-stage pruning per cell: first a near-free latitude-only lower
+//      bound (cells in a row share latitude, so this is computed once per
+//      row/segment), then a full bbox lower bound. The expensive
+//      dist2segment_cos call is only made when both lower bounds are
+//      smaller than the current best distance for the cell.
+//   4. A single pointInPolygon call per block instead of per-cell relate dispatch.
+//   5. TBB parallelism over rows within a block.
+// ----------------------------------------------------------------------------
+
+namespace {
+
+struct LLSeg {
+	double x1, y1, x2, y2;            // endpoint coords, radians
+	double minx, maxx, miny, maxy;    // tight bbox (incl. bulge), radians
+	bool wraps;                       // bbox crosses the antimeridian
+};
+
+// Compute a tight bbox of the great-circle arc between two lon/lat points
+// (in degrees). The bbox is returned in radians. We sample a handful of
+// points along the geodesic so the bbox correctly contains the latitudinal
+// bulge that long arcs make toward the nearer pole.
+static void compute_seg_bbox(double lon1d, double lat1d,
+                             double lon2d, double lat2d, LLSeg &s) {
+	static const double D2R = 0.017453292519943295;
+	s.x1 = lon1d * D2R;  s.y1 = lat1d * D2R;
+	s.x2 = lon2d * D2R;  s.y2 = lat2d * D2R;
+
+	// Make lon2 continuous with lon1 (resolves antimeridian crossing).
+	double dlon = lon2d - lon1d;
+	while (dlon >  180.0) dlon -= 360.0;
+	while (dlon < -180.0) dlon += 360.0;
+	double lon2_cont = lon1d + dlon;
+
+	// Sample on a unit sphere; geod_inverse returns d in radians for a=1, f=0.
+	geod_geodesic g;
+	geod_init(&g, 1.0, 0.0);
+	double d, azi1, azi2;
+	geod_inverse(&g, lat1d, lon1d, lat2d, lon2d, &d, &azi1, &azi2);
+
+	const int N = 12;
+	double minx_d = std::min(lon1d, lon2_cont);
+	double maxx_d = std::max(lon1d, lon2_cont);
+	double miny_d = std::min(lat1d, lat2d);
+	double maxy_d = std::max(lat1d, lat2d);
+
+	if (d > 0.0) {
+		for (int i = 1; i < N; i++) {
+			double frac = static_cast<double>(i) / N;
+			double lat_o, lon_o, azi_o;
+			geod_direct(&g, lat1d, lon1d, azi1, d * frac, &lat_o, &lon_o, &azi_o);
+			while (lon_o - lon1d >  180.0) lon_o -= 360.0;
+			while (lon_o - lon1d < -180.0) lon_o += 360.0;
+			if (lon_o < minx_d) minx_d = lon_o;
+			if (lon_o > maxx_d) maxx_d = lon_o;
+			if (lat_o < miny_d) miny_d = lat_o;
+			if (lat_o > maxy_d) maxy_d = lat_o;
+		}
+	}
+
+	s.miny = miny_d * D2R;
+	s.maxy = maxy_d * D2R;
+
+	// Map bbox back to [-180, 180]. If after mapping minx > maxx, the
+	// bbox spans the antimeridian and we mark it as wrapping.
+	double mn = minx_d, mx = maxx_d;
+	while (mn < -180.0) mn += 360.0;
+	while (mn >  180.0) mn -= 360.0;
+	while (mx < -180.0) mx += 360.0;
+	while (mx >  180.0) mx -= 360.0;
+	if (maxx_d - minx_d >= 360.0) {
+		s.wraps = false;
+		s.minx = -M_PI;
+		s.maxx =  M_PI;
+	} else {
+		s.wraps = (mn > mx);
+		s.minx = mn * D2R;
+		s.maxx = mx * D2R;
+	}
+}
+
+// Haversine angular distance (radians) used inside lower-bound helpers.
+inline double hav_rad(double px, double py, double qx, double qy,
+                     double cos_py) {
+	double dLat = qy - py;
+	double dLon = qx - px;
+	if (dLon >  M_PI) dLon -= M_2PI;
+	if (dLon < -M_PI) dLon += M_2PI;
+	double sLat = sin(dLat * 0.5);
+	double sLon = sin(dLon * 0.5);
+	double a = sLat * sLat + cos_py * cos(qy) * sLon * sLon;
+	if (a < 0.0) a = 0.0;
+	if (a > 1.0) a = 1.0;
+	return 2.0 * asin(sqrt(a));
+}
+
+// True lower bound on the geodesic distance from point (px, py) (in radians)
+// to a segment's bounding box, in meters. Computes the *closest point on the
+// bbox* in geodesic distance properly: for the top/bottom edges (constant
+// latitude), the longitude that minimises distance is the cell's longitude
+// clamped to the bbox lon range. For the left/right edges (constant
+// longitude), the optimal latitude is found analytically from
+//     d/dqy [sin(py)*sin(qy) + cos(py)*cos(dlon)*cos(qy)] = 0
+// which gives qy* = atan2(sin(py), cos(py)*cos(dlon)) when that lies in
+// (-pi/2, pi/2); otherwise the optimum on [miny, maxy] is at one of the
+// endpoints. We evaluate both endpoints unconditionally and the analytic
+// optimum when it falls inside the bbox.
+//
+inline double bbox_lower_bound_m(double px, double py, double cos_py,
+                                 const LLSeg &s) {
+	static const double EARTH_R = 6378137.0;
+
+	bool inside_lat = (py >= s.miny && py <= s.maxy);
+	bool inside_lon;
+	if (s.wraps) {
+		inside_lon = (px >= s.minx) || (px <= s.maxx);
+	} else {
+		inside_lon = (px >= s.minx && px <= s.maxx);
+	}
+	if (inside_lat && inside_lon) return 0.0;
+
+	// Closest qx in bbox lon range to px.
+	double qx_clamp;
+	if (inside_lon) {
+		qx_clamp = px;
+	} else if (s.wraps) {
+		double d1 = s.minx - px;
+		double d2 = px - s.maxx;
+		qx_clamp = (d1 <= d2) ? s.minx : s.maxx;
+	} else {
+		double d_min = std::fabs(px - s.minx);
+		if (d_min > M_PI) d_min = M_2PI - d_min;
+		double d_max = std::fabs(px - s.maxx);
+		if (d_max > M_PI) d_max = M_2PI - d_max;
+		qx_clamp = (d_min <= d_max) ? s.minx : s.maxx;
+	}
+
+	// Top and bottom edges (constant lat).
+	double D = hav_rad(px, py, qx_clamp, s.maxy, cos_py);
+	double D_bot = hav_rad(px, py, qx_clamp, s.miny, cos_py);
+	if (D_bot < D) D = D_bot;
+
+	// Left and right edges (constant lon): also test analytic optimum qy.
+	const double half_pi = M_PI * 0.5;
+	double qx_edge[2] = { s.minx, s.maxx };
+	for (int e = 0; e < 2; e++) {
+		double qx = qx_edge[e];
+		double D_min_y = hav_rad(px, py, qx, s.miny, cos_py);
+		double D_max_y = hav_rad(px, py, qx, s.maxy, cos_py);
+		double D_edge = std::min(D_min_y, D_max_y);
+		double dlon = px - qx;
+		if (dlon >  M_PI) dlon -= M_2PI;
+		if (dlon < -M_PI) dlon += M_2PI;
+		double A = sin(py);
+		double B = cos_py * cos(dlon);
+		if (B > 0.0) {
+			double qy_opt = atan2(A, B);
+			if (qy_opt > -half_pi && qy_opt < half_pi && qy_opt > s.miny && qy_opt < s.maxy) {
+				double D_opt = hav_rad(px, py, qx, qy_opt, cos_py);
+				if (D_opt < D_edge) D_edge = D_opt;
+			}
+		}
+		if (D_edge < D) D = D_edge;
+	}
+
+	return D * EARTH_R;
+}
+
+// Push every line segment of every part (and every hole) of `p` into `out`
+// with its bbox precomputed. `p` is taken non-const because several SpatVector
+// accessors (size(), nHoles(), parts indexing) are not declared const.
+static void collect_segments(SpatVector &p, std::vector<LLSeg> &out) {
+	size_t total = 0;
+	for (size_t g = 0; g < p.size(); g++) {
+		for (size_t h = 0; h < p.geoms[g].size(); h++) {
+			SpatPart &part = p.geoms[g].parts[h];
+			if (part.x.size() > 1) total += part.x.size() - 1;
+			for (size_t k = 0; k < part.nHoles(); k++) {
+				if (part.holes[k].x.size() > 1) total += part.holes[k].x.size() - 1;
+			}
+		}
+	}
+	out.clear();
+	out.reserve(total);
+
+	for (size_t g = 0; g < p.size(); g++) {
+		for (size_t h = 0; h < p.geoms[g].size(); h++) {
+			SpatPart &part = p.geoms[g].parts[h];
+			for (size_t i = 0; i + 1 < part.x.size(); i++) {
+				LLSeg s;
+				compute_seg_bbox(part.x[i], part.y[i],
+				                 part.x[i+1], part.y[i+1], s);
+				out.push_back(s);
+			}
+			for (size_t k = 0; k < part.nHoles(); k++) {
+				SpatHole &hole = part.holes[k];
+				for (size_t i = 0; i + 1 < hole.x.size(); i++) {
+					LLSeg s;
+					compute_seg_bbox(hole.x[i], hole.y[i], hole.x[i+1], hole.y[i+1], s);
+					out.push_back(s);
+				}
+			}
+		}
+	}
+}
+
+} // anonymous namespace
+
+
+SpatRaster SpatRaster::distance_vector_lonlat_fast(SpatVector p, std::string unit, const std::string& method, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+
+	if (source[0].srs.is_empty() && p.srs.is_empty()) {
+		out.addWarning("unknown CRSs. Results can be wrong");
+	} else if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRSs do not match");
+		return out;
+	}
+	if (p.empty()) {
+		out.setError("no locations to compute distance from");
+		return out;
+	}
+	if ((unit != "m") && (unit != "km")) {
+		out.setError("invalid unit. Must be 'm' or 'km'");
+		return out;
+	}
+	if ((method != "haversine") && (method != "cosine")) {
+		// callers should only route us here for these methods
+		out.setError("internal: distance_vector_lonlat_fast called with unsupported method");
+		return out;
+	}
+
+	std::string gtype = p.type();
+	if ((gtype != "polygons") && (gtype != "lines")) {
+		out.setError("internal: distance_vector_lonlat_fast called with non-line/polygon input");
+		return out;
+	}
+	bool is_poly = (gtype == "polygons");
+
+	if (p.nrow() > 1) {
+		p = p.aggregate(true);
+	}
+
+	std::vector<LLSeg> segs;
+	collect_segments(p, segs);
+	const size_t nseg = segs.size();
+	if (nseg == 0) {
+		out.setError("no segments to compute distance from");
+		return out;
+	}
+
+	const double EARTH_R = 6378137.0;
+	const double D2R = 0.017453292519943295;
+	const double m_unit = (unit == "km") ? 0.001 : 1.0;
+
+	const size_t nc = ncol();
+
+	std::vector<int64_t> cols(nc);
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> xs_deg = xFromCol(cols);   // longitudes (deg) once
+	std::vector<double> xs_rad(nc);
+	for (size_t c = 0; c < nc; c++) xs_rad[c] = xs_deg[c] * D2R;
+
+	if (!out.writeStart(opt, filenames())) {
+		return out;
+	}
+
+	for (size_t b = 0; b < out.bs.n; b++) {
+		const size_t nrow_blk = out.bs.nrows[b];
+		const size_t nblk = nrow_blk * nc;
+
+		std::vector<double> ys_deg(nrow_blk), ys_rad(nrow_blk);
+		for (size_t r = 0; r < nrow_blk; r++) {
+			ys_deg[r] = yFromRow(out.bs.row[b] + r);
+			ys_rad[r] = ys_deg[r] * D2R;
+		}
+
+		// One spherical point-in-polygon call per block (for polygons only).
+		// Uses great-circle arcs as edges, consistent with how distances to
+		// the polygon boundary are computed below; 
+		std::vector<int> inside;
+		if (is_poly) {
+			std::vector<double> all_x(nblk), all_y(nblk);
+			for (size_t r = 0; r < nrow_blk; r++) {
+				for (size_t c = 0; c < nc; c++) {
+					all_x[r*nc + c] = xs_deg[c];
+					all_y[r*nc + c] = ys_deg[r];
+				}
+			}
+			inside = p.pointInPolygonGeo(all_x, all_y);
+		}
+
+		std::vector<double> d(nblk, std::numeric_limits<double>::infinity());
+
+		auto process_row = [&](size_t r) {
+			const double py = ys_rad[r];
+			const double cos_py = cos(py);
+
+			// Per-segment latitude-only lower bound, cached for the row.
+			// This is a cheap, always-correct bound (geodesic distance is
+			// at least the meridional latitude difference) used as a quick
+			// reject before the more expensive bbox bound.
+			std::vector<double> seg_lat_lb(nseg);
+			for (size_t s = 0; s < nseg; s++) {
+				double dlat = 0.0;
+				if (py < segs[s].miny)      dlat = segs[s].miny - py;
+				else if (py > segs[s].maxy) dlat = py - segs[s].maxy;
+				seg_lat_lb[s] = EARTH_R * dlat;
+			}
+
+			const size_t row_off = r * nc;
+
+			for (size_t c = 0; c < nc; c++) {
+				const size_t idx = row_off + c;
+				if (is_poly && inside[idx]) {
+					d[idx] = 0.0;
+					continue;
+				}
+				const double px = xs_rad[c];
+				double cur = std::numeric_limits<double>::infinity();
+
+				for (size_t s = 0; s < nseg; s++) {
+					if (seg_lat_lb[s] >= cur) continue;
+					double lb = bbox_lower_bound_m(px, py, cos_py, segs[s]);
+					if (lb >= cur) continue;
+					double ds = dist2segment_cos(px, py,
+					                             segs[s].x1, segs[s].y1,
+					                             segs[s].x2, segs[s].y2,
+					                             EARTH_R);
+					if (ds < cur) cur = ds;
+				}
+				d[idx] = cur;
+			}
+		};
+
+#if defined(USE_TBB)
+		if (opt.parallel) {
+			terra_parallel_for(opt, tbb::blocked_range<size_t>(0, nrow_blk),
+				[&](const tbb::blocked_range<size_t>& range) {
+					for (size_t r = range.begin(); r != range.end(); r++) {
+						process_row(r);
+					}
+				});
+		} else {
+			for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+		}
+#else
+		for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+#endif
+
+		if (m_unit != 1.0) {
+			for (double &v : d) v *= m_unit;
+		}
+		if (!out.writeBlock(d, b)) return out;
+	}
+
+	out.writeStop();
+	return out;
+}
+
+
 SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string unit, const std::string& method, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
@@ -420,7 +801,16 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 	} else {
 
 		if ((p.type() == "polygons") || (p.type() == "lines")) {
-			
+
+			// Fast path: lon/lat with haversine or cosine method.
+			// Set TERRA_DIST_VECTOR_SLOW=1 to bypass for benchmarking.
+			if (lonlat && ((method == "haversine") || (method == "cosine"))) {
+				const char *slow = std::getenv("TERRA_DIST_VECTOR_SLOW");
+				if (slow == nullptr || slow[0] == '\0' || slow[0] == '0') {
+					return distance_vector_lonlat_fast(p, unit, method, opt);
+				}
+			}
+
 			if (p.nrow() > 1) {
 				p = p.aggregate(true);
 			}
