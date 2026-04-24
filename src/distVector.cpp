@@ -1076,8 +1076,6 @@ SpatVector SpatVector::densify(double interval, bool adjust, bool ignorelonlat) 
 }
 
 
-
-
 void split_dateline(SpatVector &v) {
 	SpatExtent e1 = {-1,  180, -91, 91};
 	SpatExtent e2 = {180, 361, -91, 91};

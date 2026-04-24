@@ -107,11 +107,12 @@ double direction_geo(double lon1, double lat1, double lon2, double lat2) {
 double direction_cos(double& lon1, double& lat1, double& lon2, double& lat2) {
 	if ((lon1 == lon2) && (lat1 == lat2)) return 0; // NAN?
 	double dLon = lon2 - lon1;
-    double y = sin(dLon)  * cos(lat2); 
-    double x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon); 
-    double azm = atan2(y, x);
-	azm = fmod(azm+M_PI, M_PI);
-	return azm > M_PI ? -(M_PI - azm) : azm;
+	double y = sin(dLon) * cos(lat2);
+	double x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon);
+	double azm = atan2(y, x);
+	// normalize to [0, 2*pi), consistent with direction_plane
+	if (azm < 0) azm += M_2PI;
+	return azm;
 }
 
 
@@ -151,6 +152,7 @@ inline double dist2track_hav(double lon1, double lat1, double lon2, double lat2,
 
 
 
+// signed along-track distance
 double alongTrackDistance_geo(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r=6378137) {
 	double a = 1;
 	double f = 0;
@@ -163,7 +165,9 @@ double alongTrackDistance_geo(double lon1, double lat1, double lon2, double lat2
 	deg2rad(b3);
 	double xtr = asin(sin(b3-b2) * sin(d));
 	double bsign = get_sign(cos(b2-b3));
-	return fabs(bsign * acos(cos(d) / cos(xtr)) * r);
+	double angle = cos(d) / cos(xtr);
+	angle = angle > 1 ? 1 : angle < -1 ? -1 : angle;
+	return bsign * acos(angle) * r;
 }
 
 
@@ -180,8 +184,7 @@ double alongTrackDistance_cos(double lon1, double lat1, double lon2, double lat2
 
 // Fixing limits for the angle between [-1, 1] to avoid NaNs from acos
 	angle = angle > 1 ? 1 : angle < -1 ? -1 : angle;
-	double dist = bearing * acos(angle) * r;
-	return fabs(dist);
+	return bearing * acos(angle) * r;
 }
 
 
@@ -199,8 +202,7 @@ double alongTrackDistance_hav(double lon1, double lat1, double lon2, double lat2
 
 // Fixing limits for the angle between [-1, 1] to avoid NaNs from acos
 	angle = angle > 1 ? 1 : angle < -1 ? -1 : angle;
-	double dist = bearing * acos(angle) * r;
-	return fabs(dist);
+	return bearing * acos(angle) * r;
 }
 
 
@@ -213,7 +215,8 @@ double dist2segment_geo(double plon, double plat, double lon1, double lat1, doub
 	double seglength = distance_geo(lon1, lat1, lon2, lat2);
 	double trackdist1 = alongTrackDistance_geo(lon1, lat1, lon2, lat2, plon, plat);
 	double trackdist2 = alongTrackDistance_geo(lon2, lat2, lon1, lat1, plon, plat);
-	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+	if ((trackdist1 < 0) || (trackdist2 < 0) ||
+		(trackdist1 > seglength) || (trackdist2 > seglength)) {
 		double d1 = distance_geo(lon1, lat1, plon, plat);
 		double d2 = distance_geo(lon2, lat2, plon, plat);
 		return d1 < d2 ? d1 : d2;
@@ -226,7 +229,8 @@ double dist2segment_cos(double plon, double plat, double lon1, double lat1, doub
 	double seglength = distance_cos_r(lon1, lat1, lon2, lat2, r);
 	double trackdist1 = alongTrackDistance_cos(lon1, lat1, lon2, lat2, plon, plat, r);
 	double trackdist2 = alongTrackDistance_cos(lon2, lat2, lon1, lat1, plon, plat, r);
-	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+	if ((trackdist1 < 0) || (trackdist2 < 0) ||
+		(trackdist1 > seglength) || (trackdist2 > seglength)) {
 		double d1 = distance_cos_r(lon1, lat1, plon, plat, r);
 		double d2 = distance_cos_r(lon2, lat2, plon, plat, r);
 		return d1 < d2 ? d1 : d2;
@@ -238,7 +242,8 @@ double dist2segment_hav(double plon, double plat, double lon1, double lat1, doub
 	double seglength = distance_hav_r(lon1, lat1, lon2, lat2, r);
 	double trackdist1 = alongTrackDistance_hav(lon1, lat1, lon2, lat2, plon, plat, r);
 	double trackdist2 = alongTrackDistance_hav(lon2, lat2, lon1, lat1, plon, plat, r);
-	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+	if ((trackdist1 < 0) || (trackdist2 < 0) ||
+		(trackdist1 > seglength) || (trackdist2 > seglength)) {
 		double d1 = distance_hav_r(lon1, lat1, plon, plat, r);
 		double d2 = distance_hav_r(lon2, lat2, plon, plat, r);
 		return d1 < d2 ? d1 : d2;
@@ -253,9 +258,10 @@ double dist2segmentPoint_geo(double plon, double plat, double lon1, double lat1,
 	double seglength = distance_geo(lon1, lat1, lon2, lat2);
 	double trackdist1 = alongTrackDistance_geo(lon1, lat1, lon2, lat2, plon, plat);
 	double trackdist2 = alongTrackDistance_geo(lon2, lat2, lon1, lat1, plon, plat);
-	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+	if ((trackdist1 < 0) || (trackdist2 < 0) ||
+		(trackdist1 > seglength) || (trackdist2 > seglength)) {
 		double d1 = distance_geo(lon1, lat1, plon, plat);
-		double d2 = distance_geo(lat2, lat2, plon, plat);
+		double d2 = distance_geo(lon2, lat2, plon, plat);
 		if (d1 < d2) {
 			ilon = lon1;
 			ilat = lat1;
