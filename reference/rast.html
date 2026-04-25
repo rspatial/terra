@@ -89,180 +89,67 @@ Note that there are operating system level limitations to the number of files th
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRasters. For other types it will be attempted to create a SpatRaster via (`as(x, "SpatRaster")`</p></dd>
+<dd><p>filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRasters. For other types it will be attempted to create a SpatRaster via <code>as(x, "SpatRaster")</code>
+subdspositive integer or character to select a sub-dataset. If zero or "", all sub-datasets are returned (if possible)
+lyrspositive integer or character to select a subset of layers (a.k.a. "bands"). If <code>x</code> has multiple filenames, the same layer numbers are selected from each of the files, unless numbers larger than the number of layers of the first data source are included
+driverscharacter. GDAL drivers to consider
+optscharacter. GDAL dataset open options
+winSpatExtent to set a <code><a href="window.html">window</a></code> (area of interest)
+snapcharacter. One of "near", "in", or "out", to indicate how the extent of <code><a href="window.html">window</a></code> should be "snapped" to <code>x</code>
+vsilogical. If <code>TRUE</code>, "/vsicurl/" is prepended to filenames that start with "http". There are many <a href="https://gdal.org/en/stable/user/virtual_file_systems.html" class="external-link">VSI configuration options</a> that can be set with <code><a href="gdal.html">setGDALconfig</a></code>
+rawlogical. If <code>TRUE</code>, scale and offset values are ignored. See <code><a href="scoff.html">scoff</a></code> to get these parameters
+nofliplogical. If <code>TRUE</code>, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (<code>ymax &lt; ymin</code>), is not considered flipped. This avoids the need to <code><a href="flip.html">flip</a></code> the raster vertically
+guessCRSlogical. If <code>TRUE</code> and the file does not specify a CRS but has an extent that is within longitude/latitude bounds, the longitude/latitude crs is assigned to the SpatRaster
+domainscharacter. Metadata domains to read (see <code><a href="metags.html">metags</a></code> to retrieve their values if there are any). <code>""</code> is the default domain
+mdlogical. If <code>TRUE</code>, the multi-dimensional GDAL API is used for reading the file. This API can only be used for a few file formats (netCDF/HDF5) and can sometimes provide notably faster reading of data with many (time) steps in the third or higher dimension. If no subdataset is selected with <code>subds</code>, all usable arrays are combined into one <code>SpatRaster</code> (like <code>md=FALSE</code>); a warning reports how many variables and layers were combined when there is more than one variable.
+dimsnumeric. Specify the order of the dimensions to read atypical multidimensional files. See <code><a href="ar_info.html">ar_info</a></code>. Not implemented yet
+nrowspositive integer. Number of rows
+ncolspositive integer. Number of columns
+nlyrspositive integer. Number of layers
+xminminimum x coordinate (left border)
+xmaxmaximum x coordinate (right border)
+yminminimum y coordinate (bottom border)
+ymaxmaximum y coordinate (top border)
+crscharacter. Description of the Coordinate Reference System (map projection) in <code>PROJ.4</code>, <code>WKT</code> or <code>authority:code</code> notation. See <code><a href="crs.html">crs</a></code>. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned
+keeptimelogical. If <code>FALSE</code> the time stamps are discarded
+keepunitslogical. If <code>FALSE</code> the layer units are discarded
+propslogical. If <code>TRUE</code> the properties (categories and color-table) are kept
+tagslogical. If <code>TRUE</code> the user specified metadata tags are kept (see <code><a href="metags.html">metags</a></code>).
+extentobject of class SpatExtent. If present, the arguments xmin, xmax, ymin and ymax are ignored
+resolutionnumeric vector of length 1 or 2 to set the spatial resolution (see <code><a href="dimensions.html">res</a></code>). If this argument is used, arguments <code>ncols</code> and <code>nrows</code> are ignored
+valsnumeric. An optional vector with cell values (if fewer values are provided, these are recycled to reach the number of cells)
+namescharacter. An optional vector with layer names (must match the number of layers)
+timetime or date stamps for each layer
+unitscharacter. units for each layer
+typecharacter. If the value is <code>"xyz"</code>, <code>x</code> must be a SpatVector with point geometry, or a matrix or data.frame with at least two columns, the first with <code>x</code> (or longitude) and the second with <code>y</code> (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells. If the value is <code>"xylz"</code>, <code>x</code> must have four columns with the third representing the layer and the fourth the cell values. If the value is <code>""</code>, the resulting SpatRaster will have the same number of rows and columns as <code>x</code>.
 
-<dt id="arg-subds">subds<a class="anchor" aria-label="anchor" href="#arg-subds"></a></dt>
-<dd><p>positive integer or character to select a sub-dataset. If zero or "", all sub-datasets are returned (if possible)</p></dd>
+digitsinteger to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when <code>type="xyz"</code>
+warnlogical. If <code>TRUE</code>, a warning about empty rasters may be emitted
+...additional arguments passed on to the <code>rast,missing-method</code></p></dd>
 
-<dt id="arg-lyrs">lyrs<a class="anchor" aria-label="anchor" href="#arg-lyrs"></a></dt>
-<dd><p>positive integer or character to select a subset of layers (a.k.a. "bands"). If <code>x</code> has multiple filenames, the same layer numbers are selected from each of the files, unless numbers larger than the number of layers of the first data source are included</p></dd>
 
-<dt id="arg-drivers">drivers<a class="anchor" aria-label="anchor" href="#arg-drivers"></a></dt>
-<dd><p>character. GDAL drivers to consider</p></dd>
 
-<dt id="arg-opts">opts<a class="anchor" aria-label="anchor" href="#arg-opts"></a></dt>
-<dd><p>character. GDAL dataset open options</p></dd>
-
-<dt id="arg-win">win<a class="anchor" aria-label="anchor" href="#arg-win"></a></dt>
-<dd><p>SpatExtent to set a <code><a href="window.html">window</a></code> (area of interest)</p></dd>
-
-<dt id="arg-snap">snap<a class="anchor" aria-label="anchor" href="#arg-snap"></a></dt>
-<dd><p>character. One of "near", "in", or "out", to indicate how the extent of <code><a href="window.html">window</a></code> should be "snapped" to <code>x</code></p></dd>
-
-<dt id="arg-vsi">vsi<a class="anchor" aria-label="anchor" href="#arg-vsi"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, "\vsicurl\" is prepended to filenames that start with "http". There are many  <a href="https://gdal.org/en/stable/user/virtual_file_systems.html" class="external-link">VSI configuration options</a> that can be set with <code><a href="gdal.html">setGDALconfig</a></code></p></dd>
-
-<dt id="arg-raw">raw<a class="anchor" aria-label="anchor" href="#arg-raw"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, scale and offset values are ignored. See <code><a href="scoff.html">scoff</a></code> to get these parameters</p></dd>
-
-<dt id="arg-noflip">noflip<a class="anchor" aria-label="anchor" href="#arg-noflip"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (<code>ymax &lt; ymin</code>), is not considered flipped. This avoids the need to <code><a href="flip.html">flip</a></code> the raster vertically</p></dd>
-
-<dt id="arg-guesscrs">guessCRS<a class="anchor" aria-label="anchor" href="#arg-guesscrs"></a></dt>
-<dd><p>logical. If <code>TRUE</code> and the file does not specify a CRS but has an extent that is within longitude/latitude bounds, the longitude/latitude crs is assigned to the SpatRaster</p></dd>
-
-<dt id="arg-domains">domains<a class="anchor" aria-label="anchor" href="#arg-domains"></a></dt>
-<dd><p>character. Metadata domains to read (see <code><a href="metags.html">metags</a></code> to retrieve their values if there are any. "" is the default domain</p></dd>
-
-<dt id="arg-md">md<a class="anchor" aria-label="anchor" href="#arg-md"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, the multi-dimensional GDAL API is used for reading the file. This API can only be used for a few file formats (netCDF/HDF5) and can sometimes provide notably faster reading of data with many (time) steps in the third or higher dimension. If no subdataset is selected with <code>subds</code>, all usable arrays are combined into one <code>SpatRaster</code> (like <code>md=FALSE</code>); a warning reports how many variables and layers were combined when there is more than one variable.</p></dd>
-
-<dt id="arg-dims">dims<a class="anchor" aria-label="anchor" href="#arg-dims"></a></dt>
-<dd><p>numeric. Specify the order of the dimensions to read atypical multidimensional files. See <code><a href="ar_info.html">ar_info</a></code>. Not implemented yet</p></dd>
-
-<dt id="arg-nrows">nrows<a class="anchor" aria-label="anchor" href="#arg-nrows"></a></dt>
-<dd><p>positive integer. Number of rows</p></dd>
-
-<dt id="arg-ncols">ncols<a class="anchor" aria-label="anchor" href="#arg-ncols"></a></dt>
-<dd><p>positive integer. Number of columns</p></dd>
-
-<dt id="arg-nlyrs">nlyrs<a class="anchor" aria-label="anchor" href="#arg-nlyrs"></a></dt>
-<dd><p>positive integer. Number of layers</p></dd>
-
-<dt id="arg-xmin">xmin<a class="anchor" aria-label="anchor" href="#arg-xmin"></a></dt>
-<dd><p>minimum x coordinate (left border)</p></dd>
-
-<dt id="arg-xmax">xmax<a class="anchor" aria-label="anchor" href="#arg-xmax"></a></dt>
-<dd><p>maximum x coordinate (right border)</p></dd>
-
-<dt id="arg-ymin">ymin<a class="anchor" aria-label="anchor" href="#arg-ymin"></a></dt>
-<dd><p>minimum y coordinate (bottom border)</p></dd>
-
-<dt id="arg-ymax">ymax<a class="anchor" aria-label="anchor" href="#arg-ymax"></a></dt>
-<dd><p>maximum y coordinate (top border)</p></dd>
-
-<dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
-<dd><p>character. Description of the Coordinate Reference System (map projection) in <code>PROJ.4</code>, <code>WKT</code> or <code>authority:code</code> notation. See <code><a href="crs.html">crs</a></code>. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned</p></dd>
-
-<dt id="arg-keeptime">keeptime<a class="anchor" aria-label="anchor" href="#arg-keeptime"></a></dt>
-<dd><p>logical. If <code>FALSE</code> the time stamps are discarded</p></dd>
-
-<dt id="arg-keepunits">keepunits<a class="anchor" aria-label="anchor" href="#arg-keepunits"></a></dt>
-<dd><p>logical. If <code>FALSE</code> the layer units are discarded</p></dd>
-
-<dt id="arg-props">props<a class="anchor" aria-label="anchor" href="#arg-props"></a></dt>
-<dd><p>logical. If <code>TRUE</code> the properties (categories and color-table) are kept</p></dd>
-
-<dt id="arg-tags">tags<a class="anchor" aria-label="anchor" href="#arg-tags"></a></dt>
-<dd><p>logical. If <code>TRUE</code> the user specified metadata tags are kept (see <code><a href="metags.html">metags</a></code>).</p></dd>
-
-<dt id="arg-extent">extent<a class="anchor" aria-label="anchor" href="#arg-extent"></a></dt>
-<dd><p>object of class SpatExtent. If present, the arguments xmin, xmax, ymin and ymax are ignored</p></dd>
-
-<dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
-<dd><p>numeric vector of length 1 or 2 to set the spatial resolution (see <code><a href="dimensions.html">res</a></code>). If this argument is used, arguments <code>ncols</code> and <code>nrows</code> are ignored</p></dd>
-
-<dt id="arg-vals">vals<a class="anchor" aria-label="anchor" href="#arg-vals"></a></dt>
-<dd><p>numeric. An optional vector with cell values (if fewer values are provided, these are recycled to reach the number of cells)</p></dd>
-
-<dt id="arg-names">names<a class="anchor" aria-label="anchor" href="#arg-names"></a></dt>
-<dd><p>character. An optional vector with layer names (must match the number of layers)</p></dd>
-
-<dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
-<dd><p>time or date stamps for each layer</p></dd>
-
-<dt id="arg-units">units<a class="anchor" aria-label="anchor" href="#arg-units"></a></dt>
-<dd><p>character. units for each layer</p></dd>
-
-<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>character. If the value is <code>"xyz"</code>, <code>x</code> must be a SpatVector with point geometry, or a matrix or data.frame with at least two columns, the first with <code>x</code> (or longitude) and the second with <code>y</code> (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells. If the value is <code>"xylz"</code>, <code>x</code> must have four columns with the third representing the layer and the fourth the cell values. If the value is <code>""</code>, the resulting SpatRaster will have the same number of rows and columns as <code>x</code>.</p></dd>
-
-<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
-<dd><p>integer to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when <code>type="xyz"</code></p></dd>
-
-<dt id="arg-warn">warn<a class="anchor" aria-label="anchor" href="#arg-warn"></a></dt>
-<dd><p>logical. If <code>TRUE</code>, a warnings about empty rasters may be emitted</p></dd>
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>additional arguments passed on to the <code>rast,missing-method</code></p></dd>
-
-</dl></div>
-    <div class="section level2">
-    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>SpatRaster</p>
-    </div>
-    <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Files are read with the GDAL library. GDAL guesses the file format from the name, and/or tries reading it with different "drivers" (see <code><a href="gdal.html">gdal</a></code>) until it succeeds. In very few cases this may cause a file to be opened with the wrong driver, and some information may be lost. For example, when a netCDF file is opened with the HDF5 driver. You can avoid that by using argument <code>rast("filename.ncdf", drivers="NETCDF")</code></p>
-<p>These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use <code><a href="writeRaster.html">writeRaster</a></code> to save SpatRaster objects to disk (and pass a filename or cell values of cluster nodes). Also see <code><a href="wrap.html">wrap</a></code>.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="sds.html">sds</a></code> to create a SpatRasterDataset (SpatRasters with the same geometry representing different variables or higher dimension), <code><a href="sprc.html">sprc</a></code> to create a SpatRasterCollection (to combine SpatRasters with different geometries), and <code><a href="vect.html">vect</a></code> for vector (points, lines, polygons) data</p></div>
+</dl><p>SpatRaster</p>
+<p>Files are read with the GDAL library. GDAL guesses the file format from the name, and/or tries reading it with different "drivers" (see <code><a href="gdal.html">gdal</a></code>) until it succeeds. In very few cases this may cause a file to be opened with the wrong driver, and some information may be lost. For example, when a netCDF file is opened with the HDF5 driver. You can avoid that by using argument <code>rast("filename.ncdf", drivers="NETCDF")</code>These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use <code><a href="writeRaster.html">writeRaster</a></code> to save SpatRaster objects to disk (and pass a filename or cell values to cluster nodes). Also see <code><a href="wrap.html">wrap</a></code>.</p>
+<p><code><a href="sds.html">sds</a></code> to create a SpatRasterDataset (SpatRasters with the same geometry representing different variables or higher dimension), <code><a href="sprc.html">sprc</a></code> to create a SpatRasterCollection (to combine SpatRasters with different geometries), and <code><a href="vect.html">vect</a></code> for vector (points, lines, polygons) data</p>
+<p># Create a SpatRaster from scratch
+x &lt;- rast(nrows=108, ncols=21, xmin=0, xmax=10)# Create a SpatRaster from a file
+f &lt;- system.file("ex/elev.tif", package="terra")
+r &lt;- rast(f)# A file with multiple layers. This one is special as the layers are RGB color channels
+s &lt;- rast(system.file("ex/logo.tif", package="terra"))# remove the color channels
+#plot(s)
+#RGB(s) &lt;- NULL
+#plot(s)# Create a skeleton with no associated cell values
+rast(s)# from a matrix
+m &lt;- matrix(1:25, nrow=5, ncol=5)
+rm &lt;- rast(m)# from a "xyz" data.frame
+d &lt;- as.data.frame(rm, xy=TRUE)
+head(d)
+rast(d, type="xyz")</p>
+<p>methods
+spatial</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create a SpatRaster from scratch</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">rast</span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">108</span>, ncols<span class="op">=</span><span class="fl">21</span>, xmin<span class="op">=</span><span class="fl">0</span>, xmax<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create a SpatRaster from a file</span></span></span>
-<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">rast</span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A file with multiple layers. This one is special as the layers are RGB color channels </span></span></span>
-<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">rast</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># remove the color channels</span></span></span>
-<span class="r-in"><span><span class="co">#plot(s)</span></span></span>
-<span class="r-in"><span><span class="co">#RGB(s) &lt;- NULL</span></span></span>
-<span class="r-in"><span><span class="co">#plot(s)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create a skeleton with no associated cell values</span></span></span>
-<span class="r-in"><span><span class="fu">rast</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> size        : 77, 101, 3  (nrow, ncol, nlyr)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 1, 1  (x, y)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : Cartesian (Meter)</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># from a matrix </span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, nrow<span class="op">=</span><span class="fl">5</span>, ncol<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">rm</span> <span class="op">&lt;-</span> <span class="fu">rast</span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># from a "xyz" data.frame</span></span></span>
-<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">rm</span>, xy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="headtail.html">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     x   y lyr.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.5 4.5     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1.5 4.5     6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 2.5 4.5    11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 3.5 4.5    16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 4.5 4.5    21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.5 3.5     2</span>
-<span class="r-in"><span><span class="fu">rast</span><span class="op">(</span><span class="va">d</span>, type<span class="op">=</span><span class="st">"xyz"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> size        : 5, 5, 1  (nrow, ncol, nlyr)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 1, 1  (x, y)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 0, 5, 0, 5  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : lyr.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :    25</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

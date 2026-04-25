@@ -8,12 +8,11 @@
   “proleptic_gregorian” calendars
   [\#1599](https://github.com/rspatial/terra/issues/1599) by Hu shiyu
 - `spatSample<SpatRaster>(method="stratified")` could cause an out of
-  bounds error
-  [\#1858](https://gi%5B#1848%5Dthub.com/rspatial/terra/issues/1858) by
-  Felipe)
+  bounds error [\#1858](https://github.com/rspatial/terra/issues/1858)
+  by Felipe)
 - `vrt` on OSX had trouble with options
   [\#1410](https://github.com/rspatial/terra/issues/1410) by Andrea
-  Manica. And occaisionaly on Windows
+  Manica. And occasionally on Windows
   [\#1848](https://github.com/rspatial/terra/issues/1848) by Monika Anna
   Tomaszewska; due to passing them as a dangling pointer.
 - `rbind<SpatVector,SpatVector>` could make R crash when combining a
@@ -63,7 +62,7 @@
   a limit for processing SpatRasters that is now detected
   [\#1993](https://github.com/rspatial/terra/issues/1993) by Enrico
   Mattea
-- additional effor to read KML/Z attribute values
+- additional effort to read KML/Z attribute values
   [\#1954](https://github.com/rspatial/terra/issues/1954) by Yong-hun
   Suh
 - `autocor` gets a “standardize” argument for row-standardization
@@ -78,7 +77,7 @@
 - better support for writing vsizip files
   [\#1629](https://github.com/rspatial/terra/issues/1629) by Eric R.
   Scott
-- better error message if `project` fails because a tranformation grid
+- better error message if `project` fails because a transformation grid
   cannot be downloaded
   [\#1425](https://github.com/rspatial/terra/issues/1425) by Kevin J
   Wolz
@@ -107,11 +106,11 @@
 - `legend_cont` method to draw a continuous legend independent of `plot`
   [\#2057](https://github.com/rspatial/terra/issues/2057) by Lucas
   Salinas Morales
-- `proj_pipelines` function to retrieve crs tranformation pipelines that
-  can be used in `project`
+- `proj_pipelines` function to retrieve CRS transformation pipelines
+  that can be used in `project`
   [\#1350](https://github.com/rspatial/terra/issues/1350) by Richard A.
   Johansen
-- `tessallate` method to create hexagonal and rectangular tessallations
+- `tessellate` method to create hexagonal and rectangular tessellations
 - `tile_apply` for parallelization
 
 ## version 1.9-11

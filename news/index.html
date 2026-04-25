@@ -39,9 +39,9 @@
 <h3 id="bug-fixes-1-9-23">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-23"></a></h3>
 <ul><li>terra now distinguishes between the “standard”/“Gregorian” and the “proleptic_gregorian” calendars <a href="https://github.com/rspatial/terra/issues/1599" class="external-link">#1599</a> by Hu shiyu</li>
 <li>
-<code>spatSample&lt;SpatRaster&gt;(method="stratified")</code> could cause an out of bounds error <a href="https://gi%5B#1848%5Dthub.com/rspatial/terra/issues/1858" class="external-link">#1858</a> by Felipe)</li>
+<code>spatSample&lt;SpatRaster&gt;(method="stratified")</code> could cause an out of bounds error <a href="https://github.com/rspatial/terra/issues/1858" class="external-link">#1858</a> by Felipe)</li>
 <li>
-<code>vrt</code> on OSX had trouble with options <a href="https://github.com/rspatial/terra/issues/1410" class="external-link">#1410</a> by Andrea Manica. And occaisionaly on Windows <a href="https://github.com/rspatial/terra/issues/1848" class="external-link">#1848</a> by Monika Anna Tomaszewska; due to passing them as a dangling pointer.</li>
+<code>vrt</code> on OSX had trouble with options <a href="https://github.com/rspatial/terra/issues/1410" class="external-link">#1410</a> by Andrea Manica. And occasionally on Windows <a href="https://github.com/rspatial/terra/issues/1848" class="external-link">#1848</a> by Monika Anna Tomaszewska; due to passing them as a dangling pointer.</li>
 <li>
 <code>rbind&lt;SpatVector,SpatVector&gt;</code> could make R crash when combining a variable that is numeric in one and boolean in the other source <a href="https://github.com/rspatial/terra/issues/2069" class="external-link">#2069</a> by Hans van Calster</li>
 <li>
@@ -68,7 +68,7 @@
 <li>
 <code>aggregate&lt;SpatRaster&gt;</code> no longer loses time attributes <a href="https://github.com/rspatial/terra/issues/2066" class="external-link">#2066</a> by Wencheng Lau-Medrano</li>
 <li>the number of files that the OS allows to be simultaneously open sets a limit for processing SpatRasters that is now detected <a href="https://github.com/rspatial/terra/issues/1993" class="external-link">#1993</a> by Enrico Mattea</li>
-<li>additional effor to read KML/Z attribute values <a href="https://github.com/rspatial/terra/issues/1954" class="external-link">#1954</a> by Yong-hun Suh</li>
+<li>additional effort to read KML/Z attribute values <a href="https://github.com/rspatial/terra/issues/1954" class="external-link">#1954</a> by Yong-hun Suh</li>
 <li>
 <code>autocor</code> gets a “standardize” argument for row-standardization <a href="https://github.com/rspatial/terra/issues/1593" class="external-link">#1593</a> by Nicholas Berryman</li>
 <li>
@@ -76,7 +76,7 @@
 <li>
 <code>sbar</code> gets argument “bg” to set a background color <a href="https://github.com/rspatial/terra/issues/1957" class="external-link">#1957</a> by Lucas Salinas Morales</li>
 <li>better support for writing vsizip files <a href="https://github.com/rspatial/terra/issues/1629" class="external-link">#1629</a> by Eric R. Scott</li>
-<li>better error message if <code>project</code> fails because a tranformation grid cannot be downloaded <a href="https://github.com/rspatial/terra/issues/1425" class="external-link">#1425</a> by Kevin J Wolz</li>
+<li>better error message if <code>project</code> fails because a transformation grid cannot be downloaded <a href="https://github.com/rspatial/terra/issues/1425" class="external-link">#1425</a> by Kevin J Wolz</li>
 <li>PROJ CDN warnings (e.g. SSL errors when downloading datum grids) are now collapsed into a single summary warning with guidance to use <code>projNetwork(FALSE)</code> <a href="https://github.com/rspatial/terra/issues/1351" class="external-link">#1351</a> by Hassan Masoomi</li>
 </ul></div>
 <div class="section level3">
@@ -94,9 +94,9 @@
 <li>
 <code>legend_cont</code> method to draw a continuous legend independent of <code>plot</code> <a href="https://github.com/rspatial/terra/issues/2057" class="external-link">#2057</a> by Lucas Salinas Morales</li>
 <li>
-<code>proj_pipelines</code> function to retrieve crs tranformation pipelines that can be used in <code>project</code> <a href="https://github.com/rspatial/terra/issues/1350" class="external-link">#1350</a> by Richard A. Johansen</li>
+<code>proj_pipelines</code> function to retrieve CRS transformation pipelines that can be used in <code>project</code> <a href="https://github.com/rspatial/terra/issues/1350" class="external-link">#1350</a> by Richard A. Johansen</li>
 <li>
-<code>tessallate</code> method to create hexagonal and rectangular tessallations</li>
+<code>tessellate</code> method to create hexagonal and rectangular tessellations</li>
 <li>
 <code>tile_apply</code> for parallelization</li>
 </ul></div>

@@ -218,8 +218,8 @@ Also see the methods in section VIII
 
 ## VII. Accessing cell values
 
-Apart from the function listed below, you can also use indexing with `[`
-with cell numbers, and row and/or column numbers  
+Apart from the functions listed below, you can also use indexing with
+`[` with cell numbers, and row and/or column numbers  
 
 |                                                                                |                                                                                                    |
 |--------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
@@ -510,7 +510,7 @@ associated with vector geometries.
 | [`as.data.frame`](https://rspatial.github.io/terra/reference/as.data.frame.md) | get attributes as a data.frame                                             |
 | [`as.list`](https://rspatial.github.io/terra/reference/as.list.md)             | get attributes as a list                                                   |
 | [`values`](https://rspatial.github.io/terra/reference/values.md)               | Get the attributes of a SpatVector                                         |
-| `values<-`                                                                     | Set new attributes to the geometries of a SpatRaster                       |
+| `values<-`                                                                     | Set new attributes to the geometries of a SpatVector                       |
 | [`sort`](https://rspatial.github.io/terra/reference/sort.md)                   | sort SpatVector by the values in a field                                   |
 | [`query`](https://rspatial.github.io/terra/reference/query.md)                 | Read features from a SpatVectorProxy                                       |
 | —————————                                                                      | ——————————————————————————————                                             |
@@ -772,7 +772,7 @@ issues. The configuration scripts were written by Roger Bivand. Some of
 code using the GEOS library was adapted from code by Edzer Pebesma for
 `sf`. Emanuele Cordano contributed functionality for catchment related
 computations. Michael Chirico, Barry Rowlingson, and Michael D. Sumner
-also made important contributions
+also made important contributions.
 
 This package is an attempt to climb on the shoulders of giants (GDAL,
 PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed
