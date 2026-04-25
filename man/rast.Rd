@@ -57,18 +57,18 @@ Note that there are operating system level limitations to the number of files th
 }
 
 \arguments{
-\item{x}{filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRasters. For other types it will be attempted to create a SpatRaster via (`as(x, "SpatRaster")`}
+\item{x}{filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRasters. For other types it will be attempted to create a SpatRaster via \code{as(x, "SpatRaster")}
 \item{subds}{positive integer or character to select a sub-dataset. If zero or "", all sub-datasets are returned (if possible)}
 \item{lyrs}{positive integer or character to select a subset of layers (a.k.a. "bands"). If \code{x} has multiple filenames, the same layer numbers are selected from each of the files, unless numbers larger than the number of layers of the first data source are included}
 \item{drivers}{character. GDAL drivers to consider}
 \item{opts}{character. GDAL dataset open options}
 \item{win}{SpatExtent to set a \code{\link{window}} (area of interest)}
 \item{snap}{character. One of "near", "in", or "out", to indicate how the extent of \code{\link{window}} should be "snapped" to \code{x}}
-\item{vsi}{logical. If \code{TRUE}, "\\vsicurl\\" is prepended to filenames that start with "http". There are many  \href{https://gdal.org/en/stable/user/virtual_file_systems.html}{VSI configuration options} that can be set with \code{\link{setGDALconfig}}}
+\item{vsi}{logical. If \code{TRUE}, "/vsicurl/" is prepended to filenames that start with "http". There are many \href{https://gdal.org/en/stable/user/virtual_file_systems.html}{VSI configuration options} that can be set with \code{\link{setGDALconfig}}}
 \item{raw}{logical. If \code{TRUE}, scale and offset values are ignored. See \code{\link{scoff}} to get these parameters}
 \item{noflip}{logical. If \code{TRUE}, a raster (e.g. JPEG image) that is not georeferenced and that GDAL assigns a flipped extent to (\code{ymax < ymin}), is not considered flipped. This avoids the need to \code{\link{flip}} the raster vertically}
 \item{guessCRS}{logical. If \code{TRUE} and the file does not specify a CRS but has an extent that is within longitude/latitude bounds, the longitude/latitude crs is assigned to the SpatRaster}
-\item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retrieve their values if there are any. "" is the default domain}
+\item{domains}{character. Metadata domains to read (see \code{\link{metags}} to retrieve their values if there are any). \code{""} is the default domain}
 \item{md}{logical. If \code{TRUE}, the multi-dimensional GDAL API is used for reading the file. This API can only be used for a few file formats (netCDF/HDF5) and can sometimes provide notably faster reading of data with many (time) steps in the third or higher dimension. If no subdataset is selected with \code{subds}, all usable arrays are combined into one \code{SpatRaster} (like \code{md=FALSE}); a warning reports how many variables and layers were combined when there is more than one variable.}
 \item{dims}{numeric. Specify the order of the dimensions to read atypical multidimensional files. See \code{\link{ar_info}}. Not implemented yet}
 \item{nrows}{positive integer. Number of rows}
@@ -92,7 +92,7 @@ Note that there are operating system level limitations to the number of files th
 \item{type}{character. If the value is \code{"xyz"}, \code{x} must be a SpatVector with point geometry, or a matrix or data.frame with at least two columns, the first with \code{x} (or longitude) and the second with \code{y} (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells. If the value is \code{"xylz"}, \code{x} must have four columns with the third representing the layer and the fourth the cell values. If the value is \code{""}, the resulting SpatRaster will have the same number of rows and columns as \code{x}. 
 }
 \item{digits}{integer to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when \code{type="xyz"}}
-\item{warn}{logical. If \code{TRUE}, a warnings about empty rasters may be emitted}
+\item{warn}{logical. If \code{TRUE}, a warning about empty rasters may be emitted}
 \item{...}{additional arguments passed on to the \code{rast,missing-method}}  
 }
 
@@ -104,7 +104,7 @@ SpatRaster
 \details{
 Files are read with the GDAL library. GDAL guesses the file format from the name, and/or tries reading it with different "drivers" (see \code{\link{gdal}}) until it succeeds. In very few cases this may cause a file to be opened with the wrong driver, and some information may be lost. For example, when a netCDF file is opened with the HDF5 driver. You can avoid that by using argument \code{rast("filename.ncdf", drivers="NETCDF")}
 
-These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save SpatRaster objects to disk (and pass a filename or cell values of cluster nodes). Also see \code{\link{wrap}}. 
+These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save SpatRaster objects to disk (and pass a filename or cell values to cluster nodes). Also see \code{\link{wrap}}. 
 }
 
 \seealso{\code{\link{sds}} to create a SpatRasterDataset (SpatRasters with the same geometry representing different variables or higher dimension), \code{\link{sprc}} to create a SpatRasterCollection (to combine SpatRasters with different geometries), and \code{\link{vect}} for vector (points, lines, polygons) data}

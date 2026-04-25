@@ -207,7 +207,7 @@ Also see the methods in section VIII
 
 \section{VII. Accessing cell values}{
 
-Apart from the function listed below, you can also use indexing with \code{[} with cell numbers, and row and/or column numbers \cr
+Apart from the functions listed below, you can also use indexing with \code{[} with cell numbers, and row and/or column numbers \cr
 
 \tabular{ll}{
     \code{\link{values}} \tab cell values (fails with very large rasters)\cr
@@ -507,7 +507,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
   \code{\link{as.list}} \tab get attributes as a list\cr
   \code{\link{values}} \tab Get the attributes of a SpatVector \cr
-  \code{\link{values<-}} \tab Set new attributes to the geometries of a SpatRaster \cr  
+  \code{\link{values<-}} \tab Set new attributes to the geometries of a SpatVector \cr  
   \code{\link{sort}} \tab sort SpatVector by the values in a field \cr
   \code{\link{query}} \tab Read features from a SpatVectorProxy \cr
   
@@ -762,7 +762,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 }
 
 \section{Contributors}{
-Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. Andrew Gene Brown and Márcia Barbosa contributed many improvements to the code and documentation. Krzysztof Dyba contributed to documentation and github management and issues. The configuration scripts were written by Roger Bivand. Some of code using the GEOS library was adapted from code by Edzer Pebesma for \code{sf}. Emanuele Cordano contributed functionality for catchment related computations. Michael Chirico, Barry Rowlingson, and Michael D. Sumner also made important contributions
+Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. Andrew Gene Brown and Márcia Barbosa contributed many improvements to the code and documentation. Krzysztof Dyba contributed to documentation and github management and issues. The configuration scripts were written by Roger Bivand. Some of code using the GEOS library was adapted from code by Edzer Pebesma for \code{sf}. Emanuele Cordano contributed functionality for catchment related computations. Michael Chirico, Barry Rowlingson, and Michael D. Sumner also made important contributions.
 
 
 This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. Feedback and suggestions by Kendon Bell, Jean-Luc Dupouey, Sarah Endicott, Derek Friend, Alex Ilich, Agustin Lobo, Gerald Nelson, Jakub Nowosad, and Monika Tomaszewska have been especially helpful.
