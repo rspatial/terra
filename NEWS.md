@@ -3,8 +3,8 @@
 ## bug fixes
 
 - terra now distinguishes between the "standard"/"Gregorian" and the "proleptic_gregorian" calendars [#1599](https://github.com/rspatial/terra/issues/1599) by Hu shiyu
-- `spatSample<SpatRaster>(method="stratified")` could cause an out of bounds error [#1858](https://gi[#1848]thub.com/rspatial/terra/issues/1858) by Felipe)
-- `vrt` on OSX had trouble with options [#1410](https://github.com/rspatial/terra/issues/1410) by Andrea Manica. And occaisionaly on Windows [#1848](https://github.com/rspatial/terra/issues/1848) by Monika Anna Tomaszewska; due to passing them as a dangling pointer.
+- `spatSample<SpatRaster>(method="stratified")` could cause an out of bounds error [#1858](https://github.com/rspatial/terra/issues/1858) by Felipe)
+- `vrt` on OSX had trouble with options [#1410](https://github.com/rspatial/terra/issues/1410) by Andrea Manica. And occasionally on Windows [#1848](https://github.com/rspatial/terra/issues/1848) by Monika Anna Tomaszewska; due to passing them as a dangling pointer.
 - `rbind<SpatVector,SpatVector>` could make R crash when combining a variable that is numeric in one and boolean in the other source [#2069](https://github.com/rspatial/terra/issues/2069) by Hans van Calster
 - `vect` can now better handle non standard geometries such as multisurface [#2037](https://github.com/rspatial/terra/issues/2037) by Floris Vanderhaeghe
 - `writeVector` can now write GPX format [#1231](https://github.com/rspatial/terra/issues/1231) by Krzysztof Dyba
@@ -23,12 +23,12 @@
 - `aggregate<SpatRaster>` no longer loses time attributes [#2066](https://github.com/rspatial/terra/issues/2066) by Wencheng Lau-Medrano
 - the number of files that the OS allows to be simultaneously open sets a limit for processing SpatRasters that is now detected [#1993](
 https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
-- additional effor to read KML/Z attribute values [#1954](https://github.com/rspatial/terra/issues/1954) by Yong-hun Suh
+- additional effort to read KML/Z attribute values [#1954](https://github.com/rspatial/terra/issues/1954) by Yong-hun Suh
 - `autocor` gets a "standardize" argument for row-standardization [#1593](https://github.com/rspatial/terra/issues/1593) by Nicholas Berryman
 - `plet` gains argument "hover" [#1571](https://github.com/rspatial/terra/issues/1571) by Agustin Lobo
 - `sbar` gets argument "bg" to set a background color [#1957](https://github.com/rspatial/terra/issues/1957) by Lucas Salinas Morales
 - better support for writing vsizip files [#1629](https://github.com/rspatial/terra/issues/1629) by Eric R. Scott
-- better error message if `project` fails because a tranformation grid cannot be downloaded [#1425](https://github.com/rspatial/terra/issues/1425) by Kevin J Wolz
+- better error message if `project` fails because a transformation grid cannot be downloaded [#1425](https://github.com/rspatial/terra/issues/1425) by Kevin J Wolz
 - PROJ CDN warnings (e.g. SSL errors when downloading datum grids) are now collapsed into a single summary warning with guidance to use `projNetwork(FALSE)` [#1351](https://github.com/rspatial/terra/issues/1351) by Hassan Masoomi
 
 
@@ -40,8 +40,8 @@ https://github.com/rspatial/terra/issues/1993) by Enrico Mattea
 - `animate<SpatVectorCollection>` method. [#2065](https://github.com/rspatial/terra/pull/2065) by Márcia Barbosa 
 - `thin<SpatVector>` method. [#1738](https://github.com/rspatial/terra/issues/1738) by Andrés
 - `legend_cont` method to draw a continuous legend independent of `plot` [#2057](https://github.com/rspatial/terra/issues/2057) by Lucas Salinas Morales
-- `proj_pipelines` function to retrieve crs tranformation pipelines that can be used in `project` [#1350](https://github.com/rspatial/terra/issues/1350) by Richard A. Johansen
-- `tessallate` method to create hexagonal and rectangular tessallations
+- `proj_pipelines` function to retrieve CRS transformation pipelines that can be used in `project` [#1350](https://github.com/rspatial/terra/issues/1350) by Richard A. Johansen
+- `tessellate` method to create hexagonal and rectangular tessellations
 - `tile_apply` for parallelization
 
 
