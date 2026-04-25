@@ -497,6 +497,39 @@ std::string SpatRaster::show(bool one_based) {
 				}
 			}
 
+			// Substitute factor labels for numeric min/max in categorical layers
+			std::vector<SpatCategories> allcats;
+			if (any_f) {
+				allcats = getCategories();
+				for (size_t i = 0; i < isf.size() && i < allcats.size(); i++) {
+					if (!isf[i]) continue;
+					if (i >= hMM.size() || !hMM[i]) continue;
+					if (std::isnan(rmin[i]) || std::isnan(rmax[i])) continue;
+					SpatCategories &cat = allcats[i];
+					if (cat.d.iv.empty() || cat.d.iv[0].empty()) continue;
+					int idx = cat.index;
+					if (idx < 1 || idx >= (int)cat.d.ncol()) continue;
+					long lmin = (long)rmin[i];
+					long lmax = (long)rmax[i];
+					const std::vector<long> &vcol = cat.d.iv[0];
+					size_t r_min = SIZE_MAX, r_max = SIZE_MAX;
+					for (size_t j = 0; j < vcol.size(); j++) {
+						if (r_min == SIZE_MAX && vcol[j] == lmin) r_min = j;
+						if (r_max == SIZE_MAX && vcol[j] == lmax) r_max = j;
+						if (r_min != SIZE_MAX && r_max != SIZE_MAX) break;
+					}
+					if (r_min == SIZE_MAX || r_max == SIZE_MAX) continue;
+					std::vector<std::string> labels = cat.d.as_string((size_t)idx);
+					if (r_min >= labels.size() || r_max >= labels.size()) continue;
+					std::string lab_min = labels[r_min];
+					std::string lab_max = labels[r_max];
+					if (lab_min.size() > 40) lab_min = lab_min.substr(0, 39) + "~";
+					if (lab_max.size() > 40) lab_max = lab_max.substr(0, 39) + "~";
+					minv[i] = lab_min;
+					maxv[i] = lab_max;
+				}
+			}
+
 			if (nl > mnr) {
 				minv.resize(mnr); minv.push_back("...");
 				maxv.resize(mnr); maxv.push_back("...");
@@ -517,6 +550,20 @@ std::string SpatRaster::show(bool one_based) {
 			}
 
 			if (ncols == 1) {
+				// Single-layer factor: show the active category column
+				// name(s) above 'name', mirroring R/z_show.R's
+				// "categories  : <colnames>" output.
+				if (any_f && !isf.empty() && isf[0] && !allcats.empty()
+						&& allcats[0].index >= 0
+						&& allcats[0].d.ncol() > 1) {
+					const std::vector<std::string> &cnms = allcats[0].d.names;
+					std::string cat_label;
+					for (size_t k = 1; k < cnms.size(); k++) {
+						if (k > 1) cat_label += ", ";
+						cat_label += cnms[k];
+					}
+					s << "categories  : " << cat_label << "\n";
+				}
 				s << "name        : " << ln[0] << "\n";
 				s << "min value   : " << minv[0] << "\n";
 				s << "max value   : " << maxv[0] << "\n";
