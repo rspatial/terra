@@ -57,7 +57,7 @@ Note that there are operating system level limitations to the number of files th
 }
 
 \arguments{
-\item{x}{filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRasters. For other types it will be attempted to create a SpatRaster via \code{as(x, "SpatRaster")}
+\item{x}{filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRasters. For other types it will be attempted to create a SpatRaster via \code{as(x, "SpatRaster")}}
 \item{subds}{positive integer or character to select a sub-dataset. If zero or "", all sub-datasets are returned (if possible)}
 \item{lyrs}{positive integer or character to select a subset of layers (a.k.a. "bands"). If \code{x} has multiple filenames, the same layer numbers are selected from each of the files, unless numbers larger than the number of layers of the first data source are included}
 \item{drivers}{character. GDAL drivers to consider}
