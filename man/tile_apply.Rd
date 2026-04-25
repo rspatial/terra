@@ -14,12 +14,12 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 }
 
 \arguments{
-  \item{x}{\code{SpatRaster}. Should normally be backed by a file (so that workers can re-open it cheaply); in-memory rasters are shipped to the workers via \code{\link{wrap}}}
+  \item{x}{\code{SpatRaster}. Preferably backed by a file so that workers can re-open it cheaply; in-memory rasters are shipped to the workers via \code{\link{wrap}}}
   \item{fun}{function. Takes a \code{SpatRaster} as its first argument and must return a \code{SpatRaster}. It is called once per tile, with the windowed \code{x} as the first argument and any extra \code{...} arguments appended}
   \item{cores}{one of: an integer (\code{> 1} creates a PSOCK cluster of that size, torn down at the end of the call); a \code{cluster} object created with \code{parallel::makeCluster}; the string \code{"future"} (use \code{\link[future.apply]{future_lapply}} with the currently-active \code{future::\link[future]{plan}}); or a future strategy object (e.g. \code{future::multisession()}), which is set as the plan for the duration of the call. The \code{"future"} and plan-object paths require the \pkg{future} and \pkg{future.apply} packages}
   \item{cpkgs}{character. Names of packages that must be loaded on each worker before \code{fun} is called (e.g. \code{"randomForest"})}
-  \item{tiles}{specification of the tiles. If \code{NULL} (the default), the tile size is chosen automatically from the GDAL block size of \code{x} and a per-worker memory budget that depends on \code{cores} (see \code{\link{getTileExtents}} \emph{Details}). Otherwise one of: a \code{SpatExtent}; a list of \code{SpatExtent}s; a 4-column matrix of extents \code{(xmin, xmax, ymin, ymax)} as returned by \code{\link{getTileExtents}}; a \code{SpatRaster} or \code{SpatVector} that defines the tile geometry; or one or two integers specifying the number of rows and columns \emph{per tile} (passed on to \code{\link{getTileExtents}})}
-  \item{buffer}{integer. Number of additional rows and columns (one number, or two for separate row/column buffers) of \code{x} to read on each side of every tile, so that \code{fun} can compute neighbourhood-dependent values (e.g. \code{\link{focal}}) without edge artefacts. The result of \code{fun} is then cropped back to the un-buffered tile extent before it is written, so the per-tile outputs are non-overlapping and assemble cleanly. Only used when \code{tiles = NULL}; ignored with a warning otherwise (when supplying \code{tiles} explicitly, build the overlap into the tiles yourself with \code{getTileExtents(..., buffer=)} and pick an \code{overlap_fun})}
+  \item{tiles}{specification of the tiles. If \code{NULL} (the default), the tile size is chosen automatically and a per-worker memory budget that depends on \code{cores} (see \code{\link{getTileExtents}}. Otherwise one of: a \code{SpatExtent}; a list of \code{SpatExtent}s; a 4-column matrix of extents \code{(xmin, xmax, ymin, ymax)} as returned by \code{\link{getTileExtents}}; a \code{SpatRaster} or \code{SpatVector} that defines the tile geometry; or one or two integers specifying the number of rows and columns \emph{per tile} (passed on to \code{\link{getTileExtents}})}
+  \item{buffer}{integer. Number of additional rows and columns (one number, or two for separate row/column buffers) of \code{x} to read on each side of every tile, so that \code{fun} can compute neighbourhood-dependent values (e.g. \code{\link{focal}}) without edge artefacts. The result of \code{fun} is then cropped back to the un-buffered tile extent before it is written, so the per-tile outputs are non-overlapping. Only used when \code{tiles = NULL}; ignored with a warning otherwise (when supplying \code{tiles} explicitly, build the overlap into the tiles yourself with \code{getTileExtents(..., buffer=)} and pick an \code{overlap_fun})}
   \item{...}{additional arguments passed to \code{fun}. When \code{cores > 1} these are serialized and shipped to each worker; \code{SpatRaster}, \code{SpatVector} and other \pkg{terra} objects in \code{...} are automatically wrapped and unwrapped}
   \item{filename}{character. Output filename for the assembled result. When empty (the default) and \code{overlap_fun = NULL}, a virtual raster (VRT) is returned that references the per-tile files (see \emph{Details})}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten if it exists}
@@ -28,15 +28,15 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 }
 
 \details{
-\strong{Buffered tiles for focal-style operations.} When \code{tiles = NULL} and \code{buffer > 0}, each tile is read on a slightly expanded extent (\code{buffer} cells on each side, clamped to \code{x}'s extent), \code{fun} is applied, and the result is cropped back to the un-buffered tile extent before it is written. This avoids the edge effects that operations like \code{\link{focal}} would otherwise produce at tile boundaries, while still letting the assembled output use the cheap \code{\link{vrt}} path.
+\strong{Buffered tiles for focal-style operations.} When \code{tiles = NULL} and \code{buffer > 0}, each tile is read on an expanded extent of (\code{buffer} cells on each side, clamped to \code{x}'s extent), \code{fun} is applied, and the result is cropped back to the un-buffered tile extent before it is written. This avoids the edge effects that operations like \code{\link{focal}} would otherwise produce at tile boundaries.
 
 The per-tile files are then assembled into the final \code{SpatRaster}:
 \itemize{
-  \item When \code{overlap_fun = NULL} (the default), the assembly is a virtual raster (\code{\link{vrt}}). This is essentially free and never reads the cell values again. It is correct as long as the tiles do not overlap; if they do (e.g. when built with \code{getTileExtents(..., buffer=)}), the value of the last tile in the overlapping regions.
-  \item When \code{overlap_fun} is set (e.g. \code{"mean"}), the assembly uses \code{\link{mosaic}} which streams the data through terra's standard chunked I/O and applies \code{overlap_fun} on overlapping cells. This is the right path for buffered tiles, focal operations, and similar.
+  \item When \code{overlap_fun = NULL} (the default), the assembly is a virtual raster (\code{\link{vrt}}). This is fast and correct as long as the tiles do not overlap. If they do, the value of the last tile in the overlapping regions is used.
+  \item When \code{overlap_fun} is set (e.g. \code{"mean"}), the assembly uses \code{\link{mosaic}} and applies the function to the values of overlapping cells.
 }
 
-If \code{filename} is supplied, the assembled result is materialised there and the per-tile intermediate files are removed. If \code{filename} is empty and a VRT is being built, the per-tile files are kept for the rest of the R session because they back the returned raster.
+If \code{filename} is empty and a VRT is returned, the tiled data files are kept for the rest of the R session, but they are lost after the session.
 
 Extra arguments passed via \code{...} must be named when \code{cores > 1}.
 
@@ -55,28 +55,15 @@ A \code{SpatRaster}.
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 
-# auto: block- and memory-aware tile size, sized for 1 worker.
+# not parallel
 # Returned object is a VRT backed by per-tile files in tempdir().
 out1 <- tile_apply(r, function(x) x * 2)
 
-# write the assembled result straight to disk (per-tile intermediates are
-# removed automatically once the output file is materialised).
-out2 <- tile_apply(r, function(x) x + 1,
-                   filename=file.path(tempdir(), "out2.tif"), overwrite=TRUE)
+# focal, use a buffer wide enough for the focal window
+out3 <- tile_apply(r, function(x) focal(x, w=5, fun="mean", 
+		na.rm=TRUE), buffer=2)
 
-# focal with the auto path: just ask for a buffer wide enough for the
-# focal window. tile_apply reads (tile + buffer) cells per tile, runs the
-# focal, crops back to the tile, and assembles via vrt() - no overlap_fun
-# needed.
-out3 <- tile_apply(r, function(x) focal(x, w=5, fun="mean", na.rm=TRUE),
-                   buffer=2)
-
-# focal with explicit pre-buffered tiles: use overlap_fun to blend overlap
-tiles_buf <- getTileExtents(r, 50, buffer=3)
-out3b <- tile_apply(r, function(x) focal(x, w=5, fun="mean", na.rm=TRUE),
-                    tiles=tiles_buf, overlap_fun="mean")
-
-# parallel on 2 workers (auto tiles are sized down for 2 concurrent workers)
+# parallel on 2 workers
 \dontrun{
 out4 <- tile_apply(r, function(x) x * 2, cores=2)
 
