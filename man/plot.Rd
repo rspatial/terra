@@ -87,7 +87,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Additional parameters include: 
   \itemize{
-    \item \code{side} numeric to indicate for which of the axes to draw a line. Default is \code{1:4} (only noticeable when \code{box=FALSE}. 
+    \item \code{side} numeric to indicate for which of the axes to draw a line. Default is \code{1:4} (only noticeable when \code{box=FALSE}). 
     \item \code{tick} numeric to indicate for which of the axes to draw tickmarks. Default is \code{1:2} unless \code{side} is changed, in which case the default is the same as \code{side}
     \item \code{lab} numeric to indicate for which of the axes to draw labels. Default is \code{1:2} unless \code{side} is changed, in which case the default is the same as \code{side}
     \item \code{xat}/\code{yat} numeric with the values at which tickmarks are to be drawn on the horizontal/vertical axis.
