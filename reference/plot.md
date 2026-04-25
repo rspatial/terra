@@ -182,7 +182,7 @@ plot(x, y, main, mar=NULL, ext=NULL, ...)
   include:
 
   - `side` numeric to indicate for which of the axes to draw a line.
-    Default is `1:4` (only noticeable when `box=FALSE`.
+    Default is `1:4` (only noticeable when `box=FALSE`).
 
   - `tick` numeric to indicate for which of the axes to draw tickmarks.
     Default is `1:2` unless `side` is changed, in which case the default
