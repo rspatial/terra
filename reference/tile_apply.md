@@ -16,8 +16,8 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 
 - x:
 
-  `SpatRaster`. Should normally be backed by a file (so that workers can
-  re-open it cheaply); in-memory rasters are shipped to the workers via
+  `SpatRaster`. Preferably backed by a file so that workers can re-open
+  it cheaply; in-memory rasters are shipped to the workers via
   [`wrap`](https://rspatial.github.io/terra/reference/wrap.md)
 
 - fun:
@@ -48,11 +48,11 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 - tiles:
 
   specification of the tiles. If `NULL` (the default), the tile size is
-  chosen automatically from the GDAL block size of `x` and a per-worker
-  memory budget that depends on `cores` (see
-  [`getTileExtents`](https://rspatial.github.io/terra/reference/makeTiles.md)
-  *Details*). Otherwise one of: a `SpatExtent`; a list of `SpatExtent`s;
-  a 4-column matrix of extents `(xmin, xmax, ymin, ymax)` as returned by
+  chosen automatically and a per-worker memory budget that depends on
+  `cores` (see
+  [`getTileExtents`](https://rspatial.github.io/terra/reference/makeTiles.md).
+  Otherwise one of: a `SpatExtent`; a list of `SpatExtent`s; a 4-column
+  matrix of extents `(xmin, xmax, ymin, ymax)` as returned by
   [`getTileExtents`](https://rspatial.github.io/terra/reference/makeTiles.md);
   a `SpatRaster` or `SpatVector` that defines the tile geometry; or one
   or two integers specifying the number of rows and columns *per tile*
@@ -67,10 +67,10 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
   [`focal`](https://rspatial.github.io/terra/reference/focal.md))
   without edge artefacts. The result of `fun` is then cropped back to
   the un-buffered tile extent before it is written, so the per-tile
-  outputs are non-overlapping and assemble cleanly. Only used when
-  `tiles = NULL`; ignored with a warning otherwise (when supplying
-  `tiles` explicitly, build the overlap into the tiles yourself with
-  `getTileExtents(..., buffer=)` and pick an `overlap_fun`)
+  outputs are non-overlapping. Only used when `tiles = NULL`; ignored
+  with a warning otherwise (when supplying `tiles` explicitly, build the
+  overlap into the tiles yourself with `getTileExtents(..., buffer=)`
+  and pick an `overlap_fun`)
 
 - ...:
 
@@ -108,34 +108,26 @@ tile_apply(x, fun, cores=1, cpkgs=NULL, tiles=NULL, buffer=0, ...,
 ## Details
 
 **Buffered tiles for focal-style operations.** When `tiles = NULL` and
-`buffer > 0`, each tile is read on a slightly expanded extent (`buffer`
-cells on each side, clamped to `x`'s extent), `fun` is applied, and the
-result is cropped back to the un-buffered tile extent before it is
-written. This avoids the edge effects that operations like
+`buffer > 0`, each tile is read on an expanded extent of (`buffer` cells
+on each side, clamped to `x`'s extent), `fun` is applied, and the result
+is cropped back to the un-buffered tile extent before it is written.
+This avoids the edge effects that operations like
 [`focal`](https://rspatial.github.io/terra/reference/focal.md) would
-otherwise produce at tile boundaries, while still letting the assembled
-output use the cheap
-[`vrt`](https://rspatial.github.io/terra/reference/vrt.md) path.
+otherwise produce at tile boundaries.
 
 The per-tile files are then assembled into the final `SpatRaster`:
 
 - When `overlap_fun = NULL` (the default), the assembly is a virtual
   raster ([`vrt`](https://rspatial.github.io/terra/reference/vrt.md)).
-  This is essentially free and never reads the cell values again. It is
-  correct as long as the tiles do not overlap; if they do (e.g. when
-  built with `getTileExtents(..., buffer=)`), the value of the last tile
-  in the overlapping regions.
+  This is fast and correct as long as the tiles do not overlap. If they
+  do, the value of the last tile in the overlapping regions is used.
 
 - When `overlap_fun` is set (e.g. `"mean"`), the assembly uses
-  [`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md) which
-  streams the data through terra's standard chunked I/O and applies
-  `overlap_fun` on overlapping cells. This is the right path for
-  buffered tiles, focal operations, and similar.
+  [`mosaic`](https://rspatial.github.io/terra/reference/mosaic.md) and
+  applies the function to the values of overlapping cells.
 
-If `filename` is supplied, the assembled result is materialised there
-and the per-tile intermediate files are removed. If `filename` is empty
-and a VRT is being built, the per-tile files are kept for the rest of
-the R session because they back the returned raster.
+If `filename` is empty and a VRT is returned, the tiled data files are
+kept for the rest of the R session, but they are lost after the session.
 
 Extra arguments passed via `...` must be named when `cores > 1`.
 
@@ -159,28 +151,15 @@ A `SpatRaster`.
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 
-# auto: block- and memory-aware tile size, sized for 1 worker.
+# not parallel
 # Returned object is a VRT backed by per-tile files in tempdir().
 out1 <- tile_apply(r, function(x) x * 2)
 
-# write the assembled result straight to disk (per-tile intermediates are
-# removed automatically once the output file is materialised).
-out2 <- tile_apply(r, function(x) x + 1,
-                   filename=file.path(tempdir(), "out2.tif"), overwrite=TRUE)
+# focal, use a buffer wide enough for the focal window
+out3 <- tile_apply(r, function(x) focal(x, w=5, fun="mean", 
+    na.rm=TRUE), buffer=2)
 
-# focal with the auto path: just ask for a buffer wide enough for the
-# focal window. tile_apply reads (tile + buffer) cells per tile, runs the
-# focal, crops back to the tile, and assembles via vrt() - no overlap_fun
-# needed.
-out3 <- tile_apply(r, function(x) focal(x, w=5, fun="mean", na.rm=TRUE),
-                   buffer=2)
-
-# focal with explicit pre-buffered tiles: use overlap_fun to blend overlap
-tiles_buf <- getTileExtents(r, 50, buffer=3)
-out3b <- tile_apply(r, function(x) focal(x, w=5, fun="mean", na.rm=TRUE),
-                    tiles=tiles_buf, overlap_fun="mean")
-
-# parallel on 2 workers (auto tiles are sized down for 2 concurrent workers)
+# parallel on 2 workers
 if (FALSE) { # \dontrun{
 out4 <- tile_apply(r, function(x) x * 2, cores=2)
 
