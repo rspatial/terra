@@ -67,7 +67,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
  
  \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link[graphics]{legend}}. 
  
-  A legend can be placed with placed by specifying arguments \code{x} and \code{y}. For a continuous legend \code{y} can have two values. \code{x} can also be a SpatExtent. Furthermore, \code{x} can have be a keyword such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. For a continuous legend, only the placement keywords "left", "right", "top", "bottom", "topright", "bottomright" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. The placement of the legend can be altered with argument \code{nudge} that move the location in the directions specified with one value (x direction) or two values (x, y). For a continuous legend it can also have four values (xmin, xmax, ymin, ymax). When supplying coordinates, use \code{horiz=TRUE} to get a horizontal legend.
+  A legend can be placed by specifying arguments \code{x} and \code{y}. For a continuous legend \code{y} can have two values. \code{x} can also be a SpatExtent. Furthermore, \code{x} can be a keyword such "topleft" and "bottomright" to place the legend at these locations inside the map rectangle. For a continuous legend, only the placement keywords "left", "right", "top", "bottom", "topright", "bottomright" are recognized; and when using these keywords, the legend is placed outside of the map rectangle. The placement of the legend can be altered with argument \code{nudge} that moves the location in the directions specified with one value (x direction) or two values (x, y). For a continuous legend it can also have four values (xmin, xmax, ymin, ymax). When supplying coordinates, use \code{horiz=TRUE} to get a horizontal legend.
     
   Additional parameters for continuous legends include: 
 
@@ -87,7 +87,7 @@ There is a separate help file for plotting a \code{\link[=plot,SpatGraticule,mis
   
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}. Additional parameters include: 
   \itemize{
-    \item \code{side} numeric to indicate for which of the axes to draw a line. Default is \code{1:4} (only noticble when \code{box=FALSE}. 
+    \item \code{side} numeric to indicate for which of the axes to draw a line. Default is \code{1:4} (only noticeable when \code{box=FALSE}). 
     \item \code{tick} numeric to indicate for which of the axes to draw tickmarks. Default is \code{1:2} unless \code{side} is changed, in which case the default is the same as \code{side}
     \item \code{lab} numeric to indicate for which of the axes to draw labels. Default is \code{1:2} unless \code{side} is changed, in which case the default is the same as \code{side}
     \item \code{xat}/\code{yat} numeric with the values at which tickmarks are to be drawn on the horizontal/vertical axis.
