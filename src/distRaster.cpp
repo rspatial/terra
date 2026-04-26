@@ -377,7 +377,12 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 //      bound (geodesic angular distance >= |dlat|) is exact: comparing it
 //      to the current best in radians lets us terminate the walk in each
 //      direction the moment the bound exceeds the best, without trig.
-//   4. TBB parallelism over rows within a block.
+//   4. When max_dist > 0 we additionally seed the per-cell best distance
+//      with that threshold (converted to radians), so cells whose nearest
+//      edge point is beyond max_dist terminate the walk in both directions
+//      almost immediately and never pay for trig. The NaN is produced by
+//      the existing post-filter.
+//   5. TBB parallelism over rows within a block.
 //
 // set TERRA_DIST_SLOW=1 to bypass the fast track 
 // ----------------------------------------------------------------------------
@@ -414,6 +419,16 @@ SpatRaster SpatRaster::distance_crds_lonlat_fast(std::vector<double>& x, std::ve
 	const double inf = std::numeric_limits<double>::infinity();
 	const double mxval = std::numeric_limits<double>::max();
 	const bool use_cos = (method == "cosine");
+
+	// When max_dist > 0 the result distances are NaN'd for values strictly
+	// greater than max_dist. Converting that threshold into an angular bound
+	// lets the latitude-only prune (|dlat| >= cur_ang) kill any edge point
+	// that is outside the "relevant" ring around the cell without spending
+	// any trig. seed_ang is nudged one ulp above max_ang so that genuine
+	// points at d == max_dist still update cur_ang (preserving the original
+	// ">" semantics) while the seed itself gets NaN'd by the post-filter.
+	const double max_ang = (max_dist > 0) ? (max_dist / EARTH_R / m) : inf;
+	const double seed_ang = std::isfinite(max_ang) ? std::nextafter(max_ang, inf) : inf;
 
 	// Sort edge points by latitude (ascending) so we can binary-search for the
 	// row latitude and walk outward, pruning by |dlat|.
@@ -487,7 +502,7 @@ SpatRaster SpatRaster::distance_crds_lonlat_fast(std::vector<double>& x, std::ve
 					continue;
 				}
 				const double px = tox_rad[c];
-				double cur_ang = inf;  // angular distance, radians
+				double cur_ang = seed_ang;  // angular distance, radians
 
 				// Forward direction: qy >= py, dlat increases monotonically.
 				for (size_t j = mid; j < np; j++) {
