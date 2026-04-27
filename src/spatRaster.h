@@ -705,6 +705,7 @@ class SpatRaster {
 		SpatRaster distance_crds_vals(std::vector<double>& x, std::vector<double>& y, std::vector<double>& v, const std::string& method, bool skip, bool setNA, std::string unit, double threshold, SpatOptions &opt);
 		SpatRaster distance_crds_lonlat_fast(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, double threshold, SpatOptions &opt);
 		SpatRaster distance_crds_lonlat_fast_geo(std::vector<double>& x, std::vector<double>& y, bool skip, bool setNA, std::string unit, double threshold, SpatOptions &opt);
+		SpatRaster distance_vector_lonlat_fast_geo(SpatVector p, std::string unit, SpatOptions &opt);
 
 		SpatRaster dn_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt);
 

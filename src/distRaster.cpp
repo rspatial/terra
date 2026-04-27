@@ -1142,6 +1142,180 @@ SpatRaster SpatRaster::distance_vector_lonlat_fast(SpatVector p, std::string uni
 }
 
 
+// ----------------------------------------------------------------------------
+// Fast path for distance(SpatRaster, SpatVector) for lon/lat polygons or lines
+// using the ellipsoidal "geo" method.
+//
+// Same structure as the haversine/cosine fast path, with these twists:
+//   * ellipsoid (a, f) is extracted from the CRS (WGS84 fallback)
+//   * the per-segment latitude-only lower bound uses R_min = a*(1-e^2), the
+//     minimum meridional radius of curvature, which is a true LB on geodesic
+//     distance given |dlat|.
+//   * the per-segment bbox lower bound (spherical, computed on R=a) is
+//     multiplied by (1-e^2) to guarantee a true LB on geodesic distance.
+//     (1-e^2) is ~0.9933 for WGS84, so the prune loses <0.7% of its sharpness
+//     relative to the spherical paths.
+// ----------------------------------------------------------------------------
+
+
+SpatRaster SpatRaster::distance_vector_lonlat_fast_geo(SpatVector p, std::string unit, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+
+	if (source[0].srs.is_empty() && p.srs.is_empty()) {
+		out.addWarning("unknown CRSs. Results can be wrong");
+	} else if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRSs do not match");
+		return out;
+	}
+	if (p.empty()) {
+		out.setError("no locations to compute distance from");
+		return out;
+	}
+	if ((unit != "m") && (unit != "km")) {
+		out.setError("invalid unit. Must be 'm' or 'km'");
+		return out;
+	}
+
+	std::string gtype = p.type();
+	if ((gtype != "polygons") && (gtype != "lines")) {
+		out.setError("internal: distance_vector_lonlat_fast_geo called with non-line/polygon input");
+		return out;
+	}
+	bool is_poly = (gtype == "polygons");
+
+	if (p.nrow() > 1) {
+		p = p.aggregate(true);
+	}
+
+	std::vector<LLSeg> segs;
+	collect_segments(p, segs);
+	const size_t nseg = segs.size();
+	if (nseg == 0) {
+		out.setError("no segments to compute distance from");
+		return out;
+	}
+
+	const double D2R = 0.017453292519943295;
+	const double m_unit = (unit == "km") ? 0.001 : 1.0;
+
+	// Ellipsoid params from source CRS (WGS84 fallback). Falls back to WGS84
+	// when source has empty SRS; if source empty but vector has a valid SRS,
+	// try that too.
+	double geo_a, geo_f;
+	if (!source[0].srs.is_empty()) {
+		geo_ellipsoid_from_wkt(source[0].srs.wkt, geo_a, geo_f);
+	} else {
+		geo_ellipsoid_from_wkt(p.srs.wkt, geo_a, geo_f);
+	}
+	const double e2 = geo_f * (2.0 - geo_f);
+	const double R_min = geo_a * (1.0 - e2);    // meridional radius of curvature (min)
+	const double bbox_scale = (1.0 - e2);       // safety factor on spherical-on-a LB
+
+	struct geod_geodesic g_ell;
+	geod_init(&g_ell, geo_a, geo_f);
+
+	const size_t nc = ncol();
+	std::vector<int64_t> cols(nc);
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> xs_deg = xFromCol(cols);
+	std::vector<double> xs_rad(nc);
+	for (size_t c = 0; c < nc; c++) xs_rad[c] = xs_deg[c] * D2R;
+
+	if (!out.writeStart(opt, filenames())) {
+		return out;
+	}
+
+	for (size_t b = 0; b < out.bs.n; b++) {
+		const size_t nrow_blk = out.bs.nrows[b];
+		const size_t nblk = nrow_blk * nc;
+
+		std::vector<double> ys_deg(nrow_blk), ys_rad(nrow_blk);
+		for (size_t r = 0; r < nrow_blk; r++) {
+			ys_deg[r] = yFromRow(out.bs.row[b] + r);
+			ys_rad[r] = ys_deg[r] * D2R;
+		}
+
+		std::vector<int> inside;
+		if (is_poly) {
+			std::vector<double> all_x(nblk), all_y(nblk);
+			for (size_t r = 0; r < nrow_blk; r++) {
+				for (size_t c = 0; c < nc; c++) {
+					all_x[r*nc + c] = xs_deg[c];
+					all_y[r*nc + c] = ys_deg[r];
+				}
+			}
+			inside = p.pointInPolygonGeo(all_x, all_y);
+		}
+
+		std::vector<double> d(nblk, std::numeric_limits<double>::infinity());
+
+		auto process_row = [&](size_t r) {
+			const double py = ys_rad[r];
+			const double py_d = ys_deg[r];
+			const double cos_py = cos(py);
+
+			// Per-segment latitude-only geodesic lower bound, cached for the row.
+			std::vector<double> seg_lat_lb(nseg);
+			for (size_t s = 0; s < nseg; s++) {
+				double dlat = 0.0;
+				if (py < segs[s].miny) dlat = segs[s].miny - py;
+				else if (py > segs[s].maxy) dlat = py - segs[s].maxy;
+				seg_lat_lb[s] = R_min * dlat;
+			}
+
+			const size_t row_off = r * nc;
+
+			for (size_t c = 0; c < nc; c++) {
+				const size_t idx = row_off + c;
+				if (is_poly && inside[idx]) {
+					d[idx] = 0.0;
+					continue;
+				}
+				const double px = xs_rad[c];
+				const double px_d = xs_deg[c];
+				double cur = std::numeric_limits<double>::infinity();
+
+				for (size_t s = 0; s < nseg; s++) {
+					if (seg_lat_lb[s] >= cur) continue;
+					double lb = bbox_scale * bbox_lower_bound_m(px, py, cos_py, segs[s]);
+					if (lb >= cur) continue;
+					double ds = dist2segment_geo_ell(px_d, py_d,
+					                                  segs[s].x1 / D2R, segs[s].y1 / D2R,
+					                                  segs[s].x2 / D2R, segs[s].y2 / D2R,
+					                                  geo_a, g_ell);
+					if (ds < cur) cur = ds;
+				}
+				d[idx] = cur;
+			}
+		};
+
+#if defined(USE_TBB)
+		if (opt.parallel) {
+			terra_parallel_for(opt, tbb::blocked_range<size_t>(0, nrow_blk),
+				[&](const tbb::blocked_range<size_t>& range) {
+					for (size_t r = range.begin(); r != range.end(); r++) {
+						process_row(r);
+					}
+				});
+		} else {
+			for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+		}
+#else
+		for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+#endif
+
+		if (m_unit != 1.0) {
+			for (double &v : d) v *= m_unit;
+		}
+		if (!out.writeBlock(d, b)) return out;
+	}
+
+	out.writeStop();
+	return out;
+}
+
+
 SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string unit, const std::string& method, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
@@ -1208,12 +1382,17 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 
 		if ((p.type() == "polygons") || (p.type() == "lines")) {
 
-			// Fast path: lon/lat with haversine or cosine method.
+			// Fast path: lon/lat with haversine/cosine/geo method.
 			// Set TERRA_DIST_VECTOR_SLOW=1 to bypass for benchmarking.
-			if (lonlat && ((method == "haversine") || (method == "cosine"))) {
+			if (lonlat) {
 				const char *slow = std::getenv("TERRA_DIST_VECTOR_SLOW");
-				if (slow == nullptr || slow[0] == '\0' || slow[0] == '0') {
-					return distance_vector_lonlat_fast(p, unit, method, opt);
+				bool fast_on = (slow == nullptr || slow[0] == '\0' || slow[0] == '0');
+				if (fast_on) {
+					if ((method == "haversine") || (method == "cosine")) {
+						return distance_vector_lonlat_fast(p, unit, method, opt);
+					} else if (method == "geo") {
+						return distance_vector_lonlat_fast_geo(p, unit, opt);
+					}
 				}
 			}
 

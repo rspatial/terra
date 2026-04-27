@@ -225,6 +225,60 @@ double dist2segment_geo(double plon, double plat, double lon1, double lat1, doub
 }
 
 
+// Ellipsoid-aware dist2segment_geo 
+// seglength and endpoint distances are ellipsoidal (via g_ell)
+// alongTrack / crossTrack use spherical math scaled by r (= a)
+// For (a, f) == WGS84 and r == 6378137 this matches dist2segment_geo
+double dist2segment_geo_ell(double plon, double plat, double lon1, double lat1,
+                            double lon2, double lat2, double r, const struct geod_geodesic &g_ell) {
+
+	static const double TO_RAD = M_PI / 180.0;
+
+	struct geod_geodesic g_sphere;
+	geod_init(&g_sphere, 1.0, 0.0);
+
+	double seglen, azi1_e, azi2_e;
+	geod_inverse(&g_ell, lat1, lon1, lat2, lon2, &seglen, &azi1_e, &azi2_e);
+
+	// along-track distance from (lon1,lat1) toward (lon2,lat2), evaluated on
+	// unit sphere then scaled by r.
+	auto along = [&](double lonA, double latA, double lonB, double latB) -> double {
+		double d, bAB, bAP, azi;
+		geod_inverse(&g_sphere, latA, lonA, latB, lonB, &d, &bAB, &azi);  // d in rad
+		geod_inverse(&g_sphere, latA, lonA, plat, plon, &d, &bAP, &azi);
+		bAB *= TO_RAD;
+		bAP *= TO_RAD;
+		double xtr = asin(sin(bAP - bAB) * sin(d));
+		double c = cos(bAB - bAP);
+		double bsign = (c > 0.0) ? 1.0 : (c < 0.0) ? -1.0 : 0.0;
+		double angle = cos(d) / cos(xtr);
+		if (angle >  1.0) angle =  1.0;
+		if (angle < -1.0) angle = -1.0;
+		return bsign * acos(angle) * r;
+	};
+
+	double td1 = along(lon1, lat1, lon2, lat2);
+	double td2 = along(lon2, lat2, lon1, lat1);
+
+	if ((td1 < 0) || (td2 < 0) || (td1 > seglen) || (td2 > seglen)) {
+		double d1, d2, azi1, azi2;
+		geod_inverse(&g_ell, lat1, lon1, plat, plon, &d1, &azi1, &azi2);
+		geod_inverse(&g_ell, lat2, lon2, plat, plon, &d2, &azi1, &azi2);
+		return d1 < d2 ? d1 : d2;
+	}
+
+	// cross-track: spherical on unit sphere, scaled by r.
+	double d, bAB, bAP, azi;
+	geod_inverse(&g_sphere, lat1, lon1, lat2, lon2, &d, &bAB, &azi);
+	geod_inverse(&g_sphere, lat1, lon1, plat, plon, &d, &bAP, &azi);
+	bAB *= TO_RAD;
+	bAP *= TO_RAD;
+	double xtr = asin(sin(bAP - bAB) * sin(d)) * r;
+	return std::fabs(xtr);
+}
+
+
+
 double dist2segment_cos(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r) {
 	double seglength = distance_cos_r(lon1, lat1, lon2, lat2, r);
 	double trackdist1 = alongTrackDistance_cos(lon1, lat1, lon2, lat2, plon, plat, r);

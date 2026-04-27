@@ -52,6 +52,9 @@ double direction_cos(double& lon1, double& lat1, double& lon2, double& lat2);
 double dist2segment_hav(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r=6378137.);
 double dist2segment_cos(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r=6378137.);
 double dist2segment_geo(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double notused=0.);
+double dist2segment_geo_ell(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r, const struct geod_geodesic &g_ell);
+
+
 
 bool pip_geo_in_ring(double plon, double plat, const std::vector<double> &rx, const std::vector<double> &ry);
 
