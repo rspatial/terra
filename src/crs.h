@@ -34,5 +34,6 @@ bool prj_from_spatial_reference(const OGRSpatialReference *srs, std::string &prj
 //std::vector<std::string> srefs_from_string(std::string input);
 bool wkt_from_string(std::string input, std::string& wkt, std::string& msg);
 bool is_ogr_error(OGRErr err, std::string &msg);
+void geo_ellipsoid_from_wkt(const std::string &wkt, double &a, double &f);
 
 //#endif

@@ -590,6 +590,190 @@ SpatRaster SpatRaster::distance_crds_lonlat_fast(std::vector<double>& x, std::ve
 
 
 // ----------------------------------------------------------------------------
+// Fast path for distance(SpatRaster, target) for lon/lat with the 
+// very precise method by Karney
+//
+// Same structure as the haversine/cosine fast path, with these differences:
+//   * distances are in meters throughout (no radian<->meters round trip)
+//   * the per-cell best is seeded from max_dist directly
+//   * the latitude-only lower bound uses R_min = a * (1 - e^2), the minimum
+//     meridional radius of curvature, which is a true lower bound on the
+//     geodesic distance given |dlat_rad|. 
+//
+// ----------------------------------------------------------------------------
+
+SpatRaster SpatRaster::distance_crds_lonlat_fast_geo(std::vector<double>& x, std::vector<double>& y, bool skip, bool setNA, std::string unit, double max_dist, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (x.empty()) {
+		out.setError("no locations to compute distance from");
+		return out;
+	}
+	bool lonlat = is_lonlat();
+	if (!lonlat) {
+		out.setError("internal: distance_crds_lonlat_fast_geo called with non-lonlat raster");
+		return out;
+	}
+
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
+	}
+
+	double m = 1;
+	if (!source[0].srs.m_dist(m, lonlat, unit)) {
+		out.setError("invalid unit");
+		return out;
+	}
+
+	const double D2R = 0.017453292519943295;
+	const double inf = std::numeric_limits<double>::infinity();
+	const double mxval = std::numeric_limits<double>::max();
+
+	// Ellipsoid parameters from the CRS (WGS84 fallback). R_min is the smallest
+	// possible meridional radius of curvature, used as a lower bound on the
+	// geodesic distance given a latitude difference.
+	double geo_a, geo_f;
+	geo_ellipsoid_from_wkt(source[0].srs.wkt, geo_a, geo_f);
+	const double e2 = geo_f * (2.0 - geo_f);
+	const double R_min = geo_a * (1.0 - e2);
+	struct geod_geodesic g;
+	geod_init(&g, geo_a, geo_f);
+
+	// Sort edge points by latitude (ascending).
+	std::vector<std::size_t> pm = sort_order_a(y);
+	permute(x, pm);
+	permute(y, pm);
+
+	const size_t np = x.size();
+	// Keep coordinates in degrees (what geod_inverse needs) and cache the
+	// latitude in radians for the cheap |dlat| prune.
+	std::vector<double> qy_rad(np);
+	for (size_t j = 0; j < np; j++) qy_rad[j] = y[j] * D2R;
+
+	const size_t nc = ncol();
+	std::vector<int64_t> cols(nc);
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> tox = xFromCol(cols);   // degrees
+
+	if (nrow() > 1000) {
+		opt.steps = std::max(opt.steps, (size_t) 4);
+		opt.progress = opt.progress * 2;
+	}
+
+	if (skip) {
+		if (!readStart()) {
+			out.setError(getError());
+			return out;
+		}
+	}
+	if (!out.writeStart(opt, filenames())) {
+		if (skip) readStop();
+		return out;
+	}
+
+	// maxdist is specified in output units (m if unit="m", km if unit="km").
+	// Internally we work in meters, so convert once. seed_dist sits one ulp
+	// above the threshold so a real distance d == max_dist still updates
+	// cur_dist (preserving the original "strictly greater than" NaN rule),
+	// while a cell that never finds a point within max_dist stays at seed_dist
+	// and gets NaN'd by the post-filter.
+	const double max_m = (max_dist > 0) ? (max_dist / m) : inf;
+	const double seed_dist = std::isfinite(max_m) ? std::nextafter(max_m, inf) : inf;
+
+	for (size_t b = 0; b < out.bs.n; b++) {
+		const size_t nrow_blk = out.bs.nrows[b];
+		const size_t nblk = nrow_blk * nc;
+
+		std::vector<double> v;
+		if (skip) {
+			readBlock(v, out.bs, b);
+		}
+
+		std::vector<double> py_deg(nrow_blk), py_rad(nrow_blk);
+		for (size_t r = 0; r < nrow_blk; r++) {
+			py_deg[r] = yFromRow(out.bs.row[b] + r);
+			py_rad[r] = py_deg[r] * D2R;
+		}
+
+		std::vector<double> d(nblk);
+
+		auto process_row = [&](size_t r) {
+			const double py_d = py_deg[r];
+			const double py_r = py_rad[r];
+			const size_t row_off = r * nc;
+			const size_t mid = std::lower_bound(qy_rad.begin(), qy_rad.end(), py_r) - qy_rad.begin();
+
+			for (size_t c = 0; c < nc; c++) {
+				const size_t idx = row_off + c;
+				if (skip && !std::isnan(v[idx])) {
+					d[idx] = 0.0;
+					continue;
+				}
+				const double px_d = tox[c];
+				double cur_dist = seed_dist;  // meters
+
+				// Forward: qy >= py. |dlat| grows monotonically.
+				for (size_t j = mid; j < np; j++) {
+					const double dlat_m_lb = R_min * (qy_rad[j] - py_r);
+					if (dlat_m_lb >= cur_dist) break;
+					double dd, azi1, azi2;
+					geod_inverse(&g, py_d, px_d, y[j], x[j], &dd, &azi1, &azi2);
+					if (dd < cur_dist) cur_dist = dd;
+				}
+				// Backward: qy < py.
+				for (size_t jj = mid; jj > 0; jj--) {
+					const size_t j = jj - 1;
+					const double dlat_m_lb = R_min * (py_r - qy_rad[j]);
+					if (dlat_m_lb >= cur_dist) break;
+					double dd, azi1, azi2;
+					geod_inverse(&g, py_d, px_d, y[j], x[j], &dd, &azi1, &azi2);
+					if (dd < cur_dist) cur_dist = dd;
+				}
+
+				d[idx] = cur_dist;
+			}
+		};
+
+#if defined(USE_TBB)
+		if (opt.parallel) {
+			terra_parallel_for(opt, tbb::blocked_range<size_t>(0, nrow_blk),
+				[&](const tbb::blocked_range<size_t>& range) {
+					for (size_t r = range.begin(); r != range.end(); r++) {
+						process_row(r);
+					}
+				});
+		} else {
+			for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+		}
+#else
+		for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+#endif
+
+		if (m != 1.0) {
+			for (double &val : d) val *= m;
+		}
+		if (max_dist > 0) {
+			for (double &val : d) val = val > max_dist ? NAN : val;
+		}
+		if (skip && setNA) {
+			for (size_t i = 0; i < nblk; i++) {
+				if (v[i] == mxval) d[i] = NAN;
+			}
+		}
+
+		if (!out.writeBlock(d, b)) {
+			if (skip) readStop();
+			return out;
+		}
+	}
+
+	if (skip) readStop();
+	out.writeStop();
+	return out;
+}
+
+
+// ----------------------------------------------------------------------------
 // Fast path for distance(SpatRaster, SpatVector) for lon/lat polygons or lines
 // using the haversine/cosine method.
 //
@@ -1271,15 +1455,17 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 		return out;
 	}
 
-	// Use the lon/lat fast path for haversine/cosine, unless TERRA_DIST_SLOW
-	// is set. The fast path is bit-equivalent (within tiny FP noise) to
-	// distance_crds for the same inputs.
-	const bool use_fast_lonlat = is_lonlat() && !values
-		&& ((method == "haversine") || (method == "cosine"))
-		&& []() {
-			const char *slow = std::getenv("TERRA_DIST_SLOW");
-			return (slow == nullptr || slow[0] == '\0' || slow[0] == '0');
-		}();
+	// Use the lon/lat fast path for haversine/cosine/geo, unless
+	// TERRA_DIST_SLOW is set. The fast path is bit-equivalent (within tiny
+	// FP noise) to distance_crds for the same inputs.
+	const bool dist_slow_env = []() {
+		const char *slow = std::getenv("TERRA_DIST_SLOW");
+		return !(slow == nullptr || slow[0] == '\0' || slow[0] == '0');
+	}();
+	const bool use_fast_lonlat = is_lonlat() && !values && !dist_slow_env
+		&& ((method == "haversine") || (method == "cosine"));
+	const bool use_fast_lonlat_geo = is_lonlat() && !values && !dist_slow_env
+		&& (method == "geo");
 
 	bool setNA = false;
 	std::vector<std::vector<double>> p;
@@ -1297,6 +1483,8 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 				return distance_crds_vals(p[0], p[1], vv[0], method, true, setNA, unit, threshold, opt);				
 			} else if (use_fast_lonlat) {
 				return distance_crds_lonlat_fast(p[0], p[1], method, true, setNA, unit, threshold, opt);
+			} else if (use_fast_lonlat_geo) {
+				return distance_crds_lonlat_fast_geo(p[0], p[1], true, setNA, unit, threshold, opt);
 			} else {
 				return distance_crds(p[0], p[1], method, true, setNA, unit, threshold, opt);
 			}
@@ -1324,6 +1512,8 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 		out = out.distance_crds_vals(p[0], p[1], vv[0], method, true, setNA, unit, threshold, opt);				
 	} else if (use_fast_lonlat) {
 		out = out.distance_crds_lonlat_fast(p[0], p[1], method, true, setNA, unit, threshold, opt);
+	} else if (use_fast_lonlat_geo) {
+		out = out.distance_crds_lonlat_fast_geo(p[0], p[1], true, setNA, unit, threshold, opt);
 	} else {
 		out = out.distance_crds(p[0], p[1], method, true, setNA, unit, threshold, opt);
 	}

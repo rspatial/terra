@@ -702,5 +702,32 @@ SpatDataFrame get_proj_pipelines(std::string source_crs, std::string target_crs,
 }
 
 
+
+
+// Extract (a, f) from a WKT string. Falls back to WGS84 when the WKT is empty,
+// cannot be parsed, or does not expose an ellipsoid.
+void geo_ellipsoid_from_wkt(const std::string &wkt, double &a, double &f) {
+	a = 6378137.0;                 // WGS84
+	f = 1.0 / 298.257223563;
+	if (wkt.size() < 2) return;
+	OGRSpatialReference srs;
+	if (srs.SetFromUserInput(wkt.c_str()) != OGRERR_NONE) return;
+
+	OGRErr err_a = OGRERR_FAILURE;
+	double a_tmp = srs.GetSemiMajor(&err_a);
+	if (err_a == OGRERR_NONE && std::isfinite(a_tmp) && a_tmp > 0) {
+		a = a_tmp;
+	}
+
+	OGRErr err_f = OGRERR_FAILURE;
+	double inv_flat = srs.GetInvFlattening(&err_f);
+	if (err_f == OGRERR_NONE && std::isfinite(inv_flat)) {
+		// An inverse flattening of 0 conventionally means a sphere (f=0);
+		// any positive value gives f = 1/inv_flat.
+		f = (inv_flat > 0.0) ? (1.0 / inv_flat) : 0.0;
+	}
+}
+
+
 #endif
 
