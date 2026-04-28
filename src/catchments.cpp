@@ -426,56 +426,6 @@ SpatRaster  SpatRaster::watershed2(int pp_offset,SpatOptions &opt) {
 /// 20220809
 /// PITFINDER 
 
-<<<<<<< HEAD:src/watershed_internal.cpp
-
-
-
-// TO INSERT::: std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
-//Rcpp::IntegerVector SpatRaster::watershed2(int pp_offset,SpatOptions opt) {
-SpatRaster  SpatRaster::pitfinder2(int pits_on_boundary, SpatOptions &opt) {
-  // DA TESTARE
-  SpatRaster out=geometry();
-  //std::vector<std::string> oname="watershed";
-  //out.setNames(oname);
-  int nx=ncol();
-  int ny=nrow();
-  //printf("nx=%d ny=%d\n",nx,ny);
-  //Rcpp::IntegerVector pOut(nx*ny);
-  // https://www.codeguru.com/cpp/cpp/cpp_mfc/stl/article.php/c4027/C-Tutorial-A-Beginners-Guide-to-stdvector-Part-1.htm 
-  std::vector<double> p=getValues(0,opt); //EC 20211203 //see https://www.delftstack.com/howto/cpp/how-to-convert-vector-to-array-in-cpp/
-  
-  
-  //SEE HERE https://stackoverflow.com/questions/26488480/how-can-i-trust-casting-from-double-to-integer
-  
-  //int *q=p.begin();
-  //int *qOut=pOut.begin();
-  // https://www.google.com/search?q=how+to+express+NumericVector+as+a+pointer&oq=how+to+express+NumericVector+as+a+pointer&aqs=chrome..69i57j33i160.13306j0j15&sourceid=chrome&ie=UTF-8
-  // https://dirk.eddelbuettel.com/code/rcpp/Rcpp-quickref.pdf
-  // http://adv-r.had.co.nz/Rcpp.html
-  
-  std::vector<double> pOutv(nx*ny,0);
-  // EC 20210319 pOutv.reserve(nx*ny);
-  // EC 20210319 std::fill(pOutv.begin(), pOutv.end(), trunc(0));
-  
-  
-  
-  ///see
-  pitfinder(&p[0],nx,ny,&pOutv[0],pits_on_boundary);
-  if (!out.writeStart(opt,filenames())) {
-    readStop();
-    return out;
-  }
-  // out.writeValues(pOutv,0,ny,0,nx); UNTIL 20220725
-  out.writeValues(pOutv,0,ny); //,0,nx); // LOOK AT writeValuesGDAL
-  out.writeStop();
-  return out;
-  
-  //return(pOut);
-  
-}
-
-=======
->>>>>>> db96607c952c45e4f28d8aec867469757effb9f2:src/catchments.cpp
 // void watershed_v2(int* p, int nx, int ny, int x, int y, int* pOut)
 void pitfinder(double* p, int nx, int ny, double* pOut,int pits_on_boundary)  {
  
@@ -707,10 +657,9 @@ void pitfinder(double* p, int nx, int ny, double* pOut,int pits_on_boundary)  {
 
 
 
-
 // TO INSERT::: std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
 //Rcpp::IntegerVector SpatRaster::watershed2(int pp_offset,SpatOptions opt) {
-SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
+SpatRaster  SpatRaster::pitfinder2(int pits_on_boundary, SpatOptions &opt) {
   // DA TESTARE
   SpatRaster out=geometry();
   //std::vector<std::string> oname="watershed";
@@ -738,7 +687,7 @@ SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
   
   
   ///see
-  pitfinder(&p[0],nx,ny,&pOutv[0]);
+  pitfinder(&p[0],nx,ny,&pOutv[0],pits_on_boundary);
   if (!out.writeStart(opt,filenames())) {
     readStop();
     return out;
@@ -752,7 +701,8 @@ SpatRaster  SpatRaster::pitfinder2(SpatOptions &opt) {
   
 }
 
-
+// =======
+//   >>>>>>> db96607c952c45e4f28d8aec867469757effb9f2:src/catchments.cpp
 
 ///////////////////////////////////////
 //// flow accumulation functions //////
