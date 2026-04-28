@@ -1,48 +1,4 @@
 
-
-# buffer2 <- function(x, width, quadsegs=10) {
-	# if (is.character(width)) {
-		# if (!(width %in% names(x))) {
-			# error("buffer2", paste(width, "is not a field in x"))
-		# }
-		# width <- x[[width, drop=TRUE]]
-	# }
-	# if (!is.numeric(width)) {
-		# error("buffer2", "width is not numeric")
-	# }
-	# x@pntr <- x@pntr$buffer2(width, quadsegs)
-	# messages(x, "buffer2")
-# }
-
-
-# buffer3 <- function(x, width, quadsegs=10) {
-	# if (is.character(width)) {
-		# if (!(width %in% names(x))) {
-			# error("buffer3", paste(width, "is not a field in x"))
-		# }
-		# width <- x[[width, drop=TRUE]]
-	# }
-	# if (!is.numeric(width)) {
-		# error("buffer3", "width is not numeric")
-	# }
-	# x@pntr <- x@pntr$buffer3(width, quadsegs)
-	# messages(x, "buffer3")
-# }
-
-# buffer4 <- function(x, width, quadsegs=10) {
-	# if (is.character(width)) {
-		# if (!(width %in% names(x))) {
-			# error("buffer4", paste(width, "is not a field in x"))
-		# }
-		# width <- x[[width, drop=TRUE]]
-	# }
-	# if (!is.numeric(width)) {
-		# error("buffer4", "width is not numeric")
-	# }
-	# x@pntr <- x@pntr$buffer4(width, quadsegs)
-	# messages(x, "buffer4")
-# }
-
 roundtrip <- function(x, coll=FALSE) {
 	if (coll) {
 		p <- methods::new("SpatVectorCollection")
@@ -539,10 +495,12 @@ setMethod("simplifyGeom", signature(x="SpatVector"),
 	}
 )
 
-setMethod("thinGeom", signature(x="SpatVector"),
-	function(x, threshold=1e-6, makeValid=TRUE) {
-		x@pntr <- x@pntr$thin(threshold)
-		x <- messages(x, "thinGeom")
+setMethod("thinNodes", signature(x="SpatVector"),
+	function(x, d=1e-6, unit="m", makeValid=TRUE) {
+		stopifnot(unit[1] %in% c("m", "km"))
+		if (unit[1] == "km") d <- d * 1000
+		x@pntr <- x@pntr$thin_nodes(d)
+		x <- messages(x, "thinNodes")
 		if (makeValid) {
 			x <- makeValid(x)
 		}

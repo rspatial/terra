@@ -34,6 +34,8 @@ Change a categorical layer into one or more numerical layers. With \code{as.nume
 SpatRaster
 }
 
+\author{Andrew Gene Brown, Robert J. Hijmans}
+
 \seealso{\code{\link{activeCat}}, \code{\link{cats}}}
 
 

@@ -1,3 +1,6 @@
+
+terra.Rcheck/*
+
 install_time_patches/
 src/Makevars.ucrt.orig
 src/Makevars.ucrt.rej
@@ -20,8 +23,9 @@ proj_conf_test*
 af_acc*
 .RData
 revdep/
-python/
+__pycache__/
 cmdapp/terra
+cmdapp/build/
 windows/
 inst/gdal/
 inst/proj/
@@ -33,5 +37,5 @@ packrat/lib*/
 packrat/src/
 
 C/terra
-
 docs
+/_*

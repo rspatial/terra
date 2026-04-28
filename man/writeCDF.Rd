@@ -15,7 +15,7 @@ Always use the \code{".nc"} or \code{".cdf"} file extension to assure that the f
 
 You can write multiple rasters (variables) that are two (x, y), three (x, y, z or x, y, time) or four dimensional (x, y, z, time).
 
-See \code{\link{depth}} and \code{\link{time}} for specifying the axes of the thrid and/or fourth dimension(s).
+See \code{\link{depth}} and \code{\link{time}} for specifying the axes of the third and/or fourth dimension(s).
 }
 
 \usage{

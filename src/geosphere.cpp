@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -107,11 +107,12 @@ double direction_geo(double lon1, double lat1, double lon2, double lat2) {
 double direction_cos(double& lon1, double& lat1, double& lon2, double& lat2) {
 	if ((lon1 == lon2) && (lat1 == lat2)) return 0; // NAN?
 	double dLon = lon2 - lon1;
-    double y = sin(dLon)  * cos(lat2); 
-    double x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon); 
-    double azm = atan2(y, x);
-	azm = fmod(azm+M_PI, M_PI);
-	return azm > M_PI ? -(M_PI - azm) : azm;
+	double y = sin(dLon) * cos(lat2);
+	double x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon);
+	double azm = atan2(y, x);
+	// normalize to [0, 2*pi), consistent with direction_plane
+	if (azm < 0) azm += M_2PI;
+	return azm;
 }
 
 
@@ -151,6 +152,7 @@ inline double dist2track_hav(double lon1, double lat1, double lon2, double lat2,
 
 
 
+// signed along-track distance
 double alongTrackDistance_geo(double lon1, double lat1, double lon2, double lat2, double plon, double plat, double r=6378137) {
 	double a = 1;
 	double f = 0;
@@ -163,7 +165,9 @@ double alongTrackDistance_geo(double lon1, double lat1, double lon2, double lat2
 	deg2rad(b3);
 	double xtr = asin(sin(b3-b2) * sin(d));
 	double bsign = get_sign(cos(b2-b3));
-	return fabs(bsign * acos(cos(d) / cos(xtr)) * r);
+	double angle = cos(d) / cos(xtr);
+	angle = angle > 1 ? 1 : angle < -1 ? -1 : angle;
+	return bsign * acos(angle) * r;
 }
 
 
@@ -180,8 +184,7 @@ double alongTrackDistance_cos(double lon1, double lat1, double lon2, double lat2
 
 // Fixing limits for the angle between [-1, 1] to avoid NaNs from acos
 	angle = angle > 1 ? 1 : angle < -1 ? -1 : angle;
-	double dist = bearing * acos(angle) * r;
-	return fabs(dist);
+	return bearing * acos(angle) * r;
 }
 
 
@@ -199,8 +202,7 @@ double alongTrackDistance_hav(double lon1, double lat1, double lon2, double lat2
 
 // Fixing limits for the angle between [-1, 1] to avoid NaNs from acos
 	angle = angle > 1 ? 1 : angle < -1 ? -1 : angle;
-	double dist = bearing * acos(angle) * r;
-	return fabs(dist);
+	return bearing * acos(angle) * r;
 }
 
 
@@ -213,7 +215,8 @@ double dist2segment_geo(double plon, double plat, double lon1, double lat1, doub
 	double seglength = distance_geo(lon1, lat1, lon2, lat2);
 	double trackdist1 = alongTrackDistance_geo(lon1, lat1, lon2, lat2, plon, plat);
 	double trackdist2 = alongTrackDistance_geo(lon2, lat2, lon1, lat1, plon, plat);
-	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+	if ((trackdist1 < 0) || (trackdist2 < 0) ||
+		(trackdist1 > seglength) || (trackdist2 > seglength)) {
 		double d1 = distance_geo(lon1, lat1, plon, plat);
 		double d2 = distance_geo(lon2, lat2, plon, plat);
 		return d1 < d2 ? d1 : d2;
@@ -222,11 +225,66 @@ double dist2segment_geo(double plon, double plat, double lon1, double lat1, doub
 }
 
 
+// Ellipsoid-aware dist2segment_geo 
+// seglength and endpoint distances are ellipsoidal (via g_ell)
+// alongTrack / crossTrack use spherical math scaled by r (= a)
+// For (a, f) == WGS84 and r == 6378137 this matches dist2segment_geo
+double dist2segment_geo_ell(double plon, double plat, double lon1, double lat1,
+                            double lon2, double lat2, double r, const struct geod_geodesic &g_ell) {
+
+	static const double TO_RAD = M_PI / 180.0;
+
+	struct geod_geodesic g_sphere;
+	geod_init(&g_sphere, 1.0, 0.0);
+
+	double seglen, azi1_e, azi2_e;
+	geod_inverse(&g_ell, lat1, lon1, lat2, lon2, &seglen, &azi1_e, &azi2_e);
+
+	// along-track distance from (lon1,lat1) toward (lon2,lat2), evaluated on
+	// unit sphere then scaled by r.
+	auto along = [&](double lonA, double latA, double lonB, double latB) -> double {
+		double d, bAB, bAP, azi;
+		geod_inverse(&g_sphere, latA, lonA, latB, lonB, &d, &bAB, &azi);  // d in rad
+		geod_inverse(&g_sphere, latA, lonA, plat, plon, &d, &bAP, &azi);
+		bAB *= TO_RAD;
+		bAP *= TO_RAD;
+		double xtr = asin(sin(bAP - bAB) * sin(d));
+		double c = cos(bAB - bAP);
+		double bsign = (c > 0.0) ? 1.0 : (c < 0.0) ? -1.0 : 0.0;
+		double angle = cos(d) / cos(xtr);
+		if (angle >  1.0) angle =  1.0;
+		if (angle < -1.0) angle = -1.0;
+		return bsign * acos(angle) * r;
+	};
+
+	double td1 = along(lon1, lat1, lon2, lat2);
+	double td2 = along(lon2, lat2, lon1, lat1);
+
+	if ((td1 < 0) || (td2 < 0) || (td1 > seglen) || (td2 > seglen)) {
+		double d1, d2, azi1, azi2;
+		geod_inverse(&g_ell, lat1, lon1, plat, plon, &d1, &azi1, &azi2);
+		geod_inverse(&g_ell, lat2, lon2, plat, plon, &d2, &azi1, &azi2);
+		return d1 < d2 ? d1 : d2;
+	}
+
+	// cross-track: spherical on unit sphere, scaled by r.
+	double d, bAB, bAP, azi;
+	geod_inverse(&g_sphere, lat1, lon1, lat2, lon2, &d, &bAB, &azi);
+	geod_inverse(&g_sphere, lat1, lon1, plat, plon, &d, &bAP, &azi);
+	bAB *= TO_RAD;
+	bAP *= TO_RAD;
+	double xtr = asin(sin(bAP - bAB) * sin(d)) * r;
+	return std::fabs(xtr);
+}
+
+
+
 double dist2segment_cos(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double r) {
 	double seglength = distance_cos_r(lon1, lat1, lon2, lat2, r);
 	double trackdist1 = alongTrackDistance_cos(lon1, lat1, lon2, lat2, plon, plat, r);
 	double trackdist2 = alongTrackDistance_cos(lon2, lat2, lon1, lat1, plon, plat, r);
-	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+	if ((trackdist1 < 0) || (trackdist2 < 0) ||
+		(trackdist1 > seglength) || (trackdist2 > seglength)) {
 		double d1 = distance_cos_r(lon1, lat1, plon, plat, r);
 		double d2 = distance_cos_r(lon2, lat2, plon, plat, r);
 		return d1 < d2 ? d1 : d2;
@@ -238,7 +296,8 @@ double dist2segment_hav(double plon, double plat, double lon1, double lat1, doub
 	double seglength = distance_hav_r(lon1, lat1, lon2, lat2, r);
 	double trackdist1 = alongTrackDistance_hav(lon1, lat1, lon2, lat2, plon, plat, r);
 	double trackdist2 = alongTrackDistance_hav(lon2, lat2, lon1, lat1, plon, plat, r);
-	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+	if ((trackdist1 < 0) || (trackdist2 < 0) ||
+		(trackdist1 > seglength) || (trackdist2 > seglength)) {
 		double d1 = distance_hav_r(lon1, lat1, plon, plat, r);
 		double d2 = distance_hav_r(lon2, lat2, plon, plat, r);
 		return d1 < d2 ? d1 : d2;
@@ -253,9 +312,10 @@ double dist2segmentPoint_geo(double plon, double plat, double lon1, double lat1,
 	double seglength = distance_geo(lon1, lat1, lon2, lat2);
 	double trackdist1 = alongTrackDistance_geo(lon1, lat1, lon2, lat2, plon, plat);
 	double trackdist2 = alongTrackDistance_geo(lon2, lat2, lon1, lat1, plon, plat);
-	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+	if ((trackdist1 < 0) || (trackdist2 < 0) ||
+		(trackdist1 > seglength) || (trackdist2 > seglength)) {
 		double d1 = distance_geo(lon1, lat1, plon, plat);
-		double d2 = distance_geo(lat2, lat2, plon, plat);
+		double d2 = distance_geo(lon2, lat2, plon, plat);
 		if (d1 < d2) {
 			ilon = lon1;
 			ilat = lat1;
@@ -353,5 +413,255 @@ void antipodes(std::vector<double> &lon, std::vector<double> &lat) {
 		normLon(lon[i]);
 		lat[i] = -lat[i];
 	}
+}
+
+
+
+// Spherical point-in-polygon test by ray casting along each test point's meridian, 
+// counting how many polygon edges the ray (from the point to the north
+// pole) crosses. Odd = inside. Holes invert the result.
+//
+// Implementation notes:
+//  - For each edge V1->V2, compute the longitude offsets d1, d2 of V1
+//    and V2 relative to the test point's longitude, normalized to
+//    (-pi, pi]. Anchor d2 within pi of d1 to follow the shorter arc.
+//  - The arc crosses the meridian iff (d1 < 0) XOR (e2 < 0), where
+//    e2 = d1 + delta_short. This half-open convention prevents
+//    double-counting at vertices that lie exactly on the meridian.
+//  - The crossing latitude is found from the great-circle equation
+//        N . P = 0   where N = V1 x V2 (Cartesian on unit sphere)
+//    giving tan(lat) = -(Nx*cos(plon) + Ny*sin(plon)) / Nz.
+//  - Edges whose great-circle goes through both poles (Nz ~ 0) are
+//    skipped: their intersection with the meridian is 0-dimensional
+//    measure and the topological count is unaffected.
+//  - Edges of zero length are skipped.
+
+inline bool pip_geo_edge_crosses_north(double lon1, double lat1, double lon2, double lat2, double plon, double plat) {
+	static const double D2R = M_PI / 180.0;
+	static const double TWOPI = 2.0 * M_PI;
+	if (lon1 == lon2 && lat1 == lat2) return false;
+
+	double rl1 = lon1 * D2R, rl2 = lon2 * D2R;
+	double rp1 = lat1 * D2R, rp2 = lat2 * D2R;
+	double rpl = plon * D2R, rpt = plat * D2R;
+
+	double d1 = rl1 - rpl;
+	while (d1 >  M_PI) d1 -= TWOPI;
+	while (d1 <= -M_PI) d1 += TWOPI;
+	double d2 = rl2 - rpl;
+	while (d2 >  M_PI) d2 -= TWOPI;
+	while (d2 <= -M_PI) d2 += TWOPI;
+
+	double delta = d2 - d1;
+	while (delta >  M_PI) delta -= TWOPI;
+	while (delta <= -M_PI) delta += TWOPI;
+	double e2 = d1 + delta;
+
+	bool d1neg = (d1 < 0.0);
+	bool e2neg = (e2 < 0.0);
+	if (d1neg == e2neg) return false;
+
+	double cl1 = cos(rp1), sl1 = sin(rp1);
+	double cl2 = cos(rp2), sl2 = sin(rp2);
+	double x1 = cl1 * cos(rl1), y1 = cl1 * sin(rl1), z1 = sl1;
+	double x2 = cl2 * cos(rl2), y2 = cl2 * sin(rl2), z2 = sl2;
+	double Nx = y1 * z2 - z1 * y2;
+	double Ny = z1 * x2 - x1 * z2;
+	double Nz = x1 * y2 - y1 * x2;
+	if (std::fabs(Nz) < 1e-15) return false;
+	double cp = cos(rpl), sp = sin(rpl);
+	double lat_cross = atan(-(Nx * cp + Ny * sp) / Nz);
+	return lat_cross > rpt;
+}
+
+
+bool pip_geo_in_ring(double plon, double plat, const std::vector<double> &rx, const std::vector<double> &ry) {
+	int crossings = 0;
+	size_t n = rx.size();
+	if (n < 3) return false;
+	// Treat ring as closed even if not explicitly so.
+	bool closed = (rx[0] == rx[n-1]) && (ry[0] == ry[n-1]);
+	size_t last = closed ? n - 1 : n;
+	for (size_t i = 0; i < last; i++) {
+		size_t j = (i + 1) % n;
+		if (!closed && j == 0) break;
+		if (pip_geo_edge_crosses_north(rx[i], ry[i], rx[j], ry[j], plon, plat)) {
+			crossings++;
+		}
+	}
+	return (crossings & 1) == 1;
+}
+
+
+// Prepare per-edge invariants for fast point-in-polygon queries.
+//
+// For each edge V1->V2 we precompute the unit-sphere cross product
+// N = V1 x V2; the great-circle through V1 and V2 has equation N.P = 0,
+// so the meridian-crossing latitude of the arc at longitude plon is
+//
+//     tan(lat_cross) = -(Nx*cos(plon) + Ny*sin(plon)) / Nz
+//
+// which is now a couple of multiplies + an atan per edge per point, with
+// no trig of the edge endpoints required at query time.
+//
+// We also cache:
+//   * a safe upper bound on the latitude reached by any arc
+//     (max_arc_lat), used to short-circuit rings whose entire arc lies
+//     south of the test point's latitude;
+//   * whether the ring topologically encircles a pole (wraps_pole) and
+//     whether the north pole sits inside the ring (flip_north). The
+//     ray-cast goes from the test point north to the pole; if that ray
+//     terminates inside the ring, the parity of edge crossings has the
+//     opposite meaning from the usual "odd = inside" convention.
+void prepare_pip_geo_ring(const std::vector<double> &rx,
+                          const std::vector<double> &ry,
+                          PipGeoRing &out) {
+	static const double D2R = M_PI / 180.0;
+	static const double R2D = 180.0 / M_PI;
+
+	out.lon.clear();
+	out.lat.clear();
+	out.Nx.clear();
+	out.Ny.clear();
+	out.Nz.clear();
+	out.max_arc_lat = -90.0;
+	out.wraps_pole = false;
+	out.flip_north = false;
+
+	size_t n = rx.size();
+	if (n < 3) return;
+
+	// Close the ring if the caller didn't.
+	bool closed = (rx[0] == rx[n-1]) && (ry[0] == ry[n-1]);
+	out.lon = rx;
+	out.lat = ry;
+	if (!closed) {
+		out.lon.push_back(rx[0]);
+		out.lat.push_back(ry[0]);
+	}
+	n = out.lon.size();
+	size_t nedges = n - 1;
+	out.Nx.assign(nedges, 0.0);
+	out.Ny.assign(nedges, 0.0);
+	out.Nz.assign(nedges, 0.0);
+
+	double total_dlon = 0.0;
+	double sum_lat = 0.0;
+	double max_lat = -90.0;
+
+	for (size_t i = 0; i < nedges; i++) {
+		double lon1 = out.lon[i];
+		double lat1 = out.lat[i];
+		double lon2 = out.lon[i+1];
+		double lat2 = out.lat[i+1];
+
+		sum_lat += lat1;
+
+		// Signed shortest-arc dlon in degrees, summed for pole-wrap detection.
+		double dlon_deg = lon2 - lon1;
+		while (dlon_deg >  180.0) dlon_deg -= 360.0;
+		while (dlon_deg <= -180.0) dlon_deg += 360.0;
+		total_dlon += dlon_deg;
+
+		if (lon1 == lon2 && lat1 == lat2) {
+			// Degenerate edge; leave N = 0 so it is skipped at query time.
+			if (lat1 > max_lat) max_lat = lat1;
+			continue;
+		}
+
+		double rl1 = lon1 * D2R, rl2 = lon2 * D2R;
+		double rp1 = lat1 * D2R, rp2 = lat2 * D2R;
+		double cl1 = cos(rp1), sl1 = sin(rp1);
+		double cl2 = cos(rp2), sl2 = sin(rp2);
+		double x1 = cl1 * cos(rl1), y1 = cl1 * sin(rl1), z1 = sl1;
+		double x2 = cl2 * cos(rl2), y2 = cl2 * sin(rl2), z2 = sl2;
+		double Nx = y1 * z2 - z1 * y2;
+		double Ny = z1 * x2 - x1 * z2;
+		double Nz = x1 * y2 - y1 * x2;
+		out.Nx[i] = Nx;
+		out.Ny[i] = Ny;
+		out.Nz[i] = Nz;
+
+		// Upper bound on the latitude reached by this arc.
+		// The full great circle's max |sin(lat)| is sqrt(1 - (Nz/|N|)^2);
+		// for short arcs the actual extremum lies between the endpoints,
+		// so endpoint max is a safe (and usually tight) bound. For longer
+		// arcs we need to use the great-circle bulge upper bound.
+		double endpoint_max = std::max(lat1, lat2);
+		double Nmag2 = Nx*Nx + Ny*Ny + Nz*Nz;
+		double arc_max = endpoint_max;
+		if (Nmag2 > 1e-30) {
+			double s = 1.0 - (Nz*Nz) / Nmag2;
+			if (s < 0.0) s = 0.0;
+			double gc_max = asin(sqrt(s)) * R2D;
+			// Use the gc bulge bound only when the arc is long enough
+			// for the bulge to actually exceed the endpoints. A safe
+			// proxy: if endpoint span in lon is small, no meaningful
+			// bulge above endpoints. Otherwise fall back to gc_max.
+			double dlon_abs = std::fabs(dlon_deg);
+			if (dlon_abs > 1.0 && gc_max > endpoint_max) {
+				arc_max = gc_max;
+			}
+		}
+		if (arc_max > max_lat) max_lat = arc_max;
+	}
+	out.max_arc_lat = max_lat;
+
+	// A ring whose signed dlons sum to ~+/-360 either encircles a pole
+	// or wraps all the way around in longitude. In practice (for our
+	// callers) such rings encircle a pole; pick which pole by the sign
+	// of the average vertex latitude. This is a robust heuristic for
+	// caps/skirts that lie predominantly in one hemisphere.
+	double avg_lat = sum_lat / static_cast<double>(nedges);
+	out.wraps_pole = std::fabs(std::fabs(total_dlon) - 360.0) < 1.0;
+	out.flip_north = out.wraps_pole && (avg_lat > 0.0);
+	if (out.wraps_pole) {
+		// A pole-enclosing ring has no useful lat upper bound.
+		out.max_arc_lat = 90.0;
+	}
+}
+
+
+bool pip_geo_in_ring_prepared(double plon_deg, double plat_deg,
+                              double cos_plon_rad, double sin_plon_rad,
+                              double plat_rad,
+                              const PipGeoRing &ring) {
+	size_t nedges = ring.Nx.size();
+	if (nedges == 0) return false;
+
+	// Cheap ring-level prune: if the ray (going north from plat to the
+	// north pole) starts above every edge's max latitude, no edge can be
+	// crossed. Skip the entire ring. Disabled when the ring encloses a
+	// pole (no useful lat bound).
+	if (plat_deg > ring.max_arc_lat) {
+		return ring.flip_north;
+	}
+
+	int crossings = 0;
+	for (size_t i = 0; i < nedges; i++) {
+		double Nz = ring.Nz[i];
+		// Skip degenerate / pole-to-pole great circles.
+		if (Nz == 0.0) continue;
+
+		// Straddle test in degrees: does the shorter arc from V1 to V2
+		// cross the meridian of the test point?
+		double d1 = ring.lon[i] - plon_deg;
+		while (d1 >  180.0) d1 -= 360.0;
+		while (d1 <= -180.0) d1 += 360.0;
+		double d2 = ring.lon[i+1] - plon_deg;
+		while (d2 >  180.0) d2 -= 360.0;
+		while (d2 <= -180.0) d2 += 360.0;
+		double delta = d2 - d1;
+		while (delta >  180.0) delta -= 360.0;
+		while (delta <= -180.0) delta += 360.0;
+		double e2 = d1 + delta;
+		if ((d1 < 0.0) == (e2 < 0.0)) continue;
+
+		if (std::fabs(Nz) < 1e-15) continue;
+		double lat_cross = atan(-(ring.Nx[i] * cos_plon_rad + ring.Ny[i] * sin_plon_rad) / Nz);
+		if (lat_cross > plat_rad) crossings++;
+	}
+	bool odd = (crossings & 1) == 1;
+	return odd ^ ring.flip_north;
 }
 

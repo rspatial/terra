@@ -219,6 +219,7 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 		
 		std::vector<SpatRasterSource> source;
+		SpatRasterSource masklyr;
 
 		BlockSize bs;
 		//BlockSize getBlockSize(unsigned n, double frac, unsigned steps=0);
@@ -378,8 +379,9 @@ class SpatRaster {
 		SpatRaster();
 		SpatRaster(size_t nr, size_t nc, size_t nl, SpatExtent ext, std::string crs);
 		SpatRaster(std::vector<size_t> rcl, std::vector<double> ext, std::string crs);
-		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains);
-		SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains);
+		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, size_t multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t md=0);
+		
+		SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t md=0);
 		SpatRaster(SpatRasterSource &s);
 		virtual ~SpatRaster(){}
 
@@ -393,7 +395,7 @@ class SpatRaster {
         SpatRaster geometry(size_t nlyrs=0, bool properties=false, bool time=true, bool units=false, bool tags=false);
 		SpatRaster geometry_opt(long nlyrs, bool properties, bool time, bool units, bool tags, bool datatype, SpatOptions &opt);
 
-		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains);
+		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t multi);
 		bool constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains);
 		bool constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, std::string driver, bool noflip, bool guessCRS, std::vector<std::string> domains);
 
@@ -418,12 +420,15 @@ class SpatRaster {
 
 		std::vector<std::string> getAllFiles();
 
+		std::string show(bool one_based=true);
+
 		void gdalogrproj_init(std::string path);
 
 		bool compare_geom(SpatRaster &x, bool lyrs, bool crs, double tol, bool warncrs=false, bool ext=true, bool rowcol=true, bool res=false);
 		bool compare_origin(std::vector<double> x, double tol);
 		bool shared_basegeom(SpatRaster &x, double tol, bool test_overlap);
 
+		void cellFromXY(std::vector<double> x, std::vector<double> y, std::vector<size_t> &cells); //size_t cells
 		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y, double missing=NAN);
 		double cellFromXY(double x, double y, double missing=NAN);
 		std::vector<double> cellFromRowCol(std::vector<int64_t> row, std::vector<int64_t> col);
@@ -597,6 +602,7 @@ class SpatRaster {
 		SpatRaster writeRasterM(SpatOptions &opt);
 		SpatRaster writeTempRaster(SpatOptions &opt);
 		bool writeDelim(std::string filename, std::string delim, bool cell, bool xy, SpatOptions &opt);
+		bool update_values(std::vector<double> &cells, std::vector<double> &vals, std::vector<size_t> layers, SpatOptions &opt);
 		bool update_meta(bool names, bool crs, bool ext, SpatOptions &opt);
 
 		//SpatRaster writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
@@ -639,6 +645,8 @@ class SpatRaster {
 		SpatRaster arith(double x, std::string oper, bool reverse, bool falseNA, SpatOptions &opt);
 		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, bool falseNA, SpatOptions &opt);
 		SpatRaster arith_m(std::vector<double> x, std::string oper, std::vector<size_t> dim, bool reverse, SpatOptions &opt);
+
+		SpatRaster apply_so(SpatOptions &opt);
 
 		SpatRaster apply(std::vector<size_t> ind, std::string fun, bool narm, std::vector<std::string> nms, std::vector<int64_t> time, std::string timestep, std::string timezone, SpatOptions &opt);
 	
@@ -688,12 +696,16 @@ class SpatRaster {
 //		SpatRaster distance_spatvector(SpatVector p, std::string unit, const std::string& method, SpatOptions &opt);
 //		SpatRaster distance_rasterize(SpatVector p, double target, double exclude, std::string unit, const std::string& method, SpatOptions &opt);
 		SpatRaster distance_vector(SpatVector p, bool rasterize, std::string unit, const std::string& method, SpatOptions &opt);
+		SpatRaster distance_vector_lonlat_fast(SpatVector p, std::string unit, const std::string& method, SpatOptions &opt);
 
 		SpatRaster direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude, const std::string& method, SpatOptions &opt);
 		
 		
 		SpatRaster distance_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit,double threshold, SpatOptions &opt);
 		SpatRaster distance_crds_vals(std::vector<double>& x, std::vector<double>& y, std::vector<double>& v, const std::string& method, bool skip, bool setNA, std::string unit, double threshold, SpatOptions &opt);
+		SpatRaster distance_crds_lonlat_fast(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, double threshold, SpatOptions &opt);
+		SpatRaster distance_crds_lonlat_fast_geo(std::vector<double>& x, std::vector<double>& y, bool skip, bool setNA, std::string unit, double threshold, SpatOptions &opt);
+		SpatRaster distance_vector_lonlat_fast_geo(SpatVector p, std::string unit, SpatOptions &opt);
 
 		SpatRaster dn_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt);
 
@@ -727,6 +739,7 @@ class SpatRaster {
 		SpatRaster filler(SpatRaster x, SpatOptions &opt);
 		
 		SpatRaster focal(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, bool naomit, std::string fun, bool expand, SpatOptions &opt);
+		SpatRaster focal2(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, bool naomit, std::string fun, bool expand, SpatOptions &opt);
 
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, int64_t row, int64_t nrows, SpatOptions &opt);
 		std::vector<std::vector<double>> freq(bool bylayer, bool round, int digits, SpatOptions &opt);
@@ -744,8 +757,9 @@ class SpatRaster {
 		SpatDataFrame global_weighted_mean(SpatRaster &weights, std::string fun, bool narm, SpatOptions &opt);
 
 		SpatRaster gridDistance(double m, SpatOptions &opt);
-		SpatRaster costDistanceRun(SpatRaster &old, bool &converged, double target, double m, bool lonlat, bool global, bool npole, bool spole, bool grid, SpatOptions &opt);
-		SpatRaster costDistance(double target, double m, size_t maxiter, bool grid, SpatOptions &opt);
+		SpatRaster costDistanceRun(SpatRaster &old, bool &converged, double target, double m, bool lonlat, bool global, bool npole, bool spole, bool grid, bool nearest, SpatOptions &opt);
+		SpatRaster costDistance(double target, double m, size_t maxiter, bool grid, bool nearest, SpatOptions &opt);
+		SpatRaster costDistanceDijkstra(double target, double m, bool grid, bool nearest, SpatOptions &opt);
 
 		SpatRaster init(std::string value, bool plusone, SpatOptions &opt);
 		SpatRaster init(std::vector<double> values, SpatOptions &opt);
@@ -829,6 +843,10 @@ class SpatRaster {
 
 
 		SpatRaster replaceValues(std::vector<double> from, std::vector<double> to, long nl, bool setothers, double others, bool keepcats, SpatOptions &opt);
+		SpatRaster lookup_apply(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt);
+		SpatRaster lookup_classify(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt);
+		SpatRaster lookup_subst(std::vector<double> from_vals, std::vector<double> to_vals, bool others, double othersValue, SpatOptions &opt);
+		SpatRaster lookup_catalyze(std::vector<double> from_vals, std::vector<std::vector<double>> to_vals_list, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, bool keepcats, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, size_t nc, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, bool keepcats, SpatOptions &opt);
 		//SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);
@@ -887,7 +905,9 @@ class SpatRaster {
 		SpatRaster trig(std::string fun, SpatOptions &opt);
 		SpatRaster trim1(double value, size_t padding, SpatOptions &opt);
 		SpatRaster trim2(double value, size_t padding, SpatOptions &opt);
-		std::vector<std::vector<double>> unique(bool bylayer, double digits, bool narm, SpatOptions &opt);
+		            std::vector<std::vector<double>> unique(bool bylayer, double digits, bool narm, SpatOptions &opt);
+		            std::vector<double> crosstab(int digits, bool narm, SpatOptions &opt);
+
 		SpatRaster project1(std::string newcrs, std::string method, SpatOptions &opt);
 		SpatRaster project2(SpatRaster &x, std::string method, SpatOptions &opt);
 		void project3(SpatRaster &out, std::string method, SpatOptions &opt);
@@ -912,8 +932,16 @@ class SpatRaster {
 		SpatRaster weighted_mean(SpatRaster w, bool narm, SpatOptions &opt);
 		SpatRaster weighted_mean(std::vector<double> w, bool narm, SpatOptions &opt);
 
-		SpatRaster warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt);
-		SpatRaster warper_by_util(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt);
+		SpatRaster warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, double xscale, double yscale, SpatOptions &opt);
+		SpatRaster warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
+			return warper(x, crs, method, mask, align, resample, "", std::vector<double>(), -1.0, true, 0, 0, opt);
+		}
+		SpatRaster warper_by_util(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, std::string pipeline, std::vector<double> AOI, double desired_accuracy, bool allow_ballpark, double xscale, double yscale, SpatOptions &opt);
+		SpatRaster warper_by_util(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
+			return warper_by_util(x, crs, method, mask, align, resample, "", std::vector<double>(), -1.0, true, 0, 0, opt);
+		}
+
+		std::vector<double> warp_scale(SpatRaster x, size_t n);
 		
 		SpatRaster resample(SpatRaster x, std::string method, bool mask, bool agg, SpatOptions &opt);
 		

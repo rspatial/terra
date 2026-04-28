@@ -508,8 +508,9 @@
 
 	if ((!is.null(ext)) || (!is.null(xlim)) || (!is.null(ylim))) {
 		if (!is.null(ext)) {
+			ext <- ext(ext)
 			out$lim <- as.vector(ext)
-			out$ext <- as.vector(align(ext(ext), x, "out"))
+			out$ext <- as.vector(align(ext, x, "out"))
 		} 
 		if (!is.null(xlim)) {
 			stopifnot(length(xlim) == 2)

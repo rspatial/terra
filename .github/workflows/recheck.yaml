@@ -5,9 +5,15 @@ on:
         type: choice
         description: Which dependents to check
         options:
+        - Depends
+        - Imports
         - strong
         - most
-
+      pattern:
+        type: string
+        description: 'grep pattern to subset packages'
+        default: ''
+        
 name: Reverse dependency check
 
 jobs:

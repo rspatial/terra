@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -19,6 +19,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <stdint.h>
+#include <cmath>
 #include <vector>
 //#include <regex>
 
@@ -67,6 +68,8 @@ void SpatRaster::gdalogrproj_init(std::string path) {
 
 }
 
+
+
 /*
 bool GetTime(std::string filename, std::vector<int64_t> &time, std::string &timestep, size_t nl) {
 	filename += ".time";
@@ -94,6 +97,21 @@ bool GetUnits(std::string filename, std::vector<std::string> &units, size_t nl) 
 }
 */
 
+bool ncdf_good_ends(std::string const &s) {
+	std::vector<std::string> end = {"_bnds", "_bounds", "lat", "lon", "longitude", "latitude"};
+	for (size_t i=0; i<end.size(); i++) {
+		if (s.length() >= end[i].length()) {
+			if (s.compare(s.length() - end[i].length(), s.length(), end[i]) == 0) {
+				return false;
+			}
+		}
+	}
+	if (s == "x" || s == "y" || s == "northing" || s == "easting") {
+		return false;
+	}
+	return true;
+}
+
 bool read_aux_json(std::string filename, std::vector<int64_t> &time, std::string &timestep, std::vector<std::string> &units, size_t nlyr) {
 	filename += ".aux.json";
 	if (!file_exists(filename)) return false;
@@ -108,27 +126,29 @@ bool read_aux_json(std::string filename, std::vector<int64_t> &time, std::string
 		if (x[0] == "unit") iunit = i;
 	}
 	if (itime >= 0) {
-		std::vector<std::string> x = strsplit_first(s[itime], "[");
-		if (x.size() == 2) {
-			x = strsplit(x[1], "]");
-			x = strsplit(x[0], ",");
-			std::vector<int64_t> tm;
-			for (size_t i=0; i<x.size(); i++) {
-				unquote(x[i]);
-				tm.push_back( parse_time(x[i]) );
-			}
-			if (tm.size() == nlyr) {
-				time = tm;
-			}
-		}
-		if ((istep >= 0) && !time.empty()) {
-			std::vector<std::string> x = strsplit_first(s[istep], ":");
+		try {
+			std::vector<std::string> x = strsplit_first(s[itime], "[");
 			if (x.size() == 2) {
-				x = strsplit(x[1], ",");
-				unquote(x[0]);
-				timestep = x[0];
+				x = strsplit(x[1], "]");
+				x = strsplit(x[0], ",");
+				std::vector<int64_t> tm;
+				for (size_t i=0; i<x.size(); i++) {
+					unquote(x[i]);
+					tm.push_back( parse_time(x[i]) );
+				}
+				if (tm.size() == nlyr) {
+					time = tm;
+				}
 			}
-		}
+			if ((istep >= 0) && !time.empty()) {
+				std::vector<std::string> x = strsplit_first(s[istep], ":");
+				if (x.size() == 2) {
+					x = strsplit(x[1], ",");
+					unquote(x[0]);
+					timestep = x[0];
+				}
+			}
+		} catch(...) {}
 	}
 	if (iunit >= 0) {
 		std::vector<std::string> x = strsplit_first(s[iunit], "[");
@@ -148,8 +168,10 @@ bool read_aux_json(std::string filename, std::vector<int64_t> &time, std::string
 
 
 void prints(std::vector<std::string> x) {
+#ifdef useRcpp
 	for (size_t i=0; i<x.size(); i++) {Rcpp::Rcout << x[i] << " ";}
-	Rcpp::Rcout << "\n";	
+	Rcpp::Rcout << "\n";
+#endif
 }
 
 
@@ -170,7 +192,7 @@ bool GetRAT(GDALRasterAttributeTable *pRAT, SpatCategories &cats, const std::str
 	size_t nc = (int) pRAT->GetColumnCount();
 	size_t nr = (int) pRAT->GetRowCount();
 
-	std::vector<std::string> ss = {"histogram", "count", "red", "green", "blue", "alpha", "opacity", "r", "g", "b", "a"};
+	std::vector<std::string> ss = {"histogram", "count", "pixel count", "red", "green", "blue", "alpha", "opacity", "r", "g", "b", "a"};
 
 	std::vector<std::string> ratnms;
 	std::vector<int> id, id2;
@@ -525,8 +547,6 @@ std::string basename_sds(std::string f) {
 	return f;
 }
 
-
-
 std::string getDsWKT(GDALDataset *poDataset) {
 	std::string wkt = "";
 #if GDAL_VERSION_MAJOR >= 3
@@ -617,13 +637,35 @@ void get_tags(std::vector<std::string> meta, std::string prefix,  std::vector<st
 	
 }
 
+
+
+// NETCDF:"/path/file.nc":var -> path + var 
+static bool split_file_array(const std::string &uri, std::string &filename, std::string &arrayname) {
+	static const char pfx[] = "NETCDF:\"";
+	const size_t plen = sizeof(pfx) - 1;
+	if (uri.size() < plen + 3) {
+		return false;
+	}
+	if (uri.compare(0, plen, pfx) != 0) {
+		return false;
+	}
+	size_t q = uri.find('"', plen);
+	if (q == std::string::npos || q + 2 >= uri.size() || uri[q + 1] != ':') {
+		return false;
+	}
+	filename = uri.substr(plen, q - plen);
+	arrayname = uri.substr(q + 2);
+	return !filename.empty() && !arrayname.empty();
+}
+
+
 std::vector<std::string> get_metadata(std::string filename, std::vector<std::string> options) {
 	std::vector<std::string> metadata;
     GDALDataset *poDataset = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, options);
     if( poDataset == NULL )  {
 		return metadata;
 	}
-	char **m = poDataset->GetMetadata();
+	CSLConstList m = poDataset->GetMetadata();
 	if (m) {
 		while (*m != nullptr) {
 			metadata.push_back(*m++);
@@ -634,7 +676,7 @@ std::vector<std::string> get_metadata(std::string filename, std::vector<std::str
 }
 
 
-SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains) {
+SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t md) {
 
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR, {}, {});
     if( poDataset == NULL )  {
@@ -647,12 +689,13 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 	}
 
 	std::string delim = "NAME=";
-	char **metadata = poDataset->GetMetadata("SUBDATASETS");
+	CSLConstList metadata = poDataset->GetMetadata("SUBDATASETS");
 
 	if (metadata == NULL) {
 		GDALClose( (GDALDatasetH) poDataset );
 		SpatRaster sub;
-		if (sub.constructFromFile(fname, {-1}, {""}, {}, options, false, guessCRS, domains)) {
+		bool ok = sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, md);
+		if (ok) {
 			std::string sname = sub.source[0].source_name;
 			push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true);
 		}
@@ -679,23 +722,39 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 				continue;
 			}
 			std::string s = meta[ids[i]*2];
-			size_t pos = s.find(delim);
-			if (pos != std::string::npos) {
-				s.erase(0, pos + delim.length());
-				SpatRaster sub;
-				if (sub.constructFromFile(s, {-1}, {""}, {}, options, false, guessCRS, domains)) {
-					std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
-					if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
-						addWarning("skipped (different geometry): " + s);
+			if (ncdf_good_ends(s)) {
+				size_t pos = s.find(delim);
+				if (pos != std::string::npos) {
+					s.erase(0, pos + delim.length());
+					SpatRaster sub;
+					bool ok = false;
+					if (md > 0) {
+						std::string mf, an;
+						if (split_file_array(s, mf, an)) {
+							SpatRaster trym;
+							if (trym.constructFromFileMulti(mf, {-1}, {an}, {}, options, {}, false, guessCRS, domains)) {
+								sub = trym;
+								ok = true;
+							}
+						}
 					}
-				} else {
-					addWarning("skipped (fail): " + s);
+					if (!ok) {
+						ok = sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, md);
+					}
+					if (ok) {
+						std::string sname = sub.source[0].source_name.empty() ? basename_sds(s) : sub.source[0].source_name;
+						if (!push_back(sub, sname, sub.source[0].source_name_long, sub.source[0].unit[0], true)) {
+							addWarning("skipped (different geometry): " + s);
+						}
+					} else {
+						addWarning("skipped (fail): " + s);
+					}
 				}
 			}
 		}
 	}
 	meta.resize(0);
-	char **m = poDataset->GetMetadata();
+	CSLConstList m = poDataset->GetMetadata();
 	if (m) {
 		while (*m != nullptr) {
 			meta.push_back(*m++);
@@ -725,12 +784,12 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 	}
 
 	std::string delim = "NAME=";
-	char **metadata = poDataset->GetMetadata("SUBDATASETS");
+	CSLConstList metadata = poDataset->GetMetadata("SUBDATASETS");
 
 	if (metadata == NULL) {
 		GDALClose( (GDALDatasetH) poDataset );
 		SpatRaster sub;
-		if (sub.constructFromFile(fname, {-1}, {""}, {}, options, false, guessCRS, domains)) {
+		if (sub.constructFromFile(fname, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0)) {
 			std::string sname = sub.source[0].source_name;
 			push_back(sub, sname);
 		}
@@ -761,7 +820,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				SpatRaster sub;
-				if (sub.constructFromFile(s, {-1}, {""}, {}, options, false, guessCRS, domains)) {
+				if (sub.constructFromFile(s, {-1}, {""}, {}, options, {}, false, guessCRS, domains, 0)) {
 					push_back(sub, basename_sds(s));
 				} else {
 					addWarning("skipped (fail): " + s);
@@ -770,7 +829,7 @@ SpatRasterCollection::SpatRasterCollection(std::string fname, std::vector<int> i
 		}
 	}
 	meta.resize(0);
-	char **m = poDataset->GetMetadata();
+	CSLConstList m = poDataset->GetMetadata();
 	if (m) {
 		while (*m != nullptr) {
 			meta.push_back(*m++);
@@ -852,7 +911,7 @@ bool getGCPs(GDALDataset *poDataset, SpatRasterSource &s) {
 
 
 
-bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains) {
+bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t multi) {
 
 
 
@@ -883,26 +942,57 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		return false;
 	}
 
-	int nl = poDataset->GetRasterCount();
-	std::string gdrv = poDataset->GetDriver()->GetDescription();
+	GDALDriver *poDriver = poDataset->GetDriver();
+	std::string gdrv = poDriver->GetDescription();
 
-	char **metasds = poDataset->GetMetadata("SUBDATASETS");
-	
-	if (metasds != NULL) {
-		std::vector<std::string> meta;
-		for (size_t i=0; metasds[i] != NULL; i++) {
-			meta.push_back(metasds[i]);
+	if ((multi >= 1) && (gdrv != "VRT")) {
+		if (gdrv == "netCDF") {
+			if (constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
+				GDALClose( (GDALDatasetH) poDataset );		
+				return true;
+			}
 		}
-		GDALClose( (GDALDatasetH) poDataset );
-		return constructFromSDS(fname, meta, subds, subdsname, options, gdrv, noflip, guessCRS, domains);
+		if (multi == 1) { // should be for > 1, but that seems to fail 
+			const char* pszMetadata = poDriver->GetMetadataItem(GDAL_DCAP_MULTIDIM_RASTER);
+			if (pszMetadata != nullptr && EQUAL(pszMetadata, "YES")) {	
+				if (constructFromFileMulti(fname, subds, subdsname, drivers, clean_ops, dims, noflip, guessCRS, domains) ){
+					GDALClose( (GDALDatasetH) poDataset );		
+					return true;
+				} else {
+					addWarning("cannot open this file with the multidim API: " + fname);
+				}
+			}
+		}
+	}
 
+	int nl = poDataset->GetRasterCount();
+
+	CSLConstList metasds = poDataset->GetMetadata("SUBDATASETS");
+
+	// for now, JPEG only, if the root has (RGB) bands and a optional SUBDATASET
+	// use by default the root so GeoTransform / worldfile / CRS apply. see #918 
+	// unless nl==0, for other drivers (ncdf) this should be an option (collapse=true -> constructFromSDS)
+	if (metasds != NULL) {
+		bool explicit_sds = (!subds.empty() && (subds[0] >= 0)) ||
+			(!subdsname.empty() && !subdsname[0].empty());
+		bool jpeg_use_root = (lower_case(gdrv) == "jpeg") && (nl > 0) && !explicit_sds;
+		bool force_sds = (nl == 0) || !jpeg_use_root;
+		if (force_sds) {
+			std::vector<std::string> meta;
+			for (size_t i=0; metasds[i] != NULL; i++) {
+				meta.push_back(metasds[i]);
+			}
+			GDALClose( (GDALDatasetH) poDataset );
+			return constructFromSDS(fname, meta, subds, subdsname, options, gdrv, noflip, guessCRS, domains);
+		}
+		// else: JPEG with bands and no subdataset request — keep poDataset as main raster
 	} else if (nl==0) {
 		setError("no raster data in " + fname);
 		return false;
 	}
 
 	for (size_t i=0; i<domains.size(); i++) {
-		char **meterra = poDataset->GetMetadata(domains[i].c_str());
+	  CSLConstList meterra = poDataset->GetMetadata(domains[i].c_str());
 		if (meterra != NULL) {
 			std::vector<std::string> meta;
 			for (size_t j=0; meterra[j] != NULL; j++) {
@@ -919,7 +1009,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	
 	SpatRasterSource s;
 
-	char **metasrc = poDataset->GetMetadata();
+	CSLConstList metasrc = poDataset->GetMetadata();
 	while (metasrc != nullptr && *metasrc != nullptr) {
 		s.smdata.push_back(*metasrc++);
 	}
@@ -947,6 +1037,13 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			std::swap(ymin, ymax);
 			s.extset = true;
 			s.flipped = true;
+		}
+		// normalize for rotated rasters
+		if (xmin > xmax) { // gt[1]<0
+			std::swap(xmin, xmax);
+		}
+		if (ymin > ymax) {
+			std::swap(ymin, ymax);
 		}
 
 		SpatExtent e(xmin, xmax, ymin, ymax);
@@ -1065,7 +1162,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 
 		// if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB") || (gdrv == "GTiff")) {
-			char **m = poBand->GetMetadata();
+		  CSLConstList m = poBand->GetMetadata();
 			while (m != nullptr && *m != nullptr) {
 				bandmeta[i].push_back(*m++);
 			}
@@ -1073,7 +1170,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			//	Rcpp::Rcout << bandmeta[i][j] << std::endl;
 			//}
 			
-			char **meterra = poBand->GetMetadata("USER_TAGS");
+			CSLConstList meterra = poBand->GetMetadata("USER_TAGS");
 			if (meterra != NULL) {
 //				std::vector<std::string> meta;
 				for (size_t j=0; meterra[j] != NULL; j++) {
@@ -1255,17 +1352,17 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		
 
 // try units from json
-		std::vector<int64_t> timestamps;
-		std::string timestep="raw";
-		//std::vector<std::string> units;
-		try {
-			read_aux_json(fname, timestamps, timestep, unts, s.nlyr);
-		} catch(...) {
-			unts.resize(0);
-			addWarning("could not parse aux.json");
-		}
-		if (!unts.empty()) {
-			s.hasUnit = true;
+		if (unts.empty()) {
+			std::vector<int64_t> timestamps;
+			std::string timestep="raw";
+			try {
+				read_aux_json(fname, timestamps, timestep, unts, s.nlyr);
+			} catch(...) {
+				unts.resize(0);
+			}
+			if (!unts.empty()) {
+				s.hasUnit = true;
+			}
 		}
 		
 		
@@ -1302,7 +1399,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 	if ((gdrv=="netCDF") || (gdrv == "HDF5"))  {
 		
-		char **m = poDataset->GetMetadata();
+		CSLConstList m = poDataset->GetMetadata();
 		if (m) {
 			while (*m != nullptr) {
 				metadata.push_back(*m++);
@@ -1389,12 +1486,12 @@ bool SpatRaster::readStopGDAL(size_t src) {
 
 
 
-void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, const std::vector<double> &scale, const std::vector<double>  &offset, const std::vector<bool> &haveso, const bool haveUserNAflag, const double userNAflag){
+void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, const std::vector<double> &scale, const std::vector<double>  &offset, const std::vector<bool> &haveso, const bool haveUserNAflag, const double userNAflag, size_t data_offset = 0){
 	size_t nl = flags.size();
 	double na = NAN;
 
 	for (size_t i=0; i<nl; i++) {
-		size_t start = i*n;
+		size_t start = data_offset + i*n;
 		if (!std::isnan(flags[i])) {
 			double flag = flags[i];
 			// a hack to avoid problems with double derived from float - double comparison
@@ -1417,14 +1514,14 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 		}
 	}
 	if (haveUserNAflag) {
-		std::replace(d.begin(), d.end(), userNAflag, na);
+		std::replace(d.begin()+data_offset, d.begin()+data_offset+n*nl, userNAflag, na);
 	}
 }
 
 
-void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, const size_t &ncols, const size_t &nl) {
+void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, const size_t &ncols, const size_t &nl, size_t data_offset) {
 	for (size_t i=0; i<nl; i++) {
-		size_t off = i*ncell;
+		size_t off = data_offset + i*ncell;
 		size_t nr = nrows/2;
 		for (size_t j=0; j<nr; j++) {
 			size_t d1 = off + j * ncols;
@@ -1467,10 +1564,8 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, size_t src, size_t row
 
 	size_t ncell = ncols * nrows;
 	size_t nl = source[src].nlyr;
-	std::vector<double> out(ncell * nl);
-	int hasNA;
-	std::vector<double> naflags(nl, NAN);
-	CPLErr err = CE_None;
+	size_t old_size = data.size();
+	data.resize(old_size + ncell * nl);
 
 	std::vector<int> panBandMap;
 	if (!source[src].in_order(true)) {
@@ -1480,45 +1575,32 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, size_t src, size_t row
 		}
 	}
 
+	CPLErr err;
 	if (panBandMap.empty()) {
-		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
+		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, data.data() + old_size, ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL);
 	} else {
-		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
+		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, data.data() + old_size, ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 	}
 
-	GDALRasterBand  *poBand;
-	if (err == CE_None ) {
-		for (size_t i=0; i<nl; i++) {
-			poBand = source[src].gdalconnection->GetRasterBand(source[src].layers[i]+1);
-			double naflag = poBand->GetNoDataValue(&hasNA);
-			if (hasNA)  naflags[i] = naflag;
-		}
-		NAso(out, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag);
-	}
-
-/*
-	for (size_t i=0; i < nl; i++) {
-		cell = ncell * i;
-		poBand = source[src].gdalconnection->GetRasterBand(source[src].layers[i] + 1);
-		double naflag = poBand->GetNoDataValue(&hasNA);
-		if (!hasNA) { naflag = NAN; }
-		GDALDataType gdtype = poBand->GetRasterDataType();
-		if (gdtype == GDT_Float64) {
-			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &out[cell], ncols, nrows, gdtype, 0, 0);
-			if (err != CE_None ) { break; }
-			set_NA(out, naflag);
-		}
-	}
-*/
 	if (err != CE_None ) {
+		data.resize(old_size);
 		setError("cannot read values");
 		return;
 	}
 
-	if (source[src].flipped) {
-		vflip(out, ncell, nrows, ncols, nl);
+	int hasNA;
+	std::vector<double> naflags(nl, NAN);
+	GDALRasterBand *poBand;
+	for (size_t i=0; i<nl; i++) {
+		poBand = source[src].gdalconnection->GetRasterBand(source[src].layers[i]+1);
+		double naflag = poBand->GetNoDataValue(&hasNA);
+		if (hasNA) naflags[i] = naflag;
 	}
-	data.insert(data.end(), out.begin(), out.end());
+	NAso(data, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag, old_size);
+
+	if (source[src].flipped) {
+		vflip(data, ncell, nrows, ncols, nl, old_size);
+	}
 }
 
 
@@ -1988,20 +2070,6 @@ std::vector<double> SpatRaster::readRowColGDALFlat(size_t src, std::vector<int64
 
 // ncdf
 
-bool ncdf_good_ends(std::string const &s) {
-	std::vector<std::string> end = {"_bnds", "_bounds", "lat", "lon", "longitude", "latitude"};
-	for (size_t i=0; i<end.size(); i++) {
-		if (s.length() >= end[i].length()) {
-			if (s.compare(s.length() - end[i].length(), s.length(), end[i]) == 0) {
-				return false;
-			}
-		}
-	}
-	if (s == "x" || s == "y" || s == "northing" || s == "easting") {
-		return false;
-	}
-	return true;
-}
 
 void ncdf_pick_most(std::vector<std::string> &sd, std::vector<std::string> &varname, std::vector<std::string> &longname, std::vector<int> &dim1, std::vector<int> &dim2) {
 	if (sd.size() < 2) return;
@@ -2039,7 +2107,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	std::vector<std::vector<std::string>> info = parse_metadata_sds(meta);
 	int n = info[0].size();
 
-	if (gtiff && (subds[0] < 0) && subdsname[0].empty()) {
+	if (gtiff && (subds[0] < 0) && (subdsname.empty() || subdsname[0].empty())) {
 		subds.resize(n);
 		std::iota(subds.begin(), subds.end(), 0);
 	}
@@ -2082,7 +2150,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	} else {
 		// eliminate sources based on names like "*_bnds" and "lat"
 		std::vector<int> rows, cols;
-		for (size_t i=0; i<info[1].size(); i++) {			
+		for (size_t i=0; i<info[1].size(); i++) {
 			if (ncdf_good_ends(info[1][i])) {
 				sd.push_back(info[0][i]);
 				varname.push_back(info[1][i]);
@@ -2125,7 +2193,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	size_t cnt;
 
     for (cnt=0; cnt < sd.size(); cnt++) {
-		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options, noflip, guessCRS, domains)) break;
+		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options, {}, noflip, guessCRS, domains, 0)) break;
 	}
 //	source[0].source_name = srcname[cnt];
 
@@ -2136,7 +2204,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	SpatOptions opt;
     for (size_t i=(cnt+1); i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
-		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options, noflip, guessCRS, domains);
+		bool success = out.constructFromFile(sd[i], {-1}, {""}, {}, options, {}, noflip, guessCRS, domains, 0);
 		if (success) {
 			if (out.compare_geom(*this, false, false, 0.1)) {
 //				out.source	[0].source_name = srcname[i];
@@ -2340,6 +2408,24 @@ std::vector<int64_t> ncdf_time(const std::vector<std::string> &metadata, std::ve
 			msg = "unknown calendar (assuming standard): " + calendar;			
 		}
 
+		// CF "standard" calendar is mixed Julian/Gregorian.  When the
+		// origin is before 1582-10-15 the raw offsets are Julian-counted
+		// but get_time() uses proleptic Gregorian.  Correct here.
+		if (cal == "366" && calendar != "proleptic_gregorian") {
+			std::vector<int> ymd0 = getymd(origin);
+			long corr = standard_cal_correction(ymd0[0], ymd0[1], ymd0[2]);
+			if (corr != 0) {
+				double corr_unit = 0;
+				if (days)          corr_unit = corr;
+				else if (hours)    corr_unit = corr * 24.0;
+				else if (minutes)  corr_unit = corr * 1440.0;
+				else if (seconds)  corr_unit = corr * 86400.0;
+				for (size_t i = 0; i < raw.size(); i++) {
+					raw[i] -= corr_unit;
+				}
+			}
+		}
+
 		// this shortcut means that 360/noleap calendars loose only have dates, no time
 		// to be refined
 		if ((hours || minutes || seconds) && (cal == "360")) {
@@ -2434,6 +2520,19 @@ std::vector<int64_t> ncdf_time(const std::vector<std::string> &metadata, std::ve
 		} else {
 			step = "raw";
 			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]);
+		}
+
+		// "days since ..." with fractional offsets (e.g. sub-daily) is still
+		// stored as epoch seconds; report timestep "seconds" so full date-time
+		// is used (not Date-only day semantics).
+		if (step == "days" && raw.size() == out.size()) {
+			for (size_t i = 0; i < raw.size(); i++) {
+				double fr = raw[i] - std::floor(raw[i]);
+				if (fr > 1e-6 && fr < 1.0 - 1e-6) {
+					step = "seconds";
+					break;
+				}
+			}
 		}
 	}
 

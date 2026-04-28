@@ -469,6 +469,11 @@ setMethod("is.nan", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("is.finite", signature(x="SpatExtent"),
+	function(x) {
+		all(is.finite(as.vector(x)))
+	}
+)
 
 setMethod("is.finite", signature(x="SpatRaster"),
 	function(x) {

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+
 #include <functional>
 #include "spatRasterMultiple.h"
 #include "recycle.h"
@@ -22,11 +23,7 @@
 #include "vecmath.h"
 #include <cmath>
 
-#if defined(USE_TBB)
-#include <tbb/tbb.h>
-#include <tbb/parallel_for.h>
-#include <tbb/blocked_range.h>
-#endif 
+#include "tbb_helper.h"
 
 
 //#include "modal.h"
@@ -289,6 +286,35 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, bool falseNA, SpatO
 	x.readStop();
 	return(out);
 }
+
+SpatRaster SpatRaster::apply_so(SpatOptions &opt) {
+	SpatRaster out = geometry();
+	if (!hasValues()) {
+		out.setError("raster has no values"); // or warn and treat as NA?
+		return out;
+	}
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a;
+		readBlock(a, out.bs, i);
+		if (!out.writeBlock(a, i)) return out;
+	}
+	out.writeStop();
+	readStop();
+	return(out);
+
+
+}
+
 
 
 SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, bool falseNA, SpatOptions &opt) {
@@ -832,7 +858,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 
 #if defined(USE_TBB)
 		if (opt.parallel) {
-			tbb::parallel_for(tbb::blocked_range<size_t>(0, a.size()),
+			terra_parallel_for(opt, tbb::blocked_range<size_t>(0, a.size()),
 				[&](const tbb::blocked_range<size_t>& range) {
 				for (size_t i = range.begin(); i != range.end(); i++) {
 					if (!std::isnan(a[i])) a[i] = mathFun(a[i]);
@@ -842,7 +868,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 			for (double& d : a) if (!std::isnan(d)) d = mathFun(d);
 		}
 #else
-		for (double& d : a) if (!std::isnan(d)) d = mathFun(d);	
+		for (double& d : a) if (!std::isnan(d)) d = mathFun(d);
 #endif
 		if (!out.writeBlock(a, i)) return out;
 	}
@@ -964,9 +990,9 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a;
 		readValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol());
-#if defined(USE_TBB) 
+#if defined(USE_TBB)
 		if (opt.parallel) {
-			tbb::parallel_for(tbb::blocked_range<size_t>(0, a.size()),
+			terra_parallel_for(opt, tbb::blocked_range<size_t>(0, a.size()),
 				[&](const tbb::blocked_range<size_t>& range) {
 				for (size_t i = range.begin(); i != range.end(); i++) {
 					if (!std::isnan(a[i])) {
@@ -977,9 +1003,9 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 		} else {
 			for (double& d : a) if (!std::isnan(d)) d = trigFun(d);
 		}
-#else 
+#else
 		for (double& d : a) if (!std::isnan(d)) d = trigFun(d);
-#endif	
+#endif
 
 		if (!out.writeBlock(a, i)) return out;
 	}

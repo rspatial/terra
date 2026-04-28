@@ -315,6 +315,41 @@
 	ticklength <- x$leg[["tick.length"]]
 	if (is.null(ticklength)) ticklength <- 1
 
+	if (!is.null(x$leg$bg)) {
+		strh <- graphics::strheight("M", cex=cex)
+		lw <- max(graphics::strwidth(zztxt, cex=cex))
+		toff <- 0.5 * strh
+		has_title <- isTRUE("title" %in% names(x$leg))
+		pad <- strh * 0.8
+		if (P == "right") {
+			bg_x0 <- e$xmin - pad
+			bg_x1 <- e$xmax + e$dx * 0.2 + toff + lw + pad
+			bg_y0 <- e$ymin - pad
+			bg_y1 <- e$ymax + pad
+			if (has_title) bg_y1 <- bg_y1 + 2 * strh
+		} else if (P == "left") {
+			bg_x0 <- e$xmin - e$dx * 0.2 - toff - lw - pad
+			bg_x1 <- e$xmax + pad
+			bg_y0 <- e$ymin - pad
+			bg_y1 <- e$ymax + pad
+			if (has_title) bg_y1 <- bg_y1 + 2 * strh
+		} else if (P == "bottom") {
+			bg_x0 <- e$xmin - pad
+			bg_x1 <- e$xmax + pad
+			bg_y0 <- e$ymin - e$dy - strh - pad
+			bg_y1 <- e$ymax + pad
+			if (has_title) bg_y1 <- bg_y1 + 2 * strh
+		} else {
+			bg_x0 <- e$xmin - pad
+			bg_x1 <- e$xmax + pad
+			bg_y0 <- e$ymin - pad
+			bg_y1 <- e$ymax + 1.5 * e$dy + strh + pad
+			if (has_title) bg_y1 <- bg_y1 + 2 * strh
+		}
+		graphics::rect(bg_x0, bg_y0, bg_x1, bg_y1,
+			col=x$leg$bg, border=x$leg$bg, xpd=NA)
+	}
+
 	if (P %in% c("left", "right")) {
 		Y <- seq(e$ymin, e$ymax, length.out=nc+1)
 		graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=NA, lwd=boxlwd)
@@ -395,7 +430,7 @@
 			x$leg$title.y <- e$ymax
 			if (x$leg$horiz) {
 				x$leg$title.x <- e$xmin + (e$xmax - e$xmin) / 2
-				if (x$leg$x	== "top") {
+				if (identical(P, "top")) {
 					x$leg$title.y <- e$ymax + 2 * (e$ymax - e$ymin)
 				}
 			} else {

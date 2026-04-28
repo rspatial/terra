@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -29,6 +29,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	memmax = opt.memmax;
 	memmin = opt.memmin;
 	parallel = opt.parallel;
+	threads = opt.threads;
 	todisk = opt.todisk;
 	tolerance = opt.tolerance;
 

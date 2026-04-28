@@ -38,8 +38,8 @@ public:
 	std::vector<std::string> labels;
 	bool ordered = false;
   
-	size_t size() { return v.size(); }
-	bool empty() { return v.empty(); }
+	size_t size() const { return v.size(); }
+	bool empty() const { return v.empty(); }
 	
 	//void compute_levels();
 	void push_back(size_t x) { v.push_back(x); }
@@ -57,8 +57,8 @@ public:
 //	}
 	
 	SpatFactor subset(std::vector<size_t> i);
-	std::string getLabel(size_t i); 
-	std::vector<std::string> getLabels();
+	std::string getLabel(size_t i) const;
+	std::vector<std::string> getLabels() const;
 	
 };
 

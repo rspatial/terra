@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -33,13 +33,20 @@ std::string double_to_string(double x) {
 	return s;
 }
 
+/*
+static std::string double_to_string(double v) {
+	std::ostringstream oss;
+	oss << v;
+	return oss.str();
+}
+*/
 
 void unquote(std::string &s) {
 	s.erase(std::remove(s.begin(), s.end(), '\"'), s.end());
 }
 
 
-std::vector<char *> string_to_charpnt(std::vector<std::string> s) {
+std::vector<char *> string_to_charpnt(const std::vector<std::string> &s) {
 	size_t n = s.size();
 	std::vector<char *> out(n + 1);
 	for (size_t i = 0; i < n; i++) {

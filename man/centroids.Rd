@@ -10,7 +10,7 @@
 \description{
 Get the centroids of polygons or lines, or centroid-like points that are guaranteed to be inside the polygons or on the lines.
 
-Or get the (weighted) centroid of the the cells with values (not \code{NA}) of a SpatRaster.
+Or get the (weighted) centroid of the cells with values (not \code{NA}) of a SpatRaster.
 }
 
 \usage{

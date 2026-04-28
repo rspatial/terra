@@ -135,7 +135,7 @@ setMethod("autocor", signature(x="numeric"),
 
 
 setMethod("autocor", signature(x="SpatRaster"),
-	function(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE) {
+	function(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE, standardize=FALSE) {
 
 		method <- match.arg(tolower(method), c("moran", "geary"))
 
@@ -147,15 +147,22 @@ setMethod("autocor", signature(x="SpatRaster"),
 		if (global) {
 			if (method == "moran") {
 				z <- x - unlist(global(x, "mean", na.rm=TRUE))
+				zz <- ifel(is.na(x), NA, 1)
+				W <- focal(zz, w=w, fun="sum", na.rm=TRUE, na.policy="omit")
 				wZiZj <- focal(z, w=w, fun="sum", na.rm=TRUE)
+				if (standardize) {
+					wZiZj <- wZiZj / W
+				}
 				wZiZj <- wZiZj * z
 				wZiZj <- unlist(global(wZiZj, "sum", na.rm=TRUE))
 				z2 <- unlist(global(z*z, "sum", na.rm=TRUE))
-				n <- ncell(z) - unlist(global(z, "isNA"))
-				zz <- ifel(is.na(x), NA, 1)
-				W <- focal( zz, w=w, fun="sum", na.rm = TRUE, na.policy="omit")
-				NS0 <- n / unlist(global(W, "sum", na.rm=TRUE))
-				m <- NS0 * wZiZj / z2
+				if (standardize) {
+					m <- wZiZj / z2
+				} else {
+					n <- ncell(z) - unlist(global(z, "isNA"))
+					NS0 <- n / unlist(global(W, "sum", na.rm=TRUE))
+					m <- NS0 * wZiZj / z2
+				}
 				names(m) <- names(x)
 				m
 			} else { # geary
@@ -164,11 +171,17 @@ setMethod("autocor", signature(x="SpatRaster"),
 				n <- ncell(x) - unlist(global(x, "isNA"))
 				fun <- function(x,...) sum((x-x[i])^2, ...)
 				f <- focal(x, w=dim(w), fun=fun, na.rm=TRUE)
-				Eij <- unlist(global(f, "sum", na.rm=TRUE))
-				xx <- ifel(is.na(x), NA ,1)
-				W <- focal(xx, w=w, na.rm=TRUE )
-				z <- 2 * unlist(global(W, "sum", na.rm=TRUE)) *
-					unlist(global((x - unlist(global(x, "mean", na.rm=TRUE)))^2, "sum", na.rm=TRUE))
+				xx <- ifel(is.na(x), NA, 1)
+				W <- focal(xx, w=w, na.rm=TRUE)
+				if (standardize) {
+					Eij <- unlist(global(f / W, "sum", na.rm=TRUE))
+					z <- 2 * n *
+						unlist(global((x - unlist(global(x, "mean", na.rm=TRUE)))^2, "sum", na.rm=TRUE))
+				} else {
+					Eij <- unlist(global(f, "sum", na.rm=TRUE))
+					z <- 2 * unlist(global(W, "sum", na.rm=TRUE)) *
+						unlist(global((x - unlist(global(x, "mean", na.rm=TRUE)))^2, "sum", na.rm=TRUE))
+				}
 				g <- (n-1)*Eij/z
 				names(g) <- names(x)
 				g

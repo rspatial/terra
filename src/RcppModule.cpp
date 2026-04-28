@@ -283,6 +283,7 @@ RCPP_MODULE(spat){
 		.method("sampleRandom", &SpatExtent::sampleRandom)
 		.method("sampleRegular", &SpatExtent::sampleRegular)
 		.method("sample", &SpatExtent::test_sample)
+		.method("show", &SpatExtent::show)
 	;
 
 /*
@@ -426,6 +427,7 @@ RCPP_MODULE(spat){
 		.method("from_hex_col", &SpatVectorCollection::from_hex_col)
 		.method("setNames", &SpatVectorCollection::setNames, "setNames" )
 		.property("names", &SpatVectorCollection::getNames)
+		.method("show", &SpatVectorCollection::show)
 
 	;
 
@@ -456,6 +458,7 @@ RCPP_MODULE(spat){
 //		.method("pointInPolygon", &SpatVector::pointInPolygon)
 		
 		.method("deepcopy", &SpatVector::deepCopy)
+		.method("show", &SpatVector::show)
 		.method("wkt", &SpatVector::wkt)
 		.method("wkb", &SpatVector::wkb)
 		.method("wkb_raw", &SpatVector::wkb_raw)
@@ -469,7 +472,8 @@ RCPP_MODULE(spat){
 		.method("rotate_longitude", &SpatVector::rotate_longitude)
 		.method("line_merge", &SpatVector::line_merge)
 		.method("simplify", &SpatVector::simplify)
-		.method("thin", &SpatVector::thin)
+		.method("thin_geoms", &SpatVector::thin_geoms)
+		.method("thin_nodes", &SpatVector::thin_nodes)
 		//.method("shared_paths", &SpatVector::shared_paths)
 		.method("shared_paths", (SpatVector (SpatVector::*)(bool))( &SpatVector::shared_paths))
 		.method("shared_paths2", (SpatVector (SpatVector::*)(SpatVector, bool))( &SpatVector::shared_paths))
@@ -539,7 +543,8 @@ RCPP_MODULE(spat){
 
 		.method("extent", &SpatVector::getExtent)
 		.method("getDF", &getVectorAttributes)
-		.method("getGeometryWKT", &SpatVector::getGeometryWKT)
+//		.method("getGeometryWKT", &SpatVector::getGeometryWKT)
+		.method("getGeometryWKT", &SpatVector::wkt)
 		.method("isLonLat", &SpatVector::is_lonlat)
 		.method("length", &SpatVector::length)
 		.method("nsegments", &SpatVector::nseg)
@@ -548,7 +553,8 @@ RCPP_MODULE(spat){
 		.property("names", &SpatVector::get_names, &SpatVector::set_names)
 		.method("nrow", &SpatVector::nrow)
 		.method("ncol", &SpatVector::ncol)
-		.method("project", &SpatVector::project)
+		.method("nnodes", &SpatVector::nnodes)
+		.method("project", (SpatVector (SpatVector::*)(std::string, bool, std::string, std::vector<double>, double, bool))(&SpatVector::project))
 		.method("project_xy", &SpatVector::project_xy)
 		.method("read", &SpatVector::read)
 		.method("setGeometry", &SpatVector::setGeometry)
@@ -623,6 +629,10 @@ RCPP_MODULE(spat){
 
 		.method("crop_ext", ( SpatVector (SpatVector::*)(SpatExtent, bool))( &SpatVector::crop ))
 		.method("crop_vct", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::crop ))
+		.method("hexagons", &SpatVector::hexagons)
+		.method("hexagons_lonlat", &SpatVector::hexagons_lonlat)
+		.method("rectangles_lonlat", &SpatVector::rectangles_lonlat)
+		.method("polyhedron", &SpatVector::polyhedron)
 
 		.method("near_between", (SpatVector (SpatVector::*)(SpatVector, bool, const std::string))( &SpatVector::nearest_point))
 		.method("near_within", (SpatVector (SpatVector::*)(const std::string))( &SpatVector::nearest_point))
@@ -677,6 +687,7 @@ RCPP_MODULE(spat){
 		.constructor()
 		.field("v", &SpatVectorProxy::v )
 		.method("deepcopy", &SpatVectorProxy::deepCopy, "deepCopy")
+		.method("show", &SpatVectorProxy::show)
 	;
 
 
@@ -684,7 +695,7 @@ RCPP_MODULE(spat){
 	class_<SpatRaster>("SpatRaster")
 		.constructor()
 	 // .constructor<std::string, int>()
-		.constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<std::string>, std::vector<int>, bool, bool, std::vector<std::string>>()
+		.constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, size_t, std::vector<std::string>, std::vector<std::string>, std::vector<int>, bool, bool, std::vector<std::string>, int>()
 		
 		.constructor<std::vector<size_t>, std::vector<double>, std::string>()
 		//.finalizer(&SpatRaster_finalizer)
@@ -720,6 +731,7 @@ RCPP_MODULE(spat){
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat")
 		.method("deepcopy", &SpatRaster::deepCopy, "deepCopy")
+		.method("show", &SpatRaster::show)
 		.method("hardcopy", &SpatRaster::hardCopy)
 		.method("get_crs", &SpatRaster::getSRS)
 		.method("set_crs", (bool (SpatRaster::*)(std::string crs))( &SpatRaster::setSRS))
@@ -883,6 +895,7 @@ RCPP_MODULE(spat){
 		.method("canProcessInMemory", &SpatRaster::canProcessInMemory)
 		.method("chunkSize", &SpatRaster::chunkSize)
 //		.method("to_memory", &SpatRaster::to_memory, "to_memory")
+		.method("update_values", &SpatRaster::update_values)
 		.method("update_meta", &SpatRaster::update_meta)
 
 
@@ -945,6 +958,9 @@ RCPP_MODULE(spat){
 		.method("clamp_raster", &SpatRaster::clamp_raster)
 		.method("clamp_ts", &SpatRaster::clamp_ts)
 		.method("replaceValues", &SpatRaster::replaceValues)
+		.method("lookup_classify", &SpatRaster::lookup_classify)
+		.method("lookup_subst", &SpatRaster::lookup_subst)
+		.method("lookup_catalyze", &SpatRaster::lookup_catalyze)
 		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, size_t, unsigned, bool, bool, double, bool, bool, bool, SpatOptions&) )( &SpatRaster::reclassify))
 		//.method("source_collapse", &SpatRaster::collapse, "collapse")
 		.method("selRange", &SpatRaster::selRange)
@@ -969,6 +985,7 @@ RCPP_MODULE(spat){
 			
 		.method("flip", &SpatRaster::flip)
 		.method("focal", &SpatRaster::focal)
+		.method("focal2", &SpatRaster::focal2)
 		.method("focalValues", &SpatRaster::focal_values)
 		.method("count", &SpatRaster::count)
 		.method("freq", &SpatRaster::freq)
@@ -1050,7 +1067,11 @@ RCPP_MODULE(spat){
 		.method("trim1", &SpatRaster::trim1)
 		.method("trim", &SpatRaster::trim2)
 
-		.method("unique", &SpatRaster::unique)
+		           .method("unique", &SpatRaster::unique)
+
+		           .method("crosstab", &SpatRaster::crosstab)
+
+
 		.method("where", &SpatRaster::where)
 		.method("sieve", &SpatRaster::sieveFilter)
 		.method("view", &SpatRaster::viewshed)
@@ -1059,8 +1080,9 @@ RCPP_MODULE(spat){
 
 		.method("rectify", &SpatRaster::rectify)
 		.method("stretch", &SpatRaster::stretch)
-		.method("warp", &SpatRaster::warper)
-		.method("warp_by_util", &SpatRaster::warper_by_util)
+		.method("warp", (SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, bool, bool, bool, std::string, std::vector<double>, double, bool, double, double, SpatOptions&))(&SpatRaster::warper))
+		.method("warp_by_util", (SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, bool, bool, bool, std::string, std::vector<double>, double, bool, double, double, SpatOptions&))(&SpatRaster::warper_by_util))
+		.method("warp_scale", &SpatRaster::warp_scale)
 		.method("resample", &SpatRaster::resample)
 		.method("zonal", &SpatRaster::zonal)
 		.method("zonal_weighted", &SpatRaster::zonal_weighted)
@@ -1089,6 +1111,7 @@ RCPP_MODULE(spat){
 		.method("deepcopy", &SpatRasterCollection::deepCopy)
 		.method("dims", &SpatRasterCollection::dims)
 		.method("extent", &SpatRasterCollection::getExtent)
+		.method("show", &SpatRasterCollection::show)
 
 		.method("has_error", &SpatRasterCollection::hasError)
 		.method("has_warning", &SpatRasterCollection::hasWarning)
@@ -1102,6 +1125,7 @@ RCPP_MODULE(spat){
 		.method("add", &SpatRasterCollection::push_back)
 		.method("merge", &SpatRasterCollection::merge)
 		.method("mosaic", &SpatRasterCollection::mosaic)
+		//.method("blend", &SpatRasterCollection::blend)
 		.method("morph", &SpatRasterCollection::morph)
 		.method("crop", &SpatRasterCollection::crop)
 		.method("addTag", &SpatRasterCollection::addTag)
@@ -1112,6 +1136,7 @@ RCPP_MODULE(spat){
 	class_<SpatRasterStack>("SpatRasterStack")
 		.constructor()
 		.constructor<std::string, std::vector<int>, bool, std::vector<std::string>, bool, bool, std::vector<std::string>>()
+		.constructor<std::string, std::vector<int>, bool, std::vector<std::string>, bool, bool, std::vector<std::string>, bool>()
 		.constructor<SpatRaster, std::string, std::string, std::string>()
 		.method("deepcopy", &SpatRasterStack::deepCopy)
 
@@ -1130,6 +1155,7 @@ RCPP_MODULE(spat){
 		.method("res", &SpatRasterStack::resolution)
 		.method("ext", &SpatRasterStack::getExtent)
 		.method("filenames", &SpatRasterStack::filenames)
+		.method("show", &SpatRasterStack::show)
 		
 		.method("get_crs", &SpatRasterStack::getSRS)
 		.property("names", &SpatRasterStack::get_names, &SpatRasterStack::set_names)

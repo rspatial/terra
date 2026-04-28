@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -29,14 +29,14 @@
 #endif
 
 
-SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains) {
+SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t md) {
 #ifdef useGDAL
-	constructFromFile(fname, subds, subdsname, drivers, options, noflip, guessCRS, domains);
+	constructFromFile(fname, subds, subdsname, drivers, options, {}, noflip, guessCRS, domains, md);
 #endif
 }
 
 
-SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains) {
+SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, size_t /*multi*/, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<int> dims, bool noflip, bool guessCRS, std::vector<std::string> domains, size_t md) {
 
 	if (fname.empty()) {
 		setError("no filename");
@@ -44,19 +44,14 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 	}
 
 #ifdef useGDAL
-	if (multi) {
-		constructFromFileMulti(fname[0], subds, subdsname, drivers, options, dims, noflip, guessCRS, domains);
-		return;
-	}
-
-	if (!constructFromFile(fname[0], subds, subdsname, drivers, options, noflip, guessCRS, domains)) {
+	if (!constructFromFile(fname[0], subds, subdsname, drivers, options, dims, noflip, guessCRS, domains, md)) {
 		//setError("cannot open file: " + fname[0]);
 		return;
 	}
 	SpatOptions opt;
 	for (size_t i=1; i<fname.size(); i++) {
 		SpatRaster r;
-		bool ok = r.constructFromFile(fname[i], subds, subdsname, drivers, options, noflip, guessCRS, domains);
+		bool ok = r.constructFromFile(fname[i], subds, subdsname, drivers, options, dims, noflip, guessCRS, domains, md);
 		if (r.msg.has_warning) {
 			addWarning(r.msg.warnings[0]);
 		}
@@ -1682,8 +1677,8 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 	double yr_inv = nrow() / (extent.ymax - extent.ymin);
 	double xr_inv = ncol() / (extent.xmax - extent.xmin);
 
-	long nr = nrow();
-	long nc = ncol();
+	long long nr = nrow();
+	long long nc = ncol();
 
 	for (size_t i = 0; i < size; i++) {
 		if (std::isnan(x[i]) || std::isnan(y[i])) {
@@ -1705,12 +1700,55 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 			if (row < 0 || row >= nr || col < 0 || col >= nc) {
 				cells[i] = missing;
 			} else {
-				cells[i] = row * ncol() + col;
+				cells[i] = row * nc + col;
 			}
 		}
 	}
 	return cells;
 }
+
+
+void SpatRaster::cellFromXY (std::vector<double> x, std::vector<double> y, std::vector<size_t> &cells) {
+// size of x and y should be the same
+
+	size_t missing = std::numeric_limits<size_t>::max();
+
+	size_t size = x.size();
+	cells.resize(size);
+
+	SpatExtent extent = getExtent();
+	double yr_inv = nrow() / (extent.ymax - extent.ymin);
+	double xr_inv = ncol() / (extent.xmax - extent.xmin);
+
+	long long nr = nrow();
+	long long nc = ncol();
+
+	for (size_t i = 0; i < size; i++) {
+		if (std::isnan(x[i]) || std::isnan(y[i])) {
+			cells[i] = missing;
+		} else {
+			// cannot use trunc here because trunc(-0.1) == 0
+			long row = std::floor((extent.ymax - y[i]) * yr_inv);
+			// points in between rows go to the row below
+			// except for the last row, when they must go up
+			if (y[i] == extent.ymin) {
+				row = nr-1 ;
+			}
+
+			long col = std::floor((x[i] - extent.xmin) * xr_inv);
+			// as for rows above. Go right, except for last column
+			if (x[i] == extent.xmax) {
+				col = nc - 1 ;
+			}
+			if (row < 0 || row >= nr || col < 0 || col >= nc) {
+				cells[i] = missing;
+			} else {
+				cells[i] = row * nc + col;
+			}
+		}
+	}
+}
+
 
 
 double SpatRaster::cellFromXY (double x, double y, double missing) {

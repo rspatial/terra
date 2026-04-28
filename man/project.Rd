@@ -14,10 +14,13 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 }
 
 \usage{
-\S4method{project}{SpatVector}(x, y, partial = FALSE)
-
 \S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
-	origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)
+	origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", 
+	AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, xscale=0, yscale=0,
+	filename="", ...)
+
+\S4method{project}{SpatVector}(x, y, partial=FALSE, pipeline="", AOI=NULL,
+    desired_accuracy=-1.0, allow_approx=TRUE)
 
 \S4method{project}{SpatExtent}(x, from, to)
 
@@ -33,7 +36,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   If \code{x} is a SpatVector, you can provide a crs definition as discussed above, or any other object from which such a crs can be extracted with \code{\link{crs}}}
 
   \item{partial}{logical. If \code{TRUE}, geometries that can only partially be represented in the output crs are included in the output}
-  
+
   \item{method}{character. Method used for estimating the new cell values of a SpatRaster. One of: 
   
 	\code{bilinear}: bilinear interpolation (3x3 cell window). This is used by default if the first layer of \code{x} is not categorical
@@ -42,7 +45,7 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 
 	\code{near}: nearest neighbor. This is used by default if the first layer of \code{x} is categorical. This method is not a good choice for continuous values.
 
-	\code{mode}: The modal value. This can be a good choice for categrical rasters, if the output cells overlap with multiple input cells. 
+	\code{mode}: The modal value. This can be a good choice for categorical rasters, if the output cells overlap with multiple input cells. 
   
 	\code{cubic}: cubic interpolation (5x5 cell window).
 
@@ -67,13 +70,25 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
   
   \item{threads}{logical. If \code{TRUE} multiple threads are used (faster for large files)}
 
-  \item{filename}{character. Output filename}
-  
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
-
   \item{use_gdal}{logical. If \code{TRUE} the GDAL-warp algorithm is used. Otherwise, a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the \code{near} and \code{bilinear} algorithms are available for the internal algorithm}
 
   \item{by_util}{logical. If \code{TRUE} and \code{gdal=TRUE}, the GDAL warp utility is used}
+
+  \item{pipeline}{character. A PROJ pipeline string to use for the coordinate transformation instead of letting GDAL select one automatically. You can use \code{\link{proj_pipelines}} to find available pipelines. When a pipeline is set, \code{y} is still used to set the output CRS}
+
+  \item{AOI}{SpatExtent or object that has a SpatExtent to set the area of interest for the transformation. This is used to select the most approprite transformation pipeline}
+
+  \item{desired_accuracy}{numeric. Only use transformations with at least this accuracy (in metres). Use \code{-1} (the default) for no constraint. Requires GDAL >= 3.3}
+
+  \item{allow_approx}{logical. If \code{FALSE}, only use transformations with known accuracy (no "ballpark" transformations). Requires GDAL >= 3.3}
+
+  \item{xscale}{numeric. Resampling ratio (number of destination pixels per source pixel) along the horizontal axis. When \code{0} (the default), this is computed automatically per processing chunk by GDAL. Setting a fixed value eliminates the block-boundary artifacts that arise when the per-chunk ratio varies across the raster. Use \code{\link{warp_scale}} to compute a suitable value from the source and destination geometry. Equals one for no resampling, below one for downsampling, and above one for upsampling}
+
+  \item{yscale}{numeric. Same as \code{xscale} but along the vertical axis}
+  
+  \item{filename}{character. Output filename}
+  
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 
   \item{from}{character. Coordinate reference system of \code{x}}
 
@@ -85,7 +100,8 @@ Change the coordinate reference system ("project") of a SpatVector, SpatRaster o
 SpatVector or SpatRaster
 }
 
-\seealso{\code{\link{crs}}, \code{\link{resample}}}
+\seealso{\code{\link{crs}}, \code{\link{resample}}, \code{\link{warp_scale}}, \code{\link{proj_pipelines}} and \code{\link{projNetwork}} to enable or disable PROJ network access for datum grid downloads.}
+
 
 \note{
 The PROJ.4 notation of coordinate reference systems has been partly deprecated in the GDAL/PROJ library that is used by this function. You can still use this notation, but *only* with the WGS84 datum. Other datums are silently ignored. 
@@ -100,6 +116,7 @@ The output resolution should generally be similar to the input resolution, but t
 
 \examples{
 ## SpatRaster
+\dontrun{
 a <- rast(ncols=40, nrows=40, xmin=-110, xmax=-90, ymin=40, ymax=60, 
           crs="+proj=longlat +datum=WGS84")
 values(a) <- 1:ncell(a)
@@ -115,10 +132,10 @@ crs(v, proj=TRUE)
 cat(crs(v), "\n")
 
 project(v, "+proj=moll")
-
-
 project(v, "EPSG:2169")
 }
+}
+
 
 \keyword{spatial}
 

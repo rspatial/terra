@@ -17,7 +17,7 @@ The shortest distance to the cells with the \code{target} value is computed for 
 }
 
 \usage{
-\S4method{gridDist}{SpatRaster}(x, target=0, scale=1, maxiter=50, filename="", ...) 
+\S4method{gridDist}{SpatRaster}(x, target=0, scale=1, maxiter=50, nearest=FALSE, filename="", ...) 
 }
 
 \arguments{
@@ -25,6 +25,7 @@ The shortest distance to the cells with the \code{target} value is computed for 
 \item{target}{numeric. value of the target cells (where to compute distance to)}
 \item{scale}{numeric. Scale factor. For longitude/latitude data 1 = "m" and 1000 = "km". For planar data that is also the case of the distance unit of the crs is "m"}
 \item{maxiter}{numeric. The maximum number of iterations. Increase this number if you get the warning that \code{costDistance} did not converge. Only relevant when target is not \code{NA}}
+\item{nearest}{logical. If \code{TRUE}, a second layer is returned with the cell number of the nearest target cell. Only relevant when target is not \code{NA}}
 \item{filename}{character. output filename (optional)}
 \item{...}{additional arguments as for \code{\link{writeRaster}}}  
 }
@@ -33,7 +34,7 @@ The shortest distance to the cells with the \code{target} value is computed for 
 \seealso{See \code{\link[terra]{distance}} for "as the crow flies" distance, and \code{\link{costDist}} for distance across a landscape with variable friction} 
 
 
-\value{SpatRaster}
+\value{SpatRaster. If \code{nearest=TRUE}, a two-layer SpatRaster with the distance in the first layer and the cell number of the nearest target in the second layer}
 
 
 \examples{

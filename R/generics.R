@@ -4,6 +4,7 @@
 # License GPL v3
 
 
+
 setMethod("centroids", signature(x="SpatRaster"),
 	function(x, weighted=FALSE) {
 		opt <- spatOptions()
@@ -389,6 +390,22 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, others=NULL, brackets=TRUE, f
 		rcl <- as.matrix(rcl)
 	}
 
+	if (NCOL(rcl) == 2) {
+		if (is.null(others)) {
+			othersValue <- NA_real_
+			useOthers <- FALSE
+		} else {
+			othersValue <- as.numeric(others[1])
+			useOthers <- TRUE
+		}
+		opt <- spatOptions(filename, ...)
+		from_vec <- as.numeric(rcl[,1])
+		to_vec <- as.numeric(rcl[,2])
+		x@pntr <- x@pntr$lookup_classify(from_vec, to_vec, useOthers, othersValue, opt)
+		messages(x, "classify")
+		return(x)
+	}
+
 	right <- ifelse(is.na(right), 2, ifelse(isTRUE(right), 1, 0))
 	include.lowest <- as.logical(include.lowest[1])
 
@@ -427,10 +444,26 @@ function(x, from, to, others=NULL, raw=FALSE, filename="", ...) {
 	}
 	fromc <- inherits(from[1], "character")
 	toc <- inherits(to[1], "character")
-	if (raw && fromc) {
-		error("subst", "if 'raw=TRUE', 'from' cannot have character values")
-	}
-	keepcats <- FALSE
+		if (raw && fromc) {
+			error("subst", "if 'raw=TRUE', 'from' cannot have character values")
+		}
+
+		if (!any(is.factor(x)) && !tom && !frm && !fromc && !toc && !raw) {
+			if (is.null(others)) {
+				othersValue <- NA_real_
+				useOthers <- FALSE
+			} else {
+				othersValue <- as.numeric(others[1])
+				useOthers <- TRUE
+			}
+			from_vec <- as.numeric(from)
+			to_vec <- as.numeric(to)
+			x@pntr <- x@pntr$lookup_subst(from_vec, to_vec, useOthers, othersValue, opt)
+			messages(x, "subst")
+			return(x)
+		}
+
+		keepcats <- FALSE
 	if (any(is.factor(x))) {
 		if (nlyr(x) > 1) {
 			error("subst", "you can only use 'subst' with categorical layers if x has a single layer")
@@ -680,7 +713,7 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 )
 
 setMethod("project", signature(x="SpatRaster"),
-	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, filename="", ..., use_gdal=TRUE, by_util = FALSE)  {
+	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, xscale=0, yscale=0, filename="", ...)  {
 
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
@@ -696,14 +729,60 @@ setMethod("project", signature(x="SpatRaster"),
 			method <- match.arg(tolower(method[1]), c("near", "bilinear", "cubic", "cubicspline", "lanczos", "mean", "average", "sum", "mode", "min", "q1", "median", "q3", "max", "rms"))
 			method[method == "mean"] <- "average"
 		}
+
 		opt <- spatOptions(filename, threads=threads, ...)
+
+		if (is.list(pipeline)) {
+			px <- attr(pipeline, "from")			
+			py <- attr(pipeline, "to")
+			if ((!is.null(px)) && crs(px) != crs(x)) {
+				warn("project", "pipeline input crs does not match (crs(x))")			
+			}
+
+			if (crs(px) != crs(x)) {
+				warn("project", "pipeline input crs does not match (crs(x))")			
+			}
+			pipeline <- pipeline$definition 
+			if (missing(y)) {
+				y <- py
+			} else {
+				if (crs(py) != crs(y)) {
+					warn("project", "pipeline output crs does not match (crs(y))")
+				}
+			}
+		} else if (!inherits(pipeline, "character")) {
+			error("project", "pipeline should be data.frame, list, or character value")
+		}
+		if (length(pipeline) != 1) {
+			error("project", "privode a single pipeline")
+		}
+
+		if (missing(y)) {
+			error("project", "y (SpatRaster or output crs) cannot be missing")
+		}
+		if (inherits(y, "numeric")) {
+			error("project", "argument y cannot be a number. For EPSG codes use format 'epsg:1234'")			
+		}
+
+
+		if (is.null(AOI)) {
+			aoi <- numeric(0)
+		} else {
+			aoi <- try(ext(AOI), silent=TRUE)
+			if (inherits(AOI, "try-error")) {
+				error("project", "AOI must be or have a SpatExtent")
+			}
+			aoi <- as.vector(aoi)[c(1,3,2,4)]
+		}
+
+		bp <- isTRUE(allow_approx)
 
 		if (inherits(y, "SpatRaster")) {
 			if (use_gdal) {
 				if (by_util) {
-					x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, mask[1], align_only[1], FALSE, opt)
+					x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, mask[1], align_only[1], FALSE, pipeline, aoi, desired_accuracy, bp, xscale, yscale, opt)
 				} else {
-					x@pntr <- x@pntr$warp(y@pntr, "", method, mask[1], align_only[1], FALSE, opt)
+					x@pntr <- x@pntr$warp(y@pntr, "", method, mask[1], align_only[1], FALSE, pipeline, aoi, desired_accuracy, bp, xscale, yscale, opt)
 				}
 			} else {
 				if (align_only) {
@@ -713,49 +792,102 @@ setMethod("project", signature(x="SpatRaster"),
 			}
 		} else {
 			if (!is.character(y)) {
-				#warn("project,SpatRaster", "argument y (the crs) should be a character value")
-				if (inherits(y, "numeric")) {
-					error("project,SpatRaster", "argument y (the crs) cannot be a number.\nFor EPSG codes use this format 'epsg:1234'")				
-				}
 				y <- as.character(crs(y))
 			}
 			if (!is.null(res) || !is.null(origin)) {
 				tmp <- project(rast(x), y)
 				if (!is.null(res)) res(tmp) <- res
 				if (!is.null(origin)) origin(tmp) <- origin
-				return(project(x, tmp, method=method, mask=mask, align_only=align_only, filename=filename, use_gdal=use_gdal, by_util=by_util, ...))
+				return(project(x, tmp, method=method, mask=mask, align_only=align_only, filename=filename, use_gdal=use_gdal, by_util=by_util, pipeline=pipeline, AOI=AOI, desired_accuracy=desired_accuracy, allow_approx=allow_approx, xscale=xscale, yscale=yscale, ...))
 			}
 			if (use_gdal) {
-
 				if (by_util) {
-					x@pntr <- x@pntr$warp_by_util(SpatRaster$new(), y, method, mask, FALSE, FALSE, opt)
-					
+					x@pntr <- x@pntr$warp_by_util(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipeline, aoi, desired_accuracy, bp, xscale, yscale, opt)
 				} else {
-					x@pntr <- x@pntr$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, opt)
+					x@pntr <- x@pntr$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, pipeline, aoi, desired_accuracy, bp, xscale, yscale, opt)
 				}
 			} else {
 				y <- project(rast(x), y)
 				x@pntr <- x@pntr$resample(y@pntr, method, mask[1], TRUE, opt)
 			}
 		}
+		proj_cdn_message()
 		messages(x, "project")
 	}
 )
+
+
+warp_scale <- function(x, y, n=21) {
+	stopifnot(inherits(x, "SpatRaster"))
+	if (!inherits(y, "SpatRaster")) {
+		y <- project(rast(x), as.character(y))
+	}
+	n <- as.integer(n)[1]
+	if (is.na(n) || n < 3) n <- 3L
+	v <- x@pntr$warp_scale(y@pntr, n)
+	messages(x, "warp_scale")
+	probs <- c("0%", "25%", "50%", "75%", "100%")
+	list(
+		xscale = setNames(v[1:5],  probs),
+		yscale = setNames(v[6:10], probs)
+	)
+}
 
 
 setMethod("project", signature(x="SpatVector"),
-	function(x, y, partial=FALSE)  {
-		if (!is.character(y)) {
-			y <- as.character(crs(y))
+	function(x, y, partial=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1, allow_approx=TRUE)  {
+
+		if (is.list(pipeline)) {
+			px <- attr(pipeline, "from")			
+			py <- attr(pipeline, "to")
+			pipeline <- pipeline$definition 
+			if (missing(y)) {
+				y <- py
+				if (is.null(y)) {
+					y <- ""
+				}
+			} else {
+				if (crs(py) != crs(y)) {
+					warn("project", "pipeline output crs does not match (crs(y))")
+				}
+			}
+			if (crs(px) != crs(x)) {
+				warn("project", "pipeline input crs does not match (crs(x))")			
+			}
+		} else if (inherits(pipeline, "character")) {
+			y <- crs(y)		
+		} else {
+			error("project", "pipeline should be data.frame, list, or character value")
 		}
-		x@pntr <- x@pntr$project(y, partial)
+		if (length(pipeline) != 1) {
+			error("project", "privode a single pipeline")
+		}
+		if (inherits(y, "numeric")) {
+			error("project", "argument y cannot be a number.\nFor EPSG codes use this format 'epsg:1234'")			
+		} else if (!is.character(y)) {
+			y <- crs(y)
+		}
+
+		if (is.null(AOI)) {
+			aoi <- numeric(0)
+		} else {
+			aoi <- try(ext(AOI), silent=TRUE)
+			if (inherits(AOI, "try-error")) {
+				error("project", "AOI must be or have a SpatExtent")
+			}
+			aoi <- as.vector(aoi)[c(1,3,2,4)]
+		}
+		x@pntr <- x@pntr$project(y, partial, pipeline, aoi, desired_accuracy, isTRUE(allow_approx))
+		proj_cdn_message()
 		messages(x, "project")
 	}
 )
 
+
 setMethod("project", signature(x="SpatVectorCollection"),
-	function(x, y, partial=FALSE)  {
-		x <- lapply(x, function(v) project(v, y, partial=partial))
+	function(x, y, partial=FALSE, pipeline=NULL, AOI=NULL, desired_accuracy=-1.0, allow_ballpark=TRUE)  {
+		x <- lapply(x, function(v) project(v, y, partial=partial, pipeline=pipeline, AOI=AOI,
+						desired_accuracy=desired_accuracy, allow_ballpark=allow_ballpark))
 		svc(x)
 	}
 )
@@ -900,9 +1032,9 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 		opt <- spatOptions(filename, threads=threads, ...)
 
 		if (by_util) {
-			x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, FALSE, FALSE, TRUE, opt)
+			x@pntr <- x@pntr$warp_by_util(y@pntr, "", method, FALSE, FALSE, TRUE, "", numeric(0), -1.0, TRUE, 0, 0, opt)
 		} else {
-			x@pntr <- x@pntr$warp(y@pntr, "", method, FALSE, FALSE, TRUE, opt)
+			x@pntr <- x@pntr$warp(y@pntr, "", method, FALSE, FALSE, TRUE, "", numeric(0), -1.0, TRUE, 0, 0, opt)
 		}
 		messages(x, "resample")
 	}
@@ -1376,23 +1508,156 @@ setMethod("sort", signature(x="data.frame"),
 )
 
 
+setMethod("merge", signature(x="SpatVector", y="data.frame"),
+	function(x, y, ...) {
+		v <- values(x)
+		v$unique_nique_ique_que_e <- 1:nrow(v)
+		m <- merge(v, y, ...)
+		m <- m[order(m$unique_nique_ique_que_e), ]
+		x <- x[stats::na.omit(m$unique_nique_ique_que_e), ]
+		m$unique_nique_ique_que_e <- NULL
+		if (nrow(m) > nrow(x)) {
+			error("merge", "using 'all.y=TRUE' is not allowed. Should it be?")
+		}
+		values(x) <- m
+		x
+	}
+)
+
+setMethod("merge", signature(x="SpatVector", y="SpatVector"),
+	function(x, y, ...) {
+		merge(x, data.frame(y), ...)
+	}
+)
+
+
+setMethod("merge", signature(x="SpatRasterCollection", "missing"),
+	function(x, first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method="", filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		out <- rast()
+		if (is.null(method)) method = ""
+		out@pntr <- x@pntr$merge(first[1], na.rm, algo, resample, method, opt)
+		if (algo == 3) {
+			messages(opt, "merge")
+		}
+		messages(x, "merge")
+		messages(out, "merge")
+	}
+)
+
+setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y, ..., first=TRUE, na.rm=TRUE, algo=1, resample=FALSE, method="", filename="", overwrite=FALSE, wopt=list()) {
+		rc <- sprc(x, y, ...)
+		merge(rc, first=first, na.rm=na.rm, algo=algo, resample=resample, method=method, filename=filename, overwrite=overwrite, wopt=wopt)
+	}
+)
 
 
 
+setMethod("mosaic", signature(x="SpatRasterCollection", "missing"),
+	function(x, fun="mean", resample=FALSE, method="", filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		out <- rast()
+		fun <- .makeTextFun(fun)
+		if (!inherits(fun, "character")) {
+			error("mosaic", "function 'fun' is not valid")
+		}
+		if (is.null(method)) method = ""
+			out@pntr <- x@pntr$mosaic(fun, resample, method, opt)
+		messages(out, "mosaic")
+	}
+)
+
+setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
+	function(x, y, ..., fun="mean", resample=FALSE, method="", filename="", overwrite=FALSE, wopt=list()) {
+		rc <- sprc(x, y, ...)
+		mosaic(rc, fun=fun, resample=resample, method=method, filename=filename, overwrite=overwrite, wopt=wopt)
+	}
+)
 
 
 
+setMethod("tessellate", signature(x="ANY"),
+	function(x, size, n, type="hexagon", flat_top=FALSE, align="fit", geo=NULL) {
 
+		type <- match.arg(tolower(type), c("hexagons", "rectangles", "polyhedron"))
+		globe <- missing(x)		
+		if (globe) {
+			e <- ext(-180, 180, -90, 90)
+			crs <- "lonlat"		
+		} else {
+			if (inherits(x, "SpatExtent")) {
+				if (isTRUE(geo)) {
+					crs <- "lonlat"
+				} else if (is.null(geo)) {
+					if (is.lonlat(rast(x), perhaps=TRUE, warn=TRUE)) {
+						crs <- "lonlat"
+					} else {
+						crs <- "local"					
+					}
+				} else {
+					crs <- "local"
+				}
+				e <- x
+			} else {
+				crs <- try(crs(x), silent=TRUE)
+				if (inherits(crs, "try-error")) crs <- ""
+				e <- try(ext(x), silent=TRUE)
+				if (inherits(e, "try-error")) {
+					error("tessellate", "cannot extract a SpatExtent from x")
+				}
+			}
+		}
 
+		if ((type=="polyhedron") && (!missing(n))) {
+			if (!isTRUE(n >= 1)) {
+				error("tessellate", "n must be >= 1")			
+			}
+		} else if (missing(size) || length(size) != 1 || !is.finite(size) || size <= 0) {
+			error("tessellate", "size must be a single positive number")
+		}
+		crs <- character_crs(crs, "tessellate")
+		if ((crs=="") && isTRUE(geo)) crs <- "lonlat"
 
-
-
-
-
-
-
-
-
-
-
+		v <- methods::new("SpatVector")
+		v@pntr <- SpatVector$new()
+		
+		if (isTRUE((crs != "") && is.lonlat(crs, perhaps=TRUE))) {
+			if (type=="polyhedron") {
+				if (missing(n)) {
+					# total cells = 10 n^2 + 2; mean cell area = 4 pi R^2 / total;
+					# regular hex has area sqrt(3)/2 * size^2.
+					R <- 6378137
+					C_target <- 8 * pi * R^2 / (sqrt(3) * size^2)
+					n <- round(sqrt(max(1, (C_target - 2) / 10)))
+				} 
+				max(1, n)
+				v@pntr <- v@pntr$polyhedron(e@pntr, as.integer(n), isTRUE(globe))
+			} else if (type == "rectangles") {
+				align_mode <- match.arg(tolower(align), c("fit", "equal", "cube"))
+				align_int <- match(align_mode, c("fit", "equal", "cube")) - 1L
+				v@pntr <- v@pntr$rectangles_lonlat(e@pntr, size, align_int)		
+			} else {
+				v@pntr <- v@pntr$hexagons_lonlat(e@pntr, size, isTRUE(flat_top))
+			}
+		} else {
+			if (type == "polyhedron") {
+				error("tessellate", "polyhedron is only available for lon/lat data")
+			} else if (type == "rectangles") {
+				if (inherits(x, "SpatRasterDataset")) {
+					if (length(sds) > 0) {
+						x <- sds[1]
+					}
+				}
+				if (!inherits(x, "SpatRaster")) {
+					r <- rast(e, res=sqrt(size))
+				}
+				return(as.polygons(x))
+			} else {
+				v@pntr <- v@pntr$hexagons(e@pntr, size, crs, isTRUE(flat_top), NaN, NaN)
+			}
+		}
+		messages(v, "tessellate")
+	}
+)
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -25,10 +25,7 @@
 //#include "sort.h"
 #include "math_utils.h"
 
-#if defined(USE_TBB)
-#include <tbb/parallel_for.h>
-#include <tbb/blocked_range.h>
-#endif 
+#include "tbb_helper.h"
 
 
 double polDistLonLat(SpatVector &p1, SpatVector &p2, std::string unit, std::string method) {
@@ -161,7 +158,7 @@ std::vector<double> SpatVector::distLonLat(SpatVector p, std::string unit, std::
 	}
 */
 	if (type() == "polygons") {
-		std::vector<int> inside = pointInPolygon(x, y);
+		std::vector<int> inside = pointInPolygonGeo(x, y);
 		for (size_t i=0; i<ng; i++) {
 			for (size_t j=0; j<np; j++) {
 				if (inside[i*np+j]) {
@@ -404,12 +401,10 @@ std::vector<double> SpatVector::distance(SpatVector x, bool pairwise, std::strin
 
 	std::vector<double> d;
 
-	if (srs.is_empty() || x.srs.is_empty()) {
-		setError("crs not defined");
-		return(d);
-	}
-	if (! srs.is_same(x.srs, false) ) {
-		setError("crs do not match");
+	if (srs.is_empty() && x.srs.is_empty()) {
+		addWarning("unknown CRSs. Results can be wrong");
+	} else if (!srs.is_same(x.srs, false) ) {
+		setError("CRSs do not match");
 		return(d);
 	}
 	
@@ -579,8 +574,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 
 	std::vector<double> d;
 	if (srs.is_empty()) {
-		setError("crs not defined");
-		return(d);
+		addWarning("unknown CRS. Results can be wrong");
 	}
 
 	bool lonlat = is_lonlat(); 
@@ -644,7 +638,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 #if defined(USE_TBB)
 				if (opt.parallel) {
 					d.resize(n);
-					tbb::parallel_for(tbb::blocked_range<size_t>(0, n-1),
+					terra_parallel_for(opt, tbb::blocked_range<size_t>(0, n-1),
 					[&](const tbb::blocked_range<size_t>& range) {
 						for (size_t i = range.begin(); i != range.end(); i++) {
 							d[i+1] = dfun(p[0][i], p[1][i], p[0][i+1], p[1][i+1]) * m;
@@ -683,7 +677,8 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 #if defined(USE_TBB)
 				if (opt.parallel) {
 					d.resize(n);
-					tbb::parallel_for(tbb::blocked_range<size_t>(0, s-2),
+					// i must run 0 .. s-2 inclusive (same as the serial loop below).
+					terra_parallel_for(opt, tbb::blocked_range<size_t>(0, s-1),
 					[&](const tbb::blocked_range<size_t>& range) {
 						for (size_t i = range.begin(); i != range.end(); i++) {
 							size_t k = 0;
@@ -741,8 +736,8 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 //				std::vector<std::vector<size_t>> idx;
 #if defined(USE_TBB)
 				if (opt.parallel) {
-					d.resize(n);			
-					tbb::parallel_for(tbb::blocked_range<size_t>(0, n),
+					d.resize(n);
+					terra_parallel_for(opt, tbb::blocked_range<size_t>(0, n),
 					[&](const tbb::blocked_range<size_t>& range) {
 						for (size_t i = range.begin(); i != range.end(); i++) {
 							SpatVector tmp1 = subset_rows((long)i);
@@ -784,7 +779,7 @@ std::vector<double> SpatVector::distance(bool sequential, std::string unit, cons
 
 #if defined(USE_TBB)
 					if (opt.parallel) {
-						tbb::parallel_for(tbb::blocked_range<size_t>((i+1), s),
+						terra_parallel_for(opt, tbb::blocked_range<size_t>((i+1), s),
 						[&](const tbb::blocked_range<size_t>& range) {
 							for (size_t j = range.begin(); j != range.end(); j++) {
 								SpatVector tmp2 = subset_rows( long(j) );
@@ -1081,8 +1076,6 @@ SpatVector SpatVector::densify(double interval, bool adjust, bool ignorelonlat) 
 }
 
 
-
-
 void split_dateline(SpatVector &v) {
 	SpatExtent e1 = {-1,  180, -91, 91};
 	SpatExtent e2 = {180, 361, -91, 91};
@@ -1129,7 +1122,6 @@ bool fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double
 }
 
 
-
 SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bool no_multipolygons, bool wrap) {
 
 	SpatVector out;
@@ -1141,8 +1133,6 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 	}
 
 	size_t npts = size();
-
-//Rcpp::Rcout << quadsegs << std::endl;
 
 	size_t n = quadsegs * 4;
 	double step = 360.0 / n;
@@ -1172,16 +1162,15 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 		geod_init(&gd, a, f);
 		double lat, lon, azi, s12, azi2;
 
-	// not checking for empty points
 		for (size_t p=0; p<npts; p++) { 
 			std::vector<std::vector<double>> xy = geoms[p].coordinates();
 			SpatVector tmp;
 			for (size_t i=0; i<xy[0].size(); i++) {
-				if (std::isnan(xy[0][i] || std::isnan(xy[1][i]) || (xy[1][i]) > 90) || (xy[1][i] < -90)) { 
+				if (std::isnan(xy[0][i]) || std::isnan(xy[1][i]) || (xy[1][i] > 90) || (xy[1][i] < -90)) {
 					tmp.addGeom(SpatGeom(polygons));
 				} else if (d[p] > 20003931) {
 					tmp = glob;
-					break;					
+					break;
 				} else {
 					std::vector<double> ptx;
 					std::vector<double> pty;
@@ -1281,8 +1270,7 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 							g.reSetPart(SpatPart(ptx, pty));
 							tmp.addGeom(g);		
 						}
-					}
-					
+					}	
 				}
 			}
 			if (tmp.size() > 1) {
@@ -1799,3 +1787,155 @@ void SpatVector::fix_lonlat_overflow() {
 	}
 	return;
 }
+
+
+SpatVector SpatVector::thin_geoms(double d, std::string unit, SpatOptions &opt) {
+
+	SpatVector out;
+	size_t n = size();
+	if (n == 0) {
+		out.setError("empty SpatVector");
+		return out;
+	}
+	if (d <= 0) {
+		out.setError("d must be > 0");
+		return out;
+	}
+
+	bool lonlat = is_lonlat();
+	double m = 1;
+	if (!srs.m_dist(m, lonlat, unit)) {
+		setError("invalid unit");
+		return out;
+	}
+	// d_internal is in the native distance unit (meters for lonlat, CRS units for planar)
+	double d_internal = d / m;
+
+	out.srs = srs;
+	out.reserve(n);
+
+	std::string gtype = type();
+
+	if (gtype == "points") {
+		std::vector<std::vector<double>> pts = coordinates();
+		std::vector<double> &px = pts[0];
+		std::vector<double> &py = pts[1];
+
+		std::vector<size_t> keep;
+		keep.push_back(0);
+
+		if (lonlat) {
+			for (size_t i = 1; i < n; i++) {
+				bool far_enough = true;
+				for (size_t j = 0; j < keep.size(); j++) {
+					size_t k = keep[j];
+					if (distLonlat(px[i], py[i], px[k], py[k]) < d_internal) {
+						far_enough = false;
+						break;
+					}
+				}
+				if (far_enough) {
+					keep.push_back(i);
+				}
+			}
+		} else {
+			for (size_t i = 1; i < n; i++) {
+				bool far_enough = true;
+				for (size_t j = 0; j < keep.size(); j++) {
+					size_t k = keep[j];
+					if (distance_plane(px[i], py[i], px[k], py[k]) < d_internal) {
+						far_enough = false;
+						break;
+					}
+				}
+				if (far_enough) {
+					keep.push_back(i);
+				}
+			}
+		}
+		out = subset_rows(keep);
+	} else {
+		// lines and polygons: distance() returns in the user's unit
+		std::vector<size_t> keep;
+		keep.push_back(0);
+		for (size_t i = 1; i < n; i++) {
+			SpatVector vi = subset_rows((long)i);
+			bool far_enough = true;
+			for (size_t j = 0; j < keep.size(); j++) {
+				SpatVector vk = subset_rows((long)keep[j]);
+				std::vector<double> dd = vi.distance(vk, true, unit, "geo", false, opt);
+				if (dd.size() > 0 && dd[0] < d) {
+					far_enough = false;
+					break;
+				}
+			}
+			if (far_enough) {
+				keep.push_back(i);
+			}
+		}
+		out = subset_rows(keep);
+	}
+	return out;
+}
+
+
+
+std::vector<int> SpatVector::pointInPolygonGeo(std::vector<double> &x, std::vector<double> &y) {
+
+	std::vector<int> out;
+	size_t ng = size();
+	size_t np = x.size();
+	out.assign(ng * np, 0);
+	if (type() != "polygons") return out;
+
+	static const double D2R = M_PI / 180.0;
+
+	for (size_t g = 0; g < ng; g++) {
+		// Prepare every ring (outer + holes of every part) once for this
+		// geometry. The per-edge cross-products and lat bounds are
+		// expensive to compute but independent of the test points
+		size_t nparts = geoms[g].size();
+		std::vector<PipGeoRing> rings;
+		rings.reserve(nparts * 2);
+		for (size_t h = 0; h < nparts; h++) {
+			PipGeoRing r;
+			prepare_pip_geo_ring(geoms[g].parts[h].x, geoms[g].parts[h].y, r);
+			if (!r.Nx.empty()) rings.push_back(std::move(r));
+			size_t nh = geoms[g].parts[h].nHoles();
+			for (size_t k = 0; k < nh; k++) {
+				PipGeoRing rh;
+				prepare_pip_geo_ring(geoms[g].parts[h].holes[k].x, geoms[g].parts[h].holes[k].y, rh);
+				if (!rh.Nx.empty()) rings.push_back(std::move(rh));
+			}
+		}
+		if (rings.empty()) continue;
+
+		for (size_t j = 0; j < np; j++) {
+			double px = x[j];
+			double py = y[j];
+			double rpl = px * D2R;
+			double cp = cos(rpl);
+			double sp = sin(rpl);
+			double rpt = py * D2R;
+			bool inside = false;
+			for (const PipGeoRing &r : rings) {
+				if (pip_geo_in_ring_prepared(px, py, cp, sp, rpt, r)) {
+					inside = !inside;
+				}
+			}
+			out[g * np + j] = inside ? 1 : 0;
+		}
+	}
+	return out;
+}
+
+
+
+std::vector<int> SpatVector::pointInPolygon(std::vector<double> &x, std::vector<double> &y) {
+	if (is_lonlat()) {
+		return pointInPolygonGeo(x, y);		
+	} else {
+		return pointInPolygonPlanar(x, y);		
+	}
+}
+

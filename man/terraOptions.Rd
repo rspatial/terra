@@ -37,6 +37,10 @@ The following options are available.
 \bold{verbose} - logical. If \code{TRUE} debugging info is printed for some functions.
 
 \bold{tolerance} - numeric. Difference in raster extent (expressed as the fraction of the raster resolution) that can be ignored when comparing alignment of rasters.
+
+\bold{parallel} - logical. The master switch for terra's internal parallelism. When \code{TRUE} (the default in version >= 1.9-21), the C++ kernels that have been parallelized with Intel TBB (parts of \code{arith}, distance calculations on \code{SpatVector}, the fast \code{focal} path, etc.) will use multiple threads. When \code{FALSE}, all such kernels run on a single thread. Use \code{terra:::.have_TBB()} to check whether TBB support was compiled in; without TBB, this option has no effect. The same option can be set per call as a write option, e.g. \code{focal(r, w=21, fun="mean", wopt=list(parallel=TRUE))}.
+
+\bold{threads} - non-negative integer. Cap on the number of threads used by parallel kernels (when \code{parallel=TRUE}) and by GDAL warp (in \code{project}, \code{resample}, \code{warp}). \code{0} (the default) means "no cap": TBB picks a sensible default (usually all logical CPUs) and GDAL uses \code{NUM_THREADS=ALL_CPUS}. A positive value caps both at that count, which is useful to leave room for other processes or to keep forked workers from each spawning hundreds of children. The value is honoured by every TBB-parallel kernel in terra through a single \code{tbb::task_arena}, and is forwarded to GDAL warp's \code{NUM_THREADS} option.
 }
 
 \note{
@@ -55,6 +59,7 @@ list. Invisibly if \code{print=TRUE}
 terraOptions()
 terraOptions(memfrac=0.5, tempdir = "c:/temp")
 terraOptions(progress=10)
+terraOptions(parallel=TRUE, threads=4)   # use TBB, capped at 4 threads
 terraOptions()
 }
 

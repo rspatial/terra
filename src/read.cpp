@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -16,12 +16,28 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRasterMultiple.h"
+#include "file_utils.h"
 
 bool SpatRaster::readStart() {
 
-	//if (!valid_sources(true, true)) {
-	//	return false;
-	//}
+	size_t nfile = 0;
+	for (size_t i=0; i<nsrc(); i++) {
+		if (!source[i].memory && !source[i].open_read) nfile++;
+	}
+	if (nfile > 0) {
+		size_t nopen, soft, hard;
+		open_file_limit(nopen, soft, hard);
+		if (nopen + nfile > soft) {
+			std::string msg = "cannot open " + std::to_string(nfile)
+				+ " files.\nThe number of files already open is "
+				+ std::to_string(nopen) + " and the OS limit is " + std::to_string(soft);
+			if (hard > soft) {
+				msg += "(raisable to " + std::to_string(hard) + ")";
+			}
+			setError(msg);
+			return false;
+		}
+	}
 
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].open_read) {
@@ -183,7 +199,6 @@ std::vector<double> SpatRaster::readValuesR(size_t row, size_t nrows, size_t col
 
 	unsigned n = nsrc();
 
-	out.reserve(nrows * ncols * nlyr());
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {
 			readChunkMEM(out, src, row, nrows, col, ncols);
@@ -246,7 +261,6 @@ void SpatRaster::readValues(std::vector<double> &out, size_t row, size_t nrows, 
 	}
 
 	unsigned n = nsrc();
-	out.reserve(nrows * ncols * nlyr());
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {
 			readChunkMEM(out, src, row, nrows, col, ncols);
@@ -274,7 +288,6 @@ void SpatRaster::readValuesWhileWriting(std::vector<double> &out, size_t row, si
 
 	unsigned n = nsrc();
 	out.resize(0);
-	out.reserve(nrows * ncols * nlyr());
 
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {
@@ -302,6 +315,10 @@ bool SpatRaster::readAll() {
 	for (size_t src=0; src<n; src++) {
 		if (!source[src].memory) {
 			readChunkGDAL(source[src].values, src, row, nrows, col, ncols);
+			if (hasError()) {
+				readStop();
+				return false;
+			}
 			source[src].memory = true;
 			source[src].extset = false;
 			source[src].flipped = false;

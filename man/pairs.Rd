@@ -36,7 +36,7 @@ s <- c(r, 1/r, sqrt(r))
 names(s) <- c("elevation", "inverse", "sqrt") 
 pairs(s)
 
-# to make indvidual histograms:
+# to make individual histograms:
 hist(r)
 # or scatter plots:
 plot(s[[1]], s[[2]])

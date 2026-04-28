@@ -24,16 +24,18 @@
 
 .gdinit <- function() {
 	path = ""
-	sf <- system.file("", package="terra")
-	if (file.exists(file.path(sf, "proj/nad.lst"))) {
-		path <- system.file("proj", package="terra")
-		.gdalinit(path, file.path(sf, "gdal"))
-		if ( Sys.info()["sysname"] == "Windows" ) {
-			.set_proj_search_paths(path)
-		}
-	} else {
-		.gdalinit(path, file.path(sf, "gdal"))
+	proj_path <- system.file("proj", package="terra")
+	gdal_path <- system.file("gdal", package="terra")
+	
+	has_proj <- dir.exists(proj_path) && (file.exists(file.path(proj_path, "proj.db")) || file.exists(file.path(proj_path, "nad.lst")))
+	has_gdal <- dir.exists(gdal_path)
+	
+	if (has_proj) {
+		projPaths(proj_path, TRUE)
 	}
+	
+	.gdalinit(path, ifelse(has_gdal, gdal_path, ""))
+	
 	if (libVersion("gdal") == "3.6.0") {
 		message("Using GDAL version 3.6.0 which was retracted because it cannot write large GPKG files")
 	}

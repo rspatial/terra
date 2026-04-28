@@ -29,6 +29,7 @@ A table or data.frame
 
 \seealso{ \code{\link{freq}}, \code{\link{zonal}} }
 
+\author{Andrew Gene Brown, Robert J. Hijmans}
 
 
 \examples{

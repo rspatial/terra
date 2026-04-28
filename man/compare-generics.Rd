@@ -28,6 +28,7 @@
 \alias{!,SpatRaster-method}
 \alias{is.finite,SpatRaster-method}
 \alias{is.infinite,SpatRaster-method}
+\alias{is.finite,SpatExtent-method}
 
 \alias{logic,SpatRaster-method}
 \alias{compare,SpatRaster-method}
@@ -44,7 +45,7 @@ Standard comparison and logical operators for computations with SpatRasters. Com
 
 See \code{\link{not.na}} for the inverse of \code{is.na}, and \code{\link{noNA}} to detect cells with missing value across layers.
 
-The \code{compare} and \code{logic} methods implement these operators in a method that can return \code{NA} istead of \code{FALSE} and allows for setting an output filename.
+The \code{compare} and \code{logic} methods implement these operators in a method that can return \code{NA} instead of \code{FALSE} and allows for setting an output filename.
 
 The terra package does not distinguish between \code{NA} (not available) and \code{NaN} (not a number). In most cases this state is represented by \code{NaN}.  
 
@@ -63,7 +64,7 @@ The following method has been implemented for \bold{(SpatExtent, SpatExtent)}: \
 \arguments{
 \item{x}{SpatRaster}
 \item{y}{SpatRaster or numeric}
-\item{oper}{character. Operator name. For \code{compare} this can be one of \code{"==", "!=", ">", "<", ">=", "<="} and for \code{logic} it can be one of \code{"!", "is.na", "not.na", "allNA", "anyNA", "noneNA", "is.infinite", "is.finite", "iSTRUE", "isFALSE"}}
+\item{oper}{character. Operator name. For \code{compare} this can be one of \code{"==", "!=", ">", "<", ">=", "<="} and for \code{logic} it can be one of \code{"!", "is.na", "not.na", "allNA", "anyNA", "noneNA", "is.infinite", "is.finite", "isTRUE", "isFALSE"}}
 \item{falseNA}{logical. Should the result be \code{TRUE, NA} instead of \code{TRUE, FALSE}?}
 \item{filename}{character. Output filename}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

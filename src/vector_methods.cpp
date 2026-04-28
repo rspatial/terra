@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -20,8 +20,6 @@
 #include "vecmath.h"
 #include "recycle.h"
 
-#include "gdal_alg.h"
-#include "ogrsf_frmts.h"
 
 /*
 std::vector<bool> SpatVector::is_valid() {
@@ -730,7 +728,7 @@ bool thinnodes(std::vector<double> &x, std::vector<double> &y, const double &thr
 
 
 
-SpatVector SpatVector::thin(double threshold) {
+SpatVector SpatVector::thin_nodes(double threshold) {
 
 	SpatVector out;
 	if (threshold < 0) {

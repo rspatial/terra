@@ -22,6 +22,7 @@ bool file_exists(const std::string& name);
 bool path_exists(std::string path);
 bool filepath_exists(const std::string& name);
 bool can_write(std::vector<std::string> filenames, std::vector<std::string> srcnames, bool overwrite, std::string &msg);
+std::string get_vsi_container(const std::string& path);
 std::string getFileExt(const std::string& s);
 std::string setFileExt(const std::string& s, const std::string& ext);
 std::string basename(std::string filename);
@@ -31,6 +32,8 @@ std::string tempFile(std::string tmpdir, std::string fname, std::string ext);
 std::string dirname(std::string filename);
 bool write_text(std::string filename, std::vector<std::string> s);
 std::vector<std::string> read_text(std::string filename);
+
+void open_file_limit(size_t &nopen, size_t &soft, size_t &hard);
 
 #endif
 

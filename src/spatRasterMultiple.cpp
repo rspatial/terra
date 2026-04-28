@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -30,7 +30,6 @@ bool SpatRasterCollection::empty() { return ds.empty(); }
 void SpatRasterCollection::resize(size_t n) { ds.resize(n); }
 
 void SpatRasterCollection::push_back(SpatRaster r, std::string name) { 
-
 /*
 	if (ds.size() == 0) {
 		extent = r.getExtent();
@@ -39,9 +38,30 @@ void SpatRasterCollection::push_back(SpatRaster r, std::string name) {
 	}
 */
 	ds.push_back(r);
-	names.push_back(name);
-	
+	names.push_back(name);	
 }
+
+
+bool SpatRasterCollection::readStop() {
+	for (size_t i = 0; i < ds.size(); i++) {
+		ds[i].readStop();
+	}
+	return true;
+}
+
+bool SpatRasterCollection::readStart() {
+	for (size_t i = 0; i < ds.size(); i++) {
+		if (!ds[i].readStart()) {
+			setError(ds[i].getError());
+			for (size_t j = 0; j < i; j++) ds[j].readStop();
+			return false;
+		}
+	}
+	return true;
+}
+
+
+
 
 SpatExtent SpatRasterCollection::getExtent() { 
 	SpatExtent e;
@@ -416,8 +436,18 @@ std::vector<std::string> SpatRasterStack::filenames() {
 	return names;
 };
 
+//bool SpatRasterStack::readStart() {
+//	for (auto& x : ds) { if (!x.readStart()) return false; }
+//	return true;
+//}
+			
 bool SpatRasterStack::readStart() {
-	for (auto& x : ds) { if (!x.readStart()) return false; }
+	for (size_t i=0; i<ds.size(); i++) {
+		if (!ds[i].readStart()) {
+			for (size_t j=0; j<i; j++) ds[j].readStop();
+			return false;
+		}
+	}
 	return true;
 }
 			

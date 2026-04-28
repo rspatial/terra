@@ -12,7 +12,7 @@ Combine geometries
 \description{
 Combine the geometries of one SpatVector with those of another. Geometries can be combined based on overlap, shared boundaries and distance (in that order of operation). 
 
-The typical use-case of this method is when you are editing geometries and you have a number of small polygons in one SpatVector that should be part of the geometries of the another SpatVector; perhaps because they were small holes inbetween the borders of two SpatVectors.
+The typical use-case of this method is when you are editing geometries and you have a number of small polygons in one SpatVector that should be part of the geometries of the other SpatVector; perhaps because they were small holes in between the borders of two SpatVectors.
 
 To append SpatVectors use `rbind` and see methods like \code{intersect} and \code{union} for "normal" polygons combinations. 
 }

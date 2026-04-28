@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -395,6 +395,91 @@ SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
 }
 
 
+static OGRGeometry* linearize_geom(OGRGeometry *poGeometry) {
+	if (poGeometry == nullptr || poGeometry->IsEmpty()) return nullptr;
+
+	OGRwkbGeometryType gt = wkbFlatten(poGeometry->getGeometryType());
+
+	if (gt == wkbPoint || gt == wkbMultiPoint ||
+		gt == wkbLineString || gt == wkbMultiLineString ||
+		gt == wkbPolygon || gt == wkbMultiPolygon) {
+		return poGeometry->clone();
+	}
+
+	OGRGeometry *lin = poGeometry->getLinearGeometry();
+	if (lin != nullptr) {
+		OGRwkbGeometryType lt = wkbFlatten(lin->getGeometryType());
+		if (lt == wkbPoint || lt == wkbMultiPoint ||
+			lt == wkbLineString || lt == wkbMultiLineString ||
+			lt == wkbPolygon || lt == wkbMultiPolygon) {
+			return lin;
+		}
+		OGRGeometryFactory::destroyGeometry(lin);
+	}
+
+	if (gt == wkbGeometryCollection) {
+		// GDAL 3.13 use std::unique_ptr<OGRGeometry>. See #2075
+		#if GDAL_VERSION_NUM >= 3130000
+		#define TERRA_FORCETO(g, t) OGRGeometryFactory::forceTo(std::unique_ptr<OGRGeometry>(g), t).release()
+		#else
+		#define TERRA_FORCETO(g, t) OGRGeometryFactory::forceTo(g, t)
+		#endif
+
+		OGRGeometry *forced;
+		forced = TERRA_FORCETO(poGeometry->clone(), wkbMultiPolygon);
+		if (forced && !forced->IsEmpty()) return forced;
+		if (forced) OGRGeometryFactory::destroyGeometry(forced);
+
+		forced = TERRA_FORCETO(poGeometry->clone(), wkbMultiLineString);
+		if (forced && !forced->IsEmpty()) return forced;
+		if (forced) OGRGeometryFactory::destroyGeometry(forced);
+
+		forced = TERRA_FORCETO(poGeometry->clone(), wkbMultiPoint);
+		if (forced && !forced->IsEmpty()) return forced;
+		if (forced) OGRGeometryFactory::destroyGeometry(forced);
+
+		#undef TERRA_FORCETO
+	}
+
+	return nullptr;
+}
+
+
+static SpatGeom linearize_to_spatgeom(OGRGeometry *poGeometry, bool &ok) {
+	ok = false;
+	SpatGeom g;
+	if (poGeometry == nullptr || poGeometry->IsEmpty()) {
+		ok = true;
+		return g;
+	}
+	OGRGeometry *lin = linearize_geom(poGeometry);
+	if (lin == nullptr) return g;
+
+	OGRwkbGeometryType gt = wkbFlatten(lin->getGeometryType());
+	if (gt == wkbPoint) {
+		g = getPointGeom(lin);
+		ok = true;
+	} else if (gt == wkbMultiPoint) {
+		g = getMultiPointGeom(lin);
+		ok = true;
+	} else if (gt == wkbLineString) {
+		g = getLinesGeom(lin);
+		ok = true;
+	} else if (gt == wkbMultiLineString) {
+		g = getMultiLinesGeom(lin);
+		ok = true;
+	} else if (gt == wkbPolygon) {
+		g = getPolygonsGeom(lin);
+		ok = true;
+	} else if (gt == wkbMultiPolygon) {
+		g = getMultiPolygonsGeom(lin);
+		ok = true;
+	}
+	OGRGeometryFactory::destroyGeometry(lin);
+	return g;
+}
+
+
 void addOGRgeometry(SpatVector &x, OGRGeometry *poGeometry) {
 	SpatGeom g;
 		
@@ -603,14 +688,16 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 	#else
 		OGRErr err = poSRS->exportToWkt(&psz);
 	#endif
-		if (err == OGRERR_NONE) {
+		if (err == OGRERR_NONE && psz != NULL) {
 			crs = psz;
 		}
-		setSRS(crs);
 		CPLFree(psz);
+		if (!crs.empty()) {
+			setSRS(crs);
+		}
 	}
 
-	if (what != "geoms") { 
+	if (what != "geoms") {
 		df = readAttributes(poLayer, as_proxy);
 	}
 	if (what == "attributes") {
@@ -620,10 +707,7 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 		return true;
 	}
 
-	//const char* lname = poLayer->GetName();
-	OGRwkbGeometryType wkbgeom = wkbFlatten(poLayer->GetGeomType());
 	OGRFeature *poFeature;
-
 	poLayer->ResetReading();
 	poFeature = poLayer->GetNextFeature();
 	if (poFeature != NULL) {
@@ -644,183 +728,149 @@ bool SpatVector::read_ogr(GDALDataset *&poDS, std::string layer, std::string que
 		if (poFeature == NULL) {
 			g = emptyGeom();
 			addGeom(g);
-		} else if ((wkbgeom == wkbPoint) | (wkbgeom == wkbMultiPoint)) {
-			//SpatPart p(0,0);
+		} else {
 			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-			if (poGeometry != NULL) {
-				if ( wkbFlatten(poGeometry->getGeometryType()) == wkbPoint ) {
-					g = getPointGeom(poGeometry);
-				} else {
-					g = getMultiPointGeom(poGeometry);
-				}
-			} else {
-				g = emptyGeom();
+			bool ok = false;
+			g = linearize_to_spatgeom(poGeometry, ok);
+			if (!ok) {
+				const char *gtn = poGeometry ?
+					OGRGeometryTypeToName(wkbFlatten(poGeometry->getGeometryType())) : "NULL";
+				setError("cannot read this geometry type: " + std::string(gtn));
+				OGRFeature::DestroyFeature(poFeature);
+				return false;
 			}
 			addGeom(g);
-			OGRFeature::DestroyFeature( poFeature );
-		} else if (wkbgeom == wkbLineString || wkbgeom == wkbMultiLineString) {
-			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-			if (poGeometry != NULL) {
-				if (wkbFlatten ( poGeometry ->getGeometryType() ) == wkbLineString) {
-					g = getLinesGeom(poGeometry);
-				} else {
-					g = getMultiLinesGeom(poGeometry);
-				}
-			} else {
-				g = emptyGeom();
-			}
-			addGeom(g);
-			OGRFeature::DestroyFeature( poFeature );
-		} else if ((wkbgeom == wkbPolygon) || (wkbgeom == wkbMultiPolygon) ||
-					(wkbgeom == wkbSurface) || (wkbgeom == wkbMultiSurface)) {
-			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-			if (poGeometry != NULL) {
-				wkbgeom = wkbFlatten(poGeometry->getGeometryType());
-				if (wkbgeom == wkbPolygon) {
-					g = getPolygonsGeom(poGeometry);
-				} else { //if (wkbgeom == wkbMultiPolygon ) {
-					g = getMultiPolygonsGeom(poGeometry);
-				} 
-			} else {
-				g = emptyGeom();
-			}
-			addGeom(g);
-			OGRFeature::DestroyFeature( poFeature );
-		} else if (wkbgeom == wkbUnknown) {
-			long long fcnt = poLayer->GetFeatureCount(true);
-			if (fcnt == 0) return true;
-			if (fcnt < 0) {
-				if ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-					return true;
-				}	
-			} 
-			const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
-			std::string strgeomtype = geomtypechar;
-			std::string s = "cannot read this geometry type: "+ strgeomtype;
-			setError(s);
-			return false;			
-		} else if (wkbgeom != wkbNone) {
-			const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
-			std::string strgeomtype = geomtypechar;
-			std::string s = "cannot read this geometry type: "+ strgeomtype;
-			setError(s);
-			return false;
+			OGRFeature::DestroyFeature(poFeature);
 		}
 		geom_count = poLayer->GetFeatureCount();
-		
-		// not checking for multiple geom fields
-        // int nGeomFieldCount = poLayer->GetLayerDefn()->GetGeomFieldCount();
 
 		OGREnvelope oExt;
 		if (poLayer->GetExtent(&oExt, FALSE) == OGRERR_NONE) {
-			extent.xmin = oExt.MinX; 
-            extent.xmax = oExt.MaxX;
+			extent.xmin = oExt.MinX;
+			extent.xmax = oExt.MaxX;
 			extent.ymin = oExt.MinY;
 			extent.ymax = oExt.MaxY;
 		} else {
-			extent.xmin = NAN; 
-            extent.xmax = NAN;
+			extent.xmin = NAN;
+			extent.xmax = NAN;
 			extent.ymin = NAN;
-			extent.ymax = NAN;			
+			extent.ymax = NAN;
 		}
-		
+
 		is_proxy = true;
 		return true;
 	}
 
-	OGRFeature::DestroyFeature( poFeature );
+	OGRFeature::DestroyFeature(poFeature);
 	poLayer->ResetReading();
-	SpatGeom g;
 
-	if ((wkbgeom == wkbPoint) | (wkbgeom == wkbMultiPoint)) {
-		//SpatPart p(0,0);
-		while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-			if (poGeometry != NULL) {
-				if ( wkbFlatten(poGeometry->getGeometryType()) == wkbPoint ) {
-					g = getPointGeom(poGeometry);
+	SpatVector points, lines, polygons;
+	std::vector<size_t> pnt, lin, pol;
+	size_t skip_count = 0;
+	size_t i = 0;
+
+	while ((poFeature = poLayer->GetNextFeature()) != NULL) {
+		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+		if (poGeometry == NULL || poGeometry->IsEmpty()) {
+			SpatGeom g = emptyGeom();
+			polygons.addGeom(g);
+			pol.push_back(i);
+		} else {
+			OGRGeometry *lin_geom = linearize_geom(poGeometry);
+			if (lin_geom == NULL) {
+				skip_count++;
+			} else {
+				OGRwkbGeometryType gt = wkbFlatten(lin_geom->getGeometryType());
+				SpatGeom g;
+				if (gt == wkbPoint) {
+					g = getPointGeom(lin_geom);
+					points.addGeom(g);
+					pnt.push_back(i);
+				} else if (gt == wkbMultiPoint) {
+					g = getMultiPointGeom(lin_geom);
+					points.addGeom(g);
+					pnt.push_back(i);
+				} else if (gt == wkbLineString) {
+					g = getLinesGeom(lin_geom);
+					lines.addGeom(g);
+					lin.push_back(i);
+				} else if (gt == wkbMultiLineString) {
+					g = getMultiLinesGeom(lin_geom);
+					lines.addGeom(g);
+					lin.push_back(i);
+				} else if (gt == wkbPolygon) {
+					g = getPolygonsGeom(lin_geom);
+					polygons.addGeom(g);
+					pol.push_back(i);
+				} else if (gt == wkbMultiPolygon) {
+					g = getMultiPolygonsGeom(lin_geom);
+					polygons.addGeom(g);
+					pol.push_back(i);
 				} else {
-					g = getMultiPointGeom(poGeometry);
+					skip_count++;
 				}
-			} else {
-				g = emptyGeom();
+				OGRGeometryFactory::destroyGeometry(lin_geom);
 			}
-			addGeom(g);
-			OGRFeature::DestroyFeature( poFeature );
 		}
-	} else if (wkbgeom == wkbLineString || wkbgeom == wkbMultiLineString) {
-		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-			if (poGeometry != NULL) {
-				if (wkbFlatten ( poGeometry ->getGeometryType() ) == wkbLineString) {
-					g = getLinesGeom(poGeometry);
-				} else {
-					g = getMultiLinesGeom(poGeometry);
-				}
-			} else {
-				g = emptyGeom();
-			}
-			addGeom(g);
-			OGRFeature::DestroyFeature( poFeature );
-		}
-	} else if ((wkbgeom == wkbPolygon) || (wkbgeom == wkbMultiPolygon) || 
-				(wkbgeom == wkbSurface) || (wkbgeom == wkbMultiSurface)) {
-		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-			if (poGeometry != NULL) {
-				wkbgeom = wkbFlatten(poGeometry->getGeometryType());
-				if (wkbgeom == wkbPolygon) {
-					g = getPolygonsGeom(poGeometry);
-				} else { //if (wkbgeom == wkbMultiPolygon ) {
-					g = getMultiPolygonsGeom(poGeometry);
-				}
-			} else {
-				g = emptyGeom();
-			}
-			addGeom(g);
-			OGRFeature::DestroyFeature( poFeature );
-		}
-	} else if (wkbgeom == wkbUnknown) {
-
-		long long fcnt = poLayer->GetFeatureCount(true);
-		if (fcnt == 0) return true;
-		if (fcnt < 0) {
-			if ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-				return true;
-			}	
-		}
-
-		SpatVectorCollection sv;
-		std::vector<double> dempty;
-		SpatVector filter2;
-		sv.read_ogr(poDS, "", "", "", dempty, filter2); 
-
-		if (sv.size() > 0) {
-			*this = sv.v[0];
-			if (sv.v.size() > 1) {
-				std::string gt = type();
-				addWarning("returning " + gt + " ignoring additional geometry types. Use 'svc' to get all geometries");
-			}
-			return true;
-		}
-		if (sv.hasError()) {
-			setError(sv.getError());
-		}
-		return false;
-	} else if (wkbgeom != wkbNone) {
-		const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
-		std::string strgeomtype = geomtypechar;
-		std::string s = "cannot read this geometry type: "+ strgeomtype;
-		setError(s);
-		return false;
+		OGRFeature::DestroyFeature(poFeature);
+		i++;
 	}
 
+	if (skip_count > 0) {
+		addWarning(std::to_string(skip_count) + " geometries could not be converted and were skipped");
+	}
+
+	size_t npol = polygons.size();
+	size_t nlin = lines.size();
+	size_t npnt = points.size();
+
+	if (npol == 0 && nlin == 0 && npnt == 0) {
+		if (!query.empty()) {
+			poDS->ReleaseResultSet(poLayer);
+		}
+		return true;
+	}
+
+	size_t ntypes = (npol > 0) + (nlin > 0) + (npnt > 0);
+
+	if (ntypes == 1) {
+		if (npol > 0) {
+			geoms = polygons.geoms;
+			extent = polygons.extent;
+			if (df.ncol() > 0 && pol.size() != i) df = df.subset_rows(pol);
+		} else if (nlin > 0) {
+			geoms = lines.geoms;
+			extent = lines.extent;
+			if (df.ncol() > 0 && lin.size() != i) df = df.subset_rows(lin);
+		} else {
+			geoms = points.geoms;
+			extent = points.extent;
+			if (df.ncol() > 0 && pnt.size() != i) df = df.subset_rows(pnt);
+		}
+	} else {
+		if (npol > 0) {
+			geoms = polygons.geoms;
+			extent = polygons.extent;
+			if (df.ncol() > 0) df = df.subset_rows(pol);
+			std::string msg = "returning polygons. Ignoring ";
+			if (nlin > 0) msg += std::to_string(nlin) + " line";
+			if (nlin > 0 && npnt > 0) msg += " and ";
+			if (npnt > 0) msg += std::to_string(npnt) + " point";
+			msg += " geometries. Use 'svc' to get all geometries";
+			addWarning(msg);
+		} else if (nlin > 0) {
+			geoms = lines.geoms;
+			extent = lines.extent;
+			if (df.ncol() > 0) df = df.subset_rows(lin);
+			addWarning("returning lines. Ignoring " + std::to_string(npnt) + " point geometries. Use 'svc' to get all geometries");
+		}
+	}
 
 	if (!query.empty()) {
 		poDS->ReleaseResultSet(poLayer);
 	}
 
- 	return true;
+	return true;
 }
 
 
@@ -845,7 +895,9 @@ bool SpatVector::read(std::string fname, std::string layer, std::string query, s
     }
 	bool success = read_ogr(poDS, layer, query, ext, filter, as_proxy, what, dialect);
 	if (poDS != NULL) GDALClose( poDS );
-	source = fname;
+	if (fname.substr(0, 1) != "{") { // not json
+		source = fname;
+	}
 	return success;
 }
 
@@ -861,6 +913,7 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 
 	OGRGeometryFactory ogr;
 
+	extent.xmin = extent.xmax = extent.ymin = extent.ymax = NAN;
 	SpatGeom g;
 	bool haveGeomt = false;
 	SpatGeomType geomt = null;
@@ -980,40 +1033,54 @@ bool SpatVectorCollection::read_ogr(GDALDataset *&poDS, std::string layer, std::
 	std::vector<size_t> pnt, lin, pol;
 	SpatGeom g;
 	size_t i = 0;
+	size_t skip_count = 0;
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-		if (poGeometry != NULL) {
-			OGRwkbGeometryType wkb = wkbFlatten(poGeometry->getGeometryType());
-			if (wkb  == wkbPoint ) {
-				g = getPointGeom(poGeometry);
-				points.addGeom(g);
-				pnt.push_back(i);
-			} else if ((wkb  == wkbMultiPoint) || (wkb  == wkbMultiPointZM) || (wkb  == wkbMultiPointM)) {
-				g = getMultiPointGeom(poGeometry);
-				points.addGeom(g);
-				pnt.push_back(i);
-			} else if (wkb == wkbLineString) {
-				g = getLinesGeom(poGeometry);
-				lines.addGeom(g);
-				lin.push_back(i);
-			} else if ((wkb == wkbMultiLineString) || (wkb == wkbMultiLineStringZM) || (wkb == wkbMultiLineStringM)) {
-				g = getMultiLinesGeom(poGeometry);
-				lines.addGeom(g);
-				lin.push_back(i);
-			} else if (wkb == wkbPolygon) {
-				g = getPolygonsGeom(poGeometry);
-				polygons.addGeom(g);
-				pol.push_back(i);
-			} else if ((wkb == wkbMultiPolygon) || (wkb == wkbMultiPolygonZM) || (wkb == wkbMultiPolygonM)) {
-				g = getMultiPolygonsGeom(poGeometry);
-				polygons.addGeom(g);
-				pol.push_back(i);
+		if (poGeometry != NULL && !poGeometry->IsEmpty()) {
+			OGRGeometry *lin_geom = linearize_geom(poGeometry);
+			if (lin_geom == NULL) {
+				skip_count++;
 			} else {
-				// g = emptyGeom();
+				OGRwkbGeometryType wkb = wkbFlatten(lin_geom->getGeometryType());
+				if (wkb == wkbPoint) {
+					g = getPointGeom(lin_geom);
+					points.addGeom(g);
+					pnt.push_back(i);
+				} else if (wkb == wkbMultiPoint) {
+					g = getMultiPointGeom(lin_geom);
+					points.addGeom(g);
+					pnt.push_back(i);
+				} else if (wkb == wkbLineString) {
+					g = getLinesGeom(lin_geom);
+					lines.addGeom(g);
+					lin.push_back(i);
+				} else if (wkb == wkbMultiLineString) {
+					g = getMultiLinesGeom(lin_geom);
+					lines.addGeom(g);
+					lin.push_back(i);
+				} else if (wkb == wkbPolygon) {
+					g = getPolygonsGeom(lin_geom);
+					polygons.addGeom(g);
+					pol.push_back(i);
+				} else if (wkb == wkbMultiPolygon) {
+					g = getMultiPolygonsGeom(lin_geom);
+					polygons.addGeom(g);
+					pol.push_back(i);
+				} else {
+					skip_count++;
+				}
+				OGRGeometryFactory::destroyGeometry(lin_geom);
 			}
-			OGRFeature::DestroyFeature( poFeature );
-			i++;
+		} else {
+			g = emptyGeom();
+			polygons.addGeom(g);
+			pol.push_back(i);
 		}
+		OGRFeature::DestroyFeature( poFeature );
+		i++;
+	}
+	if (skip_count > 0) {
+		addWarning(std::to_string(skip_count) + " geometries could not be converted and were skipped");
 	}
 	if (!query.empty()) {
 		poDS->ReleaseResultSet(poLayer);

@@ -33,6 +33,7 @@ You can provide a SpatVector or additional SpatRaster to define zones for which 
 A \code{data.frame} with 3 columns (layer, value, count) unless \code{bylayer=FALSE} in which case a\code{data.frame} with two columns is returned (value, count). 
 }
 
+\author{Andrew Gene Brown, Robert J. Hijmans}
 
 \examples{
 r <- rast(nrows=10, ncols=10)

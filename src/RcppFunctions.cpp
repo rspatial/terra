@@ -1,7 +1,9 @@
 #include <Rcpp.h>
 #include "spatRasterMultiple.h"
+#include "crs.h"
 #include "string_utils.h"
 #include "math_utils.h"
+#include "file_utils.h"
 
 #include "sort.h"
 
@@ -9,12 +11,13 @@
 #include "gdalio.h"
 #include "ogr_spatialref.h"
 
+#include <unordered_map>
+#include <string>
+
 //#define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
-#if defined(HAVE_TBB) && !defined(__APPLE__)
-#define USE_TBB
-#endif
+#include "tbb_helper.h"
 
 
 #if GDAL_VERSION_MAJOR >= 3
@@ -49,6 +52,14 @@ bool have_TBB() {
 	#else 
 		return false;
 	#endif 
+}
+
+
+// [[Rcpp::export(name = ".open_file_limit")]]
+std::vector<size_t> open_file_lim() {
+	size_t nopen, soft, hard;
+	open_file_limit(nopen, soft, hard);
+	return {nopen, soft, hard};
 }
 
 
@@ -296,7 +307,7 @@ std::vector<std::vector<std::string>> gdal_drivers() {
 	size_t n = GetGDALDriverManager()->GetDriverCount();
 	std::vector<std::vector<std::string>> s(6, std::vector<std::string>(n));
     GDALDriver *poDriver;
-    char **papszMetadata;
+    CSLConstList papszMetadata;
 	for (size_t i=0; i<n; i++) {
 	    poDriver = GetGDALDriverManager()->GetDriver((int)i);
 		const char* ss = poDriver->GetDescription();
@@ -325,8 +336,33 @@ inline void warningNoCall(const char* fmt, Args&&... args ) {
 }
 
 template <typename... Args>
-inline void NORET stopNoCall(const char* fmt, Args&&... args) {
+NORET inline void stopNoCall(const char* fmt, Args&&... args) {
     throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
+}
+
+static int proj_cdn_suppressed = 0;
+static std::string proj_cdn_reason;
+
+static bool is_proj_cdn_warning(const char *msg) {
+	std::string s(msg);
+	return (s.find("cdn.proj.org") != std::string::npos ||
+	        (s.find("PROJ:") != std::string::npos &&
+	         s.find("Cannot open https://") != std::string::npos));
+}
+
+static bool handle_proj_cdn(const char *msg, int err_no) {
+	if (!is_proj_cdn_warning(msg)) return false;
+	proj_cdn_suppressed++;
+	if (proj_cdn_suppressed == 1) {
+		std::string s(msg);
+		auto pos = s.rfind(": ");
+		if (pos != std::string::npos && pos > 30) {
+			proj_cdn_reason = s.substr(pos + 2);
+		} else {
+			proj_cdn_reason = s;
+		}
+	}
+	return true;
 }
 
 static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
@@ -335,16 +371,22 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
             break;
         case 1:
         case 2:
-            warningNoCall("%s (GDAL %d)", msg, err_no);
+            if (!handle_proj_cdn(msg, err_no)) {
+                warningNoCall("%s (GDAL %d)", msg, err_no);
+            }
             break;
         case 3:
-            warningNoCall("%s (GDAL error %d)", msg, err_no);
+            if (!handle_proj_cdn(msg, err_no)) {
+                warningNoCall("%s (GDAL error %d)", msg, err_no);
+            }
             break;
         case 4:
             stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
             break;
         default:
-            warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no);
+            if (!handle_proj_cdn(msg, err_no)) {
+                warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no);
+            }
             break;
     }
     return;
@@ -357,7 +399,9 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
         case 2:
             break;
         case 3:
-            warningNoCall("%s (GDAL error %d)", msg, err_no);
+            if (!handle_proj_cdn(msg, err_no)) {
+                warningNoCall("%s (GDAL error %d)", msg, err_no);
+            }
             break;
         case 4:
             stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no);
@@ -405,9 +449,18 @@ void set_gdal_warnings(int level) {
 	}
 }
 
-#include "common.h"
+// [[Rcpp::export(name = ".proj_cdn_suppressed")]]
+Rcpp::List get_proj_cdn_suppressed() {
+	Rcpp::List out = Rcpp::List::create(
+		Rcpp::Named("count") = proj_cdn_suppressed,
+		Rcpp::Named("reason") = proj_cdn_reason
+	);
+	proj_cdn_suppressed = 0;
+	proj_cdn_reason = "";
+	return out;
+}
 
-std::mt19937 my_rgen;
+#include "common.h"
 
 // [[Rcpp::export(name = ".seedinit")]]
 void seed_init(uint32_t seed_val) {
@@ -434,14 +487,14 @@ void gdal_init(std::string projpath, std::string datapath) {
 	//GDAL_NETCDF_IGNORE_XY_AXIS_NAME_CHECKS
 
 	//GDALregistred = true;
-#if GDAL_VERSION_MAJOR >= 3
- #ifdef PROJ_6
 	if (!projpath.empty()) {
-		const char *cp = projpath.c_str();
-		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
-	}
- #endif
+#if GDAL_VERSION_NUM >= 3000000
+		std::vector<char *> cpaths(2);
+		cpaths[0] = (char *)projpath.c_str();
+		cpaths[1] = NULL;
+		OSRSetPROJSearchPaths(cpaths.data());
 #endif
+	}
 #ifdef PROJ_71
 	#ifndef __EMSCRIPTEN__
 		proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
@@ -567,41 +620,92 @@ std::vector<std::string> get_proj_search_paths() {
 
 
 // [[Rcpp::export(name = ".set_proj_search_paths")]]
-bool set_proj_search_paths(std::vector<std::string> paths) {
+bool set_proj_search_paths(std::vector<std::string> paths, bool with_proj = false) {
 	if (paths.empty()) {
 		return false;
 	}
+	if (with_proj) {
+		// Set for PROJ library
+		if (paths.size() == 1) {
+			const char *cp = paths[0].c_str();
+			proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
+		}
+		return true;
+	} else {
+		// Set for GDAL
 #if GDAL_VERSION_NUM >= 3000000
-	std::vector <char *> cpaths(paths.size()+1);
-	for (size_t i = 0; i < paths.size(); i++) {
-		cpaths[i] = (char *) (paths[i].c_str());
-	}
-	cpaths[cpaths.size()-1] = NULL;
-	OSRSetPROJSearchPaths(cpaths.data());
-	return true;
+		std::vector <char *> cpaths(paths.size()+1);
+		for (size_t i = 0; i < paths.size(); i++) {
+			cpaths[i] = (char *) (paths[i].c_str());
+		}
+		cpaths[cpaths.size()-1] = NULL;
+		OSRSetPROJSearchPaths(cpaths.data());
+		return true;
 #else
-	return false;
+		return false;
 #endif
+	}
 }
 
 
 // [[Rcpp::export(name = ".PROJ_network")]]
-std::string PROJ_network(bool enable, std::string url) {
+std::string PROJ_network(int enable, std::string url) {
 	std::string s = "";
 #ifdef PROJ_71
-	if (enable) {
+	if (enable == -1) { // get current status
+		return std::to_string(proj_context_is_network_enabled(PJ_DEFAULT_CTX));
+	} else if (enable == 1) {
 		proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+#if GDAL_VERSION_NUM >= 3040000
+		OSRSetPROJEnableNetwork(1);
+#endif
 		if (url.size() > 5) {
 			proj_context_set_url_endpoint(PJ_DEFAULT_CTX, url.c_str());
 		}
 		s = proj_context_get_url_endpoint(PJ_DEFAULT_CTX);
-	} else { // disable:
+	} else if (enable == 0) { // disable:
 		proj_context_set_enable_network(PJ_DEFAULT_CTX, 0);
+#if GDAL_VERSION_NUM >= 3040000
+		OSRSetPROJEnableNetwork(0);
+#endif
 	}
 #endif
 	return s;
 }
 
+
+
+// [[Rcpp::export(name = ".proj_pipelines")]]
+Rcpp::List proj_pipelines(std::string source_crs, std::string target_crs,
+		std::string authority, std::vector<double> AOI, std::string use,
+		std::string grid_availability, double desired_accuracy,
+		bool strict_containment, bool axis_order_authority_compliant) {
+
+	SpatDataFrame df = get_proj_pipelines(source_crs, target_crs, authority, AOI, use, 
+		grid_availability, desired_accuracy, strict_containment, axis_order_authority_compliant);
+	if (df.hasError()) {
+		Rcpp::stop(df.getError());
+	}
+	Rcpp::List out(df.ncol());
+	for (size_t i = 0; i < df.ncol(); i++) {
+		if (df.itype[i] == 0) {
+			out[i] = df.getD(i);
+		} else if (df.itype[i] == 1) {
+			out[i] = Rcpp::wrap(df.getI(i));
+		} else if (df.itype[i] == 2) {
+			out[i] = Rcpp::wrap(df.getS(i));
+		} else if (df.itype[i] == 3) {
+			std::vector<int8_t> b = df.getB(i);
+			Rcpp::LogicalVector lv(b.size());
+			for (size_t j = 0; j < b.size(); j++) {
+				lv[j] = (b[j] > 1) ? NA_LOGICAL : (int) b[j];
+			}
+			out[i] = lv;
+		}
+	}
+	out.names() = df.names;
+	return out;
+}
 
 
 // [[Rcpp::export(name = ".removeDriver")]]
@@ -854,4 +958,5 @@ std::vector<std::string> arnames(std::string filename, bool filter) {
 }
 
 #endif
+
 

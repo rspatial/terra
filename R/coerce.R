@@ -265,7 +265,11 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 )
 
 setMethod("as.lines", signature(x="SpatRaster"),
-	function(x) {
+	function(x, na.rm=FALSE) {
+		if (na.rm) {
+			p <- as.polygons(x[[1]], round=FALSE, aggregate=FALSE, values=FALSE, na.rm=TRUE) 
+			return(as.lines(p))
+		}
 		p <- methods::new("SpatVector")
 		opt <- spatOptions()
 		p@pntr <- x@pntr$as_lines(opt)
@@ -308,7 +312,7 @@ setMethod("as.lines", signature(x="SpatVector"),
 
 
 setMethod("as.lines", signature(x="matrix"),
-	function(x, crs="") {
+	function(x, crs="", segments=FALSE) {
 		p <- vect()
 		if (ncol(x) == 2) {
 			nr <- nrow(x)
@@ -319,7 +323,12 @@ setMethod("as.lines", signature(x="matrix"),
 		} else {
 			error("expecting a two or four column matrix", "as.lines")
 		}
-		messages(p, "vect")
+		if (segments) {
+			p <- messages(p, "vect")
+			disagg(p, segments=TRUE)
+		} else {
+			messages(p, "vect")
+		}
 	}
 )
 
@@ -585,6 +594,35 @@ setAs("sf", "SpatRaster",
 )
 
 
+# https://github.com/rspatial/terra/issues/2013
+# sf encodes the FULL polygon (the whole sphere) as a single 2x2 matrix
+# c(0, 0, -90, -90). Helpers below detect that representation in the
+# three places it can appear (sf, sfc, sfg) without ever doing an
+# unconditional value comparison against a 2x2 sentinel -- otherwise an
+# ordinary polygon trips "non-conformable arrays".
+.is_full_polygon_ring <- function(m) {
+	is.matrix(m) && all(dim(m) == c(2L, 2L)) &&
+		all(m == matrix(c(0, 0, -90, -90), ncol = 2L))
+}
+
+.is_sfc_full_polygon <- function(geom) {
+	inherits(geom, "sfc_POLYGON") && length(geom) == 1L &&
+		length(geom[[1]]) >= 1L && .is_full_polygon_ring(geom[[1]][[1]])
+}
+
+.is_sfg_full_polygon <- function(geom) {
+	inherits(geom, "POLYGON") && length(geom) >= 1L &&
+		.is_full_polygon_ring(geom[[1]])
+}
+
+.full_world_polygon <- function(crs_wkt) {
+	if (is.null(crs_wkt) || is.na(crs_wkt) || !nzchar(crs_wkt)) {
+		crs_wkt <- "lonlat"
+	}
+	as.polygons(ext(-180, 180, -90, 90), crs = crs_wkt)
+}
+
+
 setAs("sf", "SpatVector",
 	function(from) {
 		sfi <- attr(from, "sf_column")
@@ -594,6 +632,9 @@ setAs("sf", "SpatVector",
 		geom <- from[[sfi]]
 		if (inherits(geom, "list")) {
 			error("as,sf", "the geometry column is not valid (perhaps first load the sf package)")
+		}
+		if (.is_sfc_full_polygon(geom)) {
+			return(.full_world_polygon(attr(geom, "crs")$wkt))
 		}
 		v <- try(.from_sf(from, geom, sfi), silent=FALSE)
 		if (inherits(v, "try-error")) {
@@ -613,6 +654,9 @@ setAs("sf", "SpatVector",
 
 setAs("sfc", "SpatVector",
 	function(from) {
+		if (.is_sfc_full_polygon(from)) {
+			return(.full_world_polygon(attr(from, "crs")$wkt))
+		}
 		v <- try(.from_sfc(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
 			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")
@@ -624,6 +668,9 @@ setAs("sfc", "SpatVector",
 
 setAs("sfg", "SpatVector",
 	function(from) {
+		if (.is_sfg_full_polygon(from)) {
+			return(.full_world_polygon(NULL))
+		}
 		v <- try(.from_sfc(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
 			error("as,sfg", "coercion failed. You can try coercing via a Spatial* (sp) class")
@@ -634,6 +681,9 @@ setAs("sfg", "SpatVector",
 
 setAs("XY", "SpatVector",
 	function(from) {
+		if (.is_sfg_full_polygon(from)) {
+			return(.full_world_polygon(NULL))
+		}
 		v <- try(.from_sfc(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
 			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")

@@ -1,4 +1,5 @@
 
+
 .terra_environment <- new.env(parent=emptyenv())
 
 .create_options <- function() {
@@ -142,7 +143,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	opt <- spatOptions()
 	nms <- names(opt)
 	nms <- nms[!grepl("^\\.", nms)]
-	nms <- nms[!(nms %in% c("initialize", "messages", "getClass", "finalize", "datatype_set", "tmpfile", "statistics", "gdal_options", "scale", "offset", "threads", "filenames", "NAflag"))]
+	nms <- nms[!(nms %in% c("initialize", "messages", "getClass", "finalize", "datatype_set", "tmpfile", "statistics", "gdal_options", "scale", "offset", "filenames", "NAflag"))]
 	defnms <- grepl("^def_", nms)
 	nms <- nms[!defnms]
 	out <- sapply(nms, function(n) eval(parse(text=paste0("opt$", n))))
@@ -156,7 +157,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 .showOptions <- function(opt, print=TRUE) {
 	out <- .getOptions()
 	if (!print) return(out)
-	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance", "memmin", "memmax")
+	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance", "memmin", "memmax", "parallel", "threads")
 	p <- out[names(out) %in% nms]
 	if (p$memmax <= 0) p$memmax <- NULL
 	nms <- names(p)
@@ -177,12 +178,11 @@ terraOptions <- function(..., print=TRUE) {
 	if (is.null(.terra_environment$options)) .create_options()
 	opt <- .terra_environment$options@pntr
 
-	nms <- names(dots)
-
 	if (length(dots) == 0) {
 		return(.showOptions(opt, print=print))
 	}
-
+	
+	nms <- names(dots)
 	ok <- nms %in% .option_names()
 	if (any(!ok)) {
 		bad <- paste(nms[!ok], collapse=", ")

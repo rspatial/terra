@@ -5,6 +5,10 @@
     .Call(`_terra_have_TBB`)
 }
 
+.open_file_limit <- function() {
+    .Call(`_terra_open_file_lim`)
+}
+
 .proj_conf_test <- function() {
     .Call(`_terra_proj_conf_test`)
 }
@@ -85,6 +89,10 @@ rgb2hex <- function(x) {
     invisible(.Call(`_terra_set_gdal_warnings`, level))
 }
 
+.proj_cdn_suppressed <- function() {
+    .Call(`_terra_get_proj_cdn_suppressed`)
+}
+
 .seedinit <- function(seed_val) {
     invisible(.Call(`_terra_seed_init`, seed_val))
 }
@@ -113,12 +121,16 @@ rgb2hex <- function(x) {
     .Call(`_terra_get_proj_search_paths`)
 }
 
-.set_proj_search_paths <- function(paths) {
-    .Call(`_terra_set_proj_search_paths`, paths)
+.set_proj_search_paths <- function(paths, with_proj = FALSE) {
+    .Call(`_terra_set_proj_search_paths`, paths, with_proj)
 }
 
 .PROJ_network <- function(enable, url) {
     .Call(`_terra_PROJ_network`, enable, url)
+}
+
+.proj_pipelines <- function(source_crs, target_crs, authority, AOI, use, grid_availability, desired_accuracy, strict_containment, axis_order_authority_compliant) {
+    .Call(`_terra_proj_pipelines`, source_crs, target_crs, authority, AOI, use, grid_availability, desired_accuracy, strict_containment, axis_order_authority_compliant)
 }
 
 .removeDriver <- function(d) {

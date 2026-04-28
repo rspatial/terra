@@ -53,36 +53,40 @@ setMethod("vect", signature(x="SpatGraticule"),
 
 
 setMethod("vect", signature(x="character"),
-	function(x, layer="", query="", dialect="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="", opts=NULL) {
+	function(x, layer="", query="", dialect="", extent=NULL, filter=NULL, crs="", proxy=FALSE, what="", opts=NULL, kml.extended=NULL) {
 
 		what <- trimws(tolower(what))
 		if (what != "") what <- match.arg(trimws(tolower(what)), c("geoms", "attributes"))
-		
+
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG", "EMPTY")) {
 			p <- methods::new("SpatVector")
-#		if (all(grepl("\\(", x) & grepl("\\)", x))) {
+	#		if (all(grepl("\\(", x) & grepl("\\)", x))) {
 			p@pntr <- SpatVector$new(gsub("\n", "", x))
 			messages(p, "vect")
 			crs(p, warn=FALSE) <- crs
 			return(p)
 		} 
-		
-		x <- x[1]
-		nx <- try(normalizePath(x, mustWork=TRUE), silent=TRUE)
-		if (!inherits(nx, "try-error")) { # skip html
-			x <- nx
-			if (grepl("\\.rds$", tolower(x))) {
-				v <- unwrap(readRDS(x))
-				if (!inherits(v, "SpatVector")) {
-					error("vect", "the rds file does not store a SpatVector")
-				}
-				return(v)
-			}
-		} else if ((substr(x, 1, 4) == "http") & (grepl("\\.shp$", x) | grepl("\\.gpkg$", x))) {
-			x <- paste0("/vsicurl/", x[1])
-		}
 
+		if (substr(x[1], 1, 1) == "{") { # json
+			if (length(x) > 1) x <- paste(x, collapse="")
+		} else {			
+			x <- x[1]
+			nx <- try(normalizePath(x, mustWork=TRUE), silent=TRUE)
+			if (!inherits(nx, "try-error")) { # skip html
+				x <- nx
+				if (grepl("\\.rds$", tolower(x))) {
+					v <- unwrap(readRDS(x))
+					if (!inherits(v, "SpatVector")) {
+						error("vect", "the rds file does not store a SpatVector")
+					}
+					return(v)
+				}
+			} else if ((substr(x, 1, 4) == "http") & (grepl("\\.shp$", x) | grepl("\\.gpkg$", x))) {
+				x <- paste0("/vsicurl/", x[1])
+			}
+		}
+		
 		p <- methods::new("SpatVector")
 		p@pntr <- SpatVector$new()
 		proxy <- isTRUE(proxy)
@@ -119,6 +123,7 @@ setMethod("vect", signature(x="character"),
 			return(pp)
 		}
 		p <- messages(p, "vect")
+		p <- .vect_kml_merge_extended(p, x, kml.extended, proxy, what)
 		if (what == "attributes") {
 			p <- values(p)
 		}
@@ -128,7 +133,7 @@ setMethod("vect", signature(x="character"),
 
 
 setMethod("vect", signature(x="Spatial"),
-	function(x, ...) {
+	function(x) {
 		methods::as(x, "SpatVector")
 	}
 )
@@ -412,7 +417,7 @@ setMethod("$<-", "SpatVector",
 
 
 setMethod("vect", signature(x="data.frame"),
-	function(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=TRUE) {
+	function(x, geom=NULL, crs=NULL, keepgeom=FALSE, quiet=FALSE) {
 		
 		guessed_geom <- FALSE; lonlat <- FALSE
 		if (!is.null(geom)) {
@@ -421,7 +426,7 @@ setMethod("vect", signature(x="data.frame"),
 			}
 		} else {
 			if (all(c("lon", "lat") %in% names(x))) { 
-				# backwards compatability
+				# backwards compatibility
 				geom <- c("lon", "lat")
 				# guessed_geom <- TRUE	
 			} else {
@@ -430,14 +435,20 @@ setMethod("vect", signature(x="data.frame"),
 				} else {
 					nms <- tolower(names(x))
 					m <- rbind(	match(c("longitude", "latitude"), nms),
+                                match(c("decimallongitude", "decimallatitude"), nms),
+								match(c("long", "lati"), nms),
 								match(c("long", "lat"), nms),								
-								match(c("lon", "lat"), nms),
-								match(c("x", "y"), nms))
+                                match(c("lon", "lat"), nms),
+								match(c("easting", "northing"), nms),
+								match(c("xcoord", "ycoord"), nms),
+                                match(c("x.coord", "y.coord"), nms),
+                                match(c("x_coord", "y_coord"), nms),
+                                match(c("x", "y"), nms))
 					test <- !apply(is.na(m), 1, any) 
 					if (sum(test) == 1) {
 						m <- m[test, ]
 						geom <- names(x)[m]
-						lonlat <- which(test) < 4
+						lonlat <- which(test) < 6
 					} else if (sum(test) == 0) {
 						lon <- which(sapply(nms, function(n) grepl(n, "longitude")))
 						lat <- which(sapply(nms, function(n) grepl(n, "latitude")))
@@ -463,15 +474,14 @@ setMethod("vect", signature(x="data.frame"),
 		
 		guessed_crs <- FALSE
 		if (is.null(crs)) {
-			if ((guessed_geom && lonlat) || ((!guessed_geom) && grepl("lon", geom[1], TRUE) && grepl("lat", geom[2], TRUE))) {
+			crs <- ""
+			if ((guessed_geom && lonlat) || ((!guessed_geom) && grepl("lon", geom[1]) && grepl("lat", geom[2]))) {
 				xr <- range(x[,geom[1]], na.rm=TRUE)
 				yr <- range(x[,geom[2]], na.rm=TRUE)
 				if ((xr[1] > -181) && (xr[2] < 361)  && (yr[1] > -90.01) && (yr[2] < 90.01)) {
 					guessed_crs <- TRUE
 					crs <- "+proj=longlat"
 				}
-			} else {
-				crs <- ""
 			}
 		} else {
 			crs <- character_crs(crs, "vect")
@@ -485,17 +495,17 @@ setMethod("vect", signature(x="data.frame"),
 				x[,geom[2]] <- as.numeric(x[,geom[2]])
 			}
 			p <- methods::new("SpatVector")
-			p@pntr <- SpatVector$new()
-			x <- .makeSpatDF(x)
+			p@pntr <- terra:::SpatVector$new()
+			x <- terra:::.makeSpatDF(x)
 
 			p@pntr$setPointsDF(x, geom-1, crs, keepgeom)
 
 			p <- messages(p, "vect")
 			if (!quiet) {
 				if (guessed_geom & guessed_crs) {
-					warn("vect", "guessed geom and crs")
+					warn("vect", "guessed geom variables and crs")
 				} else if (guessed_geom) {
-					warn("vect", "guessed geom")
+					warn("vect", "guessed geom variables")
 				} else if (guessed_crs) {
 					warn("vect", "guessed crs")
 				}			
@@ -585,10 +595,10 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			start <- start-1
 			if (start > 0) {
 				if (n >= (nr-start)) {
-					qy <- paste(qy, "OFFSET", start)
+					qy <- paste(qy, "OFFSET", format(start, scientific=FALSE))
 				} else {
 					n <- min(n, nr-start)
-					qy <- paste(qy, layer, "LIMIT", n, "OFFSET", start)
+					qy <- paste(qy, layer, "LIMIT", n, "OFFSET", format(start, scientific=FALSE))
 				}
 			} else if (n < nr) {
 				n <- min(n, nr)

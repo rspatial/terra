@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2025  Robert J. Hijmans
+// Copyright (c) 2018-2026  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -19,6 +19,7 @@
 #include "distance.h"
 #include <limits>
 #include <cmath>
+#include <algorithm>
 #include "geodesic.h"
 #include "recycle.h"
 #include "math_utils.h"
@@ -28,6 +29,14 @@
 #include "crs.h"
 #include "sort.h"
 #include "geosphere.h"
+#include "tbb_helper.h"
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#ifndef M_2PI
+#define M_2PI (2.0 * M_PI)
+#endif
 
 /*
 inline void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const std::string& method, const double &lindist) {
@@ -257,6 +266,9 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 	permute(x, pm);
 	permute(y, pm);
 
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
+	}
 	bool lonlat = is_lonlat(); 
 
 	double m=1;
@@ -352,15 +364,966 @@ SpatRaster SpatRaster::distance_crds(std::vector<double>& x, std::vector<double>
 }
 
 
+// ----------------------------------------------------------------------------
+// Fast path for distance(SpatRaster, target) for lon/lat with the
+// haversine/cosine method. Computes, for every cell in the output, the
+// distance to the nearest point in the supplied (px, py) coordinate set
+// (the edge cells around target/exclude). It is a drop-in equivalent of
+// distance_crds(skip=true) but much faster because:
+//   1. Edge points are sorted by latitude once. Their sin/cos are cached.
+//   2. For each output row we cache cos(py)/sin(py).
+//   3. Search starts from the latitude-nearest point (binary search) and
+//      walks outward in both directions. The cheap latitude-only lower
+//      bound (geodesic angular distance >= |dlat|) is exact: comparing it
+//      to the current best in radians lets us terminate the walk in each
+//      direction the moment the bound exceeds the best, without trig.
+//   4. When max_dist > 0 we additionally seed the per-cell best distance
+//      with that threshold (converted to radians), so cells whose nearest
+//      edge point is beyond max_dist terminate the walk in both directions
+//      almost immediately and never pay for trig. The NaN is produced by
+//      the existing post-filter.
+//   5. TBB parallelism over rows within a block.
+//
+// set TERRA_DIST_SLOW=1 to bypass the fast track 
+// ----------------------------------------------------------------------------
+
+SpatRaster SpatRaster::distance_crds_lonlat_fast(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, double max_dist, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (x.empty()) {
+		out.setError("no locations to compute distance from");
+		return out;
+	}
+	if ((method != "haversine") && (method != "cosine")) {
+		out.setError("internal: distance_crds_lonlat_fast called with unsupported method");
+		return out;
+	}
+	bool lonlat = is_lonlat();
+	if (!lonlat) {
+		out.setError("internal: distance_crds_lonlat_fast called with non-lonlat raster");
+		return out;
+	}
+
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
+	}
+
+	double m = 1;
+	if (!source[0].srs.m_dist(m, lonlat, unit)) {
+		out.setError("invalid unit");
+		return out;
+	}
+
+	const double D2R = 0.017453292519943295;
+	const double EARTH_R = 6378137.0;
+	const double inf = std::numeric_limits<double>::infinity();
+	const double mxval = std::numeric_limits<double>::max();
+	const bool use_cos = (method == "cosine");
+
+	// When max_dist > 0 the result distances are NaN'd for values strictly
+	// greater than max_dist. Converting that threshold into an angular bound
+	// lets the latitude-only prune (|dlat| >= cur_ang) kill any edge point
+	// that is outside the "relevant" ring around the cell without spending
+	// any trig. seed_ang is nudged one ulp above max_ang so that genuine
+	// points at d == max_dist still update cur_ang (preserving the original
+	// ">" semantics) while the seed itself gets NaN'd by the post-filter.
+	const double max_ang = (max_dist > 0) ? (max_dist / EARTH_R / m) : inf;
+	const double seed_ang = std::isfinite(max_ang) ? std::nextafter(max_ang, inf) : inf;
+
+	// Sort edge points by latitude (ascending) so we can binary-search for the
+	// row latitude and walk outward, pruning by |dlat|.
+	std::vector<std::size_t> pm = sort_order_a(y);
+	permute(x, pm);
+	permute(y, pm);
+
+	const size_t np = x.size();
+	std::vector<double> qx_rad(np), qy_rad(np), sin_qy(np), cos_qy(np);
+	for (size_t j = 0; j < np; j++) {
+		qx_rad[j] = x[j] * D2R;
+		qy_rad[j] = y[j] * D2R;
+		sin_qy[j] = sin(qy_rad[j]);
+		cos_qy[j] = cos(qy_rad[j]);
+	}
+
+	const size_t nc = ncol();
+	std::vector<int64_t> cols(nc);
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> tox = xFromCol(cols);
+	std::vector<double> tox_rad(nc);
+	for (size_t c = 0; c < nc; c++) tox_rad[c] = tox[c] * D2R;
+
+	if (nrow() > 1000) {
+		opt.steps = std::max(opt.steps, (size_t) 4);
+		opt.progress = opt.progress * 2;
+	}
+
+	if (skip) {
+		if (!readStart()) {
+			out.setError(getError());
+			return out;
+		}
+	}
+	if (!out.writeStart(opt, filenames())) {
+		if (skip) readStop();
+		return out;
+	}
+
+	for (size_t b = 0; b < out.bs.n; b++) {
+		const size_t nrow_blk = out.bs.nrows[b];
+		const size_t nblk = nrow_blk * nc;
+
+		std::vector<double> v;
+		if (skip) {
+			readBlock(v, out.bs, b);
+		}
+
+		std::vector<double> py_rad(nrow_blk), sin_py(nrow_blk), cos_py(nrow_blk);
+		for (size_t r = 0; r < nrow_blk; r++) {
+			py_rad[r] = yFromRow(out.bs.row[b] + r) * D2R;
+			sin_py[r] = sin(py_rad[r]);
+			cos_py[r] = cos(py_rad[r]);
+		}
+
+		std::vector<double> d(nblk);
+
+		auto process_row = [&](size_t r) {
+			const double py = py_rad[r];
+			const double spy = sin_py[r];
+			const double cpy = cos_py[r];
+			const size_t row_off = r * nc;
+
+			// First point with qy >= py; we walk outward from here.
+			const size_t mid = std::lower_bound(qy_rad.begin(), qy_rad.end(), py) - qy_rad.begin();
+
+			for (size_t c = 0; c < nc; c++) {
+				const size_t idx = row_off + c;
+				if (skip && !std::isnan(v[idx])) {
+					d[idx] = 0.0;
+					continue;
+				}
+				const double px = tox_rad[c];
+				double cur_ang = seed_ang;  // angular distance, radians
+
+				// Forward direction: qy >= py, dlat increases monotonically.
+				for (size_t j = mid; j < np; j++) {
+					const double dlat = qy_rad[j] - py;
+					if (dlat >= cur_ang) break;  // |dlat| is a lower bound on geodesic angle
+					double dd;
+					if (use_cos) {
+						double cosD = spy * sin_qy[j] + cpy * cos_qy[j] * cos(px - qx_rad[j]);
+						if (cosD > 1.0) cosD = 1.0;
+						else if (cosD < -1.0) cosD = -1.0;
+						dd = acos(cosD);
+					} else {
+						const double sLat = sin(dlat * 0.5);
+						const double sLon = sin((qx_rad[j] - px) * 0.5);
+						double a = sLat * sLat + cpy * cos_qy[j] * sLon * sLon;
+						if (a < 0.0) a = 0.0;
+						else if (a > 1.0) a = 1.0;
+						dd = 2.0 * atan2(sqrt(a), sqrt(1.0 - a));
+					}
+					if (dd < cur_ang) cur_ang = dd;
+				}
+				// Backward direction: qy < py, dlat increases monotonically.
+				for (size_t jj = mid; jj > 0; jj--) {
+					const size_t j = jj - 1;
+					const double dlat = py - qy_rad[j];
+					if (dlat >= cur_ang) break;
+					double dd;
+					if (use_cos) {
+						double cosD = spy * sin_qy[j] + cpy * cos_qy[j] * cos(px - qx_rad[j]);
+						if (cosD > 1.0) cosD = 1.0;
+						else if (cosD < -1.0) cosD = -1.0;
+						dd = acos(cosD);
+					} else {
+						const double sLat = sin(dlat * 0.5);
+						const double sLon = sin((qx_rad[j] - px) * 0.5);
+						double a = sLat * sLat + cpy * cos_qy[j] * sLon * sLon;
+						if (a < 0.0) a = 0.0;
+						else if (a > 1.0) a = 1.0;
+						dd = 2.0 * atan2(sqrt(a), sqrt(1.0 - a));
+					}
+					if (dd < cur_ang) cur_ang = dd;
+				}
+
+				d[idx] = cur_ang * EARTH_R;
+			}
+		};
+
+#if defined(USE_TBB)
+		if (opt.parallel) {
+			terra_parallel_for(opt, tbb::blocked_range<size_t>(0, nrow_blk),
+				[&](const tbb::blocked_range<size_t>& range) {
+					for (size_t r = range.begin(); r != range.end(); r++) {
+						process_row(r);
+					}
+				});
+		} else {
+			for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+		}
+#else
+		for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+#endif
+
+		if (m != 1.0) {
+			for (double &val : d) val *= m;
+		}
+		if (max_dist > 0) {
+			for (double &val : d) val = val > max_dist ? NAN : val;
+		}
+		if (skip && setNA) {
+			for (size_t i = 0; i < nblk; i++) {
+				if (v[i] == mxval) d[i] = NAN;
+			}
+		}
+
+		if (!out.writeBlock(d, b)) {
+			if (skip) readStop();
+			return out;
+		}
+	}
+
+	if (skip) readStop();
+	out.writeStop();
+	return out;
+}
+
+
+// ----------------------------------------------------------------------------
+// Fast path for distance(SpatRaster, target) for lon/lat with the 
+// very precise method by Karney
+//
+// Same structure as the haversine/cosine fast path, with these differences:
+//   * distances are in meters throughout (no radian<->meters round trip)
+//   * the per-cell best is seeded from max_dist directly
+//   * the latitude-only lower bound uses R_min = a * (1 - e^2), the minimum
+//     meridional radius of curvature, which is a true lower bound on the
+//     geodesic distance given |dlat_rad|. 
+//
+// ----------------------------------------------------------------------------
+
+SpatRaster SpatRaster::distance_crds_lonlat_fast_geo(std::vector<double>& x, std::vector<double>& y, bool skip, bool setNA, std::string unit, double max_dist, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (x.empty()) {
+		out.setError("no locations to compute distance from");
+		return out;
+	}
+	bool lonlat = is_lonlat();
+	if (!lonlat) {
+		out.setError("internal: distance_crds_lonlat_fast_geo called with non-lonlat raster");
+		return out;
+	}
+
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
+	}
+
+	double m = 1;
+	if (!source[0].srs.m_dist(m, lonlat, unit)) {
+		out.setError("invalid unit");
+		return out;
+	}
+
+	const double D2R = 0.017453292519943295;
+	const double inf = std::numeric_limits<double>::infinity();
+	const double mxval = std::numeric_limits<double>::max();
+
+	// Ellipsoid parameters from the CRS (WGS84 fallback). R_min is the smallest
+	// possible meridional radius of curvature, used as a lower bound on the
+	// geodesic distance given a latitude difference.
+	double geo_a, geo_f;
+	geo_ellipsoid_from_wkt(source[0].srs.wkt, geo_a, geo_f);
+	const double e2 = geo_f * (2.0 - geo_f);
+	const double R_min = geo_a * (1.0 - e2);
+	struct geod_geodesic g;
+	geod_init(&g, geo_a, geo_f);
+
+	// Sort edge points by latitude (ascending).
+	std::vector<std::size_t> pm = sort_order_a(y);
+	permute(x, pm);
+	permute(y, pm);
+
+	const size_t np = x.size();
+	// Keep coordinates in degrees (what geod_inverse needs) and cache the
+	// latitude in radians for the cheap |dlat| prune.
+	std::vector<double> qy_rad(np);
+	for (size_t j = 0; j < np; j++) qy_rad[j] = y[j] * D2R;
+
+	const size_t nc = ncol();
+	std::vector<int64_t> cols(nc);
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> tox = xFromCol(cols);   // degrees
+
+	if (nrow() > 1000) {
+		opt.steps = std::max(opt.steps, (size_t) 4);
+		opt.progress = opt.progress * 2;
+	}
+
+	if (skip) {
+		if (!readStart()) {
+			out.setError(getError());
+			return out;
+		}
+	}
+	if (!out.writeStart(opt, filenames())) {
+		if (skip) readStop();
+		return out;
+	}
+
+	// maxdist is specified in output units (m if unit="m", km if unit="km").
+	// Internally we work in meters, so convert once. seed_dist sits one ulp
+	// above the threshold so a real distance d == max_dist still updates
+	// cur_dist (preserving the original "strictly greater than" NaN rule),
+	// while a cell that never finds a point within max_dist stays at seed_dist
+	// and gets NaN'd by the post-filter.
+	const double max_m = (max_dist > 0) ? (max_dist / m) : inf;
+	const double seed_dist = std::isfinite(max_m) ? std::nextafter(max_m, inf) : inf;
+
+	for (size_t b = 0; b < out.bs.n; b++) {
+		const size_t nrow_blk = out.bs.nrows[b];
+		const size_t nblk = nrow_blk * nc;
+
+		std::vector<double> v;
+		if (skip) {
+			readBlock(v, out.bs, b);
+		}
+
+		std::vector<double> py_deg(nrow_blk), py_rad(nrow_blk);
+		for (size_t r = 0; r < nrow_blk; r++) {
+			py_deg[r] = yFromRow(out.bs.row[b] + r);
+			py_rad[r] = py_deg[r] * D2R;
+		}
+
+		std::vector<double> d(nblk);
+
+		auto process_row = [&](size_t r) {
+			const double py_d = py_deg[r];
+			const double py_r = py_rad[r];
+			const size_t row_off = r * nc;
+			const size_t mid = std::lower_bound(qy_rad.begin(), qy_rad.end(), py_r) - qy_rad.begin();
+
+			for (size_t c = 0; c < nc; c++) {
+				const size_t idx = row_off + c;
+				if (skip && !std::isnan(v[idx])) {
+					d[idx] = 0.0;
+					continue;
+				}
+				const double px_d = tox[c];
+				double cur_dist = seed_dist;  // meters
+
+				// Forward: qy >= py. |dlat| grows monotonically.
+				for (size_t j = mid; j < np; j++) {
+					const double dlat_m_lb = R_min * (qy_rad[j] - py_r);
+					if (dlat_m_lb >= cur_dist) break;
+					double dd, azi1, azi2;
+					geod_inverse(&g, py_d, px_d, y[j], x[j], &dd, &azi1, &azi2);
+					if (dd < cur_dist) cur_dist = dd;
+				}
+				// Backward: qy < py.
+				for (size_t jj = mid; jj > 0; jj--) {
+					const size_t j = jj - 1;
+					const double dlat_m_lb = R_min * (py_r - qy_rad[j]);
+					if (dlat_m_lb >= cur_dist) break;
+					double dd, azi1, azi2;
+					geod_inverse(&g, py_d, px_d, y[j], x[j], &dd, &azi1, &azi2);
+					if (dd < cur_dist) cur_dist = dd;
+				}
+
+				d[idx] = cur_dist;
+			}
+		};
+
+#if defined(USE_TBB)
+		if (opt.parallel) {
+			terra_parallel_for(opt, tbb::blocked_range<size_t>(0, nrow_blk),
+				[&](const tbb::blocked_range<size_t>& range) {
+					for (size_t r = range.begin(); r != range.end(); r++) {
+						process_row(r);
+					}
+				});
+		} else {
+			for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+		}
+#else
+		for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+#endif
+
+		if (m != 1.0) {
+			for (double &val : d) val *= m;
+		}
+		if (max_dist > 0) {
+			for (double &val : d) val = val > max_dist ? NAN : val;
+		}
+		if (skip && setNA) {
+			for (size_t i = 0; i < nblk; i++) {
+				if (v[i] == mxval) d[i] = NAN;
+			}
+		}
+
+		if (!out.writeBlock(d, b)) {
+			if (skip) readStop();
+			return out;
+		}
+	}
+
+	if (skip) readStop();
+	out.writeStop();
+	return out;
+}
+
+
+// ----------------------------------------------------------------------------
+// Fast path for distance(SpatRaster, SpatVector) for lon/lat polygons or lines
+// using the haversine/cosine method.
+//
+// Speedups over the brute-force path come from:
+//   1. Pre-extracting all segments once into a flat array (avoids per-block
+//      SpatVector reconstruction and repeated dispatch).
+//   2. Computing per-segment lat/lon bounding boxes that include the
+//      great-circle bulge (sampled along the geodesic). This makes a cheap
+//      lower-bound test correct even for very long edges (e.g. a polygon
+//      edge spanning >100 deg of longitude).
+//   3. Two-stage pruning per cell: first a near-free latitude-only lower
+//      bound (cells in a row share latitude, so this is computed once per
+//      row/segment), then a full bbox lower bound. The expensive
+//      dist2segment_cos call is only made when both lower bounds are
+//      smaller than the current best distance for the cell.
+//   4. A single pointInPolygon call per block instead of per-cell relate dispatch.
+//   5. TBB parallelism over rows within a block.
+// ----------------------------------------------------------------------------
+
+namespace {
+
+struct LLSeg {
+	double x1, y1, x2, y2;            // endpoint coords, radians
+	double minx, maxx, miny, maxy;    // tight bbox (incl. bulge), radians
+	bool wraps;                       // bbox crosses the antimeridian
+};
+
+// Compute a tight bbox of the great-circle arc between two lon/lat points
+// (in degrees). The bbox is returned in radians. We sample a handful of
+// points along the geodesic so the bbox contains the latitudinal
+// bulge that long arcs make toward the nearer pole.
+static void compute_seg_bbox(double lon1d, double lat1d,
+                             double lon2d, double lat2d, LLSeg &s) {
+	static const double D2R = 0.017453292519943295;
+	s.x1 = lon1d * D2R;  s.y1 = lat1d * D2R;
+	s.x2 = lon2d * D2R;  s.y2 = lat2d * D2R;
+
+	// Make lon2 continuous with lon1 (resolves antimeridian crossing).
+	double dlon = lon2d - lon1d;
+	while (dlon >  180.0) dlon -= 360.0;
+	while (dlon < -180.0) dlon += 360.0;
+	double lon2_cont = lon1d + dlon;
+
+	// Sample on a unit sphere; geod_inverse returns d in radians for a=1, f=0.
+	geod_geodesic g;
+	geod_init(&g, 1.0, 0.0);
+	double d, azi1, azi2;
+	geod_inverse(&g, lat1d, lon1d, lat2d, lon2d, &d, &azi1, &azi2);
+
+	const int N = 12;
+	double minx_d = std::min(lon1d, lon2_cont);
+	double maxx_d = std::max(lon1d, lon2_cont);
+	double miny_d = std::min(lat1d, lat2d);
+	double maxy_d = std::max(lat1d, lat2d);
+
+	if (d > 0.0) {
+		for (int i = 1; i < N; i++) {
+			double frac = static_cast<double>(i) / N;
+			double lat_o, lon_o, azi_o;
+			geod_direct(&g, lat1d, lon1d, azi1, d * frac, &lat_o, &lon_o, &azi_o);
+			while (lon_o - lon1d >  180.0) lon_o -= 360.0;
+			while (lon_o - lon1d < -180.0) lon_o += 360.0;
+			if (lon_o < minx_d) minx_d = lon_o;
+			if (lon_o > maxx_d) maxx_d = lon_o;
+			if (lat_o < miny_d) miny_d = lat_o;
+			if (lat_o > maxy_d) maxy_d = lat_o;
+		}
+	}
+
+	s.miny = miny_d * D2R;
+	s.maxy = maxy_d * D2R;
+
+	// Map bbox back to [-180, 180]. If after mapping minx > maxx, the
+	// bbox spans the antimeridian and we mark it as wrapping.
+	double mn = minx_d, mx = maxx_d;
+	while (mn < -180.0) mn += 360.0;
+	while (mn >  180.0) mn -= 360.0;
+	while (mx < -180.0) mx += 360.0;
+	while (mx >  180.0) mx -= 360.0;
+	if (maxx_d - minx_d >= 360.0) {
+		s.wraps = false;
+		s.minx = -M_PI;
+		s.maxx =  M_PI;
+	} else {
+		s.wraps = (mn > mx);
+		s.minx = mn * D2R;
+		s.maxx = mx * D2R;
+	}
+}
+
+// Haversine angular distance (radians) used inside lower-bound helpers.
+inline double hav_rad(double px, double py, double qx, double qy,
+                     double cos_py) {
+	double dLat = qy - py;
+	double dLon = qx - px;
+	if (dLon >  M_PI) dLon -= M_2PI;
+	if (dLon < -M_PI) dLon += M_2PI;
+	double sLat = sin(dLat * 0.5);
+	double sLon = sin(dLon * 0.5);
+	double a = sLat * sLat + cos_py * cos(qy) * sLon * sLon;
+	if (a < 0.0) a = 0.0;
+	if (a > 1.0) a = 1.0;
+	return 2.0 * asin(sqrt(a));
+}
+
+// True lower bound on the geodesic distance from point (px, py) (in radians)
+// to a segment's bounding box, in meters. Computes the *closest point on the
+// bbox* in geodesic distance properly: for the top/bottom edges (constant
+// latitude), the longitude that minimises distance is the cell's longitude
+// clamped to the bbox lon range. For the left/right edges (constant
+// longitude), the optimal latitude is found analytically from
+// d/dqy [sin(py)*sin(qy) + cos(py)*cos(dlon)*cos(qy)] = 0
+// which gives qy* = atan2(sin(py), cos(py)*cos(dlon)) when that lies in
+// (-pi/2, pi/2); otherwise the optimum on [miny, maxy] is at one of the
+// endpoints. We evaluate both endpoints unconditionally and the analytic
+// optimum when it falls inside the bbox.
+//
+inline double bbox_lower_bound_m(double px, double py, double cos_py, const LLSeg &s) {
+	static const double EARTH_R = 6378137.0;
+
+	bool inside_lat = (py >= s.miny && py <= s.maxy);
+	bool inside_lon;
+	if (s.wraps) {
+		inside_lon = (px >= s.minx) || (px <= s.maxx);
+	} else {
+		inside_lon = (px >= s.minx && px <= s.maxx);
+	}
+	if (inside_lat && inside_lon) return 0.0;
+
+	// Closest qx in bbox lon range to px.
+	double qx_clamp;
+	if (inside_lon) {
+		qx_clamp = px;
+	} else if (s.wraps) {
+		double d1 = s.minx - px;
+		double d2 = px - s.maxx;
+		qx_clamp = (d1 <= d2) ? s.minx : s.maxx;
+	} else {
+		double d_min = std::fabs(px - s.minx);
+		if (d_min > M_PI) d_min = M_2PI - d_min;
+		double d_max = std::fabs(px - s.maxx);
+		if (d_max > M_PI) d_max = M_2PI - d_max;
+		qx_clamp = (d_min <= d_max) ? s.minx : s.maxx;
+	}
+
+	// Top and bottom edges (constant lat).
+	double D = hav_rad(px, py, qx_clamp, s.maxy, cos_py);
+	double D_bot = hav_rad(px, py, qx_clamp, s.miny, cos_py);
+	if (D_bot < D) D = D_bot;
+
+	// Left and right edges (constant lon): also test analytic optimum qy.
+	const double half_pi = M_PI * 0.5;
+	double qx_edge[2] = { s.minx, s.maxx };
+	for (int e = 0; e < 2; e++) {
+		double qx = qx_edge[e];
+		double D_min_y = hav_rad(px, py, qx, s.miny, cos_py);
+		double D_max_y = hav_rad(px, py, qx, s.maxy, cos_py);
+		double D_edge = std::min(D_min_y, D_max_y);
+		double dlon = px - qx;
+		if (dlon >  M_PI) dlon -= M_2PI;
+		if (dlon < -M_PI) dlon += M_2PI;
+		double A = sin(py);
+		double B = cos_py * cos(dlon);
+		if (B > 0.0) {
+			double qy_opt = atan2(A, B);
+			if (qy_opt > -half_pi && qy_opt < half_pi && qy_opt > s.miny && qy_opt < s.maxy) {
+				double D_opt = hav_rad(px, py, qx, qy_opt, cos_py);
+				if (D_opt < D_edge) D_edge = D_opt;
+			}
+		}
+		if (D_edge < D) D = D_edge;
+	}
+
+	return D * EARTH_R;
+}
+
+// Push every line segment of every part (and every hole) of `p` into `out`
+// with its bbox precomputed. `p` is taken non-const because several SpatVector
+// accessors (size(), nHoles(), parts indexing) are not declared const.
+static void collect_segments(SpatVector &p, std::vector<LLSeg> &out) {
+	size_t total = 0;
+	for (size_t g = 0; g < p.size(); g++) {
+		for (size_t h = 0; h < p.geoms[g].size(); h++) {
+			SpatPart &part = p.geoms[g].parts[h];
+			if (part.x.size() > 1) total += part.x.size() - 1;
+			for (size_t k = 0; k < part.nHoles(); k++) {
+				if (part.holes[k].x.size() > 1) total += part.holes[k].x.size() - 1;
+			}
+		}
+	}
+	out.clear();
+	out.reserve(total);
+
+	for (size_t g = 0; g < p.size(); g++) {
+		for (size_t h = 0; h < p.geoms[g].size(); h++) {
+			SpatPart &part = p.geoms[g].parts[h];
+			for (size_t i = 0; i + 1 < part.x.size(); i++) {
+				LLSeg s;
+				compute_seg_bbox(part.x[i], part.y[i],
+				                 part.x[i+1], part.y[i+1], s);
+				out.push_back(s);
+			}
+			for (size_t k = 0; k < part.nHoles(); k++) {
+				SpatHole &hole = part.holes[k];
+				for (size_t i = 0; i + 1 < hole.x.size(); i++) {
+					LLSeg s;
+					compute_seg_bbox(hole.x[i], hole.y[i], hole.x[i+1], hole.y[i+1], s);
+					out.push_back(s);
+				}
+			}
+		}
+	}
+}
+
+} // anonymous namespace
+
+
+SpatRaster SpatRaster::distance_vector_lonlat_fast(SpatVector p, std::string unit, const std::string& method, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+
+	if (source[0].srs.is_empty() && p.srs.is_empty()) {
+		out.addWarning("unknown CRSs. Results can be wrong");
+	} else if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRSs do not match");
+		return out;
+	}
+	if (p.empty()) {
+		out.setError("no locations to compute distance from");
+		return out;
+	}
+	if ((unit != "m") && (unit != "km")) {
+		out.setError("invalid unit. Must be 'm' or 'km'");
+		return out;
+	}
+	if ((method != "haversine") && (method != "cosine")) {
+		// callers should only route us here for these methods
+		out.setError("internal: distance_vector_lonlat_fast called with unsupported method");
+		return out;
+	}
+
+	std::string gtype = p.type();
+	if ((gtype != "polygons") && (gtype != "lines")) {
+		out.setError("internal: distance_vector_lonlat_fast called with non-line/polygon input");
+		return out;
+	}
+	bool is_poly = (gtype == "polygons");
+
+	if (p.nrow() > 1) {
+		p = p.aggregate(true);
+	}
+
+	std::vector<LLSeg> segs;
+	collect_segments(p, segs);
+	const size_t nseg = segs.size();
+	if (nseg == 0) {
+		out.setError("no segments to compute distance from");
+		return out;
+	}
+
+	const double EARTH_R = 6378137.0;
+	const double D2R = 0.017453292519943295;
+	const double m_unit = (unit == "km") ? 0.001 : 1.0;
+
+	const size_t nc = ncol();
+
+	std::vector<int64_t> cols(nc);
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> xs_deg = xFromCol(cols);   // longitudes (deg) once
+	std::vector<double> xs_rad(nc);
+	for (size_t c = 0; c < nc; c++) xs_rad[c] = xs_deg[c] * D2R;
+
+	if (!out.writeStart(opt, filenames())) {
+		return out;
+	}
+
+	for (size_t b = 0; b < out.bs.n; b++) {
+		const size_t nrow_blk = out.bs.nrows[b];
+		const size_t nblk = nrow_blk * nc;
+
+		std::vector<double> ys_deg(nrow_blk), ys_rad(nrow_blk);
+		for (size_t r = 0; r < nrow_blk; r++) {
+			ys_deg[r] = yFromRow(out.bs.row[b] + r);
+			ys_rad[r] = ys_deg[r] * D2R;
+		}
+
+		// One spherical point-in-polygon call per block (for polygons only).
+		// Uses great-circle arcs as edges 
+		std::vector<int> inside;
+		if (is_poly) {
+			std::vector<double> all_x(nblk), all_y(nblk);
+			for (size_t r = 0; r < nrow_blk; r++) {
+				for (size_t c = 0; c < nc; c++) {
+					all_x[r*nc + c] = xs_deg[c];
+					all_y[r*nc + c] = ys_deg[r];
+				}
+			}
+			inside = p.pointInPolygonGeo(all_x, all_y);
+		}
+
+		std::vector<double> d(nblk, std::numeric_limits<double>::infinity());
+
+		auto process_row = [&](size_t r) {
+			const double py = ys_rad[r];
+			const double cos_py = cos(py);
+
+			// Per-segment latitude-only lower bound, cached for the row.
+			// (geodesic distance is at least the meridional latitude difference)
+			// used as a quick reject before the more expensive bbox bound.
+			std::vector<double> seg_lat_lb(nseg);
+			for (size_t s = 0; s < nseg; s++) {
+				double dlat = 0.0;
+				if (py < segs[s].miny) {
+					dlat = segs[s].miny - py;
+				} else if (py > segs[s].maxy) {
+					dlat = py - segs[s].maxy;
+				}
+				seg_lat_lb[s] = EARTH_R * dlat;
+			}
+
+			const size_t row_off = r * nc;
+
+			for (size_t c = 0; c < nc; c++) {
+				const size_t idx = row_off + c;
+				if (is_poly && inside[idx]) {
+					d[idx] = 0.0;
+					continue;
+				}
+				const double px = xs_rad[c];
+				double cur = std::numeric_limits<double>::infinity();
+
+				for (size_t s = 0; s < nseg; s++) {
+					if (seg_lat_lb[s] >= cur) continue;
+					double lb = bbox_lower_bound_m(px, py, cos_py, segs[s]);
+					if (lb >= cur) continue;
+					double ds = dist2segment_cos(px, py, segs[s].x1, segs[s].y1, segs[s].x2, segs[s].y2, EARTH_R);
+					if (ds < cur) cur = ds;
+				}
+				d[idx] = cur;
+			}
+		};
+
+#if defined(USE_TBB)
+		if (opt.parallel) {
+			terra_parallel_for(opt, tbb::blocked_range<size_t>(0, nrow_blk),
+				[&](const tbb::blocked_range<size_t>& range) {
+					for (size_t r = range.begin(); r != range.end(); r++) {
+						process_row(r);
+					}
+				});
+		} else {
+			for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+		}
+#else
+		for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+#endif
+
+		if (m_unit != 1.0) {
+			for (double &v : d) v *= m_unit;
+		}
+		if (!out.writeBlock(d, b)) return out;
+	}
+
+	out.writeStop();
+	return out;
+}
+
+
+// ----------------------------------------------------------------------------
+// Fast path for distance(SpatRaster, SpatVector) for lon/lat polygons or lines
+// using the ellipsoidal "geo" method.
+//
+// Same structure as the haversine/cosine fast path, with these twists:
+//   * ellipsoid (a, f) is extracted from the CRS (WGS84 fallback)
+//   * the per-segment latitude-only lower bound uses R_min = a*(1-e^2), the
+//     minimum meridional radius of curvature, which is a true LB on geodesic
+//     distance given |dlat|.
+//   * the per-segment bbox lower bound (spherical, computed on R=a) is
+//     multiplied by (1-e^2) to guarantee a true LB on geodesic distance.
+//     (1-e^2) is ~0.9933 for WGS84, so the prune loses <0.7% of its sharpness
+//     relative to the spherical paths.
+// ----------------------------------------------------------------------------
+
+
+SpatRaster SpatRaster::distance_vector_lonlat_fast_geo(SpatVector p, std::string unit, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+
+	if (source[0].srs.is_empty() && p.srs.is_empty()) {
+		out.addWarning("unknown CRSs. Results can be wrong");
+	} else if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRSs do not match");
+		return out;
+	}
+	if (p.empty()) {
+		out.setError("no locations to compute distance from");
+		return out;
+	}
+	if ((unit != "m") && (unit != "km")) {
+		out.setError("invalid unit. Must be 'm' or 'km'");
+		return out;
+	}
+
+	std::string gtype = p.type();
+	if ((gtype != "polygons") && (gtype != "lines")) {
+		out.setError("internal: distance_vector_lonlat_fast_geo called with non-line/polygon input");
+		return out;
+	}
+	bool is_poly = (gtype == "polygons");
+
+	if (p.nrow() > 1) {
+		p = p.aggregate(true);
+	}
+
+	std::vector<LLSeg> segs;
+	collect_segments(p, segs);
+	const size_t nseg = segs.size();
+	if (nseg == 0) {
+		out.setError("no segments to compute distance from");
+		return out;
+	}
+
+	const double D2R = 0.017453292519943295;
+	const double m_unit = (unit == "km") ? 0.001 : 1.0;
+
+	// Ellipsoid params from source CRS (WGS84 fallback). Falls back to WGS84
+	// when source has empty SRS; if source empty but vector has a valid SRS,
+	// try that too.
+	double geo_a, geo_f;
+	if (!source[0].srs.is_empty()) {
+		geo_ellipsoid_from_wkt(source[0].srs.wkt, geo_a, geo_f);
+	} else {
+		geo_ellipsoid_from_wkt(p.srs.wkt, geo_a, geo_f);
+	}
+	const double e2 = geo_f * (2.0 - geo_f);
+	const double R_min = geo_a * (1.0 - e2);    // meridional radius of curvature (min)
+	const double bbox_scale = (1.0 - e2);       // safety factor on spherical-on-a LB
+
+	struct geod_geodesic g_ell;
+	geod_init(&g_ell, geo_a, geo_f);
+
+	const size_t nc = ncol();
+	std::vector<int64_t> cols(nc);
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> xs_deg = xFromCol(cols);
+	std::vector<double> xs_rad(nc);
+	for (size_t c = 0; c < nc; c++) xs_rad[c] = xs_deg[c] * D2R;
+
+	if (!out.writeStart(opt, filenames())) {
+		return out;
+	}
+
+	for (size_t b = 0; b < out.bs.n; b++) {
+		const size_t nrow_blk = out.bs.nrows[b];
+		const size_t nblk = nrow_blk * nc;
+
+		std::vector<double> ys_deg(nrow_blk), ys_rad(nrow_blk);
+		for (size_t r = 0; r < nrow_blk; r++) {
+			ys_deg[r] = yFromRow(out.bs.row[b] + r);
+			ys_rad[r] = ys_deg[r] * D2R;
+		}
+
+		std::vector<int> inside;
+		if (is_poly) {
+			std::vector<double> all_x(nblk), all_y(nblk);
+			for (size_t r = 0; r < nrow_blk; r++) {
+				for (size_t c = 0; c < nc; c++) {
+					all_x[r*nc + c] = xs_deg[c];
+					all_y[r*nc + c] = ys_deg[r];
+				}
+			}
+			inside = p.pointInPolygonGeo(all_x, all_y);
+		}
+
+		std::vector<double> d(nblk, std::numeric_limits<double>::infinity());
+
+		auto process_row = [&](size_t r) {
+			const double py = ys_rad[r];
+			const double py_d = ys_deg[r];
+			const double cos_py = cos(py);
+
+			// Per-segment latitude-only geodesic lower bound, cached for the row.
+			std::vector<double> seg_lat_lb(nseg);
+			for (size_t s = 0; s < nseg; s++) {
+				double dlat = 0.0;
+				if (py < segs[s].miny) dlat = segs[s].miny - py;
+				else if (py > segs[s].maxy) dlat = py - segs[s].maxy;
+				seg_lat_lb[s] = R_min * dlat;
+			}
+
+			const size_t row_off = r * nc;
+
+			for (size_t c = 0; c < nc; c++) {
+				const size_t idx = row_off + c;
+				if (is_poly && inside[idx]) {
+					d[idx] = 0.0;
+					continue;
+				}
+				const double px = xs_rad[c];
+				const double px_d = xs_deg[c];
+				double cur = std::numeric_limits<double>::infinity();
+
+				for (size_t s = 0; s < nseg; s++) {
+					if (seg_lat_lb[s] >= cur) continue;
+					double lb = bbox_scale * bbox_lower_bound_m(px, py, cos_py, segs[s]);
+					if (lb >= cur) continue;
+					double ds = dist2segment_geo_ell(px_d, py_d,
+					                                  segs[s].x1 / D2R, segs[s].y1 / D2R,
+					                                  segs[s].x2 / D2R, segs[s].y2 / D2R,
+					                                  geo_a, g_ell);
+					if (ds < cur) cur = ds;
+				}
+				d[idx] = cur;
+			}
+		};
+
+#if defined(USE_TBB)
+		if (opt.parallel) {
+			terra_parallel_for(opt, tbb::blocked_range<size_t>(0, nrow_blk),
+				[&](const tbb::blocked_range<size_t>& range) {
+					for (size_t r = range.begin(); r != range.end(); r++) {
+						process_row(r);
+					}
+				});
+		} else {
+			for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+		}
+#else
+		for (size_t r = 0; r < nrow_blk; r++) process_row(r);
+#endif
+
+		if (m_unit != 1.0) {
+			for (double &v : d) v *= m_unit;
+		}
+		if (!out.writeBlock(d, b)) return out;
+	}
+
+	out.writeStop();
+	return out;
+}
+
+
 SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string unit, const std::string& method, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (source[0].srs.wkt.empty()) {
-		out.setError("CRS not defined");
-		return(out);
-	}
-	if (!source[0].srs.is_same(p.srs, false)) {
-		out.setError("CRS do not match");
+	
+	if (source[0].srs.is_empty() && p.srs.is_empty()) {
+		out.addWarning("unknown CRSs. Results can be wrong");
+	} else if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRSs do not match");
 		return(out);
 	}
 	if (p.empty()) {
@@ -418,7 +1381,21 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 	} else {
 
 		if ((p.type() == "polygons") || (p.type() == "lines")) {
-			
+
+			// Fast path: lon/lat with haversine/cosine/geo method.
+			// Set TERRA_DIST_VECTOR_SLOW=1 to bypass for benchmarking.
+			if (lonlat) {
+				const char *slow = std::getenv("TERRA_DIST_VECTOR_SLOW");
+				bool fast_on = (slow == nullptr || slow[0] == '\0' || slow[0] == '0');
+				if (fast_on) {
+					if ((method == "haversine") || (method == "cosine")) {
+						return distance_vector_lonlat_fast(p, unit, method, opt);
+					} else if (method == "geo") {
+						return distance_vector_lonlat_fast_geo(p, unit, opt);
+					}
+				}
+			}
+
 			if (p.nrow() > 1) {
 				p = p.aggregate(true);
 			}
@@ -470,12 +1447,11 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, bool rasterize, std::string
 SpatRaster SpatRaster::direction_rasterize(SpatVector p, bool from, bool degrees, double target, double exclude, const std::string &method, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (source[0].srs.wkt.empty()) {
-		out.setError("CRS not defined");
-		return(out);
-	}
-	if (!source[0].srs.is_same(p.srs, false)) {
-		out.setError("CRS do not match");
+
+	if (source[0].srs.is_empty() && p.srs.is_empty()) {
+		out.addWarning("unknown CRSs. Results can be wrong");
+	} else if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRSs do not match");
 		return(out);
 	}
 	bool lonlat = is_lonlat(); 
@@ -645,11 +1621,30 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 		if (!opt.get_filename().empty()) {
 			out = out.writeRaster(opt);
 		}
+		if (source[0].srs.is_empty()) {
+			out.addWarning("unknown CRS. Results can be wrong");
+		} 
 		return out;
 	}
 	if (!(values || is_lonlat())) { // && std::isnan(target) && std::isnan(exclude)) {
-		return proximity(target, exclude, keepNA, unit, false, threshold, remove_zero, opt); 
+		out = proximity(target, exclude, keepNA, unit, false, threshold, remove_zero, opt); 
+		if (source[0].srs.is_empty()) {
+			out.addWarning("unknown CRS. Results can be wrong");
+		} 
+		return out;
 	}
+
+	// Use the lon/lat fast path for haversine/cosine/geo, unless
+	// TERRA_DIST_SLOW is set. The fast path is bit-equivalent (within tiny
+	// FP noise) to distance_crds for the same inputs.
+	const bool dist_slow_env = []() {
+		const char *slow = std::getenv("TERRA_DIST_SLOW");
+		return !(slow == nullptr || slow[0] == '\0' || slow[0] == '0');
+	}();
+	const bool use_fast_lonlat = is_lonlat() && !values && !dist_slow_env
+		&& ((method == "haversine") || (method == "cosine"));
+	const bool use_fast_lonlat_geo = is_lonlat() && !values && !dist_slow_env
+		&& (method == "geo");
 
 	bool setNA = false;
 	std::vector<std::vector<double>> p;
@@ -665,6 +1660,10 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 			if (values) {
 				std::vector<std::vector<double>> vv = extractXY(p[0], p[1], "", false, opt);
 				return distance_crds_vals(p[0], p[1], vv[0], method, true, setNA, unit, threshold, opt);				
+			} else if (use_fast_lonlat) {
+				return distance_crds_lonlat_fast(p[0], p[1], method, true, setNA, unit, threshold, opt);
+			} else if (use_fast_lonlat_geo) {
+				return distance_crds_lonlat_fast_geo(p[0], p[1], true, setNA, unit, threshold, opt);
 			} else {
 				return distance_crds(p[0], p[1], method, true, setNA, unit, threshold, opt);
 			}
@@ -684,14 +1683,21 @@ SpatRaster SpatRaster::distance(double target, double exclude, bool keepNA, std:
 		out = edges(false, false, "inner", 8, 0, ops);
 		p = out.as_points_value(1, ops);
 	}
+	
 	if (p.empty()) {
-		return out.init({0}, opt);
-	}
-	if (values) {
+		out = out.init({0}, opt);
+	} else if (values) {
 		std::vector<std::vector<double>> vv = extractXY(p[0], p[1], "", false, opt);
 		out = out.distance_crds_vals(p[0], p[1], vv[0], method, true, setNA, unit, threshold, opt);				
+	} else if (use_fast_lonlat) {
+		out = out.distance_crds_lonlat_fast(p[0], p[1], method, true, setNA, unit, threshold, opt);
+	} else if (use_fast_lonlat_geo) {
+		out = out.distance_crds_lonlat_fast_geo(p[0], p[1], true, setNA, unit, threshold, opt);
 	} else {
 		out = out.distance_crds(p[0], p[1], method, true, setNA, unit, threshold, opt);
+	}
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
 	}
 	return out;
 }
@@ -742,509 +1748,6 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, double target, double 
 }
 
 
-
-
-
-
-inline double minCostDist(std::vector<double> &d) {
-	d.erase(std::remove_if(d.begin(), d.end(),
-		[](const double& v) { return std::isnan(v); }), d.end());
-	std::sort(d.begin(), d.end());
-	return d.empty() ? NAN : d[0];
-}
-
-
-inline void DxDxyCost(const double &lat, const size_t &row, double xres, double yres, const double &dir, double &dx,  double &dy, double &dxy, double distscale, const double mult=2) {
-	double rlat = lat + (double)row * yres * dir;
-	dx  = distance_lonlat(0, rlat, xres, rlat) / (mult * distscale);
-	yres *= -dir;
-	dy  = distance_lonlat(0, 0, 0, yres);
-	dxy = distance_lonlat(0, rlat, xres, rlat+yres);
-	dy = std::isnan(dy) ? NAN : dy / (mult * distscale);
-	dxy = std::isnan(dxy) ? NAN : dxy / (mult * distscale);
-}
-
-
-void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir, bool global, bool npole, bool spole) {
-
-	std::vector<double> cd;
-
-	double dx, dy, dxy;
-	if (geo) {
-		DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist);
-	} else {
-		dx = res[0] * lindist / 2;
-		dy = res[1] * lindist / 2;
-		dxy = sqrt(dx*dx + dy*dy);
-	}
-
-	//top to bottom
-    //left to right
-	//first cell, no cell left of it
-	if (!std::isnan(v[0])) {
-		if (global) {
-			cd = {dist[0], dabove[0] + (v[0]+vabove[0]) * dy,
-				dist[nc-1] + (v[0] + v[nc-1]) * dx,
-				dabove[nc-1] + dxy * (vabove[nc-1]+v[0])};
-		} else {
-			cd = {dist[0], dabove[0] + (v[0]+vabove[0]) * dy};
-		}
-		dist[0] = minCostDist(cd);
-	}
-	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
-		if (!std::isnan(v[i])) {
-			cd = {dist[i], dabove[i]+(vabove[i]+v[i])*dy, dabove[i-1]+(vabove[i-1]+v[i])*dxy, dist[i-1]+(v[i-1]+v[i])*dx};
-			dist[i] = minCostDist(cd);
-		}
-	}
-	if (npole) {
-		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
-		minp += dy;
-		for (size_t i=0; i<nc; i++) {
-			dist[i] = std::min(dist[i], minp);
-		}
-	}
-
-
-	for (size_t r=1; r<nr; r++) { //other rows
-		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
-		size_t start=r*nc;
-		if (!std::isnan(v[start])) {
-			if (global) {
-				cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start],
-					dist[start+nc-1] + (v[start] + v[start+nc-1]) * dx,
-					dist[start-1] + (v[start] + v[start-1]) * dxy};
-			} else {
-				cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start]};
-			}
-			dist[start] = minCostDist(cd);
-		}
-		size_t end = start+nc;
-		for (size_t i=(start+1); i<end; i++) {
-			if (!std::isnan(v[i])) {
-				cd = {dist[i], dist[i-1]+(v[i]+v[i-1])*dx, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i-nc-1]+(v[i]+v[i-nc-1])*dxy};
-				dist[i] = minCostDist(cd);
-			}
-		}
-	}
-	if (spole) {
-		double minp = *std::min_element(dist.end()-nc, dist.end());
-		minp += dy;
-		size_t ds = dist.size();
-		for (size_t i=ds-nc; i<ds; i++) {
-			dist[i] = std::min(dist[i], minp);
-		}
-	}
-
-	//right to left
-	// first row, no need for first (last) cell (unless is global)
-	if (geo) DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist);
-	if (global) {
-		size_t i=(nc-1);
-		cd = {dist[i],
-			dist[0] + (v[0] + v[i]) * dx,
-			dabove[0] + dxy * (vabove[0]+v[i])};
-		dist[i] = minCostDist(cd);
-	}
-	if (npole) {
-		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
-		minp += dy;
-		for (size_t i=0; i<nc; i++) {
-			dist[i] = std::min(dist[i], minp);
-		}
-	}
-
-	for (int i=(nc-2); i > -1; i--) { // other cells on first row
-		if (!std::isnan(v[i])) {
-			cd = {dabove[i]+(vabove[i]+v[i])*dy, dabove[i+1]+(vabove[i+1]+v[i])*dxy, dist[i+1]+(v[i+1]+v[i])*dx, dist[i]};
-			dist[i] = minCostDist(cd);
-		}
-	}
-
-	for (size_t r=1; r<nr; r++) { // other rows
-		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
-		size_t start=(r+1)*nc-1;
-
-		if (!std::isnan(v[start])) {
-			if (global) {
-				cd = { dist[start], dist[start-nc] + (v[start-nc]+v[start])* dy,
-					dist[start-nc+1] + (v[start-nc+1] + v[start]) * dx,
-					dist[start-(2*nc)+1] + (v[start-(2*nc)+1] + v[start]) * dxy
-				};
-
-			} else {
-				cd = { dist[start], dist[start-nc] + (v[start-nc]+v[start])* dy };
-			}
-			dist[start] = minCostDist(cd);
-		}
-
-		size_t end=r*nc;
-		start -= 1;
-		for (size_t i=start; i>=end; i--) {
-			if (!std::isnan(v[i])) {
-				cd = { dist[i+1]+(v[i+1]+v[i])*dx, dist[i-nc+1]+(v[i]+v[i-nc+1])*dxy, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i]};
-				dist[i] = minCostDist(cd);
-			}
-		}
-	}
-	if (spole) {
-		double minp = *std::min_element(dist.end()-nc, dist.end());
-		minp += dy;
-		size_t ds = dist.size();
-		for (size_t i=ds-nc; i<ds; i++) {
-			dist[i] = std::min(dist[i], minp);
-		}
-	}
-
-	size_t off = (nr-1) * nc;
-	dabove = std::vector<double>(dist.begin()+off, dist.end());
-	vabove = std::vector<double>(v.begin()+off, v.end());
-
-}
-
-
-void grid_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir, bool global, bool npole, bool spole) {
-
-	std::vector<double> cd;
-
-	double dx, dy, dxy;
-	if (geo) {
-		DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist, 1);
-	} else {
-		dx = res[0] * lindist;
-		dy = res[1] * lindist;
-		dxy = sqrt(dx*dx + dy*dy);
-	}
-
-	//top to bottom
-    //left to right
-	//first cell, no cell left of it
-	if (!std::isnan(v[0])) {
-		if (global) {
-			cd = {dist[0], dabove[0] + dy,
-				dist[nc-1] + dx,
-				dabove[nc-1] + dxy};
-		} else {
-			cd = {dist[0], dabove[0] + dy};
-		}
-		dist[0] = minCostDist(cd);
-	}
-	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
-		if (!std::isnan(v[i])) {
-			cd = {dist[i], dabove[i]+dy, dabove[i-1]+dxy, dist[i-1]+dx};
-			dist[i] = minCostDist(cd);
-		}
-	}
-	if (npole) {
-		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
-		minp += dy;
-		for (size_t i=0; i<nc; i++) {
-			dist[i] = std::min(dist[i], minp);
-		}
-	}
-
-
-	for (size_t r=1; r<nr; r++) { //other rows
-		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist, 1);
-		size_t start=r*nc;
-		if (!std::isnan(v[start])) {
-			if (global) {
-				cd = {dist[start-nc] + dy, dist[start],
-					dist[start+nc-1] + dx,
-					dist[start-1] + dxy};
-			} else {
-				cd = {dist[start-nc] + dy, dist[start]};
-			}
-			dist[start] = minCostDist(cd);
-		}
-		size_t end = start+nc;
-		for (size_t i=(start+1); i<end; i++) {
-			if (!std::isnan(v[i])) {
-				cd = {dist[i], dist[i-1]+dx, dist[i-nc]+dy, dist[i-nc-1]+dxy};
-				dist[i] = minCostDist(cd);
-			}
-		}
-	}
-	if (spole) {
-		double minp = *std::min_element(dist.end()-nc, dist.end());
-		minp += dy;
-		size_t ds = dist.size();
-		for (size_t i=ds-nc; i<ds; i++) {
-			dist[i] = std::min(dist[i], minp);
-		}
-	}
-
-	//right to left
-	// first row, no need for first (last) cell (unless is global)
-	if (geo) DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist, 1);
-	if (global) {
-		size_t i=(nc-1);
-		cd = {dist[i],
-			dist[0] + dx,
-			dabove[0] + dxy};
-		dist[i] = minCostDist(cd);
-	}
-	if (npole) {
-		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
-		minp += dy;
-		for (size_t i=0; i<nc; i++) {
-			dist[i] = std::min(dist[i], minp);
-		}
-	}
-
-	for (int i=(nc-2); i > -1; i--) { // other cells on first row
-		if (!std::isnan(v[i])) {
-			cd = {dabove[i]+dy, dabove[i+1]+dxy, dist[i+1]+dx, dist[i]};
-			dist[i] = minCostDist(cd);
-		}
-	}
-
-	for (size_t r=1; r<nr; r++) { // other rows
-		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist, 1);
-		size_t start=(r+1)*nc-1;
-
-		if (!std::isnan(v[start])) {
-			if (global) {
-				cd = { dist[start], dist[start-nc] + dy,
-					dist[start-nc+1] + dx,
-					dist[start-(2*nc)+1] + dxy
-				};
-
-			} else {
-				cd = { dist[start], dist[start-nc] + dy };
-			}
-			dist[start] = minCostDist(cd);
-		}
-
-		size_t end=r*nc;
-		start -= 1;
-		for (size_t i=start; i>=end; i--) {
-			if (!std::isnan(v[i])) {
-				cd = { dist[i+1]+dx, dist[i-nc+1]+dxy, dist[i-nc]+dy, dist[i]};
-				dist[i] = minCostDist(cd);
-			}
-		}
-	}
-	if (spole) {
-		double minp = *std::min_element(dist.end()-nc, dist.end());
-		minp += dy;
-		size_t ds = dist.size();
-		for (size_t i=ds-nc; i<ds; i++) {
-			dist[i] = std::min(dist[i], minp);
-		}
-	}
-
-	size_t off = (nr-1) * nc;
-	dabove = std::vector<double>(dist.begin()+off, dist.end());
-	vabove = std::vector<double>(v.begin()+off, v.end());
-}
-
-void block_is_same(bool& same, std::vector<double>& x,  std::vector<double>& y) {
-	if (!same) return;
-	for (size_t i=0; i<x.size(); i++) {
-		if (!std::isnan(x[i]) && (x[i] != y[i])) {
-			same = false;
-			break;
-		}
-	}
-}
-
-
-
-
-
-
-SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double target, double m, bool lonlat, bool global, bool npole, bool spole, bool grid, SpatOptions &opt) {
-
-	std::vector<double> res = resolution();
-
-	SpatRaster first = geometry();
-	SpatRaster second = first;
-    std::vector<double> d, v, vv;
-	if (!readStart()) {
-		first.setError(getError());
-		return(first);
-	}
-	opt.progressbar = false;
- 	if (!first.writeStart(opt, filenames())) { return first; }
-
-	size_t nc = ncol();
-	std::vector<double> dabove(nc, NAN);
-	std::vector<double> vabove(nc, 0);
-	double lat = 0;
-	if (old.hasValues()) {
-		if (!old.readStart()) {
-			first.setError(getError());
-			return(first);
-		}
-		if (!first.writeStart(opt, filenames())) {
-			readStop();
-			old.readStop();
-			return first;
-		}
-
-		for (size_t i = 0; i < first.bs.n; i++) {
-			readBlock(v, first.bs, i);
-			if (lonlat) {
-				lat = yFromRow(first.bs.row[i]);
-			}
-			bool np = (i==0) && npole;
-			bool sp = (i==first.bs.n-1) && spole;
-			if (target != 0) {
-				for (size_t j=0; j<v.size(); j++) {
-					if (v[j] == target) {
-						v[j] = 0;
-					}
-				}
-			}
-			old.readBlock(d, first.bs, i);
-			if (grid) {
-				grid_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp);
-			} else {
-				cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp);
-			}
-			if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
-		}
-	} else {
-		converged = false;
-		for (size_t i = 0; i < first.bs.n; i++) {
-			if (lonlat) {
-				lat = yFromRow(first.bs.row[i]);
-			}
-			bool np = (i==0) && npole;
-			bool sp = (i==first.bs.n-1) && spole;
-			readBlock(v, first.bs, i);
-			d.clear();
-			d.resize(v.size(), NAN);
-			for (size_t j = 0; j < v.size(); j++) {
-				if (v[j] == target) {
-					v[j] = 0;
-					d[j] = 0;
-				} else if ((!grid) && (v[j] < 0)) {
-					readStop();
-					first.writeStop();
-					first.setError("negative friction values not allowed");
-					return first;
-				}
-			}
-			if (grid) {
-				grid_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp);
-			} else {
-				cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp);
-			}
-			if (!first.writeValuesRect(d, first.bs.row[i], first.bs.nrows[i], 0, nc)) return first;
-		}
-	}
-	first.writeStop();
-
-	if (!first.readStart()) {
-		return(first);
-	}
-
-	dabove = std::vector<double>(nc, NAN);
-	vabove = std::vector<double>(nc, 0);
-  	if (!second.writeStart(opt, filenames())) {
-		readStop();
-		first.readStop();
-		return second;
-	}
-	for (int i = second.bs.n; i>0; i--) {
-		if (lonlat) {
-			lat = yFromRow(second.bs.row[i-1] + second.bs.nrows[i-1] - 1);
-		}
-		bool sp = (i==1) && spole; //! reverse order
-		bool np = (i==(int)second.bs.n) && npole;
-        readBlock(v, second.bs, i-1);
-		if (target != 0) {
-			for (size_t j=0; j<v.size(); j++) {
-				if (v[j] == target) {
-					v[j] = 0;
-				}
-			}
-		}
-		first.readBlock(d, second.bs, i-1);
-		std::reverse(v.begin(), v.end());
-		std::reverse(d.begin(), d.end());
-		if (grid) {
-			grid_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1, global, np, sp);
-		} else {
-			cost_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1, global, np, sp);
-		}
-		std::reverse(d.begin(), d.end());
-		if (converged) {
-			old.readBlock(v, second.bs, i-1);
-			block_is_same(converged, d, v);
-		}
-		if (!second.writeValuesRect(d, second.bs.row[i-1], second.bs.nrows[i-1], 0, nc)) return second;
-	}
-	second.writeStop();
-	first.readStop();
-	if (old.hasValues()) {
-		old.readStop();
-	}
-	readStop();
-	return(second);
-}
-
-SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, bool grid, SpatOptions &opt) {
-
-	SpatRaster out = geometry(1);
-	if (!hasValues()) {
-		out.setError("cannot compute distance for a raster with no values");
-		return out;
-	}
-
-	std::string filename = opt.get_filename();
-	if (!filename.empty()) {
-		if (file_exists(filename) && (!opt.get_overwrite())) {
-			out.setError("output file exists. You can use 'overwrite=TRUE' to overwrite it");
-			return(out);
-		}
-	}
-
-	SpatOptions ops(opt);
-	if (nlyr() > 1) {
-		std::vector<size_t> lyr = {0};
-		out = subset(lyr, ops);
-		out = out.costDistance(target, m, maxiter, grid, opt);
-		out.addWarning("distance computations are only done for the first input layer");
-		return out;
-	}
-
-	bool lonlat = is_lonlat();
-	bool global = is_global_lonlat();
-	int polar = ns_polar();
-	bool npole = (polar == 1) || (polar == 2);
-	bool spole = (polar == -1) || (polar == 2);
-
-	double scale;
-	if (!lonlat) {
-		scale = source[0].srs.to_meter();
-		scale = std::isnan(scale) ? 1 : scale;
-		scale /= m;
-	} else {
-		scale = m;
-	}
-
-	std::vector<double> res = resolution();
-
-	size_t i = 0;
-	bool converged=false;
-	while (i < maxiter) {
-		out = costDistanceRun(out, converged, target, scale, lonlat, global, npole, spole, grid, ops);
-		if (out.hasError()) return out;
-		if (converged) break;
-		converged = true;
-		i++;
-	}
-	if (!filename.empty()) {
-		out = out.writeRaster(opt);
-	}
-	if (i == maxiter) {
-		out.addWarning("distance algorithm did not converge");
-	}
-	return(out);
-}
 
 
 
@@ -1568,6 +2071,11 @@ SpatRaster SpatRaster::gridDistance(double m, SpatOptions &opt) {
 
 	std::vector<double> res = resolution();
 	size_t nc = ncol();
+	
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
+	}
+	
 	bool lonlat = is_lonlat();
     std::vector<double> d, v;
 	std::vector<double> above(nc, std::numeric_limits<double>::infinity());
@@ -1957,6 +2465,9 @@ SpatRaster SpatRaster::buffer(double d, double background, bool include, SpatOpt
 		return out;
 	}
 
+	if (source[0].srs.is_empty()) {
+		out.addWarning("unknown CRS. Results can be wrong");
+	}
 
 	if (!is_lonlat()) {
 		SpatOptions opt2;
@@ -2007,7 +2518,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 
 	SpatRaster out = geometry(1);
 	if (out.source[0].srs.wkt.empty()) {
-		addWarning("unknown CRS. Results can be wrong");
+		out.addWarning("unknown CRS. Results can be wrong");
 		transform = false;
 	}
 
@@ -3281,4 +3792,825 @@ SpatRaster SpatRaster::hillshade(SpatRaster aspect, std::vector<double> angle, s
 }
 
 
+//=== surfaceArea ======================================
+
+/* Compute surface area, using method from:
+Jeff S. Jenness, 2004. Calculating Landscape Surface Area from Digital Elevation Models. Wildlife Society Bulletin 32(3):829-839. http://www.jstor.org/stable/3784807
+With edge adjustments. 
+From C code in R package "sp" by Barry Rowlingson <b.rowlingson@lancaster.ac.uk> (copyright 2010)
+Adapted for terra by Robert Hijmans (C++, support for lonlat) 
+*/
+
+inline double height(const std::vector<double> &heights, const long &ncols, const size_t &row, const long &col) {
+	size_t ncr = ncols*row;
+	if (col < 0) {
+		return heights[ncr]; // + 0
+	} else if (col == ncols) {
+		return heights[ncr + (ncols-1)];
+	} else {
+		return heights[ncr + col];
+	}
+}
+
+inline double triarea(const double &a, const double &b, const double &c) {
+	// triangle area given side lengths
+	double s = (a + b + c) / 2.0;
+	return sqrt(s * (s-a) * (s-b) * (s-c));
+}
+
+
+void sarea(std::vector<double> &heights, const size_t &nrow, const long &ncol, const std::vector<double> &w, const double &h, bool lonlat, std::vector<double> &sa) {
+
+// given an nx by ny matrix of heights with single-cell edge border, compute the surface area.
+
+// offsets to neighbours
+	std::vector<int> dyv = {-1, -1, -1, 0, 1, 1, 1, 0, -1};
+	std::vector<int> dxv = {-1, 0, 1, 1, 1, 0, -1, -1, -1};
+
+// triangle diagonal length
+	double s2 = sqrt((w[0]*w[0]) + (h*h));
+// radial side lengths
+	std::vector<double> side = {s2, h, s2, w[0], s2, h, s2, w[0], s2};
+// outer edges lengths
+	std::vector<double> l3v = {w[0], w[0], h, h, w[0], w[0], h, h};
+
+	sa = std::vector<double>(heights.size() - 2*ncol, NAN);
+
+	size_t cell = 0;
+	for (size_t i=1; i<(nrow-1); i++){
+		if (lonlat) {
+			size_t k = i - 1;
+			s2 = sqrt((w[k]*w[k]) + (h*h));
+			side = {s2, h, s2, w[k], s2, h, s2, w[k], s2};
+			l3v = {w[k], w[k], h, h, w[k], w[k], h, h};
+		}
+
+		for (long j=0; j<ncol; j++) {
+			double z1 = height(heights, ncol, i, j);
+			if (!std::isnan(z1)) {
+				sa[cell] = 0;
+				for (size_t tri=0; tri<8; tri++){
+					double z2 = height(heights, ncol, i+dxv[tri], j+dyv[tri]);
+					// replace missing adjacent values with the current cell value
+					if (std::isnan(z2)) z2 = z1;
+					double z3 = height(heights, ncol, i+dxv[tri+1], j+dyv[tri+1]);
+					if (std::isnan(z3)) z3 = z1;
+					double l1 = 0.5 * sqrt(side[tri] * side[tri] + (z1-z2) * (z1-z2));
+					double l2 = 0.5 * sqrt(side[tri+1] * side[tri+1] + (z1-z3) * (z1-z3));
+					double l3 = 0.5 * sqrt(l3v[tri] * l3v[tri] + (z2-z3) * (z2-z3));
+					sa[cell] += triarea(l1, l2, l3);
+				}
+			}
+			cell++;
+		}	
+	}
+}
+
+
+SpatRaster SpatRaster::surfaceArea(SpatOptions &opt) {
+
+	SpatRaster out = geometry(1, false);
+	bool lonlat = is_lonlat();
+	if (lonlat) {
+		out.setError("not implemented for lonlat rasters");
+		return out;		
+	}
+	if (!hasValues()) {
+		out.setError("cannot compute surfaceArea for a raster with no values");
+		return out;
+	}
+	if (nlyr() != 1) {
+		out.setError("can only compute surfaceArea for a single raster layer");
+		return out;		
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+	BlockSize cbs = out.bs;
+	for (size_t i = 0; i < (cbs.n-1); i++) {
+		cbs.nrows[i] += 1;
+	}	
+	for (size_t i = 1; i < cbs.n; i++) {
+		cbs.row[i] -= 1;
+		cbs.nrows[i] += 1;
+	}
+	
+	size_t nc = ncol();	
+	double xr = xres();	
+	std::vector<double> resx = { xr };	
+	double resy = yres();
+	if (lonlat) {
+		resy = distance_lonlat(0, 0, 0, resy);		
+	} 
+	std::vector<int64_t> rows;
+
+	for (size_t i = 0; i < cbs.n; i++) {
+		std::vector<double> v;
+		readBlock(v, cbs, i);
+		if (i==0) {
+			v.insert(v.begin(), v.begin(), v.begin()+nc);
+		}
+		if (i == (cbs.n - 1)) {
+			v.insert(v.end(), v.end()-nc, v.end());
+		}
+		if (lonlat) {
+			rows.resize(out.bs.nrows[i]);
+			std::iota(rows.begin(), rows.end(), out.bs.row[i]);
+			std::vector<double> y = yFromRow(rows);
+			resx = distance_lon(xr, y);
+		}
+		std::vector<double> sa;
+		sarea(v, out.bs.nrows[i]+2, nc, resx, resy, lonlat, sa);
+		if (!out.writeBlock(sa, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
+//=== patches ======================================
+
+
+struct PatchUnionFind {
+	std::vector<double> parents;
+	size_t start_id;
+
+	PatchUnionFind(size_t start) : start_id(start) {}
+
+	void make_set(double id) {
+		parents.push_back(id); 
+	}
+
+	double find(double id) {
+		if (std::isnan(id)) return id;
+		if (id < start_id) return id; 
+		
+		size_t idx = (size_t)(id - start_id);
+		if (parents[idx] == id) return id;
+		
+		parents[idx] = find(parents[idx]); 
+		return parents[idx];
+	}
+
+	void unite(double id1, double id2, std::vector<std::vector<size_t>>& rcl) {
+		double root1 = find(id1);
+		double root2 = find(id2);
+		if (root1 == root2) return;
+
+		bool g1 = root1 < start_id;
+		bool g2 = root2 < start_id;
+
+		if (g1 && g2) {
+			rcl[0].push_back((size_t)root1);
+			rcl[1].push_back((size_t)root2);
+			return;
+		}
+
+		if (g1) {
+			parents[(size_t)(root2 - start_id)] = root1;
+		} else if (g2) {
+			parents[(size_t)(root1 - start_id)] = root2;
+		} else {
+			if (root1 < root2)
+				parents[(size_t)(root2 - start_id)] = root1;
+			else
+				parents[(size_t)(root1 - start_id)] = root2;
+		}
+	}
+};
+
+void broom_patches(const std::vector<double> &vals, std::vector<double> &patches, std::vector<double>& above_p, std::vector<double>& above_v, const size_t &dirs, size_t &ncps, const size_t &nr, const size_t &nc, std::vector<std::vector<size_t>> &rcl, bool is_global) {
+
+	PatchUnionFind uf(ncps);
+	bool d4 = dirs == 4;
+	size_t stopnc = nc-1;
+	std::vector<double> d;
+	
+	auto check_neighbor = [&](double val, double neighbor_val, double neighbor_patch, std::vector<double>& candidates) {
+		if (!std::isnan(neighbor_val) && !std::isnan(neighbor_patch)) {
+			if (is_equal(val, neighbor_val)) {
+				candidates.push_back(neighbor_patch);
+			}
+		}
+	};
+
+	auto assign_patch = [&](size_t idx, std::vector<double>& candidates) {
+		if (candidates.empty()) {
+			patches[idx] = ncps;
+			uf.make_set(ncps);
+			ncps++;
+		} else {
+			double chosen = candidates[0];
+			patches[idx] = chosen;
+			for (size_t k = 1; k < candidates.size(); ++k) {
+				uf.unite(chosen, candidates[k], rcl);
+			}
+		}
+	};
+
+	//first row
+	if ( !std::isnan(vals[0]) ) {
+		d.clear();
+		if (d4) {
+			check_neighbor(vals[0], above_v[0], above_p[0], d);
+		} else if (is_global) { 
+			check_neighbor(vals[0], above_v[0], above_p[0], d);
+			check_neighbor(vals[0], above_v[1], above_p[1], d);
+			check_neighbor(vals[0], above_v[stopnc], above_p[stopnc], d);
+		} else { 
+			check_neighbor(vals[0], above_v[0], above_p[0], d);
+			check_neighbor(vals[0], above_v[1], above_p[1], d);
+		}
+		assign_patch(0, d);
+	}
+
+	for (size_t i=1; i<stopnc; i++) {
+		if (!std::isnan(vals[i])) {
+			d.clear();
+			check_neighbor(vals[i], above_v[i], above_p[i], d);
+			check_neighbor(vals[i], vals[i-1], patches[i-1], d);
+			if (!d4) {
+				check_neighbor(vals[i], above_v[i-1], above_p[i-1], d);
+				check_neighbor(vals[i], above_v[i+1], above_p[i+1], d);
+			}
+			assign_patch(i, d);
+		}
+	}
+	
+	size_t i = stopnc;
+	if (!std::isnan(vals[i])) {
+		d.clear();
+		check_neighbor(vals[i], above_v[i], above_p[i], d);
+		check_neighbor(vals[i], vals[i-1], patches[i-1], d);
+		if (is_global) {
+			check_neighbor(vals[i], vals[0], patches[0], d);
+			if (!d4) {
+				check_neighbor(vals[i], above_v[i-1], above_p[i-1], d);
+				check_neighbor(vals[i], above_v[0], above_p[0], d);
+			}
+		} else if (!d4) {
+			check_neighbor(vals[i], above_v[i-1], above_p[i-1], d);
+		}
+		assign_patch(i, d);
+	}
+
+	for (size_t r=1; r<nr; r++) {
+		size_t start = r*nc;
+		size_t i=start;
+		if (!std::isnan(vals[i])) {
+			d.clear();
+			check_neighbor(vals[i], vals[i-nc], patches[i-nc], d);
+			if (is_global) {
+				if (!d4) {
+					check_neighbor(vals[i], vals[i-nc+1], patches[i-nc+1], d);
+					check_neighbor(vals[i], vals[i-1], patches[i-1], d);
+				}
+			} else if (!d4) {
+				check_neighbor(vals[i], vals[i-nc+1], patches[i-nc+1], d);
+			}
+			assign_patch(i, d);
+		}
+
+		size_t stop = start + stopnc;
+		for (size_t i=(start+1); i<stop; i++) {
+			if (!std::isnan(vals[i])) {
+				d.clear();
+				check_neighbor(vals[i], vals[i-1], patches[i-1], d);
+				check_neighbor(vals[i], vals[i-nc], patches[i-nc], d);
+				if (!d4) {
+					check_neighbor(vals[i], vals[i-nc-1], patches[i-nc-1], d);
+					check_neighbor(vals[i], vals[i-nc+1], patches[i-nc+1], d);
+				}
+				assign_patch(i, d);
+			}
+		}
+
+		i = stop;
+		if (!std::isnan(vals[i])) {
+			d.clear();
+			check_neighbor(vals[i], vals[i-1], patches[i-1], d);
+			check_neighbor(vals[i], vals[i-nc], patches[i-nc], d);
+			if (is_global) {
+				check_neighbor(vals[i], vals[start], patches[start], d);
+				if (!d4) {
+					check_neighbor(vals[i], vals[i-nc-1], patches[i-nc-1], d);
+					check_neighbor(vals[i], vals[start-nc], patches[start-nc], d);
+				}
+			} else if (!d4) {
+				check_neighbor(vals[i], vals[i-nc-1], patches[i-nc-1], d);
+			}
+			assign_patch(i, d);
+		}
+	}
+
+	for (size_t k = 0; k < patches.size(); ++k) {
+		if (!std::isnan(patches[k])) {
+			patches[k] = uf.find(patches[k]);
+		}
+	}
+
+	size_t off = (nr-1) * nc;
+	std::vector<double> last_row_p(patches.begin()+off, patches.end());
+	std::vector<double> last_row_v(vals.begin()+off, vals.end());
+	above_p = last_row_p;
+	above_v = last_row_v;
+}
+
+std::vector<std::vector<double>> patches_getRCL(std::vector<std::vector<size_t>> rcl, size_t n) {
+	std::vector<std::vector<size_t>> rcl2(rcl[0].size());
+	for (size_t i=0; i<rcl[0].size(); i++) {
+		rcl2[i].push_back(rcl[0][i]);
+		rcl2[i].push_back(rcl[1][i]);
+	}
+    std::sort(rcl2.begin(), rcl2.end());
+    rcl2.erase(std::unique(rcl2.begin(), rcl2.end()), rcl2.end());
+	std::vector<std::vector<double>> out(2);
+	for (size_t i=0; i<rcl2.size(); i++) {
+		out[0].push_back(rcl2[i][1]);
+		out[1].push_back(rcl2[i][0]);
+	}
+
+	for (size_t i=1; i<out[0].size(); i++) {
+		for (size_t j=0; j<i; j++) {
+			if (out[0][i] == out[1][j]) {
+				out[1][j] = out[0][i];
+			}
+		}
+	}
+
+	std::vector<double> lost = out[0];
+	lost.push_back(n);
+	size_t sub = 0;
+	for (size_t i=0; i<lost.size(); i++) {
+		sub++;
+		for (size_t j=lost[i]+1; j<lost[i+1]; j++) {
+			out[0].push_back(j);
+			out[1].push_back(j-sub);
+		}
+	}
+	return out;
+}
+
+SpatRaster SpatRaster::patches(size_t directions, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1, false);
+
+	if (nlyr() > 1) {
+		SpatOptions ops(opt);
+		std::vector<std::string> nms = getNames();
+		if (ops.names.size() == nms.size()) {
+			nms = opt.names;
+		}
+		for (size_t i=0; i<nlyr(); i++) {
+			std::vector<size_t> lyr = {i};
+			ops.names = {nms[i]};
+			SpatRaster x = subset(lyr, ops);
+			x = x.patches(directions, ops); 
+			out.addSource(x, false, ops);
+		}
+		if (!opt.get_filename().empty()) {
+			out = out.writeRaster(opt);
+		}
+		return out;
+	}
+
+	if (!hasValues()) {
+		out.setError("cannot compute patches for a raster with no values");
+		return out;
+	}
+	if (!((directions == 4) || (directions == 8))) {
+		out.setError("directions should be 4 or 8");
+		return out;		
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	
+	opt.set_filenames({""}); 
+  	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+
+    size_t nc = ncol();
+	size_t ncps = 1;
+	std::vector<double> above_p(nc, NAN);
+	std::vector<double> above_v(nc, NAN);
+	std::vector<std::vector<size_t>> rcl(2);
+	std::vector<double> v;
+	
+	bool is_global = is_global_lonlat();
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		readBlock(v, out.bs, i);
+		std::vector<double> p(v.size(), NAN); 
+		broom_patches(v, p, above_p, above_v, directions, ncps, out.bs.nrows[i], nc, rcl, is_global);
+		if (!out.writeBlock(p, i)) return out;
+	}
+	
+	readStop();
+	out.writeStop();
+	
+	std::string filename = opt.get_filename();
+	opt.set_filenames({filename});
+	
+	if (!rcl[0].empty()) {
+		std::vector<std::vector<double>> rc = patches_getRCL(rcl, ncps);
+		out = out.reclassify(rc, 3, true, false, 0.0, false, false, false, opt);
+	} else if (!filename.empty()) {
+		out = out.writeRaster(opt);
+	}
+
+	return(out);
+}
+
+//=== patches (end) ==================================
+
+
+//=== nearest ========================================
+
+std::vector<double> dn_bounds(const std::vector<double>& vx, const std::vector<double>& vy, const std::vector<double>& rx, const double& ry, size_t& first, size_t& last, const bool& lonlat, const std::string &method) {
+
+	std::vector<double> d(rx.size(), std::numeric_limits<double>::max());
+	size_t oldfirst = first;
+	first = vx.size();
+	last = 0;
+
+
+	if (lonlat) {
+		std::function<double(double, double, double, double)> dfun;
+		if (method == "haversine") {
+			dfun = distance_hav;
+		} else if (method == "cosine") {
+			dfun = distance_cos;			
+		} else {
+			dfun = distance_geo;
+		}
+
+		
+		for (size_t i=0; i<rx.size(); i++) {
+			size_t thisone = 0;
+			for (size_t j=oldfirst; j<vx.size(); j++) {
+				double dd = dfun(rx[i], ry, vx[j], vy[j]);
+				if (dd < d[i]) {
+					d[i] = dd;
+					thisone = j;
+				}
+			}
+			first = std::min(thisone, first);
+			last  = std::max(thisone, last);
+		}
+	} else {
+		for (size_t i=0; i<rx.size(); i++) {
+			size_t thisone = 0;
+			for (size_t j=oldfirst; j<vx.size(); j++) {
+				double dd = distance_plane(rx[i], ry, vx[j], vy[j]);
+				if (dd < d[i]) {
+					d[i] = dd;
+					thisone = j;
+				}
+			}
+			first = std::min(thisone, first);
+			last  = std::max(thisone, last);
+		}
+	}
+	last += 1;
+	return d;
+}
+
+
+void dn_only(std::vector<double> &d, const std::vector<double>& vx, const std::vector<double>& vy, const std::vector<double>& rx, const std::vector<double>& ry, const size_t& first, const size_t& last, const bool& lonlat, const std::vector<double>& dlast, bool skip, const std::string& method, bool setNA) {
+
+
+std::vector<double> clast;
+
+std::vector<double> cell;
+const std::vector<double> v;
+
+	size_t rxs = rx.size();
+	d.reserve(rxs + dlast.size());
+	cell.reserve(rxs + dlast.size());
+
+	double inf = std::numeric_limits<double>::infinity();
+
+	if (lonlat) {
+
+		if (method == "geo") {
+
+			double dd, azi1, azi2;
+			struct geod_geodesic g;
+			// get a and f from crs?
+			double a = 6378137.0;
+			double f = 1/298.257223563;
+			geod_init(&g, a, f);
+
+			if (skip) {
+				for (size_t i=0; i<rxs; i++) {
+					if (std::isnan(v[i])) {
+						d.push_back(inf);
+						cell.push_back(NAN);
+						for (size_t j=first; j<last; j++) {
+							geod_inverse(&g, ry[i], rx[i], vy[j], vx[j], &dd, &azi1, &azi2);
+							if (dd < d[i]) {
+								d[i] = dd;
+								cell[i] = j;
+							}
+						}
+					} else {
+						d.push_back(0);
+						cell.push_back(NAN);
+					}
+				}
+			} else { // no skip
+
+				for (size_t i=0; i<rxs; i++) {
+					d.push_back(inf);
+					cell.push_back(NAN);
+					for (size_t j=first; j<last; j++) {
+						geod_inverse(&g, ry[i], rx[i], vy[j], vx[j], &dd, &azi1, &azi2);
+						if (dd < d[i]) {
+							d[i] = dd;
+							cell[i] = j;
+						}
+					}
+				} 
+			}
+
+		} else { // not geo
+	
+			std::function<double(double, double, double, double)> dfun;
+			if (method == "haversine") {
+				dfun = distance_hav;
+			} else if (method == "cosine") {
+				dfun = distance_cos;
+			} 
+			if (skip) {
+				
+				for (size_t i=0; i<rxs; i++) {
+					if (std::isnan(v[i])) {
+						d.push_back(inf);
+						cell.push_back(NAN);
+						for (size_t j=first; j<last; j++) {
+							double dd = dfun(rx[i], ry[i], vx[j], vy[j]);
+							if (dd < d[i]) {
+								d[i] = dd;
+								cell[i] = j;
+							}
+						}
+					} else {
+						d.push_back(0);
+						cell.push_back(NAN);
+					}
+				}		
+			} else {	
+				for (size_t i=0; i<rxs; i++) {
+					d.push_back(inf);
+					cell.push_back(NAN);
+					for (size_t j=first; j<last; j++) {
+						//double dd = distHaversine(rx[i], ry[i], vx[j], vy[j]);
+						double dd = dfun(rx[i], ry[i], vx[j], vy[j]);
+
+						if (dd < d[i]) {
+							d[i] = dd;
+							cell[i] = j;
+						}
+					}
+				}
+			} 
+		}
+		
+	} else { // not lonlat
+		if (skip) {
+			for (size_t i=0; i<rxs; i++) {
+				if (std::isnan(v[i])) {
+					d.push_back(inf);
+					cell.push_back(NAN);
+					for (size_t j=first; j<last; j++) {
+						double dd = distance_plane(rx[i], ry[i], vx[j], vy[j]);
+						if (dd < d[i]) {
+							d[i] = dd;
+							cell[i] = j;
+						}
+					}
+				} else {
+					d.push_back(0);
+					cell.push_back(NAN);
+				}
+			}
+		} else {
+			for (size_t i=0; i<rxs; i++) {
+				d.push_back(inf);
+				cell.push_back(NAN);
+				for (size_t j=first; j<last; j++) {
+					double dd = distance_plane(rx[i], ry[i], vx[j], vy[j]);
+					if (dd < d[i]) {
+						d[i] = dd;
+						cell[i] = j;
+					}
+				}
+			}
+		}
+	}
+
+	d.insert(d.end(), dlast.begin(), dlast.end());
+	cell.insert(cell.end(), clast.begin(), clast.end());
+	if (skip) {
+		for (size_t i=rxs; i< v.size(); i++) {
+			if (!std::isnan(v[i])) {
+				d[i] = 0;
+				cell[i] = NAN;
+			}
+		}
+		if (setNA) {
+			double mxval = std::numeric_limits<double>::max();
+			for (size_t i=0; i< v.size(); i++) {
+				if (v[i] == mxval) {
+					d[i] = NAN;
+					cell[i] = NAN;
+				}
+			}
+		}
+	}
+}
+
+
+SpatRaster SpatRaster::dn_crds(std::vector<double>& x, std::vector<double>& y, const std::string& method, bool skip, bool setNA, std::string unit, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (x.empty()) {
+		out.setError("no locations to compute distance from");
+		return(out);
+	}
+	const double toRad = 0.0174532925199433;
+	std::vector<std::size_t> pm = sort_order_d(y);
+	permute(x, pm);
+	permute(y, pm);
+
+	bool lonlat = is_lonlat(); 
+
+	double m=1;
+	if (!source[0].srs.m_dist(m, lonlat, unit)) {
+		out.setError("invalid unit");
+		return(out);
+	}
+
+
+	unsigned nc = ncol();
+	opt.steps = std::max(opt.steps, (size_t) 4);
+	opt.progress = opt.progress * 1.5;
+
+ 	if (!out.writeStart(opt, filenames())) {
+		readStop();
+		return out;
+	}
+	std::vector<double> cells;
+	std::vector<double> dlast;
+
+	std::vector<int64_t> cols;
+	cols.resize(ncol());
+	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<double> tox = xFromCol(cols);
+
+	if (lonlat && (method != "geo")) {
+		for (double &d : x) d *= toRad;
+		for (double &d : y) d *= toRad;
+		for (double &d : tox) d *= toRad;
+	}
+
+	double oldfirst = 0;
+	size_t first = 0;
+	size_t last  = x.size();
+
+	std::vector<double> v;
+	if (skip) {
+		if (!readStart()) {
+			out.setError(getError());
+			return(out);
+		}
+		for (size_t i = 0; i < out.bs.n; i++) {
+			cells.resize((out.bs.nrows[i] -1) * nc) ;
+			std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
+			std::vector<std::vector<double>> rxy = xyFromCell(cells);
+			double toy = yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1);
+			if (lonlat && (method != "geo")) {
+				toy *= toRad;
+				for (double &d : rxy[0]) d *= toRad;
+				for (double &d : rxy[1]) d *= toRad;
+			}
+			readBlock(v, out.bs, i);
+			dlast = dn_bounds(x, y, tox, toy, first, last, lonlat, method);
+			std::vector<double> d;
+
+			dn_only(d, x, y, rxy[0], rxy[1], oldfirst, last, lonlat, dlast, true, method, setNA);
+			oldfirst = first;
+			if (m != 1) {
+				for (double &v : d) v *= m;
+			}
+			if (!out.writeBlock(d, i)) return out;
+		}
+		readStop();
+	} else {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			double toy = yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1);
+			cells.resize((out.bs.nrows[i] -1) * nc) ;
+			std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
+			std::vector<std::vector<double>> rxy = xyFromCell(cells);
+			if (lonlat && (method != "geo")) {
+				toy *= toRad;
+				for (double &d : rxy[0]) d *= toRad;
+				for (double &d : rxy[1]) d *= toRad;
+			}
+			dlast = dn_bounds(x, y, tox, toy, first, last, lonlat, method);
+			std::vector<double> d;
+			dn_only(d, x, y, rxy[0], rxy[1], oldfirst, last, lonlat, dlast, false, method, setNA);
+			oldfirst = first;
+			if (m != 1) {
+				for (double &v : d) v *= m;
+			}
+			if (!out.writeBlock(d, i)) return out;
+		}
+	}
+	out.writeStop();
+	return(out);
+}
+
+
+
+
+SpatRaster SpatRaster::nearest(double target, double exclude, bool keepNA, std::string unit, bool remove_zero, std::string method, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return out;
+	}
+
+	SpatOptions ops(opt);
+	size_t nl = nlyr();
+	if (nl > 1) {
+		std::vector<std::string> nms = getNames();
+		if (ops.names.size() == nms.size()) {
+			nms = opt.names;
+		}
+		out.source.resize(nl);
+		for (size_t i=0; i<nl; i++) {
+			std::vector<size_t> lyr = {i};
+			SpatRaster r = subset(lyr, ops);
+			ops.names = {nms[i]};
+			r = r.nearest(target, exclude, keepNA, unit, remove_zero, method, ops);
+			out.source[i] = r.source[0];
+		}
+		if (!opt.get_filename().empty()) {
+			out = out.writeRaster(opt);
+		}
+		return out;
+	}
+
+	bool setNA = false;
+	std::vector<std::vector<double>> p;
+	if (!std::isnan(exclude)) {
+		SpatRaster x;
+		if (std::isnan(target)) {
+			x = replaceValues({exclude}, {target}, 1, false, NAN, false, ops);
+			x = x.edges(false, false, "inner", 8, 1, ops);
+			p = x.as_points_value(1, ops);
+			if (p.empty()) {
+				return out.init({0}, opt);
+			}
+			return dn_crds(p[0], p[1], method, true, setNA, unit, opt);
+
+		} else {
+			x = replaceValues({exclude, target}, {NAN, NAN}, 1, false, NAN, false, ops);
+			x = x.edges(false, false, "inner", 8, 1, ops);
+			p = x.as_points_value(1, ops);
+			out = replaceValues({NAN, exclude, target}, {target, NAN, NAN}, 1, false, NAN, false, ops);
+		}
+	} else if (!std::isnan(target)) {
+		SpatRaster x = replaceValues({target}, {NAN}, 1, false, NAN, false, ops);
+		x = x.edges(false, false, "inner", 8, 0, ops);
+		p = x.as_points_value(1, ops);
+		out = replaceValues({NAN, target}, {std::numeric_limits<double>::max(), NAN}, 1, false, NAN, false, ops);
+		setNA = true;
+	} else {
+		out = edges(false, false, "inner", 8, 0, ops);
+		p = out.as_points_value(1, ops);
+	}
+	if (p.empty()) {
+		return out.init({0}, opt);
+	}
+	return out.dn_crds(p[0], p[1], method, true, setNA, unit, opt);
+}
+
+//=== nearest (end) ==================================
 

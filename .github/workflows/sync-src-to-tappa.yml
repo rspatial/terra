@@ -1,0 +1,84 @@
+# Mirror terra's src/ into rspatial/tappa/terra_lib/ whenever src/ changes on
+# the default branch. That folder holds upstream C++ only; Python code stays under
+# src/, pybind glue under native/terra_module.cpp.
+# Skips R-only / R package build artefacts: Rcpp*.cpp, Makevars*, *.o (if present).
+#
+# Requires repository secret TAPPA_SYNC_PAT on rspatial/terra (Settings → Secrets
+# and variables → Actions). Use a fine-grained PAT with Contents: Read+Write on
+# rspatial/tappa only. Without it, checkout fails: "Input required: token".
+#
+# If the Python repo is named tarra, change TAPPA_REPO below.
+
+name: Sync src to tappa
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "src/**"
+  workflow_dispatch:
+
+concurrency:
+  group: sync-src-to-tappa
+  cancel-in-progress: true
+
+env:
+  TAPPA_REPO: rspatial/tappa
+  TAPPA_BRANCH: main
+
+jobs:
+  sync:
+    if: github.repository == 'rspatial/terra'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout terra (this repo)
+        uses: actions/checkout@v5
+        with:
+          path: terra
+
+      - name: Ensure TAPPA_SYNC_PAT is set
+        env:
+          PAT: ${{ secrets.TAPPA_SYNC_PAT }}
+        run: |
+          if [ -z "$PAT" ]; then
+            echo "::error::Missing Actions secret TAPPA_SYNC_PAT on this repository."
+            echo "1. GitHub → Settings → Developer settings → Fine-grained tokens"
+            echo "2. Create a token with Contents Read+Write on repository rspatial/tappa"
+            echo "3. rspatial/terra → Settings → Secrets and variables → Actions → New repository secret"
+            echo "   Name: TAPPA_SYNC_PAT   Value: (paste token)"
+            exit 1
+          fi
+
+      - name: Checkout tappa
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ env.TAPPA_REPO }}
+          ref: ${{ env.TAPPA_BRANCH }}
+          path: tappa
+          token: ${{ secrets.TAPPA_SYNC_PAT }}
+
+      - name: Mirror src/ into tappa/terra_lib
+        run: |
+          set -euo pipefail
+          mkdir -p tappa/terra_lib
+          # --exclude alone does not remove matching files already on the destination;
+          # --delete-excluded drops Rcpp/Makevars/*.o from terra_lib when they are gone
+          # or excluded on the terra side.
+          rsync -a --delete --delete-excluded \
+            --exclude='Rcpp*.cpp' \
+            --exclude='Makevars*' \
+            --exclude='*.o' \
+            terra/src/ tappa/terra_lib/
+
+      - name: Commit and push if changed
+        working-directory: tappa
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A terra_lib
+          if git diff --staged --quiet; then
+            echo "No changes to terra_lib/ after sync."
+            exit 0
+          fi
+          git commit -m "Sync terra_lib/ from rspatial/terra@${{ github.sha }}"
+          git push origin HEAD:${{ env.TAPPA_BRANCH }}

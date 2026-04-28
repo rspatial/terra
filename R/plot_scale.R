@@ -168,13 +168,18 @@ north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ..
 	}
 }
 
-draw_box <- function(xy, d, below, labels, box.col, cex=1, ...){
+.sbar_bg <- function(xy, d, below, labels, bg, ytop=0, cex=1, ...){
 	h <- graphics::strheight("A", cex=cex)
-	w <- c(graphics::strwidth(labels[1], cex=cex), graphics::strwidth(labels[length(labels)], cex=cex))
-	box.col <- rep(box.col, length.out=2)
-	b <- ifelse(isTRUE(nchar(below) > 1), 3.5, 1.5)
-	e <- c(xy[1]-1.5*w[1], xy[1]+d+w[2], xy[2]-b*h, xy[2]+3*h)
-	polys(vect(ext(e)), col=box.col[1], border=box.col[2], xpd=TRUE)
+	pad <- h * 0.5
+	n <- length(labels)
+	lpos <- seq(xy[1], xy[1] + d, length.out=n)
+	lw <- graphics::strwidth(labels, cex=cex) / 2
+	x0 <- min(lpos - lw) - pad
+	x1 <- max(lpos + lw) + pad
+	y0 <- xy[2] - pad
+	y1 <- xy[2] + ytop + 2 * h + pad
+	if (nchar(below) > 0) y0 <- y0 - 2 * h
+	graphics::rect(x0, y0, x1, y1, col=bg, border=bg, xpd=TRUE)
 }
 
 
@@ -187,11 +192,8 @@ add_text <- function(halo=FALSE, ...) {
 }
 
 
-sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels, adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, halo=TRUE, col="black", fill=c("black", "white"), border="black", ...){
+sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, labels, adj=c(0.5, -1), lwd=2, xpd=TRUE, ticks=FALSE, scaleby=1, halo=TRUE, col="black", fill=c("black", "white"), border="black", bg=NULL, ...){
 
-box=FALSE
-box.col=c("white", "black")
-box.adj=c(0,0,0,0)
 
 	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
@@ -222,8 +224,17 @@ box.adj=c(0,0,0,0)
 				labels <- paste(ds)
 			}
 		}
-		if (box) draw_box(xy, dd, below, labels, box.col, ...)	
-
+		if (length(labels) == 1) labels <- c("", labels, "")
+		tadd <- 0
+		if (!isFALSE(ticks)) {
+			if (isTRUE(ticks)) {
+				tadd <- dd / (15 * diff(pr$usr[1:2]) / diff(pr$usr[3:4]))
+			} else {
+				tadd <- ticks
+			}
+		}
+		tadd <- max(graphics::strheight("0", cex=1)/5, tadd)
+		if (!is.null(bg)) .sbar_bg(xy, dd, below, labels, bg, ytop=tadd, ...)
 
 		if (halo) {
 			lines(matrix(c(xy[1], xy[2], xy[1]+dd, xy[2]), byrow=T, nrow=2), lwd=lwd+1, xpd=xpd, col="white")
@@ -233,24 +244,16 @@ box.adj=c(0,0,0,0)
 		if (missing(adj)) {
 			adj <- c(0.5, -0.2-lwd/20 )
 		}
-		tadd <- 0
 		if (!isFALSE(ticks)) {
-			if (isTRUE(ticks)) {
-				tadd <- dd / (15 * diff(pr$usr[1:2]) / diff(pr$usr[3:4]))
-			} else {
-				tadd <- ticks
-			}
-			if (length(labels) == 1) {
-				xtick <- c(xy[1], xy[1]+dd)
-			} else {
+			if (length(labels) == 3) {
 				xtick <- c(xy[1], xy[1]+dd/2, xy[1]+dd)			
+			} else {
+				xtick <- c(xy[1], xy[1]+dd)
 			}
 			for (i in 1:length(xtick)) {
 				lines(rbind(c(xtick[i], xy[2]), c(xtick[i], xy[2]+tadd)), lwd=ceiling(lwd/2), xpd=TRUE, ...)
 			}
 		}
-		tadd <- max(graphics::strheight("0", cex=1)/5, tadd)
-		if (length(labels) == 1) labels =c("", labels, "")
 		add_text(xy[1]+c(0,dd/2,dd),xy[2]+tadd, labels=labels, xpd=xpd, adj=adj, halo=halo, col=col, ...)
 
 	} else if (type == "bar") {
@@ -264,7 +267,7 @@ box.adj=c(0,0,0,0)
 			if (missing(labels) || is.null(labels)) {
 				labels <- c("0", "", d/scaleby)
 			}
-			if (box) draw_box(xy, dd, below, labels, box.col, ...)	
+			if (!is.null(bg)) .sbar_bg(xy, dd, below, labels, bg, ytop=lwd, ...)
 
 			half <- xy[1] + dd / 2
 			if (halo) {
@@ -283,7 +286,7 @@ box.adj=c(0,0,0,0)
 				ds <- d / scaleby
 				labels <- c("0", round(0.5*ds), ds)
 			}
-			if (box) draw_box(xy, dd, below, labels, box.col, ...)	
+			if (!is.null(bg)) .sbar_bg(xy, dd, below, labels, bg, ytop=lwd, ...)
 
 			q1 <- xy[1] + dd / 4
 			half <- xy[1] + dd / 2

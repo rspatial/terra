@@ -56,8 +56,8 @@ class SpatDataFrame {
 		long NAL = std::numeric_limits<long>::min();
 		SpatTime_t NAT = std::numeric_limits<SpatTime_t>::min();
 		
-		size_t nrow();
-		size_t ncol();
+		size_t nrow() const;
+		size_t ncol() const;
 		SpatDataFrame subset_rows(std::vector<long> range);
 		SpatDataFrame subset_rows(std::vector<size_t> range);
 		SpatDataFrame subset_cols(std::vector<size_t> range);
@@ -68,17 +68,17 @@ class SpatDataFrame {
 		std::vector<std::string> getS(size_t i);
 		std::vector<int8_t> getB(size_t i);
 		SpatTime_v getT(size_t i);
-		SpatFactor getF(size_t i);
+		SpatFactor getF(size_t i) const;
 
 		std::vector<std::string> as_string(size_t v);
 		std::vector<long> as_long(size_t v);
 		std::vector<double> as_double(size_t v);
 
-		double getDvalue(size_t i, size_t j);
-		long getIvalue(size_t i, size_t j);
-		std::string getSvalue(size_t i, size_t j);
-		int8_t getBvalue(size_t i, size_t j);
-		SpatTime_t getTvalue(size_t i, size_t j);
+		double getDvalue(size_t i, size_t j) const;
+		long getIvalue(size_t i, size_t j) const;
+		std::string getSvalue(size_t i, size_t j) const;
+		int8_t getBvalue(size_t i, size_t j) const;
+		SpatTime_t getTvalue(size_t i, size_t j) const;
 		SpatFactor getFvalue(size_t i, size_t j);
 	
 		void add_row();

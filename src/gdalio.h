@@ -15,6 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+#include <vector>
+#include <cstddef>
+
+void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, const size_t &ncols, const size_t &nl, size_t data_offset = 0);
+
 bool getGDALDataType(std::string datatype, GDALDataType &gdt);
 std::string gdalinfo(std::string filename, std::vector<std::string> options, std::vector<std::string> openopts);
 std::string gdalMDinfo(std::string filename, std::vector<std::string> options);
@@ -25,5 +30,5 @@ std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string
 void getGDALdriver(std::string &filename, std::string &driver);
 bool getNAvalue(GDALDataType gdt, double & naval);
 GDALDataset* openGDAL(std::string filename, unsigned OpenFlag, std::vector<std::string> allowed_drivers, std::vector<std::string> open_options);
-char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, std::vector<std::string> gdal_options);
+char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, bool parallel, std::vector<std::string> gdal_options);
 std::vector<std::string> ncdf_filternames(std::vector<std::string> const &s);

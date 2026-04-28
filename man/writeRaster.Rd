@@ -19,6 +19,7 @@ Write a SpatRaster to a file.
   \item{filename}{character. Output filename. Can be a single filename, or as many filenames as \code{nlyr(x)} to write a file for each layer}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{...}{additional arguments for for writing files. See Details }
+  \item{...}{additional arguments for writing files. See Details }
 }
 
 \value{

@@ -50,9 +50,9 @@ Plot a SpatGraticule. You can create a SpatGraticule with \code{\link{graticule}
 \examples{
 g <- graticule(60, 30, crs="+proj=robin")
 
-plot(g, background="azure", col="red", lty=2, box=TRUE)
-plot(g, background="azure", col="light gray", lab.loc=c(1,2), 
-		lab.lon=c(2,4,6), lab.lat=3:5, lty=3, retro=TRUE)
+#plot(g, background="azure", col="red", lty=2, box=TRUE)
+#plot(g, background="azure", col="light gray", lab.loc=c(1,2), 
+#		lab.lon=c(2,4,6), lab.lat=3:5, lty=3, retro=TRUE)
 }
 
 

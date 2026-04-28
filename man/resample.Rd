@@ -66,11 +66,6 @@ values(r) <- 1:ncell(r)
 s <- rast(nrows=25, ncols=30, xmin=1, xmax=11, ymin=-1, ymax=11)
 x <- resample(r, s, method="bilinear")
 
-opar <- par(no.readonly =TRUE)
-par(mfrow=c(1,2))
-plot(r)
-plot(x)
-par(opar)
 }
 
 \keyword{spatial}

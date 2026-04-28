@@ -27,7 +27,7 @@ setMethod("chunk", signature(x="SpatRaster"),
 		tmpf <- file.path(tmpdir, paste0("tmp", 1:nrow(g), ".tif"))
 		rlst <- vector(mode="list", nrow(g))
 
-		nodots <- is.null(list(...))
+		nodots <- length(list(...)) == 0
 
 		for (i in 1:nrow(g)) {
 			window(x) <- g[i,]

@@ -17,7 +17,7 @@ Computes flow accumulation or the total contributing area in terms of numbers of
 
 \arguments{
   \item{x}{SpatRaster with flow direction, see \code{\link{terrain}}. }
-  \item{weight}{SpatRaster with weight/score daa. For example, cell area or precipitation}  
+  \item{weight}{SpatRaster with weight/score data. For example, cell area or precipitation}  
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
@@ -94,7 +94,7 @@ plot(flow_acc1w)
 plot(flow_acc2w)
 
 
-## Application wth example elevation data
+## Application with example elevation data
 
 elev <- rast(system.file('ex/elev.tif',package="terra"))
 flowdir <- terrain(elev,"flowdir")

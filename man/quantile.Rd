@@ -11,7 +11,7 @@
 \description{
 Compute quantiles for each cell across the layers of a SpatRaster. 
 
-You can use use \code{\link{global}(x, fun=quantile)} to instead compute quantiles across cells for each layer.
+You can use \code{\link{global}(x, fun=quantile)} to instead compute quantiles across cells for each layer.
 
 You can also use this method to compute quantiles of the numeric variables of a SpatVector.
 }

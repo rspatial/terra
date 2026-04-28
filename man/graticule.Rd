@@ -9,7 +9,7 @@ Create a graticule
 }
 
 \description{
-Create a graticule. That is, a grid of lon/lat lines that can be used to on a projected map.
+Create a graticule. That is, a grid of lon/lat lines that can be used on a projected map.
 
 The object returned, a SpatGraticule, can be plotted with \code{plot} and \code{lines}. There is also a \code{crop} method.
 }
@@ -35,9 +35,7 @@ SpatGraticule
 \examples{
 g <- graticule(60, 30, crs="+proj=robin")
 g
-
 graticule(90, c(-90, -60, -23.5, 0, 23.5, 60, 90), crs="+proj=robin")
-
 }
 
 \keyword{methods}
