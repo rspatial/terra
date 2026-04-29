@@ -5,8 +5,8 @@
 
 
 setMethod("show", "SpatExtent", function(object) {
-#	.show_ext(object)
-	cat(object@pntr$show())
+	.show_ext(object)
+#	cat(object@pntr$show())
 } )
 
 setMethod("show", "SpatRaster", function(object) cat(object@pntr$show(TRUE)) )
