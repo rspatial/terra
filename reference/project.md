@@ -9,8 +9,7 @@ SpatRaster or a matrix with coordinates.
 # S4 method for class 'SpatRaster'
 project(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, 
   origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", 
-  AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, xscale=0, yscale=0,
-  filename="", ...)
+  AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, filename="", ...)
 
 # S4 method for class 'SpatVector'
 project(x, y, partial=FALSE, pipeline="", AOI=NULL,
@@ -150,22 +149,6 @@ project(x, from, to)
 
   logical. If `FALSE`, only use transformations with known accuracy (no
   "ballpark" transformations). Requires GDAL \>= 3.3
-
-- xscale:
-
-  numeric. Resampling ratio (number of destination pixels per source
-  pixel) along the horizontal axis. When `0` (the default), this is
-  computed automatically per processing chunk by GDAL. Setting a fixed
-  value eliminates the block-boundary artifacts that arise when the
-  per-chunk ratio varies across the raster. Use
-  [`warp_scale`](https://rspatial.github.io/terra/reference/warp_scale.md)
-  to compute a suitable value from the source and destination geometry.
-  Equals one for no resampling, below one for downsampling, and above
-  one for upsampling
-
-- yscale:
-
-  numeric. Same as `xscale` but along the vertical axis
 
 - filename:
 

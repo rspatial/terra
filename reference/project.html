@@ -43,8 +43,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for class 'SpatRaster'</span></span>
 <span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">method</span>, mask<span class="op">=</span><span class="cn">FALSE</span>, align_only<span class="op">=</span><span class="cn">FALSE</span>, res<span class="op">=</span><span class="cn">NULL</span>, </span>
 <span>  origin<span class="op">=</span><span class="cn">NULL</span>, threads<span class="op">=</span><span class="cn">FALSE</span>, use_gdal<span class="op">=</span><span class="cn">TRUE</span>, by_util<span class="op">=</span><span class="cn">FALSE</span>, pipeline<span class="op">=</span><span class="st">""</span>, </span>
-<span>  AOI<span class="op">=</span><span class="cn">NULL</span>, desired_accuracy<span class="op">=</span><span class="op">-</span><span class="fl">1.0</span>, allow_approx<span class="op">=</span><span class="cn">TRUE</span>, xscale<span class="op">=</span><span class="fl">0</span>, yscale<span class="op">=</span><span class="fl">0</span>,</span>
-<span>  filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  AOI<span class="op">=</span><span class="cn">NULL</span>, desired_accuracy<span class="op">=</span><span class="op">-</span><span class="fl">1.0</span>, allow_approx<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'SpatVector'</span></span>
 <span><span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, partial<span class="op">=</span><span class="cn">FALSE</span>, pipeline<span class="op">=</span><span class="st">""</span>, AOI<span class="op">=</span><span class="cn">NULL</span>,</span>
@@ -129,14 +128,6 @@
 
   <dt id="arg-allow-approx">allow_approx<a class="anchor" aria-label="anchor" href="#arg-allow-approx"></a></dt>
 <dd><p>logical. If <code>FALSE</code>, only use transformations with known accuracy (no "ballpark" transformations). Requires GDAL &gt;= 3.3</p></dd>
-
-
-  <dt id="arg-xscale">xscale<a class="anchor" aria-label="anchor" href="#arg-xscale"></a></dt>
-<dd><p>numeric. Resampling ratio (number of destination pixels per source pixel) along the horizontal axis. When <code>0</code> (the default), this is computed automatically per processing chunk by GDAL. Setting a fixed value eliminates the block-boundary artifacts that arise when the per-chunk ratio varies across the raster. Use <code><a href="warp_scale.html">warp_scale</a></code> to compute a suitable value from the source and destination geometry. Equals one for no resampling, below one for downsampling, and above one for upsampling</p></dd>
-
-
-  <dt id="arg-yscale">yscale<a class="anchor" aria-label="anchor" href="#arg-yscale"></a></dt>
-<dd><p>numeric. Same as <code>xscale</code> but along the vertical axis</p></dd>
 
 
   <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
