@@ -110,6 +110,7 @@ SpatRaster
 ## Examples
 
 ``` r
+
 r <- rast(system.file("ex/elev.tif", package="terra"))
 ra <- aggregate(r, 10)
 xy <- data.frame(xyFromCell(ra, 1:ncell(ra)))

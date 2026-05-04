@@ -97,9 +97,10 @@ unique(s, as.raster=TRUE)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
+#> categories  : label, lyr.1, lyr.1.1
 #> name        : label
-#> min value   :     0
-#> max value   :     4
+#> min value   :   1_0
+#> max value   :   5_2
 
 
 v <- vect(cbind(x=c(1:5,1:5), y=c(5:1,5:1)), 

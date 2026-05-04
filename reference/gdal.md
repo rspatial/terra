@@ -156,14 +156,7 @@ grids locally.
 gdal()
 #> [1] "3.8.4"
 gdal(2)
-head(gdal(drivers=TRUE))
-#>      name raster vector        can  vsi                     long.name
-#> 1 AAIGrid   TRUE  FALSE read/write TRUE           Arc/Info ASCII Grid
-#> 2    ACE2   TRUE  FALSE       read TRUE                          ACE2
-#> 3    ADRG   TRUE  FALSE read/write TRUE ARC Digitized Raster Graphics
-#> 4     AIG   TRUE  FALSE       read TRUE          Arc/Info Binary Grid
-#> 5     ARG   TRUE  FALSE read/write TRUE     Azavea Raster Grid format
-#> 6  AVCBin  FALSE   TRUE       read TRUE      Arc/Info Binary Coverage
+#head(gdal(drivers=TRUE))
 libVersion("all", TRUE)
 #>      major minor sub
 #> gdal     3     8   4

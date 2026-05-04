@@ -69,6 +69,7 @@ https://www.asprs.org/wp-content/uploads/pers/2000journal/january/2000_jan_87-90
 ## Examples
 
 ``` r
+
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 x <- project(r, "EPSG:2169")

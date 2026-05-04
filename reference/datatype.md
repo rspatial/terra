@@ -42,19 +42,19 @@ allowed)
 
 The following raster datatypes are available:
 
-|                         |                            |                            |
-|-------------------------|----------------------------|----------------------------|
+|  |  |  |
+|----|----|----|
 | **Datatype definition** | **minimum possible value** | **maximum possible value** |
-| `INT1U`                 | 0                          | 255                        |
-| `INT2U`                 | 0                          | 65,535                     |
-| `INT4U`                 | 0                          | 4,294,967,296              |
-| `INT8U`                 | 0                          | 18,446,744,073,709,551,616 |
-| `INT1S`                 | -128                       | 128                        |
-| `INT2S`                 | -32,767                    | 32,767                     |
-| `INT4S`                 | -2,147,483,647             | 2,147,483,647              |
-| `INT8S`                 | -9,223,372,036,854,775,808 | 9,223,372,036,854,775,808  |
-| `FLT4S`                 | -3.4e+38                   | 3.4e+38                    |
-| `FLT8S`                 | -1.7e+308                  | 1.7e+308                   |
+| `INT1U` | 0 | 255 |
+| `INT2U` | 0 | 65,535 |
+| `INT4U` | 0 | 4,294,967,296 |
+| `INT8U` | 0 | 18,446,744,073,709,551,616 |
+| `INT1S` | -128 | 128 |
+| `INT2S` | -32,767 | 32,767 |
+| `INT4S` | -2,147,483,647 | 2,147,483,647 |
+| `INT8S` | -9,223,372,036,854,775,808 | 9,223,372,036,854,775,808 |
+| `FLT4S` | -3.4e+38 | 3.4e+38 |
+| `FLT8S` | -1.7e+308 | 1.7e+308 |
 
 For all integer and byte types the lowest (signed) or highest (unsigned)
 value is used to store `NA`. For float types `NaN` is used (following

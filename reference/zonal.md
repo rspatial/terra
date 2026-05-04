@@ -141,6 +141,7 @@ and columns.
 ## Examples
 
 ``` r
+
 ### SpatRaster, SpatRaster
 r <- rast(ncols=10, nrows=10)
 values(r) <- 1:ncell(r)

@@ -87,6 +87,7 @@ SpatRaster
 ## Examples
 
 ``` r
+
 r <- rast(ncol=100, nrow=100, crs="local", xmin=0, xmax=50, ymin=0, ymax=50)
 set.seed(100)
 x <- runif(25, 5, 45)

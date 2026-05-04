@@ -49,6 +49,7 @@ list or SpatVector
 ## Examples
 
 ``` r
+
 ## split layers
 s <- rast(system.file("ex/logo.tif", package="terra"))   
 y <- split(s, c(1,2,1))

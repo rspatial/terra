@@ -42,6 +42,7 @@ Emanuele Cordano
 ## Examples
 
 ``` r
+
 ## Creation of a Digital Elevation Model 
 
 elev <- array(NA,c(9,9))

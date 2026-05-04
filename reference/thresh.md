@@ -63,6 +63,7 @@ Histograms. *IEEE Transactions on Systems, Man, and Cybernetics*,
 ## Examples
 
 ``` r
+
 s <- rast(system.file("ex/logo.tif", package="terra"))
 thresh(s, "mean", as.raster=FALSE)
 #>      red    green     blue 

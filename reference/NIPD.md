@@ -52,6 +52,7 @@ Emanuele Cordano
 ## Examples
 
 ``` r
+
 elev1 <- array(NA,c(9,9))
 elev2 <- elev1
 dx <- 1

@@ -143,9 +143,10 @@ r
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        : cover
-#> min value   :     1
-#> max value   :     3
+#> categories  : cover
+#> name        :  cover
+#> min value   : forest
+#> max value   :  urban
 
 plot(r, col=c("green", "blue", "light gray"))
 text(r, digits=3, cex=.75, halo=TRUE)
@@ -176,9 +177,10 @@ x
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
-#> name        : cover
-#> min value   :     3
-#> max value   :     5
+#> categories  : cover, letters, value
+#> name        :  cover
+#> min value   : forest
+#> max value   :  urban
 
 # get current index
 activeCat(x)

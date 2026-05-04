@@ -68,6 +68,7 @@ relation)
 ## Examples
 
 ``` r
+
 # polygons
 p1 <- vect("POLYGON ((0 0, 8 0, 8 9, 0 9, 0 0))")
 p2 <- vect("POLYGON ((5 6, 15 6, 15 15, 5 15, 5 6))")

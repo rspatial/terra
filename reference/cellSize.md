@@ -75,6 +75,7 @@ SpatRaster
 ## Examples
 
 ``` r
+
 # SpatRaster 
 r <- rast(nrows=18, ncols=36)
 v <- 1:ncell(r)

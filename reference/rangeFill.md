@@ -53,6 +53,7 @@ SpatRaster
 ## Examples
 
 ``` r
+
 x <- y <- rast(ncol=2, nrow=2)
 values(x) <- c(NA, 1:3)
 values(y) <- c(NA, 4:6)

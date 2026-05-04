@@ -56,9 +56,10 @@ x
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84)
 #> source(s)   : memory
+#> categories  : cover_color
 #> name        : cover_color
-#> min value   :           0
-#> max value   :           8
+#> min value   :  forest_red
+#> max value   :  urban_blue
 levels(x)[[1]]
 #>   ID  cover_color
 #> 1  0   forest_red

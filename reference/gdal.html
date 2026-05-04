@@ -17,7 +17,7 @@ projPaths gets or sets the search paths that PROJ uses to find coordinate system
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-23</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-24</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -129,14 +129,7 @@ projPaths gets or sets the search paths that PROJ uses to find coordinate system
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">gdal</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "3.8.4"</span>
 <span class="r-in"><span><span class="fu">gdal</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="headtail.html">head</a></span><span class="op">(</span><span class="fu">gdal</span><span class="op">(</span>drivers<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      name raster vector        can  vsi                     long.name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 AAIGrid   TRUE  FALSE read/write TRUE           Arc/Info ASCII Grid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    ACE2   TRUE  FALSE       read TRUE                          ACE2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    ADRG   TRUE  FALSE read/write TRUE ARC Digitized Raster Graphics</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     AIG   TRUE  FALSE       read TRUE          Arc/Info Binary Grid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     ARG   TRUE  FALSE read/write TRUE     Azavea Raster Grid format</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  AVCBin  FALSE   TRUE       read TRUE      Arc/Info Binary Coverage</span>
+<span class="r-in"><span><span class="co">#head(gdal(drivers=TRUE))</span></span></span>
 <span class="r-in"><span><span class="fu">libVersion</span><span class="op">(</span><span class="st">"all"</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      major minor sub</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> gdal     3     8   4</span>
