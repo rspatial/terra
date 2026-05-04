@@ -713,8 +713,11 @@ setMethod("mask", signature(x="SpatRaster", mask="sf"),
 )
 
 setMethod("project", signature(x="SpatRaster"),
-	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, xscale=0, yscale=0, filename="", ...)  {
+	function(x, y, method, mask=FALSE, align_only=FALSE, res=NULL, origin=NULL, threads=FALSE, use_gdal=TRUE, by_util=FALSE, pipeline="", AOI=NULL, desired_accuracy=-1.0, allow_approx=TRUE, filename="", ...)  {
 
+		xscale=0
+		yscale=0
+		
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@pntr$rgb)) {
 				method <- "near"
