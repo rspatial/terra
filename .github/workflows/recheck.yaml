@@ -7,6 +7,7 @@ on:
         options:
         - Depends
         - Imports
+        - Suggests
         - strong
         - most
       pattern:
