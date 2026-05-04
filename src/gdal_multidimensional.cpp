@@ -674,6 +674,23 @@ static bool md_fill_source_from_marray(
 	s.layers.resize(s.nlyr);
     std::iota(s.layers.begin(), s.layers.end(), 0);
 
+// block size: query the multidim array; fall back to (1 row, ncol) when not reported
+	{
+		int br = 1;
+		int bc = (int) s.ncol;
+		std::vector<GUInt64> bs = poVar->GetBlockSize();
+		if (bs.size() == ndim) {
+			if ((iy >= 0) && (bs[iy] > 0)) {
+				br = (int) bs[iy];
+			}
+			if ((ix >= 0) && (bs[ix] > 0)) {
+				bc = (int) bs[ix];
+			}
+		}
+		std::fill(s.blockrows.begin(), s.blockrows.end(), br);
+		std::fill(s.blockcols.begin(), s.blockcols.end(), bc);
+	}
+
 	std::vector<size_t> idx;
 	if (it >= 0 && pos_it != (size_t) -1 && !time_coord.empty()) {
 		for (size_t L = 0; L < s.nlyr; L++) {
