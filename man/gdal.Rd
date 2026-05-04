@@ -67,7 +67,7 @@ character vector of search paths. When setting paths, the result is returned inv
 \examples{
 gdal()
 gdal(2)
-head(gdal(drivers=TRUE))
+#head(gdal(drivers=TRUE))
 libVersion("all", TRUE)
 projNetwork()
 projPaths()
