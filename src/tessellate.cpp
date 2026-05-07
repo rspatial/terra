@@ -1,6 +1,8 @@
 #include "spatVector.h"
 #include <numeric>
 #include "vecmath.h"
+#include <array>
+#include <map>
 #include <unordered_map>
 
 //#include "gdal_alg.h"
