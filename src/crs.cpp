@@ -568,14 +568,10 @@ SpatDataFrame get_proj_pipelines(std::string source_crs, std::string target_crs,
 
 	SpatDataFrame out;
 
-#if GDAL_VERSION_MAJOR < 3
+#if GDAL_VERSION_MAJOR < 3 || PROJ_VERSION_MAJOR < 7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR < 1)
 	out.setError("GDAL >= 3 and PROJ >= 7.1 required");
 	return out;
 #else
-	#if PROJ_VERSION_MAJOR < 7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR < 1)
-	out.setError("PROJ >= 7.1 required");
-	return out;
-#endif
 
 	PJ *src = proj_create(PJ_DEFAULT_CTX, source_crs.c_str());
 	if (src == nullptr) {
