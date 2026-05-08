@@ -1,4 +1,13 @@
 
+r <- rast(nrow = 10, ncol = 10, xmin = 0, ymin = 0, xmax = 10, ymax = 10,  crs = "EPSG:4326")
+values(r) <- 1:100
+target <- "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+x <- project(r, target, method = "bilinear", res = 1e5)
+tmp <- rast(crs = target, extent = ext(x), resolution = 1e5)
+y <- project(r, tmp)
+expect_true(all.equal(x, y))
+
+## pipelines 
 ## basic: returns a data.frame with expected columns
 pp <- proj_pipelines("EPSG:4326", "EPSG:32632")
 
