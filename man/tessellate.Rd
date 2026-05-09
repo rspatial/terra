@@ -7,7 +7,7 @@
 
 
 \title{
-Create a tesselation
+Create a tessellation
 }
 
 \description{
