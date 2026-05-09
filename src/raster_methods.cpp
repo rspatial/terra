@@ -4871,7 +4871,7 @@ SpatRaster SpatRaster::scale_linear(double smin, double smax, SpatOptions &opt) 
 		size_t cellperlyr = out.bs.nrows[i] * ncol();
 		for (size_t lyr = 0; lyr < nl; lyr++) {
 			for (size_t j=lyroff; j<(lyroff+cellperlyr); j++) {
-				v[j] = ((v[j] - rmin[lyr]) / rdif[i]) + smin;
+				v[j] = ((v[j] - rmin[lyr]) / rdif[lyr]) + smin;
 			}
 			lyroff = lyroff + cellperlyr;
 		}
