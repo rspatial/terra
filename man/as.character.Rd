@@ -20,7 +20,7 @@ Create a text representation of (the skeleton of) an object
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster or SpatExtent}
 }
  
 \value{
@@ -30,9 +30,12 @@ character
 
 \examples{
 r <- rast()
-ext(r)
-ext(c(0, 20, 0, 20))
+r
+as.character(r)
 
+e <- ext(r)
+e
+as.character(e)
 }
 
 \keyword{spatial}
