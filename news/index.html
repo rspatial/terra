@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">terra</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-24</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-26</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-24" id="version-19-24">version 1.9-24<a class="anchor" aria-label="anchor" href="#version-19-24"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-26" id="version-19-26">version 1.9-26<a class="anchor" aria-label="anchor" href="#version-19-26"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-9-24">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-24"></a></h3>
+<h3 id="bug-fixes-1-9-26">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-26"></a></h3>
+<p>terra did not build with Apple clang 14 on CRAN terra did not build with PROJ &lt; 7 <a href="https://github.com/rspatial/terra/issues/2080" class="external-link">#2080</a> by Wolfgang Viechtbauer <code>project</code> without template failed <a href="https://github.com/rspatial/terra/issues/2081" class="external-link">#2081</a> by Ethan Plunkett</p>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.9-25" id="version-19-25">version 1.9-25<a class="anchor" aria-label="anchor" href="#version-19-25"></a></h2><p class="text-muted">CRAN release: 2026-05-06</p>
+<div class="section level3">
+<h3 id="bug-fixes-1-9-25">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-25"></a></h3>
 <ul><li>terra now distinguishes between the “standard”/“Gregorian” and the “proleptic_gregorian” calendars <a href="https://github.com/rspatial/terra/issues/1599" class="external-link">#1599</a> by Hu shiyu</li>
 <li>
 <code>spatSample&lt;SpatRaster&gt;(method="stratified")</code> could cause an out of bounds error <a href="https://github.com/rspatial/terra/issues/1858" class="external-link">#1858</a> by Felipe)</li>
@@ -55,7 +62,7 @@
 <code>distance&lt;SpatRaster&gt;</code> with haversine method could overflow from N to S pole <a href="https://github.com/rspatial/terra/issues/2077" class="external-link">#2077</a> by brshipley</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-9-24">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-24"></a></h3>
+<h3 id="enhancements-1-9-25">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-25"></a></h3>
 <ul><li>
 <code>memmax</code> now defaults to 16 GB to prevent allocation failures on very large memory systems <a href="https://github.com/rspatial/terra/issues/2073" class="external-link">#2073</a> by Will Kessler</li>
 <li>
@@ -80,7 +87,7 @@
 <li>PROJ CDN warnings (e.g. SSL errors when downloading datum grids) are now collapsed into a single summary warning with guidance to use <code>projNetwork(FALSE)</code> <a href="https://github.com/rspatial/terra/issues/1351" class="external-link">#1351</a> by Hassan Masoomi</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-9-24">new<a class="anchor" aria-label="anchor" href="#new-1-9-24"></a></h3>
+<h3 id="new-1-9-25">new<a class="anchor" aria-label="anchor" href="#new-1-9-25"></a></h3>
 <ul><li>
 <code>costDistance</code> and <code>gridDistance</code> can now return the nearest target cell number <a href="https://github.com/rspatial/terra/issues/2034" class="external-link">#2034</a> by chrislittleboy</li>
 <li>

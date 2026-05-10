@@ -1,6 +1,18 @@
 # Changelog
 
-## version 1.9-24
+## version 1.9-26
+
+### bug fixes
+
+terra did not build with Apple clang 14 on CRAN terra did not build with
+PROJ \< 7 [\#2080](https://github.com/rspatial/terra/issues/2080) by
+Wolfgang Viechtbauer `project` without template failed
+[\#2081](https://github.com/rspatial/terra/issues/2081) by Ethan
+Plunkett
+
+## version 1.9-25
+
+CRAN release: 2026-05-06
 
 ### bug fixes
 
