@@ -16,7 +16,7 @@ shade(slope, aspect, angle=45, direction=0, normalize=FALSE,
 }
 
 \arguments{
-  \item{slope}{SpatRasterwith slope values (in radians) }
+  \item{slope}{SpatRaster with slope values (in radians) }
   \item{aspect}{SpatRaster with aspect values (in radians) }
   \item{angle}{ The elevation angle(s) of the light source (sun), in degrees}
   \item{direction}{ The direction (azimuth) angle(s) of the light source (sun), in degrees}
