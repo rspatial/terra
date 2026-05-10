@@ -1,7 +1,7 @@
-# units of SpatRaster or SpatRasterDataSet
+# units of SpatRaster or SpatRasterDataset
 
 Get or set the units of the layers of a SpatRaster or the datasets in a
-SpatRasterDataSet.
+SpatRasterDataset.
 
 ## Usage
 

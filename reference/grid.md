@@ -6,7 +6,7 @@ locations within the mapped area as delineated by the axes.
 
 If you set the tick marks yourself, you can use
 [`add_abline`](https://rspatial.github.io/terra/reference/add_abline.md)
-to create a grid:
+to create a grid.
 
 Also see
 [`graticule`](https://rspatial.github.io/terra/reference/graticule.md)
@@ -44,7 +44,6 @@ add_grid(nx=NULL, ny=nx, col="lightgray", lty="dotted", lwd=1)
 [`add_abline`](https://rspatial.github.io/terra/reference/add_abline.md),
 [`add_legend`](https://rspatial.github.io/terra/reference/legend.md),
 [`add_box`](https://rspatial.github.io/terra/reference/box.md),
-`add_grid`,
 [`add_mtext`](https://rspatial.github.io/terra/reference/add_mtext.md)
 
 ## Examples

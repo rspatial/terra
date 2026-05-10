@@ -679,7 +679,7 @@ updates/improvements on the above instructions.
   : Check if a SpatExtent or SpatVector is empty
 
 - [`is.flipped(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/is.flipped.md)
-  : Is a SpatRaster is flipped
+  : Is a SpatRaster flipped?
 
 - [`is.lonlat(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/is.lonlat.md)
   [`is.lonlat(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/is.lonlat.md)
@@ -1166,7 +1166,7 @@ updates/improvements on the above instructions.
   : terrain characteristics
 
 - [`tessellate(`*`<ANY>`*`)`](https://rspatial.github.io/terra/reference/tessellate.md)
-  : Create a tesselation
+  : Create a tessellation
 
 - [`text(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/text.md)
   [`text(`*`<SpatVector>`*`)`](https://rspatial.github.io/terra/reference/text.md)
@@ -1222,7 +1222,7 @@ updates/improvements on the above instructions.
   [`` `units<-`( ``*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/units.md)
   [`units(`*`<SpatRasterDataset>`*`)`](https://rspatial.github.io/terra/reference/units.md)
   [`` `units<-`( ``*`<SpatRasterDataset>`*`)`](https://rspatial.github.io/terra/reference/units.md)
-  : units of SpatRaster or SpatRasterDataSet
+  : units of SpatRaster or SpatRasterDataset
 
 - [`update(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/update.md)
   : Update a raster file

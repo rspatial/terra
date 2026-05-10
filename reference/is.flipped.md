@@ -1,4 +1,4 @@
-# Is a SpatRaster is flipped
+# Is a SpatRaster flipped?
 
 Check if a SpatRaster is "flipped" vertically, and may need to be
 adjusted with

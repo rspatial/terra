@@ -18,7 +18,7 @@ shade(slope, aspect, angle=45, direction=0, normalize=FALSE,
 
 - slope:
 
-  SpatRasterwith slope values (in radians)
+  SpatRaster with slope values (in radians)
 
 - aspect:
 

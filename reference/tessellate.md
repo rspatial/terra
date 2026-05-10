@@ -1,4 +1,4 @@
-# Create a tesselation
+# Create a tessellation
 
 Create a tessellation of polygons with no gaps or overlaps that cover
 constant area. The polygons can be hexagons or rectangles. For lon/lat

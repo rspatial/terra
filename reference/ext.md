@@ -34,9 +34,9 @@ ext(x) <- value
 - x:
 
   SpatRaster, SpatVector, a numeric vector of length four (xmin, xmax,
-  ymin, ymax), a single numeric (xmin; see additional arguments
-  under`...`), or missing (in which case the output is the global extent
-  in lon-lat coordinates)
+  ymin, ymax), a single numeric (xmin; see additional arguments under
+  `...`), or missing (in which case the output is the global extent in
+  lon-lat coordinates)
 
 - cells:
 
