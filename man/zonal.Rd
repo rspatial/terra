@@ -39,7 +39,7 @@ You can also summarize values of a SpatVector for each polygon (zone) defined by
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with additional arguments for writing files as in \code{\link{writeRaster}}}
 
-  \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
+  \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is used to compute a weighted mean}
   \item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
   \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
   \item{small}{logical. If \code{TRUE}, values for all cells in touched polygons are extracted if none of the cells center points is within the polygon; even if \code{touches=FALSE}}
