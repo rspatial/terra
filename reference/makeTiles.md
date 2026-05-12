@@ -151,10 +151,10 @@ getTileExtents(r, cores=4)   # smaller tiles, sized for 4 concurrent workers
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 ff
-#> [1] "/tmp/RtmpdBUGgp/file21a471151e28_1.tif"
-#> [2] "/tmp/RtmpdBUGgp/file21a471151e28_2.tif"
-#> [3] "/tmp/RtmpdBUGgp/file21a471151e28_3.tif"
-#> [4] "/tmp/RtmpdBUGgp/file21a471151e28_4.tif"
+#> [1] "/tmp/RtmpQcUrys/file218914394a81_1.tif"
+#> [2] "/tmp/RtmpQcUrys/file218914394a81_2.tif"
+#> [3] "/tmp/RtmpQcUrys/file218914394a81_3.tif"
+#> [4] "/tmp/RtmpQcUrys/file218914394a81_4.tif"
 
 vrt(ff)
 #> class       : SpatRaster
@@ -162,8 +162,8 @@ vrt(ff)
 #> resolution  : 3.6, 1.8  (x, y)
 #> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
-#> source      : spat_21a46c04800e_8612_DvggOkjkTOQeAAI.vrt
-#> name        : spat_21a46c04800e_8612_DvggOkjkTOQeAAI
+#> source      : spat_218976e7a6b7_8585_DvggOkjkTOQeAAI.vrt
+#> name        : spat_218976e7a6b7_8585_DvggOkjkTOQeAAI
 #> min value   :                                      1
 #> max value   :                                  10000
 ```

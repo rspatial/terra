@@ -1,6 +1,22 @@
 # Changelog
 
-## version 1.9-26
+## version 1.9-28
+
+### bug fixes
+
+- terra did not build with GDAL \< 3.4
+  [\#2080](https://github.com/rspatial/terra/issues/2080) by Wolfgang
+  Viechtbauer
+
+### enhancements
+
+### new
+
+## version 1.9-27
+
+CRAN release: 2026-05-10
+
+Released 2026-05-08
 
 ### bug fixes
 
@@ -15,6 +31,8 @@
 ## version 1.9-25
 
 CRAN release: 2026-05-06
+
+Released 2026-05-04
 
 ### bug fixes
 

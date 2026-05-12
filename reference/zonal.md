@@ -82,8 +82,7 @@ zonal(x, z, fun=mean, ..., weighted=FALSE, as.polygons=FALSE)
 - weights:
 
   logical. If `TRUE` and `y` has polygons, the approximate fraction of
-  each cell that is covered is returned as well, for example to compute
-  a weighted mean
+  each cell that is covered is used to compute a weighted mean
 
 - exact:
 
