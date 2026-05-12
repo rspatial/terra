@@ -2,6 +2,8 @@
 
 ## bug fixes
 
+- terra did not build with GDAL < 3.4 [#2080](https://github.com/rspatial/terra/issues/2080) by Wolfgang Viechtbauer
+
 ## enhancements
 
 ## new 
