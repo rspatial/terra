@@ -8,6 +8,8 @@
 
 ## new 
 
+- `make.RGB` function [#2085](https://github.com/rspatial/terra/issues/2085) by Jérôme Guélat
+
 
 # version 1.9-27
 

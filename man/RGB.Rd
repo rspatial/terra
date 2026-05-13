@@ -57,7 +57,7 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 }  
 
 
-\seealso{\code{\link{set.RGB}}}
+\seealso{\code{\link{make.RGB}, \link{set.RGB}}}
 
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   
