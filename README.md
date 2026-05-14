@@ -12,7 +12,7 @@ status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/
 
 [Stack Overflow](https://stackoverflow.com/questions/tagged/terra) is a good place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, or if you want to request a new feature, please file an [issue](https://github.com/rspatial/terra/issues).
 
-`terra` replaces the [raster](https://github.com/rspatial/raster) package. The interfaces of `terra` and `raster` are similar, but `terra` is simpler, faster and can do more. 
+`terra` replaces the [raster](https://github.com/rspatial/raster) package. The interfaces of `terra` and `raster` are similar, but `terra` is simpler, faster and can do more. You can try [tappa](https://github.com/rspatial/tappa/) if want the terra functionality in python; or you can use the C++ library to [roll your own](https://github.com/rspatial/terra/tree/master/cmdapp) application.
 
 
 ## Installation
