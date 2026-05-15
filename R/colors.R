@@ -104,7 +104,7 @@ setMethod ("coltab<-" , "SpatRaster",
 
 
 
-make.RGB <- function(x, col=rainbow(25), breaks=NULL, alpha=FALSE, colNA="white", zlim=NULL, zlimcol=NULL, ext=NULL, filename="", ...) { 
+make.RGB <- function(x, col=grDevices::rainbow(25), breaks=NULL, alpha=FALSE, colNA="white", zlim=NULL, zlimcol=NULL, ext=NULL, filename="", ...) { 
 
 	getCols <- function(x, col, breaks=NULL, r=NULL, colNA=NA) {
 		if (!is.null(breaks)) {

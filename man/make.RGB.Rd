@@ -10,7 +10,7 @@ Make a Red-Green-Blue SpatRaster from a single layer
 
 
 \usage{
-RGB(x, col=rainbow(25), breaks=NULL, alpha=FALSE, colNA="white", 
+make.RGB(x, col=grDevices::rainbow(25), breaks=NULL, alpha=FALSE, colNA="white", 
 		zlim=NULL, zlimcol=NULL, ext=NULL, filename="", ...)
 }
 
@@ -33,6 +33,8 @@ RGB(x, col=rainbow(25), breaks=NULL, alpha=FALSE, colNA="white",
 \seealso{ \code{\link{RGB}}}
 
 \examples{
+r <- rast(system.file("ex/elev.tif", package="terra"))
+
 r <- rast(system.file("external/test.grd", package="raster"))
 x <- make.RGB(r)
 plot(x)
