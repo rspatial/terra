@@ -93,7 +93,7 @@ has.RGB(x, strict=TRUE)
 
 ## See also
 
-[`set.RGB`](https://rspatial.github.io/terra/reference/inplace.md)
+[`make.RGB`](https://rspatial.github.io/terra/reference/make.RGB.md)`, `[`set.RGB`](https://rspatial.github.io/terra/reference/inplace.md)
 
 ## Examples
 

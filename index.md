@@ -22,7 +22,10 @@ feature, please file an
 
 `terra` replaces the [raster](https://github.com/rspatial/raster)
 package. The interfaces of `terra` and `raster` are similar, but `terra`
-is simpler, faster and can do more.
+is simpler, faster and can do more. You can try
+[tappa](https://github.com/rspatial/tappa/) if want the terra
+functionality in python; or you can use the C++ library to [roll your
+own](https://github.com/rspatial/terra/tree/master/cmdapp) application.
 
 ## Installation
 

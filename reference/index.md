@@ -623,6 +623,9 @@
   [`polys(`*`<SpatExtent>`*`)`](https://rspatial.github.io/terra/reference/lines.md)
   : Add points, lines, or polygons to a map
 
+- [`make.RGB()`](https://rspatial.github.io/terra/reference/make.RGB.md)
+  : Create a RGB SpatRaster
+
 - [`makeTiles(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/makeTiles.md)
   [`getTileExtents(`*`<SpatRaster>`*`)`](https://rspatial.github.io/terra/reference/makeTiles.md)
   : Make tiles or get their extents
