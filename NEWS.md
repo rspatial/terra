@@ -3,7 +3,7 @@
 ## bug fixes
 
 - terra did not build with GDAL < 3.4 [#2080](https://github.com/rspatial/terra/issues/2080) by Wolfgang Viechtbauer
-- `spatSample` on large rasters had become very slow [#2086](https://github.com/rspatial/terra/issues/2086) by Jason Flower
+- `spatSample<SpatRaster>(method="random")` on large rasters had become very slow [#2086](https://github.com/rspatial/terra/issues/2086) by Jason Flower
 
 
 ## enhancements
